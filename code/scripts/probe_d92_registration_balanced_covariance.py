@@ -908,10 +908,14 @@ def build_d92_fit(
                 np.asarray(coefficient, dtype=np.float32)
             )
         except (FloatingPointError, OverflowError, ValueError) as error:
-            raise D92ProbeError("D92 NewGuard D42 coefficient quantization drift") from error
+            raise newguard.D92NewGuardNumericalError(
+                "deployment_quantize_decode_numeric_failure"
+            ) from error
         deployed_intercept = np.asarray(intercept, dtype=np.float16)
         if not np.isfinite(deployed_intercept).all():
-            raise D92ProbeError("D92 NewGuard D42 intercept quantization drift")
+            raise newguard.D92NewGuardNumericalError(
+                "deployment_quantize_decode_numeric_failure"
+            )
         return (
             np.asarray(decoded, dtype=np.float32),
             np.asarray(deployed_intercept, dtype=np.float32),

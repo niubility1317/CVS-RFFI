@@ -245,6 +245,43 @@ def test_newguard_rechecks_deployed_d42_head_and_falls_back_byte_exactly():
     assert audit["d92_newguard_full_head_byte_exact"] is True
 
 
+def test_newguard_rejects_a_negative_deployed_tail_with_large_unused_head_value():
+    """Would fail if coefficient magnitude inflated the deployed protection tolerance."""
+
+    rows, labels, baseline_coefficient, baseline_intercept, classes, shots = _fixture()
+    baseline_coefficient = baseline_coefficient.copy()
+    baseline_coefficient[0, -1] = np.float32(8192.0)
+    call_count = 0
+
+    def negative_deployed_tail(
+        coefficient: np.ndarray, intercept: np.ndarray
+    ) -> tuple[np.ndarray, np.ndarray]:
+        nonlocal call_count
+        call_count += 1
+        deployed_coefficient = np.asarray(coefficient, dtype=np.float32).copy()
+        if call_count == 2:
+            deployed_coefficient[0, 0] -= np.float32(0.1577)
+        return deployed_coefficient, np.asarray(intercept, dtype=np.float32).copy()
+
+    coefficient, intercept, audit = newguard.build_bidirectional_newguard_affine_state(
+        full_rows=rows,
+        full_labels=labels,
+        full_coefficient=baseline_coefficient,
+        full_intercept=baseline_intercept,
+        class_count=classes,
+        k_shot=shots,
+        quantize_decode=negative_deployed_tail,
+    )
+
+    assert call_count == 2
+    assert coefficient.tobytes() == baseline_coefficient.tobytes()
+    assert intercept.tobytes() == baseline_intercept.tobytes()
+    assert audit["d92_newguard_active"] is False
+    assert audit["d92_newguard_fallback_active"] is True
+    assert audit["d92_newguard_fallback_reason"] == "deployment_protection_failed"
+    assert audit["d92_newguard_full_head_byte_exact"] is True
+
+
 def test_newguard_rejects_registry_drift_instead_of_hiding_it_as_numeric_fallback():
     """Would fail if incomplete support labels were silently relabelled as E0 fallback."""
 

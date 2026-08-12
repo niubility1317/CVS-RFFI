@@ -696,5 +696,64 @@ def test_newguard_mode_calls_one_centered_full_component_and_emits_receipt():
     assert inventory["full_component_fit_count"] == 1
     assert inventory["block3_component_fit_count"] == 0
     assert audit["d92_newguard_full_component_fit_count"] == 1
-    assert audit["d92_newguard_active"] is True
+    assert audit["d92_newguard_active"] is False
+    assert audit["d92_newguard_fallback_active"] is True
+    assert audit["d92_newguard_fallback_reason"] == "deployment_protection_failed"
+    assert audit["d92_newguard_full_head_byte_exact"] is True
     assert audit["d92_newguard_query_rows_used"] == 0
+
+
+def test_newguard_d42_codec_value_error_routes_to_exact_full_fallback(monkeypatch):
+    """Would fail if a numerical D42 codec error escaped instead of restoring E0."""
+
+    rng = np.random.default_rng(92_712)
+    basis, _ = np.linalg.qr(rng.normal(size=(160, 3)))
+    weights = np.asarray([0.5, 0.3, 0.2], dtype=np.float64)
+    ground_audit = {
+        "d81_basis_sha256": "9" * 64,
+        "d81_spectral_weight_sha256": "a" * 64,
+        "d81_participation_ratio_effective_rank": 2.6,
+        "d81_retained_rank": 3,
+        "d81_rank_policy": "ceil_participation_ratio_effective_rank",
+        "ground_component_input_count": 84,
+        "ground_statistic_semantics": (
+            "class_centered_cross_domain_centroid_drift_eigenspectrum"
+        ),
+    }
+    classes, shots = 11, 5
+    labels = np.repeat(np.arange(classes), shots).astype(np.int64)
+    means = rng.normal(size=(classes, 288))
+    rows = (
+        means[labels] + 0.08 * rng.normal(size=(classes * shots, 288))
+    ).astype(np.float32)
+    full_fit, _, _ = probe.build_d92_fit(
+        d42,
+        basis,
+        weights,
+        ground_audit,
+        disable_registered_fisher=True,
+        registered_d_mode="full_only",
+    )
+    expected_coefficient, expected_intercept, _ = full_fit(
+        rows, labels, classes, shots
+    )
+    newguard_fit, _, _ = probe.build_d92_fit(
+        d42,
+        basis,
+        weights,
+        ground_audit,
+        disable_registered_fisher=True,
+        registered_d_mode="newguard_maxmin",
+    )
+
+    def injected_codec_value_error(_coefficient: np.ndarray):
+        raise ValueError("injected D42 coefficient codec failure")
+
+    monkeypatch.setattr(d42, "_quantize_coefficients", injected_codec_value_error)
+    coefficient, intercept, audit = newguard_fit(rows, labels, classes, shots)
+
+    assert coefficient.tobytes() == expected_coefficient.tobytes()
+    assert intercept.tobytes() == expected_intercept.tobytes()
+    assert audit["d92_newguard_active"] is False
+    assert audit["d92_newguard_fallback_active"] is True
+    assert audit["d92_newguard_full_head_byte_exact"] is True

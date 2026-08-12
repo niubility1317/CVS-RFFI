@@ -338,16 +338,18 @@ def _head_scores(
 def _protection_tolerances(
     *, augmented_rows: np.ndarray, coefficient: np.ndarray, intercept: np.ndarray
 ) -> tuple[float, float]:
-    scale = max(
+    """Keep equality closure relative, but freeze inequality score tolerance."""
+
+    closure_scale = max(
         1.0,
         float(np.max(np.abs(augmented_rows))),
         float(np.max(np.abs(coefficient))),
         float(np.max(np.abs(intercept))),
     )
-    closure = float(_CLOSURE_EPS_MULTIPLIER * np.finfo(np.float32).eps * scale)
-    protection = float(
-        _PROTECTION_EPS_MULTIPLIER * np.finfo(np.float32).eps * scale
+    closure = float(
+        _CLOSURE_EPS_MULTIPLIER * np.finfo(np.float32).eps * closure_scale
     )
+    protection = float(_PROTECTION_EPS_MULTIPLIER * np.finfo(np.float32).eps)
     return closure, protection
 
 
