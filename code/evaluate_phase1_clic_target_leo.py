@@ -44,6 +44,7 @@ _TARGET_PACKAGE_MANIFEST_FILE = "manifest.json"
 _TRUTH_SIDECAR_FILE = "truth_sidecar.json"
 _PREDICTION_SCHEMA = "cvs.phase1.clic_target_prediction.v1"
 _TARGET_SCORE_SCHEMA = "cvs.phase1.clic_target_leo_eval.v1"
+_TARGET_METRICS_SCHEMA = "cvs.phase1.clic_target_metrics.v1"
 _CONFIRMATION_TEST_SEMANTIC_FIELDS = frozenset(
     {
         "channel",
@@ -3585,6 +3586,204 @@ def _reverify_score_inputs(
     return _reopen_validated_once_target_provenance(truth=truth, package=package)
 
 
+def _reverify_target_metrics_inputs(
+    *,
+    prediction: Mapping[str, Any],
+    package: Mapping[str, Any],
+    runtime_identity: Mapping[str, Any],
+    train_config: Mapping[str, Any],
+    predictor_artifact: Path,
+    truth: Mapping[str, Any],
+) -> dict[str, str]:
+    """Close every target-only scorer byte window before receipt emission."""
+
+    if sha256_file(Path(prediction["path"])) != prediction["raw_sha256"]:
+        raise CLICTargetProtocolError("CLIC target prediction changed during metrics sealing")
+    if sha256_file(Path(package["manifest_path"])) != package["manifest_raw_sha256"]:
+        raise CLICTargetProtocolError("CLIC target package manifest changed during metrics sealing")
+    if sha256_file(Path(package["data_path"])) != package["data_raw_sha256"]:
+        raise CLICTargetProtocolError("CLIC target package data changed during metrics sealing")
+    if sha256_file(predictor_artifact) != prediction["payload"]["predictor_artifact_sha256"]:
+        raise CLICTargetProtocolError("CLIC target predictor artifact changed during metrics sealing")
+
+    # Reopen the predictor rather than trusting the already-loaded runtime.  C
+    # descriptors thereby recheck their PAIR/checkpoint/raw authority chain,
+    # while G bundles recheck their immutable archive and exact state members.
+    reopened_runtime = load_verified_clic_predictor_state(predictor_artifact)
+    reopened_identity = _require_runtime_identity(reopened_runtime)
+    for field in (
+        "arm",
+        "operator",
+        "fold_index",
+        "state_sha256",
+        "source_frozen_rule_sha256",
+        "source_class_order",
+        "source_class_order_sha256",
+    ):
+        if reopened_identity[field] != runtime_identity[field]:
+            raise CLICTargetProtocolError(
+                f"CLIC target predictor {field} changed during metrics sealing"
+            )
+    reopened_train = _runtime_train_config(reopened_runtime)
+    if not _same_train_config_binding(train_config, reopened_train):
+        raise CLICTargetProtocolError("CLIC target train config changed during metrics sealing")
+    known, _ = _reopen_truth_known_test_config(truth)
+    if sha256_file(Path(known["path"])) != known["raw_sha256"]:
+        raise CLICTargetProtocolError("CLIC target known-test config changed during metrics sealing")
+    if sha256_file(Path(truth["path"])) != truth["raw_sha256"]:
+        raise CLICTargetProtocolError("CLIC target truth sidecar changed during metrics sealing")
+    return _reopen_validated_once_target_provenance(truth=truth, package=package)
+
+
+def seal_clic_target_metrics(
+    prediction_path: str | Path,
+    truth_sidecar_path: str | Path,
+    output_path: str | Path,
+) -> Path:
+    """Seal baseline-independent target metrics after truth-blind prediction.
+
+    This receipt is deliberately not an ADV3B02 comparison.  It evaluates the
+    exact sealed candidate on target LEO-weak known/unknown rows and preserves
+    the existing combined scorer as the only noninferiority entry.
+    """
+
+    output = Path(output_path).resolve()
+    if output.exists():
+        raise CLICTargetProtocolError(
+            f"CLIC target metrics output already exists and is immutable: {output}"
+        )
+
+    # All predictor-readable artifacts close before the first truth read.
+    prediction = _load_verified_sealed_clic_prediction(prediction_path)
+    payload = prediction["payload"]
+    runtime, runtime_identity, train_config, predictor_artifact = _reopen_predictor_from_prediction(
+        payload
+    )
+    package = _read_verified_clic_iq_only_package_header(
+        payload["predictor_package_path"]
+    )
+    _validate_prediction_package_binding(payload, package)
+
+    # First evaluator-only truth read.  Known-test identity and physical role
+    # metadata never return to the predictor or influence a rerun.
+    truth = _load_verified_clic_truth_sidecar(
+        truth_sidecar_path,
+        expected_package_sha256=payload["predictor_package_sha256"],
+        expected_lineage_sha256=payload["lineage_sha256"],
+    )
+    candidate_known, candidate_class_order = _reopen_truth_known_test_config(truth)
+    known_data_sha = _known_test_data_sha(candidate_known["normalized"])
+    if (
+        candidate_known["raw_sha256"] != payload["known_test_config_raw_sha256"]
+        or known_data_sha != payload["known_test_config_normalized_sha256"]
+        or candidate_known["raw_sha256"]
+        != package["manifest"]["known_test_config_raw_sha256"]
+        or known_data_sha
+        != package["manifest"]["known_test_config_normalized_sha256"]
+    ):
+        raise CLICTargetProtocolError(
+            "CLIC target truth/package known-test config binding drift"
+        )
+    _validate_truth_universe_bindings(truth, package, candidate_known["normalized"])
+    source_class_order, source_order_sha = _validated_source_class_order_binding(
+        payload.get("source_class_order"),
+        payload.get("source_class_order_sha256"),
+        label="prediction source class order",
+    )
+    if not set(source_class_order).issubset(set(candidate_class_order)):
+        raise CLICTargetProtocolError(
+            "prediction source class order is not contained in target registered-known config"
+        )
+
+    joined = _join_prediction_and_truth(
+        prediction, truth, class_order=source_class_order
+    )
+    known_audit = _score_known_target_rows(
+        joined,
+        class_order=source_class_order,
+        receiver_ids=[
+            str(value) for value in candidate_known["normalized"]["target_receiver_ids"]
+        ],
+        day_ids=[
+            str(value) for value in candidate_known["normalized"]["target_day_ids"]
+        ],
+    )
+    unknown_gate = _evaluate_explicit_unknown_gate(
+        joined, explicit_unknown_floor=0.70
+    )
+    open_set_audit = _score_open_set_target_rows(joined)
+    fold_config_key = _target.require_sha256(
+        payload["fold_config_key"], label="prediction fold config key"
+    )
+    if fold_config_key != train_config["data_normalized_sha256"]:
+        raise CLICTargetProtocolError("prediction/scorer fold config key drift")
+
+    target_provenance = _reverify_target_metrics_inputs(
+        prediction=prediction,
+        package=package,
+        runtime_identity=runtime_identity,
+        train_config=train_config,
+        predictor_artifact=predictor_artifact,
+        truth=truth,
+    )
+    metrics_base = {
+        "schema": _TARGET_METRICS_SCHEMA,
+        "sealed": True,
+        "truth_sidecar_opened": True,
+        "baseline_compared": False,
+        "comparison_status": "ADV_COMPARISON_PENDING",
+        "prediction_path": str(prediction["path"]),
+        "prediction_raw_sha256": prediction["raw_sha256"],
+        "prediction_sha256": payload["prediction_sha256"],
+        "predictor_package_path": payload["predictor_package_path"],
+        "predictor_package_sha256": payload["predictor_package_sha256"],
+        "package_manifest_sha256": payload["package_manifest_sha256"],
+        "received_iq_data_sha256": payload["received_iq_data_sha256"],
+        "predictor_state_path": payload["predictor_state_path"],
+        "predictor_artifact_sha256": payload["predictor_artifact_sha256"],
+        "predictor_state_sha256": runtime_identity["state_sha256"],
+        "source_frozen_rule_sha256": runtime_identity["source_frozen_rule_sha256"],
+        "source_class_order": source_class_order,
+        "source_class_order_sha256": source_order_sha,
+        "arm": runtime_identity["arm"],
+        "operator": runtime_identity["operator"],
+        "fold_index": runtime_identity["fold_index"],
+        "fold_config_key": fold_config_key,
+        "train_config_manifest_path": train_config["container_path"],
+        "train_config_member_name": train_config["member_name"],
+        "train_config_raw_sha256": train_config["raw_sha256"],
+        "train_config_normalized_sha256": train_config["sealed_normalized_sha256"],
+        "train_config_data_normalized_sha256": train_config["data_normalized_sha256"],
+        "known_test_config_manifest_path": candidate_known["path"],
+        "known_test_config_raw_sha256": candidate_known["raw_sha256"],
+        "known_test_config_normalized_sha256": known_data_sha,
+        "truth_sidecar_path": str(truth["path"]),
+        "truth_sidecar_raw_sha256": truth["raw_sha256"],
+        **target_provenance,
+        "lineage_sha256": payload["lineage_sha256"],
+        "target_fit_rows": 0,
+        "target_update_rows": 0,
+        "target_retry_count": 0,
+        "target_selection_count": 0,
+        "target_selection_feedback": False,
+        "known_target_audit": known_audit,
+        "unknown_target_audit": unknown_gate["unknown_audit"],
+        "open_set_audit": open_set_audit,
+        "explicit_unknown_gate": {
+            "passed": bool(unknown_gate["explicit_unknown_gate_passed"]),
+            "floor": 0.70,
+            "failures": unknown_gate["failures"],
+        },
+        "passed": bool(unknown_gate["explicit_unknown_gate_passed"]),
+        "scorer_code_sha256": sha256_file(Path(__file__).resolve()),
+    }
+    payload_out = dict(
+        metrics_base, metrics_sha256=_target.canonical_sha256(metrics_base)
+    )
+    _write_new_utf8_json(output, payload_out, label="CLIC target metrics receipt")
+    return output
+
+
 def score_clic_target_prediction(
     prediction_path: str | Path,
     truth_sidecar_path: str | Path,
@@ -3777,6 +3976,11 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="score one sealed prediction through evaluator-only truth sidecar",
     )
+    modes.add_argument(
+        "--seal-target-metrics",
+        action="store_true",
+        help="seal baseline-independent target LEO-weak known/unknown/DG metrics",
+    )
     parser.add_argument("--cache-set-manifest", type=Path)
     parser.add_argument("--output-root", type=Path)
     parser.add_argument("--validator-receipt", type=Path)
@@ -3869,6 +4073,19 @@ def main(argv: Iterable[str] | None = None) -> int:
         )
         print(json.dumps({"prediction_path": str(output)}, ensure_ascii=False, sort_keys=True))
         return 0
+    if args.seal_target_metrics:
+        _cli_required(parser, args, "prediction", "truth_sidecar", "output")
+        output = seal_clic_target_metrics(
+            args.prediction,
+            args.truth_sidecar,
+            args.output,
+        )
+        print(
+            json.dumps(
+                {"metrics_path": str(output)}, ensure_ascii=False, sort_keys=True
+            )
+        )
+        return 0
     _cli_required(
         parser,
         args,
@@ -3895,6 +4112,7 @@ __all__ = [
     "ingest_adv3b02_target_known_reference",
     "recompute_unknown_counts",
     "publish_clic_target_prediction",
+    "seal_clic_target_metrics",
     "score_clic_target_prediction",
     "score_target_rows",
     "seal_clic_target_confirmation_validation",

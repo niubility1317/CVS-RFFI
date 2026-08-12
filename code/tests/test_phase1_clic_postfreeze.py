@@ -2557,10 +2557,15 @@ def _write_target_cache_set_fixture(
     unknown_rows: int = 2,
     unknown_defer_rows: int = 0,
     registered_tx_ids: tuple[str, ...] = ("known-tx-a", "known-tx-b"),
+    input_len: int = 16,
 ) -> dict[str, Path | str | dict[str, object]]:
     """Create a valid tiny three-scene p2_min_v1 cache-set and receipt."""
 
-    if unknown_rows <= 0 or not 0 <= unknown_defer_rows <= unknown_rows:
+    if (
+        unknown_rows <= 0
+        or not 0 <= unknown_defer_rows <= unknown_rows
+        or input_len <= 0
+    ):
         raise ValueError("synthetic unknown/defer fixture counts are invalid")
 
     from cvsrffi.leo_weak_cache import (
@@ -2628,7 +2633,7 @@ def _write_target_cache_set_fixture(
                     iq_level = 100.0 + scene_index
                 else:
                     iq_level = 200.0 + scene_index
-                iq = np.full((2, 16), iq_level, dtype=np.float32)
+                iq = np.full((2, input_len), iq_level, dtype=np.float32)
                 rows.append(
                     {
                         "role": role,
@@ -5189,3 +5194,244 @@ def test_union_six_truth_cache_scores_only_fold_local4_and_audits_inactive_tx(
     }
     unknown = payload["unknown_target_audit"]
     assert unknown["unknown_denominator_global"] == 3 * 2
+
+
+# ---------------------------------------------------------------------------
+# Baseline-independent target metrics receipt RED contracts.  These tests
+# intentionally call the public sealer before its production implementation is
+# present; collection must therefore fail with the missing API rather than
+# silently falling back to the ADV3B02 score receipt.
+# ---------------------------------------------------------------------------
+
+
+def _metrics_sealer_inputs(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    unknown_rows: int = 2,
+    unknown_defer_rows: int = 0,
+) -> dict[str, Path]:
+    artifacts = _write_target_cache_set_fixture(
+        tmp_path / "inputs",
+        registered_tx_ids=SOURCE_TX,
+        unknown_rows=unknown_rows,
+        unknown_defer_rows=unknown_defer_rows,
+    )
+    package, truth = TARGET_EVAL.seal_clic_target_package(
+        artifacts["manifest"],
+        tmp_path / "sealed_target",
+        validator_receipt_path=artifacts["receipt"],
+        expected_capsule_id=artifacts["capsule_id"],
+        expected_split_id=artifacts["split_id"],
+    )
+    predictor_artifacts = _write_fake_predictor_artifacts(tmp_path / "predictor")
+    loader = _fake_runtime_factory(
+        predictor_artifacts,
+        calls=[],
+        forward_calls=[],
+        fold_index=1,
+    )
+    monkeypatch.setattr(TARGET_EVAL, "load_verified_clic_predictor_state", loader, raising=False)
+    monkeypatch.setattr(TARGET, "load_verified_clic_predictor_state", loader, raising=False)
+    prediction = tmp_path / "prediction.json"
+    TARGET_EVAL.publish_clic_target_prediction(
+        predictor_artifacts["c_state"], package, prediction
+    )
+    return {
+        "prediction": prediction,
+        "truth": Path(truth),
+        "predictor": predictor_artifacts["c_state"],
+        "package": Path(package),
+        "known_test_config": Path(artifacts["known_test_config"]),
+    }
+
+
+def _seal_target_metrics(
+    inputs: Mapping[str, Path], output: Path,
+) -> Path:
+    """Invoke only the frozen three-path public API; no caller config is allowed."""
+
+    return Path(
+        TARGET_EVAL.seal_clic_target_metrics(
+            inputs["prediction"],
+            inputs["truth"],
+            output,
+        )
+    )
+
+
+def test_baseline_independent_metrics_receipt_seals_formula_fields_without_adv_reference(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    inputs = _metrics_sealer_inputs(tmp_path, monkeypatch)
+    output = tmp_path / "target_metrics.json"
+    result = _seal_target_metrics(inputs, output)
+    assert result == output.resolve()
+    payload = json.loads(output.read_text(encoding="utf-8"))
+    assert payload["schema"] == "cvs.phase1.clic_target_metrics.v1"
+    assert payload["sealed"] is True
+    assert payload["baseline_compared"] is False
+    assert payload["passed"] is payload["explicit_unknown_gate"]["passed"]
+    assert payload["metrics_sha256"] == _canonical(
+        {key: value for key, value in payload.items() if key != "metrics_sha256"}
+    )
+    assert payload["prediction_path"] == str(inputs["prediction"].resolve())
+    assert payload["truth_sidecar_path"] == str(inputs["truth"].resolve())
+    assert payload["predictor_state_path"] == str(inputs["predictor"].resolve())
+    assert payload["target_fit_rows"] == 0
+    assert payload["target_update_rows"] == 0
+    assert payload["target_retry_count"] == 0
+    assert payload["target_selection_count"] == 0
+    assert payload["target_selection_feedback"] is False
+    assert set(payload) >= {
+        "known_target_audit",
+        "unknown_target_audit",
+        "open_set_audit",
+        "explicit_unknown_gate",
+        "scorer_code_sha256",
+        "metrics_sha256",
+    }
+    assert not any(
+        "adv" in key.lower() or "noninferiority" in key.lower()
+        for key in payload
+    )
+    with pytest.raises(Exception, match="exists|immutable|output"):
+        _seal_target_metrics(inputs, output)
+
+
+def test_baseline_independent_metrics_writes_gate_false_for_69_unknown_31_defer_without_raising(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    inputs = _metrics_sealer_inputs(
+        tmp_path,
+        monkeypatch,
+        unknown_rows=100,
+        unknown_defer_rows=31,
+    )
+    output = tmp_path / "target_metrics_69_31.json"
+    result = _seal_target_metrics(inputs, output)
+    assert result.is_file()
+    payload = json.loads(output.read_text(encoding="utf-8"))
+    assert payload["explicit_unknown_gate"]["passed"] is False
+    assert payload["passed"] is False
+    assert payload["unknown_target_audit"]["unknown_numerator_global"] == 207
+    assert payload["unknown_target_audit"]["unknown_denominator_global"] == 300
+    assert payload["unknown_target_audit"]["unknown_defer_global"] == 93
+
+
+@pytest.mark.parametrize("tampered", ("prediction", "truth", "predictor"))
+def test_baseline_independent_metrics_receipt_rejects_prediction_truth_or_predictor_tamper(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    tampered: str,
+) -> None:
+    # The parameterized body above is intentionally kept as a separate named
+    # contract so each immutable input surface has an independent RED result.
+    inputs = _metrics_sealer_inputs(tmp_path, monkeypatch)
+    path = inputs[tampered]
+    path.write_bytes(path.read_bytes() + b"post-seal-byte-tamper\n")
+    with pytest.raises(Exception, match="prediction|truth|predictor|SHA|tamper|drift|seal_clic_target_metrics"):
+        _seal_target_metrics(inputs, tmp_path / f"tampered_{tampered}.json")
+
+
+def test_baseline_independent_metrics_validates_prediction_before_first_truth_open(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    inputs = _metrics_sealer_inputs(tmp_path, monkeypatch)
+    events: list[str] = []
+    original_prediction_loader = TARGET_EVAL._load_verified_sealed_clic_prediction
+    original_truth_loader = TARGET_EVAL._load_verified_clic_truth_sidecar
+
+    def prediction_first(*args: object, **kwargs: object) -> object:
+        events.append("prediction")
+        return original_prediction_loader(*args, **kwargs)
+
+    def truth_second(*args: object, **kwargs: object) -> object:
+        events.append("truth")
+        return original_truth_loader(*args, **kwargs)
+
+    monkeypatch.setattr(
+        TARGET_EVAL,
+        "_load_verified_sealed_clic_prediction",
+        prediction_first,
+        raising=False,
+    )
+    monkeypatch.setattr(
+        TARGET_EVAL,
+        "_load_verified_clic_truth_sidecar",
+        truth_second,
+        raising=False,
+    )
+    _seal_target_metrics(inputs, tmp_path / "ordered_metrics.json")
+    assert events.index("prediction") < events.index("truth")
+
+
+def test_baseline_independent_metrics_cli_help_and_file_invocation(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    script = CODE_ROOT / "evaluate_phase1_clic_target_leo.py"
+    help_result = subprocess.run(
+        [sys.executable, str(script), "--help"],
+        cwd=str(CODE_ROOT),
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=30,
+    )
+    assert help_result.returncode == 0, help_result.stderr
+    assert "--seal-target-metrics" in help_result.stdout
+    assert "--prediction" in help_result.stdout
+    assert "--truth-sidecar" in help_result.stdout
+    assert "--output" in help_result.stdout
+
+    # A subprocess cannot inherit the in-process FakeRuntime monkeypatch.  Use
+    # the existing real G bundle fixture so this exercises the actual file-only
+    # loader and CLI rather than weakening production validation for a test.
+    target = _write_target_cache_set_fixture(
+        tmp_path / "cli_inputs",
+        registered_tx_ids=SOURCE_TX,
+        input_len=256,
+    )
+    package, truth = TARGET_EVAL.seal_clic_target_package(
+        target["manifest"],
+        tmp_path / "cli_sealed_target",
+        validator_receipt_path=target["receipt"],
+        expected_capsule_id=target["capsule_id"],
+        expected_split_id=target["split_id"],
+    )
+    g_artifacts = _pair_fold_artifact_fixture(
+        tmp_path / "cli_g", fold=1, real_g_bundle=True
+    )
+    prediction = tmp_path / "cli_prediction.json"
+    TARGET_EVAL.publish_clic_target_prediction(
+        g_artifacts["g_bundle"], package, prediction
+    )
+    inputs = {
+        "prediction": prediction,
+        "truth": Path(truth),
+    }
+    output = tmp_path / "cli_target_metrics.json"
+    run_result = subprocess.run(
+        [
+            sys.executable,
+            str(script),
+            "--seal-target-metrics",
+            "--prediction",
+            str(inputs["prediction"]),
+            "--truth-sidecar",
+            str(inputs["truth"]),
+            "--output",
+            str(output),
+        ],
+        cwd=str(CODE_ROOT),
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=60,
+    )
+    assert run_result.returncode == 0, run_result.stderr
+    assert output.is_file()
