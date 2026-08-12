@@ -3,7 +3,7 @@
 ## 1. 状态与目标
 
 - 实验ID：`phase1_clic_postfreeze_20260812_v2`
-- 当前状态：`LOCAL_VERIFIED / READY_FOR_N607_HANDOFF`
+- 当前状态：`ARTIFACTS_COMPLETE / NO_PERFORMANCE_RESULT`
 - 操作者：主控Codex；N607唯一runner：`Luna/max`
 - 目标：从已完成、不可覆盖的训练run`phase1_clic12_20260812_v5`导出12个C／G source clean／source-V／fixed400 proxy工件，随后继续source-L三场景LEO weak、同fold pair、bundle及目标域registered／unknown确认闭环。
 - 假设：v1的统一故障仅由导出器错误要求checkpoint的`id_feature_key=z_id`造成；将checkpoint构造键固定为真实`feat_joint`、同时保持正式导出特征键为`z_id`，可恢复工件生成且不改变模型、阈值或科学路线。
@@ -61,3 +61,11 @@
 - N607 archive／release／SCP次数：待唯一runner回填。
 - outer／PID／GPU／日志／工件计数：待运行后回填。
 - 最终状态：尚无性能结果。
+
+## 8. v2运行收尾（只读技术证据）
+
+- 发布commit：`6570e816`；本地Git archive SHA256=`8353569EA6F63559DB5FD0DE13E57C9EE3ED5437612F6251E139195EF9015C5B`，bytes=`266926080`；SCP恰1次，远端SHA/bytes闭合，release为`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_clic_postfreeze_20260812_v2_6570e816`。
+- 远端静态门：关键Python`py_compile`、exporter`--help`、launcher`bash -n`、dry-run恰12行（C6/G6、v2 run ID、forbidden target/query/truth/role=0）通过。F1C/F1G真实checkpoint重开烟测均通过：`id_feature_key=feat_joint`、导出`feature_key=z_id`、arm/operator绑定正确，source/physical count=`3920`，class count=`4`。
+- 正式launch恰1次；outer PID=`2490169`。`pids_source12.tsv`记录12行：F1C=2490238(GPU0)、F5G=2490240(GPU0)、F1G=2490242(GPU1)、F5C=2490244(GPU1)、F2C=2490246(GPU2)、F6G=2490248(GPU2)、F2G=2490250(GPU3)、F6C=2490252(GPU3)、F3C=2490254(GPU4)、F3G=2490256(GPU5)、F4C=2490258(GPU6)、F4G=2490260(GPU7)。12/12均正常退出。
+- 工件闭合：`source_clean_proxy.npz=12/12`，每个文件可读且含`features`、`z_id`、`tx_logits`及source角色/物理元数据，统一shape为21120行（特征维160，logits维4）；文件大小约32.12MB。12日志均存在且无Traceback、`CLICSplitExportError`、`RuntimeError`或`ValueError`。
+- 该波只产生source clean／source-V／fixed400 proxy导出工件；未读取accuracy、loss、AUROC、`u_gap`或其他性能字段，不产生target性能结论。outer、子PID、GPU compute均清零；本地SSH进程=`0`，N607/bridge TCP22连接=`0`。
