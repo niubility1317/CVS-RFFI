@@ -5080,6 +5080,58 @@ def test_real_g_bundle_normalizes_wisig_checkpoint_sample_rate_placeholder(
     assert np.isfinite(float(output["e_unknown"]))
 
 
+def test_real_g_bundle_export_packs_tensor_state_without_numpy_bridge(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """N607 Torch2.1/NumPy2 must not enter Tensor.numpy while sealing state."""
+
+    def forbidden_tensor_numpy(*_args, **_kwargs):
+        raise AssertionError("G bundle export must not call Tensor.numpy()")
+
+    def forbidden_torch_from_numpy(*_args, **_kwargs):
+        raise AssertionError("G bundle export must not call torch.from_numpy()")
+
+    monkeypatch.setattr(torch.Tensor, "numpy", forbidden_tensor_numpy)
+    monkeypatch.setattr(torch, "from_numpy", forbidden_torch_from_numpy)
+    artifacts = _pair_fold_artifact_fixture(
+        tmp_path / "g",
+        fold=1,
+        real_g_bundle=True,
+        real_g_checkpoint_sample_rate_hz=0.0,
+    )
+    verified = BUNDLE.verify_clic_bundle(artifacts["g_bundle"])
+    assert verified["state_origin"] == "checkpoint_model_exact"
+    assert verified["real_checkpoint_state_rebuild_verified"] is True
+
+
+@pytest.mark.parametrize(
+    ("torch_dtype", "numpy_dtype", "values"),
+    (
+        (torch.bool, np.bool_, [True, False, True]),
+        (torch.int64, np.int64, [-7, 0, 19]),
+        (torch.float32, np.float32, [-1.5, 0.0, 2.25]),
+        (torch.complex64, np.complex64, [1.0 + 2.0j, -3.0 + 0.5j]),
+    ),
+)
+def test_g_bundle_tensor_state_safe_pack_preserves_exact_bytes(
+    monkeypatch: pytest.MonkeyPatch,
+    torch_dtype: torch.dtype,
+    numpy_dtype,
+    values: list[object],
+) -> None:
+    expected = np.asarray(values, dtype=numpy_dtype)
+    tensor = torch.tensor(values, dtype=torch_dtype)
+
+    def forbidden_tensor_numpy(*_args, **_kwargs):
+        raise AssertionError("state pack must not call Tensor.numpy()")
+
+    monkeypatch.setattr(torch.Tensor, "numpy", forbidden_tensor_numpy)
+    descriptor, raw = BUNDLE._state_value_bytes(tensor)
+    assert descriptor["dtype"] == expected.dtype.str
+    assert descriptor["shape"] == list(expected.shape)
+    assert raw == expected.tobytes(order="C")
+
+
 def test_union_six_truth_cache_scores_only_fold_local4_and_audits_inactive_tx(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

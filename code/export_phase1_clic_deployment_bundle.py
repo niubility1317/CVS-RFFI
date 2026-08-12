@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import ctypes
 import hashlib
 import io
 import json
@@ -175,6 +176,30 @@ def _torch_dtype_from_numpy(value: np.dtype[Any]) -> torch.dtype:
         raise CLICBundleError(f"real model state dtype cannot use safe buffer bridge: {dtype.str}") from exc
 
 
+def _numpy_dtype_from_torch(value: torch.dtype) -> np.dtype[Any]:
+    """Describe sealed tensor bytes without entering Tensor.numpy()."""
+
+    mapping: dict[torch.dtype, np.dtype[Any]] = {
+        torch.bool: np.dtype(np.bool_),
+        torch.int8: np.dtype(np.int8),
+        torch.uint8: np.dtype(np.uint8),
+        torch.int16: np.dtype(np.int16),
+        torch.int32: np.dtype(np.int32),
+        torch.int64: np.dtype(np.int64),
+        torch.float16: np.dtype(np.float16),
+        torch.float32: np.dtype(np.float32),
+        torch.float64: np.dtype(np.float64),
+        torch.complex64: np.dtype(np.complex64),
+        torch.complex128: np.dtype(np.complex128),
+    }
+    try:
+        return mapping[value]
+    except KeyError as exc:
+        raise CLICBundleError(
+            f"model/CLIC tensor dtype is not an allowed sealed format: {value}"
+        ) from exc
+
+
 def _reject_forbidden(value: Any, *, label: str) -> None:
     forbidden = (
         "raw_iq", "clean_iq", "received_iq", "sample_feature", "sample_logit", "target_row", "proxy_row",
@@ -200,8 +225,38 @@ def _state_value_bytes(value: Any) -> tuple[dict[str, Any], bytes]:
         raw = bytes(value)
         return {"kind": "bytes", "size_bytes": len(raw), "sha256": _sha256_bytes(raw)}, raw
     if torch.is_tensor(value):
-        array = value.detach().cpu().contiguous().numpy()
-    elif isinstance(value, np.ndarray):
+        tensor = (
+            value.detach()
+            .cpu()
+            .contiguous()
+            .clone(memory_format=torch.contiguous_format)
+        )
+        dtype = _numpy_dtype_from_torch(tensor.dtype)
+        if (tensor.is_floating_point() or tensor.is_complex()) and not bool(
+            torch.isfinite(tensor).all().item()
+        ):
+            raise CLICBundleError("model/CLIC state contains non-finite floating values")
+        expected_size = int(tensor.numel()) * int(dtype.itemsize)
+        storage = tensor.untyped_storage()
+        if (
+            int(tensor.storage_offset()) != 0
+            or not tensor.is_contiguous()
+            or int(storage.nbytes()) != expected_size
+        ):
+            raise CLICBundleError("model/CLIC tensor storage layout drifted")
+        raw = b"" if expected_size == 0 else ctypes.string_at(
+            int(tensor.data_ptr()), expected_size
+        )
+        if len(raw) != expected_size:
+            raise CLICBundleError("model/CLIC tensor storage byte length drifted")
+        return {
+            "kind": "array",
+            "dtype": dtype.str,
+            "shape": list(tensor.shape),
+            "size_bytes": len(raw),
+            "sha256": _sha256_bytes(raw),
+        }, raw
+    if isinstance(value, np.ndarray):
         array = np.ascontiguousarray(value)
     else:
         raise CLICBundleError("model/CLIC state values must be bytes, numpy arrays, or tensors")
