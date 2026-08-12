@@ -1892,6 +1892,95 @@ def test_clic_bundle_main_reads_g_artifacts_and_has_no_cli_state_geometry_or_rul
     assert verified["state_origin"] == "synthetic_fixture"
 
 
+def test_clic_real_g_bundle_seals_candidate_train_data_config_member_and_rejects_member_or_manifest_drift(
+    tmp_path: Path,
+) -> None:
+    """A real raw-derived G bundle must carry the immutable candidate data config.
+
+    The config is a bundle member rather than a caller-side sidecar so the
+    target predictor can reopen the exact training-data contract later.  This
+    is intentionally RED until the deployment exporter adds the member and
+    verifier bindings.
+    """
+
+    artifacts = _pair_fold_artifact_fixture(
+        tmp_path / "real_g_inputs", fold=1, real_g_bundle=True
+    )
+    bundle_path = Path(artifacts["g_bundle"])
+    member_name = "candidate_train_data_config.json"
+    members = BUNDLE.bundle_member_names(bundle_path)
+    assert member_name in members
+    assert members == set(BUNDLE.MEMBER_NAMES)
+
+    verified = BUNDLE.verify_clic_bundle(bundle_path)
+    assert verified["train_config_manifest_container_path"] == str(bundle_path.resolve())
+    assert verified["train_config_member_name"] == member_name
+    assert verified["train_config_raw_sha256"] == verified["members"][member_name]["sha256"]
+    assert verified["train_config_normalized_sha256"] == _sha_text(
+        json.dumps(
+            json.loads(
+                zipfile.ZipFile(bundle_path, "r").read(member_name).decode("utf-8")
+            )["normalized"],
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+    )
+
+    with zipfile.ZipFile(bundle_path, "r") as archive:
+        raw_config = json.loads(archive.read(member_name).decode("utf-8"))
+        clean_manifest = json.loads(
+            str(np.asarray(np.load(artifacts["g_clean"], allow_pickle=False)["manifest_json"]).item())
+        )
+    assert raw_config["schema"] == "cvs.phase1.clic_train_data_config.v1"
+    assert raw_config["real_checkpoint_config"] is True
+    assert raw_config["checkpoint_sha256"] == _sha_file(artifacts["g_paths"]["checkpoint"])
+    assert raw_config["terminal_receipt_sha256"] == _sha_file(artifacts["g_paths"]["terminal"])
+    assert raw_config["clean_manifest_sha256"] == _canonical(clean_manifest)
+    normalized = raw_config["normalized"]
+    assert normalized["split_mode"] == "tx_rx_day_1_6_3"
+    assert normalized["source_train_tx_ids"] == list(SOURCE_TX)
+    assert normalized["source_validation_tx_ids"] == list(HELD_TX)
+    assert normalized["source_proxy_tx_ids"] == list(PROXY_TX)
+    assert normalized["source_receiver_ids"] == list(SOURCE_RX)
+    assert normalized["input_len"] == int(BUNDLE.RUNTIME_MODEL_DEFAULTS["input_len"])
+    assert normalized["single_leo_training_scenes"] == list(SCENARIOS)
+    for forbidden in ("epoch", "optimizer", "loss", "model", "model_architecture", "model_state"):
+        assert forbidden not in normalized
+
+    def _rewrite_without_candidate_config(source: Path, destination: Path) -> None:
+        with zipfile.ZipFile(source, "r") as src, zipfile.ZipFile(destination, "w") as dst:
+            for info in src.infolist():
+                if info.filename != member_name:
+                    dst.writestr(info, src.read(info.filename))
+
+    tampered_member = _copy_bundle(bundle_path, tmp_path / "tampered_train_config.zip")
+    _rewrite_bundle_archive(
+        tampered_member,
+        lambda name, data: b"{\"schema\":\"tampered\"}\n" if name == member_name else data,
+    )
+    with pytest.raises(BUNDLE.CLICBundleError, match="member|config|hash|drift"):
+        BUNDLE.verify_clic_bundle(tampered_member)
+
+    tampered_manifest = _copy_bundle(bundle_path, tmp_path / "tampered_train_manifest.zip")
+
+    def _tamper_train_descriptor(name: str, data: bytes) -> bytes:
+        if name != "manifest.json":
+            return data
+        manifest = json.loads(data.decode("utf-8"))
+        manifest["members"][member_name]["sha256"] = "0" * 64
+        return (json.dumps(manifest, ensure_ascii=True, sort_keys=True) + "\n").encode("utf-8")
+
+    _rewrite_bundle_archive(tampered_manifest, _tamper_train_descriptor)
+    with pytest.raises(BUNDLE.CLICBundleError, match="member|config|hash|drift"):
+        BUNDLE.verify_clic_bundle(tampered_manifest)
+
+    missing_member = tmp_path / "missing_train_config.zip"
+    _rewrite_without_candidate_config(bundle_path, missing_member)
+    with pytest.raises(BUNDLE.CLICBundleError, match="member|allowlist|config|missing"):
+        BUNDLE.verify_clic_bundle(missing_member)
+
+
 @pytest.mark.parametrize("mutation", ("member", "byte", "shape", "dtype", "operator", "hash"))
 def test_clic_bundle_reload_rejects_any_member_byte_shape_dtype_operator_or_hash_drift(tmp_path: Path, mutation: str) -> None:
     bundle_path, _, _ = _bundle_fixture(tmp_path)
