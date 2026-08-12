@@ -186,7 +186,15 @@ def validate_per_old_class_join(rows: Sequence[Mapping[str, Any]], raw_score: Ma
 
 
 def evaluate_resource_gate(candidate_rows: Sequence[Mapping[str, Any]], baseline_rows: Sequence[Mapping[str, Any]], *, query_state_exact: bool) -> dict[str, Any]:
-    """Compare matched registration resources against the same E0 rows."""
+    """Compare matched registration resources against the same E0 rows.
+
+    Resource review is deliberately split into hard and target layers. The
+    hard layer is a safety/integrity gate (150 ms p90, 1.50x E0 and +512 KiB);
+    any miss must reject the route. The target layer (120 ms p90 and 1.25x E0)
+    is an optimization target and may only request one revision after the hard
+    layer passes. Query/state equality is returned separately so a receipt
+    mismatch is never mistaken for a soft performance miss.
+    """
     if not candidate_rows or len(candidate_rows) != len(baseline_rows):
         raise D92ParetoDistillHard11AnalysisError("resource row closure drift")
     wall_ratios: list[float] = []
@@ -204,10 +212,156 @@ def evaluate_resource_gate(candidate_rows: Sequence[Mapping[str, Any]], baseline
         peak_deltas.append(peak - base_peak)
     p90_index = max(0, math.ceil(0.9 * len(candidate_walls)) - 1)
     wall_p90 = sorted(candidate_walls)[p90_index]
-    wall_ratio_p90 = sorted(wall_ratios)[p90_index]
+    # The frozen comparison uses p90 for candidate wall time but the paired
+    # wall-time ratio is the median across matched rows. Do not substitute a
+    # ratio p90: that changes the registered resource gate.
+    wall_ratio_median = float(statistics.median(wall_ratios))
     peak_delta_p90 = sorted(peak_deltas)[p90_index]
-    passed = bool(query_state_exact) and wall_p90 <= RESOURCE_GATE["registration_wall_p90_max_ns"] and wall_ratio_p90 <= RESOURCE_GATE["registration_wall_ratio_max"] and peak_delta_p90 <= RESOURCE_GATE["registration_peak_delta_max_bytes"]
-    return {"passed": passed, "query_state_exact": bool(query_state_exact), "wall_p90": wall_p90, "wall_ratio_p90": wall_ratio_p90, "peak_delta_p90_bytes": peak_delta_p90, "candidate_wall_p90_ns": wall_p90}
+    peak_delta_max = max(peak_deltas)
+    hard_limits_passed = (
+        wall_p90 <= RESOURCE_GATE["registration_wall_p90_max_ns"]
+        and wall_ratio_median <= RESOURCE_GATE["registration_wall_ratio_max"]
+        and peak_delta_max <= RESOURCE_GATE["registration_peak_delta_max_bytes"]
+    )
+    target_limits_passed = (
+        wall_p90 <= RESOURCE_GATE["registration_wall_p90_target_max_ns"]
+        and wall_ratio_median <= RESOURCE_GATE["registration_wall_ratio_target_max"]
+    )
+    hard_passed = bool(query_state_exact) and hard_limits_passed
+    target_passed = bool(query_state_exact) and hard_limits_passed and target_limits_passed
+    return {
+        # ``passed`` remains the historical hard-layer alias for neighboring
+        # callers; new callers must use hard_passed/target_passed explicitly.
+        "passed": hard_passed,
+        "query_state_exact": bool(query_state_exact),
+        "hard_limits_passed": hard_limits_passed,
+        "hard_passed": hard_passed,
+        "target_limits_passed": target_limits_passed,
+        "target_passed": target_passed,
+        "wall_p90": wall_p90,
+        "wall_ratio_median": wall_ratio_median,
+        # Compatibility alias retained for older report consumers; all gate
+        # decisions use the explicitly named median field above.
+        "wall_ratio_p90": wall_ratio_median,
+        "peak_delta_p90_bytes": peak_delta_p90,
+        "peak_delta_max_bytes": peak_delta_max,
+        "candidate_wall_p90_ns": wall_p90,
+    }
+
+
+def _candidate_component_fit_count(row: Mapping[str, Any]) -> int:
+    """Read the actual candidate component-fit inventory, never an estimate."""
+
+    inventory = row.get("actual_component_inventory")
+    if isinstance(inventory, Mapping):
+        value = inventory.get("actual_component_fit_count")
+    else:
+        value = None
+    if value is None:
+        value = row.get("actual_component_fit_count", row.get("actual_fit_count"))
+    try:
+        count = int(value)
+    except (TypeError, ValueError) as error:
+        raise D92ParetoDistillHard11AnalysisError("candidate component-fit receipt missing") from error
+    if isinstance(value, bool) or count < 0 or float(count) != float(value):
+        raise D92ParetoDistillHard11AnalysisError("candidate component-fit receipt invalid")
+    return count
+
+
+def _candidate_component_fit_total(row: Mapping[str, Any]) -> int:
+    """Read the candidate's frozen two-state total component-fit count."""
+
+    value = row.get("fit_count", row.get("total_component_fit_count"))
+    try:
+        count = int(value)
+    except (TypeError, ValueError) as error:
+        raise D92ParetoDistillHard11AnalysisError("candidate total component-fit receipt missing") from error
+    if isinstance(value, bool) or count <= 0 or float(count) != float(value):
+        raise D92ParetoDistillHard11AnalysisError("candidate total component-fit receipt invalid")
+    return count
+
+
+def _original_d92_component_fit_count(row: Mapping[str, Any]) -> tuple[int, str]:
+    """Return the frozen original D92 FULL two-state fit count for one K row.
+
+    A paired historical row may carry an explicit D92 FULL receipt. If it does
+    not, the pre-registered D92 FULL inventory formula is used (8*(K+1) for
+    K>2, and the exact 3-fit alias for K<=2). This is component-count evidence,
+    not an estimated MAC field, and therefore cannot be self-certified by a
+    candidate's old resource estimate.
+    """
+
+    explicit_keys = (
+        "original_d92_total_component_fit_count",
+        "d92_full_total_component_fit_count",
+        "d92_total_component_fit_count",
+    )
+    for key in explicit_keys:
+        if row.get(key) is not None:
+            value = row[key]
+            source = key
+            break
+    else:
+        inventory = row.get("d92_full_component_fit_inventory")
+        value = inventory.get("total_component_fit_count") if isinstance(inventory, Mapping) else None
+        source = "frozen_d92_full_two_state_component_fit_count_8*(K+1)"
+    if value is not None:
+        try:
+            count = int(value)
+        except (TypeError, ValueError) as error:
+            raise D92ParetoDistillHard11AnalysisError("original D92 component-fit receipt invalid") from error
+        if isinstance(value, bool) or count <= 0 or float(count) != float(value):
+            raise D92ParetoDistillHard11AnalysisError("original D92 component-fit receipt invalid")
+        return count, source
+    try:
+        k_shot = int(row.get("k_shot"))
+    except (TypeError, ValueError) as error:
+        raise D92ParetoDistillHard11AnalysisError("K missing for original D92 component-fit baseline") from error
+    if k_shot <= 0:
+        raise D92ParetoDistillHard11AnalysisError("K invalid for original D92 component-fit baseline")
+    return (3 if k_shot <= 2 else 8 * (k_shot + 1)), source
+
+
+def evaluate_component_fit_reduction_gate(candidate_rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    """Require >=80% per-row registration-fit reduction versus original D92.
+
+    The gate uses only the candidate's frozen two-state component-fit total and
+    the original D92 FULL inventory formula/receipt. For K>2 the reduction is
+    exactly ``1 - 4/[8*(K+1)]`` under the frozen ParetoDistill contract. It
+    intentionally rejects missing or malformed evidence and never consults
+    estimated MAC fields.
+    """
+
+    candidate_rows = [row for row in candidate_rows if str(row.get("outer_role", "performance")) != "liveness"]
+    if not candidate_rows:
+        raise D92ParetoDistillHard11AnalysisError("component-fit row closure drift")
+    rows: list[dict[str, Any]] = []
+    for candidate in candidate_rows:
+        candidate_count = _candidate_component_fit_count(candidate)
+        candidate_total = _candidate_component_fit_total(candidate)
+        baseline_count, baseline_source = _original_d92_component_fit_count(candidate)
+        reduction = 1.0 - (float(candidate_total) / float(baseline_count))
+        rows.append({
+            "outer_key": str(candidate.get("outer_key", "")),
+            "k_shot": int(candidate.get("k_shot", -1)),
+            "candidate_actual_component_fit_count": candidate_count,
+            "candidate_total_component_fit_count": candidate_total,
+            "original_d92_total_component_fit_count": baseline_count,
+            "reduction_fraction_vs_d92": reduction,
+            "baseline_source": baseline_source,
+        })
+    threshold = float(RESOURCE_GATE["component_fit_reduction_min_fraction_vs_d92"])
+    reductions = [float(row["reduction_fraction_vs_d92"]) for row in rows]
+    passed = all(value >= threshold - _TOLERANCE for value in reductions)
+    return {
+        "passed": passed,
+        "evidence_complete": True,
+        "threshold": threshold,
+        "min_reduction_fraction": min(reductions),
+        "mean_reduction_fraction": _mean(reductions),
+        "rows": rows,
+        "baseline": RESOURCE_GATE["component_fit_baseline"],
+    }
 
 
 def validate_truth_binding(score: Mapping[str, Any], receipt: Mapping[str, Any], job: Mapping[str, Any], truth_path: str | Path) -> str:
@@ -296,14 +450,39 @@ def _magnitude_ok(deltas: Mapping[str, float]) -> bool:
 
 
 def decide_verdict(gate_state: Mapping[str, bool]) -> str:
-    required = ("complete_artifact_closure", "performance_outer_closure", "all_strict_pareto", "all_magnitude", "stability", "resources")
+    required = ("complete_artifact_closure", "performance_outer_closure", "all_strict_pareto", "all_magnitude", "stability")
     if any(name not in gate_state for name in required):
         return "REJECT_ROUTE"
     if not bool(gate_state.get("complete_artifact_closure")) or not bool(gate_state.get("performance_outer_closure")) or not bool(gate_state.get("all_strict_pareto")):
         return "REJECT_ROUTE"
+    # Keep the pre-split ``resources`` key as a compatibility alias for the
+    # earlier unit-level API. Full Hard11 analysis supplies the explicit
+    # integrity/hard/target/compute layers below.
+    legacy_resources = "resources" in gate_state and not any(
+        name in gate_state
+        for name in ("resource_integrity", "resource_hard", "resource_target", "compute_reduction")
+    )
+    if legacy_resources:
+        resource_integrity = True
+        resource_hard = bool(gate_state.get("resources"))
+        resource_target = bool(gate_state.get("resources"))
+        compute_reduction = True
+    else:
+        required_resources = ("resource_integrity", "resource_hard", "resource_target", "compute_reduction")
+        if any(name not in gate_state for name in required_resources):
+            return "REJECT_ROUTE"
+        resource_integrity = bool(gate_state.get("resource_integrity"))
+        resource_hard = bool(gate_state.get("resource_hard"))
+        resource_target = bool(gate_state.get("resource_target"))
+        compute_reduction = bool(gate_state.get("compute_reduction"))
+    # Direction, receipt completeness, hard resource ceilings and the explicit
+    # component-count reduction are route-validity gates. A hard miss is never
+    # softened into a revision request.
+    if not resource_integrity or not resource_hard or not compute_reduction:
+        return "REJECT_ROUTE"
     if not bool(gate_state.get("all_magnitude")):
         return "REVISE_ONCE"
-    if not bool(gate_state.get("stability")) or not bool(gate_state.get("resources")):
+    if not bool(gate_state.get("stability")) or not resource_target:
         return "REVISE_ONCE"
     return "ADVANCE_TO_TARGET125_CANDIDATE"
 
@@ -363,9 +542,8 @@ def _fit_resource(job_root: Path, k_shot: int, *, baseline: Mapping[str, Any] | 
                 target.add(float(value))
         resource = row.get("after_registration_resource", {})
         walls.append(_finite(resource.get("registration_wall_time_ns"), "registration wall", lower=0.0)); peaks.append(_finite(resource.get("registration_incremental_peak_working_set_bytes"), "registration peak", lower=0.0))
-    # ParetoDistill's K>2 gate is the exact 2/1 inventory (one FULL registration
-    # fit plus the immutable base component); K1 remains the real D92 alias
-    # inventory and is checked as 3/3.
+    # ParetoDistill's K>2 gate is the exact 4/2 two-state inventory; K1 remains
+    # the real D92 alias inventory and is checked as 3/3.
     expected = (3, 3, "d92_full_alias") if int(k_shot) <= 2 else (4, 2, "pareto_distill")
     if scenarios != set(SCENES) or totals != {expected[0]} or actuals != {expected[1]} or modes != {expected[2]} or len(macs) != 1 or len(states) != 1 or min(macs) < 0 or min(states) < 0:
         raise D92ParetoDistillHard11AnalysisError("fit/resource count closure drift")
@@ -522,13 +700,27 @@ def analyze_d92_pareto_distill_hard11(matrix_manifest_path: str | Path, *, run_r
     stability = all(direction_counts[m] >= (9 if m in {"seen_new_acc", "new_to_old_rate"} else 8) for m in ("h_old_new", "old_balanced_accuracy", "c_old_acc", "old_floor", "seen_new_acc", "average_forgetting", "new_to_old_rate", "old_to_new_rate")) and per_old_stability and group_stability
     query_exact = all(int(row["query_macs"]) == int(row["full_only_query_macs"]) and int(row["state_bytes"]) == int(row["full_only_state_bytes"]) for row in performance)
     resource_eval = evaluate_resource_gate(performance, [{"registration_wall_time_ns": row["full_only_registration_wall_time_ns"], "registration_incremental_peak_working_set_bytes": row["full_only_registration_peak_working_set_bytes"]} for row in performance], query_state_exact=query_exact)
+    compute_eval = evaluate_component_fit_reduction_gate(performance)
     wall_p90 = resource_eval["wall_p90"]; peak_p90 = _finite(resource_eval["peak_delta_p90_bytes"], "peak delta p90")
-    gates = {"complete_artifact_closure": {"passed": len(paired_rows) == 11 and len(per_old_rows) == 66 and len(scenario_rows) == 33, "observed": {"paired": len(paired_rows), "per_old": len(per_old_rows), "scene": len(scenario_rows)}, "threshold": "11/66/33"}, "performance_outer_closure": {"passed": len(performance) == 10 and len(liveness) == 1, "observed": f"{len(performance)}+{len(liveness)}", "threshold": "10+1"}, "all_strict_pareto": {"passed": strict, "observed": deltas, "threshold": "strict directions"}, "all_magnitude": {"passed": magnitude, "observed": deltas, "threshold": STRICT_PARETO_THRESHOLDS}, "stability": {"passed": stability, "observed": {"direction_counts": direction_counts, "per_old_class": per_old_stability, "per_outer_old": per_outer_old_summary, "by_receiver": by_receiver, "by_slice": by_slice, "by_scene": by_scene}, "threshold": "paired/group/old-class stability"}, "resources": {"passed": bool(resource_eval["passed"]), "observed": {"query_exact": query_exact, "wall_p90_ns": wall_p90, "wall_ratio_p90": resource_eval["wall_ratio_p90"], "peak_delta_p90_bytes": peak_p90}, "threshold": RESOURCE_GATE}}
+    gates = {
+        "complete_artifact_closure": {"passed": len(paired_rows) == 11 and len(per_old_rows) == 66 and len(scenario_rows) == 33, "observed": {"paired": len(paired_rows), "per_old": len(per_old_rows), "scene": len(scenario_rows)}, "threshold": "11/66/33"},
+        "performance_outer_closure": {"passed": len(performance) == 10 and len(liveness) == 1, "observed": f"{len(performance)}+{len(liveness)}", "threshold": "10+1"},
+        "all_strict_pareto": {"passed": strict, "observed": deltas, "threshold": "strict directions"},
+        "all_magnitude": {"passed": magnitude, "observed": deltas, "threshold": STRICT_PARETO_THRESHOLDS},
+        "stability": {"passed": stability, "observed": {"direction_counts": direction_counts, "per_old_class": per_old_stability, "per_outer_old": per_outer_old_summary, "by_receiver": by_receiver, "by_slice": by_slice, "by_scene": by_scene}, "threshold": "paired/group/old-class stability"},
+        "resource_integrity": {"passed": bool(resource_eval["query_state_exact"]), "observed": {"query_exact": query_exact}, "threshold": "query MACs/state bytes equal to E0"},
+        "resource_hard": {"passed": bool(resource_eval["hard_limits_passed"]), "observed": {"wall_p90_ns": wall_p90, "wall_ratio_median": resource_eval["wall_ratio_median"], "peak_delta_max_bytes": resource_eval["peak_delta_max_bytes"]}, "threshold": {"wall_p90_ns": RESOURCE_GATE["registration_wall_p90_max_ns"], "wall_ratio_median": RESOURCE_GATE["registration_wall_ratio_max"], "peak_delta_bytes": RESOURCE_GATE["registration_peak_delta_max_bytes"]}},
+        "resource_target": {"passed": bool(resource_eval["target_limits_passed"]), "observed": {"wall_p90_ns": wall_p90, "wall_ratio_median": resource_eval["wall_ratio_median"]}, "threshold": {"wall_p90_ns": RESOURCE_GATE["registration_wall_p90_target_max_ns"], "wall_ratio_median": RESOURCE_GATE["registration_wall_ratio_target_max"]}},
+        "compute_reduction": {"passed": bool(compute_eval["passed"]), "observed": compute_eval, "threshold": RESOURCE_GATE["component_fit_reduction_min_fraction_vs_d92"]},
+        # Aggregate compatibility field retained for consumers that render a
+        # single resource row; verdict decisions use the split layers above.
+        "resources": {"passed": bool(resource_eval["hard_passed"] and resource_eval["target_passed"] and compute_eval["passed"]), "observed": {"query_exact": query_exact, "wall_p90_ns": wall_p90, "wall_ratio_median": resource_eval["wall_ratio_median"], "peak_delta_max_bytes": resource_eval["peak_delta_max_bytes"]}, "threshold": RESOURCE_GATE},
+    }
     gate_state = {name: bool(value["passed"]) for name, value in gates.items()}; verdict = decide_verdict(gate_state)
-    aggregate = {"row_count": len(paired_rows), "performance_row_count": len(performance), "liveness_row_count": len(liveness), **{f"candidate_mean_{m}": _mean(row[f"candidate_{m}"] for row in performance) for m in EIGHT_PARETO_METRICS}, **{f"e0_mean_{m}": _mean(row[f"e0_{m}"] for row in performance) for m in EIGHT_PARETO_METRICS}, **{f"mean_delta_{m}_vs_e0": deltas[m] for m in EIGHT_PARETO_METRICS}, "registration_wall_p90_ns": wall_p90, "registration_wall_ratio_p90": resource_eval["wall_ratio_p90"], "registration_peak_delta_p90_bytes": peak_p90}
+    aggregate = {"row_count": len(paired_rows), "performance_row_count": len(performance), "liveness_row_count": len(liveness), **{f"candidate_mean_{m}": _mean(row[f"candidate_{m}"] for row in performance) for m in EIGHT_PARETO_METRICS}, **{f"e0_mean_{m}": _mean(row[f"e0_{m}"] for row in performance) for m in EIGHT_PARETO_METRICS}, **{f"mean_delta_{m}_vs_e0": deltas[m] for m in EIGHT_PARETO_METRICS}, "registration_wall_p90_ns": wall_p90, "registration_wall_ratio_median": resource_eval["wall_ratio_median"], "registration_peak_delta_p90_bytes": peak_p90, "registration_peak_delta_max_bytes": resource_eval["peak_delta_max_bytes"], "component_fit_reduction_min_fraction_vs_d92": compute_eval["min_reduction_fraction"]}
     return {"schema": "cvs.phase2.d92_pareto_distill_hard11.analysis.v1", "status": "ANALYZED", "claim_scope": manifest.get("claim_scope"), "matrix_manifest_sha256": manifest_sha, "method_lock_sha256": lock_sha, "selection_sha256": CANONICAL_SELECTION_SHA256, "baseline": {"paired_rows_path": str(baseline_path), "paired_rows_sha256": HISTORICAL_BASELINE_SHA256, "per_old_class_rows_path": str(per_old_path), "per_old_class_rows_sha256": HISTORICAL_PER_OLD_CLASS_SHA256}, "aggregate": aggregate, "paired_rows": paired_rows, "per_old_class_rows": per_old_rows, "per_old_class_summary": per_old_summary, "scenario_rows": scenario_rows, "by_receiver": by_receiver, "by_slice": by_slice, "by_scene": by_scene, "liveness_rows": liveness, "gates": gates, "gate_state": gate_state, "all_gates_pass": verdict == "ADVANCE_TO_TARGET125_CANDIDATE", "verdict": verdict}
 
 
 analyze_pareto_distill_hard11 = analyze_d92_pareto_distill_hard11
 
-__all__ = ["D92ParetoDistillHard11AnalysisError", "EIGHT_PARETO_METRICS", "PARETO_METRICS", "HISTORICAL_BASELINE_SHA256", "HISTORICAL_PER_OLD_CLASS_SHA256", "analyze_d92_pareto_distill_hard11", "analyze_pareto_distill_hard11", "compute_confusion_rates", "compute_old_balanced_accuracy", "compute_score_metrics", "decide_verdict", "evaluate_resource_gate", "strict_pareto_deltas", "validate_per_old_class_join", "validate_truth_binding"]
+__all__ = ["D92ParetoDistillHard11AnalysisError", "EIGHT_PARETO_METRICS", "PARETO_METRICS", "HISTORICAL_BASELINE_SHA256", "HISTORICAL_PER_OLD_CLASS_SHA256", "analyze_d92_pareto_distill_hard11", "analyze_pareto_distill_hard11", "compute_confusion_rates", "compute_old_balanced_accuracy", "compute_score_metrics", "decide_verdict", "evaluate_component_fit_reduction_gate", "evaluate_resource_gate", "strict_pareto_deltas", "validate_per_old_class_join", "validate_truth_binding"]

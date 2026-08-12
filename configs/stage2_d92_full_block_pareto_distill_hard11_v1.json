@@ -51,8 +51,8 @@
     "shard_count": 8
   },
   "fit_gate": {
-    "k_gt_2_total": 2,
-    "k_gt_2_actual": 1,
+    "k_gt_2_total": 4,
+    "k_gt_2_actual": 2,
     "k1_alias": "real_inventory"
   },
   "strict_pareto_gate": {
@@ -69,6 +69,10 @@
     "registration_wall_p90_max_ns": 150000000,
     "registration_wall_ratio_max": 1.5,
     "registration_peak_delta_max_bytes": 524288,
+    "registration_wall_p90_target_max_ns": 120000000,
+    "registration_wall_ratio_target_max": 1.25,
+    "component_fit_reduction_min_fraction_vs_d92": 0.8,
+    "component_fit_baseline": "D92_FULL_TWO_STATE_COMPONENT_FIT_COUNT_8*(K+1)",
     "query_macs_equal": true,
     "state_bytes_equal": true
   },

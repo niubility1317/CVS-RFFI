@@ -98,11 +98,15 @@ STRICT_PARETO_THRESHOLDS = {
     "new_to_old_rate": -0.005,
     "old_to_new_rate": -0.005,
 }
-FIT_GATE = {"k_gt_2_total": 2, "k_gt_2_actual": 1, "k1_alias": "real_inventory"}
+FIT_GATE = {"k_gt_2_total": 4, "k_gt_2_actual": 2, "k1_alias": "real_inventory"}
 RESOURCE_GATE = {
     "registration_wall_p90_max_ns": 150_000_000,
     "registration_wall_ratio_max": 1.5,
     "registration_peak_delta_max_bytes": 512 * 1024,
+    "registration_wall_p90_target_max_ns": 120_000_000,
+    "registration_wall_ratio_target_max": 1.25,
+    "component_fit_reduction_min_fraction_vs_d92": 0.80,
+    "component_fit_baseline": "D92_FULL_TWO_STATE_COMPONENT_FIT_COUNT_8*(K+1)",
     "query_macs_equal": True,
     "state_bytes_equal": True,
 }

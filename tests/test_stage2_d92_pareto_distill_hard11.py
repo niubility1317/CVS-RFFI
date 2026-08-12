@@ -11,11 +11,13 @@ from cvsrffi.stage2_d92_pareto_distill_hard11 import (
     ARM_ORDER,
     CANDIDATE_ID,
     CLAIM_SCOPE,
+    FIT_GATE,
     HARD11_ROWS,
     LIVENESS_OUTER_KEY,
     SCENES,
     SHARD_COUNT,
     SMOKE_OUTER_KEY,
+    RESOURCE_GATE,
     build_hard11_manifest,
     canonical_selection_sha256,
     validate_hard11_manifest,
@@ -54,6 +56,7 @@ def test_hard11_identity_is_single_arm_with_k_gt_2_smoke_and_k1_liveness() -> No
     assert SMOKE_OUTER_KEY == EXPECTED_PERFORMANCE[0]
     assert SHARD_COUNT == 8
     assert SCENES == ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
+    assert FIT_GATE == {"k_gt_2_total": 4, "k_gt_2_actual": 2, "k1_alias": "real_inventory"}
     assert canonical_selection_sha256()
 
 
@@ -122,6 +125,20 @@ def test_config_freezes_raw_score_and_per_old_sha_identities() -> None:
         "c4b90161d18482b0eedf978389557871cbf9676197f0a2889d547c95c76fbf97"
     )
     assert validate_method_lock(lock)["claim_scope"] == CLAIM_SCOPE
+
+
+def test_config_and_module_freeze_two_state_fit_inventory() -> None:
+    lock = json.loads(METHOD_LOCK.read_text(encoding="utf-8"))
+    assert lock["fit_gate"] == {"k_gt_2_total": 4, "k_gt_2_actual": 2, "k1_alias": "real_inventory"}
+    assert FIT_GATE == lock["fit_gate"]
+    assert lock["resource_gate"]["registration_wall_p90_max_ns"] == 150_000_000
+    assert lock["resource_gate"]["registration_wall_ratio_max"] == 1.5
+    assert lock["resource_gate"]["registration_peak_delta_max_bytes"] == 512 * 1024
+    assert lock["resource_gate"]["registration_wall_p90_target_max_ns"] == 120_000_000
+    assert lock["resource_gate"]["registration_wall_ratio_target_max"] == 1.25
+    assert lock["resource_gate"]["component_fit_reduction_min_fraction_vs_d92"] == 0.8
+    assert lock["resource_gate"]["component_fit_baseline"] == "D92_FULL_TWO_STATE_COMPONENT_FIT_COUNT_8*(K+1)"
+    assert RESOURCE_GATE == lock["resource_gate"]
 
 
 def test_config_freezes_single_roundtrip_deployment_lock() -> None:

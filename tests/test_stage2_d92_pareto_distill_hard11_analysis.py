@@ -15,6 +15,7 @@ from cvsrffi.stage2_d92_pareto_distill_hard11_analysis import (
     compute_old_balanced_accuracy,
     compute_score_metrics,
     decide_verdict,
+    evaluate_component_fit_reduction_gate,
     evaluate_resource_gate,
     validate_truth_binding,
     validate_per_old_class_join,
@@ -90,7 +91,10 @@ def test_three_verdict_branches_have_no_weighted_compensation() -> None:
     revise = {**advance, "all_magnitude": False}
     assert decide_verdict(revise) == "REVISE_ONCE"
     assert decide_verdict({**advance, "stability": False}) == "REVISE_ONCE"
-    assert decide_verdict({**advance, "resources": False}) == "REVISE_ONCE"
+    # A legacy aggregate resource failure is conservatively treated as a hard
+    # miss; the split API below distinguishes hard failure from target-only
+    # miss and returns REVISE_ONCE only for the latter.
+    assert decide_verdict({**advance, "resources": False}) == "REJECT_ROUTE"
     reject = {**advance, "all_strict_pareto": False}
     assert decide_verdict(reject) == "REJECT_ROUTE"
     assert decide_verdict({
@@ -99,6 +103,41 @@ def test_three_verdict_branches_have_no_weighted_compensation() -> None:
         "all_strict_pareto": True,
         "all_magnitude": True,
     }) == "REJECT_ROUTE"
+
+
+def test_split_resource_verdict_rejects_hard_miss_and_revises_target_only() -> None:
+    base = {
+        "complete_artifact_closure": True,
+        "performance_outer_closure": True,
+        "all_strict_pareto": True,
+        "all_magnitude": True,
+        "stability": True,
+        "resource_integrity": True,
+        "resource_hard": True,
+        "resource_target": True,
+        "compute_reduction": True,
+    }
+    assert decide_verdict({**base, "resource_hard": False}) == "REJECT_ROUTE"
+    assert decide_verdict({**base, "resource_integrity": False}) == "REJECT_ROUTE"
+    assert decide_verdict({**base, "compute_reduction": False}) == "REJECT_ROUTE"
+    assert decide_verdict({**base, "resource_target": False}) == "REVISE_ONCE"
+
+
+def test_component_fit_reduction_uses_frozen_d92_two_state_count_not_estimated_macs() -> None:
+    result = evaluate_component_fit_reduction_gate([
+        {"outer_key": "k5", "k_shot": 5, "fit_count": 4, "actual_fit_count": 2, "estimated_macs": 1},
+        {"outer_key": "k10", "k_shot": 10, "fit_count": 4, "actual_fit_count": 2, "estimated_macs": 10**18},
+        {"outer_key": "liveness", "outer_role": "liveness", "k_shot": 1, "fit_count": 3, "actual_fit_count": 3},
+    ])
+    assert result["passed"] is True
+    assert len(result["rows"]) == 2
+    assert result["rows"][0]["reduction_fraction_vs_d92"] == pytest.approx(1.0 - 4.0 / 48.0)
+    assert result["rows"][1]["reduction_fraction_vs_d92"] == pytest.approx(1.0 - 4.0 / 88.0)
+
+    failed = evaluate_component_fit_reduction_gate([
+        {"outer_key": "k5", "k_shot": 5, "fit_count": 10, "actual_fit_count": 2},
+    ])
+    assert failed["passed"] is False
 
 
 def test_frozen_baseline_hashes_are_exposed() -> None:
@@ -144,8 +183,54 @@ def test_resource_gate_compares_matched_peak_and_wall_ratio_not_state_bytes() ->
         query_state_exact=True,
     )
     assert result["passed"] is True
+    assert result["hard_passed"] is True
+    assert result["target_passed"] is True
     assert result["wall_ratio_p90"] == pytest.approx(1.2)
+    assert result["wall_ratio_median"] == pytest.approx(1.2)
     assert result["peak_delta_p90_bytes"] == pytest.approx(400.0)
+    assert result["peak_delta_max_bytes"] == pytest.approx(400.0)
+
+
+def test_resource_gate_uses_ratio_median_and_separates_target_limits() -> None:
+    result = evaluate_resource_gate(
+        candidate_rows=[
+            {"registration_wall_time_ns": 110_000_000.0, "registration_incremental_peak_working_set_bytes": 1200.0},
+            {"registration_wall_time_ns": 120_000_000.0, "registration_incremental_peak_working_set_bytes": 1300.0},
+            {"registration_wall_time_ns": 130_000_000.0, "registration_incremental_peak_working_set_bytes": 1400.0},
+        ],
+        baseline_rows=[
+            {"registration_wall_time_ns": 100_000_000.0, "registration_incremental_peak_working_set_bytes": 1100.0},
+            {"registration_wall_time_ns": 100_000_000.0, "registration_incremental_peak_working_set_bytes": 1100.0},
+            {"registration_wall_time_ns": 100_000_000.0, "registration_incremental_peak_working_set_bytes": 1100.0},
+        ],
+        query_state_exact=True,
+    )
+    assert result["hard_passed"] is True
+    assert result["target_passed"] is False
+    assert result["wall_ratio_median"] == pytest.approx(1.2)
+
+    hard_fail = evaluate_resource_gate(
+        candidate_rows=[{"registration_wall_time_ns": 160_000_000.0, "registration_incremental_peak_working_set_bytes": 1200.0}],
+        baseline_rows=[{"registration_wall_time_ns": 100_000_000.0, "registration_incremental_peak_working_set_bytes": 1100.0}],
+        query_state_exact=True,
+    )
+    assert hard_fail["hard_passed"] is False
+    assert hard_fail["target_passed"] is False
+
+    peak_outlier = evaluate_resource_gate(
+        candidate_rows=[
+            {"registration_wall_time_ns": 100_000_000.0, "registration_incremental_peak_working_set_bytes": 1100.0},
+            {"registration_wall_time_ns": 100_000_000.0, "registration_incremental_peak_working_set_bytes": 1100.0 + 512 * 1024 + 1},
+            {"registration_wall_time_ns": 100_000_000.0, "registration_incremental_peak_working_set_bytes": 1100.0},
+        ],
+        baseline_rows=[
+            {"registration_wall_time_ns": 100_000_000.0, "registration_incremental_peak_working_set_bytes": 1100.0},
+            {"registration_wall_time_ns": 100_000_000.0, "registration_incremental_peak_working_set_bytes": 1100.0},
+            {"registration_wall_time_ns": 100_000_000.0, "registration_incremental_peak_working_set_bytes": 1100.0},
+        ],
+        query_state_exact=True,
+    )
+    assert peak_outlier["hard_passed"] is False
 
 
 def test_truth_binding_requires_manifest_receipt_score_and_actual_hash(tmp_path: Path) -> None:
