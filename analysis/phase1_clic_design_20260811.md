@@ -290,7 +290,7 @@ Phase2旧类support适应继续使用现有合法同公式接口；新类只有�
 |CLIC-17|性能与晋级|读取sealed同row性能并作七门判定|主Agent／最终报告|deferred|需ARTIFACTS_COMPLETE后独立分析|当前NO_PERFORMANCE_RESULT|
 |CLIC-18|旧路线去重|八个永久拒绝机制及其它旧loss不得复活或拼接|全实现面|rejected|设计静态排除；实现复审再搜旧identity|非CLIC组成|
 |CLIC-19|SQSF替代案|Sinc频率轴假设与warm-start映射未闭合，本轮不采用|无目标文件|rejected|独立二选一审查|不是性能永久拒绝|
-|CLIC-20|用户目标域补充|每个C／G checkpoint均报告同一封存目标capsule的registered-known DG与registered／unknown单LEO weak盲态开放集指标，并与source-known、source-proxy及配置匹配ADV3B02基线同row封存|code/evaluate_phase1_clic_target_leo.py及postfreeze矩阵|pending|IQ-only package、目标预测SHA、source-frozen规则、隔离scorer、逐scene分子／分母、known错误、unknown显式拒识／defer、ADV3B02配置等价清单／SHA、C／G same-row及zero-feedback负测|ADV3B02不强制同包；真实unknown全体及三scene分别≥70％；单节点确认不等于Phase3协同|
+|CLIC-20|用户目标域补充|每个C／G checkpoint均报告同一封存目标capsule的registered-known DG与registered／unknown单LEO weak盲态开放集指标，并与source-known、source-proxy及配置匹配ADV3B02基线同row封存|code/evaluate_phase1_clic_target_leo.py及postfreeze矩阵|implementing/cache-stage verified|已新增独立`phase1_clic_target_confirmation`cache scope，严格角色为`target_registered_known／target_unknown`；固定receiver=`20-1`、registered union6、互斥unknown20、day=`0,1,2`，每TX 120个物理样本按truth／role-blind稳定规则分为三scene各40个且跨scene物理ID不复用。builder／loader精确角色、Torch2.1+NumPy2安全跨界、NPZ TOCTOU、caller identity拒绝和VALIDATED_ONCE派生共12项GREEN；独立cache-stage终审为P0=0、P1=0、ALLOW_CACHE_STAGE。IQ-only prediction／scorer与ADV local4 crossed RX／day重算仍在本地收口，未作性能或晋级声明|ADV3B02不强制同包；共同union6 cache按每fold sealed source local4计正式known，inactive2显式排除；真实unknown全体及三scene分别≥70％；单节点确认不等于Phase3协同|
 
 当前追踪计数：verified=8，implemented/local verified=7，pending=3，deferred=0，rejected=2，blocked=0。
 

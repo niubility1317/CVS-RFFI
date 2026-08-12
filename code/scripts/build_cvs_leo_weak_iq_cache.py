@@ -63,11 +63,21 @@ SCENARIO_PARTITION_POLICY = "disjoint_preoverlay_tx_day_stratified_v1"
 REFERENCE_EXCLUSION_POLICY = (
     "exclude_all_source_records_from_verified_reference_cache_set_v1"
 )
+PHASE1_CLIC_TARGET_CONFIRMATION_SCOPE = "phase1_clic_target_confirmation"
+SINGLE_OBSERVATION_CACHE_SCOPES = {
+    "stage2_target_old",
+    "stage2_registered",
+    PHASE1_CLIC_TARGET_CONFIRMATION_SCOPE,
+}
 SCOPE_ROLES = {
     "source_train": {"source"},
     "source_validation": {"source"},
     "stage2_target_old": {"target_old"},
     "stage2_registered": {"target_old", "target_new"},
+    PHASE1_CLIC_TARGET_CONFIRMATION_SCOPE: {
+        "target_registered_known",
+        "target_unknown",
+    },
     "external_comparison_registered": {"target_old", "target_new"},
 }
 
@@ -86,13 +96,35 @@ def _json_safe(value: Any) -> Any:
     return value
 
 
+def _tensor_to_numpy_float32(value: torch.Tensor) -> np.ndarray:
+    """Copy a finite tensor without using the Torch/NumPy ndarray bridge.
+
+    N607's Torch 2.1 plus NumPy 2.x combination can fault inside
+    ``Tensor.numpy()``.  The cache builder crosses this narrow boundary through
+    Python values instead, then owns a contiguous float32 NumPy allocation.
+    """
+
+    if not torch.is_tensor(value):
+        raise TypeError("LEO cache tensor conversion input must be a tensor")
+    source = value.detach().cpu().float().contiguous()
+    try:
+        result = np.asarray(source.tolist(), dtype=np.float32)
+    except (TypeError, ValueError, RuntimeError) as exc:
+        raise RuntimeError("LEO cache tensor conversion failed") from exc
+    if result.shape != tuple(source.shape) or not result.flags.c_contiguous:
+        raise RuntimeError("LEO cache tensor conversion shape/contiguity drift")
+    if result.size <= 0 or not np.isfinite(result).all():
+        raise RuntimeError("LEO cache tensor conversion is empty or non-finite")
+    return result
+
+
 def validate_build_spec(spec: Mapping[str, Any]) -> dict[str, Any]:
     scope = str(spec.get("cache_scope", ""))
     if scope not in SCOPE_ROLES:
         raise ValueError(f"unsupported cache_scope={scope!r}")
     expected_schema = (
         BUILD_SPEC_SCHEMA
-        if scope in {"stage2_target_old", "stage2_registered"}
+        if scope in SINGLE_OBSERVATION_CACHE_SCOPES
         else LEGACY_BUILD_SPEC_SCHEMA
     )
     if spec.get("schema") != expected_schema:
@@ -126,7 +158,7 @@ def validate_build_spec(spec: Mapping[str, Any]) -> dict[str, Any]:
         "phase2_query_post_reception_view_fit_access": False,
         "physical_sample_scenario_assignment_policy": SCENARIO_PARTITION_POLICY,
     }
-    if scope in {"stage2_target_old", "stage2_registered"}:
+    if scope in SINGLE_OBSERVATION_CACHE_SCOPES:
         failed = [
             key
             for key, expected in single_observation_contract.items()
@@ -151,7 +183,7 @@ def validate_build_spec(spec: Mapping[str, Any]) -> dict[str, Any]:
         apply_overlay = item.get("apply_leo_overlay", True)
         if not isinstance(apply_overlay, bool):
             raise ValueError("role apply_leo_overlay must be boolean")
-        if scope in {"stage2_target_old", "stage2_registered"}:
+        if scope in SINGLE_OBSERVATION_CACHE_SCOPES:
             if str(item.get("days", "")) != "0,1,2":
                 raise ValueError(
                     "single-observation formal cache requires independent day pool "
@@ -164,6 +196,22 @@ def validate_build_spec(spec: Mapping[str, Any]) -> dict[str, Any]:
                     "single-observation formal cache requires 120 physical samples "
                     "per TX before scenario partition"
                 )
+    if scope == PHASE1_CLIC_TARGET_CONFIRMATION_SCOPE:
+        role_tx_ids: dict[str, tuple[str, ...]] = {}
+        for item in role_specs:
+            if any(field in item for field in ("scene", "satellite_seed", "satellite_seed_by_scenario")):
+                raise ValueError(
+                    "target-confirmation role assignment must be fixed before "
+                    "scene/seed allocation"
+                )
+            tx_ids = tuple(
+                value.strip() for value in str(item["tx_ids"]).split(",") if value.strip()
+            )
+            if not tx_ids or len(tx_ids) != len(set(tx_ids)):
+                raise ValueError("target-confirmation role TX IDs must be nonempty and unique")
+            role_tx_ids[str(item["role"])] = tx_ids
+        if set(role_tx_ids["target_registered_known"]) & set(role_tx_ids["target_unknown"]):
+            raise ValueError("target-confirmation registered-known/unknown TX sets must be disjoint")
     overlay_by_role = {
         str(item["role"]): bool(item.get("apply_leo_overlay", True))
         for item in role_specs
@@ -605,7 +653,7 @@ def _build_one_scenario(
                 channel_meta_keys.update(str(key) for key in channel_meta)
             else:
                 leo = x
-            leo_np = leo.detach().cpu().float().numpy().astype(np.float32)
+            leo_np = _tensor_to_numpy_float32(leo)
             count = int(leo_np.shape[0])
             meta_tx = _meta_to_list(meta, "tx", count)
             meta_rx = _meta_to_list(meta, "rx", count)
@@ -725,7 +773,7 @@ def _build_one_scenario(
             "overlay_ids",
         ],
     }
-    if str(spec["cache_scope"]) in {"stage2_target_old", "stage2_registered"}:
+    if str(spec["cache_scope"]) in SINGLE_OBSERVATION_CACHE_SCOPES:
         manifest.update(
             {
                 "phase2_physical_sample_observation_policy": (
@@ -807,10 +855,7 @@ def build_cache_set(spec_path: str | Path, *, device: torch.device) -> dict[str,
     role_datasets, exclusion_audit = _build_role_datasets(
         spec, spec_dir=path.parent
     )
-    single_observation_scope = str(spec["cache_scope"]) in {
-        "stage2_target_old",
-        "stage2_registered",
-    }
+    single_observation_scope = str(spec["cache_scope"]) in SINGLE_OBSERVATION_CACHE_SCOPES
     role_datasets_by_scenario = (
         _partition_role_datasets_by_scenario(
             role_datasets,

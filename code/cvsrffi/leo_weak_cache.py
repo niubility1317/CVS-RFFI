@@ -29,6 +29,7 @@ PHASE2_PHYSICAL_SAMPLE_ROOT_ID_POLICY = (
 PHASE2_SINGLE_OBSERVATION_CACHE_SCOPES = {
     "stage2_target_old",
     "stage2_registered",
+    "phase1_clic_target_confirmation",
 }
 
 _REQUIRED_ARRAY_KEYS = (
@@ -296,6 +297,12 @@ def load_verified_leo_weak_cache(
     if not allowed:
         raise ValueError("allowed_roles must be nonempty")
 
+    # Bind the bytes that are inspected to the bytes that are reported.  The
+    # cache-set loader also checks its manifest-pinned digest around this
+    # call, but the single-cache entry point must not leave a verify-to-open
+    # window of its own.
+    raw_sha_before_open = sha256_file(cache_path)
+
     with np.load(cache_path, allow_pickle=False) as archive:
         members = tuple(str(value) for value in archive.files)
         forbidden = sorted(name for name in members if _is_forbidden_member(name))
@@ -430,10 +437,14 @@ def load_verified_leo_weak_cache(
     if str(manifest.get("physical_sample_ids_sha256", "")) != physical_ids_hash:
         raise ValueError("LEO cache physical sample ID root mismatch")
 
+    raw_sha_after_open = sha256_file(cache_path)
+    if raw_sha_after_open != raw_sha_before_open:
+        raise ValueError("LEO cache changed while opening (TOCTOU byte SHA drift)")
+
     arrays["leo_weak_iq"] = iq
     audit = {
         "path": str(cache_path),
-        "sha256": sha256_file(cache_path),
+        "sha256": raw_sha_after_open,
         "schema": LEO_WEAK_CACHE_SCHEMA,
         "scenario": scenario,
         "row_count": row_count,
@@ -539,6 +550,14 @@ def load_verified_leo_weak_cache_set(
             expected_scenario=scenario,
             allowed_roles=allowed,
         )
+        # Recheck the manifest-pinned bytes after materialization.  This
+        # closes the cache-set manifest-hash to NPZ-open race without
+        # rebuilding or revalidating any dataset state.
+        current_hash = sha256_file(cache_path)
+        if current_hash != expected_hash or audit.get("sha256") != expected_hash:
+            raise ValueError(
+                f"LEO cache-set file changed while opening (TOCTOU SHA drift) for {scenario}"
+            )
         current_ids = np.asarray(arrays["sample_ids"]).astype(str).tolist()
         current_roles = np.asarray(arrays["dataset_role"]).astype(str).tolist()
         ids_by_scenario[scenario] = current_ids
