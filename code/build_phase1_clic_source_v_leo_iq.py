@@ -267,6 +267,7 @@ class _ImmutablePublication:
     path: Path
     device: int
     inode: int
+    sha256: str | None
 
 
 def _regular_file_identity(path: Path, *, label: str) -> tuple[int, int]:
@@ -281,8 +282,16 @@ def _regular_file_identity(path: Path, *, label: str) -> tuple[int, int]:
     return int(metadata.st_dev), int(metadata.st_ino)
 
 
-def _unlink_if_owned(publication: _ImmutablePublication) -> bool:
-    """Remove only the path still linked to this builder's immutable output."""
+def _unlink_if_owned(
+    publication: _ImmutablePublication, *, require_sha: bool = True
+) -> bool:
+    """Remove only a path still owned by this builder's exact publication.
+
+    A successfully exclusive-created temporary has a trustworthy pathname and
+    inode before its payload can be sealed, so its write-failure cleanup uses
+    identity-only ownership.  Published final artifacts additionally require
+    the pre-publish SHA to match, preserving any in-place external mutation.
+    """
 
     path = publication.path
     try:
@@ -291,6 +300,14 @@ def _unlink_if_owned(publication: _ImmutablePublication) -> bool:
         return False
     if identity != (publication.device, publication.inode):
         return False
+    if require_sha:
+        if not isinstance(publication.sha256, str) or len(publication.sha256) != 64:
+            return False
+        try:
+            if _sha256_file(path) != publication.sha256:
+                return False
+        except OSError:
+            return False
     try:
         path.unlink()
     except OSError as exc:
@@ -305,6 +322,14 @@ def _assert_publication_current(
 ) -> None:
     """Reject a post-publish replacement or in-place mutation before sealing."""
 
+    if not isinstance(publication.sha256, str) or len(publication.sha256) != 64:
+        raise CLICSourceVLeoCacheError(
+            f"immutable {label} has no pre-publish SHA seal: {publication.path}"
+        )
+    if expected_sha256 != publication.sha256:
+        raise CLICSourceVLeoCacheError(
+            f"immutable {label} requested SHA differs from its pre-publish seal: {publication.path}"
+        )
     expected_identity = (publication.device, publication.inode)
     observed_identity = _regular_file_identity(publication.path, label=label)
     if observed_identity != expected_identity:
@@ -312,7 +337,7 @@ def _assert_publication_current(
             f"immutable {label} publication identity changed after publish: {publication.path}"
         )
     observed_sha256 = _sha256_file(publication.path)
-    if observed_sha256 != expected_sha256:
+    if observed_sha256 != publication.sha256:
         raise CLICSourceVLeoCacheError(
             f"immutable {label} publication bytes changed after publish: {publication.path}"
         )
@@ -334,11 +359,12 @@ def _publish_immutable_temporary(
     """
 
     try:
-        temporary_identity = _regular_file_identity(temporary, label=f"temporary {label}")
-        if temporary_identity != (temporary_publication.device, temporary_publication.inode):
-            raise CLICSourceVLeoCacheError(
-                f"temporary {label} identity changed before exclusive publish: {temporary}"
-            )
+        _assert_publication_current(
+            temporary_publication,
+            expected_sha256=temporary_publication.sha256,
+            label=f"temporary {label}",
+        )
+        temporary_identity = (temporary_publication.device, temporary_publication.inode)
         try:
             os.link(temporary, path)
         except FileExistsError as exc:
@@ -359,6 +385,7 @@ def _publish_immutable_temporary(
                 path=path,
                 device=destination_identity[0],
                 inode=destination_identity[1],
+                sha256=temporary_publication.sha256,
             )
         except Exception:
             _unlink_if_owned(
@@ -366,6 +393,7 @@ def _publish_immutable_temporary(
                     path=path,
                     device=temporary_identity[0],
                     inode=temporary_identity[1],
+                    sha256=temporary_publication.sha256,
                 )
             )
             raise
@@ -394,10 +422,17 @@ def _atomic_save_npz(path: Path, payload: Mapping[str, Any]) -> _ImmutablePublic
                 path=temporary,
                 device=temporary_identity[0],
                 inode=temporary_identity[1],
+                sha256="",
             )
             np.savez(handle, **dict(payload))
             handle.flush()
             os.fsync(handle.fileno())
+        temporary_publication = _ImmutablePublication(
+            path=temporary,
+            device=temporary_publication.device,
+            inode=temporary_publication.inode,
+            sha256=_sha256_file(temporary),
+        )
         return _publish_immutable_temporary(
             temporary,
             path,
@@ -406,7 +441,7 @@ def _atomic_save_npz(path: Path, payload: Mapping[str, Any]) -> _ImmutablePublic
         )
     except Exception:
         if temporary_publication is not None:
-            _unlink_if_owned(temporary_publication)
+            _unlink_if_owned(temporary_publication, require_sha=False)
         raise
 
 
@@ -431,10 +466,17 @@ def _atomic_write_json(path: Path, payload: Mapping[str, Any]) -> _ImmutablePubl
                 path=temporary,
                 device=temporary_identity[0],
                 inode=temporary_identity[1],
+                sha256="",
             )
             handle.write(json.dumps(dict(payload), ensure_ascii=True, sort_keys=True) + "\n")
             handle.flush()
             os.fsync(handle.fileno())
+        temporary_publication = _ImmutablePublication(
+            path=temporary,
+            device=temporary_publication.device,
+            inode=temporary_publication.inode,
+            sha256=_sha256_file(temporary),
+        )
         return _publish_immutable_temporary(
             temporary,
             path,
@@ -443,7 +485,7 @@ def _atomic_write_json(path: Path, payload: Mapping[str, Any]) -> _ImmutablePubl
         )
     except Exception:
         if temporary_publication is not None:
-            _unlink_if_owned(temporary_publication)
+            _unlink_if_owned(temporary_publication, require_sha=False)
         raise
 
 
@@ -1090,7 +1132,9 @@ def build_source_v_received_iq(args: argparse.Namespace) -> dict[str, Any]:
     receipt_publication: _ImmutablePublication | None = None
     try:
         output_publication = _atomic_save_npz(output_path, payload)
-        output_sha256 = _sha256_file(output_path)
+        output_sha256 = output_publication.sha256
+        if not isinstance(output_sha256, str):
+            raise CLICSourceVLeoCacheError("source-V received-IQ publication lacks a pre-publish SHA seal")
         _assert_publication_current(
             output_publication,
             expected_sha256=output_sha256,
@@ -1189,7 +1233,9 @@ def build_source_v_received_iq(args: argparse.Namespace) -> dict[str, Any]:
             label="source-V received-IQ cache at receipt publish",
         )
         receipt_publication = _atomic_write_json(receipt_path, receipt)
-        receipt_sha256 = _sha256_file(receipt_path)
+        receipt_sha256 = receipt_publication.sha256
+        if not isinstance(receipt_sha256, str):
+            raise CLICSourceVLeoCacheError("source-V receipt publication lacks a pre-publish SHA seal")
         _assert_publication_current(
             receipt_publication,
             expected_sha256=receipt_sha256,

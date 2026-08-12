@@ -739,3 +739,113 @@ def test_builder_preserves_racing_receipt_temporary_file_when_exclusive_create_l
     assert temporary.read_bytes() == sentinel
     assert not output.exists()
     assert not Path(args.receipt_json).exists()
+
+
+def test_builder_rejects_same_inode_valid_npz_mutation_after_publish_before_seal(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Break caught: a valid NPZ changed in place cannot become the SHA baseline."""
+
+    args, rows = _builder_args(tmp_path)
+    _install_external_doubles(monkeypatch, args=args, rows=rows)
+    output = Path(args.out_npz)
+    native_publish = BUILDER._atomic_save_npz
+    mutation_done = False
+    external_bytes = b""
+
+    def publish_then_mutate(path: Path, payload: dict[str, Any]):
+        nonlocal mutation_done, external_bytes
+        publication = native_publish(path, payload)
+        original_identity = output.stat().st_ino
+        replacement_payload = dict(payload)
+        replacement_iq = np.asarray(payload["received_iq"], dtype=np.float32).copy()
+        replacement_iq[0, 0, 0] += np.float32(0.25)
+        replacement_payload["received_iq"] = replacement_iq
+        with output.open("r+b") as handle:
+            handle.seek(0)
+            handle.truncate()
+            np.savez(handle, **replacement_payload)
+            handle.flush()
+        external_bytes = output.read_bytes()
+        assert output.stat().st_ino == original_identity
+        mutation_done = True
+        return publication
+
+    monkeypatch.setattr(BUILDER, "_atomic_save_npz", publish_then_mutate)
+    with pytest.raises(Exception, match="publication|bytes|changed|immutable|TOCTOU"):
+        BUILDER.build_source_v_received_iq(args)
+
+    assert mutation_done
+    assert output.read_bytes() == external_bytes
+    with np.load(output, allow_pickle=False) as archive:
+        assert np.isfinite(np.asarray(archive["received_iq"], dtype=np.float32)).all()
+        assert set(archive.files) == {
+            "received_iq",
+            "tx_ids",
+            "rx_ids",
+            "day_ids",
+            "physical_sample_id",
+            "sat_scenarios",
+        }
+    assert not Path(args.receipt_json).exists()
+
+
+def test_builder_rejects_same_inode_receipt_mutation_before_return_without_deleting_it(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Break caught: receipt JSON cannot be changed in place after its immutable publish."""
+
+    args, rows = _builder_args(tmp_path)
+    _install_external_doubles(monkeypatch, args=args, rows=rows)
+    output = Path(args.out_npz)
+    receipt = Path(args.receipt_json)
+    native_publish = BUILDER._atomic_write_json
+    mutation_done = False
+    external_bytes = b""
+
+    def publish_then_mutate(path: Path, payload: dict[str, Any]):
+        nonlocal mutation_done, external_bytes
+        publication = native_publish(path, payload)
+        original_identity = receipt.stat().st_ino
+        changed = dict(payload)
+        changed["target_access"] = True
+        with receipt.open("r+", encoding="utf-8") as handle:
+            handle.seek(0)
+            handle.truncate()
+            json.dump(changed, handle, ensure_ascii=True, sort_keys=True)
+            handle.write("\n")
+            handle.flush()
+        external_bytes = receipt.read_bytes()
+        assert receipt.stat().st_ino == original_identity
+        mutation_done = True
+        return publication
+
+    monkeypatch.setattr(BUILDER, "_atomic_write_json", publish_then_mutate)
+    with pytest.raises(Exception, match="publication|bytes|changed|immutable|TOCTOU"):
+        BUILDER.build_source_v_received_iq(args)
+
+    assert mutation_done
+    assert json.loads(receipt.read_text(encoding="utf-8"))["target_access"] is True
+    assert receipt.read_bytes() == external_bytes
+    assert not output.exists()
+
+
+def test_npz_write_failure_after_our_exclusive_temporary_create_cleans_only_our_tmp(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Break caught: fail-closed publication must not leave its own partial lockout file."""
+
+    output = tmp_path / "source_validation_known_leo_weak.npz"
+    temporary = output.with_name(output.name + ".tmp")
+
+    def partial_then_fail(handle: Any, **_payload: Any) -> None:
+        handle.write(b"incomplete-own-npz")
+        handle.flush()
+        raise RuntimeError("synthetic write failure")
+
+    monkeypatch.setattr(BUILDER.np, "savez", partial_then_fail)
+    with pytest.raises(RuntimeError, match="synthetic write failure"):
+        BUILDER._atomic_save_npz(output, {"received_iq": np.ones((1, 2, 2), dtype=np.float32)})
+
+    assert not output.exists()
+    assert not temporary.exists()
