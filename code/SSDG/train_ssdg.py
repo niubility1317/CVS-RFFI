@@ -6,7 +6,10 @@ import hashlib
 import importlib
 import json
 import math
+import os
 import random
+import shlex
+import subprocess
 import time
 from collections import defaultdict
 from copy import deepcopy
@@ -6749,6 +6752,112 @@ _ADV3B02_TECHNICAL_SMOKE_SOURCE_ROLES = {
 }
 
 
+def _adv3b02_technical_smoke_bash_path(path: Path) -> str:
+    """Return a path accepted by the local bash implementation on every supported host."""
+
+    resolved = path.resolve()
+    if os.name == "nt" and resolved.drive:
+        drive = resolved.drive.rstrip(":").lower()
+        relative = resolved.as_posix().split(":", 1)[1].lstrip("/")
+        return f"/mnt/{drive}/{relative}"
+    return str(resolved)
+
+
+def _formal_adv3b02_technical_smoke_f1_args() -> argparse.Namespace:
+    """Recover the F1 parser namespace from the adjacent frozen formal launcher.
+
+    The technical probe must validate against the actual formal command source,
+    rather than a caller-supplied hash or a manually copied subset of losses.
+    ``--dry-run`` only emits shell-quoted command rows and never creates roots
+    or invokes the trainer.
+    """
+
+    launcher = Path(__file__).resolve().parents[1] / "scripts" / (
+        "launch_phase1_adv3b02_clic6_v1_20260813.sh"
+    )
+    if not launcher.is_file():
+        raise ValueError(
+            "ADV3B02 technical smoke requires its adjacent frozen formal launcher"
+        )
+    environment = os.environ.copy()
+    for key in (
+        "RUN_ID",
+        "RUN_ROOT",
+        "LOG_ROOT",
+        "PROJECT_ROOT",
+        "CODE_ROOT",
+        "PYTHON",
+        "WISIG_PKL",
+        "TRAIN_SCRIPT",
+    ):
+        environment.pop(key, None)
+    environment["RUN_ID"] = _ADV3B02_TECHNICAL_SMOKE_RUN_ID
+    try:
+        completed = subprocess.run(
+            ["bash", _adv3b02_technical_smoke_bash_path(launcher), "--dry-run"],
+            check=True,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="strict",
+            env=environment,
+        )
+    except (OSError, subprocess.CalledProcessError) as error:
+        detail = getattr(error, "stderr", "") or str(error)
+        raise ValueError(
+            "ADV3B02 technical smoke could not recover the frozen F1 launcher profile: "
+            f"{detail.strip()}"
+        ) from error
+    rows = [line for line in completed.stdout.splitlines() if line.strip()]
+    if len(rows) != 6 or not rows[0].startswith("[DRY-RUN] "):
+        raise ValueError(
+            "ADV3B02 technical smoke formal launcher did not emit six frozen command rows"
+        )
+    try:
+        tokens = shlex.split(rows[0].removeprefix("[DRY-RUN] "))
+        train_index = next(
+            index
+            for index, token in enumerate(tokens)
+            if token.replace("\\", "/").endswith("/SSDG/train_ssdg.py")
+        )
+        return build_arg_parser().parse_args(tokens[train_index + 1 :])
+    except (ValueError, StopIteration) as error:
+        raise ValueError(
+            "ADV3B02 technical smoke could not parse the frozen F1 launcher command"
+        ) from error
+
+
+def _validate_adv3b02_technical_smoke_f1_profile(args: Any) -> None:
+    """Require every parser field to match formal F1 except isolated runtime paths."""
+
+    formal_args = _formal_adv3b02_technical_smoke_f1_args()
+    allowed_runtime_differences = {
+        # The wrapper deliberately relocates these artifacts under its own
+        # immutable smoke root.  The smoke control itself is absent from the
+        # formal six-fold command and is checked separately by the caller.
+        "output_dir",
+        "phase2_export_path",
+        "phase1_adv3b02_technical_smoke_batches",
+    }
+    for field, expected in vars(formal_args).items():
+        if field in allowed_runtime_differences:
+            continue
+        actual = getattr(args, field, object())
+        # argparse intentionally uses NaN for a handful of opt-in audit
+        # thresholds.  Two unset NaNs encode the same frozen default even
+        # though IEEE equality treats them as unequal.
+        try:
+            if math.isnan(float(expected)) and math.isnan(float(actual)):
+                continue
+        except (TypeError, ValueError):
+            pass
+        if actual != expected:
+            raise ValueError(
+                "ADV3B02 technical smoke frozen F1 profile drift: "
+                f"{field} expected={expected!r} got={actual!r}"
+            )
+
+
 def _validate_phase1_adv3b02_technical_smoke_args(args: Any) -> int:
     """Fail closed before data construction for the isolated ADV3B02 F1 smoke."""
 
@@ -6816,10 +6925,19 @@ def _validate_phase1_adv3b02_technical_smoke_args(args: Any) -> int:
         raise ValueError(
             "ADV3B02 technical smoke output_dir must be the isolated F1 smoke root"
         )
+    expected_export_path = f"{output_dir}/phase2_zid_prototypes.pt"
+    export_path = str(getattr(args, "phase2_export_path", "")).replace("\\", "/")
+    if export_path != expected_export_path:
+        raise ValueError(
+            "ADV3B02 technical smoke requires phase2_export_path under its isolated F1 root"
+        )
+    _validate_adv3b02_technical_smoke_f1_profile(args)
     return batches
 
 
-def _adv3b02_technical_smoke_source_evidence(data_ctx: Mapping[str, Any]) -> Dict[str, Any]:
+def _adv3b02_technical_smoke_source_evidence(
+    data_ctx: Mapping[str, Any], args: Any
+) -> Dict[str, Any]:
     """Seal the actual source-role and split bindings consumed by the three batches."""
 
     split_info = dict(data_ctx.get("split_info", {}) or {})
@@ -6861,6 +6979,10 @@ def _adv3b02_technical_smoke_source_evidence(data_ctx: Mapping[str, Any]) -> Dic
             "source_val_size": int(split_info.get("source_val_size", 0)),
             "split_manifest_sha256": str(source_split.get("split_manifest_sha256", "")),
         },
+        "source_dataset": {
+            "wisig_pkl_path": str(getattr(args, "wisig_pkl", "")),
+            "wisig_pkl_sha256": str(source_split.get("wisig_pkl_sha256", "")),
+        },
     }
 
 
@@ -6887,6 +7009,12 @@ def _finalize_phase1_adv3b02_technical_smoke(
             "ADV3B02 technical smoke requires three finite, effective optimizer steps: "
             f"observed={observed}"
         )
+    source_evidence = dict(source_evidence)
+    source_dataset = dict(source_evidence.get("source_dataset", {}) or {})
+    if not str(source_dataset.get("wisig_pkl_path", "")).strip():
+        raise ValueError(
+            "ADV3B02 technical smoke receipt requires its resolved source dataset path"
+        )
     receipt_path = out_dir / "phase1_adv3b02_technical_smoke_receipt.json"
     receipt = {
         "schema": "cvs.phase1.adv3b02_technical_smoke.v1",
@@ -6902,7 +7030,7 @@ def _finalize_phase1_adv3b02_technical_smoke(
         "optimizer_nonfinite_batches": int(counters.get("optimizer_nonfinite_batches", 0)),
         "forward_batches": int(counters.get("forward_batches", 0)),
         "backward_batches": int(counters.get("backward_batches", 0)),
-        **dict(source_evidence),
+        **source_evidence,
         "source_val_rows_opened": 0,
         "query_rows_opened": 0,
         "target_rows_opened": 0,
@@ -6949,6 +7077,12 @@ def train(args) -> int:
         raise ValueError(
             "--ablation_id is reserved for --formal_ablation true"
         )
+    # The smoke's complete F1 profile must be sealed before any generic
+    # validation can redirect a drift into a different code path or before
+    # source data construction becomes reachable.
+    adv3b02_technical_smoke_batches = _validate_phase1_adv3b02_technical_smoke_args(
+        args
+    )
     total_epochs = _resolve_epoch_schedule(args)
     args.epochs = total_epochs
     clic_frozen_mode_active = bool(
@@ -7785,9 +7919,6 @@ def train(args) -> int:
             "--direct_metric_require_effective_negative_grad true requires either "
             "--direct_metric_virtual_detach false or --direct_metric_gate_reference_detach false"
         )
-    adv3b02_technical_smoke_batches = _validate_phase1_adv3b02_technical_smoke_args(
-        args
-    )
     if args.dry_run:
         print(
             f"[DRY-RUN] Parsed arguments and skipped data/model construction. "
@@ -8402,7 +8533,7 @@ def train(args) -> int:
     }
     if adv3b02_technical_smoke_batches:
         adv3b02_technical_smoke_source_binding = _adv3b02_technical_smoke_source_evidence(
-            data_ctx
+            data_ctx, args
         )
     if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode or gd_proto_nll_frozen_mode or icmt_frozen_mode or cagm_frozen_mode or rcrmd_frozen_mode or rcat_frozen_mode or rcmmc_frozen_mode or hscf_frozen_mode or hnccd_frozen_mode or recte_frozen_mode or cp_sfce_frozen_mode:
         tx_partition_receipt = (
@@ -15927,6 +16058,17 @@ def train(args) -> int:
                         flush=True,
                     )
                     return 0
+
+        if (
+            adv3b02_technical_smoke_batches
+            and adv3b02_technical_smoke_counters["batches"]
+            < adv3b02_technical_smoke_batches
+        ):
+            raise RuntimeError(
+                "ADV3B02 technical smoke requires three complete batches in its "
+                "first epoch before source validation; "
+                f"observed={adv3b02_technical_smoke_counters['batches']}"
+            )
 
         if pamr_audit_only:
             val_stats = {

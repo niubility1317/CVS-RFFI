@@ -21,6 +21,7 @@ REPO_ROOT = CODE_ROOT.parent
 LAUNCHER = CODE_ROOT / "scripts" / "launch_phase1_adv3b02_clic6_v1_20260813.sh"
 SMOKE_LAUNCHER = CODE_ROOT / "scripts" / "smoke_phase1_adv3b02_clic_f1_v1_20260813.sh"
 SMOKE_ROOT_NAME = ".smoke_phase1_adv3b02_clic6_20260813_v1_F1"
+FORMAL_WISIG_PKL = "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl"
 
 if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
@@ -460,7 +461,12 @@ def _adv3b02_smoke_args(tmp_path: Path):
 
     parser = train_ssdg.build_arg_parser()
     line = _smoke_dry_run_line(tmp_path)
-    return parser.parse_args(_trainer_args(_command_tokens(line)))
+    args = parser.parse_args(_trainer_args(_command_tokens(line)))
+    # The test wrapper's temporary PROJECT_ROOT intentionally changes its
+    # dry-run dataset path.  Runtime profile validation is stricter: it must
+    # bind back to the formal F1 ManySig path.
+    args.wisig_pkl = FORMAL_WISIG_PKL
+    return args
 
 
 def test_adv3b02_smoke_parser_accepts_zero_or_three_batches(tmp_path: Path) -> None:
@@ -471,6 +477,16 @@ def test_adv3b02_smoke_parser_accepts_zero_or_three_batches(tmp_path: Path) -> N
     parser = train_ssdg.build_arg_parser()
     assert parser.parse_args(["--output_dir", "unused"]).phase1_adv3b02_technical_smoke_batches == 0
     assert _adv3b02_smoke_args(tmp_path).phase1_adv3b02_technical_smoke_batches == 3
+
+
+def test_adv3b02_smoke_exact_f1_profile_validates_before_data(tmp_path: Path) -> None:
+    """Break caught: the isolated F1 wrapper no longer matches its formal command source."""
+
+    from SSDG import train_ssdg
+
+    assert train_ssdg._validate_phase1_adv3b02_technical_smoke_args(
+        _adv3b02_smoke_args(tmp_path)
+    ) == 3
 
 
 @pytest.mark.parametrize("batches", (1, 2, 4))
@@ -513,6 +529,57 @@ def test_adv3b02_smoke_rejects_wrong_method_before_data(
         train_ssdg.train(args)
 
 
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("lambda_proto", 9.99),
+        ("lambda_tx_proto", 0.01),
+        ("use_feature_masks", False),
+        ("wisig_pkl", "/foreign/ManySig.pkl"),
+        (
+            "sat_view_schedule",
+            "1@0.30:leo_clear_weak;41@0.60:leo_clear_weak,leo_rain_weak;"
+            "91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+        ),
+    ),
+)
+def test_adv3b02_smoke_rejects_any_frozen_method_profile_drift_before_data(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    field: str,
+    value: object,
+) -> None:
+    """Break caught: a smoke invocation can change a frozen F1 mechanism or loss."""
+
+    from SSDG import train_ssdg
+
+    args = _adv3b02_smoke_args(tmp_path)
+    setattr(args, field, value)
+    monkeypatch.setattr(
+        train_ssdg,
+        "_build_ssdg_wisig_data",
+        lambda *_args, **_kwargs: pytest.fail(
+            f"ADV smoke profile drift reached data construction: {field}"
+        ),
+    )
+    with pytest.raises(ValueError, match=field):
+        train_ssdg.train(args)
+
+
+def test_adv3b02_smoke_flag_zero_does_not_freeze_the_f1_profile(tmp_path: Path) -> None:
+    """Break caught: ordinary flag=0 training is constrained by smoke-only F1 values."""
+
+    from SSDG import train_ssdg
+
+    args = _adv3b02_smoke_args(tmp_path)
+    args.phase1_adv3b02_technical_smoke_batches = 0
+    args.base_candidate = "ordinary_source_only_candidate"
+    args.lambda_proto = 9.99
+    args.use_feature_masks = False
+    args.dry_run = True
+    assert train_ssdg.train(args) == 0
+
+
 def _smoke_source_evidence() -> dict[str, object]:
     return {
         "source_roles": {
@@ -528,6 +595,10 @@ def _smoke_source_evidence() -> dict[str, object]:
             "unlabeled_size": 35280,
             "source_val_size": 16800,
             "split_manifest_sha256": "b" * 64,
+        },
+        "source_dataset": {
+            "wisig_pkl_path": FORMAL_WISIG_PKL,
+            "wisig_pkl_sha256": "e" * 64,
         },
     }
 
@@ -571,6 +642,43 @@ def test_adv3b02_smoke_finalizer_seals_three_finite_effective_batches(
     assert receipt["target_rows_opened"] == 0
     assert receipt["test_rows_opened"] == 0
     assert receipt["selection_feedback_count"] == 0
+    assert receipt["source_dataset"] == _smoke_source_evidence()["source_dataset"]
+
+
+def test_adv3b02_smoke_source_evidence_binds_dataset_path_and_split_hash(
+    tmp_path: Path,
+) -> None:
+    """Break caught: the receipt loses the exact source dataset binding."""
+
+    from SSDG import train_ssdg
+
+    args = _adv3b02_smoke_args(tmp_path)
+    data_ctx = {
+        "named_test_loaders": {},
+        "split_info": {
+            "mode": "tx_rx_day_1_6_3",
+            "labeled_size": 3920,
+            "unlabeled_size": 35280,
+            "source_val_size": 16800,
+            "source_split_receipt": {
+                "split_manifest_sha256": "b" * 64,
+                "wisig_pkl_sha256": "e" * 64,
+            },
+            "tx_partition_receipt": {
+                "enabled": True,
+                "held_tx_loaded_by_training": False,
+                "source_known_train_tx": ["20-15", "20-19", "6-15", "8-20"],
+                "source_known_validation_tx": ["14-7"],
+                "source_proxy_unknown_tx": ["14-10"],
+                "partition_sha256": "a" * 64,
+            },
+        },
+    }
+    evidence = train_ssdg._adv3b02_technical_smoke_source_evidence(data_ctx, args)
+    assert evidence["source_dataset"] == {
+        "wisig_pkl_path": FORMAL_WISIG_PKL,
+        "wisig_pkl_sha256": "e" * 64,
+    }
 
 
 def test_adv3b02_smoke_finalizer_rejects_nonfinite_or_existing_receipt(
@@ -633,6 +741,151 @@ def test_adv3b02_smoke_flag_zero_does_not_restrict_formal_rows(tmp_path: Path) -
     assert args.phase1_adv3b02_technical_smoke_batches == 0
     assert args.candidate_id == "F2_ADV3B02_CLIC"
     assert train_ssdg._validate_phase1_adv3b02_technical_smoke_args(args) == 0
+
+
+@pytest.mark.parametrize("batch_count", (1, 2))
+def test_adv3b02_smoke_fails_short_first_epoch_before_any_source_validation(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    batch_count: int,
+) -> None:
+    """Break caught: a short smoke loader enters source validation or a later epoch."""
+
+    torch = pytest.importorskip("torch")
+    from SSDG import train_ssdg
+
+    args = train_ssdg.build_arg_parser().parse_args(
+        [
+            "--output_dir",
+            str(tmp_path / "short-smoke"),
+            "--from_scratch",
+            "true",
+            "--epochs",
+            "2",
+            "--label_epochs",
+            "2",
+            "--pseudo_epochs",
+            "0",
+            "--batch_size",
+            "2",
+            "--eval_batch_size",
+            "2",
+            "--device",
+            "cpu",
+            "--phase1_adv3b02_technical_smoke_batches",
+            "3",
+        ]
+    )
+    for field in (
+        "lambda_u",
+        "lambda_ent",
+        "lambda_domain",
+        "lambda_adv",
+        "lambda_orth",
+        "lambda_cons",
+        "lambda_group_ce",
+        "lambda_fishr",
+        "lambda_sat_cls",
+        "lambda_sat_cons",
+    ):
+        setattr(args, field, 0.0)
+    args.use_unlabeled = False
+    args.use_sat_consistency = False
+    args.use_mixstyle = False
+    args.use_aug = False
+    args.amp = False
+
+    class TinyModel(torch.nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.linear = torch.nn.Linear(2, 2)
+            self.forward_count = 0
+
+        def forward(self, x, **_kwargs):
+            self.forward_count += 1
+            logits = self.linear(x)
+            return {"tx_logits": logits, "z_id": logits}
+
+    model = TinyModel()
+    batches = [
+        (
+            torch.tensor([[1.0, 0.0], [0.0, 1.0]]),
+            torch.tensor([0, 1]),
+            {},
+        )
+        for _ in range(batch_count)
+    ]
+    source_roles = {
+        "enabled": True,
+        "held_tx_loaded_by_training": False,
+        "source_known_train_tx": ["20-15", "20-19", "6-15", "8-20"],
+        "source_known_validation_tx": ["14-7"],
+        "source_proxy_unknown_tx": ["14-10"],
+        "partition_sha256": "c" * 64,
+    }
+    data_ctx = {
+        "train_loader": batches,
+        "balanced_train_sampler": None,
+        "unlabeled_loader": [],
+        "val_loader": [object()],
+        "named_test_loaders": {},
+        "domain_label_map": {},
+        "num_domains": 1,
+        "input_len": 2,
+        "num_classes": 2,
+        "class_id_to_tx": ["20-15", "20-19"],
+        "split_info": {
+            "mode": "tx_rx_day_1_6_3",
+            "labeled_size": 2 * batch_count,
+            "unlabeled_size": 0,
+            "source_val_size": 1,
+            "source_split_receipt": {"split_manifest_sha256": "d" * 64},
+            "tx_partition_receipt": source_roles,
+        },
+    }
+    monkeypatch.setattr(
+        train_ssdg,
+        "_validate_phase1_adv3b02_technical_smoke_args",
+        lambda _args: 3,
+    )
+    monkeypatch.setattr(train_ssdg, "resolve_device", lambda _device: torch.device("cpu"))
+    monkeypatch.setattr(train_ssdg, "_prepare_cuda_memory_audit", lambda _device: None)
+    monkeypatch.setattr(train_ssdg, "set_seed", lambda _seed: None)
+    monkeypatch.setattr(train_ssdg, "_build_ssdg_wisig_data", lambda *_args: data_ctx)
+    monkeypatch.setattr(
+        train_ssdg,
+        "_build_manytx_real_oe_data",
+        lambda *_args, **_kwargs: {"loader": None, "sampler": None, "receipt": {}},
+    )
+    monkeypatch.setattr(train_ssdg, "merge_checkpoint_args", lambda *_args, **_kwargs: args)
+    monkeypatch.setattr(train_ssdg, "_apply_model_cli_args", lambda model_args, _args: model_args)
+    monkeypatch.setattr(train_ssdg, "build_baseline_model", lambda *_args: model)
+    monkeypatch.setattr(train_ssdg, "move_batch", lambda batch, _device: batch)
+
+    def core_losses(out_l, y_l, *_args, **_kwargs):
+        zero = out_l["tx_logits"].sum() * 0.0
+        return {
+            "loss_cls": torch.nn.functional.cross_entropy(out_l["tx_logits"], y_l),
+            "loss_dom": zero,
+            "loss_adv": zero,
+            "loss_cons": zero,
+            "loss_orth": zero,
+            "loss_group_ce": zero,
+            "cons_cos": zero,
+            "dom_acc": zero,
+        }
+
+    monkeypatch.setattr(train_ssdg, "compute_core_losses", core_losses)
+    monkeypatch.setattr(
+        train_ssdg,
+        "evaluate_loader",
+        lambda *_args, **_kwargs: pytest.fail("short ADV smoke opened source validation"),
+    )
+
+    with pytest.raises(RuntimeError, match="first epoch.*observed"):
+        train_ssdg.train(args)
+    assert model.forward_count == batch_count
+    assert not (Path(args.output_dir) / "phase1_adv3b02_technical_smoke_receipt.json").exists()
 
 
 def test_dry_run_has_no_target_side_input_and_creates_no_roots(tmp_path: Path) -> None:
