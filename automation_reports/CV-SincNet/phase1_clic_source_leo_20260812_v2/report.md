@@ -3,7 +3,7 @@
 ## 状态与目标
 
 - 实验ID：`phase1_clic_source_leo_20260812_v2`。
-- 当前状态：`LOCAL_FIX_UNDER_REVIEW / FORMAL_LAUNCH=0 / NO_PERFORMANCE_RESULT`。
+- 当前状态：`READY_TO_LAUNCH / FORMAL_LAUNCH=0 / NO_PERFORMANCE_RESULT_YET`（F1真实cache smoke已通过，等待唯一正式入口启动）。
 - 目标：修复v1真实烟测发现的Torch 2.1／NumPy 2.x数组桥接崩溃，然后为F1—F6各生成一份source-L单观测LEO weak received-IQ缓存，并由同fold C／G复用完全相同的缓存字节导出特征。
 - 科学路线、矩阵、数据、场景、seed、GPU映射及停止条件均不变；本次仅修复N607运行时兼容性，不调参、不读取性能。
 
@@ -53,3 +53,13 @@
 - Git commit及最终报告SHA。
 - 本地联合测试精确计数、独立审查结论。
 - archive／release／SCP／smoke／唯一launch、PID／GPU／日志和工件闭合。
+
+## v2发布与F1真实cache smoke证据（2026-08-12）
+
+- 冻结Git commit：`5c14d7fd46e71556d6ede01c8daf790fa83c32ce`；仅由该commit生成无前缀干净archive，未携带Task7 dirty文件。
+- 本地archive：`E:\type10-7\code\runner_tmp_phase1_clic_source_leo_20260812_v2\phase1_clic_source_leo_20260812_v2_5c14d7fd_git_archive.tar`，SHA256=`24E977CAEB331C3CCAFFA76E0B540A1E84ACD2D84D08444DE350153DE9D84BD1`，bytes=`267008000`，members=`5024`。
+- SCP恰1次，远端archive SHA／bytes闭合；原子落地release：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_clic_source_leo_20260812_v2_5c14d7fd`。远端核心文件SHA以archive解出LF字节复算：builder=`25F895E42552D16EA71941CED02F08C1E7E20D7927335AAE94F6EF72D6A45B4D`，export clean=`C9CA2B62CE94FEC8255B0ACD493E5B2513782DF8C375D0E43129638508CE846F`，export LEO=`591B60960F40BFE9585DB0D958C9A0E11DC0A75534AC935DFC3CD497E4E533C9`，phase1_clic=`36FFDE23244D80AD15647F72252C70004D1E33549D7BF3D6E510E99E56461335`，launcher=`3813EEEA125075D47D1B7C9976C78BD2681A4398418B33EFF58F41B9876B265D`。
+- 远端静态门：4核心`py_compile`、builder/export `--help`、launcher `bash -n`、dry-run精确18行（6 cache+12 export）均通过；目标／query／truth／role参数为0；run/log/outer/release初始路径均不存在且未覆盖。
+- F1 smoke独立路径：`/home/szu2070436088/2510044040/CV-SincNet/.smoke_phase1_clic_source_leo_20260812_v2_F1`，使用真实F1C/F1G final checkpoint与terminal receipt、ManySig及GPU0，未写正式run。builder产出`source_l_received_iq.npz`（9,597,696 bytes）和receipt（5,265 bytes）。首次结构校验因误写3920³笛卡尔积而非工件故障；经批准仅终止run-owned验证PID 2515762（SIGTERM后退出），未重建／改写工件。
+- 修正结构校验与生产consumer重开通过：NPZ SHA256=`bd9d2813522fcc722957bfdbf90a33462a23c2f4e77a8fdefd88708345842dbd`；exact members=`received_iq,tx_ids,rx_ids,day_ids,physical_sample_id,sat_scenarios`；row_count=`3920`；28个TX×RX cell各140；84个TX×RX×scene cell计数46/47；physical_sample_id全局唯一3920；received_iq finite；receipt schema=`cvs.phase1.clic_source_leo_received_iq.v1`、`minimum_cell_count=46`、fit/held-validation/proxy forward rows均0、`query_access=false`、`target_access=false`；生产`_load_existing_received_iq`重开PASS。
+- smoke结束时该路径下无运行进程、GPU compute为空、SSH客户端与N607 TCP22均清零。正式launch计数仍为0；本报告更新后将提交，然后执行唯一正式launcher入口。
