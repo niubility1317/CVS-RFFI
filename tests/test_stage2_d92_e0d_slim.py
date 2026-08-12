@@ -536,3 +536,36 @@ def test_tpce_arm_reuses_the_single_full_fit_and_low_k_alias() -> None:
     assert k1_audit["d92_e0d_registered_d_mode_effective"] == "d92_full_alias"
     assert k1_audit["d92_e0d_total_component_fit_count"] == 3
     assert k1_audit["d92_e0d_actual_component_fit_count"] == 3
+
+
+def test_tcra_arm_reuses_one_full_fit_and_adds_no_postprocess_fit() -> None:
+    """TCRA changes the compiled q2 state, never the FULL fit inventory."""
+
+    arm = D92_E0D_ARMS["E0_FULL_D42_TAIL_CLASS_ROW_ASCENT"]
+    assert (
+        arm.candidate_id,
+        arm.registered_d_mode,
+        arm.b_enabled,
+        arm.e_enabled,
+    ) == (
+        "d92_e0_full_d42_tail_class_row_ascent",
+        "full_only",
+        True,
+        False,
+    )
+    assert expected_total_component_fit_count(10, arm_id=arm.arm_id) == 2
+    _, _, audit, _, _ = _run(arm.arm_id, class_count=11, k_shot=5)
+    inventory = audit["d92_e0d_actual_component_inventory"]
+    assert audit["d92_e0d_total_component_fit_count"] == 2
+    assert audit["d92_e0d_actual_component_fit_count"] == 1
+    assert inventory["full_component_fit_count"] == 1
+    assert inventory["block3_component_fit_count"] == 0
+    assert inventory["loo_component_fit_count"] == 0
+    assert audit["d92_e0d_query_truth_access"] is False
+
+    for k_shot in (1, 2):
+        _, _, low_audit, _, _ = _run(
+            arm.arm_id, class_count=11, k_shot=k_shot, repeated=True
+        )
+        assert low_audit["d92_e0d_registered_d_mode_effective"] == "d92_full_alias"
+        assert low_audit["d92_e0d_k1_k2_exact_full_alias"] is True

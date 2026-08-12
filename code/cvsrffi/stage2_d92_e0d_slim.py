@@ -80,6 +80,13 @@ D92_E0D_ARMS: Mapping[str, D92E0DSlimArmSpec] = MappingProxyType(
             True,
             False,
         ),
+        "E0_FULL_D42_TAIL_CLASS_ROW_ASCENT": D92E0DSlimArmSpec(
+            "E0_FULL_D42_TAIL_CLASS_ROW_ASCENT",
+            "d92_e0_full_d42_tail_class_row_ascent",
+            "full_only",
+            True,
+            False,
+        ),
     }
 )
 
@@ -791,6 +798,7 @@ def build_d92_e0d_fit(
                 "d92_e0d_query_fit_access": False,
                 "d92_e0d_query_update_access": False,
                 "d92_e0d_query_selection_access": False,
+                "d92_e0d_query_truth_access": False,
                 "d92_e0d_query_role_oracle_access": False,
                 "d92_e0d_query_class_quota_access": False,
                 "d92_e0d_query_global_reassignment": False,

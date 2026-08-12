@@ -37,6 +37,7 @@ _FORBIDDEN_QUERY_ACCESS_FIELDS = (
     "d92_e0d_query_fit_access",
     "d92_e0d_query_update_access",
     "d92_e0d_query_selection_access",
+    "d92_e0d_query_truth_access",
     "d92_e0d_query_role_oracle_access",
     "d92_e0d_query_class_quota_access",
     "d92_e0d_query_global_reassignment",
@@ -113,6 +114,71 @@ _TPCE_RECEIPT_SUFFIXES = (
 )
 _TPCE_RECEIPT_FIELDS = tuple(
     f"d92_e0d_tpce_{suffix}" for suffix in _TPCE_RECEIPT_SUFFIXES
+)
+_TCRA_ARM_IDS = frozenset({"E0_FULL_D42_TAIL_CLASS_ROW_ASCENT"})
+_TCRA_RECEIPT_SUFFIXES = (
+    "active",
+    "fallback_active",
+    "fallback_reason",
+    "quantile",
+    "quantile_method",
+    "state_postprocess_mode",
+    "direct_state_publish",
+    "requantize_call_count",
+    "e0_state_sha256",
+    "final_state_sha256",
+    "modified_state_field_names",
+    "changed_code2_count",
+    "state_delta_code2_l1",
+    "requested_atomic_ascent_count",
+    "applied_atomic_ascent_count",
+    "generated_atomic_ascent_count",
+    "selected_atomic_ascent_count",
+    "rejected_atomic_ascent_count",
+    "prefix_guard_rejected_count",
+    "greedy_step_count",
+    "aggregate_saturation_count",
+    "code1_byte_exact",
+    "scale1_byte_exact",
+    "scale2_byte_exact",
+    "intercept_byte_exact",
+    "log_diag_byte_exact",
+    "coef2_byte_exact",
+    "old_tail_count_by_class",
+    "pooled_new_tail_count",
+    "guard_tolerance",
+    "old_tail_gain_by_class",
+    "old_tail_min_gain",
+    "pooled_new_cross_tail_gain",
+    "pooled_new_allclass_tail_gain",
+    "old_to_new_hinge_delta",
+    "new_to_old_hinge_delta",
+    "support_guard_pass",
+    "true_class_row_only",
+    "competitor_code_decrement_count",
+    "class_permutation_equivariant",
+    "row_permutation_invariant",
+    "old_group_uniform_shift",
+    "support_full_score_evaluation_count",
+    "support_analytic_candidate_evaluation_count",
+    "support_score_macs_upper_bound",
+    "support_coordinate_comparisons_upper_bound",
+    "support_macs_upper_bound",
+    "support_transient_bytes_upper_bound",
+    "persistent_state_bytes_delta",
+    "component_fit_count",
+    "query_rows_used",
+    "query_macs",
+    "query_fit_access",
+    "query_update_access",
+    "query_selection_access",
+    "query_truth_access",
+    "query_role_oracle_access",
+    "query_class_quota_access",
+    "query_global_reassignment",
+)
+_TCRA_RECEIPT_FIELDS = tuple(
+    f"d92_e0d_tcra_{suffix}" for suffix in _TCRA_RECEIPT_SUFFIXES
 )
 _FLOORBOOST_RECEIPT_FIELDS = (
     "d92_e0d_floorboost_active",
@@ -1107,6 +1173,228 @@ def _tpce_support_receipt(
     return receipt
 
 
+def _tcra_support_receipt(
+    audit: dict[str, Any],
+    *,
+    arm: D92E0DSlimArmSpec,
+    registered: bool,
+    k_shot: int,
+    state: Any,
+) -> dict[str, Any]:
+    """Validate the frozen true-class-only D42 postprocessor receipt."""
+
+    if arm.arm_id not in _TCRA_ARM_IDS:
+        return {}
+    if any(field not in audit for field in _TCRA_RECEIPT_FIELDS):
+        raise D92E0DQueryEvaluationError("D92-E0D TCRA receipt missing")
+    receipt = {field: audit[field] for field in _TCRA_RECEIPT_FIELDS}
+    prefix = "d92_e0d_tcra_"
+
+    def finite(name: str, *, lower: float | None = None) -> float:
+        value = receipt[prefix + name]
+        if (
+            isinstance(value, bool)
+            or not isinstance(value, (int, float))
+            or not np.isfinite(float(value))
+            or (lower is not None and float(value) < lower)
+        ):
+            raise D92E0DQueryEvaluationError(
+                f"D92-E0D TCRA {name} receipt drift"
+            )
+        return float(value)
+
+    def integer(name: str, *, lower: int = 0) -> int:
+        value = finite(name, lower=float(lower))
+        if value != float(int(value)):
+            raise D92E0DQueryEvaluationError(
+                f"D92-E0D TCRA {name} receipt drift"
+            )
+        return int(value)
+
+    def sha(name: str) -> str:
+        value = receipt[prefix + name]
+        if (
+            not isinstance(value, str)
+            or len(value) != 64
+            or any(character not in "0123456789abcdef" for character in value)
+        ):
+            raise D92E0DQueryEvaluationError(
+                f"D92-E0D TCRA {name} receipt drift"
+            )
+        return value
+
+    for name in (
+        "code1_byte_exact",
+        "scale1_byte_exact",
+        "scale2_byte_exact",
+        "intercept_byte_exact",
+        "log_diag_byte_exact",
+        "true_class_row_only",
+        "class_permutation_equivariant",
+        "row_permutation_invariant",
+    ):
+        if receipt[prefix + name] is not True:
+            raise D92E0DQueryEvaluationError("D92-E0D TCRA state guard drift")
+    if (
+        receipt[prefix + "state_postprocess_mode"] != "d42_tcra"
+        or receipt[prefix + "direct_state_publish"] is not True
+        or receipt[prefix + "requantize_call_count"] != 0
+        or receipt[prefix + "quantile"] != 0.20
+        or receipt[prefix + "quantile_method"] != "lower"
+        or receipt[prefix + "competitor_code_decrement_count"] != 0
+        or receipt[prefix + "old_group_uniform_shift"] is not False
+        or receipt[prefix + "persistent_state_bytes_delta"] != 0
+        or receipt[prefix + "component_fit_count"] != 0
+        or receipt[prefix + "query_rows_used"] != 0
+        or receipt[prefix + "query_macs"] != 0
+        or any(
+            receipt[prefix + f"query_{name}"] is not False
+            for name in (
+                "fit_access",
+                "update_access",
+                "selection_access",
+                "truth_access",
+                "role_oracle_access",
+                "class_quota_access",
+                "global_reassignment",
+            )
+        )
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D TCRA frozen receipt drift")
+
+    from cvsrffi import stage2_d92_d42_tail_class_row_ascent as tcra
+
+    final_sha = sha("final_state_sha256")
+    e0_sha = sha("e0_state_sha256")
+    if tcra.d42_tcra_state_sha256(state) != final_sha:
+        raise D92E0DQueryEvaluationError("D92-E0D TCRA deployed state SHA drift")
+    active_state = bool(registered and int(k_shot) > 2)
+    active = receipt[prefix + "active"]
+    fallback = receipt[prefix + "fallback_active"]
+    reason = receipt[prefix + "fallback_reason"]
+    generated = integer("generated_atomic_ascent_count")
+    selected = integer("selected_atomic_ascent_count")
+    rejected = integer("rejected_atomic_ascent_count")
+    prefix_rejected = integer("prefix_guard_rejected_count")
+    steps = integer("greedy_step_count")
+    requested = integer("requested_atomic_ascent_count")
+    applied = integer("applied_atomic_ascent_count")
+    changed = integer("changed_code2_count")
+    state_l1 = integer("state_delta_code2_l1")
+    saturation = integer("aggregate_saturation_count")
+    full_scores = integer("support_full_score_evaluation_count")
+    analytic = integer("support_analytic_candidate_evaluation_count")
+    score_macs = integer("support_score_macs_upper_bound")
+    integer("support_coordinate_comparisons_upper_bound")
+    support_macs = integer("support_macs_upper_bound")
+    integer("support_transient_bytes_upper_bound")
+    modified_fields = receipt[prefix + "modified_state_field_names"]
+    if (
+        generated != selected + rejected
+        or requested != selected
+        or prefix_rejected > rejected
+        or steps != selected + prefix_rejected
+        or support_macs < score_macs
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D TCRA atomic receipt drift")
+
+    if not active_state:
+        if (
+            active is not False
+            or fallback is not False
+            or reason != "K1_K2_EXACT_D92_FULL_ALIAS"
+            or final_sha != e0_sha
+            or modified_fields != []
+            or any(
+                value != 0
+                for value in (
+                    generated,
+                    selected,
+                    rejected,
+                    prefix_rejected,
+                    steps,
+                    requested,
+                    applied,
+                    changed,
+                    state_l1,
+                    saturation,
+                    full_scores,
+                    analytic,
+                    score_macs,
+                    support_macs,
+                )
+            )
+            or receipt[prefix + "coef2_byte_exact"] is not True
+            or receipt[prefix + "support_guard_pass"] is not False
+        ):
+            raise D92E0DQueryEvaluationError("D92-E0D TCRA alias receipt drift")
+        return receipt
+
+    if fallback is True:
+        if (
+            active is not False
+            or not isinstance(reason, str)
+            or not reason
+            or final_sha != e0_sha
+            or modified_fields != []
+            or applied != 0
+            or changed != 0
+            or state_l1 != 0
+            or receipt[prefix + "coef2_byte_exact"] is not True
+            or receipt[prefix + "support_guard_pass"] is not False
+        ):
+            raise D92E0DQueryEvaluationError("D92-E0D TCRA fallback receipt drift")
+        return receipt
+    if fallback is not False:
+        raise D92E0DQueryEvaluationError("D92-E0D TCRA fallback flag drift")
+
+    if (
+        active is not True
+        or reason is not None
+        or generated <= 0
+        or selected <= 0
+        or applied != selected
+        or changed != selected
+        or state_l1 != changed
+        or prefix_rejected < 0
+        or final_sha == e0_sha
+        or modified_fields != ["coef2_qint8"]
+        or receipt[prefix + "coef2_byte_exact"] is not False
+        or receipt[prefix + "support_guard_pass"] is not True
+        or saturation < 0
+        or full_scores != steps + 2
+        or analytic <= 0
+        or score_macs <= 0
+        or support_macs <= 0
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D TCRA active receipt drift")
+    old_counts = receipt[prefix + "old_tail_count_by_class"]
+    old_gains = receipt[prefix + "old_tail_gain_by_class"]
+    if (
+        not isinstance(old_counts, list)
+        or len(old_counts) != OLD_CLASS_COUNT
+        or any(int(value) <= 0 for value in old_counts)
+        or not isinstance(old_gains, list)
+        or len(old_gains) != OLD_CLASS_COUNT
+        or integer("pooled_new_tail_count", lower=1) <= 0
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D TCRA fixed-tail receipt drift")
+    tolerance = finite("guard_tolerance", lower=0.0)
+    if (
+        any(
+            not np.isfinite(float(value)) or float(value) <= tolerance
+            for value in old_gains
+        )
+        or finite("old_tail_min_gain") <= tolerance
+        or finite("pooled_new_cross_tail_gain") <= tolerance
+        or finite("pooled_new_allclass_tail_gain") < -tolerance
+        or finite("old_to_new_hinge_delta") > tolerance
+        or finite("new_to_old_hinge_delta") > tolerance
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D TCRA support guard drift")
+    return receipt
+
+
 def _audit_d92_e0d_fit(
     result: Any,
     *,
@@ -1276,6 +1564,13 @@ def _audit_d92_e0d_fit(
         k_shot=k_shot,
         state=result.state,
     )
+    after_tcra_receipt = _tcra_support_receipt(
+        after,
+        arm=arm,
+        registered=True,
+        k_shot=k_shot,
+        state=result.state,
+    )
     after_pareto_deployed_state_closure = _pareto_deployed_state_closure(
         result.state,
         after_pareto_distill_receipt,
@@ -1316,7 +1611,11 @@ def _audit_d92_e0d_fit(
         "after_state_postprocess_mode": (
             "d42_tpce"
             if arm.arm_id in _TPCE_ARM_IDS and int(k_shot) > 2
-            else None
+            else (
+                "d42_tcra"
+                if arm.arm_id in _TCRA_ARM_IDS and int(k_shot) > 2
+                else None
+            )
         ),
         "before_total_component_fit_count": int(
             before["d92_e0d_total_component_fit_count"]
@@ -1352,6 +1651,7 @@ def _audit_d92_e0d_fit(
         **after_pareto_distill_receipt,
         **after_pareto_deployed_state_closure,
         **after_tpce_receipt,
+        **after_tcra_receipt,
         "query_macs": int(after["d92_e0d_query_macs"]),
         "query_truth_access": False,
         "query_fit_access": False,
@@ -1424,7 +1724,7 @@ def run_d92_e0d_query_evaluation(
             class_count=class_count,
         )
 
-    def fit_with_tpce(
+    def fit_with_state_postprocess(
         old_support_features: Any,
         old_support_labels: Any,
         old_classes: Any,
@@ -1442,10 +1742,16 @@ def run_d92_e0d_query_evaluation(
             new_classes,
             **kwargs,
         )
-        if arm.arm_id not in _TPCE_ARM_IDS:
+        if arm.arm_id not in (_TPCE_ARM_IDS | _TCRA_ARM_IDS):
             return result
         from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
-        from cvsrffi import stage2_d92_d42_tail_pair_code_exchange as tpce
+
+        is_tcra = arm.arm_id in _TCRA_ARM_IDS
+        if is_tcra:
+            from cvsrffi import stage2_d92_d42_tail_class_row_ascent as postprocess
+        else:
+            from cvsrffi import stage2_d92_d42_tail_pair_code_exchange as postprocess
+        receipt_name = "TCRA" if is_tcra else "TPCE"
 
         old_rows = np.asarray(old_support_features, dtype=np.float32)
         new_rows = np.asarray(new_support_features, dtype=np.float32)
@@ -1453,7 +1759,9 @@ def run_d92_e0d_query_evaluation(
         new_registry = tuple(str(value) for value in new_classes)
         registry = old_registry + new_registry
         if tuple(result.state.classes) != registry:
-            raise D92E0DQueryEvaluationError("D92-E0D TPCE registry drift")
+            raise D92E0DQueryEvaluationError(
+                f"D92-E0D {receipt_name} registry drift"
+            )
         mapping = {handle: index for index, handle in enumerate(registry)}
         try:
             targets = np.asarray(
@@ -1470,7 +1778,7 @@ def run_d92_e0d_query_evaluation(
             )
         except KeyError as error:
             raise D92E0DQueryEvaluationError(
-                "D92-E0D TPCE support registry drift"
+                f"D92-E0D {receipt_name} support registry drift"
             ) from error
         class_counts = np.bincount(targets, minlength=len(registry))
         if (
@@ -1478,42 +1786,59 @@ def run_d92_e0d_query_evaluation(
             or np.any(class_counts <= 0)
             or len(set(int(value) for value in class_counts.tolist())) != 1
         ):
-            raise D92E0DQueryEvaluationError("D92-E0D TPCE K closure drift")
+            raise D92E0DQueryEvaluationError(
+                f"D92-E0D {receipt_name} K closure drift"
+            )
         k_value = int(class_counts[0])
         if k_value <= 2:
             candidate_state = result.state
-            tpce_audit = tpce.d42_tpce_inactive_receipt(result.state)
+            postprocess_audit = (
+                postprocess.d42_tcra_inactive_receipt(result.state)
+                if is_tcra
+                else postprocess.d42_tpce_inactive_receipt(result.state)
+            )
             post_resource = None
         else:
-            def run_tpce_postprocess() -> Any:
+            def run_state_postprocess() -> Any:
                 all_rows = np.concatenate([old_rows, new_rows], axis=0).astype(
                     np.float32
                 )
                 transformed = d42._transform(
                     all_rows, result.state.log_diag_fp32
                 )
-                return tpce.apply_d42_tail_pair_code_exchange(
-                    result.state,
-                    transformed,
-                    targets,
-                    old_class_count=len(old_registry),
+                return (
+                    postprocess.apply_d42_tail_class_row_ascent(
+                        result.state,
+                        transformed,
+                        targets,
+                        old_class_count=len(old_registry),
+                    )
+                    if is_tcra
+                    else postprocess.apply_d42_tail_pair_code_exchange(
+                        result.state,
+                        transformed,
+                        targets,
+                        old_class_count=len(old_registry),
+                    )
                 )
 
             measured, post_resource = measure_registration_call(
-                run_tpce_postprocess
+                run_state_postprocess
             )
-            candidate_state, tpce_audit = measured
+            candidate_state, postprocess_audit = measured
+        source_prefix = "d92_tcra_" if is_tcra else "d92_tpce_"
+        formal_prefix = "d92_e0d_tcra_" if is_tcra else "d92_e0d_tpce_"
         formal_receipt = {
-            key.replace("d92_tpce_", "d92_e0d_tpce_"): value
-            for key, value in tpce_audit.items()
-            if key.startswith("d92_tpce_")
+            key.replace(source_prefix, formal_prefix): value
+            for key, value in postprocess_audit.items()
+            if key.startswith(source_prefix)
         }
         geometry = dict(result.geometry_audit)
         final_audit = dict(geometry.get("final_covariance_audit", {}))
         if post_resource is not None:
             if any(field not in final_audit for field in _RESOURCE_FIELDS):
                 raise D92E0DQueryEvaluationError(
-                    "D92-E0D TPCE base resource receipt drift"
+                    f"D92-E0D {receipt_name} base resource receipt drift"
                 )
             base_baseline = int(final_audit["registration_baseline_rss_bytes"])
             combined_peak = max(
@@ -1545,8 +1870,8 @@ def run_d92_e0d_query_evaluation(
         d81_eval.CANDIDATE_D81 = arm.candidate_id
         d81_eval.SCHEMA = SCHEMA_BY_ARM[arm.arm_id]
         d81_eval._audit_fit = audit
-        if arm.arm_id in _TPCE_ARM_IDS:
-            d81_eval.fit_d42_unified_shrinkage_lda = fit_with_tpce
+        if arm.arm_id in (_TPCE_ARM_IDS | _TCRA_ARM_IDS):
+            d81_eval.fit_d42_unified_shrinkage_lda = fit_with_state_postprocess
         result = d81_eval.run_d81_query_evaluation(
             before_enrollment_package_root=before_enrollment_package_root,
             before_enrollment_seal_path=before_enrollment_seal_path,

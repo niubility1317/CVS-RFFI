@@ -183,6 +183,7 @@ def _resource(
         "d92_e0d_query_fit_access": False,
         "d92_e0d_query_update_access": False,
         "d92_e0d_query_selection_access": False,
+        "d92_e0d_query_truth_access": False,
         "d92_e0d_query_role_oracle_access": False,
         "d92_e0d_query_class_quota_access": False,
         "d92_e0d_query_global_reassignment": False,
@@ -902,6 +903,139 @@ def test_tpce_query_audit_rejects_greedy_subset_count_drift():
         "d92_e0d_tpce_rejected_atomic_exchange_count"
     ] += 1
     with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="atomic"):
+        e0d_eval._audit_d92_e0d_fit(
+            result,
+            arm=arm,
+            scenario="leo_clear_weak",
+            k_shot=5,
+            old_count=OLD_CLASS_COUNT,
+            class_count=11,
+        )
+
+
+def test_tcra_evaluator_runs_direct_postprocess_with_zero_query_access(
+    monkeypatch,
+):
+    arm = slim.D92_E0D_ARMS["E0_FULL_D42_TAIL_CLASS_ROW_ASCENT"]
+    base_state = _tpce_state()
+    rows, targets = _tpce_support()
+    classes = tuple(base_state.classes)
+    old_mask = targets < OLD_CLASS_COUNT
+
+    def fake_d42_fit(*_args, **_kwargs):
+        base = _result(arm, k_shot=5)
+        return d42.D42UnifiedShrinkageLDAResult(
+            before_state=base.before_state,
+            state=base_state,
+            matched_fp32_before_state=base.before_state,
+            matched_fp32_state=base_state,
+            training_trace=tuple(base.training_trace),
+            geometry_audit=base.geometry_audit,
+            resource_audit=base.resource_audit,
+        )
+
+    def fake_run(**_kwargs):
+        fitted = d81_eval.fit_d42_unified_shrinkage_lda(
+            rows[old_mask],
+            np.asarray(classes)[targets[old_mask]],
+            classes[:OLD_CLASS_COUNT],
+            rows[~old_mask],
+            np.asarray(classes)[targets[~old_mask]],
+            classes[OLD_CLASS_COUNT:],
+        )
+        row = d81_eval._audit_fit(
+            fitted,
+            scenario="leo_clear_weak",
+            k_shot=5,
+            old_count=OLD_CLASS_COUNT,
+            class_count=len(classes),
+        )
+        return {
+            "candidate": d81_eval.CANDIDATE_D81,
+            "schema": d81_eval.SCHEMA,
+            "tcra_fit_row": row,
+        }
+
+    monkeypatch.setattr(d81_eval, "fit_d42_unified_shrinkage_lda", fake_d42_fit)
+    monkeypatch.setattr(d81_eval, "run_d81_query_evaluation", fake_run)
+    result = e0d_eval.run_d92_e0d_query_evaluation(
+        arm_id=arm.arm_id, **_allowed_kwargs()
+    )
+
+    row = result["tcra_fit_row"]
+    assert row["after_state_postprocess_mode"] == "d42_tcra"
+    assert row["d92_e0d_tcra_active"] is True
+    assert row["d92_e0d_tcra_component_fit_count"] == 0
+    assert row["d92_e0d_tcra_modified_state_field_names"] == ["coef2_qint8"]
+    assert row["d92_e0d_tcra_generated_atomic_ascent_count"] == row[
+        "d92_e0d_tcra_selected_atomic_ascent_count"
+    ] + row["d92_e0d_tcra_rejected_atomic_ascent_count"]
+    assert row["after_total_component_fit_count"] == 2
+    assert row["after_actual_component_inventory"]["actual_component_fit_count"] == 1
+    assert all(
+        row[f"d92_e0d_tcra_query_{name}"] is False
+        for name in (
+            "fit_access",
+            "update_access",
+            "selection_access",
+            "truth_access",
+            "role_oracle_access",
+            "class_quota_access",
+            "global_reassignment",
+        )
+    )
+    assert row["query_truth_access"] is False
+
+
+@pytest.mark.parametrize("k_shot", [1, 2])
+def test_tcra_query_audit_keeps_low_k_full_alias(k_shot):
+    from cvsrffi import stage2_d92_d42_tail_class_row_ascent as tcra
+
+    arm = slim.D92_E0D_ARMS["E0_FULL_D42_TAIL_CLASS_ROW_ASCENT"]
+    state = _tpce_state()
+    result = _result(arm, k_shot=k_shot)
+    result.state = state
+    result.geometry_audit["final_covariance_audit"].update(
+        {
+            key.replace("d92_tcra_", "d92_e0d_tcra_"): value
+            for key, value in tcra.d42_tcra_inactive_receipt(state).items()
+        }
+    )
+    row = e0d_eval._audit_d92_e0d_fit(
+        result,
+        arm=arm,
+        scenario="leo_clear_weak",
+        k_shot=k_shot,
+        old_count=OLD_CLASS_COUNT,
+        class_count=11,
+    )
+    assert row["after_state_postprocess_mode"] is None
+    assert row["d92_e0d_tcra_active"] is False
+    assert row["d92_e0d_tcra_fallback_active"] is False
+    assert row["d92_e0d_tcra_fallback_reason"] == "K1_K2_EXACT_D92_FULL_ALIAS"
+
+
+def test_tcra_query_audit_rejects_query_access_tamper():
+    from cvsrffi import stage2_d92_d42_tail_class_row_ascent as tcra
+
+    arm = slim.D92_E0D_ARMS["E0_FULL_D42_TAIL_CLASS_ROW_ASCENT"]
+    state = _tpce_state()
+    rows, targets = _tpce_support()
+    candidate, receipt = tcra.apply_d42_tail_class_row_ascent(
+        state, rows, targets, old_class_count=OLD_CLASS_COUNT
+    )
+    result = _result(arm, k_shot=5)
+    result.state = candidate
+    result.geometry_audit["final_covariance_audit"].update(
+        {
+            key.replace("d92_tcra_", "d92_e0d_tcra_"): value
+            for key, value in receipt.items()
+        }
+    )
+    result.geometry_audit["final_covariance_audit"][
+        "d92_e0d_tcra_query_selection_access"
+    ] = True
+    with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="TCRA"):
         e0d_eval._audit_d92_e0d_fit(
             result,
             arm=arm,
