@@ -26,6 +26,7 @@ PREDICTION_ENTRY = _base_runner.PREDICTION_ENTRY
 SCORING_ENTRY = _base_runner.SCORING_ENTRY
 QUERY_ZERO_FIELDS = tuple(_base_runner.QUERY_ZERO_FIELDS)
 subprocess = _base_runner.subprocess
+_BASE_VERIFY_MANIFEST_ARTIFACTS = _base_runner._verify_manifest_artifacts
 
 
 class D92D92TPCEHard11RunnerError(RuntimeError):
@@ -149,7 +150,7 @@ def _validate_fit_audit(path: str | Path, *, k_shot: int) -> None:
 
 
 def _verify_manifest_artifacts(manifest: Mapping[str, Any]) -> None:
-    return _base_runner._verify_manifest_artifacts(manifest)
+    return _BASE_VERIFY_MANIFEST_ARTIFACTS(manifest)
 
 
 @contextmanager

@@ -171,3 +171,19 @@ def test_shard_schema_rewrite_touches_only_its_owned_outputs(tmp_path: Path) -> 
     assert "d92_tpce_hard11" in json.loads(
         smoke.read_text(encoding="utf-8")
     )["schema"]
+
+
+def test_runner_context_delegates_manifest_artifact_check_without_recursion(
+    monkeypatch,
+) -> None:
+    observed: list[object] = []
+    sentinel = {"jobs": []}
+
+    monkeypatch.setattr(
+        runner,
+        "_BASE_VERIFY_MANIFEST_ARTIFACTS",
+        lambda manifest: observed.append(manifest),
+    )
+    with runner._runner_context():
+        runner._base_runner._verify_manifest_artifacts(sentinel)
+    assert observed == [sentinel]
