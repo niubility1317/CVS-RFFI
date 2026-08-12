@@ -9,9 +9,12 @@ from cvsrffi.stage2_d92_newguard_hard11_analysis import (
     EIGHT_PARETO_METRICS,
     HISTORICAL_BASELINE_SHA256,
     HISTORICAL_PER_OLD_CLASS_SHA256,
+    compute_confusion_rates,
     compute_old_balanced_accuracy,
     compute_score_metrics,
     decide_verdict,
+    evaluate_resource_gate,
+    validate_per_old_class_join,
     strict_pareto_deltas,
 )
 
@@ -83,8 +86,56 @@ def test_three_verdict_branches_have_no_weighted_compensation() -> None:
     assert decide_verdict(revise) == "REVISE_ONCE"
     reject = {**advance, "all_strict_pareto": False}
     assert decide_verdict(reject) == "REJECT_ROUTE"
+    assert decide_verdict({
+        "complete_artifact_closure": True,
+        "performance_outer_closure": True,
+        "all_strict_pareto": True,
+        "all_magnitude": True,
+    }) == "REJECT_ROUTE"
 
 
 def test_frozen_baseline_hashes_are_exposed() -> None:
     assert HISTORICAL_BASELINE_SHA256 == "6ebb37fac77d5a218924bcb51ad27424abff4a162a3b8a45a340947fe6d8de6a"
     assert HISTORICAL_PER_OLD_CLASS_SHA256 == "c0fc1e02b66b01d06da68bdd824594f3281e601d72b32726fa1e97a1e49788e6"
+
+
+def test_confusion_rates_use_real_old_and_new_query_counts() -> None:
+    score = {
+        "before": {"by_scenario": {"clear": {"query_count": 90}, "rain": {"query_count": 10}}},
+        "after": {"by_scenario": {
+            "clear": {"query_count": 100, "new_to_old_rate": 0.0, "old_to_new_rate": 0.0},
+            "rain": {"query_count": 110, "new_to_old_rate": 1.0, "old_to_new_rate": 1.0},
+        }},
+    }
+    rates = compute_confusion_rates(score)
+    assert rates["new_to_old_rate"] == pytest.approx(100.0 / 110.0)
+    assert rates["old_to_new_rate"] == pytest.approx(10.0 / 100.0)
+
+
+def test_per_old_class_join_rejects_missing_or_tx_drift_and_never_fills_candidate() -> None:
+    raw = {"after": {"by_tx": {
+        "old-a": {"role": "target_old", "accuracy": 0.8},
+        "old-b": {"role": "target_old", "accuracy": 0.6},
+    }}}
+    rows = [
+        {"outer_key": "row", "tx": "old-a", "candidate_accuracy": "0.8", "baseline_accuracy": "0.7"},
+        {"outer_key": "row", "tx": "old-b", "candidate_accuracy": "0.6", "baseline_accuracy": "0.7"},
+    ]
+    with pytest.raises(ValueError, match="per-old"):
+        validate_per_old_class_join(rows[:1], raw, outer_key="row")
+    with pytest.raises(ValueError, match="per-old"):
+        validate_per_old_class_join(rows[:-1] + [{**rows[-1], "tx": "old-c"}], raw, outer_key="row")
+    joined = validate_per_old_class_join(rows, raw, outer_key="row")
+    assert joined["old-a"]["candidate_accuracy"] == pytest.approx(0.8)
+    assert joined["old-a"]["e0_accuracy"] == pytest.approx(0.8)
+
+
+def test_resource_gate_compares_matched_peak_and_wall_ratio_not_state_bytes() -> None:
+    result = evaluate_resource_gate(
+        candidate_rows=[{"registration_wall_time_ns": 120.0, "registration_incremental_peak_working_set_bytes": 1500.0}],
+        baseline_rows=[{"registration_wall_time_ns": 100.0, "registration_incremental_peak_working_set_bytes": 1100.0, "state_bytes": 1.0}],
+        query_state_exact=True,
+    )
+    assert result["passed"] is True
+    assert result["wall_ratio_p90"] == pytest.approx(1.2)
+    assert result["peak_delta_p90_bytes"] == pytest.approx(400.0)

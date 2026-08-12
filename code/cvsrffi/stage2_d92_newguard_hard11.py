@@ -99,9 +99,21 @@ STRICT_PARETO_THRESHOLDS = {
     "old_to_new_rate": -0.005,
 }
 FIT_GATE = {"k_gt_2_total": 2, "k_gt_2_actual": 1, "k1_alias": "real_inventory"}
-RESOURCE_GATE = {"registration_wall_p90_max_ns": 150_000_000, "registration_peak_delta_max_bytes": 512 * 1024, "query_macs_equal": True, "state_bytes_equal": True}
+RESOURCE_GATE = {
+    "registration_wall_p90_max_ns": 150_000_000,
+    "registration_wall_ratio_max": 1.5,
+    "registration_peak_delta_max_bytes": 512 * 1024,
+    "query_macs_equal": True,
+    "state_bytes_equal": True,
+}
 STOP_RULE = {"same_normalized_exception_fingerprint_distinct_outer_count": 2, "pre_prediction_only": True, "shared_run_root_ledger": True, "fresh_run_retry_authorized": False}
 _OUTPUTS = {"summary": "summary.json", "gates": "gates.json", "paired_rows": "paired_rows.csv", "per_old_class_rows": "per_old_class_rows.csv", "markdown": "analysis.md"}
+_PACKAGE_LAYOUT = {
+    "before_enrollment": (("offline", "predictor", "before", "enrollment_only"), ("offline", "seals", "before_enrollment.seal.json")),
+    "before_apply": (("offline", "predictor", "before", "apply_only_staging"), ("apply_seals", "before_apply.seal.json")),
+    "after_enrollment": (("offline", "predictor", "after", "enrollment_only"), ("offline", "seals", "after_enrollment.seal.json")),
+    "after_apply": (("offline", "predictor", "after", "apply_only_staging"), ("apply_seals", "after_apply.seal.json")),
+}
 
 
 class D92NewGuardHard11Error(ValueError):
@@ -163,14 +175,8 @@ def _expected_rows() -> list[dict[str, Any]]:
 
 
 def _package_layout(source_job_root: PurePath, *, require_files: bool) -> dict[str, Any]:
-    layout = {
-        "before_enrollment": (("offline", "predictor", "before", "enrollment_only"), ("offline", "seals", "before_enrollment.seal.json")),
-        "before_apply": (("offline", "predictor", "before", "apply_only_staging"), ("apply_seals", "before_apply.seal.json")),
-        "after_enrollment": (("offline", "predictor", "after", "enrollment_only"), ("offline", "seals", "after_enrollment.seal.json")),
-        "after_apply": (("offline", "predictor", "after", "apply_only_staging"), ("apply_seals", "after_apply.seal.json")),
-    }
     result = {}
-    for name, (pkg, seal) in layout.items():
+    for name, (pkg, seal) in _PACKAGE_LAYOUT.items():
         pkg_path, seal_path = source_job_root.joinpath(*pkg), source_job_root.joinpath(*seal)
         if require_files and (not Path(str(pkg_path)).is_dir() or not Path(str(seal_path)).is_file()):
             raise D92NewGuardHard11Error(f"sealed source package missing: {name}")
@@ -228,13 +234,22 @@ def validate_hard11_manifest(manifest: Mapping[str, Any], *, expected_method_loc
             raise D92NewGuardHard11Error("canonical job identity drift")
         if not _path_matches(job.get("output_root"), manifest["output_root"], "jobs", row["outer_key"], ARM_ID) or not _path_matches(job.get("source_job_root"), manifest["source_d92_output_root"], "jobs", row["outer_key"]):
             raise D92NewGuardHard11Error("job path drift")
+        expected_truth = _pure_path(job["source_job_root"]).joinpath("offline", "scorer", "truth_sidecar.json")
+        if _pure_path(job.get("truth_sidecar")) != expected_truth:
+            raise D92NewGuardHard11Error("truth sidecar path drift")
         if not isinstance(job.get("packages"), Mapping) or set(job["packages"]) != {"before_enrollment", "before_apply", "after_enrollment", "after_apply"}:
             raise D92NewGuardHard11Error("package identity drift")
-        for pkg in job["packages"].values():
+        source_job_root = _pure_path(job["source_job_root"])
+        for name, pkg in job["packages"].items():
             if set(pkg) != {"package_root", "detached_seal_path", "expected_seal_sha256"}:
                 raise D92NewGuardHard11Error("package key drift")
+            expected_pkg, expected_seal = _PACKAGE_LAYOUT[name]
+            if _pure_path(pkg["package_root"]) != source_job_root.joinpath(*expected_pkg) or _pure_path(pkg["detached_seal_path"]) != source_job_root.joinpath(*expected_seal):
+                raise D92NewGuardHard11Error("package path drift")
             if require_package_hashes and not isinstance(pkg.get("expected_seal_sha256"), str):
                 raise D92NewGuardHard11Error("package SHA missing")
+            if require_package_hashes and not re.fullmatch(r"[0-9a-f]{64}", str(pkg.get("expected_seal_sha256"))):
+                raise D92NewGuardHard11Error("package SHA format drift")
         if job["job_id"] in seen:
             raise D92NewGuardHard11Error("duplicate job identity")
         seen.add(job["job_id"])

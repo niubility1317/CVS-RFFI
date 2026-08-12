@@ -23,6 +23,7 @@ from cvsrffi.stage2_d92_newguard_hard11 import (  # noqa: E402
     CANDIDATE_ID,
     CANONICAL_SELECTION_SHA256,
     LIVENESS_OUTER_KEY,
+    SCENES,
     SHARD_COUNT,
     SMOKE_OUTER_KEY,
     D92NewGuardHard11Error,
@@ -111,6 +112,59 @@ def _read_json_object(path: Path) -> dict[str, Any]:
     return payload
 
 
+def _validate_fit_audit(path: str | Path, *, k_shot: int) -> None:
+    """Require the real three-scene fit audit and frozen K-specific inventory."""
+    source = Path(path)
+    if not source.is_file() or source.is_symlink():
+        raise D92NewGuardHard11RunnerError(f"fit audit is missing: {source}")
+    try:
+        rows = json.loads(source.read_text(encoding="utf-8-sig"))
+    except (OSError, ValueError) as error:
+        raise D92NewGuardHard11RunnerError(f"fit audit is invalid: {source}") from error
+    if not isinstance(rows, list) or len(rows) != len(SCENES) or any(not isinstance(row, Mapping) for row in rows):
+        raise D92NewGuardHard11RunnerError("fit audit scene closure drift")
+    if {str(row.get("scenario")) for row in rows} != set(SCENES):
+        raise D92NewGuardHard11RunnerError("fit audit scene identity drift")
+    expected_total, expected_actual, expected_mode = ((3, 3, "d92_full_alias") if int(k_shot) <= 2 else (2, 1, "newguard_maxmin"))
+    for row in rows:
+        if row.get("arm_id") != ARM_ID or row.get("candidate_id") != CANDIDATE_ID:
+            raise D92NewGuardHard11RunnerError("fit audit arm/candidate identity drift")
+        if any(row.get(field) is not False for field in QUERY_ZERO_FIELDS):
+            raise D92NewGuardHard11RunnerError("fit audit query access is not zero")
+        inventory = row.get("after_actual_component_inventory", {})
+        actual = inventory.get("actual_component_fit_count", row.get("actual_fit_count", -1)) if isinstance(inventory, Mapping) else -1
+        total = row.get("after_total_component_fit_count", row.get("fit_count", -1))
+        mode = row.get("after_registered_d_mode_effective", row.get("registered_d_mode", ""))
+        try:
+            total_i, actual_i = int(total), int(actual)
+        except (TypeError, ValueError) as error:
+            raise D92NewGuardHard11RunnerError("fit audit inventory is invalid") from error
+        if (total_i, actual_i, str(mode)) != (expected_total, expected_actual, expected_mode):
+            raise D92NewGuardHard11RunnerError("fit audit K/mode inventory drift")
+
+
+def _verify_manifest_artifacts(manifest: Mapping[str, Any]) -> None:
+    """Hash-check package/seal/truth paths immediately before prediction dispatch."""
+    for job in manifest.get("jobs", []):
+        source_root = Path(str(job.get("source_job_root")))
+        truth = Path(str(job.get("truth_sidecar")))
+        if not truth.is_file() or truth.is_symlink():
+            raise D92NewGuardHard11RunnerError(f"truth sidecar is missing: {truth}")
+        packages = job.get("packages")
+        if not isinstance(packages, Mapping):
+            raise D92NewGuardHard11RunnerError("package manifest is missing")
+        for name, item in packages.items():
+            if not isinstance(item, Mapping):
+                raise D92NewGuardHard11RunnerError(f"package entry is invalid: {name}")
+            package_root = Path(str(item.get("package_root")))
+            seal = Path(str(item.get("detached_seal_path")))
+            if not package_root.is_dir() or package_root.is_symlink() or not seal.is_file() or seal.is_symlink():
+                raise D92NewGuardHard11RunnerError(f"package artifact is missing: {name}")
+            expected = str(item.get("expected_seal_sha256", "")).lower()
+            if len(expected) != 64 or any(ch not in "0123456789abcdef" for ch in expected) or _sha256_file(seal) != expected:
+                raise D92NewGuardHard11RunnerError(f"package seal SHA drift: {name}")
+
+
 def _load_manifest(path: str | Path, expected_sha256: str) -> dict[str, Any]:
     source = Path(path).resolve(strict=True)
     if source.is_symlink() or not source.is_file() or _sha256_file(source) != str(expected_sha256).lower():
@@ -170,18 +224,20 @@ def _liveness_job(manifest: Mapping[str, Any]) -> Mapping[str, Any]:
 def _validate_shared_smoke(manifest: Mapping[str, Any], *, manifest_sha256: str, device: str) -> None:
     if int(manifest.get("job_count", -1)) != 11 or len(manifest.get("jobs", [])) != 11:
         raise D92NewGuardHard11RunnerError("Hard11 matrix identity drift")
+    _verify_manifest_artifacts(manifest)
     smoke_root = Path(str(manifest["output_root"])).resolve() / "smoke"
     receipt = _read_json_object(smoke_root / "smoke_receipt.json")
     job = _smoke_job(manifest)
     prediction_root = smoke_root / "diag"
     closure_paths = _prediction_closure_paths(prediction_root)
-    identity = receipt.get("schema") == "cvs.phase2.d92_newguard_hard11.smoke_receipt.v1" and receipt.get("status") == "D92_NEWGUARD_HARD11_REAL_CHECKPOINT_TRUTH_FREE_SMOKE_PASS" and str(receipt.get("matrix_manifest_sha256", "")).lower() == str(manifest_sha256).lower() and receipt.get("selection_sha256") == CANONICAL_SELECTION_SHA256 and receipt.get("smoke_outer_key") == SMOKE_OUTER_KEY and receipt.get("job_id") == job.get("job_id") and receipt.get("arm_id") == ARM_ID and receipt.get("candidate") == CANDIDATE_ID and int(receipt.get("k_shot", -1)) > 2 and receipt.get("outer_role") == "performance" and receipt.get("truth_open") is False and all(receipt.get(field) is False for field in QUERY_ZERO_FIELDS)
+    identity = receipt.get("schema") == "cvs.phase2.d92_newguard_hard11.smoke_receipt.v1" and receipt.get("status") == "D92_NEWGUARD_HARD11_REAL_CHECKPOINT_TRUTH_FREE_SMOKE_PASS" and str(receipt.get("matrix_manifest_sha256", "")).lower() == str(manifest_sha256).lower() and receipt.get("selection_sha256") == CANONICAL_SELECTION_SHA256 and receipt.get("smoke_outer_key") == SMOKE_OUTER_KEY and receipt.get("job_id") == job.get("job_id") and receipt.get("arm_id") == ARM_ID and receipt.get("candidate") == CANDIDATE_ID and int(receipt.get("k_shot", -1)) > 2 and receipt.get("outer_role") == "performance" and receipt.get("truth_open") is False and receipt.get("query_truth_joined_only_after_immutable_predictions") is True and receipt.get("prediction_and_scorer_processes_isolated") is True and all(receipt.get(field) is False for field in QUERY_ZERO_FIELDS)
     if not identity:
         raise D92NewGuardHard11RunnerError("shared smoke receipt identity/protocol drift")
     expected_command = _prediction_command(job, ground_component_dir=str(manifest["ground_component_dir"]), ground_manifest_sha256=str(manifest["ground_manifest_sha256"]), device=str(device), output_root=prediction_root)
     if receipt.get("command") != expected_command:
         raise D92NewGuardHard11RunnerError("shared smoke command identity drift")
     hashes = {field: _sha256_file(path) for field, path in {"before_prediction_sha256": closure_paths["before_prediction"], "after_prediction_sha256": closure_paths["after_prediction"], "before_commit_sha256": closure_paths["before_commit"], "after_commit_sha256": closure_paths["after_commit"], "before_fit_audit_sha256": closure_paths["before_fit_audit"], "after_fit_audit_sha256": closure_paths["after_fit_audit"], "fit_audit_sha256": closure_paths["after_fit_audit"]}.items()}
+    _validate_fit_audit(closure_paths["after_fit_audit"], k_shot=int(job["k_shot"]))
     if any(receipt.get(field) != value for field, value in hashes.items()) or receipt.get("prediction_closure") != hashes or _prediction_closure_status(prediction_root)[0] != "closed":
         raise D92NewGuardHard11RunnerError("shared smoke prediction closure drift")
 
@@ -198,6 +254,7 @@ def prepare(args: argparse.Namespace) -> dict[str, Any]:
 
 def truth_free_smoke(args: argparse.Namespace) -> dict[str, Any]:
     manifest = _load_manifest(args.matrix_manifest, args.matrix_manifest_sha256)
+    _verify_manifest_artifacts(manifest)
     job = _smoke_job(manifest)
     output = Path(str(manifest["output_root"])).resolve() / "smoke"
     if Path(args.output_root).resolve() != output or output.exists():
@@ -215,8 +272,9 @@ def truth_free_smoke(args: argparse.Namespace) -> dict[str, Any]:
         _record_pre_prediction_failure(Path(str(manifest["output_root"])), job, _normalized_fingerprint(reason))
         raise D92NewGuardHard11RunnerError("truth-free smoke prediction closure failed")
     paths = _prediction_closure_paths(prediction_root)
+    _validate_fit_audit(paths["after_fit_audit"], k_shot=int(job["k_shot"]))
     hashes = {field: _sha256_file(path) for field, path in {"before_prediction_sha256": paths["before_prediction"], "after_prediction_sha256": paths["after_prediction"], "before_commit_sha256": paths["before_commit"], "after_commit_sha256": paths["after_commit"], "before_fit_audit_sha256": paths["before_fit_audit"], "after_fit_audit_sha256": paths["after_fit_audit"], "fit_audit_sha256": paths["after_fit_audit"]}.items()}
-    receipt = {"schema": "cvs.phase2.d92_newguard_hard11.smoke_receipt.v1", "status": "D92_NEWGUARD_HARD11_REAL_CHECKPOINT_TRUTH_FREE_SMOKE_PASS", "matrix_manifest_sha256": str(args.matrix_manifest_sha256).lower(), "selection_sha256": manifest["selection_sha256"], "smoke_outer_key": SMOKE_OUTER_KEY, "outer_index": job["outer_index"], "outer_key": job["outer_key"], "job_id": job["job_id"], "outer_role": job["outer_role"], "arm_id": ARM_ID, "candidate": CANDIDATE_ID, "k_shot": int(job["k_shot"]), "prediction_root": str(prediction_root), "command": command, **hashes, "prediction_closure": hashes, "fit_audit_protocol_closed": True, **{field: False for field in QUERY_ZERO_FIELDS}, "truth_open": False}
+    receipt = {"schema": "cvs.phase2.d92_newguard_hard11.smoke_receipt.v1", "status": "D92_NEWGUARD_HARD11_REAL_CHECKPOINT_TRUTH_FREE_SMOKE_PASS", "matrix_manifest_sha256": str(args.matrix_manifest_sha256).lower(), "selection_sha256": manifest["selection_sha256"], "smoke_outer_key": SMOKE_OUTER_KEY, "outer_index": job["outer_index"], "outer_key": job["outer_key"], "job_id": job["job_id"], "outer_role": job["outer_role"], "arm_id": ARM_ID, "candidate": CANDIDATE_ID, "k_shot": int(job["k_shot"]), "prediction_root": str(prediction_root), "command": command, **hashes, "prediction_closure": hashes, "fit_audit_protocol_closed": True, "query_truth_joined_only_after_immutable_predictions": True, "prediction_and_scorer_processes_isolated": True, **{field: False for field in QUERY_ZERO_FIELDS}, "truth_open": False}
     _write_json_new(output / "smoke_receipt.json", receipt)
     return receipt
 
@@ -226,6 +284,7 @@ smoke = truth_free_smoke
 
 def run_shard(args: argparse.Namespace) -> dict[str, Any]:
     manifest = _load_manifest(args.matrix_manifest, args.matrix_manifest_sha256)
+    _verify_manifest_artifacts(manifest)
     _validate_shared_smoke(manifest, manifest_sha256=str(args.matrix_manifest_sha256).lower(), device=str(args.device))
     if int(args.shard_count) != SHARD_COUNT or int(args.shard_index) not in range(SHARD_COUNT):
         raise D92NewGuardHard11RunnerError("shard identity drift")
@@ -252,6 +311,14 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
         if prediction_result.returncode != 0 or status != "closed":
             fingerprint = _fingerprint(job_root / "prediction.stderr.log") if prediction_result.returncode != 0 else _normalized_fingerprint(reason)
             failures.append({"job_id": job["job_id"], "stage": "pre_prediction", "fingerprint": fingerprint})
+            if _record_pre_prediction_failure(output, job, fingerprint):
+                break
+            continue
+        try:
+            _validate_fit_audit(job_root / "diag" / "after" / "fit_audit.json", k_shot=int(job["k_shot"]))
+        except D92NewGuardHard11RunnerError as error:
+            fingerprint = _normalized_fingerprint(str(error))
+            failures.append({"job_id": job["job_id"], "stage": "pre_prediction", "fingerprint": fingerprint, "error": str(error)})
             if _record_pre_prediction_failure(output, job, fingerprint):
                 break
             continue

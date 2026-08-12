@@ -60,6 +60,7 @@
   },
   "resource_gate": {
     "registration_wall_p90_max_ns": 150000000,
+    "registration_wall_ratio_max": 1.5,
     "registration_peak_delta_max_bytes": 524288,
     "query_macs_equal": true,
     "state_bytes_equal": true

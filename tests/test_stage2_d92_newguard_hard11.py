@@ -91,6 +91,16 @@ def test_manifest_rejects_identity_drift(tmp_path: Path) -> None:
     ):
         with pytest.raises(ValueError):
             validate_hard11_manifest(mutated)
+    broken_truth = {**manifest, "jobs": [dict(job) for job in manifest["jobs"]]}
+    broken_truth["jobs"][0]["truth_sidecar"] = "wrong/truth_sidecar.json"
+    with pytest.raises(ValueError, match="truth"):
+        validate_hard11_manifest(broken_truth)
+    broken_seal = {**manifest, "jobs": [dict(job) for job in manifest["jobs"]]}
+    broken_seal["jobs"][0]["packages"] = dict(broken_seal["jobs"][0]["packages"])
+    broken_seal["jobs"][0]["packages"]["before_enrollment"] = dict(broken_seal["jobs"][0]["packages"]["before_enrollment"])
+    broken_seal["jobs"][0]["packages"]["before_enrollment"]["detached_seal_path"] = "wrong/seal.json"
+    with pytest.raises(ValueError, match="package"):
+        validate_hard11_manifest(broken_seal)
 
 
 def test_config_freezes_raw_score_and_per_old_sha_identities() -> None:
