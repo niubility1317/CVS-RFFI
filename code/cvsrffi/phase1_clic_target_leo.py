@@ -946,38 +946,72 @@ def _c_train_config_from_pair_clean(
     if set(tx_ids[proxy].tolist()) != set(proxy_unknown_tx_ids):
         raise CLICTargetProtocolError("C predictor PAIR clean proxy TX coverage drifted")
 
-    source_receivers = _ordered_nonempty_strings(receiver_ids[labeled | validation], label="C predictor source receivers")
-    source_days = _ordered_nonempty_strings(day_ids[labeled | validation], label="C predictor source days")
+    observed_source_receivers = _ordered_nonempty_strings(
+        receiver_ids[labeled | validation], label="C predictor source receivers"
+    )
+    observed_source_days = _ordered_nonempty_strings(
+        day_ids[labeled | validation], label="C predictor source days"
+    )
     split_info = checkpoint.get("split_info")
     checkpoint_split = split_info.get("source_split_receipt") if isinstance(split_info, Mapping) else None
     manifest_split = manifest.get("source_split_receipt")
     source_split = manifest_split if isinstance(manifest_split, Mapping) else checkpoint_split
-    if isinstance(source_split, Mapping):
-        if source_split.get("schema") != "cvs.phase1.source_split_receipt.v1":
-            raise CLICTargetProtocolError("C predictor source split receipt schema drifted")
-        receipt_receivers = _ordered_nonempty_strings(
-            source_split.get("source_receivers"),
-            label="C predictor source split receivers",
+    if not isinstance(source_split, Mapping):
+        raise CLICTargetProtocolError("C predictor lacks sealed source split receipt")
+    if source_split.get("schema") != "cvs.phase1.source_split_receipt.v1":
+        raise CLICTargetProtocolError("C predictor source split receipt schema drifted")
+    receipt_receiver_indices = _ordered_nonempty_strings(
+        source_split.get("source_receivers"),
+        label="C predictor source split receivers",
+        reject_duplicates=True,
+    )
+    receipt_day_indices = _ordered_nonempty_strings(
+        source_split.get("source_days"),
+        label="C predictor source split days",
+        reject_duplicates=True,
+    )
+    if "source_receiver_ids" in manifest or "source_day_ids" in manifest:
+        source_receivers = _ordered_nonempty_strings(
+            manifest.get("source_receiver_ids"),
+            label="C predictor clean manifest source_receiver_ids",
             reject_duplicates=True,
         )
-        receipt_days = _ordered_nonempty_strings(
-            source_split.get("source_days"),
-            label="C predictor source split days",
+        source_days = _ordered_nonempty_strings(
+            manifest.get("source_day_ids"),
+            label="C predictor clean manifest source_day_ids",
             reject_duplicates=True,
         )
-        if set(receipt_receivers) != set(source_receivers) or set(receipt_days) != set(source_days):
-            raise CLICTargetProtocolError("C predictor source split/clean aggregate axis drifted")
-        source_receivers = receipt_receivers
-        source_days = receipt_days
-    for field, observed in (("source_receiver_ids", source_receivers), ("source_day_ids", source_days)):
-        if field in manifest:
-            declared = _ordered_nonempty_strings(
-                manifest.get(field),
-                label=f"C predictor clean manifest {field}",
-                reject_duplicates=True,
+        # V5 source receipts bind selected axis *indices*.  CLEAN.export resolves
+        # those indices to physical WiSig labels, checks every exported row, and
+        # seals the labels separately.  Only their cardinality may be compared.
+        if (
+            len(receipt_receiver_indices) != len(source_receivers)
+            or len(receipt_day_indices) != len(source_days)
+        ):
+            raise CLICTargetProtocolError(
+                "C predictor clean-manifest source axis label cardinality drifted"
             )
-            if declared != observed:
-                raise CLICTargetProtocolError(f"C predictor clean manifest {field} binding drifted")
+        if (
+            set(source_receivers) != set(observed_source_receivers)
+            or set(source_days) != set(observed_source_days)
+        ):
+            raise CLICTargetProtocolError(
+                "C predictor clean-manifest physical source RX/day labels drifted"
+            )
+    elif isinstance(checkpoint_split, Mapping):
+        # Historical fixtures stored physical labels directly in split_info.
+        # Real v5 checkpoints omit split_info and cannot enter this fallback.
+        source_receivers = receipt_receiver_indices
+        source_days = receipt_day_indices
+        if (
+            set(source_receivers) != set(observed_source_receivers)
+            or set(source_days) != set(observed_source_days)
+        ):
+            raise CLICTargetProtocolError("C predictor source split/clean aggregate axis drifted")
+    else:
+        raise CLICTargetProtocolError(
+            "C predictor v5 clean manifest lacks physical source RX/day labels"
+        )
 
     # Real v5 source artifacts must state their data schema and input width.
     # The narrow split_info fallback exists only for the pre-v5 mechanical
@@ -989,10 +1023,23 @@ def _c_train_config_from_pair_clean(
     if str(raw_dataset or "").casefold() != "wisig":
         raise CLICTargetProtocolError("C predictor training dataset schema drifted")
     dataset_provenance: dict[str, Any] = {"dataset_schema": "WiSig"}
-    if args.get("wisig_pkl_sha256") is not None:
-        dataset_provenance["wisig_pkl_sha256"] = require_sha256(
-            args.get("wisig_pkl_sha256"), label="C predictor frozen WiSig dataset"
+    checkpoint_dataset_sha = args.get("wisig_pkl_sha256")
+    clean_dataset_sha = manifest.get("wisig_pkl_sha256")
+    if clean_dataset_sha not in (None, ""):
+        sealed_dataset_sha = require_sha256(
+            clean_dataset_sha, label="C predictor clean-manifest frozen WiSig dataset"
         )
+        if checkpoint_dataset_sha not in (None, "") and require_sha256(
+            checkpoint_dataset_sha, label="C predictor checkpoint frozen WiSig dataset"
+        ) != sealed_dataset_sha:
+            raise CLICTargetProtocolError("C predictor checkpoint/clean WiSig dataset SHA drifted")
+        dataset_provenance["wisig_pkl_sha256"] = sealed_dataset_sha
+    elif checkpoint_dataset_sha not in (None, ""):
+        dataset_provenance["wisig_pkl_sha256"] = require_sha256(
+            checkpoint_dataset_sha, label="C predictor frozen WiSig dataset"
+        )
+    elif not legacy_checkpoint_copy:
+        raise CLICTargetProtocolError("C predictor v5 clean manifest lacks frozen WiSig dataset SHA")
     input_len = args.get("wisig_out_len")
     if input_len is None and legacy_checkpoint_copy:
         input_len = int(_clic.CLIC_INPUT_LENGTH)

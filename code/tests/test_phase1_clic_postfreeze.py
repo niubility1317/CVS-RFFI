@@ -4484,14 +4484,30 @@ def test_target_scorer_reopens_known_config_only_after_prediction_seal_and_truth
     assert known_open_order and all(known_open_order)
 
 
-def _rewrite_real_g_fixture_without_checkpoint_split_info(artifacts: Mapping[str, object]) -> None:
-    """Move v5 split receipts into clean-manifest evidence and remove split_info."""
+def _rewrite_real_arm_fixture_without_checkpoint_split_info(
+    artifacts: Mapping[str, object], *, arm: str
+) -> None:
+    """Model the real v5 clean-manifest axis contract for either C or G."""
 
-    paths = artifacts["g_paths"]
+    if arm not in {"C", "G"}:
+        raise AssertionError("real arm fixture must be C or G")
+    key = arm.casefold()
+    paths = artifacts[f"{key}_paths"]
     checkpoint_path = Path(paths["checkpoint"])
     checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
     assert isinstance(checkpoint, Mapping)
     checkpoint = dict(checkpoint)
+    checkpoint_args = dict(checkpoint.get("args", {}))
+    checkpoint_args.update(
+        {
+            "dataset": "wisig",
+            "wisig_out_len": 256,
+            # This is the real v5 shape: the checkpoint retained the argument
+            # surface but the frozen dataset hash is sealed by CLEAN.export.
+            "wisig_pkl_sha256": "",
+        }
+    )
+    checkpoint["args"] = checkpoint_args
     checkpoint.pop("split_info", None)
     torch.save(checkpoint, checkpoint_path)
     checkpoint_sha = _sha_file(checkpoint_path)
@@ -4508,7 +4524,7 @@ def _rewrite_real_g_fixture_without_checkpoint_split_info(artifacts: Mapping[str
     terminal_path.write_text(json.dumps(terminal, ensure_ascii=True, sort_keys=True) + "\n", encoding="utf-8")
     terminal_sha = _sha_file(terminal_path)
 
-    clean_path = Path(artifacts["g_clean"])
+    clean_path = Path(artifacts[f"{key}_clean"])
     with np.load(clean_path, allow_pickle=False) as archive:
         clean_arrays = {name: np.array(archive[name], copy=True) for name in archive.files}
     clean_manifest = json.loads(str(np.asarray(clean_arrays["manifest_json"]).item()))
@@ -4516,8 +4532,10 @@ def _rewrite_real_g_fixture_without_checkpoint_split_info(artifacts: Mapping[str
     clean_manifest["terminal_receipt_sha256"] = terminal_sha
     clean_manifest["source_split_receipt"] = {
         "schema": "cvs.phase1.source_split_receipt.v1",
-        "source_receivers": list(SOURCE_RX),
-        "source_days": list(SOURCE_DAYS),
+        # Real v5 receipts bind axis indices.  Physical WiSig labels are sealed
+        # separately below and must never be compared to these strings.
+        "source_receivers": [str(index) for index in range(len(SOURCE_RX))],
+        "source_days": [str(index) for index in range(len(SOURCE_DAYS))],
         "labeled_indices_sha256": _sha_text("labeled"),
         "split_manifest_sha256": _sha_text("split"),
     }
@@ -4527,12 +4545,13 @@ def _rewrite_real_g_fixture_without_checkpoint_split_info(artifacts: Mapping[str
     }
     clean_manifest["source_receiver_ids"] = list(SOURCE_RX)
     clean_manifest["source_day_ids"] = list(SOURCE_DAYS)
+    clean_manifest["wisig_pkl_sha256"] = _sha_text("v5-wisig-dataset")
     clean_arrays["manifest_json"] = np.asarray(
         json.dumps(clean_manifest, ensure_ascii=True, sort_keys=True)
     )
     np.savez(clean_path, **clean_arrays)
 
-    leo_path = Path(artifacts["g_leo"])
+    leo_path = Path(artifacts[f"{key}_leo"])
     with np.load(leo_path, allow_pickle=False) as archive:
         leo_arrays = {name: np.array(archive[name], copy=True) for name in archive.files}
     leo_manifest = json.loads(str(np.asarray(leo_arrays["manifest_json"]).item()))
@@ -4547,7 +4566,7 @@ def _rewrite_real_g_fixture_without_checkpoint_split_info(artifacts: Mapping[str
     )
     np.savez(leo_path, **leo_arrays)
 
-    binding_path = Path(artifacts["g_binding"])
+    binding_path = Path(artifacts[f"{key}_binding"])
     binding = json.loads(binding_path.read_text(encoding="utf-8"))
     for field in ("checkpoint_sha256", "source_checkpoint_sha256"):
         if field in binding:
@@ -4558,6 +4577,19 @@ def _rewrite_real_g_fixture_without_checkpoint_split_info(artifacts: Mapping[str
     binding["leo_npz_sha256"] = _sha_file(leo_path)
     binding["leo_manifest_sha256"] = _canonical(leo_manifest)
     binding_path.write_text(json.dumps(binding, ensure_ascii=True, sort_keys=True) + "\n", encoding="utf-8")
+
+    proxy_path = Path(artifacts[f"{key}_proxy"])
+    proxy_path.unlink()
+    PAIR.export_clic_proxy_diagnostic(
+        clean_npz_path=clean_path,
+        output_json_path=proxy_path,
+    )
+
+
+def _rewrite_real_g_fixture_without_checkpoint_split_info(artifacts: Mapping[str, object]) -> None:
+    """Compatibility wrapper for the existing real-G bundle regression."""
+
+    _rewrite_real_arm_fixture_without_checkpoint_split_info(artifacts, arm="G")
 
 
 def test_clic_real_g_bundle_derives_train_config_from_v5_clean_manifest_without_split_info(
@@ -4591,6 +4623,65 @@ def test_clic_real_g_bundle_derives_train_config_from_v5_clean_manifest_without_
         "source_val_ratio": 0.30,
     }
     assert not {"epoch", "optimizer", "loss", "model"}.intersection(normalized)
+
+
+def test_c_predictor_descriptor_uses_v5_clean_physical_axes_without_checkpoint_split_info(
+    tmp_path: Path,
+) -> None:
+    """C must distinguish receipt indices from clean-manifest physical labels."""
+
+    artifacts = _pair_artifact_fixture(tmp_path / "pair")
+    _rewrite_real_arm_fixture_without_checkpoint_split_info(artifacts, arm="C")
+    checkpoint = torch.load(
+        artifacts["c_paths"]["checkpoint"], map_location="cpu", weights_only=False
+    )
+    assert "split_info" not in checkpoint
+    args = PAIR.build_parser().parse_args(_pair_cli_argv(artifacts))
+    PAIR.evaluate(args)
+    descriptor = tmp_path / "c_predictor_state.json"
+    TARGET.seal_clic_c_predictor_state(
+        artifacts["c_paths"]["checkpoint"],
+        artifacts["c_paths"]["terminal"],
+        args.output_pair_json,
+        descriptor,
+        fold_index=1,
+    )
+    payload = json.loads(descriptor.read_text(encoding="utf-8"))
+    train_config = json.loads(
+        Path(payload["train_config_manifest_path"]).read_text(encoding="utf-8")
+    )
+    assert train_config["normalized"]["source_receiver_ids"] == list(SOURCE_RX)
+    assert train_config["normalized"]["source_day_ids"] == list(SOURCE_DAYS)
+
+
+@pytest.mark.parametrize("missing_field", ("source_receiver_ids", "source_day_ids"))
+def test_c_predictor_descriptor_rejects_v5_clean_missing_physical_axis(
+    tmp_path: Path, missing_field: str
+) -> None:
+    """A v5 checkpoint cannot enter the legacy physical-label fallback."""
+
+    artifacts = _pair_artifact_fixture(tmp_path / missing_field)
+    _rewrite_real_arm_fixture_without_checkpoint_split_info(artifacts, arm="C")
+    clean_path = Path(artifacts["c_clean"])
+    with np.load(clean_path, allow_pickle=False) as archive:
+        arrays = {name: np.array(archive[name], copy=True) for name in archive.files}
+    manifest = json.loads(str(np.asarray(arrays["manifest_json"]).item()))
+    manifest.pop(missing_field)
+    arrays["manifest_json"] = np.asarray(json.dumps(manifest, ensure_ascii=True, sort_keys=True))
+    np.savez(clean_path, **arrays)
+    proxy_path = Path(artifacts["c_proxy"])
+    proxy_path.unlink()
+    PAIR.export_clic_proxy_diagnostic(clean_npz_path=clean_path, output_json_path=proxy_path)
+    args = PAIR.build_parser().parse_args(_pair_cli_argv(artifacts))
+    PAIR.evaluate(args)
+    with pytest.raises(Exception, match="physical|source_receiver_ids|source_day_ids|RX/day|label"):
+        TARGET.seal_clic_c_predictor_state(
+            artifacts["c_paths"]["checkpoint"],
+            artifacts["c_paths"]["terminal"],
+            args.output_pair_json,
+            tmp_path / f"{missing_field}.descriptor.json",
+            fold_index=1,
+        )
 
 
 def test_c_predictor_descriptor_is_derived_from_immutable_pair_output_and_rejects_forgery(

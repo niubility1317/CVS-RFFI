@@ -819,11 +819,29 @@ def _candidate_train_config_from_real_artifacts(
     if str(args.get("dataset", "")).casefold() != "wisig":
         raise CLICBundleError("real candidate train config dataset schema drifted")
     raw_wisig_pkl_sha256 = args.get("wisig_pkl_sha256")
-    wisig_pkl_sha256 = (
-        _require_sha256(raw_wisig_pkl_sha256, label="real candidate frozen WiSig dataset")
-        if raw_wisig_pkl_sha256 is not None
-        else None
-    )
+    raw_clean_wisig_sha256 = clean_manifest.get("wisig_pkl_sha256")
+    if raw_clean_wisig_sha256 not in (None, ""):
+        wisig_pkl_sha256 = _require_sha256(
+            raw_clean_wisig_sha256,
+            label="real candidate clean-manifest frozen WiSig dataset",
+        )
+        if raw_wisig_pkl_sha256 not in (None, "") and _require_sha256(
+            raw_wisig_pkl_sha256,
+            label="real candidate checkpoint frozen WiSig dataset",
+        ) != wisig_pkl_sha256:
+            raise CLICBundleError(
+                "real candidate checkpoint/clean WiSig dataset SHA drifted"
+            )
+    elif raw_wisig_pkl_sha256 not in (None, ""):
+        wisig_pkl_sha256 = _require_sha256(
+            raw_wisig_pkl_sha256, label="real candidate frozen WiSig dataset"
+        )
+    elif isinstance(checkpoint_source_receipt, Mapping):
+        wisig_pkl_sha256 = None
+    else:
+        raise CLICBundleError(
+            "real candidate v5 clean manifest lacks frozen WiSig dataset SHA"
+        )
     for field in ("labeled_indices_sha256", "split_manifest_sha256"):
         _require_sha256(source_receipt.get(field), label=f"real candidate source split {field}")
     checkpoint_sha = _sha256_file(checkpoint_file)
