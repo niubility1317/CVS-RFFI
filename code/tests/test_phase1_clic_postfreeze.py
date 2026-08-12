@@ -2106,10 +2106,12 @@ def _write_target_cache_set_fixture(
     root = tmp_path / "target_cache"
     root.mkdir(parents=True, exist_ok=True)
     dataset_sha = _sha_text("target-dataset")
+    known_test = _target_known_test_config()
+    known_class_order = [str(tx_id) for tx_id in known_test["class_order"]]
     known_config = _write_target_config_manifest(
         root / "known_test_config.json",
         schema="cvs.phase1.clic_known_test_config.v1",
-        normalized=_target_known_test_config(),
+        normalized=known_test,
     )
     mapping: dict[str, str] = {}
     hashes: dict[str, str] = {}
@@ -2123,7 +2125,10 @@ def _write_target_cache_set_fixture(
                 identity_scene = 0 if duplicate_cross_scene and scene_index == 1 and role_index == 0 and repeat == 0 else scene_index
                 identity_index = role_index * 2 + repeat
                 source_index = identity_scene * 100 + identity_index
-                tx_id = f"{role}-tx-{repeat}"
+                if role == "registered_known":
+                    tx_id = known_class_order[repeat % len(known_class_order)]
+                else:
+                    tx_id = f"unknown-tx-{repeat}"
                 rx_id = f"target-rx-{repeat % 2}"
                 day_id = f"day-{repeat % 2}"
                 eq_id = "eq-0"
