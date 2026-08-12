@@ -119,7 +119,7 @@ cd /home/szu2070436088/2510044040/CV-SincNet/runs/d92_csoas_g0_source_0000000000
 
 - `bash -n launch.sh`：PASS（snapshot repo）；
 - snapshot Git工作树`git diff --check`：PASS；
-- 两处镜像逐文件SHA256一致：PASS。当前hash为`report.md=df48006c13074f70e0afc353b346885528e6aa2bd5012326661d5ddabb7630a0`、`launch.sh=7310091d200c9f8d3785c01417ac640bd6d176338b78b7c6da8f1f3918593182`、`DELIVERY_MANIFEST.txt=82b6c511279675a9b4d7ae64d4a806013e5f1a963f8f9dea00c8668264b5f547`；
+- 两处镜像逐文件SHA256一致：PASS。当前`launch.sh`骨架SHA256为`7310091d200c9f8d3785c01417ac640bd6d176338b78b7c6da8f1f3918593182`；`report.md`与`DELIVERY_MANIFEST.txt`的最终SHA256记录在manifest并在镜像复核中一致；
 - 未执行：Conda测试、N607 SSH preflight、SCP、远端hash/compile、detached launch、scorer。
 
 主代理科学提交后必须填入：真实scientific commit、runtime archive路径/大小/SHA256、launch SHA256、CSOAS入口文件清单及局部验证结果；随后由主代理统一封存并决定是否交给sole runner。本机械owner不修改科学代码、配置、测试或公式。
