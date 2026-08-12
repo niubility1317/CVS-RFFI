@@ -1,0 +1,25 @@
+{
+  "channel": {
+    "channel_config_source": "training_controls.SAT_CHANNEL_SCENARIO_CONFIGS",
+    "formal_scenarios": [
+      "leo_clear_weak",
+      "leo_low_elev_weak",
+      "leo_rain_weak"
+    ],
+    "model": "simplified_leo_residual_weak_v1",
+    "sat_fc_hz": 2462000000.0,
+    "sat_fs_hz": 25000000.0,
+    "target_channel_view": "leo_weak_only"
+  },
+  "metrics": {
+    "domain_generalization": "target_known_accuracy_by_scene_receiver_class_day_with_equal_scene_and_sample_pooled_aggregates",
+    "known_accuracy": "correct_source_local4_identity_over_all_true_active_known_with_unknown_and_defer_as_errors",
+    "open_set": "AUROC_unknown_AUPR_out_FPR95_from_source_frozen_unknown_energy",
+    "unknown_rejection": "count_decision_unknown_over_true_unknown_with_defer_excluded"
+  },
+  "preprocess": {
+    "input_len": 256,
+    "iq_dtype": "float32"
+  },
+  "zero_adapt": true
+}
