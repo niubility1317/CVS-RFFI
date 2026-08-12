@@ -4,7 +4,7 @@ set -euo pipefail
 # Invoke explicitly as: bash scripts/launch_phase1_clic12_20260811.sh [--dry-run]
 # Frozen six-fold source-only Phase1 CLIC C/G matrix.  The two arms share every
 # training argument and differ only in the deterministic token operator.
-RUN_ID="${RUN_ID:-phase1_clic12_20260812_v2}"
+RUN_ID="${RUN_ID:-phase1_clic12_20260812_v3}"
 PROJECT_ROOT="${PROJECT_ROOT:-/home/szu2070436088/2510044040/CV-SincNet}"
 CODE_ROOT="${CODE_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 PYTHON="${PYTHON:-/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python}"
@@ -29,6 +29,7 @@ FOLD_TRAIN_TX=(
   "14-10,14-7,20-15,8-20" "14-10,14-7,20-15,20-19" "14-7,20-15,20-19,6-15"
 )
 FOLD_KNOWN_VAL_TX=("14-7" "20-15" "20-19" "6-15" "8-20" "14-10")
+FOLD_PROXY_TX=("14-10" "14-7" "20-15" "20-19" "6-15" "8-20")
 FOLD_BASELINE_CKPT=(
   "${GEOSAT_CKPT_ROOT}/F1C_LOTO_CLSGeo12/final_ssdg.pth" "${GEOSAT_CKPT_ROOT}/F2C_LOTO_CLSGeo12/final_ssdg.pth"
   "${GEOSAT_CKPT_ROOT}/F3C_LOTO_CLSGeo12/final_ssdg.pth" "${GEOSAT_CKPT_ROOT}/F4C_LOTO_CLSGeo12/final_ssdg.pth"
@@ -107,6 +108,7 @@ launch_arm() {
     --output_dir "${output_dir}" --baseline_ckpt "${FOLD_BASELINE_CKPT[index]}"
     --phase1_source_train_tx_ids "${FOLD_TRAIN_TX[index]}"
     --phase1_source_known_validation_tx_ids "${FOLD_KNOWN_VAL_TX[index]}"
+    --phase1_source_proxy_unknown_tx_ids "${FOLD_PROXY_TX[index]}"
     --phase1_clic_operator_mode "${operator}")
   if [[ "${DRY_RUN}" == "1" ]]; then
     printf '[DRY-RUN] CUDA_VISIBLE_DEVICES=%q PYTHONPATH=%q' "${gpu}" "${CODE_ROOT}"

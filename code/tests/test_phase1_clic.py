@@ -1505,7 +1505,7 @@ def test_clic_forward_exposes_the_exact_live_token_tensor_as_training_aux(operat
 def test_clic_launcher_has_the_frozen_12_arm_matrix_and_no_target_or_unknown_training_args() -> None:
     launcher_text = CLIC_LAUNCHER.read_text(encoding="utf-8")
     assert launcher_text.startswith("#!/usr/bin/env bash\n")
-    assert 'RUN_ID="${RUN_ID:-phase1_clic12_20260812_v2}"' in launcher_text
+    assert 'RUN_ID="${RUN_ID:-phase1_clic12_20260812_v3}"' in launcher_text
     assert "--phase1_clic_frozen_mode true" in launcher_text
     assert "--epochs 40" in launcher_text
     assert "--batch_size 128" in launcher_text
@@ -1537,7 +1537,10 @@ def test_clic_launcher_has_the_frozen_12_arm_matrix_and_no_target_or_unknown_tra
     ):
         assert f"--phase1_{flag}_enabled false" in launcher_text
         assert f"--lambda_{flag} 0" in launcher_text
-    assert not re.search(r"--[^\s=]*(?:target|proxy|unknown)[^\s=]*", launcher_text, re.I)
+    forbidden_training_flags = re.findall(
+        r"--[^\s=]*(?:target|proxy|unknown)[^\s=]*", launcher_text, re.I
+    )
+    assert forbidden_training_flags == ["--phase1_source_proxy_unknown_tx_ids"]
 
     relative = f"scripts/{CLIC_LAUNCHER.name}"
     syntax = subprocess.run(["bash", "-n", relative], cwd=str(CODE_ROOT), text=True, capture_output=True)
@@ -1548,14 +1551,18 @@ def test_clic_launcher_has_the_frozen_12_arm_matrix_and_no_target_or_unknown_tra
     assert len(rows) == 12
     assert sum("--phase1_clic_operator_mode raw_phase_control" in line for line in rows) == 6
     assert sum("--phase1_clic_operator_mode complex_local_invariant_curvature" in line for line in rows) == 6
-    assert all("phase1_clic12_20260812_v2" in line for line in rows)
+    assert all("phase1_clic12_20260812_v3" in line for line in rows)
     assert all("--epochs 40" in line and "--batch_size 128" in line for line in rows)
     assert all("--seed 7281164" in line for line in rows)
     assert all("--lambda_sat_cls 0" in line for line in rows)
     assert all("--lambda_sat_cons 0.10" in line for line in rows)
     assert all("--sat_cons_start_epoch 1" in line for line in rows)
     assert not re.search(r"--(?:lambda_clic|clic_loss|loss_clic)(?:\s|=)", "\n".join(rows), re.I)
-    assert not re.search(r"--[^\s=]*(?:target|proxy|unknown)[^\s=]*", "\n".join(rows), re.I)
+    assert all(
+        re.findall(r"--[^\s=]*(?:target|proxy|unknown)[^\s=]*", row, re.I)
+        == ["--phase1_source_proxy_unknown_tx_ids"]
+        for row in rows
+    )
 
     # A textual dry-run is insufficient: an argparse action such as
     # ``store_true`` rejects a trailing literal ``true`` only at process start.
@@ -1563,6 +1570,7 @@ def test_clic_launcher_has_the_frozen_12_arm_matrix_and_no_target_or_unknown_tra
     # launcher cannot pass local checks and then fail all remote arms before
     # entering training.
     parser = train_ssdg.build_arg_parser()
+    frozen_tx_universe = {"14-10", "14-7", "20-15", "20-19", "6-15", "8-20"}
     for row in rows:
         tokens = shlex.split(row)
         script_index = next(
@@ -1570,6 +1578,19 @@ def test_clic_launcher_has_the_frozen_12_arm_matrix_and_no_target_or_unknown_tra
         )
         parsed = parser.parse_args(tokens[script_index + 1 :])
         assert parsed.phase1_clic_frozen_mode is True
+        train_tx = {value for value in parsed.phase1_source_train_tx_ids.split(",") if value}
+        validation_tx = {
+            value for value in parsed.phase1_source_known_validation_tx_ids.split(",") if value
+        }
+        proxy_tx = {
+            value for value in parsed.phase1_source_proxy_unknown_tx_ids.split(",") if value
+        }
+        assert len(train_tx) == 4
+        assert len(validation_tx) == len(proxy_tx) == 1
+        assert not train_tx & validation_tx
+        assert not train_tx & proxy_tx
+        assert not validation_tx & proxy_tx
+        assert train_tx | validation_tx | proxy_tx == frozen_tx_universe
 
 
 def _ast_call_name(node: ast.Call) -> str:
