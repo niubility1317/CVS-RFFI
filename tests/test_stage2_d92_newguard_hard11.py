@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -74,6 +75,7 @@ def test_manifest_expands_to_11_jobs_33_scene_arms_and_8_shards(tmp_path: Path) 
     assert manifest["arms"] == [ARM_ID]
     assert manifest["candidate_ids"] == {ARM_ID: CANDIDATE_ID}
     assert {tuple(job["scenarios"]) for job in manifest["jobs"]} == {SCENES}
+    assert all(re.fullmatch(r"[0-9a-f]{64}", str(job["truth_sidecar_sha256"])) for job in manifest["jobs"])
     assert validate_hard11_manifest(manifest)["job_count"] == 11
 
 
@@ -95,6 +97,10 @@ def test_manifest_rejects_identity_drift(tmp_path: Path) -> None:
     broken_truth["jobs"][0]["truth_sidecar"] = "wrong/truth_sidecar.json"
     with pytest.raises(ValueError, match="truth"):
         validate_hard11_manifest(broken_truth)
+    broken_truth_hash = {**manifest, "jobs": [dict(job) for job in manifest["jobs"]]}
+    broken_truth_hash["jobs"][0]["truth_sidecar_sha256"] = "not-a-sha"
+    with pytest.raises(ValueError, match="truth"):
+        validate_hard11_manifest(broken_truth_hash)
     broken_seal = {**manifest, "jobs": [dict(job) for job in manifest["jobs"]]}
     broken_seal["jobs"][0]["packages"] = dict(broken_seal["jobs"][0]["packages"])
     broken_seal["jobs"][0]["packages"]["before_enrollment"] = dict(broken_seal["jobs"][0]["packages"]["before_enrollment"])

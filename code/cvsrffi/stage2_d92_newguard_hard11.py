@@ -184,6 +184,17 @@ def _package_layout(source_job_root: PurePath, *, require_files: bool) -> dict[s
     return result
 
 
+def _truth_sidecar_sha256(source_job_root: PurePath, *, require_files: bool) -> str:
+    truth_path = Path(str(source_job_root.joinpath("offline", "scorer", "truth_sidecar.json")))
+    if require_files:
+        if not truth_path.is_file() or truth_path.is_symlink():
+            raise D92NewGuardHard11Error("truth sidecar missing")
+        return _sha256_file(truth_path)
+    # Unit manifests intentionally do not materialize the remote source tree;
+    # runtime verification rejects this sentinel before any prediction starts.
+    return "0" * 64
+
+
 def canonical_selection_sha256() -> str:
     payload = {"schema": "cvs.phase2.d92_newguard_hard11.selection.v1", "selection_id": "D92-E0-FULL-BIDIRECTIONAL-NEWGUARD-MAXMIN-Hard11-v1", "protocol_schema": "p2_min_v1", "claim_scope": CLAIM_SCOPE, "order": "explicit_pre_registered_performance_then_k1_liveness", "outer_rows": [dict(row) for row in HARD11_ROWS], "coverage": {"outer_count": 11, "performance_outer_count": 10, "liveness_outer_count": 1, "scene_count": 3, "scene_row_count": 33, "shard_count": 8}}
     return hashlib.sha256(_canonical_bytes(payload)).hexdigest()
@@ -226,7 +237,7 @@ def validate_hard11_manifest(manifest: Mapping[str, Any], *, expected_method_loc
     if not isinstance(jobs, list) or len(jobs) != 11:
         raise D92NewGuardHard11Error("job-count drift")
     seen = set()
-    job_keys = {"index", "outer_index", "arm_position", "planned_shard_index", "job_id", "outer_key", "outer_role", "hard_score", "receiver", "seed", "k_shot", "new_class_count", "arm_id", "candidate", "role", "primary", "scenarios", "source_job_root", "packages", "truth_sidecar", "output_root"}
+    job_keys = {"index", "outer_index", "arm_position", "planned_shard_index", "job_id", "outer_key", "outer_role", "hard_score", "receiver", "seed", "k_shot", "new_class_count", "arm_id", "candidate", "role", "primary", "scenarios", "source_job_root", "packages", "truth_sidecar", "truth_sidecar_sha256", "output_root"}
     for index, row in enumerate(rows):
         job = jobs[index]
         expected_job = {"index": index, "outer_index": index, "arm_position": 0, "planned_shard_index": index % 8, "job_id": f"{row['outer_key']}__arm_{ARM_ID.lower()}", **row, "arm_id": ARM_ID, "candidate": CANDIDATE_ID, "role": "primary", "primary": True, "scenarios": list(SCENES)}
@@ -237,6 +248,8 @@ def validate_hard11_manifest(manifest: Mapping[str, Any], *, expected_method_loc
         expected_truth = _pure_path(job["source_job_root"]).joinpath("offline", "scorer", "truth_sidecar.json")
         if _pure_path(job.get("truth_sidecar")) != expected_truth:
             raise D92NewGuardHard11Error("truth sidecar path drift")
+        if not re.fullmatch(r"[0-9a-f]{64}", str(job.get("truth_sidecar_sha256"))):
+            raise D92NewGuardHard11Error("truth sidecar SHA drift")
         if not isinstance(job.get("packages"), Mapping) or set(job["packages"]) != {"before_enrollment", "before_apply", "after_enrollment", "after_apply"}:
             raise D92NewGuardHard11Error("package identity drift")
         source_job_root = _pure_path(job["source_job_root"])
@@ -271,7 +284,7 @@ def build_hard11_manifest(*, context_path: str | Path, method_lock_path: str | P
     for index, row in enumerate(_expected_rows()):
         source_job_root = source_root.joinpath("jobs", row["outer_key"])
         truth_sidecar = source_job_root.joinpath("offline", "scorer", "truth_sidecar.json")
-        jobs.append({"index": index, "outer_index": index, "arm_position": 0, "planned_shard_index": index % 8, "job_id": f"{row['outer_key']}__arm_{ARM_ID.lower()}", **row, "arm_id": ARM_ID, "candidate": CANDIDATE_ID, "role": "primary", "primary": True, "scenarios": list(SCENES), "source_job_root": str(source_job_root), "packages": _package_layout(source_job_root, require_files=require_package_files), "truth_sidecar": str(truth_sidecar), "output_root": str(output.joinpath("jobs", row["outer_key"], ARM_ID))})
+        jobs.append({"index": index, "outer_index": index, "arm_position": 0, "planned_shard_index": index % 8, "job_id": f"{row['outer_key']}__arm_{ARM_ID.lower()}", **row, "arm_id": ARM_ID, "candidate": CANDIDATE_ID, "role": "primary", "primary": True, "scenarios": list(SCENES), "source_job_root": str(source_job_root), "packages": _package_layout(source_job_root, require_files=require_package_files), "truth_sidecar": str(truth_sidecar), "truth_sidecar_sha256": _truth_sidecar_sha256(source_job_root, require_files=require_package_files), "output_root": str(output.joinpath("jobs", row["outer_key"], ARM_ID))})
     manifest = {"schema": "cvs.phase2.d92_newguard_hard11.matrix.v1", "status": "FROZEN_DEVELOPMENT_MATRIX", "claim_scope": CLAIM_SCOPE, "protocol_schema": "p2_min_v1", "selection_sha256": CANONICAL_SELECTION_SHA256, "context_path": str(context_file), "context_sha256": CONTEXT_SHA256, "method_lock": str(lock_file), "method_lock_sha256": _sha256_file(lock_file), "source_d92_output_root": SOURCE_D92_OUTPUT_ROOT, "ground_component_dir": GROUND_COMPONENT_DIR, "ground_manifest_path": GROUND_MANIFEST_PATH, "ground_manifest_sha256": GROUND_MANIFEST_SHA256, "output_root": str(output), "shard_count": 8, "outer_count": 11, "performance_outer_count": 10, "liveness_outer_count": 1, "job_count": 11, "scene_count": 3, "scene_arm_count": 33, "arms": [ARM_ID], "candidate_ids": dict(ARM_CANDIDATE_IDS), "primary_arm": ARM_ID, "smoke_outer_key": SMOKE_OUTER_KEY, "liveness_outer_key": LIVENESS_OUTER_KEY, "arm_roles": dict(ARM_ROLES), "coverage": _coverage(_expected_rows()), "selected_rows": _expected_rows(), "jobs": jobs}
     validate_hard11_manifest(manifest, expected_method_lock_sha256=manifest["method_lock_sha256"], require_package_hashes=require_package_files)
     return manifest

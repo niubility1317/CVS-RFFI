@@ -6,6 +6,7 @@ import csv
 import hashlib
 import json
 import math
+import re
 import statistics
 from collections import defaultdict
 from pathlib import Path
@@ -207,6 +208,19 @@ def evaluate_resource_gate(candidate_rows: Sequence[Mapping[str, Any]], baseline
     peak_delta_p90 = sorted(peak_deltas)[p90_index]
     passed = bool(query_state_exact) and wall_p90 <= RESOURCE_GATE["registration_wall_p90_max_ns"] and wall_ratio_p90 <= RESOURCE_GATE["registration_wall_ratio_max"] and peak_delta_p90 <= RESOURCE_GATE["registration_peak_delta_max_bytes"]
     return {"passed": passed, "query_state_exact": bool(query_state_exact), "wall_p90": wall_p90, "wall_ratio_p90": wall_ratio_p90, "peak_delta_p90_bytes": peak_delta_p90, "candidate_wall_p90_ns": wall_p90}
+
+
+def validate_truth_binding(score: Mapping[str, Any], receipt: Mapping[str, Any], job: Mapping[str, Any], truth_path: str | Path) -> str:
+    """Require manifest, receipt, scorer and actual truth-sidecar hashes to agree."""
+    manifest_path = Path(str(job.get("truth_sidecar"))).resolve()
+    actual_path = Path(truth_path).resolve()
+    expected = str(job.get("truth_sidecar_sha256", "")).lower()
+    if manifest_path != actual_path or not actual_path.is_file() or actual_path.is_symlink() or not re.fullmatch(r"[0-9a-f]{64}", expected):
+        raise D92NewGuardHard11AnalysisError("truth sidecar path/hash closure drift")
+    actual = _sha256(actual_path)
+    if actual != expected or str(receipt.get("truth_sidecar_sha256", "")).lower() != actual or str(score.get("truth_sidecar_sha256", "")).lower() != actual:
+        raise D92NewGuardHard11AnalysisError("truth sidecar hash binding drift")
+    return actual
 
 
 def compute_old_balanced_accuracy(by_tx: Mapping[str, Any]) -> float:
@@ -430,6 +444,7 @@ def analyze_d92_newguard_hard11(matrix_manifest_path: str | Path, *, run_root: s
             raise D92NewGuardHard11AnalysisError("prediction closure drift")
         if score.get("candidate") != CANDIDATE_ID or score.get("query_truth_fed_back_to_predictor") is not False or score.get("query_truth_joined_only_after_immutable_predictions") is not True or score.get("before_prediction_sha256") != receipt.get("before_prediction_sha256") or score.get("after_prediction_sha256") != receipt.get("after_prediction_sha256"):
             raise D92NewGuardHard11AnalysisError("score binding drift")
+        validate_truth_binding(score, receipt, job, Path(str(job["truth_sidecar"])))
         candidate = compute_score_metrics(score); baseline_score = _read_json(raw_path); baseline = compute_score_metrics(baseline_score)
         historical_join = validate_per_old_class_join(per_old_by_outer.get(str(job["outer_key"]), []), baseline_score, outer_key=str(job["outer_key"]))
         resource = _fit_resource(job_root, int(job["k_shot"]), baseline=baseline)
@@ -480,4 +495,4 @@ def analyze_d92_newguard_hard11(matrix_manifest_path: str | Path, *, run_root: s
 
 analyze_newguard_hard11 = analyze_d92_newguard_hard11
 
-__all__ = ["D92NewGuardHard11AnalysisError", "EIGHT_PARETO_METRICS", "PARETO_METRICS", "HISTORICAL_BASELINE_SHA256", "HISTORICAL_PER_OLD_CLASS_SHA256", "analyze_d92_newguard_hard11", "analyze_newguard_hard11", "compute_confusion_rates", "compute_old_balanced_accuracy", "compute_score_metrics", "decide_verdict", "evaluate_resource_gate", "strict_pareto_deltas", "validate_per_old_class_join"]
+__all__ = ["D92NewGuardHard11AnalysisError", "EIGHT_PARETO_METRICS", "PARETO_METRICS", "HISTORICAL_BASELINE_SHA256", "HISTORICAL_PER_OLD_CLASS_SHA256", "analyze_d92_newguard_hard11", "analyze_newguard_hard11", "compute_confusion_rates", "compute_old_balanced_accuracy", "compute_score_metrics", "decide_verdict", "evaluate_resource_gate", "strict_pareto_deltas", "validate_per_old_class_join", "validate_truth_binding"]

@@ -191,9 +191,14 @@ def test_manifest_artifact_hashes_are_checked_on_real_paths(tmp_path: Path) -> N
     job = {
         "source_job_root": str(tmp_path),
         "truth_sidecar": str(truth),
+        "truth_sidecar_sha256": _sha256(truth),
         "packages": {"before_enrollment": {"package_root": str(package_root), "detached_seal_path": str(seal), "expected_seal_sha256": _sha256(seal)}},
     }
     runner._verify_manifest_artifacts({"jobs": [job]})
+    truth.write_text("tampered-truth", encoding="utf-8")
+    with pytest.raises(runner.D92NewGuardHard11RunnerError, match="truth"):
+        runner._verify_manifest_artifacts({"jobs": [job]})
+    truth.write_text("{}", encoding="utf-8")
     seal.write_text("tampered", encoding="utf-8")
     with pytest.raises(runner.D92NewGuardHard11RunnerError, match="SHA"):
         runner._verify_manifest_artifacts({"jobs": [job]})

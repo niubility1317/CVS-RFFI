@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 from pathlib import Path
 
 import pytest
@@ -14,6 +15,7 @@ from cvsrffi.stage2_d92_newguard_hard11_analysis import (
     compute_score_metrics,
     decide_verdict,
     evaluate_resource_gate,
+    validate_truth_binding,
     validate_per_old_class_join,
     strict_pareto_deltas,
 )
@@ -139,3 +141,17 @@ def test_resource_gate_compares_matched_peak_and_wall_ratio_not_state_bytes() ->
     assert result["passed"] is True
     assert result["wall_ratio_p90"] == pytest.approx(1.2)
     assert result["peak_delta_p90_bytes"] == pytest.approx(400.0)
+
+
+def test_truth_binding_requires_manifest_receipt_score_and_actual_hash(tmp_path: Path) -> None:
+    truth = tmp_path / "truth_sidecar.json"
+    truth.write_text("{}", encoding="utf-8")
+    digest = hashlib.sha256(truth.read_bytes()).hexdigest()
+    score = _score()
+    score["truth_sidecar_sha256"] = digest
+    receipt = {"truth_sidecar_sha256": digest}
+    job = {"truth_sidecar": str(truth), "truth_sidecar_sha256": digest}
+    validate_truth_binding(score, receipt, job, truth)
+    truth.write_text("tampered", encoding="utf-8")
+    with pytest.raises(ValueError, match="truth"):
+        validate_truth_binding(score, receipt, job, truth)
