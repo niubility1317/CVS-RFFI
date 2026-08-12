@@ -8,7 +8,7 @@
 |候选|`E0_FULL_D42_TAIL_CLASS_ROW_ASCENT`；candidate=`d92_e0_full_d42_tail_class_row_ascent`|
 |科学commit|`b2934f62da56035ccd80032798280b6c7d2d74b7`|
 |日期/执行者|2026-08-12；主代理设计与裁决，唯一N607 runner负责落地|
-|状态|`LOCAL_VERIFIED / READY_TO_LAND`|
+|状态|`G0_MECHANISM_RESOURCE_FAIL / NO_PERFORMANCE_RESULT`|
 |目标|仅在固定K10真实checkpoint上验证三场景TCRA是否active、协议闭合且registration wall P90≤150ms|
 |声明边界|`TRUTH_FREE_MECHANISM_G0 / NO_PERFORMANCE_RESULT`；不运行scorer，不读取accuracy/H/BA/floor/forgetting/混淆|
 
@@ -75,3 +75,41 @@ launcher先验证archive、四个detached seal、ground manifest、运行时impo
 - `D92_TCRA_G0_ACTIVE_RESOURCE_PASS`：随后才实现独立单臂Hard11（10 performance+1 K1 liveness），并以八项同排指标裁决。
 - 任一场景fallback或P90>150ms：记录并拒绝/修订TCRA，不建设Hard11。
 - G0绝不形成“优于E0_FULL_ONLY”的性能声明。
+
+## 8.runner事实（2026-08-12）
+
+唯一N607 runner按冻结交付执行了一次launch；未使用truth/scorer，未读取accuracy、H、BA、floor、forgetting或混淆结果。direct普通账号preflight、GPU0-7可见性、三处远端目标初始ABSENT、本地取回根初始ABSENT均通过。远端Python为3.10.19，NumPy为2.2.5，Torch为2.1.0+cu121，CUDA 8卡可见。
+
+### 8.1落地与命令
+
+|项目|事实|
+|---|---|
+|source|`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_tcra_g0_source_b2934f62_20260812_v1`|
+|output|`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0_full_d42_tcra_g0_k10_20260812_v1`|
+|logs|`/home/szu2070436088/2510044040/CV-SincNet/logs/d92_e0_full_d42_tcra_g0_k10_20260812_v1`|
+|archive|6071944B；SHA256=`aeed383cb79892cc4c84c9a02bf9bc543503962dcffc10bbb3299c4bd94bb973`|
+|launch.sh|8635B；SHA256=`9b0bfbc297c82febc21c0b3d0bce35218826e21c2a83722f75df6c0281987dd0`|
+|detached command|`cd /home/szu2070436088/2510044040/CV-SincNet/runs/d92_tcra_g0_source_b2934f62_20260812_v1 && nohup bash ./launch.sh >./launch_driver.out 2>./launch_driver.err </dev/null &`|
+|执行结果|SSH exit=0；run在首次探针前结束，未保留活动PID；GPU compute apps为空|
+
+### 8.2三场景技术字段
+
+|场景|active|fallback|reason|generated|selected|guard|registration wall(ns)|
+|---|---:|---:|---|---:|---:|---:|---:|
+|`leo_clear_weak`|false|true|`support_guard_failed`|27|21|false|126199968|
+|`leo_low_elev_weak`|false|true|`support_guard_failed`|33|24|false|137051153|
+|`leo_rain_weak`|false|true|`support_guard_failed`|27|21|false|121518388|
+
+最近秩P90（3行最大值）为137051153ns；该值仅为fit/resource技术字段，不能改变fallback负结果。三场景七项query访问（fit、update、selection、truth、role_oracle、class_quota、global_reassignment）均为`false`。
+
+### 8.3失败与artifact闭合
+
+prediction入口完成before/after各一份`prediction_artifact.npz`、`COMMIT.json`、`execution_receipt.json`、`fit_audit.json`和`resource_audit.json`；`import_closure.err`与`prediction.err`为空。随后launcher验证器读取固定路径`output/diag/after/fit_audit.json`，而实际文件位于`output/after/fit_audit.json`，产生`FileNotFoundError`，因此未生成`g0_validation.json`，run状态为机制/资源FAIL，不形成性能结果。该缺陷未在远端修复，未重启、未重试同run。
+
+|本地取回树|文件数|字节数|tree SHA256|
+|---|---:|---:|---|
+|`local_artifacts/d92_e0_full_d42_tcra_g0_k10_20260812_v1/source`|1417|73347943|`00a1ca4cd1a384e84366eb25ac85180b1ad3b1812517d4cda9b732ca5a0d6c2d`|
+|`local_artifacts/d92_e0_full_d42_tcra_g0_k10_20260812_v1/output`|10|728373|`e9cde3405bc89d9309df223d4866b48c697de12f2412ba4799bb450515e8ed5b`|
+|`local_artifacts/d92_e0_full_d42_tcra_g0_k10_20260812_v1/logs`|4|442|`be9a094a5eca66b43bfbc9bc7c96ea8b01f3abe002312a49cdbf54fbebc49aef`|
+
+远端保留source/output/logs；本地取回根为`E:\type10-7\local_artifacts\d92_e0_full_d42_tcra_g0_k10_20260812_v1`。取回未包含truth/scorer sidecar。所有SSH/SCP任务结束后均确认本地ssh/scp进程=0、到N607 TCP22=0，GPU已释放。`fresh_run_retry=false`；后续修订或新run由主代理另行决定。
