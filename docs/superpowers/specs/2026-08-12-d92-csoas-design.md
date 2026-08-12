@@ -28,7 +28,7 @@
 
 ## 3.逐类闭式OAS
 
-令`p=288`，`tau_c=tr(S_c)/p`，`alpha_c=tr(S_c^2)/p=mean(S_c⊙S_c)`。逐类收缩系数为：
+令`p=288`，`tau_c=tr(S_c)/p`，`alpha_c=tr(S_c^2)/p^2=mean(S_c⊙S_c)`。这里的`mean`对完整`p×p`矩阵取平均，严格匹配冻结的sklearn OAS尺度。逐类收缩系数为：
 
 `rho_c=clip[(alpha_c+tau_c^2)/((n_eff,c+1)(alpha_c-tau_c^2/p)),0,1]`。
 
