@@ -59,6 +59,23 @@ SATELLITE_TTA_POLICIES = (
 )
 
 
+def _tensor_to_numpy_float32(value: torch.Tensor) -> np.ndarray:
+    """Copy a tensor through a Python-list boundary for Torch2.1/NumPy2.x."""
+
+    if not torch.is_tensor(value):
+        raise ValueError("feature export tensor conversion input is invalid")
+    source = value.detach().cpu().float().contiguous()
+    if source.numel() <= 0:
+        raise ValueError("feature export tensor conversion input is empty")
+    try:
+        observed = np.asarray(source.tolist(), dtype=np.float32)
+    except (TypeError, ValueError, RuntimeError) as exc:
+        raise ValueError("feature export tensor conversion failed") from exc
+    if observed.shape != tuple(source.shape) or not observed.flags.c_contiguous or not np.isfinite(observed).all():
+        raise ValueError("feature export tensor conversion shape/finite contract drifted")
+    return observed
+
+
 def _validate_star_ground_impl(impl: str, scenarios: Sequence[str], *, field: str) -> None:
     impl_text = str(impl or "legacy_satellite")
     if impl_text != "simplified_leo_residual":
@@ -609,6 +626,7 @@ def extract_features_with_metadata(
     aux_fft_logmag_dim: int = 0,
     aux_rf_stat_dim: int = 0,
     include_raw_iq: bool = False,
+    safe_numpy_bridge: bool = False,
 ):
     feature_buf: list[np.ndarray] = []
     aux_fft_buf: list[np.ndarray] = []
@@ -681,8 +699,12 @@ def extract_features_with_metadata(
                         "model output does not include tx_logits/logits for Phase1 classifier audit"
                     )
                 logits_tensor = logits_obj.float()
-            z = z_tensor.detach().cpu().numpy()
-            tx_logits = logits_tensor.detach().cpu().numpy()
+            if bool(safe_numpy_bridge):
+                z = _tensor_to_numpy_float32(z_tensor)
+                tx_logits = _tensor_to_numpy_float32(logits_tensor)
+            else:
+                z = z_tensor.detach().cpu().numpy()
+                tx_logits = logits_tensor.detach().cpu().numpy()
             feature_buf.append(z)
             tx_logit_buf.append(tx_logits)
             label_buf.extend([int(v) for v in y.detach().cpu().reshape(-1).tolist()])

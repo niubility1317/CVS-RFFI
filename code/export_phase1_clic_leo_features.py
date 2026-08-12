@@ -25,10 +25,28 @@ EXPECTED_BINDING_SCHEMA = "cvs.phase1.clic_leo_binding.v1"
 EXPECTED_TRAINING_RUN_LEAF = "phase1_clic12_20260812_v5"
 EXPECTED_SCENARIOS = tuple(_clic.FORMAL_LEO_WEAK_SCENARIOS)
 EXPECTED_METHOD = "P1_CLIC"
+EXPECTED_CACHE_RUN_LEAF = "phase1_clic_source_leo_20260812_v3"
+EXPECTED_EXPORT_RUN_LEAF = "phase1_clic_source_leo_20260812_v4"
+EXPECTED_CACHE_SCHEMA = "cvs.phase1.clic_source_leo_received_iq.v1"
 
 
 class CLICLEOBindingError(RuntimeError):
     """Raised when existing received-IQ bytes cannot close the CLIC LEO contract."""
+
+
+def _numpy_float32_to_tensor(value: np.ndarray) -> torch.Tensor:
+    """Cross the NumPy/Torch boundary without the legacy ndarray C API."""
+
+    source = np.ascontiguousarray(value, dtype=np.float32)
+    if source.size <= 0 or not np.isfinite(source).all():
+        raise CLICLEOBindingError("existing received-IQ tensor row is empty or non-finite")
+    try:
+        # N607 uses Torch 2.1 with NumPy 2.x.  The buffer protocol remains
+        # compatible there; clone immediately detaches from the NPZ snapshot.
+        tensor = torch.frombuffer(memoryview(source), dtype=torch.float32)
+        return tensor.reshape(source.shape).clone()
+    except (TypeError, ValueError, RuntimeError) as exc:
+        raise CLICLEOBindingError("existing received-IQ NumPy conversion failed") from exc
 
 
 def _sha256_file(path: str | Path) -> str:
@@ -52,6 +70,99 @@ def _parse_csv(value: str, *, label: str) -> tuple[str, ...]:
     if not parsed:
         raise CLICLEOBindingError(f"{label} is empty")
     return parsed
+
+
+def _validate_sealed_source_leo_cache_asset(
+    args: argparse.Namespace,
+    *,
+    received_path: Path,
+    source_tx_ids: tuple[str, ...],
+    fold: int,
+    arm: str,
+    candidate: str,
+    checkpoint: Path,
+    terminal: Path,
+    terminal_receipt: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Reopen the exact immutable v3 cache receipt for the v4 export-only run."""
+
+    if getattr(args, "require_sealed_source_leo_cache", False) is not True:
+        return {}
+    training_root = Path(args.training_run_root).resolve()
+    cache_root = Path(args.cache_run_root).resolve()
+    output_root = Path(args.postfreeze_output_root).resolve()
+    if (
+        training_root.name != EXPECTED_TRAINING_RUN_LEAF
+        or cache_root.name != EXPECTED_CACHE_RUN_LEAF
+        or output_root.name != EXPECTED_EXPORT_RUN_LEAF
+        or not (training_root.parent == cache_root.parent == output_root.parent)
+    ):
+        raise CLICLEOBindingError("sealed source-LEO training/cache/output root drifted")
+    expected_dir = cache_root / f"F{fold}_SHARED"
+    expected_npz = expected_dir / "source_l_received_iq.npz"
+    receipt_path = Path(args.existing_received_iq_receipt_json).resolve()
+    expected_receipt = expected_dir / "source_l_received_iq.receipt.json"
+    if received_path != expected_npz or receipt_path != expected_receipt or not receipt_path.is_file():
+        raise CLICLEOBindingError("sealed source-LEO cache/receipt path drifted")
+    if (
+        Path(args.out_npz).resolve().parent != output_root / candidate
+        or Path(args.binding_json).resolve().parent != output_root / candidate
+    ):
+        raise CLICLEOBindingError("sealed source-LEO output candidate root drifted")
+    receipt_sha_before = _sha256_file(receipt_path)
+    try:
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise CLICLEOBindingError("sealed source-LEO cache receipt is unreadable") from exc
+    if not isinstance(receipt, Mapping):
+        raise CLICLEOBindingError("sealed source-LEO cache receipt is malformed")
+    expected_scalars = {
+        "schema": EXPECTED_CACHE_SCHEMA,
+        "method": EXPECTED_METHOD,
+        "fold_index": fold,
+        "source_only": True,
+        "source_l_only": True,
+        "same_received_iq_bytes_for_c_and_g": True,
+        "source_row_count": 3920,
+        "target_access": False,
+        "query_access": False,
+        "held_validation_forward_rows": 0,
+        "proxy_forward_rows": 0,
+        "fit_rows": 0,
+        "threshold_fit_rows": 0,
+    }
+    for field, expected in expected_scalars.items():
+        if receipt.get(field) != expected or type(receipt.get(field)) is not type(expected):
+            raise CLICLEOBindingError(f"sealed source-LEO cache receipt {field} drifted")
+    if tuple(receipt.get("formal_scenarios", ())) != EXPECTED_SCENARIOS:
+        raise CLICLEOBindingError("sealed source-LEO cache receipt scenario order drifted")
+    if tuple(receipt.get("source_tx_ids", ())) != source_tx_ids:
+        raise CLICLEOBindingError("sealed source-LEO cache receipt source TX order drifted")
+    if receipt.get("source_split_sha256") != terminal_receipt.get("source_split_sha256"):
+        raise CLICLEOBindingError("sealed source-LEO cache/terminal source split SHA drifted")
+    checkpoint_hashes = receipt.get("checkpoint_sha256_by_arm")
+    terminal_hashes = receipt.get("terminal_receipt_sha256_by_arm")
+    if not isinstance(checkpoint_hashes, Mapping) or set(checkpoint_hashes) != {"C", "G"}:
+        raise CLICLEOBindingError("sealed source-LEO cache checkpoint hash map drifted")
+    if not isinstance(terminal_hashes, Mapping) or set(terminal_hashes) != {"C", "G"}:
+        raise CLICLEOBindingError("sealed source-LEO cache terminal hash map drifted")
+    if checkpoint_hashes.get(arm) != _sha256_file(checkpoint):
+        raise CLICLEOBindingError("sealed source-LEO cache/current checkpoint SHA drifted")
+    if terminal_hashes.get(arm) != _sha256_file(terminal):
+        raise CLICLEOBindingError("sealed source-LEO cache/current terminal SHA drifted")
+    if Path(str(receipt.get("received_iq_npz_path", ""))).resolve() != received_path:
+        raise CLICLEOBindingError("sealed source-LEO cache receipt NPZ path drifted")
+    observed_sha = _sha256_file(received_path)
+    if receipt.get("received_iq_npz_sha256") != observed_sha:
+        raise CLICLEOBindingError("sealed source-LEO cache receipt NPZ SHA drifted")
+    if _sha256_file(receipt_path) != receipt_sha_before:
+        raise CLICLEOBindingError("sealed source-LEO cache receipt changed during reopen")
+    return {
+        "receipt_path": str(receipt_path),
+        "receipt_sha256": receipt_sha_before,
+        "npz_sha256": observed_sha,
+        "source_row_count": 3920,
+    }
 
 
 def _validate_args(args: argparse.Namespace) -> tuple[Path, Path, Path, tuple[str, ...], str, int, str]:
@@ -306,10 +417,23 @@ def export(args: argparse.Namespace) -> dict[str, Any]:
     raw_arrays, physical_keys, coverage, received_sha = _load_received_iq_snapshot(
         received_path, source_tx_ids=source_tx_ids
     )
+    cache_asset = _validate_sealed_source_leo_cache_asset(
+        args,
+        received_path=received_path,
+        source_tx_ids=source_tx_ids,
+        fold=fold,
+        arm=arm,
+        candidate=candidate,
+        checkpoint=checkpoint,
+        terminal=terminal,
+        terminal_receipt=terminal_receipt,
+    )
     iq = np.asarray(raw_arrays["received_iq"], dtype=np.float32)
     if iq.ndim != 3 or iq.shape[1] != 2 or iq.shape[2] != int(checkpoint_args.get("wisig_out_len", 256)):
         raise CLICLEOBindingError("existing received-IQ must be finite [N,2,T] rows matching checkpoint input length")
     row_count = int(iq.shape[0])
+    if cache_asset and row_count != cache_asset["source_row_count"]:
+        raise CLICLEOBindingError("sealed source-LEO cache NPZ row count drifted")
     tx_ids = np.asarray(raw_arrays["tx_ids"]).reshape(-1).astype(str)
     rx_ids = np.asarray(raw_arrays["rx_ids"]).reshape(-1).astype(str)
     day_ids = np.asarray(raw_arrays["day_ids"]).reshape(-1).astype(str)
@@ -327,7 +451,7 @@ def export(args: argparse.Namespace) -> dict[str, Any]:
 
         def __getitem__(self, index: int):
             return (
-                torch.from_numpy(iq[index]),
+                _numpy_float32_to_tensor(iq[index]),
                 torch.tensor(int(labels[index]), dtype=torch.long),
                 torch.tensor(0, dtype=torch.long),
                 {
@@ -355,6 +479,7 @@ def export(args: argparse.Namespace) -> dict[str, Any]:
         role="source_L_leo_calibration",
         channel_view="received_existing",
         satellite_tta_policy="none",
+        safe_numpy_bridge=True,
     )
     if int(np.asarray(payload["features"]).shape[0]) != row_count:
         raise CLICLEOBindingError("CLIC LEO forward did not preserve existing received-IQ row count")
@@ -397,6 +522,9 @@ def export(args: argparse.Namespace) -> dict[str, Any]:
             "threshold_fit_rows": 0,
         }
     )
+    if cache_asset:
+        binding["source_leo_cache_receipt_path"] = cache_asset["receipt_path"]
+        binding["source_leo_cache_receipt_sha256"] = cache_asset["receipt_sha256"]
     manifest = {
         "schema": "cvs.phase1.clic_leo_export.v1",
         "method": EXPECTED_METHOD,
@@ -420,6 +548,8 @@ def export(args: argparse.Namespace) -> dict[str, Any]:
         "threshold_fit_rows": 0,
         "source_frozen_tail_calibration_only": True,
     }
+    if cache_asset:
+        manifest["source_leo_cache_receipt_sha256"] = cache_asset["receipt_sha256"]
     payload["manifest_json"] = np.asarray(json.dumps(manifest, ensure_ascii=True, sort_keys=True))
     output_path = Path(args.out_npz).resolve()
     binding_path = Path(args.binding_json).resolve()
@@ -434,6 +564,8 @@ def export(args: argparse.Namespace) -> dict[str, Any]:
         binding_written = True
         if _sha256_file(received_path) != received_sha:
             raise CLICLEOBindingError("existing received-IQ changed while sealing the snapshot binding")
+        if cache_asset and _sha256_file(cache_asset["receipt_path"]) != cache_asset["receipt_sha256"]:
+            raise CLICLEOBindingError("sealed source-LEO cache receipt changed during forward")
     except Exception:
         # The targets were proven absent before work began.  Remove only files
         # this invocation finished writing so a detected snapshot race never
@@ -450,6 +582,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--ckpt", required=True)
     parser.add_argument("--terminal-receipt-json", required=True)
     parser.add_argument("--existing-received-iq-npz", required=True)
+    parser.add_argument("--existing-received-iq-receipt-json")
+    parser.add_argument("--cache-run-root")
+    parser.add_argument("--require-sealed-source-leo-cache", action="store_true")
     parser.add_argument("--out-npz", required=True)
     parser.add_argument("--binding-json", required=True)
     parser.add_argument("--training-run-root", required=True)

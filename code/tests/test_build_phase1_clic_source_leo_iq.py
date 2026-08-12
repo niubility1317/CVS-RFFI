@@ -12,12 +12,15 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 
 import numpy as np
 import pytest
 import torch
 
 import build_phase1_clic_source_leo_iq as BUILDER
+import export_phase1_clic_leo_features as LEO_EXPORT
+import export_spaceborne_features as FEATURE_EXPORT
 from build_phase1_clic_source_leo_iq import assign_source_l_scenarios
 
 
@@ -60,6 +63,186 @@ def test_numpy_float32_to_tensor_avoids_legacy_numpy_c_api_bridge(
     assert tuple(observed.shape) == (3, 2, 4)
     assert observed.tolist() == source.tolist()
     assert observed.is_contiguous()
+
+
+def test_leo_export_numpy_float32_to_tensor_avoids_legacy_numpy_c_api_bridge(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    source = np.arange(48, dtype=np.float64).reshape(2, 3, 8)[:, :, ::2]
+
+    def forbidden_from_numpy(_array: np.ndarray):
+        raise AssertionError("torch.from_numpy() must not be used by the source-LEO exporter")
+
+    monkeypatch.setattr(torch, "from_numpy", forbidden_from_numpy)
+    observed = LEO_EXPORT._numpy_float32_to_tensor(source)
+    expected = np.asarray(source, dtype=np.float32)
+
+    assert observed.dtype == torch.float32
+    assert tuple(observed.shape) == expected.shape
+    assert observed.tolist() == expected.tolist()
+    assert observed.is_contiguous()
+    source[...] = -999.0
+    assert observed.tolist() == expected.tolist()
+
+
+def test_feature_export_tensor_to_numpy_float32_avoids_legacy_numpy_c_api_bridge(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    source = torch.arange(24, dtype=torch.float32).reshape(3, 2, 4).transpose(1, 2)
+
+    def forbidden_numpy(_tensor: torch.Tensor):
+        raise AssertionError("Tensor.numpy() must not be used by the source-LEO feature export")
+
+    monkeypatch.setattr(torch.Tensor, "numpy", forbidden_numpy)
+    observed = FEATURE_EXPORT._tensor_to_numpy_float32(source)
+
+    assert observed.dtype == np.float32
+    assert observed.shape == (3, 4, 2)
+    assert observed.tolist() == source.tolist()
+    assert observed.flags.c_contiguous
+
+
+def test_feature_export_tensor_to_numpy_float32_rejects_empty() -> None:
+    with pytest.raises(ValueError, match="empty|shape|finite|conversion"):
+        FEATURE_EXPORT._tensor_to_numpy_float32(torch.empty((2, 0), dtype=torch.float32))
+
+
+@pytest.mark.parametrize("field", ("CACHE_ROOT", "TRAINING_ROOT", "RUN_ROOT", "LOG_ROOT"))
+def test_source_leo_v4_launcher_rejects_root_override(field: str, tmp_path: Path) -> None:
+    launcher = Path(__file__).resolve().parents[1] / "scripts" / "launch_phase1_clic_source_leo_export12_20260812.sh"
+    completed = subprocess.run(
+        [
+            "bash",
+            "-c",
+            f"{field}={(tmp_path / 'injected').as_posix()} bash {launcher.name} --dry-run",
+        ],
+        cwd=launcher.parent,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert completed.returncode != 0
+    assert "root" in completed.stderr.lower() and "drift" in completed.stderr.lower()
+
+
+def test_source_leo_sealed_cache_asset_rejects_receipt_sha_drift(tmp_path: Path) -> None:
+    project_root = tmp_path
+    cache_root = project_root / "runs" / "phase1_clic_source_leo_20260812_v3"
+    cache_dir = cache_root / "F1_SHARED"
+    cache_dir.mkdir(parents=True)
+    cache_npz = cache_dir / "source_l_received_iq.npz"
+    cache_npz.write_bytes(b"immutable-cache")
+    receipt_path = cache_dir / "source_l_received_iq.receipt.json"
+    receipt_path.write_text(
+        json.dumps(
+            {
+                "schema": "cvs.phase1.clic_source_leo_received_iq.v1",
+                "method": "P1_CLIC",
+                "fold_index": 1,
+                "source_only": True,
+                "source_l_only": True,
+                "same_received_iq_bytes_for_c_and_g": True,
+                "formal_scenarios": list(FORMAL_SCENES),
+                "source_tx_ids": list(TX_IDS),
+                "source_row_count": 3920,
+                "source_split_sha256": "1" * 64,
+                "checkpoint_sha256_by_arm": {"C": "2" * 64, "G": "3" * 64},
+                "terminal_receipt_sha256_by_arm": {"C": "4" * 64, "G": "5" * 64},
+                "received_iq_npz_path": str(cache_npz),
+                "received_iq_npz_sha256": "0" * 64,
+                "target_access": False,
+                "query_access": False,
+                "held_validation_forward_rows": 0,
+                "proxy_forward_rows": 0,
+                "fit_rows": 0,
+                "threshold_fit_rows": 0,
+            }
+        ),
+        encoding="utf-8",
+    )
+    output_dir = project_root / "runs" / "phase1_clic_source_leo_20260812_v4" / "F1C_CLIC12"
+    checkpoint = project_root / "runs" / "phase1_clic12_20260812_v5" / "F1C_CLIC12" / "final_ssdg.pth"
+    terminal = checkpoint.with_name("phase1_clic_terminal_receipt.json")
+    checkpoint.parent.mkdir(parents=True)
+    checkpoint.write_bytes(b"checkpoint")
+    terminal.write_bytes(b"terminal")
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt["checkpoint_sha256_by_arm"] = {
+        "C": hashlib.sha256(checkpoint.read_bytes()).hexdigest(),
+        "G": "3" * 64,
+    }
+    receipt["terminal_receipt_sha256_by_arm"] = {
+        "C": hashlib.sha256(terminal.read_bytes()).hexdigest(),
+        "G": "5" * 64,
+    }
+    receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+    args = argparse.Namespace(
+        require_sealed_source_leo_cache=True,
+        cache_run_root=str(cache_root),
+        existing_received_iq_receipt_json=str(receipt_path),
+        postfreeze_output_root=str(project_root / "runs" / "phase1_clic_source_leo_20260812_v4"),
+        training_run_root=str(project_root / "runs" / "phase1_clic12_20260812_v5"),
+        out_npz=str(output_dir / "source_leo.npz"),
+        binding_json=str(output_dir / "source_leo.binding.json"),
+    )
+    validator = getattr(LEO_EXPORT, "_validate_sealed_source_leo_cache_asset", None)
+    assert callable(validator), "sealed source-LEO cache validator is absent"
+    with pytest.raises(Exception, match="SHA|hash|drift|cache"):
+        validator(
+            args,
+            received_path=cache_npz,
+            source_tx_ids=TX_IDS,
+            fold=1,
+            arm="C",
+            candidate="F1C_CLIC12",
+            checkpoint=checkpoint,
+            terminal=terminal,
+            terminal_receipt={"source_split_sha256": "1" * 64},
+        )
+
+
+def test_feature_export_loop_runs_with_legacy_tensor_numpy_disabled(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class TinyRows(torch.utils.data.Dataset):
+        def __len__(self) -> int:
+            return 2
+
+        def __getitem__(self, index: int):
+            return (
+                torch.full((2, 8), float(index + 1), dtype=torch.float32),
+                torch.tensor(index, dtype=torch.long),
+                torch.tensor(0, dtype=torch.long),
+                {"tx": f"tx-{index}", "rx": "rx-0", "day": "0", "equalized": "1", "sig_i": str(index)},
+            )
+
+    class TinyModel:
+        def eval(self):
+            return self
+
+    def identity_forward(_model, rows: torch.Tensor, _feature_name: str):
+        return rows.flatten(1), rows.mean(dim=-1)
+
+    def forbidden_numpy(_tensor: torch.Tensor):
+        raise AssertionError("Tensor.numpy() must not execute in the source-LEO feature loop")
+
+    monkeypatch.setattr(FEATURE_EXPORT, "identity_only_feature_forward", identity_forward)
+    monkeypatch.setattr(torch.Tensor, "numpy", forbidden_numpy)
+    payload = FEATURE_EXPORT.extract_features_with_metadata(
+        TinyModel(),
+        torch.utils.data.DataLoader(TinyRows(), batch_size=2, shuffle=False),
+        device=torch.device("cpu"),
+        feature_name="z_id",
+        role="source_L_leo_calibration",
+        channel_view="received_existing",
+        satellite_tta_policy="none",
+        safe_numpy_bridge=True,
+    )
+
+    assert payload["features"].shape == (2, 16)
+    assert payload["tx_logits"].shape == (2, 2)
+    assert payload["features"].dtype == np.float32
+    assert np.isfinite(payload["features"]).all()
 
 
 def _source_l_rows(*, rows_per_cell: int = 140) -> tuple[list[str], list[str], list[str]]:
