@@ -3,7 +3,7 @@
 ## 1. 状态与目标
 
 - 实验ID：`phase1_clic12_20260812_v5`
-- 当前状态：`RUNNING / NO_PERFORMANCE_RESULT_YET`
+- 当前状态：`TRAINING_TECHNICALLY_COMPLETE / NO_PERFORMANCE_RESULT`
 - 操作者：主控Codex；N607唯一runner：`Luna/max`
 - 目标：完成F1—F6×C/G共12臂、每臂40epoch的P1-CLIC源域训练；训练技术闭合后，对目标域统一叠加`LEO weak`星地信道，联合评估域泛化和未知类拒识。
 - v1—v4全部是封存的系统性技术失败，均为`NO_PERFORMANCE_RESULT`；v5使用新的run/log/output路径，不恢复、覆盖或重试任何旧run。
@@ -46,7 +46,7 @@
 - 复用release与启动时间：2026-08-12 14:57 CST；release=`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_clic_smoke3_20260812_v1_f43f313e`，复用已验签archive（SHA256=`4F96E4203830809BA807750F03921EE21F26D79EDEE5C401BD179D5C87B3A03F`，266874880 bytes），未重复SCP或解包。
 - launcher/PID/GPU/日志：正式launcher恰1次，retry=`NO`；outer PID=`2441974`；`pids.tsv`已登记12/12：F1C=2441978/GPU0，F5G=2441980/GPU0，F1G=2441983/GPU1，F5C=2441989/GPU1，F2C=2441993/GPU2，F6G=2441996/GPU2，F2G=2442004/GPU3，F6C=2442009/GPU3，F3C=2442015/GPU4，F3G=2442017/GPU5，F4C=2442019/GPU6，F4G=2442021/GPU7。每个PID均绑定该release的`train_ssdg.py`及v5 run-root，12个独立日志路径已建立。
 - 首波技术健康（启动后约12秒）：12/12训练PID存活；12个`phase1_clic_config_receipt.json`已生成，日志尚未刷新正文；当前无Traceback、CLICRuntimeError或其他确定性异常指纹。GPU compute为12进程，显存约1.4–1.7GiB/进程，符合固定映射及每卡最多2进程。
-- checkpoint/terminal计数：待回填。
-- 训练完成状态与后冻结工件：待回填。
-- GPU/PID/SSH清理：待回填。
+- checkpoint/terminal计数：12/12`final_ssdg.pth`与12/12`phase1_clic_terminal_receipt.json`，12/12 config receipt；failure receipt=0。12臂均epoch=40/40、batch=1200，AMP attempts/effective steps/graph releases均=1200，overflow skips=0；日志总计约100396 bytes，技术异常指纹计数=0。
+- 训练完成状态与后冻结工件：outer及全部训练PID已退出；终端receipt逐臂schema=`cvs.phase1.clic_terminal_envelope.v1`、`completed=true`，嵌套CLIC receipt为`cvs.phase1.clic_receipt.v1`，`source_l_only=true`、`use_held=false`、`use_proxy=false`、`use_target=false`、`query_truth_access=false`、`query_role_access=false`。本runner只做训练技术验真，未读取或报告accuracy/loss/H/BA/floor等性能，也未启动postfreeze评测。
+- GPU/PID/SSH清理：训练完成后run-owned PID=0、outer PID=0、NVIDIA compute应用=0；本地`ssh.exe=0`，N607及bridge TCP22=0。所有release、run、log、checkpoint和receipt均保留，未触碰v1—v4或Task7 dirty/untracked文件。
 - 结果表与最终判定：待工件完整后回填；运行中不读取性能。
