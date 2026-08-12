@@ -566,7 +566,6 @@ def _newguard_support_receipt(
         or numeric["rank"] <= 0
         or numeric["threshold"] <= 0.0
         or numeric["xnew"] < 0.0
-        or numeric["new_margin"] < -1.0e-4
         or numeric["protection_tolerance"]
         != float(1024.0 * np.finfo(np.float32).eps)
         or numeric["new_margin"] < -numeric["protection_tolerance"]
@@ -592,7 +591,7 @@ def _newguard_support_receipt(
         or not np.isfinite(tail).all()
         or not np.isfinite(deployed_tail).all()
         or not np.isfinite(residual_norm).all()
-        or np.any(tail < -1.0e-4)
+        or np.any(tail < -numeric["protection_tolerance"])
         or np.any(deployed_tail < -numeric["protection_tolerance"])
         or np.any(residual_norm < 0.0)
         or any(
