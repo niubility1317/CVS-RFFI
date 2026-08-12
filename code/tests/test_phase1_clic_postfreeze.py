@@ -2355,19 +2355,30 @@ def _fake_runtime_factory(
     *,
     calls: list[Path],
     forward_calls: list[np.ndarray],
+    scene_calls: list[str] | None = None,
 ) -> object:
-    class FakeRuntime:
+    class FakeRuntime(TARGET._CLICTargetPredictorRuntime):
         def __init__(self, path: Path) -> None:
             self.path = path
             self.arm = "G" if path.suffix == ".zip" else "C"
             self.operator = "complex_local_invariant_curvature" if self.arm == "G" else "raw_phase_control"
-            self.state_sha256 = _sha_file(path)
-            self.source_frozen_rule_sha256 = _sha_text("source-frozen-rule")
-            self.train_config_manifest_path = paths["train_config"]
-            self.train_config_raw_sha256 = _sha_file(paths["train_config"])
-            self.train_config_normalized_sha256 = _canonical(_target_train_config())
+            super().__init__(
+                arm=self.arm,
+                operator=self.operator,
+                state_sha256=_sha_file(path),
+                source_frozen_rule_sha256=_sha_text("source-frozen-rule"),
+                train_config_manifest_path=str(paths["train_config"]),
+                train_config_raw_sha256=_sha_file(paths["train_config"]),
+                train_config_normalized_sha256=_canonical(_target_train_config()),
+                train_config_member_name=None,
+                forward_impl=self._forward_impl,
+            )
 
-        def forward_once(self, received_i: object) -> dict[str, object]:
+        def _forward_impl(self, received_i: object, *, scene: str) -> dict[str, object]:
+            if scene not in SCENARIOS:
+                raise AssertionError(f"fixture received non-formal scene: {scene}")
+            if scene_calls is not None:
+                scene_calls.append(scene)
             values = np.asarray(received_i, dtype=np.float32)
             forward_calls.append(np.array(values, copy=True))
             return {
@@ -2534,7 +2545,13 @@ def test_publish_predictor_state_is_path_only_and_loader_returns_verified_runtim
     predictor_artifacts = _write_fake_predictor_artifacts(tmp_path / "predictor")
     calls: list[Path] = []
     forwards: list[np.ndarray] = []
-    loader = _fake_runtime_factory(predictor_artifacts, calls=calls, forward_calls=forwards)
+    scene_calls: list[str] = []
+    loader = _fake_runtime_factory(
+        predictor_artifacts,
+        calls=calls,
+        forward_calls=forwards,
+        scene_calls=scene_calls,
+    )
     monkeypatch.setattr(TARGET_EVAL, "load_verified_clic_predictor_state", loader, raising=False)
     monkeypatch.setattr(TARGET, "load_verified_clic_predictor_state", loader, raising=False)
     output = tmp_path / "c_prediction.json"
@@ -2542,6 +2559,7 @@ def test_publish_predictor_state_is_path_only_and_loader_returns_verified_runtim
     assert output.is_file()
     assert calls == [predictor_artifacts["c_state"]]
     assert len(forwards) > 0
+    assert set(scene_calls) == set(SCENARIOS)
     assert isinstance(result, (str, Path, Mapping))
     with pytest.raises(Exception, match="path|artifact|state|predictor|inject"):
         TARGET_EVAL.publish_clic_target_prediction({"model_state": {}}, package, tmp_path / "injected.json")
@@ -2556,7 +2574,13 @@ def test_c_and_g_prediction_bind_identical_iq_package_and_forward_once_per_sampl
     predictor_artifacts = _write_fake_predictor_artifacts(tmp_path / "predictor")
     calls: list[Path] = []
     forwards: list[np.ndarray] = []
-    loader = _fake_runtime_factory(predictor_artifacts, calls=calls, forward_calls=forwards)
+    scene_calls: list[str] = []
+    loader = _fake_runtime_factory(
+        predictor_artifacts,
+        calls=calls,
+        forward_calls=forwards,
+        scene_calls=scene_calls,
+    )
     monkeypatch.setattr(TARGET_EVAL, "load_verified_clic_predictor_state", loader, raising=False)
     monkeypatch.setattr(TARGET, "load_verified_clic_predictor_state", loader, raising=False)
     c_out = tmp_path / "c_prediction.json"
@@ -2571,11 +2595,18 @@ def test_c_and_g_prediction_bind_identical_iq_package_and_forward_once_per_sampl
     assert c_payload["forward_count"] == g_payload["forward_count"] == c_payload["row_count"]
     assert c_payload["predictor_state_sha256"] != g_payload["predictor_state_sha256"]
     assert len(forwards) == 2 * int(c_payload["row_count"])
+    assert len(scene_calls) == 2 * int(c_payload["row_count"])
+    assert set(scene_calls) == set(SCENARIOS)
     assert _target_prediction_path(c_result, c_out).is_file()
     assert _target_prediction_path(g_result, g_out).is_file()
 
 
-def test_prediction_seals_candidate_config_paths_raw_and_normalized_sha_and_rejects_postseal_tamper(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+@pytest.mark.parametrize("tampered_config", ("train", "known_test"))
+def test_prediction_seals_candidate_config_paths_raw_and_normalized_sha_and_rejects_postseal_tamper(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    tampered_config: str,
+) -> None:
     artifacts = _write_target_cache_set_fixture(tmp_path)
     package, truth = TARGET_EVAL.seal_clic_target_package(
         artifacts["manifest"], tmp_path / "sealed_target", validator_receipt_path=artifacts["receipt"],
@@ -2590,9 +2621,29 @@ def test_prediction_seals_candidate_config_paths_raw_and_normalized_sha_and_reje
     payload = json.loads(prediction.read_text(encoding="utf-8"))
     for field in ("train_config_manifest_path", "train_config_raw_sha256", "train_config_normalized_sha256", "known_test_config_manifest_path", "known_test_config_raw_sha256", "known_test_config_normalized_sha256"):
         assert field in payload
-    Path(predictor_artifacts["train_config"]).write_text(Path(predictor_artifacts["train_config"]).read_text(encoding="utf-8") + "tamper\n", encoding="utf-8")
-    with pytest.raises(Exception, match="train.*config|sha|tamper"):
-        TARGET_EVAL.score_clic_target_prediction(prediction, truth, tmp_path / "missing_adv_reference.json", tmp_path / "score.json")
+    baseline = _write_adv3b02_reference_fixture(tmp_path / "baseline")
+    adv_reference = tmp_path / "adv_reference.json"
+    TARGET_EVAL.ingest_adv3b02_target_known_reference(
+        baseline["checkpoint"],
+        baseline["train_config"],
+        baseline["known_test_config"],
+        baseline["metrics"],
+        adv_reference,
+    )
+    config_path = (
+        Path(predictor_artifacts["train_config"])
+        if tampered_config == "train"
+        else Path(artifacts["known_test_config"])
+    )
+    config_path.write_text(
+        config_path.read_text(encoding="utf-8") + "postseal-byte-tamper\n",
+        encoding="utf-8",
+    )
+    expected = "train.*config|known.*test.*config|sha|tamper|drift"
+    with pytest.raises(Exception, match=expected):
+        TARGET_EVAL.score_clic_target_prediction(
+            prediction, truth, adv_reference, tmp_path / "score.json"
+        )
 
 
 def test_adv3b02_reference_ingest_binds_own_artifacts_without_unknown_claim(tmp_path: Path) -> None:
@@ -2695,11 +2746,11 @@ def test_true_unknown_defer_never_counts_toward_explicit_rejection(tmp_path: Pat
 
 
 def test_truth_sidecar_is_unreadable_before_sealed_prediction_and_target_path_has_no_fit_update_retry(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    truth = tmp_path / "truth.json"
-    truth.write_text(json.dumps({"schema": "cvs.phase1.clic_target_truth_sidecar.v1"}) + "\n", encoding="utf-8")
+    truth = tmp_path / "truth_directory"
+    truth.mkdir()
     unsealed = tmp_path / "unsealed_prediction.json"
     unsealed.write_text(json.dumps({"schema": "cvs.phase1.clic_target_prediction.v1", "sealed": False}) + "\n", encoding="utf-8")
-    with pytest.raises(Exception, match="seal|prediction|immutable|verified"):
+    with pytest.raises(Exception, match="seal|immutable|verified"):
         TARGET_EVAL.score_clic_target_prediction(unsealed, truth, tmp_path / "adv.json", tmp_path / "score.json")
 
     artifacts = _write_target_cache_set_fixture(tmp_path / "sealed")
@@ -2716,3 +2767,146 @@ def test_truth_sidecar_is_unreadable_before_sealed_prediction_and_target_path_ha
     prediction = tmp_path / "sealed" / "prediction.json"
     TARGET_EVAL.publish_clic_target_prediction(predictor_artifacts["c_state"], package, prediction)
     assert len(forwards) == 12
+
+
+def test_opaque_prediction_truth_join_is_exact_and_rejects_duplicate_missing_or_scene_mismatch() -> None:
+    token_a = _sha_text("target-opaque-a")
+    token_b = _sha_text("target-opaque-b")
+    prediction_rows = [
+        {"opaque_token": token_a, "scene": SCENARIOS[0], "decision": "registered"},
+        {"opaque_token": token_b, "scene": SCENARIOS[1], "decision": "unknown"},
+    ]
+    truth_rows = [
+        {"opaque_token": token_a, "scene": SCENARIOS[0], "role": "registered_known", "truth": "known-a"},
+        {"opaque_token": token_b, "scene": SCENARIOS[1], "role": "unknown", "truth": "unknown"},
+    ]
+    joined = TARGET.join_prediction_and_truth_by_opaque_token(prediction_rows, truth_rows)
+    assert len(joined) == 2
+    assert [row["opaque_token"] for row in joined] == [token_a, token_b]
+    assert all(row["prediction"]["opaque_token"] == row["truth"]["opaque_token"] for row in joined)
+
+    with pytest.raises(Exception, match="duplicate|opaque|token|join"):
+        TARGET.join_prediction_and_truth_by_opaque_token(
+            [*prediction_rows, dict(prediction_rows[0])], truth_rows
+        )
+    with pytest.raises(Exception, match="missing|opaque|token|join"):
+        TARGET.join_prediction_and_truth_by_opaque_token(prediction_rows[:1], truth_rows)
+    mismatched_truth = [dict(row) for row in truth_rows]
+    mismatched_truth[0]["scene"] = SCENARIOS[1]
+    with pytest.raises(Exception, match="scene|opaque|token|join|mismatch"):
+        TARGET.join_prediction_and_truth_by_opaque_token(prediction_rows, mismatched_truth)
+
+
+def test_target_scorer_receipt_has_zero_feedback_counters_and_never_reopens_predictor_feedback(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    artifacts = _write_target_cache_set_fixture(tmp_path / "inputs")
+    package, truth = TARGET_EVAL.seal_clic_target_package(
+        artifacts["manifest"],
+        tmp_path / "sealed_target",
+        validator_receipt_path=artifacts["receipt"],
+        expected_capsule_id=artifacts["capsule_id"],
+        expected_split_id=artifacts["split_id"],
+    )
+    predictor_artifacts = _write_fake_predictor_artifacts(tmp_path / "predictor")
+    loader = _fake_runtime_factory(predictor_artifacts, calls=[], forward_calls=[])
+    monkeypatch.setattr(TARGET_EVAL, "load_verified_clic_predictor_state", loader, raising=False)
+    monkeypatch.setattr(TARGET, "load_verified_clic_predictor_state", loader, raising=False)
+    prediction = tmp_path / "prediction.json"
+    TARGET_EVAL.publish_clic_target_prediction(
+        predictor_artifacts["c_state"], package, prediction
+    )
+    prediction_payload = json.loads(prediction.read_text(encoding="utf-8"))
+    assert prediction_payload["truth_sidecar_opened"] is False
+    for field in (
+        "target_fit_rows",
+        "target_update_rows",
+        "target_retry_count",
+        "target_selection_count",
+    ):
+        assert prediction_payload[field] == 0
+    assert prediction_payload["target_selection_feedback"] is False
+    baseline = _write_adv3b02_reference_fixture(tmp_path / "baseline")
+    reference = tmp_path / "adv_reference.json"
+    TARGET_EVAL.ingest_adv3b02_target_known_reference(
+        baseline["checkpoint"],
+        baseline["train_config"],
+        baseline["known_test_config"],
+        baseline["metrics"],
+        reference,
+    )
+    score_path = tmp_path / "score.json"
+    result = TARGET_EVAL.score_clic_target_prediction(
+        prediction, truth, reference, score_path
+    )
+    assert score_path.is_file()
+    payload = json.loads(score_path.read_text(encoding="utf-8"))
+    for field in (
+        "target_fit_rows",
+        "target_update_rows",
+        "target_retry_count",
+        "target_selection_count",
+    ):
+        assert payload[field] == 0
+    assert payload["target_selection_feedback"] is False
+    assert payload["truth_sidecar_opened"] is True
+    assert isinstance(result, (str, Path, Mapping))
+
+
+def test_true_unknown_gate_accepts_exact_70_percent_and_ignores_registered_rows() -> None:
+    rows = _true_unknown_rows(unknown=70, defer=30, per_scene=True)
+    rows.extend(
+        {
+            "scene": scene,
+            "role": "registered_known",
+            "truth": "known-tx-a",
+            "decision": "unknown",
+        }
+        for scene in SCENARIOS
+    )
+    audit = TARGET_EVAL.recompute_unknown_counts(rows)
+    assert audit["unknown_denominator_global"] == 300
+    assert audit["unknown_numerator_global"] == 210
+    assert audit["unknown_defer_global"] == 90
+    assert audit["unknown_rejection_rate_global"] == pytest.approx(0.70)
+    assert all(
+        audit["unknown_rejection_rate_by_scene"][scene] == pytest.approx(0.70)
+        for scene in SCENARIOS
+    )
+    result = TARGET_EVAL.score_target_rows(rows)
+    assert result["explicit_unknown_gate_passed"] is True
+
+
+@pytest.mark.parametrize(
+    "surface",
+    (
+        "train_receivers",
+        "train_days",
+        "train_preprocess",
+        "known_channel",
+        "known_scenes",
+    ),
+)
+def test_adv3b02_equivalence_rejects_training_or_known_test_data_surface_drift(surface: str) -> None:
+    candidate_train = _target_train_config()
+    baseline_train = json.loads(json.dumps(candidate_train))
+    candidate_known = _target_known_test_config(capsule_id="candidate-capsule-v1")
+    baseline_known = json.loads(json.dumps(candidate_known))
+    if surface == "train_receivers":
+        baseline_train["source_receiver_ids"] = ["drifted-rx"]
+    elif surface == "train_days":
+        baseline_train["source_day_ids"] = ["drifted-day"]
+    elif surface == "train_preprocess":
+        baseline_train["preprocessing"]["input_len"] = 512
+    elif surface == "known_channel":
+        baseline_known["leo_weak_channel"]["rain"]["attenuation_db"] = 9.0
+    elif surface == "known_scenes":
+        baseline_known["scenes"] = [SCENARIOS[1], SCENARIOS[0], SCENARIOS[2]]
+    with pytest.raises(Exception, match="config|equivalence|receiver|day|split|preprocess|channel|scene|drift"):
+        TARGET_EVAL.validate_adv3b02_config_equivalence(
+            candidate_train_config=candidate_train,
+            candidate_known_test_config=candidate_known,
+            baseline_train_config=baseline_train,
+            baseline_known_test_config=baseline_known,
+        )
