@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import json
+
+from cvsrffi import stage2_d92_tpce_hard11_analysis as analysis
+
 from cvsrffi.stage2_d92_tpce_hard11_analysis import (
     EIGHT_PARETO_METRICS,
     compute_confusion_rates,
@@ -47,3 +51,35 @@ def test_resource_gate_uses_wall_p90_ratio_median_and_peak_delta() -> None:
     )
     assert result["hard_passed"] is True
     assert result["wall_ratio_median"] == 1.2
+
+
+def test_fit_resource_accepts_real_k1_d92_full_alias(tmp_path, monkeypatch) -> None:
+    """The liveness row must use the same K1 mode emitted by E0D."""
+
+    monkeypatch.setattr(analysis, "_validate_fit_audit", lambda *_a, **_k: None)
+    rows = []
+    for scene in ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"):
+        rows.append(
+            {
+                "scenario": scene,
+                "after_registration_resource": {
+                    "registration_wall_time_ns": 10,
+                    "registration_incremental_peak_working_set_bytes": 20,
+                },
+                "query_macs": 11 * 288,
+                "after_state_bytes": 100,
+                "after_total_component_fit_count": 3,
+                "after_actual_component_inventory": {
+                    "actual_component_fit_count": 3
+                },
+                "after_registered_d_mode_effective": "d92_full_alias",
+                "d92_e0d_tpce_persistent_state_bytes_delta": None,
+            }
+        )
+    path = tmp_path / "diag" / "after" / "fit_audit.json"
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps(rows), encoding="utf-8")
+    receipt = analysis._fit_resource(tmp_path, 1)
+    assert receipt["registered_d_mode"] == "d92_full_alias"
+    assert receipt["fit_count"] == 3
+    assert receipt["actual_fit_count"] == 3

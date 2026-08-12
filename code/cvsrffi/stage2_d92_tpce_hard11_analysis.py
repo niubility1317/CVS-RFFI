@@ -103,10 +103,10 @@ def _fit_resource(job_root: str | Path, k_shot: int, *, baseline: Mapping[str, A
             raise D92TPCEHard11AnalysisError("TPCE persistent state delta drift")
     if len(query) != 1 or len(state) != 1 or len(fit_counts) != 1 or len(actual_counts) != 1:
         raise D92TPCEHard11AnalysisError("TPCE receipt values differ across scenes")
-    expected = (2, 1, "full_only") if active else (3, 3, "full_only")
+    expected = (2, 1, "full_only") if active else (3, 3, "d92_full_alias")
     if (next(iter(fit_counts)), next(iter(actual_counts)), rows[0].get("after_registered_d_mode_effective")) != expected:
         raise D92TPCEHard11AnalysisError("TPCE fit inventory drift")
-    return {"fit_count": next(iter(fit_counts)), "actual_fit_count": next(iter(actual_counts)), "registered_d_mode": "full_only", "query_macs": next(iter(query)), "state_bytes": next(iter(state)), "registration_wall_time_ns": statistics.median(wall), "registration_incremental_peak_working_set_bytes": statistics.median(peak), "support_macs": statistics.median([_finite(row.get(prefix + "support_macs_upper_bound"), "support MACs", lower=0.0) for row in rows]) if active else None, "support_transient_bytes": statistics.median([_finite(row.get(prefix + "support_transient_bytes_upper_bound"), "support transient bytes", lower=0.0) for row in rows]) if active else None, "persistent_state_bytes_delta": 0 if active else None}
+    return {"fit_count": next(iter(fit_counts)), "actual_fit_count": next(iter(actual_counts)), "registered_d_mode": expected[2], "query_macs": next(iter(query)), "state_bytes": next(iter(state)), "registration_wall_time_ns": statistics.median(wall), "registration_incremental_peak_working_set_bytes": statistics.median(peak), "support_macs": statistics.median([_finite(row.get(prefix + "support_macs_upper_bound"), "support MACs", lower=0.0) for row in rows]) if active else None, "support_transient_bytes": statistics.median([_finite(row.get(prefix + "support_transient_bytes_upper_bound"), "support transient bytes", lower=0.0) for row in rows]) if active else None, "persistent_state_bytes_delta": 0 if active else None}
 
 
 def analyze_d92_tpce_hard11(*args: Any, **kwargs: Any) -> dict[str, Any]:
