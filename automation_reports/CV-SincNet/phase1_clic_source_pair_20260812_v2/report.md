@@ -3,7 +3,7 @@
 ## 状态与目标
 
 - 实验ID：`phase1_clic_source_pair_20260812_v2`。
-- 当前状态：`LOCAL_VERIFIED / INDEPENDENT_ALLOW / FORMAL_LAUNCH=0 / NO_PERFORMANCE_RESULT`。
+- 当前状态：`ARTIFACTS_COMPLETE / FORMAL_LAUNCH=1 / NO_PERFORMANCE_RESULT`。
 - 操作者：主控Codex；N607唯一runner：`Luna/max`。
 - 目标：沿用v1完全相同的v5训练、clean v2、source-LEO v4、F1—F6×C／G矩阵和三scene规则，生成12份common、12份fixed400 proxy及6份C／G PAIR工件。
 
@@ -44,3 +44,11 @@
 - launcher SHA-256：`E1C8292D099A72FF9B46B6BB765AF4081DF642724F2EC151E349B25FA4003F58`。
 - 独立终审：`P0=0/P1=0/ALLOW`。审查方独立确认local4正例通过，外部held伪装、缺任一local4类、旧v1 run-ID注入均fail-closed；PAIR／proxy专项8项通过。
 - Git提交、archive／release／SCP／真实F1技术烟测、正式launch与工件闭合待回填。
+
+## v2正式运行与工件闭合（2026-08-12）
+
+- 唯一formal launcher invocation=`1`，outer PID=`2604466`，6个CPU fold worker写入`pids_source_pair6.tsv`（6行）；未重试，GPU未占用。
+- 工件计数闭合：12/12 `common_training_receipt.json`、12/12 `proxy_diagnostic.json`、6/6 `F*_C_vs_G_pair.json`，6/6日志；worker与outer已退出，run-owned PID=0、GPU compute=0、SSH/TCP22=0。
+- common receipts均`source_only=true`。proxy diagnostics schema均`cvs.phase1.clic_proxy_diagnostic.v1`，proxy/source-validation fit rows与threshold rows均为0，`tail_policy_used=false`。
+- PAIR records schema均`cvs.phase1.clic_postfreeze_pair.v1`、`source_only=true`、`target_artifacts_present=false`，六fold same-fold/common binding闭合；同fold C/G raw/LEO binding由PAIR重开验证通过。日志技术异常标记（Traceback、TypeError、RuntimeError、CLICPostfreezePairError、ERROR、Exception）=0。
+- F1C技术烟测writer exit=0，schema与clean SHA闭合；一次校验脚本误读顶层字段的AssertionError不影响writer，已用正确嵌套字段复验通过。全程未读取AUROC、u_gap或其他性能值；本run仅记`ARTIFACTS_COMPLETE / NO_PERFORMANCE_RESULT`，后续指标分析另行执行。
