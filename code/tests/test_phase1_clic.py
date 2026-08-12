@@ -1461,6 +1461,53 @@ def test_clic_config_dynamically_rejects_nonzero_parser_lambda(
         train_ssdg.train(args)
 
 
+def test_clic_config_accepts_declared_proxy_tx_before_source_l_only_data_build(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A proxy TX role declaration is not permission to load its rows."""
+
+    args = _clic_validation_args(tmp_path)
+    args.phase1_source_train_tx_ids = "20-15,20-19,6-15,8-20"
+    args.phase1_source_known_validation_tx_ids = "14-7"
+    args.phase1_source_proxy_unknown_tx_ids = "14-10"
+
+    class DataBoundaryReached(RuntimeError):
+        pass
+
+    def stop_at_source_l_builder(*_args, **_kwargs):
+        raise DataBoundaryReached("CLIC config accepted the TX-role manifest")
+
+    monkeypatch.setattr(train_ssdg, "_build_ssdg_wisig_data", stop_at_source_l_builder)
+    with pytest.raises(DataBoundaryReached, match="accepted the TX-role manifest"):
+        train_ssdg.train(args)
+
+
+def test_clic_source_l_data_build_rejects_any_loaded_proxy_rows(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    args = _clic_validation_args(tmp_path)
+    args.phase1_source_train_tx_ids = "20-15,20-19,6-15,8-20"
+    args.phase1_source_known_validation_tx_ids = "14-7"
+    args.phase1_source_proxy_unknown_tx_ids = "14-10"
+
+    monkeypatch.setattr(
+        train_ssdg,
+        "_build_ssdg_wisig_data",
+        lambda *_args, **_kwargs: {
+            "split_info": {
+                "tx_partition_receipt": {
+                    "enabled": True,
+                    "held_tx_loaded_by_training": True,
+                }
+            }
+        },
+    )
+    with pytest.raises(CLICConfigError, match="held/proxy TX loaded by training"):
+        train_ssdg.train(args)
+
+
 @pytest.mark.parametrize(
     "operator_mode",
     ("raw_phase_control", "complex_local_invariant_curvature"),

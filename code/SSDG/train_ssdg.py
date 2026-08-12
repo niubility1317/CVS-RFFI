@@ -6935,8 +6935,6 @@ def train(args) -> int:
                     "P1-CLIC forbids every legacy auxiliary loss weight: "
                     + ", ".join(clic_nonzero_legacy_weights)
                 )
-            if str(getattr(args, "phase1_source_proxy_unknown_tx_ids", "")).strip():
-                raise CLICConfigError("P1-CLIC source training forbids proxy-unknown rows")
             if not all(value is False or value == 0 for value in clic_source_only_contract.values() if value is not True):
                 raise CLICConfigError("P1-CLIC source-only zero-access contract drifted")
         except Exception as error:
@@ -7628,6 +7626,17 @@ def train(args) -> int:
             if apply_sat_channel_for_scenario is None:
                 raise ImportError("cvsrffi.eval.apply_sat_channel_for_scenario is required for P1-CLIC")
             data_ctx = _build_ssdg_wisig_data(args, device)
+            clic_tx_partition_receipt = (
+                (data_ctx.get("split_info", {}) or {}).get("tx_partition_receipt", {})
+            )
+            if not bool(clic_tx_partition_receipt.get("enabled", False)):
+                raise CLICConfigError(
+                    "P1-CLIC requires an explicit TX-role partition receipt"
+                )
+            if bool(clic_tx_partition_receipt.get("held_tx_loaded_by_training", True)):
+                raise CLICConfigError(
+                    "P1-CLIC rejects any held/proxy TX loaded by training"
+                )
             clic_train_loader = data_ctx["train_loader"]
             if int(data_ctx.get("input_len", 0)) != 256:
                 raise CLICConfigError("P1-CLIC requires source-L received_i length 256")
