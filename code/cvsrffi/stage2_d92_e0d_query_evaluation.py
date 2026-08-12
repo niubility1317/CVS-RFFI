@@ -97,10 +97,19 @@ _NEWGUARD_RECEIPT_FIELDS = (
     "d92_e0d_newguard_tau_old_envelope_shift",
     "d92_e0d_newguard_deployment_protection_pass",
     "d92_e0d_newguard_full_head_byte_exact",
+    "d92_e0d_newguard_deployment_backtrack_scale",
+    "d92_e0d_newguard_deployment_attempt_count",
+    "d92_e0d_newguard_deployment_full_head_byte_exact",
+    "d92_e0d_newguard_deployment_codec_roundtrip_count",
+    "d92_e0d_newguard_deployment_codec_macs_upper_bound",
     "d92_e0d_newguard_nullspace_rank",
     "d92_e0d_newguard_rank_threshold",
     "d92_e0d_newguard_max_abs_Xnew_internal_residual",
+    "d92_e0d_newguard_protection_tolerance",
     "d92_e0d_newguard_new_support_min_margin_change",
+    "d92_e0d_newguard_new_support_old_envelope_change_max",
+    "d92_e0d_newguard_deployment_new_support_min_margin_change",
+    "d92_e0d_newguard_deployment_new_support_old_envelope_change_max",
     "d92_e0d_newguard_tail_margin_change_by_old_class",
     "d92_e0d_newguard_deployment_tail_margin_change_by_old_class",
     "d92_e0d_newguard_residual_l2_by_old_class",
@@ -449,7 +458,15 @@ def _newguard_support_receipt(
             if not registered
             else "K1_K2_EXACT_D92_FULL_ALIAS"
         )
-        if active is not False or fallback is not False or reason != expected_reason:
+        if (
+            active is not False
+            or fallback is not False
+            or reason != expected_reason
+            or receipt["d92_e0d_newguard_deployment_backtrack_scale"] is not None
+            or int(receipt["d92_e0d_newguard_deployment_attempt_count"]) != 0
+            or receipt["d92_e0d_newguard_deployment_full_head_byte_exact"]
+            is not True
+        ):
             raise D92E0DQueryEvaluationError("D92-E0D NewGuard receipt drift")
         return receipt
     if int(receipt["d92_e0d_newguard_full_component_fit_count"]) != 1:
@@ -460,6 +477,10 @@ def _newguard_support_receipt(
             or not isinstance(reason, str)
             or not reason
             or receipt["d92_e0d_newguard_full_head_byte_exact"] is not True
+            or receipt["d92_e0d_newguard_deployment_backtrack_scale"] is not None
+            or int(receipt["d92_e0d_newguard_deployment_attempt_count"]) <= 0
+            or receipt["d92_e0d_newguard_deployment_full_head_byte_exact"]
+            is not True
         ):
             raise D92E0DQueryEvaluationError("D92-E0D NewGuard fallback receipt drift")
         return receipt
@@ -476,6 +497,24 @@ def _newguard_support_receipt(
             "new_margin": float(
                 receipt["d92_e0d_newguard_new_support_min_margin_change"]
             ),
+            "deployed_new_margin": float(
+                receipt[
+                    "d92_e0d_newguard_deployment_new_support_min_margin_change"
+                ]
+            ),
+            "raw_envelope": float(
+                receipt[
+                    "d92_e0d_newguard_new_support_old_envelope_change_max"
+                ]
+            ),
+            "deployed_envelope": float(
+                receipt[
+                    "d92_e0d_newguard_deployment_new_support_old_envelope_change_max"
+                ]
+            ),
+            "protection_tolerance": float(
+                receipt["d92_e0d_newguard_protection_tolerance"]
+            ),
             "objective": float(receipt["d92_e0d_newguard_maxmin_objective"]),
             "trust": float(receipt["d92_e0d_newguard_trust_region_utilization"]),
             "macs": int(
@@ -488,6 +527,18 @@ def _newguard_support_receipt(
                 receipt["d92_e0d_newguard_persistent_state_bytes_delta"]
             ),
             "query_macs": int(receipt["d92_e0d_newguard_query_macs"]),
+            "scale": float(
+                receipt["d92_e0d_newguard_deployment_backtrack_scale"]
+            ),
+            "attempts": int(
+                receipt["d92_e0d_newguard_deployment_attempt_count"]
+            ),
+            "codec_roundtrips": int(
+                receipt["d92_e0d_newguard_deployment_codec_roundtrip_count"]
+            ),
+            "codec_macs": int(
+                receipt["d92_e0d_newguard_deployment_codec_macs_upper_bound"]
+            ),
         }
         tail = np.asarray(
             receipt["d92_e0d_newguard_tail_margin_change_by_old_class"],
@@ -509,12 +560,19 @@ def _newguard_support_receipt(
         receipt["d92_e0d_newguard_new_rows_byte_exact"] is not True
         or receipt["d92_e0d_newguard_deployment_new_rows_byte_exact"] is not True
         or receipt["d92_e0d_newguard_deployment_protection_pass"] is not True
+        or receipt["d92_e0d_newguard_deployment_full_head_byte_exact"] is not False
         or not all(np.isfinite(value) for value in numeric.values())
         or numeric["tau"] > 0.0
         or numeric["rank"] <= 0
         or numeric["threshold"] <= 0.0
         or numeric["xnew"] < 0.0
         or numeric["new_margin"] < -1.0e-4
+        or numeric["protection_tolerance"]
+        != float(1024.0 * np.finfo(np.float32).eps)
+        or numeric["new_margin"] < -numeric["protection_tolerance"]
+        or numeric["deployed_new_margin"] < -numeric["protection_tolerance"]
+        or numeric["raw_envelope"] > numeric["protection_tolerance"]
+        or numeric["deployed_envelope"] > numeric["protection_tolerance"]
         or numeric["objective"] < 0.0
         or numeric["trust"] < 0.0
         or numeric["trust"] > 1.0 + 1.0e-6
@@ -522,6 +580,12 @@ def _newguard_support_receipt(
         or numeric["transient"] < 0
         or numeric["state_delta"] != 0
         or numeric["query_macs"] != int(class_count) * 288
+        or numeric["scale"] <= 0.0
+        or numeric["scale"] > 128.0
+        or numeric["attempts"] <= 0
+        or numeric["attempts"] > 20
+        or numeric["codec_roundtrips"] != numeric["attempts"] + 1
+        or numeric["codec_macs"] <= 0
         or tail.shape != (OLD_CLASS_COUNT,)
         or deployed_tail.shape != (OLD_CLASS_COUNT,)
         or residual_norm.shape != (OLD_CLASS_COUNT,)
@@ -529,7 +593,7 @@ def _newguard_support_receipt(
         or not np.isfinite(deployed_tail).all()
         or not np.isfinite(residual_norm).all()
         or np.any(tail < -1.0e-4)
-        or np.any(deployed_tail < -1.0e-4)
+        or np.any(deployed_tail < -numeric["protection_tolerance"])
         or np.any(residual_norm < 0.0)
         or any(
             receipt[field] is not False

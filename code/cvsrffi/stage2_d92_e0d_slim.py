@@ -239,6 +239,17 @@ def build_d92_e0d_fit(
                 "d92_newguard_tau_old_envelope_shift",
                 "d92_newguard_deployment_new_rows_byte_exact",
                 "d92_newguard_deployment_protection_pass",
+                "d92_newguard_protection_tolerance",
+                "d92_newguard_new_support_min_margin_change",
+                "d92_newguard_new_support_old_envelope_change_max",
+                "d92_newguard_deployment_new_support_min_margin_change",
+                "d92_newguard_deployment_new_support_old_envelope_change_max",
+                "d92_newguard_deployment_tail_margin_change_by_old_class",
+                "d92_newguard_deployment_backtrack_scale",
+                "d92_newguard_deployment_attempt_count",
+                "d92_newguard_deployment_full_head_byte_exact",
+                "d92_newguard_deployment_codec_roundtrip_count",
+                "d92_newguard_deployment_codec_macs_upper_bound",
                 "d92_newguard_persistent_state_bytes_delta",
                 "d92_newguard_query_rows_used",
                 "d92_newguard_query_fit_access",
@@ -264,11 +275,32 @@ def build_d92_e0d_fit(
                         or not base_newguard_reason
                         or base_audit.get("d92_newguard_full_head_byte_exact")
                         is not True
+                        or base_audit.get(
+                            "d92_newguard_deployment_backtrack_scale"
+                        )
+                        is not None
+                        or int(
+                            base_audit["d92_newguard_deployment_attempt_count"]
+                        )
+                        <= 0
+                        or base_audit.get(
+                            "d92_newguard_deployment_full_head_byte_exact"
+                        )
+                        is not True
                     ):
                         raise D92E0DSlimError(
                             "D92-E0D NewGuard fallback receipt drift"
                         )
                 elif base_newguard_fallback is False:
+                    protection_tolerance = float(
+                        base_audit["d92_newguard_protection_tolerance"]
+                    )
+                    deployed_tail = np.asarray(
+                        base_audit[
+                            "d92_newguard_deployment_tail_margin_change_by_old_class"
+                        ],
+                        dtype=np.float64,
+                    )
                     if (
                         base_newguard_active is not True
                         or base_newguard_reason is not None
@@ -280,6 +312,66 @@ def build_d92_e0d_fit(
                         is not True
                         or base_audit.get("d92_newguard_deployment_protection_pass")
                         is not True
+                        or float(
+                            base_audit["d92_newguard_deployment_backtrack_scale"]
+                        )
+                        <= 0.0
+                        or int(
+                            base_audit[
+                                "d92_newguard_deployment_attempt_count"
+                            ]
+                        )
+                        <= 0
+                        or base_audit.get(
+                            "d92_newguard_deployment_full_head_byte_exact"
+                        )
+                        is not False
+                        or int(
+                            base_audit[
+                                "d92_newguard_deployment_codec_roundtrip_count"
+                            ]
+                        )
+                        != int(
+                            base_audit[
+                                "d92_newguard_deployment_attempt_count"
+                            ]
+                        )
+                        + 1
+                        or int(
+                            base_audit[
+                                "d92_newguard_deployment_codec_macs_upper_bound"
+                            ]
+                        )
+                        <= 0
+                        or protection_tolerance
+                        != float(1024.0 * np.finfo(np.float32).eps)
+                        or float(
+                            base_audit[
+                                "d92_newguard_new_support_min_margin_change"
+                            ]
+                        )
+                        < -protection_tolerance
+                        or float(
+                            base_audit[
+                                "d92_newguard_deployment_new_support_min_margin_change"
+                            ]
+                        )
+                        < -protection_tolerance
+                        or float(
+                            base_audit[
+                                "d92_newguard_new_support_old_envelope_change_max"
+                            ]
+                        )
+                        > protection_tolerance
+                        or float(
+                            base_audit[
+                                "d92_newguard_deployment_new_support_old_envelope_change_max"
+                            ]
+                        )
+                        > protection_tolerance
+                        or deployed_tail.shape != (6,)
+                        or not np.isfinite(deployed_tail).all()
+                        or np.any(deployed_tail < -protection_tolerance)
                         or float(base_audit["d92_newguard_tau_old_envelope_shift"])
                         > 0.0
                     ):
@@ -300,6 +392,13 @@ def build_d92_e0d_fit(
                     base_newguard_active is not False
                     or base_newguard_fallback is not False
                     or base_newguard_reason != expected_reason
+                    or base_audit.get("d92_newguard_deployment_backtrack_scale")
+                    is not None
+                    or int(base_audit["d92_newguard_deployment_attempt_count"]) != 0
+                    or base_audit.get(
+                        "d92_newguard_deployment_full_head_byte_exact"
+                    )
+                    is not True
                 ):
                     raise D92E0DSlimError(
                         "D92-E0D NewGuard inactive receipt drift"

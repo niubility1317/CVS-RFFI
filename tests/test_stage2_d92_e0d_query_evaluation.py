@@ -202,11 +202,36 @@ def _resource(
         "d92_e0d_newguard_deployment_new_rows_byte_exact": (
             True if newguard_active else None
         ),
+        "d92_e0d_newguard_protection_tolerance": (
+            1024.0 * np.finfo(np.float32).eps if newguard_active else None
+        ),
+        "d92_e0d_newguard_new_support_old_envelope_change_max": (
+            -0.01 if newguard_active else None
+        ),
+        "d92_e0d_newguard_deployment_new_support_old_envelope_change_max": (
+            -0.01 if newguard_active else None
+        ),
+        "d92_e0d_newguard_deployment_new_support_min_margin_change": (
+            0.01 if newguard_active else None
+        ),
         "d92_e0d_newguard_tau_old_envelope_shift": (
             -0.01 if newguard_active else 0.0
         ),
         "d92_e0d_newguard_deployment_protection_pass": newguard_active,
         "d92_e0d_newguard_full_head_byte_exact": not newguard_active,
+        "d92_e0d_newguard_deployment_backtrack_scale": (
+            0.5 if newguard_active else None
+        ),
+        "d92_e0d_newguard_deployment_attempt_count": (
+            2 if newguard_active else 0
+        ),
+        "d92_e0d_newguard_deployment_full_head_byte_exact": not newguard_active,
+        "d92_e0d_newguard_deployment_codec_roundtrip_count": (
+            3 if newguard_active else 0
+        ),
+        "d92_e0d_newguard_deployment_codec_macs_upper_bound": (
+            3 * 8 * (11 if registered else 6) * 288 if newguard_active else 0
+        ),
         "d92_e0d_newguard_nullspace_rank": 10 if newguard_active else None,
         "d92_e0d_newguard_rank_threshold": 1.0e-8 if newguard_active else None,
         "d92_e0d_newguard_max_abs_Xnew_internal_residual": (
@@ -645,6 +670,17 @@ def test_newguard_query_audit_requires_support_only_protection_receipt():
             "d92_e0d_newguard_deployment_new_rows_byte_exact": True,
             "d92_e0d_newguard_tau_old_envelope_shift": -0.01,
             "d92_e0d_newguard_deployment_protection_pass": True,
+            "d92_e0d_newguard_protection_tolerance": (
+                1024.0 * np.finfo(np.float32).eps
+            ),
+            "d92_e0d_newguard_new_support_old_envelope_change_max": -0.01,
+            "d92_e0d_newguard_deployment_new_support_old_envelope_change_max": -0.01,
+            "d92_e0d_newguard_deployment_new_support_min_margin_change": 0.01,
+            "d92_e0d_newguard_deployment_backtrack_scale": 0.5,
+            "d92_e0d_newguard_deployment_attempt_count": 2,
+            "d92_e0d_newguard_deployment_full_head_byte_exact": False,
+            "d92_e0d_newguard_deployment_codec_roundtrip_count": 3,
+            "d92_e0d_newguard_deployment_codec_macs_upper_bound": 76_032,
             "d92_e0d_newguard_persistent_state_bytes_delta": 0,
         }
     )
@@ -658,3 +694,8 @@ def test_newguard_query_audit_requires_support_only_protection_receipt():
     )
     assert row["d92_e0d_newguard_full_component_fit_count"] == 1
     assert row["d92_e0d_newguard_deployment_protection_pass"] is True
+    assert row["d92_e0d_newguard_deployment_backtrack_scale"] == 0.5
+    assert row["d92_e0d_newguard_deployment_attempt_count"] == 2
+    assert row["d92_e0d_newguard_deployment_full_head_byte_exact"] is False
+    assert row["d92_e0d_newguard_deployment_codec_roundtrip_count"] == 3
+    assert row["d92_e0d_newguard_deployment_codec_macs_upper_bound"] == 76_032
