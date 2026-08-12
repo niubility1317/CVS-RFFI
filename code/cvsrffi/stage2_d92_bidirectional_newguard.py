@@ -753,14 +753,7 @@ def build_bidirectional_newguard_affine_state(
                 shots=shots,
                 dimension=dimension,
             )
-            fallback.update(
-                {
-                    "d92_newguard_deployment_new_rows_byte_exact": protection[
-                        "d92_newguard_deployment_new_rows_byte_exact"
-                    ],
-                    "d92_newguard_deployment_protection_pass": False,
-                }
-            )
+            fallback.update(protection)
             return baseline_coefficient_exact, baseline_intercept_exact, fallback
         support_macs, support_transient = _resource_upper_bounds(
             classes=classes,

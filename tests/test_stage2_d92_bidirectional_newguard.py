@@ -280,6 +280,36 @@ def test_newguard_rejects_a_negative_deployed_tail_with_large_unused_head_value(
     assert audit["d92_newguard_fallback_active"] is True
     assert audit["d92_newguard_fallback_reason"] == "deployment_protection_failed"
     assert audit["d92_newguard_full_head_byte_exact"] is True
+    assert audit["d92_newguard_closure_tolerance"] > 0.0
+    assert audit["d92_newguard_protection_tolerance"] > 0.0
+    assert np.isfinite(
+        audit["d92_newguard_deployment_max_abs_Xnew_internal_residual"]
+    )
+    assert np.isfinite(
+        audit["d92_newguard_deployment_old_group_zero_sum_residual_max_abs"]
+    )
+    deployed_tail = np.asarray(
+        audit["d92_newguard_deployment_tail_margin_change_by_old_class"],
+        dtype=np.float64,
+    )
+    assert deployed_tail.shape == (6,)
+    assert np.isfinite(deployed_tail).all()
+    assert float(np.min(deployed_tail)) < -audit["d92_newguard_protection_tolerance"]
+    assert np.isfinite(
+        audit["d92_newguard_deployment_new_support_min_margin_change"]
+    )
+    assert np.isfinite(
+        audit[
+            "d92_newguard_deployment_new_support_old_envelope_change_max"
+        ]
+    )
+    assert np.isfinite(
+        audit[
+            "d92_newguard_deployment_new_support_old_envelope_change_max_abs_error"
+        ]
+    )
+    assert audit["d92_newguard_deployment_new_rows_byte_exact"] is True
+    assert audit["d92_newguard_deployment_protection_pass"] is False
 
 
 def test_newguard_rejects_registry_drift_instead_of_hiding_it_as_numeric_fallback():
