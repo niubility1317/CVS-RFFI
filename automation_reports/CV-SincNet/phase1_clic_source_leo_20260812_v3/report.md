@@ -45,3 +45,11 @@
 
 - Git commit、文件SHA、本地验证结果与独立最窄审查。
 - archive／release／SCP／唯一正式launch、PID／GPU／日志、cache／NPZ／binding闭合。
+
+## v3发布与静态门检查点（2026-08-12）
+
+- 冻结commit=`61c0b805c1c3187005856b3646126dab6ff09426`；工作树Task7/PAIR dirty均未打包、未stage。
+- 本地干净archive：`E:\type10-7\code\runner_tmp_phase1_clic_source_leo_20260812_v3\phase1_clic_source_leo_20260812_v3_61c0b805_git_archive.tar`，SHA256=`B52900DFAB499EC1B421111949F1E357527C69909FD0E366EBAE28C39A578E48`，bytes=`267018240`，members=`5026`。
+- 唯一SCP=1；远端临时archive SHA／bytes闭合，原子落地release=`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_clic_source_leo_20260812_v3_61c0b805`。远端核心SHA：launcher=`EC4E98080734E4B94F66999B7CD269C7ECBC5C1753DEC81EDEAE0DB99C591B0A`，builder=`25F895E42552D16EA71941CED02F08C1E7E20D7927335AAE94F6EF72D6A45B4D`，exporter=`591B60960F40BFE9585DB0D958C9A0E11DC0A75534AC935DFC3CD497E4E533C9`，phase1_clic=`36FFDE23244D80AD15647F72252C70004D1E33549D7BF3D6E510E99E56461335`。
+- 远端静态门通过：核心`py_compile`、builder`--help`、launcher`bash -n`、dry-run精确18行（6 cache+12 export，C6/G6）均通过；检查输出无target/query/truth/role输入参数。过程中一次只读静态脚本误拼Python路径，未写远端、未启动、随后已用正确`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`复验通过。
+- v3正式launch计数仍为0；下一步按合同只检查launcher文件存在并明确调用`bash`，不使用`test -x`。
