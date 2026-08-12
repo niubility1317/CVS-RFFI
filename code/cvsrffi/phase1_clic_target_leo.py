@@ -1459,10 +1459,16 @@ def _load_g_predictor_bundle(path: Path) -> _CLICTargetPredictorRuntime:
     fold = int(source_policy["fold_index"])
     if fold not in range(1, 7):
         raise CLICTargetProtocolError("G predictor bundle source-policy fold is invalid")
+    try:
+        prepared_forward = bundle._prepare_verified_real_forward(path, verified)
+    except Exception as exc:
+        raise CLICTargetProtocolError(
+            "G predictor deployment bundle runtime preparation failed"
+        ) from exc
 
     def forward(received_i: Any, *, scene: str) -> dict[str, Any]:
         try:
-            return dict(bundle.reload_forward(path, received_i, scene=scene))
+            return dict(prepared_forward(received_i, scene=scene))
         except Exception as exc:
             raise CLICTargetProtocolError("G predictor verified received-IQ forward failed") from exc
 

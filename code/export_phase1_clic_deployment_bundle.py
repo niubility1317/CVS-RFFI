@@ -1813,15 +1813,18 @@ def _single_real_score_scalars(scored: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
-def _reload_real_forward(
+def _prepare_verified_real_forward(
     path: str | Path,
     verified: Mapping[str, Any],
-    received_i: Any,
-    *,
-    scene: str | None,
-) -> dict[str, Any]:
-    if not isinstance(scene, str) or scene not in EXPECTED_SCENARIOS:
-        raise CLICBundleError("strict real CLIC reload requires one formal LEO scene")
+):
+    """Reopen and rebuild one verified bundle once for its immutable row stream.
+
+    The caller has already verified the archive.  Reopening all members here
+    closes that verify-to-materialize window; the target publisher separately
+    hashes the bundle before loading and again after the complete row stream.
+    No received IQ, target identity, fit state, or threshold enters this setup.
+    """
+
     members = _reload_members_after_verify(path, verified)
     config = _validate_config(verified.get("config"), require_runtime_rebuild=True)
     geometry = _json_member(members["source_geometry.json"], label="source geometry")
@@ -1837,52 +1840,67 @@ def _reload_real_forward(
     model = _rebuild_real_model(
         model_state, runtime_rebuild=config["runtime_rebuild"]
     )
-    input_tensor = _strict_received_iq_for_reload(
-        received_i, input_len=int(config["runtime_rebuild"]["input_len"])
-    )
     try:
         parameter = next(model.parameters())
     except StopIteration as exc:
         raise CLICBundleError("strict real CLIC reload model has no parameters") from exc
-    input_tensor = input_tensor.to(dtype=parameter.dtype, device=torch.device("cpu"))
-    try:
-        with torch.no_grad():
-            # Exactly one received-IQ forward.  No channel synthesis, TTA,
-            # source/proxy access, fit, threshold update, or feedback occurs.
-            output = model(input_tensor, y_tx=None, grl_lambda=1.0, return_aux=True)
-    except (RuntimeError, TypeError, ValueError) as exc:
-        raise CLICBundleError("strict real CLIC reload forward failed") from exc
-    if not isinstance(output, Mapping):
-        raise CLICBundleError("strict real CLIC reload model output is not a mapping")
-    z_id = _tensor_output(output, "z_id", expected_shape=(1, int(config["z_id_dim"])))
-    z_dom = _tensor_output(output, "z_dom", expected_shape=(1, int(config["z_dom_dim"])))
-    q_clic = _tensor_output(output, "q_clic", expected_shape=(1, int(config["q_clic_dim"])))
-    tx_logits = _tensor_output(output, "tx_logits", expected_shape=(1, LOCAL_CLASS_COUNT))
-    try:
-        scored = _pair.score_clic_open_set(
-            geometry,
-            normalized_rule["per_scene_policies"][scene],
-            z_id,
-            tx_logits,
-            scene,
-        )
-    except _pair.CLICPostfreezePairError as exc:
-        raise CLICBundleError("strict real CLIC reload PAIR scoring failed") from exc
-    score_scalars = _single_real_score_scalars(scored)
-    return {
-        "z_id": z_id,
-        "z_dom": z_dom,
-        "q_clic": q_clic,
-        "tx_logits": tx_logits,
-        **score_scalars,
-        "scene": scene,
-        "state_sha256": str(verified["state_sha256"]),
-        "geometry_state_sha256": scored["geometry_state_sha256"],
-        "policy_rule_sha256": scored["policy_rule_sha256"],
-        "real_checkpoint_state_rebuild_verified": True,
-        "real_checkpoint_reload_verified": True,
-        "synthetic_fixture": False,
-    }
+
+    def forward(received_i: Any, *, scene: str | None = None) -> dict[str, Any]:
+        if not isinstance(scene, str) or scene not in EXPECTED_SCENARIOS:
+            raise CLICBundleError("strict real CLIC reload requires one formal LEO scene")
+        input_tensor = _strict_received_iq_for_reload(
+            received_i, input_len=int(config["runtime_rebuild"]["input_len"])
+        ).to(dtype=parameter.dtype, device=torch.device("cpu"))
+        try:
+            with torch.no_grad():
+                # Exactly one received-IQ forward.  No channel synthesis, TTA,
+                # source/proxy access, fit, threshold update, or feedback occurs.
+                output = model(input_tensor, y_tx=None, grl_lambda=1.0, return_aux=True)
+        except (RuntimeError, TypeError, ValueError) as exc:
+            raise CLICBundleError("strict real CLIC reload forward failed") from exc
+        if not isinstance(output, Mapping):
+            raise CLICBundleError("strict real CLIC reload model output is not a mapping")
+        z_id = _tensor_output(output, "z_id", expected_shape=(1, int(config["z_id_dim"])))
+        z_dom = _tensor_output(output, "z_dom", expected_shape=(1, int(config["z_dom_dim"])))
+        q_clic = _tensor_output(output, "q_clic", expected_shape=(1, int(config["q_clic_dim"])))
+        tx_logits = _tensor_output(output, "tx_logits", expected_shape=(1, LOCAL_CLASS_COUNT))
+        try:
+            scored = _pair.score_clic_open_set(
+                geometry,
+                normalized_rule["per_scene_policies"][scene],
+                z_id,
+                tx_logits,
+                scene,
+            )
+        except _pair.CLICPostfreezePairError as exc:
+            raise CLICBundleError("strict real CLIC reload PAIR scoring failed") from exc
+        score_scalars = _single_real_score_scalars(scored)
+        return {
+            "z_id": z_id,
+            "z_dom": z_dom,
+            "q_clic": q_clic,
+            "tx_logits": tx_logits,
+            **score_scalars,
+            "scene": scene,
+            "state_sha256": str(verified["state_sha256"]),
+            "geometry_state_sha256": scored["geometry_state_sha256"],
+            "policy_rule_sha256": scored["policy_rule_sha256"],
+            "real_checkpoint_state_rebuild_verified": True,
+            "real_checkpoint_reload_verified": True,
+            "synthetic_fixture": False,
+        }
+
+    return forward
+
+
+def _reload_real_forward(
+    path: str | Path,
+    verified: Mapping[str, Any],
+    received_i: Any,
+    *,
+    scene: str | None,
+) -> dict[str, Any]:
+    return _prepare_verified_real_forward(path, verified)(received_i, scene=scene)
 
 
 def reload_forward(path: str | Path, received_i: Any, *, scene: str | None = None) -> dict[str, Any]:

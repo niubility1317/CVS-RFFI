@@ -5019,6 +5019,35 @@ def test_g_predictor_runtime_forward_normalizes_reload_scalars(
         assert np.isfinite(np.asarray(output[field], dtype=np.float64)).all()
 
 
+def test_g_predictor_runtime_rebuilds_once_before_repeated_target_rows(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """One immutable G bundle is verified/rebuilt once, not once per IQ row."""
+
+    artifacts = _pair_fold_artifact_fixture(
+        tmp_path / "g", fold=1, real_g_bundle=True
+    )
+    with np.load(artifacts["existing_received_iq"], allow_pickle=False) as archive:
+        received_rows = np.asarray(archive["received_iq"][:2], dtype=np.float32)
+    rebuilds = 0
+    original_rebuild = BUNDLE._rebuild_real_model
+
+    def counted_rebuild(*args: object, **kwargs: object):
+        nonlocal rebuilds
+        rebuilds += 1
+        return original_rebuild(*args, **kwargs)
+
+    monkeypatch.setattr(BUNDLE, "_rebuild_real_model", counted_rebuild)
+    runtime = TARGET.load_verified_clic_predictor_state(artifacts["g_bundle"])
+    load_rebuilds = rebuilds
+    assert load_rebuilds >= 1
+    runtime.forward_once(received_rows[0], scene=SCENARIOS[0])
+    runtime.forward_once(received_rows[1], scene=SCENARIOS[0])
+    assert rebuilds == load_rebuilds, (
+        "verified G runtime must retain its immutable model across target rows"
+    )
+
+
 def test_union_six_truth_cache_scores_only_fold_local4_and_audits_inactive_tx(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
