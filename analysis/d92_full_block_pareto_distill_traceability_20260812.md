@@ -7,13 +7,13 @@
 |ID|源要求|冻结实现面|验证证据|状态|
 |---|---|---|---|---|
 |PD-01|相对E0八项严格Pareto|Hard10 analyzer逐outer、scene、TX同排门|10个performance outer；任一均值平/反向即`REJECT_ROUTE`|DESIGN_FROZEN|
-|PD-02|旧类floor和遗忘显著改善，同时seen-new与双向混淆改善|support词典序旧CVaR20、新q20、双向hinge目标|部署support收据；Hard10 truth-side最终证伪|DESIGN_FROZEN|
+|PD-02|旧类floor和遗忘显著改善，同时seen-new与双向混淆改善|support词典序六旧类固定lower-Q20 tail、全新类合并固定lower-Q20 tail、双向hinge目标|部署support收据；Hard10 truth-side最终证伪|DESIGN_FROZEN|
 |PD-03|不复用FloorBoost/NewGuard失败机制|禁止旧类统一bias、保护回缩、多scale和容差放宽|静态method lock与负测|DESIGN_FROZEN|
 |PD-04|只保留D92的低成本互补几何|共享一次旧/新协方差统计；FULL与BLOCK各解一次|`covariance_estimation_count=1`、`full_solve=1`、`block_solve=1`|DESIGN_FROZEN|
 |PD-05|禁止LOO/Fisher/Pareto枚举|不构造PRESS、不做K折重拟合、不调用D61/D62残差门|fit inventory与调用负测|DESIGN_FROZEN|
 |PD-06|类置换等变|类公共仿射规范；六个旧类各自固定tail；所有新类合并为一个固定lower-Q20 new→old tail；阈值并列全纳入|old/new组内标签置换测试|DESIGN_FROZEN|
 |PD-07|query零访问|仅同一row注册support参与求解|query truth/fit/update/selection/role/quota/global全false|DESIGN_FROZEN|
-|PD-08|真实D42部署闭环|对`Q_D42(theta)`重算全部support约束；最多一次固定code-local修正|量化后约束与byte/hash收据|DESIGN_FROZEN|
+|PD-08|真实D42部署闭环|E0/候选双预览复用实际D42尺度；跨组变化达到真实量子；正式单头发布SHA等于候选预览；无code-local修正|量化后约束、量子与byte/hash收据|DESIGN_FROZEN|
 |PD-09|无效候选不发布|部署头E0-byte-exact、无真实量化步变化或约束失败时`LOCAL_INVALID`/exact E0 fallback|真实checkpoint no-query smoke|DESIGN_FROZEN|
 |PD-10|K1/K2边界不变|严格D92 FULL alias|K1/K2 state/prediction与fit inventory测试|DESIGN_FROZEN|
 |PD-11|query/state与E0一致|最终仅持久化一个F0仿射头|query MAC/state byte exact|DESIGN_FROZEN|

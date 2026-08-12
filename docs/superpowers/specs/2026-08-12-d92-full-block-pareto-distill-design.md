@@ -43,7 +43,7 @@
 
 ## 5.D42部署
 
-对唯一连续解执行一次正式D42 codec回环，并直接在解码后的`Q_D42(theta(beta))`上重算tail、双向hinge、类别置换闭包和新/旧support指标。只允许一次固定的最小范数code-local修正；不得使用scale列表、回缩搜索或query选择。
+对E0 FULL和唯一连续候选各执行一次D42部署预览，直接保留两次真实`scale1/scale2`，并在候选解码头上重算tail、双向hinge、类别置换闭包和新/旧support指标。由两次预览的实际D42尺度与support幅值冻结跨组margin量子；候选的old→new或new→old部署margin变化至少有一项达到该量子才可激活。正式状态仍只发布一次单F0头，且其解码SHA必须等于候选预览SHA；不得进行code-local修正、scale列表、回缩搜索或query选择。
 
 出现以下任一情况时不发布Hard10：部署头与E0 byte-exact；全部support跨组margin变化小于一个真实D42量化步；部署support共同下界不为正；双向hinge任一方向劣于E0；永久state或query MAC不等于E0。结构错误直接抛出，合法数值退化返回exact E0并标记`LOCAL_INVALID`。
 

@@ -5,8 +5,8 @@
 |字段|冻结值|
 |---|---|
 |run ID|`d92_e0_full_block_pareto_distill_hard11_20260812_v1`|
-|状态|`DESIGN_FROZEN / IMPLEMENTING`|
-|时间|2026-08-12 11:58 HKT|
+|状态|`LOCAL_VERIFIED / READY_FOR_N607_HANDOFF`|
+|时间|2026-08-12 13:03 HKT|
 |操作者|Codex `/root`；科学实现与机械执行闭环分属独立owner；N607由唯一runner负责|
 |候选|`E0_FULL_BLOCK_PARETO_DISTILL`；candidate=`d92_e0_full_block_pareto_distill`|
 |协议|`p2_min_v1`、复用`VALIDATED_ONCE`数据，不重复验证|
@@ -37,7 +37,11 @@ Hard10原始D92 score已从原retry2任务只读取回10/10份，未修改远端
 - `analysis/d92_full_block_pareto_distill_traceability_20260812.md`
 - Git设计提交：`b925e820`
 
-K>2时，同一份D81变换support只估计一次`Sigma=0.5 Sigma_old+0.5 Sigma_new`。FULL解使用`Sigma`，BLOCK解只取同一`Sigma`的160/96/32块对角，不重估中心或协方差。两头规范化后形成互补方向，单次词典序support求解依次优化旧类固定CVaR20、新类固定q20、双向hinge与最小头扰动；最终只发布一个D42 F0头。
+K>2时，同一份D81变换support只估计一次`Sigma=0.5 Sigma_old+0.5 Sigma_new`。FULL解使用`Sigma`，BLOCK解只取同一`Sigma`的160/96/32块对角，不重估中心或协方差。经组均衡support-logit RMS对齐后，以`theta(beta)=theta_FULL+G(diag(beta)D)`形成单头候选，`0≤beta_c≤1`且所有类使用同一公式。
+
+一次词典序求解分三层：先最大化七个固定tail约束的共同增益，包括六个旧类各自的lower-Q20 true-vs-all margin均值和一个将所有新类support合并后的lower-Q20 true-new-vs-old margin均值；再最小化old→new与new→old最坏方向hinge；最后最小化归一化方向范数。固定tail集合只由E0部署support确定，优化中不更换，也不扫描权重。
+
+部署阶段分别对E0和唯一候选做一次真实D42预览，复用实际`scale1/scale2`计算support跨组margin量子。候选只有在old→new或new→old至少一项部署变化达到该量子、七项tail和双向hinge均不劣于E0、且部署头非E0 byte-exact时才激活；否则精确回退E0。正式状态只发布一个D42 F0头，并要求最终解码SHA等于候选预览SHA。
 
 禁止PRESS、K折LOO、Fisher、Pareto枚举、旧类统一bias、NewGuard多尺度回缩和query选择。部署头E0-byte-exact、未跨真实量化步或support约束失败时，本地无效或exact E0 fallback，不进入性能发布。
 
@@ -80,15 +84,13 @@ K>2时，同一份D81变换support只估计一次`Sigma=0.5 Sigma_old+0.5 Sigma_
 
 ## 6.本地实现与验证
 
-当前设计文件已进入Git提交`b925e820`。科学核心与Hard11机械闭环正在TDD实现。发布前只要求：
+实现已闭合并进入Git：设计`b925e820`，Hard11机械闭环`6205901a`/`231070cf`，科学实现`51b4605d`，D42跨组真实量子收据与机械门`fa809723`，最终科学量子门`ba866ff8`。
 
-1. 聚焦协议负测和K1/K2 alias；
-2. 真实checkpoint K>2 no-query smoke，并证明部署头非E0-byte-exact；
-3. 共享统计资源receipt；
-4. 独立P0=0、P1=0；
-5. clean Git commit和不可覆盖run路径。
+本地`ssr-gpu`一次整合验证覆盖core、共享协方差、probe、slim、query、Hard11 builder、runner和analyzer，共133项通过；9个发布模块`py_compile`通过，配置JSON、两个CLI帮助、`git diff --check`全部通过。独立监督者仅复核此前唯一P1后给出`P0=0 / P1=0 / APPROVE`。
 
-P2不阻塞实验。
+真实D42 RED证据为：实际量子约`0.00788`而跨组部署变化约`0.001`时，旧实现会错误激活；修复后精确回退E0。K>2 active必须满足`quantum>0`、`change>=quantum`、`quantum_pass=true`，K1/REG0三字段必须为`None`。
+
+本地历史回收K10包在进入fit前因旧SOMP-H detached seal schema不兼容而停止，没有性能结果；未据此修改方法。N607当前封存包的真实checkpoint K10 no-query smoke被保留为shard前硬门：只有active、非fallback、fit=4/2、query零访问和最终D42 SHA闭合后才会启动8个shard。P2不阻塞实验。
 
 ## 7.N607预注册
 
@@ -101,8 +103,21 @@ P2不阻塞实验。
 |logs root|`/home/szu2070436088/2510044040/CV-SincNet/logs/d92_e0_full_block_pareto_distill_hard11_20260812_v1`|
 |GPU|GPU0–7各一个shard，`CUDA_VISIBLE_DEVICES=i`内使用`cuda:0`|
 |expected|11 job receipt、22正式prediction/COMMIT/fit/resource、11 score、8 summary|
+|runtime commit|`ba866ff8f3292faad8ca847e5115f6591a0f71d4`|
+|runtime archive|`d92_pareto_distill_runtime_closure_ba866ff8.tar.gz`；5,082,551 bytes；SHA256=`8351fcf9241a73b2ee89865d2a12c6add4aba517dd168716b7e8a8fb88a3dab5`|
+|method lock|`stage2_d92_full_block_pareto_distill_hard11_v1.json`；SHA256=`6c3e1a1b41e08ecf7444c30607cbfdf5d59bcea06f9a902eacac91186d8f62c7`|
+|launch|`launch.sh`；SHA256=`19e2f3e12281a918144b781270f7ab8eb72631ba1c9947808222861c0f9fd5cc`|
+|selection|SHA256=`969fecb2fe723fa04db766cec0390f83771398124494c459e1918d90b91da8df`|
 
-最终exact command、archive/config/launch SHA、commit、PID与CWD在本地门通过后回填。启动前四个run路径必须不存在；唯一runner只启动一次。
+本地到远端只同步三件固定输入：外部报告目录的runtime archive到source root；Git仓库中的method lock到`source_root/configs/`；Git仓库报告目录的`launch.sh`到source root。runtime归档含1,312项，包含`code/cvsrffi/__init__.py`、科学核心和runner入口，且不存在`code/code`。
+
+冻结exact command：
+
+```text
+cd /home/szu2070436088/2510044040/CV-SincNet/runs/d92_pareto_distill_source_snapshot_20260812_v1 && nohup bash ./launch.sh >./launch_driver.out 2>./launch_driver.err </dev/null &
+```
+
+启动前source/output/logs及本地取回路径必须不存在；唯一runner只启动一次，`fresh_run_retry=false`。PID、CWD、GPU映射、manifest SHA、smoke receipt和最终artifact树在runner回传后追加。
 
 health stop仅限协议/安全错误、launcher确定性故障、prediction闭包失败或两个不同outer出现同一pre-prediction确定性异常。不得读取性能决定停止。技术失败保留artifact并标记`NO_PERFORMANCE_RESULT`，不得覆盖或在同一run ID重启。
 
@@ -111,4 +126,3 @@ health stop仅限协议/安全错误、launcher确定性故障、prediction闭�
 最大工程风险是共享统计后的BLOCK solve仍超过150ms/1.50×E0；最大科学风险是support margin改善不能外推为query Pareto。前者先由真实checkpoint资源smoke筛除，后者只能由完整10/10 Hard10一次性证伪。
 
 完成后必须回填：Git差异与测试、真实smoke、同步映射与哈希、exact command/PID/GPU、11/11闭合、完整取回、逐outer八指标、receiver/K/scene/六旧类分解、wall/peak/fallback以及唯一裁决。
-
