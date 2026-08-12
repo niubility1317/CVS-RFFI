@@ -72,10 +72,10 @@ def _validate_tcra_row(row: Mapping[str,Any], active: bool) -> None:
         if row.get(p+'active') is not True or row.get(p+'fallback_active') is not False or row.get(p+'fallback_reason') is not None: raise D92TCRAHard10RunnerError('fit audit TCRA active/fallback drift')
         if row.get(p+'final_gate_revision')!='safe_directional_v2' or row.get(p+'state_postprocess_mode')!='d42_tcra' or row.get(p+'direct_state_publish') is not True or row.get(p+'requantize_call_count')!=0: raise D92TCRAHard10RunnerError('fit audit TCRA revision/publish drift')
         if _sha(row.get(p+'e0_state_sha256'),'E0 state') == _sha(row.get(p+'final_state_sha256'),'final state'): raise D92TCRAHard10RunnerError('fit audit TCRA state did not change')
-        counts=[int(_finite(row.get(p+n),n,0)) for n in ('requested_atomic_ascent_count','applied_atomic_ascent_count','generated_atomic_ascent_count','selected_atomic_ascent_count','rejected_atomic_ascent_count','greedy_step_count')]
-        requested,applied,generated,selected,rejected,steps=counts
-        if requested!=applied or requested!=selected or generated!=selected+rejected or steps!=selected or selected<1 or row.get(p+'aggregate_saturation_count')!=0: raise D92TCRAHard10RunnerError('fit audit TCRA atomic receipt drift')
-        if row.get(p+'modified_state_field_names')!='coef2_qint8' or row.get(p+'competitor_code_decrement_count')!=0: raise D92TCRAHard10RunnerError('fit audit TCRA state-field drift')
+        counts=[int(_finite(row.get(p+n),n,0)) for n in ('requested_atomic_ascent_count','applied_atomic_ascent_count','generated_atomic_ascent_count','selected_atomic_ascent_count','rejected_atomic_ascent_count','prefix_guard_rejected_count','greedy_step_count')]
+        requested,applied,generated,selected,rejected,prefix_rejected,steps=counts
+        if requested!=applied or requested!=selected or generated!=selected+rejected or prefix_rejected>rejected or steps!=selected+prefix_rejected or selected<1 or row.get(p+'aggregate_saturation_count')!=0: raise D92TCRAHard10RunnerError('fit audit TCRA atomic receipt drift')
+        if row.get(p+'modified_state_field_names')!=['coef2_qint8'] or row.get(p+'competitor_code_decrement_count')!=0: raise D92TCRAHard10RunnerError('fit audit TCRA state-field drift')
         for n in ('old_tail_count_by_class','old_tail_gain_by_class'):
             if not isinstance(row.get(p+n),list) or len(row[p+n])!=6: raise D92TCRAHard10RunnerError(f'fit audit {n} drift')
         tol=_finite(row.get(p+'guard_tolerance'),'guard_tolerance',0)
@@ -101,6 +101,16 @@ def _validate_fit_audit(path: str|Path, *, k_shot: int) -> None:
 
 def _verify_manifest_artifacts(manifest: Mapping[str, Any]) -> None:
     return _BASE_VERIFY_MANIFEST_ARTIFACTS(manifest)
+
+
+def _rewrite_shared_failure_evidence(output_root: str | Path) -> None:
+    """Translate only immutable shared failure receipts owned by this run."""
+    root = Path(output_root)
+    _rewrite_schema(root / "SYSTEMIC_TECHNICAL_FAILURE_STOP.json", to_tcra=True)
+    ledger = root / "systemic_pre_prediction_failures"
+    if ledger.is_dir():
+        for path in ledger.rglob("*.json"):
+            _rewrite_schema(path, to_tcra=True)
 
 
 def _validate_shared_smoke(manifest: Mapping[str, Any], *, manifest_sha256: str, device: str) -> None:
@@ -239,9 +249,13 @@ def prepare(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def truth_free_smoke(args: argparse.Namespace) -> dict[str, Any]:
-    with _runner_context():
-        result = _base_runner.truth_free_smoke(args)
-    _rewrite_output(Path(args.output_root), to_tcra=True)
+    try:
+        with _runner_context():
+            result = _base_runner.truth_free_smoke(args)
+    finally:
+        smoke_root = Path(args.output_root)
+        _rewrite_output(smoke_root, to_tcra=True)
+        _rewrite_shared_failure_evidence(smoke_root.parent)
     result["status"] = "D92_TCRA_HARD10_REAL_CHECKPOINT_TRUTH_FREE_SMOKE_PASS"
     result["schema"] = "cvs.phase2.d92_tcra_hard10.smoke_receipt.v1"
     return result
@@ -262,14 +276,17 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
     def read_json_object(path: str | Path) -> dict[str, Any]:
         return _base_smoke_receipt_view(original_read_json_object(path))
 
-    with _runner_context():
-        _base_runner._read_json_object = read_json_object
-        try:
-            result = _base_runner.run_shard(args)
-        finally:
-            _base_runner._read_json_object = original_read_json_object
-    if manifest is not None:
-        _rewrite_shard_output(manifest, shard_index=int(args.shard_index))
+    try:
+        with _runner_context():
+            _base_runner._read_json_object = read_json_object
+            try:
+                result = _base_runner.run_shard(args)
+            finally:
+                _base_runner._read_json_object = original_read_json_object
+    finally:
+        if manifest is not None:
+            _rewrite_shard_output(manifest, shard_index=int(args.shard_index))
+            _rewrite_shared_failure_evidence(manifest["output_root"])
     result["schema"] = "cvs.phase2.d92_tcra_hard10.shard_summary.v1"
     return result
 

@@ -44,7 +44,8 @@ def _row(k_shot: int = 10) -> dict[str, object]:
         prefix + "generated_atomic_ascent_count": 3 if active else 0,
         prefix + "selected_atomic_ascent_count": 1 if active else 0,
         prefix + "rejected_atomic_ascent_count": 2 if active else 0,
-        prefix + "greedy_step_count": 1 if active else 0,
+        prefix + "prefix_guard_rejected_count": 1 if active else 0,
+        prefix + "greedy_step_count": 2 if active else 0,
         prefix + "aggregate_saturation_count": 0,
         prefix + "code1_byte_exact": True if active else None,
         prefix + "scale1_byte_exact": True if active else None,
@@ -52,7 +53,7 @@ def _row(k_shot: int = 10) -> dict[str, object]:
         prefix + "intercept_byte_exact": True if active else None,
         prefix + "log_diag_byte_exact": True if active else None,
         prefix + "coef2_byte_exact": False if active else None,
-        prefix + "modified_state_field_names": "coef2_qint8" if active else None,
+        prefix + "modified_state_field_names": ["coef2_qint8"] if active else None,
         prefix + "old_tail_count_by_class": [1] * 6 if active else None,
         prefix + "old_tail_gain_by_class": [0.1] * 6 if active else None,
         prefix + "old_tail_min_gain": 0.1 if active else None,
@@ -117,3 +118,19 @@ def test_runner_context_binds_real_executor_and_tcra_exception() -> None:
         assert base.D92ParetoDistillHard11RunnerError is runner.D92TCRAHard10RunnerError
         assert base.D92ParetoDistillHard11Error is runner.D92TCRAHard10RunnerError
     assert base.D92ParetoDistillHard11RunnerError is original
+
+
+def test_shared_failure_receipts_are_rewritten_to_tcra(tmp_path: Path) -> None:
+    stop = tmp_path / "SYSTEMIC_TECHNICAL_FAILURE_STOP.json"
+    record = (
+        tmp_path
+        / "systemic_pre_prediction_failures"
+        / ("f" * 64)
+        / "outer"
+        / "job.json"
+    )
+    _write(stop, {"schema": "cvs.phase2.d92_pareto_distill_hard11.systemic_stop.v1"})
+    _write(record, {"schema": "cvs.phase2.d92_pareto_distill_hard11.pre_prediction_failure.v1"})
+    runner._rewrite_shared_failure_evidence(tmp_path)
+    assert json.loads(stop.read_text())["schema"] == "cvs.phase2.d92_tcra_hard10.systemic_stop.v1"
+    assert json.loads(record.read_text())["schema"] == "cvs.phase2.d92_tcra_hard10.pre_prediction_failure.v1"
