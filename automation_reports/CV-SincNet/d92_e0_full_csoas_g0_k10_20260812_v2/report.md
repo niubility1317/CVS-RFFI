@@ -1,6 +1,6 @@
 # D92 E0 FULL CSOAS K10 G0实验报告
 
-状态：`LOCAL_VERIFIED / READY_FOR_N607_HANDOFF`
+状态：`ARTIFACTS_COMPLETE / G0_MECHANISM_RESOURCE_PASS / NO_PERFORMANCE_RESULT`
 
 ## 1.实验身份
 
@@ -82,6 +82,41 @@ cd /home/szu2070436088/2510044040/CV-SincNet/runs/d92_csoas_g0_source_b8ebd4f4_2
 
 期望artifact：before/after的prediction、COMMIT、fit/resource/execution receipt，`logs/g0_validation.json`及driver/import/prediction日志。G0不运行scorer。
 
-## 8.运行结果（待runner回填）
+## 8.运行结果
 
-v1已因发布验证器读取未持久化量化字段而技术停止；方法预测与收据完整但不得重标为G0成功。v2只修复该证据源，科学commit、方法、outer、门槛均不变。当前无PID、无远端同步、无性能结果。sole runner须回填preflight、SCP/hashes、CWD/cmdline/PID/GPU、三场景机制/资源表、artifact tree hash、SSH清理与最终状态。
+v1已因发布验证器读取未持久化量化字段而技术停止；本v2只修复该证据源，科学commit、方法、outer和门槛均不变。本次唯一launch完成G0机制/资源闭环，明确不运行scorer、不读取性能指标，结论仍为`NO_PERFORMANCE_RESULT`。
+
+### 8.1Preflight、落地与唯一launch
+
+- 2026-08-12 19:56:45 CST direct preflight通过：普通账户`szu2070436088`、项目根目录可见，8张RTX3090均为0%利用率、1MiB占用；无本地残留`ssh.exe`或TCP22连接。
+- launch前远端source/output/logs三root均`ABSENT`、无同run进程；仅创建source目录，按`archive→launch.sh`顺序SCP。archive与launch远端size/SHA分别为`6137499/4b0b434a26b47511cb0ddeb9f2455bc81964d8fcef312e75e57879547b631ca5`和`10309/d60520af5c0e9d7019894361cc8ab81fade8c0f3ec4957fa5bb01b7f09dff3f7`。
+- 远端landing核验通过：archive为1458 members、无绝对路径、`..`路径或link成员，required entries齐全，`bash -n`通过；`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`为Python 3.10.19，`CUDA_AVAILABLE=True`且device_count=8；四份seal和ground manifest SHA全部匹配。
+- 唯一detached命令按冻结值执行一次，SSH返回`SSH_EXIT=0`，未重试、未重启、未换命令。任务在首次完整探针前已结束；因此没有可持久读取的run PID。固定CWD/cmdline由上节命令确定，最终`RUN_ACTIVE=0`且`nvidia-smi --query-compute-apps`为空，GPU已释放。探针曾遇到一次进程退出竞态`/proc/<pid>/cmdline: No such file`，仅为读取已结束进程的诊断竞态，不是run异常；`launch_driver.err`、`import_closure.err`和`prediction.err`均为空。
+
+### 8.2三场景G0技术收据
+
+`logs/g0_validation.json`的schema为`cvs.phase2.d92_csoas.truth_free_g0_validation.v2`，status为`D92_CSOAS_G0_ACTIVE_NON_E0_RESOURCE_PASS`。三场景的14个query禁用字段（fit/update/selection/truth/role-oracle/class-quota/global-reassignment及其`d92_csoas_*`镜像字段）均为`false`。
+
+|scene|active|fallback|candidate/reference fit|FULL actual/total|candidate state SHA256|wall|incremental peak|paired E0 peak|peak gate|
+|---|---|---|---:|---:|---|---:|---:|---:|---|
+|`leo_clear_weak`|true|false|1/0|1/2|`d967d57e8b47fcb602d63f4b10c8c21c61c95f5e5d28fecad5e4697a29475b5c`|12.965436ms|876,544|1,327,104|PASS|
+|`leo_low_elev_weak`|true|false|1/0|1/2|`e2c83efeac79e01d678c465b22fad699a9c78b2e9f05dd64e25266fae301f9bb`|12.726085ms|581,632|1,060,864|PASS|
+|`leo_rain_weak`|true|false|1/0|1/2|`454df5a8ca58324c3c29d7c3b9035ef29bd1c020757b29bddac842fa9a5db7ac`|14.268484ms|458,752|57,344|PASS|
+
+wall P90 nearest-rank=`14.268484ms`，目标`120ms`和硬门`150ms`均通过；三场景candidate state均不等于paired E0 state，且paired query-token/scenario SHA匹配、candidate prediction SHA=`dd25a86a6b080eb1f30b7d3bf5b19857c23e0870e9f0b121e95e24925738eb05`不等于E0 prediction SHA=`d539001ece0319b967023ea05dea7764264a731daa44bf7882a45660ba183cc0`。这些是机制/资源和artifact identity证据，不是准确率、H、BA、floor、forgetting或unknown性能。
+
+### 8.3完整artifact取回与树校验
+
+远端artifact未删除，完整取回至`E:\type10-7\local_artifacts\d92_e0_full_csoas_g0_k10_20260812_v2`。tree SHA按远端`find -type f -printf '%P\\n' | sort`顺序，对每行使用`relative_path  file_sha256\\n`后SHA256；远端与本地count、bytes、逐文件SHA及tree SHA一致。
+
+|root|远端文件数|远端bytes|远端tree SHA256|本地文件数|本地bytes|本地tree SHA256|
+|---|---:|---:|---|---:|---:|---|
+|source|1429|73,632,132|`5814b80c56e397da21ff51626be482c4f2f2fede20dfbfe902461f9f22ac8f5e`|1429|73,632,132|`5814b80c56e397da21ff51626be482c4f2f2fede20dfbfe902461f9f22ac8f5e`|
+|output|10|1,018,135|`afb51a16be729a46639a7b6d20d2cd383de89b88ecbcde49cf20310df68d774a`|10|1,018,135|`afb51a16be729a46639a7b6d20d2cd383de89b88ecbcde49cf20310df68d774a`|
+|logs|5|2,597|`b5243b2a679fae2f014e3c47b05362cf2ff333d3f5a920e695fbe87f82eae1a6`|5|2,597|`b5243b2a679fae2f014e3c47b05362cf2ff333d3f5a920e695fbe87f82eae1a6`|
+
+### 8.4最终边界
+
+- 本run只证明冻结E0_FULL_CSOAS路径在K10、三LEO弱场景下完成active/non-fallback、paired-E0非同一性、query禁用和wall/peak资源门；不证明性能提升、未知拒识、Phase3协同或真实在轨能力。
+- 无异常指纹、无P0/P1、无输出覆盖、无retry；远端source/output/logs保留，最终run/GPU/SSH/SCP/TCP22均清零。
+- 下一步仅由主agent决定是否将该G0技术收据纳入后续分析；runner不做方法、阈值、矩阵或性能晋级决策。

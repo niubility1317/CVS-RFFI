@@ -1,5 +1,5 @@
 run_id=d92_e0_full_csoas_g0_k10_20260812_v2
-status=LOCAL_VERIFIED_READY_FOR_N607_HANDOFF
+status=ARTIFACTS_COMPLETE_G0_MECHANISM_RESOURCE_PASS_NO_PERFORMANCE_RESULT
 candidate=E0_FULL_CSOAS
 scientific_commit=b8ebd4f4522fcc3e9e6b7dd18d722c329021f181
 archive_local=E:\type10-7\automation_reports\CV-SincNet\d92_e0_full_csoas_g0_k10_20260812_v2\d92_csoas_g0_runtime_b8ebd4f4.tar.gz
@@ -21,3 +21,8 @@ protocol_schema=p2_min_v1
 truth_or_scorer_authorized=false
 fresh_run_retry=false
 performance_claim=false
+detached_launch_count=1
+fresh_run_retry_authorized=false
+g0_marker=D92_CSOAS_G0_ACTIVE_NON_E0_RESOURCE_PASS
+wall_p90_nearest_rank_ns=14268484
+local_retrieval_root=E:\type10-7\local_artifacts\d92_e0_full_csoas_g0_k10_20260812_v2
