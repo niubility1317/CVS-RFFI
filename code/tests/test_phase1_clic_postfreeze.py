@@ -585,22 +585,9 @@ def _pair_artifact_fixture(tmp_path: Path) -> dict[str, object]:
         receipt_path = tmp_path / arm / "common_receipt.json"
         receipt_path.write_text(json.dumps(_common_receipt(arm), sort_keys=True) + "\n", encoding="utf-8")
         proxy_path = tmp_path / arm / "proxy_diagnostic.json"
-        proxy_path.write_text(
-            json.dumps(
-                {
-                    "schema": "cvs.phase1.clic_proxy_diagnostic.v1",
-                    "fit": {"role": "source_L_only", "fit_rows": 8, "threshold_fit_rows": 0},
-                    "source_validation_known": {"fit_rows": 0, "threshold_fit_rows": 0},
-                    "proxy_unknown": {"count": 400, "fit_rows": 0, "threshold_fit_rows": 0},
-                    "AUROC_unknown": 0.5,
-                    "u_gap": 0.0,
-                    "threshold_used": False,
-                    "tail_policy_used": False,
-                },
-                sort_keys=True,
-            )
-            + "\n",
-            encoding="utf-8",
+        PAIR.export_clic_proxy_diagnostic(
+            clean_npz_path=clean,
+            output_json_path=proxy_path,
         )
         artifacts[f"{arm.lower()}_paths"] = paths
         artifacts[f"{arm.lower()}_clean"] = clean
@@ -654,22 +641,9 @@ def _pair_fold_artifact_fixture(
         receipt_path = tmp_path / arm / "common_receipt.json"
         receipt_path.write_text(json.dumps(receipt, sort_keys=True) + "\n", encoding="utf-8")
         proxy_path = tmp_path / arm / "proxy_diagnostic.json"
-        proxy_path.write_text(
-            json.dumps(
-                {
-                    "schema": "cvs.phase1.clic_proxy_diagnostic.v1",
-                    "fit": {"role": "source_L_only", "fit_rows": 8, "threshold_fit_rows": 0},
-                    "source_validation_known": {"fit_rows": 0, "threshold_fit_rows": 0},
-                    "proxy_unknown": {"count": 400, "fit_rows": 0, "threshold_fit_rows": 0},
-                    "AUROC_unknown": 0.5,
-                    "u_gap": 0.0,
-                    "threshold_used": False,
-                    "tail_policy_used": False,
-                },
-                sort_keys=True,
-            )
-            + "\n",
-            encoding="utf-8",
+        PAIR.export_clic_proxy_diagnostic(
+            clean_npz_path=clean,
+            output_json_path=proxy_path,
         )
         artifacts[f"{arm.lower()}_paths"] = paths
         artifacts[f"{arm.lower()}_clean"] = clean
