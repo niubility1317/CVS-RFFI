@@ -4,7 +4,7 @@
 
 - 实验ID：`phase1_clic12_20260812_v2`
 - 时间：2026-08-12（Asia/Hong_Kong）
-- 当前状态：`LOCAL_VERIFIED / PREREGISTERED / NOT_LAUNCHED`
+- 当前状态：`LANDED / REMOTE_STATIC_VERIFIED / READY_TO_LAUNCH`
 - 目的：保持v1科学方法、12臂矩阵、数据、seed、epoch、loss和GPU映射不变，仅修复launcher对`argparse store_true`开关多传字面量`true`的发布缺陷，重新取得真实训练checkpoint。
 - v1：`phase1_clic12_20260811_v1`已封存为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；唯一launch=1，12/12在训练前同指纹`unrecognized arguments: true`退出，0 checkpoint、0 terminal receipt、GPU已释放。v1不得重试。
 
@@ -44,8 +44,8 @@ GPU映射保持：0=`F1C,F5G`；1=`F1G,F5C`；2=`F2C,F6G`；3=`F2G,F6C`；4=`F3C
 
 ## 7. 运行回填
 
-- archive SHA/bytes：待runner
-- release静态门：待runner
+- archive SHA/bytes：`4C5A96C37078E7016B838D6CA4694C07811166D90E2F259424C001EEEC5EEB33`，266844160 bytes；SCP=1，远端SHA/bytes闭合。
+- release静态门：通过；远端py_compile、`train_ssdg.py --help`、`bash -n`、12行dry-run（C6/G6、`lambda_sat_cons=0.10`）和release无pycache通过。
 - launch时间/次数：待runner
 - outer与candidate PID/GPU：待runner
 - 首波技术健康：待runner
