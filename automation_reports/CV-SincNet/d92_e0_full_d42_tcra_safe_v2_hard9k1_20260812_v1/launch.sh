@@ -3,9 +3,9 @@ set -euo pipefail
 
 project=/home/szu2070436088/2510044040/CV-SincNet
 python=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
-source_root="$project/runs/d92_tcra_safe_v2_hard9_source_86a26b24_20260812_v1"
+source_root="$project/runs/d92_tcra_safe_v2_hard9_source_824a6744_20260812_v1"
 code_root="$source_root/code"
-runtime_archive="$source_root/d92_tcra_safe_v2_hard9_runtime_86a26b24.tar.gz"
+runtime_archive="$source_root/d92_tcra_safe_v2_hard9_runtime_824a6744.tar.gz"
 context="$project/runs/d131_d92_lite160_qtie_target125_20260804_r3/prepared/target125_context.json"
 method_lock="$source_root/configs/stage2_d92_tcra_safe_v2_hard10_v1.json"
 output="$project/runs/d92_e0_full_d42_tcra_safe_v2_hard9k1_20260812_v1"
@@ -13,7 +13,7 @@ logs="$project/logs/d92_e0_full_d42_tcra_safe_v2_hard9k1_20260812_v1"
 
 require_file() { test -f "$1" || { printf 'required file missing: %s\n' "$1" >&2; exit 64; }; }
 require_file "$runtime_archive"
-test "$(sha256sum "$runtime_archive" | awk '{print $1}')" = "3338d85ef75d680d9c3e0feb46af5434ef0596b8fa3d0f6ae19ab8dc28f0ecff"
+test "$(sha256sum "$runtime_archive" | awk '{print $1}')" = "017a3c1c8137061cdd616c4548f6ec1f23c78d5dacb95250a6df4ca5b411e582"
 require_file "$method_lock"
 test "$(sha256sum "$method_lock" | awk '{print $1}')" = "9740ebd8f7368ea73bf8bdfb1ff57735e7407f89dab7b51a834988c4d6f9f13e"
 require_file "$context"

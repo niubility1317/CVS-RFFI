@@ -6,7 +6,7 @@
 |---|---|
 |run ID|`d92_e0_full_d42_tcra_safe_v2_hard9k1_20260812_v1`|
 |候选|`E0_FULL_D42_TAIL_CLASS_ROW_ASCENT`；final gate=`safe_directional_v2`|
-|代码commit|`86a26b24`（科学实现`6a74c410`）|
+|代码commit|`824a6744`（科学实现`6a74c410`）|
 |状态|`LOCAL_VERIFIED / READY_TO_LAND`|
 |矩阵|9个performance outer+1个K1 liveness；30 scene-arm；8 shards|
 |比较目标|完整125实验中的同outer`E0_FULL_ONLY`|
@@ -43,13 +43,13 @@ K1 liveness为`rx_20_1__seed_713106__k_1__new_20`，仅验证精确E0 alias，�
 
 |文件|大小|SHA256|
 |---|---:|---|
-|`d92_tcra_safe_v2_hard9_runtime_86a26b24.tar.gz`|5,117,806B|`3338d85ef75d680d9c3e0feb46af5434ef0596b8fa3d0f6ae19ab8dc28f0ecff`|
+|`d92_tcra_safe_v2_hard9_runtime_824a6744.tar.gz`|5,118,339B|`017a3c1c8137061cdd616c4548f6ec1f23c78d5dacb95250a6df4ca5b411e582`|
 |`stage2_d92_tcra_safe_v2_hard10_v1.json`|7,213B|`9740ebd8f7368ea73bf8bdfb1ff57735e7407f89dab7b51a834988c4d6f9f13e`|
-|`launch.sh`|3,576B|`4a5207efe5bab5c9e4f415755c808d2f0b337c61c8c4fa183ef16823c7e1daae`|
+|`launch.sh`|3,576B|`867b5b9e58d81a8bc10a47f9a36486e0681c8680741dff07d49945fe90a78a90`|
 
 远端冻结路径：
 
-- source：`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_tcra_safe_v2_hard9_source_86a26b24_20260812_v1`
+- source：`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_tcra_safe_v2_hard9_source_824a6744_20260812_v1`
 - output：`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0_full_d42_tcra_safe_v2_hard9k1_20260812_v1`
 - logs：`/home/szu2070436088/2510044040/CV-SincNet/logs/d92_e0_full_d42_tcra_safe_v2_hard9k1_20260812_v1`
 - Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`
@@ -57,7 +57,7 @@ K1 liveness为`rx_20_1__seed_713106__k_1__new_20`，仅验证精确E0 alias，�
 唯一detached命令：
 
 ```text
-cd /home/szu2070436088/2510044040/CV-SincNet/runs/d92_tcra_safe_v2_hard9_source_86a26b24_20260812_v1 && nohup bash ./launch.sh >./launch_driver.out 2>./launch_driver.err </dev/null &
+cd /home/szu2070436088/2510044040/CV-SincNet/runs/d92_tcra_safe_v2_hard9_source_824a6744_20260812_v1 && nohup bash ./launch.sh >./launch_driver.out 2>./launch_driver.err </dev/null &
 ```
 
 ## 5.健康门与裁决
