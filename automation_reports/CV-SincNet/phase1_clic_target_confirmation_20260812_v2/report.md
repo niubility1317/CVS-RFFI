@@ -26,3 +26,20 @@
 ## 待N607回填
 
 - Git commit、archive/SCP/release、静态门、唯一launch/PID/GPU、工件SHA/count/schema及SSH清理证据。
+
+## N607运行与验收封存（2026-08-12）
+
+- 冻结Git commit：`68e5d00af454000fdba50580a0d6edfb6873c0c2`。归档由该commit直接生成，未解包本地、未改动dirty树；archive bytes=`267489280`，SHA256=`C2F4C170E019AF4453D52FDF5CB65D3715397AA43BD6556A32B5DE0653C24A13`。SCP恰1次到项目根，远端bytes/SHA闭合。
+- 远端release：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_clic_target_confirmation_20260812_v2_68e5d00a`；stage目录解包后原子改名。四文件静态SHA闭合：spec=`d1b20cd9bff5d33646a38687d7e62ac1cdf19ef137a0020f7ccefd17d057c361`；launcher=`08294d0ded02b90fdfe367338d54c5f9779a47532aeb42bfff37c187734c1f8c`；builder=`bcd6b0d1dd784ae518d26c1889645d2dd4b22bbcdee4158fea3dc606404370f2`；production loader=`dceb7b6e32ba63ede0cc91dbf839779976a4ac31bd71b1e6f2a187cf76ef481e`。ManyTx存在；JSON解析、builder/loader`py_compile`、builder`--help`、launcher`bash -n`和`bash <launcher> --dry-run`均通过。归档不保留launcher可执行位，直接执行会返回126；正式入口始终使用`bash`，未chmod、未改release。
+- 唯一正式命令：`nohup bash /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_clic_target_confirmation_20260812_v2_68e5d00a/code/scripts/launch_phase1_clic_target_cache_v2_20260812.sh > /home/szu2070436088/2510044040/CV-SincNet/phase1_clic_target_confirmation_20260812_v2_outer.out 2>&1 &`；formal invocation=`1`，retry=`NO`，outer PID=`2692275`，builder PID=`2692287`。outer文件位于项目根、run/log根之外且0B；run/log由launcher内部创建，未被外层预建。两进程均正常退出，无匹配旧runner或其他run进程。
+- 最终状态：`ARTIFACTS_COMPLETE / NO_PERFORMANCE_RESULT`。工件同一run且不可覆盖：
+
+|场景|NPZ bytes|NPZ SHA256|rows|registered|unknown|
+|---|---:|---|---:|---:|---:|
+|`leo_clear_weak`|3641482|`3217da7846e4ab2bdb46ab4ec61604c4b5a4e30c544a2462865ffca2f7eaa530`|1040|240|800|
+|`leo_low_elev_weak`|3654054|`3f8160557e91c7f8ede9d460bbc342cc5cf29660ddded0293630967a550eb0a4`|1040|240|800|
+|`leo_rain_weak`|3637310|`998c0172b9eb9cb3c52f1fa9583999f4e32b320bba5caa9f1438997c31133a51`|1040|240|800|
+|`cache_set.json`|6248|`47c4ca2acadd992b99ddf007dc60ff439d63d859ed5e160bd5ee700dfcef3b11`|—|—|—|
+
+- production loader`load_verified_leo_weak_cache_set`重开通过：schema=`cvs_leo_weak_iq_cache_set_v2`，scope正确；总physical observations=`3120`、unique physical samples=`3120`；每场景1040；每场景角色精确为registered-known=240、unknown=800；所有数值数组finite；三场景physical ID交集为0；manifest与NPZ SHA均闭合；`clean_sample_access=false`、`phase2_single_observation_compliant=true`，成员清单先于IQ读取的禁用访问检查通过，未发生clean/query-truth/fit/update/selection访问。
+- 运行健康与清理：target log=`4661`B、PID表=`168`B，无`Traceback`、`RuntimeError`、OOM、NaN、权限或失败指纹；GPU0—7均`0%`利用率、约`1MiB`显存；远端无run-owned进程；本地`ssh/scp`进程为0且到N607:22连接为0。未读取任何性能指标，v2是独立fresh run，不是v1 retry。
