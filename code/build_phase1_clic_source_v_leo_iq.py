@@ -12,8 +12,11 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
+import stat
 from collections import defaultdict
 from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -257,7 +260,120 @@ def _coverage_counts(
     }
 
 
-def _atomic_save_npz(path: Path, payload: Mapping[str, Any]) -> None:
+@dataclass(frozen=True)
+class _ImmutablePublication:
+    """Identity of a file published through the no-replace link operation."""
+
+    path: Path
+    device: int
+    inode: int
+
+
+def _regular_file_identity(path: Path, *, label: str) -> tuple[int, int]:
+    """Return a platform-neutral regular-file identity without following links."""
+
+    try:
+        metadata = path.lstat()
+    except OSError as exc:
+        raise CLICSourceVLeoCacheError(f"{label} cannot be statted: {path}") from exc
+    if not stat.S_ISREG(metadata.st_mode):
+        raise CLICSourceVLeoCacheError(f"{label} must remain a regular file: {path}")
+    return int(metadata.st_dev), int(metadata.st_ino)
+
+
+def _unlink_if_owned(publication: _ImmutablePublication) -> bool:
+    """Remove only the path still linked to this builder's immutable output."""
+
+    path = publication.path
+    try:
+        identity = _regular_file_identity(path, label="immutable publication")
+    except CLICSourceVLeoCacheError:
+        return False
+    if identity != (publication.device, publication.inode):
+        return False
+    try:
+        path.unlink()
+    except OSError as exc:
+        raise CLICSourceVLeoCacheError(
+            f"unable to clean builder-owned immutable publication: {path}"
+        ) from exc
+    return True
+
+
+def _assert_publication_current(
+    publication: _ImmutablePublication, *, expected_sha256: str, label: str
+) -> None:
+    """Reject a post-publish replacement or in-place mutation before sealing."""
+
+    expected_identity = (publication.device, publication.inode)
+    observed_identity = _regular_file_identity(publication.path, label=label)
+    if observed_identity != expected_identity:
+        raise CLICSourceVLeoCacheError(
+            f"immutable {label} publication identity changed after publish: {publication.path}"
+        )
+    observed_sha256 = _sha256_file(publication.path)
+    if observed_sha256 != expected_sha256:
+        raise CLICSourceVLeoCacheError(
+            f"immutable {label} publication bytes changed after publish: {publication.path}"
+        )
+
+
+def _publish_immutable_temporary(
+    temporary: Path,
+    path: Path,
+    *,
+    label: str,
+    temporary_publication: _ImmutablePublication,
+) -> _ImmutablePublication:
+    """Publish one same-directory temporary file without ever replacing a target.
+
+    ``os.link`` is an exclusive destination creation on both NTFS and POSIX
+    filesystems: it either links our already-fsynced temporary bytes to a new
+    destination name, or reports that another owner won the name.  Unlike
+    ``Path.replace``, it cannot overwrite a concurrent immutable artifact.
+    """
+
+    try:
+        temporary_identity = _regular_file_identity(temporary, label=f"temporary {label}")
+        if temporary_identity != (temporary_publication.device, temporary_publication.inode):
+            raise CLICSourceVLeoCacheError(
+                f"temporary {label} identity changed before exclusive publish: {temporary}"
+            )
+        try:
+            os.link(temporary, path)
+        except FileExistsError as exc:
+            raise CLICSourceVLeoCacheError(
+                f"refusing to overwrite immutable {label} during concurrent publish: {path}"
+            ) from exc
+        except OSError as exc:
+            raise CLICSourceVLeoCacheError(
+                f"exclusive immutable {label} publish failed: {path}"
+            ) from exc
+        try:
+            destination_identity = _regular_file_identity(path, label=f"published {label}")
+            if destination_identity != temporary_identity:
+                raise CLICSourceVLeoCacheError(
+                    f"immutable {label} destination changed during exclusive publish: {path}"
+                )
+            return _ImmutablePublication(
+                path=path,
+                device=destination_identity[0],
+                inode=destination_identity[1],
+            )
+        except Exception:
+            _unlink_if_owned(
+                _ImmutablePublication(
+                    path=path,
+                    device=temporary_identity[0],
+                    inode=temporary_identity[1],
+                )
+            )
+            raise
+    finally:
+        _unlink_if_owned(temporary_publication)
+
+
+def _atomic_save_npz(path: Path, payload: Mapping[str, Any]) -> _ImmutablePublication:
     if path.exists():
         raise CLICSourceVLeoCacheError(
             f"refusing to overwrite immutable source-V received-IQ cache: {path}"
@@ -268,17 +384,33 @@ def _atomic_save_npz(path: Path, payload: Mapping[str, Any]) -> None:
         raise CLICSourceVLeoCacheError(
             f"refusing to overwrite temporary source-V cache: {temporary}"
         )
+    temporary_publication: _ImmutablePublication | None = None
     try:
         with temporary.open("xb") as handle:
+            temporary_identity = _regular_file_identity(
+                temporary, label="temporary source-V received-IQ cache"
+            )
+            temporary_publication = _ImmutablePublication(
+                path=temporary,
+                device=temporary_identity[0],
+                inode=temporary_identity[1],
+            )
             np.savez(handle, **dict(payload))
-        temporary.replace(path)
+            handle.flush()
+            os.fsync(handle.fileno())
+        return _publish_immutable_temporary(
+            temporary,
+            path,
+            label="source-V received-IQ cache",
+            temporary_publication=temporary_publication,
+        )
     except Exception:
-        if temporary.is_file():
-            temporary.unlink()
+        if temporary_publication is not None:
+            _unlink_if_owned(temporary_publication)
         raise
 
 
-def _atomic_write_json(path: Path, payload: Mapping[str, Any]) -> None:
+def _atomic_write_json(path: Path, payload: Mapping[str, Any]) -> _ImmutablePublication:
     if path.exists():
         raise CLICSourceVLeoCacheError(
             f"refusing to overwrite immutable source-V receipt: {path}"
@@ -289,15 +421,29 @@ def _atomic_write_json(path: Path, payload: Mapping[str, Any]) -> None:
         raise CLICSourceVLeoCacheError(
             f"refusing to overwrite temporary source-V receipt: {temporary}"
         )
+    temporary_publication: _ImmutablePublication | None = None
     try:
-        temporary.write_text(
-            json.dumps(dict(payload), ensure_ascii=True, sort_keys=True) + "\n",
-            encoding="utf-8",
+        with temporary.open("x", encoding="utf-8") as handle:
+            temporary_identity = _regular_file_identity(
+                temporary, label="temporary source-V receipt"
+            )
+            temporary_publication = _ImmutablePublication(
+                path=temporary,
+                device=temporary_identity[0],
+                inode=temporary_identity[1],
+            )
+            handle.write(json.dumps(dict(payload), ensure_ascii=True, sort_keys=True) + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        return _publish_immutable_temporary(
+            temporary,
+            path,
+            label="source-V receipt",
+            temporary_publication=temporary_publication,
         )
-        temporary.replace(path)
     except Exception:
-        if temporary.is_file():
-            temporary.unlink()
+        if temporary_publication is not None:
+            _unlink_if_owned(temporary_publication)
         raise
 
 
@@ -940,20 +1086,34 @@ def build_source_v_received_iq(args: argparse.Namespace) -> dict[str, Any]:
         "physical_sample_id": np.asarray(rows["physical_sample_ids"], dtype=str),
         "sat_scenarios": scene_array,
     }
-    output_written = False
-    receipt_written = False
+    output_publication: _ImmutablePublication | None = None
+    receipt_publication: _ImmutablePublication | None = None
     try:
-        _atomic_save_npz(output_path, payload)
-        output_written = True
+        output_publication = _atomic_save_npz(output_path, payload)
+        output_sha256 = _sha256_file(output_path)
+        _assert_publication_current(
+            output_publication,
+            expected_sha256=output_sha256,
+            label="source-V received-IQ cache",
+        )
         _validate_materialized_cache(
             output_path, expected_row_count=FROZEN_SOURCE_V_ROW_COUNT
+        )
+        _assert_publication_current(
+            output_publication,
+            expected_sha256=output_sha256,
+            label="source-V received-IQ cache after validation",
         )
         input_hashes_after_write = _input_hashes(input_paths)
         if input_hashes_after_write != input_hashes_before:
             raise CLICSourceVLeoCacheError(
                 "source-V cache input bytes changed before receipt sealing"
             )
-        output_sha256 = _sha256_file(output_path)
+        _assert_publication_current(
+            output_publication,
+            expected_sha256=output_sha256,
+            label="source-V received-IQ cache before receipt sealing",
+        )
         receipt = {
             "schema": SOURCE_V_LEO_CACHE_SCHEMA,
             "method": "P1_CLIC",
@@ -1023,12 +1183,37 @@ def build_source_v_received_iq(args: argparse.Namespace) -> dict[str, Any]:
             "selection_access": False,
             "retry_access": False,
         }
-        _atomic_write_json(receipt_path, receipt)
-        receipt_written = True
+        _assert_publication_current(
+            output_publication,
+            expected_sha256=output_sha256,
+            label="source-V received-IQ cache at receipt publish",
+        )
+        receipt_publication = _atomic_write_json(receipt_path, receipt)
+        receipt_sha256 = _sha256_file(receipt_path)
+        _assert_publication_current(
+            receipt_publication,
+            expected_sha256=receipt_sha256,
+            label="source-V receipt",
+        )
+        _assert_publication_current(
+            output_publication,
+            expected_sha256=output_sha256,
+            label="source-V received-IQ cache after receipt publish",
+        )
+        _assert_publication_current(
+            receipt_publication,
+            expected_sha256=receipt_sha256,
+            label="source-V receipt before return",
+        )
+        _assert_publication_current(
+            output_publication,
+            expected_sha256=output_sha256,
+            label="source-V received-IQ cache before return",
+        )
     except Exception:
-        for path, written in ((receipt_path, receipt_written), (output_path, output_written)):
-            if written and path.is_file():
-                path.unlink()
+        for publication in (receipt_publication, output_publication):
+            if publication is not None:
+                _unlink_if_owned(publication)
         raise
     return {
         "out_npz": str(output_path),

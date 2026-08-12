@@ -12,6 +12,7 @@ real.
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 from typing import Any
 
@@ -574,3 +575,167 @@ def test_builder_refuses_immutable_or_noncanonical_output_binding(
         BUILDER.build_source_v_received_iq(bad_args)
     assert not Path(bad_args.out_npz).exists()
     assert not Path(bad_args.receipt_json).exists()
+
+
+def test_builder_fails_closed_when_npz_destination_appears_during_publish(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Break caught: a concurrent immutable NPZ must never be replaced.
+
+    The collision is injected after the builder has written its temporary
+    payload but before its exclusive destination publish.  ``os.link`` has
+    the required no-replace semantics on both NTFS and POSIX filesystems.
+    """
+
+    args, rows = _builder_args(tmp_path)
+    _install_external_doubles(monkeypatch, args=args, rows=rows)
+    output = Path(args.out_npz)
+    receipt = Path(args.receipt_json)
+    sentinel = b"concurrent-npz-sentinel\n"
+    native_link = BUILDER.os.link
+
+    def racing_link(source: str | Path, destination: str | Path, *args_: object, **kwargs: object) -> None:
+        target = Path(destination)
+        if target == output:
+            target.write_bytes(sentinel)
+        native_link(source, destination, *args_, **kwargs)
+
+    monkeypatch.setattr(BUILDER.os, "link", racing_link)
+    with pytest.raises(Exception, match="overwrite|immutable|publish|exists|concurrent"):
+        BUILDER.build_source_v_received_iq(args)
+
+    assert output.read_bytes() == sentinel
+    assert not receipt.exists()
+    assert not list(Path(args.cache_run_root).rglob("*.tmp"))
+
+
+def test_builder_cleans_its_npz_when_receipt_destination_races_without_deleting_sentinel(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Break caught: a receipt collision must retain its owner and remove our half artifact."""
+
+    args, rows = _builder_args(tmp_path)
+    _install_external_doubles(monkeypatch, args=args, rows=rows)
+    output = Path(args.out_npz)
+    receipt = Path(args.receipt_json)
+    sentinel = b"concurrent-receipt-sentinel\n"
+    native_link = BUILDER.os.link
+
+    def racing_link(source: str | Path, destination: str | Path, *args_: object, **kwargs: object) -> None:
+        target = Path(destination)
+        if target == receipt:
+            target.write_bytes(sentinel)
+        native_link(source, destination, *args_, **kwargs)
+
+    monkeypatch.setattr(BUILDER.os, "link", racing_link)
+    with pytest.raises(Exception, match="overwrite|immutable|publish|exists|concurrent"):
+        BUILDER.build_source_v_received_iq(args)
+
+    assert not output.exists()
+    assert receipt.read_bytes() == sentinel
+    assert not list(Path(args.cache_run_root).rglob("*.tmp"))
+
+
+def test_builder_rejects_post_publish_valid_npz_replacement_without_deleting_external_file(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Break caught: a valid-looking replacement cannot pass a post-publish TOCTOU window."""
+
+    args, rows = _builder_args(tmp_path)
+    _install_external_doubles(monkeypatch, args=args, rows=rows)
+    output = Path(args.out_npz)
+    receipt = Path(args.receipt_json)
+    native_assert = BUILDER._assert_publication_current
+    replacement_done = False
+    replacement_bytes = b""
+
+    def replace_before_identity_check(
+        publication: Any, *, expected_sha256: str, label: str
+    ) -> None:
+        nonlocal replacement_done, replacement_bytes
+        if not replacement_done and Path(publication.path) == output:
+            replacement = output.with_name("external-valid-replacement.npz")
+            replacement_bytes = output.read_bytes()
+            replacement.write_bytes(replacement_bytes)
+            os.replace(replacement, output)
+            replacement_done = True
+        native_assert(publication, expected_sha256=expected_sha256, label=label)
+
+    monkeypatch.setattr(BUILDER, "_assert_publication_current", replace_before_identity_check)
+    with pytest.raises(Exception, match="publication|changed|identity|immutable|TOCTOU"):
+        BUILDER.build_source_v_received_iq(args)
+
+    assert replacement_done
+    assert output.read_bytes() == replacement_bytes
+    with np.load(output, allow_pickle=False) as archive:
+        assert set(archive.files) == {
+            "received_iq",
+            "tx_ids",
+            "rx_ids",
+            "day_ids",
+            "physical_sample_id",
+            "sat_scenarios",
+        }
+    assert not receipt.exists()
+    assert not list(Path(args.cache_run_root).rglob("*.tmp"))
+
+
+def test_builder_preserves_racing_npz_temporary_file_when_exclusive_create_loses(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Break caught: losing a temporary-name race must not unlink the other owner."""
+
+    args, rows = _builder_args(tmp_path)
+    _install_external_doubles(monkeypatch, args=args, rows=rows)
+    temporary = Path(args.out_npz).with_name(Path(args.out_npz).name + ".tmp")
+    sentinel = b"foreign-npz-temporary\n"
+    native_open = Path.open
+    injected = False
+
+    def racing_open(self: Path, mode: str = "r", *args_: object, **kwargs: object):
+        nonlocal injected
+        if self == temporary and mode == "xb" and not injected:
+            with native_open(self, "xb") as handle:
+                handle.write(sentinel)
+            injected = True
+        return native_open(self, mode, *args_, **kwargs)
+
+    monkeypatch.setattr(Path, "open", racing_open)
+    with pytest.raises(Exception, match="temporary|exists|File exists"):
+        BUILDER.build_source_v_received_iq(args)
+
+    assert injected
+    assert temporary.read_bytes() == sentinel
+    assert not Path(args.out_npz).exists()
+    assert not Path(args.receipt_json).exists()
+
+
+def test_builder_preserves_racing_receipt_temporary_file_when_exclusive_create_loses(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Break caught: receipt temporary cleanup is owned-only on Windows and POSIX."""
+
+    args, rows = _builder_args(tmp_path)
+    _install_external_doubles(monkeypatch, args=args, rows=rows)
+    output = Path(args.out_npz)
+    temporary = Path(args.receipt_json).with_name(Path(args.receipt_json).name + ".tmp")
+    sentinel = b"foreign-receipt-temporary\n"
+    native_open = Path.open
+    injected = False
+
+    def racing_open(self: Path, mode: str = "r", *args_: object, **kwargs: object):
+        nonlocal injected
+        if self == temporary and mode == "x" and not injected:
+            with native_open(self, "xb") as handle:
+                handle.write(sentinel)
+            injected = True
+        return native_open(self, mode, *args_, **kwargs)
+
+    monkeypatch.setattr(Path, "open", racing_open)
+    with pytest.raises(Exception, match="temporary|exists|File exists"):
+        BUILDER.build_source_v_received_iq(args)
+
+    assert injected
+    assert temporary.read_bytes() == sentinel
+    assert not output.exists()
+    assert not Path(args.receipt_json).exists()

@@ -34,3 +34,11 @@
 - GREEN：`python -m pytest -q code/tests/test_build_phase1_clic_source_v_leo_iq.py`通过`11/11`；包括不可覆盖和非canonical输出负例。
 - 静态核验：`py_compile`、构建器CLI`--help`和`git diff --check`均通过。
 - 技术缓存闭合不等于source指标通过，更不等于Phase1晋级；尚未发生N607同步或正式实验启动。
+
+## Task1 P1竞态修复：不可覆盖发布与发布后核验
+
+- 复审触发条件：原`temporary.replace(path)`在临时文件写完与最终路径落地之间可覆盖并发创建的不可变NPZ或receipt；原`temporary.exists()`与`open("xb")`／`open("x")`之间的竞争还可能在异常清理时删除外部`.tmp`。
+- RED证据：新增动态竞态测试后，旧实现分别暴露最终NPZ／receipt哨兵被覆盖、外部NPZ有效替换未被拒绝、以及NPZ／receipt外部临时文件被删除。
+- 修复：临时文件仅在本方成功独占创建后记录`device/inode`身份；同目录写入并`fsync`后以`os.link`独占创建最终名称，绝不使用替换式发布。任何冲突均失败关闭。清理仅在路径仍与本方记录身份一致时执行，因此不会删除并发所有者的最终文件、替换文件或临时文件。
+- 发布后核验：NPZ在重开验证、输入哈希检查、receipt封存前后均核对发布身份与SHA；receipt发布后和返回前同样核对身份与SHA。有效但外部替换的NPZ也会被拒绝，且外部文件保持原样。
+- GREEN：`ssr-gpu`下`python -m pytest -q code/tests/test_build_phase1_clic_source_v_leo_iq.py`通过`16/16`；其中5项为最终路径／临时路径并发安全回归。该修复仍不读取目标端、不发起N607操作，也不改变缓存的数据、场景或指标语义。
