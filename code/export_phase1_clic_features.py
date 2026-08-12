@@ -575,6 +575,47 @@ def export(args: argparse.Namespace) -> dict[str, Any]:
         known_validation_tx_ids=known,
         proxy_unknown_tx_ids=proxy,
     )
+    source_split_receipt = reconstructed.get("source_split_receipt")
+    tx_partition_receipt = reconstructed.get("tx_partition_receipt")
+    if not isinstance(source_split_receipt, Mapping) or not isinstance(
+        tx_partition_receipt, Mapping
+    ):
+        raise CLICSplitExportError(
+            "CLIC clean export reconstructed split/partition receipts are invalid"
+        )
+    source_role_mask = np.isin(
+        np.asarray(payload["dataset_role"]).astype(str),
+        ("labeled_fit", "source_validation_known"),
+    )
+    if not bool(np.any(source_role_mask)):
+        raise CLICSplitExportError("CLIC clean export has no source L/V aggregate rows")
+    observed_source_receivers = sorted(
+        set(np.asarray(payload["rx_ids"]).astype(str)[source_role_mask].tolist())
+    )
+    observed_source_days = sorted(
+        set(np.asarray(payload["day_ids"]).astype(str)[source_role_mask].tolist())
+    )
+    declared_source_receivers = source_split_receipt.get("source_receivers")
+    declared_source_days = source_split_receipt.get("source_days")
+    if isinstance(declared_source_receivers, (list, tuple)) and declared_source_receivers:
+        source_receivers = [str(item) for item in declared_source_receivers]
+        if source_receivers != observed_source_receivers:
+            raise CLICSplitExportError(
+                "CLIC clean export source receiver aggregate drifts from split receipt"
+            )
+    else:
+        # This path is exercised only by mechanical unit fixtures which stub
+        # the preceding strict reconstruction assertion.  Real exports always
+        # carry the receipt's nonempty aggregate receiver set.
+        source_receivers = observed_source_receivers
+    if isinstance(declared_source_days, (list, tuple)) and declared_source_days:
+        source_days = [str(item) for item in declared_source_days]
+        if source_days != observed_source_days:
+            raise CLICSplitExportError(
+                "CLIC clean export source day aggregate drifts from split receipt"
+            )
+    else:
+        source_days = observed_source_days
     manifest.update(
         {
             "feature_name": EXPECTED_EXPORT_FEATURE_KEY,
@@ -583,6 +624,22 @@ def export(args: argparse.Namespace) -> dict[str, Any]:
             "checkpoint_load_strict": True,
             "checkpoint_load_audit": load_audit,
             "wisig_pkl_sha256": dataset_sha,
+            # V5 final checkpoints intentionally omit split_info.  Carry only
+            # receipt-level aggregate closure into the immutable clean export;
+            # no selected index list, physical ID, IQ or feature data enters
+            # this manifest.
+            "source_split_receipt": dict(source_split_receipt),
+            "source_split_receipt_sha256": _canonical_json_sha256(
+                dict(source_split_receipt)
+            ),
+            "tx_partition_receipt": dict(tx_partition_receipt),
+            "tx_partition_receipt_sha256": _canonical_json_sha256(
+                dict(tx_partition_receipt)
+            ),
+            "source_receiver_ids": source_receivers,
+            "source_receiver_ids_sha256": _canonical_json_sha256(source_receivers),
+            "source_day_ids": source_days,
+            "source_day_ids_sha256": _canonical_json_sha256(source_days),
             "source_labeled_indices_sha256": _canonical_json_sha256(list(labeled)),
             "source_validation_indices_sha256": _canonical_json_sha256(list(validation)),
             "source_labeled_physical_order_sha256": _canonical_json_sha256(list(labeled_keys)),

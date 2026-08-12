@@ -33,6 +33,7 @@ MEMBER_NAMES = (
     "clic_state.bin",
     "source_geometry.json",
     "source_frozen_unknown_rule.json",
+    "candidate_train_data_config.json",
     "config.json",
     "manifest.json",
 )
@@ -43,6 +44,7 @@ LOCAL_CLASS_COUNT = 4
 REAL_RULE_SCHEMA = "cvs.phase1.clic_source_frozen_unknown_rules.v1"
 CLIC_STATE_PREFIX = "id_backbone.clic."
 RUNTIME_REBUILD_SCHEMA = "cvs.phase1.clic_runtime_rebuild.v1"
+CANDIDATE_TRAIN_CONFIG_SCHEMA = "cvs.phase1.clic_train_data_config.v1"
 
 # Exactly the model construction surface used by post_stage_common's
 # build_baseline_model.  No data path, sample identity, source split, or
@@ -148,6 +150,29 @@ def _require_sha256(value: Any, *, label: str) -> str:
     except ValueError as exc:
         raise CLICBundleError(f"{label} hash is invalid") from exc
     return value
+
+
+def _torch_dtype_from_numpy(value: np.dtype[Any]) -> torch.dtype:
+    """Map the exact packed-state dtype without torch.from_numpy()."""
+
+    dtype = np.dtype(value)
+    mapping: dict[np.dtype[Any], torch.dtype] = {
+        np.dtype(np.bool_): torch.bool,
+        np.dtype(np.int8): torch.int8,
+        np.dtype(np.uint8): torch.uint8,
+        np.dtype(np.int16): torch.int16,
+        np.dtype(np.int32): torch.int32,
+        np.dtype(np.int64): torch.int64,
+        np.dtype(np.float16): torch.float16,
+        np.dtype(np.float32): torch.float32,
+        np.dtype(np.float64): torch.float64,
+        np.dtype(np.complex64): torch.complex64,
+        np.dtype(np.complex128): torch.complex128,
+    }
+    try:
+        return mapping[dtype]
+    except KeyError as exc:
+        raise CLICBundleError(f"real model state dtype cannot use safe buffer bridge: {dtype.str}") from exc
 
 
 def _reject_forbidden(value: Any, *, label: str) -> None:
@@ -552,7 +577,12 @@ def _rebuild_real_model(
             if array.dtype.hasobject or array.dtype.fields is not None or not array.dtype.isnative:
                 raise CLICBundleError("real model state dtype cannot be reconstructed")
             try:
-                tensor = torch.from_numpy(array)
+                # Do not enter Torch's legacy NumPy ndarray C API: this
+                # rebuild path executes for every real G target forward on
+                # Torch 2.1/NumPy 2.x.  `clone` owns the decoded bytes before
+                # the NumPy state archive can go out of scope.
+                tensor = torch.frombuffer(memoryview(array), dtype=_torch_dtype_from_numpy(array.dtype))
+                tensor = tensor.reshape(array.shape).clone()
             except (TypeError, ValueError) as exc:
                 raise CLICBundleError("real model state tensor conversion failed") from exc
         if tensor.dtype == torch.bfloat16:
@@ -629,13 +659,356 @@ def _bundle_clean_masks(
     proxy = roles == "proxy_unknown"
     if not (np.any(labeled) and np.any(validation) and int(np.sum(proxy)) == 400):
         raise CLICBundleError("bundle clean NPZ L/V/fixed400 role rows do not close")
-    if set(tx_ids[labeled]) != set(source_tx_ids) or set(tx_ids[validation]) != set(known_validation_tx_ids):
+    if set(tx_ids[labeled]) != set(source_tx_ids) or set(tx_ids[validation]) != set(source_tx_ids):
         raise CLICBundleError("bundle clean NPZ source-L/source-V TX roles drifted")
     if set(tx_ids[proxy]) != set(proxy_unknown_tx_ids):
         raise CLICBundleError("bundle clean NPZ fixed400 proxy TX role drifted")
     if any(int(np.sum(tx_ids[labeled] == name)) <= 1 for name in source_tx_ids):
         raise CLICBundleError("bundle clean NPZ every source-L local4 class needs more than one row")
     return labeled, validation, proxy
+
+
+def _string_sequence(value: Any, *, label: str) -> list[str]:
+    """Accept only a small, explicit aggregate configuration set.
+
+    This deliberately differs from sample metadata: receiver/day/TX values are
+    only the frozen set-level training configuration needed for a matched
+    reference audit.  Per-row IDs, sample identities and raw IQ remain absent.
+    """
+
+    if not isinstance(value, (list, tuple)):
+        raise CLICBundleError(f"{label} must be a nonempty ordered string list")
+    normalized = [str(item) for item in value]
+    if not normalized or any(not item for item in normalized) or len(normalized) != len(set(normalized)):
+        raise CLICBundleError(f"{label} must be nonempty, unique strings")
+    return normalized
+
+
+def _exact_ratio(value: Any, *, label: str, expected: float) -> float:
+    number = _finite_number(value, label=label)
+    if not math.isclose(number, expected, rel_tol=0.0, abs_tol=1.0e-12):
+        raise CLICBundleError(f"{label} drifted from frozen value {expected}")
+    return expected
+
+
+def _candidate_train_config_from_real_artifacts(
+    *,
+    checkpoint: Mapping[str, Any],
+    checkpoint_file: Path,
+    terminal_file: Path,
+    clean: Mapping[str, Any],
+    source_tx_ids: Sequence[str],
+    known_validation_tx_ids: Sequence[str],
+    proxy_unknown_tx_ids: Sequence[str],
+    runtime_rebuild: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Derive the immutable candidate *data* contract from sealed real inputs.
+
+    The contract intentionally excludes epoch, optimizer, loss and model state.
+    It captures only the source data/split/role/preprocess/LEO configuration
+    that must match a historical target-known baseline.
+    """
+
+    args = checkpoint.get("args")
+    clean_manifest = clean.get("manifest")
+    if not isinstance(args, Mapping) or not isinstance(clean_manifest, Mapping):
+        raise CLICBundleError("real candidate train config lacks checkpoint args/clean manifest")
+
+    # v5 final checkpoints deliberately no longer duplicate split_info.  The
+    # immutable clean export is the authority for aggregate source split and
+    # partition evidence.  A narrow legacy fallback retains old archive-test
+    # readability, but a present clean-manifest receipt is always authoritative
+    # and must agree with any redundant checkpoint copy.
+    checkpoint_split_info = checkpoint.get("split_info")
+    checkpoint_source_receipt: Mapping[str, Any] | None = None
+    checkpoint_partition_receipt: Mapping[str, Any] | None = None
+    if isinstance(checkpoint_split_info, Mapping):
+        raw_source = checkpoint_split_info.get("source_split_receipt")
+        raw_partition = checkpoint_split_info.get("tx_partition_receipt")
+        if raw_source is not None and not isinstance(raw_source, Mapping):
+            raise CLICBundleError("real candidate checkpoint source split receipt is invalid")
+        if raw_partition is not None and not isinstance(raw_partition, Mapping):
+            raise CLICBundleError("real candidate checkpoint TX partition receipt is invalid")
+        checkpoint_source_receipt = raw_source
+        checkpoint_partition_receipt = raw_partition
+    manifest_source_receipt = clean_manifest.get("source_split_receipt")
+    manifest_partition_receipt = clean_manifest.get("tx_partition_receipt")
+    if manifest_source_receipt is not None and not isinstance(manifest_source_receipt, Mapping):
+        raise CLICBundleError("real candidate clean-manifest source split receipt is invalid")
+    if manifest_partition_receipt is not None and not isinstance(manifest_partition_receipt, Mapping):
+        raise CLICBundleError("real candidate clean-manifest TX partition receipt is invalid")
+    source_receipt = (
+        manifest_source_receipt
+        if isinstance(manifest_source_receipt, Mapping)
+        else checkpoint_source_receipt
+    )
+    partition_receipt = (
+        manifest_partition_receipt
+        if isinstance(manifest_partition_receipt, Mapping)
+        else checkpoint_partition_receipt
+    )
+    if not isinstance(source_receipt, Mapping) or not isinstance(partition_receipt, Mapping):
+        raise CLICBundleError("real candidate train config lacks sealed source split/partition receipt")
+    if isinstance(manifest_source_receipt, Mapping) and isinstance(checkpoint_source_receipt, Mapping):
+        if _canonical_sha256(dict(manifest_source_receipt)) != _canonical_sha256(dict(checkpoint_source_receipt)):
+            raise CLICBundleError("real candidate clean/checkpoint source split receipt drifted")
+    if isinstance(manifest_partition_receipt, Mapping) and isinstance(checkpoint_partition_receipt, Mapping):
+        if _canonical_sha256(dict(manifest_partition_receipt)) != _canonical_sha256(dict(checkpoint_partition_receipt)):
+            raise CLICBundleError("real candidate clean/checkpoint TX partition receipt drifted")
+    if source_receipt.get("schema") != "cvs.phase1.source_split_receipt.v1":
+        raise CLICBundleError("real candidate train config source split receipt schema drifted")
+    if isinstance(manifest_partition_receipt, Mapping) and partition_receipt.get("schema") != "cvs.phase1.tx_partition_receipt.v1":
+        raise CLICBundleError("real candidate clean-manifest TX partition receipt schema drifted")
+    split_mode = str(args.get("split_mode", ""))
+    if split_mode != "tx_rx_day_1_6_3":
+        raise CLICBundleError("real candidate train config split mode drifted")
+    source_receivers = _string_sequence(
+        source_receipt.get("source_receivers"), label="real candidate source receiver set"
+    )
+    source_days = _string_sequence(
+        source_receipt.get("source_days"), label="real candidate source day set"
+    )
+    for field, expected_values in (
+        ("source_receiver_ids", source_receivers),
+        ("source_day_ids", source_days),
+    ):
+        if field in clean_manifest:
+            clean_values = _string_sequence(
+                clean_manifest.get(field), label=f"real candidate clean-manifest {field}"
+            )
+            if clean_values != expected_values:
+                raise CLICBundleError(f"real candidate clean-manifest {field} drifted from source split receipt")
+    source_train = [str(item) for item in source_tx_ids]
+    source_validation = [str(item) for item in known_validation_tx_ids]
+    source_proxy = [str(item) for item in proxy_unknown_tx_ids]
+    if (
+        len(source_train) != LOCAL_CLASS_COUNT
+        or len(source_validation) != 1
+        or len(source_proxy) != 1
+        or len(set(source_train) | set(source_validation) | set(source_proxy))
+        != LOCAL_CLASS_COUNT + 2
+    ):
+        raise CLICBundleError("real candidate train config source TX role partition drifted")
+    labeled_ratio = _exact_ratio(args.get("labeled_ratio"), label="checkpoint labeled_ratio", expected=0.07)
+    unlabeled_ratio = _exact_ratio(args.get("unlabeled_ratio"), label="checkpoint unlabeled_ratio", expected=0.63)
+    source_val_ratio = _exact_ratio(args.get("source_val_ratio"), label="checkpoint source_val_ratio", expected=0.30)
+    if not math.isclose(labeled_ratio + unlabeled_ratio + source_val_ratio, 1.0, rel_tol=0.0, abs_tol=1.0e-12):
+        raise CLICBundleError("real candidate train role ratios do not close")
+    runtime = _validate_runtime_rebuild(runtime_rebuild)
+    input_len = int(runtime["input_len"])
+    if str(args.get("dataset", "")).casefold() != "wisig":
+        raise CLICBundleError("real candidate train config dataset schema drifted")
+    raw_wisig_pkl_sha256 = args.get("wisig_pkl_sha256")
+    wisig_pkl_sha256 = (
+        _require_sha256(raw_wisig_pkl_sha256, label="real candidate frozen WiSig dataset")
+        if raw_wisig_pkl_sha256 is not None
+        else None
+    )
+    for field in ("labeled_indices_sha256", "split_manifest_sha256"):
+        _require_sha256(source_receipt.get(field), label=f"real candidate source split {field}")
+    checkpoint_sha = _sha256_file(checkpoint_file)
+    terminal_sha = _sha256_file(terminal_file)
+    clean_sha = _canonical_sha256(dict(clean_manifest))
+    if (
+        clean_manifest.get("source_checkpoint_sha256") != checkpoint_sha
+        or clean_manifest.get("terminal_receipt_sha256") != terminal_sha
+        or tuple(str(item) for item in clean_manifest.get("source_tx_ids", ())) != tuple(source_train)
+        or tuple(str(item) for item in clean_manifest.get("known_validation_tx_ids", ())) != tuple(source_validation)
+        or tuple(str(item) for item in clean_manifest.get("proxy_unknown_tx_ids", ())) != tuple(source_proxy)
+    ):
+        raise CLICBundleError("real candidate train config clean-manifest/checkpoint binding drifted")
+    dataset_provenance: dict[str, Any] = {"dataset_schema": "WiSig"}
+    # Current checkpoints bind the frozen WiSig bytes here.  The small legacy
+    # archive fixture predates that field; retaining its schema-only identity
+    # is safe because it still carries no per-arm receipt/physical-row hash.
+    if wisig_pkl_sha256 is not None:
+        dataset_provenance["wisig_pkl_sha256"] = wisig_pkl_sha256
+    normalized = {
+        "dataset_provenance": {
+            # Dataset bytes are a semantic training-data identity.  The
+            # receipt/manifest bytes below instead prove this arm's own
+            # immutable provenance and must not make a different physical-row
+            # realisation fail the ADV/CLIC config-equivalence gate.
+            **dataset_provenance,
+        },
+        "source_train_tx_ids": source_train,
+        "source_validation_tx_ids": source_validation,
+        "source_proxy_tx_ids": source_proxy,
+        "source_receiver_ids": source_receivers,
+        "source_day_ids": source_days,
+        "split_mode": split_mode,
+        "role_construction": {
+            "split_mode": split_mode,
+            "labeled_ratio": labeled_ratio,
+            "unlabeled_ratio": unlabeled_ratio,
+            "source_val_ratio": source_val_ratio,
+        },
+        "physical_row_selection": {
+            "selection_policy": "pre_registered_tx_rx_day_eq_split_by_sig_i",
+            "group_axes": ["tx_id", "rx_id", "day_id", "eq_id"],
+        },
+        "preprocessing": {"input_len": input_len, "iq_dtype": "float32"},
+        # Kept explicitly for audit readability; `preprocessing.input_len` is
+        # the canonical comparison input-length surface.
+        "input_len": input_len,
+        "single_leo_training_scenes": list(EXPECTED_SCENARIOS),
+    }
+    return {
+        "schema": CANDIDATE_TRAIN_CONFIG_SCHEMA,
+        "real_checkpoint_config": True,
+        "checkpoint_sha256": checkpoint_sha,
+        "terminal_receipt_sha256": terminal_sha,
+        "clean_manifest_sha256": clean_sha,
+        "integrity": {
+            "source_split_receipt_sha256": _canonical_sha256(dict(source_receipt)),
+            "tx_partition_receipt_sha256": _canonical_sha256(dict(partition_receipt)),
+            "clean_manifest_sha256": clean_sha,
+            "labeled_indices_sha256": str(source_receipt["labeled_indices_sha256"]),
+            "split_manifest_sha256": str(source_receipt["split_manifest_sha256"]),
+        },
+        "normalized": normalized,
+        "normalized_sha256": _canonical_sha256(normalized),
+    }
+
+
+def _synthetic_candidate_train_config(
+    *, checkpoint_file: Path, terminal_file: Path
+) -> dict[str, Any]:
+    """Mark archive-mechanics fixtures as explicitly non-comparable."""
+
+    normalized = {"synthetic_fixture": True}
+    return {
+        "schema": CANDIDATE_TRAIN_CONFIG_SCHEMA,
+        "real_checkpoint_config": False,
+        "checkpoint_sha256": _sha256_file(checkpoint_file),
+        "terminal_receipt_sha256": _sha256_file(terminal_file),
+        "normalized": normalized,
+        "normalized_sha256": _canonical_sha256(normalized),
+    }
+
+
+def _validate_candidate_train_config_member(
+    value: Mapping[str, Any],
+    *,
+    real_state: bool,
+    checkpoint_sha256: str,
+    terminal_receipt_sha256: str,
+    expected_input_len: int | None,
+) -> dict[str, Any]:
+    """Verify the sealed aggregate training-data member without source access."""
+
+    if not isinstance(value, Mapping):
+        raise CLICBundleError("candidate train config member must be a mapping")
+    payload = dict(value)
+    common = {
+        "schema",
+        "real_checkpoint_config",
+        "checkpoint_sha256",
+        "terminal_receipt_sha256",
+        "normalized",
+        "normalized_sha256",
+    }
+    if real_state:
+        expected = common | {"clean_manifest_sha256", "integrity"}
+    else:
+        expected = common
+    if set(payload) != expected or payload.get("schema") != CANDIDATE_TRAIN_CONFIG_SCHEMA:
+        raise CLICBundleError("candidate train config member fields/schema drifted")
+    if payload.get("real_checkpoint_config") is not real_state:
+        raise CLICBundleError("candidate train config real/synthetic state binding drifted")
+    if payload.get("checkpoint_sha256") != checkpoint_sha256 or payload.get("terminal_receipt_sha256") != terminal_receipt_sha256:
+        raise CLICBundleError("candidate train config checkpoint/terminal hash binding drifted")
+    _require_sha256(payload.get("checkpoint_sha256"), label="candidate train config checkpoint")
+    _require_sha256(payload.get("terminal_receipt_sha256"), label="candidate train config terminal")
+    normalized = payload.get("normalized")
+    if not isinstance(normalized, Mapping):
+        raise CLICBundleError("candidate train config normalized state is invalid")
+    normalized = dict(normalized)
+    if payload.get("normalized_sha256") != _canonical_sha256(normalized):
+        raise CLICBundleError("candidate train config normalized hash drifted")
+    _require_sha256(payload.get("normalized_sha256"), label="candidate train config normalized")
+    if not real_state:
+        if normalized != {"synthetic_fixture": True}:
+            raise CLICBundleError("synthetic candidate train config must be explicitly non-real")
+        return payload
+    _require_sha256(payload.get("clean_manifest_sha256"), label="candidate train config clean manifest")
+    integrity = payload.get("integrity")
+    expected_integrity = {
+        "source_split_receipt_sha256",
+        "tx_partition_receipt_sha256",
+        "clean_manifest_sha256",
+        "labeled_indices_sha256",
+        "split_manifest_sha256",
+    }
+    if not isinstance(integrity, Mapping) or set(integrity) != expected_integrity:
+        raise CLICBundleError("candidate train config integrity fields drifted")
+    for field in sorted(expected_integrity):
+        _require_sha256(integrity.get(field), label=f"candidate train config integrity {field}")
+    if integrity["clean_manifest_sha256"] != payload["clean_manifest_sha256"]:
+        raise CLICBundleError("candidate train config clean manifest integrity drifted")
+    expected_normalized = {
+        "dataset_provenance",
+        "source_train_tx_ids",
+        "source_validation_tx_ids",
+        "source_proxy_tx_ids",
+        "source_receiver_ids",
+        "source_day_ids",
+        "split_mode",
+        "role_construction",
+        "physical_row_selection",
+        "preprocessing",
+        "input_len",
+        "single_leo_training_scenes",
+    }
+    if set(normalized) != expected_normalized:
+        raise CLICBundleError("candidate train config normalized data fields drifted")
+    if normalized.get("split_mode") != "tx_rx_day_1_6_3":
+        raise CLICBundleError("candidate train config split mode drifted")
+    for field, expected_count in (
+        ("source_train_tx_ids", LOCAL_CLASS_COUNT),
+        ("source_validation_tx_ids", 1),
+        ("source_proxy_tx_ids", 1),
+    ):
+        values = _string_sequence(normalized.get(field), label=f"candidate train config {field}")
+        if len(values) != expected_count:
+            raise CLICBundleError(f"candidate train config {field} cardinality drifted")
+    for field in ("source_receiver_ids", "source_day_ids"):
+        _string_sequence(normalized.get(field), label=f"candidate train config {field}")
+    roles = normalized.get("role_construction")
+    if not isinstance(roles, Mapping) or set(roles) != {"split_mode", "labeled_ratio", "unlabeled_ratio", "source_val_ratio"}:
+        raise CLICBundleError("candidate train config role construction fields drifted")
+    if roles.get("split_mode") != normalized["split_mode"]:
+        raise CLICBundleError("candidate train config role construction split binding drifted")
+    _exact_ratio(roles.get("labeled_ratio"), label="candidate train labeled ratio", expected=0.07)
+    _exact_ratio(roles.get("unlabeled_ratio"), label="candidate train unlabeled ratio", expected=0.63)
+    _exact_ratio(roles.get("source_val_ratio"), label="candidate train source validation ratio", expected=0.30)
+    physical = normalized.get("physical_row_selection")
+    if not isinstance(physical, Mapping) or set(physical) != {"selection_policy", "group_axes"}:
+        raise CLICBundleError("candidate train config physical row-selection fields drifted")
+    if (
+        physical.get("selection_policy") != "pre_registered_tx_rx_day_eq_split_by_sig_i"
+        or physical.get("group_axes") != ["tx_id", "rx_id", "day_id", "eq_id"]
+    ):
+        raise CLICBundleError("candidate train config physical row-selection policy drifted")
+    preprocessing = normalized.get("preprocessing")
+    if not isinstance(preprocessing, Mapping) or set(preprocessing) != {"input_len", "iq_dtype"}:
+        raise CLICBundleError("candidate train config preprocessing fields drifted")
+    if type(normalized.get("input_len")) is not int or normalized["input_len"] <= 0:
+        raise CLICBundleError("candidate train config input length is invalid")
+    if preprocessing.get("input_len") != normalized["input_len"] or preprocessing.get("iq_dtype") != "float32":
+        raise CLICBundleError("candidate train config preprocessing/input length drifted")
+    if expected_input_len is not None and normalized["input_len"] != expected_input_len:
+        raise CLICBundleError("candidate train config runtime input length drifted")
+    if normalized.get("single_leo_training_scenes") != list(EXPECTED_SCENARIOS):
+        raise CLICBundleError("candidate train config single-LEO scene definition drifted")
+    source = normalized.get("dataset_provenance")
+    if not isinstance(source, Mapping) or set(source) not in ({"dataset_schema"}, {"dataset_schema", "wisig_pkl_sha256"}):
+        raise CLICBundleError("candidate train config dataset provenance is invalid")
+    if source.get("dataset_schema") != "WiSig":
+        raise CLICBundleError("candidate train config dataset schema drifted")
+    if "wisig_pkl_sha256" in source:
+        _require_sha256(source.get("wisig_pkl_sha256"), label="candidate train config frozen WiSig dataset")
+    return payload
 
 
 def _strict_leo_artifact_for_bundle(
@@ -701,7 +1074,15 @@ def _source_rule_from_clean_and_leo(
     clean_npz_path: str | Path,
     leo_npz_path: str | Path,
     leo_binding_path: str | Path,
-) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]]:
+) -> tuple[
+    dict[str, Any],
+    dict[str, Any],
+    dict[str, Any],
+    dict[str, Any],
+    dict[str, Any],
+    dict[str, Any],
+    dict[str, Any],
+]:
     """Derive all real bundle state from sealed G artifacts, never CLI values."""
 
     args = checkpoint.get("args")
@@ -809,7 +1190,25 @@ def _source_rule_from_clean_and_leo(
         "z_dom_dim": output_dims["z_dom"],
         "q_clic_dim": output_dims["q_clic"],
     }
-    return dict(model_state), clic_state, geometry, source_rule, source_policy_state, config
+    candidate_train_config = _candidate_train_config_from_real_artifacts(
+        checkpoint=checkpoint,
+        checkpoint_file=checkpoint_file,
+        terminal_file=terminal_file,
+        clean=clean,
+        source_tx_ids=source_tx_ids,
+        known_validation_tx_ids=known_validation_tx_ids,
+        proxy_unknown_tx_ids=proxy_unknown_tx_ids,
+        runtime_rebuild=runtime_rebuild,
+    )
+    return (
+        dict(model_state),
+        clic_state,
+        geometry,
+        source_rule,
+        source_policy_state,
+        config,
+        candidate_train_config,
+    )
 
 
 def _zip_write(archive: zipfile.ZipFile, name: str, payload: bytes) -> None:
@@ -849,12 +1248,22 @@ def export_bundle(
     checkpoint, _ = _checkpoint_terminal_binding(checkpoint_file, terminal_file)
     raw_paths = (clean_npz_path, leo_npz_path, leo_binding_path)
     explicit_state = (model_state, clic_state, source_geometry, source_frozen_unknown_rule, operator_mode, config)
-    if any(value is not None for value in raw_paths):
+    candidate_train_config: dict[str, Any]
+    raw_derived = any(value is not None for value in raw_paths)
+    if raw_derived:
         if not all(value is not None for value in raw_paths):
             raise CLICBundleError("bundle raw artifact derivation requires clean, LEO NPZ, and LEO binding together")
         if any(value is not None for value in explicit_state) or source_policy_state is not None:
             raise CLICBundleError("bundle cannot mix raw-derived and caller-injected state")
-        model_state, clic_state, source_geometry, source_frozen_unknown_rule, source_policy_state, config = _source_rule_from_clean_and_leo(
+        (
+            model_state,
+            clic_state,
+            source_geometry,
+            source_frozen_unknown_rule,
+            source_policy_state,
+            config,
+            candidate_train_config,
+        ) = _source_rule_from_clean_and_leo(
             checkpoint=checkpoint,
             checkpoint_file=checkpoint_file,
             terminal_file=terminal_file,
@@ -865,6 +1274,10 @@ def export_bundle(
         operator_mode = EXPECTED_OPERATOR_MODE
     elif any(value is None for value in explicit_state):
         raise CLICBundleError("bundle explicit-state branch is incomplete")
+    else:
+        candidate_train_config = _synthetic_candidate_train_config(
+            checkpoint_file=checkpoint_file, terminal_file=terminal_file
+        )
     assert model_state is not None
     assert clic_state is not None
     assert source_geometry is not None
@@ -884,7 +1297,13 @@ def export_bundle(
     clic_payload = _pack_state(clic_state, label="CLIC")
     checkpoint_model = checkpoint.get("model")
     state_origin = "synthetic_fixture"
+    source_class_order: list[str] | None = None
+    source_class_order_sha256: str | None = None
     if isinstance(checkpoint_model, Mapping) and checkpoint_model:
+        if not raw_derived:
+            raise CLICBundleError(
+                "checkpoint-backed CLIC bundle requires raw-derived candidate train config"
+            )
         if model_payload != _pack_state(checkpoint_model, label="checkpoint model"):
             raise CLICBundleError("model_state does not equal exact current checkpoint model state")
         rule, scene_rule_sha = _validated_real_bundle_state(
@@ -909,6 +1328,15 @@ def export_bundle(
             or normalized_policy_state.get("policies") != rule.get("per_scene_policies")
         ):
             raise CLICBundleError("real CLIC bundle G source policy state/rule drifted")
+        try:
+            source_class_order = list(
+                _pair._validated_geometry(normalized_policy_state["geometry"])[0]
+            )
+        except _pair.CLICPostfreezePairError as exc:
+            raise CLICBundleError(
+                "real CLIC bundle G source class order failed strict PAIR validation"
+            ) from exc
+        source_class_order_sha256 = _canonical_sha256(source_class_order)
         normalized_config = _validate_config(
             {
                 **normalized_config,
@@ -924,12 +1352,14 @@ def export_bundle(
         normalized_policy_state = None
     geometry_payload = _canonical_json_bytes(dict(source_geometry)) + b"\n"
     rule_payload = _canonical_json_bytes(rule) + b"\n"
+    candidate_train_config_payload = _canonical_json_bytes(candidate_train_config) + b"\n"
     config_payload = _canonical_json_bytes(normalized_config) + b"\n"
     members = {
         "model_state.bin": model_payload,
         "clic_state.bin": clic_payload,
         "source_geometry.json": geometry_payload,
         "source_frozen_unknown_rule.json": rule_payload,
+        "candidate_train_data_config.json": candidate_train_config_payload,
         "config.json": config_payload,
     }
     descriptors = {name: _member_descriptor(name, payload) for name, payload in members.items()}
@@ -960,6 +1390,10 @@ def export_bundle(
         "bundle_has_raw_checkpoint": False,
         "bundle_has_sample_rows": False,
     }
+    if state_origin == "checkpoint_model_exact":
+        assert source_class_order is not None and source_class_order_sha256 is not None
+        manifest["source_class_order"] = source_class_order
+        manifest["source_class_order_sha256"] = source_class_order_sha256
     manifest_payload = _canonical_json_bytes(manifest) + b"\n"
     output.parent.mkdir(parents=True, exist_ok=True)
     temporary = output.with_name(output.name + ".tmp")
@@ -1018,12 +1452,22 @@ def verify_clic_bundle(path: str | Path) -> dict[str, Any]:
         "source_frozen_unknown_rule_sha256", "per_scene_policy_rule_sha256", "bundle_has_raw_checkpoint",
         "bundle_has_sample_rows",
     }
+    if manifest.get("state_origin") == "checkpoint_model_exact":
+        expected_fields.update({"source_class_order", "source_class_order_sha256"})
     if set(manifest) != expected_fields or manifest.get("schema") != BUNDLE_SCHEMA:
         raise CLICBundleError("CLIC bundle manifest state/schema field drifted")
     if manifest.get("member_allowlist") != list(MEMBER_NAMES):
         raise CLICBundleError("CLIC bundle member allowlist drifted")
     descriptors = manifest.get("members")
-    if not isinstance(descriptors, Mapping) or set(descriptors) != set(STATE_MEMBER_NAMES + ("source_geometry.json", "source_frozen_unknown_rule.json", "config.json")):
+    if not isinstance(descriptors, Mapping) or set(descriptors) != set(
+        STATE_MEMBER_NAMES
+        + (
+            "source_geometry.json",
+            "source_frozen_unknown_rule.json",
+            "candidate_train_data_config.json",
+            "config.json",
+        )
+    ):
         raise CLICBundleError("CLIC bundle member descriptor drifted")
     for name, descriptor in descriptors.items():
         if not isinstance(descriptor, Mapping) or set(descriptor) != {"sha256", "size_bytes"}:
@@ -1045,6 +1489,20 @@ def verify_clic_bundle(path: str | Path) -> dict[str, Any]:
     )
     if _json_member(members["config.json"], label="config") != config:
         raise CLICBundleError("CLIC bundle config member drifted")
+    candidate_train_config = _validate_candidate_train_config_member(
+        _json_member(
+            members["candidate_train_data_config.json"],
+            label="candidate train data config",
+        ),
+        real_state=real_state,
+        checkpoint_sha256=str(manifest["checkpoint_sha256"]),
+        terminal_receipt_sha256=str(manifest["terminal_receipt_sha256"]),
+        expected_input_len=(
+            int(config["runtime_rebuild"]["input_len"])
+            if real_state
+            else None
+        ),
+    )
     if manifest.get("z_id_shape") != [1, config["z_id_dim"]] or manifest.get("z_id_dtype") != "float64":
         raise CLICBundleError("CLIC bundle z_id shape/dtype drifted")
     if manifest.get("z_dom_shape") != [1, config["z_dom_dim"]] or manifest.get("q_clic_shape") != [1, config["q_clic_dim"]]:
@@ -1091,6 +1549,21 @@ def verify_clic_bundle(path: str | Path) -> dict[str, Any]:
             or normalized_policy_state.get("policies") != normalized_rule.get("per_scene_policies")
         ):
             raise CLICBundleError("real CLIC bundle source policy state/rule drifted")
+        try:
+            policy_class_order = list(
+                _pair._validated_geometry(normalized_policy_state["geometry"])[0]
+            )
+        except _pair.CLICPostfreezePairError as exc:
+            raise CLICBundleError(
+                "real CLIC bundle source class order failed strict PAIR validation"
+            ) from exc
+        manifest_class_order = manifest.get("source_class_order")
+        if manifest_class_order != policy_class_order:
+            raise CLICBundleError("real CLIC bundle source class order binding drifted")
+        if manifest.get("source_class_order_sha256") != _canonical_sha256(
+            policy_class_order
+        ):
+            raise CLICBundleError("real CLIC bundle source class order SHA drifted")
     elif policy_state is not None:
         raise CLICBundleError("synthetic fixture bundle must not claim a source policy state")
     # This is deliberately derived from sealed, verified bundle state rather
@@ -1106,6 +1579,15 @@ def verify_clic_bundle(path: str | Path) -> dict[str, Any]:
         )
         real_rebuild_verified = True
     verified = dict(manifest)
+    verified["candidate_train_data_config"] = candidate_train_config
+    verified["train_config_manifest_container_path"] = str(Path(path).resolve())
+    verified["train_config_member_name"] = "candidate_train_data_config.json"
+    verified["train_config_raw_sha256"] = str(
+        descriptors["candidate_train_data_config.json"]["sha256"]
+    )
+    verified["train_config_normalized_sha256"] = str(
+        candidate_train_config["normalized_sha256"]
+    )
     verified["real_checkpoint_state_rebuild_verified"] = real_rebuild_verified
     # Verification proves that the sealed state reconstructs; it has not yet
     # received IQ or run a model forward.  Only reload_forward can claim that.
@@ -1183,6 +1665,11 @@ def _reload_members_after_verify(path: str | Path, verified: Mapping[str, Any]) 
         if key not in {
             "real_checkpoint_state_rebuild_verified",
             "real_checkpoint_reload_verified",
+            "candidate_train_data_config",
+            "train_config_manifest_container_path",
+            "train_config_member_name",
+            "train_config_raw_sha256",
+            "train_config_normalized_sha256",
         }
     }
     if manifest != expected_manifest:
@@ -1202,7 +1689,15 @@ def _reload_members_after_verify(path: str | Path, verified: Mapping[str, Any]) 
 
 def _strict_received_iq_for_reload(received_i: Any, *, input_len: int) -> torch.Tensor:
     if torch.is_tensor(received_i):
-        values = received_i.detach().cpu().numpy()
+        source_tensor = received_i.detach().cpu().float().contiguous()
+        try:
+            values = np.asarray(source_tensor.tolist(), dtype=np.float32)
+        except (TypeError, ValueError, RuntimeError) as exc:
+            raise CLICBundleError(
+                "CLIC reload received_i safe tensor conversion failed"
+            ) from exc
+        if values.shape != tuple(source_tensor.shape) or not values.flags.c_contiguous:
+            raise CLICBundleError("CLIC reload received_i tensor shape/contiguity drift")
     else:
         try:
             values = np.asarray(received_i)
@@ -1216,7 +1711,14 @@ def _strict_received_iq_for_reload(received_i: Any, *, input_len: int) -> torch.
         raise CLICBundleError("CLIC reload received_i must have strict [2,T] or [1,2,T] shape")
     if not np.isfinite(values).all():
         raise CLICBundleError("CLIC reload received_i is non-finite")
-    return torch.from_numpy(np.ascontiguousarray(values))
+    source = np.ascontiguousarray(values, dtype=np.float32)
+    try:
+        # Use the buffer protocol rather than the NumPy ndarray C API, and
+        # clone so one target forward cannot alias the received-IQ package.
+        tensor = torch.frombuffer(memoryview(source), dtype=torch.float32)
+        return tensor.reshape(source.shape).clone()
+    except (TypeError, ValueError, RuntimeError) as exc:
+        raise CLICBundleError("CLIC reload received_i safe NumPy/Torch conversion failed") from exc
 
 
 def _tensor_output(
@@ -1228,10 +1730,49 @@ def _tensor_output(
     value = output.get(field)
     if not torch.is_tensor(value):
         raise CLICBundleError(f"strict CLIC reload model output lacks tensor {field}")
-    array = value.detach().cpu().numpy()
+    source = value.detach().cpu().contiguous()
+    try:
+        array = np.asarray(source.tolist(), dtype=np.float64)
+    except (TypeError, ValueError, RuntimeError) as exc:
+        raise CLICBundleError(f"strict CLIC reload {field} safe tensor conversion failed") from exc
+    if array.shape != tuple(source.shape) or not array.flags.c_contiguous:
+        raise CLICBundleError(f"strict CLIC reload {field} tensor shape/contiguity drifted")
     if array.shape != expected_shape or not np.isfinite(array).all():
         raise CLICBundleError(f"strict CLIC reload {field} output shape/nonfinite drifted")
     return np.ascontiguousarray(array, dtype=np.float64)
+
+
+def _single_real_score_scalars(scored: Mapping[str, Any]) -> dict[str, Any]:
+    """Extract the one-row PAIR score contract used by a real bundle reload."""
+
+    if not isinstance(scored, Mapping):
+        raise CLICBundleError("strict real CLIC reload PAIR score is not a mapping")
+    try:
+        e_unknown = np.asarray(scored["e_unknown"], dtype=np.float64)
+        decision = np.asarray(scored["decision"])
+        predicted_index = np.asarray(scored["predicted_index"])
+        predicted_class = np.asarray(scored["predicted_class"])
+        zero_flag = np.asarray(scored["zero_flag"])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise CLICBundleError("strict real CLIC reload PAIR score fields are invalid") from exc
+    if e_unknown.shape != (1,) or not np.isfinite(e_unknown).all():
+        raise CLICBundleError("strict real CLIC reload PAIR unknown-energy is not one finite row")
+    if decision.shape != (1,) or predicted_class.shape != (1,) or zero_flag.shape != (1,):
+        raise CLICBundleError("strict real CLIC reload PAIR score is not one row")
+    if predicted_index.shape != (1,) or not np.issubdtype(predicted_index.dtype, np.integer):
+        raise CLICBundleError("strict real CLIC reload PAIR predicted index is not one integer row")
+    normalized_decision = str(decision[0])
+    if normalized_decision not in {"registered", "unknown", "defer"}:
+        raise CLICBundleError("strict real CLIC reload PAIR decision is invalid")
+    if zero_flag.dtype != np.dtype(np.bool_):
+        raise CLICBundleError("strict real CLIC reload PAIR zero flag is not boolean")
+    return {
+        "e_unknown": float(e_unknown[0]),
+        "decision": normalized_decision,
+        "predicted_index": int(predicted_index[0]),
+        "predicted_class": str(predicted_class[0]),
+        "zero_flag": bool(zero_flag[0]),
+    }
 
 
 def _reload_real_forward(
@@ -1289,16 +1830,13 @@ def _reload_real_forward(
         )
     except _pair.CLICPostfreezePairError as exc:
         raise CLICBundleError("strict real CLIC reload PAIR scoring failed") from exc
+    score_scalars = _single_real_score_scalars(scored)
     return {
         "z_id": z_id,
         "z_dom": z_dom,
         "q_clic": q_clic,
         "tx_logits": tx_logits,
-        "e_unknown": scored["e_unknown"],
-        "decision": scored["decision"],
-        "predicted_index": scored["predicted_index"],
-        "predicted_class": scored["predicted_class"],
-        "zero_flag": scored["zero_flag"],
+        **score_scalars,
         "scene": scene,
         "state_sha256": str(verified["state_sha256"]),
         "geometry_state_sha256": scored["geometry_state_sha256"],

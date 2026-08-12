@@ -966,6 +966,285 @@ def test_clic_clean_export_writes_feature_npz_not_manifest_only(tmp_path: Path) 
         manifest = json.loads(str(np.asarray(data["manifest_json"]).item()))
     assert manifest["schema"] == "cvs.phase1.clic_lv_export.v1"
     assert manifest["source_only"] is True
+    # V5 no-split-info bundles must carry aggregate source split/partition
+    # evidence in the production clean manifest, without row identities.
+    for field in (
+        "source_split_receipt",
+        "tx_partition_receipt",
+        "source_receiver_ids",
+        "source_day_ids",
+        "source_labeled_indices_sha256",
+        "source_validation_indices_sha256",
+    ):
+        assert field in manifest
+    assert not {"physical_sample_id", "sample_ids", "sig_ids"}.intersection(manifest)
+
+
+def test_clic_clean_export_to_bundle_derives_v5_config_without_manual_manifest_injection(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The real CLEAN.export manifest is the only source for v5 bundle config."""
+
+    import cvsrffi.checkpoint_loading as checkpoint_loading
+    import dataset_wisig
+    import export_spaceborne_features
+    from SSDG.train_ssdg import _build_source_split_receipt
+
+    paths = _checkpoint_fixture(tmp_path / "G", arm="G", real_model=True)
+    dataset_path = tmp_path / "synthetic_wisig.pkl"
+    dataset_path.write_bytes(b"production-clean-exporter-fixture")
+    dataset_sha = _sha_file(dataset_path)
+    checkpoint_path = Path(paths["checkpoint"])
+    checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
+    checkpoint["args"].update(
+        {
+            "wisig_pkl": str(dataset_path),
+            "wisig_pkl_sha256": dataset_sha,
+            "wisig_out_len": 256,
+            "wisig_equalized": 1,
+            "wisig_domain": "rx_day",
+            "wisig_train_days": "0,1",
+            "wisig_test_days": "",
+            "wisig_train_rxs": "0,1",
+            "wisig_test_rxs": "",
+        }
+    )
+    checkpoint.pop("split_info", None)
+    torch.save(checkpoint, checkpoint_path)
+    checkpoint_sha = _sha_file(checkpoint_path)
+    terminal_path = Path(paths["terminal"])
+    terminal = json.loads(terminal_path.read_text(encoding="utf-8"))
+    strict = dict(terminal["strict_core"])
+    labeled_indices = tuple(range(8))
+
+    class SyntheticRows:
+        def __init__(self, rows: list[tuple[str, str, str, int]], tx_list: tuple[str, ...]):
+            self.tx_list = list(tx_list)
+            self.rx_list = list(SOURCE_RX)
+            self.day_list = list(SOURCE_DAYS)
+            self.eq_list = ["eq-0"]
+            self.rows = list(rows)
+            self.index = []
+            for tx, rx, day, sig_i in self.rows:
+                self.index.append(
+                    dataset_wisig.WiSigIndex(
+                        tx_i=self.tx_list.index(tx),
+                        rx_i=self.rx_list.index(rx),
+                        day_i=self.day_list.index(day),
+                        eq_i=0,
+                        sig_i=int(sig_i),
+                    )
+                )
+
+        def __len__(self) -> int:
+            return len(self.rows)
+
+        def __getitem__(self, index: int):
+            tx, rx, day, sig_i = self.rows[index]
+            tx_i = self.tx_list.index(tx)
+            return (
+                torch.zeros((2, 256), dtype=torch.float32),
+                torch.tensor(tx_i, dtype=torch.long),
+                torch.tensor(0, dtype=torch.long),
+                {"tx": tx, "rx": rx, "day": day, "equalized": "eq-0", "sig_i": str(sig_i)},
+            )
+
+    source_rows = SyntheticRows(
+        [
+            (SOURCE_TX[0], SOURCE_RX[0], SOURCE_DAYS[0], 0),
+            (SOURCE_TX[1], SOURCE_RX[1], SOURCE_DAYS[1], 1),
+            (SOURCE_TX[2], SOURCE_RX[0], SOURCE_DAYS[1], 2),
+            (SOURCE_TX[3], SOURCE_RX[1], SOURCE_DAYS[0], 3),
+            (SOURCE_TX[0], SOURCE_RX[0], SOURCE_DAYS[1], 4),
+            (SOURCE_TX[1], SOURCE_RX[1], SOURCE_DAYS[0], 5),
+            (SOURCE_TX[2], SOURCE_RX[0], SOURCE_DAYS[0], 6),
+            (SOURCE_TX[3], SOURCE_RX[1], SOURCE_DAYS[1], 7),
+            (SOURCE_TX[0], SOURCE_RX[1], SOURCE_DAYS[0], 8),
+            (SOURCE_TX[1], SOURCE_RX[0], SOURCE_DAYS[1], 9),
+            (SOURCE_TX[2], SOURCE_RX[1], SOURCE_DAYS[1], 10),
+            (SOURCE_TX[3], SOURCE_RX[0], SOURCE_DAYS[0], 11),
+            (SOURCE_TX[0], SOURCE_RX[0], SOURCE_DAYS[1], 12),
+            (SOURCE_TX[1], SOURCE_RX[1], SOURCE_DAYS[0], 13),
+            (SOURCE_TX[2], SOURCE_RX[0], SOURCE_DAYS[0], 14),
+            (SOURCE_TX[3], SOURCE_RX[1], SOURCE_DAYS[1], 15),
+        ],
+        SOURCE_TX,
+    )
+    proxy_rows = SyntheticRows(
+        [
+            (PROXY_TX[0], SOURCE_RX[index % 2], SOURCE_DAYS[index % 2], index)
+            for index in range(400)
+        ],
+        (*SOURCE_TX, *PROXY_TX),
+    )
+    labeled_keys = CLEAN._physical_keys_for_indices(source_rows, labeled_indices)
+    split_receipt = _build_source_split_receipt(
+        seed=7281164,
+        split_mode="tx_rx_day_1_6_3",
+        source_days=SOURCE_DAYS,
+        target_days=("target-day",),
+        source_receivers=SOURCE_RX,
+        target_receivers=("target-rx",),
+        labeled_indices=labeled_indices,
+        unlabeled_indices=(),
+        source_validation_indices=tuple(range(8, 16)),
+        wisig_pkl_sha256=dataset_sha,
+    )
+    partition_receipt = {
+        "schema": "cvs.phase1.tx_partition_receipt.v1",
+        "enabled": True,
+        "source_known_train_tx": list(SOURCE_TX),
+        "source_known_validation_tx": list(HELD_TX),
+        "source_proxy_unknown_tx": list(PROXY_TX),
+        "dataset_tx_order": list((*SOURCE_TX, *HELD_TX, *PROXY_TX)),
+        "dataset_tx_count": 6,
+        "training_tx_count": len(SOURCE_TX),
+        "held_tx_loaded_by_training": False,
+    }
+    reconstructed = {
+        "source_base": source_rows,
+        "labeled_indices": labeled_indices,
+        "unlabeled_indices": (),
+        "validation_indices": tuple(range(8, 16)),
+        "source_split_receipt": split_receipt,
+        "tx_partition_receipt": partition_receipt,
+    }
+    strict.update(
+        {
+            "final_checkpoint_sha256": checkpoint_sha,
+            "source_split_count": len(labeled_indices),
+            "source_split_sha256": CLEAN._canonical_json_sha256(list(labeled_indices)),
+            "class_order_count": len(SOURCE_TX),
+            "class_order_sha256": CLEAN._canonical_json_sha256(list(SOURCE_TX)),
+            "physical_order_count": len(labeled_keys),
+            "physical_order_sha256": CLEAN._canonical_json_sha256(list(labeled_indices)),
+        }
+    )
+    for event in strict["common_binding_events"]:
+        event.update(
+            {
+                "source_split_count": len(labeled_indices),
+                "source_split_sha256": CLEAN._canonical_json_sha256(list(labeled_indices)),
+                "class_order_count": len(SOURCE_TX),
+                "class_order_sha256": CLEAN._canonical_json_sha256(list(SOURCE_TX)),
+                "physical_order_count": len(labeled_keys),
+                "physical_order_sha256": CLEAN._canonical_json_sha256(list(labeled_indices)),
+            }
+        )
+    strict["common_batch_sequence_sha256"] = CLIC._common_binding_sequence_sha256(
+        strict["common_binding_events"]
+    )
+    terminal["selected_checkpoint_sha256"] = checkpoint_sha
+    terminal["strict_core"] = strict
+    terminal_path.write_text(json.dumps(terminal, ensure_ascii=True, sort_keys=True) + "\n", encoding="utf-8")
+
+    class DummyModel:
+        def eval(self):
+            return self
+
+    def fake_extract(_model, loader, *, role: str, **_kwargs):
+        metadata = [loader.dataset[index][3] for index in range(len(loader.dataset))]
+        count = len(metadata)
+        tx_ids = np.asarray([str(item["tx"]) for item in metadata], dtype=str)
+        rx_ids = np.asarray([str(item["rx"]) for item in metadata], dtype=str)
+        day_ids = np.asarray([str(item["day"]) for item in metadata], dtype=str)
+        tx_indices = np.asarray(
+            [SOURCE_TX.index(value) if value in SOURCE_TX else -1 for value in tx_ids],
+            dtype=np.int64,
+        )
+        features = np.zeros((count, 160), dtype=np.float32)
+        logits = np.zeros((count, 4), dtype=np.float32)
+        for index, tx_index in enumerate(tx_indices):
+            if tx_index >= 0:
+                features[index, tx_index] = 1.0
+                logits[index, tx_index] = 3.0
+        return {
+            "features": features,
+            "tx_logits": logits,
+            "raw_labels": tx_indices,
+            "domain_labels": np.zeros(count, dtype=np.int64),
+            "tx_ids": tx_ids,
+            "rx_ids": rx_ids,
+            "day_ids": day_ids,
+            "eq_ids": np.asarray(["eq-0"] * count, dtype=str),
+            "sig_ids": np.asarray([str(item["sig_i"]) for item in metadata], dtype=str),
+            "dataset_role": np.asarray([role] * count, dtype=str),
+            "channel_views": np.asarray(["clean"] * count, dtype=str),
+            "sat_scenarios": np.asarray([""] * count, dtype=str),
+        }
+
+    monkeypatch.setattr(CLEAN, "FROZEN_WISIG_SHA256", dataset_sha)
+    monkeypatch.setattr(CLEAN, "_reconstruct_source_l_v", lambda **_kwargs: reconstructed)
+    monkeypatch.setattr(dataset_wisig, "load_wisig_compact_pkl", lambda _path: {"synthetic": True})
+    monkeypatch.setattr(
+        export_spaceborne_features,
+        "_build_wisig_dataset",
+        lambda **_kwargs: (proxy_rows, {"synthetic": True}),
+    )
+    monkeypatch.setattr(export_spaceborne_features, "extract_features_with_metadata", fake_extract)
+    monkeypatch.setattr(
+        checkpoint_loading,
+        "build_exact_ssdg_model_from_checkpoint",
+        lambda *_args, **_kwargs: (DummyModel(), {"synthetic": True}),
+    )
+
+    clean_path = tmp_path / "G" / "clean_from_exporter.npz"
+    clean_args = argparse.Namespace(
+        ckpt=str(checkpoint_path),
+        terminal_receipt_json=str(terminal_path),
+        wisig_pkl=str(dataset_path),
+        expected_wisig_sha256=dataset_sha,
+        source_tx_ids=",".join(SOURCE_TX),
+        known_validation_tx_ids=",".join(HELD_TX),
+        proxy_unknown_tx_ids=",".join(PROXY_TX),
+        source_feature_npz="",
+        source_l_npz="",
+        output_npz=str(clean_path),
+        out_npz=str(clean_path),
+        batch_size=32,
+        device="cpu",
+    )
+    CLEAN.export(clean_args)
+    assert clean_path.is_file()
+    with np.load(clean_path, allow_pickle=False) as archive:
+        clean_manifest = json.loads(str(np.asarray(archive["manifest_json"]).item()))
+    assert clean_manifest["source_split_receipt"]["source_receivers"] == list(SOURCE_RX)
+    assert clean_manifest["source_split_receipt"]["source_days"] == list(SOURCE_DAYS)
+    assert clean_manifest["tx_partition_receipt"]["source_known_train_tx"] == list(SOURCE_TX)
+
+    existing = tmp_path / "G" / "existing_received_iq.npz"
+    pair_rows = _write_pair_received_iq(existing)
+    leo_path = tmp_path / "G" / "leo.npz"
+    binding = _write_pair_leo_npz(
+        leo_path,
+        arm="G",
+        paths=paths,
+        existing=existing,
+        rows=pair_rows,
+        feature_dim=160,
+    )
+    binding_path = tmp_path / "G" / "leo_binding.json"
+    binding_path.write_text(json.dumps(binding, sort_keys=True) + "\n", encoding="utf-8")
+    bundle_path = tmp_path / "G" / "clean_export.bundle.zip"
+    BUNDLE.export_bundle(
+        checkpoint_path=checkpoint_path,
+        terminal_receipt_path=terminal_path,
+        output_path=bundle_path,
+        clean_npz_path=clean_path,
+        leo_npz_path=leo_path,
+        leo_binding_path=binding_path,
+    )
+    verified = BUNDLE.verify_clic_bundle(bundle_path)
+    assert verified["candidate_train_data_config"]["real_checkpoint_config"] is True
+    normalized = verified["candidate_train_data_config"]["normalized"]
+    assert normalized["source_receiver_ids"] == list(SOURCE_RX)
+    assert normalized["source_day_ids"] == list(SOURCE_DAYS)
+    assert normalized["role_construction"] == {
+        "split_mode": "tx_rx_day_1_6_3",
+        "labeled_ratio": 0.07,
+        "unlabeled_ratio": 0.63,
+        "source_val_ratio": 0.30,
+    }
 
 
 def test_clic_clean_rejects_synchronized_checkpoint_seed_drift(tmp_path: Path) -> None:
@@ -2237,6 +2516,7 @@ def _write_target_cache_set_fixture(
     non_leo_view: bool = False,
     unknown_rows: int = 2,
     unknown_defer_rows: int = 0,
+    registered_tx_ids: tuple[str, ...] = ("known-tx-a", "known-tx-b"),
 ) -> dict[str, Path | str | dict[str, object]]:
     """Create a valid tiny three-scene p2_min_v1 cache-set and receipt."""
 
@@ -2260,7 +2540,11 @@ def _write_target_cache_set_fixture(
     root = tmp_path / "target_cache"
     root.mkdir(parents=True, exist_ok=True)
     dataset_sha = _sha_text("target-dataset")
+    if not registered_tx_ids or len(set(registered_tx_ids)) != len(registered_tx_ids):
+        raise ValueError("synthetic registered TX IDs must be nonempty and unique")
     known_test = _target_known_test_config()
+    known_test["target_known_tx_ids"] = [str(value) for value in registered_tx_ids]
+    known_test["class_order"] = [str(value) for value in registered_tx_ids]
     known_class_order = [str(tx_id) for tx_id in known_test["class_order"]]
     known_config = _write_target_config_manifest(
         root / "known_test_config.json",
@@ -2270,17 +2554,17 @@ def _write_target_cache_set_fixture(
     mapping: dict[str, str] = {}
     hashes: dict[str, str] = {}
     ids_by_scene: dict[str, list[str]] = {}
-    roles = ("registered_known", "unknown")
+    roles = ("target_registered_known", "target_unknown")
 
     for scene_index, scene in enumerate(SCENARIOS):
         rows: list[dict[str, object]] = []
         for role_index, role in enumerate(roles):
-            repeat_count = 2 if role == "registered_known" else unknown_rows
+            repeat_count = len(known_class_order) if role == "target_registered_known" else unknown_rows
             for repeat in range(repeat_count):
                 identity_scene = 0 if duplicate_cross_scene and scene_index == 1 and role_index == 0 and repeat == 0 else scene_index
                 identity_index = role_index * max(2, unknown_rows) + repeat
                 source_index = identity_scene * 10000 + identity_index
-                if role == "registered_known":
+                if role == "target_registered_known":
                     tx_id = known_class_order[repeat % len(known_class_order)]
                 else:
                     tx_id = f"unknown-tx-{repeat}"
@@ -2298,7 +2582,7 @@ def _write_target_cache_set_fixture(
                     eq_id=eq_id,
                     sig_id=sig_id,
                 )
-                if role == "registered_known":
+                if role == "target_registered_known":
                     iq_level = 10.0 + scene_index + repeat
                 elif repeat < unknown_rows - unknown_defer_rows:
                     iq_level = 100.0 + scene_index
@@ -2383,7 +2667,8 @@ def _write_target_cache_set_fixture(
             cache_path,
             leo_weak_iq=iq_rows,
             raw_labels=np.asarray(
-                [0, 1] + [-1] * int(unknown_rows), dtype=np.int64
+                list(range(len(known_class_order))) + [-1] * int(unknown_rows),
+                dtype=np.int64,
             ),
             domain_labels=np.zeros(len(rows), dtype=np.int64),
             tx_ids=tx_ids,
@@ -2414,7 +2699,7 @@ def _write_target_cache_set_fixture(
         "clean_sample_access": False,
         "clean_derived_signal_access": False,
         "target_channel_view": "leo_weak_only",
-        "cache_scope": "stage2_registered",
+        "cache_scope": "phase1_clic_target_confirmation",
         "output_roles": list(roles),
         "cache_npz_by_scenario": mapping,
         "cache_sha256_by_scenario": hashes,
@@ -2442,7 +2727,7 @@ def _write_target_cache_set_fixture(
         "split_id": "target-split-v1",
         "cache_set_manifest_path": str(manifest_path.resolve()),
         "cache_set_manifest_sha256": _sha_file(manifest_path),
-        "cache_scope": "stage2_registered",
+        "cache_scope": "phase1_clic_target_confirmation",
         "truth_role_blind_scene_assignment": True,
         "known_test_config_manifest_path": str(known_config.resolve()),
         "known_test_config_raw_sha256": _sha_file(known_config),
@@ -2477,14 +2762,194 @@ def _target_fixture_universe_ids(artifacts: Mapping[str, object]) -> dict[str, l
             roles = np.asarray(archive["dataset_role"]).astype(str)
             tx_ids = np.asarray(archive["tx_ids"]).astype(str)
             for role, tx_id in zip(roles.tolist(), tx_ids.tolist(), strict=True):
-                if role == "registered_known":
+                if role == "target_registered_known":
                     values["registered_tx"].append(tx_id)
-                elif role == "unknown":
+                elif role == "target_unknown":
                     values["unknown_tx"].append(tx_id)
             values["receiver"].extend(np.asarray(archive["rx_ids"]).astype(str).tolist())
             values["day"].extend(np.asarray(archive["day_ids"]).astype(str).tolist())
             values["physical"].extend(np.asarray(archive["sample_ids"]).astype(str).tolist())
     return {key: sorted(set(items)) for key, items in values.items()}
+
+
+def _target_confirmation_test_semantics() -> dict[str, object]:
+    """Only evaluator-owned semantic knobs accepted by the confirmation sealer."""
+
+    return {
+        "channel": {
+            "model": "leo_residual",
+            "clear": {"elevation_deg": 45.0},
+            "low_elev": {"elevation_deg": 15.0},
+            "rain": {"attenuation_db": 8.0},
+        },
+        "preprocess": {"input_len": 16, "iq_dtype": "float32"},
+        "zero_adapt": True,
+        "metrics": {
+            "known_accuracy": "accepted_true_class_fraction",
+            "unknown_rejection": "decision_unknown_over_true_unknown",
+        },
+    }
+
+
+def test_target_confirmation_validation_sealer_derives_known_config_and_receipt_from_cache(
+    tmp_path: Path,
+) -> None:
+    """The new-scope validation sealer is the sole authority for target IDs."""
+
+    artifacts = _write_target_cache_set_fixture(
+        tmp_path / "inputs", registered_tx_ids=SOURCE_TX
+    )
+    semantics = _target_confirmation_test_semantics()
+    output_root = tmp_path / "validation"
+    sealer = getattr(TARGET_EVAL, "seal_clic_target_confirmation_validation")
+    result = sealer(
+        artifacts["manifest"],
+        output_root,
+        test_semantics=semantics,
+        expected_capsule_id=None,
+        expected_split_id=None,
+        expected_protocol_schema="p2_min_v1",
+    )
+    assert isinstance(result, Mapping)
+    receipt_path = Path(str(result["receipt_path"])).resolve()
+    known_path = Path(str(result["known_test_config_path"])).resolve()
+    assert receipt_path.is_file() and known_path.is_file()
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    known_payload = json.loads(known_path.read_text(encoding="utf-8"))
+    universe = _target_fixture_universe_ids(artifacts)
+
+    assert receipt["schema"] == "cvs.phase2.data_validation_receipt.v1"
+    assert receipt["phase2_data_status"] == "VALIDATED_ONCE"
+    assert receipt["protocol_schema"] == "p2_min_v1"
+    assert receipt["cache_scope"] == "phase1_clic_target_confirmation"
+    assert Path(receipt["cache_set_manifest_path"]).resolve() == Path(artifacts["manifest"]).resolve()
+    assert receipt["cache_set_manifest_sha256"] == _sha_file(Path(artifacts["manifest"]))
+    assert receipt["known_test_config_manifest_path"] == str(known_path)
+    assert receipt["known_test_config_raw_sha256"] == _sha_file(known_path)
+    assert receipt["truth_role_blind_scene_assignment"] is True
+    assert str(result["capsule_id"]) == receipt["capsule_id"]
+    assert str(result["split_id"]) == receipt["split_id"]
+    assert receipt["capsule_id"] not in {"", "caller-capsule", "target-capsule-v1"}
+    assert receipt["split_id"] not in {"", "caller-split", "target-split-v1"}
+
+    assert known_payload["schema"] == "cvs.phase1.clic_known_test_config.v1"
+    normalized = known_payload["normalized"]
+    assert normalized["target_receiver_ids"] == universe["receiver"]
+    assert normalized["target_day_ids"] == universe["day"]
+    assert normalized["target_known_tx_ids"] == list(SOURCE_TX)
+    assert normalized["class_order"] == list(SOURCE_TX)
+    assert normalized["scenes"] == list(SCENARIOS)
+    assert normalized["leo_weak_channel"] == semantics["channel"]
+    assert normalized["preprocessing"] == semantics["preprocess"]
+    assert normalized["zero_adaptation"] == semantics["zero_adapt"]
+    assert normalized["metric_definitions"] == semantics["metrics"]
+
+    # The generated receipt is directly consumable by the IQ-only package sealer.
+    package, truth = TARGET_EVAL.seal_clic_target_package(
+        artifacts["manifest"],
+        tmp_path / "sealed_target",
+        validator_receipt_path=receipt_path,
+        expected_capsule_id=receipt["capsule_id"],
+        expected_split_id=receipt["split_id"],
+    )
+    assert Path(package).exists() and Path(truth).is_file()
+
+    with pytest.raises(Exception, match="overwrite|immutable|exists"):
+        sealer(
+            artifacts["manifest"],
+            output_root,
+            test_semantics=semantics,
+            expected_capsule_id=receipt["capsule_id"],
+            expected_split_id=receipt["split_id"],
+            expected_protocol_schema="p2_min_v1",
+        )
+
+
+@pytest.mark.parametrize(
+    "forged_field, forged_value",
+    [
+        ("target_known_tx_ids", ["forged-tx"]),
+        ("target_receiver_ids", ["forged-rx"]),
+        ("target_day_ids", ["forged-day"]),
+        ("class_order", ["forged-class"]),
+    ],
+)
+def test_target_confirmation_validation_sealer_rejects_caller_identity_fields(
+    tmp_path: Path,
+    forged_field: str,
+    forged_value: object,
+) -> None:
+    artifacts = _write_target_cache_set_fixture(
+        tmp_path / "inputs", registered_tx_ids=SOURCE_TX
+    )
+    semantics = _target_confirmation_test_semantics()
+    semantics[forged_field] = forged_value
+    sealer = getattr(TARGET_EVAL, "seal_clic_target_confirmation_validation")
+    with pytest.raises(Exception, match="semantic|caller|derived|cache|forbidden|TX|receiver|day|class|field"):
+        sealer(
+            artifacts["manifest"],
+            tmp_path / "validation",
+            test_semantics=semantics,
+            expected_protocol_schema="p2_min_v1",
+        )
+
+
+def test_target_confirmation_validation_cli_help_and_file_invocation(
+    tmp_path: Path,
+) -> None:
+    """The file-only evaluator CLI exposes and executes the validation sealer."""
+
+    script = CODE_ROOT / "evaluate_phase1_clic_target_leo.py"
+    help_result = subprocess.run(
+        [sys.executable, str(script), "--help"],
+        cwd=str(CODE_ROOT),
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=30,
+    )
+    assert help_result.returncode == 0, help_result.stderr
+    assert "--seal-target-validation" in help_result.stdout
+    assert "--test-semantics-json" in help_result.stdout
+
+    artifacts = _write_target_cache_set_fixture(
+        tmp_path / "inputs", registered_tx_ids=SOURCE_TX
+    )
+    semantics_path = tmp_path / "test_semantics.json"
+    semantics = _target_confirmation_test_semantics()
+    semantics_path.write_text(
+        json.dumps(semantics, ensure_ascii=True, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    output_root = tmp_path / "validation_cli"
+    run_result = subprocess.run(
+        [
+            sys.executable,
+            str(script),
+            "--seal-target-validation",
+            "--cache-set-manifest",
+            str(artifacts["manifest"]),
+            "--output-root",
+            str(output_root),
+            "--test-semantics-json",
+            str(semantics_path),
+        ],
+        cwd=str(CODE_ROOT),
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=60,
+    )
+    assert run_result.returncode == 0, run_result.stderr
+    result = json.loads(run_result.stdout.strip().splitlines()[-1])
+    receipt_path = Path(result["receipt_path"]).resolve()
+    known_path = Path(result["known_test_config_path"]).resolve()
+    assert receipt_path.is_file() and known_path.is_file()
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    assert receipt["test_semantics_json_path"] == str(semantics_path.resolve())
+    assert receipt["test_semantics_json_raw_sha256"] == _sha_file(semantics_path)
+    assert receipt["phase2_data_status"] == "VALIDATED_ONCE"
+    assert receipt["cache_scope"] == "phase1_clic_target_confirmation"
 
 
 def _target_prediction_path(result: object, fallback: Path) -> Path:
@@ -2562,6 +3027,8 @@ def _fake_runtime_factory(
                 train_config_normalized_sha256=_canonical(_target_train_config()),
                 train_config_member_name=None,
                 fold_index=fold_index,
+                source_class_order=list(SOURCE_TX),
+                source_class_order_sha256=_canonical(list(SOURCE_TX)),
                 forward_impl=self._forward_impl,
             )
 
@@ -2601,9 +3068,15 @@ def _write_adv3b02_reference_fixture(
     *,
     different_capsule: bool = True,
     rich_cells: bool = False,
+    crossed_cells: bool = False,
+    known_tx_ids: tuple[str, ...] = ("known-tx-a", "known-tx-b"),
 ) -> dict[str, Path | dict[str, object]]:
     train = _target_train_config()
-    known = _target_known_test_config(capsule_id="baseline-capsule-v2" if different_capsule else "candidate-capsule-v1")
+    known = _target_known_test_config(
+        capsule_id="baseline-capsule-v2" if different_capsule else "candidate-capsule-v1"
+    )
+    known["target_known_tx_ids"] = [str(value) for value in known_tx_ids]
+    known["class_order"] = [str(value) for value in known_tx_ids]
     train_path = _write_target_config_manifest(
         tmp_path / "adv_train_config.json",
         schema="cvs.phase1.adv3b02_train_data_config.v1",
@@ -2619,8 +3092,8 @@ def _write_adv3b02_reference_fixture(
     metrics_path = tmp_path / "adv3b02_stratified_metrics.json"
     cells = []
     receiver_sha = _canonical(["target-rx-0", "target-rx-1"])
-    tx_sha = _canonical(["known-tx-a", "known-tx-b"])
-    class_sha = _canonical(["known-tx-a", "known-tx-b"])
+    tx_sha = _canonical(list(known_tx_ids))
+    class_sha = _canonical(list(known_tx_ids))
     day_sha = _canonical(["day-0", "day-1"])
     known_sha = _canonical(TARGET.normalize_known_test_config(known))
     fold_config_key = _canonical(TARGET.normalize_train_data_config(train))
@@ -2632,6 +3105,10 @@ def _write_adv3b02_reference_fixture(
             "accuracy": numerator / denominator,
         }
 
+    known_count = len(known_tx_ids)
+    receiver_count = 2
+    day_count = 2
+
     for fold in range(1, 2):
         for scene in SCENARIOS:
             cell = {
@@ -2641,41 +3118,194 @@ def _write_adv3b02_reference_fixture(
                     "target_known_tx_set_sha256": tx_sha,
                     "class_order_sha256": class_sha,
                     "known_test_config_sha256": known_sha,
-                    "numerator": 2,
-                    "denominator": 2,
+                    "numerator": known_count,
+                    "denominator": known_count,
                     "accuracy": 1.0,
-                }
+            }
             if rich_cells:
+                if crossed_cells and len(known_tx_ids) == 6:
+                    # The four active local classes are fixed at 1/2 in every
+                    # crossed RX/day cell.  The two inactive union classes are
+                    # intentionally high/low with unequal denominators, so
+                    # union-level by_receiver/by_day values differ from the
+                    # local-four values even though the active crossed cells
+                    # remain unchanged.
+                    active_ids = tuple(known_tx_ids[:4])
+                    inactive_high, inactive_low = known_tx_ids[4:]
+
+                    def crossed_triplet(tx_id: str) -> dict[str, object]:
+                        if tx_id in active_ids:
+                            return {"numerator": 1, "denominator": 2, "accuracy": 0.5}
+                        if tx_id == inactive_high:
+                            return {"numerator": 2, "denominator": 2, "accuracy": 1.0}
+                        return {"numerator": 0, "denominator": 1, "accuracy": 0.0}
+
+                    by_class_receiver = {
+                        tx_id: {
+                            rx_id: crossed_triplet(tx_id)
+                            for rx_id in ("target-rx-0", "target-rx-1")
+                        }
+                        for tx_id in known_tx_ids
+                    }
+                    by_class_day = {
+                        tx_id: {
+                            day_id: crossed_triplet(tx_id)
+                            for day_id in ("day-0", "day-1")
+                        }
+                        for tx_id in known_tx_ids
+                    }
+                    by_class = {
+                        tx_id: {
+                            "numerator": sum(
+                                int(value["numerator"])
+                                for value in by_class_receiver[tx_id].values()
+                            ),
+                            "denominator": sum(
+                                int(value["denominator"])
+                                for value in by_class_receiver[tx_id].values()
+                            ),
+                            "accuracy": sum(
+                                int(value["numerator"])
+                                for value in by_class_receiver[tx_id].values()
+                            )
+                            / sum(
+                                int(value["denominator"])
+                                for value in by_class_receiver[tx_id].values()
+                            ),
+                        }
+                        for tx_id in known_tx_ids
+                    }
+                    overall_numerator = sum(
+                        int(value["numerator"]) for value in by_class.values()
+                    )
+                    overall_denominator = sum(
+                        int(value["denominator"]) for value in by_class.values()
+                    )
+                    by_receiver = {
+                        rx_id: {
+                            "numerator": sum(
+                                int(by_class_receiver[tx_id][rx_id]["numerator"])
+                                for tx_id in known_tx_ids
+                            ),
+                            "denominator": sum(
+                                int(by_class_receiver[tx_id][rx_id]["denominator"])
+                                for tx_id in known_tx_ids
+                            ),
+                        }
+                        for rx_id in ("target-rx-0", "target-rx-1")
+                    }
+                    by_day = {
+                        day_id: {
+                            "numerator": sum(
+                                int(by_class_day[tx_id][day_id]["numerator"])
+                                for tx_id in known_tx_ids
+                            ),
+                            "denominator": sum(
+                                int(by_class_day[tx_id][day_id]["denominator"])
+                                for tx_id in known_tx_ids
+                            ),
+                        }
+                        for day_id in ("day-0", "day-1")
+                    }
+                    for partition in (by_receiver, by_day):
+                        for value in partition.values():
+                            value["accuracy"] = value["numerator"] / value["denominator"]
+                    cell.update(
+                        {
+                            "target_day_set_sha256": day_sha,
+                            "overall": {
+                                "numerator": overall_numerator,
+                                "denominator": overall_denominator,
+                                "accuracy": overall_numerator / overall_denominator,
+                            },
+                            "by_class": by_class,
+                            "by_receiver": by_receiver,
+                            "by_day": by_day,
+                            "by_class_receiver": by_class_receiver,
+                            "by_class_day": by_class_day,
+                            "macro_accuracy": sum(
+                                float(value["accuracy"]) for value in by_class.values()
+                            )
+                            / float(len(by_class)),
+                            "min_class_accuracy": min(
+                                float(value["accuracy"]) for value in by_class.values()
+                            ),
+                            "min_receiver_accuracy": min(
+                                float(value["accuracy"]) for value in by_receiver.values()
+                            ),
+                            "min_day_accuracy": min(
+                                float(value["accuracy"]) for value in by_day.values()
+                            ),
+                            "known_false_reject": {
+                                "numerator": 0,
+                                "denominator": overall_denominator,
+                                "accuracy": 0.0,
+                            },
+                            "known_defer": {
+                                "numerator": 0,
+                                "denominator": overall_denominator,
+                                "accuracy": 0.0,
+                            },
+                            "accepted_known": {
+                                "correct": overall_numerator,
+                                "denominator": overall_denominator,
+                                "accuracy": overall_numerator / overall_denominator,
+                                "coverage": 1.0,
+                            },
+                        }
+                    )
+                    cell["numerator"] = overall_numerator
+                    cell["denominator"] = overall_denominator
+                    cell["accuracy"] = overall_numerator / overall_denominator
+                    cells.append(cell)
+                    continue
                 cell.update(
                     {
                         "target_day_set_sha256": day_sha,
-                        "overall": _triplet(2, 2),
+                        "overall": _triplet(2 * known_count, 2 * known_count),
                         "by_class": {
-                            tx_id: _triplet(1, 1)
-                            for tx_id in ("known-tx-a", "known-tx-b")
+                            tx_id: _triplet(2, 2)
+                            for tx_id in known_tx_ids
                         },
                         "by_receiver": {
-                            rx_id: _triplet(1, 1)
+                            rx_id: _triplet(known_count, known_count)
                             for rx_id in ("target-rx-0", "target-rx-1")
                         },
                         "by_day": {
-                            day_id: _triplet(1, 1)
+                            day_id: _triplet(known_count, known_count)
                             for day_id in ("day-0", "day-1")
+                        },
+                        "by_class_receiver": {
+                            tx_id: {
+                                rx_id: _triplet(1, 1)
+                                for rx_id in ("target-rx-0", "target-rx-1")
+                            }
+                            for tx_id in known_tx_ids
+                        },
+                        "by_class_day": {
+                            tx_id: {
+                                day_id: _triplet(1, 1)
+                                for day_id in ("day-0", "day-1")
+                            }
+                            for tx_id in known_tx_ids
                         },
                         "macro_accuracy": 1.0,
                         "min_class_accuracy": 1.0,
                         "min_receiver_accuracy": 1.0,
                         "min_day_accuracy": 1.0,
-                        "known_false_reject": _triplet(0, 2),
-                        "known_defer": _triplet(0, 2),
+                        "known_false_reject": _triplet(0, 2 * known_count),
+                        "known_defer": _triplet(0, 2 * known_count),
                         "accepted_known": {
-                            "correct": 2,
-                            "denominator": 2,
+                            "correct": 2 * known_count,
+                            "denominator": 2 * known_count,
                             "accuracy": 1.0,
                             "coverage": 1.0,
                         },
                     }
                 )
+                cell["numerator"] = 2 * known_count
+                cell["denominator"] = 2 * known_count
+                cell["accuracy"] = 1.0
             cells.append(cell)
     metrics_path.write_text(json.dumps({"schema": "cvs.phase1.adv3b02_target_known_metrics.v1", "cells": cells}, sort_keys=True) + "\n", encoding="utf-8")
     return {
@@ -2766,8 +3396,8 @@ def test_target_package_manifest_seals_cache_truth_and_known_config_universe_roo
     )
     assert len({str(row["physical_sample_id"]) for row in truth_rows}) == len(truth_rows)
     assert sorted({str(row["rx_id"]) for row in truth_rows}) == universe["receiver"]
-    assert sorted({str(row["tx_id"]) for row in truth_rows if row["role"] == "registered_known"}) == universe["registered_tx"]
-    assert sorted({str(row["tx_id"]) for row in truth_rows if row["role"] == "unknown"}) == universe["unknown_tx"]
+    assert sorted({str(row["tx_id"]) for row in truth_rows if row["role"] == "target_registered_known"}) == universe["registered_tx"]
+    assert sorted({str(row["tx_id"]) for row in truth_rows if row["role"] == "target_unknown"}) == universe["unknown_tx"]
     assert sorted({str(row["day_id"]) for row in truth_rows}) == universe["day"]
     assert sorted({str(row["physical_sample_id"]) for row in truth_rows}) == universe["physical"]
 
@@ -2973,8 +3603,22 @@ def test_prediction_seals_candidate_config_paths_raw_and_normalized_sha_and_reje
     prediction = tmp_path / "prediction.json"
     TARGET_EVAL.publish_clic_target_prediction(predictor_artifacts["c_state"], package, prediction)
     payload = json.loads(prediction.read_text(encoding="utf-8"))
-    for field in ("train_config_manifest_path", "train_config_raw_sha256", "train_config_normalized_sha256", "known_test_config_manifest_path", "known_test_config_raw_sha256", "known_test_config_normalized_sha256"):
+    for field in (
+        "train_config_manifest_path",
+        "train_config_raw_sha256",
+        "train_config_normalized_sha256",
+        "known_test_config_raw_sha256",
+        "known_test_config_normalized_sha256",
+    ):
         assert field in payload
+    assert "known_test_config_manifest_path" not in payload
+    truth_payload = json.loads(Path(truth).read_text(encoding="utf-8"))
+    assert truth_payload["known_test_config_manifest_path"] == str(
+        Path(artifacts["known_test_config"]).resolve()
+    )
+    assert truth_payload["known_test_config_raw_sha256"] == _sha_file(
+        Path(artifacts["known_test_config"])
+    )
     baseline = _write_adv3b02_reference_fixture(tmp_path / "baseline")
     adv_reference = tmp_path / "adv_reference.json"
     TARGET_EVAL.ingest_adv3b02_target_known_reference(
@@ -3080,6 +3724,100 @@ def test_adv3b02_reference_rejects_missing_zero_or_derived_subcell(
             baseline["known_test_config"],
             drifted,
             tmp_path / f"drifted_{mutation}_reference.json",
+        )
+
+
+def test_adv3b02_local4_noninferiority_uses_crossed_class_receiver_day_cells(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Inactive union classes may alter axis marginals, not local-four crossed cells."""
+
+    union6 = tuple(f"known-tx-{suffix}" for suffix in "abcdef")
+    target = _write_target_cache_set_fixture(
+        tmp_path / "target", registered_tx_ids=union6
+    )
+    package, truth = TARGET_EVAL.seal_clic_target_package(
+        target["manifest"],
+        tmp_path / "sealed_target",
+        validator_receipt_path=target["receipt"],
+        expected_capsule_id=target["capsule_id"],
+        expected_split_id=target["split_id"],
+    )
+    fake_artifacts = _write_fake_predictor_artifacts(tmp_path / "predictor")
+    base_loader = _fake_runtime_factory(fake_artifacts, calls=[], forward_calls=[])
+
+    def loader(path: str | Path) -> object:
+        runtime = base_loader(path)
+        runtime.source_class_order = list(union6[:4])
+        runtime.source_class_order_sha256 = _canonical(list(union6[:4]))
+        return runtime
+
+    monkeypatch.setattr(TARGET_EVAL, "load_verified_clic_predictor_state", loader, raising=False)
+    monkeypatch.setattr(TARGET, "load_verified_clic_predictor_state", loader, raising=False)
+    prediction = tmp_path / "prediction.json"
+    TARGET_EVAL.publish_clic_target_prediction(
+        fake_artifacts["c_state"], package, prediction
+    )
+    baseline = _write_adv3b02_reference_fixture(
+        tmp_path / "baseline",
+        known_tx_ids=union6,
+        rich_cells=True,
+        crossed_cells=True,
+    )
+    reference = tmp_path / "adv_reference.json"
+    TARGET_EVAL.ingest_adv3b02_target_known_reference(
+        baseline["checkpoint"],
+        baseline["train_config"],
+        baseline["known_test_config"],
+        baseline["metrics"],
+        reference,
+    )
+    score = tmp_path / "score.json"
+    TARGET_EVAL.score_clic_target_prediction(prediction, truth, reference, score)
+    payload = json.loads(score.read_text(encoding="utf-8"))
+    noninferiority = payload["adv3b02_noninferiority"]
+    for scene in SCENARIOS:
+        baseline_cell = noninferiority["by_scene"][scene]["baseline"]
+        assert set(baseline_cell["by_class_receiver"]) == set(union6[:4])
+        assert set(baseline_cell["by_class_day"]) == set(union6[:4])
+        assert baseline_cell["by_receiver"] == {
+            "target-rx-0": {"numerator": 4, "denominator": 8, "accuracy": 0.5},
+            "target-rx-1": {"numerator": 4, "denominator": 8, "accuracy": 0.5},
+        }
+        assert baseline_cell["by_day"] == {
+            "day-0": {"numerator": 4, "denominator": 8, "accuracy": 0.5},
+            "day-1": {"numerator": 4, "denominator": 8, "accuracy": 0.5},
+        }
+
+
+@pytest.mark.parametrize("mutation", ("missing_crossed", "crossed_drift", "crossed_zero"))
+def test_adv3b02_reference_rejects_crossed_class_receiver_day_drift(
+    tmp_path: Path, mutation: str
+) -> None:
+    union6 = tuple(f"known-tx-{suffix}" for suffix in "abcdef")
+    baseline = _write_adv3b02_reference_fixture(
+        tmp_path / "baseline",
+        known_tx_ids=union6,
+        rich_cells=True,
+        crossed_cells=True,
+    )
+    metrics = json.loads(Path(baseline["metrics"]).read_text(encoding="utf-8"))
+    cell = metrics["cells"][0]
+    if mutation == "missing_crossed":
+        cell.pop("by_class_receiver")
+    elif mutation == "crossed_drift":
+        cell["by_class_receiver"][union6[0]]["target-rx-0"]["numerator"] = 0
+    else:
+        cell["by_class_day"][union6[0]]["day-0"]["denominator"] = 0
+    bad_metrics = tmp_path / f"bad_{mutation}.json"
+    bad_metrics.write_text(json.dumps(metrics, sort_keys=True) + "\n", encoding="utf-8")
+    with pytest.raises(Exception, match="cross|class|receiver|day|subcell|denominator|closure|drift|rich|field"):
+        TARGET_EVAL.ingest_adv3b02_target_known_reference(
+            baseline["checkpoint"],
+            baseline["train_config"],
+            baseline["known_test_config"],
+            bad_metrics,
+            tmp_path / f"bad_{mutation}_reference.json",
         )
 
 
@@ -3221,7 +3959,9 @@ def test_target_scorer_receipt_has_zero_feedback_counters_and_never_reopens_pred
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    artifacts = _write_target_cache_set_fixture(tmp_path / "inputs")
+    artifacts = _write_target_cache_set_fixture(
+        tmp_path / "inputs", registered_tx_ids=SOURCE_TX
+    )
     package, truth = TARGET_EVAL.seal_clic_target_package(
         artifacts["manifest"],
         tmp_path / "sealed_target",
@@ -3247,7 +3987,9 @@ def test_target_scorer_receipt_has_zero_feedback_counters_and_never_reopens_pred
     ):
         assert prediction_payload[field] == 0
     assert prediction_payload["target_selection_feedback"] is False
-    baseline = _write_adv3b02_reference_fixture(tmp_path / "baseline")
+    baseline = _write_adv3b02_reference_fixture(
+        tmp_path / "baseline", known_tx_ids=SOURCE_TX
+    )
     reference = tmp_path / "adv_reference.json"
     TARGET_EVAL.ingest_adv3b02_target_known_reference(
         baseline["checkpoint"],
@@ -3262,6 +4004,18 @@ def test_target_scorer_receipt_has_zero_feedback_counters_and_never_reopens_pred
     )
     assert score_path.is_file()
     payload = json.loads(score_path.read_text(encoding="utf-8"))
+    truth_payload = json.loads(Path(truth).read_text(encoding="utf-8"))
+    prediction_payload = json.loads(prediction.read_text(encoding="utf-8"))
+    assert "known_test_config_manifest_path" not in prediction_payload
+    assert truth_payload["known_test_config_manifest_path"] == str(
+        Path(artifacts["known_test_config"]).resolve()
+    )
+    assert payload["known_test_config_manifest_path"] == truth_payload["known_test_config_manifest_path"]
+    assert payload["known_test_config_raw_sha256"] == truth_payload["known_test_config_raw_sha256"]
+    assert payload["known_test_config_normalized_sha256"] == prediction_payload[
+        "known_test_config_normalized_sha256"
+    ]
+    assert payload["truth_sidecar_path"] == str(Path(truth).resolve())
     for field in (
         "target_fit_rows",
         "target_update_rows",
@@ -3366,6 +4120,7 @@ def test_formal_scorer_seals_69_unknown_plus_31_defer_with_gate_false_without_ra
         tmp_path / "inputs",
         unknown_rows=100,
         unknown_defer_rows=31,
+        registered_tx_ids=SOURCE_TX,
     )
     package, truth = TARGET_EVAL.seal_clic_target_package(
         artifacts["manifest"],
@@ -3382,7 +4137,9 @@ def test_formal_scorer_seals_69_unknown_plus_31_defer_with_gate_false_without_ra
     TARGET_EVAL.publish_clic_target_prediction(
         predictor_artifacts["c_state"], package, prediction
     )
-    baseline = _write_adv3b02_reference_fixture(tmp_path / "baseline")
+    baseline = _write_adv3b02_reference_fixture(
+        tmp_path / "baseline", known_tx_ids=SOURCE_TX
+    )
     reference = tmp_path / "adv_reference.json"
     TARGET_EVAL.ingest_adv3b02_target_known_reference(
         baseline["checkpoint"],
@@ -3489,3 +4246,711 @@ def test_adv3b02_equivalence_rejects_training_or_known_test_data_surface_drift(s
             baseline_train_config=baseline_train,
             baseline_known_test_config=baseline_known,
         )
+
+
+def _json_keys(value: object) -> set[str]:
+    """Return every mapping key in a sealed JSON value for visibility checks."""
+
+    keys: set[str] = set()
+    if isinstance(value, Mapping):
+        for key, child in value.items():
+            keys.add(str(key))
+            keys.update(_json_keys(child))
+    elif isinstance(value, (list, tuple)):
+        for child in value:
+            keys.update(_json_keys(child))
+    return keys
+
+
+def _target_package_bytes(package: Path) -> bytes:
+    """Read only predictor-package bytes, never the evaluator truth sidecar."""
+
+    if package.is_dir():
+        return b"".join(
+            [
+                (package / "manifest.json").read_bytes(),
+                (package / "received_iq.npz").read_bytes(),
+            ]
+        )
+    with zipfile.ZipFile(package, "r") as archive:
+        return archive.read("manifest.json") + archive.read("received_iq.npz")
+
+
+def _assert_iq_only_visibility(package: Path, manifest: Mapping[str, object], known_path: Path) -> None:
+    """Lock the predictor-visible package to IQ/opaque-scene data only."""
+
+    forbidden_keys = {
+        "known_test_config_manifest_path",
+        "truth_sidecar_path",
+        "validator_receipt_path",
+        "tx_ids",
+        "rx_ids",
+        "day_ids",
+        "class_order",
+        "physical_sample_id",
+        "role",
+    }
+    assert not (_json_keys(manifest) & forbidden_keys)
+    raw = _target_package_bytes(package)
+    assert str(known_path.resolve()).encode("utf-8") not in raw
+    assert b"truth_sidecar" not in raw
+    # Source-policy local4 class order is an allowed aggregate binding; the
+    # predictor package must still hide target-known IDs and all evaluator
+    # strata.
+    for leaked_id in (*SOURCE_RX, *SOURCE_DAYS, "known-tx-a", "known-tx-b"):
+        assert leaked_id.encode("utf-8") not in raw
+
+
+def test_target_iq_only_package_excludes_known_config_and_truth_identity(tmp_path: Path) -> None:
+    """The sealed predictor package must not carry evaluator-only config/truth identity."""
+
+    artifacts = _write_target_cache_set_fixture(
+        tmp_path, registered_tx_ids=SOURCE_TX
+    )
+    package, truth = TARGET_EVAL.seal_clic_target_package(
+        artifacts["manifest"],
+        tmp_path / "sealed_target",
+        validator_receipt_path=artifacts["receipt"],
+        expected_capsule_id=artifacts["capsule_id"],
+        expected_split_id=artifacts["split_id"],
+    )
+    manifest = _target_manifest(package)
+    _assert_iq_only_visibility(package, manifest, Path(artifacts["known_test_config"]))
+
+    # The evaluator may retain this reopening binding only on the truth side.
+    truth_payload = json.loads(Path(truth).read_text(encoding="utf-8"))
+    assert truth_payload["known_test_config_manifest_path"] == str(
+        Path(artifacts["known_test_config"]).resolve()
+    )
+    assert truth_payload["known_test_config_raw_sha256"] == _sha_file(
+        Path(artifacts["known_test_config"])
+    )
+
+
+def test_target_publisher_never_opens_evaluator_known_config_or_exposes_it_in_prediction(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Publisher forward must remain truth-blind even when config access is instrumented."""
+
+    artifacts = _write_target_cache_set_fixture(
+        tmp_path, registered_tx_ids=SOURCE_TX
+    )
+    package, _truth = TARGET_EVAL.seal_clic_target_package(
+        artifacts["manifest"],
+        tmp_path / "sealed_target",
+        validator_receipt_path=artifacts["receipt"],
+        expected_capsule_id=artifacts["capsule_id"],
+        expected_split_id=artifacts["split_id"],
+    )
+    predictor_artifacts = _write_fake_predictor_artifacts(tmp_path / "predictor")
+    loader = _fake_runtime_factory(predictor_artifacts, calls=[], forward_calls=[])
+    monkeypatch.setattr(TARGET_EVAL, "load_verified_clic_predictor_state", loader, raising=False)
+    monkeypatch.setattr(TARGET, "load_verified_clic_predictor_state", loader, raising=False)
+
+    known_path = Path(artifacts["known_test_config"]).resolve()
+    original_reader = TARGET.read_verified_config_manifest
+    opened_known: list[Path] = []
+
+    def exploding_known_reader(path: str | Path, *args: object, **kwargs: object) -> object:
+        resolved = Path(path).resolve()
+        if resolved == known_path:
+            opened_known.append(resolved)
+            raise AssertionError("publisher opened evaluator-only known-test config")
+        return original_reader(path, *args, **kwargs)
+
+    monkeypatch.setattr(TARGET, "read_verified_config_manifest", exploding_known_reader)
+    prediction = tmp_path / "prediction.json"
+    TARGET_EVAL.publish_clic_target_prediction(
+        predictor_artifacts["c_state"], package, prediction
+    )
+
+    assert opened_known == []
+    payload = json.loads(prediction.read_text(encoding="utf-8"))
+    assert payload["truth_sidecar_opened"] is False
+    _assert_iq_only_visibility(package, _target_manifest(package), known_path)
+    assert not (_json_keys(payload) & {
+        "known_test_config_manifest_path",
+        "truth_sidecar_path",
+        "tx_ids",
+        "rx_ids",
+        "day_ids",
+        "class_order",
+        "physical_sample_id",
+        "role",
+    })
+    prediction_raw = prediction.read_bytes()
+    assert str(known_path).encode("utf-8") not in prediction_raw
+    assert b"truth_sidecar" not in prediction_raw
+    for leaked_id in (*SOURCE_RX, *SOURCE_DAYS, "known-tx-a", "known-tx-b"):
+        assert leaked_id.encode("utf-8") not in prediction_raw
+
+
+def test_target_scorer_reopens_known_config_only_after_prediction_seal_and_truth_open(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Prediction integrity must close before truth-side known-config reopening."""
+
+    artifacts = _write_target_cache_set_fixture(
+        tmp_path, registered_tx_ids=SOURCE_TX
+    )
+    package, truth = TARGET_EVAL.seal_clic_target_package(
+        artifacts["manifest"],
+        tmp_path / "sealed_target",
+        validator_receipt_path=artifacts["receipt"],
+        expected_capsule_id=artifacts["capsule_id"],
+        expected_split_id=artifacts["split_id"],
+    )
+    predictor_artifacts = _write_fake_predictor_artifacts(tmp_path / "predictor")
+    loader = _fake_runtime_factory(predictor_artifacts, calls=[], forward_calls=[])
+    monkeypatch.setattr(TARGET_EVAL, "load_verified_clic_predictor_state", loader, raising=False)
+    monkeypatch.setattr(TARGET, "load_verified_clic_predictor_state", loader, raising=False)
+    prediction = tmp_path / "prediction.json"
+    TARGET_EVAL.publish_clic_target_prediction(
+        predictor_artifacts["c_state"], package, prediction
+    )
+
+    baseline = _write_adv3b02_reference_fixture(
+        tmp_path / "baseline", known_tx_ids=SOURCE_TX
+    )
+    adv_reference = tmp_path / "adv_reference.json"
+    TARGET_EVAL.ingest_adv3b02_target_known_reference(
+        baseline["checkpoint"],
+        baseline["train_config"],
+        baseline["known_test_config"],
+        baseline["metrics"],
+        adv_reference,
+    )
+
+    known_path = Path(artifacts["known_test_config"]).resolve()
+    original_reader = TARGET.read_verified_config_manifest
+    truth_opened = False
+    known_open_order: list[bool] = []
+
+    def ordered_reader(path: str | Path, *args: object, **kwargs: object) -> object:
+        resolved = Path(path).resolve()
+        if resolved == known_path:
+            known_open_order.append(truth_opened)
+            if not truth_opened:
+                raise AssertionError("scorer reopened known config before truth sidecar")
+        return original_reader(path, *args, **kwargs)
+
+    original_truth_loader = TARGET_EVAL._load_verified_clic_truth_sidecar
+
+    def truth_first_loader(*args: object, **kwargs: object) -> object:
+        nonlocal truth_opened
+        truth_opened = True
+        return original_truth_loader(*args, **kwargs)
+
+    monkeypatch.setattr(TARGET, "read_verified_config_manifest", ordered_reader)
+    monkeypatch.setattr(TARGET_EVAL, "_load_verified_clic_truth_sidecar", truth_first_loader)
+    score_path = tmp_path / "score.json"
+    TARGET_EVAL.score_clic_target_prediction(
+        prediction, truth, adv_reference, score_path
+    )
+    assert truth_opened is True
+    assert known_open_order and all(known_open_order)
+
+
+def _rewrite_real_g_fixture_without_checkpoint_split_info(artifacts: Mapping[str, object]) -> None:
+    """Move v5 split receipts into clean-manifest evidence and remove split_info."""
+
+    paths = artifacts["g_paths"]
+    checkpoint_path = Path(paths["checkpoint"])
+    checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
+    assert isinstance(checkpoint, Mapping)
+    checkpoint = dict(checkpoint)
+    checkpoint.pop("split_info", None)
+    torch.save(checkpoint, checkpoint_path)
+    checkpoint_sha = _sha_file(checkpoint_path)
+
+    terminal_path = Path(paths["terminal"])
+    terminal = json.loads(terminal_path.read_text(encoding="utf-8"))
+    terminal["selected_checkpoint_sha256"] = checkpoint_sha
+    strict_core = dict(terminal.get("strict_core", {}))
+    if "final_checkpoint_sha256" in strict_core:
+        strict_core["final_checkpoint_sha256"] = checkpoint_sha
+    if "checkpoint_sha256" in strict_core:
+        strict_core["checkpoint_sha256"] = checkpoint_sha
+    terminal["strict_core"] = strict_core
+    terminal_path.write_text(json.dumps(terminal, ensure_ascii=True, sort_keys=True) + "\n", encoding="utf-8")
+    terminal_sha = _sha_file(terminal_path)
+
+    clean_path = Path(artifacts["g_clean"])
+    with np.load(clean_path, allow_pickle=False) as archive:
+        clean_arrays = {name: np.array(archive[name], copy=True) for name in archive.files}
+    clean_manifest = json.loads(str(np.asarray(clean_arrays["manifest_json"]).item()))
+    clean_manifest["source_checkpoint_sha256"] = checkpoint_sha
+    clean_manifest["terminal_receipt_sha256"] = terminal_sha
+    clean_manifest["source_split_receipt"] = {
+        "schema": "cvs.phase1.source_split_receipt.v1",
+        "source_receivers": list(SOURCE_RX),
+        "source_days": list(SOURCE_DAYS),
+        "labeled_indices_sha256": _sha_text("labeled"),
+        "split_manifest_sha256": _sha_text("split"),
+    }
+    clean_manifest["tx_partition_receipt"] = {
+        "schema": "cvs.phase1.tx_partition_receipt.v1",
+        "partition_sha256": _sha_text("partition"),
+    }
+    clean_manifest["source_receiver_ids"] = list(SOURCE_RX)
+    clean_manifest["source_day_ids"] = list(SOURCE_DAYS)
+    clean_arrays["manifest_json"] = np.asarray(
+        json.dumps(clean_manifest, ensure_ascii=True, sort_keys=True)
+    )
+    np.savez(clean_path, **clean_arrays)
+
+    leo_path = Path(artifacts["g_leo"])
+    with np.load(leo_path, allow_pickle=False) as archive:
+        leo_arrays = {name: np.array(archive[name], copy=True) for name in archive.files}
+    leo_manifest = json.loads(str(np.asarray(leo_arrays["manifest_json"]).item()))
+    for field in ("checkpoint_sha256", "source_checkpoint_sha256"):
+        if field in leo_manifest:
+            leo_manifest[field] = checkpoint_sha
+    for field in ("terminal_receipt_sha256", "source_terminal_receipt_sha256"):
+        if field in leo_manifest:
+            leo_manifest[field] = terminal_sha
+    leo_arrays["manifest_json"] = np.asarray(
+        json.dumps(leo_manifest, ensure_ascii=True, sort_keys=True)
+    )
+    np.savez(leo_path, **leo_arrays)
+
+    binding_path = Path(artifacts["g_binding"])
+    binding = json.loads(binding_path.read_text(encoding="utf-8"))
+    for field in ("checkpoint_sha256", "source_checkpoint_sha256"):
+        if field in binding:
+            binding[field] = checkpoint_sha
+    for field in ("terminal_receipt_sha256", "source_terminal_receipt_sha256"):
+        if field in binding:
+            binding[field] = terminal_sha
+    binding["leo_npz_sha256"] = _sha_file(leo_path)
+    binding["leo_manifest_sha256"] = _canonical(leo_manifest)
+    binding_path.write_text(json.dumps(binding, ensure_ascii=True, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def test_clic_real_g_bundle_derives_train_config_from_v5_clean_manifest_without_split_info(
+    tmp_path: Path,
+) -> None:
+    """Real G config derivation must not depend on a duplicated checkpoint.split_info."""
+
+    artifacts = _pair_fold_artifact_fixture(tmp_path / "real_g", fold=1, real_g_bundle=True)
+    _rewrite_real_g_fixture_without_checkpoint_split_info(artifacts)
+    checkpoint = torch.load(artifacts["g_paths"]["checkpoint"], map_location="cpu", weights_only=False)
+    assert "split_info" not in checkpoint
+    output = tmp_path / "v5_no_split_info.bundle.zip"
+    BUNDLE.export_bundle(
+        checkpoint_path=artifacts["g_paths"]["checkpoint"],
+        terminal_receipt_path=artifacts["g_paths"]["terminal"],
+        output_path=output,
+        clean_npz_path=artifacts["g_clean"],
+        leo_npz_path=artifacts["g_leo"],
+        leo_binding_path=artifacts["g_binding"],
+    )
+    verified = BUNDLE.verify_clic_bundle(output)
+    candidate = verified["candidate_train_data_config"]
+    assert candidate["real_checkpoint_config"] is True
+    normalized = candidate["normalized"]
+    assert normalized["source_day_ids"] == list(SOURCE_DAYS)
+    assert normalized["source_receiver_ids"] == list(SOURCE_RX)
+    assert normalized["role_construction"] == {
+        "split_mode": "tx_rx_day_1_6_3",
+        "labeled_ratio": 0.07,
+        "unlabeled_ratio": 0.63,
+        "source_val_ratio": 0.30,
+    }
+    assert not {"epoch", "optimizer", "loss", "model"}.intersection(normalized)
+
+
+def test_c_predictor_descriptor_is_derived_from_immutable_pair_output_and_rejects_forgery(
+    tmp_path: Path,
+) -> None:
+    """C descriptor authority is the exact PAIR record, never an orphan policy JSON."""
+
+    artifacts = _pair_artifact_fixture(tmp_path / "pair")
+    args = PAIR.build_parser().parse_args(_pair_cli_argv(artifacts))
+    pair_payload = PAIR.evaluate(args)
+    pair_path = Path(args.output_pair_json).resolve()
+    persisted = json.loads(pair_path.read_text(encoding="utf-8"))
+    assert persisted == pair_payload
+    c_state = pair_payload["clic_source_policy_state"]["C"]
+    checkpoint_path = Path(artifacts["c_paths"]["checkpoint"])
+    terminal_path = Path(artifacts["c_paths"]["terminal"])
+    descriptor = tmp_path / "c_predictor_state.json"
+
+    sealer = getattr(TARGET, "seal_clic_c_predictor_state")
+    result = sealer(
+        checkpoint_path,
+        terminal_path,
+        pair_path,
+        descriptor,
+        fold_index=1,
+    )
+    descriptor_path = Path(result) if isinstance(result, (str, Path)) else descriptor
+    payload = json.loads(descriptor_path.read_text(encoding="utf-8"))
+    assert payload["pair_artifact_path"] == str(pair_path)
+    assert payload["pair_artifact_sha256"] == _sha_file(pair_path)
+    assert payload["pair_policy_state_sha256"] == c_state["state_sha256"]
+    assert payload["checkpoint_sha256"] == _sha_file(checkpoint_path)
+    assert payload["terminal_receipt_sha256"] == _sha_file(terminal_path)
+    assert payload["arm"] == "C"
+    assert payload["fold_index"] == 1
+    if "pair_policy_state_path" in payload:
+        assert Path(payload["pair_policy_state_path"]).resolve() == pair_path
+
+    tampered_pair = pair_path.read_bytes() + b"pair-byte-tamper\n"
+    pair_path.write_bytes(tampered_pair)
+    with pytest.raises(Exception, match="PAIR|pair|SHA|hash|tamper|artifact|policy|drift"):
+        TARGET.load_verified_clic_predictor_state(descriptor_path)
+
+    forged_policy = tmp_path / "forged_policy.json"
+    forged_policy.write_text(json.dumps(c_state, ensure_ascii=True, sort_keys=True) + "\n", encoding="utf-8")
+    forged_descriptor = dict(payload)
+    forged_descriptor["pair_artifact_path"] = str(forged_policy.resolve())
+    forged_descriptor["pair_artifact_sha256"] = _sha_file(forged_policy)
+    forged_path = tmp_path / "forged_descriptor.json"
+    forged_path.write_text(json.dumps(forged_descriptor, ensure_ascii=True, sort_keys=True) + "\n", encoding="utf-8")
+    with pytest.raises(Exception, match="PAIR|pair|schema|policy|artifact|drift|descriptor"):
+        TARGET.load_verified_clic_predictor_state(forged_path)
+
+
+def test_c_predictor_descriptor_seals_pair_source_local4_order_and_sha(tmp_path: Path) -> None:
+    """C descriptor class order comes from PAIR source policy, not target config."""
+
+    artifacts = _pair_artifact_fixture(tmp_path / "pair")
+    args = PAIR.build_parser().parse_args(_pair_cli_argv(artifacts))
+    PAIR.evaluate(args)
+    pair_path = Path(args.output_pair_json)
+    descriptor = tmp_path / "c_predictor_state.json"
+    TARGET.seal_clic_c_predictor_state(
+        artifacts["c_paths"]["checkpoint"],
+        artifacts["c_paths"]["terminal"],
+        pair_path,
+        descriptor,
+        fold_index=1,
+    )
+    payload = json.loads(descriptor.read_text(encoding="utf-8"))
+    assert payload["source_class_order"] == list(SOURCE_TX)
+    assert payload["source_class_order_sha256"] == _canonical(list(SOURCE_TX))
+
+    tampered = dict(payload)
+    tampered["source_class_order"] = list(reversed(SOURCE_TX))
+    tampered_path = tmp_path / "c_predictor_state_tampered.json"
+    tampered_path.write_text(json.dumps(tampered, sort_keys=True) + "\n", encoding="utf-8")
+    with pytest.raises(Exception, match="class|order|source|SHA|hash|descriptor|drift"):
+        TARGET.load_verified_clic_predictor_state(tampered_path)
+
+
+def test_c_predictor_descriptor_rejects_pair_bound_clean_byte_replacement(
+    tmp_path: Path,
+) -> None:
+    """PAIR authority must reopen the exact clean raw bytes, not just its path."""
+
+    artifacts = _pair_artifact_fixture(tmp_path / "pair")
+    args = PAIR.build_parser().parse_args(_pair_cli_argv(artifacts))
+    PAIR.evaluate(args)
+    pair_path = Path(args.output_pair_json)
+    descriptor = tmp_path / "c_predictor_state.json"
+    TARGET.seal_clic_c_predictor_state(
+        artifacts["c_paths"]["checkpoint"],
+        artifacts["c_paths"]["terminal"],
+        pair_path,
+        descriptor,
+        fold_index=1,
+    )
+    clean_path = Path(artifacts["c_clean"])
+    clean_path.write_bytes(clean_path.read_bytes() + b"clean-byte-tamper")
+    with pytest.raises(Exception, match="clean|raw|artifact|PAIR-derived|SHA|hash|tamper|drift"):
+        TARGET.load_verified_clic_predictor_state(descriptor)
+
+
+def test_pair_evaluate_rejects_self_consistent_cg_replacement_after_arm_derivation(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """PAIR must reject a clean/LEO replacement made after derivation.
+
+    The replacement is internally re-sealed (clean proxy declaration and LEO
+    binding are regenerated), so a path-only or per-artifact validator cannot
+    mistake this for a malformed fixture.  The immutable raw snapshot taken by
+    PAIR must still detect the byte race and must not write a pair record.
+    """
+
+    artifacts = _pair_artifact_fixture(tmp_path / "pair")
+    args = PAIR.build_parser().parse_args(_pair_cli_argv(artifacts))
+    original_derive = PAIR._derive_arm_postfreeze_state
+
+    def replacing_derive(**kwargs: object) -> dict[str, object]:
+        state = original_derive(**kwargs)
+        if kwargs.get("arm") != "C":
+            return state
+
+        clean_path = Path(str(kwargs["clean_npz_path"])).resolve()
+        with np.load(clean_path, allow_pickle=False) as archive:
+            clean_arrays = {name: np.array(archive[name], copy=True) for name in archive.files}
+        clean_arrays["z_id"][0, 0] += np.float32(0.125)
+        clean_arrays["features"] = np.asarray(clean_arrays["z_id"], dtype=np.float32).copy()
+        clean_replacement = clean_path.with_name(clean_path.name + ".replacement.npz")
+        np.savez(clean_replacement, **clean_arrays)
+        clean_replacement.replace(clean_path)
+
+        replacement_proxy = Path(str(kwargs["proxy_diagnostic_path"])).with_name("replacement_proxy.json")
+        PAIR.export_clic_proxy_diagnostic(
+            clean_npz_path=clean_path,
+            output_json_path=replacement_proxy,
+        )
+        replacement_proxy.replace(Path(str(kwargs["proxy_diagnostic_path"])).resolve())
+
+        leo_path = Path(str(kwargs["leo_npz_path"])).resolve()
+        with np.load(leo_path, allow_pickle=False) as archive:
+            leo_arrays = {name: np.array(archive[name], copy=True) for name in archive.files}
+        leo_arrays["z_id"][0, 0] += np.float32(0.125)
+        leo_arrays["features"] = np.asarray(leo_arrays["z_id"], dtype=np.float32).copy()
+        leo_replacement = leo_path.with_name(leo_path.name + ".replacement.npz")
+        np.savez(leo_replacement, **leo_arrays)
+        leo_replacement.replace(leo_path)
+
+        binding_path = Path(str(kwargs["leo_binding_path"])).resolve()
+        binding = json.loads(binding_path.read_text(encoding="utf-8"))
+        with np.load(leo_path, allow_pickle=False) as archive:
+            leo_manifest = json.loads(str(np.asarray(archive["manifest_json"]).item()))
+        binding["leo_npz_sha256"] = _sha_file(leo_path)
+        binding["leo_manifest_sha256"] = _canonical(leo_manifest)
+        binding_path.write_text(json.dumps(binding, ensure_ascii=True, sort_keys=True) + "\n", encoding="utf-8")
+        return state
+
+    monkeypatch.setattr(PAIR, "_derive_arm_postfreeze_state", replacing_derive)
+    with pytest.raises(Exception, match="TOCTOU|changed|SHA|raw artifact|drift") as exc_info:
+        PAIR.evaluate(args)
+    assert "TOCTOU" in str(exc_info.value) or "changed while deriving/sealing" in str(exc_info.value)
+    assert not Path(args.output_pair_json).exists(), "rejected TOCTOU input must not leave a pair record"
+
+
+def test_pair_output_seals_raw_sha_for_every_cg_authority_artifact(tmp_path: Path) -> None:
+    """PAIR must make each C/G input reopenable by path and raw byte SHA."""
+
+    artifacts = _pair_artifact_fixture(tmp_path / "pair")
+    args = PAIR.build_parser().parse_args(_pair_cli_argv(artifacts))
+    payload = PAIR.evaluate(args)
+    for arm in ("C", "G"):
+        raw = payload["raw_artifacts"][arm]
+        for stem in (
+            "checkpoint",
+            "terminal",
+            "clean",
+            "leo",
+            "leo_binding",
+            "common_receipt",
+            "proxy_diagnostic",
+        ):
+            path = Path(str(raw[stem])).resolve()
+            assert path.is_file(), (arm, stem, raw)
+            assert raw[f"{stem}_sha256"] == _sha_file(path)
+
+
+def test_g_bundle_and_prediction_bind_pair_source_local4_order_and_sha(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """G verified state and IQ-only prediction carry the PAIR local4 binding."""
+
+    artifacts = _pair_fold_artifact_fixture(tmp_path / "g", fold=1, real_g_bundle=True)
+    verified = BUNDLE.verify_clic_bundle(artifacts["g_bundle"])
+    assert verified["source_class_order"] == list(SOURCE_TX)
+    assert verified["source_class_order_sha256"] == _canonical(list(SOURCE_TX))
+
+    target = _write_target_cache_set_fixture(tmp_path / "target")
+    package, _truth = TARGET_EVAL.seal_clic_target_package(
+        target["manifest"],
+        tmp_path / "sealed_target",
+        validator_receipt_path=target["receipt"],
+        expected_capsule_id=target["capsule_id"],
+        expected_split_id=target["split_id"],
+    )
+    fake_artifacts = _write_fake_predictor_artifacts(tmp_path / "predictor")
+    base_loader = _fake_runtime_factory(fake_artifacts, calls=[], forward_calls=[])
+
+    def loader(path: str | Path) -> object:
+        runtime = base_loader(path)
+        runtime.source_class_order = list(SOURCE_TX)
+        runtime.source_class_order_sha256 = _canonical(list(SOURCE_TX))
+        return runtime
+
+    monkeypatch.setattr(TARGET_EVAL, "load_verified_clic_predictor_state", loader, raising=False)
+    monkeypatch.setattr(TARGET, "load_verified_clic_predictor_state", loader, raising=False)
+    prediction = tmp_path / "prediction.json"
+    TARGET_EVAL.publish_clic_target_prediction(
+        fake_artifacts["g_bundle"], package, prediction
+    )
+    payload = json.loads(prediction.read_text(encoding="utf-8"))
+    assert payload["source_class_order"] == list(SOURCE_TX)
+    assert payload["source_class_order_sha256"] == _canonical(list(SOURCE_TX))
+
+
+def test_c_predictor_runtime_forward_is_torch_numpy2_compatible(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """C's strict received-IQ path and model forward must avoid legacy bridges."""
+
+    import cvsrffi.checkpoint_loading as checkpoint_loading
+
+    artifacts = _pair_artifact_fixture(tmp_path / "c")
+    args = PAIR.build_parser().parse_args(_pair_cli_argv(artifacts))
+    PAIR.evaluate(args)
+    pair_path = Path(args.output_pair_json)
+    descriptor = tmp_path / "c" / "c_predictor_state.json"
+    TARGET.seal_clic_c_predictor_state(
+        artifacts["c_paths"]["checkpoint"],
+        artifacts["c_paths"]["terminal"],
+        pair_path,
+        descriptor,
+        fold_index=1,
+    )
+
+    class DummyModel(torch.nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.anchor = torch.nn.Parameter(torch.ones(1))
+
+        def forward(self, tensor, *, y_tx=None, grl_lambda=1.0, return_aux=True):
+            del y_tx, grl_lambda, return_aux
+            batch = int(tensor.shape[0])
+            return {
+                "z_id": torch.ones((batch, 2), dtype=torch.float32),
+                "z_dom": torch.zeros((batch, 2), dtype=torch.float32),
+                "q_clic": torch.zeros((batch, 1), dtype=torch.float32),
+                "tx_logits": torch.zeros((batch, len(SOURCE_TX)), dtype=torch.float32),
+            }
+
+    monkeypatch.setattr(
+        checkpoint_loading,
+        "build_exact_ssdg_model_from_checkpoint",
+        lambda *_args, **_kwargs: (DummyModel(), {"synthetic": True}),
+    )
+
+    def forbidden_tensor_numpy(*_args, **_kwargs):
+        raise AssertionError("C predictor must not call Tensor.numpy()")
+
+    def forbidden_torch_from_numpy(*_args, **_kwargs):
+        raise AssertionError("C predictor must not call torch.from_numpy()")
+
+    monkeypatch.setattr(torch.Tensor, "numpy", forbidden_tensor_numpy)
+    monkeypatch.setattr(torch, "from_numpy", forbidden_torch_from_numpy)
+    runtime = TARGET.load_verified_clic_predictor_state(descriptor)
+    received_i = np.zeros((2, 256), dtype=np.float32)
+    output = runtime.forward_once(received_i, scene=SCENARIOS[0])
+    assert output["decision"] in {"registered", "unknown", "defer"}
+    for field in ("z_id", "z_dom", "q_clic", "tx_logits"):
+        assert np.isfinite(np.asarray(output[field], dtype=np.float64)).all()
+
+
+def test_g_bundle_reload_forward_is_torch_numpy2_compatible(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A verified real G bundle must reload and forward without legacy bridges."""
+
+    artifacts = _pair_fold_artifact_fixture(tmp_path / "g", fold=1, real_g_bundle=True)
+    with np.load(artifacts["existing_received_iq"], allow_pickle=False) as archive:
+        received_i = np.asarray(archive["received_iq"][0], dtype=np.float32)
+
+    def forbidden_tensor_numpy(*_args, **_kwargs):
+        raise AssertionError("G bundle reload must not call Tensor.numpy()")
+
+    def forbidden_torch_from_numpy(*_args, **_kwargs):
+        raise AssertionError("G bundle reload must not call torch.from_numpy()")
+
+    monkeypatch.setattr(torch.Tensor, "numpy", forbidden_tensor_numpy)
+    monkeypatch.setattr(torch, "from_numpy", forbidden_torch_from_numpy)
+    output = BUNDLE.reload_forward(
+        artifacts["g_bundle"], received_i, scene=SCENARIOS[0]
+    )
+    assert type(output["decision"]) is str
+    assert output["decision"] in {"registered", "unknown", "defer"}
+    assert type(output["e_unknown"]) is float
+    assert np.isfinite(output["e_unknown"])
+    for field in ("z_id", "z_dom", "q_clic", "tx_logits"):
+        assert np.isfinite(np.asarray(output[field], dtype=np.float64)).all()
+
+
+def test_g_predictor_runtime_forward_normalizes_reload_scalars(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The G runtime wrapper must expose scalar decision/energy contracts."""
+
+    artifacts = _pair_fold_artifact_fixture(tmp_path / "g", fold=1, real_g_bundle=True)
+    with np.load(artifacts["existing_received_iq"], allow_pickle=False) as archive:
+        received_i = np.asarray(archive["received_iq"][0], dtype=np.float32)
+
+    def forbidden_tensor_numpy(*_args, **_kwargs):
+        raise AssertionError("G predictor runtime must not call Tensor.numpy()")
+
+    def forbidden_torch_from_numpy(*_args, **_kwargs):
+        raise AssertionError("G predictor runtime must not call torch.from_numpy()")
+
+    monkeypatch.setattr(torch.Tensor, "numpy", forbidden_tensor_numpy)
+    monkeypatch.setattr(torch, "from_numpy", forbidden_torch_from_numpy)
+    runtime = TARGET.load_verified_clic_predictor_state(artifacts["g_bundle"])
+    output = runtime.forward_once(received_i, scene=SCENARIOS[0])
+    assert type(output["decision"]) is str
+    assert output["decision"] in {"registered", "unknown", "defer"}
+    assert type(output["e_unknown"]) is float
+    assert np.isfinite(output["e_unknown"])
+    for field in ("z_id", "z_dom", "q_clic", "tx_logits"):
+        assert np.isfinite(np.asarray(output[field], dtype=np.float64)).all()
+
+
+def test_union_six_truth_cache_scores_only_fold_local4_and_audits_inactive_tx(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Union-six registered truth must not inflate local-four known DG."""
+
+    union6 = tuple(f"known-tx-{suffix}" for suffix in "abcdef")
+    target = _write_target_cache_set_fixture(
+        tmp_path / "target",
+        registered_tx_ids=union6,
+    )
+    package, truth = TARGET_EVAL.seal_clic_target_package(
+        target["manifest"],
+        tmp_path / "sealed_target",
+        validator_receipt_path=target["receipt"],
+        expected_capsule_id=target["capsule_id"],
+        expected_split_id=target["split_id"],
+    )
+    fake_artifacts = _write_fake_predictor_artifacts(tmp_path / "predictor")
+    base_loader = _fake_runtime_factory(fake_artifacts, calls=[], forward_calls=[])
+
+    def loader(path: str | Path) -> object:
+        runtime = base_loader(path)
+        runtime.source_class_order = list(union6[:4])
+        runtime.source_class_order_sha256 = _canonical(list(union6[:4]))
+        return runtime
+
+    monkeypatch.setattr(TARGET_EVAL, "load_verified_clic_predictor_state", loader, raising=False)
+    monkeypatch.setattr(TARGET, "load_verified_clic_predictor_state", loader, raising=False)
+    prediction = tmp_path / "prediction.json"
+    TARGET_EVAL.publish_clic_target_prediction(fake_artifacts["c_state"], package, prediction)
+
+    baseline = _write_adv3b02_reference_fixture(
+        tmp_path / "baseline",
+        known_tx_ids=union6,
+        rich_cells=True,
+    )
+    reference = tmp_path / "adv_reference.json"
+    TARGET_EVAL.ingest_adv3b02_target_known_reference(
+        baseline["checkpoint"],
+        baseline["train_config"],
+        baseline["known_test_config"],
+        baseline["metrics"],
+        reference,
+    )
+    score = tmp_path / "score.json"
+    TARGET_EVAL.score_clic_target_prediction(prediction, truth, reference, score)
+    payload = json.loads(score.read_text(encoding="utf-8"))
+    known = payload["known_target_audit"]
+    assert known["global"]["overall"]["denominator"] == 3 * 4
+    inactive = known["inactive_registered_known"]
+    assert inactive["excluded_from_known_denominator"] is True
+    assert inactive["by_tx"] == {
+        tx_id: {"denominator": 3, "count": 3}
+        for tx_id in union6[4:]
+    }
+    unknown = payload["unknown_target_audit"]
+    assert unknown["unknown_denominator_global"] == 3 * 2

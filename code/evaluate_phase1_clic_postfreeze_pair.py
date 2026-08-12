@@ -1742,6 +1742,73 @@ def _atomic_write_pair_json(path: Path, payload: Mapping[str, Any]) -> None:
     temporary.replace(path)
 
 
+_PAIR_RAW_ARTIFACT_STEMS = (
+    "checkpoint",
+    "terminal",
+    "clean",
+    "leo",
+    "leo_binding",
+    "common_receipt",
+    "proxy_diagnostic",
+)
+
+
+def _snapshot_pair_raw_artifacts(args: argparse.Namespace) -> dict[str, dict[str, str]]:
+    """Snapshot every PAIR input before deriving any source-only state."""
+
+    sealed: dict[str, dict[str, str]] = {}
+    for arm in ("C", "G"):
+        paths = {
+            "checkpoint": getattr(args, f"{arm.lower()}_checkpoint"),
+            "terminal": getattr(args, f"{arm.lower()}_terminal_receipt_json"),
+            "clean": getattr(args, f"{arm.lower()}_clean_npz"),
+            "leo": getattr(args, f"{arm.lower()}_leo_npz"),
+            "leo_binding": Path(
+                getattr(args, f"{arm.lower()}_leo_binding_json")
+            ).resolve(),
+            "common_receipt": Path(
+                getattr(args, f"{arm.lower()}_common_receipt_json")
+            ).resolve(),
+            "proxy_diagnostic": getattr(args, f"{arm.lower()}_proxy_diagnostic_json"),
+        }
+        record: dict[str, str] = {}
+        for stem in _PAIR_RAW_ARTIFACT_STEMS:
+            raw_path = _require_regular_existing(
+                paths[stem], label=f"PAIR {arm} raw {stem}"
+            )
+            record[stem] = str(raw_path)
+            record[f"{stem}_sha256"] = _sha256_file(raw_path)
+        sealed[arm] = record
+    return sealed
+
+
+def _assert_pair_raw_snapshot_unchanged(
+    snapshot: Mapping[str, Mapping[str, Any]]
+) -> None:
+    """Reject any authority-byte drift between snapshot, derivation and seal."""
+
+    if set(str(key) for key in snapshot) != {"C", "G"}:
+        raise CLICPostfreezePairError("PAIR raw artifact snapshot arm map drifted")
+    expected_fields = set(_PAIR_RAW_ARTIFACT_STEMS) | {
+        f"{stem}_sha256" for stem in _PAIR_RAW_ARTIFACT_STEMS
+    }
+    for arm in ("C", "G"):
+        record = snapshot.get(arm)
+        if not isinstance(record, Mapping) or set(str(key) for key in record) != expected_fields:
+            raise CLICPostfreezePairError(f"PAIR {arm} raw artifact snapshot fields drifted")
+        for stem in _PAIR_RAW_ARTIFACT_STEMS:
+            path = _require_regular_existing(
+                record.get(stem), label=f"PAIR {arm} raw {stem}"
+            )
+            expected_sha = _require_sha256(
+                record.get(f"{stem}_sha256"), label=f"PAIR {arm} raw {stem}"
+            )
+            if _sha256_file(path) != expected_sha:
+                raise CLICPostfreezePairError(
+                    f"PAIR {arm} raw {stem} changed while deriving/sealing (TOCTOU SHA drift)"
+                )
+
+
 def evaluate(args: argparse.Namespace) -> dict[str, Any]:
     """Reopen one C/G postfreeze pair, fit source-L state, and write no row data."""
 
@@ -1760,6 +1827,7 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
         expected_scenarios = ",".join(EXPECTED_SCENARIOS)
     if tuple(str(item) for item in str(expected_scenarios).split(",")) != EXPECTED_SCENARIOS:
         raise CLICPostfreezePairError("PAIR expected formal scene order drifted")
+    raw_artifacts = _snapshot_pair_raw_artifacts(args)
     states = {
         arm: _derive_arm_postfreeze_state(
             arm=arm,
@@ -1780,6 +1848,7 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
     for field in ("received_iq_sha256", "physical_order_sha256"):
         if states["C"]["physical_binding"][field] != states["G"]["physical_binding"][field]:
             raise CLICPostfreezePairError(f"PAIR C/G single-LEO {field} binding drifted")
+    _assert_pair_raw_snapshot_unchanged(raw_artifacts)
     payload = {
         "schema": EXPECTED_PAIR_SCHEMA,
         "postfreeze_matrix_id": EXPECTED_POSTFREEZE_MATRIX_ID,
@@ -1800,25 +1869,9 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
             "source_only": True,
             "single_leo_observation": True,
         },
-        "raw_artifacts": {
-            arm: {
-                "checkpoint": str(states[arm]["opened"]["checkpoint_path"]),
-                "terminal": str(states[arm]["opened"]["terminal_path"]),
-                "clean": str(states[arm]["clean"]["path"]),
-                "leo": str(states[arm]["leo"]["path"]),
-                "leo_binding": str(states[arm]["physical_binding"]["binding_sha256"]),
-                "common_receipt": str(states[arm]["common_receipt"] and Path(getattr(args, f"{arm.lower()}_common_receipt_json")).resolve()),
-                "proxy_diagnostic": str(states[arm]["proxy_declaration"]["path"]),
-                "proxy_diagnostic_sha256": str(states[arm]["proxy_declaration"]["sha256"]),
-            }
-            for arm in ("C", "G")
-        },
+        "raw_artifacts": raw_artifacts,
     }
-    # Replace the internal binding digest with its actual immutable path only
-    # after all scientific state is derived; the digest itself remains in the
-    # per-arm policy and is never a substitute for reopening its bytes.
-    for arm in ("C", "G"):
-        payload["raw_artifacts"][arm]["leo_binding"] = str(Path(getattr(args, f"{arm.lower()}_leo_binding_json")).resolve())
+    _assert_pair_raw_snapshot_unchanged(raw_artifacts)
     _atomic_write_pair_json(Path(args.output_pair_json).resolve(), payload)
     return payload
 
@@ -1975,9 +2028,8 @@ def reopen_f6_raw_artifacts(
     if len(prior_pair_metrics) != 5:
         raise CLICPostfreezePairError("F6 must reopen exactly F1--F5 prior raw pair artifacts")
 
-    base_fields = {
-        "checkpoint", "terminal", "clean", "leo", "leo_binding", "common_receipt", "proxy_diagnostic",
-    }
+    base_fields = set(_PAIR_RAW_ARTIFACT_STEMS)
+    persisted_sha_fields = {f"{field}_sha256" for field in base_fields}
     records: dict[int, dict[str, Any]] = {}
     reopened: dict[int, dict[str, Any]] = {}
     artifact_hashes: dict[str, dict[str, dict[str, str]]] = {}
@@ -2003,7 +2055,12 @@ def reopen_f6_raw_artifacts(
             supplied = external.get(arm, external.get(arm.lower()))
             if not isinstance(persisted, Mapping) or not isinstance(supplied, Mapping):
                 raise CLICPostfreezePairError(f"F6 F{fold} {arm} raw artifact record is invalid")
-            if not base_fields.issubset(set(str(key) for key in persisted)) or not base_fields.issubset(set(str(key) for key in supplied)):
+            if (
+                not (base_fields | persisted_sha_fields).issubset(
+                    set(str(key) for key in persisted)
+                )
+                or not base_fields.issubset(set(str(key) for key in supplied))
+            ):
                 raise CLICPostfreezePairError(f"F6 F{fold} {arm} raw artifact set is incomplete")
             for field in base_fields:
                 recorded_path = _require_regular_existing(persisted.get(field), label=f"F6 F{fold} {arm} recorded {field}")
@@ -2028,21 +2085,31 @@ def reopen_f6_raw_artifacts(
                     )
                 ),
             )
-            artifact_hashes[str(fold)][arm] = {
-                field: _sha256_file(_require_regular_existing(supplied[field], label=f"F6 F{fold} {arm} {field}"))
-                for field in base_fields
-            }
-            persisted_proxy_sha = _require_sha256(
-                persisted.get("proxy_diagnostic_sha256"),
-                label=f"F6 F{fold} {arm} persisted proxy diagnostic",
-            )
-            supplied_proxy_sha = _require_sha256(
-                supplied.get("proxy_diagnostic_sha256"),
-                label=f"F6 F{fold} {arm} supplied proxy diagnostic",
-            )
-            recomputed_proxy_sha = states[arm]["proxy_declaration"]["sha256"]
-            if persisted_proxy_sha != recomputed_proxy_sha or supplied_proxy_sha != recomputed_proxy_sha:
-                raise CLICPostfreezePairError(f"F6 F{fold} {arm} proxy diagnostic artifact SHA drifted")
+            artifact_hashes[str(fold)][arm] = {}
+            for field in base_fields:
+                actual_sha = _sha256_file(
+                    _require_regular_existing(
+                        supplied[field], label=f"F6 F{fold} {arm} {field}"
+                    )
+                )
+                persisted_sha = _require_sha256(
+                    persisted.get(f"{field}_sha256"),
+                    label=f"F6 F{fold} {arm} persisted {field}",
+                )
+                if persisted_sha != actual_sha:
+                    raise CLICPostfreezePairError(
+                        f"F6 F{fold} {arm} persisted {field} raw artifact SHA drifted"
+                    )
+                if f"{field}_sha256" in supplied:
+                    supplied_sha = _require_sha256(
+                        supplied.get(f"{field}_sha256"),
+                        label=f"F6 F{fold} {arm} supplied {field}",
+                    )
+                    if supplied_sha != actual_sha:
+                        raise CLICPostfreezePairError(
+                            f"F6 F{fold} {arm} supplied {field} raw artifact SHA drifted"
+                        )
+                artifact_hashes[str(fold)][arm][field] = actual_sha
         common = validate_clic_common_training_binding(states["C"]["common_receipt"], states["G"]["common_receipt"])
         for field in ("received_iq_sha256", "physical_order_sha256"):
             if states["C"]["physical_binding"][field] != states["G"]["physical_binding"][field]:
