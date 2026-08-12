@@ -26,8 +26,12 @@
   },
   "fallback": "K1_K2_exact_D92_FULL_alias",
   "deployment_policy": {
+    "revision": "pareto_safe_greedy_v2",
     "codec": "post_compile_direct_coef2_qint8_pair_exchange",
-    "selection": "synchronous_int32_sum_then_single_boundary_check",
+    "selection": "deterministic_pareto_safe_greedy_atomic_subset",
+    "acceptance": "relative_to_e0_six_old_q20_pooled_new_cross_all_and_cross_hinges",
+    "priority": "uncovered_required_tail_then_worst_gain_then_total_gain_then_semantic_handle",
+    "full_synchronous_publish": false,
     "quantization": "no_requantize_no_scan",
     "all_fail": "exact_e0_fallback",
     "code_local_correction_max_count": 0,

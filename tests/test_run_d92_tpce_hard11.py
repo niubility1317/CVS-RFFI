@@ -44,6 +44,10 @@ def _row(*, k_shot: int = 10) -> dict[str, object]:
         prefix + "requested_atomic_exchange_count": 1 if active else 0,
         prefix + "applied_atomic_exchange_count": 1 if active else 0,
         prefix + "aggregate_saturation_count": 0,
+        prefix + "generated_atomic_exchange_count": 3 if active else 0,
+        prefix + "selected_atomic_exchange_count": 1 if active else 0,
+        prefix + "rejected_atomic_exchange_count": 2 if active else 0,
+        prefix + "greedy_step_count": 1 if active else 0,
         prefix + "code1_byte_exact": True,
         prefix + "scale1_byte_exact": True,
         prefix + "scale2_byte_exact": True,
@@ -86,6 +90,15 @@ def test_fit_audit_rejects_tpce_code2_guard_drift(tmp_path: Path) -> None:
     row["d92_e0d_tpce_code1_byte_exact"] = False
     _write(path, [{**row, "scenario": scene} for scene in SCENES])
     with pytest.raises(runner.D92D92TPCEHard11RunnerError, match="fit audit"):
+        runner._validate_fit_audit(path, k_shot=10)
+
+
+def test_fit_audit_rejects_tpce_greedy_subset_count_drift(tmp_path: Path) -> None:
+    path = tmp_path / "fit_audit.json"
+    row = _row()
+    row["d92_e0d_tpce_rejected_atomic_exchange_count"] = 3
+    _write(path, [{**row, "scenario": scene} for scene in SCENES])
+    with pytest.raises(runner.D92D92TPCEHard11RunnerError, match="atomic"):
         runner._validate_fit_audit(path, k_shot=10)
 
 

@@ -66,7 +66,11 @@ def test_method_lock_rejects_tpce_identity_drift() -> None:
     assert lock["arms"][ARM_ID]["registered_mode"] == "full_only"
     assert lock["state_postprocess_mode"] == "d42_tpce"
     assert lock["deployment_policy"]["codec"] == "post_compile_direct_coef2_qint8_pair_exchange"
-    assert lock["deployment_policy"]["selection"] == "synchronous_int32_sum_then_single_boundary_check"
+    assert lock["deployment_policy"]["revision"] == "pareto_safe_greedy_v2"
+    assert lock["deployment_policy"]["selection"] == "deterministic_pareto_safe_greedy_atomic_subset"
+    assert lock["deployment_policy"]["acceptance"] == "relative_to_e0_six_old_q20_pooled_new_cross_all_and_cross_hinges"
+    assert lock["deployment_policy"]["priority"] == "uncovered_required_tail_then_worst_gain_then_total_gain_then_semantic_handle"
+    assert lock["deployment_policy"]["full_synchronous_publish"] is False
     assert lock["deployment_policy"]["quantization"] == "no_requantize_no_scan"
     assert validate_method_lock(lock)["primary_arm"] == ARM_ID
     with pytest.raises(ValueError):

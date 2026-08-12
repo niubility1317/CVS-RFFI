@@ -769,6 +769,23 @@ def test_tpce_evaluator_invokes_direct_state_postprocess_and_closes_receipt(
     rows, targets = _tpce_support()
     classes = tuple(base_state.classes)
     old_mask = targets < OLD_CLASS_COUNT
+    registration_measure_active = {"value": False}
+    original_measure = e0d_eval.measure_registration_call
+    original_transform = d42._transform
+
+    def tracked_measure(function):
+        def measured_function():
+            registration_measure_active["value"] = True
+            try:
+                return function()
+            finally:
+                registration_measure_active["value"] = False
+
+        return original_measure(measured_function)
+
+    def tracked_transform(*args, **kwargs):
+        assert registration_measure_active["value"] is True
+        return original_transform(*args, **kwargs)
 
     def fake_d42_fit(*_args, **_kwargs):
         base = _result(arm, k_shot=5)
@@ -806,6 +823,8 @@ def test_tpce_evaluator_invokes_direct_state_postprocess_and_closes_receipt(
 
     monkeypatch.setattr(d81_eval, "fit_d42_unified_shrinkage_lda", fake_d42_fit)
     monkeypatch.setattr(d81_eval, "run_d81_query_evaluation", fake_run)
+    monkeypatch.setattr(e0d_eval, "measure_registration_call", tracked_measure)
+    monkeypatch.setattr(d42, "_transform", tracked_transform)
     result = e0d_eval.run_d92_e0d_query_evaluation(
         arm_id=arm.arm_id, **_allowed_kwargs()
     )
@@ -815,6 +834,13 @@ def test_tpce_evaluator_invokes_direct_state_postprocess_and_closes_receipt(
     assert row["d92_e0d_tpce_final_state_sha256"] != row[
         "d92_e0d_tpce_e0_state_sha256"
     ]
+    generated = row["d92_e0d_tpce_generated_atomic_exchange_count"]
+    selected = row["d92_e0d_tpce_selected_atomic_exchange_count"]
+    rejected = row["d92_e0d_tpce_rejected_atomic_exchange_count"]
+    assert generated == selected + rejected
+    assert selected == row["d92_e0d_tpce_greedy_step_count"]
+    assert selected == row["d92_e0d_tpce_requested_atomic_exchange_count"]
+    assert selected == row["d92_e0d_tpce_applied_atomic_exchange_count"]
     assert row["after_total_component_fit_count"] == 2
     assert row["after_actual_component_inventory"][
         "actual_component_fit_count"
@@ -845,6 +871,37 @@ def test_tpce_query_audit_rejects_nonfinite_old_tail_gain():
         "d92_e0d_tpce_old_tail_gain_by_class"
     ][0] = float("nan")
     with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="support guard"):
+        e0d_eval._audit_d92_e0d_fit(
+            result,
+            arm=arm,
+            scenario="leo_clear_weak",
+            k_shot=5,
+            old_count=OLD_CLASS_COUNT,
+            class_count=11,
+        )
+
+
+def test_tpce_query_audit_rejects_greedy_subset_count_drift():
+    arm = slim.D92_E0D_ARMS["E0_FULL_D42_TAIL_PAIR_CODE_EXCHANGE"]
+    state = _tpce_state()
+    rows, targets = _tpce_support()
+    from cvsrffi import stage2_d92_d42_tail_pair_code_exchange as tpce
+
+    candidate, base_receipt = tpce.apply_d42_tail_pair_code_exchange(
+        state, rows, targets, old_class_count=OLD_CLASS_COUNT
+    )
+    result = _result(arm, k_shot=5)
+    result.state = candidate
+    result.geometry_audit["final_covariance_audit"].update(
+        {
+            key.replace("d92_tpce_", "d92_e0d_tpce_"): value
+            for key, value in base_receipt.items()
+        }
+    )
+    result.geometry_audit["final_covariance_audit"][
+        "d92_e0d_tpce_rejected_atomic_exchange_count"
+    ] += 1
+    with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="atomic"):
         e0d_eval._audit_d92_e0d_fit(
             result,
             arm=arm,

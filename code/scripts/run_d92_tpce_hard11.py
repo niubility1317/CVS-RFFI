@@ -80,7 +80,18 @@ def _validate_tpce_row(row: Mapping[str, Any], *, active: bool) -> None:
         changed = int(_finite(row.get(prefix + "changed_code2_count"), "changed_code2_count", lower=1))
         requested = int(_finite(row.get(prefix + "requested_atomic_exchange_count"), "requested_atomic_exchange_count", lower=1))
         applied = int(_finite(row.get(prefix + "applied_atomic_exchange_count"), "applied_atomic_exchange_count", lower=1))
-        if changed <= 0 or requested != applied or row.get(prefix + "aggregate_saturation_count") != 0:
+        generated = int(_finite(row.get(prefix + "generated_atomic_exchange_count"), "generated_atomic_exchange_count", lower=1))
+        selected = int(_finite(row.get(prefix + "selected_atomic_exchange_count"), "selected_atomic_exchange_count", lower=1))
+        rejected = int(_finite(row.get(prefix + "rejected_atomic_exchange_count"), "rejected_atomic_exchange_count", lower=0))
+        greedy_steps = int(_finite(row.get(prefix + "greedy_step_count"), "greedy_step_count", lower=1))
+        if (
+            changed <= 0
+            or requested != applied
+            or requested != selected
+            or generated != selected + rejected
+            or greedy_steps != selected
+            or row.get(prefix + "aggregate_saturation_count") != 0
+        ):
             raise D92D92TPCEHard11RunnerError("fit audit TPCE atomic exchange drift")
         for name in ("old_tail_count_by_class", "old_tail_gain_by_class"):
             values = row.get(prefix + name)
@@ -109,7 +120,7 @@ def _validate_tpce_row(row: Mapping[str, Any], *, active: bool) -> None:
             raise D92D92TPCEHard11RunnerError("fit audit TPCE K1/K2 alias drift")
         if _require_sha(row.get(prefix + "e0_state_sha256"), "E0 state") != _require_sha(row.get(prefix + "final_state_sha256"), "final state"):
             raise D92D92TPCEHard11RunnerError("fit audit alias state drift")
-        for name in ("changed_code2_count", "requested_atomic_exchange_count", "applied_atomic_exchange_count", "aggregate_saturation_count", "component_fit_count"):
+        for name in ("changed_code2_count", "requested_atomic_exchange_count", "applied_atomic_exchange_count", "aggregate_saturation_count", "generated_atomic_exchange_count", "selected_atomic_exchange_count", "rejected_atomic_exchange_count", "greedy_step_count", "component_fit_count"):
             if row.get(prefix + name) != 0:
                 raise D92D92TPCEHard11RunnerError("fit audit alias count drift")
 

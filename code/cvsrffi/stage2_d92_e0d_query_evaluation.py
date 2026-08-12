@@ -82,6 +82,10 @@ _TPCE_RECEIPT_SUFFIXES = (
     "requested_atomic_exchange_count",
     "applied_atomic_exchange_count",
     "aggregate_saturation_count",
+    "generated_atomic_exchange_count",
+    "selected_atomic_exchange_count",
+    "rejected_atomic_exchange_count",
+    "greedy_step_count",
     "code1_byte_exact",
     "scale1_byte_exact",
     "scale2_byte_exact",
@@ -1001,6 +1005,10 @@ def _tpce_support_receipt(
                     "requested_atomic_exchange_count",
                     "applied_atomic_exchange_count",
                     "aggregate_saturation_count",
+                    "generated_atomic_exchange_count",
+                    "selected_atomic_exchange_count",
+                    "rejected_atomic_exchange_count",
+                    "greedy_step_count",
                     "support_score_macs_upper_bound",
                     "support_coordinate_comparisons_upper_bound",
                     "support_macs_upper_bound",
@@ -1014,6 +1022,10 @@ def _tpce_support_receipt(
     for name in (
         "requested_atomic_exchange_count",
         "aggregate_saturation_count",
+        "generated_atomic_exchange_count",
+        "selected_atomic_exchange_count",
+        "rejected_atomic_exchange_count",
+        "greedy_step_count",
         "support_score_macs_upper_bound",
         "support_coordinate_comparisons_upper_bound",
         "support_macs_upper_bound",
@@ -1021,6 +1033,10 @@ def _tpce_support_receipt(
     ):
         finite(name, lower=0.0)
     if fallback is True:
+        generated = int(finite("generated_atomic_exchange_count", lower=0.0))
+        selected = int(finite("selected_atomic_exchange_count", lower=0.0))
+        rejected = int(finite("rejected_atomic_exchange_count", lower=0.0))
+        greedy_steps = int(finite("greedy_step_count", lower=0.0))
         if (
             active is not False
             or not isinstance(reason, str)
@@ -1029,6 +1045,8 @@ def _tpce_support_receipt(
             or receipt[prefix + "changed_code2_count"] != 0
             or receipt[prefix + "applied_atomic_exchange_count"] != 0
             or receipt[prefix + "support_guard_pass"] is not False
+            or generated != selected + rejected
+            or greedy_steps != selected
             or (
                 reason == "aggregate_saturation"
                 and finite("aggregate_saturation_count", lower=0.0) <= 0.0
@@ -1036,6 +1054,21 @@ def _tpce_support_receipt(
         ):
             raise D92E0DQueryEvaluationError("D92-E0D TPCE fallback receipt drift")
         return receipt
+    generated = int(finite("generated_atomic_exchange_count", lower=1.0))
+    selected = int(finite("selected_atomic_exchange_count", lower=1.0))
+    rejected = int(finite("rejected_atomic_exchange_count", lower=0.0))
+    greedy_steps = int(finite("greedy_step_count", lower=1.0))
+    requested = int(finite("requested_atomic_exchange_count", lower=1.0))
+    applied = int(finite("applied_atomic_exchange_count", lower=1.0))
+    if (
+        requested != applied
+        or generated != selected + rejected
+        or selected != greedy_steps
+        or selected != requested
+    ):
+        raise D92E0DQueryEvaluationError(
+            "D92-E0D TPCE active atomic receipt drift"
+        )
     if (
         active is not True
         or fallback is not False
@@ -1043,8 +1076,6 @@ def _tpce_support_receipt(
         or final_sha == e0_sha
         or receipt[prefix + "support_guard_pass"] is not True
         or finite("changed_code2_count", lower=1.0) < 1.0
-        or finite("requested_atomic_exchange_count", lower=1.0)
-        != finite("applied_atomic_exchange_count", lower=1.0)
         or finite("aggregate_saturation_count", lower=0.0) != 0.0
     ):
         raise D92E0DQueryEvaluationError("D92-E0D TPCE active receipt drift")
@@ -1441,8 +1472,6 @@ def run_d92_e0d_query_evaluation(
             raise D92E0DQueryEvaluationError(
                 "D92-E0D TPCE support registry drift"
             ) from error
-        all_rows = np.concatenate([old_rows, new_rows], axis=0).astype(np.float32)
-        transformed = d42._transform(all_rows, result.state.log_diag_fp32)
         class_counts = np.bincount(targets, minlength=len(registry))
         if (
             len(class_counts) != len(registry)
@@ -1456,13 +1485,22 @@ def run_d92_e0d_query_evaluation(
             tpce_audit = tpce.d42_tpce_inactive_receipt(result.state)
             post_resource = None
         else:
-            measured, post_resource = measure_registration_call(
-                lambda: tpce.apply_d42_tail_pair_code_exchange(
+            def run_tpce_postprocess() -> Any:
+                all_rows = np.concatenate([old_rows, new_rows], axis=0).astype(
+                    np.float32
+                )
+                transformed = d42._transform(
+                    all_rows, result.state.log_diag_fp32
+                )
+                return tpce.apply_d42_tail_pair_code_exchange(
                     result.state,
                     transformed,
                     targets,
                     old_class_count=len(old_registry),
                 )
+
+            measured, post_resource = measure_registration_call(
+                run_tpce_postprocess
             )
             candidate_state, tpce_audit = measured
         formal_receipt = {
