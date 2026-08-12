@@ -36,3 +36,35 @@
 - fresh独立复审commit`b27a24f0`：`P0=0，P1=0，ALLOW`。复审实际重跑v5聚焦`4／4`、launcher语法和dry-run`12／12`，确认禁止target／truth／score／role／cache／package参数为0，未访问N607。
 - 待完成：立即交N607唯一runner完成preflight／commit archive／唯一SCP／远端静态门、唯一启动和12工件零IQ真实模型重开烟测。
 - 工件闭合后，使用target confirmation v2已验证缓存派生VALIDATED_ONCE收据和known-test配置，封装一个IQ-only package，并对12臂分别发布预测；评分阶段同时报告三scene target-known DG、unknown拒识及域泛化，并只与同训练／测试数据配置的合法ADV3B02原件比较。
+
+## N607落地、静态门与唯一启动
+
+- 冻结commit：`74c42be1b2027ec569d7efef3f47eef1cf6b02e6`；本地dirty仅既有untracked`code/configs/phase1_clic_target_test_semantics_20260812_v1.json`与`conversation_index/`，均未进入archive、未修改。
+- `git archive`严格取冻结commit，未本地解包：`clean_commit_213751415.tar`，267550720bytes，SHA256=`6DC48647285253C78847C9A575AB7FFEFC2D32B9165C79AE73D38CFDA25B93E5`。SCP恰1次（初次shell超时返回124，但客户端自然退出；随后只读核实已完整落地，未重试）至`/home/szu2070436088/2510044040/CV-SincNet/clean_commit_predictor_v1_213751415.tar`，远端bytes/SHA闭合。指定父目录原先不存在，创建`/home/szu2070436088/2510044040/releases`后在全新stage解压并原子改名为`/home/szu2070436088/2510044040/releases/phase1_clic_predictor_artifacts_20260812_v1_74c42be1`；未预建run/log/outer。
+- 远端release静态文件物理SHA：launcher=`26dc30e88ddaa59e637e6304ac820d5e2c9bfa00167a6b532c0b01163bb0fd55`（与冻结SHA一致）；C entry=`71b412979c27c945191a6c2125bb8fb640d5377390a1a84c5739947e89fe087e`；G entry=`da3cd2174114927346eb5a6c6249d3fec09e0cb0827bdea2cf0daeb463520a3c`。C/G`py_compile`、C module`--help`、G`--help`、`bash -n`均PASS；launcher dry-run恰12行（C6＋G6），禁止参数flag（target/truth/score/role/cache/package）=0；run/log/outer启动前ABSENT。
+- 唯一正式命令于2026-08-12T21:39:30执行：
+  `nohup bash /home/szu2070436088/2510044040/releases/phase1_clic_predictor_artifacts_20260812_v1_74c42be1/code/scripts/launch_phase1_clic_predictor_artifacts12_v1_20260812.sh > /home/szu2070436088/2510044040/CV-SincNet/phase1_clic_predictor_artifacts_20260812_v1_outer.out 2>&1 &`
+  - `FORMAL_INVOCATION=1`、`RETRY=NO`；outerPID=`2744797`；foldPID=`2744801,2744802,2744804,2744805,2744807,2744810`，记录于`logs/phase1_clic_predictor_artifacts_20260812_v1/pids_predictor_artifacts6.tsv`。
+
+## 系统性技术失败与封存
+
+- 6/6fold在C descriptor产出前立即产生完全相同的确定性异常：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python: No module named cvsrffi.phase1_clic_target_leo`。静态阶段同一C module help曾PASS；formal运行时6份日志均仅100bytes且SHA相同`4d3148febb3ee5d1bc820f58b8afbbd6e8651f8a094a52d7af3c2cf2ba583c79`，表明运行时module resolution未闭合。该异常满足“至少2fold在完整C/G工件前相同确定性异常”的系统性停止规则。
+- 保留证据：`c_predictor_state.json=0`、`c_predictor_state.train_config.json=0`、`g_deployment_bundle.zip=0`；日志6、PID行6、outer0bytes；技术异常扫描6条、无GPU进程。outer与6fold均已退出，本地SSH/SCP/TCP22清零；未重试、未修代码、未打开target cache/IQ/truth、未读取性能字段。
+
+| fold | C descriptor | C train config | G bundle | log bytes/SHA | technical verdict |
+|---|---:|---:|---:|---|---|
+| F1 | 0 | 0 | 0 | 100；`4d3148febb3ee5d1bc820f58b8afbbd6e8651f8a094a52d7af3c2cf2ba583c79` | STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE |
+| F2 | 0 | 0 | 0 | 100；`4d3148febb3ee5d1bc820f58b8afbbd6e8651f8a094a52d7af3c2cf2ba583c79` | STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE |
+| F3 | 0 | 0 | 0 | 100；`4d3148febb3ee5d1bc820f58b8afbbd6e8651f8a094a52d7af3c2cf2ba583c79` | STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE |
+| F4 | 0 | 0 | 0 | 100；`4d3148febb3ee5d1bc820f58b8afbbd6e8651f8a094a52d7af3c2cf2ba583c79` | STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE |
+| F5 | 0 | 0 | 0 | 100；`4d3148febb3ee5d1bc820f58b8afbbd6e8651f8a094a52d7af3c2cf2ba583c79` | STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE |
+| F6 | 0 | 0 | 0 | 100；`4d3148febb3ee5d1bc820f58b8afbbd6e8651f8a094a52d7af3c2cf2ba583c79` | STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE |
+
+- 最终状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。该v1不得被标记为健康artifact run，也不得在原run ID上重试；任何修复必须由主控另行本地验证、独立复审并分配fresh run ID。
+
+## 只读故障诊断补充
+
+- release C入口文件确实存在：`/home/szu2070436088/2510044040/releases/phase1_clic_predictor_artifacts_20260812_v1_74c42be1/code/cvsrffi/phase1_clic_target_leo.py`，bytes=`70736`，SHA256=`71b412979c27c945191a6c2125bb8fb640d5377390a1a84c5739947e89fe087e`。
+- F1日志100bytes全文精确为：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python: No module named cvsrffi.phase1_clic_target_leo`；F2–F6同内容、同bytes、同SHA。outer仍0bytes。
+- 按要求使用同一release路径、同一`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`、仅只读设置`PYTHONPATH=<release>/code`执行namespace诊断（未导入target module）：`sys.path`含release/code；`import cvsrffi`成功，`cvsrffi.__path__`唯一指向release/code/cvsrffi；release目录直列也可见`phase1_clic_target_leo.py`。同环境`importlib.util.find_spec("cvsrffi.phase1_clic_target_leo")`返回该release文件的SourceFileLoader和origin，未执行模块代码。
+- 因此可确认：归档物理文件及包namespace均存在，formal detached worker却报告module resolution failure；本run仅封存该运行时解析不闭合证据，不臆测根因、不修改release、不重试。后续修复必须改用绝对文件入口并建立fresh run ID，由主控重新本地验证与复审。
