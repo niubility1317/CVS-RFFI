@@ -136,3 +136,5 @@ NewGuard在10/10 performance outer均`active=true`、无fallback，部署尺度�
 资源方面，query MAC与永久state保持E0精确一致，peak p90只增加20KiB；但注册wall p90为175.999ms、相对E0为1.856×，超过150ms和1.5×冻结门。额外成本主要来自多轮真实D42 codec回检。
 
 最终裁决：`REJECT_ROUTE`。不运行完整Target125，不继续微调NewGuard尺度或放宽保护容差。下一方法应直接在D42部署格点上做一次闭式/小规模联合margin求解，允许同时调整旧类与新类行，显式优化旧类CVaR/floor、遗忘、新类margin及双向混淆；必须保持单FULL fit、query/state不增，并避免多轮codec回缩。
+
+下一轮完整研发目标已固化到`docs/D92_NEXT_STRICT_PARETO_TARGET_PROMPT_20260812.md`。
