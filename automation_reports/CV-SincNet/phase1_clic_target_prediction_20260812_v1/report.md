@@ -18,7 +18,7 @@
 ## 输入、输出与访问边界
 
 - C predictors：`runs/phase1_clic_predictor_artifacts_20260812_v2/F{1..6}C_CLIC12/c_predictor_state.json`；这些工件已在v2系统性G失败前成功封存，v2报告保留其SHA和技术证据。
-- G predictors：`runs/phase1_clic_g_bundles_20260812_v1/F{1..6}G_CLIC12/g_deployment_bundle.zip`。G-only新run只修正checkpoint采样率占位语义，不改变training v5／clean v4／source-LEO v4、fold或source rule。
+- G predictors：`runs/phase1_clic_g_bundles_20260812_v2_serial/F{1..6}G_CLIC12/g_deployment_bundle.zip`。G-only v2串行run只修正checkpoint采样率占位语义并避免多fold并发native竞争，不改变training v5／clean v4／source-LEO v4、fold或source rule。
 - 输出根：`runs/phase1_clic_target_prediction_20260812_v1`；日志根：`logs/phase1_clic_target_prediction_20260812_v1`；启动前必须不存在且不可覆盖。
 - validation输出：`validation/{known_test_config.json,validator_receipt.json}`；package输出：`sealed_target/iq_only_package/{manifest.json,received_iq.npz}`；truth仅在`sealed_target/truth_sidecar.json`，不得传给publisher。
 - predictions：`predictions/F{1..6}{C,G}_CLIC12.prediction.json`共12份；每份应有3120行且forward_count=3120，C／G绑定相同package SHA，分别绑定独立predictor SHA、source rule、local4顺序和训练配置SHA。
@@ -29,7 +29,7 @@
 - 运行将分两段：先CPU执行validation和IQ-only package封存；再启动6个CPU fold worker，每个worker严格依次执行同fold C、G，线程上限为2。冻结runtime当前明确使用CPU，因此不虚构GPU映射；正式launcher唯一调用，retry=`NO`。
 - 启动后核对outer／worker PID、CWD／cmdline／run-root和日志增长；至少2fold出现同一确定性异常且未产完整prediction，或发生协议访问、错误hash／checkout、覆盖风险时，只停止本run精确进程并保留证据；不得按性能值停止。
 - prediction完整后，单独truth-side scorer才可首次打开truth sidecar；评分必须同时给出target-known DG、unknown拒识和三scene域泛化。ADV3B02对比只接受训练／known-test配置逐字段等价且分层crossed证据完整的不可变原件；当前未找到该原件时，先封存12份prediction，不伪造非劣结论。
-- 本地launcher：`code/scripts/launch_phase1_clic_target_prediction12_v1_20260812.sh`，更新后SHA-256=`77406F0A10C33B44B43E2828DCAA63191C017B0A0F54B4963D050D6996420127`；测试语义JSON SHA-256=`416371DB57C08E6877F2DA49E73C62A241F857304D52480C884D8F6F86A84A04`。`bash -n`通过；dry-run精确14行，即validation1＋package1＋prediction C6／G6，C6仅绑定predictor artifacts v2、G6仅绑定G-only v1；禁止truth／ADV／score／fit／update／role／query／selection／retry参数为0；窄测试`1／1`通过。
+- 本地launcher：`code/scripts/launch_phase1_clic_target_prediction12_v1_20260812.sh`，串行G根更新后SHA-256=`E89EA1241E0A9255968B8DAAD71D35C774CF5488054EB2BFD151490E4B0569A0`；测试语义JSON SHA-256=`416371DB57C08E6877F2DA49E73C62A241F857304D52480C884D8F6F86A84A04`。`bash -n`通过；dry-run精确14行，即validation1＋package1＋prediction C6／G6，C6仅绑定predictor artifacts v2、G6仅绑定G-only serial v2；禁止truth／ADV／score／fit／update／role／query／selection／retry参数为0；窄测试`1／1`通过。
 - 待完成：G-only六fold工件落盘；更新后的C-v2／G-only双根绑定fresh P0／P1审查；N607唯一启动、预测工件QA及报告回填。
 - 双根绑定fresh复审结论：`P0=0，P1=0，ALLOW`。实际确认C-v2命中6、G-only命中6、唯一IQ-only package命中12、dry-run14行、禁止参数0、launcher测试`1／1`；G-only工件尚未落盘仅是正式launch前置条件。
 

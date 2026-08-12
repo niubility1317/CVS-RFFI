@@ -46,7 +46,7 @@ def test_target_prediction_launcher_dry_run_is_exact_iq_only_matrix() -> None:
         for line in prediction_lines
     ) == 6
     assert sum(
-        "phase1_clic_g_bundles_20260812_v1" in line
+        "phase1_clic_g_bundles_20260812_v2_serial" in line
         for line in prediction_lines
     ) == 6
     assert joined.count("--package") == 12
