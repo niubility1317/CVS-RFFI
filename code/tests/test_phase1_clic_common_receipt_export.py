@@ -3,6 +3,8 @@ from __future__ import annotations
 """RED contracts for the public source-only CLIC common-receipt exporter."""
 
 import json
+import subprocess
+import sys
 from collections.abc import Mapping
 from pathlib import Path
 
@@ -121,6 +123,125 @@ def test_export_clic_common_training_receipt_refuses_overwrite(tmp_path: Path) -
             training_run_root=TRAINING_RUN,
         )
     assert output.read_bytes() == before
+
+
+def test_common_training_receipt_cli_writes_the_same_strict_projection(
+    tmp_path: Path,
+) -> None:
+    paths = _checkpoint_fixture(tmp_path, arm="C", fold=1)
+    output = tmp_path / "C_common_training_receipt.cli.json"
+    script = Path(PAIR.__file__).resolve()
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(script),
+            "--export-common-training-receipt",
+            "--checkpoint",
+            str(paths["checkpoint"]),
+            "--terminal-receipt-json",
+            str(paths["terminal"]),
+            "--output-common-receipt-json",
+            str(output),
+            "--expected-arm",
+            "C",
+            "--fold-index",
+            "1",
+            "--training-run-root",
+            TRAINING_RUN,
+        ],
+        cwd=script.parent,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert completed.returncode == 0, completed.stderr
+    _assert_source_only_receipt(
+        json.loads(output.read_text(encoding="utf-8")),
+        _strict_terminal(paths),
+        expected_arm="C",
+    )
+
+
+@pytest.mark.parametrize(
+    ("extra_flag", "extra_value"),
+    (
+        ("--postfreeze-matrix-id", "injected-matrix"),
+        ("--expected-scenarios", "injected-scene"),
+    ),
+)
+def test_common_training_receipt_cli_rejects_pair_only_metadata(
+    tmp_path: Path,
+    extra_flag: str,
+    extra_value: str,
+) -> None:
+    paths = _checkpoint_fixture(tmp_path, arm="C", fold=1)
+    output = tmp_path / f"C_common_training_receipt_{extra_flag[2:]}.json"
+    script = Path(PAIR.__file__).resolve()
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(script),
+            "--export-common-training-receipt",
+            "--checkpoint",
+            str(paths["checkpoint"]),
+            "--terminal-receipt-json",
+            str(paths["terminal"]),
+            "--output-common-receipt-json",
+            str(output),
+            "--expected-arm",
+            "C",
+            "--fold-index",
+            "1",
+            "--training-run-root",
+            TRAINING_RUN,
+            extra_flag,
+            extra_value,
+        ],
+        cwd=script.parent,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert completed.returncode != 0
+    assert not output.exists()
+
+
+@pytest.mark.parametrize("tamper", ("missing_source_only", "physical_count", "extra_field"))
+def test_pair_loader_rejects_post_export_common_receipt_tamper(
+    tmp_path: Path,
+    tamper: str,
+) -> None:
+    paths = _checkpoint_fixture(tmp_path, arm="G", fold=1)
+    output = tmp_path / f"G_common_training_receipt_{tamper}.json"
+    _exporter()(
+        paths["checkpoint"],
+        paths["terminal"],
+        output,
+        expected_arm="G",
+        fold_index=1,
+        training_run_root=TRAINING_RUN,
+    )
+    receipt = json.loads(output.read_text(encoding="utf-8"))
+    if tamper == "missing_source_only":
+        del receipt["source_only"]
+    elif tamper == "physical_count":
+        receipt["physical_row_count"] = int(receipt["physical_row_count"]) + 1
+    else:
+        receipt["opaque_extra"] = "not-allowed"
+    output.write_text(json.dumps(receipt, sort_keys=True) + "\n", encoding="utf-8")
+
+    with pytest.raises(Exception, match="schema|field|source|physical|count|drift"):
+        PAIR._load_common_receipt(
+            output,
+            expected_arm="G",
+            fold_index=1,
+            training_run_root=TRAINING_RUN,
+            terminal_receipt=_strict_terminal(paths),
+        )
 
 
 @pytest.mark.parametrize(

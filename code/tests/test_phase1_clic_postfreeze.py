@@ -362,7 +362,8 @@ def _common_receipt(arm: str) -> dict[str, object]:
         "source_split_sha256": receipt["source_split_sha256"],
         "common_batch_sequence_sha256": receipt["common_batch_sequence_sha256"],
         "scene_order": list(SCENARIOS),
-        "physical_row_count": 12,
+        "physical_row_count": int(receipt["physical_order_count"]),
+        "source_only": True,
     }
 
 

@@ -1362,6 +1362,130 @@ def _atomic_write_proxy_diagnostic_json(path: Path, payload: Mapping[str, Any]) 
     temporary.replace(path)
 
 
+def export_clic_common_training_receipt(
+    checkpoint_path: str | Path,
+    terminal_receipt_path: str | Path,
+    output_json_path: str | Path,
+    *,
+    expected_arm: str,
+    fold_index: int,
+    training_run_root: str,
+) -> dict[str, Any]:
+    """Project one strict training terminal into the PAIR common binding.
+
+    No caller-supplied row, scene, or digest can enter this artifact.  Every
+    value is re-opened from the frozen final checkpoint and its validated
+    terminal envelope, then the input bytes are checked again before the
+    immutable aggregate-only JSON is sealed.
+    """
+
+    arm = str(expected_arm).upper()
+    if arm not in {"C", "G"}:
+        raise CLICPostfreezePairError("CLIC common receipt arm must be C or G")
+    if type(fold_index) is not int or fold_index not in range(1, 7):
+        raise CLICPostfreezePairError("CLIC common receipt fold must be F1..F6")
+    if str(training_run_root) != EXPECTED_TRAINING_RUN_LEAF:
+        raise CLICPostfreezePairError("CLIC common receipt training run drifted")
+
+    checkpoint_file = _require_regular_existing(
+        checkpoint_path, label=f"CLIC common {arm} checkpoint"
+    )
+    terminal_file = _require_regular_existing(
+        terminal_receipt_path, label=f"CLIC common {arm} terminal receipt"
+    )
+    expected_candidate = f"F{fold_index}{arm}_CLIC12"
+    if (
+        checkpoint_file.name != "final_ssdg.pth"
+        or checkpoint_file.parent.name != expected_candidate
+        or checkpoint_file.parent.parent.name != EXPECTED_TRAINING_RUN_LEAF
+        or terminal_file.parent != checkpoint_file.parent
+    ):
+        raise CLICPostfreezePairError("CLIC common checkpoint/terminal path binding drifted")
+
+    input_sha_before = {
+        "checkpoint": _sha256_file(checkpoint_file),
+        "terminal": _sha256_file(terminal_file),
+    }
+    try:
+        checkpoint = torch.load(checkpoint_file, map_location="cpu", weights_only=False)
+    except Exception as exc:
+        raise CLICPostfreezePairError("CLIC common checkpoint is unreadable") from exc
+    if not isinstance(checkpoint, Mapping) or not isinstance(checkpoint.get("args"), Mapping):
+        raise CLICPostfreezePairError("CLIC common checkpoint payload is malformed")
+    raw_args = checkpoint["args"]
+    try:
+        source_tx_ids = _clean._parse_csv(
+            raw_args.get("phase1_source_train_tx_ids", ""),
+            label="CLIC common source TX IDs",
+        )
+        known_validation_tx_ids = _clean._parse_csv(
+            raw_args.get("phase1_source_known_validation_tx_ids", ""),
+            label="CLIC common held TX IDs",
+        )
+        proxy_unknown_tx_ids = _clean._parse_csv(
+            raw_args.get("phase1_source_proxy_unknown_tx_ids", ""),
+            label="CLIC common proxy TX IDs",
+        )
+        args, receipt, observed_arm = _clean.validate_clic_training_checkpoint(
+            checkpoint,
+            checkpoint_path=checkpoint_file,
+            terminal_receipt_path=terminal_file,
+            source_tx_ids=source_tx_ids,
+            known_validation_tx_ids=known_validation_tx_ids,
+            proxy_unknown_tx_ids=proxy_unknown_tx_ids,
+        )
+    except _clean.CLICSplitExportError as exc:
+        raise CLICPostfreezePairError(
+            f"CLIC common checkpoint/terminal strict reopen failed: {exc}"
+        ) from exc
+    if (
+        observed_arm != arm
+        or args.get("candidate_id") != expected_candidate
+        or args.get("run_id") != EXPECTED_TRAINING_RUN_LEAF
+    ):
+        raise CLICPostfreezePairError("CLIC common arm/fold/run binding drifted")
+
+    physical_count = receipt.get("physical_order_count")
+    if type(physical_count) is not int or int(physical_count) <= 0:
+        raise CLICPostfreezePairError("CLIC common physical row count is invalid")
+    sha_fields = (
+        "physical_order_sha256",
+        "class_order_sha256",
+        "source_split_sha256",
+        "common_batch_sequence_sha256",
+    )
+    for field in sha_fields:
+        _require_sha256(receipt.get(field), label=f"CLIC common {field}")
+    payload = {
+        "arm": arm,
+        "fold_index": fold_index,
+        "training_run_root": EXPECTED_TRAINING_RUN_LEAF,
+        "scene_order": list(EXPECTED_SCENARIOS),
+        "physical_row_count": int(physical_count),
+        **{field: str(receipt[field]) for field in sha_fields},
+        "source_only": True,
+    }
+    mirror = {**payload, "arm": "G" if arm == "C" else "C"}
+    validate_clic_common_training_binding(
+        payload if arm == "C" else mirror,
+        mirror if arm == "C" else payload,
+    )
+    input_sha_after = {
+        "checkpoint": _sha256_file(checkpoint_file),
+        "terminal": _sha256_file(terminal_file),
+    }
+    if input_sha_after != input_sha_before:
+        raise CLICPostfreezePairError("CLIC common input bytes changed during export")
+    output = Path(output_json_path).resolve()
+    _atomic_write_proxy_diagnostic_json(output, payload)
+    return {
+        "output_json": str(output),
+        "checkpoint_sha256": input_sha_before["checkpoint"],
+        "terminal_receipt_sha256": input_sha_before["terminal"],
+        "common_binding_sha256": _canonical_sha256(payload),
+    }
+
+
 def export_clic_proxy_diagnostic(
     *,
     clean_npz_path: str | Path,
@@ -1463,6 +1587,24 @@ def _load_common_receipt(
     terminal_receipt: Mapping[str, Any],
 ) -> dict[str, Any]:
     receipt = _load_json(path, label=f"PAIR {expected_arm} common receipt")
+    required_fields = {
+        "arm",
+        "fold_index",
+        "training_run_root",
+        "scene_order",
+        "physical_row_count",
+        "physical_order_sha256",
+        "class_order_sha256",
+        "source_split_sha256",
+        "common_batch_sequence_sha256",
+        "source_only",
+    }
+    if set(receipt) != required_fields:
+        raise CLICPostfreezePairError(
+            f"PAIR {expected_arm} common receipt exact field/schema drifted"
+        )
+    if receipt.get("source_only") is not True:
+        raise CLICPostfreezePairError(f"PAIR {expected_arm} common receipt source-only drifted")
     if receipt.get("arm") != expected_arm or receipt.get("fold_index") != fold_index or receipt.get("training_run_root") != training_run_root:
         raise CLICPostfreezePairError(f"PAIR {expected_arm} common receipt arm/fold/run drifted")
     for field in ("physical_order_sha256", "class_order_sha256", "source_split_sha256", "common_batch_sequence_sha256"):
@@ -1473,6 +1615,10 @@ def _load_common_receipt(
         raise CLICPostfreezePairError(f"PAIR {expected_arm} common receipt scene order drifted")
     if type(receipt.get("physical_row_count")) is not int or int(receipt["physical_row_count"]) <= 0:
         raise CLICPostfreezePairError(f"PAIR {expected_arm} common receipt physical row count is invalid")
+    if receipt["physical_row_count"] != terminal_receipt.get("physical_order_count"):
+        raise CLICPostfreezePairError(
+            f"PAIR {expected_arm} common receipt/terminal physical row count drifted"
+        )
     return receipt
 
 
@@ -1600,9 +1746,15 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
     source_tx_ids = _source_class_order(_clean._parse_csv(args.source_tx_ids, label="PAIR source TX IDs"))
     if fold_index not in range(1, 7) or training_run_root != EXPECTED_TRAINING_RUN_LEAF:
         raise CLICPostfreezePairError("PAIR fold/training-run contract drifted")
-    if str(getattr(args, "postfreeze_matrix_id", EXPECTED_POSTFREEZE_MATRIX_ID)) != EXPECTED_POSTFREEZE_MATRIX_ID:
+    postfreeze_matrix_id = getattr(args, "postfreeze_matrix_id", None)
+    if postfreeze_matrix_id is None:
+        postfreeze_matrix_id = EXPECTED_POSTFREEZE_MATRIX_ID
+    if str(postfreeze_matrix_id) != EXPECTED_POSTFREEZE_MATRIX_ID:
         raise CLICPostfreezePairError("PAIR postfreeze matrix contract drifted")
-    if tuple(str(item) for item in str(getattr(args, "expected_scenarios", ",".join(EXPECTED_SCENARIOS))).split(",")) != EXPECTED_SCENARIOS:
+    expected_scenarios = getattr(args, "expected_scenarios", None)
+    if expected_scenarios is None:
+        expected_scenarios = ",".join(EXPECTED_SCENARIOS)
+    if tuple(str(item) for item in str(expected_scenarios).split(",")) != EXPECTED_SCENARIOS:
         raise CLICPostfreezePairError("PAIR expected formal scene order drifted")
     states = {
         arm: _derive_arm_postfreeze_state(
@@ -1670,6 +1822,21 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
+        "--export-common-training-receipt",
+        action="store_true",
+        help="write one immutable source-only common binding from checkpoint+terminal",
+    )
+    parser.add_argument("--checkpoint", help="final checkpoint for common-receipt export only")
+    parser.add_argument(
+        "--terminal-receipt-json",
+        help="versioned terminal envelope for common-receipt export only",
+    )
+    parser.add_argument(
+        "--output-common-receipt-json",
+        help="immutable common-receipt output for common-receipt export only",
+    )
+    parser.add_argument("--expected-arm", choices=("C", "G"), help="bound arm for common-receipt export")
+    parser.add_argument(
         "--export-proxy-diagnostic",
         action="store_true",
         help="write one immutable fixed400 source-only proxy diagnostic from --clean-npz",
@@ -1690,8 +1857,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--fold-index", type=int)
     parser.add_argument("--training-run-root")
     parser.add_argument("--source-tx-ids")
-    parser.add_argument("--postfreeze-matrix-id", default=EXPECTED_POSTFREEZE_MATRIX_ID)
-    parser.add_argument("--expected-scenarios", default=",".join(EXPECTED_SCENARIOS))
+    parser.add_argument("--postfreeze-matrix-id")
+    parser.add_argument("--expected-scenarios")
     parser.add_argument("--output-pair-json")
     return parser
 
@@ -1706,16 +1873,49 @@ def main(argv: Sequence[str] | None = None) -> int:
         "c_proxy_diagnostic_json", "g_proxy_diagnostic_json", "fold_index", "training_run_root",
         "source_tx_ids", "output_pair_json",
     )
-    if args.export_proxy_diagnostic:
+    common_fields = (
+        "checkpoint", "terminal_receipt_json", "output_common_receipt_json", "expected_arm",
+    )
+    pair_metadata_fields = ("postfreeze_matrix_id", "expected_scenarios")
+    if args.export_common_training_receipt:
+        if args.export_proxy_diagnostic:
+            parser.error("common-receipt and proxy export modes are mutually exclusive")
+        missing_common = [field.replace("_", "-") for field in common_fields if getattr(args, field) is None]
+        if missing_common or args.fold_index is None or args.training_run_root is None:
+            parser.error(
+                "--export-common-training-receipt requires --checkpoint, --terminal-receipt-json, "
+                "--output-common-receipt-json, --expected-arm, --fold-index and --training-run-root"
+            )
+        if any(getattr(args, field) is not None for field in pair_fields if field not in {"fold_index", "training_run_root"}):
+            parser.error("common-receipt export is mutually exclusive with PAIR C/G inputs")
+        if args.clean_npz is not None or args.output_proxy_diagnostic_json is not None:
+            parser.error("common-receipt export is mutually exclusive with proxy inputs")
+        if any(getattr(args, field) is not None for field in pair_metadata_fields):
+            parser.error("common-receipt export is mutually exclusive with PAIR metadata")
+        result = export_clic_common_training_receipt(
+            args.checkpoint,
+            args.terminal_receipt_json,
+            args.output_common_receipt_json,
+            expected_arm=args.expected_arm,
+            fold_index=args.fold_index,
+            training_run_root=args.training_run_root,
+        )
+    elif args.export_proxy_diagnostic:
+        if any(getattr(args, field) is not None for field in common_fields):
+            parser.error("proxy export is mutually exclusive with common-receipt inputs")
         if not args.clean_npz or not args.output_proxy_diagnostic_json:
             parser.error("--export-proxy-diagnostic requires --clean-npz and --output-proxy-diagnostic-json")
         if any(getattr(args, field) is not None for field in pair_fields):
             parser.error("--export-proxy-diagnostic is mutually exclusive with PAIR C/G inputs")
+        if any(getattr(args, field) is not None for field in pair_metadata_fields):
+            parser.error("--export-proxy-diagnostic is mutually exclusive with PAIR metadata")
         result = export_clic_proxy_diagnostic(
             clean_npz_path=args.clean_npz,
             output_json_path=args.output_proxy_diagnostic_json,
         )
     else:
+        if any(getattr(args, field) is not None for field in common_fields):
+            parser.error("common-receipt inputs require --export-common-training-receipt")
         if args.clean_npz is not None or args.output_proxy_diagnostic_json is not None:
             parser.error("--clean-npz and --output-proxy-diagnostic-json require --export-proxy-diagnostic")
         missing = [field.replace("_", "-") for field in pair_fields if getattr(args, field) is None]
@@ -1926,6 +2126,7 @@ __all__ = [
     "compute_clic_proxy_diagnostic",
     "decide_clic_open_set",
     "evaluate",
+    "export_clic_common_training_receipt",
     "export_clic_proxy_diagnostic",
     "fit_clic_source_geometry",
     "freeze_clic_tail_policy",
