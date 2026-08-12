@@ -2,28 +2,43 @@ from __future__ import annotations
 
 import numpy as np
 
+from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
 from cvsrffi import stage2_d92_full_block_pareto_distill as pareto
+
+
+def _test_d42_scales(coefficient: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Return a small, positive three-block codec receipt for unit fixtures."""
+
+    shape = (int(np.asarray(coefficient).shape[0]), 3)
+    scale = np.full(shape, np.float16(1.0e-4), dtype=np.float16)
+    return scale, scale.copy()
 
 
 def _roundtrip_identity(
     coefficient: np.ndarray, intercept: np.ndarray
-) -> tuple[np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """A controlled deployed-codec boundary for support-only solver tests."""
 
+    scale1, scale2 = _test_d42_scales(coefficient)
     return (
         np.asarray(coefficient, dtype=np.float32).copy(),
         np.asarray(intercept, dtype=np.float32).copy(),
+        scale1,
+        scale2,
     )
 
 
 def _d42_preview_codec(
     coefficient: np.ndarray, intercept: np.ndarray
-) -> tuple[np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """A non-identity stand-in for the deployed D42 int8/FP16 roundtrip."""
 
+    scale1, scale2 = _test_d42_scales(coefficient)
     return (
         np.asarray(np.round(np.asarray(coefficient) * 8.0) / 8.0, dtype=np.float32),
         np.asarray(np.asarray(intercept, dtype=np.float16), dtype=np.float32),
+        scale1,
+        scale2,
     )
 
 
@@ -141,6 +156,8 @@ def test_deployment_equal_to_e0_falls_back_byte_exactly():
     full_intercept=full_b,
         deployed_full_coefficient=full_w,
         deployed_full_intercept=full_b,
+        deployed_full_scale1=_test_d42_scales(full_w)[0],
+        deployed_full_scale2=_test_d42_scales(full_w)[1],
         block_coefficient=full_w,
         block_intercept=full_b,
         class_count=8,
@@ -171,6 +188,8 @@ def test_registered_pareto_receipt_has_fixed_query_and_fit_inventory():
     full_intercept=full_b,
         deployed_full_coefficient=full_w,
         deployed_full_intercept=full_b,
+        deployed_full_scale1=_test_d42_scales(full_w)[0],
+        deployed_full_scale2=_test_d42_scales(full_w)[1],
         block_coefficient=block_w,
         block_intercept=block_b,
         class_count=8,
@@ -206,6 +225,8 @@ def test_active_receipt_locks_exactly_six_old_and_one_pooled_new_constraints():
         full_intercept=full_b,
         deployed_full_coefficient=full_w,
         deployed_full_intercept=full_b,
+        deployed_full_scale1=_test_d42_scales(full_w)[0],
+        deployed_full_scale2=_test_d42_scales(full_w)[1],
         block_coefficient=_active_block_fixture(),
         block_intercept=block_b,
         class_count=8,
@@ -242,6 +263,8 @@ def test_old_and_new_group_label_permutations_are_equivariant():
         full_intercept=full_b,
         deployed_full_coefficient=full_w,
         deployed_full_intercept=full_b,
+        deployed_full_scale1=_test_d42_scales(full_w)[0],
+        deployed_full_scale2=_test_d42_scales(full_w)[1],
         block_coefficient=block_w,
         block_intercept=block_b,
         class_count=8,
@@ -258,6 +281,8 @@ def test_old_and_new_group_label_permutations_are_equivariant():
             full_intercept=full_b[inverse],
             deployed_full_coefficient=full_w[inverse],
             deployed_full_intercept=full_b[inverse],
+            deployed_full_scale1=_test_d42_scales(full_w[inverse])[0],
+            deployed_full_scale2=_test_d42_scales(full_w[inverse])[1],
             block_coefficient=block_w[inverse],
             block_intercept=block_b[inverse],
             class_count=8,
@@ -283,7 +308,12 @@ def test_deployed_non_e0_check_uses_decoded_e0_reference_not_continuous_full():
     rows, labels, full_w, full_b, _, block_b = _fixture()
     full_w = full_w.copy()
     full_w[np.arange(8), np.arange(8)] += np.float32(0.06)
-    deployed_full_w, deployed_full_b = _d42_preview_codec(full_w, full_b)
+    (
+        deployed_full_w,
+        deployed_full_b,
+        deployed_full_scale1,
+        deployed_full_scale2,
+    ) = _d42_preview_codec(full_w, full_b)
     _, _, audit = pareto.build_full_block_pareto_distill_affine_state(
         full_rows=rows,
         full_labels=labels,
@@ -291,6 +321,8 @@ def test_deployed_non_e0_check_uses_decoded_e0_reference_not_continuous_full():
         full_intercept=full_b,
         deployed_full_coefficient=deployed_full_w,
         deployed_full_intercept=deployed_full_b,
+        deployed_full_scale1=deployed_full_scale1,
+        deployed_full_scale2=deployed_full_scale2,
         block_coefficient=_active_block_fixture(),
         block_intercept=block_b,
         class_count=8,
@@ -300,3 +332,77 @@ def test_deployed_non_e0_check_uses_decoded_e0_reference_not_continuous_full():
 
     assert full_w.tobytes() != deployed_full_w.tobytes()
     assert audit["d92_pareto_distill_deployed_e0_reference"] == "d42_decoded_full_head"
+
+
+def test_real_d42_cross_group_change_below_quantum_falls_back_to_e0():
+    """A sub-step D42 cross-group change must not publish due to other margins."""
+
+    classes, shots, dimension = 8, 5, 288
+    labels = np.repeat(np.arange(classes, dtype=np.int64), shots)
+    rows = np.zeros((classes * shots, dimension), dtype=np.float32)
+    for class_index in range(classes):
+        local = slice(class_index * shots, (class_index + 1) * shots)
+        rows[local, class_index] = 1.0
+        rows[local, (class_index + 1) % classes] = np.asarray(
+            [0.0, 0.1, 0.1, 0.2, 0.2], dtype=np.float32
+        )
+    full_w = np.zeros((classes, dimension), dtype=np.float32)
+    full_w[np.arange(classes), np.arange(classes)] = 1.0
+    full_b = np.zeros(classes, dtype=np.float32)
+    block_w = full_w.copy()
+    block_w[np.arange(classes), np.arange(classes)] += np.float32(0.1)
+    _, _, deployed_full_scale1, deployed_full_scale2, deployed_full_w = (
+        d42._quantize_coefficients(full_w)
+    )
+    deployed_full_b = np.asarray(full_b, dtype=np.float16).astype(np.float32)
+    substep_w = full_w.copy()
+    substep_w[np.arange(classes), np.arange(classes)] += np.float32(0.001)
+    _, _, scale1, scale2, expected_w = d42._quantize_coefficients(substep_w)
+    expected_b = np.asarray(full_b, dtype=np.float16).astype(np.float32)
+    actual_quantum = float(
+        max(
+            np.max(deployed_full_scale1),
+            np.max(deployed_full_scale2),
+            np.max(scale1),
+            np.max(scale2),
+        )
+    )
+
+    def real_d42_substep_preview(_coefficient, intercept):
+        return (
+            expected_w,
+            np.asarray(intercept, dtype=np.float16).astype(np.float32),
+            scale1,
+            scale2,
+        )
+
+    _, _, audit = pareto.build_full_block_pareto_distill_affine_state(
+        full_rows=rows,
+        full_labels=labels,
+        full_coefficient=full_w,
+        full_intercept=full_b,
+        deployed_full_coefficient=deployed_full_w,
+        deployed_full_intercept=deployed_full_b,
+        deployed_full_scale1=deployed_full_scale1,
+        deployed_full_scale2=deployed_full_scale2,
+        block_coefficient=block_w,
+        block_intercept=full_b,
+        class_count=classes,
+        k_shot=shots,
+        quantize_decode=real_d42_substep_preview,
+    )
+
+    assert actual_quantum > 0.001
+    assert audit["d92_pareto_distill_active"] is False
+    assert audit["d92_pareto_distill_fallback_active"] is True
+    assert audit["d92_pareto_distill_fallback_reason"] == (
+        "deployment_cross_group_margin_change_below_quantum"
+    )
+    assert audit[
+        "d92_pareto_distill_deployment_cross_group_margin_quantum"
+    ] == actual_quantum
+    assert (
+        audit["d92_pareto_distill_deployment_cross_group_margin_change_max_abs"]
+        < actual_quantum
+    )
+    assert audit["d92_pareto_distill_deployment_cross_group_quantum_pass"] is False

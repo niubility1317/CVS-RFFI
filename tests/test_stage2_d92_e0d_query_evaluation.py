@@ -300,6 +300,15 @@ def _resource(
         "d92_e0d_pareto_distill_full_head_byte_exact": not pareto_active,
         "d92_e0d_pareto_distill_deployed_support_constraints_pass": pareto_active,
         "d92_e0d_pareto_distill_deployed_full_head_byte_exact": not pareto_active,
+        "d92_e0d_pareto_distill_deployment_cross_group_margin_change_max_abs": (
+            0.25 if pareto_active else None
+        ),
+        "d92_e0d_pareto_distill_deployment_cross_group_margin_quantum": (
+            0.125 if pareto_active else None
+        ),
+        "d92_e0d_pareto_distill_deployment_cross_group_quantum_pass": (
+            True if pareto_active else None
+        ),
         "d92_e0d_pareto_distill_deployed_e0_affine_sha256": None,
         "d92_e0d_pareto_distill_deployed_candidate_affine_sha256": None,
         "d92_e0d_pareto_distill_full_solve_count": 1 if pareto_active else 0,
@@ -775,6 +784,14 @@ def test_pareto_query_audit_closes_4_2_receipt_and_rejects_query_access_tamper()
     assert row["d92_e0d_pareto_distill_active"] is True
     assert row["d92_e0d_pareto_distill_deployed_support_constraints_pass"] is True
     assert row["d92_e0d_pareto_distill_deployed_full_head_byte_exact"] is False
+    assert row[
+        "d92_e0d_pareto_distill_deployment_cross_group_margin_quantum"
+    ] == 0.125
+    assert (
+        row["d92_e0d_pareto_distill_deployment_cross_group_margin_change_max_abs"]
+        >= row["d92_e0d_pareto_distill_deployment_cross_group_margin_quantum"]
+    )
+    assert row["d92_e0d_pareto_distill_deployment_cross_group_quantum_pass"] is True
     assert row["d92_e0d_pareto_distill_deployed_head_state_closure_pass"] is True
     assert row["d92_e0d_pareto_distill_deployed_head_state_affine_sha256"] == (
         _deployed_affine_sha256(result.state)
@@ -787,6 +804,20 @@ def test_pareto_query_audit_closes_4_2_receipt_and_rejects_query_access_tamper()
     with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="Pareto Distill query"):
         e0d_eval._audit_d92_e0d_fit(
             tampered,
+            arm=arm,
+            scenario="leo_rain_weak",
+            k_shot=5,
+            old_count=6,
+            class_count=11,
+        )
+
+    quantum_tampered = _result(arm)
+    quantum_tampered.geometry_audit["final_covariance_audit"][
+        "d92_e0d_pareto_distill_deployment_cross_group_margin_change_max_abs"
+    ] = 0.01
+    with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="quantum"):
+        e0d_eval._audit_d92_e0d_fit(
+            quantum_tampered,
             arm=arm,
             scenario="leo_rain_weak",
             k_shot=5,
@@ -831,6 +862,9 @@ def test_pareto_query_audit_uses_e0_reference_for_numeric_fallback():
             "d92_e0d_pareto_distill_full_head_byte_exact": True,
             "d92_e0d_pareto_distill_deployed_support_constraints_pass": False,
             "d92_e0d_pareto_distill_deployed_full_head_byte_exact": True,
+            "d92_e0d_pareto_distill_deployment_cross_group_margin_change_max_abs": 0.01,
+            "d92_e0d_pareto_distill_deployment_cross_group_margin_quantum": 0.125,
+            "d92_e0d_pareto_distill_deployment_cross_group_quantum_pass": False,
             "d92_e0d_pareto_distill_deployed_candidate_affine_sha256": None,
             "d92_e0d_pareto_distill_deployed_e0_affine_sha256": (
                 _deployed_affine_sha256(result.state)
@@ -866,3 +900,8 @@ def test_pareto_query_audit_keeps_low_k_alias_reason():
     assert row["d92_e0d_pareto_distill_fallback_reason"] == (
         "K1_K2_EXACT_D92_FULL_ALIAS"
     )
+    assert row[
+        "d92_e0d_pareto_distill_deployment_cross_group_margin_change_max_abs"
+    ] is None
+    assert row["d92_e0d_pareto_distill_deployment_cross_group_margin_quantum"] is None
+    assert row["d92_e0d_pareto_distill_deployment_cross_group_quantum_pass"] is None

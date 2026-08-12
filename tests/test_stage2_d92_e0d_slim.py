@@ -452,11 +452,28 @@ def test_pareto_distill_arm_wires_shared_two_component_receipt_and_low_k_alias()
     if audit["d92_e0d_pareto_distill_active"]:
         assert audit["d92_e0d_pareto_distill_deployed_support_constraints_pass"] is True
         assert audit["d92_e0d_pareto_distill_deployed_full_head_byte_exact"] is False
+        assert audit[
+            "d92_e0d_pareto_distill_deployment_cross_group_margin_quantum"
+        ] > 0.0
+        assert (
+            audit[
+                "d92_e0d_pareto_distill_deployment_cross_group_margin_change_max_abs"
+            ]
+            >= audit[
+                "d92_e0d_pareto_distill_deployment_cross_group_margin_quantum"
+            ]
+        )
+        assert audit[
+            "d92_e0d_pareto_distill_deployment_cross_group_quantum_pass"
+        ] is True
     else:
         assert audit["d92_e0d_pareto_distill_fallback_active"] is True
         assert audit["d92_e0d_pareto_distill_local_valid"] is False
         assert audit["d92_e0d_pareto_distill_deployed_support_constraints_pass"] is False
         assert audit["d92_e0d_pareto_distill_deployed_full_head_byte_exact"] is True
+        assert audit[
+            "d92_e0d_pareto_distill_deployment_cross_group_quantum_pass"
+        ] is False
 
     _, _, k2_audit, _, _ = _run(
         "E0_FULL_BLOCK_PARETO_DISTILL", class_count=11, k_shot=2, repeated=True
@@ -467,6 +484,15 @@ def test_pareto_distill_arm_wires_shared_two_component_receipt_and_low_k_alias()
     assert k2_audit["d92_e0d_pareto_distill_fallback_reason"] == (
         "K1_K2_EXACT_D92_FULL_ALIAS"
     )
+    assert k2_audit[
+        "d92_e0d_pareto_distill_deployment_cross_group_margin_change_max_abs"
+    ] is None
+    assert k2_audit[
+        "d92_e0d_pareto_distill_deployment_cross_group_margin_quantum"
+    ] is None
+    assert k2_audit[
+        "d92_e0d_pareto_distill_deployment_cross_group_quantum_pass"
+    ] is None
 
     _, _, k1_audit, _, _ = _run(
         "E0_FULL_BLOCK_PARETO_DISTILL", class_count=11, k_shot=1
@@ -477,3 +503,12 @@ def test_pareto_distill_arm_wires_shared_two_component_receipt_and_low_k_alias()
     assert k1_audit["d92_e0d_pareto_distill_fallback_reason"] == (
         "K1_K2_EXACT_D92_FULL_ALIAS"
     )
+    assert k1_audit[
+        "d92_e0d_pareto_distill_deployment_cross_group_margin_change_max_abs"
+    ] is None
+    assert k1_audit[
+        "d92_e0d_pareto_distill_deployment_cross_group_margin_quantum"
+    ] is None
+    assert k1_audit[
+        "d92_e0d_pareto_distill_deployment_cross_group_quantum_pass"
+    ] is None

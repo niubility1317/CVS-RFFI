@@ -24,6 +24,7 @@ _SOLVER_QP = "scipy_slsqp_convex_quadratic_v1"
 _EPS = 1.0e-9
 _CONSTRAINT_TOLERANCE = 5.0e-7
 _D42_CODEC_MACS_PER_COEFFICIENT = 8
+_D42_BLOCK_WIDTHS = (160, 96, 32)
 _HIGHS_CONSTRAINT_EVALUATION_ITERATION_CAP = 2048
 _SLSQP_CONSTRAINT_EVALUATION_ITERATION_CAP = 500
 
@@ -59,11 +60,15 @@ def _validated_inputs(
     full_intercept: np.ndarray,
     deployed_full_coefficient: np.ndarray,
     deployed_full_intercept: np.ndarray,
+    deployed_full_scale1: np.ndarray,
+    deployed_full_scale2: np.ndarray,
     block_coefficient: np.ndarray,
     block_intercept: np.ndarray,
     class_count: int,
     k_shot: int,
 ) -> tuple[
+    np.ndarray,
+    np.ndarray,
     np.ndarray,
     np.ndarray,
     np.ndarray,
@@ -85,6 +90,8 @@ def _validated_inputs(
     full_b = np.asarray(full_intercept)
     deployed_full_w = np.asarray(deployed_full_coefficient)
     deployed_full_b = np.asarray(deployed_full_intercept)
+    deployed_full_scale1_array = np.asarray(deployed_full_scale1)
+    deployed_full_scale2_array = np.asarray(deployed_full_scale2)
     block_w = np.asarray(block_coefficient)
     block_b = np.asarray(block_intercept)
     if (
@@ -97,6 +104,8 @@ def _validated_inputs(
         or full_b.dtype != np.float32
         or deployed_full_w.dtype != np.float32
         or deployed_full_b.dtype != np.float32
+        or deployed_full_scale1_array.dtype != np.float16
+        or deployed_full_scale2_array.dtype != np.float16
         or block_w.dtype != np.float32
         or block_b.dtype != np.float32
         or full_w.shape != (classes, rows.shape[1])
@@ -104,6 +113,8 @@ def _validated_inputs(
         or block_w.shape != full_w.shape
         or full_b.shape != (classes,)
         or deployed_full_b.shape != full_b.shape
+        or deployed_full_scale1_array.shape != (classes, len(_D42_BLOCK_WIDTHS))
+        or deployed_full_scale2_array.shape != (classes, len(_D42_BLOCK_WIDTHS))
         or block_b.shape != full_b.shape
         or not np.issubdtype(labels.dtype, np.integer)
         or not np.issubdtype(rows.dtype, np.number)
@@ -112,6 +123,10 @@ def _validated_inputs(
         or not np.isfinite(full_b).all()
         or not np.isfinite(deployed_full_w).all()
         or not np.isfinite(deployed_full_b).all()
+        or not np.isfinite(deployed_full_scale1_array).all()
+        or not np.isfinite(deployed_full_scale2_array).all()
+        or np.any(deployed_full_scale1_array <= 0)
+        or np.any(deployed_full_scale2_array <= 0)
         or not np.isfinite(block_w).all()
         or not np.isfinite(block_b).all()
     ):
@@ -129,6 +144,8 @@ def _validated_inputs(
         np.asarray(full_b, dtype=np.float32),
         np.asarray(deployed_full_w, dtype=np.float32),
         np.asarray(deployed_full_b, dtype=np.float32),
+        np.asarray(deployed_full_scale1_array, dtype=np.float16),
+        np.asarray(deployed_full_scale2_array, dtype=np.float16),
         np.asarray(block_w, dtype=np.float32),
         np.asarray(block_b, dtype=np.float32),
         classes,
@@ -651,13 +668,16 @@ def _support_metrics(
 
 
 def _roundtrip(
-    callback: Callable[[np.ndarray, np.ndarray], tuple[np.ndarray, np.ndarray]],
+    callback: Callable[
+        [np.ndarray, np.ndarray],
+        tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray],
+    ],
     coefficient: np.ndarray,
     intercept: np.ndarray,
     *,
     class_count: int,
     dimension: int,
-) -> tuple[np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     try:
         output = callback(
             np.asarray(coefficient, dtype=np.float32),
@@ -665,20 +685,134 @@ def _roundtrip(
         )
     except (FloatingPointError, OverflowError, ValueError, np.linalg.LinAlgError) as error:
         raise D92ParetoDistillNumericalError("deployment_quantize_decode_numeric_failure") from error
-    if not isinstance(output, tuple) or len(output) != 2:
+    if not isinstance(output, tuple) or len(output) != 4:
         raise D92ParetoDistillError("D92 Pareto distill codec callback contract drift")
     weight = np.asarray(output[0])
     bias = np.asarray(output[1])
-    if weight.shape != (class_count, dimension) or bias.shape != (class_count,):
+    scale1 = np.asarray(output[2])
+    scale2 = np.asarray(output[3])
+    if (
+        weight.shape != (class_count, dimension)
+        or bias.shape != (class_count,)
+        or scale1.dtype != np.float16
+        or scale2.dtype != np.float16
+        or scale1.shape != (class_count, len(_D42_BLOCK_WIDTHS))
+        or scale2.shape != (class_count, len(_D42_BLOCK_WIDTHS))
+    ):
         raise D92ParetoDistillError("D92 Pareto distill codec callback shape drift")
     if not (
         np.issubdtype(weight.dtype, np.number)
         and np.issubdtype(bias.dtype, np.number)
         and np.isfinite(weight).all()
         and np.isfinite(bias).all()
+        and np.isfinite(scale1).all()
+        and np.isfinite(scale2).all()
+        and np.all(scale1 > 0)
+        and np.all(scale2 > 0)
     ):
         raise D92ParetoDistillNumericalError("deployment_quantize_decode_nonfinite")
-    return np.asarray(weight, dtype=np.float32), np.asarray(bias, dtype=np.float32)
+    return (
+        np.asarray(weight, dtype=np.float32),
+        np.asarray(bias, dtype=np.float32),
+        np.asarray(scale1, dtype=np.float16),
+        np.asarray(scale2, dtype=np.float16),
+    )
+
+
+def _cross_group_margin_change_max_abs(
+    baseline_scores: np.ndarray,
+    deployed_scores: np.ndarray,
+    labels: np.ndarray,
+) -> tuple[float, float, float]:
+    """Return old→new, new→old, and combined deployed-margin changes only."""
+
+    baseline = np.asarray(baseline_scores, dtype=np.float64)
+    deployed = np.asarray(deployed_scores, dtype=np.float64)
+    targets = np.asarray(labels, dtype=np.int64)
+    if (
+        baseline.ndim != 2
+        or deployed.shape != baseline.shape
+        or targets.shape != (baseline.shape[0],)
+        or baseline.shape[1] <= OLD_CLASS_COUNT
+    ):
+        raise D92ParetoDistillError("cross-group margin registry drift")
+    sample_rows = np.arange(baseline.shape[0], dtype=np.int64)
+    old_mask = targets < OLD_CLASS_COUNT
+    new_mask = ~old_mask
+    if not np.any(old_mask) or not np.any(new_mask):
+        raise D92ParetoDistillError("cross-group margin support partition drift")
+    baseline_old_to_new = (
+        baseline[sample_rows[old_mask], targets[old_mask]]
+        - np.max(baseline[old_mask, OLD_CLASS_COUNT:], axis=1)
+    )
+    deployed_old_to_new = (
+        deployed[sample_rows[old_mask], targets[old_mask]]
+        - np.max(deployed[old_mask, OLD_CLASS_COUNT:], axis=1)
+    )
+    baseline_new_to_old = (
+        baseline[sample_rows[new_mask], targets[new_mask]]
+        - np.max(baseline[new_mask, :OLD_CLASS_COUNT], axis=1)
+    )
+    deployed_new_to_old = (
+        deployed[sample_rows[new_mask], targets[new_mask]]
+        - np.max(deployed[new_mask, :OLD_CLASS_COUNT], axis=1)
+    )
+    old_to_new = float(np.max(np.abs(deployed_old_to_new - baseline_old_to_new)))
+    new_to_old = float(np.max(np.abs(deployed_new_to_old - baseline_new_to_old)))
+    combined = float(max(old_to_new, new_to_old))
+    if not all(math.isfinite(value) and value >= 0.0 for value in (old_to_new, new_to_old, combined)):
+        raise D92ParetoDistillNumericalError("deployment_cross_group_margin_nonfinite")
+    return old_to_new, new_to_old, combined
+
+
+def _cross_group_margin_quantum(
+    rows: np.ndarray,
+    *,
+    e0_scale1: np.ndarray,
+    e0_scale2: np.ndarray,
+    candidate_scale1: np.ndarray,
+    candidate_scale2: np.ndarray,
+) -> float:
+    """Return the frozen, support-projected D42 cross-group margin quantum.
+
+    Each term is one actual decoded D42 code step (either level) multiplied by
+    the maximum absolute support coordinate in the same frozen D42 block.  The
+    maximum over the two already-previewed heads and nonempty support blocks is
+    a deterministic, support-only publishing threshold in logit-margin units.
+    """
+
+    support = np.asarray(rows, dtype=np.float64)
+    if support.ndim != 2 or support.shape[1] <= 0 or not np.isfinite(support).all():
+        raise D92ParetoDistillError("cross-group quantum support drift")
+    scales = (e0_scale1, e0_scale2, candidate_scale1, candidate_scale2)
+    arrays = [np.asarray(value, dtype=np.float16) for value in scales]
+    class_count = arrays[0].shape[0]
+    if any(
+        value.shape != (class_count, len(_D42_BLOCK_WIDTHS))
+        or not np.isfinite(value).all()
+        or np.any(value <= 0)
+        for value in arrays
+    ):
+        raise D92ParetoDistillNumericalError("deployment_cross_group_quantum_invalid")
+    begin = 0
+    values: list[float] = []
+    for block_index, width in enumerate(_D42_BLOCK_WIDTHS):
+        end = min(begin + int(width), support.shape[1])
+        if begin >= end:
+            break
+        amplitude = float(np.max(np.abs(support[:, begin:end])))
+        block_step = max(
+            float(np.max(value[:, block_index])) for value in arrays
+        )
+        if amplitude > 0.0 and block_step > 0.0:
+            values.append(amplitude * block_step)
+        begin += int(width)
+    if not values:
+        raise D92ParetoDistillNumericalError("deployment_cross_group_quantum_zero")
+    quantum = float(max(values))
+    if not math.isfinite(quantum) or quantum <= 0.0:
+        raise D92ParetoDistillNumericalError("deployment_cross_group_quantum_invalid")
+    return quantum
 
 
 def affine_preview_sha256(coefficient: np.ndarray, intercept: np.ndarray) -> str:
@@ -700,6 +834,12 @@ def _fallback_audit(
     block_rms: float | None = None,
     ratio: float | None = None,
     tail_thresholds: list[float] | None = None,
+    deployed_e0_scale1: np.ndarray | None = None,
+    deployed_e0_scale2: np.ndarray | None = None,
+    deployed_candidate_scale1: np.ndarray | None = None,
+    deployed_candidate_scale2: np.ndarray | None = None,
+    cross_group_margin_change: float | None = None,
+    cross_group_margin_quantum: float | None = None,
 ) -> dict[str, Any]:
     """Return a complete support-only receipt for an exact E0 fallback."""
 
@@ -750,6 +890,33 @@ def _fallback_audit(
         "d92_pareto_distill_deployed_e0_reference": "d42_decoded_full_head",
         "d92_pareto_distill_deployed_e0_affine_sha256": None,
         "d92_pareto_distill_deployed_candidate_affine_sha256": None,
+        "d92_pareto_distill_deployment_e0_scale1_fp16": (
+            None
+            if deployed_e0_scale1 is None
+            else np.asarray(deployed_e0_scale1, dtype=np.float16).tolist()
+        ),
+        "d92_pareto_distill_deployment_e0_scale2_fp16": (
+            None
+            if deployed_e0_scale2 is None
+            else np.asarray(deployed_e0_scale2, dtype=np.float16).tolist()
+        ),
+        "d92_pareto_distill_deployment_candidate_scale1_fp16": (
+            None
+            if deployed_candidate_scale1 is None
+            else np.asarray(deployed_candidate_scale1, dtype=np.float16).tolist()
+        ),
+        "d92_pareto_distill_deployment_candidate_scale2_fp16": (
+            None
+            if deployed_candidate_scale2 is None
+            else np.asarray(deployed_candidate_scale2, dtype=np.float16).tolist()
+        ),
+        "d92_pareto_distill_deployment_cross_group_margin_change_max_abs": (
+            None if cross_group_margin_change is None else float(cross_group_margin_change)
+        ),
+        "d92_pareto_distill_deployment_cross_group_margin_quantum": (
+            None if cross_group_margin_quantum is None else float(cross_group_margin_quantum)
+        ),
+        "d92_pareto_distill_deployment_cross_group_quantum_pass": False,
         "d92_pareto_distill_old_tail_gain_by_class": None,
         "d92_pareto_distill_pooled_new_tail_gain": None,
         "d92_pareto_distill_common_tail_gain": None,
@@ -811,6 +978,9 @@ def pareto_distill_inactive_receipt(
             "d92_pareto_distill_deployment_e0_reference_codec_roundtrip_count": 0,
             "d92_pareto_distill_deployment_candidate_codec_roundtrip_count": 0,
             "d92_pareto_distill_deployment_codec_macs_upper_bound": 0,
+            "d92_pareto_distill_deployment_cross_group_margin_change_max_abs": None,
+            "d92_pareto_distill_deployment_cross_group_margin_quantum": None,
+            "d92_pareto_distill_deployment_cross_group_quantum_pass": None,
         }
     )
     return receipt
@@ -824,11 +994,16 @@ def build_full_block_pareto_distill_affine_state(
     full_intercept: np.ndarray,
     deployed_full_coefficient: np.ndarray,
     deployed_full_intercept: np.ndarray,
+    deployed_full_scale1: np.ndarray,
+    deployed_full_scale2: np.ndarray,
     block_coefficient: np.ndarray,
     block_intercept: np.ndarray,
     class_count: int,
     k_shot: int,
-    quantize_decode: Callable[[np.ndarray, np.ndarray], tuple[np.ndarray, np.ndarray]],
+    quantize_decode: Callable[
+        [np.ndarray, np.ndarray],
+        tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray],
+    ],
 ) -> tuple[np.ndarray, np.ndarray, dict[str, Any]]:
     """Build one deployed support-only Pareto head or byte-exact E0 fallback."""
 
@@ -839,6 +1014,8 @@ def build_full_block_pareto_distill_affine_state(
         full_b,
         deployed_full_w,
         deployed_full_b,
+        deployed_full_scale1_array,
+        deployed_full_scale2_array,
         block_w,
         block_b,
         classes,
@@ -851,6 +1028,8 @@ def build_full_block_pareto_distill_affine_state(
         full_intercept=full_intercept,
         deployed_full_coefficient=deployed_full_coefficient,
         deployed_full_intercept=deployed_full_intercept,
+        deployed_full_scale1=deployed_full_scale1,
+        deployed_full_scale2=deployed_full_scale2,
         block_coefficient=block_coefficient,
         block_intercept=block_intercept,
         class_count=class_count,
@@ -860,6 +1039,10 @@ def build_full_block_pareto_distill_affine_state(
     block_rms: float | None = None
     ratio: float | None = None
     thresholds: list[float] | None = None
+    deployed_candidate_scale1: np.ndarray | None = None
+    deployed_candidate_scale2: np.ndarray | None = None
+    cross_group_margin_change: float | None = None
+    cross_group_margin_quantum: float | None = None
     try:
         # The frozen lower-Q20 support sets and every published comparison are
         # defined relative to the actual D42-decoded E0 deployment head.  The
@@ -911,7 +1094,12 @@ def build_full_block_pareto_distill_affine_state(
         candidate_b = np.asarray(continuous_b, dtype=np.float32)
         if not np.isfinite(candidate_w).all() or not np.isfinite(candidate_b).all():
             raise D92ParetoDistillNumericalError("continuous_affine_nonfinite")
-        deployed_w, deployed_b = _roundtrip(
+        (
+            deployed_w,
+            deployed_b,
+            deployed_candidate_scale1,
+            deployed_candidate_scale2,
+        ) = _roundtrip(
             quantize_decode,
             candidate_w,
             candidate_b,
@@ -947,8 +1135,19 @@ def build_full_block_pareto_distill_affine_state(
                 np.max(np.abs(np.asarray(deployed_b, dtype=np.float64) - candidate_b)),
             )
         )
-        cross_margin_change = float(
-            np.max(np.abs(deployed_metrics["margins"] - full_metrics["margins"]))
+        (
+            old_to_new_margin_change,
+            new_to_old_margin_change,
+            cross_group_margin_change,
+        ) = _cross_group_margin_change_max_abs(
+            full_metrics["scores"], deployed_metrics["scores"], labels
+        )
+        cross_group_margin_quantum = _cross_group_margin_quantum(
+            rows,
+            e0_scale1=deployed_full_scale1_array,
+            e0_scale2=deployed_full_scale2_array,
+            candidate_scale1=deployed_candidate_scale1,
+            candidate_scale2=deployed_candidate_scale2,
         )
         if (
             not np.isfinite(tail_gain).all()
@@ -956,12 +1155,10 @@ def build_full_block_pareto_distill_affine_state(
             or common_gain <= _CONSTRAINT_TOLERANCE
         ):
             raise D92ParetoDistillNumericalError("deployment_common_tail_gain_nonpositive")
-        # The generic callback intentionally exposes only deployed weights, not
-        # codec scales; its decode error is therefore *not* a quantization step.
-        # Require a real deployed support-margin change, and record the codec
-        # error separately for the caller that owns the concrete D42 codec.
-        if cross_margin_change <= _CONSTRAINT_TOLERANCE:
-            raise D92ParetoDistillNumericalError("deployment_margin_change_zero")
+        if cross_group_margin_change < cross_group_margin_quantum:
+            raise D92ParetoDistillNumericalError(
+                "deployment_cross_group_margin_change_below_quantum"
+            )
         if (
             float(deployed_metrics["old_to_new_hinge"])
             > float(full_metrics["old_to_new_hinge"]) + _CONSTRAINT_TOLERANCE
@@ -1031,7 +1228,16 @@ def build_full_block_pareto_distill_affine_state(
             "d92_pareto_distill_baseline_old_to_new_hinge": float(full_metrics["old_to_new_hinge"]),
             "d92_pareto_distill_baseline_new_to_old_hinge": float(full_metrics["new_to_old_hinge"]),
             "d92_pareto_distill_deployment_codec_error_max_abs": codec_error,
-            "d92_pareto_distill_deployment_cross_margin_change_max_abs": cross_margin_change,
+            "d92_pareto_distill_deployment_cross_margin_change_max_abs": cross_group_margin_change,
+            "d92_pareto_distill_deployment_cross_group_old_to_new_margin_change_max_abs": old_to_new_margin_change,
+            "d92_pareto_distill_deployment_cross_group_new_to_old_margin_change_max_abs": new_to_old_margin_change,
+            "d92_pareto_distill_deployment_cross_group_margin_change_max_abs": cross_group_margin_change,
+            "d92_pareto_distill_deployment_cross_group_margin_quantum": cross_group_margin_quantum,
+            "d92_pareto_distill_deployment_cross_group_quantum_pass": True,
+            "d92_pareto_distill_deployment_e0_scale1_fp16": deployed_full_scale1_array.tolist(),
+            "d92_pareto_distill_deployment_e0_scale2_fp16": deployed_full_scale2_array.tolist(),
+            "d92_pareto_distill_deployment_candidate_scale1_fp16": deployed_candidate_scale1.tolist(),
+            "d92_pareto_distill_deployment_candidate_scale2_fp16": deployed_candidate_scale2.tolist(),
             "d92_pareto_distill_lexicographic_lp_solver": _SOLVER_LP,
             "d92_pareto_distill_lexicographic_qp_solver": _SOLVER_QP,
             "d92_pareto_distill_stage1_solve_count": 1,
@@ -1096,6 +1302,12 @@ def build_full_block_pareto_distill_affine_state(
             block_rms=block_rms,
             ratio=ratio,
             tail_thresholds=thresholds,
+            deployed_e0_scale1=deployed_full_scale1_array,
+            deployed_e0_scale2=deployed_full_scale2_array,
+            deployed_candidate_scale1=deployed_candidate_scale1,
+            deployed_candidate_scale2=deployed_candidate_scale2,
+            cross_group_margin_change=cross_group_margin_change,
+            cross_group_margin_quantum=cross_group_margin_quantum,
         )
         fallback["d92_pareto_distill_deployed_e0_affine_sha256"] = (
             affine_preview_sha256(deployed_full_w, deployed_full_b)

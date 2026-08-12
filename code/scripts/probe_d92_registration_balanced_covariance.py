@@ -984,11 +984,11 @@ def build_d92_fit(
 
     def pareto_distill_quantize_decode(
         coefficient: np.ndarray, intercept: np.ndarray
-    ) -> tuple[np.ndarray, np.ndarray]:
+    ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         """Run the one frozen D42 codec pass used by Pareto Distill."""
 
         try:
-            _, _, _, _, decoded = d42._quantize_coefficients(
+            _, _, scale1, scale2, decoded = d42._quantize_coefficients(
                 np.asarray(coefficient, dtype=np.float32)
             )
         except (
@@ -1008,6 +1008,8 @@ def build_d92_fit(
         return (
             np.asarray(decoded, dtype=np.float32),
             np.asarray(deployed_intercept, dtype=np.float32),
+            np.asarray(scale1, dtype=np.float16),
+            np.asarray(scale2, dtype=np.float16),
         )
 
     def pareto_distill_fit(
@@ -1074,7 +1076,12 @@ def build_d92_fit(
                 feature_dimension=int(d42.FEATURE_DIM),
             )
             try:
-                deployed_full_coefficient, deployed_full_intercept = (
+                (
+                    deployed_full_coefficient,
+                    deployed_full_intercept,
+                    deployed_full_scale1,
+                    deployed_full_scale2,
+                ) = (
                     pareto_distill_quantize_decode(
                         np.asarray(full_coefficient, dtype=np.float32),
                         np.asarray(full_intercept, dtype=np.float32),
@@ -1100,6 +1107,12 @@ def build_d92_fit(
                                 deployed_full_intercept,
                             )
                         ),
+                        "d92_pareto_distill_deployment_e0_scale1_fp16": (
+                            deployed_full_scale1.tolist()
+                        ),
+                        "d92_pareto_distill_deployment_e0_scale2_fp16": (
+                            deployed_full_scale2.tolist()
+                        ),
                     }
                 )
             fallback.update(
@@ -1108,6 +1121,7 @@ def build_d92_fit(
                     "d92_pareto_distill_fallback_reason": (
                         f"block_compile_numeric_fallback:{error}"
                     ),
+                    "d92_pareto_distill_deployment_cross_group_quantum_pass": False,
                     "d92_pareto_distill_full_solve_count": 1,
                     "d92_pareto_distill_block_solve_count": 1,
                     "d92_pareto_distill_component_fit_count": 2,
@@ -1189,7 +1203,12 @@ def build_d92_fit(
                 }
             )
         try:
-            deployed_full_coefficient, deployed_full_intercept = (
+            (
+                deployed_full_coefficient,
+                deployed_full_intercept,
+                deployed_full_scale1,
+                deployed_full_scale2,
+            ) = (
                 pareto_distill_quantize_decode(
                     np.asarray(full_coefficient, dtype=np.float32),
                     np.asarray(full_intercept, dtype=np.float32),
@@ -1203,6 +1222,8 @@ def build_d92_fit(
                     full_intercept=np.asarray(full_intercept, dtype=np.float32),
                     deployed_full_coefficient=deployed_full_coefficient,
                     deployed_full_intercept=deployed_full_intercept,
+                    deployed_full_scale1=deployed_full_scale1,
+                    deployed_full_scale2=deployed_full_scale2,
                     block_coefficient=np.asarray(block_coefficient, dtype=np.float32),
                     block_intercept=np.asarray(block_intercept, dtype=np.float32),
                     class_count=class_count,
@@ -1223,6 +1244,7 @@ def build_d92_fit(
                     "d92_pareto_distill_fallback_reason": (
                         f"deployment_codec_numeric_fallback:{error}"
                     ),
+                    "d92_pareto_distill_deployment_cross_group_quantum_pass": False,
                     "d92_pareto_distill_full_solve_count": 1,
                     "d92_pareto_distill_block_solve_count": 1,
                     "d92_pareto_distill_component_fit_count": 2,

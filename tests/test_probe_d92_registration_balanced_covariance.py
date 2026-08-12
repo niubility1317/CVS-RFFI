@@ -599,9 +599,26 @@ def test_pareto_distill_probe_uses_one_shared_statistic_and_two_components():
         assert audit[
             "d92_pareto_distill_deployment_candidate_codec_roundtrip_count"
         ] == 1
+        assert audit[
+            "d92_pareto_distill_deployment_cross_group_margin_quantum"
+        ] > 0.0
+        assert (
+            audit[
+                "d92_pareto_distill_deployment_cross_group_margin_change_max_abs"
+            ]
+            >= audit[
+                "d92_pareto_distill_deployment_cross_group_margin_quantum"
+            ]
+        )
+        assert audit[
+            "d92_pareto_distill_deployment_cross_group_quantum_pass"
+        ] is True
     else:
         assert audit["d92_pareto_distill_fallback_active"] is True
         assert audit["d92_pareto_distill_deployment_codec_roundtrip_count"] in (1, 2)
+        assert audit[
+            "d92_pareto_distill_deployment_cross_group_quantum_pass"
+        ] is False
     assert audit["d92_pareto_distill_query_rows_used"] == 0
     assert audit["d92_pareto_distill_query_fit_access"] is False
     assert audit["d92_pareto_distill_support_optimization_macs_upper_bound"] >= 0
@@ -641,6 +658,9 @@ def test_pareto_probe_numeric_codec_failure_is_exact_e0_and_structural_input_thr
     assert intercept.tobytes() == expected_b.tobytes()
     assert audit["d92_pareto_distill_fallback_active"] is True
     assert audit["d92_pareto_distill_full_head_byte_exact"] is True
+    assert audit[
+        "d92_pareto_distill_deployment_cross_group_quantum_pass"
+    ] is False
 
     broken_labels = labels.copy()
     broken_labels[-1] = 0
@@ -696,6 +716,9 @@ def test_pareto_block_numeric_fallback_records_decoded_e0_reference(monkeypatch)
     assert audit["d92_pareto_distill_deployment_codec_roundtrip_count"] == 1
     assert audit["d92_pareto_distill_deployment_candidate_codec_roundtrip_count"] == 0
     assert audit["d92_pareto_distill_deployed_candidate_affine_sha256"] is None
+    assert audit[
+        "d92_pareto_distill_deployment_cross_group_quantum_pass"
+    ] is False
     assert audit["d92_pareto_distill_deployed_e0_affine_sha256"] == (
         pareto.affine_preview_sha256(decoded, decoded_intercept)
     )

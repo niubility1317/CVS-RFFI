@@ -426,6 +426,9 @@ def build_d92_e0d_fit(
                 "d92_pareto_distill_full_head_byte_exact",
                 "d92_pareto_distill_deployed_support_constraints_pass",
                 "d92_pareto_distill_deployed_full_head_byte_exact",
+                "d92_pareto_distill_deployment_cross_group_margin_change_max_abs",
+                "d92_pareto_distill_deployment_cross_group_margin_quantum",
+                "d92_pareto_distill_deployment_cross_group_quantum_pass",
                 "d92_pareto_distill_deployed_e0_affine_sha256",
                 "d92_pareto_distill_deployed_candidate_affine_sha256",
                 "d92_pareto_distill_full_solve_count",
@@ -450,6 +453,15 @@ def build_d92_e0d_fit(
             active = base_audit["d92_pareto_distill_active"]
             fallback = base_audit["d92_pareto_distill_fallback_active"]
             reason = base_audit["d92_pareto_distill_fallback_reason"]
+            cross_group_change = base_audit[
+                "d92_pareto_distill_deployment_cross_group_margin_change_max_abs"
+            ]
+            cross_group_quantum = base_audit[
+                "d92_pareto_distill_deployment_cross_group_margin_quantum"
+            ]
+            cross_group_quantum_pass = base_audit[
+                "d92_pareto_distill_deployment_cross_group_quantum_pass"
+            ]
             if base_audit["d92_pareto_distill_mode"] != "pareto_distill":
                 raise D92E0DSlimError("D92-E0D Pareto Distill mode drift")
             if pareto_registered_state:
@@ -494,6 +506,27 @@ def build_d92_e0d_fit(
                         raise D92E0DSlimError(
                             "D92-E0D Pareto Distill fallback receipt drift"
                         )
+                    if cross_group_quantum_pass is not False:
+                        raise D92E0DSlimError(
+                            "D92-E0D Pareto Distill fallback quantum receipt drift"
+                        )
+                    for value, positive in (
+                        (cross_group_change, False),
+                        (cross_group_quantum, True),
+                    ):
+                        if value is not None:
+                            try:
+                                numeric = float(value)
+                            except (TypeError, ValueError) as error:
+                                raise D92E0DSlimError(
+                                    "D92-E0D Pareto Distill fallback quantum receipt drift"
+                                ) from error
+                            if not np.isfinite(numeric) or numeric < 0.0 or (
+                                positive and numeric <= 0.0
+                            ):
+                                raise D92E0DSlimError(
+                                    "D92-E0D Pareto Distill fallback quantum receipt drift"
+                                )
                 elif fallback is False:
                     if (
                         active is not True
@@ -512,6 +545,23 @@ def build_d92_e0d_fit(
                     ):
                         raise D92E0DSlimError(
                             "D92-E0D Pareto Distill active receipt drift"
+                        )
+                    try:
+                        quantum = float(cross_group_quantum)
+                        change = float(cross_group_change)
+                    except (TypeError, ValueError) as error:
+                        raise D92E0DSlimError(
+                            "D92-E0D Pareto Distill active quantum receipt drift"
+                        ) from error
+                    if (
+                        cross_group_quantum_pass is not True
+                        or not np.isfinite(quantum)
+                        or not np.isfinite(change)
+                        or quantum <= 0.0
+                        or change < quantum
+                    ):
+                        raise D92E0DSlimError(
+                            "D92-E0D Pareto Distill active quantum receipt drift"
                         )
                 else:
                     raise D92E0DSlimError(
@@ -537,6 +587,9 @@ def build_d92_e0d_fit(
                         "d92_pareto_distill_deployed_candidate_affine_sha256"
                     ]
                     is not None
+                    or cross_group_change is not None
+                    or cross_group_quantum is not None
+                    or cross_group_quantum_pass is not None
                 ):
                     raise D92E0DSlimError(
                         "D92-E0D Pareto Distill inactive receipt drift"

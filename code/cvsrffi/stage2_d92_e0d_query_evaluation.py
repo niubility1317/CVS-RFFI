@@ -138,6 +138,9 @@ _PARETO_DISTILL_RECEIPT_FIELDS = (
     "d92_e0d_pareto_distill_full_head_byte_exact",
     "d92_e0d_pareto_distill_deployed_support_constraints_pass",
     "d92_e0d_pareto_distill_deployed_full_head_byte_exact",
+    "d92_e0d_pareto_distill_deployment_cross_group_margin_change_max_abs",
+    "d92_e0d_pareto_distill_deployment_cross_group_margin_quantum",
+    "d92_e0d_pareto_distill_deployment_cross_group_quantum_pass",
     "d92_e0d_pareto_distill_deployed_e0_affine_sha256",
     "d92_e0d_pareto_distill_deployed_candidate_affine_sha256",
     "d92_e0d_pareto_distill_full_solve_count",
@@ -660,6 +663,15 @@ def _pareto_distill_support_receipt(
     active = receipt["d92_e0d_pareto_distill_active"]
     fallback = receipt["d92_e0d_pareto_distill_fallback_active"]
     reason = receipt["d92_e0d_pareto_distill_fallback_reason"]
+    cross_group_change = receipt[
+        "d92_e0d_pareto_distill_deployment_cross_group_margin_change_max_abs"
+    ]
+    cross_group_quantum = receipt[
+        "d92_e0d_pareto_distill_deployment_cross_group_margin_quantum"
+    ]
+    cross_group_quantum_pass = receipt[
+        "d92_e0d_pareto_distill_deployment_cross_group_quantum_pass"
+    ]
     fixed_counts = (
         int(receipt["d92_e0d_pareto_distill_full_solve_count"]),
         int(receipt["d92_e0d_pareto_distill_block_solve_count"]),
@@ -702,6 +714,9 @@ def _pareto_distill_support_receipt(
                 "d92_e0d_pareto_distill_deployed_candidate_affine_sha256"
             ]
             is not None
+            or cross_group_change is not None
+            or cross_group_quantum is not None
+            or cross_group_quantum_pass is not None
         ):
             raise D92E0DQueryEvaluationError(
                 "D92-E0D Pareto Distill inactive receipt drift"
@@ -736,6 +751,27 @@ def _pareto_distill_support_receipt(
             raise D92E0DQueryEvaluationError(
                 "D92-E0D Pareto Distill fallback receipt drift"
             )
+        if cross_group_quantum_pass is not False:
+            raise D92E0DQueryEvaluationError(
+                "D92-E0D Pareto Distill fallback quantum receipt drift"
+            )
+        for value, positive in (
+            (cross_group_change, False),
+            (cross_group_quantum, True),
+        ):
+            if value is not None:
+                try:
+                    numeric = float(value)
+                except (TypeError, ValueError) as error:
+                    raise D92E0DQueryEvaluationError(
+                        "D92-E0D Pareto Distill fallback quantum receipt drift"
+                    ) from error
+                if not np.isfinite(numeric) or numeric < 0.0 or (
+                    positive and numeric <= 0.0
+                ):
+                    raise D92E0DQueryEvaluationError(
+                        "D92-E0D Pareto Distill fallback quantum receipt drift"
+                    )
         return receipt
     if (
         fallback is not False
@@ -753,6 +789,23 @@ def _pareto_distill_support_receipt(
         is not False
     ):
         raise D92E0DQueryEvaluationError("D92-E0D Pareto Distill active receipt drift")
+    try:
+        quantum = float(cross_group_quantum)
+        change = float(cross_group_change)
+    except (TypeError, ValueError) as error:
+        raise D92E0DQueryEvaluationError(
+            "D92-E0D Pareto Distill active quantum receipt drift"
+        ) from error
+    if (
+        cross_group_quantum_pass is not True
+        or not np.isfinite(quantum)
+        or not np.isfinite(change)
+        or quantum <= 0.0
+        or change < quantum
+    ):
+        raise D92E0DQueryEvaluationError(
+            "D92-E0D Pareto Distill active quantum receipt drift"
+        )
     return receipt
 
 
