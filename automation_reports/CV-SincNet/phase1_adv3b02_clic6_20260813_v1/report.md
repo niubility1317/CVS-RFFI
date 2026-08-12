@@ -3,7 +3,7 @@
 ## 1.状态、目的与边界
 
 - 实验ID：`phase1_adv3b02_clic6_20260813_v1`
-- 当前状态：`LOCAL_VERIFIED / NOT_RELEASED / NO_PERFORMANCE_RESULT`
+- 当前状态：`INDEPENDENT_REVIEW_ALLOW / READY_FOR_N607_F1_SMOKE / NO_PERFORMANCE_RESULT`
 - 本地实现操作者：Terra/max；N607唯一runner：待主控完成独立P0/P1复审后指定。
 - 方法身份：`ADV3B02_CORE90_SOFT_E200_CLIC_EQ_RHO07_FINAL`。
 - 历史机制锚点：`ADV3B02_CORE90_SOFT_E200`。本任务是保持其完整机制和损失配置的配置等价重训练，不是历史checkpoint的字节级复现。
@@ -75,6 +75,8 @@ Git实现谱系：初始Task1入口提交为`72640e30fe713d5aca365e2cb07fa52522f
 首次Task2提交`fc6e4146`经独立审查判定`P0=0/P1=2/NO-GO`：直接训练器调用可漂移`lambda_proto`等方法profile，且真实loader一轮不足3批时会进入source validation。修复版本在任何通用校验或数据构建前，从同一release的正式launcher F1 dry-run机械解析完整parser namespace，除隔离output/export/control字段外逐字段精确比较，`wisig_pkl`亦不得漂移；同时在第一轮batch loop结束、任何source-V评估之前对实际batch数不足3立即fail-closed且不写receipt。该修复须重新获得独立`P0=0/P1=0`后方可进入N607。
 
 第二轮独立攻击发现，继承的`BASH_ENV`可重定义`printf`并伪造formal F1 dry-run，PATH也可替换用于profile恢复的bash。最终实现只接受平台系统bash的绝对解析路径，并以最小环境运行formal dry-run：固定`PATH=/usr/bin:/bin`，仅保留locale及Windows启动所需系统变量，显式排除`BASH_ENV`、`ENV`、`SHELLOPTS`、`BASHOPTS`、`WSLENV`和`BASH_FUNC_*`。这是Task2最后一轮release-engineering修复；关闭真实入口后，不再以同进程恶意猴补、重复签名或额外authority扩大阻断。
+
+最终独立终审基线：`edacc54d1d9fe8b5477e6da71d5f40ca4e8104af`；结论`P0=0/P1=0/ALLOW`。fresh证据为29/29聚焦测试、环境攻击2/2、正式六折真实解析并调用`train(...--dry_run)`6/6、训练器`py_compile`、两份`bash -n`、最小POSIX环境formal dry-run=6行/smoke=1行及diff-check全部通过。冻结SHA256：训练器=`5BBC34C8204E93076F297A524D89294D8265EEADD03E8513A6BE116569221D10`；正式launcher=`FCABDA8ABA3A29D8DEE81D1E16C90A9E211402B10270B1C80FB9B56B832DAD22`；烟测wrapper=`80B2D3AA70FEF909B7FD027C01A5E5197B8EB37308605D5338A8754C354F2F7D`；测试=`8432F5F7773FAB11FA4C069BEA4B52437C172161106ED18451D849061C181FBE`。该ALLOW只授权同release的N607 F1技术烟测；烟测receipt闭合前正式六fold调用次数必须保持0。
 
 ## 6.预期工件、健康与停止规则
 
