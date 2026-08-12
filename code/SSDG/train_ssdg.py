@@ -1080,6 +1080,15 @@ def build_arg_parser() -> argparse.ArgumentParser:
         ),
     )
     parser.add_argument(
+        "--phase1_adv3b02_technical_smoke_batches",
+        type=int,
+        default=0,
+        help=(
+            "Run exactly three source-only F1 ADV3B02 technical batches, "
+            "write an immutable receipt, and exit before evaluation."
+        ),
+    )
+    parser.add_argument(
         "--phase1_recte_frozen_mode",
         type=str2bool,
         default=False,
@@ -3002,22 +3011,32 @@ def _build_ssdg_wisig_data(args, device: torch.device):
     unlabeled_ds = WiSigSubsetDataset(source_base, unlabeled_idx, split_source="ssdg_unlabeled_tx_hidden")
     val_ds = WiSigSubsetDataset(source_base, val_idx, split_source="ssdg_source_val")
 
-    _, _, _, named_tests, named_meta, test_split_info = make_wisig_trainval_test_by_day_rx(
-        ds_w,
-        equalized=eq,
-        out_len=int(args.wisig_out_len),
-        domain=str(args.wisig_domain),
-        normalize=True,
-        crop_mode="center",
-        train_ratio=0.5,
-        guard_gap=int(args.wisig_guard_gap),
-        train_days=train_days,
-        test_days=test_days,
-        train_rxs=train_rxs,
-        test_rxs=test_rxs,
-        max_samples_per_combo_test=None if int(args.wisig_max_test_per_combo) <= 0 else int(args.wisig_max_test_per_combo),
-        seed=int(args.seed),
-    )
+    adv3b02_technical_smoke_active = int(
+        getattr(args, "phase1_adv3b02_technical_smoke_batches", 0)
+    ) == 3
+    if adv3b02_technical_smoke_active:
+        # The smoke must exercise the same source data/model/optimizer path,
+        # but it deliberately does not construct or open held-out test rows.
+        named_tests = {}
+        named_meta = {}
+        test_split_info = {"status": "NOT_OPENED_ADV3B02_TECHNICAL_SMOKE"}
+    else:
+        _, _, _, named_tests, named_meta, test_split_info = make_wisig_trainval_test_by_day_rx(
+            ds_w,
+            equalized=eq,
+            out_len=int(args.wisig_out_len),
+            domain=str(args.wisig_domain),
+            normalize=True,
+            crop_mode="center",
+            train_ratio=0.5,
+            guard_gap=int(args.wisig_guard_gap),
+            train_days=train_days,
+            test_days=test_days,
+            train_rxs=train_rxs,
+            test_rxs=test_rxs,
+            max_samples_per_combo_test=None if int(args.wisig_max_test_per_combo) <= 0 else int(args.wisig_max_test_per_combo),
+            seed=int(args.seed),
+        )
     balanced_sampler = None
     if bool(getattr(args, "use_tx_rx_balanced_sampler", False)):
         if BalancedTxDomainBatchSampler is None or DataLoader is None:
@@ -6719,6 +6738,183 @@ def _pamr_technical_audit_skip_receipt(scope: str) -> Dict[str, str]:
     }
 
 
+_ADV3B02_TECHNICAL_SMOKE_METHOD = "ADV3B02_CORE90_SOFT_E200_CLIC_EQ_RHO07_FINAL"
+_ADV3B02_TECHNICAL_SMOKE_RUN_ID = "phase1_adv3b02_clic6_20260813_v1"
+_ADV3B02_TECHNICAL_SMOKE_CANDIDATE = "F1_ADV3B02_CLIC"
+_ADV3B02_TECHNICAL_SMOKE_ROOT = ".smoke_phase1_adv3b02_clic6_20260813_v1_F1"
+_ADV3B02_TECHNICAL_SMOKE_SOURCE_ROLES = {
+    "phase1_source_train_tx_ids": "20-15,20-19,6-15,8-20",
+    "phase1_source_known_validation_tx_ids": "14-7",
+    "phase1_source_proxy_unknown_tx_ids": "14-10",
+}
+
+
+def _validate_phase1_adv3b02_technical_smoke_args(args: Any) -> int:
+    """Fail closed before data construction for the isolated ADV3B02 F1 smoke."""
+
+    batches = int(getattr(args, "phase1_adv3b02_technical_smoke_batches", 0))
+    if batches not in {0, 3}:
+        raise ValueError("ADV3B02 technical smoke requires exactly zero or three batches")
+    if batches == 0:
+        return 0
+    if bool(getattr(args, "dry_run", False)):
+        raise ValueError("ADV3B02 technical smoke is a non-dry-run lifecycle only")
+
+    expected_text = {
+        "base_candidate": _ADV3B02_TECHNICAL_SMOKE_METHOD,
+        "run_id": _ADV3B02_TECHNICAL_SMOKE_RUN_ID,
+        "candidate_id": _ADV3B02_TECHNICAL_SMOKE_CANDIDATE,
+        "split_mode": "tx_rx_day_1_6_3",
+        "checkpoint_selection": "final_only",
+        "best_metric": "source_val_sat_hmean",
+        "device": "cuda:0",
+        **_ADV3B02_TECHNICAL_SMOKE_SOURCE_ROLES,
+    }
+    for field, expected in expected_text.items():
+        actual = str(getattr(args, field, "")).strip()
+        if actual != expected:
+            raise ValueError(
+                f"ADV3B02 technical smoke requires {field}={expected!r}, got {actual!r}"
+            )
+    expected_float = {
+        "labeled_ratio": 0.07,
+        "unlabeled_ratio": 0.63,
+        "source_val_ratio": 0.30,
+    }
+    for field, expected in expected_float.items():
+        actual = float(getattr(args, field, float("nan")))
+        if not math.isclose(actual, expected, rel_tol=0.0, abs_tol=1.0e-12):
+            raise ValueError(
+                f"ADV3B02 technical smoke requires {field}={expected}, got {actual}"
+            )
+    expected_int = {"epochs": 200, "label_epochs": 130, "pseudo_epochs": 70}
+    for field, expected in expected_int.items():
+        actual = int(getattr(args, field, -1))
+        if actual != expected:
+            raise ValueError(
+                f"ADV3B02 technical smoke requires {field}={expected}, got {actual}"
+            )
+    if not bool(getattr(args, "from_scratch", False)):
+        raise ValueError("ADV3B02 technical smoke requires --from_scratch true")
+    if not bool(getattr(args, "phase1_source_val_selection_only", False)):
+        raise ValueError(
+            "ADV3B02 technical smoke requires --phase1_source_val_selection_only true"
+        )
+    if bool(getattr(args, "enable_joint_safe_guard", False)):
+        raise ValueError("ADV3B02 technical smoke forbids the held-out joint-safe guard")
+    if bool(getattr(args, "formal_ablation", False)):
+        raise ValueError("ADV3B02 technical smoke is not a formal ablation")
+    if str(getattr(args, "baseline_ckpt", "")).strip():
+        raise ValueError("ADV3B02 technical smoke requires a scratch-only F1 command")
+
+    output_dir = str(getattr(args, "output_dir", "")).replace("\\", "/").rstrip("/")
+    expected_suffix = (
+        f"/{_ADV3B02_TECHNICAL_SMOKE_ROOT}/"
+        f"{_ADV3B02_TECHNICAL_SMOKE_CANDIDATE}"
+    )
+    if not output_dir.endswith(expected_suffix):
+        raise ValueError(
+            "ADV3B02 technical smoke output_dir must be the isolated F1 smoke root"
+        )
+    return batches
+
+
+def _adv3b02_technical_smoke_source_evidence(data_ctx: Mapping[str, Any]) -> Dict[str, Any]:
+    """Seal the actual source-role and split bindings consumed by the three batches."""
+
+    split_info = dict(data_ctx.get("split_info", {}) or {})
+    tx_roles = dict(split_info.get("tx_partition_receipt", {}) or {})
+    if not bool(tx_roles.get("enabled", False)):
+        raise ValueError("ADV3B02 technical smoke requires an explicit source TX partition")
+    if bool(tx_roles.get("held_tx_loaded_by_training", True)):
+        raise ValueError("ADV3B02 technical smoke rejects held/proxy TX rows in training")
+    actual_roles = {
+        "phase1_source_train_tx_ids": ",".join(
+            str(value) for value in tx_roles.get("source_known_train_tx", [])
+        ),
+        "phase1_source_known_validation_tx_ids": ",".join(
+            str(value) for value in tx_roles.get("source_known_validation_tx", [])
+        ),
+        "phase1_source_proxy_unknown_tx_ids": ",".join(
+            str(value) for value in tx_roles.get("source_proxy_unknown_tx", [])
+        ),
+    }
+    if actual_roles != _ADV3B02_TECHNICAL_SMOKE_SOURCE_ROLES:
+        raise ValueError("ADV3B02 technical smoke source-role receipt drifted from F1")
+    if data_ctx.get("named_test_loaders"):
+        raise ValueError("ADV3B02 technical smoke must not construct held-out test loaders")
+    source_split = dict(split_info.get("source_split_receipt", {}) or {})
+    return {
+        "source_roles": {
+            "train_tx_ids": list(tx_roles.get("source_known_train_tx", [])),
+            "known_validation_tx_ids": list(
+                tx_roles.get("source_known_validation_tx", [])
+            ),
+            "proxy_unknown_tx_ids": list(tx_roles.get("source_proxy_unknown_tx", [])),
+            "partition_sha256": str(tx_roles.get("partition_sha256", "")),
+            "held_tx_loaded_by_training": False,
+        },
+        "source_split": {
+            "mode": str(split_info.get("mode", "")),
+            "labeled_size": int(split_info.get("labeled_size", 0)),
+            "unlabeled_size": int(split_info.get("unlabeled_size", 0)),
+            "source_val_size": int(split_info.get("source_val_size", 0)),
+            "split_manifest_sha256": str(source_split.get("split_manifest_sha256", "")),
+        },
+    }
+
+
+def _finalize_phase1_adv3b02_technical_smoke(
+    *,
+    out_dir: Path,
+    args: Any,
+    counters: Mapping[str, int],
+    source_evidence: Mapping[str, Any],
+) -> Path:
+    """Persist exactly one non-performance receipt after the third complete batch."""
+
+    expected = {
+        "batches": 3,
+        "forward_batches": 3,
+        "backward_batches": 3,
+        "optimizer_attempts": 3,
+        "optimizer_effective_steps": 3,
+        "optimizer_nonfinite_batches": 0,
+    }
+    observed = {key: int(counters.get(key, -1)) for key in expected}
+    if observed != expected:
+        raise RuntimeError(
+            "ADV3B02 technical smoke requires three finite, effective optimizer steps: "
+            f"observed={observed}"
+        )
+    receipt_path = out_dir / "phase1_adv3b02_technical_smoke_receipt.json"
+    receipt = {
+        "schema": "cvs.phase1.adv3b02_technical_smoke.v1",
+        "completed": True,
+        "claim": "NO_PERFORMANCE_RESULT",
+        "base_candidate": str(args.base_candidate),
+        "run_id": str(args.run_id),
+        "candidate_id": str(args.candidate_id),
+        "fold": "F1",
+        "batches": observed["batches"],
+        "optimizer_attempts": observed["optimizer_attempts"],
+        "optimizer_effective_steps": int(counters.get("optimizer_effective_steps", 0)),
+        "optimizer_nonfinite_batches": int(counters.get("optimizer_nonfinite_batches", 0)),
+        "forward_batches": int(counters.get("forward_batches", 0)),
+        "backward_batches": int(counters.get("backward_batches", 0)),
+        **dict(source_evidence),
+        "source_val_rows_opened": 0,
+        "query_rows_opened": 0,
+        "target_rows_opened": 0,
+        "test_rows_opened": 0,
+        "selection_feedback_count": 0,
+    }
+    with receipt_path.open("x", encoding="utf-8", newline="\n") as stream:
+        json.dump(receipt, stream, ensure_ascii=False, indent=2, sort_keys=True)
+        stream.write("\n")
+    return receipt_path
+
+
 def train(args) -> int:
     training_wall_started = time.time()
     ablation_manifest = None
@@ -7589,6 +7785,9 @@ def train(args) -> int:
             "--direct_metric_require_effective_negative_grad true requires either "
             "--direct_metric_virtual_detach false or --direct_metric_gate_reference_detach false"
         )
+    adv3b02_technical_smoke_batches = _validate_phase1_adv3b02_technical_smoke_args(
+        args
+    )
     if args.dry_run:
         print(
             f"[DRY-RUN] Parsed arguments and skipped data/model construction. "
@@ -7614,6 +7813,10 @@ def train(args) -> int:
         out_dir / "latest_ssdg.pth",
         out_dir / "tail_reference_ssdg.pth",
     ]
+    if adv3b02_technical_smoke_batches:
+        stale_identity_paths.append(
+            out_dir / "phase1_adv3b02_technical_smoke_receipt.json"
+        )
     stale_identity_paths = [path for path in stale_identity_paths if path.exists()]
     if stale_identity_paths:
         raise FileExistsError(
@@ -8188,6 +8391,19 @@ def train(args) -> int:
                 pass
             raise
     data_ctx = _build_ssdg_wisig_data(args, device)
+    adv3b02_technical_smoke_source_binding: Dict[str, Any] = {}
+    adv3b02_technical_smoke_counters = {
+        "batches": 0,
+        "forward_batches": 0,
+        "backward_batches": 0,
+        "optimizer_attempts": 0,
+        "optimizer_effective_steps": 0,
+        "optimizer_nonfinite_batches": 0,
+    }
+    if adv3b02_technical_smoke_batches:
+        adv3b02_technical_smoke_source_binding = _adv3b02_technical_smoke_source_evidence(
+            data_ctx
+        )
     if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode or gd_proto_nll_frozen_mode or icmt_frozen_mode or cagm_frozen_mode or rcrmd_frozen_mode or rcat_frozen_mode or rcmmc_frozen_mode or hscf_frozen_mode or hnccd_frozen_mode or recte_frozen_mode or cp_sfce_frozen_mode:
         tx_partition_receipt = (
             (data_ctx.get("split_info", {}) or {}).get("tx_partition_receipt", {})
@@ -14109,6 +14325,8 @@ def train(args) -> int:
                     grad_domain = _grad_norm(model, lambda name: "dom" in name or "domain" in name)
                     grads_finite = _grads_are_finite(model)
                     if grads_finite:
+                        if adv3b02_technical_smoke_batches:
+                            adv3b02_technical_smoke_counters["optimizer_attempts"] += 1
                         scaler.step(optimizer)
                         if bool(getattr(cp_sfce_config, "enabled", False)):
                             try:
@@ -15682,6 +15900,33 @@ def train(args) -> int:
                         failure_stage="post_telemetry_retained_graph_release",
                     )
                     raise
+
+            if adv3b02_technical_smoke_batches:
+                # All standard batch work (forward/loss/backward/scaler and
+                # any retained-graph release) is now complete.  This must be
+                # the last batch-loop action before source validation below.
+                adv3b02_technical_smoke_counters["batches"] += 1
+                adv3b02_technical_smoke_counters["forward_batches"] += 1
+                if not skipped_nonfinite_loss:
+                    adv3b02_technical_smoke_counters["backward_batches"] += 1
+                if optimizer_step_applied:
+                    adv3b02_technical_smoke_counters["optimizer_effective_steps"] += 1
+                if skipped_nonfinite_loss or skipped_nonfinite_grad:
+                    adv3b02_technical_smoke_counters["optimizer_nonfinite_batches"] += 1
+                if adv3b02_technical_smoke_counters["batches"] == adv3b02_technical_smoke_batches:
+                    receipt_path = _finalize_phase1_adv3b02_technical_smoke(
+                        out_dir=out_dir,
+                        args=args,
+                        counters=adv3b02_technical_smoke_counters,
+                        source_evidence=adv3b02_technical_smoke_source_binding,
+                    )
+                    print(
+                        "[ADV3B02-TECHNICAL-SMOKE] "
+                        f"batches=3 receipt={receipt_path} "
+                        "source_val_rows_opened=0 target_rows_opened=0",
+                        flush=True,
+                    )
+                    return 0
 
         if pamr_audit_only:
             val_stats = {

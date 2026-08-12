@@ -41,12 +41,14 @@ ADV3B02在本任务中没有独立source-frozen的端点真实unknown决策规�
 |文件|用途|状态|
 |---|---|---|
 |`code/scripts/launch_phase1_adv3b02_clic6_v1_20260813.sh`|六折训练入口、冻结合同、全六fold预检、根目录防覆盖、PID表与限定技术停止逻辑|已实现|
+|`code/scripts/smoke_phase1_adv3b02_clic_f1_v1_20260813.sh`|从正式启动器机械提取F1命令，在独立根执行恰3个完整source-only forward/backward/optimizer batch；不读取source-V、target、query或test row|已实现|
+|`code/SSDG/train_ssdg.py`|新增默认关闭的三批技术烟测生命周期；flag=0不改变正式训练，flag=3仅接受冻结F1合同并在第三个有限、有效optimizer step后不可覆盖地写技术receipt|已实现|
 |`code/tests/test_phase1_adv3b02_clic6_baseline.py`|六折命令/角色/全部关键旗标、真实训练器解析与运行时dry-run、无目标侧接口、全六fold预检、根目录保护和合同漂移拒绝|已实现|
 |本报告|预注册、N607交接与结果表模板|已建立|
 
 |验证命令|结果|
 |---|---|
-|`python -m pytest code/tests/test_phase1_adv3b02_clic6_baseline.py -q`|7/7通过。最初5项RED为启动器不存在；独立审查后新增两项RED：六条命令的`train(args --dry_run)`被`joint_safe`运行时守卫拒绝，及F6碰撞未能在任何child启动前拒绝。修复后7项均GREEN。|
+|`python -m pytest code/tests/test_phase1_adv3b02_clic6_baseline.py -q`|17/17通过。除原7项六fold合同外，新增F1独立入口、仅0/3 batch、错误方法/部分batch在数据构建前拒绝、三次有限有效optimizer step receipt、非有限batch拒绝、receipt不可覆盖及flag=0不约束正式F2—F6。|
 |`bash -n code/scripts/launch_phase1_adv3b02_clic6_v1_20260813.sh`|通过。|
 |`bash code/scripts/launch_phase1_adv3b02_clic6_v1_20260813.sh --dry-run`|通过；恰六条F1→F6源侧命令。|
 |真实`train_ssdg.build_arg_parser().parse_args(...)`和`train(args --dry_run)`|六条命令均接受`--from_scratch true`、`--checkpoint_selection final_only`、`best_metric=source_val_sat_hmean`和全部训练旗标；逐条追加`--dry_run`后，真实`train_ssdg.train(args)`均返回0且未构造数据/模型。|
@@ -67,6 +69,8 @@ Git实现谱系：初始Task1入口提交为`72640e30fe713d5aca365e2cb07fa52522f
 - 单次正式命令：`RUN_ID=phase1_adv3b02_clic6_20260813_v1 PROJECT_ROOT=/home/szu2070436088/2510044040/CV-SincNet CODE_ROOT=<release>/code PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python RUN_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_clic6_20260813_v1 LOG_ROOT=/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_clic6_20260813_v1 bash <release>/code/scripts/launch_phase1_adv3b02_clic6_v1_20260813.sh`。
 - 正式launch次数：1；retry：`NO`；不复用、不恢复或覆盖任一旧run。
 - 本地→远端映射：launcher、测试和本报告均来自上述Git commit；正式同步仅发送launcher和经审核的release archive，不修改远端源文件。
+
+正式六fold启动前有且只有一次强制F1技术烟测门：runner必须从同一release以`bash <release>/code/scripts/smoke_phase1_adv3b02_clic_f1_v1_20260813.sh`启动，固定写入`runs/.smoke_phase1_adv3b02_clic6_20260813_v1_F1/F1_ADV3B02_CLIC`与对应logs根。PID文件记录的是前台烟测wrapper PID；训练子进程及其CWD/cmdline须由runner在运行期另行核验。技术PASS严格要求receipt schema=`cvs.phase1.adv3b02_technical_smoke.v1`、`batches=forward=backward=optimizer_attempts=optimizer_effective_steps=3`、nonfinite=0、source-val/target/query/test row访问和selection反馈全为0。烟测失败、缺receipt或进程绑定不闭合时，`FORMAL_INVOCATION=0`，不得调用正式六fold启动器；烟测通过后才允许唯一formal invocation=1。烟测不读取性能，也不构成checkpoint或候选选择。
 
 ## 6.预期工件、健康与停止规则
 

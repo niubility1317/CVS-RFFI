@@ -7,15 +7,20 @@ wrong profile values, TX roles, checkpoint policy, parser syntax, root reuse, or
 accidental target-side input must make the real launcher fail this suite.
 """
 
+import json
 import shlex
 import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 
 CODE_ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = CODE_ROOT.parent
 LAUNCHER = CODE_ROOT / "scripts" / "launch_phase1_adv3b02_clic6_v1_20260813.sh"
+SMOKE_LAUNCHER = CODE_ROOT / "scripts" / "smoke_phase1_adv3b02_clic_f1_v1_20260813.sh"
+SMOKE_ROOT_NAME = ".smoke_phase1_adv3b02_clic6_20260813_v1_F1"
 
 if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
@@ -36,6 +41,17 @@ def _launcher_env(tmp_path: Path) -> dict[str, str]:
         "RUN_ID": "phase1_adv3b02_clic6_20260813_v1",
         "RUN_ROOT": _wsl_path(tmp_path / "runs"),
         "LOG_ROOT": _wsl_path(tmp_path / "logs"),
+        "WISIG_PKL": _wsl_path(tmp_path / "ManySig.pkl"),
+    }
+
+
+def _smoke_env(tmp_path: Path) -> dict[str, str]:
+    """Only the project root is configurable; formal roots stay unreachable."""
+
+    return {
+        "PROJECT_ROOT": _wsl_path(tmp_path / "project"),
+        "CODE_ROOT": _wsl_path(CODE_ROOT),
+        "PYTHON": "python",
         "WISIG_PKL": _wsl_path(tmp_path / "ManySig.pkl"),
     }
 
@@ -80,6 +96,50 @@ def _run_launcher(
         capture_output=True,
         text=True,
     )
+
+
+def _smoke_argv(
+    tmp_path: Path,
+    *args: str,
+    env_overrides: dict[str, str] | None = None,
+) -> list[str]:
+    assert SMOKE_LAUNCHER.is_file(), f"missing smoke launcher: {SMOKE_LAUNCHER}"
+    env = _smoke_env(tmp_path)
+    if env_overrides:
+        env.update(env_overrides)
+    assignments = " ".join(f"{key}={shlex.quote(value)}" for key, value in env.items())
+    command = " ".join(
+        [
+            assignments,
+            "bash",
+            shlex.quote(_wsl_path(SMOKE_LAUNCHER)),
+            *(shlex.quote(value) for value in args),
+        ]
+    )
+    return ["bash", "-lc", command]
+
+
+def _run_smoke(
+    tmp_path: Path,
+    *args: str,
+    check: bool = True,
+    env_overrides: dict[str, str] | None = None,
+) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        _smoke_argv(tmp_path, *args, env_overrides=env_overrides),
+        cwd=REPO_ROOT,
+        check=check,
+        capture_output=True,
+        text=True,
+    )
+
+
+def _smoke_dry_run_line(tmp_path: Path) -> str:
+    result = _run_smoke(tmp_path, "--dry-run")
+    lines = [line for line in result.stdout.splitlines() if line.strip()]
+    assert len(lines) == 1
+    assert lines[0].startswith("[DRY-RUN] ")
+    return lines[0]
 
 
 def _dry_run_lines(tmp_path: Path) -> list[str]:
@@ -338,6 +398,241 @@ def test_all_six_commands_pass_the_real_train_runtime_dry_run_guard(tmp_path: Pa
     for line in _dry_run_lines(tmp_path):
         args = parser.parse_args(_trainer_args(_command_tokens(line)) + ["--dry_run"])
         assert train_ssdg.train(args) == 0
+
+
+def test_adv3b02_smoke_launcher_emits_one_isolated_f1_command(tmp_path: Path) -> None:
+    """Break caught: a smoke run can drift from F1 or write under the formal roots."""
+
+    assert SMOKE_LAUNCHER.is_file()
+    syntax = subprocess.run(
+        ["bash", "-n", _wsl_path(SMOKE_LAUNCHER)],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+    )
+    assert syntax.returncode == 0, syntax.stderr
+
+    line = _smoke_dry_run_line(tmp_path)
+    tokens = _command_tokens(line)
+    values = _arg_map(_trainer_args(tokens))
+    assert tokens[0] == "CUDA_VISIBLE_DEVICES=0"
+    assert values["--candidate_id"] == "F1_ADV3B02_CLIC"
+    assert values["--run_id"] == "phase1_adv3b02_clic6_20260813_v1"
+    assert values["--phase1_adv3b02_technical_smoke_batches"] == "3"
+    assert values["--output_dir"].endswith(f"/{SMOKE_ROOT_NAME}/F1_ADV3B02_CLIC")
+    for flag, expected in EXPECTED_PROFILE.items():
+        assert values.get(flag) == expected, f"smoke F1: {flag}"
+
+    project = tmp_path / "project"
+    assert not (project / "runs" / "phase1_adv3b02_clic6_20260813_v1").exists()
+    assert not (project / "logs" / "phase1_adv3b02_clic6_20260813_v1").exists()
+    assert not (project / "runs" / SMOKE_ROOT_NAME).exists()
+    assert not (project / "logs" / SMOKE_ROOT_NAME).exists()
+
+
+def test_adv3b02_smoke_launcher_rejects_formal_root_overrides_and_existing_smoke_root(
+    tmp_path: Path,
+) -> None:
+    """Break caught: smoke can be redirected to a formal root or overwrite its own receipt root."""
+
+    formal_override = _run_smoke(
+        tmp_path,
+        check=False,
+        env_overrides={"RUN_ROOT": _wsl_path(tmp_path / "project" / "runs" / "formal")},
+    )
+    assert formal_override.returncode != 0
+    assert "RUN_ROOT/LOG_ROOT overrides are forbidden" in formal_override.stderr
+
+    smoke_root = tmp_path / "project" / "runs" / SMOKE_ROOT_NAME
+    smoke_root.mkdir(parents=True)
+    marker = smoke_root / "preserve.txt"
+    marker.write_text("preserve", encoding="utf-8")
+    collision = _run_smoke(tmp_path, check=False)
+    assert collision.returncode != 0
+    assert "refusing to overwrite smoke run/log root" in collision.stderr
+    assert marker.read_text(encoding="utf-8") == "preserve"
+    assert not (tmp_path / "project" / "logs" / SMOKE_ROOT_NAME).exists()
+    assert not (tmp_path / "project" / "runs" / "phase1_adv3b02_clic6_20260813_v1").exists()
+
+
+def _adv3b02_smoke_args(tmp_path: Path):
+    from SSDG import train_ssdg
+
+    parser = train_ssdg.build_arg_parser()
+    line = _smoke_dry_run_line(tmp_path)
+    return parser.parse_args(_trainer_args(_command_tokens(line)))
+
+
+def test_adv3b02_smoke_parser_accepts_zero_or_three_batches(tmp_path: Path) -> None:
+    """Break caught: the dedicated technical-control flag cannot represent its only legal states."""
+
+    from SSDG import train_ssdg
+
+    parser = train_ssdg.build_arg_parser()
+    assert parser.parse_args(["--output_dir", "unused"]).phase1_adv3b02_technical_smoke_batches == 0
+    assert _adv3b02_smoke_args(tmp_path).phase1_adv3b02_technical_smoke_batches == 3
+
+
+@pytest.mark.parametrize("batches", (1, 2, 4))
+def test_adv3b02_smoke_rejects_partial_batch_counts_before_data(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    batches: int,
+) -> None:
+    """Break caught: a partial smoke invocation reaches data construction."""
+
+    from SSDG import train_ssdg
+
+    args = _adv3b02_smoke_args(tmp_path)
+    args.phase1_adv3b02_technical_smoke_batches = batches
+    monkeypatch.setattr(
+        train_ssdg,
+        "_build_ssdg_wisig_data",
+        lambda *_args, **_kwargs: pytest.fail("partial ADV smoke reached data construction"),
+    )
+    with pytest.raises(ValueError, match="zero or three"):
+        train_ssdg.train(args)
+
+
+def test_adv3b02_smoke_rejects_wrong_method_before_data(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Break caught: the technical smoke accepts a non-ADV3B02 method identity."""
+
+    from SSDG import train_ssdg
+
+    args = _adv3b02_smoke_args(tmp_path)
+    args.base_candidate = "NOT_ADV3B02"
+    monkeypatch.setattr(
+        train_ssdg,
+        "_build_ssdg_wisig_data",
+        lambda *_args, **_kwargs: pytest.fail("wrong-method ADV smoke reached data construction"),
+    )
+    with pytest.raises(ValueError, match="base_candidate"):
+        train_ssdg.train(args)
+
+
+def _smoke_source_evidence() -> dict[str, object]:
+    return {
+        "source_roles": {
+            "train_tx_ids": ["20-15", "20-19", "6-15", "8-20"],
+            "known_validation_tx_ids": ["14-7"],
+            "proxy_unknown_tx_ids": ["14-10"],
+            "partition_sha256": "a" * 64,
+            "held_tx_loaded_by_training": False,
+        },
+        "source_split": {
+            "mode": "tx_rx_day_1_6_3",
+            "labeled_size": 3920,
+            "unlabeled_size": 35280,
+            "source_val_size": 16800,
+            "split_manifest_sha256": "b" * 64,
+        },
+    }
+
+
+def test_adv3b02_smoke_finalizer_seals_three_finite_effective_batches(
+    tmp_path: Path,
+) -> None:
+    """Break caught: an incomplete or non-effective probe can be called complete."""
+
+    from SSDG import train_ssdg
+
+    args = _adv3b02_smoke_args(tmp_path)
+    out_dir = tmp_path / "smoke-output"
+    out_dir.mkdir()
+    counters = {
+        "batches": 3,
+        "forward_batches": 3,
+        "backward_batches": 3,
+        "optimizer_attempts": 3,
+        "optimizer_effective_steps": 3,
+        "optimizer_nonfinite_batches": 0,
+    }
+
+    receipt_path = train_ssdg._finalize_phase1_adv3b02_technical_smoke(
+        out_dir=out_dir,
+        args=args,
+        counters=counters,
+        source_evidence=_smoke_source_evidence(),
+    )
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    assert receipt["schema"] == "cvs.phase1.adv3b02_technical_smoke.v1"
+    assert receipt["claim"] == "NO_PERFORMANCE_RESULT"
+    assert receipt["batches"] == 3
+    assert receipt["forward_batches"] == 3
+    assert receipt["backward_batches"] == 3
+    assert receipt["optimizer_attempts"] == 3
+    assert receipt["optimizer_effective_steps"] == 3
+    assert receipt["optimizer_nonfinite_batches"] == 0
+    assert receipt["source_val_rows_opened"] == 0
+    assert receipt["query_rows_opened"] == 0
+    assert receipt["target_rows_opened"] == 0
+    assert receipt["test_rows_opened"] == 0
+    assert receipt["selection_feedback_count"] == 0
+
+
+def test_adv3b02_smoke_finalizer_rejects_nonfinite_or_existing_receipt(
+    tmp_path: Path,
+) -> None:
+    """Break caught: failed batches or an existing immutable receipt are overwritten."""
+
+    from SSDG import train_ssdg
+
+    args = _adv3b02_smoke_args(tmp_path)
+    out_dir = tmp_path / "smoke-output"
+    out_dir.mkdir()
+    failed = {
+        "batches": 3,
+        "forward_batches": 3,
+        "backward_batches": 2,
+        "optimizer_attempts": 2,
+        "optimizer_effective_steps": 2,
+        "optimizer_nonfinite_batches": 1,
+    }
+    receipt_path = out_dir / "phase1_adv3b02_technical_smoke_receipt.json"
+    with pytest.raises(RuntimeError, match="finite, effective optimizer steps"):
+        train_ssdg._finalize_phase1_adv3b02_technical_smoke(
+            out_dir=out_dir,
+            args=args,
+            counters=failed,
+            source_evidence=_smoke_source_evidence(),
+        )
+    assert not receipt_path.exists()
+
+    sentinel = b"foreign-immutable-receipt\n"
+    receipt_path.write_bytes(sentinel)
+    complete = {
+        "batches": 3,
+        "forward_batches": 3,
+        "backward_batches": 3,
+        "optimizer_attempts": 3,
+        "optimizer_effective_steps": 3,
+        "optimizer_nonfinite_batches": 0,
+    }
+    with pytest.raises(FileExistsError):
+        train_ssdg._finalize_phase1_adv3b02_technical_smoke(
+            out_dir=out_dir,
+            args=args,
+            counters=complete,
+            source_evidence=_smoke_source_evidence(),
+        )
+    assert receipt_path.read_bytes() == sentinel
+
+
+def test_adv3b02_smoke_flag_zero_does_not_restrict_formal_rows(tmp_path: Path) -> None:
+    """Break caught: adding the probe changes ordinary F2--F6 validation."""
+
+    from SSDG import train_ssdg
+
+    formal_line = _dry_run_lines(tmp_path)[1]
+    args = train_ssdg.build_arg_parser().parse_args(
+        _trainer_args(_command_tokens(formal_line))
+    )
+    assert args.phase1_adv3b02_technical_smoke_batches == 0
+    assert args.candidate_id == "F2_ADV3B02_CLIC"
+    assert train_ssdg._validate_phase1_adv3b02_technical_smoke_args(args) == 0
 
 
 def test_dry_run_has_no_target_side_input_and_creates_no_roots(tmp_path: Path) -> None:
