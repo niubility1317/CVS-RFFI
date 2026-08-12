@@ -39,3 +39,22 @@
 - 12/12`source_clean_proxy.npz`全部存在（每份约32MB），candidate为`F1C/F1G…F6C/F6G_CLIC12`。生产`evaluate_phase1_clic_postfreeze_pair._load_feature_npz`逐份重开PASS；每份21120行，角色计数`labeled_fit=3920`、`source_validation_known=16800`、`proxy_unknown=400`；`features=z_id`形状`(21120,160)`、`tx_logits`形状`(21120,4)`且全部finite。
 - 自定义闭合核验PASS：所有`(tx,rx,day,eq,sig)`物理key全局唯一，L/V/proxy物理集合两两disjoint；manifest中`source_split_receipt`、`tx_partition_receipt`、source receiver/day轴、L/V/proxy physical-order SHA均与当前行序一致；checkpoint与terminal receipt实际bytesSHA一致；`source_only=true`、`clean_source_runtime_access=false`、`query_fit_access=false`、Uloader/forward=0、validation/proxy fit/threshold=0、`held_tx_loaded_by_training=false`、source-target receiver overlap=0；C/G`clic_enabled`绑定正确。
 - 完成后短连接核验：outer/child均退出，GPUcompute-app为空，所有本地SSH/SCP进程与TCP22连接清零；未读性能指标、未重试、未清理非本run。最终状态：`ARTIFACTS_COMPLETE / NO_PERFORMANCE_RESULT`。
+
+## 同行证据表（性能字段按合同N/A）
+
+本run是source-onlyclean特征生产，不包含target/query性能评估；因此K-shot、old/seen-new/unknown、coverage、rollback、defer、loss/adapter与性能结论均为N/A，不以任何中间值替代。每行仅记录同一candidate的结构性证据。
+
+| candidate/run | mechanism/arm | source split与seed | artifact（bytes，SHA256） | rows（L/V/proxy） | finite/physical disjoint/production reopen | final verdict |
+|---|---|---|---|---|---|---|
+| F1C_CLIC12 | P1_CLIC/C | source-only；split seed7281164，proxy seed7281148；K-shot=N/A | source_clean_proxy.npz；32126888；`ff7166a2dd0b70455711ce7997ffd385534aa9a4cda8fe280e810dca7702f86c` | 21120（3920/16800/400） | PASS/PASS/PASS | artifact complete；性能=N/A |
+| F1G_CLIC12 | P1_CLIC/G | source-only；split seed7281164，proxy seed7281148；K-shot=N/A | source_clean_proxy.npz；32126884；`c68aa2bfd8ba4d3c9adc1e76c1b1b2ee76416d79305c0a1a42b11d48e511009e` | 21120（3920/16800/400） | PASS/PASS/PASS | artifact complete；性能=N/A |
+| F2C_CLIC12 | P1_CLIC/C | source-only；split seed7281164，proxy seed7281148；K-shot=N/A | source_clean_proxy.npz；32126884；`54565a6ea83069df3aa45c0450dbc20974469b15e6acf8f08f10e94171f3fd00` | 21120（3920/16800/400） | PASS/PASS/PASS | artifact complete；性能=N/A |
+| F2G_CLIC12 | P1_CLIC/G | source-only；split seed7281164，proxy seed7281148；K-shot=N/A | source_clean_proxy.npz；32126880；`e739250db574135ca5cbb7e5912b1bb5719423cff6dfbb659d4af538099e9803` | 21120（3920/16800/400） | PASS/PASS/PASS | artifact complete；性能=N/A |
+| F3C_CLIC12 | P1_CLIC/C | source-only；split seed7281164，proxy seed7281148；K-shot=N/A | source_clean_proxy.npz；32126884；`0b41241ad0e8da0499835916905b92dfc6db59fa140ee025cd1850e7f9d3eee9` | 21120（3920/16800/400） | PASS/PASS/PASS | artifact complete；性能=N/A |
+| F3G_CLIC12 | P1_CLIC/G | source-only；split seed7281164，proxy seed7281148；K-shot=N/A | source_clean_proxy.npz；32126880；`464dbe7445ec8adf9fa75230f78f6774a4bd37ac21d08b4ad5d1e342b91c35c6` | 21120（3920/16800/400） | PASS/PASS/PASS | artifact complete；性能=N/A |
+| F4C_CLIC12 | P1_CLIC/C | source-only；split seed7281164，proxy seed7281148；K-shot=N/A | source_clean_proxy.npz；32126888；`93b2f518d071e170f8d9f83a1fe7289e2e53377450fca8377f79f9d49a0cb492` | 21120（3920/16800/400） | PASS/PASS/PASS | artifact complete；性能=N/A |
+| F4G_CLIC12 | P1_CLIC/G | source-only；split seed7281164，proxy seed7281148；K-shot=N/A | source_clean_proxy.npz；32126884；`4ae1ee19a59b1efcf6ac652a8a76223df8a00f11ac682b6167e207d330a7b48a` | 21120（3920/16800/400） | PASS/PASS/PASS | artifact complete；性能=N/A |
+| F5C_CLIC12 | P1_CLIC/C | source-only；split seed7281164，proxy seed7281148；K-shot=N/A | source_clean_proxy.npz；32126888；`fb5351b76315748f60e019e2857ee416efbf6cc1a9d376f50d4a645022d82f75` | 21120（3920/16800/400） | PASS/PASS/PASS | artifact complete；性能=N/A |
+| F5G_CLIC12 | P1_CLIC/G | source-only；split seed7281164，proxy seed7281148；K-shot=N/A | source_clean_proxy.npz；32126884；`17ccec57e6a1ebb72d7e3eff0779450f59f5e4922c82c0ffe8fc7fbf09e9f9ee` | 21120（3920/16800/400） | PASS/PASS/PASS | artifact complete；性能=N/A |
+| F6C_CLIC12 | P1_CLIC/C | source-only；split seed7281164，proxy seed7281148；K-shot=N/A | source_clean_proxy.npz；32126884；`dcbbf5063a8b7bdff37d1638ad340b577996b55c48aeffdf2bbd67f4e646957c` | 21120（3920/16800/400） | PASS/PASS/PASS | artifact complete；性能=N/A |
+| F6G_CLIC12 | P1_CLIC/G | source-only；split seed7281164，proxy seed7281148；K-shot=N/A | source_clean_proxy.npz；32126880；`d4b49fb1ea5fa76728865c68e17420a6ca81e221cecd9131d42151bc20bec15f` | 21120（3920/16800/400） | PASS/PASS/PASS | artifact complete；性能=N/A |
