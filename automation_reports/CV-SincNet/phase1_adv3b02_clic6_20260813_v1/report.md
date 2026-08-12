@@ -124,3 +124,11 @@ N607 runner在启动前必须确认release哈希、训练器可编译、数据�
 
 - 仅当以上静态门闭合后启动一次F1 smoke；invocation=1，retry=`NO`。wrapper不传`RUN_ROOT`/`LOG_ROOT`，唯一outer建议路径：`/home/szu2070436088/2510044040/CV-SincNet/.smoke_phase1_adv3b02_clic6_20260813_v1_F1_outer.out`，启动前必须ABSENT且不得预建smoke roots。
 - PASS必须满足receipt schema=`cvs.phase1.adv3b02_technical_smoke.v1`、`batches=forward=backward=optimizer_attempts=optimizer_effective_steps=3`、nonfinite=0、F1角色闭合、source-val/query/target/test opened=0、selection=0，并核wrapper PID（PID文件仅wrapper）、Python child/CWD/cmdline/GPU0/log。失败即`FORMAL_INVOCATION=0`，不重试并封STOP。
+
+## 10.SMOKE结果与封停
+
+- SMOKE invocation=`1`，retry=`NO`；formal invocation=`0`（未调用formal launcher）。outer PID=`2951029`，wrapper PID文件=`2951029`，wrapper cmdline指向同一release的`smoke_phase1_adv3b02_clic_f1_v1_20260813.sh`；wrapper观测CWD=`/home/szu2070436088`（按冻结wrapper命令从SSH默认目录启动）。训练Python主PID=`2951038`，另有同命令后代PID=`2951126`、`2951189`；四个PID均已退出，GPU0–7回到utilization=0、memory.used=1 MiB。Python child的绝对release脚本、F1 output_dir、ManySig路径和冻结参数均已在日志cmdline中闭合；child退出前未单独取得`/proc` CWD快照。
+- F1日志：`/home/szu2070436088/2510044040/CV-SincNet/logs/.smoke_phase1_adv3b02_clic6_20260813_v1_F1/F1_ADV3B02_CLIC.out`，10614 bytes；PID文件仅为wrapper PID。outer文件存在但0 bytes（wrapper将训练输出重定向至F1日志）。
+- 技术门失败：日志末端记录`batches=3`、`forward_batches=3`、`backward_batches=3`，但`optimizer_attempts=2`、`optimizer_effective_steps=2`、`optimizer_nonfinite_batches=1`，随后抛出`RuntimeError: ADV3B02 technical smoke requires three finite, effective optimizer steps`。未生成receipt、final checkpoint、metrics或`phase2_zid_prototypes.pt`；smoke run目录仅保留空的F1 output目录结构。
+- 封停状态：`SMOKE_STOPPED_TECHNICAL_GATE / FORMAL_NOT_LAUNCHED / NO_PERFORMANCE_RESULT`。严格不重试、不修改远端release/生产代码、不按accuracy/loss/DG/proxy选择或停止；formal run/log/outer路径保持ABSENT。此次异常只作为烟测技术门证据，不构成方法性能结论。
+- SSH清理：本次检查结束后本地无残留`ssh.exe`/`scp.exe`或ESTABLISHED TCP22；远端无本run活动进程。
