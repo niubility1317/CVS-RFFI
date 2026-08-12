@@ -3,7 +3,7 @@
 ## 状态与目标
 
 - 实验ID：`phase1_clic_g_bundles_20260812_v1`。
-- 当前状态：`LOCAL_VERIFIED / FRESH_REVIEW_PENDING / FORMAL_LAUNCH=0 / NO_PERFORMANCE_RESULT`。
+- 当前状态：`LOCAL_VERIFIED / REVIEW_ALLOW / FORMAL_LAUNCH=0 / NO_PERFORMANCE_RESULT`。
 - 操作者：主控Codex；N607唯一runner：`Luna/max`。
 - 目标：用training v5、clean v4和source-LEO v4为F1—F6的G臂各生成一份不可变deployment bundle；不重复已在predictor artifacts v2成功产生的6份C descriptor，不读取target、不计算性能。
 - v2已封存为系统性技术失败，但6C descriptor／6C train config有效保留；G=0。真实checkpoint只读证据表明`sample_rate_hz=0.0,dataset=wisig,wisig_out_len=256`，而训练入口会把非正占位值规范化为WiSig 25MHz。旧bundle重建错误地封存了占位0。
@@ -21,6 +21,7 @@
 - 至少2fold在完整bundle前出现同一确定性异常即封存技术失败；不得按性能停止，不得远端修代码或重试。
 - 成功QA只做production verifier重开、bundle member／SHA／local4／training config／zero-fit-update-threshold-selection检查，不打开target cache、不读性能。
 - 6G bundle闭合后，目标prediction v1使用predictor artifacts v2中的C工件和本run的G工件，同一target confirmation v2 IQ-only package生成12份prediction；独立评分仍必须同时给target LEO-weak、unknown rejection和scene／RX／class／day域泛化。
+- fresh独立审查结论：`P0=0，P1=0，ALLOW`。实际覆盖WiSig0→25MHz、其他dataset0→5MHz、正值原样、bad／NaN／±Inf拒绝；G聚焦`5／5`、postfreeze`140／140`、launcher测试`1／1`、bash-n和6行dry-run均通过。
 
 |候选|输入配置|预期工件|target LEO-weak|unknown rejection|域泛化|当前结论|
 |---|---|---|---|---|---|---|
