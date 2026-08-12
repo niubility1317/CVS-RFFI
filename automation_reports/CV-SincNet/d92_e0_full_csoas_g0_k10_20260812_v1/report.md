@@ -1,6 +1,6 @@
 # D92 E0 FULL CSOAS K10 G0实验报告
 
-状态：`LOCAL_VERIFIED / READY_FOR_N607_HANDOFF`
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 
 ## 1.实验身份
 
@@ -81,3 +81,51 @@ cd /home/szu2070436088/2510044040/CV-SincNet/runs/d92_csoas_g0_source_b8ebd4f4_2
 ## 8.运行结果（待runner回填）
 
 当前无PID、无远端同步、无性能结果。sole runner须回填preflight、SCP/hashes、CWD/cmdline/PID/GPU、三场景机制/资源表、artifact tree hash、SSH清理与最终状态。
+
+## 9.Runner回填（2026-08-12）
+
+### 9.1最终状态
+
+`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。冻结exact detached命令只执行一次并自然退出；没有重试、重启或换run ID，`fresh_run_retry=false`。`prediction.out`报告truth-free prediction entry完成，但随后launch closure在生成`g0_validation.json`时抛出：`KeyError: 'final_coefficient_quantization_error_max'`。因此本run没有G0成功marker，也不构成性能结果；未运行scorer/analyzer，未读取accuracy、H、BA、floor或forgetting。
+
+### 9.2Precheck与落地
+
+- direct普通账号preflight通过：`N607`→`szu2070436088@172.31.111.215`，项目根可见，8张RTX3090可见且空闲；未使用admin或bridge。
+- release仓`E:\type10-7\code\snapshots\d92_125wt`在启动前tracked clean，HEAD=`10c1107645d61c696cd8ac9894152da787bca1fd`。
+- 远端source创建前确认source/output/logs及同run进程均不存在；只创建source root，未预创建output、logs或`source/code`。
+- archive与launch依次SCP；远端大小/SHA256分别为`6137499/4b0b434a26b47511cb0ddeb9f2455bc81964d8fcef312e75e57879547b631ca5`与`8902/c49450d7e82b9fb3c927493dbb5e1f5a9935d3cf0cbd38a4e4e055efcb2b7374`；tar成员`1458`，绝对路径、`../`和`code/code`均为0；`bash -n`通过。
+- 远端Python=`3.10.19`，torch=`2.1.0+cu121`，CUDA可用、8卡；四份seal和ground manifest SHA256全部匹配。
+
+### 9.3唯一命令与即时健康
+
+```text
+cd /home/szu2070436088/2510044040/CV-SincNet/runs/d92_csoas_g0_source_b8ebd4f4_20260812_v1 && nohup bash ./launch.sh >./launch_driver.out 2>./launch_driver.err </dev/null &
+```
+
+SSH返回0。命令自然完成过快，未捕获可持续主PID；即时及终态进程列表均无该run的bash/Python进程，GPU0回到`0%/1MiB`。`launch_driver.err`唯一异常为上述closure `KeyError`；`prediction.err`为空，`prediction.out`为399 bytes。
+
+### 9.4G0技术收据（非性能）
+
+|场景|active|fallback|candidate/ref fit|FULL actual/total|wall(ms)|incremental peak(bytes)|query禁用字段|备注|
+|---|---:|---:|---:|---:|---:|---:|---|---|
+|`leo_clear_weak`|true|false|1/0|1/2|13.129212|868352|全部false|收据存在，closure未封存marker|
+|`leo_low_elev_weak`|true|false|1/0|1/2|12.966224|692224|全部false|收据存在，closure未封存marker|
+|`leo_rain_weak`|true|false|1/0|1/2|14.481507|425984|全部false|收据存在，closure未封存marker|
+
+三场景wall P90（nearest-rank=max）为`14.481507ms`；query MAC为`3168=11×288`，`query_decision_policy=per_sample_all_registered_classes`，query truth/fit/update/selection/role/quota/global-reassignment均为false，source/clean runtime access均为false。上述仅为运行健康、协议与资源收据，不是准确率或任何性能声明。
+
+### 9.5完整取回与tree hash
+
+本地取回根：`E:\type10-7\local_artifacts\d92_e0_full_csoas_g0_k10_20260812_v1`；远端保留未删除。canonical tree hash按相对路径、文件size及SHA256排序后计算，远端=本地：
+
+|root|files|bytes|tree SHA256|
+|---|---:|---:|---|
+|source|1429|73628803|`3966300b82263e01401ec0c905d6506f01947a9bdfd848835706fcb11a81aef1`|
+|output|10|1018139|`ee10d95dbfc2ebac906a1575068f474a5724105f18cc58db3dbafa07ba3d62e6`|
+|logs|4|399|`c590aaa74575d482edeca90561a2ff7202fc5c98210c5ca98aea6dd45e193094`|
+
+output包含before/after各自`COMMIT.json`、`execution_receipt.json`、`fit_audit.json`、`resource_audit.json`及prediction artifact；未生成`g0_validation.json`。
+
+### 9.6清理与后续
+
+每次SSH/SCP后本地`ssh.exe`/`scp.exe`均已退出，N607及bridge TCP22均无ESTABLISHED连接；本任务未使用bridge。远端run进程为0，GPU已释放。不得在此run上修复、重启、重试或覆盖；如需修复closure，必须由主agent本地修复并另行完成独立门禁、commit和全新run ID。
