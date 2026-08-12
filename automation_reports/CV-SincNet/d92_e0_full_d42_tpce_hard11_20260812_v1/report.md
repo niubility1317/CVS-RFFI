@@ -48,3 +48,7 @@ cd /home/szu2070436088/2510044040/CV-SincNet/runs/d92_tpce_source_snapshot_ecae5
 |本地Git状态|科学与机械实现已提交；本报告和启动器将在发布交接提交中纳入Git|
 
 真实K10 checkpoint smoke是8个shard的硬前置：仅当TPCE三场景均`active=true`、`fallback=false`、fit=2/1、D42 state闭合且所有query访问为false时启动Hard10。任何K>2 exact-E0 fallback均记技术停止且不生成性能结论。
+
+## v1运行结果
+
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。prepare成功生成11-job/33-scene-arm manifest；K10 truth-free smoke在进入TPCE fit前因`_verify_manifest_artifacts`回指自身触发`RecursionError: maximum recursion depth exceeded`。未产出active/fallback方法字段，0个shard启动，0个正式prediction/score，因此不得作性能解释。根因已在commit`4768c6b2`以冻结原始validator引用修复并增加call-level回归；后续仅使用全新v2路径，不重启或覆盖v1。
