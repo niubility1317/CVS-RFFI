@@ -101,3 +101,26 @@ N607 runner在启动前必须确认release哈希、训练器可编译、数据�
 |F4|`F4_ADV3B02_CLIC`|source-only ADV3B02 DG comparator|见第2节|N/A|392002|N/A|N/A|N/A|N/A|`N/A—no independently source-frozen endpoint rule`|待运行|NOT_RUN|
 |F5|`F5_ADV3B02_CLIC`|source-only ADV3B02 DG comparator|见第2节|N/A|392002|N/A|N/A|N/A|N/A|`N/A—no independently source-frozen endpoint rule`|待运行|NOT_RUN|
 |F6|`F6_ADV3B02_CLIC`|source-only ADV3B02 DG comparator|见第2节|N/A|392002|N/A|N/A|N/A|N/A|`N/A—no independently source-frozen endpoint rule`|待运行|NOT_RUN|
+
+## 9.N607 runner执行记录（2026-08-13）
+
+### 9.1冻结与发布
+
+- runner：Luna/max；唯一run owner；本节只记录机械发布、烟测和运行健康证据，不作方法、参数或性能判断。
+- 本地冻结worktree：`E:\type10-7\code\snapshots\phase3_responsibility_20260807_wt`；发布commit：`6cf720ecce7baf12ff42492446a0bdd42eb55293`（`git archive`，不含dirty）。worktree中其他agent的`source-metrics` staged/untracked改动未触碰、未stage、未revert。
+- archive：267,929,600 bytes；SHA256=`8C380F478C6E927C4CDE4C9B64231F94C2201614B81C2491B5DAB24D7100B3B0`。远端唯一SCP已完成一次，远端bytes/SHA与本地闭合。
+- 物理换行记录：archive解包后的trainer raw=`14FD0C9E55AFD6C3921418FD93A82EC2B100D4F3663CEA9AF582B2027A48BFB0`、LF-normalized=`C46AE727B9C0385760A6454C33D32ADAE7E4CC8716A2EAFA4AC2363F73C0A5DA`（CRLF=18,036）；测试raw=`948A868B6EC098E2FEF3BC2E1942F6622CCCA0D787DFDAAB6A12254671F82CEC`、LF-normalized=`8432F5F7773FAB11FA4C069BEA4B52437C172161106ED18451D849061C181FBE`（CRLF=1,078）。launcher=`FCABDA8ABA3A29D8DEE81D1E16C90A9E211402B10270B1C80FB9B56B832DAD22`、smoke wrapper=`80B2D3AA70FEF909B7FD027C01A5E5197B8EB37308605D5338A8754C354F2F7D`（均LF/raw相同）。
+- 远端release：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_clic6_20260813_v1_6cf720ec`；tar在stage解包并完成SHA、bash-n、临时`py_compile`后以`mv`原子落地；stage目录已移除，上传tar保留用于审计。
+
+### 9.2只读preflight与静态门
+
+- direct N607 preflight：PASS；server=`dell-DSS8440`，project可见，GPU0–7各24,576 MiB且utilization=0、memory.used=1 MiB；每次SSH/SCP后本地无残留`ssh.exe`/`scp.exe`或ESTABLISHED TCP22。
+- ManySig：`/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl`，2,359,341,461 bytes，SHA256=`2B0A7A7488DD3650BCAE7B1D80EFBCFFD1598AAA671AE6B0A0DF2A24DC0F694F`。
+- 静态验证：四个发布文件SHA闭合；`bash -n`（formal/smoke）通过；远端训练器与聚焦测试临时`py_compile`通过。
+- formal dry-run恰6行（F1→F6），smoke dry-run恰1行且包含`--phase1_adv3b02_technical_smoke_batches 3`；两者命令中target/query/truth/package/scorer输入计数均为0；dry-run未创建任何run/log/smoke root。
+- 静态时GPU0–7无compute app、无本run训练进程；正式调用计数`FORMAL_INVOCATION=0`，smoke调用计数`SMOKE_INVOCATION=0`（截至本节写入前）。
+
+### 9.3烟测门（待执行）
+
+- 仅当以上静态门闭合后启动一次F1 smoke；invocation=1，retry=`NO`。wrapper不传`RUN_ROOT`/`LOG_ROOT`，唯一outer建议路径：`/home/szu2070436088/2510044040/CV-SincNet/.smoke_phase1_adv3b02_clic6_20260813_v1_F1_outer.out`，启动前必须ABSENT且不得预建smoke roots。
+- PASS必须满足receipt schema=`cvs.phase1.adv3b02_technical_smoke.v1`、`batches=forward=backward=optimizer_attempts=optimizer_effective_steps=3`、nonfinite=0、F1角色闭合、source-val/query/target/test opened=0、selection=0，并核wrapper PID（PID文件仅wrapper）、Python child/CWD/cmdline/GPU0/log。失败即`FORMAL_INVOCATION=0`，不重试并封STOP。
