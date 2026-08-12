@@ -156,7 +156,25 @@ def _rewrite_output(root: Path) -> None:
 
 
 def _rewrite_shared_failure_evidence(root: str | Path) -> None:
-    _rewrite_output(Path(root))
+    shared_root = Path(root)
+    _rewrite_schema(shared_root / "SYSTEMIC_TECHNICAL_FAILURE_STOP.json")
+    ledger = shared_root / "systemic_pre_prediction_failures"
+    if ledger.is_dir():
+        for path in ledger.rglob("*.json"):
+            _rewrite_schema(path)
+
+
+def _rewrite_shard_output(manifest: Mapping[str, Any], *, shard_index: int) -> None:
+    """Rewrite only evidence exclusively owned by one completed shard."""
+
+    for job in manifest.get("jobs", []):
+        if isinstance(job, Mapping) and int(job.get("planned_shard_index", -1)) == int(shard_index):
+            _rewrite_output(Path(str(job["output_root"])))
+    _rewrite_schema(
+        Path(str(manifest["output_root"]))
+        / "summaries"
+        / f"shard_{int(shard_index)}.json"
+    )
 
 
 def _base_smoke_receipt_view(payload: Mapping[str, Any]) -> dict[str, Any]:
@@ -217,7 +235,9 @@ def _validate_shared_smoke(manifest: Mapping[str, Any], *, manifest_sha256: str,
         and receipt.get("job_id") == job.get("job_id")
         and receipt.get("arm_id") == ARM_ID
         and receipt.get("candidate") == CANDIDATE_ID
+        and receipt.get("truth_sidecar_sha256") == job.get("truth_sidecar_sha256")
         and int(receipt.get("k_shot", -1)) > 2
+        and receipt.get("outer_role") == "performance"
         and receipt.get("truth_open") is False
         and receipt.get("query_truth_joined_only_after_immutable_predictions") is True
         and receipt.get("prediction_and_scorer_processes_isolated") is True
@@ -225,8 +245,33 @@ def _validate_shared_smoke(manifest: Mapping[str, Any], *, manifest_sha256: str,
     )
     if not identity:
         raise D92CSOASHard10RunnerError("CSOAS smoke receipt identity/protocol drift")
+    expected_command = _base_runner._prediction_command(
+        job,
+        ground_component_dir=str(manifest["ground_component_dir"]),
+        ground_manifest_sha256=str(manifest["ground_manifest_sha256"]),
+        device=str(device),
+        output_root=prediction_root,
+    )
+    if receipt.get("command") != expected_command:
+        raise D92CSOASHard10RunnerError("CSOAS smoke command identity drift")
+    hashes = {
+        field: _base_runner._sha256_file(path)
+        for field, path in {
+            "before_prediction_sha256": paths["before_prediction"],
+            "after_prediction_sha256": paths["after_prediction"],
+            "before_commit_sha256": paths["before_commit"],
+            "after_commit_sha256": paths["after_commit"],
+            "before_fit_audit_sha256": paths["before_fit_audit"],
+            "after_fit_audit_sha256": paths["after_fit_audit"],
+            "fit_audit_sha256": paths["after_fit_audit"],
+        }.items()
+    }
     _validate_fit_audit(paths["after_fit_audit"], k_shot=int(job["k_shot"]))
-    if _base_runner._prediction_closure_status(prediction_root)[0] != "closed":
+    if (
+        any(receipt.get(field) != value for field, value in hashes.items())
+        or receipt.get("prediction_closure") != hashes
+        or _base_runner._prediction_closure_status(prediction_root)[0] != "closed"
+    ):
         raise D92CSOASHard10RunnerError("CSOAS smoke prediction closure drift")
 
 
@@ -265,7 +310,7 @@ def run_shard(args: Any) -> dict[str, Any]:
             result = _base_runner.run_shard(args)
     finally:
         if manifest is not None:
-            _rewrite_output(Path(str(manifest["output_root"])))
+            _rewrite_shard_output(manifest, shard_index=int(args.shard_index))
             _rewrite_shared_failure_evidence(manifest["output_root"])
     result["schema"] = "cvs.phase2.d92_csoas_hard10.shard_summary.v1"
     return result
