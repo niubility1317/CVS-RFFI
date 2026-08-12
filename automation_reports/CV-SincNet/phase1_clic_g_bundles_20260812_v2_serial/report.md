@@ -3,7 +3,7 @@
 ## 状态与目标
 
 - 实验ID：`phase1_clic_g_bundles_20260812_v2_serial`。
-- 当前状态：`LOCAL_VERIFIED / FRESH_REVIEW_PENDING / FORMAL_LAUNCH=0 / NO_PERFORMANCE_RESULT`。
+- 当前状态：`LOCAL_VERIFIED / REVIEW_ALLOW / FORMAL_LAUNCH=0 / NO_PERFORMANCE_RESULT`。
 - v1正式launch=1后，单F1G真实runtime smoke成功，但6个CPU worker并发启动时6／6在任何bundle前统一native segfault。v1已封存、不得重试。
 - v2是按两轮release repair上限拆出的最小独立one-shot入口：同一commit模型修复、同一F1G—F6G矩阵、同一training v5／clean v4／source-LEO v4、同一CPU线程上限，仅把6fold并发改为单进程逐fold串行；不调参、不改方法、不选fold、不接触target或性能。
 
@@ -18,6 +18,7 @@
 
 - 成功只做production verify/reload技术QA，不读target、不报告性能。6G闭合后，target prediction v1改为C取predictor artifacts v2、G取本串行v2，仍对同一IQ-only target LEO-weak package生成12份prediction。
 - target LEO-weak、unknown rejection、scene／RX／class／day DG是后续独立scorer的强制共同输出；本G-only构建run仅提供冻结predictor，不产生这些性能指标。
+- fresh独立复审结论：`P0=0，P1=0，ALLOW`。确认相对v1只有run ID／TSV和6并发→逐fold串行变化；每fold立即wait、记录exit、成功才下一fold；bash-n、dry-run6和专测`2／2`通过，科学矩阵与输入未漂移。
 
 |候选|矩阵是否保留|并发变化|预期工件|target／unknown／DG|当前结论|
 |---|---|---|---|---|---|
