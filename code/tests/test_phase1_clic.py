@@ -8,6 +8,7 @@ import gc
 import inspect
 import json
 import re
+import shlex
 import subprocess
 import textwrap
 import weakref
@@ -1504,7 +1505,7 @@ def test_clic_forward_exposes_the_exact_live_token_tensor_as_training_aux(operat
 def test_clic_launcher_has_the_frozen_12_arm_matrix_and_no_target_or_unknown_training_args() -> None:
     launcher_text = CLIC_LAUNCHER.read_text(encoding="utf-8")
     assert launcher_text.startswith("#!/usr/bin/env bash\n")
-    assert 'RUN_ID="${RUN_ID:-phase1_clic12_20260811_v1}"' in launcher_text
+    assert 'RUN_ID="${RUN_ID:-phase1_clic12_20260812_v2}"' in launcher_text
     assert "--phase1_clic_frozen_mode true" in launcher_text
     assert "--epochs 40" in launcher_text
     assert "--batch_size 128" in launcher_text
@@ -1547,7 +1548,7 @@ def test_clic_launcher_has_the_frozen_12_arm_matrix_and_no_target_or_unknown_tra
     assert len(rows) == 12
     assert sum("--phase1_clic_operator_mode raw_phase_control" in line for line in rows) == 6
     assert sum("--phase1_clic_operator_mode complex_local_invariant_curvature" in line for line in rows) == 6
-    assert all("phase1_clic12_20260811_v1" in line for line in rows)
+    assert all("phase1_clic12_20260812_v2" in line for line in rows)
     assert all("--epochs 40" in line and "--batch_size 128" in line for line in rows)
     assert all("--seed 7281164" in line for line in rows)
     assert all("--lambda_sat_cls 0" in line for line in rows)
@@ -1555,6 +1556,20 @@ def test_clic_launcher_has_the_frozen_12_arm_matrix_and_no_target_or_unknown_tra
     assert all("--sat_cons_start_epoch 1" in line for line in rows)
     assert not re.search(r"--(?:lambda_clic|clic_loss|loss_clic)(?:\s|=)", "\n".join(rows), re.I)
     assert not re.search(r"--[^\s=]*(?:target|proxy|unknown)[^\s=]*", "\n".join(rows), re.I)
+
+    # A textual dry-run is insufficient: an argparse action such as
+    # ``store_true`` rejects a trailing literal ``true`` only at process start.
+    # Parse every emitted child command through the real training parser so the
+    # launcher cannot pass local checks and then fail all remote arms before
+    # entering training.
+    parser = train_ssdg.build_arg_parser()
+    for row in rows:
+        tokens = shlex.split(row)
+        script_index = next(
+            index for index, token in enumerate(tokens) if token.endswith("SSDG/train_ssdg.py")
+        )
+        parsed = parser.parse_args(tokens[script_index + 1 :])
+        assert parsed.phase1_clic_frozen_mode is True
 
 
 def _ast_call_name(node: ast.Call) -> str:

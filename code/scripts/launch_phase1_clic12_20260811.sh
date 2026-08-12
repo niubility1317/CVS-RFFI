@@ -4,7 +4,7 @@ set -euo pipefail
 # Invoke explicitly as: bash scripts/launch_phase1_clic12_20260811.sh [--dry-run]
 # Frozen six-fold source-only Phase1 CLIC C/G matrix.  The two arms share every
 # training argument and differ only in the deterministic token operator.
-RUN_ID="${RUN_ID:-phase1_clic12_20260811_v1}"
+RUN_ID="${RUN_ID:-phase1_clic12_20260812_v2}"
 PROJECT_ROOT="${PROJECT_ROOT:-/home/szu2070436088/2510044040/CV-SincNet}"
 CODE_ROOT="${CODE_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 PYTHON="${PYTHON:-/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python}"
@@ -63,7 +63,7 @@ COMMON=(
   --manytx_real_oe_enabled false --manytx_real_oe_protocol_enabled false --use_unlabeled false
   --pseudo_domain_gate false --pseudo_temporal_gate false --use_ema_teacher false --teacher_ckpt ""
   --lambda_teacher_clean_kl 0 --lambda_teacher_sat_kl 0 --lambda_teacher_zid_mse 0
-  --use_aug false --use_mixstyle false --mixstyle_use_domain_label false --use_sat_consistency true
+  --use_aug false --use_mixstyle false --mixstyle_use_domain_label false --use_sat_consistency
   --sat_train_scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak --sat_view_prob 1.0
   --lambda_sat_cls 0 --lambda_sat_cons 0.10 --sat_cons_start_epoch 1 --no_use_concat_sat_channel_aug
   --use_tx_rx_balanced_sampler false --use_phase2_ground_prototypes false --use_feature_masks false
