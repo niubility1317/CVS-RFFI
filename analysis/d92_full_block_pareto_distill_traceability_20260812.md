@@ -11,7 +11,7 @@
 |PD-03|不复用FloorBoost/NewGuard失败机制|禁止旧类统一bias、保护回缩、多scale和容差放宽|静态method lock与负测|DESIGN_FROZEN|
 |PD-04|只保留D92的低成本互补几何|共享一次旧/新协方差统计；FULL与BLOCK各解一次|`covariance_estimation_count=1`、`full_solve=1`、`block_solve=1`|DESIGN_FROZEN|
 |PD-05|禁止LOO/Fisher/Pareto枚举|不构造PRESS、不做K折重拟合、不调用D61/D62残差门|fit inventory与调用负测|DESIGN_FROZEN|
-|PD-06|类置换等变|类公共仿射规范、固定bottom-20%并列全纳入、组内同公式|old/new组内标签置换测试|DESIGN_FROZEN|
+|PD-06|类置换等变|类公共仿射规范；六个旧类各自固定tail；所有新类合并为一个固定lower-Q20 new→old tail；阈值并列全纳入|old/new组内标签置换测试|DESIGN_FROZEN|
 |PD-07|query零访问|仅同一row注册support参与求解|query truth/fit/update/selection/role/quota/global全false|DESIGN_FROZEN|
 |PD-08|真实D42部署闭环|对`Q_D42(theta)`重算全部support约束；最多一次固定code-local修正|量化后约束与byte/hash收据|DESIGN_FROZEN|
 |PD-09|无效候选不发布|部署头E0-byte-exact、无真实量化步变化或约束失败时`LOCAL_INVALID`/exact E0 fallback|真实checkpoint no-query smoke|DESIGN_FROZEN|
@@ -28,4 +28,3 @@
 - Hard10原D92相对E0：H`+0.8201pp`、old BA/c_old`+1.2778pp`、floor`+3.6667pp`、seen-new`+0.3417pp`、forgetting`-1.2778pp`、old→new`-0.6389pp`，但new→old`+0.0583pp`。新候选不能简单复刻D92。
 - Hard12中D46 LOO、D62 Fisher/Pareto和固定50均未形成全指标正向证据；本轮只保留BLOCK协方差的互补方向。
 - FloorBoost牺牲seen-new与new→old换取旧类；NewGuard改变部署头却没有改变任何Hard10指标。两条路线均已关闭。
-

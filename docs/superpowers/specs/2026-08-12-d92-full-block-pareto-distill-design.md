@@ -35,7 +35,7 @@
 
 先以部署E0 FULL头固定每类bottom-20% support集合；`method=lower`，阈值并列样本全部纳入。每个样本的margin为真实类logit减去最强竞争类logit。求解过程不扫描权重：
 
-1. 最大化共同下界`t`，约束六个旧类固定tail平均margin增益和所有新类固定tail平均margin增益均不小于`t`。
+1. 最大化共同下界`t`，约束六个旧类各自的固定tail平均margin增益，以及一个将所有新类support合并后冻结的lower-Q20 new→old margin增益，均不小于`t`。新类只形成一个组级约束，不逐新类加门，以保持新类置换等变并避免K5下过度收紧为E0。
 2. 在保持第一阶段最优值的条件下，最小化old→new与new→old零阈值hinge均值的最大值。
 3. 在前两阶段最优值不退化的条件下，最小化`||G(diag(beta)D)||_F^2`。
 
@@ -52,4 +52,3 @@
 K>2的two-state组件计数为4，`DA1_REG1`实际solve为2；最终只持久化一个D42 F0头。Hard10发布前先做真实checkpoint无query资源smoke。历史未共享双fit约191ms，不构成本方法资源证据；新共享统计路径必须以实测证明wall硬门`<=150ms`且`<=1.50x E0`、peak`<=E0+512KiB`。
 
 正式Hard10仍是唯一性能证伪器。八项均值任一平或反向即`REJECT_ROUTE`；八项全正但幅度、稳定性或目标资源未齐且硬上限未破，裁决`REVISE_ONCE`；全部通过才输出`ADVANCE_TO_TARGET125_CANDIDATE`，不得自动运行Target125。
-
