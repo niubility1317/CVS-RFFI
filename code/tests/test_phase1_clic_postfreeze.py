@@ -14,9 +14,12 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import re
 import shutil
+import subprocess
 import zipfile
 import sys
+from collections.abc import Mapping
 from pathlib import Path
 
 import numpy as np
@@ -405,6 +408,29 @@ def _write_pair_received_iq(path: Path) -> tuple[np.ndarray, np.ndarray, np.ndar
     )
 
 
+def _duplicate_physical_id_across_scenes(source: Path, destination: Path) -> Path:
+    """Copy a received-IQ table while reusing one physical ID in another scene."""
+
+    with np.load(source, allow_pickle=False) as archive:
+        arrays = {name: np.array(archive[name], copy=True) for name in archive.files}
+    scenes = np.asarray(arrays["sat_scenarios"], dtype=str).reshape(-1)
+    physical = np.asarray(arrays["physical_sample_id"], dtype=str).reshape(-1)
+    first = int(np.flatnonzero(scenes == SCENARIOS[0])[0])
+    second_candidates = np.flatnonzero(scenes == SCENARIOS[1])
+    second = next(
+        int(index)
+        for index in second_candidates
+        if str(arrays["tx_ids"].reshape(-1)[index]) == str(arrays["tx_ids"].reshape(-1)[first])
+        and str(arrays["rx_ids"].reshape(-1)[index]) == str(arrays["rx_ids"].reshape(-1)[first])
+        and str(arrays["day_ids"].reshape(-1)[index]) == str(arrays["day_ids"].reshape(-1)[first])
+    )
+    physical[second] = physical[first]
+    arrays["physical_sample_id"] = physical
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    np.savez(destination, **arrays)
+    return destination
+
+
 def _write_pair_leo_npz(
     path: Path,
     *,
@@ -430,9 +456,11 @@ def _write_pair_leo_npz(
         count = len(loader.dataset)
         if count != len(tx_ids):
             raise AssertionError("pair LEO fixture row count drifted")
+        metadata = [loader.dataset[index][3] for index in range(count)]
+        actual_physical_ids = np.asarray([str(item["sig_i"]) for item in metadata], dtype=str)
         tx_index = np.asarray([SOURCE_TX.index(value) for value in tx_ids], dtype=np.int64)
         rx_slot = np.asarray([int(value.split("-")[1]) for value in rx_ids], dtype=np.int64)
-        repeat = np.asarray([int(value.rsplit("-", 1)[1]) for value in physical_ids], dtype=np.float64)
+        repeat = np.asarray([int(value.rsplit("-", 1)[1]) for value in actual_physical_ids], dtype=np.float64)
         base = np.zeros((len(SOURCE_TX), feature_dim), dtype=np.float32)
         base[:, :2] = np.asarray([[1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0]], dtype=np.float32)
         features = base[tx_index]
@@ -451,7 +479,7 @@ def _write_pair_leo_npz(
             "rx_ids": rx_ids,
             "day_ids": day_ids,
             "eq_ids": np.asarray(["existing_received_iq"] * count, dtype=str),
-            "sig_ids": physical_ids,
+            "sig_ids": actual_physical_ids,
             "dataset_role": np.asarray([role] * count, dtype=str),
             "channel_views": np.asarray(["received_existing"] * count, dtype=str),
             "sat_scenarios": scenes,
@@ -948,6 +976,106 @@ def test_clic_leo_main_writes_existing_iq_features_before_binding_without_regene
     assert leo_manifest["received_iq_sha256"] == before_sha
 
 
+def test_clic_leo_loader_and_pair_reject_physical_id_reuse_across_scenes(tmp_path: Path) -> None:
+    """A physical sample identity is global; scene is never part of its uniqueness key."""
+
+    base = tmp_path / "existing_received_iq.npz"
+    _write_pair_received_iq(base)
+    duplicate = _duplicate_physical_id_across_scenes(base, tmp_path / "duplicate_received_iq.npz")
+    with pytest.raises(Exception, match="duplicate|physical|unique|scene"):
+        LEO._load_existing_received_iq(duplicate, source_tx_ids=SOURCE_TX)
+
+    artifacts = _pair_artifact_fixture(tmp_path / "pair")
+    rows = _write_pair_received_iq(tmp_path / "rows.npz")
+    duplicate = _duplicate_physical_id_across_scenes(tmp_path / "rows.npz", tmp_path / "pair_duplicate.npz")
+    for arm in ("C", "G"):
+        leo = tmp_path / f"pair_{arm.lower()}_duplicate_leo.npz"
+        binding = _write_pair_leo_npz(
+            leo,
+            arm=arm,
+            paths=artifacts[f"{arm.lower()}_paths"],
+            existing=duplicate,
+            rows=rows,
+        )
+        binding_path = tmp_path / f"pair_{arm.lower()}_duplicate_binding.json"
+        binding_path.write_text(json.dumps(binding, sort_keys=True) + "\n", encoding="utf-8")
+        artifacts[f"{arm.lower()}_leo"] = leo
+        artifacts[f"{arm.lower()}_binding"] = binding_path
+    with pytest.raises(Exception, match="duplicate|physical|unique|scene"):
+        PAIR.evaluate(PAIR.build_parser().parse_args(_pair_cli_argv(artifacts)))
+
+
+def test_clic_leo_export_fails_closed_if_existing_iq_changes_after_first_load(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import cvsrffi.checkpoint_loading as checkpoint_loading
+    import export_spaceborne_features
+
+    paths = _checkpoint_fixture(tmp_path / "G", arm="G")
+    existing = tmp_path / "existing_received_iq.npz"
+    _write_leo_export_received_iq_fixture(existing)
+    output = tmp_path / "leo_features.npz"
+    binding_path = tmp_path / "leo_binding.json"
+    args = LEO.build_parser().parse_args(
+        [
+            "--ckpt", str(paths["checkpoint"]),
+            "--terminal-receipt-json", str(paths["terminal"]),
+            "--existing-received-iq-npz", str(existing),
+            "--out-npz", str(output),
+            "--binding-json", str(binding_path),
+            "--training-run-root", str(paths["training_root"]),
+            "--postfreeze-output-root", str(tmp_path),
+            "--candidate-id", str(paths["candidate"]),
+            "--fold-index", "1",
+            "--arm", "G",
+            "--source-tx-ids", ",".join(SOURCE_TX),
+        ]
+    )
+    original_loader = LEO._load_existing_received_iq
+
+    def replacing_loader(path: Path, *, source_tx_ids: tuple[str, ...]):
+        loaded = original_loader(path, source_tx_ids=source_tx_ids)
+        replacement = path.with_name(path.stem + ".replacement.npz")
+        _write_leo_export_received_iq_fixture(replacement)
+        with np.load(replacement, allow_pickle=False) as archive:
+            replacement_arrays = {name: np.array(archive[name], copy=True) for name in archive.files}
+        replacement_arrays["received_iq"][0, 0, 0] += np.float32(1.0)
+        np.savez(replacement, **replacement_arrays)
+        replacement.replace(path)
+        return loaded
+
+    class DummyModel:
+        def eval(self):
+            return self
+
+    def fake_extract(_model, loader, *, role: str, **_kwargs):
+        count = len(loader.dataset)
+        metadata = [loader.dataset[index][3] for index in range(count)]
+        return {
+            "features": np.ones((count, 2), dtype=np.float32),
+            "tx_logits": np.zeros((count, 4), dtype=np.float32),
+            "raw_labels": np.zeros(count, dtype=np.int64),
+            "domain_labels": np.zeros(count, dtype=np.int64),
+            "tx_ids": np.asarray([str(item["tx"]) for item in metadata], dtype=str),
+            "rx_ids": np.asarray([str(item["rx"]) for item in metadata], dtype=str),
+            "day_ids": np.asarray([str(item["day"]) for item in metadata], dtype=str),
+            "eq_ids": np.asarray(["existing_received_iq"] * count, dtype=str),
+            "sig_ids": np.asarray([str(item["sig_i"]) for item in metadata], dtype=str),
+            "dataset_role": np.asarray([role] * count, dtype=str),
+            "channel_views": np.asarray(["received_existing"] * count, dtype=str),
+            "sat_scenarios": np.asarray([SCENARIOS[index // 28] for index in range(count)], dtype=str),
+        }
+
+    monkeypatch.setattr(LEO, "_load_existing_received_iq", replacing_loader)
+    monkeypatch.setattr(checkpoint_loading, "build_exact_ssdg_model_from_checkpoint", lambda *_args, **_kwargs: (DummyModel(), {}))
+    monkeypatch.setattr(export_spaceborne_features, "extract_features_with_metadata", fake_extract)
+    with pytest.raises(Exception) as exc_info:
+        LEO.export(args)
+    assert re.search("changed|snapshot|hash|SHA|received|immutable", str(exc_info.value), re.IGNORECASE), str(exc_info.value)
+    assert not output.exists()
+    assert not binding_path.exists()
+
+
 def test_clic_float64_totalized_l2_preserves_exact_zero_and_rejects_nonfinite() -> None:
     features = np.asarray([[3.0, 4.0], [0.0, 0.0]], dtype=np.float32)
     normalized = PAIR.safe_totalized_l2_float64(features, label="CLIC fixture")
@@ -1141,6 +1269,97 @@ def test_clic_proxy_diagnostic_rejects_short_vfit_or_nonmutual_proxy_tx(case: st
             proxy_tx_ids=proxy_labels,
             source_tx_ids=SOURCE_TX,
         )
+
+
+def test_clic_proxy_writer_cli_recomputes_clean_raw_and_pair_never_trusts_hand_json(
+    tmp_path: Path,
+) -> None:
+    artifacts = _pair_artifact_fixture(tmp_path / "artifacts")
+    clean = Path(artifacts["g_clean"])
+    loaded = PAIR._load_feature_npz(clean, CLEAN.EXPECTED_LV_EXPORT_SCHEMA, "G")
+    roles = np.asarray(loaded["roles"], dtype=str)
+    tx_ids = np.asarray(loaded["tx_ids"], dtype=str)
+    manifest = loaded["manifest"]
+    source_order = tuple(str(item) for item in manifest["source_tx_ids"])
+    labeled = roles == "labeled_fit"
+    validation = roles == "source_validation_known"
+    proxy = roles == "proxy_unknown"
+    expected = PAIR.compute_clic_proxy_diagnostic(
+        loaded["z_id"][labeled],
+        tx_ids[labeled],
+        loaded["z_id"][validation],
+        loaded["z_id"][proxy],
+        tx_ids[proxy],
+        source_order,
+    )
+
+    output = tmp_path / "proxy_writer.json"
+    writer = PAIR.export_clic_proxy_diagnostic
+    result = writer(clean_npz_path=clean, output_json_path=output)
+    assert output.is_file()
+    payload = json.loads(output.read_text(encoding="utf-8"))
+    assert set(payload) == set(expected) | {"clean_npz_sha256"}
+    assert payload["clean_npz_sha256"] == _sha_file(clean)
+    assert payload["geometry_state_sha256"] == expected["geometry_state_sha256"]
+    assert payload["fit"] == expected["fit"]
+    assert payload["source_validation_known"] == expected["source_validation_known"]
+    assert payload["proxy_unknown"] == expected["proxy_unknown"]
+    assert payload["AUROC_unknown"] == pytest.approx(expected["AUROC_unknown"])
+    assert payload["u_gap"] == pytest.approx(expected["u_gap"])
+    assert payload["threshold_used"] is False
+    assert payload["tail_policy_used"] is False
+    if isinstance(result, Mapping):
+        assert Path(str(result.get("output_json", result.get("output_path", output)))).resolve() == output.resolve()
+    written_bytes = output.read_bytes()
+    with pytest.raises(Exception, match="overwrite|immutable|exists"):
+        writer(clean_npz_path=clean, output_json_path=output)
+    assert output.read_bytes() == written_bytes
+
+    cli_output = tmp_path / "proxy_writer_cli.json"
+    cli = subprocess.run(
+        [
+            sys.executable,
+            str(CODE_ROOT / "evaluate_phase1_clic_postfreeze_pair.py"),
+            "--export-proxy-diagnostic",
+            "--clean-npz",
+            str(clean),
+            "--output-proxy-diagnostic-json",
+            str(cli_output),
+        ],
+        cwd=str(CODE_ROOT),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert cli.returncode == 0, cli.stderr or cli.stdout
+    assert json.loads(cli_output.read_text(encoding="utf-8")) == payload
+
+    pair_artifacts = _pair_artifact_fixture(tmp_path / "pair")
+    for arm in ("C", "G"):
+        generated = tmp_path / f"{arm.lower()}_generated_proxy.json"
+        writer(clean_npz_path=pair_artifacts[f"{arm.lower()}_clean"], output_json_path=generated)
+        pair_artifacts[f"{arm.lower()}_proxy"] = generated
+    args = PAIR.build_parser().parse_args(_pair_cli_argv(pair_artifacts))
+    PAIR.evaluate(args)
+    tampered = json.loads(Path(pair_artifacts["g_proxy"]).read_text(encoding="utf-8"))
+    tampered["AUROC_unknown"] = 0.0 if float(tampered["AUROC_unknown"]) != 0.0 else 1.0
+    Path(pair_artifacts["g_proxy"]).write_text(json.dumps(tampered, sort_keys=True) + "\n", encoding="utf-8")
+    with pytest.raises(Exception, match="proxy|diagnostic|recompute|AUROC|u_gap|hash|SHA|drift"):
+        PAIR.evaluate(args)
+
+
+def test_clic_pair_script_help_is_a_real_executable_cli() -> None:
+    completed = subprocess.run(
+        [sys.executable, str(CODE_ROOT / "evaluate_phase1_clic_postfreeze_pair.py"), "--help"],
+        cwd=str(CODE_ROOT),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert completed.returncode == 0, completed.stderr or completed.stdout
+    assert "usage:" in completed.stdout.lower()
+    assert "--c-checkpoint" in completed.stdout
+    assert "--export-proxy-diagnostic" in completed.stdout
 
 
 def test_clic_pair_parser_evaluate_writes_cg_artifact_summary_and_common_binding(tmp_path: Path) -> None:
@@ -1404,6 +1623,66 @@ def _copy_bundle(source: Path, destination: Path) -> Path:
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, destination)
     return destination
+
+
+@pytest.mark.parametrize("state_slot", ("model_state", "clic_state"))
+@pytest.mark.parametrize(
+    "bad_state",
+    (
+        np.asarray([np.nan], dtype=np.float32),
+        np.asarray([np.inf], dtype=np.float64),
+        torch.tensor([float("nan")], dtype=torch.float32),
+        {"nested_tensor": torch.tensor([float("inf")], dtype=torch.float32)},
+        {"nested_array": np.asarray([np.nan], dtype=np.float64)},
+    ),
+)
+def test_clic_bundle_pack_and_export_reject_nonfinite_model_or_clic_state(
+    tmp_path: Path,
+    state_slot: str,
+    bad_state: object,
+) -> None:
+    paths = _checkpoint_fixture(tmp_path, arm="G")
+    source_geometry = {
+        "source_fit_roles": ["source_L"],
+        "class_order": list(SOURCE_TX),
+        "radius": {tx: 1.0 for tx in SOURCE_TX},
+        "energy": {tx: 0.5 for tx in SOURCE_TX},
+        "tail": {tx: {"q": 0.95} for tx in SOURCE_TX},
+    }
+    source_rule = {
+        "direction": "higher_is_unknown",
+        "threshold": {"source_frozen": True},
+        "defer": {"source_frozen": True},
+        "rule_sha256": _canonical(
+            {
+                "direction": "higher_is_unknown",
+                "threshold": {"source_frozen": True},
+                "defer": {"source_frozen": True},
+            }
+        ),
+    }
+    model_state = {"weight": np.asarray([1.0], dtype=np.float32)}
+    clic_state = {"weight": np.asarray([1.0], dtype=np.float32)}
+    if state_slot == "model_state":
+        model_state = {"weight": bad_state}
+    else:
+        clic_state = {"weight": bad_state}
+    with pytest.raises(Exception, match="finite|non-finite|state|tensor|array|unsupported"):
+        BUNDLE._pack_state({"bad": bad_state}, label=state_slot)
+    output = tmp_path / f"bad_{state_slot}.bundle.zip"
+    with pytest.raises(Exception, match="finite|non-finite|state|tensor|array|unsupported"):
+        BUNDLE.export_bundle(
+            checkpoint_path=paths["checkpoint"],
+            terminal_receipt_path=paths["terminal"],
+            output_path=output,
+            model_state=model_state,
+            clic_state=clic_state,
+            source_geometry=source_geometry,
+            source_frozen_unknown_rule=source_rule,
+            operator_mode="complex_local_invariant_curvature",
+            config={"z_id_dim": 2, "z_dom_dim": 2, "q_clic_dim": 1},
+        )
+    assert not output.exists()
 
 
 def _rewrite_bundle_archive(path: Path, mutate) -> None:
