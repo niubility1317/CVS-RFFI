@@ -5,7 +5,7 @@
 - 实验ID：`phase1_clic12_20260811_v1`
 - 预注册时间：2026-08-12（Asia/Hong_Kong）
 - 操作方：Codex主控；N607唯一runner待交接
-- 当前状态：`LOCAL_VERIFIED / READY_TO_LAUNCH / NOT_LAUNCHED`
+- 当前状态：`LANDED / REMOTE_STATIC_VERIFIED / READY_TO_LAUNCH`
 - 目标：在冻结的六折source-only Phase1矩阵上训练CLIC对照臂C与机制臂G，为后续clean、三种LEO weak、source-proxy unknown和目标域盲态评测生成12份真实final checkpoint与严格训练回执。
 - 假设：固定lag集合`{1,2,4,8}`的多尺度三点复曲率token，在不改变训练数据、主干、分类头、损失、优化器、epoch和物理批顺序的前提下，可能改善LEO weak下的身份域泛化和source-only未知能量几何。
 - 对照：C=`raw_phase_control`；G=`complex_local_invariant_curvature`。两臂仅token算子不同。
@@ -29,11 +29,13 @@
 | 文件 | SHA256 |
 |---|---|
 | `code/scripts/launch_phase1_clic12_20260811.sh` | `40DC21E33F160254C068E3220F452F751D2CC2E40C77F7D64039C874414753D6` |
-| `code/SSDG/train_ssdg.py` | `8E3812B3DA4110063BA43A442B0E80EBE3FD5B9CE0C436E0AA8FF7DDD30CBEF8` |
-| `code/model.py` | `171F7A483CDB94D6C974442C12ABA2B9C48A552C8D146BCA11F8F8805FE33B8D` |
-| `code/cvsrffi/phase1_clic.py` | `7BCE1F4FA6214E1EC945B9100E8E2E9AE1ED2D2198DF12C72E33339E1D065605` |
+| `code/SSDG/train_ssdg.py` | `2898BB9C2F37919D41613B13DB405A7C73A599F2D758365B164F8D4CAE3558C2` |
+| `code/model.py` | `8F6391500D456EAD76B50D171167E931E2665B03371A001C27ABC531629AF26A` |
+| `code/cvsrffi/phase1_clic.py` | `36FFDE23244D80AD15647F72252C70004D1E33549D7BF3D6E510E99E56461335` |
 
 Task5独立终审已经给出`P0=0/P1=0`；训练实现不依赖仍在开发的Task7目标评分模块。
+
+上述SHA以冻结commit生成的Git archive规范LF字节为发布权威。本地Windows工作树因`core.autocrlf=true`对应三个CRLF文件SHA分别为`8E3812B3…`、`171F7A48…`、`7BCE1F4…`；内容归一化后与archive一致，不属于科学代码漂移。launcher字节在两侧相同。
 
 ## 4. 本地验证
 
@@ -45,6 +47,8 @@ Task5独立终审已经给出`P0=0/P1=0`；训练实现不依赖仍在开发的T
 - launcher `bash -n`：通过。
 - launcher dry-run：12行，C=6、G=6、`lambda_sat_cons=0.10`为12/12、40epoch为12/12。
 - 训练发布文件与commit`5e34483c`逐文件无差异。
+- Git archive：SHA256=`C4A1F70221B46AB2196F2C129F90AB537D2EADAE2803F9273D9D0F1B93C7A9D2`，266772480bytes；本地与N607闭合。
+- N607 release已原子落地；远端`py_compile`、`--help`、`bash -n`及12臂dry-run全部通过，release无`__pycache__`。
 
 ## 5. 冻结矩阵与资源
 
