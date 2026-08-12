@@ -1508,6 +1508,124 @@ def test_clic_source_l_data_build_rejects_any_loaded_proxy_rows(
         train_ssdg.train(args)
 
 
+def test_clic_reads_physical_rows_from_the_real_move_batch_extra_tuple() -> None:
+    labels = torch.arange(128, dtype=torch.long) % 4
+    domains = torch.arange(128, dtype=torch.long) % 7
+    metadata = {
+        "base_index": torch.arange(1000, 1128, dtype=torch.long),
+        "sig_i": torch.arange(2000, 2128, dtype=torch.long),
+    }
+
+    rows = train_ssdg._clic_source_batch_physical_rows(
+        (domains, metadata),
+        labels,
+        expected_rows=128,
+    )
+
+    assert rows[0] == (1000, 2000, 0)
+    assert rows[-1] == (1127, 2127, 3)
+    assert len(rows) == 128
+
+
+@pytest.mark.parametrize(
+    "extra",
+    (
+        (),
+        (torch.zeros(128, dtype=torch.long),),
+        (torch.zeros(128, dtype=torch.long), {"base_index": torch.arange(128)}),
+    ),
+)
+def test_clic_physical_row_binding_rejects_missing_real_batch_metadata(extra) -> None:
+    with pytest.raises(CLICRuntimeError, match="metadata|binding"):
+        train_ssdg._clic_source_batch_physical_rows(
+            extra,
+            torch.arange(128, dtype=torch.long) % 4,
+            expected_rows=128,
+        )
+
+
+@pytest.mark.parametrize(
+    ("field", "invalid_value"),
+    (
+        ("base_index", True),
+        ("base_index", 0.5),
+        ("base_index", "1"),
+        ("base_index", float("nan")),
+        ("base_index", -1),
+        ("sig_i", False),
+        ("sig_i", 1.5),
+        ("sig_i", "2"),
+        ("sig_i", float("inf")),
+        ("sig_i", -1),
+        ("label", True),
+        ("label", 1.0),
+        ("label", "1"),
+        ("label", -1),
+        ("label", 4),
+    ),
+)
+def test_clic_physical_row_binding_rejects_nonintegral_or_out_of_range_values(
+    field: str,
+    invalid_value: object,
+) -> None:
+    base_indices = list(range(1000, 1128))
+    signal_indices = list(range(2000, 2128))
+    labels = [index % 4 for index in range(128)]
+    if field == "base_index":
+        base_indices[0] = invalid_value
+    elif field == "sig_i":
+        signal_indices[0] = invalid_value
+    else:
+        labels[0] = invalid_value
+    extra = (
+        torch.zeros(128, dtype=torch.long),
+        {"base_index": base_indices, "sig_i": signal_indices},
+    )
+
+    with pytest.raises(CLICRuntimeError, match="malformed"):
+        train_ssdg._clic_source_batch_physical_rows(
+            extra,
+            labels,
+            expected_rows=128,
+        )
+
+
+def test_clic_parser_exposes_only_zero_or_three_batch_technical_smoke() -> None:
+    parser = train_ssdg.build_arg_parser()
+    args = parser.parse_args(
+        [
+            "--output_dir",
+            "unused",
+            "--phase1_clic_technical_smoke_batches",
+            "3",
+        ]
+    )
+    assert args.phase1_clic_technical_smoke_batches == 3
+    source = inspect.getsource(train_ssdg.train)
+    assert "phase1_clic_technical_smoke_receipt.json" in source
+    assert source.index("release_clic_retained_graph_roots") < source.index(
+        "phase1_clic_technical_smoke_receipt.json"
+    )
+
+
+@pytest.mark.parametrize("batches", (-1, 1, 2, 4))
+def test_clic_config_rejects_any_partial_technical_smoke_batch_count(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    batches: int,
+) -> None:
+    args = _clic_validation_args(tmp_path)
+    args.phase1_clic_technical_smoke_batches = batches
+
+    monkeypatch.setattr(
+        train_ssdg,
+        "_build_ssdg_wisig_data",
+        lambda *_args, **_kwargs: pytest.fail("invalid smoke count reached data"),
+    )
+    with pytest.raises(CLICConfigError, match="zero or three"):
+        train_ssdg.train(args)
+
+
 @pytest.mark.parametrize(
     "operator_mode",
     ("raw_phase_control", "complex_local_invariant_curvature"),

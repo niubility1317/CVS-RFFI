@@ -1071,6 +1071,15 @@ def build_arg_parser() -> argparse.ArgumentParser:
         help="Frozen P1-CLIC token operator; C/G differ only by this deterministic choice.",
     )
     parser.add_argument(
+        "--phase1_clic_technical_smoke_batches",
+        type=int,
+        default=0,
+        help=(
+            "Run the exact frozen CLIC trainer lifecycle for three batches "
+            "(one per formal LEO weak scene), write a technical receipt, and exit."
+        ),
+    )
+    parser.add_argument(
         "--phase1_recte_frozen_mode",
         type=str2bool,
         default=False,
@@ -2491,6 +2500,56 @@ def _meta_from_extra(extra) -> Mapping[str, Any] | None:
         return None
     meta = extra[1]
     return meta if isinstance(meta, Mapping) else None
+
+
+def _clic_source_batch_physical_rows(
+    extra: Any,
+    labels: Any,
+    *,
+    expected_rows: int,
+) -> List[Tuple[int, int, int]]:
+    """Recover the immutable WiSig row binding from ``move_batch`` extras."""
+
+    meta = _meta_from_extra(extra)
+    if meta is None:
+        raise CLICRuntimeError("P1-CLIC source-L batch metadata is absent")
+    base_indices = _as_plain_list(meta.get("base_index"))
+    signal_indices = _as_plain_list(meta.get("sig_i"))
+    local_labels = _as_plain_list(labels)
+    rows = int(expected_rows)
+    if not (
+        len(base_indices) == rows
+        and len(signal_indices) == rows
+        and len(local_labels) == rows
+    ):
+        raise CLICRuntimeError("P1-CLIC source-L physical batch binding is incomplete")
+
+    def _strict_integer(value: Any, *, field: str, upper_bound: int | None = None) -> int:
+        if torch.is_tensor(value):
+            if value.numel() != 1 or value.dtype == torch.bool or value.is_floating_point() or value.is_complex():
+                raise CLICRuntimeError(
+                    "P1-CLIC source-L physical batch binding is malformed"
+                )
+            value = value.detach().cpu().item()
+        if isinstance(value, (bool, np.bool_)) or not isinstance(value, (int, np.integer)):
+            raise CLICRuntimeError(
+                "P1-CLIC source-L physical batch binding is malformed"
+            )
+        parsed = int(value)
+        if parsed < 0 or (upper_bound is not None and parsed >= upper_bound):
+            raise CLICRuntimeError(
+                "P1-CLIC source-L physical batch binding is malformed"
+            )
+        return parsed
+
+    return [
+        (
+            _strict_integer(base_indices[index], field="base_index"),
+            _strict_integer(signal_indices[index], field="sig_i"),
+            _strict_integer(local_labels[index], field="local_label", upper_bound=4),
+        )
+        for index in range(rows)
+    ]
 
 
 def _metadata_label_tensor(extra, key: str, device, expected_count: int) -> Optional[torch.Tensor]:
@@ -6761,6 +6820,13 @@ def train(args) -> int:
                 raise CLICConfigError("P1-CLIC operator mode is not frozen")
             if int(clic_config.input_length) != 256 or int(clic_config.embed_dim) != 160:
                 raise CLICConfigError("P1-CLIC requires received_i[128,2,256] and d=160")
+            clic_technical_smoke_batches = int(
+                getattr(args, "phase1_clic_technical_smoke_batches", 0)
+            )
+            if clic_technical_smoke_batches not in {0, len(FORMAL_LEO_WEAK_SCENARIOS)}:
+                raise CLICConfigError(
+                    "P1-CLIC technical smoke requires exactly zero or three batches"
+                )
             if (
                 int(total_epochs) != 40
                 or int(getattr(args, "label_epochs", 0)) != 40
@@ -7829,30 +7895,11 @@ def train(args) -> int:
                         raise CLICRuntimeError("P1-CLIC actual gamma-Wc-E correction is non-finite")
 
                     clic_failure_stage = "common_binding"
-                    if not isinstance(clic_extra_l, Mapping):
-                        raise CLICRuntimeError("P1-CLIC source-L batch metadata is absent")
-                    clic_base_indices = _as_plain_list(clic_extra_l.get("base_index"))
-                    clic_signal_indices = _as_plain_list(clic_extra_l.get("sig_i"))
-                    clic_local_labels = _as_plain_list(y_l)
-                    if not (
-                        len(clic_base_indices) == 128
-                        and len(clic_signal_indices) == 128
-                        and len(clic_local_labels) == 128
-                    ):
-                        raise CLICRuntimeError("P1-CLIC source-L physical batch binding is incomplete")
-                    try:
-                        clic_batch_physical_rows = [
-                            (
-                                int(clic_base_indices[index]),
-                                int(clic_signal_indices[index]),
-                                int(clic_local_labels[index]),
-                            )
-                            for index in range(128)
-                        ]
-                    except (TypeError, ValueError) as error:
-                        raise CLICRuntimeError(
-                            "P1-CLIC source-L physical batch binding is malformed"
-                        ) from error
+                    clic_batch_physical_rows = _clic_source_batch_physical_rows(
+                        clic_extra_l,
+                        y_l,
+                        expected_rows=128,
+                    )
                     clic_binding = {
                         "scene": str(clic_scene),
                         "batch_index": int(clic_batch_index),
@@ -7875,9 +7922,6 @@ def train(args) -> int:
                         binding=clic_binding,
                     )
                     clic_batch_physical_rows = None
-                    clic_base_indices = None
-                    clic_signal_indices = None
-                    clic_local_labels = None
                     clic_extra_l = None
 
                     clic_vjp_audit = None
@@ -8008,6 +8052,56 @@ def train(args) -> int:
                     clic_receipt["graph_release_count"] = int(
                         clic_receipt["graph_release_count"]
                     ) + 1
+                    if (
+                        clic_technical_smoke_batches
+                        and clic_batch_index == clic_technical_smoke_batches
+                    ):
+                        if set(clic_receipt["scene_audits"]) != set(
+                            FORMAL_LEO_WEAK_SCENARIOS
+                        ):
+                            raise CLICRuntimeError(
+                                "P1-CLIC technical smoke did not audit every formal LEO weak scene"
+                            )
+                        clic_technical_smoke_receipt = {
+                            "schema": "cvs.phase1.clic_technical_smoke.v1",
+                            "completed": True,
+                            "arm": str(clic_arm),
+                            "batches": int(clic_batch_index),
+                            "formal_scenes": list(FORMAL_LEO_WEAK_SCENARIOS),
+                            "common_scenario_batches": dict(
+                                clic_receipt["common_scenario_batches"]
+                            ),
+                            "scene_audits_complete": True,
+                            "amp_attempts": int(clic_receipt["amp_attempts"]),
+                            "graph_release_count": int(
+                                clic_receipt["graph_release_count"]
+                            ),
+                            "source_split_sha256": str(clic_source_sha256),
+                            "physical_order_sha256": str(clic_physical_order_sha256),
+                            "class_order_sha256": str(clic_class_order_sha256),
+                            "proxy_rows_loaded": 0,
+                            "query_rows_opened": 0,
+                            "target_rows_opened": 0,
+                            "selection_feedback_count": 0,
+                        }
+                        (out_dir / "phase1_clic_technical_smoke_receipt.json").write_text(
+                            json.dumps(
+                                clic_technical_smoke_receipt,
+                                ensure_ascii=False,
+                                indent=2,
+                                sort_keys=True,
+                            )
+                            + "\n",
+                            encoding="utf-8",
+                            newline="\n",
+                        )
+                        print(
+                            "[P1-CLIC-SMOKE] "
+                            f"arm={clic_arm} batches={clic_batch_index} "
+                            "scenes=3 proxy_rows_loaded=0 query_rows_opened=0",
+                            flush=True,
+                        )
+                        return 0
 
                 print(
                     "[P1-CLIC] "
