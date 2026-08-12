@@ -62,6 +62,7 @@ _OCF_RECEIPT_FIELDS = (
 )
 _OCF_MAC_RECEIPT_FIELDS = _OCF_RECEIPT_FIELDS[2:5]
 _FLOORBOOST_ARM_IDS = frozenset({"E0_FULL_MAXMIN_FLOORBOOST"})
+_NEWGUARD_ARM_IDS = frozenset({"E0_FULL_BIDIRECTIONAL_NEWGUARD_MAXMIN"})
 _FLOORBOOST_RECEIPT_FIELDS = (
     "d92_e0d_floorboost_active",
     "d92_e0d_floorboost_lambda",
@@ -85,6 +86,38 @@ _FLOORBOOST_RECEIPT_FIELDS = (
     "d92_e0d_floorboost_support_macs_upper_bound",
     "d92_e0d_floorboost_support_transient_bytes_upper_bound",
     "d92_e0d_floorboost_persistent_state_bytes_delta",
+)
+_NEWGUARD_RECEIPT_FIELDS = (
+    "d92_e0d_newguard_active",
+    "d92_e0d_newguard_fallback_active",
+    "d92_e0d_newguard_fallback_reason",
+    "d92_e0d_newguard_full_component_fit_count",
+    "d92_e0d_newguard_new_rows_byte_exact",
+    "d92_e0d_newguard_deployment_new_rows_byte_exact",
+    "d92_e0d_newguard_tau_old_envelope_shift",
+    "d92_e0d_newguard_deployment_protection_pass",
+    "d92_e0d_newguard_full_head_byte_exact",
+    "d92_e0d_newguard_nullspace_rank",
+    "d92_e0d_newguard_rank_threshold",
+    "d92_e0d_newguard_max_abs_Xnew_internal_residual",
+    "d92_e0d_newguard_new_support_min_margin_change",
+    "d92_e0d_newguard_tail_margin_change_by_old_class",
+    "d92_e0d_newguard_deployment_tail_margin_change_by_old_class",
+    "d92_e0d_newguard_residual_l2_by_old_class",
+    "d92_e0d_newguard_maxmin_objective",
+    "d92_e0d_newguard_trust_region_utilization",
+    "d92_e0d_newguard_support_optimization_macs_upper_bound",
+    "d92_e0d_newguard_support_transient_bytes_upper_bound",
+    "d92_e0d_newguard_persistent_state_bytes_delta",
+    "d92_e0d_newguard_query_rows_used",
+    "d92_e0d_newguard_query_macs",
+    "d92_e0d_newguard_query_fit_access",
+    "d92_e0d_newguard_query_update_access",
+    "d92_e0d_newguard_query_selection_access",
+    "d92_e0d_newguard_query_truth_access",
+    "d92_e0d_newguard_query_role_oracle_access",
+    "d92_e0d_newguard_query_class_quota_access",
+    "d92_e0d_newguard_query_global_reassignment",
 )
 
 
@@ -391,6 +424,131 @@ def _floorboost_support_receipt(
     return receipt
 
 
+def _newguard_support_receipt(
+    audit: dict[str, Any],
+    *,
+    arm: D92E0DSlimArmSpec,
+    registered: bool,
+    k_shot: int,
+    class_count: int,
+) -> dict[str, Any]:
+    """Validate NewGuard's support-only FP32 and deployed-head closure receipt."""
+
+    if arm.arm_id not in _NEWGUARD_ARM_IDS:
+        return {}
+    if any(field not in audit for field in _NEWGUARD_RECEIPT_FIELDS):
+        raise D92E0DQueryEvaluationError("D92-E0D NewGuard receipt drift")
+    receipt = {field: audit[field] for field in _NEWGUARD_RECEIPT_FIELDS}
+    active_state = bool(registered and int(k_shot) > 2)
+    active = receipt["d92_e0d_newguard_active"]
+    fallback = receipt["d92_e0d_newguard_fallback_active"]
+    reason = receipt["d92_e0d_newguard_fallback_reason"]
+    if not active_state:
+        expected_reason = (
+            "NOT_REGISTERED_STATE"
+            if not registered
+            else "K1_K2_EXACT_D92_FULL_ALIAS"
+        )
+        if active is not False or fallback is not False or reason != expected_reason:
+            raise D92E0DQueryEvaluationError("D92-E0D NewGuard receipt drift")
+        return receipt
+    if int(receipt["d92_e0d_newguard_full_component_fit_count"]) != 1:
+        raise D92E0DQueryEvaluationError("D92-E0D NewGuard FULL inventory drift")
+    if fallback is True:
+        if (
+            active is not False
+            or not isinstance(reason, str)
+            or not reason
+            or receipt["d92_e0d_newguard_full_head_byte_exact"] is not True
+        ):
+            raise D92E0DQueryEvaluationError("D92-E0D NewGuard fallback receipt drift")
+        return receipt
+    if fallback is not False or active is not True or reason is not None:
+        raise D92E0DQueryEvaluationError("D92-E0D NewGuard receipt drift")
+    try:
+        numeric = {
+            "tau": float(receipt["d92_e0d_newguard_tau_old_envelope_shift"]),
+            "rank": int(receipt["d92_e0d_newguard_nullspace_rank"]),
+            "threshold": float(receipt["d92_e0d_newguard_rank_threshold"]),
+            "xnew": float(
+                receipt["d92_e0d_newguard_max_abs_Xnew_internal_residual"]
+            ),
+            "new_margin": float(
+                receipt["d92_e0d_newguard_new_support_min_margin_change"]
+            ),
+            "objective": float(receipt["d92_e0d_newguard_maxmin_objective"]),
+            "trust": float(receipt["d92_e0d_newguard_trust_region_utilization"]),
+            "macs": int(
+                receipt["d92_e0d_newguard_support_optimization_macs_upper_bound"]
+            ),
+            "transient": int(
+                receipt["d92_e0d_newguard_support_transient_bytes_upper_bound"]
+            ),
+            "state_delta": int(
+                receipt["d92_e0d_newguard_persistent_state_bytes_delta"]
+            ),
+            "query_macs": int(receipt["d92_e0d_newguard_query_macs"]),
+        }
+        tail = np.asarray(
+            receipt["d92_e0d_newguard_tail_margin_change_by_old_class"],
+            dtype=np.float64,
+        )
+        deployed_tail = np.asarray(
+            receipt[
+                "d92_e0d_newguard_deployment_tail_margin_change_by_old_class"
+            ],
+            dtype=np.float64,
+        )
+        residual_norm = np.asarray(
+            receipt["d92_e0d_newguard_residual_l2_by_old_class"],
+            dtype=np.float64,
+        )
+    except (TypeError, ValueError) as error:
+        raise D92E0DQueryEvaluationError("D92-E0D NewGuard receipt drift") from error
+    if (
+        receipt["d92_e0d_newguard_new_rows_byte_exact"] is not True
+        or receipt["d92_e0d_newguard_deployment_new_rows_byte_exact"] is not True
+        or receipt["d92_e0d_newguard_deployment_protection_pass"] is not True
+        or not all(np.isfinite(value) for value in numeric.values())
+        or numeric["tau"] > 0.0
+        or numeric["rank"] <= 0
+        or numeric["threshold"] <= 0.0
+        or numeric["xnew"] < 0.0
+        or numeric["new_margin"] < -1.0e-4
+        or numeric["objective"] < 0.0
+        or numeric["trust"] < 0.0
+        or numeric["trust"] > 1.0 + 1.0e-6
+        or numeric["macs"] < 0
+        or numeric["transient"] < 0
+        or numeric["state_delta"] != 0
+        or numeric["query_macs"] != int(class_count) * 288
+        or tail.shape != (OLD_CLASS_COUNT,)
+        or deployed_tail.shape != (OLD_CLASS_COUNT,)
+        or residual_norm.shape != (OLD_CLASS_COUNT,)
+        or not np.isfinite(tail).all()
+        or not np.isfinite(deployed_tail).all()
+        or not np.isfinite(residual_norm).all()
+        or np.any(tail < -1.0e-4)
+        or np.any(deployed_tail < -1.0e-4)
+        or np.any(residual_norm < 0.0)
+        or any(
+            receipt[field] is not False
+            for field in (
+                "d92_e0d_newguard_query_fit_access",
+                "d92_e0d_newguard_query_update_access",
+                "d92_e0d_newguard_query_selection_access",
+                "d92_e0d_newguard_query_truth_access",
+                "d92_e0d_newguard_query_role_oracle_access",
+                "d92_e0d_newguard_query_class_quota_access",
+                "d92_e0d_newguard_query_global_reassignment",
+            )
+        )
+        or int(receipt["d92_e0d_newguard_query_rows_used"]) != 0
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D NewGuard receipt drift")
+    return receipt
+
+
 def _audit_d92_e0d_fit(
     result: Any,
     *,
@@ -428,6 +586,13 @@ def _audit_d92_e0d_fit(
             k_shot=k_shot,
         )
         _floorboost_support_receipt(
+            audit,
+            arm=arm,
+            registered=registered,
+            k_shot=k_shot,
+            class_count=class_count if registered else old_count,
+        )
+        _newguard_support_receipt(
             audit,
             arm=arm,
             registered=registered,
@@ -525,6 +690,13 @@ def _audit_d92_e0d_fit(
         k_shot=k_shot,
         class_count=class_count,
     )
+    after_newguard_receipt = _newguard_support_receipt(
+        after,
+        arm=arm,
+        registered=True,
+        k_shot=k_shot,
+        class_count=class_count,
+    )
     before_resource = _resource_receipt(before)
     after_resource = _resource_receipt(after)
     return {
@@ -587,6 +759,7 @@ def _audit_d92_e0d_fit(
             "d92_e0d_ocf_support_alignment_transient_bytes_upper_bound"
         ],
         **after_floorboost_receipt,
+        **after_newguard_receipt,
         "query_macs": int(after["d92_e0d_query_macs"]),
         "query_truth_access": False,
         "query_fit_access": False,

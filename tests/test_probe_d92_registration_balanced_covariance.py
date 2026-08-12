@@ -656,3 +656,45 @@ def test_floorboost_ocf_numeric_degeneracy_fails_closed_to_full_head():
     assert audit["d92_floorboost_full_head_byte_exact"] is True
     assert audit["d92_floorboost_new_rows_byte_exact"] is True
     assert audit["d92_floorboost_delta_bias_by_old_class"] is None
+
+
+def test_newguard_mode_calls_one_centered_full_component_and_emits_receipt():
+    """Would fail if NewGuard reused BLOCK/LOO or lost the post-center FULL capture."""
+
+    rng = np.random.default_rng(92_711)
+    basis, _ = np.linalg.qr(rng.normal(size=(160, 3)))
+    weights = np.asarray([0.5, 0.3, 0.2], dtype=np.float64)
+    ground_audit = {
+        "d81_basis_sha256": "9" * 64,
+        "d81_spectral_weight_sha256": "a" * 64,
+        "d81_participation_ratio_effective_rank": 2.6,
+        "d81_retained_rank": 3,
+        "d81_rank_policy": "ceil_participation_ratio_effective_rank",
+        "ground_component_input_count": 84,
+        "ground_statistic_semantics": (
+            "class_centered_cross_domain_centroid_drift_eigenspectrum"
+        ),
+    }
+    classes, shots = 11, 5
+    labels = np.repeat(np.arange(classes), shots).astype(np.int64)
+    means = rng.normal(size=(classes, 288))
+    rows = (
+        means[labels] + 0.08 * rng.normal(size=(classes * shots, 288))
+    ).astype(np.float32)
+    fit, _, _ = probe.build_d92_fit(
+        d42,
+        basis,
+        weights,
+        ground_audit,
+        disable_registered_fisher=True,
+        registered_d_mode="newguard_maxmin",
+    )
+    _, _, audit = fit(rows, labels, classes, shots)
+
+    inventory = audit["d92_component_fit_inventory"]
+    assert inventory["actual_component_fit_count"] == 1
+    assert inventory["full_component_fit_count"] == 1
+    assert inventory["block3_component_fit_count"] == 0
+    assert audit["d92_newguard_full_component_fit_count"] == 1
+    assert audit["d92_newguard_active"] is True
+    assert audit["d92_newguard_query_rows_used"] == 0

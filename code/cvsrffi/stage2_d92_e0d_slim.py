@@ -59,6 +59,13 @@ D92_E0D_ARMS: Mapping[str, D92E0DSlimArmSpec] = MappingProxyType(
             0.20,
             0.35,
         ),
+        "E0_FULL_BIDIRECTIONAL_NEWGUARD_MAXMIN": D92E0DSlimArmSpec(
+            "E0_FULL_BIDIRECTIONAL_NEWGUARD_MAXMIN",
+            "d92_e0_full_bidirectional_newguard_maxmin",
+            "newguard_maxmin",
+            True,
+            False,
+        ),
     }
 )
 
@@ -87,7 +94,14 @@ def expected_total_component_fit_count(k_shot: int, *, arm_id: str) -> int:
         return 4 * (k + 1)
     if arm.registered_d_mode in ("full_only", "block_only"):
         return 2
-    if arm.registered_d_mode in ("fixed50", "ocf25", "ocf50", "floorboost"):
+    if arm.registered_d_mode == "newguard_maxmin":
+        return 2
+    if arm.registered_d_mode in (
+        "fixed50",
+        "ocf25",
+        "ocf50",
+        "floorboost",
+    ):
         return 4
     raise D92E0DSlimError("D92-E0D frozen D mode drift")
 
@@ -211,6 +225,85 @@ def build_d92_e0d_fit(
             or base_floorboost_reason is not None
         ):
             raise D92E0DSlimError("D92-E0D floorboost inactive receipt drift")
+        newguard_mode = arm.registered_d_mode == "newguard_maxmin"
+        newguard_registered_state = bool(
+            newguard_mode and registered and int(k_shot) > 2
+        )
+        if newguard_mode:
+            newguard_required = (
+                "d92_newguard_active",
+                "d92_newguard_fallback_active",
+                "d92_newguard_fallback_reason",
+                "d92_newguard_full_component_fit_count",
+                "d92_newguard_new_rows_byte_exact",
+                "d92_newguard_tau_old_envelope_shift",
+                "d92_newguard_deployment_new_rows_byte_exact",
+                "d92_newguard_deployment_protection_pass",
+                "d92_newguard_persistent_state_bytes_delta",
+                "d92_newguard_query_rows_used",
+                "d92_newguard_query_fit_access",
+                "d92_newguard_query_update_access",
+                "d92_newguard_query_selection_access",
+                "d92_newguard_query_truth_access",
+                "d92_newguard_query_role_oracle_access",
+                "d92_newguard_query_class_quota_access",
+                "d92_newguard_query_global_reassignment",
+            )
+            if any(key not in base_audit for key in newguard_required):
+                raise D92E0DSlimError("D92-E0D NewGuard receipt missing")
+            base_newguard_active = base_audit["d92_newguard_active"]
+            base_newguard_fallback = base_audit["d92_newguard_fallback_active"]
+            base_newguard_reason = base_audit["d92_newguard_fallback_reason"]
+            if newguard_registered_state:
+                if int(base_audit["d92_newguard_full_component_fit_count"]) != 1:
+                    raise D92E0DSlimError("D92-E0D NewGuard FULL inventory drift")
+                if base_newguard_fallback is True:
+                    if (
+                        base_newguard_active is not False
+                        or not isinstance(base_newguard_reason, str)
+                        or not base_newguard_reason
+                        or base_audit.get("d92_newguard_full_head_byte_exact")
+                        is not True
+                    ):
+                        raise D92E0DSlimError(
+                            "D92-E0D NewGuard fallback receipt drift"
+                        )
+                elif base_newguard_fallback is False:
+                    if (
+                        base_newguard_active is not True
+                        or base_newguard_reason is not None
+                        or base_audit.get("d92_newguard_new_rows_byte_exact")
+                        is not True
+                        or base_audit.get(
+                            "d92_newguard_deployment_new_rows_byte_exact"
+                        )
+                        is not True
+                        or base_audit.get("d92_newguard_deployment_protection_pass")
+                        is not True
+                        or float(base_audit["d92_newguard_tau_old_envelope_shift"])
+                        > 0.0
+                    ):
+                        raise D92E0DSlimError(
+                            "D92-E0D NewGuard active receipt drift"
+                        )
+                else:
+                    raise D92E0DSlimError(
+                        "D92-E0D NewGuard fallback flag drift"
+                    )
+            else:
+                expected_reason = (
+                    "NOT_REGISTERED_STATE"
+                    if not registered
+                    else "K1_K2_EXACT_D92_FULL_ALIAS"
+                )
+                if (
+                    base_newguard_active is not False
+                    or base_newguard_fallback is not False
+                    or base_newguard_reason != expected_reason
+                ):
+                    raise D92E0DSlimError(
+                        "D92-E0D NewGuard inactive receipt drift"
+                    )
         ocf_expected_active = bool(
             arm.ocf_lambda is not None
             and registered
@@ -243,6 +336,11 @@ def build_d92_e0d_fit(
             floorboost_registered_state and base_floorboost_fallback is True
         )
         audit = dict(base_audit)
+        newguard_receipt = {
+            key.replace("d92_newguard_", "d92_e0d_newguard_"): value
+            for key, value in base_audit.items()
+            if key.startswith("d92_newguard_")
+        }
         audit.update(
             {
                 "d92_e0d_arm_id": arm.arm_id,
@@ -395,6 +493,7 @@ def build_d92_e0d_fit(
                 "d92_e0d_query_class_quota_access": False,
                 "d92_e0d_query_global_reassignment": False,
                 "d92_e0d_finite_output_pass": finite,
+                **newguard_receipt,
                 **resource,
             }
         )

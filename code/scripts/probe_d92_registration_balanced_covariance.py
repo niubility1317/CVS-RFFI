@@ -12,6 +12,7 @@ from cvsrffi.stage2_d92_registration_balanced_covariance import (
     OLD_CLASS_COUNT,
     build_registration_balanced_equal_lda,
 )
+from cvsrffi import stage2_d92_bidirectional_newguard as newguard
 
 
 d62, d43 = d81.d62, d81.d43
@@ -33,6 +34,7 @@ REGISTERED_D_MODES = (
     "ocf25",
     "ocf50",
     "floorboost",
+    "newguard_maxmin",
 )
 OCF_LAMBDA_BY_MODE = {"ocf25": 0.25, "ocf50": 0.50}
 OCF_RMS_EPSILON = 1.0e-12
@@ -896,6 +898,81 @@ def build_d92_fit(
         )
         return selected(rows, labels, class_count, k_shot)
 
+    def newguard_quantize_decode(
+        coefficient: np.ndarray, intercept: np.ndarray
+    ) -> tuple[np.ndarray, np.ndarray]:
+        """Use D42's actual two-level int8/FP16 deployed-head codec."""
+
+        try:
+            _, _, _, _, decoded = d42._quantize_coefficients(
+                np.asarray(coefficient, dtype=np.float32)
+            )
+        except (FloatingPointError, OverflowError, ValueError) as error:
+            raise D92ProbeError("D92 NewGuard D42 coefficient quantization drift") from error
+        deployed_intercept = np.asarray(intercept, dtype=np.float16)
+        if not np.isfinite(deployed_intercept).all():
+            raise D92ProbeError("D92 NewGuard D42 intercept quantization drift")
+        return (
+            np.asarray(decoded, dtype=np.float32),
+            np.asarray(deployed_intercept, dtype=np.float32),
+        )
+
+    def newguard_fit(
+        rows: np.ndarray,
+        labels: np.ndarray,
+        class_count: int,
+        k_shot: int,
+    ) -> tuple[np.ndarray, np.ndarray, dict[str, Any]]:
+        """Capture exactly the single centered FULL support input for NewGuard."""
+
+        nonlocal component_support_capture
+        if component_support_capture is not None:
+            raise D92ProbeError("D92 NewGuard support capture re-entry")
+        current_support: list[dict[str, Any]] = []
+        component_support_capture = current_support
+        try:
+            full_coefficient, full_intercept, full_audit = full_fit(
+                rows, labels, class_count, k_shot
+            )
+            if (
+                len(current_support) != 1
+                or current_support[0]["arm"] != "full"
+                or current_support[0]["class_count"] != int(class_count)
+                or current_support[0]["k_shot"] != int(k_shot)
+            ):
+                raise D92ProbeError("D92 NewGuard FULL support capture drift")
+            try:
+                coefficient, intercept, newguard_audit = (
+                    newguard.build_bidirectional_newguard_affine_state(
+                        full_rows=current_support[0]["rows"],
+                        full_labels=current_support[0]["labels"],
+                        full_coefficient=np.asarray(full_coefficient, dtype=np.float32),
+                        full_intercept=np.asarray(full_intercept, dtype=np.float32),
+                        class_count=class_count,
+                        k_shot=k_shot,
+                        quantize_decode=newguard_quantize_decode,
+                    )
+                )
+            except newguard.D92NewGuardError as error:
+                raise D92ProbeError(
+                    f"D92 NewGuard construction drift: {error}"
+                ) from error
+            audit = dict(full_audit)
+            audit.update(
+                {
+                    "coefficient_source": (
+                        "d92_newguard_single_full_compact_nullspace_bidirectional_"
+                        "maxmin_or_exact_e0_fallback"
+                    ),
+                    "d92_newguard_component_arms": ["full"],
+                    **newguard_audit,
+                }
+            )
+            return coefficient, intercept, audit
+        finally:
+            current_support.clear()
+            component_support_capture = None
+
     def structured_builder(d42_arg: Any, arm: str) -> Callable[..., Any]:
         if d42_arg is not d42 or arm != "block3_centered":
             raise D92ProbeError("D92 unexpected structured covariance request")
@@ -1171,6 +1248,9 @@ def build_d92_fit(
         elif registered_d_mode == "floorboost":
             selected_fit = floorboost_fit
             effective_d_mode = registered_d_mode
+        elif registered_d_mode == "newguard_maxmin":
+            selected_fit = newguard_fit
+            effective_d_mode = registered_d_mode
         elif registered_d_mode in OCF_LAMBDA_BY_MODE:
             selected_fit = lambda *call: ocf_fit(
                 *call, lambda_value=OCF_LAMBDA_BY_MODE[registered_d_mode]
@@ -1216,6 +1296,35 @@ def build_d92_fit(
         floorboost_active = bool(
             d_mode_active and floorboost_mode and not floorboost_numeric_fallback
         )
+        newguard_mode = registered_d_mode == "newguard_maxmin"
+        newguard_active = bool(d_mode_active and newguard_mode)
+        if newguard_active:
+            newguard_receipt = {
+                key: value
+                for key, value in base_audit.items()
+                if key.startswith("d92_newguard_")
+            }
+            if (
+                newguard_receipt.get("d92_newguard_full_component_fit_count") != 1
+                or newguard_receipt.get("d92_newguard_mode") != "newguard_maxmin"
+            ):
+                raise D92ProbeError("D92 NewGuard active receipt drift")
+        else:
+            newguard_reason = (
+                "MODE_NOT_SELECTED"
+                if not newguard_mode
+                else (
+                    "NOT_REGISTERED_STATE"
+                    if not registered
+                    else "K1_K2_EXACT_D92_FULL_ALIAS"
+                )
+            )
+            newguard_receipt = newguard.newguard_inactive_receipt(
+                reason=newguard_reason,
+                class_count=int(class_count),
+                k_shot=int(k_shot),
+                feature_dimension=int(d42.FEATURE_DIM),
+            )
         audit = dict(base_audit)
         center_active = ground_center_active(class_count, k_shot)
         d81_audit = (
@@ -1349,6 +1458,7 @@ def build_d92_fit(
                 "d92_floorboost_fallback_reason": (
                     floorboost_reason if floorboost_mode else None
                 ),
+                **newguard_receipt,
                 "d92_component_fit_inventory": component_inventory,
                 "d92_component_support_retained_count": (
                     component_support_retained_count

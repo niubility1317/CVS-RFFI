@@ -372,3 +372,36 @@ def test_before_and_k1_k2_states_are_exact_d92_full_aliases_across_arms():
         if k_shot == 1:
             assert {head[2]["d92_e0d_total_component_fit_count"] for head in heads} == {3}
             assert {head[2]["d92_e0d_actual_component_fit_count"] for head in heads} == {3}
+
+
+def test_newguard_arm_is_single_full_fit_and_keeps_low_k_full_alias():
+    """Would fail if the NewGuard arm added a BLOCK/LOO fit or changed K2."""
+
+    arm = D92_E0D_ARMS["E0_FULL_BIDIRECTIONAL_NEWGUARD_MAXMIN"]
+    assert (
+        arm.candidate_id,
+        arm.registered_d_mode,
+        arm.b_enabled,
+        arm.e_enabled,
+    ) == (
+        "d92_e0_full_bidirectional_newguard_maxmin",
+        "newguard_maxmin",
+        True,
+        False,
+    )
+    _, _, active_audit, _, _ = _run(
+        "E0_FULL_BIDIRECTIONAL_NEWGUARD_MAXMIN", class_count=11, k_shot=5
+    )
+    assert active_audit["d92_e0d_actual_component_fit_count"] == 1
+    assert active_audit["d92_e0d_total_component_fit_count"] == 2
+    assert active_audit["d92_e0d_newguard_full_component_fit_count"] == 1
+    _, _, k2_audit, _, _ = _run(
+        "E0_FULL_BIDIRECTIONAL_NEWGUARD_MAXMIN",
+        class_count=11,
+        k_shot=2,
+        repeated=True,
+    )
+    assert k2_audit["d92_e0d_k1_k2_exact_full_alias"] is True
+    assert k2_audit["d92_e0d_newguard_fallback_reason"] == (
+        "K1_K2_EXACT_D92_FULL_ALIAS"
+    )

@@ -78,6 +78,21 @@ def _resource(
         else None
     )
     floorboost_bias_macs = 6 * OLD_CLASS_COUNT if floorboost_active else None
+    newguard_applies = arm.arm_id == "E0_FULL_BIDIRECTIONAL_NEWGUARD_MAXMIN"
+    newguard_active = bool(newguard_applies and registered and k_shot > 2)
+    newguard_reason = (
+        None
+        if newguard_active
+        else (
+            "NOT_REGISTERED_STATE"
+            if newguard_applies and not registered
+            else (
+                "K1_K2_EXACT_D92_FULL_ALIAS"
+                if newguard_applies
+                else "MODE_NOT_SELECTED"
+            )
+        )
+    )
     return {
         "d92_registration_state_support_only": True,
         "d92_query_rows_used": 0,
@@ -179,6 +194,58 @@ def _resource(
             1_024 if floorboost_active else None
         ),
         "d92_e0d_floorboost_persistent_state_bytes_delta": 0,
+        "d92_e0d_newguard_active": newguard_active,
+        "d92_e0d_newguard_fallback_active": False,
+        "d92_e0d_newguard_fallback_reason": newguard_reason,
+        "d92_e0d_newguard_full_component_fit_count": 1,
+        "d92_e0d_newguard_new_rows_byte_exact": True,
+        "d92_e0d_newguard_deployment_new_rows_byte_exact": (
+            True if newguard_active else None
+        ),
+        "d92_e0d_newguard_tau_old_envelope_shift": (
+            -0.01 if newguard_active else 0.0
+        ),
+        "d92_e0d_newguard_deployment_protection_pass": newguard_active,
+        "d92_e0d_newguard_full_head_byte_exact": not newguard_active,
+        "d92_e0d_newguard_nullspace_rank": 10 if newguard_active else None,
+        "d92_e0d_newguard_rank_threshold": 1.0e-8 if newguard_active else None,
+        "d92_e0d_newguard_max_abs_Xnew_internal_residual": (
+            0.0 if newguard_active else None
+        ),
+        "d92_e0d_newguard_new_support_min_margin_change": (
+            0.01 if newguard_active else None
+        ),
+        "d92_e0d_newguard_tail_margin_change_by_old_class": (
+            [0.0] * OLD_CLASS_COUNT if newguard_active else None
+        ),
+        "d92_e0d_newguard_deployment_tail_margin_change_by_old_class": (
+            [0.0] * OLD_CLASS_COUNT if newguard_active else None
+        ),
+        "d92_e0d_newguard_residual_l2_by_old_class": (
+            [0.01] * OLD_CLASS_COUNT if newguard_active else None
+        ),
+        "d92_e0d_newguard_maxmin_objective": (
+            0.0 if newguard_active else None
+        ),
+        "d92_e0d_newguard_trust_region_utilization": (
+            0.25 if newguard_active else None
+        ),
+        "d92_e0d_newguard_support_optimization_macs_upper_bound": (
+            1_024 if newguard_active else 0
+        ),
+        "d92_e0d_newguard_support_transient_bytes_upper_bound": (
+            4_096 if newguard_active else 0
+        ),
+        "d92_e0d_newguard_persistent_state_bytes_delta": 0,
+        "d92_e0d_newguard_query_rows_used": 0,
+        "d92_e0d_newguard_query_macs": (11 if registered else 6) * 288,
+        "d92_e0d_newguard_query_fit_access": False,
+        "d92_e0d_newguard_query_update_access": False,
+        "d92_e0d_newguard_query_selection_access": False,
+        "d92_e0d_newguard_query_truth_access": False,
+        "d92_e0d_newguard_query_role_oracle_access": False,
+        "d92_e0d_newguard_query_class_quota_access": False,
+        "d92_e0d_newguard_query_global_reassignment": False,
         "d81_transform_audit": {
             "schema": "cvs.phase2.d81.support_center_translation.v1",
             "support_rows": class_count * k_shot,
@@ -560,3 +627,34 @@ def test_evaluator_does_not_accept_truth_role_quota_or_score_arguments():
         e0d_eval.run_d92_e0d_query_evaluation(
             arm_id="D92_FULL", truth_path="forbidden", **_allowed_kwargs()
         )
+
+
+def test_newguard_query_audit_requires_support_only_protection_receipt():
+    """Would fail if formal NewGuard rows omitted its deployed-head protection proof."""
+
+    arm = slim.D92_E0D_ARMS["E0_FULL_BIDIRECTIONAL_NEWGUARD_MAXMIN"]
+    result = _result(arm)
+    receipt = result.geometry_audit["final_covariance_audit"]
+    receipt.update(
+        {
+            "d92_e0d_newguard_active": True,
+            "d92_e0d_newguard_fallback_active": False,
+            "d92_e0d_newguard_fallback_reason": None,
+            "d92_e0d_newguard_full_component_fit_count": 1,
+            "d92_e0d_newguard_new_rows_byte_exact": True,
+            "d92_e0d_newguard_deployment_new_rows_byte_exact": True,
+            "d92_e0d_newguard_tau_old_envelope_shift": -0.01,
+            "d92_e0d_newguard_deployment_protection_pass": True,
+            "d92_e0d_newguard_persistent_state_bytes_delta": 0,
+        }
+    )
+    row = e0d_eval._audit_d92_e0d_fit(
+        result,
+        arm=arm,
+        scenario="leo_clear_weak",
+        k_shot=5,
+        old_count=6,
+        class_count=11,
+    )
+    assert row["d92_e0d_newguard_full_component_fit_count"] == 1
+    assert row["d92_e0d_newguard_deployment_protection_pass"] is True
