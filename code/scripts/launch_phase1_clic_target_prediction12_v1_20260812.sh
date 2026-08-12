@@ -3,7 +3,7 @@ set -euo pipefail
 
 RUN_ID="phase1_clic_target_prediction_20260812_v1"
 C_PREDICTOR_RUN_ID="phase1_clic_predictor_artifacts_20260812_v2"
-G_PREDICTOR_RUN_ID="phase1_clic_g_bundles_20260812_v2_serial"
+G_PREDICTOR_RUN_ID="phase1_clic_g_bundles_20260812_v3_safe_pack"
 TARGET_CACHE_RUN_ID="phase1_clic_target_confirmation_20260812_v2"
 PROJECT_ROOT="/home/szu2070436088/2510044040/CV-SincNet"
 CODE_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
