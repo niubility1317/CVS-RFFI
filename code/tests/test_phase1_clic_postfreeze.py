@@ -27,10 +27,12 @@ import pytest
 import torch
 
 import evaluate_phase1_clic_postfreeze_pair as PAIR
+import evaluate_phase1_clic_target_leo as TARGET_EVAL
 import export_phase1_clic_deployment_bundle as BUNDLE
 import export_phase1_clic_features as CLEAN
 import export_phase1_clic_leo_features as LEO
 from cvsrffi import phase1_clic as CLIC
+import cvsrffi.phase1_clic_target_leo as TARGET
 
 
 CODE_ROOT = Path(__file__).resolve().parents[1]
@@ -1911,3 +1913,677 @@ def test_clic_bundle_reload_rejects_any_member_byte_shape_dtype_operator_or_hash
         _mutate_bundle_manifest(mutated, "hash")
     with pytest.raises(BUNDLE.CLICBundleError, match="member|byte|shape|dtype|operator|hash|state|forbidden"):
         BUNDLE.verify_clic_bundle(mutated)
+
+
+# ---------------------------------------------------------------------------
+# Task 7 RED contracts.  These fixtures intentionally contain only tiny,
+# byte-sealed LEO-IQ rows; they never train, tune, or inspect target metrics.
+# ---------------------------------------------------------------------------
+
+
+def _write_target_config_manifest(path: Path, *, schema: str, normalized: dict[str, object]) -> Path:
+    payload = {
+        "schema": schema,
+        "normalized": dict(normalized),
+        "normalized_sha256": _canonical(normalized),
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
+    return path
+
+
+def _target_train_config() -> dict[str, object]:
+    return {
+        "dataset_provenance": "wisig_phase1_source",
+        "source_train_tx_ids": list(SOURCE_TX),
+        "source_validation_tx_ids": list(HELD_TX),
+        "source_proxy_tx_ids": list(PROXY_TX),
+        "source_receiver_ids": list(SOURCE_RX),
+        "source_day_ids": list(SOURCE_DAYS),
+        "split_mode": "tx_rx_day_1_6_3",
+        "role_construction": "source_only_labeled_unlabeled_validation",
+        "physical_row_selection": "fixed_pre_registered_rows",
+        "preprocessing": {"input_len": 256, "iq_dtype": "float32"},
+        "single_leo_training_scenes": list(SCENARIOS),
+        # Deliberately not part of normalized data-config equality.
+        "epoch": 40,
+        "optimizer": "adam",
+        "loss": "ssdg",
+        "model_architecture": "clic12_lite_d",
+    }
+
+
+def _target_known_test_config(*, capsule_id: str = "candidate-capsule-v1") -> dict[str, object]:
+    return {
+        "target_receiver_ids": ["target-rx-0", "target-rx-1"],
+        "target_known_tx_ids": ["known-tx-a", "known-tx-b"],
+        "class_order": ["known-tx-a", "known-tx-b"],
+        "scenes": list(SCENARIOS),
+        "leo_weak_channel": {
+            "model": "leo_residual",
+            "clear": {"elevation_deg": 45.0},
+            "low_elev": {"elevation_deg": 15.0},
+            "rain": {"attenuation_db": 8.0},
+        },
+        "preprocessing": {"input_len": 256, "iq_dtype": "float32"},
+        "zero_adaptation": True,
+        "metric_definitions": {
+            "known_accuracy": "accepted_true_class_fraction",
+            "unknown_rejection": "decision_unknown_over_true_unknown",
+        },
+        # These fields must be ignored by ADV3B02 normalized equivalence.
+        "capsule_id": capsule_id,
+        "physical_sample_ids": [f"physical-{capsule_id}-0"],
+        "received_iq_sha256": _sha_text(capsule_id),
+        "scene_seed": 17,
+    }
+
+
+def _write_target_cache_set_fixture(
+    tmp_path: Path,
+    *,
+    duplicate_cross_scene: bool = False,
+    non_leo_view: bool = False,
+) -> dict[str, Path | str | dict[str, object]]:
+    """Create a valid tiny three-scene p2_min_v1 cache-set and receipt."""
+
+    from cvsrffi.leo_weak_cache import (
+        LEO_WEAK_CACHE_SCHEMA,
+        LEO_WEAK_CACHE_SET_SCHEMA,
+        LEO_WEAK_CACHE_STAGE,
+        PHASE2_PHYSICAL_SAMPLE_OBSERVATION_POLICY,
+        PHASE2_PHYSICAL_SAMPLE_ROOT_ID_POLICY,
+        PHASE2_SAMPLE_VIEW_POLICY,
+        canonical_json_sha256,
+        ids_sha256,
+        overlay_id,
+        physical_sample_id_from_values,
+        post_channel_iq_sha256,
+    )
+
+    root = tmp_path / "target_cache"
+    root.mkdir(parents=True, exist_ok=True)
+    dataset_sha = _sha_text("target-dataset")
+    known_config = _write_target_config_manifest(
+        root / "known_test_config.json",
+        schema="cvs.phase1.clic_known_test_config.v1",
+        normalized=_target_known_test_config(),
+    )
+    mapping: dict[str, str] = {}
+    hashes: dict[str, str] = {}
+    ids_by_scene: dict[str, list[str]] = {}
+    roles = ("registered_known", "unknown")
+
+    for scene_index, scene in enumerate(SCENARIOS):
+        rows: list[dict[str, object]] = []
+        for role_index, role in enumerate(roles):
+            for repeat in range(2):
+                identity_scene = 0 if duplicate_cross_scene and scene_index == 1 and role_index == 0 and repeat == 0 else scene_index
+                identity_index = role_index * 2 + repeat
+                source_index = identity_scene * 100 + identity_index
+                tx_id = f"{role}-tx-{repeat}"
+                rx_id = f"target-rx-{repeat % 2}"
+                day_id = f"day-{repeat % 2}"
+                eq_id = "eq-0"
+                sig_id = f"sig-{identity_scene}-{role_index}-{repeat}"
+                physical_id = physical_sample_id_from_values(
+                    dataset_sha256=dataset_sha,
+                    source_record_index=source_index,
+                    role=role,
+                    tx_id=tx_id,
+                    rx_id=rx_id,
+                    day_id=day_id,
+                    eq_id=eq_id,
+                    sig_id=sig_id,
+                )
+                iq = np.full((2, 16), float(scene_index + role_index + repeat + 1), dtype=np.float32)
+                rows.append(
+                    {
+                        "role": role,
+                        "tx": tx_id,
+                        "rx": rx_id,
+                        "day": day_id,
+                        "eq": eq_id,
+                        "sig": sig_id,
+                        "source_index": source_index,
+                        "physical": physical_id,
+                        "iq": iq,
+                    }
+                )
+        iq_rows = np.asarray([row["iq"] for row in rows], dtype=np.float32)
+        tx_ids = np.asarray([row["tx"] for row in rows], dtype=str)
+        rx_ids = np.asarray([row["rx"] for row in rows], dtype=str)
+        day_ids = np.asarray([row["day"] for row in rows], dtype=str)
+        eq_ids = np.asarray([row["eq"] for row in rows], dtype=str)
+        sig_ids = np.asarray([row["sig"] for row in rows], dtype=str)
+        role_ids = np.asarray([row["role"] for row in rows], dtype=str)
+        source_indices = np.asarray([row["source_index"] for row in rows], dtype=np.int64)
+        sample_ids = np.asarray([row["physical"] for row in rows], dtype=str)
+        dataset_hashes = np.asarray([dataset_sha] * len(rows), dtype=str)
+        seeds = np.asarray([17 + scene_index] * len(rows), dtype=np.int64)
+        channel_hash = canonical_json_sha256({"scenario": scene, "model": "leo_residual"})
+        iq_hashes = np.asarray([post_channel_iq_sha256(row) for row in iq_rows], dtype=str)
+        overlay_ids = np.asarray(
+            [
+                overlay_id(
+                    sample_id=str(sample_ids[index]),
+                    scenario=scene,
+                    satellite_seed=int(seeds[index]),
+                    channel_config_sha256=channel_hash,
+                    iq_sha256=str(iq_hashes[index]),
+                )
+                for index in range(len(rows))
+            ],
+            dtype=str,
+        )
+        manifest = {
+            "schema": LEO_WEAK_CACHE_SCHEMA,
+            "artifact_stage": LEO_WEAK_CACHE_STAGE,
+            "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
+            "clean_sample_access": False,
+            "clean_derived_signal_access": False,
+            "contains_post_channel_iq_only": True,
+            "contains_clean_rows": False,
+            "target_channel_view": "leo_weak_only",
+            "target_channel_scenarios": [scene],
+            "scenario": scene,
+            "iq_array_key": "leo_weak_iq",
+            "raw_or_clean_iq_key_present": False,
+            "overlay_applied_before_phase2": True,
+            "star_ground_channel_impl": "simplified_leo_residual",
+            "channel_model": "leo_residual",
+            "phase2_physical_sample_observation_policy": PHASE2_PHYSICAL_SAMPLE_OBSERVATION_POLICY,
+            "phase2_cross_scenario_physical_sample_reuse": False,
+            "phase2_additional_leo_channel_state_generation": False,
+            "phase2_post_reception_equalization_augmentation_transform_allowed": True,
+            "phase2_post_reception_view_from_fixed_received_iq_only": True,
+            "phase2_post_reception_view_counts_as_additional_physical_sample": False,
+            "phase2_physical_sample_root_id_policy": PHASE2_PHYSICAL_SAMPLE_ROOT_ID_POLICY,
+            "phase2_query_post_reception_view_fit_access": False,
+            "builder_sha256": _sha_text("builder"),
+            "output_roles": list(roles),
+            "sample_overlay_provenance_fields": [
+                "sample_ids", "source_dataset_sha256", "source_record_indices",
+                "sat_scenarios", "satellite_seeds", "post_channel_iq_sha256", "overlay_ids",
+            ],
+            "channel_config_sha256": channel_hash,
+            "physical_sample_ids_sha256": ids_sha256(sample_ids.tolist()),
+            "row_count": len(rows),
+        }
+        cache_path = root / f"{scene}.npz"
+        np.savez(
+            cache_path,
+            leo_weak_iq=iq_rows,
+            raw_labels=np.asarray([0, 1, 0, 1], dtype=np.int64),
+            domain_labels=np.zeros(len(rows), dtype=np.int64),
+            tx_ids=tx_ids,
+            rx_ids=rx_ids,
+            day_ids=day_ids,
+            eq_ids=eq_ids,
+            sig_ids=sig_ids,
+            source_dataset_sha256=dataset_hashes,
+            source_record_indices=source_indices,
+            dataset_role=role_ids,
+            channel_views=np.asarray(["clean" if non_leo_view else "rx_base"] * len(rows), dtype=str),
+            sat_scenarios=np.asarray([scene] * len(rows), dtype=str),
+            satellite_seeds=seeds,
+            overlay_applied=np.asarray([not non_leo_view] * len(rows), dtype=bool),
+            sample_ids=sample_ids,
+            post_channel_iq_sha256=iq_hashes,
+            overlay_ids=overlay_ids,
+            manifest_json=np.asarray(json.dumps(manifest, ensure_ascii=True, sort_keys=True)),
+        )
+        mapping[scene] = cache_path.name
+        hashes[scene] = _sha_file(cache_path)
+        ids_by_scene[scene] = sample_ids.astype(str).tolist()
+
+    cache_manifest = {
+        "schema": LEO_WEAK_CACHE_SET_SCHEMA,
+        "artifact_stage": LEO_WEAK_CACHE_STAGE,
+        "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
+        "clean_sample_access": False,
+        "clean_derived_signal_access": False,
+        "target_channel_view": "leo_weak_only",
+        "cache_scope": "stage2_registered",
+        "output_roles": list(roles),
+        "cache_npz_by_scenario": mapping,
+        "cache_sha256_by_scenario": hashes,
+        "physical_sample_ids_sha256_by_scenario": {
+            scene: ids_sha256(ids_by_scene[scene]) for scene in SCENARIOS
+        },
+        "physical_sample_scenario_assignment_sha256": canonical_json_sha256(ids_by_scene),
+        "phase2_physical_sample_observation_policy": PHASE2_PHYSICAL_SAMPLE_OBSERVATION_POLICY,
+        "phase2_cross_scenario_physical_sample_reuse": False,
+        "phase2_additional_leo_channel_state_generation": False,
+        "phase2_post_reception_equalization_augmentation_transform_allowed": True,
+        "phase2_post_reception_view_from_fixed_received_iq_only": True,
+        "phase2_post_reception_view_counts_as_additional_physical_sample": False,
+        "phase2_physical_sample_root_id_policy": PHASE2_PHYSICAL_SAMPLE_ROOT_ID_POLICY,
+        "phase2_query_post_reception_view_fit_access": False,
+    }
+    manifest_path = root / "cache_set.json"
+    manifest_path.write_text(json.dumps(cache_manifest, ensure_ascii=True, sort_keys=True) + "\n", encoding="utf-8")
+    receipt_path = root / "validator_receipt.json"
+    receipt = {
+        "schema": "cvs.phase2.data_validation_receipt.v1",
+        "phase2_data_status": "VALIDATED_ONCE",
+        "protocol_schema": "p2_min_v1",
+        "capsule_id": "target-capsule-v1",
+        "split_id": "target-split-v1",
+        "cache_set_manifest_path": str(manifest_path.resolve()),
+        "cache_set_manifest_sha256": _sha_file(manifest_path),
+        "cache_scope": "stage2_registered",
+        "truth_role_blind_scene_assignment": True,
+        "known_test_config_manifest_path": str(known_config.resolve()),
+        "known_test_config_raw_sha256": _sha_file(known_config),
+    }
+    receipt_path.write_text(json.dumps(receipt, ensure_ascii=True, sort_keys=True) + "\n", encoding="utf-8")
+    return {
+        "root": root,
+        "manifest": manifest_path,
+        "receipt": receipt_path,
+        "known_test_config": known_config,
+        "capsule_id": str(receipt["capsule_id"]),
+        "split_id": str(receipt["split_id"]),
+    }
+
+
+def _target_manifest(package: Path | str) -> dict[str, object]:
+    path = Path(package)
+    if path.is_dir():
+        return json.loads((path / "manifest.json").read_text(encoding="utf-8"))
+    with zipfile.ZipFile(path, "r") as archive:
+        return json.loads(archive.read("manifest.json").decode("utf-8"))
+
+
+def _target_prediction_path(result: object, fallback: Path) -> Path:
+    if isinstance(result, (str, Path)):
+        return Path(result)
+    if isinstance(result, Mapping):
+        for key in ("prediction_path", "output_path", "path"):
+            value = result.get(key)
+            if value:
+                return Path(str(value))
+    return fallback
+
+
+def _write_fake_predictor_artifacts(tmp_path: Path) -> dict[str, Path]:
+    train_config = _write_target_config_manifest(
+        tmp_path / "candidate_train_config.json",
+        schema="cvs.phase1.clic_train_data_config.v1",
+        normalized=_target_train_config(),
+    )
+    checkpoint = tmp_path / "final_checkpoint.pth"
+    checkpoint.write_bytes(b"immutable-checkpoint")
+    terminal = tmp_path / "terminal.json"
+    terminal.write_text(json.dumps({"schema": "cvs.phase1.clic_terminal_envelope.v1"}) + "\n", encoding="utf-8")
+    pair_policy = tmp_path / "pair_policy.json"
+    pair_policy.write_text(json.dumps({"schema": "cvs.phase1.clic_source_policy_state.v1", "arm": "C"}) + "\n", encoding="utf-8")
+    c_state = tmp_path / "c_predictor_state.v1.json"
+    c_state.write_text(
+        json.dumps(
+            {
+                "schema": "cvs.phase1.clic_predictor_state.v1",
+                "arm": "C",
+                "operator": "raw_phase_control",
+                "checkpoint_path": str(checkpoint),
+                "checkpoint_sha256": _sha_file(checkpoint),
+                "terminal_receipt_path": str(terminal),
+                "terminal_receipt_sha256": _sha_file(terminal),
+                "pair_policy_state_path": str(pair_policy),
+                "pair_policy_state_sha256": _sha_file(pair_policy),
+                "train_config_manifest_path": str(train_config),
+                "train_config_raw_sha256": _sha_file(train_config),
+                "train_config_normalized_sha256": _canonical(_target_train_config()),
+                "immutable": True,
+            },
+            ensure_ascii=True,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    g_bundle = tmp_path / "g_verified.bundle.zip"
+    g_bundle.write_bytes(b"verified-g-bundle")
+    return {"train_config": train_config, "c_state": c_state, "g_bundle": g_bundle}
+
+
+def _fake_runtime_factory(
+    paths: dict[str, Path],
+    *,
+    calls: list[Path],
+    forward_calls: list[np.ndarray],
+) -> object:
+    class FakeRuntime:
+        def __init__(self, path: Path) -> None:
+            self.path = path
+            self.arm = "G" if path.suffix == ".zip" else "C"
+            self.operator = "complex_local_invariant_curvature" if self.arm == "G" else "raw_phase_control"
+            self.state_sha256 = _sha_file(path)
+            self.source_frozen_rule_sha256 = _sha_text("source-frozen-rule")
+            self.train_config_manifest_path = paths["train_config"]
+            self.train_config_raw_sha256 = _sha_file(paths["train_config"])
+            self.train_config_normalized_sha256 = _canonical(_target_train_config())
+
+        def forward_once(self, received_i: object) -> dict[str, object]:
+            values = np.asarray(received_i, dtype=np.float32)
+            forward_calls.append(np.array(values, copy=True))
+            return {
+                "z_id": np.asarray([1.0, 0.0], dtype=np.float32),
+                "z_dom": np.asarray([0.0, 1.0], dtype=np.float32),
+                "q_clic": np.asarray([0.1], dtype=np.float32),
+                "tx_logits": np.asarray([2.0, 1.0], dtype=np.float32),
+                "e_unknown": 0.1,
+                "decision": "registered",
+            }
+
+    def load(path: str | Path) -> FakeRuntime:
+        resolved = Path(path)
+        calls.append(resolved)
+        return FakeRuntime(resolved)
+
+    return load
+
+
+def _write_adv3b02_reference_fixture(tmp_path: Path, *, different_capsule: bool = True) -> dict[str, Path | dict[str, object]]:
+    train = _target_train_config()
+    known = _target_known_test_config(capsule_id="baseline-capsule-v2" if different_capsule else "candidate-capsule-v1")
+    train_path = _write_target_config_manifest(
+        tmp_path / "adv_train_config.json",
+        schema="cvs.phase1.adv3b02_train_data_config.v1",
+        normalized=train,
+    )
+    known_path = _write_target_config_manifest(
+        tmp_path / "adv_known_test_config.json",
+        schema="cvs.phase1.adv3b02_known_test_config.v1",
+        normalized=known,
+    )
+    checkpoint = tmp_path / "adv3b02_checkpoint.pth"
+    checkpoint.write_bytes(b"adv3b02-checkpoint")
+    metrics_path = tmp_path / "adv3b02_stratified_metrics.json"
+    cells = []
+    receiver_sha = _canonical(["target-rx-0", "target-rx-1"])
+    tx_sha = _canonical(["known-tx-a", "known-tx-b"])
+    class_sha = _canonical(["known-tx-a", "known-tx-b"])
+    known_sha = _canonical(known)
+    for fold in range(1, 2):
+        for scene in SCENARIOS:
+            cells.append(
+                {
+                    "fold_config_key": f"adv-f{fold}",
+                    "scene": scene,
+                    "target_receiver_set_sha256": receiver_sha,
+                    "target_known_tx_set_sha256": tx_sha,
+                    "class_order_sha256": class_sha,
+                    "known_test_config_sha256": known_sha,
+                    "numerator": 1,
+                    "denominator": 1,
+                    "accuracy": 1.0,
+                }
+            )
+    metrics_path.write_text(json.dumps({"schema": "cvs.phase1.adv3b02_target_known_metrics.v1", "cells": cells}, sort_keys=True) + "\n", encoding="utf-8")
+    return {
+        "checkpoint": checkpoint,
+        "train_config": train_path,
+        "known_test_config": known_path,
+        "metrics": metrics_path,
+        "train": train,
+        "known": known,
+    }
+
+
+def _true_unknown_rows(*, unknown: int, defer: int, per_scene: bool = True) -> list[dict[str, object]]:
+    rows: list[dict[str, object]] = []
+    scenes = SCENARIOS if per_scene else (SCENARIOS[0],)
+    for scene in scenes:
+        for index in range(unknown):
+            rows.append({"scene": scene, "role": "unknown", "truth": "unknown", "decision": "unknown"})
+        for index in range(defer):
+            rows.append({"scene": scene, "role": "unknown", "truth": "unknown", "decision": "defer"})
+    return rows
+
+
+def test_target_sealer_reuses_validated_receipt_and_emits_iq_only_role_blind_package(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    artifacts = _write_target_cache_set_fixture(tmp_path)
+    called: list[str] = []
+
+    def forbidden_builder(*_args: object, **_kwargs: object) -> None:
+        called.append("builder")
+        raise AssertionError("target sealer must not rebuild or revalidate an existing cache")
+
+    monkeypatch.setattr(TARGET_EVAL, "build_phase2_cache", forbidden_builder, raising=False)
+    monkeypatch.setattr(TARGET_EVAL, "revalidate_phase2_cache", forbidden_builder, raising=False)
+    package, truth = TARGET_EVAL.seal_clic_target_package(
+        artifacts["manifest"],
+        tmp_path / "sealed_target",
+        validator_receipt_path=artifacts["receipt"],
+        expected_capsule_id=artifacts["capsule_id"],
+        expected_split_id=artifacts["split_id"],
+        expected_protocol_schema="p2_min_v1",
+    )
+    manifest = _target_manifest(package)
+    assert manifest["query_truth_included"] is False
+    assert manifest["query_role_included"] is False
+    assert manifest["single_leo_observation"] is True
+    assert set(manifest["scenes"]) == set(SCENARIOS)
+    assert manifest["scene_physical_id_pairwise_disjoint"] is True
+    package_names = {path.name.lower() for path in Path(package).rglob("*")}
+    assert not package_names.intersection({"label", "role", "tx_id", "rx_id", "day_id", "truth.json"})
+    truth_payload = json.loads(Path(truth).read_text(encoding="utf-8"))
+    assert truth_payload["schema"] == "cvs.phase1.clic_target_truth_sidecar.v1"
+    assert called == []
+
+
+@pytest.mark.parametrize(
+    "receipt_patch, expected",
+    [
+        ({"phase2_data_status": "PENDING"}, "VALIDATED_ONCE"),
+        ({"protocol_schema": "wrong_schema"}, "p2_min_v1"),
+        ({"capsule_id": "other-capsule"}, "capsule"),
+        ({"split_id": "other-split"}, "split"),
+    ],
+)
+def test_target_sealer_rejects_receipt_drift_before_opening_iq(tmp_path: Path, receipt_patch: dict[str, object], expected: str) -> None:
+    artifacts = _write_target_cache_set_fixture(tmp_path)
+    receipt = json.loads(Path(artifacts["receipt"]).read_text(encoding="utf-8"))
+    receipt.update(receipt_patch)
+    bad_receipt = tmp_path / "bad_receipt.json"
+    bad_receipt.write_text(json.dumps(receipt, sort_keys=True) + "\n", encoding="utf-8")
+    with pytest.raises(Exception, match=expected):
+        TARGET_EVAL.seal_clic_target_package(
+            artifacts["manifest"],
+            tmp_path / "sealed_target",
+            validator_receipt_path=bad_receipt,
+            expected_capsule_id=artifacts["capsule_id"],
+            expected_split_id=artifacts["split_id"],
+        )
+
+
+def test_target_sealer_rejects_cross_scene_physical_reuse_and_non_leo_view(tmp_path: Path) -> None:
+    duplicate = _write_target_cache_set_fixture(tmp_path / "duplicate", duplicate_cross_scene=True)
+    with pytest.raises(Exception, match="physical|scene|duplicate|reuse|disjoint"):
+        TARGET_EVAL.seal_clic_target_package(
+            duplicate["manifest"],
+            tmp_path / "duplicate_out",
+            validator_receipt_path=duplicate["receipt"],
+            expected_capsule_id=duplicate["capsule_id"],
+            expected_split_id=duplicate["split_id"],
+        )
+    non_leo = _write_target_cache_set_fixture(tmp_path / "non_leo", non_leo_view=True)
+    with pytest.raises(Exception, match="LEO|leo|received|view|overlay|clean"):
+        TARGET_EVAL.seal_clic_target_package(
+            non_leo["manifest"],
+            tmp_path / "non_leo_out",
+            validator_receipt_path=non_leo["receipt"],
+            expected_capsule_id=non_leo["capsule_id"],
+            expected_split_id=non_leo["split_id"],
+        )
+
+
+def test_publish_predictor_state_is_path_only_and_loader_returns_verified_runtime(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    artifacts = _write_target_cache_set_fixture(tmp_path)
+    package, _truth = TARGET_EVAL.seal_clic_target_package(
+        artifacts["manifest"],
+        tmp_path / "sealed_target",
+        validator_receipt_path=artifacts["receipt"],
+        expected_capsule_id=artifacts["capsule_id"],
+        expected_split_id=artifacts["split_id"],
+    )
+    predictor_artifacts = _write_fake_predictor_artifacts(tmp_path / "predictor")
+    calls: list[Path] = []
+    forwards: list[np.ndarray] = []
+    loader = _fake_runtime_factory(predictor_artifacts, calls=calls, forward_calls=forwards)
+    monkeypatch.setattr(TARGET_EVAL, "load_verified_clic_predictor_state", loader, raising=False)
+    monkeypatch.setattr(TARGET, "load_verified_clic_predictor_state", loader, raising=False)
+    output = tmp_path / "c_prediction.json"
+    result = TARGET_EVAL.publish_clic_target_prediction(predictor_artifacts["c_state"], package, output)
+    assert output.is_file()
+    assert calls == [predictor_artifacts["c_state"]]
+    assert len(forwards) > 0
+    assert isinstance(result, (str, Path, Mapping))
+    with pytest.raises(Exception, match="path|artifact|state|predictor|inject"):
+        TARGET_EVAL.publish_clic_target_prediction({"model_state": {}}, package, tmp_path / "injected.json")
+
+
+def test_c_and_g_prediction_bind_identical_iq_package_and_forward_once_per_sample(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    artifacts = _write_target_cache_set_fixture(tmp_path)
+    package, _truth = TARGET_EVAL.seal_clic_target_package(
+        artifacts["manifest"], tmp_path / "sealed_target", validator_receipt_path=artifacts["receipt"],
+        expected_capsule_id=artifacts["capsule_id"], expected_split_id=artifacts["split_id"],
+    )
+    predictor_artifacts = _write_fake_predictor_artifacts(tmp_path / "predictor")
+    calls: list[Path] = []
+    forwards: list[np.ndarray] = []
+    loader = _fake_runtime_factory(predictor_artifacts, calls=calls, forward_calls=forwards)
+    monkeypatch.setattr(TARGET_EVAL, "load_verified_clic_predictor_state", loader, raising=False)
+    monkeypatch.setattr(TARGET, "load_verified_clic_predictor_state", loader, raising=False)
+    c_out = tmp_path / "c_prediction.json"
+    g_out = tmp_path / "g_prediction.json"
+    c_result = TARGET_EVAL.publish_clic_target_prediction(predictor_artifacts["c_state"], package, c_out)
+    c_forward_count = len(forwards)
+    g_result = TARGET_EVAL.publish_clic_target_prediction(predictor_artifacts["g_bundle"], package, g_out)
+    manifest = _target_manifest(package)
+    c_payload = json.loads(c_out.read_text(encoding="utf-8"))
+    g_payload = json.loads(g_out.read_text(encoding="utf-8"))
+    assert c_payload["predictor_package_sha256"] == g_payload["predictor_package_sha256"] == manifest["package_sha256"]
+    assert c_payload["forward_count"] == g_payload["forward_count"] == c_payload["row_count"]
+    assert c_payload["predictor_state_sha256"] != g_payload["predictor_state_sha256"]
+    assert len(forwards) == 2 * int(c_payload["row_count"])
+    assert _target_prediction_path(c_result, c_out).is_file()
+    assert _target_prediction_path(g_result, g_out).is_file()
+
+
+def test_prediction_seals_candidate_config_paths_raw_and_normalized_sha_and_rejects_postseal_tamper(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    artifacts = _write_target_cache_set_fixture(tmp_path)
+    package, truth = TARGET_EVAL.seal_clic_target_package(
+        artifacts["manifest"], tmp_path / "sealed_target", validator_receipt_path=artifacts["receipt"],
+        expected_capsule_id=artifacts["capsule_id"], expected_split_id=artifacts["split_id"],
+    )
+    predictor_artifacts = _write_fake_predictor_artifacts(tmp_path / "predictor")
+    loader = _fake_runtime_factory(predictor_artifacts, calls=[], forward_calls=[])
+    monkeypatch.setattr(TARGET_EVAL, "load_verified_clic_predictor_state", loader, raising=False)
+    monkeypatch.setattr(TARGET, "load_verified_clic_predictor_state", loader, raising=False)
+    prediction = tmp_path / "prediction.json"
+    TARGET_EVAL.publish_clic_target_prediction(predictor_artifacts["c_state"], package, prediction)
+    payload = json.loads(prediction.read_text(encoding="utf-8"))
+    for field in ("train_config_manifest_path", "train_config_raw_sha256", "train_config_normalized_sha256", "known_test_config_manifest_path", "known_test_config_raw_sha256", "known_test_config_normalized_sha256"):
+        assert field in payload
+    Path(predictor_artifacts["train_config"]).write_text(Path(predictor_artifacts["train_config"]).read_text(encoding="utf-8") + "tamper\n", encoding="utf-8")
+    with pytest.raises(Exception, match="train.*config|sha|tamper"):
+        TARGET_EVAL.score_clic_target_prediction(prediction, truth, tmp_path / "missing_adv_reference.json", tmp_path / "score.json")
+
+
+def test_adv3b02_reference_ingest_binds_own_artifacts_without_unknown_claim(tmp_path: Path) -> None:
+    baseline = _write_adv3b02_reference_fixture(tmp_path / "baseline", different_capsule=True)
+    output = tmp_path / "adv3b02_reference.json"
+    result = TARGET_EVAL.ingest_adv3b02_target_known_reference(
+        baseline["checkpoint"], baseline["train_config"], baseline["known_test_config"], baseline["metrics"], output,
+    )
+    payload = json.loads(output.read_text(encoding="utf-8"))
+    assert payload["schema"] == "cvs.phase1.adv3b02_target_known_reference.v1"
+    assert payload["checkpoint_sha256"] == _sha_file(baseline["checkpoint"])
+    assert payload["train_config_raw_sha256"] == _sha_file(baseline["train_config"])
+    assert payload["known_test_config_raw_sha256"] == _sha_file(baseline["known_test_config"])
+    assert payload["stratified_metric_artifact_sha256"] == _sha_file(baseline["metrics"])
+    assert all(int(cell["denominator"]) > 0 for cell in payload["semantic_cells"])
+    assert "unknown" not in json.dumps(payload, ensure_ascii=True).lower()
+    assert _target_prediction_path(result, output).is_file()
+
+
+def test_adv3b02_config_equivalence_ignores_capsule_physical_seed_but_rejects_train_or_test_drift(tmp_path: Path) -> None:
+    candidate_train = _target_train_config()
+    baseline_train = dict(candidate_train, epoch=200, optimizer="sgd", model_architecture="adv3b02")
+    candidate_known = _target_known_test_config(capsule_id="candidate-capsule-v1")
+    baseline_known = _target_known_test_config(capsule_id="baseline-capsule-v2")
+    baseline_known["physical_sample_ids"] = ["baseline-physical-row"]
+    baseline_known["scene_seed"] = 90210
+    passed = TARGET_EVAL.validate_adv3b02_config_equivalence(
+        candidate_train_config=candidate_train,
+        candidate_known_test_config=candidate_known,
+        baseline_train_config=baseline_train,
+        baseline_known_test_config=baseline_known,
+    )
+    assert passed["passed"] is True
+    drifted_train = dict(baseline_train, split_mode="tx_rx_day_drift")
+    with pytest.raises(Exception, match="config|equivalence|split|drift"):
+        TARGET_EVAL.validate_adv3b02_config_equivalence(
+            candidate_train_config=candidate_train,
+            candidate_known_test_config=candidate_known,
+            baseline_train_config=drifted_train,
+            baseline_known_test_config=baseline_known,
+        )
+    drifted_known = dict(baseline_known, zero_adaptation=False)
+    with pytest.raises(Exception, match="config|equivalence|zero|adapt"):
+        TARGET_EVAL.validate_adv3b02_config_equivalence(
+            candidate_train_config=candidate_train,
+            candidate_known_test_config=candidate_known,
+            baseline_train_config=baseline_train,
+            baseline_known_test_config=drifted_known,
+        )
+
+
+def test_adv3b02_reference_rejects_missing_or_zero_denominator_semantic_cell(tmp_path: Path) -> None:
+    baseline = _write_adv3b02_reference_fixture(tmp_path / "baseline")
+    metrics = json.loads(Path(baseline["metrics"]).read_text(encoding="utf-8"))
+    metrics["cells"][0]["denominator"] = 0
+    bad_metrics = tmp_path / "bad_metrics.json"
+    bad_metrics.write_text(json.dumps(metrics, sort_keys=True) + "\n", encoding="utf-8")
+    with pytest.raises(Exception, match="denominator|cell|positive|missing"):
+        TARGET_EVAL.ingest_adv3b02_target_known_reference(
+            baseline["checkpoint"], baseline["train_config"], baseline["known_test_config"], bad_metrics, tmp_path / "bad_reference.json",
+        )
+
+
+def test_true_unknown_defer_never_counts_toward_explicit_rejection(tmp_path: Path) -> None:
+    rows = _true_unknown_rows(unknown=69, defer=31, per_scene=True)
+    audit = TARGET_EVAL.recompute_unknown_counts(rows)
+    assert audit["unknown_denominator_global"] == 300
+    assert audit["unknown_numerator_global"] == 207
+    assert all(audit["unknown_denominator_by_scene"][scene] == 100 for scene in SCENARIOS)
+    assert all(audit["unknown_numerator_by_scene"][scene] == 69 for scene in SCENARIOS)
+    with pytest.raises(Exception, match="70|explicit|unknown"):
+        TARGET_EVAL.score_target_rows(rows)
+
+
+def test_truth_sidecar_is_unreadable_before_sealed_prediction_and_target_path_has_no_fit_update_retry(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    truth = tmp_path / "truth.json"
+    truth.write_text(json.dumps({"schema": "cvs.phase1.clic_target_truth_sidecar.v1"}) + "\n", encoding="utf-8")
+    unsealed = tmp_path / "unsealed_prediction.json"
+    unsealed.write_text(json.dumps({"schema": "cvs.phase1.clic_target_prediction.v1", "sealed": False}) + "\n", encoding="utf-8")
+    with pytest.raises(Exception, match="seal|prediction|immutable|verified"):
+        TARGET_EVAL.score_clic_target_prediction(unsealed, truth, tmp_path / "adv.json", tmp_path / "score.json")
+
+    artifacts = _write_target_cache_set_fixture(tmp_path / "sealed")
+    package, _truth = TARGET_EVAL.seal_clic_target_package(
+        artifacts["manifest"], tmp_path / "sealed" / "package", validator_receipt_path=artifacts["receipt"],
+        expected_capsule_id=artifacts["capsule_id"], expected_split_id=artifacts["split_id"],
+    )
+    predictor_artifacts = _write_fake_predictor_artifacts(tmp_path / "sealed" / "predictor")
+    calls: list[Path] = []
+    forwards: list[np.ndarray] = []
+    loader = _fake_runtime_factory(predictor_artifacts, calls=calls, forward_calls=forwards)
+    monkeypatch.setattr(TARGET_EVAL, "load_verified_clic_predictor_state", loader, raising=False)
+    monkeypatch.setattr(TARGET, "load_verified_clic_predictor_state", loader, raising=False)
+    prediction = tmp_path / "sealed" / "prediction.json"
+    TARGET_EVAL.publish_clic_target_prediction(predictor_artifacts["c_state"], package, prediction)
+    assert len(forwards) == 12
