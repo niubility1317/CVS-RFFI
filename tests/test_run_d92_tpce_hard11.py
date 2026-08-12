@@ -123,3 +123,51 @@ def test_shared_smoke_schema_translation_is_in_memory_only() -> None:
         "marker": 92,
     }
     assert tpce["schema"] == "cvs.phase2.d92_tpce_hard11.smoke_receipt.v1"
+
+
+def test_shard_schema_rewrite_touches_only_its_owned_outputs(tmp_path: Path) -> None:
+    output = tmp_path / "run"
+    owned = output / "jobs" / "owned"
+    other = output / "jobs" / "other"
+    summary = output / "summaries" / "shard_0.json"
+    smoke = output / "smoke" / "smoke_receipt.json"
+    base_receipt = {
+        "schema": "cvs.phase2.d92_pareto_distill_hard11.job_receipt.v1",
+        "status": "PREDICTIONS_AND_POST_PREDICTION_SCORE_COMPLETE",
+    }
+    _write(owned / "job_receipt.json", base_receipt)
+    _write(other / "job_receipt.json", base_receipt)
+    _write(
+        summary,
+        {
+            "schema": "cvs.phase2.d92_pareto_distill_hard11.shard_summary.v1",
+            "status": "PASS",
+        },
+    )
+    _write(
+        smoke,
+        {
+            "schema": "cvs.phase2.d92_tpce_hard11.smoke_receipt.v1",
+            "status": "D92_TPCE_HARD11_REAL_CHECKPOINT_TRUTH_FREE_SMOKE_PASS",
+        },
+    )
+    manifest = {
+        "output_root": str(output),
+        "jobs": [
+            {"planned_shard_index": 0, "output_root": str(owned)},
+            {"planned_shard_index": 1, "output_root": str(other)},
+        ],
+    }
+    runner._rewrite_shard_output(manifest, shard_index=0)
+    assert "d92_tpce_hard11" in json.loads(
+        (owned / "job_receipt.json").read_text(encoding="utf-8")
+    )["schema"]
+    assert "d92_pareto_distill_hard11" in json.loads(
+        (other / "job_receipt.json").read_text(encoding="utf-8")
+    )["schema"]
+    assert "d92_tpce_hard11" in json.loads(
+        summary.read_text(encoding="utf-8")
+    )["schema"]
+    assert "d92_tpce_hard11" in json.loads(
+        smoke.read_text(encoding="utf-8")
+    )["schema"]

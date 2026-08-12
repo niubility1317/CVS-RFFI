@@ -199,6 +199,25 @@ def _rewrite_output(root: Path, *, to_tpce: bool) -> None:
             _rewrite_schema(path, to_tpce=to_tpce)
 
 
+def _rewrite_shard_output(
+    manifest: Mapping[str, Any], *, shard_index: int
+) -> None:
+    """Rewrite only evidence exclusively owned by one completed shard."""
+
+    for job in manifest.get("jobs", []):
+        if (
+            isinstance(job, Mapping)
+            and int(job.get("planned_shard_index", -1)) == int(shard_index)
+        ):
+            _rewrite_output(Path(str(job["output_root"])), to_tpce=True)
+    _rewrite_schema(
+        Path(str(manifest["output_root"]))
+        / "summaries"
+        / f"shard_{int(shard_index)}.json",
+        to_tpce=True,
+    )
+
+
 def _base_smoke_receipt_view(payload: Mapping[str, Any]) -> dict[str, Any]:
     """Translate TPCE smoke identity in memory for the proven base validator."""
 
@@ -236,9 +255,13 @@ def truth_free_smoke(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def run_shard(args: argparse.Namespace) -> dict[str, Any]:
-    manifest_root: Path | None = None
+    manifest: dict[str, Any] | None = None
     try:
-        manifest_root = Path(json.loads(Path(args.matrix_manifest).read_text(encoding="utf-8-sig"))["output_root"])
+        loaded = json.loads(
+            Path(args.matrix_manifest).read_text(encoding="utf-8-sig")
+        )
+        if isinstance(loaded, dict):
+            manifest = loaded
     except (OSError, ValueError, KeyError, TypeError):
         pass
     original_read_json_object = _base_runner._read_json_object
@@ -252,8 +275,8 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
             result = _base_runner.run_shard(args)
         finally:
             _base_runner._read_json_object = original_read_json_object
-    if manifest_root:
-        _rewrite_output(manifest_root, to_tpce=True)
+    if manifest is not None:
+        _rewrite_shard_output(manifest, shard_index=int(args.shard_index))
     result["schema"] = "cvs.phase2.d92_tpce_hard11.shard_summary.v1"
     return result
 
