@@ -3,7 +3,7 @@
 ## 状态与目标
 
 - 实验ID：`phase1_clic_source_leo_20260812_v3`。
-- 当前状态：`LOCAL_VERIFIED / FORMAL_LAUNCH=0 / NO_PERFORMANCE_RESULT`。
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / FORMAL_LAUNCH=1 / NO_PERFORMANCE_RESULT`。
 - 目标：为F1—F6各构建一份source-L单观测LEO weak received-IQ缓存，并由同fold C／G读取完全相同的缓存字节，完成12个source-LEO特征导出。
 - v3不改变方法、数据、场景、seed、矩阵、GPU映射、阈值或停止规则；唯一发布修复是改用新run ID，并要求运行席以`bash <launcher-path>`调用普通Git归档文件，不再用执行位检查阻断入口。
 
@@ -53,3 +53,11 @@
 - 唯一SCP=1；远端临时archive SHA／bytes闭合，原子落地release=`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_clic_source_leo_20260812_v3_61c0b805`。远端核心SHA：launcher=`EC4E98080734E4B94F66999B7CD269C7ECBC5C1753DEC81EDEAE0DB99C591B0A`，builder=`25F895E42552D16EA71941CED02F08C1E7E20D7927335AAE94F6EF72D6A45B4D`，exporter=`591B60960F40BFE9585DB0D958C9A0E11DC0A75534AC935DFC3CD497E4E533C9`，phase1_clic=`36FFDE23244D80AD15647F72252C70004D1E33549D7BF3D6E510E99E56461335`。
 - 远端静态门通过：核心`py_compile`、builder`--help`、launcher`bash -n`、dry-run精确18行（6 cache+12 export，C6/G6）均通过；检查输出无target/query/truth/role输入参数。过程中一次只读静态脚本误拼Python路径，未写远端、未启动、随后已用正确`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`复验通过。
 - v3正式launch计数仍为0；下一步按合同只检查launcher文件存在并明确调用`bash`，不使用`test -x`。
+
+## v3唯一正式运行结果（2026-08-12）
+
+- 唯一正式launcher调用=`1`，outer PID=`2535002`，明确使用`bash "$REL/code/scripts/launch_phase1_clic_source_leo12_20260812.sh"`；未重试。首波确认launcher CWD/release、run/log根及GPU映射符合冻结合同。
+- 串行cache阶段完整通过：`6/6` `source_l_received_iq.npz`与`6/6` receipt均生成，每份source_row_count=3920，6份cache日志均只含receipt JSON且无异常。
+- export阶段`12/12`独立进程（pids表12行，GPU按fold C/G映射0..5）在输出前产生同一确定性异常：`export_phase1_clic_leo_features.py:330`调用`torch.from_numpy(iq[index])`，Torch/NumPy桥接报`TypeError: expected np.ndarray (got numpy.ndarray)`。异常日志=12/12、Traceback=12/12；`source_leo.npz=0/12`、binding=`0/12`，未产出任何export性能工件。
+- 该共同异常满足预注册“至少两个不同fold在工件前同一确定性异常”系统性停止规则。12个export进程与outer已自然退出，无需终止；仅保留6 cache、6 receipt、18日志和`pids_source_leo12.tsv`（12行）。GPU compute=0，正式run-owned进程=0，SSH/TCP22=0。
+- 结论：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。未读取accuracy/loss/AUROC/拒识性能，禁止将本run作为性能结果。下一轮如修复该真实release接口，必须创建新commit与新run ID，不能重试或覆盖v3。
