@@ -4,7 +4,7 @@ set -euo pipefail
 # Source-only CLIC postfreeze closure.  Each fold independently seals C/G
 # common receipts and fixed400 proxy diagnostics, then reopens the complete
 # clean + single-LEO chain to write one aggregate-only C/G PAIR record.
-RUN_ID="${RUN_ID:-phase1_clic_source_pair_20260812_v1}"
+RUN_ID="${RUN_ID:-phase1_clic_source_pair_20260812_v2}"
 TRAINING_RUN_ID="${TRAINING_RUN_ID:-phase1_clic12_20260812_v5}"
 CLEAN_RUN_ID="${CLEAN_RUN_ID:-phase1_clic_postfreeze_20260812_v2}"
 LEO_RUN_ID="${LEO_RUN_ID:-phase1_clic_source_leo_20260812_v4}"
@@ -29,7 +29,7 @@ for arg in "$@"; do
 done
 
 [[ "${DRY_RUN}" == "0" || "${DRY_RUN}" == "1" ]] || { echo "DRY_RUN must be 0 or 1" >&2; exit 2; }
-[[ "${RUN_ID}" == "phase1_clic_source_pair_20260812_v1" ]] || { echo "source PAIR run ID drift" >&2; exit 2; }
+[[ "${RUN_ID}" == "phase1_clic_source_pair_20260812_v2" ]] || { echo "source PAIR run ID drift" >&2; exit 2; }
 [[ "${TRAINING_RUN_ID}" == "phase1_clic12_20260812_v5" ]] || { echo "training run ID drift" >&2; exit 2; }
 [[ "${CLEAN_RUN_ID}" == "phase1_clic_postfreeze_20260812_v2" ]] || { echo "clean run ID drift" >&2; exit 2; }
 [[ "${LEO_RUN_ID}" == "phase1_clic_source_leo_20260812_v4" ]] || { echo "source LEO run ID drift" >&2; exit 2; }

@@ -255,7 +255,11 @@ def _write_feature_npz(
         raise AssertionError("feature fixture dimension must be at least two")
     path.parent.mkdir(parents=True, exist_ok=True)
     fit_labels = np.asarray([tx for tx in SOURCE_TX for _ in range(2)], dtype=str)
-    validation_labels = np.asarray([HELD_TX[0]] * 4, dtype=str)
+    # ``source_validation_known`` is the held-out V slice of the current
+    # local4 source partition.  The disjoint one-TX checkpoint validation role
+    # remains a manifest/terminal audit identity and is never materialized as
+    # geometry/proxy feature rows.
+    validation_labels = np.asarray(list(SOURCE_TX), dtype=str)
     proxy_labels = np.asarray([PROXY_TX[0]] * 400, dtype=str)
     labels = np.concatenate([fit_labels, validation_labels, proxy_labels])
     roles = np.asarray(
@@ -1502,6 +1506,26 @@ def test_clic_pair_script_help_is_a_real_executable_cli() -> None:
     assert "usage:" in completed.stdout.lower()
     assert "--c-checkpoint" in completed.stdout
     assert "--export-proxy-diagnostic" in completed.stdout
+
+
+def test_clic_proxy_writer_rejects_external_held_tx_disguised_as_source_v(
+    tmp_path: Path,
+) -> None:
+    artifacts = _pair_artifact_fixture(tmp_path / "artifacts")
+    clean = Path(artifacts["g_clean"])
+    with np.load(clean, allow_pickle=False) as archive:
+        arrays = {name: np.array(archive[name], copy=True) for name in archive.files}
+    roles = np.asarray(arrays["dataset_role"], dtype=str)
+    tx_ids = np.asarray(arrays["tx_ids"], dtype=str)
+    tx_ids[roles == "source_validation_known"] = HELD_TX[0]
+    arrays["tx_ids"] = tx_ids
+    with clean.open("wb") as handle:
+        np.savez(handle, **arrays)
+    with pytest.raises(Exception, match="source-V|local4|TX labels|drift"):
+        PAIR.export_clic_proxy_diagnostic(
+            clean_npz_path=clean,
+            output_json_path=tmp_path / "forbidden_proxy.json",
+        )
 
 
 def test_clic_pair_parser_evaluate_writes_cg_artifact_summary_and_common_binding(tmp_path: Path) -> None:

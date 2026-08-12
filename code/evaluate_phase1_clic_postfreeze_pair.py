@@ -1288,8 +1288,12 @@ def _clean_masks_for_arm(clean: Mapping[str, Any], *, opened: Mapping[str, Any])
         raise CLICPostfreezePairError("PAIR clean source-L labels are not exactly local4")
     if any(int(np.sum(tx_ids[labeled] == tx)) <= VARIANCE_DDOF for tx in opened["source_tx_ids"]):
         raise CLICPostfreezePairError("PAIR clean source-L local4 class count is insufficient")
-    if set(tx_ids[validation]) != set(opened["known_validation_tx_ids"]):
-        raise CLICPostfreezePairError("PAIR clean source-V labels drifted")
+    # The feature-export role ``source_validation_known`` is the held-out V
+    # slice of the current local4 source partition.  The one disjoint
+    # checkpoint validation TX remains a manifest/terminal audit identity and
+    # is intentionally never materialized as postfreeze feature rows.
+    if set(tx_ids[validation]) != set(opened["source_tx_ids"]):
+        raise CLICPostfreezePairError("PAIR clean source-V local4 labels drifted")
     if set(tx_ids[proxy]) != set(opened["proxy_unknown_tx_ids"]):
         raise CLICPostfreezePairError("PAIR clean fixed400 proxy TX labels drifted")
     return labeled, validation, proxy
@@ -1344,8 +1348,8 @@ def _proxy_inputs_from_clean_artifact(
         raise CLICPostfreezePairError("CLIC proxy clean source-L TX labels drifted")
     if any(int(np.sum(tx_ids[labeled] == tx_id)) <= VARIANCE_DDOF for tx_id in source_tx_ids):
         raise CLICPostfreezePairError("CLIC proxy clean source-L class count is insufficient")
-    if set(tx_ids[validation]) != set(known_validation_tx_ids):
-        raise CLICPostfreezePairError("CLIC proxy clean source-V TX labels drifted")
+    if set(tx_ids[validation]) != set(source_tx_ids):
+        raise CLICPostfreezePairError("CLIC proxy clean source-V local4 TX labels drifted")
     if set(tx_ids[proxy]) != set(proxy_unknown_tx_ids):
         raise CLICPostfreezePairError("CLIC proxy clean fixed400 proxy TX labels drifted")
     return source_tx_ids, labeled, validation, proxy
