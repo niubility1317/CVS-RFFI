@@ -2143,7 +2143,8 @@ def _write_target_cache_set_fixture(
                     eq_id=eq_id,
                     sig_id=sig_id,
                 )
-                iq = np.full((2, 16), float(scene_index + role_index + repeat + 1), dtype=np.float32)
+                iq_level = (10.0 if role == "registered_known" else 100.0) + scene_index + repeat
+                iq = np.full((2, 16), iq_level, dtype=np.float32)
                 rows.append(
                     {
                         "role": role,
@@ -2386,13 +2387,14 @@ def _fake_runtime_factory(
                 scene_calls.append(scene)
             values = np.asarray(received_i, dtype=np.float32)
             forward_calls.append(np.array(values, copy=True))
+            decision = "unknown" if float(values.mean()) >= 50.0 else "registered"
             return {
                 "z_id": np.asarray([1.0, 0.0], dtype=np.float32),
                 "z_dom": np.asarray([0.0, 1.0], dtype=np.float32),
                 "q_clic": np.asarray([0.1], dtype=np.float32),
                 "tx_logits": np.asarray([2.0, 1.0], dtype=np.float32),
-                "e_unknown": 0.1,
-                "decision": "registered",
+                "e_unknown": 0.9 if decision == "unknown" else 0.1,
+                "decision": decision,
             }
 
     def load(path: str | Path) -> FakeRuntime:
