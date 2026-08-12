@@ -206,3 +206,9 @@ runner抛出的“quantum receipt drift”是硬门的外部表现，不是根�
 唯一裁决：`REJECT_ROUTE`。
 
 理由不是八项中某一项下降，而是方法在真实D42部署态没有形成候选：三场景全部回到E0，无法满足“严格优于E0”的必要前提，也不具备进入完整125的资格。下一轮若继续研发，必须更换为直接在D42离散码空间构造非零、support受约束更新的新方法家族；不得对本候选做强度扫描、量化容差放宽或同run重试。
+
+## 11.三轮强制回顾与下一轮边界
+
+本run是继FloorBoost和NewGuard之后的第三条完成探索路线。依照三轮回顾要求，已重新核对目标、`项目.md`、项目conversation index、三份完整报告和回收artifact，并将完整回顾固化到`analysis/d92_three_round_retrospective_20260812.md`。
+
+回顾结论如下：FloorBoost证明旧类floor可提升，但旧类整体bias会严重扩大new→old并使新类崩塌；NewGuard证明“部署字节非E0”不等于“决策非E0”，且多轮codec回缩超资源；Pareto Distill证明连续双fit候选可能在真实D42后完全塌回E0。第四轮不得继续调这三条路线，必须改为从E0部署码字出发的一次性D42离散码空间更新，并保持单FULL fit、单F0 query头、K≤2精确alias和八项严格Pareto门。
