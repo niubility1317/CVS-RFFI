@@ -1,6 +1,6 @@
 # D92 E0 FULL CSOAS Hard9+K1实验报告
 
-状态：`LOCAL_VERIFIED / READY_FOR_N607_HANDOFF`
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT / TERMINAL_ARTIFACTS_COMPLETE`
 
 ## 1.目标与冻结身份
 
@@ -62,4 +62,9 @@ cd /home/szu2070436088/2510044040/CV-SincNet/runs/d92_csoas_hard9_source_7a43408
 
 ## 6.运行与分析结果
 
-待sole runner回填。
+- prepare通过：10 jobs、30 scene rows，manifest SHA=`7a16d7b4959318ab7ccb1347624c43b3de1005b10ec7df947366b62377b3b589`。
+- K5/new20 smoke在任何prediction前触发确定性`RecursionError`：wrapper覆盖base verifier后动态回调自身；8 shards未启动，无performance artifact，不运行analyzer。
+- v1最终计数：prediction/COMMIT/fit/resource/execution/score/job receipt/shard summary均为0；仅保留matrix manifest和技术日志。
+- 完整取回根：`E:\type10-7\local_artifacts\d92_e0_full_csoas_hard9k1_20260812_v1`。远端=本地树：source 1438 files/73,810,922B/SHA `fb94a5f4d7780c62972635505470bd268d632698989c088ee83e57e062ad7573`；output 1/33,682B/`2600944af8a3fc2fa4d0adc939598d85c624ce3b7a5a4ec3e69a93fb7e1851c4`；logs 6/2,111B/`3af65e98794f66722da1282d7df58e3b50f5f3e7a80c111b564e4f9e89d1bb59`。
+- manifest引用的10份truth sidecar已逐SHA取回但未读内容；远端树保留。最终run/GPU/本地SSH/TCP22均清零。
+- 该run不得重试、续跑、覆盖或解释性能。修复必须进入本地Git、独立复审，并使用全新run ID。
