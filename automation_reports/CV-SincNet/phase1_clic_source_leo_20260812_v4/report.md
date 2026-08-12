@@ -3,7 +3,7 @@
 ## 状态与目标
 
 - 实验ID：`phase1_clic_source_leo_20260812_v4`。
-- 当前状态：`LOCAL_VERIFYING / FORMAL_LAUNCH=0 / NO_PERFORMANCE_RESULT`。
+- 当前状态：`READY_TO_LAUNCH / FORMAL_LAUNCH=0 / NO_PERFORMANCE_RESULT_YET`。
 - 目标：复用v3已经完整生成的6份不可变source-L received-IQ cache，只执行F1—F6×C／G共12个source-LEO forward与binding封存。
 - 这是两轮发布工程修复后的更小独立one-shot：不重建cache、不改变物理样本、scene、seed、模型、checkpoint、矩阵、GPU映射或停止规则。
 
@@ -39,3 +39,11 @@
 
 - Git commit、文件SHA、本地回归、独立审查结论。
 - archive／release／SCP／真实converter smoke／唯一launch、PID／GPU／工件闭合。
+
+## v4发布、静态门与smoke裁定（2026-08-12）
+
+- 冻结commit=`d3a886bee2be6fc496489557fda45664d74c1bbc`；Task7/PAIR dirty未进入archive、未stage。干净archive=`E:\type10-7\code\runner_tmp_phase1_clic_source_leo_20260812_v4_d3a886be_git_archive.tar`，SHA256=`2F583DA5DAC68309D8799372977BE8619E2696C30E1F26FF8F55502348CC8E4B`，bytes=`267048960`。
+- SCP恰1次；远端SHA／bytes闭合，原子release=`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_clic_source_leo_20260812_v4_d3a886be`。正确v4入口是commit中新文件`code/scripts/launch_phase1_clic_source_leo_export12_20260812.sh`（旧`launch_phase1_clic_source_leo12_20260812.sh`为v3历史文件，未调用）；入口SHA=`25A9E94A63EFACB8786D4BC0C2D3145ADA294019A23B4591F5E450EE2A51D692`，exporter SHA=`B57B3EEAD2DCEB6E398A43A016F7CD9909C8535890BD650DB98860957780DEE4`。
+- 远端静态门通过：exporter/shared extractor/phase1_clic `py_compile`、exporter`--help`含sealed cache参数、v4入口`bash -n`、dry-run精确12行（C6/G6、cache_run=v3）通过，输出无target/query/truth/role输入。
+- F1真实consumer smoke未执行forward：sealed asset校验强制`postfreeze-output-root`必须为正式v4 run root且输出目录必须位于正式候选目录，与“smoke不得写正式v4输出、临时路径可用”要求冲突；主控裁定不放宽sealed边界、不在正式root做临时smoke、不新commit，按已存在的v2真实F1 smoke、v3真实6 cache与本次动态安全桥接审查证据直接跳过。smoke跳过不是失败；v4 run/log/outer仍ABSENT，launch计数=0。
+- 下一步仅调用正确v4入口：检查文件存在后以`bash "$REL/code/scripts/launch_phase1_clic_source_leo_export12_20260812.sh"`启动一次，retry=NO。
