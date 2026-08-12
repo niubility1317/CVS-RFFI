@@ -3,7 +3,7 @@
 ## 1. 状态与目标
 
 - 实验ID：`phase1_clic_postfreeze_20260812_v1`
-- 当前状态：`LOCAL_VERIFIED / SOURCE_FIRST_WAVE_PENDING`
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 操作者：主控Codex；N607唯一runner：`Luna/max`
 - 训练输入：不可覆盖run`phase1_clic12_20260812_v5`的12个final checkpoint与12个terminal receipt。
 - 目标：先执行12个source-only clean／fixed400 proxy导出，再用每fold一次预固定、C／G共享字节的三场景source-L LEO弱信道缓存完成LEO／pair／bundle；目标域阶段只在IQ-only隔离修复和既有`p2_min_v1`目标包原件闭合后执行。
@@ -47,3 +47,13 @@
 - 现成source-L LEO缓存没有一个已证实同时包含v5每fold所需的TX／RX／day／physical ID／三scene／received-IQ字段；因此先执行不依赖它的12个clean／proxy导出，再从v5 source-L物理划分一次性生成共享缓存。
 - target实现独立复审发现IQ-only package可能在模型forward前暴露known-test配置路径；目标阶段必须先修为模型只见IQ／opaque token／scene，全部forward结束并销毁runtime后才由离线封存器追加配置绑定。该问题不影响source第一波。
 - 当前状态不是性能结果，不进行方法晋级或淘汰。
+
+## 7. v1运行收尾（只读技术证据）
+
+- 运行时间：2026-08-12；N607唯一runner：`Luna/max`。
+- 发布commit：`a3954fa31474fa738005e3c1898a8a2055da9a57`；本地Git archive SHA256=`4A201E58F9BD2330B4537D57D0B85DB4431644857A9F0B12A12537744FFB203C`，bytes=`266905600`；SCP恰1次，远端SHA/bytes闭合，release为`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_clic_postfreeze_20260812_v1_a3954fa3`。
+- 远端静态门：关键Python`py_compile`、exporter`--help`、launcher`bash -n`、dry-run恰12行（C6/G6、`CLIC_CLEAN_EXPORT`、训练根`phase1_clic12_20260812_v5`、无target/query/truth参数）通过。正式launch恰1次；outer PID=`2472908`。
+- `pids_source12.tsv`记录12/12行：F1C=2472923(GPU0)、F5G=2472925(GPU0)、F1G=2472927(GPU1)、F5C=2472929(GPU1)、F2C=2472931(GPU2)、F6G=2472933(GPU2)、F2G=2472935(GPU3)、F6C=2472937(GPU3)、F3C=2472939(GPU4)、F3G=2472941(GPU5)、F4C=2472943(GPU6)、F4G=2472945(GPU7)。12/12均已退出。
+- 12/12日志完整尾部具有相同归一化异常指纹：`__main__.CLICSplitExportError: checkpoint arg id_feature_key drifted`，触发位置为`export_phase1_clic_features.py:137`，均发生在输出生成前。该故障满足“至少两行在输出前同一确定性异常”的系统性技术停止规则。
+- 工件计数：`source_clean_proxy.npz`=`0/12`；terminal/final checkpoint未由本波生成，receipt=`0`；未读取accuracy、loss、AUROC或其他性能字段。
+- 清理核验：outer、12子PID及GPU compute均清零；本地SSH进程=`0`，N607/bridge TCP22连接=`0`。本run不可重启或覆盖；后续修复必须使用新的不可覆盖run ID。
