@@ -86,6 +86,8 @@ def test_three_verdict_branches_have_no_weighted_compensation() -> None:
     assert decide_verdict(advance) == "ADVANCE_TO_TARGET125_CANDIDATE"
     revise = {**advance, "all_magnitude": False}
     assert decide_verdict(revise) == "REVISE_ONCE"
+    assert decide_verdict({**advance, "stability": False}) == "REVISE_ONCE"
+    assert decide_verdict({**advance, "resources": False}) == "REVISE_ONCE"
     reject = {**advance, "all_strict_pareto": False}
     assert decide_verdict(reject) == "REJECT_ROUTE"
     assert decide_verdict({

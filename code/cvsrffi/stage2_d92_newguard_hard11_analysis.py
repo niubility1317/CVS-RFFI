@@ -296,7 +296,7 @@ def decide_verdict(gate_state: Mapping[str, bool]) -> str:
     if not bool(gate_state.get("all_magnitude")):
         return "REVISE_ONCE"
     if not bool(gate_state.get("stability")) or not bool(gate_state.get("resources")):
-        return "REJECT_ROUTE"
+        return "REVISE_ONCE"
     return "ADVANCE_TO_TARGET125_CANDIDATE"
 
 

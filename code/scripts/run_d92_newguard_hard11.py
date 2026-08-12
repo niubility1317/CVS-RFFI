@@ -139,6 +139,19 @@ def _validate_fit_audit(path: str | Path, *, k_shot: int) -> None:
             total_i, actual_i = int(total), int(actual)
         except (TypeError, ValueError) as error:
             raise D92NewGuardHard11RunnerError("fit audit inventory is invalid") from error
+        if int(k_shot) > 2:
+            if (
+                row.get("d92_e0d_newguard_active") is not True
+                or row.get("d92_e0d_newguard_fallback_active") is not False
+                or row.get("d92_e0d_newguard_fallback_reason") is not None
+            ):
+                raise D92NewGuardHard11RunnerError("fit audit NewGuard active/fallback drift")
+        elif (
+            row.get("d92_e0d_newguard_active") is not False
+            or row.get("d92_e0d_newguard_fallback_active") is not False
+            or row.get("d92_e0d_newguard_fallback_reason") != "K1_K2_EXACT_D92_FULL_ALIAS"
+        ):
+            raise D92NewGuardHard11RunnerError("fit audit NewGuard K1 alias drift")
         if (total_i, actual_i, str(mode)) != (expected_total, expected_actual, expected_mode):
             raise D92NewGuardHard11RunnerError("fit audit K/mode inventory drift")
 

@@ -43,10 +43,15 @@ def _full_manifest(tmp_path: Path) -> tuple[Path, str, dict[str, object]]:
     return manifest_path, _sha256(manifest_path), manifest
 
 
-def _write_prediction_closure(root: Path) -> None:
+def _write_prediction_closure(root: Path, *, force_newguard_fallback: bool = False) -> None:
     k1 = "__k_1__" in str(root)
     mode = "d92_full_alias" if k1 else "newguard_maxmin"
     total, actual = (3, 3) if k1 else (2, 1)
+    newguard_active = False if k1 else not force_newguard_fallback
+    newguard_fallback = False if k1 else force_newguard_fallback
+    newguard_reason = "K1_K2_EXACT_D92_FULL_ALIAS" if k1 else (
+        "deployment_protection_failed" if force_newguard_fallback else None
+    )
     for state in ("before", "after"):
         state_root = root / state
         state_root.mkdir(parents=True, exist_ok=True)
@@ -63,6 +68,9 @@ def _write_prediction_closure(root: Path) -> None:
             "after_registered_d_mode_effective": mode,
             "after_total_component_fit_count": total,
             "after_actual_component_inventory": {"actual_component_fit_count": actual},
+            "d92_e0d_newguard_active": newguard_active,
+            "d92_e0d_newguard_fallback_active": newguard_fallback,
+            "d92_e0d_newguard_fallback_reason": newguard_reason,
             "after_registration_resource": {"registration_wall_time_ns": 100.0, "registration_incremental_peak_working_set_bytes": 100.0},
             "query_macs": 7488,
             "after_state_bytes": 18503,
@@ -179,6 +187,72 @@ def test_fit_audit_gate_requires_newguard_mode_inventory_and_query_zero(tmp_path
     _write_json(path, rows)
     with pytest.raises(runner.D92NewGuardHard11RunnerError, match="fit audit"):
         runner._validate_fit_audit(path, k_shot=10)
+
+
+def test_fit_audit_requires_active_newguard_without_fallback_for_k_gt_2(tmp_path: Path) -> None:
+    path = tmp_path / "fit_audit.json"
+    rows = [{
+        "scenario": scene,
+        "arm_id": runner.ARM_ID,
+        "candidate_id": runner.CANDIDATE_ID,
+        "after_registered_d_mode_effective": "newguard_maxmin",
+        "after_total_component_fit_count": 2,
+        "after_actual_component_inventory": {"actual_component_fit_count": 1},
+        "d92_e0d_newguard_active": False,
+        "d92_e0d_newguard_fallback_active": True,
+        "d92_e0d_newguard_fallback_reason": "deployment_protection_failed",
+        **{field: False for field in runner.QUERY_ZERO_FIELDS},
+    } for scene in SCENES]
+    _write_json(path, rows)
+    with pytest.raises(runner.D92NewGuardHard11RunnerError, match="NewGuard"):
+        runner._validate_fit_audit(path, k_shot=10)
+
+
+def test_fit_audit_requires_exact_k1_alias_reason(tmp_path: Path) -> None:
+    path = tmp_path / "fit_audit.json"
+    rows = [{
+        "scenario": scene,
+        "arm_id": runner.ARM_ID,
+        "candidate_id": runner.CANDIDATE_ID,
+        "after_registered_d_mode_effective": "d92_full_alias",
+        "after_total_component_fit_count": 3,
+        "after_actual_component_inventory": {"actual_component_fit_count": 3},
+        "d92_e0d_newguard_active": False,
+        "d92_e0d_newguard_fallback_active": False,
+        "d92_e0d_newguard_fallback_reason": "wrong_reason",
+        **{field: False for field in runner.QUERY_ZERO_FIELDS},
+    } for scene in SCENES]
+    _write_json(path, rows)
+    with pytest.raises(runner.D92NewGuardHard11RunnerError, match="NewGuard"):
+        runner._validate_fit_audit(path, k_shot=1)
+
+
+def test_k_gt_2_smoke_rejects_newguard_fallback_before_shards(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    manifest_path, digest, manifest = _full_manifest(tmp_path)
+
+    def fake_fallback_child(command: list[str], **_: object) -> SimpleNamespace:
+        if "run_d92_e0d_prediction.py" in str(command[1]):
+            root = Path(command[command.index("--output-root") + 1])
+            _write_prediction_closure(root, force_newguard_fallback=True)
+        else:
+            path = Path(command[command.index("--output-path") + 1])
+            _write_json(path, {"status": "PASS"})
+        return SimpleNamespace(returncode=0)
+
+    monkeypatch.setattr(runner.subprocess, "run", fake_fallback_child)
+    monkeypatch.setattr(runner, "_verify_manifest_artifacts", lambda *_a: None)
+    with pytest.raises(runner.D92NewGuardHard11RunnerError, match="NewGuard"):
+        runner.truth_free_smoke(
+            SimpleNamespace(
+                matrix_manifest=str(manifest_path),
+                matrix_manifest_sha256=digest,
+                output_root=str(Path(manifest["output_root"]) / "smoke"),
+                device="cpu",
+                cpu_threads=1,
+            )
+        )
 
 
 def test_manifest_artifact_hashes_are_checked_on_real_paths(tmp_path: Path) -> None:
