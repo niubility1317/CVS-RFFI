@@ -13,6 +13,27 @@ if str(ROOT / "code") not in sys.path:
 from scripts import run_d92_csoas_hard10 as runner  # noqa: E402
 
 
+def test_manifest_artifact_wrapper_keeps_original_base_helper_under_runner_context(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    manifest = {"jobs": []}
+    calls: list[object] = []
+
+    def original_base_helper(value: object) -> None:
+        calls.append(value)
+
+    monkeypatch.setattr(
+        runner,
+        "_BASE_VERIFY_MANIFEST_ARTIFACTS",
+        original_base_helper,
+        raising=False,
+    )
+    with runner._runner_context():
+        runner._base_runner._verify_manifest_artifacts(manifest)
+
+    assert calls == [manifest]
+
+
 def _write(path: Path, value: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(value), encoding="utf-8")

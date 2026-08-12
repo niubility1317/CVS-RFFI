@@ -29,6 +29,7 @@ SCORING_ENTRY = _base_runner.SCORING_ENTRY
 subprocess = _base_runner.subprocess
 QUERY_ZERO_FIELDS = tuple(_base_runner.QUERY_ZERO_FIELDS)
 CSOAS_QUERY_ZERO_FIELDS = tuple(_matrix.CSOAS_QUERY_ZERO_FIELDS)
+_BASE_VERIFY_MANIFEST_ARTIFACTS = _base_runner._verify_manifest_artifacts
 
 
 class D92CSOASHard10RunnerError(RuntimeError):
@@ -119,7 +120,7 @@ def _validate_fit_audit(path: str | Path, *, k_shot: int) -> None:
 
 def _verify_manifest_artifacts(manifest: Mapping[str, Any]) -> None:
     # Delegate immutable package/truth hash checks to the proven Hard11 helper.
-    _base_runner._verify_manifest_artifacts(manifest)
+    _BASE_VERIFY_MANIFEST_ARTIFACTS(manifest)
 
 
 def _read_json_object(path: str | Path) -> dict[str, Any]:
