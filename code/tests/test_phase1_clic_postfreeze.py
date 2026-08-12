@@ -170,6 +170,7 @@ def _checkpoint_fixture(
             "source_split_receipt": {
                 "schema": "cvs.phase1.source_split_receipt.v1",
                 "source_receivers": list(SOURCE_RX),
+                "source_days": list(SOURCE_DAYS),
                 "labeled_indices_sha256": _sha_text("labeled"),
                 "split_manifest_sha256": _sha_text("split"),
             },
@@ -1943,6 +1944,13 @@ def test_clic_real_g_bundle_seals_candidate_train_data_config_member_and_rejects
     assert normalized["source_validation_tx_ids"] == list(HELD_TX)
     assert normalized["source_proxy_tx_ids"] == list(PROXY_TX)
     assert normalized["source_receiver_ids"] == list(SOURCE_RX)
+    assert normalized["source_day_ids"] == list(SOURCE_DAYS)
+    assert normalized["role_construction"] == {
+        "split_mode": "tx_rx_day_1_6_3",
+        "labeled_ratio": 0.07,
+        "unlabeled_ratio": 0.63,
+        "source_val_ratio": 0.30,
+    }
     assert normalized["input_len"] == int(BUNDLE.RUNTIME_MODEL_DEFAULTS["input_len"])
     assert normalized["single_leo_training_scenes"] == list(SCENARIOS)
     for forbidden in ("epoch", "optimizer", "loss", "model", "model_architecture", "model_state"):
@@ -2030,7 +2038,12 @@ def _target_train_config() -> dict[str, object]:
         "source_receiver_ids": list(SOURCE_RX),
         "source_day_ids": list(SOURCE_DAYS),
         "split_mode": "tx_rx_day_1_6_3",
-        "role_construction": "source_only_labeled_unlabeled_validation",
+        "role_construction": {
+            "split_mode": "tx_rx_day_1_6_3",
+            "labeled_ratio": 0.07,
+            "unlabeled_ratio": 0.63,
+            "source_val_ratio": 0.30,
+        },
         "physical_row_selection": "fixed_pre_registered_rows",
         "preprocessing": {"input_len": 256, "iq_dtype": "float32"},
         "single_leo_training_scenes": list(SCENARIOS),
@@ -2628,6 +2641,33 @@ def test_adv3b02_config_equivalence_ignores_capsule_physical_seed_but_rejects_tr
             candidate_known_test_config=candidate_known,
             baseline_train_config=baseline_train,
             baseline_known_test_config=drifted_known,
+        )
+
+
+@pytest.mark.parametrize(
+    "ratio_field, drifted_value",
+    [
+        ("labeled_ratio", 0.08),
+        ("unlabeled_ratio", 0.62),
+        ("source_val_ratio", 0.31),
+    ],
+)
+def test_adv3b02_config_equivalence_rejects_any_training_role_ratio_drift(
+    ratio_field: str,
+    drifted_value: float,
+) -> None:
+    candidate_train = _target_train_config()
+    baseline_train = _target_train_config()
+    baseline_role = dict(baseline_train["role_construction"])
+    baseline_role[ratio_field] = drifted_value
+    baseline_train["role_construction"] = baseline_role
+    known = _target_known_test_config()
+    with pytest.raises(Exception, match="config|equivalence|role|ratio|drift"):
+        TARGET_EVAL.validate_adv3b02_config_equivalence(
+            candidate_train_config=candidate_train,
+            candidate_known_test_config=known,
+            baseline_train_config=baseline_train,
+            baseline_known_test_config=known,
         )
 
 
