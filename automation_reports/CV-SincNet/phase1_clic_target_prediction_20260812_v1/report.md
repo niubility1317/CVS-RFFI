@@ -3,7 +3,7 @@
 ## 状态与目标
 
 - 实验ID：`phase1_clic_target_prediction_20260812_v1`。
-- 当前状态：`LOCAL_VERIFIED / INPUT_BINDING_UPDATED / FRESH_REVIEW_PENDING / FORMAL_LAUNCH=0 / NO_PERFORMANCE_RESULT`。
+- 当前状态：`LOCAL_VERIFIED / INPUT_BINDING_REVIEW_ALLOW / FORMAL_LAUNCH=0 / NO_PERFORMANCE_RESULT`。
 - 操作者：主控Codex；N607唯一runner：`Luna/max`。
 - 目标：从既有target confirmation v2缓存唯一派生VALIDATED_ONCE收据和known-test配置，封装一个IQ-only目标包，并使用predictor artifacts v2的F1—F6×C／G共12个冻结predictor逐行零适配前向，生成12份不可变prediction。
 - 用户边界：不要求与ADV3B02共用同一封存目标包、物理行、received-IQ字节或seed；只要求训练数据配置和known-test数据配置相同。C／G本身仍使用同一个本轮IQ-only package。
@@ -31,6 +31,7 @@
 - prediction完整后，单独truth-side scorer才可首次打开truth sidecar；评分必须同时给出target-known DG、unknown拒识和三scene域泛化。ADV3B02对比只接受训练／known-test配置逐字段等价且分层crossed证据完整的不可变原件；当前未找到该原件时，先封存12份prediction，不伪造非劣结论。
 - 本地launcher：`code/scripts/launch_phase1_clic_target_prediction12_v1_20260812.sh`，更新后SHA-256=`77406F0A10C33B44B43E2828DCAA63191C017B0A0F54B4963D050D6996420127`；测试语义JSON SHA-256=`416371DB57C08E6877F2DA49E73C62A241F857304D52480C884D8F6F86A84A04`。`bash -n`通过；dry-run精确14行，即validation1＋package1＋prediction C6／G6，C6仅绑定predictor artifacts v2、G6仅绑定G-only v1；禁止truth／ADV／score／fit／update／role／query／selection／retry参数为0；窄测试`1／1`通过。
 - 待完成：G-only六fold工件落盘；更新后的C-v2／G-only双根绑定fresh P0／P1审查；N607唯一启动、预测工件QA及报告回填。
+- 双根绑定fresh复审结论：`P0=0，P1=0，ALLOW`。实际确认C-v2命中6、G-only命中6、唯一IQ-only package命中12、dry-run14行、禁止参数0、launcher测试`1／1`；G-only工件尚未落盘仅是正式launch前置条件。
 
 ## 预期工件技术表
 
