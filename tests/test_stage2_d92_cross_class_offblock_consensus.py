@@ -51,6 +51,33 @@ def _random_support(classes: int, shots: int, seed: int) -> tuple[np.ndarray, np
     return rows.astype(np.float32), labels
 
 
+def _near_endpoint_consensus_group() -> tuple[np.ndarray, np.ndarray]:
+    """Two K3 directions whose cosine is below but very near one."""
+
+    rows: list[np.ndarray] = []
+    labels: list[int] = []
+    for class_index, middle in enumerate((1.0, 1.0 + 2.0e-7)):
+        direction = np.zeros(d42.FEATURE_DIM, dtype=np.float32)
+        direction[[0, 160, 256]] = (1.0, middle, 1.0)
+        rows.extend((-direction, np.zeros_like(direction), direction))
+        labels.extend((class_index, class_index, class_index))
+    return np.stack(rows), np.asarray(labels, dtype=np.int64)
+
+
+def _float64_boundary_consensus_group() -> tuple[np.ndarray, np.ndarray]:
+    """K3 support retains a sub-float32 direction magnitude difference."""
+
+    rows: list[np.ndarray] = []
+    labels: list[int] = []
+    for class_index, first in enumerate((1.0, 1.0 + 2.0e-8)):
+        direction = np.zeros(d42.FEATURE_DIM, dtype=np.float64)
+        direction[[0, 160, 256]] = (first, 1.0, 1.0)
+        # Reverse canonical order to require byte-key sorting before FP64 work.
+        rows.extend((direction, -direction, np.zeros_like(direction)))
+        labels.extend((class_index, class_index, class_index))
+    return np.stack(rows), np.asarray(labels, dtype=np.int64)
+
+
 def test_ccoc_pairwise_consensus_has_literal_full_and_block_endpoints():
     """Would fail if CCOC averaged raw off-blocks instead of pairwise cosine."""
 
@@ -80,6 +107,43 @@ def test_ccoc_rejects_a_class_with_zero_offblock_direction():
         ccoc.build_cross_class_offblock_consensus_statistics(
             d42, rows, labels, class_count=11, k_shot=3
         )
+
+
+def test_ccoc_near_endpoint_rho_is_not_absorbed_by_a_tolerance():
+    """Would fail if a non-endpoint pairwise cosine were snapped to one."""
+
+    rows, labels = _near_endpoint_consensus_group()
+    rho, audit = ccoc._stream_group_consensus(rows, labels, range(2), 3)
+
+    assert 1.0 - 64.0 * np.finfo(np.float64).eps < audit["pairwise_cosine_raw"] < 1.0
+    assert rho == audit["pairwise_cosine_raw"]
+    assert rho < 1.0
+
+
+def test_ccoc_float32_byte_sorting_keeps_original_float64_reduction_values():
+    """Would fail if canonical sorting quantized the rows used for reduction."""
+
+    rows, labels = _float64_boundary_consensus_group()
+    expected_order = tuple(
+        sorted(
+            np.flatnonzero(labels == 0).tolist(),
+            key=lambda index: np.ascontiguousarray(
+                np.asarray(rows[index], dtype=np.float32)
+            ).tobytes(order="C"),
+        )
+    )
+    class_key, actual_order = ccoc._canonical_class_row_order(rows, labels, 0, 3)
+    _, audit = ccoc._stream_group_consensus(rows, labels, range(2), 3)
+
+    assert actual_order == expected_order
+    assert class_key == tuple(
+        np.ascontiguousarray(np.asarray(rows[index], dtype=np.float32)).tobytes(
+            order="C"
+        )
+        for index in expected_order
+    )
+    assert audit["canonicalization"] == "lexicographic_float32_row_bytes_then_float64_reduce"
+    assert audit["offblock_norm_max"] > audit["offblock_norm_min"]
 
 
 def test_ccoc_rejects_nonfinite_q_and_rho_boundaries(monkeypatch):
@@ -214,6 +278,10 @@ def test_ccoc_k10_receipt_uses_the_frozen_streaming_bound():
     )
 
     assert statistics.audit["d92_ccoc_support_transient_bytes_upper_bound"] == 334336
+    assert statistics.audit["d92_ccoc_workspace_upper_accumulators_bytes"] == 188416
+    assert statistics.audit["d92_ccoc_workspace_cross_block_buffer_bytes"] == 122880
+    assert statistics.audit["d92_ccoc_workspace_residual_buffer_bytes"] == 23040
+    assert statistics.audit["d92_ccoc_workspace_numeric_bytes_upper_bound"] == 334336
     assert statistics.audit["d92_ccoc_query_fit_access"] is False
     assert statistics.audit["d92_ccoc_query_update_access"] is False
     assert statistics.audit["d92_ccoc_query_selection_access"] is False
@@ -252,3 +320,24 @@ def test_ccoc_active_audit_keeps_the_frozen_no_extra_work_contract():
     assert statistics.audit["d92_ccoc_query_macs_delta"] == 0
     assert compiled_audit["d92_ccoc_dense_solve_count"] == 1
     assert compiled_audit["d92_ccoc_full_solve_count"] == 1
+
+
+def test_ccoc_inactive_receipt_rejects_an_active_registration_state():
+    """Would fail if an active registered CCOC row silently claimed K1/K2 fallback."""
+
+    with pytest.raises(ccoc.D92CCOCError, match="active_registration"):
+        ccoc.ccoc_inactive_receipt(11, 3)
+
+
+def test_ccoc_inactive_receipt_keeps_only_frozen_pre_and_low_k_reasons():
+    """Would fail if inactive receipts drifted from the D81 lifecycle reasons."""
+
+    assert ccoc.ccoc_inactive_receipt(6, 5)["d92_ccoc_status"] == "before_exact_d81"
+    assert (
+        ccoc.ccoc_inactive_receipt(11, 1)["d92_ccoc_status"]
+        == "k1_k2_exact_d81_fallback"
+    )
+    assert (
+        ccoc.ccoc_inactive_receipt(11, 2)["d92_ccoc_status"]
+        == "k1_k2_exact_d81_fallback"
+    )

@@ -27,10 +27,22 @@ _UPPER_BLOCK_PAIRS = (
     (_BLOCK_SLICES[0], _BLOCK_SLICES[2]),
     (_BLOCK_SLICES[1], _BLOCK_SLICES[2]),
 )
-_CANONICALIZATION = (
-    "per_class_lexicographic_float32_row_bytes_then_float64_mean_residual_scatter"
+_CANONICALIZATION = "lexicographic_float32_row_bytes_then_float64_reduce"
+_FEATURE_DIMENSION = 288
+_FLOAT64_BYTES = np.dtype(np.float64).itemsize
+_UPPER_ACCUMULATOR_BYTES = int(
+    sum(
+        (left.stop - left.start) * (right.stop - right.start) * _FLOAT64_BYTES
+        for left, right in _UPPER_BLOCK_PAIRS
+    )
 )
-_SUPPORT_TRANSIENT_BYTES_UPPER_BOUND = 334336
+_CROSS_BLOCK_WORKSPACE_BYTES = int(160 * 96 * _FLOAT64_BYTES)
+_K10_RESIDUAL_WORKSPACE_BYTES = int(10 * _FEATURE_DIMENSION * _FLOAT64_BYTES)
+_K10_NUMERIC_WORKSPACE_BYTES = int(
+    _UPPER_ACCUMULATOR_BYTES
+    + _CROSS_BLOCK_WORKSPACE_BYTES
+    + _K10_RESIDUAL_WORKSPACE_BYTES
+)
 
 
 class D92CCOCError(RuntimeError):
@@ -52,50 +64,89 @@ class CrossClassOffblockConsensusStatistics:
     audit: dict[str, Any]
 
 
-def _canonical_float32_class_rows(rows: np.ndarray) -> np.ndarray:
-    """Canonicalize one class by its float32 row bytes before FP64 math."""
+def _float32_row_bytes(row: np.ndarray) -> bytes:
+    """Build the canonical sort key without changing the FP64 reduction row."""
 
-    source = np.asarray(rows)
-    if source.ndim != 2 or len(source) == 0:
-        raise D92CCOCError("ccoc_invalid_class_rows")
     with np.errstate(over="ignore", invalid="ignore"):
-        rows32 = np.ascontiguousarray(np.asarray(source, dtype=np.float32))
-    if not np.isfinite(rows32).all():
+        row32 = np.ascontiguousarray(np.asarray(row, dtype=np.float32))
+    if not np.isfinite(row32).all():
         raise D92CCOCNumericalError("ccoc_q_nonfinite")
-    order = sorted(
-        range(len(rows32)),
-        key=lambda index: rows32[index].tobytes(order="C"),
-    )
-    return np.asarray(rows32[np.asarray(order, dtype=np.int64)], dtype=np.float64)
+    return row32.tobytes(order="C")
 
 
-def _canonical_group_class_indices(
-    rows: np.ndarray, labels: np.ndarray, class_indices: Iterable[int]
-) -> tuple[int, ...]:
-    """Order class contributions by their canonical support content, not IDs."""
+def _canonical_class_row_order(
+    rows: np.ndarray,
+    labels: np.ndarray,
+    class_index: int,
+    k_shot: int,
+) -> tuple[tuple[bytes, ...], tuple[int, ...]]:
+    """Return one class's float32-byte order without copying class rows."""
 
-    keyed: list[tuple[tuple[bytes, ...], int]] = []
+    indices = np.flatnonzero(labels == int(class_index))
+    if len(indices) != int(k_shot):
+        raise D92CCOCError("ccoc_unbalanced_group_registry")
+    keyed = [
+        (_float32_row_bytes(rows[int(index)]), int(index)) for index in indices
+    ]
+    keyed.sort(key=lambda item: item[0])
+    return tuple(item[0] for item in keyed), tuple(item[1] for item in keyed)
+
+
+def _canonical_group_class_orders(
+    rows: np.ndarray,
+    labels: np.ndarray,
+    class_indices: Iterable[int],
+    k_shot: int,
+) -> tuple[tuple[int, tuple[int, ...]], ...]:
+    """Order class contributions by canonical support content, not class ID."""
+
+    keyed: list[tuple[tuple[bytes, ...], int, tuple[int, ...]]] = []
     for raw_index in class_indices:
         class_index = int(raw_index)
-        class_rows = _canonical_float32_class_rows(rows[labels == class_index])
-        class_key = tuple(
-            np.ascontiguousarray(row, dtype=np.float32).tobytes(order="C")
-            for row in class_rows
+        class_key, row_order = _canonical_class_row_order(
+            rows, labels, class_index, k_shot
         )
-        keyed.append((class_key, class_index))
+        keyed.append((class_key, class_index, row_order))
     keyed.sort(key=lambda item: item[0])
-    return tuple(item[1] for item in keyed)
+    return tuple((item[1], item[2]) for item in keyed)
 
 
-def _cross_block(
-    residual: np.ndarray, left: slice, right: slice, denominator: float
+def _cross_block_into(
+    residual: np.ndarray,
+    left: slice,
+    right: slice,
+    denominator: float,
+    workspace: np.ndarray,
 ) -> np.ndarray:
-    """Return one deterministic upper covariance block without retaining it."""
+    """Overwrite the one reusable max-cross-block workspace and return its view."""
 
-    block = np.matmul(residual[:, left].T, residual[:, right]) / denominator
+    rows = int(left.stop - left.start)
+    columns = int(right.stop - right.start)
+    block = workspace[: rows * columns].reshape(rows, columns)
+    np.matmul(residual[:, left].T, residual[:, right], out=block)
+    np.multiply(block, 1.0 / denominator, out=block)
     if not np.isfinite(block).all():
         raise D92CCOCNumericalError("ccoc_q_nonfinite")
     return block
+
+
+def _workspace_receipt(k_shot: int) -> dict[str, int]:
+    """Report the exact live numerical buffers used by the streaming core."""
+
+    shots = int(k_shot)
+    residual_bytes = int(shots * _FEATURE_DIMENSION * _FLOAT64_BYTES)
+    numeric_bytes = int(
+        _UPPER_ACCUMULATOR_BYTES
+        + _CROSS_BLOCK_WORKSPACE_BYTES
+        + residual_bytes
+    )
+    return {
+        "upper_accumulators_bytes": _UPPER_ACCUMULATOR_BYTES,
+        "cross_block_buffer_bytes": _CROSS_BLOCK_WORKSPACE_BYTES,
+        "residual_buffer_bytes": residual_bytes,
+        "numeric_bytes_upper_bound": numeric_bytes,
+        "frozen_k10_numeric_bytes_upper_bound": _K10_NUMERIC_WORKSPACE_BYTES,
+    }
 
 
 def _stream_group_consensus(
@@ -114,43 +165,57 @@ def _stream_group_consensus(
     """
 
     rows = np.asarray(transformed)
-    labels = np.asarray(targets, dtype=np.int64)
+    labels = np.asarray(targets)
     classes = tuple(int(index) for index in class_indices)
     shots = int(k_shot)
     if (
         rows.ndim != 2
-        or rows.shape[1] != 288
+        or rows.shape[1] != _FEATURE_DIMENSION
         or labels.shape != (len(rows),)
+        or not np.issubdtype(labels.dtype, np.integer)
         or len(classes) < 2
         or shots <= 2
     ):
         raise D92CCOCError("ccoc_invalid_group_registry")
-    if any(int(np.sum(labels == class_index)) != shots for class_index in classes):
-        raise D92CCOCError("ccoc_unbalanced_group_registry")
-
-    ordered_classes = _canonical_group_class_indices(rows, labels, classes)
+    ordered_classes = _canonical_group_class_orders(
+        rows, labels, classes, shots
+    )
     accumulators = [
         np.zeros((left.stop - left.start, right.stop - right.start), dtype=np.float64)
         for left, right in _UPPER_BLOCK_PAIRS
     ]
+    cross_block_workspace = np.empty(
+        _CROSS_BLOCK_WORKSPACE_BYTES // _FLOAT64_BYTES, dtype=np.float64
+    )
+    residual = np.empty((shots, _FEATURE_DIMENSION), dtype=np.float64)
     norm_min = math.inf
     norm_max = 0.0
     denominator = float(shots - 1)
 
-    for class_index in ordered_classes:
-        class_rows = _canonical_float32_class_rows(rows[labels == class_index])
-        mean = np.sum(class_rows, axis=0, dtype=np.float64) / float(shots)
-        residual = class_rows - mean
-        if not np.isfinite(mean).all() or not np.isfinite(residual).all():
+    for _, row_order in ordered_classes:
+        for local_index, row_index in enumerate(row_order):
+            source_row = rows[row_index]
+            if not np.isfinite(source_row).all():
+                raise D92CCOCNumericalError("ccoc_q_nonfinite")
+            residual[local_index] = source_row
+        mean_workspace = cross_block_workspace[:_FEATURE_DIMENSION]
+        mean_workspace.fill(0.0)
+        for local_index in range(shots):
+            np.add(mean_workspace, residual[local_index], out=mean_workspace)
+        np.multiply(mean_workspace, 1.0 / float(shots), out=mean_workspace)
+        np.subtract(residual, mean_workspace, out=residual)
+        if not np.isfinite(mean_workspace).all() or not np.isfinite(residual).all():
             raise D92CCOCNumericalError("ccoc_q_nonfinite")
 
         norm_squared = 0.0
         for left, right in _UPPER_BLOCK_PAIRS:
-            q_block = _cross_block(residual, left, right, denominator)
-            block_norm = float(np.linalg.norm(q_block, ord="fro"))
-            if not math.isfinite(block_norm):
+            q_block = _cross_block_into(
+                residual, left, right, denominator, cross_block_workspace
+            )
+            block_norm_squared = float(np.vdot(q_block, q_block).real)
+            if not math.isfinite(block_norm_squared) or block_norm_squared < 0.0:
                 raise D92CCOCNumericalError("ccoc_q_nonfinite")
-            norm_squared += block_norm * block_norm
+            norm_squared += block_norm_squared
         if not math.isfinite(norm_squared):
             raise D92CCOCNumericalError("ccoc_q_nonfinite")
         class_norm = math.sqrt(norm_squared)
@@ -158,8 +223,11 @@ def _stream_group_consensus(
             raise D92CCOCNumericalError("ccoc_q_zero_frobenius_norm")
 
         for accumulator, (left, right) in zip(accumulators, _UPPER_BLOCK_PAIRS):
-            q_block = _cross_block(residual, left, right, denominator)
-            accumulator += q_block / class_norm
+            q_block = _cross_block_into(
+                residual, left, right, denominator, cross_block_workspace
+            )
+            np.multiply(q_block, 1.0 / class_norm, out=q_block)
+            np.add(accumulator, q_block, out=accumulator)
         norm_min = min(norm_min, class_norm)
         norm_max = max(norm_max, class_norm)
 
@@ -175,13 +243,7 @@ def _stream_group_consensus(
     )
     if not math.isfinite(rho_raw):
         raise D92CCOCNumericalError("ccoc_rho_nonfinite")
-    endpoint_tolerance = 64.0 * np.finfo(np.float64).eps
-    if abs(rho_raw) <= endpoint_tolerance:
-        rho = 0.0
-    elif abs(rho_raw - 1.0) <= endpoint_tolerance:
-        rho = 1.0
-    else:
-        rho = float(np.clip(rho_raw, 0.0, 1.0))
+    rho = float(np.clip(rho_raw, 0.0, 1.0))
     if not math.isfinite(rho):
         raise D92CCOCNumericalError("ccoc_rho_nonfinite")
     return rho, {
@@ -192,6 +254,7 @@ def _stream_group_consensus(
         "pairwise_cosine_clipped": rho,
         "crossblock_passes_per_class": 2,
         "upper_block_count": len(_UPPER_BLOCK_PAIRS),
+        "canonicalization": _CANONICALIZATION,
     }
 
 
@@ -281,6 +344,7 @@ def _ccoc_statistics_audit(
 
     audit = dict(base.covariance_audit)
     support_macs = _support_macs_upper_bound(base.class_count, base.k_shot)
+    workspace = _workspace_receipt(base.k_shot)
     audit.update(
         {
             "d92_ccoc_active": True,
@@ -327,9 +391,24 @@ def _ccoc_statistics_audit(
             "d92_ccoc_new_endpoint_cholesky_min_diagonal": new_cholesky_min,
             "d92_ccoc_final_cholesky_min_diagonal": final_cholesky_min,
             "d92_ccoc_support_macs_upper_bound": support_macs,
-            "d92_ccoc_support_transient_bytes_upper_bound": (
-                _SUPPORT_TRANSIENT_BYTES_UPPER_BOUND
-            ),
+            "d92_ccoc_workspace_upper_accumulators_bytes": workspace[
+                "upper_accumulators_bytes"
+            ],
+            "d92_ccoc_workspace_cross_block_buffer_bytes": workspace[
+                "cross_block_buffer_bytes"
+            ],
+            "d92_ccoc_workspace_residual_buffer_bytes": workspace[
+                "residual_buffer_bytes"
+            ],
+            "d92_ccoc_workspace_numeric_bytes_upper_bound": workspace[
+                "numeric_bytes_upper_bound"
+            ],
+            "d92_ccoc_workspace_frozen_k10_numeric_bytes_upper_bound": workspace[
+                "frozen_k10_numeric_bytes_upper_bound"
+            ],
+            "d92_ccoc_support_transient_bytes_upper_bound": workspace[
+                "numeric_bytes_upper_bound"
+            ],
             "d92_ccoc_persistent_state_bytes_delta": 0,
             "d92_ccoc_persistent_bytes_delta": 0,
             "d92_ccoc_query_state_bytes_delta": 0,
@@ -345,7 +424,9 @@ def _ccoc_statistics_audit(
             "d92_ccoc_query_class_quota_access": False,
             "d92_ccoc_query_global_reassignment": False,
             "support_macs_upper_bound": support_macs,
-            "support_transient_bytes_upper_bound": _SUPPORT_TRANSIENT_BYTES_UPPER_BOUND,
+            "support_transient_bytes_upper_bound": workspace[
+                "numeric_bytes_upper_bound"
+            ],
             "persistent_state_bytes_delta": 0,
             "query_state_bytes_delta": 0,
             "query_macs_delta": 0,
@@ -473,9 +554,14 @@ def ccoc_inactive_receipt(
     """Return the no-fit receipt for pre-registration or K1/K2 CCOC states."""
 
     classes, shots, old_count = int(class_count), int(k_shot), int(old_class_count)
-    if classes < old_count or shots < 1:
+    if classes < old_count or old_count <= 0 or shots < 1:
         raise D92CCOCError("ccoc_invalid_inactive_registry")
-    status = "before_exact_d81" if classes == old_count else "k1_k2_exact_d81_fallback"
+    if classes == old_count:
+        status = "before_exact_d81"
+    elif shots <= 2:
+        status = "k1_k2_exact_d81_fallback"
+    else:
+        raise D92CCOCError("ccoc_inactive_receipt_active_registration")
     return {
         "d92_ccoc_active": False,
         "d92_ccoc_fallback_active": False,
