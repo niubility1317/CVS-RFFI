@@ -43,7 +43,7 @@ PROXY_TX = ("tx-proxy",)
 SOURCE_RX = ("rx-0", "rx-1")
 SOURCE_DAYS = ("day-0", "day-1")
 TRAINING_RUN = "phase1_clic12_20260812_v5"
-POSTFREEZE_MATRIX = "phase1_clic_postfreeze_20260812_v1"
+POSTFREEZE_MATRIX = "phase1_clic_postfreeze_20260812_v2"
 
 
 def _load_clic_core_fixture():
@@ -90,7 +90,6 @@ def _real_g_model_state() -> dict[str, torch.Tensor]:
         from model_dual_cvsincnet import build_dual_model
 
         runtime_defaults = dict(BUNDLE.RUNTIME_MODEL_DEFAULTS)
-        runtime_defaults["id_feature_key"] = "z_id"
         model = build_dual_model(**runtime_defaults)
         _REAL_G_MODEL_STATE = {
             key: value.detach().cpu().contiguous().clone()
@@ -127,7 +126,7 @@ def _checkpoint_fixture(
     args = {
         "split_mode": "tx_rx_day_1_6_3",
         "model_variant": "lite_d",
-        "id_feature_key": "z_id",
+        "id_feature_key": "feat_joint",
         "phase1_source_train_tx_ids": ",".join(SOURCE_TX),
         "phase1_source_known_validation_tx_ids": ",".join(HELD_TX),
         "phase1_source_proxy_unknown_tx_ids": ",".join(PROXY_TX),
@@ -148,7 +147,7 @@ def _checkpoint_fixture(
             raise AssertionError("only the frozen G arm may carry a real deployment model fixture")
         args.update({key: value for key, value in BUNDLE.RUNTIME_MODEL_DEFAULTS.items()})
         args["wisig_out_len"] = int(BUNDLE.RUNTIME_MODEL_DEFAULTS["input_len"])
-        args["id_feature_key"] = "z_id"
+        args["id_feature_key"] = "feat_joint"
         args["phase1_clic_enabled"] = True
         args["phase1_clic_frozen_mode"] = True
         args["phase1_clic_operator_mode"] = "complex_local_invariant_curvature"
@@ -718,6 +717,8 @@ def test_clic_clean_exporter_reopens_versioned_terminal_and_checkpoint_contract(
         proxy_unknown_tx_ids=PROXY_TX,
     )
     assert arm == "G"
+    assert args["id_feature_key"] == "feat_joint"
+    assert CLEAN.EXPECTED_EXPORT_FEATURE_KEY == "z_id"
     assert args["checkpoint_selection"] == "final_only"
     assert receipt["completed"] is True
     assert receipt["final_checkpoint_sha256"] == paths["checkpoint_sha"]

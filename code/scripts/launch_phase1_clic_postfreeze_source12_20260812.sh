@@ -5,7 +5,7 @@ set -euo pipefail
 # It exports source-L clean/source-V/fixed400 proxy features only.  No target,
 # query, truth, role, source-LEO generation, scoring, or performance selection
 # is reachable from this launcher.
-RUN_ID="${RUN_ID:-phase1_clic_postfreeze_20260812_v1}"
+RUN_ID="${RUN_ID:-phase1_clic_postfreeze_20260812_v2}"
 TRAINING_RUN_ID="${TRAINING_RUN_ID:-phase1_clic12_20260812_v5}"
 PROJECT_ROOT="${PROJECT_ROOT:-/home/szu2070436088/2510044040/CV-SincNet}"
 CODE_ROOT="${CODE_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
@@ -25,7 +25,7 @@ for arg in "$@"; do
   esac
 done
 [[ "${DRY_RUN}" == "0" || "${DRY_RUN}" == "1" ]] || { echo "DRY_RUN must be 0 or 1" >&2; exit 2; }
-[[ "${RUN_ID}" == "phase1_clic_postfreeze_20260812_v1" ]] || { echo "postfreeze run ID drift" >&2; exit 2; }
+[[ "${RUN_ID}" == "phase1_clic_postfreeze_20260812_v2" ]] || { echo "postfreeze run ID drift" >&2; exit 2; }
 [[ "${TRAINING_RUN_ID}" == "phase1_clic12_20260812_v5" ]] || { echo "training run ID drift" >&2; exit 2; }
 [[ -f "${EXPORTER}" ]] || { echo "missing CLIC clean exporter: ${EXPORTER}" >&2; exit 2; }
 

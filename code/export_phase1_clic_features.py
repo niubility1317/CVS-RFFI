@@ -27,7 +27,13 @@ EXPECTED_CHECKPOINT_ROLE = "training_final_only"
 EXPECTED_CHECKPOINT_SELECTION = "final_only"
 EXPECTED_CANDIDATE_PATTERN = re.compile(r"^F([1-6])([CG])_CLIC12$")
 EXPECTED_METHOD = "P1_CLIC"
-EXPECTED_HEAD_FEATURE_KEY = "z_id"
+# ``id_feature_key`` is the pre-CLIC backbone construction key recorded by the
+# frozen v5 trainer.  The postfreeze exporter, however, must read the CLIC
+# module's final identity output exposed as ``z_id``.  Keeping these contracts
+# separate prevents a valid training checkpoint from being rejected while
+# still ensuring that geometry is fitted on the post-CLIC representation.
+EXPECTED_CHECKPOINT_ID_FEATURE_KEY = "feat_joint"
+EXPECTED_EXPORT_FEATURE_KEY = "z_id"
 FROZEN_WISIG_SHA256 = "2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f"
 FROZEN_PROXY_DAYS = ("2021_03_01", "2021_03_08")
 FROZEN_PROXY_RXS = ("1-1", "1-19", "14-7", "18-2", "19-2", "2-1")
@@ -124,7 +130,7 @@ def _validate_checkpoint_args(
     expected_text = {
         "split_mode": "tx_rx_day_1_6_3",
         "model_variant": "lite_d",
-        "id_feature_key": EXPECTED_HEAD_FEATURE_KEY,
+        "id_feature_key": EXPECTED_CHECKPOINT_ID_FEATURE_KEY,
         "phase1_source_train_tx_ids": ",".join(source_tx_ids),
         "phase1_source_known_validation_tx_ids": ",".join(known_validation_tx_ids),
         "phase1_source_proxy_unknown_tx_ids": ",".join(proxy_unknown_tx_ids),
@@ -233,7 +239,7 @@ def build_clean_export_manifest(
         "clic_terminal_contract": str(receipt["terminal_contract"]),
         "clic_terminal_contract_passed": True,
         "clic_enabled": arm == "G",
-        "z_id_source_key": EXPECTED_HEAD_FEATURE_KEY,
+        "z_id_source_key": EXPECTED_EXPORT_FEATURE_KEY,
         "source_tx_ids": [str(item) for item in source_tx_ids],
         "known_validation_tx_ids": [str(item) for item in known_validation_tx_ids],
         "proxy_unknown_tx_ids": [str(item) for item in proxy_unknown_tx_ids],
@@ -509,7 +515,7 @@ def export(args: argparse.Namespace) -> dict[str, Any]:
                 model,
                 loader,
                 device=device,
-                feature_name=EXPECTED_HEAD_FEATURE_KEY,
+                feature_name=EXPECTED_EXPORT_FEATURE_KEY,
                 role=role,
                 channel_view="clean",
                 satellite_tta_policy="none",
@@ -527,8 +533,8 @@ def export(args: argparse.Namespace) -> dict[str, Any]:
     )
     manifest.update(
         {
-            "feature_name": EXPECTED_HEAD_FEATURE_KEY,
-            "feature_key": EXPECTED_HEAD_FEATURE_KEY,
+            "feature_name": EXPECTED_EXPORT_FEATURE_KEY,
+            "feature_key": EXPECTED_EXPORT_FEATURE_KEY,
             "classification_head_contract": "dual_cvsincnet_tx_logits_v1",
             "checkpoint_load_strict": True,
             "checkpoint_load_audit": load_audit,
