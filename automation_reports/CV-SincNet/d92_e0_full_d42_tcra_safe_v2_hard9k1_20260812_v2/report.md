@@ -141,3 +141,16 @@ TCRA在support上每场景实际选择16–58个D42原子，并保持旧类tail�
 
 最终决定：淘汰TCRA/TPCE式support-tail离散后处理轴；不做完整125、不做同轴参数扫描。下一轮必须直接优化与held-query旧类错误更一致、且不依赖逐prefix全support复算的统计量。
 
+## 探索复盘与下一轮边界
+
+本轮已满足“三轮后复盘”要求，下一次实现前冻结以下结论：
+
+1. `FloorBoost`的旧类bias修补能抬floor，但破坏新类边界，说明只向旧类加截距不是双向Pareto解。
+2. `NewGuard`和`ParetoDistill`的连续安全扰动在真实D42发布态被吞没或回退，且额外求解超资源；不再做连续head微扰后量化。
+3. `TPCE/TCRA`直接改D42格点能稳定激活且不伤旧类，但support-tail提升几乎不迁移到held-query；逐prefix真实复算还使P90和wall ratio越硬门。不再做support-tail原子搜索、强度扫描或同轴放宽。
+4. 下一候选必须在一次FULL注册内部改变统计估计本身，而非注册后补丁；优先研究对弱旧类与新类同时对称的、解析闭式的鲁棒协方差/均值不确定性校准。不得使用query、clean/source、role Oracle、类配额或全局重分配。
+5. 研发顺序固定为：离线证据核对→单个真实K>2 no-query G0（机制激活且wall≤120ms目标/≤150ms硬门）→与G0不重叠的最难Hard9+K1→8项严格Pareto。Hard9任一指标持平/反向即淘汰；只有Hard9全过才跑完整125。
+6. 资源实现必须复用E0 FULL的一次特征变换和充分统计量，不允许第二次FULL/BLOCK拟合、LOO/Fisher、逐候选全support重算或参数扫描；query MAC、持久state和actual fit必须与E0一致。
+
+下一轮的成功定义不是“安全不退化”，而是9个最难outer均值上8项全部严格优于E0，且对old floor和forgetting达到实质改善。任何support代理或合成样本提升都不能替代真实held-query证据。
+
