@@ -431,6 +431,48 @@ def _duplicate_physical_id_across_scenes(source: Path, destination: Path) -> Pat
     return destination
 
 
+def _resign_leo_npz_with_cross_scene_duplicate(npz_path: Path, binding_path: Path) -> None:
+    """Tamper a valid LEO artifact, then re-seal its manifest and binding hashes."""
+
+    with np.load(npz_path, allow_pickle=False) as archive:
+        arrays = {name: np.array(archive[name], copy=True) for name in archive.files}
+    scenes = np.asarray(arrays["sat_scenarios"], dtype=str).reshape(-1)
+    tx_ids = np.asarray(arrays["tx_ids"], dtype=str).reshape(-1)
+    rx_ids = np.asarray(arrays["rx_ids"], dtype=str).reshape(-1)
+    day_ids = np.asarray(arrays["day_ids"], dtype=str).reshape(-1)
+    physical_ids = np.asarray(arrays["physical_sample_id"], dtype=str).reshape(-1)
+    first = int(np.flatnonzero(scenes == SCENARIOS[0])[0])
+    second = next(
+        int(index)
+        for index in np.flatnonzero(scenes == SCENARIOS[1])
+        if tx_ids[index] == tx_ids[first] and rx_ids[index] == rx_ids[first] and day_ids[index] == day_ids[first]
+    )
+    physical_ids[second] = physical_ids[first]
+    arrays["physical_sample_id"] = physical_ids
+    physical_keys = [
+        "|".join((tx_ids[index], rx_ids[index], day_ids[index], physical_ids[index]))
+        for index in range(physical_ids.size)
+    ]
+    manifest = json.loads(str(np.asarray(arrays["manifest_json"]).item()))
+    scenario_coverage = dict(manifest["scenario_coverage"])
+    for scene in SCENARIOS:
+        positions = np.flatnonzero(scenes == scene)
+        scene_keys = [physical_keys[int(index)] for index in positions]
+        scenario_coverage[scene] = dict(scenario_coverage[scene])
+        scenario_coverage[scene]["physical_order_sha256"] = _canonical(scene_keys)
+    manifest["scenario_coverage"] = scenario_coverage
+    manifest["physical_order_sha256"] = _canonical(physical_keys)
+    arrays["manifest_json"] = np.asarray(json.dumps(manifest, ensure_ascii=True, sort_keys=True))
+    np.savez(npz_path, **arrays)
+    binding = json.loads(binding_path.read_text(encoding="utf-8"))
+    binding["physical_keys"] = physical_keys
+    binding["physical_order_sha256"] = _canonical(physical_keys)
+    binding["scenario_coverage"] = scenario_coverage
+    binding["leo_npz_sha256"] = _sha_file(npz_path)
+    binding["leo_manifest_sha256"] = _canonical(manifest)
+    binding_path.write_text(json.dumps(binding, ensure_ascii=True, sort_keys=True) + "\n", encoding="utf-8")
+
+
 def _write_pair_leo_npz(
     path: Path,
     *,
@@ -986,21 +1028,11 @@ def test_clic_leo_loader_and_pair_reject_physical_id_reuse_across_scenes(tmp_pat
         LEO._load_existing_received_iq(duplicate, source_tx_ids=SOURCE_TX)
 
     artifacts = _pair_artifact_fixture(tmp_path / "pair")
-    rows = _write_pair_received_iq(tmp_path / "rows.npz")
-    duplicate = _duplicate_physical_id_across_scenes(tmp_path / "rows.npz", tmp_path / "pair_duplicate.npz")
     for arm in ("C", "G"):
-        leo = tmp_path / f"pair_{arm.lower()}_duplicate_leo.npz"
-        binding = _write_pair_leo_npz(
-            leo,
-            arm=arm,
-            paths=artifacts[f"{arm.lower()}_paths"],
-            existing=duplicate,
-            rows=rows,
+        _resign_leo_npz_with_cross_scene_duplicate(
+            Path(artifacts[f"{arm.lower()}_leo"]),
+            Path(artifacts[f"{arm.lower()}_binding"]),
         )
-        binding_path = tmp_path / f"pair_{arm.lower()}_duplicate_binding.json"
-        binding_path.write_text(json.dumps(binding, sort_keys=True) + "\n", encoding="utf-8")
-        artifacts[f"{arm.lower()}_leo"] = leo
-        artifacts[f"{arm.lower()}_binding"] = binding_path
     with pytest.raises(Exception, match="duplicate|physical|unique|scene"):
         PAIR.evaluate(PAIR.build_parser().parse_args(_pair_cli_argv(artifacts)))
 
