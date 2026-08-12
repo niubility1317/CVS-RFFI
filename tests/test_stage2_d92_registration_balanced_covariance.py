@@ -5,6 +5,8 @@ import numpy as np
 from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
 from cvsrffi.stage2_d92_registration_balanced_covariance import (
     build_registration_balanced_equal_lda,
+    build_registration_balanced_statistics,
+    compile_registration_balanced_affine,
 )
 
 
@@ -93,3 +95,40 @@ def test_formula_is_equivariant_within_registration_groups():
     coefficient2, intercept2, _ = fit(rows, inverse[labels], 16, 5)
     np.testing.assert_allclose(coefficient2[inverse], coefficient, rtol=0.0, atol=2e-4)
     np.testing.assert_allclose(intercept2[inverse], intercept, rtol=0.0, atol=2e-4)
+
+
+def test_shared_block_compile_uses_three_frozen_solves_and_matches_dense_blockdiag():
+    """Would fail if BLOCK reintroduced the old dense 288d solve path."""
+
+    rows, labels = _support(11, 5, seed=313)
+    statistics = build_registration_balanced_statistics(d42, rows, labels, 11, 5)
+    coefficient, intercept, audit = compile_registration_balanced_affine(
+        d42, statistics, arm="block3_centered"
+    )
+    covariance = np.asarray(statistics.covariance, dtype=np.float64)
+    structured = np.zeros_like(covariance)
+    for block in d42.BLOCK_SLICES:
+        structured[block, block] = covariance[block, block]
+    dense_coefficient = np.linalg.solve(structured, statistics.means.T).T
+    dense_intercept = -0.5 * np.diag(statistics.means @ dense_coefficient.T)
+    dense_coefficient -= dense_coefficient.mean(axis=0, keepdims=True)
+    dense_intercept -= dense_intercept.mean()
+
+    np.testing.assert_allclose(coefficient, dense_coefficient.astype(np.float32), atol=2e-5)
+    np.testing.assert_allclose(intercept, dense_intercept.astype(np.float32), atol=2e-5)
+    assert audit["d92_compiled_covariance_eigvalsh_count"] == 3
+    assert audit["d92_compiled_covariance_solve_count"] == 3
+    assert audit["d92_compiled_covariance_dense_288_solve_count"] == 0
+
+
+def test_shared_full_compile_reuses_the_single_pd_check():
+    """Would fail if FULL silently added another 288d eigendecomposition."""
+
+    rows, labels = _support(11, 5, seed=314)
+    statistics = build_registration_balanced_statistics(d42, rows, labels, 11, 5)
+    _, _, audit = compile_registration_balanced_affine(d42, statistics, arm="full")
+
+    assert statistics.covariance_audit["d92_shared_covariance_estimation_count"] == 1
+    assert audit["d92_compiled_covariance_eigvalsh_count"] == 0
+    assert audit["d92_compiled_covariance_solve_count"] == 1
+    assert audit["d92_compiled_covariance_dense_288_solve_count"] == 1

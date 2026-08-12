@@ -9,10 +9,14 @@ import numpy as np
 
 from scripts import probe_d81_ground_nuisance_cauchy_center as d81
 from cvsrffi.stage2_d92_registration_balanced_covariance import (
+    D92RegistrationBalancedCovarianceError,
     OLD_CLASS_COUNT,
     build_registration_balanced_equal_lda,
+    build_registration_balanced_statistics,
+    compile_registration_balanced_affine,
 )
 from cvsrffi import stage2_d92_bidirectional_newguard as newguard
+from cvsrffi import stage2_d92_full_block_pareto_distill as pareto_distill
 
 
 d62, d43 = d81.d62, d81.d43
@@ -35,6 +39,7 @@ REGISTERED_D_MODES = (
     "ocf50",
     "floorboost",
     "newguard_maxmin",
+    "pareto_distill",
 )
 OCF_LAMBDA_BY_MODE = {"ocf25": 0.25, "ocf50": 0.50}
 OCF_RMS_EPSILON = 1.0e-12
@@ -977,6 +982,309 @@ def build_d92_fit(
             current_support.clear()
             component_support_capture = None
 
+    def pareto_distill_quantize_decode(
+        coefficient: np.ndarray, intercept: np.ndarray
+    ) -> tuple[np.ndarray, np.ndarray]:
+        """Run the one frozen D42 codec pass used by Pareto Distill."""
+
+        try:
+            _, _, _, _, decoded = d42._quantize_coefficients(
+                np.asarray(coefficient, dtype=np.float32)
+            )
+        except (
+            FloatingPointError,
+            OverflowError,
+            ValueError,
+            d42.D42UnifiedShrinkageLDAError,
+        ) as error:
+            raise pareto_distill.D92ParetoDistillNumericalError(
+                "deployment_quantize_decode_numeric_failure"
+            ) from error
+        deployed_intercept = np.asarray(intercept, dtype=np.float16)
+        if not np.isfinite(deployed_intercept).all():
+            raise pareto_distill.D92ParetoDistillNumericalError(
+                "deployment_quantize_decode_numeric_failure"
+            )
+        return (
+            np.asarray(decoded, dtype=np.float32),
+            np.asarray(deployed_intercept, dtype=np.float32),
+        )
+
+    def pareto_distill_fit(
+        rows: np.ndarray,
+        labels: np.ndarray,
+        class_count: int,
+        k_shot: int,
+    ) -> tuple[np.ndarray, np.ndarray, dict[str, Any]]:
+        """Build FULL/BLOCK from one D81 transform and one shared covariance."""
+
+        if int(class_count) <= OLD_CLASS_COUNT or int(k_shot) <= 2:
+            raise D92ProbeError("D92 Pareto Distill lifecycle dispatch drift")
+        try:
+            transformed, transform_audit = d81.core.translate_to_robust_centers(
+                rows,
+                labels,
+                class_count,
+                k_shot,
+                basis,
+                spectral_weights,
+            )
+            statistics = build_registration_balanced_statistics(
+                d42,
+                transformed,
+                labels,
+                class_count,
+                k_shot,
+            )
+            full_coefficient, full_intercept, full_audit = (
+                compile_registration_balanced_affine(
+                    d42, statistics, arm="full"
+                )
+            )
+        except Exception as error:
+            if isinstance(error, D92ProbeError):
+                raise
+            raise D92ProbeError(
+                f"D92 Pareto Distill shared-statistics construction drift: {error}"
+            ) from error
+        try:
+            block_coefficient, block_intercept, block_audit = (
+                compile_registration_balanced_affine(
+                    d42, statistics, arm="block3_centered"
+                )
+            )
+        except D92RegistrationBalancedCovarianceError as error:
+            # The continuous FULL head is already an E0-valid state.  A
+            # finite block-only linear algebra degeneration therefore has the
+            # frozen exact-E0 fallback, whereas malformed FULL/statistics
+            # inputs above remain structural errors.
+            numeric_markers = (
+                "positive definite",
+                "non-finite",
+                "residual",
+            )
+            if not any(marker in str(error).lower() for marker in numeric_markers):
+                raise D92ProbeError(
+                    f"D92 Pareto Distill BLOCK construction drift: {error}"
+                ) from error
+            fallback = pareto_distill.pareto_distill_inactive_receipt(
+                reason=f"block_compile_numeric_fallback:{error}",
+                class_count=class_count,
+                k_shot=k_shot,
+                feature_dimension=int(d42.FEATURE_DIM),
+            )
+            try:
+                deployed_full_coefficient, deployed_full_intercept = (
+                    pareto_distill_quantize_decode(
+                        np.asarray(full_coefficient, dtype=np.float32),
+                        np.asarray(full_intercept, dtype=np.float32),
+                    )
+                )
+            except pareto_distill.D92ParetoDistillNumericalError:
+                # A failed concrete D42 reference preview cannot close a later
+                # deployment state, so keep the numeric fallback auditable and
+                # let the normal D42 compiler surface its own exact failure.
+                pass
+            else:
+                fallback.update(
+                    {
+                        "d92_pareto_distill_deployment_codec_roundtrip_count": 1,
+                        "d92_pareto_distill_deployment_e0_reference_codec_roundtrip_count": 1,
+                        "d92_pareto_distill_deployment_candidate_codec_roundtrip_count": 0,
+                        "d92_pareto_distill_deployment_codec_macs_upper_bound": int(
+                            8 * int(class_count) * int(d42.FEATURE_DIM)
+                        ),
+                        "d92_pareto_distill_deployed_e0_affine_sha256": (
+                            pareto_distill.affine_preview_sha256(
+                                deployed_full_coefficient,
+                                deployed_full_intercept,
+                            )
+                        ),
+                    }
+                )
+            fallback.update(
+                {
+                    "d92_pareto_distill_fallback_active": True,
+                    "d92_pareto_distill_fallback_reason": (
+                        f"block_compile_numeric_fallback:{error}"
+                    ),
+                    "d92_pareto_distill_full_solve_count": 1,
+                    "d92_pareto_distill_block_solve_count": 1,
+                    "d92_pareto_distill_component_fit_count": 2,
+                    "d92_pareto_distill_covariance_estimation_count": 1,
+                    "d92_pareto_distill_robust_center_transform_count": 1,
+                }
+            )
+            component_records.extend(
+                [
+                    {
+                        "arm": "full",
+                        "class_count": int(class_count),
+                        "k_shot": int(k_shot),
+                        "status": full_audit["d92_status"],
+                        "active": bool(full_audit["d92_registration_balanced_active"]),
+                        "shared_covariance": True,
+                        "shared_robust_center": True,
+                    },
+                    {
+                        "arm": "block3_centered",
+                        "class_count": int(class_count),
+                        "k_shot": int(k_shot),
+                        "status": "pareto_block_numeric_fallback",
+                        "active": True,
+                        "shared_covariance": True,
+                        "shared_robust_center": True,
+                    },
+                ]
+            )
+            transform_records.append(
+                {
+                    "component_arm": "full_block_shared",
+                    "class_count": int(class_count),
+                    "k_shot": int(k_shot),
+                    "center_shift_l2_max": transform_audit["center_shift_l2_max"],
+                    "normalized_weight_min": transform_audit["normalized_weight_min"],
+                    "effective_sample_size_min": min(
+                        transform_audit["effective_sample_size_by_class"]
+                    ),
+                }
+            )
+            audit = dict(full_audit)
+            audit.update(
+                {
+                    "coefficient_source": "d92_pareto_distill_exact_e0_block_numeric_fallback",
+                    "d92_pareto_distill_component_arms": ["full", "block3_centered"],
+                    "d92_pareto_distill_shared_statistics": True,
+                    "d81_component_arm": "full_block_shared",
+                    "d81_transform_audit": transform_audit,
+                    **fallback,
+                }
+            )
+            return full_coefficient, full_intercept, audit
+        transform_records.append(
+            {
+                "component_arm": "full_block_shared",
+                "class_count": int(class_count),
+                "k_shot": int(k_shot),
+                "center_shift_l2_max": transform_audit["center_shift_l2_max"],
+                "normalized_weight_min": transform_audit["normalized_weight_min"],
+                "effective_sample_size_min": min(
+                    transform_audit["effective_sample_size_by_class"]
+                ),
+            }
+        )
+        for arm_name, component_audit in (
+            ("full", full_audit),
+            ("block3_centered", block_audit),
+        ):
+            component_records.append(
+                {
+                    "arm": arm_name,
+                    "class_count": int(class_count),
+                    "k_shot": int(k_shot),
+                    "status": component_audit["d92_status"],
+                    "active": bool(component_audit["d92_registration_balanced_active"]),
+                    "shared_covariance": True,
+                    "shared_robust_center": True,
+                }
+            )
+        try:
+            deployed_full_coefficient, deployed_full_intercept = (
+                pareto_distill_quantize_decode(
+                    np.asarray(full_coefficient, dtype=np.float32),
+                    np.asarray(full_intercept, dtype=np.float32),
+                )
+            )
+            coefficient, intercept, pareto_audit = (
+                pareto_distill.build_full_block_pareto_distill_affine_state(
+                    full_rows=statistics.rows,
+                    full_labels=statistics.labels,
+                    full_coefficient=np.asarray(full_coefficient, dtype=np.float32),
+                    full_intercept=np.asarray(full_intercept, dtype=np.float32),
+                    deployed_full_coefficient=deployed_full_coefficient,
+                    deployed_full_intercept=deployed_full_intercept,
+                    block_coefficient=np.asarray(block_coefficient, dtype=np.float32),
+                    block_intercept=np.asarray(block_intercept, dtype=np.float32),
+                    class_count=class_count,
+                    k_shot=k_shot,
+                    quantize_decode=pareto_distill_quantize_decode,
+                )
+            )
+        except pareto_distill.D92ParetoDistillNumericalError as error:
+            fallback = pareto_distill.pareto_distill_inactive_receipt(
+                reason=f"deployment_codec_numeric_fallback:{error}",
+                class_count=class_count,
+                k_shot=k_shot,
+                feature_dimension=int(d42.FEATURE_DIM),
+            )
+            fallback.update(
+                {
+                    "d92_pareto_distill_fallback_active": True,
+                    "d92_pareto_distill_fallback_reason": (
+                        f"deployment_codec_numeric_fallback:{error}"
+                    ),
+                    "d92_pareto_distill_full_solve_count": 1,
+                    "d92_pareto_distill_block_solve_count": 1,
+                    "d92_pareto_distill_component_fit_count": 2,
+                    "d92_pareto_distill_covariance_estimation_count": 1,
+                    "d92_pareto_distill_robust_center_transform_count": 1,
+                }
+            )
+            audit = dict(full_audit)
+            audit.update(
+                {
+                    "coefficient_source": "d92_pareto_distill_exact_e0_codec_numeric_fallback",
+                    "covariance_equation_residual_max": float(
+                        max(
+                            float(full_audit["covariance_equation_residual_max"]),
+                            float(block_audit["covariance_equation_residual_max"]),
+                        )
+                    ),
+                    "d81_component_arm": "full_block_shared",
+                    "d81_transform_audit": transform_audit,
+                    "d92_pareto_distill_component_arms": ["full", "block3_centered"],
+                    "d92_pareto_distill_shared_statistics": True,
+                    **fallback,
+                }
+            )
+            return full_coefficient, full_intercept, audit
+        except pareto_distill.D92ParetoDistillError as error:
+            raise D92ProbeError(
+                f"D92 Pareto Distill affine construction drift: {error}"
+            ) from error
+        audit = dict(full_audit)
+        audit.update(
+            {
+                "coefficient_source": (
+                    "d92_pareto_distill_shared_d81_center_shared_task_balanced_"
+                    "full_block_covariance_lexicographic_support_head"
+                ),
+                "covariance_equation_residual_max": float(
+                    max(
+                        float(full_audit["covariance_equation_residual_max"]),
+                        float(block_audit["covariance_equation_residual_max"]),
+                    )
+                ),
+                "d81_component_arm": "full_block_shared",
+                "d81_ground_basis_sha256": basis_audit["basis_sha256"],
+                "d81_ground_spectral_weight_sha256": basis_audit[
+                    "spectral_weight_sha256"
+                ],
+                "d81_ground_effective_rank": basis_audit[
+                    "participation_ratio_effective_rank"
+                ],
+                "d81_ground_retained_rank": basis_audit["retained_rank"],
+                "d81_ground_rank_policy": basis_audit["rank_policy"],
+                "d81_transform_audit": transform_audit,
+                "d92_pareto_distill_component_arms": ["full", "block3_centered"],
+                "d92_pareto_distill_covariance_estimation_count": 1,
+                "d92_pareto_distill_robust_center_transform_count": 1,
+                "d92_pareto_distill_shared_statistics": True,
+                **pareto_audit,
+            }
+        )
+        return coefficient, intercept, audit
+
     def structured_builder(d42_arg: Any, arm: str) -> Callable[..., Any]:
         if d42_arg is not d42 or arm != "block3_centered":
             raise D92ProbeError("D92 unexpected structured covariance request")
@@ -1255,6 +1563,9 @@ def build_d92_fit(
         elif registered_d_mode == "newguard_maxmin":
             selected_fit = newguard_fit
             effective_d_mode = registered_d_mode
+        elif registered_d_mode == "pareto_distill":
+            selected_fit = pareto_distill_fit
+            effective_d_mode = registered_d_mode
         elif registered_d_mode in OCF_LAMBDA_BY_MODE:
             selected_fit = lambda *call: ocf_fit(
                 *call, lambda_value=OCF_LAMBDA_BY_MODE[registered_d_mode]
@@ -1325,6 +1636,68 @@ def build_d92_fit(
             )
             newguard_receipt = newguard.newguard_inactive_receipt(
                 reason=newguard_reason,
+                class_count=int(class_count),
+                k_shot=int(k_shot),
+                feature_dimension=int(d42.FEATURE_DIM),
+            )
+        pareto_mode = registered_d_mode == "pareto_distill"
+        pareto_active = bool(d_mode_active and pareto_mode)
+        if pareto_active:
+            pareto_receipt = {
+                key: value
+                for key, value in base_audit.items()
+                if key.startswith("d92_pareto_distill_")
+            }
+            required_pareto = {
+                "d92_pareto_distill_mode",
+                "d92_pareto_distill_active",
+                "d92_pareto_distill_fallback_active",
+                "d92_pareto_distill_fallback_reason",
+                "d92_pareto_distill_local_valid",
+                "d92_pareto_distill_full_solve_count",
+                "d92_pareto_distill_block_solve_count",
+                "d92_pareto_distill_loo_fit_count",
+                "d92_pareto_distill_fisher_fit_count",
+                "d92_pareto_distill_component_fit_count",
+                "d92_pareto_distill_covariance_estimation_count",
+                "d92_pareto_distill_robust_center_transform_count",
+            }
+            if (
+                not required_pareto.issubset(pareto_receipt)
+                or pareto_receipt["d92_pareto_distill_mode"] != "pareto_distill"
+                or int(pareto_receipt["d92_pareto_distill_full_solve_count"])
+                != 1
+                or int(pareto_receipt["d92_pareto_distill_block_solve_count"])
+                != 1
+                or int(pareto_receipt["d92_pareto_distill_loo_fit_count"]) != 0
+                or int(pareto_receipt["d92_pareto_distill_fisher_fit_count"])
+                != 0
+                or int(pareto_receipt["d92_pareto_distill_component_fit_count"])
+                != 2
+                or int(
+                    pareto_receipt["d92_pareto_distill_covariance_estimation_count"]
+                )
+                != 1
+                or int(
+                    pareto_receipt[
+                        "d92_pareto_distill_robust_center_transform_count"
+                    ]
+                )
+                != 1
+            ):
+                raise D92ProbeError("D92 Pareto Distill active receipt drift")
+        else:
+            pareto_reason = (
+                "MODE_NOT_SELECTED"
+                if not pareto_mode
+                else (
+                    "NOT_REGISTERED_STATE"
+                    if not registered
+                    else "K1_K2_EXACT_D92_FULL_ALIAS"
+                )
+            )
+            pareto_receipt = pareto_distill.pareto_distill_inactive_receipt(
+                reason=pareto_reason,
                 class_count=int(class_count),
                 k_shot=int(k_shot),
                 feature_dimension=int(d42.FEATURE_DIM),
@@ -1463,6 +1836,7 @@ def build_d92_fit(
                     floorboost_reason if floorboost_mode else None
                 ),
                 **newguard_receipt,
+                **pareto_receipt,
                 "d92_component_fit_inventory": component_inventory,
                 "d92_component_support_retained_count": (
                     component_support_retained_count

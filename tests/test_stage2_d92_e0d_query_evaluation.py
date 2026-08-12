@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import hashlib
 from types import SimpleNamespace
 
 import numpy as np
 import pytest
 
 from cvsrffi import stage2_d81_query_evaluation as d81_eval
+from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
 from cvsrffi import stage2_d92_e0d_query_evaluation as e0d_eval
 from cvsrffi import stage2_d92_e0d_slim as slim
 from cvsrffi.stage2_d92_registration_balanced_covariance import OLD_CLASS_COUNT
@@ -13,21 +15,27 @@ from scripts import probe_d81_ground_nuisance_cauchy_center as d81_probe
 
 
 def _state(*, classes: int, old_count: int, marker: int):
-    return SimpleNamespace(
-        schema="cvs.phase2.d42.unified_shrinkage_lda_state.v1",
-        classes=tuple(f"tx_{index}" for index in range(classes)),
-        old_class_count=old_count,
-        covariance_policy="sklearn_lsqr_auto_shrinkage_equal_prior",
-        log_diag_fp32=np.full(288, marker, dtype=np.float32),
-        coef1_qint8=np.full((classes, 288), marker, dtype=np.int8),
-        coef2_qint8=np.full((classes, 288), -marker, dtype=np.int8),
-        scale1_fp16=np.full((classes, 3), marker + 1, dtype=np.float16),
-        scale2_fp16=np.full((classes, 3), marker + 2, dtype=np.float16),
-        intercept_fp16=np.full(classes, marker + 3, dtype=np.float16),
-        coef_fp32=np.full((classes, 288), marker + 4, dtype=np.float32),
-        intercept_fp32=np.full(classes, marker + 5, dtype=np.float32),
-        persistent_state_bytes=classes * 100,
+    state, _ = d42._compile_state(
+        tuple(f"tx_{index}" for index in range(classes)),
+        old_count,
+        np.full(288, marker, dtype=np.float32),
+        np.full((classes, 288), marker + 4, dtype=np.float32),
+        np.full(classes, marker + 5, dtype=np.float32),
+        "sklearn_lsqr_auto_shrinkage_equal_prior",
+        precision="int8",
     )
+    return state
+
+
+def _deployed_affine_sha256(state) -> str:
+    digest = hashlib.sha256()
+    digest.update(
+        np.ascontiguousarray(d42.decode_d42_coefficients(state), dtype=np.float32).tobytes()
+    )
+    digest.update(
+        np.ascontiguousarray(state.intercept_fp16, dtype=np.float32).tobytes()
+    )
+    return digest.hexdigest()
 
 
 def _resource(
@@ -90,6 +98,19 @@ def _resource(
                 "K1_K2_EXACT_D92_FULL_ALIAS"
                 if newguard_applies
                 else "MODE_NOT_SELECTED"
+            )
+        )
+    )
+    pareto_applies = arm.arm_id == "E0_FULL_BLOCK_PARETO_DISTILL"
+    pareto_active = bool(pareto_applies and registered and k_shot > 2)
+    pareto_reason = (
+        None
+        if pareto_active
+        else (
+            "NOT_REGISTERED_STATE"
+            if pareto_applies and not registered
+            else (
+                "K1_K2_EXACT_D92_FULL_ALIAS" if pareto_applies else None
             )
         )
     )
@@ -271,6 +292,32 @@ def _resource(
         "d92_e0d_newguard_query_role_oracle_access": False,
         "d92_e0d_newguard_query_class_quota_access": False,
         "d92_e0d_newguard_query_global_reassignment": False,
+        "d92_e0d_pareto_distill_mode": "pareto_distill",
+        "d92_e0d_pareto_distill_active": pareto_active,
+        "d92_e0d_pareto_distill_fallback_active": False,
+        "d92_e0d_pareto_distill_fallback_reason": pareto_reason,
+        "d92_e0d_pareto_distill_local_valid": pareto_active,
+        "d92_e0d_pareto_distill_full_head_byte_exact": not pareto_active,
+        "d92_e0d_pareto_distill_deployed_support_constraints_pass": pareto_active,
+        "d92_e0d_pareto_distill_deployed_full_head_byte_exact": not pareto_active,
+        "d92_e0d_pareto_distill_deployed_e0_affine_sha256": None,
+        "d92_e0d_pareto_distill_deployed_candidate_affine_sha256": None,
+        "d92_e0d_pareto_distill_full_solve_count": 1 if pareto_active else 0,
+        "d92_e0d_pareto_distill_block_solve_count": 1 if pareto_active else 0,
+        "d92_e0d_pareto_distill_loo_fit_count": 0,
+        "d92_e0d_pareto_distill_fisher_fit_count": 0,
+        "d92_e0d_pareto_distill_component_fit_count": 2 if pareto_active else 0,
+        "d92_e0d_pareto_distill_covariance_estimation_count": 1 if pareto_active else 0,
+        "d92_e0d_pareto_distill_robust_center_transform_count": 1 if pareto_active else 0,
+        "d92_e0d_pareto_distill_query_rows_used": 0,
+        "d92_e0d_pareto_distill_query_macs": (11 if registered else 6) * 288,
+        "d92_e0d_pareto_distill_query_fit_access": False,
+        "d92_e0d_pareto_distill_query_update_access": False,
+        "d92_e0d_pareto_distill_query_selection_access": False,
+        "d92_e0d_pareto_distill_query_truth_access": False,
+        "d92_e0d_pareto_distill_query_role_oracle_access": False,
+        "d92_e0d_pareto_distill_query_class_quota_access": False,
+        "d92_e0d_pareto_distill_query_global_reassignment": False,
         "d81_transform_audit": {
             "schema": "cvs.phase2.d81.support_center_translation.v1",
             "support_rows": class_count * k_shot,
@@ -300,18 +347,27 @@ def _resource(
 def _result(
     arm: slim.D92E0DSlimArmSpec, *, after_marker: int = 2, k_shot: int = 5
 ):
+    before_state = _state(classes=6, old_count=6, marker=1)
+    state = _state(classes=11, old_count=6, marker=after_marker)
+    before = _resource(arm, registered=False, k_shot=k_shot)
+    after = _resource(arm, registered=True, k_shot=k_shot)
+    if arm.arm_id == "E0_FULL_BLOCK_PARETO_DISTILL":
+        if after["d92_e0d_pareto_distill_active"]:
+            after["d92_e0d_pareto_distill_deployed_candidate_affine_sha256"] = (
+                _deployed_affine_sha256(state)
+            )
+        elif after["d92_e0d_pareto_distill_fallback_active"]:
+            after["d92_e0d_pareto_distill_deployed_e0_affine_sha256"] = (
+                _deployed_affine_sha256(state)
+            )
     return SimpleNamespace(
         geometry_audit={
             "k1_unit_covariance_fallback": False,
-            "before_covariance_audit": _resource(
-                arm, registered=False, k_shot=k_shot
-            ),
-            "final_covariance_audit": _resource(
-                arm, registered=True, k_shot=k_shot
-            ),
+            "before_covariance_audit": before,
+            "final_covariance_audit": after,
         },
-        before_state=_state(classes=6, old_count=6, marker=1),
-        state=_state(classes=11, old_count=6, marker=after_marker),
+        before_state=before_state,
+        state=state,
         training_trace=[],
         resource_audit={"trainable_parameters": 0},
     )
@@ -699,3 +755,114 @@ def test_newguard_query_audit_requires_support_only_protection_receipt():
     assert row["d92_e0d_newguard_deployment_full_head_byte_exact"] is False
     assert row["d92_e0d_newguard_deployment_codec_roundtrip_count"] == 3
     assert row["d92_e0d_newguard_deployment_codec_macs_upper_bound"] == 76_032
+
+
+def test_pareto_query_audit_closes_4_2_receipt_and_rejects_query_access_tamper():
+    """Would fail if formal Pareto rows accepted query access or bad 4/2 state."""
+
+    arm = slim.D92_E0D_ARMS["E0_FULL_BLOCK_PARETO_DISTILL"]
+    result = _result(arm)
+    row = e0d_eval._audit_d92_e0d_fit(
+        result,
+        arm=arm,
+        scenario="leo_rain_weak",
+        k_shot=5,
+        old_count=6,
+        class_count=11,
+    )
+    assert row["after_total_component_fit_count"] == 4
+    assert row["query_macs"] == 11 * 288
+    assert row["d92_e0d_pareto_distill_active"] is True
+    assert row["d92_e0d_pareto_distill_deployed_support_constraints_pass"] is True
+    assert row["d92_e0d_pareto_distill_deployed_full_head_byte_exact"] is False
+    assert row["d92_e0d_pareto_distill_deployed_head_state_closure_pass"] is True
+    assert row["d92_e0d_pareto_distill_deployed_head_state_affine_sha256"] == (
+        _deployed_affine_sha256(result.state)
+    )
+
+    tampered = _result(arm)
+    tampered.geometry_audit["final_covariance_audit"][
+        "d92_e0d_pareto_distill_query_selection_access"
+    ] = True
+    with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="Pareto Distill query"):
+        e0d_eval._audit_d92_e0d_fit(
+            tampered,
+            arm=arm,
+            scenario="leo_rain_weak",
+            k_shot=5,
+            old_count=6,
+            class_count=11,
+        )
+
+
+def test_pareto_query_audit_rejects_final_deployed_head_hash_tamper():
+    """Would fail if a D42 final state could diverge from the previewed head."""
+
+    arm = slim.D92_E0D_ARMS["E0_FULL_BLOCK_PARETO_DISTILL"]
+    result = _result(arm)
+    result.geometry_audit["final_covariance_audit"][
+        "d92_e0d_pareto_distill_deployed_candidate_affine_sha256"
+    ] = "0" * 64
+    with pytest.raises(
+        e0d_eval.D92E0DQueryEvaluationError, match="Pareto Distill deployed"
+    ):
+        e0d_eval._audit_d92_e0d_fit(
+            result,
+            arm=arm,
+            scenario="leo_rain_weak",
+            k_shot=5,
+            old_count=6,
+            class_count=11,
+        )
+
+
+def test_pareto_query_audit_uses_e0_reference_for_numeric_fallback():
+    """Would fail if an exact-E0 fallback skipped its deployed reference closure."""
+
+    arm = slim.D92_E0D_ARMS["E0_FULL_BLOCK_PARETO_DISTILL"]
+    result = _result(arm)
+    receipt = result.geometry_audit["final_covariance_audit"]
+    receipt.update(
+        {
+            "d92_e0d_pareto_distill_active": False,
+            "d92_e0d_pareto_distill_fallback_active": True,
+            "d92_e0d_pareto_distill_fallback_reason": "numeric_fallback",
+            "d92_e0d_pareto_distill_local_valid": False,
+            "d92_e0d_pareto_distill_full_head_byte_exact": True,
+            "d92_e0d_pareto_distill_deployed_support_constraints_pass": False,
+            "d92_e0d_pareto_distill_deployed_full_head_byte_exact": True,
+            "d92_e0d_pareto_distill_deployed_candidate_affine_sha256": None,
+            "d92_e0d_pareto_distill_deployed_e0_affine_sha256": (
+                _deployed_affine_sha256(result.state)
+            ),
+        }
+    )
+    row = e0d_eval._audit_d92_e0d_fit(
+        result,
+        arm=arm,
+        scenario="leo_rain_weak",
+        k_shot=5,
+        old_count=6,
+        class_count=11,
+    )
+    assert row["d92_e0d_pareto_distill_deployed_head_state_closure_pass"] is True
+    assert row["d92_e0d_pareto_distill_deployed_head_state_affine_sha256"] == (
+        _deployed_affine_sha256(result.state)
+    )
+
+
+def test_pareto_query_audit_keeps_low_k_alias_reason():
+    """Would fail if K1 alias evidence lost its frozen lifecycle reason."""
+
+    arm = slim.D92_E0D_ARMS["E0_FULL_BLOCK_PARETO_DISTILL"]
+    row = e0d_eval._audit_d92_e0d_fit(
+        _result(arm, k_shot=1),
+        arm=arm,
+        scenario="leo_rain_weak",
+        k_shot=1,
+        old_count=6,
+        class_count=11,
+    )
+    assert row["d92_e0d_pareto_distill_fallback_reason"] == (
+        "K1_K2_EXACT_D92_FULL_ALIAS"
+    )

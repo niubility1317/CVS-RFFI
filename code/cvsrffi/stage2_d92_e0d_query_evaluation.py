@@ -63,6 +63,7 @@ _OCF_RECEIPT_FIELDS = (
 _OCF_MAC_RECEIPT_FIELDS = _OCF_RECEIPT_FIELDS[2:5]
 _FLOORBOOST_ARM_IDS = frozenset({"E0_FULL_MAXMIN_FLOORBOOST"})
 _NEWGUARD_ARM_IDS = frozenset({"E0_FULL_BIDIRECTIONAL_NEWGUARD_MAXMIN"})
+_PARETO_DISTILL_ARM_IDS = frozenset({"E0_FULL_BLOCK_PARETO_DISTILL"})
 _FLOORBOOST_RECEIPT_FIELDS = (
     "d92_e0d_floorboost_active",
     "d92_e0d_floorboost_lambda",
@@ -127,6 +128,34 @@ _NEWGUARD_RECEIPT_FIELDS = (
     "d92_e0d_newguard_query_role_oracle_access",
     "d92_e0d_newguard_query_class_quota_access",
     "d92_e0d_newguard_query_global_reassignment",
+)
+_PARETO_DISTILL_RECEIPT_FIELDS = (
+    "d92_e0d_pareto_distill_mode",
+    "d92_e0d_pareto_distill_active",
+    "d92_e0d_pareto_distill_fallback_active",
+    "d92_e0d_pareto_distill_fallback_reason",
+    "d92_e0d_pareto_distill_local_valid",
+    "d92_e0d_pareto_distill_full_head_byte_exact",
+    "d92_e0d_pareto_distill_deployed_support_constraints_pass",
+    "d92_e0d_pareto_distill_deployed_full_head_byte_exact",
+    "d92_e0d_pareto_distill_deployed_e0_affine_sha256",
+    "d92_e0d_pareto_distill_deployed_candidate_affine_sha256",
+    "d92_e0d_pareto_distill_full_solve_count",
+    "d92_e0d_pareto_distill_block_solve_count",
+    "d92_e0d_pareto_distill_loo_fit_count",
+    "d92_e0d_pareto_distill_fisher_fit_count",
+    "d92_e0d_pareto_distill_component_fit_count",
+    "d92_e0d_pareto_distill_covariance_estimation_count",
+    "d92_e0d_pareto_distill_robust_center_transform_count",
+    "d92_e0d_pareto_distill_query_rows_used",
+    "d92_e0d_pareto_distill_query_macs",
+    "d92_e0d_pareto_distill_query_fit_access",
+    "d92_e0d_pareto_distill_query_update_access",
+    "d92_e0d_pareto_distill_query_selection_access",
+    "d92_e0d_pareto_distill_query_truth_access",
+    "d92_e0d_pareto_distill_query_role_oracle_access",
+    "d92_e0d_pareto_distill_query_class_quota_access",
+    "d92_e0d_pareto_distill_query_global_reassignment",
 )
 
 
@@ -612,6 +641,180 @@ def _newguard_support_receipt(
     return receipt
 
 
+def _pareto_distill_support_receipt(
+    audit: dict[str, Any],
+    *,
+    arm: D92E0DSlimArmSpec,
+    registered: bool,
+    k_shot: int,
+    class_count: int,
+) -> dict[str, Any]:
+    """Validate the shared-statistics Pareto receipt without query access."""
+
+    if arm.arm_id not in _PARETO_DISTILL_ARM_IDS:
+        return {}
+    if any(field not in audit for field in _PARETO_DISTILL_RECEIPT_FIELDS):
+        raise D92E0DQueryEvaluationError("D92-E0D Pareto Distill receipt drift")
+    receipt = {field: audit[field] for field in _PARETO_DISTILL_RECEIPT_FIELDS}
+    active_state = bool(registered and int(k_shot) > 2)
+    active = receipt["d92_e0d_pareto_distill_active"]
+    fallback = receipt["d92_e0d_pareto_distill_fallback_active"]
+    reason = receipt["d92_e0d_pareto_distill_fallback_reason"]
+    fixed_counts = (
+        int(receipt["d92_e0d_pareto_distill_full_solve_count"]),
+        int(receipt["d92_e0d_pareto_distill_block_solve_count"]),
+        int(receipt["d92_e0d_pareto_distill_loo_fit_count"]),
+        int(receipt["d92_e0d_pareto_distill_fisher_fit_count"]),
+        int(receipt["d92_e0d_pareto_distill_component_fit_count"]),
+    )
+    if receipt["d92_e0d_pareto_distill_mode"] != "pareto_distill":
+        raise D92E0DQueryEvaluationError("D92-E0D Pareto Distill mode drift")
+    if any(
+        receipt[field] is not False
+        for field in (
+            "d92_e0d_pareto_distill_query_fit_access",
+            "d92_e0d_pareto_distill_query_update_access",
+            "d92_e0d_pareto_distill_query_selection_access",
+            "d92_e0d_pareto_distill_query_truth_access",
+            "d92_e0d_pareto_distill_query_role_oracle_access",
+            "d92_e0d_pareto_distill_query_class_quota_access",
+            "d92_e0d_pareto_distill_query_global_reassignment",
+        )
+    ) or int(receipt["d92_e0d_pareto_distill_query_rows_used"]) != 0:
+        raise D92E0DQueryEvaluationError("D92-E0D Pareto Distill query closure drift")
+    if int(receipt["d92_e0d_pareto_distill_query_macs"]) != int(class_count) * 288:
+        raise D92E0DQueryEvaluationError("D92-E0D Pareto Distill query MAC drift")
+    if not active_state:
+        expected_reason = (
+            "NOT_REGISTERED_STATE"
+            if not registered
+            else "K1_K2_EXACT_D92_FULL_ALIAS"
+        )
+        if (
+            active is not False
+            or fallback is not False
+            or reason != expected_reason
+            or receipt["d92_e0d_pareto_distill_local_valid"] is not False
+            or fixed_counts != (0, 0, 0, 0, 0)
+            or receipt["d92_e0d_pareto_distill_deployed_e0_affine_sha256"]
+            is not None
+            or receipt[
+                "d92_e0d_pareto_distill_deployed_candidate_affine_sha256"
+            ]
+            is not None
+        ):
+            raise D92E0DQueryEvaluationError(
+                "D92-E0D Pareto Distill inactive receipt drift"
+            )
+        return receipt
+    if (
+        fixed_counts != (1, 1, 0, 0, 2)
+        or int(receipt["d92_e0d_pareto_distill_covariance_estimation_count"])
+        != 1
+        or int(receipt["d92_e0d_pareto_distill_robust_center_transform_count"])
+        != 1
+    ):
+        raise D92E0DQueryEvaluationError(
+            "D92-E0D Pareto Distill shared-count receipt drift"
+        )
+    if fallback is True:
+        if (
+            active is not False
+            or receipt["d92_e0d_pareto_distill_local_valid"] is not False
+            or not isinstance(reason, str)
+            or not reason
+            or receipt["d92_e0d_pareto_distill_full_head_byte_exact"] is not True
+            or receipt[
+                "d92_e0d_pareto_distill_deployed_support_constraints_pass"
+            ]
+            is not False
+            or receipt[
+                "d92_e0d_pareto_distill_deployed_full_head_byte_exact"
+            ]
+            is not True
+        ):
+            raise D92E0DQueryEvaluationError(
+                "D92-E0D Pareto Distill fallback receipt drift"
+            )
+        return receipt
+    if (
+        fallback is not False
+        or active is not True
+        or reason is not None
+        or receipt["d92_e0d_pareto_distill_local_valid"] is not True
+        or receipt["d92_e0d_pareto_distill_full_head_byte_exact"] is not False
+        or receipt[
+            "d92_e0d_pareto_distill_deployed_support_constraints_pass"
+        ]
+        is not True
+        or receipt[
+            "d92_e0d_pareto_distill_deployed_full_head_byte_exact"
+        ]
+        is not False
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D Pareto Distill active receipt drift")
+    return receipt
+
+
+def _pareto_deployed_state_closure(
+    state: Any,
+    receipt: dict[str, Any],
+    *,
+    arm: D92E0DSlimArmSpec,
+) -> dict[str, Any]:
+    """Close the previewed D42 affine head against the final deployed state."""
+
+    if arm.arm_id not in _PARETO_DISTILL_ARM_IDS:
+        return {}
+    active = receipt["d92_e0d_pareto_distill_active"] is True
+    fallback = receipt["d92_e0d_pareto_distill_fallback_active"] is True
+    if not active and not fallback:
+        return {
+            "d92_e0d_pareto_distill_deployed_head_state_closure_pass": None,
+            "d92_e0d_pareto_distill_deployed_head_state_affine_sha256": None,
+        }
+    expected_field = (
+        "d92_e0d_pareto_distill_deployed_candidate_affine_sha256"
+        if active
+        else "d92_e0d_pareto_distill_deployed_e0_affine_sha256"
+    )
+    expected = receipt.get(expected_field)
+    if not isinstance(expected, str) or len(expected) != 64:
+        raise D92E0DQueryEvaluationError(
+            "D92-E0D Pareto Distill deployed preview hash drift"
+        )
+    try:
+        from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
+
+        coefficient = d42.decode_d42_coefficients(state)
+        intercept = np.asarray(state.intercept_fp16, dtype=np.float32)
+    except (AttributeError, TypeError, ValueError) as error:
+        raise D92E0DQueryEvaluationError(
+            "D92-E0D Pareto Distill deployed state decode drift"
+        ) from error
+    if (
+        coefficient.ndim != 2
+        or intercept.shape != (coefficient.shape[0],)
+        or not np.isfinite(coefficient).all()
+        or not np.isfinite(intercept).all()
+    ):
+        raise D92E0DQueryEvaluationError(
+            "D92-E0D Pareto Distill deployed state decode drift"
+        )
+    digest = hashlib.sha256()
+    digest.update(np.ascontiguousarray(coefficient, dtype=np.float32).tobytes())
+    digest.update(np.ascontiguousarray(intercept, dtype=np.float32).tobytes())
+    actual = digest.hexdigest()
+    if actual != expected:
+        raise D92E0DQueryEvaluationError(
+            "D92-E0D Pareto Distill deployed preview/state mismatch"
+        )
+    return {
+        "d92_e0d_pareto_distill_deployed_head_state_closure_pass": True,
+        "d92_e0d_pareto_distill_deployed_head_state_affine_sha256": actual,
+    }
+
+
 def _audit_d92_e0d_fit(
     result: Any,
     *,
@@ -656,6 +859,13 @@ def _audit_d92_e0d_fit(
             class_count=class_count if registered else old_count,
         )
         _newguard_support_receipt(
+            audit,
+            arm=arm,
+            registered=registered,
+            k_shot=k_shot,
+            class_count=class_count if registered else old_count,
+        )
+        _pareto_distill_support_receipt(
             audit,
             arm=arm,
             registered=registered,
@@ -760,6 +970,18 @@ def _audit_d92_e0d_fit(
         k_shot=k_shot,
         class_count=class_count,
     )
+    after_pareto_distill_receipt = _pareto_distill_support_receipt(
+        after,
+        arm=arm,
+        registered=True,
+        k_shot=k_shot,
+        class_count=class_count,
+    )
+    after_pareto_deployed_state_closure = _pareto_deployed_state_closure(
+        result.state,
+        after_pareto_distill_receipt,
+        arm=arm,
+    )
     before_resource = _resource_receipt(before)
     after_resource = _resource_receipt(after)
     return {
@@ -823,6 +1045,8 @@ def _audit_d92_e0d_fit(
         ],
         **after_floorboost_receipt,
         **after_newguard_receipt,
+        **after_pareto_distill_receipt,
+        **after_pareto_deployed_state_closure,
         "query_macs": int(after["d92_e0d_query_macs"]),
         "query_truth_access": False,
         "query_fit_access": False,

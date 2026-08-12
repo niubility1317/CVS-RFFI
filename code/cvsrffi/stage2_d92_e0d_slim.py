@@ -66,6 +66,13 @@ D92_E0D_ARMS: Mapping[str, D92E0DSlimArmSpec] = MappingProxyType(
             True,
             False,
         ),
+        "E0_FULL_BLOCK_PARETO_DISTILL": D92E0DSlimArmSpec(
+            "E0_FULL_BLOCK_PARETO_DISTILL",
+            "d92_e0_full_block_pareto_distill",
+            "pareto_distill",
+            True,
+            False,
+        ),
     }
 )
 
@@ -96,6 +103,8 @@ def expected_total_component_fit_count(k_shot: int, *, arm_id: str) -> int:
         return 2
     if arm.registered_d_mode == "newguard_maxmin":
         return 2
+    if arm.registered_d_mode == "pareto_distill":
+        return 4
     if arm.registered_d_mode in (
         "fixed50",
         "ocf25",
@@ -403,6 +412,135 @@ def build_d92_e0d_fit(
                     raise D92E0DSlimError(
                         "D92-E0D NewGuard inactive receipt drift"
                     )
+        pareto_mode = arm.registered_d_mode == "pareto_distill"
+        pareto_registered_state = bool(
+            pareto_mode and registered and int(k_shot) > 2
+        )
+        if pareto_mode:
+            pareto_required = (
+                "d92_pareto_distill_mode",
+                "d92_pareto_distill_active",
+                "d92_pareto_distill_fallback_active",
+                "d92_pareto_distill_fallback_reason",
+                "d92_pareto_distill_local_valid",
+                "d92_pareto_distill_full_head_byte_exact",
+                "d92_pareto_distill_deployed_support_constraints_pass",
+                "d92_pareto_distill_deployed_full_head_byte_exact",
+                "d92_pareto_distill_deployed_e0_affine_sha256",
+                "d92_pareto_distill_deployed_candidate_affine_sha256",
+                "d92_pareto_distill_full_solve_count",
+                "d92_pareto_distill_block_solve_count",
+                "d92_pareto_distill_loo_fit_count",
+                "d92_pareto_distill_fisher_fit_count",
+                "d92_pareto_distill_component_fit_count",
+                "d92_pareto_distill_covariance_estimation_count",
+                "d92_pareto_distill_robust_center_transform_count",
+                "d92_pareto_distill_query_rows_used",
+                "d92_pareto_distill_query_macs",
+                "d92_pareto_distill_query_fit_access",
+                "d92_pareto_distill_query_update_access",
+                "d92_pareto_distill_query_selection_access",
+                "d92_pareto_distill_query_truth_access",
+                "d92_pareto_distill_query_role_oracle_access",
+                "d92_pareto_distill_query_class_quota_access",
+                "d92_pareto_distill_query_global_reassignment",
+            )
+            if any(key not in base_audit for key in pareto_required):
+                raise D92E0DSlimError("D92-E0D Pareto Distill receipt missing")
+            active = base_audit["d92_pareto_distill_active"]
+            fallback = base_audit["d92_pareto_distill_fallback_active"]
+            reason = base_audit["d92_pareto_distill_fallback_reason"]
+            if base_audit["d92_pareto_distill_mode"] != "pareto_distill":
+                raise D92E0DSlimError("D92-E0D Pareto Distill mode drift")
+            if pareto_registered_state:
+                fixed_counts = (
+                    int(base_audit["d92_pareto_distill_full_solve_count"]),
+                    int(base_audit["d92_pareto_distill_block_solve_count"]),
+                    int(base_audit["d92_pareto_distill_loo_fit_count"]),
+                    int(base_audit["d92_pareto_distill_fisher_fit_count"]),
+                    int(base_audit["d92_pareto_distill_component_fit_count"]),
+                    int(
+                        base_audit[
+                            "d92_pareto_distill_covariance_estimation_count"
+                        ]
+                    ),
+                    int(
+                        base_audit[
+                            "d92_pareto_distill_robust_center_transform_count"
+                        ]
+                    ),
+                )
+                if fixed_counts != (1, 1, 0, 0, 2, 1, 1):
+                    raise D92E0DSlimError(
+                        "D92-E0D Pareto Distill shared-count receipt drift"
+                    )
+                if fallback is True:
+                    if (
+                        active is not False
+                        or base_audit["d92_pareto_distill_local_valid"] is not False
+                        or not isinstance(reason, str)
+                        or not reason
+                        or base_audit["d92_pareto_distill_full_head_byte_exact"]
+                        is not True
+                        or base_audit[
+                            "d92_pareto_distill_deployed_support_constraints_pass"
+                        ]
+                        is not False
+                        or base_audit[
+                            "d92_pareto_distill_deployed_full_head_byte_exact"
+                        ]
+                        is not True
+                    ):
+                        raise D92E0DSlimError(
+                            "D92-E0D Pareto Distill fallback receipt drift"
+                        )
+                elif fallback is False:
+                    if (
+                        active is not True
+                        or base_audit["d92_pareto_distill_local_valid"] is not True
+                        or reason is not None
+                        or base_audit["d92_pareto_distill_full_head_byte_exact"]
+                        is not False
+                        or base_audit[
+                            "d92_pareto_distill_deployed_support_constraints_pass"
+                        ]
+                        is not True
+                        or base_audit[
+                            "d92_pareto_distill_deployed_full_head_byte_exact"
+                        ]
+                        is not False
+                    ):
+                        raise D92E0DSlimError(
+                            "D92-E0D Pareto Distill active receipt drift"
+                        )
+                else:
+                    raise D92E0DSlimError(
+                        "D92-E0D Pareto Distill fallback flag drift"
+                    )
+            else:
+                expected_reason = (
+                    "NOT_REGISTERED_STATE"
+                    if not registered
+                    else "K1_K2_EXACT_D92_FULL_ALIAS"
+                )
+                if (
+                    active is not False
+                    or fallback is not False
+                    or reason != expected_reason
+                    or base_audit["d92_pareto_distill_local_valid"] is not False
+                    or int(base_audit["d92_pareto_distill_component_fit_count"]) != 0
+                    or int(base_audit["d92_pareto_distill_full_solve_count"]) != 0
+                    or int(base_audit["d92_pareto_distill_block_solve_count"]) != 0
+                    or base_audit["d92_pareto_distill_deployed_e0_affine_sha256"]
+                    is not None
+                    or base_audit[
+                        "d92_pareto_distill_deployed_candidate_affine_sha256"
+                    ]
+                    is not None
+                ):
+                    raise D92E0DSlimError(
+                        "D92-E0D Pareto Distill inactive receipt drift"
+                    )
         ocf_expected_active = bool(
             arm.ocf_lambda is not None
             and registered
@@ -439,6 +577,11 @@ def build_d92_e0d_fit(
             key.replace("d92_newguard_", "d92_e0d_newguard_"): value
             for key, value in base_audit.items()
             if key.startswith("d92_newguard_")
+        }
+        pareto_receipt = {
+            key.replace("d92_pareto_distill_", "d92_e0d_pareto_distill_"): value
+            for key, value in base_audit.items()
+            if key.startswith("d92_pareto_distill_")
         }
         audit.update(
             {
@@ -593,6 +736,7 @@ def build_d92_e0d_fit(
                 "d92_e0d_query_global_reassignment": False,
                 "d92_e0d_finite_output_pass": finite,
                 **newguard_receipt,
+                **pareto_receipt,
                 **resource,
             }
         )

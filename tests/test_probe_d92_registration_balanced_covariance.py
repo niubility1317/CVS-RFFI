@@ -559,6 +559,148 @@ def test_registered_e0_d_mode_keeps_k1_and_k2_as_exact_d92_full_aliases():
         assert audit["d92_k1_k2_exact_full_alias"] is True
 
 
+def test_pareto_distill_probe_uses_one_shared_statistic_and_two_components():
+    """Would fail if Pareto recomputed a centre/covariance or reintroduced LOO."""
+
+    rng = np.random.default_rng(92_913)
+    basis, _ = np.linalg.qr(rng.normal(size=(160, 3)))
+    weights = np.asarray([0.5, 0.3, 0.2], dtype=np.float64)
+    ground_audit = {
+        "d81_basis_sha256": "1" * 64,
+        "d81_spectral_weight_sha256": "2" * 64,
+        "d81_participation_ratio_effective_rank": 2.6,
+        "d81_retained_rank": 3,
+        "d81_rank_policy": "ceil_participation_ratio_effective_rank",
+        "ground_component_input_count": 84,
+        "ground_statistic_semantics": "class_centered_cross_domain_centroid_drift_eigenspectrum",
+    }
+    classes, shots = 11, 5
+    labels = np.repeat(np.arange(classes), shots).astype(np.int64)
+    means = rng.normal(size=(classes, 288))
+    rows = (means[labels] + 0.08 * rng.normal(size=(classes * shots, 288))).astype(np.float32)
+    fit, _call_records, transform_records = probe.build_d92_fit(
+        d42, basis, weights, ground_audit, disable_registered_fisher=True,
+        registered_d_mode="pareto_distill"
+    )
+    _, _, audit = fit(rows, labels, classes, shots)
+
+    inventory = audit["d92_component_fit_inventory"]
+    assert audit["d92_registered_d_mode_effective"] == "pareto_distill"
+    assert inventory["actual_component_fit_count"] == 2
+    assert inventory["full_component_fit_count"] == 1
+    assert inventory["block3_component_fit_count"] == 1
+    assert inventory["loo_component_fit_count"] == 0
+    assert audit["d92_pareto_distill_covariance_estimation_count"] == 1
+    assert audit["d92_pareto_distill_robust_center_transform_count"] == 1
+    assert len(transform_records) == 1
+    assert audit["d92_pareto_distill_stage1_constraint_count"] == 7
+    if audit["d92_pareto_distill_active"]:
+        assert audit["d92_pareto_distill_deployment_codec_roundtrip_count"] == 2
+        assert audit[
+            "d92_pareto_distill_deployment_candidate_codec_roundtrip_count"
+        ] == 1
+    else:
+        assert audit["d92_pareto_distill_fallback_active"] is True
+        assert audit["d92_pareto_distill_deployment_codec_roundtrip_count"] in (1, 2)
+    assert audit["d92_pareto_distill_query_rows_used"] == 0
+    assert audit["d92_pareto_distill_query_fit_access"] is False
+    assert audit["d92_pareto_distill_support_optimization_macs_upper_bound"] >= 0
+
+
+def test_pareto_probe_numeric_codec_failure_is_exact_e0_and_structural_input_throws(monkeypatch):
+    """Numerics fail closed; malformed support registry remains a hard error."""
+
+    rng = np.random.default_rng(92_914)
+    basis, _ = np.linalg.qr(rng.normal(size=(160, 3)))
+    weights = np.asarray([0.5, 0.3, 0.2], dtype=np.float64)
+    ground_audit = {
+        "d81_basis_sha256": "3" * 64,
+        "d81_spectral_weight_sha256": "4" * 64,
+        "d81_participation_ratio_effective_rank": 2.6,
+        "d81_retained_rank": 3,
+        "d81_rank_policy": "ceil_participation_ratio_effective_rank",
+        "ground_component_input_count": 84,
+        "ground_statistic_semantics": "class_centered_cross_domain_centroid_drift_eigenspectrum",
+    }
+    classes, shots = 11, 5
+    labels = np.repeat(np.arange(classes), shots).astype(np.int64)
+    rows = rng.normal(size=(classes * shots, 288)).astype(np.float32)
+    full_fit, _, _ = probe.build_d92_fit(
+        d42, basis, weights, ground_audit, disable_registered_fisher=True,
+        registered_d_mode="full_only"
+    )
+    expected_w, expected_b, _ = full_fit(rows, labels, classes, shots)
+    fit, _, _ = probe.build_d92_fit(
+        d42, basis, weights, ground_audit, disable_registered_fisher=True,
+        registered_d_mode="pareto_distill"
+    )
+
+    monkeypatch.setattr(d42, "_quantize_coefficients", lambda _value: (_ for _ in ()).throw(ValueError("injected codec")))
+    coefficient, intercept, audit = fit(rows, labels, classes, shots)
+    assert coefficient.tobytes() == expected_w.tobytes()
+    assert intercept.tobytes() == expected_b.tobytes()
+    assert audit["d92_pareto_distill_fallback_active"] is True
+    assert audit["d92_pareto_distill_full_head_byte_exact"] is True
+
+    broken_labels = labels.copy()
+    broken_labels[-1] = 0
+    with pytest.raises(probe.D92ProbeError, match="shared-statistics|registry"):
+        fit(rows, broken_labels, classes, shots)
+
+
+def test_pareto_block_numeric_fallback_records_decoded_e0_reference(monkeypatch):
+    """Would fail if a legal BLOCK numeric fallback lacked its D42 E0 preview."""
+
+    rng = np.random.default_rng(92_915)
+    basis, _ = np.linalg.qr(rng.normal(size=(160, 3)))
+    weights = np.asarray([0.5, 0.3, 0.2], dtype=np.float64)
+    ground_audit = {
+        "d81_basis_sha256": "5" * 64,
+        "d81_spectral_weight_sha256": "6" * 64,
+        "d81_participation_ratio_effective_rank": 2.6,
+        "d81_retained_rank": 3,
+        "d81_rank_policy": "ceil_participation_ratio_effective_rank",
+        "ground_component_input_count": 84,
+        "ground_statistic_semantics": "class_centered_cross_domain_centroid_drift_eigenspectrum",
+    }
+    classes, shots = 11, 5
+    labels = np.repeat(np.arange(classes), shots).astype(np.int64)
+    rows = rng.normal(size=(classes * shots, 288)).astype(np.float32)
+    original_compile = probe.compile_registration_balanced_affine
+
+    def block_numeric_failure(d42_arg, statistics, *, arm):
+        if arm == "block3_centered":
+            raise probe.D92RegistrationBalancedCovarianceError(
+                "positive definite injected block failure"
+            )
+        return original_compile(d42_arg, statistics, arm=arm)
+
+    monkeypatch.setattr(
+        probe, "compile_registration_balanced_affine", block_numeric_failure
+    )
+    fit, _, _ = probe.build_d92_fit(
+        d42,
+        basis,
+        weights,
+        ground_audit,
+        disable_registered_fisher=True,
+        registered_d_mode="pareto_distill",
+    )
+    coefficient, intercept, audit = fit(rows, labels, classes, shots)
+    decoded = d42._quantize_coefficients(coefficient)[4]
+    decoded_intercept = np.asarray(intercept, dtype=np.float16).astype(np.float32)
+    from cvsrffi import stage2_d92_full_block_pareto_distill as pareto
+
+    assert audit["d92_pareto_distill_active"] is False
+    assert audit["d92_pareto_distill_fallback_active"] is True
+    assert audit["d92_pareto_distill_deployment_codec_roundtrip_count"] == 1
+    assert audit["d92_pareto_distill_deployment_candidate_codec_roundtrip_count"] == 0
+    assert audit["d92_pareto_distill_deployed_candidate_affine_sha256"] is None
+    assert audit["d92_pareto_distill_deployed_e0_affine_sha256"] == (
+        pareto.affine_preview_sha256(decoded, decoded_intercept)
+    )
+
+
 def _floorboost_hand_fixture():
     """Return a support set whose Q20 lower statistic is hand-checkable."""
 

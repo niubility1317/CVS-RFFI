@@ -419,3 +419,61 @@ def test_newguard_arm_is_single_full_fit_and_keeps_low_k_full_alias():
     assert k2_audit["d92_e0d_newguard_fallback_reason"] == (
         "K1_K2_EXACT_D92_FULL_ALIAS"
     )
+
+
+def test_pareto_distill_arm_wires_shared_two_component_receipt_and_low_k_alias():
+    """Would fail if slim dropped Pareto's 4/2 inventory or K2 exact alias."""
+
+    arm = D92_E0D_ARMS["E0_FULL_BLOCK_PARETO_DISTILL"]
+    assert (
+        arm.candidate_id,
+        arm.registered_d_mode,
+        arm.b_enabled,
+        arm.e_enabled,
+    ) == ("d92_e0_full_block_pareto_distill", "pareto_distill", True, False)
+    _, _, audit, _, transforms = _run(
+        "E0_FULL_BLOCK_PARETO_DISTILL", class_count=11, k_shot=5
+    )
+    inventory = audit["d92_e0d_actual_component_inventory"]
+    assert expected_total_component_fit_count(5, arm_id=arm.arm_id) == 4
+    assert audit["d92_e0d_total_component_fit_count"] == 4
+    assert audit["d92_e0d_actual_component_fit_count"] == 2
+    assert inventory["full_component_fit_count"] == 1
+    assert inventory["block3_component_fit_count"] == 1
+    assert inventory["loo_component_fit_count"] == 0
+    assert len(transforms) == 1
+    assert audit["d92_e0d_pareto_distill_covariance_estimation_count"] == 1
+    assert audit["d92_e0d_pareto_distill_robust_center_transform_count"] == 1
+    assert audit["d92_e0d_pareto_distill_query_rows_used"] == 0
+    assert audit["d92_e0d_pareto_distill_query_macs"] == 11 * 288
+    assert audit["d92_e0d_pareto_distill_query_fit_access"] is False
+    assert audit["d92_e0d_pareto_distill_query_update_access"] is False
+    assert audit["d92_e0d_pareto_distill_query_selection_access"] is False
+    if audit["d92_e0d_pareto_distill_active"]:
+        assert audit["d92_e0d_pareto_distill_deployed_support_constraints_pass"] is True
+        assert audit["d92_e0d_pareto_distill_deployed_full_head_byte_exact"] is False
+    else:
+        assert audit["d92_e0d_pareto_distill_fallback_active"] is True
+        assert audit["d92_e0d_pareto_distill_local_valid"] is False
+        assert audit["d92_e0d_pareto_distill_deployed_support_constraints_pass"] is False
+        assert audit["d92_e0d_pareto_distill_deployed_full_head_byte_exact"] is True
+
+    _, _, k2_audit, _, _ = _run(
+        "E0_FULL_BLOCK_PARETO_DISTILL", class_count=11, k_shot=2, repeated=True
+    )
+    assert k2_audit["d92_e0d_registered_d_mode_effective"] == "d92_full_alias"
+    assert k2_audit["d92_e0d_pareto_distill_active"] is False
+    assert k2_audit["d92_e0d_pareto_distill_fallback_active"] is False
+    assert k2_audit["d92_e0d_pareto_distill_fallback_reason"] == (
+        "K1_K2_EXACT_D92_FULL_ALIAS"
+    )
+
+    _, _, k1_audit, _, _ = _run(
+        "E0_FULL_BLOCK_PARETO_DISTILL", class_count=11, k_shot=1
+    )
+    assert k1_audit["d92_e0d_registered_d_mode_effective"] == "d92_full_alias"
+    assert k1_audit["d92_e0d_pareto_distill_active"] is False
+    assert k1_audit["d92_e0d_pareto_distill_fallback_active"] is False
+    assert k1_audit["d92_e0d_pareto_distill_fallback_reason"] == (
+        "K1_K2_EXACT_D92_FULL_ALIAS"
+    )
