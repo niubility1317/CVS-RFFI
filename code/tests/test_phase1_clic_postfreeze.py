@@ -1022,6 +1022,8 @@ def test_clic_clean_export_to_bundle_derives_v5_config_without_manual_manifest_i
             self.tx_list = list(tx_list)
             self.rx_list = list(SOURCE_RX)
             self.day_list = list(SOURCE_DAYS)
+            self.rx_keep = list(range(len(self.rx_list)))
+            self.day_keep = list(range(len(self.day_list)))
             self.eq_list = ["eq-0"]
             self.rows = list(rows)
             self.index = []
@@ -1081,9 +1083,9 @@ def test_clic_clean_export_to_bundle_derives_v5_config_without_manual_manifest_i
     split_receipt = _build_source_split_receipt(
         seed=7281164,
         split_mode="tx_rx_day_1_6_3",
-        source_days=SOURCE_DAYS,
+        source_days=tuple(range(len(SOURCE_DAYS))),
         target_days=("target-day",),
-        source_receivers=SOURCE_RX,
+        source_receivers=tuple(range(len(SOURCE_RX))),
         target_receivers=("target-rx",),
         labeled_indices=labeled_indices,
         unlabeled_indices=(),
@@ -1208,8 +1210,10 @@ def test_clic_clean_export_to_bundle_derives_v5_config_without_manual_manifest_i
     assert clean_path.is_file()
     with np.load(clean_path, allow_pickle=False) as archive:
         clean_manifest = json.loads(str(np.asarray(archive["manifest_json"]).item()))
-    assert clean_manifest["source_split_receipt"]["source_receivers"] == list(SOURCE_RX)
-    assert clean_manifest["source_split_receipt"]["source_days"] == list(SOURCE_DAYS)
+    assert clean_manifest["source_split_receipt"]["source_receivers"] == ["0", "1"]
+    assert clean_manifest["source_split_receipt"]["source_days"] == ["0", "1"]
+    assert clean_manifest["source_receiver_ids"] == list(SOURCE_RX)
+    assert clean_manifest["source_day_ids"] == list(SOURCE_DAYS)
     assert clean_manifest["tx_partition_receipt"]["source_known_train_tx"] == list(SOURCE_TX)
 
     existing = tmp_path / "G" / "existing_received_iq.npz"
@@ -1245,6 +1249,33 @@ def test_clic_clean_export_to_bundle_derives_v5_config_without_manual_manifest_i
         "unlabeled_ratio": 0.63,
         "source_val_ratio": 0.30,
     }
+
+
+@pytest.mark.parametrize(
+    "declared",
+    (
+        ("0", "0"),
+        ("0", "2"),
+        (SOURCE_RX[0], SOURCE_RX[1]),
+    ),
+)
+def test_clic_clean_source_axis_indices_fail_closed_before_physical_label_binding(
+    declared: tuple[str, str],
+) -> None:
+    """Receipt indices cannot repeat, leave the rebuilt axis or masquerade as labels."""
+
+    class SourceAxis:
+        rx_keep = [0, 1]
+        rx_list = list(SOURCE_RX)
+
+    with pytest.raises(CLEAN.CLICSplitExportError, match="source receiver"):
+        CLEAN._physical_axis_labels_from_split_indices(
+            SourceAxis(),
+            declared,
+            keep_attr="rx_keep",
+            labels_attr="rx_list",
+            axis_name="receiver",
+        )
 
 
 def test_clic_clean_rejects_synchronized_checkpoint_seed_drift(tmp_path: Path) -> None:

@@ -288,6 +288,50 @@ def _physical_keys_for_indices(base: Any, indices: Sequence[int]) -> tuple[str, 
     return tuple(keys)
 
 
+def _physical_axis_labels_from_split_indices(
+    source_base: Any,
+    declared_indices: Any,
+    *,
+    keep_attr: str,
+    labels_attr: str,
+    axis_name: str,
+) -> list[str]:
+    """Resolve split-receipt axis indices to the physical labels in export rows."""
+
+    if not isinstance(declared_indices, (list, tuple)) or not declared_indices:
+        raise CLICSplitExportError(
+            f"CLIC clean export split receipt has no source {axis_name} indices"
+        )
+    indices: list[int] = []
+    for raw in declared_indices:
+        token = str(raw)
+        if not token.isdigit() or str(int(token)) != token:
+            raise CLICSplitExportError(
+                f"CLIC clean export split receipt source {axis_name} index is invalid"
+            )
+        indices.append(int(token))
+    if len(indices) != len(set(indices)):
+        raise CLICSplitExportError(
+            f"CLIC clean export split receipt source {axis_name} indices repeat"
+        )
+    kept = getattr(source_base, keep_attr, None)
+    labels = getattr(source_base, labels_attr, None)
+    if not isinstance(kept, (list, tuple)) or not isinstance(labels, (list, tuple)):
+        raise CLICSplitExportError(
+            f"CLIC clean export source {axis_name} axis metadata is unavailable"
+        )
+    kept_indices = [int(value) for value in kept]
+    if sorted(indices) != sorted(kept_indices):
+        raise CLICSplitExportError(
+            f"CLIC clean export source {axis_name} indices drift from reconstructed axis"
+        )
+    if any(index < 0 or index >= len(labels) for index in indices):
+        raise CLICSplitExportError(
+            f"CLIC clean export source {axis_name} index is outside the dataset axis"
+        )
+    return sorted(str(labels[index]) for index in indices)
+
+
 def _reconstruct_source_l_v(
     *,
     raw_dataset: Mapping[str, Any],
@@ -598,7 +642,13 @@ def export(args: argparse.Namespace) -> dict[str, Any]:
     declared_source_receivers = source_split_receipt.get("source_receivers")
     declared_source_days = source_split_receipt.get("source_days")
     if isinstance(declared_source_receivers, (list, tuple)) and declared_source_receivers:
-        source_receivers = [str(item) for item in declared_source_receivers]
+        source_receivers = _physical_axis_labels_from_split_indices(
+            source_base,
+            declared_source_receivers,
+            keep_attr="rx_keep",
+            labels_attr="rx_list",
+            axis_name="receiver",
+        )
         if source_receivers != observed_source_receivers:
             raise CLICSplitExportError(
                 "CLIC clean export source receiver aggregate drifts from split receipt"
@@ -609,7 +659,13 @@ def export(args: argparse.Namespace) -> dict[str, Any]:
         # carry the receipt's nonempty aggregate receiver set.
         source_receivers = observed_source_receivers
     if isinstance(declared_source_days, (list, tuple)) and declared_source_days:
-        source_days = [str(item) for item in declared_source_days]
+        source_days = _physical_axis_labels_from_split_indices(
+            source_base,
+            declared_source_days,
+            keep_attr="day_keep",
+            labels_attr="day_list",
+            axis_name="day",
+        )
         if source_days != observed_source_days:
             raise CLICSplitExportError(
                 "CLIC clean export source day aggregate drifts from split receipt"

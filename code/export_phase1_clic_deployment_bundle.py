@@ -762,22 +762,42 @@ def _candidate_train_config_from_real_artifacts(
     split_mode = str(args.get("split_mode", ""))
     if split_mode != "tx_rx_day_1_6_3":
         raise CLICBundleError("real candidate train config split mode drifted")
-    source_receivers = _string_sequence(
+    source_receiver_indices = _string_sequence(
         source_receipt.get("source_receivers"), label="real candidate source receiver set"
     )
-    source_days = _string_sequence(
+    source_day_indices = _string_sequence(
         source_receipt.get("source_days"), label="real candidate source day set"
     )
-    for field, expected_values in (
-        ("source_receiver_ids", source_receivers),
-        ("source_day_ids", source_days),
-    ):
-        if field in clean_manifest:
-            clean_values = _string_sequence(
-                clean_manifest.get(field), label=f"real candidate clean-manifest {field}"
+    if "source_receiver_ids" in clean_manifest or "source_day_ids" in clean_manifest:
+        source_receivers = _string_sequence(
+            clean_manifest.get("source_receiver_ids"),
+            label="real candidate clean-manifest source_receiver_ids",
+        )
+        source_days = _string_sequence(
+            clean_manifest.get("source_day_ids"),
+            label="real candidate clean-manifest source_day_ids",
+        )
+        # Split receipts intentionally bind source axis *indices* while the
+        # clean manifest binds physical labels resolved from those indices and
+        # checked against every exported row.
+        if (
+            len(source_receiver_indices) != len(source_receivers)
+            or len(source_day_indices) != len(source_days)
+        ):
+            raise CLICBundleError(
+                "real candidate clean-manifest source axis label cardinality drifted"
             )
-            if clean_values != expected_values:
-                raise CLICBundleError(f"real candidate clean-manifest {field} drifted from source split receipt")
+    elif isinstance(checkpoint_source_receipt, Mapping):
+        # Historical archive fixtures/checkpoints predate the explicit clean
+        # label surface and stored physical labels directly in split_info.
+        # Frozen v5 checkpoints have no split_info, so they cannot enter this
+        # compatibility branch and must carry the new clean-manifest fields.
+        source_receivers = source_receiver_indices
+        source_days = source_day_indices
+    else:
+        raise CLICBundleError(
+            "real candidate v5 clean manifest lacks physical source RX/day labels"
+        )
     source_train = [str(item) for item in source_tx_ids]
     source_validation = [str(item) for item in known_validation_tx_ids]
     source_proxy = [str(item) for item in proxy_unknown_tx_ids]
