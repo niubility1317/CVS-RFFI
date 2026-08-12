@@ -37,21 +37,57 @@ class RegistrationBalancedStatistics:
     labels: np.ndarray
     means: np.ndarray
     covariance: np.ndarray
+    old_covariance: np.ndarray
+    new_covariance: np.ndarray
     class_count: int
     k_shot: int
     covariance_audit: dict[str, Any]
 
 
+def _canonical_row_key(row: np.ndarray) -> tuple[bytes, bytes]:
+    """Use float32 row bytes as the stable primary support ordering key."""
+
+    row64 = np.ascontiguousarray(np.asarray(row, dtype=np.float64))
+    row32 = np.ascontiguousarray(np.asarray(row64, dtype=np.float32))
+    # The full-precision suffix only breaks a float32-byte tie without
+    # changing the required canonical float32 ordering.
+    return row32.tobytes(order="C"), row64.tobytes(order="C")
+
+
+def _canonical_class_rows(rows: np.ndarray) -> np.ndarray:
+    """Return one class in a row-order-invariant deterministic sequence."""
+
+    source = np.asarray(rows, dtype=np.float64)
+    order = sorted(range(len(source)), key=lambda index: _canonical_row_key(source[index]))
+    return np.asarray(source[np.asarray(order, dtype=np.int64)], dtype=np.float64)
+
+
+def _canonical_group_rows(
+    rows: np.ndarray, labels: np.ndarray, class_indices: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
+    """Canonicalize class and row order before sklearn's group covariance fit."""
+
+    classes: list[tuple[tuple[tuple[bytes, bytes], ...], np.ndarray]] = []
+    for class_index in class_indices.tolist():
+        class_rows = _canonical_class_rows(rows[labels == class_index])
+        class_key = tuple(_canonical_row_key(row) for row in class_rows)
+        classes.append((class_key, class_rows))
+    classes.sort(key=lambda item: item[0])
+    group_rows = np.concatenate([item[1] for item in classes], axis=0)
+    group_labels = np.concatenate(
+        [
+            np.full(len(item[1]), index, dtype=np.int64)
+            for index, item in enumerate(classes)
+        ],
+        axis=0,
+    )
+    return group_rows, group_labels
+
+
 def _group_covariance(
     d42: Any, rows: np.ndarray, labels: np.ndarray, class_indices: np.ndarray
 ) -> np.ndarray:
-    mask = np.isin(labels, class_indices)
-    group_rows = rows[mask]
-    group_labels_raw = labels[mask]
-    local = {int(value): index for index, value in enumerate(class_indices.tolist())}
-    group_labels = np.asarray(
-        [local[int(value)] for value in group_labels_raw], dtype=np.int64
-    )
+    group_rows, group_labels = _canonical_group_rows(rows, labels, class_indices)
     count = len(class_indices)
     estimator = d42.LinearDiscriminantAnalysis(
         solver="lsqr",
@@ -108,11 +144,19 @@ def build_registration_balanced_statistics(
         raise D92RegistrationBalancedCovarianceError(
             "D92 shared covariance is defined only for registered K>2 states"
         )
-    means = np.stack([rows[labels == index].mean(axis=0) for index in range(classes)])
+    means = np.stack(
+        [
+            np.sum(_canonical_class_rows(rows[labels == index]), axis=0, dtype=np.float64)
+            / float(shots)
+            for index in range(classes)
+        ]
+    )
     old_indices = np.arange(OLD_CLASS_COUNT, dtype=np.int64)
     new_indices = np.arange(OLD_CLASS_COUNT, classes, dtype=np.int64)
     old_covariance = _group_covariance(d42, rows, labels, old_indices)
     new_covariance = _group_covariance(d42, rows, labels, new_indices)
+    old_covariance.setflags(write=False)
+    new_covariance.setflags(write=False)
     covariance = TASK_WEIGHT * old_covariance + TASK_WEIGHT * new_covariance
     covariance = 0.5 * (covariance + covariance.T)
     eigenvalues = np.linalg.eigvalsh(covariance)
@@ -160,6 +204,8 @@ def build_registration_balanced_statistics(
         labels=labels,
         means=np.asarray(means, dtype=np.float64),
         covariance=np.asarray(covariance, dtype=np.float64),
+        old_covariance=old_covariance,
+        new_covariance=new_covariance,
         class_count=classes,
         k_shot=shots,
         covariance_audit=audit,

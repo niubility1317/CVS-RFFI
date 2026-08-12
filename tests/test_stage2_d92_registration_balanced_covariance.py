@@ -132,3 +132,19 @@ def test_shared_full_compile_reuses_the_single_pd_check():
     assert audit["d92_compiled_covariance_eigvalsh_count"] == 0
     assert audit["d92_compiled_covariance_solve_count"] == 1
     assert audit["d92_compiled_covariance_dense_288_solve_count"] == 1
+
+
+def test_registration_statistics_expose_spd_task_endpoints_without_changing_average():
+    """Would fail if CCOC could not reuse the exact D92 task endpoints."""
+
+    rows, labels = _support(11, 5, seed=991)
+    statistics = build_registration_balanced_statistics(d42, rows, labels, 11, 5)
+
+    assert statistics.old_covariance.shape == (288, 288)
+    assert statistics.new_covariance.shape == (288, 288)
+    np.linalg.cholesky(statistics.old_covariance)
+    np.linalg.cholesky(statistics.new_covariance)
+    np.testing.assert_array_equal(
+        statistics.covariance,
+        0.5 * statistics.old_covariance + 0.5 * statistics.new_covariance,
+    )
