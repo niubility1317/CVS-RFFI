@@ -3,7 +3,7 @@
 ## 1. 状态与目标
 
 - 实验ID：`phase1_clic12_20260812_v5`
-- 当前状态：`PREREGISTERED / NOT_LAUNCHED`
+- 当前状态：`RUNNING / NO_PERFORMANCE_RESULT_YET`
 - 操作者：主控Codex；N607唯一runner：`Luna/max`
 - 目标：完成F1—F6×C/G共12臂、每臂40epoch的P1-CLIC源域训练；训练技术闭合后，对目标域统一叠加`LEO weak`星地信道，联合评估域泛化和未知类拒识。
 - v1—v4全部是封存的系统性技术失败，均为`NO_PERFORMANCE_RESULT`；v5使用新的run/log/output路径，不恢复、覆盖或重试任何旧run。
@@ -43,9 +43,9 @@
 
 ## 6. 运行回填
 
-- 复用release与启动时间：待回填。
-- launcher/PID/GPU/日志：待回填。
-- 首波技术健康：待回填。
+- 复用release与启动时间：2026-08-12 14:57 CST；release=`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_clic_smoke3_20260812_v1_f43f313e`，复用已验签archive（SHA256=`4F96E4203830809BA807750F03921EE21F26D79EDEE5C401BD179D5C87B3A03F`，266874880 bytes），未重复SCP或解包。
+- launcher/PID/GPU/日志：正式launcher恰1次，retry=`NO`；outer PID=`2441974`；`pids.tsv`已登记12/12：F1C=2441978/GPU0，F5G=2441980/GPU0，F1G=2441983/GPU1，F5C=2441989/GPU1，F2C=2441993/GPU2，F6G=2441996/GPU2，F2G=2442004/GPU3，F6C=2442009/GPU3，F3C=2442015/GPU4，F3G=2442017/GPU5，F4C=2442019/GPU6，F4G=2442021/GPU7。每个PID均绑定该release的`train_ssdg.py`及v5 run-root，12个独立日志路径已建立。
+- 首波技术健康（启动后约12秒）：12/12训练PID存活；12个`phase1_clic_config_receipt.json`已生成，日志尚未刷新正文；当前无Traceback、CLICRuntimeError或其他确定性异常指纹。GPU compute为12进程，显存约1.4–1.7GiB/进程，符合固定映射及每卡最多2进程。
 - checkpoint/terminal计数：待回填。
 - 训练完成状态与后冻结工件：待回填。
 - GPU/PID/SSH清理：待回填。
