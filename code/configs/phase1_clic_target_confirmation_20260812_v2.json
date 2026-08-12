@@ -1,0 +1,54 @@
+{
+  "schema": "cvs_leo_weak_iq_cache_build_spec_v2",
+  "cache_set_id": "phase1_clic_target_confirmation_20260812_v2_rx_20_1_seed_713101",
+  "cache_scope": "phase1_clic_target_confirmation",
+  "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+  "clean_sample_access": false,
+  "clean_derived_signal_access": false,
+  "phase2_physical_sample_observation_policy": "single_leo_weak_observation_per_physical_sample",
+  "phase2_cross_scenario_physical_sample_reuse": false,
+  "phase2_additional_leo_channel_state_generation": false,
+  "phase2_post_reception_equalization_augmentation_transform_allowed": true,
+  "phase2_post_reception_view_from_fixed_received_iq_only": true,
+  "phase2_post_reception_view_counts_as_additional_physical_sample": false,
+  "phase2_physical_sample_root_id_policy": "immutable_preoverlay_lineage_token",
+  "phase2_query_post_reception_view_fit_access": false,
+  "physical_sample_scenario_assignment_policy": "disjoint_preoverlay_tx_day_stratified_v1",
+  "star_ground_channel_impl": "simplified_leo_residual",
+  "role_specs": [
+    {
+      "role": "target_registered_known",
+      "pkl": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManyTx.pkl",
+      "tx_ids": "14-10,14-7,20-15,20-19,6-15,8-20",
+      "rxs": "20-1",
+      "days": "0,1,2",
+      "max_samples_per_tx": 120
+    },
+    {
+      "role": "target_unknown",
+      "pkl": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManyTx.pkl",
+      "tx_ids": "1-16,1-18,18-10,14-11,8-3,18-8,10-10,16-19,20-12,4-10,13-14,2-5,1-8,19-13,19-9,3-8,19-8,11-19,2-16,19-6",
+      "rxs": "20-1",
+      "days": "0,1,2",
+      "max_samples_per_tx": 120
+    }
+  ],
+  "dataset_seed": 713101,
+  "satellite_seed_by_scenario": {
+    "leo_clear_weak": 7131010,
+    "leo_low_elev_weak": 7131011,
+    "leo_rain_weak": 7131012
+  },
+  "out_npz_by_scenario": {
+    "leo_clear_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_clic_target_confirmation_20260812_v2/cache/leo_clear_weak.npz",
+    "leo_low_elev_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_clic_target_confirmation_20260812_v2/cache/leo_low_elev_weak.npz",
+    "leo_rain_weak": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_clic_target_confirmation_20260812_v2/cache/leo_rain_weak.npz"
+  },
+  "out_manifest": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_clic_target_confirmation_20260812_v2/cache/cache_set.json",
+  "batch_size": 256,
+  "wisig_out_len": 256,
+  "wisig_equalized": "1",
+  "wisig_domain": "rx_day",
+  "sat_fs_hz": 25000000.0,
+  "sat_fc_hz": 2462000000.0
+}
