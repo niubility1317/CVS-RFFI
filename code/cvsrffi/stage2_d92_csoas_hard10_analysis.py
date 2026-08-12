@@ -127,7 +127,11 @@ def evaluate_resource_gate(candidate_rows: Sequence[Mapping[str, Any]], baseline
 
 def _candidate_component_fit_count(row: Mapping[str, Any]) -> int:
     inventory = row.get("actual_component_inventory")
-    value = inventory.get("actual_component_fit_count") if isinstance(inventory, Mapping) else row.get("actual_component_fit_count")
+    value = (
+        inventory.get("actual_component_fit_count")
+        if isinstance(inventory, Mapping)
+        else row.get("actual_component_fit_count", row.get("actual_fit_count"))
+    )
     if isinstance(value, bool) or value is None:
         raise D92CSOASHard10AnalysisError("candidate component-fit receipt missing")
     count = int(value)

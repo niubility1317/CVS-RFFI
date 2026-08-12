@@ -92,6 +92,23 @@ def test_component_fit_gate_uses_actual_receipt_not_mac_estimate() -> None:
     assert analysis.evaluate_component_fit_reduction_gate(rows)["passed"] is False
 
 
+def test_component_fit_gate_accepts_analyzer_flat_actual_fit_count() -> None:
+    rows = [
+        {
+            "outer_role": "performance",
+            "outer_key": "rx_real",
+            "k_shot": 10,
+            "fit_count": 2,
+            "actual_fit_count": 1,
+        },
+    ]
+
+    result = analysis.evaluate_component_fit_reduction_gate(rows)
+
+    assert result["passed"] is True
+    assert result["rows"][0]["candidate_actual_component_fit_count"] == 1
+
+
 def test_truth_binding_checks_actual_sidecar_hash(tmp_path: Path) -> None:
     truth = tmp_path / "jobs" / "outer" / "offline" / "scorer" / "truth_sidecar.json"
     truth.parent.mkdir(parents=True)
