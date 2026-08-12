@@ -3,7 +3,7 @@
 ## 1. 状态与目标
 
 - 实验ID：`phase1_clic12_20260812_v4`
-- 当前状态：`LOCAL_VERIFIED / READY_FOR_REAL_PATH_SMOKE`
+- 当前状态：`LANDED / REMOTE_STATIC_VERIFIED / SMOKE_VERIFIED / READY_TO_LAUNCH`
 - 操作者：主控Codex；N607唯一runner：`Luna/max`
 - 目标：训练P1-CLIC的F1—F6×C/G共12臂；训练完成后所有正式指标均叠加`LEO weak`目标域测试，联合评估未知类拒识与域泛化。
 - v1—v3均为训练前系统性技术失败，全部封存为`NO_PERFORMANCE_RESULT`；v4不恢复、覆盖或重试旧run。
@@ -51,9 +51,10 @@
 
 ## 7. 运行回填
 
-- archive SHA/bytes：待runner
-- SCP/release/launch：待runner
-- 真实路径烟测：待runner
+- archive SHA/bytes：`CD550674EFF0C67E694E0384A679AD04E9DE204070449C440294F2E634D1835A`，266864640 bytes；SCP=1，远端SHA/bytes闭合。
+- SCP/release/launch：SCP=1，release原子落地，launch待执行，fresh-run retry=NO。
+- release静态门：核心文件hash、远端py_compile、`train_ssdg.py --help`、`bash -n`、dry-run12、真实parser12/12、TX4+1+1六TX闭合通过，release无pycache。
+- 真实路径烟测：通过；F1C/F1G真实checkpoint重建，真实`_build_ssdg_wisig_data`返回`tx_partition_enabled=true`、`held_tx_loaded_by_training=false`、四类`class_id_to_tx`及一条proxy TX回执；取到128行train batch；C/G各一次clean+`leo_clear_weak` forward，`clean CE+0.10 KL` backward有限且CLIC梯度非零；`proxy_rows_loaded=0`、`query_rows_opened=0`。烟测后GPU/SSH清零。
 - PID/GPU/日志：待runner
 - checkpoint/terminal计数：待runner
 - 最终状态：待runner
