@@ -391,8 +391,15 @@ def build_d92_e0d_fit(
                 "d92_newguard_deployment_new_support_min_margin_change",
                 "d92_newguard_deployment_new_support_old_envelope_change_max",
                 "d92_newguard_deployment_tail_margin_change_by_old_class",
-                "d92_newguard_deployment_backtrack_scale",
-                "d92_newguard_deployment_attempt_count",
+                "d92_newguard_closure_tolerance",
+                "d92_newguard_max_abs_Xnew_internal_residual",
+                "d92_newguard_old_group_zero_sum_residual_max_abs",
+                "d92_newguard_new_support_old_envelope_change_max_abs_error",
+                "d92_newguard_deployment_max_abs_Xnew_internal_residual",
+                "d92_newguard_deployment_old_group_zero_sum_residual_max_abs",
+                "d92_newguard_deployment_new_support_old_envelope_change_max_abs_error",
+                "d92_newguard_deployment_strength_scale",
+                "d92_newguard_deployment_candidate_count",
                 "d92_newguard_deployment_full_head_byte_exact",
                 "d92_newguard_deployment_codec_roundtrip_count",
                 "d92_newguard_deployment_codec_macs_upper_bound",
@@ -422,13 +429,19 @@ def build_d92_e0d_fit(
                         or base_audit.get("d92_newguard_full_head_byte_exact")
                         is not True
                         or base_audit.get(
-                            "d92_newguard_deployment_backtrack_scale"
+                            "d92_newguard_deployment_strength_scale"
                         )
                         is not None
                         or int(
-                            base_audit["d92_newguard_deployment_attempt_count"]
+                            base_audit["d92_newguard_deployment_candidate_count"]
                         )
-                        <= 0
+                        not in (0, 1)
+                        or int(
+                            base_audit[
+                                "d92_newguard_deployment_codec_roundtrip_count"
+                            ]
+                        )
+                        not in (0, 2)
                         or base_audit.get(
                             "d92_newguard_deployment_full_head_byte_exact"
                         )
@@ -440,6 +453,20 @@ def build_d92_e0d_fit(
                 elif base_newguard_fallback is False:
                     protection_tolerance = float(
                         base_audit["d92_newguard_protection_tolerance"]
+                    )
+                    closure_tolerance = float(
+                        base_audit["d92_newguard_closure_tolerance"]
+                    )
+                    closure_values = np.asarray(
+                        [
+                            base_audit["d92_newguard_max_abs_Xnew_internal_residual"],
+                            base_audit["d92_newguard_old_group_zero_sum_residual_max_abs"],
+                            base_audit["d92_newguard_new_support_old_envelope_change_max_abs_error"],
+                            base_audit["d92_newguard_deployment_max_abs_Xnew_internal_residual"],
+                            base_audit["d92_newguard_deployment_old_group_zero_sum_residual_max_abs"],
+                            base_audit["d92_newguard_deployment_new_support_old_envelope_change_max_abs_error"],
+                        ],
+                        dtype=np.float64,
                     )
                     deployed_tail = np.asarray(
                         base_audit[
@@ -459,15 +486,15 @@ def build_d92_e0d_fit(
                         or base_audit.get("d92_newguard_deployment_protection_pass")
                         is not True
                         or float(
-                            base_audit["d92_newguard_deployment_backtrack_scale"]
+                            base_audit["d92_newguard_deployment_strength_scale"]
                         )
-                        <= 0.0
+                        != 1.0
                         or int(
                             base_audit[
-                                "d92_newguard_deployment_attempt_count"
+                                "d92_newguard_deployment_candidate_count"
                             ]
                         )
-                        <= 0
+                        != 1
                         or base_audit.get(
                             "d92_newguard_deployment_full_head_byte_exact"
                         )
@@ -477,12 +504,7 @@ def build_d92_e0d_fit(
                                 "d92_newguard_deployment_codec_roundtrip_count"
                             ]
                         )
-                        != int(
-                            base_audit[
-                                "d92_newguard_deployment_attempt_count"
-                            ]
-                        )
-                        + 1
+                        != 2
                         or int(
                             base_audit[
                                 "d92_newguard_deployment_codec_macs_upper_bound"
@@ -491,6 +513,12 @@ def build_d92_e0d_fit(
                         <= 0
                         or protection_tolerance
                         != float(1024.0 * np.finfo(np.float32).eps)
+                        or not np.isfinite(closure_tolerance)
+                        or closure_tolerance <= 0.0
+                        or closure_values.shape != (6,)
+                        or not np.isfinite(closure_values).all()
+                        or np.any(closure_values < 0.0)
+                        or np.any(closure_values > closure_tolerance)
                         or float(
                             base_audit[
                                 "d92_newguard_new_support_min_margin_change"
@@ -538,9 +566,9 @@ def build_d92_e0d_fit(
                     base_newguard_active is not False
                     or base_newguard_fallback is not False
                     or base_newguard_reason != expected_reason
-                    or base_audit.get("d92_newguard_deployment_backtrack_scale")
+                    or base_audit.get("d92_newguard_deployment_strength_scale")
                     is not None
-                    or int(base_audit["d92_newguard_deployment_attempt_count"]) != 0
+                    or int(base_audit["d92_newguard_deployment_candidate_count"]) != 0
                     or base_audit.get(
                         "d92_newguard_deployment_full_head_byte_exact"
                     )

@@ -219,14 +219,20 @@ _NEWGUARD_RECEIPT_FIELDS = (
     "d92_e0d_newguard_tau_old_envelope_shift",
     "d92_e0d_newguard_deployment_protection_pass",
     "d92_e0d_newguard_full_head_byte_exact",
-    "d92_e0d_newguard_deployment_backtrack_scale",
-    "d92_e0d_newguard_deployment_attempt_count",
+    "d92_e0d_newguard_deployment_strength_scale",
+    "d92_e0d_newguard_deployment_candidate_count",
     "d92_e0d_newguard_deployment_full_head_byte_exact",
     "d92_e0d_newguard_deployment_codec_roundtrip_count",
     "d92_e0d_newguard_deployment_codec_macs_upper_bound",
     "d92_e0d_newguard_nullspace_rank",
     "d92_e0d_newguard_rank_threshold",
     "d92_e0d_newguard_max_abs_Xnew_internal_residual",
+    "d92_e0d_newguard_closure_tolerance",
+    "d92_e0d_newguard_old_group_zero_sum_residual_max_abs",
+    "d92_e0d_newguard_new_support_old_envelope_change_max_abs_error",
+    "d92_e0d_newguard_deployment_max_abs_Xnew_internal_residual",
+    "d92_e0d_newguard_deployment_old_group_zero_sum_residual_max_abs",
+    "d92_e0d_newguard_deployment_new_support_old_envelope_change_max_abs_error",
     "d92_e0d_newguard_protection_tolerance",
     "d92_e0d_newguard_new_support_min_margin_change",
     "d92_e0d_newguard_new_support_old_envelope_change_max",
@@ -615,8 +621,8 @@ def _newguard_support_receipt(
             active is not False
             or fallback is not False
             or reason != expected_reason
-            or receipt["d92_e0d_newguard_deployment_backtrack_scale"] is not None
-            or int(receipt["d92_e0d_newguard_deployment_attempt_count"]) != 0
+            or receipt["d92_e0d_newguard_deployment_strength_scale"] is not None
+            or int(receipt["d92_e0d_newguard_deployment_candidate_count"]) != 0
             or receipt["d92_e0d_newguard_deployment_full_head_byte_exact"]
             is not True
         ):
@@ -630,8 +636,11 @@ def _newguard_support_receipt(
             or not isinstance(reason, str)
             or not reason
             or receipt["d92_e0d_newguard_full_head_byte_exact"] is not True
-            or receipt["d92_e0d_newguard_deployment_backtrack_scale"] is not None
-            or int(receipt["d92_e0d_newguard_deployment_attempt_count"]) <= 0
+            or receipt["d92_e0d_newguard_deployment_strength_scale"] is not None
+            or int(receipt["d92_e0d_newguard_deployment_candidate_count"])
+            not in (0, 1)
+            or int(receipt["d92_e0d_newguard_deployment_codec_roundtrip_count"])
+            not in (0, 2)
             or receipt["d92_e0d_newguard_deployment_full_head_byte_exact"]
             is not True
         ):
@@ -646,6 +655,32 @@ def _newguard_support_receipt(
             "threshold": float(receipt["d92_e0d_newguard_rank_threshold"]),
             "xnew": float(
                 receipt["d92_e0d_newguard_max_abs_Xnew_internal_residual"]
+            ),
+            "closure_tolerance": float(
+                receipt["d92_e0d_newguard_closure_tolerance"]
+            ),
+            "old_group_zero_sum": float(
+                receipt["d92_e0d_newguard_old_group_zero_sum_residual_max_abs"]
+            ),
+            "raw_envelope_error": float(
+                receipt[
+                    "d92_e0d_newguard_new_support_old_envelope_change_max_abs_error"
+                ]
+            ),
+            "deployed_xnew": float(
+                receipt[
+                    "d92_e0d_newguard_deployment_max_abs_Xnew_internal_residual"
+                ]
+            ),
+            "deployed_old_group_zero_sum": float(
+                receipt[
+                    "d92_e0d_newguard_deployment_old_group_zero_sum_residual_max_abs"
+                ]
+            ),
+            "deployed_envelope_error": float(
+                receipt[
+                    "d92_e0d_newguard_deployment_new_support_old_envelope_change_max_abs_error"
+                ]
             ),
             "new_margin": float(
                 receipt["d92_e0d_newguard_new_support_min_margin_change"]
@@ -681,10 +716,10 @@ def _newguard_support_receipt(
             ),
             "query_macs": int(receipt["d92_e0d_newguard_query_macs"]),
             "scale": float(
-                receipt["d92_e0d_newguard_deployment_backtrack_scale"]
+                receipt["d92_e0d_newguard_deployment_strength_scale"]
             ),
             "attempts": int(
-                receipt["d92_e0d_newguard_deployment_attempt_count"]
+                receipt["d92_e0d_newguard_deployment_candidate_count"]
             ),
             "codec_roundtrips": int(
                 receipt["d92_e0d_newguard_deployment_codec_roundtrip_count"]
@@ -718,7 +753,19 @@ def _newguard_support_receipt(
         or numeric["tau"] > 0.0
         or numeric["rank"] <= 0
         or numeric["threshold"] <= 0.0
+        or numeric["closure_tolerance"] <= 0.0
         or numeric["xnew"] < 0.0
+        or numeric["xnew"] > numeric["closure_tolerance"]
+        or numeric["old_group_zero_sum"] < 0.0
+        or numeric["old_group_zero_sum"] > numeric["closure_tolerance"]
+        or numeric["raw_envelope_error"] < 0.0
+        or numeric["raw_envelope_error"] > numeric["closure_tolerance"]
+        or numeric["deployed_xnew"] < 0.0
+        or numeric["deployed_xnew"] > numeric["closure_tolerance"]
+        or numeric["deployed_old_group_zero_sum"] < 0.0
+        or numeric["deployed_old_group_zero_sum"] > numeric["closure_tolerance"]
+        or numeric["deployed_envelope_error"] < 0.0
+        or numeric["deployed_envelope_error"] > numeric["closure_tolerance"]
         or numeric["protection_tolerance"]
         != float(1024.0 * np.finfo(np.float32).eps)
         or numeric["new_margin"] < -numeric["protection_tolerance"]
@@ -732,11 +779,9 @@ def _newguard_support_receipt(
         or numeric["transient"] < 0
         or numeric["state_delta"] != 0
         or numeric["query_macs"] != int(class_count) * 288
-        or numeric["scale"] <= 0.0
-        or numeric["scale"] > 128.0
-        or numeric["attempts"] <= 0
-        or numeric["attempts"] > 20
-        or numeric["codec_roundtrips"] != numeric["attempts"] + 1
+        or numeric["scale"] != 1.0
+        or numeric["attempts"] != 1
+        or numeric["codec_roundtrips"] != 2
         or numeric["codec_macs"] <= 0
         or tail.shape != (OLD_CLASS_COUNT,)
         or deployed_tail.shape != (OLD_CLASS_COUNT,)

@@ -306,6 +306,24 @@ def _resource(
         "d92_e0d_newguard_protection_tolerance": (
             1024.0 * np.finfo(np.float32).eps if newguard_active else None
         ),
+        "d92_e0d_newguard_closure_tolerance": (
+            1.0e-5 if newguard_active else None
+        ),
+        "d92_e0d_newguard_old_group_zero_sum_residual_max_abs": (
+            0.0 if newguard_active else None
+        ),
+        "d92_e0d_newguard_new_support_old_envelope_change_max_abs_error": (
+            0.0 if newguard_active else None
+        ),
+        "d92_e0d_newguard_deployment_max_abs_Xnew_internal_residual": (
+            0.0 if newguard_active else None
+        ),
+        "d92_e0d_newguard_deployment_old_group_zero_sum_residual_max_abs": (
+            0.0 if newguard_active else None
+        ),
+        "d92_e0d_newguard_deployment_new_support_old_envelope_change_max_abs_error": (
+            0.0 if newguard_active else None
+        ),
         "d92_e0d_newguard_new_support_old_envelope_change_max": (
             -0.01 if newguard_active else None
         ),
@@ -320,18 +338,18 @@ def _resource(
         ),
         "d92_e0d_newguard_deployment_protection_pass": newguard_active,
         "d92_e0d_newguard_full_head_byte_exact": not newguard_active,
-        "d92_e0d_newguard_deployment_backtrack_scale": (
-            0.5 if newguard_active else None
+        "d92_e0d_newguard_deployment_strength_scale": (
+            1.0 if newguard_active else None
         ),
-        "d92_e0d_newguard_deployment_attempt_count": (
-            2 if newguard_active else 0
+        "d92_e0d_newguard_deployment_candidate_count": (
+            1 if newguard_active else 0
         ),
         "d92_e0d_newguard_deployment_full_head_byte_exact": not newguard_active,
         "d92_e0d_newguard_deployment_codec_roundtrip_count": (
-            3 if newguard_active else 0
+            2 if newguard_active else 0
         ),
         "d92_e0d_newguard_deployment_codec_macs_upper_bound": (
-            3 * 8 * (11 if registered else 6) * 288 if newguard_active else 0
+            2 * 8 * (11 if registered else 6) * 288 if newguard_active else 0
         ),
         "d92_e0d_newguard_nullspace_rank": 10 if newguard_active else None,
         "d92_e0d_newguard_rank_threshold": 1.0e-8 if newguard_active else None,
@@ -1398,14 +1416,21 @@ def test_newguard_query_audit_requires_support_only_protection_receipt():
             "d92_e0d_newguard_protection_tolerance": (
                 1024.0 * np.finfo(np.float32).eps
             ),
+            "d92_e0d_newguard_closure_tolerance": 1.0e-5,
+            "d92_e0d_newguard_max_abs_Xnew_internal_residual": 0.0,
+            "d92_e0d_newguard_old_group_zero_sum_residual_max_abs": 0.0,
+            "d92_e0d_newguard_new_support_old_envelope_change_max_abs_error": 0.0,
+            "d92_e0d_newguard_deployment_max_abs_Xnew_internal_residual": 0.0,
+            "d92_e0d_newguard_deployment_old_group_zero_sum_residual_max_abs": 0.0,
+            "d92_e0d_newguard_deployment_new_support_old_envelope_change_max_abs_error": 0.0,
             "d92_e0d_newguard_new_support_old_envelope_change_max": -0.01,
             "d92_e0d_newguard_deployment_new_support_old_envelope_change_max": -0.01,
             "d92_e0d_newguard_deployment_new_support_min_margin_change": 0.01,
-            "d92_e0d_newguard_deployment_backtrack_scale": 0.5,
-            "d92_e0d_newguard_deployment_attempt_count": 2,
+            "d92_e0d_newguard_deployment_strength_scale": 1.0,
+            "d92_e0d_newguard_deployment_candidate_count": 1,
             "d92_e0d_newguard_deployment_full_head_byte_exact": False,
-            "d92_e0d_newguard_deployment_codec_roundtrip_count": 3,
-            "d92_e0d_newguard_deployment_codec_macs_upper_bound": 76_032,
+            "d92_e0d_newguard_deployment_codec_roundtrip_count": 2,
+            "d92_e0d_newguard_deployment_codec_macs_upper_bound": 50_688,
             "d92_e0d_newguard_persistent_state_bytes_delta": 0,
         }
     )
@@ -1419,11 +1444,11 @@ def test_newguard_query_audit_requires_support_only_protection_receipt():
     )
     assert row["d92_e0d_newguard_full_component_fit_count"] == 1
     assert row["d92_e0d_newguard_deployment_protection_pass"] is True
-    assert row["d92_e0d_newguard_deployment_backtrack_scale"] == 0.5
-    assert row["d92_e0d_newguard_deployment_attempt_count"] == 2
+    assert row["d92_e0d_newguard_deployment_strength_scale"] == 1.0
+    assert row["d92_e0d_newguard_deployment_candidate_count"] == 1
     assert row["d92_e0d_newguard_deployment_full_head_byte_exact"] is False
-    assert row["d92_e0d_newguard_deployment_codec_roundtrip_count"] == 3
-    assert row["d92_e0d_newguard_deployment_codec_macs_upper_bound"] == 76_032
+    assert row["d92_e0d_newguard_deployment_codec_roundtrip_count"] == 2
+    assert row["d92_e0d_newguard_deployment_codec_macs_upper_bound"] == 50_688
 
 
 def test_pareto_query_audit_closes_4_2_receipt_and_rejects_query_access_tamper():

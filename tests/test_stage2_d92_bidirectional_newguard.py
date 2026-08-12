@@ -83,6 +83,15 @@ def test_newguard_uses_compact_nullspace_and_preserves_protected_support():
     assert audit["d92_newguard_old_group_zero_sum_residual_max_abs"] <= audit[
         "d92_newguard_closure_tolerance"
     ]
+    assert audit[
+        "d92_newguard_deployment_max_abs_Xnew_internal_residual"
+    ] <= audit["d92_newguard_closure_tolerance"]
+    assert audit[
+        "d92_newguard_deployment_old_group_zero_sum_residual_max_abs"
+    ] <= audit["d92_newguard_closure_tolerance"]
+    assert audit[
+        "d92_newguard_deployment_new_support_old_envelope_change_max_abs_error"
+    ] <= audit["d92_newguard_closure_tolerance"]
 
 
 def test_newguard_protects_new_rows_tau_and_all_fixed_old_tails():
@@ -103,8 +112,8 @@ def test_newguard_protects_new_rows_tau_and_all_fixed_old_tails():
     assert intercept[6:].tobytes() == baseline_intercept[6:].tobytes()
     assert audit["d92_newguard_new_rows_byte_exact"] is True
     assert audit["d92_newguard_deployment_new_rows_byte_exact"] is True
-    assert audit["d92_newguard_deployment_backtrack_scale"] == 128.0
-    assert audit["d92_newguard_deployment_attempt_count"] == 1
+    assert audit["d92_newguard_deployment_strength_scale"] == 1.0
+    assert audit["d92_newguard_deployment_candidate_count"] == 1
     assert audit["d92_newguard_deployment_full_head_byte_exact"] is False
     assert audit["d92_newguard_deployment_codec_roundtrip_count"] == 2
     assert audit["d92_newguard_deployment_codec_macs_upper_bound"] == (
@@ -260,27 +269,27 @@ def test_newguard_rechecks_deployed_d42_head_and_falls_back_byte_exactly():
         quantize_decode=deployment_drift,
     )
 
-    assert candidate_call_count == 20
+    assert candidate_call_count == 1
     assert coefficient.tobytes() == baseline_coefficient.tobytes()
     assert intercept.tobytes() == baseline_intercept.tobytes()
     assert audit["d92_newguard_active"] is False
     assert audit["d92_newguard_fallback_active"] is True
     assert audit["d92_newguard_fallback_reason"] == "deployment_protection_failed"
     assert audit["d92_newguard_full_head_byte_exact"] is True
-    assert audit["d92_newguard_deployment_backtrack_scale"] is None
-    assert audit["d92_newguard_deployment_attempt_count"] == 20
+    assert audit["d92_newguard_deployment_strength_scale"] is None
+    assert audit["d92_newguard_deployment_candidate_count"] == 1
     assert audit["d92_newguard_deployment_full_head_byte_exact"] is True
-    assert audit["d92_newguard_deployment_codec_roundtrip_count"] == 21
+    assert audit["d92_newguard_deployment_codec_roundtrip_count"] == 2
     assert audit["d92_newguard_deployment_codec_macs_upper_bound"] == (
-        21 * 8 * classes * 288
+        2 * 8 * classes * 288
     )
     assert audit["d92_newguard_support_optimization_macs_upper_bound"] > audit[
         "d92_newguard_deployment_codec_macs_upper_bound"
     ]
 
 
-def test_newguard_backtracks_to_largest_d42_safe_nonzero_scale_after_tail_flip():
-    """Would fail if D42 tail damage caused E0 fallback instead of fixed-grid shrinkage."""
+def test_newguard_returns_e0_after_single_candidate_deployed_tail_flip():
+    """One unsafe deployed candidate must return exact E0 without a scale search."""
 
     rows, labels, baseline_coefficient, baseline_intercept, classes, shots = _fixture()
     full_delta = None
@@ -319,36 +328,20 @@ def test_newguard_backtracks_to_largest_d42_safe_nonzero_scale_after_tail_flip()
         quantize_decode=d42_tail_flip_above_half_scale,
     )
 
-    np.testing.assert_allclose(
-        attempted_scales, [128.0, 64.0], rtol=0.0, atol=1.0e-4
-    )
-    assert coefficient.tobytes() != baseline_coefficient.tobytes()
-    assert intercept.tobytes() != baseline_intercept.tobytes()
-    assert audit["d92_newguard_active"] is True
-    assert audit["d92_newguard_fallback_active"] is False
-    assert audit["d92_newguard_fallback_reason"] is None
-    assert audit["d92_newguard_deployment_backtrack_scale"] == 64.0
-    assert audit["d92_newguard_deployment_attempt_count"] == 2
-    assert audit["d92_newguard_deployment_full_head_byte_exact"] is False
-    deployed_tail = np.asarray(
-        audit["d92_newguard_deployment_tail_margin_change_by_old_class"],
-        dtype=np.float64,
-    )
-    assert deployed_tail.shape == (6,)
-    assert np.isfinite(deployed_tail).all()
-    assert float(np.min(deployed_tail)) >= -audit["d92_newguard_protection_tolerance"]
-    assert audit[
-        "d92_newguard_deployment_new_support_min_margin_change"
-    ] >= -audit["d92_newguard_protection_tolerance"]
-    assert audit[
-        "d92_newguard_deployment_new_support_old_envelope_change_max"
-    ] <= audit["d92_newguard_protection_tolerance"]
-    assert audit["d92_newguard_deployment_new_rows_byte_exact"] is True
-    assert audit["d92_newguard_deployment_protection_pass"] is True
+    np.testing.assert_allclose(attempted_scales, [128.0], rtol=0.0, atol=1.0e-4)
+    assert coefficient.tobytes() == baseline_coefficient.tobytes()
+    assert intercept.tobytes() == baseline_intercept.tobytes()
+    assert audit["d92_newguard_active"] is False
+    assert audit["d92_newguard_fallback_active"] is True
+    assert audit["d92_newguard_fallback_reason"] == "deployment_protection_failed"
+    assert audit["d92_newguard_deployment_strength_scale"] is None
+    assert audit["d92_newguard_deployment_candidate_count"] == 1
+    assert audit["d92_newguard_deployment_full_head_byte_exact"] is True
+    assert audit["d92_newguard_deployment_protection_pass"] is False
 
 
-def test_newguard_continues_after_large_scale_raw_protection_failure():
-    """Would fail if one raw-unsafe scale skipped a later raw/deployed-safe scale."""
+def test_newguard_protection_failure_does_not_scan_a_second_strength():
+    """The frozen method has one support-side candidate; any failed guard returns E0."""
 
     rows, labels, baseline_coefficient, baseline_intercept, classes, shots = _fixture()
     full_delta = None
@@ -390,13 +383,60 @@ def test_newguard_continues_after_large_scale_raw_protection_failure():
             quantize_decode=large_scale_raw_tail_flip,
         )
 
-    np.testing.assert_allclose(attempted_scales, [128.0], rtol=0.0, atol=1.0e-4)
-    assert receipt_calls == 2
-    assert coefficient.tobytes() != baseline_coefficient.tobytes()
-    assert intercept.tobytes() != baseline_intercept.tobytes()
-    assert audit["d92_newguard_active"] is True
-    assert audit["d92_newguard_deployment_backtrack_scale"] == 64.0
-    assert audit["d92_newguard_deployment_attempt_count"] == 2
+    assert attempted_scales == []
+    assert receipt_calls == 1
+    assert coefficient.tobytes() == baseline_coefficient.tobytes()
+    assert intercept.tobytes() == baseline_intercept.tobytes()
+    assert audit["d92_newguard_active"] is False
+    assert audit["d92_newguard_fallback_active"] is True
+    assert audit["d92_newguard_fallback_reason"] == "raw_protection_failed"
+    assert audit["d92_newguard_deployment_strength_scale"] is None
+    assert audit["d92_newguard_deployment_candidate_count"] == 0
+
+
+def test_newguard_deployed_xnew_closure_failure_cannot_publish_active_head():
+    """A small codec drift can pass margin guards but must fail the exact Xnew closure."""
+
+    rows, labels, baseline_coefficient, baseline_intercept, classes, shots = _fixture()
+    candidate_calls = 0
+
+    def xnew_closure_drift(
+        coefficient: np.ndarray, intercept: np.ndarray
+    ) -> tuple[np.ndarray, np.ndarray]:
+        nonlocal candidate_calls
+        deployed_coefficient, deployed_intercept = _d42_roundtrip(
+            coefficient, intercept
+        )
+        if (
+            coefficient.tobytes() != baseline_coefficient.tobytes()
+            or intercept.tobytes() != baseline_intercept.tobytes()
+        ):
+            candidate_calls += 1
+            deployed_coefficient = deployed_coefficient.copy()
+            deployed_coefficient[0, 6] += np.float32(1.0e-4)
+            deployed_coefficient[1, 6] -= np.float32(1.0e-4)
+        return deployed_coefficient, deployed_intercept
+
+    coefficient, intercept, audit = newguard.build_bidirectional_newguard_affine_state(
+        full_rows=rows,
+        full_labels=labels,
+        full_coefficient=baseline_coefficient,
+        full_intercept=baseline_intercept,
+        class_count=classes,
+        k_shot=shots,
+        quantize_decode=xnew_closure_drift,
+    )
+
+    assert candidate_calls == 1
+    assert coefficient.tobytes() == baseline_coefficient.tobytes()
+    assert intercept.tobytes() == baseline_intercept.tobytes()
+    assert audit["d92_newguard_active"] is False
+    assert audit["d92_newguard_fallback_active"] is True
+    assert audit["d92_newguard_fallback_reason"] == "deployment_protection_failed"
+    assert audit["d92_newguard_deployment_protection_pass"] is False
+    assert audit[
+        "d92_newguard_deployment_max_abs_Xnew_internal_residual"
+    ] > audit["d92_newguard_closure_tolerance"]
 
 
 def test_newguard_rejects_registry_drift_instead_of_hiding_it_as_numeric_fallback():

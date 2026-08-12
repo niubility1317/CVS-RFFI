@@ -11,11 +11,15 @@ from cvsrffi.stage2_d92_newguard_hard11_analysis import (
     HISTORICAL_BASELINE_SHA256,
     HISTORICAL_PER_OLD_CLASS_SHA256,
     _fit_resource,
+    _group_stability,
     compute_confusion_rates,
     compute_old_balanced_accuracy,
     compute_score_metrics,
     decide_verdict,
+    evaluate_component_fit_reduction_gate,
     evaluate_resource_gate,
+    evaluate_stability_gate,
+    evaluate_stability_direction_counts,
     validate_truth_binding,
     validate_per_old_class_join,
     strict_pareto_deltas,
@@ -85,12 +89,14 @@ def test_three_verdict_branches_have_no_weighted_compensation() -> None:
         "all_magnitude": True,
         "stability": True,
         "resources": True,
+        "compute_reduction": True,
     }
     assert decide_verdict(advance) == "ADVANCE_TO_TARGET125_CANDIDATE"
     revise = {**advance, "all_magnitude": False}
     assert decide_verdict(revise) == "REVISE_ONCE"
-    assert decide_verdict({**advance, "stability": False}) == "REVISE_ONCE"
-    assert decide_verdict({**advance, "resources": False}) == "REVISE_ONCE"
+    assert decide_verdict({**advance, "stability": False}) == "REJECT_ROUTE"
+    assert decide_verdict({**advance, "resources": False}) == "REJECT_ROUTE"
+    assert decide_verdict({**advance, "compute_reduction": False}) == "REJECT_ROUTE"
     reject = {**advance, "all_strict_pareto": False}
     assert decide_verdict(reject) == "REJECT_ROUTE"
     assert decide_verdict({
@@ -144,8 +150,108 @@ def test_resource_gate_compares_matched_peak_and_wall_ratio_not_state_bytes() ->
         query_state_exact=True,
     )
     assert result["passed"] is True
-    assert result["wall_ratio_p90"] == pytest.approx(1.2)
-    assert result["peak_delta_p90_bytes"] == pytest.approx(400.0)
+    assert result["wall_ratio_median"] == pytest.approx(1.2)
+    assert result["peak_delta_max_bytes"] == pytest.approx(400.0)
+
+
+def test_resource_gate_uses_ratio_median_and_peak_max_from_frozen_spec() -> None:
+    result = evaluate_resource_gate(
+        candidate_rows=[
+            {"registration_wall_time_ns": 100.0, "registration_incremental_peak_working_set_bytes": 1100.0},
+            {"registration_wall_time_ns": 120.0, "registration_incremental_peak_working_set_bytes": 1200.0},
+            {"registration_wall_time_ns": 149.0, "registration_incremental_peak_working_set_bytes": 701000.0},
+        ],
+        baseline_rows=[
+            {"registration_wall_time_ns": 100.0, "registration_incremental_peak_working_set_bytes": 1000.0},
+            {"registration_wall_time_ns": 100.0, "registration_incremental_peak_working_set_bytes": 1000.0},
+            {"registration_wall_time_ns": 100.0, "registration_incremental_peak_working_set_bytes": 1000.0},
+        ],
+        query_state_exact=True,
+    )
+    assert result["wall_ratio_median"] == pytest.approx(1.2)
+    assert result["peak_delta_max_bytes"] == pytest.approx(700000.0)
+    assert result["passed"] is False
+
+
+def test_resource_gate_rejects_one_bad_scene_without_outer_median_masking() -> None:
+    candidate = [
+        {"registration_wall_time_ns": 100_000_000.0, "registration_incremental_peak_working_set_bytes": 1000.0},
+        {"registration_wall_time_ns": 100_000_000.0, "registration_incremental_peak_working_set_bytes": 1000.0 + 512 * 1024 + 1},
+        {"registration_wall_time_ns": 100_000_000.0, "registration_incremental_peak_working_set_bytes": 1000.0},
+    ]
+    baseline = [
+        {"registration_wall_time_ns": 100_000_000.0, "registration_incremental_peak_working_set_bytes": 1000.0}
+        for _ in range(3)
+    ]
+
+    result = evaluate_resource_gate(candidate, baseline, query_state_exact=True)
+
+    assert result["peak_delta_max_bytes"] == pytest.approx(512 * 1024 + 1)
+    assert result["passed"] is False
+
+
+def test_component_fit_reduction_uses_frozen_d92_two_state_inventory() -> None:
+    result = evaluate_component_fit_reduction_gate(
+        [
+            {"outer_key": "k5", "k_shot": 5, "fit_count": 2, "actual_fit_count": 1},
+            {"outer_key": "k10", "k_shot": 10, "fit_count": 2, "actual_fit_count": 1},
+            {
+                "outer_key": "liveness",
+                "outer_role": "liveness",
+                "k_shot": 1,
+                "fit_count": 3,
+                "actual_fit_count": 3,
+            },
+        ]
+    )
+
+    assert result["passed"] is True
+    assert result["rows"][0]["reduction_fraction_vs_d92"] == pytest.approx(
+        1.0 - 2.0 / 48.0
+    )
+    assert result["rows"][1]["reduction_fraction_vs_d92"] == pytest.approx(
+        1.0 - 2.0 / 88.0
+    )
+    assert evaluate_component_fit_reduction_gate(
+        [{"outer_key": "k5", "k_shot": 5, "fit_count": 10, "actual_fit_count": 1}]
+    )["passed"] is False
+
+
+def test_stability_separates_nonregression_ties_from_strict_direction() -> None:
+    rows = [
+        {f"delta_{metric}_vs_e0": 0.0 for metric in EIGHT_PARETO_METRICS}
+        for _ in range(10)
+    ]
+
+    result = evaluate_stability_direction_counts(rows)
+
+    assert result["nonregression"]["seen_new_acc"] == 10
+    assert result["nonregression"]["new_to_old_rate"] == 10
+    assert result["strict_direction"]["seen_new_acc"] == 0
+    assert result["strict_direction"]["new_to_old_rate"] == 0
+    assert evaluate_stability_gate(
+        performance_rows=rows,
+        per_old_stability=True,
+        group_stability=True,
+    )["passed"] is False
+
+
+def test_group_stability_requires_strict_benefit_in_multiple_groups() -> None:
+    rows = [
+        {
+            "receiver": receiver,
+            "candidate_h_old_new": 0.7 + delta,
+            "e0_h_old_new": 0.7,
+            "candidate_seen_new_acc": 0.6,
+            "e0_seen_new_acc": 0.6,
+        }
+        for receiver, delta in (("rx-a", 0.01), ("rx-b", 0.0), ("rx-c", 0.0))
+    ]
+
+    grouped = _group_stability(rows, "receiver")
+
+    assert all(item["passed"] for item in grouped.values())
+    assert sum(bool(item["strict_benefit"]) for item in grouped.values()) == 1
 
 
 def test_truth_binding_requires_manifest_receipt_score_and_actual_hash(tmp_path: Path) -> None:
@@ -218,3 +324,5 @@ def test_fit_resource_accepts_three_scene_newguard_inventory(tmp_path: Path) -> 
     assert result["fit_count"] == 2
     assert result["actual_fit_count"] == 1
     assert result["registered_d_mode"] == "newguard_maxmin"
+    assert set(result["scene_resources"]) == set(SCENES)
+    assert result["scene_resources"][SCENES[0]]["registration_wall_time_ns"] == pytest.approx(1000.0)

@@ -15,6 +15,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
+import numpy as np
+
 CODE_ROOT = Path(__file__).resolve().parents[1]
 if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
@@ -23,7 +25,6 @@ from cvsrffi.stage2_d92_newguard_hard11 import (  # noqa: E402
     ARM_ID,
     CANDIDATE_ID,
     CANONICAL_SELECTION_SHA256,
-    DEPLOYMENT_BACKTRACK,
     LIVENESS_OUTER_KEY,
     SCENES,
     SHARD_COUNT,
@@ -148,24 +149,22 @@ def _validate_fit_audit(path: str | Path, *, k_shot: int) -> None:
                 or row.get("d92_e0d_newguard_fallback_reason") is not None
             ):
                 raise D92NewGuardHard11RunnerError("fit audit NewGuard active/fallback drift")
-            scale = row.get("d92_e0d_newguard_deployment_backtrack_scale")
-            attempt_count = row.get("d92_e0d_newguard_deployment_attempt_count")
+            scale = row.get("d92_e0d_newguard_deployment_strength_scale")
+            candidate_count = row.get("d92_e0d_newguard_deployment_candidate_count")
             full_head_byte_exact = row.get(
                 "d92_e0d_newguard_deployment_full_head_byte_exact"
             )
-            scales = tuple(float(value) for value in DEPLOYMENT_BACKTRACK["scales"])
             if (
                 isinstance(scale, bool)
                 or not isinstance(scale, (int, float))
-                or not any(float(scale) == value for value in scales)
+                or float(scale) != 1.0
             ):
                 raise D92NewGuardHard11RunnerError(
-                    "fit audit deployment backtrack scale drift"
+                    "fit audit single-candidate deployment scale drift"
                 )
-            expected_attempt_count = scales.index(float(scale)) + 1
-            if type(attempt_count) is not int or attempt_count != expected_attempt_count:
+            if type(candidate_count) is not int or candidate_count != 1:
                 raise D92NewGuardHard11RunnerError(
-                    "fit audit deployment backtrack attempt drift"
+                    "fit audit single-candidate deployment count drift"
                 )
             if full_head_byte_exact is not False:
                 raise D92NewGuardHard11RunnerError(
@@ -173,6 +172,13 @@ def _validate_fit_audit(path: str | Path, *, k_shot: int) -> None:
                 )
             try:
                 tolerance = float(row["d92_e0d_newguard_protection_tolerance"])
+                closure_tolerance = float(row["d92_e0d_newguard_closure_tolerance"])
+                raw_xnew = float(row["d92_e0d_newguard_max_abs_Xnew_internal_residual"])
+                raw_zero_sum = float(row["d92_e0d_newguard_old_group_zero_sum_residual_max_abs"])
+                raw_envelope_error = float(row["d92_e0d_newguard_new_support_old_envelope_change_max_abs_error"])
+                deployed_xnew = float(row["d92_e0d_newguard_deployment_max_abs_Xnew_internal_residual"])
+                deployed_zero_sum = float(row["d92_e0d_newguard_deployment_old_group_zero_sum_residual_max_abs"])
+                deployed_envelope_error = float(row["d92_e0d_newguard_deployment_new_support_old_envelope_change_max_abs_error"])
                 raw_new_margin = float(
                     row["d92_e0d_newguard_new_support_min_margin_change"]
                 )
@@ -207,11 +213,16 @@ def _validate_fit_audit(path: str | Path, *, k_shot: int) -> None:
                 raise D92NewGuardHard11RunnerError(
                     "fit audit NewGuard protection receipt drift"
                 ) from error
-            expected_tolerance = float(
-                DEPLOYMENT_BACKTRACK["protection_tolerance_value"]
-            )
+            expected_tolerance = float(1024.0 * np.finfo(np.float32).eps)
             protected_scalars = (
                 tolerance,
+                closure_tolerance,
+                raw_xnew,
+                raw_zero_sum,
+                raw_envelope_error,
+                deployed_xnew,
+                deployed_zero_sum,
+                deployed_envelope_error,
                 raw_new_margin,
                 deployed_new_margin,
                 raw_envelope,
@@ -225,6 +236,19 @@ def _validate_fit_audit(path: str | Path, *, k_shot: int) -> None:
                 is not True
                 or row.get("d92_e0d_newguard_deployment_protection_pass") is not True
                 or tolerance != expected_tolerance
+                or closure_tolerance <= 0.0
+                or raw_xnew < 0.0
+                or raw_xnew > closure_tolerance
+                or raw_zero_sum < 0.0
+                or raw_zero_sum > closure_tolerance
+                or raw_envelope_error < 0.0
+                or raw_envelope_error > closure_tolerance
+                or deployed_xnew < 0.0
+                or deployed_xnew > closure_tolerance
+                or deployed_zero_sum < 0.0
+                or deployed_zero_sum > closure_tolerance
+                or deployed_envelope_error < 0.0
+                or deployed_envelope_error > closure_tolerance
                 or len(raw_tail) != 6
                 or len(deployed_tail) != 6
                 or not all(math.isfinite(value) for value in protected_scalars)
@@ -245,8 +269,8 @@ def _validate_fit_audit(path: str | Path, *, k_shot: int) -> None:
         ):
             raise D92NewGuardHard11RunnerError("fit audit NewGuard K1 alias drift")
         elif (
-            row.get("d92_e0d_newguard_deployment_backtrack_scale") is not None
-            or row.get("d92_e0d_newguard_deployment_attempt_count") != 0
+            row.get("d92_e0d_newguard_deployment_strength_scale") is not None
+            or row.get("d92_e0d_newguard_deployment_candidate_count") != 0
             or row.get("d92_e0d_newguard_deployment_full_head_byte_exact") is not True
         ):
             raise D92NewGuardHard11RunnerError(

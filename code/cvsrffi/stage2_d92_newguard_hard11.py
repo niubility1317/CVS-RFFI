@@ -103,40 +103,23 @@ RESOURCE_GATE = {
     "registration_wall_p90_max_ns": 150_000_000,
     "registration_wall_ratio_max": 1.5,
     "registration_peak_delta_max_bytes": 512 * 1024,
+    "component_fit_baseline": "D92_FULL_TWO_STATE_COMPONENT_FIT_COUNT_8*(K+1)",
+    "component_fit_reduction_min_fraction_vs_d92": 0.80,
     "query_macs_equal": True,
     "state_bytes_equal": True,
 }
 STOP_RULE = {"same_normalized_exception_fingerprint_distinct_outer_count": 2, "pre_prediction_only": True, "shared_run_root_ledger": True, "fresh_run_retry_authorized": False}
 _OUTPUTS = {"summary": "summary.json", "gates": "gates.json", "paired_rows": "paired_rows.csv", "per_old_class_rows": "per_old_class_rows.csv", "markdown": "analysis.md"}
-DEPLOYMENT_BACKTRACK = {
-    "scales": [
-        128.0,
-        64.0,
-        32.0,
-        16.0,
-        8.0,
-        4.0,
-        2.0,
-        1.0,
-        0.5,
-        0.25,
-        0.125,
-        0.0625,
-        0.03125,
-        0.015625,
-        0.0078125,
-        0.00390625,
-        0.001953125,
-        0.0009765625,
-        0.00048828125,
-        0.000244140625,
-    ],
-    "selection": "largest_safe_nonzero_after_actual_d42_roundtrip",
-    "all_fail": "exact_e0_fallback",
+DEPLOYMENT_VALIDATION = {
+    "candidate_count": 1,
+    "strength_scale": 1.0,
+    "selection": "single_pre_registered_maxmin_candidate",
+    "any_failure": "exact_e0_fallback",
+    "closure_tolerance_formula": "128*float32_eps*max(1,max_abs_augmented_row)",
     "protection_tolerance_formula": "1024*float32_eps",
     "protection_tolerance_value": 0.0001220703125,
     "negative_tail_accepted": False,
-    "max_trust_region_fraction": 0.0128,
+    "trust_region_fraction": 0.0001,
 }
 _PACKAGE_LAYOUT = {
     "before_enrollment": (("offline", "predictor", "before", "enrollment_only"), ("offline", "seals", "before_enrollment.seal.json")),
@@ -236,7 +219,7 @@ CANONICAL_SELECTION_SHA256 = canonical_selection_sha256()
 def _expected_lock() -> dict[str, Any]:
     return {
         "schema": "cvs.phase2.d92_newguard_hard11.method_lock.v1", "matrix_schema": "cvs.phase2.d92_newguard_hard11.matrix.v1", "job_receipt_schema": "cvs.phase2.d92_newguard_hard11.job_receipt.v1", "experiment_id": "D92-E0-FULL-BIDIRECTIONAL-NEWGUARD-MAXMIN-Hard11-v1", "protocol_schema": "p2_min_v1", "claim_scope": CLAIM_SCOPE, "selection_sha256": CANONICAL_SELECTION_SHA256,
-        "arms": {ARM_ID: {"candidate_id": CANDIDATE_ID, "role": "primary", "registered_mode": "newguard_maxmin"}}, "primary_arm": ARM_ID, "smoke_outer_key": SMOKE_OUTER_KEY, "liveness_outer_key": LIVENESS_OUTER_KEY, "fixed_components": _FIXED_COMPONENTS, "fallback": "K1_K2_exact_D92_FULL_alias", "deployment_backtrack": DEPLOYMENT_BACKTRACK, "query_contract": _QUERY_CONTRACT, "matrix": _MATRIX, "fit_gate": FIT_GATE, "strict_pareto_gate": STRICT_PARETO_THRESHOLDS, "resource_gate": RESOURCE_GATE, "historical_baseline": {"paired_rows_path": HISTORICAL_BASELINE_PATH, "paired_rows_sha256": HISTORICAL_BASELINE_SHA256, "per_old_class_rows_path": HISTORICAL_PER_OLD_CLASS_PATH, "per_old_class_rows_sha256": HISTORICAL_PER_OLD_CLASS_SHA256, "e0_raw_scores": {key: {"path": f"{RAW_SCORE_ROOT}/{key}/E0_FULL_ONLY/scorer/diag_cosine_score.json", "sha256": value} for key, value in _RAW_SCORE_SHA.items()}, "rerun": False}, "stop_rule": STOP_RULE, "fresh_run_retry": False, "only_promotion_candidate": ARM_ID, "outputs": _OUTPUTS,
+        "arms": {ARM_ID: {"candidate_id": CANDIDATE_ID, "role": "primary", "registered_mode": "newguard_maxmin"}}, "primary_arm": ARM_ID, "smoke_outer_key": SMOKE_OUTER_KEY, "liveness_outer_key": LIVENESS_OUTER_KEY, "fixed_components": _FIXED_COMPONENTS, "fallback": "K1_K2_exact_D92_FULL_alias", "deployment_validation": DEPLOYMENT_VALIDATION, "query_contract": _QUERY_CONTRACT, "matrix": _MATRIX, "fit_gate": FIT_GATE, "strict_pareto_gate": STRICT_PARETO_THRESHOLDS, "resource_gate": RESOURCE_GATE, "historical_baseline": {"paired_rows_path": HISTORICAL_BASELINE_PATH, "paired_rows_sha256": HISTORICAL_BASELINE_SHA256, "per_old_class_rows_path": HISTORICAL_PER_OLD_CLASS_PATH, "per_old_class_rows_sha256": HISTORICAL_PER_OLD_CLASS_SHA256, "e0_raw_scores": {key: {"path": f"{RAW_SCORE_ROOT}/{key}/E0_FULL_ONLY/scorer/diag_cosine_score.json", "sha256": value} for key, value in _RAW_SCORE_SHA.items()}, "rerun": False}, "stop_rule": STOP_RULE, "fresh_run_retry": False, "only_promotion_candidate": ARM_ID, "outputs": _OUTPUTS,
     }
 
 
@@ -324,4 +307,4 @@ build_newguard_hard11_manifest = build_hard11_manifest
 build_hard11_matrix_manifest = build_hard11_manifest
 validate_manifest = validate_hard11_manifest
 
-__all__ = ["ARM_ID", "ARM_ORDER", "ARM_CANDIDATE_IDS", "ARM_ROLES", "CANDIDATE_ID", "CANONICAL_SELECTION_SHA256", "CLAIM_SCOPE", "CONTEXT_SHA256", "DEPLOYMENT_BACKTRACK", "D92NewGuardHard11Error", "D92NewGuardHard11MatrixError", "FIT_GATE", "HARD11_ROWS", "HARD11_V1_ROWS", "HISTORICAL_BASELINE_PATH", "HISTORICAL_BASELINE_SHA256", "HISTORICAL_PER_OLD_CLASS_PATH", "HISTORICAL_PER_OLD_CLASS_SHA256", "LIVENESS_OUTER_KEY", "PRIMARY_ARM", "RAW_SCORE_ROOT", "SCENES", "SHARD_COUNT", "SMOKE_OUTER_KEY", "SOURCE_D92_OUTPUT_ROOT", "STRICT_PARETO_THRESHOLDS", "RESOURCE_GATE", "build_hard11_manifest", "build_newguard_hard11_manifest", "build_hard11_matrix_manifest", "canonical_selection_sha256", "validate_hard11_manifest", "validate_manifest", "validate_method_lock"]
+__all__ = ["ARM_ID", "ARM_ORDER", "ARM_CANDIDATE_IDS", "ARM_ROLES", "CANDIDATE_ID", "CANONICAL_SELECTION_SHA256", "CLAIM_SCOPE", "CONTEXT_SHA256", "DEPLOYMENT_VALIDATION", "D92NewGuardHard11Error", "D92NewGuardHard11MatrixError", "FIT_GATE", "HARD11_ROWS", "HARD11_V1_ROWS", "HISTORICAL_BASELINE_PATH", "HISTORICAL_BASELINE_SHA256", "HISTORICAL_PER_OLD_CLASS_PATH", "HISTORICAL_PER_OLD_CLASS_SHA256", "LIVENESS_OUTER_KEY", "PRIMARY_ARM", "RAW_SCORE_ROOT", "SCENES", "SHARD_COUNT", "SMOKE_OUTER_KEY", "SOURCE_D92_OUTPUT_ROOT", "STRICT_PARETO_THRESHOLDS", "RESOURCE_GATE", "build_hard11_manifest", "build_newguard_hard11_manifest", "build_hard11_matrix_manifest", "canonical_selection_sha256", "validate_hard11_manifest", "validate_manifest", "validate_method_lock"]

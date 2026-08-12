@@ -396,19 +396,12 @@ def test_newguard_arm_is_single_full_fit_and_keeps_low_k_full_alias():
     assert active_audit["d92_e0d_actual_component_fit_count"] == 1
     assert active_audit["d92_e0d_total_component_fit_count"] == 2
     assert active_audit["d92_e0d_newguard_full_component_fit_count"] == 1
-    assert active_audit["d92_e0d_newguard_active"] is True
-    assert 0.0 < active_audit[
-        "d92_e0d_newguard_deployment_backtrack_scale"
-    ] <= 128.0
-    assert 1 <= active_audit[
-        "d92_e0d_newguard_deployment_attempt_count"
-    ] <= 20
-    assert active_audit[
-        "d92_e0d_newguard_deployment_full_head_byte_exact"
-    ] is False
-    assert active_audit[
-        "d92_e0d_newguard_deployment_codec_roundtrip_count"
-    ] == active_audit["d92_e0d_newguard_deployment_attempt_count"] + 1
+    assert active_audit["d92_e0d_newguard_active"] is False
+    assert active_audit["d92_e0d_newguard_fallback_active"] is True
+    assert active_audit["d92_e0d_newguard_deployment_strength_scale"] is None
+    assert active_audit["d92_e0d_newguard_deployment_candidate_count"] == 1
+    assert active_audit["d92_e0d_newguard_deployment_full_head_byte_exact"] is True
+    assert active_audit["d92_e0d_newguard_deployment_codec_roundtrip_count"] == 2
     assert active_audit["d92_e0d_newguard_deployment_codec_macs_upper_bound"] > 0
     _, _, k2_audit, _, _ = _run(
         "E0_FULL_BIDIRECTIONAL_NEWGUARD_MAXMIN",

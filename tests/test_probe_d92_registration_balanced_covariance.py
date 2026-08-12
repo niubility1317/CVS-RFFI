@@ -826,8 +826,8 @@ def test_floorboost_ocf_numeric_degeneracy_fails_closed_to_full_head():
     assert audit["d92_floorboost_delta_bias_by_old_class"] is None
 
 
-def test_newguard_mode_calls_one_centered_full_component_and_emits_receipt():
-    """Would fail if NewGuard reused BLOCK/LOO or lost the post-center FULL capture."""
+def test_newguard_mode_calls_one_centered_full_component_and_strictly_falls_back():
+    """The real D42 probe must keep one FULL fit and reject a failed closure."""
 
     rng = np.random.default_rng(92_711)
     basis, _ = np.linalg.qr(rng.normal(size=(160, 3)))
@@ -864,25 +864,24 @@ def test_newguard_mode_calls_one_centered_full_component_and_emits_receipt():
     assert inventory["full_component_fit_count"] == 1
     assert inventory["block3_component_fit_count"] == 0
     assert audit["d92_newguard_full_component_fit_count"] == 1
-    assert audit["d92_newguard_active"] is True
-    assert audit["d92_newguard_fallback_active"] is False
-    assert audit["d92_newguard_fallback_reason"] is None
-    assert 0.0 < audit["d92_newguard_deployment_backtrack_scale"] <= 128.0
-    assert 1 <= audit["d92_newguard_deployment_attempt_count"] <= 20
-    assert audit["d92_newguard_deployment_full_head_byte_exact"] is False
-    assert audit["d92_newguard_deployment_codec_roundtrip_count"] == (
-        audit["d92_newguard_deployment_attempt_count"] + 1
-    )
+    assert audit["d92_newguard_active"] is False
+    assert audit["d92_newguard_fallback_active"] is True
+    assert audit["d92_newguard_fallback_reason"] == "deployment_protection_failed"
+    assert audit["d92_newguard_full_head_byte_exact"] is True
+    assert audit["d92_newguard_deployment_strength_scale"] is None
+    assert audit["d92_newguard_deployment_candidate_count"] == 1
+    assert audit["d92_newguard_deployment_full_head_byte_exact"] is True
+    assert audit["d92_newguard_deployment_codec_roundtrip_count"] == 2
     assert audit["d92_newguard_deployment_codec_macs_upper_bound"] > 0
-    assert min(audit["d92_newguard_deployment_tail_margin_change_by_old_class"]) >= (
-        -audit["d92_newguard_protection_tolerance"]
+    assert audit["d92_newguard_deployment_protection_pass"] is False
+    assert (
+        audit["d92_newguard_deployment_max_abs_Xnew_internal_residual"]
+        > audit["d92_newguard_closure_tolerance"]
+        or audit[
+            "d92_newguard_deployment_new_support_old_envelope_change_max_abs_error"
+        ]
+        > audit["d92_newguard_closure_tolerance"]
     )
-    assert audit["d92_newguard_deployment_new_support_min_margin_change"] >= (
-        -audit["d92_newguard_protection_tolerance"]
-    )
-    assert audit[
-        "d92_newguard_deployment_new_support_old_envelope_change_max"
-    ] <= audit["d92_newguard_protection_tolerance"]
     assert audit["d92_newguard_query_rows_used"] == 0
 
 

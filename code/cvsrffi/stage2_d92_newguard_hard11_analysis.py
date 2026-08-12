@@ -204,10 +204,10 @@ def evaluate_resource_gate(candidate_rows: Sequence[Mapping[str, Any]], baseline
         peak_deltas.append(peak - base_peak)
     p90_index = max(0, math.ceil(0.9 * len(candidate_walls)) - 1)
     wall_p90 = sorted(candidate_walls)[p90_index]
-    wall_ratio_p90 = sorted(wall_ratios)[p90_index]
-    peak_delta_p90 = sorted(peak_deltas)[p90_index]
-    passed = bool(query_state_exact) and wall_p90 <= RESOURCE_GATE["registration_wall_p90_max_ns"] and wall_ratio_p90 <= RESOURCE_GATE["registration_wall_ratio_max"] and peak_delta_p90 <= RESOURCE_GATE["registration_peak_delta_max_bytes"]
-    return {"passed": passed, "query_state_exact": bool(query_state_exact), "wall_p90": wall_p90, "wall_ratio_p90": wall_ratio_p90, "peak_delta_p90_bytes": peak_delta_p90, "candidate_wall_p90_ns": wall_p90}
+    wall_ratio_median = statistics.median(wall_ratios)
+    peak_delta_max = max(peak_deltas)
+    passed = bool(query_state_exact) and wall_p90 <= RESOURCE_GATE["registration_wall_p90_max_ns"] and wall_ratio_median <= RESOURCE_GATE["registration_wall_ratio_max"] and peak_delta_max <= RESOURCE_GATE["registration_peak_delta_max_bytes"]
+    return {"passed": passed, "query_state_exact": bool(query_state_exact), "wall_p90": wall_p90, "wall_ratio_median": wall_ratio_median, "peak_delta_max_bytes": peak_delta_max, "candidate_wall_p90_ns": wall_p90}
 
 
 def validate_truth_binding(score: Mapping[str, Any], receipt: Mapping[str, Any], job: Mapping[str, Any], truth_path: str | Path) -> str:
@@ -295,15 +295,114 @@ def _magnitude_ok(deltas: Mapping[str, float]) -> bool:
     return all(deltas[m] >= STRICT_PARETO_THRESHOLDS[m] - _TOLERANCE if m not in {"average_forgetting", "new_to_old_rate", "old_to_new_rate"} else deltas[m] <= STRICT_PARETO_THRESHOLDS[m] + _TOLERANCE for m in EIGHT_PARETO_METRICS)
 
 
+def evaluate_stability_direction_counts(rows: Sequence[Mapping[str, Any]]) -> dict[str, dict[str, int]]:
+    """Count non-regression and strict directional wins on paired E0 deltas."""
+    nonregression: dict[str, int] = {}
+    strict_direction: dict[str, int] = {}
+    lower_is_better = {"average_forgetting", "new_to_old_rate", "old_to_new_rate"}
+    for metric in EIGHT_PARETO_METRICS:
+        values = [_finite(row.get(f"delta_{metric}_vs_e0"), f"paired delta {metric}") for row in rows]
+        if metric in lower_is_better:
+            nonregression[metric] = sum(value <= _TOLERANCE for value in values)
+            strict_direction[metric] = sum(value < -_TOLERANCE for value in values)
+        else:
+            nonregression[metric] = sum(value >= -_TOLERANCE for value in values)
+            strict_direction[metric] = sum(value > _TOLERANCE for value in values)
+    return {"nonregression": nonregression, "strict_direction": strict_direction}
+
+
+def evaluate_stability_gate(
+    *,
+    performance_rows: Sequence[Mapping[str, Any]],
+    per_old_stability: bool,
+    group_stability: bool,
+) -> dict[str, Any]:
+    """Apply every frozen outer-direction requirement without treating ties as wins."""
+
+    counts = evaluate_stability_direction_counts(performance_rows)
+    nonregression = counts["nonregression"]
+    strict_direction = counts["strict_direction"]
+    passed = bool(
+        all(
+            nonregression[metric] >= 8
+            for metric in (
+                "h_old_new",
+                "old_balanced_accuracy",
+                "old_floor",
+                "seen_new_acc",
+                "average_forgetting",
+            )
+        )
+        and strict_direction["seen_new_acc"] >= 9
+        and strict_direction["new_to_old_rate"] >= 9
+        and bool(per_old_stability)
+        and bool(group_stability)
+    )
+    return {**counts, "passed": passed}
+
+
+def evaluate_component_fit_reduction_gate(
+    candidate_rows: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Require the frozen per-row >=80% fit reduction versus full D92."""
+
+    performance = [
+        row
+        for row in candidate_rows
+        if str(row.get("outer_role", "performance")) != "liveness"
+    ]
+    if not performance:
+        raise D92NewGuardHard11AnalysisError("component-fit row closure drift")
+    evidence: list[dict[str, Any]] = []
+    for row in performance:
+        try:
+            k_shot = int(row["k_shot"])
+            total = int(row.get("fit_count", row.get("total_component_fit_count")))
+            actual = int(
+                row.get("actual_fit_count", row.get("actual_component_fit_count"))
+            )
+        except (KeyError, TypeError, ValueError) as error:
+            raise D92NewGuardHard11AnalysisError(
+                "component-fit receipt missing"
+            ) from error
+        if k_shot <= 2 or total != 2 or actual != 1:
+            reduction = 0.0
+        else:
+            baseline = 8 * (k_shot + 1)
+            reduction = 1.0 - float(total) / float(baseline)
+        evidence.append(
+            {
+                "outer_key": str(row.get("outer_key", "")),
+                "k_shot": k_shot,
+                "candidate_total_component_fit_count": total,
+                "candidate_actual_component_fit_count": actual,
+                "original_d92_total_component_fit_count": 8 * (k_shot + 1),
+                "reduction_fraction_vs_d92": reduction,
+                "baseline_source": RESOURCE_GATE["component_fit_baseline"],
+            }
+        )
+    reductions = [float(row["reduction_fraction_vs_d92"]) for row in evidence]
+    threshold = float(RESOURCE_GATE["component_fit_reduction_min_fraction_vs_d92"])
+    return {
+        "passed": all(value >= threshold - _TOLERANCE for value in reductions),
+        "evidence_complete": True,
+        "threshold": threshold,
+        "min_reduction_fraction": min(reductions),
+        "mean_reduction_fraction": _mean(reductions),
+        "rows": evidence,
+        "baseline": RESOURCE_GATE["component_fit_baseline"],
+    }
+
+
 def decide_verdict(gate_state: Mapping[str, bool]) -> str:
-    required = ("complete_artifact_closure", "performance_outer_closure", "all_strict_pareto", "all_magnitude", "stability", "resources")
+    required = ("complete_artifact_closure", "performance_outer_closure", "all_strict_pareto", "all_magnitude", "stability", "resources", "compute_reduction")
     if any(name not in gate_state for name in required):
         return "REJECT_ROUTE"
     if not bool(gate_state.get("complete_artifact_closure")) or not bool(gate_state.get("performance_outer_closure")) or not bool(gate_state.get("all_strict_pareto")):
         return "REJECT_ROUTE"
+    if not bool(gate_state.get("stability")) or not bool(gate_state.get("resources")) or not bool(gate_state.get("compute_reduction")):
+        return "REJECT_ROUTE"
     if not bool(gate_state.get("all_magnitude")):
-        return "REVISE_ONCE"
-    if not bool(gate_state.get("stability")) or not bool(gate_state.get("resources")):
         return "REVISE_ONCE"
     return "ADVANCE_TO_TARGET125_CANDIDATE"
 
@@ -312,7 +411,11 @@ def _key(row: Mapping[str, Any]) -> tuple[str, int, int, int]:
     return str(row["receiver"]), int(row["seed"]), int(row["k_shot"]), int(row.get("new_class_count", row.get("new_count")))
 
 
-def _fit_resource(job_root: Path, k_shot: int, *, baseline: Mapping[str, Any] | None = None) -> dict[str, Any]:
+def _fit_resource_for_expected(
+    job_root: Path,
+    *,
+    expected: tuple[int, int, str],
+) -> dict[str, Any]:
     path = job_root / "diag" / "after" / "fit_audit.json"
     if not path.is_file() or path.is_symlink():
         raise D92NewGuardHard11AnalysisError("after fit audit missing")
@@ -323,12 +426,13 @@ def _fit_resource(job_root: Path, k_shot: int, *, baseline: Mapping[str, Any] | 
     if not isinstance(rows, list) or len(rows) != 3:
         raise D92NewGuardHard11AnalysisError("after fit audit scene closure drift")
     totals, actuals, macs, states, modes = set(), set(), set(), set(), set()
-    walls, peaks = [], []
+    scene_resources: dict[str, dict[str, float]] = {}
     scenarios = set()
     for row in rows:
         if not isinstance(row, Mapping):
             raise D92NewGuardHard11AnalysisError("after fit audit row invalid")
-        scenarios.add(str(row.get("scenario")))
+        scenario = str(row.get("scenario"))
+        scenarios.add(scenario)
         if any(row.get(field) is not False for field in QUERY_ZERO_FIELDS):
             raise D92NewGuardHard11AnalysisError("query access is not zero")
         totals.add(int(row.get("after_total_component_fit_count", row.get("fit_count", -1))))
@@ -337,14 +441,45 @@ def _fit_resource(job_root: Path, k_shot: int, *, baseline: Mapping[str, Any] | 
         macs.add(int(row.get("query_macs", -1))); states.add(int(row.get("after_state_bytes", row.get("state_bytes", -1))))
         modes.add(str(row.get("after_registered_d_mode_effective", row.get("registered_d_mode", ""))))
         resource = row.get("after_registration_resource", {})
-        walls.append(_finite(resource.get("registration_wall_time_ns"), "registration wall", lower=0.0)); peaks.append(_finite(resource.get("registration_incremental_peak_working_set_bytes"), "registration peak", lower=0.0))
+        scene_resources[scenario] = {
+            "registration_wall_time_ns": _finite(
+                resource.get("registration_wall_time_ns"),
+                f"registration wall {scenario}",
+                lower=0.0,
+            ),
+            "registration_incremental_peak_working_set_bytes": _finite(
+                resource.get("registration_incremental_peak_working_set_bytes"),
+                f"registration peak {scenario}",
+                lower=0.0,
+            ),
+        }
+    if scenarios != set(SCENES) or totals != {expected[0]} or actuals != {expected[1]} or modes != {expected[2]} or len(macs) != 1 or len(states) != 1 or min(macs) < 0 or min(states) < 0:
+        raise D92NewGuardHard11AnalysisError("fit/resource count closure drift")
+    walls = [scene_resources[scenario]["registration_wall_time_ns"] for scenario in SCENES]
+    peaks = [scene_resources[scenario]["registration_incremental_peak_working_set_bytes"] for scenario in SCENES]
+    return {
+        "fit_count": expected[0],
+        "actual_fit_count": expected[1],
+        "registered_d_mode": expected[2],
+        "query_macs": next(iter(macs)),
+        "state_bytes": next(iter(states)),
+        "registration_wall_time_ns": float(statistics.median(walls)),
+        "registration_incremental_peak_working_set_bytes": float(statistics.median(peaks)),
+        "scene_resources": scene_resources,
+    }
+
+
+def _fit_resource(job_root: Path, k_shot: int, *, baseline: Mapping[str, Any] | None = None) -> dict[str, Any]:
     # NewGuard's K>2 gate is the exact 2/1 inventory (one FULL registration
     # fit plus the immutable base component); K1 remains the real D92 alias
     # inventory and is checked as 3/3.
     expected = (3, 3, "d92_full_alias") if int(k_shot) <= 2 else (2, 1, "newguard_maxmin")
-    if scenarios != set(SCENES) or totals != {expected[0]} or actuals != {expected[1]} or modes != {expected[2]} or len(macs) != 1 or len(states) != 1 or min(macs) < 0 or min(states) < 0:
-        raise D92NewGuardHard11AnalysisError("fit/resource count closure drift")
-    return {"fit_count": expected[0], "actual_fit_count": expected[1], "registered_d_mode": expected[2], "query_macs": next(iter(macs)), "state_bytes": next(iter(states)), "registration_wall_time_ns": float(statistics.median(walls)), "registration_incremental_peak_working_set_bytes": float(statistics.median(peaks))}
+    return _fit_resource_for_expected(job_root, expected=expected)
+
+
+def _e0_fit_resource(job_root: Path, k_shot: int) -> dict[str, Any]:
+    expected = (3, 3, "d92_full_alias") if int(k_shot) <= 2 else (2, 1, "full_only")
+    return _fit_resource_for_expected(job_root, expected=expected)
 
 
 def _baseline_raw_metrics(path: Path) -> dict[str, Any]:
@@ -411,7 +546,14 @@ def _group_stability(rows: Sequence[Mapping[str, Any]], group_field: str) -> dic
     for key, items in sorted(grouped.items()):
         h_delta = _mean(float(item["candidate_h_old_new"]) - float(item["e0_h_old_new"]) for item in items)
         new_delta = _mean(float(item["candidate_seen_new_acc"]) - float(item["e0_seen_new_acc"]) for item in items)
-        result[key] = {"row_count": len(items), "mean_delta_h_old_new": h_delta, "mean_delta_seen_new_acc": new_delta, "passed": h_delta >= -_TOLERANCE and new_delta >= -_TOLERANCE}
+        strict_benefit = h_delta > _TOLERANCE or new_delta > _TOLERANCE
+        result[key] = {
+            "row_count": len(items),
+            "mean_delta_h_old_new": h_delta,
+            "mean_delta_seen_new_acc": new_delta,
+            "strict_benefit": strict_benefit,
+            "passed": h_delta >= -_TOLERANCE and new_delta >= -_TOLERANCE,
+        }
     return result
 
 
@@ -459,6 +601,10 @@ def analyze_d92_newguard_hard11(matrix_manifest_path: str | Path, *, run_root: s
         candidate = compute_score_metrics(score); baseline_score = _read_json(raw_path); baseline = compute_score_metrics(baseline_score)
         historical_join = validate_per_old_class_join(per_old_by_outer.get(str(job["outer_key"]), []), baseline_score, outer_key=str(job["outer_key"]))
         resource = _fit_resource(job_root, int(job["k_shot"]), baseline=baseline)
+        baseline_job_root = raw_path.parents[1]
+        if _prediction_closure_status(baseline_job_root / "diag") != ("closed", "closed"):
+            raise D92NewGuardHard11AnalysisError("E0 prediction closure drift")
+        baseline_resource = _e0_fit_resource(baseline_job_root, int(job["k_shot"]))
         baseline_row = baseline_by_key[key]
         baseline_wall = _finite(baseline_row.get("registration_wall_time_ns"), "E0 registration wall", lower=0.0)
         baseline_peak = _finite(baseline_row.get("registration_incremental_peak_working_set_bytes"), "E0 registration peak", lower=0.0)
@@ -466,7 +612,10 @@ def analyze_d92_newguard_hard11(matrix_manifest_path: str | Path, *, run_root: s
         for metric in EIGHT_PARETO_METRICS:
             row[f"candidate_{metric}"] = candidate[metric]; row[f"e0_{metric}"] = baseline[metric]; row[f"delta_{metric}_vs_e0"] = candidate[metric] - baseline[metric]
         row["full_only_query_macs"] = _finite(baseline_row.get("query_macs"), "E0 query MACs", lower=0.0); row["full_only_state_bytes"] = _finite(baseline_row.get("state_bytes"), "E0 state bytes", lower=0.0)
+        if abs(baseline_resource["registration_wall_time_ns"] - baseline_wall) > _TOLERANCE or abs(baseline_resource["registration_incremental_peak_working_set_bytes"] - baseline_peak) > _TOLERANCE:
+            raise D92NewGuardHard11AnalysisError("E0 historical resource aggregate drift")
         row["full_only_registration_wall_time_ns"] = baseline_wall; row["full_only_registration_peak_working_set_bytes"] = baseline_peak
+        row["full_only_scene_resources"] = baseline_resource["scene_resources"]
         row["registration_wall_ratio"] = resource["registration_wall_time_ns"] / baseline_wall if baseline_wall else math.inf; row["registration_peak_delta_bytes"] = resource["registration_incremental_peak_working_set_bytes"] - baseline_peak
         paired_rows.append(row)
         if set(candidate["old_class_accuracy"]) != set(historical_join) or set(candidate["old_class_accuracy"]) != set(baseline["old_class_accuracy"]):
@@ -481,7 +630,9 @@ def analyze_d92_newguard_hard11(matrix_manifest_path: str | Path, *, run_root: s
     performance = [row for row in paired_rows if row["outer_role"] == "performance"]; liveness = [row for row in paired_rows if row["outer_role"] == "liveness"]
     deltas = {metric: _mean(row[f"delta_{metric}_vs_e0"] for row in performance) for metric in EIGHT_PARETO_METRICS}
     strict = _strict_ok(deltas); magnitude = _magnitude_ok(deltas)
-    direction_counts = {metric: sum((row[f"delta_{metric}_vs_e0"] > -_TOLERANCE if metric in {"average_forgetting", "new_to_old_rate", "old_to_new_rate"} else row[f"delta_{metric}_vs_e0"] >= -_TOLERANCE) for row in performance) for metric in EIGHT_PARETO_METRICS}
+    stability_counts = evaluate_stability_direction_counts(performance)
+    nonregression_counts = stability_counts["nonregression"]
+    strict_direction_counts = stability_counts["strict_direction"]
     by_old_group: dict[str, list[float]] = defaultdict(list)
     by_outer_old: dict[str, list[float]] = defaultdict(list)
     for item in per_old_rows:
@@ -493,17 +644,43 @@ def analyze_d92_newguard_hard11(matrix_manifest_path: str | Path, *, run_root: s
     per_old_stability = len(per_old_summary) == 6 and all(item["row_count"] == 10 for item in per_old_summary.values()) and all(item["min_delta_accuracy"] >= -0.01 for item in per_old_summary.values()) and len(per_outer_old_summary) == 10 and all(item["passed"] for item in per_outer_old_summary.values())
     group_base = [item for item in scenario_rows if item["outer_key"] in {row["outer_key"] for row in performance}]
     by_receiver = _group_stability(group_base, "receiver"); by_slice = _group_stability(group_base, "slice"); by_scene = _group_stability(group_base, "scenario")
-    group_stability = all(item["passed"] for groups in (by_receiver, by_slice, by_scene) for item in groups.values())
-    stability = all(direction_counts[m] >= (9 if m in {"seen_new_acc", "new_to_old_rate"} else 8) for m in ("h_old_new", "old_balanced_accuracy", "old_floor", "seen_new_acc", "average_forgetting", "new_to_old_rate")) and per_old_stability and group_stability
+    receiver_strict_benefit_count = sum(bool(item["strict_benefit"]) for item in by_receiver.values())
+    scene_strict_benefit_count = sum(bool(item["strict_benefit"]) for item in by_scene.values())
+    group_stability = (
+        all(item["passed"] for groups in (by_receiver, by_slice, by_scene) for item in groups.values())
+        and receiver_strict_benefit_count >= 2
+        and scene_strict_benefit_count >= 2
+    )
+    stability_eval = evaluate_stability_gate(
+        performance_rows=performance,
+        per_old_stability=per_old_stability,
+        group_stability=group_stability,
+    )
+    stability = bool(stability_eval["passed"])
     query_exact = all(int(row["query_macs"]) == int(row["full_only_query_macs"]) and int(row["state_bytes"]) == int(row["full_only_state_bytes"]) for row in performance)
-    resource_eval = evaluate_resource_gate(performance, [{"registration_wall_time_ns": row["full_only_registration_wall_time_ns"], "registration_incremental_peak_working_set_bytes": row["full_only_registration_peak_working_set_bytes"]} for row in performance], query_state_exact=query_exact)
-    wall_p90 = resource_eval["wall_p90"]; peak_p90 = _finite(resource_eval["peak_delta_p90_bytes"], "peak delta p90")
-    gates = {"complete_artifact_closure": {"passed": len(paired_rows) == 11 and len(per_old_rows) == 66 and len(scenario_rows) == 33, "observed": {"paired": len(paired_rows), "per_old": len(per_old_rows), "scene": len(scenario_rows)}, "threshold": "11/66/33"}, "performance_outer_closure": {"passed": len(performance) == 10 and len(liveness) == 1, "observed": f"{len(performance)}+{len(liveness)}", "threshold": "10+1"}, "all_strict_pareto": {"passed": strict, "observed": deltas, "threshold": "strict directions"}, "all_magnitude": {"passed": magnitude, "observed": deltas, "threshold": STRICT_PARETO_THRESHOLDS}, "stability": {"passed": stability, "observed": {"direction_counts": direction_counts, "per_old_class": per_old_stability, "per_outer_old": per_outer_old_summary, "by_receiver": by_receiver, "by_slice": by_slice, "by_scene": by_scene}, "threshold": "paired/group/old-class stability"}, "resources": {"passed": bool(resource_eval["passed"]), "observed": {"query_exact": query_exact, "wall_p90_ns": wall_p90, "wall_ratio_p90": resource_eval["wall_ratio_p90"], "peak_delta_p90_bytes": peak_p90}, "threshold": RESOURCE_GATE}}
+    candidate_scene_resources: list[dict[str, float]] = []
+    baseline_scene_resources: list[dict[str, float]] = []
+    for row in performance:
+        candidate_by_scene = row["scene_resources"]
+        baseline_by_scene = row["full_only_scene_resources"]
+        if set(candidate_by_scene) != set(SCENES) or set(baseline_by_scene) != set(SCENES):
+            raise D92NewGuardHard11AnalysisError("same-scene resource closure drift")
+        for scenario in SCENES:
+            candidate_scene_resources.append(candidate_by_scene[scenario])
+            baseline_scene_resources.append(baseline_by_scene[scenario])
+    resource_eval = evaluate_resource_gate(
+        candidate_scene_resources,
+        baseline_scene_resources,
+        query_state_exact=query_exact,
+    )
+    compute_eval = evaluate_component_fit_reduction_gate(performance)
+    wall_p90 = resource_eval["wall_p90"]; peak_max = _finite(resource_eval["peak_delta_max_bytes"], "peak delta max")
+    gates = {"complete_artifact_closure": {"passed": len(paired_rows) == 11 and len(per_old_rows) == 66 and len(scenario_rows) == 33, "observed": {"paired": len(paired_rows), "per_old": len(per_old_rows), "scene": len(scenario_rows)}, "threshold": "11/66/33"}, "performance_outer_closure": {"passed": len(performance) == 10 and len(liveness) == 1, "observed": f"{len(performance)}+{len(liveness)}", "threshold": "10+1"}, "all_strict_pareto": {"passed": strict, "observed": deltas, "threshold": "strict directions"}, "all_magnitude": {"passed": magnitude, "observed": deltas, "threshold": STRICT_PARETO_THRESHOLDS}, "stability": {"passed": stability, "observed": {"nonregression_counts": nonregression_counts, "strict_direction_counts": strict_direction_counts, "per_old_class": per_old_stability, "per_outer_old": per_outer_old_summary, "by_receiver": by_receiver, "by_slice": by_slice, "by_scene": by_scene, "receiver_strict_benefit_count": receiver_strict_benefit_count, "scene_strict_benefit_count": scene_strict_benefit_count}, "threshold": "paired non-regression plus strict seen-new/new-to-old direction, at least two strict-benefit receivers/scenes, and old-class stability"}, "resources": {"passed": bool(resource_eval["passed"]), "observed": {"query_exact": query_exact, "same_scene_pair_count": len(candidate_scene_resources), "wall_p90_ns": wall_p90, "wall_ratio_median": resource_eval["wall_ratio_median"], "peak_delta_max_bytes": peak_max}, "threshold": RESOURCE_GATE}, "compute_reduction": {"passed": bool(compute_eval["passed"]), "observed": compute_eval, "threshold": RESOURCE_GATE["component_fit_reduction_min_fraction_vs_d92"]}}
     gate_state = {name: bool(value["passed"]) for name, value in gates.items()}; verdict = decide_verdict(gate_state)
-    aggregate = {"row_count": len(paired_rows), "performance_row_count": len(performance), "liveness_row_count": len(liveness), **{f"candidate_mean_{m}": _mean(row[f"candidate_{m}"] for row in performance) for m in EIGHT_PARETO_METRICS}, **{f"e0_mean_{m}": _mean(row[f"e0_{m}"] for row in performance) for m in EIGHT_PARETO_METRICS}, **{f"mean_delta_{m}_vs_e0": deltas[m] for m in EIGHT_PARETO_METRICS}, "registration_wall_p90_ns": wall_p90, "registration_wall_ratio_p90": resource_eval["wall_ratio_p90"], "registration_peak_delta_p90_bytes": peak_p90}
+    aggregate = {"row_count": len(paired_rows), "performance_row_count": len(performance), "liveness_row_count": len(liveness), **{f"candidate_mean_{m}": _mean(row[f"candidate_{m}"] for row in performance) for m in EIGHT_PARETO_METRICS}, **{f"e0_mean_{m}": _mean(row[f"e0_{m}"] for row in performance) for m in EIGHT_PARETO_METRICS}, **{f"mean_delta_{m}_vs_e0": deltas[m] for m in EIGHT_PARETO_METRICS}, "registration_wall_p90_ns": wall_p90, "registration_wall_ratio_median": resource_eval["wall_ratio_median"], "registration_peak_delta_max_bytes": peak_max, "component_fit_reduction_min_fraction_vs_d92": compute_eval["min_reduction_fraction"]}
     return {"schema": "cvs.phase2.d92_newguard_hard11.analysis.v1", "status": "ANALYZED", "claim_scope": manifest.get("claim_scope"), "matrix_manifest_sha256": manifest_sha, "method_lock_sha256": lock_sha, "selection_sha256": CANONICAL_SELECTION_SHA256, "baseline": {"paired_rows_path": str(baseline_path), "paired_rows_sha256": HISTORICAL_BASELINE_SHA256, "per_old_class_rows_path": str(per_old_path), "per_old_class_rows_sha256": HISTORICAL_PER_OLD_CLASS_SHA256}, "aggregate": aggregate, "paired_rows": paired_rows, "per_old_class_rows": per_old_rows, "per_old_class_summary": per_old_summary, "scenario_rows": scenario_rows, "by_receiver": by_receiver, "by_slice": by_slice, "by_scene": by_scene, "liveness_rows": liveness, "gates": gates, "gate_state": gate_state, "all_gates_pass": verdict == "ADVANCE_TO_TARGET125_CANDIDATE", "verdict": verdict}
 
 
 analyze_newguard_hard11 = analyze_d92_newguard_hard11
 
-__all__ = ["D92NewGuardHard11AnalysisError", "EIGHT_PARETO_METRICS", "PARETO_METRICS", "HISTORICAL_BASELINE_SHA256", "HISTORICAL_PER_OLD_CLASS_SHA256", "analyze_d92_newguard_hard11", "analyze_newguard_hard11", "compute_confusion_rates", "compute_old_balanced_accuracy", "compute_score_metrics", "decide_verdict", "evaluate_resource_gate", "strict_pareto_deltas", "validate_per_old_class_join", "validate_truth_binding"]
+__all__ = ["D92NewGuardHard11AnalysisError", "EIGHT_PARETO_METRICS", "PARETO_METRICS", "HISTORICAL_BASELINE_SHA256", "HISTORICAL_PER_OLD_CLASS_SHA256", "analyze_d92_newguard_hard11", "analyze_newguard_hard11", "compute_confusion_rates", "compute_old_balanced_accuracy", "compute_score_metrics", "decide_verdict", "evaluate_component_fit_reduction_gate", "evaluate_resource_gate", "evaluate_stability_direction_counts", "evaluate_stability_gate", "strict_pareto_deltas", "validate_per_old_class_join", "validate_truth_binding"]

@@ -18,14 +18,9 @@ from cvsrffi.stage2_d92_registration_balanced_covariance import OLD_CLASS_COUNT
 
 TAIL_FRACTION = 0.20
 TAIL_QUANTILE_METHOD = "lower"
-# This fixed support-scale fraction is deliberately below the D42 two-level
-# int8/FP16 deployed-head closure budget; it is a method constant, never a
-# receiver/scene/K/query-selected sweep value.
+# The trust-region fraction is the single pre-registered strength used by the
+# one max-min solve.  Deployment validation never searches another strength.
 TRUST_REGION_FRACTION = 1.0e-4
-MAX_TRUST_REGION_FRACTION = 0.0128
-DEPLOYMENT_BACKTRACK_SCALES = tuple(
-    float(2.0**power) for power in range(7, -13, -1)
-)
 _CLOSURE_EPS_MULTIPLIER = 128.0
 _PROTECTION_EPS_MULTIPLIER = 1024.0
 _D42_CODEC_MACS_PER_COEFFICIENT = 8
@@ -426,8 +421,8 @@ def _protection_receipt(
     if (
         min(raw_tail_delta) < -protection_tolerance
         or float(np.min(raw_new_margin_delta)) < -protection_tolerance
-        or float(np.max(raw_envelope_delta)) > protection_tolerance
-        or float(tau) > protection_tolerance
+        or raw_envelope_error > closure_tolerance
+        or float(tau) > 0.0
     ):
         raise D92NewGuardNumericalError("raw_protection_failed")
     candidate_deployed_coefficient, candidate_deployed_intercept = _validate_roundtrip(
@@ -488,9 +483,12 @@ def _protection_receipt(
     )
     deployment_pass = bool(
         deployment_new_rows_byte_exact
+        and max_deployed_new_residual <= closure_tolerance
+        and max_deployed_group_sum <= closure_tolerance
         and min(deployed_tail_delta) >= -protection_tolerance
         and float(np.min(deployed_new_margin_delta)) >= -protection_tolerance
-        and float(np.max(deployed_envelope_delta)) <= protection_tolerance
+        and deployed_envelope_error <= closure_tolerance
+        and float(tau) <= 0.0
     )
     return {
         "d92_newguard_closure_tolerance": closure_tolerance,
@@ -587,8 +585,8 @@ def _fallback_audit(
         "d92_newguard_new_rows_byte_exact": True,
         "d92_newguard_deployment_new_rows_byte_exact": None,
         "d92_newguard_deployment_full_head_byte_exact": True,
-        "d92_newguard_deployment_backtrack_scale": None,
-        "d92_newguard_deployment_attempt_count": 0,
+        "d92_newguard_deployment_strength_scale": None,
+        "d92_newguard_deployment_candidate_count": 0,
         "d92_newguard_deployment_codec_roundtrip_count": 0,
         "d92_newguard_deployment_codec_macs_upper_bound": 0,
         "d92_newguard_max_abs_Xnew_internal_residual": None,
@@ -734,7 +732,6 @@ def build_bidirectional_newguard_affine_state(
             directions=directions, strengths=strengths
         )
         residual_norms = np.linalg.norm(internal, axis=1)
-        max_trust_radius = float(MAX_TRUST_REGION_FRACTION * score_rms / feature_rms)
         if (
             not np.isfinite(residual_norms).all()
             or float(np.max(residual_norms)) > trust_radius + np.finfo(np.float64).eps
@@ -766,19 +763,6 @@ def build_bidirectional_newguard_affine_state(
             row_rank=row_rank,
             tail_row_count=int(sum(len(indices) for indices in tail_indices)),
         )
-        full_candidate_coefficient = candidate_coefficient
-        full_candidate_intercept = candidate_intercept
-        coefficient_delta = (
-            full_candidate_coefficient.astype(np.float64)
-            - baseline_coefficient_exact.astype(np.float64)
-        )
-        intercept_delta = (
-            full_candidate_intercept.astype(np.float64)
-            - baseline_intercept_exact.astype(np.float64)
-        )
-        protection = None
-        selected_scale = 0.0
-        attempts = 0
         baseline_deployed_coefficient, baseline_deployed_intercept = _validate_roundtrip(
             quantize_decode,
             baseline_coefficient_exact,
@@ -786,48 +770,26 @@ def build_bidirectional_newguard_affine_state(
             classes=classes,
             dimension=dimension,
         )
-        for attempts, scale in enumerate(DEPLOYMENT_BACKTRACK_SCALES, start=1):
-            if scale * trust_radius > max_trust_radius + np.finfo(np.float64).eps:
-                raise D92NewGuardNumericalError("deployment_backtracking_trust_exceeded")
-            candidate_coefficient = np.asarray(
-                baseline_coefficient_exact.astype(np.float64)
-                + scale * coefficient_delta,
-                dtype=np.float32,
-            )
-            candidate_intercept = np.asarray(
-                baseline_intercept_exact.astype(np.float64) + scale * intercept_delta,
-                dtype=np.float32,
-            )
-            scaled_tau = float(scale * tau)
-            scaled_internal = np.asarray(scale * internal, dtype=np.float64)
-            try:
-                protection = _protection_receipt(
-                    rows=rows,
-                    labels=labels,
-                    baseline_coefficient=baseline_coefficient_exact,
-                    baseline_intercept=baseline_intercept_exact,
-                    candidate_coefficient=candidate_coefficient,
-                    candidate_intercept=candidate_intercept,
-                    internal=scaled_internal,
-                    tau=scaled_tau,
-                    tail_indices=tail_indices,
-                    quantize_decode=quantize_decode,
-                    baseline_deployed_coefficient=baseline_deployed_coefficient,
-                    baseline_deployed_intercept=baseline_deployed_intercept,
-                    classes=classes,
-                    dimension=dimension,
-                )
-            except D92NewGuardNumericalError:
-                continue
-            if (
-                protection["d92_newguard_deployment_protection_pass"]
-                and not protection["d92_newguard_deployment_full_head_byte_exact"]
-            ):
-                selected_scale = float(scale)
-                tau = scaled_tau
-                internal = scaled_internal
-                break
-        if selected_scale == 0.0:
+        protection = _protection_receipt(
+            rows=rows,
+            labels=labels,
+            baseline_coefficient=baseline_coefficient_exact,
+            baseline_intercept=baseline_intercept_exact,
+            candidate_coefficient=candidate_coefficient,
+            candidate_intercept=candidate_intercept,
+            internal=internal,
+            tau=tau,
+            tail_indices=tail_indices,
+            quantize_decode=quantize_decode,
+            baseline_deployed_coefficient=baseline_deployed_coefficient,
+            baseline_deployed_intercept=baseline_deployed_intercept,
+            classes=classes,
+            dimension=dimension,
+        )
+        if (
+            not protection["d92_newguard_deployment_protection_pass"]
+            or protection["d92_newguard_deployment_full_head_byte_exact"]
+        ):
             fallback = _fallback_audit(
                 reason="deployment_protection_failed",
                 classes=classes,
@@ -838,12 +800,12 @@ def build_bidirectional_newguard_affine_state(
                 fallback.update(protection)
             fallback.update(
                 {
-                    "d92_newguard_deployment_backtrack_scale": None,
-                    "d92_newguard_deployment_attempt_count": int(attempts),
+                    "d92_newguard_deployment_strength_scale": None,
+                    "d92_newguard_deployment_candidate_count": 1,
                     "d92_newguard_deployment_full_head_byte_exact": True,
                 }
             )
-            codec_roundtrips = int(attempts + 1)
+            codec_roundtrips = 2
             codec_macs = _deployment_codec_macs_upper_bound(
                 roundtrip_count=codec_roundtrips,
                 classes=classes,
@@ -862,9 +824,7 @@ def build_bidirectional_newguard_affine_state(
                 }
             )
             return baseline_coefficient_exact, baseline_intercept_exact, fallback
-        residual_norms = np.linalg.norm(internal, axis=1)
-        objective_value = float(selected_scale * objective_value)
-        codec_roundtrips = int(attempts + 1)
+        codec_roundtrips = 2
         codec_macs = _deployment_codec_macs_upper_bound(
             roundtrip_count=codec_roundtrips,
             classes=classes,
@@ -886,8 +846,8 @@ def build_bidirectional_newguard_affine_state(
                 int(len(indices)) for indices in tail_indices
             ],
             "d92_newguard_tau_old_envelope_shift": tau,
-            "d92_newguard_deployment_backtrack_scale": selected_scale,
-            "d92_newguard_deployment_attempt_count": int(attempts),
+            "d92_newguard_deployment_strength_scale": 1.0,
+            "d92_newguard_deployment_candidate_count": 1,
             "d92_newguard_deployment_codec_roundtrip_count": codec_roundtrips,
             "d92_newguard_deployment_codec_macs_upper_bound": codec_macs,
             "d92_newguard_new_rows_byte_exact": new_rows_byte_exact,
@@ -899,11 +859,11 @@ def build_bidirectional_newguard_affine_state(
             "d92_newguard_maxmin_solve_count": 1,
             "d92_newguard_support_feature_rms": feature_rms,
             "d92_newguard_support_score_rms": score_rms,
-            "d92_newguard_trust_region_radius": max_trust_radius,
+            "d92_newguard_trust_region_radius": trust_radius,
             "d92_newguard_trust_region_utilization": float(
                 max(
-                    float(np.max(residual_norms)) / max_trust_radius,
-                    abs(tau) / max_trust_radius,
+                    float(np.max(residual_norms)) / trust_radius,
+                    abs(tau) / trust_radius,
                 )
             ),
             "d92_newguard_fallback_active": False,
@@ -951,8 +911,6 @@ __all__ = [
     "TAIL_FRACTION",
     "TAIL_QUANTILE_METHOD",
     "TRUST_REGION_FRACTION",
-    "MAX_TRUST_REGION_FRACTION",
-    "DEPLOYMENT_BACKTRACK_SCALES",
     "build_bidirectional_newguard_affine_state",
     "newguard_inactive_receipt",
 ]

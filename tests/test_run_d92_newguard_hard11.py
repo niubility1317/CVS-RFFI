@@ -52,8 +52,8 @@ def _write_prediction_closure(root: Path, *, force_newguard_fallback: bool = Fal
     newguard_reason = "K1_K2_EXACT_D92_FULL_ALIAS" if k1 else (
         "deployment_protection_failed" if force_newguard_fallback else None
     )
-    deployment_scale = None if k1 else 0.5
-    deployment_attempt_count = 0 if k1 else 9
+    deployment_scale = None if k1 else 1.0
+    deployment_candidate_count = 0 if k1 else 1
     deployment_full_head_byte_exact = True if k1 else False
     protection_tolerance = None if k1 else 0.0001220703125
     protected_value = None if k1 else 0.0
@@ -77,13 +77,20 @@ def _write_prediction_closure(root: Path, *, force_newguard_fallback: bool = Fal
             "d92_e0d_newguard_active": newguard_active,
             "d92_e0d_newguard_fallback_active": newguard_fallback,
             "d92_e0d_newguard_fallback_reason": newguard_reason,
-            "d92_e0d_newguard_deployment_backtrack_scale": deployment_scale,
-            "d92_e0d_newguard_deployment_attempt_count": deployment_attempt_count,
+            "d92_e0d_newguard_deployment_strength_scale": deployment_scale,
+            "d92_e0d_newguard_deployment_candidate_count": deployment_candidate_count,
             "d92_e0d_newguard_deployment_full_head_byte_exact": deployment_full_head_byte_exact,
             "d92_e0d_newguard_new_rows_byte_exact": True,
             "d92_e0d_newguard_deployment_new_rows_byte_exact": True if not k1 else None,
             "d92_e0d_newguard_deployment_protection_pass": False if k1 else True,
             "d92_e0d_newguard_protection_tolerance": protection_tolerance,
+            "d92_e0d_newguard_closure_tolerance": None if k1 else 1.0e-5,
+            "d92_e0d_newguard_max_abs_Xnew_internal_residual": protected_value,
+            "d92_e0d_newguard_old_group_zero_sum_residual_max_abs": protected_value,
+            "d92_e0d_newguard_new_support_old_envelope_change_max_abs_error": protected_value,
+            "d92_e0d_newguard_deployment_max_abs_Xnew_internal_residual": protected_value,
+            "d92_e0d_newguard_deployment_old_group_zero_sum_residual_max_abs": protected_value,
+            "d92_e0d_newguard_deployment_new_support_old_envelope_change_max_abs_error": protected_value,
             "d92_e0d_newguard_new_support_min_margin_change": protected_value,
             "d92_e0d_newguard_deployment_new_support_min_margin_change": protected_value,
             "d92_e0d_newguard_new_support_old_envelope_change_max": protected_value,
@@ -258,13 +265,20 @@ def _fit_audit_row(*, k_shot: int = 10) -> dict[str, object]:
         "d92_e0d_newguard_active": False if k1 else True,
         "d92_e0d_newguard_fallback_active": False,
         "d92_e0d_newguard_fallback_reason": "K1_K2_EXACT_D92_FULL_ALIAS" if k1 else None,
-        "d92_e0d_newguard_deployment_backtrack_scale": None if k1 else 0.25,
-        "d92_e0d_newguard_deployment_attempt_count": 0 if k1 else 10,
+        "d92_e0d_newguard_deployment_strength_scale": None if k1 else 1.0,
+        "d92_e0d_newguard_deployment_candidate_count": 0 if k1 else 1,
         "d92_e0d_newguard_deployment_full_head_byte_exact": True if k1 else False,
         "d92_e0d_newguard_new_rows_byte_exact": True,
         "d92_e0d_newguard_deployment_new_rows_byte_exact": None if k1 else True,
         "d92_e0d_newguard_deployment_protection_pass": False if k1 else True,
         "d92_e0d_newguard_protection_tolerance": None if k1 else 0.0001220703125,
+        "d92_e0d_newguard_closure_tolerance": None if k1 else 1.0e-5,
+        "d92_e0d_newguard_max_abs_Xnew_internal_residual": None if k1 else 0.0,
+        "d92_e0d_newguard_old_group_zero_sum_residual_max_abs": None if k1 else 0.0,
+        "d92_e0d_newguard_new_support_old_envelope_change_max_abs_error": None if k1 else 0.0,
+        "d92_e0d_newguard_deployment_max_abs_Xnew_internal_residual": None if k1 else 0.0,
+        "d92_e0d_newguard_deployment_old_group_zero_sum_residual_max_abs": None if k1 else 0.0,
+        "d92_e0d_newguard_deployment_new_support_old_envelope_change_max_abs_error": None if k1 else 0.0,
         "d92_e0d_newguard_new_support_min_margin_change": None if k1 else 0.0,
         "d92_e0d_newguard_deployment_new_support_min_margin_change": None if k1 else 0.0,
         "d92_e0d_newguard_new_support_old_envelope_change_max": None if k1 else 0.0,
@@ -278,12 +292,12 @@ def _fit_audit_row(*, k_shot: int = 10) -> dict[str, object]:
 @pytest.mark.parametrize(
     ("field", "value"),
     (
-        ("d92_e0d_newguard_deployment_backtrack_scale", 0.3),
-        ("d92_e0d_newguard_deployment_attempt_count", 1),
+        ("d92_e0d_newguard_deployment_strength_scale", 0.5),
+        ("d92_e0d_newguard_deployment_candidate_count", 2),
         ("d92_e0d_newguard_deployment_full_head_byte_exact", True),
     ),
 )
-def test_fit_audit_rejects_k_gt_2_deployment_backtrack_receipt_drift(
+def test_fit_audit_rejects_k_gt_2_single_candidate_receipt_drift(
     tmp_path: Path, field: str, value: object
 ) -> None:
     path = tmp_path / "fit_audit.json"
@@ -313,6 +327,13 @@ def test_fit_audit_accepts_k1_exact_alias_deployment_receipt(tmp_path: Path) -> 
     ("field", "value"),
     (
         ("d92_e0d_newguard_protection_tolerance", 1.0),
+        ("d92_e0d_newguard_closure_tolerance", 0.0),
+        ("d92_e0d_newguard_max_abs_Xnew_internal_residual", 1.0),
+        ("d92_e0d_newguard_old_group_zero_sum_residual_max_abs", 1.0),
+        ("d92_e0d_newguard_new_support_old_envelope_change_max_abs_error", 1.0),
+        ("d92_e0d_newguard_deployment_max_abs_Xnew_internal_residual", 1.0),
+        ("d92_e0d_newguard_deployment_old_group_zero_sum_residual_max_abs", 1.0),
+        ("d92_e0d_newguard_deployment_new_support_old_envelope_change_max_abs_error", 1.0),
         ("d92_e0d_newguard_new_rows_byte_exact", False),
         ("d92_e0d_newguard_deployment_new_rows_byte_exact", False),
         ("d92_e0d_newguard_new_support_min_margin_change", -1.0),

@@ -24,35 +24,16 @@
     "query": "single_f0_all_registered_classes"
   },
   "fallback": "K1_K2_exact_D92_FULL_alias",
-  "deployment_backtrack": {
-    "scales": [
-      128.0,
-      64.0,
-      32.0,
-      16.0,
-      8.0,
-      4.0,
-      2.0,
-      1.0,
-      0.5,
-      0.25,
-      0.125,
-      0.0625,
-      0.03125,
-      0.015625,
-      0.0078125,
-      0.00390625,
-      0.001953125,
-      0.0009765625,
-      0.00048828125,
-      0.000244140625
-    ],
-    "selection": "largest_safe_nonzero_after_actual_d42_roundtrip",
-    "all_fail": "exact_e0_fallback",
+  "deployment_validation": {
+    "candidate_count": 1,
+    "strength_scale": 1.0,
+    "selection": "single_pre_registered_maxmin_candidate",
+    "any_failure": "exact_e0_fallback",
+    "closure_tolerance_formula": "128*float32_eps*max(1,max_abs_augmented_row)",
     "protection_tolerance_formula": "1024*float32_eps",
     "protection_tolerance_value": 0.0001220703125,
     "negative_tail_accepted": false,
-    "max_trust_region_fraction": 0.0128
+    "trust_region_fraction": 0.0001
   },
   "query_contract": {
     "decision": "per_sample_all_registered_classes",
@@ -92,6 +73,8 @@
     "registration_wall_p90_max_ns": 150000000,
     "registration_wall_ratio_max": 1.5,
     "registration_peak_delta_max_bytes": 524288,
+    "component_fit_baseline": "D92_FULL_TWO_STATE_COMPONENT_FIT_COUNT_8*(K+1)",
+    "component_fit_reduction_min_fraction_vs_d92": 0.8,
     "query_macs_equal": true,
     "state_bytes_equal": true
   },
