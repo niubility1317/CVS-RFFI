@@ -23,7 +23,7 @@
 4. 最终`Sigma_g*=rho_g Sigma_g^auto+(1-rho_g)blockdiag(Sigma_g^auto)`，再固定old/new`0.5/0.5`，执行一次FULL solve和一次D42发布。禁止第二FULL/BLOCK fit、LOO、Fisher、rank-one task contrast、逐边/逐prefix搜索和多codec回缩。
 5. 所有类必须具有finite且非零的off-block范数；任一失败、SPD/solve/codec失败或结构漂移时exact E0 fallback。不得丢弃弱类、加epsilon、jitter、伪逆或放宽容差。
 6. old/new组内label permutation、support row permutation和old/new任务交换必须等变。不得使用类别顺序、receiver、scene、seed、K或new count特判。
-7. G0发布前必须证明最终D42 state非E0、至少一个`rho∈(0,1)`，且部署跨组support margin变化达到一个真实D42量化量子；否则本地无效，不发布Hard9。
+7. G0发布前必须证明最终D42 state非E0、至少一个`rho∈(0,1)`，且以隔离E0/CCOC support-only执行的真实解码头计算，`max_j|Delta cross-group margin_j|`达到由两份state实际D42 block scale与同一support块幅度定义的一个量化量子；否则本地无效，不发布Hard9。
 
 ## 三、硬性能目标
 

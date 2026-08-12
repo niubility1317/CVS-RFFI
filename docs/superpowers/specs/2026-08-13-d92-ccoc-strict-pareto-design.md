@@ -16,7 +16,7 @@ CCOC只在`DA1_REG1`且`K>2`时激活。它保留当前D92已经验证的类均�
 
 ## 2.合法输入与禁止项
 
-输入仅为同一outer合法K-shot support、标签、现有D81变换及D92已经构造的充分统计量。query及其任何view不得进入fit、更新、系数选择、回退、停止或G0机制判定；禁止clean/source样本、query truth、role Oracle、class quota和global reassignment。
+输入仅为同一outer合法K-shot support、标签、现有D81变换及D92已经构造的充分统计量。下文`x_ci`严格指与`Sigma_g^auto`处于完全相同坐标系的、D81变换后的288维support向量，禁止误用D81变换前feature。query及其任何view不得进入fit、更新、系数选择、回退、停止或G0机制判定；禁止clean/source样本、query truth、role Oracle、class quota和global reassignment。
 
 禁止第二次FULL或BLOCK fit、LOO、Fisher、rank-one task contrast、旧类bias、候选/强度/步长扫描、逐边或逐prefix原子搜索、重复D42回缩，以及receiver、scene、seed、K、new-count或类别ID特判。P*型rank-one precision更新永久删除，不得以其他名称恢复。
 
@@ -62,7 +62,9 @@ K≤2：`active=false`、`fallback=false`、reason=`K1_K2_EXACT_D92_FULL_ALIAS`�
 
 K>2正常路径：candidate FULL实际fit恰为1，额外BLOCK/LOO/Fisher fit均为0，dense solve恰为1，D42正式发布恰为1。任一off-block、rho、SPD、solve或codec数值失败都发布byte-exact `E0_FULL_ONLY`并标记`fallback=true`；异常回退允许额外执行E0 reference，但必须记录真实fit/codec库存且`G0_eligible=false`。结构、schema、registry或seal漂移继续抛错，不得伪装为数值回退。
 
-G0必须从最终D42 state复核：candidate state与同outer、同scene的immutable E0 state不同；至少一个组满足`0<rho_g<1`；最终部署头相对配对E0在合法support上的跨组margin变化不小于由实际D42 block scale和support幅度计算的一个真实量化量子。任一条件失败均不得进入Hard9。
+G0必须从最终D42 state复核：candidate state与同outer、同scene的immutable E0 state不同；至少一个组满足`0<rho_g<1`；最终部署头相对配对E0在合法support上的跨组margin变化不小于一个可执行的真实D42量化量子。对每个support行`j`，以最终解码头定义`M_j=s(y_j)-max_{k in opposite_group(y_j)}s(k)`，并记录`max_j|M_j^CCOC-M_j^E0|`。对冻结三块`b`，令`A_b=max_j max_{d in b}|x_jd|`，令`q_b=A_b max(scale1_E0[:,b],scale2_E0[:,b],scale1_CCOC[:,b],scale2_CCOC[:,b])`，取所有非空块的`q=max_b q_b`。冻结门为`max_j|Delta M_j|>=q>0`。该定义与现有`_cross_group_margin_change_max_abs`和`_cross_group_margin_quantum`语义一致；不得改成仅要求非零。
+
+为保持candidate实际FULL fit=1，G0用两个隔离的truth-free support-only技术执行分别产生E0 reference与CCOC state；reference执行不进入candidate fit库存或candidate wall/peak。validator只在两份state及support identity完全匹配后计算上述margin和量子，且不得读取query truth或用query预测选择候选。
 
 ## 6.资源实现
 
