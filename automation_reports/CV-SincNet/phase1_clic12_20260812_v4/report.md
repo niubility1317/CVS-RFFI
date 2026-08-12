@@ -3,7 +3,7 @@
 ## 1. 状态与目标
 
 - 实验ID：`phase1_clic12_20260812_v4`
-- 当前状态：`LANDED / REMOTE_STATIC_VERIFIED / SMOKE_VERIFIED / READY_TO_LAUNCH`
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 操作者：主控Codex；N607唯一runner：`Luna/max`
 - 目标：训练P1-CLIC的F1—F6×C/G共12臂；训练完成后所有正式指标均叠加`LEO weak`目标域测试，联合评估未知类拒识与域泛化。
 - v1—v3均为训练前系统性技术失败，全部封存为`NO_PERFORMANCE_RESULT`；v4不恢复、覆盖或重试旧run。
@@ -52,9 +52,11 @@
 ## 7. 运行回填
 
 - archive SHA/bytes：`CD550674EFF0C67E694E0384A679AD04E9DE204070449C440294F2E634D1835A`，266864640 bytes；SCP=1，远端SHA/bytes闭合。
-- SCP/release/launch：SCP=1，release原子落地，launch待执行，fresh-run retry=NO。
+- SCP/release/launch：SCP=1，release原子落地；唯一正式launch=1，fresh-run retry=NO。启动SSH通道曾超时，但随后只读核验确认run/log/outer和pids.tsv已落地。
 - release静态门：核心文件hash、远端py_compile、`train_ssdg.py --help`、`bash -n`、dry-run12、真实parser12/12、TX4+1+1六TX闭合通过，release无pycache。
 - 真实路径烟测：通过；F1C/F1G真实checkpoint重建，真实`_build_ssdg_wisig_data`返回`tx_partition_enabled=true`、`held_tx_loaded_by_training=false`、四类`class_id_to_tx`及一条proxy TX回执；取到128行train batch；C/G各一次clean+`leo_clear_weak` forward，`clean CE+0.10 KL` backward有限且CLIC梯度非零；`proxy_rows_loaded=0`、`query_rows_opened=0`。烟测后GPU/SSH清零。
-- PID/GPU/日志：待runner
-- checkpoint/terminal计数：待runner
-- 最终状态：待runner
+- PID/GPU/日志：`pids.tsv`写出12个冻结PID和GPU映射；12候选日志各663 bytes；首波后12 PID全部退出，GPU compute apps=0。
+- checkpoint/terminal计数：12份`phase1_clic_failure_receipt.json`；`final_ssdg.pth=0`、`phase1_clic_terminal_receipt.json=0`，prediction/score=0。
+- 首波技术健康：12/12在首个训练batch前同一确定性错误`cvsrffi.phase1_clic.CLICRuntimeError: P1-CLIC source-L batch metadata is absent`退出；触发launcher-wide deterministic technical stop，不读取性能、不重试。
+- 最终状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；v1—v4均封存，不进行第5次launcher修补。
+- SSH/TCP22清理：本地`ssh.exe=0`，N607/bridge TCP22 established=0。
