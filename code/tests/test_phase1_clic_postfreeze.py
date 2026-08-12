@@ -671,6 +671,15 @@ def _pair_fold_artifact_fixture(
     return artifacts
 
 
+def _write_proxy_without_field(source: Path, destination: Path, field: str) -> None:
+    """Copy a production-written proxy record while removing one sealed field."""
+
+    payload = json.loads(source.read_text(encoding="utf-8"))
+    assert field in payload, (field, sorted(payload))
+    payload.pop(field)
+    destination.write_text(json.dumps(payload, sort_keys=True) + "\n", encoding="utf-8")
+
+
 def _pair_cli_argv(artifacts: dict[str, object], *, fold: int = 1) -> list[str]:
     return [
         "--c-checkpoint", str(artifacts["c_paths"]["checkpoint"]),
@@ -1400,6 +1409,25 @@ def test_clic_pair_parser_evaluate_writes_cg_artifact_summary_and_common_binding
     assert payload["raw_artifacts"]["G"]["leo_binding"] == str(Path(artifacts["g_binding"]).resolve())
 
 
+@pytest.mark.parametrize(
+    "missing_field",
+    ("clean_npz_sha256", "geometry", "geometry_state_sha256", "score_rule"),
+)
+def test_clic_pair_evaluate_rejects_incomplete_production_proxy_diagnostic(
+    tmp_path: Path, missing_field: str
+) -> None:
+    artifacts = _pair_artifact_fixture(tmp_path / "artifacts")
+    complete = Path(artifacts["c_proxy"])
+    complete_payload = json.loads(complete.read_text(encoding="utf-8"))
+    assert {"clean_npz_sha256", "geometry", "geometry_state_sha256", "score_rule"} <= set(complete_payload)
+    missing = tmp_path / f"proxy_missing_{missing_field}.json"
+    _write_proxy_without_field(complete, missing, missing_field)
+    artifacts["c_proxy"] = missing
+    args = PAIR.build_parser().parse_args(_pair_cli_argv(artifacts))
+    with pytest.raises(Exception, match="proxy|diagnostic|field|schema|missing|geometry|drift"):
+        PAIR.evaluate(args)
+
+
 def test_clic_pair_evaluate_rejects_missing_raw_npz_or_tampered_binding(tmp_path: Path) -> None:
     artifacts = _pair_artifact_fixture(tmp_path / "missing")
     parser = PAIR.build_parser()
@@ -1589,6 +1617,50 @@ def test_clic_f6_positive_reopens_all_cg_raw_artifacts_and_rejects_binding_byte_
             current_checkpoint=f6["checkpoint"],
             raw_artifacts_by_fold=raw_by_fold,
         )
+
+
+def test_clic_f6_reopen_rejects_each_incomplete_production_proxy_diagnostic(tmp_path: Path) -> None:
+    priors: list[Path] = []
+    raw_by_fold: dict[int, dict[str, object]] = {}
+    for fold in range(1, 6):
+        artifacts = _pair_fold_artifact_fixture(
+            tmp_path / f"F{fold}", fold=fold, real_g_bundle=True
+        )
+        args = PAIR.build_parser().parse_args(_pair_cli_argv(artifacts, fold=fold))
+        pair_payload = PAIR.evaluate(args)
+        pair_path = Path(args.output_pair_json)
+        assert pair_path.is_file()
+        raw_by_fold[fold] = {
+            arm: dict(pair_payload["raw_artifacts"][arm]) for arm in ("C", "G")
+        }
+        raw_by_fold[fold]["G"]["bundle"] = artifacts["g_bundle"]
+        priors.append(pair_path)
+    f6 = _checkpoint_fixture(tmp_path / "F6G", arm="G", fold=6)
+    fields = ("clean_npz_sha256", "geometry", "geometry_state_sha256", "score_rule")
+    for missing_field in fields:
+        mutated_proxy = tmp_path / f"F1_missing_{missing_field}.json"
+        _write_proxy_without_field(Path(raw_by_fold[1]["C"]["proxy_diagnostic"]), mutated_proxy, missing_field)
+        mutated_raw = {
+            fold: {arm: dict(values) for arm, values in fold_raw.items()}
+            for fold, fold_raw in raw_by_fold.items()
+        }
+        mutated_raw[1]["C"]["proxy_diagnostic"] = str(mutated_proxy)
+        mutated_raw[1]["C"]["proxy_diagnostic_sha256"] = _sha_file(mutated_proxy)
+        mutated_record = tmp_path / f"F1_pair_missing_{missing_field}.json"
+        record = json.loads(priors[0].read_text(encoding="utf-8"))
+        record["raw_artifacts"]["C"]["proxy_diagnostic"] = str(mutated_proxy)
+        record["raw_artifacts"]["C"]["proxy_diagnostic_sha256"] = _sha_file(mutated_proxy)
+        mutated_record.write_text(json.dumps(record, sort_keys=True) + "\n", encoding="utf-8")
+        mutated_priors = [mutated_record, *priors[1:]]
+        with pytest.raises(Exception, match="proxy|diagnostic|field|schema|missing|geometry|drift"):
+            PAIR.reopen_f6_raw_artifacts(
+                prior_pair_metrics=mutated_priors,
+                current_fold=6,
+                expected_matrix_id=POSTFREEZE_MATRIX,
+                expected_training_run=TRAINING_RUN,
+                current_checkpoint=f6["checkpoint"],
+                raw_artifacts_by_fold=mutated_raw,
+            )
 
 
 def _bundle_fixture(tmp_path: Path) -> tuple[Path, dict[str, object], Path]:
