@@ -17,6 +17,10 @@
 |PD-09|无效候选不发布|部署头E0-byte-exact、无真实量化步变化或约束失败时`LOCAL_INVALID`/exact E0 fallback|真实checkpoint no-query smoke|DESIGN_FROZEN|
 |PD-10|K1/K2边界不变|严格D92 FULL alias|K1/K2 state/prediction与fit inventory测试|DESIGN_FROZEN|
 |PD-11|query/state与E0一致|最终仅持久化一个F0仿射头|query MAC/state byte exact|DESIGN_FROZEN|
+
+## 实验结局
+
+N607 run`d92_e0_full_block_pareto_distill_hard11_20260812_v1`在冻结K10真实checkpoint smoke中，clear、low-elev、rain三场景均得到`deployment_full_head_byte_exact`，候选按设计精确回退E0；`active=false`、正式score=0、shard=0/8。query零访问、fit=4/2和E0状态SHA闭合正常。该证据使PD-09的无效候选拦截得到真实验证，同时否证该方法族的可部署非零更新。唯一裁决为`REJECT_ROUTE`，不得放宽D42量子门、扫描强度或自动运行Target125。
 |PD-12|注册计算显著低于D92|two-state fit=4、DA1_REG1实际solve=2；额外BLOCK复用共享统计|本地资源receipt；N607 paired wall/peak|DESIGN_FROZEN|
 |PD-13|只跑最难矩阵|复用冻结Hard10+1个K1、3scene、1arm、8shard|11 job/33 scene-arm manifest|DESIGN_FROZEN|
 |PD-14|不重复数据验证|复用`VALIDATED_ONCE`、`p2_min_v1`及原sealed packages|capsule/split/protocol身份|DESIGN_FROZEN|

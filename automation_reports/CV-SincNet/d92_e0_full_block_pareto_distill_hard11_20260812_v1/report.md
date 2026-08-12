@@ -5,7 +5,7 @@
 |字段|冻结值|
 |---|---|
 |run ID|`d92_e0_full_block_pareto_distill_hard11_20260812_v1`|
-|状态|`LOCAL_VERIFIED / READY_FOR_N607_HANDOFF`|
+|状态|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT / REJECT_ROUTE`|
 |时间|2026-08-12 13:03 HKT|
 |操作者|Codex `/root`；科学实现与机械执行闭环分属独立owner；N607由唯一runner负责|
 |候选|`E0_FULL_BLOCK_PARETO_DISTILL`；candidate=`d92_e0_full_block_pareto_distill`|
@@ -126,3 +126,83 @@ health stop仅限协议/安全错误、launcher确定性故障、prediction闭�
 最大工程风险是共享统计后的BLOCK solve仍超过150ms/1.50×E0；最大科学风险是support margin改善不能外推为query Pareto。前者先由真实checkpoint资源smoke筛除，后者只能由完整10/10 Hard10一次性证伪。
 
 完成后必须回填：Git差异与测试、真实smoke、同步映射与哈希、exact command/PID/GPU、11/11闭合、完整取回、逐outer八指标、receiver/K/scene/六旧类分解、wall/peak/fallback以及唯一裁决。
+
+## 9.N607唯一runner回收记录（2026-08-12）
+
+### 9.1状态与预检
+
+|字段|事实证据|
+|---|---|
+|runner状态|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；fresh-run retry=`false`|
+|本地版本|`E:\\type10-7\\code\\snapshots\\d92_125wt`分支`codex/d92-be-hard12-strict-pareto-20260811`，HEAD=`621a5b0af3d318c7b172737cfabbcdf1b99bb346`，启动前工作树干净|
+|直连预检|普通账号直连N607 PASS；项目根、Python 3.10.19、8×RTX3090可见|
+|启动前冲突检查|source/output/logs及本地回收根均不存在；无匹配run进程；GPU空闲|
+
+### 9.2同步与远端验证
+
+串行同步`archive→config→launch`，每次SCP后均确认本地无残留`ssh.exe`和N607 TCP22连接。远端三件文件哈希与冻结值一致；`bash -n`、临时解包`compileall`和11个冻结模块import closure均PASS。归档成员数为1,312，包含`code/cvsrffi/__init__.py`、Pareto核心与runner，未发现`code/code`。
+
+|远端文件|大小|SHA256|
+|---|---:|---|
+|`source_root/d92_pareto_distill_runtime_closure_ba866ff8.tar.gz`|5,082,551|`8351fcf9241a73b2ee89865d2a12c6add4aba517dd168716b7e8a8fb88a3dab5`|
+|`source_root/configs/stage2_d92_full_block_pareto_distill_hard11_v1.json`|7,154|`6c3e1a1b41e08ecf7444c30607cbfdf5d59bcea06f9a902eacac91186d8f62c7`|
+|`source_root/launch.sh`|4,252|`19e2f3e12281a918144b781270f7ab8eb72631ba1c9947808222861c0f9fd5cc`|
+
+### 9.3唯一启动与健康结果
+
+唯一执行冻结命令，SSH返回0。prepare与import closure完成后，K10 smoke在shard启动前失败，未执行任何正式outer。确定性异常指纹为：
+
+```text
+D92ParetoDistillHard11RunnerError: fit audit ParetoDistill cross-group quantum receipt drift
+```
+
+三种LEO场景的fit audit均记录：`active=false`、`fallback=true`、`fallback_reason=deployment_full_head_byte_exact`、two-state fit=4、实际FULL+BLOCK solve=2、candidate affine SHA=`null`、E0/head-state SHA闭合、`deployed_head_state_closure_pass=true`；跨组change/quantum为`null`且`quantum_pass=false`。query truth/fit/update/selection/role-oracle/class-quota/global-reassignment访问全部为`false`。由于smoke未通过active/非fallback/quantum硬门，launcher未创建8个shard。
+
+### 9.4产物与回收
+
+远端产物完整保留。远端与本地回收树的文件数、总字节和内容树SHA一致：
+
+|树|文件数|总字节|内容树SHA256|
+|---|---:|---:|---|
+|`source_snapshot`|1,329|70,658,686|`e2972c82d5ad199e3312c9c3d641d474db653f23b9db707ed327f7a791244c34`|
+|`logs`|6|1,735|`93354b7353790cb88782ae44d795fd2053db531ccaaabcd9e560f36908039d9b`|
+|`output`|13|761,200|`0169bdb759abc0f29aa917330c9436b904dff5c6d3603d911733527bc1f3237b`|
+
+本地回收根为`E:\\type10-7\\local_artifacts\\d92_e0_full_block_pareto_distill_hard11_20260812_v1`。正式矩阵计数为0/11 job receipt、0/22正式prediction/COMMIT/fit/resource、0/11 score、0/8 shard summary。manifest引用的11份历史truth sidecar已回收到`truth_sidecars/jobs/<outer>/offline/scorer/truth_sidecar.json`，11/11 SHA匹配，共5,306,510字节。`matrix_manifest.json` SHA256=`26ad9a51a31feca4e949b17749d8d17813c7d456815538848ef40a4279e5b9e4`。最终远端无匹配run进程、GPU无compute process；本地无SSH/SCP残留。
+
+## 10.主分析与唯一裁决
+
+### 10.1科学解释
+
+runner抛出的“quantum receipt drift”是硬门的外部表现，不是根因。根因是唯一候选在真实K10 checkpoint的clear、low-elev和rain三场景中，连续优化后的头经D42编码/解码后都与E0 FULL完整头byte-exact；因此候选没有任何可部署的非零改变，按冻结规则精确回退E0。此时change和quantum不适用，候选SHA为空，不能将E0 fallback冒充新方法性能。
+
+这条证据直接否证了本路线的可部署性。继续放宽量化门、扫描方向强度、选择其他smoke outer或让fallback进入正式矩阵，都会改变预注册方法或用target结果选择候选，均被禁止。本run不重启，完整Hard10也不补跑。
+
+### 10.2指标与DA/REG状态
+
+由于shard与truth-side scorer均未启动，新候选没有任何合法性能指标。历史E0与原D92只保留为研发背景，不与本run的smoke诊断拼接成伪同排结果。
+
+|方法|H|old BA|`c_old_acc`|old floor|seen-new|forgetting|new→old|old→new|证据状态|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|E0_FULL_ONLY|73.3472%|74.8611%|74.8611%|44.8333%|72.0333%|12.9167%|15.0417%|15.3333%|历史Target125 artifact在冻结Hard10行上的同排均值|
+|原D92|74.1673%|76.1389%|76.1389%|48.5000%|72.3750%|11.6389%|15.1000%|14.6944%|历史retry2 artifact在同一Hard10行上的同排均值|
+|Pareto Distill|N/A|N/A|N/A|N/A|N/A|N/A|N/A|N/A|真实K10 smoke三场景均D42-byte-exact回退；0个正式score|
+
+|状态|本run可报告结果|
+|---|---|
+|`DA0_REG0`|未运行；new类指标与H按定义为`N/A`|
+|`DA1_REG0`|仅生成truth-free技术artifact；未连接scorer，性能`N/A`|
+|`DA0_REG1`|未运行，性能`N/A`|
+|`DA1_REG1`|尝试的候选精确回退E0；未连接scorer，性能`N/A`|
+
+因此不存在10 outer×3 scene性能表，也不存在receiver、K、new-count、旧类或双向混淆分解。缺失是由shard前科学无效门造成的预期结果，不是待补数据。
+
+### 10.3资源诊断边界
+
+三种smoke场景的注册wall分别为284.454ms、170.740ms和280.772ms，中位数280.772ms、诊断p90为283.718ms；峰值增量内存最大15,040,512 bytes。fit计数为two-state 4、实际2，相对D92 K10代理`8×(K+1)=88`减少95.45%；query MAC为3,168，发布state为8,583 bytes，但二者对应exact-E0 fallback状态。由于仅一个outer且候选未激活，这些数字只能作为技术诊断，不能替代冻结Hard10资源裁决；它们也没有提供继续该路线的依据。
+
+### 10.4裁决
+
+唯一裁决：`REJECT_ROUTE`。
+
+理由不是八项中某一项下降，而是方法在真实D42部署态没有形成候选：三场景全部回到E0，无法满足“严格优于E0”的必要前提，也不具备进入完整125的资格。下一轮若继续研发，必须更换为直接在D42离散码空间构造非零、support受约束更新的新方法家族；不得对本候选做强度扫描、量化容差放宽或同run重试。
