@@ -12,7 +12,7 @@
 
 - Follow root `AGENTS.md`, root `项目.md`, and `E:\codex\home\attachments\c75febfd-60b9-42bb-9825-a0b3b9eda0bb\goal-objective.md`.
 - Training, checkpoint selection, model state and all ADV hyperparameters remain source-only; target prediction is zero-training, zero-adaptation, zero-update, zero-selection and zero-retry.
-- Do not reuse or relabel the historical `tx_rx_day_1_7_2`, `0.10/0.70/0.20` checkpoint. The new method identity is `ADV3B02_CORE90_SOFT_E200_RHO10_FINAL_E200`.
+- Do not reuse or relabel the historical `tx_rx_day_1_7_2`, `0.10/0.70/0.20` checkpoint. The new method identity is `ADV3B02_CORE90_SOFT_E200_CLIC_EQ_RHO07_FINAL` so its `0.07/0.63/0.30` data configuration is not mislabeled as `RHO10`.
 - Freeze `split_mode=tx_rx_day_1_6_3`, `labeled_ratio=0.07`, `unlabeled_ratio=0.63`, `source_val_ratio=0.30`, seed `392002`, 200 epochs, 130 label epochs, 70 pseudo epochs, `from_scratch=true`, and final-only checkpoint selection.
 - Preserve the historical ADV3B02 loss/mechanism flags exactly from `code/scripts/launch_phase1_adv3_mechanism32_queue_20260701.sh` for `ADV3B02_CORE90_SOFT_E200`; do not tune from current target results.
 - Six folds use the exact CLIC TX partitions already sealed by training v5. One fold-level ADV reference is shared by its C and G candidates; references may not cross folds.
