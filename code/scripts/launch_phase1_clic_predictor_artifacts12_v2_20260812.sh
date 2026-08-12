@@ -18,7 +18,7 @@ LEO_ROOT="${PROJECT_ROOT}/runs/${LEO_RUN_ID}"
 PAIR_ROOT="${PROJECT_ROOT}/runs/${PAIR_RUN_ID}"
 RUN_ROOT="${PROJECT_ROOT}/runs/${RUN_ID}"
 LOG_ROOT="${PROJECT_ROOT}/logs/${RUN_ID}"
-C_ENTRY="${CODE_ROOT}/cvsrffi/phase1_clic_target_leo.py"
+C_ENTRY="${CODE_ROOT}/phase1_clic_target_leo_cli.py"
 G_ENTRY="${CODE_ROOT}/export_phase1_clic_deployment_bundle.py"
 DRY_RUN=0
 
