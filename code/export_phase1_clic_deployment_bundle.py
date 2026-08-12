@@ -537,6 +537,20 @@ def _runtime_rebuild_from_checkpoint(checkpoint: Mapping[str, Any]) -> dict[str,
     ):
         if key in args:
             model_kwargs[key] = args[key]
+    # Training normalizes a non-positive CLI/checkpoint sample-rate placeholder
+    # before constructing the model (WiSig=25 MHz, other datasets=5 MHz).  Seal
+    # that effective architecture value, not the pre-normalization placeholder,
+    # so strict offline reconstruction is identical to the trained state.
+    try:
+        sample_rate_hz = float(model_kwargs["sample_rate_hz"])
+    except (TypeError, ValueError) as exc:
+        raise CLICBundleError("real CLIC checkpoint sample rate is not numeric") from exc
+    if not math.isfinite(sample_rate_hz):
+        raise CLICBundleError("real CLIC checkpoint sample rate is non-finite")
+    if sample_rate_hz <= 0.0:
+        model_kwargs["sample_rate_hz"] = (
+            25e6 if str(model_kwargs.get("dataset", "wisig")) == "wisig" else 5e6
+        )
     for bundle_key, checkpoint_key in (
         ("mixstyle_on", "use_mixstyle"),
         ("mixstyle_p", "mixstyle_p"),

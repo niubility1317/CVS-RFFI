@@ -107,6 +107,7 @@ def _checkpoint_fixture(
     arm: str = "G",
     fold: int = 1,
     real_model: bool = False,
+    real_model_checkpoint_sample_rate_hz: float | None = None,
 ) -> dict[str, Path | str | dict[str, object]]:
     """Create one final-only checkpoint plus the external versioned envelope."""
 
@@ -151,6 +152,8 @@ def _checkpoint_fixture(
         args["phase1_clic_enabled"] = True
         args["phase1_clic_frozen_mode"] = True
         args["phase1_clic_operator_mode"] = "complex_local_invariant_curvature"
+        if real_model_checkpoint_sample_rate_hz is not None:
+            args["sample_rate_hz"] = float(real_model_checkpoint_sample_rate_hz)
         model_state = _real_g_model_state()
     payload = {
         "checkpoint_schema": "ssdg_phase1_training_state_v2",
@@ -613,6 +616,7 @@ def _pair_fold_artifact_fixture(
     *,
     fold: int,
     real_g_bundle: bool = False,
+    real_g_checkpoint_sample_rate_hz: float | None = None,
 ) -> dict[str, object]:
     """Build one complete C/G pair chain with the frozen shared LEO bytes."""
 
@@ -628,6 +632,11 @@ def _pair_fold_artifact_fixture(
             arm=arm,
             fold=fold,
             real_model=bool(real_g_bundle and arm == "G"),
+            real_model_checkpoint_sample_rate_hz=(
+                real_g_checkpoint_sample_rate_hz
+                if real_g_bundle and arm == "G"
+                else None
+            ),
         )
         clean = tmp_path / arm / "clean.npz"
         _write_feature_npz(clean, paths, arm=arm, feature_dim=feature_dim)
@@ -5046,6 +5055,29 @@ def test_g_predictor_runtime_rebuilds_once_before_repeated_target_rows(
     assert rebuilds == load_rebuilds, (
         "verified G runtime must retain its immutable model across target rows"
     )
+
+
+def test_real_g_bundle_normalizes_wisig_checkpoint_sample_rate_placeholder(
+    tmp_path: Path,
+) -> None:
+    """Checkpoint 0 means the same WiSig 25 MHz default used at training."""
+
+    artifacts = _pair_fold_artifact_fixture(
+        tmp_path / "g",
+        fold=1,
+        real_g_bundle=True,
+        real_g_checkpoint_sample_rate_hz=0.0,
+    )
+    verified = BUNDLE.verify_clic_bundle(artifacts["g_bundle"])
+    runtime_rebuild = verified["config"]["runtime_rebuild"]
+    assert runtime_rebuild["model_kwargs"]["sample_rate_hz"] == 25_000_000.0
+    with np.load(artifacts["existing_received_iq"], allow_pickle=False) as archive:
+        received_i = np.asarray(archive["received_iq"][0], dtype=np.float32)
+    output = BUNDLE.reload_forward(
+        artifacts["g_bundle"], received_i, scene=SCENARIOS[0]
+    )
+    assert output["decision"] in {"registered", "unknown", "defer"}
+    assert np.isfinite(float(output["e_unknown"]))
 
 
 def test_union_six_truth_cache_scores_only_fold_local4_and_audits_inactive_tx(
