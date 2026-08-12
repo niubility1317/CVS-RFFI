@@ -82,10 +82,3 @@
 |F6G_CLIC12|`05352c3b102513a85db64ff905e47f0227314f4523b69710ccb25d6262d7619d`|`0742c1c6e12baadae2a926d5e982b333ee8f202bc5d0e0772acbd8d6dcac4cd1`|
 
 完整receipt位于N607`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_clic_target_metrics_20260812_v1/metrics/`；日志位于同一项目根的`logs/phase1_clic_target_metrics_20260812_v1/`。本地报告与Git镜像必须保持同一SHA。
-
-|候选|机制|target RX/day|LEO-weak场景|known overall/macro/min|unknown reject（全局/逐scene）|AUROC/AUPR/FPR95|defer/coverage|scene/RX/class/day DG|ADV比较|技术／最终结论|
-|---|---|---|---|---|---|---|---|---|---|---|
-|F1C—F6C|C：raw phase control|20-1；day0,1,2|clear/low-elev/rain|待12份receipt|待12份receipt|待12份receipt|待12份receipt|待12份receipt|PENDING|待运行|
-|F1G—F6G|G：complex local invariant curvature|同上|同上|待12份receipt|待12份receipt|待12份receipt|待12份receipt|待12份receipt|PENDING|待运行|
-
-本表当前仅预注册字段，不含性能数值；任何结果必须来自本run同一行receipt并保留candidate ID。
