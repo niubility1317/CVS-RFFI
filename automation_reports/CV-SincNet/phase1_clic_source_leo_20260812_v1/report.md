@@ -3,7 +3,7 @@
 ## 1. 状态与目标
 
 - 实验ID：`phase1_clic_source_leo_20260812_v1`
-- 当前状态：`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`
+- 当前状态：`SMOKE_TECHNICAL_FAILURE / FORMAL_LAUNCH=0 / NO_PERFORMANCE_RESULT`
 - 操作者：主控Codex；N607唯一runner待本地提交及独立审查完成后交接给`Luna/max`。
 - 目标：为F1—F6各构建一份不可变source-L单观测LEO weak received-IQ缓存，并让同fold C／G checkpoint复用完全相同的NPZ字节，各导出一份source LEO特征与binding。
 - 比较对象：同fold C参数匹配control与G多尺度三点复曲率token；G固定lag=`{1,2,4,8}`，其余训练数据配置、source物理行、信道场景、seed和received-IQ字节相同。
@@ -61,3 +61,11 @@
 - Git commit待提交；生产SHA=`9170A73079E7048A104979DD17833411C323E2396618875C8692CBD670958774`，launcher SHA=`90C71124BE8C113F41AE83F420237397E4C7BDC5B16AAC48EED5D49AC3A541F6`，测试SHA=`43253DD293CF90AB0998E155C78DE6284CCB617C477217FE9ACB47A19063C0E2`；独立审查=`P0=0/P1=0/ALLOW`。
 - N607 archive／release／SCP次数、remote hashes、唯一launch、PID／GPU／日志及工件闭合。
 - 完整工件返回前保持`NO_PERFORMANCE_RESULT`。
+
+## 8. N607发布与烟测收尾
+
+- 冻结commit：`8b877155548fe562403ab24b211cc723526f6529`；clean Git archive SHA256=`9B6773E21152FFCB7808993883B1B7080136D7F1D738C8EA8C2B2DBE60D15738`，bytes=`266987520`；SCP恰1次，远端SHA/bytes闭合；release=`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_clic_source_leo_20260812_v1_8b877155`。
+- 远端静态门：builder/consumer及核心Python`py_compile`通过；help、launcher`bash -n`、dry-run精确18行（6 cache+12 export，目标/查询/真值/角色入口均为0）通过。launcher实际文件名为`launch_phase1_clic_source_leo12_20260812.sh`，SHA256=`90C71124BE8C113F41AE83F420237397E4C7BDC5B16AAC48EED5D49AC3A541F6`。
+- F1真实cache烟测：使用真实F1C/F1G final checkpoint、terminal与ManySig，目标为私有烟测路径`/home/szu2070436088/2510044040/CV-SincNet/.smoke_phase1_clic_source_leo_20260812_v1_F1`；进程在`build_phase1_clic_source_leo_iq.py:308`执行`x.detach().cpu().float().numpy().astype(np.float32)`时发生native segmentation fault，exit=`139`。stderr只有NumPy DeprecationWarning及`Segmentation fault (core dumped)`，无faulthandler/native stack；未生成cache NPZ或receipt。烟测目录随后按自有绝对路径安全清理，生产run/log/outer路径均保持ABSENT。
+- 烟测环境：Python=`3.10.19`，Torch=`2.1.0+cu121`，CUDA=`12.1`且`cuda.is_available=True`，NumPy=`2.2.5`；SSH wrapper中`CUDA_VISIBLE_DEVICES`未设置（正式launcher仅在正式进程中设置）；release builder SHA256=`F30FEDD6A187BDBA3CE4B72B03AD7E662129DC7F42487B294C00997C55799D4B`。
+- 正式launch=`0`，retry=`NO`；无cache/receipt/source_leo/binding产物，无性能结果。烟测后GPU及相关进程清零；本地SSH进程=`0`，N607/bridge TCP22=`0`。不得重试该run；后续修复必须新commit与新run ID。
