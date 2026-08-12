@@ -12,6 +12,13 @@
 - v1已不可变封存为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`：6／6 common成功，6／6 fold在proxy阶段同一`CLIC proxy clean source-V TX labels drifted`退出，proxy=0、pair=0；未读取性能、未重试。
 - 只读inventory证明clean v2的`source_validation_known`为当前local4 source partition内部30%验证切片：F1每个source TX各4200行，F2结构相同；外部单独held-validation TX只存在于checkpoint／manifest审计字段，从未materialize为该角色的feature row。
 - v1错误地要求V行TX等于外部held TX。v2唯一语义修复为：L和V行均须完整覆盖当前local4；proxy行仍须精确等于单独proxy TX。V依旧仅连续评分，`fit_rows=0`、`threshold_fit_rows=0`；geometry、tail、阈值、模型、数据、seed、矩阵均不改变。
+
+## v2发布与F1C proxy smoke检查点（2026-08-12）
+
+- 冻结commit=`ee83be7fa4c91adb6edd777917b44ba9690cb54a`；Task7 dirty/untracked未进入archive、未stage。干净archive=`E:\type10-7\code\runner_tmp_phase1_clic_source_pair_20260812_v2_ee83be7f_git_archive.tar`，SHA256=`76B8947F4A4CDC4F20F27FBC41D5844FDCD56FEFDC4EA3BBD2C3704DEF4F8DE6`，bytes=`267089920`。
+- SCP恰1次；远端SHA／bytes闭合并原子落地release=`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_clic_source_pair_20260812_v2_ee83be7f`。launcher SHA=`E1C8292D099A72FF9B46B6BB765AF4081DF642724F2EC151E349B25FA4003F58`。
+- 远端静态门通过：PAIR evaluator及依赖py_compile、common/proxy help、launcher bash-n、dry-run精确30行（common12+proxy12+pair6），forbidden target/query/truth/role=0。
+- F1C proxy writer技术烟测成功：writer exit=0，临时输出`.smoke_phase1_clic_source_pair_20260812_v2_F1C/proxy_diagnostic.json` schema=`cvs.phase1.clic_proxy_diagnostic.v1`，clean SHA=`42253b0fd58f1bdd08e331082a6967154509b87a678643666134a1a8555cca18`闭合；顶层与嵌套proxy/source-validation fit/threshold rows均0，`tail_policy_used=false`。一次校验脚本误读顶层字段后AssertionError，未重试writer；随后按正确嵌套字段复验SMOKE_PASS。正式run/log/outer仍ABSENT，launch=0，SSH/TCP22清零。
 - 本轮发布边界只含PAIR、测试、launcher和本报告；deployment bundle与Task7未提交实现不进入本次archive，也不被本次source PAIR入口消费。bundle同义修复留给其独立集成提交，不能借本轮夹带。
 
 ## 冻结输入、输出与入口
