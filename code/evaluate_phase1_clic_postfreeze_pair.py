@@ -27,7 +27,7 @@ from cvsrffi import phase1_clic as _clic
 
 
 EXPECTED_TRAINING_RUN_LEAF = "phase1_clic12_20260812_v5"
-EXPECTED_POSTFREEZE_MATRIX_ID = "phase1_clic_postfreeze_20260812_v2"
+EXPECTED_POSTFREEZE_MATRIX_ID = "phase1_clic_postfreeze_20260812_v4"
 EXPECTED_PAIR_SCHEMA = "cvs.phase1.clic_postfreeze_pair.v1"
 EXPECTED_GEOMETRY_SCHEMA = "cvs.phase1.clic_source_geometry.v1"
 EXPECTED_POLICY_SCHEMA = "cvs.phase1.clic_source_tail_policy.v1"

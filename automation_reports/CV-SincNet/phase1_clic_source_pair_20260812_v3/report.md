@@ -37,6 +37,8 @@
 
 - 本地验证已通过：PAIR／common／proxy聚焦回归`20／20`；launcher在WSL下`bash -n`通过；dry-run精确30行，其中common12、proxy12、pair6，target／query／truth／role参数命中0；`git diff --check`通过。
 - launcher SHA-256：`3AFEB89D0424EA06916E815EEF6535AACF5869BB5FCCAF18E6E0B2A8DDA0D16B`。
-- 待完成：Git提交、独立P0／P1审查、N607 preflight、archive／SCP／远端静态门和唯一正式启动。
+- 独立首轮审查发现并阻止了发布前的matrix identity错配：launcher已传v4，但PAIR生产常量仍为v2。根因是clean链升级后权威常量未同步；当前最小修复仅将生产权威及CLIC测试夹具推进为`phase1_clic_postfreeze_20260812_v4`，不改变方法、数据或矩阵。
+- 修复后PAIR聚焦回归`20／20`、postfreeze全量`135／135`均通过；仅有既有Torch AMP弃用warning，无失败。
+- 待完成：新Git提交、独立P0／P1复审、N607 preflight、archive／SCP／远端静态门和唯一正式启动。
 - PAIR完成后立即生成6个C predictor descriptor和6个G deployment bundle，做真实前向烟测；随后使用已封存target confirmation v2缓存生成validation、IQ-only package及12臂目标预测。
 - 正式评分将同时报告target LEO-weak下的target-known细分、unknown显式拒识和三scene域泛化；缺少合法ADV3B02同配置基线时不得伪造非劣结论。
