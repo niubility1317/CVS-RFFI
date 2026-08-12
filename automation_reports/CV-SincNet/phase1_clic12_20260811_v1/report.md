@@ -5,7 +5,7 @@
 - 实验ID：`phase1_clic12_20260811_v1`
 - 预注册时间：2026-08-12（Asia/Hong_Kong）
 - 操作方：Codex主控；N607唯一runner待交接
-- 当前状态：`LANDED / REMOTE_STATIC_VERIFIED / READY_TO_LAUNCH`
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 目标：在冻结的六折source-only Phase1矩阵上训练CLIC对照臂C与机制臂G，为后续clean、三种LEO weak、source-proxy unknown和目标域盲态评测生成12份真实final checkpoint与严格训练回执。
 - 假设：固定lag集合`{1,2,4,8}`的多尺度三点复曲率token，在不改变训练数据、主干、分类头、损失、优化器、epoch和物理批顺序的前提下，可能改善LEO weak下的身份域泛化和source-only未知能量几何。
 - 对照：C=`raw_phase_control`；G=`complex_local_invariant_curvature`。两臂仅token算子不同。
@@ -99,9 +99,11 @@ nohup env RUN_ID=phase1_clic12_20260811_v1 PROJECT_ROOT=/home/szu2070436088/2510
 
 ## 9. 运行回填
 
-- launch时间：待runner回填
-- release archive SHA/bytes：待runner回填
-- outer PID：待runner回填
-- candidate PID/GPU：待runner回填
-- 首波健康：待runner回填
-- 最终状态：待runner回填
+- launch时间：2026-08-12 13:40（Asia/Hong_Kong）；唯一`nohup`启动，launch次数=1，fresh-run retry=NO。
+- release archive SHA/bytes：`C4A1F70221B46AB2196F2C129F90AB537D2EADAE2803F9273D9D0F1B93C7A9D2`，266772480 bytes；远端SHA/bytes闭合。首次SCP客户端exit=0，随后短暂可见性异常经`find PROJECT_ROOT -maxdepth 2`确认文件已落地，无纠正SCP。
+- release静态复验：四核心文件SHA按Git archive LF字节闭合；`py_compile`、`train_ssdg.py --help`、`bash -n`、12行dry-run（C6/G6、`lambda_sat_cons=0.10`、40epoch）通过；release无pycache。
+- outer PID：未形成稳定独立outer进程；`phase1_clic12_20260811_v1_outer.out`保留且为0 bytes。
+- candidate PID/GPU：`pids.tsv`写出12个PID，GPU映射与冻结合同一致（GPU0:F1C/F5G，1:F1G/F5C，2:F2C/F6G，3:F2G/F6C，4:F3C，5:F3G，6:F4C，7:F4G）；首波后12 PID全部退出，GPU compute apps=0。
+- 首波健康：12/12在有效checkpoint前同一确定性CLI错误`train_ssdg.py: error: unrecognized arguments: true`退出；无`final_ssdg.pth`、无`phase1_clic_terminal_receipt.json`、无prediction/score工件。该launcher-wide deterministic fault触发合同技术停止；不读取性能、不因性能停止。
+- SSH/TCP22清理：每次SSH/SCP后本地`ssh.exe=0`，N607/bridge TCP22 established=0。
+- 最终状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；不得把本run标为性能结果或重试。
