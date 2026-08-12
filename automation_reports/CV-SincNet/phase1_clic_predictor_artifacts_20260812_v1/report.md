@@ -3,7 +3,7 @@
 ## 状态与目标
 
 - 实验ID：`phase1_clic_predictor_artifacts_20260812_v1`。
-- 当前状态：`LOCAL_VERIFIED / FRESH_REVIEW_PENDING / FORMAL_LAUNCH=0 / NO_PERFORMANCE_RESULT`。
+- 当前状态：`LOCAL_VERIFIED / REVIEW_ALLOW / FORMAL_LAUNCH=0 / NO_PERFORMANCE_RESULT`。
 - 操作者：主控Codex；N607唯一runner：`Luna/max`。
 - 目标：从训练v5、clean v4、source-LEO v4及PAIR v3不可变原件生成6个C predictor descriptor、6个C训练配置原件和6个G deployment bundle，为同一target confirmation配置上的12臂零适配预测提供可重开模型输入。
 - 本阶段不打开target cache／IQ／truth，不读取或计算性能；成功只表示12个predictor工件技术闭合。
@@ -33,5 +33,6 @@
 - 新增真实v5无`split_info`的C正例及缺RX／day字段负测；C／G物理轴和数据SHA聚焦`4／4`通过。完整postfreeze回归`138／138`、Task5 core回归`190／190`通过；3个生产／测试文件`py_compile`及`git diff --check`通过。
 - launcher `bash -n`通过，dry-run精确12行（C6＋G6）。命令中没有cache、package、prediction、truth、score或目标适配参数；字符串`target`仅存在于生产模块名`cvsrffi.phase1_clic_target_leo`，不代表目标数据访问。
 - launcher SHA-256：`26DC30E88DDAA59E637E6304AC820D5E2C9BFA00167A6B532C0B01163BB0FD55`；`git diff --check`通过。
-- 待完成：提交本次修复、fresh独立P0／P1复审；若`P0=0，P1=0`，立即交N607唯一runner完成preflight／archive／SCP／远端静态门、唯一启动和12工件零IQ真实模型重开烟测。
+- fresh独立复审commit`b27a24f0`：`P0=0，P1=0，ALLOW`。复审实际重跑v5聚焦`4／4`、launcher语法和dry-run`12／12`，确认禁止target／truth／score／role／cache／package参数为0，未访问N607。
+- 待完成：立即交N607唯一runner完成preflight／commit archive／唯一SCP／远端静态门、唯一启动和12工件零IQ真实模型重开烟测。
 - 工件闭合后，使用target confirmation v2已验证缓存派生VALIDATED_ONCE收据和known-test配置，封装一个IQ-only package，并对12臂分别发布预测；评分阶段同时报告三scene target-known DG、unknown拒识及域泛化，并只与同训练／测试数据配置的合法ADV3B02原件比较。
