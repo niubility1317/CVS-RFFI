@@ -113,6 +113,48 @@ def _read_json_object(path: Path) -> dict[str, Any]:
     return payload
 
 
+_CROSS_GROUP_MARGIN_CHANGE_FIELD = (
+    "d92_e0d_pareto_distill_deployment_cross_group_margin_change_max_abs"
+)
+_CROSS_GROUP_MARGIN_QUANTUM_FIELD = (
+    "d92_e0d_pareto_distill_deployment_cross_group_margin_quantum"
+)
+_CROSS_GROUP_QUANTUM_PASS_FIELD = (
+    "d92_e0d_pareto_distill_deployment_cross_group_quantum_pass"
+)
+
+
+def _validate_cross_group_quantum_receipt(
+    row: Mapping[str, Any], *, active: bool
+) -> None:
+    """Validate the deployment cross-group margin quantum contract."""
+
+    change = row.get(_CROSS_GROUP_MARGIN_CHANGE_FIELD)
+    quantum = row.get(_CROSS_GROUP_MARGIN_QUANTUM_FIELD)
+    passed = row.get(_CROSS_GROUP_QUANTUM_PASS_FIELD)
+    if not active:
+        if change is not None or quantum is not None or passed is not None:
+            raise D92ParetoDistillHard11RunnerError(
+                "fit audit ParetoDistill cross-group quantum inactive receipt drift"
+            )
+        return
+    if (
+        isinstance(change, bool)
+        or not isinstance(change, (int, float))
+        or not math.isfinite(float(change))
+        or float(change) <= 0.0
+        or isinstance(quantum, bool)
+        or not isinstance(quantum, (int, float))
+        or not math.isfinite(float(quantum))
+        or float(quantum) <= 0.0
+        or float(change) < float(quantum)
+        or passed is not True
+    ):
+        raise D92ParetoDistillHard11RunnerError(
+            "fit audit ParetoDistill cross-group quantum receipt drift"
+        )
+
+
 def _validate_fit_audit(path: str | Path, *, k_shot: int) -> None:
     """Require the three-scene fit inventory and the frozen ParetoDistill receipt."""
     source = Path(path)
@@ -152,6 +194,7 @@ def _validate_fit_audit(path: str | Path, *, k_shot: int) -> None:
             raise D92ParetoDistillHard11RunnerError("fit audit inventory is invalid") from error
         if (total_i, actual_i, str(mode)) != (expected_total, expected_actual, expected_mode):
             raise D92ParetoDistillHard11RunnerError("fit audit K/mode inventory drift")
+        _validate_cross_group_quantum_receipt(row, active=active)
         active_value = row.get(prefix + "active")
         fallback_value = row.get(prefix + "fallback_active")
         reason = row.get(prefix + "fallback_reason")

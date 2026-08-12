@@ -38,6 +38,15 @@ PARETO_METRICS = EIGHT_PARETO_METRICS
 HISTORICAL_BASELINE_SHA256 = HISTORICAL_BASELINE_SHA256
 HISTORICAL_PER_OLD_CLASS_SHA256 = HISTORICAL_PER_OLD_CLASS_SHA256
 _TOLERANCE = 1.0e-12
+_CROSS_GROUP_MARGIN_CHANGE_FIELD = (
+    "d92_e0d_pareto_distill_deployment_cross_group_margin_change_max_abs"
+)
+_CROSS_GROUP_MARGIN_QUANTUM_FIELD = (
+    "d92_e0d_pareto_distill_deployment_cross_group_margin_quantum"
+)
+_CROSS_GROUP_QUANTUM_PASS_FIELD = (
+    "d92_e0d_pareto_distill_deployment_cross_group_quantum_pass"
+)
 
 
 class D92ParetoDistillHard11AnalysisError(ValueError):
@@ -487,6 +496,38 @@ def decide_verdict(gate_state: Mapping[str, bool]) -> str:
     return "ADVANCE_TO_TARGET125_CANDIDATE"
 
 
+def _validate_cross_group_quantum_receipt(
+    row: Mapping[str, Any], *, active: bool
+) -> tuple[float | None, float | None]:
+    """Validate the deployment cross-group margin quantum contract."""
+
+    change = row.get(_CROSS_GROUP_MARGIN_CHANGE_FIELD)
+    quantum = row.get(_CROSS_GROUP_MARGIN_QUANTUM_FIELD)
+    passed = row.get(_CROSS_GROUP_QUANTUM_PASS_FIELD)
+    if not active:
+        if change is not None or quantum is not None or passed is not None:
+            raise D92ParetoDistillHard11AnalysisError(
+                "ParetoDistill cross-group quantum inactive receipt drift"
+            )
+        return None, None
+    if (
+        isinstance(change, bool)
+        or not isinstance(change, (int, float))
+        or not math.isfinite(float(change))
+        or float(change) <= 0.0
+        or isinstance(quantum, bool)
+        or not isinstance(quantum, (int, float))
+        or not math.isfinite(float(quantum))
+        or float(quantum) <= 0.0
+        or float(change) < float(quantum)
+        or passed is not True
+    ):
+        raise D92ParetoDistillHard11AnalysisError(
+            "ParetoDistill cross-group quantum receipt drift"
+        )
+    return float(change), float(quantum)
+
+
 def _key(row: Mapping[str, Any]) -> tuple[str, int, int, int]:
     return str(row["receiver"]), int(row["seed"]), int(row["k_shot"]), int(row.get("new_class_count", row.get("new_count")))
 
@@ -503,6 +544,7 @@ def _fit_resource(job_root: Path, k_shot: int, *, baseline: Mapping[str, Any] | 
         raise D92ParetoDistillHard11AnalysisError("after fit audit scene closure drift")
     totals, actuals, macs, states, modes = set(), set(), set(), set(), set()
     support_macs, support_transient, state_deltas = set(), set(), set()
+    cross_group_changes, cross_group_quanta = set(), set()
     walls, peaks = [], []
     scenarios = set()
     for row in rows:
@@ -511,6 +553,13 @@ def _fit_resource(job_root: Path, k_shot: int, *, baseline: Mapping[str, Any] | 
         scenarios.add(str(row.get("scenario")))
         if any(row.get(field) is not False for field in QUERY_ZERO_FIELDS):
             raise D92ParetoDistillHard11AnalysisError("query access is not zero")
+        cross_change, cross_quantum = _validate_cross_group_quantum_receipt(
+            row, active=int(k_shot) > 2
+        )
+        if cross_change is not None:
+            cross_group_changes.add(cross_change)
+        if cross_quantum is not None:
+            cross_group_quanta.add(cross_quantum)
         totals.add(int(row.get("after_total_component_fit_count", row.get("fit_count", -1))))
         inventory = row.get("after_actual_component_inventory", {})
         actuals.add(int(inventory.get("actual_component_fit_count", row.get("actual_fit_count", -1))) if isinstance(inventory, Mapping) else -1)
@@ -547,7 +596,7 @@ def _fit_resource(job_root: Path, k_shot: int, *, baseline: Mapping[str, Any] | 
     expected = (3, 3, "d92_full_alias") if int(k_shot) <= 2 else (4, 2, "pareto_distill")
     if scenarios != set(SCENES) or totals != {expected[0]} or actuals != {expected[1]} or modes != {expected[2]} or len(macs) != 1 or len(states) != 1 or min(macs) < 0 or min(states) < 0:
         raise D92ParetoDistillHard11AnalysisError("fit/resource count closure drift")
-    return {"fit_count": expected[0], "actual_fit_count": expected[1], "registered_d_mode": expected[2], "query_macs": next(iter(macs)), "state_bytes": next(iter(states)), "registration_wall_time_ns": float(statistics.median(walls)), "registration_incremental_peak_working_set_bytes": float(statistics.median(peaks)), "support_macs": float(next(iter(support_macs))) if support_macs else None, "support_transient_bytes": float(next(iter(support_transient))) if support_transient else None, "persistent_state_bytes_delta": float(next(iter(state_deltas))) if state_deltas else None}
+    return {"fit_count": expected[0], "actual_fit_count": expected[1], "registered_d_mode": expected[2], "query_macs": next(iter(macs)), "state_bytes": next(iter(states)), "registration_wall_time_ns": float(statistics.median(walls)), "registration_incremental_peak_working_set_bytes": float(statistics.median(peaks)), "support_macs": float(next(iter(support_macs))) if support_macs else None, "support_transient_bytes": float(next(iter(support_transient))) if support_transient else None, "persistent_state_bytes_delta": float(next(iter(state_deltas))) if state_deltas else None, "cross_group_margin_change_max_abs": float(statistics.median(cross_group_changes)) if cross_group_changes else None, "cross_group_margin_quantum": float(statistics.median(cross_group_quanta)) if cross_group_quanta else None}
 
 
 def _baseline_raw_metrics(path: Path) -> dict[str, Any]:

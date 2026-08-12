@@ -144,10 +144,10 @@ def test_config_and_module_freeze_two_state_fit_inventory() -> None:
 def test_config_freezes_single_roundtrip_deployment_lock() -> None:
     lock = json.loads(METHOD_LOCK.read_text(encoding="utf-8"))
     assert lock["deployment_policy"] == {
-        "codec": "D42_SINGLE_ROUNDTRIP",
-        "selection": "unique_continuous_solution_then_one_fixed_code_local_correction",
+        "codec": "D42_DUAL_E0_CANDIDATE_PREVIEW_PLUS_SINGLE_PUBLISH",
+        "selection": "unique_continuous_solution_no_scan_no_code_local_correction",
         "all_fail": "exact_e0_fallback",
-        "code_local_correction_max_count": 1,
+        "code_local_correction_max_count": 0,
         "negative_tail_accepted": False,
     }
 

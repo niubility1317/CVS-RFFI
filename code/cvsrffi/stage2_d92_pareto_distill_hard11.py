@@ -113,10 +113,10 @@ RESOURCE_GATE = {
 STOP_RULE = {"same_normalized_exception_fingerprint_distinct_outer_count": 2, "pre_prediction_only": True, "shared_run_root_ledger": True, "fresh_run_retry_authorized": False}
 _OUTPUTS = {"summary": "summary.json", "gates": "gates.json", "paired_rows": "paired_rows.csv", "per_old_class_rows": "per_old_class_rows.csv", "markdown": "analysis.md"}
 DEPLOYMENT_POLICY = {
-    "codec": "D42_SINGLE_ROUNDTRIP",
-    "selection": "unique_continuous_solution_then_one_fixed_code_local_correction",
+    "codec": "D42_DUAL_E0_CANDIDATE_PREVIEW_PLUS_SINGLE_PUBLISH",
+    "selection": "unique_continuous_solution_no_scan_no_code_local_correction",
     "all_fail": "exact_e0_fallback",
-    "code_local_correction_max_count": 1,
+    "code_local_correction_max_count": 0,
     "negative_tail_accepted": False,
 }
 _PACKAGE_LAYOUT = {

@@ -300,6 +300,9 @@ def test_fit_resource_accepts_three_scene_pareto_distill_inventory(tmp_path: Pat
             "d92_e0d_pareto_distill_persistent_state_bytes_delta": 0,
             "d92_e0d_pareto_distill_support_macs": 100,
             "d92_e0d_pareto_distill_support_transient_bytes": 200,
+            "d92_e0d_pareto_distill_deployment_cross_group_margin_change_max_abs": 0.25,
+            "d92_e0d_pareto_distill_deployment_cross_group_margin_quantum": 0.125,
+            "d92_e0d_pareto_distill_deployment_cross_group_quantum_pass": True,
             "after_registration_resource": {
                 "registration_wall_time_ns": 1000,
                 "registration_incremental_peak_working_set_bytes": 2000,
@@ -314,3 +317,54 @@ def test_fit_resource_accepts_three_scene_pareto_distill_inventory(tmp_path: Pat
     assert result["fit_count"] == 4
     assert result["actual_fit_count"] == 2
     assert result["registered_d_mode"] == "pareto_distill"
+
+
+@pytest.mark.parametrize(
+    ("k_shot", "field", "value"),
+    (
+        (10, "d92_e0d_pareto_distill_deployment_cross_group_quantum_pass", False),
+        (10, "d92_e0d_pareto_distill_deployment_cross_group_margin_quantum", 0.0),
+        (10, "d92_e0d_pareto_distill_deployment_cross_group_margin_change_max_abs", 0.1),
+        (1, "d92_e0d_pareto_distill_deployment_cross_group_margin_quantum", 0.0),
+    ),
+)
+def test_fit_resource_rejects_cross_group_quantum_receipt_drift(
+    tmp_path: Path, k_shot: int, field: str, value: object
+) -> None:
+    active = k_shot > 2
+    rows = []
+    for scenario in SCENES:
+        row = {
+            "scenario": scenario,
+            **{field_name: False for field_name in QUERY_ZERO_FIELDS},
+            "after_total_component_fit_count": 4 if active else 3,
+            "after_actual_component_inventory": {"actual_component_fit_count": 2 if active else 3},
+            "query_macs": 123,
+            "after_state_bytes": 456,
+            "after_registered_d_mode_effective": "pareto_distill" if active else "d92_full_alias",
+            "d92_e0d_pareto_distill_covariance_estimation_count": 1 if active else None,
+            "d92_e0d_pareto_distill_robust_center_transform_count": 1 if active else None,
+            "d92_e0d_pareto_distill_full_solve_count": 1 if active else None,
+            "d92_e0d_pareto_distill_block_solve_count": 1 if active else None,
+            "d92_e0d_pareto_distill_loo_fit_count": 0 if active else None,
+            "d92_e0d_pareto_distill_fisher_fit_count": 0 if active else None,
+            "d92_e0d_pareto_distill_deployed_support_constraints_pass": True if active else False,
+            "d92_e0d_pareto_distill_deployed_full_head_byte_exact": False if active else True,
+            "d92_e0d_pareto_distill_persistent_state_bytes_delta": 0 if active else None,
+            "d92_e0d_pareto_distill_support_macs": 100 if active else None,
+            "d92_e0d_pareto_distill_support_transient_bytes": 200 if active else None,
+            "d92_e0d_pareto_distill_deployment_cross_group_margin_change_max_abs": 0.25 if active else None,
+            "d92_e0d_pareto_distill_deployment_cross_group_margin_quantum": 0.125 if active else None,
+            "d92_e0d_pareto_distill_deployment_cross_group_quantum_pass": True if active else None,
+            "after_registration_resource": {
+                "registration_wall_time_ns": 1000,
+                "registration_incremental_peak_working_set_bytes": 2000,
+            },
+        }
+        row[field] = value
+        rows.append(row)
+    path = tmp_path / "job" / "diag" / "after" / "fit_audit.json"
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps(rows), encoding="utf-8")
+    with pytest.raises(ValueError, match="quantum"):
+        _fit_resource(tmp_path / "job", k_shot)

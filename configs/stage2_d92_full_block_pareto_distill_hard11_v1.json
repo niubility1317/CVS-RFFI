@@ -25,10 +25,10 @@
   },
   "fallback": "K1_K2_exact_D92_FULL_alias",
   "deployment_policy": {
-    "codec": "D42_SINGLE_ROUNDTRIP",
-    "selection": "unique_continuous_solution_then_one_fixed_code_local_correction",
+    "codec": "D42_DUAL_E0_CANDIDATE_PREVIEW_PLUS_SINGLE_PUBLISH",
+    "selection": "unique_continuous_solution_no_scan_no_code_local_correction",
     "all_fail": "exact_e0_fallback",
-    "code_local_correction_max_count": 1,
+    "code_local_correction_max_count": 0,
     "negative_tail_accepted": false
   },
   "query_contract": {

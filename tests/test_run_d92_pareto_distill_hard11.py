@@ -82,6 +82,9 @@ def _write_prediction_closure(root: Path, *, force_pareto_distill_fallback: bool
             "d92_e0d_pareto_distill_persistent_state_bytes_delta": None if k1 else 0,
             "d92_e0d_pareto_distill_support_macs": None if k1 else 123.0,
             "d92_e0d_pareto_distill_support_transient_bytes": None if k1 else 456.0,
+            "d92_e0d_pareto_distill_deployment_cross_group_margin_change_max_abs": None if k1 else 0.25,
+            "d92_e0d_pareto_distill_deployment_cross_group_margin_quantum": None if k1 else 0.125,
+            "d92_e0d_pareto_distill_deployment_cross_group_quantum_pass": None if k1 else True,
             "after_registration_resource": {"registration_wall_time_ns": 100.0, "registration_incremental_peak_working_set_bytes": 100.0},
             "query_macs": 7488,
             "after_state_bytes": 18503,
@@ -261,6 +264,9 @@ def _fit_audit_row(*, k_shot: int = 10) -> dict[str, object]:
         "d92_e0d_pareto_distill_persistent_state_bytes_delta": None if k1 else 0,
         "d92_e0d_pareto_distill_support_macs": None if k1 else 123.0,
         "d92_e0d_pareto_distill_support_transient_bytes": None if k1 else 456.0,
+        "d92_e0d_pareto_distill_deployment_cross_group_margin_change_max_abs": None if k1 else 0.25,
+        "d92_e0d_pareto_distill_deployment_cross_group_margin_quantum": None if k1 else 0.125,
+        "d92_e0d_pareto_distill_deployment_cross_group_quantum_pass": None if k1 else True,
         **{field: False for field in runner.QUERY_ZERO_FIELDS},
     }
 
@@ -274,6 +280,10 @@ def _fit_audit_row(*, k_shot: int = 10) -> dict[str, object]:
         ("d92_e0d_pareto_distill_deployed_full_head_byte_exact", True),
         ("d92_e0d_pareto_distill_persistent_state_bytes_delta", 1),
         ("d92_e0d_pareto_distill_support_macs", -1),
+        ("d92_e0d_pareto_distill_deployment_cross_group_margin_change_max_abs", 0.0),
+        ("d92_e0d_pareto_distill_deployment_cross_group_margin_change_max_abs", 0.1),
+        ("d92_e0d_pareto_distill_deployment_cross_group_margin_quantum", 0.0),
+        ("d92_e0d_pareto_distill_deployment_cross_group_quantum_pass", False),
     ),
 )
 def test_fit_audit_rejects_k_gt_2_receipt_drift(
@@ -311,6 +321,9 @@ def test_fit_audit_accepts_k1_exact_alias_deployment_receipt(tmp_path: Path) -> 
         ("d92_e0d_pareto_distill_persistent_state_bytes_delta", 1),
         ("d92_e0d_pareto_distill_support_macs", -1),
         ("d92_e0d_pareto_distill_support_transient_bytes", -1),
+        ("d92_e0d_pareto_distill_deployment_cross_group_margin_change_max_abs", 0.0),
+        ("d92_e0d_pareto_distill_deployment_cross_group_margin_quantum", 0.0),
+        ("d92_e0d_pareto_distill_deployment_cross_group_quantum_pass", False),
     ),
 )
 def test_fit_audit_rejects_explicit_pareto_distill_receipt_drift(
