@@ -4,12 +4,14 @@ from __future__ import annotations
 
 import hashlib
 import json
+from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 
 from cvsrffi.stage2_d92_registration_balanced_covariance import OLD_CLASS_COUNT
+from cvsrffi.stage2_registration_resource_probe import measure_registration_call
 from cvsrffi.stage2_d92_e0d_slim import (
     D92E0DSlimArmSpec,
     D92_E0D_ARMS,
@@ -64,6 +66,50 @@ _OCF_MAC_RECEIPT_FIELDS = _OCF_RECEIPT_FIELDS[2:5]
 _FLOORBOOST_ARM_IDS = frozenset({"E0_FULL_MAXMIN_FLOORBOOST"})
 _NEWGUARD_ARM_IDS = frozenset({"E0_FULL_BIDIRECTIONAL_NEWGUARD_MAXMIN"})
 _PARETO_DISTILL_ARM_IDS = frozenset({"E0_FULL_BLOCK_PARETO_DISTILL"})
+_TPCE_ARM_IDS = frozenset({"E0_FULL_D42_TAIL_PAIR_CODE_EXCHANGE"})
+_TPCE_RECEIPT_SUFFIXES = (
+    "active",
+    "fallback_active",
+    "fallback_reason",
+    "quantile",
+    "quantile_method",
+    "state_postprocess_mode",
+    "direct_state_publish",
+    "requantize_call_count",
+    "e0_state_sha256",
+    "final_state_sha256",
+    "changed_code2_count",
+    "requested_atomic_exchange_count",
+    "applied_atomic_exchange_count",
+    "aggregate_saturation_count",
+    "code1_byte_exact",
+    "scale1_byte_exact",
+    "scale2_byte_exact",
+    "intercept_byte_exact",
+    "log_diag_byte_exact",
+    "old_tail_count_by_class",
+    "pooled_new_tail_count",
+    "tied_competitor_relation_count",
+    "guard_tolerance",
+    "old_tail_gain_by_class",
+    "old_tail_min_gain",
+    "pooled_new_cross_tail_gain",
+    "pooled_new_allclass_tail_gain",
+    "old_to_new_hinge_delta",
+    "new_to_old_hinge_delta",
+    "support_guard_pass",
+    "class_permutation_equivariant",
+    "old_group_uniform_shift",
+    "support_score_macs_upper_bound",
+    "support_coordinate_comparisons_upper_bound",
+    "support_macs_upper_bound",
+    "support_transient_bytes_upper_bound",
+    "persistent_state_bytes_delta",
+    "component_fit_count",
+)
+_TPCE_RECEIPT_FIELDS = tuple(
+    f"d92_e0d_tpce_{suffix}" for suffix in _TPCE_RECEIPT_SUFFIXES
+)
 _FLOORBOOST_RECEIPT_FIELDS = (
     "d92_e0d_floorboost_active",
     "d92_e0d_floorboost_lambda",
@@ -868,6 +914,168 @@ def _pareto_deployed_state_closure(
     }
 
 
+def _tpce_support_receipt(
+    audit: dict[str, Any],
+    *,
+    arm: D92E0DSlimArmSpec,
+    registered: bool,
+    k_shot: int,
+    state: Any,
+) -> dict[str, Any]:
+    """Validate the direct D42 code-state postprocessor receipt."""
+
+    if arm.arm_id not in _TPCE_ARM_IDS:
+        return {}
+    if any(field not in audit for field in _TPCE_RECEIPT_FIELDS):
+        raise D92E0DQueryEvaluationError("D92-E0D TPCE receipt missing")
+    receipt = {field: audit[field] for field in _TPCE_RECEIPT_FIELDS}
+    prefix = "d92_e0d_tpce_"
+
+    def finite(name: str, *, lower: float | None = None) -> float:
+        value = receipt[prefix + name]
+        if (
+            isinstance(value, bool)
+            or not isinstance(value, (int, float))
+            or not np.isfinite(float(value))
+            or (lower is not None and float(value) < lower)
+        ):
+            raise D92E0DQueryEvaluationError(
+                f"D92-E0D TPCE {name} receipt drift"
+            )
+        return float(value)
+
+    def sha(name: str) -> str:
+        value = receipt[prefix + name]
+        if (
+            not isinstance(value, str)
+            or len(value) != 64
+            or any(character not in "0123456789abcdef" for character in value)
+        ):
+            raise D92E0DQueryEvaluationError(
+                f"D92-E0D TPCE {name} receipt drift"
+            )
+        return value
+
+    for name in (
+        "code1_byte_exact",
+        "scale1_byte_exact",
+        "scale2_byte_exact",
+        "intercept_byte_exact",
+        "log_diag_byte_exact",
+    ):
+        if receipt[prefix + name] is not True:
+            raise D92E0DQueryEvaluationError("D92-E0D TPCE state guard drift")
+    if (
+        receipt[prefix + "state_postprocess_mode"] != "d42_tpce"
+        or receipt[prefix + "direct_state_publish"] is not True
+        or receipt[prefix + "requantize_call_count"] != 0
+        or receipt[prefix + "quantile"] != 0.20
+        or receipt[prefix + "quantile_method"] != "lower"
+        or receipt[prefix + "class_permutation_equivariant"] is not True
+        or receipt[prefix + "old_group_uniform_shift"] is not False
+        or receipt[prefix + "persistent_state_bytes_delta"] != 0
+        or receipt[prefix + "component_fit_count"] != 0
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D TPCE frozen receipt drift")
+    from cvsrffi import stage2_d92_d42_tail_pair_code_exchange as tpce
+
+    final_sha = sha("final_state_sha256")
+    e0_sha = sha("e0_state_sha256")
+    if tpce.d42_tpce_state_sha256(state) != final_sha:
+        raise D92E0DQueryEvaluationError("D92-E0D TPCE deployed state SHA drift")
+
+    active_state = bool(registered and int(k_shot) > 2)
+    active = receipt[prefix + "active"]
+    fallback = receipt[prefix + "fallback_active"]
+    reason = receipt[prefix + "fallback_reason"]
+    if not active_state:
+        if (
+            active is not False
+            or fallback is not False
+            or reason != "K1_K2_EXACT_D92_FULL_ALIAS"
+            or final_sha != e0_sha
+            or any(
+                receipt[prefix + name] != 0
+                for name in (
+                    "changed_code2_count",
+                    "requested_atomic_exchange_count",
+                    "applied_atomic_exchange_count",
+                    "aggregate_saturation_count",
+                    "support_score_macs_upper_bound",
+                    "support_coordinate_comparisons_upper_bound",
+                    "support_macs_upper_bound",
+                    "support_transient_bytes_upper_bound",
+                )
+            )
+        ):
+            raise D92E0DQueryEvaluationError("D92-E0D TPCE alias receipt drift")
+        return receipt
+
+    for name in (
+        "requested_atomic_exchange_count",
+        "aggregate_saturation_count",
+        "support_score_macs_upper_bound",
+        "support_coordinate_comparisons_upper_bound",
+        "support_macs_upper_bound",
+        "support_transient_bytes_upper_bound",
+    ):
+        finite(name, lower=0.0)
+    if fallback is True:
+        if (
+            active is not False
+            or not isinstance(reason, str)
+            or not reason
+            or final_sha != e0_sha
+            or receipt[prefix + "changed_code2_count"] != 0
+            or receipt[prefix + "applied_atomic_exchange_count"] != 0
+            or receipt[prefix + "support_guard_pass"] is not False
+            or (
+                reason == "aggregate_saturation"
+                and finite("aggregate_saturation_count", lower=0.0) <= 0.0
+            )
+        ):
+            raise D92E0DQueryEvaluationError("D92-E0D TPCE fallback receipt drift")
+        return receipt
+    if (
+        active is not True
+        or fallback is not False
+        or reason is not None
+        or final_sha == e0_sha
+        or receipt[prefix + "support_guard_pass"] is not True
+        or finite("changed_code2_count", lower=1.0) < 1.0
+        or finite("requested_atomic_exchange_count", lower=1.0)
+        != finite("applied_atomic_exchange_count", lower=1.0)
+        or finite("aggregate_saturation_count", lower=0.0) != 0.0
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D TPCE active receipt drift")
+    old_counts = receipt[prefix + "old_tail_count_by_class"]
+    old_gains = receipt[prefix + "old_tail_gain_by_class"]
+    if (
+        not isinstance(old_counts, list)
+        or len(old_counts) != OLD_CLASS_COUNT
+        or any(int(value) <= 0 for value in old_counts)
+        or not isinstance(old_gains, list)
+        or len(old_gains) != OLD_CLASS_COUNT
+        or int(finite("pooled_new_tail_count", lower=1.0)) <= 0
+        or int(finite("tied_competitor_relation_count", lower=1.0)) <= 0
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D TPCE fixed-tail receipt drift")
+    tolerance = finite("guard_tolerance", lower=0.0)
+    if (
+        any(
+            not np.isfinite(float(value)) or float(value) <= tolerance
+            for value in old_gains
+        )
+        or finite("old_tail_min_gain") <= tolerance
+        or finite("pooled_new_cross_tail_gain") <= tolerance
+        or finite("pooled_new_allclass_tail_gain") < -tolerance
+        or finite("old_to_new_hinge_delta") > tolerance
+        or finite("new_to_old_hinge_delta") > tolerance
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D TPCE support guard drift")
+    return receipt
+
+
 def _audit_d92_e0d_fit(
     result: Any,
     *,
@@ -1030,6 +1238,13 @@ def _audit_d92_e0d_fit(
         k_shot=k_shot,
         class_count=class_count,
     )
+    after_tpce_receipt = _tpce_support_receipt(
+        after,
+        arm=arm,
+        registered=True,
+        k_shot=k_shot,
+        state=result.state,
+    )
     after_pareto_deployed_state_closure = _pareto_deployed_state_closure(
         result.state,
         after_pareto_distill_receipt,
@@ -1067,6 +1282,11 @@ def _audit_d92_e0d_fit(
         "after_effective_E": expected_after_e,
         "before_registered_d_mode_effective": "d92_full_alias",
         "after_registered_d_mode_effective": expected_after_mode,
+        "after_state_postprocess_mode": (
+            "d42_tpce"
+            if arm.arm_id in _TPCE_ARM_IDS and int(k_shot) > 2
+            else None
+        ),
         "before_total_component_fit_count": int(
             before["d92_e0d_total_component_fit_count"]
         ),
@@ -1100,6 +1320,7 @@ def _audit_d92_e0d_fit(
         **after_newguard_receipt,
         **after_pareto_distill_receipt,
         **after_pareto_deployed_state_closure,
+        **after_tpce_receipt,
         "query_macs": int(after["d92_e0d_query_macs"]),
         "query_truth_access": False,
         "query_fit_access": False,
@@ -1144,6 +1365,7 @@ def run_d92_e0d_query_evaluation(
     original_candidate = d81_eval.CANDIDATE_D81
     original_schema = d81_eval.SCHEMA
     original_audit = d81_eval._audit_fit
+    original_d42_fit = d81_eval.fit_d42_unified_shrinkage_lda
 
     def builder(d42: Any, basis: Any, weights: Any, ground_audit: dict[str, Any]):
         return build_d92_e0d_fit(
@@ -1171,11 +1393,122 @@ def run_d92_e0d_query_evaluation(
             class_count=class_count,
         )
 
+    def fit_with_tpce(
+        old_support_features: Any,
+        old_support_labels: Any,
+        old_classes: Any,
+        new_support_features: Any,
+        new_support_labels: Any,
+        new_classes: Any,
+        **kwargs: Any,
+    ) -> Any:
+        result = original_d42_fit(
+            old_support_features,
+            old_support_labels,
+            old_classes,
+            new_support_features,
+            new_support_labels,
+            new_classes,
+            **kwargs,
+        )
+        if arm.arm_id not in _TPCE_ARM_IDS:
+            return result
+        from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
+        from cvsrffi import stage2_d92_d42_tail_pair_code_exchange as tpce
+
+        old_rows = np.asarray(old_support_features, dtype=np.float32)
+        new_rows = np.asarray(new_support_features, dtype=np.float32)
+        old_registry = tuple(str(value) for value in old_classes)
+        new_registry = tuple(str(value) for value in new_classes)
+        registry = old_registry + new_registry
+        if tuple(result.state.classes) != registry:
+            raise D92E0DQueryEvaluationError("D92-E0D TPCE registry drift")
+        mapping = {handle: index for index, handle in enumerate(registry)}
+        try:
+            targets = np.asarray(
+                [
+                    mapping[str(value)]
+                    for value in np.concatenate(
+                        [
+                            np.asarray(old_support_labels).astype(str),
+                            np.asarray(new_support_labels).astype(str),
+                        ]
+                    ).tolist()
+                ],
+                dtype=np.int64,
+            )
+        except KeyError as error:
+            raise D92E0DQueryEvaluationError(
+                "D92-E0D TPCE support registry drift"
+            ) from error
+        all_rows = np.concatenate([old_rows, new_rows], axis=0).astype(np.float32)
+        transformed = d42._transform(all_rows, result.state.log_diag_fp32)
+        class_counts = np.bincount(targets, minlength=len(registry))
+        if (
+            len(class_counts) != len(registry)
+            or np.any(class_counts <= 0)
+            or len(set(int(value) for value in class_counts.tolist())) != 1
+        ):
+            raise D92E0DQueryEvaluationError("D92-E0D TPCE K closure drift")
+        k_value = int(class_counts[0])
+        if k_value <= 2:
+            candidate_state = result.state
+            tpce_audit = tpce.d42_tpce_inactive_receipt(result.state)
+            post_resource = None
+        else:
+            measured, post_resource = measure_registration_call(
+                lambda: tpce.apply_d42_tail_pair_code_exchange(
+                    result.state,
+                    transformed,
+                    targets,
+                    old_class_count=len(old_registry),
+                )
+            )
+            candidate_state, tpce_audit = measured
+        formal_receipt = {
+            key.replace("d92_tpce_", "d92_e0d_tpce_"): value
+            for key, value in tpce_audit.items()
+            if key.startswith("d92_tpce_")
+        }
+        geometry = dict(result.geometry_audit)
+        final_audit = dict(geometry.get("final_covariance_audit", {}))
+        if post_resource is not None:
+            if any(field not in final_audit for field in _RESOURCE_FIELDS):
+                raise D92E0DQueryEvaluationError(
+                    "D92-E0D TPCE base resource receipt drift"
+                )
+            base_baseline = int(final_audit["registration_baseline_rss_bytes"])
+            combined_peak = max(
+                int(final_audit["registration_peak_rss_bytes"]),
+                int(post_resource["registration_peak_rss_bytes"]),
+            )
+            final_audit.update(
+                {
+                    "registration_wall_time_ns": int(
+                        final_audit["registration_wall_time_ns"]
+                    )
+                    + int(post_resource["registration_wall_time_ns"]),
+                    "registration_process_cpu_time_ns": int(
+                        final_audit["registration_process_cpu_time_ns"]
+                    )
+                    + int(post_resource["registration_process_cpu_time_ns"]),
+                    "registration_peak_rss_bytes": combined_peak,
+                    "registration_incremental_peak_working_set_bytes": max(
+                        0, combined_peak - base_baseline
+                    ),
+                }
+            )
+        final_audit.update(formal_receipt)
+        geometry["final_covariance_audit"] = final_audit
+        return replace(result, state=candidate_state, geometry_audit=geometry)
+
     try:
         d81_probe.build_d81_fit = builder
         d81_eval.CANDIDATE_D81 = arm.candidate_id
         d81_eval.SCHEMA = SCHEMA_BY_ARM[arm.arm_id]
         d81_eval._audit_fit = audit
+        if arm.arm_id in _TPCE_ARM_IDS:
+            d81_eval.fit_d42_unified_shrinkage_lda = fit_with_tpce
         result = d81_eval.run_d81_query_evaluation(
             before_enrollment_package_root=before_enrollment_package_root,
             before_enrollment_seal_path=before_enrollment_seal_path,
@@ -1199,6 +1532,7 @@ def run_d92_e0d_query_evaluation(
         d81_eval.CANDIDATE_D81 = original_candidate
         d81_eval.SCHEMA = original_schema
         d81_eval._audit_fit = original_audit
+        d81_eval.fit_d42_unified_shrinkage_lda = original_d42_fit
     if (
         result.get("candidate") != arm.candidate_id
         or result.get("schema") != SCHEMA_BY_ARM[arm.arm_id]

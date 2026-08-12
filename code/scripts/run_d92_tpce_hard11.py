@@ -54,7 +54,7 @@ def _require_sha(value: Any, label: str) -> str:
     return value.lower()
 
 
-def _validate_tpce_row(row: Mapping[str, Any], *, active: bool, allow_numeric_fallback: bool = False) -> None:
+def _validate_tpce_row(row: Mapping[str, Any], *, active: bool) -> None:
     prefix = "d92_e0d_tpce_"
     required = (
         "code1_byte_exact", "scale1_byte_exact", "scale2_byte_exact", "intercept_byte_exact", "log_diag_byte_exact",
@@ -99,20 +99,10 @@ def _validate_tpce_row(row: Mapping[str, Any], *, active: bool, allow_numeric_fa
             _finite(row.get(prefix + name), name, lower=0.0)
         if row.get(prefix + "persistent_state_bytes_delta") != 0 or row.get(prefix + "component_fit_count") != 0:
             raise D92D92TPCEHard11RunnerError("fit audit TPCE resource receipt drift")
-    elif allow_numeric_fallback and fallback:
-        reason = row.get(prefix + "fallback_reason")
-        if row.get(prefix + "active") is not False or not isinstance(reason, str) or not reason:
-            raise D92D92TPCEHard11RunnerError("fit audit TPCE numeric fallback identity drift")
-        if _require_sha(row.get(prefix + "e0_state_sha256"), "E0 state") != _require_sha(row.get(prefix + "final_state_sha256"), "final state"):
-            raise D92D92TPCEHard11RunnerError("fit audit TPCE numeric fallback state drift")
-        for name in ("changed_code2_count", "applied_atomic_exchange_count"):
-            if row.get(prefix + name) != 0:
-                raise D92D92TPCEHard11RunnerError("fit audit TPCE numeric fallback applied-update drift")
-        _finite(row.get(prefix + "requested_atomic_exchange_count"), "requested_atomic_exchange_count", lower=0.0)
-        saturation = _finite(row.get(prefix + "aggregate_saturation_count"), "aggregate_saturation_count", lower=0.0)
-        if reason == "aggregate_saturation" and saturation <= 0:
-            raise D92D92TPCEHard11RunnerError("fit audit TPCE saturation fallback diagnostic drift")
-        return
+    elif active:
+        raise D92D92TPCEHard11RunnerError(
+            "fit audit TPCE K>2 candidate did not activate"
+        )
     else:
         if row.get(prefix + "active") is not False or row.get(prefix + "fallback_active") is not False or row.get(prefix + "fallback_reason") != "K1_K2_EXACT_D92_FULL_ALIAS":
             raise D92D92TPCEHard11RunnerError("fit audit TPCE K1/K2 alias drift")
@@ -134,7 +124,11 @@ def _validate_fit_audit(path: str | Path, *, k_shot: int) -> None:
     if not isinstance(rows, list) or len(rows) != 3 or {str(row.get("scenario")) for row in rows if isinstance(row, Mapping)} != set(SCENES):
         raise D92D92TPCEHard11RunnerError("fit audit scene closure drift")
     active = int(k_shot) > 2
-    expected = (2, 1, "full_only", "d42_tpce") if active else (3, 3, "full_only", None)
+    expected = (
+        (2, 1, "full_only", "d42_tpce")
+        if active
+        else (3, 3, "d92_full_alias", None)
+    )
     for row in rows:
         if not isinstance(row, Mapping) or row.get("arm_id") != ARM_ID or row.get("candidate_id") != CANDIDATE_ID:
             raise D92D92TPCEHard11RunnerError("fit audit arm/candidate identity drift")
@@ -151,7 +145,7 @@ def _validate_fit_audit(path: str | Path, *, k_shot: int) -> None:
             raise D92D92TPCEHard11RunnerError("fit audit inventory is invalid") from error
         if observed != expected:
             raise D92D92TPCEHard11RunnerError("fit audit K/mode inventory drift")
-        _validate_tpce_row(row, active=active, allow_numeric_fallback=active)
+        _validate_tpce_row(row, active=active)
 
 
 def _verify_manifest_artifacts(manifest: Mapping[str, Any]) -> None:

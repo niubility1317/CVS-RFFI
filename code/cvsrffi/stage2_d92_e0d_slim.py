@@ -73,6 +73,13 @@ D92_E0D_ARMS: Mapping[str, D92E0DSlimArmSpec] = MappingProxyType(
             True,
             False,
         ),
+        "E0_FULL_D42_TAIL_PAIR_CODE_EXCHANGE": D92E0DSlimArmSpec(
+            "E0_FULL_D42_TAIL_PAIR_CODE_EXCHANGE",
+            "d92_e0_full_d42_tail_pair_code_exchange",
+            "full_only",
+            True,
+            False,
+        ),
     }
 )
 

@@ -27,6 +27,46 @@ def _state(*, classes: int, old_count: int, marker: int):
     return state
 
 
+def _tpce_state(class_count: int = 11):
+    code1 = np.zeros((class_count, d42.FEATURE_DIM), dtype=np.int8)
+    for index in range(class_count):
+        code1[index, index] = 1
+    return d42.D42UnifiedShrinkageLDAState(
+        schema=d42.SCHEMA_INT8,
+        classes=tuple(f"tx_{index}" for index in range(class_count)),
+        old_class_count=OLD_CLASS_COUNT,
+        log_diag_fp32=np.zeros(d42.FEATURE_DIM, dtype=np.float32),
+        coef1_qint8=code1,
+        coef2_qint8=np.zeros_like(code1),
+        scale1_fp16=np.ones(
+            (class_count, len(d42.BLOCK_SLICES)), dtype=np.float16
+        ),
+        scale2_fp16=np.full(
+            (class_count, len(d42.BLOCK_SLICES)), 0.25, dtype=np.float16
+        ),
+        intercept_fp16=np.zeros(class_count, dtype=np.float16),
+        coef_fp32=np.zeros((0, d42.FEATURE_DIM), dtype=np.float32),
+        intercept_fp32=np.zeros(0, dtype=np.float32),
+        covariance_policy="sklearn_lsqr_auto_shrinkage_equal_prior",
+    )
+
+
+def _tpce_support(
+    class_count: int = 11, k_shot: int = 5
+) -> tuple[np.ndarray, np.ndarray]:
+    rows: list[np.ndarray] = []
+    targets: list[int] = []
+    for class_index in range(class_count):
+        for sample_index in range(k_shot):
+            row = np.zeros(d42.FEATURE_DIM, dtype=np.float32)
+            row[class_index] = np.float32(1.0 + 0.01 * sample_index)
+            row[160 + class_index] = np.float32(0.5 + 0.01 * sample_index)
+            row[256 + class_index] = np.float32(0.25 + 0.01 * sample_index)
+            rows.append(row)
+            targets.append(class_index)
+    return np.stack(rows), np.asarray(targets, dtype=np.int64)
+
+
 def _deployed_affine_sha256(state) -> str:
     digest = hashlib.sha256()
     digest.update(
@@ -716,6 +756,102 @@ def test_evaluator_does_not_accept_truth_role_quota_or_score_arguments():
     with pytest.raises(TypeError):
         e0d_eval.run_d92_e0d_query_evaluation(
             arm_id="D92_FULL", truth_path="forbidden", **_allowed_kwargs()
+        )
+
+
+def test_tpce_evaluator_invokes_direct_state_postprocess_and_closes_receipt(
+    monkeypatch,
+):
+    """Would fail if the production entry registered TPCE but never executed it."""
+
+    arm = slim.D92_E0D_ARMS["E0_FULL_D42_TAIL_PAIR_CODE_EXCHANGE"]
+    base_state = _tpce_state()
+    rows, targets = _tpce_support()
+    classes = tuple(base_state.classes)
+    old_mask = targets < OLD_CLASS_COUNT
+
+    def fake_d42_fit(*_args, **_kwargs):
+        base = _result(arm, k_shot=5)
+        return d42.D42UnifiedShrinkageLDAResult(
+            before_state=base.before_state,
+            state=base_state,
+            matched_fp32_before_state=base.before_state,
+            matched_fp32_state=base_state,
+            training_trace=tuple(base.training_trace),
+            geometry_audit=base.geometry_audit,
+            resource_audit=base.resource_audit,
+        )
+
+    def fake_run(**_kwargs):
+        fitted = d81_eval.fit_d42_unified_shrinkage_lda(
+            rows[old_mask],
+            np.asarray(classes)[targets[old_mask]],
+            classes[:OLD_CLASS_COUNT],
+            rows[~old_mask],
+            np.asarray(classes)[targets[~old_mask]],
+            classes[OLD_CLASS_COUNT:],
+        )
+        row = d81_eval._audit_fit(
+            fitted,
+            scenario="leo_clear_weak",
+            k_shot=5,
+            old_count=OLD_CLASS_COUNT,
+            class_count=len(classes),
+        )
+        return {
+            "candidate": d81_eval.CANDIDATE_D81,
+            "schema": d81_eval.SCHEMA,
+            "tpce_fit_row": row,
+        }
+
+    monkeypatch.setattr(d81_eval, "fit_d42_unified_shrinkage_lda", fake_d42_fit)
+    monkeypatch.setattr(d81_eval, "run_d81_query_evaluation", fake_run)
+    result = e0d_eval.run_d92_e0d_query_evaluation(
+        arm_id=arm.arm_id, **_allowed_kwargs()
+    )
+    row = result["tpce_fit_row"]
+    assert row["d92_e0d_tpce_active"] is True
+    assert row["d92_e0d_tpce_fallback_active"] is False
+    assert row["d92_e0d_tpce_final_state_sha256"] != row[
+        "d92_e0d_tpce_e0_state_sha256"
+    ]
+    assert row["after_total_component_fit_count"] == 2
+    assert row["after_actual_component_inventory"][
+        "actual_component_fit_count"
+    ] == 1
+    assert row["after_state_postprocess_mode"] == "d42_tpce"
+    assert row["query_fit_access"] is False
+    assert row["query_truth_access"] is False
+
+
+def test_tpce_query_audit_rejects_nonfinite_old_tail_gain():
+    arm = slim.D92_E0D_ARMS["E0_FULL_D42_TAIL_PAIR_CODE_EXCHANGE"]
+    state = _tpce_state()
+    rows, targets = _tpce_support()
+    from cvsrffi import stage2_d92_d42_tail_pair_code_exchange as tpce
+
+    candidate, base_receipt = tpce.apply_d42_tail_pair_code_exchange(
+        state, rows, targets, old_class_count=OLD_CLASS_COUNT
+    )
+    result = _result(arm, k_shot=5)
+    result.state = candidate
+    result.geometry_audit["final_covariance_audit"].update(
+        {
+            key.replace("d92_tpce_", "d92_e0d_tpce_"): value
+            for key, value in base_receipt.items()
+        }
+    )
+    result.geometry_audit["final_covariance_audit"][
+        "d92_e0d_tpce_old_tail_gain_by_class"
+    ][0] = float("nan")
+    with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="support guard"):
+        e0d_eval._audit_d92_e0d_fit(
+            result,
+            arm=arm,
+            scenario="leo_clear_weak",
+            k_shot=5,
+            old_count=OLD_CLASS_COUNT,
+            class_count=11,
         )
 
 

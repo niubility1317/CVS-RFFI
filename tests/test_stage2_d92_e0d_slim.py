@@ -512,3 +512,27 @@ def test_pareto_distill_arm_wires_shared_two_component_receipt_and_low_k_alias()
     assert k1_audit[
         "d92_e0d_pareto_distill_deployment_cross_group_quantum_pass"
     ] is None
+
+
+def test_tpce_arm_reuses_the_single_full_fit_and_low_k_alias() -> None:
+    """TPCE is a D42 state postprocess, not another covariance fit."""
+
+    arm = D92_E0D_ARMS["E0_FULL_D42_TAIL_PAIR_CODE_EXCHANGE"]
+    assert (
+        arm.candidate_id,
+        arm.registered_d_mode,
+        arm.b_enabled,
+        arm.e_enabled,
+    ) == (
+        "d92_e0_full_d42_tail_pair_code_exchange",
+        "full_only",
+        True,
+        False,
+    )
+    assert expected_total_component_fit_count(10, arm_id=arm.arm_id) == 2
+    _, _, k1_audit, _, _ = _run(
+        arm.arm_id, class_count=11, k_shot=1, repeated=True
+    )
+    assert k1_audit["d92_e0d_registered_d_mode_effective"] == "d92_full_alias"
+    assert k1_audit["d92_e0d_total_component_fit_count"] == 3
+    assert k1_audit["d92_e0d_actual_component_fit_count"] == 3

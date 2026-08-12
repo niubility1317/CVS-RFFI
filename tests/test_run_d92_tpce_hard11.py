@@ -24,7 +24,9 @@ def _row(*, k_shot: int = 10) -> dict[str, object]:
         "scenario": SCENES[0],
         "arm_id": runner.ARM_ID,
         "candidate_id": runner.CANDIDATE_ID,
-        "after_registered_d_mode_effective": "full_only",
+        "after_registered_d_mode_effective": (
+            "full_only" if active else "d92_full_alias"
+        ),
         "after_state_postprocess_mode": "d42_tpce" if active else None,
         "after_total_component_fit_count": 2 if active else 3,
         "after_actual_component_inventory": {"actual_component_fit_count": 1 if active else 3},
@@ -87,7 +89,7 @@ def test_fit_audit_rejects_tpce_code2_guard_drift(tmp_path: Path) -> None:
         runner._validate_fit_audit(path, k_shot=10)
 
 
-def test_fit_audit_allows_numeric_fallback_diagnostics_but_no_applied_update(tmp_path: Path) -> None:
+def test_fit_audit_rejects_k_greater_than_two_numeric_fallback(tmp_path: Path) -> None:
     path = tmp_path / "fit_audit.json"
     row = _row()
     prefix = "d92_e0d_tpce_"
@@ -99,4 +101,8 @@ def test_fit_audit_allows_numeric_fallback_diagnostics_but_no_applied_update(tmp
     row[prefix + "applied_atomic_exchange_count"] = 0
     row[prefix + "aggregate_saturation_count"] = 1
     _write(path, [{**row, "scenario": scene} for scene in SCENES])
-    runner._validate_fit_audit(path, k_shot=10)
+    with pytest.raises(
+        runner.D92D92TPCEHard11RunnerError,
+        match="did not activate",
+    ):
+        runner._validate_fit_audit(path, k_shot=10)
