@@ -41,7 +41,14 @@ def test_target_prediction_launcher_dry_run_is_exact_iq_only_matrix() -> None:
             f"F{fold}G_CLIC12/g_deployment_bundle.zip" in line for line in fold_lines
         )
     joined = "\n".join(lines)
-    assert "phase1_clic_predictor_artifacts_20260812_v2" in joined
+    assert sum(
+        "phase1_clic_predictor_artifacts_20260812_v2" in line
+        for line in prediction_lines
+    ) == 6
+    assert sum(
+        "phase1_clic_g_bundles_20260812_v1" in line
+        for line in prediction_lines
+    ) == 6
     assert joined.count("--package") == 12
     for forbidden in (
         "--truth-sidecar",

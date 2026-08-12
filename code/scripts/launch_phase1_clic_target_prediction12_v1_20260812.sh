@@ -2,14 +2,16 @@
 set -euo pipefail
 
 RUN_ID="phase1_clic_target_prediction_20260812_v1"
-PREDICTOR_RUN_ID="phase1_clic_predictor_artifacts_20260812_v2"
+C_PREDICTOR_RUN_ID="phase1_clic_predictor_artifacts_20260812_v2"
+G_PREDICTOR_RUN_ID="phase1_clic_g_bundles_20260812_v1"
 TARGET_CACHE_RUN_ID="phase1_clic_target_confirmation_20260812_v2"
 PROJECT_ROOT="/home/szu2070436088/2510044040/CV-SincNet"
 CODE_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PYTHON="/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python"
 EVALUATOR_ENTRY="${CODE_ROOT}/evaluate_phase1_clic_target_leo.py"
 SEMANTICS_JSON="${CODE_ROOT}/configs/phase1_clic_target_test_semantics_20260812_v1.json"
-PREDICTOR_ROOT="${PROJECT_ROOT}/runs/${PREDICTOR_RUN_ID}"
+C_PREDICTOR_ROOT="${PROJECT_ROOT}/runs/${C_PREDICTOR_RUN_ID}"
+G_PREDICTOR_ROOT="${PROJECT_ROOT}/runs/${G_PREDICTOR_RUN_ID}"
 CACHE_MANIFEST="${PROJECT_ROOT}/runs/${TARGET_CACHE_RUN_ID}/cache/cache_set.json"
 RUN_ROOT="${PROJECT_ROOT}/runs/${RUN_ID}"
 LOG_ROOT="${PROJECT_ROOT}/logs/${RUN_ID}"
@@ -52,9 +54,9 @@ package_command() {
 prediction_command() {
   local fold="$1" arm="$2" predictor output
   if [[ "${arm}" == "C" ]]; then
-    predictor="${PREDICTOR_ROOT}/F${fold}C_CLIC12/c_predictor_state.json"
+    predictor="${C_PREDICTOR_ROOT}/F${fold}C_CLIC12/c_predictor_state.json"
   else
-    predictor="${PREDICTOR_ROOT}/F${fold}G_CLIC12/g_deployment_bundle.zip"
+    predictor="${G_PREDICTOR_ROOT}/F${fold}G_CLIC12/g_deployment_bundle.zip"
   fi
   output="${PREDICTION_ROOT}/F${fold}${arm}_CLIC12.prediction.json"
   PREDICTION_CMD=("${PYTHON}" -u "${EVALUATOR_ENTRY}"
@@ -75,10 +77,10 @@ check_inputs() {
   local fold
   [[ -f "${CACHE_MANIFEST}" ]] || { echo "missing target confirmation cache manifest" >&2; return 2; }
   for fold in 1 2 3 4 5 6; do
-    [[ -f "${PREDICTOR_ROOT}/F${fold}C_CLIC12/c_predictor_state.json" ]] || {
+    [[ -f "${C_PREDICTOR_ROOT}/F${fold}C_CLIC12/c_predictor_state.json" ]] || {
       echo "missing C predictor: F${fold}" >&2; return 2;
     }
-    [[ -f "${PREDICTOR_ROOT}/F${fold}G_CLIC12/g_deployment_bundle.zip" ]] || {
+    [[ -f "${G_PREDICTOR_ROOT}/F${fold}G_CLIC12/g_deployment_bundle.zip" ]] || {
       echo "missing G predictor: F${fold}" >&2; return 2;
     }
   done
