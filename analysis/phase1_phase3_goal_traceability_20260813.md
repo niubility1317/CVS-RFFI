@@ -1,8 +1,10 @@
 # Phase1—Phase3目标域泛化与真实未知拒识追踪
 
-日期：2026-08-13  
-目标来源：`E:\codex\home\attachments\c75febfd-60b9-42bb-9825-a0b3b9eda0bb\goal-objective.md`  
-协议权威：根目录`项目.md`（2026-08-07，`p2_min_v1`）  
+日期：2026-08-13
+
+目标来源：`E:\codex\home\attachments\c75febfd-60b9-42bb-9825-a0b3b9eda0bb\goal-objective.md`
+
+协议权威：根目录`项目.md`（2026-08-07，`p2_min_v1`）
 
 本表用于防止把技术工件完成、单节点目标确认或局部指标误写成Phase1晋级或Phase3完成。状态只依据当前Git实现、N607不可变工件及实验报告更新。
 
@@ -38,4 +40,3 @@
 3.生成source四组receipt与ADV rich reference，运行原严格combined scorer，完成Phase1七项不可补偿门审计。
 4.若Phase1任一门失败，只能从source侧信号设计新冻结候选；不得用target结果选择候选或阈值。
 5.仅在Phase1门闭合后进入Phase3多接收节点代理协同、`N_sat=1..5`及A／B／C／D矩阵。
-
