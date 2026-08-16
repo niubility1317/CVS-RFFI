@@ -3,7 +3,7 @@
 ## 预注册与状态
 
 - 实验ID：`phase1_clic_source_metrics_20260813_v2`。
-- 当前状态：`LOCAL_VERIFIED / P1_REMEDIATED_LOCALLY / RE_REVIEW_PENDING / FORMAL_INVOCATION=0 / NO_PERFORMANCE_RESULT`。
+- 当前状态：`LOCAL_VERIFIED / P1_REMEDIATED / INDEPENDENT_REVIEW_ALLOW / FORMAL_INVOCATION=0 / NO_PERFORMANCE_RESULT`。
 - 目标：仅修复F1独立结构smoke的输出/路径合同，使它直接使用封存的正式F1输入绝对路径，并将技术缓存和单次C/G前向写入独立、不可覆盖的smoke根。不得改变数据、方法、阈值、fold、指标、GPU矩阵、sealed receipt或任何target/query边界。
 - v1封存事实：`phase1_clic_source_metrics_20260813_v1`的唯一smoke已停止，`SMOKE_INVOCATION=1`、`FORMAL_INVOCATION=0`、`retry=NO`。hardlink镜像后的checkpoint绝对路径与terminal envelope的`selected_checkpoint_path`不一致，builder在任何缓存、feature、scorer或性能输出前以`CLICSplitExportError: CLIC terminal envelope selected checkpoint path drifted`失败。v1永久封存，绝不重试、覆盖或改标为formal。
 
@@ -31,7 +31,7 @@
 | V2-02 | v2接口 | `--technical-smoke`仅允许F1、F1C/F1G；training/checkpoint/terminal/clean/PAIR/cache/output必须逐项等于冻结canonical root下的run ID和文件名 | exporter、测试 | P1 round1 local complete | 正/负根目录合同测试 | 无flag独立父目录必须拒绝 |
 | V2-03 | formal不变性 | 无flag保持训练/clean/cache/output同一formal`runs`父目录；v2只改run identity | builder/exporter/evaluator、v2 launcher、测试 | local complete | focused回归与formal dry-run | 不改数据/方法/矩阵 |
 | V2-04 | 技术smoke | fresh roots后先共享cache，再串行C/G一次forward；run/log根用exact mkdir独占认领，PID/log用noclobber持有FD；不score、不产生性能 | 新smoke脚本、formal脚本、脚本测试 | P1 round1 local complete | PID/log race RED→GREEN、bash-n与smoke dry-run | `FORMAL_INVOCATION=0` |
-| V2-05 | release | 新v2报告、hash、测试、Git提交；独立P0/P1 review由主控另派 | 本报告 | P1 remediation local verified; re-review pending | diff/check/commit记录 | 本作者不自审、不访问N607 |
+| V2-05 | release | 新v2报告、hash、测试、Git提交；独立P0/P1 review由主控另派 | 本报告 | independent review ALLOW | `P0=0/P1=0/P2=0` | 实现作者不自审；本地门不代表N607已运行 |
 
 ## 计划命令与交接边界
 
@@ -79,6 +79,13 @@
 - launcher测试执行器显式调用`C:\Program Files\Git\bin\bash.exe`并使用`/e/...`路径；不再使用裸`bash`、`/mnt/...`或`WSLENV`。
 - `git diff --check`通过。未执行N607、SSH、SCP、sync、训练、smoke实际运行、scorer或任何性能读取。
 
+### 独立P0/P1复审
+
+- 独立复审结论：`P0=0 / P1=0 / P2=0 / ALLOW`，仅代表本地发布门通过，不代表N607落地、运行或性能结论。
+- canonical F1C/F1G路径正例通过；caller自报mirror与同形mirror均在checkpoint打开和输出发布前拒绝。
+- formal与smoke的post-guard根/证据竞争均以退出码3拒绝，攻击者marker保持原字节且零dispatch。
+- fresh复核再次通过`py_compile`、两份测试38/38、两份`bash -n`、formal/smoke dry-run 25/3和`git diff --check`。
+
 ### 本次变更文件
 
 - `code/build_phase1_clic_source_v_leo_iq.py`
@@ -94,6 +101,7 @@
 ### Git与哈希
 
 - 本地提交：`503b07be7ed20359fa0a5f95eb8244f822173ab9`（`Add v2 source metrics smoke path`）。
+- P1修复提交：`9f56e731d4443c5e1f396bf77afb8a877461cd9d`（`Harden v2 source metrics smoke path`）。
 
 ### P1修复round1最终源文件哈希
 
