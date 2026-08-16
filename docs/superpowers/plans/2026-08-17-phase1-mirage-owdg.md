@@ -114,7 +114,7 @@ git diff --check
 
 Expected: PASS; both documents show matching semantics. Record in the implementation report that`项目.md`is outside Git and mirrored by`docs/PROJECT_PROTOCOL.md`.
 
-- [ ] **Step 5: Commit the Git-backed protocol change**
+- [x] **Step 5: Commit the Git-backed protocol change**
 
 ```bash
 git add docs/PROJECT_PROTOCOL.md docs/superpowers/plans/2026-08-17-phase1-mirage-owdg.md code/cvsrffi/phase1_mirage/protocol.py tests/phase1_mirage/test_protocol_policy.py analysis/phase1_mirage_owdg_traceability.md
