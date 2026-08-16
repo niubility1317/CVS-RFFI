@@ -27,8 +27,9 @@ from build_phase1_clic_source_v_leo_iq import assign_source_v_scenarios
 FORMAL_SCENES = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
 TX_IDS = tuple(f"tx-{index}" for index in range(4))
 RX_IDS = tuple(f"rx-{index}" for index in range(7))
-DAY_IDS = ("day-0", "day-1", "day-2")
-ROWS_PER_TX_RX_DAY = 200
+SOURCE_V_DAY_IDS = ("2021_03_01", "2021_03_08")
+NONFROZEN_SOURCE_V_DAY_IDS = ("2021_03_15", "2021_03_23")
+ROWS_PER_TX_RX_DAY = 300
 SOURCE_V_COUNT = 16_800
 
 
@@ -54,8 +55,12 @@ def _physical_key(
     return "\x1f".join((tx_id, rx_id, day_id, eq_id, sig_id))
 
 
-def _source_v_rows() -> dict[str, Any]:
-    """Hand-built complete 4x7x3x200 held-V table for real builder checks."""
+def _source_v_rows(
+    *,
+    day_ids_for_rows: tuple[str, ...] = SOURCE_V_DAY_IDS,
+    rows_per_tx_rx_day: int = ROWS_PER_TX_RX_DAY,
+) -> dict[str, Any]:
+    """Hand-build the sealed 4x7x2x300 held-V physical table."""
 
     tx_ids: list[str] = []
     rx_ids: list[str] = []
@@ -67,8 +72,8 @@ def _source_v_rows() -> dict[str, Any]:
     row = 0
     for tx_id in TX_IDS:
         for rx_id in RX_IDS:
-            for day_id in DAY_IDS:
-                for repeat in range(ROWS_PER_TX_RX_DAY):
+            for day_id in day_ids_for_rows:
+                for repeat in range(rows_per_tx_rx_day):
                     tx_ids.append(tx_id)
                     rx_ids.append(rx_id)
                     day_ids.append(day_id)
@@ -89,6 +94,33 @@ def _source_v_rows() -> dict[str, Any]:
         "sig_ids": sig_ids,
         "physical_sample_ids": physical_ids,
     }
+
+
+def _copy_source_v_rows(rows: dict[str, Any]) -> dict[str, Any]:
+    """Keep clean-v4 drift fixtures independent from the collected V rows."""
+
+    return {name: value.copy() for name, value in rows.items()}
+
+
+def _unbalanced_source_v_rows() -> dict[str, Any]:
+    """Keep 600 rows in one cell while moving 299 rows across its frozen days."""
+
+    rows = _copy_source_v_rows(_source_v_rows())
+    moved = 0
+    for index, (tx_id, rx_id, day_id) in enumerate(
+        zip(rows["tx_ids"], rows["rx_ids"], rows["day_ids"], strict=True)
+    ):
+        if (
+            tx_id == TX_IDS[0]
+            and rx_id == RX_IDS[0]
+            and day_id == SOURCE_V_DAY_IDS[1]
+            and moved < ROWS_PER_TX_RX_DAY - 1
+        ):
+            rows["day_ids"][index] = SOURCE_V_DAY_IDS[0]
+            rows["sig_ids"][index] = f"unbalanced-day-axis-{index:05d}"
+            moved += 1
+    assert moved == ROWS_PER_TX_RX_DAY - 1
+    return rows
 
 
 def test_assign_source_v_scenarios_is_permutation_invariant_and_covers_every_axis() -> None:
@@ -129,7 +161,7 @@ def test_assign_source_v_scenarios_is_permutation_invariant_and_covers_every_axi
                 )
                 if observed_rx == rx_id
             ) > 0
-        for day_id in DAY_IDS:
+        for day_id in SOURCE_V_DAY_IDS:
             assert sum(
                 baseline[physical_id] == scene
                 for physical_id, observed_day in zip(
@@ -168,6 +200,87 @@ def test_assign_source_v_scenarios_rejects_invalid_physical_or_axis_input(
         assign_source_v_scenarios(tx_ids, rx_ids, day_ids, physical_ids)
 
 
+def test_assign_source_v_scenarios_rejects_legacy_three_day_axis_even_at_16800_rows() -> None:
+    """Break caught: restoring the old three-day count admits a wrong clean-v4 V axis."""
+
+    legacy_rows = _source_v_rows(
+        day_ids_for_rows=(*SOURCE_V_DAY_IDS, "2021_03_15"),
+        rows_per_tx_rx_day=200,
+    )
+
+    with pytest.raises(
+        BUILDER.CLICSourceVLeoCacheError, match="frozen day axis drifted"
+    ):
+        assign_source_v_scenarios(
+            legacy_rows["tx_ids"],
+            legacy_rows["rx_ids"],
+            legacy_rows["day_ids"],
+            legacy_rows["physical_sample_ids"],
+        )
+
+
+@pytest.mark.parametrize("mutation", ("missing", "extra"))
+def test_assign_source_v_scenarios_rejects_missing_or_extra_source_v_day_axis(
+    mutation: str,
+) -> None:
+    """Break caught: a nonsealed held-V day axis is accepted despite 16800 rows."""
+
+    rows = _source_v_rows()
+    day_ids = list(rows["day_ids"])
+    if mutation == "missing":
+        day_ids = [SOURCE_V_DAY_IDS[0] for _ in day_ids]
+    else:
+        day_ids[0] = "2021_03_15"
+
+    with pytest.raises(
+        BUILDER.CLICSourceVLeoCacheError, match="frozen day axis drifted"
+    ):
+        assign_source_v_scenarios(
+            rows["tx_ids"], rows["rx_ids"], day_ids, rows["physical_sample_ids"]
+        )
+
+
+def test_assign_source_v_scenarios_rejects_self_consistent_nonfrozen_two_day_axis() -> None:
+    """Break caught: any two substitute dates cannot self-certify the held-V axis."""
+
+    rows = _source_v_rows(day_ids_for_rows=NONFROZEN_SOURCE_V_DAY_IDS)
+
+    with pytest.raises(
+        BUILDER.CLICSourceVLeoCacheError, match="frozen day axis drifted"
+    ):
+        assign_source_v_scenarios(
+            rows["tx_ids"],
+            rows["rx_ids"],
+            rows["day_ids"],
+            rows["physical_sample_ids"],
+        )
+
+
+def test_assign_source_v_scenarios_rejects_599_1_day_split_inside_600_row_cell() -> None:
+    """Break caught: a 600-row TX/RX total cannot hide 599/1 physical-day drift."""
+
+    rows = _unbalanced_source_v_rows()
+    cell_days = [
+        day_id
+        for tx_id, rx_id, day_id in zip(
+            rows["tx_ids"], rows["rx_ids"], rows["day_ids"], strict=True
+        )
+        if tx_id == TX_IDS[0] and rx_id == RX_IDS[0]
+    ]
+    assert cell_days.count(SOURCE_V_DAY_IDS[0]) == 599
+    assert cell_days.count(SOURCE_V_DAY_IDS[1]) == 1
+
+    with pytest.raises(
+        BUILDER.CLICSourceVLeoCacheError, match="TX/RX/day coverage drifted"
+    ):
+        assign_source_v_scenarios(
+            rows["tx_ids"],
+            rows["rx_ids"],
+            rows["day_ids"],
+            rows["physical_sample_ids"],
+        )
+
+
 def _source_l_rows() -> tuple[list[str], list[str], list[str], list[str], list[str]]:
     tx_ids: list[str] = []
     rx_ids: list[str] = []
@@ -179,7 +292,7 @@ def _source_l_rows() -> tuple[list[str], list[str], list[str], list[str], list[s
             for repeat in range(140):
                 tx_ids.append(tx_id)
                 rx_ids.append(rx_id)
-                day_ids.append(DAY_IDS[repeat % len(DAY_IDS)])
+                day_ids.append(SOURCE_V_DAY_IDS[repeat % len(SOURCE_V_DAY_IDS)])
                 eq_ids.append("eq-1")
                 sig_ids.append(f"l-{repeat:03d}")
     assert len(tx_ids) == 3920
@@ -195,7 +308,7 @@ def _proxy_rows() -> tuple[list[str], list[str], list[str], list[str], list[str]
     for repeat in range(400):
         tx_ids.append("proxy-tx")
         rx_ids.append(RX_IDS[repeat % len(RX_IDS)])
-        day_ids.append(DAY_IDS[repeat % len(DAY_IDS)])
+        day_ids.append(SOURCE_V_DAY_IDS[repeat % len(SOURCE_V_DAY_IDS)])
         eq_ids.append("eq-1")
         sig_ids.append(f"p-{repeat:03d}")
     return tx_ids, rx_ids, day_ids, eq_ids, sig_ids
@@ -210,6 +323,7 @@ def _write_clean_npz(
     rows: dict[str, Any],
     manifest_drift: bool = False,
     role_overlap: bool = False,
+    manifest_day_ids: tuple[str, ...] | None = None,
 ) -> None:
     """Write a complete clean-v4-shaped metadata archive without features."""
 
@@ -253,7 +367,9 @@ def _write_clean_npz(
         "run_id": "phase1_clic12_20260812_v5",
         "source_tx_ids": list(TX_IDS),
         "source_receiver_ids": list(RX_IDS),
-        "source_day_ids": list(DAY_IDS),
+        "source_day_ids": list(
+            SOURCE_V_DAY_IDS if manifest_day_ids is None else manifest_day_ids
+        ),
         "source_validation_indices_sha256": _canonical_sha(
             list(range(3920, 3920 + SOURCE_V_COUNT))
         ),
@@ -282,9 +398,20 @@ def _write_clean_npz(
     )
 
 
-def _builder_args(tmp_path: Path, *, manifest_drift: bool = False, role_overlap: bool = False) -> tuple[argparse.Namespace, dict[str, Any]]:
+def _builder_args(
+    tmp_path: Path,
+    *,
+    manifest_drift: bool = False,
+    role_overlap: bool = False,
+    c_clean_rows: dict[str, Any] | None = None,
+    g_clean_rows: dict[str, Any] | None = None,
+    c_manifest_day_ids: tuple[str, ...] | None = None,
+    g_manifest_day_ids: tuple[str, ...] | None = None,
+) -> tuple[argparse.Namespace, dict[str, Any]]:
     rows = _source_v_rows()
-    cache_root = tmp_path / "runs" / "phase1_clic_source_metrics_20260813_v2"
+    c_rows = rows if c_clean_rows is None else c_clean_rows
+    g_rows = rows if g_clean_rows is None else g_clean_rows
+    cache_root = tmp_path / "runs" / "phase1_clic_source_metrics_20260816_v3"
     shared_dir = cache_root / "F1_SHARED"
     c_dir = tmp_path / "runs" / "phase1_clic12_20260812_v5" / "F1C_CLIC12"
     g_dir = tmp_path / "runs" / "phase1_clic12_20260812_v5" / "F1G_CLIC12"
@@ -309,16 +436,18 @@ def _builder_args(tmp_path: Path, *, manifest_drift: bool = False, role_overlap:
         candidate_id="F1C_CLIC12",
         checkpoint_sha=hashlib.sha256(c_checkpoint.read_bytes()).hexdigest(),
         terminal_sha=hashlib.sha256(c_terminal.read_bytes()).hexdigest(),
-        rows=rows,
+        rows=c_rows,
         role_overlap=role_overlap,
+        manifest_day_ids=c_manifest_day_ids,
     )
     _write_clean_npz(
         g_clean,
         candidate_id="F1G_CLIC12",
         checkpoint_sha=hashlib.sha256(g_checkpoint.read_bytes()).hexdigest(),
         terminal_sha=hashlib.sha256(g_terminal.read_bytes()).hexdigest(),
-        rows=rows,
+        rows=g_rows,
         manifest_drift=manifest_drift,
+        manifest_day_ids=g_manifest_day_ids,
     )
     dataset_path = tmp_path / "synthetic_wisig.pkl"
     dataset_path.write_bytes(b"synthetic-data-free-wisig")
@@ -470,6 +599,13 @@ def test_builder_seals_exact_v_cache_shared_by_c_and_g_without_legacy_bridges(
     assert receipt["role"] == "source_validation_known_leo_weak"
     assert receipt["source_v_only"] is True
     assert receipt["source_validation_row_count"] == SOURCE_V_COUNT
+    assert receipt["source_day_ids"] == list(SOURCE_V_DAY_IDS)
+    assert receipt["source_validation_tx_rx_day_coverage"] == {
+        f"{tx_id}|{rx_id}|{day_id}": ROWS_PER_TX_RX_DAY
+        for tx_id in TX_IDS
+        for rx_id in RX_IDS
+        for day_id in SOURCE_V_DAY_IDS
+    }
     assert receipt["same_received_iq_bytes_for_c_and_g"] is True
     assert receipt["single_leo_observation_per_physical_sample"] is True
     assert receipt["cross_scene_physical_sample_reuse"] is False
@@ -521,6 +657,112 @@ def test_builder_rejects_clean_or_channel_contract_drift_without_partial_output(
     assert not Path(args.out_npz).exists()
     assert not Path(args.receipt_json).exists()
     assert not list(Path(args.cache_run_root).rglob("*.tmp"))
+
+
+@pytest.mark.parametrize("mutation", ("missing", "extra"))
+def test_builder_rejects_clean_v4_missing_or_extra_day_axis_before_output(
+    mutation: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Break caught: clean-v4 V metadata has an incomplete or surplus physical day axis."""
+
+    c_clean_rows = _copy_source_v_rows(_source_v_rows())
+    if mutation == "missing":
+        for index, day_id in enumerate(c_clean_rows["day_ids"]):
+            if day_id == SOURCE_V_DAY_IDS[1]:
+                c_clean_rows["day_ids"][index] = SOURCE_V_DAY_IDS[0]
+                c_clean_rows["sig_ids"][index] = f"missing-day-axis-{index:05d}"
+    else:
+        c_clean_rows["day_ids"][0] = "2021_03_15"
+    args, rows = _builder_args(tmp_path, c_clean_rows=c_clean_rows)
+    _install_external_doubles(monkeypatch, args=args, rows=rows)
+
+    with pytest.raises(
+        BUILDER.CLICSourceVLeoCacheError,
+        match="C clean-v4 V frozen day axis drifted",
+    ):
+        BUILDER.build_source_v_received_iq(args)
+    assert not Path(args.out_npz).exists()
+    assert not Path(args.receipt_json).exists()
+
+
+def test_builder_rejects_clean_v4_manifest_day_axis_drift_before_output(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Break caught: a manifest can no longer self-declare a different held-V day axis."""
+
+    args, rows = _builder_args(
+        tmp_path,
+        g_manifest_day_ids=(*SOURCE_V_DAY_IDS, "2021_03_15"),
+    )
+    _install_external_doubles(monkeypatch, args=args, rows=rows)
+
+    with pytest.raises(
+        BUILDER.CLICSourceVLeoCacheError,
+        match="G clean-v4 manifest source day axis drifted",
+    ):
+        BUILDER.build_source_v_received_iq(args)
+    assert not Path(args.out_npz).exists()
+    assert not Path(args.receipt_json).exists()
+
+
+@pytest.mark.parametrize(
+    ("mutation", "manifest_day_ids", "match"),
+    (
+        (
+            "nonfrozen_axis",
+            NONFROZEN_SOURCE_V_DAY_IDS,
+            "C clean-v4 V frozen day axis drifted",
+        ),
+        (
+            "unbalanced_cell_day",
+            None,
+            "C clean-v4 V TX/RX/day coverage drifted",
+        ),
+    ),
+)
+def test_builder_rejects_clean_v4_frozen_day_or_cell_coverage_drift_before_output(
+    mutation: str,
+    manifest_day_ids: tuple[str, ...] | None,
+    match: str,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Break caught: clean-v4 must use the physical dates and 300 rows per cell-day."""
+
+    if mutation == "nonfrozen_axis":
+        c_clean_rows = _source_v_rows(day_ids_for_rows=NONFROZEN_SOURCE_V_DAY_IDS)
+    else:
+        c_clean_rows = _unbalanced_source_v_rows()
+    args, rows = _builder_args(
+        tmp_path,
+        c_clean_rows=c_clean_rows,
+        c_manifest_day_ids=manifest_day_ids,
+    )
+    _install_external_doubles(monkeypatch, args=args, rows=rows)
+
+    with pytest.raises(BUILDER.CLICSourceVLeoCacheError, match=match):
+        BUILDER.build_source_v_received_iq(args)
+    assert not Path(args.out_npz).exists()
+    assert not Path(args.receipt_json).exists()
+
+
+def test_builder_rejects_c_g_clean_v4_physical_binding_drift_before_output(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Break caught: C/G clean-v4 can no longer bind different held-V physical rows."""
+
+    g_clean_rows = _copy_source_v_rows(_source_v_rows())
+    g_clean_rows["sig_ids"][0] = "g-physical-binding-drift"
+    args, rows = _builder_args(tmp_path, g_clean_rows=g_clean_rows)
+    _install_external_doubles(monkeypatch, args=args, rows=rows)
+
+    with pytest.raises(
+        BUILDER.CLICSourceVLeoCacheError,
+        match="source-V cache C/G clean-v4 validation_keys does not share exact V binding",
+    ):
+        BUILDER.build_source_v_received_iq(args)
+    assert not Path(args.out_npz).exists()
+    assert not Path(args.receipt_json).exists()
 
 
 def test_builder_rejects_input_toctou_before_sealing_and_leaves_no_artifact(

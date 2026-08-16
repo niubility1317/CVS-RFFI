@@ -26,28 +26,28 @@ import export_phase1_clic_source_v_leo_features as EXPORTER
 
 SCENES = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
 SOURCE_TX = ("tx-0", "tx-1", "tx-2", "tx-3")
-V2_RUN_ID = "phase1_clic_source_metrics_20260813_v2"
-V2_SMOKE_ROOT_NAME = ".smoke_phase1_clic_source_metrics_20260813_v2_F1"
+V3_RUN_ID = "phase1_clic_source_metrics_20260816_v3"
+V3_SMOKE_ROOT_NAME = ".smoke_phase1_clic_source_metrics_20260816_v3_F1"
 
 
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _v2_technical_smoke_paths(
+def _v3_technical_smoke_paths(
     tmp_path: Path, *, mirror_training: bool = False
 ) -> dict[str, Path]:
     """Create only path-shaped inputs for the root-contract boundary."""
 
     runs = tmp_path / "runs"
-    smoke_root = runs / V2_SMOKE_ROOT_NAME
+    smoke_root = runs / V3_SMOKE_ROOT_NAME
     training_root = (
         smoke_root / "training_mirror" / "phase1_clic12_20260812_v5"
         if mirror_training
         else runs / "phase1_clic12_20260812_v5"
     )
     clean_root = runs / "phase1_clic_postfreeze_20260812_v4"
-    source_root = smoke_root / V2_RUN_ID
+    source_root = smoke_root / V3_RUN_ID
     candidate = "F1C_CLIC12"
     paths = {
         "project_root": tmp_path,
@@ -71,7 +71,7 @@ def _v2_technical_smoke_paths(
     return paths
 
 
-def _v2_technical_smoke_args(paths: dict[str, Path], *, technical_smoke: bool) -> Namespace:
+def _v3_technical_smoke_args(paths: dict[str, Path], *, technical_smoke: bool) -> Namespace:
     return Namespace(
         ckpt=str(paths["checkpoint"]),
         terminal_receipt_json=str(paths["terminal"]),
@@ -100,8 +100,8 @@ def test_technical_smoke_reaches_original_f1_terminal_before_any_output(
 ) -> None:
     """Break caught: the formal-parent gate blocks a legal independent F1 smoke."""
 
-    paths = _v2_technical_smoke_paths(tmp_path)
-    args = _v2_technical_smoke_args(paths, technical_smoke=True)
+    paths = _v3_technical_smoke_paths(tmp_path)
+    args = _v3_technical_smoke_args(paths, technical_smoke=True)
     observed: list[tuple[Path, Path]] = []
     monkeypatch.setattr(
         EXPORTER,
@@ -141,7 +141,7 @@ def test_technical_smoke_root_contract_allows_only_the_exact_f1_exception(
 ) -> None:
     """Break caught: a broad smoke escape hatch can admit another fold or root."""
 
-    paths = _v2_technical_smoke_paths(tmp_path)
+    paths = _v3_technical_smoke_paths(tmp_path)
     monkeypatch.setattr(
         EXPORTER,
         "EXPECTED_TECHNICAL_SMOKE_PROJECT_ROOT",
@@ -176,7 +176,7 @@ def test_technical_smoke_root_contract_allows_only_the_exact_f1_exception(
             technical_smoke=True,
         )
 
-    mirrored = _v2_technical_smoke_paths(tmp_path / "mirrored", mirror_training=True)
+    mirrored = _v3_technical_smoke_paths(tmp_path / "mirrored", mirror_training=True)
     with pytest.raises(EXPORTER.CLICSourceVFeatureExportError, match="technical smoke|canonical|root"):
         EXPORTER.validate_source_v_execution_roots(
             training_root=mirrored["training_root"],
@@ -193,12 +193,12 @@ def test_technical_smoke_root_contract_allows_only_the_exact_f1_exception(
         )
 
 
-def test_formal_v2_root_contract_has_no_independent_parent_without_the_flag(
+def test_formal_v3_root_contract_has_no_independent_parent_without_the_flag(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """Break caught: independent roots become legal without the narrow smoke control."""
 
-    paths = _v2_technical_smoke_paths(tmp_path)
+    paths = _v3_technical_smoke_paths(tmp_path)
     monkeypatch.setattr(
         EXPORTER,
         "EXPECTED_TECHNICAL_SMOKE_PROJECT_ROOT",
@@ -219,7 +219,7 @@ def test_formal_v2_root_contract_has_no_independent_parent_without_the_flag(
             technical_smoke=False,
         )
 
-    formal_root = paths["runs"] / V2_RUN_ID
+    formal_root = paths["runs"] / V3_RUN_ID
     EXPORTER.validate_source_v_execution_roots(
         training_root=paths["training_root"],
         clean_path=paths["clean"],
@@ -254,9 +254,9 @@ def test_technical_smoke_rejects_same_shape_mirror_before_checkpoint_open(
 ) -> None:
     """Break caught: a self-consistent mirror replaces the original formal root."""
 
-    canonical = _v2_technical_smoke_paths(tmp_path / "canonical")
-    mirror = _v2_technical_smoke_paths(tmp_path / "mirror_only")
-    args = _v2_technical_smoke_args(mirror, technical_smoke=True)
+    canonical = _v3_technical_smoke_paths(tmp_path / "canonical")
+    mirror = _v3_technical_smoke_paths(tmp_path / "mirror_only")
+    args = _v3_technical_smoke_args(mirror, technical_smoke=True)
     args.formal_project_root = str(mirror["project_root"])
     checkpoint_opened: list[Path] = []
 
@@ -282,7 +282,7 @@ def test_technical_smoke_rejects_same_shape_mirror_before_checkpoint_open(
 def test_technical_smoke_rejects_relative_formal_project_root(tmp_path: Path) -> None:
     """Break caught: a relative root lets callers escape the frozen formal parent."""
 
-    paths = _v2_technical_smoke_paths(tmp_path)
+    paths = _v3_technical_smoke_paths(tmp_path)
     with pytest.raises(EXPORTER.CLICSourceVFeatureExportError, match="formal project|absolute|root"):
         EXPORTER.validate_source_v_execution_roots(
             training_root=paths["training_root"],
@@ -676,7 +676,7 @@ def test_source_v_physical_component_drift_stops_before_forward_or_output(
     runs = tmp_path / "runs"
     training_root = runs / "phase1_clic12_20260812_v5"
     clean_root = runs / "phase1_clic_postfreeze_20260812_v4"
-    source_root = runs / V2_RUN_ID
+    source_root = runs / V3_RUN_ID
     candidate = "F1C_CLIC12"
     checkpoint_path = training_root / candidate / "final_ssdg.pth"
     terminal_path = training_root / candidate / "terminal_receipt.json"
@@ -1044,7 +1044,7 @@ def test_pair_scorer_binds_each_v_export_to_its_clean_v4_sha_and_refuses_overwri
     runs = tmp_path / "runs"
     training_root = runs / "phase1_clic12_20260812_v5"
     clean_root = runs / "phase1_clic_postfreeze_20260812_v4"
-    source_root = runs / V2_RUN_ID
+    source_root = runs / V3_RUN_ID
     paths: dict[str, Path] = {}
 
     def write_file(key: str, path: Path) -> None:

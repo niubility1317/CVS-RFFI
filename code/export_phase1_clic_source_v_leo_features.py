@@ -30,7 +30,7 @@ EXPECTED_CACHE_RUN_ID = _cache.EXPECTED_CACHE_RUN_ID
 EXPECTED_PAIR_SCHEMA = _pair.EXPECTED_PAIR_SCHEMA
 EXPECTED_SCENARIOS = tuple(_pair.EXPECTED_SCENARIOS)
 SOURCE_V_ROLE = _cache.SOURCE_V_ROLE
-TECHNICAL_SMOKE_ROOT_NAME = ".smoke_phase1_clic_source_metrics_20260813_v2_F1"
+TECHNICAL_SMOKE_ROOT_NAME = ".smoke_phase1_clic_source_metrics_20260816_v3_F1"
 EXPECTED_PAIR_RUN_ID = "phase1_clic_source_pair_20260812_v3"
 EXPECTED_TECHNICAL_SMOKE_PROJECT_ROOT = "/home/szu2070436088/2510044040/CV-SincNet"
 
@@ -58,7 +58,7 @@ def validate_source_v_execution_roots(
     Formal source-metrics forwards retain the original common ``runs`` parent
     requirement.  The only independent-root form is the pre-registered F1
     technical smoke, whose inputs remain the original canonical formal files
-    while its cache and output share one dedicated v2 smoke leaf.
+    while its cache and output share one dedicated v3 smoke leaf.
     """
 
     if type(technical_smoke) is not bool:

@@ -31,12 +31,14 @@ SOURCE_V_LEO_CACHE_SCHEMA = "cvs.phase1.clic_source_v_leo_received_iq.v1"
 SOURCE_V_ROLE = "source_validation_known_leo_weak"
 EXPECTED_TRAINING_RUN_ID = "phase1_clic12_20260812_v5"
 EXPECTED_CLEAN_RUN_ID = "phase1_clic_postfreeze_20260812_v4"
-EXPECTED_CACHE_RUN_ID = "phase1_clic_source_metrics_20260813_v2"
+EXPECTED_CACHE_RUN_ID = "phase1_clic_source_metrics_20260816_v3"
 FROZEN_SOURCE_V_ROW_COUNT = 16_800
 FROZEN_SOURCE_CLASS_COUNT = 4
 FROZEN_SOURCE_RECEIVER_COUNT = 7
-FROZEN_SOURCE_DAY_COUNT = 3
+FROZEN_SOURCE_V_DAY_IDS = ("2021_03_01", "2021_03_08")
+FROZEN_SOURCE_DAY_COUNT = 2
 FROZEN_SOURCE_V_ROWS_PER_TX_RX_CELL = 600
+FROZEN_SOURCE_V_ROWS_PER_TX_RX_DAY = 300
 FROZEN_WISIG_SHA256 = _source_l.FROZEN_WISIG_SHA256
 SOURCE_LEO_SEED_OFFSET = _source_l.SOURCE_LEO_SEED_OFFSET
 SOURCE_LEO_SCENE_SEED_STRIDE = _source_l.SOURCE_LEO_SCENE_SEED_STRIDE
@@ -136,6 +138,59 @@ def _physical_sample_id(
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
+def _validate_frozen_source_v_axes_and_cell_day_coverage(
+    *,
+    tx_ids: Sequence[str],
+    rx_ids: Sequence[str],
+    day_ids: Sequence[str],
+    label: str,
+) -> tuple[tuple[str, ...], tuple[str, ...], dict[str, int]]:
+    """Freeze the held-V physical day labels and every TX/RX/day cell count."""
+
+    tx_rows = _strict_string_rows(tx_ids, label="TX")
+    rx_rows = _strict_string_rows(rx_ids, label="RX")
+    day_rows = _strict_string_rows(day_ids, label="day")
+    if not (len(tx_rows) == len(rx_rows) == len(day_rows)):
+        raise CLICSourceVLeoCacheError(f"{label} metadata row lengths drifted")
+    classes = tuple(sorted(set(tx_rows)))
+    receivers = tuple(sorted(set(rx_rows)))
+    days = tuple(sorted(set(day_rows)))
+    if len(classes) != FROZEN_SOURCE_CLASS_COUNT:
+        raise CLICSourceVLeoCacheError(
+            f"{label} must contain exactly four TX classes"
+        )
+    if len(receivers) != FROZEN_SOURCE_RECEIVER_COUNT:
+        raise CLICSourceVLeoCacheError(
+            f"{label} must contain exactly seven RX cells"
+        )
+    if days != FROZEN_SOURCE_V_DAY_IDS:
+        raise CLICSourceVLeoCacheError(f"{label} frozen day axis drifted")
+
+    counts = {
+        (tx_id, rx_id, day_id): 0
+        for tx_id in classes
+        for rx_id in receivers
+        for day_id in FROZEN_SOURCE_V_DAY_IDS
+    }
+    for tx_id, rx_id, day_id in zip(tx_rows, rx_rows, day_rows, strict=True):
+        counts[(tx_id, rx_id, day_id)] += 1
+    for (tx_id, rx_id, day_id), observed in counts.items():
+        if observed != FROZEN_SOURCE_V_ROWS_PER_TX_RX_DAY:
+            raise CLICSourceVLeoCacheError(
+                f"{label} TX/RX/day coverage drifted: "
+                f"tx={tx_id!r} rx={rx_id!r} day={day_id!r} "
+                f"observed={observed} expected={FROZEN_SOURCE_V_ROWS_PER_TX_RX_DAY}"
+            )
+    return (
+        classes,
+        receivers,
+        {
+            f"{tx_id}|{rx_id}|{day_id}": observed
+            for (tx_id, rx_id, day_id), observed in counts.items()
+        },
+    )
+
+
 def assign_source_v_scenarios(
     tx_ids: Sequence[str],
     rx_ids: Sequence[str],
@@ -167,15 +222,12 @@ def assign_source_v_scenarios(
         raise CLICSourceVLeoCacheError(
             "source-V physical sample IDs must be globally unique"
         )
-    classes = tuple(sorted(set(tx_rows)))
-    receivers = tuple(sorted(set(rx_rows)))
-    days = tuple(sorted(set(day_rows)))
-    if len(classes) != FROZEN_SOURCE_CLASS_COUNT:
-        raise CLICSourceVLeoCacheError("source-V must contain exactly four TX classes")
-    if len(receivers) != FROZEN_SOURCE_RECEIVER_COUNT:
-        raise CLICSourceVLeoCacheError("source-V must contain exactly seven RX cells")
-    if len(days) != FROZEN_SOURCE_DAY_COUNT:
-        raise CLICSourceVLeoCacheError("source-V must contain exactly three source days")
+    classes, receivers, _ = _validate_frozen_source_v_axes_and_cell_day_coverage(
+        tx_ids=tx_rows,
+        rx_ids=rx_rows,
+        day_ids=day_rows,
+        label="source-V",
+    )
 
     grouped: dict[tuple[str, str], list[str]] = defaultdict(list)
     for tx_id, rx_id, physical_id in zip(tx_rows, rx_rows, physical_rows, strict=True):
@@ -629,10 +681,14 @@ def _read_clean_validation_binding(
     validation_sig = tuple(sig_rows[index] for index in validation_positions)
     if tuple(sorted(set(validation_tx))) != tuple(sorted(source_tx_ids)):
         raise CLICSourceVLeoCacheError(f"{arm} clean-v4 V TX class order/set drifted")
-    if len(set(validation_rx)) != FROZEN_SOURCE_RECEIVER_COUNT:
-        raise CLICSourceVLeoCacheError(f"{arm} clean-v4 V receiver axis drifted")
-    if len(set(validation_day)) != FROZEN_SOURCE_DAY_COUNT:
-        raise CLICSourceVLeoCacheError(f"{arm} clean-v4 V day axis drifted")
+    _, _, validation_tx_rx_day_coverage = (
+        _validate_frozen_source_v_axes_and_cell_day_coverage(
+            tx_ids=validation_tx,
+            rx_ids=validation_rx,
+            day_ids=validation_day,
+            label=f"{arm} clean-v4 V",
+        )
+    )
     expected_manifest = {
         "schema": "cvs.phase1.clic_lv_export.v1",
         "method": "P1_CLIC",
@@ -659,7 +715,7 @@ def _read_clean_validation_binding(
         raise CLICSourceVLeoCacheError(
             f"{arm} clean-v4 manifest source receiver axis drifted"
         )
-    if manifest.get("source_day_ids") != sorted(set(validation_day)):
+    if manifest.get("source_day_ids") != list(FROZEN_SOURCE_V_DAY_IDS):
         raise CLICSourceVLeoCacheError(
             f"{arm} clean-v4 manifest source day axis drifted"
         )
@@ -681,6 +737,7 @@ def _read_clean_validation_binding(
         "validation_tx_ids": validation_tx,
         "validation_rx_ids": validation_rx,
         "validation_day_ids": validation_day,
+        "validation_tx_rx_day_coverage": validation_tx_rx_day_coverage,
         "validation_eq_ids": validation_eq,
         "validation_sig_ids": validation_sig,
         "validation_metadata_order_sha256": validation_order_sha,
@@ -961,6 +1018,7 @@ def build_source_v_received_iq(args: argparse.Namespace) -> dict[str, Any]:
         "validation_tx_ids",
         "validation_rx_ids",
         "validation_day_ids",
+        "validation_tx_rx_day_coverage",
         "validation_eq_ids",
         "validation_sig_ids",
         "validation_metadata_order_sha256",
@@ -1057,6 +1115,20 @@ def build_source_v_received_iq(args: argparse.Namespace) -> dict[str, Any]:
         )
     if _canonical_sha256(list(row_keys)) != c_clean["validation_metadata_order_sha256"]:
         raise CLICSourceVLeoCacheError("source-V reconstructed V order hash drifted")
+    _, _, source_validation_tx_rx_day_coverage = (
+        _validate_frozen_source_v_axes_and_cell_day_coverage(
+            tx_ids=rows["tx_ids"],
+            rx_ids=rows["rx_ids"],
+            day_ids=rows["day_ids"],
+            label="source-V reconstructed V",
+        )
+    )
+    if source_validation_tx_rx_day_coverage != c_clean[
+        "validation_tx_rx_day_coverage"
+    ]:
+        raise CLICSourceVLeoCacheError(
+            "source-V reconstructed TX/RX/day coverage does not equal clean-v4 V"
+        )
     assignment = assign_source_v_scenarios(
         rows["tx_ids"],
         rows["rx_ids"],
@@ -1169,8 +1241,9 @@ def build_source_v_received_iq(args: argparse.Namespace) -> dict[str, Any]:
             "clean_evidence_run_id": EXPECTED_CLEAN_RUN_ID,
             "source_tx_ids": list(source_tx_ids),
             "source_rx_ids": sorted(set(str(value) for value in rows["rx_ids"])),
-            "source_day_ids": sorted(set(str(value) for value in rows["day_ids"])),
+            "source_day_ids": list(FROZEN_SOURCE_V_DAY_IDS),
             "source_validation_row_count": FROZEN_SOURCE_V_ROW_COUNT,
+            "source_validation_tx_rx_day_coverage": source_validation_tx_rx_day_coverage,
             "source_validation_indices_sha256": validation_index_sha,
             "source_validation_physical_order_sha256": c_clean[
                 "validation_metadata_order_sha256"
