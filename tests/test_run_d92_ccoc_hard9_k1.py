@@ -383,6 +383,26 @@ def test_third_shard_shared_stop_after_prediction_prevents_scoring(
     assert score_starts == []
 
 
+def test_score_dispatch_barrier_rechecks_stop_in_check_start_window(
+    tmp_path: Path,
+) -> None:
+    score_starts: list[str] = []
+
+    started, value = runner._dispatch_score_under_stop_barrier(
+        tmp_path,
+        coordinator_id="shard-3",
+        before_start=lambda: _write(
+            tmp_path / "SYSTEMIC_TECHNICAL_FAILURE_STOP.json",
+            {"schema": runner.SYSTEMIC_FAILURE_SCHEMA},
+        ),
+        start=lambda: score_starts.append("score") or "started",
+    )
+
+    assert started is False
+    assert value is None
+    assert score_starts == []
+
+
 def test_coordinator_stop_does_not_signal_foreign_pid(tmp_path: Path) -> None:
     job = {
         "job_id": "job-foreign",
@@ -421,6 +441,93 @@ def test_coordinator_stop_does_not_signal_foreign_pid(tmp_path: Path) -> None:
     assert result["verified_process_count"] == 0
     assert result["skipped_unverified_process_count"] == 1
     assert signals == []
+
+
+def test_second_fingerprint_publishes_stop_and_automatically_stops_only_owned_child(
+    tmp_path: Path,
+) -> None:
+    first = {
+        "outer_key": "rx_7_7__seed_713104__k_5__new_20",
+        "job_id": "first",
+        "arm_id": runner.ARM_ID,
+        "candidate": runner.CANDIDATE_ID,
+    }
+    second = {
+        "outer_key": "rx_7_7__seed_713103__k_10__new_5",
+        "job_id": "second",
+        "arm_id": runner.ARM_ID,
+        "candidate": runner.CANDIDATE_ID,
+    }
+    foreign = {
+        "outer_key": "rx_8_8__seed_713103__k_5__new_20",
+        "job_id": "foreign",
+        "arm_id": runner.ARM_ID,
+        "candidate": runner.CANDIDATE_ID,
+    }
+    runner._write_active_process_receipt(
+        tmp_path,
+        job=first,
+        shard_index=0,
+        stage="score",
+        pid=101,
+        parent_pid=201,
+        cwd=runner.CODE_ROOT,
+        cmdline=("python", "owned"),
+    )
+    runner._write_active_process_receipt(
+        tmp_path,
+        job=foreign,
+        shard_index=1,
+        stage="prediction",
+        pid=102,
+        parent_pid=202,
+        cwd=runner.CODE_ROOT,
+        cmdline=("python", "foreign"),
+    )
+    signals: list[tuple[int, str]] = []
+
+    def inspect(pid: int) -> dict[str, object]:
+        if pid == 101:
+            return {
+                "pid": 101,
+                "parent_pid": 201,
+                "cwd": str(runner.CODE_ROOT),
+                "cmdline": ["python", "owned"],
+            }
+        return {
+            "pid": 102,
+            "parent_pid": 202,
+            "cwd": str(tmp_path / "foreign-cwd"),
+            "cmdline": ["python", "foreign"],
+        }
+
+    assert (
+        runner._record_pre_prediction_failure(
+            tmp_path,
+            first,
+            "same-error",
+            coordinator_id="triggering-shard",
+            process_inspector=inspect,
+            signal_sender=lambda pid, signal: signals.append((pid, signal)),
+            sleep_seconds=0.0,
+        )
+        is False
+    )
+    assert (
+        runner._record_pre_prediction_failure(
+            tmp_path,
+            second,
+            "same-error",
+            coordinator_id="triggering-shard",
+            process_inspector=inspect,
+            signal_sender=lambda pid, signal: signals.append((pid, signal)),
+            sleep_seconds=0.0,
+        )
+        is True
+    )
+
+    assert signals == [(101, "SIGTERM"), (101, "SIGKILL")]
+    assert (tmp_path / "coordination" / "stop_action.json").is_file()
 
 
 def test_shard_child_writes_exclusive_process_receipt_before_wait(
@@ -499,13 +606,92 @@ def test_runtime_source_lock_closes_scientific_entry_and_rejects_file_drift(
             }
         },
     }
+
+    def temp_git(_repo_root: Path, _arguments: tuple[str, ...]) -> str:
+        return "" if _arguments[0] == "cat-file" else "a" * 40
+
     assert runner._verify_runtime_source_files(
         source_lock,
         code_root=tmp_path / "code",
+        git_runner=temp_git,
     )["file_count"] == 1
     source.write_bytes(b"drift")
     with pytest.raises(runner.D92CCOCHard9K1RunnerError, match="runtime source"):
-        runner._verify_runtime_source_files(source_lock, code_root=tmp_path / "code")
+        runner._verify_runtime_source_files(
+            source_lock,
+            code_root=tmp_path / "code",
+            git_runner=temp_git,
+        )
+
+
+def test_runtime_source_gate_requires_frozen_commit_and_both_git_blob_views(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "code" / "cvsrffi" / "runtime.py"
+    source.parent.mkdir(parents=True)
+    source.write_bytes(b"frozen")
+    commit = "c" * 40
+    blob = "d" * 40
+    source_lock = {
+        "scientific_entry_commit": commit,
+        "files": {
+            "cvsrffi/runtime.py": {
+                "git_blob": blob,
+                "sha256": hashlib.sha256(b"frozen").hexdigest(),
+            }
+        },
+    }
+
+    def git_ok(_repo_root: Path, arguments: tuple[str, ...]) -> str:
+        values = {
+            ("cat-file", "-e", f"{commit}^{{commit}}") : "",
+            ("rev-parse", f"{commit}:code/cvsrffi/runtime.py"): blob,
+            ("rev-parse", "HEAD:code/cvsrffi/runtime.py"): blob,
+        }
+        return values[arguments]
+
+    assert runner._verify_runtime_source_files(
+        source_lock,
+        code_root=tmp_path / "code",
+        git_runner=git_ok,
+    )["file_count"] == 1
+
+    with pytest.raises(runner.D92CCOCHard9K1RunnerError, match="frozen commit"):
+        runner._verify_runtime_source_files(
+            source_lock,
+            code_root=tmp_path / "code",
+            git_runner=lambda _root, _arguments: (_ for _ in ()).throw(
+                runner.D92CCOCHard9K1RunnerError("frozen commit missing")
+            ),
+        )
+
+    def frozen_blob_drift(_repo_root: Path, arguments: tuple[str, ...]) -> str:
+        if arguments == ("cat-file", "-e", f"{commit}^{{commit}}"):
+            return ""
+        if arguments == ("rev-parse", f"{commit}:code/cvsrffi/runtime.py"):
+            return "e" * 40
+        return blob
+
+    with pytest.raises(runner.D92CCOCHard9K1RunnerError, match="frozen blob"):
+        runner._verify_runtime_source_files(
+            source_lock,
+            code_root=tmp_path / "code",
+            git_runner=frozen_blob_drift,
+        )
+
+    def head_blob_drift(_repo_root: Path, arguments: tuple[str, ...]) -> str:
+        if arguments == ("cat-file", "-e", f"{commit}^{{commit}}"):
+            return ""
+        if arguments == ("rev-parse", f"{commit}:code/cvsrffi/runtime.py"):
+            return blob
+        return "f" * 40
+
+    with pytest.raises(runner.D92CCOCHard9K1RunnerError, match="HEAD blob"):
+        runner._verify_runtime_source_files(
+            source_lock,
+            code_root=tmp_path / "code",
+            git_runner=head_blob_drift,
+        )
 
 
 def test_e0_resource_records_are_loaded_per_scene_from_the_sealed_fit_audit(

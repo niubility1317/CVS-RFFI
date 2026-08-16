@@ -13,6 +13,7 @@ import stat
 import subprocess
 import sys
 import time
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Mapping
@@ -364,6 +365,7 @@ def _verify_runtime_source_files(
     runtime_source: Mapping[str, Any],
     *,
     code_root: str | Path = CODE_ROOT,
+    git_runner: Callable[[Path, tuple[str, ...]], str] | None = None,
 ) -> dict[str, Any]:
     """Fail closed if any locked scientific execution source has drifted."""
 
@@ -382,6 +384,15 @@ def _verify_runtime_source_files(
     ):
         raise D92CCOCHard9K1RunnerError("runtime source lock identity drift")
     root = Path(code_root).resolve(strict=True)
+    repo_root = root.parent
+    repo_prefix = root.relative_to(repo_root).as_posix()
+    run_git = git_runner or _git_output
+    try:
+        run_git(repo_root, ("cat-file", "-e", f"{commit}^{{commit}}"))
+    except D92CCOCHard9K1RunnerError as error:
+        raise D92CCOCHard9K1RunnerError(
+            "runtime source frozen commit is unavailable"
+        ) from error
     for relative_path, record in files.items():
         if (
             not isinstance(relative_path, str)
@@ -410,20 +421,58 @@ def _verify_runtime_source_files(
             raise D92CCOCHard9K1RunnerError(
                 f"runtime source SHA drift: {relative_path}"
             )
-    return {"scientific_entry_commit": commit, "file_count": len(files)}
+        repository_path = f"{repo_prefix}/{relative_path}"
+        frozen_blob = run_git(
+            repo_root,
+            ("rev-parse", f"{commit}:{repository_path}"),
+        )
+        if str(frozen_blob).strip().lower() != str(record["git_blob"]).lower():
+            raise D92CCOCHard9K1RunnerError(
+                f"runtime source frozen blob drift: {relative_path}"
+            )
+        head_blob = run_git(repo_root, ("rev-parse", f"HEAD:{repository_path}"))
+        if str(head_blob).strip().lower() != str(record["git_blob"]).lower():
+            raise D92CCOCHard9K1RunnerError(
+                f"runtime source HEAD blob drift: {relative_path}"
+            )
+    return {
+        "scientific_entry_commit": commit,
+        "repository_root": str(repo_root),
+        "file_count": len(files),
+    }
 
 
 def _verify_runtime_source_lock(
     lock: Mapping[str, Any],
     *,
     code_root: str | Path = CODE_ROOT,
+    git_runner: Callable[[Path, tuple[str, ...]], str] | None = None,
 ) -> dict[str, Any]:
     if not isinstance(lock, Mapping):
         raise D92CCOCHard9K1RunnerError("runtime source method-lock drift")
     return _verify_runtime_source_files(
         lock.get("runtime_source", {}),
         code_root=code_root,
+        git_runner=git_runner,
     )
+
+
+def _git_output(repo_root: Path, arguments: tuple[str, ...]) -> str:
+    """Run one bounded Git object query without trusting terminal text alone."""
+
+    try:
+        completed = subprocess.run(
+            ["git", "-C", str(repo_root), *arguments],
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+    except OSError as error:
+        raise D92CCOCHard9K1RunnerError("runtime source Git invocation failed") from error
+    if completed.returncode != 0:
+        raise D92CCOCHard9K1RunnerError("runtime source Git object lookup failed")
+    return completed.stdout.strip()
 
 
 def _verify_truth_sidecar_snapshot(
@@ -758,16 +807,104 @@ def _shared_stop_path(output_root: Path) -> Path:
     return output_root / "SYSTEMIC_TECHNICAL_FAILURE_STOP.json"
 
 
+def _stop_score_lock_path(output_root: Path) -> Path:
+    return output_root / "coordination" / "stop_score_dispatch.lock"
+
+
+@contextmanager
+def _stop_score_dispatch_lock(
+    output_root: str | Path,
+    *,
+    coordinator_id: str,
+    purpose: str,
+    timeout_seconds: float = 5.0,
+):
+    """Serialize stop publication and scorer Popen/receipt registration.
+
+    A stale lock deliberately fails closed.  Releasing a lock owned by another
+    coordinator is forbidden, so a crash cannot be repaired by a later shard.
+    """
+
+    root = Path(output_root).resolve()
+    owner_id = str(coordinator_id)
+    if not owner_id or purpose not in {"score_dispatch", "stop_publish", "stop_action"}:
+        raise D92CCOCHard9K1RunnerError("stop/score coordination identity drift")
+    timeout = _finite(timeout_seconds, "stop/score coordination timeout", lower=0.0)
+    path = _stop_score_lock_path(root)
+    owner = {
+        "schema": _ACTIVE_PROCESS_ACTION_SCHEMA,
+        "status": "STOP_SCORE_DISPATCH_LOCK",
+        "timestamp": _now(),
+        "coordinator_id": owner_id,
+        "purpose": purpose,
+        "run_root": str(root),
+        "pid": os.getpid(),
+        "performance_result_allowed": False,
+    }
+    deadline = time.monotonic() + timeout
+    while True:
+        try:
+            _write_json_new(path, owner)
+            break
+        except FileExistsError:
+            if time.monotonic() >= deadline:
+                raise D92CCOCHard9K1RunnerError(
+                    "stop/score coordination lock is unavailable"
+                )
+            time.sleep(0.01)
+    try:
+        yield
+    finally:
+        existing = _read_json_object(path, label="stop/score coordination lock")
+        if existing != owner:
+            raise D92CCOCHard9K1RunnerError(
+                "stop/score coordination lock ownership drift"
+            )
+        try:
+            os.chmod(path, stat.S_IREAD | stat.S_IWRITE)
+            path.unlink()
+        except OSError as error:
+            raise D92CCOCHard9K1RunnerError(
+                "stop/score coordination lock release failed"
+            ) from error
+
+
+def _dispatch_score_under_stop_barrier(
+    output_root: str | Path,
+    *,
+    coordinator_id: str,
+    start: Callable[[], Any],
+    before_start: Callable[[], None] | None = None,
+) -> tuple[bool, Any | None]:
+    """Atomically recheck stop and register a score child before dispatch."""
+
+    root = Path(output_root).resolve()
+    with _stop_score_dispatch_lock(
+        root,
+        coordinator_id=coordinator_id,
+        purpose="score_dispatch",
+    ):
+        if _shared_stop_path(root).is_file():
+            return False, None
+        if before_start is not None:
+            before_start()
+        if _shared_stop_path(root).is_file():
+            return False, None
+        return True, start()
+
+
 def _start_score_unless_stopped(
     output_root: str | Path,
     *,
     start: Callable[[], Any],
 ) -> tuple[bool, Any | None]:
-    """Recheck the shared systemic stop at the prediction-to-score boundary."""
+    """Compatibility boundary for the direct pre-existing stop test."""
 
-    if _shared_stop_path(Path(output_root)).is_file():
-        return False, None
-    return True, start()
+    return _dispatch_score_under_stop_barrier(
+        output_root,
+        coordinator_id=f"compat-score-dispatch-{os.getpid()}",
+        start=start,
+    )
 
 
 def _active_process_path(
@@ -846,7 +983,7 @@ def _write_active_process_receipt(
     return path
 
 
-def _run_shard_child(
+def _start_shard_child(
     command: list[str],
     *,
     output_root: str | Path,
@@ -857,7 +994,7 @@ def _run_shard_child(
     stderr: Any,
     env: Mapping[str, str],
     popen: Callable[..., Any] = subprocess.Popen,
-) -> int:
+) -> Any:
     """Start one owned child and persist its exclusive stop receipt first."""
 
     child = popen(
@@ -886,7 +1023,40 @@ def _run_shard_child(
         except (AttributeError, OSError, subprocess.SubprocessError):
             pass
         raise
+    return child
+
+
+def _wait_shard_child(child: Any) -> int:
     return int(child.wait())
+
+
+def _run_shard_child(
+    command: list[str],
+    *,
+    output_root: str | Path,
+    job: Mapping[str, Any],
+    shard_index: int,
+    stage: str,
+    stdout: Any,
+    stderr: Any,
+    env: Mapping[str, str],
+    popen: Callable[..., Any] = subprocess.Popen,
+) -> int:
+    """Start and wait for one owned child outside the score-dispatch barrier."""
+
+    return _wait_shard_child(
+        _start_shard_child(
+            command,
+            output_root=output_root,
+            job=job,
+            shard_index=shard_index,
+            stage=stage,
+            stdout=stdout,
+            stderr=stderr,
+            env=env,
+            popen=popen,
+        )
+    )
 
 
 def _read_active_process_receipt(path: Path, *, output_root: Path) -> dict[str, Any]:
@@ -1028,19 +1198,16 @@ def _acquire_stop_coordinator(output_root: Path, coordinator_id: str) -> None:
             raise D92CCOCHard9K1RunnerError("stop coordinator ownership drift")
 
 
-def stop_verified_active_processes(
-    output_root: str | Path,
+def _stop_verified_active_processes_locked(
+    root: Path,
     *,
     coordinator_id: str,
-    process_inspector: Callable[[int], Mapping[str, Any] | None] | None = None,
-    signal_sender: Callable[[int, str], None] | None = None,
-    sleep_seconds: float = 1.0,
+    process_inspector: Callable[[int], Mapping[str, Any] | None] | None,
+    signal_sender: Callable[[int, str], None] | None,
+    sleep_seconds: float,
 ) -> dict[str, Any]:
-    """Stop only verified run-owned children after a systemic stop receipt exists."""
+    """Stop only verified run-owned children while the barrier is held."""
 
-    root = Path(output_root).resolve()
-    if not coordinator_id or not _shared_stop_path(root).is_file():
-        raise D92CCOCHard9K1RunnerError("systemic stop/coordinator identity drift")
     _acquire_stop_coordinator(root, str(coordinator_id))
     inspect = process_inspector or _inspect_posix_process
     send = signal_sender or _send_posix_signal
@@ -1088,10 +1255,89 @@ def stop_verified_active_processes(
     return result
 
 
+def stop_verified_active_processes(
+    output_root: str | Path,
+    *,
+    coordinator_id: str,
+    process_inspector: Callable[[int], Mapping[str, Any] | None] | None = None,
+    signal_sender: Callable[[int, str], None] | None = None,
+    sleep_seconds: float = 1.0,
+) -> dict[str, Any]:
+    """Stop only verified run-owned children after a systemic stop receipt exists."""
+
+    root = Path(output_root).resolve()
+    if not coordinator_id or not _shared_stop_path(root).is_file():
+        raise D92CCOCHard9K1RunnerError("systemic stop/coordinator identity drift")
+    with _stop_score_dispatch_lock(
+        root,
+        coordinator_id=str(coordinator_id),
+        purpose="stop_action",
+    ):
+        return _stop_verified_active_processes_locked(
+            root,
+            coordinator_id=str(coordinator_id),
+            process_inspector=process_inspector,
+            signal_sender=signal_sender,
+            sleep_seconds=sleep_seconds,
+        )
+
+
+def _publish_systemic_stop_and_terminate(
+    output_root: str | Path,
+    *,
+    coordinator_id: str,
+    fingerprint: str,
+    distinct_outer_count: int,
+    process_inspector: Callable[[int], Mapping[str, Any] | None] | None,
+    signal_sender: Callable[[int, str], None] | None,
+    sleep_seconds: float,
+) -> bool:
+    """Atomically publish the stop and terminate only receipt-verified children."""
+
+    root = Path(output_root).resolve()
+    with _stop_score_dispatch_lock(
+        root,
+        coordinator_id=str(coordinator_id),
+        purpose="stop_publish",
+    ):
+        created = False
+        try:
+            _write_json_new(
+                _shared_stop_path(root),
+                {
+                    "schema": SYSTEMIC_FAILURE_SCHEMA,
+                    "status": "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE",
+                    "timestamp": _now(),
+                    "reason": "same_pre_prediction_fingerprint_on_two_distinct_outers",
+                    "fingerprint": str(fingerprint),
+                    "distinct_outer_count": int(distinct_outer_count),
+                    "performance_result_allowed": False,
+                    "fresh_run_retry_authorized": False,
+                },
+            )
+            created = True
+        except FileExistsError:
+            pass
+        if created:
+            _stop_verified_active_processes_locked(
+                root,
+                coordinator_id=str(coordinator_id),
+                process_inspector=process_inspector,
+                signal_sender=signal_sender,
+                sleep_seconds=sleep_seconds,
+            )
+        return _shared_stop_path(root).is_file()
+
+
 def _record_pre_prediction_failure(
     output_root: str | Path,
     job: Mapping[str, Any],
     fingerprint: str,
+    *,
+    coordinator_id: str | None = None,
+    process_inspector: Callable[[int], Mapping[str, Any] | None] | None = None,
+    signal_sender: Callable[[int, str], None] | None = None,
+    sleep_seconds: float = 1.0,
 ) -> bool:
     """Record only pre-prediction failures and stop after two outer rows."""
 
@@ -1127,22 +1373,19 @@ def _record_pre_prediction_failure(
         else 0
     )
     if distinct_outer_count >= 2:
-        try:
-            _write_json_new(
-                _shared_stop_path(root),
-                {
-                    "schema": SYSTEMIC_FAILURE_SCHEMA,
-                    "status": "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE",
-                    "timestamp": _now(),
-                    "reason": "same_pre_prediction_fingerprint_on_two_distinct_outers",
-                    "fingerprint": normalized,
-                    "distinct_outer_count": distinct_outer_count,
-                    "performance_result_allowed": False,
-                    "fresh_run_retry_authorized": False,
-                },
-            )
-        except FileExistsError:
-            pass
+        return _publish_systemic_stop_and_terminate(
+            root,
+            coordinator_id=(
+                str(coordinator_id)
+                if coordinator_id
+                else f"automatic-systemic-stop-{os.getpid()}"
+            ),
+            fingerprint=normalized,
+            distinct_outer_count=distinct_outer_count,
+            process_inspector=process_inspector,
+            signal_sender=signal_sender,
+            sleep_seconds=sleep_seconds,
+        )
     return _shared_stop_path(root).is_file()
 
 
@@ -1351,6 +1594,7 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
     ):
         raise D92CCOCHard9K1RunnerError("shard identity drift")
     shard_index = int(args.shard_index)
+    coordinator_id = f"shard-{shard_index}-pid-{os.getpid()}"
     selected = [
         job
         for job in manifest["jobs"]
@@ -1380,6 +1624,7 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
                 output_root,
                 job,
                 "immutable_job_output_overwrite_risk",
+                coordinator_id=coordinator_id,
             )
             break
         job_root.mkdir(parents=True)
@@ -1434,6 +1679,7 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
                 output_root,
                 job,
                 fingerprint,
+                coordinator_id=coordinator_id,
             ):
                 break
             continue
@@ -1461,7 +1707,7 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
                 job_root / "score.stderr.log"
             ).open("x", encoding="utf-8") as stderr:
 
-                def _start_score() -> tuple[Path, str, int]:
+                def _start_score() -> tuple[Path, str, Any]:
                     binding_path, binding_sha256 = _write_score_binding(
                         job_root,
                         job=job,
@@ -1473,7 +1719,7 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
                     return (
                         binding_path,
                         binding_sha256,
-                        _run_shard_child(
+                        _start_shard_child(
                             score_command,
                             output_root=output_root,
                             job=job,
@@ -1485,8 +1731,9 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
                         ),
                     )
 
-                score_started, score_value = _start_score_unless_stopped(
+                score_started, score_value = _dispatch_score_under_stop_barrier(
                     output_root,
+                    coordinator_id=coordinator_id,
                     start=_start_score,
                 )
         except D92CCOCHard9K1RunnerError as error:
@@ -1508,7 +1755,8 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
             break
         if score_value is None:  # pragma: no cover - guarded by score_started
             raise D92CCOCHard9K1RunnerError("score start value drift")
-        score_binding_path, score_binding_sha256, score_returncode = score_value
+        score_binding_path, score_binding_sha256, score_child = score_value
+        score_returncode = _wait_shard_child(score_child)
         try:
             truth_sidecar_sha256_after_score = _verify_truth_sidecar_snapshot(
                 job["truth_sidecar"],
