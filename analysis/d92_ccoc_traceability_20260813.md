@@ -55,3 +55,7 @@ v1在远端`prepare`前由启动探针触发`ModuleNotFoundError`，因此保留
 ## 2026-08-17 v4 E0资源基线身份发布
 
 `d92_e0_full_ccoc_hard9k1_20260817_v4`是新的CCOC-16不可覆盖身份。E0 fit-audit改为对当前文件执行存在性、非symlink、outer/scene/E0身份与resource schema/query MAC/state/wall/peak合法性验证，实际observed SHA只写入manifest/receipt追溯，不再与历史SHA比较。`runtime_source_verification_mode=sha256_only`、truth/prediction闭包、9+1矩阵、资源阈值和query门不变。状态为`LOCAL_VERIFIED_READY_FOR_N607_HANDOFF / NO_HARD9_RUNTIME_RESULT / NO_PERFORMANCE_RESULT`；v1/v2/v3证据不变，未执行SSH、SCP、N607启动或analyzer。
+
+## 2026-08-17 v5内嵌E0资源投影发布
+
+`d92_e0_full_ccoc_hard9k1_20260817_v5`是新的CCOC-16不可覆盖身份。prepare不再要求外部E0 fit-audit存在或打开它，直接验证并使用Git封存的`e0_resource.scenes`；`e0_resource_source_mode=embedded_preregistered_projection`，历史path/SHA只作declared trace metadata。truth/prediction闭包、9+1矩阵、资源阈值和query门不变。状态为`LOCAL_VERIFIED_READY_FOR_N607_HANDOFF / NO_HARD9_RUNTIME_RESULT / NO_PERFORMANCE_RESULT`；v1/v2/v3/v4证据不变，未执行SSH、SCP、N607启动或analyzer。
