@@ -948,7 +948,7 @@ def test_runtime_source_lock_closes_scientific_entry_and_rejects_file_drift(
     tmp_path: Path,
 ) -> None:
     lock = json.loads(
-        (ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v7.json").read_text(
+        (ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v8.json").read_text(
             encoding="utf-8"
         )
     )
@@ -964,7 +964,7 @@ def test_runtime_source_lock_closes_scientific_entry_and_rejects_file_drift(
     assert protected <= set(lock["runtime_source"]["files"])
     assert runner._verify_runtime_source_lock(lock, code_root=ROOT / "code")[
         "scientific_entry_commit"
-    ] == "1429a496739dfadaf169b83ddf86b3b831f174d5"
+    ] == "053ef7d006b05d4cb00c593e9b694669c0ecb005"
 
     source = tmp_path / "code" / "cvsrffi" / "runtime.py"
     source.parent.mkdir(parents=True)
@@ -1022,10 +1022,10 @@ def _run_extracted_archive_prepare_probe(
         bundle.extractall(extracted)
 
     extracted_config = (
-        extracted / "configs" / "stage2_d92_ccoc_hard9_k1_v7.json"
+        extracted / "configs" / "stage2_d92_ccoc_hard9_k1_v8.json"
     )
     extracted_config.write_bytes(
-        (ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v7.json").read_bytes()
+        (ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v8.json").read_bytes()
     )
     config = json.loads(extracted_config.read_text(encoding="utf-8"))
     for relative_path in config["runtime_source"]["files"]:
@@ -1058,7 +1058,7 @@ root = Path(sys.argv[1]).resolve()
 sys.path.insert(0, str(root / "code"))
 from scripts import run_d92_ccoc_hard9_k1 as runner
 
-config = root / "configs" / "stage2_d92_ccoc_hard9_k1_v7.json"
+config = root / "configs" / "stage2_d92_ccoc_hard9_k1_v8.json"
 output_root = root / "prepare_output"
 runner.build_hard9_k1_manifest = lambda _config, require_package_files: {
     "method_lock": str(config),

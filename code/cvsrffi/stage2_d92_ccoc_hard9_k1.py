@@ -361,7 +361,7 @@ E0_RESOURCE_ROWS = {
     ),
 }
 
-SCIENTIFIC_ENTRY_COMMIT = "1429a496739dfadaf169b83ddf86b3b831f174d5"
+SCIENTIFIC_ENTRY_COMMIT = "053ef7d006b05d4cb00c593e9b694669c0ecb005"
 RUNTIME_SOURCE_FILES = {
     "scripts/run_d92_e0d_prediction.py": {
         "git_blob": "02dc1e01684dcde8089a0243587b965d617bc3b8",
@@ -384,8 +384,8 @@ RUNTIME_SOURCE_FILES = {
         "sha256": "d201c662c283980c9882f1b940ac190b0cc5f4b46855314df4febe1737923693",
     },
     "cvsrffi/stage2_d92_e0d_query_evaluation.py": {
-        "git_blob": "c3491e3359d5da5dd9291a44dd5169bfb295e877",
-        "sha256": "0512ab85a678e24fb3d9a7df3eb73506452976e25a92bdcf57591f0af17a0399",
+        "git_blob": "03e163678bcb84ad39917f48c343347e75eb8ca5",
+        "sha256": "48e71bb8eaf9092f430e68e8cec6471a1e64d142a5282ff1b349faea336b55f1",
     },
     "cvsrffi/stage2_d92_e0d_slim.py": {
         "git_blob": "1cf2b527e514729e14685527a0dc91bf15c5c4e5",
@@ -669,7 +669,7 @@ def _expected_lock() -> dict[str, Any]:
         "runtime": {
             "output_root": (
                 "/home/szu2070436088/2510044040/CV-SincNet/runs/"
-                "d92_ccoc_hard9_k1_20260817_v7"
+                "d92_ccoc_hard9_k1_20260817_v8"
             )
         },
         "outputs": {
