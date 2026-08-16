@@ -48,11 +48,14 @@ def _row(scene: str, *, candidate: bool) -> dict[str, object]:
         "arm_id": run_d92_qic_g0.CANDIDATE_ARM
         if candidate
         else run_d92_qic_g0.REFERENCE_ARM,
+        "k_shot": 10,
+        "old_class_count": 6,
+        "registered_class_count": 11,
+        "after_registered_d_mode_effective": "full_only",
         "after_state_bytes": 8583,
         "query_macs": 3168,
         "after_actual_component_inventory": {
             "actual_component_fit_count": 1,
-            "full_component_fit_count": 1,
         },
         "after_registration_resource": {
             "registration_wall_time_ns": 110_000_000 if candidate else 100_000_000,
@@ -234,3 +237,51 @@ def test_candidate_gate_rejects_fallback_and_persists_rejection(tmp_path, monkey
         run_d92_qic_g0.run(args)
     persisted = json.loads(Path(args.g0_validation_path).read_text(encoding="utf-8"))
     assert persisted["status"] == "D92_QIC_G0_REJECTED"
+
+
+@pytest.mark.parametrize("field, value", [("k_shot", 5), ("old_class_count", 5), ("registered_class_count", 10)])
+def test_g0_rejects_wrong_k_or_class_counts(tmp_path, monkeypatch, field, value) -> None:
+    args = _args(tmp_path)
+
+    def fake_run(*, arm_id: str, output_root: str | Path, **_kwargs: object):
+        output = Path(output_root)
+        after = output / "after"
+        after.mkdir(parents=True)
+        rows = [
+            _row(scene, candidate=arm_id == run_d92_qic_g0.CANDIDATE_ARM)
+            for scene in run_d92_qic_g0.G0_SCENES
+        ]
+        for row in rows:
+            row[field] = value
+        (after / "fit_audit.json").write_text(
+            json.dumps(rows), encoding="utf-8", newline="\n"
+        )
+        return {}
+
+    monkeypatch.setattr(e0d, "run_d92_e0d_query_evaluation", fake_run)
+    with pytest.raises(run_d92_qic_g0.D92QICG0EntryError, match="validation failed"):
+        run_d92_qic_g0.run(args)
+
+
+def test_g0_rejects_missing_mac_and_state_receipts(tmp_path, monkeypatch) -> None:
+    args = _args(tmp_path)
+
+    def fake_run(*, arm_id: str, output_root: str | Path, **_kwargs: object):
+        output = Path(output_root)
+        after = output / "after"
+        after.mkdir(parents=True)
+        rows = [
+            _row(scene, candidate=arm_id == run_d92_qic_g0.CANDIDATE_ARM)
+            for scene in run_d92_qic_g0.G0_SCENES
+        ]
+        for row in rows:
+            row.pop("query_macs")
+            row.pop("after_state_bytes")
+        (after / "fit_audit.json").write_text(
+            json.dumps(rows), encoding="utf-8", newline="\n"
+        )
+        return {}
+
+    monkeypatch.setattr(e0d, "run_d92_e0d_query_evaluation", fake_run)
+    with pytest.raises(run_d92_qic_g0.D92QICG0EntryError, match="validation failed"):
+        run_d92_qic_g0.run(args)

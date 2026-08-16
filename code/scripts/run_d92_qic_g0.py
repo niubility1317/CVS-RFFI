@@ -111,6 +111,14 @@ def _integer(value: Any, name: str) -> int:
     return int(result)
 
 
+def _integer_gate(value: Any, name: str, *, expected: int | None = None) -> bool:
+    try:
+        result = _integer(value, name)
+    except D92QICG0Error:
+        return False
+    return result == expected if expected is not None else result > 0
+
+
 def _sha(value: Any, name: str) -> str:
     if (
         not isinstance(value, str)
@@ -230,8 +238,12 @@ def _candidate_scene_gates(
     inventory = candidate.get("after_actual_component_inventory")
     gates["after_actual_full_once"] = (
         isinstance(inventory, Mapping)
-        and _integer(inventory.get("actual_component_fit_count"), "actual component fit count") == 1
-        and _integer(inventory.get("full_component_fit_count"), "full component fit count") == 1
+        and _integer_gate(
+            inventory.get("actual_component_fit_count"),
+            "actual component fit count",
+            expected=1,
+        )
+        and candidate.get("after_registered_d_mode_effective") == "full_only"
     )
     gates["base_query_zero"] = _query_zero(candidate)
     gates["qic_query_zero"] = _query_zero(candidate, "d92_e0d_qic_")
@@ -265,12 +277,39 @@ def _candidate_scene_gates(
 def _scene_validation(reference: Mapping[str, Any], candidate: Mapping[str, Any]) -> dict[str, Any]:
     gates = _candidate_scene_gates(reference, candidate)
     gates["reference_query_zero"] = _query_zero(reference)
+    for label, row in (("reference", reference), ("candidate", candidate)):
+        gates[f"{label}_k_and_class_shape"] = all(
+            _integer_gate(row.get(field), f"{label} {field}", expected=expected)
+            for field, expected in (
+                ("k_shot", 10),
+                ("old_class_count", 6),
+                ("registered_class_count", 11),
+            )
+        )
     gates["arm_identity"] = (
         reference.get("arm_id") == REFERENCE_ARM and candidate.get("arm_id") == CANDIDATE_ARM
     )
-    gates["query_macs_exact"] = candidate.get("query_macs") == reference.get("query_macs")
+    reference_query_macs = _integer_gate(
+        reference.get("query_macs"), "reference query macs", expected=11 * 288
+    )
+    candidate_query_macs = _integer_gate(
+        candidate.get("query_macs"), "candidate query macs", expected=11 * 288
+    )
+    gates["query_macs_exact"] = (
+        reference_query_macs
+        and candidate_query_macs
+        and candidate.get("query_macs") == reference.get("query_macs")
+    )
+    reference_state_bytes = _integer_gate(
+        reference.get("after_state_bytes"), "reference state bytes"
+    )
+    candidate_state_bytes = _integer_gate(
+        candidate.get("after_state_bytes"), "candidate state bytes"
+    )
     gates["persistent_state_bytes_exact"] = (
-        candidate.get("after_state_bytes") == reference.get("after_state_bytes")
+        reference_state_bytes
+        and candidate_state_bytes
+        and candidate.get("after_state_bytes") == reference.get("after_state_bytes")
     )
     return {
         "pass": all(gates.values()),
