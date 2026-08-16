@@ -6,7 +6,7 @@ does not load files, inspect target artifacts, or retain mutable model state.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from hashlib import sha256
 import math
 from numbers import Real
@@ -511,7 +511,7 @@ def _make_source_receipt(
 
 @dataclass(frozen=True, init=False)
 class FrozenDecisionTable:
-    """Factory-sealed scores and decisions for one candidate, fold, and threshold tuple."""
+    """Factory-created scores and decisions for one candidate, fold, and threshold tuple."""
 
     candidate_id: str
     known_role: SourcePartition
@@ -521,44 +521,6 @@ class FrozenDecisionTable:
     proxy_rows: tuple[ProxyDecisionRow, ...]
     proxy_update_count: int
     source_receipt: DecisionSourceReceipt
-    _factory_seal: object = field(repr=False, compare=False)
-
-    def __init__(
-        self,
-        *,
-        candidate_id: str,
-        known_role: SourcePartition,
-        proxy_role: ProxyRole,
-        thresholds: DecisionThresholds,
-        known_rows: tuple[KnownDecisionRow, ...],
-        proxy_rows: tuple[ProxyDecisionRow, ...],
-        proxy_update_count: int,
-        source_receipt: DecisionSourceReceipt | None = None,
-        _factory_seal: object | None = None,
-    ) -> None:
-        if _factory_seal is not _FROZEN_TABLE_FACTORY_SEAL:
-            raise CalibrationProtocolError("FrozenDecisionTable must be created by the validated factory")
-        candidate = _require_identifier(candidate_id, "candidate_id")
-        if not isinstance(thresholds, DecisionThresholds):
-            raise CalibrationProtocolError("thresholds must be DecisionThresholds")
-        expected_receipt = _make_source_receipt(
-            known_rows,
-            proxy_rows,
-            known_role=known_role,
-            proxy_role=proxy_role,
-            proxy_update_count=proxy_update_count,
-        )
-        if source_receipt is not None and source_receipt != expected_receipt:
-            raise CalibrationProtocolError("frozen decision source receipt does not match decision rows")
-        object.__setattr__(self, "candidate_id", candidate)
-        object.__setattr__(self, "known_role", known_role)
-        object.__setattr__(self, "proxy_role", proxy_role)
-        object.__setattr__(self, "thresholds", thresholds)
-        object.__setattr__(self, "known_rows", known_rows)
-        object.__setattr__(self, "proxy_rows", proxy_rows)
-        object.__setattr__(self, "proxy_update_count", expected_receipt.proxy_update_count)
-        object.__setattr__(self, "source_receipt", expected_receipt)
-        object.__setattr__(self, "_factory_seal", _factory_seal)
 
     @property
     def fold(self) -> int:
@@ -578,13 +540,48 @@ class FrozenDecisionTable:
         return _sha256_payload(payload)
 
 
+def _create_frozen_decision_table(
+    *,
+    candidate_id: object,
+    known_role: object,
+    proxy_role: object,
+    thresholds: object,
+    known_rows: object,
+    proxy_rows: object,
+    proxy_update_count: object,
+    _factory_seal: object,
+) -> FrozenDecisionTable:
+    """Construct a table only for a module-private factory call with validated rows."""
+
+    if _factory_seal is not _FROZEN_TABLE_FACTORY_SEAL:
+        raise CalibrationProtocolError("FrozenDecisionTable must be created by the validated factory")
+    candidate = _require_identifier(candidate_id, "candidate_id")
+    if not isinstance(thresholds, DecisionThresholds):
+        raise CalibrationProtocolError("thresholds must be DecisionThresholds")
+    source_receipt = _make_source_receipt(
+        known_rows,
+        proxy_rows,
+        known_role=known_role,
+        proxy_role=proxy_role,
+        proxy_update_count=proxy_update_count,
+    )
+    table = object.__new__(FrozenDecisionTable)
+    object.__setattr__(table, "candidate_id", candidate)
+    object.__setattr__(table, "known_role", known_role)
+    object.__setattr__(table, "proxy_role", proxy_role)
+    object.__setattr__(table, "thresholds", thresholds)
+    object.__setattr__(table, "known_rows", known_rows)
+    object.__setattr__(table, "proxy_rows", proxy_rows)
+    object.__setattr__(table, "proxy_update_count", source_receipt.proxy_update_count)
+    object.__setattr__(table, "source_receipt", source_receipt)
+    return table
+
+
 def _validate_frozen_decision_table(table: object) -> FrozenDecisionTable:
     """Recompute the source receipt before any downstream metric consumes a table."""
 
     if not isinstance(table, FrozenDecisionTable):
         raise CalibrationProtocolError("metric inputs must be a FrozenDecisionTable")
-    if table._factory_seal is not _FROZEN_TABLE_FACTORY_SEAL:
-        raise CalibrationProtocolError("frozen decision table lacks the factory seal")
     if not isinstance(table.thresholds, DecisionThresholds):
         raise CalibrationProtocolError("frozen decision table thresholds are invalid")
     expected_receipt = _make_source_receipt(
@@ -688,7 +685,7 @@ def _head_decisions(
         )
         for index, row in enumerate(proxy_scores.rows)
     )
-    return FrozenDecisionTable(
+    return _create_frozen_decision_table(
         candidate_id=candidate_id,
         known_role=known_scores.role,
         proxy_role=proxy_scores.role,

@@ -57,6 +57,13 @@ conda run -n ssr-gpu python -m pytest -p no:cacheprovider tests/phase1_mirage/te
 - C1裁决：批准规格§3.4只注册leo_clear_weak、leo_low_elev_weak、leo_rain_weak三个target scene；Gate4精确要求global加这三个scene。因此现有global、clear、low_elev、rain四项检查正确，不新增第四个scene。
 - I1：正式calibrate_thresholds现在只接受0≤max_known_frr≤.10；.1000001 fail closed，较宽松的阈值不能冒充正式Gate。
 - I2：唯一arm的首要比较改为预注册的无量纲Gate2/3连续slack最小值：macro delta=(d-.02)/.02、min delta=(d-.01)/.01、worst-scene=d/.005、fold=(n-5)/1、AUROC=(a-.85)/.15、AUROC delta=(d-.05)/.05、FRR=(.10-frr)/.10。Gate1和proxy update_count=0为布尔闭合，不将所有promoted arm压为同一零余量。
-- I3：FrozenDecisionTable只能由校验工厂以模块私有seal建立，并携带DecisionSourceReceipt（role、fold、行数、hash、proxy update count）。score_same_row再次校验seal、receipt、唯一/跨known-proxy ID、role、fold和零update，伪造或篡改表fail closed。
+- I3：FrozenDecisionTable只能由使用模块私有seal的校验工厂瞬时建立，实例不存储或暴露seal，并携带DecisionSourceReceipt（role、fold、行数、hash、proxy update count）。score_same_row再次校验receipt、唯一/跨known-proxy ID、role、fold和零update，伪造或篡改表fail closed。
 - RED：3项预期失败，分别覆盖放宽FRR、直接/伪seal或交叉ID表、混合原始单位导致的arm排序反转。
 - GREEN：同3项通过；Task8聚焦14 passed；Task1—8限定回归128 passed（125项基线加3项新增）；git diff --check通过。
+
+## Fix round2：I3 seal复用闭合
+
+- RED：从合法FrozenDecisionTable读取_factory_seal后，公开构造器仍可接受该token并生成行收据一致的伪表；新测试以该真实复用路径预期拒绝，得到DID NOT RAISE。
+- GREEN：FrozenDecisionTable保持init=False且不定义公开构造器；模块私有_create_frozen_decision_table以sentinel调用并使用object.__new__写入已校验字段，但不把sentinel写入实例。普通构造或传入_factory_seal均为TypeError/CalibrationProtocolError，合法factory表仍可same-row评分。
+- 保留score_same_row对来源receipt、role、fold、proxy update count、重复ID和跨known-proxy ID的复验；本轮不试图防御object.__new__、反射或模块globals修改等同进程恶意代码路径。
+- 验证：I3聚焦RED 1项预期失败→GREEN 1项通过；Task8聚焦14 passed；Task1—8限定回归128 passed；git diff --check通过。

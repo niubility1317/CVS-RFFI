@@ -176,8 +176,8 @@ def test_tables_are_immutable_and_selection_decisions_cannot_use_calibration_rol
         api.freeze_selection_decisions(v_select, p_cal, thresholds, candidate_id="A")
 
 
-def test_frozen_decision_tables_require_the_factory_seal_and_reject_tampered_cross_ids():
-    """Catch direct/forged decision tables and score-time reuse of a known ID as proxy."""
+def test_frozen_decision_tables_are_factory_only_and_reject_tampered_cross_ids():
+    """Catch a leaked factory token, public construction, or score-time cross-ID reuse."""
 
     api = _api()
     scoring = importlib.import_module("cvsrffi.phase1_mirage.scoring")
@@ -189,27 +189,22 @@ def test_frozen_decision_tables_require_the_factory_seal_and_reject_tampered_cro
         candidate_id="A",
     )
 
-    with pytest.raises(api.CalibrationProtocolError, match="factory"):
-        api.FrozenDecisionTable(
-            candidate_id="forged",
-            known_role=SourcePartition.V_SELECT,
-            proxy_role=ProxyRole.P_SELECT,
-            thresholds=thresholds,
-            known_rows=decisions.known_rows,
-            proxy_rows=decisions.proxy_rows,
-            proxy_update_count=0,
-        )
-    with pytest.raises(api.CalibrationProtocolError, match="factory"):
-        api.FrozenDecisionTable(
-            candidate_id="forged",
-            known_role=SourcePartition.V_SELECT,
-            proxy_role=ProxyRole.P_SELECT,
-            thresholds=thresholds,
-            known_rows=decisions.known_rows,
-            proxy_rows=decisions.proxy_rows,
-            proxy_update_count=0,
-            _factory_seal=object(),
-        )
+    construction_kwargs = {
+        "candidate_id": "forged",
+        "known_role": SourcePartition.V_SELECT,
+        "proxy_role": ProxyRole.P_SELECT,
+        "thresholds": thresholds,
+        "known_rows": decisions.known_rows,
+        "proxy_rows": decisions.proxy_rows,
+        "proxy_update_count": 0,
+    }
+    leaked_seal = getattr(decisions, "_factory_seal", object())
+    with pytest.raises((TypeError, api.CalibrationProtocolError)):
+        api.FrozenDecisionTable(**construction_kwargs)
+    with pytest.raises((TypeError, api.CalibrationProtocolError)):
+        api.FrozenDecisionTable(**construction_kwargs, _factory_seal=leaked_seal)
+    assert not hasattr(decisions, "_factory_seal")
+    assert scoring.score_same_row(decisions).candidate_id == "A"
 
     crossed_proxy = replace(
         decisions.proxy_rows[0],
