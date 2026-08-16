@@ -34,6 +34,14 @@ _CANONICAL_TIE_POLICY = (
 )
 _FEATURE_DIMENSION = 288
 _FLOAT64_BYTES = np.dtype(np.float64).itemsize
+_COVARIANCE_BUFFER_BYTES = int(
+    _FEATURE_DIMENSION * _FEATURE_DIMENSION * _FLOAT64_BYTES
+)
+_MAX_BLOCK_DIMENSION = max(block.stop - block.start for block in _BLOCK_SLICES)
+_MAX_DIAGONAL_BLOCK_WORKSPACE_BYTES = int(
+    _MAX_BLOCK_DIMENSION * _MAX_BLOCK_DIMENSION * _FLOAT64_BYTES
+)
+_MAX_BLOCK_ROW_WORKSPACE_BYTES = int(_MAX_BLOCK_DIMENSION * _FLOAT64_BYTES)
 _UPPER_ACCUMULATOR_BYTES = int(
     sum(
         (left.stop - left.start) * (right.stop - right.start) * _FLOAT64_BYTES
@@ -309,8 +317,36 @@ def _blockdiag(covariance: np.ndarray) -> np.ndarray:
     return result
 
 
-def _mix_full_and_blockdiag(covariance: np.ndarray, rho: float) -> np.ndarray:
-    """Interpolate one full endpoint and its block-diagonal endpoint."""
+def _covariance_mix_workspace_receipt() -> dict[str, int]:
+    """Report the explicit live buffers for the low-peak covariance assembly.
+
+    The two frozen D92 endpoints are caller-owned read-only inputs.  CCOC adds
+    one output covariance, one reusable largest diagonal-block workspace, and
+    one row scratch for preserving the original diagonal multiplication order.
+    The streaming rho workspace has returned before this assembly starts, so
+    its separately reported bound does not overlap this live set.
+    """
+
+    live_bytes = int(
+        _COVARIANCE_BUFFER_BYTES
+        + _MAX_DIAGONAL_BLOCK_WORKSPACE_BYTES
+        + _MAX_BLOCK_ROW_WORKSPACE_BYTES
+    )
+    return {
+        "candidate_covariance_result_bytes": _COVARIANCE_BUFFER_BYTES,
+        "candidate_covariance_block_workspace_bytes": (
+            _MAX_DIAGONAL_BLOCK_WORKSPACE_BYTES
+        ),
+        "candidate_covariance_row_workspace_bytes": _MAX_BLOCK_ROW_WORKSPACE_BYTES,
+        "candidate_covariance_full_buffer_count_upper_bound": 1,
+        "candidate_covariance_mix_live_bytes_upper_bound": live_bytes,
+    }
+
+
+def _validate_endpoint_and_rho(
+    covariance: np.ndarray, rho: float
+) -> tuple[np.ndarray, float]:
+    """Validate one frozen endpoint without allocating another full matrix."""
 
     value = float(rho)
     if not math.isfinite(value):
@@ -318,9 +354,123 @@ def _mix_full_and_blockdiag(covariance: np.ndarray, rho: float) -> np.ndarray:
     if value < 0.0 or value > 1.0:
         raise D92CCOCNumericalError("ccoc_rho_out_of_range")
     full = np.asarray(covariance, dtype=np.float64)
+    if full.shape != (_FEATURE_DIMENSION, _FEATURE_DIMENSION):
+        raise D92CCOCError("ccoc_endpoint_shape_drift")
     if not np.isfinite(full).all():
         raise D92CCOCNumericalError("ccoc_endpoint_nonfinite")
-    return value * full + (1.0 - value) * _blockdiag(full)
+    return full, value
+
+
+def _mix_endpoint_into(
+    result: np.ndarray,
+    endpoint: np.ndarray,
+    rho: float,
+    *,
+    block_workspace: np.ndarray,
+) -> None:
+    """Overwrite ``result`` with one literal frozen full/block endpoint mix.
+
+    This retains the old elementwise multiplication/addition order, including
+    diagonal rounding, while avoiding a full block-diagonal matrix.  The three
+    upper off-diagonal blocks determine their transposes exactly because each
+    frozen D92 endpoint is symmetric.
+    """
+
+    other = 1.0 - float(rho)
+    for left, right in _UPPER_BLOCK_PAIRS:
+        upper = result[left, right]
+        np.multiply(upper, rho, out=upper)
+        # The frozen literal includes ``+(1-rho)*0`` on off-diagonal blocks.
+        # Retain that signed-zero rounding without creating a second matrix.
+        np.add(upper, 0.0, out=upper)
+        np.copyto(result[right, left], upper.T)
+    for block in _BLOCK_SLICES:
+        rows = int(block.stop - block.start)
+        target = result[block, block]
+        source = endpoint[block, block]
+        scratch = block_workspace[:rows, :rows]
+        np.multiply(target, rho, out=target)
+        np.multiply(source, other, out=scratch)
+        np.add(target, scratch, out=target)
+
+
+def _add_half_endpoint_mix_into(
+    result: np.ndarray,
+    endpoint: np.ndarray,
+    rho: float,
+    *,
+    block_workspace: np.ndarray,
+    row_workspace: np.ndarray,
+) -> None:
+    """Add half a frozen endpoint mix using one reusable block workspace."""
+
+    other = 1.0 - float(rho)
+    for left, right in _UPPER_BLOCK_PAIRS:
+        rows = int(left.stop - left.start)
+        columns = int(right.stop - right.start)
+        source = endpoint[left, right]
+        scratch = block_workspace[:rows, :columns]
+        np.multiply(source, rho, out=scratch)
+        np.add(scratch, 0.0, out=scratch)
+        np.multiply(scratch, 0.5, out=scratch)
+        upper = result[left, right]
+        np.add(upper, scratch, out=upper)
+        np.copyto(result[right, left], upper.T)
+    for block in _BLOCK_SLICES:
+        rows = int(block.stop - block.start)
+        target = result[block, block]
+        source = endpoint[block, block]
+        scratch = block_workspace[:rows, :rows]
+        np.multiply(source, rho, out=scratch)
+        for row_index in range(rows):
+            row = row_workspace[:rows]
+            np.multiply(source[row_index], other, out=row)
+            np.add(scratch[row_index], row, out=scratch[row_index])
+        np.multiply(scratch, 0.5, out=scratch)
+        np.add(target, scratch, out=target)
+
+
+def _stream_task_covariance_mix(
+    old_covariance: np.ndarray,
+    new_covariance: np.ndarray,
+    old_rho: float,
+    new_rho: float,
+) -> np.ndarray:
+    """Assemble the frozen task-balanced covariance without full temporaries."""
+
+    old, old_value = _validate_endpoint_and_rho(old_covariance, old_rho)
+    new, new_value = _validate_endpoint_and_rho(new_covariance, new_rho)
+    if old.shape != new.shape:
+        raise D92CCOCError("ccoc_task_covariance_shape_drift")
+    result = old.copy()
+    block_workspace = np.empty(
+        (_MAX_BLOCK_DIMENSION, _MAX_BLOCK_DIMENSION), dtype=np.float64
+    )
+    row_workspace = np.empty(_MAX_BLOCK_DIMENSION, dtype=np.float64)
+    _mix_endpoint_into(
+        result, old, old_value, block_workspace=block_workspace
+    )
+    np.multiply(result, 0.5, out=result)
+    _add_half_endpoint_mix_into(
+        result,
+        new,
+        new_value,
+        block_workspace=block_workspace,
+        row_workspace=row_workspace,
+    )
+    return result
+
+
+def _mix_full_and_blockdiag(covariance: np.ndarray, rho: float) -> np.ndarray:
+    """Interpolate one full endpoint and its block-diagonal endpoint."""
+
+    full, value = _validate_endpoint_and_rho(covariance, rho)
+    result = full.copy()
+    workspace = np.empty(
+        (_MAX_BLOCK_DIMENSION, _MAX_BLOCK_DIMENSION), dtype=np.float64
+    )
+    _mix_endpoint_into(result, full, value, block_workspace=workspace)
+    return result
 
 
 def _combine_task_covariances(
@@ -332,7 +482,19 @@ def _combine_task_covariances(
     new = np.asarray(new_covariance, dtype=np.float64)
     if old.shape != new.shape or old.shape != (288, 288):
         raise D92CCOCError("ccoc_task_covariance_shape_drift")
-    return 0.5 * old + 0.5 * new
+    result = old.copy()
+    workspace = np.empty(
+        (_MAX_BLOCK_DIMENSION, _MAX_BLOCK_DIMENSION), dtype=np.float64
+    )
+    np.multiply(result, 0.5, out=result)
+    for row_block in _BLOCK_SLICES:
+        rows = int(row_block.stop - row_block.start)
+        for column_block in _BLOCK_SLICES:
+            columns = int(column_block.stop - column_block.start)
+            scratch = workspace[:rows, :columns]
+            np.multiply(new[row_block, column_block], 0.5, out=scratch)
+            np.add(result[row_block, column_block], scratch, out=result[row_block, column_block])
+    return result
 
 
 def _require_symmetric_positive_definite(
@@ -384,6 +546,7 @@ def _ccoc_statistics_audit(
     audit = dict(base.covariance_audit)
     support_macs = _support_macs_upper_bound(base.class_count, base.k_shot)
     workspace = _workspace_receipt(base.k_shot)
+    covariance_mix_workspace = _covariance_mix_workspace_receipt()
     audit.update(
         {
             "d92_ccoc_active": True,
@@ -446,6 +609,29 @@ def _ccoc_statistics_audit(
             "d92_ccoc_workspace_frozen_k10_numeric_bytes_upper_bound": workspace[
                 "frozen_k10_numeric_bytes_upper_bound"
             ],
+            "d92_ccoc_workspace_candidate_covariance_result_bytes": (
+                covariance_mix_workspace["candidate_covariance_result_bytes"]
+            ),
+            "d92_ccoc_workspace_candidate_covariance_block_workspace_bytes": (
+                covariance_mix_workspace[
+                    "candidate_covariance_block_workspace_bytes"
+                ]
+            ),
+            "d92_ccoc_workspace_candidate_covariance_row_workspace_bytes": (
+                covariance_mix_workspace[
+                    "candidate_covariance_row_workspace_bytes"
+                ]
+            ),
+            "d92_ccoc_workspace_candidate_covariance_full_buffer_count_upper_bound": (
+                covariance_mix_workspace[
+                    "candidate_covariance_full_buffer_count_upper_bound"
+                ]
+            ),
+            "d92_ccoc_workspace_candidate_covariance_mix_live_bytes_upper_bound": (
+                covariance_mix_workspace[
+                    "candidate_covariance_mix_live_bytes_upper_bound"
+                ]
+            ),
             "d92_ccoc_support_transient_bytes_upper_bound": workspace[
                 "numeric_bytes_upper_bound"
             ],
@@ -509,9 +695,12 @@ def build_cross_class_offblock_consensus_statistics(
     new_rho, new_audit = _stream_group_consensus(
         transformed, targets, range(OLD_CLASS_COUNT, int(class_count)), k_shot
     )
-    old_covariance = _mix_full_and_blockdiag(base.old_covariance, old_rho)
-    new_covariance = _mix_full_and_blockdiag(base.new_covariance, new_rho)
-    covariance = _combine_task_covariances(old_covariance, new_covariance)
+    covariance = _stream_task_covariance_mix(
+        base.old_covariance,
+        base.new_covariance,
+        old_rho,
+        new_rho,
+    )
     final_cholesky_min = _require_symmetric_positive_definite(
         covariance, name="final_covariance"
     )

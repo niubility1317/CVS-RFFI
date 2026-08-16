@@ -51,6 +51,36 @@ def _random_support(classes: int, shots: int, seed: int) -> tuple[np.ndarray, np
     return rows.astype(np.float32), labels
 
 
+def _random_spd_endpoint_pair(seed: int) -> tuple[np.ndarray, np.ndarray]:
+    """Build two independent symmetric positive-definite 288d endpoints."""
+
+    rng = np.random.default_rng(seed)
+    endpoints: list[np.ndarray] = []
+    for _ in range(2):
+        factor = rng.normal(size=(d42.FEATURE_DIM, d42.FEATURE_DIM))
+        covariance = factor @ factor.T
+        covariance += np.eye(d42.FEATURE_DIM, dtype=np.float64)
+        endpoints.append(covariance)
+    return endpoints[0], endpoints[1]
+
+
+def _frozen_ccoc_task_covariance_reference(
+    old_covariance: np.ndarray,
+    new_covariance: np.ndarray,
+    old_rho: float,
+    new_rho: float,
+) -> np.ndarray:
+    """Independent literal of the frozen full/block endpoint equation."""
+
+    old_mix = old_rho * old_covariance + (1.0 - old_rho) * _blockdiag(
+        old_covariance
+    )
+    new_mix = new_rho * new_covariance + (1.0 - new_rho) * _blockdiag(
+        new_covariance
+    )
+    return 0.5 * old_mix + 0.5 * new_mix
+
+
 def _near_endpoint_consensus_group() -> tuple[np.ndarray, np.ndarray]:
     """Two K3 directions whose cosine is below but very near one."""
 
@@ -377,6 +407,111 @@ def test_ccoc_task_balanced_mix_is_exactly_invariant_to_swapping_tasks():
     reverse = ccoc._combine_task_covariances(new_endpoint, old_endpoint)
 
     np.testing.assert_array_equal(forward, reverse)
+
+
+@pytest.mark.parametrize(
+    ("old_rho", "new_rho"),
+    (
+        (0.0, 1.0),
+        (1.0, 0.0),
+        (0.3, 0.123456789),
+    ),
+)
+def test_ccoc_streamed_task_mix_matches_frozen_bits_without_mutating_endpoints(
+    old_rho, new_rho
+):
+    """Would fail if the low-peak mix changed math or wrote a D92 endpoint."""
+
+    old_endpoint, new_endpoint = _random_spd_endpoint_pair(2_026_817)
+    old_endpoint.setflags(write=False)
+    new_endpoint.setflags(write=False)
+    old_before = old_endpoint.tobytes()
+    new_before = new_endpoint.tobytes()
+    expected = _frozen_ccoc_task_covariance_reference(
+        old_endpoint, new_endpoint, old_rho, new_rho
+    )
+
+    actual = ccoc._stream_task_covariance_mix(
+        old_endpoint, new_endpoint, old_rho, new_rho
+    )
+
+    np.testing.assert_array_equal(actual, expected)
+    assert old_endpoint.tobytes() == old_before
+    assert new_endpoint.tobytes() == new_before
+    assert old_endpoint.flags.writeable is False
+    assert new_endpoint.flags.writeable is False
+
+
+def test_ccoc_streamed_task_mix_receipt_bounds_live_candidate_buffers():
+    """Would fail if mix accounting hid a second full covariance allocation."""
+
+    receipt = ccoc._covariance_mix_workspace_receipt()
+
+    full_bytes = d42.FEATURE_DIM * d42.FEATURE_DIM * np.dtype(np.float64).itemsize
+    assert receipt["candidate_covariance_result_bytes"] == full_bytes
+    assert receipt["candidate_covariance_block_workspace_bytes"] == 160 * 160 * 8
+    assert receipt["candidate_covariance_row_workspace_bytes"] == 160 * 8
+    assert receipt["candidate_covariance_full_buffer_count_upper_bound"] <= 2
+    assert receipt["candidate_covariance_full_buffer_count_upper_bound"] == 1
+    assert receipt["candidate_covariance_mix_live_bytes_upper_bound"] == (
+        full_bytes + 160 * 160 * 8 + 160 * 8
+    )
+    assert receipt["candidate_covariance_mix_live_bytes_upper_bound"] <= 1_048_576
+
+
+def test_ccoc_c26_k5_streamed_mix_preserves_compiled_d42_state_bits():
+    """Would fail if C26/K5 low-peak assembly changed the deployed D42 state."""
+
+    rows, labels = _random_support(26, 5, seed=8_171)
+    statistics = ccoc.build_cross_class_offblock_consensus_statistics(
+        d42, rows, labels, class_count=26, k_shot=5
+    )
+    expected_covariance = _frozen_ccoc_task_covariance_reference(
+        statistics.base.old_covariance,
+        statistics.base.new_covariance,
+        statistics.old_rho,
+        statistics.new_rho,
+    )
+    expected_covariance.setflags(write=False)
+    expected_statistics = replace(statistics, covariance=expected_covariance)
+
+    actual_coefficient, actual_intercept, _ = (
+        ccoc.compile_cross_class_offblock_consensus_affine(d42, statistics)
+    )
+    expected_coefficient, expected_intercept, _ = (
+        ccoc.compile_cross_class_offblock_consensus_affine(d42, expected_statistics)
+    )
+    actual_state, _ = d42._compile_state(
+        tuple(f"tx_{index}" for index in range(26)),
+        6,
+        np.zeros(d42.FEATURE_DIM, dtype=np.float32),
+        actual_coefficient,
+        actual_intercept,
+        "sklearn_lsqr_auto_shrinkage_equal_prior",
+        precision="int8",
+    )
+    expected_state, _ = d42._compile_state(
+        tuple(f"tx_{index}" for index in range(26)),
+        6,
+        np.zeros(d42.FEATURE_DIM, dtype=np.float32),
+        expected_coefficient,
+        expected_intercept,
+        "sklearn_lsqr_auto_shrinkage_equal_prior",
+        precision="int8",
+    )
+
+    np.testing.assert_array_equal(statistics.covariance, expected_covariance)
+    assert actual_coefficient.tobytes() == expected_coefficient.tobytes()
+    assert actual_intercept.tobytes() == expected_intercept.tobytes()
+    for field in (
+        "log_diag_fp32",
+        "coef1_qint8",
+        "coef2_qint8",
+        "scale1_fp16",
+        "scale2_fp16",
+        "intercept_fp16",
+    ):
+        assert getattr(actual_state, field).tobytes() == getattr(expected_state, field).tobytes()
 
 
 def test_ccoc_compile_performs_one_dense_solve_without_extra_fit_families(monkeypatch):
