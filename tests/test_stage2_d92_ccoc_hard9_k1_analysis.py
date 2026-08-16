@@ -3,9 +3,12 @@ from __future__ import annotations
 import hashlib
 import json
 import csv
+import os
+import stat
 import sys
 from pathlib import Path
 
+import numpy as np
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -14,6 +17,7 @@ if str(ROOT / "code") not in sys.path:
 
 from cvsrffi import stage2_d92_ccoc_hard9_k1 as matrix  # noqa: E402
 from cvsrffi import stage2_d92_ccoc_hard9_k1_analysis as analysis  # noqa: E402
+from cvsrffi.stage2_diag_cosine_scorer import score_diag_cosine_pair  # noqa: E402
 
 
 _ORIGINAL_MATRIX_STATE = {
@@ -178,6 +182,8 @@ def test_output_package_is_exclusive_and_contains_all_seven_files(tmp_path: Path
 
 def _write_json(path: Path, value: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists():
+        os.chmod(path, stat.S_IREAD | stat.S_IWRITE)
     path.write_text(json.dumps(value, ensure_ascii=False, sort_keys=True), encoding="utf-8")
 
 
@@ -219,69 +225,83 @@ def _write_csv(path: Path, rows: list[dict[str, object]]) -> None:
         writer.writerows(rows)
 
 
-def _surface_score(
-    outer: str,
-    truth_sha256: str,
-    *,
-    gain: float,
-    forgetting_pp: float,
-    query_tag: str = "canonical",
-) -> dict[str, object]:
-    """Make an E0/candidate surface with explicit per-state query identities."""
+def _token(outer: str, scene: str, role: str, index: int, *, alternate: bool = False) -> str:
+    suffix = ":alternate" if alternate else ""
+    return f"{outer}:{scene}:{role}:{index}{suffix}"
 
-    after_accuracy = 0.70 + gain
-    error_rate = 0.10 - (0.02 if gain else 0.0)
-    before_scene = {
-        scene: {
-            "query_count": 60,
-            "query_identity_sha256": hashlib.sha256(
-                f"{outer}:before:{scene}:{query_tag}".encode("utf-8")
-            ).hexdigest(),
-        }
-        for scene in analysis.SCENES
-    }
-    after_scene = {
-        scene: {
-            "query_count": 80,
-            "query_identity_sha256": hashlib.sha256(
-                f"{outer}:after:{scene}:{query_tag}".encode("utf-8")
-            ).hexdigest(),
-            "h_old_new": after_accuracy,
-            "old_acc": after_accuracy,
-            "old_balanced_accuracy": after_accuracy,
-            "c_old_acc": after_accuracy,
-            "old_floor": after_accuracy,
-            "seen_new_acc": after_accuracy,
-            "average_forgetting": forgetting_pp / 100.0,
-            "new_to_old_rate": error_rate,
-            "old_to_new_rate": error_rate,
-        }
-        for scene in analysis.SCENES
-    }
-    old_before = {f"tx_{index}": {"role": "target_old", "accuracy": 0.80} for index in range(6)}
-    old_after = {
-        f"tx_{index}": {"role": "target_old", "accuracy": after_accuracy}
-        for index in range(6)
-    }
-    return {
-        "schema": "cvs.phase2.diag_cosine_dev_pair_score.v1",
-        "candidate": "e0_full_only" if gain == 0.0 else analysis.CANDIDATE_ID,
-        "truth_sidecar_sha256": truth_sha256,
-        "query_truth_fed_back_to_predictor": False,
-        "query_truth_joined_only_after_immutable_predictions": True,
-        "before": {"old_acc": 0.80, "by_tx": old_before, "by_scenario": before_scene},
-        "after": {
-            "h_old_new": after_accuracy,
-            "old_acc": after_accuracy,
-            "seen_new_acc": after_accuracy,
-            "new_to_old_rate": error_rate,
-            "old_to_new_rate": error_rate,
-            "by_tx": old_after,
-            "by_scenario": after_scene,
-        },
-        "old_forgetting_pp": forgetting_pp,
-        "per_old_class_floor_before": 0.80,
-    }
+
+def _write_truth_sidecar(path: Path, outer: str) -> None:
+    """Create one canonical manifest-bound sidecar used by E0 and candidate."""
+
+    rows: list[dict[str, str]] = []
+    for scene in analysis.SCENES:
+        for index in range(6):
+            common = {
+                "true_class_handle": f"old_handle_{index}",
+                "transmitter_label": f"tx_{index}",
+                "evaluation_role": "target_old",
+            }
+            rows.append({"query_token": _token(outer, scene, "old", index), **common})
+            if index == 0:
+                rows.append(
+                    {
+                        "query_token": _token(outer, scene, "old", index, alternate=True),
+                        **common,
+                    }
+                )
+        for index in range(2):
+            rows.append(
+                {
+                    "query_token": _token(outer, scene, "new", index),
+                    "true_class_handle": f"new_handle_{index}",
+                    "transmitter_label": f"new_tx_{index}",
+                    "evaluation_role": "target_new",
+                }
+            )
+    _write_json(path, {"schema": "cvs.phase2.query_truth_sidecar.v2", "rows": rows})
+
+
+def _write_prediction_artifact(
+    path: Path,
+    outer: str,
+    *,
+    state: str,
+    candidate: bool,
+    raw_query_mismatch: bool = False,
+) -> None:
+    """Emit the real scorer's exact immutable NPZ shape, never a fake sidecar."""
+
+    tokens: list[str] = []
+    scenes: list[str] = []
+    predicted: list[str] = []
+    for scene in analysis.SCENES:
+        for index in range(6):
+            use_alternate = raw_query_mismatch and not candidate and index == 0
+            tokens.append(_token(outer, scene, "old", index, alternate=use_alternate))
+            scenes.append(scene)
+            if state == "after" and candidate:
+                predicted.append(f"old_handle_{index}")
+            elif state == "after" and index in {0, 1}:
+                predicted.append("new_handle_0")
+            elif state == "before" and index == 0:
+                predicted.append("new_handle_0")
+            else:
+                predicted.append(f"old_handle_{index}")
+        if state == "after":
+            for index in range(2):
+                tokens.append(_token(outer, scene, "new", index))
+                scenes.append(scene)
+                predicted.append(
+                    f"new_handle_{index}" if candidate or index == 1 else "old_handle_0"
+                )
+    path.parent.mkdir(parents=True, exist_ok=True)
+    np.savez(
+        path,
+        query_tokens=np.asarray(tokens, dtype=str),
+        scenarios=np.asarray(scenes, dtype=str),
+        predicted_class_handles=np.asarray(predicted, dtype=str),
+    )
+    os.chmod(path, stat.S_IREAD)
 
 
 def _closure_hashes(job_root: Path) -> dict[str, str]:
@@ -331,47 +351,134 @@ def _refresh_score_evidence(job_root: Path) -> None:
     _write_json(receipt_path, receipt)
 
 
+def _rewrite_candidate_after_scene_for_stability(
+    job_root: Path,
+    truth_path: Path,
+    scene: str,
+) -> None:
+    """Make one real scene worse while leaving the outer aggregate strict."""
+
+    state_root = job_root / "diag" / "after"
+    artifact = state_root / "prediction_artifact.npz"
+    with np.load(artifact, allow_pickle=False) as archive:
+        tokens = archive["query_tokens"].astype(str)
+        scenes = archive["scenarios"].astype(str)
+        predicted = archive["predicted_class_handles"].astype(str)
+    changed = 0
+    for index, (token, observed_scene) in enumerate(zip(tokens.tolist(), scenes.tolist())):
+        if observed_scene == scene and ":old:" in token and changed < 3:
+            predicted[index] = "new_handle_0"
+            changed += 1
+    assert changed == 3
+    os.chmod(artifact, stat.S_IREAD | stat.S_IWRITE)
+    np.savez(
+        artifact,
+        query_tokens=tokens,
+        scenarios=scenes,
+        predicted_class_handles=predicted,
+    )
+    os.chmod(artifact, stat.S_IREAD)
+    _refresh_commit(state_root)
+    score_path = job_root / "scorer" / "diag_cosine_score.json"
+    os.chmod(score_path, stat.S_IREAD | stat.S_IWRITE)
+    score_path.unlink()
+    score_diag_cosine_pair(
+        before_prediction_path=job_root / "diag" / "before" / "prediction_artifact.npz",
+        after_prediction_path=artifact,
+        truth_sidecar_path=truth_path,
+        output_path=score_path,
+        candidate=analysis.CANDIDATE_ID,
+    )
+    _refresh_closure_evidence(job_root)
+
+
+def _rewrite_candidate_after_as_e0(job_root: Path, truth_path: Path, outer: str) -> None:
+    """Create a real post-registration E0 tie and rebind every Task1 SHA."""
+
+    state_root = job_root / "diag" / "after"
+    artifact = state_root / "prediction_artifact.npz"
+    os.chmod(artifact, stat.S_IREAD | stat.S_IWRITE)
+    _write_prediction_artifact(artifact, outer, state="after", candidate=False)
+    _refresh_commit(state_root)
+    score_path = job_root / "scorer" / "diag_cosine_score.json"
+    os.chmod(score_path, stat.S_IREAD | stat.S_IWRITE)
+    score_path.unlink()
+    score_diag_cosine_pair(
+        before_prediction_path=job_root / "diag" / "before" / "prediction_artifact.npz",
+        after_prediction_path=artifact,
+        truth_sidecar_path=truth_path,
+        output_path=score_path,
+        candidate=analysis.CANDIDATE_ID,
+    )
+    _refresh_closure_evidence(job_root)
+
+
 def _integration_fixture(
     tmp_path: Path,
     *,
     raw_truth_mismatch: bool = False,
     raw_query_mismatch: bool = False,
 ) -> tuple[Path, Path, Path, Path]:
-    """Build a strict canonical manifest with local, fully closed artifacts."""
+    """Build a strict fixture from actual scorer-shaped artifacts.
+
+    E0 and CCOC deliberately consume one immutable, manifest-bound truth
+    sidecar.  The raw score is produced by the real post-prediction scorer;
+    it contains no analyzer-only query-identity or per-scene synthetic fields.
+    """
 
     raw_root = tmp_path / "e0_raw"
     paired_path = tmp_path / "historical" / "paired_rows.csv"
     per_old_path = tmp_path / "historical" / "per_old_class_rows.csv"
     truth_root = tmp_path / "truth"
-    raw_scores: dict[str, dict[str, object]] = {}
-    candidate_truth_sha: dict[str, str] = {}
     selected_rows = matrix._expected_rows()
     mismatch_outer = str(selected_rows[0]["outer_key"])
+    truth_sha: dict[str, str] = {}
     for row in selected_rows:
         outer = str(row["outer_key"])
-        candidate_truth_sha[outer] = hashlib.sha256(
-            f"candidate-truth:{outer}".encode("utf-8")
-        ).hexdigest()
-        raw_truth_sha = candidate_truth_sha[outer]
-        if raw_truth_mismatch and outer == mismatch_outer:
-            raw_truth_sha = hashlib.sha256(f"raw-truth:{outer}".encode("utf-8")).hexdigest()
-        raw_scores[outer] = _surface_score(
+        truth = truth_root / "jobs" / outer / "offline" / "scorer" / "truth_sidecar.json"
+        _write_truth_sidecar(truth, outer)
+        truth_sha[outer] = _digest(truth)
+
+    raw_scores: dict[str, dict[str, object]] = {}
+    for row in selected_rows:
+        outer = str(row["outer_key"])
+        e0_root = raw_root / outer / "E0_FULL_ONLY"
+        _write_prediction_artifact(
+            e0_root / "diag" / "before" / "prediction_artifact.npz",
             outer,
-            raw_truth_sha,
-            gain=0.0,
-            forgetting_pp=10.0,
-            query_tag="raw-drift" if raw_query_mismatch and outer == mismatch_outer else "canonical",
+            state="before",
+            candidate=False,
+            raw_query_mismatch=raw_query_mismatch and outer == mismatch_outer,
         )
-        _write_json(
-            raw_root / outer / "E0_FULL_ONLY" / "scorer" / "diag_cosine_score.json",
-            raw_scores[outer],
+        _write_prediction_artifact(
+            e0_root / "diag" / "after" / "prediction_artifact.npz",
+            outer,
+            state="after",
+            candidate=False,
+            raw_query_mismatch=raw_query_mismatch and outer == mismatch_outer,
         )
+        raw_score_path = e0_root / "scorer" / "diag_cosine_score.json"
+        score_diag_cosine_pair(
+            before_prediction_path=e0_root / "diag" / "before" / "prediction_artifact.npz",
+            after_prediction_path=e0_root / "diag" / "after" / "prediction_artifact.npz",
+            truth_sidecar_path=truth_root / "jobs" / outer / "offline" / "scorer" / "truth_sidecar.json",
+            output_path=raw_score_path,
+            candidate="e0_full_only",
+        )
+        raw_score = json.loads(raw_score_path.read_text(encoding="utf-8"))
+        if raw_truth_mismatch and outer == mismatch_outer:
+            raw_score["truth_sidecar_sha256"] = "f" * 64
+            _write_json(raw_score_path, raw_score)
+        raw_scores[outer] = json.loads(raw_score_path.read_text(encoding="utf-8"))
 
     paired_rows: list[dict[str, object]] = []
     per_old_rows: list[dict[str, object]] = []
     for row in selected_rows:
         outer = str(row["outer_key"])
-        metrics = analysis.compute_score_metrics(raw_scores[outer])
+        raw_score = raw_scores[outer]
+        before = raw_score["before"]
+        after = raw_score["after"]
+        assert isinstance(before, dict) and isinstance(after, dict)
         scenes = matrix.E0_RESOURCE_ROWS[outer]["scenes"]
         query_macs = {int(value["query_macs"]) for value in scenes.values()}
         state_bytes = {int(value["state_bytes"]) for value in scenes.values()}
@@ -384,24 +491,27 @@ def _integration_fixture(
                 "k_shot": row["k_shot"],
                 "new_class_count": row["new_class_count"],
                 "slice": f"K{row['k_shot']}_new{row['new_class_count']}",
-                "candidate_h_old_new": metrics["h_old_new"],
-                "candidate_old_acc": metrics["c_old_acc"],
-                "candidate_old_floor": metrics["old_floor"],
-                "candidate_seen_new_acc": metrics["seen_new_acc"],
-                "candidate_forgetting": metrics["average_forgetting"],
-                "candidate_da1_reg0_old_acc": metrics["da1_reg0_old_acc"],
-                "candidate_da1_reg0_old_floor": metrics["da1_reg0_old_floor"],
+                "candidate_h_old_new": after["h_old_new"],
+                "candidate_old_acc": after["old_acc"],
+                "candidate_old_floor": raw_score["per_old_class_floor_after"],
+                "candidate_seen_new_acc": after["seen_new_acc"],
+                "candidate_forgetting": float(raw_score["old_forgetting_pp"]) / 100.0,
+                "candidate_da1_reg0_old_acc": before["old_acc"],
+                "candidate_da1_reg0_old_floor": raw_score["per_old_class_floor_before"],
                 "query_macs": next(iter(query_macs)),
                 "state_bytes": next(iter(state_bytes)),
             }
         )
+        by_tx = after["by_tx"]
+        assert isinstance(by_tx, dict)
         for tx in range(6):
+            accuracy = by_tx[f"tx_{tx}"]["accuracy"]
             per_old_rows.append(
                 {
                     "outer_key": outer,
                     "tx": f"tx_{tx}",
-                    "candidate_accuracy": 0.70,
-                    "baseline_accuracy": 0.70,
+                    "candidate_accuracy": accuracy,
+                    "baseline_accuracy": accuracy,
                     "delta_accuracy": 0.0,
                 }
             )
@@ -422,7 +532,7 @@ def _integration_fixture(
     manifest = matrix.build_hard9_k1_manifest(lock_path, require_package_files=False)
     for job in manifest["jobs"]:
         outer = str(job["outer_key"])
-        job["truth_sidecar_sha256"] = candidate_truth_sha[outer]
+        job["truth_sidecar_sha256"] = truth_sha[outer]
         for package_name, package in job["packages"].items():
             package["expected_seal_sha256"] = hashlib.sha256(
                 f"seal:{outer}:{package_name}".encode("utf-8")
@@ -439,13 +549,6 @@ def _integration_fixture(
     manifest_sha = _digest(manifest_path)
     for job in manifest["jobs"]:
         outer = str(job["outer_key"])
-        truth = truth_root / "jobs" / outer / "offline" / "scorer" / "truth_sidecar.json"
-        truth.parent.mkdir(parents=True, exist_ok=True)
-        truth.write_text(f"candidate-truth:{outer}", encoding="utf-8")
-        assert _digest(truth) == candidate_truth_sha[outer]
-        candidate = _surface_score(outer, candidate_truth_sha[outer], gain=0.05, forgetting_pp=8.0)
-        candidate["before_prediction_sha256"] = "before-placeholder"
-        candidate["after_prediction_sha256"] = "after-placeholder"
         job_root = run_root / "jobs" / outer / analysis.ARM_ID
         fit_rows: list[dict[str, object]] = []
         for scene in analysis.SCENES:
@@ -488,14 +591,23 @@ def _integration_fixture(
             state_root.mkdir(parents=True, exist_ok=True)
             _write_json(state_root / "execution_receipt.json", {"state": state_name})
             _write_json(state_root / "fit_audit.json", fit_rows)
-            (state_root / "prediction_artifact.npz").write_bytes((state_name + outer).encode("utf-8"))
+            _write_prediction_artifact(
+                state_root / "prediction_artifact.npz",
+                outer,
+                state=state_name,
+                candidate=True,
+            )
             _write_json(state_root / "resource_audit.json", {"state": state_name})
             _make_commit(state_root)
-        closure_hashes = _closure_hashes(job_root)
-        candidate["before_prediction_sha256"] = closure_hashes["before_prediction_sha256"]
-        candidate["after_prediction_sha256"] = closure_hashes["after_prediction_sha256"]
         score_path = job_root / "scorer" / "diag_cosine_score.json"
-        _write_json(score_path, candidate)
+        score_diag_cosine_pair(
+            before_prediction_path=job_root / "diag" / "before" / "prediction_artifact.npz",
+            after_prediction_path=job_root / "diag" / "after" / "prediction_artifact.npz",
+            truth_sidecar_path=truth_root / "jobs" / outer / "offline" / "scorer" / "truth_sidecar.json",
+            output_path=score_path,
+            candidate=analysis.CANDIDATE_ID,
+        )
+        closure_hashes = _closure_hashes(job_root)
         binding_path = job_root / "score_binding.json"
         _write_json(
             binding_path,
@@ -574,6 +686,9 @@ def test_complete_fixture_has_9_performance_27_scene_and_60_old_rows(tmp_path: P
     assert len([row for row in result["scenario_rows"] if row["outer_role"] == "performance"]) == 27
     assert len(result["per_old_class_rows"]) == 60
     assert len(result["liveness_rows"]) == 1
+    # CCOC improves after registration in this real fixture, so forgetting is
+    # negative and must remain a finite lower-is-better stability metric.
+    assert all(row["candidate_average_forgetting"] < 0.0 for row in result["scenario_rows"])
 
 
 def test_single_scene_hard_peak_is_rejected_even_when_other_scenes_pass(tmp_path: Path) -> None:
@@ -617,10 +732,14 @@ def test_k1_cannot_enter_performance_aggregation(tmp_path: Path) -> None:
     payload = json.loads(Path(manifest).read_text(encoding="utf-8"))
     payload["jobs"][-1]["outer_role"] = "performance"
     _write_json(Path(manifest), payload)
-    import pytest
-
-    with pytest.raises(analysis.D92CCOCHard9K1AnalysisError, match="matrix manifest"):
-        analysis.analyze_d92_ccoc_hard9_k1(manifest, run_root=run_root, method_lock_path=lock, truth_sidecar_root=truth_root)
+    _assert_memory_reject(
+        analysis.analyze_d92_ccoc_hard9_k1(
+            manifest,
+            run_root=run_root,
+            method_lock_path=lock,
+            truth_sidecar_root=truth_root,
+        )
+    )
 
 
 def test_duplicate_or_missing_scene_is_rejected_before_metric_aggregation(tmp_path: Path) -> None:
@@ -634,13 +753,14 @@ def test_duplicate_or_missing_scene_is_rejected_before_metric_aggregation(tmp_pa
     _refresh_commit(state_root)
     _refresh_closure_evidence(state_root.parent.parent)
 
-    with pytest.raises(analysis.D92CCOCHard9K1AnalysisError, match="duplicate/missing"):
+    _assert_memory_reject(
         analysis.analyze_d92_ccoc_hard9_k1(
             manifest,
             run_root=run_root,
             method_lock_path=lock,
             truth_sidecar_root=truth_root,
         )
+    )
 
 
 def test_performance_fallback_receipt_is_rejected(tmp_path: Path) -> None:
@@ -654,13 +774,14 @@ def test_performance_fallback_receipt_is_rejected(tmp_path: Path) -> None:
     _refresh_commit(state_root)
     _refresh_closure_evidence(state_root.parent.parent)
 
-    with pytest.raises(analysis.D92CCOCHard9K1AnalysisError, match="active lifecycle"):
+    _assert_memory_reject(
         analysis.analyze_d92_ccoc_hard9_k1(
             manifest,
             run_root=run_root,
             method_lock_path=lock,
             truth_sidecar_root=truth_root,
         )
+    )
 
 
 def test_commit_and_truth_hash_drift_are_rejected_before_verdict(tmp_path: Path) -> None:
@@ -671,25 +792,27 @@ def test_commit_and_truth_hash_drift_are_rejected_before_verdict(tmp_path: Path)
     rows[0]["after_registration_resource"]["registration_wall_time_ns"] = 1
     _write_json(fit, rows)
 
-    with pytest.raises(analysis.D92CCOCHard9K1AnalysisError, match="closure SHA drift"):
+    _assert_memory_reject(
         analysis.analyze_d92_ccoc_hard9_k1(
             manifest,
             run_root=run_root,
             method_lock_path=lock,
             truth_sidecar_root=truth_root,
         )
+    )
 
     _refresh_commit(fit.parent)
     _refresh_closure_evidence(fit.parent.parent.parent)
     truth = truth_root / "jobs" / outer / "offline" / "scorer" / "truth_sidecar.json"
     truth.write_text("drifted truth", encoding="utf-8")
-    with pytest.raises(analysis.D92CCOCHard9K1AnalysisError, match="truth sidecar hash binding drift"):
+    _assert_memory_reject(
         analysis.analyze_d92_ccoc_hard9_k1(
             manifest,
             run_root=run_root,
             method_lock_path=lock,
             truth_sidecar_root=truth_root,
         )
+    )
 
 
 def test_single_scene_wall_and_query_state_hard_failures_are_not_soft_revision(tmp_path: Path) -> None:
@@ -714,26 +837,25 @@ def test_truth_and_score_binding_drift_is_rejected(tmp_path: Path) -> None:
     payload = json.loads(Path(manifest).read_text(encoding="utf-8"))
     payload["jobs"][0]["truth_sidecar_sha256"] = "0" * 64
     _write_json(Path(manifest), payload)
-    import pytest
-
-    with pytest.raises(analysis.D92CCOCHard9K1AnalysisError, match="matrix manifest"):
-        analysis.analyze_d92_ccoc_hard9_k1(manifest, run_root=run_root, method_lock_path=lock, truth_sidecar_root=truth_root)
+    _assert_memory_reject(
+        analysis.analyze_d92_ccoc_hard9_k1(
+            manifest,
+            run_root=run_root,
+            method_lock_path=lock,
+            truth_sidecar_root=truth_root,
+        )
+    )
 
 
 def test_any_metric_tie_is_rejected_even_when_other_metrics_improve(tmp_path: Path) -> None:
     manifest, lock, run_root, truth_root = _integration_fixture(tmp_path)
     payload = json.loads(Path(manifest).read_text(encoding="utf-8"))
     outer = payload["jobs"][0]["outer_key"]
-    raw = json.loads((Path(analysis.matrix.RAW_SCORE_ROOT) / outer / "E0_FULL_ONLY" / "scorer" / "diag_cosine_score.json").read_text(encoding="utf-8"))
-    score_path = run_root / "jobs" / outer / analysis.ARM_ID / "scorer" / "diag_cosine_score.json"
-    candidate = json.loads(score_path.read_text(encoding="utf-8"))
-    candidate["after"]["h_old_new"] = raw["after"]["h_old_new"]
-    _write_json(score_path, candidate)
-    receipt_path = score_path.parent.parent / "job_receipt.json"
-    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
-    receipt["score_sha256"] = _digest(score_path)
-    receipt["score_evidence"]["score_artifact_sha256"] = receipt["score_sha256"]
-    _write_json(receipt_path, receipt)
+    _rewrite_candidate_after_as_e0(
+        run_root / "jobs" / outer / analysis.ARM_ID,
+        truth_root / "jobs" / outer / "offline" / "scorer" / "truth_sidecar.json",
+        outer,
+    )
     result = analysis.analyze_d92_ccoc_hard9_k1(manifest, run_root=run_root, method_lock_path=lock, truth_sidecar_root=truth_root)
     assert result["verdict"] == "REJECT_ROUTE"
     assert result["gate_state"]["all_strict_pareto"] is False
@@ -743,49 +865,11 @@ def test_any_metric_tie_is_rejected_even_when_other_metrics_improve(tmp_path: Pa
 def test_each_eight_metric_tie_rejects_the_route(tmp_path: Path, metric: str) -> None:
     manifest, lock, run_root, truth_root = _integration_fixture(tmp_path)
     outer = json.loads(Path(manifest).read_text(encoding="utf-8"))["jobs"][0]["outer_key"]
-    raw = json.loads(
-        (
-            Path(analysis.matrix.RAW_SCORE_ROOT)
-            / outer
-            / "E0_FULL_ONLY"
-            / "scorer"
-            / "diag_cosine_score.json"
-        ).read_text(encoding="utf-8")
+    _rewrite_candidate_after_as_e0(
+        run_root / "jobs" / outer / analysis.ARM_ID,
+        truth_root / "jobs" / outer / "offline" / "scorer" / "truth_sidecar.json",
+        outer,
     )
-    score_path = run_root / "jobs" / outer / analysis.ARM_ID / "scorer" / "diag_cosine_score.json"
-    candidate = json.loads(score_path.read_text(encoding="utf-8"))
-    if metric == "h_old_new":
-        candidate["after"]["h_old_new"] = raw["after"]["h_old_new"]
-    elif metric == "old_balanced_accuracy":
-        for tx, row in candidate["after"]["by_tx"].items():
-            if row.get("role") == "target_old":
-                row["accuracy"] = raw["after"]["by_tx"][tx]["accuracy"]
-    elif metric == "c_old_acc":
-        candidate["after"]["old_acc"] = raw["after"]["old_acc"]
-    elif metric == "old_floor":
-        old_tx = min(
-            (
-                (tx, row["accuracy"])
-                for tx, row in raw["after"]["by_tx"].items()
-                if row.get("role") == "target_old"
-            ),
-            key=lambda item: item[1],
-        )[0]
-        candidate["after"]["by_tx"][old_tx]["accuracy"] = raw["after"]["by_tx"][old_tx]["accuracy"]
-    elif metric == "seen_new_acc":
-        candidate["after"]["seen_new_acc"] = raw["after"]["seen_new_acc"]
-    elif metric == "average_forgetting":
-        candidate["old_forgetting_pp"] = raw["old_forgetting_pp"]
-    else:
-        for scene in analysis.SCENES:
-            candidate["after"]["by_scenario"][scene][metric] = raw["after"]["by_scenario"][scene][metric]
-        candidate["after"][metric] = raw["after"][metric]
-    _write_json(score_path, candidate)
-    receipt_path = score_path.parent.parent / "job_receipt.json"
-    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
-    receipt["score_sha256"] = _digest(score_path)
-    receipt["score_evidence"]["score_artifact_sha256"] = receipt["score_sha256"]
-    _write_json(receipt_path, receipt)
 
     result = analysis.analyze_d92_ccoc_hard9_k1(
         manifest,
@@ -796,6 +880,8 @@ def test_each_eight_metric_tie_rejects_the_route(tmp_path: Path, metric: str) ->
 
     assert result["verdict"] == "REJECT_ROUTE"
     assert result["gate_state"]["all_strict_pareto"] is False
+    row = next(item for item in result["paired_rows"] if item["outer_key"] == outer)
+    assert row[f"candidate_{metric}"] == row[f"e0_{metric}"]
 
 
 def test_paired_e0_row_is_bound_to_its_same_outer_raw_score(tmp_path: Path) -> None:
@@ -816,7 +902,7 @@ def test_paired_e0_row_is_bound_to_its_same_outer_raw_score(tmp_path: Path) -> N
         writer.writeheader()
         writer.writerows(rows)
 
-    with pytest.raises(analysis.D92CCOCHard9K1AnalysisError, match="paired E0"):
+    _assert_memory_reject(
         analysis.analyze_d92_ccoc_hard9_k1(
             manifest,
             run_root=run_root,
@@ -824,6 +910,7 @@ def test_paired_e0_row_is_bound_to_its_same_outer_raw_score(tmp_path: Path) -> N
             baseline_paired_rows_path=paired,
             truth_sidecar_root=truth_root,
         )
+    )
 
 
 def test_score_binding_evidence_is_required_for_truth_last_closure(tmp_path: Path) -> None:
@@ -835,13 +922,14 @@ def test_score_binding_evidence_is_required_for_truth_last_closure(tmp_path: Pat
         receipt.pop(field)
     _write_json(receipt_path, receipt)
 
-    with pytest.raises(analysis.D92CCOCHard9K1AnalysisError, match="score binding"):
+    _assert_memory_reject(
         analysis.analyze_d92_ccoc_hard9_k1(
             manifest,
             run_root=run_root,
             method_lock_path=lock,
             truth_sidecar_root=truth_root,
         )
+    )
 
 
 def test_729088_peak_is_target_only_failure_and_revises_once(tmp_path: Path) -> None:
@@ -906,6 +994,13 @@ def _assert_controlled_reject(result: dict[str, object], output_root: Path) -> N
     assert result["gate_state"]["complete_artifact_closure"] is False
     assert {path.name for path in output_root.iterdir()} == _EXCLUSIVE_OUTPUTS
     assert json.loads((output_root / "summary.json").read_text(encoding="utf-8"))["verdict"] == "REJECT_ROUTE"
+
+
+def _assert_memory_reject(result: dict[str, object]) -> None:
+    assert result["verdict"] == "REJECT_ROUTE"
+    assert result["status"] == "REJECTED_EVIDENCE_CLOSURE"
+    assert result["gate_state"]["complete_artifact_closure"] is False
+    assert "output_paths" not in result
 
 
 def test_compact_manifest_cannot_use_a_production_fallback() -> None:
@@ -981,6 +1076,59 @@ def test_candidate_and_same_outer_e0_must_share_truth_and_query_surface(
     _assert_controlled_reject(result, output_root)
 
 
+def test_real_e0_sibling_prediction_shape_is_rejected_without_synthetic_score_fields(
+    tmp_path: Path,
+) -> None:
+    manifest, _, _, truth_root = _integration_fixture(tmp_path)
+    outer = json.loads(manifest.read_text(encoding="utf-8"))["jobs"][0]["outer_key"]
+    raw_score_path = (
+        Path(analysis.matrix.RAW_SCORE_ROOT)
+        / outer
+        / "E0_FULL_ONLY"
+        / "scorer"
+        / "diag_cosine_score.json"
+    )
+    raw_score = json.loads(raw_score_path.read_text(encoding="utf-8"))
+    raw_before = raw_score_path.parent.parent / "diag" / "before" / "prediction_artifact.npz"
+    os.chmod(raw_before, stat.S_IREAD | stat.S_IWRITE)
+    np.savez(raw_before, query_tokens=np.asarray(["bad"], dtype=str))
+    os.chmod(raw_before, stat.S_IREAD)
+    raw_score["before_prediction_sha256"] = _digest(raw_before)
+    _write_json(raw_score_path, raw_score)
+    paths = analysis._raw_e0_prediction_paths(raw_score_path, raw_score, outer_key=outer)
+    truth = analysis._read_truth_surface(
+        truth_root / "jobs" / outer / "offline" / "scorer" / "truth_sidecar.json"
+    )
+    with pytest.raises(analysis.D92CCOCHard9K1AnalysisError, match="exact schema"):
+        analysis._surface_pair(
+            paths["before"],
+            paths["after"],
+            truth,
+            label=f"E0 {outer}",
+        )
+
+
+def test_missing_truth_root_is_controlled_in_memory_and_as_seven_outputs(tmp_path: Path) -> None:
+    manifest, lock, run_root, _ = _integration_fixture(tmp_path)
+    missing_root = tmp_path / "missing-truth-root"
+    memory = analysis.analyze_d92_ccoc_hard9_k1(
+        manifest,
+        run_root=run_root,
+        method_lock_path=lock,
+        truth_sidecar_root=missing_root,
+    )
+    _assert_memory_reject(memory)
+    output_root = tmp_path / "reject-missing-truth-root"
+    materialized = analysis.analyze_d92_ccoc_hard9_k1(
+        manifest,
+        run_root=run_root,
+        method_lock_path=lock,
+        truth_sidecar_root=missing_root,
+        output_root=output_root,
+    )
+    _assert_controlled_reject(materialized, output_root)
+
+
 def test_fit_and_commit_rewrite_without_task1_closure_rebind_is_controlled_reject(
     tmp_path: Path,
 ) -> None:
@@ -1049,12 +1197,12 @@ def test_receiver_knew_and_scene_stability_requires_all_eight_metric_directions(
     jobs = json.loads(manifest.read_text(encoding="utf-8"))["jobs"]
     scene = analysis.SCENES[-1]
     job = next(item for item in jobs if item["outer_role"] == "performance")
-    score_path = run_root / "jobs" / job["outer_key"] / analysis.ARM_ID / "scorer" / "diag_cosine_score.json"
-    score = json.loads(score_path.read_text(encoding="utf-8"))
-    score["after"]["by_scenario"][scene]["old_to_new_rate"] = 0.12
-    score["after"]["old_to_new_rate"] = (0.08 + 0.08 + 0.12) / 3.0
-    _write_json(score_path, score)
-    _refresh_score_evidence(score_path.parent.parent)
+    job_root = run_root / "jobs" / job["outer_key"] / analysis.ARM_ID
+    _rewrite_candidate_after_scene_for_stability(
+        job_root,
+        truth_root / "jobs" / job["outer_key"] / "offline" / "scorer" / "truth_sidecar.json",
+        scene,
+    )
 
     result = analysis.analyze_d92_ccoc_hard9_k1(
         manifest,

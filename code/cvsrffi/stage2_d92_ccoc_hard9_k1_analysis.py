@@ -16,6 +16,8 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
 
+import numpy as np
+
 from cvsrffi import stage2_d92_ccoc_hard9_k1 as matrix
 
 
@@ -64,6 +66,11 @@ _PREDICTION_CLOSURE_FILES = {
     "before_execution_receipt_sha256": ("before", "execution_receipt.json"),
     "after_execution_receipt_sha256": ("after", "execution_receipt.json"),
 }
+_PREDICTION_ARTIFACT_MEMBERS = (
+    "query_tokens",
+    "scenarios",
+    "predicted_class_handles",
+)
 
 # These are the already-used D92 direction/magnitude gates.  They are copied
 # as analysis constants only; CCOC does not tune or redefine them.
@@ -432,6 +439,7 @@ def validate_paired_e0_row(
     job: Mapping[str, Any],
     *,
     outer_key: str,
+    metrics: Mapping[str, Any] | None = None,
 ) -> None:
     """Bind the selected historical paired E0 row to its sealed raw score.
 
@@ -457,7 +465,7 @@ def validate_paired_e0_row(
         elif str(actual) != str(expected):
             raise _fail(f"paired E0 identity drift: {outer_key}/{field}")
 
-    metrics = compute_score_metrics(raw_score)
+    metrics = dict(metrics) if metrics is not None else compute_score_metrics(raw_score)
     evidence = {
         "candidate_h_old_new": metrics["h_old_new"],
         "candidate_old_acc": metrics["c_old_acc"],
@@ -468,7 +476,11 @@ def validate_paired_e0_row(
         "candidate_da1_reg0_old_floor": metrics["da1_reg0_old_floor"],
     }
     for field, expected in evidence.items():
-        actual = _finite(row.get(field), f"paired E0 {field}", lower=0.0)
+        actual = _finite(
+            row.get(field),
+            f"paired E0 {field}",
+            lower=None if field == "candidate_forgetting" else 0.0,
+        )
         if abs(actual - float(expected)) > 1.0e-9:
             raise _fail(f"paired E0/raw-score drift: {outer_key}/{field}")
 
@@ -719,57 +731,364 @@ def _scenario_closure(score: Mapping[str, Any], label: str) -> tuple[Mapping[str
     return before_scene, after_scene
 
 
+def _canonical_query_identity(scene: str, tokens: Sequence[str]) -> str:
+    """Hash a scene's explicit query-ID set, independent of artifact order."""
+
+    if not tokens or len(tokens) != len(set(tokens)):
+        raise _fail(f"query token closure drift: {scene}")
+    payload = {
+        "scenario": str(scene),
+        "query_tokens": sorted(str(token) for token in tokens),
+    }
+    return hashlib.sha256(
+        json.dumps(payload, ensure_ascii=True, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+
+def _read_prediction_artifact(path: str | Path, *, label: str) -> dict[str, list[str]]:
+    """Read the exact immutable diag-cosine NPZ surface without a sidecar."""
+
+    source = Path(path)
+    if source.is_symlink() or not source.is_file():
+        raise _fail(f"{label} prediction artifact missing or symlinked")
+    try:
+        with np.load(source, allow_pickle=False) as archive:
+            if tuple(archive.files) != _PREDICTION_ARTIFACT_MEMBERS:
+                raise _fail(f"{label} prediction artifact exact schema drift")
+            values = {name: archive[name].astype(str).tolist() for name in archive.files}
+    except D92CCOCHard9K1AnalysisError:
+        raise
+    except Exception as error:  # malformed ZIP/NPZ evidence is an audit failure
+        raise _fail(f"{label} prediction artifact unreadable") from error
+    lengths = {len(value) for value in values.values()}
+    if lengths == {0} or len(lengths) != 1:
+        raise _fail(f"{label} prediction artifact rows are empty or misaligned")
+    keys = list(zip(values["scenarios"], values["query_tokens"]))
+    if len(keys) != len(set(keys)):
+        raise _fail(f"{label} prediction scenario/token key is duplicated")
+    if set(values["scenarios"]) != set(SCENES):
+        raise _fail(f"{label} prediction scenario registry drift")
+    return values
+
+
+def _read_truth_surface(path: str | Path) -> dict[str, dict[str, str]]:
+    """Parse the same manifest-bound truth sidecar used by E0 and CCOC."""
+
+    payload = _read_json(Path(path))
+    rows = payload.get("rows")
+    if payload.get("schema") != "cvs.phase2.query_truth_sidecar.v2" or not isinstance(rows, list):
+        raise _fail("truth sidecar schema drift")
+    result: dict[str, dict[str, str]] = {}
+    required = {"query_token", "true_class_handle", "transmitter_label", "evaluation_role"}
+    for row in rows:
+        if not isinstance(row, Mapping) or not required.issubset(row):
+            raise _fail("truth sidecar row schema drift")
+        token = str(row["query_token"])
+        role = str(row["evaluation_role"])
+        if not token or token in result or role not in {"target_old", "target_new"}:
+            raise _fail("truth token/role drift")
+        result[token] = {
+            "true_class_handle": str(row["true_class_handle"]),
+            "transmitter_label": str(row["transmitter_label"]),
+            "evaluation_role": role,
+        }
+    if not result:
+        raise _fail("truth sidecar is empty")
+    return result
+
+
+def _harmonic(old_accuracy: float, new_accuracy: float) -> float:
+    total = old_accuracy + new_accuracy
+    return 0.0 if total <= 0.0 else 2.0 * old_accuracy * new_accuracy / total
+
+
+def _surface_metrics(
+    prediction: Mapping[str, Sequence[str]],
+    truth: Mapping[str, Mapping[str, str]],
+    *,
+    label: str,
+) -> dict[str, Any]:
+    """Recompute the full score surface directly from prediction plus truth."""
+
+    handle_roles: dict[str, str] = {}
+    for truth_row in truth.values():
+        handle = str(truth_row["true_class_handle"])
+        role = str(truth_row["evaluation_role"])
+        previous = handle_roles.setdefault(handle, role)
+        if previous != role:
+            raise _fail("registered class handle has mixed roles")
+    rows: list[dict[str, Any]] = []
+    for scene, token, predicted in zip(
+        prediction["scenarios"],
+        prediction["query_tokens"],
+        prediction["predicted_class_handles"],
+    ):
+        if token not in truth:
+            raise _fail(f"{label} prediction token is absent from truth sidecar")
+        target = truth[token]
+        rows.append(
+            {
+                "scene": str(scene),
+                "token": str(token),
+                "tx": str(target["transmitter_label"]),
+                "role": str(target["evaluation_role"]),
+                "true": str(target["true_class_handle"]),
+                "predicted": str(predicted),
+                "predicted_role": handle_roles.get(str(predicted)),
+                "correct": int(str(predicted) == str(target["true_class_handle"])),
+            }
+        )
+
+    def summarize(selected: Sequence[Mapping[str, Any]], *, scene: str | None) -> dict[str, Any]:
+        old = [row for row in selected if row["role"] == "target_old"]
+        new = [row for row in selected if row["role"] == "target_new"]
+        if not old:
+            raise _fail(f"{label} old-class surface is empty")
+        old_by_tx: dict[str, list[int]] = defaultdict(list)
+        by_tx: dict[str, list[int]] = defaultdict(list)
+        roles_by_tx: dict[str, str] = {}
+        for row in selected:
+            tx = str(row["tx"])
+            by_tx[tx].append(int(row["correct"]))
+            previous_role = roles_by_tx.setdefault(tx, str(row["role"]))
+            if previous_role != row["role"]:
+                raise _fail(f"{label} transmitter role drift: {tx}")
+            if row["role"] == "target_old":
+                old_by_tx[tx].append(int(row["correct"]))
+        if len(old_by_tx) != 6:
+            raise _fail(f"{label} expected six old classes, got {len(old_by_tx)}")
+        old_class_accuracy = {tx: _mean(values) for tx, values in sorted(old_by_tx.items())}
+        old_acc = _mean(int(row["correct"]) for row in old)
+        new_acc = _mean(int(row["correct"]) for row in new) if new else None
+        old_to_new = _mean(int(row["predicted_role"] == "target_new") for row in old)
+        new_to_old = _mean(int(row["predicted_role"] == "target_old") for row in new) if new else None
+        token_values = [str(row["token"]) for row in selected]
+        return {
+            "query_count": len(selected),
+            "old_query_count": len(old),
+            "new_query_count": len(new),
+            "query_identity_sha256": _canonical_query_identity(scene or "all", token_values),
+            "query_tokens": tuple(sorted(token_values)),
+            "old_acc": old_acc,
+            "seen_new_acc": new_acc,
+            "h_old_new": _harmonic(old_acc, new_acc) if new_acc is not None else None,
+            "old_to_new_rate": old_to_new,
+            "new_to_old_rate": new_to_old,
+            "old_class_accuracy": old_class_accuracy,
+            "old_balanced_accuracy": _mean(old_class_accuracy.values()),
+            "c_old_acc": old_acc,
+            "old_floor": min(old_class_accuracy.values()),
+            "by_tx": {
+                tx: {
+                    "role": roles_by_tx[tx],
+                    "count": len(values),
+                    "accuracy": _mean(values),
+                }
+                for tx, values in sorted(by_tx.items())
+            },
+        }
+
+    scenes: dict[str, dict[str, Any]] = {}
+    for scene in SCENES:
+        scenes[scene] = summarize([row for row in rows if row["scene"] == scene], scene=scene)
+    return {"scenes": scenes, "aggregate": summarize(rows, scene=None)}
+
+
+def _raw_e0_prediction_paths(raw_score_path: Path, raw_score: Mapping[str, Any], *, outer_key: str) -> dict[str, Path]:
+    """Derive only the frozen E0 sibling artifacts from a raw-score path."""
+
+    if raw_score_path.name != "diag_cosine_score.json" or raw_score_path.parent.name != "scorer":
+        raise _fail(f"E0 raw-score path shape drift: {outer_key}")
+    root = raw_score_path.parent.parent
+    result: dict[str, Path] = {}
+    for state in ("before", "after"):
+        path = root / "diag" / state / "prediction_artifact.npz"
+        expected = _sha256_value(raw_score.get(f"{state}_prediction_sha256"), f"E0 {state} prediction {outer_key}")
+        if path.is_symlink() or not path.is_file():
+            raise _fail(f"E0 {state} prediction artifact missing or symlinked: {outer_key}")
+        if _sha(path) != expected:
+            raise _fail(f"E0 {state} prediction SHA drift: {outer_key}")
+        result[state] = path
+    return result
+
+
+def _compare_score_metric(actual: Any, expected: Any, *, label: str, required: bool = False) -> None:
+    if actual is None:
+        if required and expected is not None:
+            raise _fail(f"score aggregate missing: {label}")
+        return
+    if expected is None:
+        raise _fail(f"score aggregate unexpected: {label}")
+    if abs(_finite(actual, label) - float(expected)) > 1.0e-9:
+        raise _fail(f"score/artifact aggregate drift: {label}")
+
+
+def _validate_score_against_surface(score: Mapping[str, Any], surface: Mapping[str, Any], *, label: str) -> None:
+    """Cross-check all raw-score values that actually exist against real rows."""
+
+    for state in ("before", "after"):
+        score_state = score.get(state)
+        expected_state = surface[state]
+        if not isinstance(score_state, Mapping) or not isinstance(expected_state, Mapping):
+            raise _fail(f"{label} score state surface missing")
+        score_scenes = score_state.get("by_scenario")
+        expected_scenes = expected_state["scenes"]
+        if not isinstance(score_scenes, Mapping) or set(score_scenes) != set(SCENES):
+            raise _fail(f"{label} score 3-scene closure drift")
+        for scene in SCENES:
+            actual_scene = score_scenes[scene]
+            if not isinstance(actual_scene, Mapping):
+                raise _fail(f"{label} score scene row invalid: {scene}")
+            expected_scene = expected_scenes[scene]
+            for field in (
+                "query_count",
+                "old_acc",
+                "seen_new_acc",
+                "h_old_new",
+                "old_to_new_rate",
+                "new_to_old_rate",
+            ):
+                if field in {"query_count", "old_acc", "seen_new_acc", "h_old_new"} and field not in actual_scene:
+                    raise _fail(f"score aggregate missing: {label}/{state}/{scene}/{field}")
+                _compare_score_metric(
+                    actual_scene.get(field),
+                    expected_scene[field],
+                    label=f"{label}/{state}/{scene}/{field}",
+                    required=field in {"query_count", "old_acc", "seen_new_acc", "h_old_new"},
+                )
+        actual_by_tx = score_state.get("by_tx")
+        expected_by_tx = expected_state["aggregate"]["by_tx"]
+        if not isinstance(actual_by_tx, Mapping) or set(actual_by_tx) != set(expected_by_tx):
+            raise _fail(f"{label} score by-TX closure drift: {state}")
+        for tx, expected in expected_by_tx.items():
+            actual = actual_by_tx[tx]
+            if not isinstance(actual, Mapping) or actual.get("role") != expected["role"]:
+                raise _fail(f"{label} score by-TX role drift: {state}/{tx}")
+            if _integer(actual.get("count"), f"{label}/{state}/{tx}/count") != expected["count"]:
+                raise _fail(f"{label} score by-TX count drift: {state}/{tx}")
+            _compare_score_metric(actual.get("accuracy"), expected["accuracy"], label=f"{label}/{state}/{tx}/accuracy", required=True)
+        for field in ("query_count", "old_acc", "seen_new_acc", "h_old_new", "old_to_new_rate", "new_to_old_rate"):
+            if field in {"query_count", "old_acc", "seen_new_acc", "h_old_new"} and field not in score_state:
+                raise _fail(f"score aggregate missing: {label}/{state}/{field}")
+            _compare_score_metric(
+                score_state.get(field),
+                expected_state["aggregate"][field],
+                label=f"{label}/{state}/{field}",
+                required=field in {"query_count", "old_acc", "seen_new_acc", "h_old_new"},
+            )
+    before = surface["before"]["aggregate"]
+    after = surface["after"]["aggregate"]
+    _compare_score_metric(
+        score.get("old_forgetting_pp"),
+        100.0 * (float(before["old_acc"]) - float(after["old_acc"])),
+        label=f"{label}/old_forgetting_pp",
+        required=True,
+    )
+    _compare_score_metric(score.get("per_old_class_floor_before"), before["old_floor"], label=f"{label}/per_old_class_floor_before", required=True)
+    _compare_score_metric(score.get("per_old_class_floor_after"), after["old_floor"], label=f"{label}/per_old_class_floor_after", required=True)
+
+
+def _surface_pair(
+    before_path: Path,
+    after_path: Path,
+    truth: Mapping[str, Mapping[str, str]],
+    *,
+    label: str,
+) -> dict[str, Any]:
+    before = _surface_metrics(_read_prediction_artifact(before_path, label=f"{label}/before"), truth, label=f"{label}/before")
+    after = _surface_metrics(_read_prediction_artifact(after_path, label=f"{label}/after"), truth, label=f"{label}/after")
+    for scene in SCENES:
+        if before["scenes"][scene]["seen_new_acc"] is not None or after["scenes"][scene]["seen_new_acc"] is None:
+            raise _fail(f"{label} before/after registration role coverage drift: {scene}")
+        if set(before["scenes"][scene]["old_class_accuracy"]) != set(after["scenes"][scene]["old_class_accuracy"]):
+            raise _fail(f"{label} matched old-class registry drift: {scene}")
+    return {"before": before, "after": after}
+
+
 def _validate_candidate_e0_surface(
     candidate: Mapping[str, Any],
     baseline: Mapping[str, Any],
     job: Mapping[str, Any],
     *,
     outer_key: str,
-) -> None:
-    """Require one same-outer truth/query surface before any comparison."""
+    candidate_before_path: Path,
+    candidate_after_path: Path,
+    raw_score_path: Path,
+    truth_path: Path,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Bind candidate and E0 to one real truth/query surface before comparison."""
 
     job_truth = _sha256_value(job.get("truth_sidecar_sha256"), f"job truth {outer_key}")
     candidate_truth = _sha256_value(candidate.get("truth_sidecar_sha256"), f"candidate truth {outer_key}")
     baseline_truth = _sha256_value(baseline.get("truth_sidecar_sha256"), f"E0 raw-score truth {outer_key}")
     if candidate_truth != job_truth or baseline_truth != job_truth:
         raise _fail(f"candidate/E0 truth surface drift: {outer_key}")
-    candidate_before, candidate_after = _scenario_closure(candidate, f"candidate {outer_key}")
-    baseline_before, baseline_after = _scenario_closure(baseline, f"E0 {outer_key}")
-    for state, candidate_rows, baseline_rows in (
-        ("before", candidate_before, baseline_before),
-        ("after", candidate_after, baseline_after),
-    ):
+    raw_paths = _raw_e0_prediction_paths(raw_score_path, baseline, outer_key=outer_key)
+    truth = _read_truth_surface(truth_path)
+    candidate_surface = _surface_pair(candidate_before_path, candidate_after_path, truth, label=f"candidate {outer_key}")
+    baseline_surface = _surface_pair(raw_paths["before"], raw_paths["after"], truth, label=f"E0 {outer_key}")
+    _validate_score_against_surface(candidate, candidate_surface, label=f"candidate {outer_key}")
+    _validate_score_against_surface(baseline, baseline_surface, label=f"E0 {outer_key}")
+    for state in ("before", "after"):
         for scene in SCENES:
-            candidate_row = candidate_rows[scene]
-            baseline_row = baseline_rows[scene]
-            candidate_count = _integer(candidate_row.get("query_count"), f"candidate {state} query count {outer_key}/{scene}")
-            baseline_count = _integer(baseline_row.get("query_count"), f"E0 {state} query count {outer_key}/{scene}")
-            candidate_identity = _sha256_value(candidate_row.get("query_identity_sha256"), f"candidate {state} query identity {outer_key}/{scene}")
-            baseline_identity = _sha256_value(baseline_row.get("query_identity_sha256"), f"E0 {state} query identity {outer_key}/{scene}")
-            if candidate_count != baseline_count or candidate_identity != baseline_identity:
+            candidate_scene = candidate_surface[state]["scenes"][scene]
+            baseline_scene = baseline_surface[state]["scenes"][scene]
+            if (
+                candidate_scene["query_count"] != baseline_scene["query_count"]
+                or candidate_scene["query_tokens"] != baseline_scene["query_tokens"]
+                or candidate_scene["query_identity_sha256"] != baseline_scene["query_identity_sha256"]
+            ):
                 raise _fail(f"candidate/E0 query surface drift: {outer_key}/{state}/{scene}")
+    return candidate_surface, baseline_surface
+
+
+def _metrics_from_surface_pair(surface: Mapping[str, Any]) -> dict[str, Any]:
+    before = surface["before"]["aggregate"]
+    after = surface["after"]["aggregate"]
+    return {
+        "h_old_new": after["h_old_new"],
+        "old_balanced_accuracy": after["old_balanced_accuracy"],
+        "c_old_acc": after["c_old_acc"],
+        "old_floor": after["old_floor"],
+        "seen_new_acc": after["seen_new_acc"],
+        "average_forgetting": float(before["old_acc"]) - float(after["old_acc"]),
+        "new_to_old_rate": after["new_to_old_rate"],
+        "old_to_new_rate": after["old_to_new_rate"],
+        "new_to_old_error": after["new_to_old_rate"],
+        "old_to_new_error": after["old_to_new_rate"],
+        "old_class_accuracy": dict(after["old_class_accuracy"]),
+        "old_class_count": len(after["old_class_accuracy"]),
+        "query_macs": -1,
+        "state_bytes": -1,
+        "da1_reg0_old_acc": before["old_acc"],
+        "da1_reg0_old_floor": before["old_floor"],
+    }
 
 
 def _scenario_rows(outer_key: str, job: Mapping[str, Any], candidate: Mapping[str, Any], baseline: Mapping[str, Any]) -> list[dict[str, Any]]:
-    candidate_before, candidate_after = _scenario_closure(candidate, f"candidate {outer_key}")
-    baseline_before, baseline_after = _scenario_closure(baseline, f"E0 {outer_key}")
+    candidate_before = candidate["before"]["scenes"]
+    candidate_after = candidate["after"]["scenes"]
+    baseline_before = baseline["before"]["scenes"]
+    baseline_after = baseline["after"]["scenes"]
     rows: list[dict[str, Any]] = []
     for scene in SCENES:
         c = candidate_after[scene]
         b = baseline_after[scene]
-        c_old = _finite(candidate_before[scene].get("query_count"), f"candidate old count {scene}", lower=0.0)
-        b_old = _finite(baseline_before[scene].get("query_count"), f"E0 old count {scene}", lower=0.0)
-        c_total = _finite(c.get("query_count"), f"candidate total count {scene}", lower=0.0)
-        b_total = _finite(b.get("query_count"), f"E0 total count {scene}", lower=0.0)
+        c_before = candidate_before[scene]
+        b_before = baseline_before[scene]
+        c_old = _finite(c_before["query_count"], f"candidate old count {scene}", lower=0.0)
+        b_old = _finite(b_before["query_count"], f"E0 old count {scene}", lower=0.0)
+        c_total = _finite(c["query_count"], f"candidate total count {scene}", lower=0.0)
+        b_total = _finite(b["query_count"], f"E0 total count {scene}", lower=0.0)
         values = {
-            "h_old_new": (_finite(c.get("h_old_new"), f"candidate H {scene}", lower=0.0, upper=1.0), _finite(b.get("h_old_new"), f"E0 H {scene}", lower=0.0, upper=1.0)),
-            "old_balanced_accuracy": (_finite(c.get("old_balanced_accuracy"), f"candidate old balanced accuracy {scene}", lower=0.0, upper=1.0), _finite(b.get("old_balanced_accuracy"), f"E0 old balanced accuracy {scene}", lower=0.0, upper=1.0)),
-            "c_old_acc": (_finite(c.get("c_old_acc"), f"candidate C-old accuracy {scene}", lower=0.0, upper=1.0), _finite(b.get("c_old_acc"), f"E0 C-old accuracy {scene}", lower=0.0, upper=1.0)),
-            "old_floor": (_finite(c.get("old_floor"), f"candidate old floor {scene}", lower=0.0, upper=1.0), _finite(b.get("old_floor"), f"E0 old floor {scene}", lower=0.0, upper=1.0)),
-            "seen_new_acc": (_finite(c.get("seen_new_acc"), f"candidate new acc {scene}", lower=0.0, upper=1.0), _finite(b.get("seen_new_acc"), f"E0 new acc {scene}", lower=0.0, upper=1.0)),
-            "average_forgetting": (_finite(c.get("average_forgetting"), f"candidate forgetting {scene}", lower=0.0), _finite(b.get("average_forgetting"), f"E0 forgetting {scene}", lower=0.0)),
-            "new_to_old_rate": (_finite(c.get("new_to_old_rate"), f"candidate new-to-old {scene}", lower=0.0, upper=1.0), _finite(b.get("new_to_old_rate"), f"E0 new-to-old {scene}", lower=0.0, upper=1.0)),
-            "old_to_new_rate": (_finite(c.get("old_to_new_rate"), f"candidate old-to-new {scene}", lower=0.0, upper=1.0), _finite(b.get("old_to_new_rate"), f"E0 old-to-new {scene}", lower=0.0, upper=1.0)),
+            "h_old_new": (_finite(c["h_old_new"], f"candidate H {scene}", lower=0.0, upper=1.0), _finite(b["h_old_new"], f"E0 H {scene}", lower=0.0, upper=1.0)),
+            "old_balanced_accuracy": (_finite(c["old_balanced_accuracy"], f"candidate old balanced accuracy {scene}", lower=0.0, upper=1.0), _finite(b["old_balanced_accuracy"], f"E0 old balanced accuracy {scene}", lower=0.0, upper=1.0)),
+            "c_old_acc": (_finite(c["c_old_acc"], f"candidate C-old accuracy {scene}", lower=0.0, upper=1.0), _finite(b["c_old_acc"], f"E0 C-old accuracy {scene}", lower=0.0, upper=1.0)),
+            "old_floor": (_finite(c["old_floor"], f"candidate old floor {scene}", lower=0.0, upper=1.0), _finite(b["old_floor"], f"E0 old floor {scene}", lower=0.0, upper=1.0)),
+            "seen_new_acc": (_finite(c["seen_new_acc"], f"candidate new acc {scene}", lower=0.0, upper=1.0), _finite(b["seen_new_acc"], f"E0 new acc {scene}", lower=0.0, upper=1.0)),
+            "average_forgetting": (_finite(c_before["old_acc"], f"candidate before old accuracy {scene}", lower=0.0, upper=1.0) - _finite(c["old_acc"], f"candidate after old accuracy {scene}", lower=0.0, upper=1.0), _finite(b_before["old_acc"], f"E0 before old accuracy {scene}", lower=0.0, upper=1.0) - _finite(b["old_acc"], f"E0 after old accuracy {scene}", lower=0.0, upper=1.0)),
+            "new_to_old_rate": (_finite(c["new_to_old_rate"], f"candidate new-to-old {scene}", lower=0.0, upper=1.0), _finite(b["new_to_old_rate"], f"E0 new-to-old {scene}", lower=0.0, upper=1.0)),
+            "old_to_new_rate": (_finite(c["old_to_new_rate"], f"candidate old-to-new {scene}", lower=0.0, upper=1.0), _finite(b["old_to_new_rate"], f"E0 old-to-new {scene}", lower=0.0, upper=1.0)),
         }
         row: dict[str, Any] = {
             "outer_key": outer_key,
@@ -976,7 +1295,7 @@ def _job_artifacts(
     manifest_sha: str,
     lock_sha: str,
     truth_sidecar_root: str | Path | None,
-) -> tuple[dict[str, Any], list[dict[str, Any]], list[dict[str, Any]]]:
+) -> tuple[dict[str, Any], list[dict[str, Any]], dict[str, Any]]:
     outer = str(job["outer_key"])
     job_root = root / "jobs" / outer / ARM_ID
     receipt = _read_json(job_root / "job_receipt.json")
@@ -1005,7 +1324,14 @@ def _job_artifacts(
     validate_truth_binding(score, receipt, job, truth_path)
     fit_rows, _ = _validate_fit_rows(job, job_root)
     resources = _resource_join(job, job_root, fit_rows)
-    return score, resources, [{"outer_key": outer, "receipt": receipt, "fit_rows": fit_rows}]
+    return score, resources, {
+        "outer_key": outer,
+        "receipt": receipt,
+        "fit_rows": fit_rows,
+        "truth_path": truth_path,
+        "before_path": before_path,
+        "after_path": after_path,
+    }
 
 
 def _baseline_lookup(rows: Sequence[Mapping[str, Any]]) -> dict[str, Mapping[str, Any]]:
@@ -1109,21 +1435,32 @@ def _analyze_d92_ccoc_hard9_k1(
         if outer not in baseline_by_outer or outer not in raw_paths:
             raise _fail(f"job/baseline identity mismatch: {outer}")
         raw_score = _read_json(raw_paths[outer])
-        baseline_metrics = compute_score_metrics(raw_score)
+        candidate_score, job_resources, candidate_artifacts = _job_artifacts(
+            job,
+            root,
+            manifest_sha=manifest_sha,
+            lock_sha=lock_sha,
+            truth_sidecar_root=truth_sidecar_root,
+        )
+        candidate_surface, baseline_surface = _validate_candidate_e0_surface(
+            candidate_score,
+            raw_score,
+            job,
+            outer_key=outer,
+            candidate_before_path=candidate_artifacts["before_path"],
+            candidate_after_path=candidate_artifacts["after_path"],
+            raw_score_path=raw_paths[outer],
+            truth_path=candidate_artifacts["truth_path"],
+        )
+        baseline_metrics = _metrics_from_surface_pair(baseline_surface)
+        candidate_metrics = _metrics_from_surface_pair(candidate_surface)
         validate_paired_e0_row(
             baseline_by_outer[outer],
             raw_score,
             job,
             outer_key=outer,
+            metrics=baseline_metrics,
         )
-        candidate_score, job_resources, _ = _job_artifacts(job, root, manifest_sha=manifest_sha, lock_sha=lock_sha, truth_sidecar_root=truth_sidecar_root)
-        _validate_candidate_e0_surface(
-            candidate_score,
-            raw_score,
-            job,
-            outer_key=outer,
-        )
-        candidate_metrics = compute_score_metrics(candidate_score)
         if job_resources:
             candidate_metrics["query_macs"] = int(job_resources[0]["candidate_query_macs"])
             candidate_metrics["state_bytes"] = int(job_resources[0]["candidate_state_bytes"])
@@ -1168,7 +1505,7 @@ def _analyze_d92_ccoc_hard9_k1(
                 "historical_baseline_accuracy": values["historical_baseline_accuracy"],
                 "historical_delta_accuracy": values["historical_delta_accuracy"],
             })
-        scenario_rows.extend(_scenario_rows(outer, job, candidate_score, raw_score))
+        scenario_rows.extend(_scenario_rows(outer, job, candidate_surface, baseline_surface))
 
     if len(paired_rows) != 10 or len(per_old_rows) != 60 or len(scenario_rows) != 30:
         raise _fail("Hard9 result row closure drift")
@@ -1297,7 +1634,7 @@ def _prepare_output_root(output_root: str | Path) -> Path:
     return root
 
 
-def _controlled_reject_result(error: D92CCOCHard9K1AnalysisError) -> dict[str, Any]:
+def _controlled_reject_result(error: Exception) -> dict[str, Any]:
     """Materialize evidence failures as a self-contained reject package."""
 
     gate_names = (
@@ -1349,7 +1686,12 @@ def analyze_d92_ccoc_hard9_k1(
     truth_sidecar_root: str | Path | None = None,
     output_root: str | Path | None = None,
 ) -> dict[str, Any]:
-    """Analyze a frozen run; with an output root, evidence faults reject in place."""
+    """Analyze a frozen run; audit/evidence faults always return REJECT_ROUTE.
+
+    Invalid call shapes and output-root overwrite requests still raise before
+    analysis.  Missing or unreadable frozen evidence is a controlled verdict,
+    whether or not a seven-file destination was requested.
+    """
 
     prepared_output = _prepare_output_root(output_root) if output_root is not None else None
     try:
@@ -1361,11 +1703,10 @@ def analyze_d92_ccoc_hard9_k1(
             per_old_class_rows_path=per_old_class_rows_path,
             truth_sidecar_root=truth_sidecar_root,
         )
-    except D92CCOCHard9K1AnalysisError as error:
-        if prepared_output is None:
-            raise
+    except (D92CCOCHard9K1AnalysisError, OSError) as error:
         result = _controlled_reject_result(error)
-        result["output_paths"] = write_analysis_outputs(result, prepared_output)
+        if prepared_output is not None:
+            result["output_paths"] = write_analysis_outputs(result, prepared_output)
         return result
     if prepared_output is not None:
         result["output_paths"] = write_analysis_outputs(result, prepared_output)
