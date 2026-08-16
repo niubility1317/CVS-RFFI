@@ -37,7 +37,7 @@
 
 - 本地验证环境：`ssr-gpu`，串行运行聚焦测试和受影响回归；随后执行`py_compile`、三个`--help`、`bash -n`、formal/smoke dry-run及`git diff --check`。
 - future formal入口（仅在主控完成独立review并交给唯一runner后）：`nohup bash <immutable-release>/code/scripts/launch_phase1_clic_source_metrics12_v2_20260816.sh > /home/szu2070436088/2510044040/CV-SincNet/phase1_clic_source_metrics_20260813_v2_outer.out 2>&1 &`。
-- future smoke入口：`bash <immutable-release>/code/scripts/smoke_phase1_clic_source_metrics_f1_v2_20260816.sh`；smoke失败仍保持formal根、日志及outer为`ABSENT`。
+- future smoke入口：`nohup bash <immutable-release>/code/scripts/smoke_phase1_clic_source_metrics_f1_v2_20260816.sh > /home/szu2070436088/2510044040/CV-SincNet/phase1_clic_source_metrics_20260813_v2_smoke_outer.out 2>&1 &`；该命令只允许唯一runner调用1次，`retry=NO`。smoke失败仍保持formal根、日志及formal outer为`ABSENT`。
 - 本次作者边界：只做本地代码、测试、脚本、报告和Git版本化；不访问N607，不同步、不启动、不评分、不解释性能。
 
 ## v2本地实施与验证记录
