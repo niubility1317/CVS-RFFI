@@ -229,3 +229,21 @@
 |`automation_reports/CV-SincNet/phase1_adv3b02_clic6_20260816_v2/report.md`（review-input）|`76946a4f9f8286271714f266dd498ca256a8008a8234c68e85bed308eaec90e4`|
 
 - 终裁与本地版本化均未访问N607、target truth或任何性能字段；没有生成prediction工件、PID、GPU证据、archive、release或远端SHA，formal invocation仍为`0`，retry=`NO`。
+
+### 16.7唯一N607runner的release与STATIC落地（2026-08-16 18:53）
+
+- 本runner身份为唯一`Luna/max`N607runner；冻结commit=`bccb4ce465c38e874b49119ee3e4f646c70b7a33`，工作树仅保留既有未跟踪`conversation_index/`，archive未包含dirty或`conversation_index`内容。
+- 直连N607preflight=`PASS`：server=`dell-DSS8440`，project/Python可见，GPU0–7均`1MiB/0%`；普通N607账号，未使用bridge/admin。
+- 本地Gitarchive：`/tmp/phase1_adv3b02_target_prediction_20260816_v1_bccb4ce.tar.gz`，bytes=`35820726`，SHA256=`3da5db5fdb1353824b74a7ff1811c06a5560b4a0296c82f1c3f6728dd70dbe99`；archive成员=`5124`，absolute/traversal=`0`，link=`0`。
+- SCP恰1次写入临时路径`/home/szu2070436088/2510044040/releases/.phase1_adv3b02_target_prediction_20260816_v1_bccb4ce.tar.gz`；远端bytes/SHA与本地一致。stage为`/home/szu2070436088/2510044040/releases/.phase1_adv3b02_target_prediction_20260816_v1_bccb4ce.stage`，静态通过后仅一次atomic rename至`/home/szu2070436088/2510044040/releases/phase1_adv3b02_target_prediction_20260816_v1_bccb4ce`，未覆盖既有release。
+- release关键文件raw/LFcanonical均闭合：evaluator=`b17931166da99adcea9bb45ddb6c3ffa0239dbc6df301e6a58b46ecdc8829729`（64607bytes）、launcher=`1f920885ef753113d49f1184d4ff9461c724438f33f13a9ae0d43ced1ba3de45`（14932bytes）、本reportarchive版本=`07879d12c1303414a4c74cf1d6c3ea1de17cc8fd83556fb2794b32f4f6867e51`（35283bytes）；三者均无lone CR。
+- STATIC=`PASS`：evaluator与owned test以固定`CVS-RFFI/bin/python`cfile方式`py_compile`通过；evaluator两种mode help通过；launcher`bash -n`通过；dry-run精确12行（6seal+6publish），truth/known/reference/metric/score/role/query/selection/retry禁用flag计数=`0`。
+- 输入只读存在性闭合：6组ADV checkpoint+completion receipt、12组training-v5 C/G checkpoint+terminal+clean-v4、同一IQ-only package manifest/received-IQ文件、ManySig；ManySig SHA=`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`。未读取target、truth、known config、reference或metrics/performance。
+- formal run/log、F1 smoke run/log及两类outer在STATIC与release后均ABSENT；当前状态=`LANDED / STATIC_PASS / SMOKE_INVOCATION=0 / FORMAL_INVOCATION=0 / RETRY=NO / NO_PERFORMANCE_RESULT`。
+
+### 16.8唯一F1 smoke技术停止（2026-08-16）
+
+- 仅执行一次detached smoke invocation，`SMOKE_INVOCATION=1`、`RETRY=NO`；outerPID=`925426`，固定GPU=`0`，目标outer=`/home/szu2070436088/2510044040/CV-SincNet/.smoke_phase1_adv3b02_target_prediction_20260816_v1_F1_outer.out`。
+- 启动后短连接回读：outer存在但bytes=`0`、空文件SHA256=`e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`，mtime=`2026-08-16 19:01:06.710363852 +0800`；独立smoke run/log根仍为`ABSENT`，F1 train-config、technical receipt、wrapper/child进程均未落地。
+- GPU0–7最终均为`1MiB/0%`；未发现属于本run的存活进程；本地SSH/SCP/TCP22均清零。未读取IQ-only package、target、truth、known config、reference、metrics或performance。
+- 由于唯一detached smoke未形成wrapper/run/log/receipt，按预注册技术停止规则封存：`SMOKE_STOPPED_TECHNICAL_FAILURE / FORMAL_INVOCATION=0 / NO_PERFORMANCE_RESULT / RETRY=NO`。不formal、不retry、不改release、不删除partial outer证据。
