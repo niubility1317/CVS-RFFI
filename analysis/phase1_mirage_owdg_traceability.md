@@ -5,6 +5,7 @@
 本记录在修改协议正文或实现前建立。批准的歧义解决优先于任务简报和设计规格中仍保留的`0.07/0.63/0.30`及文档逐字断言写法：执行接口采用`0.07/0.63/0.15/0.15`，并用行为测试证明权限边界。
 
 | ID | 规格来源 | 需求 | 实现文件 | 测试 | 状态 | 证据与说明 |
+| T8-CAL-SCORE-01 | Task 8简报；设计规格§6-7 | 仅以V_cal/P_cal校准冻结阈值，以V_select/P_select生成same-row指标；强制六fold等权、Gate1—4不可补偿、Gate4目标隔离与唯一source-only arm选择。 | code/cvsrffi/phase1_mirage/calibration.py；code/cvsrffi/phase1_mirage/scoring.py | tests/phase1_mirage/test_calibration.py；tests/phase1_mirage/test_scoring.py | verified | 初始RED为10项缺少calibration模块；GREEN为11项聚焦测试和Task1—8限定回归125项通过。额外scene等权RED修正fold内样本量加权；角色/ID/update、FRR/defer、5/6、Gate不可补偿和target不反馈均有行为覆盖。 |
 |---|---|---|---|---|---|---|
 | T1-POL-01 | 用户批准歧义解决；设计规格§3.2 | Phase1 source划分固定为`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`。 | `code/cvsrffi/phase1_mirage/protocol.py`；两份协议正文 | `tests/phase1_mirage/test_protocol_policy.py` | verified | RED为缺少模块；GREEN聚焦测试8项通过。 |
 | T1-POL-02 | 用户批准歧义解决；设计规格§2-3 | `L_s/U_s/V_s`可以共享source-known TX身份；所有角色的物理样本ID必须互斥。 | `code/cvsrffi/phase1_mirage/protocol.py`；两份协议正文 | `tests/phase1_mirage/test_protocol_policy.py` | verified | GREEN验证允许共享TX并拒绝重复`physical_sample_id`。 |
