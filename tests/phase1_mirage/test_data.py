@@ -63,7 +63,7 @@ def test_split_uses_approved_policy_per_group_and_preserves_physical_id_disjoint
     rows_100_per_group = _rows_100_per_group()
     _, _, _, _, _, build_source_split, _, _, _ = _data_api()
 
-    split = build_source_split(rows_100_per_group, seed=817001)
+    split = build_source_split(rows_100_per_group, seed=817001, forbidden_receivers=())
 
     assert tuple(map(len, (split.l_ids, split.u_ids, split.v_cal_ids, split.v_select_ids))) == (7, 63, 15, 15)
     partition_ids = (set(split.l_ids), set(split.u_ids), set(split.v_cal_ids), set(split.v_select_ids))
@@ -80,9 +80,9 @@ def test_split_is_deterministic_for_a_seed_and_changes_for_a_different_seed():
     rows_100_per_group = _rows_100_per_group()
     _, _, _, _, _, build_source_split, _, _, _ = _data_api()
 
-    first = build_source_split(rows_100_per_group, seed=817001)
-    repeated = build_source_split(rows_100_per_group, seed=817001)
-    changed = build_source_split(rows_100_per_group, seed=817002)
+    first = build_source_split(rows_100_per_group, seed=817001, forbidden_receivers=())
+    repeated = build_source_split(rows_100_per_group, seed=817001, forbidden_receivers=())
+    changed = build_source_split(rows_100_per_group, seed=817002, forbidden_receivers=())
 
     assert repeated == first
     assert (changed.l_ids, changed.u_ids, changed.v_cal_ids, changed.v_select_ids) != (
@@ -104,7 +104,7 @@ def test_split_partitions_each_tx_receiver_day_group_without_forbidding_shared_t
     )
     _, _, _, _, _, build_source_split, _, _, _ = _data_api()
 
-    split = build_source_split(first_group + second_group, seed=817001)
+    split = build_source_split(first_group + second_group, seed=817001, forbidden_receivers=())
 
     assert tuple(map(len, (split.l_ids, split.u_ids, split.v_cal_ids, split.v_select_ids))) == (14, 126, 30, 30)
     assert split.group_counts == {
@@ -131,6 +131,14 @@ def test_target_receiver_is_rejected_before_duplicate_id_validation_or_split():
         build_source_split(target_with_reused_id, seed=817001, forbidden_receivers={"20-1"})
 
 
+def test_split_requires_an_explicit_authoritative_receiver_constraint():
+    rows_100_per_group = _rows_100_per_group()
+    _, _, _, _, _, build_source_split, _, _, _ = _data_api()
+
+    with pytest.raises(TypeError, match="forbidden_receivers"):
+        build_source_split(rows_100_per_group, seed=817001)
+
+
 def test_duplicate_physical_sample_id_is_rejected():
     rows_100_per_group = _rows_100_per_group()
     _, SourceInventoryRow, SourceProtocolError, _, _, build_source_split, _, _, _ = _data_api()
@@ -145,15 +153,15 @@ def test_duplicate_physical_sample_id_is_rejected():
     )
 
     with pytest.raises(SourceProtocolError, match="duplicate physical_sample_id"):
-        build_source_split(duplicate_id_rows, seed=817001)
+        build_source_split(duplicate_id_rows, seed=817001, forbidden_receivers=())
 
 
 def test_unlabeled_materialization_has_no_tx_label_in_structure_or_attributes():
     rows_100_per_group = _rows_100_per_group()
     _, _, _, UnlabeledView, _, build_source_split, _, materialize_unlabeled, _ = _data_api()
-    split = build_source_split(rows_100_per_group, seed=817001)
+    split = build_source_split(rows_100_per_group, seed=817001, forbidden_receivers=())
 
-    views = materialize_unlabeled(rows_100_per_group, split.u_ids[:2])
+    views = materialize_unlabeled(rows_100_per_group, split.u_ids[:2], manifest=split)
 
     assert isinstance(views, tuple)
     assert tuple(view.physical_sample_id for view in views) == split.u_ids[:2]
@@ -172,10 +180,15 @@ def test_unlabeled_materialization_has_no_tx_label_in_structure_or_attributes():
 def test_labeled_and_validation_views_expose_only_their_approved_fields():
     rows_100_per_group = _rows_100_per_group()
     LabeledView, _, SourceProtocolError, _, ValidationView, build_source_split, materialize_labeled, _, materialize_validation = _data_api()
-    split = build_source_split(rows_100_per_group, seed=817001)
+    split = build_source_split(rows_100_per_group, seed=817001, forbidden_receivers=())
 
-    labeled = materialize_labeled(rows_100_per_group, split.l_ids)
-    validation = materialize_validation(rows_100_per_group, split.v_cal_ids, split_role="val_cal")
+    labeled = materialize_labeled(rows_100_per_group, split.l_ids, manifest=split)
+    validation = materialize_validation(
+        rows_100_per_group,
+        split.v_cal_ids,
+        split_role="val_cal",
+        manifest=split,
+    )
 
     assert isinstance(labeled, tuple)
     assert all(isinstance(view, LabeledView) and isinstance(view.tx_label, int) for view in labeled)
@@ -196,13 +209,50 @@ def test_labeled_and_validation_views_expose_only_their_approved_fields():
         "split_role",
     }
     with pytest.raises(SourceProtocolError, match="split_role"):
-        materialize_validation(rows_100_per_group, split.v_select_ids, split_role="not-a-validation-role")
+        materialize_validation(
+            rows_100_per_group,
+            split.v_select_ids,
+            split_role="not-a-validation-role",
+            manifest=split,
+        )
+
+
+def test_materialization_requires_the_split_manifest():
+    rows_100_per_group = _rows_100_per_group()
+    _, _, _, _, _, build_source_split, _, materialize_unlabeled, _ = _data_api()
+    split = build_source_split(rows_100_per_group, seed=817001, forbidden_receivers=())
+
+    with pytest.raises(TypeError, match="manifest"):
+        materialize_unlabeled(rows_100_per_group, split.u_ids)
+
+
+def test_labeled_materialization_rejects_unlabeled_partition_ids():
+    rows_100_per_group = _rows_100_per_group()
+    _, _, SourceProtocolError, _, _, build_source_split, materialize_labeled, _, _ = _data_api()
+    split = build_source_split(rows_100_per_group, seed=817001, forbidden_receivers=())
+
+    with pytest.raises(SourceProtocolError, match="L_s"):
+        materialize_labeled(rows_100_per_group, split.u_ids, manifest=split)
+
+
+def test_validation_materialization_rejects_calibration_ids_for_select_role():
+    rows_100_per_group = _rows_100_per_group()
+    _, _, SourceProtocolError, _, _, build_source_split, _, _, materialize_validation = _data_api()
+    split = build_source_split(rows_100_per_group, seed=817001, forbidden_receivers=())
+
+    with pytest.raises(SourceProtocolError, match="V_select"):
+        materialize_validation(
+            rows_100_per_group,
+            split.v_cal_ids,
+            split_role="val_select",
+            manifest=split,
+        )
 
 
 def test_manifest_receipt_hashes_match_each_returned_id_list():
     rows_100_per_group = _rows_100_per_group()
     _, _, _, _, _, build_source_split, _, _, _ = _data_api()
-    split = build_source_split(rows_100_per_group, seed=817001)
+    split = build_source_split(rows_100_per_group, seed=817001, forbidden_receivers=())
 
     for partition, identifiers in (
         (SourcePartition.L_S, split.l_ids),

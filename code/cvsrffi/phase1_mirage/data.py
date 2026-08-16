@@ -103,12 +103,20 @@ def _inventory_by_id(rows: Sequence[SourceInventoryRow]) -> dict[str, SourceInve
 
 
 def _select_rows(
-    rows: Sequence[SourceInventoryRow], physical_ids: Sequence[str]
+    rows: Sequence[SourceInventoryRow],
+    physical_ids: Sequence[str],
+    *,
+    allowed_ids: Collection[str],
+    source_partition: SourcePartition,
 ) -> tuple[SourceInventoryRow, ...]:
     inventory = _inventory_by_id(rows)
     requested_ids = tuple(physical_ids)
     if len(set(requested_ids)) != len(requested_ids):
         raise SourceProtocolError("duplicate physical_sample_id in materialization request")
+    if not set(requested_ids).issubset(allowed_ids):
+        raise SourceProtocolError(
+            f"physical_sample_id is not authorized for {source_partition.value}"
+        )
     try:
         return tuple(inventory[physical_sample_id] for physical_sample_id in requested_ids)
     except KeyError as error:
@@ -133,7 +141,7 @@ def build_source_split(
     rows: Sequence[SourceInventoryRow],
     *,
     seed: int,
-    forbidden_receivers: Collection[str] = (),
+    forbidden_receivers: Collection[str],
 ) -> SourceSplitManifest:
     """Split source physical IDs by TX, receiver, and day without target access."""
 
@@ -185,7 +193,10 @@ def build_source_split(
 
 
 def materialize_labeled(
-    rows: Sequence[SourceInventoryRow], physical_ids: Sequence[str]
+    rows: Sequence[SourceInventoryRow],
+    physical_ids: Sequence[str],
+    *,
+    manifest: SourceSplitManifest,
 ) -> tuple[LabeledView, ...]:
     """Return only the fields approved for labeled source training."""
 
@@ -197,12 +208,20 @@ def materialize_labeled(
             day_id=row.day_id,
             iq_index=row.iq_index,
         )
-        for row in _select_rows(rows, physical_ids)
+        for row in _select_rows(
+            rows,
+            physical_ids,
+            allowed_ids=manifest.l_ids,
+            source_partition=SourcePartition.L_S,
+        )
     )
 
 
 def materialize_unlabeled(
-    rows: Sequence[SourceInventoryRow], physical_ids: Sequence[str]
+    rows: Sequence[SourceInventoryRow],
+    physical_ids: Sequence[str],
+    *,
+    manifest: SourceSplitManifest,
 ) -> tuple[UnlabeledView, ...]:
     """Return a structural label-free view for unlabeled source training."""
 
@@ -213,7 +232,12 @@ def materialize_unlabeled(
             day_id=row.day_id,
             iq_index=row.iq_index,
         )
-        for row in _select_rows(rows, physical_ids)
+        for row in _select_rows(
+            rows,
+            physical_ids,
+            allowed_ids=manifest.u_ids,
+            source_partition=SourcePartition.U_S,
+        )
     )
 
 
@@ -222,11 +246,17 @@ def materialize_validation(
     physical_ids: Sequence[str],
     *,
     split_role: Literal["val_cal", "val_select"],
+    manifest: SourceSplitManifest,
 ) -> tuple[ValidationView, ...]:
     """Return labeled validation data with an explicit approved validation role."""
 
     if split_role not in _VALIDATION_ROLES:
         raise SourceProtocolError(f"unsupported split_role: {split_role}")
+    allowed_ids, source_partition = (
+        (manifest.v_cal_ids, SourcePartition.V_CAL)
+        if split_role == "val_cal"
+        else (manifest.v_select_ids, SourcePartition.V_SELECT)
+    )
     return tuple(
         ValidationView(
             physical_sample_id=row.physical_sample_id,
@@ -236,5 +266,10 @@ def materialize_validation(
             iq_index=row.iq_index,
             split_role=split_role,
         )
-        for row in _select_rows(rows, physical_ids)
+        for row in _select_rows(
+            rows,
+            physical_ids,
+            allowed_ids=allowed_ids,
+            source_partition=source_partition,
+        )
     )
