@@ -247,3 +247,70 @@
 - 启动后短连接回读：outer存在但bytes=`0`、空文件SHA256=`e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`，mtime=`2026-08-16 19:01:06.710363852 +0800`；独立smoke run/log根仍为`ABSENT`，F1 train-config、technical receipt、wrapper/child进程均未落地。
 - GPU0–7最终均为`1MiB/0%`；未发现属于本run的存活进程；本地SSH/SCP/TCP22均清零。未读取IQ-only package、target、truth、known config、reference、metrics或performance。
 - 由于唯一detached smoke未形成wrapper/run/log/receipt，按预注册技术停止规则封存：`SMOKE_STOPPED_TECHNICAL_FAILURE / FORMAL_INVOCATION=0 / NO_PERFORMANCE_RESULT / RETRY=NO`。不formal、不retry、不改release、不删除partial outer证据。
+
+### 16.9文件化F1 smoke修复与全新v2盲预测预注册（2026-08-16）
+
+#### 16.9.1根因边界与版本身份
+
+- v1保持`SMOKE_STOPPED_TECHNICAL_FAILURE / FORMAL_INVOCATION=0 / NO_PERFORMANCE_RESULT / RETRY=NO`，既有run、release和空outer证据均不恢复、不覆盖、不重标。16.8只证明detached执行没有形成落盘wrapper、run/log或receipt；它不证明模型重建或单IQ forward失败。
+- 本轮仅修复执行面：v1发布包没有一个可由`nohup bash <versioned-script>`直接调用的F1盲推smoke文件。新入口不通过SSH stdin传输脚本体，不改变`evaluate_phase1_adv3b02_target_leo.py`、SSDG模型、checkpoint、数据、场景、六折映射或publisher语义。
+- 全新formal run ID冻结为`phase1_adv3b02_target_prediction_20260816_v2`。当前状态为`LOCAL_VERIFIED / INDEPENDENT_ALLOW / NOT_LANDED / SMOKE_INVOCATION=0 / FORMAL_INVOCATION=0 / NO_PERFORMANCE_RESULT`；独立终裁为`P0=0 / P1=0 / P2=0 / ALLOW`。commit、archive、sync、N607 preflight与launch仍未在本节形成证据。
+
+#### 16.9.2F1 one-shot技术入口
+
+|字段|冻结值／规则|
+|---|---|
+|Python入口|`code/smoke_phase1_adv3b02_target_prediction_f1.py`|
+|落盘launcher|`code/scripts/smoke_phase1_adv3b02_target_prediction_f1_v2_20260816.sh`|
+|source输入|F1 ADV v2 `final_ssdg.pth`、同目录`phase1_training_completion_receipt.json`、F1C `source_clean_proxy.npz`；仅这三类|
+|smoke输入|本地构造全零`float32` IQ，shape=`(2,256)`；scene固定为`leo_clear_weak`|
+|执行路径|调用production `seal_adv3b02_train_data_config`，再调用production `load_verified_adv3b02_runtime`，只执行一次`forward_once`|
+|成功门|严格重建成功；输出恰4个有限logit；`forward_count=1`；`fit/update/retry/selection=0`|
+|禁止访问|IQ-only package、target row、query、truth sidecar、known-test config、reference、scorer、metrics与performance均不打开|
+|smoke run根|`runs/.smoke_phase1_adv3b02_target_prediction_20260816_v2_F1/F1_ADV3B02_CLIC`|
+|smoke log根|`logs/.smoke_phase1_adv3b02_target_prediction_20260816_v2_F1`|
+|不可变证据|`train_data_config.json`、`technical_smoke_receipt.json`、`F1_ADV3B02_CLIC.pid`、`F1_ADV3B02_CLIC.out`；run/log根、PID、日志和receipt均拒绝覆盖|
+
+receipt schema为`cvs.phase1.adv3b02_target_prediction_technical_smoke.v2`，封存checkpoint、completion、F1C clean-v4、sealed train-config原始SHA，以及normalized config、physical-axis binding和source class-order SHA。receipt同时封存精确baseline terminal tuple、`strict_runtime_load=true`、`synthetic_local_input_count=1`、`finite_logit_count=4`和全部零访问／零更新计数；不封存logit值、预测类别或性能字段。独立validator只重读checkpoint、completion、sealed train-config和receipt，不重开clean/WiSig或任何target输入。
+
+计划唯一smoke命令为：
+
+```text
+nohup bash <release>/code/scripts/smoke_phase1_adv3b02_target_prediction_f1_v2_20260816.sh > /home/szu2070436088/2510044040/CV-SincNet/.smoke_phase1_adv3b02_target_prediction_20260816_v2_F1_outer.out 2>&1 &
+```
+
+该命令只允许未来sole runner调用一次，`SMOKE_INVOCATION=1 / RETRY=NO`。任一输入、strict load、有限性、计数、SHA、fresh-root或不可覆盖检查失败，状态固定为`SMOKE_STOPPED_TECHNICAL_FAILURE / FORMAL_INVOCATION=0 / NO_PERFORMANCE_RESULT`，不得启动formal。
+
+#### 16.9.3v2 formal门与新输出根
+
+- 新versioned formal入口为`code/scripts/launch_phase1_adv3b02_target_prediction6_v2_20260816.sh`。它先用上述file-backed validator核验F1 receipt，再机械复用已独立ALLOW的v1六折launcher，仅把formal run身份替换为v2；渲染结果写入短生命周期文件并以文件路径执行，不把shell脚本体交给进程stdin。
+- formal run/log根分别为`runs/phase1_adv3b02_target_prediction_20260816_v2`和`logs/phase1_adv3b02_target_prediction_20260816_v2`，与已停止v1完全分离。六折输入、F1—F6顺序、先6 seal后6 publish、GPU0—5映射、canonical F#C clean authority、C／G metadata前置等价门、同一既有IQ-only package、3120 rows／fold及publisher四类盲输入均保持v1冻结值。
+- formal dry-run在smoke尚未产生时仍可执行，精确输出12条命令；实际formal在receipt缺失、字段漂移或SHA不一致时，于任何v2 formal run/log输出前拒绝。
+- 未来formal唯一命令预注册为`nohup bash <release>/code/scripts/launch_phase1_adv3b02_target_prediction6_v2_20260816.sh > /home/szu2070436088/2510044040/CV-SincNet/phase1_adv3b02_target_prediction_20260816_v2_outer.out 2>&1 &`。`FORMAL_INVOCATION<=1 / RETRY=NO`；任何技术失败保留partial artifacts并标记`NO_PERFORMANCE_RESULT`，不得依据性能停止、选择或重跑。
+- 冻结CWD仍为`/home/szu2070436088/2510044040/CV-SincNet`，Python仍为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；计划release为`releases/phase1_adv3b02_target_prediction_20260816_v2_<commit8>`，commit与release SHA均待版本化后填写。本节不构成N607授权。
+
+#### 16.9.4TDD、本地验证与追溯
+
+- RED：新生产文件不存在时，`ssr-gpu`下完整owned测试共17项，结果为`10 passed / 7 failed`、exit=`1`。首因精确为`ADV v2 file-backed smoke Python entry is absent`；其余失败仅对应新smoke shell或新v2 formal launcher缺失。Conda/Python进程在RED前后均为`NONE`。
+- GREEN包装的首次命令在Conda参数包装层因多行`python -c`被拒绝，Python、py_compile和pytest均未启动，前后进程仍为`NONE`；该记录不是项目测试失败。将同一验证体改为单行无换行参数后串行执行，exit=`0`：3个Python文件py_compile通过，2个CLI help通过，owned测试`17/17 passed`。唯一warning为`code/model.py:701`既有AMP API FutureWarning，不改变本合同；GREEN前后Conda/Python进程均为`NONE`。
+- 真实测试通过production SSDG训练构建路径生成最小真实state；file-backed smoke实际完成source sealer、strict runtime重建和一条zero-IQ forward，并验证有限4-logit、原始SHA绑定、receipt validator、无target/truth/known/reference/query文件以及二次receipt写入拒绝。测试没有替换runtime loader或model reconstructor。
+- shell静态门通过：两份新脚本`bash -n`均为0；stdin关闭条件下smoke dry-run为1条，v2 formal dry-run为12条；scoped `git diff --check`为0。本轮没有访问N607、IQ-only package、target truth、known config、reference、metrics或performance，也没有生成正式prediction。
+
+|ID|要求|实现／证据|状态|
+|---|---|---|---|
+|ADV-PRED-V2-01|真正版本化且不依赖SSH stdin的F1 one-shot入口|Python入口＋直接落盘shell；DEVNULL dry-run与真实strict测试|verified-local|
+|ADV-PRED-V2-02|只用F1 checkpoint／completion／F1C clean和本地zero IQ|CLI精确输入面、真实sealer/runtime测试、禁止输入断言|verified-local|
+|ADV-PRED-V2-03|一次forward、有限4-logit、零fit/update/retry/selection|immutable technical receipt与真实模型测试|verified-local|
+|ADV-PRED-V2-04|fresh exact root、PID／log／receipt不可覆盖|双root碰撞负测、exclusive shell writer、二次receipt拒绝|verified-local|
+|ADV-PRED-V2-05|smoke失败阻止formal；v1永不复用|v2 formal receipt gate与缺失receipt零输出负测|verified-local|
+|ADV-PRED-V2-06|全新v2 formal身份且六折合同不漂移|v2 dry-run精确12条，输出根全部绑定v2|verified-local|
+|ADV-PRED-V2-07|独立复审后才版本化／release|独立`P0=0/P1=0/P2=0/ALLOW`；当前未sync、未launch|verified-local|
+
+本地review-input SHA256如下；报告自身SHA在独立复审前另行计算，避免自引用：
+
+|文件|SHA256|
+|---|---|
+|`code/smoke_phase1_adv3b02_target_prediction_f1.py`|`6272ffcf968ccd2ab1ce18e1086602f72d46ea207834b99195dca93d64a5b7be`|
+|`code/scripts/smoke_phase1_adv3b02_target_prediction_f1_v2_20260816.sh`|`d29bfe6d01977f40bb43742fcb97f6fbfe72b31ddcbc7dda39b8e0257a56dff1`|
+|`code/scripts/launch_phase1_adv3b02_target_prediction6_v2_20260816.sh`|`5df7ce63dc508965d23f80a0e3a6df06ee67af50664e3c5ab499293402b3134b`|
+|`code/tests/test_phase1_adv3b02_target_prediction_launcher.py`|`51ed09c099d86fc4400a49d72a9240406a19bce5baa1b83799f1af24727b6cba`|
