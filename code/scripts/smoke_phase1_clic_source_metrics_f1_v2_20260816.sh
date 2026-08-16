@@ -10,7 +10,8 @@ SMOKE_ROOT_NAME=".smoke_phase1_clic_source_metrics_20260813_v2_F1"
 TRAINING_RUN_ID="phase1_clic12_20260812_v5"
 CLEAN_RUN_ID="phase1_clic_postfreeze_20260812_v4"
 SOURCE_PAIR_RUN_ID="phase1_clic_source_pair_20260812_v3"
-PROJECT_ROOT="${PROJECT_ROOT:-/home/szu2070436088/2510044040/CV-SincNet}"
+CANONICAL_PROJECT_ROOT="/home/szu2070436088/2510044040/CV-SincNet"
+PROJECT_ROOT="${PROJECT_ROOT:-${CANONICAL_PROJECT_ROOT}}"
 CODE_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PYTHON="/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python"
 WISIG_PKL="${PROJECT_ROOT}/Dataset_WigSig/ManySig.pkl"
@@ -37,6 +38,11 @@ for arg in "$@"; do
     *) echo "invalid argument: ${arg}" >&2; exit 2 ;;
   esac
 done
+
+[[ "${PROJECT_ROOT}" == "${CANONICAL_PROJECT_ROOT}" ]] || {
+  echo "technical smoke requires the frozen canonical project root" >&2
+  exit 3
+}
 
 candidate_for() {
   local arm="$1"
@@ -95,6 +101,7 @@ forward_command() {
     --source-v-received-iq-npz "${shared}"
     --source-v-received-iq-receipt-json "${receipt}"
     --pair-json "$(pair_path)"
+    --formal-project-root "${PROJECT_ROOT}"
     --training-run-root "${TRAINING_ROOT}"
     --cache-run-root "${SOURCE_ROOT}"
     --output-root "${SOURCE_ROOT}"
@@ -113,6 +120,36 @@ emit_command() {
     "${stage}" "${arm}" "${GPU}"
   printf ' %q' "$@"
   printf '\n'
+}
+
+claim_exact_root() {
+  local path="$1"
+  if ! mkdir -- "${path}"; then
+    echo "refusing to overwrite source metrics v2 smoke run/log root" >&2
+    exit 3
+  fi
+}
+
+open_exclusive_fd() {
+  local path="$1"
+  if ! { set -o noclobber; exec {OPEN_FD}>"${path}"; }; then
+    set +o noclobber
+    echo "refusing to overwrite source metrics v2 smoke log evidence" >&2
+    exit 3
+  fi
+  set +o noclobber
+}
+
+launch_with_exclusive_log() {
+  local log_path="$1" log_fd
+  shift
+  open_exclusive_fd "${log_path}"
+  log_fd="${OPEN_FD}"
+  (
+    "$@" >&"${log_fd}" 2>&1
+  ) &
+  LAUNCHED_PID="$!"
+  exec {log_fd}>&-
 }
 
 if [[ "${DRY_RUN}" == "1" ]]; then
@@ -159,15 +196,20 @@ for arm in C G; do
 done
 [[ -f "$(pair_path)" ]] || { echo "missing source PAIR-v3 receipt: F1" >&2; exit 2; }
 
-mkdir -p "${SOURCE_ROOT}/F1_SHARED" "${SOURCE_ROOT}/F1C_CLIC12" "${SOURCE_ROOT}/F1G_CLIC12" "${LOG_ROOT}"
+claim_exact_root "${SMOKE_ROOT}"
+claim_exact_root "${LOG_ROOT}"
+claim_exact_root "${SOURCE_ROOT}"
+mkdir -p "${SOURCE_ROOT}/F1_SHARED" "${SOURCE_ROOT}/F1C_CLIC12" "${SOURCE_ROOT}/F1G_CLIC12"
 
 cache_command
-CUDA_VISIBLE_DEVICES="${GPU}" PYTHONPATH="${CODE_ROOT}" \
-  "${CACHE_CMD[@]}" >"${LOG_ROOT}/F1_source_v_cache.out" 2>&1
+launch_with_exclusive_log "${LOG_ROOT}/F1_source_v_cache.out" \
+  env CUDA_VISIBLE_DEVICES="${GPU}" PYTHONPATH="${CODE_ROOT}" "${CACHE_CMD[@]}"
+wait "${LAUNCHED_PID}"
 
 for arm in C G; do
   candidate="$(candidate_for "${arm}")"
   forward_command "${arm}"
-  CUDA_VISIBLE_DEVICES="${GPU}" PYTHONPATH="${CODE_ROOT}" \
-    "${FORWARD_CMD[@]}" >"${LOG_ROOT}/${candidate}_source_v_forward.out" 2>&1
+  launch_with_exclusive_log "${LOG_ROOT}/${candidate}_source_v_forward.out" \
+    env CUDA_VISIBLE_DEVICES="${GPU}" PYTHONPATH="${CODE_ROOT}" "${FORWARD_CMD[@]}"
+  wait "${LAUNCHED_PID}"
 done

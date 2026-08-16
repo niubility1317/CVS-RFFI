@@ -165,6 +165,42 @@ emit_command() {
   printf '\n'
 }
 
+claim_exact_root() {
+  local path="$1"
+  if ! mkdir -- "${path}"; then
+    echo "refusing to overwrite source metrics run/log root" >&2
+    exit 3
+  fi
+}
+
+open_exclusive_fd() {
+  local path="$1"
+  if ! { set -o noclobber; exec {OPEN_FD}>"${path}"; }; then
+    set +o noclobber
+    echo "refusing to overwrite source metrics PID/log evidence" >&2
+    exit 3
+  fi
+  set +o noclobber
+}
+
+claim_log() {
+  local log_path="$1"
+  open_exclusive_fd "${log_path}"
+  LOG_FDS["${log_path}"]="${OPEN_FD}"
+}
+
+launch_claimed_log() {
+  local log_path="$1" log_fd
+  shift
+  log_fd="${LOG_FDS["${log_path}"]}"
+  (
+    "$@" >&"${log_fd}" 2>&1
+  ) &
+  LAUNCHED_PID="$!"
+  exec {log_fd}>&-
+  unset "LOG_FDS[${log_path}]"
+}
+
 if [[ "${DRY_RUN}" == "1" ]]; then
   for fold in 1 2 3 4 5 6; do
     index=$((fold - 1))
@@ -226,26 +262,34 @@ check_inputs() {
 }
 
 check_inputs
-mkdir -p "${RUN_ROOT}" "${LOG_ROOT}"
-printf 'stage|fold|arm|physical_gpu|pid|output|log_path\n' >"${LOG_ROOT}/pids_source_metrics12.tsv"
+claim_exact_root "${RUN_ROOT}"
+claim_exact_root "${LOG_ROOT}"
+PID_FILE="${LOG_ROOT}/pids_source_metrics12.tsv"
+open_exclusive_fd "${PID_FILE}"
+PID_FD="${OPEN_FD}"
+printf 'stage|fold|arm|physical_gpu|pid|output|log_path\n' >&"${PID_FD}"
 
 declare -a PIDS=()
+declare -A LOG_FDS=()
 append_pid() {
   local stage="$1" fold="$2" arm="$3" gpu="$4" pid="$5" output="$6" log_path="$7"
   PIDS+=("${pid}")
   printf '%s|%s|%s|%s|%s|%s|%s\n' \
     "${stage}" "${fold}" "${arm}" "${gpu}" "${pid}" "${output}" "${log_path}" \
-    >>"${LOG_ROOT}/pids_source_metrics12.tsv"
+    >&"${PID_FD}"
 }
 
 for fold in 1 2 3 4 5 6; do
-  index=$((fold - 1))
   mkdir -p "${RUN_ROOT}/F${fold}_SHARED"
+  claim_log "${LOG_ROOT}/F${fold}_source_v_cache.out"
+done
+for fold in 1 2 3 4 5 6; do
+  index=$((fold - 1))
   cache_command "${fold}"
   log_path="${LOG_ROOT}/F${fold}_source_v_cache.out"
-  CUDA_VISIBLE_DEVICES="${GPU_MAP[index]}" PYTHONPATH="${CODE_ROOT}" \
-    "${CACHE_CMD[@]}" >"${log_path}" 2>&1 &
-  append_pid CLIC_SOURCE_V_CACHE "${fold}" CG "${GPU_MAP[index]}" "$!" \
+  launch_claimed_log "${log_path}" env CUDA_VISIBLE_DEVICES="${GPU_MAP[index]}" PYTHONPATH="${CODE_ROOT}" \
+    "${CACHE_CMD[@]}"
+  append_pid CLIC_SOURCE_V_CACHE "${fold}" CG "${GPU_MAP[index]}" "${LAUNCHED_PID}" \
     "$(shared_cache_for "${fold}")" "${log_path}"
 done
 status=0
@@ -256,15 +300,21 @@ done
 
 PIDS=()
 for fold in 1 2 3 4 5 6; do
-  index=$((fold - 1))
   mkdir -p "${RUN_ROOT}/$(candidate_for "${fold}" C)" "${RUN_ROOT}/$(candidate_for "${fold}" G)"
+  for arm in C G; do
+    candidate="$(candidate_for "${fold}" "${arm}")"
+    claim_log "${LOG_ROOT}/${candidate}_source_v_forward.out"
+  done
+done
+for fold in 1 2 3 4 5 6; do
+  index=$((fold - 1))
   for arm in C G; do
     candidate="$(candidate_for "${fold}" "${arm}")"
     forward_command "${fold}" "${arm}"
     log_path="${LOG_ROOT}/${candidate}_source_v_forward.out"
-    CUDA_VISIBLE_DEVICES="${GPU_MAP[index]}" PYTHONPATH="${CODE_ROOT}" \
-      "${FORWARD_CMD[@]}" >"${log_path}" 2>&1 &
-    append_pid CLIC_SOURCE_V_FORWARD "${fold}" "${arm}" "${GPU_MAP[index]}" "$!" \
+    launch_claimed_log "${log_path}" env CUDA_VISIBLE_DEVICES="${GPU_MAP[index]}" PYTHONPATH="${CODE_ROOT}" \
+      "${FORWARD_CMD[@]}"
+    append_pid CLIC_SOURCE_V_FORWARD "${fold}" "${arm}" "${GPU_MAP[index]}" "${LAUNCHED_PID}" \
       "${RUN_ROOT}/${candidate}/source_validation_known_leo_weak_features.npz" "${log_path}"
   done
 done
@@ -277,12 +327,14 @@ done
 PIDS=()
 for fold in 1 2 3 4 5 6; do
   mkdir -p "${RUN_ROOT}/F${fold}_PAIR"
+  claim_log "${LOG_ROOT}/F${fold}_source_metrics_pair.out"
+done
+for fold in 1 2 3 4 5 6; do
   score_command "${fold}"
   log_path="${LOG_ROOT}/F${fold}_source_metrics_pair.out"
-  CUDA_VISIBLE_DEVICES="" PYTHONPATH="${CODE_ROOT}" \
-    OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 \
-    "${SCORE_CMD[@]}" >"${log_path}" 2>&1 &
-  append_pid CLIC_SOURCE_METRICS_PAIR "${fold}" CG CPU "$!" \
+  launch_claimed_log "${log_path}" env CUDA_VISIBLE_DEVICES="" PYTHONPATH="${CODE_ROOT}" \
+    OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 "${SCORE_CMD[@]}"
+  append_pid CLIC_SOURCE_METRICS_PAIR "${fold}" CG CPU "${LAUNCHED_PID}" \
     "${RUN_ROOT}/F${fold}_PAIR/source_metrics_pair.json" "${log_path}"
 done
 status=0
@@ -293,10 +345,11 @@ done
 
 aggregate_command
 log_path="${LOG_ROOT}/source_metrics_aggregate.out"
-CUDA_VISIBLE_DEVICES="" PYTHONPATH="${CODE_ROOT}" \
-  OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 \
-  "${AGGREGATE_CMD[@]}" >"${log_path}" 2>&1 &
-aggregate_pid=$!
+claim_log "${log_path}"
+launch_claimed_log "${log_path}" env CUDA_VISIBLE_DEVICES="" PYTHONPATH="${CODE_ROOT}" \
+  OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 "${AGGREGATE_CMD[@]}"
+aggregate_pid="${LAUNCHED_PID}"
 append_pid CLIC_SOURCE_METRICS_AGGREGATE ALL CG CPU "${aggregate_pid}" \
   "${RUN_ROOT}/source_metrics_aggregate.json" "${log_path}"
 wait "${aggregate_pid}"
+exec {PID_FD}>&-

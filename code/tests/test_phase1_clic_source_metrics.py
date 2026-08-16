@@ -50,6 +50,7 @@ def _v2_technical_smoke_paths(
     source_root = smoke_root / V2_RUN_ID
     candidate = "F1C_CLIC12"
     paths = {
+        "project_root": tmp_path,
         "runs": runs,
         "smoke_root": smoke_root,
         "training_root": training_root,
@@ -78,6 +79,7 @@ def _v2_technical_smoke_args(paths: dict[str, Path], *, technical_smoke: bool) -
         source_v_received_iq_npz=str(paths["cache"]),
         source_v_received_iq_receipt_json=str(paths["cache_receipt"]),
         pair_json=str(paths["pair"]),
+        formal_project_root=str(paths["project_root"]),
         training_run_root=str(paths["training_root"]),
         cache_run_root=str(paths["source_root"]),
         output_root=str(paths["source_root"]),
@@ -101,6 +103,11 @@ def test_technical_smoke_reaches_original_f1_terminal_before_any_output(
     paths = _v2_technical_smoke_paths(tmp_path)
     args = _v2_technical_smoke_args(paths, technical_smoke=True)
     observed: list[tuple[Path, Path]] = []
+    monkeypatch.setattr(
+        EXPORTER,
+        "EXPECTED_TECHNICAL_SMOKE_PROJECT_ROOT",
+        str(paths["project_root"]),
+    )
 
     monkeypatch.setattr(
         EXPORTER.torch,
@@ -129,10 +136,17 @@ def test_technical_smoke_reaches_original_f1_terminal_before_any_output(
     assert not paths["binding"].exists()
 
 
-def test_technical_smoke_root_contract_allows_only_the_exact_f1_exception(tmp_path: Path) -> None:
+def test_technical_smoke_root_contract_allows_only_the_exact_f1_exception(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """Break caught: a broad smoke escape hatch can admit another fold or root."""
 
     paths = _v2_technical_smoke_paths(tmp_path)
+    monkeypatch.setattr(
+        EXPORTER,
+        "EXPECTED_TECHNICAL_SMOKE_PROJECT_ROOT",
+        str(paths["project_root"]),
+    )
     assert EXPORTER.validate_source_v_execution_roots(
         training_root=paths["training_root"],
         clean_path=paths["clean"],
@@ -140,6 +154,8 @@ def test_technical_smoke_root_contract_allows_only_the_exact_f1_exception(tmp_pa
         output_root=paths["source_root"],
         checkpoint_path=paths["checkpoint"],
         terminal_path=paths["terminal"],
+        pair_path=paths["pair"],
+        formal_project_root=str(paths["project_root"]),
         fold_index=1,
         candidate_id="F1C_CLIC12",
         technical_smoke=True,
@@ -153,6 +169,8 @@ def test_technical_smoke_root_contract_allows_only_the_exact_f1_exception(tmp_pa
             output_root=paths["source_root"],
             checkpoint_path=paths["checkpoint"],
             terminal_path=paths["terminal"],
+            pair_path=paths["pair"],
+            formal_project_root=str(paths["project_root"]),
             fold_index=2,
             candidate_id="F2C_CLIC12",
             technical_smoke=True,
@@ -167,16 +185,25 @@ def test_technical_smoke_root_contract_allows_only_the_exact_f1_exception(tmp_pa
             output_root=mirrored["source_root"],
             checkpoint_path=mirrored["checkpoint"],
             terminal_path=mirrored["terminal"],
+            pair_path=mirrored["pair"],
+            formal_project_root=str(paths["project_root"]),
             fold_index=1,
             candidate_id="F1C_CLIC12",
             technical_smoke=True,
         )
 
 
-def test_formal_v2_root_contract_has_no_independent_parent_without_the_flag(tmp_path: Path) -> None:
+def test_formal_v2_root_contract_has_no_independent_parent_without_the_flag(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """Break caught: independent roots become legal without the narrow smoke control."""
 
     paths = _v2_technical_smoke_paths(tmp_path)
+    monkeypatch.setattr(
+        EXPORTER,
+        "EXPECTED_TECHNICAL_SMOKE_PROJECT_ROOT",
+        str(paths["project_root"]),
+    )
     with pytest.raises(EXPORTER.CLICSourceVFeatureExportError, match="root binding|formal|parent"):
         EXPORTER.validate_source_v_execution_roots(
             training_root=paths["training_root"],
@@ -185,6 +212,8 @@ def test_formal_v2_root_contract_has_no_independent_parent_without_the_flag(tmp_
             output_root=paths["source_root"],
             checkpoint_path=paths["checkpoint"],
             terminal_path=paths["terminal"],
+            pair_path=paths["pair"],
+            formal_project_root=str(paths["project_root"]),
             fold_index=1,
             candidate_id="F1C_CLIC12",
             technical_smoke=False,
@@ -198,6 +227,8 @@ def test_formal_v2_root_contract_has_no_independent_parent_without_the_flag(tmp_
         output_root=formal_root,
         checkpoint_path=paths["checkpoint"],
         terminal_path=paths["terminal"],
+        pair_path=paths["pair"],
+        formal_project_root=str(paths["project_root"]),
         fold_index=1,
         candidate_id="F1C_CLIC12",
         technical_smoke=False,
@@ -210,6 +241,58 @@ def test_formal_v2_root_contract_has_no_independent_parent_without_the_flag(tmp_
             output_root=formal_root,
             checkpoint_path=paths["checkpoint"],
             terminal_path=paths["terminal"],
+            pair_path=paths["pair"],
+            formal_project_root=str(paths["project_root"]),
+            fold_index=1,
+            candidate_id="F1C_CLIC12",
+            technical_smoke=True,
+        )
+
+
+def test_technical_smoke_rejects_same_shape_mirror_before_checkpoint_open(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Break caught: a self-consistent mirror replaces the original formal root."""
+
+    canonical = _v2_technical_smoke_paths(tmp_path / "canonical")
+    mirror = _v2_technical_smoke_paths(tmp_path / "mirror_only")
+    args = _v2_technical_smoke_args(mirror, technical_smoke=True)
+    args.formal_project_root = str(mirror["project_root"])
+    checkpoint_opened: list[Path] = []
+
+    monkeypatch.setattr(
+        EXPORTER,
+        "EXPECTED_TECHNICAL_SMOKE_PROJECT_ROOT",
+        str(canonical["project_root"]),
+    )
+
+    def must_not_open_checkpoint(path: str | Path, **_kwargs: Any) -> dict[str, Any]:
+        checkpoint_opened.append(Path(path))
+        raise AssertionError("same-shape mirror reached checkpoint opening")
+
+    monkeypatch.setattr(EXPORTER.torch, "load", must_not_open_checkpoint)
+    with pytest.raises(EXPORTER.CLICSourceVFeatureExportError, match="formal project|canonical|root"):
+        EXPORTER.export_source_v_leo_features(args)
+
+    assert checkpoint_opened == []
+    assert not mirror["output"].exists()
+    assert not mirror["binding"].exists()
+
+
+def test_technical_smoke_rejects_relative_formal_project_root(tmp_path: Path) -> None:
+    """Break caught: a relative root lets callers escape the frozen formal parent."""
+
+    paths = _v2_technical_smoke_paths(tmp_path)
+    with pytest.raises(EXPORTER.CLICSourceVFeatureExportError, match="formal project|absolute|root"):
+        EXPORTER.validate_source_v_execution_roots(
+            training_root=paths["training_root"],
+            clean_path=paths["clean"],
+            cache_root=paths["source_root"],
+            output_root=paths["source_root"],
+            checkpoint_path=paths["checkpoint"],
+            terminal_path=paths["terminal"],
+            pair_path=paths["pair"],
+            formal_project_root="relative-project-root",
             fold_index=1,
             candidate_id="F1C_CLIC12",
             technical_smoke=True,

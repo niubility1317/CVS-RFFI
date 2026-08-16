@@ -31,6 +31,8 @@ EXPECTED_PAIR_SCHEMA = _pair.EXPECTED_PAIR_SCHEMA
 EXPECTED_SCENARIOS = tuple(_pair.EXPECTED_SCENARIOS)
 SOURCE_V_ROLE = _cache.SOURCE_V_ROLE
 TECHNICAL_SMOKE_ROOT_NAME = ".smoke_phase1_clic_source_metrics_20260813_v2_F1"
+EXPECTED_PAIR_RUN_ID = "phase1_clic_source_pair_20260812_v3"
+EXPECTED_TECHNICAL_SMOKE_PROJECT_ROOT = "/home/szu2070436088/2510044040/CV-SincNet"
 
 
 class CLICSourceVFeatureExportError(RuntimeError):
@@ -45,6 +47,8 @@ def validate_source_v_execution_roots(
     output_root: str | Path,
     checkpoint_path: str | Path,
     terminal_path: str | Path,
+    pair_path: str | Path,
+    formal_project_root: str | Path | None,
     fold_index: int,
     candidate_id: str,
     technical_smoke: bool,
@@ -61,12 +65,20 @@ def validate_source_v_execution_roots(
         raise CLICSourceVFeatureExportError("source-V technical smoke control must be boolean")
     if fold_index not in range(1, 7):
         raise CLICSourceVFeatureExportError("source-V execution root fold is invalid")
-    training = Path(training_root).resolve()
-    clean = Path(clean_path).resolve()
-    cache = Path(cache_root).resolve()
-    output = Path(output_root).resolve()
-    checkpoint = Path(checkpoint_path).resolve()
-    terminal = Path(terminal_path).resolve()
+    raw_training = Path(training_root)
+    raw_clean = Path(clean_path)
+    raw_cache = Path(cache_root)
+    raw_output = Path(output_root)
+    raw_checkpoint = Path(checkpoint_path)
+    raw_terminal = Path(terminal_path)
+    raw_pair = Path(pair_path)
+    training = raw_training.resolve()
+    clean = raw_clean.resolve()
+    cache = raw_cache.resolve()
+    output = raw_output.resolve()
+    checkpoint = raw_checkpoint.resolve()
+    terminal = raw_terminal.resolve()
+    pair = raw_pair.resolve()
     clean_root = clean.parent.parent
     expected_candidates = {
         f"F{fold_index}C_CLIC12",
@@ -105,17 +117,40 @@ def validate_source_v_execution_roots(
             )
         return
 
-    smoke_root = cache.parent
-    formal_parent = training.parent
     if (
-        cache != output
-        or smoke_root.name != TECHNICAL_SMOKE_ROOT_NAME
-        or smoke_root.parent.name != "runs"
-        or clean_root.parent != formal_parent
-        or formal_parent != smoke_root.parent
+        not isinstance(formal_project_root, str)
+        or formal_project_root != EXPECTED_TECHNICAL_SMOKE_PROJECT_ROOT
     ):
         raise CLICSourceVFeatureExportError(
-            "source-V technical smoke original-formal/smoke root binding drifted"
+            "source-V technical smoke formal project root must equal the frozen canonical root"
+        )
+    formal_project = Path(formal_project_root)
+    formal_runs = formal_project / "runs"
+    expected_training = formal_runs / _clean.EXPECTED_TRAINING_RUN_ID
+    expected_checkpoint = expected_training / candidate_id / "final_ssdg.pth"
+    expected_terminal = expected_checkpoint.parent / "phase1_clic_terminal_receipt.json"
+    expected_clean = (
+        formal_runs
+        / _cache.EXPECTED_CLEAN_RUN_ID
+        / candidate_id
+        / "source_clean_proxy.npz"
+    )
+    expected_pair = formal_runs / EXPECTED_PAIR_RUN_ID / "F1_C_vs_G_pair.json"
+    expected_smoke_leaf = (
+        formal_runs / TECHNICAL_SMOKE_ROOT_NAME / EXPECTED_CACHE_RUN_ID
+    )
+    anchored_paths = (
+        (raw_training, expected_training),
+        (raw_checkpoint, expected_checkpoint),
+        (raw_terminal, expected_terminal),
+        (raw_clean, expected_clean),
+        (raw_pair, expected_pair),
+        (raw_cache, expected_smoke_leaf),
+        (raw_output, expected_smoke_leaf),
+    )
+    if any(not actual.is_absolute() or actual != expected for actual, expected in anchored_paths):
+        raise CLICSourceVFeatureExportError(
+            "source-V technical smoke canonical formal input/output root binding drifted"
         )
 
 
@@ -636,12 +671,14 @@ def export_source_v_leo_features(args: argparse.Namespace) -> dict[str, Any]:
     output_path = Path(args.out_npz).resolve()
     binding_path = Path(args.binding_json).resolve()
     validate_source_v_execution_roots(
-        training_root=training_root,
-        clean_path=clean_path,
-        cache_root=cache_root,
-        output_root=output_root,
-        checkpoint_path=checkpoint_path,
-        terminal_path=terminal_path,
+        training_root=args.training_run_root,
+        clean_path=args.clean_npz,
+        cache_root=args.cache_run_root,
+        output_root=args.output_root,
+        checkpoint_path=args.ckpt,
+        terminal_path=args.terminal_receipt_json,
+        pair_path=args.pair_json,
+        formal_project_root=getattr(args, "formal_project_root", None),
         fold_index=fold,
         candidate_id=candidate,
         technical_smoke=getattr(args, "technical_smoke", False),
@@ -901,6 +938,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--source-v-received-iq-npz", required=True)
     parser.add_argument("--source-v-received-iq-receipt-json", required=True)
     parser.add_argument("--pair-json", required=True)
+    parser.add_argument(
+        "--formal-project-root",
+        help="technical-smoke declaration checked against the frozen canonical N607 project root",
+    )
     parser.add_argument("--training-run-root", required=True)
     parser.add_argument("--cache-run-root", required=True)
     parser.add_argument("--output-root", required=True)
