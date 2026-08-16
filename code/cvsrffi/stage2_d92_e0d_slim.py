@@ -98,6 +98,13 @@ D92_E0D_ARMS: Mapping[str, D92E0DSlimArmSpec] = MappingProxyType(
             True,
             False,
         ),
+        "E0_FULL_D42_QUANTIZATION_INTERCEPT_CLOSURE": D92E0DSlimArmSpec(
+            "E0_FULL_D42_QUANTIZATION_INTERCEPT_CLOSURE",
+            "d92_e0_full_d42_quantization_intercept_closure",
+            "full_only",
+            True,
+            False,
+        ),
     }
 )
 

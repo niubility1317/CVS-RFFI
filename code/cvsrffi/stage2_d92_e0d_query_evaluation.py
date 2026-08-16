@@ -429,6 +429,81 @@ _TCRA_RECEIPT_SUFFIXES = (
 _TCRA_RECEIPT_FIELDS = tuple(
     f"d92_e0d_tcra_{suffix}" for suffix in _TCRA_RECEIPT_SUFFIXES
 )
+_QIC_ARM_IDS = frozenset({"E0_FULL_D42_QUANTIZATION_INTERCEPT_CLOSURE"})
+_QIC_RECEIPT_SUFFIXES = (
+    "active",
+    "fallback_active",
+    "fallback_reason",
+    "formula_revision",
+    "state_postprocess_mode",
+    "direct_state_publish",
+    "deployed_d42_coordinate",
+    "common_shift_invariant_residual",
+    "equal_prior_policy",
+    "all_class_shared_formula",
+    "class_permutation_equivariant",
+    "row_permutation_invariant",
+    "support_row_canonicalization",
+    "centering_reduction",
+    "e0_state_sha256",
+    "final_state_sha256",
+    "modified_state_field_names",
+    "intercept_fp16_bit_change_count",
+    "state_delta_intercept_l1",
+    "candidate_intercept_fp16_bit_change_count",
+    "coef1_byte_exact",
+    "coef2_byte_exact",
+    "scale1_byte_exact",
+    "scale2_byte_exact",
+    "log_diag_byte_exact",
+    "coef_fp32_byte_exact",
+    "intercept_fp32_byte_exact",
+    "class_registry_byte_exact",
+    "state_shape_byte_exact",
+    "intercept_byte_exact",
+    "class_count",
+    "k_shot",
+    "e0_residual_l1",
+    "candidate_residual_l1",
+    "residual_reduction_l1",
+    "target_center_sum_abs",
+    "e0_intercept_common_shift",
+    "candidate_intercept_common_shift",
+    "requantize_call_count",
+    "coefficient_decode_count",
+    "additional_full_fit_count",
+    "block_fit_count",
+    "loo_fit_count",
+    "fisher_scan_count",
+    "candidate_scan_count",
+    "support_only",
+    "support_macs_upper_bound",
+    "support_transient_bytes_upper_bound",
+    "support_rows_bytes_upper_bound",
+    "support_decoded_coefficient_bytes_upper_bound",
+    "support_mean_bytes_upper_bound",
+    "support_candidate_matrix_bytes",
+    "support_288_square_matrix_bytes",
+    "support_work_complexity",
+    "persistent_state_bytes_delta",
+    "query_macs_delta",
+    "query_rows_used",
+    "query_fit_access",
+    "query_update_access",
+    "query_selection_access",
+    "query_truth_access",
+    "query_role_oracle_access",
+    "query_class_quota_access",
+    "query_global_reassignment",
+    "clean_sample_access",
+    "source_sample_access",
+)
+_QIC_RECEIPT_FIELDS = tuple(
+    f"d92_e0d_qic_{suffix}" for suffix in _QIC_RECEIPT_SUFFIXES
+)
+_QIC_RAW_RECEIPT_FIELDS = frozenset(
+    f"d92_qic_{suffix}" for suffix in _QIC_RECEIPT_SUFFIXES
+)
 _FLOORBOOST_RECEIPT_FIELDS = (
     "d92_e0d_floorboost_active",
     "d92_e0d_floorboost_lambda",
@@ -2429,6 +2504,352 @@ def _tcra_support_receipt(
     return receipt
 
 
+def _mirror_qic_receipt(raw_audit: Mapping[str, Any]) -> dict[str, Any]:
+    """Copy exactly the frozen QIC receipt into the E0D audit namespace."""
+
+    raw_fields = {
+        key for key in raw_audit if isinstance(key, str) and key.startswith("d92_qic_")
+    }
+    if raw_fields != _QIC_RAW_RECEIPT_FIELDS:
+        raise D92E0DQueryEvaluationError("D92-E0D QIC raw receipt whitelist drift")
+    mirrored = {
+        f"d92_e0d_qic_{suffix}": raw_audit[f"d92_qic_{suffix}"]
+        for suffix in _QIC_RECEIPT_SUFFIXES
+    }
+    if set(mirrored) != set(_QIC_RECEIPT_FIELDS):
+        raise D92E0DQueryEvaluationError("D92-E0D QIC mirror receipt drift")
+    return mirrored
+
+
+def _qic_static_resource_values(state: Any, *, k_shot: int) -> dict[str, int]:
+    """Recompute QIC's bounded support work from the deployed state shape."""
+
+    from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
+
+    class_count = int(len(state.classes))
+    feature_dim = int(d42.FEATURE_DIM)
+    row_count = int(class_count * int(k_shot))
+    rows_bytes = row_count * feature_dim * np.dtype(np.float32).itemsize
+    decoded_bytes = class_count * feature_dim * np.dtype(np.float32).itemsize
+    mean_bytes = class_count * feature_dim * np.dtype(np.float64).itemsize
+    per_class_gather_bytes = int(k_shot) * feature_dim * (
+        np.dtype(np.float32).itemsize + np.dtype(np.float64).itemsize
+    ) + feature_dim * np.dtype(np.float64).itemsize
+    vector_bytes = class_count * (
+        8 * np.dtype(np.float64).itemsize + 2 * np.dtype(np.float16).itemsize
+    )
+    try:
+        state_array_bytes = sum(
+            int(np.ascontiguousarray(np.asarray(getattr(state, name))).nbytes)
+            for name in _STATE_ARRAY_NAMES
+        )
+    except (AttributeError, TypeError, ValueError) as error:
+        raise D92E0DQueryEvaluationError("D92-E0D QIC state resource drift") from error
+    return {
+        "support_macs_upper_bound": class_count * (int(k_shot) + 1) * feature_dim,
+        "support_rows_bytes_upper_bound": rows_bytes,
+        "support_decoded_coefficient_bytes_upper_bound": decoded_bytes,
+        "support_mean_bytes_upper_bound": mean_bytes,
+        "support_transient_bytes_upper_bound": (
+            rows_bytes
+            + rows_bytes
+            + per_class_gather_bytes
+            + 2 * decoded_bytes
+            + mean_bytes
+            + vector_bytes
+            + 2 * state_array_bytes
+        ),
+    }
+
+
+def _qic_postprocess_state_closure(
+    e0_state: Any,
+    candidate_state: Any,
+    raw_audit: Mapping[str, Any],
+) -> None:
+    """Check the direct state transition before it reaches query evaluation."""
+
+    from cvsrffi import stage2_d92_d42_quantization_intercept_closure as qic
+
+    _mirror_qic_receipt(raw_audit)
+    try:
+        e0_sha = qic.d42_qic_state_sha256(e0_state)
+        final_sha = qic.d42_qic_state_sha256(candidate_state)
+    except (qic.D92D42QICError, TypeError, ValueError) as error:
+        raise D92E0DQueryEvaluationError("D92-E0D QIC state closure drift") from error
+    if (
+        raw_audit["d92_qic_e0_state_sha256"] != e0_sha
+        or raw_audit["d92_qic_final_state_sha256"] != final_sha
+        or e0_state.schema != candidate_state.schema
+        or tuple(e0_state.classes) != tuple(candidate_state.classes)
+        or int(e0_state.old_class_count) != int(candidate_state.old_class_count)
+        or e0_state.covariance_policy != candidate_state.covariance_policy
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D QIC state identity drift")
+    non_intercept_names = tuple(
+        name for name in _STATE_ARRAY_NAMES if name != "intercept_fp16"
+    )
+    byte_exact = {
+        name: np.ascontiguousarray(np.asarray(getattr(e0_state, name))).tobytes()
+        == np.ascontiguousarray(np.asarray(getattr(candidate_state, name))).tobytes()
+        for name in non_intercept_names
+    }
+    expected_flags = {
+        "log_diag_fp32": "d92_qic_log_diag_byte_exact",
+        "coef1_qint8": "d92_qic_coef1_byte_exact",
+        "coef2_qint8": "d92_qic_coef2_byte_exact",
+        "scale1_fp16": "d92_qic_scale1_byte_exact",
+        "scale2_fp16": "d92_qic_scale2_byte_exact",
+        "coef_fp32": "d92_qic_coef_fp32_byte_exact",
+        "intercept_fp32": "d92_qic_intercept_fp32_byte_exact",
+    }
+    if (
+        not all(byte_exact.values())
+        or any(raw_audit[field] is not True for field in expected_flags.values())
+        or raw_audit["d92_qic_class_registry_byte_exact"] is not True
+        or raw_audit["d92_qic_state_shape_byte_exact"] is not True
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D QIC non-intercept state drift")
+    changed = int(
+        np.count_nonzero(
+            np.ascontiguousarray(candidate_state.intercept_fp16).view(np.uint16)
+            != np.ascontiguousarray(e0_state.intercept_fp16).view(np.uint16)
+        )
+    )
+    active = raw_audit["d92_qic_active"]
+    fallback = raw_audit["d92_qic_fallback_active"]
+    if active is True:
+        if (
+            fallback is not False
+            or raw_audit["d92_qic_intercept_fp16_bit_change_count"] != changed
+            or raw_audit["d92_qic_state_delta_intercept_l1"] != changed
+            or changed <= 0
+            or raw_audit["d92_qic_modified_state_field_names"] != ["intercept_fp16"]
+            or raw_audit["d92_qic_intercept_byte_exact"] is not False
+        ):
+            raise D92E0DQueryEvaluationError("D92-E0D QIC active state closure drift")
+        return
+    if (
+        active is not False
+        or changed != 0
+        or raw_audit["d92_qic_intercept_fp16_bit_change_count"] != 0
+        or raw_audit["d92_qic_state_delta_intercept_l1"] != 0
+        or raw_audit["d92_qic_modified_state_field_names"] != []
+        or raw_audit["d92_qic_intercept_byte_exact"] is not True
+        or final_sha != e0_sha
+        or not isinstance(fallback, bool)
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D QIC fallback state closure drift")
+
+
+def _qic_support_receipt(
+    audit: dict[str, Any],
+    *,
+    arm: D92E0DSlimArmSpec,
+    registered: bool,
+    k_shot: int,
+    state: Any,
+) -> dict[str, Any]:
+    """Fail closed on any QIC state, lifecycle, or resource receipt drift."""
+
+    if arm.arm_id not in _QIC_ARM_IDS:
+        return {}
+    qic_fields = {
+        key for key in audit if isinstance(key, str) and key.startswith("d92_e0d_qic_")
+    }
+    if qic_fields != set(_QIC_RECEIPT_FIELDS) or any(
+        isinstance(key, str) and key.startswith("d92_qic_") for key in audit
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D QIC receipt whitelist drift")
+    receipt = {field: audit[field] for field in _QIC_RECEIPT_FIELDS}
+    prefix = "d92_e0d_qic_"
+
+    def finite(name: str, *, lower: float | None = None) -> float:
+        value = receipt[prefix + name]
+        if (
+            isinstance(value, bool)
+            or not isinstance(value, (int, float))
+            or not np.isfinite(float(value))
+            or (lower is not None and float(value) < lower)
+        ):
+            raise D92E0DQueryEvaluationError(
+                f"D92-E0D QIC {name} receipt drift"
+            )
+        return float(value)
+
+    def integer(name: str, *, lower: int = 0) -> int:
+        value = finite(name, lower=float(lower))
+        if value != float(int(value)):
+            raise D92E0DQueryEvaluationError(
+                f"D92-E0D QIC {name} receipt drift"
+            )
+        return int(value)
+
+    def sha(name: str) -> str:
+        value = receipt[prefix + name]
+        if (
+            not isinstance(value, str)
+            or len(value) != 64
+            or any(character not in "0123456789abcdef" for character in value)
+        ):
+            raise D92E0DQueryEvaluationError(
+                f"D92-E0D QIC {name} receipt drift"
+            )
+        return value
+
+    if (
+        not registered
+        or receipt[prefix + "formula_revision"]
+        != "d42_quantization_intercept_self_consistency_v1"
+        or receipt[prefix + "state_postprocess_mode"]
+        != "d42_quantization_intercept_closure"
+        or receipt[prefix + "direct_state_publish"] is not True
+        or receipt[prefix + "deployed_d42_coordinate"] is not True
+        or receipt[prefix + "common_shift_invariant_residual"] is not True
+        or receipt[prefix + "equal_prior_policy"]
+        != "log_1_over_registered_class_count"
+        or receipt[prefix + "all_class_shared_formula"] is not True
+        or receipt[prefix + "class_permutation_equivariant"] is not True
+        or receipt[prefix + "row_permutation_invariant"] is not True
+        or receipt[prefix + "support_row_canonicalization"]
+        != "float32_row_bytes_lexicographic"
+        or receipt[prefix + "centering_reduction"]
+        != "math.fsum_canonical_class_registry_order"
+        or receipt[prefix + "class_count"] != len(state.classes)
+        or receipt[prefix + "k_shot"] != int(k_shot)
+        or receipt[prefix + "requantize_call_count"] != 0
+        or receipt[prefix + "additional_full_fit_count"] != 0
+        or receipt[prefix + "block_fit_count"] != 0
+        or receipt[prefix + "loo_fit_count"] != 0
+        or receipt[prefix + "fisher_scan_count"] != 0
+        or receipt[prefix + "candidate_scan_count"] != 0
+        or receipt[prefix + "support_only"] is not True
+        or receipt[prefix + "support_candidate_matrix_bytes"] != 0
+        or receipt[prefix + "support_288_square_matrix_bytes"] != 0
+        or receipt[prefix + "support_work_complexity"] != "O(C*K*288)+O(C*288)"
+        or receipt[prefix + "persistent_state_bytes_delta"] != 0
+        or receipt[prefix + "query_macs_delta"] != 0
+        or receipt[prefix + "query_rows_used"] != 0
+        or receipt[prefix + "clean_sample_access"] is not False
+        or receipt[prefix + "source_sample_access"] is not False
+        or any(
+            receipt[prefix + f"query_{name}"] is not False
+            for name in (
+                "fit_access",
+                "update_access",
+                "selection_access",
+                "truth_access",
+                "role_oracle_access",
+                "class_quota_access",
+                "global_reassignment",
+            )
+        )
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D QIC frozen receipt drift")
+    for name in (
+        "coef1_byte_exact",
+        "coef2_byte_exact",
+        "scale1_byte_exact",
+        "scale2_byte_exact",
+        "log_diag_byte_exact",
+        "coef_fp32_byte_exact",
+        "intercept_fp32_byte_exact",
+        "class_registry_byte_exact",
+        "state_shape_byte_exact",
+    ):
+        if receipt[prefix + name] is not True:
+            raise D92E0DQueryEvaluationError("D92-E0D QIC state guard drift")
+    from cvsrffi import stage2_d92_d42_quantization_intercept_closure as qic
+
+    final_sha = sha("final_state_sha256")
+    e0_sha = sha("e0_state_sha256")
+    try:
+        deployed_sha = qic.d42_qic_state_sha256(state)
+    except (qic.D92D42QICError, TypeError, ValueError) as error:
+        raise D92E0DQueryEvaluationError("D92-E0D QIC deployed state drift") from error
+    if deployed_sha != final_sha:
+        raise D92E0DQueryEvaluationError("D92-E0D QIC deployed state SHA drift")
+
+    expected_resources = _qic_static_resource_values(state, k_shot=int(k_shot))
+    for name, expected in expected_resources.items():
+        if integer(name) != int(expected):
+            raise D92E0DQueryEvaluationError("D92-E0D QIC static resource drift")
+    active = receipt[prefix + "active"]
+    fallback = receipt[prefix + "fallback_active"]
+    reason = receipt[prefix + "fallback_reason"]
+    changed = integer("intercept_fp16_bit_change_count")
+    state_delta = integer("state_delta_intercept_l1")
+    candidate_changed = integer("candidate_intercept_fp16_bit_change_count")
+    decode_count = integer("coefficient_decode_count")
+    if changed != state_delta or candidate_changed < changed or decode_count > 1:
+        raise D92E0DQueryEvaluationError("D92-E0D QIC count receipt drift")
+
+    if int(k_shot) <= 2:
+        if (
+            active is not False
+            or fallback is not False
+            or reason != "K1_K2_EXACT_D92_FULL_ALIAS"
+            or final_sha != e0_sha
+            or receipt[prefix + "modified_state_field_names"] != []
+            or changed != 0
+            or candidate_changed != 0
+            or decode_count != 0
+            or receipt[prefix + "intercept_byte_exact"] is not True
+            or any(
+                receipt[prefix + name] is not None
+                for name in (
+                    "e0_residual_l1",
+                    "candidate_residual_l1",
+                    "residual_reduction_l1",
+                    "target_center_sum_abs",
+                    "e0_intercept_common_shift",
+                    "candidate_intercept_common_shift",
+                )
+            )
+        ):
+            raise D92E0DQueryEvaluationError("D92-E0D QIC alias receipt drift")
+        return receipt
+
+    if fallback is True:
+        if (
+            active is not False
+            or not isinstance(reason, str)
+            or not reason
+            or final_sha != e0_sha
+            or receipt[prefix + "modified_state_field_names"] != []
+            or changed != 0
+            or receipt[prefix + "intercept_byte_exact"] is not True
+        ):
+            raise D92E0DQueryEvaluationError("D92-E0D QIC fallback receipt drift")
+        return receipt
+    if fallback is not False:
+        raise D92E0DQueryEvaluationError("D92-E0D QIC fallback flag drift")
+    if (
+        active is not True
+        or reason is not None
+        or final_sha == e0_sha
+        or receipt[prefix + "modified_state_field_names"] != ["intercept_fp16"]
+        or changed <= 0
+        or candidate_changed != changed
+        or decode_count != 1
+        or receipt[prefix + "intercept_byte_exact"] is not False
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D QIC active receipt drift")
+    e0_residual = finite("e0_residual_l1", lower=0.0)
+    candidate_residual = finite("candidate_residual_l1", lower=0.0)
+    reduction = finite("residual_reduction_l1", lower=0.0)
+    finite("target_center_sum_abs", lower=0.0)
+    finite("e0_intercept_common_shift")
+    finite("candidate_intercept_common_shift")
+    if (
+        not candidate_residual < e0_residual
+        or not reduction > 0.0
+        or not np.isclose(reduction, e0_residual - candidate_residual, rtol=0.0, atol=0.0)
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D QIC residual receipt drift")
+    return receipt
+
+
 def _audit_d92_e0d_fit(
     result: Any,
     *,
@@ -2674,6 +3095,13 @@ def _audit_d92_e0d_fit(
         k_shot=k_shot,
         state=result.state,
     )
+    after_qic_receipt = _qic_support_receipt(
+        after,
+        arm=arm,
+        registered=True,
+        k_shot=k_shot,
+        state=result.state,
+    )
     after_pareto_deployed_state_closure = _pareto_deployed_state_closure(
         result.state,
         after_pareto_distill_receipt,
@@ -2717,7 +3145,11 @@ def _audit_d92_e0d_fit(
             else (
                 "d42_tcra"
                 if arm.arm_id in _TCRA_ARM_IDS and int(k_shot) > 2
-                else None
+                else (
+                    "d42_quantization_intercept_closure"
+                    if arm.arm_id in _QIC_ARM_IDS and int(k_shot) > 2
+                    else None
+                )
             )
         ),
         "before_total_component_fit_count": int(
@@ -2757,6 +3189,7 @@ def _audit_d92_e0d_fit(
         **after_pareto_deployed_state_closure,
         **after_tpce_receipt,
         **after_tcra_receipt,
+        **after_qic_receipt,
         "query_macs": int(after["d92_e0d_query_macs"]),
         "query_truth_access": False,
         "query_fit_access": False,
@@ -3258,16 +3691,23 @@ def run_d92_e0d_query_evaluation(
             new_classes,
             **kwargs,
         )
-        if arm.arm_id not in (_TPCE_ARM_IDS | _TCRA_ARM_IDS):
+        if arm.arm_id not in (_TPCE_ARM_IDS | _TCRA_ARM_IDS | _QIC_ARM_IDS):
             return result
         from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
 
         is_tcra = arm.arm_id in _TCRA_ARM_IDS
-        if is_tcra:
+        is_qic = arm.arm_id in _QIC_ARM_IDS
+        if is_qic:
+            from cvsrffi import (
+                stage2_d92_d42_quantization_intercept_closure as postprocess,
+            )
+            receipt_name = "QIC"
+        elif is_tcra:
             from cvsrffi import stage2_d92_d42_tail_class_row_ascent as postprocess
+            receipt_name = "TCRA"
         else:
             from cvsrffi import stage2_d92_d42_tail_pair_code_exchange as postprocess
-        receipt_name = "TCRA" if is_tcra else "TPCE"
+            receipt_name = "TPCE"
 
         old_rows = np.asarray(old_support_features, dtype=np.float32)
         new_rows = np.asarray(new_support_features, dtype=np.float32)
@@ -3278,6 +3718,10 @@ def run_d92_e0d_query_evaluation(
             raise D92E0DQueryEvaluationError(
                 f"D92-E0D {receipt_name} registry drift"
             )
+        if is_qic and not new_registry:
+            # QIC is a REG1-only post-codec closure.  REG0 must retain the
+            # exact E0 state and must not acquire a QIC receipt.
+            return result
         mapping = {handle: index for index, handle in enumerate(registry)}
         try:
             targets = np.asarray(
@@ -3308,11 +3752,16 @@ def run_d92_e0d_query_evaluation(
         k_value = int(class_counts[0])
         if k_value <= 2:
             candidate_state = result.state
-            postprocess_audit = (
-                postprocess.d42_tcra_inactive_receipt(result.state)
-                if is_tcra
-                else postprocess.d42_tpce_inactive_receipt(result.state)
-            )
+            if is_qic:
+                postprocess_audit = postprocess.d42_qic_inactive_receipt(
+                    result.state, k_shot=k_value
+                )
+            else:
+                postprocess_audit = (
+                    postprocess.d42_tcra_inactive_receipt(result.state)
+                    if is_tcra
+                    else postprocess.d42_tpce_inactive_receipt(result.state)
+                )
             post_resource = None
         else:
             def run_state_postprocess() -> Any:
@@ -3322,6 +3771,10 @@ def run_d92_e0d_query_evaluation(
                 transformed = d42._transform(
                     all_rows, result.state.log_diag_fp32
                 )
+                if is_qic:
+                    return postprocess.apply_d42_quantization_intercept_closure(
+                        result.state, transformed, targets
+                    )
                 return (
                     postprocess.apply_d42_tail_class_row_ascent(
                         result.state,
@@ -3342,13 +3795,19 @@ def run_d92_e0d_query_evaluation(
                 run_state_postprocess
             )
             candidate_state, postprocess_audit = measured
-        source_prefix = "d92_tcra_" if is_tcra else "d92_tpce_"
-        formal_prefix = "d92_e0d_tcra_" if is_tcra else "d92_e0d_tpce_"
-        formal_receipt = {
-            key.replace(source_prefix, formal_prefix): value
-            for key, value in postprocess_audit.items()
-            if key.startswith(source_prefix)
-        }
+        if is_qic:
+            _qic_postprocess_state_closure(
+                result.state, candidate_state, postprocess_audit
+            )
+            formal_receipt = _mirror_qic_receipt(postprocess_audit)
+        else:
+            source_prefix = "d92_tcra_" if is_tcra else "d92_tpce_"
+            formal_prefix = "d92_e0d_tcra_" if is_tcra else "d92_e0d_tpce_"
+            formal_receipt = {
+                key.replace(source_prefix, formal_prefix): value
+                for key, value in postprocess_audit.items()
+                if key.startswith(source_prefix)
+            }
         geometry = dict(result.geometry_audit)
         final_audit = dict(geometry.get("final_covariance_audit", {}))
         if post_resource is not None:
@@ -3390,7 +3849,7 @@ def run_d92_e0d_query_evaluation(
             d81_eval.fit_d42_unified_shrinkage_lda = (
                 fit_with_final_state_technical_support_receipt
             )
-        elif arm.arm_id in (_TPCE_ARM_IDS | _TCRA_ARM_IDS):
+        elif arm.arm_id in (_TPCE_ARM_IDS | _TCRA_ARM_IDS | _QIC_ARM_IDS):
             d81_eval.fit_d42_unified_shrinkage_lda = fit_with_state_postprocess
         elif arm.arm_id in _CCOC_ARM_IDS:
             d81_eval.fit_d42_unified_shrinkage_lda = fit_with_csoas_codec_guard

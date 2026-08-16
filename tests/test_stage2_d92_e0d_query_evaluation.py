@@ -1444,6 +1444,222 @@ def test_tcra_evaluator_runs_direct_postprocess_with_zero_query_access(
     assert row["query_truth_access"] is False
 
 
+def test_qic_evaluator_runs_one_reg1_postprocess_and_closes_receipt(
+    monkeypatch,
+):
+    """Would fail if the registered QIC arm never published its final state."""
+
+    arm = slim.D92_E0D_ARMS["E0_FULL_D42_QUANTIZATION_INTERCEPT_CLOSURE"]
+    base_state = _tpce_state()
+    rows, targets = _tpce_support()
+    for class_index in range(len(base_state.classes)):
+        rows[targets == class_index, class_index] += np.float32(0.2 * class_index)
+    classes = tuple(base_state.classes)
+    old_mask = targets < OLD_CLASS_COUNT
+    calls = {"fit": 0, "transform": 0}
+    original_transform = d42._transform
+
+    def fake_d42_fit(*_args, **_kwargs):
+        calls["fit"] += 1
+        base = _result(arm, k_shot=5)
+        return d42.D42UnifiedShrinkageLDAResult(
+            before_state=base.before_state,
+            state=base_state,
+            matched_fp32_before_state=base.before_state,
+            matched_fp32_state=base_state,
+            training_trace=tuple(base.training_trace),
+            geometry_audit=base.geometry_audit,
+            resource_audit=base.resource_audit,
+        )
+
+    def tracked_transform(*args, **kwargs):
+        calls["transform"] += 1
+        return original_transform(*args, **kwargs)
+
+    def fake_run(**_kwargs):
+        fitted = d81_eval.fit_d42_unified_shrinkage_lda(
+            rows[old_mask],
+            np.asarray(classes)[targets[old_mask]],
+            classes[:OLD_CLASS_COUNT],
+            rows[~old_mask],
+            np.asarray(classes)[targets[~old_mask]],
+            classes[OLD_CLASS_COUNT:],
+        )
+        row = d81_eval._audit_fit(
+            fitted,
+            scenario="leo_clear_weak",
+            k_shot=5,
+            old_count=OLD_CLASS_COUNT,
+            class_count=len(classes),
+        )
+        return {
+            "candidate": d81_eval.CANDIDATE_D81,
+            "schema": d81_eval.SCHEMA,
+            "qic_fit_row": row,
+        }
+
+    monkeypatch.setattr(d81_eval, "fit_d42_unified_shrinkage_lda", fake_d42_fit)
+    monkeypatch.setattr(d81_eval, "run_d81_query_evaluation", fake_run)
+    monkeypatch.setattr(d42, "_transform", tracked_transform)
+    result = e0d_eval.run_d92_e0d_query_evaluation(
+        arm_id=arm.arm_id, **_allowed_kwargs()
+    )
+
+    row = result["qic_fit_row"]
+    assert calls == {"fit": 1, "transform": 1}
+    assert row["after_state_postprocess_mode"] == "d42_quantization_intercept_closure"
+    assert row["d92_e0d_qic_active"] is True
+    assert row["d92_e0d_qic_fallback_active"] is False
+    assert row["d92_e0d_qic_final_state_sha256"] != row[
+        "d92_e0d_qic_e0_state_sha256"
+    ]
+    assert row["d92_e0d_qic_intercept_fp16_bit_change_count"] > 0
+    assert row["d92_e0d_qic_coefficient_decode_count"] == 1
+    assert row["d92_e0d_qic_additional_full_fit_count"] == 0
+    assert row["after_total_component_fit_count"] == 2
+    assert row["after_actual_component_inventory"]["actual_component_fit_count"] == 1
+    assert row["query_fit_access"] is False
+    assert row["query_truth_access"] is False
+
+
+def test_qic_evaluator_keeps_reg0_on_the_exact_e0_state(monkeypatch):
+    """Would fail if the QIC postprocessor wrote a registration-free state."""
+
+    arm = slim.D92_E0D_ARMS["E0_FULL_D42_QUANTIZATION_INTERCEPT_CLOSURE"]
+    base_state = _state(classes=OLD_CLASS_COUNT, old_count=OLD_CLASS_COUNT, marker=1)
+    rows, targets = _tpce_support(class_count=OLD_CLASS_COUNT)
+    classes = tuple(base_state.classes)
+    calls = {"transform": 0}
+    original_transform = d42._transform
+
+    def fake_d42_fit(*_args, **_kwargs):
+        base = _result(arm, k_shot=5)
+        return d42.D42UnifiedShrinkageLDAResult(
+            before_state=base_state,
+            state=base_state,
+            matched_fp32_before_state=base_state,
+            matched_fp32_state=base_state,
+            training_trace=tuple(base.training_trace),
+            geometry_audit=base.geometry_audit,
+            resource_audit=base.resource_audit,
+        )
+
+    def tracked_transform(*args, **kwargs):
+        calls["transform"] += 1
+        return original_transform(*args, **kwargs)
+
+    def fake_run(**_kwargs):
+        fitted = d81_eval.fit_d42_unified_shrinkage_lda(
+            rows,
+            np.asarray(classes)[targets],
+            classes,
+            np.zeros((0, d42.FEATURE_DIM), dtype=np.float32),
+            np.asarray([], dtype=str),
+            tuple(),
+        )
+        assert fitted.state is base_state
+        return {"candidate": d81_eval.CANDIDATE_D81, "schema": d81_eval.SCHEMA}
+
+    monkeypatch.setattr(d81_eval, "fit_d42_unified_shrinkage_lda", fake_d42_fit)
+    monkeypatch.setattr(d81_eval, "run_d81_query_evaluation", fake_run)
+    monkeypatch.setattr(d42, "_transform", tracked_transform)
+    result = e0d_eval.run_d92_e0d_query_evaluation(
+        arm_id=arm.arm_id, **_allowed_kwargs()
+    )
+
+    assert result["candidate"] == arm.candidate_id
+    assert calls == {"transform": 0}
+
+
+@pytest.mark.parametrize("k_shot", [1, 2])
+def test_qic_query_audit_keeps_low_k_full_alias(k_shot):
+    """Would fail if the E0D mirror changed a frozen K1/K2 state."""
+
+    from cvsrffi import stage2_d92_d42_quantization_intercept_closure as qic
+
+    arm = slim.D92_E0D_ARMS["E0_FULL_D42_QUANTIZATION_INTERCEPT_CLOSURE"]
+    state = _tpce_state()
+    result = _result(arm, k_shot=k_shot)
+    result.state = state
+    result.geometry_audit["final_covariance_audit"].update(
+        {
+            key.replace("d92_qic_", "d92_e0d_qic_"): value
+            for key, value in qic.d42_qic_inactive_receipt(
+                state, k_shot=k_shot
+            ).items()
+        }
+    )
+
+    row = e0d_eval._audit_d92_e0d_fit(
+        result,
+        arm=arm,
+        scenario="leo_clear_weak",
+        k_shot=k_shot,
+        old_count=OLD_CLASS_COUNT,
+        class_count=11,
+    )
+
+    assert row["after_state_postprocess_mode"] is None
+    assert row["d92_e0d_qic_active"] is False
+    assert row["d92_e0d_qic_fallback_active"] is False
+    assert row["d92_e0d_qic_fallback_reason"] == "K1_K2_EXACT_D92_FULL_ALIAS"
+    assert row["d92_e0d_qic_coefficient_decode_count"] == 0
+
+
+def test_qic_query_audit_closes_real_fallback_and_rejects_resource_tamper():
+    """Would fail if QIC's exact-E0 fallback or static resource receipt drifted."""
+
+    from cvsrffi import stage2_d92_d42_quantization_intercept_closure as qic
+
+    arm = slim.D92_E0D_ARMS["E0_FULL_D42_QUANTIZATION_INTERCEPT_CLOSURE"]
+    state = _tpce_state()
+    rows, targets = _tpce_support()
+    for class_index in range(len(state.classes)):
+        rows[targets == class_index, class_index] += np.float32(0.2 * class_index)
+    active_state, _active_receipt = qic.apply_d42_quantization_intercept_closure(
+        state, rows, targets
+    )
+    fallback_state, fallback_receipt = qic.apply_d42_quantization_intercept_closure(
+        active_state, rows, targets
+    )
+    assert fallback_state is active_state
+    assert fallback_receipt["d92_qic_fallback_active"] is True
+
+    result = _result(arm, k_shot=5)
+    result.state = fallback_state
+    audit = result.geometry_audit["final_covariance_audit"]
+    audit.update(
+        {
+            key.replace("d92_qic_", "d92_e0d_qic_"): value
+            for key, value in fallback_receipt.items()
+        }
+    )
+    row = e0d_eval._audit_d92_e0d_fit(
+        result,
+        arm=arm,
+        scenario="leo_clear_weak",
+        k_shot=5,
+        old_count=OLD_CLASS_COUNT,
+        class_count=11,
+    )
+    assert row["d92_e0d_qic_active"] is False
+    assert row["d92_e0d_qic_fallback_active"] is True
+    assert row["d92_e0d_qic_final_state_sha256"] == row[
+        "d92_e0d_qic_e0_state_sha256"
+    ]
+
+    audit["d92_e0d_qic_support_transient_bytes_upper_bound"] += 1
+    with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="QIC static resource"):
+        e0d_eval._audit_d92_e0d_fit(
+            result,
+            arm=arm,
+            scenario="leo_clear_weak",
+            k_shot=5,
+            old_count=OLD_CLASS_COUNT,
+            class_count=11,
+        )
+
+
 @pytest.mark.parametrize("k_shot", [1, 2])
 def test_tcra_query_audit_keeps_low_k_full_alias(k_shot):
     from cvsrffi import stage2_d92_d42_tail_class_row_ascent as tcra
