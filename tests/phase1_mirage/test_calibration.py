@@ -215,6 +215,26 @@ def test_frozen_decision_tables_are_factory_only_and_reject_tampered_cross_ids()
         scoring.score_same_row(decisions)
 
 
+def test_frozen_decision_table_rejects_public_no_argument_construction():
+    """Catch an init=False dataclass silently producing a half-initialized public table."""
+
+    api = _api()
+
+    with pytest.raises(TypeError, match="use validated factory"):
+        api.FrozenDecisionTable()
+
+
+def test_same_row_scoring_rejects_half_initialized_frozen_decision_table():
+    """Catch a score entrypoint leaking AttributeError from a bypassed half-table instance."""
+
+    api = _api()
+    scoring = importlib.import_module("cvsrffi.phase1_mirage.scoring")
+    half_initialized = object.__new__(api.FrozenDecisionTable)
+
+    with pytest.raises(scoring.ScoringProtocolError, match="frozen decision table"):
+        scoring.score_same_row(half_initialized)
+
+
 def test_score_table_column_factory_fails_closed_for_shape_range_and_duplicate_ids():
     """Catch malformed table columns before a threshold or decision is emitted."""
 

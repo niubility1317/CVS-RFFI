@@ -202,7 +202,7 @@ def score_same_row(decision_table: FrozenDecisionTable) -> SameRowMetrics:
     try:
         decision_table = _validate_frozen_decision_table(decision_table)
     except CalibrationProtocolError as error:
-        raise ScoringProtocolError("same-row scoring rejected an unsealed or mismatched source receipt") from error
+        raise ScoringProtocolError("same-row scoring rejected an invalid frozen decision table or source receipt") from error
     if (
         decision_table.known_role is not SourcePartition.V_SELECT
         or decision_table.proxy_role is not ProxyRole.P_SELECT

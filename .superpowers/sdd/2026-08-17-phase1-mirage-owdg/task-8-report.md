@@ -64,6 +64,13 @@ conda run -n ssr-gpu python -m pytest -p no:cacheprovider tests/phase1_mirage/te
 ## Fix round2：I3 seal复用闭合
 
 - RED：从合法FrozenDecisionTable读取_factory_seal后，公开构造器仍可接受该token并生成行收据一致的伪表；新测试以该真实复用路径预期拒绝，得到DID NOT RAISE。
-- GREEN：FrozenDecisionTable保持init=False且不定义公开构造器；模块私有_create_frozen_decision_table以sentinel调用并使用object.__new__写入已校验字段，但不把sentinel写入实例。普通构造或传入_factory_seal均为TypeError/CalibrationProtocolError，合法factory表仍可same-row评分。
+- GREEN：FrozenDecisionTable保持init=False且没有可成功返回实例的公开构造路径；模块私有_create_frozen_decision_table以sentinel调用并使用object.__new__写入已校验字段，但不把sentinel写入实例。普通构造或传入_factory_seal均为TypeError/CalibrationProtocolError，合法factory表仍可same-row评分。
 - 保留score_same_row对来源receipt、role、fold、proxy update count、重复ID和跨known-proxy ID的复验；本轮不试图防御object.__new__、反射或模块globals修改等同进程恶意代码路径。
 - 验证：I3聚焦RED 1项预期失败→GREEN 1项通过；Task8聚焦14 passed；Task1—8限定回归128 passed；git diff --check通过。
+
+## Fix round3：I3无参半初始化闭合
+
+- RED：init=False允许FrozenDecisionTable()返回缺字段实例；object.__new__(FrozenDecisionTable)进入score_same_row时在读取thresholds处泄漏AttributeError。两项新测试分别预期清晰TypeError和ScoringProtocolError，均按预期失败。
+- GREEN：FrozenDecisionTable显式__init__(*args,**kwargs)始终以“use validated factory”抛出TypeError。私有factory仍以object.__new__填充全部字段，但在返回前调用完整_validate_frozen_decision_table自验。
+- 评分入口在任何字段读取前检查candidate、role、threshold、rows、update count和source receipt的完整性与结构；缺字段或畸形内部值归一为CalibrationProtocolError，再转换为ScoringProtocolError，不泄漏AttributeError。合法factory表保持通过。
+- 验证：I3聚焦RED 2项预期失败→GREEN 2项通过；Task8聚焦16 passed；Task1—8限定回归130 passed；git diff --check通过。

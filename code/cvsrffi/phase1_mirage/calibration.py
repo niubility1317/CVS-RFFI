@@ -522,6 +522,9 @@ class FrozenDecisionTable:
     proxy_update_count: int
     source_receipt: DecisionSourceReceipt
 
+    def __init__(self, *args: object, **kwargs: object) -> None:
+        raise TypeError("FrozenDecisionTable cannot be constructed directly; use validated factory")
+
     @property
     def fold(self) -> int:
         return self.source_receipt.fold
@@ -574,7 +577,7 @@ def _create_frozen_decision_table(
     object.__setattr__(table, "proxy_rows", proxy_rows)
     object.__setattr__(table, "proxy_update_count", source_receipt.proxy_update_count)
     object.__setattr__(table, "source_receipt", source_receipt)
-    return table
+    return _validate_frozen_decision_table(table)
 
 
 def _validate_frozen_decision_table(table: object) -> FrozenDecisionTable:
@@ -582,17 +585,36 @@ def _validate_frozen_decision_table(table: object) -> FrozenDecisionTable:
 
     if not isinstance(table, FrozenDecisionTable):
         raise CalibrationProtocolError("metric inputs must be a FrozenDecisionTable")
-    if not isinstance(table.thresholds, DecisionThresholds):
-        raise CalibrationProtocolError("frozen decision table thresholds are invalid")
-    expected_receipt = _make_source_receipt(
-        table.known_rows,
-        table.proxy_rows,
-        known_role=table.known_role,
-        proxy_role=table.proxy_role,
-        proxy_update_count=table.proxy_update_count,
+    required_fields = (
+        "candidate_id",
+        "known_role",
+        "proxy_role",
+        "thresholds",
+        "known_rows",
+        "proxy_rows",
+        "proxy_update_count",
+        "source_receipt",
     )
-    if table.source_receipt != expected_receipt:
-        raise CalibrationProtocolError("frozen decision table source receipt mismatch")
+    missing_fields = tuple(field_name for field_name in required_fields if not hasattr(table, field_name))
+    if missing_fields:
+        raise CalibrationProtocolError("frozen decision table is incomplete")
+    try:
+        _require_identifier(table.candidate_id, "frozen decision table candidate_id")
+        if not isinstance(table.thresholds, DecisionThresholds):
+            raise CalibrationProtocolError("frozen decision table thresholds are invalid")
+        if not isinstance(table.source_receipt, DecisionSourceReceipt):
+            raise CalibrationProtocolError("frozen decision table source receipt is invalid")
+        expected_receipt = _make_source_receipt(
+            table.known_rows,
+            table.proxy_rows,
+            known_role=table.known_role,
+            proxy_role=table.proxy_role,
+            proxy_update_count=table.proxy_update_count,
+        )
+        if table.source_receipt != expected_receipt:
+            raise CalibrationProtocolError("frozen decision table source receipt mismatch")
+    except (AttributeError, TypeError) as error:
+        raise CalibrationProtocolError("frozen decision table is incomplete or malformed") from error
     return table
 
 
