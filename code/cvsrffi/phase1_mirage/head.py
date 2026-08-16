@@ -274,11 +274,18 @@ def decide(output: OpenHeadOutput, *, quality: Tensor, thresholds: DecisionThres
     if not bool(((quality >= 0.0) & (quality <= 1.0)).all()):
         raise ValueError("quality must lie in [0, 1]")
 
+    top_scores = output.class_scores.amax(dim=1, keepdim=True)
+    unique_top = (output.class_scores == top_scores).sum(dim=1) == 1
     best_labels = output.class_scores.argmax(dim=1)
     best_margins = output.radius_margins.gather(1, best_labels[:, None]).squeeze(1)
     outside_registered_support = output.radius_margins.amin(dim=1) > 0.0
     quality_ok = quality >= float(thresholds.tau_q)
-    registered = quality_ok & (output.unknown_risk <= float(thresholds.tau_reg)) & (best_margins <= 0.0)
+    registered = (
+        quality_ok
+        & unique_top
+        & (output.unknown_risk <= float(thresholds.tau_reg))
+        & (best_margins <= 0.0)
+    )
     explicit_unknown = (
         quality_ok
         & ~registered

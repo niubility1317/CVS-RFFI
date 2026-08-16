@@ -150,7 +150,7 @@ def test_class_row_permutation_only_permutates_class_outputs_and_label_mapping()
         permuted_head.low_rank_factor.copy_(head.low_rank_factor[permutation])
 
     z_id = _normalized(
-        [[1.0, 0.2, 0.1, 0.1], [0.1, 1.0, -0.3, 0.2], [-0.2, 0.1, -1.0, 0.3], [0.2, 0.2, 0.1, 1.0]]
+        [[1.0, 0.2, 0.1, 0.1], [0.1, 1.0, -0.3, 0.2], [-0.2, 0.1, -1.0, 0.3], [0.3, 0.2, 0.1, 1.0]]
     )
     original = head(z_id)
     permuted = permuted_head(z_id)
@@ -195,6 +195,48 @@ def test_decision_uses_quality_then_registered_unknown_and_defer_states():
     assert torch.equal(decision.registered, torch.tensor([True, False, False, False, False]))
     assert torch.equal(decision.explicit_unknown, torch.tensor([False, False, True, False, False]))
     assert torch.equal(decision.deferred, torch.tensor([False, True, False, True, True]))
+
+
+def test_tied_top_scores_defer_without_breaking_unknown_or_class_permutation_equivalence():
+    """Catch argmax choosing an arbitrary registered label when top scores tie."""
+
+    DEFER_LABEL, UNKNOWN_LABEL, DecisionThresholds, _, OpenHeadOutput, decide = _head_api()
+    output = OpenHeadOutput(
+        class_scores=torch.tensor([[0.9, 0.9, 0.1], [0.8, 0.8, 0.1]]),
+        class_distances=torch.tensor([[0.0, 0.0, 1.0], [1.0, 1.0, 2.0]]),
+        radius_margins=torch.tensor([[-0.1, -0.1, 0.2], [0.1, 0.1, 0.2]]),
+        energy=torch.tensor([0.0, 0.0]),
+        unknown_risk=torch.tensor([0.1, 0.9]),
+    )
+    permutation = torch.tensor([1, 2, 0])
+    permuted_output = OpenHeadOutput(
+        class_scores=output.class_scores[:, permutation],
+        class_distances=output.class_distances[:, permutation],
+        radius_margins=output.radius_margins[:, permutation],
+        energy=output.energy,
+        unknown_risk=output.unknown_risk,
+    )
+    thresholds = DecisionThresholds(tau_q=0.5, tau_reg=0.2, tau_unk=0.8)
+    quality = torch.tensor([0.9, 0.9])
+
+    original = decide(output, quality=quality, thresholds=thresholds)
+    permuted = decide(permuted_output, quality=quality, thresholds=thresholds)
+
+    expected_labels = torch.tensor([DEFER_LABEL, UNKNOWN_LABEL])
+    expected_registered = torch.tensor([False, False])
+    expected_unknown = torch.tensor([False, True])
+    expected_deferred = torch.tensor([True, False])
+    for decision in (original, permuted):
+        assert torch.equal(decision.labels, expected_labels)
+        assert torch.equal(decision.registered, expected_registered)
+        assert torch.equal(decision.explicit_unknown, expected_unknown)
+        assert torch.equal(decision.deferred, expected_deferred)
+        state_count = (
+            decision.registered.to(dtype=torch.int64)
+            + decision.explicit_unknown.to(dtype=torch.int64)
+            + decision.deferred.to(dtype=torch.int64)
+        )
+        assert torch.equal(state_count, torch.ones_like(state_count))
 
 
 def test_head_and_decision_reject_malformed_embeddings_masks_thresholds_quality_and_risk():
