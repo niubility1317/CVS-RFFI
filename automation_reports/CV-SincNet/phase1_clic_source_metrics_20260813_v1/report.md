@@ -3,7 +3,7 @@
 ## Task1预注册：source-V单观测LEO缓存
 
 - 实验ID：`phase1_clic_source_metrics_20260813_v1`。
-- 当前状态：`LOCAL_VERIFYING / NO_PERFORMANCE_RESULT`。
+- 当前状态：`SMOKE_STOPPED_TECHNICAL_GATE / FORMAL_NOT_LAUNCHED / NO_PERFORMANCE_RESULT`。
 - 本任务只创建`source_validation_known_leo_weak`的16,800行received-IQ缓存构建器；它不同于既有3,920行source-L尾部校准缓存，绝不重建、修改或读取后者的结果。
 - 该工件属于`POST_TARGET_COMPLETION_AUDIT_NON_SELECTION`：目标端确认已经封存。本任务不得以任何方式使用目标truth、指标、候选排序、阈值、重训、重试、复活或晋级决策。
 
@@ -122,3 +122,34 @@
 - GREEN：真实正例加dataset/TX/RX/day/eq/sig六个漂移预检共`7/7`通过；每个漂移均在PAIR加载、model forward和immutable输出发布之前拒绝，`source_v_features.npz`和binding均不存在。dataset-SHA变异检查会使漂移路径越过绑定层并到达PAIR桩，恢复读取manifest后的实现重新通过。
 - 回归：`code/tests/test_phase1_clic_source_metrics.py`共`23/23`通过；`test_phase1_clic_postfreeze.py`与`test_phase1_clic_common_receipt_export.py`共`171/171`通过。`py_compile`、exporter/scorer`--help`和`git diff --check`均通过。
 - 边界：没有N607、target、query truth、性能计算、输出artifact或参数选择；本记录仅证明本地P1身份绑定闭合，不构成source指标、训练质量或任何晋级结论。
+
+## F1独立结构smoke封存：技术失败
+
+- 状态：`SMOKE_STOPPED_TECHNICAL_GATE / FORMAL_NOT_LAUNCHED / NO_PERFORMANCE_RESULT`。
+- `SMOKE_INVOCATION=1`，唯一worker PID=`754555`；F1 cache builder子PID=`754626`，exit=`1`；`retry=NO`，`FORMAL=0`。
+- 精确trace fingerprint：`CLICSplitExportError: CLIC terminal envelope selected checkpoint path drifted`。
+- 根因：独立smoke tree中的hardlink镜像路径与terminal envelope记录的absolute selected checkpoint路径不一致，builder在checkpoint/terminal重开阶段拒绝继续。这是smoke路径绑定失败，不是性能或协议结果。
+- F1C/F1G exporter均未启动；生成物为`0 cache/receipt/feature/binding`，不执行score，不读取accuracy、AUROC或任何gate。
+
+### Smoke路径与输入镜像
+
+- smoke root：`/home/szu2070436088/2510044040/CV-SincNet/.smoke_phase1_clic_source_metrics_20260813_v1_F1`。
+- worker：`<smoke root>/smoke_worker.sh`；outer log：`<smoke root>/logs/smoke_worker.outer.out`；builder log：`<smoke root>/logs/phase1_clic_source_metrics_20260813_v1/F1_CACHE_BUILDER.out`（2382 bytes）；manifest：`<smoke root>/logs/phase1_clic_source_metrics_20260813_v1/smoke_manifest.tsv`。
+- 6个不可变输入均优先hardlink成功，镜像前后SHA一致；PAIR F1与ManySig均直接读取正式v3/正式原件，未复制或修改：
+
+| 输入 | bytes | SHA256 |
+|---|---:|---|
+| F1C checkpoint | 7681196 | `eebc810879f32c1db83f05a5b47794c804468b3e718e85b42cac034935d1aa01` |
+| F1C terminal | 1523377 | `ee923c9d767891e60f826a5d332b797926ac6a0ac96b56b2cbf17f52f508a697` |
+| F1C clean | 32126888 | `ff7166a2dd0b70455711ce7997ffd385534aa9a4cda8fe280e810dca7702f86c` |
+| F1G checkpoint | 7681196 | `a0b5cb61d4ef922d1446cd93f870c29f4f4c51050e36c775c02c462d51415be5` |
+| F1G terminal | 1523389 | `bd75d3c08bda7f2f4a456423885d21e3c4f94251bb22deb3966eec4e8336dcd1` |
+| F1G clean | 32126884 | `c68aa2bfd8ba4d3c9adc1e76c1b1b2ee76416d79305c0a1a42b11d48e511009e` |
+
+### Release、远端静态与安全边界证据
+
+- immutable release：`/home/szu2070436088/2510044040/releases/phase1_clic_source_metrics_20260813_v1_175b1540`；archive physical=`268113920` bytes，SHA256=`27e96ef020d3e3e014df40817f8cf15fd4d42825ac15acba838378d4c08debad`；SCP恰一次，upload tar与该SHA一致。
+- 远端静态检查：`py_compile=PASS`、三个`--help=PASS`、`bash -n=PASS`、dry-run=`25`（cache=`6`、forward=`12`、pair=`6`、aggregate=`1`），forbidden target/query/truth/prediction/package/`--retry`均为`0`。
+- 正式`run`、`log`、`outer`在smoke失败后仍为`ABSENT`；GPU0为`0%/1MiB`，相关进程为`0`，本地SSH/SCP进程与TCP22连接均为`0`。smoke root及全部partial log保留，未删除、未覆盖。
+
+后续只能创建新的run ID `phase1_clic_source_metrics_20260813_v2`重新完成独立路径合同；本v1不得retry、不得改标为formal、不得产生性能结论。
