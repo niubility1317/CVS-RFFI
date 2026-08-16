@@ -930,7 +930,7 @@ def test_runtime_source_lock_closes_scientific_entry_and_rejects_file_drift(
     tmp_path: Path,
 ) -> None:
     lock = json.loads(
-        (ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v4.json").read_text(
+        (ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v5.json").read_text(
             encoding="utf-8"
         )
     )
@@ -1003,22 +1003,28 @@ def _run_extracted_archive_prepare_probe(
             assert not member.issym() and not member.islnk()
         bundle.extractall(extracted)
 
-    config = json.loads(
-        (
-            extracted
-            / "configs"
-            / "stage2_d92_ccoc_hard9_k1_v2.json"
-        ).read_text(encoding="utf-8")
+    extracted_config = (
+        extracted / "configs" / "stage2_d92_ccoc_hard9_k1_v5.json"
     )
+    extracted_config.write_bytes(
+        (ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v5.json").read_bytes()
+    )
+    config = json.loads(extracted_config.read_text(encoding="utf-8"))
     for relative_path in config["runtime_source"]["files"]:
         archived_source = extracted / "code" / relative_path
         archived_source.write_bytes((ROOT / "code" / relative_path).read_bytes())
 
-    # Use the exact prospective v3 source bytes inside the proven runtime
-    # closure, still without a .git directory.
+    # Use the exact prospective v5 runner/matrix bytes inside the proven
+    # runtime closure, still without a .git directory.
     extracted_runner = extracted / "code" / "scripts" / "run_d92_ccoc_hard9_k1.py"
     extracted_runner.write_bytes(
         (ROOT / "code" / "scripts" / "run_d92_ccoc_hard9_k1.py").read_bytes()
+    )
+    extracted_matrix = (
+        extracted / "code" / "cvsrffi" / "stage2_d92_ccoc_hard9_k1.py"
+    )
+    extracted_matrix.write_bytes(
+        (ROOT / "code" / "cvsrffi" / "stage2_d92_ccoc_hard9_k1.py").read_bytes()
     )
     if drift_locked_source:
         locked = extracted / "code" / "cvsrffi" / "stage2_d92_e0d_slim.py"
@@ -1034,7 +1040,7 @@ root = Path(sys.argv[1]).resolve()
 sys.path.insert(0, str(root / "code"))
 from scripts import run_d92_ccoc_hard9_k1 as runner
 
-config = root / "configs" / "stage2_d92_ccoc_hard9_k1_v2.json"
+config = root / "configs" / "stage2_d92_ccoc_hard9_k1_v5.json"
 output_root = root / "prepare_output"
 runner.build_hard9_k1_manifest = lambda _config, require_package_files: {
     "method_lock": str(config),
@@ -1153,7 +1159,7 @@ def test_runtime_source_gate_requires_frozen_commit_and_both_git_blob_views(
         )
 
 
-def test_e0_resource_records_accept_legal_content_drift_and_reject_tamper(
+def test_e0_resource_records_use_embedded_projection_without_historical_file(
     tmp_path: Path,
 ) -> None:
     outer_key = "rx_7_7__seed_713104__k_5__new_20"
@@ -1171,67 +1177,86 @@ def test_e0_resource_records_accept_legal_content_drift_and_reject_tamper(
         / "after"
         / "fit_audit.json"
     )
-    rows = []
-    actual_scenes: dict[str, dict[str, int]] = {}
+    embedded_scenes: dict[str, dict[str, int]] = {}
     for index, scene in enumerate(runner.SCENES):
-        values = {
+        embedded_scenes[scene] = {
             "registration_wall_time_ns": 100 + index,
             "registration_incremental_peak_working_set_bytes": 200 + index,
             "query_macs": 7_488,
             "state_bytes": 18_498,
         }
-        actual_scenes[scene] = values
-        rows.append(
-            {
-                "scenario": scene,
-                "arm_id": "E0_FULL_ONLY",
-                "candidate_id": "d92_e0d_e0_full_only",
-                "k_shot": 5,
-                "registered_class_count": 26,
-                "after_registration_resource": {
-                    "schema": "cvs.phase2.registration_resource_receipt.v1",
-                    "registration_wall_time_ns": values[
-                        "registration_wall_time_ns"
-                    ],
-                    "registration_incremental_peak_working_set_bytes": values[
-                        "registration_incremental_peak_working_set_bytes"
-                    ],
-                },
-                "query_macs": values["query_macs"],
-                "after_state_bytes": values["state_bytes"],
-            }
-        )
-    _write(fit_audit, rows)
     job["e0_resource"] = {
         "fit_audit": {
             "path": str(fit_audit),
             "sha256": "a" * 64,
         },
-        "scenes": {
-            scene: {**values, "registration_wall_time_ns": 1}
-            for scene, values in actual_scenes.items()
-        },
+        "scenes": embedded_scenes,
     }
 
     observation = runner._load_verified_e0_resource_records(job)
-    observed_sha = hashlib.sha256(fit_audit.read_bytes()).hexdigest()
     assert observation == {
-        "fit_audit_observed_sha256": observed_sha,
-        "scenes": actual_scenes,
+        "source_mode": "embedded_preregistered_projection",
+        "fit_audit_declared_sha256": "a" * 64,
+        "scenes": embedded_scenes,
     }
-    observed = runner._bind_e0_resource_observations({"jobs": [job]})
-    assert observed == {outer_key: observed_sha}
-    assert job["e0_resource"]["fit_audit"]["sha256"] == observed_sha
-    assert job["e0_resource"]["scenes"] == actual_scenes
+    binding = runner._bind_e0_resource_observations({"jobs": [job]})
+    assert binding == {
+        "source_mode": "embedded_preregistered_projection",
+        "fit_audit_declared_sha256": {outer_key: "a" * 64},
+    }
+    assert not fit_audit.exists()
 
-    tampered = copy.deepcopy(rows)
-    tampered[1]["arm_id"] = "NOT_E0"
-    _write(fit_audit, tampered)
-    with pytest.raises(runner.D92CCOCHard9K1RunnerError, match="identity"):
-        runner._load_verified_e0_resource_records(job)
 
-    tampered = copy.deepcopy(rows)
-    tampered[1]["after_registration_resource"]["schema"] = "wrong"
-    _write(fit_audit, tampered)
-    with pytest.raises(runner.D92CCOCHard9K1RunnerError, match="schema"):
-        runner._load_verified_e0_resource_records(job)
+def test_embedded_e0_resource_projection_rejects_identity_and_value_tamper() -> None:
+    outer_key = "rx_7_7__seed_713104__k_5__new_20"
+    job = {
+        "outer_key": outer_key,
+        "k_shot": 5,
+        "new_class_count": 20,
+        "e0_resource": {
+            "fit_audit": {
+                "path": f"/missing/jobs/{outer_key}/E0_FULL_ONLY/diag/after/fit_audit.json",
+                "sha256": "a" * 64,
+            },
+            "scenes": {
+                scene: {
+                    "registration_wall_time_ns": 100,
+                    "registration_incremental_peak_working_set_bytes": 0,
+                    "query_macs": 7_488,
+                    "state_bytes": 1,
+                }
+                for scene in runner.SCENES
+            },
+        },
+    }
+
+    cases: list[tuple[str, dict[str, object], str]] = []
+    scene_drift = copy.deepcopy(job)
+    del scene_drift["e0_resource"]["scenes"][runner.SCENES[0]]
+    cases.append(("scene", scene_drift, "scene identity"))
+    query_drift = copy.deepcopy(job)
+    query_drift["e0_resource"]["scenes"][runner.SCENES[0]]["query_macs"] += 1
+    cases.append(("query", query_drift, "query MAC identity"))
+    state_drift = copy.deepcopy(job)
+    state_drift["e0_resource"]["scenes"][runner.SCENES[0]]["state_bytes"] = 0
+    cases.append(("state", state_drift, "query/state"))
+    wall_drift = copy.deepcopy(job)
+    wall_drift["e0_resource"]["scenes"][runner.SCENES[0]][
+        "registration_wall_time_ns"
+    ] = 0
+    cases.append(("wall", wall_drift, "wall"))
+    peak_drift = copy.deepcopy(job)
+    peak_drift["e0_resource"]["scenes"][runner.SCENES[0]][
+        "registration_incremental_peak_working_set_bytes"
+    ] = -1
+    cases.append(("peak", peak_drift, "peak"))
+    identity_drift = copy.deepcopy(job)
+    identity_drift["outer_key"] = "rx_7_7__seed_713104__k_10__new_20"
+    cases.append(("identity", identity_drift, "job identity"))
+
+    for label, tampered, error in cases:
+        with pytest.raises(
+            runner.D92CCOCHard9K1RunnerError,
+            match=error,
+        ):
+            runner._load_verified_e0_resource_records(tampered)

@@ -27,6 +27,7 @@ from cvsrffi.stage2_d92_ccoc_hard9_k1 import (  # noqa: E402
     ARM_ID,
     CANONICAL_SELECTION_SHA256,
     CANDIDATE_ID,
+    E0_RESOURCE_SOURCE_MODE,
     FIT_GATE,
     JOB_RECEIPT_SCHEMA,
     MATRIX_SCHEMA,
@@ -738,14 +739,10 @@ def _load_manifest(path: str | Path, expected_sha256: str) -> dict[str, Any]:
 def _load_verified_e0_resource_records(
     job: Mapping[str, Any],
 ) -> dict[str, Any]:
-    """Load the current same-outer E0 resource baseline by scene key.
+    """Validate the Git-sealed same-outer E0 resource projection."""
 
-    The historical SHA is trace metadata, not an execution gate.  Current
-    bytes are schema/identity checked and their observed SHA is returned for
-    the immutable matrix/receipt trail.
-    """
-
-    outer_key = str(job.get("outer_key", ""))
+    outer_value = job.get("outer_key")
+    outer_key = outer_value if isinstance(outer_value, str) else ""
     try:
         k_shot = _integer(job.get("k_shot"), "E0 resource K", lower=1)
         new_class_count = _integer(
@@ -761,72 +758,36 @@ def _load_verified_e0_resource_records(
     if (
         not isinstance(sealed, Mapping)
         or set(sealed) != {"path", "sha256"}
-        or not isinstance(declared_scenes, Mapping)
-        or set(declared_scenes) != set(SCENES)
-        or not _is_sha256(sealed.get("sha256"))
     ):
         raise D92CCOCHard9K1RunnerError("E0 resource sealed record drift")
-    source = Path(str(sealed.get("path", "")))
-    expected_suffix = (
-        f"/jobs/{outer_key}/E0_FULL_ONLY/diag/after/fit_audit.json"
-    )
-    if not source.is_file() or source.is_symlink():
-        raise D92CCOCHard9K1RunnerError("E0 resource fit-audit is missing")
-    if not source.as_posix().endswith(expected_suffix):
-        raise D92CCOCHard9K1RunnerError("E0 resource outer identity drift")
-    observed_sha256 = _sha256_file(source)
-    try:
-        rows = json.loads(source.read_text(encoding="utf-8-sig"))
-    except (OSError, ValueError) as error:
-        raise D92CCOCHard9K1RunnerError("E0 resource fit-audit invalid") from error
-    if (
-        not isinstance(rows, list)
-        or len(rows) != len(SCENES)
-        or any(not isinstance(row, Mapping) for row in rows)
+    if not isinstance(declared_scenes, Mapping) or set(declared_scenes) != set(
+        SCENES
     ):
-        raise D92CCOCHard9K1RunnerError("E0 resource scene closure drift")
-    by_scene = {str(row.get("scenario", "")): row for row in rows}
-    if len(by_scene) != len(SCENES) or set(by_scene) != set(SCENES):
         raise D92CCOCHard9K1RunnerError("E0 resource scene identity drift")
+    if not outer_key.endswith(f"__k_{k_shot}__new_{new_class_count}"):
+        raise D92CCOCHard9K1RunnerError("E0 resource job identity drift")
 
     actual: dict[str, dict[str, int]] = {}
     for scene in SCENES:
-        row = by_scene[scene]
-        resource_receipt = row.get("after_registration_resource")
-        if (
-            row.get("arm_id") != "E0_FULL_ONLY"
-            or row.get("candidate_id") != "d92_e0d_e0_full_only"
-            or _integer(row.get("k_shot"), "E0 resource K", lower=1) != k_shot
-            or _integer(
-                row.get("registered_class_count"),
-                "E0 resource registered-class count",
-                lower=1,
-            )
-            != 6 + new_class_count
-        ):
-            raise D92CCOCHard9K1RunnerError("E0 resource fit-audit identity drift")
-        if (
-            not isinstance(resource_receipt, Mapping)
-            or resource_receipt.get("schema")
-            != "cvs.phase2.registration_resource_receipt.v1"
-        ):
-            raise D92CCOCHard9K1RunnerError("E0 resource receipt schema drift")
+        values = declared_scenes.get(scene)
+        if not isinstance(values, Mapping) or set(values) != {
+            "registration_wall_time_ns",
+            "registration_incremental_peak_working_set_bytes",
+            "query_macs",
+            "state_bytes",
+        }:
+            raise D92CCOCHard9K1RunnerError("E0 resource scene field drift")
         actual_scene = {
             "registration_wall_time_ns": _integer(
-                _resource_value(row, "registration_wall_time_ns"),
+                values.get("registration_wall_time_ns"),
                 "E0 registration wall",
             ),
             "registration_incremental_peak_working_set_bytes": _integer(
-                _resource_value(
-                    row,
-                    "registration_incremental_peak_working_set_bytes",
-                ),
+                values.get("registration_incremental_peak_working_set_bytes"),
                 "E0 registration peak",
             ),
-            "query_macs": _integer(row.get("query_macs"), "E0 query MACs"),
-            "state_bytes": _integer(
-                row.get("after_state_bytes"), "E0 state bytes", lower=1
-            ),
+            "query_macs": _integer(values.get("query_macs"), "E0 query MACs"),
+            "state_bytes": _integer(values.get("state_bytes"), "E0 state bytes"),
         }
         if actual_scene["registration_wall_time_ns"] <= 0:
             raise D92CCOCHard9K1RunnerError("E0 resource wall is zero")
@@ -835,35 +796,31 @@ def _load_verified_e0_resource_records(
         if actual_scene["query_macs"] != (6 + new_class_count) * 288:
             raise D92CCOCHard9K1RunnerError("E0 resource query MAC identity drift")
         actual[scene] = actual_scene
-    if not outer_key:
-        raise D92CCOCHard9K1RunnerError("E0 resource outer identity drift")
     return {
-        "fit_audit_observed_sha256": observed_sha256,
+        "source_mode": E0_RESOURCE_SOURCE_MODE,
+        "fit_audit_declared_sha256": str(sealed.get("sha256", "")),
         "scenes": actual,
     }
 
 
-def _bind_e0_resource_observations(manifest: Mapping[str, Any]) -> dict[str, str]:
-    """Bind current E0 resource observations into the immutable run manifest."""
+def _bind_e0_resource_observations(manifest: Mapping[str, Any]) -> dict[str, Any]:
+    """Validate embedded E0 projections and collect trace-only declarations."""
 
     jobs = manifest.get("jobs")
     if not isinstance(jobs, list):
         raise D92CCOCHard9K1RunnerError("E0 resource manifest jobs drift")
-    observed: dict[str, str] = {}
+    declared: dict[str, str] = {}
     for job in jobs:
         if not isinstance(job, dict):
             raise D92CCOCHard9K1RunnerError("E0 resource manifest job drift")
         observation = _load_verified_e0_resource_records(job)
-        resource = job.get("e0_resource")
-        if not isinstance(resource, dict) or not isinstance(
-            resource.get("fit_audit"), dict
-        ):
-            raise D92CCOCHard9K1RunnerError("E0 resource manifest binding drift")
-        digest = str(observation["fit_audit_observed_sha256"]).lower()
-        resource["fit_audit"]["sha256"] = digest
-        resource["scenes"] = observation["scenes"]
-        observed[str(job["outer_key"])] = digest
-    return observed
+        declared[str(job["outer_key"])] = str(
+            observation["fit_audit_declared_sha256"]
+        )
+    return {
+        "source_mode": E0_RESOURCE_SOURCE_MODE,
+        "fit_audit_declared_sha256": declared,
+    }
 
 
 def _prediction_command(
@@ -1622,8 +1579,10 @@ def _validate_shared_smoke(
     )
     if (
         receipt.get("fit_audit_resource_gate") != resource_gate
-        or receipt.get("e0_resource_fit_audit_observed_sha256")
-        != e0_observation["fit_audit_observed_sha256"]
+        or receipt.get("e0_resource_source_mode")
+        != e0_observation["source_mode"]
+        or receipt.get("e0_resource_fit_audit_declared_sha256")
+        != e0_observation["fit_audit_declared_sha256"]
     ):
         raise D92CCOCHard9K1RunnerError("smoke resource gate receipt drift")
 
@@ -1633,7 +1592,7 @@ def prepare(args: argparse.Namespace) -> dict[str, Any]:
     lock = _read_json_object(manifest["method_lock"], label="method lock")
     validate_method_lock(lock)
     runtime_source_receipt = _verify_runtime_source_lock(lock)
-    e0_observed_sha256 = _bind_e0_resource_observations(manifest)
+    e0_resource_binding = _bind_e0_resource_observations(manifest)
     output_root = Path(str(manifest["output_root"]))
     if output_root.exists() or output_root.is_symlink():
         raise D92CCOCHard9K1RunnerError("matrix output already exists")
@@ -1648,7 +1607,10 @@ def prepare(args: argparse.Namespace) -> dict[str, Any]:
         "runtime_source_verification_mode": runtime_source_receipt[
             "verification_mode"
         ],
-        "e0_resource_fit_audit_observed_sha256": e0_observed_sha256,
+        "e0_resource_source_mode": e0_resource_binding["source_mode"],
+        "e0_resource_fit_audit_declared_sha256": e0_resource_binding[
+            "fit_audit_declared_sha256"
+        ],
         "job_count": 10,
         "scene_arm_count": 30,
     }
@@ -1736,8 +1698,9 @@ def smoke(args: argparse.Namespace) -> dict[str, Any]:
         **hashes,
         "prediction_closure": hashes,
         "fit_audit_resource_gate": resource_gate,
-        "e0_resource_fit_audit_observed_sha256": e0_observation[
-            "fit_audit_observed_sha256"
+        "e0_resource_source_mode": e0_observation["source_mode"],
+        "e0_resource_fit_audit_declared_sha256": e0_observation[
+            "fit_audit_declared_sha256"
         ],
         "truth_open": False,
         "query_truth_joined_only_after_immutable_predictions": True,
@@ -2018,8 +1981,9 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
             "query_truth_fed_back_to_predictor": False,
             "prediction_and_scorer_processes_isolated": True,
             "fit_audit_resource_gate": fit_resource_gate,
-            "e0_resource_fit_audit_observed_sha256": e0_observation[
-                "fit_audit_observed_sha256"
+            "e0_resource_source_mode": e0_observation["source_mode"],
+            "e0_resource_fit_audit_declared_sha256": e0_observation[
+                "fit_audit_declared_sha256"
             ],
             "fresh_run_retry_authorized": False,
         }

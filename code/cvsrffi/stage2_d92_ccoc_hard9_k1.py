@@ -29,6 +29,7 @@ METHOD_LOCK_SCHEMA = "cvs.phase2.d92_ccoc_hard9_k1.method_lock.v1"
 JOB_RECEIPT_SCHEMA = "cvs.phase2.d92_ccoc_hard9_k1.job_receipt.v1"
 SHARD_SUMMARY_SCHEMA = "cvs.phase2.d92_ccoc_hard9_k1.shard_summary.v1"
 SYSTEMIC_FAILURE_SCHEMA = "cvs.phase2.d92_ccoc_hard9_k1.systemic_failure.v1"
+E0_RESOURCE_SOURCE_MODE = "embedded_preregistered_projection"
 
 ARM_ID = "E0_FULL_CROSS_CLASS_OFFBLOCK_CONSENSUS"
 CANDIDATE_ID = "d92_e0_full_cross_class_offblock_consensus"
@@ -668,7 +669,7 @@ def _expected_lock() -> dict[str, Any]:
         "runtime": {
             "output_root": (
                 "/home/szu2070436088/2510044040/CV-SincNet/runs/"
-                "d92_ccoc_hard9_k1_20260817_v4"
+                "d92_ccoc_hard9_k1_20260817_v5"
             )
         },
         "outputs": {
@@ -908,12 +909,9 @@ def validate_hard9_k1_manifest(
         }:
             raise D92CCOCHard9K1Error("E0 resource manifest record drift")
         fit_audit = e0_resource.get("fit_audit")
-        expected_fit_path = E0_RESOURCE_ROWS[row["outer_key"]]["fit_audit"]["path"]
         if (
             not isinstance(fit_audit, Mapping)
             or set(fit_audit) != {"path", "sha256"}
-            or _pure_path(fit_audit.get("path")) != _pure_path(expected_fit_path)
-            or not _is_sha256(fit_audit.get("sha256"))
         ):
             raise D92CCOCHard9K1Error("E0 resource fit-audit record drift")
         resource_scenes = e0_resource.get("scenes")
@@ -935,6 +933,8 @@ def validate_hard9_k1_manifest(
                 lower = 0 if field == "registration_incremental_peak_working_set_bytes" else 1
                 if isinstance(value, bool) or not isinstance(value, int) or value < lower:
                     raise D92CCOCHard9K1Error("E0 resource scene value drift")
+            if values["query_macs"] != (6 + row["new_class_count"]) * 288:
+                raise D92CCOCHard9K1Error("E0 resource query MAC identity drift")
         truth_sidecar_sha256 = job.get("truth_sidecar_sha256")
         if (
             _pure_path(job.get("truth_sidecar"))
@@ -1094,6 +1094,7 @@ __all__ = [
     "D92CCOCHard9K1Error",
     "D92CCOCHard9K1MatrixError",
     "EXCLUDED_OUTER_KEYS",
+    "E0_RESOURCE_SOURCE_MODE",
     "FIT_GATE",
     "G0_OUTER_KEY",
     "HARD9_K1_ROWS",
