@@ -3,7 +3,7 @@
 ## 1.状态、范围与非性能边界
 
 - 实验ID：`phase1_adv3b02_clic6_20260816_v2`。
-- 当前状态（最新接替runner reconcile）：`BLOCKED / REMOTE_STATE_CONFLICT / NO_PERFORMANCE_RESULT`。第10—12节保留为此前runner的历史记录，不覆盖本次现场证据。
+- 当前状态（最终技术封存）：`ARTIFACTS_COMPLETE / NON_PROMOTABLE_P0_DISABLED / NO_PERFORMANCE_RESULT`。第10—13节保留此前release、smoke与reconcile历史；本节记录最终既有formal自然完成证据。
 - v1状态：`phase1_adv3b02_clic6_20260813_v1`永久保持`SMOKE_STOPPED_TECHNICAL_GATE / FORMAL_NOT_LAUNCHED / NO_PERFORMANCE_RESULT`；formal invocation=`0`，retry=`NO`，不得恢复、重试、覆盖或改写v1。
 - 本v2只修正技术烟测对训练器既有可恢复梯度跳过的观测合同；不改ADV3B02方法、loss、fold、seed、epoch、数据角色、source-only边界或target权限。
 - 本报告和任何v2 receipt均为技术证据，不记录、读取或解释accuracy、DG、proxy或其他性能值。
@@ -118,3 +118,22 @@
 - 技术marker扫描未发现`Traceback`、`RuntimeError`、`OOM`、`nonfinite`或`FAILED`文本；因此没有可登记的失败fingerprint，记为`NONE_OBSERVED`，不将其解释为成功。首个阻断fingerprint为：`REMOTE_RECONCILE_STATE_CONFLICT expected(staging=present,final=absent,SMOKE=0,FORMAL=0,run/log/outer=absent) observed(staging=absent,final=present,formal_wrapper=801059,formal_run_files=12,formal_log_files=21,smoke_run_files=1,smoke_log_files=2,outer_files=2)`。
 - 按brief/hash review的即时NO-GO规则，本runner停止在reconcile门：`SMOKE_INVOCATION=0`、`FORMAL_INVOCATION=0`仅表示本接替runner未发起调用，不能覆盖远端既有现场；不读取性能、不作晋级判断、不干预既有formal。SSH/SCP/TCP22清理复核为`VERIFIED`（无本地`ssh.exe`/`scp.exe`残留，无到N607的`ESTABLISHED`连接，仅短暂`TIME_WAIT`）。
 - 最新运行状态：`BLOCKED / REMOTE_STATE_CONFLICT / NO_PERFORMANCE_RESULT`。后续动作需主控重新核定远端现场与run ownership；本报告不授权任何恢复、重试、覆盖或终止。
+
+## 14.既有formal自然完成与最终技术封存（2026-08-16 17:05）
+
+- 该formal由既有唯一launcher自然完成；本接替runner没有launch、retry、kill、SCP、rename或远端写入。最终只读核对时间=`2026-08-16T17:05:22+08:00`，remote process counts=`wrapper=0,trainer=0`，GPU compute apps为空，Traceback=`0`，RuntimeError=`0`。
+- 训练合同的冻结字段继续闭合：`training_scope=source_only`，方法身份=`ADV3B02_CORE90_SOFT_E200_CLIC_EQ_RHO07_FINAL`，run ID=`phase1_adv3b02_clic6_20260816_v2`。smoke技术receipt保持`completed=true`、`raw_batches_observed=4`、`effective_forward/backward/optimizer=3`、`handled_grad_skip_count=1`、`skipped_nonfinite_loss_batches=0`；`source_val_rows_opened=0`、`target_rows_opened=0`、`query_rows_opened=0`、`test_rows_opened=0`、`selection_feedback_count=0`，claim=`NO_PERFORMANCE_RESULT`。
+- 六fold同一行artifact封存表如下；SHA为N607现存文件的只读回读，不包含任何性能字段：
+
+|fold/candidate|final checkpoint bytes/SHA256|terminal status bytes/SHA256|completion receipt bytes/SHA256|process exit/finished|
+|---|---:|---|---|---|
+|F1/F1_ADV3B02_CLIC|15015647 / `d262c0181ce9496f915be5c338d2ac5c97a26de88cabd82357537a9eeac13237`|27074 / `46d74a7ed9ea5e3e4ed15e57556416bcde2964ac9cb6239dd6fa074e841140cb`|4163 / `b4d77a5a483eac764e8ed997f73dc390f813d108cbd0391e9fbf48f53397506e`|0 / `16:57:39`|
+|F2/F2_ADV3B02_CLIC|15015647 / `5a5c929d661f1cc11cb83af3916633ebc547ae50c3ba51167ab99c5412e771de`|27129 / `b77fb19c58ecfcbdd1f1f017bd2b93f6cd63f14c31cd164bca7d9b65951ee6ea`|4162 / `d59d2f2d9c15049a45522616de8adb48e0cc7c25b8fcbf29172c41a7100f0131`|0 / `16:57:39`|
+|F3/F3_ADV3B02_CLIC|15015647 / `6a70f0c6139a4145597211af855b5d19488e08a498f1b0486451ff3a82b6f62e`|27105 / `905907c050cf6c4e3fa9b4122937a54b72a7f5d0e969f413048602d20c062f6f`|4163 / `09b954aec5bd1df1e899a4e1f0a992bb007201fcd239bf46606485181607b0b9`|0 / `16:57:54`|
+|F4/F4_ADV3B02_CLIC|15015647 / `a63fa2f5947c3ff8893693b3d6388b77ccf738051240f26f9aa68d9c3aec4dd1`|27125 / `707bdf23eda8f1063ac5df4dd5e69e3c6892023d365acf84abe83710b75d75e1`|4162 / `c1f0a5c6fa8a42256186e55c93c17a31200b0dbb73c09bb555ee1ee36c917474`|0 / `16:57:54`|
+|F5/F5_ADV3B02_CLIC|15015647 / `4f7bb7d84dae1f6d29e2286c6413532311970359786673c2ebffd5a8d601eae1`|27129 / `b405a823e2b27baee5de40b289cbf476006ed5dc5cfda6aaf6759445d9f40888`|4162 / `ac73322a8bc8bc9240a6f21bf3fe10a4cef3cd6f971cf503965b62af8da2ca1c`|0 / `16:57:54`|
+|F6/F6_ADV3B02_CLIC|15015647 / `0bfe7c196534551f9a0c43a51036a9a51929d82491959308069886defaa1334e`|27101 / `73058cac2e7432c228bebee5178ca6558f1e8657fda556c656bb19659347f231`|4162 / `50f07ca0c2df328263a8d335d58ffff90d8bd66bfffbd1b140266325bc486303`|0 / `16:57:54`|
+
+- 终态语义按冻结Git trainer实现核对：`_resolve_phase1_terminal_status`在P0机制未就绪时返回`NON_PROMOTABLE_P0_DISABLED`；随后代码将该终态映射为`terminal_exit_code=8`，并写入`promotion_ready=false`、`performance_result_available=false`、`phase1_training_complete=false`及source-only claim。因而receipt中的`status=COMPLETE`仅出现在嵌套heldout/component状态，不能覆盖顶层terminal status；`NON_PROMOTABLE_P0_DISABLED`与`exit_code=8`是技术终态及晋级门字段，不是accuracy、DG或其他性能结论，也不构成方法晋级声明。
+- 每fold正式终端receipt顶层均为`terminal_status=NON_PROMOTABLE_P0_DISABLED`、`exit_code=8`、`formal_performance_claim=false`；六个status文件虽保留首行`running`，但均有独立`exit=0`与完成时间，且checkpoint、terminal、completion receipt和相关小型技术artifact均存在。该status文本不一致已原样记录，不改写远端状态。
+- 进程/GPU/连接清理：远端wrapper/trainer均为`0`，NVIDIA compute app为空；本地SSH/SCP进程=`0`，到N607的`ESTABLISHED=0`，仅观察到TIME_WAIT。最终状态为`ARTIFACTS_COMPLETE / NON_PROMOTABLE_P0_DISABLED / NO_PERFORMANCE_RESULT`，不进行性能解释或晋级。
