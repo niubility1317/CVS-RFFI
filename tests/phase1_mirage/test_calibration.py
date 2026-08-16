@@ -108,6 +108,19 @@ def test_calibration_enforces_known_frr_and_returns_no_deployable_separation():
         )
 
 
+def test_formal_calibration_rejects_any_relaxed_known_frr_limit():
+    """Catch a formal caller relaxing the approved ten-percent known-FRR hard ceiling."""
+
+    api = _api()
+
+    with pytest.raises(api.CalibrationProtocolError, match="0.10"):
+        api.calibrate_thresholds(
+            known_scores=_known_table(api),
+            proxy_scores=_proxy_table(api),
+            max_known_frr=0.1000001,
+        )
+
+
 def test_calibration_rejects_selection_target_overlap_and_mutating_proxy_inputs():
     """Catch role leakage, reused physical/query IDs, or a proxy update during calibration."""
 
@@ -161,6 +174,50 @@ def test_tables_are_immutable_and_selection_decisions_cannot_use_calibration_rol
         api.freeze_selection_decisions(v_cal, p_select, thresholds, candidate_id="A")
     with pytest.raises(api.CalibrationProtocolError, match="P_select"):
         api.freeze_selection_decisions(v_select, p_cal, thresholds, candidate_id="A")
+
+
+def test_frozen_decision_tables_require_the_factory_seal_and_reject_tampered_cross_ids():
+    """Catch direct/forged decision tables and score-time reuse of a known ID as proxy."""
+
+    api = _api()
+    scoring = importlib.import_module("cvsrffi.phase1_mirage.scoring")
+    thresholds = api.calibrate_thresholds(_known_table(api), _proxy_table(api))
+    decisions = api.freeze_selection_decisions(
+        _known_table(api, role=SourcePartition.V_SELECT),
+        _proxy_table(api, role=ProxyRole.P_SELECT),
+        thresholds,
+        candidate_id="A",
+    )
+
+    with pytest.raises(api.CalibrationProtocolError, match="factory"):
+        api.FrozenDecisionTable(
+            candidate_id="forged",
+            known_role=SourcePartition.V_SELECT,
+            proxy_role=ProxyRole.P_SELECT,
+            thresholds=thresholds,
+            known_rows=decisions.known_rows,
+            proxy_rows=decisions.proxy_rows,
+            proxy_update_count=0,
+        )
+    with pytest.raises(api.CalibrationProtocolError, match="factory"):
+        api.FrozenDecisionTable(
+            candidate_id="forged",
+            known_role=SourcePartition.V_SELECT,
+            proxy_role=ProxyRole.P_SELECT,
+            thresholds=thresholds,
+            known_rows=decisions.known_rows,
+            proxy_rows=decisions.proxy_rows,
+            proxy_update_count=0,
+            _factory_seal=object(),
+        )
+
+    crossed_proxy = replace(
+        decisions.proxy_rows[0],
+        row=replace(decisions.proxy_rows[0].row, physical_id=decisions.known_rows[0].row.physical_id),
+    )
+    object.__setattr__(decisions, "proxy_rows", (crossed_proxy,) + decisions.proxy_rows[1:])
+    with pytest.raises(scoring.ScoringProtocolError, match="receipt|overlap|sealed"):
+        scoring.score_same_row(decisions)
 
 
 def test_score_table_column_factory_fails_closed_for_shape_range_and_duplicate_ids():

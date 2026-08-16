@@ -382,3 +382,52 @@ def test_unique_arm_selection_uses_only_promoted_source_receipts_and_records_sta
     assert selection.selected_arm_id == "A"
     assert selection.tie_break == "stable_arm_id"
     assert selection.used_target_data is False
+
+
+def test_unique_arm_selection_uses_normalized_weakest_gate_slack_not_raw_unit_margins():
+    """Catch an arm ranking that reverses when accuracy, AUROC, and fold-count units are mixed."""
+
+    _, scoring = _apis()
+    baseline = _summary(
+        scoring,
+        arm="B0",
+        values=tuple(
+            _metric(scoring, arm="B0", fold=fold, macro=0.80, minimum=0.70, worst=0.60, auc=0.80)
+            for fold in range(6)
+        ),
+    )
+    arm_a = _summary(
+        scoring,
+        arm="A",
+        values=tuple(
+            _metric(scoring, arm="A", fold=fold, macro=0.825, minimum=0.712, worst=0.605, auc=0.90, frr=0.08)
+            for fold in range(6)
+        ),
+    )
+    arm_b = _summary(
+        scoring,
+        arm="B",
+        values=tuple(
+            _metric(scoring, arm="B", fold=fold, macro=0.823, minimum=0.714, worst=0.606, auc=0.88, frr=0.085)
+            for fold in range(6)
+        ),
+    )
+    receipt_a = scoring.evaluate_source_gates(arm_a, baseline, _gate1(scoring))
+    receipt_b = scoring.evaluate_source_gates(arm_b, baseline, _gate1(scoring))
+
+    assert receipt_a.promoted and receipt_b.promoted
+    assert min(receipt_a.gate_margins.values()) < min(receipt_b.gate_margins.values())
+    assert receipt_a.normalized_gate_slacks["gate2_minimum_delta"] == pytest.approx(0.20)
+    assert receipt_b.normalized_gate_slacks["gate3_known_frr"] == pytest.approx(0.15)
+    assert receipt_a.weakest_gate_margin == pytest.approx(0.20)
+    assert receipt_b.weakest_gate_margin == pytest.approx(0.15)
+
+    selection = scoring.select_unique_arm(
+        (
+            scoring.ArmSelectionCandidate("B", receipt_b, bundle_bytes=1_024),
+            scoring.ArmSelectionCandidate("A", receipt_a, bundle_bytes=1_024),
+        )
+    )
+
+    assert selection.selected_arm_id == "A"
+    assert selection.tie_break == "weakest_gate_margin"

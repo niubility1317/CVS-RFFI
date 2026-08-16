@@ -15,7 +15,7 @@ from typing import Mapping, Sequence
 
 from sklearn.metrics import roc_auc_score
 
-from .calibration import FrozenDecisionTable
+from .calibration import CalibrationProtocolError, FrozenDecisionTable, _validate_frozen_decision_table
 from .protocol import ProxyRole, SourcePartition
 
 
@@ -199,6 +199,10 @@ def score_same_row(decision_table: FrozenDecisionTable) -> SameRowMetrics:
 
     if not isinstance(decision_table, FrozenDecisionTable):
         raise ScoringProtocolError("same-row scoring requires a FrozenDecisionTable")
+    try:
+        decision_table = _validate_frozen_decision_table(decision_table)
+    except CalibrationProtocolError as error:
+        raise ScoringProtocolError("same-row scoring rejected an unsealed or mismatched source receipt") from error
     if (
         decision_table.known_role is not SourcePartition.V_SELECT
         or decision_table.proxy_role is not ProxyRole.P_SELECT
@@ -432,6 +436,7 @@ class SourceGateReceipt:
     gate2_checks: Mapping[str, bool]
     gate3_checks: Mapping[str, bool]
     gate_margins: Mapping[str, float]
+    normalized_gate_slacks: Mapping[str, float]
 
     def __post_init__(self) -> None:
         if not isinstance(self.candidate, SourceArmSummary) or not isinstance(self.baseline, SourceArmSummary):
@@ -455,12 +460,40 @@ class SourceGateReceipt:
                 {str(key): _require_unit_or_signed(value, f"gate_margins[{key!r}]") for key, value in self.gate_margins.items()}
             ),
         )
+        if not isinstance(self.normalized_gate_slacks, Mapping) or not self.normalized_gate_slacks:
+            raise ScoringProtocolError("normalized_gate_slacks must be a non-empty mapping")
+        expected_slacks = {
+            "gate2_macro_delta",
+            "gate2_minimum_delta",
+            "gate2_worst_scene_delta",
+            "gate2_fold_nondegrade",
+            "gate3_proxy_auroc",
+            "gate3_proxy_auroc_delta",
+            "gate3_known_frr",
+        }
+        if set(self.normalized_gate_slacks) != expected_slacks:
+            raise ScoringProtocolError("normalized_gate_slacks must contain the pre-registered Gate 2/3 constraints")
+        object.__setattr__(
+            self,
+            "normalized_gate_slacks",
+            MappingProxyType(
+                {
+                    str(key): _require_unit_or_signed(value, f"normalized_gate_slacks[{key!r}]")
+                    for key, value in self.normalized_gate_slacks.items()
+                }
+            ),
+        )
 
     @property
     def weakest_gate_margin(self) -> float:
-        """Return the minimum quantitative Gate 2/3 margin for deterministic arm ordering."""
+        """Return the minimum pre-registered dimensionless Gate 2/3 slack.
 
-        return min(self.gate_margins.values())
+        Gate 1 and P_select update-count are Boolean closure checks and are
+        deliberately excluded.  Selection already filters to promoted arms;
+        the remaining continuous constraints use their approved normalizers.
+        """
+
+        return min(self.normalized_gate_slacks.values())
 
 
 def _require_unit_or_signed(value: object, field_name: str) -> float:
@@ -472,7 +505,10 @@ def _require_unit_or_signed(value: object, field_name: str) -> float:
     return numeric
 
 
-def _evaluate_gate2(candidate: SourceArmSummary, baseline: SourceArmSummary) -> tuple[Mapping[str, bool], Mapping[str, float]]:
+def _evaluate_gate2(
+    candidate: SourceArmSummary,
+    baseline: SourceArmSummary,
+) -> tuple[Mapping[str, bool], Mapping[str, float], Mapping[str, float]]:
     candidate_folds = candidate.by_fold
     baseline_folds = baseline.by_fold
     if set(candidate_folds) != set(baseline_folds):
@@ -502,10 +538,19 @@ def _evaluate_gate2(candidate: SourceArmSummary, baseline: SourceArmSummary) -> 
         "gate2_worst_scene_delta": worst_delta,
         "gate2_fold_nondegrade": (count - 5) / 6,
     }
-    return MappingProxyType(checks), MappingProxyType(margins)
+    normalized_slacks = {
+        "gate2_macro_delta": (macro_delta - 0.02) / 0.02,
+        "gate2_minimum_delta": (minimum_delta - 0.01) / 0.01,
+        "gate2_worst_scene_delta": worst_delta / 0.005,
+        "gate2_fold_nondegrade": (count - 5) / 1,
+    }
+    return MappingProxyType(checks), MappingProxyType(margins), MappingProxyType(normalized_slacks)
 
 
-def _evaluate_gate3(candidate: SourceArmSummary, baseline: SourceArmSummary) -> tuple[Mapping[str, bool], Mapping[str, float]]:
+def _evaluate_gate3(
+    candidate: SourceArmSummary,
+    baseline: SourceArmSummary,
+) -> tuple[Mapping[str, bool], Mapping[str, float], Mapping[str, float]]:
     auroc_delta = candidate.proxy_auroc - baseline.proxy_auroc
     checks = {
         "proxy_auroc_at_least_0_85": _at_least(candidate.proxy_auroc, 0.85),
@@ -518,7 +563,12 @@ def _evaluate_gate3(candidate: SourceArmSummary, baseline: SourceArmSummary) -> 
         "gate3_proxy_auroc_delta": auroc_delta - 0.05,
         "gate3_known_frr": 0.10 - candidate.known_frr,
     }
-    return MappingProxyType(checks), MappingProxyType(margins)
+    normalized_slacks = {
+        "gate3_proxy_auroc": (candidate.proxy_auroc - 0.85) / 0.15,
+        "gate3_proxy_auroc_delta": (auroc_delta - 0.05) / 0.05,
+        "gate3_known_frr": (0.10 - candidate.known_frr) / 0.10,
+    }
+    return MappingProxyType(checks), MappingProxyType(margins), MappingProxyType(normalized_slacks)
 
 
 def evaluate_source_gates(
@@ -533,12 +583,14 @@ def evaluate_source_gates(
     if candidate.arm_id == baseline.arm_id:
         raise ScoringProtocolError("candidate arm and B0 arm must differ")
     gate1_receipt = evaluate_gate1(gate1, expected_folds=frozenset(candidate.by_fold))
-    gate2_checks, gate2_margins = _evaluate_gate2(candidate, baseline)
-    gate3_checks, gate3_margins = _evaluate_gate3(candidate, baseline)
+    gate2_checks, gate2_margins, gate2_slacks = _evaluate_gate2(candidate, baseline)
+    gate3_checks, gate3_margins, gate3_slacks = _evaluate_gate3(candidate, baseline)
     gate2_pass = all(gate2_checks.values())
     gate3_pass = all(gate3_checks.values())
     margins = dict(gate2_margins)
     margins.update(gate3_margins)
+    normalized_slacks = dict(gate2_slacks)
+    normalized_slacks.update(gate3_slacks)
     return SourceGateReceipt(
         candidate=candidate,
         baseline=baseline,
@@ -550,6 +602,7 @@ def evaluate_source_gates(
         gate2_checks=gate2_checks,
         gate3_checks=gate3_checks,
         gate_margins=margins,
+        normalized_gate_slacks=normalized_slacks,
     )
 
 
@@ -688,9 +741,12 @@ def _max_filter(
 
 
 def select_unique_arm(candidates: Sequence[ArmSelectionCandidate]) -> ArmSelectionReceipt:
-    """Choose one promoted arm by Gate margin, macro, AUROC, bytes, then stable ID.
+    """Choose one promoted arm by normalized Gate 2/3 slack, macro, AUROC, bytes, then stable ID.
 
-    Missing bundle-size receipts are deterministically ranked as infinity.  This
+    The first comparison is the pre-registered dimensionless minimum slack
+    described by :attr:`SourceGateReceipt.weakest_gate_margin`; Boolean Gate 1
+    and proxy-update closure do not collapse otherwise distinct promoted arms.
+    Missing bundle-size receipts are deterministically ranked as infinity. This
     avoids target fallback while still yielding a stable result whenever at
     least one source-promoted arm exists.
     """

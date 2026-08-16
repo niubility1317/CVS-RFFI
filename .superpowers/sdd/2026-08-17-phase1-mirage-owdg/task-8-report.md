@@ -51,3 +51,12 @@ conda run -n ssr-gpu python -m pytest -p no:cacheprovider tests/phase1_mirage/te
 
 - reviewed P0/P1：role分离、update_count=0、跨表ID互斥、known FRR定义、defer语义、scene/fold等权、5/6边界、Gate不可补偿和Gate4不反馈。未发现阻断项。
 - 本实现只提供评分与收据纯函数，不构成source性能Gate通过或target性能结论；完整矩阵和一次性target artifacts仍由后续任务生成。
+
+## Fix round1：I1/I2/I3与C1权威裁决
+
+- C1裁决：批准规格§3.4只注册leo_clear_weak、leo_low_elev_weak、leo_rain_weak三个target scene；Gate4精确要求global加这三个scene。因此现有global、clear、low_elev、rain四项检查正确，不新增第四个scene。
+- I1：正式calibrate_thresholds现在只接受0≤max_known_frr≤.10；.1000001 fail closed，较宽松的阈值不能冒充正式Gate。
+- I2：唯一arm的首要比较改为预注册的无量纲Gate2/3连续slack最小值：macro delta=(d-.02)/.02、min delta=(d-.01)/.01、worst-scene=d/.005、fold=(n-5)/1、AUROC=(a-.85)/.15、AUROC delta=(d-.05)/.05、FRR=(.10-frr)/.10。Gate1和proxy update_count=0为布尔闭合，不将所有promoted arm压为同一零余量。
+- I3：FrozenDecisionTable只能由校验工厂以模块私有seal建立，并携带DecisionSourceReceipt（role、fold、行数、hash、proxy update count）。score_same_row再次校验seal、receipt、唯一/跨known-proxy ID、role、fold和零update，伪造或篡改表fail closed。
+- RED：3项预期失败，分别覆盖放宽FRR、直接/伪seal或交叉ID表、混合原始单位导致的arm排序反转。
+- GREEN：同3项通过；Task8聚焦14 passed；Task1—8限定回归128 passed（125项基线加3项新增）；git diff --check通过。

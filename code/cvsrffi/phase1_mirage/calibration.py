@@ -6,7 +6,7 @@ does not load files, inspect target artifacts, or retain mutable model state.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from hashlib import sha256
 import math
 from numbers import Real
@@ -360,9 +360,158 @@ def _validate_decision_flags(label: object, registered: object, explicit_unknown
         raise CalibrationProtocolError("decision states must be exactly one of registered, unknown, or defer")
 
 
+_FROZEN_TABLE_FACTORY_SEAL = object()
+
+
+def _sha256_payload(value: object) -> str:
+    return sha256(repr(value).encode("utf-8")).hexdigest()
+
+
+def _valid_role_pair(known_role: object, proxy_role: object) -> bool:
+    return (known_role, proxy_role) in {
+        (SourcePartition.V_CAL, ProxyRole.P_CAL),
+        (SourcePartition.V_SELECT, ProxyRole.P_SELECT),
+    }
+
+
+def _validate_decision_row_collections(
+    known_rows: object,
+    proxy_rows: object,
+    *,
+    known_role: object,
+    proxy_role: object,
+    proxy_update_count: object,
+) -> tuple[tuple[KnownDecisionRow, ...], tuple[ProxyDecisionRow, ...], int, int]:
+    """Fail closed on a forged or internally inconsistent frozen decision payload."""
+
+    if not _valid_role_pair(known_role, proxy_role):
+        raise CalibrationProtocolError("frozen decision roles must be paired validation roles")
+    if not isinstance(known_rows, tuple) or not known_rows:
+        raise CalibrationProtocolError("known decision rows must be a non-empty tuple")
+    if not isinstance(proxy_rows, tuple) or not proxy_rows:
+        raise CalibrationProtocolError("proxy decision rows must be a non-empty tuple")
+    if any(not isinstance(row, KnownDecisionRow) for row in known_rows):
+        raise CalibrationProtocolError("known decision rows are malformed")
+    if any(not isinstance(row, ProxyDecisionRow) for row in proxy_rows):
+        raise CalibrationProtocolError("proxy decision rows are malformed")
+    update_count = _validate_update_count(proxy_update_count, "proxy decision table")
+    known_physical_ids = [row.row.physical_id for row in known_rows]
+    known_query_ids = [row.row.query_id for row in known_rows]
+    proxy_physical_ids = [row.row.physical_id for row in proxy_rows]
+    proxy_query_ids = [row.row.query_id for row in proxy_rows]
+    for label, identities in (
+        ("known physical_id", known_physical_ids),
+        ("known query_id", known_query_ids),
+        ("proxy physical_id", proxy_physical_ids),
+        ("proxy query_id", proxy_query_ids),
+    ):
+        if len(set(identities)) != len(identities):
+            raise CalibrationProtocolError(f"frozen decision table has duplicate {label}")
+    known_ids = set(known_physical_ids) | set(known_query_ids)
+    proxy_ids = set(proxy_physical_ids) | set(proxy_query_ids)
+    if known_ids & proxy_ids:
+        raise CalibrationProtocolError("frozen decision table has forbidden known/proxy ID overlap")
+    folds = {row.row.fold for row in known_rows} | {row.row.fold for row in proxy_rows}
+    if len(folds) != 1:
+        raise CalibrationProtocolError("frozen decision table must contain exactly one fold")
+    return known_rows, proxy_rows, update_count, next(iter(folds))
+
+
+def _decision_rows_digest(rows: tuple[KnownDecisionRow, ...] | tuple[ProxyDecisionRow, ...]) -> str:
+    return _sha256_payload(
+        tuple(
+            (
+                row.row.physical_id,
+                row.row.query_id,
+                row.row.quality,
+                row.row.unknown_risk,
+                row.row.inside_registered_support,
+                row.row.predicted_class,
+                getattr(row.row, "true_class", None),
+                getattr(row.row, "receiver", None),
+                getattr(row.row, "day", None),
+                getattr(row.row, "scene", None),
+                row.row.fold,
+                row.label,
+                row.registered,
+                row.explicit_unknown,
+                row.deferred,
+            )
+            for row in rows
+        )
+    )
+
+
 @dataclass(frozen=True)
+class DecisionSourceReceipt:
+    """Immutable role and source-row hashes that bind a factory-created decision table."""
+
+    known_role: SourcePartition
+    proxy_role: ProxyRole
+    fold: int
+    known_row_count: int
+    proxy_row_count: int
+    known_rows_sha256: str
+    proxy_rows_sha256: str
+    proxy_update_count: int
+
+    def __post_init__(self) -> None:
+        if not _valid_role_pair(self.known_role, self.proxy_role):
+            raise CalibrationProtocolError("decision source receipt roles are invalid")
+        object.__setattr__(self, "fold", _require_nonnegative_int(self.fold, "decision source receipt fold"))
+        object.__setattr__(
+            self,
+            "known_row_count",
+            _require_nonnegative_int(self.known_row_count, "decision source receipt known_row_count"),
+        )
+        object.__setattr__(
+            self,
+            "proxy_row_count",
+            _require_nonnegative_int(self.proxy_row_count, "decision source receipt proxy_row_count"),
+        )
+        if self.known_row_count == 0 or self.proxy_row_count == 0:
+            raise CalibrationProtocolError("decision source receipt row counts must be positive")
+        for field_name in ("known_rows_sha256", "proxy_rows_sha256"):
+            digest = getattr(self, field_name)
+            if not isinstance(digest, str) or len(digest) != 64 or set(digest) - set("0123456789abcdef"):
+                raise CalibrationProtocolError(f"{field_name} must be a lowercase SHA256 digest")
+        object.__setattr__(
+            self,
+            "proxy_update_count",
+            _validate_update_count(self.proxy_update_count, "decision source receipt"),
+        )
+
+
+def _make_source_receipt(
+    known_rows: object,
+    proxy_rows: object,
+    *,
+    known_role: object,
+    proxy_role: object,
+    proxy_update_count: object,
+) -> DecisionSourceReceipt:
+    known, proxy, updates, fold = _validate_decision_row_collections(
+        known_rows,
+        proxy_rows,
+        known_role=known_role,
+        proxy_role=proxy_role,
+        proxy_update_count=proxy_update_count,
+    )
+    return DecisionSourceReceipt(
+        known_role=known_role,
+        proxy_role=proxy_role,
+        fold=fold,
+        known_row_count=len(known),
+        proxy_row_count=len(proxy),
+        known_rows_sha256=_decision_rows_digest(known),
+        proxy_rows_sha256=_decision_rows_digest(proxy),
+        proxy_update_count=updates,
+    )
+
+
+@dataclass(frozen=True, init=False)
 class FrozenDecisionTable:
-    """Immutable scores and decisions for one candidate, fold, and frozen threshold tuple."""
+    """Factory-sealed scores and decisions for one candidate, fold, and threshold tuple."""
 
     candidate_id: str
     known_role: SourcePartition
@@ -371,56 +520,83 @@ class FrozenDecisionTable:
     known_rows: tuple[KnownDecisionRow, ...]
     proxy_rows: tuple[ProxyDecisionRow, ...]
     proxy_update_count: int
+    source_receipt: DecisionSourceReceipt
+    _factory_seal: object = field(repr=False, compare=False)
 
-    def __post_init__(self) -> None:
-        object.__setattr__(self, "candidate_id", _require_identifier(self.candidate_id, "candidate_id"))
-        valid_pairs = {
-            (SourcePartition.V_CAL, ProxyRole.P_CAL),
-            (SourcePartition.V_SELECT, ProxyRole.P_SELECT),
-        }
-        if (self.known_role, self.proxy_role) not in valid_pairs:
-            raise CalibrationProtocolError("frozen decision roles must be paired validation roles")
-        if not isinstance(self.thresholds, DecisionThresholds):
+    def __init__(
+        self,
+        *,
+        candidate_id: str,
+        known_role: SourcePartition,
+        proxy_role: ProxyRole,
+        thresholds: DecisionThresholds,
+        known_rows: tuple[KnownDecisionRow, ...],
+        proxy_rows: tuple[ProxyDecisionRow, ...],
+        proxy_update_count: int,
+        source_receipt: DecisionSourceReceipt | None = None,
+        _factory_seal: object | None = None,
+    ) -> None:
+        if _factory_seal is not _FROZEN_TABLE_FACTORY_SEAL:
+            raise CalibrationProtocolError("FrozenDecisionTable must be created by the validated factory")
+        candidate = _require_identifier(candidate_id, "candidate_id")
+        if not isinstance(thresholds, DecisionThresholds):
             raise CalibrationProtocolError("thresholds must be DecisionThresholds")
-        if not isinstance(self.known_rows, tuple) or not self.known_rows:
-            raise CalibrationProtocolError("known decision rows must be a non-empty tuple")
-        if not isinstance(self.proxy_rows, tuple) or not self.proxy_rows:
-            raise CalibrationProtocolError("proxy decision rows must be a non-empty tuple")
-        if any(not isinstance(row, KnownDecisionRow) for row in self.known_rows):
-            raise CalibrationProtocolError("known decision rows are malformed")
-        if any(not isinstance(row, ProxyDecisionRow) for row in self.proxy_rows):
-            raise CalibrationProtocolError("proxy decision rows are malformed")
-        folds = {row.row.fold for row in self.known_rows} | {row.row.fold for row in self.proxy_rows}
-        if len(folds) != 1:
-            raise CalibrationProtocolError("frozen decision table must contain exactly one fold")
-        object.__setattr__(self, "proxy_update_count", _validate_update_count(self.proxy_update_count, "proxy decision table"))
+        expected_receipt = _make_source_receipt(
+            known_rows,
+            proxy_rows,
+            known_role=known_role,
+            proxy_role=proxy_role,
+            proxy_update_count=proxy_update_count,
+        )
+        if source_receipt is not None and source_receipt != expected_receipt:
+            raise CalibrationProtocolError("frozen decision source receipt does not match decision rows")
+        object.__setattr__(self, "candidate_id", candidate)
+        object.__setattr__(self, "known_role", known_role)
+        object.__setattr__(self, "proxy_role", proxy_role)
+        object.__setattr__(self, "thresholds", thresholds)
+        object.__setattr__(self, "known_rows", known_rows)
+        object.__setattr__(self, "proxy_rows", proxy_rows)
+        object.__setattr__(self, "proxy_update_count", expected_receipt.proxy_update_count)
+        object.__setattr__(self, "source_receipt", expected_receipt)
+        object.__setattr__(self, "_factory_seal", _factory_seal)
 
     @property
     def fold(self) -> int:
-        return self.known_rows[0].row.fold
+        return self.source_receipt.fold
 
     @property
     def table_id(self) -> str:
-        """Return a deterministic receipt hash for the exact frozen decision rows."""
+        """Return a deterministic hash bound to the factory source receipt and decisions."""
 
         payload = (
             self.candidate_id,
-            self.known_role.value,
-            self.proxy_role.value,
-            self.fold,
+            self.source_receipt,
             float(self.thresholds.tau_q),
             float(self.thresholds.tau_reg),
             float(self.thresholds.tau_unk),
-            tuple(
-                (row.row.physical_id, row.row.query_id, row.label, row.registered, row.explicit_unknown, row.deferred)
-                for row in self.known_rows
-            ),
-            tuple(
-                (row.row.physical_id, row.row.query_id, row.label, row.registered, row.explicit_unknown, row.deferred)
-                for row in self.proxy_rows
-            ),
         )
-        return sha256(repr(payload).encode("utf-8")).hexdigest()
+        return _sha256_payload(payload)
+
+
+def _validate_frozen_decision_table(table: object) -> FrozenDecisionTable:
+    """Recompute the source receipt before any downstream metric consumes a table."""
+
+    if not isinstance(table, FrozenDecisionTable):
+        raise CalibrationProtocolError("metric inputs must be a FrozenDecisionTable")
+    if table._factory_seal is not _FROZEN_TABLE_FACTORY_SEAL:
+        raise CalibrationProtocolError("frozen decision table lacks the factory seal")
+    if not isinstance(table.thresholds, DecisionThresholds):
+        raise CalibrationProtocolError("frozen decision table thresholds are invalid")
+    expected_receipt = _make_source_receipt(
+        table.known_rows,
+        table.proxy_rows,
+        known_role=table.known_role,
+        proxy_role=table.proxy_role,
+        proxy_update_count=table.proxy_update_count,
+    )
+    if table.source_receipt != expected_receipt:
+        raise CalibrationProtocolError("frozen decision table source receipt mismatch")
+    return table
 
 
 def _pair_identity_overlap(known_scores: KnownScoreTable, proxy_scores: ProxyScoreTable) -> set[str]:
@@ -520,6 +696,7 @@ def _head_decisions(
         known_rows=known_rows,
         proxy_rows=proxy_rows,
         proxy_update_count=proxy_scores.update_count,
+        _factory_seal=_FROZEN_TABLE_FACTORY_SEAL,
     )
 
 
@@ -560,9 +737,7 @@ def freeze_selection_decisions(
 
 
 def _require_decision_table(table: object) -> FrozenDecisionTable:
-    if not isinstance(table, FrozenDecisionTable):
-        raise CalibrationProtocolError("metric inputs must be a FrozenDecisionTable")
-    return table
+    return _validate_frozen_decision_table(table)
 
 
 def known_false_rejection_rate(table: FrozenDecisionTable) -> float:
@@ -646,6 +821,8 @@ def calibrate_thresholds(
         permission=Permission.CALIBRATE,
     )
     allowed_frr = _require_unit_interval(max_known_frr, "max_known_frr")
+    if allowed_frr > 0.10:
+        raise CalibrationProtocolError("formal max_known_frr must not exceed 0.10")
     best_thresholds: DecisionThresholds | None = None
     best_key: tuple[float, float, float, float, float, float] | None = None
     for thresholds in empirical_threshold_grid(known_scores, proxy_scores):
@@ -675,6 +852,7 @@ def calibrate_thresholds(
 
 __all__ = [
     "CalibrationProtocolError",
+    "DecisionSourceReceipt",
     "FrozenDecisionTable",
     "KnownDecisionRow",
     "KnownScoreRow",
