@@ -477,6 +477,38 @@ def test_ccoc_inactive_receipt_rejects_old_class_count_override_drift():
         ccoc.ccoc_inactive_receipt(11, 3, old_class_count=11)
 
 
+@pytest.mark.parametrize(
+    ("class_count", "k_shot", "old_class_count"),
+    (
+        (11, 2.9, 6),
+        (6.9, 2, 6),
+        (11, 2, 6.9),
+        (11, 2, 6.0),
+        (True, 2, 6),
+        (11, "2", 6),
+    ),
+)
+def test_ccoc_inactive_receipt_rejects_non_exact_count_types(
+    class_count, k_shot, old_class_count
+):
+    """Would fail if int() could truncate or coerce public count arguments."""
+
+    with pytest.raises(ccoc.D92CCOCError, match="exact_integer"):
+        ccoc.ccoc_inactive_receipt(
+            class_count, k_shot, old_class_count=old_class_count
+        )
+
+
+def test_ccoc_inactive_receipt_accepts_exact_numpy_integer_counts():
+    """The public receipt accepts exact NumPy integer counts without coercion."""
+
+    receipt = ccoc.ccoc_inactive_receipt(
+        np.int64(11), np.int64(2), old_class_count=np.int64(6)
+    )
+
+    assert receipt["d92_ccoc_status"] == "k1_k2_exact_d81_fallback"
+
+
 def test_ccoc_inactive_receipt_keeps_only_frozen_pre_and_low_k_reasons():
     """Would fail if inactive receipts drifted from the D81 lifecycle reasons."""
 

@@ -57,6 +57,16 @@ class D92CCOCNumericalError(D92CCOCError):
     """Raised for a finite-support CCOC numerical degeneration."""
 
 
+def _require_exact_integer_count(value: Any, *, name: str) -> int:
+    """Reject public count coercions before they can alter a CCOC route."""
+
+    if isinstance(value, (bool, np.bool_)) or not isinstance(
+        value, (int, np.integer)
+    ):
+        raise D92CCOCError(f"ccoc_{name}_not_exact_integer")
+    return int(value)
+
+
 @dataclass(frozen=True)
 class CrossClassOffblockConsensusStatistics:
     """One CCOC covariance and the reused D92 registration statistics."""
@@ -583,10 +593,13 @@ def ccoc_inactive_receipt(
 ) -> dict[str, Any]:
     """Return the no-fit receipt for pre-registration or K1/K2 CCOC states."""
 
-    classes, shots = int(class_count), int(k_shot)
-    if int(old_class_count) != OLD_CLASS_COUNT:
+    classes = _require_exact_integer_count(class_count, name="class_count")
+    shots = _require_exact_integer_count(k_shot, name="k_shot")
+    old_count = _require_exact_integer_count(
+        old_class_count, name="old_class_count"
+    )
+    if old_count != OLD_CLASS_COUNT:
         raise D92CCOCError("ccoc_old_class_count_override_drift")
-    old_count = OLD_CLASS_COUNT
     if classes < old_count or shots < 1:
         raise D92CCOCError("ccoc_invalid_inactive_registry")
     if classes == old_count:
