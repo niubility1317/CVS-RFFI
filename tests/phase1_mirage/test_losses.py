@@ -10,6 +10,7 @@ import torch
 import torch.nn.functional as functional
 
 from cvsrffi.phase1_mirage.head import OpenHeadOutput
+from cvsrffi.phase1_mirage.model import MIRAGEConfig
 from cvsrffi.phase1_mirage.proxy import build_proxy_episode
 
 
@@ -168,6 +169,22 @@ def test_all_arms_share_budget_and_change_only_declared_mechanisms():
         configs[0].epochs = 1
 
 
+@pytest.mark.parametrize(
+    "encoder",
+    (
+        MIRAGEConfig(token_dim=256),
+        MIRAGEConfig(transformer_layers=3),
+    ),
+)
+def test_arm_config_rejects_custom_encoder_capacity(encoder):
+    """Catch an arm-specific token or layer configuration hidden behind a frozen dataclass."""
+
+    ArmConfig, arm_config, _ = _config_api()
+
+    with pytest.raises(ValueError, match="encoder"):
+        ArmConfig(arm_id="B0", encoder=encoder, mechanisms=arm_config("B0").mechanisms)
+
+
 def test_pseudo_label_requires_all_four_conditions_and_supports_broadcasting():
     """Catch acceptance if any confidence, margin, view, or radius gate is omitted."""
 
@@ -251,6 +268,53 @@ def test_proxy_rows_never_enter_registered_ce_in_the_same_episode():
     )
 
 
+def test_b_rejects_proxy_episode_that_leaks_a_proxy_label_into_registered_rows():
+    """Catch a forged partition that leaves one proxy-class row in registered CE."""
+
+    _, _, compute_arm_losses, _, _, _ = _loss_api()
+    inputs = _loss_inputs()
+    episode = inputs["proxy_episode"]
+    forged = dataclasses.replace(
+        episode,
+        registered_rows=torch.cat((episode.registered_rows, episode.proxy_rows[:1])),
+        proxy_rows=episode.proxy_rows[1:],
+    )
+    inputs["proxy_episode"] = forged
+
+    with pytest.raises(ValueError, match="proxy_rows"):
+        compute_arm_losses("B", **inputs)
+
+
+def test_b_rejects_proxy_episode_with_a_noncanonical_registered_class_mask():
+    """Catch a proxy episode that masks an additional registered class row."""
+
+    _, _, compute_arm_losses, _, _, _ = _loss_api()
+    inputs = _loss_inputs()
+    episode = inputs["proxy_episode"]
+    forged_mask = episode.registered_class_mask.clone()
+    extra_masked_class = next(index for index in range(forged_mask.numel()) if index != episode.proxy_class)
+    forged_mask[extra_masked_class] = False
+    inputs["proxy_episode"] = dataclasses.replace(episode, registered_class_mask=forged_mask)
+
+    with pytest.raises(ValueError, match="registered_class_mask"):
+        compute_arm_losses("B", **inputs)
+
+
+def test_b_rejects_proxy_episode_with_reordered_but_equivalent_rows():
+    """Catch accepting row sets that differ from the deterministic episode receipt order."""
+
+    _, _, compute_arm_losses, _, _, _ = _loss_api()
+    inputs = _loss_inputs()
+    episode = inputs["proxy_episode"]
+    inputs["proxy_episode"] = dataclasses.replace(
+        episode,
+        registered_rows=episode.registered_rows.flip(0),
+    )
+
+    with pytest.raises(ValueError, match="registered_rows"):
+        compute_arm_losses("B", **inputs)
+
+
 def test_boundary_mixup_uses_only_different_registered_classes_and_normalizes():
     """Catch same-class, out-of-range, or unnormalized B/C boundary mixes."""
 
@@ -317,6 +381,24 @@ def test_b_rejects_a_forged_same_class_boundary_mixup_batch():
     )
     inputs["boundary_mixup_batch"] = forged
     inputs["boundary_mixup_output"] = _open_output(1, 3)
+
+    with pytest.raises(ValueError, match="boundary mixup"):
+        compute_arm_losses("B", **inputs)
+
+
+def test_b_rejects_an_empty_mixup_batch_when_legal_registered_pairs_exist():
+    """Catch silently disabling B/C boundary mixup despite available cross-class pairs."""
+
+    BoundaryMixupBatch, _, compute_arm_losses, _, _, _ = _loss_api()
+    inputs = _loss_inputs()
+    original = inputs["boundary_mixup_batch"]
+    inputs["boundary_mixup_batch"] = BoundaryMixupBatch(
+        mixed_embeddings=original.mixed_embeddings[:0],
+        left_indices=original.left_indices[:0],
+        right_indices=original.right_indices[:0],
+        lambdas=original.lambdas[:0],
+    )
+    inputs["boundary_mixup_output"] = None
 
     with pytest.raises(ValueError, match="boundary mixup"):
         compute_arm_losses("B", **inputs)
@@ -403,3 +485,19 @@ def test_b_and_c_require_their_proxy_episode_but_b0_does_not():
     assert torch.isfinite(b0["total"])
     with pytest.raises(ValueError, match="proxy_episode"):
         compute_arm_losses("B", **inputs)
+
+
+@pytest.mark.parametrize(
+    ("overrides", "message"),
+    (
+        ({"tail_fraction": 0.50}, "tail_fraction"),
+        ({"min_group_size": 8}, "min_group_size"),
+    ),
+)
+def test_c_rejects_nonfrozen_group_cvar_overrides(overrides, message):
+    """Catch a formal C loss that lets callers tune CVaR tail or fallback support."""
+
+    _, _, compute_arm_losses, _, _, _ = _loss_api()
+
+    with pytest.raises(ValueError, match=message):
+        compute_arm_losses("C", **_loss_inputs(include_group=True), **overrides)

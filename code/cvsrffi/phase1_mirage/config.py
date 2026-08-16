@@ -69,6 +69,8 @@ class ArmConfig:
             raise ValueError(f"arm_id must be one of: {', '.join(_ARM_ORDER)}")
         if not isinstance(self.encoder, MIRAGEConfig):
             raise TypeError("encoder must be a MIRAGEConfig")
+        if self.encoder != MIRAGEConfig():
+            raise ValueError("encoder must equal the frozen default MIRAGEConfig()")
         if (
             self.epochs != _SHARED_EPOCHS
             or self.optimizer != _SHARED_OPTIMIZER

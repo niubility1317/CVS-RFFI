@@ -30,6 +30,8 @@ _INTEGER_DTYPES = frozenset(
         torch.int64,
     }
 )
+_FORMAL_MIN_GROUP_SIZE = 16
+_FORMAL_TAIL_FRACTION = 0.30
 
 
 @dataclass(frozen=True)
@@ -375,18 +377,20 @@ def _validated_episode_masks(
         raise TypeError("proxy_episode must be a ProxyEpisode")
     batch_size = labels.shape[0]
     device = labels.device
+    if isinstance(episode.proxy_class, bool) or not isinstance(episode.proxy_class, Integral):
+        raise TypeError("proxy_episode.proxy_class must be an integer")
+    if episode.proxy_class < 0 or episode.proxy_class >= class_count:
+        raise ValueError("proxy_episode proxy class must index the supervised class dimension")
     class_mask = _require_bool_vector(
         episode.registered_class_mask,
         name="proxy_episode.registered_class_mask",
         length=class_count,
         device=device,
     )
-    if not bool(class_mask.any()):
-        raise ValueError("proxy_episode must retain at least one registered class")
-    if isinstance(episode.proxy_class, bool) or not isinstance(episode.proxy_class, Integral):
-        raise TypeError("proxy_episode.proxy_class must be an integer")
-    if episode.proxy_class < 0 or episode.proxy_class >= class_count or bool(class_mask[episode.proxy_class]):
-        raise ValueError("proxy_episode proxy class must be masked from registration")
+    expected_class_mask = torch.ones(class_count, dtype=torch.bool, device=device)
+    expected_class_mask[int(episode.proxy_class)] = False
+    if not torch.equal(class_mask, expected_class_mask):
+        raise ValueError("proxy_episode.registered_class_mask must exactly mask only proxy_class")
     registered_rows = _require_integer_vector(
         episode.registered_rows,
         name="proxy_episode.registered_rows",
@@ -397,6 +401,12 @@ def _validated_episode_masks(
         name="proxy_episode.proxy_rows",
         device=device,
     )
+    expected_proxy_rows = torch.nonzero(labels == int(episode.proxy_class), as_tuple=False).flatten()
+    expected_registered_rows = torch.nonzero(labels != int(episode.proxy_class), as_tuple=False).flatten()
+    if not torch.equal(proxy_rows, expected_proxy_rows):
+        raise ValueError("proxy_episode.proxy_rows must exactly equal all proxy_class rows")
+    if not torch.equal(registered_rows, expected_registered_rows):
+        raise ValueError("proxy_episode.registered_rows must exactly equal all non-proxy rows")
     all_rows = torch.cat((registered_rows, proxy_rows), dim=0)
     if bool((all_rows < 0).any()) or bool((all_rows >= batch_size).any()):
         raise ValueError("proxy episode rows must index the supervised batch")
@@ -404,11 +414,8 @@ def _validated_episode_masks(
         raise ValueError("proxy episode rows must be a disjoint full partition of the supervised batch")
     if not torch.equal(all_rows.sort().values, torch.arange(batch_size, device=device)):
         raise ValueError("proxy episode rows must cover the supervised batch exactly once")
-    if not bool((labels[proxy_rows] == int(episode.proxy_class)).all()):
-        raise ValueError("proxy_episode proxy rows must match its source proxy class")
-    registered_mask = torch.zeros(batch_size, dtype=torch.bool, device=device)
-    registered_mask[registered_rows] = True
-    proxy_mask = ~registered_mask
+    registered_mask = labels != int(episode.proxy_class)
+    proxy_mask = labels == int(episode.proxy_class)
     return registered_mask, proxy_mask, class_mask
 
 
@@ -546,6 +553,13 @@ def build_boundary_mixup(
         right_indices=right_indices,
         lambdas=pair_lambdas,
     )
+
+
+def _has_legal_boundary_pair(labels: Tensor, registered_row_mask: Tensor) -> bool:
+    """Check pair legality from source labels only, without a quota or loss value."""
+
+    registered_labels = labels[registered_row_mask]
+    return registered_labels.numel() >= 2 and registered_labels.unique().numel() >= 2
 
 
 def boundary_mixup_loss(
@@ -771,7 +785,8 @@ def compute_arm_losses(
     boundary_lambdas: Tensor | float = 0.5,
     group_losses: Tensor | None = None,
     group_ids: Tensor | None = None,
-    tail_fraction: float = 0.30,
+    min_group_size: int = _FORMAL_MIN_GROUP_SIZE,
+    tail_fraction: float = _FORMAL_TAIL_FRACTION,
 ) -> dict[str, Tensor]:
     """Compose exactly the mechanisms declared by a frozen B0/A/B/C arm.
 
@@ -879,6 +894,11 @@ def compute_arm_losses(
                 labels=supervised_labels,
                 registered_row_mask=registered_rows,
             )
+            if (
+                boundary_mixup_batch.mixed_embeddings.shape[0] == 0
+                and _has_legal_boundary_pair(supervised_labels, registered_rows)
+            ):
+                raise ValueError("boundary mixup batch must not be empty when legal registered pairs exist")
         losses["boundary_mixup"] = boundary_mixup_loss(
             boundary_mixup_batch,
             boundary_mixup_output,
@@ -888,7 +908,19 @@ def compute_arm_losses(
     if config.arm_id == "C":
         if group_losses is None or group_ids is None:
             raise ValueError("group_losses and group_ids are required for C Group-CVaR")
-        losses["group_cvar"] = group_cvar(group_losses, group_ids, tail_fraction=tail_fraction)
+        if isinstance(min_group_size, bool) or not isinstance(min_group_size, Integral):
+            raise TypeError("min_group_size must be an integer")
+        if int(min_group_size) != _FORMAL_MIN_GROUP_SIZE:
+            raise ValueError(f"min_group_size must equal frozen value {_FORMAL_MIN_GROUP_SIZE}")
+        if isinstance(tail_fraction, bool) or not isinstance(tail_fraction, Real):
+            raise TypeError("tail_fraction must be a real number")
+        if not math.isfinite(float(tail_fraction)) or float(tail_fraction) != _FORMAL_TAIL_FRACTION:
+            raise ValueError(f"tail_fraction must equal frozen value {_FORMAL_TAIL_FRACTION}")
+        losses["group_cvar"] = group_cvar(
+            group_losses,
+            group_ids,
+            tail_fraction=_FORMAL_TAIL_FRACTION,
+        )
 
     for name, value in tuple(losses.items()):
         _require_scalar_finite(value, name=name)
