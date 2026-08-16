@@ -336,3 +336,11 @@ nohup bash <release>/code/scripts/smoke_phase1_adv3b02_target_prediction_f1_v2_2
 - 冻结commit=`c7f4d85e1757951c78d021f72b50bc03d9cc571d`；PREFLIGHT、archive、SCP恰1、STATIC及stage→`/home/szu2070436088/2510044040/releases/phase1_adv3b02_target_prediction_20260816_v3_c7f4d85e`原子release均PASS。STATIC为两脚本`bash -n`、smoke dry-run=`1`行、formal dry-run=`12`行及必要输入/fresh roots闭合。
 - 唯一SMOKE命令已执行1次（CWD为project root、GPU0、`RETRY=NO`）；F1 PID=`963435`，outer=`0B`，smoke log=`2611B`，run/log leaf已创建但config/technical receipt未产生，进程已退出。
 - 技术停止原因为`ADV3B02TargetProtocolError: ADV source split WiSig SHA256 is invalid`；`FORMAL_INVOCATION=0`，不retry、不formal。最终GPU0—7空闲，本地SSH/SCP/TCP22清零；状态=`SMOKE_STOPPED_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，未读取prediction值或性能。
+
+### 16.13 v3技术停止与v4预注册（2026-08-16）
+
+- v3永久技术停止；首因为checkpoint与completion嵌套source-split receipt的WiSig声明同样为空，`FORMAL_INVOCATION=0 / RETRY=NO / NO_PERFORMANCE_RESULT`。
+- 最小修复沿用既有CLIC规则：先验证receipt原始self-SHA；空WiSig声明规范化为`FROZEN_WISIG_SHA256`，非空错误值拒绝；实际ManySig字节与clean-v4仍必须等于冻结SHA。
+- v4 run ID=`phase1_adv3b02_target_prediction_20260816_v4`，smoke ID=`.smoke_phase1_adv3b02_target_prediction_20260816_v4_F1`；使用全新run/log/receipt根及v4落盘入口，不复用v3。
+- smoke命令：`cd /home/szu2070436088/2510044040/CV-SincNet && nohup bash <release>/code/scripts/smoke_phase1_adv3b02_target_prediction_f1_v4_20260816.sh > /home/szu2070436088/2510044040/CV-SincNet/.smoke_phase1_adv3b02_target_prediction_20260816_v4_F1_outer.out 2>&1 &`；formal命令：`cd /home/szu2070436088/2510044040/CV-SincNet && nohup bash <release>/code/scripts/launch_phase1_adv3b02_target_prediction6_v4_20260816.sh > /home/szu2070436088/2510044040/CV-SincNet/phase1_adv3b02_target_prediction_20260816_v4_outer.out 2>&1 &`。
+- 本地RED=`1 failed`，GREEN=`4/4 passed`，py_compile、`bash -n`、dry-run=`1+12`通过。预注册上限为`SMOKE_INVOCATION=1 / FORMAL_INVOCATION=1 / RETRY=NO`；任一核心绑定或执行失败均technical stop，不产生性能结论。

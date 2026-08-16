@@ -168,10 +168,12 @@ def _validate_source_split_receipt(
         raise ADV3B02TargetProtocolError("ADV source split seed drift")
     if receipt.get("split_mode") != "tx_rx_day_1_6_3":
         raise ADV3B02TargetProtocolError("ADV source split mode drift")
-    receipt_wisig_sha = _require_sha(
-        receipt.get("wisig_pkl_sha256"), label="ADV source split WiSig"
-    )
-    if wisig_sha is not None and receipt_wisig_sha != wisig_sha:
+    declared_wisig_sha = receipt.get("wisig_pkl_sha256")
+    if declared_wisig_sha != "" and _require_sha(
+        declared_wisig_sha, label="ADV source split WiSig"
+    ) != _clean_v4.FROZEN_WISIG_SHA256:
+        raise ADV3B02TargetProtocolError("ADV source split WiSig SHA drift")
+    if wisig_sha is not None and wisig_sha != _clean_v4.FROZEN_WISIG_SHA256:
         raise ADV3B02TargetProtocolError("ADV source split WiSig SHA drift")
     source_days = _ids(receipt.get("source_days"), label="ADV source day indices")
     source_receivers = _ids(
@@ -228,7 +230,13 @@ def _validate_source_split_receipt(
         label="ADV source split validation tolerance flag",
     ) is not True:
         raise ADV3B02TargetProtocolError("ADV source split tolerance receipt drift")
-    return receipt
+    normalized = dict(receipt)
+    normalized["wisig_pkl_sha256"] = _clean_v4.FROZEN_WISIG_SHA256
+    normalized.pop("split_manifest_sha256")
+    normalized["split_manifest_sha256"] = _canonical_sha(
+        normalized, label="ADV source split receipt"
+    )
+    return normalized
 
 
 def _validate_tx_partition(value: Any) -> dict[str, Any]:

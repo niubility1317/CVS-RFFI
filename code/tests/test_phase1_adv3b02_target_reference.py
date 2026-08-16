@@ -706,7 +706,7 @@ def test_task2_seals_train_config_only_from_checkpoint_completion_and_clean_v4(
 
 
 def test_task2_sealer_accepts_empty_optional_top_level_wisig_shas(
-    tmp_path: Path,
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """Real ADV artifacts bind WiSig through the self-sealed split receipt."""
 
@@ -714,13 +714,23 @@ def test_task2_sealer_accepts_empty_optional_top_level_wisig_shas(
 
     adv = _load_task2_module()
     paths = _write_training_authorities(tmp_path)
+    monkeypatch.setattr(
+        adv._clean_v4, "FROZEN_WISIG_SHA256", sha256_file(paths["wisig"])
+    )
     checkpoint = torch.load(
         paths["checkpoint"], map_location="cpu", weights_only=False
     )
     checkpoint["args"]["wisig_pkl_sha256"] = ""
-    torch.save(checkpoint, paths["checkpoint"])
     completion = json.loads(paths["completion"].read_text(encoding="utf-8"))
     completion["wisig_pkl_sha256"] = ""
+    for receipt in (
+        checkpoint["split_info"]["source_split_receipt"],
+        completion["source_split_receipt"],
+    ):
+        receipt["wisig_pkl_sha256"] = ""
+        receipt.pop("split_manifest_sha256")
+        receipt["split_manifest_sha256"] = TARGET.canonical_sha256(receipt)
+    torch.save(checkpoint, paths["checkpoint"])
     completion["selected_checkpoint_sha256"] = sha256_file(paths["checkpoint"])
     _write_json(paths["completion"], completion)
     output = tmp_path / "real-artifact-style.train_config.json"
@@ -738,7 +748,7 @@ def test_task2_sealer_accepts_empty_optional_top_level_wisig_shas(
     ("checkpoint-top-level", "completion-top-level", "nested-receipt"),
 )
 def test_task2_sealer_rejects_nonempty_or_nested_wisig_sha_drift(
-    tmp_path: Path, drift: str
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, drift: str
 ) -> None:
     """Optional copies may be empty, but nonempty copies and the receipt must agree."""
 
@@ -746,6 +756,9 @@ def test_task2_sealer_rejects_nonempty_or_nested_wisig_sha_drift(
 
     adv = _load_task2_module()
     paths = _write_training_authorities(tmp_path)
+    monkeypatch.setattr(
+        adv._clean_v4, "FROZEN_WISIG_SHA256", sha256_file(paths["wisig"])
+    )
     checkpoint = torch.load(
         paths["checkpoint"], map_location="cpu", weights_only=False
     )
