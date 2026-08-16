@@ -4,7 +4,9 @@ import hashlib
 import json
 import os
 import stat
+import subprocess
 import sys
+import tarfile
 import threading
 from pathlib import Path
 
@@ -927,7 +929,7 @@ def test_runtime_source_lock_closes_scientific_entry_and_rejects_file_drift(
     tmp_path: Path,
 ) -> None:
     lock = json.loads(
-        (ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v2.json").read_text(
+        (ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v3.json").read_text(
             encoding="utf-8"
         )
     )
@@ -973,6 +975,111 @@ def test_runtime_source_lock_closes_scientific_entry_and_rejects_file_drift(
             code_root=tmp_path / "code",
             git_runner=temp_git,
         )
+
+
+def _run_extracted_archive_prepare_probe(
+    tmp_path: Path,
+    *,
+    drift_locked_source: bool,
+) -> subprocess.CompletedProcess[str]:
+    """Run real ``prepare`` from an archive-shaped tree with no Git metadata."""
+
+    archive = (
+        ROOT
+        / "automation_reports"
+        / "CV-SincNet"
+        / "d92_e0_full_ccoc_hard9k1_20260817_v2"
+        / "runtime"
+        / "d92_ccoc_hard9_k1_source_fe9033be_20260817_v2.tar.gz"
+    )
+    extracted = tmp_path / "extracted"
+    extracted.mkdir()
+    with tarfile.open(archive, "r:gz") as bundle:
+        members = bundle.getmembers()
+        for member in members:
+            path = Path(member.name)
+            assert not path.is_absolute() and ".." not in path.parts
+            assert not member.issym() and not member.islnk()
+        bundle.extractall(extracted)
+
+    config = json.loads(
+        (
+            extracted
+            / "configs"
+            / "stage2_d92_ccoc_hard9_k1_v2.json"
+        ).read_text(encoding="utf-8")
+    )
+    for relative_path in config["runtime_source"]["files"]:
+        archived_source = extracted / "code" / relative_path
+        archived_source.write_bytes((ROOT / "code" / relative_path).read_bytes())
+
+    # Use the exact prospective v3 source bytes inside the proven runtime
+    # closure, still without a .git directory.
+    extracted_runner = extracted / "code" / "scripts" / "run_d92_ccoc_hard9_k1.py"
+    extracted_runner.write_bytes(
+        (ROOT / "code" / "scripts" / "run_d92_ccoc_hard9_k1.py").read_bytes()
+    )
+    if drift_locked_source:
+        locked = extracted / "code" / "cvsrffi" / "stage2_d92_e0d_slim.py"
+        locked.write_bytes(locked.read_bytes() + b"\n# byte drift\n")
+
+    probe = """
+import argparse
+import json
+import sys
+from pathlib import Path
+
+root = Path(sys.argv[1]).resolve()
+sys.path.insert(0, str(root / "code"))
+from scripts import run_d92_ccoc_hard9_k1 as runner
+
+config = root / "configs" / "stage2_d92_ccoc_hard9_k1_v2.json"
+output_root = root / "prepare_output"
+runner.build_hard9_k1_manifest = lambda _config, require_package_files: {
+    "method_lock": str(config),
+    "jobs": [],
+    "output_root": str(output_root),
+}
+try:
+    value = runner.prepare(argparse.Namespace(config=str(config)))
+except Exception as error:
+    print(f"{type(error).__name__}: {error}", file=sys.stderr)
+    raise SystemExit(2)
+print(json.dumps(value, sort_keys=True))
+"""
+    environment = os.environ.copy()
+    environment["PYTHONPATH"] = str(extracted / "code")
+    return subprocess.run(
+        [sys.executable, "-c", probe, str(extracted)],
+        check=False,
+        capture_output=True,
+        text=True,
+        env=environment,
+    )
+
+
+def test_extracted_archive_prepare_uses_sha_only_without_git_metadata(
+    tmp_path: Path,
+) -> None:
+    result = _run_extracted_archive_prepare_probe(
+        tmp_path,
+        drift_locked_source=False,
+    )
+    assert result.returncode == 0, result.stderr
+    receipt = json.loads(result.stdout)
+    assert receipt["runtime_source_verification_mode"] == "sha256_only"
+
+
+def test_extracted_archive_prepare_still_rejects_locked_source_byte_drift(
+    tmp_path: Path,
+) -> None:
+    result = _run_extracted_archive_prepare_probe(
+        tmp_path,
+        drift_locked_source=True,
+    )
+    assert result.returncode == 2
+    assert "runtime source SHA drift" in result.stderr
+    assert "frozen commit is unavailable" not in result.stderr
 
 
 def test_runtime_source_gate_requires_frozen_commit_and_both_git_blob_views(

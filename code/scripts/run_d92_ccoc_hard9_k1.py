@@ -401,13 +401,15 @@ def _verify_runtime_source_files(
     root = Path(code_root).resolve(strict=True)
     repo_root = root.parent
     repo_prefix = root.relative_to(repo_root).as_posix()
-    run_git = git_runner or _git_output
-    try:
-        run_git(repo_root, ("cat-file", "-e", f"{commit}^{{commit}}"))
-    except D92CCOCHard9K1RunnerError as error:
-        raise D92CCOCHard9K1RunnerError(
-            "runtime source frozen commit is unavailable"
-        ) from error
+    verification_mode = "sha256_only"
+    if git_runner is not None:
+        verification_mode = "sha256_plus_git"
+        try:
+            git_runner(repo_root, ("cat-file", "-e", f"{commit}^{{commit}}"))
+        except D92CCOCHard9K1RunnerError as error:
+            raise D92CCOCHard9K1RunnerError(
+                "runtime source frozen commit is unavailable"
+            ) from error
     for relative_path, record in files.items():
         if (
             not isinstance(relative_path, str)
@@ -436,24 +438,29 @@ def _verify_runtime_source_files(
             raise D92CCOCHard9K1RunnerError(
                 f"runtime source SHA drift: {relative_path}"
             )
-        repository_path = f"{repo_prefix}/{relative_path}"
-        frozen_blob = run_git(
-            repo_root,
-            ("rev-parse", f"{commit}:{repository_path}"),
-        )
-        if str(frozen_blob).strip().lower() != str(record["git_blob"]).lower():
-            raise D92CCOCHard9K1RunnerError(
-                f"runtime source frozen blob drift: {relative_path}"
+        if git_runner is not None:
+            repository_path = f"{repo_prefix}/{relative_path}"
+            frozen_blob = git_runner(
+                repo_root,
+                ("rev-parse", f"{commit}:{repository_path}"),
             )
-        head_blob = run_git(repo_root, ("rev-parse", f"HEAD:{repository_path}"))
-        if str(head_blob).strip().lower() != str(record["git_blob"]).lower():
-            raise D92CCOCHard9K1RunnerError(
-                f"runtime source HEAD blob drift: {relative_path}"
+            if str(frozen_blob).strip().lower() != str(record["git_blob"]).lower():
+                raise D92CCOCHard9K1RunnerError(
+                    f"runtime source frozen blob drift: {relative_path}"
+                )
+            head_blob = git_runner(
+                repo_root,
+                ("rev-parse", f"HEAD:{repository_path}"),
             )
+            if str(head_blob).strip().lower() != str(record["git_blob"]).lower():
+                raise D92CCOCHard9K1RunnerError(
+                    f"runtime source HEAD blob drift: {relative_path}"
+                )
     return {
         "scientific_entry_commit": commit,
         "repository_root": str(repo_root),
         "file_count": len(files),
+        "verification_mode": verification_mode,
     }
 
 
@@ -470,24 +477,6 @@ def _verify_runtime_source_lock(
         code_root=code_root,
         git_runner=git_runner,
     )
-
-
-def _git_output(repo_root: Path, arguments: tuple[str, ...]) -> str:
-    """Run one bounded Git object query without trusting terminal text alone."""
-
-    try:
-        completed = subprocess.run(
-            ["git", "-C", str(repo_root), *arguments],
-            check=False,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-        )
-    except OSError as error:
-        raise D92CCOCHard9K1RunnerError("runtime source Git invocation failed") from error
-    if completed.returncode != 0:
-        raise D92CCOCHard9K1RunnerError("runtime source Git object lookup failed")
-    return completed.stdout.strip()
 
 
 def _verify_truth_sidecar_snapshot(
@@ -1612,7 +1601,7 @@ def prepare(args: argparse.Namespace) -> dict[str, Any]:
     manifest = build_hard9_k1_manifest(args.config, require_package_files=True)
     lock = _read_json_object(manifest["method_lock"], label="method lock")
     validate_method_lock(lock)
-    _verify_runtime_source_lock(lock)
+    runtime_source_receipt = _verify_runtime_source_lock(lock)
     for job in manifest["jobs"]:
         _load_verified_e0_resource_records(job)
     output_root = Path(str(manifest["output_root"]))
@@ -1626,6 +1615,9 @@ def prepare(args: argparse.Namespace) -> dict[str, Any]:
         "status": "CCOC_HARD9_K1_MATRIX_PREPARED",
         "matrix_manifest": str(manifest_path),
         "matrix_manifest_sha256": digest,
+        "runtime_source_verification_mode": runtime_source_receipt[
+            "verification_mode"
+        ],
         "job_count": 10,
         "scene_arm_count": 30,
     }

@@ -15,7 +15,7 @@ if str(ROOT / "code") not in sys.path:
 from cvsrffi import stage2_d92_ccoc_hard9_k1 as matrix  # noqa: E402
 
 
-CONFIG = ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v2.json"
+CONFIG = ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v3.json"
 G0_OUTER = "rx_7_7__seed_713106__k_10__new_5"
 
 
