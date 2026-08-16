@@ -67,3 +67,7 @@ v1在远端`prepare`前由启动探针触发`ModuleNotFoundError`，因此保留
 ## 2026-08-17 v7优化core runtime绑定发布
 
 `d92_e0_full_ccoc_hard9k1_20260817_v7`将已验证的core优化提交`1429a496739dfadaf169b83ddf86b3b831f174d5`绑入runtime source lock；core blob为`abb45a15514c8c5758e0cececb930a76d27a29b8`，SHA256为`6f87d4eb041ba8874182a46eb3f2a76dc3f2f075a6692ee217f19bcd2f8ff331`，49成员归档包含该字节。本发布未再改动科学代码、方法、9+1矩阵、阈值、query或truth/prediction闭包。状态为`LOCAL_VERIFIED_READY_FOR_N607_HANDOFF / NO_HARD9_RUNTIME_RESULT / NO_PERFORMANCE_RESULT`；v1至v6证据不变，未执行SSH、SCP、N607启动或analyzer。
+
+## 2026-08-17 v8 query integration runtime绑定发布
+
+`d92_e0_full_ccoc_hard9k1_20260817_v8`将query integration提交`053ef7d006b05d4cb00c593e9b694669c0ecb005`绑入runtime source lock；Query文件blob为`03e163678bcb84ad39917f48c343347e75eb8ca5`，SHA256为`48e71bb8eaf9092f430e68e8cec6471a1e64d142a5282ff1b349faea336b55f1`，49成员归档包含该字节，并保留v7已验证优化core的SHA256`6f87d4eb041ba8874182a46eb3f2a76dc3f2f075a6692ee217f19bcd2f8ff331`。本发布仅更新运行时身份和不可覆盖的v8路径，未改动科学算法、9+1矩阵、阈值、query门或truth/prediction闭包。状态为`LOCAL_VERIFIED_READY_FOR_N607_HANDOFF / NO_HARD9_RUNTIME_RESULT / NO_PERFORMANCE_RESULT`；v1至v7证据不变，未执行SSH、SCP、N607启动或analyzer。
