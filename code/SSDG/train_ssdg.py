@@ -1093,6 +1093,15 @@ def build_arg_parser() -> argparse.ArgumentParser:
         ),
     )
     parser.add_argument(
+        "--phase1_adv3b02_technical_smoke_v2_max_batches",
+        type=int,
+        default=0,
+        help=(
+            "Run the versioned ADV3B02 F1 technical smoke with a fixed four-raw-"
+            "batch cap, three effective optimizer steps, and no evaluation."
+        ),
+    )
+    parser.add_argument(
         "--phase1_recte_frozen_mode",
         type=str2bool,
         default=False,
@@ -3015,9 +3024,13 @@ def _build_ssdg_wisig_data(args, device: torch.device):
     unlabeled_ds = WiSigSubsetDataset(source_base, unlabeled_idx, split_source="ssdg_unlabeled_tx_hidden")
     val_ds = WiSigSubsetDataset(source_base, val_idx, split_source="ssdg_source_val")
 
-    adv3b02_technical_smoke_active = int(
-        getattr(args, "phase1_adv3b02_technical_smoke_batches", 0)
-    ) == 3
+    adv3b02_technical_smoke_active = (
+        int(getattr(args, "phase1_adv3b02_technical_smoke_batches", 0)) == 3
+        or int(
+            getattr(args, "phase1_adv3b02_technical_smoke_v2_max_batches", 0)
+        )
+        == 4
+    )
     if adv3b02_technical_smoke_active:
         # The smoke must exercise the same source data/model/optimizer path,
         # but it deliberately does not construct or open held-out test rows.
@@ -6746,6 +6759,11 @@ _ADV3B02_TECHNICAL_SMOKE_METHOD = "ADV3B02_CORE90_SOFT_E200_CLIC_EQ_RHO07_FINAL"
 _ADV3B02_TECHNICAL_SMOKE_RUN_ID = "phase1_adv3b02_clic6_20260813_v1"
 _ADV3B02_TECHNICAL_SMOKE_CANDIDATE = "F1_ADV3B02_CLIC"
 _ADV3B02_TECHNICAL_SMOKE_ROOT = ".smoke_phase1_adv3b02_clic6_20260813_v1_F1"
+_ADV3B02_TECHNICAL_SMOKE_V2_RUN_ID = "phase1_adv3b02_clic6_20260816_v2"
+_ADV3B02_TECHNICAL_SMOKE_V2_ROOT = ".smoke_phase1_adv3b02_clic6_20260816_v2_F1"
+_ADV3B02_TECHNICAL_SMOKE_V2_RAW_BATCH_CAP = 4
+_ADV3B02_TECHNICAL_SMOKE_V2_TARGET_EFFECTIVE_STEPS = 3
+_ADV3B02_TECHNICAL_SMOKE_V2_MAX_GRAD_SKIPS = 1
 _ADV3B02_TECHNICAL_SMOKE_SOURCE_ROLES = {
     "phase1_source_train_tx_ids": "20-15,20-19,6-15,8-20",
     "phase1_source_known_validation_tx_ids": "14-7",
@@ -6986,6 +7004,163 @@ def _validate_phase1_adv3b02_technical_smoke_args(args: Any) -> int:
     return batches
 
 
+def _formal_adv3b02_technical_smoke_v2_f1_args() -> argparse.Namespace:
+    """Recover F1 from the versioned formal launcher without evaluating data."""
+
+    launcher = Path(__file__).resolve().parents[1] / "scripts" / (
+        "launch_phase1_adv3b02_clic6_v2_20260816.sh"
+    )
+    if not launcher.is_file():
+        raise ValueError(
+            "ADV3B02 v2 technical smoke requires its adjacent frozen formal launcher"
+        )
+    bash_path = _trusted_adv3b02_technical_smoke_bash()
+    environment = _adv3b02_technical_smoke_profile_environment()
+    environment["RUN_ID"] = _ADV3B02_TECHNICAL_SMOKE_V2_RUN_ID
+    try:
+        completed = subprocess.run(
+            [bash_path, _adv3b02_technical_smoke_bash_path(launcher), "--dry-run"],
+            check=True,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="strict",
+            env=environment,
+        )
+    except (OSError, subprocess.CalledProcessError) as error:
+        detail = getattr(error, "stderr", "") or str(error)
+        raise ValueError(
+            "ADV3B02 v2 technical smoke could not recover the frozen F1 launcher "
+            f"profile: {detail.strip()}"
+        ) from error
+    rows = [line for line in completed.stdout.splitlines() if line.strip()]
+    if len(rows) != 6 or not rows[0].startswith("[DRY-RUN] "):
+        raise ValueError(
+            "ADV3B02 v2 technical smoke formal launcher did not emit six frozen command rows"
+        )
+    try:
+        tokens = shlex.split(rows[0].removeprefix("[DRY-RUN] "))
+        train_index = next(
+            index
+            for index, token in enumerate(tokens)
+            if token.replace("\\", "/").endswith("/SSDG/train_ssdg.py")
+        )
+        return build_arg_parser().parse_args(tokens[train_index + 1 :])
+    except (ValueError, StopIteration) as error:
+        raise ValueError(
+            "ADV3B02 v2 technical smoke could not parse the frozen F1 launcher command"
+        ) from error
+
+
+def _validate_adv3b02_technical_smoke_v2_f1_profile(args: Any) -> None:
+    """Require the v2 probe to preserve every formal F1 method/profile field."""
+
+    formal_args = _formal_adv3b02_technical_smoke_v2_f1_args()
+    allowed_runtime_differences = {
+        "output_dir",
+        "phase2_export_path",
+        "phase1_adv3b02_technical_smoke_batches",
+        "phase1_adv3b02_technical_smoke_v2_max_batches",
+    }
+    for field, expected in vars(formal_args).items():
+        if field in allowed_runtime_differences:
+            continue
+        actual = getattr(args, field, object())
+        try:
+            if math.isnan(float(expected)) and math.isnan(float(actual)):
+                continue
+        except (TypeError, ValueError):
+            pass
+        if actual != expected:
+            raise ValueError(
+                "ADV3B02 v2 technical smoke frozen F1 profile drift: "
+                f"{field} expected={expected!r} got={actual!r}"
+            )
+
+
+def _validate_phase1_adv3b02_technical_smoke_v2_args(args: Any) -> int:
+    """Fail closed for v2's bounded effective-step technical lifecycle."""
+
+    raw_batch_cap = int(
+        getattr(args, "phase1_adv3b02_technical_smoke_v2_max_batches", 0)
+    )
+    if raw_batch_cap not in {0, _ADV3B02_TECHNICAL_SMOKE_V2_RAW_BATCH_CAP}:
+        raise ValueError(
+            "ADV3B02 v2 technical smoke requires exactly zero or four raw batches"
+        )
+    if raw_batch_cap == 0:
+        return 0
+    if int(getattr(args, "phase1_adv3b02_technical_smoke_batches", 0)) != 0:
+        raise ValueError("ADV3B02 v2 technical smoke cannot be combined with v1 control")
+    if bool(getattr(args, "dry_run", False)):
+        raise ValueError("ADV3B02 v2 technical smoke is a non-dry-run lifecycle only")
+
+    expected_text = {
+        "base_candidate": _ADV3B02_TECHNICAL_SMOKE_METHOD,
+        "run_id": _ADV3B02_TECHNICAL_SMOKE_V2_RUN_ID,
+        "candidate_id": _ADV3B02_TECHNICAL_SMOKE_CANDIDATE,
+        "split_mode": "tx_rx_day_1_6_3",
+        "checkpoint_selection": "final_only",
+        "best_metric": "source_val_sat_hmean",
+        "device": "cuda:0",
+        **_ADV3B02_TECHNICAL_SMOKE_SOURCE_ROLES,
+    }
+    for field, expected in expected_text.items():
+        actual = str(getattr(args, field, "")).strip()
+        if actual != expected:
+            raise ValueError(
+                f"ADV3B02 v2 technical smoke requires {field}={expected!r}, got {actual!r}"
+            )
+    expected_float = {
+        "labeled_ratio": 0.07,
+        "unlabeled_ratio": 0.63,
+        "source_val_ratio": 0.30,
+    }
+    for field, expected in expected_float.items():
+        actual = float(getattr(args, field, float("nan")))
+        if not math.isclose(actual, expected, rel_tol=0.0, abs_tol=1.0e-12):
+            raise ValueError(
+                f"ADV3B02 v2 technical smoke requires {field}={expected}, got {actual}"
+            )
+    expected_int = {"epochs": 200, "label_epochs": 130, "pseudo_epochs": 70}
+    for field, expected in expected_int.items():
+        actual = int(getattr(args, field, -1))
+        if actual != expected:
+            raise ValueError(
+                f"ADV3B02 v2 technical smoke requires {field}={expected}, got {actual}"
+            )
+    if not bool(getattr(args, "from_scratch", False)):
+        raise ValueError("ADV3B02 v2 technical smoke requires --from_scratch true")
+    if not bool(getattr(args, "phase1_source_val_selection_only", False)):
+        raise ValueError(
+            "ADV3B02 v2 technical smoke requires --phase1_source_val_selection_only true"
+        )
+    if bool(getattr(args, "enable_joint_safe_guard", False)):
+        raise ValueError("ADV3B02 v2 technical smoke forbids the held-out joint-safe guard")
+    if bool(getattr(args, "formal_ablation", False)):
+        raise ValueError("ADV3B02 v2 technical smoke is not a formal ablation")
+    if str(getattr(args, "baseline_ckpt", "")).strip():
+        raise ValueError("ADV3B02 v2 technical smoke requires a scratch-only F1 command")
+
+    output_dir = str(getattr(args, "output_dir", "")).replace("\\", "/").rstrip("/")
+    expected_suffix = (
+        f"/{_ADV3B02_TECHNICAL_SMOKE_V2_ROOT}/"
+        f"{_ADV3B02_TECHNICAL_SMOKE_CANDIDATE}"
+    )
+    if not output_dir.endswith(expected_suffix):
+        raise ValueError(
+            "ADV3B02 v2 technical smoke output_dir must be the isolated F1 smoke root"
+        )
+    expected_export_path = f"{output_dir}/phase2_zid_prototypes.pt"
+    export_path = str(getattr(args, "phase2_export_path", "")).replace("\\", "/")
+    if export_path != expected_export_path:
+        raise ValueError(
+            "ADV3B02 v2 technical smoke requires phase2_export_path under its isolated F1 root"
+        )
+    _validate_adv3b02_technical_smoke_v2_f1_profile(args)
+    return raw_batch_cap
+
+
 def _adv3b02_technical_smoke_source_evidence(
     data_ctx: Mapping[str, Any], args: Any
 ) -> Dict[str, Any]:
@@ -7094,6 +7269,168 @@ def _finalize_phase1_adv3b02_technical_smoke(
     return receipt_path
 
 
+def _finalize_phase1_adv3b02_technical_smoke_v2(
+    *,
+    out_dir: Path,
+    args: Any,
+    counters: Mapping[str, Any],
+    source_evidence: Mapping[str, Any],
+) -> Path:
+    """Seal v2 only after its bounded raw window proves three effective steps."""
+
+    required = {
+        "raw_batch_cap": _ADV3B02_TECHNICAL_SMOKE_V2_RAW_BATCH_CAP,
+        "target_effective_steps": _ADV3B02_TECHNICAL_SMOKE_V2_TARGET_EFFECTIVE_STEPS,
+        "effective_forward_steps": _ADV3B02_TECHNICAL_SMOKE_V2_TARGET_EFFECTIVE_STEPS,
+        "effective_backward_steps": _ADV3B02_TECHNICAL_SMOKE_V2_TARGET_EFFECTIVE_STEPS,
+        "optimizer_attempts": _ADV3B02_TECHNICAL_SMOKE_V2_TARGET_EFFECTIVE_STEPS,
+        "optimizer_effective_steps": _ADV3B02_TECHNICAL_SMOKE_V2_TARGET_EFFECTIVE_STEPS,
+        "skipped_nonfinite_loss_batches": 0,
+    }
+    observed = {key: int(counters.get(key, -1)) for key in required}
+    raw_batches_observed = int(counters.get("raw_batches_observed", -1))
+    if raw_batches_observed < _ADV3B02_TECHNICAL_SMOKE_V2_TARGET_EFFECTIVE_STEPS:
+        raise RuntimeError(
+            "ADV3B02 v2 technical smoke cannot claim three effective steps with "
+            f"only {raw_batches_observed} raw batches"
+        )
+    if raw_batches_observed > _ADV3B02_TECHNICAL_SMOKE_V2_RAW_BATCH_CAP:
+        raise RuntimeError(
+            "ADV3B02 v2 technical smoke exceeded its fixed raw-batch cap: "
+            f"observed={raw_batches_observed}"
+        )
+    if observed != required:
+        if raw_batches_observed >= _ADV3B02_TECHNICAL_SMOKE_V2_RAW_BATCH_CAP:
+            raise RuntimeError(
+                "ADV3B02 v2 technical smoke exhausted its raw-batch cap without "
+                "three finite, effective optimizer steps: "
+                f"observed={observed}"
+            )
+        raise RuntimeError(
+            "ADV3B02 v2 technical smoke requires three finite, effective optimizer "
+            f"steps: observed={observed}"
+        )
+    skipped_nonfinite_grad_batches = int(
+        counters.get("skipped_nonfinite_grad_batches", -1)
+    )
+    handled_grad_skip_count = int(counters.get("handled_grad_skip_count", -1))
+    if skipped_nonfinite_grad_batches not in {
+        0,
+        _ADV3B02_TECHNICAL_SMOKE_V2_MAX_GRAD_SKIPS,
+    } or handled_grad_skip_count != skipped_nonfinite_grad_batches:
+        raise RuntimeError(
+            "ADV3B02 v2 technical smoke allows zero or one handled nonfinite "
+            "gradient skip"
+        )
+
+    raw_batch_records = list(counters.get("raw_batch_records", []) or [])
+    if len(raw_batch_records) != raw_batches_observed:
+        raise RuntimeError(
+            "ADV3B02 v2 technical smoke raw-batch record count does not match "
+            "the observed raw batches"
+        )
+    expected_indices = list(range(1, raw_batches_observed + 1))
+    actual_indices = [
+        int(dict(record).get("raw_batch_index", -1)) for record in raw_batch_records
+    ]
+    if actual_indices != expected_indices:
+        raise RuntimeError(
+            "ADV3B02 v2 technical smoke raw-batch records must use consecutive "
+            "one-based indices"
+        )
+    recorded_grad_skips = 0
+    recorded_optimizer_attempts = 0
+    recorded_optimizer_effective = 0
+    for record in raw_batch_records:
+        payload = dict(record)
+        for field in (
+            "loss_finite",
+            "grad_finite",
+            "optimizer_attempted",
+            "optimizer_effective",
+            "amp_scale_before",
+            "amp_scale_after",
+        ):
+            if field not in payload:
+                raise RuntimeError(
+                    "ADV3B02 v2 technical smoke raw-batch record is missing "
+                    f"{field}"
+                )
+        if not bool(payload["loss_finite"]):
+            raise RuntimeError(
+                "ADV3B02 v2 technical smoke rejects a nonfinite loss record"
+            )
+        if not bool(payload["grad_finite"]):
+            recorded_grad_skips += 1
+            if bool(payload["optimizer_attempted"]) or bool(payload["optimizer_effective"]):
+                raise RuntimeError(
+                    "ADV3B02 v2 technical smoke cannot attempt an optimizer step "
+                    "after a nonfinite gradient"
+                )
+        if bool(payload["optimizer_attempted"]):
+            recorded_optimizer_attempts += 1
+        if bool(payload["optimizer_effective"]):
+            recorded_optimizer_effective += 1
+        try:
+            if not math.isfinite(float(payload["amp_scale_before"])) or not math.isfinite(
+                float(payload["amp_scale_after"])
+            ):
+                raise ValueError("nonfinite AMP scale")
+        except (TypeError, ValueError) as error:
+            raise RuntimeError(
+                "ADV3B02 v2 technical smoke receipt requires finite AMP scales"
+            ) from error
+    if (
+        recorded_grad_skips != skipped_nonfinite_grad_batches
+        or recorded_optimizer_attempts != observed["optimizer_attempts"]
+        or recorded_optimizer_effective != observed["optimizer_effective_steps"]
+    ):
+        raise RuntimeError(
+            "ADV3B02 v2 technical smoke raw-batch records disagree with their "
+            "aggregate counters"
+        )
+
+    source_evidence = dict(source_evidence)
+    source_dataset = dict(source_evidence.get("source_dataset", {}) or {})
+    if not str(source_dataset.get("wisig_pkl_path", "")).strip():
+        raise ValueError(
+            "ADV3B02 v2 technical smoke receipt requires its resolved source dataset path"
+        )
+    receipt_path = out_dir / "phase1_adv3b02_technical_smoke_v2_receipt.json"
+    receipt = {
+        "schema": "cvs.phase1.adv3b02_technical_smoke.v2",
+        "completed": True,
+        "claim": "NO_PERFORMANCE_RESULT",
+        "base_candidate": str(args.base_candidate),
+        "run_id": str(args.run_id),
+        "candidate_id": str(args.candidate_id),
+        "fold": "F1",
+        "raw_batch_cap": observed["raw_batch_cap"],
+        "raw_batches_observed": raw_batches_observed,
+        "target_effective_steps": observed["target_effective_steps"],
+        "effective_forward_steps": observed["effective_forward_steps"],
+        "effective_backward_steps": observed["effective_backward_steps"],
+        "optimizer_attempts": observed["optimizer_attempts"],
+        "optimizer_effective_steps": observed["optimizer_effective_steps"],
+        "skipped_nonfinite_loss_batches": observed[
+            "skipped_nonfinite_loss_batches"
+        ],
+        "skipped_nonfinite_grad_batches": skipped_nonfinite_grad_batches,
+        "handled_grad_skip_count": handled_grad_skip_count,
+        "raw_batch_records": raw_batch_records,
+        **source_evidence,
+        "source_val_rows_opened": 0,
+        "query_rows_opened": 0,
+        "target_rows_opened": 0,
+        "test_rows_opened": 0,
+        "selection_feedback_count": 0,
+    }
+    with receipt_path.open("x", encoding="utf-8", newline="\n") as stream:
+        json.dump(receipt, stream, ensure_ascii=False, indent=2, sort_keys=True)
+        stream.write("\n")
+    return receipt_path
+
+
 def train(args) -> int:
     training_wall_started = time.time()
     ablation_manifest = None
@@ -7133,6 +7470,9 @@ def train(args) -> int:
     # source data construction becomes reachable.
     adv3b02_technical_smoke_batches = _validate_phase1_adv3b02_technical_smoke_args(
         args
+    )
+    adv3b02_technical_smoke_v2_max_batches = (
+        _validate_phase1_adv3b02_technical_smoke_v2_args(args)
     )
     total_epochs = _resolve_epoch_schedule(args)
     args.epochs = total_epochs
@@ -7999,6 +8339,10 @@ def train(args) -> int:
         stale_identity_paths.append(
             out_dir / "phase1_adv3b02_technical_smoke_receipt.json"
         )
+    if adv3b02_technical_smoke_v2_max_batches:
+        stale_identity_paths.append(
+            out_dir / "phase1_adv3b02_technical_smoke_v2_receipt.json"
+        )
     stale_identity_paths = [path for path in stale_identity_paths if path.exists()]
     if stale_identity_paths:
         raise FileExistsError(
@@ -8582,9 +8926,27 @@ def train(args) -> int:
         "optimizer_effective_steps": 0,
         "optimizer_nonfinite_batches": 0,
     }
+    adv3b02_technical_smoke_v2_counters: Dict[str, Any] = {
+        "raw_batch_cap": _ADV3B02_TECHNICAL_SMOKE_V2_RAW_BATCH_CAP,
+        "raw_batches_observed": 0,
+        "target_effective_steps": _ADV3B02_TECHNICAL_SMOKE_V2_TARGET_EFFECTIVE_STEPS,
+        "effective_forward_steps": 0,
+        "effective_backward_steps": 0,
+        "optimizer_attempts": 0,
+        "optimizer_effective_steps": 0,
+        "skipped_nonfinite_loss_batches": 0,
+        "skipped_nonfinite_grad_batches": 0,
+        "handled_grad_skip_count": 0,
+        "raw_batch_records": [],
+    }
     if adv3b02_technical_smoke_batches:
         adv3b02_technical_smoke_source_binding = _adv3b02_technical_smoke_source_evidence(
             data_ctx, args
+        )
+    adv3b02_technical_smoke_v2_source_binding: Dict[str, Any] = {}
+    if adv3b02_technical_smoke_v2_max_batches:
+        adv3b02_technical_smoke_v2_source_binding = (
+            _adv3b02_technical_smoke_source_evidence(data_ctx, args)
         )
     if ccpc_frozen_mode or pamr_frozen_mode or cb_sfce_frozen_mode or gd_proto_nll_frozen_mode or icmt_frozen_mode or cagm_frozen_mode or rcrmd_frozen_mode or rcat_frozen_mode or rcmmc_frozen_mode or hscf_frozen_mode or hnccd_frozen_mode or recte_frozen_mode or cp_sfce_frozen_mode:
         tx_partition_receipt = (
@@ -10414,6 +10776,11 @@ def train(args) -> int:
         )
         for batch_idx, labeled_batch in enumerate(data_ctx["train_loader"], start=1):
             hnccd_step_started = time.perf_counter() if hnccd_frozen_mode else None
+            adv3b02_technical_smoke_v2_amp_scale_before = (
+                float(scaler.get_scale())
+                if adv3b02_technical_smoke_v2_max_batches
+                else 1.0
+            )
             x_l, y_l, extra_l = move_batch(labeled_batch, device)
             if pamr_frozen_mode and bool(getattr(pamr_config, "enabled", False)):
                 try:
@@ -16110,6 +16477,85 @@ def train(args) -> int:
                     )
                     return 0
 
+            elif adv3b02_technical_smoke_v2_max_batches:
+                # V2 intentionally measures effective optimizer steps rather
+                # than treating a raw batch count as proof of a completed
+                # training step.  This is a bounded technical control only:
+                # it exits before source validation and never reads target,
+                # query, or test data.
+                counters = adv3b02_technical_smoke_v2_counters
+                counters["raw_batches_observed"] += 1
+                raw_batch_index = int(counters["raw_batches_observed"])
+                loss_finite = bool(loss_is_finite)
+                grad_finite = bool(loss_finite and not skipped_nonfinite_grad)
+                optimizer_attempted = bool(grad_finite)
+                optimizer_effective = bool(optimizer_step_applied)
+                amp_scale_after = float(scaler.get_scale())
+                counters["raw_batch_records"].append(
+                    {
+                        "raw_batch_index": raw_batch_index,
+                        "loss_finite": loss_finite,
+                        "grad_finite": grad_finite,
+                        "optimizer_attempted": optimizer_attempted,
+                        "optimizer_effective": optimizer_effective,
+                        "amp_scale_before": adv3b02_technical_smoke_v2_amp_scale_before,
+                        "amp_scale_after": amp_scale_after,
+                    }
+                )
+                if not loss_finite:
+                    counters["skipped_nonfinite_loss_batches"] += 1
+                    raise RuntimeError(
+                        "ADV3B02 v2 technical smoke rejects nonfinite loss before "
+                        "source validation"
+                    )
+                if not grad_finite:
+                    counters["skipped_nonfinite_grad_batches"] += 1
+                    counters["handled_grad_skip_count"] += 1
+                    if (
+                        counters["handled_grad_skip_count"]
+                        > _ADV3B02_TECHNICAL_SMOKE_V2_MAX_GRAD_SKIPS
+                    ):
+                        raise RuntimeError(
+                            "ADV3B02 v2 technical smoke allows at most one handled "
+                            "nonfinite gradient skip before source validation"
+                        )
+                else:
+                    counters["optimizer_attempts"] += 1
+                    if optimizer_effective:
+                        counters["effective_forward_steps"] += 1
+                        counters["effective_backward_steps"] += 1
+                        counters["optimizer_effective_steps"] += 1
+
+                if (
+                    counters["optimizer_effective_steps"]
+                    == _ADV3B02_TECHNICAL_SMOKE_V2_TARGET_EFFECTIVE_STEPS
+                ):
+                    receipt_path = _finalize_phase1_adv3b02_technical_smoke_v2(
+                        out_dir=out_dir,
+                        args=args,
+                        counters=counters,
+                        source_evidence=adv3b02_technical_smoke_v2_source_binding,
+                    )
+                    print(
+                        "[ADV3B02-TECHNICAL-SMOKE-V2] "
+                        f"raw_batches={raw_batch_index} effective_steps=3 "
+                        f"receipt={receipt_path} source_val_rows_opened=0 "
+                        "target_rows_opened=0",
+                        flush=True,
+                    )
+                    return 0
+                if raw_batch_index >= adv3b02_technical_smoke_v2_max_batches:
+                    _finalize_phase1_adv3b02_technical_smoke_v2(
+                        out_dir=out_dir,
+                        args=args,
+                        counters=counters,
+                        source_evidence=adv3b02_technical_smoke_v2_source_binding,
+                    )
+                    raise AssertionError(
+                        "ADV3B02 v2 technical smoke finalizer unexpectedly accepted "
+                        "a raw-batch cap without three effective steps"
+                    )
+
         if (
             adv3b02_technical_smoke_batches
             and adv3b02_technical_smoke_counters["batches"]
@@ -16119,6 +16565,13 @@ def train(args) -> int:
                 "ADV3B02 technical smoke requires three complete batches in its "
                 "first epoch before source validation; "
                 f"observed={adv3b02_technical_smoke_counters['batches']}"
+            )
+        if adv3b02_technical_smoke_v2_max_batches:
+            raise RuntimeError(
+                "ADV3B02 v2 technical smoke reached source-validation boundary "
+                "before its bounded raw-batch lifecycle completed: "
+                f"observed={adv3b02_technical_smoke_v2_counters['raw_batches_observed']} "
+                f"cap={adv3b02_technical_smoke_v2_max_batches}"
             )
 
         if pamr_audit_only:

@@ -8,6 +8,7 @@ accidental target-side input must make the real launcher fail this suite.
 """
 
 import json
+import math
 import os
 import shlex
 import shutil
@@ -23,6 +24,10 @@ REPO_ROOT = CODE_ROOT.parent
 LAUNCHER = CODE_ROOT / "scripts" / "launch_phase1_adv3b02_clic6_v1_20260813.sh"
 SMOKE_LAUNCHER = CODE_ROOT / "scripts" / "smoke_phase1_adv3b02_clic_f1_v1_20260813.sh"
 SMOKE_ROOT_NAME = ".smoke_phase1_adv3b02_clic6_20260813_v1_F1"
+V2_LAUNCHER = CODE_ROOT / "scripts" / "launch_phase1_adv3b02_clic6_v2_20260816.sh"
+V2_SMOKE_LAUNCHER = CODE_ROOT / "scripts" / "smoke_phase1_adv3b02_clic_f1_v2_20260816.sh"
+V2_RUN_ID = "phase1_adv3b02_clic6_20260816_v2"
+V2_SMOKE_ROOT_NAME = ".smoke_phase1_adv3b02_clic6_20260816_v2_F1"
 FORMAL_WISIG_PKL = "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl"
 
 if str(CODE_ROOT) not in sys.path:
@@ -51,6 +56,27 @@ def _launcher_env(tmp_path: Path) -> dict[str, str]:
 def _smoke_env(tmp_path: Path) -> dict[str, str]:
     """Only the project root is configurable; formal roots stay unreachable."""
 
+    return {
+        "PROJECT_ROOT": _wsl_path(tmp_path / "project"),
+        "CODE_ROOT": _wsl_path(CODE_ROOT),
+        "PYTHON": "python",
+        "WISIG_PKL": _wsl_path(tmp_path / "ManySig.pkl"),
+    }
+
+
+def _v2_launcher_env(tmp_path: Path) -> dict[str, str]:
+    return {
+        "PROJECT_ROOT": _wsl_path(tmp_path / "project"),
+        "CODE_ROOT": _wsl_path(CODE_ROOT),
+        "PYTHON": "python",
+        "RUN_ID": V2_RUN_ID,
+        "RUN_ROOT": _wsl_path(tmp_path / "runs"),
+        "LOG_ROOT": _wsl_path(tmp_path / "logs"),
+        "WISIG_PKL": _wsl_path(tmp_path / "ManySig.pkl"),
+    }
+
+
+def _v2_smoke_env(tmp_path: Path) -> dict[str, str]:
     return {
         "PROJECT_ROOT": _wsl_path(tmp_path / "project"),
         "CODE_ROOT": _wsl_path(CODE_ROOT),
@@ -137,8 +163,88 @@ def _run_smoke(
     )
 
 
+def _v2_launcher_argv(
+    tmp_path: Path,
+    *args: str,
+    env_overrides: dict[str, str] | None = None,
+) -> list[str]:
+    assert V2_LAUNCHER.is_file(), f"missing v2 launcher under test: {V2_LAUNCHER}"
+    env = _v2_launcher_env(tmp_path)
+    if env_overrides:
+        env.update(env_overrides)
+    assignments = " ".join(f"{key}={shlex.quote(value)}" for key, value in env.items())
+    command = " ".join(
+        [
+            assignments,
+            "bash",
+            shlex.quote(_wsl_path(V2_LAUNCHER)),
+            *(shlex.quote(value) for value in args),
+        ]
+    )
+    return ["bash", "-lc", command]
+
+
+def _run_v2_launcher(
+    tmp_path: Path,
+    *args: str,
+    check: bool = True,
+    env_overrides: dict[str, str] | None = None,
+) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        _v2_launcher_argv(tmp_path, *args, env_overrides=env_overrides),
+        cwd=REPO_ROOT,
+        check=check,
+        capture_output=True,
+        text=True,
+    )
+
+
+def _v2_smoke_argv(
+    tmp_path: Path,
+    *args: str,
+    env_overrides: dict[str, str] | None = None,
+) -> list[str]:
+    assert V2_SMOKE_LAUNCHER.is_file(), f"missing v2 smoke launcher: {V2_SMOKE_LAUNCHER}"
+    env = _v2_smoke_env(tmp_path)
+    if env_overrides:
+        env.update(env_overrides)
+    assignments = " ".join(f"{key}={shlex.quote(value)}" for key, value in env.items())
+    command = " ".join(
+        [
+            assignments,
+            "bash",
+            shlex.quote(_wsl_path(V2_SMOKE_LAUNCHER)),
+            *(shlex.quote(value) for value in args),
+        ]
+    )
+    return ["bash", "-lc", command]
+
+
+def _run_v2_smoke(
+    tmp_path: Path,
+    *args: str,
+    check: bool = True,
+    env_overrides: dict[str, str] | None = None,
+) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        _v2_smoke_argv(tmp_path, *args, env_overrides=env_overrides),
+        cwd=REPO_ROOT,
+        check=check,
+        capture_output=True,
+        text=True,
+    )
+
+
 def _smoke_dry_run_line(tmp_path: Path) -> str:
     result = _run_smoke(tmp_path, "--dry-run")
+    lines = [line for line in result.stdout.splitlines() if line.strip()]
+    assert len(lines) == 1
+    assert lines[0].startswith("[DRY-RUN] ")
+    return lines[0]
+
+
+def _v2_smoke_dry_run_line(tmp_path: Path) -> str:
+    result = _run_v2_smoke(tmp_path, "--dry-run")
     lines = [line for line in result.stdout.splitlines() if line.strip()]
     assert len(lines) == 1
     assert lines[0].startswith("[DRY-RUN] ")
@@ -433,6 +539,117 @@ def test_adv3b02_smoke_launcher_emits_one_isolated_f1_command(tmp_path: Path) ->
     assert not (project / "logs" / SMOKE_ROOT_NAME).exists()
 
 
+def test_adv3b02_v2_launchers_preserve_f1_profile_and_use_new_paths(tmp_path: Path) -> None:
+    """Break caught: v2 drifts a frozen method field or reuses a v1 run/smoke root."""
+
+    assert V2_LAUNCHER.is_file()
+    assert V2_SMOKE_LAUNCHER.is_file()
+    for launcher in (V2_LAUNCHER, V2_SMOKE_LAUNCHER):
+        syntax = subprocess.run(
+            ["bash", "-n", _wsl_path(launcher)],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+        )
+        assert syntax.returncode == 0, syntax.stderr
+
+    formal = _run_v2_launcher(tmp_path, "--dry-run")
+    formal_lines = [line for line in formal.stdout.splitlines() if line.strip()]
+    assert len(formal_lines) == 6
+    for line, (candidate, train_tx, known_tx, proxy_tx, gpu) in zip(formal_lines, FOLDS):
+        tokens = _command_tokens(line)
+        values = _arg_map(_trainer_args(tokens))
+        assert tokens[0] == f"CUDA_VISIBLE_DEVICES={gpu}"
+        assert values["--run_id"] == V2_RUN_ID
+        assert values["--candidate_id"] == candidate
+        assert values["--phase1_source_train_tx_ids"] == train_tx
+        assert values["--phase1_source_known_validation_tx_ids"] == known_tx
+        assert values["--phase1_source_proxy_unknown_tx_ids"] == proxy_tx
+        for flag, expected in EXPECTED_PROFILE.items():
+            assert values.get(flag) == expected, f"v2 {candidate}: {flag}"
+
+    smoke_tokens = _command_tokens(_v2_smoke_dry_run_line(tmp_path))
+    smoke_values = _arg_map(_trainer_args(smoke_tokens))
+    assert smoke_tokens[0] == "CUDA_VISIBLE_DEVICES=0"
+    assert smoke_values["--run_id"] == V2_RUN_ID
+    assert smoke_values["--candidate_id"] == "F1_ADV3B02_CLIC"
+    assert smoke_values["--phase1_adv3b02_technical_smoke_v2_max_batches"] == "4"
+    assert "--phase1_adv3b02_technical_smoke_batches" not in smoke_values
+    assert smoke_values["--output_dir"].endswith(
+        f"/{V2_SMOKE_ROOT_NAME}/F1_ADV3B02_CLIC"
+    )
+
+
+def _write_v2_smoke_receipt(project_root: Path) -> Path:
+    receipt_path = (
+        project_root
+        / "runs"
+        / V2_SMOKE_ROOT_NAME
+        / "F1_ADV3B02_CLIC"
+        / "phase1_adv3b02_technical_smoke_v2_receipt.json"
+    )
+    receipt_path.parent.mkdir(parents=True)
+    receipt_path.write_text(
+        json.dumps(
+            {
+                "schema": "cvs.phase1.adv3b02_technical_smoke.v2",
+                "completed": True,
+                "claim": "NO_PERFORMANCE_RESULT",
+                "run_id": V2_RUN_ID,
+                "candidate_id": "F1_ADV3B02_CLIC",
+                "raw_batch_cap": 4,
+                "raw_batches_observed": 4,
+                "target_effective_steps": 3,
+                "effective_forward_steps": 3,
+                "effective_backward_steps": 3,
+                "optimizer_attempts": 3,
+                "optimizer_effective_steps": 3,
+                "skipped_nonfinite_loss_batches": 0,
+                "skipped_nonfinite_grad_batches": 1,
+                "handled_grad_skip_count": 1,
+                "raw_batch_records": [
+                    {
+                        "raw_batch_index": index,
+                        "loss_finite": True,
+                        "grad_finite": index != 1,
+                        "optimizer_attempted": index != 1,
+                        "optimizer_effective": index != 1,
+                        "amp_scale_before": 1.0,
+                        "amp_scale_after": 1.0,
+                    }
+                    for index in range(1, 5)
+                ],
+            },
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+    return receipt_path
+
+
+def test_adv3b02_v2_formal_requires_new_smoke_receipt_and_preserves_roots(
+    tmp_path: Path,
+) -> None:
+    """Break caught: formal v2 launches without its new smoke receipt or overwrites a root."""
+
+    missing = _run_v2_launcher(tmp_path, check=False)
+    assert missing.returncode != 0
+    assert "requires a complete v2 technical smoke receipt" in missing.stderr
+    assert not (tmp_path / "runs").exists()
+    assert not (tmp_path / "logs").exists()
+
+    _write_v2_smoke_receipt(tmp_path / "project")
+    collision = tmp_path / "runs"
+    collision.mkdir()
+    marker = collision / "preserve.txt"
+    marker.write_text("preserve", encoding="utf-8")
+    blocked = _run_v2_launcher(tmp_path, check=False, env_overrides={"PYTHON": "/bin/false"})
+    assert blocked.returncode != 0
+    assert "refusing to overwrite run/log root" in blocked.stderr
+    assert marker.read_text(encoding="utf-8") == "preserve"
+    assert not (tmp_path / "logs").exists()
+
+
 def test_adv3b02_smoke_launcher_rejects_formal_root_overrides_and_existing_smoke_root(
     tmp_path: Path,
 ) -> None:
@@ -467,6 +684,16 @@ def _adv3b02_smoke_args(tmp_path: Path):
     # The test wrapper's temporary PROJECT_ROOT intentionally changes its
     # dry-run dataset path.  Runtime profile validation is stricter: it must
     # bind back to the formal F1 ManySig path.
+    args.wisig_pkl = FORMAL_WISIG_PKL
+    return args
+
+
+def _adv3b02_smoke_v2_args(tmp_path: Path):
+    from SSDG import train_ssdg
+
+    parser = train_ssdg.build_arg_parser()
+    line = _v2_smoke_dry_run_line(tmp_path)
+    args = parser.parse_args(_trainer_args(_command_tokens(line)))
     args.wisig_pkl = FORMAL_WISIG_PKL
     return args
 
@@ -644,6 +871,58 @@ def test_adv3b02_smoke_rejects_bash_env_forged_formal_profile_before_data(
         train_ssdg.train(args)
 
 
+def test_adv3b02_smoke_v2_reuses_profile_and_bash_env_guards(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Break caught: v2 trusts a BASH_ENV-forged F1 profile instead of the frozen one."""
+
+    from SSDG import train_ssdg
+
+    args = _adv3b02_smoke_v2_args(tmp_path)
+    assert train_ssdg._validate_phase1_adv3b02_technical_smoke_v2_args(args) == 4
+    args.lambda_proto = 9.99
+    bash_env = tmp_path / "forge-v2-formal-profile.sh"
+    bash_env.write_text(
+        """printf() {
+  if [[ \"$1\" == \" %q\" ]]; then
+    shift
+    for item in \"$@\"; do
+      [[ \"$item\" == \"0.0032\" ]] && item='9.99'
+      builtin printf ' %q' \"$item\"
+    done
+  else
+    builtin printf \"$@\"
+  fi
+}
+""",
+        encoding="utf-8",
+        newline="\n",
+    )
+    if os.name == "nt":
+        wsl_entries = [
+            item
+            for item in os.environ.get("WSLENV", "").split(":")
+            if item and not item.startswith("BASH_ENV/") and item != "BASH_ENV"
+        ]
+        monkeypatch.setenv("WSLENV", ":".join([*wsl_entries, "BASH_ENV"]))
+        monkeypatch.setenv("BASH_ENV", _wsl_path(bash_env))
+    else:
+        monkeypatch.setenv("BASH_ENV", str(bash_env))
+
+    attack = subprocess.run(
+        ["bash", _wsl_path(V2_LAUNCHER) if os.name == "nt" else str(V2_LAUNCHER), "--dry-run"],
+        cwd=REPO_ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    forged_values = _arg_map(_trainer_args(_command_tokens(attack.stdout.splitlines()[0])))
+    assert forged_values["--lambda_proto"] == "9.99"
+    with pytest.raises(ValueError, match="lambda_proto"):
+        train_ssdg._validate_phase1_adv3b02_technical_smoke_v2_args(args)
+
+
 def test_adv3b02_smoke_rejects_bash_resolved_from_an_untrusted_path(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -699,6 +978,309 @@ def _smoke_source_evidence() -> dict[str, object]:
             "wisig_pkl_sha256": "e" * 64,
         },
     }
+
+
+def _prepare_v2_real_training_sequence(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    grad_nonfinite_raw_indices: set[int],
+    loss_nonfinite_raw_indices: set[int],
+):
+    """Build a real tiny train loop; only the source data adapter is synthetic."""
+
+    torch = pytest.importorskip("torch")
+    from SSDG import train_ssdg
+
+    args = train_ssdg.build_arg_parser().parse_args(
+        [
+            "--output_dir",
+            str(tmp_path / "v2-smoke-output"),
+            "--from_scratch",
+            "true",
+            "--epochs",
+            "2",
+            "--label_epochs",
+            "2",
+            "--pseudo_epochs",
+            "0",
+            "--batch_size",
+            "2",
+            "--eval_batch_size",
+            "2",
+            "--device",
+            "cpu",
+            "--phase1_adv3b02_technical_smoke_v2_max_batches",
+            "4",
+        ]
+    )
+    for field in (
+        "lambda_u",
+        "lambda_ent",
+        "lambda_domain",
+        "lambda_adv",
+        "lambda_orth",
+        "lambda_cons",
+        "lambda_group_ce",
+        "lambda_fishr",
+        "lambda_sat_cls",
+        "lambda_sat_cons",
+    ):
+        setattr(args, field, 0.0)
+    args.base_candidate = "ADV3B02_CORE90_SOFT_E200_CLIC_EQ_RHO07_FINAL"
+    args.run_id = V2_RUN_ID
+    args.candidate_id = "F1_ADV3B02_CLIC"
+    args.wisig_pkl = FORMAL_WISIG_PKL
+    args.use_unlabeled = False
+    args.use_sat_consistency = False
+    args.use_mixstyle = False
+    args.use_aug = False
+    args.amp = False
+
+    class TinyModel(torch.nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.linear = torch.nn.Linear(2, 2)
+            self.forward_count = 0
+            self.last_raw_index = -1
+
+        def forward(self, x, **_kwargs):
+            raw_index = self.forward_count
+            self.forward_count += 1
+            self.last_raw_index = raw_index
+            logits = self.linear(x)
+            if raw_index in grad_nonfinite_raw_indices:
+                logits.register_hook(lambda grad: torch.full_like(grad, float("inf")))
+            return {"tx_logits": logits, "z_id": logits}
+
+    model = TinyModel()
+    batches = [
+        (
+            torch.tensor([[1.0, 0.0], [0.0, 1.0]]),
+            torch.tensor([0, 1]),
+            {},
+        )
+        for _ in range(4)
+    ]
+    source_roles = {
+        "enabled": True,
+        "held_tx_loaded_by_training": False,
+        "source_known_train_tx": ["20-15", "20-19", "6-15", "8-20"],
+        "source_known_validation_tx": ["14-7"],
+        "source_proxy_unknown_tx": ["14-10"],
+        "partition_sha256": "c" * 64,
+    }
+    data_ctx = {
+        "train_loader": batches,
+        "balanced_train_sampler": None,
+        "unlabeled_loader": [],
+        "val_loader": [object()],
+        "named_test_loaders": {},
+        "domain_label_map": {},
+        "num_domains": 1,
+        "input_len": 2,
+        "num_classes": 2,
+        "class_id_to_tx": ["20-15", "20-19"],
+        "split_info": {
+            "mode": "tx_rx_day_1_6_3",
+            "labeled_size": 8,
+            "unlabeled_size": 0,
+            "source_val_size": 1,
+            "source_split_receipt": {
+                "split_manifest_sha256": "d" * 64,
+                "wisig_pkl_sha256": "e" * 64,
+            },
+            "tx_partition_receipt": source_roles,
+        },
+    }
+    source_val_attempts: list[str] = []
+    monkeypatch.setattr(
+        train_ssdg,
+        "_validate_phase1_adv3b02_technical_smoke_v2_args",
+        lambda _args: 4,
+    )
+    monkeypatch.setattr(train_ssdg, "resolve_device", lambda _device: torch.device("cpu"))
+    monkeypatch.setattr(train_ssdg, "_prepare_cuda_memory_audit", lambda _device: None)
+    monkeypatch.setattr(train_ssdg, "set_seed", lambda _seed: None)
+    monkeypatch.setattr(train_ssdg, "_build_ssdg_wisig_data", lambda *_args: data_ctx)
+    monkeypatch.setattr(
+        train_ssdg,
+        "_build_manytx_real_oe_data",
+        lambda *_args, **_kwargs: {"loader": None, "sampler": None, "receipt": {}},
+    )
+    monkeypatch.setattr(train_ssdg, "merge_checkpoint_args", lambda *_args, **_kwargs: args)
+    monkeypatch.setattr(train_ssdg, "_apply_model_cli_args", lambda model_args, _args: model_args)
+    monkeypatch.setattr(train_ssdg, "build_baseline_model", lambda *_args: model)
+    monkeypatch.setattr(train_ssdg, "move_batch", lambda batch, _device: batch)
+
+    def core_losses(out_l, y_l, *_args, **_kwargs):
+        zero = out_l["tx_logits"].sum() * 0.0
+        loss_cls = torch.nn.functional.cross_entropy(out_l["tx_logits"], y_l)
+        if model.last_raw_index in loss_nonfinite_raw_indices:
+            loss_cls = loss_cls * float("nan")
+        return {
+            "loss_cls": loss_cls,
+            "loss_dom": zero,
+            "loss_adv": zero,
+            "loss_cons": zero,
+            "loss_orth": zero,
+            "loss_group_ce": zero,
+            "cons_cos": zero,
+            "dom_acc": zero,
+        }
+
+    monkeypatch.setattr(train_ssdg, "compute_core_losses", core_losses)
+
+    def no_source_validation(*_args, **_kwargs):
+        source_val_attempts.append("opened")
+        pytest.fail("v2 technical smoke opened source validation")
+
+    monkeypatch.setattr(train_ssdg, "evaluate_loader", no_source_validation)
+    return train_ssdg, args, model, source_val_attempts
+
+
+def test_adv3b02_smoke_v2_real_grad_skip_then_three_effective_steps(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Break caught: one actual post-backward inf-gradient cannot recover to three steps."""
+
+    train_ssdg, args, model, source_val_attempts = _prepare_v2_real_training_sequence(
+        tmp_path,
+        monkeypatch,
+        grad_nonfinite_raw_indices={0},
+        loss_nonfinite_raw_indices=set(),
+    )
+
+    assert train_ssdg.train(args) == 0
+    receipt = json.loads(
+        (Path(args.output_dir) / "phase1_adv3b02_technical_smoke_v2_receipt.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert receipt["schema"] == "cvs.phase1.adv3b02_technical_smoke.v2"
+    assert receipt["claim"] == "NO_PERFORMANCE_RESULT"
+    assert receipt["raw_batch_cap"] == 4
+    assert receipt["raw_batches_observed"] == 4
+    assert receipt["target_effective_steps"] == 3
+    assert receipt["effective_forward_steps"] == 3
+    assert receipt["effective_backward_steps"] == 3
+    assert receipt["optimizer_attempts"] == 3
+    assert receipt["optimizer_effective_steps"] == 3
+    assert receipt["skipped_nonfinite_loss_batches"] == 0
+    assert receipt["skipped_nonfinite_grad_batches"] == 1
+    assert receipt["handled_grad_skip_count"] == 1
+    records = receipt["raw_batch_records"]
+    assert [record["raw_batch_index"] for record in records] == [1, 2, 3, 4]
+    assert [record["loss_finite"] for record in records] == [True, True, True, True]
+    assert [record["grad_finite"] for record in records] == [False, True, True, True]
+    assert [record["optimizer_attempted"] for record in records] == [False, True, True, True]
+    assert [record["optimizer_effective"] for record in records] == [False, True, True, True]
+    assert all(math.isfinite(float(record["amp_scale_before"])) for record in records)
+    assert all(math.isfinite(float(record["amp_scale_after"])) for record in records)
+    assert model.forward_count == 4
+    assert source_val_attempts == []
+    assert receipt["source_val_rows_opened"] == 0
+    assert receipt["target_rows_opened"] == 0
+    assert receipt["query_rows_opened"] == 0
+    assert receipt["test_rows_opened"] == 0
+    assert receipt["selection_feedback_count"] == 0
+
+
+def test_adv3b02_smoke_v2_rejects_second_grad_skip_before_source_validation(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Break caught: a second nonfinite-gradient skip is silently tolerated."""
+
+    train_ssdg, args, model, source_val_attempts = _prepare_v2_real_training_sequence(
+        tmp_path,
+        monkeypatch,
+        grad_nonfinite_raw_indices={0, 1},
+        loss_nonfinite_raw_indices=set(),
+    )
+    with pytest.raises(RuntimeError, match="at most one.*nonfinite gradient"):
+        train_ssdg.train(args)
+    assert model.forward_count == 2
+    assert source_val_attempts == []
+    assert not (Path(args.output_dir) / "phase1_adv3b02_technical_smoke_v2_receipt.json").exists()
+
+
+def test_adv3b02_smoke_v2_rejects_nonfinite_loss_before_source_validation(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Break caught: a nonfinite loss is misclassified as a recoverable v2 grad skip."""
+
+    train_ssdg, args, model, source_val_attempts = _prepare_v2_real_training_sequence(
+        tmp_path,
+        monkeypatch,
+        grad_nonfinite_raw_indices=set(),
+        loss_nonfinite_raw_indices={0},
+    )
+    with pytest.raises(RuntimeError, match="nonfinite loss"):
+        train_ssdg.train(args)
+    assert model.forward_count == 1
+    assert source_val_attempts == []
+    assert not (Path(args.output_dir) / "phase1_adv3b02_technical_smoke_v2_receipt.json").exists()
+
+
+def test_adv3b02_smoke_v2_finalizer_rejects_raw_cap_exhaustion(
+    tmp_path: Path,
+) -> None:
+    """Break caught: a four-raw-batch window can claim pass with fewer than three steps."""
+
+    from SSDG import train_ssdg
+
+    args = _adv3b02_smoke_v2_args(tmp_path)
+    out_dir = tmp_path / "v2-cap-output"
+    out_dir.mkdir()
+    counters = {
+        "raw_batch_cap": 4,
+        "raw_batches_observed": 4,
+        "target_effective_steps": 3,
+        "effective_forward_steps": 2,
+        "effective_backward_steps": 2,
+        "optimizer_attempts": 2,
+        "optimizer_effective_steps": 2,
+        "skipped_nonfinite_loss_batches": 0,
+        "skipped_nonfinite_grad_batches": 1,
+        "handled_grad_skip_count": 1,
+        "raw_batch_records": [
+            {
+                "raw_batch_index": index,
+                "loss_finite": True,
+                "grad_finite": index != 1,
+                "optimizer_attempted": index in {2, 3},
+                "optimizer_effective": index in {2, 3},
+                "amp_scale_before": 1.0,
+                "amp_scale_after": 1.0,
+            }
+            for index in range(1, 5)
+        ],
+    }
+    with pytest.raises(RuntimeError, match="raw-batch cap"):
+        train_ssdg._finalize_phase1_adv3b02_technical_smoke_v2(
+            out_dir=out_dir,
+            args=args,
+            counters=counters,
+            source_evidence=_smoke_source_evidence(),
+        )
+    assert not (out_dir / "phase1_adv3b02_technical_smoke_v2_receipt.json").exists()
+
+
+def test_adv3b02_smoke_v2_control_zero_leaves_formal_rows_unrestricted(
+    tmp_path: Path,
+) -> None:
+    """Break caught: adding v2 changes ordinary formal parser/runtime validation."""
+
+    from SSDG import train_ssdg
+
+    formal_line = _dry_run_lines(tmp_path)[1]
+    args = train_ssdg.build_arg_parser().parse_args(_trainer_args(_command_tokens(formal_line)))
+    assert args.phase1_adv3b02_technical_smoke_batches == 0
+    assert args.phase1_adv3b02_technical_smoke_v2_max_batches == 0
+    assert train_ssdg._validate_phase1_adv3b02_technical_smoke_v2_args(args) == 0
 
 
 def test_adv3b02_smoke_finalizer_seals_three_finite_effective_batches(
