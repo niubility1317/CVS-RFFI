@@ -143,6 +143,11 @@ _CCOC_RAW_ACTIVE_STATISTIC_FIELDS = _ccoc_raw_fields(
     "workspace_residual_buffer_bytes",
     "workspace_numeric_bytes_upper_bound",
     "workspace_frozen_k10_numeric_bytes_upper_bound",
+    "workspace_candidate_covariance_result_bytes",
+    "workspace_candidate_covariance_block_workspace_bytes",
+    "workspace_candidate_covariance_row_workspace_bytes",
+    "workspace_candidate_covariance_full_buffer_count_upper_bound",
+    "workspace_candidate_covariance_mix_live_bytes_upper_bound",
     "support_transient_bytes_upper_bound",
     "persistent_state_bytes_delta",
     "persistent_bytes_delta",
@@ -298,6 +303,15 @@ _CCOC_MIRROR_INACTIVE_ONLY_FIELDS = frozenset(
     field.replace("d92_ccoc_", "d92_e0d_ccoc_")
     for field in _CCOC_MIRROR_INACTIVE_ONLY_FIELDS
 )
+_CCOC_COVARIANCE_MIX_WORKSPACE_EXPECTED = {
+    "d92_ccoc_workspace_candidate_covariance_result_bytes": 288 * 288 * 8,
+    "d92_ccoc_workspace_candidate_covariance_block_workspace_bytes": 160 * 160 * 8,
+    "d92_ccoc_workspace_candidate_covariance_row_workspace_bytes": 160 * 8,
+    "d92_ccoc_workspace_candidate_covariance_full_buffer_count_upper_bound": 1,
+    "d92_ccoc_workspace_candidate_covariance_mix_live_bytes_upper_bound": (
+        288 * 288 * 8 + 160 * 160 * 8 + 160 * 8
+    ),
+}
 _TPCE_ARM_IDS = frozenset({"E0_FULL_D42_TAIL_PAIR_CODE_EXCHANGE"})
 _TPCE_RECEIPT_SUFFIXES = (
     "active",
@@ -1607,6 +1621,24 @@ def _csoas_support_receipt(
     return receipt
 
 
+def _validate_ccoc_covariance_mix_workspace_receipt(
+    raw: Mapping[str, Any],
+) -> None:
+    """Verify the frozen live CCOC covariance-mix allocation accounting."""
+
+    for field, expected in _CCOC_COVARIANCE_MIX_WORKSPACE_EXPECTED.items():
+        value = raw.get(field)
+        if (
+            isinstance(value, bool)
+            or not isinstance(value, (int, np.integer))
+            or int(value) <= 0
+            or int(value) != expected
+        ):
+            raise D92E0DQueryEvaluationError(
+                "D92-E0D CCOC covariance mix workspace receipt drift"
+            )
+
+
 def _ccoc_support_receipt(
     audit: dict[str, Any],
     *,
@@ -1748,6 +1780,8 @@ def _ccoc_support_receipt(
     fallback = raw["d92_ccoc_fallback_active"]
     active = raw["d92_ccoc_active"]
     if fallback is True:
+        if raw["d92_ccoc_candidate_statistic_receipt_available"] is True:
+            _validate_ccoc_covariance_mix_workspace_receipt(raw)
         if (
             active is not False
             or not isinstance(raw["d92_ccoc_fallback_reason"], str)
@@ -1771,6 +1805,7 @@ def _ccoc_support_receipt(
         or mirrored["d92_e0d_ccoc_g0_block_reason"] is not None
     ):
         raise D92E0DQueryEvaluationError("D92-E0D CCOC active receipt drift")
+    _validate_ccoc_covariance_mix_workspace_receipt(raw)
     statistics = (
         "d92_ccoc_formula_revision",
         "d92_ccoc_formula",

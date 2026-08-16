@@ -660,6 +660,17 @@ def _ccoc_receipt(
         "d92_ccoc_workspace_residual_buffer_bytes": 256,
         "d92_ccoc_workspace_numeric_bytes_upper_bound": 1_792,
         "d92_ccoc_workspace_frozen_k10_numeric_bytes_upper_bound": 334_336,
+        "d92_ccoc_workspace_candidate_covariance_result_bytes": (
+            288 * 288 * 8
+        ),
+        "d92_ccoc_workspace_candidate_covariance_block_workspace_bytes": (
+            160 * 160 * 8
+        ),
+        "d92_ccoc_workspace_candidate_covariance_row_workspace_bytes": 160 * 8,
+        "d92_ccoc_workspace_candidate_covariance_full_buffer_count_upper_bound": 1,
+        "d92_ccoc_workspace_candidate_covariance_mix_live_bytes_upper_bound": (
+            288 * 288 * 8 + 160 * 160 * 8 + 160 * 8
+        ),
         "d92_ccoc_support_transient_bytes_upper_bound": 1_792,
         "d92_ccoc_persistent_state_bytes_delta": 0,
         "d92_ccoc_persistent_bytes_delta": 0,
@@ -1800,6 +1811,33 @@ def test_ccoc_query_audit_closes_complete_support_receipt():
     assert row["d92_e0d_ccoc_query_global_reassignment"] is False
 
 
+def test_ccoc_query_audit_recomputes_active_covariance_mix_workspace_receipt():
+    """Would fail if Query accepted a non-v7 CCOC covariance-mix receipt."""
+
+    arm, result = _ccoc_result()
+    row = e0d_eval._audit_d92_e0d_fit(
+        result,
+        arm=arm,
+        scenario="leo_clear_weak",
+        k_shot=10,
+        old_count=OLD_CLASS_COUNT,
+        class_count=11,
+    )
+    expected = {
+        "d92_e0d_ccoc_workspace_candidate_covariance_result_bytes": 288 * 288 * 8,
+        "d92_e0d_ccoc_workspace_candidate_covariance_block_workspace_bytes": (
+            160 * 160 * 8
+        ),
+        "d92_e0d_ccoc_workspace_candidate_covariance_row_workspace_bytes": 160
+        * 8,
+        "d92_e0d_ccoc_workspace_candidate_covariance_full_buffer_count_upper_bound": 1,
+        "d92_e0d_ccoc_workspace_candidate_covariance_mix_live_bytes_upper_bound": (
+            288 * 288 * 8 + 160 * 160 * 8 + 160 * 8
+        ),
+    }
+    assert {field: row[field] for field in expected} == expected
+
+
 @pytest.mark.parametrize(
     ("field", "tampered"),
     (
@@ -1838,6 +1876,82 @@ def test_ccoc_query_audit_rejects_frozen_k10_workspace_byte_drift(delta):
     mirror_field = raw_field.replace("d92_ccoc_", "d92_e0d_ccoc_")
     audit[raw_field] = int(audit[raw_field]) + delta
     audit[mirror_field] = int(audit[mirror_field]) + delta
+
+    with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="CCOC"):
+        e0d_eval._audit_d92_e0d_fit(
+            result,
+            arm=arm,
+            scenario="leo_clear_weak",
+            k_shot=10,
+            old_count=OLD_CLASS_COUNT,
+            class_count=11,
+        )
+
+
+@pytest.mark.parametrize(
+    ("suffix", "tampered"),
+    (
+        ("candidate_covariance_result_bytes", 288 * 288 * 8 - 8),
+        ("candidate_covariance_block_workspace_bytes", 0),
+        ("candidate_covariance_row_workspace_bytes", 1.5),
+        ("candidate_covariance_full_buffer_count_upper_bound", 2),
+        ("candidate_covariance_mix_live_bytes_upper_bound", 1),
+    ),
+)
+def test_ccoc_query_audit_rejects_covariance_mix_workspace_tamper(
+    suffix, tampered
+):
+    """Would fail if Query did not independently recompute v7 mix resources."""
+
+    arm, result = _ccoc_result()
+    audit = result.geometry_audit["final_covariance_audit"]
+    raw_field = f"d92_ccoc_workspace_{suffix}"
+    mirror_field = raw_field.replace("d92_ccoc_", "d92_e0d_ccoc_")
+    audit[raw_field] = tampered
+    audit[mirror_field] = tampered
+
+    with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="CCOC"):
+        e0d_eval._audit_d92_e0d_fit(
+            result,
+            arm=arm,
+            scenario="leo_clear_weak",
+            k_shot=10,
+            old_count=OLD_CLASS_COUNT,
+            class_count=11,
+        )
+
+
+def test_ccoc_query_audit_rejects_missing_covariance_mix_workspace_fields():
+    """Would fail if a v7 field pair could disappear without rejection."""
+
+    arm, result = _ccoc_result()
+    audit = result.geometry_audit["final_covariance_audit"]
+    raw_field = "d92_ccoc_workspace_candidate_covariance_result_bytes"
+    mirror_field = raw_field.replace("d92_ccoc_", "d92_e0d_ccoc_")
+    audit.pop(raw_field)
+    audit.pop(mirror_field)
+
+    with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="CCOC"):
+        e0d_eval._audit_d92_e0d_fit(
+            result,
+            arm=arm,
+            scenario="leo_clear_weak",
+            k_shot=10,
+            old_count=OLD_CLASS_COUNT,
+            class_count=11,
+        )
+
+
+@pytest.mark.parametrize("removed_prefix", ("d92_ccoc_", "d92_e0d_ccoc_"))
+def test_ccoc_query_audit_rejects_single_sided_covariance_mix_workspace_mirror(
+    removed_prefix,
+):
+    """Would fail if an approved v7 field could lose one side of its mirror."""
+
+    arm, result = _ccoc_result()
+    audit = result.geometry_audit["final_covariance_audit"]
+    suffix = "workspace_candidate_covariance_result_bytes"
+    audit.pop(f"{removed_prefix}{suffix}")
 
     with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="CCOC"):
         e0d_eval._audit_d92_e0d_fit(
