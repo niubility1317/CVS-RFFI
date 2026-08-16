@@ -63,3 +63,7 @@ v1在远端`prepare`前由启动探针触发`ModuleNotFoundError`，因此保留
 ## 2026-08-17 v6 query-zero validator发布
 
 `d92_e0_full_ccoc_hard9k1_20260817_v6`是新的CCOC-16不可覆盖身份。fit-audit validator仅要求7个base字段与7个批准`d92_e0d_ccoc_`镜像存在且为false，不再要求generic `d92_e0d_`或raw `d92_ccoc_`别名存在；未批准字段仍由query whitelist拒绝。query代码、truth/prediction闭包、9+1矩阵、资源阈值和实时推理门不变。状态为`LOCAL_VERIFIED_READY_FOR_N607_HANDOFF / NO_HARD9_RUNTIME_RESULT / NO_PERFORMANCE_RESULT`；v1至v5证据不变，未执行SSH、SCP、N607启动或analyzer。
+
+## 2026-08-17 v7优化core runtime绑定发布
+
+`d92_e0_full_ccoc_hard9k1_20260817_v7`将已验证的core优化提交`1429a496739dfadaf169b83ddf86b3b831f174d5`绑入runtime source lock；core blob为`abb45a15514c8c5758e0cececb930a76d27a29b8`，SHA256为`6f87d4eb041ba8874182a46eb3f2a76dc3f2f075a6692ee217f19bcd2f8ff331`，49成员归档包含该字节。本发布未再改动科学代码、方法、9+1矩阵、阈值、query或truth/prediction闭包。状态为`LOCAL_VERIFIED_READY_FOR_N607_HANDOFF / NO_HARD9_RUNTIME_RESULT / NO_PERFORMANCE_RESULT`；v1至v6证据不变，未执行SSH、SCP、N607启动或analyzer。
