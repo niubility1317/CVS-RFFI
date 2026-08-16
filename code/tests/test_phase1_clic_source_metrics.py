@@ -7,6 +7,7 @@ module load time.  Before the production APIs exist, collection must fail at
 that boundary instead of accidentally proving a synthetic helper.
 """
 
+import copy
 import hashlib
 import json
 import subprocess
@@ -26,28 +27,28 @@ import export_phase1_clic_source_v_leo_features as EXPORTER
 
 SCENES = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
 SOURCE_TX = ("tx-0", "tx-1", "tx-2", "tx-3")
-V3_RUN_ID = "phase1_clic_source_metrics_20260816_v3"
-V3_SMOKE_ROOT_NAME = ".smoke_phase1_clic_source_metrics_20260816_v3_F1"
+V4_RUN_ID = "phase1_clic_source_metrics_20260816_v4"
+V4_SMOKE_ROOT_NAME = ".smoke_phase1_clic_source_metrics_20260816_v4_F1"
 
 
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _v3_technical_smoke_paths(
+def _v4_technical_smoke_paths(
     tmp_path: Path, *, mirror_training: bool = False
 ) -> dict[str, Path]:
     """Create only path-shaped inputs for the root-contract boundary."""
 
     runs = tmp_path / "runs"
-    smoke_root = runs / V3_SMOKE_ROOT_NAME
+    smoke_root = runs / V4_SMOKE_ROOT_NAME
     training_root = (
         smoke_root / "training_mirror" / "phase1_clic12_20260812_v5"
         if mirror_training
         else runs / "phase1_clic12_20260812_v5"
     )
     clean_root = runs / "phase1_clic_postfreeze_20260812_v4"
-    source_root = smoke_root / V3_RUN_ID
+    source_root = smoke_root / V4_RUN_ID
     candidate = "F1C_CLIC12"
     paths = {
         "project_root": tmp_path,
@@ -71,7 +72,7 @@ def _v3_technical_smoke_paths(
     return paths
 
 
-def _v3_technical_smoke_args(paths: dict[str, Path], *, technical_smoke: bool) -> Namespace:
+def _v4_technical_smoke_args(paths: dict[str, Path], *, technical_smoke: bool) -> Namespace:
     return Namespace(
         ckpt=str(paths["checkpoint"]),
         terminal_receipt_json=str(paths["terminal"]),
@@ -100,8 +101,8 @@ def test_technical_smoke_reaches_original_f1_terminal_before_any_output(
 ) -> None:
     """Break caught: the formal-parent gate blocks a legal independent F1 smoke."""
 
-    paths = _v3_technical_smoke_paths(tmp_path)
-    args = _v3_technical_smoke_args(paths, technical_smoke=True)
+    paths = _v4_technical_smoke_paths(tmp_path)
+    args = _v4_technical_smoke_args(paths, technical_smoke=True)
     observed: list[tuple[Path, Path]] = []
     monkeypatch.setattr(
         EXPORTER,
@@ -141,7 +142,7 @@ def test_technical_smoke_root_contract_allows_only_the_exact_f1_exception(
 ) -> None:
     """Break caught: a broad smoke escape hatch can admit another fold or root."""
 
-    paths = _v3_technical_smoke_paths(tmp_path)
+    paths = _v4_technical_smoke_paths(tmp_path)
     monkeypatch.setattr(
         EXPORTER,
         "EXPECTED_TECHNICAL_SMOKE_PROJECT_ROOT",
@@ -176,7 +177,7 @@ def test_technical_smoke_root_contract_allows_only_the_exact_f1_exception(
             technical_smoke=True,
         )
 
-    mirrored = _v3_technical_smoke_paths(tmp_path / "mirrored", mirror_training=True)
+    mirrored = _v4_technical_smoke_paths(tmp_path / "mirrored", mirror_training=True)
     with pytest.raises(EXPORTER.CLICSourceVFeatureExportError, match="technical smoke|canonical|root"):
         EXPORTER.validate_source_v_execution_roots(
             training_root=mirrored["training_root"],
@@ -193,12 +194,12 @@ def test_technical_smoke_root_contract_allows_only_the_exact_f1_exception(
         )
 
 
-def test_formal_v3_root_contract_has_no_independent_parent_without_the_flag(
+def test_formal_v4_root_contract_has_no_independent_parent_without_the_flag(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """Break caught: independent roots become legal without the narrow smoke control."""
 
-    paths = _v3_technical_smoke_paths(tmp_path)
+    paths = _v4_technical_smoke_paths(tmp_path)
     monkeypatch.setattr(
         EXPORTER,
         "EXPECTED_TECHNICAL_SMOKE_PROJECT_ROOT",
@@ -219,7 +220,7 @@ def test_formal_v3_root_contract_has_no_independent_parent_without_the_flag(
             technical_smoke=False,
         )
 
-    formal_root = paths["runs"] / V3_RUN_ID
+    formal_root = paths["runs"] / V4_RUN_ID
     EXPORTER.validate_source_v_execution_roots(
         training_root=paths["training_root"],
         clean_path=paths["clean"],
@@ -254,9 +255,9 @@ def test_technical_smoke_rejects_same_shape_mirror_before_checkpoint_open(
 ) -> None:
     """Break caught: a self-consistent mirror replaces the original formal root."""
 
-    canonical = _v3_technical_smoke_paths(tmp_path / "canonical")
-    mirror = _v3_technical_smoke_paths(tmp_path / "mirror_only")
-    args = _v3_technical_smoke_args(mirror, technical_smoke=True)
+    canonical = _v4_technical_smoke_paths(tmp_path / "canonical")
+    mirror = _v4_technical_smoke_paths(tmp_path / "mirror_only")
+    args = _v4_technical_smoke_args(mirror, technical_smoke=True)
     args.formal_project_root = str(mirror["project_root"])
     checkpoint_opened: list[Path] = []
 
@@ -282,7 +283,7 @@ def test_technical_smoke_rejects_same_shape_mirror_before_checkpoint_open(
 def test_technical_smoke_rejects_relative_formal_project_root(tmp_path: Path) -> None:
     """Break caught: a relative root lets callers escape the frozen formal parent."""
 
-    paths = _v3_technical_smoke_paths(tmp_path)
+    paths = _v4_technical_smoke_paths(tmp_path)
     with pytest.raises(EXPORTER.CLICSourceVFeatureExportError, match="formal project|absolute|root"):
         EXPORTER.validate_source_v_execution_roots(
             training_root=paths["training_root"],
@@ -573,6 +574,189 @@ def test_pair_single_leo_common_binding_requires_sealed_source_l_identity() -> N
         EXPORTER.validate_pair_source_l_policy_binding(binding, policies)
 
 
+def _production_shape_proxy_diagnostic(
+    *, auroc_unknown: float = 0.75, u_gap: float = 0.20
+) -> dict[str, Any]:
+    """Return the PAIR-v3 diagnostic contract emitted by the production scorer.
+
+    The producer records its one permitted source-L geometry fit nested under
+    ``fit`` and ``geometry``.  It deliberately has no top-level fit counters:
+    source-validation and proxy scoring are the only zero-fit roles here.
+    """
+
+    geometry_fit_rows = 24
+    geometry = {
+        "fit_rows": geometry_fit_rows,
+        "state_sha256": "e" * 64,
+        "feature_dim": 3,
+        "class_counts": {tx_id: 6 for tx_id in SOURCE_TX},
+    }
+    return {
+        "schema": "cvs.phase1.clic_proxy_diagnostic.v1",
+        "geometry": geometry,
+        "geometry_state_sha256": geometry["state_sha256"],
+        "fit": {
+            "role": "source_L_only",
+            "fit_rows": geometry_fit_rows,
+            "threshold_fit_rows": 0,
+            "class_counts": dict(geometry["class_counts"]),
+            "feature_dim": geometry["feature_dim"],
+            "normalization": "float64_totalized_l2_zero_preserved",
+            "variance_ddof": 1,
+            "variance_shrink_class": 0.25,
+            "variance_shrink_pooled": 0.10,
+            "variance_floor": 1e-6,
+        },
+        "source_validation_known": {
+            "role": "source_validation_known",
+            "count": 8,
+            "mean_e_unknown": 0.10,
+            "min_e_unknown": 0.05,
+            "max_e_unknown": 0.20,
+            "fit_rows": 0,
+            "threshold_fit_rows": 0,
+        },
+        "proxy_unknown": {
+            "role": "proxy_unknown",
+            "tx_id": "heldout-proxy-tx",
+            "count": 400,
+            "mean_e_unknown": 0.30,
+            "min_e_unknown": 0.15,
+            "max_e_unknown": 0.50,
+            "fit_rows": 0,
+            "threshold_fit_rows": 0,
+        },
+        "AUROC_unknown": auroc_unknown,
+        "u_gap": u_gap,
+        "proxy_minus_known_heldout_mean_e_unknown": u_gap,
+        "score_rule": "log4_minus_logsumexp_negative_full_diagonal_gaussian_nll",
+        "threshold_used": False,
+        "tail_policy_used": False,
+        "source_validation_fit_rows": 0,
+        "proxy_fit_rows": 0,
+        "source_validation_threshold_rows": 0,
+        "proxy_threshold_rows": 0,
+    }
+
+
+def _open_pair_policy_with_proxy_diagnostic(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    diagnostic: dict[str, Any],
+) -> tuple[dict[str, Any], str, dict[str, Any]]:
+    """Open a real PAIR receipt file while leaving its policy validator real."""
+
+    binding = {
+        "received_iq_sha256": "a" * 64,
+        "physical_order_sha256": "b" * 64,
+        "source_only": True,
+        "single_leo_observation": True,
+    }
+    policies = {
+        scene: {
+            "received_iq_sha256": binding["received_iq_sha256"],
+            "physical_order_sha256": binding["physical_order_sha256"],
+        }
+        for scene in SCENES
+    }
+    pair_path = tmp_path / "F1_C_vs_G_pair.json"
+    payload = {
+        "schema": EXPORTER.EXPECTED_PAIR_SCHEMA,
+        "fold_index": 1,
+        "source_only": True,
+        "target_artifacts_present": False,
+        "source_tx_ids": list(SOURCE_TX),
+        "single_leo_common_binding": binding,
+        "clic_source_policy_state": {"C": {"placeholder": "C"}, "G": {"placeholder": "G"}},
+        "proxy_diagnostic": {"C": diagnostic, "G": copy.deepcopy(diagnostic)},
+    }
+    pair_path.write_text(json.dumps(payload, sort_keys=True) + "\n", encoding="utf-8")
+    monkeypatch.setattr(
+        EXPORTER._pair,
+        "_validated_clic_source_policy_state",
+        lambda _state, **_kwargs: {"policies": policies, "state_sha256": "c" * 64},
+    )
+    return EXPORTER._load_pair_policy_state(
+        pair_json_path=pair_path,
+        fold_index=1,
+        arm="C",
+        checkpoint_sha256="d" * 64,
+        terminal_receipt_sha256="f" * 64,
+        source_tx_ids=SOURCE_TX,
+    )
+
+
+def test_pair_proxy_diagnostic_accepts_production_source_l_fit_without_top_level_counters(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Break caught: a legal PAIR-v3 source-L geometry fit is rejected as V/proxy fitting."""
+
+    diagnostic = _production_shape_proxy_diagnostic()
+    assert "fit_rows" not in diagnostic
+    assert "threshold_fit_rows" not in diagnostic
+    state, _pair_sha, observed = _open_pair_policy_with_proxy_diagnostic(
+        tmp_path, monkeypatch, diagnostic
+    )
+    assert state["state_sha256"] == "c" * 64
+    assert observed == diagnostic
+
+
+@pytest.mark.parametrize(
+    ("path", "value"),
+    (
+        (("source_validation_known", "fit_rows"), 1),
+        (("proxy_unknown", "fit_rows"), 1),
+        (("source_validation_fit_rows",), 1),
+        (("proxy_fit_rows",), 1),
+        (("fit", "threshold_fit_rows"), 1),
+        (("source_validation_known", "threshold_fit_rows"), 1),
+        (("proxy_unknown", "threshold_fit_rows"), 1),
+        (("source_validation_threshold_rows",), 1),
+        (("proxy_threshold_rows",), 1),
+    ),
+)
+def test_pair_proxy_diagnostic_rejects_v_proxy_or_threshold_fit(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    path: tuple[str, ...],
+    value: int,
+) -> None:
+    """Break caught: V/proxy scoring or any threshold fit enters the read-only PAIR reuse path."""
+
+    diagnostic = _production_shape_proxy_diagnostic()
+    target: dict[str, Any] = diagnostic
+    for field in path[:-1]:
+        target = target[field]
+    target[path[-1]] = value
+    with pytest.raises(EXPORTER.CLICSourceVFeatureExportError, match="proxy diagnostic.*(fit|threshold)"):
+        _open_pair_policy_with_proxy_diagnostic(tmp_path, monkeypatch, diagnostic)
+
+
+@pytest.mark.parametrize(
+    ("path", "value"),
+    (
+        (("fit", "fit_rows"), 0),
+        (("geometry", "fit_rows"), 0),
+        (("geometry", "fit_rows"), 25),
+    ),
+)
+def test_pair_proxy_diagnostic_requires_positive_bound_source_l_geometry_fit(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    path: tuple[str, ...],
+    value: int,
+) -> None:
+    """Break caught: source-L geometry fit is zero, absent, or detached from its geometry state."""
+
+    diagnostic = _production_shape_proxy_diagnostic()
+    target: dict[str, Any] = diagnostic
+    for field in path[:-1]:
+        target = target[field]
+    target[path[-1]] = value
+    with pytest.raises(EXPORTER.CLICSourceVFeatureExportError, match="proxy diagnostic.*source-L.*fit_rows"):
+        _open_pair_policy_with_proxy_diagnostic(tmp_path, monkeypatch, diagnostic)
+
+
 def test_clean_v_cache_identity_requires_the_same_index_and_order_hashes() -> None:
     """Break caught: matching V rows alone cannot substitute for sealed clean/cache identities."""
 
@@ -676,7 +860,7 @@ def test_source_v_physical_component_drift_stops_before_forward_or_output(
     runs = tmp_path / "runs"
     training_root = runs / "phase1_clic12_20260812_v5"
     clean_root = runs / "phase1_clic_postfreeze_20260812_v4"
-    source_root = runs / V3_RUN_ID
+    source_root = runs / V4_RUN_ID
     candidate = "F1C_CLIC12"
     checkpoint_path = training_root / candidate / "final_ssdg.pth"
     terminal_path = training_root / candidate / "terminal_receipt.json"
@@ -1036,15 +1220,15 @@ def test_source_metrics_clis_are_file_invocable() -> None:
         assert "usage:" in completed.stdout.lower()
 
 
-def test_pair_scorer_binds_each_v_export_to_its_clean_v4_sha_and_refuses_overwrite(
+def test_pair_scorer_accepts_production_shape_pair_diagnostic_and_binds_each_v_export(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Break caught: score orchestration drops clean binding or overwrites an immutable pair receipt."""
+    """Break caught: score entry rejects legal nested PAIR fits, drops clean binding, or overwrites output."""
 
     runs = tmp_path / "runs"
     training_root = runs / "phase1_clic12_20260812_v5"
     clean_root = runs / "phase1_clic_postfreeze_20260812_v4"
-    source_root = runs / V3_RUN_ID
+    source_root = runs / V4_RUN_ID
     paths: dict[str, Path] = {}
 
     def write_file(key: str, path: Path) -> None:
@@ -1109,10 +1293,12 @@ def test_pair_scorer_binds_each_v_export_to_its_clean_v4_sha_and_refuses_overwri
         "single_leo_common_binding": {**policy_hashes, "source_only": True, "single_leo_observation": True},
         "clic_source_policy_state": {"C": {"placeholder": "C"}, "G": {"placeholder": "G"}},
         "proxy_diagnostic": {
-            "C": {"schema": "cvs.phase1.clic_proxy_diagnostic.v1", "AUROC_unknown": 0.50, "u_gap": 0.10, "fit_rows": 0, "threshold_fit_rows": 0, "source_validation_fit_rows": 0, "proxy_fit_rows": 0, "source_validation_threshold_rows": 0, "proxy_threshold_rows": 0},
-            "G": {"schema": "cvs.phase1.clic_proxy_diagnostic.v1", "AUROC_unknown": 0.60, "u_gap": 0.20, "fit_rows": 0, "threshold_fit_rows": 0, "source_validation_fit_rows": 0, "proxy_fit_rows": 0, "source_validation_threshold_rows": 0, "proxy_threshold_rows": 0},
+            "C": _production_shape_proxy_diagnostic(auroc_unknown=0.50, u_gap=0.10),
+            "G": _production_shape_proxy_diagnostic(auroc_unknown=0.60, u_gap=0.20),
         },
     }
+    assert "fit_rows" not in pair_payload["proxy_diagnostic"]["C"]
+    assert "threshold_fit_rows" not in pair_payload["proxy_diagnostic"]["C"]
     feature_clean_hashes: dict[str, str] = {}
 
     monkeypatch.setattr(METRICS, "_open_checkpoint_arm", fake_open_checkpoint_arm)
@@ -1194,6 +1380,10 @@ def test_pair_scorer_binds_each_v_export_to_its_clean_v4_sha_and_refuses_overwri
     assert output_json.is_file()
     assert receipt["target_access"] is False
     assert receipt["completion_audit"] == "POST_TARGET_COMPLETION_AUDIT_NON_SELECTION"
+    assert receipt["proxy"] == {
+        "C": {"AUROC_unknown": 0.50, "u_gap": 0.10, "fit_rows": 0, "threshold_fit_rows": 0},
+        "G": {"AUROC_unknown": 0.60, "u_gap": 0.20, "fit_rows": 0, "threshold_fit_rows": 0},
+    }
     assert feature_clean_hashes == {"C": _sha256(paths["C_clean"]), "G": _sha256(paths["G_clean"])}
     with pytest.raises(METRICS.CLICSourceMetricsError, match="overwrite"):
         METRICS.score_source_metrics_pair(args)

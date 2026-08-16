@@ -30,7 +30,7 @@ EXPECTED_CACHE_RUN_ID = _cache.EXPECTED_CACHE_RUN_ID
 EXPECTED_PAIR_SCHEMA = _pair.EXPECTED_PAIR_SCHEMA
 EXPECTED_SCENARIOS = tuple(_pair.EXPECTED_SCENARIOS)
 SOURCE_V_ROLE = _cache.SOURCE_V_ROLE
-TECHNICAL_SMOKE_ROOT_NAME = ".smoke_phase1_clic_source_metrics_20260816_v3_F1"
+TECHNICAL_SMOKE_ROOT_NAME = ".smoke_phase1_clic_source_metrics_20260816_v4_F1"
 EXPECTED_PAIR_RUN_ID = "phase1_clic_source_pair_20260812_v3"
 EXPECTED_TECHNICAL_SMOKE_PROJECT_ROOT = "/home/szu2070436088/2510044040/CV-SincNet"
 
@@ -58,7 +58,7 @@ def validate_source_v_execution_roots(
     Formal source-metrics forwards retain the original common ``runs`` parent
     requirement.  The only independent-root form is the pre-registered F1
     technical smoke, whose inputs remain the original canonical formal files
-    while its cache and output share one dedicated v3 smoke leaf.
+    while its cache and output share one dedicated v4 smoke leaf.
     """
 
     if type(technical_smoke) is not bool:
@@ -586,6 +586,62 @@ def _atomic_write_json(path: Path, payload: Mapping[str, Any]) -> Any:
         raise CLICSourceVFeatureExportError(f"source-V feature binding immutable publish failed: {exc}") from exc
 
 
+def _validate_pair_proxy_diagnostic(diagnostic: Mapping[str, Any]) -> None:
+    """Accept the sealed source-L geometry fit while preserving V/proxy zero-fit.
+
+    ``compute_clic_proxy_diagnostic`` intentionally records its one legal
+    source-L geometry fit inside ``fit`` and ``geometry``.  The held
+    source-validation and proxy roles remain score-only, as do every threshold
+    counter.  Top-level fit counters are not part of the producer contract.
+    """
+
+    geometry = diagnostic.get("geometry")
+    fit = diagnostic.get("fit")
+    source_validation = diagnostic.get("source_validation_known")
+    proxy = diagnostic.get("proxy_unknown")
+    if not all(isinstance(value, Mapping) for value in (geometry, fit, source_validation, proxy)):
+        raise CLICSourceVFeatureExportError("PAIR-v3 proxy diagnostic fit geometry/roles are malformed")
+    if fit.get("role") != "source_L_only":
+        raise CLICSourceVFeatureExportError("PAIR-v3 proxy diagnostic source-L fit role drifted")
+    geometry_fit_rows = geometry.get("fit_rows")
+    source_l_fit_rows = fit.get("fit_rows")
+    if type(geometry_fit_rows) is not int or geometry_fit_rows <= 0:
+        raise CLICSourceVFeatureExportError(
+            "PAIR-v3 proxy diagnostic source-L geometry fit_rows must be a positive integer"
+        )
+    if type(source_l_fit_rows) is not int or source_l_fit_rows <= 0:
+        raise CLICSourceVFeatureExportError(
+            "PAIR-v3 proxy diagnostic source-L fit_rows must be a positive integer"
+        )
+    if source_l_fit_rows != geometry_fit_rows:
+        raise CLICSourceVFeatureExportError(
+            "PAIR-v3 proxy diagnostic source-L fit_rows must match geometry fit_rows"
+        )
+
+    def require_zero(value: Any, *, label: str) -> None:
+        if type(value) is not int or value != 0:
+            raise CLICSourceVFeatureExportError(
+                f"PAIR-v3 proxy diagnostic {label} must remain zero"
+            )
+
+    require_zero(fit.get("threshold_fit_rows"), label="source-L threshold_fit_rows")
+    for label, role, section in (
+        ("source-validation", "source_validation_known", source_validation),
+        ("proxy", "proxy_unknown", proxy),
+    ):
+        if section.get("role") != role:
+            raise CLICSourceVFeatureExportError(f"PAIR-v3 proxy diagnostic {label} role drifted")
+        require_zero(section.get("fit_rows"), label=f"{label} fit_rows")
+        require_zero(section.get("threshold_fit_rows"), label=f"{label} threshold_fit_rows")
+    for field in (
+        "source_validation_fit_rows",
+        "proxy_fit_rows",
+        "source_validation_threshold_rows",
+        "proxy_threshold_rows",
+    ):
+        require_zero(diagnostic.get(field), label=field)
+
+
 def _load_pair_policy_state(
     *,
     pair_json_path: str | Path,
@@ -636,9 +692,7 @@ def _load_pair_policy_state(
         value = diagnostic.get(field)
         if not isinstance(value, (int, float)) or not np.isfinite(float(value)):
             raise CLICSourceVFeatureExportError(f"PAIR-v3 proxy diagnostic {field} is non-finite")
-    for field in ("fit_rows", "threshold_fit_rows", "source_validation_fit_rows", "proxy_fit_rows", "source_validation_threshold_rows", "proxy_threshold_rows"):
-        if diagnostic.get(field) != 0:
-            raise CLICSourceVFeatureExportError(f"PAIR-v3 proxy diagnostic {field} must remain zero")
+    _validate_pair_proxy_diagnostic(diagnostic)
     if _sha256_file(pair_path) != pair_sha:
         raise CLICSourceVFeatureExportError("PAIR-v3 policy receipt changed while opening")
     return state, pair_sha, dict(diagnostic)

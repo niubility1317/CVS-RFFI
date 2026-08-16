@@ -411,7 +411,7 @@ def _builder_args(
     rows = _source_v_rows()
     c_rows = rows if c_clean_rows is None else c_clean_rows
     g_rows = rows if g_clean_rows is None else g_clean_rows
-    cache_root = tmp_path / "runs" / "phase1_clic_source_metrics_20260816_v3"
+    cache_root = tmp_path / "runs" / "phase1_clic_source_metrics_20260816_v4"
     shared_dir = cache_root / "F1_SHARED"
     c_dir = tmp_path / "runs" / "phase1_clic12_20260812_v5" / "F1C_CLIC12"
     g_dir = tmp_path / "runs" / "phase1_clic12_20260812_v5" / "F1G_CLIC12"

@@ -931,9 +931,10 @@ def score_source_metrics_pair(args: argparse.Namespace) -> dict[str, Any]:
             raise CLICSourceMetricsError("PAIR-v3 proxy diagnostic drifted")
         for field in ("AUROC_unknown", "u_gap"):
             _finite_number(diagnostic.get(field), label=f"PAIR {arm} {field}")
-        for field in ("fit_rows", "threshold_fit_rows", "source_validation_fit_rows", "proxy_fit_rows", "source_validation_threshold_rows", "proxy_threshold_rows"):
-            if diagnostic.get(field) != 0:
-                raise CLICSourceMetricsError("PAIR-v3 proxy diagnostic fit/threshold contract drifted")
+        try:
+            _source_v._validate_pair_proxy_diagnostic(diagnostic)
+        except _source_v.CLICSourceVFeatureExportError as exc:
+            raise CLICSourceMetricsError(f"PAIR-v3 proxy diagnostic contract drifted: {exc}") from exc
         proxy_readonly[arm] = {
             "AUROC_unknown": float(diagnostic["AUROC_unknown"]),
             "u_gap": float(diagnostic["u_gap"]),
