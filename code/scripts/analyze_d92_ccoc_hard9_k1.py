@@ -14,7 +14,6 @@ if str(CODE_ROOT) not in sys.path:
 
 from cvsrffi.stage2_d92_ccoc_hard9_k1_analysis import (  # noqa: E402
     analyze_d92_ccoc_hard9_k1,
-    write_analysis_outputs,
 )
 
 
@@ -41,8 +40,9 @@ def main(argv: list[str] | None = None) -> int:
         baseline_paired_rows_path=args.baseline_paired_rows,
         per_old_class_rows_path=args.per_old_class_rows,
         truth_sidecar_root=args.truth_sidecar_root,
+        output_root=args.output_root,
     )
-    outputs = write_analysis_outputs(result, args.output_root)
+    outputs = result.get("output_paths", {})
     print(json.dumps({"verdict": result["verdict"], "outputs": outputs}, ensure_ascii=False, sort_keys=True))
     return 0
 

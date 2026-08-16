@@ -40,6 +40,30 @@ ARM_ID = matrix.ARM_ID
 CANDIDATE_ID = matrix.CANDIDATE_ID
 QUERY_ZERO_FIELDS = tuple(matrix.QUERY_ZERO_FIELDS)
 _TOLERANCE = 1.0e-12
+PREDICTION_CLOSURE_SHA_FIELDS = (
+    "before_prediction_sha256",
+    "after_prediction_sha256",
+    "before_commit_sha256",
+    "after_commit_sha256",
+    "before_fit_audit_sha256",
+    "after_fit_audit_sha256",
+    "before_resource_audit_sha256",
+    "after_resource_audit_sha256",
+    "before_execution_receipt_sha256",
+    "after_execution_receipt_sha256",
+)
+_PREDICTION_CLOSURE_FILES = {
+    "before_prediction_sha256": ("before", "prediction_artifact.npz"),
+    "after_prediction_sha256": ("after", "prediction_artifact.npz"),
+    "before_commit_sha256": ("before", "COMMIT.json"),
+    "after_commit_sha256": ("after", "COMMIT.json"),
+    "before_fit_audit_sha256": ("before", "fit_audit.json"),
+    "after_fit_audit_sha256": ("after", "fit_audit.json"),
+    "before_resource_audit_sha256": ("before", "resource_audit.json"),
+    "after_resource_audit_sha256": ("after", "resource_audit.json"),
+    "before_execution_receipt_sha256": ("before", "execution_receipt.json"),
+    "after_execution_receipt_sha256": ("after", "execution_receipt.json"),
+}
 
 # These are the already-used D92 direction/magnitude gates.  They are copied
 # as analysis constants only; CCOC does not tune or redefine them.
@@ -78,6 +102,34 @@ def _sha(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def _sha256_value(value: Any, label: str) -> str:
+    result = str(value or "").lower()
+    if len(result) != 64 or any(character not in "0123456789abcdef" for character in result):
+        raise _fail(f"invalid SHA256 {label}")
+    return result
+
+
+def _prediction_closure_hashes(job_root: Path) -> dict[str, str]:
+    """Recompute the ten Task1 immutable prediction-closure hashes."""
+
+    return {
+        field: _sha(_state_root(job_root, state) / name)
+        for field, (state, name) in _PREDICTION_CLOSURE_FILES.items()
+    }
+
+
+def _validate_closure_surface(
+    surface: Mapping[str, Any],
+    closure_hashes: Mapping[str, str],
+    *,
+    label: str,
+) -> None:
+    for field in PREDICTION_CLOSURE_SHA_FIELDS:
+        actual = _sha256_value(surface.get(field), f"{label}/{field}")
+        if actual != closure_hashes[field]:
+            raise _fail(f"Task1 prediction closure SHA drift: {label}/{field}")
 
 
 def _read_json(path: Path) -> dict[str, Any]:
@@ -247,7 +299,7 @@ def compute_score_metrics(score: Mapping[str, Any]) -> dict[str, Any]:
         "state_bytes": state_bytes,
         "da1_reg0_old_acc": before_old,
         "da1_reg0_old_floor": _finite(
-            score.get("per_old_class_floor_before", min(old_accuracy.values())),
+            score.get("per_old_class_floor_before"),
             "DA1_REG0 old floor",
             lower=0.0,
             upper=1.0,
@@ -489,7 +541,12 @@ def _validate_fit_rows(
 ) -> tuple[list[dict[str, Any]], dict[str, Mapping[str, Any]]]:
     after_root = _state_root(job_root, "after")
     fit_path = after_root / "fit_audit.json"
-    payload = json.loads(fit_path.read_text(encoding="utf-8-sig")) if fit_path.is_file() and not fit_path.is_symlink() else None
+    payload: Any = None
+    if fit_path.is_file() and not fit_path.is_symlink():
+        try:
+            payload = json.loads(fit_path.read_text(encoding="utf-8-sig"))
+        except (OSError, ValueError) as error:
+            raise _fail("invalid fit audit JSON") from error
     if not isinstance(payload, list) or len(payload) != len(SCENES) or any(not isinstance(row, Mapping) for row in payload):
         raise _fail("fit audit scene closure drift")
     by_scene: dict[str, Mapping[str, Any]] = {}
@@ -544,7 +601,7 @@ def _validate_fit_rows(
     _validate_commit_state(_state_root(job_root, "before"))
     _validate_commit_state(_state_root(job_root, "after"))
     after_rows = [dict(by_scene[scene]) for scene in SCENES]
-    return after_rows, {scene: row for scene, row in zip(SCENES, after_rows)}
+    return after_rows, dict(by_scene)
 
 
 def _e0_scene_resources(job: Mapping[str, Any], outer_key: str) -> dict[str, Mapping[str, Any]]:
@@ -621,18 +678,25 @@ def evaluate_resource_gate(candidate_rows: Sequence[Mapping[str, Any]], *, query
     walls = [_finite(row.get("candidate_wall_ns"), "candidate wall", lower=0.0) for row in candidate_rows]
     ratios = [_finite(row.get("wall_ratio"), "wall ratio", lower=0.0) for row in candidate_rows]
     peaks = [_finite(row.get("candidate_peak_bytes"), "candidate peak", lower=0.0) for row in candidate_rows]
-    target = all(bool(row.get("wall_target_pass")) and bool(row.get("ratio_target_pass")) and bool(row.get("peak_target_pass")) and bool(row.get("query_state_exact")) for row in candidate_rows)
+    wall_p90 = _p90(walls)
+    ratio_p90 = _p90(ratios)
+    peak_max = max(peaks)
+    target = (
+        wall_p90 <= float(matrix.RESOURCE_GATE["registration_wall_p90_target_max_ns"])
+        and ratio_p90 <= float(matrix.RESOURCE_GATE["registration_wall_ratio_target_max"])
+        and peak_max <= float(matrix.RESOURCE_GATE["candidate_peak_target_max_bytes"])
+    )
     return {
         "query_state_exact": bool(query_state_exact) and all(bool(row.get("query_state_exact")) for row in candidate_rows),
         "hard_limits_passed": bool(hard_scene and query_state_exact),
         "hard_passed": bool(hard_scene and query_state_exact),
         "target_limits_passed": bool(target),
         "target_passed": bool(target and hard_scene and query_state_exact),
-        "wall_p90_ns": _p90(walls),
-        "wall_ratio_p90": _p90(ratios),
+        "wall_p90_ns": wall_p90,
+        "wall_ratio_p90": ratio_p90,
         "wall_ratio_median": float(statistics.median(ratios)),
-        "candidate_peak_max_bytes": max(peaks),
-        "candidate_peak_target_pass": max(peaks) <= float(matrix.RESOURCE_GATE["candidate_peak_target_max_bytes"]),
+        "candidate_peak_max_bytes": peak_max,
+        "candidate_peak_target_pass": peak_max <= float(matrix.RESOURCE_GATE["candidate_peak_target_max_bytes"]),
         "scene_count": len(candidate_rows),
         "failed_scenes": [
             f"{row.get('outer_key')}/{row.get('scenario')}"
@@ -655,6 +719,37 @@ def _scenario_closure(score: Mapping[str, Any], label: str) -> tuple[Mapping[str
     return before_scene, after_scene
 
 
+def _validate_candidate_e0_surface(
+    candidate: Mapping[str, Any],
+    baseline: Mapping[str, Any],
+    job: Mapping[str, Any],
+    *,
+    outer_key: str,
+) -> None:
+    """Require one same-outer truth/query surface before any comparison."""
+
+    job_truth = _sha256_value(job.get("truth_sidecar_sha256"), f"job truth {outer_key}")
+    candidate_truth = _sha256_value(candidate.get("truth_sidecar_sha256"), f"candidate truth {outer_key}")
+    baseline_truth = _sha256_value(baseline.get("truth_sidecar_sha256"), f"E0 raw-score truth {outer_key}")
+    if candidate_truth != job_truth or baseline_truth != job_truth:
+        raise _fail(f"candidate/E0 truth surface drift: {outer_key}")
+    candidate_before, candidate_after = _scenario_closure(candidate, f"candidate {outer_key}")
+    baseline_before, baseline_after = _scenario_closure(baseline, f"E0 {outer_key}")
+    for state, candidate_rows, baseline_rows in (
+        ("before", candidate_before, baseline_before),
+        ("after", candidate_after, baseline_after),
+    ):
+        for scene in SCENES:
+            candidate_row = candidate_rows[scene]
+            baseline_row = baseline_rows[scene]
+            candidate_count = _integer(candidate_row.get("query_count"), f"candidate {state} query count {outer_key}/{scene}")
+            baseline_count = _integer(baseline_row.get("query_count"), f"E0 {state} query count {outer_key}/{scene}")
+            candidate_identity = _sha256_value(candidate_row.get("query_identity_sha256"), f"candidate {state} query identity {outer_key}/{scene}")
+            baseline_identity = _sha256_value(baseline_row.get("query_identity_sha256"), f"E0 {state} query identity {outer_key}/{scene}")
+            if candidate_count != baseline_count or candidate_identity != baseline_identity:
+                raise _fail(f"candidate/E0 query surface drift: {outer_key}/{state}/{scene}")
+
+
 def _scenario_rows(outer_key: str, job: Mapping[str, Any], candidate: Mapping[str, Any], baseline: Mapping[str, Any]) -> list[dict[str, Any]]:
     candidate_before, candidate_after = _scenario_closure(candidate, f"candidate {outer_key}")
     baseline_before, baseline_after = _scenario_closure(baseline, f"E0 {outer_key}")
@@ -668,8 +763,11 @@ def _scenario_rows(outer_key: str, job: Mapping[str, Any], candidate: Mapping[st
         b_total = _finite(b.get("query_count"), f"E0 total count {scene}", lower=0.0)
         values = {
             "h_old_new": (_finite(c.get("h_old_new"), f"candidate H {scene}", lower=0.0, upper=1.0), _finite(b.get("h_old_new"), f"E0 H {scene}", lower=0.0, upper=1.0)),
-            "old_acc": (_finite(c.get("old_acc"), f"candidate old acc {scene}", lower=0.0, upper=1.0), _finite(b.get("old_acc"), f"E0 old acc {scene}", lower=0.0, upper=1.0)),
+            "old_balanced_accuracy": (_finite(c.get("old_balanced_accuracy"), f"candidate old balanced accuracy {scene}", lower=0.0, upper=1.0), _finite(b.get("old_balanced_accuracy"), f"E0 old balanced accuracy {scene}", lower=0.0, upper=1.0)),
+            "c_old_acc": (_finite(c.get("c_old_acc"), f"candidate C-old accuracy {scene}", lower=0.0, upper=1.0), _finite(b.get("c_old_acc"), f"E0 C-old accuracy {scene}", lower=0.0, upper=1.0)),
+            "old_floor": (_finite(c.get("old_floor"), f"candidate old floor {scene}", lower=0.0, upper=1.0), _finite(b.get("old_floor"), f"E0 old floor {scene}", lower=0.0, upper=1.0)),
             "seen_new_acc": (_finite(c.get("seen_new_acc"), f"candidate new acc {scene}", lower=0.0, upper=1.0), _finite(b.get("seen_new_acc"), f"E0 new acc {scene}", lower=0.0, upper=1.0)),
+            "average_forgetting": (_finite(c.get("average_forgetting"), f"candidate forgetting {scene}", lower=0.0), _finite(b.get("average_forgetting"), f"E0 forgetting {scene}", lower=0.0)),
             "new_to_old_rate": (_finite(c.get("new_to_old_rate"), f"candidate new-to-old {scene}", lower=0.0, upper=1.0), _finite(b.get("new_to_old_rate"), f"E0 new-to-old {scene}", lower=0.0, upper=1.0)),
             "old_to_new_rate": (_finite(c.get("old_to_new_rate"), f"candidate old-to-new {scene}", lower=0.0, upper=1.0), _finite(b.get("old_to_new_rate"), f"E0 old-to-new {scene}", lower=0.0, upper=1.0)),
         }
@@ -702,9 +800,18 @@ def _group_stability(rows: Sequence[Mapping[str, Any]], field: str) -> dict[str,
         grouped[str(row[field])].append(row)
     result: dict[str, dict[str, Any]] = {}
     for key, members in sorted(grouped.items()):
-        h_delta = _mean(float(row["candidate_h_old_new"]) - float(row["e0_h_old_new"]) for row in members)
-        n_delta = _mean(float(row["candidate_seen_new_acc"]) - float(row["e0_seen_new_acc"]) for row in members)
-        result[key] = {"row_count": len(members), "mean_delta_h_old_new": h_delta, "mean_delta_seen_new_acc": n_delta, "passed": h_delta >= -_TOLERANCE and n_delta >= -_TOLERANCE}
+        deltas = {
+            metric: _mean(
+                float(row[f"candidate_{metric}"]) - float(row[f"e0_{metric}"])
+                for row in members
+            )
+            for metric in EIGHT_PARETO_METRICS
+        }
+        result[key] = {
+            "row_count": len(members),
+            **{f"mean_delta_{metric}": delta for metric, delta in deltas.items()},
+            "passed": _strict_row_ok(deltas),
+        }
     return result
 
 
@@ -715,15 +822,8 @@ def _job_key(job: Mapping[str, Any]) -> str:
 def _validate_manifest_shape(manifest: Mapping[str, Any], lock_sha: str) -> None:
     try:
         matrix.validate_hard9_k1_manifest(manifest, expected_method_lock_sha256=lock_sha, require_package_hashes=True)
-        return
     except Exception as error:
-        # A small test fixture may omit package paths while retaining all
-        # analysis-relevant fields.  Do not weaken the frozen identity checks.
-        required = {"schema", "jobs", "job_count", "outer_count", "performance_outer_count", "liveness_outer_count", "scene_count", "scene_arm_count", "selection_sha256", "method_lock_sha256"}
-        if not required.issubset(manifest):
-            raise _fail("matrix manifest closure drift") from error
-        if manifest.get("schema") != matrix.MATRIX_SCHEMA or manifest.get("job_count") != 10 or manifest.get("outer_count") != 10 or manifest.get("performance_outer_count") != 9 or manifest.get("liveness_outer_count") != 1 or manifest.get("scene_count") != 3 or manifest.get("scene_arm_count") != 30 or str(manifest.get("method_lock_sha256")).lower() != lock_sha.lower() or str(manifest.get("selection_sha256")).lower() != matrix.CANONICAL_SELECTION_SHA256.lower():
-            raise _fail("matrix manifest identity/count drift") from error
+        raise _fail("matrix manifest closure drift") from error
 
 
 def _validate_job_identity(job: Mapping[str, Any], manifest_sha: str, lock_sha: str) -> None:
@@ -749,6 +849,7 @@ def _validate_receipt(
     score_path: Path,
     before_path: Path,
     after_path: Path,
+    closure_hashes: Mapping[str, str],
 ) -> None:
     expected = {
         "schema": matrix.JOB_RECEIPT_SCHEMA,
@@ -771,12 +872,18 @@ def _validate_receipt(
     for key, value in expected.items():
         if receipt.get(key) != value:
             raise _fail(f"job receipt binding drift: {key}")
-    if str(receipt.get("before_prediction_sha256", "")).lower() != _sha(before_path) or str(receipt.get("after_prediction_sha256", "")).lower() != _sha(after_path) or str(receipt.get("score_sha256", "")).lower() != _sha(score_path):
+    _validate_closure_surface(receipt, closure_hashes, label="job receipt")
+    prediction_closure = receipt.get("prediction_closure")
+    if not isinstance(prediction_closure, Mapping):
+        raise _fail("job receipt prediction_closure missing")
+    _validate_closure_surface(prediction_closure, closure_hashes, label="job receipt prediction_closure")
+    if str(receipt.get("score_sha256", "")).lower() != _sha(score_path):
         raise _fail("job receipt prediction/score SHA drift")
-    truth_sha = str(job.get("truth_sidecar_sha256", "")).lower()
+    if _sha(before_path) != closure_hashes["before_prediction_sha256"] or _sha(after_path) != closure_hashes["after_prediction_sha256"]:
+        raise _fail("recomputed prediction closure SHA drift")
+    truth_sha = _sha256_value(job.get("truth_sidecar_sha256"), "job truth sidecar")
     if (
-        len(truth_sha) != 64
-        or str(receipt.get("truth_sidecar_sha256", "")).lower() != truth_sha
+        str(receipt.get("truth_sidecar_sha256", "")).lower() != truth_sha
         or str(receipt.get("truth_sidecar_sha256_before_score", "")).lower() != truth_sha
         or str(receipt.get("truth_sidecar_sha256_after_score", "")).lower() != truth_sha
     ):
@@ -793,6 +900,7 @@ def _validate_score_binding(
     job_root: Path,
     manifest_sha: str,
     lock_sha: str,
+    closure_hashes: Mapping[str, str],
 ) -> None:
     if (
         score.get("schema") != "cvs.phase2.diag_cosine_dev_pair_score.v1"
@@ -801,8 +909,8 @@ def _validate_score_binding(
         or score.get("query_truth_joined_only_after_immutable_predictions") is not True
     ):
         raise _fail("score candidate/query binding drift")
-    before_sha = _sha(before_path)
-    after_sha = _sha(after_path)
+    before_sha = closure_hashes["before_prediction_sha256"]
+    after_sha = closure_hashes["after_prediction_sha256"]
     if str(score.get("before_prediction_sha256", "")).lower() != before_sha or str(score.get("after_prediction_sha256", "")).lower() != after_sha:
         raise _fail("score prediction binding drift")
     binding_value = receipt.get("score_binding")
@@ -827,8 +935,7 @@ def _validate_score_binding(
         "method_lock_sha256": lock_sha,
         "truth_sidecar": str(job["truth_sidecar"]),
         "truth_sidecar_sha256": truth_sha,
-        "before_prediction_sha256": before_sha,
-        "after_prediction_sha256": after_sha,
+        **closure_hashes,
         "performance_result_allowed": False,
     }
     binding = _read_json(binding_path)
@@ -838,6 +945,7 @@ def _validate_score_binding(
             actual = str(actual or "").lower()
         if actual != expected:
             raise _fail(f"score binding drift: {key}")
+    _validate_closure_surface(binding, closure_hashes, label="score binding")
     evidence = receipt.get("score_evidence")
     if not isinstance(evidence, Mapping):
         raise _fail("score binding evidence missing")
@@ -848,10 +956,9 @@ def _validate_score_binding(
         "candidate": CANDIDATE_ID,
         "matrix_manifest_sha256": manifest_sha,
         "method_lock_sha256": lock_sha,
-        "score_artifact_sha256": str(receipt["score_sha256"]).lower(),
+        "score_artifact_sha256": str(receipt.get("score_sha256", "")).lower(),
         "truth_sidecar_sha256": truth_sha,
-        "before_prediction_sha256": before_sha,
-        "after_prediction_sha256": after_sha,
+        **closure_hashes,
     }
     for key, expected in expected_evidence.items():
         actual = evidence.get(key)
@@ -859,6 +966,7 @@ def _validate_score_binding(
             actual = str(actual or "").lower()
         if actual != expected:
             raise _fail(f"score binding evidence drift: {key}")
+    _validate_closure_surface(evidence, closure_hashes, label="score evidence")
 
 
 def _job_artifacts(
@@ -879,7 +987,8 @@ def _job_artifacts(
     score_path = job_root / "scorer" / "diag_cosine_score.json"
     if not before_path.is_file() or not after_path.is_file() or before_path.is_symlink() or after_path.is_symlink():
         raise _fail(f"prediction artifact closure drift: {outer}")
-    _validate_receipt(job, receipt, manifest_sha=manifest_sha, lock_sha=lock_sha, score_path=score_path, before_path=before_path, after_path=after_path)
+    closure_hashes = _prediction_closure_hashes(job_root)
+    _validate_receipt(job, receipt, manifest_sha=manifest_sha, lock_sha=lock_sha, score_path=score_path, before_path=before_path, after_path=after_path, closure_hashes=closure_hashes)
     score = _read_json(score_path)
     _validate_score_binding(
         score,
@@ -890,6 +999,7 @@ def _job_artifacts(
         job_root=job_root,
         manifest_sha=manifest_sha,
         lock_sha=lock_sha,
+        closure_hashes=closure_hashes,
     )
     truth_path = _logical_truth_path(job, truth_sidecar_root)
     validate_truth_binding(score, receipt, job, truth_path)
@@ -936,7 +1046,7 @@ def _baseline_path_arg(path: str | Path | None, default: str) -> Path:
     return Path(path if path is not None else default).resolve(strict=True)
 
 
-def analyze_d92_ccoc_hard9_k1(
+def _analyze_d92_ccoc_hard9_k1(
     matrix_manifest_path: str | Path,
     *,
     run_root: str | Path | None,
@@ -1007,6 +1117,12 @@ def analyze_d92_ccoc_hard9_k1(
             outer_key=outer,
         )
         candidate_score, job_resources, _ = _job_artifacts(job, root, manifest_sha=manifest_sha, lock_sha=lock_sha, truth_sidecar_root=truth_sidecar_root)
+        _validate_candidate_e0_surface(
+            candidate_score,
+            raw_score,
+            job,
+            outer_key=outer,
+        )
         candidate_metrics = compute_score_metrics(candidate_score)
         if job_resources:
             candidate_metrics["query_macs"] = int(job_resources[0]["candidate_query_macs"])
@@ -1093,7 +1209,23 @@ def analyze_d92_ccoc_hard9_k1(
     by_receiver = _group_stability(performance_scenes, "receiver")
     by_slice = _group_stability(performance_scenes, "slice")
     by_scene = _group_stability(performance_scenes, "scenario")
-    group_stability = all(item["passed"] for groups in (by_receiver, by_slice, by_scene) for item in groups.values())
+    scenario_row_stability = all(
+        _strict_row_ok(
+            {
+                metric: _finite(row[f"delta_{metric}"], f"scenario delta {metric}")
+                for metric in EIGHT_PARETO_METRICS
+            }
+        )
+        for row in performance_scenes
+    )
+    group_stability = bool(
+        scenario_row_stability
+        and all(
+            item["passed"]
+            for groups in (by_receiver, by_slice, by_scene)
+            for item in groups.values()
+        )
+    )
     stability = bool(all_strict and per_old_stability and group_stability)
     resource_eval = evaluate_resource_gate(resource_rows, query_state_exact=True)
     # Query/state integrity is a hard gate; K1 is not included in the
@@ -1106,7 +1238,7 @@ def analyze_d92_ccoc_hard9_k1(
         "performance_outer_closure": {"passed": len(performance) == 9 and len(liveness) == 1 and all(int(row["k_shot"]) > 1 for row in performance), "observed": {"performance": len(performance), "liveness": len(liveness), "performance_k": sorted({int(row["k_shot"]) for row in performance})}, "threshold": "9 performance+1 K1 liveness"},
         "all_strict_pareto": {"passed": all_strict, "observed": {"direction_counts": direction_counts, "mean_deltas": mean_deltas}, "threshold": "all 8 metrics strict on every performance outer"},
         "all_magnitude": {"passed": all_magnitude, "observed": mean_deltas, "threshold": STRICT_PARETO_THRESHOLDS},
-        "stability": {"passed": stability, "observed": {"per_old_class": per_old_stability, "per_outer_old": per_outer_summary, "by_receiver": by_receiver, "by_slice": by_slice, "by_scene": by_scene}, "threshold": "receiver/K-new/scene and per-old stability"},
+        "stability": {"passed": stability, "observed": {"per_old_class": per_old_stability, "per_outer_old": per_outer_summary, "by_receiver": by_receiver, "by_slice": by_slice, "by_scene": by_scene, "scenario_row_stability": scenario_row_stability}, "threshold": "receiver/K-new/scene all-8 strict direction and per-old stability"},
         "resource_integrity": {"passed": query_exact, "observed": {"query_state_exact": query_exact}, "threshold": "query MAC/state exact per scene"},
         "resource_hard": {"passed": resource_hard, "observed": resource_eval, "threshold": {"absolute_peak_bytes": matrix.RESOURCE_GATE["candidate_peak_hard_max_bytes"], "wall_ns": 150_000_000, "ratio": 1.50}},
         "resource_target": {"passed": resource_target, "observed": resource_eval, "threshold": {"absolute_peak_bytes": matrix.RESOURCE_GATE["candidate_peak_target_max_bytes"], "wall_p90_ns": 120_000_000, "ratio_p90": 1.25}},
@@ -1154,6 +1286,90 @@ def analyze_d92_ccoc_hard9_k1(
         "all_gates_pass": verdict == "ADVANCE_TO_TARGET125_CANDIDATE",
         "verdict": verdict,
     }
+
+
+def _prepare_output_root(output_root: str | Path) -> Path:
+    root = Path(output_root).resolve()
+    if root.exists() and (not root.is_dir() or root.is_symlink() or any(root.iterdir())):
+        raise D92CCOCHard9K1AnalysisError(
+            f"output overwrite refused: existing output root {root}"
+        )
+    return root
+
+
+def _controlled_reject_result(error: D92CCOCHard9K1AnalysisError) -> dict[str, Any]:
+    """Materialize evidence failures as a self-contained reject package."""
+
+    gate_names = (
+        "complete_artifact_closure",
+        "performance_outer_closure",
+        "all_strict_pareto",
+        "all_magnitude",
+        "stability",
+        "resource_integrity",
+        "resource_hard",
+        "resource_target",
+    )
+    gates = {
+        name: {
+            "passed": False,
+            "observed": {"error": str(error)} if name == "complete_artifact_closure" else "not evaluated after evidence failure",
+            "threshold": "immutable evidence closure required",
+        }
+        for name in gate_names
+    }
+    return {
+        "schema": "cvs.phase2.d92_ccoc_hard9_k1.analysis.v1",
+        "status": "REJECTED_EVIDENCE_CLOSURE",
+        "claim_scope": matrix.CLAIM_SCOPE,
+        "aggregate": {},
+        "paired_rows": [],
+        "per_old_class_rows": [],
+        "per_old_class_summary": {},
+        "scenario_rows": [],
+        "liveness_rows": [],
+        "resource_rows": [],
+        "by_receiver": {},
+        "by_slice": {},
+        "by_scene": {},
+        "gates": gates,
+        "gate_state": {name: False for name in gate_names},
+        "all_gates_pass": False,
+        "verdict": "REJECT_ROUTE",
+    }
+
+
+def analyze_d92_ccoc_hard9_k1(
+    matrix_manifest_path: str | Path,
+    *,
+    run_root: str | Path | None,
+    method_lock_path: str | Path,
+    baseline_paired_rows_path: str | Path | None = None,
+    per_old_class_rows_path: str | Path | None = None,
+    truth_sidecar_root: str | Path | None = None,
+    output_root: str | Path | None = None,
+) -> dict[str, Any]:
+    """Analyze a frozen run; with an output root, evidence faults reject in place."""
+
+    prepared_output = _prepare_output_root(output_root) if output_root is not None else None
+    try:
+        result = _analyze_d92_ccoc_hard9_k1(
+            matrix_manifest_path,
+            run_root=run_root,
+            method_lock_path=method_lock_path,
+            baseline_paired_rows_path=baseline_paired_rows_path,
+            per_old_class_rows_path=per_old_class_rows_path,
+            truth_sidecar_root=truth_sidecar_root,
+        )
+    except D92CCOCHard9K1AnalysisError as error:
+        if prepared_output is None:
+            raise
+        result = _controlled_reject_result(error)
+        result["output_paths"] = write_analysis_outputs(result, prepared_output)
+        return result
+    if prepared_output is not None:
+        result["output_paths"] = write_analysis_outputs(result, prepared_output)
+    return result
 
 
 analyze_ccoc_hard9_k1 = analyze_d92_ccoc_hard9_k1

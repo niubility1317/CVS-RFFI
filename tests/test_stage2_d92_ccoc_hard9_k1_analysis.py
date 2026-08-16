@@ -2,9 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-import copy
 import csv
-import shutil
 import sys
 from pathlib import Path
 
@@ -14,7 +12,27 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / "code") not in sys.path:
     sys.path.insert(0, str(ROOT / "code"))
 
+from cvsrffi import stage2_d92_ccoc_hard9_k1 as matrix  # noqa: E402
 from cvsrffi import stage2_d92_ccoc_hard9_k1_analysis as analysis  # noqa: E402
+
+
+_ORIGINAL_MATRIX_STATE = {
+    "RAW_SCORE_ROOT": matrix.RAW_SCORE_ROOT,
+    "RAW_SCORE_SHA": dict(matrix.RAW_SCORE_SHA),
+    "HISTORICAL_BASELINE_PATH": matrix.HISTORICAL_BASELINE_PATH,
+    "HISTORICAL_BASELINE_SHA256": matrix.HISTORICAL_BASELINE_SHA256,
+    "HISTORICAL_PER_OLD_CLASS_PATH": matrix.HISTORICAL_PER_OLD_CLASS_PATH,
+    "HISTORICAL_PER_OLD_CLASS_SHA256": matrix.HISTORICAL_PER_OLD_CLASS_SHA256,
+}
+
+
+@pytest.fixture(autouse=True)
+def _restore_matrix_fixture_constants() -> None:
+    """Keep canonical test-path relocation local to each test case."""
+
+    yield
+    for name, value in _ORIGINAL_MATRIX_STATE.items():
+        setattr(matrix, name, dict(value) if isinstance(value, dict) else value)
 
 
 def test_analyzer_exports_frozen_verdicts() -> None:
@@ -55,6 +73,7 @@ def _score(delta: float = 0.02) -> dict[str, object]:
             "old_to_new_rate": 0.10 - delta,
         },
         "old_forgetting_pp": -delta * 100.0,
+        "per_old_class_floor_before": 0.70,
     }
 
 
@@ -192,56 +211,248 @@ def _refresh_commit(state_root: Path) -> None:
     _write_json(state_root / "COMMIT.json", commit)
 
 
-def _integration_fixture(tmp_path: Path) -> tuple[Path, Path, Path, Path]:
-    from cvsrffi import stage2_d92_ccoc_hard9_k1 as matrix
+def _write_csv(path: Path, rows: list[dict[str, object]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
 
-    config = ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v1.json"
-    lock_path = tmp_path / "method_lock.json"
-    shutil.copyfile(config, lock_path)
-    manifest = matrix.build_hard9_k1_manifest(config, require_package_files=False)
-    run_root = tmp_path / "run"
+
+def _surface_score(
+    outer: str,
+    truth_sha256: str,
+    *,
+    gain: float,
+    forgetting_pp: float,
+    query_tag: str = "canonical",
+) -> dict[str, object]:
+    """Make an E0/candidate surface with explicit per-state query identities."""
+
+    after_accuracy = 0.70 + gain
+    error_rate = 0.10 - (0.02 if gain else 0.0)
+    before_scene = {
+        scene: {
+            "query_count": 60,
+            "query_identity_sha256": hashlib.sha256(
+                f"{outer}:before:{scene}:{query_tag}".encode("utf-8")
+            ).hexdigest(),
+        }
+        for scene in analysis.SCENES
+    }
+    after_scene = {
+        scene: {
+            "query_count": 80,
+            "query_identity_sha256": hashlib.sha256(
+                f"{outer}:after:{scene}:{query_tag}".encode("utf-8")
+            ).hexdigest(),
+            "h_old_new": after_accuracy,
+            "old_acc": after_accuracy,
+            "old_balanced_accuracy": after_accuracy,
+            "c_old_acc": after_accuracy,
+            "old_floor": after_accuracy,
+            "seen_new_acc": after_accuracy,
+            "average_forgetting": forgetting_pp / 100.0,
+            "new_to_old_rate": error_rate,
+            "old_to_new_rate": error_rate,
+        }
+        for scene in analysis.SCENES
+    }
+    old_before = {f"tx_{index}": {"role": "target_old", "accuracy": 0.80} for index in range(6)}
+    old_after = {
+        f"tx_{index}": {"role": "target_old", "accuracy": after_accuracy}
+        for index in range(6)
+    }
+    return {
+        "schema": "cvs.phase2.diag_cosine_dev_pair_score.v1",
+        "candidate": "e0_full_only" if gain == 0.0 else analysis.CANDIDATE_ID,
+        "truth_sidecar_sha256": truth_sha256,
+        "query_truth_fed_back_to_predictor": False,
+        "query_truth_joined_only_after_immutable_predictions": True,
+        "before": {"old_acc": 0.80, "by_tx": old_before, "by_scenario": before_scene},
+        "after": {
+            "h_old_new": after_accuracy,
+            "old_acc": after_accuracy,
+            "seen_new_acc": after_accuracy,
+            "new_to_old_rate": error_rate,
+            "old_to_new_rate": error_rate,
+            "by_tx": old_after,
+            "by_scenario": after_scene,
+        },
+        "old_forgetting_pp": forgetting_pp,
+        "per_old_class_floor_before": 0.80,
+    }
+
+
+def _closure_hashes(job_root: Path) -> dict[str, str]:
+    files = {
+        "before_prediction_sha256": ("before", "prediction_artifact.npz"),
+        "after_prediction_sha256": ("after", "prediction_artifact.npz"),
+        "before_commit_sha256": ("before", "COMMIT.json"),
+        "after_commit_sha256": ("after", "COMMIT.json"),
+        "before_fit_audit_sha256": ("before", "fit_audit.json"),
+        "after_fit_audit_sha256": ("after", "fit_audit.json"),
+        "before_resource_audit_sha256": ("before", "resource_audit.json"),
+        "after_resource_audit_sha256": ("after", "resource_audit.json"),
+        "before_execution_receipt_sha256": ("before", "execution_receipt.json"),
+        "after_execution_receipt_sha256": ("after", "execution_receipt.json"),
+    }
+    return {
+        field: _digest(job_root / "diag" / state / name)
+        for field, (state, name) in files.items()
+    }
+
+
+def _refresh_closure_evidence(job_root: Path) -> None:
+    """Model Task1 re-binding after a deliberate valid artifact mutation."""
+
+    hashes = _closure_hashes(job_root)
+    binding_path = job_root / "score_binding.json"
+    binding = json.loads(binding_path.read_text(encoding="utf-8"))
+    binding.update(hashes)
+    _write_json(binding_path, binding)
+    receipt_path = job_root / "job_receipt.json"
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt.update(hashes)
+    receipt["prediction_closure"] = dict(hashes)
+    receipt["score_binding_sha256"] = _digest(binding_path)
+    receipt["score_sha256"] = _digest(job_root / "scorer" / "diag_cosine_score.json")
+    receipt["score_evidence"].update(hashes)
+    receipt["score_evidence"]["score_artifact_sha256"] = receipt["score_sha256"]
+    _write_json(receipt_path, receipt)
+
+
+def _refresh_score_evidence(job_root: Path) -> None:
+    receipt_path = job_root / "job_receipt.json"
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    score_sha = _digest(job_root / "scorer" / "diag_cosine_score.json")
+    receipt["score_sha256"] = score_sha
+    receipt["score_evidence"]["score_artifact_sha256"] = score_sha
+    _write_json(receipt_path, receipt)
+
+
+def _integration_fixture(
+    tmp_path: Path,
+    *,
+    raw_truth_mismatch: bool = False,
+    raw_query_mismatch: bool = False,
+) -> tuple[Path, Path, Path, Path]:
+    """Build a strict canonical manifest with local, fully closed artifacts."""
+
+    raw_root = tmp_path / "e0_raw"
+    paired_path = tmp_path / "historical" / "paired_rows.csv"
+    per_old_path = tmp_path / "historical" / "per_old_class_rows.csv"
     truth_root = tmp_path / "truth"
+    raw_scores: dict[str, dict[str, object]] = {}
+    candidate_truth_sha: dict[str, str] = {}
+    selected_rows = matrix._expected_rows()
+    mismatch_outer = str(selected_rows[0]["outer_key"])
+    for row in selected_rows:
+        outer = str(row["outer_key"])
+        candidate_truth_sha[outer] = hashlib.sha256(
+            f"candidate-truth:{outer}".encode("utf-8")
+        ).hexdigest()
+        raw_truth_sha = candidate_truth_sha[outer]
+        if raw_truth_mismatch and outer == mismatch_outer:
+            raw_truth_sha = hashlib.sha256(f"raw-truth:{outer}".encode("utf-8")).hexdigest()
+        raw_scores[outer] = _surface_score(
+            outer,
+            raw_truth_sha,
+            gain=0.0,
+            forgetting_pp=10.0,
+            query_tag="raw-drift" if raw_query_mismatch and outer == mismatch_outer else "canonical",
+        )
+        _write_json(
+            raw_root / outer / "E0_FULL_ONLY" / "scorer" / "diag_cosine_score.json",
+            raw_scores[outer],
+        )
+
+    paired_rows: list[dict[str, object]] = []
+    per_old_rows: list[dict[str, object]] = []
+    for row in selected_rows:
+        outer = str(row["outer_key"])
+        metrics = analysis.compute_score_metrics(raw_scores[outer])
+        scenes = matrix.E0_RESOURCE_ROWS[outer]["scenes"]
+        query_macs = {int(value["query_macs"]) for value in scenes.values()}
+        state_bytes = {int(value["state_bytes"]) for value in scenes.values()}
+        assert len(query_macs) == len(state_bytes) == 1
+        paired_rows.append(
+            {
+                "outer_key": outer,
+                "receiver": row["receiver"],
+                "seed": row["seed"],
+                "k_shot": row["k_shot"],
+                "new_class_count": row["new_class_count"],
+                "slice": f"K{row['k_shot']}_new{row['new_class_count']}",
+                "candidate_h_old_new": metrics["h_old_new"],
+                "candidate_old_acc": metrics["c_old_acc"],
+                "candidate_old_floor": metrics["old_floor"],
+                "candidate_seen_new_acc": metrics["seen_new_acc"],
+                "candidate_forgetting": metrics["average_forgetting"],
+                "candidate_da1_reg0_old_acc": metrics["da1_reg0_old_acc"],
+                "candidate_da1_reg0_old_floor": metrics["da1_reg0_old_floor"],
+                "query_macs": next(iter(query_macs)),
+                "state_bytes": next(iter(state_bytes)),
+            }
+        )
+        for tx in range(6):
+            per_old_rows.append(
+                {
+                    "outer_key": outer,
+                    "tx": f"tx_{tx}",
+                    "candidate_accuracy": 0.70,
+                    "baseline_accuracy": 0.70,
+                    "delta_accuracy": 0.0,
+                }
+            )
+    _write_csv(paired_path, paired_rows)
+    _write_csv(per_old_path, per_old_rows)
+
+    matrix.RAW_SCORE_ROOT = str(raw_root)
+    matrix.RAW_SCORE_SHA = {
+        outer: _digest(raw_root / outer / "E0_FULL_ONLY" / "scorer" / "diag_cosine_score.json")
+        for outer in raw_scores
+    }
+    matrix.HISTORICAL_BASELINE_PATH = str(paired_path)
+    matrix.HISTORICAL_BASELINE_SHA256 = _digest(paired_path)
+    matrix.HISTORICAL_PER_OLD_CLASS_PATH = str(per_old_path)
+    matrix.HISTORICAL_PER_OLD_CLASS_SHA256 = _digest(per_old_path)
+    lock_path = tmp_path / "method_lock.json"
+    _write_json(lock_path, matrix._expected_lock())
+    manifest = matrix.build_hard9_k1_manifest(lock_path, require_package_files=False)
     for job in manifest["jobs"]:
-        truth = truth_root / "jobs" / job["outer_key"] / "offline" / "scorer" / "truth_sidecar.json"
-        truth.parent.mkdir(parents=True, exist_ok=True)
-        truth.write_text("opaque truth", encoding="utf-8")
-        job["truth_sidecar"] = str(truth)
-        job["truth_sidecar_sha256"] = _digest(truth)
+        outer = str(job["outer_key"])
+        job["truth_sidecar_sha256"] = candidate_truth_sha[outer]
+        for package_name, package in job["packages"].items():
+            package["expected_seal_sha256"] = hashlib.sha256(
+                f"seal:{outer}:{package_name}".encode("utf-8")
+            ).hexdigest()
     manifest_path = tmp_path / "matrix_manifest.json"
     _write_json(manifest_path, manifest)
+    matrix.validate_hard9_k1_manifest(
+        manifest,
+        expected_method_lock_sha256=_digest(lock_path),
+        require_package_hashes=True,
+    )
+
+    run_root = tmp_path / "run"
     manifest_sha = _digest(manifest_path)
-    raw_root = Path(matrix.RAW_SCORE_ROOT)
     for job in manifest["jobs"]:
-        outer = job["outer_key"]
-        raw_path = raw_root / outer / "E0_FULL_ONLY" / "scorer" / "diag_cosine_score.json"
-        baseline = json.loads(raw_path.read_text(encoding="utf-8"))
-        candidate = copy.deepcopy(baseline)
-        candidate["candidate"] = analysis.CANDIDATE_ID
-        candidate["truth_sidecar_sha256"] = job["truth_sidecar_sha256"]
+        outer = str(job["outer_key"])
+        truth = truth_root / "jobs" / outer / "offline" / "scorer" / "truth_sidecar.json"
+        truth.parent.mkdir(parents=True, exist_ok=True)
+        truth.write_text(f"candidate-truth:{outer}", encoding="utf-8")
+        assert _digest(truth) == candidate_truth_sha[outer]
+        candidate = _surface_score(outer, candidate_truth_sha[outer], gain=0.05, forgetting_pp=8.0)
         candidate["before_prediction_sha256"] = "before-placeholder"
         candidate["after_prediction_sha256"] = "after-placeholder"
-        candidate["query_truth_fed_back_to_predictor"] = False
-        candidate["query_truth_joined_only_after_immutable_predictions"] = True
-        candidate["old_forgetting_pp"] = float(baseline.get("old_forgetting_pp", 0.0)) - 2.0
-        for field in ("h_old_new", "old_acc", "seen_new_acc"):
-            candidate["after"][field] = min(0.99, float(candidate["after"][field]) + 0.05)
-        for tx, row in candidate["after"]["by_tx"].items():
-            if row.get("role") == "target_old":
-                row["accuracy"] = float(row["accuracy"]) if float(row["accuracy"]) >= 0.95 else min(0.99, float(row["accuracy"]) + 0.05)
-        for state_name in ("before", "after"):
-            candidate[state_name]["by_tx"] = copy.deepcopy(candidate["before"]["by_tx"] if state_name == "before" else candidate["after"]["by_tx"])
-        for scene in analysis.SCENES:
-            row = candidate["after"]["by_scenario"][scene]
-            for field in ("h_old_new", "old_acc", "seen_new_acc"):
-                row[field] = min(0.99, float(row[field]) + 0.05)
-            for field in ("new_to_old_rate", "old_to_new_rate"):
-                row[field] = max(0.001, float(row[field]) - 0.02)
         job_root = run_root / "jobs" / outer / analysis.ARM_ID
-        fit_rows = []
+        fit_rows: list[dict[str, object]] = []
         for scene in analysis.SCENES:
             active = int(job["k_shot"]) > 2
             prefix = "d92_e0d_ccoc_"
-            row = {
+            e0_resource = job["e0_resource"]["scenes"][scene]
+            fit_row: dict[str, object] = {
                 "scenario": scene,
                 "arm_id": analysis.ARM_ID,
                 "candidate_id": analysis.CANDIDATE_ID,
@@ -250,9 +461,12 @@ def _integration_fixture(tmp_path: Path) -> tuple[Path, Path, Path, Path]:
                 "after_actual_component_inventory": {"actual_component_fit_count": 1 if active else 3},
                 "after_registered_d_mode_effective": "ccoc_full" if active else "d92_full_alias",
                 "registered_class_count": 6 + int(job["new_class_count"]),
-                "query_macs": int(job["e0_resource"]["scenes"][scene]["query_macs"]),
-                "after_state_bytes": int(job["e0_resource"]["scenes"][scene]["state_bytes"]),
-                "after_registration_resource": {"registration_wall_time_ns": int(job["e0_resource"]["scenes"][scene]["registration_wall_time_ns"]), "registration_incremental_peak_working_set_bytes": 1000},
+                "query_macs": int(e0_resource["query_macs"]),
+                "after_state_bytes": int(e0_resource["state_bytes"]),
+                "after_registration_resource": {
+                    "registration_wall_time_ns": int(int(e0_resource["registration_wall_time_ns"]) * 1.05),
+                    "registration_incremental_peak_working_set_bytes": 500_000,
+                },
                 prefix + "active": active,
                 prefix + "fallback_active": False,
                 prefix + "fallback_reason": None if active else matrix.FIT_GATE["k1_alias"],
@@ -265,42 +479,43 @@ def _integration_fixture(tmp_path: Path) -> tuple[Path, Path, Path, Path]:
                 prefix + "query_rows_used": 0,
             }
             for field in matrix.QUERY_ZERO_FIELDS:
-                row[field] = False
-                row["d92_e0d_" + field] = False
-                row[prefix + field] = False
-            fit_rows.append(row)
+                fit_row[field] = False
+                fit_row["d92_e0d_" + field] = False
+                fit_row[prefix + field] = False
+            fit_rows.append(fit_row)
         for state_name in ("before", "after"):
             state_root = job_root / "diag" / state_name
             state_root.mkdir(parents=True, exist_ok=True)
             _write_json(state_root / "execution_receipt.json", {"state": state_name})
             _write_json(state_root / "fit_audit.json", fit_rows)
             (state_root / "prediction_artifact.npz").write_bytes((state_name + outer).encode("utf-8"))
-            _write_json(state_root / "resource_audit.json", {})
+            _write_json(state_root / "resource_audit.json", {"state": state_name})
             _make_commit(state_root)
-        before_sha = _digest(job_root / "diag" / "before" / "prediction_artifact.npz")
-        after_sha = _digest(job_root / "diag" / "after" / "prediction_artifact.npz")
-        candidate["before_prediction_sha256"] = before_sha
-        candidate["after_prediction_sha256"] = after_sha
-        _write_json(job_root / "scorer" / "diag_cosine_score.json", candidate)
-        score_sha = _digest(job_root / "scorer" / "diag_cosine_score.json")
+        closure_hashes = _closure_hashes(job_root)
+        candidate["before_prediction_sha256"] = closure_hashes["before_prediction_sha256"]
+        candidate["after_prediction_sha256"] = closure_hashes["after_prediction_sha256"]
+        score_path = job_root / "scorer" / "diag_cosine_score.json"
+        _write_json(score_path, candidate)
         binding_path = job_root / "score_binding.json"
-        _write_json(binding_path, {
-            "schema": "cvs.phase2.d92_ccoc_hard9_k1.score_binding.v1",
-            "job_id": job["job_id"],
-            "outer_key": outer,
-            "outer_role": job["outer_role"],
-            "arm_id": analysis.ARM_ID,
-            "candidate": analysis.CANDIDATE_ID,
-            "matrix_manifest_sha256": manifest_sha,
-            "method_lock_sha256": manifest["method_lock_sha256"],
-            "truth_sidecar": str(job["truth_sidecar"]),
-            "truth_sidecar_sha256": job["truth_sidecar_sha256"],
-            "before_prediction_sha256": before_sha,
-            "after_prediction_sha256": after_sha,
-            "score_command": ["python", "score"],
-            "performance_result_allowed": False,
-        })
-        binding_sha = _digest(binding_path)
+        _write_json(
+            binding_path,
+            {
+                "schema": "cvs.phase2.d92_ccoc_hard9_k1.score_binding.v1",
+                "job_id": job["job_id"],
+                "outer_key": outer,
+                "outer_role": job["outer_role"],
+                "arm_id": analysis.ARM_ID,
+                "candidate": analysis.CANDIDATE_ID,
+                "matrix_manifest_sha256": manifest_sha,
+                "method_lock_sha256": manifest["method_lock_sha256"],
+                "truth_sidecar": str(job["truth_sidecar"]),
+                "truth_sidecar_sha256": job["truth_sidecar_sha256"],
+                **closure_hashes,
+                "score_command": ["python", "score"],
+                "performance_result_allowed": False,
+            },
+        )
+        score_sha = _digest(score_path)
         score_evidence = {
             "job_id": job["job_id"],
             "outer_key": outer,
@@ -310,26 +525,38 @@ def _integration_fixture(tmp_path: Path) -> tuple[Path, Path, Path, Path]:
             "method_lock_sha256": manifest["method_lock_sha256"],
             "score_artifact_sha256": score_sha,
             "truth_sidecar_sha256": job["truth_sidecar_sha256"],
-            "before_prediction_sha256": before_sha,
-            "after_prediction_sha256": after_sha,
+            **closure_hashes,
         }
-        _write_json(job_root / "job_receipt.json", {
-            "schema": matrix.JOB_RECEIPT_SCHEMA,
-            "status": "PREDICTIONS_AND_POST_PREDICTION_SCORE_COMPLETE",
-            "job_id": job["job_id"], "outer_key": outer, "outer_role": job["outer_role"], "k_shot": job["k_shot"],
-            "arm_id": analysis.ARM_ID, "candidate": analysis.CANDIDATE_ID,
-            "matrix_manifest_sha256": manifest_sha, "method_lock_sha256": manifest["method_lock_sha256"], "selection_sha256": matrix.CANONICAL_SELECTION_SHA256,
-            "before_prediction_sha256": before_sha, "after_prediction_sha256": after_sha, "score_sha256": score_sha,
-            "truth_sidecar_sha256": job["truth_sidecar_sha256"],
-            "truth_sidecar_sha256_before_score": job["truth_sidecar_sha256"],
-            "truth_sidecar_sha256_after_score": job["truth_sidecar_sha256"],
-            "score_binding": str(binding_path),
-            "score_binding_sha256": binding_sha,
-            "score_evidence": score_evidence,
-            "truth_sidecar_exposed_to_predictor": False,
-            "query_truth_joined_only_after_immutable_predictions": True, "query_truth_fed_back_to_predictor": False,
-            "prediction_and_scorer_processes_isolated": True, "fresh_run_retry_authorized": False,
-        })
+        _write_json(
+            job_root / "job_receipt.json",
+            {
+                "schema": matrix.JOB_RECEIPT_SCHEMA,
+                "status": "PREDICTIONS_AND_POST_PREDICTION_SCORE_COMPLETE",
+                "job_id": job["job_id"],
+                "outer_key": outer,
+                "outer_role": job["outer_role"],
+                "k_shot": job["k_shot"],
+                "arm_id": analysis.ARM_ID,
+                "candidate": analysis.CANDIDATE_ID,
+                "matrix_manifest_sha256": manifest_sha,
+                "method_lock_sha256": manifest["method_lock_sha256"],
+                "selection_sha256": matrix.CANONICAL_SELECTION_SHA256,
+                **closure_hashes,
+                "prediction_closure": dict(closure_hashes),
+                "score_sha256": score_sha,
+                "truth_sidecar_sha256": job["truth_sidecar_sha256"],
+                "truth_sidecar_sha256_before_score": job["truth_sidecar_sha256"],
+                "truth_sidecar_sha256_after_score": job["truth_sidecar_sha256"],
+                "score_binding": str(binding_path),
+                "score_binding_sha256": _digest(binding_path),
+                "score_evidence": score_evidence,
+                "truth_sidecar_exposed_to_predictor": False,
+                "query_truth_joined_only_after_immutable_predictions": True,
+                "query_truth_fed_back_to_predictor": False,
+                "prediction_and_scorer_processes_isolated": True,
+                "fresh_run_retry_authorized": False,
+            },
+        )
     return manifest_path, lock_path, run_root, truth_root
 
 
@@ -358,6 +585,7 @@ def test_single_scene_hard_peak_is_rejected_even_when_other_scenes_pass(tmp_path
     rows[1]["after_registration_resource"]["registration_incremental_peak_working_set_bytes"] = 1_048_577
     _write_json(fit, rows)
     _refresh_commit(fit.parent)
+    _refresh_closure_evidence(fit.parent.parent.parent)
 
     result = analysis.analyze_d92_ccoc_hard9_k1(
         manifest,
@@ -391,7 +619,7 @@ def test_k1_cannot_enter_performance_aggregation(tmp_path: Path) -> None:
     _write_json(Path(manifest), payload)
     import pytest
 
-    with pytest.raises(analysis.D92CCOCHard9K1AnalysisError, match="K1"):
+    with pytest.raises(analysis.D92CCOCHard9K1AnalysisError, match="matrix manifest"):
         analysis.analyze_d92_ccoc_hard9_k1(manifest, run_root=run_root, method_lock_path=lock, truth_sidecar_root=truth_root)
 
 
@@ -404,6 +632,7 @@ def test_duplicate_or_missing_scene_is_rejected_before_metric_aggregation(tmp_pa
     rows[1]["scenario"] = rows[0]["scenario"]
     _write_json(fit, rows)
     _refresh_commit(state_root)
+    _refresh_closure_evidence(state_root.parent.parent)
 
     with pytest.raises(analysis.D92CCOCHard9K1AnalysisError, match="duplicate/missing"):
         analysis.analyze_d92_ccoc_hard9_k1(
@@ -423,6 +652,7 @@ def test_performance_fallback_receipt_is_rejected(tmp_path: Path) -> None:
     rows[0]["d92_e0d_ccoc_fallback_active"] = True
     _write_json(fit, rows)
     _refresh_commit(state_root)
+    _refresh_closure_evidence(state_root.parent.parent)
 
     with pytest.raises(analysis.D92CCOCHard9K1AnalysisError, match="active lifecycle"):
         analysis.analyze_d92_ccoc_hard9_k1(
@@ -441,7 +671,7 @@ def test_commit_and_truth_hash_drift_are_rejected_before_verdict(tmp_path: Path)
     rows[0]["after_registration_resource"]["registration_wall_time_ns"] = 1
     _write_json(fit, rows)
 
-    with pytest.raises(analysis.D92CCOCHard9K1AnalysisError, match="commit member SHA drift"):
+    with pytest.raises(analysis.D92CCOCHard9K1AnalysisError, match="closure SHA drift"):
         analysis.analyze_d92_ccoc_hard9_k1(
             manifest,
             run_root=run_root,
@@ -450,6 +680,7 @@ def test_commit_and_truth_hash_drift_are_rejected_before_verdict(tmp_path: Path)
         )
 
     _refresh_commit(fit.parent)
+    _refresh_closure_evidence(fit.parent.parent.parent)
     truth = truth_root / "jobs" / outer / "offline" / "scorer" / "truth_sidecar.json"
     truth.write_text("drifted truth", encoding="utf-8")
     with pytest.raises(analysis.D92CCOCHard9K1AnalysisError, match="truth sidecar hash binding drift"):
@@ -472,6 +703,7 @@ def test_single_scene_wall_and_query_state_hard_failures_are_not_soft_revision(t
     rows[1]["after_state_bytes"] += 1
     _write_json(fit, rows)
     _refresh_commit(state_root)
+    _refresh_closure_evidence(state_root.parent.parent)
     result = analysis.analyze_d92_ccoc_hard9_k1(manifest, run_root=run_root, method_lock_path=lock, truth_sidecar_root=truth_root)
     assert result["verdict"] == "REJECT_ROUTE"
     assert result["gate_state"]["resource_hard"] is False
@@ -484,7 +716,7 @@ def test_truth_and_score_binding_drift_is_rejected(tmp_path: Path) -> None:
     _write_json(Path(manifest), payload)
     import pytest
 
-    with pytest.raises(analysis.D92CCOCHard9K1AnalysisError, match="matrix_manifest_sha256"):
+    with pytest.raises(analysis.D92CCOCHard9K1AnalysisError, match="matrix manifest"):
         analysis.analyze_d92_ccoc_hard9_k1(manifest, run_root=run_root, method_lock_path=lock, truth_sidecar_root=truth_root)
 
 
@@ -547,6 +779,7 @@ def test_each_eight_metric_tie_rejects_the_route(tmp_path: Path, metric: str) ->
     else:
         for scene in analysis.SCENES:
             candidate["after"]["by_scenario"][scene][metric] = raw["after"]["by_scenario"][scene][metric]
+        candidate["after"][metric] = raw["after"][metric]
     _write_json(score_path, candidate)
     receipt_path = score_path.parent.parent / "job_receipt.json"
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
@@ -620,6 +853,7 @@ def test_729088_peak_is_target_only_failure_and_revises_once(tmp_path: Path) -> 
     rows[0]["after_registration_resource"]["registration_incremental_peak_working_set_bytes"] = 729_088
     _write_json(fit, rows)
     _refresh_commit(state_root)
+    _refresh_closure_evidence(state_root.parent.parent)
 
     result = analysis.analyze_d92_ccoc_hard9_k1(
         manifest,
@@ -654,3 +888,201 @@ def test_markdown_reports_observed_reg0_old_metrics_and_na_reg0_new_metrics(
     ) in markdown
     assert "| DA0_REG1 | N/A | N/A | N/A | N/A |" in markdown
     assert "| DA1_REG1 |" in markdown
+
+
+_EXCLUSIVE_OUTPUTS = {
+    "summary.json",
+    "gates.json",
+    "paired_rows.csv",
+    "per_old_class_rows.csv",
+    "scenario_rows.csv",
+    "liveness_rows.csv",
+    "analysis.md",
+}
+
+
+def _assert_controlled_reject(result: dict[str, object], output_root: Path) -> None:
+    assert result["verdict"] == "REJECT_ROUTE"
+    assert result["gate_state"]["complete_artifact_closure"] is False
+    assert {path.name for path in output_root.iterdir()} == _EXCLUSIVE_OUTPUTS
+    assert json.loads((output_root / "summary.json").read_text(encoding="utf-8"))["verdict"] == "REJECT_ROUTE"
+
+
+def test_compact_manifest_cannot_use_a_production_fallback() -> None:
+    compact = {
+        "schema": matrix.MATRIX_SCHEMA,
+        "jobs": [],
+        "job_count": 10,
+        "outer_count": 10,
+        "performance_outer_count": 9,
+        "liveness_outer_count": 1,
+        "scene_count": 3,
+        "scene_arm_count": 30,
+        "selection_sha256": matrix.CANONICAL_SELECTION_SHA256,
+        "method_lock_sha256": "a" * 64,
+    }
+    with pytest.raises(analysis.D92CCOCHard9K1AnalysisError):
+        analysis._validate_manifest_shape(compact, "a" * 64)
+
+
+def test_resource_target_uses_frozen_p90_for_wall_and_ratio() -> None:
+    rows = []
+    for index in range(10):
+        rows.append(
+            {
+                "outer_key": f"outer-{index}",
+                "scenario": "leo_clear_weak",
+                "candidate_wall_ns": 100_000_000 if index < 9 else 125_000_000,
+                "wall_ratio": 1.0 if index < 9 else 1.30,
+                "candidate_peak_bytes": 500_000,
+                "wall_hard_pass": True,
+                "ratio_hard_pass": True,
+                "peak_hard_pass": True,
+                "wall_target_pass": index < 9,
+                "ratio_target_pass": index < 9,
+                "peak_target_pass": True,
+                "query_state_exact": True,
+            }
+        )
+    result = analysis.evaluate_resource_gate(rows)
+    assert result["wall_p90_ns"] == 100_000_000
+    assert result["wall_ratio_p90"] == 1.0
+    assert result["target_passed"] is True
+
+
+def test_missing_reg0_old_floor_is_evidence_failure_not_reg1_substitution() -> None:
+    score = _score()
+    score.pop("per_old_class_floor_before")
+    with pytest.raises(analysis.D92CCOCHard9K1AnalysisError, match="DA1_REG0 old floor"):
+        analysis.compute_score_metrics(score)
+
+
+@pytest.mark.parametrize(
+    ("fixture_kwargs", "name"),
+    [
+        ({"raw_truth_mismatch": True}, "truth"),
+        ({"raw_query_mismatch": True}, "query"),
+    ],
+)
+def test_candidate_and_same_outer_e0_must_share_truth_and_query_surface(
+    tmp_path: Path,
+    fixture_kwargs: dict[str, bool],
+    name: str,
+) -> None:
+    manifest, lock, run_root, truth_root = _integration_fixture(tmp_path, **fixture_kwargs)
+    output_root = tmp_path / f"reject-{name}"
+    result = analysis.analyze_d92_ccoc_hard9_k1(
+        manifest,
+        run_root=run_root,
+        method_lock_path=lock,
+        truth_sidecar_root=truth_root,
+        output_root=output_root,
+    )
+    _assert_controlled_reject(result, output_root)
+
+
+def test_fit_and_commit_rewrite_without_task1_closure_rebind_is_controlled_reject(
+    tmp_path: Path,
+) -> None:
+    manifest, lock, run_root, truth_root = _integration_fixture(tmp_path)
+    outer = json.loads(manifest.read_text(encoding="utf-8"))["jobs"][0]["outer_key"]
+    state_root = run_root / "jobs" / outer / analysis.ARM_ID / "diag" / "after"
+    fit_path = state_root / "fit_audit.json"
+    fit_rows = json.loads(fit_path.read_text(encoding="utf-8"))
+    fit_rows[0]["audit_nonce"] = "rewritten-after-bind"
+    _write_json(fit_path, fit_rows)
+    _refresh_commit(state_root)
+    output_root = tmp_path / "reject-fit-commit-drift"
+    result = analysis.analyze_d92_ccoc_hard9_k1(
+        manifest,
+        run_root=run_root,
+        method_lock_path=lock,
+        truth_sidecar_root=truth_root,
+        output_root=output_root,
+    )
+    _assert_controlled_reject(result, output_root)
+
+
+def test_missing_score_evidence_and_fallback_produce_controlled_seven_file_rejects(
+    tmp_path: Path,
+) -> None:
+    manifest, lock, run_root, truth_root = _integration_fixture(tmp_path / "missing")
+    outer = json.loads(manifest.read_text(encoding="utf-8"))["jobs"][0]["outer_key"]
+    receipt_path = run_root / "jobs" / outer / analysis.ARM_ID / "job_receipt.json"
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt.pop("score_evidence")
+    _write_json(receipt_path, receipt)
+    missing_root = tmp_path / "reject-missing-evidence"
+    missing = analysis.analyze_d92_ccoc_hard9_k1(
+        manifest,
+        run_root=run_root,
+        method_lock_path=lock,
+        truth_sidecar_root=truth_root,
+        output_root=missing_root,
+    )
+    _assert_controlled_reject(missing, missing_root)
+
+    manifest, lock, run_root, truth_root = _integration_fixture(tmp_path / "fallback")
+    outer = json.loads(manifest.read_text(encoding="utf-8"))["jobs"][0]["outer_key"]
+    job_root = run_root / "jobs" / outer / analysis.ARM_ID
+    fit_path = job_root / "diag" / "after" / "fit_audit.json"
+    fit_rows = json.loads(fit_path.read_text(encoding="utf-8"))
+    fit_rows[0]["d92_e0d_ccoc_fallback_active"] = True
+    _write_json(fit_path, fit_rows)
+    _refresh_commit(fit_path.parent)
+    _refresh_closure_evidence(job_root)
+    fallback_root = tmp_path / "reject-fallback"
+    fallback = analysis.analyze_d92_ccoc_hard9_k1(
+        manifest,
+        run_root=run_root,
+        method_lock_path=lock,
+        truth_sidecar_root=truth_root,
+        output_root=fallback_root,
+    )
+    _assert_controlled_reject(fallback, fallback_root)
+
+
+def test_receiver_knew_and_scene_stability_requires_all_eight_metric_directions(
+    tmp_path: Path,
+) -> None:
+    manifest, lock, run_root, truth_root = _integration_fixture(tmp_path)
+    jobs = json.loads(manifest.read_text(encoding="utf-8"))["jobs"]
+    scene = analysis.SCENES[-1]
+    job = next(item for item in jobs if item["outer_role"] == "performance")
+    score_path = run_root / "jobs" / job["outer_key"] / analysis.ARM_ID / "scorer" / "diag_cosine_score.json"
+    score = json.loads(score_path.read_text(encoding="utf-8"))
+    score["after"]["by_scenario"][scene]["old_to_new_rate"] = 0.12
+    score["after"]["old_to_new_rate"] = (0.08 + 0.08 + 0.12) / 3.0
+    _write_json(score_path, score)
+    _refresh_score_evidence(score_path.parent.parent)
+
+    result = analysis.analyze_d92_ccoc_hard9_k1(
+        manifest,
+        run_root=run_root,
+        method_lock_path=lock,
+        truth_sidecar_root=truth_root,
+    )
+    assert result["gate_state"]["all_strict_pareto"] is True
+    assert result["gate_state"]["resource_hard"] is True
+    assert result["gate_state"]["stability"] is False
+    assert result["verdict"] == "REVISE_ONCE"
+
+
+def test_fit_resource_join_remains_explicitly_scene_keyed_after_fit_order_changes(
+    tmp_path: Path,
+) -> None:
+    manifest, lock, run_root, truth_root = _integration_fixture(tmp_path)
+    outer = json.loads(manifest.read_text(encoding="utf-8"))["jobs"][0]["outer_key"]
+    job_root = run_root / "jobs" / outer / analysis.ARM_ID
+    fit_path = job_root / "diag" / "after" / "fit_audit.json"
+    rows = json.loads(fit_path.read_text(encoding="utf-8"))
+    _write_json(fit_path, list(reversed(rows)))
+    _refresh_commit(fit_path.parent)
+    _refresh_closure_evidence(job_root)
+    result = analysis.analyze_d92_ccoc_hard9_k1(
+        manifest,
+        run_root=run_root,
+        method_lock_path=lock,
+        truth_sidecar_root=truth_root,
+    )
+    assert result["verdict"] == "ADVANCE_TO_TARGET125_CANDIDATE"
