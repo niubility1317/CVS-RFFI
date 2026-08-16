@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
@@ -268,3 +269,20 @@ def test_prereg_report_has_no_prefilled_runtime_pass_claim() -> None:
     assert "G0_MECHANISM_RESOURCE_PASS" not in text
     assert "expected_marker" in text
     assert "D92_CCOC_G0_ACTIVE_QUANTUM_RESOURCE_PASS" in text
+
+
+def test_source_manifest_includes_tracked_cvsrffi_init() -> None:
+    root = Path(__file__).parents[1]
+    init_path = root / "code/cvsrffi/__init__.py"
+    manifest_path = root / "code/CCOC_G0_SOURCE_MANIFEST.sha256"
+    expected_sha256 = (
+        "db0119aff842e1af0991535c9681b59ac404950dbbae3772487aa74ec0fc9c4d"
+    )
+
+    assert hashlib.sha256(init_path.read_bytes()).hexdigest() == expected_sha256
+    entries = {
+        line.split(maxsplit=1)[1]: line.split(maxsplit=1)[0]
+        for line in manifest_path.read_text(encoding="utf-8").splitlines()
+        if line and not line.startswith("#")
+    }
+    assert entries["code/cvsrffi/__init__.py"] == expected_sha256
