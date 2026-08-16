@@ -38,7 +38,7 @@
 
 ## 2026-08-17 Task3本地发布状态
 
-`d92_e0_full_ccoc_hard9k1_20260816_v1`已在`7647cae86dd0696b7990dcd958a16cefd35637ca`基础上完成本地发布物准备，状态为`LOCAL_VERIFIED_READY_FOR_N607_HANDOFF / NO_HARD9_RUNTIME_RESULT / NO_PERFORMANCE_RESULT`。归档为39成员、38个Git-blob源成员，SHA256为`707d72a1f0083a7f28d62d904acbe6a12d354e1358426ace4efbc971ae21d65d`；launch、报告、交付清单及外部非Git镜像逐字节绑定。注册资源hard上限为1MiB、target为512KiB，query MAC、state、per-query latency及其他冻结门保持不变。未执行SSH、SCP、N607 launch或性能分析；Hard9是否通过及后续Target125仍由主代理依据完整artifact裁决。
+`d92_e0_full_ccoc_hard9k1_20260816_v1`已在truth-order HEAD`07e69f1e4360eacec2b972f465c4c19dd1710fd8`基础上完成本地发布物修复，状态为`LOCAL_VERIFIED_READY_FOR_N607_HANDOFF / NO_HARD9_RUNTIME_RESULT / NO_PERFORMANCE_RESULT`。归档为49成员、48个源成员，SHA256为`62a8a1f8536e8df6d6cbbdc9314ae86519817d44b3982a7acaf42be8df949cdb`；补入D80/D81 core及D43/D44/D45/D46/D61/D62/D66/D80动态probe，不含G0 runner/core；解包后runner/analyzer `--help`均rc0。launch、报告、交付清单及外部非Git镜像逐字节绑定。注册资源hard上限为1MiB、target为512KiB，query MAC、state、per-query latency及其他冻结门保持不变。未执行SSH、SCP、N607 launch或性能分析；Hard9是否通过及后续Target125仍由主代理依据完整artifact裁决。
 
 ## 自动批准边界
 

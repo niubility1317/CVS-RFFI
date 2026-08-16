@@ -5,8 +5,8 @@ project=/home/szu2070436088/2510044040/CV-SincNet
 python=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 run_id=d92_e0_full_ccoc_hard9k1_20260816_v1
 fresh_run_retry=false
-source_root="$project/runs/d92_ccoc_hard9_k1_source_7647cae8_20260816_v1"
-runtime_archive="$project/runs/d92_ccoc_hard9_k1_source_7647cae8_20260816_v1.tar.gz"
+source_root="$project/runs/d92_ccoc_hard9_k1_source_07e69f1e_20260816_v1"
+runtime_archive="$project/runs/d92_ccoc_hard9_k1_source_07e69f1e_20260816_v1.tar.gz"
 driver="$project/runs/d92_ccoc_hard9_k1_driver_${run_id}.sh"
 output_root="$project/runs/d92_ccoc_hard9_k1_20260816_v1"
 logs_root="$project/logs/${run_id}"
@@ -14,9 +14,9 @@ code_root="$source_root/code"
 config="$source_root/configs/stage2_d92_ccoc_hard9_k1_v1.json"
 runner="$code_root/scripts/run_d92_ccoc_hard9_k1.py"
 source_manifest="$code_root/D92_CCOC_HARD9_K1_SOURCE_MANIFEST.sha256"
-archive_sha256=707d72a1f0083a7f28d62d904acbe6a12d354e1358426ace4efbc971ae21d65d
-archive_size_bytes=263356
-archive_member_count=39
+archive_sha256=62a8a1f8536e8df6d6cbbdc9314ae86519817d44b3982a7acaf42be8df949cdb
+archive_size_bytes=308426
+archive_member_count=49
 coordinator_id="task3-${run_id}"
 
 require_file() {

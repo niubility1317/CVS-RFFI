@@ -2951,10 +2951,10 @@ release_message=chore: prepare D92 CCOC G0 v6 release; delivery_files_are_exactl
 
 [20260817_d92_e0_full_ccoc_hard9k1_task3_release]
 run_id=d92_e0_full_ccoc_hard9k1_20260816_v1
-local_change=Task3 release ready no performance for CCOC-16; staged immutable Hard9+K1 archive, launch, preregistration report and delivery manifest from base 7647cae86dd0696b7990dcd958a16cefd35637ca. No SSH/SCP/N607 launch or analysis was performed.
-local_to_remote=automation_reports/CV-SincNet/d92_e0_full_ccoc_hard9k1_20260816_v1/runtime/d92_ccoc_hard9_k1_source_7647cae8_20260816_v1.tar.gz -> /home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_hard9_k1_source_7647cae8_20260816_v1.tar.gz; launch.sh -> /home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_hard9_k1_driver_d92_e0_full_ccoc_hard9k1_20260816_v1.sh; report/manifest -> matching remote run handoff records.
-archive=sha256:707d72a1f0083a7f28d62d904acbe6a12d354e1358426ace4efbc971ae21d65d size_bytes:263356 members:39 source_members:38 source_manifest_sha256:bdab91cca199fd5536e29ca58c5ad66cf9e370cdc8645b0e7515b5940edce902d
-launch=sha256:e5176e99573f9a4debbbe34931207cba16df30fc82b0b9da24468195a1386042 size_bytes:5802
+local_change=Task3 CCOC-16 release fix round1; rebuilt immutable Hard9+K1 archive from truth-order HEAD 07e69f1e with the 10 proven D80/D81 dynamic dependencies, current runner/matrix/analyzer/config, launch and handoff records. No SSH/SCP/N607 launch or analysis was performed.
+local_to_remote=automation_reports/CV-SincNet/d92_e0_full_ccoc_hard9k1_20260816_v1/runtime/d92_ccoc_hard9_k1_source_07e69f1e_20260816_v1.tar.gz -> /home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_hard9_k1_source_07e69f1e_20260816_v1.tar.gz; launch.sh -> /home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_hard9_k1_driver_d92_e0_full_ccoc_hard9k1_20260816_v1.sh; report/manifest -> matching remote run handoff records.
+archive=sha256:62a8a1f8536e8df6d6cbbdc9314ae86519817d44b3982a7acaf42be8df949cdb size_bytes:308426 members:49 source_members:48 source_manifest_sha256:40fc6607d9bd8862f0b90f04e89d57f31bdd377ea52df90af0327a2c49ee5734
+launch=sha256:9de104123c4eb622713940686eeafdc702cecd71ab45913d6a2fbebb633f7ef2 size_bytes:5802
 status=LOCAL_VERIFIED_READY_FOR_N607_HANDOFF / NO_HARD9_RUNTIME_RESULT / NO_PERFORMANCE_RESULT
 ccoc16=release ready no performance; registration_hard_bytes=1048576 registration_target_bytes=524288; query_MAC_state_per_query_latency_gates=unchanged
-verification=release_test_5_passed; Task1_Task2_focused_71_passed; py_compile_verified; config_json_verified; bash_n_verified; tar_safety_members_39_verified; git_blob_manifest_38_of_38_verified; external_mirror_cmp_verified; git_diff_check_verified; no_ssh_scp_n607_launch_or_analysis
+verification=release_test_6_passed; extracted_runner_help_rc0; extracted_analyzer_help_rc0; py_compile_verified; config_json_verified; bash_n_verified; archive_integrity_members_49_verified; external_mirror_cmp_verified; git_diff_check_verified; no_ssh_scp_n607_launch_or_analysis

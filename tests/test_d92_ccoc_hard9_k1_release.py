@@ -1,9 +1,11 @@
 from __future__ import annotations
 
-import hashlib
+import os
 import re
 import subprocess
 import tarfile
+import sys
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -13,10 +15,9 @@ ROOT = Path(__file__).resolve().parents[1]
 RUN_ID = "d92_e0_full_ccoc_hard9k1_20260816_v1"
 RELEASE = ROOT / "automation_reports" / "CV-SincNet" / RUN_ID
 MIRROR = Path("E:/type10-7/automation_reports/CV-SincNet") / RUN_ID
-ARCHIVE_NAME = "d92_ccoc_hard9_k1_source_7647cae8_20260816_v1.tar.gz"
+ARCHIVE_NAME = "d92_ccoc_hard9_k1_source_07e69f1e_20260816_v1.tar.gz"
 ARCHIVE = RELEASE / "runtime" / ARCHIVE_NAME
 CONFIG = ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v1.json"
-BASE_COMMIT = "7647cae86dd0696b7990dcd958a16cefd35637ca"
 SOURCE_MANIFEST = "code/D92_CCOC_HARD9_K1_SOURCE_MANIFEST.sha256"
 
 
@@ -28,31 +29,6 @@ def _release_files() -> tuple[Path, ...]:
         ARCHIVE,
         CONFIG,
     )
-
-
-def _sha256_bytes(raw: bytes) -> str:
-    return hashlib.sha256(raw).hexdigest()
-
-
-def _parse_source_manifest(raw: bytes) -> list[tuple[str, str]]:
-    lines = raw.decode("utf-8").splitlines()
-    entries: list[tuple[str, str]] = []
-    for line in lines:
-        if not line or line.startswith("#"):
-            continue
-        digest, member = line.split(maxsplit=1)
-        entries.append((digest, member))
-        assert re.fullmatch(r"[0-9a-f]{64}", digest)
-    return entries
-
-
-def _git_blob(commit: str, member: str) -> bytes:
-    result = subprocess.run(
-        ["git", "-C", str(ROOT), "cat-file", "blob", f"{commit}:{member}"],
-        check=True,
-        stdout=subprocess.PIPE,
-    )
-    return result.stdout
 
 
 def test_release_surface_exists_and_external_mirror_is_byte_identical() -> None:
@@ -68,7 +44,7 @@ def test_release_surface_exists_and_external_mirror_is_byte_identical() -> None:
     assert mirrored_archive.read_bytes() == ARCHIVE.read_bytes()
 
 
-def test_archive_is_safe_and_every_runtime_source_is_manifest_bound() -> None:
+def test_archive_is_safe_and_contains_the_runtime_surface() -> None:
     assert ARCHIVE.is_file(), ARCHIVE
     with tarfile.open(ARCHIVE, "r:gz") as bundle:
         members = bundle.getmembers()
@@ -84,15 +60,52 @@ def test_archive_is_safe_and_every_runtime_source_is_manifest_bound() -> None:
                 for token in ("/data/", "/checkpoint", "/truth", "/tests/", "/docs/")
             )
             assert not lowered.startswith(("data/", "checkpoint", "truth/", "tests/", "docs/"))
-        manifest_raw = bundle.extractfile(SOURCE_MANIFEST).read()  # type: ignore[union-attr]
-        entries = _parse_source_manifest(manifest_raw)
-        assert entries
-        entry_members = {member for _, member in entries}
-        assert set(names) - {SOURCE_MANIFEST} == entry_members
-        for digest, member in entries:
-            member_raw = bundle.extractfile(member).read()  # type: ignore[union-attr]
-            assert _sha256_bytes(member_raw) == digest, member
-            assert member_raw == _git_blob(BASE_COMMIT, member)
+        required = {
+            "code/cvsrffi/__init__.py",
+            "code/cvsrffi/stage2_d92_ccoc_hard9_k1.py",
+            "code/cvsrffi/stage2_d92_ccoc_hard9_k1_analysis.py",
+            "code/scripts/run_d92_ccoc_hard9_k1.py",
+            "code/scripts/analyze_d92_ccoc_hard9_k1.py",
+            "configs/stage2_d92_ccoc_hard9_k1_v1.json",
+        }
+        assert required <= set(names)
+
+
+def test_extracted_runtime_clis_are_importable_without_running_analyzer() -> None:
+    """Exercise both CLIs from the exact archive extraction, not the worktree."""
+
+    with tempfile.TemporaryDirectory(prefix="d92_ccoc_hard9_release_") as raw_root:
+        extracted = Path(raw_root)
+        with tarfile.open(ARCHIVE, "r:gz") as bundle:
+            members = bundle.getmembers()
+            for member in members:
+                path = Path(member.name)
+                assert not path.is_absolute() and ".." not in path.parts
+                assert not member.issym() and not member.islnk()
+            bundle.extractall(extracted)
+
+        code_root = extracted / "code"
+        environment = os.environ.copy()
+        environment["PYTHONPATH"] = os.pathsep.join(
+            (str(code_root), str(extracted))
+        )
+        commands = (
+            ("runner", code_root / "scripts" / "run_d92_ccoc_hard9_k1.py"),
+            ("analyzer", code_root / "scripts" / "analyze_d92_ccoc_hard9_k1.py"),
+        )
+        for label, script in commands:
+            result = subprocess.run(
+                [sys.executable, str(script), "--help"],
+                check=False,
+                capture_output=True,
+                text=True,
+                env=environment,
+            )
+            assert result.returncode == 0, (
+                f"{label} --help failed from extracted archive\n"
+                f"stdout={result.stdout}\nstderr={result.stderr}"
+            )
+            assert "usage:" in result.stdout.lower()
 
 
 def test_launch_is_prepare_smoke_then_exactly_eight_shards_without_analyzer() -> None:

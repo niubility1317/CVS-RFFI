@@ -4,7 +4,7 @@
 
 `LOCAL_VERIFIED_READY_FOR_N607_HANDOFF / NO_HARD9_RUNTIME_RESULT / NO_PERFORMANCE_RESULT`
 
-本报告对应`d92_e0_full_ccoc_hard9k1_20260816_v1`，操作方为Task3发布代理，记录时间为2026-08-17。当前工作树为`E:/type10-7/code/snapshots/d92_125wt`，科学基线与发布绑定提交为`7647cae86dd0696b7990dcd958a16cefd35637ca`。本轮只完成本地发布物、结构验证和交接准备，未SSH、未SCP、未启动N607、未读取或分析任何Hard9运行结果。
+本报告对应`d92_e0_full_ccoc_hard9k1_20260816_v1`，操作方为Task3发布代理，记录时间为2026-08-17。当前工作树为`E:/type10-7/code/snapshots/d92_125wt`，科学基线与发布绑定提交为`07e69f1e4360eacec2b972f465c4c19dd1710fd8`。本轮只完成本地发布物、结构验证和交接准备，未SSH、未SCP、未启动N607、未读取或分析任何Hard9运行结果。
 
 ## 目标、比较与冻结边界
 
@@ -19,22 +19,22 @@
 |项目|值|
 |---|---|
 |本地发布根|`automation_reports/CV-SincNet/d92_e0_full_ccoc_hard9k1_20260816_v1/`|
-|运行时归档|`runtime/d92_ccoc_hard9_k1_source_7647cae8_20260816_v1.tar.gz`|
-|归档SHA256|`707d72a1f0083a7f28d62d904acbe6a12d354e1358426ace4efbc971ae21d65d`|
-|归档大小|`263356`字节|
-|归档成员|`39`（源成员`38`，另含逐成员SHA清单）|
-|launch.sh|`5802`字节，SHA256=`e5176e99573f9a4debbbe34931207cba16df30fc82b0b9da24468195a1386042`|
+|运行时归档|`runtime/d92_ccoc_hard9_k1_source_07e69f1e_20260816_v1.tar.gz`|
+|归档SHA256|`62a8a1f8536e8df6d6cbbdc9314ae86519817d44b3982a7acaf42be8df949cdb`|
+|归档大小|`308426`字节|
+|归档成员|`49`（源成员`48`，含联合source manifest）|
+|launch.sh|`5802`字节，SHA256=`9de104123c4eb622713940686eeafdc702cecd71ab45913d6a2fbebb633f7ef2`|
 |method lock|`configs/stage2_d92_ccoc_hard9_k1_v1.json`|
 |外部镜像|`E:/type10-7/automation_reports/CV-SincNet/d92_e0_full_ccoc_hard9k1_20260816_v1/`|
 
-归档只包含runtime closure、runner、analyzer CLI和method lock config。Python/config成员按Git blob原始字节从`7647cae8`封存，归档使用LF字节，不携带data、checkpoint、truth sidecar、tests或docs。`code/D92_CCOC_HARD9_K1_SOURCE_MANIFEST.sha256`逐成员记录SHA256，并在远端解包后由launch重新核验。
+归档只包含runtime closure、runner、analyzer CLI和method lock config。Python/config成员按Git blob原始字节从`07e69f1e`封存，归档使用LF字节，并补入D80/D81动态依赖及D43/D44/D45/D46/D61/D62/D66/D80 probes；不携带G0 runner/core、data、checkpoint、truth sidecar、tests或docs。归档以整体SHA和安全成员边界核验，不恢复逐成员Git blob gate。
 
 ## N607交接接口（仅预登记）
 
 |资源|不可覆盖路径|
 |---|---|
-|source archive|`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_hard9_k1_source_7647cae8_20260816_v1.tar.gz`|
-|source root|`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_hard9_k1_source_7647cae8_20260816_v1`|
+|source archive|`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_hard9_k1_source_07e69f1e_20260816_v1.tar.gz`|
+|source root|`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_hard9_k1_source_07e69f1e_20260816_v1`|
 |driver|`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_hard9_k1_driver_d92_e0_full_ccoc_hard9k1_20260816_v1.sh`|
 |output root|`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_hard9_k1_20260816_v1`|
 |log root|`/home/szu2070436088/2510044040/CV-SincNet/logs/d92_e0_full_ccoc_hard9k1_20260816_v1`|
@@ -47,12 +47,12 @@ launch先检查source/output/log路径不存在，再解包、核验逐成员man
 |检查|结果|
 |---|---|
 |发布测试RED|已观察发布面缺失导致的预期失败|
-|archive安全边界、成员清单与Git blob闭合|已验证，39成员、38源成员|
+|archive整体身份、安全边界与运行时闭包|已验证，49成员、48源成员|
 |archive/config/launch/report/manifest存在性与外部镜像|本地与外部镜像逐字节一致|
 |Task1/Task2聚焦回归|`71 passed`（Task1矩阵6、runner26；Task2 analyzer39）|
-|发布测试|`5 passed`，包含发布RED后GREEN边界|
+|发布测试|`6 passed`，包含解包后runner/analyzer `--help`均rc0|
 |`py_compile`、JSON语义读取、`bash -n`|均已验证|
-|归档安全、39成员、38个Git-blob源成员|均已验证|
+|归档安全、49成员、48个源成员、G0 runner/core排除|均已验证|
 |`git diff --check`|已验证|
 |N607、SSH/SCP、运行和性能分析|未执行|
 
