@@ -73,54 +73,41 @@
 **Files:**
 - Modify: `E:\type10-7\项目.md`
 - Modify: `docs/PROJECT_PROTOCOL.md`
-- Create: `tests/phase1_mirage/test_protocol_docs.py`
+- Create: `code/cvsrffi/phase1_mirage/protocol.py`
+- Create: `tests/phase1_mirage/test_protocol_policy.py`
+- Create: `analysis/phase1_mirage_owdg_traceability.md`
 
 **Interfaces:**
 - Consumes: approved spec section 2-3.
-- Produces: authoritative text defining `L_s/U_s/V_s`, `proxy_train`, `P_cal/P_select` and identity-disjoint target unknown.
+- Produces: synchronized authoritative text and machine-executable`Phase1DataPolicy`for`L_s/U_s/V_s`、`proxy_train`、`P_cal/P_select`与身份互斥target unknown。
 
-- [ ] **Step 1: Write the failing public-protocol test**
+- [x] **Step 1: Write the failing policy-behavior test**
 
 ```python
-from pathlib import Path
-
-
-def test_public_protocol_defines_split_relative_proxy_and_blind_target_unknown():
-    text = Path("docs/PROJECT_PROTOCOL.md").read_text(encoding="utf-8")
-    required = {
-        "L_s/U_s/V_s可以共享TX身份但物理样本ID两两不交",
-        "proxy_train只由L_s生成",
-        "P_cal/P_select只由source validation生成",
-        "target unknown TX身份与source train/validation TX身份互斥",
-        "target结果不得回流训练、阈值、模型或候选选择",
-    }
-    assert required <= set(text.splitlines())
+def test_proxy_train_is_labeled_training_only_and_can_receive_rejection_gradients():
+    policy = Phase1DataPolicy()
+    assert policy.proxy_origin_is_allowed(ProxyRole.PROXY_TRAIN, SourcePartition.L_S)
+    assert policy.allows(ProxyRole.PROXY_TRAIN, Permission.REJECTION_GRADIENT)
 ```
 
-- [ ] **Step 2: Run the test and verify the old protocol fails**
+- [x] **Step 2: Run the test and verify the policy interface is initially absent**
 
-Run: `conda run -n ssr-gpu python -m pytest -p no:cacheprovider tests/phase1_mirage/test_protocol_docs.py -q`
+Run: `conda run -n ssr-gpu python -m pytest -p no:cacheprovider tests/phase1_mirage/test_protocol_policy.py -q`
 
-Expected: FAIL because the approved proxy lines are absent.
+Expected: FAIL because`cvsrffi.phase1_mirage.protocol`is absent.
 
-- [ ] **Step 3: Replace the Phase1 proxy section in both protocol documents**
+- [x] **Step 3: Implement the minimum policy interface and synchronize both Phase1 protocol sections**
 
-Insert the five exact test lines, followed by these semantics:
+The behavior tests must cover`0.07/0.63/0.15/0.15`、physical-ID互斥但TX身份可共享、`proxy_train`的`L_s`来源与拒识梯度、`P_cal/P_select`的独立validation来源和唯一用途、target unknown身份互斥，以及所有target角色的零训练/校准/选模/选择性重跑权限。
 
-```text
-训练proxy可参与拒识相关反向传播；validation proxy只校准和选模，不更新状态。
-proxy是相对episode注册类别表的source代理角色，不是真实未见TX性能。
-真实unknown结论只来自模型与阈值冻结后的一次性target评估。
-```
+Delete the old fixed-TX-disjoint and proxy-all-training-ban semantics. Preserve all Phase2/Phase3 permissions unchanged.
 
-Delete the old requirement that all proxy physical samples are excluded from training and model-selection feedback. Preserve all Phase2/Phase3 permissions unchanged.
-
-- [ ] **Step 4: Verify both documents and report the root non-Git boundary**
+- [x] **Step 4: Verify both documents and report the root non-Git boundary**
 
 Run:
 
 ```bash
-conda run -n ssr-gpu python -m pytest -p no:cacheprovider tests/phase1_mirage/test_protocol_docs.py -q
+conda run -n ssr-gpu python -m pytest -p no:cacheprovider tests/phase1_mirage/test_protocol_policy.py -q
 rg -n "proxy_train|P_cal/P_select|target unknown TX身份" /e/type10-7/项目.md docs/PROJECT_PROTOCOL.md
 git diff --check
 ```
@@ -130,8 +117,8 @@ Expected: PASS; both documents show matching semantics. Record in the implementa
 - [ ] **Step 5: Commit the Git-backed protocol change**
 
 ```bash
-git add docs/PROJECT_PROTOCOL.md tests/phase1_mirage/test_protocol_docs.py
-git commit -m "docs: authorize split-relative Phase1 proxy training"
+git add docs/PROJECT_PROTOCOL.md docs/superpowers/plans/2026-08-17-phase1-mirage-owdg.md code/cvsrffi/phase1_mirage/protocol.py tests/phase1_mirage/test_protocol_policy.py analysis/phase1_mirage_owdg_traceability.md
+git commit -m "feat: enforce MIRAGE Phase1 data policy"
 ```
 
 ### Task 2: Build Role-Safe Source Splits

@@ -1,6 +1,6 @@
 # CVS项目场景与数据协议
 
-版本：2026-07-18
+版本：2026-08-17
 协议模式：`p2_min_v1`
 
 ## 文件职责
@@ -36,7 +36,15 @@ U_s = {(x_j,d_j): receiver(x_j) ∈ R_s, y_j hidden or unavailable}
 rho_label ≤ 0.1
 ```
 
-当前统一划分语义为相对source全池`0.07/0.63/0.30`：有TX标签训练集、无TX标签训练集、互斥source validation。三部分均不得包含`R_t`。Phase1可使用source clean与卫星增强训练，但这不授予Phase2访问这些样本或派生状态的权限。
+当前统一划分语义为相对source全池`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`：有TX标签训练集、无TX标签训练集、校准validation与选模validation，其中`V_s=V_cal∪V_select`。四个角色均不得包含`R_t`。`L_s`、`U_s`与`V_s`可以共享source已知TX身份，但物理样本ID在所有角色间必须两两不交。Phase1可使用source clean与卫星增强训练，但这不授予Phase2访问这些样本或派生状态的权限。
+
+### Source-only proxy unknown研发边界
+
+`proxy_train`只由`L_s`生成。它是相对当前episode注册类别表的source代理角色，而非真实未见TX；训练proxy可参与拒识相关反向传播。`U_s`不生成proxy，因为训练过程不可读取其TX真值。
+
+`P_cal`只由`V_cal`生成且只用于校准与阈值冻结；`P_select`只由`V_select`生成且只用于source侧模型选择。validation proxy不得反向传播，不得更新EMA、prototype、normalization或其他持久状态。source proxy指标只能写作代理未知研发性能，不能替代真实target unknown性能。
+
+target unknown TX身份与source训练/validation TX身份必须互斥。任何target角色，包括target-known与target unknown，均不得用于训练、校准、选模、候选重排或触发选择性重跑。模型、几何与阈值在target访问前冻结；预测artifact先封存，独立scorer之后才能连接truth。真实unknown结论只来自这一次性、role/truth-blind的target评估，不反馈研发。
 
 ## Phase2最小数据协议
 
