@@ -14,6 +14,8 @@ from dataclasses import asdict, dataclass
 import hashlib
 import io
 import json
+import math
+from numbers import Integral, Real
 import os
 from pathlib import Path
 import random
@@ -838,29 +840,62 @@ def write_completion_receipt(
         raise TrainingProtocolError("completion receipt could not read checkpoint bytes") from error
     if not isinstance(checkpoint, Mapping):
         raise TrainingProtocolError("completion receipt checkpoint payload must be a mapping")
+    checkpoint_sha256 = _file_sha256(checkpoint_path)
     if int(checkpoint.get("epochs_completed", -1)) != epochs:
         raise TrainingProtocolError("checkpoint epoch count does not match completion receipt")
     checkpoint_selection = checkpoint.get("selection")
     if not isinstance(checkpoint_selection, Mapping):
         raise TrainingProtocolError("checkpoint selection metadata is missing")
-    if checkpoint_selection.get("selection_source") != "V_select":
-        raise TrainingProtocolError("checkpoint selection source must be V_select")
-    if int(checkpoint_selection.get("epoch", -1)) != int(selection["epoch"]):
+    if not isinstance(selection, Mapping):
+        raise TrainingProtocolError("completion receipt selection must be a mapping")
+    sealed_epoch = checkpoint_selection.get("epoch")
+    supplied_epoch = selection.get("epoch")
+    if (
+        isinstance(sealed_epoch, bool)
+        or not isinstance(sealed_epoch, Integral)
+        or isinstance(supplied_epoch, bool)
+        or not isinstance(supplied_epoch, Integral)
+    ):
+        raise TrainingProtocolError("checkpoint selection epoch must be an integer")
+    if int(sealed_epoch) != int(supplied_epoch):
         raise TrainingProtocolError("checkpoint selected epoch does not match completion receipt")
-    if int(selection["epoch"]) < 1 or int(selection["epoch"]) > epochs:
+    sealed_source = checkpoint_selection.get("selection_source")
+    supplied_source = selection.get("selection_source")
+    if sealed_source != "V_select":
+        raise TrainingProtocolError("checkpoint selection source must be V_select")
+    if supplied_source != sealed_source:
+        raise TrainingProtocolError("checkpoint selection source does not match completion receipt")
+    if int(sealed_epoch) < 1 or int(sealed_epoch) > epochs:
         raise TrainingProtocolError("selected epoch lies outside completed training")
-    if selection.get("selection_source") != "V_select":
-        raise TrainingProtocolError("checkpoint selection must use V_select")
+    sealed_metrics: dict[str, float] = {}
+    for field_name in ("v_select_known_macro", "v_select_worst_scene"):
+        sealed_value = checkpoint_selection.get(field_name)
+        supplied_value = selection.get(field_name)
+        if (
+            isinstance(sealed_value, bool)
+            or not isinstance(sealed_value, Real)
+            or not math.isfinite(float(sealed_value))
+        ):
+            raise TrainingProtocolError(f"checkpoint selection {field_name} must be finite")
+        if (
+            isinstance(supplied_value, bool)
+            or not isinstance(supplied_value, Real)
+            or not math.isfinite(float(supplied_value))
+        ):
+            raise TrainingProtocolError(f"completion receipt {field_name} must be finite")
+        if float(supplied_value) != float(sealed_value):
+            raise TrainingProtocolError(f"checkpoint selection {field_name} does not match completion receipt")
+        sealed_metrics[field_name] = float(sealed_value)
     receipt = {
         "schema": "phase1_mirage_completion_receipt_v1",
         "status": status,
         "checkpoint_path": checkpoint_path.name,
-        "checkpoint_sha256": _file_sha256(checkpoint_path),
+        "checkpoint_sha256": checkpoint_sha256,
         "epochs_completed": epochs,
-        "selected_epoch": int(selection["epoch"]),
-        "selection_source": "V_select",
-        "v_select_known_macro": float(selection["v_select_known_macro"]),
-        "v_select_worst_scene": float(selection["v_select_worst_scene"]),
+        "selected_epoch": int(sealed_epoch),
+        "selection_source": sealed_source,
+        "v_select_known_macro": sealed_metrics["v_select_known_macro"],
+        "v_select_worst_scene": sealed_metrics["v_select_worst_scene"],
         "swad_strategy": swad_strategy,
     }
     _atomic_write_json(output_dir / "completion_receipt.json", receipt)

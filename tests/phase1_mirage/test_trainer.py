@@ -305,3 +305,72 @@ def test_completion_receipt_verifies_the_checkpoint_epoch_and_selection_binding(
             selection=selection,
             swad_strategy="EMA_FALLBACK_NO_COMPLETE_161_200_WINDOW",
         )
+
+
+def test_completion_receipt_uses_only_the_sealed_checkpoint_selection(tmp_path):
+    """Catch a completed receipt that substitutes caller-supplied V_select metrics."""
+
+    trainer = _trainer_api()
+    checkpoint_path = tmp_path / "checkpoint.pt"
+    sealed_selection = {
+        "epoch": 2,
+        "selection_source": "V_select",
+        "v_select_known_macro": 0.20,
+        "v_select_worst_scene": 0.10,
+    }
+    torch.save({"epochs_completed": 2, "selection": sealed_selection}, checkpoint_path)
+    mismatched_selection = {
+        **sealed_selection,
+        "v_select_known_macro": 0.99,
+        "v_select_worst_scene": 0.98,
+    }
+
+    with pytest.raises(trainer.TrainingProtocolError, match="checkpoint selection"):
+        trainer.write_completion_receipt(
+            output_dir=tmp_path,
+            checkpoint_path=checkpoint_path,
+            status="COMPLETED",
+            epochs=2,
+            selection=mismatched_selection,
+            swad_strategy="EMA_FALLBACK_NO_COMPLETE_161_200_WINDOW",
+        )
+    assert not (tmp_path / "completion_receipt.json").exists()
+
+    receipt = trainer.write_completion_receipt(
+        output_dir=tmp_path,
+        checkpoint_path=checkpoint_path,
+        status="COMPLETED",
+        epochs=2,
+        selection=sealed_selection,
+        swad_strategy="EMA_FALLBACK_NO_COMPLETE_161_200_WINDOW",
+    )
+    persisted = json.loads((tmp_path / "completion_receipt.json").read_text(encoding="utf-8"))
+    assert receipt["v_select_known_macro"] == sealed_selection["v_select_known_macro"]
+    assert receipt["v_select_worst_scene"] == sealed_selection["v_select_worst_scene"]
+    assert persisted["v_select_known_macro"] == sealed_selection["v_select_known_macro"]
+    assert persisted["v_select_worst_scene"] == sealed_selection["v_select_worst_scene"]
+
+
+def test_completion_receipt_rejects_nonfinite_sealed_selection_metrics(tmp_path):
+    """Catch NaN or infinity being persisted as a V_select completion metric."""
+
+    trainer = _trainer_api()
+    checkpoint_path = tmp_path / "checkpoint.pt"
+    selection = {
+        "epoch": 2,
+        "selection_source": "V_select",
+        "v_select_known_macro": float("nan"),
+        "v_select_worst_scene": 0.10,
+    }
+    torch.save({"epochs_completed": 2, "selection": selection}, checkpoint_path)
+
+    with pytest.raises(trainer.TrainingProtocolError, match="finite"):
+        trainer.write_completion_receipt(
+            output_dir=tmp_path,
+            checkpoint_path=checkpoint_path,
+            status="COMPLETED",
+            epochs=2,
+            selection=selection,
+            swad_strategy="EMA_FALLBACK_NO_COMPLETE_161_200_WINDOW",
+        )
+    assert not (tmp_path / "completion_receipt.json").exists()
