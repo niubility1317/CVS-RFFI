@@ -56,11 +56,18 @@
 |文件|SHA256|
 |---|---|
 |`code/SSDG/train_ssdg.py`|`5D4DF42F9A9C2B6AA1D862D4D2C41F55E28B4C643A48C8F146068C0079930F9F`|
-|`code/tests/test_phase1_adv3b02_clic6_baseline.py`|`5FF56890398A784A0C69F1B99AF4B99AB7181BC7E47712AC4F0BA466FC67CA03`|
-|`code/scripts/launch_phase1_adv3b02_clic6_v2_20260816.sh`|`2DCEC113608C81468DECB3FE7B32AA42CCB95BB1453393A72B4C6848F13C1AF6`|
+|`code/tests/test_phase1_adv3b02_clic6_baseline.py`|`571FA104216F1EE2C635CF02DB6A6A54A3FBEFC8C09D3BDAC856FF0BC60F652C`|
+|`code/scripts/launch_phase1_adv3b02_clic6_v2_20260816.sh`|`40960CFBB436968AB1F9BB740EF88AC6844F538DFFC468C1FD8EA47F87AC6AD7`|
 |`code/scripts/smoke_phase1_adv3b02_clic_f1_v2_20260816.sh`|`14DEAC6E1ADD2B5FA9F25A90C84FE2DD45CC15A7FADA4FD3A1D13727055BF7EF`|
 
-## 6.本轮禁止事项
+## 6.独立P1复审闭环
+
+- 复审发现：v2 formal receipt gate先前没有绑定`base_candidate`、`fold`及`source_val_rows_opened`、`query_rows_opened`、`target_rows_opened`、`test_rows_opened`、`selection_feedback_count`。隔离伪造receipt把方法改成`FORGED_METHOD`并将五个访问计数改成`1`后，旧gate会放行至后续dataset/root检查，故不能证明formal invocation保持在技术门之后。
+- 最小修复：仅在`code/scripts/launch_phase1_adv3b02_clic6_v2_20260816.sh`的formal receipt validator中增加`base_candidate=ADV3B02_CORE90_SOFT_E200_CLIC_EQ_RHO07_FINAL`、`fold=F1`，并要求五个访问计数均为严格`int`类型的`0`（`bool`不作为`int`接受）。不改变方法、loss、fold矩阵、seed、epoch、run身份或smoke控制。
+- P1 RED：新增真实launcher负测后，旧实现报`missing WiSig dataset`而不是receipt-gate错误，证实伪造receipt越过formal gate。
+- P1 GREEN：修复后，review攻击、`fold=F2`、`False`伪装访问计数、缺失访问字段均在任何run/log root或dataset检查前被`requires a complete v2 technical smoke receipt`拒绝。`ssr-gpu`下`py_compile` exit=`0`，ADV focused pytest exit=`0`，`38 passed`；只有5项既有PyTorch AMP API FutureWarning。两个v2 launcher的`bash -n`、formal/smoke dry-run与`git diff --check`均通过。
+
+## 7.本轮禁止事项
 
 - 不启动N607，不同步，不提交，不执行v1或v2 formal。
 - 不改变source角色、fold、seed、epoch、loss、checkpoint选择或任何target接口。

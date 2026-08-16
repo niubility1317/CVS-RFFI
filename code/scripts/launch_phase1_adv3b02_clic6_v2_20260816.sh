@@ -55,8 +55,10 @@ required = {
     "schema": "cvs.phase1.adv3b02_technical_smoke.v2",
     "completed": True,
     "claim": "NO_PERFORMANCE_RESULT",
+    "base_candidate": "ADV3B02_CORE90_SOFT_E200_CLIC_EQ_RHO07_FINAL",
     "run_id": "phase1_adv3b02_clic6_20260816_v2",
     "candidate_id": "F1_ADV3B02_CLIC",
+    "fold": "F1",
     "raw_batch_cap": 4,
     "target_effective_steps": 3,
     "effective_forward_steps": 3,
@@ -68,6 +70,17 @@ required = {
 for field, expected in required.items():
     if payload.get(field) != expected:
         raise SystemExit(f"receipt field mismatch: {field}")
+
+for field in (
+    "source_val_rows_opened",
+    "query_rows_opened",
+    "target_rows_opened",
+    "test_rows_opened",
+    "selection_feedback_count",
+):
+    value = payload.get(field)
+    if type(value) is not int or value != 0:
+        raise SystemExit(f"receipt access counter must be exact integer zero: {field}")
 
 raw_batches = payload.get("raw_batches_observed")
 if not isinstance(raw_batches, int) or raw_batches not in {3, 4}:

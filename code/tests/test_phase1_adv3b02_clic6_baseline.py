@@ -595,8 +595,10 @@ def _write_v2_smoke_receipt(project_root: Path) -> Path:
                 "schema": "cvs.phase1.adv3b02_technical_smoke.v2",
                 "completed": True,
                 "claim": "NO_PERFORMANCE_RESULT",
+                "base_candidate": "ADV3B02_CORE90_SOFT_E200_CLIC_EQ_RHO07_FINAL",
                 "run_id": V2_RUN_ID,
                 "candidate_id": "F1_ADV3B02_CLIC",
+                "fold": "F1",
                 "raw_batch_cap": 4,
                 "raw_batches_observed": 4,
                 "target_effective_steps": 3,
@@ -607,6 +609,11 @@ def _write_v2_smoke_receipt(project_root: Path) -> Path:
                 "skipped_nonfinite_loss_batches": 0,
                 "skipped_nonfinite_grad_batches": 1,
                 "handled_grad_skip_count": 1,
+                "source_val_rows_opened": 0,
+                "query_rows_opened": 0,
+                "target_rows_opened": 0,
+                "test_rows_opened": 0,
+                "selection_feedback_count": 0,
                 "raw_batch_records": [
                     {
                         "raw_batch_index": index,
@@ -625,6 +632,45 @@ def _write_v2_smoke_receipt(project_root: Path) -> Path:
         encoding="utf-8",
     )
     return receipt_path
+
+
+def test_adv3b02_v2_formal_rejects_forged_receipt_guard_fields_before_roots(
+    tmp_path: Path,
+) -> None:
+    """Break caught: forged method/access receipts can pass v2's formal gate."""
+
+    cases = (
+        (
+            "review_attack",
+            {
+                "base_candidate": "FORGED_METHOD",
+                "source_val_rows_opened": 1,
+                "query_rows_opened": 1,
+                "target_rows_opened": 1,
+                "test_rows_opened": 1,
+                "selection_feedback_count": 1,
+            },
+            None,
+        ),
+        ("wrong_fold", {"fold": "F2"}, None),
+        ("bool_access", {"source_val_rows_opened": False}, None),
+        ("missing_access", {}, "selection_feedback_count"),
+    )
+    for case_name, replacements, removed_field in cases:
+        case_root = tmp_path / case_name
+        receipt_path = _write_v2_smoke_receipt(case_root / "project")
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        receipt.update(replacements)
+        if removed_field is not None:
+            receipt.pop(removed_field)
+        receipt_path.write_text(json.dumps(receipt, sort_keys=True), encoding="utf-8")
+
+        blocked = _run_v2_launcher(case_root, check=False)
+
+        assert blocked.returncode != 0, case_name
+        assert "requires a complete v2 technical smoke receipt" in blocked.stderr
+        assert not (case_root / "runs").exists(), case_name
+        assert not (case_root / "logs").exists(), case_name
 
 
 def test_adv3b02_v2_formal_requires_new_smoke_receipt_and_preserves_roots(
