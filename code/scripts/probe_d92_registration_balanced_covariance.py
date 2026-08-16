@@ -1694,7 +1694,7 @@ def build_d92_fit(
                 }
             )
             return reference_coefficient, reference_intercept, audit
-        except D92CCOCError as error:
+        except (D92CCOCError, D92RegistrationBalancedCovarianceError) as error:
             raise D92ProbeError(f"D92 CCOC registry/receipt drift: {error}") from error
 
         component_records.append(

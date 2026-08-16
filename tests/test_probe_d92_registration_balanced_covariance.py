@@ -1408,3 +1408,45 @@ def test_ccoc_structural_core_error_is_not_relabelled_as_numeric_fallback(
     )
     with pytest.raises(probe.D92ProbeError, match="CCOC registry/receipt drift"):
         fit(rows, labels, 11, 3)
+
+
+def test_ccoc_base_d92_registry_error_is_fail_closed_not_e0_fallback(monkeypatch):
+    """Would fail if a Task1 base-registry error selected numeric E0 recovery."""
+
+    rng = np.random.default_rng(92_820)
+    basis, _ = np.linalg.qr(rng.normal(size=(160, 3)))
+    weights = np.asarray([0.5, 0.3, 0.2], dtype=np.float64)
+    ground_audit = {
+        "d81_basis_sha256": "a" * 64,
+        "d81_spectral_weight_sha256": "b" * 64,
+        "d81_participation_ratio_effective_rank": 2.6,
+        "d81_retained_rank": 3,
+        "d81_rank_policy": "ceil_participation_ratio_effective_rank",
+        "ground_component_input_count": 84,
+        "ground_statistic_semantics": (
+            "class_centered_cross_domain_centroid_drift_eigenspectrum"
+        ),
+    }
+    labels = np.repeat(np.arange(11), 3).astype(np.int64)
+    rows = rng.normal(size=(len(labels), 288)).astype(np.float32)
+    fit, _, _ = probe.build_d92_fit(
+        d42,
+        basis,
+        weights,
+        ground_audit,
+        disable_registered_fisher=True,
+        registered_d_mode="ccoc_full",
+    )
+
+    def base_registry_drift(*_args, **_kwargs):
+        raise probe.D92RegistrationBalancedCovarianceError(
+            "injected_base_registry_drift"
+        )
+
+    monkeypatch.setattr(
+        probe,
+        "build_cross_class_offblock_consensus_statistics",
+        base_registry_drift,
+    )
+    with pytest.raises(probe.D92ProbeError, match="CCOC registry/receipt drift"):
+        fit(rows, labels, 11, 3)

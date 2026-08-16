@@ -511,7 +511,7 @@ def _ccoc_receipt(
         or int(raw["d92_ccoc_support_macs_upper_bound"]) <= 0
         or int(raw["d92_ccoc_workspace_numeric_bytes_upper_bound"]) <= 0
         or int(raw["d92_ccoc_workspace_frozen_k10_numeric_bytes_upper_bound"])
-        <= 0
+        != 334_336
         or int(raw["d92_ccoc_support_transient_bytes_upper_bound"])
         != int(raw["d92_ccoc_workspace_numeric_bytes_upper_bound"])
     ):

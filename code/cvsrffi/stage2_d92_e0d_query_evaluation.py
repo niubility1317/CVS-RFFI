@@ -69,6 +69,233 @@ _NEWGUARD_ARM_IDS = frozenset({"E0_FULL_BIDIRECTIONAL_NEWGUARD_MAXMIN"})
 _PARETO_DISTILL_ARM_IDS = frozenset({"E0_FULL_BLOCK_PARETO_DISTILL"})
 _CSOAS_ARM_IDS = frozenset({"E0_FULL_CSOAS"})
 _CCOC_ARM_IDS = frozenset({"E0_FULL_CROSS_CLASS_OFFBLOCK_CONSENSUS"})
+
+
+def _ccoc_raw_fields(*suffixes: str) -> frozenset[str]:
+    """Return one explicit CCOC raw-receipt field collection."""
+
+    return frozenset(f"d92_ccoc_{suffix}" for suffix in suffixes)
+
+
+_CCOC_RAW_LIFECYCLE_FIELDS = _ccoc_raw_fields(
+    "active",
+    "fallback_active",
+    "fallback_reason",
+    "candidate_attempt_fit_count",
+    "fallback_reference_fit_count",
+    "candidate_statistic_receipt_available",
+    "fallback_reference_full_head_byte_exact",
+    "paired_e0_codec_state_equal",
+    "query_rows_used",
+    "query_fit_access",
+    "query_update_access",
+    "query_selection_access",
+    "query_truth_access",
+    "query_role_oracle_access",
+    "query_class_quota_access",
+    "query_global_reassignment",
+)
+_CCOC_RAW_ACTIVE_STATISTIC_FIELDS = _ccoc_raw_fields(
+    "formula_revision",
+    "formula",
+    "old_rho",
+    "new_rho",
+    "old_group_class_count",
+    "new_group_class_count",
+    "old_offblock_norm_min",
+    "old_offblock_norm_max",
+    "new_offblock_norm_min",
+    "new_offblock_norm_max",
+    "old_pairwise_cosine_raw",
+    "new_pairwise_cosine_raw",
+    "canonicalization",
+    "canonicalization_tie_policy",
+    "crossblock_passes_per_class",
+    "upper_block_count",
+    "covariance_symmetric",
+    "full_endpoint_reused",
+    "full_endpoint_reuse",
+    "additional_fit_count",
+    "additional_full_fit_count",
+    "additional_block_fit_count",
+    "additional_loo_fit_count",
+    "additional_fisher_fit_count",
+    "additional_scan_count",
+    "block_fit_count",
+    "loo_fit_count",
+    "fisher_fit_count",
+    "scan_count",
+    "hyperparameter_scan_count",
+    "weight_scan_count",
+    "dense_solve_count",
+    "cholesky_check_count",
+    "cholesky_endpoint_check_count",
+    "cholesky_final_check_count",
+    "cholesky_pass",
+    "old_endpoint_cholesky_min_diagonal",
+    "new_endpoint_cholesky_min_diagonal",
+    "final_cholesky_min_diagonal",
+    "support_macs_upper_bound",
+    "workspace_upper_accumulators_bytes",
+    "workspace_cross_block_buffer_bytes",
+    "workspace_residual_buffer_bytes",
+    "workspace_numeric_bytes_upper_bound",
+    "workspace_frozen_k10_numeric_bytes_upper_bound",
+    "support_transient_bytes_upper_bound",
+    "persistent_state_bytes_delta",
+    "persistent_bytes_delta",
+    "query_state_bytes_delta",
+    "query_bytes_delta",
+    "query_macs_delta",
+    "query_macs",
+)
+_CCOC_RAW_ACTIVE_COMPILE_FIELDS = _ccoc_raw_fields(
+    "compile_solve_count",
+    "full_solve_count",
+    "full_dense_288_solve_count",
+    "compiled_cholesky_check_count",
+    "covariance_equation_residual_max",
+)
+_CCOC_RAW_ACTIVE_FIELDS = (
+    _CCOC_RAW_LIFECYCLE_FIELDS
+    | _CCOC_RAW_ACTIVE_STATISTIC_FIELDS
+    | _CCOC_RAW_ACTIVE_COMPILE_FIELDS
+)
+_CCOC_RAW_NUMERIC_FALLBACK_WITH_STATISTICS_FIELDS = (
+    _CCOC_RAW_ACTIVE_FIELDS - _CCOC_RAW_ACTIVE_COMPILE_FIELDS
+)
+_CCOC_RAW_NUMERIC_FALLBACK_WITHOUT_STATISTICS_FIELDS = _ccoc_raw_fields(
+    "active",
+    "fallback_active",
+    "fallback_reason",
+    "formula_revision",
+    "formula",
+    "old_rho",
+    "new_rho",
+    "old_group_class_count",
+    "new_group_class_count",
+    "canonicalization",
+    "canonicalization_tie_policy",
+    "full_endpoint_reused",
+    "full_endpoint_reuse",
+    "additional_fit_count",
+    "additional_full_fit_count",
+    "additional_block_fit_count",
+    "additional_loo_fit_count",
+    "additional_fisher_fit_count",
+    "additional_scan_count",
+    "hyperparameter_scan_count",
+    "weight_scan_count",
+    "dense_solve_count",
+    "cholesky_check_count",
+    "cholesky_pass",
+    "support_macs_upper_bound",
+    "support_transient_bytes_upper_bound",
+    "persistent_state_bytes_delta",
+    "persistent_bytes_delta",
+    "query_state_bytes_delta",
+    "query_bytes_delta",
+    "query_macs_delta",
+    "query_macs",
+    "candidate_attempt_fit_count",
+    "fallback_reference_fit_count",
+    "candidate_statistic_receipt_available",
+    "fallback_reference_full_head_byte_exact",
+    "paired_e0_codec_state_equal",
+    "query_rows_used",
+    "query_fit_access",
+    "query_update_access",
+    "query_selection_access",
+    "query_truth_access",
+    "query_role_oracle_access",
+    "query_class_quota_access",
+    "query_global_reassignment",
+)
+_CCOC_RAW_CODEC_FALLBACK_FIELDS = _ccoc_raw_fields(
+    "active",
+    "fallback_active",
+    "fallback_reason",
+    "formula_revision",
+    "formula",
+    "old_rho",
+    "new_rho",
+    "old_group_class_count",
+    "new_group_class_count",
+    "candidate_attempt_fit_count",
+    "fallback_reference_fit_count",
+    "candidate_statistic_receipt_available",
+    "fallback_reference_full_head_byte_exact",
+    "paired_e0_codec_state_equal",
+    "query_rows_used",
+    "query_fit_access",
+    "query_update_access",
+    "query_selection_access",
+    "query_truth_access",
+    "query_role_oracle_access",
+    "query_class_quota_access",
+    "query_global_reassignment",
+    "codec_fallback_component_execution_count",
+    "codec_fallback_scope",
+)
+_CCOC_RAW_INACTIVE_FIELDS = _ccoc_raw_fields(
+    "active",
+    "fallback_active",
+    "fallback_reason",
+    "formula_revision",
+    "status",
+    "old_rho",
+    "new_rho",
+    "old_group_class_count",
+    "new_group_class_count",
+    "canonicalization",
+    "canonicalization_tie_policy",
+    "full_endpoint_reused",
+    "full_endpoint_reuse",
+    "additional_fit_count",
+    "additional_full_fit_count",
+    "additional_block_fit_count",
+    "additional_loo_fit_count",
+    "additional_fisher_fit_count",
+    "additional_scan_count",
+    "hyperparameter_scan_count",
+    "weight_scan_count",
+    "dense_solve_count",
+    "cholesky_check_count",
+    "cholesky_pass",
+    "support_macs_upper_bound",
+    "support_transient_bytes_upper_bound",
+    "persistent_state_bytes_delta",
+    "persistent_bytes_delta",
+    "query_state_bytes_delta",
+    "query_bytes_delta",
+    "query_macs_delta",
+    "query_macs",
+    "query_rows_used",
+    "query_fit_access",
+    "query_update_access",
+    "query_selection_access",
+    "query_truth_access",
+    "query_role_oracle_access",
+    "query_class_quota_access",
+    "query_global_reassignment",
+)
+_CCOC_MIRROR_G0_FIELDS = frozenset(
+    {
+        "d92_e0d_ccoc_g0_eligible",
+        "d92_e0d_ccoc_g0_block_reason",
+    }
+)
+_CCOC_MIRROR_INACTIVE_ONLY_FIELDS = _ccoc_raw_fields(
+    "candidate_attempt_fit_count",
+    "fallback_reference_fit_count",
+    "candidate_statistic_receipt_available",
+    "fallback_reference_full_head_byte_exact",
+    "paired_e0_codec_state_equal",
+)
+_CCOC_MIRROR_INACTIVE_ONLY_FIELDS = frozenset(
+    field.replace("d92_ccoc_", "d92_e0d_ccoc_")
+    for field in _CCOC_MIRROR_INACTIVE_ONLY_FIELDS
+)
 _TPCE_ARM_IDS = frozenset({"E0_FULL_D42_TAIL_PAIR_CODE_EXCHANGE"})
 _TPCE_RECEIPT_SUFFIXES = (
     "active",
@@ -1383,21 +1610,61 @@ def _ccoc_support_receipt(
         for key, value in audit.items()
         if key.startswith("d92_e0d_ccoc_")
     }
-    required_mirror = (
-        "d92_e0d_ccoc_active",
-        "d92_e0d_ccoc_fallback_active",
-        "d92_e0d_ccoc_fallback_reason",
-        "d92_e0d_ccoc_candidate_attempt_fit_count",
-        "d92_e0d_ccoc_fallback_reference_fit_count",
-        "d92_e0d_ccoc_candidate_statistic_receipt_available",
-        "d92_e0d_ccoc_fallback_reference_full_head_byte_exact",
-        "d92_e0d_ccoc_paired_e0_codec_state_equal",
-        "d92_e0d_ccoc_g0_eligible",
-        "d92_e0d_ccoc_g0_block_reason",
-    )
-    if any(field not in mirrored for field in required_mirror):
-        raise D92E0DQueryEvaluationError("D92-E0D CCOC receipt missing")
     enabled = bool(registered and int(k_shot) > 2)
+    raw_fields = frozenset(raw)
+    if not enabled:
+        expected_raw_fields = _CCOC_RAW_INACTIVE_FIELDS
+    elif (
+        raw.get("d92_ccoc_active") is True
+        and raw.get("d92_ccoc_fallback_active") is False
+    ):
+        expected_raw_fields = _CCOC_RAW_ACTIVE_FIELDS
+    elif raw.get("d92_ccoc_fallback_active") is True:
+        if (
+            raw.get("d92_ccoc_codec_fallback_scope")
+            == "whole_d42_retry_before_and_after"
+        ):
+            expected_raw_fields = _CCOC_RAW_CODEC_FALLBACK_FIELDS
+        elif raw.get("d92_ccoc_candidate_statistic_receipt_available") is True:
+            expected_raw_fields = _CCOC_RAW_NUMERIC_FALLBACK_WITH_STATISTICS_FIELDS
+        else:
+            expected_raw_fields = _CCOC_RAW_NUMERIC_FALLBACK_WITHOUT_STATISTICS_FIELDS
+    else:
+        raise D92E0DQueryEvaluationError("D92-E0D CCOC lifecycle field drift")
+    expected_mirror_fields = frozenset(
+        field.replace("d92_ccoc_", "d92_e0d_ccoc_")
+        for field in expected_raw_fields
+    ) | _CCOC_MIRROR_G0_FIELDS
+    if not enabled:
+        expected_mirror_fields |= _CCOC_MIRROR_INACTIVE_ONLY_FIELDS
+    if (
+        raw_fields != expected_raw_fields
+        or frozenset(mirrored) != expected_mirror_fields
+    ):
+        raise D92E0DQueryEvaluationError(
+            "D92-E0D CCOC receipt field collection drift"
+        )
+    for raw_field in expected_raw_fields:
+        mirror_field = raw_field.replace("d92_ccoc_", "d92_e0d_ccoc_")
+        if (
+            (enabled or raw_field != "d92_ccoc_fallback_reason")
+            and mirrored[mirror_field] != raw[raw_field]
+        ):
+            raise D92E0DQueryEvaluationError("D92-E0D CCOC raw/mirror drift")
+    frozen_workspace_field = (
+        "d92_ccoc_workspace_frozen_k10_numeric_bytes_upper_bound"
+    )
+    if frozen_workspace_field in raw:
+        try:
+            frozen_workspace = int(raw[frozen_workspace_field])
+        except (TypeError, ValueError) as error:
+            raise D92E0DQueryEvaluationError(
+                "D92-E0D CCOC frozen workspace receipt drift"
+            ) from error
+        if frozen_workspace != 334_336:
+            raise D92E0DQueryEvaluationError(
+                "D92-E0D CCOC frozen workspace receipt drift"
+            )
     if not enabled:
         raw_reason = (
             "before_exact_d81"
@@ -1430,7 +1697,7 @@ def _ccoc_support_receipt(
             or mirrored["d92_e0d_ccoc_g0_block_reason"] != mirror_reason
         ):
             raise D92E0DQueryEvaluationError("D92-E0D CCOC alias receipt drift")
-        return mirrored
+        return {field: mirrored[field] for field in sorted(expected_mirror_fields)}
 
     lifecycle = (
         "d92_ccoc_active",
@@ -1452,10 +1719,6 @@ def _ccoc_support_receipt(
     )
     if any(field not in raw for field in lifecycle):
         raise D92E0DQueryEvaluationError("D92-E0D CCOC lifecycle missing")
-    for field, value in raw.items():
-        mirror_name = field.replace("d92_ccoc_", "d92_e0d_ccoc_")
-        if mirror_name in mirrored and mirrored[mirror_name] != value:
-            raise D92E0DQueryEvaluationError("D92-E0D CCOC raw/mirror drift")
     if (
         int(raw["d92_ccoc_candidate_attempt_fit_count"]) != 1
         or raw["d92_ccoc_paired_e0_codec_state_equal"] is not None
@@ -1477,7 +1740,7 @@ def _ccoc_support_receipt(
             != "NUMERIC_FALLBACK_EXACT_E0"
         ):
             raise D92E0DQueryEvaluationError("D92-E0D CCOC fallback receipt drift")
-        return mirrored
+        return {field: mirrored[field] for field in sorted(expected_mirror_fields)}
     if (
         fallback is not False
         or active is not True
@@ -1627,12 +1890,12 @@ def _ccoc_support_receipt(
         or int(raw["d92_ccoc_support_macs_upper_bound"]) <= 0
         or int(raw["d92_ccoc_workspace_numeric_bytes_upper_bound"]) <= 0
         or int(raw["d92_ccoc_workspace_frozen_k10_numeric_bytes_upper_bound"])
-        <= 0
+        != 334_336
         or int(raw["d92_ccoc_support_transient_bytes_upper_bound"])
         != int(raw["d92_ccoc_workspace_numeric_bytes_upper_bound"])
     ):
         raise D92E0DQueryEvaluationError("D92-E0D CCOC statistic receipt drift")
-    return mirrored
+    return {field: mirrored[field] for field in sorted(expected_mirror_fields)}
 
 
 def _tpce_support_receipt(

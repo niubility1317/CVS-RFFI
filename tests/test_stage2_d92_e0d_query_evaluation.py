@@ -10,6 +10,9 @@ from cvsrffi import stage2_d81_query_evaluation as d81_eval
 from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
 from cvsrffi import stage2_d92_e0d_query_evaluation as e0d_eval
 from cvsrffi import stage2_d92_e0d_slim as slim
+from cvsrffi.stage2_d92_cross_class_offblock_consensus import (
+    ccoc_inactive_receipt,
+)
 from cvsrffi.stage2_d92_registration_balanced_covariance import OLD_CLASS_COUNT
 from scripts import probe_d81_ground_nuisance_cauchy_center as d81_probe
 
@@ -563,43 +566,57 @@ def _ccoc_receipt(
 ) -> dict:
     """Return a literal support-only CCOC receipt for query-audit tests."""
 
-    active = bool(registered and k_shot > 2 and not fallback)
+    if not registered or k_shot <= 2:
+        raw = ccoc_inactive_receipt(
+            class_count,
+            k_shot,
+            old_class_count=OLD_CLASS_COUNT,
+        )
+        reason = (
+            "NOT_REGISTERED_STATE"
+            if not registered
+            else "K1_K2_EXACT_D92_FULL_ALIAS"
+        )
+        mirrored = {
+            key.replace("d92_ccoc_", "d92_e0d_ccoc_"): value
+            for key, value in raw.items()
+        }
+        mirrored.update(
+            {
+                "d92_e0d_ccoc_fallback_reason": reason,
+                "d92_e0d_ccoc_candidate_attempt_fit_count": 0,
+                "d92_e0d_ccoc_fallback_reference_fit_count": 0,
+                "d92_e0d_ccoc_candidate_statistic_receipt_available": False,
+                "d92_e0d_ccoc_fallback_reference_full_head_byte_exact": None,
+                "d92_e0d_ccoc_paired_e0_codec_state_equal": None,
+                "d92_e0d_ccoc_g0_eligible": False,
+                "d92_e0d_ccoc_g0_block_reason": reason,
+            }
+        )
+        return {**raw, **mirrored}
+
+    active = not fallback
     reason = (
-        "NOT_REGISTERED_STATE"
-        if not registered
-        else (
-            "K1_K2_EXACT_D92_FULL_ALIAS"
-            if k_shot <= 2
-            else ("injected_ccoc_numeric_failure" if fallback else None)
-        )
-    )
-    raw_reason = (
-        "before_exact_d81"
-        if not registered
-        else (
-            "k1_k2_exact_d81_fallback"
-            if k_shot <= 2
-            else ("injected_ccoc_numeric_failure" if fallback else None)
-        )
+        "injected_ccoc_numeric_failure" if fallback else None
     )
     raw = {
         "d92_ccoc_active": active,
         "d92_ccoc_fallback_active": bool(fallback),
-        "d92_ccoc_fallback_reason": raw_reason,
+        "d92_ccoc_fallback_reason": reason,
         "d92_ccoc_formula_revision": "pairwise_cosine_v1",
         "d92_ccoc_formula": (
             "Sigma=0.5*mix(Sigma_old,rho_old)+0.5*mix(Sigma_new,rho_new)"
         ),
-        "d92_ccoc_old_rho": 0.25 if active else None,
-        "d92_ccoc_new_rho": 0.75 if active else None,
+        "d92_ccoc_old_rho": 0.25,
+        "d92_ccoc_new_rho": 0.75,
         "d92_ccoc_old_group_class_count": OLD_CLASS_COUNT,
         "d92_ccoc_new_group_class_count": class_count - OLD_CLASS_COUNT,
-        "d92_ccoc_old_offblock_norm_min": 1.0 if active else None,
-        "d92_ccoc_old_offblock_norm_max": 2.0 if active else None,
-        "d92_ccoc_new_offblock_norm_min": 1.5 if active else None,
-        "d92_ccoc_new_offblock_norm_max": 2.5 if active else None,
-        "d92_ccoc_old_pairwise_cosine_raw": 0.25 if active else None,
-        "d92_ccoc_new_pairwise_cosine_raw": 0.75 if active else None,
+        "d92_ccoc_old_offblock_norm_min": 1.0,
+        "d92_ccoc_old_offblock_norm_max": 2.0,
+        "d92_ccoc_new_offblock_norm_min": 1.5,
+        "d92_ccoc_new_offblock_norm_max": 2.5,
+        "d92_ccoc_old_pairwise_cosine_raw": 0.25,
+        "d92_ccoc_new_pairwise_cosine_raw": 0.75,
         "d92_ccoc_canonicalization": (
             "lexicographic_float32_row_bytes_then_float64_reduce"
         ),
@@ -607,11 +624,11 @@ def _ccoc_receipt(
             "float32_row_bytes_then_float64_row_bytes_"
             "duplicate_class_handle_fail_closed"
         ),
-        "d92_ccoc_crossblock_passes_per_class": 2 if active else 0,
-        "d92_ccoc_upper_block_count": 3 if active else 0,
-        "d92_ccoc_covariance_symmetric": active,
-        "d92_ccoc_full_endpoint_reused": active,
-        "d92_ccoc_full_endpoint_reuse": active,
+        "d92_ccoc_crossblock_passes_per_class": 2,
+        "d92_ccoc_upper_block_count": 3,
+        "d92_ccoc_covariance_symmetric": True,
+        "d92_ccoc_full_endpoint_reused": True,
+        "d92_ccoc_full_endpoint_reuse": True,
         "d92_ccoc_additional_fit_count": 0,
         "d92_ccoc_additional_full_fit_count": 0,
         "d92_ccoc_additional_block_fit_count": 0,
@@ -625,25 +642,25 @@ def _ccoc_receipt(
         "d92_ccoc_hyperparameter_scan_count": 0,
         "d92_ccoc_weight_scan_count": 0,
         "d92_ccoc_dense_solve_count": 1 if active else 0,
-        "d92_ccoc_compile_solve_count": 1 if active else 0,
-        "d92_ccoc_full_solve_count": 1 if active else 0,
-        "d92_ccoc_full_dense_288_solve_count": 1 if active else 0,
-        "d92_ccoc_cholesky_check_count": 3 if active else 0,
-        "d92_ccoc_cholesky_endpoint_check_count": 2 if active else 0,
-        "d92_ccoc_cholesky_final_check_count": 1 if active else 0,
-        "d92_ccoc_cholesky_pass": active,
-        "d92_ccoc_old_endpoint_cholesky_min_diagonal": 0.2 if active else None,
-        "d92_ccoc_new_endpoint_cholesky_min_diagonal": 0.3 if active else None,
-        "d92_ccoc_final_cholesky_min_diagonal": 0.4 if active else None,
-        "d92_ccoc_support_macs_upper_bound": 1_000 if active else 0,
-        "d92_ccoc_workspace_upper_accumulators_bytes": 1_024 if active else 0,
-        "d92_ccoc_workspace_cross_block_buffer_bytes": 512 if active else 0,
-        "d92_ccoc_workspace_residual_buffer_bytes": 256 if active else 0,
-        "d92_ccoc_workspace_numeric_bytes_upper_bound": 1_792 if active else 0,
-        "d92_ccoc_workspace_frozen_k10_numeric_bytes_upper_bound": (
-            334_336 if active else 0
-        ),
-        "d92_ccoc_support_transient_bytes_upper_bound": 1_792 if active else 0,
+        "d92_ccoc_compile_solve_count": 1,
+        "d92_ccoc_full_solve_count": 1,
+        "d92_ccoc_full_dense_288_solve_count": 1,
+        "d92_ccoc_compiled_cholesky_check_count": 0,
+        "d92_ccoc_covariance_equation_residual_max": 0.0,
+        "d92_ccoc_cholesky_check_count": 3,
+        "d92_ccoc_cholesky_endpoint_check_count": 2,
+        "d92_ccoc_cholesky_final_check_count": 1,
+        "d92_ccoc_cholesky_pass": True,
+        "d92_ccoc_old_endpoint_cholesky_min_diagonal": 0.2,
+        "d92_ccoc_new_endpoint_cholesky_min_diagonal": 0.3,
+        "d92_ccoc_final_cholesky_min_diagonal": 0.4,
+        "d92_ccoc_support_macs_upper_bound": 1_000,
+        "d92_ccoc_workspace_upper_accumulators_bytes": 1_024,
+        "d92_ccoc_workspace_cross_block_buffer_bytes": 512,
+        "d92_ccoc_workspace_residual_buffer_bytes": 256,
+        "d92_ccoc_workspace_numeric_bytes_upper_bound": 1_792,
+        "d92_ccoc_workspace_frozen_k10_numeric_bytes_upper_bound": 334_336,
+        "d92_ccoc_support_transient_bytes_upper_bound": 1_792,
         "d92_ccoc_persistent_state_bytes_delta": 0,
         "d92_ccoc_persistent_bytes_delta": 0,
         "d92_ccoc_query_state_bytes_delta": 0,
@@ -658,14 +675,23 @@ def _ccoc_receipt(
         "d92_ccoc_query_role_oracle_access": False,
         "d92_ccoc_query_class_quota_access": False,
         "d92_ccoc_query_global_reassignment": False,
-        "d92_ccoc_candidate_attempt_fit_count": 1 if registered and k_shot > 2 else 0,
+        "d92_ccoc_candidate_attempt_fit_count": 1,
         "d92_ccoc_fallback_reference_fit_count": 1 if fallback else 0,
-        "d92_ccoc_candidate_statistic_receipt_available": active,
+        "d92_ccoc_candidate_statistic_receipt_available": True,
         "d92_ccoc_fallback_reference_full_head_byte_exact": (
             True if fallback else None
         ),
         "d92_ccoc_paired_e0_codec_state_equal": None,
     }
+    if fallback:
+        for field in (
+            "d92_ccoc_compile_solve_count",
+            "d92_ccoc_full_solve_count",
+            "d92_ccoc_full_dense_288_solve_count",
+            "d92_ccoc_compiled_cholesky_check_count",
+            "d92_ccoc_covariance_equation_residual_max",
+        ):
+            raw.pop(field)
     mirrored = {
         key.replace("d92_ccoc_", "d92_e0d_ccoc_"): value
         for key, value in raw.items()
@@ -1791,6 +1817,111 @@ def test_ccoc_query_audit_rejects_rho_inventory_and_query_tamper(field, tampered
 
     arm, result = _ccoc_result()
     result.geometry_audit["final_covariance_audit"][field] = tampered
+    with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="CCOC"):
+        e0d_eval._audit_d92_e0d_fit(
+            result,
+            arm=arm,
+            scenario="leo_clear_weak",
+            k_shot=10,
+            old_count=OLD_CLASS_COUNT,
+            class_count=11,
+        )
+
+
+@pytest.mark.parametrize("delta", (-1, 1))
+def test_ccoc_query_audit_rejects_frozen_k10_workspace_byte_drift(delta):
+    """Would fail if Query accepted either side of the frozen 334336-byte bound."""
+
+    arm, result = _ccoc_result()
+    audit = result.geometry_audit["final_covariance_audit"]
+    raw_field = "d92_ccoc_workspace_frozen_k10_numeric_bytes_upper_bound"
+    mirror_field = raw_field.replace("d92_ccoc_", "d92_e0d_ccoc_")
+    audit[raw_field] = int(audit[raw_field]) + delta
+    audit[mirror_field] = int(audit[mirror_field]) + delta
+
+    with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="CCOC"):
+        e0d_eval._audit_d92_e0d_fit(
+            result,
+            arm=arm,
+            scenario="leo_clear_weak",
+            k_shot=10,
+            old_count=OLD_CLASS_COUNT,
+            class_count=11,
+        )
+
+
+@pytest.mark.parametrize(
+    ("raw_field", "mirror_field", "value"),
+    (
+        (
+            "d92_ccoc_unknown_receipt_field",
+            "d92_e0d_ccoc_unknown_receipt_field",
+            "forged",
+        ),
+        (
+            "d92_ccoc_raw_support_rows",
+            "d92_e0d_ccoc_raw_support_rows",
+            ((0.0, 1.0),),
+        ),
+    ),
+)
+def test_ccoc_query_audit_rejects_unknown_or_raw_support_receipt_fields(
+    raw_field, mirror_field, value
+):
+    """Would fail if unapproved CCOC fields crossed the fit-audit boundary."""
+
+    arm, result = _ccoc_result()
+    audit = result.geometry_audit["final_covariance_audit"]
+    audit[raw_field] = value
+    audit[mirror_field] = value
+
+    with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="CCOC"):
+        e0d_eval._audit_d92_e0d_fit(
+            result,
+            arm=arm,
+            scenario="leo_clear_weak",
+            k_shot=10,
+            old_count=OLD_CLASS_COUNT,
+            class_count=11,
+        )
+
+
+@pytest.mark.parametrize(
+    ("raw_field", "mirror_field", "value"),
+    (
+        ("d92_ccoc_raw_support_rows", None, ((0.0, 1.0),)),
+        (None, "d92_e0d_ccoc_raw_support_rows", ((0.0, 1.0),)),
+    ),
+)
+def test_ccoc_query_audit_rejects_single_sided_or_missing_mirror_fields(
+    raw_field, mirror_field, value
+):
+    """Would fail if a CCOC raw/mirror collection could be one-sided."""
+
+    arm, result = _ccoc_result()
+    audit = result.geometry_audit["final_covariance_audit"]
+    if raw_field is not None:
+        audit[raw_field] = value
+    if mirror_field is not None:
+        audit[mirror_field] = value
+
+    with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="CCOC"):
+        e0d_eval._audit_d92_e0d_fit(
+            result,
+            arm=arm,
+            scenario="leo_clear_weak",
+            k_shot=10,
+            old_count=OLD_CLASS_COUNT,
+            class_count=11,
+        )
+
+
+def test_ccoc_query_audit_rejects_missing_mirrored_statistic_field():
+    """Would fail if an approved raw field could omit its mirrored closure."""
+
+    arm, result = _ccoc_result()
+    result.geometry_audit["final_covariance_audit"].pop("d92_e0d_ccoc_old_rho")
+
     with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="CCOC"):
         e0d_eval._audit_d92_e0d_fit(
             result,

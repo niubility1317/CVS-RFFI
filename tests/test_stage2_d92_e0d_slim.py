@@ -717,3 +717,27 @@ def test_ccoc_numeric_fallback_reports_real_three_fit_two_state_inventory(
     assert inventory["full_component_fit_count"] == 2
     assert audit["d92_e0d_ccoc_g0_eligible"] is False
     assert audit["d92_e0d_ccoc_g0_block_reason"] == "NUMERIC_FALLBACK_EXACT_E0"
+
+
+@pytest.mark.parametrize("delta", (-1, 1))
+def test_ccoc_slim_rejects_frozen_k10_workspace_byte_drift(delta):
+    """Would fail if the immutable 334336-byte K10 workspace became a loose bound."""
+
+    arm = D92_E0D_ARMS["E0_FULL_CROSS_CLASS_OFFBLOCK_CONSENSUS"]
+    _, _, audit, _, _ = _run(
+        arm.arm_id,
+        class_count=11,
+        k_shot=10,
+    )
+    tampered = dict(audit)
+    field = "d92_ccoc_workspace_frozen_k10_numeric_bytes_upper_bound"
+    tampered[field] = int(tampered[field]) + delta
+
+    with pytest.raises(slim.D92E0DSlimError, match="CCOC statistic receipt drift"):
+        slim._ccoc_receipt(
+            tampered,
+            arm=arm,
+            registered=True,
+            k_shot=10,
+            class_count=11,
+        )
