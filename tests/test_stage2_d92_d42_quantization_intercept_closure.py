@@ -175,6 +175,55 @@ def test_qic_publishes_the_strictly_closer_fp16_intercept_and_nothing_else() -> 
     ) * d42.FEATURE_DIM
 
 
+def test_qic_c11_k10_transient_upper_bound_covers_all_live_component_buffers() -> None:
+    """A resource receipt that omits QIC materialization buffers is unsafe."""
+
+    state = _state(class_count=11)
+    rows, targets = _support(class_count=11, k_shot=10)
+
+    _candidate, audit = qic.apply_d42_quantization_intercept_closure(
+        state, rows, targets
+    )
+
+    feature_bytes = d42.FEATURE_DIM
+    row_bytes = rows.nbytes
+    sort_key_bytes = row_bytes
+    per_class_gather_bytes = 10 * feature_bytes * (
+        np.dtype(np.float32).itemsize + np.dtype(np.float64).itemsize
+    ) + feature_bytes * np.dtype(np.float64).itemsize
+    decoded_bytes = 2 * len(state.classes) * feature_bytes * np.dtype(np.float32).itemsize
+    means_bytes = len(state.classes) * feature_bytes * np.dtype(np.float64).itemsize
+    vector_bytes = len(state.classes) * (
+        8 * np.dtype(np.float64).itemsize + 2 * np.dtype(np.float16).itemsize
+    )
+    state_array_bytes = sum(
+        value.nbytes
+        for value in (
+            state.log_diag_fp32,
+            state.coef1_qint8,
+            state.coef2_qint8,
+            state.scale1_fp16,
+            state.scale2_fp16,
+            state.intercept_fp16,
+            state.coef_fp32,
+            state.intercept_fp32,
+        )
+    )
+    explicit_live_components = (
+        row_bytes
+        + sort_key_bytes
+        + per_class_gather_bytes
+        + decoded_bytes
+        + means_bytes
+        + vector_bytes
+        + 2 * state_array_bytes
+    )
+
+    assert audit["d92_qic_active"] is True
+    assert audit["d92_qic_support_transient_bytes_upper_bound"] >= explicit_live_components
+    assert audit["d92_qic_support_transient_bytes_upper_bound"] < 1024 * 1024
+
+
 def test_qic_falls_back_to_the_exact_e0_state_when_fp16_cannot_improve() -> None:
     """Removing the strict-improvement gate would incorrectly republish E0 as QIC."""
 

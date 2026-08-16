@@ -165,15 +165,51 @@ def _centered_residual(
 
 
 def _resource_values(
-    *, row_count: int, class_count: int, k_shot: int
+    *,
+    state: d42.D42UnifiedShrinkageLDAState,
+    row_count: int,
+    class_count: int,
+    k_shot: int,
 ) -> tuple[int, int, int, int, int]:
     rows_bytes = int(row_count * d42.FEATURE_DIM * np.dtype(np.float32).itemsize)
     decoded_bytes = int(
         class_count * d42.FEATURE_DIM * np.dtype(np.float32).itemsize
     )
     mean_bytes = int(class_count * d42.FEATURE_DIM * np.dtype(np.float64).itemsize)
-    vector_bytes = int(class_count * (8 * 6 + 2))
-    transient_bytes = int(rows_bytes + decoded_bytes + mean_bytes + vector_bytes)
+    sort_key_bytes = rows_bytes
+    per_class_gather_bytes = int(
+        int(k_shot)
+        * d42.FEATURE_DIM
+        * (np.dtype(np.float32).itemsize + np.dtype(np.float64).itemsize)
+        + d42.FEATURE_DIM * np.dtype(np.float64).itemsize
+    )
+    vector_bytes = int(
+        class_count * (8 * np.dtype(np.float64).itemsize + 2 * np.dtype(np.float16).itemsize)
+    )
+    state_array_bytes = int(
+        sum(
+            value.nbytes
+            for value in (
+                state.log_diag_fp32,
+                state.coef1_qint8,
+                state.coef2_qint8,
+                state.scale1_fp16,
+                state.scale2_fp16,
+                state.intercept_fp16,
+                state.coef_fp32,
+                state.intercept_fp32,
+            )
+        )
+    )
+    transient_bytes = int(
+        rows_bytes
+        + sort_key_bytes
+        + per_class_gather_bytes
+        + 2 * decoded_bytes
+        + mean_bytes
+        + vector_bytes
+        + 2 * state_array_bytes
+    )
     support_macs = int(class_count * (int(k_shot) + 1) * d42.FEATURE_DIM)
     return support_macs, transient_bytes, rows_bytes, decoded_bytes, mean_bytes
 
@@ -293,7 +329,10 @@ def d42_qic_inactive_receipt(
     shot = None if k_shot is None else int(k_shot)
     row_count = 0 if shot is None else int(class_count * shot)
     resources = _resource_values(
-        row_count=row_count, class_count=class_count, k_shot=0 if shot is None else shot
+        state=state,
+        row_count=row_count,
+        class_count=class_count,
+        k_shot=0 if shot is None else shot,
     )
     sha = _state_sha256(state)
     return _base_audit(
@@ -340,7 +379,10 @@ def apply_d42_quantization_intercept_closure(
 
     class_count = len(state.classes)
     resources = _resource_values(
-        row_count=len(rows), class_count=class_count, k_shot=k_shot
+        state=state,
+        row_count=len(rows),
+        class_count=class_count,
+        k_shot=k_shot,
     )
     e0_sha = _state_sha256(state)
     decode_count = 0
