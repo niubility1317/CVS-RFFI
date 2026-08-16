@@ -30,6 +30,96 @@ def _write_bytes_readonly(path: Path, value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
 
 
+_CLOSURE_SHA_FIELDS = (
+    "before_prediction_sha256",
+    "after_prediction_sha256",
+    "before_commit_sha256",
+    "after_commit_sha256",
+    "before_fit_audit_sha256",
+    "after_fit_audit_sha256",
+    "before_resource_audit_sha256",
+    "after_resource_audit_sha256",
+    "before_execution_receipt_sha256",
+    "after_execution_receipt_sha256",
+)
+
+
+def _write_prediction_closure(prediction_root: Path) -> dict[str, Path]:
+    for state in ("before", "after"):
+        state_root = prediction_root / state
+        for name in (
+            "prediction_artifact.npz",
+            "COMMIT.json",
+            "fit_audit.json",
+            "resource_audit.json",
+            "execution_receipt.json",
+        ):
+            path = state_root / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(f"{state}:{name}".encode("utf-8"))
+    return runner._prediction_closure_paths(prediction_root)
+
+
+def _score_fixture(
+    tmp_path: Path,
+) -> tuple[dict[str, object], dict[str, Path], Path, str]:
+    truth_path = tmp_path / "truth_sidecar.json"
+    truth_sha256 = _write_bytes_readonly(truth_path, b"truth")
+    paths = _write_prediction_closure(tmp_path / "diag")
+    job: dict[str, object] = {
+        "job_id": "job-1",
+        "outer_key": "rx_7_7__seed_713104__k_5__new_20",
+        "outer_role": "performance",
+        "arm_id": runner.ARM_ID,
+        "candidate": runner.CANDIDATE_ID,
+        "truth_sidecar": str(truth_path),
+        "truth_sidecar_sha256": truth_sha256,
+    }
+    score_path = tmp_path / "score.json"
+    _write(
+        score_path,
+        {
+            "schema": "cvs.phase2.diag_cosine_dev_pair_score.v1",
+            "candidate": runner.CANDIDATE_ID,
+            "truth_sidecar_sha256": truth_sha256,
+            "before_prediction_sha256": hashlib.sha256(
+                paths["before_prediction"].read_bytes()
+            ).hexdigest(),
+            "after_prediction_sha256": hashlib.sha256(
+                paths["after_prediction"].read_bytes()
+            ).hexdigest(),
+        },
+    )
+    return job, paths, score_path, truth_sha256
+
+
+def _closure_sha_values(paths: dict[str, Path]) -> dict[str, str]:
+    evidence_paths = {
+        "before_prediction_sha256": paths["before_prediction"],
+        "after_prediction_sha256": paths["after_prediction"],
+        "before_commit_sha256": paths["before_commit"],
+        "after_commit_sha256": paths["after_commit"],
+        "before_fit_audit_sha256": paths["before_fit_audit"],
+        "after_fit_audit_sha256": paths["after_fit_audit"],
+        "before_resource_audit_sha256": paths["before_fit_audit"].with_name(
+            "resource_audit.json"
+        ),
+        "after_resource_audit_sha256": paths["after_fit_audit"].with_name(
+            "resource_audit.json"
+        ),
+        "before_execution_receipt_sha256": paths["before_fit_audit"].with_name(
+            "execution_receipt.json"
+        ),
+        "after_execution_receipt_sha256": paths["after_fit_audit"].with_name(
+            "execution_receipt.json"
+        ),
+    }
+    return {
+        field: hashlib.sha256(path.read_bytes()).hexdigest()
+        for field, path in evidence_paths.items()
+    }
+
+
 def _reference_resources(*, peak: int = 10) -> dict[str, dict[str, int]]:
     return {
         scene: {
@@ -271,42 +361,14 @@ def test_score_evidence_requires_actual_readonly_sidecar_before_and_after_scorin
 def test_score_artifact_binds_actual_inputs_to_the_frozen_job_identity(
     tmp_path: Path,
 ) -> None:
-    truth_path = tmp_path / "truth_sidecar.json"
-    before_path = tmp_path / "before.npz"
-    after_path = tmp_path / "after.npz"
-    truth_sha256 = _write_bytes_readonly(truth_path, b"truth")
-    before_sha256 = _write_bytes_readonly(before_path, b"before")
-    after_sha256 = _write_bytes_readonly(after_path, b"after")
-    job = {
-        "job_id": "job-1",
-        "outer_key": "rx_7_7__seed_713104__k_5__new_20",
-        "outer_role": "performance",
-        "arm_id": runner.ARM_ID,
-        "candidate": runner.CANDIDATE_ID,
-        "truth_sidecar": str(truth_path),
-        "truth_sidecar_sha256": truth_sha256,
-    }
-    score_path = tmp_path / "score.json"
-    _write(
-        score_path,
-        {
-            "schema": "cvs.phase2.diag_cosine_dev_pair_score.v1",
-            "candidate": runner.CANDIDATE_ID,
-            "truth_sidecar_sha256": truth_sha256,
-            "before_prediction_sha256": before_sha256,
-            "after_prediction_sha256": after_sha256,
-        },
-    )
+    job, paths, score_path, truth_sha256 = _score_fixture(tmp_path)
 
     binding_path, binding_sha256 = runner._write_score_binding(
         tmp_path / "job",
         job=job,
         matrix_manifest_sha256="a" * 64,
         method_lock_sha256="b" * 64,
-        paths={
-            "before_prediction": before_path,
-            "after_prediction": after_path,
-        },
+        paths=paths,
         score_command=["python", "score"],
     )
     binding = json.loads(binding_path.read_text(encoding="utf-8"))
@@ -321,8 +383,8 @@ def test_score_artifact_binds_actual_inputs_to_the_frozen_job_identity(
         matrix_manifest_sha256="a" * 64,
         method_lock_sha256="b" * 64,
         truth_sidecar_sha256=truth_sha256,
-        before_prediction_path=before_path,
-        after_prediction_path=after_path,
+        before_prediction_path=paths["before_prediction"],
+        after_prediction_path=paths["after_prediction"],
         score_binding_path=binding_path,
     )
     assert evidence["job_id"] == job["job_id"]
@@ -335,8 +397,12 @@ def test_score_artifact_binds_actual_inputs_to_the_frozen_job_identity(
             "schema": "cvs.phase2.diag_cosine_dev_pair_score.v1",
             "candidate": "wrong-candidate",
             "truth_sidecar_sha256": truth_sha256,
-            "before_prediction_sha256": before_sha256,
-            "after_prediction_sha256": after_sha256,
+            "before_prediction_sha256": hashlib.sha256(
+                paths["before_prediction"].read_bytes()
+            ).hexdigest(),
+            "after_prediction_sha256": hashlib.sha256(
+                paths["after_prediction"].read_bytes()
+            ).hexdigest(),
         },
     )
     with pytest.raises(runner.D92CCOCHard9K1RunnerError, match="score artifact"):
@@ -346,8 +412,152 @@ def test_score_artifact_binds_actual_inputs_to_the_frozen_job_identity(
             matrix_manifest_sha256="a" * 64,
             method_lock_sha256="b" * 64,
             truth_sidecar_sha256=truth_sha256,
-            before_prediction_path=before_path,
-            after_prediction_path=after_path,
+            before_prediction_path=paths["before_prediction"],
+            after_prediction_path=paths["after_prediction"],
+            score_binding_path=binding_path,
+        )
+
+
+def test_score_binding_seals_all_before_after_closure_hashes_with_o_excl(
+    tmp_path: Path,
+) -> None:
+    job, paths, _score_path, _truth_sha256 = _score_fixture(tmp_path)
+
+    binding_path, binding_sha256 = runner._write_score_binding(
+        tmp_path / "job",
+        job=job,
+        matrix_manifest_sha256="a" * 64,
+        method_lock_sha256="b" * 64,
+        paths=paths,
+        score_command=["python", "score"],
+    )
+
+    binding = json.loads(binding_path.read_text(encoding="utf-8"))
+    expected_hashes = _closure_sha_values(paths)
+    assert set(_CLOSURE_SHA_FIELDS) <= set(binding)
+    assert {field: binding[field] for field in _CLOSURE_SHA_FIELDS} == expected_hashes
+    assert binding_sha256 == hashlib.sha256(binding_path.read_bytes()).hexdigest()
+    with pytest.raises(FileExistsError):
+        runner._write_score_binding(
+            tmp_path / "job",
+            job=job,
+            matrix_manifest_sha256="a" * 64,
+            method_lock_sha256="b" * 64,
+            paths=paths,
+            score_command=["python", "score"],
+        )
+
+
+def test_outer_score_binding_rejects_fit_and_rewritten_commit_drift(
+    tmp_path: Path,
+) -> None:
+    job, paths, score_path, truth_sha256 = _score_fixture(tmp_path)
+    binding_path, _binding_sha256 = runner._write_score_binding(
+        tmp_path / "job",
+        job=job,
+        matrix_manifest_sha256="a" * 64,
+        method_lock_sha256="b" * 64,
+        paths=paths,
+        score_command=["python", "score"],
+    )
+    _write(paths["after_fit_audit"], {"tampered": "fit"})
+    _write(paths["after_commit"], {"rewritten": "commit"})
+
+    with pytest.raises(
+        runner.D92CCOCHard9K1RunnerError, match="score binding closure"
+    ):
+        runner._validate_score_artifact(
+            score_path,
+            job=job,
+            matrix_manifest_sha256="a" * 64,
+            method_lock_sha256="b" * 64,
+            truth_sidecar_sha256=truth_sha256,
+            before_prediction_path=paths["before_prediction"],
+            after_prediction_path=paths["after_prediction"],
+            score_binding_path=binding_path,
+        )
+
+
+def test_final_job_receipt_seals_same_closure_hashes_and_rejects_rewrite(
+    tmp_path: Path,
+) -> None:
+    job, paths, score_path, truth_sha256 = _score_fixture(tmp_path)
+    binding_path, binding_sha256 = runner._write_score_binding(
+        tmp_path / "job",
+        job=job,
+        matrix_manifest_sha256="a" * 64,
+        method_lock_sha256="b" * 64,
+        paths=paths,
+        score_command=["python", "score"],
+    )
+    score_evidence = runner._validate_score_artifact(
+        score_path,
+        job=job,
+        matrix_manifest_sha256="a" * 64,
+        method_lock_sha256="b" * 64,
+        truth_sidecar_sha256=truth_sha256,
+        before_prediction_path=paths["before_prediction"],
+        after_prediction_path=paths["after_prediction"],
+        score_binding_path=binding_path,
+    )
+    closure_hashes = {
+        field: score_evidence[field] for field in _CLOSURE_SHA_FIELDS
+    }
+    receipt_base = {
+        "schema": runner.JOB_RECEIPT_SCHEMA,
+        "status": "PREDICTIONS_AND_POST_PREDICTION_SCORE_COMPLETE",
+        "job_id": job["job_id"],
+        "outer_key": job["outer_key"],
+        "outer_role": job["outer_role"],
+        "arm_id": runner.ARM_ID,
+        "candidate": runner.CANDIDATE_ID,
+        "matrix_manifest_sha256": "a" * 64,
+        "method_lock_sha256": "b" * 64,
+        "truth_sidecar_sha256": truth_sha256,
+        "score_binding": str(binding_path),
+        "score_binding_sha256": binding_sha256,
+        "score_evidence": score_evidence,
+    }
+    receipt_path = tmp_path / "job" / "job_receipt.json"
+    receipt_sha256 = runner._write_job_receipt(
+        tmp_path / "job",
+        receipt_base,
+        closure_hashes=closure_hashes,
+    )
+
+    expected_hashes = _closure_sha_values(paths)
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    assert {field: receipt[field] for field in _CLOSURE_SHA_FIELDS} == expected_hashes
+    assert receipt["prediction_closure"] == expected_hashes
+    assert receipt["truth_sidecar_sha256"] == truth_sha256
+    assert receipt["score_binding_sha256"] == binding_sha256
+    assert receipt_sha256 == hashlib.sha256(receipt_path.read_bytes()).hexdigest()
+    with pytest.raises(FileExistsError):
+        runner._write_job_receipt(
+            tmp_path / "job",
+            receipt_base,
+            closure_hashes=closure_hashes,
+        )
+
+    _write(paths["after_fit_audit"], {"tampered": "fit"})
+    _write(paths["after_commit"], {"rewritten": "commit"})
+    assert receipt["after_fit_audit_sha256"] != hashlib.sha256(
+        paths["after_fit_audit"].read_bytes()
+    ).hexdigest()
+    assert receipt["after_commit_sha256"] != hashlib.sha256(
+        paths["after_commit"].read_bytes()
+    ).hexdigest()
+    with pytest.raises(
+        runner.D92CCOCHard9K1RunnerError, match="score binding closure"
+    ):
+        runner._validate_score_artifact(
+            score_path,
+            job=job,
+            matrix_manifest_sha256="a" * 64,
+            method_lock_sha256="b" * 64,
+            truth_sidecar_sha256=truth_sha256,
+            before_prediction_path=paths["before_prediction"],
+            after_prediction_path=paths["after_prediction"],
             score_binding_path=binding_path,
         )
 

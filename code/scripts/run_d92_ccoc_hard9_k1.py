@@ -57,6 +57,20 @@ _ACTIVE_PROCESS_SCHEMA = "cvs.phase2.d92_ccoc_hard9_k1.active_process.v1"
 _ACTIVE_PROCESS_ACTION_SCHEMA = "cvs.phase2.d92_ccoc_hard9_k1.stop_action.v1"
 
 
+_PREDICTION_CLOSURE_SHA_FIELDS = (
+    "before_prediction_sha256",
+    "after_prediction_sha256",
+    "before_commit_sha256",
+    "after_commit_sha256",
+    "before_fit_audit_sha256",
+    "after_fit_audit_sha256",
+    "before_resource_audit_sha256",
+    "after_resource_audit_sha256",
+    "before_execution_receipt_sha256",
+    "after_execution_receipt_sha256",
+)
+
+
 class D92CCOCHard9K1RunnerError(RuntimeError):
     """Raised when a direct CCOC Hard9+K1 runner boundary drifts."""
 
@@ -495,6 +509,52 @@ def _verify_truth_sidecar_snapshot(
     return expected
 
 
+def _prediction_closure_hashes(
+    before_prediction_path: str | Path,
+    after_prediction_path: str | Path,
+) -> dict[str, str]:
+    """Hash every sealed prediction-closure member for an outer receipt."""
+
+    before_prediction = Path(before_prediction_path)
+    after_prediction = Path(after_prediction_path)
+    if (
+        before_prediction.name != "prediction_artifact.npz"
+        or after_prediction.name != "prediction_artifact.npz"
+        or before_prediction.parent.name != "before"
+        or after_prediction.parent.name != "after"
+        or before_prediction.parent.parent != after_prediction.parent.parent
+    ):
+        raise D92CCOCHard9K1RunnerError("prediction closure hash path drift")
+    evidence_paths = {
+        "before_prediction_sha256": before_prediction,
+        "after_prediction_sha256": after_prediction,
+        "before_commit_sha256": before_prediction.with_name("COMMIT.json"),
+        "after_commit_sha256": after_prediction.with_name("COMMIT.json"),
+        "before_fit_audit_sha256": before_prediction.with_name("fit_audit.json"),
+        "after_fit_audit_sha256": after_prediction.with_name("fit_audit.json"),
+        "before_resource_audit_sha256": before_prediction.with_name(
+            "resource_audit.json"
+        ),
+        "after_resource_audit_sha256": after_prediction.with_name(
+            "resource_audit.json"
+        ),
+        "before_execution_receipt_sha256": before_prediction.with_name(
+            "execution_receipt.json"
+        ),
+        "after_execution_receipt_sha256": after_prediction.with_name(
+            "execution_receipt.json"
+        ),
+    }
+    if tuple(evidence_paths) != _PREDICTION_CLOSURE_SHA_FIELDS:
+        raise D92CCOCHard9K1RunnerError("prediction closure hash schema drift")
+    for field, path in evidence_paths.items():
+        if not path.is_file() or path.is_symlink():
+            raise D92CCOCHard9K1RunnerError(
+                f"prediction closure hash artifact drift: {field}"
+            )
+    return {field: _sha256_file(path) for field, path in evidence_paths.items()}
+
+
 def _validate_score_artifact(
     path: str | Path,
     *,
@@ -514,9 +574,10 @@ def _validate_score_artifact(
     score = _read_json_object(score_path, label="score artifact")
     before_path = Path(before_prediction_path)
     after_path = Path(after_prediction_path)
+    closure_hashes = _prediction_closure_hashes(before_path, after_path)
     expected_truth = str(truth_sidecar_sha256).lower()
-    expected_before = _sha256_file(before_path)
-    expected_after = _sha256_file(after_path)
+    expected_before = closure_hashes["before_prediction_sha256"]
+    expected_after = closure_hashes["after_prediction_sha256"]
     identity = {
         "job_id": str(job.get("job_id", "")),
         "outer_key": str(job.get("outer_key", "")),
@@ -552,12 +613,16 @@ def _validate_score_artifact(
             or binding.get("after_prediction_sha256") != expected_after
         ):
             raise D92CCOCHard9K1RunnerError("score binding identity drift")
+        if any(
+            str(binding.get(field, "")).lower() != expected
+            for field, expected in closure_hashes.items()
+        ):
+            raise D92CCOCHard9K1RunnerError("score binding closure hash drift")
     return {
         **identity,
         "score_artifact_sha256": _sha256_file(score_path),
         "truth_sidecar_sha256": expected_truth,
-        "before_prediction_sha256": expected_before,
-        "after_prediction_sha256": expected_after,
+        **closure_hashes,
     }
 
 
@@ -576,8 +641,10 @@ def _write_score_binding(
         job["truth_sidecar"],
         expected_sha256=str(job["truth_sidecar_sha256"]),
     )
-    before_sha256 = _sha256_file(paths["before_prediction"])
-    after_sha256 = _sha256_file(paths["after_prediction"])
+    closure_hashes = _prediction_closure_hashes(
+        paths["before_prediction"],
+        paths["after_prediction"],
+    )
     binding_path = job_root / "score_binding.json"
     digest = _write_json_new(
         binding_path,
@@ -593,13 +660,53 @@ def _write_score_binding(
             "method_lock_sha256": str(method_lock_sha256).lower(),
             "truth_sidecar": str(job["truth_sidecar"]),
             "truth_sidecar_sha256": truth_sha256,
-            "before_prediction_sha256": before_sha256,
-            "after_prediction_sha256": after_sha256,
+            **closure_hashes,
             "score_command": list(score_command),
             "performance_result_allowed": False,
         },
     )
     return binding_path, digest
+
+
+def _write_job_receipt(
+    job_root: str | Path,
+    receipt: Mapping[str, Any],
+    *,
+    closure_hashes: Mapping[str, str],
+) -> str:
+    """Write the final immutable receipt with the score-validated closure."""
+
+    root = Path(job_root)
+    if root.is_symlink() or not root.is_dir():
+        raise D92CCOCHard9K1RunnerError("job receipt root drift")
+    if set(closure_hashes) != set(_PREDICTION_CLOSURE_SHA_FIELDS) or any(
+        not _is_sha256(closure_hashes.get(field))
+        for field in _PREDICTION_CLOSURE_SHA_FIELDS
+    ):
+        raise D92CCOCHard9K1RunnerError("job receipt closure hash drift")
+    normalized_hashes = {
+        field: str(closure_hashes[field]).lower()
+        for field in _PREDICTION_CLOSURE_SHA_FIELDS
+    }
+    if any(
+        field in receipt
+        for field in (*_PREDICTION_CLOSURE_SHA_FIELDS, "prediction_closure")
+    ):
+        raise D92CCOCHard9K1RunnerError("job receipt closure overwrite risk")
+    evidence = receipt.get("score_evidence")
+    if not isinstance(evidence, Mapping) or any(
+        str(evidence.get(field, "")).lower() != expected
+        for field, expected in normalized_hashes.items()
+    ):
+        raise D92CCOCHard9K1RunnerError("job receipt score evidence drift")
+    return _write_json_new(
+        root / "job_receipt.json",
+        {
+            **dict(receipt),
+            **normalized_hashes,
+            "prediction_closure": normalized_hashes,
+        },
+    )
 
 
 def _load_manifest(path: str | Path, expected_sha256: str) -> dict[str, Any]:
@@ -1850,6 +1957,9 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
                 }
             )
             continue
+        closure_hashes = {
+            field: score_evidence[field] for field in _PREDICTION_CLOSURE_SHA_FIELDS
+        }
         receipt = {
             "schema": JOB_RECEIPT_SCHEMA,
             "status": "PREDICTIONS_AND_POST_PREDICTION_SCORE_COMPLETE",
@@ -1865,8 +1975,6 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
             "selection_sha256": manifest["selection_sha256"],
             "prediction_command": command,
             "score_command": score_command,
-            "before_prediction_sha256": _sha256_file(paths["before_prediction"]),
-            "after_prediction_sha256": _sha256_file(paths["after_prediction"]),
             "score_sha256": _sha256_file(score_path),
             "truth_sidecar_sha256": truth_sidecar_sha256_after_score,
             "truth_sidecar_sha256_before_score": score_evidence[
@@ -1883,7 +1991,7 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
             "fit_audit_resource_gate": fit_resource_gate,
             "fresh_run_retry_authorized": False,
         }
-        _write_json_new(job_root / "job_receipt.json", receipt)
+        _write_job_receipt(job_root, receipt, closure_hashes=closure_hashes)
         completed_jobs.append(str(job["job_id"]))
     stopped = _shared_stop_path(output_root).is_file()
     status = (
