@@ -178,7 +178,6 @@ def _row(
     }
     for field in runner.QUERY_ZERO_FIELDS:
         row[field] = False
-        row["d92_e0d_" + field] = False
         row[prefix + field] = False
     return row
 
@@ -199,6 +198,25 @@ def test_fit_audit_accepts_ccoc_k_gt_2_and_k1_exact_alias(tmp_path: Path) -> Non
         assert result["scene_count"] == 3
         assert result["candidate_peak_hard_pass"] is True
         assert result["candidate_peak_target_pass"] is False
+
+
+def test_query_access_zero_requires_base_and_approved_ccoc_mirror_only() -> None:
+    prefix = "d92_e0d_ccoc_"
+    row = {
+        key: False
+        for field in runner.QUERY_ZERO_FIELDS
+        for key in (field, prefix + field)
+    }
+
+    assert runner._query_access_is_zero(row) is True
+    for field in runner.QUERY_ZERO_FIELDS:
+        for key in (field, prefix + field):
+            missing = dict(row)
+            del missing[key]
+            assert runner._query_access_is_zero(missing) is False
+            enabled = dict(row)
+            enabled[key] = True
+            assert runner._query_access_is_zero(enabled) is False
 
 
 def test_candidate_peak_is_absolute_not_offset_by_e0_peak(tmp_path: Path) -> None:
@@ -930,7 +948,7 @@ def test_runtime_source_lock_closes_scientific_entry_and_rejects_file_drift(
     tmp_path: Path,
 ) -> None:
     lock = json.loads(
-        (ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v5.json").read_text(
+        (ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v6.json").read_text(
             encoding="utf-8"
         )
     )
@@ -1004,10 +1022,10 @@ def _run_extracted_archive_prepare_probe(
         bundle.extractall(extracted)
 
     extracted_config = (
-        extracted / "configs" / "stage2_d92_ccoc_hard9_k1_v5.json"
+        extracted / "configs" / "stage2_d92_ccoc_hard9_k1_v6.json"
     )
     extracted_config.write_bytes(
-        (ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v5.json").read_bytes()
+        (ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v6.json").read_bytes()
     )
     config = json.loads(extracted_config.read_text(encoding="utf-8"))
     for relative_path in config["runtime_source"]["files"]:
@@ -1040,7 +1058,7 @@ root = Path(sys.argv[1]).resolve()
 sys.path.insert(0, str(root / "code"))
 from scripts import run_d92_ccoc_hard9_k1 as runner
 
-config = root / "configs" / "stage2_d92_ccoc_hard9_k1_v5.json"
+config = root / "configs" / "stage2_d92_ccoc_hard9_k1_v6.json"
 output_root = root / "prepare_output"
 runner.build_hard9_k1_manifest = lambda _config, require_package_files: {
     "method_lock": str(config),

@@ -174,7 +174,7 @@ def _resource_value(row: Mapping[str, Any], field: str) -> float:
 
 def _query_access_is_zero(row: Mapping[str, Any]) -> bool:
     for field in QUERY_ZERO_FIELDS:
-        for candidate in (field, f"d92_e0d_{field}", f"d92_e0d_ccoc_{field}"):
+        for candidate in (field, f"d92_e0d_ccoc_{field}"):
             if row.get(candidate) is not False:
                 return False
     return True
