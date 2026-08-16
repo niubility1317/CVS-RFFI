@@ -46,3 +46,40 @@
 - 只因协议/访问/哈希/覆盖/错误checkout、确定性技术异常或至少两不同row同一pre-receipt异常停止；绝不因准确率、AUROC、floor或任何性能值停止。
 - 预期formal artifact：6个shared cache+receipt、12个feature+binding、6个pair metrics、1个aggregate。技术完成不等于任何七门通过或候选晋级。
 - 任何N607落地、启动、监控、artifact读取与报告终态由唯一runner和主控完成；本预注册文件不声明已发布、已运行或存在性能结果。
+
+## Runner发布与技术终态（2026-08-16）
+
+- 本run唯一runner按主控冻结commit`a98819f5fa1252d7d7864b0003dc5d613c70b825`执行；SCP恰1次。远端归档为`35865177`bytes，SHA256=`eac3575dffb3d9045b3eb3dda6be9bc42e898959b2d7b19604d133184134e29b`，保留在`releases/.phase1_clic_source_metrics_20260816_v3_a98819f5.tar.gz`。
+- Windows`core.autocrlf=true`造成归档中Python/report物理CRLF；只读审计确认stage与归档5112项清单完全一致、无外来文件、无lone CR，CRLF归一化后六个冻结SHA全部闭合。仅两份Bash launcher在exact stage内用remote Python临时文件原子替换并保留模式，随后atomic rename至`releases/phase1_clic_source_metrics_20260816_v3_a98819f5`；未二次SCP、未删除tar/stage证据。
+
+| 文件 | 远端release物理SHA256 | CRLF归一化SHA256 | 冻结SHA匹配 |
+|---|---|---|---|
+| `build_phase1_clic_source_v_leo_iq.py` | `db6908a967740f82ae535470af6dfec1417d8a480a81d4e004b57d78ab0ce6bd` | `ad1ce4bcded8a0c87bcc30a171c52b4415725eb1cb1d639cfe152372425a9897` | 是 |
+| `export_phase1_clic_source_v_leo_features.py` | `4e7b375a5ad6ddeb494e6dc1c62606383de42edda9e4ec056cee952a3ce67cbe` | `84d4e12f154f36406b798f2e2d10be732e6d1301e211b8afa5076d2e6b10036e` | 是 |
+| `evaluate_phase1_clic_source_metrics.py` | `d60ba165a511be8e881e8c8f0f2835a037a0cf7c199fbcd88e30e654fff464f7` | `e4eb7ca70e2d0dc1656a733f92359e21d41e4e60d52deb554ff3843e1683c3f9` | 是 |
+| `launch_phase1_clic_source_metrics12_v3_20260816.sh` | `5146c48202ba5ec2141dfe20f6c1b33ce65f40588e61a16e80f76260c5710d8e` | 同左 | 是 |
+| `smoke_phase1_clic_source_metrics_f1_v3_20260816.sh` | `32febf2aba43d5ae30fa6f8203d96f8686972020981bf6c519e0c272ecf2f809` | 同左 | 是 |
+| `report.md` | `bbdc00edee3a4119e0499bb74d9dd3d98ceb6fd5a784f0f30eaeebd6f76a656e` | `8ea2ea81712888cfcb4a066029ade0bd33e6da8e7d77e9827a7dc244a9318f79` | 是 |
+
+- 远端静态门：exact`CVS-RFFI/bin/python`临时cfile`py_compile`通过；三入口`--help`通过；两launcher`bash -n`通过；formal/smoke dry-run分别为25/3行；ManySig SHA、12组训练/terminal/clean与6组PAIR-v3输入存在且未读target/query/truth/性能；formal/smoke运行根、日志根和outer在启动前均为空。
+
+## F1 smoke技术终态
+
+- 唯一命令：`cd /home/szu2070436088/2510044040/CV-SincNet && nohup bash /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_clic_source_metrics_20260816_v3_a98819f5/code/scripts/smoke_phase1_clic_source_metrics_f1_v3_20260816.sh > /home/szu2070436088/2510044040/CV-SincNet/phase1_clic_source_metrics_20260816_v3_smoke_outer.out 2>&1 &`。
+- `SMOKE_INVOCATION=1`，outer PID=`871012`，启动时间=`2026-08-16T17:29:14+08:00`，GPU=`0`，`RETRY=NO`。cache完成后，F1C forward在产生feature前确定性失败：`CLICSourceVFeatureExportError: PAIR-v3 proxy diagnostic fit_rows must remain zero`。该错误触发技术停止规则，未启动F1G、scorer或formal。
+
+| partial artifact | bytes | SHA256 |
+|---|---:|---|
+| `F1_SHARED/source_validation_known_leo_weak.npz` | 41127936 | `fdc7d7cc00df80028fba432499658ee86ba22bcf993bcda83a7dd6bd1adb1a5c` |
+| `F1_SHARED/source_validation_known_leo_weak.receipt.json` | 13739 | `cc698d6fdb3d982a615d1669c4c234d5e4b7cb560a904f37c70f5329ed69a5d4` |
+| `F1_source_v_cache.out` | 574 | `0d76bdd398b9387a35fbef05292226559026815881b8b45caaaf3301218e24d6` |
+| `F1C_CLIC12_source_v_forward.out` | 1140 | `f68460708e91b2505f90bfaad88f80d1f0b421b68933b95b0a0c0eeeb0a7bafd` |
+| smoke outer | 0 | `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` |
+
+- cache receipt结构审计：`source_validation_row_count=16800`；日期为`2021_03_01/2021_03_08`；3个LEO场景各5600行；7RX各800行；每个TX/RX/day各300行；`single_leo_observation_per_physical_sample=true`、跨场景物理ID不复用、C/G共享received-IQ字节；`source_v_only=true`；`fit_rows=0`、`threshold_fit_rows=0`、`source_l_forward_rows=0`、`source_v_forward_rows=0`、`proxy_forward_rows=0`；`clean_source_runtime_access=false`、`target_access=false`、`query_access=false`、`selection_access=false`、`retry_access=false`。
+- F1C/F1G feature与binding、formal cache/receipt、pair metrics和aggregate均未生成。smoke进程已退出，GPU0回到`1MiB/0%`，本地SSH客户端和N607 TCP22连接均清零；partial run/log保留且未覆盖。
+
+## 最终结论
+
+- `SMOKE_STOPPED_TECHNICAL_FAILURE / FORMAL_INVOCATION=0 / NO_PERFORMANCE_RESULT / RETRY=NO`。
+- 所有性能字段均为`N/A`/未读取；本run不支持任何性能、候选晋级或Phase3声明。该PAIR-v3输入/策略故障需由主控另行完成本地修复、验证、独立复审并申请新的非覆盖run ID；本runner不重试当前run。
