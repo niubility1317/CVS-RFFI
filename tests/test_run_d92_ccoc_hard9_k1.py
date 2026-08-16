@@ -5,6 +5,7 @@ import json
 import os
 import stat
 import sys
+import threading
 from pathlib import Path
 
 import pytest
@@ -528,6 +529,92 @@ def test_second_fingerprint_publishes_stop_and_automatically_stops_only_owned_ch
 
     assert signals == [(101, "SIGTERM"), (101, "SIGKILL")]
     assert (tmp_path / "coordination" / "stop_action.json").is_file()
+
+
+def test_prediction_dispatch_barrier_registers_popen_child_before_queued_stop_scan(
+    tmp_path: Path,
+) -> None:
+    job = {
+        "outer_key": "rx_7_7__seed_713104__k_5__new_20",
+        "job_id": "prediction-race",
+        "arm_id": runner.ARM_ID,
+        "candidate": runner.CANDIDATE_ID,
+    }
+    popen_seen = threading.Event()
+    stop_attempted = threading.Event()
+    stop_errors: list[BaseException] = []
+    signals: list[tuple[int, str]] = []
+
+    class Child:
+        pid = 703
+
+        def wait(self) -> int:  # pragma: no cover - dispatch intentionally does not wait
+            return 0
+
+        def terminate(self) -> None:  # pragma: no cover - receipt write succeeds
+            raise AssertionError("must not terminate during receipt registration")
+
+    child = Child()
+
+    def inspect(pid: int) -> dict[str, object]:
+        assert pid == child.pid
+        return {
+            "pid": child.pid,
+            "parent_pid": os.getpid(),
+            "cwd": str(runner.CODE_ROOT),
+            "cmdline": ["python", "prediction"],
+        }
+
+    def publish_stop() -> None:
+        assert popen_seen.wait(1.0)
+        stop_attempted.set()
+        try:
+            runner._publish_systemic_stop_and_terminate(
+                tmp_path,
+                coordinator_id="second-fingerprint-shard",
+                fingerprint="a" * 64,
+                distinct_outer_count=2,
+                process_inspector=inspect,
+                signal_sender=lambda pid, signal: signals.append((pid, signal)),
+                sleep_seconds=0.0,
+            )
+        except BaseException as error:  # make thread failure observable to pytest
+            stop_errors.append(error)
+
+    worker = threading.Thread(target=publish_stop)
+
+    def start_prediction() -> Child:
+        worker.start()
+        return runner._start_shard_child(
+            ["python", "prediction"],
+            output_root=tmp_path,
+            job=job,
+            shard_index=3,
+            stage="prediction",
+            stdout=object(),
+            stderr=object(),
+            env={},
+            popen=lambda *_args, **_kwargs: child,
+            after_popen_before_receipt=lambda: (
+                popen_seen.set(),
+                stop_attempted.wait(1.0),
+            ),
+        )
+
+    started, registered_child = runner._dispatch_prediction_under_stop_barrier(
+        tmp_path,
+        coordinator_id="prediction-shard",
+        start=start_prediction,
+    )
+    worker.join(timeout=2.0)
+
+    assert started is True
+    assert registered_child is child
+    assert not worker.is_alive()
+    assert stop_errors == []
+    assert list((tmp_path / "active_processes" / "shard_3").glob("*.json"))
+    assert signals == [(child.pid, "SIGTERM"), (child.pid, "SIGKILL")]
+    assert (tmp_path / "SYSTEMIC_TECHNICAL_FAILURE_STOP.json").is_file()
 
 
 def test_shard_child_writes_exclusive_process_receipt_before_wait(

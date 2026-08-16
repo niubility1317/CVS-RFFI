@@ -827,7 +827,12 @@ def _stop_score_dispatch_lock(
 
     root = Path(output_root).resolve()
     owner_id = str(coordinator_id)
-    if not owner_id or purpose not in {"score_dispatch", "stop_publish", "stop_action"}:
+    if not owner_id or purpose not in {
+        "prediction_dispatch",
+        "score_dispatch",
+        "stop_publish",
+        "stop_action",
+    }:
         raise D92CCOCHard9K1RunnerError("stop/score coordination identity drift")
     timeout = _finite(timeout_seconds, "stop/score coordination timeout", lower=0.0)
     path = _stop_score_lock_path(root)
@@ -883,6 +888,30 @@ def _dispatch_score_under_stop_barrier(
         root,
         coordinator_id=coordinator_id,
         purpose="score_dispatch",
+    ):
+        if _shared_stop_path(root).is_file():
+            return False, None
+        if before_start is not None:
+            before_start()
+        if _shared_stop_path(root).is_file():
+            return False, None
+        return True, start()
+
+
+def _dispatch_prediction_under_stop_barrier(
+    output_root: str | Path,
+    *,
+    coordinator_id: str,
+    start: Callable[[], Any],
+    before_start: Callable[[], None] | None = None,
+) -> tuple[bool, Any | None]:
+    """Atomically recheck stop and register a prediction child before dispatch."""
+
+    root = Path(output_root).resolve()
+    with _stop_score_dispatch_lock(
+        root,
+        coordinator_id=coordinator_id,
+        purpose="prediction_dispatch",
     ):
         if _shared_stop_path(root).is_file():
             return False, None
@@ -994,6 +1023,7 @@ def _start_shard_child(
     stderr: Any,
     env: Mapping[str, str],
     popen: Callable[..., Any] = subprocess.Popen,
+    after_popen_before_receipt: Callable[[], Any] | None = None,
 ) -> Any:
     """Start one owned child and persist its exclusive stop receipt first."""
 
@@ -1006,6 +1036,8 @@ def _start_shard_child(
         env=dict(env),
     )
     try:
+        if after_popen_before_receipt is not None:
+            after_popen_before_receipt()
         _write_active_process_receipt(
             output_root,
             job=job,
@@ -1641,16 +1673,33 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
         with (job_root / "prediction.stdout.log").open("x", encoding="utf-8") as stdout, (
             job_root / "prediction.stderr.log"
         ).open("x", encoding="utf-8") as stderr:
-            prediction_returncode = _run_shard_child(
-                command,
-                output_root=output_root,
-                job=job,
-                shard_index=shard_index,
-                stage="prediction",
-                stdout=stdout,
-                stderr=stderr,
-                env=_child_env(args.cpu_threads),
+            prediction_started, prediction_child = (
+                _dispatch_prediction_under_stop_barrier(
+                    output_root,
+                    coordinator_id=coordinator_id,
+                    start=lambda: _start_shard_child(
+                        command,
+                        output_root=output_root,
+                        job=job,
+                        shard_index=shard_index,
+                        stage="prediction",
+                        stdout=stdout,
+                        stderr=stderr,
+                        env=_child_env(args.cpu_threads),
+                    ),
+                )
             )
+        if not prediction_started:
+            failures.append(
+                {
+                    "job_id": job["job_id"],
+                    "stage": "systemic_stop_before_prediction",
+                }
+            )
+            break
+        if prediction_child is None:  # pragma: no cover - guarded by prediction_started
+            raise D92CCOCHard9K1RunnerError("prediction start value drift")
+        prediction_returncode = _wait_shard_child(prediction_child)
         prediction_root = job_root / "diag"
         closure_status, closure_reason = (
             _prediction_closure_status(prediction_root)
