@@ -329,3 +329,18 @@ def test_v5_launch_freezes_all_four_seal_sha256_arguments() -> None:
         actual_sha256 = matches[0]
         assert re.fullmatch(r"[0-9a-f]{64}", actual_sha256)
         assert actual_sha256 == expected_sha256
+
+
+def test_v6_launch_checks_the_persisted_g0_marker_shape() -> None:
+    root = Path(__file__).parents[1]
+    launch_path = (
+        root
+        / "automation_reports/CV-SincNet/"
+        "d92_e0_full_ccoc_g0_k10_20260816_v6/launch.sh"
+    )
+    assert launch_path.is_file(), f"missing v6 launch artifact: {launch_path}"
+    text = launch_path.read_text(encoding="utf-8")
+
+    assert 'value.get("status") == "D92_CCOC_G0_ACTIVE_QUANTUM_RESOURCE_PASS"' in text
+    assert 'validation.get("marker") == "D92_CCOC_G0_ACTIVE_QUANTUM_RESOURCE_PASS"' in text
+    assert 'value.get("marker") == "D92_CCOC_G0_ACTIVE_QUANTUM_RESOURCE_PASS"' not in text
