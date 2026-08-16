@@ -1,6 +1,6 @@
 # D92 CCOC需求追溯矩阵
 
-状态：`LOCAL_VERIFIED / G0_V3_READY_FOR_N607_HANDOFF / NO_G0_RUNTIME_RESULT`
+状态：`G0_V3_RESOURCE_REJECT / V4_THRESHOLD_REVISION_FROZEN / NO_PERFORMANCE_RESULT`
 
 设计源：`docs/superpowers/specs/2026-08-13-d92-ccoc-strict-pareto-design.md`
 
@@ -26,9 +26,9 @@
 |CCOC-09|K>2单FULL fit、单dense solve、无BLOCK/LOO/Fisher/scan|probe/slim/query|actual inventory与篡改拒绝|本地通过|
 |CCOC-10|query零访问；MAC和永久state与E0精确一致|query evaluation|七项禁用字段、state/MAC闭包|本地通过|
 |CCOC-11|正常路径一次D42；数值失败exact E0且G0不可用|query codec guard|数值异常与结构异常分流测试|本地通过|
-|CCOC-12|瞬时工作集上界`334,336B`且实际peak增量≤512KiB|core receipt/G0|公式测试、N607资源收据|静态上界通过；实际peak待G0|
-|CCOC-13|隔离E0/CCOC support-only技术执行；部署state非E0、至少一个rho严格内部，`max_j|Delta M_j|>=max_b(A_b*max four deployed block scales)>0`|G0 validator|真实K10三场景truth-free G0|本地入口通过；真实G0待运行|
-|CCOC-14|G0三场景active/no fallback，wall/ratio/peak硬门全过|G0 report/launcher|N607 artifact与validation JSON|待运行|
+|CCOC-12|瞬时工作集上界`334,336B`；注册增量peak目标≤512KiB、硬门≤1MiB|core receipt/G0|公式测试、N607资源收据|v3实测clear=`729,088B`；v4新硬门待验证|
+|CCOC-13|隔离E0/CCOC support-only技术执行；部署state非E0、至少一个rho严格内部，`max_j|Delta M_j|>=max_b(A_b*max four deployed block scales)>0`|G0 validator|真实K10三场景truth-free G0|v3除旧peak门外通过；v4待运行|
+|CCOC-14|G0三场景active/no fallback，wall/ratio/peak硬门全过|G0 report/launcher|N607 artifact与validation JSON|v3旧门拒绝；v4待运行|
 |CCOC-15|G0通过后Hard9+K1；八项任一tie/反向即拒绝|独立runner/analyzer|paired rows、逐类/scene/receiver、verdict|待运行|
 |CCOC-16|Hard9全过才自动进入新Target125 run|主代理裁决/report|Git状态、不可覆盖run ID、sole runner handoff|待裁决|
 

@@ -68,7 +68,7 @@ G0必须从最终D42 state复核：candidate state与同outer、同scene的immut
 
 ## 6.资源实现
 
-实现按old组、new组顺序流式处理并复用buffer，不保存`C×288×288`的`S_c/Q_c/u_c`。只保留三个上三角cross-block区域：`160×96`、`160×32`、`96×32`。在float64下，upper accumulators为`188,416B`，最大复用Q buffer为`122,880B`，K10 residual buffer为`23,040B`，冻结瞬时上界为`334,336B`，相对`512KiB`硬门保留`189,952B`余量。
+实现按old组、new组顺序流式处理并复用buffer，不保存`C×288×288`的`S_c/Q_c/u_c`。只保留三个上三角cross-block区域：`160×96`、`160×32`、`96×32`。在float64下，upper accumulators为`188,416B`，最大复用Q buffer为`122,880B`，K10 residual buffer为`23,040B`，冻结瞬时上界为`334,336B`。注册增量peak目标保持`≤512KiB`，硬门按2026-08-16用户授权放宽为`≤1MiB`；该放宽不适用于query MAC、永久state、wall或paired wall ratio。
 
 query仍是单一F0线性头；query MAC、序列化字段和永久state bytes必须与E0逐row精确相同。support统计MAC必须按真实矩阵乘法、归一化、Cholesky和一次FULL solve给出保守上界；不得用estimated component-fit proxy替代实际wall/peak收据。
 
@@ -95,7 +95,9 @@ RED必须先证明新模块/arm/receipt不存在或行为错误，再写GREEN。
 
 ## 9.G0、Hard9与Target125
 
-G0固定使用`rx_7_7__seed_713106__k_10__new_5`的三个`leo_*_weak`场景，只执行truth-free prediction，不运行scorer。三场景都必须active、无fallback、SPD/receipt/量子门闭合、actual FULL fit=1、query/state/MAC精确；registration wall P90目标`≤120ms`且paired ratio`≤1.25×`，硬门`≤150ms`且`≤1.50×`，peak增量`≤512KiB`。
+G0固定使用`rx_7_7__seed_713106__k_10__new_5`的三个`leo_*_weak`场景，只执行truth-free prediction，不运行scorer。三场景都必须active、无fallback、SPD/receipt/量子门闭合、actual FULL fit=1、query/state/MAC精确；registration wall P90目标`≤120ms`且paired ratio`≤1.25×`，硬门`≤150ms`且`≤1.50×`；注册增量peak目标`≤512KiB`、硬门`≤1MiB`。实时推理预算不得随注册peak门放宽。
+
+2026-08-16的v3真实G0在旧`512KiB`门下仅因`leo_clear_weak`注册增量peak=`729,088B`失败；该run保持`G0_RESOURCE_GATE_REJECT`，不得事后改判。阈值修订只对预先冻结的新不可覆盖v4及后续run生效。
 
 G0通过后，自动进入与G0不重叠的Hard9+K1。九个performance outer与E0逐row配对；`H_old_new`、old balanced accuracy、`c_old_acc`、old floor、seen-new accuracy必须严格升高，average forgetting、new→old、old→new必须严格降低。任一tie、反向、fallback、证据不完整或资源硬门失败即`REJECT_ROUTE`，不扫描rho或任何替代权重。
 

@@ -20,7 +20,7 @@
 - 数值失败exact E0_FULL_ONLY且真实记录candidate/ref库存；结构、registry、schema和seal错误继续抛出。
 - row canonicalization=`lexicographic_float32_row_bytes_then_float64_reduce`；old/new组内label permutation等变、task swap不变。
 - 流式内存不保留`C×288×288`；K10瞬时统计上界=`334336B`，query MAC/state与E0精确相同。
-- G0固定`rx_7_7__seed_713106__k_10__new_5`三场景；至少一个rho严格位于`(0,1)`，state非E0，`max_j|Delta M_j|>=q>0`，wall P90≤150ms、paired ratio≤1.50、peak增量≤512KiB。
+- G0固定`rx_7_7__seed_713106__k_10__new_5`三场景；至少一个rho严格位于`(0,1)`，state非E0，`max_j|Delta M_j|>=q>0`，wall P90≤150ms、paired ratio≤1.50、注册增量peak目标≤512KiB且硬门≤1MiB。query MAC与永久state仍须和E0精确相等。
 - 不修改历史CSOAS、TCRA、TPCE、NewGuard、FloorBoost结果或矩阵；不运行scorer或读取truth完成G0。
 - 所有代码测试先在`conda activate ssr-gpu`环境串行执行；项目改动必须Git提交；N607只能由一个专属runner以新run ID执行。
 
