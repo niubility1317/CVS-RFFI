@@ -28,6 +28,10 @@ _UPPER_BLOCK_PAIRS = (
     (_BLOCK_SLICES[1], _BLOCK_SLICES[2]),
 )
 _CANONICALIZATION = "lexicographic_float32_row_bytes_then_float64_reduce"
+_CANONICAL_TIE_POLICY = (
+    "float32_row_bytes_then_float64_row_bytes_"
+    "duplicate_class_handle_fail_closed"
+)
 _FEATURE_DIMENSION = 288
 _FLOAT64_BYTES = np.dtype(np.float64).itemsize
 _UPPER_ACCUMULATOR_BYTES = int(
@@ -74,19 +78,35 @@ def _float32_row_bytes(row: np.ndarray) -> bytes:
     return row32.tobytes(order="C")
 
 
+def _float64_row_bytes(row: np.ndarray) -> bytes:
+    """Build the lossless tie key from the original FP64 reduction row."""
+
+    row64 = np.ascontiguousarray(np.asarray(row, dtype=np.float64))
+    if not np.isfinite(row64).all():
+        raise D92CCOCNumericalError("ccoc_q_nonfinite")
+    return row64.tobytes(order="C")
+
+
 def _canonical_class_row_order(
     rows: np.ndarray,
     labels: np.ndarray,
     class_index: int,
     k_shot: int,
-) -> tuple[tuple[bytes, ...], tuple[int, ...]]:
-    """Return one class's float32-byte order without copying class rows."""
+) -> tuple[tuple[tuple[bytes, bytes], ...], tuple[int, ...]]:
+    """Return a lossless canonical class handle without copying class rows."""
 
     indices = np.flatnonzero(labels == int(class_index))
     if len(indices) != int(k_shot):
         raise D92CCOCError("ccoc_unbalanced_group_registry")
     keyed = [
-        (_float32_row_bytes(rows[int(index)]), int(index)) for index in indices
+        (
+            (
+                _float32_row_bytes(rows[int(index)]),
+                _float64_row_bytes(rows[int(index)]),
+            ),
+            int(index),
+        )
+        for index in indices
     ]
     keyed.sort(key=lambda item: item[0])
     return tuple(item[0] for item in keyed), tuple(item[1] for item in keyed)
@@ -100,7 +120,9 @@ def _canonical_group_class_orders(
 ) -> tuple[tuple[int, tuple[int, ...]], ...]:
     """Order class contributions by canonical support content, not class ID."""
 
-    keyed: list[tuple[tuple[bytes, ...], int, tuple[int, ...]]] = []
+    keyed: list[
+        tuple[tuple[tuple[bytes, bytes], ...], int, tuple[int, ...]]
+    ] = []
     for raw_index in class_indices:
         class_index = int(raw_index)
         class_key, row_order = _canonical_class_row_order(
@@ -108,6 +130,12 @@ def _canonical_group_class_orders(
         )
         keyed.append((class_key, class_index, row_order))
     keyed.sort(key=lambda item: item[0])
+    for previous, current in zip(keyed, keyed[1:]):
+        if previous[0] == current[0]:
+            # A complete handle proves equal FP64 rows and therefore equal
+            # reductions.  Reject rather than let a stable sort use class IDs
+            # as an implicit ordering rule for indistinguishable classes.
+            raise D92CCOCError("ccoc_identical_class_handle")
     return tuple((item[1], item[2]) for item in keyed)
 
 
@@ -255,6 +283,7 @@ def _stream_group_consensus(
         "crossblock_passes_per_class": 2,
         "upper_block_count": len(_UPPER_BLOCK_PAIRS),
         "canonicalization": _CANONICALIZATION,
+        "canonicalization_tie_policy": _CANONICAL_TIE_POLICY,
     }
 
 
@@ -365,6 +394,7 @@ def _ccoc_statistics_audit(
             "d92_ccoc_old_pairwise_cosine_raw": float(old_audit["pairwise_cosine_raw"]),
             "d92_ccoc_new_pairwise_cosine_raw": float(new_audit["pairwise_cosine_raw"]),
             "d92_ccoc_canonicalization": _CANONICALIZATION,
+            "d92_ccoc_canonicalization_tie_policy": _CANONICAL_TIE_POLICY,
             "d92_ccoc_crossblock_passes_per_class": 2,
             "d92_ccoc_upper_block_count": len(_UPPER_BLOCK_PAIRS),
             "d92_ccoc_covariance_symmetric": bool(np.array_equal(covariance, covariance.T)),
@@ -553,8 +583,11 @@ def ccoc_inactive_receipt(
 ) -> dict[str, Any]:
     """Return the no-fit receipt for pre-registration or K1/K2 CCOC states."""
 
-    classes, shots, old_count = int(class_count), int(k_shot), int(old_class_count)
-    if classes < old_count or old_count <= 0 or shots < 1:
+    classes, shots = int(class_count), int(k_shot)
+    if int(old_class_count) != OLD_CLASS_COUNT:
+        raise D92CCOCError("ccoc_old_class_count_override_drift")
+    old_count = OLD_CLASS_COUNT
+    if classes < old_count or shots < 1:
         raise D92CCOCError("ccoc_invalid_inactive_registry")
     if classes == old_count:
         status = "before_exact_d81"
@@ -573,6 +606,7 @@ def ccoc_inactive_receipt(
         "d92_ccoc_old_group_class_count": old_count,
         "d92_ccoc_new_group_class_count": max(0, classes - old_count),
         "d92_ccoc_canonicalization": _CANONICALIZATION,
+        "d92_ccoc_canonicalization_tie_policy": _CANONICAL_TIE_POLICY,
         "d92_ccoc_full_endpoint_reused": False,
         "d92_ccoc_full_endpoint_reuse": False,
         "d92_ccoc_additional_fit_count": 0,

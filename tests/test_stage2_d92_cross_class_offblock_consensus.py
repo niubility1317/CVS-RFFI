@@ -78,6 +78,58 @@ def _float64_boundary_consensus_group() -> tuple[np.ndarray, np.ndarray]:
     return np.stack(rows), np.asarray(labels, dtype=np.int64)
 
 
+def _float32_collision_support() -> tuple[np.ndarray, np.ndarray]:
+    """11 K3 classes with colliding float32 keys but distinct float64 rows."""
+
+    rng = np.random.default_rng(53)
+    rows: list[np.ndarray] = []
+    labels: list[int] = []
+    for class_index in range(11):
+        center = np.zeros(d42.FEATURE_DIM, dtype=np.float64)
+        center[[0, 160, 256]] = 1.0e12
+        center[10] = float(class_index) * 1.0e7
+        offsets = rng.normal(size=(3, 3))
+        offsets += np.asarray(
+            (class_index * 0.01, -class_index * 0.02, class_index * 0.03)
+        )
+        for offset in offsets:
+            row = center.copy()
+            row[[0, 160, 256]] += offset
+            rows.append(row)
+            labels.append(class_index)
+    return np.stack(rows), np.asarray(labels, dtype=np.int64)
+
+
+def _float32_class_handle_collision_support() -> tuple[np.ndarray, np.ndarray]:
+    """11 K3 classes whose complete float32 sequences collide across classes."""
+
+    rng = np.random.default_rng(991)
+    scales = (
+        1.0,
+        10.0,
+        100.0,
+        1000.0,
+        5000.0,
+        10000.0,
+        2.0,
+        20.0,
+        200.0,
+        2000.0,
+        8000.0,
+    )
+    rows: list[np.ndarray] = []
+    labels: list[int] = []
+    for class_index, scale in enumerate(scales):
+        offsets = rng.normal(size=(3, 3)) * scale
+        offsets -= offsets.mean(axis=0, keepdims=True)
+        for offset in offsets:
+            row = np.zeros(d42.FEATURE_DIM, dtype=np.float64)
+            row[[0, 160, 256]] = 1.0e12 + offset
+            rows.append(row)
+            labels.append(class_index)
+    return np.stack(rows), np.asarray(labels, dtype=np.int64)
+
+
 def test_ccoc_pairwise_consensus_has_literal_full_and_block_endpoints():
     """Would fail if CCOC averaged raw off-blocks instead of pairwise cosine."""
 
@@ -137,8 +189,13 @@ def test_ccoc_float32_byte_sorting_keeps_original_float64_reduction_values():
 
     assert actual_order == expected_order
     assert class_key == tuple(
-        np.ascontiguousarray(np.asarray(rows[index], dtype=np.float32)).tobytes(
-            order="C"
+        (
+            np.ascontiguousarray(np.asarray(rows[index], dtype=np.float32)).tobytes(
+                order="C"
+            ),
+            np.ascontiguousarray(np.asarray(rows[index], dtype=np.float64)).tobytes(
+                order="C"
+            ),
         )
         for index in expected_order
     )
@@ -196,6 +253,34 @@ def test_ccoc_is_bitwise_invariant_to_support_row_permutation():
     assert second_audit == first_audit
 
 
+def test_ccoc_float32_key_collisions_are_bitwise_row_permutation_invariant():
+    """Would fail if equal float32 keys preserved caller order for FP64 rows."""
+
+    rows, labels = _float32_collision_support()
+    assert len({ccoc._float32_row_bytes(row) for row in rows[:3]}) == 1
+    shuffled = np.concatenate(
+        [np.flatnonzero(labels == class_index)[::-1] for class_index in range(11)]
+    )
+    first = ccoc.build_cross_class_offblock_consensus_statistics(
+        d42, rows, labels, class_count=11, k_shot=3
+    )
+    second = ccoc.build_cross_class_offblock_consensus_statistics(
+        d42, rows[shuffled], labels[shuffled], class_count=11, k_shot=3
+    )
+    first_coefficient, first_intercept, first_audit = (
+        ccoc.compile_cross_class_offblock_consensus_affine(d42, first)
+    )
+    second_coefficient, second_intercept, second_audit = (
+        ccoc.compile_cross_class_offblock_consensus_affine(d42, second)
+    )
+
+    np.testing.assert_array_equal(second.covariance, first.covariance)
+    np.testing.assert_array_equal(second_coefficient, first_coefficient)
+    np.testing.assert_array_equal(second_intercept, first_intercept)
+    assert second.audit == first.audit
+    assert second_audit == first_audit
+
+
 def test_ccoc_is_bitwise_equivariant_to_within_group_label_permutation():
     """Would fail if group aggregation depended on arbitrary class ID order."""
 
@@ -223,6 +308,62 @@ def test_ccoc_is_bitwise_equivariant_to_within_group_label_permutation():
     np.testing.assert_array_equal(second_intercept[inverse], first_intercept)
     assert second.audit == first.audit
     assert second_audit == first_audit
+
+
+def test_ccoc_float32_key_collisions_are_bitwise_label_equivariant():
+    """Would fail if class-handle ties used registration class IDs as ordering."""
+
+    rows, labels = _float32_class_handle_collision_support()
+    handles = [
+        ccoc._canonical_class_row_order(rows, labels, class_index, 3)[0]
+        for class_index in range(11)
+    ]
+    assert all(
+        isinstance(item, tuple) and len(item) == 2
+        for handle in handles
+        for item in handle
+    )
+    primary_sequences = [
+        tuple(primary for primary, _ in handle) for handle in handles
+    ]
+    secondary_sequences = [
+        tuple(secondary for _, secondary in handle) for handle in handles
+    ]
+    assert all(sequence == primary_sequences[0] for sequence in primary_sequences)
+    assert len(set(secondary_sequences)) == 11
+    permutation = np.asarray(
+        [2, 5, 0, 4, 1, 3, 9, 6, 8, 7, 10], dtype=np.int64
+    )
+    inverse = np.empty_like(permutation)
+    inverse[permutation] = np.arange(len(inverse))
+    first = ccoc.build_cross_class_offblock_consensus_statistics(
+        d42, rows, labels, class_count=11, k_shot=3
+    )
+    second = ccoc.build_cross_class_offblock_consensus_statistics(
+        d42, rows, inverse[labels], class_count=11, k_shot=3
+    )
+    first_coefficient, first_intercept, first_audit = (
+        ccoc.compile_cross_class_offblock_consensus_affine(d42, first)
+    )
+    second_coefficient, second_intercept, second_audit = (
+        ccoc.compile_cross_class_offblock_consensus_affine(d42, second)
+    )
+
+    np.testing.assert_array_equal(second.covariance, first.covariance)
+    np.testing.assert_array_equal(second_coefficient[inverse], first_coefficient)
+    np.testing.assert_array_equal(second_intercept[inverse], first_intercept)
+    assert second.audit == first.audit
+    assert second_audit == first_audit
+
+
+def test_ccoc_rejects_an_exact_duplicate_canonical_class_handle():
+    """Would fail if an identical class-handle tie fell back to a class ID."""
+
+    rows, labels = _manual_consensus_support()
+    rows[np.flatnonzero(labels == 1)] = rows[np.flatnonzero(labels == 0)]
+
+    with pytest.raises(ccoc.D92CCOCError, match="identical_class_handle"):
+        ccoc._stream_group_consensus(rows, labels, range(6), 3)
 
 
 def test_ccoc_task_balanced_mix_is_exactly_invariant_to_swapping_tasks():
@@ -327,6 +468,13 @@ def test_ccoc_inactive_receipt_rejects_an_active_registration_state():
 
     with pytest.raises(ccoc.D92CCOCError, match="active_registration"):
         ccoc.ccoc_inactive_receipt(11, 3)
+
+
+def test_ccoc_inactive_receipt_rejects_old_class_count_override_drift():
+    """Would fail if the frozen old-class boundary could be caller-overridden."""
+
+    with pytest.raises(ccoc.D92CCOCError, match="old_class_count"):
+        ccoc.ccoc_inactive_receipt(11, 3, old_class_count=11)
 
 
 def test_ccoc_inactive_receipt_keeps_only_frozen_pre_and_low_k_reasons():
