@@ -78,3 +78,36 @@
 - 当前聚焦：`python -m pytest -q code/tests/test_phase1_clic_source_metrics.py`通过`17/17`。覆盖cache/receipt哈希漂移、target访问标志、V-only角色、单physical单forward、旧Torch/NumPy桥接禁止、非有限和非整数输入、known unknown/defer计错、零分母/角色/scene复用、clean/cache/feature元数据绑定、每fold/全18门禁、严格proxy增益、CLI`--help`，以及pair-score编排中的每臂clean-v4 SHA传递和不可覆盖输出。
 - 受影响回归：`python -m pytest -q code/tests/test_phase1_clic_postfreeze.py code/tests/test_phase1_clic_common_receipt_export.py`全绿；仅保留既有PyTorch`autocast`弃用警告。
 - 静态验证：新模块`py_compile`、两份CLI`--help`和`git diff --check`均通过。当前没有N607运行、目标访问或性能结果。
+
+## Task3可追溯预注册：12臂source指标release
+
+- 当前状态：`IMPLEMENTING / NO_PERFORMANCE_RESULT`。本阶段只编排已经封存的training-v5、clean-v4、PAIR-v3和source-V缓存输入；不会读取target、query truth、target package或prediction输入。
+- run ID固定为`phase1_clic_source_metrics_20260813_v1`。输出根和日志根均为新建、不可覆盖路径；retry为`NO`，任何性能数值不参与调度、停止、重试、选择、复活或晋级。
+
+| ID | 来源 | 要求 | 目标文件 | 状态 | 验证 | 备注 |
+|---|---|---|---|---|---|---|
+| T3-01 | Task3 | 严格构建6份同fold C/G共享source-V缓存 | 新launcher、launcher测试 | pending | dry-run计数与路径断言 | 缓存按fold串行，单缓存只产生一个`F*_SHARED`工件对 |
+| T3-02 | Task3 | 生成12份C/G source-V forward，所有forward传对应clean-v4 NPZ | 新launcher、launcher测试 | pending | dry-run逐臂参数断言 | 每physical row的单次forward由既有exporter执行 |
+| T3-03 | Task3 | 生成12份fold C/G metrics receipt和1份六foldaggregate | 新launcher、launcher测试 | pending | dry-run逐fold参数与aggregate断言 | scorer只读PAIR-v3 proxy，CPU执行 |
+| T3-04 | Task3 | 固定12臂映射、6共享cache、forward每GPU最多2项、scorer CPU | 新launcher、launcher测试 | pending | dry-run GPU/CPU环境断言 | 不改变训练、公式、阈值或冻结方法 |
+| T3-05 | Task3 | fresh roots、拒绝覆盖、无target/query/truth/prediction输入 | 新launcher、launcher测试 | pending | dry-run禁止输入断言和非dry-run根保护 | source-only及`POST_TARGET_COMPLETION_AUDIT_NON_SELECTION`只由既有工件封存 |
+| T3-06 | Task3 | 预注册命令、路径、PID台账、预期工件、健康停止和retry=NO | 本报告 | pending | 报告复核 | 不访问N607，不报告性能结果 |
+
+## Task2 P1修复可追溯记录：source-V physical ID语义
+
+- 当前状态：`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`。本修复只纠正Task2对Task1 source-V缓存`physical_sample_id`的重开语义；不修改scorer、Task1 builder、训练、缓存、target或N607路径。
+
+| ID | 来源 | 要求 | 目标文件 | 状态 | 验证 | 备注 |
+|---|---|---|---|---|---|---|
+| P1-01 | Task1物理ID合同 | 正例必须通过Task1`_physical_sample_id(dataset_sha256,tx,rx,day,eq,sig)`构造，不将clean raw`sig`当作缓存physical ID | exporter、聚焦测试 | verified | RED后GREEN | 生产代码只调用Task1 helper，不复制哈希公式 |
+| P1-02 | Task2 pre-forward绑定 | 从clean-v4 manifest封存的dataset SHA及逐行V`tx/rx/day/eq/sig`重算expected ID，并与缓存逐行精确比较 | exporter、聚焦测试 | verified | 六字段漂移负例 | `sig`仍参与独立ID绑定 |
+| P1-03 | 安全边界 | dataset/tx/rx/day/eq/sig任一漂移必须在model forward和任何输出发布前拒绝 | exporter、聚焦测试 | verified | 无输出断言 | 保留scene/feature/TOCTOU/zero-access合同 |
+
+### P1根因、RED/GREEN与边界证据
+
+- 根因：`dff5686a`中的Task2 exporter将Task1 metadata-hash`physical_sample_id`直接与clean-v4 raw`validation_sig_ids`逐行比较。二者不是同一命名空间，因此真实Task1正例被错误拒绝。
+- RED：先将正例改为真实Task1`_physical_sample_id(dataset_sha256,tx,rx,day,eq,sig)`构造。`ssr-gpu`下运行`python -m pytest -q code/tests/test_phase1_clic_source_metrics.py -k source_v_forward_reopens_clean_v4_identity_before_forward`按预期失败于`source-V cache/clean-v4 physical_ids row binding drifted`。
+- 修复：exporter从Task1 metadata-only clean-v4 binding中的manifest`wisig_pkl_sha256`及逐行`validation_tx_ids/validation_rx_ids/validation_day_ids/validation_eq_ids/validation_sig_ids`调用Task1 helper重算expected physical ID；缓存ID必须逐行完全相等。TX/RX/day原轴绑定继续保留，预期ID重复也失败关闭。
+- GREEN：真实正例加dataset/TX/RX/day/eq/sig六个漂移预检共`7/7`通过；每个漂移均在PAIR加载、model forward和immutable输出发布之前拒绝，`source_v_features.npz`和binding均不存在。dataset-SHA变异检查会使漂移路径越过绑定层并到达PAIR桩，恢复读取manifest后的实现重新通过。
+- 回归：`code/tests/test_phase1_clic_source_metrics.py`共`23/23`通过；`test_phase1_clic_postfreeze.py`与`test_phase1_clic_common_receipt_export.py`共`171/171`通过。`py_compile`、exporter/scorer`--help`和`git diff --check`均通过。
+- 边界：没有N607、target、query truth、性能计算、输出artifact或参数选择；本记录仅证明本地P1身份绑定闭合，不构成source指标、训练质量或任何晋级结论。

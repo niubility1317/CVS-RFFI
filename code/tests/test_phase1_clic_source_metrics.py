@@ -19,6 +19,7 @@ import numpy as np
 import pytest
 import torch
 
+import build_phase1_clic_source_v_leo_iq as TASK1_CACHE
 import evaluate_phase1_clic_source_metrics as METRICS
 import export_phase1_clic_source_v_leo_features as EXPORTER
 
@@ -44,6 +45,35 @@ def _cache_arrays(row_count: int = 12) -> dict[str, np.ndarray]:
         "physical_sample_id": np.asarray([f"physical-{index:04d}" for index in range(row_count)], dtype=str),
         "sat_scenarios": np.asarray([SCENES[index % 3] for index in range(row_count)], dtype=str),
     }
+
+
+def _task1_physical_ids(
+    *,
+    dataset_sha256: str,
+    tx_ids: np.ndarray,
+    rx_ids: np.ndarray,
+    day_ids: np.ndarray,
+    eq_ids: np.ndarray,
+    sig_ids: np.ndarray,
+) -> np.ndarray:
+    """Construct test IDs with Task1 itself, never a copied hash formula."""
+
+    return np.asarray(
+        [
+            TASK1_CACHE._physical_sample_id(
+                dataset_sha256=dataset_sha256,
+                tx_id=str(tx_id),
+                rx_id=str(rx_id),
+                day_id=str(day_id),
+                eq_id=str(eq_id),
+                sig_id=str(sig_id),
+            )
+            for tx_id, rx_id, day_id, eq_id, sig_id in zip(
+                tx_ids, rx_ids, day_ids, eq_ids, sig_ids, strict=True
+            )
+        ],
+        dtype=str,
+    )
 
 
 def _cache_receipt(path: Path, arrays: dict[str, np.ndarray]) -> dict[str, Any]:
@@ -323,31 +353,193 @@ def test_source_v_feature_metadata_reopens_every_cache_axis() -> None:
 
 
 def test_source_v_forward_reopens_clean_v4_identity_before_forward() -> None:
-    """Break caught: a source-V cache with another held-V index cannot reach the model."""
+    """Break caught: raw clean sig IDs cannot substitute Task1 physical IDs."""
+
+    dataset_sha256 = "a" * 64
+    tx_ids = np.asarray(SOURCE_TX, dtype=str)
+    rx_ids = np.asarray(["rx-0", "rx-0", "rx-1", "rx-1"], dtype=str)
+    day_ids = np.asarray(["day-0", "day-1", "day-0", "day-1"], dtype=str)
+    eq_ids = np.asarray(["eq-0", "eq-1", "eq-0", "eq-1"], dtype=str)
+    sig_ids = np.asarray(["sig-0", "sig-1", "sig-2", "sig-3"], dtype=str)
+    physical_ids = _task1_physical_ids(
+        dataset_sha256=dataset_sha256,
+        tx_ids=tx_ids,
+        rx_ids=rx_ids,
+        day_ids=day_ids,
+        eq_ids=eq_ids,
+        sig_ids=sig_ids,
+    )
 
     snapshot = {
         "receipt": {
             "source_validation_indices_sha256": "a" * 64,
             "source_validation_physical_order_sha256": "b" * 64,
         },
-        "tx_ids": np.asarray(SOURCE_TX, dtype=str),
-        "rx_ids": np.asarray(["rx-0", "rx-0", "rx-1", "rx-1"], dtype=str),
-        "day_ids": np.asarray(["day-0", "day-1", "day-0", "day-1"], dtype=str),
-        "physical_ids": np.asarray(["p-0", "p-1", "p-2", "p-3"], dtype=str),
+        "tx_ids": tx_ids,
+        "rx_ids": rx_ids,
+        "day_ids": day_ids,
+        "physical_ids": physical_ids,
     }
     clean_binding = {
         "validation_indices_sha256": "a" * 64,
         "validation_metadata_order_sha256": "b" * 64,
-        "validation_tx_ids": tuple(SOURCE_TX),
-        "validation_rx_ids": ("rx-0", "rx-0", "rx-1", "rx-1"),
-        "validation_day_ids": ("day-0", "day-1", "day-0", "day-1"),
-        "validation_sig_ids": ("p-0", "p-1", "p-2", "p-3"),
+        "validation_tx_ids": tuple(tx_ids.tolist()),
+        "validation_rx_ids": tuple(rx_ids.tolist()),
+        "validation_day_ids": tuple(day_ids.tolist()),
+        "validation_eq_ids": tuple(eq_ids.tolist()),
+        "validation_sig_ids": tuple(sig_ids.tolist()),
+        "manifest": {"wisig_pkl_sha256": dataset_sha256},
     }
     EXPORTER.validate_source_v_clean_v4_binding(snapshot=snapshot, clean_binding=clean_binding)
 
     clean_binding["validation_indices_sha256"] = "c" * 64
     with pytest.raises(EXPORTER.CLICSourceVFeatureExportError, match="clean-v4|index|binding"):
         EXPORTER.validate_source_v_clean_v4_binding(snapshot=snapshot, clean_binding=clean_binding)
+
+
+@pytest.mark.parametrize(
+    "component",
+    ("dataset_sha256", "tx_ids", "rx_ids", "day_ids", "eq_ids", "sig_ids"),
+)
+def test_source_v_physical_component_drift_stops_before_forward_or_output(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, component: str
+) -> None:
+    """Break caught: any Task1 physical-ID input drift reaches neither model nor output."""
+
+    runs = tmp_path / "runs"
+    training_root = runs / "phase1_clic12_20260812_v5"
+    clean_root = runs / "phase1_clic_postfreeze_20260812_v4"
+    source_root = runs / "phase1_clic_source_metrics_20260813_v1"
+    candidate = "F1C_CLIC12"
+    checkpoint_path = training_root / candidate / "final_ssdg.pth"
+    terminal_path = training_root / candidate / "terminal_receipt.json"
+    clean_path = clean_root / candidate / "source_clean_proxy.npz"
+    cache_path = source_root / "F1_SHARED" / "source_validation_known_leo_weak.npz"
+    cache_receipt_path = source_root / "F1_SHARED" / "source_validation_known_leo_weak.receipt.json"
+    pair_path = runs / "pair_v3.json"
+    output_path = source_root / candidate / "source_v_features.npz"
+    binding_path = source_root / candidate / "source_v_features.binding.json"
+    for path in (
+        checkpoint_path,
+        terminal_path,
+        clean_path,
+        cache_path,
+        cache_receipt_path,
+        pair_path,
+    ):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(path.name.encode("ascii"))
+
+    dataset_sha256 = "a" * 64
+    tx_ids = np.asarray(SOURCE_TX, dtype=str)
+    rx_ids = np.asarray(["rx-0", "rx-0", "rx-1", "rx-1"], dtype=str)
+    day_ids = np.asarray(["day-0", "day-1", "day-0", "day-1"], dtype=str)
+    eq_ids = np.asarray(["eq-0", "eq-1", "eq-0", "eq-1"], dtype=str)
+    sig_ids = np.asarray(["sig-0", "sig-1", "sig-2", "sig-3"], dtype=str)
+    physical_ids = _task1_physical_ids(
+        dataset_sha256=dataset_sha256,
+        tx_ids=tx_ids,
+        rx_ids=rx_ids,
+        day_ids=day_ids,
+        eq_ids=eq_ids,
+        sig_ids=sig_ids,
+    )
+    snapshot = {
+        "cache_sha256": _sha256(cache_path),
+        "cache_receipt_sha256": _sha256(cache_receipt_path),
+        "receipt": {
+            "source_validation_indices_sha256": "a" * 64,
+            "source_validation_physical_order_sha256": "b" * 64,
+            "checkpoint_sha256_by_arm": {"C": _sha256(checkpoint_path)},
+            "terminal_receipt_sha256_by_arm": {"C": _sha256(terminal_path)},
+        },
+        "tx_ids": tx_ids,
+        "rx_ids": rx_ids,
+        "day_ids": day_ids,
+        "physical_ids": physical_ids,
+        "row_count": int(physical_ids.size),
+    }
+    clean_binding = {
+        "sha256": _sha256(clean_path),
+        "validation_indices_sha256": "a" * 64,
+        "validation_metadata_order_sha256": "b" * 64,
+        "validation_tx_ids": tuple(tx_ids.tolist()),
+        "validation_rx_ids": tuple(rx_ids.tolist()),
+        "validation_day_ids": tuple(day_ids.tolist()),
+        "validation_eq_ids": tuple(eq_ids.tolist()),
+        "validation_sig_ids": tuple(sig_ids.tolist()),
+        "manifest": {"wisig_pkl_sha256": dataset_sha256},
+    }
+    drifted_snapshot = dict(snapshot)
+    drifted_binding = dict(clean_binding)
+    drifted_binding["manifest"] = dict(clean_binding["manifest"])
+    if component == "dataset_sha256":
+        drifted_binding["manifest"]["wisig_pkl_sha256"] = "b" * 64
+    else:
+        binding_field = f"validation_{component}"
+        values = list(drifted_binding[binding_field])
+        values[0] = f"drifted-{component}"
+        drifted_binding[binding_field] = tuple(values)
+        if component in {"tx_ids", "rx_ids", "day_ids"}:
+            drifted_snapshot[component] = np.asarray(values, dtype=str)
+
+    monkeypatch.setattr(
+        EXPORTER.torch,
+        "load",
+        lambda *_args, **_kwargs: {
+            "args": {
+                "phase1_source_known_validation_tx_ids": "held-tx",
+                "phase1_source_proxy_unknown_tx_ids": "proxy-tx",
+                "wisig_out_len": 256,
+            }
+        },
+    )
+    monkeypatch.setattr(
+        EXPORTER._clean,
+        "validate_clic_training_checkpoint",
+        lambda *_args, **_kwargs: ({}, {}, "C"),
+    )
+    monkeypatch.setattr(
+        EXPORTER,
+        "read_source_v_cache_snapshot",
+        lambda **_kwargs: drifted_snapshot,
+    )
+    monkeypatch.setattr(
+        EXPORTER._cache,
+        "_read_clean_validation_binding",
+        lambda **_kwargs: drifted_binding,
+    )
+    pair_calls: list[bool] = []
+
+    def must_not_reach_pair(*_args: Any, **_kwargs: Any) -> tuple[dict[str, Any], str, dict[str, Any]]:
+        pair_calls.append(True)
+        raise AssertionError("physical-ID drift reached the post-binding forward path")
+
+    monkeypatch.setattr(EXPORTER, "_load_pair_policy_state", must_not_reach_pair)
+    args = Namespace(
+        ckpt=str(checkpoint_path),
+        terminal_receipt_json=str(terminal_path),
+        clean_npz=str(clean_path),
+        source_v_received_iq_npz=str(cache_path),
+        source_v_received_iq_receipt_json=str(cache_receipt_path),
+        pair_json=str(pair_path),
+        training_run_root=str(training_root),
+        cache_run_root=str(source_root),
+        output_root=str(source_root),
+        out_npz=str(output_path),
+        binding_json=str(binding_path),
+        candidate_id=candidate,
+        fold_index=1,
+        arm="C",
+        source_tx_ids=",".join(SOURCE_TX),
+        batch_size=4,
+        device="cpu",
+    )
+    with pytest.raises(EXPORTER.CLICSourceVFeatureExportError, match="physical|binding"):
+        EXPORTER.export_source_v_leo_features(args)
+    assert pair_calls == []
+    assert not output_path.exists()
+    assert not binding_path.exists()
 
 
 def test_source_v_forward_payload_is_one_row_once_and_safe_bridge_avoids_legacy_api() -> None:

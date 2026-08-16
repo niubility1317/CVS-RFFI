@@ -287,17 +287,75 @@ def validate_source_v_clean_v4_binding(
     row_count = int(physical.size)
     if row_count <= 0 or np.any(physical == "") or len(set(physical.tolist())) != row_count:
         raise CLICSourceVFeatureExportError("source-V cache physical rows are invalid for clean-v4 binding")
+    manifest = clean_binding.get("manifest")
+    if not isinstance(manifest, Mapping):
+        raise CLICSourceVFeatureExportError("clean-v4 manifest is absent for source-V physical binding")
+    dataset_sha256 = _require_sha256(
+        manifest.get("wisig_pkl_sha256"), label="clean-v4 manifest WiSig dataset"
+    )
+    clean_tx_ids = _strict_text(
+        clean_binding.get("validation_tx_ids"),
+        label="clean-v4 validation tx_ids",
+        row_count=row_count,
+    )
+    clean_rx_ids = _strict_text(
+        clean_binding.get("validation_rx_ids"),
+        label="clean-v4 validation rx_ids",
+        row_count=row_count,
+    )
+    clean_day_ids = _strict_text(
+        clean_binding.get("validation_day_ids"),
+        label="clean-v4 validation day_ids",
+        row_count=row_count,
+    )
+    clean_eq_ids = _strict_text(
+        clean_binding.get("validation_eq_ids"),
+        label="clean-v4 validation eq_ids",
+        row_count=row_count,
+    )
+    clean_sig_ids = _strict_text(
+        clean_binding.get("validation_sig_ids"),
+        label="clean-v4 validation sig_ids",
+        row_count=row_count,
+    )
     axes = {
-        "tx_ids": (snapshot.get("tx_ids"), clean_binding.get("validation_tx_ids")),
-        "rx_ids": (snapshot.get("rx_ids"), clean_binding.get("validation_rx_ids")),
-        "day_ids": (snapshot.get("day_ids"), clean_binding.get("validation_day_ids")),
-        "physical_ids": (physical, clean_binding.get("validation_sig_ids")),
+        "tx_ids": (snapshot.get("tx_ids"), clean_tx_ids),
+        "rx_ids": (snapshot.get("rx_ids"), clean_rx_ids),
+        "day_ids": (snapshot.get("day_ids"), clean_day_ids),
     }
     for field, (cache_values, clean_values) in axes.items():
         cache_text = _strict_text(cache_values, label=f"source-V cache {field}", row_count=row_count)
-        clean_text = _strict_text(clean_values, label=f"clean-v4 validation {field}", row_count=row_count)
-        if not np.array_equal(cache_text, clean_text):
+        if not np.array_equal(cache_text, clean_values):
             raise CLICSourceVFeatureExportError(f"source-V cache/clean-v4 {field} row binding drifted")
+    expected_physical = np.asarray(
+        [
+            _cache._physical_sample_id(
+                dataset_sha256=dataset_sha256,
+                tx_id=str(tx_id),
+                rx_id=str(rx_id),
+                day_id=str(day_id),
+                eq_id=str(eq_id),
+                sig_id=str(sig_id),
+            )
+            for tx_id, rx_id, day_id, eq_id, sig_id in zip(
+                clean_tx_ids,
+                clean_rx_ids,
+                clean_day_ids,
+                clean_eq_ids,
+                clean_sig_ids,
+                strict=True,
+            )
+        ],
+        dtype=str,
+    )
+    if len(set(expected_physical.tolist())) != row_count:
+        raise CLICSourceVFeatureExportError(
+            "clean-v4 validation metadata does not map to unique Task1 physical IDs"
+        )
+    if not np.array_equal(physical, expected_physical):
+        raise CLICSourceVFeatureExportError(
+            "source-V cache/clean-v4 Task1 physical ID row binding drifted"
+        )
 
 
 def validate_source_v_forward_payload(
