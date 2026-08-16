@@ -33,12 +33,12 @@
 
 | 阶段 | 状态 | 证据 |
 |---|---|---|
-| local | `LOCAL_VERIFIED` | 待记录冻结archive及本地Git/Bash验证 |
-| landing | `PENDING` | 待记录单次SCP、远端tar bytes/SHA、stage解包与atomic rename |
-| smoke | `PENDING` | `SMOKE_INVOCATION=0`；待记录唯一PID/CWD/cmdline/GPU/日志与receipt |
-| formal | `PENDING` | `FORMAL_INVOCATION=0`；仅在ADV正式训练自然完成且GPU0..5清空后启动 |
-| artifacts | `PENDING` | 待记录技术QA；未闭合前不读性能 |
-| analysis | `PENDING` | 待记录source-only同row结果；不含target/query/truth结果 |
+| local | `LOCAL_VERIFIED` | 冻结full hash、canonical SHA、archive bytes和Git Bash静态门已闭合 |
+| landing | `LANDED` | 唯一SCP、remote tar bytes/SHA、stage解包和atomic rename已闭合 |
+| smoke | `SMOKE_STOPPED_TECHNICAL_FAILURE` | observed PID`835435`已退出；cache阶段确定性技术异常；`RETRY=NO` |
+| formal | `FORMAL_INVOCATION=0` | formal run/log/outer均`ABSENT`，未启动 |
+| artifacts | `INCOMPLETE / NO_PERFORMANCE_RESULT` | 预期6个smoke artifact均缺失，未读取性能 |
+| analysis | `NOT_PERFORMED` | 不存在可分析的完整同row结果；未读取target/query/truth |
 
 ### 2026-08-16本地预检与archive
 
@@ -60,6 +60,12 @@
 - 远端Python为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；3个Python入口`py_compile`通过；builder/exporter/scorer三个`--help`均成功；两份launcher`bash -n`通过；formal/smoke dry-run行数为`25/3`；`--target/--query/--truth/--prediction/--package`禁用flag匹配为`0`。
 - 当前阶段：`LANDED / STATIC_VERIFIED`；`SMOKE_INVOCATION=0`；`FORMAL_INVOCATION=0`；`retry=NO`；`NO_PERFORMANCE_RESULT`。远端静态临时目录为`/tmp/phase1_clic_source_metrics_v2_static.pNxk1K`，不在release树中。
 
+### Smoke预启动门
+
+- 正式ADV v2仍为外部活跃训练，runner只做monitor-only；按冻结资源规则，F1 smoke仅使用GPU0且C/G串行，允许在GPU0已有1个ADV进程时总进程数为2。
+- 唯一预注册命令：`nohup bash /home/szu2070436088/2510044040/releases/phase1_clic_source_metrics_20260813_v2_549a4b3a/code/scripts/smoke_phase1_clic_source_metrics_f1_v2_20260816.sh > /home/szu2070436088/2510044040/CV-SincNet/phase1_clic_source_metrics_20260813_v2_smoke_outer.out 2>&1 &`。
+- 启动前硬门：smoke run/log/outer均必须`ABSENT`；`SMOKE_INVOCATION`从0变1且`retry=NO`；不读取性能，不启动formal。
+
 ## 运行证据
 
 待runner追加：UTC/本地时间、远端hostname/date、ADV占用、release/archive和文件哈希、exact命令、PID/CWD/cmdline、GPU映射、stage屏障、完整artifact路径/SHA/row/finite/物理ID/scene、异常及最终判定。
@@ -67,3 +73,31 @@
 ## 版本边界
 
 本runner只拥有本报告；不得stage/commit`conversation_index/`或其他agent文件。所有方法、代码、脚本、阈值和矩阵均取冻结full hash，不在本runner阶段改动。
+
+## 最终封存结论
+
+- 最终状态：`SMOKE_STOPPED_TECHNICAL_FAILURE / FORMAL_INVOCATION=0 / NO_PERFORMANCE_RESULT / RETRY=NO`。本报告封存阶段未访问N607、未改代码、未删除或覆盖任何run artifact。
+- 冻结release一致性：本地archive SHA=`3f6c7862529e1f18ebd62741cac967dbe339f10a753ce674b541099a4afd5f23`、bytes=`268257280`；远端incoming同bytes/SHA。release owner=`szu2070436088:szu2070436088`，mtime=`2026-08-16 16:19:57.089679173 +0800`；incoming owner相同，mtime=`2026-08-16 16:17:50.734670226 +0800`；stage路径已不存在。incoming tar member与release关键builder/exporter/scorer/formal launcher/smoke launcher/report的raw SHA逐项`match=1`，且LF-normalized SHA分别匹配冻结任务值，故可证明release来自同一冻结`549a4b3a95d96556d849c6324fbde8601359379a`。
+- Smoke路径证据：smoke base mtime=`2026-08-16 16:21:40.818686518 +0800`；source root mtime=`16:21:40.819686518 +0800`；log root mtime=`16:21:40.823686518 +0800`；outer owner为`szu2070436088:szu2070436088`、size=`0`、mtime=`2026-08-16 16:21:35.270686125 +0800`。maxdepth3树仅有F1共享、F1C、F1G三个空叶目录及其父目录，无任何NPZ、receipt或binding文件。
+- Smoke调用证据：唯一观测到的启动回执为`SMOKE_LAUNCH_PID=835435`；首个独立核验时该PID已退出且无source-metrics进程。由于没有持久化调用计数器，persistent unique-invocation proof=`UNKNOWN`；但路径由脚本独占创建，未发现第二个PID、第二份outer或第二次路径创建证据。不能把该事实升级为完整唯一调用证明。
+- 预期artifact闭合：`0/6`，以下路径均`ABSENT`，无bytes/SHA可记录：F1 shared cache NPZ、shared receipt、F1C feature NPZ/binding、F1G feature NPZ/binding；因此没有pair metrics、aggregate或性能表。
+- Smoke outer全文为空。唯一cache日志`F1_source_v_cache.out`为`1007` bytes，完整技术栈如下：
+
+```text
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/releases/phase1_clic_source_metrics_20260813_v2_549a4b3a/code/build_phase1_clic_source_v_leo_iq.py", line 1316, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/releases/phase1_clic_source_metrics_20260813_v2_549a4b3a/code/build_phase1_clic_source_v_leo_iq.py", line 1296, in main
+    result = build_source_v_received_iq(build_parser().parse_args(argv))
+  File "/home/szu2070436088/2510044040/releases/phase1_clic_source_metrics_20260813_v2_549a4b3a/code/build_phase1_clic_source_v_leo_iq.py", line 943, in build_source_v_received_iq
+    c_clean = _read_clean_validation_binding(
+  File "/home/szu2070436088/2510044040/releases/phase1_clic_source_metrics_20260813_v2_549a4b3a/code/build_phase1_clic_source_v_leo_iq.py", line 635, in _read_clean_validation_binding
+    raise CLICSourceVLeoCacheError(f"{arm} clean-v4 V day axis drifted")
+__main__.CLICSourceVLeoCacheError: C clean-v4 V day axis drifted
+```
+
+- 生产读取器QA：release Python模块import成功；`read_source_v_cache_snapshot`可加载。实际reopen返回`CLICSourceVFeatureExportError: source-V cache or receipt is missing`；C/G feature及binding均不存在，无法进行feature reopen或finite/physical-binding QA。该失败仅表示smoke artifact不完整，不是性能结果。
+- Formal封存：formal run、formal log、formal outer均`ABSENT`；无formal launcher进程，故`FORMAL_INVOCATION=0`可确认。未启动formal，不存在formal性能结论。
+- 活动资源封存：ADV wrapper`801059`及六个child`801089,801092,801095,801100,801103,801106`仍活跃，GPU0..5各1个ADV训练进程，GPU6..7无进程；source-metrics/smoke进程不存在。未干预ADV。
+- SSH封存：本地无ssh/scp进程、无到N607的`ESTABLISHED`连接；仅保留TCP`TIME_WAIT`记录及本机22监听，不影响远端run判断。
+- 最终判定：smoke是技术失败并已自然退出；保留所有部分run/log目录，不重跑、不启动formal、不读取任何性能或target/query/truth结果。根镜像报告路径不存在，未创建额外镜像；本次Git变更仅限本owned report。
