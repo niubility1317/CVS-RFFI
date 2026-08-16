@@ -30,11 +30,15 @@
 |CCOC-13|隔离E0/CCOC support-only技术执行；部署state非E0、至少一个rho严格内部，`max_j|Delta M_j|>=max_b(A_b*max four deployed block scales)>0`|G0 validator|真实K10三场景truth-free G0|v3除旧peak门外通过；v4待运行|
 |CCOC-14|G0三场景active/no fallback，wall/ratio/peak硬门全过|G0 report/launcher|v6 G0 hard pass；candidate wall P90=70.463259ms、ratio P90=1.142053、maxpeak=729088B；target512KiB在clear scene未通过、hard1MiB三scene通过|技术硬门通过；NO_PERFORMANCE_RESULT|
 |CCOC-15|G0通过后Hard9+K1；八项任一tie/反向即拒绝|独立runner/analyzer|Hard9+K1 implementing；G0 artifact仅闭合技术门，尚无Hard9 paired rows|不能写性能结论；NO_PERFORMANCE_RESULT|
-|CCOC-16|Hard9全过才自动进入新Target125 run|主代理裁决/report|Git状态、不可覆盖run ID、sole runner handoff|待裁决|
+|CCOC-16|Hard9全过才自动进入新Target125 run|主代理裁决/report|本地不可覆盖发布包、唯一launch、prepare→truth-free smoke→8 shards顺序、sole-runner handoff|release ready no performance|
 
 ## 八项方向
 
 必须严格升高：`H_old_new`、old balanced accuracy、`c_old_acc`、old floor、seen-new accuracy。必须严格降低：average forgetting、new→old、old→new。任何加权总分不得补偿单项反向。
+
+## 2026-08-17 Task3本地发布状态
+
+`d92_e0_full_ccoc_hard9k1_20260816_v1`已在`7647cae86dd0696b7990dcd958a16cefd35637ca`基础上完成本地发布物准备，状态为`LOCAL_VERIFIED_READY_FOR_N607_HANDOFF / NO_HARD9_RUNTIME_RESULT / NO_PERFORMANCE_RESULT`。归档为39成员、38个Git-blob源成员，SHA256为`707d72a1f0083a7f28d62d904acbe6a12d354e1358426ace4efbc971ae21d65d`；launch、报告、交付清单及外部非Git镜像逐字节绑定。注册资源hard上限为1MiB、target为512KiB，query MAC、state、per-query latency及其他冻结门保持不变。未执行SSH、SCP、N607 launch或性能分析；Hard9是否通过及后续Target125仍由主代理依据完整artifact裁决。
 
 ## 自动批准边界
 
