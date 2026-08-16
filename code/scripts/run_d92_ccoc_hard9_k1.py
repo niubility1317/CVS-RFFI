@@ -8,12 +8,14 @@ import hashlib
 import json
 import math
 import os
+import signal
 import stat
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Callable, Mapping
 
 
 CODE_ROOT = Path(__file__).resolve().parents[1]
@@ -48,6 +50,10 @@ except ImportError:  # pragma: no cover - direct script execution on N607
 
 PREDICTION_ENTRY = _prediction_support.PREDICTION_ENTRY
 SCORING_ENTRY = _prediction_support.SCORING_ENTRY
+_SCORE_ARTIFACT_SCHEMA = "cvs.phase2.diag_cosine_dev_pair_score.v1"
+_SCORE_BINDING_SCHEMA = "cvs.phase2.d92_ccoc_hard9_k1.score_binding.v1"
+_ACTIVE_PROCESS_SCHEMA = "cvs.phase2.d92_ccoc_hard9_k1.active_process.v1"
+_ACTIVE_PROCESS_ACTION_SCHEMA = "cvs.phase2.d92_ccoc_hard9_k1.stop_action.v1"
 
 
 class D92CCOCHard9K1RunnerError(RuntimeError):
@@ -64,6 +70,14 @@ def _sha256_file(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def _is_sha256(value: Any) -> bool:
+    return (
+        isinstance(value, str)
+        and len(value) == 64
+        and all(character in "0123456789abcdef" for character in value.lower())
+    )
 
 
 def _json_bytes(value: Mapping[str, Any]) -> bytes:
@@ -346,6 +360,199 @@ def _verify_manifest_artifacts(manifest: Mapping[str, Any]) -> None:
                 raise D92CCOCHard9K1RunnerError(f"package seal SHA drift: {name}")
 
 
+def _verify_runtime_source_files(
+    runtime_source: Mapping[str, Any],
+    *,
+    code_root: str | Path = CODE_ROOT,
+) -> dict[str, Any]:
+    """Fail closed if any locked scientific execution source has drifted."""
+
+    if not isinstance(runtime_source, Mapping) or set(runtime_source) != {
+        "scientific_entry_commit",
+        "files",
+    }:
+        raise D92CCOCHard9K1RunnerError("runtime source lock schema drift")
+    commit = str(runtime_source.get("scientific_entry_commit", "")).lower()
+    files = runtime_source.get("files")
+    if (
+        len(commit) != 40
+        or any(character not in "0123456789abcdef" for character in commit)
+        or not isinstance(files, Mapping)
+        or not files
+    ):
+        raise D92CCOCHard9K1RunnerError("runtime source lock identity drift")
+    root = Path(code_root).resolve(strict=True)
+    for relative_path, record in files.items():
+        if (
+            not isinstance(relative_path, str)
+            or not relative_path
+            or relative_path.startswith(("/", "\\"))
+            or "\\" in relative_path
+            or ".." in Path(relative_path).parts
+            or not isinstance(record, Mapping)
+            or set(record) != {"git_blob", "sha256"}
+            or not _is_sha256(record.get("sha256"))
+            or not isinstance(record.get("git_blob"), str)
+            or len(str(record["git_blob"])) != 40
+            or any(
+                character not in "0123456789abcdef"
+                for character in str(record["git_blob"]).lower()
+            )
+        ):
+            raise D92CCOCHard9K1RunnerError("runtime source record drift")
+        source = (root / relative_path).resolve()
+        if (
+            root not in source.parents
+            or not source.is_file()
+            or source.is_symlink()
+            or _sha256_file(source) != str(record["sha256"]).lower()
+        ):
+            raise D92CCOCHard9K1RunnerError(
+                f"runtime source SHA drift: {relative_path}"
+            )
+    return {"scientific_entry_commit": commit, "file_count": len(files)}
+
+
+def _verify_runtime_source_lock(
+    lock: Mapping[str, Any],
+    *,
+    code_root: str | Path = CODE_ROOT,
+) -> dict[str, Any]:
+    if not isinstance(lock, Mapping):
+        raise D92CCOCHard9K1RunnerError("runtime source method-lock drift")
+    return _verify_runtime_source_files(
+        lock.get("runtime_source", {}),
+        code_root=code_root,
+    )
+
+
+def _verify_truth_sidecar_snapshot(
+    path: str | Path,
+    *,
+    expected_sha256: str,
+) -> str:
+    """Return a verified, read-only truth-sidecar SHA at one score boundary."""
+
+    source = Path(path)
+    expected = str(expected_sha256).lower()
+    if (
+        not source.is_file()
+        or source.is_symlink()
+        or source.stat().st_mode & (stat.S_IWUSR | stat.S_IWGRP | stat.S_IWOTH)
+        or not _is_sha256(expected)
+        or _sha256_file(source) != expected
+    ):
+        raise D92CCOCHard9K1RunnerError("truth sidecar snapshot/hash drift")
+    return expected
+
+
+def _validate_score_artifact(
+    path: str | Path,
+    *,
+    job: Mapping[str, Any],
+    matrix_manifest_sha256: str,
+    method_lock_sha256: str,
+    truth_sidecar_sha256: str,
+    before_prediction_path: str | Path,
+    after_prediction_path: str | Path,
+    score_binding_path: str | Path | None = None,
+) -> dict[str, Any]:
+    """Bind parsed independent-score inputs to one immutable matrix job."""
+
+    score_path = Path(path)
+    if not score_path.is_file() or score_path.is_symlink():
+        raise D92CCOCHard9K1RunnerError("score artifact is missing")
+    score = _read_json_object(score_path, label="score artifact")
+    before_path = Path(before_prediction_path)
+    after_path = Path(after_prediction_path)
+    expected_truth = str(truth_sidecar_sha256).lower()
+    expected_before = _sha256_file(before_path)
+    expected_after = _sha256_file(after_path)
+    identity = {
+        "job_id": str(job.get("job_id", "")),
+        "outer_key": str(job.get("outer_key", "")),
+        "arm_id": str(job.get("arm_id", "")),
+        "candidate": str(job.get("candidate", "")),
+        "matrix_manifest_sha256": str(matrix_manifest_sha256).lower(),
+        "method_lock_sha256": str(method_lock_sha256).lower(),
+    }
+    if (
+        not all(identity.values())
+        or not _is_sha256(identity["matrix_manifest_sha256"])
+        or not _is_sha256(identity["method_lock_sha256"])
+        or score.get("schema") != _SCORE_ARTIFACT_SCHEMA
+        or score.get("candidate") != identity["candidate"]
+        or score.get("truth_sidecar_sha256") != expected_truth
+        or score.get("before_prediction_sha256") != expected_before
+        or score.get("after_prediction_sha256") != expected_after
+    ):
+        raise D92CCOCHard9K1RunnerError("score artifact input/identity drift")
+    if score_binding_path is not None:
+        binding = _read_json_object(score_binding_path, label="score binding")
+        if (
+            binding.get("schema") != _SCORE_BINDING_SCHEMA
+            or binding.get("job_id") != identity["job_id"]
+            or binding.get("outer_key") != identity["outer_key"]
+            or binding.get("arm_id") != identity["arm_id"]
+            or binding.get("candidate") != identity["candidate"]
+            or binding.get("matrix_manifest_sha256")
+            != identity["matrix_manifest_sha256"]
+            or binding.get("method_lock_sha256") != identity["method_lock_sha256"]
+            or binding.get("truth_sidecar_sha256") != expected_truth
+            or binding.get("before_prediction_sha256") != expected_before
+            or binding.get("after_prediction_sha256") != expected_after
+        ):
+            raise D92CCOCHard9K1RunnerError("score binding identity drift")
+    return {
+        **identity,
+        "score_artifact_sha256": _sha256_file(score_path),
+        "truth_sidecar_sha256": expected_truth,
+        "before_prediction_sha256": expected_before,
+        "after_prediction_sha256": expected_after,
+    }
+
+
+def _write_score_binding(
+    job_root: Path,
+    *,
+    job: Mapping[str, Any],
+    matrix_manifest_sha256: str,
+    method_lock_sha256: str,
+    paths: Mapping[str, Path],
+    score_command: list[str],
+) -> tuple[Path, str]:
+    """Seal actual scoring inputs at the boundary immediately before scoring."""
+
+    truth_sha256 = _verify_truth_sidecar_snapshot(
+        job["truth_sidecar"],
+        expected_sha256=str(job["truth_sidecar_sha256"]),
+    )
+    before_sha256 = _sha256_file(paths["before_prediction"])
+    after_sha256 = _sha256_file(paths["after_prediction"])
+    binding_path = job_root / "score_binding.json"
+    digest = _write_json_new(
+        binding_path,
+        {
+            "schema": _SCORE_BINDING_SCHEMA,
+            "timestamp": _now(),
+            "job_id": str(job["job_id"]),
+            "outer_key": str(job["outer_key"]),
+            "outer_role": str(job["outer_role"]),
+            "arm_id": str(job["arm_id"]),
+            "candidate": str(job["candidate"]),
+            "matrix_manifest_sha256": str(matrix_manifest_sha256).lower(),
+            "method_lock_sha256": str(method_lock_sha256).lower(),
+            "truth_sidecar": str(job["truth_sidecar"]),
+            "truth_sidecar_sha256": truth_sha256,
+            "before_prediction_sha256": before_sha256,
+            "after_prediction_sha256": after_sha256,
+            "score_command": list(score_command),
+            "performance_result_allowed": False,
+        },
+    )
+    return binding_path, digest
+
+
 def _load_manifest(path: str | Path, expected_sha256: str) -> dict[str, Any]:
     source = Path(path).resolve(strict=True)
     expected = str(expected_sha256).lower()
@@ -364,6 +571,7 @@ def _load_manifest(path: str | Path, expected_sha256: str) -> dict[str, Any]:
         lock_sha = _sha256_file(lock_path)
         lock = json.loads(lock_path.read_text(encoding="utf-8-sig"))
         validate_method_lock(lock)
+        _verify_runtime_source_lock(lock)
         validate_hard9_k1_manifest(
             payload,
             expected_method_lock_sha256=lock_sha,
@@ -381,33 +589,109 @@ def _load_manifest(path: str | Path, expected_sha256: str) -> dict[str, Any]:
     return payload
 
 
-def _reference_resources_for_outer(
-    manifest: Mapping[str, Any],
-    outer_key: str,
-) -> dict[str, dict[str, Any]]:
-    """Return the sealed E0 resource-only baseline for one outer row."""
+def _load_verified_e0_resource_records(
+    job: Mapping[str, Any],
+) -> dict[str, dict[str, int]]:
+    """Load the same-outer sealed E0 fit audit and index it by scene key.
 
-    lock_path = Path(str(manifest["method_lock"]))
-    lock = _read_json_object(lock_path, label="method lock")
-    validate_method_lock(lock)
-    baseline = lock.get("historical_baseline")
-    if not isinstance(baseline, Mapping):
-        raise D92CCOCHard9K1RunnerError("historical baseline identity drift")
-    rows = baseline.get("e0_resource_rows")
-    if not isinstance(rows, Mapping) or outer_key not in rows:
-        raise D92CCOCHard9K1RunnerError("E0 resource baseline missing")
-    resource = rows[outer_key]
-    if not isinstance(resource, Mapping):
-        raise D92CCOCHard9K1RunnerError("E0 resource baseline malformed")
-    required = {
+    The frozen record seals both the whole historical fit-audit bytes and the
+    resource-only projection used by each candidate scene.  It intentionally
+    never position-zips rows or estimates missing scene measurements.
+    """
+
+    outer_key = str(job.get("outer_key", ""))
+    try:
+        k_shot = _integer(job.get("k_shot"), "E0 resource K", lower=1)
+        new_class_count = _integer(
+            job.get("new_class_count"), "E0 resource new-class count", lower=1
+        )
+    except D92CCOCHard9K1RunnerError as error:
+        raise D92CCOCHard9K1RunnerError("E0 resource job identity drift") from error
+    resource = job.get("e0_resource")
+    if not isinstance(resource, Mapping) or set(resource) != {"fit_audit", "scenes"}:
+        raise D92CCOCHard9K1RunnerError("E0 resource manifest record drift")
+    sealed = resource.get("fit_audit")
+    locked_scenes = resource.get("scenes")
+    if (
+        not isinstance(sealed, Mapping)
+        or set(sealed) != {"path", "sha256"}
+        or not isinstance(locked_scenes, Mapping)
+        or set(locked_scenes) != set(SCENES)
+        or not _is_sha256(sealed.get("sha256"))
+    ):
+        raise D92CCOCHard9K1RunnerError("E0 resource sealed record drift")
+    source = Path(str(sealed.get("path", "")))
+    if (
+        not source.is_file()
+        or source.is_symlink()
+        or _sha256_file(source) != str(sealed["sha256"]).lower()
+    ):
+        raise D92CCOCHard9K1RunnerError("E0 resource fit-audit SHA drift")
+    try:
+        rows = json.loads(source.read_text(encoding="utf-8-sig"))
+    except (OSError, ValueError) as error:
+        raise D92CCOCHard9K1RunnerError("E0 resource fit-audit invalid") from error
+    if (
+        not isinstance(rows, list)
+        or len(rows) != len(SCENES)
+        or any(not isinstance(row, Mapping) for row in rows)
+    ):
+        raise D92CCOCHard9K1RunnerError("E0 resource scene closure drift")
+    by_scene = {str(row.get("scenario", "")): row for row in rows}
+    if len(by_scene) != len(SCENES) or set(by_scene) != set(SCENES):
+        raise D92CCOCHard9K1RunnerError("E0 resource scene identity drift")
+
+    required_fields = {
         "registration_wall_time_ns",
         "registration_incremental_peak_working_set_bytes",
         "query_macs",
         "state_bytes",
     }
-    if set(resource) != required:
-        raise D92CCOCHard9K1RunnerError("E0 resource baseline field drift")
-    return {scene: dict(resource) for scene in SCENES}
+    actual: dict[str, dict[str, int]] = {}
+    for scene in SCENES:
+        row = by_scene[scene]
+        if (
+            row.get("arm_id") != "E0_FULL_ONLY"
+            or row.get("candidate_id") != "d92_e0d_e0_full_only"
+            or _integer(row.get("k_shot"), "E0 resource K", lower=1) != k_shot
+            or _integer(
+                row.get("registered_class_count"),
+                "E0 resource registered-class count",
+                lower=1,
+            )
+            != 6 + new_class_count
+        ):
+            raise D92CCOCHard9K1RunnerError("E0 resource fit-audit identity drift")
+        actual_scene = {
+            "registration_wall_time_ns": _integer(
+                _resource_value(row, "registration_wall_time_ns"),
+                "E0 registration wall",
+            ),
+            "registration_incremental_peak_working_set_bytes": _integer(
+                _resource_value(
+                    row,
+                    "registration_incremental_peak_working_set_bytes",
+                ),
+                "E0 registration peak",
+            ),
+            "query_macs": _integer(row.get("query_macs"), "E0 query MACs"),
+            "state_bytes": _integer(
+                row.get("after_state_bytes"), "E0 state bytes", lower=1
+            ),
+        }
+        locked = locked_scenes[scene]
+        if not isinstance(locked, Mapping) or set(locked) != required_fields:
+            raise D92CCOCHard9K1RunnerError("E0 resource locked scene field drift")
+        expected_scene = {
+            field: _integer(locked.get(field), f"E0 locked {field}", lower=0)
+            for field in required_fields
+        }
+        if actual_scene != expected_scene:
+            raise D92CCOCHard9K1RunnerError("E0 resource sealed scene value drift")
+        actual[scene] = actual_scene
+    if not outer_key:
+        raise D92CCOCHard9K1RunnerError("E0 resource outer identity drift")
+    return actual
 
 
 def _prediction_command(
@@ -442,6 +726,26 @@ def _prediction_closure_status(root: Path) -> tuple[str, str]:
     return _prediction_support._prediction_closure_status(root)
 
 
+def _prediction_failure_stage(prediction_root: str | Path) -> str:
+    """Classify failed prediction attempts without treating partial output as pre-run."""
+
+    root = Path(prediction_root)
+    closure = _prediction_closure_paths(root)
+    artifacts = list(closure.values())
+    for state in ("before", "after"):
+        artifacts.extend(
+            (
+                root / state / "execution_receipt.json",
+                root / state / "resource_audit.json",
+            )
+        )
+    return (
+        "post_prediction"
+        if any(path.exists() or path.is_symlink() for path in artifacts)
+        else "pre_prediction"
+    )
+
+
 def _fingerprint(path: Path) -> str:
     return _prediction_support._fingerprint(path)
 
@@ -452,6 +756,336 @@ def _normalized_fingerprint(reason: str) -> str:
 
 def _shared_stop_path(output_root: Path) -> Path:
     return output_root / "SYSTEMIC_TECHNICAL_FAILURE_STOP.json"
+
+
+def _start_score_unless_stopped(
+    output_root: str | Path,
+    *,
+    start: Callable[[], Any],
+) -> tuple[bool, Any | None]:
+    """Recheck the shared systemic stop at the prediction-to-score boundary."""
+
+    if _shared_stop_path(Path(output_root)).is_file():
+        return False, None
+    return True, start()
+
+
+def _active_process_path(
+    output_root: str | Path,
+    *,
+    shard_index: int,
+    job_id: str,
+    stage: str,
+) -> Path:
+    token = hashlib.sha256(f"{job_id}\x00{stage}".encode("utf-8")).hexdigest()
+    return (
+        Path(output_root)
+        / "active_processes"
+        / f"shard_{int(shard_index)}"
+        / f"{token}.json"
+    )
+
+
+def _write_active_process_receipt(
+    output_root: str | Path,
+    *,
+    job: Mapping[str, Any],
+    shard_index: int,
+    stage: str,
+    pid: int,
+    parent_pid: int,
+    cwd: str | Path,
+    cmdline: tuple[str, ...] | list[str],
+) -> Path:
+    """Record one shard-owned child before it can be stopped by a coordinator."""
+
+    root = Path(output_root).resolve()
+    job_id = str(job.get("job_id", ""))
+    outer_key = str(job.get("outer_key", ""))
+    arm_id = str(job.get("arm_id", ""))
+    candidate = str(job.get("candidate", ""))
+    command = [str(value) for value in cmdline]
+    if (
+        not job_id
+        or not outer_key
+        or arm_id != ARM_ID
+        or candidate != CANDIDATE_ID
+        or stage not in {"prediction", "score"}
+        or int(shard_index) not in range(SHARD_COUNT)
+        or int(pid) <= 0
+        or int(parent_pid) <= 0
+        or not command
+    ):
+        raise D92CCOCHard9K1RunnerError("active-process receipt identity drift")
+    path = _active_process_path(
+        root,
+        shard_index=int(shard_index),
+        job_id=job_id,
+        stage=stage,
+    )
+    _write_json_new(
+        path,
+        {
+            "schema": _ACTIVE_PROCESS_SCHEMA,
+            "status": "ACTIVE_CHILD_RECORDED",
+            "timestamp": _now(),
+            "run_root": str(root),
+            "job_id": job_id,
+            "outer_key": outer_key,
+            "arm_id": arm_id,
+            "candidate": candidate,
+            "shard_index": int(shard_index),
+            "stage": stage,
+            "pid": int(pid),
+            "parent_pid": int(parent_pid),
+            "cwd": str(Path(cwd).resolve()),
+            "cmdline": command,
+            "performance_result_allowed": False,
+        },
+    )
+    return path
+
+
+def _run_shard_child(
+    command: list[str],
+    *,
+    output_root: str | Path,
+    job: Mapping[str, Any],
+    shard_index: int,
+    stage: str,
+    stdout: Any,
+    stderr: Any,
+    env: Mapping[str, str],
+    popen: Callable[..., Any] = subprocess.Popen,
+) -> int:
+    """Start one owned child and persist its exclusive stop receipt first."""
+
+    child = popen(
+        command,
+        cwd=CODE_ROOT,
+        stdout=stdout,
+        stderr=stderr,
+        text=True,
+        env=dict(env),
+    )
+    try:
+        _write_active_process_receipt(
+            output_root,
+            job=job,
+            shard_index=shard_index,
+            stage=stage,
+            pid=int(child.pid),
+            parent_pid=os.getpid(),
+            cwd=CODE_ROOT,
+            cmdline=command,
+        )
+    except BaseException:
+        try:
+            child.terminate()
+            child.wait()
+        except (AttributeError, OSError, subprocess.SubprocessError):
+            pass
+        raise
+    return int(child.wait())
+
+
+def _read_active_process_receipt(path: Path, *, output_root: Path) -> dict[str, Any]:
+    receipt = _read_json_object(path, label="active-process receipt")
+    required = {
+        "schema",
+        "status",
+        "timestamp",
+        "run_root",
+        "job_id",
+        "outer_key",
+        "arm_id",
+        "candidate",
+        "shard_index",
+        "stage",
+        "pid",
+        "parent_pid",
+        "cwd",
+        "cmdline",
+        "performance_result_allowed",
+    }
+    if (
+        set(receipt) != required
+        or receipt.get("schema") != _ACTIVE_PROCESS_SCHEMA
+        or receipt.get("status") != "ACTIVE_CHILD_RECORDED"
+        or Path(str(receipt.get("run_root", ""))).resolve() != output_root.resolve()
+        or receipt.get("arm_id") != ARM_ID
+        or receipt.get("candidate") != CANDIDATE_ID
+        or int(receipt.get("shard_index", -1)) not in range(SHARD_COUNT)
+        or receipt.get("stage") not in {"prediction", "score"}
+        or _integer(receipt.get("pid"), "active-process PID", lower=1) <= 0
+        or _integer(receipt.get("parent_pid"), "active-process parent PID", lower=1)
+        <= 0
+        or not isinstance(receipt.get("cmdline"), list)
+        or not receipt["cmdline"]
+        or any(not isinstance(item, str) or not item for item in receipt["cmdline"])
+        or receipt.get("performance_result_allowed") is not False
+    ):
+        raise D92CCOCHard9K1RunnerError("active-process receipt contract drift")
+    return receipt
+
+
+def _iter_active_process_receipts(output_root: Path) -> list[Path]:
+    root = output_root / "active_processes"
+    if not root.is_dir() or root.is_symlink():
+        return []
+    paths: list[Path] = []
+    for shard_root in sorted(root.iterdir(), key=lambda item: item.name):
+        if not shard_root.is_dir() or shard_root.is_symlink():
+            continue
+        for path in sorted(shard_root.iterdir(), key=lambda item: item.name):
+            if path.suffix == ".json" and path.is_file() and not path.is_symlink():
+                paths.append(path)
+    return paths
+
+
+def _inspect_posix_process(pid: int) -> dict[str, Any] | None:
+    if os.name != "posix":
+        return None
+    root = Path("/proc") / str(int(pid))
+    try:
+        status = (root / "status").read_text(encoding="utf-8")
+        parent = next(
+            int(line.split("\t", 1)[1])
+            for line in status.splitlines()
+            if line.startswith("PPid:\t")
+        )
+        return {
+            "pid": int(pid),
+            "parent_pid": parent,
+            "cwd": os.readlink(root / "cwd"),
+            "cmdline": [
+                item.decode("utf-8", errors="surrogateescape")
+                for item in (root / "cmdline").read_bytes().split(b"\x00")
+                if item
+            ],
+        }
+    except (OSError, StopIteration, ValueError):
+        return None
+
+
+def _receipt_matches_process(
+    receipt: Mapping[str, Any],
+    process: Mapping[str, Any] | None,
+) -> bool:
+    if not isinstance(process, Mapping):
+        return False
+    try:
+        return (
+            int(process.get("pid", -1)) == int(receipt["pid"])
+            and int(process.get("parent_pid", -1)) == int(receipt["parent_pid"])
+            and Path(str(process.get("cwd", ""))).resolve()
+            == Path(str(receipt["cwd"])).resolve()
+            and list(process.get("cmdline", [])) == list(receipt["cmdline"])
+        )
+    except (TypeError, ValueError):
+        return False
+
+
+def _send_posix_signal(pid: int, signal_name: str) -> None:
+    if os.name != "posix":
+        raise D92CCOCHard9K1RunnerError("coordinator stop is unsupported on this host")
+    selected = {"SIGTERM": signal.SIGTERM, "SIGKILL": signal.SIGKILL}.get(signal_name)
+    if selected is None:
+        raise D92CCOCHard9K1RunnerError("coordinator signal identity drift")
+    os.kill(int(pid), selected)
+
+
+def _acquire_stop_coordinator(output_root: Path, coordinator_id: str) -> None:
+    path = output_root / "coordination" / "stop_coordinator.json"
+    payload = {
+        "schema": _ACTIVE_PROCESS_ACTION_SCHEMA,
+        "status": "UNIQUE_STOP_COORDINATOR",
+        "timestamp": _now(),
+        "coordinator_id": coordinator_id,
+        "run_root": str(output_root.resolve()),
+        "performance_result_allowed": False,
+    }
+    try:
+        _write_json_new(path, payload)
+    except FileExistsError:
+        existing = _read_json_object(path, label="stop coordinator")
+        if (
+            set(existing)
+            != {
+                "schema",
+                "status",
+                "timestamp",
+                "coordinator_id",
+                "run_root",
+                "performance_result_allowed",
+            }
+            or existing.get("schema") != _ACTIVE_PROCESS_ACTION_SCHEMA
+            or existing.get("status") != "UNIQUE_STOP_COORDINATOR"
+            or existing.get("coordinator_id") != coordinator_id
+            or existing.get("run_root") != str(output_root.resolve())
+            or existing.get("performance_result_allowed") is not False
+        ):
+            raise D92CCOCHard9K1RunnerError("stop coordinator ownership drift")
+
+
+def stop_verified_active_processes(
+    output_root: str | Path,
+    *,
+    coordinator_id: str,
+    process_inspector: Callable[[int], Mapping[str, Any] | None] | None = None,
+    signal_sender: Callable[[int, str], None] | None = None,
+    sleep_seconds: float = 1.0,
+) -> dict[str, Any]:
+    """Stop only verified run-owned children after a systemic stop receipt exists."""
+
+    root = Path(output_root).resolve()
+    if not coordinator_id or not _shared_stop_path(root).is_file():
+        raise D92CCOCHard9K1RunnerError("systemic stop/coordinator identity drift")
+    _acquire_stop_coordinator(root, str(coordinator_id))
+    inspect = process_inspector or _inspect_posix_process
+    send = signal_sender or _send_posix_signal
+    delay = _finite(sleep_seconds, "stop grace seconds", lower=0.0)
+    receipts = [
+        _read_active_process_receipt(path, output_root=root)
+        for path in _iter_active_process_receipts(root)
+    ]
+    verified = 0
+    skipped = 0
+    graceful = 0
+    escalated = 0
+    for receipt in receipts:
+        pid = int(receipt["pid"])
+        if not _receipt_matches_process(receipt, inspect(pid)):
+            skipped += 1
+            continue
+        verified += 1
+        send(pid, "SIGTERM")
+        graceful += 1
+        if delay > 0.0:
+            time.sleep(delay)
+        if _receipt_matches_process(receipt, inspect(pid)):
+            send(pid, "SIGKILL")
+            escalated += 1
+    result = {
+        "schema": _ACTIVE_PROCESS_ACTION_SCHEMA,
+        "status": "VERIFIED_STOP_COORDINATOR_COMPLETE",
+        "timestamp": _now(),
+        "run_root": str(root),
+        "coordinator_id": str(coordinator_id),
+        "active_receipt_count": len(receipts),
+        "verified_process_count": verified,
+        "skipped_unverified_process_count": skipped,
+        "graceful_termination_attempt_count": graceful,
+        "escalated_termination_attempt_count": escalated,
+        "performance_result_allowed": False,
+    }
+    try:
+        _write_json_new(root / "coordination" / "stop_action.json", result)
+    except FileExistsError as error:
+        raise D92CCOCHard9K1RunnerError(
+            "stop coordinator action already recorded"
+        ) from error
+    return result
 
 
 def _record_pre_prediction_failure(
@@ -585,10 +1219,7 @@ def _validate_shared_smoke(
     resource_gate = _validate_fit_audit(
         paths["after_fit_audit"],
         k_shot=int(job["k_shot"]),
-        reference_resources=_reference_resources_for_outer(
-            manifest,
-            str(job["outer_key"]),
-        ),
+        reference_resources=_load_verified_e0_resource_records(job),
     )
     if receipt.get("fit_audit_resource_gate") != resource_gate:
         raise D92CCOCHard9K1RunnerError("smoke resource gate receipt drift")
@@ -596,6 +1227,11 @@ def _validate_shared_smoke(
 
 def prepare(args: argparse.Namespace) -> dict[str, Any]:
     manifest = build_hard9_k1_manifest(args.config, require_package_files=True)
+    lock = _read_json_object(manifest["method_lock"], label="method lock")
+    validate_method_lock(lock)
+    _verify_runtime_source_lock(lock)
+    for job in manifest["jobs"]:
+        _load_verified_e0_resource_records(job)
     output_root = Path(str(manifest["output_root"]))
     if output_root.exists() or output_root.is_symlink():
         raise D92CCOCHard9K1RunnerError("matrix output already exists")
@@ -640,28 +1276,33 @@ def smoke(args: argparse.Namespace) -> dict[str, Any]:
             env=_child_env(args.cpu_threads),
         )
     if completed.returncode != 0:
-        _record_pre_prediction_failure(
-            Path(str(manifest["output_root"])),
-            job,
-            _fingerprint(output_root / "prediction.stderr.log"),
+        stage = _prediction_failure_stage(prediction_root)
+        if stage == "pre_prediction":
+            _record_pre_prediction_failure(
+                Path(str(manifest["output_root"])),
+                job,
+                _fingerprint(output_root / "prediction.stderr.log"),
+            )
+        raise D92CCOCHard9K1RunnerError(
+            f"truth-free smoke {stage.replace('_', '-')} prediction failed"
         )
-        raise D92CCOCHard9K1RunnerError("truth-free smoke prediction failed")
     status, reason = _prediction_closure_status(prediction_root)
     if status != "closed":
-        _record_pre_prediction_failure(
-            Path(str(manifest["output_root"])),
-            job,
-            _normalized_fingerprint(reason),
+        stage = _prediction_failure_stage(prediction_root)
+        if stage == "pre_prediction":
+            _record_pre_prediction_failure(
+                Path(str(manifest["output_root"])),
+                job,
+                _normalized_fingerprint(reason),
+            )
+        raise D92CCOCHard9K1RunnerError(
+            f"truth-free smoke {stage.replace('_', '-')} prediction closure failed"
         )
-        raise D92CCOCHard9K1RunnerError("truth-free smoke prediction closure failed")
     paths = _prediction_closure_paths(prediction_root)
     resource_gate = _validate_fit_audit(
         paths["after_fit_audit"],
         k_shot=int(job["k_shot"]),
-        reference_resources=_reference_resources_for_outer(
-            manifest,
-            str(job["outer_key"]),
-        ),
+        reference_resources=_load_verified_e0_resource_records(job),
     )
     hashes = {
         "before_prediction_sha256": _sha256_file(paths["before_prediction"]),
@@ -755,45 +1396,52 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
         with (job_root / "prediction.stdout.log").open("x", encoding="utf-8") as stdout, (
             job_root / "prediction.stderr.log"
         ).open("x", encoding="utf-8") as stderr:
-            prediction_result = subprocess.run(
+            prediction_returncode = _run_shard_child(
                 command,
-                cwd=CODE_ROOT,
+                output_root=output_root,
+                job=job,
+                shard_index=shard_index,
+                stage="prediction",
                 stdout=stdout,
                 stderr=stderr,
-                text=True,
-                check=False,
                 env=_child_env(args.cpu_threads),
             )
         prediction_root = job_root / "diag"
         closure_status, closure_reason = (
             _prediction_closure_status(prediction_root)
-            if prediction_result.returncode == 0
+            if prediction_returncode == 0
             else ("technical_failure", "prediction_returncode")
         )
-        if prediction_result.returncode != 0 or closure_status != "closed":
+        if prediction_returncode != 0 or closure_status != "closed":
             fingerprint = (
                 _fingerprint(job_root / "prediction.stderr.log")
-                if prediction_result.returncode != 0
+                if prediction_returncode != 0
                 else _normalized_fingerprint(closure_reason)
             )
+            failure_stage = _prediction_failure_stage(prediction_root)
             failures.append(
                 {
                     "job_id": job["job_id"],
-                    "stage": "pre_prediction",
+                    "stage": (
+                        "pre_prediction"
+                        if failure_stage == "pre_prediction"
+                        else "post_prediction_technical_failure"
+                    ),
                     "fingerprint": fingerprint,
                 }
             )
-            if _record_pre_prediction_failure(output_root, job, fingerprint):
+            if failure_stage == "pre_prediction" and _record_pre_prediction_failure(
+                output_root,
+                job,
+                fingerprint,
+            ):
                 break
             continue
         try:
             fit_resource_gate = _validate_fit_audit(
                 prediction_root / "after" / "fit_audit.json",
                 k_shot=int(job["k_shot"]),
-                reference_resources=_reference_resources_for_outer(
-                    manifest,
-                    str(job["outer_key"]),
-                ),
+                reference_resources=_load_verified_e0_resource_records(job),
             )
         except D92CCOCHard9K1RunnerError as error:
             # A closed prediction exists, so this is a rejected job rather than
@@ -807,29 +1455,104 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
             )
             continue
         score_command = _score_command(job)
-        with (job_root / "score.stdout.log").open("x", encoding="utf-8") as stdout, (
-            job_root / "score.stderr.log"
-        ).open("x", encoding="utf-8") as stderr:
-            score_result = subprocess.run(
-                score_command,
-                cwd=CODE_ROOT,
-                stdout=stdout,
-                stderr=stderr,
-                text=True,
-                check=False,
-                env=_child_env(args.cpu_threads),
+        paths = _prediction_closure_paths(prediction_root)
+        try:
+            with (job_root / "score.stdout.log").open("x", encoding="utf-8") as stdout, (
+                job_root / "score.stderr.log"
+            ).open("x", encoding="utf-8") as stderr:
+
+                def _start_score() -> tuple[Path, str, int]:
+                    binding_path, binding_sha256 = _write_score_binding(
+                        job_root,
+                        job=job,
+                        matrix_manifest_sha256=str(args.matrix_manifest_sha256),
+                        method_lock_sha256=str(manifest["method_lock_sha256"]),
+                        paths=paths,
+                        score_command=score_command,
+                    )
+                    return (
+                        binding_path,
+                        binding_sha256,
+                        _run_shard_child(
+                            score_command,
+                            output_root=output_root,
+                            job=job,
+                            shard_index=shard_index,
+                            stage="score",
+                            stdout=stdout,
+                            stderr=stderr,
+                            env=_child_env(args.cpu_threads),
+                        ),
+                    )
+
+                score_started, score_value = _start_score_unless_stopped(
+                    output_root,
+                    start=_start_score,
+                )
+        except D92CCOCHard9K1RunnerError as error:
+            failures.append(
+                {
+                    "job_id": job["job_id"],
+                    "stage": "post_prediction_score_input_validation",
+                    "error": str(error),
+                }
             )
+            continue
+        if not score_started:
+            failures.append(
+                {
+                    "job_id": job["job_id"],
+                    "stage": "post_prediction_systemic_stop_before_score",
+                }
+            )
+            break
+        if score_value is None:  # pragma: no cover - guarded by score_started
+            raise D92CCOCHard9K1RunnerError("score start value drift")
+        score_binding_path, score_binding_sha256, score_returncode = score_value
+        try:
+            truth_sidecar_sha256_after_score = _verify_truth_sidecar_snapshot(
+                job["truth_sidecar"],
+                expected_sha256=str(job["truth_sidecar_sha256"]),
+            )
+        except D92CCOCHard9K1RunnerError as error:
+            failures.append(
+                {
+                    "job_id": job["job_id"],
+                    "stage": "post_prediction_score_truth_validation",
+                    "error": str(error),
+                }
+            )
+            continue
         score_path = job_root / "scorer" / "diag_cosine_score.json"
-        if score_result.returncode != 0 or not score_path.is_file() or score_path.is_symlink():
+        if score_returncode != 0 or not score_path.is_file() or score_path.is_symlink():
             failures.append(
                 {
                     "job_id": job["job_id"],
                     "stage": "score",
-                    "returncode": score_result.returncode,
+                    "returncode": score_returncode,
                 }
             )
             continue
-        paths = _prediction_closure_paths(prediction_root)
+        try:
+            score_evidence = _validate_score_artifact(
+                score_path,
+                job=job,
+                matrix_manifest_sha256=str(args.matrix_manifest_sha256),
+                method_lock_sha256=str(manifest["method_lock_sha256"]),
+                truth_sidecar_sha256=truth_sidecar_sha256_after_score,
+                before_prediction_path=paths["before_prediction"],
+                after_prediction_path=paths["after_prediction"],
+                score_binding_path=score_binding_path,
+            )
+        except D92CCOCHard9K1RunnerError as error:
+            failures.append(
+                {
+                    "job_id": job["job_id"],
+                    "stage": "post_prediction_score_artifact_validation",
+                    "error": str(error),
+                }
+            )
+            continue
         receipt = {
             "schema": JOB_RECEIPT_SCHEMA,
             "status": "PREDICTIONS_AND_POST_PREDICTION_SCORE_COMPLETE",
@@ -848,7 +1571,14 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
             "before_prediction_sha256": _sha256_file(paths["before_prediction"]),
             "after_prediction_sha256": _sha256_file(paths["after_prediction"]),
             "score_sha256": _sha256_file(score_path),
-            "truth_sidecar_sha256": job["truth_sidecar_sha256"],
+            "truth_sidecar_sha256": truth_sidecar_sha256_after_score,
+            "truth_sidecar_sha256_before_score": score_evidence[
+                "truth_sidecar_sha256"
+            ],
+            "truth_sidecar_sha256_after_score": truth_sidecar_sha256_after_score,
+            "score_binding": str(score_binding_path),
+            "score_binding_sha256": score_binding_sha256,
+            "score_evidence": score_evidence,
             "truth_sidecar_exposed_to_predictor": False,
             "query_truth_joined_only_after_immutable_predictions": True,
             "query_truth_fed_back_to_predictor": False,
@@ -885,6 +1615,16 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
     return summary
 
 
+def coordinator_stop(args: argparse.Namespace) -> dict[str, Any]:
+    """Execute the one bounded, receipt-verified systemic-stop action."""
+
+    return stop_verified_active_processes(
+        args.output_root,
+        coordinator_id=str(args.coordinator_id),
+        sleep_seconds=float(args.grace_seconds),
+    )
+
+
 def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(description=__doc__)
     commands = result.add_subparsers(dest="command", required=True)
@@ -907,19 +1647,24 @@ def parser() -> argparse.ArgumentParser:
     )
     shard_parser.add_argument("--device", required=True)
     shard_parser.add_argument("--cpu-threads", type=int, default=2)
+    stop_parser = commands.add_parser("coordinator-stop")
+    stop_parser.add_argument("--output-root", required=True)
+    stop_parser.add_argument("--coordinator-id", required=True)
+    stop_parser.add_argument("--grace-seconds", type=float, default=1.0)
     return result
 
 
 def main() -> int:
     try:
         args = parser().parse_args()
-        value = (
-            prepare(args)
-            if args.command == "prepare"
-            else smoke(args)
-            if args.command == "smoke"
-            else run_shard(args)
-        )
+        if args.command == "prepare":
+            value = prepare(args)
+        elif args.command == "smoke":
+            value = smoke(args)
+        elif args.command == "run-shard":
+            value = run_shard(args)
+        else:
+            value = coordinator_stop(args)
     except (D92CCOCHard9K1RunnerError, D92CCOCHard9K1Error, ValueError) as error:
         print(f"D92 CCOC Hard9+K1 failed: {error}", file=sys.stderr)
         return 2
@@ -928,6 +1673,7 @@ def main() -> int:
         "CCOC_HARD9_K1_MATRIX_PREPARED",
         "D92_CCOC_HARD9_K1_REAL_CHECKPOINT_TRUTH_FREE_SMOKE_PASS",
         "PASS",
+        "VERIFIED_STOP_COORDINATOR_COMPLETE",
     } else 1
 
 

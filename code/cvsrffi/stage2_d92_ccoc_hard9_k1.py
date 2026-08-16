@@ -211,66 +211,188 @@ RAW_SCORE_SHA = {
         "bf60d1231127c51b9a9dbe06c9c78bbad7bfd34d0b2ffc5c7809dc94d47677f2"
     ),
 }
-BASELINE_RESOURCES = {
-    "rx_7_7__seed_713104__k_5__new_20": {
-        "registration_wall_time_ns": 94_819_902.0,
-        "registration_incremental_peak_working_set_bytes": 1_650_688.0,
-        "query_macs": 7_488,
-        "state_bytes": 18_498,
+E0_RESOURCE_OUTPUT_ROOT = (
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/"
+    "d92_e0_full_only_target125_20260812_v1/output"
+)
+
+
+def _e0_resource_row(
+    outer_key: str,
+    fit_audit_sha256: str,
+    *,
+    clear: tuple[int, int, int, int],
+    low_elev: tuple[int, int, int, int],
+    rain: tuple[int, int, int, int],
+) -> dict[str, Any]:
+    """Freeze the same-outer E0 fit-audit resource projection by scene."""
+
+    def scene_record(values: tuple[int, int, int, int]) -> dict[str, int]:
+        return {
+            "registration_wall_time_ns": values[0],
+            "registration_incremental_peak_working_set_bytes": values[1],
+            "query_macs": values[2],
+            "state_bytes": values[3],
+        }
+
+    return {
+        "fit_audit": {
+            "path": (
+                f"{E0_RESOURCE_OUTPUT_ROOT}/jobs/{outer_key}/E0_FULL_ONLY/"
+                "diag/after/fit_audit.json"
+            ),
+            "sha256": fit_audit_sha256,
+        },
+        "scenes": {
+            "leo_clear_weak": scene_record(clear),
+            "leo_low_elev_weak": scene_record(low_elev),
+            "leo_rain_weak": scene_record(rain),
+        },
+    }
+
+
+E0_RESOURCE_ROWS = {
+    "rx_7_7__seed_713104__k_5__new_20": _e0_resource_row(
+        "rx_7_7__seed_713104__k_5__new_20",
+        "e47b9f0f015d121bf594a899c6591a33fbcaef19e8e6926bc4a9a96fff3c4712",
+        clear=(95_671_833, 2_289_664, 7_488, 18_498),
+        low_elev=(94_819_902, 1_650_688, 7_488, 18_498),
+        rain=(93_753_108, 536_576, 7_488, 18_498),
+    ),
+    "rx_7_7__seed_713103__k_10__new_5": _e0_resource_row(
+        "rx_7_7__seed_713103__k_10__new_5",
+        "4cd5d435e7c1704afcfbfe0f4f97df2ef6587c8e086398145a95c7f530471371",
+        clear=(67_552_260, 1_323_008, 3_168, 8_583),
+        low_elev=(62_632_550, 1_036_288, 3_168, 8_583),
+        rain=(66_908_410, 282_624, 3_168, 8_583),
+    ),
+    "rx_8_8__seed_713103__k_5__new_20": _e0_resource_row(
+        "rx_8_8__seed_713103__k_5__new_20",
+        "e6d2b3341dc7bb4ca75fe2236a5bdcc9d9f2822b4daa84ac8d15b4449c9841cc",
+        clear=(103_676_788, 2_306_048, 7_488, 18_498),
+        low_elev=(101_870_949, 1_646_592, 7_488, 18_498),
+        rain=(101_377_578, 81_920, 7_488, 18_498),
+    ),
+    "rx_8_8__seed_713103__k_10__new_5": _e0_resource_row(
+        "rx_8_8__seed_713103__k_10__new_5",
+        "4da713d052e2a60f26baf776b95550084d9de92170c720a7dc7d94c7885e1305",
+        clear=(66_023_869, 1_323_008, 3_168, 8_583),
+        low_elev=(68_134_836, 1_040_384, 3_168, 8_583),
+        rain=(68_161_877, 299_008, 3_168, 8_583),
+    ),
+    "rx_8_8__seed_713106__k_5__new_20": _e0_resource_row(
+        "rx_8_8__seed_713106__k_5__new_20",
+        "49a046b109a38c32c2dcc09acbbe56383c7cf6c1135246cb41d7bf679fc869c4",
+        clear=(107_504_136, 2_301_952, 7_488, 18_498),
+        low_elev=(107_694_729, 1_646_592, 7_488, 18_498),
+        rain=(106_661_273, 159_744, 7_488, 18_498),
+    ),
+    "rx_7_14__seed_713104__k_10__new_10": _e0_resource_row(
+        "rx_7_14__seed_713104__k_10__new_10",
+        "e397c13e51be450d0d3a34b2d8a5ee8f61d80cf51e0547aca9df9be84e7b0c57",
+        clear=(69_537_319, 2_162_688, 4_608, 11_888),
+        low_elev=(73_730_329, 1_253_376, 4_608, 11_888),
+        rain=(68_828_579, 593_920, 4_608, 11_888),
+    ),
+    "rx_3_19__seed_713102__k_10__new_5": _e0_resource_row(
+        "rx_3_19__seed_713102__k_10__new_5",
+        "069b7a647dc5a774827b4d21f03bfaab72cffdff2c8de252933abb6f9024d8df",
+        clear=(57_259_742, 1_327_104, 3_168, 8_583),
+        low_elev=(57_753_489, 1_183_744, 3_168, 8_583),
+        rain=(57_241_044, 434_176, 3_168, 8_583),
+    ),
+    "rx_7_7__seed_713105__k_10__new_20": _e0_resource_row(
+        "rx_7_7__seed_713105__k_10__new_20",
+        "d221da20b4382a70e4f416d5d7cee971a94f16536641903b5afc62ac833d43e7",
+        clear=(109_990_099, 2_842_624, 7_488, 18_498),
+        low_elev=(108_896_424, 1_978_368, 7_488, 18_498),
+        rain=(99_478_682, 1_232_896, 7_488, 18_498),
+    ),
+    "rx_7_7__seed_713104__k_10__new_5": _e0_resource_row(
+        "rx_7_7__seed_713104__k_10__new_5",
+        "429635cd5841773dc7260af168a0be03d8e2316eb995477b2cb2084973f52efc",
+        clear=(62_909_104, 1_318_912, 3_168, 8_583),
+        low_elev=(64_490_445, 1_310_720, 3_168, 8_583),
+        rain=(64_522_045, 401_408, 3_168, 8_583),
+    ),
+    LIVENESS_OUTER_KEY: _e0_resource_row(
+        LIVENESS_OUTER_KEY,
+        "30cf647066b2972dcd6c3187f0d5c8258491a4ae7d6d3ac5985af30749597127",
+        clear=(10_020_321, 2_043_904, 7_488, 18_503),
+        low_elev=(10_528_416, 991_232, 7_488, 18_503),
+        rain=(9_709_379, 81_920, 7_488, 18_503),
+    ),
+}
+
+SCIENTIFIC_ENTRY_COMMIT = "930c5d644c323bab94deece9a08fdfb09f565399"
+RUNTIME_SOURCE_FILES = {
+    "scripts/run_d92_e0d_prediction.py": {
+        "git_blob": "02dc1e01684dcde8089a0243587b965d617bc3b8",
+        "sha256": "0f7c1c1866c6d84409068c3db160ee6084a9838012f2ef93de1b8e4fefc3f30c",
     },
-    "rx_7_7__seed_713103__k_10__new_5": {
-        "registration_wall_time_ns": 66_908_410.0,
-        "registration_incremental_peak_working_set_bytes": 1_036_288.0,
-        "query_macs": 3_168,
-        "state_bytes": 8_583,
+    "scripts/score_d92_be_prediction.py": {
+        "git_blob": "5cac3560bc812f56c4718166e3509c76c2904894",
+        "sha256": "a33ba598313ac953d3d02b57b3cdfe4409a441307d2f7b0eb86e0de749017001",
     },
-    "rx_8_8__seed_713103__k_5__new_20": {
-        "registration_wall_time_ns": 101_870_949.0,
-        "registration_incremental_peak_working_set_bytes": 1_646_592.0,
-        "query_macs": 7_488,
-        "state_bytes": 18_498,
+    "scripts/probe_d92_registration_balanced_covariance.py": {
+        "git_blob": "68c61c508b9179c7e272819565acaad81f002aa8",
+        "sha256": "e173ea9172b8be2763bf109bd8f27a37a2e6fc8972614519883469d30e7b6766",
     },
-    "rx_8_8__seed_713103__k_10__new_5": {
-        "registration_wall_time_ns": 68_134_836.0,
-        "registration_incremental_peak_working_set_bytes": 1_040_384.0,
-        "query_macs": 3_168,
-        "state_bytes": 8_583,
+    "scripts/probe_d81_ground_nuisance_cauchy_center.py": {
+        "git_blob": "b20a4f215aca116edc8555307e6ec1489761ab14",
+        "sha256": "36acb149c37ce37787cd85ab33f770fe265fd9d985c4e088c48615af718e5d99",
     },
-    "rx_8_8__seed_713106__k_5__new_20": {
-        "registration_wall_time_ns": 107_504_136.0,
-        "registration_incremental_peak_working_set_bytes": 1_646_592.0,
-        "query_macs": 7_488,
-        "state_bytes": 18_498,
+    "scripts/run_d92_e0ocf_hard12v3.py": {
+        "git_blob": "e41ce24db1de2b09fcb66a2b61f7e7936e7866e0",
+        "sha256": "d201c662c283980c9882f1b940ac190b0cc5f4b46855314df4febe1737923693",
     },
-    "rx_7_14__seed_713104__k_10__new_10": {
-        "registration_wall_time_ns": 69_537_319.0,
-        "registration_incremental_peak_working_set_bytes": 1_253_376.0,
-        "query_macs": 4_608,
-        "state_bytes": 11_888,
+    "cvsrffi/stage2_d92_e0d_query_evaluation.py": {
+        "git_blob": "c3491e3359d5da5dd9291a44dd5169bfb295e877",
+        "sha256": "0512ab85a678e24fb3d9a7df3eb73506452976e25a92bdcf57591f0af17a0399",
     },
-    "rx_3_19__seed_713102__k_10__new_5": {
-        "registration_wall_time_ns": 57_259_742.0,
-        "registration_incremental_peak_working_set_bytes": 1_183_744.0,
-        "query_macs": 3_168,
-        "state_bytes": 8_583,
+    "cvsrffi/stage2_d92_e0d_slim.py": {
+        "git_blob": "1cf2b527e514729e14685527a0dc91bf15c5c4e5",
+        "sha256": "8dd9864f27ab19fc0f779f48287ec42b42d3cf6c84af587b63766df7fe3464ef",
     },
-    "rx_7_7__seed_713105__k_10__new_20": {
-        "registration_wall_time_ns": 108_896_424.0,
-        "registration_incremental_peak_working_set_bytes": 1_978_368.0,
-        "query_macs": 7_488,
-        "state_bytes": 18_498,
+    "cvsrffi/stage2_d92_cross_class_offblock_consensus.py": {
+        "git_blob": "9ed699a293bb1a4ab33d611f1d8ba8284f3c673f",
+        "sha256": "e59eb726d531f1d0219f982c3e08f1590f5f5a623ff01b8ac3ba2353f28f04d2",
     },
-    "rx_7_7__seed_713104__k_10__new_5": {
-        "registration_wall_time_ns": 64_490_445.0,
-        "registration_incremental_peak_working_set_bytes": 1_310_720.0,
-        "query_macs": 3_168,
-        "state_bytes": 8_583,
+    "cvsrffi/stage2_d92_registration_balanced_covariance.py": {
+        "git_blob": "578fcae4c1d1a72e9cd9fec36b3d2073047942f5",
+        "sha256": "ebea42f67df045223b5d50db6f5d6074f64cd1018a3caa6dcfa0328b2896bba0",
     },
-    LIVENESS_OUTER_KEY: {
-        "registration_wall_time_ns": 10_020_321.0,
-        "registration_incremental_peak_working_set_bytes": 991_232.0,
-        "query_macs": 7_488,
-        "state_bytes": 18_503,
+    "cvsrffi/stage2_registration_resource_probe.py": {
+        "git_blob": "e1115fda0fc7015d24a7add1ec457b0a504d5c58",
+        "sha256": "184ba2a798b663571a1de08ffa067f8d37d22e28a87df718331bbf66aa02561c",
+    },
+    "cvsrffi/stage2_d42_unified_shrinkage_lda.py": {
+        "git_blob": "ee7e4150a99fd331266654d0119ee867e38f55a8",
+        "sha256": "b78715909e2bed57036be0f6a84073b09e830c830fa3953fa1b092464e401f35",
+    },
+    "cvsrffi/stage2_d38_strong_b3_quantized.py": {
+        "git_blob": "1e45e0d383f72135437961549abef8a992209fbb",
+        "sha256": "1781cc83ce353481ebb09df1dab2a5d413955098f442367a969eb583e4b50ec9",
+    },
+    "cvsrffi/stage2_d92_cauchy_scatter_oas.py": {
+        "git_blob": "cfdd10b6892becd2a94d9874f69ec073035bb572",
+        "sha256": "0f00d4b2e243a5c346e01c988e93ba18119e887ba2f47de722c5c62730a03164",
+    },
+    "cvsrffi/stage2_d81_query_evaluation.py": {
+        "git_blob": "4723429aee9dbe984e11d50ba5a7688c3ece201a",
+        "sha256": "d6e40695fa94f3d738d871e27698bc26d0eb5dbb346fd49d32269ac7cd659e80",
+    },
+    "cvsrffi/stage2_diag_cosine_scorer.py": {
+        "git_blob": "867788adc8d355915a83c1581df81594fcdc4b42",
+        "sha256": "22d5555fa3e80f3b8da508011ff7a56993c57ac6f17591cd6f35e9b5d64b9cba",
+    },
+    "cvsrffi/somph_predictor_bundle.py": {
+        "git_blob": "a95cd5b566e92763b59ff82fc859553581c582de",
+        "sha256": "1c68a9e06530a8ff9b3aadaa2743d419a0c454b0cab95c5a6d52b9c658696bb4",
+    },
+    "cvsrffi/stage2_d92_e0ocf_hard12.py": {
+        "git_blob": "078b22d02b757c09dd651ba75ffc5b3b737ed04b",
+        "sha256": "65998e84d7b95cff30d9e37976c0f6d757270fa9464574008a2e26836e7e06c5",
     },
 }
 
@@ -477,8 +599,14 @@ def _expected_lock() -> dict[str, Any]:
                 for outer_key, digest in RAW_SCORE_SHA.items()
             },
             "e0_resource_rows": {
-                outer_key: dict(resource)
-                for outer_key, resource in BASELINE_RESOURCES.items()
+                outer_key: {
+                    "fit_audit": dict(resource["fit_audit"]),
+                    "scenes": {
+                        scene: dict(values)
+                        for scene, values in resource["scenes"].items()
+                    },
+                }
+                for outer_key, resource in E0_RESOURCE_ROWS.items()
             },
             "rerun": False,
         },
@@ -495,6 +623,12 @@ def _expected_lock() -> dict[str, Any]:
         "stop_rule": dict(STOP_RULE),
         "fresh_run_retry": False,
         "only_promotion_candidate": ARM_ID,
+        "runtime_source": {
+            "scientific_entry_commit": SCIENTIFIC_ENTRY_COMMIT,
+            "files": {
+                path: dict(record) for path, record in RUNTIME_SOURCE_FILES.items()
+            },
+        },
         "runtime": {
             "output_root": (
                 "/home/szu2070436088/2510044040/CV-SincNet/runs/"
@@ -507,6 +641,7 @@ def _expected_lock() -> dict[str, Any]:
             "jobs": "jobs/<outer_key>/"
             "E0_FULL_CROSS_CLASS_OFFBLOCK_CONSENSUS",
             "shard_summary": "summaries/shard_<index>.json",
+            "coordinator_stop": "coordination/stop_action.json",
         },
     }
 
@@ -627,6 +762,7 @@ _JOB_KEYS = {
     "packages",
     "truth_sidecar",
     "truth_sidecar_sha256",
+    "e0_resource",
     "method_lock_sha256",
     "output_root",
 }
@@ -707,6 +843,15 @@ def validate_hard9_k1_manifest(
             "role": "primary",
             "primary": True,
             "scenarios": list(SCENES),
+            "e0_resource": {
+                "fit_audit": dict(E0_RESOURCE_ROWS[row["outer_key"]]["fit_audit"]),
+                "scenes": {
+                    scene: dict(values)
+                    for scene, values in E0_RESOURCE_ROWS[row["outer_key"]][
+                        "scenes"
+                    ].items()
+                },
+            },
             "method_lock_sha256": method_lock_sha,
         }
         if (
@@ -818,6 +963,17 @@ def build_hard9_k1_manifest(
                     source_job_root,
                     require_files=require_package_files,
                 ),
+                "e0_resource": {
+                    "fit_audit": dict(
+                        E0_RESOURCE_ROWS[row["outer_key"]]["fit_audit"]
+                    ),
+                    "scenes": {
+                        scene: dict(values)
+                        for scene, values in E0_RESOURCE_ROWS[row["outer_key"]][
+                            "scenes"
+                        ].items()
+                    },
+                },
                 "method_lock_sha256": method_lock_sha,
                 "output_root": str(
                     _pure_path(output_root).joinpath(
@@ -893,7 +1049,9 @@ __all__ = [
     "QUERY_ZERO_FIELDS",
     "REGISTERED_MODE",
     "RESOURCE_GATE",
+    "RUNTIME_SOURCE_FILES",
     "SCENES",
+    "SCIENTIFIC_ENTRY_COMMIT",
     "SHARD_COUNT",
     "SHARD_SUMMARY_SCHEMA",
     "SMOKE_OUTER_KEY",

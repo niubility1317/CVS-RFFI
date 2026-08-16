@@ -167,3 +167,19 @@ def test_manifest_requires_non_placeholder_package_and_truth_hashes() -> None:
             expected_method_lock_sha256=manifest["method_lock_sha256"],
             require_package_hashes=True,
         )
+
+
+def test_manifest_binds_one_sealed_e0_fit_audit_with_per_scene_resources() -> None:
+    manifest = matrix.build_hard9_k1_manifest(
+        CONFIG,
+        require_package_files=False,
+    )
+    resource = manifest["jobs"][0]["e0_resource"]
+
+    assert set(resource) == {"fit_audit", "scenes"}
+    assert set(resource["fit_audit"]) == {"path", "sha256"}
+    assert re.fullmatch(r"[0-9a-f]{64}", resource["fit_audit"]["sha256"])
+    assert set(resource["scenes"]) == set(matrix.SCENES)
+    assert resource["scenes"]["leo_clear_weak"]["registration_wall_time_ns"] != (
+        resource["scenes"]["leo_low_elev_weak"]["registration_wall_time_ns"]
+    )

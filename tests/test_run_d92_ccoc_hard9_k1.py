@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import hashlib
 import json
+import os
+import stat
 import sys
 from pathlib import Path
 
@@ -17,6 +20,13 @@ from scripts import run_d92_ccoc_hard9_k1 as runner  # noqa: E402
 def _write(path: Path, value: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(value), encoding="utf-8")
+
+
+def _write_bytes_readonly(path: Path, value: bytes) -> str:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(value)
+    os.chmod(path, stat.S_IREAD)
+    return hashlib.sha256(value).hexdigest()
 
 
 def _reference_resources(*, peak: int = 10) -> dict[str, dict[str, int]]:
@@ -228,3 +238,330 @@ def test_systemic_failure_needs_two_distinct_pre_prediction_outers(
     )
     assert stop["schema"] == "cvs.phase2.d92_ccoc_hard9_k1.systemic_failure.v1"
     assert stop["distinct_outer_count"] == 2
+
+
+def test_score_evidence_requires_actual_readonly_sidecar_before_and_after_scoring(
+    tmp_path: Path,
+) -> None:
+    truth_path = tmp_path / "truth_sidecar.json"
+    expected_sha256 = _write_bytes_readonly(
+        truth_path,
+        b'{"schema":"cvs.phase2.query_truth_sidecar.v2","rows":[]}',
+    )
+
+    assert (
+        runner._verify_truth_sidecar_snapshot(
+            truth_path,
+            expected_sha256=expected_sha256,
+        )
+        == expected_sha256
+    )
+
+    os.chmod(truth_path, stat.S_IWRITE | stat.S_IREAD)
+    truth_path.write_bytes(b'{"schema":"cvs.phase2.query_truth_sidecar.v2","rows":[1]}')
+    os.chmod(truth_path, stat.S_IREAD)
+    with pytest.raises(runner.D92CCOCHard9K1RunnerError, match="truth sidecar"):
+        runner._verify_truth_sidecar_snapshot(
+            truth_path,
+            expected_sha256=expected_sha256,
+        )
+
+
+def test_score_artifact_binds_actual_inputs_to_the_frozen_job_identity(
+    tmp_path: Path,
+) -> None:
+    truth_path = tmp_path / "truth_sidecar.json"
+    before_path = tmp_path / "before.npz"
+    after_path = tmp_path / "after.npz"
+    truth_sha256 = _write_bytes_readonly(truth_path, b"truth")
+    before_sha256 = _write_bytes_readonly(before_path, b"before")
+    after_sha256 = _write_bytes_readonly(after_path, b"after")
+    job = {
+        "job_id": "job-1",
+        "outer_key": "rx_7_7__seed_713104__k_5__new_20",
+        "outer_role": "performance",
+        "arm_id": runner.ARM_ID,
+        "candidate": runner.CANDIDATE_ID,
+        "truth_sidecar": str(truth_path),
+        "truth_sidecar_sha256": truth_sha256,
+    }
+    score_path = tmp_path / "score.json"
+    _write(
+        score_path,
+        {
+            "schema": "cvs.phase2.diag_cosine_dev_pair_score.v1",
+            "candidate": runner.CANDIDATE_ID,
+            "truth_sidecar_sha256": truth_sha256,
+            "before_prediction_sha256": before_sha256,
+            "after_prediction_sha256": after_sha256,
+        },
+    )
+
+    binding_path, binding_sha256 = runner._write_score_binding(
+        tmp_path / "job",
+        job=job,
+        matrix_manifest_sha256="a" * 64,
+        method_lock_sha256="b" * 64,
+        paths={
+            "before_prediction": before_path,
+            "after_prediction": after_path,
+        },
+        score_command=["python", "score"],
+    )
+    binding = json.loads(binding_path.read_text(encoding="utf-8"))
+    assert binding["outer_key"] == job["outer_key"]
+    assert binding["arm_id"] == runner.ARM_ID
+    assert binding["method_lock_sha256"] == "b" * 64
+    assert binding_sha256 == hashlib.sha256(binding_path.read_bytes()).hexdigest()
+
+    evidence = runner._validate_score_artifact(
+        score_path,
+        job=job,
+        matrix_manifest_sha256="a" * 64,
+        method_lock_sha256="b" * 64,
+        truth_sidecar_sha256=truth_sha256,
+        before_prediction_path=before_path,
+        after_prediction_path=after_path,
+        score_binding_path=binding_path,
+    )
+    assert evidence["job_id"] == job["job_id"]
+    assert evidence["outer_key"] == job["outer_key"]
+    assert evidence["matrix_manifest_sha256"] == "a" * 64
+
+    _write(
+        score_path,
+        {
+            "schema": "cvs.phase2.diag_cosine_dev_pair_score.v1",
+            "candidate": "wrong-candidate",
+            "truth_sidecar_sha256": truth_sha256,
+            "before_prediction_sha256": before_sha256,
+            "after_prediction_sha256": after_sha256,
+        },
+    )
+    with pytest.raises(runner.D92CCOCHard9K1RunnerError, match="score artifact"):
+        runner._validate_score_artifact(
+            score_path,
+            job=job,
+            matrix_manifest_sha256="a" * 64,
+            method_lock_sha256="b" * 64,
+            truth_sidecar_sha256=truth_sha256,
+            before_prediction_path=before_path,
+            after_prediction_path=after_path,
+            score_binding_path=binding_path,
+        )
+
+
+def test_nonzero_prediction_with_any_closure_artifact_is_post_prediction_failure(
+    tmp_path: Path,
+) -> None:
+    prediction_root = tmp_path / "diag"
+
+    assert runner._prediction_failure_stage(prediction_root) == "pre_prediction"
+
+    artifact = prediction_root / "after" / "execution_receipt.json"
+    artifact.parent.mkdir(parents=True)
+    artifact.write_text("{}", encoding="utf-8")
+    assert runner._prediction_failure_stage(prediction_root) == "post_prediction"
+
+
+def test_third_shard_shared_stop_after_prediction_prevents_scoring(
+    tmp_path: Path,
+) -> None:
+    score_starts: list[str] = []
+    _write(
+        tmp_path / "SYSTEMIC_TECHNICAL_FAILURE_STOP.json",
+        {"schema": runner.SYSTEMIC_FAILURE_SCHEMA},
+    )
+
+    started, value = runner._start_score_unless_stopped(
+        tmp_path,
+        start=lambda: score_starts.append("score") or "started",
+    )
+
+    assert started is False
+    assert value is None
+    assert score_starts == []
+
+
+def test_coordinator_stop_does_not_signal_foreign_pid(tmp_path: Path) -> None:
+    job = {
+        "job_id": "job-foreign",
+        "outer_key": "rx_7_7__seed_713104__k_5__new_20",
+        "arm_id": runner.ARM_ID,
+        "candidate": runner.CANDIDATE_ID,
+    }
+    _write(
+        tmp_path / "SYSTEMIC_TECHNICAL_FAILURE_STOP.json",
+        {"schema": runner.SYSTEMIC_FAILURE_SCHEMA},
+    )
+    runner._write_active_process_receipt(
+        tmp_path,
+        job=job,
+        shard_index=2,
+        stage="prediction",
+        pid=43210,
+        parent_pid=12345,
+        cwd=runner.CODE_ROOT,
+        cmdline=("python", "prediction"),
+    )
+    signals: list[tuple[int, str]] = []
+    result = runner.stop_verified_active_processes(
+        tmp_path,
+        coordinator_id="task3-coordinator",
+        process_inspector=lambda _pid: {
+            "pid": 43210,
+            "parent_pid": 12345,
+            "cwd": str(tmp_path / "foreign-cwd"),
+            "cmdline": ["python", "prediction"],
+        },
+        signal_sender=lambda pid, signal: signals.append((pid, signal)),
+        sleep_seconds=0.0,
+    )
+
+    assert result["verified_process_count"] == 0
+    assert result["skipped_unverified_process_count"] == 1
+    assert signals == []
+
+
+def test_shard_child_writes_exclusive_process_receipt_before_wait(
+    tmp_path: Path,
+) -> None:
+    job = {
+        "job_id": "job-active",
+        "outer_key": "rx_7_7__seed_713104__k_5__new_20",
+        "arm_id": runner.ARM_ID,
+        "candidate": runner.CANDIDATE_ID,
+    }
+
+    class Child:
+        pid = 54321
+
+        def wait(self) -> int:
+            receipts = list((tmp_path / "active_processes" / "shard_2").glob("*.json"))
+            assert len(receipts) == 1
+            receipt = json.loads(receipts[0].read_text(encoding="utf-8"))
+            assert receipt["pid"] == self.pid
+            assert receipt["job_id"] == job["job_id"]
+            assert receipt["cwd"] == str(runner.CODE_ROOT.resolve())
+            assert receipt["cmdline"] == ["python", "prediction"]
+            return 0
+
+        def terminate(self) -> None:  # pragma: no cover - receipt write succeeds
+            raise AssertionError("must not terminate a correctly receipted child")
+
+    assert (
+        runner._run_shard_child(
+            ["python", "prediction"],
+            output_root=tmp_path,
+            job=job,
+            shard_index=2,
+            stage="prediction",
+            stdout=object(),
+            stderr=object(),
+            env={},
+            popen=lambda *_args, **_kwargs: Child(),
+        )
+        == 0
+    )
+
+
+def test_runtime_source_lock_closes_scientific_entry_and_rejects_file_drift(
+    tmp_path: Path,
+) -> None:
+    lock = json.loads(
+        (ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v1.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    protected = {
+        "scripts/run_d92_e0d_prediction.py",
+        "scripts/score_d92_be_prediction.py",
+        "scripts/probe_d92_registration_balanced_covariance.py",
+        "cvsrffi/stage2_d92_cross_class_offblock_consensus.py",
+        "cvsrffi/stage2_d92_e0d_slim.py",
+        "cvsrffi/stage2_d92_e0d_query_evaluation.py",
+        "cvsrffi/stage2_d42_unified_shrinkage_lda.py",
+    }
+    assert protected <= set(lock["runtime_source"]["files"])
+    assert runner._verify_runtime_source_lock(lock, code_root=ROOT / "code")[
+        "scientific_entry_commit"
+    ] == "930c5d644c323bab94deece9a08fdfb09f565399"
+
+    source = tmp_path / "code" / "cvsrffi" / "runtime.py"
+    source.parent.mkdir(parents=True)
+    source.write_bytes(b"frozen")
+    source_lock = {
+        "scientific_entry_commit": "930c5d644c323bab94deece9a08fdfb09f565399",
+        "files": {
+            "cvsrffi/runtime.py": {
+                "git_blob": "a" * 40,
+                "sha256": hashlib.sha256(b"frozen").hexdigest(),
+            }
+        },
+    }
+    assert runner._verify_runtime_source_files(
+        source_lock,
+        code_root=tmp_path / "code",
+    )["file_count"] == 1
+    source.write_bytes(b"drift")
+    with pytest.raises(runner.D92CCOCHard9K1RunnerError, match="runtime source"):
+        runner._verify_runtime_source_files(source_lock, code_root=tmp_path / "code")
+
+
+def test_e0_resource_records_are_loaded_per_scene_from_the_sealed_fit_audit(
+    tmp_path: Path,
+) -> None:
+    job = {
+        "outer_key": "rx_7_7__seed_713104__k_5__new_20",
+        "k_shot": 5,
+        "new_class_count": 20,
+    }
+    fit_audit = tmp_path / "e0_after_fit_audit.json"
+    rows = []
+    locked_scenes: dict[str, dict[str, int]] = {}
+    for index, scene in enumerate(runner.SCENES):
+        values = {
+            "registration_wall_time_ns": 100 + index,
+            "registration_incremental_peak_working_set_bytes": 200 + index,
+            "query_macs": 7_488,
+            "state_bytes": 18_498,
+        }
+        locked_scenes[scene] = values
+        rows.append(
+            {
+                "scenario": scene,
+                "arm_id": "E0_FULL_ONLY",
+                "candidate_id": "d92_e0d_e0_full_only",
+                "k_shot": 5,
+                "registered_class_count": 26,
+                "after_registration_resource": {
+                    "registration_wall_time_ns": values[
+                        "registration_wall_time_ns"
+                    ],
+                    "registration_incremental_peak_working_set_bytes": values[
+                        "registration_incremental_peak_working_set_bytes"
+                    ],
+                },
+                "query_macs": values["query_macs"],
+                "after_state_bytes": values["state_bytes"],
+            }
+        )
+    _write(fit_audit, rows)
+    job["e0_resource"] = {
+        "fit_audit": {
+            "path": str(fit_audit),
+            "sha256": hashlib.sha256(fit_audit.read_bytes()).hexdigest(),
+        },
+        "scenes": locked_scenes,
+    }
+
+    resources = runner._load_verified_e0_resource_records(job)
+    assert resources == locked_scenes
+
+    rows[1]["after_registration_resource"]["registration_wall_time_ns"] = 999
+    _write(fit_audit, rows)
+    job["e0_resource"]["fit_audit"]["sha256"] = hashlib.sha256(
+        fit_audit.read_bytes()
+    ).hexdigest()
+    with pytest.raises(runner.D92CCOCHard9K1RunnerError, match="E0 resource"):
+        runner._load_verified_e0_resource_records(job)
