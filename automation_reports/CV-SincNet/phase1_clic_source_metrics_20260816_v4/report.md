@@ -103,7 +103,7 @@
 - 每fold均满足总量`16800=4×7×2×300`、三scene各`5600`、TX/RX/day集合为`4×7×2`、每个TX/RX/day合计`300`；physical_sample_id全局唯一，三scene两两物理ID不交，`single_leo_observation_per_physical_sample=true`。
 - 12份feature均为`16800×160`且finite；C/Gfeaturephysical顺序一致，并与sharedcache及binding中的physical-order/cache/receiptSHA闭合。
 - 6份receipt及12份binding均为source-only；fit/update/proxy-forward/threshold计数为0；target/query/selection/retry访问为false；PAIR与aggregate均为`POST_TARGET_COMPLETION_AUDIT_NON_SELECTION`。6份pair的C/Gclean各16800行、每scene各5600行，决策计数闭合。
-- E:\type10-7根镜像路径`/e/type10-7/automation_reports/CV-SincNet/phase1_clic_source_metrics_20260816_v4/report.md`在最终QA时不存在，未创建、未同步；仅更新本Gitworktree中的同一report。
+- E:\type10-7根镜像已补齐至`/e/type10-7/automation_reports/CV-SincNet/phase1_clic_source_metrics_20260816_v4/report.md`；提交前后均要求与本Gitworktree中的report字节一致并记录同一SHA256。
 
 ### Formal主artifact逐项bytes/SHA256
 
