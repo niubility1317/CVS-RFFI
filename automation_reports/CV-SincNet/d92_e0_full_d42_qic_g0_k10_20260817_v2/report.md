@@ -1,6 +1,6 @@
 # D92 E0 FULL QIC K10 G0预登记与发布报告
 
-状态：`LOCAL_VERIFIED / NOT_RUN / NO_PERFORMANCE_RESULT`
+状态：`ARTIFACTS_COMPLETE / TECHNICAL_G0_PASS / NO_PERFORMANCE_RESULT`
 
 本报告只登记一次K10/new5、三scene、truth-free技术G0发布。当前未执行N607、未启动driver、未读取truth/scorer或性能结果。
 
@@ -109,3 +109,54 @@ v2仅修复v1的发布层自引用缺陷：外层`nohup`重定向会在脚本开
 ## 7.证据边界
 
 本文件在运行前不声明G0通过、不声明方法性能、不读取accuracy/H/BA/floor/forgetting、truth或scorer。只有sole runner返回完整技术artifact后，主代理才可更新同一报告的最终状态和逐scene技术表。
+
+## 8. Sole runner最终技术交接
+
+状态：`ARTIFACTS_COMPLETE / TECHNICAL_G0_PASS / NO_PERFORMANCE_RESULT`
+
+本run只执行一次冻结detached command，完成K10/new5、old6/registered11、三scene truth-free技术G0。未运行analyzer，未读取accuracy、H、BA、floor、forgetting、truth或scorer；prediction artifact仅随run完整取回，未读取其内容。
+
+### 8.1 RULES_READ / PRECHECK / SYNC / COMMAND
+
+|项目|结果|
+|---|---|
+|RULES_READ|`VERIFIED`；live AGENTS.md、项目.md、Git Bash skill、failure catalog、N607 automation skill均完整读取|
+|PRECHECK|`VERIFIED`；普通direct N607、项目根/Python/8GPU可见，v2七个fresh路径及同run进程ABSENT，GPU0空闲|
+|SYNC|`VERIFIED`；archive 218553B、SHA256=`802a52557657d6d415992192fd546fe564495ff71354a7890807645bb071113a`；launch 6623B、SHA256=`fe9c708735c6416dec0958ece5cca1c3c26fd27a242e28e9211359fc9eed467e`；远端`bash -n`通过|
+|release/runtime|release HEAD=`2392a8b79444036d66edb85bab27b2cc827ebc5b`；runtime=`82ce747643af71ac3737bc0a89d18114be96f27e`|
+
+唯一执行命令：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet/runs && nohup bash ./d92_qic_g0_launch_82ce7476_20260817_v2.sh >./d92_qic_g0_launch_82ce7476_20260817_v2.out 2>./d92_qic_g0_launch_82ce7476_20260817_v2.err </dev/null &
+```
+
+启动后短连接观察到source-root、run-root、logs-root和两臂输出均生成；进程已自然退出，无需要健康停止的异常。最终检查时间为2026-08-17 06:55:04（Asia/Hong_Kong），同run PID/PPID/CWD/cmdline匹配为0，GPU0–GPU7均无compute app。
+
+### 8.2 固定marker与逐scene技术表
+
+固定marker：`D92_QIC_G0_ACTIVE_QUANTIZATION_INTERCEPT_CLOSURE_RESOURCE_PASS`。`g0_validation.json`的`status`、`marker`和`pass`均匹配，三个`scene_gates`均为true。
+
+|scene|K/类形状|QIC active/fallback|E0→final state SHA256（缩略）|FP16 bit change|E0 residual→candidate residual→reduction|modified fields|decode/additional-full/block/LOO/Fisher/scan/requantize|query MAC candidate/reference/delta|state bytes candidate/reference/delta|wall candidate/reference/ratio|peak bytes|query/protocol gates|
+|---|---|---|---|---:|---|---|---|---|---|---|---:|---|
+|`leo_clear_weak`|10/6/11|true/false|`e473eeef…04366`→`6f3853af…60894`|11|229.1639949631→0.0364577573→229.1275372059|`intercept_fp16`|1/0/0/0/0/0/0|3168/3168/0|8583/8583/0|64.911634ms/61.707970ms/1.051917|8192|base/QIC七项全false；全部gate=true|
+|`leo_low_elev_weak`|10/6/11|true/false|`6258f924…bee71f`→`b7909151…c181b`|11|173.3684354920→0.0131944239→173.3552410681|`intercept_fp16`|1/0/0/0/0/0/0|3168/3168/0|8583/8583/0|64.196002ms/61.590854ms/1.042298|94208|base/QIC七项全false；全部gate=true|
+|`leo_rain_weak`|10/6/11|true/false|`7d367a41…775b`→`52f66c1d…1689`|11|251.8618226068→0.0219630476→251.8398595592|`intercept_fp16`|1/0/0/0/0/0/0|3168/3168/0|8583/8583/0|63.808285ms/61.644737ms/1.035097|32768|base/QIC七项全false；全部gate=true|
+
+逐scene完整SHA、残差和字段均保存在取回的`fit_audit.json`中；表中SHA仅为可读缩略，不构成新的hash gate。
+
+### 8.3 资源与协议收据
+
+- QIC support上界：`34848`MACs，transient bytes上界`357024`，复杂度`O(C*K*288)+O(C*288)`。
+- 三scene candidate registration wall均≤150ms，candidate/reference wall ratio均≤1.50，incremental peak均≤1MiB且均低于512KiB目标。
+- 三scene均为一次coefficient decode；additional FULL、block、LOO、Fisher、candidate scan、requantize均为0，且`actual FULL once`为true。
+- 仅`intercept_fp16`修改；coefficient/scale/log_diag/intercept_fp32/state shape/class registry均byte-exact，direct state publish、all-class shared formula、class/row permutation invariance均为true。
+- base与QIC七项query访问字段全部false；query MAC为`3168=11*288`，QIC query MAC delta为0；persistent state bytes delta为0；clean/source sample access为false，support-only为true。
+
+### 8.4 ARTIFACTS / CLEANUP / NEXT_ACTION
+
+完整取回至`E:/type10-7/local_artifacts/d92_e0_full_d42_qic_g0_k10_20260817_v2/`：source root、reference/candidate run root、logs、driver out/err。`g0_validation.json`、两臂`fit_audit.json`、execution/resource receipts和prediction artifacts均存在；prediction artifacts未读。driver out仅含固定PASS marker，driver err为空。
+
+远端source/run/logs/driver保留未删；最终同run进程为0、GPU0–GPU7已释放。每次SSH/SCP后均核验本地主机无存活SSH/SCP客户端及到N607的ESTABLISHED连接。
+
+下一动作：主代理可基于这份truth-free技术G0收据决定是否推进预注册的完整矩阵；本run不得重试、重启、改写或被当作性能结果。
