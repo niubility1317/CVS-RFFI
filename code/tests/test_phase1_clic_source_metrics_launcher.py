@@ -6,26 +6,123 @@ from pathlib import Path
 
 
 CODE_ROOT = Path(__file__).resolve().parents[1]
+GIT_BASH = Path(r"C:\Program Files\Git\bin\bash.exe")
 LAUNCHER = CODE_ROOT / "scripts" / "launch_phase1_clic_source_metrics12_v1_20260813.sh"
 RUN_ID = "phase1_clic_source_metrics_20260813_v1"
+V2_LAUNCHER = CODE_ROOT / "scripts" / "launch_phase1_clic_source_metrics12_v2_20260816.sh"
+V2_SMOKE_LAUNCHER = CODE_ROOT / "scripts" / "smoke_phase1_clic_source_metrics_f1_v2_20260816.sh"
+V2_RUN_ID = "phase1_clic_source_metrics_20260813_v2"
+V2_SMOKE_ROOT_NAME = ".smoke_phase1_clic_source_metrics_20260813_v2_F1"
 
 
-def _wsl_path(path: Path) -> str:
+def _git_bash_path(path: Path) -> str:
     resolved = path.resolve()
     drive = resolved.drive.rstrip(":").lower()
     relative = resolved.as_posix().split(":", 1)[1].lstrip("/")
-    return f"/mnt/{drive}/{relative}"
+    return f"/{drive}/{relative}"
 
 
 def _dry_run() -> list[str]:
     result = subprocess.run(
-        ["bash", _wsl_path(LAUNCHER), "--dry-run"],
+        [str(GIT_BASH), _git_bash_path(LAUNCHER), "--dry-run"],
         cwd=CODE_ROOT.parent,
         check=True,
         capture_output=True,
         text=True,
     )
     return [line for line in result.stdout.splitlines() if line.strip()]
+
+
+def _dry_run_script(script: Path) -> list[str]:
+    result = subprocess.run(
+        [str(GIT_BASH), _git_bash_path(script), "--dry-run"],
+        cwd=CODE_ROOT.parent,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return [line for line in result.stdout.splitlines() if line.strip()]
+
+
+def _project_root_environment(project_root: Path) -> dict[str, str]:
+    environment = dict(os.environ)
+    environment["PROJECT_ROOT"] = _git_bash_path(project_root)
+    return environment
+
+
+def test_source_metrics_v2_formal_dry_run_keeps_the_complete_frozen_matrix() -> None:
+    """Break caught: v2 changes matrix stages, v1 identity, or source-only controls."""
+
+    lines = _dry_run_script(V2_LAUNCHER)
+    assert len(lines) == 25
+    joined = "\n".join(lines)
+    assert V2_RUN_ID in joined
+    assert RUN_ID not in joined
+    assert len([line for line in lines if "stage=CLIC_SOURCE_V_CACHE" in line]) == 6
+    assert len([line for line in lines if "stage=CLIC_SOURCE_V_FORWARD" in line]) == 12
+    assert len([line for line in lines if "stage=CLIC_SOURCE_METRICS_PAIR" in line]) == 6
+    assert len([line for line in lines if "stage=CLIC_SOURCE_METRICS_AGGREGATE" in line]) == 1
+    assert "--technical-smoke" not in joined
+    for forbidden in ("target", "query", "truth", "prediction", "package", "--retry"):
+        assert forbidden not in joined.lower()
+
+
+def test_source_metrics_v2_formal_rejects_immutable_root_collision(tmp_path: Path) -> None:
+    """Break caught: a new v2 launcher resumes or overwrites its formal run root."""
+
+    project_root = tmp_path / "project"
+    (project_root / "runs" / V2_RUN_ID).mkdir(parents=True)
+    result = subprocess.run(
+        [str(GIT_BASH), _git_bash_path(V2_LAUNCHER)],
+        cwd=CODE_ROOT.parent,
+        env=_project_root_environment(project_root),
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 3
+    assert "refusing to overwrite source metrics run/log root" in result.stderr
+
+
+def test_source_metrics_v2_f1_smoke_dry_run_is_path_strict_and_score_free() -> None:
+    """Break caught: smoke mirrors formal inputs, scores performance, or launches more than F1 C/G."""
+
+    lines = _dry_run_script(V2_SMOKE_LAUNCHER)
+    assert len(lines) == 3
+    joined = "\n".join(lines)
+    assert V2_RUN_ID in joined
+    assert V2_SMOKE_ROOT_NAME in joined
+    assert "SMOKE_INVOCATION=1" in joined
+    assert "FORMAL_INVOCATION=0" in joined
+    assert len([line for line in lines if "stage=CLIC_SOURCE_V_CACHE" in line]) == 1
+    forwards = [line for line in lines if "stage=CLIC_SOURCE_V_FORWARD" in line]
+    assert len(forwards) == 2
+    assert "fold=1" in joined
+    assert "F1C_CLIC12" in joined and "F1G_CLIC12" in joined
+    assert "F2C_CLIC12" not in joined and "F2G_CLIC12" not in joined
+    assert "--technical-smoke" in joined
+    assert "stage=CLIC_SOURCE_METRICS_PAIR" not in joined
+    assert "stage=CLIC_SOURCE_METRICS_AGGREGATE" not in joined
+    assert "source_validation_known_leo_weak.npz" in joined
+    assert "phase1_clic12_20260812_v5/F1C_CLIC12/final_ssdg.pth" in joined
+    assert "phase1_clic_postfreeze_20260812_v4/F1C_CLIC12/source_clean_proxy.npz" in joined
+    for forbidden in ("target", "query", "truth", "prediction", "package", "--retry"):
+        assert forbidden not in joined.lower()
+
+
+def test_source_metrics_v2_smoke_rejects_preexisting_root_before_input_checks(tmp_path: Path) -> None:
+    """Break caught: a smoke can overwrite its cache/feature/log root on a second invocation."""
+
+    project_root = tmp_path / "project"
+    (project_root / "runs" / V2_SMOKE_ROOT_NAME).mkdir(parents=True)
+    result = subprocess.run(
+        [str(GIT_BASH), _git_bash_path(V2_SMOKE_LAUNCHER)],
+        cwd=CODE_ROOT.parent,
+        env=_project_root_environment(project_root),
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 3
+    assert "refusing to overwrite source metrics v2 smoke run/log root" in result.stderr
 
 
 def test_source_metrics_launcher_dry_run_has_exact_source_only_release_matrix() -> None:
@@ -94,17 +191,9 @@ def test_source_metrics_launcher_rejects_preexisting_run_root_before_input_check
 
     project_root = tmp_path / "project"
     (project_root / "runs" / RUN_ID).mkdir(parents=True)
-    environment = dict(os.environ)
-    environment["PROJECT_ROOT"] = _wsl_path(project_root)
-    if os.name == "nt":
-        wsl_entries = [
-            item
-            for item in environment.get("WSLENV", "").split(":")
-            if item and not item.startswith("PROJECT_ROOT/") and item != "PROJECT_ROOT"
-        ]
-        environment["WSLENV"] = ":".join([*wsl_entries, "PROJECT_ROOT"])
+    environment = _project_root_environment(project_root)
     result = subprocess.run(
-        ["bash", _wsl_path(LAUNCHER)],
+        [str(GIT_BASH), _git_bash_path(LAUNCHER)],
         cwd=CODE_ROOT.parent,
         env=environment,
         capture_output=True,
@@ -119,7 +208,7 @@ def test_source_metrics_launcher_rejects_target_and_retry_controls() -> None:
 
     for forbidden in ("--target-root", "--retry"):
         result = subprocess.run(
-            ["bash", _wsl_path(LAUNCHER), forbidden],
+            [str(GIT_BASH), _git_bash_path(LAUNCHER), forbidden],
             cwd=CODE_ROOT.parent,
             capture_output=True,
             text=True,

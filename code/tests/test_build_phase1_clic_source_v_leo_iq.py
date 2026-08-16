@@ -284,7 +284,7 @@ def _write_clean_npz(
 
 def _builder_args(tmp_path: Path, *, manifest_drift: bool = False, role_overlap: bool = False) -> tuple[argparse.Namespace, dict[str, Any]]:
     rows = _source_v_rows()
-    cache_root = tmp_path / "runs" / "phase1_clic_source_metrics_20260813_v1"
+    cache_root = tmp_path / "runs" / "phase1_clic_source_metrics_20260813_v2"
     shared_dir = cache_root / "F1_SHARED"
     c_dir = tmp_path / "runs" / "phase1_clic12_20260812_v5" / "F1C_CLIC12"
     g_dir = tmp_path / "runs" / "phase1_clic12_20260812_v5" / "F1G_CLIC12"

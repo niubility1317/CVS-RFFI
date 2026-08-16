@@ -30,10 +30,93 @@ EXPECTED_CACHE_RUN_ID = _cache.EXPECTED_CACHE_RUN_ID
 EXPECTED_PAIR_SCHEMA = _pair.EXPECTED_PAIR_SCHEMA
 EXPECTED_SCENARIOS = tuple(_pair.EXPECTED_SCENARIOS)
 SOURCE_V_ROLE = _cache.SOURCE_V_ROLE
+TECHNICAL_SMOKE_ROOT_NAME = ".smoke_phase1_clic_source_metrics_20260813_v2_F1"
 
 
 class CLICSourceVFeatureExportError(RuntimeError):
     """Raised when a source-V-only feature forward cannot close safely."""
+
+
+def validate_source_v_execution_roots(
+    *,
+    training_root: str | Path,
+    clean_path: str | Path,
+    cache_root: str | Path,
+    output_root: str | Path,
+    checkpoint_path: str | Path,
+    terminal_path: str | Path,
+    fold_index: int,
+    candidate_id: str,
+    technical_smoke: bool,
+) -> None:
+    """Close formal roots, or the sole F1 technical-smoke exception, fail closed.
+
+    Formal source-metrics forwards retain the original common ``runs`` parent
+    requirement.  The only independent-root form is the pre-registered F1
+    technical smoke, whose inputs remain the original canonical formal files
+    while its cache and output share one dedicated v2 smoke leaf.
+    """
+
+    if type(technical_smoke) is not bool:
+        raise CLICSourceVFeatureExportError("source-V technical smoke control must be boolean")
+    if fold_index not in range(1, 7):
+        raise CLICSourceVFeatureExportError("source-V execution root fold is invalid")
+    training = Path(training_root).resolve()
+    clean = Path(clean_path).resolve()
+    cache = Path(cache_root).resolve()
+    output = Path(output_root).resolve()
+    checkpoint = Path(checkpoint_path).resolve()
+    terminal = Path(terminal_path).resolve()
+    clean_root = clean.parent.parent
+    expected_candidates = {
+        f"F{fold_index}C_CLIC12",
+        f"F{fold_index}G_CLIC12",
+    }
+    if candidate_id not in expected_candidates:
+        raise CLICSourceVFeatureExportError("source-V candidate/fold root binding drifted")
+    if technical_smoke and (
+        fold_index != 1 or candidate_id not in {"F1C_CLIC12", "F1G_CLIC12"}
+    ):
+        raise CLICSourceVFeatureExportError("source-V technical smoke is restricted to F1 C/G")
+    if (
+        training.name != _clean.EXPECTED_TRAINING_RUN_ID
+        or clean_root.name != _cache.EXPECTED_CLEAN_RUN_ID
+        or cache.name != EXPECTED_CACHE_RUN_ID
+        or output.name != EXPECTED_CACHE_RUN_ID
+    ):
+        raise CLICSourceVFeatureExportError("source-V training/clean/cache run identity drifted")
+    if checkpoint != training / candidate_id / "final_ssdg.pth":
+        raise CLICSourceVFeatureExportError("source-V checkpoint path binding drifted")
+    if terminal != checkpoint.parent / "phase1_clic_terminal_receipt.json":
+        raise CLICSourceVFeatureExportError("source-V terminal path binding drifted")
+    if clean != clean_root / candidate_id / "source_clean_proxy.npz":
+        raise CLICSourceVFeatureExportError("source-V clean-v4 path binding drifted")
+
+    if not technical_smoke:
+        formal_parent = training.parent
+        if (
+            formal_parent.name != "runs"
+            or clean_root.parent != formal_parent
+            or cache.parent != formal_parent
+            or output.parent != formal_parent
+        ):
+            raise CLICSourceVFeatureExportError(
+                "source-V formal training/clean/cache/output root binding drifted"
+            )
+        return
+
+    smoke_root = cache.parent
+    formal_parent = training.parent
+    if (
+        cache != output
+        or smoke_root.name != TECHNICAL_SMOKE_ROOT_NAME
+        or smoke_root.parent.name != "runs"
+        or clean_root.parent != formal_parent
+        or formal_parent != smoke_root.parent
+    ):
+        raise CLICSourceVFeatureExportError(
+            "source-V technical smoke original-formal/smoke root binding drifted"
+        )
 
 
 def _sha256_file(path: str | Path) -> str:
@@ -552,18 +635,17 @@ def export_source_v_leo_features(args: argparse.Namespace) -> dict[str, Any]:
     pair_path = Path(args.pair_json).resolve()
     output_path = Path(args.out_npz).resolve()
     binding_path = Path(args.binding_json).resolve()
-    if (
-        training_root.name != _clean.EXPECTED_TRAINING_RUN_ID
-        or clean_path.parent.parent.name != _cache.EXPECTED_CLEAN_RUN_ID
-        or cache_root.name != EXPECTED_CACHE_RUN_ID
-        or output_root.name != EXPECTED_CACHE_RUN_ID
-        or not (training_root.parent == clean_path.parent.parent.parent == cache_root.parent == output_root.parent)
-    ):
-        raise CLICSourceVFeatureExportError("source-V training/cache/output root binding drifted")
-    if checkpoint_path != training_root / candidate / "final_ssdg.pth" or terminal_path.parent != checkpoint_path.parent:
-        raise CLICSourceVFeatureExportError("source-V checkpoint/terminal path binding drifted")
-    if clean_path != clean_path.parent.parent / candidate / "source_clean_proxy.npz":
-        raise CLICSourceVFeatureExportError("source-V clean-v4 path binding drifted")
+    validate_source_v_execution_roots(
+        training_root=training_root,
+        clean_path=clean_path,
+        cache_root=cache_root,
+        output_root=output_root,
+        checkpoint_path=checkpoint_path,
+        terminal_path=terminal_path,
+        fold_index=fold,
+        candidate_id=candidate,
+        technical_smoke=getattr(args, "technical_smoke", False),
+    )
     shared_dir = cache_root / f"F{fold}_SHARED"
     if cache_path != shared_dir / "source_validation_known_leo_weak.npz" or cache_receipt_path != shared_dir / "source_validation_known_leo_weak.receipt.json":
         raise CLICSourceVFeatureExportError("source-V shared cache path binding drifted")
@@ -830,6 +912,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--source-tx-ids", required=True)
     parser.add_argument("--batch-size", type=int, default=256)
     parser.add_argument("--device", default="cuda:0")
+    parser.add_argument(
+        "--technical-smoke",
+        action="store_true",
+        help="allow only the pre-registered F1 independent technical-smoke root",
+    )
     return parser
 
 
@@ -855,6 +942,7 @@ __all__ = [
     "numpy_float32_to_tensor",
     "read_source_v_cache_snapshot",
     "validate_source_v_clean_v4_binding",
+    "validate_source_v_execution_roots",
     "validate_pair_single_leo_common_binding",
     "validate_pair_source_l_policy_binding",
     "validate_source_v_forward_payload",

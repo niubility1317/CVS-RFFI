@@ -26,10 +26,194 @@ import export_phase1_clic_source_v_leo_features as EXPORTER
 
 SCENES = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
 SOURCE_TX = ("tx-0", "tx-1", "tx-2", "tx-3")
+V2_RUN_ID = "phase1_clic_source_metrics_20260813_v2"
+V2_SMOKE_ROOT_NAME = ".smoke_phase1_clic_source_metrics_20260813_v2_F1"
 
 
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _v2_technical_smoke_paths(
+    tmp_path: Path, *, mirror_training: bool = False
+) -> dict[str, Path]:
+    """Create only path-shaped inputs for the root-contract boundary."""
+
+    runs = tmp_path / "runs"
+    smoke_root = runs / V2_SMOKE_ROOT_NAME
+    training_root = (
+        smoke_root / "training_mirror" / "phase1_clic12_20260812_v5"
+        if mirror_training
+        else runs / "phase1_clic12_20260812_v5"
+    )
+    clean_root = runs / "phase1_clic_postfreeze_20260812_v4"
+    source_root = smoke_root / V2_RUN_ID
+    candidate = "F1C_CLIC12"
+    paths = {
+        "runs": runs,
+        "smoke_root": smoke_root,
+        "training_root": training_root,
+        "clean_root": clean_root,
+        "source_root": source_root,
+        "checkpoint": training_root / candidate / "final_ssdg.pth",
+        "terminal": training_root / candidate / "phase1_clic_terminal_receipt.json",
+        "clean": clean_root / candidate / "source_clean_proxy.npz",
+        "cache": source_root / "F1_SHARED" / "source_validation_known_leo_weak.npz",
+        "cache_receipt": source_root / "F1_SHARED" / "source_validation_known_leo_weak.receipt.json",
+        "pair": runs / "phase1_clic_source_pair_20260812_v3" / "F1_C_vs_G_pair.json",
+        "output": source_root / candidate / "source_validation_known_leo_weak_features.npz",
+        "binding": source_root / candidate / "source_validation_known_leo_weak.binding.json",
+    }
+    for key in ("checkpoint", "terminal", "clean", "cache", "cache_receipt", "pair"):
+        paths[key].parent.mkdir(parents=True, exist_ok=True)
+        paths[key].write_bytes(key.encode("ascii"))
+    return paths
+
+
+def _v2_technical_smoke_args(paths: dict[str, Path], *, technical_smoke: bool) -> Namespace:
+    return Namespace(
+        ckpt=str(paths["checkpoint"]),
+        terminal_receipt_json=str(paths["terminal"]),
+        clean_npz=str(paths["clean"]),
+        source_v_received_iq_npz=str(paths["cache"]),
+        source_v_received_iq_receipt_json=str(paths["cache_receipt"]),
+        pair_json=str(paths["pair"]),
+        training_run_root=str(paths["training_root"]),
+        cache_run_root=str(paths["source_root"]),
+        output_root=str(paths["source_root"]),
+        out_npz=str(paths["output"]),
+        binding_json=str(paths["binding"]),
+        candidate_id="F1C_CLIC12",
+        fold_index=1,
+        arm="C",
+        source_tx_ids=",".join(SOURCE_TX),
+        batch_size=4,
+        device="cpu",
+        technical_smoke=technical_smoke,
+    )
+
+
+def test_technical_smoke_reaches_original_f1_terminal_before_any_output(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Break caught: the formal-parent gate blocks a legal independent F1 smoke."""
+
+    paths = _v2_technical_smoke_paths(tmp_path)
+    args = _v2_technical_smoke_args(paths, technical_smoke=True)
+    observed: list[tuple[Path, Path]] = []
+
+    monkeypatch.setattr(
+        EXPORTER.torch,
+        "load",
+        lambda *_args, **_kwargs: {
+            "args": {
+                "phase1_source_known_validation_tx_ids": "held-tx",
+                "phase1_source_proxy_unknown_tx_ids": "proxy-tx",
+                "wisig_out_len": 256,
+            }
+        },
+    )
+
+    def reaches_original_terminal(
+        _checkpoint: Mapping[str, Any], *, checkpoint_path: Path, terminal_receipt_path: Path, **_kwargs: Any
+    ) -> tuple[dict[str, Any], dict[str, Any], str]:
+        observed.append((checkpoint_path, terminal_receipt_path))
+        raise RuntimeError("reached original F1 terminal envelope")
+
+    monkeypatch.setattr(EXPORTER._clean, "validate_clic_training_checkpoint", reaches_original_terminal)
+    with pytest.raises(RuntimeError, match="reached original F1 terminal envelope"):
+        EXPORTER.export_source_v_leo_features(args)
+
+    assert observed == [(paths["checkpoint"].resolve(), paths["terminal"].resolve())]
+    assert not paths["output"].exists()
+    assert not paths["binding"].exists()
+
+
+def test_technical_smoke_root_contract_allows_only_the_exact_f1_exception(tmp_path: Path) -> None:
+    """Break caught: a broad smoke escape hatch can admit another fold or root."""
+
+    paths = _v2_technical_smoke_paths(tmp_path)
+    assert EXPORTER.validate_source_v_execution_roots(
+        training_root=paths["training_root"],
+        clean_path=paths["clean"],
+        cache_root=paths["source_root"],
+        output_root=paths["source_root"],
+        checkpoint_path=paths["checkpoint"],
+        terminal_path=paths["terminal"],
+        fold_index=1,
+        candidate_id="F1C_CLIC12",
+        technical_smoke=True,
+    ) is None
+
+    with pytest.raises(EXPORTER.CLICSourceVFeatureExportError, match="technical smoke|F1|root"):
+        EXPORTER.validate_source_v_execution_roots(
+            training_root=paths["training_root"],
+            clean_path=paths["clean"],
+            cache_root=paths["source_root"],
+            output_root=paths["source_root"],
+            checkpoint_path=paths["checkpoint"],
+            terminal_path=paths["terminal"],
+            fold_index=2,
+            candidate_id="F2C_CLIC12",
+            technical_smoke=True,
+        )
+
+    mirrored = _v2_technical_smoke_paths(tmp_path / "mirrored", mirror_training=True)
+    with pytest.raises(EXPORTER.CLICSourceVFeatureExportError, match="technical smoke|canonical|root"):
+        EXPORTER.validate_source_v_execution_roots(
+            training_root=mirrored["training_root"],
+            clean_path=mirrored["clean"],
+            cache_root=mirrored["source_root"],
+            output_root=mirrored["source_root"],
+            checkpoint_path=mirrored["checkpoint"],
+            terminal_path=mirrored["terminal"],
+            fold_index=1,
+            candidate_id="F1C_CLIC12",
+            technical_smoke=True,
+        )
+
+
+def test_formal_v2_root_contract_has_no_independent_parent_without_the_flag(tmp_path: Path) -> None:
+    """Break caught: independent roots become legal without the narrow smoke control."""
+
+    paths = _v2_technical_smoke_paths(tmp_path)
+    with pytest.raises(EXPORTER.CLICSourceVFeatureExportError, match="root binding|formal|parent"):
+        EXPORTER.validate_source_v_execution_roots(
+            training_root=paths["training_root"],
+            clean_path=paths["clean"],
+            cache_root=paths["source_root"],
+            output_root=paths["source_root"],
+            checkpoint_path=paths["checkpoint"],
+            terminal_path=paths["terminal"],
+            fold_index=1,
+            candidate_id="F1C_CLIC12",
+            technical_smoke=False,
+        )
+
+    formal_root = paths["runs"] / V2_RUN_ID
+    EXPORTER.validate_source_v_execution_roots(
+        training_root=paths["training_root"],
+        clean_path=paths["clean"],
+        cache_root=formal_root,
+        output_root=formal_root,
+        checkpoint_path=paths["checkpoint"],
+        terminal_path=paths["terminal"],
+        fold_index=1,
+        candidate_id="F1C_CLIC12",
+        technical_smoke=False,
+    )
+    with pytest.raises(EXPORTER.CLICSourceVFeatureExportError, match="technical smoke|root"):
+        EXPORTER.validate_source_v_execution_roots(
+            training_root=paths["training_root"],
+            clean_path=paths["clean"],
+            cache_root=formal_root,
+            output_root=formal_root,
+            checkpoint_path=paths["checkpoint"],
+            terminal_path=paths["terminal"],
+            fold_index=1,
+            candidate_id="F1C_CLIC12",
+            technical_smoke=True,
+        )
 
 
 def _cache_arrays(row_count: int = 12) -> dict[str, np.ndarray]:
@@ -409,7 +593,7 @@ def test_source_v_physical_component_drift_stops_before_forward_or_output(
     runs = tmp_path / "runs"
     training_root = runs / "phase1_clic12_20260812_v5"
     clean_root = runs / "phase1_clic_postfreeze_20260812_v4"
-    source_root = runs / "phase1_clic_source_metrics_20260813_v1"
+    source_root = runs / V2_RUN_ID
     candidate = "F1C_CLIC12"
     checkpoint_path = training_root / candidate / "final_ssdg.pth"
     terminal_path = training_root / candidate / "terminal_receipt.json"
@@ -777,7 +961,7 @@ def test_pair_scorer_binds_each_v_export_to_its_clean_v4_sha_and_refuses_overwri
     runs = tmp_path / "runs"
     training_root = runs / "phase1_clic12_20260812_v5"
     clean_root = runs / "phase1_clic_postfreeze_20260812_v4"
-    source_root = runs / "phase1_clic_source_metrics_20260813_v1"
+    source_root = runs / V2_RUN_ID
     paths: dict[str, Path] = {}
 
     def write_file(key: str, path: Path) -> None:
