@@ -668,7 +668,7 @@ def _expected_lock() -> dict[str, Any]:
         "runtime": {
             "output_root": (
                 "/home/szu2070436088/2510044040/CV-SincNet/runs/"
-                "d92_ccoc_hard9_k1_20260816_v1"
+                "d92_ccoc_hard9_k1_20260817_v2"
             )
         },
         "outputs": {

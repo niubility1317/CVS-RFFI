@@ -927,7 +927,7 @@ def test_runtime_source_lock_closes_scientific_entry_and_rejects_file_drift(
     tmp_path: Path,
 ) -> None:
     lock = json.loads(
-        (ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v1.json").read_text(
+        (ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v2.json").read_text(
             encoding="utf-8"
         )
     )
