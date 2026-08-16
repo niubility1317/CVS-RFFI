@@ -3,7 +3,7 @@
 ## 1.状态、范围与非性能边界
 
 - 实验ID：`phase1_adv3b02_clic6_20260816_v2`。
-- 当前状态：`STATIC_HASH_REGISTRATION_DEFECT_CONFIRMED / REMOTE_RESUME_NOT_YET_AUTHORIZED / SMOKE0 / FORMAL0`。
+- 当前状态（最新接替runner reconcile）：`BLOCKED / REMOTE_STATE_CONFLICT / NO_PERFORMANCE_RESULT`。第10—12节保留为此前runner的历史记录，不覆盖本次现场证据。
 - v1状态：`phase1_adv3b02_clic6_20260813_v1`永久保持`SMOKE_STOPPED_TECHNICAL_GATE / FORMAL_NOT_LAUNCHED / NO_PERFORMANCE_RESULT`；formal invocation=`0`，retry=`NO`，不得恢复、重试、覆盖或改写v1。
 - 本v2只修正技术烟测对训练器既有可恢复梯度跳过的观测合同；不改ADV3B02方法、loss、fold、seed、epoch、数据角色、source-only边界或target权限。
 - 本报告和任何v2 receipt均为技术证据，不记录、读取或解释accuracy、DG、proxy或其他性能值。
@@ -90,3 +90,31 @@
 - trainer physical SHA分别为：当前Windows worktree=`5D4DF42F9A9C2B6AA1D862D4D2C41F55E28B4C643A48C8F146068C0079930F9F`；local archive member raw=`1E9EA659E77466BDBB4F94944671FA691418F17188379EFFD6E6E187C59B2068`；remote staging raw=`1E9EA659E77466BDBB4F94944671FA691418F17188379EFFD6E6E187C59B2068`；archive/staging LF-normalized=`2E5A6C6AA72CBA049D5D03023F29542F2A21F86534979F1A6786C19466171279`。
 - 更正结论：`5D4DF...`是当前Windows worktree physical hash，不是Git/archive canonical hash；原始静态停止保留为hash registration defect的历史记录。该更正不构成release通过、final落地、smoke通过或formal授权。
 - 当前状态：`STATIC_HASH_REGISTRATION_DEFECT_CONFIRMED / REMOTE_RESUME_NOT_YET_AUTHORIZED / SMOKE0 / FORMAL0`；不得恢复远端流程，除非主控另行完成并授权新的registration闭环。
+
+## 10.恢复静态门（2026-08-16）
+
+- 独立hash review裁定`P0=0/P1=0/ALLOW_RESUME`后，按更新brief重新完成即时reconcile与STATIC_ONLY；不重复SCP、不重建archive。
+- canonical trainer LF/Git SHA=`2E5A6C6AA72CBA049D5D03023F29542F2A21F86534979F1A6786C19466171279`；archive/staging trainer physical SHA=`1E9EA659E77466BDBB4F94944671FA691418F17188379EFFD6E6E187C59B2068`；Windows worktree physical SHA=`5D4DF42F9A9C2B6AA1D862D4D2C41F55E28B4C643A48C8F146068C0079930F9F`仅作物理记录。
+- 即时reconcile=`VERIFIED`：staging存在、final/formal run+log/smoke run+log/outer均不存在、目标进程NONE、GPU0--7空闲、upload bytes/SHA闭合、SSH/TCP22清理闭合。
+- STATIC=`VERIFIED`：archive/staging member safety、physical/LF hash、trainer/test `py_compile`、两份`bash -n`、formal dry-run=6、smoke dry-run=1且raw cap=4、冻结flags、输入/禁止路径、fresh roots全部通过。下一步仅允许既有staging到final的原子rename，再执行唯一F1 v2 smoke。
+
+## 11.正式release落地（2026-08-16）
+
+- 已执行唯一原子`staging→final` rename并独立回读：`VERIFIED`。final存在、staging不存在；final trainer raw/LF canonical及test canonical SHA回读通过。未重复SCP，未创建任何run/log/smoke路径。
+
+## 12.F1 v2技术烟测（2026-08-16）
+
+- `SMOKE_INVOCATION=1`、retry=`NO`，唯一F1 wrapper PID=`793610`；PID文件与wrapper PID一致，launch CWD=`/home/szu2070436088/2510044040/CV-SincNet`，命令来自final release且dry-run绑定`CUDA_VISIBLE_DEVICES=0`。wrapper在首次3秒有界检查前已完成，因此不伪造事后`/proc`存活快照；命令、PID文件、run/log绑定及post-run GPU释放证据闭合。
+- v2 receipt contract=`VERIFIED`：schema/identity/fold闭合，raw batches=`4`（cap=`4`），effective forward/backward/optimizer=`3`，optimizer attempts=`3`，nonfinite-loss skips=`0`，grad skip=`0或1`范围内，五项source-val/query/target/test/selection访问计数均为严格整数`0`。
+- artifact/log计数：F1 run artifact=`1`（receipt）；smoke log files=`2`（`F1_ADV3B02_CLIC.out`=`9834B`及PID file），outer=`0B`；GPU apps为空，SSH/TCP22清理为`VERIFIED`。仅检查技术marker，未读取或解释性能字段。
+- 当前状态：`SMOKE_PASS / FORMAL_PENDING / NO_PERFORMANCE_RESULT`；仅允许唯一formal sixfold invocation=`1`。
+
+## 13.接替runner即时reconcile（2026-08-16 15:19—15:22）
+
+- 本次唯一远端动作是直连`N607`的BatchMode只读reconcile，结果为`VERIFIED`：host=`dell-DSS8440`，user=`szu2070436088`，project/release根可见，远端时间为`2026-08-16T15:19:50+08:00`；未执行`.ps1`、SCP、rename、launch、kill或cleanup。
+- upload身份仍闭合：bytes=`268175360`，SHA256=`C1A876278424B21DA45D47550F4E01F5BEF0849163FAC8B6316C2B61C6DEBFFE`。但冻结前提已不成立：预期staging存在、final缺失，实测staging=`ABSENT`，final=`EXISTS`（directory，`du -sb=265656106`）。
+- 远端正式现场已存在：wrapper PID=`801059`，CWD=`/home/szu2070436088/2510044040/CV-SincNet`，命令来自`releases/phase1_adv3b02_clic6_20260816_v2_2e0b0b89/code/scripts/launch_phase1_adv3b02_clic6_v2_20260816.sh`；训练主进程为`801089,801092,801095,801100,801103,801106`，GPU compute app出现在GPU0—5，GPU6—7未见该run compute app。未启动新的wrapper或子进程。
+- 只读artifact计数：formal run files=`12`、formal receipts/checkpoint匹配数=`0`；formal log files=`21`、receipt/pid匹配数=`7`；smoke run files=`1`（receipt=`1`）；smoke log files=`2`（receipt/pid匹配数=`1`）；formal与smoke outer均存在且各为`0B`。这些是存在性/计数证据，不是性能结果。
+- 技术marker扫描未发现`Traceback`、`RuntimeError`、`OOM`、`nonfinite`或`FAILED`文本；因此没有可登记的失败fingerprint，记为`NONE_OBSERVED`，不将其解释为成功。首个阻断fingerprint为：`REMOTE_RECONCILE_STATE_CONFLICT expected(staging=present,final=absent,SMOKE=0,FORMAL=0,run/log/outer=absent) observed(staging=absent,final=present,formal_wrapper=801059,formal_run_files=12,formal_log_files=21,smoke_run_files=1,smoke_log_files=2,outer_files=2)`。
+- 按brief/hash review的即时NO-GO规则，本runner停止在reconcile门：`SMOKE_INVOCATION=0`、`FORMAL_INVOCATION=0`仅表示本接替runner未发起调用，不能覆盖远端既有现场；不读取性能、不作晋级判断、不干预既有formal。SSH/SCP/TCP22清理复核为`VERIFIED`（无本地`ssh.exe`/`scp.exe`残留，无到N607的`ESTABLISHED`连接，仅短暂`TIME_WAIT`）。
+- 最新运行状态：`BLOCKED / REMOTE_STATE_CONFLICT / NO_PERFORMANCE_RESULT`。后续动作需主控重新核定远端现场与run ownership；本报告不授权任何恢复、重试、覆盖或终止。
