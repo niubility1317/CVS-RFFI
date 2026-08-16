@@ -104,6 +104,28 @@ def test_target_unknown_tx_must_be_disjoint_from_source_train_and_validation_tx(
         )
 
 
+def test_target_unknown_tx_allows_disjoint_source_train_and_validation_tx():
+    _, Phase1DataPolicy, _, _, _, _, _ = _policy_api()
+
+    result = Phase1DataPolicy().validate_target_unknown_identities(
+        target_unknown_tx_ids={"target-unknown-1", "target-unknown-2"},
+        source_train_tx_ids={"source-train-tx"},
+        source_validation_tx_ids={"source-validation-tx"},
+    )
+
+    assert result is None
+
+
+def test_target_roles_fail_closed_for_candidate_reranking():
+    Permission, Phase1DataPolicy, Phase1PolicyError, _, _, _, TargetRole = _policy_api()
+    policy = Phase1DataPolicy()
+
+    for target_role in TargetRole:
+        assert not policy.allows(target_role, Permission.CANDIDATE_RERANK)
+        with pytest.raises(Phase1PolicyError, match="target"):
+            policy.require_permission(target_role, Permission.CANDIDATE_RERANK)
+
+
 def test_target_roles_cannot_change_training_calibration_selection_or_retries():
     Permission, Phase1DataPolicy, Phase1PolicyError, _, _, _, TargetRole = _policy_api()
     policy = Phase1DataPolicy()

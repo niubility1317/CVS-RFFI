@@ -44,6 +44,7 @@ class Permission(str, Enum):
     REJECTION_GRADIENT = "rejection_gradient"
     CALIBRATE = "calibrate"
     SELECT_MODEL = "select_model"
+    CANDIDATE_RERANK = "candidate_rerank"
     SELECTIVE_RERUN = "selective_rerun"
 
 

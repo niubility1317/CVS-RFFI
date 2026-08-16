@@ -44,7 +44,9 @@ rho_label ≤ 0.1
 
 `P_cal`只由`V_cal`生成且只用于校准与阈值冻结；`P_select`只由`V_select`生成且只用于source侧模型选择。validation proxy不得反向传播，不得更新EMA、prototype、normalization或其他持久状态。source proxy指标只能写作代理未知研发性能，不能替代真实target unknown性能。
 
-target unknown TX身份与source训练/validation TX身份必须互斥。任何target角色，包括target-known与target unknown，均不得用于训练、校准、选模、候选重排或触发选择性重跑。模型、几何与阈值在target访问前冻结；预测artifact先封存，独立scorer之后才能连接truth。真实unknown结论只来自这一次性、role/truth-blind的target评估，不反馈研发。
+target unknown TX身份与source训练/validation TX身份必须互斥。任何target角色，包括target-known与target unknown，均不得用于训练、校准、选模、候选重排（`CANDIDATE_RERANK`）或触发选择性重跑。模型、几何与阈值在target访问前冻结；预测artifact先封存，独立scorer之后才能连接truth。真实unknown结论只来自这一次性、role/truth-blind的target评估，不反馈研发。
+
+target-known与target-unknown在连接角色或truth前，必须对每个物理样本采用相同的单物理样本单LEO weak观测规则，并使用相同预处理、模型前向和决策规则；不得依据known/unknown角色改变scene、seed、处理路径或阈值。
 
 ## Phase2最小数据协议
 
