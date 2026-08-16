@@ -40,6 +40,10 @@
 
 `d92_e0_full_ccoc_hard9k1_20260816_v1`已在truth-order HEAD`07e69f1e4360eacec2b972f465c4c19dd1710fd8`基础上完成本地发布物修复，状态为`LOCAL_VERIFIED_READY_FOR_N607_HANDOFF / NO_HARD9_RUNTIME_RESULT / NO_PERFORMANCE_RESULT`。归档为49成员、48个源成员，SHA256为`62a8a1f8536e8df6d6cbbdc9314ae86519817d44b3982a7acaf42be8df949cdb`；补入D80/D81 core及D43/D44/D45/D46/D61/D62/D66/D80动态probe，不含G0 runner/core；解包后runner/analyzer `--help`均rc0。launch、报告、交付清单及外部非Git镜像逐字节绑定。注册资源hard上限为1MiB、target为512KiB，query MAC、state、per-query latency及其他冻结门保持不变。未执行SSH、SCP、N607 launch或性能分析；Hard9是否通过及后续Target125仍由主代理依据完整artifact裁决。
 
+## 2026-08-17 v2技术修复发布
+
+v1在远端`prepare`前由启动探针触发`ModuleNotFoundError`，因此保留为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`且不覆盖。新的`d92_e0_full_ccoc_hard9k1_20260817_v2`只将错误模块名更正为实际存在的`cvsrffi.stage2_d92_registration_balanced_covariance`并分配全新的source/output/log/driver/retrieval路径；运行时Git基线为`fe9033be177f52d17b6a391574dd2b755bd40f37`。精确解包探针已验证launcher列出的全部模块可导入；科学机制、9+1矩阵、1MiB注册hard/512KiB target以及严格实时query门保持不变。当前仍是`LOCAL_VERIFIED_READY_FOR_N607_HANDOFF / NO_HARD9_RUNTIME_RESULT / NO_PERFORMANCE_RESULT`，未执行SSH、SCP、N607启动或性能分析。
+
 ## 自动批准边界
 
 用户已授权同类流程性审批自动通过，包括从已冻结设计进入实现、通过本地门后发布G0、G0通过后发布冻结Hard9，以及Hard9全门通过后创建新Target125 run。公式、协议、数据、矩阵、阈值、权限或破坏性操作的实质变化仍必须由主代理停下说明。
