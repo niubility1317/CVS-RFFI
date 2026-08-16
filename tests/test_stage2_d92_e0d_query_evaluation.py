@@ -2192,6 +2192,7 @@ def test_ccoc_technical_support_receipt_sink_is_support_only_and_state_stable(
 
     assert len(captured) == 1
     receipt = captured[0]
+    assert receipt["schema"] == "cvs.phase2.d92_ccoc.support_state_receipt.v1"
     assert receipt["scene"] == "leo_clear_weak"
     assert receipt["after_state_fingerprint_sha256"] == before_fingerprint
     assert receipt["query_access"] is False
@@ -2226,10 +2227,198 @@ def test_ccoc_none_sink_skips_technical_support_capture(monkeypatch):
 
     monkeypatch.setattr(e0d_eval, "build_d92_e0d_fit", fake_build)
     monkeypatch.setattr(d81_eval, "fit_d42_unified_shrinkage_lda", fake_d42_fit)
-    monkeypatch.setattr(e0d_eval, "_ccoc_technical_support_receipt", unexpected_capture)
+    monkeypatch.setattr(e0d_eval, "_final_state_technical_support_receipt", unexpected_capture)
     monkeypatch.setattr(d81_eval, "run_d81_query_evaluation", fake_run)
     result = e0d_eval.run_d92_e0d_query_evaluation(
         arm_id="E0_FULL_CROSS_CLASS_OFFBLOCK_CONSENSUS", **_allowed_kwargs()
     )
 
     assert result["candidate"] == "d92_e0_full_cross_class_offblock_consensus"
+
+
+def test_e0_technical_support_receipt_sink_uses_native_final_fit_without_ccoc_side_effects(
+    monkeypatch,
+):
+    """E0 receipt capture must not enter any CCOC fit, codec, or mirror path."""
+
+    captured: list[dict] = []
+    state = _state(classes=11, old_count=OLD_CLASS_COUNT, marker=7)
+    fingerprint = e0d_eval._state_fingerprint_sha256(state)
+    result_object = SimpleNamespace(state=state)
+    old_classes = tuple(f"tx_{index}" for index in range(OLD_CLASS_COUNT))
+    new_classes = tuple(f"tx_{index}" for index in range(OLD_CLASS_COUNT, 11))
+    rows, targets = _tpce_support(class_count=11, k_shot=3)
+    build_arms: list[str] = []
+    fit_calls = 0
+    original_ccoc_arms = e0d_eval._CCOC_ARM_IDS
+
+    def fake_build(_d42, _basis, _weights, _ground_audit, *, arm_id):
+        build_arms.append(arm_id)
+        return (lambda *_args: (None, None, {})), [], []
+
+    def fake_d42_fit(*_args, **_kwargs):
+        nonlocal fit_calls
+        fit_calls += 1
+        return result_object
+
+    def fake_audit(_result, **_kwargs):
+        return {"e0_native_fit_count": fit_calls}
+
+    def fake_run(**_kwargs):
+        d81_probe.build_d81_fit(None, None, None, {})
+        fitted = d81_eval.fit_d42_unified_shrinkage_lda(
+            rows[targets < OLD_CLASS_COUNT],
+            np.asarray(
+                [old_classes[index] for index in targets[targets < OLD_CLASS_COUNT]]
+            ),
+            old_classes,
+            rows[targets >= OLD_CLASS_COUNT],
+            np.asarray(
+                [
+                    new_classes[index - OLD_CLASS_COUNT]
+                    for index in targets[targets >= OLD_CLASS_COUNT]
+                ]
+            ),
+            new_classes,
+        )
+        assert fitted is result_object
+        assert e0d_eval._state_fingerprint_sha256(state) == fingerprint
+        audit = d81_eval._audit_fit(
+            fitted,
+            scenario="leo_clear_weak",
+            k_shot=3,
+            old_count=OLD_CLASS_COUNT,
+            class_count=11,
+        )
+        assert audit == {"e0_native_fit_count": 1}
+        return {"candidate": d81_eval.CANDIDATE_D81, "schema": d81_eval.SCHEMA}
+
+    monkeypatch.setattr(e0d_eval, "build_d92_e0d_fit", fake_build)
+    monkeypatch.setattr(d81_eval, "fit_d42_unified_shrinkage_lda", fake_d42_fit)
+    monkeypatch.setattr(e0d_eval, "_audit_d92_e0d_fit", fake_audit)
+    monkeypatch.setattr(d81_eval, "run_d81_query_evaluation", fake_run)
+    result = e0d_eval.run_d92_e0d_query_evaluation(
+        arm_id="E0_FULL_ONLY",
+        technical_support_receipt_sink=captured.append,
+        **_allowed_kwargs(),
+    )
+
+    assert build_arms == ["E0_FULL_ONLY"]
+    assert fit_calls == 1
+    assert e0d_eval._CCOC_ARM_IDS == original_ccoc_arms
+    assert set(result).isdisjoint(
+        {
+            "d92_ccoc_active",
+            "d92_ccoc_fallback_active",
+            "d92_e0d_ccoc_active",
+            "d92_e0d_ccoc_fallback_active",
+            "d92_e0d_ccoc_codec_numeric_fallback",
+        }
+    )
+    assert len(captured) == 1
+    receipt = captured[0]
+    assert receipt["schema"] == "cvs.phase2.d92_e0d.support_state_receipt.v1"
+    assert receipt["arm_id"] == "E0_FULL_ONLY"
+    assert receipt["after_state_fingerprint_sha256"] == fingerprint
+    assert receipt["final_d42_coefficient_bias_state_sha256"] == fingerprint
+    assert receipt["query_access"] is False
+    assert receipt["truth_access"] is False
+    assert set(receipt).isdisjoint(
+        {
+            "support_features",
+            "query_features",
+            "query_tokens",
+            "truth",
+            "d92_ccoc_active",
+            "d92_e0d_ccoc_active",
+            "d92_e0d_ccoc_codec_numeric_fallback",
+        }
+    )
+
+
+@pytest.mark.parametrize(
+    "message",
+    ("D42 state drift", "D42 intercept FP16 overflow"),
+)
+def test_e0_technical_sink_preserves_native_errors_without_ccoc_fallback(
+    monkeypatch, message: str
+):
+    """E0 structural and codec errors must stay on the original E0 error path."""
+
+    old_classes = tuple(f"tx_{index}" for index in range(OLD_CLASS_COUNT))
+    new_classes = tuple(f"tx_{index}" for index in range(OLD_CLASS_COUNT, 11))
+    rows, targets = _tpce_support(class_count=11, k_shot=3)
+    build_arms: list[str] = []
+    original_ccoc_arms = e0d_eval._CCOC_ARM_IDS
+
+    def fake_build(_d42, _basis, _weights, _ground_audit, *, arm_id):
+        build_arms.append(arm_id)
+        return (lambda *_args: (None, None, {})), [], []
+
+    def fake_d42_fit(*_args, **_kwargs):
+        raise d42.D42UnifiedShrinkageLDAError(message)
+
+    def fake_run(**_kwargs):
+        d81_probe.build_d81_fit(None, None, None, {})
+        return d81_eval.fit_d42_unified_shrinkage_lda(
+            rows[targets < OLD_CLASS_COUNT],
+            np.asarray(
+                [old_classes[index] for index in targets[targets < OLD_CLASS_COUNT]]
+            ),
+            old_classes,
+            rows[targets >= OLD_CLASS_COUNT],
+            np.asarray(
+                [
+                    new_classes[index - OLD_CLASS_COUNT]
+                    for index in targets[targets >= OLD_CLASS_COUNT]
+                ]
+            ),
+            new_classes,
+        )
+
+    monkeypatch.setattr(e0d_eval, "build_d92_e0d_fit", fake_build)
+    monkeypatch.setattr(d81_eval, "fit_d42_unified_shrinkage_lda", fake_d42_fit)
+    monkeypatch.setattr(d81_eval, "run_d81_query_evaluation", fake_run)
+    with pytest.raises(d42.D42UnifiedShrinkageLDAError, match=message):
+        e0d_eval.run_d92_e0d_query_evaluation(
+            arm_id="E0_FULL_ONLY",
+            technical_support_receipt_sink=lambda _receipt: None,
+            **_allowed_kwargs(),
+        )
+
+    assert build_arms == ["E0_FULL_ONLY"]
+    assert e0d_eval._CCOC_ARM_IDS == original_ccoc_arms
+
+
+def test_e0_none_sink_skips_support_receipt_capture(monkeypatch):
+    """The default E0 call must not add a support transform or receipt capture."""
+
+    fit_calls = 0
+
+    def fake_build(_d42, _basis, _weights, _ground_audit, *, arm_id):
+        assert arm_id == "E0_FULL_ONLY"
+        return (lambda *_args: (None, None, {})), [], []
+
+    def fake_d42_fit(*_args, **_kwargs):
+        nonlocal fit_calls
+        fit_calls += 1
+        return SimpleNamespace()
+
+    def unexpected_transform(*_args, **_kwargs):
+        raise AssertionError("default None sink must not transform support")
+
+    def fake_run(**_kwargs):
+        d81_probe.build_d81_fit(None, None, None, {})
+        d81_eval.fit_d42_unified_shrinkage_lda()
+        return {"candidate": d81_eval.CANDIDATE_D81, "schema": d81_eval.SCHEMA}
+
+    monkeypatch.setattr(e0d_eval, "build_d92_e0d_fit", fake_build)
+    monkeypatch.setattr(d81_eval, "fit_d42_unified_shrinkage_lda", fake_d42_fit)
+    monkeypatch.setattr(d42, "_transform", unexpected_transform)
+    monkeypatch.setattr(d81_eval, "run_d81_query_evaluation", fake_run)
+    result = e0d_eval.run_d92_e0d_query_evaluation(
+        arm_id="E0_FULL_ONLY", **_allowed_kwargs()
+    )
+
+    assert result["candidate"] == "d92_e0d_e0_full_only"
+    assert fit_calls == 1

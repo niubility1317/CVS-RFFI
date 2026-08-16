@@ -70,6 +70,7 @@ _NEWGUARD_ARM_IDS = frozenset({"E0_FULL_BIDIRECTIONAL_NEWGUARD_MAXMIN"})
 _PARETO_DISTILL_ARM_IDS = frozenset({"E0_FULL_BLOCK_PARETO_DISTILL"})
 _CSOAS_ARM_IDS = frozenset({"E0_FULL_CSOAS"})
 _CCOC_ARM_IDS = frozenset({"E0_FULL_CROSS_CLASS_OFFBLOCK_CONSENSUS"})
+_TECHNICAL_SUPPORT_RECEIPT_ARM_IDS = frozenset({"E0_FULL_ONLY"}) | _CCOC_ARM_IDS
 
 
 def _ccoc_raw_fields(*suffixes: str) -> frozenset[str]:
@@ -565,9 +566,10 @@ def _state_fingerprint_sha256(state: Any) -> str:
     return digest.hexdigest()
 
 
-def _ccoc_technical_support_receipt(
+def _final_state_technical_support_receipt(
     result: Any,
     *,
+    arm_id: str,
     old_support_features: Any,
     old_support_labels: Any,
     old_classes: Any,
@@ -575,10 +577,18 @@ def _ccoc_technical_support_receipt(
     new_support_labels: Any,
     new_classes: Any,
 ) -> dict[str, Any]:
-    """Derive an ephemeral CCOC support receipt without retaining support rows."""
+    """Derive an ephemeral final-state support receipt without retaining rows."""
 
     from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
 
+    if arm_id in _CCOC_ARM_IDS:
+        receipt_schema = "cvs.phase2.d92_ccoc.support_state_receipt.v1"
+    elif arm_id == "E0_FULL_ONLY":
+        receipt_schema = "cvs.phase2.d92_e0d.support_state_receipt.v1"
+    else:
+        raise D92E0DQueryEvaluationError(
+            "D92-E0D technical support receipt arm drift"
+        )
     state = result.state
     old_registry = tuple(str(value) for value in old_classes)
     new_registry = tuple(str(value) for value in new_classes)
@@ -588,7 +598,7 @@ def _ccoc_technical_support_receipt(
         or int(state.old_class_count) != len(old_registry)
         or len(old_registry) != int(OLD_CLASS_COUNT)
     ):
-        raise D92E0DQueryEvaluationError("D92-E0D CCOC support registry drift")
+        raise D92E0DQueryEvaluationError("D92-E0D technical support registry drift")
     try:
         old_rows = np.asarray(old_support_features, dtype=np.float32)
         new_rows = np.asarray(new_support_features, dtype=np.float32)
@@ -600,24 +610,30 @@ def _ccoc_technical_support_receipt(
             )
         )
     except (TypeError, ValueError) as error:
-        raise D92E0DQueryEvaluationError("D92-E0D CCOC support input drift") from error
+        raise D92E0DQueryEvaluationError(
+            "D92-E0D technical support input drift"
+        ) from error
     if (
         rows.ndim != 2
         or rows.shape[1] != 288
         or labels.shape != (len(rows),)
         or not np.isfinite(rows).all()
     ):
-        raise D92E0DQueryEvaluationError("D92-E0D CCOC support shape drift")
+        raise D92E0DQueryEvaluationError("D92-E0D technical support shape drift")
     class_index = {handle: index for index, handle in enumerate(registry)}
     try:
         targets = np.asarray(
             [class_index[str(value)] for value in labels.tolist()], dtype=np.int64
         )
     except KeyError as error:
-        raise D92E0DQueryEvaluationError("D92-E0D CCOC support label drift") from error
+        raise D92E0DQueryEvaluationError(
+            "D92-E0D technical support label drift"
+        ) from error
     support_counts = np.bincount(targets, minlength=len(registry))
     if len(support_counts) != len(registry) or np.any(support_counts <= 0):
-        raise D92E0DQueryEvaluationError("D92-E0D CCOC support class closure drift")
+        raise D92E0DQueryEvaluationError(
+            "D92-E0D technical support class closure drift"
+        )
     transformed = d42._transform(rows, state.log_diag_fp32)
     coefficients = d42.decode_d42_coefficients(state)
     intercept = np.asarray(state.intercept_fp16, dtype=np.float32)
@@ -629,10 +645,10 @@ def _ccoc_technical_support_receipt(
         or not np.isfinite(coefficients).all()
         or not np.isfinite(intercept).all()
     ):
-        raise D92E0DQueryEvaluationError("D92-E0D CCOC support state drift")
+        raise D92E0DQueryEvaluationError("D92-E0D technical support state drift")
     scores = transformed @ coefficients.T + intercept
     if not np.isfinite(scores).all():
-        raise D92E0DQueryEvaluationError("D92-E0D CCOC support score drift")
+        raise D92E0DQueryEvaluationError("D92-E0D technical support score drift")
     canonical: list[tuple[str, bytes, int, str]] = []
     for row_index, target in enumerate(targets.tolist()):
         handle = registry[int(target)]
@@ -656,7 +672,9 @@ def _ccoc_technical_support_receipt(
         )
         margin = float(scores[row_index, target] - np.max(scores[row_index, opposite]))
         if not np.isfinite(margin):
-            raise D92E0DQueryEvaluationError("D92-E0D CCOC support margin drift")
+            raise D92E0DQueryEvaluationError(
+                "D92-E0D technical support margin drift"
+            )
         identity_digest.update(handle.encode("utf-8"))
         identity_digest.update(row_bytes)
         margins.append(
@@ -683,10 +701,10 @@ def _ccoc_technical_support_receipt(
         or not np.isfinite(scale1_block_max_abs).all()
         or not np.isfinite(scale2_block_max_abs).all()
     ):
-        raise D92E0DQueryEvaluationError("D92-E0D CCOC support scale drift")
+        raise D92E0DQueryEvaluationError("D92-E0D technical support scale drift")
     state_fingerprint = _state_fingerprint_sha256(state)
     return {
-        "schema": "cvs.phase2.d92_ccoc.support_state_receipt.v1",
+        "schema": receipt_schema,
         "old_class_count": int(OLD_CLASS_COUNT),
         "registered_class_count": int(len(registry)),
         "canonical_class_handles": tuple(sorted(registry)),
@@ -2753,10 +2771,10 @@ def run_d92_e0d_query_evaluation(
         )
     if (
         technical_support_receipt_sink is not None
-        and arm.arm_id not in _CCOC_ARM_IDS
+        and arm.arm_id not in _TECHNICAL_SUPPORT_RECEIPT_ARM_IDS
     ):
         raise D92E0DQueryEvaluationError(
-            "D92-E0D technical support receipt sink is CCOC-only"
+            "D92-E0D technical support receipt sink requires E0 or CCOC"
         )
     support_receipt_enabled = technical_support_receipt_sink is not None
     original_builder = d81_probe.build_d81_fit
@@ -3116,7 +3134,7 @@ def run_d92_e0d_query_evaluation(
         finally:
             d42._compile_state = original_compile_state
 
-    def fit_with_ccoc_technical_support_receipt(
+    def fit_with_final_state_technical_support_receipt(
         old_support_features: Any,
         old_support_labels: Any,
         old_classes: Any,
@@ -3125,9 +3143,14 @@ def run_d92_e0d_query_evaluation(
         new_classes: Any,
         **kwargs: Any,
     ) -> Any:
-        """Capture only a transient final-state CCOC support receipt."""
+        """Capture a transient receipt after the arm's native final-state fit."""
 
-        result = fit_with_csoas_codec_guard(
+        native_fit = (
+            fit_with_csoas_codec_guard
+            if arm.arm_id in _CCOC_ARM_IDS
+            else original_d42_fit
+        )
+        result = native_fit(
             old_support_features,
             old_support_labels,
             old_classes,
@@ -3136,8 +3159,9 @@ def run_d92_e0d_query_evaluation(
             new_classes,
             **kwargs,
         )
-        receipt = _ccoc_technical_support_receipt(
+        receipt = _final_state_technical_support_receipt(
             result,
+            arm_id=arm.arm_id,
             old_support_features=old_support_features,
             old_support_labels=old_support_labels,
             old_classes=old_classes,
@@ -3169,7 +3193,7 @@ def run_d92_e0d_query_evaluation(
                 receipt = pending_support_receipts.pop(id(result))
             except KeyError as error:
                 raise D92E0DQueryEvaluationError(
-                    "D92-E0D CCOC technical support receipt drift"
+                    "D92-E0D technical support receipt drift"
                 ) from error
             technical_support_receipt_sink(
                 {
@@ -3327,14 +3351,14 @@ def run_d92_e0d_query_evaluation(
         d81_eval.CANDIDATE_D81 = arm.candidate_id
         d81_eval.SCHEMA = SCHEMA_BY_ARM[arm.arm_id]
         d81_eval._audit_fit = audit
-        if arm.arm_id in (_TPCE_ARM_IDS | _TCRA_ARM_IDS):
+        if support_receipt_enabled:
+            d81_eval.fit_d42_unified_shrinkage_lda = (
+                fit_with_final_state_technical_support_receipt
+            )
+        elif arm.arm_id in (_TPCE_ARM_IDS | _TCRA_ARM_IDS):
             d81_eval.fit_d42_unified_shrinkage_lda = fit_with_state_postprocess
         elif arm.arm_id in _CCOC_ARM_IDS:
-            d81_eval.fit_d42_unified_shrinkage_lda = (
-                fit_with_ccoc_technical_support_receipt
-                if support_receipt_enabled
-                else fit_with_csoas_codec_guard
-            )
+            d81_eval.fit_d42_unified_shrinkage_lda = fit_with_csoas_codec_guard
         elif arm.arm_id in _CSOAS_ARM_IDS:
             d81_eval.fit_d42_unified_shrinkage_lda = fit_with_csoas_codec_guard
         evaluation_kwargs = {
