@@ -191,6 +191,7 @@
 ### 16.3N607交接字段与技术停止规则
 
 - 冻结CWD：`/home/szu2070436088/2510044040/CV-SincNet`；Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；release：`releases/phase1_adv3b02_target_prediction_20260816_v1_<commit8>`，其中commit仍为`PENDING`。
+- formal前必须先完成一次独立、不可覆盖的F1真实checkpoint无query技术smoke。smoke ID固定为`.smoke_phase1_adv3b02_target_prediction_20260816_v1_F1`，run/log根分别为`runs/.smoke_phase1_adv3b02_target_prediction_20260816_v1_F1`和`logs/.smoke_phase1_adv3b02_target_prediction_20260816_v1_F1`；runner先用F1checkpoint、同目录completion receipt和F1C clean-v4封一份独立train-config，再通过production `load_verified_adv3b02_runtime`对全零`(2,256)`IQ、`leo_clear_weak`执行恰一次forward，只验证有限4-logit与strict load audit。该smoke不打开IQ-only package、truth、known config、reference或metrics，不生成target prediction，也不读取性能；`SMOKE_INVOCATION=1 / RETRY=NO`。任何技术失败都封存为`SMOKE_STOPPED_TECHNICAL_FAILURE / FORMAL_INVOCATION=0 / NO_PERFORMANCE_RESULT`，不得启动formal或重试。
 - 计划唯一命令：`nohup bash <release>/code/scripts/launch_phase1_adv3b02_target_prediction6_v1_20260816.sh > /home/szu2070436088/2510044040/CV-SincNet/phase1_adv3b02_target_prediction_20260816_v1_outer.out 2>&1 &`。PID、GPU占用、精确CWD／cmdline、日志增长及工件计数均待未来唯一runner只读回填；当前没有PID、GPU或远端状态。
 - fresh-root规则：启动前先检查run/log根均不存在，再以exact `mkdir`领取；所有日志与PID evidence以noclobber独占创建。任一既有root或planned output均拒绝，不恢复、不覆盖。
 - 技术停止：错误checkout／hash／路径、truth／known／reference输入越界、覆盖风险、任何row计数或zero-update合同失败均为技术拒绝；若至少两个fold在prediction前出现同一确定性异常fingerprint，未来sole runner只停止经PID/CWD/cmdline证明属于本run的进程树并保留全部partial artifacts。不得读取性能决定停止。
