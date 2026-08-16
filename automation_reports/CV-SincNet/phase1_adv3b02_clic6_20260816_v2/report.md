@@ -72,3 +72,14 @@
 - 不启动N607，不同步，不提交，不执行v1或v2 formal。
 - 不改变source角色、fold、seed、epoch、loss、checkpoint选择或任何target接口。
 - 不将一个处理过的nonfinite skip视为性能、候选选择或方法通过证据。
+
+## 8.N607 runner执行记录（2026-08-16）
+
+- runner：Luna/max；唯一run owner；本节只记录机械静态门证据，不读取或解释性能，不作方法、参数或晋级判断。
+- 合同commit：`2e0b0b8990c013659c362b346f20d47d53e48ac7`。既有archive：268175360 bytes，SHA256=`C1A876278424B21DA45D47550F4E01F5BEF0849163FAC8B6316C2B61C6DEBFFE`；按brief不重建、不解包、不重复SCP。
+- direct N607 preflight：`VERIFIED`。server=`dell-DSS8440`，user=`szu2070436088`，project可见；GPU0--7均24,576 MiB、utilization=0、memory.used=1 MiB；独立`/proc`扫描无v2目标进程。upload bytes/SHA与local archive闭合；staging存在，final不存在；formal run/log、smoke run/log/outer均不存在。
+- archive member safety：5103 members，absolute/traversal=0，link members=0。staging相关入口、输入ManySig、fresh roots均通过；远端Python=`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；trainer/test `py_compile=PASS`，两份v2 `bash -n=PASS`，formal dry-run=6，smoke dry-run=1且raw cap=4，冻结关键flags=PASS，禁止target/query/truth/package/scorer输入=NONE。
+- 静态hash闭合失败：brief要求trainer canonical SHA=`5D4DF42F9A9C2B6AA1D862D4D2C41F55E28B4C643A48C8F146068C0079930F9F`；archive/staging trainer physical SHA=`1E9EA659E77466BDBB4F94944671FA691418F17188379EFFD6E6E187C59B2068`，LF-normalized SHA=`2E5A6C6AA72CBA049D5D03023F29542F2A21F86534979F1A6786C19466171279`。test、formal launcher、smoke wrapper和prereg report的LF SHA均与brief闭合。该差异不能通过改hash、改archive、改release或改source-metrics工作树解决。
+- 终态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。未将staging原子rename为final；SMOKE invocation=`0`、FORMAL invocation=`0`、retry=`NO`；无smoke receipt、checkpoint、run artifact或formal log；release final artifact=0、formal logs=0、smoke logs=0。无run-owned PID可停止；GPU保持空闲；本地SSH/SCP进程与TCP22均清理为`VERIFIED`。
+- 首个技术fingerprint：`STATIC_HASH_MISMATCH trainer canonical_sha256 expected=5D4DF42F9A9C2B6AA1D862D4D2C41F55E28B4C643A48C8F146068C0079930F9F actual_archive_stage_raw=1E9EA659E77466BDBB4F94944671FA691418F17188379EFFD6E6E187C59B2068 actual_archive_stage_lf=2E5A6C6AA72CBA049D5D03023F29542F2A21F86534979F1A6786C19466171279`。
+- worktree中其他agent的source-metrics staged/unstaged改动及未跟踪`conversation_index/`未触碰、未stage、未revert。
