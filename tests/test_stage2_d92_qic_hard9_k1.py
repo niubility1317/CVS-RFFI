@@ -15,7 +15,7 @@ if str(ROOT / "code") not in sys.path:
 from cvsrffi import stage2_d92_qic_hard9_k1 as matrix  # noqa: E402
 
 
-CONFIG = ROOT / "configs" / "stage2_d92_qic_hard9_k1_v1.json"
+CONFIG = ROOT / "configs" / "stage2_d92_qic_hard9_k1_v2.json"
 G0_OUTER = "rx_7_7__seed_713106__k_10__new_5"
 
 
@@ -40,6 +40,15 @@ def test_hard9_k1_selection_is_qic_only_disjoint_from_g0() -> None:
     }
     assert re.fullmatch(r"[0-9a-f]{64}", matrix.canonical_selection_sha256())
     assert matrix.canonical_selection_sha256() == matrix.CANONICAL_SELECTION_SHA256
+
+
+def test_v2_method_lock_uses_a_fresh_non_overwriting_output_root() -> None:
+    lock = json.loads(CONFIG.read_text(encoding="utf-8"))
+
+    assert lock["experiment_id"] == "D92-E0-FULL-QIC-Hard9-K1-v1"
+    assert lock["runtime"]["output_root"].endswith(
+        "/d92_qic_hard9_k1_20260817_v2"
+    )
 
 
 def test_manifest_binds_all_sealed_inputs_and_exact_hard9_k1_jobs() -> None:
