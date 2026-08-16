@@ -9,6 +9,8 @@
 |字段|值|
 |---|---|
 |run ID|d92_e0_full_ccoc_g0_k10_20260813_v1|
+|预登记完成时间|2026-08-16（Asia/Hong_Kong）|
+|operator|primary agent；sole N607 runner待交接|
 |scientific/G0 entry commit|df17c06e|
 |release提交消息|chore: prepare D92 CCOC G0 release|
 |outer|rx_7_7__seed_713106__k_10__new_5|
@@ -18,6 +20,7 @@
 |协议|p2_min_v1；沿用VALIDATED_ONCE sealed package|
 |expected_marker|D92_CCOC_G0_ACTIVE_QUANTUM_RESOURCE_PASS|
 |fresh-run retry|false|
+|GPU|GPU0；one-shot truth-free technical G0|
 |环境|ssr-gpu；发布launch使用固定/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python|
 
 第一阶段entry commit只包含Task3四个code/test文件与source manifest：
@@ -75,6 +78,26 @@ source_archive=/home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_g0_source
 ## 5.launch边界
 
 launch.sh只执行archive存在性、精确SHA/size/member count、tar path safety、source manifest逐成员校验、解包后import/compile closure、三个不可覆盖检查、唯一固定双执行CLI命令和预期marker检查。source绝对路径已展开为df17c06e，没有占位符或变量化source/archive路径；不带score/truth参数，不调用外部scorer，不读取性能结果，不执行第二次尝试。
+
+冻结落地与启动路径：
+
+```text
+remote_launch=/home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_g0_launch_df17c06e_20260813_v1.sh
+launch_cwd=/home/szu2070436088/2510044040/CV-SincNet/runs
+launch_driver_out=/home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_g0_launch_df17c06e_20260813_v1.out
+launch_driver_err=/home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_g0_launch_df17c06e_20260813_v1.err
+local_retrieval=E:/type10-7/local_artifacts/d92_e0_full_ccoc_g0_k10_20260813_v1
+```
+
+唯一detached命令固定为：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet/runs && nohup bash ./d92_ccoc_g0_launch_df17c06e_20260813_v1.sh >./d92_ccoc_g0_launch_df17c06e_20260813_v1.out 2>./d92_ccoc_g0_launch_df17c06e_20260813_v1.err </dev/null &
+```
+
+启动前必须由普通N607账户确认archive、launch的size/SHA与本报告一致；source、output、logs、driver out/err和本地取回根均不存在；同run进程为0；GPU0可用。启动后用短连接核验shell/child PID、精确CWD/cmdline/run-root绑定、GPU0进程和日志增长。G0为一次性技术执行，不以accuracy、H、BA、floor、forgetting或任何性能值停止或重试。
+
+预期artifact包括reference_e0与candidate_ccoc各自的before/after prediction closure、fit/resource/execution audit，最终g0_validation.json，以及logs根中的source_manifest_check、import_closure、g0_driver、marker_check四组out/err。成功条件仅为三个scene全部技术门通过并产生预期marker；错误hash、输出覆盖风险、query/truth协议违规、launcher-wide确定性异常、无prediction closure或非零退出均标记STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT，保留并取回现有artifact，fresh-run retry=false。
 
 ## 6.RED/GREEN与静态验证
 

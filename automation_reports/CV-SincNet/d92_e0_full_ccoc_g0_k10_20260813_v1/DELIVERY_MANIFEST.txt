@@ -12,6 +12,14 @@ source_root=/home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_g0_source_df
 source_archive=/home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_g0_source_df17c06e_20260813_v1.tar.gz
 output_root=/home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0_full_ccoc_g0_k10_20260813_v1
 logs_root=/home/szu2070436088/2510044040/CV-SincNet/logs/d92_e0_full_ccoc_g0_k10_20260813_v1
+remote_launch=/home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_g0_launch_df17c06e_20260813_v1.sh
+launch_cwd=/home/szu2070436088/2510044040/CV-SincNet/runs
+launch_driver_out=/home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_g0_launch_df17c06e_20260813_v1.out
+launch_driver_err=/home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_g0_launch_df17c06e_20260813_v1.err
+local_retrieval_root=E:/type10-7/local_artifacts/d92_e0_full_ccoc_g0_k10_20260813_v1
+gpu=0
+fresh_run_retry=false
+exact_detached_command=cd /home/szu2070436088/2510044040/CV-SincNet/runs && nohup bash ./d92_ccoc_g0_launch_df17c06e_20260813_v1.sh >./d92_ccoc_g0_launch_df17c06e_20260813_v1.out 2>./d92_ccoc_g0_launch_df17c06e_20260813_v1.err </dev/null &
 repo_release_root=E:/type10-7/code/snapshots/d92_125wt/automation_reports/CV-SincNet/d92_e0_full_ccoc_g0_k10_20260813_v1
 external_mirror_root=E:/type10-7/automation_reports/CV-SincNet/d92_e0_full_ccoc_g0_k10_20260813_v1
 
@@ -36,8 +44,8 @@ required_entry=code/CCOC_G0_SOURCE_MANIFEST.sha256
 
 [repo_release_files]
 relative_path=report.md
-size_bytes=7062
-sha256=ad81bdf855cf5570c2f0da6b4dd77a59cb063e08b1defd71c8c81b332f01613c
+size_bytes=8981
+sha256=747921b6f01904d762131bd5493dc938c7b69101e81d5e8abb54261f0817b266
 relative_path=launch.sh
 size_bytes=7650
 sha256=d29d3b148e0d91c896e4559f4e1547146a10d615201caf8322b632cfe53833d9
@@ -74,5 +82,7 @@ source_manifest=33_of_33
 overwrite_guard=pass
 runtime_executed=false
 performance_read=false
+sole_runner_handoff_ready=true
+health_stop=hash_or_overwrite_or_protocol_or_launcher_wide_exception_or_missing_prediction_closure_only
 prelaunch_superseded_old_archive=ce7973a5_archive_removed_only_from_this_release_runtime
-manifest_payload_sha256=09f91b147126ab8338dffdb23a813763507a5ee707098ecebe540b193d12ce03
+manifest_payload_sha256=8169d420cfc9edc091aa07fa55523e5f4cc202af371848c76c1eb5125d672373
