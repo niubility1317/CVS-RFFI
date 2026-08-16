@@ -165,3 +165,66 @@
 |---|---|
 |`code/evaluate_phase1_adv3b02_target_leo.py`|`b17931166da99adcea9bb45ddb6c3ffa0239dbc6df301e6a58b46ecdc8829729`|
 |`code/tests/test_phase1_adv3b02_target_reference.py`|`fcc1d4d6a939cd734414399c58427904cc1c1b6247985e37e3702407eec75ddb`|
+
+## 16.Task2六fold盲预测执行壳预注册（2026-08-16）
+
+### 16.1状态与版本边界
+
+- 预注册run ID：`phase1_adv3b02_target_prediction_20260816_v1`。当前状态：`LOCAL_VERIFIED / INDEPENDENT_ALLOW / LOCAL_ONLY / NOT_N607_READY / NO_PERFORMANCE_RESULT`。
+- 已冻结Task2基础commit：`e9e1fa0ed09b4b1c5ac7f11d46c2fa0674915b3a`。执行壳与本节由本次Git提交共同封存，具体commit以Git记录为准，避免报告自引用；release根、archive及远端文件SHA仍为`PENDING`。本次提交不授权sync或launch。
+- owned实现范围仅为`code/scripts/launch_phase1_adv3b02_target_prediction6_v1_20260816.sh`、`code/tests/test_phase1_adv3b02_target_prediction_launcher.py`及本节。不得修改Task2 evaluator、source-v4文件、truth-side scorer、traceability或`conversation_index/`。
+
+### 16.2冻结输入、矩阵与输出
+
+|authority|冻结路径／规则|
+|---|---|
+|ADV checkpoint|`runs/phase1_adv3b02_clic6_20260816_v2/F{1..6}_ADV3B02_CLIC/final_ssdg.pth`|
+|completion receipt|与checkpoint同目录的`phase1_training_completion_receipt.json`；这是production evaluator与trainer的实际文件名|
+|clean-v4 metadata|`runs/phase1_clic_postfreeze_20260812_v4/F{1..6}C_CLIC12/source_clean_proxy.npz`为每fold唯一预注册canonical source authority|
+|C／G等价只读门|任何输出前，复用`build_phase1_clic_source_v_leo_iq._read_clean_validation_binding`严格重开同fold C／G clean metadata，分别绑定training-v5 checkpoint／terminal SHA，并要求physical keys、TX／RX／day、TX×RX×day coverage、EQ／signal、physical-order SHA及validation-index SHA全等；失败即技术拒绝。该门不生成重复binding authority，publisher也不消费clean|
+|IQ-only package|`runs/phase1_clic_target_prediction_20260812_v1/sealed_target/iq_only_package`；六fold共用同一既有sealed package|
+|输出根|`runs/phase1_adv3b02_target_prediction_20260816_v1`；每fold输出`F{n}_ADV3B02_CLIC/train_data_config.json`与`F{n}_ADV3B02_CLIC/target_prediction.json`|
+|日志根|`logs/phase1_adv3b02_target_prediction_20260816_v1`；根、逐fold seal／publish日志及PID表均不可覆盖|
+
+执行顺序冻结为：先串行完成6个source-only train-config seal，全部成功后再将F1—F6 publisher分别映射到physical GPU0—5。dry-run必须精确列出6条seal与6条publish；每条publish只接checkpoint、completion receipt、sealed train-config、同一IQ-only package及output，不接truth、known-test config、reference、metrics、role、query、selection或retry参数。每份prediction必须为3120行、`forward_count=3120`、`fit/update/retry/selection=0`且不可覆盖。
+
+### 16.3N607交接字段与技术停止规则
+
+- 冻结CWD：`/home/szu2070436088/2510044040/CV-SincNet`；Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；release：`releases/phase1_adv3b02_target_prediction_20260816_v1_<commit8>`，其中commit仍为`PENDING`。
+- 计划唯一命令：`nohup bash <release>/code/scripts/launch_phase1_adv3b02_target_prediction6_v1_20260816.sh > /home/szu2070436088/2510044040/CV-SincNet/phase1_adv3b02_target_prediction_20260816_v1_outer.out 2>&1 &`。PID、GPU占用、精确CWD／cmdline、日志增长及工件计数均待未来唯一runner只读回填；当前没有PID、GPU或远端状态。
+- fresh-root规则：启动前先检查run/log根均不存在，再以exact `mkdir`领取；所有日志与PID evidence以noclobber独占创建。任一既有root或planned output均拒绝，不恢复、不覆盖。
+- 技术停止：错误checkout／hash／路径、truth／known／reference输入越界、覆盖风险、任何row计数或zero-update合同失败均为技术拒绝；若至少两个fold在prediction前出现同一确定性异常fingerprint，未来sole runner只停止经PID/CWD/cmdline证明属于本run的进程树并保留全部partial artifacts。不得读取性能决定停止。
+- formal invocation=`0`，retry=`NO`。本地GREEN与独立终裁已闭合，但本节仍不是N607授权；Git版本化后仍须由主控另行交给唯一runner。
+
+### 16.4设计可追溯门
+
+|ID|要求|目标|状态|验证|
+|---|---|---|---|---|
+|ADV-PRED-L1|真实六foldcheckpoint／completion与唯一canonical clean路径|launcher dry-run与输入preflight|verified|逐fold真实路径与实际completion文件名闭合|
+|ADV-PRED-L2|同foldC／G physical metadata全等后才使用C；比较失败时任何输出为0|production metadata helper只读preflight|verified|无效metadata负测在run/log输出前拒绝|
+|ADV-PRED-L3|先6 seal，再GPU0—5并行6 publish；精确fold/path映射|launcher与focused test|verified|dry-run `6 seal→6 publish`、GPU0—5|
+|ADV-PRED-L4|publisher保持四类盲输入；无truth／known／reference／metrics／role／query／selection／retry flags|launcher与focused test|verified|精确CLI option-set及禁用参数测试|
+|ADV-PRED-L5|run/log/output fresh且不可覆盖|exact mkdir、noclobber、evaluator immutable writer|verified|run／log碰撞双负测及二次fresh检查|
+|ADV-PRED-L6|本地证据与独立复审闭合后才可版本化／release|本报告|implemented|独立`P0=0/P1=0/P2=0/ALLOW`；本次Git提交仅闭合本地版本，N607=`NOT_AUTHORIZED`|
+
+### 16.5本地TDD与静态证据
+
+- RED：生产launcher尚不存在时，串行运行owned focused测试，collected=`10`、`10 failed / 0 passed`、exit=`1`；十项首因均为`ADV target prediction launcher is absent`，不是fixture、import或语法错误。
+- 最小实现：只新增冻结shell launcher；没有修改`evaluate_phase1_adv3b02_target_leo.py`或任何source-v4／truth／metrics入口。C／G clean strict comparison在第二次fresh-root检查及任何exact `mkdir`之前完成；不写额外binding authority。
+- GREEN：`ssr-gpu`解释器为`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe`，测试文件`py_compile`通过，focused pytest=`10/10 passed`，无失败或warning；未重跑第二次Conda。
+- shell静态门：`bash -n`通过；dry-run精确`12`行，即seal=`6`、publish=`6`，顺序为全部seal完成后才列publish；GPU映射F1—F6=`0,1,2,3,4,5`；scoped `git diff --check`通过。
+- dry-run参数审计：seal每fold仅含`--seal-train-data-config --checkpoint --completion-receipt-json --clean-v4-npz --output`；publish每fold仅含`--publish-target-prediction --checkpoint --completion-receipt-json --train-config-manifest --iq-only-package --output`。truth／known／reference／metrics／score／role／query／selection／retry参数为0。
+- GREEN wrapper结束后的即时主机核对发现另一个`F:\App\miniconda3`Conda/Python组已出现；本任务未与其重叠启动第二个wrapper，也不将该时点误写为全机Conda clear。此后本任务只做静态diff/SHA；独立终裁使用上述既有GREEN证据，没有触发新的Conda运行。
+
+### 16.6独立终裁与版本化输入SHA
+
+- launcher独立终裁为`P0=0 / P1=0 / P2=0 / ALLOW`。终裁确认六fold路径与顺序、C／G metadata零输出前置门、canonical C sealer输入、publisher四类盲输入、fresh／noclobber及零性能边界均无阻断项。
+- 终裁输入的三文件SHA256如下。报告SHA是写入本终裁结论之前的review-input快照；本次提交后的报告SHA另由Git交接回传，不冒充同一自引用值。
+
+|终裁输入文件|SHA256|
+|---|---|
+|`code/scripts/launch_phase1_adv3b02_target_prediction6_v1_20260816.sh`|`1f920885ef753113d49f1184d4ff9461c724438f33f13a9ae0d43ced1ba3de45`|
+|`code/tests/test_phase1_adv3b02_target_prediction_launcher.py`|`78375972ba4a62afcac5c31b201635163c4c6498f03fa11f62c2a5cf2104dffe`|
+|`automation_reports/CV-SincNet/phase1_adv3b02_clic6_20260816_v2/report.md`（review-input）|`76946a4f9f8286271714f266dd498ca256a8008a8234c68e85bed308eaec90e4`|
+
+- 终裁与本地版本化均未访问N607、target truth或任何性能字段；没有生成prediction工件、PID、GPU证据、archive、release或远端SHA，formal invocation仍为`0`，retry=`NO`。
