@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import subprocess
 from pathlib import Path
 
@@ -297,3 +298,34 @@ def test_source_manifest_includes_tracked_cvsrffi_init() -> None:
         if line and not line.startswith("#")
     }
     assert entries["code/cvsrffi/__init__.py"] == expected_sha256
+
+
+def test_v5_launch_freezes_all_four_seal_sha256_arguments() -> None:
+    root = Path(__file__).parents[1]
+    launch_path = (
+        root
+        / "automation_reports/CV-SincNet/"
+        "d92_e0_full_ccoc_g0_k10_20260816_v5/launch.sh"
+    )
+    assert launch_path.is_file(), f"missing v5 launch artifact: {launch_path}"
+    text = launch_path.read_text(encoding="utf-8")
+    expected = {
+        "--before-enrollment-seal-sha256": (
+            "e3da38668a1e6ec4053e65e669e2a1845bb43198891644d830950e4550b5cea9"
+        ),
+        "--before-apply-seal-sha256": (
+            "736852188c32255647b8105bc7a68d4cc92ca73615e4734d0ed5f4bdd0f04473"
+        ),
+        "--after-enrollment-seal-sha256": (
+            "2600a21ee9a2f95a8d17fa1f4d2263b0e04d243424e3257474502953ed6d9286"
+        ),
+        "--after-apply-seal-sha256": (
+            "afbdc2ebae59fcc311b0cd44aafd27898d7c4af65c9ef03c1085154c8d13020a"
+        ),
+    }
+    for option, expected_sha256 in expected.items():
+        matches = re.findall(rf"{re.escape(option)}\s+([0-9a-f]+)", text)
+        assert len(matches) == 1, (option, matches)
+        actual_sha256 = matches[0]
+        assert re.fullmatch(r"[0-9a-f]{64}", actual_sha256)
+        assert actual_sha256 == expected_sha256
