@@ -131,7 +131,9 @@ def _loss_inputs(*, include_group: bool = False, unknown_logit: torch.Tensor | N
         result["group_losses"] = torch.tensor(
             [0.1, 0.2, 0.4, 0.6, 1.1, 1.3], requires_grad=True
         )
-        result["group_ids"] = torch.tensor([0, 0, 1, 1, 2, 2], dtype=torch.int64)
+        result["receiver_ids"] = torch.tensor([0, 0, 0, 1, 1, 1], dtype=torch.int64)
+        result["day_ids"] = torch.tensor([0, 0, 1, 0, 0, 1], dtype=torch.int64)
+        result["scene_ids"] = torch.tensor([0, 0, 0, 1, 1, 1], dtype=torch.int64)
     return result
 
 
@@ -386,22 +388,62 @@ def test_b_rejects_a_forged_same_class_boundary_mixup_batch():
         compute_arm_losses("B", **inputs)
 
 
-def test_b_rejects_an_empty_mixup_batch_when_legal_registered_pairs_exist():
-    """Catch silently disabling B/C boundary mixup despite available cross-class pairs."""
+def test_b_rejects_an_explicit_empty_mixup_batch_even_if_internal_build_would_be_empty():
+    """Catch callers using an explicit empty object to disable B/C boundary mixup."""
 
     BoundaryMixupBatch, _, compute_arm_losses, _, _, _ = _loss_api()
     inputs = _loss_inputs()
-    original = inputs["boundary_mixup_batch"]
+    inputs["boundary_embeddings"] = torch.tensor(
+        [
+            [1.0, 0.0, 0.0, 0.0],
+            [1.0, 0.0, 0.0, 0.0],
+            [-1.0, 0.0, 0.0, 0.0],
+            [-1.0, 0.0, 0.0, 0.0],
+            [-1.0, 0.0, 0.0, 0.0],
+            [-1.0, 0.0, 0.0, 0.0],
+        ],
+        requires_grad=True,
+    )
+    empty_embeddings = inputs["boundary_embeddings"][:0] * 0.0
     inputs["boundary_mixup_batch"] = BoundaryMixupBatch(
-        mixed_embeddings=original.mixed_embeddings[:0],
-        left_indices=original.left_indices[:0],
-        right_indices=original.right_indices[:0],
-        lambdas=original.lambdas[:0],
+        mixed_embeddings=empty_embeddings,
+        left_indices=torch.empty(0, dtype=torch.int64),
+        right_indices=torch.empty(0, dtype=torch.int64),
+        lambdas=torch.empty(0),
     )
     inputs["boundary_mixup_output"] = None
 
     with pytest.raises(ValueError, match="boundary mixup"):
         compute_arm_losses("B", **inputs)
+
+
+def test_b_none_mixup_builds_a_graph_connected_zero_for_opposing_registered_embeddings():
+    """Catch rejecting an internal no-norm mixup instead of returning a safe zero."""
+
+    _, _, compute_arm_losses, _, _, _ = _loss_api()
+    inputs = _loss_inputs()
+    opposing_embeddings = torch.tensor(
+        [
+            [1.0, 0.0, 0.0, 0.0],
+            [1.0, 0.0, 0.0, 0.0],
+            [-1.0, 0.0, 0.0, 0.0],
+            [-1.0, 0.0, 0.0, 0.0],
+            [-1.0, 0.0, 0.0, 0.0],
+            [-1.0, 0.0, 0.0, 0.0],
+        ],
+        requires_grad=True,
+    )
+    inputs["boundary_embeddings"] = opposing_embeddings
+    inputs["boundary_mixup_batch"] = None
+    inputs["boundary_mixup_output"] = None
+
+    losses = compute_arm_losses("B", **inputs)
+
+    assert losses["boundary_mixup"].shape == torch.Size([])
+    assert losses["boundary_mixup"].item() == 0.0
+    losses["boundary_mixup"].backward()
+    assert opposing_embeddings.grad is not None
+    assert torch.equal(opposing_embeddings.grad, torch.zeros_like(opposing_embeddings))
 
 
 def test_group_resolution_uses_only_fixed_sample_count_hierarchy():
@@ -444,6 +486,69 @@ def test_group_cvar_rejects_invalid_tail_fractions(tail_fraction):
     _, _, _, group_cvar, _, _ = _loss_api()
     with pytest.raises(ValueError, match="tail_fraction"):
         group_cvar(torch.tensor([1.0]), torch.tensor([0]), tail_fraction=tail_fraction)
+
+
+def test_c_rejects_external_preparsed_group_ids():
+    """Catch a caller bypassing C's frozen source-field fallback resolution."""
+
+    _, _, compute_arm_losses, _, _, resolve_group_ids = _loss_api()
+    inputs = _loss_inputs(include_group=True)
+    inputs["group_ids"] = resolve_group_ids(
+        inputs["receiver_ids"],
+        inputs["day_ids"],
+        inputs["scene_ids"],
+        min_group_size=16,
+    )
+
+    with pytest.raises(ValueError, match="group_ids"):
+        compute_arm_losses("C", **inputs)
+
+
+def test_c_resolves_raw_group_sources_at_its_frozen_settings():
+    """Catch C accepting caller-selected groups or non-frozen fallback controls."""
+
+    _, _, compute_arm_losses, group_cvar, _, resolve_group_ids = _loss_api()
+    inputs = _loss_inputs(include_group=True)
+
+    result = compute_arm_losses("C", **inputs)
+    expected_groups = resolve_group_ids(
+        inputs["receiver_ids"],
+        inputs["day_ids"],
+        inputs["scene_ids"],
+        min_group_size=16,
+    )
+    expected = group_cvar(inputs["group_losses"], expected_groups, tail_fraction=0.30)
+
+    assert torch.allclose(result["group_cvar"], expected)
+
+
+@pytest.mark.parametrize("missing", ("receiver_ids", "day_ids", "scene_ids"))
+def test_c_requires_all_raw_group_source_fields(missing):
+    """Catch C falling back to unproven pre-resolved group assignments."""
+
+    _, _, compute_arm_losses, _, _, _ = _loss_api()
+    inputs = _loss_inputs(include_group=True)
+    inputs.pop(missing)
+
+    with pytest.raises(ValueError, match=missing):
+        compute_arm_losses("C", **inputs)
+
+
+@pytest.mark.parametrize("arm", ("B0", "A", "B"))
+def test_non_c_arms_ignore_group_source_fields(arm):
+    """Catch B0/A/B reading C-only group metadata or its graph."""
+
+    _, _, compute_arm_losses, _, _, _ = _loss_api()
+    inputs = _loss_inputs(include_group=True)
+    inputs["receiver_ids"] = object()
+    inputs["day_ids"] = object()
+    inputs["scene_ids"] = object()
+    inputs["group_ids"] = object()
+
+    result = compute_arm_losses(arm, **inputs)
+
+    assert "group_cvar" not in result
+    assert torch.isfinite(result["total"])
 
 
 def test_proxy_open_and_group_cvar_gradients_exist_only_in_declared_arms():

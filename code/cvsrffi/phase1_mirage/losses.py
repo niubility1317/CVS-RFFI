@@ -555,13 +555,6 @@ def build_boundary_mixup(
     )
 
 
-def _has_legal_boundary_pair(labels: Tensor, registered_row_mask: Tensor) -> bool:
-    """Check pair legality from source labels only, without a quota or loss value."""
-
-    registered_labels = labels[registered_row_mask]
-    return registered_labels.numel() >= 2 and registered_labels.unique().numel() >= 2
-
-
 def boundary_mixup_loss(
     mixup: BoundaryMixupBatch,
     output: OpenHeadOutput | None,
@@ -784,6 +777,9 @@ def compute_arm_losses(
     boundary_mixup_output: OpenHeadOutput | None = None,
     boundary_lambdas: Tensor | float = 0.5,
     group_losses: Tensor | None = None,
+    receiver_ids: Tensor | None = None,
+    day_ids: Tensor | None = None,
+    scene_ids: Tensor | None = None,
     group_ids: Tensor | None = None,
     min_group_size: int = _FORMAL_MIN_GROUP_SIZE,
     tail_fraction: float = _FORMAL_TAIL_FRACTION,
@@ -894,11 +890,8 @@ def compute_arm_losses(
                 labels=supervised_labels,
                 registered_row_mask=registered_rows,
             )
-            if (
-                boundary_mixup_batch.mixed_embeddings.shape[0] == 0
-                and _has_legal_boundary_pair(supervised_labels, registered_rows)
-            ):
-                raise ValueError("boundary mixup batch must not be empty when legal registered pairs exist")
+            if boundary_mixup_batch.mixed_embeddings.shape[0] == 0:
+                raise ValueError("boundary mixup batch must not be explicitly empty")
         losses["boundary_mixup"] = boundary_mixup_loss(
             boundary_mixup_batch,
             boundary_mixup_output,
@@ -906,8 +899,12 @@ def compute_arm_losses(
         )
 
     if config.arm_id == "C":
-        if group_losses is None or group_ids is None:
-            raise ValueError("group_losses and group_ids are required for C Group-CVaR")
+        if group_ids is not None:
+            raise ValueError("group_ids must not be supplied to formal C Group-CVaR")
+        if group_losses is None:
+            raise ValueError("group_losses are required for C Group-CVaR")
+        if receiver_ids is None or day_ids is None or scene_ids is None:
+            raise ValueError("receiver_ids, day_ids, and scene_ids are required for C Group-CVaR")
         if isinstance(min_group_size, bool) or not isinstance(min_group_size, Integral):
             raise TypeError("min_group_size must be an integer")
         if int(min_group_size) != _FORMAL_MIN_GROUP_SIZE:
@@ -916,9 +913,15 @@ def compute_arm_losses(
             raise TypeError("tail_fraction must be a real number")
         if not math.isfinite(float(tail_fraction)) or float(tail_fraction) != _FORMAL_TAIL_FRACTION:
             raise ValueError(f"tail_fraction must equal frozen value {_FORMAL_TAIL_FRACTION}")
+        resolved_group_ids = resolve_group_ids(
+            receiver_ids,
+            day_ids,
+            scene_ids,
+            min_group_size=_FORMAL_MIN_GROUP_SIZE,
+        )
         losses["group_cvar"] = group_cvar(
             group_losses,
-            group_ids,
+            resolved_group_ids,
             tail_fraction=_FORMAL_TAIL_FRACTION,
         )
 
