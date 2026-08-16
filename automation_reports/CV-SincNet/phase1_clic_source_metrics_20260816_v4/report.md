@@ -50,3 +50,39 @@
 
 - 只因协议、访问、hash、输出覆盖、错误checkout或确定性技术异常停止；绝不根据accuracy、AUROC、floor或其他性能值停止、调参、选择或重试。
 - v4仅在完整预测与独立评分artifact齐全后才可进入分析；技术完成不等于性能门通过、候选晋级或Phase3声明。
+
+## v4发布与F1 smoke技术证据（2026-08-16）
+
+- 唯一runner使用冻结commit`37d244be125c6e79aee35ff35c4a8dd6e889530d`创建LF-safe Git archive；本地archive为`35815871`bytes，SHA256=`ee279dca406378b021de2ec0f9d753e071136eab4028688e0ef187f4daf2d946`。SCP恰1次，远端bytes/SHA一致。release已atomic rename至`/home/szu2070436088/2510044040/releases/phase1_clic_source_metrics_20260816_v4_37d244be`；stage、tar和release均未覆盖或删除。
+- 远端STATIC：exact`CVS-RFFI/bin/python`的builder/exporter/metrics临时cfile`py_compile`通过；三入口`--help`通过；两launcher`bash -n`通过；formal/smoke dry-run严格为25/3行，且dry-run未出现target/query/truth/prediction/package/`--retry`；ManySig SHA、12组training-v5/clean-v4与6组PAIR-v3输入存在。release、formal/smoke run/log及outer根在启动前均ABSENT，release post-state hash闭合。
+
+### Source-V身份闭合
+
+- F1_SHARED receipt与feature binding共同封存的7个physical source receiver IDs为`1-1、1-19、14-7、18-2、19-2、2-1、2-19`；2个source day IDs为`2021_03_01、2021_03_08`。本身份集合与v3已封存clean-v4/source-V输入一致，未重建或改变物理数据。
+- source-V receipt结构QA：`16800=4TX×7RX×2day×300`；三LEO场景各5600；两日期各8400；每个TX/RX/day各300；physical_sample_id全局唯一；三场景physical ID两两不交；`single_leo_observation_per_physical_sample=true`；C/G共享received-IQ字节；source-only、zero-fit、zero-threshold、zero-source-L/proxy forward及clean/target/query/selection/retry访问均为零或false。
+
+### F1 smoke
+
+- 唯一入口：`cd /home/szu2070436088/2510044040/CV-SincNet && nohup bash /home/szu2070436088/2510044040/releases/phase1_clic_source_metrics_20260816_v4_37d244be/code/scripts/smoke_phase1_clic_source_metrics_f1_v4_20260816.sh > /home/szu2070436088/2510044040/CV-SincNet/.smoke_phase1_clic_source_metrics_20260816_v4_F1_outer.out 2>&1 &`。
+- `SMOKE_INVOCATION=1`，outer PID=`902611`，启动时间=`2026-08-16T18:28:32+08:00`，CWD为canonical project root，GPU=`0`，`RETRY=NO`。cache→F1C→F1G串行完成；未运行scorer，未创建formal root。
+
+| artifact | bytes | SHA256 |
+|---|---:|---|
+| `F1_SHARED/source_validation_known_leo_weak.npz` | 41127936 | `fdc7d7cc00df80028fba432499658ee86ba22bcf993bcda83a7dd6bd1adb1a5c` |
+| `F1_SHARED/source_validation_known_leo_weak.receipt.json` | 13739 | `b8aa907de0864281f36cc770dfa536f35a2eb08e6d2994e9bdb13d4e8f7a77f3` |
+| `F1C_CLIC12/source_validation_known_leo_weak_features.npz` | 37711540 | `16ada3c984f758bb60d3efcaedc6a4014d8d82843dc5e0b0cd08606bbd1dee47` |
+| `F1C_CLIC12/source_validation_known_leo_weak.binding.json` | 1887 | `0e2828467970776a8436f3f27a1d97438f22540fcfabc16cd4c70ce159f75bc4` |
+| `F1G_CLIC12/source_validation_known_leo_weak_features.npz` | 37711544 | `280685f0565cd9ed12c091ab8da393b0fe1eb9a837f3c84e9f30c8e61bcd28f8` |
+| `F1G_CLIC12/source_validation_known_leo_weak.binding.json` | 1887 | `2d210749805a7e6254bde52d9fb48d628c5011a31a204a5288765d26accce5d3` |
+| `F1_source_v_cache.out` | 574 | `77e94d9115c402444099f454a93f4510d9915a18a1ffa2a75985ea4eaf02a7d5` |
+| `F1C_CLIC12_source_v_forward.out` | 2569 | `af31c2f1af57da17f4c510b282cb6ce72abd6a49cf3170a719bfacdcb77de100` |
+| `F1G_CLIC12_source_v_forward.out` | 2570 | `25d9ba7e2f2aa10b3370a5abe6882cd2fcb97fce71ca0967f15a50ffad7117a9` |
+| smoke outer | 0 | `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` |
+
+- 独立结构QA未读取或输出任何性能字段：三份NPZ的16800行/finite/physical-order闭合，C/G binding的cache、PAIR、physical-order和zero-access/zero-fit/zero-threshold字段一致；6个预期artifact全部存在。smoke wrapper已退出，GPU0为`1MiB/0%`，本地SSH/TCP22已清零。
+- 过程记录：一次早期健康检查曾无意输出包含封存proxy字段的完整binding日志行；其性能字段未被保存、比较、选择、停止或写入本报告，后续QA仅访问结构与权限字段。
+
+## v4当前状态
+
+- `SMOKE_PASS / SMOKE_INVOCATION=1 / FORMAL_INVOCATION=0 / NO_PERFORMANCE_RESULT / RETRY=NO`。
+- 仅技术烟测通过；formal尚未启动。下一阶段必须使用同一已落地release按冻结6fold完整矩阵执行，不得选择性运行或读取性能作停止依据。
