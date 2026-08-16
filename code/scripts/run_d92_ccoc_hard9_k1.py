@@ -341,20 +341,21 @@ def _validate_fit_audit(
 
 
 def _verify_manifest_artifacts(manifest: Mapping[str, Any]) -> None:
-    """Hash-check the four sealed packages and opaque truth sidecar."""
+    """Hash-check predictor packages while leaving truth opaque until scoring."""
 
     for job in manifest.get("jobs", []):
         if not isinstance(job, Mapping):
             raise D92CCOCHard9K1RunnerError("manifest job is invalid")
-        truth = Path(str(job.get("truth_sidecar")))
+        truth = job.get("truth_sidecar")
         expected_truth = str(job.get("truth_sidecar_sha256", "")).lower()
         if (
-            not truth.is_file()
-            or truth.is_symlink()
-            or len(expected_truth) != 64
-            or _sha256_file(truth) != expected_truth
+            not isinstance(truth, str)
+            or not truth
+            or "\x00" in truth
+            or not _is_sha256(expected_truth)
+            or expected_truth == "0" * 64
         ):
-            raise D92CCOCHard9K1RunnerError("truth sidecar SHA drift")
+            raise D92CCOCHard9K1RunnerError("truth sidecar metadata drift")
         packages = job.get("packages")
         if not isinstance(packages, Mapping):
             raise D92CCOCHard9K1RunnerError("package manifest is missing")
@@ -637,13 +638,13 @@ def _write_score_binding(
 ) -> tuple[Path, str]:
     """Seal actual scoring inputs at the boundary immediately before scoring."""
 
-    truth_sha256 = _verify_truth_sidecar_snapshot(
-        job["truth_sidecar"],
-        expected_sha256=str(job["truth_sidecar_sha256"]),
-    )
     closure_hashes = _prediction_closure_hashes(
         paths["before_prediction"],
         paths["after_prediction"],
+    )
+    truth_sha256 = _verify_truth_sidecar_snapshot(
+        job["truth_sidecar"],
+        expected_sha256=str(job["truth_sidecar_sha256"]),
     )
     binding_path = job_root / "score_binding.json"
     digest = _write_json_new(

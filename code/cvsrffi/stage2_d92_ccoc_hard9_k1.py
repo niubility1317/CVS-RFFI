@@ -211,6 +211,42 @@ RAW_SCORE_SHA = {
         "bf60d1231127c51b9a9dbe06c9c78bbad7bfd34d0b2ffc5c7809dc94d47677f2"
     ),
 }
+
+# These ten digests were sealed by the same-outer E0 raw-score artifacts whose
+# paths and file hashes are already frozen in the method lock above.  Matrix
+# preparation copies only this opaque metadata; it never opens query truth.
+PREREGISTERED_TRUTH_SIDECAR_SHA256 = {
+    "rx_7_7__seed_713104__k_5__new_20": (
+        "0ea2f8471e3632545cda52f3e0879fc276237f263885ba8a14d74b45b4b84237"
+    ),
+    "rx_7_7__seed_713103__k_10__new_5": (
+        "83e143cac2104bd610e8ed83968a7dff2bff5bab1ba84da479ee7e2fa13481ce"
+    ),
+    "rx_8_8__seed_713103__k_5__new_20": (
+        "7c1340020d7240e50771e104f623c2035de709f87ab15a041701b88d13eac3ea"
+    ),
+    "rx_8_8__seed_713103__k_10__new_5": (
+        "aa3aa1eb05fd4b7781b59d48e8173cbc8304c4ff390e110e1f359cf2b5049f0b"
+    ),
+    "rx_8_8__seed_713106__k_5__new_20": (
+        "f8e74dd1491f8e0a4fd70c0ea9ac55bfab1d185a098a25bcb7757336a3e84924"
+    ),
+    "rx_7_14__seed_713104__k_10__new_10": (
+        "e8ae7fd3ef3369bc96b72c4c18834259cd24ac4056fdc015f2c6734f3b4f08b2"
+    ),
+    "rx_3_19__seed_713102__k_10__new_5": (
+        "0d27fa7794d9f8f10cc4e50771b2944f2f4d948958a342e1fbdca6288af53176"
+    ),
+    "rx_7_7__seed_713105__k_10__new_20": (
+        "75ce467e4dbe35fd2ff40475f2bac606d7c7cf4c9c30dbe0ec674fb5c4967190"
+    ),
+    "rx_7_7__seed_713104__k_10__new_5": (
+        "e1dec138a60795619248a6b352614aff4291b3d08088c1723fe77acee0a689eb"
+    ),
+    LIVENESS_OUTER_KEY: (
+        "b6fc53dc3a02b0867084a1146e4f23fc40ca543b726da3cb54db587f59ec621d"
+    ),
+}
 E0_RESOURCE_OUTPUT_ROOT = (
     "/home/szu2070436088/2510044040/CV-SincNet/runs/"
     "d92_e0_full_only_target125_20260812_v1/output"
@@ -698,15 +734,13 @@ def _package_entries(
     return entries
 
 
-def _truth_sidecar_sha256(source_job_root: PurePath, *, require_files: bool) -> str:
-    truth_path = Path(
-        str(source_job_root.joinpath("offline", "scorer", "truth_sidecar.json"))
-    )
-    if not require_files:
-        return "0" * 64
-    if not truth_path.is_file() or truth_path.is_symlink():
-        raise D92CCOCHard9K1Error("truth sidecar missing")
-    return _sha256_file(truth_path)
+def _preregistered_truth_sidecar_sha256(outer_key: str) -> str:
+    """Return opaque truth identity without touching the truth sidecar."""
+
+    digest = PREREGISTERED_TRUTH_SIDECAR_SHA256.get(str(outer_key))
+    if not _is_sha256(digest):
+        raise D92CCOCHard9K1Error("pre-registered truth sidecar hash missing")
+    return str(digest).lower()
 
 
 _MANIFEST_KEYS = {
@@ -959,9 +993,8 @@ def build_hard9_k1_manifest(
                         "offline", "scorer", "truth_sidecar.json"
                     )
                 ),
-                "truth_sidecar_sha256": _truth_sidecar_sha256(
-                    source_job_root,
-                    require_files=require_package_files,
+                "truth_sidecar_sha256": _preregistered_truth_sidecar_sha256(
+                    row["outer_key"]
                 ),
                 "e0_resource": {
                     "fit_audit": dict(

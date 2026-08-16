@@ -183,3 +183,55 @@ def test_manifest_binds_one_sealed_e0_fit_audit_with_per_scene_resources() -> No
     assert resource["scenes"]["leo_clear_weak"]["registration_wall_time_ns"] != (
         resource["scenes"]["leo_low_elev_weak"]["registration_wall_time_ns"]
     )
+
+
+def test_manifest_build_uses_preregistered_truth_hashes_without_truth_files(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Reopening a truth sidecar during build must make this test fail."""
+
+    def sealed_packages(
+        source_job_root: object,
+        *,
+        require_files: bool,
+    ) -> dict[str, dict[str, str]]:
+        assert require_files is True
+        return {
+            name: {
+                "package_root": str(source_job_root.joinpath(*package_parts)),
+                "detached_seal_path": str(source_job_root.joinpath(*seal_parts)),
+                "expected_seal_sha256": "1" * 64,
+            }
+            for name, (package_parts, seal_parts) in matrix.PACKAGE_LAYOUT.items()
+        }
+
+    monkeypatch.setattr(matrix, "_package_entries", sealed_packages)
+
+    # The configured source paths are N607-only and deliberately do not exist
+    # on this host. Building with require_package_files=True therefore proves
+    # truth identity came from pre-registered metadata rather than a truth file.
+    manifest = matrix.build_hard9_k1_manifest(
+        CONFIG,
+        require_package_files=True,
+    )
+
+    expected = {
+        "rx_7_7__seed_713104__k_5__new_20": (
+            "0ea2f8471e3632545cda52f3e0879fc276237f263885ba8a14d74b45b4b84237"
+        ),
+        "rx_20_1__seed_713106__k_1__new_20": (
+            "b6fc53dc3a02b0867084a1146e4f23fc40ca543b726da3cb54db587f59ec621d"
+        ),
+    }
+    by_outer = {
+        str(job["outer_key"]): str(job["truth_sidecar_sha256"])
+        for job in manifest["jobs"]
+    }
+    assert by_outer["rx_7_7__seed_713104__k_5__new_20"] == expected[
+        "rx_7_7__seed_713104__k_5__new_20"
+    ]
+    assert by_outer["rx_20_1__seed_713106__k_1__new_20"] == expected[
+        "rx_20_1__seed_713106__k_1__new_20"
+    ]
+    assert len(by_outer) == 10
+    assert all(value != "0" * 64 for value in by_outer.values())

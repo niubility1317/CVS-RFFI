@@ -304,6 +304,60 @@ def test_parser_has_only_prepare_smoke_and_shard_execution_boundaries() -> None:
     assert runner.SHARD_COUNT == 8
 
 
+def test_prediction_manifest_check_defers_truth_until_score_binding(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    truth_path = tmp_path / "truth_sidecar.json"
+    truth_sha256 = _write_bytes_readonly(truth_path, b"score-only-truth")
+    job_root = tmp_path / "job"
+    job_root.mkdir()
+    package_root = tmp_path / "package"
+    package_root.mkdir()
+    seal = tmp_path / "seal.json"
+    seal_sha256 = _write_bytes_readonly(seal, b"seal")
+    job: dict[str, object] = {
+        "job_id": "truth-last-job",
+        "outer_key": runner.SMOKE_OUTER_KEY,
+        "outer_role": "performance",
+        "arm_id": runner.ARM_ID,
+        "candidate": runner.CANDIDATE_ID,
+        "truth_sidecar": str(truth_path),
+        "truth_sidecar_sha256": truth_sha256,
+        "packages": {
+            "sealed": {
+                "package_root": str(package_root),
+                "detached_seal_path": str(seal),
+                "expected_seal_sha256": seal_sha256,
+            }
+        },
+    }
+    manifest = {"jobs": [job]}
+    paths = _write_prediction_closure(job_root / "diag")
+    truth_reads: list[Path] = []
+    original_sha256_file = runner._sha256_file
+
+    def observing_sha256(path: Path) -> str:
+        resolved = Path(path).resolve()
+        if resolved == truth_path.resolve():
+            truth_reads.append(resolved)
+        return original_sha256_file(Path(path))
+
+    monkeypatch.setattr(runner, "_sha256_file", observing_sha256)
+    runner._verify_manifest_artifacts(manifest)
+    assert truth_reads == []
+
+    runner._write_score_binding(
+        job_root,
+        job=job,
+        matrix_manifest_sha256="c" * 64,
+        method_lock_sha256="a" * 64,
+        paths=paths,
+        score_command=["score"],
+    )
+    assert truth_reads == [truth_path.resolve()]
+
+
 def test_systemic_failure_needs_two_distinct_pre_prediction_outers(
     tmp_path: Path,
 ) -> None:
