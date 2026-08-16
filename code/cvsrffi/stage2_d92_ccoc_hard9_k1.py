@@ -668,7 +668,7 @@ def _expected_lock() -> dict[str, Any]:
         "runtime": {
             "output_root": (
                 "/home/szu2070436088/2510044040/CV-SincNet/runs/"
-                "d92_ccoc_hard9_k1_20260817_v3"
+                "d92_ccoc_hard9_k1_20260817_v4"
             )
         },
         "outputs": {
@@ -877,15 +877,6 @@ def validate_hard9_k1_manifest(
             "role": "primary",
             "primary": True,
             "scenarios": list(SCENES),
-            "e0_resource": {
-                "fit_audit": dict(E0_RESOURCE_ROWS[row["outer_key"]]["fit_audit"]),
-                "scenes": {
-                    scene: dict(values)
-                    for scene, values in E0_RESOURCE_ROWS[row["outer_key"]][
-                        "scenes"
-                    ].items()
-                },
-            },
             "method_lock_sha256": method_lock_sha,
         }
         if (
@@ -910,6 +901,40 @@ def validate_hard9_k1_manifest(
         ):
             raise D92CCOCHard9K1Error("job path drift")
         source_job_root = _pure_path(job["source_job_root"])
+        e0_resource = job.get("e0_resource")
+        if not isinstance(e0_resource, Mapping) or set(e0_resource) != {
+            "fit_audit",
+            "scenes",
+        }:
+            raise D92CCOCHard9K1Error("E0 resource manifest record drift")
+        fit_audit = e0_resource.get("fit_audit")
+        expected_fit_path = E0_RESOURCE_ROWS[row["outer_key"]]["fit_audit"]["path"]
+        if (
+            not isinstance(fit_audit, Mapping)
+            or set(fit_audit) != {"path", "sha256"}
+            or _pure_path(fit_audit.get("path")) != _pure_path(expected_fit_path)
+            or not _is_sha256(fit_audit.get("sha256"))
+        ):
+            raise D92CCOCHard9K1Error("E0 resource fit-audit record drift")
+        resource_scenes = e0_resource.get("scenes")
+        resource_fields = {
+            "registration_wall_time_ns",
+            "registration_incremental_peak_working_set_bytes",
+            "query_macs",
+            "state_bytes",
+        }
+        if not isinstance(resource_scenes, Mapping) or set(resource_scenes) != set(
+            SCENES
+        ):
+            raise D92CCOCHard9K1Error("E0 resource scene identity drift")
+        for scene in SCENES:
+            values = resource_scenes.get(scene)
+            if not isinstance(values, Mapping) or set(values) != resource_fields:
+                raise D92CCOCHard9K1Error("E0 resource scene field drift")
+            for field, value in values.items():
+                lower = 0 if field == "registration_incremental_peak_working_set_bytes" else 1
+                if isinstance(value, bool) or not isinstance(value, int) or value < lower:
+                    raise D92CCOCHard9K1Error("E0 resource scene value drift")
         truth_sidecar_sha256 = job.get("truth_sidecar_sha256")
         if (
             _pure_path(job.get("truth_sidecar"))

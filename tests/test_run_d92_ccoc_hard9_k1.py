@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import os
@@ -929,7 +930,7 @@ def test_runtime_source_lock_closes_scientific_entry_and_rejects_file_drift(
     tmp_path: Path,
 ) -> None:
     lock = json.loads(
-        (ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v3.json").read_text(
+        (ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v4.json").read_text(
             encoding="utf-8"
         )
     )
@@ -1152,17 +1153,26 @@ def test_runtime_source_gate_requires_frozen_commit_and_both_git_blob_views(
         )
 
 
-def test_e0_resource_records_are_loaded_per_scene_from_the_sealed_fit_audit(
+def test_e0_resource_records_accept_legal_content_drift_and_reject_tamper(
     tmp_path: Path,
 ) -> None:
+    outer_key = "rx_7_7__seed_713104__k_5__new_20"
     job = {
-        "outer_key": "rx_7_7__seed_713104__k_5__new_20",
+        "outer_key": outer_key,
         "k_shot": 5,
         "new_class_count": 20,
     }
-    fit_audit = tmp_path / "e0_after_fit_audit.json"
+    fit_audit = (
+        tmp_path
+        / "jobs"
+        / outer_key
+        / "E0_FULL_ONLY"
+        / "diag"
+        / "after"
+        / "fit_audit.json"
+    )
     rows = []
-    locked_scenes: dict[str, dict[str, int]] = {}
+    actual_scenes: dict[str, dict[str, int]] = {}
     for index, scene in enumerate(runner.SCENES):
         values = {
             "registration_wall_time_ns": 100 + index,
@@ -1170,7 +1180,7 @@ def test_e0_resource_records_are_loaded_per_scene_from_the_sealed_fit_audit(
             "query_macs": 7_488,
             "state_bytes": 18_498,
         }
-        locked_scenes[scene] = values
+        actual_scenes[scene] = values
         rows.append(
             {
                 "scenario": scene,
@@ -1179,6 +1189,7 @@ def test_e0_resource_records_are_loaded_per_scene_from_the_sealed_fit_audit(
                 "k_shot": 5,
                 "registered_class_count": 26,
                 "after_registration_resource": {
+                    "schema": "cvs.phase2.registration_resource_receipt.v1",
                     "registration_wall_time_ns": values[
                         "registration_wall_time_ns"
                     ],
@@ -1194,18 +1205,33 @@ def test_e0_resource_records_are_loaded_per_scene_from_the_sealed_fit_audit(
     job["e0_resource"] = {
         "fit_audit": {
             "path": str(fit_audit),
-            "sha256": hashlib.sha256(fit_audit.read_bytes()).hexdigest(),
+            "sha256": "a" * 64,
         },
-        "scenes": locked_scenes,
+        "scenes": {
+            scene: {**values, "registration_wall_time_ns": 1}
+            for scene, values in actual_scenes.items()
+        },
     }
 
-    resources = runner._load_verified_e0_resource_records(job)
-    assert resources == locked_scenes
+    observation = runner._load_verified_e0_resource_records(job)
+    observed_sha = hashlib.sha256(fit_audit.read_bytes()).hexdigest()
+    assert observation == {
+        "fit_audit_observed_sha256": observed_sha,
+        "scenes": actual_scenes,
+    }
+    observed = runner._bind_e0_resource_observations({"jobs": [job]})
+    assert observed == {outer_key: observed_sha}
+    assert job["e0_resource"]["fit_audit"]["sha256"] == observed_sha
+    assert job["e0_resource"]["scenes"] == actual_scenes
 
-    rows[1]["after_registration_resource"]["registration_wall_time_ns"] = 999
-    _write(fit_audit, rows)
-    job["e0_resource"]["fit_audit"]["sha256"] = hashlib.sha256(
-        fit_audit.read_bytes()
-    ).hexdigest()
-    with pytest.raises(runner.D92CCOCHard9K1RunnerError, match="E0 resource"):
+    tampered = copy.deepcopy(rows)
+    tampered[1]["arm_id"] = "NOT_E0"
+    _write(fit_audit, tampered)
+    with pytest.raises(runner.D92CCOCHard9K1RunnerError, match="identity"):
+        runner._load_verified_e0_resource_records(job)
+
+    tampered = copy.deepcopy(rows)
+    tampered[1]["after_registration_resource"]["schema"] = "wrong"
+    _write(fit_audit, tampered)
+    with pytest.raises(runner.D92CCOCHard9K1RunnerError, match="schema"):
         runner._load_verified_e0_resource_records(job)

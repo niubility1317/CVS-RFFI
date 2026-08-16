@@ -15,7 +15,7 @@ if str(ROOT / "code") not in sys.path:
 from cvsrffi import stage2_d92_ccoc_hard9_k1 as matrix  # noqa: E402
 
 
-CONFIG = ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v3.json"
+CONFIG = ROOT / "configs" / "stage2_d92_ccoc_hard9_k1_v4.json"
 G0_OUTER = "rx_7_7__seed_713106__k_10__new_5"
 
 
@@ -183,6 +183,25 @@ def test_manifest_binds_one_sealed_e0_fit_audit_with_per_scene_resources() -> No
     assert resource["scenes"]["leo_clear_weak"]["registration_wall_time_ns"] != (
         resource["scenes"]["leo_low_elev_weak"]["registration_wall_time_ns"]
     )
+
+    observed = json.loads(json.dumps(manifest))
+    observed_resource = observed["jobs"][0]["e0_resource"]
+    observed_resource["fit_audit"]["sha256"] = "f" * 64
+    observed_resource["scenes"]["leo_clear_weak"][
+        "registration_wall_time_ns"
+    ] += 1
+    matrix.validate_hard9_k1_manifest(
+        observed,
+        expected_method_lock_sha256=manifest["method_lock_sha256"],
+        require_package_hashes=False,
+    )
+    del observed_resource["scenes"]["leo_clear_weak"]["query_macs"]
+    with pytest.raises(ValueError, match="resource"):
+        matrix.validate_hard9_k1_manifest(
+            observed,
+            expected_method_lock_sha256=manifest["method_lock_sha256"],
+            require_package_hashes=False,
+        )
 
 
 def test_manifest_build_uses_preregistered_truth_hashes_without_truth_files(

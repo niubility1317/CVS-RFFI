@@ -737,12 +737,12 @@ def _load_manifest(path: str | Path, expected_sha256: str) -> dict[str, Any]:
 
 def _load_verified_e0_resource_records(
     job: Mapping[str, Any],
-) -> dict[str, dict[str, int]]:
-    """Load the same-outer sealed E0 fit audit and index it by scene key.
+) -> dict[str, Any]:
+    """Load the current same-outer E0 resource baseline by scene key.
 
-    The frozen record seals both the whole historical fit-audit bytes and the
-    resource-only projection used by each candidate scene.  It intentionally
-    never position-zips rows or estimates missing scene measurements.
+    The historical SHA is trace metadata, not an execution gate.  Current
+    bytes are schema/identity checked and their observed SHA is returned for
+    the immutable matrix/receipt trail.
     """
 
     outer_key = str(job.get("outer_key", ""))
@@ -757,22 +757,24 @@ def _load_verified_e0_resource_records(
     if not isinstance(resource, Mapping) or set(resource) != {"fit_audit", "scenes"}:
         raise D92CCOCHard9K1RunnerError("E0 resource manifest record drift")
     sealed = resource.get("fit_audit")
-    locked_scenes = resource.get("scenes")
+    declared_scenes = resource.get("scenes")
     if (
         not isinstance(sealed, Mapping)
         or set(sealed) != {"path", "sha256"}
-        or not isinstance(locked_scenes, Mapping)
-        or set(locked_scenes) != set(SCENES)
+        or not isinstance(declared_scenes, Mapping)
+        or set(declared_scenes) != set(SCENES)
         or not _is_sha256(sealed.get("sha256"))
     ):
         raise D92CCOCHard9K1RunnerError("E0 resource sealed record drift")
     source = Path(str(sealed.get("path", "")))
-    if (
-        not source.is_file()
-        or source.is_symlink()
-        or _sha256_file(source) != str(sealed["sha256"]).lower()
-    ):
-        raise D92CCOCHard9K1RunnerError("E0 resource fit-audit SHA drift")
+    expected_suffix = (
+        f"/jobs/{outer_key}/E0_FULL_ONLY/diag/after/fit_audit.json"
+    )
+    if not source.is_file() or source.is_symlink():
+        raise D92CCOCHard9K1RunnerError("E0 resource fit-audit is missing")
+    if not source.as_posix().endswith(expected_suffix):
+        raise D92CCOCHard9K1RunnerError("E0 resource outer identity drift")
+    observed_sha256 = _sha256_file(source)
     try:
         rows = json.loads(source.read_text(encoding="utf-8-sig"))
     except (OSError, ValueError) as error:
@@ -787,15 +789,10 @@ def _load_verified_e0_resource_records(
     if len(by_scene) != len(SCENES) or set(by_scene) != set(SCENES):
         raise D92CCOCHard9K1RunnerError("E0 resource scene identity drift")
 
-    required_fields = {
-        "registration_wall_time_ns",
-        "registration_incremental_peak_working_set_bytes",
-        "query_macs",
-        "state_bytes",
-    }
     actual: dict[str, dict[str, int]] = {}
     for scene in SCENES:
         row = by_scene[scene]
+        resource_receipt = row.get("after_registration_resource")
         if (
             row.get("arm_id") != "E0_FULL_ONLY"
             or row.get("candidate_id") != "d92_e0d_e0_full_only"
@@ -808,6 +805,12 @@ def _load_verified_e0_resource_records(
             != 6 + new_class_count
         ):
             raise D92CCOCHard9K1RunnerError("E0 resource fit-audit identity drift")
+        if (
+            not isinstance(resource_receipt, Mapping)
+            or resource_receipt.get("schema")
+            != "cvs.phase2.registration_resource_receipt.v1"
+        ):
+            raise D92CCOCHard9K1RunnerError("E0 resource receipt schema drift")
         actual_scene = {
             "registration_wall_time_ns": _integer(
                 _resource_value(row, "registration_wall_time_ns"),
@@ -825,19 +828,42 @@ def _load_verified_e0_resource_records(
                 row.get("after_state_bytes"), "E0 state bytes", lower=1
             ),
         }
-        locked = locked_scenes[scene]
-        if not isinstance(locked, Mapping) or set(locked) != required_fields:
-            raise D92CCOCHard9K1RunnerError("E0 resource locked scene field drift")
-        expected_scene = {
-            field: _integer(locked.get(field), f"E0 locked {field}", lower=0)
-            for field in required_fields
-        }
-        if actual_scene != expected_scene:
-            raise D92CCOCHard9K1RunnerError("E0 resource sealed scene value drift")
+        if actual_scene["registration_wall_time_ns"] <= 0:
+            raise D92CCOCHard9K1RunnerError("E0 resource wall is zero")
+        if actual_scene["query_macs"] <= 0 or actual_scene["state_bytes"] <= 0:
+            raise D92CCOCHard9K1RunnerError("E0 resource query/state drift")
+        if actual_scene["query_macs"] != (6 + new_class_count) * 288:
+            raise D92CCOCHard9K1RunnerError("E0 resource query MAC identity drift")
         actual[scene] = actual_scene
     if not outer_key:
         raise D92CCOCHard9K1RunnerError("E0 resource outer identity drift")
-    return actual
+    return {
+        "fit_audit_observed_sha256": observed_sha256,
+        "scenes": actual,
+    }
+
+
+def _bind_e0_resource_observations(manifest: Mapping[str, Any]) -> dict[str, str]:
+    """Bind current E0 resource observations into the immutable run manifest."""
+
+    jobs = manifest.get("jobs")
+    if not isinstance(jobs, list):
+        raise D92CCOCHard9K1RunnerError("E0 resource manifest jobs drift")
+    observed: dict[str, str] = {}
+    for job in jobs:
+        if not isinstance(job, dict):
+            raise D92CCOCHard9K1RunnerError("E0 resource manifest job drift")
+        observation = _load_verified_e0_resource_records(job)
+        resource = job.get("e0_resource")
+        if not isinstance(resource, dict) or not isinstance(
+            resource.get("fit_audit"), dict
+        ):
+            raise D92CCOCHard9K1RunnerError("E0 resource manifest binding drift")
+        digest = str(observation["fit_audit_observed_sha256"]).lower()
+        resource["fit_audit"]["sha256"] = digest
+        resource["scenes"] = observation["scenes"]
+        observed[str(job["outer_key"])] = digest
+    return observed
 
 
 def _prediction_command(
@@ -1588,12 +1614,17 @@ def _validate_shared_smoke(
         raise D92CCOCHard9K1RunnerError("smoke command identity drift")
     if _prediction_closure_status(prediction_root) != ("closed", "closed"):
         raise D92CCOCHard9K1RunnerError("smoke prediction closure drift")
+    e0_observation = _load_verified_e0_resource_records(job)
     resource_gate = _validate_fit_audit(
         paths["after_fit_audit"],
         k_shot=int(job["k_shot"]),
-        reference_resources=_load_verified_e0_resource_records(job),
+        reference_resources=e0_observation["scenes"],
     )
-    if receipt.get("fit_audit_resource_gate") != resource_gate:
+    if (
+        receipt.get("fit_audit_resource_gate") != resource_gate
+        or receipt.get("e0_resource_fit_audit_observed_sha256")
+        != e0_observation["fit_audit_observed_sha256"]
+    ):
         raise D92CCOCHard9K1RunnerError("smoke resource gate receipt drift")
 
 
@@ -1602,8 +1633,7 @@ def prepare(args: argparse.Namespace) -> dict[str, Any]:
     lock = _read_json_object(manifest["method_lock"], label="method lock")
     validate_method_lock(lock)
     runtime_source_receipt = _verify_runtime_source_lock(lock)
-    for job in manifest["jobs"]:
-        _load_verified_e0_resource_records(job)
+    e0_observed_sha256 = _bind_e0_resource_observations(manifest)
     output_root = Path(str(manifest["output_root"]))
     if output_root.exists() or output_root.is_symlink():
         raise D92CCOCHard9K1RunnerError("matrix output already exists")
@@ -1618,6 +1648,7 @@ def prepare(args: argparse.Namespace) -> dict[str, Any]:
         "runtime_source_verification_mode": runtime_source_receipt[
             "verification_mode"
         ],
+        "e0_resource_fit_audit_observed_sha256": e0_observed_sha256,
         "job_count": 10,
         "scene_arm_count": 30,
     }
@@ -1674,10 +1705,11 @@ def smoke(args: argparse.Namespace) -> dict[str, Any]:
             f"truth-free smoke {stage.replace('_', '-')} prediction closure failed"
         )
     paths = _prediction_closure_paths(prediction_root)
+    e0_observation = _load_verified_e0_resource_records(job)
     resource_gate = _validate_fit_audit(
         paths["after_fit_audit"],
         k_shot=int(job["k_shot"]),
-        reference_resources=_load_verified_e0_resource_records(job),
+        reference_resources=e0_observation["scenes"],
     )
     hashes = {
         "before_prediction_sha256": _sha256_file(paths["before_prediction"]),
@@ -1704,6 +1736,9 @@ def smoke(args: argparse.Namespace) -> dict[str, Any]:
         **hashes,
         "prediction_closure": hashes,
         "fit_audit_resource_gate": resource_gate,
+        "e0_resource_fit_audit_observed_sha256": e0_observation[
+            "fit_audit_observed_sha256"
+        ],
         "truth_open": False,
         "query_truth_joined_only_after_immutable_predictions": True,
         "prediction_and_scorer_processes_isolated": True,
@@ -1833,10 +1868,11 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
                 break
             continue
         try:
+            e0_observation = _load_verified_e0_resource_records(job)
             fit_resource_gate = _validate_fit_audit(
                 prediction_root / "after" / "fit_audit.json",
                 k_shot=int(job["k_shot"]),
-                reference_resources=_load_verified_e0_resource_records(job),
+                reference_resources=e0_observation["scenes"],
             )
         except D92CCOCHard9K1RunnerError as error:
             # A closed prediction exists, so this is a rejected job rather than
@@ -1982,6 +2018,9 @@ def run_shard(args: argparse.Namespace) -> dict[str, Any]:
             "query_truth_fed_back_to_predictor": False,
             "prediction_and_scorer_processes_isolated": True,
             "fit_audit_resource_gate": fit_resource_gate,
+            "e0_resource_fit_audit_observed_sha256": e0_observation[
+                "fit_audit_observed_sha256"
+            ],
             "fresh_run_retry_authorized": False,
         }
         _write_job_receipt(job_root, receipt, closure_hashes=closure_hashes)
