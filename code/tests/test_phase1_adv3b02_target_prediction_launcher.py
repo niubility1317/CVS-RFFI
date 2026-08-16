@@ -30,10 +30,23 @@ V2_LAUNCHER = (
     / "scripts"
     / "launch_phase1_adv3b02_target_prediction6_v2_20260816.sh"
 )
+V3_SMOKE_ENTRY = CODE_ROOT / "smoke_phase1_adv3b02_target_prediction_f1_v3.py"
+V3_SMOKE_LAUNCHER = (
+    CODE_ROOT
+    / "scripts"
+    / "smoke_phase1_adv3b02_target_prediction_f1_v3_20260816.sh"
+)
+V3_LAUNCHER = (
+    CODE_ROOT
+    / "scripts"
+    / "launch_phase1_adv3b02_target_prediction6_v3_20260816.sh"
+)
 TARGET_REFERENCE_TEST = CODE_ROOT / "tests" / "test_phase1_adv3b02_target_reference.py"
 RUN_ID = "phase1_adv3b02_target_prediction_20260816_v1"
 V2_RUN_ID = "phase1_adv3b02_target_prediction_20260816_v2"
 V2_SMOKE_ID = ".smoke_phase1_adv3b02_target_prediction_20260816_v2_F1"
+V3_RUN_ID = "phase1_adv3b02_target_prediction_20260816_v3"
+V3_SMOKE_ID = ".smoke_phase1_adv3b02_target_prediction_20260816_v3_F1"
 PROJECT_ROOT = "/home/szu2070436088/2510044040/CV-SincNet"
 ADV_RUN_ID = "phase1_adv3b02_clic6_20260816_v2"
 CLEAN_RUN_ID = "phase1_clic_postfreeze_20260812_v4"
@@ -84,6 +97,22 @@ def _run_v2_formal_launcher(
 ) -> subprocess.CompletedProcess[str]:
     assert V2_LAUNCHER.is_file(), "ADV v2 formal prediction launcher is absent"
     return _run_script(V2_LAUNCHER, *arguments, environment=environment)
+
+
+def _run_v3_smoke_launcher(
+    *arguments: str,
+    environment: dict[str, str] | None = None,
+) -> subprocess.CompletedProcess[str]:
+    assert V3_SMOKE_LAUNCHER.is_file(), "ADV v3 file-backed smoke launcher is absent"
+    return _run_script(V3_SMOKE_LAUNCHER, *arguments, environment=environment)
+
+
+def _run_v3_formal_launcher(
+    *arguments: str,
+    environment: dict[str, str] | None = None,
+) -> subprocess.CompletedProcess[str]:
+    assert V3_LAUNCHER.is_file(), "ADV v3 formal prediction launcher is absent"
+    return _run_script(V3_LAUNCHER, *arguments, environment=environment)
 
 
 def _load_file_module(path: Path, *, name: str, missing: str):
@@ -531,3 +560,52 @@ def test_v2_formal_requires_completed_smoke_before_any_output(tmp_path: Path) ->
     assert "formal v2 requires a complete F1 target-prediction smoke receipt" in result.stderr
     assert not (project_root / "runs" / V2_RUN_ID).exists()
     assert not (project_root / "logs" / V2_RUN_ID).exists()
+
+
+def test_v3_smoke_dry_run_has_fresh_identity_and_v3_receipt_contract() -> None:
+    """Break caught: the repaired smoke reuses the consumed v2 identity."""
+
+    smoke = _load_file_module(
+        V3_SMOKE_ENTRY,
+        name="_adv3b02_target_prediction_f1_smoke_v3",
+        missing="ADV v3 file-backed smoke Python entry is absent",
+    )
+    assert smoke.SMOKE_SCHEMA == "cvs.phase1.adv3b02_target_prediction_technical_smoke.v3"
+    assert smoke.SMOKE_RUN_ID == V3_RUN_ID
+    result = _run_v3_smoke_launcher("--dry-run")
+    assert result.returncode == 0, result.stderr
+    lines = [line for line in result.stdout.splitlines() if line.strip()]
+    assert len(lines) == 1
+    line = lines[0]
+    assert f"run_id={V3_RUN_ID}" in line
+    assert f"/runs/{V3_SMOKE_ID}/F1_ADV3B02_CLIC" in line
+    assert Path(_command_tokens(line)[2]).name == V3_SMOKE_ENTRY.name
+    assert f"run_id={V2_RUN_ID}" not in line
+    assert f"/runs/{V2_SMOKE_ID}/F1_ADV3B02_CLIC" not in line
+
+
+def test_v3_formal_dry_run_and_gate_use_only_fresh_v3_identity(
+    tmp_path: Path,
+) -> None:
+    """Break caught: formal resumes v2 or starts without the v3 smoke receipt."""
+
+    result = _run_v3_formal_launcher("--dry-run")
+    assert result.returncode == 0, result.stderr
+    lines = [line for line in result.stdout.splitlines() if line.strip()]
+    assert len(lines) == 12
+    assert all("stage=ADV_TRAIN_CONFIG_SEAL" in line for line in lines[:6])
+    assert all("stage=ADV_TARGET_PREDICTION" in line for line in lines[6:])
+    for fold, seal_line, publish_line in zip(
+        range(1, 7), lines[:6], lines[6:], strict=True
+    ):
+        v3_output = f"{PROJECT_ROOT}/runs/{V3_RUN_ID}/F{fold}_ADV3B02_CLIC"
+        v2_output = f"{PROJECT_ROOT}/runs/{V2_RUN_ID}/F{fold}_ADV3B02_CLIC"
+        assert v3_output in seal_line and v3_output in publish_line
+        assert v2_output not in seal_line and v2_output not in publish_line
+
+    project_root = tmp_path / "project"
+    gated = _run_v3_formal_launcher(environment=_project_environment(project_root))
+    assert gated.returncode == 2
+    assert "formal v3 requires a complete F1 target-prediction smoke receipt" in gated.stderr
+    assert not (project_root / "runs" / V3_RUN_ID).exists()
+    assert not (project_root / "logs" / V3_RUN_ID).exists()

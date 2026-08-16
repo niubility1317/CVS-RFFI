@@ -705,6 +705,76 @@ def test_task2_seals_train_config_only_from_checkpoint_completion_and_clean_v4(
         _seal_train_config(adv, paths, output)
 
 
+def test_task2_sealer_accepts_empty_optional_top_level_wisig_shas(
+    tmp_path: Path,
+) -> None:
+    """Real ADV artifacts bind WiSig through the self-sealed split receipt."""
+
+    import torch
+
+    adv = _load_task2_module()
+    paths = _write_training_authorities(tmp_path)
+    checkpoint = torch.load(
+        paths["checkpoint"], map_location="cpu", weights_only=False
+    )
+    checkpoint["args"]["wisig_pkl_sha256"] = ""
+    torch.save(checkpoint, paths["checkpoint"])
+    completion = json.loads(paths["completion"].read_text(encoding="utf-8"))
+    completion["wisig_pkl_sha256"] = ""
+    completion["selected_checkpoint_sha256"] = sha256_file(paths["checkpoint"])
+    _write_json(paths["completion"], completion)
+    output = tmp_path / "real-artifact-style.train_config.json"
+
+    assert _seal_train_config(adv, paths, output) == output.resolve()
+    sealed = json.loads(output.read_text(encoding="utf-8"))
+    assert sealed["wisig_pkl_sha256"] == sha256_file(paths["wisig"])
+    assert sealed["normalized"]["dataset_provenance"]["wisig_pkl_sha256"] == sha256_file(
+        paths["wisig"]
+    )
+
+
+@pytest.mark.parametrize(
+    "drift",
+    ("checkpoint-top-level", "completion-top-level", "nested-receipt"),
+)
+def test_task2_sealer_rejects_nonempty_or_nested_wisig_sha_drift(
+    tmp_path: Path, drift: str
+) -> None:
+    """Optional copies may be empty, but nonempty copies and the receipt must agree."""
+
+    import torch
+
+    adv = _load_task2_module()
+    paths = _write_training_authorities(tmp_path)
+    checkpoint = torch.load(
+        paths["checkpoint"], map_location="cpu", weights_only=False
+    )
+    completion = json.loads(paths["completion"].read_text(encoding="utf-8"))
+    bad_sha = "0" * 64
+    if drift == "checkpoint-top-level":
+        checkpoint["args"]["wisig_pkl_sha256"] = bad_sha
+    elif drift == "completion-top-level":
+        completion["wisig_pkl_sha256"] = bad_sha
+    else:
+        checkpoint["args"]["wisig_pkl_sha256"] = ""
+        completion["wisig_pkl_sha256"] = ""
+        for receipt in (
+            checkpoint["split_info"]["source_split_receipt"],
+            completion["source_split_receipt"],
+        ):
+            receipt["wisig_pkl_sha256"] = bad_sha
+            receipt.pop("split_manifest_sha256")
+            receipt["split_manifest_sha256"] = TARGET.canonical_sha256(receipt)
+    torch.save(checkpoint, paths["checkpoint"])
+    completion["selected_checkpoint_sha256"] = sha256_file(paths["checkpoint"])
+    _write_json(paths["completion"], completion)
+    output = tmp_path / f"{drift}.train_config.json"
+
+    with pytest.raises(Exception, match="WiSig|wisig|SHA|drift"):
+        _seal_train_config(adv, paths, output)
+    assert not output.exists()
+
+
 @pytest.mark.parametrize("axis", ("receiver", "day"))
 def test_task2_sealer_rejects_same_count_wrong_wisig_physical_axis(
     tmp_path: Path, axis: str

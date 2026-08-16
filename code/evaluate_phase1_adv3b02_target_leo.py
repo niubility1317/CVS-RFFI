@@ -154,7 +154,9 @@ def _validate_self_sha(
     return result
 
 
-def _validate_source_split_receipt(value: Any, *, wisig_sha: str) -> dict[str, Any]:
+def _validate_source_split_receipt(
+    value: Any, *, wisig_sha: str | None = None
+) -> dict[str, Any]:
     receipt = _validate_self_sha(
         _mapping(value, label="ADV source split receipt"),
         sha_field="split_manifest_sha256",
@@ -166,9 +168,10 @@ def _validate_source_split_receipt(value: Any, *, wisig_sha: str) -> dict[str, A
         raise ADV3B02TargetProtocolError("ADV source split seed drift")
     if receipt.get("split_mode") != "tx_rx_day_1_6_3":
         raise ADV3B02TargetProtocolError("ADV source split mode drift")
-    if _require_sha(
+    receipt_wisig_sha = _require_sha(
         receipt.get("wisig_pkl_sha256"), label="ADV source split WiSig"
-    ) != wisig_sha:
+    )
+    if wisig_sha is not None and receipt_wisig_sha != wisig_sha:
         raise ADV3B02TargetProtocolError("ADV source split WiSig SHA drift")
     source_days = _ids(receipt.get("source_days"), label="ADV source day indices")
     source_receivers = _ids(
@@ -328,7 +331,6 @@ def _validate_adv_checkpoint(path: Path) -> dict[str, Any]:
     ).strip():
         raise ADV3B02TargetProtocolError("ADV checkpoint WiSig path is missing")
     wisig_path = _path(wisig_path_value, label="ADV checkpoint WiSig dataset")
-    wisig_sha = _require_sha(args.get("wisig_pkl_sha256"), label="ADV checkpoint WiSig")
     if args.get("split_mode") != "tx_rx_day_1_6_3":
         raise ADV3B02TargetProtocolError("ADV checkpoint split mode drift")
     if _require_int(args.get("seed"), label="ADV checkpoint seed") != 392002:
@@ -342,8 +344,14 @@ def _validate_adv_checkpoint(path: Path) -> dict[str, Any]:
     if split_info.get("mode") != "tx_rx_day_1_6_3":
         raise ADV3B02TargetProtocolError("ADV checkpoint split_info mode drift")
     source_split = _validate_source_split_receipt(
-        split_info.get("source_split_receipt"), wisig_sha=wisig_sha
+        split_info.get("source_split_receipt")
     )
+    wisig_sha = source_split["wisig_pkl_sha256"]
+    args_wisig_sha = args.get("wisig_pkl_sha256")
+    if args_wisig_sha not in (None, "") and _require_sha(
+        args_wisig_sha, label="ADV checkpoint WiSig"
+    ) != wisig_sha:
+        raise ADV3B02TargetProtocolError("ADV checkpoint WiSig SHA drift")
     partition = _validate_tx_partition(split_info.get("tx_partition_receipt"))
     local_order = _ids(
         split_info.get("class_id_to_tx"),
@@ -428,14 +436,19 @@ def _read_completion(path: Path, *, checkpoint: Mapping[str, Any]) -> dict[str, 
         raise ADV3B02TargetProtocolError("ADV completion receipt schema drift")
     if payload.get("run_id") != _ADV_RUN_ID:
         raise ADV3B02TargetProtocolError("ADV completion receipt run identity drift")
-    for optional_field, expected_value in (
-        ("candidate_id", checkpoint["candidate_id"]),
-        ("wisig_pkl_sha256", checkpoint["wisig_sha256"]),
-    ):
-        if optional_field in payload and payload.get(optional_field) != expected_value:
-            raise ADV3B02TargetProtocolError(
-                f"ADV completion receipt {optional_field} drift"
-            )
+    if "candidate_id" in payload and payload.get("candidate_id") != checkpoint[
+        "candidate_id"
+    ]:
+        raise ADV3B02TargetProtocolError(
+            "ADV completion receipt candidate_id drift"
+        )
+    completion_wisig_sha = payload.get("wisig_pkl_sha256")
+    if completion_wisig_sha not in (None, "") and _require_sha(
+        completion_wisig_sha, label="ADV completion receipt WiSig"
+    ) != checkpoint["wisig_sha256"]:
+        raise ADV3B02TargetProtocolError(
+            "ADV completion receipt wisig_pkl_sha256 drift"
+        )
     baseline_fields = (
         "terminal_status",
         "exit_code",
