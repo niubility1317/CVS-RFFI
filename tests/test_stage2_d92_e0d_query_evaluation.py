@@ -2003,6 +2003,132 @@ def test_ccoc_codec_numeric_error_retries_once_with_e0_reference_builder(
     assert result["d92_e0d_ccoc_codec_fallback_component_execution_count"] == 1
 
 
+def test_ccoc_codec_fallback_mirrors_live_ledger_and_closes_query_audit(
+    monkeypatch,
+):
+    """Would fail if the real retry ledger had raw-only codec receipt fields."""
+
+    arm = slim.D92_E0D_ARMS["E0_FULL_CROSS_CLASS_OFFBLOCK_CONSENSUS"]
+    reference_result = _result(slim.D92_E0D_ARMS["E0_FULL_ONLY"], k_shot=10)
+    reference_before = dict(
+        reference_result.geometry_audit["before_covariance_audit"]
+    )
+    reference_after = dict(
+        reference_result.geometry_audit["final_covariance_audit"]
+    )
+    retry_template = _result(arm, k_shot=10)
+    build_arms: list[str] = []
+    audited_rows: list[dict] = []
+    retry_results: list[SimpleNamespace] = []
+
+    def fake_build(_d42, _basis, _weights, _ground_audit, *, arm_id):
+        build_arms.append(arm_id)
+
+        def reference_fit(_rows, _labels, class_count, k_shot):
+            source = (
+                reference_before
+                if int(class_count) == OLD_CLASS_COUNT
+                else reference_after
+            )
+            return (
+                np.zeros((int(class_count), d42.FEATURE_DIM), dtype=np.float32),
+                np.zeros(int(class_count), dtype=np.float32),
+                dict(source),
+            )
+
+        return reference_fit, [], []
+
+    def fake_d42_fit(*_args, **_kwargs):
+        return d42._compile_state(
+            tuple(f"tx_{index}" for index in range(11)),
+            OLD_CLASS_COUNT,
+            None,
+            None,
+            None,
+            "frozen",
+            precision="int8",
+        )
+
+    def overflow_compile(*_args, **_kwargs):
+        raise d42.D42UnifiedShrinkageLDAError("D42 intercept FP16 overflow")
+
+    calls = 0
+
+    def fake_run(**_kwargs):
+        nonlocal calls
+        calls += 1
+        fit, _, _ = d81_probe.build_d81_fit(None, None, None, {})
+        if calls == 1:
+            return d81_eval.fit_d42_unified_shrinkage_lda()
+        before = fit(
+            np.zeros((OLD_CLASS_COUNT * 10, d42.FEATURE_DIM), dtype=np.float32),
+            np.zeros(OLD_CLASS_COUNT * 10, dtype=np.int64),
+            OLD_CLASS_COUNT,
+            10,
+        )
+        after = fit(
+            np.zeros((11 * 10, d42.FEATURE_DIM), dtype=np.float32),
+            np.zeros(11 * 10, dtype=np.int64),
+            11,
+            10,
+        )
+        retry_result = retry_template
+        retry_result.geometry_audit["before_covariance_audit"] = before[2]
+        retry_result.geometry_audit["final_covariance_audit"] = after[2]
+        retry_results.append(retry_result)
+        audited_rows.append(
+            d81_eval._audit_fit(
+                retry_result,
+                scenario="leo_clear_weak",
+                k_shot=10,
+                old_count=OLD_CLASS_COUNT,
+                class_count=11,
+            )
+        )
+        return {
+            "candidate": d81_eval.CANDIDATE_D81,
+            "schema": d81_eval.SCHEMA,
+        }
+
+    monkeypatch.setattr(e0d_eval, "build_d92_e0d_fit", fake_build)
+    monkeypatch.setattr(d81_eval, "fit_d42_unified_shrinkage_lda", fake_d42_fit)
+    monkeypatch.setattr(d42, "_compile_state", overflow_compile)
+    monkeypatch.setattr(d81_eval, "run_d81_query_evaluation", fake_run)
+    result = e0d_eval.run_d92_e0d_query_evaluation(
+        arm_id=arm.arm_id,
+        **_allowed_kwargs(),
+    )
+
+    assert build_arms == [arm.arm_id, "E0_FULL_ONLY"]
+    assert result["d92_e0d_ccoc_codec_numeric_fallback"] is True
+    assert len(audited_rows) == 1
+    row = audited_rows[0]
+    after = retry_results[0].geometry_audit["final_covariance_audit"]
+    assert after["d92_ccoc_codec_fallback_component_execution_count"] == 3
+    assert after["d92_e0d_ccoc_codec_fallback_component_execution_count"] == 3
+    assert after["d92_e0d_ccoc_codec_fallback_scope"] == (
+        "whole_d42_retry_before_and_after"
+    )
+    assert row["d92_e0d_ccoc_codec_fallback_component_execution_count"] == 3
+    assert row["d92_e0d_ccoc_codec_fallback_scope"] == (
+        "whole_d42_retry_before_and_after"
+    )
+    assert "d92_ccoc_codec_fallback_component_execution_count" not in row
+    assert row["d92_e0d_ccoc_g0_eligible"] is False
+    assert row["d92_e0d_ccoc_g0_block_reason"] == "NUMERIC_FALLBACK_EXACT_E0"
+
+    after["d92_e0d_ccoc_codec_fallback_component_execution_count"] = 4
+    with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="CCOC"):
+        e0d_eval._audit_d92_e0d_fit(
+            retry_results[0],
+            arm=arm,
+            scenario="leo_clear_weak",
+            k_shot=10,
+            old_count=OLD_CLASS_COUNT,
+            class_count=11,
+        )
+
+
 def test_ccoc_technical_support_receipt_sink_is_support_only_and_state_stable(
     monkeypatch,
 ):

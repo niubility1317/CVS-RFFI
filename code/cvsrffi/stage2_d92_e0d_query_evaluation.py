@@ -18,6 +18,7 @@ from cvsrffi.stage2_d92_e0d_slim import (
     build_d92_e0d_fit,
     expected_total_component_fit_count,
 )
+from scripts import probe_d92_registration_balanced_covariance as d92_probe
 
 
 SCHEMA_BY_ARM = {
@@ -2972,6 +2973,12 @@ def run_d92_e0d_query_evaluation(
                 "d92_ccoc_query_role_oracle_access": False,
                 "d92_ccoc_query_class_quota_access": False,
                 "d92_ccoc_query_global_reassignment": False,
+                "d92_ccoc_codec_fallback_component_execution_count": len(
+                    ccoc_codec_execution_ledger
+                ),
+                "d92_ccoc_codec_fallback_scope": (
+                    "whole_d42_retry_before_and_after"
+                ),
             }
             mirrored = {
                 key.replace("d92_ccoc_", "d92_e0d_ccoc_"): value
@@ -3037,8 +3044,6 @@ def run_d92_e0d_query_evaluation(
                     "d92_e0d_two_state_registered_count_applies": True,
                     "d92_e0d_registered_d_mode_active": True,
                     "d92_e0d_registered_d_mode_effective": arm.registered_d_mode,
-                    "d92_ccoc_codec_fallback_component_execution_count": actual_count,
-                    "d92_ccoc_codec_fallback_scope": "whole_d42_retry_before_and_after",
                     **fallback_receipt(class_count),
                 }
             )
