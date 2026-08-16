@@ -111,6 +111,20 @@ def test_label_permutation_preserves_full_cycle_role_balance_and_receipts():
     assert torch.equal(relabeled_proxy_counts, torch.ones_like(relabeled_proxy_counts))
 
 
+def test_same_episode_is_label_permutation_equivalent_for_uneven_groups():
+    _, build_proxy_episode, _ = _proxy_api()
+    labels = torch.tensor([0, 1, 1, 2, 2, 2])
+    label_permutation = torch.tensor([2, 0, 1])
+    relabeled = label_permutation[labels]
+
+    original = build_proxy_episode(labels, split_role="val_cal", seed=9, episode_index=0)
+    permuted = build_proxy_episode(relabeled, split_role="val_cal", seed=9, episode_index=0)
+
+    assert torch.equal(permuted.proxy_rows, original.proxy_rows)
+    assert permuted.proxy_class == label_permutation[original.proxy_class].item()
+    assert dict(permuted.schedule_receipt) == dict(original.schedule_receipt)
+
+
 def test_schedule_receipt_contains_only_permutation_invariant_metadata():
     _, build_proxy_episode, _ = _proxy_api()
 

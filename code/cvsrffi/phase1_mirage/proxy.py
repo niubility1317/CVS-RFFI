@@ -69,12 +69,12 @@ def _validated_class_ids(class_ids: Sequence[int]) -> tuple[int, ...]:
     normalized = tuple(_require_integer(class_id, name="class ID") for class_id in raw_class_ids)
     if any(class_id < 0 for class_id in normalized):
         raise ProxyProtocolError("class IDs must be non-negative")
-    ordered = tuple(sorted(set(normalized)))
-    if tuple(range(len(ordered))) != ordered:
+    first_seen = tuple(dict.fromkeys(normalized))
+    if set(first_seen) != set(range(len(first_seen))):
         raise ProxyProtocolError("class IDs must be contiguous starting at 0")
-    if len(ordered) < 3:
+    if len(first_seen) < 3:
         raise ProxyProtocolError("proxy episode requires at least three classes")
-    return ordered
+    return first_seen
 
 
 def _validated_labels(labels: torch.Tensor) -> tuple[int, ...]:
@@ -102,15 +102,15 @@ def _require_approved_split_role(split_role: str) -> None:
 
 
 def proxy_class_for_episode(class_ids: Sequence[int], *, seed: int, episode_index: int) -> int:
-    """Choose one proxy class using the approved deterministic balanced cycle."""
+    """Choose one class from the sequence's anonymous first-seen group order."""
 
-    ordered = _validated_class_ids(class_ids)
+    first_seen = _validated_class_ids(class_ids)
     normalized_seed = _require_integer(seed, name="seed")
     normalized_episode_index = _require_integer(episode_index, name="episode_index")
     if normalized_episode_index < 0:
         raise ProxyProtocolError("episode_index must be non-negative")
-    offset = int(hashlib.sha256(f"{normalized_seed}:proxy".encode("utf-8")).hexdigest(), 16) % len(ordered)
-    return ordered[(offset + normalized_episode_index) % len(ordered)]
+    offset = int(hashlib.sha256(f"{normalized_seed}:proxy".encode("utf-8")).hexdigest(), 16) % len(first_seen)
+    return first_seen[(offset + normalized_episode_index) % len(first_seen)]
 
 
 def build_proxy_episode(
