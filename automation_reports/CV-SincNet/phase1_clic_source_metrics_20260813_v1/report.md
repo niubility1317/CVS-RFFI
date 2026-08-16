@@ -81,17 +81,28 @@
 
 ## Task3可追溯预注册：12臂source指标release
 
-- 当前状态：`IMPLEMENTING / NO_PERFORMANCE_RESULT`。本阶段只编排已经封存的training-v5、clean-v4、PAIR-v3和source-V缓存输入；不会读取target、query truth、target package或prediction输入。
+- 当前状态：`LOCAL_VERIFIED / NO_PERFORMANCE_RESULT`。本阶段只编排已经封存的training-v5、clean-v4、PAIR-v3和source-V缓存输入；不会读取target、query truth、target package或prediction输入。
 - run ID固定为`phase1_clic_source_metrics_20260813_v1`。输出根和日志根均为新建、不可覆盖路径；retry为`NO`，任何性能数值不参与调度、停止、重试、选择、复活或晋级。
 
 | ID | 来源 | 要求 | 目标文件 | 状态 | 验证 | 备注 |
 |---|---|---|---|---|---|---|
-| T3-01 | Task3 | 严格构建6份同fold C/G共享source-V缓存 | 新launcher、launcher测试 | pending | dry-run计数与路径断言 | 缓存按fold串行，单缓存只产生一个`F*_SHARED`工件对 |
-| T3-02 | Task3 | 生成12份C/G source-V forward，所有forward传对应clean-v4 NPZ | 新launcher、launcher测试 | pending | dry-run逐臂参数断言 | 每physical row的单次forward由既有exporter执行 |
-| T3-03 | Task3 | 生成12份fold C/G metrics receipt和1份六foldaggregate | 新launcher、launcher测试 | pending | dry-run逐fold参数与aggregate断言 | scorer只读PAIR-v3 proxy，CPU执行 |
-| T3-04 | Task3 | 固定12臂映射、6共享cache、forward每GPU最多2项、scorer CPU | 新launcher、launcher测试 | pending | dry-run GPU/CPU环境断言 | 不改变训练、公式、阈值或冻结方法 |
-| T3-05 | Task3 | fresh roots、拒绝覆盖、无target/query/truth/prediction输入 | 新launcher、launcher测试 | pending | dry-run禁止输入断言和非dry-run根保护 | source-only及`POST_TARGET_COMPLETION_AUDIT_NON_SELECTION`只由既有工件封存 |
-| T3-06 | Task3 | 预注册命令、路径、PID台账、预期工件、健康停止和retry=NO | 本报告 | pending | 报告复核 | 不访问N607，不报告性能结果 |
+| T3-01 | Task3 | 严格构建6份同fold C/G共享source-V缓存 | 新launcher、launcher测试 | verified | dry-run计数与路径断言 | 缓存先于任何consumer完成，单fold只产生一个`F*_SHARED`工件对 |
+| T3-02 | Task3 | 生成12份C/G source-V forward，所有forward传对应clean-v4 NPZ | 新launcher、launcher测试 | verified | dry-run逐臂参数断言 | 每physical row的单次forward由既有exporter执行 |
+| T3-03 | Task3 | 生成12臂fold C/G metrics证据和1份六foldaggregate | 新launcher、launcher测试 | verified | dry-run逐fold参数与aggregate断言 | 6份pair receipt各封C/G两臂；scorer只读PAIR-v3 proxy并在CPU执行 |
+| T3-04 | Task3 | 固定12臂映射、6共享cache、forward每GPU最多2项、scorer CPU | 新launcher、launcher测试 | verified | dry-run GPU/CPU环境断言 | 不改变训练、公式、阈值或冻结方法 |
+| T3-05 | Task3 | fresh roots、拒绝覆盖、无target/query/truth/prediction输入 | 新launcher、launcher测试 | verified | dry-run禁止输入断言和非dry-run根保护 | source-only及`POST_TARGET_COMPLETION_AUDIT_NON_SELECTION`只由既有工件封存 |
+| T3-06 | Task3 | 预注册命令、路径、PID台账、预期工件、健康停止和retry=NO | 本报告 | verified | 报告复核 | 不访问N607，不报告性能结果 |
+
+### Task3本地验证与N607交接合同
+
+- 实现提交：`08276ab4b87c5558c370572fa33fe272b5a5d169`；此前真实物理ID修复提交：`416c2498182f9b1fcc0db97fe74fe4685481bf32`。
+- 文件SHA256：launcher=`3F143E888B04DB373B4CE5C39906817818501D747E28DF103A264848CF917EEE`；launcher测试=`743B4C347E623F395314FA458BA6AC69F0F545A0FDF71D1EB9A06C86475FE7BF`。
+- 本地验证：`ssr-gpu`下launcher行为测试`3/3`通过；`bash -n`通过；dry-run精确`25`行=`6 cache+12 forward+6 pair score+1 aggregate`，禁止的target/query/truth/prediction/package/retry命中`0`；`git diff --check`通过。
+- 固定输入：training=`runs/phase1_clic12_20260812_v5`、clean=`runs/phase1_clic_postfreeze_20260812_v4`、PAIR=`runs/phase1_clic_source_pair_20260812_v3`、WiSig SHA256=`2b0a7a7488dd3650bcae7b1d80efbcffd1598aaa671ae6b0a0df2a24dc0f694f`。
+- 正式输出：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_clic_source_metrics_20260813_v1`；日志：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_clic_source_metrics_20260813_v1`；outer：`/home/szu2070436088/2510044040/CV-SincNet/phase1_clic_source_metrics_20260813_v1_outer.out`。
+- 正式入口：`nohup bash <immutable-release>/code/scripts/launch_phase1_clic_source_metrics12_v1_20260813.sh > /home/szu2070436088/2510044040/CV-SincNet/phase1_clic_source_metrics_20260813_v1_outer.out 2>&1 &`；环境为release内`CODE_ROOT`、`CVS-RFFI` Python、正式C/G forward使用GPU0..5且每卡最多2个并发consumer，score/aggregate强制CPU。
+- 启动前必须做direct N607 preflight、release/正式run/log/outer均ABSENT、输入和SHA闭合。强制先在独立smoke root执行F1共享cache+C/G consumer结构smoke；smoke失败则formal invocation保持0。smoke通过后才允许唯一formal invocation=1，retry=`NO`。
+- 健康停止：仅协议/SHA/覆盖/访问违规、launcher级确定性失败，或至少两个不同row在产出receipt前出现同一归一化异常指纹时停止精确run-owned进程树；绝不因accuracy、proxy AUROC或任何性能值停止、重试或选择。预期正式工件为6个共享cache+receipt、12个feature NPZ+binding、6个pair receipt、1个aggregate、PID表和分阶段日志。
 
 ## Task2 P1修复可追溯记录：source-V physical ID语义
 
