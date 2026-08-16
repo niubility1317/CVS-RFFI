@@ -6,6 +6,7 @@ import pytest
 
 from cvsrffi.stage2_d92_ccoc_g0 import (
     D92CCOCG0Error,
+    G0_SCENES,
     _maximum_cross_group_margin_quantum,
     validate_ccoc_g0,
 )
@@ -59,9 +60,20 @@ def _scene(*, candidate_margin: float = 3.0) -> tuple[dict, dict]:
 
 
 def _wrapped(reference: dict, candidate: dict) -> tuple[dict, dict]:
-    return {"scenes": {"leo_clear_weak": reference}}, {
-        "scenes": {"leo_clear_weak": candidate}
-    }
+    return _all_scenes(reference, candidate)
+
+
+def _all_scenes(reference: dict, candidate: dict) -> tuple[dict, dict]:
+    reference_rows = {}
+    candidate_rows = {}
+    for scene in G0_SCENES:
+        reference_row = deepcopy(reference)
+        candidate_row = deepcopy(candidate)
+        reference_row["scene"] = scene
+        candidate_row["scene"] = scene
+        reference_rows[scene] = reference_row
+        candidate_rows[scene] = candidate_row
+    return {"scenes": reference_rows}, {"scenes": candidate_rows}
 
 
 def test_quantum_uses_maximum_block_amplitude_and_all_four_scales() -> None:
@@ -133,3 +145,60 @@ def test_state_sha_must_differ_from_reference() -> None:
 
     assert result["gates"]["state"] is False
     assert result["pass"] is False
+
+
+def test_candidate_peak_gate_is_absolute_and_reference_cannot_offset_it() -> None:
+    reference, candidate = _scene()
+    reference["registration_incremental_peak_working_set_bytes"] = 500_000
+    candidate["registration_incremental_peak_working_set_bytes"] = 1_000_000
+
+    result = validate_ccoc_g0(*_wrapped(reference, candidate))
+
+    assert result["gates"]["peak"] is False
+    assert (
+        result["gates"]["registration_incremental_peak_working_set_bytes"]
+        is False
+    )
+    assert result["pass"] is False
+
+
+def test_scene_collection_must_equal_all_three_frozen_scenes() -> None:
+    reference, candidate = _scene()
+
+    with pytest.raises(D92CCOCG0Error, match="G0 scene set"):
+        validate_ccoc_g0(
+            {"scenes": {"leo_clear_weak": reference}},
+            {"scenes": {"leo_clear_weak": candidate}},
+        )
+
+
+def test_reference_and_candidate_query_disable_fields_are_all_gated() -> None:
+    reference, candidate = _scene()
+    reference["query_access"] = True
+    reference_rows, candidate_rows = _all_scenes(reference, candidate)
+
+    result = validate_ccoc_g0(reference_rows, candidate_rows)
+
+    assert result["gates"]["reference_query_access"] is False
+    assert result["gates"]["candidate_query_access"] is True
+    assert result["gates"]["query"] is False
+    assert result["pass"] is False
+
+
+def test_validation_reports_candidate_wall_and_ratio_p90() -> None:
+    reference, candidate = _scene()
+    reference_rows, candidate_rows = _all_scenes(reference, candidate)
+    reference_walls = [100_000_000, 100_000_000, 100_000_000]
+    candidate_walls = [100_000_000, 120_000_000, 130_000_000]
+    for index, scene in enumerate(G0_SCENES):
+        reference_rows["scenes"][scene]["registration_wall_time_ns"] = (
+            reference_walls[index]
+        )
+        candidate_rows["scenes"][scene]["registration_wall_time_ns"] = (
+            candidate_walls[index]
+        )
+
+    result = validate_ccoc_g0(reference_rows, candidate_rows)
+
+    assert result["candidate_wall_p90_ns"] == 130_000_000
+    assert result["candidate_reference_ratio_p90"] == 1.3

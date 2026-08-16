@@ -28,6 +28,16 @@ BLOCK_NAMES = ("z160", "fft96", "rf32")
 WALL_LIMIT_NS = 150_000_000
 WALL_RATIO_LIMIT = 1.50
 PEAK_DELTA_LIMIT_BYTES = 512 * 1024
+QUERY_DISABLE_FIELDS = (
+    "query_access",
+    "truth_access",
+    "query_fit_access",
+    "query_update_access",
+    "query_selection_access",
+    "query_role_oracle_access",
+    "query_class_quota_access",
+    "query_global_reassignment",
+)
 
 
 class D92CCOCG0Error(ValueError):
@@ -310,6 +320,15 @@ def _flag(row: Mapping[str, Any], *names: str) -> bool:
     return value is True
 
 
+def _query_disabled(row: Mapping[str, Any], field: str) -> bool:
+    return not _flag(
+        row,
+        field,
+        f"d92_e0d_{field}",
+        f"d92_ccoc_{field}",
+    )
+
+
 def _ccoc_g0_gates(
     reference: Mapping[str, Any],
     candidate: Mapping[str, Any],
@@ -322,11 +341,6 @@ def _ccoc_g0_gates(
     candidate_state = _state_sha(candidate)
     ref_wall = _resource_value(reference, "registration_wall_time_ns")
     cand_wall = _resource_value(candidate, "registration_wall_time_ns")
-    ref_peak = _resource_value(
-        reference,
-        "registration_incremental_peak_working_set_bytes",
-        "peak_delta_bytes",
-    )
     cand_peak = _resource_value(
         candidate,
         "registration_incremental_peak_working_set_bytes",
@@ -342,19 +356,18 @@ def _ccoc_g0_gates(
             rho_finite.append(_finite(value, "rho"))
         except D92CCOCG0Error:
             rho_finite.append(float("nan"))
-    query_fields = (
-        "query_access",
-        "truth_access",
-        "query_fit_access",
-        "query_update_access",
-        "query_selection_access",
-        "query_role_oracle_access",
-        "query_class_quota_access",
-        "query_global_reassignment",
-    )
-    query_gates = {
-        field: not _flag(candidate, field, f"d92_e0d_{field}")
-        for field in query_fields
+    reference_query_gates = {
+        f"reference_{field}": _query_disabled(reference, field)
+        for field in QUERY_DISABLE_FIELDS
+    }
+    candidate_query_gates = {
+        f"candidate_{field}": _query_disabled(candidate, field)
+        for field in QUERY_DISABLE_FIELDS
+    }
+    query_gates = {**reference_query_gates, **candidate_query_gates}
+    legacy_candidate_query_gates = {
+        field: candidate_query_gates[f"candidate_{field}"]
+        for field in QUERY_DISABLE_FIELDS
     }
     margin_delta = max((abs(float(value)) for value in margins.values()), default=0.0)
     candidate_fit = candidate.get("actual_full_fit_count")
@@ -375,9 +388,8 @@ def _ccoc_g0_gates(
         and cand_wall / ref_wall <= WALL_RATIO_LIMIT
     )
     peak_pass = (
-        ref_peak is not None
-        and cand_peak is not None
-        and cand_peak - ref_peak <= float(PEAK_DELTA_LIMIT_BYTES)
+        cand_peak is not None
+        and cand_peak <= float(PEAK_DELTA_LIMIT_BYTES)
     )
     state_bytes_pass = (
         reference.get("persistent_state_bytes") is not None
@@ -413,7 +425,16 @@ def _ccoc_g0_gates(
         "quantum": quantum > 0.0 and margin_delta >= quantum,
     }
     gates.update(query_gates)
+    gates.update(legacy_candidate_query_gates)
     return gates
+
+
+def _nearest_rank_p90(values: Sequence[float | None]) -> float | None:
+    if not values or any(value is None for value in values):
+        return None
+    ordered = sorted(float(value) for value in values if value is not None)
+    rank = max(0, math.ceil(0.90 * len(ordered)) - 1)
+    return float(ordered[rank])
 
 
 def validate_ccoc_g0(
@@ -424,12 +445,17 @@ def validate_ccoc_g0(
 
     reference = _scene_rows(reference_rows)
     candidate = _scene_rows(candidate_rows)
-    if set(reference) != set(candidate):
-        raise D92CCOCG0Error("reference/candidate scene identity mismatch")
+    expected_scenes = set(G0_SCENES)
+    if set(reference) != expected_scenes or set(candidate) != expected_scenes:
+        raise D92CCOCG0Error("G0 scene set mismatch")
     scene_results: dict[str, Any] = {}
     all_pass = True
     all_deltas: list[float] = []
     all_quanta: list[float] = []
+    candidate_walls: list[float | None] = []
+    candidate_reference_ratios: list[float | None] = []
+    candidate_wall_by_scene: dict[str, float | None] = {}
+    candidate_reference_ratio_by_scene: dict[str, float | None] = {}
     for scene in sorted(reference):
         ref_row = reference[scene]
         cand_row = candidate[scene]
@@ -444,6 +470,27 @@ def validate_ccoc_g0(
             "gates": gates,
             "pass": scene_pass,
         }
+        merged_reference = _merge_row(ref_row)
+        merged_candidate = _merge_row(cand_row)
+        candidate_wall = _resource_value(
+            merged_candidate,
+            "registration_wall_time_ns",
+        )
+        reference_wall = _resource_value(
+            merged_reference,
+            "registration_wall_time_ns",
+        )
+        candidate_ratio = (
+            candidate_wall / reference_wall
+            if candidate_wall is not None
+            and reference_wall is not None
+            and reference_wall > 0.0
+            else None
+        )
+        candidate_walls.append(candidate_wall)
+        candidate_reference_ratios.append(candidate_ratio)
+        candidate_wall_by_scene[scene] = candidate_wall
+        candidate_reference_ratio_by_scene[scene] = candidate_ratio
         all_pass = all_pass and scene_pass
         all_deltas.append(float(delta))
         all_quanta.append(float(quantum))
@@ -456,6 +503,15 @@ def validate_ccoc_g0(
         "scenes": scene_results,
         "max_cross_group_margin_change_abs": max(all_deltas),
         "cross_group_margin_quantum": max(all_quanta),
+        "candidate_wall_p90_ns": _nearest_rank_p90(candidate_walls),
+        "candidate_reference_ratio_p90": _nearest_rank_p90(
+            candidate_reference_ratios
+        ),
+        "candidate_reference_wall_ratio_p90": _nearest_rank_p90(
+            candidate_reference_ratios
+        ),
+        "candidate_wall_time_ns_by_scene": candidate_wall_by_scene,
+        "candidate_reference_ratio_by_scene": candidate_reference_ratio_by_scene,
         "gates": aggregate_gates,
         "scene_gates": {
             scene: bool(details["pass"])

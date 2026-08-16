@@ -98,30 +98,11 @@ def _run_arm(
 ) -> dict[str, Any]:
     """Run one frozen arm and collect only the support receipt callback."""
 
-    original_allowed = e0d._CCOC_ARM_IDS
-    original_ccoc_support_receipt = e0d._ccoc_support_receipt
-    # Task2 exposes the callback on the CCOC path.  The reference execution
-    # uses the same callback solely to expose its final D42 support receipt;
-    # no fit or prediction path is changed by this temporary admission.
-    if arm_id == REFERENCE_ARM:
-        e0d._CCOC_ARM_IDS = frozenset(set(original_allowed) | {REFERENCE_ARM})
-
-        def reference_ccoc_support_receipt(*call_args: Any, **call_kwargs: Any):
-            arm = call_kwargs.get("arm")
-            if getattr(arm, "arm_id", None) == REFERENCE_ARM:
-                return {}
-            return original_ccoc_support_receipt(*call_args, **call_kwargs)
-
-        e0d._ccoc_support_receipt = reference_ccoc_support_receipt
-    try:
-        return e0d.run_d92_e0d_query_evaluation(
-            arm_id=arm_id,
-            **_call_kwargs(args, output_root),
-            technical_support_receipt_sink=receipts.append,
-        )
-    finally:
-        e0d._CCOC_ARM_IDS = original_allowed
-        e0d._ccoc_support_receipt = original_ccoc_support_receipt
+    return e0d.run_d92_e0d_query_evaluation(
+        arm_id=arm_id,
+        **_call_kwargs(args, output_root),
+        technical_support_receipt_sink=receipts.append,
+    )
 
 
 def _rows_from_result(

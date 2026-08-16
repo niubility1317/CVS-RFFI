@@ -10,6 +10,31 @@ from scripts import run_d92_ccoc_g0
 from cvsrffi import stage2_d92_e0d_query_evaluation as e0d
 
 
+def _minimal_args(tmp_path: Path) -> argparse.Namespace:
+    return argparse.Namespace(
+        outer_key=run_d92_ccoc_g0.G0_OUTER_KEY,
+        reference_arm="E0_FULL_ONLY",
+        candidate_arm="E0_FULL_CROSS_CLASS_OFFBLOCK_CONSENSUS",
+        reference_output_root=str(tmp_path / "reference"),
+        candidate_output_root=str(tmp_path / "candidate"),
+        before_enrollment_package_root="before-enrollment",
+        before_enrollment_seal_path="before-enrollment.seal",
+        before_enrollment_seal_sha256="a" * 64,
+        before_apply_package_root="before-apply",
+        before_apply_seal_path="before-apply.seal",
+        before_apply_seal_sha256="b" * 64,
+        after_enrollment_package_root="after-enrollment",
+        after_enrollment_seal_path="after-enrollment.seal",
+        after_enrollment_seal_sha256="c" * 64,
+        after_apply_package_root="after-apply",
+        after_apply_seal_path="after-apply.seal",
+        after_apply_seal_sha256="d" * 64,
+        ground_component_dir="ground",
+        ground_manifest_sha256="e" * 64,
+        device="cuda:0",
+    )
+
+
 def test_parser_freezes_outer_and_two_arms() -> None:
     parser = run_d92_ccoc_g0.parser()
     args = parser.parse_args(
@@ -169,7 +194,7 @@ def test_run_joins_persisted_fit_audit_and_emits_marker(tmp_path, monkeypatch) -
                         else 120_000_000,
                         "registration_incremental_peak_working_set_bytes": 100
                         if arm_id == "E0_FULL_ONLY"
-                        else 524_388,
+                        else 524_288,
                     },
                     "d92_e0d_ccoc_active": arm_id != "E0_FULL_ONLY",
                     "d92_e0d_ccoc_fallback_active": False,
@@ -192,3 +217,54 @@ def test_run_joins_persisted_fit_audit_and_emits_marker(tmp_path, monkeypatch) -
         run_d92_ccoc_g0.G0_MARKER
     )
     assert e0d._CCOC_ARM_IDS == before
+
+
+def test_reference_arm_uses_formal_sink_without_private_ccoc_hooks(
+    tmp_path, monkeypatch
+) -> None:
+    args = _minimal_args(tmp_path)
+    observed: list[tuple[str, object]] = []
+
+    monkeypatch.setattr(
+        e0d,
+        "_CCOC_ARM_IDS",
+        frozenset({run_d92_ccoc_g0.CANDIDATE_ARM}),
+    )
+    monkeypatch.delattr(e0d, "_ccoc_support_receipt", raising=False)
+
+    def fake_run(*, arm_id, technical_support_receipt_sink, **_kwargs):
+        assert arm_id not in e0d._CCOC_ARM_IDS
+        assert not hasattr(e0d, "_ccoc_support_receipt")
+        observed.append((arm_id, technical_support_receipt_sink))
+        return {"schema": "fake"}
+
+    monkeypatch.setattr(e0d, "run_d92_e0d_query_evaluation", fake_run)
+    receipts: list[dict] = []
+
+    run_d92_ccoc_g0._run_arm(
+        args,
+        arm_id=run_d92_ccoc_g0.REFERENCE_ARM,
+        output_root=tmp_path / "reference",
+        receipts=receipts,
+    )
+
+    assert observed[0][0] == run_d92_ccoc_g0.REFERENCE_ARM
+    assert observed[0][1].__self__ is receipts
+    assert observed[0][1].__name__ == "append"
+
+
+def test_prereg_report_has_no_prefilled_runtime_pass_claim() -> None:
+    report_path = (
+        Path(__file__).parents[1]
+        / "automation_reports/CV-SincNet/"
+        "d92_e0_full_ccoc_g0_k10_20260813_v1/report.md"
+    )
+    text = report_path.read_text(encoding="utf-8")
+
+    assert (
+        "LOCAL_VERIFIED_READY_FOR_N607_HANDOFF / "
+        "NO_G0_RUNTIME_RESULT / NO_PERFORMANCE_RESULT"
+    ) in text
+    assert "G0_MECHANISM_RESOURCE_PASS" not in text
+    assert "expected_marker" in text
+    assert "D92_CCOC_G0_ACTIVE_QUANTUM_RESOURCE_PASS" in text
