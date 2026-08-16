@@ -137,3 +137,31 @@
 - 终态语义按冻结Git trainer实现核对：`_resolve_phase1_terminal_status`在P0机制未就绪时返回`NON_PROMOTABLE_P0_DISABLED`；随后代码将该终态映射为`terminal_exit_code=8`，并写入`promotion_ready=false`、`performance_result_available=false`、`phase1_training_complete=false`及source-only claim。因而receipt中的`status=COMPLETE`仅出现在嵌套heldout/component状态，不能覆盖顶层terminal status；`NON_PROMOTABLE_P0_DISABLED`与`exit_code=8`是技术终态及晋级门字段，不是accuracy、DG或其他性能结论，也不构成方法晋级声明。
 - 每fold正式终端receipt顶层均为`terminal_status=NON_PROMOTABLE_P0_DISABLED`、`exit_code=8`、`formal_performance_claim=false`；六个status文件虽保留首行`running`，但均有独立`exit=0`与完成时间，且checkpoint、terminal、completion receipt和相关小型技术artifact均存在。该status文本不一致已原样记录，不改写远端状态。
 - 进程/GPU/连接清理：远端wrapper/trainer均为`0`，NVIDIA compute app为空；本地SSH/SCP进程=`0`，到N607的`ESTABLISHED=0`，仅观察到TIME_WAIT。最终状态为`ARTIFACTS_COMPLETE / NON_PROMOTABLE_P0_DISABLED / NO_PERFORMANCE_RESULT`，不进行性能解释或晋级。
+
+## 15.Task2盲预测入口本地版本化交接（2026-08-16）
+
+### 15.1状态与范围
+
+- Task2当前状态为`LOCAL_VERIFIED / INDEPENDENT_ALLOW / BLIND_ARTIFACTS_NOT_YET_PRODUCED / NO_PERFORMANCE_RESULT`。本轮只版本化本地入口、测试与追踪记录；未访问N607、未运行六fold盲预测、未生成任何target prediction或truth-side metrics工件，也未启动实验。
+- 生产入口为`code/evaluate_phase1_adv3b02_target_leo.py`，测试为`code/tests/test_phase1_adv3b02_target_reference.py`。入口只接受run=`phase1_adv3b02_clic6_20260816_v2`；永久停止的v1不得冒充或复用。
+- source-only封存API为`seal_adv3b02_train_data_config(checkpoint_path, completion_receipt_path, clean_v4_npz_path, output_path)`，CLI模式为`--seal-train-data-config`。blind publisher API为`publish_adv3b02_target_prediction(checkpoint_path, completion_receipt_path, train_config_manifest_path, iq_only_package_path, output_path)`，CLI模式为`--publish-target-prediction`。publisher的四类盲输入仅为checkpoint、同目录completion receipt、sealed train-config和现有IQ-only package；没有truth sidecar、known-test config、ADV reference或metrics输入。
+
+### 15.2冻结终态、物理轴与盲态合同
+
+- sealer只接受以下完整且精确的baseline terminal tuple：`terminal_status=NON_PROMOTABLE_P0_DISABLED`、`exit_code=8`、`phase1_training_complete=false`、`technical_only=false`、`formal_performance_claim=false`、`claim=PHASE1_SOURCE_ONLY_TRAINING_RECEIPT`。任一缺字段或漂移均拒绝；sealed train-config与prediction继续封存`baseline_terminal_status`、`baseline_exit_code=8`、`baseline_promotion_ready=false`和`formal_performance_claim=false`。这些字段仅表达技术终态与晋级门，不是性能结果，也不得重标为COMPLETE或promotable。
+- sealer从checkpoint内绑定的`args.wisig_pkl`派生source authority，要求其原始SHA与checkpoint及clean-v4的WiSig SHA逐项一致；重开数据集的`rx_list/capture_date_list`，将checkpoint的source receiver/day index轴映射为有序物理标签，要求与clean-v4的`source_receiver_ids/source_day_ids`严格相等，并在写出前后重验WiSig、checkpoint、completion和clean-v4的SHA。train-config封存`cvs.phase1.wisig_source_physical_axis_binding.v1`、index-to-physical映射及各canonical SHA；publisher只重读并逐字段核验sealed binding与normalized physical IDs，不重开WiSig或clean-v4。
+- clean-v4只用于既有严格manifest/metadata重开，测试证明没有读取`z_id/features/tx_logits`等feature member。publisher在任何row forward前验证全部输入与SHA，随后对3120个opaque row各执行一次forward，封存checkpoint、completion、train-config normalized/physical-axis binding、package manifest与received-IQ SHA；`fit/update/retry/selection=0`，不输出truth、role或TX/RX/day身份，且输出不可覆盖并受TOCTOU检查。
+- 真实重建烟测通过production `SSDG.train_ssdg`模型构建路径生成最小真实state，直接调用`load_verified_adv3b02_runtime`，以一条received-IQ完成一次forward并得到有限的4-logit输出；测试没有runtime loader/reconstructor替身，也没有truth、known、reference或query输入。
+
+### 15.3TDD、独立复审与残余P2
+
+- 初始RED在Task2模块/API尚不存在时按预期失败；P1修复轮的唯一RED选择集共6项，结果为`5 failed, 1 passed`、exit=`1`。五项失败分别暴露checkpoint-bound WiSig路径未封存、同数量但错误的receiver/day物理映射未拒绝、WiSig dataset TOCTOU未拒绝，以及publisher对重算SHA后的physical-axis映射漂移未闭合；已存在的真实SSDG重建烟测通过。
+- GREEN为单次串行wrapper：两个owned文件`py_compile`均通过；完整owned测试文件结果为`34 passed, 0 failed, 1 warning in 7.70s`、exit=`0`；两个CLI模式的help均通过。唯一warning是`code/model.py:701`既有`torch.cuda.amp.autocast`弃用提示，不改变本合同。
+- 独立fresh复审结果为`P0=0 / P1=0 / P2=2 / ALLOW`，独立复跑为`34/34`。P2-1：seal阶段为读取RX/day轴调用`dataset_wisig.load_wisig_compact_pkl`，底层完整`pickle.load`会载入含data的source-only对象；未触及target/query，也没有N607 OOM证据，保留为内存与metadata-only优化风险。P2-2：共享CLI在`--publish-target-prediction`模式不会显式拒绝额外且无用的`--clean-v4-npz`；该值未传入publisher、publisher不重开clean，且没有扩大truth/known/reference输入面，保留为窄接口卫生问题。两项均不阻塞，本轮按裁定不修复。
+
+本次版本化前owned实现SHA256如下：
+
+|文件|SHA256|
+|---|---|
+|`code/evaluate_phase1_adv3b02_target_leo.py`|`b17931166da99adcea9bb45ddb6c3ffa0239dbc6df301e6a58b46ecdc8829729`|
+|`code/tests/test_phase1_adv3b02_target_reference.py`|`fcc1d4d6a939cd734414399c58427904cc1c1b6247985e37e3702407eec75ddb`|
