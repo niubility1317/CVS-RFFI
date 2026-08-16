@@ -3,7 +3,7 @@
 ## 1.状态、范围与非性能边界
 
 - 实验ID：`phase1_adv3b02_clic6_20260816_v2`。
-- 当前状态：`LOCAL_GREEN / LOCAL_ROOT_CAUSE_CONFIRMED / NO_N607_LAUNCH / NO_PERFORMANCE_RESULT`。
+- 当前状态：`STATIC_HASH_REGISTRATION_DEFECT_CONFIRMED / REMOTE_RESUME_NOT_YET_AUTHORIZED / SMOKE0 / FORMAL0`。
 - v1状态：`phase1_adv3b02_clic6_20260813_v1`永久保持`SMOKE_STOPPED_TECHNICAL_GATE / FORMAL_NOT_LAUNCHED / NO_PERFORMANCE_RESULT`；formal invocation=`0`，retry=`NO`，不得恢复、重试、覆盖或改写v1。
 - 本v2只修正技术烟测对训练器既有可恢复梯度跳过的观测合同；不改ADV3B02方法、loss、fold、seed、epoch、数据角色、source-only边界或target权限。
 - 本报告和任何v2 receipt均为技术证据，不记录、读取或解释accuracy、DG、proxy或其他性能值。
@@ -79,7 +79,14 @@
 - 合同commit：`2e0b0b8990c013659c362b346f20d47d53e48ac7`。既有archive：268175360 bytes，SHA256=`C1A876278424B21DA45D47550F4E01F5BEF0849163FAC8B6316C2B61C6DEBFFE`；按brief不重建、不解包、不重复SCP。
 - direct N607 preflight：`VERIFIED`。server=`dell-DSS8440`，user=`szu2070436088`，project可见；GPU0--7均24,576 MiB、utilization=0、memory.used=1 MiB；独立`/proc`扫描无v2目标进程。upload bytes/SHA与local archive闭合；staging存在，final不存在；formal run/log、smoke run/log/outer均不存在。
 - archive member safety：5103 members，absolute/traversal=0，link members=0。staging相关入口、输入ManySig、fresh roots均通过；远端Python=`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；trainer/test `py_compile=PASS`，两份v2 `bash -n=PASS`，formal dry-run=6，smoke dry-run=1且raw cap=4，冻结关键flags=PASS，禁止target/query/truth/package/scorer输入=NONE。
-- 静态hash闭合失败：brief要求trainer canonical SHA=`5D4DF42F9A9C2B6AA1D862D4D2C41F55E28B4C643A48C8F146068C0079930F9F`；archive/staging trainer physical SHA=`1E9EA659E77466BDBB4F94944671FA691418F17188379EFFD6E6E187C59B2068`，LF-normalized SHA=`2E5A6C6AA72CBA049D5D03023F29542F2A21F86534979F1A6786C19466171279`。test、formal launcher、smoke wrapper和prereg report的LF SHA均与brief闭合。该差异不能通过改hash、改archive、改release或改source-metrics工作树解决。
-- 终态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。未将staging原子rename为final；SMOKE invocation=`0`、FORMAL invocation=`0`、retry=`NO`；无smoke receipt、checkpoint、run artifact或formal log；release final artifact=0、formal logs=0、smoke logs=0。无run-owned PID可停止；GPU保持空闲；本地SSH/SCP进程与TCP22均清理为`VERIFIED`。
+- 历史初始静态停止（按brief原始hash注册）：brief要求trainer canonical SHA=`5D4DF42F9A9C2B6AA1D862D4D2C41F55E28B4C643A48C8F146068C0079930F9F`；archive/staging trainer physical SHA=`1E9EA659E77466BDBB4F94944671FA691418F17188379EFFD6E6E187C59B2068`，LF-normalized SHA=`2E5A6C6AA72CBA049D5D03023F29542F2A21F86534979F1A6786C19466171279`。该历史停止证据保留，不表示release通过。
+- 历史停止时终态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。未将staging原子rename为final；SMOKE invocation=`0`、FORMAL invocation=`0`、retry=`NO`；无smoke receipt、checkpoint、run artifact或formal log；release final artifact=0、formal logs=0、smoke logs=0。无run-owned PID可停止；GPU保持空闲；本地SSH/SCP进程与TCP22均清理为`VERIFIED`。
 - 首个技术fingerprint：`STATIC_HASH_MISMATCH trainer canonical_sha256 expected=5D4DF42F9A9C2B6AA1D862D4D2C41F55E28B4C643A48C8F146068C0079930F9F actual_archive_stage_raw=1E9EA659E77466BDBB4F94944671FA691418F17188379EFFD6E6E187C59B2068 actual_archive_stage_lf=2E5A6C6AA72CBA049D5D03023F29542F2A21F86534979F1A6786C19466171279`。
 - worktree中其他agent的source-metrics staged/unstaged改动及未跟踪`conversation_index/`未触碰、未stage、未revert。
+
+## 9.证据更正（2026-08-16）
+
+- 主控独立复核确认Git/archive canonical冻结SHA为`2E5A6C6AA72CBA049D5D03023F29542F2A21F86534979F1A6786C19466171279`，与`git show 2e0b0b89:code/SSDG/train_ssdg.py`及archive/staging的LF-normalized内容一致。
+- trainer physical SHA分别为：当前Windows worktree=`5D4DF42F9A9C2B6AA1D862D4D2C41F55E28B4C643A48C8F146068C0079930F9F`；local archive member raw=`1E9EA659E77466BDBB4F94944671FA691418F17188379EFFD6E6E187C59B2068`；remote staging raw=`1E9EA659E77466BDBB4F94944671FA691418F17188379EFFD6E6E187C59B2068`；archive/staging LF-normalized=`2E5A6C6AA72CBA049D5D03023F29542F2A21F86534979F1A6786C19466171279`。
+- 更正结论：`5D4DF...`是当前Windows worktree physical hash，不是Git/archive canonical hash；原始静态停止保留为hash registration defect的历史记录。该更正不构成release通过、final落地、smoke通过或formal授权。
+- 当前状态：`STATIC_HASH_REGISTRATION_DEFECT_CONFIRMED / REMOTE_RESUME_NOT_YET_AUTHORIZED / SMOKE0 / FORMAL0`；不得恢复远端流程，除非主控另行完成并授权新的registration闭环。
