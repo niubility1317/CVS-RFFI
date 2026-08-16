@@ -132,6 +132,27 @@ class _InjectNonFiniteIdentityHead(nn.Module):
         )
 
 
+class _InjectInfiniteQualityHead(nn.Module):
+    """Controlled test double for an overflow before the quality sigmoid."""
+
+    def forward(self, quality_aux: torch.Tensor) -> torch.Tensor:
+        return torch.full(
+            (quality_aux.shape[0], 1), float("inf"), dtype=quality_aux.dtype, device=quality_aux.device
+        )
+
+
+class _InjectMaxFiniteIdentityHead(nn.Module):
+    """Controlled test double whose finite entries overflow an L2 reduction."""
+
+    def forward(self, features: torch.Tensor) -> torch.Tensor:
+        return torch.full(
+            (features.shape[0], 160),
+            torch.finfo(torch.float32).max,
+            dtype=features.dtype,
+            device=features.device,
+        )
+
+
 def test_formal_mode_raises_for_a_controlled_internal_nonfinite_output():
     """Catch a formal-mode regression that silently passes a corrupt internal tensor."""
 
@@ -140,4 +161,26 @@ def test_formal_mode_raises_for_a_controlled_internal_nonfinite_output():
     model.identity_head = _InjectNonFiniteIdentityHead()
 
     with pytest.raises(FloatingPointError, match="identity_head"):
+        model(torch.randn(2, 2, 256))
+
+
+def test_formal_mode_raises_when_quality_logit_is_nonfinite_before_sigmoid():
+    """Catch a sigmoid that would otherwise turn an infinite internal logit into one."""
+
+    MIRAGEConfig, MIRAGEEncoder, _ = _model_api()
+    model = MIRAGEEncoder(MIRAGEConfig(formal_mode=True))
+    model.quality_head = _InjectInfiniteQualityHead()
+
+    with pytest.raises(FloatingPointError, match="quality_logit"):
+        model(torch.randn(2, 2, 256))
+
+
+def test_formal_mode_raises_when_finite_identity_entries_overflow_the_l2_norm():
+    """Catch an overflowing norm before a normalization routine can emit zero vectors."""
+
+    MIRAGEConfig, MIRAGEEncoder, _ = _model_api()
+    model = MIRAGEEncoder(MIRAGEConfig(formal_mode=True))
+    model.identity_head = _InjectMaxFiniteIdentityHead()
+
+    with pytest.raises(FloatingPointError, match="z_id_norm"):
         model(torch.randn(2, 2, 256))

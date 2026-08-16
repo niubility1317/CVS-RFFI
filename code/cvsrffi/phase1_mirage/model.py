@@ -12,7 +12,6 @@ import math
 
 import torch
 from torch import Tensor, nn
-from torch.nn import functional as functional
 
 
 @dataclass(frozen=True)
@@ -238,7 +237,9 @@ class MIRAGEEncoder(nn.Module):
             tokens = transformer_layer(tokens)
             tokens = self._require_finite(tokens, f"transformer_layer_{layer_index}")
 
-        quality = torch.sigmoid(self.quality_head(quality_aux)).squeeze(-1)
+        quality_logit = self.quality_head(quality_aux)
+        quality_logit = self._require_finite(quality_logit, "quality_logit")
+        quality = torch.sigmoid(quality_logit).squeeze(-1)
         quality = self._require_finite(quality, "quality_head")
         local_summary = local_tokens.mean(dim=1)
         global_summary = tokens.mean(dim=1)
@@ -249,9 +250,10 @@ class MIRAGEEncoder(nn.Module):
         z_id_raw = self.identity_head(fused)
         z_id_raw = self._require_finite(z_id_raw, "identity_head")
         z_id_norm = torch.linalg.vector_norm(z_id_raw, dim=1)
+        z_id_norm = self._require_finite(z_id_norm, "z_id_norm")
         if bool((z_id_norm <= 1e-12).any()):
             raise FloatingPointError("identity_head produced a zero-norm identity representation")
-        z_id = functional.normalize(z_id_raw, p=2.0, dim=1, eps=1e-12)
+        z_id = z_id_raw / z_id_norm[:, None]
         z_id = self._require_finite(z_id, "z_id")
 
         z_dom = self.domain_head(torch.cat((fused, quality_aux), dim=1))
