@@ -51,3 +51,7 @@ v1在远端`prepare`前由启动探针触发`ModuleNotFoundError`，因此保留
 ## 2026-08-17 v3 SHA-only归档发布
 
 `d92_e0_full_ccoc_hard9k1_20260817_v3`是新的、不可覆盖的CCOC-16发布身份。它只移除解包归档必须包含Git commit/HEAD对象的冗余运行时门；17个method-lock源文件仍按实际字节SHA256逐文件fail-closed验证，48个归档源成员另由source manifest闭合，prepare明确报告`sha256_only`。v3配置相对v2只改变`runtime.output_root`；9+1矩阵、三scene、1MiB注册hard、512KiB target、150ms/1.50 hard以及严格query MAC/state/零访问门均不变。当前状态为`LOCAL_VERIFIED_READY_FOR_N607_HANDOFF / NO_HARD9_RUNTIME_RESULT / NO_PERFORMANCE_RESULT`；v1/v2证据保持不变，未执行SSH、SCP、N607启动或analyzer。
+
+## 2026-08-17 v4 E0资源基线身份发布
+
+`d92_e0_full_ccoc_hard9k1_20260817_v4`是新的CCOC-16不可覆盖身份。E0 fit-audit改为对当前文件执行存在性、非symlink、outer/scene/E0身份与resource schema/query MAC/state/wall/peak合法性验证，实际observed SHA只写入manifest/receipt追溯，不再与历史SHA比较。`runtime_source_verification_mode=sha256_only`、truth/prediction闭包、9+1矩阵、资源阈值和query门不变。状态为`LOCAL_VERIFIED_READY_FOR_N607_HANDOFF / NO_HARD9_RUNTIME_RESULT / NO_PERFORMANCE_RESULT`；v1/v2/v3证据不变，未执行SSH、SCP、N607启动或analyzer。
