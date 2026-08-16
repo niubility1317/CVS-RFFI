@@ -40,6 +40,8 @@
 |log root|`/home/szu2070436088/2510044040/CV-SincNet/logs/d92_e0_full_ccoc_hard9k1_20260816_v1`|
 |local retrieval（预登记）|`E:/type10-7/local_artifacts/d92_e0_full_ccoc_hard9k1_20260816_v1`|
 
+唯一detached启动命令：`cd /home/szu2070436088/2510044040/CV-SincNet/runs && nohup bash ./d92_ccoc_hard9_k1_driver_d92_e0_full_ccoc_hard9k1_20260816_v1.sh >./d92_e0_full_ccoc_hard9k1_20260816_v1.launch.out 2>./d92_e0_full_ccoc_hard9k1_20260816_v1.launch.err </dev/null &`。
+
 launch先检查source/output/log路径不存在，再解包、核验逐成员manifest、编译和import closure；之后按`prepare→truth-free smoke→8 shards`顺序执行。smoke只检查真实checkpoint的truth-free结构收据，只有smoke结构收据闭合后才会创建8个shard进程。runner只产生健康、prediction/COMMIT/fit/resource/score/summary计数和异常fingerprint等结构收据，launch不读取性能指标，也不自动运行`analyze_d92_ccoc_hard9_k1.py`。若共享systemic-stop receipt出现，外部协调只调用冻结`coordinator-stop`并以本run的active-process receipts核验归属；不使用宽泛kill，不重试。
 
 ## 本地验证记录
