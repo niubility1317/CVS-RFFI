@@ -1,43 +1,52 @@
 D92 E0 FULL CCOC K10 G0 DELIVERY MANIFEST
-schema=cvs.phase2.d92_ccoc.release_manifest.v1
+schema=cvs.phase2.d92_ccoc.release_manifest.v2
 run_id=d92_e0_full_ccoc_g0_k10_20260813_v1
-scientific_entry_commit=ce7973a5
+scientific_entry_commit=df17c06e
 release_commit_message=chore: prepare D92 CCOC G0 release
 outer_key=rx_7_7__seed_713106__k_10__new_5
 reference_arm=E0_FULL_ONLY
 candidate_arm=E0_FULL_CROSS_CLASS_OFFBLOCK_CONSENSUS
-marker=D92_CCOC_G0_ACTIVE_QUANTUM_RESOURCE_PASS
-source_root=/home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_g0_source_ce7973a5_20260813_v1
-source_archive=/home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_g0_source_ce7973a5_20260813_v1.tar.gz
+expected_marker=D92_CCOC_G0_ACTIVE_QUANTUM_RESOURCE_PASS
+status=LOCAL_VERIFIED_READY_FOR_N607_HANDOFF / NO_G0_RUNTIME_RESULT / NO_PERFORMANCE_RESULT
+source_root=/home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_g0_source_df17c06e_20260813_v1
+source_archive=/home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_g0_source_df17c06e_20260813_v1.tar.gz
 output_root=/home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0_full_ccoc_g0_k10_20260813_v1
 logs_root=/home/szu2070436088/2510044040/CV-SincNet/logs/d92_e0_full_ccoc_g0_k10_20260813_v1
 repo_release_root=E:/type10-7/code/snapshots/d92_125wt/automation_reports/CV-SincNet/d92_e0_full_ccoc_g0_k10_20260813_v1
 external_mirror_root=E:/type10-7/automation_reports/CV-SincNet/d92_e0_full_ccoc_g0_k10_20260813_v1
 
+[source_manifest]
+relative_path=code/CCOC_G0_SOURCE_MANIFEST.sha256
+entry_count=33
+sha256=527cc9b102567c74a36ec19599e8ec6ac07f013f2a94ca7753a73ce1f3ba10a5
+basis=git index blob bytes at scientific_entry_commit, LF, manifest excluded from its own entries
+
 [archive]
-relative_path=runtime/d92_ccoc_g0_source_ce7973a5_20260813_v1.tar.gz
-remote_path=/home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_g0_source_ce7973a5_20260813_v1.tar.gz
-size_bytes=214489
-member_count=37
-sha256=bdf9ddddcc9fb08d754e9ca07cc50b411622f0fd1fb36dd9586b6d6b18037c44
+relative_path=runtime/d92_ccoc_g0_source_df17c06e_20260813_v1.tar.gz
+remote_path=/home/szu2070436088/2510044040/CV-SincNet/runs/d92_ccoc_g0_source_df17c06e_20260813_v1.tar.gz
+size_bytes=215746
+member_count=38
+file_member_count=34
+sha256=af9bcc8d75e12010ff8fa18ea4aad75d40ee2886744384bafe4ca23738e0f538
 tar_safety=pass_no_absolute_no_parent_no_code_code
 required_entry=code/cvsrffi/stage2_d92_ccoc_g0.py
 required_entry=code/cvsrffi/stage2_d92_e0d_query_evaluation.py
 required_entry=code/scripts/run_d92_ccoc_g0.py
+required_entry=code/CCOC_G0_SOURCE_MANIFEST.sha256
 
 [repo_release_files]
 relative_path=report.md
-size_bytes=7631
-sha256=1fe58af16d8bf3d15d7df5e051ce20937fd1f8cf682e8a40475eb959f444a1f0
+size_bytes=7062
+sha256=ad81bdf855cf5570c2f0da6b4dd77a59cb063e08b1defd71c8c81b332f01613c
 relative_path=launch.sh
-size_bytes=7144
-sha256=fd1d91f2221452ee21b413edec01b4757c946c3896a783ea881b9deddc994bea
+size_bytes=7650
+sha256=d29d3b148e0d91c896e4559f4e1547146a10d615201caf8322b632cfe53833d9
 relative_path=DELIVERY_MANIFEST.txt
 encoding=utf-8
 line_endings=LF
-relative_path=runtime/d92_ccoc_g0_source_ce7973a5_20260813_v1.tar.gz
-size_bytes=214489
-sha256=bdf9ddddcc9fb08d754e9ca07cc50b411622f0fd1fb36dd9586b6d6b18037c44
+relative_path=runtime/d92_ccoc_g0_source_df17c06e_20260813_v1.tar.gz
+size_bytes=215746
+sha256=af9bcc8d75e12010ff8fa18ea4aad75d40ee2886744384bafe4ca23738e0f538
 
 [external_mirror]
 mirror_root_is_git=false
@@ -48,20 +57,22 @@ relative_path=launch.sh
 source=E:/type10-7/code/snapshots/d92_125wt/automation_reports/CV-SincNet/d92_e0_full_ccoc_g0_k10_20260813_v1/launch.sh
 relative_path=DELIVERY_MANIFEST.txt
 source=E:/type10-7/code/snapshots/d92_125wt/automation_reports/CV-SincNet/d92_e0_full_ccoc_g0_k10_20260813_v1/DELIVERY_MANIFEST.txt
-relative_path=runtime/d92_ccoc_g0_source_ce7973a5_20260813_v1.tar.gz
-source=E:/type10-7/code/snapshots/d92_125wt/automation_reports/CV-SincNet/d92_e0_full_ccoc_g0_k10_20260813_v1/runtime/d92_ccoc_g0_source_ce7973a5_20260813_v1.tar.gz
+relative_path=runtime/d92_ccoc_g0_source_df17c06e_20260813_v1.tar.gz
+source=E:/type10-7/code/snapshots/d92_125wt/automation_reports/CV-SincNet/d92_e0_full_ccoc_g0_k10_20260813_v1/runtime/d92_ccoc_g0_source_df17c06e_20260813_v1.tar.gz
 verification=byte_identical_sha256_for_all_four_files
 
 [validation]
-red=module_and_cli_collection_failure_before_implementation
-green=15_focused_tests_passed
+red=6_expected_failures_before_implementation
+green=21_focused_tests_passed
 py_compile=pass
 cli_help=pass
 bash_n=pass
 archive_import_closure=pass
 json_utf8_semantic_read=pass
 tar_boundary=pass
+source_manifest=33_of_33
 overwrite_guard=pass
-truth_or_scorer_execution=false
+runtime_executed=false
 performance_read=false
-manifest_payload_sha256=987ec252913ce3eb5ffb418f938da468c6aa3c1e1219dffc789e03646449ecc2
+prelaunch_superseded_old_archive=ce7973a5_archive_removed_only_from_this_release_runtime
+manifest_payload_sha256=09f91b147126ab8338dffdb23a813763507a5ee707098ecebe540b193d12ce03
