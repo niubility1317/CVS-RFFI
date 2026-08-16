@@ -558,6 +558,136 @@ def _active_csoas_receipt(*, class_count: int = 11, k_shot: int = 5) -> dict:
     }
 
 
+def _ccoc_receipt(
+    *, registered: bool, class_count: int, k_shot: int, fallback: bool = False
+) -> dict:
+    """Return a literal support-only CCOC receipt for query-audit tests."""
+
+    active = bool(registered and k_shot > 2 and not fallback)
+    reason = (
+        "NOT_REGISTERED_STATE"
+        if not registered
+        else (
+            "K1_K2_EXACT_D92_FULL_ALIAS"
+            if k_shot <= 2
+            else ("injected_ccoc_numeric_failure" if fallback else None)
+        )
+    )
+    raw_reason = (
+        "before_exact_d81"
+        if not registered
+        else (
+            "k1_k2_exact_d81_fallback"
+            if k_shot <= 2
+            else ("injected_ccoc_numeric_failure" if fallback else None)
+        )
+    )
+    raw = {
+        "d92_ccoc_active": active,
+        "d92_ccoc_fallback_active": bool(fallback),
+        "d92_ccoc_fallback_reason": raw_reason,
+        "d92_ccoc_formula_revision": "pairwise_cosine_v1",
+        "d92_ccoc_formula": (
+            "Sigma=0.5*mix(Sigma_old,rho_old)+0.5*mix(Sigma_new,rho_new)"
+        ),
+        "d92_ccoc_old_rho": 0.25 if active else None,
+        "d92_ccoc_new_rho": 0.75 if active else None,
+        "d92_ccoc_old_group_class_count": OLD_CLASS_COUNT,
+        "d92_ccoc_new_group_class_count": class_count - OLD_CLASS_COUNT,
+        "d92_ccoc_old_offblock_norm_min": 1.0 if active else None,
+        "d92_ccoc_old_offblock_norm_max": 2.0 if active else None,
+        "d92_ccoc_new_offblock_norm_min": 1.5 if active else None,
+        "d92_ccoc_new_offblock_norm_max": 2.5 if active else None,
+        "d92_ccoc_old_pairwise_cosine_raw": 0.25 if active else None,
+        "d92_ccoc_new_pairwise_cosine_raw": 0.75 if active else None,
+        "d92_ccoc_canonicalization": (
+            "lexicographic_float32_row_bytes_then_float64_reduce"
+        ),
+        "d92_ccoc_canonicalization_tie_policy": (
+            "float32_row_bytes_then_float64_row_bytes_"
+            "duplicate_class_handle_fail_closed"
+        ),
+        "d92_ccoc_crossblock_passes_per_class": 2 if active else 0,
+        "d92_ccoc_upper_block_count": 3 if active else 0,
+        "d92_ccoc_covariance_symmetric": active,
+        "d92_ccoc_full_endpoint_reused": active,
+        "d92_ccoc_full_endpoint_reuse": active,
+        "d92_ccoc_additional_fit_count": 0,
+        "d92_ccoc_additional_full_fit_count": 0,
+        "d92_ccoc_additional_block_fit_count": 0,
+        "d92_ccoc_additional_loo_fit_count": 0,
+        "d92_ccoc_additional_fisher_fit_count": 0,
+        "d92_ccoc_additional_scan_count": 0,
+        "d92_ccoc_block_fit_count": 0,
+        "d92_ccoc_loo_fit_count": 0,
+        "d92_ccoc_fisher_fit_count": 0,
+        "d92_ccoc_scan_count": 0,
+        "d92_ccoc_hyperparameter_scan_count": 0,
+        "d92_ccoc_weight_scan_count": 0,
+        "d92_ccoc_dense_solve_count": 1 if active else 0,
+        "d92_ccoc_compile_solve_count": 1 if active else 0,
+        "d92_ccoc_full_solve_count": 1 if active else 0,
+        "d92_ccoc_full_dense_288_solve_count": 1 if active else 0,
+        "d92_ccoc_cholesky_check_count": 3 if active else 0,
+        "d92_ccoc_cholesky_endpoint_check_count": 2 if active else 0,
+        "d92_ccoc_cholesky_final_check_count": 1 if active else 0,
+        "d92_ccoc_cholesky_pass": active,
+        "d92_ccoc_old_endpoint_cholesky_min_diagonal": 0.2 if active else None,
+        "d92_ccoc_new_endpoint_cholesky_min_diagonal": 0.3 if active else None,
+        "d92_ccoc_final_cholesky_min_diagonal": 0.4 if active else None,
+        "d92_ccoc_support_macs_upper_bound": 1_000 if active else 0,
+        "d92_ccoc_workspace_upper_accumulators_bytes": 1_024 if active else 0,
+        "d92_ccoc_workspace_cross_block_buffer_bytes": 512 if active else 0,
+        "d92_ccoc_workspace_residual_buffer_bytes": 256 if active else 0,
+        "d92_ccoc_workspace_numeric_bytes_upper_bound": 1_792 if active else 0,
+        "d92_ccoc_workspace_frozen_k10_numeric_bytes_upper_bound": (
+            334_336 if active else 0
+        ),
+        "d92_ccoc_support_transient_bytes_upper_bound": 1_792 if active else 0,
+        "d92_ccoc_persistent_state_bytes_delta": 0,
+        "d92_ccoc_persistent_bytes_delta": 0,
+        "d92_ccoc_query_state_bytes_delta": 0,
+        "d92_ccoc_query_bytes_delta": 0,
+        "d92_ccoc_query_macs_delta": 0,
+        "d92_ccoc_query_macs": 0,
+        "d92_ccoc_query_rows_used": 0,
+        "d92_ccoc_query_fit_access": False,
+        "d92_ccoc_query_update_access": False,
+        "d92_ccoc_query_selection_access": False,
+        "d92_ccoc_query_truth_access": False,
+        "d92_ccoc_query_role_oracle_access": False,
+        "d92_ccoc_query_class_quota_access": False,
+        "d92_ccoc_query_global_reassignment": False,
+        "d92_ccoc_candidate_attempt_fit_count": 1 if registered and k_shot > 2 else 0,
+        "d92_ccoc_fallback_reference_fit_count": 1 if fallback else 0,
+        "d92_ccoc_candidate_statistic_receipt_available": active,
+        "d92_ccoc_fallback_reference_full_head_byte_exact": (
+            True if fallback else None
+        ),
+        "d92_ccoc_paired_e0_codec_state_equal": None,
+    }
+    mirrored = {
+        key.replace("d92_ccoc_", "d92_e0d_ccoc_"): value
+        for key, value in raw.items()
+    }
+    mirrored.update(
+        {
+            "d92_e0d_ccoc_fallback_reason": reason,
+            "d92_e0d_ccoc_g0_eligible": active,
+            "d92_e0d_ccoc_g0_block_reason": (
+                (
+                    None
+                    if active
+                    else (
+                        "NUMERIC_FALLBACK_EXACT_E0" if fallback else reason
+                    )
+                )
+            ),
+        }
+    )
+    return {**raw, **mirrored}
+
+
 def test_audit_keeps_existing_resource_fields_and_adds_state_fingerprints():
     """Would fail if a state array was omitted from the per-scene parity receipt."""
 
@@ -1590,3 +1720,259 @@ def test_pareto_query_audit_keeps_low_k_alias_reason():
     ] is None
     assert row["d92_e0d_pareto_distill_deployment_cross_group_margin_quantum"] is None
     assert row["d92_e0d_pareto_distill_deployment_cross_group_quantum_pass"] is None
+
+
+def _ccoc_result(*, fallback: bool = False):
+    arm = slim.D92_E0D_ARMS["E0_FULL_CROSS_CLASS_OFFBLOCK_CONSENSUS"]
+    result = _result(arm, k_shot=10)
+    result.geometry_audit["before_covariance_audit"].update(
+        _ccoc_receipt(registered=False, class_count=OLD_CLASS_COUNT, k_shot=10)
+    )
+    result.geometry_audit["final_covariance_audit"].update(
+        _ccoc_receipt(
+            registered=True,
+            class_count=11,
+            k_shot=10,
+            fallback=fallback,
+        )
+    )
+    if fallback:
+        after = result.geometry_audit["final_covariance_audit"]
+        after["d92_e0d_actual_component_fit_count"] = 2
+        after["d92_e0d_total_component_fit_count"] = 3
+        after["d92_e0d_actual_component_inventory"] = {
+            "schema": "cvs.phase2.d92.actual_component_fit_inventory.v1",
+            "actual_component_fit_count": 2,
+            "actual_component_calls": [
+                {"arm": "full", "status": "ccoc_numeric_attempt"},
+                {"arm": "full", "status": "ccoc_exact_e0_reference"},
+            ],
+        }
+    return arm, result
+
+
+def test_ccoc_query_audit_closes_complete_support_receipt():
+    """Would fail if CCOC active rows omitted rho, SPD, inventory, or no-query proof."""
+
+    arm, result = _ccoc_result()
+    row = e0d_eval._audit_d92_e0d_fit(
+        result,
+        arm=arm,
+        scenario="leo_clear_weak",
+        k_shot=10,
+        old_count=OLD_CLASS_COUNT,
+        class_count=11,
+    )
+    assert row["d92_e0d_ccoc_active"] is True
+    assert row["d92_e0d_ccoc_g0_eligible"] is True
+    assert row["d92_e0d_ccoc_old_rho"] == pytest.approx(0.25)
+    assert row["d92_e0d_ccoc_new_rho"] == pytest.approx(0.75)
+    assert row["d92_e0d_ccoc_dense_solve_count"] == 1
+    assert row["d92_e0d_ccoc_workspace_frozen_k10_numeric_bytes_upper_bound"] == (
+        334_336
+    )
+    assert row["d92_e0d_ccoc_query_global_reassignment"] is False
+
+
+@pytest.mark.parametrize(
+    ("field", "tampered"),
+    (
+        ("d92_ccoc_old_rho", 1.5),
+        ("d92_ccoc_additional_fit_count", 1),
+        ("d92_ccoc_canonicalization", "input_row_order"),
+        ("d92_ccoc_dense_solve_count", 2),
+        ("d92_ccoc_persistent_state_bytes_delta", 1),
+        ("d92_ccoc_query_macs_delta", 1),
+        ("d92_ccoc_query_selection_access", True),
+    ),
+)
+def test_ccoc_query_audit_rejects_rho_inventory_and_query_tamper(field, tampered):
+    """Would fail if a raw CCOC receipt could diverge from its mirrored closure."""
+
+    arm, result = _ccoc_result()
+    result.geometry_audit["final_covariance_audit"][field] = tampered
+    with pytest.raises(e0d_eval.D92E0DQueryEvaluationError, match="CCOC"):
+        e0d_eval._audit_d92_e0d_fit(
+            result,
+            arm=arm,
+            scenario="leo_clear_weak",
+            k_shot=10,
+            old_count=OLD_CLASS_COUNT,
+            class_count=11,
+        )
+
+
+def test_ccoc_query_audit_accepts_core_numeric_e0_fallback_but_blocks_g0():
+    """Would fail if a two-after-fit CCOC fallback were treated as active G0."""
+
+    arm, result = _ccoc_result(fallback=True)
+    row = e0d_eval._audit_d92_e0d_fit(
+        result,
+        arm=arm,
+        scenario="leo_clear_weak",
+        k_shot=10,
+        old_count=OLD_CLASS_COUNT,
+        class_count=11,
+    )
+    assert row["after_total_component_fit_count"] == 3
+    assert row["d92_e0d_ccoc_active"] is False
+    assert row["d92_e0d_ccoc_fallback_active"] is True
+    assert row["d92_e0d_ccoc_g0_eligible"] is False
+    assert row["d92_e0d_ccoc_g0_block_reason"] == "NUMERIC_FALLBACK_EXACT_E0"
+
+
+def test_ccoc_codec_numeric_error_retries_once_with_e0_reference_builder(
+    monkeypatch,
+):
+    """Would fail if a registered-after CCOC codec error retried the candidate."""
+
+    build_arms: list[str] = []
+
+    def fake_build(_d42, _basis, _weights, _ground_audit, *, arm_id):
+        build_arms.append(arm_id)
+        return (lambda *_args: (None, None, {})), [], []
+
+    def fake_d42_fit(*_args, **_kwargs):
+        return d42._compile_state(
+            tuple(f"tx_{index}" for index in range(11)),
+            OLD_CLASS_COUNT,
+            None,
+            None,
+            None,
+            "frozen",
+            precision="int8",
+        )
+
+    def overflow_compile(*_args, **_kwargs):
+        raise d42.D42UnifiedShrinkageLDAError("D42 intercept FP16 overflow")
+
+    calls = 0
+
+    def fake_run(**_kwargs):
+        nonlocal calls
+        calls += 1
+        d81_probe.build_d81_fit(None, None, None, {})
+        if calls == 1:
+            d81_eval.fit_d42_unified_shrinkage_lda()
+        return {"candidate": d81_eval.CANDIDATE_D81, "schema": d81_eval.SCHEMA}
+
+    monkeypatch.setattr(e0d_eval, "build_d92_e0d_fit", fake_build)
+    monkeypatch.setattr(d81_eval, "fit_d42_unified_shrinkage_lda", fake_d42_fit)
+    monkeypatch.setattr(d42, "_compile_state", overflow_compile)
+    monkeypatch.setattr(d81_eval, "run_d81_query_evaluation", fake_run)
+    result = e0d_eval.run_d92_e0d_query_evaluation(
+        arm_id="E0_FULL_CROSS_CLASS_OFFBLOCK_CONSENSUS", **_allowed_kwargs()
+    )
+    assert calls == 2
+    assert build_arms == [
+        "E0_FULL_CROSS_CLASS_OFFBLOCK_CONSENSUS",
+        "E0_FULL_ONLY",
+    ]
+    assert result["d92_e0d_ccoc_codec_numeric_fallback"] is True
+    assert result["d92_e0d_ccoc_codec_fallback_component_execution_count"] == 1
+
+
+def test_ccoc_technical_support_receipt_sink_is_support_only_and_state_stable(
+    monkeypatch,
+):
+    """Would fail if the optional CCOC sink persisted support or read query state."""
+
+    captured: list[dict] = []
+    state = _state(classes=11, old_count=OLD_CLASS_COUNT, marker=3)
+    before_fingerprint = e0d_eval._state_fingerprint_sha256(state)
+    result_object = SimpleNamespace(state=state)
+    old_classes = tuple(f"tx_{index}" for index in range(OLD_CLASS_COUNT))
+    new_classes = tuple(f"tx_{index}" for index in range(OLD_CLASS_COUNT, 11))
+    rows, targets = _tpce_support(class_count=11, k_shot=3)
+
+    def fake_build(_d42, _basis, _weights, _ground_audit, *, arm_id):
+        assert arm_id == "E0_FULL_CROSS_CLASS_OFFBLOCK_CONSENSUS"
+        return (lambda *_args: (None, None, {})), [], []
+
+    def fake_d42_fit(*_args, **_kwargs):
+        return result_object
+
+    def fake_audit(_result, **_kwargs):
+        return {"support_only": True}
+
+    def fake_run(**_kwargs):
+        d81_probe.build_d81_fit(None, None, None, {})
+        fitted = d81_eval.fit_d42_unified_shrinkage_lda(
+            rows[targets < OLD_CLASS_COUNT],
+            np.asarray(
+                [old_classes[index] for index in targets[targets < OLD_CLASS_COUNT]]
+            ),
+            old_classes,
+            rows[targets >= OLD_CLASS_COUNT],
+            np.asarray(
+                [
+                    new_classes[index - OLD_CLASS_COUNT]
+                    for index in targets[targets >= OLD_CLASS_COUNT]
+                ]
+            ),
+            new_classes,
+        )
+        assert fitted is result_object
+        assert e0d_eval._state_fingerprint_sha256(state) == before_fingerprint
+        d81_eval._audit_fit(
+            fitted,
+            scenario="leo_clear_weak",
+            k_shot=3,
+            old_count=OLD_CLASS_COUNT,
+            class_count=11,
+        )
+        return {"candidate": d81_eval.CANDIDATE_D81, "schema": d81_eval.SCHEMA}
+
+    monkeypatch.setattr(e0d_eval, "build_d92_e0d_fit", fake_build)
+    monkeypatch.setattr(d81_eval, "fit_d42_unified_shrinkage_lda", fake_d42_fit)
+    monkeypatch.setattr(e0d_eval, "_audit_d92_e0d_fit", fake_audit)
+    monkeypatch.setattr(d81_eval, "run_d81_query_evaluation", fake_run)
+    e0d_eval.run_d92_e0d_query_evaluation(
+        arm_id="E0_FULL_CROSS_CLASS_OFFBLOCK_CONSENSUS",
+        technical_support_receipt_sink=captured.append,
+        **_allowed_kwargs(),
+    )
+
+    assert len(captured) == 1
+    receipt = captured[0]
+    assert receipt["scene"] == "leo_clear_weak"
+    assert receipt["after_state_fingerprint_sha256"] == before_fingerprint
+    assert receipt["query_access"] is False
+    assert receipt["truth_access"] is False
+    assert len(receipt["canonical_support_handles"]) == len(rows)
+    assert len(receipt["cross_group_margin_by_support_handle"]) == len(rows)
+    assert set(receipt["support_block_absmax"]) == {"z160", "fft96", "rf32"}
+    assert len(receipt["scale1_block_max_abs"]) == 3
+    assert len(receipt["scale2_block_max_abs"]) == 3
+    assert set(receipt).isdisjoint(
+        {"support_features", "query_features", "query_tokens", "truth"}
+    )
+
+
+def test_ccoc_none_sink_skips_technical_support_capture(monkeypatch):
+    """The default sink must add no support receipt work to a CCOC evaluation."""
+
+    def fake_build(_d42, _basis, _weights, _ground_audit, *, arm_id):
+        assert arm_id == "E0_FULL_CROSS_CLASS_OFFBLOCK_CONSENSUS"
+        return (lambda *_args: (None, None, {})), [], []
+
+    def fake_d42_fit(*_args, **_kwargs):
+        return SimpleNamespace()
+
+    def unexpected_capture(*_args, **_kwargs):
+        raise AssertionError("default None sink must not capture support")
+
+    def fake_run(**_kwargs):
+        d81_probe.build_d81_fit(None, None, None, {})
+        d81_eval.fit_d42_unified_shrinkage_lda()
+        return {"candidate": d81_eval.CANDIDATE_D81, "schema": d81_eval.SCHEMA}
+
+    monkeypatch.setattr(e0d_eval, "build_d92_e0d_fit", fake_build)
+    monkeypatch.setattr(d81_eval, "fit_d42_unified_shrinkage_lda", fake_d42_fit)
+    monkeypatch.setattr(e0d_eval, "_ccoc_technical_support_receipt", unexpected_capture)
+    monkeypatch.setattr(d81_eval, "run_d81_query_evaluation", fake_run)
+    result = e0d_eval.run_d92_e0d_query_evaluation(
+        arm_id="E0_FULL_CROSS_CLASS_OFFBLOCK_CONSENSUS", **_allowed_kwargs()
+    )
+
+    assert result["candidate"] == "d92_e0_full_cross_class_offblock_consensus"

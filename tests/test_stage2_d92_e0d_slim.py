@@ -8,6 +8,7 @@ import pytest
 from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
 from cvsrffi import stage2_d92_e0d_slim as slim
 from cvsrffi.stage2_d92_cauchy_scatter_oas import D92CauchyScatterOASNumericalError
+from cvsrffi.stage2_d92_cross_class_offblock_consensus import D92CCOCNumericalError
 from cvsrffi.stage2_d92_registration_balanced_covariance import OLD_CLASS_COUNT
 from cvsrffi.stage2_d92_e0d_slim import (
     D92_E0D_ARMS,
@@ -635,3 +636,84 @@ def test_csoas_numeric_fallback_reports_two_after_fits_and_is_not_g0_eligible(
     assert inventory["full_component_fit_count"] == 2
     assert audit["d92_e0d_total_component_fit_count"] == 3
     assert audit["d92_e0d_csoas_g0_eligible"] is False
+
+
+def test_ccoc_arm_has_one_active_full_fit_and_low_k_exact_aliases():
+    """Would fail if CCOC changed its frozen arm, count, or K1/K2 route."""
+
+    arm = D92_E0D_ARMS["E0_FULL_CROSS_CLASS_OFFBLOCK_CONSENSUS"]
+    assert (
+        arm.candidate_id,
+        arm.registered_d_mode,
+        arm.b_enabled,
+        arm.e_enabled,
+    ) == (
+        "d92_e0_full_cross_class_offblock_consensus",
+        "ccoc_full",
+        True,
+        False,
+    )
+    assert expected_total_component_fit_count(10, arm_id=arm.arm_id) == 2
+    coefficient, intercept, audit, _, transforms = _run(
+        arm.arm_id, class_count=11, k_shot=10
+    )
+    inventory = audit["d92_e0d_actual_component_inventory"]
+    assert coefficient.shape == (11, 288)
+    assert intercept.shape == (11,)
+    assert audit["d92_e0d_registered_d_mode_effective"] == "ccoc_full"
+    assert audit["d92_e0d_actual_component_fit_count"] == 1
+    assert audit["d92_e0d_total_component_fit_count"] == 2
+    assert inventory["full_component_fit_count"] == 1
+    assert inventory["block3_component_fit_count"] == 0
+    assert len(transforms) == 1
+    assert audit["d92_e0d_ccoc_active"] is True
+    assert audit["d92_e0d_ccoc_fallback_active"] is False
+    assert audit["d92_e0d_ccoc_g0_eligible"] is True
+    for shots in (1, 2):
+        _, _, low_audit, _, _ = _run(
+            arm.arm_id, class_count=11, k_shot=shots, repeated=True
+        )
+        assert low_audit["d92_e0d_registered_d_mode_effective"] == "d92_full_alias"
+        assert low_audit["d92_e0d_k1_k2_exact_full_alias"] is True
+        assert low_audit["d92_e0d_ccoc_active"] is False
+        assert low_audit["d92_e0d_ccoc_fallback_active"] is False
+        assert low_audit["d92_e0d_ccoc_fallback_reason"] == (
+            "K1_K2_EXACT_D92_FULL_ALIAS"
+        )
+
+
+def test_ccoc_numeric_fallback_reports_real_three_fit_two_state_inventory(
+    monkeypatch,
+):
+    """Would fail if CCOC fallback fabricated a normal two-fit receipt or G0."""
+
+    def injected_numeric_failure(_d42, _statistics):
+        raise D92CCOCNumericalError("injected_ccoc_numeric_failure")
+
+    monkeypatch.setattr(
+        slim.d92_probe,
+        "compile_cross_class_offblock_consensus_affine",
+        injected_numeric_failure,
+        raising=False,
+    )
+    basis, weights, ground_audit = _ground()
+    fit, _, _ = slim.build_d92_e0d_fit(
+        d42,
+        basis,
+        weights,
+        ground_audit,
+        arm_id="E0_FULL_CROSS_CLASS_OFFBLOCK_CONSENSUS",
+        resource_measure=_measure,
+    )
+    rows, labels = _support(class_count=11, k_shot=10)
+    _, _, audit = fit(rows, labels, 11, 10)
+
+    inventory = audit["d92_e0d_actual_component_inventory"]
+    assert audit["d92_e0d_ccoc_active"] is False
+    assert audit["d92_e0d_ccoc_fallback_active"] is True
+    assert audit["d92_e0d_actual_component_fit_count"] == 2
+    assert audit["d92_e0d_total_component_fit_count"] == 3
+    assert inventory["actual_component_fit_count"] == 2
+    assert inventory["full_component_fit_count"] == 2
+    assert audit["d92_e0d_ccoc_g0_eligible"] is False
+    assert audit["d92_e0d_ccoc_g0_block_reason"] == "NUMERIC_FALLBACK_EXACT_E0"

@@ -9,6 +9,7 @@ from typing import Any, Callable, Mapping
 import numpy as np
 
 from cvsrffi.stage2_registration_resource_probe import measure_registration_call
+from cvsrffi.stage2_d92_registration_balanced_covariance import OLD_CLASS_COUNT
 from scripts import probe_d92_registration_balanced_covariance as d92_probe
 
 
@@ -39,6 +40,13 @@ D92_E0D_ARMS: Mapping[str, D92E0DSlimArmSpec] = MappingProxyType(
         ),
         "E0_FULL_CSOAS": D92E0DSlimArmSpec(
             "E0_FULL_CSOAS", "d92_e0_full_csoas", "csoas_full", True, False
+        ),
+        "E0_FULL_CROSS_CLASS_OFFBLOCK_CONSENSUS": D92E0DSlimArmSpec(
+            "E0_FULL_CROSS_CLASS_OFFBLOCK_CONSENSUS",
+            "d92_e0_full_cross_class_offblock_consensus",
+            "ccoc_full",
+            True,
+            False,
         ),
         "E0_BLOCK_ONLY": D92E0DSlimArmSpec(
             "E0_BLOCK_ONLY", "d92_e0d_e0_block_only", "block_only", True, False
@@ -116,7 +124,12 @@ def expected_total_component_fit_count(k_shot: int, *, arm_id: str) -> int:
         return 8 * (k + 1)
     if arm.registered_d_mode == "fusion_loo":
         return 4 * (k + 1)
-    if arm.registered_d_mode in ("full_only", "block_only", "csoas_full"):
+    if arm.registered_d_mode in (
+        "full_only",
+        "block_only",
+        "csoas_full",
+        "ccoc_full",
+    ):
         return 2
     if arm.registered_d_mode == "newguard_maxmin":
         return 2
@@ -245,6 +258,273 @@ def _csoas_receipt(
     return result
 
 
+def _ccoc_receipt(
+    base_audit: dict[str, Any],
+    *,
+    arm: D92E0DSlimArmSpec,
+    registered: bool,
+    k_shot: int,
+    class_count: int,
+) -> dict[str, Any]:
+    """Mirror and validate the frozen CCOC support-only lifecycle receipt."""
+
+    if arm.registered_d_mode != "ccoc_full":
+        return {}
+    raw = {
+        key: value
+        for key, value in base_audit.items()
+        if key.startswith("d92_ccoc_")
+    }
+    active_lifecycle = bool(registered and int(k_shot) > 2)
+    inactive_reason = (
+        "NOT_REGISTERED_STATE"
+        if not registered
+        else "K1_K2_EXACT_D92_FULL_ALIAS"
+    )
+    if not active_lifecycle:
+        expected_raw_reason = (
+            "before_exact_d81"
+            if not registered
+            else "k1_k2_exact_d81_fallback"
+        )
+        required = (
+            "d92_ccoc_active",
+            "d92_ccoc_fallback_active",
+            "d92_ccoc_fallback_reason",
+            "d92_ccoc_old_rho",
+            "d92_ccoc_new_rho",
+        )
+        if (
+            any(field not in raw for field in required)
+            or raw["d92_ccoc_active"] is not False
+            or raw["d92_ccoc_fallback_active"] is not False
+            or raw["d92_ccoc_fallback_reason"] != expected_raw_reason
+            or raw["d92_ccoc_old_rho"] is not None
+            or raw["d92_ccoc_new_rho"] is not None
+        ):
+            raise D92E0DSlimError("D92-E0D CCOC inactive receipt drift")
+        mirrored = {
+            key.replace("d92_ccoc_", "d92_e0d_ccoc_"): value
+            for key, value in raw.items()
+        }
+        mirrored.update(
+            {
+                "d92_e0d_ccoc_active": False,
+                "d92_e0d_ccoc_fallback_active": False,
+                "d92_e0d_ccoc_fallback_reason": inactive_reason,
+                "d92_e0d_ccoc_candidate_attempt_fit_count": 0,
+                "d92_e0d_ccoc_fallback_reference_fit_count": 0,
+                "d92_e0d_ccoc_candidate_statistic_receipt_available": False,
+                "d92_e0d_ccoc_fallback_reference_full_head_byte_exact": None,
+                "d92_e0d_ccoc_paired_e0_codec_state_equal": None,
+                "d92_e0d_ccoc_g0_eligible": False,
+                "d92_e0d_ccoc_g0_block_reason": inactive_reason,
+            }
+        )
+        return mirrored
+
+    lifecycle = (
+        "d92_ccoc_active",
+        "d92_ccoc_fallback_active",
+        "d92_ccoc_fallback_reason",
+        "d92_ccoc_candidate_attempt_fit_count",
+        "d92_ccoc_fallback_reference_fit_count",
+        "d92_ccoc_candidate_statistic_receipt_available",
+        "d92_ccoc_fallback_reference_full_head_byte_exact",
+        "d92_ccoc_paired_e0_codec_state_equal",
+        "d92_ccoc_query_rows_used",
+        "d92_ccoc_query_fit_access",
+        "d92_ccoc_query_update_access",
+        "d92_ccoc_query_selection_access",
+        "d92_ccoc_query_truth_access",
+        "d92_ccoc_query_role_oracle_access",
+        "d92_ccoc_query_class_quota_access",
+        "d92_ccoc_query_global_reassignment",
+    )
+    if any(field not in raw for field in lifecycle):
+        raise D92E0DSlimError("D92-E0D CCOC receipt missing")
+    if (
+        int(raw["d92_ccoc_candidate_attempt_fit_count"]) != 1
+        or raw["d92_ccoc_paired_e0_codec_state_equal"] is not None
+        or int(raw["d92_ccoc_query_rows_used"]) != 0
+        or any(raw[field] is not False for field in lifecycle[9:])
+    ):
+        raise D92E0DSlimError("D92-E0D CCOC support/query receipt drift")
+    mirrored = {
+        key.replace("d92_ccoc_", "d92_e0d_ccoc_"): value
+        for key, value in raw.items()
+    }
+    fallback = raw["d92_ccoc_fallback_active"]
+    active = raw["d92_ccoc_active"]
+    if fallback is True:
+        if (
+            active is not False
+            or not isinstance(raw["d92_ccoc_fallback_reason"], str)
+            or not raw["d92_ccoc_fallback_reason"]
+            or int(raw["d92_ccoc_fallback_reference_fit_count"]) != 1
+            or raw["d92_ccoc_fallback_reference_full_head_byte_exact"] is not True
+        ):
+            raise D92E0DSlimError("D92-E0D CCOC numeric fallback receipt drift")
+        mirrored.update(
+            {
+                "d92_e0d_ccoc_g0_eligible": False,
+                "d92_e0d_ccoc_g0_block_reason": "NUMERIC_FALLBACK_EXACT_E0",
+            }
+        )
+        return mirrored
+    if (
+        fallback is not False
+        or active is not True
+        or raw["d92_ccoc_fallback_reason"] is not None
+        or int(raw["d92_ccoc_fallback_reference_fit_count"]) != 0
+        or raw["d92_ccoc_candidate_statistic_receipt_available"] is not True
+        or raw["d92_ccoc_fallback_reference_full_head_byte_exact"] is not None
+    ):
+        raise D92E0DSlimError("D92-E0D CCOC active receipt drift")
+    required_statistics = (
+        "d92_ccoc_old_rho",
+        "d92_ccoc_new_rho",
+        "d92_ccoc_old_group_class_count",
+        "d92_ccoc_new_group_class_count",
+        "d92_ccoc_old_offblock_norm_min",
+        "d92_ccoc_old_offblock_norm_max",
+        "d92_ccoc_new_offblock_norm_min",
+        "d92_ccoc_new_offblock_norm_max",
+        "d92_ccoc_canonicalization",
+        "d92_ccoc_canonicalization_tie_policy",
+        "d92_ccoc_crossblock_passes_per_class",
+        "d92_ccoc_upper_block_count",
+        "d92_ccoc_covariance_symmetric",
+        "d92_ccoc_full_endpoint_reused",
+        "d92_ccoc_full_endpoint_reuse",
+        "d92_ccoc_additional_fit_count",
+        "d92_ccoc_additional_full_fit_count",
+        "d92_ccoc_additional_block_fit_count",
+        "d92_ccoc_additional_loo_fit_count",
+        "d92_ccoc_additional_fisher_fit_count",
+        "d92_ccoc_additional_scan_count",
+        "d92_ccoc_block_fit_count",
+        "d92_ccoc_loo_fit_count",
+        "d92_ccoc_fisher_fit_count",
+        "d92_ccoc_scan_count",
+        "d92_ccoc_hyperparameter_scan_count",
+        "d92_ccoc_weight_scan_count",
+        "d92_ccoc_dense_solve_count",
+        "d92_ccoc_compile_solve_count",
+        "d92_ccoc_full_solve_count",
+        "d92_ccoc_full_dense_288_solve_count",
+        "d92_ccoc_cholesky_check_count",
+        "d92_ccoc_cholesky_endpoint_check_count",
+        "d92_ccoc_cholesky_final_check_count",
+        "d92_ccoc_cholesky_pass",
+        "d92_ccoc_old_endpoint_cholesky_min_diagonal",
+        "d92_ccoc_new_endpoint_cholesky_min_diagonal",
+        "d92_ccoc_final_cholesky_min_diagonal",
+        "d92_ccoc_support_macs_upper_bound",
+        "d92_ccoc_workspace_numeric_bytes_upper_bound",
+        "d92_ccoc_workspace_frozen_k10_numeric_bytes_upper_bound",
+        "d92_ccoc_support_transient_bytes_upper_bound",
+        "d92_ccoc_persistent_state_bytes_delta",
+        "d92_ccoc_persistent_bytes_delta",
+        "d92_ccoc_query_state_bytes_delta",
+        "d92_ccoc_query_bytes_delta",
+        "d92_ccoc_query_macs_delta",
+        "d92_ccoc_query_macs",
+    )
+    if any(field not in raw for field in required_statistics):
+        raise D92E0DSlimError("D92-E0D CCOC statistic receipt missing")
+    try:
+        rho = np.asarray(
+            [raw["d92_ccoc_old_rho"], raw["d92_ccoc_new_rho"]],
+            dtype=np.float64,
+        )
+        norms = np.asarray(
+            [
+                raw["d92_ccoc_old_offblock_norm_min"],
+                raw["d92_ccoc_old_offblock_norm_max"],
+                raw["d92_ccoc_new_offblock_norm_min"],
+                raw["d92_ccoc_new_offblock_norm_max"],
+            ],
+            dtype=np.float64,
+        )
+        cholesky = np.asarray(
+            [
+                raw["d92_ccoc_old_endpoint_cholesky_min_diagonal"],
+                raw["d92_ccoc_new_endpoint_cholesky_min_diagonal"],
+                raw["d92_ccoc_final_cholesky_min_diagonal"],
+            ],
+            dtype=np.float64,
+        )
+    except (TypeError, ValueError) as error:
+        raise D92E0DSlimError("D92-E0D CCOC numeric receipt drift") from error
+    zero_counts = (
+        "d92_ccoc_additional_fit_count",
+        "d92_ccoc_additional_full_fit_count",
+        "d92_ccoc_additional_block_fit_count",
+        "d92_ccoc_additional_loo_fit_count",
+        "d92_ccoc_additional_fisher_fit_count",
+        "d92_ccoc_additional_scan_count",
+        "d92_ccoc_block_fit_count",
+        "d92_ccoc_loo_fit_count",
+        "d92_ccoc_fisher_fit_count",
+        "d92_ccoc_scan_count",
+        "d92_ccoc_hyperparameter_scan_count",
+        "d92_ccoc_weight_scan_count",
+        "d92_ccoc_persistent_state_bytes_delta",
+        "d92_ccoc_persistent_bytes_delta",
+        "d92_ccoc_query_state_bytes_delta",
+        "d92_ccoc_query_bytes_delta",
+        "d92_ccoc_query_macs_delta",
+        "d92_ccoc_query_macs",
+    )
+    if (
+        not np.isfinite(rho).all()
+        or np.any(rho < 0.0)
+        or np.any(rho > 1.0)
+        or int(raw["d92_ccoc_old_group_class_count"]) != int(OLD_CLASS_COUNT)
+        or int(raw["d92_ccoc_new_group_class_count"])
+        != int(class_count) - int(OLD_CLASS_COUNT)
+        or not np.isfinite(norms).all()
+        or np.any(norms <= 0.0)
+        or norms[0] > norms[1]
+        or norms[2] > norms[3]
+        or raw["d92_ccoc_canonicalization"]
+        != "lexicographic_float32_row_bytes_then_float64_reduce"
+        or raw["d92_ccoc_canonicalization_tie_policy"]
+        != "float32_row_bytes_then_float64_row_bytes_duplicate_class_handle_fail_closed"
+        or int(raw["d92_ccoc_crossblock_passes_per_class"]) != 2
+        or int(raw["d92_ccoc_upper_block_count"]) != 3
+        or raw["d92_ccoc_covariance_symmetric"] is not True
+        or raw["d92_ccoc_full_endpoint_reused"] is not True
+        or raw["d92_ccoc_full_endpoint_reuse"] is not True
+        or any(int(raw[field]) != 0 for field in zero_counts)
+        or int(raw["d92_ccoc_dense_solve_count"]) != 1
+        or int(raw["d92_ccoc_compile_solve_count"]) != 1
+        or int(raw["d92_ccoc_full_solve_count"]) != 1
+        or int(raw["d92_ccoc_full_dense_288_solve_count"]) != 1
+        or int(raw["d92_ccoc_cholesky_check_count"]) != 3
+        or int(raw["d92_ccoc_cholesky_endpoint_check_count"]) != 2
+        or int(raw["d92_ccoc_cholesky_final_check_count"]) != 1
+        or raw["d92_ccoc_cholesky_pass"] is not True
+        or not np.isfinite(cholesky).all()
+        or np.any(cholesky <= 0.0)
+        or int(raw["d92_ccoc_support_macs_upper_bound"]) <= 0
+        or int(raw["d92_ccoc_workspace_numeric_bytes_upper_bound"]) <= 0
+        or int(raw["d92_ccoc_workspace_frozen_k10_numeric_bytes_upper_bound"])
+        <= 0
+        or int(raw["d92_ccoc_support_transient_bytes_upper_bound"])
+        != int(raw["d92_ccoc_workspace_numeric_bytes_upper_bound"])
+    ):
+        raise D92E0DSlimError("D92-E0D CCOC statistic receipt drift")
+    mirrored.update(
+        {
+            "d92_e0d_ccoc_g0_eligible": True,
+            "d92_e0d_ccoc_g0_block_reason": None,
+        }
+    )
+    return mirrored
+
+
 def build_d92_e0d_fit(
     d42: Any,
     basis: np.ndarray,
@@ -295,6 +575,16 @@ def build_d92_e0d_fit(
         csoas_numeric_fallback = bool(
             csoas_receipt.get("d92_csoas_fallback_active") is True
         )
+        ccoc_receipt = _ccoc_receipt(
+            base_audit,
+            arm=arm,
+            registered=registered,
+            k_shot=k_shot,
+            class_count=class_count,
+        )
+        ccoc_numeric_fallback = bool(
+            ccoc_receipt.get("d92_e0d_ccoc_fallback_active") is True
+        )
         if registered and int(k_shot) > 2:
             total_count = expected_total_component_fit_count(
                 k_shot, arm_id=arm.arm_id
@@ -302,7 +592,7 @@ def build_d92_e0d_fit(
             expected_actual = _expected_actual_registered_component_fit_count(
                 k_shot, arm=arm
             )
-            if csoas_numeric_fallback:
+            if csoas_numeric_fallback or ccoc_numeric_fallback:
                 # Before-state E0 has one fit and the after-state has the
                 # failed candidate attempt plus one exact E0 reference fit.
                 expected_actual = 2
@@ -955,6 +1245,7 @@ def build_d92_e0d_fit(
                 "d92_e0d_query_global_reassignment": False,
                 "d92_e0d_finite_output_pass": finite,
                 **csoas_receipt,
+                **ccoc_receipt,
                 **newguard_receipt,
                 **pareto_receipt,
                 **resource,

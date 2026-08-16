@@ -10,6 +10,10 @@ from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
 from cvsrffi.stage2_d92_cauchy_scatter_oas import (
     D92CauchyScatterOASNumericalError,
 )
+from cvsrffi.stage2_d92_cross_class_offblock_consensus import (
+    D92CCOCError,
+    D92CCOCNumericalError,
+)
 from scripts import probe_d81_ground_nuisance_cauchy_center as d81_probe
 from scripts import probe_d92_registration_balanced_covariance as probe
 
@@ -1063,3 +1067,344 @@ def test_csoas_numeric_failure_records_both_candidate_and_exact_e0_reference_ful
     assert inventory["full_component_fit_count"] == 2
     assert inventory["block3_component_fit_count"] == 0
     assert len(transform_records) == 2
+
+
+def test_ccoc_registered_path_uses_one_d81_transform_and_one_full_fit():
+    """Would fail if CCOC were not a single support-only FULL route."""
+
+    rng = np.random.default_rng(92_815)
+    basis, _ = np.linalg.qr(rng.normal(size=(160, 3)))
+    spectral_weights = np.asarray([0.5, 0.3, 0.2], dtype=np.float64)
+    ground_audit = {
+        "d81_basis_sha256": "f" * 64,
+        "d81_spectral_weight_sha256": "1" * 64,
+        "d81_participation_ratio_effective_rank": 2.6,
+        "d81_retained_rank": 3,
+        "d81_rank_policy": "ceil_participation_ratio_effective_rank",
+        "ground_component_input_count": 84,
+        "ground_statistic_semantics": (
+            "class_centered_cross_domain_centroid_drift_eigenspectrum"
+        ),
+    }
+    classes, shots = 11, 5
+    labels = np.repeat(np.arange(classes), shots).astype(np.int64)
+    means = rng.normal(size=(classes, 288))
+    rows = (
+        means[labels] + 0.08 * rng.normal(size=(classes * shots, 288))
+    ).astype(np.float32)
+    fit, _, transform_records = probe.build_d92_fit(
+        d42,
+        basis,
+        spectral_weights,
+        ground_audit,
+        disable_registered_fisher=True,
+        registered_d_mode="ccoc_full",
+    )
+
+    coefficient, intercept, audit = fit(rows, labels, classes, shots)
+    e0_fit, _, _ = probe.build_d92_fit(
+        d42,
+        basis,
+        spectral_weights,
+        ground_audit,
+        disable_registered_fisher=True,
+        registered_d_mode="full_only",
+    )
+    e0_coefficient, e0_intercept, _ = e0_fit(rows, labels, classes, shots)
+    ccoc_state, _ = d42._compile_state(
+        tuple(f"tx_{index}" for index in range(classes)),
+        6,
+        np.zeros(288, dtype=np.float32),
+        coefficient,
+        intercept,
+        "sklearn_lsqr_auto_shrinkage_equal_prior",
+        precision="int8",
+    )
+    e0_state, _ = d42._compile_state(
+        tuple(f"tx_{index}" for index in range(classes)),
+        6,
+        np.zeros(288, dtype=np.float32),
+        e0_coefficient,
+        e0_intercept,
+        "sklearn_lsqr_auto_shrinkage_equal_prior",
+        precision="int8",
+    )
+
+    inventory = audit["d92_component_fit_inventory"]
+    assert coefficient.shape == (classes, 288)
+    assert intercept.shape == (classes,)
+    assert audit["d92_registered_d_mode_effective"] == "ccoc_full"
+    assert audit["d92_ccoc_active"] is True
+    assert audit["d92_ccoc_fallback_active"] is False
+    assert audit["d92_ccoc_full_endpoint_reused"] is True
+    assert audit["d92_ccoc_additional_fit_count"] == 0
+    assert audit["d92_ccoc_dense_solve_count"] == 1
+    assert 0.0 <= audit["d92_ccoc_old_rho"] <= 1.0
+    assert 0.0 <= audit["d92_ccoc_new_rho"] <= 1.0
+    assert any(
+        not np.array_equal(getattr(ccoc_state, field), getattr(e0_state, field))
+        for field in ("coef1_qint8", "coef2_qint8", "scale1_fp16", "scale2_fp16")
+    )
+    assert audit["d92_component_fit_count"] == 1
+    assert inventory["full_component_fit_count"] == 1
+    assert inventory["block3_component_fit_count"] == 0
+    assert len(transform_records) == 1
+    for field in (
+        "d92_ccoc_query_fit_access",
+        "d92_ccoc_query_update_access",
+        "d92_ccoc_query_selection_access",
+        "d92_ccoc_query_truth_access",
+        "d92_ccoc_query_role_oracle_access",
+        "d92_ccoc_query_class_quota_access",
+        "d92_ccoc_query_global_reassignment",
+    ):
+        assert audit[field] is False
+
+
+@pytest.mark.parametrize("shots", (1, 2))
+def test_ccoc_k1_k2_are_byte_exact_d92_full_aliases(shots):
+    """Would fail if CCOC changed either frozen low-K D92 FULL alias."""
+
+    rng = np.random.default_rng(92_816 + shots)
+    basis, _ = np.linalg.qr(rng.normal(size=(160, 3)))
+    weights = np.asarray([0.5, 0.3, 0.2], dtype=np.float64)
+    ground_audit = {
+        "d81_basis_sha256": "2" * 64,
+        "d81_spectral_weight_sha256": "3" * 64,
+        "d81_participation_ratio_effective_rank": 2.6,
+        "d81_retained_rank": 3,
+        "d81_rank_policy": "ceil_participation_ratio_effective_rank",
+        "ground_component_input_count": 84,
+        "ground_statistic_semantics": (
+            "class_centered_cross_domain_centroid_drift_eigenspectrum"
+        ),
+    }
+    classes = 11
+    labels = np.repeat(np.arange(classes), shots).astype(np.int64)
+    means = rng.normal(size=(classes, 288))
+    rows = means[labels].astype(np.float32)
+    e0_fit, _, _ = probe.build_d92_fit(
+        d42,
+        basis,
+        weights,
+        ground_audit,
+        disable_registered_fisher=True,
+        registered_d_mode="full_only",
+    )
+    ccoc_fit, _, _ = probe.build_d92_fit(
+        d42,
+        basis,
+        weights,
+        ground_audit,
+        disable_registered_fisher=True,
+        registered_d_mode="ccoc_full",
+    )
+
+    expected_coefficient, expected_intercept, _ = e0_fit(
+        rows, labels, classes, shots
+    )
+    coefficient, intercept, audit = ccoc_fit(rows, labels, classes, shots)
+    e0_state, _ = d42._compile_state(
+        tuple(f"tx_{index}" for index in range(classes)),
+        6,
+        np.zeros(288, dtype=np.float32),
+        expected_coefficient,
+        expected_intercept,
+        "sklearn_lsqr_auto_shrinkage_equal_prior",
+        precision="int8",
+    )
+    ccoc_state, _ = d42._compile_state(
+        tuple(f"tx_{index}" for index in range(classes)),
+        6,
+        np.zeros(288, dtype=np.float32),
+        coefficient,
+        intercept,
+        "sklearn_lsqr_auto_shrinkage_equal_prior",
+        precision="int8",
+    )
+
+    assert coefficient.tobytes() == expected_coefficient.tobytes()
+    assert intercept.tobytes() == expected_intercept.tobytes()
+    for field in (
+        "log_diag_fp32",
+        "coef1_qint8",
+        "coef2_qint8",
+        "scale1_fp16",
+        "scale2_fp16",
+        "intercept_fp16",
+    ):
+        assert getattr(ccoc_state, field).tobytes() == getattr(e0_state, field).tobytes()
+    assert audit["d92_registered_d_mode_effective"] == "d92_full_alias"
+    assert audit["d92_ccoc_active"] is False
+    assert audit["d92_ccoc_fallback_active"] is False
+    assert audit["d92_ccoc_fallback_reason"] == "k1_k2_exact_d81_fallback"
+    assert audit["d92_ccoc_old_rho"] is None
+    assert audit["d92_ccoc_new_rho"] is None
+
+
+def test_ccoc_numeric_failure_records_candidate_and_exact_e0_reference_fit(monkeypatch):
+    """Would fail if a real CCOC numerical attempt vanished from inventory."""
+
+    rng = np.random.default_rng(92_817)
+    basis, _ = np.linalg.qr(rng.normal(size=(160, 3)))
+    weights = np.asarray([0.5, 0.3, 0.2], dtype=np.float64)
+    ground_audit = {
+        "d81_basis_sha256": "4" * 64,
+        "d81_spectral_weight_sha256": "5" * 64,
+        "d81_participation_ratio_effective_rank": 2.6,
+        "d81_retained_rank": 3,
+        "d81_rank_policy": "ceil_participation_ratio_effective_rank",
+        "ground_component_input_count": 84,
+        "ground_statistic_semantics": (
+            "class_centered_cross_domain_centroid_drift_eigenspectrum"
+        ),
+    }
+    classes, shots = 11, 5
+    labels = np.repeat(np.arange(classes), shots).astype(np.int64)
+    means = rng.normal(size=(classes, 288))
+    rows = (
+        means[labels] + 0.08 * rng.normal(size=(classes * shots, 288))
+    ).astype(np.float32)
+    e0_fit, _, _ = probe.build_d92_fit(
+        d42,
+        basis,
+        weights,
+        ground_audit,
+        disable_registered_fisher=True,
+        registered_d_mode="full_only",
+    )
+    ccoc_fit, _, transform_records = probe.build_d92_fit(
+        d42,
+        basis,
+        weights,
+        ground_audit,
+        disable_registered_fisher=True,
+        registered_d_mode="ccoc_full",
+    )
+    expected_coefficient, expected_intercept, _ = e0_fit(
+        rows, labels, classes, shots
+    )
+
+    def injected_numeric_failure(_d42, _statistics):
+        raise D92CCOCNumericalError("injected_ccoc_numeric_failure")
+
+    monkeypatch.setattr(
+        probe,
+        "compile_cross_class_offblock_consensus_affine",
+        injected_numeric_failure,
+        raising=False,
+    )
+    coefficient, intercept, audit = ccoc_fit(rows, labels, classes, shots)
+
+    inventory = audit["d92_component_fit_inventory"]
+    assert coefficient.tobytes() == expected_coefficient.tobytes()
+    assert intercept.tobytes() == expected_intercept.tobytes()
+    assert audit["d92_ccoc_active"] is False
+    assert audit["d92_ccoc_fallback_active"] is True
+    assert audit["d92_ccoc_fallback_reason"] == "injected_ccoc_numeric_failure"
+    assert audit["d92_ccoc_candidate_attempt_fit_count"] == 1
+    assert audit["d92_ccoc_fallback_reference_fit_count"] == 1
+    assert audit["d92_ccoc_fallback_reference_full_head_byte_exact"] is True
+    assert audit["d92_component_fit_count"] == 2
+    assert inventory["actual_component_fit_count"] == 2
+    assert inventory["full_component_fit_count"] == 2
+    assert len(transform_records) == 2
+
+
+def test_ccoc_zero_offblock_core_error_falls_to_exact_e0_full_reference():
+    """A real zero-Q core failure must retain the exact E0 fallback route."""
+
+    rng = np.random.default_rng(92_818)
+    basis, _ = np.linalg.qr(rng.normal(size=(160, 3)))
+    weights = np.asarray([0.5, 0.3, 0.2], dtype=np.float64)
+    ground_audit = {
+        "d81_basis_sha256": "6" * 64,
+        "d81_spectral_weight_sha256": "7" * 64,
+        "d81_participation_ratio_effective_rank": 2.6,
+        "d81_retained_rank": 3,
+        "d81_rank_policy": "ceil_participation_ratio_effective_rank",
+        "ground_component_input_count": 84,
+        "ground_statistic_semantics": (
+            "class_centered_cross_domain_centroid_drift_eigenspectrum"
+        ),
+    }
+    classes, shots = 11, 3
+    labels = np.repeat(np.arange(classes), shots).astype(np.int64)
+    rows = np.zeros((classes * shots, 288), dtype=np.float32)
+    offsets = np.asarray([-1.0, 0.0, 1.0], dtype=np.float32)
+    for class_index in range(classes):
+        selected = np.flatnonzero(labels == class_index)
+        rows[selected, 3] = np.float32(10.0 * class_index)
+        rows[selected, 0] = offsets
+    e0_fit, _, _ = probe.build_d92_fit(
+        d42,
+        basis,
+        weights,
+        ground_audit,
+        disable_registered_fisher=True,
+        registered_d_mode="full_only",
+    )
+    ccoc_fit, _, transform_records = probe.build_d92_fit(
+        d42,
+        basis,
+        weights,
+        ground_audit,
+        disable_registered_fisher=True,
+        registered_d_mode="ccoc_full",
+    )
+
+    expected_coefficient, expected_intercept, _ = e0_fit(
+        rows, labels, classes, shots
+    )
+    coefficient, intercept, audit = ccoc_fit(rows, labels, classes, shots)
+
+    assert coefficient.tobytes() == expected_coefficient.tobytes()
+    assert intercept.tobytes() == expected_intercept.tobytes()
+    assert audit["d92_ccoc_active"] is False
+    assert audit["d92_ccoc_fallback_active"] is True
+    assert audit["d92_ccoc_fallback_reason"] == "ccoc_q_zero_frobenius_norm"
+    assert audit["d92_ccoc_candidate_statistic_receipt_available"] is False
+    assert audit["d92_component_fit_count"] == 2
+    assert len(transform_records) == 2
+
+
+def test_ccoc_structural_core_error_is_not_relabelled_as_numeric_fallback(
+    monkeypatch,
+):
+    """Class-registry drift must stay fail-closed instead of selecting E0."""
+
+    rng = np.random.default_rng(92_819)
+    basis, _ = np.linalg.qr(rng.normal(size=(160, 3)))
+    weights = np.asarray([0.5, 0.3, 0.2], dtype=np.float64)
+    ground_audit = {
+        "d81_basis_sha256": "8" * 64,
+        "d81_spectral_weight_sha256": "9" * 64,
+        "d81_participation_ratio_effective_rank": 2.6,
+        "d81_retained_rank": 3,
+        "d81_rank_policy": "ceil_participation_ratio_effective_rank",
+        "ground_component_input_count": 84,
+        "ground_statistic_semantics": (
+            "class_centered_cross_domain_centroid_drift_eigenspectrum"
+        ),
+    }
+    labels = np.repeat(np.arange(11), 3).astype(np.int64)
+    rows = rng.normal(size=(len(labels), 288)).astype(np.float32)
+    fit, _, _ = probe.build_d92_fit(
+        d42,
+        basis,
+        weights,
+        ground_audit,
+        disable_registered_fisher=True,
+        registered_d_mode="ccoc_full",
+    )
+
+    def structural_drift(*_args, **_kwargs):
+        raise D92CCOCError("ccoc_unbalanced_group_registry")
+
+    monkeypatch.setattr(
+        probe,
+        "build_cross_class_offblock_consensus_statistics",
+        structural_drift,
+    )
+    with pytest.raises(probe.D92ProbeError, match="CCOC registry/receipt drift"):
+        fit(rows, labels, 11, 3)

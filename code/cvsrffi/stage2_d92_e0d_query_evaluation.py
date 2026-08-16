@@ -6,7 +6,7 @@ import hashlib
 import json
 from dataclasses import replace
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable, Mapping
 
 import numpy as np
 
@@ -68,6 +68,7 @@ _FLOORBOOST_ARM_IDS = frozenset({"E0_FULL_MAXMIN_FLOORBOOST"})
 _NEWGUARD_ARM_IDS = frozenset({"E0_FULL_BIDIRECTIONAL_NEWGUARD_MAXMIN"})
 _PARETO_DISTILL_ARM_IDS = frozenset({"E0_FULL_BLOCK_PARETO_DISTILL"})
 _CSOAS_ARM_IDS = frozenset({"E0_FULL_CSOAS"})
+_CCOC_ARM_IDS = frozenset({"E0_FULL_CROSS_CLASS_OFFBLOCK_CONSENSUS"})
 _TPCE_ARM_IDS = frozenset({"E0_FULL_D42_TAIL_PAIR_CODE_EXCHANGE"})
 _TPCE_RECEIPT_SUFFIXES = (
     "active",
@@ -334,6 +335,145 @@ def _state_fingerprint_sha256(state: Any) -> str:
         digest.update(_canonical_bytes({"shape": list(array.shape)}))
         digest.update(array.tobytes(order="C"))
     return digest.hexdigest()
+
+
+def _ccoc_technical_support_receipt(
+    result: Any,
+    *,
+    old_support_features: Any,
+    old_support_labels: Any,
+    old_classes: Any,
+    new_support_features: Any,
+    new_support_labels: Any,
+    new_classes: Any,
+) -> dict[str, Any]:
+    """Derive an ephemeral CCOC support receipt without retaining support rows."""
+
+    from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
+
+    state = result.state
+    old_registry = tuple(str(value) for value in old_classes)
+    new_registry = tuple(str(value) for value in new_classes)
+    registry = old_registry + new_registry
+    if (
+        tuple(str(value) for value in state.classes) != registry
+        or int(state.old_class_count) != len(old_registry)
+        or len(old_registry) != int(OLD_CLASS_COUNT)
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D CCOC support registry drift")
+    try:
+        old_rows = np.asarray(old_support_features, dtype=np.float32)
+        new_rows = np.asarray(new_support_features, dtype=np.float32)
+        rows = np.concatenate((old_rows, new_rows), axis=0)
+        labels = np.concatenate(
+            (
+                np.asarray(old_support_labels).astype(str),
+                np.asarray(new_support_labels).astype(str),
+            )
+        )
+    except (TypeError, ValueError) as error:
+        raise D92E0DQueryEvaluationError("D92-E0D CCOC support input drift") from error
+    if (
+        rows.ndim != 2
+        or rows.shape[1] != 288
+        or labels.shape != (len(rows),)
+        or not np.isfinite(rows).all()
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D CCOC support shape drift")
+    class_index = {handle: index for index, handle in enumerate(registry)}
+    try:
+        targets = np.asarray(
+            [class_index[str(value)] for value in labels.tolist()], dtype=np.int64
+        )
+    except KeyError as error:
+        raise D92E0DQueryEvaluationError("D92-E0D CCOC support label drift") from error
+    support_counts = np.bincount(targets, minlength=len(registry))
+    if len(support_counts) != len(registry) or np.any(support_counts <= 0):
+        raise D92E0DQueryEvaluationError("D92-E0D CCOC support class closure drift")
+    transformed = d42._transform(rows, state.log_diag_fp32)
+    coefficients = d42.decode_d42_coefficients(state)
+    intercept = np.asarray(state.intercept_fp16, dtype=np.float32)
+    if (
+        transformed.shape != rows.shape
+        or coefficients.shape != (len(registry), 288)
+        or intercept.shape != (len(registry),)
+        or not np.isfinite(transformed).all()
+        or not np.isfinite(coefficients).all()
+        or not np.isfinite(intercept).all()
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D CCOC support state drift")
+    scores = transformed @ coefficients.T + intercept
+    if not np.isfinite(scores).all():
+        raise D92E0DQueryEvaluationError("D92-E0D CCOC support score drift")
+    canonical: list[tuple[str, bytes, int, str]] = []
+    for row_index, target in enumerate(targets.tolist()):
+        handle = registry[int(target)]
+        row_bytes = np.ascontiguousarray(
+            transformed[row_index], dtype=np.float32
+        ).tobytes(order="C")
+        row_digest = hashlib.sha256()
+        row_digest.update(b"cvs.phase2.d92.ccoc.support-row.v1\0")
+        row_digest.update(handle.encode("utf-8"))
+        row_digest.update(row_bytes)
+        canonical.append((handle, row_bytes, row_index, row_digest.hexdigest()))
+    canonical.sort(key=lambda row: (row[0], row[1]))
+    identity_digest = hashlib.sha256()
+    margins: list[dict[str, Any]] = []
+    for handle, row_bytes, row_index, row_handle in canonical:
+        target = int(targets[row_index])
+        opposite = (
+            np.arange(len(registry)) >= int(OLD_CLASS_COUNT)
+            if target < int(OLD_CLASS_COUNT)
+            else np.arange(len(registry)) < int(OLD_CLASS_COUNT)
+        )
+        margin = float(scores[row_index, target] - np.max(scores[row_index, opposite]))
+        if not np.isfinite(margin):
+            raise D92E0DQueryEvaluationError("D92-E0D CCOC support margin drift")
+        identity_digest.update(handle.encode("utf-8"))
+        identity_digest.update(row_bytes)
+        margins.append(
+            {
+                "support_handle": row_handle,
+                "canonical_row_handle": row_handle,
+                "class_handle": handle,
+                "cross_group_margin": margin,
+            }
+        )
+    block_names = ("z160", "fft96", "rf32")
+    support_block_absmax = {
+        name: float(np.max(np.abs(transformed[:, block])))
+        for name, block in zip(block_names, d42.BLOCK_SLICES)
+    }
+    scale1_block_max_abs = np.max(
+        np.abs(np.asarray(state.scale1_fp16, dtype=np.float32)), axis=0
+    )
+    scale2_block_max_abs = np.max(
+        np.abs(np.asarray(state.scale2_fp16, dtype=np.float32)), axis=0
+    )
+    if (
+        not np.isfinite(np.asarray(tuple(support_block_absmax.values()))).all()
+        or not np.isfinite(scale1_block_max_abs).all()
+        or not np.isfinite(scale2_block_max_abs).all()
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D CCOC support scale drift")
+    state_fingerprint = _state_fingerprint_sha256(state)
+    return {
+        "schema": "cvs.phase2.d92_ccoc.support_state_receipt.v1",
+        "old_class_count": int(OLD_CLASS_COUNT),
+        "registered_class_count": int(len(registry)),
+        "canonical_class_handles": tuple(sorted(registry)),
+        "canonical_support_identity_sha256": identity_digest.hexdigest(),
+        "canonical_support_handles": tuple(row[3] for row in canonical),
+        "cross_group_margin_by_support_handle": tuple(margins),
+        "A_b": support_block_absmax,
+        "support_block_absmax": support_block_absmax,
+        "after_state_fingerprint_sha256": state_fingerprint,
+        "final_d42_coefficient_bias_state_sha256": state_fingerprint,
+        "scale1_block_max_abs": tuple(float(value) for value in scale1_block_max_abs),
+        "scale2_block_max_abs": tuple(float(value) for value in scale2_block_max_abs),
+        "query_access": False,
+        "truth_access": False,
+    }
 
 
 def _resource_receipt(audit: dict[str, Any]) -> dict[str, Any]:
@@ -1221,6 +1361,280 @@ def _csoas_support_receipt(
     return receipt
 
 
+def _ccoc_support_receipt(
+    audit: dict[str, Any],
+    *,
+    arm: D92E0DSlimArmSpec,
+    registered: bool,
+    k_shot: int,
+    class_count: int,
+) -> dict[str, Any]:
+    """Close the CCOC support receipt without consulting query-side data."""
+
+    if arm.arm_id not in _CCOC_ARM_IDS:
+        return {}
+    raw = {
+        key: value
+        for key, value in audit.items()
+        if key.startswith("d92_ccoc_")
+    }
+    mirrored = {
+        key: value
+        for key, value in audit.items()
+        if key.startswith("d92_e0d_ccoc_")
+    }
+    required_mirror = (
+        "d92_e0d_ccoc_active",
+        "d92_e0d_ccoc_fallback_active",
+        "d92_e0d_ccoc_fallback_reason",
+        "d92_e0d_ccoc_candidate_attempt_fit_count",
+        "d92_e0d_ccoc_fallback_reference_fit_count",
+        "d92_e0d_ccoc_candidate_statistic_receipt_available",
+        "d92_e0d_ccoc_fallback_reference_full_head_byte_exact",
+        "d92_e0d_ccoc_paired_e0_codec_state_equal",
+        "d92_e0d_ccoc_g0_eligible",
+        "d92_e0d_ccoc_g0_block_reason",
+    )
+    if any(field not in mirrored for field in required_mirror):
+        raise D92E0DQueryEvaluationError("D92-E0D CCOC receipt missing")
+    enabled = bool(registered and int(k_shot) > 2)
+    if not enabled:
+        raw_reason = (
+            "before_exact_d81"
+            if not registered
+            else "k1_k2_exact_d81_fallback"
+        )
+        mirror_reason = (
+            "NOT_REGISTERED_STATE"
+            if not registered
+            else "K1_K2_EXACT_D92_FULL_ALIAS"
+        )
+        if (
+            raw.get("d92_ccoc_active") is not False
+            or raw.get("d92_ccoc_fallback_active") is not False
+            or raw.get("d92_ccoc_fallback_reason") != raw_reason
+            or raw.get("d92_ccoc_old_rho") is not None
+            or raw.get("d92_ccoc_new_rho") is not None
+            or mirrored["d92_e0d_ccoc_active"] is not False
+            or mirrored["d92_e0d_ccoc_fallback_active"] is not False
+            or mirrored["d92_e0d_ccoc_fallback_reason"] != mirror_reason
+            or int(mirrored["d92_e0d_ccoc_candidate_attempt_fit_count"]) != 0
+            or int(mirrored["d92_e0d_ccoc_fallback_reference_fit_count"])
+            != 0
+            or mirrored["d92_e0d_ccoc_candidate_statistic_receipt_available"]
+            is not False
+            or mirrored["d92_e0d_ccoc_fallback_reference_full_head_byte_exact"]
+            is not None
+            or mirrored["d92_e0d_ccoc_paired_e0_codec_state_equal"] is not None
+            or mirrored["d92_e0d_ccoc_g0_eligible"] is not False
+            or mirrored["d92_e0d_ccoc_g0_block_reason"] != mirror_reason
+        ):
+            raise D92E0DQueryEvaluationError("D92-E0D CCOC alias receipt drift")
+        return mirrored
+
+    lifecycle = (
+        "d92_ccoc_active",
+        "d92_ccoc_fallback_active",
+        "d92_ccoc_fallback_reason",
+        "d92_ccoc_candidate_attempt_fit_count",
+        "d92_ccoc_fallback_reference_fit_count",
+        "d92_ccoc_candidate_statistic_receipt_available",
+        "d92_ccoc_fallback_reference_full_head_byte_exact",
+        "d92_ccoc_paired_e0_codec_state_equal",
+        "d92_ccoc_query_rows_used",
+        "d92_ccoc_query_fit_access",
+        "d92_ccoc_query_update_access",
+        "d92_ccoc_query_selection_access",
+        "d92_ccoc_query_truth_access",
+        "d92_ccoc_query_role_oracle_access",
+        "d92_ccoc_query_class_quota_access",
+        "d92_ccoc_query_global_reassignment",
+    )
+    if any(field not in raw for field in lifecycle):
+        raise D92E0DQueryEvaluationError("D92-E0D CCOC lifecycle missing")
+    for field, value in raw.items():
+        mirror_name = field.replace("d92_ccoc_", "d92_e0d_ccoc_")
+        if mirror_name in mirrored and mirrored[mirror_name] != value:
+            raise D92E0DQueryEvaluationError("D92-E0D CCOC raw/mirror drift")
+    if (
+        int(raw["d92_ccoc_candidate_attempt_fit_count"]) != 1
+        or raw["d92_ccoc_paired_e0_codec_state_equal"] is not None
+        or int(raw["d92_ccoc_query_rows_used"]) != 0
+        or any(raw[field] is not False for field in lifecycle[9:])
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D CCOC support/query drift")
+    fallback = raw["d92_ccoc_fallback_active"]
+    active = raw["d92_ccoc_active"]
+    if fallback is True:
+        if (
+            active is not False
+            or not isinstance(raw["d92_ccoc_fallback_reason"], str)
+            or not raw["d92_ccoc_fallback_reason"]
+            or int(raw["d92_ccoc_fallback_reference_fit_count"]) != 1
+            or raw["d92_ccoc_fallback_reference_full_head_byte_exact"] is not True
+            or mirrored["d92_e0d_ccoc_g0_eligible"] is not False
+            or mirrored["d92_e0d_ccoc_g0_block_reason"]
+            != "NUMERIC_FALLBACK_EXACT_E0"
+        ):
+            raise D92E0DQueryEvaluationError("D92-E0D CCOC fallback receipt drift")
+        return mirrored
+    if (
+        fallback is not False
+        or active is not True
+        or raw["d92_ccoc_fallback_reason"] is not None
+        or int(raw["d92_ccoc_fallback_reference_fit_count"]) != 0
+        or raw["d92_ccoc_candidate_statistic_receipt_available"] is not True
+        or raw["d92_ccoc_fallback_reference_full_head_byte_exact"] is not None
+        or mirrored["d92_e0d_ccoc_g0_eligible"] is not True
+        or mirrored["d92_e0d_ccoc_g0_block_reason"] is not None
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D CCOC active receipt drift")
+    statistics = (
+        "d92_ccoc_formula_revision",
+        "d92_ccoc_formula",
+        "d92_ccoc_old_rho",
+        "d92_ccoc_new_rho",
+        "d92_ccoc_old_group_class_count",
+        "d92_ccoc_new_group_class_count",
+        "d92_ccoc_old_offblock_norm_min",
+        "d92_ccoc_old_offblock_norm_max",
+        "d92_ccoc_new_offblock_norm_min",
+        "d92_ccoc_new_offblock_norm_max",
+        "d92_ccoc_old_pairwise_cosine_raw",
+        "d92_ccoc_new_pairwise_cosine_raw",
+        "d92_ccoc_canonicalization",
+        "d92_ccoc_canonicalization_tie_policy",
+        "d92_ccoc_crossblock_passes_per_class",
+        "d92_ccoc_upper_block_count",
+        "d92_ccoc_covariance_symmetric",
+        "d92_ccoc_full_endpoint_reused",
+        "d92_ccoc_full_endpoint_reuse",
+        "d92_ccoc_additional_fit_count",
+        "d92_ccoc_additional_full_fit_count",
+        "d92_ccoc_additional_block_fit_count",
+        "d92_ccoc_additional_loo_fit_count",
+        "d92_ccoc_additional_fisher_fit_count",
+        "d92_ccoc_additional_scan_count",
+        "d92_ccoc_block_fit_count",
+        "d92_ccoc_loo_fit_count",
+        "d92_ccoc_fisher_fit_count",
+        "d92_ccoc_scan_count",
+        "d92_ccoc_hyperparameter_scan_count",
+        "d92_ccoc_weight_scan_count",
+        "d92_ccoc_dense_solve_count",
+        "d92_ccoc_compile_solve_count",
+        "d92_ccoc_full_solve_count",
+        "d92_ccoc_full_dense_288_solve_count",
+        "d92_ccoc_cholesky_check_count",
+        "d92_ccoc_cholesky_endpoint_check_count",
+        "d92_ccoc_cholesky_final_check_count",
+        "d92_ccoc_cholesky_pass",
+        "d92_ccoc_old_endpoint_cholesky_min_diagonal",
+        "d92_ccoc_new_endpoint_cholesky_min_diagonal",
+        "d92_ccoc_final_cholesky_min_diagonal",
+        "d92_ccoc_support_macs_upper_bound",
+        "d92_ccoc_workspace_upper_accumulators_bytes",
+        "d92_ccoc_workspace_cross_block_buffer_bytes",
+        "d92_ccoc_workspace_residual_buffer_bytes",
+        "d92_ccoc_workspace_numeric_bytes_upper_bound",
+        "d92_ccoc_workspace_frozen_k10_numeric_bytes_upper_bound",
+        "d92_ccoc_support_transient_bytes_upper_bound",
+        "d92_ccoc_persistent_state_bytes_delta",
+        "d92_ccoc_persistent_bytes_delta",
+        "d92_ccoc_query_state_bytes_delta",
+        "d92_ccoc_query_bytes_delta",
+        "d92_ccoc_query_macs_delta",
+        "d92_ccoc_query_macs",
+    )
+    if any(field not in raw for field in statistics):
+        raise D92E0DQueryEvaluationError("D92-E0D CCOC statistic receipt missing")
+    try:
+        rho = np.asarray(
+            [raw["d92_ccoc_old_rho"], raw["d92_ccoc_new_rho"]],
+            dtype=np.float64,
+        )
+        norms = np.asarray(
+            [
+                raw["d92_ccoc_old_offblock_norm_min"],
+                raw["d92_ccoc_old_offblock_norm_max"],
+                raw["d92_ccoc_new_offblock_norm_min"],
+                raw["d92_ccoc_new_offblock_norm_max"],
+            ],
+            dtype=np.float64,
+        )
+        cholesky = np.asarray(
+            [
+                raw["d92_ccoc_old_endpoint_cholesky_min_diagonal"],
+                raw["d92_ccoc_new_endpoint_cholesky_min_diagonal"],
+                raw["d92_ccoc_final_cholesky_min_diagonal"],
+            ],
+            dtype=np.float64,
+        )
+    except (TypeError, ValueError) as error:
+        raise D92E0DQueryEvaluationError("D92-E0D CCOC numeric receipt drift") from error
+    zero_counts = (
+        "d92_ccoc_additional_fit_count",
+        "d92_ccoc_additional_full_fit_count",
+        "d92_ccoc_additional_block_fit_count",
+        "d92_ccoc_additional_loo_fit_count",
+        "d92_ccoc_additional_fisher_fit_count",
+        "d92_ccoc_additional_scan_count",
+        "d92_ccoc_block_fit_count",
+        "d92_ccoc_loo_fit_count",
+        "d92_ccoc_fisher_fit_count",
+        "d92_ccoc_scan_count",
+        "d92_ccoc_hyperparameter_scan_count",
+        "d92_ccoc_weight_scan_count",
+        "d92_ccoc_persistent_state_bytes_delta",
+        "d92_ccoc_persistent_bytes_delta",
+        "d92_ccoc_query_state_bytes_delta",
+        "d92_ccoc_query_bytes_delta",
+        "d92_ccoc_query_macs_delta",
+        "d92_ccoc_query_macs",
+    )
+    if (
+        raw["d92_ccoc_formula_revision"] != "pairwise_cosine_v1"
+        or raw["d92_ccoc_canonicalization"]
+        != "lexicographic_float32_row_bytes_then_float64_reduce"
+        or raw["d92_ccoc_canonicalization_tie_policy"]
+        != "float32_row_bytes_then_float64_row_bytes_duplicate_class_handle_fail_closed"
+        or int(raw["d92_ccoc_old_group_class_count"]) != int(OLD_CLASS_COUNT)
+        or int(raw["d92_ccoc_new_group_class_count"])
+        != int(class_count) - int(OLD_CLASS_COUNT)
+        or not np.isfinite(rho).all()
+        or np.any(rho < 0.0)
+        or np.any(rho > 1.0)
+        or not np.isfinite(norms).all()
+        or np.any(norms <= 0.0)
+        or norms[0] > norms[1]
+        or norms[2] > norms[3]
+        or not np.isfinite(cholesky).all()
+        or np.any(cholesky <= 0.0)
+        or int(raw["d92_ccoc_crossblock_passes_per_class"]) != 2
+        or int(raw["d92_ccoc_upper_block_count"]) != 3
+        or raw["d92_ccoc_covariance_symmetric"] is not True
+        or raw["d92_ccoc_full_endpoint_reused"] is not True
+        or raw["d92_ccoc_full_endpoint_reuse"] is not True
+        or any(int(raw[field]) != 0 for field in zero_counts)
+        or int(raw["d92_ccoc_dense_solve_count"]) != 1
+        or int(raw["d92_ccoc_compile_solve_count"]) != 1
+        or int(raw["d92_ccoc_full_solve_count"]) != 1
+        or int(raw["d92_ccoc_full_dense_288_solve_count"]) != 1
+        or int(raw["d92_ccoc_cholesky_check_count"]) != 3
+        or int(raw["d92_ccoc_cholesky_endpoint_check_count"]) != 2
+        or int(raw["d92_ccoc_cholesky_final_check_count"]) != 1
+        or raw["d92_ccoc_cholesky_pass"] is not True
+        or int(raw["d92_ccoc_support_macs_upper_bound"]) <= 0
+        or int(raw["d92_ccoc_workspace_numeric_bytes_upper_bound"]) <= 0
+        or int(raw["d92_ccoc_workspace_frozen_k10_numeric_bytes_upper_bound"])
+        <= 0
+        or int(raw["d92_ccoc_support_transient_bytes_upper_bound"])
+        != int(raw["d92_ccoc_workspace_numeric_bytes_upper_bound"])
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D CCOC statistic receipt drift")
+    return mirrored
+
+
 def _tpce_support_receipt(
     audit: dict[str, Any],
     *,
@@ -1762,6 +2176,13 @@ def _audit_d92_e0d_fit(
             k_shot=k_shot,
             class_count=class_count if registered else old_count,
         )
+        _ccoc_support_receipt(
+            audit,
+            arm=arm,
+            registered=registered,
+            k_shot=k_shot,
+            class_count=class_count if registered else old_count,
+        )
         inventory = audit.get("d92_e0d_actual_component_inventory")
         if (
             audit.get("d92_registration_state_support_only") is not True
@@ -1793,6 +2214,13 @@ def _audit_d92_e0d_fit(
         k_shot=k_shot,
         class_count=class_count,
     )
+    after_ccoc_receipt = _ccoc_support_receipt(
+        after,
+        arm=arm,
+        registered=True,
+        k_shot=k_shot,
+        class_count=class_count,
+    )
     if int(k_shot) > 2:
         expected_total = expected_total_component_fit_count(
             k_shot, arm_id=arm.arm_id
@@ -1805,6 +2233,36 @@ def _audit_d92_e0d_fit(
             ):
                 expected_total = 4
                 expected_actual = 4
+            else:
+                expected_total = 3
+                expected_actual = 2
+        if after_ccoc_receipt.get("d92_e0d_ccoc_fallback_active") is True:
+            if (
+                after.get("d92_ccoc_codec_fallback_scope")
+                == "whole_d42_retry_before_and_after"
+            ):
+                inventory = after.get("d92_e0d_actual_component_inventory")
+                if not isinstance(inventory, dict):
+                    raise D92E0DQueryEvaluationError(
+                        "D92-E0D CCOC codec inventory drift"
+                    )
+                expected_actual = int(
+                    inventory.get("actual_component_fit_count", -1)
+                )
+                expected_total = expected_actual
+                if (
+                    expected_actual < 1
+                    or int(
+                        after.get(
+                            "d92_ccoc_codec_fallback_component_execution_count",
+                            -1,
+                        )
+                    )
+                    != expected_actual
+                ):
+                    raise D92E0DQueryEvaluationError(
+                        "D92-E0D CCOC codec inventory drift"
+                    )
             else:
                 expected_total = 3
                 expected_actual = 2
@@ -1978,6 +2436,7 @@ def _audit_d92_e0d_fit(
         **after_newguard_receipt,
         **after_pareto_distill_receipt,
         **after_csoas_receipt,
+        **after_ccoc_receipt,
         **after_pareto_deployed_state_closure,
         **after_tpce_receipt,
         **after_tcra_receipt,
@@ -2011,6 +2470,7 @@ def run_d92_e0d_query_evaluation(
     ground_manifest_sha256: str,
     output_root: str | Path,
     device: str,
+    technical_support_receipt_sink: Callable[[Mapping[str, Any]], None] | None = None,
 ) -> dict[str, Any]:
     """Run one frozen arm without exposing a truth-side input surface."""
 
@@ -2021,12 +2481,29 @@ def run_d92_e0d_query_evaluation(
         arm = D92_E0D_ARMS[str(arm_id)]
     except KeyError as error:
         raise D92E0DQueryEvaluationError(f"unknown D92-E0D arm: {arm_id}") from error
+    if technical_support_receipt_sink is not None and not callable(
+        technical_support_receipt_sink
+    ):
+        raise D92E0DQueryEvaluationError(
+            "D92-E0D technical support receipt sink must be callable"
+        )
+    if (
+        technical_support_receipt_sink is not None
+        and arm.arm_id not in _CCOC_ARM_IDS
+    ):
+        raise D92E0DQueryEvaluationError(
+            "D92-E0D technical support receipt sink is CCOC-only"
+        )
+    support_receipt_enabled = technical_support_receipt_sink is not None
     original_builder = d81_probe.build_d81_fit
     original_candidate = d81_eval.CANDIDATE_D81
     original_schema = d81_eval.SCHEMA
     original_audit = d81_eval._audit_fit
     original_d42_fit = d81_eval.fit_d42_unified_shrinkage_lda
     after_state_codec_errors: list[Exception] = []
+    ccoc_codec_execution_ledger: list[dict[str, Any]] = []
+    ccoc_codec_retry_active = False
+    pending_support_receipts: dict[int, dict[str, Any]] = {}
 
     def builder(d42: Any, basis: Any, weights: Any, ground_audit: dict[str, Any]):
         return build_d92_e0d_fit(
@@ -2168,6 +2645,144 @@ def run_d92_e0d_query_evaluation(
 
         return fallback_fit, call_records, transform_records
 
+    def ccoc_codec_fallback_builder(
+        d42: Any, basis: Any, weights: Any, ground_audit: dict[str, Any]
+    ):
+        """Retry the whole D42 path with E0 and a real CCOC execution ledger."""
+
+        nonlocal ccoc_codec_retry_active
+        ccoc_codec_retry_active = True
+        reference_fit, call_records, transform_records = build_d92_e0d_fit(
+            d42,
+            basis,
+            weights,
+            ground_audit,
+            arm_id="E0_FULL_ONLY",
+        )
+
+        def inactive_receipt(class_count: int, k_shot: int) -> dict[str, Any]:
+            raw = d92_probe.ccoc_inactive_receipt(
+                int(class_count), int(k_shot), old_class_count=OLD_CLASS_COUNT
+            )
+            mirrored = {
+                key.replace("d92_ccoc_", "d92_e0d_ccoc_"): value
+                for key, value in raw.items()
+            }
+            mirrored.update(
+                {
+                    "d92_e0d_ccoc_fallback_reason": "NOT_REGISTERED_STATE",
+                    "d92_e0d_ccoc_candidate_attempt_fit_count": 0,
+                    "d92_e0d_ccoc_fallback_reference_fit_count": 0,
+                    "d92_e0d_ccoc_candidate_statistic_receipt_available": False,
+                    "d92_e0d_ccoc_fallback_reference_full_head_byte_exact": None,
+                    "d92_e0d_ccoc_paired_e0_codec_state_equal": None,
+                    "d92_e0d_ccoc_g0_eligible": False,
+                    "d92_e0d_ccoc_g0_block_reason": "NOT_REGISTERED_STATE",
+                }
+            )
+            return {**raw, **mirrored}
+
+        def fallback_receipt(class_count: int) -> dict[str, Any]:
+            raw = {
+                "d92_ccoc_active": False,
+                "d92_ccoc_fallback_active": True,
+                "d92_ccoc_fallback_reason": "D42_CODEC_NUMERIC_RETRY_E0_FULL",
+                "d92_ccoc_formula_revision": "pairwise_cosine_v1",
+                "d92_ccoc_formula": (
+                    "Sigma=0.5*mix(Sigma_old,rho_old)+0.5*mix(Sigma_new,rho_new)"
+                ),
+                "d92_ccoc_old_rho": None,
+                "d92_ccoc_new_rho": None,
+                "d92_ccoc_old_group_class_count": int(OLD_CLASS_COUNT),
+                "d92_ccoc_new_group_class_count": int(class_count)
+                - int(OLD_CLASS_COUNT),
+                "d92_ccoc_candidate_attempt_fit_count": 1,
+                "d92_ccoc_fallback_reference_fit_count": 1,
+                "d92_ccoc_candidate_statistic_receipt_available": False,
+                "d92_ccoc_fallback_reference_full_head_byte_exact": True,
+                "d92_ccoc_paired_e0_codec_state_equal": None,
+                "d92_ccoc_query_rows_used": 0,
+                "d92_ccoc_query_fit_access": False,
+                "d92_ccoc_query_update_access": False,
+                "d92_ccoc_query_selection_access": False,
+                "d92_ccoc_query_truth_access": False,
+                "d92_ccoc_query_role_oracle_access": False,
+                "d92_ccoc_query_class_quota_access": False,
+                "d92_ccoc_query_global_reassignment": False,
+            }
+            mirrored = {
+                key.replace("d92_ccoc_", "d92_e0d_ccoc_"): value
+                for key, value in raw.items()
+            }
+            mirrored.update(
+                {
+                    "d92_e0d_ccoc_g0_eligible": False,
+                    "d92_e0d_ccoc_g0_block_reason": "NUMERIC_FALLBACK_EXACT_E0",
+                }
+            )
+            return {**raw, **mirrored}
+
+        def fallback_fit(
+            rows: np.ndarray,
+            labels: np.ndarray,
+            class_count: int,
+            k_shot: int,
+        ) -> tuple[np.ndarray, np.ndarray, dict[str, Any]]:
+            coefficient, intercept, reference_audit = reference_fit(
+                rows, labels, class_count, k_shot
+            )
+            audit_copy = dict(reference_audit)
+            registered = int(class_count) > int(OLD_CLASS_COUNT)
+            ccoc_codec_execution_ledger.append(
+                {
+                    "arm": "full",
+                    "class_count": int(class_count),
+                    "k_shot": int(k_shot),
+                    "status": (
+                        "ccoc_codec_retry_after_e0_reference"
+                        if registered
+                        else "ccoc_codec_retry_before_e0"
+                    ),
+                    "active": True,
+                }
+            )
+            audit_copy.update(
+                {
+                    "d92_e0d_arm_id": arm.arm_id,
+                    "d92_e0d_candidate_id": arm.candidate_id,
+                    "d92_e0d_registered_d_mode": arm.registered_d_mode,
+                }
+            )
+            if not registered:
+                audit_copy.update(inactive_receipt(class_count, k_shot))
+                return coefficient, intercept, audit_copy
+            calls = [dict(record) for record in ccoc_codec_execution_ledger]
+            actual_count = len(calls)
+            inventory = dict(audit_copy["d92_e0d_actual_component_inventory"])
+            inventory.update(
+                {
+                    "actual_component_fit_count": actual_count,
+                    "actual_component_calls": calls,
+                    "full_component_fit_count": actual_count,
+                }
+            )
+            audit_copy.update(
+                {
+                    "d92_e0d_actual_component_fit_count": actual_count,
+                    "d92_e0d_actual_component_inventory": inventory,
+                    "d92_e0d_total_component_fit_count": actual_count,
+                    "d92_e0d_two_state_registered_count_applies": True,
+                    "d92_e0d_registered_d_mode_active": True,
+                    "d92_e0d_registered_d_mode_effective": arm.registered_d_mode,
+                    "d92_ccoc_codec_fallback_component_execution_count": actual_count,
+                    "d92_ccoc_codec_fallback_scope": "whole_d42_retry_before_and_after",
+                    **fallback_receipt(class_count),
+                }
+            )
+            return coefficient, intercept, audit_copy
+
+        return fallback_fit, call_records, transform_records
+
     def is_d42_codec_numerical_error(error: BaseException) -> bool:
         from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
 
@@ -2192,6 +2807,24 @@ def run_d92_e0d_query_evaluation(
             precision: str,
             **compile_kwargs: Any,
         ) -> Any:
+            if (
+                arm.arm_id in _CCOC_ARM_IDS
+                and str(precision).lower() == "int8"
+                and not ccoc_codec_retry_active
+            ):
+                ccoc_codec_execution_ledger.append(
+                    {
+                        "arm": "full",
+                        "class_count": int(len(classes)),
+                        "k_shot": 0,
+                        "status": (
+                            "ccoc_codec_numeric_attempt"
+                            if len(classes) > int(old_class_count)
+                            else "ccoc_codec_candidate_before_e0"
+                        ),
+                        "active": True,
+                    }
+                )
             try:
                 return original_compile_state(
                     classes,
@@ -2215,6 +2848,38 @@ def run_d92_e0d_query_evaluation(
         finally:
             d42._compile_state = original_compile_state
 
+    def fit_with_ccoc_technical_support_receipt(
+        old_support_features: Any,
+        old_support_labels: Any,
+        old_classes: Any,
+        new_support_features: Any,
+        new_support_labels: Any,
+        new_classes: Any,
+        **kwargs: Any,
+    ) -> Any:
+        """Capture only a transient final-state CCOC support receipt."""
+
+        result = fit_with_csoas_codec_guard(
+            old_support_features,
+            old_support_labels,
+            old_classes,
+            new_support_features,
+            new_support_labels,
+            new_classes,
+            **kwargs,
+        )
+        receipt = _ccoc_technical_support_receipt(
+            result,
+            old_support_features=old_support_features,
+            old_support_labels=old_support_labels,
+            old_classes=old_classes,
+            new_support_features=new_support_features,
+            new_support_labels=new_support_labels,
+            new_classes=new_classes,
+        )
+        pending_support_receipts[id(result)] = receipt
+        return result
+
     def audit(
         result: Any,
         *,
@@ -2223,7 +2888,7 @@ def run_d92_e0d_query_evaluation(
         old_count: int,
         class_count: int,
     ) -> dict[str, Any]:
-        return _audit_d92_e0d_fit(
+        row = _audit_d92_e0d_fit(
             result,
             arm=arm,
             scenario=scenario,
@@ -2231,6 +2896,22 @@ def run_d92_e0d_query_evaluation(
             old_count=old_count,
             class_count=class_count,
         )
+        if support_receipt_enabled:
+            try:
+                receipt = pending_support_receipts.pop(id(result))
+            except KeyError as error:
+                raise D92E0DQueryEvaluationError(
+                    "D92-E0D CCOC technical support receipt drift"
+                ) from error
+            technical_support_receipt_sink(
+                {
+                    **receipt,
+                    "scene": str(scenario),
+                    "arm_id": arm.arm_id,
+                    "candidate_id": arm.candidate_id,
+                }
+            )
+        return row
 
     def fit_with_state_postprocess(
         old_support_features: Any,
@@ -2380,6 +3061,12 @@ def run_d92_e0d_query_evaluation(
         d81_eval._audit_fit = audit
         if arm.arm_id in (_TPCE_ARM_IDS | _TCRA_ARM_IDS):
             d81_eval.fit_d42_unified_shrinkage_lda = fit_with_state_postprocess
+        elif arm.arm_id in _CCOC_ARM_IDS:
+            d81_eval.fit_d42_unified_shrinkage_lda = (
+                fit_with_ccoc_technical_support_receipt
+                if support_receipt_enabled
+                else fit_with_csoas_codec_guard
+            )
         elif arm.arm_id in _CSOAS_ARM_IDS:
             d81_eval.fit_d42_unified_shrinkage_lda = fit_with_csoas_codec_guard
         evaluation_kwargs = {
@@ -2404,26 +3091,40 @@ def run_d92_e0d_query_evaluation(
             result = d81_eval.run_d81_query_evaluation(**evaluation_kwargs)
         except Exception as error:
             if (
-                arm.arm_id not in _CSOAS_ARM_IDS
+                arm.arm_id not in (_CSOAS_ARM_IDS | _CCOC_ARM_IDS)
                 or not after_state_codec_errors
                 or error is not after_state_codec_errors[-1]
             ):
                 raise
             # D81 only creates the output after all three scene fits close, so
             # this retry cannot overwrite a partially published artifact.
-            d81_probe.build_d81_fit = codec_fallback_builder
-            result = {
-                **d81_eval.run_d81_query_evaluation(**evaluation_kwargs),
-                "d92_csoas_codec_numeric_fallback": True,
-                "d92_csoas_codec_fallback_component_execution_count": 4,
-                "d92_csoas_codec_fallback_scope": "whole_d42_retry_before_and_after",
-            }
+            if arm.arm_id in _CCOC_ARM_IDS:
+                d81_probe.build_d81_fit = ccoc_codec_fallback_builder
+                result = {
+                    **d81_eval.run_d81_query_evaluation(**evaluation_kwargs),
+                    "d92_e0d_ccoc_codec_numeric_fallback": True,
+                    "d92_e0d_ccoc_codec_fallback_component_execution_count": len(
+                        ccoc_codec_execution_ledger
+                    ),
+                    "d92_e0d_ccoc_codec_fallback_scope": (
+                        "whole_d42_retry_before_and_after"
+                    ),
+                }
+            else:
+                d81_probe.build_d81_fit = codec_fallback_builder
+                result = {
+                    **d81_eval.run_d81_query_evaluation(**evaluation_kwargs),
+                    "d92_csoas_codec_numeric_fallback": True,
+                    "d92_csoas_codec_fallback_component_execution_count": 4,
+                    "d92_csoas_codec_fallback_scope": "whole_d42_retry_before_and_after",
+                }
     finally:
         d81_probe.build_d81_fit = original_builder
         d81_eval.CANDIDATE_D81 = original_candidate
         d81_eval.SCHEMA = original_schema
         d81_eval._audit_fit = original_audit
         d81_eval.fit_d42_unified_shrinkage_lda = original_d42_fit
+        pending_support_receipts.clear()
     if (
         result.get("candidate") != arm.candidate_id
         or result.get("schema") != SCHEMA_BY_ARM[arm.arm_id]

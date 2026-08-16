@@ -21,6 +21,13 @@ from cvsrffi.stage2_d92_cauchy_scatter_oas import (
     build_cauchy_scatter_oas_statistics,
     compile_cauchy_scatter_oas_affine,
 )
+from cvsrffi.stage2_d92_cross_class_offblock_consensus import (
+    D92CCOCError,
+    D92CCOCNumericalError,
+    build_cross_class_offblock_consensus_statistics,
+    ccoc_inactive_receipt,
+    compile_cross_class_offblock_consensus_affine,
+)
 from cvsrffi import stage2_d92_bidirectional_newguard as newguard
 from cvsrffi import stage2_d92_full_block_pareto_distill as pareto_distill
 
@@ -47,6 +54,7 @@ REGISTERED_D_MODES = (
     "newguard_maxmin",
     "pareto_distill",
     "csoas_full",
+    "ccoc_full",
 )
 OCF_LAMBDA_BY_MODE = {"ocf25": 0.25, "ocf50": 0.50}
 OCF_RMS_EPSILON = 1.0e-12
@@ -1511,6 +1519,220 @@ def build_d92_fit(
         )
         return coefficient, intercept, audit
 
+    def _record_ccoc_transform(
+        transform_audit: dict[str, Any],
+        *,
+        class_count: int,
+        k_shot: int,
+    ) -> None:
+        """Record the single CCOC D81 transform without retaining support."""
+
+        transform_records.append(
+            {
+                "component_arm": "ccoc_full",
+                "class_count": int(class_count),
+                "k_shot": int(k_shot),
+                "center_shift_l2_max": transform_audit["center_shift_l2_max"],
+                "normalized_weight_min": transform_audit[
+                    "normalized_weight_min"
+                ],
+                "effective_sample_size_min": min(
+                    transform_audit["effective_sample_size_by_class"]
+                ),
+            }
+        )
+
+    def _ccoc_numeric_fallback_receipt(
+        error: D92CCOCNumericalError,
+        *,
+        class_count: int,
+        k_shot: int,
+        statistics: Any | None,
+    ) -> dict[str, Any]:
+        """Describe a discarded CCOC attempt without fabricating statistics."""
+
+        candidate_receipt = (
+            {
+                key: value
+                for key, value in statistics.audit.items()
+                if key.startswith("d92_ccoc_")
+            }
+            if statistics is not None
+            else {
+                "d92_ccoc_active": False,
+                "d92_ccoc_fallback_active": False,
+                "d92_ccoc_fallback_reason": None,
+                "d92_ccoc_formula_revision": "pairwise_cosine_v1",
+                "d92_ccoc_formula": (
+                    "Sigma=0.5*mix(Sigma_old,rho_old)+0.5*mix(Sigma_new,rho_new)"
+                ),
+                "d92_ccoc_old_rho": None,
+                "d92_ccoc_new_rho": None,
+                "d92_ccoc_old_group_class_count": OLD_CLASS_COUNT,
+                "d92_ccoc_new_group_class_count": max(
+                    0, int(class_count) - OLD_CLASS_COUNT
+                ),
+                "d92_ccoc_canonicalization": (
+                    "lexicographic_float32_row_bytes_then_float64_reduce"
+                ),
+                "d92_ccoc_canonicalization_tie_policy": (
+                    "float32_row_bytes_then_float64_row_bytes_"
+                    "duplicate_class_handle_fail_closed"
+                ),
+                "d92_ccoc_full_endpoint_reused": False,
+                "d92_ccoc_full_endpoint_reuse": False,
+                "d92_ccoc_additional_fit_count": 0,
+                "d92_ccoc_additional_full_fit_count": 0,
+                "d92_ccoc_additional_block_fit_count": 0,
+                "d92_ccoc_additional_loo_fit_count": 0,
+                "d92_ccoc_additional_fisher_fit_count": 0,
+                "d92_ccoc_additional_scan_count": 0,
+                "d92_ccoc_hyperparameter_scan_count": 0,
+                "d92_ccoc_weight_scan_count": 0,
+                "d92_ccoc_dense_solve_count": 0,
+                "d92_ccoc_cholesky_check_count": 0,
+                "d92_ccoc_cholesky_pass": False,
+                "d92_ccoc_support_macs_upper_bound": 0,
+                "d92_ccoc_support_transient_bytes_upper_bound": 0,
+                "d92_ccoc_persistent_state_bytes_delta": 0,
+                "d92_ccoc_persistent_bytes_delta": 0,
+                "d92_ccoc_query_state_bytes_delta": 0,
+                "d92_ccoc_query_bytes_delta": 0,
+                "d92_ccoc_query_macs_delta": 0,
+                "d92_ccoc_query_macs": 0,
+                "d92_ccoc_query_rows_used": 0,
+                "d92_ccoc_query_fit_access": False,
+                "d92_ccoc_query_update_access": False,
+                "d92_ccoc_query_selection_access": False,
+                "d92_ccoc_query_truth_access": False,
+                "d92_ccoc_query_role_oracle_access": False,
+                "d92_ccoc_query_class_quota_access": False,
+                "d92_ccoc_query_global_reassignment": False,
+            }
+        )
+        candidate_receipt.update(
+            {
+                "d92_ccoc_active": False,
+                "d92_ccoc_fallback_active": True,
+                "d92_ccoc_fallback_reason": str(error),
+                "d92_ccoc_candidate_attempt_fit_count": 1,
+                "d92_ccoc_fallback_reference_fit_count": 1,
+                "d92_ccoc_candidate_statistic_receipt_available": statistics
+                is not None,
+                "d92_ccoc_fallback_reference_full_head_byte_exact": True,
+                "d92_ccoc_paired_e0_codec_state_equal": None,
+                "d92_ccoc_query_rows_used": 0,
+                "d92_ccoc_query_fit_access": False,
+                "d92_ccoc_query_update_access": False,
+                "d92_ccoc_query_selection_access": False,
+                "d92_ccoc_query_truth_access": False,
+                "d92_ccoc_query_role_oracle_access": False,
+                "d92_ccoc_query_class_quota_access": False,
+                "d92_ccoc_query_global_reassignment": False,
+            }
+        )
+        return candidate_receipt
+
+    def ccoc_fit(
+        rows: np.ndarray,
+        labels: np.ndarray,
+        class_count: int,
+        k_shot: int,
+    ) -> tuple[np.ndarray, np.ndarray, dict[str, Any]]:
+        """Compile one support-only CCOC FULL head; fall back only on numeric error."""
+
+        statistics = None
+        transform_audit = None
+        try:
+            transformed, transform_audit = d81.core.translate_to_robust_centers(
+                rows,
+                labels,
+                class_count,
+                k_shot,
+                basis,
+                spectral_weights,
+            )
+            statistics = build_cross_class_offblock_consensus_statistics(
+                d42,
+                transformed,
+                labels,
+                class_count=class_count,
+                k_shot=k_shot,
+            )
+            coefficient, intercept, ccoc_audit = (
+                compile_cross_class_offblock_consensus_affine(d42, statistics)
+            )
+        except D92CCOCNumericalError as error:
+            # The support-only candidate is discarded.  The exact E0 FULL
+            # reference is the only recovery and is recorded as a real call.
+            component_records.append(
+                {
+                    "arm": "full",
+                    "class_count": int(class_count),
+                    "k_shot": int(k_shot),
+                    "status": "ccoc_numeric_fallback_attempt",
+                    "active": True,
+                }
+            )
+            if transform_audit is not None:
+                _record_ccoc_transform(
+                    transform_audit, class_count=class_count, k_shot=k_shot
+                )
+            reference_coefficient, reference_intercept, reference_audit = full_fit(
+                rows, labels, class_count, k_shot
+            )
+            audit = dict(reference_audit)
+            audit.update(
+                {
+                    **_ccoc_numeric_fallback_receipt(
+                        error,
+                        class_count=class_count,
+                        k_shot=k_shot,
+                        statistics=statistics,
+                    ),
+                    "coefficient_source": "d92_ccoc_numeric_exact_e0_full_fallback",
+                }
+            )
+            return reference_coefficient, reference_intercept, audit
+        except D92CCOCError as error:
+            raise D92ProbeError(f"D92 CCOC registry/receipt drift: {error}") from error
+
+        component_records.append(
+            {
+                "arm": "full",
+                "class_count": int(class_count),
+                "k_shot": int(k_shot),
+                "status": "ccoc_active",
+                "active": True,
+            }
+        )
+        _record_ccoc_transform(
+            transform_audit, class_count=class_count, k_shot=k_shot
+        )
+        audit = dict(ccoc_audit)
+        audit.update(
+            {
+                "coefficient_source": "d92_ccoc_d81_cross_class_offblock_consensus_single_full",
+                "d81_component_arm": "ccoc_full",
+                "d81_ground_basis_sha256": basis_audit["basis_sha256"],
+                "d81_ground_spectral_weight_sha256": basis_audit[
+                    "spectral_weight_sha256"
+                ],
+                "d81_ground_effective_rank": basis_audit[
+                    "participation_ratio_effective_rank"
+                ],
+                "d81_ground_retained_rank": basis_audit["retained_rank"],
+                "d81_ground_rank_policy": basis_audit["rank_policy"],
+                "d81_transform_audit": transform_audit,
+                "d92_ccoc_candidate_attempt_fit_count": 1,
+                "d92_ccoc_fallback_reference_fit_count": 0,
+                "d92_ccoc_candidate_statistic_receipt_available": True,
+                "d92_ccoc_fallback_reference_full_head_byte_exact": None,
+                "d92_ccoc_paired_e0_codec_state_equal": None,
+            }
+        )
+        return coefficient, intercept, audit
+
     def fixed50_fit(
         rows: np.ndarray,
         labels: np.ndarray,
@@ -1730,6 +1952,9 @@ def build_d92_fit(
         elif registered_d_mode == "csoas_full":
             selected_fit = csoas_fit
             effective_d_mode = registered_d_mode
+        elif registered_d_mode == "ccoc_full":
+            selected_fit = ccoc_fit
+            effective_d_mode = registered_d_mode
         elif registered_d_mode == "block_only":
             selected_fit = direct_block_fit
             effective_d_mode = registered_d_mode
@@ -1881,6 +2106,47 @@ def build_d92_fit(
                 k_shot=int(k_shot),
                 feature_dimension=int(d42.FEATURE_DIM),
             )
+        ccoc_mode = registered_d_mode == "ccoc_full"
+        ccoc_active = bool(d_mode_active and ccoc_mode)
+        if ccoc_active:
+            ccoc_receipt = {
+                key: value
+                for key, value in base_audit.items()
+                if key.startswith("d92_ccoc_")
+            }
+            required_ccoc = {
+                "d92_ccoc_active",
+                "d92_ccoc_fallback_active",
+                "d92_ccoc_fallback_reason",
+                "d92_ccoc_candidate_attempt_fit_count",
+                "d92_ccoc_fallback_reference_fit_count",
+                "d92_ccoc_candidate_statistic_receipt_available",
+                "d92_ccoc_fallback_reference_full_head_byte_exact",
+                "d92_ccoc_paired_e0_codec_state_equal",
+                "d92_ccoc_query_rows_used",
+                "d92_ccoc_query_fit_access",
+                "d92_ccoc_query_update_access",
+                "d92_ccoc_query_selection_access",
+                "d92_ccoc_query_truth_access",
+                "d92_ccoc_query_role_oracle_access",
+                "d92_ccoc_query_class_quota_access",
+                "d92_ccoc_query_global_reassignment",
+            }
+            if not required_ccoc.issubset(ccoc_receipt):
+                raise D92ProbeError("D92 CCOC active receipt drift")
+        elif ccoc_mode:
+            try:
+                ccoc_receipt = ccoc_inactive_receipt(
+                    int(class_count),
+                    int(k_shot),
+                    old_class_count=OLD_CLASS_COUNT,
+                )
+            except D92CCOCError as error:
+                raise D92ProbeError(
+                    f"D92 CCOC inactive receipt drift: {error}"
+                ) from error
+        else:
+            ccoc_receipt = {}
         audit = dict(base_audit)
         center_active = ground_center_active(class_count, k_shot)
         d81_audit = (
@@ -2016,6 +2282,7 @@ def build_d92_fit(
                 ),
                 **newguard_receipt,
                 **pareto_receipt,
+                **ccoc_receipt,
                 "d92_component_fit_inventory": component_inventory,
                 "d92_component_support_retained_count": (
                     component_support_retained_count
