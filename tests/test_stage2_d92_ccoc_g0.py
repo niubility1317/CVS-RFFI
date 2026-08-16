@@ -100,7 +100,7 @@ def test_equal_quantum_margin_boundary_passes() -> None:
         ("actual_full_fit_count", 2),
         ("query_access", True),
         ("registration_wall_time_ns", 150_000_001),
-        ("registration_incremental_peak_working_set_bytes", 524_389),
+        ("registration_incremental_peak_working_set_bytes", 1_048_577),
     ],
 )
 def test_each_frozen_gate_failure_rejects(field: str, value: object) -> None:
@@ -150,7 +150,7 @@ def test_state_sha_must_differ_from_reference() -> None:
 def test_candidate_peak_gate_is_absolute_and_reference_cannot_offset_it() -> None:
     reference, candidate = _scene()
     reference["registration_incremental_peak_working_set_bytes"] = 500_000
-    candidate["registration_incremental_peak_working_set_bytes"] = 1_000_000
+    candidate["registration_incremental_peak_working_set_bytes"] = 1_048_577
 
     result = validate_ccoc_g0(*_wrapped(reference, candidate))
 
@@ -160,6 +160,49 @@ def test_candidate_peak_gate_is_absolute_and_reference_cannot_offset_it() -> Non
         is False
     )
     assert result["pass"] is False
+
+
+def test_candidate_peak_729088_passes_new_one_mib_hard_cap() -> None:
+    reference, candidate = _scene()
+    candidate["registration_incremental_peak_working_set_bytes"] = 729_088
+
+    result = validate_ccoc_g0(*_wrapped(reference, candidate))
+
+    assert result["gates"]["peak"] is True
+    assert result["gates"]["registration_incremental_peak_working_set_bytes"] is True
+
+
+def test_candidate_peak_1048577_fails_new_one_mib_hard_cap() -> None:
+    reference, candidate = _scene()
+    candidate["registration_incremental_peak_working_set_bytes"] = 1_048_577
+
+    result = validate_ccoc_g0(*_wrapped(reference, candidate))
+
+    assert result["gates"]["peak"] is False
+    assert result["gates"]["registration_incremental_peak_working_set_bytes"] is False
+
+
+@pytest.mark.parametrize(
+    ("mutation", "gate"),
+    [
+        (lambda reference, candidate: candidate.update(
+            registration_wall_time_ns=150_000_001
+        ), "wall"),
+        (lambda reference, candidate: (
+            reference.update(registration_wall_time_ns=99_999_999),
+            candidate.update(registration_wall_time_ns=150_000_000),
+        ), "ratio"),
+        (lambda reference, candidate: candidate.update(query_macs=124), "query_macs"),
+        (lambda reference, candidate: candidate.update(persistent_state_bytes=457), "state_bytes"),
+    ],
+)
+def test_non_peak_hard_gates_remain_unchanged(mutation, gate: str) -> None:
+    reference, candidate = _scene()
+    mutation(reference, candidate)
+
+    result = validate_ccoc_g0(*_wrapped(reference, candidate))
+
+    assert result["gates"][gate] is False
 
 
 def test_scene_collection_must_equal_all_three_frozen_scenes() -> None:
