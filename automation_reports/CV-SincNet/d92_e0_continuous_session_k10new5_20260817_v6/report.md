@@ -40,3 +40,14 @@ cd /home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0_continuous_session_k10n
 ```
 
 技术健康完成后才取回5份truth sidecar并由主代理运行truth-last分析；runner不读性能、不调参、不重试。协议/安全、query泄漏、错误运行字节、覆盖或确定性执行故障仍触发精确停机；资源超限本身不再是运行健康停机条件。
+
+## Runner封口（2026-08-17）
+
+- 最终状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+- 启动：冻结`nohup bash ./launch.sh`命令仅提交一次。首次健康核验时run-owned PID=0、GPU compute=0，因此无需执行进程终止。
+- 技术触发：`smoke_gpu0.out`记录`ContinuousSessionPredictionError: terminal schedule closure drift`。这是确定性执行故障；不作性能解释、不调参、不修复或重试。
+- 资源门边界：本次停止并非wall/peak资源收据超限导致；未读取任何资源或性能数值作为停机决策。
+- 已保全truth-free产物：`matrix_manifest=1`、`prepared_manifest=5`、`delta_receipt=5`、`COMMIT=5`、`fit_audit=21`、`resource_audit=21`；`prediction_manifest=0`、`job_receipt=0`、`execution_receipt=0`。正式prediction闭合不存在。
+- 取回：`E:/type10-7/local_artifacts/d92_e0_continuous_session_k10new5_20260817_v6/run_root`（220文件）及`log_root`（3文件）已从对应远端根完整复制，文件计数与远端一致；包含runtime/source、output、release archive、launch、`launch.out`/`launch.err`和日志。
+- 未复制truth sidecar或truth receipt，`content_read=false`；未运行analyzer，未读取accuracy、H、BA、floor或其他性能字段。`fresh_run_retry=false`，不可进入性能分析。
+- 封口清理：本地`ssh.exe`、`scp.exe`及至N607 TCP22连接均为0。

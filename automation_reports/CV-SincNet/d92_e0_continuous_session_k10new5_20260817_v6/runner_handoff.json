@@ -1,0 +1,58 @@
+{
+  "run_id": "d92_e0_continuous_session_k10new5_20260817_v6",
+  "terminal_status": "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT",
+  "fresh_run_retry": false,
+  "analysis_eligible": false,
+  "science_commit": "e5fcb515de750bfdfd129996c66892d2af003f68",
+  "release_commit": "3fd775e74015a50f01a92418c6588007ed5f7522",
+  "launch": {
+    "submission_count": 1,
+    "command": "cd /home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0_continuous_session_k10new5_20260817_v6 && nohup bash ./launch.sh >./launch.out 2>./launch.err </dev/null &",
+    "archive": {
+      "name": "d92_e0_continuous_session_v6.tar.gz",
+      "bytes": 171110,
+      "sha256": "9514ef2dab5ba0f64c91e0e37e73bcc514c3bf8e8b4cdea5300ea88adc5a2b40",
+      "members": 31
+    },
+    "launch_file": {
+      "name": "launch.sh",
+      "bytes": 2263,
+      "sha256": "c99254e0097c7c1727d560ae0973cc4100024bb78ecb372463f0e863417a4c30",
+      "bash_n": "PASS"
+    }
+  },
+  "technical_failure": {
+    "observed_at": "2026-08-17T15:15:51+08:00",
+    "fingerprint": "ContinuousSessionPredictionError: terminal schedule closure drift",
+    "log": "smoke_gpu0.out",
+    "failure_class": "deterministic_execution_fault",
+    "resource_gate_stop": false
+  },
+  "artifact_counts": {
+    "matrix_manifest_json": 1,
+    "prepared_manifest_json": 5,
+    "delta_receipt_json": 5,
+    "commit_json": 5,
+    "fit_audit_json": 21,
+    "resource_audit_json": 21,
+    "prediction_manifest_json": 0,
+    "job_receipt_json": 0,
+    "execution_receipt_json": 0
+  },
+  "retrieval": {
+    "root": "E:/type10-7/local_artifacts/d92_e0_continuous_session_k10new5_20260817_v6",
+    "run_root_files": 220,
+    "log_root_files": 3,
+    "remote_file_counts_match": true,
+    "truth_sidecars_copied": false,
+    "truth_receipts_copied": false,
+    "content_read": false
+  },
+  "cleanup": {
+    "run_owned_pid_count": 0,
+    "gpu_compute_process_count": 0,
+    "local_ssh_process_count": 0,
+    "local_scp_process_count": 0,
+    "n607_tcp22_established_count": 0
+  }
+}
