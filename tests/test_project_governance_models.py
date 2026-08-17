@@ -25,6 +25,7 @@ from tools.project_governance.models import (
     ScanBundle,
     ScopeResult,
 )
+from tools.project_governance.paths import normalize_relative_path, stable_asset_id
 
 
 def test_fixed_governance_vocabularies_are_stable():
@@ -78,6 +79,25 @@ def test_fixed_governance_vocabularies_are_stable():
     assert ApprovalState.AWAITING_USER_APPROVAL.value == "AWAITING_USER_APPROVAL"
     assert ExecutionState.NOT_AUTHORIZED.value == "NOT_AUTHORIZED"
     assert AssetKind.JUNCTION.value == "junction"
+
+
+def test_asset_id_uses_location_root_and_path_not_metadata():
+    first = stable_asset_id(Location.LOCAL, "TYPE10_7", "runs/A")
+
+    assert first == stable_asset_id(Location.LOCAL, "TYPE10_7", "runs\\A")
+    assert first == stable_asset_id(Location.LOCAL, "TYPE10_7", "RUNS/a")
+    assert first != stable_asset_id(Location.N607, "TYPE10_7", "runs/A")
+    assert stable_asset_id(Location.N607, "TYPE10_7", "runs/A") != stable_asset_id(
+        Location.N607, "TYPE10_7", "RUNS/a"
+    )
+
+
+def test_relative_paths_normalize_unicode_and_reject_root_escapes():
+    assert normalize_relative_path("runs\\cafe\u0301/./receipt.json") == "runs/caf\u00e9/receipt.json"
+
+    for forbidden in ("../outside", "runs/../../outside", "/outside", "E:\\outside"):
+        with pytest.raises(ValueError):
+            normalize_relative_path(forbidden)
 
 
 def test_records_are_frozen_and_optional_evidence_is_none():
