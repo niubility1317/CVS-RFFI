@@ -48,3 +48,14 @@ cd /home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0_continuous_session_k10n
 - 两个outer在prediction前出现同一确定性异常：停止后续dispatch；不重试、不覆盖。
 - 不因中间性能停止。`fresh_run_retry=false`。
 - 成功需要5个outer、210次session fit、全部不可覆盖预测闭合；随后才允许truth-last分析连续轨迹性能。
+
+## Runner封口（2026-08-17）
+
+- 最终状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+- 启动：冻结的`nohup bash ./launch.sh`命令仅提交一次；首次健康核验时run-owned PID为0、GPU compute进程为0，无需执行进程终止。
+- 技术触发：`smoke_gpu0.out`记录`ContinuousSessionPredictionError: registration wall hard gate failed`。这是技术失败指纹，不作性能解释、方法修复或重试。
+- 仅限技术资源记录：路径绑定阶段为`smoke/leo_clear_weak/DA1_REG0`；fit receipt中`session_index=0`，receipt中的scene与schedule字段均为`ABSENT`。resource receipt记录`registration_wall_time_ns=267672490`、`registration_wall_hard_max_ns=300000000`、`registration_incremental_peak_working_set_bytes=7524352`、`registration_incremental_peak_hard_max_bytes=4194304`、`registration_peak_rss_bytes=1469804544`。
+- 已保全的truth-free产物：`matrix_manifest=1`、`prepared_manifest=5`、`delta_receipt=5`、`COMMIT=5`、`NPZ=75`、`fit_audit=1`、`resource_audit=1`；`prediction_manifest=0`、`job_receipt=0`、`execution_receipt=0`。正式矩阵未形成可分析闭合。
+- 取回：`E:/type10-7/local_artifacts/d92_e0_continuous_session_k10new5_20260817_v5/run_root`（180文件，canonical tree SHA256=`4e17d62bc2f54979b51ea012e9e6b1bd135c69e8c17c423556c303085256e8ce`）与`log_root`（3文件，SHA256=`423fd4a5b698becafe0677488e9633f5efdced3c2c6e0f38118c6faf721a29bf`）均与远端逐文件canonical hash清单匹配；其中包含runtime/source、output、release archive、launch、launch.out/err和日志。
+- 未复制truth sidecar或receipt用于truth闭合，`content_read=false`；未运行analyzer，未读取accuracy、H、BA、floor或其他性能字段。`fresh_run_retry=false`，不可进入性能分析。
+- 封口清理：本地`ssh.exe`、`scp.exe`及至N607 TCP22连接均为0。
