@@ -35,6 +35,7 @@ from tools.project_governance.paths import normalize_relative_path, stable_asset
 class FakeRunner:
     results: list[CommandResult]
     connection_results: list[ConnectionCheck | tuple[ConnectionEvidence, ...]]
+    stream_output: bool = True
     calls: list[dict[str, object]] = field(default_factory=list)
     connection_calls: list[dict[str, object]] = field(default_factory=list)
 
@@ -60,7 +61,7 @@ class FakeRunner:
             raise AssertionError("unexpected command execution")
         result = self.results.pop(0)
         assert result.command == command
-        if stdout_line_handler is not None:
+        if stdout_line_handler is not None and self.stream_output:
             for line in result.stdout_lines:
                 stdout_line_handler(line)
         return result
@@ -652,6 +653,8 @@ def test_n607_posix_backslash_is_literal_and_cannot_collide_with_nested_path() -
 
     assert normalize_relative_path(literal, location=Location.N607) == literal
     assert normalize_relative_path(r"runs/..\literal.json", location=Location.N607) == r"runs/..\literal.json"
+    assert normalize_relative_path(r"\\leading.json", location=Location.N607) == r"\\leading.json"
+    assert normalize_relative_path(r"C:\literal.json", location=Location.N607) == r"C:\literal.json"
     assert stable_asset_id(Location.N607, "N607_CVS_SINCNET", literal) != stable_asset_id(
         Location.N607, "N607_CVS_SINCNET", nested
     )
@@ -837,3 +840,122 @@ def test_direct_command_reuses_the_preflight_config_path() -> None:
 
     assert result.receipt.outcome is RemoteOutcome.VERIFIED
     assert runner.calls[1]["command"][:3] == ("ssh", "-F", str(DEFAULT_SSH_CONFIG))
+
+
+def test_process_ppid_and_scan_error_path_are_required_for_protocol_closure() -> None:
+    bad_ppid = list(_ndjson(active=True))
+    for index, line in enumerate(bad_ppid):
+        record = json.loads(line)
+        if record.get("record_type") == "PROCESS":
+            record["ppid"] = None
+            bad_ppid[index] = json.dumps(record)
+            break
+
+    missing_error_path = list(_ndjson())
+    missing_error_path.insert(
+        -1,
+        json.dumps(
+            {
+                "schema_version": 1,
+                "scan_id": "SCAN-1",
+                "record_type": "SCAN_ERROR",
+                "location": "N607",
+                "root_id": "N607_CVS_SINCNET",
+                "operation": "probe",
+                "error_type": "OSError",
+                "error": "missing path",
+            }
+        ),
+    )
+    completion = json.loads(missing_error_path[-1])
+    completion["record_count"] = len(missing_error_path) - 1
+    completion["scan_error_count"] = 1
+    missing_error_path[-1] = json.dumps(completion)
+
+    for pid, lines in ((1501, tuple(bad_ppid)), (1502, tuple(missing_error_path))):
+        runner = FakeRunner(
+            [_preflight_ok(), _result(_direct_command(), pid=pid, stdout_lines=lines)],
+            [(), ()],
+        )
+        assert _collector(runner).collect().receipt.outcome is RemoteOutcome.FAILED
+
+
+def test_runner_that_ignores_stream_handler_cannot_verify_readable_stdout() -> None:
+    runner = FakeRunner(
+        [_preflight_ok(), _result(_direct_command(), pid=1601, stdout_lines=_ndjson())],
+        [(), ()],
+        stream_output=False,
+    )
+
+    result = _collector(runner).collect()
+
+    assert result.receipt.outcome is RemoteOutcome.FAILED
+    assert "completion" in (result.receipt.error or "").casefold()
+
+
+def test_linked_carrier_emits_one_asset_error_and_failed_scope() -> None:
+    payload = build_remote_payload(_config(), _discovery(), scan_id="SCAN-LINK")
+    namespace: dict[str, object] = {"__name__": "payload_test"}
+    exec(compile(payload, "<remote-payload>", "exec"), namespace)
+    directory_metadata = SimpleNamespace(st_mode=stat.S_IFDIR | 0o755, st_size=0, st_mtime=0)
+    link_metadata = SimpleNamespace(st_mode=stat.S_IFLNK | 0o777, st_size=4, st_mtime=0)
+
+    class FakeScandir:
+        def __init__(self, entries=(), error: OSError | None = None):
+            self.entries = entries
+            self.error = error
+
+        def __enter__(self):
+            if self.error is not None:
+                raise self.error
+            return iter(self.entries)
+
+        def __exit__(self, exc_type, exc, traceback):
+            return False
+
+    runs_entry = SimpleNamespace(name="runs", path="/srv/CV-SincNet/runs")
+
+    def normalize(value: object) -> str:
+        return str(value).replace("\\", "/")
+
+    def fake_lstat(path: object):
+        normalized = normalize(path)
+        if normalized == "/srv/CV-SincNet":
+            return directory_metadata
+        if normalized == "/srv/CV-SincNet/runs":
+            return link_metadata
+        raise FileNotFoundError(normalized)
+
+    def fake_scandir(path: object):
+        normalized = normalize(path)
+        if normalized == "/srv/CV-SincNet":
+            return FakeScandir((runs_entry,))
+        raise FileNotFoundError(normalized)
+
+    namespace["os"] = SimpleNamespace(
+        path=os.path,
+        sep=os.sep,
+        lstat=fake_lstat,
+        scandir=fake_scandir,
+        readlink=lambda path: "",
+    )
+    output = io.StringIO()
+    with redirect_stdout(output):
+        namespace["_main"]()
+    records = [json.loads(line) for line in output.getvalue().splitlines()]
+
+    assert sum(
+        record["record_type"] == "ASSET" and record.get("relative_path") == "runs"
+        for record in records
+    ) == 1
+    assert any(
+        record["record_type"] == "SCAN_ERROR"
+        and record["operation"] == "carrier_boundary"
+        for record in records
+    )
+    assert any(
+        record["record_type"] == "SCOPE"
+        and record["relative_path"] == "runs"
+        and record["status"] == "SCAN_ERROR"
+        for record in records
+    )

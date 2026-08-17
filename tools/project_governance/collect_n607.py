@@ -854,7 +854,7 @@ def _parse_ndjson(
             root_prefix = expected_root.rstrip("/") + "/"
             if (
                 not _is_int(pid, minimum=1)
-                or (ppid is not None and not _is_int(ppid))
+                or not _is_int(ppid)
                 or not isinstance(cwd, str)
                 or (cwd != expected_root and not cwd.startswith(root_prefix))
                 or not isinstance(value.get("cmdline"), str)
@@ -862,6 +862,10 @@ def _parse_ndjson(
             ):
                 raise ValueError(f"NDJSON process fields are incomplete at line {index}")
         elif record_type == "SCAN_ERROR":
+            try:
+                _canonical_n607_path(value.get("relative_path"), allow_empty=True)
+            except ValueError as exc:
+                raise ValueError(f"NDJSON scan error path is invalid at line {index}") from exc
             if (
                 value.get("location") != "N607"
                 or value.get("root_id") != "N607_CVS_SINCNET"

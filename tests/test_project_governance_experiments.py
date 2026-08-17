@@ -56,6 +56,25 @@ def _asset(
     )
 
 
+def _n607_asset(relative_path: str) -> AssetRecord:
+    return AssetRecord(
+        asset_id=stable_asset_id(Location.N607, "N607_CVS_SINCNET", relative_path),
+        scan_id="N607_EXPERIMENT_FIXTURE_SCAN",
+        location=Location.N607,
+        root_id="N607_CVS_SINCNET",
+        relative_path=relative_path,
+        display_name=relative_path.rsplit("/", 1)[-1],
+        escaped_name=relative_path.rsplit("/", 1)[-1],
+        asset_kind=AssetKind.FILE,
+        size_bytes=1,
+        mtime_utc=FIXTURE_MTIME,
+        access_status=AccessStatus.OK,
+        hash_status=HashStatus.METADATA_ONLY,
+        sha256=None,
+        evidence_role="prediction",
+    )
+
+
 def _record_containing(index, suffix: str):
     return next(
         record
@@ -437,3 +456,22 @@ def test_oversized_required_report_is_scan_error_even_with_live_binding(tmp_path
 
     assert index["RUN_OVERSIZED"].experiment_state is ExperimentState.SCAN_ERROR
     assert "UNREADABLE_EVIDENCE" in (index["RUN_OVERSIZED"].closure_gaps or ())
+
+
+def test_n607_index_preserves_literal_backslash_distinct_from_posix_separator() -> None:
+    root = "/home/szu2070436088/2510044040/CV-SincNet"
+    literal = r"runs/foo\bar.json"
+    nested = "runs/foo/bar.json"
+
+    index = index_experiments(
+        (_n607_asset(literal), _n607_asset(nested)),
+        root_paths={"N607_CVS_SINCNET": root},
+    )
+
+    remote_paths = {
+        path
+        for record in index.values()
+        for path in (record.n607_artifact_paths or ())
+    }
+    assert len(index) == 2
+    assert remote_paths == {f"{root}/{literal}", f"{root}/{nested}"}

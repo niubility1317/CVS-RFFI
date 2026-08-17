@@ -28,7 +28,9 @@ def normalize_relative_path(
     normalized = unicodedata.normalize("NFC", value)
     if selected_location is not Location.N607:
         normalized = normalized.replace("\\", "/")
-    if normalized.startswith("/") or _WINDOWS_ABSOLUTE.match(normalized):
+    if normalized.startswith("/") or (
+        selected_location is not Location.N607 and _WINDOWS_ABSOLUTE.match(normalized)
+    ):
         raise ValueError(f"path must be relative: {value!r}")
 
     parts: list[str] = []

@@ -15,7 +15,7 @@ import unicodedata
 from collections import defaultdict
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 from .models import AccessStatus, AssetKind, AssetRecord, ExperimentRecord, ExperimentState, Location
@@ -23,6 +23,7 @@ from .paths import normalize_relative_path
 
 
 MAX_EVIDENCE_BYTES = 2 * 1024 * 1024
+IndexedPath = Path | PurePosixPath
 _BLOCKED_SUFFIXES = {".bin", ".ckpt", ".npy", ".npz", ".pkl", ".pickle", ".pt", ".pth"}
 _TEXT_SUFFIXES = {".json", ".md", ".receipt", ".txt"}
 _TERMINAL_VALUES = {"COMPLETE", "COMPLETED", "DONE", "FINISHED", "TERMINAL", "TRUE"}
@@ -80,7 +81,7 @@ class ExperimentIndex(dict[str, ExperimentRecord]):
 @dataclass
 class _Evidence:
     asset: AssetRecord
-    path: Path | None
+    path: IndexedPath | None
     kind: str | None
     claims: list[EvidenceClaim]
     issues: list[str]
@@ -114,45 +115,79 @@ def _run_key(value: str) -> str:
     return value.casefold()
 
 
-def _path_key(path: Path | str) -> str:
+def _is_remote_path(path: IndexedPath | str) -> bool:
+    return isinstance(path, PurePosixPath)
+
+
+def _path_key(path: IndexedPath | str) -> str:
+    if _is_remote_path(path):
+        return f"posix:{path.as_posix()}"
     return os.path.normcase(os.path.normpath(os.path.abspath(os.fspath(path))))
 
 
-def _same_path(left: Path | str, right: Path | str) -> bool:
+def _same_path(left: IndexedPath | str, right: IndexedPath | str) -> bool:
+    if _is_remote_path(left) or _is_remote_path(right):
+        return PurePosixPath(os.fspath(left)) == PurePosixPath(os.fspath(right))
     return _path_key(left) == _path_key(right)
 
 
-def _is_under(path: Path, root: Path) -> bool:
+def _is_under(path: IndexedPath, root: IndexedPath) -> bool:
+    if _is_remote_path(path) != _is_remote_path(root):
+        return False
+    if _is_remote_path(path):
+        return path == root or root in path.parents
     path_key = _path_key(path)
     root_key = _path_key(root)
     return path_key == root_key or path_key.startswith(root_key + os.sep)
 
 
-def _root_for(asset: AssetRecord, root_paths: Mapping[Any, str | os.PathLike[str]]) -> Path | None:
+def _remote_absolute(value: str | os.PathLike[str]) -> PurePosixPath | None:
+    candidate = PurePosixPath(os.fspath(value))
+    if not candidate.is_absolute() or ".." in candidate.parts:
+        return None
+    return candidate
+
+
+def _join_under(root: IndexedPath, relative: str) -> IndexedPath | None:
+    if _is_remote_path(root):
+        candidate: IndexedPath = root / PurePosixPath(relative)
+    else:
+        candidate = (root / Path(relative)).resolve(strict=False)
+    return candidate if _is_under(candidate, root) else None
+
+
+def _root_for(
+    asset: AssetRecord, root_paths: Mapping[Any, str | os.PathLike[str]]
+) -> IndexedPath | None:
     root = root_paths.get(asset.root_id)
     if root is None:
         root = root_paths.get(asset.location)
     if root is None:
         root = root_paths.get(asset.location.value)
-    return Path(root).resolve(strict=False) if root is not None else None
+    if root is None:
+        return None
+    if asset.location is Location.N607:
+        return _remote_absolute(root)
+    return Path(root).resolve(strict=False)
 
 
-def _path_from_asset(asset: AssetRecord, root_paths: Mapping[Any, str | os.PathLike[str]]) -> Path | None:
+def _path_from_asset(
+    asset: AssetRecord, root_paths: Mapping[Any, str | os.PathLike[str]]
+) -> IndexedPath | None:
     root = _root_for(asset, root_paths)
     if root is None:
         return None
     try:
-        relative = normalize_relative_path(asset.relative_path)
+        relative = normalize_relative_path(asset.relative_path, location=asset.location)
     except ValueError:
         return None
-    candidate = (root / Path(relative)).resolve(strict=False)
-    return candidate if _is_under(candidate, root) else None
+    return _join_under(root, relative)
 
 
 def _evidence_kind(asset: AssetRecord) -> str | None:
     role = (asset.evidence_role or "").casefold()
     name = asset.display_name.casefold()
-    suffix = Path(name).suffix
+    suffix = (PurePosixPath(name) if asset.location is Location.N607 else Path(name)).suffix
     if suffix in _BLOCKED_SUFFIXES or role in {"checkpoint", "pickle", "numpy", "pytorch"}:
         return None
     if suffix not in _TEXT_SUFFIXES:
@@ -185,11 +220,13 @@ def _decode_text(payload: bytes) -> str:
     return text
 
 
-def _read_text(asset: AssetRecord, path: Path | None) -> str:
+def _read_text(asset: AssetRecord, path: IndexedPath | None) -> str:
     if asset.size_bytes is not None and asset.size_bytes > MAX_EVIDENCE_BYTES:
         raise OverflowError("indexed evidence exceeds 2 MiB")
     if path is None:
         raise OSError("asset root path is unavailable")
+    if _is_remote_path(path):
+        raise OSError("remote evidence is not materialized locally")
     with path.open("rb") as handle:
         payload = handle.read(MAX_EVIDENCE_BYTES + 1)
     if len(payload) > MAX_EVIDENCE_BYTES:
@@ -263,7 +300,7 @@ def _claims_from_text(asset: AssetRecord, text: str) -> list[EvidenceClaim]:
     return claims
 
 
-def _parse_evidence(asset: AssetRecord, path: Path | None) -> _Evidence:
+def _parse_evidence(asset: AssetRecord, path: IndexedPath | None) -> _Evidence:
     kind = _evidence_kind(asset)
     evidence = _Evidence(asset=asset, path=path, kind=kind, claims=[], issues=[])
     if kind is None:
@@ -310,25 +347,36 @@ def _value_set(claims: Iterable[EvidenceClaim], field: str) -> tuple[Any, ...]:
     return tuple(values)
 
 
-def _resolve_claim_path(value: Any, asset: AssetRecord, root_paths: Mapping[Any, str | os.PathLike[str]]) -> Path | None:
+def _resolve_claim_path(
+    value: Any,
+    asset: AssetRecord,
+    root_paths: Mapping[Any, str | os.PathLike[str]],
+) -> IndexedPath | None:
     if not isinstance(value, str) or not value.strip():
         return None
-    candidate = Path(value)
+    candidate: IndexedPath
+    if asset.location is Location.N607:
+        candidate = PurePosixPath(value)
+    else:
+        candidate = Path(value)
     if candidate.is_absolute():
+        if _is_remote_path(candidate):
+            return _remote_absolute(value)
         return candidate.resolve(strict=False)
     root = _root_for(asset, root_paths)
     if root is None:
         return None
     try:
-        relative = normalize_relative_path(value)
+        relative = normalize_relative_path(value, location=asset.location)
     except ValueError:
         return None
-    resolved = (root / Path(relative)).resolve(strict=False)
-    return resolved if _is_under(resolved, root) else None
+    return _join_under(root, relative)
 
 
-def _explicit_run_roots(item: _Evidence, root_paths: Mapping[Any, str | os.PathLike[str]]) -> tuple[Path, ...]:
-    roots: list[Path] = []
+def _explicit_run_roots(
+    item: _Evidence, root_paths: Mapping[Any, str | os.PathLike[str]]
+) -> tuple[IndexedPath, ...]:
+    roots: list[IndexedPath] = []
     for value in _value_set(item.claims, "run_root"):
         resolved = _resolve_claim_path(value, item.asset, root_paths)
         if resolved is not None and not any(_same_path(resolved, seen) for seen in roots):
@@ -338,27 +386,32 @@ def _explicit_run_roots(item: _Evidence, root_paths: Mapping[Any, str | os.PathL
 
 def _expected_artifact_paths(
     item: _Evidence, root_paths: Mapping[Any, str | os.PathLike[str]]
-) -> tuple[Path, ...]:
+) -> tuple[IndexedPath, ...]:
     """Resolve only explicitly declared expected artifacts for one evidence item."""
 
-    resolved_paths: list[Path] = []
+    resolved_paths: list[IndexedPath] = []
     run_roots = _explicit_run_roots(item, root_paths)
     for value in _value_set(item.claims, "expected_artifacts"):
         if not isinstance(value, str) or not value.strip():
             continue
-        candidate = Path(value)
+        candidate: IndexedPath
+        if item.asset.location is Location.N607:
+            candidate = PurePosixPath(value)
+        else:
+            candidate = Path(value)
         if candidate.is_absolute():
-            candidates = (candidate.resolve(strict=False),)
+            resolved = _resolve_claim_path(value, item.asset, root_paths)
+            candidates = (resolved,) if resolved is not None else ()
         else:
             try:
-                relative = normalize_relative_path(value)
+                relative = normalize_relative_path(value, location=item.asset.location)
             except ValueError:
                 continue
             if run_roots:
                 candidates = tuple(
-                    (root / Path(relative)).resolve(strict=False)
+                    resolved
                     for root in run_roots
-                    if _is_under((root / Path(relative)).resolve(strict=False), root)
+                    if (resolved := _join_under(root, relative)) is not None
                 )
             else:
                 root_relative = _resolve_claim_path(value, item.asset, root_paths)
@@ -411,15 +464,18 @@ def _process_from_value(value: ProcessEvidence | Mapping[str, Any]) -> ProcessEv
     )
 
 
-def _cmdline_mentions(cmdline: str | None, run_root: Path) -> bool:
+def _cmdline_mentions(cmdline: str | None, run_root: IndexedPath) -> bool:
     if not cmdline:
         return False
-    variants = {
-        str(run_root),
-        run_root.as_posix(),
-        str(run_root).replace("\\", "/"),
-        str(run_root).replace("/", "\\"),
-    }
+    if _is_remote_path(run_root):
+        variants = {run_root.as_posix()}
+    else:
+        variants = {
+            str(run_root),
+            run_root.as_posix(),
+            str(run_root).replace("\\", "/"),
+            str(run_root).replace("/", "\\"),
+        }
     for variant in variants:
         if not variant:
             continue
@@ -440,7 +496,7 @@ def _cmdline_mentions(cmdline: str | None, run_root: Path) -> bool:
 
 
 def _active_process_for(
-    run_roots: Sequence[Path], process_evidence: Sequence[ProcessEvidence]
+    run_roots: Sequence[IndexedPath], process_evidence: Sequence[ProcessEvidence]
 ) -> tuple[ProcessEvidence | None, bool]:
     active_reference = False
     for process in process_evidence:
@@ -515,8 +571,8 @@ def index_experiments(
     union = _UnionFind(len(assets))
     by_run_id: dict[str, list[int]] = defaultdict(list)
     by_root: dict[str, list[int]] = defaultdict(list)
-    root_bindings: list[tuple[int, Path]] = []
-    expected_artifact_bindings: list[tuple[int, Path]] = []
+    root_bindings: list[tuple[int, IndexedPath]] = []
+    expected_artifact_bindings: list[tuple[int, IndexedPath]] = []
 
     for index, item in enumerate(evidence):
         for value in _value_set(item.claims, "run_id"):
@@ -611,12 +667,12 @@ def index_experiments(
         if len(commits) > 1:
             gaps.append("CONFLICTING_GIT_COMMIT")
 
-        run_roots: list[Path] = []
+        run_roots: list[IndexedPath] = []
         for item in group_items:
             for resolved in _explicit_run_roots(item, root_paths):
                 if not any(_same_path(resolved, seen) for seen in run_roots):
                     run_roots.append(resolved)
-        expected_paths: list[Path] = []
+        expected_paths: list[IndexedPath] = []
         for item in group_items:
             for resolved in _expected_artifact_paths(item, root_paths):
                 if not any(_same_path(resolved, seen) for seen in expected_paths):
