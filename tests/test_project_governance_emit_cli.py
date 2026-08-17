@@ -1252,6 +1252,113 @@ def test_cli_default_never_constructs_or_calls_n607(tmp_path):
     assert not (tmp_path / "governance-external" / "CLI_FIXTURE").exists()
 
 
+def test_cli_missing_configured_local_root_emits_scope_error_and_exit_2(tmp_path):
+    from tools.project_governance.cli import run_scan
+
+    root = tmp_path / "missing-local-root"
+    config = _cli_fixture_config(root)
+    git_runner, _ = _fake_git_runner_factory(root)
+
+    outcome = run_scan(
+        _cli_args(tmp_path),
+        config=config,
+        git_runner=git_runner,
+        repository_seeds=(root,),
+        implementation_repository=root,
+        clock=lambda: "2026-08-17T00:00:00Z",
+    )
+
+    assert outcome.exit_code == 2
+    assert outcome.local_error_count == 2
+    assert not root.exists()
+    full = json.loads(Path(outcome.output_dir, "asset_inventory_full.json").read_text(encoding="utf-8"))
+    root_scope = next(
+        scope
+        for scope in full["scope_results"]
+        if scope["location"] == "LOCAL" and scope["relative_path"] == ""
+    )
+    assert root_scope["status"] == "SCAN_ERROR"
+    assert root_scope["error"]
+    receipt = json.loads(Path(outcome.output_dir, "scan_receipt.json").read_text(encoding="utf-8"))
+    assert receipt["scan_error_counts"]["scopes"] == 1
+
+
+def test_cli_allows_a_missing_optional_carrier_after_the_local_root_is_verified(tmp_path):
+    from tools.project_governance.cli import run_scan
+
+    root = tmp_path / "local"
+    root.mkdir()
+    config = _cli_fixture_config(root)
+    git_runner, _ = _fake_git_runner_factory(root)
+
+    outcome = run_scan(
+        _cli_args(tmp_path),
+        config=config,
+        git_runner=git_runner,
+        repository_seeds=(root,),
+        implementation_repository=root,
+        clock=lambda: "2026-08-17T00:00:00Z",
+    )
+
+    assert outcome.exit_code == 0
+    full = json.loads(Path(outcome.output_dir, "asset_inventory_full.json").read_text(encoding="utf-8"))
+    local_scopes = {
+        scope["relative_path"]: scope["status"]
+        for scope in full["scope_results"]
+        if scope["location"] == "LOCAL"
+    }
+    assert local_scopes == {"": "VERIFIED", "runs": "NOT_PRESENT"}
+
+
+def test_cli_marks_an_unverified_n607_root_scope_as_an_error(tmp_path):
+    from tools.project_governance.cli import run_scan
+    from tools.project_governance.collect_n607 import N607CollectionResult
+
+    root = tmp_path / "local"
+    root.mkdir()
+    config = _cli_fixture_config(root)
+    git_runner, _ = _fake_git_runner_factory(root)
+    fixture = _fake_n607_result("CLI_FIXTURE")
+    records = [dict(record) for record in fixture.records]
+    root_scope = next(
+        record
+        for record in records
+        if record["record_type"] == "SCOPE" and record["relative_path"] == ""
+    )
+    root_scope.update(status="NOT_PRESENT", asset_ids=[])
+
+    class FakeN607Collector:
+        def collect(self):
+            return N607CollectionResult(records=tuple(records), receipt=fixture.receipt)
+
+    outcome = run_scan(
+        _cli_args(tmp_path, include_n607=True),
+        config=config,
+        git_runner=git_runner,
+        repository_seeds=(root,),
+        implementation_repository=root,
+        n607_collector_factory=lambda _config, _scan_id: FakeN607Collector(),
+        clock=lambda: "2026-08-17T00:00:00Z",
+    )
+
+    assert outcome.exit_code == 2
+    assert outcome.remote_error_count == 1
+    full = json.loads(Path(outcome.output_dir, "asset_inventory_full.json").read_text(encoding="utf-8"))
+    remote_root_scope = next(
+        scope
+        for scope in full["scope_results"]
+        if scope["location"] == "N607" and scope["relative_path"] == ""
+    )
+    assert remote_root_scope["status"] == "SCAN_ERROR"
+    assert remote_root_scope["error"]
+    assert any(
+        scope["location"] == "LOCAL"
+        and scope["relative_path"] == "runs"
+        and scope["status"] == "NOT_PRESENT"
+        for scope in full["scope_results"]
+    )
+
+
 def test_cli_print_plan_has_no_scan_git_network_or_output_side_effects(tmp_path, capsys):
     from tools.project_governance.cli import print_plan
 

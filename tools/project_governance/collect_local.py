@@ -102,7 +102,20 @@ class LocalCollector:
         try:
             with os.scandir(directory) as iterator:
                 entries = sorted(iterator, key=lambda entry: entry.name.casefold())
-        except FileNotFoundError:
+        except FileNotFoundError as exc:
+            if not relative_directory:
+                self._record_scan_error(relative_directory, str(exc))
+                self._scopes.append(
+                    ScopeResult(
+                        scan_id=self._scan_id,
+                        location=Location.LOCAL,
+                        root_id=self._location.root_id,
+                        relative_path=relative_directory,
+                        status="SCAN_ERROR",
+                        error=str(exc),
+                    )
+                )
+                return
             self._scopes.append(
                 ScopeResult(
                     scan_id=self._scan_id,

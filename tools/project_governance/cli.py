@@ -152,6 +152,41 @@ def _scope_descriptions(scopes: Iterable[ScopeResult]) -> tuple[str, ...]:
     )
 
 
+def _require_verified_root_scope(
+    scopes: Iterable[ScopeResult], *, location: Location, root_id: str, scan_id: str
+) -> tuple[ScopeResult, ...]:
+    """Fail closed when a collector does not verify exactly one configured root."""
+
+    recorded = tuple(scopes)
+    root_scopes = tuple(
+        scope
+        for scope in recorded
+        if scope.location is location and scope.relative_path == ""
+    )
+    if len(root_scopes) == 1 and root_scopes[0].status == "VERIFIED":
+        return recorded
+    if len(root_scopes) == 1 and root_scopes[0].status == "SCAN_ERROR":
+        return recorded
+    if not root_scopes:
+        return recorded + (
+            ScopeResult(
+                scan_id=scan_id,
+                location=location,
+                root_id=root_id,
+                relative_path="",
+                status="SCAN_ERROR",
+                error=f"configured {location.value} root scope is missing",
+            ),
+        )
+    error = f"configured {location.value} root scope is not uniquely VERIFIED"
+    return tuple(
+        replace(scope, status="SCAN_ERROR", asset_ids=None, error=scope.error or error)
+        if scope.location is location and scope.relative_path == ""
+        else scope
+        for scope in recorded
+    )
+
+
 def _not_requested_remote() -> _RemoteFacts:
     return _RemoteFacts(
         assets=(),
@@ -514,7 +549,6 @@ def _convert_remote(
     processes: list[Mapping[str, object]] = []
     reported_error_count: int | None = None
     protocol_errors = 0
-    status_errors = 0
     for record in result.records:
         if not isinstance(record, Mapping):
             raise ValueError("remote collector returned a non-object record")
@@ -522,11 +556,9 @@ def _convert_remote(
         if record_type == "ASSET":
             asset = _asset_from_remote(record, config, scan_id)
             assets.append(asset)
-            status_errors += int(asset.access_status is AccessStatus.SCAN_ERROR)
         elif record_type == "SCOPE":
             scope = _scope_from_remote(record, config, scan_id)
             scopes.append(scope)
-            status_errors += int(scope.status == "SCAN_ERROR")
         elif record_type == "PROCESS":
             if record.get("scan_id") != scan_id:
                 raise ValueError("remote process scan_id does not match the requested scan")
@@ -549,6 +581,17 @@ def _convert_remote(
         raise ValueError("remote COLLECTION_COMPLETE scan_error_count does not close")
     closed_protocol_errors = (
         reported_error_count if reported_error_count is not None else protocol_errors
+    )
+    scopes = list(
+        _require_verified_root_scope(
+            scopes,
+            location=Location.N607,
+            root_id=config.n607.root_id,
+            scan_id=scan_id,
+        )
+    )
+    status_errors = sum(asset.access_status is AccessStatus.SCAN_ERROR for asset in assets) + sum(
+        scope.status == "SCAN_ERROR" for scope in scopes
     )
     return _RemoteFacts(
         assets=tuple(assets),
@@ -793,6 +836,12 @@ def run_scan(
     local_assets, local_scopes = LocalCollector(
         selected_config.local, selected_config.discovery, scan_id=args.scan_id
     ).collect()
+    local_scopes = _require_verified_root_scope(
+        local_scopes,
+        location=Location.LOCAL,
+        root_id=selected_config.local.root_id,
+        scan_id=args.scan_id,
+    )
     root_paths: dict[str, str | Path] = {
         selected_config.local.root_id: selected_config.local.root,
         selected_config.n607.root_id: selected_config.n607.root,

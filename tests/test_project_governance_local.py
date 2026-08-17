@@ -138,6 +138,27 @@ def test_collects_fixture_metadata_without_following_links_or_mutating(tmp_path,
     assert any(scope.relative_path == "missing" and scope.status == "NOT_PRESENT" for scope in scopes)
 
 
+def test_missing_configured_root_is_a_scan_error_but_missing_carriers_remain_not_present(tmp_path):
+    root = tmp_path / "missing-root"
+
+    records, scopes = LocalCollector(
+        _fixture_config(root),
+        DiscoveryConfig(
+            control_evidence_max_depth=3,
+            hash_max_bytes=10 * 1024 * 1024,
+            text_read_max_bytes=2 * 1024 * 1024,
+        ),
+        scan_id="MISSING_ROOT_SCAN",
+    ).collect()
+
+    statuses = {scope.relative_path: scope.status for scope in scopes}
+    assert statuses == {"": "SCAN_ERROR", "runs": "NOT_PRESENT", "missing": "NOT_PRESENT"}
+    assert any(
+        record.relative_path == "root" and record.access_status is AccessStatus.SCAN_ERROR
+        for record in records
+    )
+
+
 def test_collect_local_has_no_destructive_call_sites():
     source = (
         Path(__file__).resolve().parents[1] / "tools" / "project_governance" / "collect_local.py"
