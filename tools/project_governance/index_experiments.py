@@ -327,6 +327,79 @@ def _resolve_claim_path(value: Any, asset: AssetRecord, root_paths: Mapping[Any,
     return resolved if _is_under(resolved, root) else None
 
 
+def _explicit_run_roots(item: _Evidence, root_paths: Mapping[Any, str | os.PathLike[str]]) -> tuple[Path, ...]:
+    roots: list[Path] = []
+    for value in _value_set(item.claims, "run_root"):
+        resolved = _resolve_claim_path(value, item.asset, root_paths)
+        if resolved is not None and not any(_same_path(resolved, seen) for seen in roots):
+            roots.append(resolved)
+    return tuple(roots)
+
+
+def _expected_artifact_paths(
+    item: _Evidence, root_paths: Mapping[Any, str | os.PathLike[str]]
+) -> tuple[Path, ...]:
+    """Resolve only explicitly declared expected artifacts for one evidence item."""
+
+    resolved_paths: list[Path] = []
+    run_roots = _explicit_run_roots(item, root_paths)
+    for value in _value_set(item.claims, "expected_artifacts"):
+        if not isinstance(value, str) or not value.strip():
+            continue
+        candidate = Path(value)
+        if candidate.is_absolute():
+            candidates = (candidate.resolve(strict=False),)
+        else:
+            try:
+                relative = normalize_relative_path(value)
+            except ValueError:
+                continue
+            if run_roots:
+                candidates = tuple(
+                    (root / Path(relative)).resolve(strict=False)
+                    for root in run_roots
+                    if _is_under((root / Path(relative)).resolve(strict=False), root)
+                )
+            else:
+                root_relative = _resolve_claim_path(value, item.asset, root_paths)
+                candidates = (root_relative,) if root_relative is not None else ()
+        for resolved in candidates:
+            if resolved is not None and not any(_same_path(resolved, seen) for seen in resolved_paths):
+                resolved_paths.append(resolved)
+    return tuple(resolved_paths)
+
+
+def _direct_binding_tokens(
+    item: _Evidence, root_paths: Mapping[Any, str | os.PathLike[str]]
+) -> frozenset[str]:
+    """Return only run IDs and exact paths that are explicitly declared."""
+
+    tokens: set[str] = set()
+    for value in _value_set(item.claims, "run_id"):
+        run_id = _normalize_run_id(value)
+        if run_id is not None:
+            tokens.add(f"run:{_run_key(run_id)}")
+    for root in _explicit_run_roots(item, root_paths):
+        tokens.add(f"path:{_path_key(root)}")
+    for artifact in _expected_artifact_paths(item, root_paths):
+        tokens.add(f"path:{_path_key(artifact)}")
+    return frozenset(tokens)
+
+
+def _read_failure_blocks_classification(items: Sequence[_Evidence]) -> bool:
+    """Return whether unreadable required evidence prevents a conservative state."""
+
+    read_failures = {"UNREADABLE_EVIDENCE", "MALFORMED_EVIDENCE", "EVIDENCE_SIZE_LIMIT"}
+    reports = [item for item in items if item.kind == "report"]
+    if any(read_failures.intersection(item.issues) for item in reports):
+        return True
+    has_readable_report = any(not read_failures.intersection(item.issues) for item in reports)
+    return not has_readable_report and any(
+        item.kind in {"manifest", "receipt"} and read_failures.intersection(item.issues)
+        for item in items
+    )
+
+
 def _process_from_value(value: ProcessEvidence | Mapping[str, Any]) -> ProcessEvidence:
     if isinstance(value, ProcessEvidence):
         return value
@@ -439,38 +512,22 @@ def index_experiments(
     evidence = [_parse_evidence(asset, path) for asset, path in zip(assets, paths)]
     processes = tuple(_process_from_value(item) for item in process_evidence)
 
-    # Attach caller-provided root-relative paths after parsing; it is a strict
-    # path operation, not a directory enumeration.
-    for item in evidence:
-        if item.kind not in {"report", "manifest", "receipt"} or item.path is None or item.issues:
-            continue
-        if any(claim.field == "run_root" for claim in item.claims):
-            continue
-        root = _root_for(item.asset, root_paths)
-        if root is None:
-            continue
-        try:
-            relative_parent = item.path.parent.relative_to(root).as_posix()
-        except ValueError:
-            continue
-        if relative_parent and relative_parent != ".":
-            item.claims.append(_claim(item.asset, "run_root", relative_parent, confidence="EXPLICIT_PATH"))
-
     union = _UnionFind(len(assets))
     by_run_id: dict[str, list[int]] = defaultdict(list)
     by_root: dict[str, list[int]] = defaultdict(list)
     root_bindings: list[tuple[int, Path]] = []
+    expected_artifact_bindings: list[tuple[int, Path]] = []
 
     for index, item in enumerate(evidence):
         for value in _value_set(item.claims, "run_id"):
             run_id = _normalize_run_id(value)
             if run_id is not None:
                 by_run_id[_run_key(run_id)].append(index)
-        for value in _value_set(item.claims, "run_root"):
-            run_root = _resolve_claim_path(value, item.asset, root_paths)
-            if run_root is not None:
-                root_bindings.append((index, run_root))
-                by_root[_path_key(run_root)].append(index)
+        for run_root in _explicit_run_roots(item, root_paths):
+            root_bindings.append((index, run_root))
+            by_root[_path_key(run_root)].append(index)
+        for artifact_path in _expected_artifact_paths(item, root_paths):
+            expected_artifact_bindings.append((index, artifact_path))
 
     for grouped in (*by_run_id.values(), *by_root.values()):
         for member in grouped[1:]:
@@ -481,6 +538,11 @@ def index_experiments(
             if path is not None and _is_under(path, root):
                 union.union(evidence_index, asset_index)
 
+    for evidence_index, expected_path in expected_artifact_bindings:
+        for asset_index, path in enumerate(paths):
+            if path is not None and _same_path(path, expected_path):
+                union.union(evidence_index, asset_index)
+
     # A matching commit is only enough when a manifest or receipt already
     # carries a direct run/path binding.  Commit text alone never joins runs.
     by_commit: dict[str, list[int]] = defaultdict(list)
@@ -489,19 +551,17 @@ def index_experiments(
         if commits:
             by_commit[commits[0]].append(index)
     for members in by_commit.values():
-        binding_members = [
-            member
-            for member in members
-            if evidence[member].kind in {"manifest", "receipt"}
-            and (
-                _value_set(evidence[member].claims, "run_id")
-                or _value_set(evidence[member].claims, "run_root")
-                or _value_set(evidence[member].claims, "expected_artifacts")
-            )
-        ]
-        if binding_members:
+        for binding_member in members:
+            if evidence[binding_member].kind not in {"manifest", "receipt"}:
+                continue
+            binding_tokens = _direct_binding_tokens(evidence[binding_member], root_paths)
+            if not binding_tokens:
+                continue
             for member in members:
-                union.union(binding_members[0], member)
+                if member == binding_member:
+                    continue
+                if binding_tokens.intersection(_direct_binding_tokens(evidence[member], root_paths)):
+                    union.union(binding_member, member)
 
     grouped_indices: dict[int, list[int]] = defaultdict(list)
     for index in range(len(assets)):
@@ -538,9 +598,10 @@ def index_experiments(
         preferred_run_id = report_run_ids[0] if report_run_ids else (run_ids[0] if run_ids else None)
         key = _record_key(preferred_run_id, group_assets[0].asset_id, occupied_keys)
 
+        reports = [item for item in group_items if item.kind == "report"]
         gaps: list[str] = []
         issues = {issue for item in group_items for issue in item.issues}
-        if "UNREADABLE_EVIDENCE" in issues or "MALFORMED_EVIDENCE" in issues:
+        if _read_failure_blocks_classification(group_items):
             gaps.append("UNREADABLE_EVIDENCE")
         if "EVIDENCE_SIZE_LIMIT" in issues:
             gaps.append("EVIDENCE_SIZE_LIMIT")
@@ -552,28 +613,12 @@ def index_experiments(
 
         run_roots: list[Path] = []
         for item in group_items:
-            for value in _value_set(item.claims, "run_root"):
-                resolved = _resolve_claim_path(value, item.asset, root_paths)
-                if resolved is not None and not any(_same_path(resolved, seen) for seen in run_roots):
+            for resolved in _explicit_run_roots(item, root_paths):
+                if not any(_same_path(resolved, seen) for seen in run_roots):
                     run_roots.append(resolved)
         expected_paths: list[Path] = []
         for item in group_items:
-            for value in _value_set(item.claims, "expected_artifacts"):
-                if not isinstance(value, str) or not value.strip():
-                    continue
-                candidate = Path(value)
-                if candidate.is_absolute():
-                    resolved = candidate.resolve(strict=False)
-                elif run_roots:
-                    try:
-                        relative = normalize_relative_path(value)
-                    except ValueError:
-                        gaps.append("INVALID_EXPECTED_ARTIFACT_PATH")
-                        continue
-                    resolved = (run_roots[0] / Path(relative)).resolve(strict=False)
-                else:
-                    gaps.append("UNRESOLVED_EXPECTED_ARTIFACT")
-                    continue
+            for resolved in _expected_artifact_paths(item, root_paths):
                 if not any(_same_path(resolved, seen) for seen in expected_paths):
                     expected_paths.append(resolved)
 
@@ -587,8 +632,7 @@ def index_experiments(
         matched_process, active_reference = _active_process_for(run_roots, processes)
         active_live = matched_process is not None
 
-        reports = [item for item in group_items if item.kind == "report"]
-        terminal = _terminal(_value_set(group_claims, "terminal"))
+        terminal = any(_terminal(_value_set(item.claims, "terminal")) for item in reports)
         archived = any(_truthy(value) for value in _value_set(group_claims, "archive"))
         has_explicit_binding = bool(run_ids or run_roots)
 

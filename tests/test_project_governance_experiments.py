@@ -35,6 +35,7 @@ def _asset(
     access_status: AccessStatus = AccessStatus.OK,
     asset_kind: AssetKind = AssetKind.FILE,
     size_bytes: int | None = None,
+    experiment_id: str | None = None,
 ) -> AssetRecord:
     return AssetRecord(
         asset_id=stable_asset_id(Location.LOCAL, ROOT_ID, relative_path),
@@ -50,6 +51,7 @@ def _asset(
         access_status=access_status,
         hash_status=HashStatus.METADATA_ONLY,
         sha256=None,
+        experiment_id=experiment_id,
         evidence_role=evidence_role,
     )
 
@@ -283,3 +285,155 @@ def test_conflicts_and_unreadable_evidence_stay_separate_for_review(evidence_fix
         for claim in index.claims
     )
     assert all(isinstance(claim, EvidenceClaim) for claim in index.claims)
+
+
+def test_shared_commit_with_one_manifest_does_not_merge_distinct_explicit_runs(tmp_path: Path):
+    root = tmp_path / "indexed-assets"
+    root.mkdir()
+    _write(root, "runs/RUN_COMMIT_A/report.md", "run_id: RUN_COMMIT_A\ngit_commit: shared-commit\nrun_root: runs/RUN_COMMIT_A\n")
+    _write(
+        root,
+        "runs/RUN_COMMIT_A/manifest.json",
+        json.dumps({"run_id": "RUN_COMMIT_A", "git_commit": "shared-commit", "run_root": "runs/RUN_COMMIT_A"}),
+    )
+    _write(root, "runs/RUN_COMMIT_B/report.md", "run_id: RUN_COMMIT_B\ngit_commit: shared-commit\nrun_root: runs/RUN_COMMIT_B\n")
+
+    index = index_experiments(
+        (
+            _asset("runs/RUN_COMMIT_A/report.md", evidence_role="report"),
+            _asset("runs/RUN_COMMIT_A/manifest.json", evidence_role="manifest"),
+            _asset("runs/RUN_COMMIT_B/report.md", evidence_role="report"),
+        ),
+        root_paths={ROOT_ID: root},
+    )
+
+    assert index["RUN_COMMIT_A"].experiment_state is ExperimentState.OPEN_INCOMPLETE
+    assert index["RUN_COMMIT_B"].experiment_state is ExperimentState.OPEN_INCOMPLETE
+    assert "CONFLICTING_RUN_ID" not in (index["RUN_COMMIT_A"].closure_gaps or ())
+
+
+def test_manifest_terminal_cannot_complete_a_nonterminal_report(tmp_path: Path):
+    root = tmp_path / "indexed-assets"
+    root.mkdir()
+    _write(
+        root,
+        "runs/RUN_MANIFEST_TERMINAL/report.md",
+        "\n".join(
+            (
+                "run_id: RUN_MANIFEST_TERMINAL",
+                "run_root: runs/RUN_MANIFEST_TERMINAL",
+                "expected_artifacts:",
+                "- predictions.json",
+                "",
+            )
+        ),
+    )
+    _write(
+        root,
+        "runs/RUN_MANIFEST_TERMINAL/manifest.json",
+        json.dumps(
+            {
+                "run_id": "RUN_MANIFEST_TERMINAL",
+                "run_root": "runs/RUN_MANIFEST_TERMINAL",
+                "status": "COMPLETE",
+            }
+        ),
+    )
+    _write(root, "runs/RUN_MANIFEST_TERMINAL/predictions.json", '{"opaque_prediction_artifact": true}\n')
+
+    index = index_experiments(
+        (
+            _asset("runs/RUN_MANIFEST_TERMINAL/report.md", evidence_role="report"),
+            _asset("runs/RUN_MANIFEST_TERMINAL/manifest.json", evidence_role="manifest"),
+            _asset("runs/RUN_MANIFEST_TERMINAL/predictions.json", evidence_role="prediction"),
+        ),
+        root_paths={ROOT_ID: root},
+    )
+
+    assert index["RUN_MANIFEST_TERMINAL"].experiment_state is ExperimentState.OPEN_INCOMPLETE
+
+
+def test_reports_without_explicit_run_roots_do_not_merge_only_by_shared_parent(tmp_path: Path):
+    root = tmp_path / "indexed-assets"
+    root.mkdir()
+    _write(root, "reports/shared/report-a.md", "run_id: RUN_PARENT_A\n")
+    _write(root, "reports/shared/report-b.md", "run_id: RUN_PARENT_B\n")
+
+    index = index_experiments(
+        (
+            _asset("reports/shared/report-a.md", evidence_role="report"),
+            _asset("reports/shared/report-b.md", evidence_role="report"),
+        ),
+        root_paths={ROOT_ID: root},
+    )
+
+    assert index["RUN_PARENT_A"].experiment_state is ExperimentState.OPEN_INCOMPLETE
+    assert index["RUN_PARENT_B"].experiment_state is ExperimentState.OPEN_INCOMPLETE
+    assert "CONFLICTING_RUN_ID" not in (index["RUN_PARENT_A"].closure_gaps or ())
+
+
+def test_explicit_root_relative_expected_artifact_associates_its_indexed_asset(tmp_path: Path):
+    root = tmp_path / "indexed-assets"
+    root.mkdir()
+    _write(
+        root,
+        "reports/expected-artifact.md",
+        "\n".join(
+            (
+                "run_id: RUN_EXPECTED",
+                "status: COMPLETE",
+                "expected_artifacts:",
+                "- runs/RUN_EXPECTED/predictions.json",
+                "",
+            )
+        ),
+    )
+    _write(root, "runs/RUN_EXPECTED/predictions.json", '{"opaque_prediction_artifact": true}\n')
+
+    index = index_experiments(
+        (
+            _asset("reports/expected-artifact.md", evidence_role="report"),
+            _asset("runs/RUN_EXPECTED/predictions.json", evidence_role="prediction"),
+        ),
+        root_paths={ROOT_ID: root},
+    )
+
+    expected = index["RUN_EXPECTED"]
+    assert expected.experiment_state is ExperimentState.COMPLETE_EVIDENCE
+    assert any(path.replace("\\", "/").endswith("/runs/RUN_EXPECTED/predictions.json") for path in (expected.observed_artifacts or ()))
+
+
+def test_oversized_required_report_is_scan_error_even_with_live_binding(tmp_path: Path):
+    root = tmp_path / "indexed-assets"
+    root.mkdir()
+    run_root = root / "runs" / "RUN_OVERSIZED"
+    run_root.mkdir(parents=True)
+    _write(root, "runs/RUN_OVERSIZED/report.md", "run_id: RUN_OVERSIZED\n")
+    _write(
+        root,
+        "runs/RUN_OVERSIZED/manifest.json",
+        json.dumps({"run_id": "RUN_OVERSIZED", "run_root": "runs/RUN_OVERSIZED"}),
+    )
+
+    index = index_experiments(
+        (
+            _asset(
+                "runs/RUN_OVERSIZED/report.md",
+                evidence_role="report",
+                size_bytes=2 * 1024 * 1024 + 1,
+                experiment_id="RUN_OVERSIZED",
+            ),
+            _asset("runs/RUN_OVERSIZED/manifest.json", evidence_role="manifest"),
+        ),
+        root_paths={ROOT_ID: root},
+        process_evidence=(
+            ProcessEvidence(
+                pid=1618,
+                cwd=str(run_root),
+                cmdline=f"python runner.py --run-root {run_root}",
+            ),
+        ),
+    )
+
+    assert index["RUN_OVERSIZED"].experiment_state is ExperimentState.SCAN_ERROR
+    assert "UNREADABLE_EVIDENCE" in (index["RUN_OVERSIZED"].closure_gaps or ())
