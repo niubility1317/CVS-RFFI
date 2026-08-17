@@ -9,6 +9,7 @@ from docx import Document
 from docx.oxml.ns import qn
 
 from regroup_phase2_result_tables import regroup_report
+from normalize_phase2_report_symbols import audit
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -39,6 +40,15 @@ def next_table_after_caption(document: Document, caption: str):
         for table in document.tables:
             if table._tbl is next_element:
                 return table
+    raise AssertionError(f"caption not found: {caption}")
+
+
+def caption_paragraph(document: Document, caption: str):
+    for paragraph in document.paragraphs:
+        nodes = paragraph._p.xpath(".//w:t | .//m:t")
+        text = "".join(node.text or "" for node in nodes).strip()
+        if text == caption:
+            return paragraph
     raise AssertionError(f"caption not found: {caption}")
 
 
@@ -122,6 +132,34 @@ class RegroupPhase2ResultTablesTest(unittest.TestCase):
                 table = next_table_after_caption(result, caption)
                 math_count = len(table.rows[0]._tr.xpath(".//m:oMath"))
                 self.assertGreaterEqual(math_count, 3, caption)
+
+    def test_symbol_audit_accepts_explicit_result_regrouping(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output = Path(tmpdir) / "regrouped.docx"
+            regroup_report(SOURCE, output)
+            result = audit(output, SOURCE, allow_result_regrouping=True)
+            self.assertEqual(result["tables"], 52)
+            self.assertEqual(result["rows"], 188)
+            self.assertEqual(result["references"], 5)
+
+    def test_configuration_caption_and_small_table_are_kept_together(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output = Path(tmpdir) / "regrouped.docx"
+            regroup_report(SOURCE, output)
+            result = Document(output)
+            caption = "配置：K=10，新类数=1"
+            paragraph = caption_paragraph(result, caption)
+            self.assertTrue(paragraph._p.xpath("./w:pPr/w:keepNext"))
+            self.assertTrue(paragraph._p.xpath("./w:pPr/w:keepLines"))
+
+            table = next_table_after_caption(result, caption)
+            for row in table.rows[:-1]:
+                for cell in row.cells:
+                    for cell_paragraph in cell.paragraphs:
+                        self.assertTrue(
+                            cell_paragraph._p.xpath("./w:pPr/w:keepNext"),
+                            f"missing keepNext in {caption}",
+                        )
 
 
 if __name__ == "__main__":

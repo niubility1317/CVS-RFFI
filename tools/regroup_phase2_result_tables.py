@@ -64,6 +64,7 @@ def create_configuration_caption(
     paragraph.paragraph_format.space_before = Pt(7)
     paragraph.paragraph_format.space_after = Pt(3)
     paragraph.paragraph_format.keep_with_next = True
+    paragraph.paragraph_format.keep_together = True
 
     prefix_run = paragraph.add_run(prefix)
     set_run_fonts(prefix_run, bold=True, color=ACCENT_BLUE)
@@ -126,6 +127,10 @@ def create_compact_table(
         row_properties = target_row._tr.get_or_add_trPr()
         if row_properties.find(qn("w:cantSplit")) is None:
             row_properties.append(OxmlElement("w:cantSplit"))
+    for row in table.rows[:-1]:
+        for cell in row.cells:
+            for paragraph in cell.paragraphs:
+                paragraph.paragraph_format.keep_with_next = True
     return table
 
 

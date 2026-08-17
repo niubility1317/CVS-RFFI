@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import re
+from collections import Counter
 from pathlib import Path
 from typing import Iterable
 
@@ -353,7 +354,12 @@ def subscript_pairs(doc: Document) -> set[tuple[str, str]]:
     return pairs
 
 
-def audit(path: Path, reference: Path | None = None) -> dict[str, int]:
+def audit(
+    path: Path,
+    reference: Path | None = None,
+    *,
+    allow_result_regrouping: bool = False,
+) -> dict[str, int]:
     doc = Document(str(path))
     rows = sum(len(table.rows) for table in doc.tables)
     references = [p.text for p in doc.paragraphs if p.text.startswith("[")]
@@ -369,7 +375,15 @@ def audit(path: Path, reference: Path | None = None) -> dict[str, int]:
         raise RuntimeError("ambiguous state phrase remains")
     if "qKNN名称中的K不表示K-shot" not in body:
         raise RuntimeError("qKNN/K-shot distinction missing")
-    if len(doc.tables) != 17 or rows != 153 or len(references) != 5 or omml < 309:
+    expected_tables = 52 if allow_result_regrouping else 17
+    expected_rows = 188 if allow_result_regrouping else 153
+    minimum_omml = 491 if allow_result_regrouping else 309
+    if (
+        len(doc.tables) != expected_tables
+        or rows != expected_rows
+        or len(references) != 5
+        or omml < minimum_omml
+    ):
         raise RuntimeError(
             f"document scale changed: tables={len(doc.tables)} rows={rows} "
             f"references={len(references)} omml={omml}"
@@ -411,10 +425,18 @@ def audit(path: Path, reference: Path | None = None) -> dict[str, int]:
         ]
         if references != original_references:
             raise RuntimeError("reference entries changed")
-        if result_number_tokens(doc) != result_number_tokens(original):
-            raise RuntimeError("experiment result numbers changed")
-        if len(original.paragraphs) != len(doc.paragraphs):
-            raise RuntimeError("body paragraph count changed")
+        current_numbers = result_number_tokens(doc)
+        original_numbers = result_number_tokens(original)
+        if allow_result_regrouping:
+            if Counter(current_numbers) != Counter(original_numbers):
+                raise RuntimeError("experiment result numbers changed during regrouping")
+            if len(doc.paragraphs) != len(original.paragraphs) + 38:
+                raise RuntimeError("unexpected configuration-caption paragraph count")
+        else:
+            if current_numbers != original_numbers:
+                raise RuntimeError("experiment result numbers changed")
+            if len(original.paragraphs) != len(doc.paragraphs):
+                raise RuntimeError("body paragraph count changed")
 
     return {
         "tables": len(doc.tables),
@@ -428,6 +450,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Normalize Phase2 report symbols.")
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--reference", type=Path)
+    parser.add_argument("--allow-result-regrouping", action="store_true")
     parser.add_argument("paths", nargs="+", type=Path)
     return parser.parse_args()
 
@@ -437,7 +460,11 @@ def main() -> None:
     if args.check:
         if len(args.paths) != 1:
             raise ValueError("--check requires one DOCX path")
-        result = audit(args.paths[0].resolve(), args.reference.resolve() if args.reference else None)
+        result = audit(
+            args.paths[0].resolve(),
+            args.reference.resolve() if args.reference else None,
+            allow_result_regrouping=args.allow_result_regrouping,
+        )
         print("SYMBOL_QA=PASS")
         print(" ".join(f"{key}={value}" for key, value in result.items()))
         return
