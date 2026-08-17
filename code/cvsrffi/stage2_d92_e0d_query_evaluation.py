@@ -3691,6 +3691,10 @@ def run_d92_e0d_query_evaluation(
     output_root: str | Path,
     device: str,
     technical_support_receipt_sink: Callable[[Mapping[str, Any]], None] | None = None,
+    package_loader: Callable[..., Any] | None = None,
+    query_package_loader: Callable[..., Any] | None = None,
+    state_lock_sink: Callable[[Mapping[str, Any]], Mapping[str, Any]] | None = None,
+    publication: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Run one frozen arm without exposing a truth-side input surface."""
 
@@ -3707,6 +3711,13 @@ def run_d92_e0d_query_evaluation(
         raise D92E0DQueryEvaluationError(
             "D92-E0D technical support receipt sink must be callable"
         )
+    for name, value in (
+        ("package loader", package_loader),
+        ("query package loader", query_package_loader),
+        ("state lock sink", state_lock_sink),
+    ):
+        if value is not None and not callable(value):
+            raise D92E0DQueryEvaluationError(f"D92-E0D {name} must be callable")
     if (
         technical_support_receipt_sink is not None
         and arm.arm_id not in _TECHNICAL_SUPPORT_RECEIPT_ARM_IDS
@@ -4370,6 +4381,10 @@ def run_d92_e0d_query_evaluation(
             "ground_manifest_sha256": ground_manifest_sha256,
             "output_root": output_root,
             "device": device,
+            "package_loader": package_loader,
+            "query_package_loader": query_package_loader,
+            "state_lock_sink": state_lock_sink,
+            "publication": publication,
         }
         try:
             result = d81_eval.run_d81_query_evaluation(**evaluation_kwargs)

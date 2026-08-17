@@ -13,7 +13,7 @@ import hashlib
 import json
 import time
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Callable, Mapping
 
 import numpy as np
 
@@ -47,6 +47,20 @@ D81_ALLOWED_SKLEARN_RUNTIME_VERSIONS = ("1.7.0", "1.7.2")
 
 class D81QueryEvaluationError(ValueError):
     """Raised when a sealed row or the locked D81 evaluation drifts."""
+
+
+_PUBLICATION_FIELDS = frozenset(
+    {
+        "result_status",
+        "receipt_status",
+        "claim_scope",
+        "formal_launch_authority",
+        "formal_metric_claim_allowed",
+        "ground_component_status",
+        "state_labels",
+        "state_lock",
+    }
+)
 
 
 def _canonical_bytes(value: Mapping[str, Any] | list[Any]) -> bytes:
@@ -107,6 +121,110 @@ def _require_cross_state_lock(
     if k_shot not in (1, 5, 10):
         raise D81QueryEvaluationError("D81 125 K-shot lock drift")
     return old_classes, all_classes, k_shot
+
+
+def _require_enrollment_state_lock(
+    before_enrollment: Mapping[str, Any],
+    after_enrollment: Mapping[str, Any],
+) -> tuple[tuple[str, ...], tuple[str, ...], int]:
+    """Close the support-state identity before any query package is opened."""
+
+    for field in (
+        "receiver",
+        "seed",
+        "k_shot",
+        "phase1_checkpoint_sha256",
+        "feature_runtime_sha256",
+        "method_lock_sha256",
+    ):
+        if before_enrollment.get(field) != after_enrollment.get(field):
+            raise D81QueryEvaluationError(f"enrollment before/after {field} drift")
+    if (
+        str(before_enrollment.get("registration_state")) != "before"
+        or str(after_enrollment.get("registration_state")) != "after"
+    ):
+        raise D81QueryEvaluationError("enrollment registration state drift")
+    old_classes = _registered_handles(before_enrollment)
+    all_classes = _registered_handles(after_enrollment)
+    if all_classes[: len(old_classes)] != old_classes:
+        raise D81QueryEvaluationError("enrollment old registered prefix drift")
+    new_count = len(all_classes) - len(old_classes)
+    if len(old_classes) != 6 or new_count not in (5, 10, 20):
+        raise D81QueryEvaluationError("D81 enrollment class-count lock drift")
+    k_shot = int(after_enrollment.get("k_shot", -1))
+    if k_shot not in (1, 5, 10):
+        raise D81QueryEvaluationError("D81 enrollment K-shot lock drift")
+    return old_classes, all_classes, k_shot
+
+
+def _state_fingerprint_sha256(state: Any) -> str:
+    """Bind the exact deployed D42 affine state before query materialization."""
+
+    digest = hashlib.sha256()
+    for value in (
+        str(state.schema),
+        "\x1f".join(str(item) for item in state.classes),
+        str(int(state.old_class_count)),
+        str(state.covariance_policy),
+    ):
+        digest.update(value.encode("utf-8"))
+        digest.update(b"\x00")
+    for name in (
+        "log_diag_fp32",
+        "coef1_qint8",
+        "coef2_qint8",
+        "scale1_fp16",
+        "scale2_fp16",
+        "intercept_fp16",
+        "coef_fp32",
+        "intercept_fp32",
+    ):
+        values = np.ascontiguousarray(np.asarray(getattr(state, name)))
+        if not np.isfinite(values.astype(np.float64, copy=False)).all():
+            raise D81QueryEvaluationError(f"D81 state {name} is non-finite")
+        digest.update(name.encode("ascii"))
+        digest.update(values.dtype.str.encode("ascii"))
+        digest.update(_canonical_bytes(list(values.shape)))
+        digest.update(values.tobytes(order="C"))
+    return digest.hexdigest()
+
+
+def _publication_receipt_fields(
+    publication: Mapping[str, Any] | None, *, state: str
+) -> dict[str, Any]:
+    if publication is None:
+        return {
+            "status": "CONFIRMATION_PREDICTION_COMPLETE_UNVERIFIED_GROUND_COMPONENT",
+            "claim_scope": "confirmation_stability_screen_development_evidence_only",
+            "formal_launch_authority": False,
+            "formal_metric_claim_allowed": False,
+            "ground_component_status": "UNVERIFIED",
+        }
+    if set(publication) != _PUBLICATION_FIELDS:
+        raise D81QueryEvaluationError("D81 publication metadata schema drift")
+    state_labels = publication.get("state_labels")
+    state_lock = publication.get("state_lock")
+    if (
+        not isinstance(state_labels, Mapping)
+        or set(state_labels) != {"before", "after"}
+        or not isinstance(state_labels.get(state), str)
+        or not isinstance(state_lock, Mapping)
+        or publication.get("formal_launch_authority") is not True
+        or publication.get("formal_metric_claim_allowed") is not False
+    ):
+        raise D81QueryEvaluationError("D81 formal publication metadata drift")
+    for name in ("result_status", "receipt_status", "claim_scope", "ground_component_status"):
+        if not isinstance(publication.get(name), str) or not publication[name]:
+            raise D81QueryEvaluationError("D81 formal publication text drift")
+    return {
+        "status": publication["receipt_status"],
+        "claim_scope": publication["claim_scope"],
+        "formal_launch_authority": True,
+        "formal_metric_claim_allowed": False,
+        "ground_component_status": publication["ground_component_status"],
+        "four_state_label": state_labels[state],
+        "state_lock": dict(state_lock),
+    }
 
 
 def _support_features(
@@ -228,6 +346,7 @@ def _publish_state(
     predictions: list[np.ndarray],
     fit_audit: list[dict[str, Any]],
     resource: Mapping[str, Any],
+    publication: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     destination = _output_root(output)
     prediction_sha256 = _write_npz_new(
@@ -240,10 +359,7 @@ def _publish_state(
     resource_sha256 = _write_json_new(destination / "resource_audit.json", dict(resource))
     receipt = {
         "schema": "cvs.phase2.diag_cosine_exploration_receipt.v1",
-        "status": "CONFIRMATION_PREDICTION_COMPLETE_UNVERIFIED_GROUND_COMPONENT",
-        "claim_scope": "confirmation_stability_screen_development_evidence_only",
-        "formal_launch_authority": False,
-        "formal_metric_claim_allowed": False,
+        **_publication_receipt_fields(publication, state=state),
         "candidate": {"name": CANDIDATE_D81},
         "registration_state": state,
         "receiver": manifest["receiver"],
@@ -287,7 +403,6 @@ def _publish_state(
         "query_decision_policy": "per_sample_all_registered_classes",
         "support_scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
         "query_scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
-        "ground_component_status": "UNVERIFIED",
         "preopen_audit": {"enrollment": enrollment_audit, "apply": apply_audit},
         "resource": dict(resource),
         "artifacts": {
@@ -340,41 +455,46 @@ def run_d81_query_evaluation(
     ground_manifest_sha256: str,
     output_root: str | Path,
     device: str,
+    package_loader: Callable[..., tuple[dict[str, dict[str, np.ndarray]], dict[str, Any], dict[str, Any]]] | None = None,
+    query_package_loader: Callable[..., tuple[dict[str, dict[str, np.ndarray]], dict[str, Any], dict[str, Any]]] | None = None,
+    state_lock_sink: Callable[[Mapping[str, Any]], Mapping[str, Any]] | None = None,
+    publication: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Fit locked D81 from support and publish before/after query predictions."""
+    """Fit locked D81 from support and publish before/after query predictions.
+
+    ``query_package_loader`` is invoked only after all support-derived D42
+    states have closed and an optional state-lock sink has published its
+    immutable receipt.  The diagnostic default keeps historical callers
+    compatible while allowing the formal D92 consumer to provide the signed
+    atomic materializers for both package profiles.
+    """
 
     from scripts import probe_d81_ground_nuisance_cauchy_center as probe
     from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
 
-    before_support, before_manifest, before_enrollment_audit = (
-        load_verified_somph_predictor_bundle(
+    support_loader = package_loader or load_verified_somph_predictor_bundle
+    query_loader = query_package_loader or support_loader
+    before_support, before_manifest, before_enrollment_audit = support_loader(
             before_enrollment_package_root,
             detached_seal_path=before_enrollment_seal_path,
             expected_seal_sha256=str(before_enrollment_seal_sha256).lower(),
-        )
     )
-    before_query, before_apply, before_apply_audit = load_verified_somph_predictor_bundle(
-        before_apply_package_root,
-        detached_seal_path=before_apply_seal_path,
-        expected_seal_sha256=str(before_apply_seal_sha256).lower(),
-    )
-    after_support, after_manifest, after_enrollment_audit = (
-        load_verified_somph_predictor_bundle(
+    after_support, after_manifest, after_enrollment_audit = support_loader(
             after_enrollment_package_root,
             detached_seal_path=after_enrollment_seal_path,
             expected_seal_sha256=str(after_enrollment_seal_sha256).lower(),
-        )
     )
-    after_query, after_apply, after_apply_audit = load_verified_somph_predictor_bundle(
-        after_apply_package_root,
-        detached_seal_path=after_apply_seal_path,
-        expected_seal_sha256=str(after_apply_seal_sha256).lower(),
+    old_classes, all_classes, k_shot = _require_enrollment_state_lock(
+        before_manifest, after_manifest
     )
-    _validate_matched_packages(before_manifest, before_apply)
-    _validate_matched_packages(after_manifest, after_apply)
-    old_classes, all_classes, k_shot = _require_cross_state_lock(
-        before_manifest, before_apply, after_manifest, after_apply
-    )
+    output = Path(output_root)
+    if output.exists():
+        if not output.is_dir() or output.is_symlink() or any(output.iterdir()):
+            raise D81QueryEvaluationError(
+                f"D81 evaluation output is not an empty directory: {output}"
+            )
+    else:
+        output.mkdir(parents=True)
     runtime_device = _device(device)
     model = load_torchscript_backbone_same_fd(
         after_enrollment_package_root,
@@ -401,6 +521,7 @@ def run_d81_query_evaluation(
     after_scenarios: list[np.ndarray] = []
     after_predictions: list[np.ndarray] = []
     fit_audit: list[dict[str, Any]] = []
+    fit_results: dict[str, Any] = {}
     support_forward_count = 0
     before_query_forward_count = 0
     after_query_forward_count = 0
@@ -441,24 +562,13 @@ def run_d81_query_evaluation(
                     class_count=len(all_classes),
                 )
             )
+            fit_results[scenario] = result
             support_forward_count += support_count
             peak_state_bytes = max(
                 peak_state_bytes,
                 int(result.before_state.persistent_state_bytes),
                 int(result.state.persistent_state_bytes),
             )
-            before_x, before_token, before_count = _query_features(
-                before_query[scenario], model=model, runtime_device=runtime_device
-            )
-            after_x, after_token, after_count = _query_features(
-                after_query[scenario], model=model, runtime_device=runtime_device
-            )
-            started = time.perf_counter()
-            before_pred = predict_d42_unified_shrinkage_lda(
-                result.before_state, before_x
-            )
-            after_pred = predict_d42_unified_shrinkage_lda(result.state, after_x)
-            scoring_seconds += time.perf_counter() - started
             if int(k_shot) == 1:
                 before_audit = result.geometry_audit["before_covariance_audit"]
                 after_audit = result.geometry_audit["final_covariance_audit"]
@@ -467,14 +577,6 @@ def run_d81_query_evaluation(
                     or after_audit["d62_boundary_status"] != "k1_k2_exact_d46_fallback"
                 ):
                     raise D81QueryEvaluationError("D81 K1 exact fallback drift")
-            before_tokens.append(before_token)
-            before_scenarios.append(np.asarray([scenario] * before_count))
-            before_predictions.append(np.asarray(before_pred).astype(str))
-            after_tokens.append(after_token)
-            after_scenarios.append(np.asarray([scenario] * after_count))
-            after_predictions.append(np.asarray(after_pred).astype(str))
-            before_query_forward_count += before_count
-            after_query_forward_count += after_count
     finally:
         d42._fit_equal_prior_lda = original_fit
         d42.SKLEARN_RUNTIME_VERSION = original_sklearn_runtime_version
@@ -482,6 +584,87 @@ def run_d81_query_evaluation(
         "component_npz_sha256"
     ]:
         raise D81QueryEvaluationError("D81 ground component changed during evaluation")
+    if set(fit_results) != set(FORMAL_LEO_WEAK_SCENARIOS):
+        raise D81QueryEvaluationError("D81 support-state scene closure drift")
+    support_state_lock = {
+        "schema": "cvs.phase2.d81.support_state_lock.v1",
+        "candidate": CANDIDATE_D81,
+        "receiver": after_manifest["receiver"],
+        "seed": int(after_manifest["seed"]),
+        "k_shot": int(k_shot),
+        "old_class_count": len(old_classes),
+        "registered_class_count": len(all_classes),
+        "phase1_checkpoint_sha256": after_manifest["phase1_checkpoint_sha256"],
+        "feature_runtime_sha256": after_manifest["feature_runtime_sha256"],
+        "method_lock_sha256": after_manifest["method_lock_sha256"],
+        "old_class_handles": list(old_classes),
+        "registered_class_handles": list(all_classes),
+        "state_fingerprints": {
+            scenario: {
+                "before_state_sha256": _state_fingerprint_sha256(
+                    fit_results[scenario].before_state
+                ),
+                "after_state_sha256": _state_fingerprint_sha256(
+                    fit_results[scenario].state
+                ),
+            }
+            for scenario in FORMAL_LEO_WEAK_SCENARIOS
+        },
+        "query_opened": False,
+    }
+    if state_lock_sink is None:
+        state_lock = support_state_lock
+    else:
+        try:
+            state_lock = state_lock_sink(support_state_lock)
+        except Exception as error:
+            raise D81QueryEvaluationError("D81 support-state lock publication failed") from error
+        if not isinstance(state_lock, Mapping) or not state_lock:
+            raise D81QueryEvaluationError("D81 support-state lock receipt drift")
+
+    # The apply packages carry held query IQ.  Do not invoke their loader until
+    # the full before/after support-derived state has been sealed above.
+    before_query, before_apply, before_apply_audit = query_loader(
+        before_apply_package_root,
+        detached_seal_path=before_apply_seal_path,
+        expected_seal_sha256=str(before_apply_seal_sha256).lower(),
+    )
+    after_query, after_apply, after_apply_audit = query_loader(
+        after_apply_package_root,
+        detached_seal_path=after_apply_seal_path,
+        expected_seal_sha256=str(after_apply_seal_sha256).lower(),
+    )
+    _validate_matched_packages(before_manifest, before_apply)
+    _validate_matched_packages(after_manifest, after_apply)
+    query_old_classes, query_all_classes, query_k_shot = _require_cross_state_lock(
+        before_manifest, before_apply, after_manifest, after_apply
+    )
+    if (
+        query_old_classes != old_classes
+        or query_all_classes != all_classes
+        or query_k_shot != k_shot
+    ):
+        raise D81QueryEvaluationError("D81 state-lock/query registry drift")
+    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+        result = fit_results[scenario]
+        before_x, before_token, before_count = _query_features(
+            before_query[scenario], model=model, runtime_device=runtime_device
+        )
+        after_x, after_token, after_count = _query_features(
+            after_query[scenario], model=model, runtime_device=runtime_device
+        )
+        started = time.perf_counter()
+        before_pred = predict_d42_unified_shrinkage_lda(result.before_state, before_x)
+        after_pred = predict_d42_unified_shrinkage_lda(result.state, after_x)
+        scoring_seconds += time.perf_counter() - started
+        before_tokens.append(before_token)
+        before_scenarios.append(np.asarray([scenario] * before_count))
+        before_predictions.append(np.asarray(before_pred).astype(str))
+        after_tokens.append(after_token)
+        after_scenarios.append(np.asarray([scenario] * after_count))
+        after_predictions.append(np.asarray(after_pred).astype(str))
+        before_query_forward_count += before_count
+        after_query_forward_count += after_count
     common_resource = {
         "trainable_parameters": int(max(row["resource_audit"]["trainable_parameters"] for row in fit_audit)),
         "adaptation_epochs": int(max(row["resource_audit"]["adaptation_epochs"] for row in fit_audit)),
@@ -513,14 +696,6 @@ def run_d81_query_evaluation(
             )
         ),
     }
-    output = Path(output_root)
-    if output.exists() and (
-        not output.is_dir() or output.is_symlink() or any(output.iterdir())
-    ):
-        raise D81QueryEvaluationError(
-            f"D81 evaluation output is not an empty directory: {output}"
-        )
-    output.mkdir(parents=True, exist_ok=True)
     (output / "before").mkdir()
     (output / "after").mkdir()
     states = {
@@ -538,6 +713,7 @@ def run_d81_query_evaluation(
             predictions=before_predictions,
             fit_audit=fit_audit,
             resource=common_resource,
+            publication=publication,
         ),
         "after": _publish_state(
             output / "after",
@@ -553,11 +729,16 @@ def run_d81_query_evaluation(
             predictions=after_predictions,
             fit_audit=fit_audit,
             resource=common_resource,
+            publication=publication,
         ),
     }
     return {
         "schema": SCHEMA,
-        "status": "CONFIRMATION_PREDICTIONS_COMPLETE_UNVERIFIED_GROUND_COMPONENT",
+        "status": (
+            str(publication["result_status"])
+            if publication is not None
+            else "CONFIRMATION_PREDICTIONS_COMPLETE_UNVERIFIED_GROUND_COMPONENT"
+        ),
         "candidate": CANDIDATE_D81,
         "receiver": after_manifest["receiver"],
         "seed": after_manifest["seed"],
@@ -566,6 +747,7 @@ def run_d81_query_evaluation(
         "states": states,
         "resource": common_resource,
         "ground_audit": ground_audit,
+        "state_lock": dict(state_lock),
     }
 
 

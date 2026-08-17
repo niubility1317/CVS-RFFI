@@ -2203,6 +2203,89 @@ def _actual_materialized_roots(
 ) -> dict[str, dict[str, str]]:
     if set(payloads) != set(FORMAL_LEO_WEAK_SCENARIOS):
         raise PredictorPackageError("SOMP-H materialized scenario set drift")
+    profile = manifest.get("profile")
+    if profile not in PROFILE_VALUES:
+        raise PredictorPackageError("SOMP-H materialized bundle profile drift")
+    if profile == APPLY_ONLY:
+        observed_tokens: set[str] = set()
+        token_roots: dict[str, str] = {}
+        overlay_roots: dict[str, str] = {}
+        iq_roots: dict[str, str] = {}
+        seed_roots: dict[str, str] = {}
+        assignment_roots: dict[str, str] = {}
+        required_arrays = set(QUERY_NPZ_MEMBERS) - {"manifest_json"}
+        for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+            arrays = payloads[scenario]
+            if set(arrays) != required_arrays:
+                raise PredictorPackageError("SOMP-H materialized query schema drift")
+            _validate_iq(
+                arrays["query_leo_weak_iq"],
+                arrays["query_post_channel_iq_sha256"],
+                context=f"verified-materializer-query:{scenario}",
+            )
+            tokens = _tokens(
+                arrays["query_tokens"],
+                prefix="qid_",
+                context=f"verified-materializer-query:{scenario}",
+            )
+            overlays = _tokens(
+                arrays["query_overlay_tokens"],
+                prefix="oid_",
+                context=f"verified-materializer-query-overlay:{scenario}",
+            )
+            iq_hashes = np.asarray(
+                arrays["query_post_channel_iq_sha256"]
+            ).astype(str).tolist()
+            seeds = np.asarray(arrays["query_satellite_seeds"])
+            if (
+                not tokens
+                or len(overlays) != len(tokens)
+                or len(iq_hashes) != len(tokens)
+                or seeds.shape != (len(tokens),)
+                or not np.issubdtype(seeds.dtype, np.integer)
+            ):
+                raise PredictorPackageError("SOMP-H verified query metadata drift")
+            if observed_tokens & set(tokens):
+                raise PredictorPackageError(
+                    "SOMP-H verified cross-scenario physical reuse"
+                )
+            observed_tokens.update(tokens)
+            ordered = sorted(
+                zip(tokens, overlays, seeds.tolist(), iq_hashes),
+                key=lambda item: item[0],
+            )
+            token_roots[scenario] = sha256_bytes(
+                canonical_json_bytes([item[0] for item in ordered])
+            )
+            overlay_roots[scenario] = sha256_bytes(
+                canonical_json_bytes([item[1] for item in ordered])
+            )
+            seed_roots[scenario] = sha256_bytes(
+                canonical_json_bytes([int(item[2]) for item in ordered])
+            )
+            iq_roots[scenario] = sha256_bytes(
+                canonical_json_bytes([item[3] for item in ordered])
+            )
+            assignment_roots[scenario] = sha256_bytes(
+                canonical_json_bytes(
+                    [
+                        {
+                            "sample_token": item[0],
+                            "overlay_token": item[1],
+                            "satellite_seed": int(item[2]),
+                            "post_channel_iq_sha256": item[3],
+                        }
+                        for item in ordered
+                    ]
+                )
+            )
+        return {
+            "actual_support_token_sha256_by_scenario": token_roots,
+            "actual_overlay_ids_sha256_by_scenario": overlay_roots,
+            "actual_iq_sha256_root_by_scenario": iq_roots,
+            "actual_satellite_seed_sha256_by_scenario": seed_roots,
+            "actual_materialized_assignment_sha256_by_scenario": assignment_roots,
+        }
     class_count = int(manifest["registered_class_count"])
     k_shot = int(manifest["k_shot"])
     expected_rows = class_count * k_shot
@@ -2463,10 +2546,12 @@ def _make_verified_materialization_api(
             detached_seal_path=detached_seal_path,
             expected_seal_sha256=expected_seal_sha256,
             inspect_iq_members=False,
-            load_npz_control_members=False,
+            # An apply package's head capsule is part of its immutable query
+            # trust root, so validate it before any query IQ archive opens.
+            load_npz_control_members=True,
         )
         if (
-            manifest.get("profile") != ENROLLMENT_ONLY
+            manifest.get("profile") not in PROFILE_VALUES
             or manifest != manifest_pre
             or seal != seal_pre
             or manifest.get("package_root_sha256")
@@ -2482,16 +2567,30 @@ def _make_verified_materialization_api(
         by_kind = {item["kind"]: item for item in manifest["members"]}
         payloads: dict[str, dict[str, np.ndarray]] = {}
         iq_member_roots: dict[str, str] = {}
+        profile = manifest["profile"]
         for scenario in FORMAL_LEO_WEAK_SCENARIOS:
-            descriptor = by_kind[f"support:{scenario}"]
+            descriptor = by_kind[
+                f"support:{scenario}"
+                if profile == ENROLLMENT_ONLY
+                else f"query:{scenario}"
+            ]
             arrays, embedded = _materialize_iq(Path(package_root), descriptor)
-            _validate_support_payload(
-                arrays,
-                embedded,
-                manifest=manifest,
-                scenario=scenario,
-                provenance=provenance[scenario],
-            )
+            if profile == ENROLLMENT_ONLY:
+                _validate_support_payload(
+                    arrays,
+                    embedded,
+                    manifest=manifest,
+                    scenario=scenario,
+                    provenance=provenance[scenario],
+                )
+            else:
+                _validate_query_payload(
+                    arrays,
+                    embedded,
+                    manifest=manifest,
+                    scenario=scenario,
+                    provenance=provenance[scenario],
+                )
             payloads[scenario] = arrays
             iq_member_roots[scenario] = descriptor["sha256"]
         immutable_payloads = _immutable_payloads(payloads)
@@ -2551,7 +2650,7 @@ def _make_verified_materialization_api(
         if recomputed_digest != evidence.evidence_sha256:
             raise PredictorPackageError("SOMP-H materialized evidence digest drift")
         if (
-            manifest.get("profile") != ENROLLMENT_ONLY
+            manifest.get("profile") not in PROFILE_VALUES
             or manifest.get("package_root_sha256")
             != preflight.get("package_root_sha256")
             or seal.get("package_root_sha256")
@@ -2606,11 +2705,22 @@ def _make_verified_materialization_api(
 
 
 (
-    SomphMaterializedEnrollmentEvidence,
-    materialize_somph_enrollment_with_signed_authority,
-    finalize_somph_enrollment_authority_after_materialization,
+    SomphMaterializedPackageEvidence,
+    materialize_somph_predictor_bundle_with_signed_authority,
+    finalize_somph_predictor_bundle_authority_after_materialization,
 ) = _make_verified_materialization_api(
     _preflight_somph_predictor_bundle_with_authority_impl
+)
+
+# Keep the established enrollment entry point byte-for-byte compatible for
+# existing support-only consumers.  The generic names are used by formal
+# predictor consumers that must authorize both the support and apply packages.
+SomphMaterializedEnrollmentEvidence = SomphMaterializedPackageEvidence
+materialize_somph_enrollment_with_signed_authority = (
+    materialize_somph_predictor_bundle_with_signed_authority
+)
+finalize_somph_enrollment_authority_after_materialization = (
+    finalize_somph_predictor_bundle_authority_after_materialization
 )
 
 

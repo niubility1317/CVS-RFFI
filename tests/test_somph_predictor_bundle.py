@@ -1909,6 +1909,65 @@ def test_synthetic_key_cannot_open_atomic_production_iq(
         )
 
 
+def test_signed_atomic_materializer_can_verify_apply_only_query_package(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The signed atomic path must cover query packages as well as support."""
+
+    root, seal_path, seal_sha, manifest = _package(
+        tmp_path,
+        monkeypatch,
+        profile=APPLY_ONLY,
+        stage="stage2b",
+        registration_state="before",
+        class_count=6,
+        k_shot=10,
+    )
+    authority_roots = _path_free_authority_roots()
+    authority_roots["cache_sha256_by_scenario"] = {
+        scenario: "c" * 64 for scenario in FORMAL_LEO_WEAK_SCENARIOS
+    }
+    authority_roots["structural_receipt_sha256"] = "d" * 64
+    policy_inputs = _policy_inputs(
+        tmp_path,
+        monkeypatch,
+        root=root,
+        seal_path=seal_path,
+        seal_sha=seal_sha,
+        manifest=manifest,
+        authority_roots=authority_roots,
+    )
+
+    def synthetic_preflight(package_root: str | Path, **kwargs):
+        return somph_bundle._preflight_somph_predictor_bundle_with_authority_impl(
+            package_root,
+            _pinned_policy_verifier=_synthetic_policy_verifier(
+                _test_policy_key_material()[2]
+            ),
+            **kwargs,
+        )
+
+    _evidence_type, materialize, finalize = (
+        somph_bundle._make_verified_materialization_api(synthetic_preflight)
+    )
+    evidence = materialize(
+        root,
+        detached_seal_path=seal_path,
+        expected_seal_sha256=seal_sha,
+        **policy_inputs,
+    )
+    final = finalize(evidence)
+
+    assert evidence.manifest["profile"] == APPLY_ONLY
+    assert set(evidence.materialized_payloads) == set(FORMAL_LEO_WEAK_SCENARIOS)
+    assert all(
+        "query_leo_weak_iq" in arrays
+        for arrays in evidence.materialized_payloads.values()
+    )
+    assert final["formal_launch_authority"] is True
+    assert final["iq_payload_materialized"] is True
+
+
 def test_production_module_exports_no_capability_issuer_or_test_factory() -> None:
     forbidden = (
         "SomphAuthorityPreflightEvidence",
