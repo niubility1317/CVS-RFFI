@@ -22,8 +22,10 @@ from typing import Any, Iterable, Mapping, Sequence
 
 from .models import (
     AccessStatus,
+    ApprovalState,
     AssetRecord,
     DeletionCandidate,
+    ExecutionState,
     ExperimentRecord,
     ExperimentState,
     GitOwnership,
@@ -49,6 +51,22 @@ _ARTIFACT_ORDER = (
     "asset_inventory_full.json",
 )
 _RECEIPT_NAME = "scan_receipt.json"
+_REQUIRED_METADATA = frozenset(
+    {
+        "local_root",
+        "local_scopes",
+        "n607_root",
+        "n607_scopes",
+        "implementation_git_head",
+        "git_tracked_diff_state",
+        "collector_versions",
+        "n607_requested",
+        "n607_route",
+        "n607_preflight",
+        "n607_disconnect",
+        "n607_scan_error_count",
+    }
+)
 
 
 @dataclass(frozen=True)
@@ -189,6 +207,75 @@ def _location_value(location: Location | str) -> str:
     return location.value if isinstance(location, Location) else str(location)
 
 
+def _validate_metadata(metadata: Mapping[str, Any] | None) -> dict[str, Any]:
+    if not isinstance(metadata, Mapping):
+        raise ValueError("complete receipt metadata is required")
+    missing = sorted(_REQUIRED_METADATA.difference(metadata))
+    if missing:
+        raise ValueError(f"receipt metadata is missing required fields: {', '.join(missing)}")
+    values = dict(metadata)
+    for field in (
+        "local_root",
+        "n607_root",
+        "implementation_git_head",
+        "git_tracked_diff_state",
+        "n607_route",
+        "n607_preflight",
+        "n607_disconnect",
+    ):
+        value = values[field]
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError(f"receipt metadata field must be a non-empty string: {field}")
+    for field in ("local_scopes", "n607_scopes"):
+        scopes = values[field]
+        if (
+            not isinstance(scopes, (tuple, list))
+            or any(not isinstance(scope, str) or scope != scope.strip() for scope in scopes)
+        ):
+            raise ValueError(f"receipt metadata field must be an explicit string sequence: {field}")
+    versions = values["collector_versions"]
+    if not isinstance(versions, Mapping) or not versions:
+        raise ValueError("receipt metadata collector_versions must be a non-empty mapping")
+    if type(values["n607_requested"]) is not bool:
+        raise ValueError("receipt metadata n607_requested must be boolean")
+    error_count = values["n607_scan_error_count"]
+    if type(error_count) is not int or error_count < 0:
+        raise ValueError("n607_scan_error_count must be a non-negative integer")
+    n607_states = (
+        values["n607_route"],
+        values["n607_preflight"],
+        values["n607_disconnect"],
+    )
+    if values["n607_requested"]:
+        if any(state in {"NOT_PROVIDED", "NOT_REQUESTED"} for state in n607_states):
+            raise ValueError("requested N607 receipt metadata must carry observed connection states")
+    elif n607_states != ("NOT_REQUESTED", "NOT_REQUESTED", "NOT_REQUESTED") or error_count != 0:
+        raise ValueError("unrequested N607 receipt metadata must use explicit NOT_REQUESTED states")
+    return values
+
+
+def _validate_deletion_candidates(candidates: Iterable[DeletionCandidate]) -> None:
+    for candidate in candidates:
+        if not isinstance(candidate, DeletionCandidate):
+            raise ValueError("deletion candidate rows must use DeletionCandidate records")
+        if (
+            candidate.approval_state is not ApprovalState.AWAITING_USER_APPROVAL
+            or candidate.execution_state is not ExecutionState.NOT_AUTHORIZED
+            or candidate.approved_scope is not None
+        ):
+            raise ValueError(
+                f"deletion candidate is not approval-only and unexecuted: {candidate.candidate_id}"
+            )
+
+
+def _payload_entry(name: str, payload: bytes) -> dict[str, Any]:
+    return {
+        "path": name,
+        "bytes": len(payload),
+        "sha256": hashlib.sha256(payload).hexdigest(),
+    }
+
+
 class ReportEmitter:
     """Write a fresh, deterministic governance report directory.
 
@@ -221,13 +308,11 @@ class ReportEmitter:
         self.bundle = bundle
         self.output_root = Path(output_root).expanduser().resolve(strict=False)
         self.external_output_root = Path(external_output_root).expanduser().resolve(strict=False)
-        self.metadata = dict(metadata or {})
+        self.metadata = _validate_metadata(metadata)
+        _validate_deletion_candidates(bundle.deletion_candidates or ())
         for timestamp in (bundle.started_at_utc, bundle.completed_at_utc):
             if timestamp is not None:
                 _iso_utc(timestamp)
-        n607_scan_error_count = self.metadata.get("n607_scan_error_count", 0)
-        if type(n607_scan_error_count) is not int or n607_scan_error_count < 0:
-            raise ValueError("n607_scan_error_count must be a non-negative integer")
         self.git_file_max_bytes = int(git_file_max_bytes)
         self.git_scan_max_bytes = int(git_scan_max_bytes)
         self._emission_now_utc: str | None = None
@@ -314,9 +399,9 @@ class ReportEmitter:
             for gap in (experiment.closure_gaps or ())
         )
         metadata = self.metadata
-        n607_route = metadata.get("n607_route", "NOT_PROVIDED")
-        n607_preflight = metadata.get("n607_preflight", "NOT_PROVIDED")
-        n607_disconnect = metadata.get("n607_disconnect", "NOT_PROVIDED")
+        n607_route = metadata["n607_route"]
+        n607_preflight = metadata["n607_preflight"]
+        n607_disconnect = metadata["n607_disconnect"]
         deletion_rows = records["deletion_candidates"]
         missing = "\u672a\u63d0\u4f9b"
         # Keep source text ASCII-safe while emitting the required Chinese report.
@@ -372,8 +457,8 @@ class ReportEmitter:
             f"- {zh['operator']}\uff1a`{self.bundle.operator or missing}`",
             f"- {zh['start']}\uff08UTC\uff09\uff1a`{self._timestamp(self.bundle.started_at_utc)}`",
             f"- {zh['complete']}\uff08UTC\uff09\uff1a`{self._timestamp(self.bundle.completed_at_utc)}`",
-            f"- {zh['local_root']}\uff1a`{metadata.get('local_root', missing)}`\uff1b{zh['surface']}\uff1a`{', '.join(map(str, metadata.get('local_scopes', ()))) or missing}`",
-            f"- {zh['remote_root']}\uff1a`{metadata.get('n607_root', missing)}`\uff1b{zh['surface']}\uff1a`{', '.join(map(str, metadata.get('n607_scopes', ()))) or missing}`",
+            f"- {zh['local_root']}\uff1a`{metadata['local_root']}`\uff1b{zh['surface']}\uff1a`{', '.join(map(str, metadata['local_scopes'])) or missing}`",
+            f"- {zh['remote_root']}\uff1a`{metadata['n607_root']}`\uff1b{zh['surface']}\uff1a`{', '.join(map(str, metadata['n607_scopes'])) or missing}`",
             "",
             f"## {zh['asset']}",
             "",
@@ -468,16 +553,10 @@ class ReportEmitter:
             "git_ownership": sum(record.ownership is GitOwnership.GIT_STATE_ERROR or bool(record.error) for record in git_records),
             "retention_decisions": 0,
             "deletion_candidates": 0,
-            "n607_records": int(metadata.get("n607_scan_error_count", 0)),
+            "n607_records": int(metadata["n607_scan_error_count"]),
         }
-        local_scopes = metadata.get(
-            "local_scopes",
-            [scope.relative_path for scope in scopes if scope.location is Location.LOCAL],
-        )
-        n607_scopes = metadata.get(
-            "n607_scopes",
-            [scope.relative_path for scope in scopes if scope.location is Location.N607],
-        )
+        local_scopes = metadata["local_scopes"]
+        n607_scopes = metadata["n607_scopes"]
         deletion_rows = [
             _record_dict(candidate)
             for candidate in _sort_records(records["deletion_candidates"], fields_for_key=("candidate_id", "location", "absolute_path"))
@@ -490,18 +569,18 @@ class ReportEmitter:
             "completed_at_utc": self._timestamp(self.bundle.completed_at_utc),
             "emitted_at_utc": self._timestamp(None),
             "roots": {
-                "local": metadata.get("local_root"),
-                "n607": metadata.get("n607_root"),
+                "local": metadata["local_root"],
+                "n607": metadata["n607_root"],
             },
             "scopes": {
                 "local": list(local_scopes or ()),
                 "n607": list(n607_scopes or ()),
             },
             "implementation": {
-                "git_head": metadata.get("implementation_git_head"),
-                "tracked_diff_state": metadata.get("git_tracked_diff_state"),
+                "git_head": metadata["implementation_git_head"],
+                "tracked_diff_state": metadata["git_tracked_diff_state"],
             },
-            "collector_versions": _json_value(metadata.get("collector_versions", {})),
+            "collector_versions": _json_value(metadata["collector_versions"]),
             "counts": {
                 "assets": len(assets),
                 "assets_local": sum(asset.location is Location.LOCAL for asset in assets),
@@ -514,16 +593,22 @@ class ReportEmitter:
             },
             "scan_error_counts": error_counts,
             "n607_evidence": {
-                "route": metadata.get("n607_route", "NOT_PROVIDED"),
-                "preflight": metadata.get("n607_preflight", "NOT_PROVIDED"),
-                "disconnect": metadata.get("n607_disconnect", "NOT_PROVIDED"),
+                "requested": metadata["n607_requested"],
+                "route": metadata["n607_route"],
+                "preflight": metadata["n607_preflight"],
+                "disconnect": metadata["n607_disconnect"],
             },
             "source_asset_mutations": 0,
             "moves": 0,
             "overwrites": 0,
             "deletions": 0,
             "deletion_rows": deletion_rows,
-            "authorized_deletion_rows": 0,
+            "authorized_deletion_rows": sum(
+                candidate.approval_state is not ApprovalState.AWAITING_USER_APPROVAL
+                or candidate.execution_state is not ExecutionState.NOT_AUTHORIZED
+                or candidate.approved_scope is not None
+                for candidate in records["deletion_candidates"]
+            ),
             "files": [],
             "external_files": [],
             "receipt_file": {"path": _RECEIPT_NAME, "written_last": True},
@@ -612,8 +697,19 @@ class ReportEmitter:
         git_target.mkdir()
         records = self._records()
         payloads = self._payloads(records)
+        small_receipt = self._receipt_base(records)
+        small_receipt["artifact_route"] = "GIT_COMPLETE"
+        small_receipt["files"] = [
+            _payload_entry(name, payloads[name]) for name in sorted(payloads)
+        ]
+        small_receipt["external_files"] = []
+        small_receipt_payload = _json_bytes(small_receipt)
         oversize = any(len(payload) > self.git_file_max_bytes for payload in payloads.values())
-        oversize = oversize or sum(len(payload) for payload in payloads.values()) > self.git_scan_max_bytes
+        oversize = oversize or len(small_receipt_payload) > self.git_file_max_bytes
+        oversize = oversize or (
+            sum(len(payload) for payload in payloads.values()) + len(small_receipt_payload)
+            > self.git_scan_max_bytes
+        )
         external_output: Path | None = None
         external_entries: list[dict[str, Any]] = []
 
@@ -680,6 +776,14 @@ class ReportEmitter:
             raise ValueError(
                 "scan receipt exceeds git file threshold: "
                 f"bytes={len(receipt_payload)} limit={self.git_file_max_bytes}"
+            )
+        git_total_bytes = sum(
+            path.stat().st_size for path in git_target.iterdir() if path.is_file()
+        ) + len(receipt_payload)
+        if git_total_bytes > self.git_scan_max_bytes:
+            raise ValueError(
+                "git output exceeds scan threshold: "
+                f"bytes={git_total_bytes} limit={self.git_scan_max_bytes}"
             )
         self._write_exclusive(git_target / _RECEIPT_NAME, receipt_payload, encoding="utf-8")
         return EmissionResult(git_target, external_output, receipt)

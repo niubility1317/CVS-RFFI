@@ -153,9 +153,11 @@ def _metadata() -> dict[str, object]:
         "implementation_git_head": "abc123",
         "git_tracked_diff_state": "clean",
         "collector_versions": {"local": "1", "n607": "1"},
+        "n607_requested": True,
         "n607_route": "direct",
         "n607_preflight": "VERIFIED",
         "n607_disconnect": "VERIFIED",
+        "n607_scan_error_count": 0,
     }
 
 
@@ -204,12 +206,22 @@ def test_emitter_produces_stable_small_outputs_with_required_encodings(tmp_path)
 
 
 def test_emitter_is_immutable_on_second_scan_id_and_receipt_is_last(tmp_path):
-    emitter = ReportEmitter(_bundle(), output_root=tmp_path / "git", external_output_root=tmp_path / "external")
+    emitter = ReportEmitter(
+        _bundle(),
+        output_root=tmp_path / "git",
+        external_output_root=tmp_path / "external",
+        metadata=_metadata(),
+    )
     first = emitter.emit()
     before = {path.name: path.read_bytes() for path in first.git_output_dir.iterdir()}
 
     with pytest.raises(FileExistsError):
-        ReportEmitter(_bundle(), output_root=tmp_path / "git", external_output_root=tmp_path / "external").emit()
+        ReportEmitter(
+            _bundle(),
+            output_root=tmp_path / "git",
+            external_output_root=tmp_path / "external",
+            metadata=_metadata(),
+        ).emit()
 
     after = {path.name: path.read_bytes() for path in first.git_output_dir.iterdir()}
     assert after == before
@@ -219,7 +231,10 @@ def test_emitter_is_immutable_on_second_scan_id_and_receipt_is_last(tmp_path):
 def test_emitter_reuses_one_timestamp_when_bundle_times_are_missing(tmp_path):
     bundle = replace(_bundle(), started_at_utc=None, completed_at_utc=None)
     result = ReportEmitter(
-        bundle, output_root=tmp_path / "git", external_output_root=tmp_path / "external"
+        bundle,
+        output_root=tmp_path / "git",
+        external_output_root=tmp_path / "external",
+        metadata=_metadata(),
     ).emit()
     full = json.loads(result.git_output_dir.joinpath("asset_inventory_full.json").read_text(encoding="utf-8"))
     receipt = json.loads(result.git_output_dir.joinpath("scan_receipt.json").read_text(encoding="utf-8"))
@@ -237,6 +252,7 @@ def test_emitter_rejects_invalid_timestamp_before_creating_output(tmp_path):
             bundle,
             output_root=tmp_path / "git",
             external_output_root=tmp_path / "external",
+            metadata=_metadata(),
         )
 
     assert not (tmp_path / "git").exists()
@@ -255,7 +271,12 @@ def test_emitter_retains_partial_output_without_receipt_on_failure(tmp_path):
             return super()._write_exclusive(path, payload, encoding=encoding, newline=newline)
 
     with pytest.raises(OSError, match="fixture write failure"):
-        FailingEmitter(_bundle(), output_root=tmp_path / "git", external_output_root=tmp_path / "external").emit()
+        FailingEmitter(
+            _bundle(),
+            output_root=tmp_path / "git",
+            external_output_root=tmp_path / "external",
+            metadata=_metadata(),
+        ).emit()
     output = tmp_path / "git" / "EMIT_FIXTURE"
     assert output.exists()
     assert not output.joinpath("scan_receipt.json").exists()
@@ -264,13 +285,19 @@ def test_emitter_retains_partial_output_without_receipt_on_failure(tmp_path):
 
 def test_emitter_routes_complete_oversized_tables_without_truncating_evidence(tmp_path):
     long_path = "runs/" + ("x" * 100) + ".json"
+    original = _bundle(long_path=long_path)
+    bundle = replace(
+        original,
+        assets=tuple(original.assets or ())
+        + tuple(_asset(f"bulk/{index:03d}.json") for index in range(40)),
+    )
     emitter = ReportEmitter(
-        _bundle(long_path=long_path),
+        bundle,
         output_root=tmp_path / "git",
         external_output_root=tmp_path / "external",
         metadata=_metadata(),
         git_file_max_bytes=10_000,
-        git_scan_max_bytes=512,
+        git_scan_max_bytes=100_000,
     )
 
     result = emitter.emit()
@@ -298,6 +325,7 @@ def test_emitter_fails_when_a_csv_row_cannot_fit_a_git_shard(tmp_path):
             _bundle(long_path=long_path),
             output_root=tmp_path / "git",
             external_output_root=tmp_path / "external",
+            metadata=_metadata(),
             git_file_max_bytes=128,
             git_scan_max_bytes=256,
         ).emit()
@@ -319,6 +347,7 @@ def test_emitter_treats_embedded_newline_as_one_csv_row_for_shard_limit(tmp_path
             bundle,
             output_root=tmp_path / "git",
             external_output_root=tmp_path / "external",
+            metadata=_metadata(),
             git_file_max_bytes=900,
             git_scan_max_bytes=256,
         ).emit()
@@ -331,14 +360,17 @@ def test_emitter_preserves_embedded_newline_in_complete_csv_shards(tmp_path):
     original = _bundle()
     bundle = replace(
         original,
-        assets=tuple(original.assets or ()) + (_asset(multiline, location=Location.N607),),
+        assets=tuple(original.assets or ())
+        + (_asset(multiline, location=Location.N607),)
+        + tuple(_asset(f"bulk/{index:03d}.json") for index in range(40)),
     )
     result = ReportEmitter(
         bundle,
         output_root=tmp_path / "git",
         external_output_root=tmp_path / "external",
+        metadata=_metadata(),
         git_file_max_bytes=10_000,
-        git_scan_max_bytes=256,
+        git_scan_max_bytes=100_000,
     ).emit()
 
     external_csv = (result.external_output_dir or Path()) / "asset_inventory_n607.csv"
@@ -378,6 +410,90 @@ def test_emitter_fails_instead_of_writing_an_oversized_receipt(tmp_path):
     assert not output.joinpath("scan_receipt.json").exists()
 
 
+def test_emitter_refuses_terminal_receipt_when_git_shards_exceed_scan_limit(tmp_path):
+    base = _bundle(include_error=False)
+    bundle = replace(
+        base,
+        assets=tuple(
+            _asset(f"bulk/{index:03d}-{'x' * 80}.json")
+            for index in range(80)
+        ),
+    )
+
+    with pytest.raises(ValueError, match="git output exceeds scan threshold"):
+        ReportEmitter(
+            bundle,
+            output_root=tmp_path / "git",
+            external_output_root=tmp_path / "external",
+            metadata=_metadata(),
+            git_file_max_bytes=8192,
+            git_scan_max_bytes=1024,
+        ).emit()
+
+    assert (tmp_path / "external" / "EMIT_FIXTURE" / "asset_inventory_full.json").exists()
+    assert not (tmp_path / "git" / "EMIT_FIXTURE" / "scan_receipt.json").exists()
+
+
+@pytest.mark.parametrize(
+    "updates",
+    (
+        {"approval_state": "APPROVED"},
+        {"execution_state": "AUTHORIZED"},
+        {"approved_scope": "DELETE_B"},
+    ),
+)
+def test_emitter_rejects_any_authorized_deletion_candidate_before_writing(tmp_path, updates):
+    original = _bundle()
+    candidate = replace((original.deletion_candidates or ())[0], **updates)
+    bundle = replace(original, deletion_candidates=(candidate,))
+
+    with pytest.raises(ValueError, match="deletion candidate"):
+        ReportEmitter(
+            bundle,
+            output_root=tmp_path / "git",
+            external_output_root=tmp_path / "external",
+            metadata=_metadata(),
+        )
+
+    assert not (tmp_path / "git").exists()
+
+
+def test_emitter_requires_complete_terminal_receipt_metadata(tmp_path):
+    with pytest.raises(ValueError, match="metadata"):
+        ReportEmitter(
+            _bundle(),
+            output_root=tmp_path / "git",
+            external_output_root=tmp_path / "external",
+            metadata=None,
+        )
+
+    assert not (tmp_path / "git").exists()
+
+
+def test_emitter_accepts_explicit_not_requested_n607_evidence(tmp_path):
+    metadata = _metadata()
+    metadata.update(
+        {
+            "n607_requested": False,
+            "n607_route": "NOT_REQUESTED",
+            "n607_preflight": "NOT_REQUESTED",
+            "n607_disconnect": "NOT_REQUESTED",
+            "n607_scan_error_count": 0,
+        }
+    )
+
+    result = ReportEmitter(
+        _bundle(),
+        output_root=tmp_path / "git",
+        external_output_root=tmp_path / "external",
+        metadata=metadata,
+    ).emit()
+    receipt = json.loads(result.git_output_dir.joinpath("scan_receipt.json").read_text(encoding="utf-8"))
+
+    assert receipt["n607_evidence"]["requested"] is False
+    assert set(receipt["n607_evidence"].values()) >= {False, "NOT_REQUESTED"}
+
+
 def test_emitter_receipt_keeps_remote_evidence_and_zero_execution_fields(tmp_path):
     result = ReportEmitter(
         _bundle(), output_root=tmp_path / "git", external_output_root=tmp_path / "external", metadata=_metadata()
@@ -387,6 +503,7 @@ def test_emitter_receipt_keeps_remote_evidence_and_zero_execution_fields(tmp_pat
     assert receipt["roots"]["local"] == "E:/type10-7"
     assert receipt["roots"]["n607"] == "/home/szu2070436088/2510044040/CV-SincNet"
     assert receipt["n607_evidence"] == {
+        "requested": True,
         "route": "direct",
         "preflight": "VERIFIED",
         "disconnect": "VERIFIED",
