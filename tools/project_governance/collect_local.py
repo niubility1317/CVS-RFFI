@@ -21,6 +21,10 @@ _SUMMARY_DIRECTORY_NAMES = {"prediction", "predictions", "score", "scores"}
 def _is_reparse_point(entry: os.DirEntry[str], metadata: os.stat_result) -> bool:
     """Identify Windows junction-like entries without resolving their targets."""
 
+    return _is_reparse_metadata(metadata)
+
+
+def _is_reparse_metadata(metadata: os.stat_result) -> bool:
     attributes = getattr(metadata, "st_file_attributes", 0)
     reparse_flag = getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)
     return bool(reparse_flag and attributes & reparse_flag)
@@ -50,13 +54,47 @@ class LocalCollector:
         self._scan_direct(root, "", "ROOT_DIRECT", descend_units=False)
         for surface in self._location.carrier_surfaces:
             relative_path = normalize_relative_path(surface.relative_path)
+            carrier_path = self._safe_carrier_path(root, relative_path)
+            if carrier_path is None:
+                continue
             self._scan_direct(
-                root.joinpath(*relative_path.split("/")),
+                carrier_path,
                 relative_path,
                 f"CARRIER_DIRECT:{relative_path}",
                 descend_units=True,
             )
         return tuple(self._records.values()), tuple(self._scopes)
+
+    def _safe_carrier_path(self, root: Path, relative_path: str) -> Path | None:
+        candidate = root
+        components = relative_path.split("/")
+        for index, component in enumerate(components):
+            candidate /= component
+            candidate_relative_path = normalize_relative_path("/".join(components[: index + 1]))
+            try:
+                metadata = os.lstat(candidate)
+            except FileNotFoundError:
+                return candidate
+            except OSError as exc:
+                self._record_scan_error(candidate_relative_path, str(exc))
+                self._scopes.append(
+                    ScopeResult(
+                        scan_id=self._scan_id,
+                        location=Location.LOCAL,
+                        root_id=self._location.root_id,
+                        relative_path=candidate_relative_path,
+                        status="SCAN_ERROR",
+                        error=str(exc),
+                    )
+                )
+                return None
+            if stat.S_ISLNK(metadata.st_mode):
+                self._record_carrier_boundary(candidate_relative_path, AssetKind.SYMLINK, metadata)
+                return None
+            if _is_reparse_metadata(metadata):
+                self._record_carrier_boundary(candidate_relative_path, AssetKind.JUNCTION, metadata)
+                return None
+        return candidate
 
     def _scan_direct(
         self, directory: Path, relative_directory: str, tag: str, *, descend_units: bool
@@ -150,6 +188,7 @@ class LocalCollector:
                         self._asset_record(entry, relative_path, AssetKind.DIRECTORY, metadata),
                         "PREDICTION_SCORE_SUMMARY",
                     )
+                    continue
                 self._scan_control_evidence(Path(entry.path), relative_path, depth=depth + 1)
                 continue
             if entry.is_file(follow_symlinks=False) and self._is_control_evidence(entry.name):
@@ -178,7 +217,9 @@ class LocalCollector:
     def _asset_record(
         self, entry: os.DirEntry[str], relative_path: str, kind: AssetKind, metadata: os.stat_result
     ) -> AssetRecord:
-        hash_status, digest = self._hash_metadata(Path(entry.path), entry.name, kind, metadata.st_size)
+        hash_status, digest, hash_error = self._hash_metadata(
+            Path(entry.path), entry.name, kind, metadata.st_size
+        )
         display_name = normalize_relative_path(entry.name)
         return AssetRecord(
             asset_id=stable_asset_id(Location.LOCAL, self._location.root_id, relative_path),
@@ -190,30 +231,55 @@ class LocalCollector:
             escaped_name=escaped_display_name(display_name),
             asset_kind=kind,
             size_bytes=metadata.st_size,
-            mtime_utc=datetime.fromtimestamp(metadata.st_mtime, timezone.utc).strftime(
-                "%Y-%m-%dT%H:%M:%S.%fZ"
-            ),
-            access_status=AccessStatus.OK,
+            mtime_utc=self._mtime_utc(metadata.st_mtime),
+            access_status=AccessStatus.SCAN_ERROR if hash_error else AccessStatus.OK,
             hash_status=hash_status,
             sha256=digest,
+            decision_reason=hash_error or "UNCLASSIFIED",
         )
 
     def _hash_metadata(
         self, path: Path, name: str, kind: AssetKind, size_bytes: int
-    ) -> tuple[HashStatus, str | None]:
+    ) -> tuple[HashStatus, str | None, str | None]:
         suffix = Path(name).suffix.casefold()
         if kind is not AssetKind.FILE or suffix in _PROTECTED_SUFFIXES or not self._is_control_evidence(name):
-            return HashStatus.METADATA_ONLY, None
+            return HashStatus.METADATA_ONLY, None, None
         if size_bytes > self._discovery.hash_max_bytes:
-            return HashStatus.NOT_HASHED_SIZE_LIMIT, None
+            return HashStatus.NOT_HASHED_SIZE_LIMIT, None, None
         try:
             digest = hashlib.sha256()
             with path.open("rb") as stream:
                 for block in iter(lambda: stream.read(1024 * 1024), b""):
                     digest.update(block)
-            return HashStatus.SHA256, digest.hexdigest()
-        except OSError:
-            return HashStatus.ERROR, None
+            return HashStatus.SHA256, digest.hexdigest(), None
+        except OSError as exc:
+            return HashStatus.ERROR, None, str(exc)
+
+    def _record_carrier_boundary(
+        self, relative_path: str, kind: AssetKind, metadata: os.stat_result
+    ) -> AssetRecord:
+        asset_id = stable_asset_id(Location.LOCAL, self._location.root_id, relative_path)
+        existing = self._records.get(asset_id)
+        if existing is not None:
+            return self._add_record(existing, "CARRIER_BOUNDARY")
+        normalized = normalize_relative_path(relative_path)
+        display_name = normalized.rsplit("/", 1)[-1]
+        record = AssetRecord(
+            asset_id=asset_id,
+            scan_id=self._scan_id,
+            location=Location.LOCAL,
+            root_id=self._location.root_id,
+            relative_path=normalized,
+            display_name=display_name,
+            escaped_name=escaped_display_name(display_name),
+            asset_kind=kind,
+            size_bytes=getattr(metadata, "st_size", None),
+            mtime_utc=self._mtime_utc(getattr(metadata, "st_mtime", None)),
+            access_status=AccessStatus.OK,
+            hash_status=HashStatus.METADATA_ONLY,
+            sha256=None,
+        )
+        return self._add_record(record, "CARRIER_BOUNDARY")
 
     def _record_scan_error(self, relative_path: str, error: str) -> AssetRecord:
         if not relative_path:
@@ -276,6 +342,12 @@ class LocalCollector:
     @staticmethod
     def _join_relative(parent: str, name: str) -> str:
         return normalize_relative_path(f"{parent}/{name}" if parent else name)
+
+    @staticmethod
+    def _mtime_utc(value: float | None) -> str | None:
+        if value is None:
+            return None
+        return datetime.fromtimestamp(value, timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 
 
 __all__ = ["LocalCollector"]

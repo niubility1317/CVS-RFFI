@@ -4,11 +4,13 @@ import ast
 import codecs
 import hashlib
 import os
+import stat
 from pathlib import Path
+from types import SimpleNamespace
 
 from tools.project_governance.collect_local import LocalCollector
 from tools.project_governance.config import CarrierSurface, DiscoveryConfig, LocationConfig
-from tools.project_governance.models import AccessStatus, HashStatus, Location
+from tools.project_governance.models import AccessStatus, AssetKind, HashStatus, Location
 
 
 def _snapshot_tree(root: Path) -> dict[str, tuple[int, int]]:
@@ -178,3 +180,114 @@ def test_deduplicates_case_insensitive_local_identity_and_merges_coverage_tags(t
     manifests = [record for record in records if record.relative_path.casefold() == "runs/manifest.json"]
     assert len(manifests) == 1
     assert manifests[0].evidence_role == "CARRIER_DIRECT:RUNS|CARRIER_DIRECT:runs"
+
+
+def test_does_not_scan_carrier_surfaces_that_are_links_or_junctions(tmp_path, monkeypatch):
+    root = tmp_path / "fixture-root"
+    root.mkdir()
+    linked_target = root / "linked-target"
+    linked_target.mkdir()
+    (linked_target / "secret.json").write_text("external", encoding="utf-8")
+    os.symlink(linked_target, root / "linked", target_is_directory=True)
+    junction = root / "junction"
+    junction.mkdir()
+    (junction / "secret.json").write_text("external", encoding="utf-8")
+    config = LocationConfig(
+        location=Location.LOCAL,
+        root_id="TYPE10_7",
+        root=str(root),
+        carrier_surfaces=(
+            CarrierSurface(relative_path="linked", status="PRESENT"),
+            CarrierSurface(relative_path="junction", status="PRESENT"),
+        ),
+    )
+
+    from tools.project_governance import collect_local
+
+    original_lstat = collect_local.os.lstat
+    original_reparse_check = collect_local._is_reparse_point
+
+    def junction_lstat(path, *args, **kwargs):
+        metadata = original_lstat(path, *args, **kwargs)
+        if os.path.normcase(os.fspath(path)) == os.path.normcase(os.fspath(junction)):
+            return SimpleNamespace(
+                st_mode=metadata.st_mode,
+                st_file_attributes=getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0x400),
+            )
+        return metadata
+
+    with monkeypatch.context() as fixture_patch:
+        fixture_patch.setattr(collect_local.os, "lstat", junction_lstat)
+        fixture_patch.setattr(
+            collect_local,
+            "_is_reparse_point",
+            lambda entry, metadata: entry.name == "junction" or original_reparse_check(entry, metadata),
+        )
+        records, _ = LocalCollector(
+            config,
+            DiscoveryConfig(
+                control_evidence_max_depth=3,
+                hash_max_bytes=10 * 1024 * 1024,
+                text_read_max_bytes=2 * 1024 * 1024,
+            ),
+            scan_id="CARRIER_LINK_SCAN",
+        ).collect()
+
+    by_path = {record.relative_path: record for record in records}
+    assert by_path["linked"].asset_kind is AssetKind.SYMLINK
+    assert by_path["junction"].asset_kind is AssetKind.JUNCTION
+    assert "linked/secret.json" not in by_path
+    assert "junction/secret.json" not in by_path
+
+
+def test_prediction_summary_does_not_collect_control_files_below_it(tmp_path):
+    root = tmp_path / "fixture-root"
+    prediction_config = root / "runs" / "run-1" / "predictions" / "config.json"
+    prediction_config.parent.mkdir(parents=True)
+    prediction_config.write_text('{"must_not_be_read": true}', encoding="utf-8")
+
+    records, _ = LocalCollector(
+        _fixture_config(root),
+        DiscoveryConfig(
+            control_evidence_max_depth=3,
+            hash_max_bytes=10 * 1024 * 1024,
+            text_read_max_bytes=2 * 1024 * 1024,
+        ),
+        scan_id="PREDICTION_BOUNDARY_SCAN",
+    ).collect()
+
+    by_path = {record.relative_path: record for record in records}
+    assert "runs/run-1/predictions" in by_path
+    assert "runs/run-1/predictions/config.json" not in by_path
+
+
+def test_hash_read_failure_emits_scan_error_record(tmp_path, monkeypatch):
+    root = tmp_path / "fixture-root"
+    manifest = root / "runs" / "manifest.json"
+    manifest.parent.mkdir(parents=True)
+    manifest.write_text('{"fixture": true}', encoding="utf-8")
+
+    from tools.project_governance import collect_local
+
+    original_open = collect_local.Path.open
+
+    def denied_open(path, *args, **kwargs):
+        if Path(path) == manifest and args and args[0] == "rb":
+            raise PermissionError("fixture hash denial")
+        return original_open(path, *args, **kwargs)
+
+    with monkeypatch.context() as fixture_patch:
+        fixture_patch.setattr(collect_local.Path, "open", denied_open)
+        records, _ = LocalCollector(
+            _fixture_config(root),
+            DiscoveryConfig(
+                control_evidence_max_depth=3,
+                hash_max_bytes=10 * 1024 * 1024,
+                text_read_max_bytes=2 * 1024 * 1024,
+            ),
+            scan_id="HASH_ERROR_SCAN",
+        ).collect()
+
+    manifest_record = {record.relative_path: record for record in records}["runs/manifest.json"]
+    assert manifest_record.access_status is AccessStatus.SCAN_ERROR
+    assert manifest_record.hash_status is HashStatus.ERROR
