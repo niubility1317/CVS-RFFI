@@ -3,9 +3,13 @@ from __future__ import annotations
 import ast
 import io
 import json
+import os
+import stat
 from contextlib import redirect_stdout
 from dataclasses import dataclass, field
 from pathlib import Path
+from types import SimpleNamespace
+from typing import Callable
 
 import pytest
 
@@ -17,12 +21,14 @@ from tools.project_governance.collect_n607 import (
     CommandResult,
     ConnectionCheck,
     ConnectionEvidence,
+    DEFAULT_SSH_CONFIG,
     N607Collector,
     RemoteOutcome,
     build_remote_payload,
 )
 from tools.project_governance.config import CarrierSurface, DiscoveryConfig, LocationConfig
 from tools.project_governance.models import Location
+from tools.project_governance.paths import normalize_relative_path, stable_asset_id
 
 
 @dataclass
@@ -39,6 +45,7 @@ class FakeRunner:
         input_text: str | None,
         timeout_seconds: int,
         label: str,
+        stdout_line_handler: Callable[[str | bytes], None] | None = None,
     ) -> CommandResult:
         self.calls.append(
             {
@@ -46,12 +53,16 @@ class FakeRunner:
                 "input_text": input_text,
                 "timeout_seconds": timeout_seconds,
                 "label": label,
+                "streamed": stdout_line_handler is not None,
             }
         )
         if not self.results:
             raise AssertionError("unexpected command execution")
         result = self.results.pop(0)
         assert result.command == command
+        if stdout_line_handler is not None:
+            for line in result.stdout_lines:
+                stdout_line_handler(line)
         return result
 
     def check_connections(
@@ -97,9 +108,13 @@ def _preflight_command(script: Path = Path("C:/repo/tools/n607_ssh_preflight.ps1
     )
 
 
-def _direct_command() -> tuple[str, ...]:
+def _direct_command(
+    config: Path = Path("C:/repo/tools/n607_ssh_config"),
+) -> tuple[str, ...]:
     return (
         "ssh",
+        "-F",
+        str(config),
         "-T",
         "-o",
         "BatchMode=yes",
@@ -169,6 +184,7 @@ def _preflight_ok(command: tuple[str, ...] | None = None) -> CommandResult:
         pid=101,
         stdout_lines=(
             "Config OK: N607 is direct. user szu2070436088; hostname 172.31.111.215",
+            "SSH config: C:/repo/tools/n607_ssh_config",
             "Identity file OK: C:/Users/lh594/.ssh/id_ed25519_n607_codexsandboxoffline",
             "Identity file OK: C:/Users/lh594/.ssh/id_ed25519_n607",
             "user=szu2070436088",
@@ -180,6 +196,7 @@ def _preflight_ok(command: tuple[str, ...] | None = None) -> CommandResult:
 
 
 def _ndjson(*, scan_id: str = "SCAN-1", active: bool = False) -> tuple[str, ...]:
+    asset_id = "asset:N607:N607_CVS_SINCNET:runs/demo/report.md"
     lines = [
         json.dumps(
             {
@@ -196,7 +213,7 @@ def _ndjson(*, scan_id: str = "SCAN-1", active: bool = False) -> tuple[str, ...]
                 "schema_version": 1,
                 "scan_id": scan_id,
                 "record_type": "ASSET",
-                "asset_id": "asset:N607:N607_CVS_SINCNET:runs/demo/report.md",
+                "asset_id": asset_id,
                 "location": "N607",
                 "root_id": "N607_CVS_SINCNET",
                 "relative_path": "runs/demo/report.md",
@@ -208,6 +225,43 @@ def _ndjson(*, scan_id: str = "SCAN-1", active: bool = False) -> tuple[str, ...]
                 "access_status": "OK",
                 "hash_status": "SHA256",
                 "sha256": "0" * 64,
+                "evidence_role": "CONTROL_EVIDENCE",
+            }
+        ),
+        json.dumps(
+            {
+                "schema_version": 1,
+                "scan_id": scan_id,
+                "record_type": "SCOPE",
+                "location": "N607",
+                "root_id": "N607_CVS_SINCNET",
+                "relative_path": "",
+                "status": "VERIFIED",
+                "asset_ids": [asset_id],
+            }
+        ),
+        json.dumps(
+            {
+                "schema_version": 1,
+                "scan_id": scan_id,
+                "record_type": "SCOPE",
+                "location": "N607",
+                "root_id": "N607_CVS_SINCNET",
+                "relative_path": "runs",
+                "status": "VERIFIED",
+                "asset_ids": [],
+            }
+        ),
+        json.dumps(
+            {
+                "schema_version": 1,
+                "scan_id": scan_id,
+                "record_type": "SCOPE",
+                "location": "N607",
+                "root_id": "N607_CVS_SINCNET",
+                "relative_path": "logs",
+                "status": "NOT_PRESENT",
+                "asset_ids": [],
             }
         ),
     ]
@@ -292,7 +346,6 @@ def test_remote_payload_is_ast_safe_and_imports_only_read_only_stdlib() -> None:
         "hashlib",
         "json",
         "os",
-        "re",
         "socket",
         "stat",
         "unicodedata",
@@ -326,6 +379,10 @@ def test_remote_payload_executes_locally_as_ndjson_without_mutating_source(tmp_p
     assert records[-1]["record_type"] == "COLLECTION_COMPLETE"
     assert all(record["schema_version"] == 1 for record in records)
     assert all(record["scan_id"] == "SCAN-EXEC" for record in records)
+    assert any(
+        record["record_type"] == "SCAN_ERROR" and record["operation"] == "proc_scandir"
+        for record in records
+    )
     assets = [record for record in records if record["record_type"] == "ASSET"]
     assert any(record["relative_path"] == "runs/demo/report.md" for record in assets)
     assert all(not record["relative_path"].startswith("/") for record in assets)
@@ -353,6 +410,7 @@ def test_direct_success_requires_markers_valid_ndjson_and_clean_disconnect() -> 
     assert [call["label"] for call in runner.calls] == ["PREFLIGHT", "DIRECT"]
     assert runner.calls[1]["command"] == _direct_command()
     assert runner.calls[1]["timeout_seconds"] == 45
+    assert runner.calls[1]["streamed"] is True
     assert "SCAN-1" in str(runner.calls[1]["input_text"])
     assert runner.connection_calls[1]["attempt_pids"] == (202,)
     assert runner.connection_calls[1]["endpoints"] == (
@@ -368,6 +426,7 @@ def test_known_direct_path_failure_with_valid_identity_uses_exact_bridge() -> No
         returncode=1,
         stdout_lines=(
             "Config OK: N607 is direct. user szu2070436088; hostname 172.31.111.215",
+            "SSH config: C:/repo/tools/n607_ssh_config",
             "Identity file OK: C:/Users/lh594/.ssh/id_ed25519_n607",
         ),
         stderr_tail="ssh: connect to host 172.31.111.215 port 22: Connection timed out",
@@ -497,6 +556,7 @@ def test_preflight_requires_actual_remote_ordinary_user_evidence() -> None:
         proxy_pids=(802,),
         stdout_lines=(
             "Config OK: N607 is direct. user szu2070436088; hostname 172.31.111.215",
+            "SSH config: C:/repo/tools/n607_ssh_config",
             "Identity file OK: C:/Users/lh594/.ssh/id_ed25519_n607",
             "user=someone_else",
             "project_root=/home/szu2070436088/2510044040/CV-SincNet",
@@ -519,6 +579,7 @@ def test_missing_attempt_child_evidence_cannot_authorize_bridge_fallback() -> No
         returncode=1,
         stdout_lines=(
             "Config OK: N607 is direct. user szu2070436088; hostname 172.31.111.215",
+            "SSH config: C:/repo/tools/n607_ssh_config",
             "Identity file OK: C:/Users/lh594/.ssh/id_ed25519_n607",
         ),
         stderr_tail="ssh: connect to host 172.31.111.215 port 22: Connection timed out",
@@ -552,6 +613,7 @@ def test_preflight_path_fallback_requires_a_failed_preflight_exit() -> None:
         returncode=0,
         stdout_lines=(
             "Config OK: N607 is direct. user szu2070436088; hostname 172.31.111.215",
+            "SSH config: C:/repo/tools/n607_ssh_config",
             "Identity file OK: C:/Users/lh594/.ssh/id_ed25519_n607",
         ),
         stderr_tail="ssh: connect to host 172.31.111.215 port 22: Connection timed out",
@@ -582,3 +644,196 @@ def test_ndjson_requires_stable_asset_identity_and_one_final_completion() -> Non
         )
         result = _collector(runner).collect()
         assert result.receipt.outcome is RemoteOutcome.FAILED
+
+
+def test_n607_posix_backslash_is_literal_and_cannot_collide_with_nested_path() -> None:
+    literal = r"runs/foo\bar.json"
+    nested = "runs/foo/bar.json"
+
+    assert normalize_relative_path(literal, location=Location.N607) == literal
+    assert normalize_relative_path(r"runs/..\literal.json", location=Location.N607) == r"runs/..\literal.json"
+    assert stable_asset_id(Location.N607, "N607_CVS_SINCNET", literal) != stable_asset_id(
+        Location.N607, "N607_CVS_SINCNET", nested
+    )
+
+
+def test_verified_collection_requires_root_and_every_configured_carrier_scope() -> None:
+    header = _ndjson()[0]
+    complete = json.dumps(
+        {
+            "schema_version": 1,
+            "scan_id": "SCAN-1",
+            "record_type": "COLLECTION_COMPLETE",
+            "record_count": 1,
+            "scan_error_count": 0,
+        }
+    )
+    missing_carrier = [line for line in _ndjson() if json.loads(line).get("relative_path") != "logs"]
+    final = json.loads(missing_carrier[-1])
+    final["record_count"] = len(missing_carrier) - 1
+    missing_carrier[-1] = json.dumps(final)
+
+    for pid, lines in ((1201, (header, complete)), (1202, tuple(missing_carrier))):
+        runner = FakeRunner(
+            [_preflight_ok(), _result(_direct_command(), pid=pid, stdout_lines=lines)],
+            [(), ()],
+        )
+        result = _collector(runner).collect()
+        assert result.receipt.outcome is RemoteOutcome.FAILED
+
+
+def test_unknown_record_type_and_invalid_utf8_are_rejected() -> None:
+    unknown = list(_ndjson())
+    unknown.insert(
+        -1,
+        json.dumps(
+            {
+                "schema_version": 1,
+                "scan_id": "SCAN-1",
+                "record_type": "TRUST_ME",
+            }
+        ),
+    )
+    final = json.loads(unknown[-1])
+    final["record_count"] = len(unknown) - 1
+    unknown[-1] = json.dumps(final)
+    cases: tuple[tuple[str | bytes, ...], ...] = (tuple(unknown), (b"\xff\xfe",))
+    for offset, lines in enumerate(cases):
+        runner = FakeRunner(
+            [
+                _preflight_ok(),
+                _result(_direct_command(), pid=1301 + offset, stdout_lines=lines),
+            ],
+            [(), ()],
+        )
+        result = _collector(runner).collect()
+        assert result.receipt.outcome is RemoteOutcome.FAILED
+
+
+def test_payload_records_partial_proc_visibility_instead_of_silently_skipping() -> None:
+    payload = build_remote_payload(_config(), _discovery(), scan_id="SCAN-PROC")
+    namespace: dict[str, object] = {"__name__": "payload_test"}
+    exec(compile(payload, "<remote-payload>", "exec"), namespace)
+
+    class FakeScandir:
+        def __enter__(self):
+            return iter((SimpleNamespace(name="123"),))
+
+        def __exit__(self, exc_type, exc, traceback):
+            return False
+
+    fake_os = SimpleNamespace(
+        path=os.path,
+        sep=os.sep,
+        scandir=lambda path: FakeScandir(),
+        readlink=lambda path: (_ for _ in ()).throw(PermissionError("denied")),
+    )
+    namespace["os"] = fake_os
+    output = io.StringIO()
+    with redirect_stdout(output):
+        namespace["_processes"]()
+    records = [json.loads(line) for line in output.getvalue().splitlines()]
+
+    assert len(records) == 1
+    assert records[0]["record_type"] == "SCAN_ERROR"
+    assert records[0]["operation"] == "proc_partial_visibility"
+    assert "123" in records[0]["error"]
+
+
+def test_payload_deduplicates_revisited_assets_and_records_decode_errors(tmp_path: Path) -> None:
+    payload = build_remote_payload(_config(), _discovery(), scan_id="SCAN-DEDUPE")
+    namespace: dict[str, object] = {"__name__": "payload_test"}
+    exec(compile(payload, "<remote-payload>", "exec"), namespace)
+    link_metadata = SimpleNamespace(st_mode=stat.S_IFLNK | 0o777, st_size=4, st_mtime=0)
+
+    output = io.StringIO()
+    with redirect_stdout(output):
+        namespace["_record_asset"]("ignored", "runs", "ROOT_DIRECT", link_metadata)
+        namespace["_record_asset"]("ignored", "runs", "LINK", link_metadata)
+    records = [json.loads(line) for line in output.getvalue().splitlines()]
+    assert [record["record_type"] for record in records] == ["ASSET"]
+
+    invalid_report = tmp_path / "report.md"
+    invalid_report.write_bytes(b"\xff")
+    output = io.StringIO()
+    with redirect_stdout(output):
+        namespace["_record_asset"](
+            invalid_report.as_posix(),
+            "runs/invalid/report.md",
+            "CONTROL_EVIDENCE",
+            os.lstat(invalid_report),
+        )
+    records = [json.loads(line) for line in output.getvalue().splitlines()]
+    assert records[0]["record_type"] == "SCAN_ERROR"
+    assert records[-1]["record_type"] == "ASSET"
+    assert records[-1]["access_status"] == "SCAN_ERROR"
+
+
+def test_payload_requires_ppid_for_a_project_bound_process() -> None:
+    payload = build_remote_payload(_config(), _discovery(), scan_id="SCAN-PPID")
+    namespace: dict[str, object] = {"__name__": "payload_test"}
+    exec(compile(payload, "<remote-payload>", "exec"), namespace)
+
+    class FakeScandir:
+        def __enter__(self):
+            return iter((SimpleNamespace(name="321"),))
+
+        def __exit__(self, exc_type, exc, traceback):
+            return False
+
+    fake_os = SimpleNamespace(
+        path=os.path,
+        sep=os.sep,
+        scandir=lambda path: FakeScandir(),
+        readlink=lambda path: "/srv/CV-SincNet",
+    )
+    namespace["os"] = fake_os
+    namespace["_read_process_text"] = lambda path, limit: (
+        "python\x00train.py\x00" if path.endswith("/cmdline") else "Name:\tpython\n"
+    )
+    output = io.StringIO()
+    with redirect_stdout(output):
+        namespace["_processes"]()
+    records = [json.loads(line) for line in output.getvalue().splitlines()]
+
+    assert not any(record["record_type"] == "PROCESS" for record in records)
+    assert any(
+        record["record_type"] == "SCAN_ERROR"
+        and record["operation"] == "proc_partial_visibility"
+        for record in records
+    )
+
+
+def test_direct_command_reuses_the_preflight_config_path() -> None:
+    preflight_script = DEFAULT_SSH_CONFIG.with_name("n607_ssh_preflight.ps1")
+    direct = _result(
+        _direct_command(DEFAULT_SSH_CONFIG),
+        pid=1401,
+        stdout_lines=_ndjson(),
+    )
+    preflight = _result(
+        _preflight_command(preflight_script),
+        pid=1400,
+        proxy_pids=(1402,),
+        stdout_lines=(
+            "Config OK: N607 is direct. user szu2070436088; hostname 172.31.111.215",
+            f"SSH config: {DEFAULT_SSH_CONFIG.as_posix()}",
+            "Identity file OK: C:/Users/lh594/.ssh/id_ed25519_n607",
+            "user=szu2070436088",
+            "project_root=/home/szu2070436088/2510044040/CV-SincNet",
+            "Preflight OK: use ssh N607",
+        ),
+    )
+    runner = FakeRunner([preflight, direct], [(), ()])
+    collector = N607Collector(
+        _config("/home/szu2070436088/2510044040/CV-SincNet"),
+        _discovery(),
+        scan_id="SCAN-1",
+        runner=runner,
+        preflight_script=preflight_script,
+    )
+
+    result = collector.collect()
+
+    assert result.receipt.outcome is RemoteOutcome.VERIFIED
+    assert runner.calls[1]["command"][:3] == ("ssh", "-F", str(DEFAULT_SSH_CONFIG))

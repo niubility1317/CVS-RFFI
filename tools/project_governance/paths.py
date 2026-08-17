@@ -12,12 +12,22 @@ from .models import Location
 _WINDOWS_ABSOLUTE = re.compile(r"^[A-Za-z]:[\\/]|^//|^\\\\")
 
 
-def normalize_relative_path(value: str) -> str:
-    """Return an NFC, forward-slash relative path that remains under its root."""
+def normalize_relative_path(
+    value: str, *, location: Location | str | None = None
+) -> str:
+    """Return a normalized relative path that remains under its root.
+
+    Local/unspecified inputs accept Windows separators.  N607 paths are
+    POSIX paths, where a backslash is a literal filename character and must
+    not collapse into a directory separator.
+    """
 
     if not isinstance(value, str) or not value:
         raise ValueError("path must be a non-empty relative string")
-    normalized = unicodedata.normalize("NFC", value).replace("\\", "/")
+    selected_location = Location(location) if location is not None else None
+    normalized = unicodedata.normalize("NFC", value)
+    if selected_location is not Location.N607:
+        normalized = normalized.replace("\\", "/")
     if normalized.startswith("/") or _WINDOWS_ABSOLUTE.match(normalized):
         raise ValueError(f"path must be relative: {value!r}")
 
@@ -40,7 +50,7 @@ def stable_asset_id(location: Location, root_id: str, relative_path: str) -> str
     """Build identity from location, configured root and normalized relative path only."""
 
     selected_location = Location(location)
-    path = normalize_relative_path(relative_path)
+    path = normalize_relative_path(relative_path, location=selected_location)
     if selected_location is Location.LOCAL:
         path = path.casefold()
     return "asset:{location}:{root}:{path}".format(

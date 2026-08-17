@@ -11,7 +11,7 @@ import json
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Protocol, Sequence
+from typing import Callable, Protocol, Sequence
 
 from .config import DiscoveryConfig, LocationConfig
 from .models import Location
@@ -27,18 +27,9 @@ APPROVED_N607_HOST = "172.31.111.215:22"
 APPROVED_BRIDGE_HOST = "172.31.105.18:22"
 APPROVED_ENDPOINTS = (APPROVED_N607_HOST, APPROVED_BRIDGE_HOST)
 DEFAULT_PREFLIGHT_SCRIPT = Path("E:/type10-7/tools/n607_ssh_preflight.ps1")
-
-_DIRECT_COMMAND = (
-    "ssh",
-    "-T",
-    "-o",
-    "BatchMode=yes",
-    "-o",
-    "ConnectTimeout=10",
-    "N607",
-    "python3",
-    "-",
-)
+DEFAULT_SSH_CONFIG = DEFAULT_PREFLIGHT_SCRIPT.with_name("n607_ssh_config")
+MAX_NDJSON_LINE_BYTES = 16 * 1024 * 1024
+MAX_NDJSON_TOTAL_BYTES = 256 * 1024 * 1024
 _BRIDGE_PROXY = (
     "ProxyCommand=ssh -i C:/Users/lh594/.ssh/id_ed25519_lab_bridge_172_31_105_18 "
     "-o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new "
@@ -100,7 +91,7 @@ class CommandResult:
     returncode: int | None = None
     child_exited: bool = False
     proxy_children_exited: bool = False
-    stdout_lines: tuple[str, ...] = ()
+    stdout_lines: tuple[str | bytes, ...] = ()
     stderr_tail: str = ""
     timed_out: bool = False
 
@@ -144,6 +135,7 @@ class CommandRunner(Protocol):
         input_text: str | None,
         timeout_seconds: int,
         label: str,
+        stdout_line_handler: Callable[[str | bytes], None] | None = None,
     ) -> CommandResult: ...
 
     def check_connections(
@@ -156,7 +148,6 @@ import datetime
 import hashlib
 import json
 import os
-import re
 import socket
 import stat
 import unicodedata
@@ -164,6 +155,7 @@ import urllib.parse
 
 _emitted = 0
 _scan_errors = 0
+_asset_ids_emitted = set()
 
 
 def _emit(record_type, **fields):
@@ -194,7 +186,6 @@ def _error(relative_path, operation, error):
 
 def _normalize_relative(value):
     normalized = unicodedata.normalize("NFC", value)
-    normalized = re.sub(r"\\", "/", normalized)
     if normalized.startswith("/"):
         raise ValueError("absolute relative path")
     parts = []
@@ -294,7 +285,7 @@ def _evidence_text(path, size_bytes, suffix, name):
     try:
         return payload.decode("utf-8-sig")
     except UnicodeDecodeError:
-        return None
+        return payload.decode("gb18030")
 
 
 def _record_asset(path, relative_path, evidence_role, metadata=None):
@@ -311,7 +302,7 @@ def _record_asset(path, relative_path, evidence_role, metadata=None):
             try:
                 hash_status, digest = _hash_file(path, metadata.st_size, suffix)
                 evidence_text = _evidence_text(path, metadata.st_size, suffix, name)
-            except (OSError, OverflowError) as error:
+            except (OSError, OverflowError, UnicodeError) as error:
                 access_status = "SCAN_ERROR"
                 hash_status = "ERROR"
                 _error(relative_path, "bounded_file_read", error)
@@ -334,6 +325,9 @@ def _record_asset(path, relative_path, evidence_role, metadata=None):
         }
         if evidence_text is not None:
             fields["evidence_text"] = evidence_text
+        if fields["asset_id"] in _asset_ids_emitted:
+            return fields["asset_id"], asset_kind
+        _asset_ids_emitted.add(fields["asset_id"])
         _emit("ASSET", **fields)
         return fields["asset_id"], asset_kind
     except (OSError, ValueError) as error:
@@ -430,6 +424,11 @@ def _safe_carrier(relative_path):
             metadata = os.lstat(current)
             if stat.S_ISLNK(metadata.st_mode):
                 _record_asset(current, "/".join(accumulated), "LINK", metadata)
+                _error(
+                    relative_path,
+                    "carrier_boundary",
+                    ValueError("carrier path crosses a symbolic link"),
+                )
                 return None
         return current
     except FileNotFoundError:
@@ -448,8 +447,11 @@ def _processes():
     try:
         with os.scandir("/proc") as iterator:
             entries = tuple(iterator)
-    except OSError:
+    except OSError as error:
+        _error("", "proc_scandir", error)
         return
+    unreadable_count = 0
+    unreadable_pids = []
     for entry in entries:
         if not entry.name.isdigit():
             continue
@@ -469,6 +471,8 @@ def _processes():
                     raw_ppid = line.split(":", 1)[1].strip()
                     ppid = int(raw_ppid) if raw_ppid.isdigit() else None
                     break
+            if ppid is None:
+                raise ValueError("PPid is missing from process status")
             lowered = cmdline.casefold()
             training_like = any(token in lowered for token in ("train", "runner", "launch"))
             _emit(
@@ -480,7 +484,20 @@ def _processes():
                 training_like=training_like,
             )
         except (OSError, UnicodeError, ValueError, OverflowError):
-            continue
+            unreadable_count += 1
+            if len(unreadable_pids) < 10:
+                unreadable_pids.append(entry.name)
+    if unreadable_count:
+        _error(
+            "",
+            "proc_partial_visibility",
+            RuntimeError(
+                "unreadable_processes={count};sample_pids={pids}".format(
+                    count=unreadable_count,
+                    pids=",".join(unreadable_pids),
+                )
+            ),
+        )
 
 
 def _main():
@@ -501,9 +518,35 @@ def _main():
             carrier_path = _safe_carrier(carrier)
             if carrier_path is not None:
                 _scan_direct(carrier_path, carrier, "CARRIER_DIRECT:" + carrier, True)
+            else:
+                _emit(
+                    "SCOPE",
+                    location="N607",
+                    root_id=ROOT_ID,
+                    relative_path=carrier,
+                    status="SCAN_ERROR",
+                    asset_ids=[],
+                )
         _processes()
     except (OSError, ValueError) as error:
         _error("", "root_lstat", error)
+        _emit(
+            "SCOPE",
+            location="N607",
+            root_id=ROOT_ID,
+            relative_path="",
+            status="SCAN_ERROR",
+            asset_ids=[],
+        )
+        for carrier in CARRIER_SURFACES:
+            _emit(
+                "SCOPE",
+                location="N607",
+                root_id=ROOT_ID,
+                relative_path=carrier,
+                status="SCAN_ERROR",
+                asset_ids=[],
+            )
     _emit(
         "COLLECTION_COMPLETE",
         record_count=_emitted,
@@ -562,6 +605,22 @@ def _preflight_command(script: Path) -> tuple[str, ...]:
     )
 
 
+def _direct_command(ssh_config: Path) -> tuple[str, ...]:
+    return (
+        "ssh",
+        "-F",
+        str(ssh_config),
+        "-T",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "ConnectTimeout=10",
+        "N607",
+        "python3",
+        "-",
+    )
+
+
 def _attempt_pids(result: CommandResult) -> tuple[int, ...]:
     values = (() if result.child_pid is None else (result.child_pid,)) + result.proxy_child_pids
     return tuple(dict.fromkeys(values))
@@ -612,10 +671,23 @@ def _receipt_for_attempt(
     )
 
 
-def _classify_preflight(result: CommandResult) -> tuple[str, str | None]:
-    text = "\n".join(result.stdout_lines) + "\n" + result.stderr_tail
+def _classify_preflight(
+    result: CommandResult, *, expected_ssh_config: Path
+) -> tuple[str, str | None]:
+    try:
+        decoded_lines = tuple(
+            line.decode("utf-8") if isinstance(line, bytes) else line
+            for line in result.stdout_lines
+        )
+    except UnicodeDecodeError:
+        return "FAILED", "preflight output is not strict UTF-8"
+    text = "\n".join(decoded_lines) + "\n" + result.stderr_tail
     folded = text.casefold()
+    path_folded = folded.translate(str.maketrans({"\\": "/"}))
     config_valid = folded.count("config ok: n607 is direct") == 1
+    config_path_valid = (
+        f"ssh config: {expected_ssh_config.as_posix().casefold()}" in path_folded
+    )
     identity_valid = folded.count("identity file ok:") >= 1
     remote_user_valid = "user=szu2070436088" in folded
     project_visible = "project_root=/home/szu2070436088/2510044040/cv-sincnet" in folded
@@ -625,6 +697,7 @@ def _classify_preflight(result: CommandResult) -> tuple[str, str | None]:
     if (
         result.returncode == 0
         and config_valid
+        and config_path_valid
         and identity_valid
         and remote_user_valid
         and project_visible
@@ -634,17 +707,61 @@ def _classify_preflight(result: CommandResult) -> tuple[str, str | None]:
     if (
         result.returncode != 0
         and config_valid
+        and config_path_valid
         and identity_valid
         and any(marker in folded for marker in _PATH_UNAVAILABLE_MARKERS)
     ):
         return "DIRECT_PATH_UNAVAILABLE", None
-    if not config_valid or not identity_valid or (result.returncode == 0 and not remote_user_valid):
+    if (
+        not config_valid
+        or not config_path_valid
+        or not identity_valid
+        or (result.returncode == 0 and not remote_user_valid)
+    ):
         return "FAILED", "preflight identity/config evidence is missing or ambiguous"
     return "FAILED", "preflight failed without an authorized bridge-fallback classification"
 
 
+_ALLOWED_RECORD_TYPES = {
+    "SERVER_INFO",
+    "ASSET",
+    "SCOPE",
+    "PROCESS",
+    "SCAN_ERROR",
+    "COLLECTION_COMPLETE",
+}
+_ALLOWED_ASSET_KINDS = {"file", "directory", "symlink", "other"}
+_ALLOWED_ACCESS_STATUS = {"OK", "SCAN_ERROR"}
+_ALLOWED_HASH_STATUS = {
+    "SHA256",
+    "METADATA_ONLY",
+    "NOT_HASHED_SIZE_LIMIT",
+    "ERROR",
+}
+_ALLOWED_SCOPE_STATUS = {"VERIFIED", "NOT_PRESENT", "SCAN_ERROR"}
+
+
+def _is_int(value: object, *, minimum: int = 0) -> bool:
+    return not isinstance(value, bool) and isinstance(value, int) and value >= minimum
+
+
+def _canonical_n607_path(value: object, *, allow_empty: bool) -> str:
+    if value == "" and allow_empty:
+        return ""
+    if not isinstance(value, str):
+        raise ValueError("N607 path is not a string")
+    normalized = normalize_relative_path(value, location=Location.N607)
+    if normalized != value:
+        raise ValueError("N607 path is not canonical")
+    return normalized
+
+
 def _parse_ndjson(
-    lines: Sequence[str], *, scan_id: str, expected_root: str
+    lines: Sequence[str],
+    *,
+    scan_id: str,
+    expected_root: str,
+    expected_carriers: Sequence[str],
 ) -> tuple[tuple[dict[str, object], ...], bool]:
     records: list[dict[str, object]] = []
     for index, line in enumerate(lines, start=1):
@@ -665,13 +782,22 @@ def _parse_ndjson(
         ):
             raise ValueError(f"NDJSON identity mismatch at line {index}")
         record_type = value.get("record_type")
-        if not isinstance(record_type, str) or not record_type:
+        if record_type not in _ALLOWED_RECORD_TYPES:
             raise ValueError(f"NDJSON record type missing at line {index}")
         if "relative_path" in value:
-            relative = value["relative_path"]
-            if relative != "":
-                if not isinstance(relative, str) or normalize_relative_path(relative) != relative:
-                    raise ValueError(f"NDJSON path is not canonical at line {index}")
+            try:
+                _canonical_n607_path(value["relative_path"], allow_empty=True)
+            except ValueError as exc:
+                raise ValueError(f"NDJSON path is not canonical at line {index}") from exc
+        if record_type == "SERVER_INFO":
+            if (
+                not isinstance(value.get("hostname"), str)
+                or not value.get("hostname")
+                or not isinstance(value.get("server_time_utc"), str)
+                or not str(value.get("server_time_utc")).endswith("Z")
+                or value.get("root") != expected_root
+            ):
+                raise ValueError(f"NDJSON server evidence is incomplete at line {index}")
         if record_type == "ASSET":
             if value.get("location") != "N607" or value.get("root_id") != "N607_CVS_SINCNET":
                 raise ValueError(f"NDJSON asset scope mismatch at line {index}")
@@ -682,6 +808,71 @@ def _parse_ndjson(
                 Location.N607, "N607_CVS_SINCNET", relative_path
             ):
                 raise ValueError(f"NDJSON asset identity mismatch at line {index}")
+            if (
+                value.get("asset_kind") not in _ALLOWED_ASSET_KINDS
+                or not _is_int(value.get("size_bytes"))
+                or not isinstance(value.get("mtime_utc"), str)
+                or not str(value.get("mtime_utc")).endswith("Z")
+                or value.get("access_status") not in _ALLOWED_ACCESS_STATUS
+                or value.get("hash_status") not in _ALLOWED_HASH_STATUS
+                or not isinstance(value.get("display_name"), str)
+                or not isinstance(value.get("escaped_name"), str)
+                or not isinstance(value.get("evidence_role"), str)
+            ):
+                raise ValueError(f"NDJSON asset fields are incomplete at line {index}")
+            digest = value.get("sha256")
+            if value.get("hash_status") == "SHA256":
+                if (
+                    not isinstance(digest, str)
+                    or len(digest) != 64
+                    or any(character not in "0123456789abcdef" for character in digest)
+                ):
+                    raise ValueError(f"NDJSON asset hash is invalid at line {index}")
+            elif digest is not None:
+                raise ValueError(f"NDJSON metadata-only asset has a hash at line {index}")
+            if "evidence_text" in value and not isinstance(value["evidence_text"], str):
+                raise ValueError(f"NDJSON evidence text is invalid at line {index}")
+        elif record_type == "SCOPE":
+            if value.get("location") != "N607" or value.get("root_id") != "N607_CVS_SINCNET":
+                raise ValueError(f"NDJSON scope mismatch at line {index}")
+            try:
+                _canonical_n607_path(value.get("relative_path"), allow_empty=True)
+            except ValueError as exc:
+                raise ValueError(f"NDJSON scope path is invalid at line {index}") from exc
+            asset_ids = value.get("asset_ids")
+            if (
+                value.get("status") not in _ALLOWED_SCOPE_STATUS
+                or not isinstance(asset_ids, list)
+                or any(not isinstance(asset_id, str) or not asset_id for asset_id in asset_ids)
+                or len(asset_ids) != len(set(asset_ids))
+            ):
+                raise ValueError(f"NDJSON scope fields are incomplete at line {index}")
+        elif record_type == "PROCESS":
+            pid = value.get("pid")
+            ppid = value.get("ppid")
+            cwd = value.get("cwd")
+            root_prefix = expected_root.rstrip("/") + "/"
+            if (
+                not _is_int(pid, minimum=1)
+                or (ppid is not None and not _is_int(ppid))
+                or not isinstance(cwd, str)
+                or (cwd != expected_root and not cwd.startswith(root_prefix))
+                or not isinstance(value.get("cmdline"), str)
+                or not isinstance(value.get("training_like"), bool)
+            ):
+                raise ValueError(f"NDJSON process fields are incomplete at line {index}")
+        elif record_type == "SCAN_ERROR":
+            if (
+                value.get("location") != "N607"
+                or value.get("root_id") != "N607_CVS_SINCNET"
+                or not isinstance(value.get("operation"), str)
+                or not value.get("operation")
+                or not isinstance(value.get("error_type"), str)
+                or not value.get("error_type")
+                or not isinstance(value.get("error"), str)
+                or not value.get("error")
+            ):
+                raise ValueError(f"NDJSON scan error fields are incomplete at line {index}")
         records.append(value)
     completions = [item for item in records if item.get("record_type") == "COLLECTION_COMPLETE"]
     if len(completions) != 1 or not records or records[-1] is not completions[0]:
@@ -693,6 +884,26 @@ def _parse_ndjson(
         or server_records[0].get("root") != expected_root
     ):
         raise ValueError("NDJSON server/root evidence is incomplete")
+    scope_records = [item for item in records if item.get("record_type") == "SCOPE"]
+    expected_scope_paths = ("",) + tuple(expected_carriers)
+    observed_scope_paths = tuple(str(item.get("relative_path")) for item in scope_records)
+    if (
+        len(observed_scope_paths) != len(expected_scope_paths)
+        or set(observed_scope_paths) != set(expected_scope_paths)
+    ):
+        raise ValueError("NDJSON root/carrier scope coverage is incomplete")
+    asset_ids = [
+        str(item.get("asset_id")) for item in records if item.get("record_type") == "ASSET"
+    ]
+    if len(asset_ids) != len(set(asset_ids)):
+        raise ValueError("NDJSON asset identities are not unique")
+    known_asset_ids = set(asset_ids)
+    if any(
+        asset_id not in known_asset_ids
+        for scope in scope_records
+        for asset_id in scope.get("asset_ids", [])
+    ):
+        raise ValueError("NDJSON scope references an unknown asset")
     completion = records[-1]
     record_count = completion.get("record_count")
     if (
@@ -714,6 +925,60 @@ def _parse_ndjson(
         for item in records
     )
     return tuple(records), active_training
+
+
+class _NDJSONStreamValidator:
+    """Strictly decode and parse one bounded UTF-8 object at a time."""
+
+    def __init__(
+        self,
+        *,
+        scan_id: str,
+        expected_root: str,
+        expected_carriers: Sequence[str],
+    ) -> None:
+        self._scan_id = scan_id
+        self._expected_root = expected_root
+        self._expected_carriers = tuple(expected_carriers)
+        self._lines: list[str] = []
+        self._total_bytes = 0
+        self._error: str | None = None
+
+    def feed(self, raw_line: str | bytes) -> None:
+        if self._error is not None:
+            return
+        try:
+            payload = raw_line.encode("utf-8") if isinstance(raw_line, str) else raw_line
+            if not isinstance(payload, bytes):
+                raise TypeError("stdout line is not bytes or text")
+            if payload.endswith(b"\n"):
+                payload = payload[:-1]
+                if payload.endswith(b"\r"):
+                    payload = payload[:-1]
+            if b"\n" in payload or b"\r" in payload:
+                raise ValueError("stdout callback supplied multiple lines")
+            if len(payload) > MAX_NDJSON_LINE_BYTES:
+                raise ValueError("NDJSON line exceeds the bounded size")
+            self._total_bytes += len(payload) + 1
+            if self._total_bytes > MAX_NDJSON_TOTAL_BYTES:
+                raise ValueError("NDJSON stream exceeds the bounded total size")
+            decoded = payload.decode("utf-8")
+            value = json.loads(decoded)
+            if not isinstance(value, dict):
+                raise ValueError("NDJSON line is not an object")
+            self._lines.append(decoded)
+        except (TypeError, UnicodeError, ValueError, json.JSONDecodeError) as exc:
+            self._error = f"malformed streaming NDJSON: {exc}"
+
+    def finish(self) -> tuple[tuple[dict[str, object], ...], bool]:
+        if self._error is not None:
+            raise ValueError(self._error)
+        return _parse_ndjson(
+            self._lines,
+            scan_id=self._scan_id,
+            expected_root=self._expected_root,
+            expected_carriers=self._expected_carriers,
+        )
 
 
 class N607Collector:
@@ -739,6 +1004,7 @@ class N607Collector:
         # host-local config, so the production default remains on the fixed
         # project control plane.
         self._preflight_script = preflight_script or DEFAULT_PREFLIGHT_SCRIPT
+        self._ssh_config = self._preflight_script.with_name("n607_ssh_config")
 
     def collect(self) -> N607CollectionResult:
         attempts: list[AttemptReceipt] = []
@@ -747,6 +1013,7 @@ class N607Collector:
             _preflight_command(self._preflight_script),
             input_text=None,
             timeout_seconds=PREFLIGHT_TIMEOUT_SECONDS,
+            stdout_line_handler=None,
         )
         preflight_result, disconnect_status, lingering, disconnect_error = preflight
         attempts.append(_receipt_for_attempt("PREFLIGHT", preflight_result, disconnect_status, lingering))
@@ -760,7 +1027,9 @@ class N607Collector:
                 disconnect_error,
             )
 
-        preflight_status, preflight_error = _classify_preflight(preflight_result)
+        preflight_status, preflight_error = _classify_preflight(
+            preflight_result, expected_ssh_config=self._ssh_config
+        )
         if preflight_status in {"DIRECT_READY", "DIRECT_PATH_UNAVAILABLE"} and not preflight_result.proxy_child_pids:
             return self._result(
                 RemoteOutcome.UNKNOWN,
@@ -790,13 +1059,21 @@ class N607Collector:
             )
 
         route = DIRECT_ROUTE if preflight_status == "DIRECT_READY" else BRIDGE_ROUTE
-        command = _DIRECT_COMMAND if route == DIRECT_ROUTE else _BRIDGE_COMMAND
+        command = _direct_command(self._ssh_config) if route == DIRECT_ROUTE else _BRIDGE_COMMAND
         payload = build_remote_payload(self._location, self._discovery, scan_id=self._scan_id)
+        stream_validator = _NDJSONStreamValidator(
+            scan_id=self._scan_id,
+            expected_root=self._location.root,
+            expected_carriers=tuple(
+                surface.relative_path for surface in self._location.carrier_surfaces
+            ),
+        )
         command_result, disconnect_status, lingering, disconnect_error = self._run_attempt(
             route,
             command,
             input_text=payload,
             timeout_seconds=SSH_TIMEOUT_SECONDS,
+            stdout_line_handler=stream_validator.feed,
         )
         attempts.append(_receipt_for_attempt(route, command_result, disconnect_status, lingering))
         if route == BRIDGE_ROUTE and not command_result.proxy_child_pids:
@@ -827,11 +1104,7 @@ class N607Collector:
                 f"collection command exited {command_result.returncode}",
             )
         try:
-            records, active_training = _parse_ndjson(
-                command_result.stdout_lines,
-                scan_id=self._scan_id,
-                expected_root=self._location.root,
-            )
+            records, active_training = stream_validator.finish()
         except ValueError as exc:
             return self._result(
                 RemoteOutcome.FAILED,
@@ -858,12 +1131,14 @@ class N607Collector:
         *,
         input_text: str | None,
         timeout_seconds: int,
+        stdout_line_handler: Callable[[str | bytes], None] | None,
     ) -> tuple[CommandResult, str, tuple[ConnectionEvidence, ...], str | None]:
         result = self._runner.run(
             command,
             input_text=input_text,
             timeout_seconds=timeout_seconds,
             label=label,
+            stdout_line_handler=stdout_line_handler,
         )
         disconnect_status, lingering, error = _connection_check(self._runner, result)
         return result, disconnect_status, lingering, error
@@ -899,6 +1174,7 @@ __all__ = [
     "ConnectionCheck",
     "ConnectionEvidence",
     "DEFAULT_PREFLIGHT_SCRIPT",
+    "DEFAULT_SSH_CONFIG",
     "DIRECT_ROUTE",
     "N607CollectionResult",
     "N607Collector",
