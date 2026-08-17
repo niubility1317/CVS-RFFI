@@ -42,6 +42,19 @@ def result_numbers(doc: Document) -> list[str]:
     ]
 
 
+def subscript_pairs(doc: Document) -> set[tuple[str, str]]:
+    pairs: set[tuple[str, str]] = set()
+    for node in doc.element.xpath(".//m:sSub"):
+        base = "".join(
+            node.xpath('./*[local-name()="e"]//*[local-name()="t"]/text()')
+        )
+        sub = "".join(
+            node.xpath('./*[local-name()="sub"]//*[local-name()="t"]/text()')
+        )
+        pairs.add((base, sub))
+    return pairs
+
+
 class NormalizePhase2ReportSymbolsTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
@@ -75,6 +88,21 @@ class NormalizePhase2ReportSymbolsTests(unittest.TestCase):
         self.assertIn("REG1", metric_math)
         self.assertNotIn("pre", metric_math)
         self.assertNotIn("post", metric_math)
+        all_math = "\n".join(
+            math_text(paragraph)
+            for paragraph in self.output_doc.paragraphs
+        )
+        self.assertNotIn("Cold", all_math)
+        self.assertNotIn("Ctnew", all_math)
+        self.assertNotIn("Aoldpost", all_math)
+
+        pairs = subscript_pairs(self.output_doc)
+        self.assertIn(("P", "src"), pairs)
+        self.assertIn(("P", "tgt"), pairs)
+        self.assertNotIn(("P", "s"), pairs)
+        self.assertNotIn(("P", "t"), pairs)
+        self.assertNotIn(("Y", "S"), pairs)
+        self.assertNotIn(("Y", "T"), pairs)
 
         mri_math = "\n".join(
             math_text(self.output_doc.paragraphs[index]) for index in (82, 84, 86, 88)
@@ -82,14 +110,19 @@ class NormalizePhase2ReportSymbolsTests(unittest.TestCase):
         self.assertIn("π", mri_math)
         self.assertIn("src", mri_math)
         self.assertIn("tgt", mri_math)
+        self.assertIn("ε₀", math_text(self.output_doc.paragraphs[82]))
 
         mopc_math = "\n".join(
             math_text(self.output_doc.paragraphs[index])
             for index in (139, 141, 142, 143, 145, 147, 149)
         )
-        self.assertIn("Ttemp", mopc_math)
+        self.assertIn("Tₜₑₘₚ", mopc_math)
         self.assertIn("ξ", mopc_math)
         self.assertNotIn("τ", mopc_math)
+        self.assertIn("Bp", mopc_math)
+        self.assertNotIn("Bμ", mopc_math)
+        self.assertIn("ℒHR=j=1J", mopc_math)
+        self.assertNotIn("ℒHR=g=", mopc_math)
 
     def test_preserves_results_references_and_document_scale(self) -> None:
         self.assertEqual(len(self.source_doc.tables), len(self.output_doc.tables))

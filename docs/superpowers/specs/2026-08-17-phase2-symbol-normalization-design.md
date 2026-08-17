@@ -12,7 +12,7 @@
 4. 所有分类概率统一为`\pi_\theta(c\mid x)`，不再在不同方法中混用`p_\theta`和`q_\theta`。
 5. 类原型统一用粗体`\boldsymbol\mu_c`；概率不再使用`p`，以避免prototype与probability混淆。
 6. few-shot任务保留`\tau`；MoPC-HR的softmax温度改为`T_{\mathrm{temp}}`。数值稳定常数使用`\varepsilon_0`；高斯扰动使用`\boldsymbol\xi_r`。
-7. 点分类损失使用`\ell_{\mathrm{cls}}`；MoPC-HR参数组索引改为`g`，避免与损失函数符号`\ell`重叠。
+7. 点分类损失保留标准记号`\ell`；MoPC-HR参数组索引改为`j`、参数组总数改为`J`，避免与损失函数`\ell`和分类器`g_\theta`重叠。
 8. 预测状态不再混用`(0)/(1)`与`pre/post`。报告首先定义`DA0_REG0`、`DA1_REG0`、`DA0_REG1`和`DA1_REG1`；具体结果表必须明确该方法经过的状态路径。
 9. qKNN名称中的`K`属于算法名称，不等于报告的`K-shot`样本数；首次出现处明确区分。
 
@@ -30,4 +30,3 @@
 - 文档表格数、行数、数值token序列及参考文献段落与输入版一致。
 - OMML公式对象数量不减少，文档无`U+FFFD`、可见LaTeX反斜杠或独立符号说明段落。
 - 生成PDF/PNG并逐页检查公式、表格、分页和字体显示。
-

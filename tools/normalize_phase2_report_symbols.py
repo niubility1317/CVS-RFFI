@@ -184,13 +184,16 @@ def normalize(source: Path, output: Path) -> None:
     doc = Document(str(source))
 
     # Category sets: one symbol family, Y, throughout task definitions and result metrics.
-    for index in (2, 7, 8, 10, 19, 24, 25):
+    for index in (2, 7, 8, 10, 19, 24, 25, 32, 33):
         replace_class_set_token(doc.paragraphs[index])
     for paragraph in doc.tables[0]._tbl.xpath(".//w:p"):
         class Wrapper:
             _p = paragraph
 
-        replace_class_set_token(Wrapper())
+        wrapped = Wrapper()
+        replace_class_set_token(wrapped)
+        replace_math_token(wrapped, "S", "src")
+        replace_math_token(wrapped, "T", "tgt")
     for index in (16, 17, 20, 21, 43, 65, 77):
         script_existing_y(doc.paragraphs[index])
 
@@ -200,9 +203,7 @@ def normalize(source: Path, output: Path) -> None:
     for index in (16, 17, 19, 20, 21, 81, 84, 85, 86, 88, 93, 94, 97, 98, 99, 100, 102):
         normalize_domain_tokens(doc.paragraphs[index])
 
-    # The pointwise loss has a semantic subscript; the parameter-group index is g.
-    replace_math_token(doc.paragraphs[20], "ℓ", "ℓcls", expected=1)
-    replace_math_token(doc.paragraphs[21], "ℓ", "ℓcls", expected=1)
+    # The pointwise loss keeps the standard ell; the parameter-group index is j.
 
     # Explicit adaptation/registration states replace overloaded 0/1 and pre/post.
     p = doc.paragraphs[43]
@@ -247,6 +248,7 @@ def normalize(source: Path, output: Path) -> None:
     replace_math_token(doc.paragraphs[61], "pre", "DA1_REG0", expected=1)
     replace_math_token(doc.paragraphs[61], "post", "DA1_REG1", expected=1)
     replace_math_token_after(doc.paragraphs[64], ("y", "i"), "1", "DA1_REG1", expected=1)
+    replace_math_token(doc.paragraphs[66], "post", "DA1_REG1", expected=1)
 
     # Prototype uses mu; pi is reserved for classification probability.
     for index in (74, 75, 77):
@@ -257,22 +259,24 @@ def normalize(source: Path, output: Path) -> None:
 
     # Epsilon is split into numerical stabilization and stochastic perturbation.
     for index in (81, 82, 100, 101):
-        replace_math_token(doc.paragraphs[index], "ϵ", "ε0")
+        replace_math_token(doc.paragraphs[index], "ϵ", "ε₀")
     for index in (139, 142):
         replace_math_token(doc.paragraphs[index], "ϵ", "ξ")
     replace_plain(doc.paragraphs[139], "是零均值各向同性高斯扰动", "是零均值各向同性高斯扰动向量")
 
     # MoPC-HR: tau remains the few-shot task symbol; temperature and group index are unique.
     for index in (139, 142, 143):
-        replace_math_token(doc.paragraphs[index], "τ", "Ttemp")
+        replace_math_token(doc.paragraphs[index], "τ", "Tₜₑₘₚ")
     for index in (139, 144, 145):
-        replace_math_token(doc.paragraphs[index], "ℓ", "g")
-        replace_math_token(doc.paragraphs[index], "ℓ−", "g−")
-        replace_math_token(doc.paragraphs[index], "ℓ=", "g=")
+        replace_math_token(doc.paragraphs[index], "ℓ", "j")
+        replace_math_token(doc.paragraphs[index], "ℓ−", "j−")
+        replace_math_token(doc.paragraphs[index], "ℓ=", "j=")
+        replace_math_token(doc.paragraphs[index], "L", "J")
     replace_math_token(doc.paragraphs[136], "0.01t", "0.01u", expected=1)
     replace_plain(doc.paragraphs[136], "学习率为", "学习率为（其中u表示optimizer step）", expected=1)
     for index in (139, 142):
         replace_math_token(doc.paragraphs[index], "p", "μ")
+    replace_math_token_after(doc.paragraphs[139], ("B",), "μ", "p", expected=1)
 
     # qKNN acronym K is not the shot budget K.
     qknn = find_paragraph(doc, "qKNN（")
@@ -333,6 +337,19 @@ def result_number_tokens(doc: Document) -> list[str]:
     ]
 
 
+def subscript_pairs(doc: Document) -> set[tuple[str, str]]:
+    pairs: set[tuple[str, str]] = set()
+    for node in doc.element.xpath(".//m:sSub"):
+        base = "".join(
+            node.xpath('./*[local-name()="e"]//*[local-name()="t"]/text()')
+        )
+        sub = "".join(
+            node.xpath('./*[local-name()="sub"]//*[local-name()="t"]/text()')
+        )
+        pairs.add((base, sub))
+    return pairs
+
+
 def audit(path: Path, reference: Path | None = None) -> dict[str, int]:
     doc = Document(str(path))
     rows = sum(len(table.rows) for table in doc.tables)
@@ -341,7 +358,7 @@ def audit(path: Path, reference: Path | None = None) -> dict[str, int]:
     body = "\n".join("".join(p._p.itertext()) for p in all_paragraphs(doc))
     math = "\n".join(math_text(p) for p in all_paragraphs(doc))
 
-    required = ("src", "tgt", "π", "Ttemp", "ξ", "DA0_REG0", "DA1_REG0", "DA1_REG1")
+    required = ("src", "tgt", "π", "Tₜₑₘₚ", "ξ", "DA0_REG0", "DA1_REG0", "DA1_REG1")
     missing = [token for token in required if token not in math and token not in body]
     if missing:
         raise RuntimeError(f"missing normalized symbols: {missing}")
@@ -356,6 +373,33 @@ def audit(path: Path, reference: Path | None = None) -> dict[str, int]:
         )
     if "�" in body or "\\mathcal" in body:
         raise RuntimeError("damaged or visible source notation found")
+
+    pairs = subscript_pairs(doc)
+    for pair in (("P", "src"), ("P", "tgt")):
+        if pair not in pairs:
+            raise RuntimeError(f"missing Word-equation subscript: {pair}")
+    forbidden_pairs = {("P", "s"), ("P", "t"), ("Y", "S"), ("Y", "T")}
+    if pairs & forbidden_pairs:
+        raise RuntimeError(f"legacy equation subscripts remain: {pairs & forbidden_pairs}")
+
+    plain = "\n".join(
+        "".join(paragraph._p.xpath(".//w:t/text()"))
+        for paragraph in all_paragraphs(doc)
+    )
+    for code_field in (
+        "old_acc_before",
+        "old_acc_after",
+        "seen_new_acc",
+        "H_old_new",
+        "min_old",
+    ):
+        plain = plain.replace(code_field, "")
+    literal_math = re.findall(
+        r"(?<![A-Za-z0-9])(?:P|D|Y|A|G|H|F|Q|R|T|N|B|C|d|p|q|z|x|y|w|n|K|L)_[A-Za-z]",
+        plain,
+    )
+    if literal_math:
+        raise RuntimeError(f"plain-text math symbols remain: {literal_math[:8]}")
 
     if reference is not None:
         original = Document(str(reference))
