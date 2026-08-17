@@ -136,6 +136,7 @@ def formalize_report(source: Path | str, output: Path | str) -> None:
         ("ADV3B02", "Phase1域泛化基座"),
         ("同一Phase1域泛化基座地面域泛化checkpoint", "同一Phase1域泛化基座checkpoint"),
         ("Phase1域泛化基座增量更新", "Phase1基座更新"),
+        ("Phase1域泛化基座 backbone", "Phase1域泛化基座backbone"),
         ("编码器接口替换为Phase1域泛化基座的160维", "编码器接口接入Phase1域泛化基座输出的160维"),
         (
             "本文按照项目命名约定，用qKNN统称Phase2轻量适配/注册路线。",

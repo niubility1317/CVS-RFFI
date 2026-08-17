@@ -70,6 +70,7 @@ class FormalizePhase2ProjectNamingTest(unittest.TestCase):
             body = all_visible_text(result)
 
             self.assertNotIn("ADV3B02", body)
+            self.assertNotIn("Phase1域泛化基座 backbone", body)
             self.assertIn("Phase1域泛化基座", body)
             self.assertIn("Phase2少样本适应与增量注册方法", body)
             self.assertIn("qKNN", body)
