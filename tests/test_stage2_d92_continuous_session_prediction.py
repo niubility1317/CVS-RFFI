@@ -224,6 +224,26 @@ def test_prediction_runtime_rejects_registration_wall_above_v2_300ms_limit() -> 
         )
 
 
+def test_frozen_da1_reg0_baseline_records_resources_without_applying_session_gate() -> None:
+    """Would fail if the old-only baseline were charged to the REG1 session budget."""
+
+    resource = _registration_resource(
+        {
+            "registration_wall_time_ns": 300_000_001,
+            "registration_incremental_peak_working_set_bytes": 4 * 1024 * 1024 + 1,
+        },
+        state=_state(("cls_old_a", "cls_old_b")),
+        support_bytes=10,
+        registered_class_count=2,
+        enforce_hard_gate=False,
+    )
+
+    assert resource["registration_wall_time_ns"] == 300_000_001
+    assert resource["registration_incremental_peak_working_set_bytes"] == 4 * 1024 * 1024 + 1
+    assert resource["registration_hard_gate_enforced"] is False
+    assert resource["registration_resource_scope"] == "frozen_da1_reg0_baseline_rebuild"
+
+
 @pytest.mark.parametrize(
     ("builder", "message"),
     [

@@ -765,20 +765,27 @@ def _registration_resource(
     state: Any,
     support_bytes: int,
     registered_class_count: int,
+    enforce_hard_gate: bool = True,
 ) -> dict[str, Any]:
     resource = dict(measured)
     wall = int(resource.get("registration_wall_time_ns", -1))
     peak = int(resource.get("registration_incremental_peak_working_set_bytes", -1))
     if wall < 0 or peak < 0:
         raise ContinuousSessionPredictionError("registration resource receipt drift")
-    if wall > _REGISTRATION_WALL_HARD_MAX_NS:
+    if enforce_hard_gate and wall > _REGISTRATION_WALL_HARD_MAX_NS:
         raise ContinuousSessionPredictionError("registration wall hard gate failed")
-    if peak > _REGISTRATION_PEAK_HARD_MAX_BYTES:
+    if enforce_hard_gate and peak > _REGISTRATION_PEAK_HARD_MAX_BYTES:
         raise ContinuousSessionPredictionError("registration peak hard gate failed")
     resource.update(
         {
             "registration_wall_hard_max_ns": _REGISTRATION_WALL_HARD_MAX_NS,
             "registration_incremental_peak_hard_max_bytes": _REGISTRATION_PEAK_HARD_MAX_BYTES,
+            "registration_hard_gate_enforced": bool(enforce_hard_gate),
+            "registration_resource_scope": (
+                "cumulative_new_class_registration"
+                if enforce_hard_gate
+                else "frozen_da1_reg0_baseline_rebuild"
+            ),
             "support_bytes": int(support_bytes),
             "state_bytes": _state_bytes(state),
             "query_macs": int(registered_class_count * 288),
@@ -1181,6 +1188,7 @@ def _run_real_continuous_session_prediction(
                 state=baseline_state,
                 support_bytes=sum(record.rows.nbytes for record in anchor.old_records),
                 registered_class_count=len(old_handles),
+                enforce_hard_gate=False,
             ),
             "ledger": continuous.SessionLedger.start(anchor),
         }
