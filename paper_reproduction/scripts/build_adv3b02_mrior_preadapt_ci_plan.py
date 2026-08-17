@@ -52,7 +52,6 @@ FORMAL_RECEIVERS = ("20-1", "3-19", "7-14", "7-7", "8-8")
 FORMAL_SEEDS = (713101, 713102, 713103, 713104, 713105)
 FORMAL_K_VALUES = (1, 5, 10, 20)
 FORMAL_NEW_COUNTS = (2, 5, 10, 20)
-PREADAPT_ANCHOR_NEW_CLASS_COUNT = 2
 FORMAL_EXPERIMENT_ID = "adv3b02_mrior_preadapt_ci_20260817_v1"
 
 
@@ -477,9 +476,6 @@ def _build(
         expected_source_cache_manifest_sha256,
         field="expected source-cache manifest SHA",
     )
-    if PREADAPT_ANCHOR_NEW_CLASS_COUNT not in contract.new_counts:
-        raise ValueError("preadapt anchor new-count is unavailable")
-
     evidence = {
         key: _package_evidence(
             package,
@@ -488,86 +484,68 @@ def _build(
         )
         for key, package in packages.items()
     }
-    anchor_by_receiver_seed: dict[tuple[str, int], _PackageEvidence] = {}
-    for receiver in contract.receivers:
-        for seed in contract.seeds:
-            anchor = evidence.get((receiver, seed, PREADAPT_ANCHOR_NEW_CLASS_COUNT))
-            if anchor is None:
-                raise ValueError("preadapt anchor package missing")
-            anchor_by_receiver_seed[(receiver, seed)] = anchor
-            for new_count in contract.new_counts:
-                candidate = evidence[(receiver, seed, new_count)]
-                if candidate.old_class_labels != anchor.old_class_labels:
-                    raise ValueError("target-old class identity drift across new-count packages")
-                if candidate.checkpoint_sha256 != anchor.checkpoint_sha256:
-                    raise ValueError("target package checkpoint drift across new-count packages")
-                for k_shot in contract.k_values:
-                    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
-                        if (
-                            candidate.old_support_token_sha256_by_k_scene[(k_shot, scenario)]
-                            != anchor.old_support_token_sha256_by_k_scene[(k_shot, scenario)]
-                        ):
-                            raise ValueError(
-                                "target-old support identity drift across new-count packages"
-                            )
 
     resolved_run_root = run_root.resolve()
     jobs: list[dict[str, Any]] = []
-    job_by_identity: dict[tuple[str, int, int, str], dict[str, Any]] = {}
+    job_by_identity: dict[tuple[str, int, int, int, str], dict[str, Any]] = {}
     method_lock = expected_mrior_preadapt_method_lock()
     method_lock_sha256 = _canonical_sha256(method_lock)
     for receiver in contract.receivers:
         for seed in contract.seeds:
-            anchor = anchor_by_receiver_seed[(receiver, seed)]
-            for k_shot in contract.k_values:
-                for scenario in FORMAL_LEO_WEAK_SCENARIOS:
-                    identity = (receiver, seed, k_shot, scenario)
-                    if identity in job_by_identity:
-                        raise ValueError("duplicate preadapt job key")
-                    job_id = preadapt_key(receiver, seed, k_shot, scenario)
-                    support_token_sha256 = anchor.old_support_token_sha256_by_k_scene[
-                        (k_shot, scenario)
-                    ]
-                    binding = MRIORPreadaptInputBinding.from_verified_values(
-                        checkpoint_sha256=anchor.checkpoint_sha256,
-                        source_cache_sha256=source_cache_sha256,
-                        support_token_sha256=support_token_sha256,
-                        target_package_seal_sha256=anchor.detached_seal_sha256,
-                        receiver=receiver,
-                        seed=seed,
-                        k_shot=k_shot,
-                        scene=scenario,
-                    )
-                    artifact_root = resolved_run_root / "preadapt_jobs" / job_id
-                    job = {
-                        "job_id": job_id,
-                        "receiver": receiver,
-                        "seed": seed,
-                        "k_shot": k_shot,
-                        "scenario": scenario,
-                        "preadapt_anchor_new_class_count": PREADAPT_ANCHOR_NEW_CLASS_COUNT,
-                        "target_package_id": anchor.package_id,
-                        "target_package_root": str(anchor.predictor_package_root),
-                        "target_package_seal_path": str(anchor.detached_seal_path),
-                        "target_package_seal_sha256": anchor.detached_seal_sha256,
-                        "target_package_manifest_sha256": anchor.manifest_sha256,
-                        "checkpoint_sha256": anchor.checkpoint_sha256,
-                        "source_cache_manifest": str(source_cache_manifest),
-                        "source_cache_sha256": source_cache_sha256,
-                        "old_support_token_sha256": support_token_sha256,
-                        "input_binding": binding.canonical_payload(),
-                        "input_binding_sha256": binding.canonical_sha256,
-                        "method_lock": method_lock,
-                        "method_lock_sha256": method_lock_sha256,
-                        "query_opened_before_model_lock": False,
-                        "artifact_root": str(artifact_root),
-                        "artifact_state_path": str(artifact_root / "mrior_preadapt_state.pt"),
-                        "artifact_manifest_path": str(artifact_root / "manifest.json"),
-                    }
-                    jobs.append(job)
-                    job_by_identity[identity] = job
+            for new_count in contract.new_counts:
+                package = evidence[(receiver, seed, new_count)]
+                for k_shot in contract.k_values:
+                    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+                        identity = (receiver, seed, new_count, k_shot, scenario)
+                        if identity in job_by_identity:
+                            raise ValueError("duplicate preadapt job key")
+                        job_id = (
+                            f"{preadapt_key(receiver, seed, k_shot, scenario)}__new_{new_count}"
+                        )
+                        support_token_sha256 = package.old_support_token_sha256_by_k_scene[
+                            (k_shot, scenario)
+                        ]
+                        binding = MRIORPreadaptInputBinding.from_verified_values(
+                            checkpoint_sha256=package.checkpoint_sha256,
+                            source_cache_sha256=source_cache_sha256,
+                            support_token_sha256=support_token_sha256,
+                            target_package_seal_sha256=package.detached_seal_sha256,
+                            receiver=receiver,
+                            seed=seed,
+                            k_shot=k_shot,
+                            scene=scenario,
+                        )
+                        artifact_root = resolved_run_root / "preadapt_jobs" / job_id
+                        job = {
+                            "job_id": job_id,
+                            "receiver": receiver,
+                            "seed": seed,
+                            "new_class_count": new_count,
+                            "k_shot": k_shot,
+                            "scenario": scenario,
+                            "target_package_id": package.package_id,
+                            "target_package_root": str(package.predictor_package_root),
+                            "target_package_seal_path": str(package.detached_seal_path),
+                            "target_package_seal_sha256": package.detached_seal_sha256,
+                            "target_package_manifest_sha256": package.manifest_sha256,
+                            "checkpoint_sha256": package.checkpoint_sha256,
+                            "source_cache_manifest": str(source_cache_manifest),
+                            "source_cache_sha256": source_cache_sha256,
+                            "old_support_token_sha256": support_token_sha256,
+                            "input_binding": binding.canonical_payload(),
+                            "input_binding_sha256": binding.canonical_sha256,
+                            "method_lock": method_lock,
+                            "method_lock_sha256": method_lock_sha256,
+                            "query_opened_before_model_lock": False,
+                            "artifact_root": str(artifact_root),
+                            "artifact_state_path": str(artifact_root / "mrior_preadapt_state.pt"),
+                            "artifact_manifest_path": str(artifact_root / "manifest.json"),
+                        }
+                        jobs.append(job)
+                        job_by_identity[identity] = job
     if len({job["job_id"] for job in jobs}) != len(jobs):
         raise ValueError("duplicate preadapt job ID")
+    jobs.sort(key=lambda job: str(job["job_id"]))
 
     source_cell_by_key = {
         (
@@ -582,29 +560,13 @@ def _build(
     cells: list[dict[str, Any]] = []
     for receiver in contract.receivers:
         for seed in contract.seeds:
-            anchor = anchor_by_receiver_seed[(receiver, seed)]
             for k_shot in contract.k_values:
-                job_ids_by_scenario = {
-                    scenario: job_by_identity[(receiver, seed, k_shot, scenario)][
-                        "job_id"
-                    ]
-                    for scenario in FORMAL_LEO_WEAK_SCENARIOS
-                }
                 for new_count in contract.new_counts:
                     package = evidence[(receiver, seed, new_count)]
-                    reuse_proof_by_scenario = {
-                        scenario: {
-                            "anchor_package_id": anchor.package_id,
-                            "anchor_new_class_count": PREADAPT_ANCHOR_NEW_CLASS_COUNT,
-                            "anchor_old_support_token_sha256": anchor.old_support_token_sha256_by_k_scene[
-                                (k_shot, scenario)
-                            ],
-                            "cell_package_id": package.package_id,
-                            "cell_package_old_support_token_sha256": package.old_support_token_sha256_by_k_scene[
-                                (k_shot, scenario)
-                            ],
-                            "matched": True,
-                        }
+                    job_ids_by_scenario = {
+                        scenario: job_by_identity[
+                            (receiver, seed, new_count, k_shot, scenario)
+                        ]["job_id"]
                         for scenario in FORMAL_LEO_WEAK_SCENARIOS
                     }
                     for source_method in SOURCE_METHODS:
@@ -630,10 +592,7 @@ def _build(
                                 "target_package_root": str(package.predictor_package_root),
                                 "target_package_seal_path": str(package.detached_seal_path),
                                 "target_package_seal_sha256": package.detached_seal_sha256,
-                                "preadapt_anchor_new_class_count": PREADAPT_ANCHOR_NEW_CLASS_COUNT,
-                                "preadapt_anchor_target_package_seal_sha256": anchor.detached_seal_sha256,
                                 "preadapt_job_ids_by_scenario": job_ids_by_scenario,
-                                "preadapt_reuse_proof_by_scenario": reuse_proof_by_scenario,
                                 "output_root": str(resolved_run_root / "cells" / cell_id),
                             }
                         )
@@ -645,6 +604,7 @@ def _build(
     expected_job_count = (
         len(contract.receivers)
         * len(contract.seeds)
+        * len(contract.new_counts)
         * len(contract.k_values)
         * len(FORMAL_LEO_WEAK_SCENARIOS)
     )
@@ -654,9 +614,11 @@ def _build(
     first_receiver = contract.receivers[0]
     first_seed = contract.seeds[0]
     smoke_job_ids = [
-        job_by_identity[(first_receiver, first_seed, contract.k_values[0], scenario)][
-            "job_id"
-        ]
+        job_by_identity[(first_receiver, first_seed, new_count, k_shot, scenario)]["job_id"]
+        for new_count, k_shot in (
+            (contract.new_counts[0], contract.k_values[0]),
+            (contract.new_counts[-1], contract.k_values[-1]),
+        )
         for scenario in FORMAL_LEO_WEAK_SCENARIOS
     ]
     smoke_cell_ids = [
@@ -702,8 +664,8 @@ def _build(
         "k_values": list(contract.k_values),
         "new_class_counts": list(contract.new_counts),
         "scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
-        "preadapt_anchor_new_class_count": PREADAPT_ANCHOR_NEW_CLASS_COUNT,
-        "canonical_ordering": "receiver,seed,k_shot,scenario,new_class_count,method",
+        "preadapt_scope": "receiver_seed_newcount_k_scene",
+        "canonical_ordering": "receiver,seed,new_class_count,k_shot,scenario,method",
         "preadapt_jobs": jobs,
         "cells": cells,
         "counts": {

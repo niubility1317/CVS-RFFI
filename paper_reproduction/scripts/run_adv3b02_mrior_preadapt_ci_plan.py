@@ -22,7 +22,7 @@ FORMAL_METHOD_MAP = {
     "csil_paper_full": "mrior_sda_then_csil_paper_full",
     "mopc_hr_paper_full": "mrior_sda_then_mopc_hr_paper_full",
 }
-FORMAL_COUNTS = {"preadapt_jobs": 300, "cells": 800, "scenario_rows": 2400}
+FORMAL_COUNTS = {"preadapt_jobs": 1200, "cells": 800, "scenario_rows": 2400}
 FORMAL_SHARD_COUNT = 8
 
 
@@ -74,7 +74,7 @@ def _validate_plan_payload(raw_plan: Mapping[str, Any]) -> dict[str, Any]:
     if plan.get("schema") != PLAN_SCHEMA:
         raise ValueError("MRIOR preadapt CI plan schema drift")
     if plan.get("counts") != FORMAL_COUNTS:
-        raise ValueError("MRIOR preadapt CI plan must close 300/800/2400")
+        raise ValueError("MRIOR preadapt CI plan must close 1200/800/2400")
     scenarios = tuple(str(value) for value in _normal_list(plan.get("scenarios"), field="scenarios"))
     if scenarios != FORMAL_SCENARIOS:
         raise ValueError("MRIOR preadapt CI plan scenario matrix drift")
@@ -103,18 +103,21 @@ def _validate_plan_payload(raw_plan: Mapping[str, Any]) -> dict[str, Any]:
         or len(set(new_counts)) != 4
     ):
         raise ValueError("MRIOR preadapt CI formal matrix dimensions drift")
+    if plan.get("preadapt_scope") != "receiver_seed_newcount_k_scene":
+        raise ValueError("MRIOR preadapt CI preadapt scope drift")
     expected_job_keys = {
-        (receiver, seed, k_shot, scenario)
+        (receiver, seed, new_count, k_shot, scenario)
         for receiver in receivers
         for seed in seeds
+        for new_count in new_counts
         for k_shot in k_values
         for scenario in scenarios
     }
     jobs = _normal_list(plan.get("preadapt_jobs"), field="preadapt jobs")
     if len(jobs) != FORMAL_COUNTS["preadapt_jobs"]:
-        raise ValueError("MRIOR preadapt CI plan requires 300 preadapt jobs")
+        raise ValueError("MRIOR preadapt CI plan requires 1200 preadapt jobs")
     job_ids: set[str] = set()
-    job_keys: set[tuple[str, int, int, str]] = set()
+    job_keys: set[tuple[str, int, int, int, str]] = set()
     jobs_by_id: dict[str, dict[str, Any]] = {}
     for raw_job in jobs:
         if not isinstance(raw_job, Mapping):
@@ -124,6 +127,7 @@ def _validate_plan_payload(raw_plan: Mapping[str, Any]) -> dict[str, Any]:
         key = (
             str(job.get("receiver", "")),
             job.get("seed"),
+            job.get("new_class_count"),
             job.get("k_shot"),
             str(job.get("scenario", "")),
         )
@@ -135,6 +139,8 @@ def _validate_plan_payload(raw_plan: Mapping[str, Any]) -> dict[str, Any]:
             or not isinstance(key[1], int)
             or isinstance(key[2], bool)
             or not isinstance(key[2], int)
+            or isinstance(key[3], bool)
+            or not isinstance(key[3], int)
             or key not in expected_job_keys
             or key in job_keys
             or not isinstance(job.get("artifact_root"), str)
@@ -206,6 +212,7 @@ def _validate_plan_payload(raw_plan: Mapping[str, Any]) -> dict[str, Any]:
                 job is None
                 or job["receiver"] != key[0]
                 or int(job["seed"]) != key[1]
+                or int(job["new_class_count"]) != key[2]
                 or int(job["k_shot"]) != key[4]
                 or job["scenario"] != scenario
             ):
@@ -348,7 +355,7 @@ def _verify_matrix_closure(
     expected_jobs = {str(job["job_id"]) for job in plan["preadapt_jobs"]}
     observed_jobs = [str(item.get("job_id", "")) for item in artifacts]
     if len(observed_jobs) != FORMAL_COUNTS["preadapt_jobs"] or set(observed_jobs) != expected_jobs:
-        raise ValueError("matrix closure requires exactly 300 preadapt artifacts")
+        raise ValueError("matrix closure requires exactly 1200 preadapt artifacts")
     expected_cells = {str(cell["cell_id"]) for cell in plan["cells"]}
     observed_cells = [str(item.get("cell_id", "")) for item in cells]
     if len(observed_cells) != FORMAL_COUNTS["cells"] or set(observed_cells) != expected_cells:
@@ -410,8 +417,7 @@ def _verify_smoke_authority(
         receipt.get("schema") != "cvs.phase2.adv3b02_mrior_preadapt_ci_smoke_receipt.v1"
         or receipt.get("status") != "PASS"
         or receipt.get("plan_contract_sha256") != plan["plan_contract_sha256"]
-        or receipt.get("completed_preadapt_job_ids")
-        != [job["job_id"] for job in plan["preadapt_jobs"]]
+        or receipt.get("completed_preadapt_job_ids") != plan["smoke_preadapt_job_ids"]
         or receipt.get("completed_cell_ids") != plan["smoke_cell_ids"]
     ):
         raise ValueError("MRIOR preadapt CI smoke authority receipt drift")
@@ -830,11 +836,39 @@ def _assert_dispatch_allowed(plan: Mapping[str, Any]) -> None:
 def run(args: argparse.Namespace) -> dict[str, Any]:
     plan = _load_plan(Path(args.plan))
     project_root = Path(args.project_root).resolve(strict=True)
+    stage = str(args.stage)
+    if stage == "preadapt_shard":
+        _verify_smoke_authority(plan, project_root=project_root)
     _claim_run_root(plan)
     invocation = [str(value) for value in getattr(args, "invocation", sys.argv)]
-    stage = str(args.stage)
     if stage == "prepare":
         return {"status": "PASS", "stage": stage, "run_root": plan["run_root"]}
+    if stage == "preadapt_smoke":
+        if int(args.shard_index) != 0:
+            raise ValueError("MRIOR preadapt CI preadapt smoke runs only on shard 0")
+        jobs = {str(job["job_id"]): job for job in plan["preadapt_jobs"]}
+        completed = []
+        for job_id in plan["smoke_preadapt_job_ids"]:
+            _assert_dispatch_allowed(plan)
+            job = jobs[str(job_id)]
+            try:
+                receipt = _run_preadapt_job(
+                    plan,
+                    job,
+                    project_root=project_root,
+                    device_name=str(args.device),
+                    invocation=invocation,
+                )
+            except Exception as exc:
+                _update_health_state(
+                    plan,
+                    row_id=str(job["job_id"]),
+                    exc=exc,
+                    prediction_produced=False,
+                )
+                raise
+            completed.append(receipt["job_id"])
+        return {"status": "PASS", "stage": stage, "completed": completed}
     if stage == "preadapt_shard":
         selected = _select_shard(
             plan["preadapt_jobs"],
@@ -865,7 +899,11 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     if stage == "smoke":
         if int(args.shard_index) != 0:
             raise ValueError("MRIOR preadapt CI smoke runs only on shard 0")
-        preadapt_receipts = _all_preadapt_receipts(plan)
+        jobs = {str(job["job_id"]): job for job in plan["preadapt_jobs"]}
+        preadapt_receipts = [
+            _read_existing_preadapt_receipt(jobs[str(job_id)])
+            for job_id in plan["smoke_preadapt_job_ids"]
+        ]
         cells = {str(cell["cell_id"]): cell for cell in plan["cells"]}
         completed_cells = []
         for cell_id in plan["smoke_cell_ids"]:
@@ -892,12 +930,10 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                 "schema": "cvs.phase2.adv3b02_mrior_preadapt_ci_smoke_receipt.v1",
                 "status": "PASS",
                 "plan_contract_sha256": plan["plan_contract_sha256"],
-                "completed_preadapt_job_ids": [
-                    job["job_id"] for job in plan["preadapt_jobs"]
-                ],
+                "completed_preadapt_job_ids": plan["smoke_preadapt_job_ids"],
                 "preadapt_receipt_sha256": {
                     receipt["job_id"]: _sha256(
-                        Path(str(next(job for job in plan["preadapt_jobs"] if job["job_id"] == receipt["job_id"])["artifact_root"]))
+                        Path(str(jobs[str(receipt["job_id"])]["artifact_root"]))
                         / "job_receipt.json"
                     )
                     for receipt in preadapt_receipts
@@ -910,14 +946,18 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             },
         )
         return {"status": "PASS", "stage": stage, "completed": completed_cells}
-    raise ValueError("stage must be prepare, preadapt_shard, or smoke")
+    raise ValueError("stage must be prepare, preadapt_smoke, preadapt_shard, or smoke")
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--plan", type=Path, required=True)
     parser.add_argument("--project-root", type=Path, required=True)
-    parser.add_argument("--stage", choices=("prepare", "preadapt_shard", "smoke"), required=True)
+    parser.add_argument(
+        "--stage",
+        choices=("prepare", "preadapt_smoke", "preadapt_shard", "smoke"),
+        required=True,
+    )
     parser.add_argument("--shard-index", type=int, default=0)
     parser.add_argument("--shard-count", type=int, default=FORMAL_SHARD_COUNT)
     parser.add_argument("--device", default="cuda:0")

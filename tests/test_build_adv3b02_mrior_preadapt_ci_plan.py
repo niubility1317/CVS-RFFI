@@ -300,10 +300,10 @@ def _miniature_v7_inputs(tmp_path: Path) -> dict[str, object]:
     }
 
 
-def test_miniature_plan_deduplicates_preadaptation_across_methods_and_new_counts(
+def test_miniature_plan_scopes_preadaptation_per_new_count_and_deduplicates_only_across_methods(
     tmp_path: Path,
 ) -> None:
-    """A missing builder, duplicate jobs, or non-anchor reuse must fail this contract."""
+    """Each new-count package owns MRIOR preadaptation while both methods share it."""
 
     values = _miniature_v7_inputs(tmp_path)
     module = importlib.import_module(
@@ -325,17 +325,20 @@ def test_miniature_plan_deduplicates_preadaptation_across_methods_and_new_counts
 
     assert plan["schema"] == "cvs.phase2.adv3b02_mrior_preadapt_ci_plan.v1"
     assert plan["counts"] == {
-        "preadapt_jobs": 12,
+        "preadapt_jobs": 24,
         "cells": 16,
         "scenario_rows": 48,
     }
-    assert plan["preadapt_anchor_new_class_count"] == 2
-    assert len(plan["preadapt_jobs"]) == 12
+    assert plan["preadapt_scope"] == "receiver_seed_newcount_k_scene"
+    assert len(plan["preadapt_jobs"]) == 24
     assert len(plan["cells"]) == 16
     assert plan["smoke_preadapt_job_ids"] == [
-        "rx_20_1__seed_713101__k_1__scene_leo_clear_weak",
-        "rx_20_1__seed_713101__k_1__scene_leo_low_elev_weak",
-        "rx_20_1__seed_713101__k_1__scene_leo_rain_weak",
+        "rx_20_1__seed_713101__k_1__scene_leo_clear_weak__new_2",
+        "rx_20_1__seed_713101__k_1__scene_leo_low_elev_weak__new_2",
+        "rx_20_1__seed_713101__k_1__scene_leo_rain_weak__new_2",
+        "rx_20_1__seed_713101__k_2__scene_leo_clear_weak__new_5",
+        "rx_20_1__seed_713101__k_2__scene_leo_low_elev_weak__new_5",
+        "rx_20_1__seed_713101__k_2__scene_leo_rain_weak__new_5",
     ]
     assert len(plan["smoke_cell_ids"]) == 4
     assert Path(values["output"]).is_file()
@@ -344,15 +347,12 @@ def test_miniature_plan_deduplicates_preadaptation_across_methods_and_new_counts
     )
 
     expected_job_ids = {
-        "rx_20_1__seed_713101__k_1__scene_leo_clear_weak",
-        "rx_20_1__seed_713101__k_2__scene_leo_rain_weak",
-        "rx_3_19__seed_713101__k_1__scene_leo_low_elev_weak",
+        "rx_20_1__seed_713101__k_1__scene_leo_clear_weak__new_2",
+        "rx_20_1__seed_713101__k_2__scene_leo_rain_weak__new_5",
+        "rx_3_19__seed_713101__k_1__scene_leo_low_elev_weak__new_2",
     }
     assert expected_job_ids <= {job["job_id"] for job in plan["preadapt_jobs"]}
-    anchor_seals = {
-        job["job_id"]: job["target_package_seal_sha256"]
-        for job in plan["preadapt_jobs"]
-    }
+    jobs_by_id = {job["job_id"]: job for job in plan["preadapt_jobs"]}
     matching_cells = [
         cell
         for cell in plan["cells"]
@@ -364,11 +364,14 @@ def test_miniature_plan_deduplicates_preadaptation_across_methods_and_new_counts
     assert {
         cell["preadapt_job_ids_by_scenario"]["leo_clear_weak"]
         for cell in matching_cells
-    } == {"rx_20_1__seed_713101__k_1__scene_leo_clear_weak"}
-    assert {
-        cell["preadapt_anchor_target_package_seal_sha256"]
-        for cell in matching_cells
-    } == {anchor_seals["rx_20_1__seed_713101__k_1__scene_leo_clear_weak"]}
+    } == {
+        "rx_20_1__seed_713101__k_1__scene_leo_clear_weak__new_2",
+        "rx_20_1__seed_713101__k_1__scene_leo_clear_weak__new_5",
+    }
+    for cell in matching_cells:
+        job = jobs_by_id[cell["preadapt_job_ids_by_scenario"]["leo_clear_weak"]]
+        assert job["new_class_count"] == cell["new_class_count"]
+        assert job["target_package_seal_sha256"] == cell["target_package_seal_sha256"]
     assert {cell["method"] for cell in plan["cells"]} == {
         "mrior_sda_then_csil_paper_full",
         "mrior_sda_then_mopc_hr_paper_full",
@@ -428,10 +431,10 @@ def test_rejects_non_v7_source_plan_before_creating_output(tmp_path: Path) -> No
     assert not Path(values["output"]).exists()
 
 
-def test_rejects_target_old_support_identity_drift_across_new_counts(
+def test_binds_target_old_support_identity_to_its_own_new_count_package(
     tmp_path: Path,
 ) -> None:
-    """A legal new-class package cannot silently substitute old support for a shared job."""
+    """A new-count package may have its own legal old-support identity and MRIOR job."""
 
     values = _miniature_v7_inputs(tmp_path)
     source_path = values["source_plan"]
@@ -460,20 +463,28 @@ def test_rejects_target_old_support_identity_drift_across_new_counts(
     module = importlib.import_module(
         "paper_reproduction.scripts.build_adv3b02_mrior_preadapt_ci_plan"
     )
-    with pytest.raises(ValueError, match="old support identity drift"):
-        module._build_for_test(
-            source_plan=source_path,
-            expected_source_plan_sha256=_sha256(source_path),
-            source_cache_manifest=values["source_cache"],
-            expected_source_cache_manifest_sha256=values["source_cache_sha256"],
-            run_root=values["run_root"],
-            output=values["output"],
-            expected_receivers=values["receivers"],
-            expected_seeds=values["seeds"],
-            expected_k_values=values["k_values"],
-            expected_new_counts=values["new_counts"],
-            expected_source_cache_path=str(values["source_cache"]),
-        )
+    plan = module._build_for_test(
+        source_plan=source_path,
+        expected_source_plan_sha256=_sha256(source_path),
+        source_cache_manifest=values["source_cache"],
+        expected_source_cache_manifest_sha256=values["source_cache_sha256"],
+        run_root=values["run_root"],
+        output=values["output"],
+        expected_receivers=values["receivers"],
+        expected_seeds=values["seeds"],
+        expected_k_values=values["k_values"],
+        expected_new_counts=values["new_counts"],
+        expected_source_cache_path=str(values["source_cache"]),
+    )
+    jobs_by_id = {job["job_id"]: job for job in plan["preadapt_jobs"]}
+    new_two = jobs_by_id[
+        "rx_20_1__seed_713101__k_1__scene_leo_clear_weak__new_2"
+    ]
+    new_five = jobs_by_id[
+        "rx_20_1__seed_713101__k_1__scene_leo_clear_weak__new_5"
+    ]
+    assert new_two["old_support_token_sha256"] != new_five["old_support_token_sha256"]
+    assert new_two["target_package_id"] != new_five["target_package_id"]
 
 
 def test_rejects_resealed_stage2b_predictor_package(tmp_path: Path) -> None:
@@ -631,7 +642,7 @@ def test_formal_build_rejects_any_source_plan_sha_except_frozen_v7(
         )
 
 
-def test_formal_contract_keeps_the_frozen_300_job_800_cell_dimensions() -> None:
+def test_formal_contract_keeps_the_frozen_1200_job_800_cell_dimensions() -> None:
     """Changing a formal grid member must fail the matrix-size contract review."""
 
     module = importlib.import_module(
@@ -650,9 +661,10 @@ def test_formal_contract_keeps_the_frozen_300_job_800_cell_dimensions() -> None:
     assert (
         len(contract.receivers)
         * len(contract.seeds)
+        * len(contract.new_counts)
         * len(contract.k_values)
         * len(FORMAL_LEO_WEAK_SCENARIOS)
-        == 300
+        == 1200
     )
 
 

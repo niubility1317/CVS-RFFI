@@ -40,21 +40,23 @@ def _formal_plan(tmp_path: Path) -> dict:
     job_by_key = {}
     for receiver in receivers:
         for seed in seeds:
-            for k_shot in k_values:
-                for scenario in scenarios:
-                    job_id = f"job-{receiver}-{seed}-{k_shot}-{scenario}"
-                    job = {
-                        "job_id": job_id,
-                        "receiver": receiver,
-                        "seed": seed,
-                        "k_shot": k_shot,
-                        "scenario": scenario,
-                        "artifact_root": str(run_root / "preadapt_jobs" / job_id),
-                        "input_binding_sha256": "a" * 64,
-                        "method_lock_sha256": "b" * 64,
-                    }
-                    jobs.append(job)
-                    job_by_key[(receiver, seed, k_shot, scenario)] = job_id
+            for new_count in new_counts:
+                for k_shot in k_values:
+                    for scenario in scenarios:
+                        job_id = f"job-{receiver}-{seed}-{new_count}-{k_shot}-{scenario}"
+                        job = {
+                            "job_id": job_id,
+                            "receiver": receiver,
+                            "seed": seed,
+                            "new_class_count": new_count,
+                            "k_shot": k_shot,
+                            "scenario": scenario,
+                            "artifact_root": str(run_root / "preadapt_jobs" / job_id),
+                            "input_binding_sha256": "a" * 64,
+                            "method_lock_sha256": "b" * 64,
+                        }
+                        jobs.append(job)
+                        job_by_key[(receiver, seed, new_count, k_shot, scenario)] = job_id
     cells = []
     for receiver in receivers:
         for seed in seeds:
@@ -77,7 +79,7 @@ def _formal_plan(tmp_path: Path) -> dict:
                                 "output_root": str(run_root / "cells" / cell_id),
                                 "preadapt_job_ids_by_scenario": {
                                     scenario: job_by_key[
-                                        (receiver, seed, k_shot, scenario)
+                                        (receiver, seed, new_count, k_shot, scenario)
                                     ]
                                     for scenario in scenarios
                                 },
@@ -96,9 +98,29 @@ def _formal_plan(tmp_path: Path) -> dict:
         "scenarios": scenarios,
         "preadapt_jobs": jobs,
         "cells": cells,
-        "counts": {"preadapt_jobs": 300, "cells": 800, "scenario_rows": 2400},
-        "smoke_preadapt_job_ids": [job["job_id"] for job in jobs[:3]],
-        "smoke_cell_ids": [cell["cell_id"] for cell in cells[:4]],
+        "preadapt_scope": "receiver_seed_newcount_k_scene",
+        "counts": {"preadapt_jobs": 1200, "cells": 800, "scenario_rows": 2400},
+        "smoke_preadapt_job_ids": [
+            job_by_key[(receivers[0], seeds[0], new_count, k_shot, scenario)]
+            for new_count, k_shot in (
+                (new_counts[0], k_values[0]),
+                (new_counts[-1], k_values[-1]),
+            )
+            for scenario in scenarios
+        ],
+        "smoke_cell_ids": [
+            cell["cell_id"]
+            for cell in cells
+            if cell["receiver"] == receivers[0]
+            and cell["seed"] == seeds[0]
+            and (
+                (cell["new_class_count"] == new_counts[0] and cell["k_shot"] == k_values[0])
+                or (
+                    cell["new_class_count"] == new_counts[-1]
+                    and cell["k_shot"] == k_values[-1]
+                )
+            )
+        ],
         "launch_authority": False,
         "authority_state": "N607_MRIOR_PREADAPT_CI_SMOKE_REQUIRED",
     }
@@ -118,6 +140,30 @@ def test_matrix_dispatch_requires_passed_smoke_authority() -> None:
         runner._verify_smoke_authority(plan, project_root=Path.cwd())
 
 
+def test_smoke_authority_accepts_only_declared_smoke_preadapt_jobs(tmp_path: Path) -> None:
+    """The smoke receipt authorizes its six declared preadapt jobs, not full preadaptation."""
+
+    plan = _formal_plan(tmp_path)
+    smoke_job_ids = [job["job_id"] for job in plan["preadapt_jobs"][:6]]
+    plan["smoke_preadapt_job_ids"] = smoke_job_ids
+    run_root = Path(plan["run_root"])
+    run_root.mkdir()
+    (run_root / "smoke_receipt.json").write_text(
+        json.dumps(
+            {
+                "schema": "cvs.phase2.adv3b02_mrior_preadapt_ci_smoke_receipt.v1",
+                "status": "PASS",
+                "plan_contract_sha256": plan["plan_contract_sha256"],
+                "completed_preadapt_job_ids": smoke_job_ids,
+                "completed_cell_ids": plan["smoke_cell_ids"],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    runner._verify_smoke_authority(plan, project_root=Path.cwd())
+
+
 def test_runner_rejects_an_unowned_existing_run_root(tmp_path: Path) -> None:
     """A stale directory must never become an implicit destination to overwrite."""
 
@@ -131,19 +177,19 @@ def test_runner_rejects_an_unowned_existing_run_root(tmp_path: Path) -> None:
         )
 
 
-def test_runner_requires_exact_300_800_2400_matrix_closure(tmp_path: Path) -> None:
+def test_runner_requires_exact_1200_800_2400_matrix_closure(tmp_path: Path) -> None:
     """A formal run cannot silently release a partial or duplicate matrix."""
 
     plan = _formal_plan(tmp_path)
     runner._validate_plan_payload(plan)
 
-    plan["counts"] = {"preadapt_jobs": 300, "cells": 800, "scenario_rows": 2399}
+    plan["counts"] = {"preadapt_jobs": 1200, "cells": 800, "scenario_rows": 2399}
     with pytest.raises(ValueError, match="2400"):
         runner._validate_plan_payload(plan)
 
 
 def test_eight_deterministic_shards_partition_preadapt_jobs_once(tmp_path: Path) -> None:
-    """All 300 job identities are assigned once across exactly eight shards."""
+    """All 1200 job identities are assigned once across exactly eight shards."""
 
     jobs = _formal_plan(tmp_path)["preadapt_jobs"]
     assigned = [
@@ -152,8 +198,8 @@ def test_eight_deterministic_shards_partition_preadapt_jobs_once(tmp_path: Path)
         for job in runner._select_shard(jobs, shard_index=shard_index, shard_count=8)
     ]
 
-    assert len(assigned) == 300
-    assert len(set(assigned)) == 300
+    assert len(assigned) == 1200
+    assert len(set(assigned)) == 1200
 
 
 def test_two_matching_pre_prediction_failures_stop_with_no_performance_result(
