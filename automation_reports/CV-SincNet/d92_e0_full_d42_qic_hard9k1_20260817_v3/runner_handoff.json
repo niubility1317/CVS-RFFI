@@ -1,0 +1,95 @@
+{
+  "run_id": "d92_e0_full_d42_qic_hard9k1_20260817_v3",
+  "status": "ARTIFACTS_COMPLETE / READY_FOR_PRIMARY_ANALYZER / NO_PERFORMANCE_RESULT",
+  "release_commit": "82be9b2216ffb7f38cac44c33a1998fcd61122b5",
+  "runtime_identity_commit": "fa75cf8e4cb4235e09ef3d77b3f6091e4ef31663",
+  "receipt_fix_commit": "7aba092633b02472abd6cc562cf5d99f0a9f466f",
+  "launch_count": 1,
+  "fresh_run_retry": false,
+  "analyzer_run": false,
+  "performance_read": false,
+  "precheck": {
+    "route": "N607_direct_ordinary",
+    "status": "PASS",
+    "gpu_ids": [0, 1, 2, 3, 4, 5, 6, 7],
+    "initial_paths_absent": true,
+    "initial_same_run_process_absent": true
+  },
+  "sync": {
+    "status": "PASS",
+    "archive_size": 320797,
+    "archive_sha256": "61d424bda548ec04b49a1763b83080a0dff04c11b94d6a707e72d98cd00bddbe",
+    "archive_members": 50,
+    "source_manifest_records": 49,
+    "driver_size": 6692,
+    "driver_sha256": "737a638b978430713599fbf75135c9802d408eb4e101948130762dfc743c6658",
+    "embedded_config_sha256": "e8000884391e08719fafa110425a9a17ac184d99175c15971cd033ab2f546efa"
+  },
+  "launch": {
+    "status": "EXECUTED_ONCE",
+    "startup_reconciliation": "initial_launch_connection_unknown_then_bounded_read_only_reconciliation_confirmed_completion",
+    "shards": 8,
+    "gpu_mapping": "shard_0..7 -> GPU_0..7",
+    "driver_err_bytes": 0
+  },
+  "smoke": {
+    "marker": "D92_QIC_HARD9_K1_REAL_CHECKPOINT_TRUTH_FREE_SMOKE_PASS",
+    "truth_open": false,
+    "query_truth_access": false,
+    "query_fit_access": false,
+    "query_update_access": false,
+    "query_selection_access": false,
+    "query_role_oracle_access": false,
+    "query_class_quota_access": false,
+    "query_global_reassignment": false,
+    "truth_joined_only_after_immutable_predictions": true,
+    "prediction_and_scorer_processes_isolated": true,
+    "prediction_closure_fields_present": [
+      "before_prediction_sha256",
+      "before_commit_sha256",
+      "before_fit_audit_sha256",
+      "after_prediction_sha256",
+      "after_commit_sha256",
+      "after_fit_audit_sha256"
+    ],
+    "resource_policy": "record_only_analyzer_decides",
+    "resource_used_as_technical_stop": false
+  },
+  "technical_counts": {
+    "matrix_jobs": 10,
+    "scene_arm_rows": 30,
+    "formal_before_predictions": 20,
+    "formal_after_predictions": 20,
+    "formal_commit": 20,
+    "formal_fit_audit": 20,
+    "formal_resource_audit": 20,
+    "formal_execution_receipt": 20,
+    "job_receipts": 10,
+    "diag_cosine_score_artifacts": 10,
+    "score_bindings": 10,
+    "shard_summaries": 8,
+    "shard_events": 8,
+    "all_prediction_artifacts_including_smoke": 22,
+    "all_commit_including_smoke": 22,
+    "all_fit_audit_including_smoke": 22,
+    "all_resource_audit_including_smoke": 22,
+    "all_execution_receipt_including_smoke": 22
+  },
+  "retrieval": {
+    "local_root": "E:/type10-7/local_artifacts/d92_e0_full_d42_qic_hard9k1_20260817_v3",
+    "source_files": 95,
+    "output_files": 220,
+    "log_files": 24,
+    "truth_sidecars": 10,
+    "truth_sidecar_hash_verified": true,
+    "truth_sidecar_contents_read": false,
+    "remote_retained": true
+  },
+  "cleanup": {
+    "same_run_processes": 0,
+    "gpu_compute_processes": 0,
+    "local_ssh_scp_active": false,
+    "tcp22_established": false
+  },
+  "next_action": "primary_runs_frozen_truth_last_analyzer_locally"
+}
