@@ -344,6 +344,70 @@ def test_uncollected_evidence_collections_are_none_not_empty_tuples():
     assert bundle.deletion_candidates is None
 
 
+def test_measured_empty_evidence_collections_are_distinct_from_none():
+    scope = ScopeResult(
+        scan_id="SCAN_1",
+        location=Location.LOCAL,
+        root_id="TYPE10_7",
+        relative_path="runs",
+        status="VERIFIED",
+        asset_ids=(),
+    )
+    ownership = GitOwnershipRecord(
+        asset_id="asset:LOCAL:TYPE10_7:runs/A",
+        ownership=GitOwnership.NON_GIT_EVIDENCE,
+        linked_worktrees=(),
+    )
+    experiment = ExperimentRecord(
+        experiment_id="RUN_A",
+        local_artifact_paths=(),
+        n607_artifact_paths=(),
+        expected_artifacts=(),
+        observed_artifacts=(),
+        closure_gaps=(),
+    )
+    decision = RetentionDecision(
+        asset_id="asset:LOCAL:TYPE10_7:runs/A",
+        retention_class=RetentionClass.REVIEW_REQUIRED,
+        rule_code="INSUFFICIENT_EVIDENCE",
+        evidence_asset_ids=(),
+    )
+    bundle = ScanBundle(
+        scan_id="SCAN_1",
+        assets=(),
+        scope_results=(),
+        git_ownership=(),
+        experiments=(),
+        retention_decisions=(),
+        deletion_candidates=(),
+    )
+
+    assert scope.asset_ids == ()
+    assert GitOwnershipRecord(
+        asset_id=ownership.asset_id,
+        ownership=ownership.ownership,
+    ).linked_worktrees is None
+    assert ownership.linked_worktrees == ()
+    assert experiment.local_artifact_paths == ()
+    assert experiment.n607_artifact_paths == ()
+    assert experiment.expected_artifacts == ()
+    assert experiment.observed_artifacts == ()
+    assert experiment.closure_gaps == ()
+    assert RetentionDecision(
+        asset_id=decision.asset_id,
+        retention_class=decision.retention_class,
+        rule_code=decision.rule_code,
+    ).evidence_asset_ids is None
+    assert decision.evidence_asset_ids == ()
+    assert bundle.assets == ()
+    assert bundle.scope_results == ()
+    assert bundle.git_ownership == ()
+    assert bundle.experiments == ()
+    assert bundle.retention_decisions == ()
+    assert bundle.deletion_candidates == ()
+    assert ScanBundle(scan_id="SCAN_1").assets is None
+
+
 def test_load_config_rejects_replaced_or_reordered_carrier_surfaces(tmp_path):
     source = Path(__file__).resolve().parents[1] / "configs" / "project_governance_inventory_v1.json"
     payload = json.loads(source.read_text(encoding="utf-8"))
