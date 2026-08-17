@@ -28,6 +28,7 @@ from tools.project_governance.collect_n607 import (
     APPROVED_ENDPOINTS,
     DEFAULT_PREFLIGHT_SCRIPT,
     DEFAULT_SSH_CONFIG,
+    MAX_NDJSON_LINE_BYTES,
     CommandResult,
     ConnectionCheck,
     ConnectionEvidence,
@@ -40,7 +41,10 @@ from tools.project_governance.config import GovernanceConfig
 
 _NETSTAT_COMMAND = ("netstat.exe", "-ano", "-p", "tcp")
 _MAX_STDERR_TAIL_BYTES = 8192
+_STDOUT_READ_LIMIT = MAX_NDJSON_LINE_BYTES + 3
+_STDERR_READ_LIMIT = _MAX_STDERR_TAIL_BYTES + 1
 _STREAM_JOIN_SECONDS = 2.0
+_TRUNCATION_MARKER = b"[stderr truncated]\n"
 
 
 class _Tracker(Protocol):
@@ -216,9 +220,40 @@ def _default_tracker(root_pid: int, required: bool) -> _Tracker:
     return _WindowsDescendantTracker(root_pid, required)
 
 
-def _tail(chunks: list[bytes]) -> str:
-    payload = b"".join(chunks)[-_MAX_STDERR_TAIL_BYTES:]
-    return payload.decode("utf-8", errors="replace")
+class _BoundedByteTail:
+    """Thread-safe bounded stderr tail with explicit truncation evidence."""
+
+    def __init__(self) -> None:
+        self._payload = bytearray()
+        self._truncated = False
+        self._lock = threading.Lock()
+
+    def append(self, chunk: bytes) -> None:
+        raw = bytes(chunk)
+        with self._lock:
+            self._payload.extend(raw)
+            if len(self._payload) > _MAX_STDERR_TAIL_BYTES:
+                del self._payload[: len(self._payload) - _MAX_STDERR_TAIL_BYTES]
+                self._truncated = True
+
+    def text(self) -> str:
+        with self._lock:
+            payload = bytes(self._payload)
+            truncated = self._truncated
+        decoded = payload.decode("utf-8", errors="replace")
+        encoded = decoded.encode("utf-8")
+        if truncated or len(encoded) > _MAX_STDERR_TAIL_BYTES:
+            retained = _MAX_STDERR_TAIL_BYTES - len(_TRUNCATION_MARKER)
+            bounded = encoded[-retained:].decode("utf-8", errors="ignore")
+            return _TRUNCATION_MARKER.decode("ascii") + bounded
+        return decoded
+
+
+def _tail(chunks: Sequence[bytes]) -> str:
+    tail = _BoundedByteTail()
+    for chunk in chunks:
+        tail.append(chunk)
+    return tail.text()
 
 
 def _is_exact_preflight(command: tuple[str, ...]) -> bool:
@@ -301,13 +336,13 @@ class ProductionCommandRunner:
             )
         tracker = self._tracker_factory(child_pid, proxy_required)
         stdout_lines: list[bytes] = []
-        stderr_chunks: list[bytes] = []
+        stderr_tail = _BoundedByteTail()
         callback_errors: list[str] = []
 
         def read_stdout() -> None:
             stream = process.stdout
             while True:
-                line = stream.readline()
+                line = stream.readline(_STDOUT_READ_LIMIT)
                 if not line:
                     return
                 raw = bytes(line)
@@ -322,10 +357,10 @@ class ProductionCommandRunner:
         def read_stderr() -> None:
             stream = process.stderr
             while True:
-                line = stream.readline()
+                line = stream.readline(_STDERR_READ_LIMIT)
                 if not line:
                     return
-                stderr_chunks.append(bytes(line))
+                stderr_tail.append(bytes(line))
 
         reader_threads = [
             threading.Thread(target=read_stdout, daemon=True),
@@ -361,23 +396,25 @@ class ProductionCommandRunner:
         except subprocess.TimeoutExpired:
             timed_out = True
         except OSError as exc:
-            stderr_chunks.append(str(exc).encode("utf-8", errors="replace"))
+            stderr_tail.append(str(exc).encode("utf-8", errors="replace"))
 
         if child_exited:
             for thread in reader_threads:
                 thread.join(timeout=_STREAM_JOIN_SECONDS)
             if any(thread.is_alive() for thread in reader_threads):
                 child_exited = False
-                stderr_chunks.append(b"stdout or stderr did not close after child exit")
+                stderr_tail.append(b"stdout or stderr did not close after child exit")
             if writer_thread is not None:
                 writer_thread.join(timeout=_STREAM_JOIN_SECONDS)
         proxy_child_pids = tracker.proxy_child_pids
         proxy_children_exited = tracker.wait_for_exit() if child_exited else False
         tracker.close()
         if callback_errors:
-            stderr_chunks.extend(error.encode("utf-8", errors="replace") for error in callback_errors)
+            for error in callback_errors:
+                stderr_tail.append(error.encode("utf-8", errors="replace"))
         if writer_errors:
-            stderr_chunks.extend(error.encode("utf-8", errors="replace") for error in writer_errors)
+            for error in writer_errors:
+                stderr_tail.append(error.encode("utf-8", errors="replace"))
         return CommandResult(
             command=normalized_command,
             child_pid=child_pid,
@@ -386,7 +423,7 @@ class ProductionCommandRunner:
             child_exited=child_exited,
             proxy_children_exited=proxy_children_exited,
             stdout_lines=tuple(stdout_lines),
-            stderr_tail=_tail(stderr_chunks),
+            stderr_tail=stderr_tail.text(),
             timed_out=timed_out,
         )
 

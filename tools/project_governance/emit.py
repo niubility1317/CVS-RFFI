@@ -59,6 +59,11 @@ _REQUESTED_N607_PREFLIGHT_STATES = frozenset(
     {"DIRECT_READY", "DIRECT_PATH_UNAVAILABLE", "FAILED", "UNKNOWN"}
 )
 _REQUESTED_N607_DISCONNECT_STATES = frozenset({"VERIFIED", "UNKNOWN"})
+_REQUESTED_N607_OUTCOMES = frozenset({"VERIFIED", "FAILED", "UNKNOWN"})
+_N607_ATTEMPT_LABELS = frozenset({"PREFLIGHT", "DIRECT", "LAB_BRIDGE"})
+_N607_CONNECTION_STATES = frozenset({"ESTABLISHED", "SYN_SENT"})
+_N607_ENDPOINTS = frozenset({"172.31.111.215:22", "172.31.105.18:22"})
+_MAX_N607_STDERR_TAIL_BYTES = 8192
 _ROUTE_PREFLIGHT_STATE = {
     "DIRECT": "DIRECT_READY",
     "LAB_BRIDGE": "DIRECT_PATH_UNAVAILABLE",
@@ -80,9 +85,12 @@ _REQUIRED_METADATA = frozenset(
         "git_tracked_diff_state",
         "collector_versions",
         "n607_requested",
+        "n607_outcome",
         "n607_route",
         "n607_preflight",
         "n607_disconnect",
+        "n607_attempts",
+        "n607_active_training_observed",
         "n607_scan_error_count",
     }
 )
@@ -236,6 +244,88 @@ def _location_value(location: Location | str) -> str:
     return location.value if isinstance(location, Location) else str(location)
 
 
+def _validate_n607_attempts(value: Any) -> tuple[dict[str, Any], ...]:
+    if not isinstance(value, (tuple, list)):
+        raise ValueError("receipt metadata n607_attempts must be an explicit sequence")
+    required = {
+        "label",
+        "child_pid",
+        "proxy_child_pids",
+        "returncode",
+        "timed_out",
+        "child_exited",
+        "proxy_children_exited",
+        "disconnect_status",
+        "lingering_connections",
+        "stderr_tail",
+    }
+    normalized: list[dict[str, Any]] = []
+    for attempt in value:
+        if not isinstance(attempt, Mapping) or set(attempt) != required:
+            raise ValueError("receipt metadata N607 attempt fields are invalid")
+        label = attempt["label"]
+        if label not in _N607_ATTEMPT_LABELS:
+            raise ValueError("receipt metadata N607 attempt label is invalid")
+        child_pid = attempt["child_pid"]
+        if child_pid is not None and (type(child_pid) is not int or child_pid <= 0):
+            raise ValueError("receipt metadata N607 child PID is invalid")
+        proxy_pids = attempt["proxy_child_pids"]
+        if not isinstance(proxy_pids, (tuple, list)) or any(
+            type(pid) is not int or pid <= 0 for pid in proxy_pids
+        ):
+            raise ValueError("receipt metadata N607 proxy PIDs are invalid")
+        if len(set(proxy_pids)) != len(proxy_pids):
+            raise ValueError("receipt metadata N607 proxy PIDs are not unique")
+        returncode = attempt["returncode"]
+        if returncode is not None and type(returncode) is not int:
+            raise ValueError("receipt metadata N607 return code is invalid")
+        for field in ("timed_out", "child_exited", "proxy_children_exited"):
+            if type(attempt[field]) is not bool:
+                raise ValueError(f"receipt metadata N607 {field} is invalid")
+        disconnect_status = attempt["disconnect_status"]
+        if disconnect_status not in _REQUESTED_N607_DISCONNECT_STATES:
+            raise ValueError("receipt metadata N607 attempt disconnect state is invalid")
+        stderr_tail = attempt["stderr_tail"]
+        if not isinstance(stderr_tail, str) or len(stderr_tail.encode("utf-8")) > _MAX_N607_STDERR_TAIL_BYTES:
+            raise ValueError("receipt metadata N607 stderr tail is invalid")
+        raw_connections = attempt["lingering_connections"]
+        if not isinstance(raw_connections, (tuple, list)):
+            raise ValueError("receipt metadata N607 lingering connections are invalid")
+        attempt_pids = set(proxy_pids)
+        if child_pid is not None:
+            attempt_pids.add(child_pid)
+        connections: list[dict[str, Any]] = []
+        for connection in raw_connections:
+            if not isinstance(connection, Mapping) or set(connection) != {"pid", "endpoint", "state"}:
+                raise ValueError("receipt metadata N607 connection fields are invalid")
+            pid = connection["pid"]
+            endpoint = connection["endpoint"]
+            state = connection["state"]
+            if type(pid) is not int or pid <= 0 or pid not in attempt_pids:
+                raise ValueError("receipt metadata N607 connection PID is invalid")
+            if endpoint not in _N607_ENDPOINTS or state not in _N607_CONNECTION_STATES:
+                raise ValueError("receipt metadata N607 connection endpoint or state is invalid")
+            connections.append({"pid": pid, "endpoint": endpoint, "state": state})
+        normalized.append(
+            {
+                "label": label,
+                "child_pid": child_pid,
+                "proxy_child_pids": tuple(proxy_pids),
+                "returncode": returncode,
+                "timed_out": attempt["timed_out"],
+                "child_exited": attempt["child_exited"],
+                "proxy_children_exited": attempt["proxy_children_exited"],
+                "disconnect_status": disconnect_status,
+                "lingering_connections": tuple(connections),
+                "stderr_tail": stderr_tail,
+            }
+        )
+    labels = tuple(attempt["label"] for attempt in normalized)
+    if len(set(labels)) != len(labels):
+        raise ValueError("receipt metadata N607 attempt labels are not unique")
+    return tuple(normalized)
+
+
 def _validate_metadata(metadata: Mapping[str, Any] | None) -> dict[str, Any]:
     if not isinstance(metadata, Mapping):
         raise ValueError("complete receipt metadata is required")
@@ -248,6 +338,7 @@ def _validate_metadata(metadata: Mapping[str, Any] | None) -> dict[str, Any]:
         "n607_root",
         "implementation_git_head",
         "git_tracked_diff_state",
+        "n607_outcome",
         "n607_route",
         "n607_preflight",
         "n607_disconnect",
@@ -269,16 +360,22 @@ def _validate_metadata(metadata: Mapping[str, Any] | None) -> dict[str, Any]:
         raise ValueError("receipt metadata collector_versions must be a non-empty mapping")
     if type(values["n607_requested"]) is not bool:
         raise ValueError("receipt metadata n607_requested must be boolean")
+    if type(values["n607_active_training_observed"]) is not bool:
+        raise ValueError("receipt metadata n607_active_training_observed must be boolean")
+    values["n607_attempts"] = _validate_n607_attempts(values["n607_attempts"])
     error_count = values["n607_scan_error_count"]
     if type(error_count) is not int or error_count < 0:
         raise ValueError("n607_scan_error_count must be a non-negative integer")
     n607_states = (
+        values["n607_outcome"],
         values["n607_route"],
         values["n607_preflight"],
         values["n607_disconnect"],
     )
     if values["n607_requested"]:
-        route, preflight, disconnect = n607_states
+        outcome, route, preflight, disconnect = n607_states
+        if outcome not in _REQUESTED_N607_OUTCOMES:
+            raise ValueError("requested N607 receipt metadata has an uncontrolled outcome")
         if route not in _REQUESTED_N607_ROUTES:
             raise ValueError("requested N607 receipt metadata has an uncontrolled route state")
         if (
@@ -289,7 +386,44 @@ def _validate_metadata(metadata: Mapping[str, Any] | None) -> dict[str, Any]:
         expected_preflight = _ROUTE_PREFLIGHT_STATE.get(route)
         if expected_preflight is not None and preflight != expected_preflight:
             raise ValueError("requested N607 route and preflight states are inconsistent")
-    elif n607_states != ("NOT_REQUESTED", "NOT_REQUESTED", "NOT_REQUESTED") or error_count != 0:
+        labels = tuple(attempt["label"] for attempt in values["n607_attempts"])
+        expected_labels = {
+            "DIRECT": ("PREFLIGHT", "DIRECT"),
+            "LAB_BRIDGE": ("PREFLIGHT", "LAB_BRIDGE"),
+        }.get(route)
+        if expected_labels is not None and labels != expected_labels:
+            raise ValueError("requested N607 attempts do not match the selected route")
+        if route == "NO_ROUTE" and labels not in {(), ("PREFLIGHT",)}:
+            raise ValueError("requested N607 attempts do not match the no-route state")
+        if outcome == "VERIFIED":
+            if route == "NO_ROUTE" or disconnect != "VERIFIED":
+                raise ValueError("verified N607 metadata has incomplete terminal states")
+            if any(
+                attempt["child_pid"] is None
+                or attempt["returncode"] != 0
+                or attempt["timed_out"]
+                or not attempt["child_exited"]
+                or not attempt["proxy_children_exited"]
+                or attempt["disconnect_status"] != "VERIFIED"
+                or attempt["lingering_connections"]
+                for attempt in values["n607_attempts"]
+            ):
+                raise ValueError("verified N607 metadata has incomplete attempt evidence")
+            if any(
+                attempt["label"] in {"PREFLIGHT", "LAB_BRIDGE"}
+                and not attempt["proxy_child_pids"]
+                for attempt in values["n607_attempts"]
+            ):
+                raise ValueError("verified N607 metadata lacks required proxy exit evidence")
+        elif values["n607_active_training_observed"]:
+            raise ValueError("non-verified N607 metadata cannot claim active training evidence")
+    elif (
+        n607_states
+        != ("NOT_REQUESTED", "NOT_REQUESTED", "NOT_REQUESTED", "NOT_REQUESTED")
+        or error_count != 0
+        or values["n607_attempts"]
+        or values["n607_active_training_observed"]
+    ):
         raise ValueError("unrequested N607 receipt metadata must use explicit NOT_REQUESTED states")
     return values
 
@@ -541,6 +675,7 @@ class ReportEmitter:
             for gap in (experiment.closure_gaps or ())
         )
         metadata = self.metadata
+        n607_outcome = metadata["n607_outcome"]
         n607_route = metadata["n607_route"]
         n607_preflight = metadata["n607_preflight"]
         n607_disconnect = metadata["n607_disconnect"]
@@ -582,9 +717,12 @@ class ReportEmitter:
             "experiment_error": "\u5b9e\u9a8cSCAN_ERROR",
             "n607_record_error": "N607\u534f\u8baeSCAN_ERROR",
             "remote": "N607\u8fde\u63a5\u7ed3\u679c",
+            "outcome": "\u7ed3\u679c",
             "route": "\u8def\u7531",
             "preflight": "\u9884\u68c0",
             "disconnect": "\u65ad\u8fde",
+            "attempts": "\u5c1d\u8bd5\u8bb0\u5f55\u6570",
+            "active_training": "\u89c2\u6d4b\u5230\u6d3b\u52a8\u8bad\u7ec3",
             "boundary": "\u53d8\u66f4\u8fb9\u754c",
             "zero": "\u5b9e\u9645\u79fb\u52a8\u3001\u8986\u76d6\u3001\u5220\u9664\u6570\u91cf\u4e3a0\u3002\u6240\u6709\u5f85\u5ba1\u6279\u6761\u76ee\u4fdd\u6301\u539f\u4f4d\uff0c\u6267\u884c\u72b6\u6001\u4e3a`NOT_AUTHORIZED`\uff1b\u672c\u62a5\u544a\u4e0d\u63d0\u4f9b\u6267\u884c\u63a5\u53e3\u3002",
         }
@@ -642,7 +780,32 @@ class ReportEmitter:
             )
         if not deletion_rows:
             lines.extend(["", zh["no_rows"]])
-        lines.extend(["", f"## {zh['gaps']}", "", f"- {zh['nonverified']}\uff1a`{'; '.join(gaps) if gaps else zh['none']}`", f"- {zh['experiment_gaps']}\uff1a`{'; '.join(experiment_gaps) if experiment_gaps else zh['none']}`", f"- {zh['asset_error']}\uff1a`{sum(asset.access_status is AccessStatus.SCAN_ERROR for asset in assets)}`", f"- {zh['experiment_error']}\uff1a`{sum(experiment.experiment_state is ExperimentState.SCAN_ERROR for experiment in experiments)}`", f"- {zh['n607_record_error']}\uff1a`{int(metadata.get('n607_scan_error_count', 0))}`", "", f"## {zh['remote']}", "", f"- {zh['route']}\uff1a`{n607_route}`", f"- {zh['preflight']}\uff1a`{n607_preflight}`", f"- {zh['disconnect']}\uff1a`{n607_disconnect}`", "", f"## {zh['boundary']}", "", zh["zero"], ""])
+        lines.extend(
+            [
+                "",
+                f"## {zh['gaps']}",
+                "",
+                f"- {zh['nonverified']}\uff1a`{'; '.join(gaps) if gaps else zh['none']}`",
+                f"- {zh['experiment_gaps']}\uff1a`{'; '.join(experiment_gaps) if experiment_gaps else zh['none']}`",
+                f"- {zh['asset_error']}\uff1a`{sum(asset.access_status is AccessStatus.SCAN_ERROR for asset in assets)}`",
+                f"- {zh['experiment_error']}\uff1a`{sum(experiment.experiment_state is ExperimentState.SCAN_ERROR for experiment in experiments)}`",
+                f"- {zh['n607_record_error']}\uff1a`{int(metadata.get('n607_scan_error_count', 0))}`",
+                "",
+                f"## {zh['remote']}",
+                "",
+                f"- {zh['outcome']}\uff1a`{n607_outcome}`",
+                f"- {zh['route']}\uff1a`{n607_route}`",
+                f"- {zh['preflight']}\uff1a`{n607_preflight}`",
+                f"- {zh['disconnect']}\uff1a`{n607_disconnect}`",
+                f"- {zh['attempts']}\uff1a`{len(metadata['n607_attempts'])}`",
+                f"- {zh['active_training']}\uff1a`{str(metadata['n607_active_training_observed']).lower()}`",
+                "",
+                f"## {zh['boundary']}",
+                "",
+                zh["zero"],
+                "",
+            ]
+        )
         return "\n".join(lines)
 
     def _payloads(self, records: Mapping[str, tuple[Any, ...]]) -> dict[str, bytes]:
@@ -736,9 +899,12 @@ class ReportEmitter:
             "scan_error_counts": error_counts,
             "n607_evidence": {
                 "requested": metadata["n607_requested"],
+                "outcome": metadata["n607_outcome"],
                 "route": metadata["n607_route"],
                 "preflight": metadata["n607_preflight"],
                 "disconnect": metadata["n607_disconnect"],
+                "active_training_observed": metadata["n607_active_training_observed"],
+                "attempts": _json_value(metadata["n607_attempts"]),
             },
             "source_asset_mutations": 0,
             "moves": 0,

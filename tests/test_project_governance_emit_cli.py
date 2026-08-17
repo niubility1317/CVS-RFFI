@@ -150,6 +150,33 @@ def _bundle(*, include_error: bool = True, long_path: str | None = None) -> Scan
     )
 
 
+def _attempt_metadata(
+    label: str,
+    child_pid: int,
+    *,
+    proxy_child_pids: tuple[int, ...] = (),
+    returncode: int | None = 0,
+    timed_out: bool = False,
+    child_exited: bool = True,
+    proxy_children_exited: bool = True,
+    disconnect_status: str = "VERIFIED",
+    lingering_connections: tuple[dict[str, object], ...] = (),
+    stderr_tail: str = "",
+) -> dict[str, object]:
+    return {
+        "label": label,
+        "child_pid": child_pid,
+        "proxy_child_pids": proxy_child_pids,
+        "returncode": returncode,
+        "timed_out": timed_out,
+        "child_exited": child_exited,
+        "proxy_children_exited": proxy_children_exited,
+        "disconnect_status": disconnect_status,
+        "lingering_connections": lingering_connections,
+        "stderr_tail": stderr_tail,
+    }
+
+
 def _metadata() -> dict[str, object]:
     return {
         "local_root": "E:/type10-7",
@@ -160,9 +187,15 @@ def _metadata() -> dict[str, object]:
         "git_tracked_diff_state": "clean",
         "collector_versions": {"local": "1", "n607": "1"},
         "n607_requested": True,
+        "n607_outcome": "VERIFIED",
         "n607_route": "DIRECT",
         "n607_preflight": "DIRECT_READY",
         "n607_disconnect": "VERIFIED",
+        "n607_attempts": (
+            _attempt_metadata("PREFLIGHT", 4100, proxy_child_pids=(4101,)),
+            _attempt_metadata("DIRECT", 4200),
+        ),
+        "n607_active_training_observed": False,
         "n607_scan_error_count": 0,
     }
 
@@ -712,23 +745,66 @@ def test_emitter_rejects_uncontrolled_requested_n607_states_before_writing(
 
 
 @pytest.mark.parametrize(
-    ("route", "preflight", "disconnect"),
+    ("outcome", "route", "preflight", "disconnect", "attempts"),
     (
-        ("DIRECT", "DIRECT_READY", "VERIFIED"),
-        ("LAB_BRIDGE", "DIRECT_PATH_UNAVAILABLE", "VERIFIED"),
-        ("NO_ROUTE", "FAILED", "VERIFIED"),
-        ("NO_ROUTE", "UNKNOWN", "UNKNOWN"),
+        (
+            "VERIFIED",
+            "DIRECT",
+            "DIRECT_READY",
+            "VERIFIED",
+            (
+                _attempt_metadata("PREFLIGHT", 4100, proxy_child_pids=(4101,)),
+                _attempt_metadata("DIRECT", 4200),
+            ),
+        ),
+        (
+            "VERIFIED",
+            "LAB_BRIDGE",
+            "DIRECT_PATH_UNAVAILABLE",
+            "VERIFIED",
+            (
+                _attempt_metadata("PREFLIGHT", 4100, proxy_child_pids=(4101,)),
+                _attempt_metadata("LAB_BRIDGE", 4200, proxy_child_pids=(4201,)),
+            ),
+        ),
+        (
+            "FAILED",
+            "NO_ROUTE",
+            "FAILED",
+            "VERIFIED",
+            (_attempt_metadata("PREFLIGHT", 4100, proxy_child_pids=(4101,), returncode=1),),
+        ),
+        (
+            "UNKNOWN",
+            "NO_ROUTE",
+            "UNKNOWN",
+            "UNKNOWN",
+            (
+                _attempt_metadata(
+                    "PREFLIGHT",
+                    4100,
+                    proxy_child_pids=(4101,),
+                    returncode=None,
+                    timed_out=True,
+                    child_exited=False,
+                    proxy_children_exited=False,
+                    disconnect_status="UNKNOWN",
+                ),
+            ),
+        ),
     ),
 )
 def test_emitter_accepts_collector_n607_state_vocabulary(
-    tmp_path, route, preflight, disconnect
+    tmp_path, outcome, route, preflight, disconnect, attempts
 ):
     metadata = _metadata()
     metadata.update(
         {
+            "n607_outcome": outcome,
             "n607_route": route,
             "n607_preflight": preflight,
             "n607_disconnect": disconnect,
+            "n607_attempts": attempts,
         }
     )
 
@@ -742,12 +818,14 @@ def test_emitter_accepts_collector_n607_state_vocabulary(
         result.git_output_dir.joinpath("scan_receipt.json").read_text(encoding="utf-8")
     )
 
-    assert receipt["n607_evidence"] == {
-        "requested": True,
-        "route": route,
-        "preflight": preflight,
-        "disconnect": disconnect,
-    }
+    assert receipt["n607_evidence"]["requested"] is True
+    assert receipt["n607_evidence"]["outcome"] == outcome
+    assert receipt["n607_evidence"]["route"] == route
+    assert receipt["n607_evidence"]["preflight"] == preflight
+    assert receipt["n607_evidence"]["disconnect"] == disconnect
+    assert [attempt["label"] for attempt in receipt["n607_evidence"]["attempts"]] == [
+        attempt["label"] for attempt in attempts
+    ]
 
 
 @pytest.mark.parametrize(
@@ -774,14 +852,49 @@ def test_emitter_rejects_inconsistent_requested_n607_route_and_preflight(
     assert not (tmp_path / "git").exists()
 
 
+@pytest.mark.parametrize(
+    "case",
+    ("zero_pid", "oversized_stderr", "unapproved_endpoint", "missing_field", "missing_proxy"),
+)
+def test_emitter_rejects_malformed_n607_attempt_evidence_before_writing(tmp_path, case):
+    metadata = _metadata()
+    attempts = [dict(attempt) for attempt in metadata["n607_attempts"]]
+    if case == "zero_pid":
+        attempts[1]["child_pid"] = 0
+    elif case == "oversized_stderr":
+        attempts[1]["stderr_tail"] = "x" * 8193
+    elif case == "unapproved_endpoint":
+        attempts[1]["lingering_connections"] = (
+            {"pid": 4200, "endpoint": "203.0.113.1:22", "state": "ESTABLISHED"},
+        )
+    elif case == "missing_field":
+        attempts[1].pop("returncode")
+    else:
+        attempts[0]["proxy_child_pids"] = ()
+    metadata["n607_attempts"] = tuple(attempts)
+
+    with pytest.raises(ValueError, match="N607|n607"):
+        ReportEmitter(
+            _bundle(),
+            output_root=tmp_path / "git",
+            external_output_root=tmp_path / "external",
+            metadata=metadata,
+        )
+
+    assert not (tmp_path / "git").exists()
+
+
 def test_emitter_accepts_explicit_not_requested_n607_evidence(tmp_path):
     metadata = _metadata()
     metadata.update(
         {
             "n607_requested": False,
+            "n607_outcome": "NOT_REQUESTED",
             "n607_route": "NOT_REQUESTED",
             "n607_preflight": "NOT_REQUESTED",
             "n607_disconnect": "NOT_REQUESTED",
+            "n607_attempts": (),
+            "n607_active_training_observed": False,
             "n607_scan_error_count": 0,
         }
     )
@@ -795,7 +908,15 @@ def test_emitter_accepts_explicit_not_requested_n607_evidence(tmp_path):
     receipt = json.loads(result.git_output_dir.joinpath("scan_receipt.json").read_text(encoding="utf-8"))
 
     assert receipt["n607_evidence"]["requested"] is False
-    assert set(receipt["n607_evidence"].values()) >= {False, "NOT_REQUESTED"}
+    assert receipt["n607_evidence"] == {
+        "requested": False,
+        "outcome": "NOT_REQUESTED",
+        "route": "NOT_REQUESTED",
+        "preflight": "NOT_REQUESTED",
+        "disconnect": "NOT_REQUESTED",
+        "active_training_observed": False,
+        "attempts": [],
+    }
 
 
 def test_emitter_receipt_keeps_remote_evidence_and_zero_execution_fields(tmp_path):
@@ -808,9 +929,23 @@ def test_emitter_receipt_keeps_remote_evidence_and_zero_execution_fields(tmp_pat
     assert receipt["roots"]["n607"] == "/home/szu2070436088/2510044040/CV-SincNet"
     assert receipt["n607_evidence"] == {
         "requested": True,
+        "outcome": "VERIFIED",
         "route": "DIRECT",
         "preflight": "DIRECT_READY",
         "disconnect": "VERIFIED",
+        "active_training_observed": False,
+        "attempts": [
+            {
+                **_attempt_metadata("PREFLIGHT", 4100, proxy_child_pids=(4101,)),
+                "proxy_child_pids": [4101],
+                "lingering_connections": [],
+            },
+            {
+                **_attempt_metadata("DIRECT", 4200),
+                "proxy_child_pids": [],
+                "lingering_connections": [],
+            },
+        ],
     }
     assert receipt["deletion_rows"][0]["execution_state"] == "NOT_AUTHORIZED"
     report = result.git_output_dir.joinpath("report.md").read_text(encoding="utf-8")
@@ -935,6 +1070,7 @@ def _fake_git_runner_factory(root: Path):
 
 def _fake_n607_result(scan_id: str):
     from tools.project_governance.collect_n607 import (
+        AttemptReceipt,
         N607CollectionResult,
         N607Receipt,
         RemoteOutcome,
@@ -1013,7 +1149,32 @@ def _fake_n607_result(scan_id: str):
             route="DIRECT",
             preflight_status="DIRECT_READY",
             disconnect_status="VERIFIED",
-            attempts=(),
+            attempts=(
+                AttemptReceipt(
+                    label="PREFLIGHT",
+                    child_pid=4100,
+                    proxy_child_pids=(4101,),
+                    returncode=0,
+                    timed_out=False,
+                    child_exited=True,
+                    proxy_children_exited=True,
+                    disconnect_status="VERIFIED",
+                    lingering_connections=(),
+                    stderr_tail="",
+                ),
+                AttemptReceipt(
+                    label="DIRECT",
+                    child_pid=4200,
+                    proxy_child_pids=(),
+                    returncode=0,
+                    timed_out=False,
+                    child_exited=True,
+                    proxy_children_exited=True,
+                    disconnect_status="VERIFIED",
+                    lingering_connections=(),
+                    stderr_tail="",
+                ),
+            ),
         ),
     )
 
@@ -1080,7 +1241,8 @@ def test_cli_default_never_constructs_or_calls_n607(tmp_path):
         config=config,
         git_runner=git_runner,
         repository_seeds=(root,),
-        n607_collector_factory=lambda: (_ for _ in ()).throw(AssertionError("N607 contacted")),
+        implementation_repository=root,
+        n607_collector_factory=lambda *_: (_ for _ in ()).throw(AssertionError("N607 contacted")),
         clock=lambda: "2026-08-17T00:00:00Z",
     )
 
@@ -1138,7 +1300,8 @@ def test_cli_fixture_scan_emits_joined_inventory_and_approval_only_rows(tmp_path
         config=config,
         git_runner=git_runner,
         repository_seeds=(root,),
-        n607_collector_factory=lambda: FakeN607Collector(),
+        implementation_repository=root,
+        n607_collector_factory=lambda _config, _scan_id: FakeN607Collector(),
         clock=lambda: "2026-08-17T00:00:00Z",
     )
     assert first.exit_code == 0
@@ -1164,6 +1327,44 @@ def test_cli_fixture_scan_emits_joined_inventory_and_approval_only_rows(tmp_path
     assert any(row["experiment_id"] == "RUN_FIXTURE" for row in experiments)
     receipt = json.loads(output.joinpath("scan_receipt.json").read_text(encoding="utf-8"))
     assert receipt["authorized_deletion_rows"] == 0
+    assert receipt["implementation"] == {
+        "git_head": "fixture-head",
+        "tracked_diff_state": "CLEAN",
+    }
+    assert receipt["n607_evidence"] == {
+        "requested": True,
+        "outcome": "VERIFIED",
+        "route": "DIRECT",
+        "preflight": "DIRECT_READY",
+        "disconnect": "VERIFIED",
+        "active_training_observed": False,
+        "attempts": [
+            {
+                "label": "PREFLIGHT",
+                "child_pid": 4100,
+                "proxy_child_pids": [4101],
+                "returncode": 0,
+                "timed_out": False,
+                "child_exited": True,
+                "proxy_children_exited": True,
+                "disconnect_status": "VERIFIED",
+                "lingering_connections": [],
+                "stderr_tail": "",
+            },
+            {
+                "label": "DIRECT",
+                "child_pid": 4200,
+                "proxy_child_pids": [],
+                "returncode": 0,
+                "timed_out": False,
+                "child_exited": True,
+                "proxy_children_exited": True,
+                "disconnect_status": "VERIFIED",
+                "lingering_connections": [],
+                "stderr_tail": "",
+            },
+        ],
+    }
     assert all(item["sha256"] for item in receipt["files"])
     assert len(full["retention_decisions"]) == len(full["assets"])
     assert all(
@@ -1222,13 +1423,112 @@ def test_cli_maps_remote_failure_evidence_to_the_fixed_exit_codes(
         config=config,
         git_runner=git_runner,
         repository_seeds=(root,),
-        n607_collector_factory=lambda: FakeN607Collector(),
+        implementation_repository=root,
+        n607_collector_factory=lambda _config, _scan_id: FakeN607Collector(),
         clock=lambda: "2026-08-17T00:00:00Z",
     )
 
     assert outcome.exit_code == expected_exit
     assert outcome.remote_contacted is True
     assert outcome.remote_outcome == outcome_name
+
+
+@pytest.mark.parametrize(
+    ("scenario", "expected_exit", "expected_labels"),
+    (
+        ("PREFLIGHT_FAILED", 2, ["PREFLIGHT"]),
+        ("BRIDGE_LINGERING", 3, ["PREFLIGHT", "LAB_BRIDGE"]),
+    ),
+)
+def test_cli_receipt_preserves_attempt_evidence_for_non_success_routes(
+    tmp_path, scenario, expected_exit, expected_labels
+):
+    from tools.project_governance.cli import run_scan
+    from tools.project_governance.collect_n607 import (
+        APPROVED_BRIDGE_HOST,
+        AttemptReceipt,
+        ConnectionEvidence,
+        N607CollectionResult,
+        N607Receipt,
+        RemoteOutcome,
+    )
+
+    root = tmp_path / "local"
+    (root / "runs").mkdir(parents=True)
+    config = _cli_fixture_config(root)
+    git_runner, _ = _fake_git_runner_factory(root)
+    preflight = AttemptReceipt(
+        label="PREFLIGHT",
+        child_pid=5100,
+        proxy_child_pids=(5101,),
+        returncode=1 if scenario == "PREFLIGHT_FAILED" else 0,
+        timed_out=False,
+        child_exited=True,
+        proxy_children_exited=True,
+        disconnect_status="VERIFIED",
+        lingering_connections=(),
+        stderr_tail="fixture preflight evidence",
+    )
+    if scenario == "PREFLIGHT_FAILED":
+        receipt = N607Receipt(
+            outcome=RemoteOutcome.FAILED,
+            route=None,
+            preflight_status="FAILED",
+            disconnect_status="VERIFIED",
+            attempts=(preflight,),
+        )
+    else:
+        bridge = AttemptReceipt(
+            label="LAB_BRIDGE",
+            child_pid=5200,
+            proxy_child_pids=(5201,),
+            returncode=0,
+            timed_out=False,
+            child_exited=True,
+            proxy_children_exited=False,
+            disconnect_status="UNKNOWN",
+            lingering_connections=(
+                ConnectionEvidence(
+                    pid=5201,
+                    endpoint=APPROVED_BRIDGE_HOST,
+                    state="ESTABLISHED",
+                ),
+            ),
+            stderr_tail="fixture bridge evidence",
+        )
+        receipt = N607Receipt(
+            outcome=RemoteOutcome.UNKNOWN,
+            route="LAB_BRIDGE",
+            preflight_status="DIRECT_PATH_UNAVAILABLE",
+            disconnect_status="UNKNOWN",
+            attempts=(preflight, bridge),
+        )
+
+    class FakeN607Collector:
+        def collect(self):
+            return N607CollectionResult(records=(), receipt=receipt)
+
+    args = _cli_args(tmp_path, include_n607=True)
+    args.scan_id = f"CLI_{scenario}"
+    outcome = run_scan(
+        args,
+        config=config,
+        git_runner=git_runner,
+        repository_seeds=(root,),
+        implementation_repository=root,
+        n607_collector_factory=lambda _config, _scan_id: FakeN607Collector(),
+        clock=lambda: "2026-08-17T00:00:00Z",
+    )
+
+    assert outcome.exit_code == expected_exit
+    persisted = json.loads(Path(outcome.output_dir, "scan_receipt.json").read_text(encoding="utf-8"))[
+        "n607_evidence"
+    ]
+    assert [attempt["label"] for attempt in persisted["attempts"]] == expected_labels
+    if scenario == "BRIDGE_LINGERING":
+        assert persisted["attempts"][-1]["lingering_connections"] == [
+            {"pid": 5201, "endpoint": APPROVED_BRIDGE_HOST, "state": "ESTABLISHED"}
+        ]
 
 
 def test_cli_rejects_an_unsafe_output_component_before_collecting(tmp_path):
@@ -1244,7 +1544,7 @@ def test_cli_rejects_an_unsafe_output_component_before_collecting(tmp_path):
         args,
         config=config,
         git_runner=lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("Git called")),
-        n607_collector_factory=lambda: (_ for _ in ()).throw(AssertionError("N607 called")),
+        n607_collector_factory=lambda *_: (_ for _ in ()).throw(AssertionError("N607 called")),
     )
 
     assert outcome.exit_code == 4
@@ -1266,6 +1566,233 @@ def test_cli_entrypoint_has_no_destructive_process_control_in_package():
             isinstance(node, ast.Attribute) and node.attr in banned
             for node in ast.walk(tree)
         ), source_path
+
+
+def _n607_result_with_error_source(scan_id: str, source: str):
+    from tools.project_governance.collect_n607 import N607CollectionResult
+
+    original = _fake_n607_result(scan_id)
+    records = [dict(record) for record in original.records]
+    completion = records[-1]
+    if source == "asset":
+        asset = next(record for record in records if record["record_type"] == "ASSET")
+        asset.update(access_status="SCAN_ERROR", hash_status="ERROR", sha256=None)
+    elif source == "scope":
+        scope = next(record for record in records if record["record_type"] == "SCOPE")
+        scope.update(status="SCAN_ERROR", error="fixture scope error")
+    elif source in {"raw", "scope_and_raw", "mismatched_raw"}:
+        if source == "scope_and_raw":
+            scope = next(record for record in records if record["record_type"] == "SCOPE")
+            scope.update(status="SCAN_ERROR", error="fixture scope error")
+        records.insert(
+            -1,
+            {
+                "schema_version": 1,
+                "scan_id": scan_id,
+                "record_type": "SCAN_ERROR",
+                "location": "N607",
+                "root_id": "N607_CVS_SINCNET",
+                "relative_path": "runs",
+                "operation": "scandir",
+                "error_type": "OSError",
+                "error": "fixture remote error",
+            },
+        )
+        completion["record_count"] += 1
+        completion["scan_error_count"] = 0 if source == "mismatched_raw" else 1
+    else:
+        raise AssertionError(f"unknown fixture error source: {source}")
+    return N607CollectionResult(records=tuple(records), receipt=original.receipt)
+
+
+@pytest.mark.parametrize("source", ("asset", "scope", "raw"))
+def test_cli_remote_scan_errors_never_return_success(tmp_path, source):
+    from tools.project_governance.cli import run_scan
+
+    root = tmp_path / "local"
+    (root / "runs").mkdir(parents=True)
+    (root / "runs" / "report.md").write_text("run_id: RUN_LOCAL\n", encoding="utf-8")
+    config = _cli_fixture_config(root)
+    git_runner, _ = _fake_git_runner_factory(root)
+
+    class FakeN607Collector:
+        def collect(self):
+            return _n607_result_with_error_source("CLI_FIXTURE", source)
+
+    outcome = run_scan(
+        _cli_args(tmp_path, include_n607=True),
+        config=config,
+        git_runner=git_runner,
+        repository_seeds=(root,),
+        implementation_repository=root,
+        n607_collector_factory=lambda _config, _scan_id: FakeN607Collector(),
+        clock=lambda: "2026-08-17T00:00:00Z",
+    )
+
+    assert outcome.exit_code == 2
+    assert outcome.remote_error_count == 1
+    if source == "raw":
+        full = json.loads(
+            Path(outcome.output_dir, "asset_inventory_full.json").read_text(encoding="utf-8")
+        )
+        preserved = [
+            json.loads(scope["error"])
+            for scope in full["scope_results"]
+            if scope["status"] == "SCAN_ERROR" and scope["error"] is not None
+        ]
+        assert {
+            "record_type": "SCAN_ERROR",
+            "operation": "scandir",
+            "error_type": "OSError",
+            "error": "fixture remote error",
+        } in preserved
+
+
+def test_cli_preserves_the_protocol_scan_error_count_without_double_counting(tmp_path):
+    from tools.project_governance.cli import run_scan
+
+    root = tmp_path / "local"
+    (root / "runs").mkdir(parents=True)
+    config = _cli_fixture_config(root)
+    git_runner, _ = _fake_git_runner_factory(root)
+
+    class FakeN607Collector:
+        def collect(self):
+            return _n607_result_with_error_source("CLI_FIXTURE", "scope_and_raw")
+
+    outcome = run_scan(
+        _cli_args(tmp_path, include_n607=True),
+        config=config,
+        git_runner=git_runner,
+        repository_seeds=(root,),
+        implementation_repository=root,
+        n607_collector_factory=lambda _config, _scan_id: FakeN607Collector(),
+        clock=lambda: "2026-08-17T00:00:00Z",
+    )
+
+    assert outcome.exit_code == 2
+    assert outcome.remote_error_count == 1
+    receipt = json.loads(Path(outcome.output_dir, "scan_receipt.json").read_text(encoding="utf-8"))
+    assert receipt["scan_error_counts"]["n607_records"] == 1
+
+
+def test_cli_rejects_a_remote_scan_error_count_that_does_not_close(tmp_path):
+    from tools.project_governance.cli import run_scan
+
+    root = tmp_path / "local"
+    (root / "runs").mkdir(parents=True)
+    config = _cli_fixture_config(root)
+    git_runner, _ = _fake_git_runner_factory(root)
+
+    class FakeN607Collector:
+        def collect(self):
+            return _n607_result_with_error_source("CLI_FIXTURE", "mismatched_raw")
+
+    outcome = run_scan(
+        _cli_args(tmp_path, include_n607=True),
+        config=config,
+        git_runner=git_runner,
+        repository_seeds=(root,),
+        implementation_repository=root,
+        n607_collector_factory=lambda _config, _scan_id: FakeN607Collector(),
+        clock=lambda: "2026-08-17T00:00:00Z",
+    )
+
+    assert outcome.exit_code == 3
+    assert outcome.remote_outcome == "UNKNOWN"
+
+
+def test_cli_selects_the_exact_implementation_repository_head(tmp_path):
+    from tools.project_governance.cli import _implementation_state
+    from tools.project_governance.collect_git import RepositoryRecord
+
+    implementation = tmp_path / "implementation"
+    other = tmp_path / "other"
+    records = (
+        RepositoryRecord(
+            repository_root=str(implementation),
+            head_commit="implementation-head",
+            status_summary="",
+        ),
+        RepositoryRecord(
+            repository_root=str(other),
+            head_commit="unrelated-head",
+            status_summary="unrelated dirty state",
+        ),
+    )
+
+    assert _implementation_state(records, implementation_repository=implementation) == (
+        "implementation-head",
+        "CLEAN",
+    )
+
+
+@pytest.mark.parametrize(("include_n607", "expected_exit"), ((False, 2), (True, 3)))
+def test_cli_post_scan_emission_failure_never_claims_a_prescan_gate(
+    tmp_path, monkeypatch, include_n607, expected_exit
+):
+    from tools.project_governance.cli import run_scan
+    from tools.project_governance.collect_n607 import N607CollectionResult, N607Receipt, RemoteOutcome
+
+    root = tmp_path / "local"
+    (root / "runs").mkdir(parents=True)
+    config = _cli_fixture_config(root)
+    git_runner, calls = _fake_git_runner_factory(root)
+
+    class FakeN607Collector:
+        def collect(self):
+            return N607CollectionResult(
+                records=(),
+                receipt=N607Receipt(
+                    outcome=RemoteOutcome.UNKNOWN,
+                    route=None,
+                    preflight_status="UNKNOWN",
+                    disconnect_status="UNKNOWN",
+                    attempts=(),
+                ),
+            )
+
+    monkeypatch.setattr(ReportEmitter, "emit", lambda self: (_ for _ in ()).throw(OSError("disk fault")))
+    outcome = run_scan(
+        _cli_args(tmp_path, include_n607=include_n607),
+        config=config,
+        git_runner=git_runner,
+        repository_seeds=(root,),
+        implementation_repository=root,
+        n607_collector_factory=lambda _config, _scan_id: FakeN607Collector(),
+        clock=lambda: "2026-08-17T00:00:00Z",
+    )
+
+    assert calls
+    assert outcome.exit_code == expected_exit
+    assert outcome.message is not None and "after scanning" in outcome.message
+
+
+def test_cli_does_not_retry_a_factory_that_raises_typeerror_internally(tmp_path):
+    from tools.project_governance.cli import run_scan
+
+    root = tmp_path / "local"
+    (root / "runs").mkdir(parents=True)
+    config = _cli_fixture_config(root)
+    git_runner, _ = _fake_git_runner_factory(root)
+    calls: list[int] = []
+
+    def broken_factory(*args):
+        calls.append(len(args))
+        raise TypeError("internal factory failure")
+
+    outcome = run_scan(
+        _cli_args(tmp_path, include_n607=True),
+        config=config,
+        git_runner=git_runner,
+        repository_seeds=(root,),
+        implementation_repository=root,
+        n607_collector_factory=broken_factory,
+        clock=lambda: "2026-08-17T00:00:00Z",
+    )
+
+    assert calls == [2]
+    assert outcome.exit_code == 3
 
 
 def test_top_level_runner_rejects_unapproved_commands_without_invoking_processes():
@@ -1342,3 +1869,73 @@ def test_top_level_runner_streams_only_an_approved_preflight_through_fakes():
     assert result.proxy_children_exited is True
     assert result.stdout_lines == (b"preflight line\\n",)
     assert seen == [b"preflight line\\n"]
+
+
+def test_top_level_runner_bounds_each_stream_read_and_retains_only_a_marked_stderr_tail():
+    entrypoint = Path(__file__).resolve().parents[1] / "tools" / "project_governance_inventory.py"
+    module = runpy.run_path(str(entrypoint), run_name="project_governance_inventory_bounded_test")
+    from tools.project_governance.collect_n607 import (
+        DEFAULT_PREFLIGHT_SCRIPT,
+        MAX_NDJSON_LINE_BYTES,
+    )
+
+    class RecordingStream:
+        def __init__(self, payload: bytes):
+            self.payload = payload
+            self.read_sizes: list[int] = []
+
+        def readline(self, size=-1):
+            self.read_sizes.append(size)
+            if not self.payload:
+                return b""
+            limit = len(self.payload) if size is None or size < 0 else min(size, len(self.payload))
+            newline = self.payload.find(b"\n", 0, limit)
+            take = newline + 1 if newline >= 0 else limit
+            chunk, self.payload = self.payload[:take], self.payload[take:]
+            return chunk
+
+    class FakeProcess:
+        def __init__(self):
+            self.pid = 4321
+            self.stdin = io.BytesIO()
+            self.stdout = RecordingStream(b"bounded preflight line\n")
+            self.stderr = RecordingStream(b"\xff" * 20000)
+            self.returncode = 0
+
+        def wait(self, timeout=None):
+            return self.returncode
+
+    class FakeTracker:
+        proxy_child_pids = (4322,)
+
+        def wait_for_exit(self):
+            return True
+
+        def close(self):
+            return None
+
+    process = FakeProcess()
+    runner = module["ProductionCommandRunner"](
+        popen_factory=lambda *args, **kwargs: process,
+        tracker_factory=lambda pid, required: FakeTracker(),
+    )
+    result = runner.run(
+        (
+            "powershell.exe",
+            "-NoLogo",
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            str(DEFAULT_PREFLIGHT_SCRIPT),
+        ),
+        input_text=None,
+        timeout_seconds=1,
+        label="PREFLIGHT",
+    )
+
+    expected_read_limit = MAX_NDJSON_LINE_BYTES + 3
+    assert process.stdout.read_sizes and set(process.stdout.read_sizes) == {expected_read_limit}
+    assert process.stderr.read_sizes and set(process.stderr.read_sizes) == {8193}
+    assert "truncated" in result.stderr_tail
+    assert len(result.stderr_tail.encode("utf-8")) <= 8192

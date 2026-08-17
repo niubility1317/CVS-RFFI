@@ -21,9 +21,15 @@ from .classify_retention import (
     build_deletion_candidates,
     classify_retentions,
 )
-from .collect_git import GitCommandRunner, map_git_ownership
+from .collect_git import GitCommandRunner, GitOwnershipMapper, RepositoryRecord
 from .collect_local import LocalCollector
-from .collect_n607 import N607CollectionResult, RemoteOutcome
+from .collect_n607 import (
+    APPROVED_ENDPOINTS,
+    AttemptReceipt,
+    ConnectionEvidence,
+    N607CollectionResult,
+    RemoteOutcome,
+)
 from .config import GovernanceConfig, load_config
 from .emit import ReportEmitter
 from .index_experiments import ExperimentIndex, index_experiments
@@ -45,6 +51,9 @@ from .paths import normalize_relative_path, stable_asset_id
 
 CLI_VERSION = "project-governance-cli-v1"
 _REMOTE_SCOPE_STATUSES = frozenset({"VERIFIED", "NOT_PRESENT", "SCAN_ERROR"})
+_REMOTE_ATTEMPT_LABELS = frozenset({"PREFLIGHT", "DIRECT", "LAB_BRIDGE"})
+_REMOTE_CONNECTION_STATES = frozenset({"ESTABLISHED", "SYN_SENT"})
+_MAX_ATTEMPT_STDERR_BYTES = 8192
 
 
 @dataclass(frozen=True)
@@ -79,11 +88,15 @@ class ScanOutcome:
 class _RemoteFacts:
     assets: tuple[AssetRecord, ...]
     scopes: tuple[ScopeResult, ...]
+    error_scopes: tuple[ScopeResult, ...]
     processes: tuple[Mapping[str, object], ...]
     outcome: str
     route: str
     preflight: str
     disconnect: str
+    attempts: tuple[Mapping[str, object], ...]
+    active_training_observed: bool
+    protocol_error_count: int
     error_count: int
 
 
@@ -143,11 +156,15 @@ def _not_requested_remote() -> _RemoteFacts:
     return _RemoteFacts(
         assets=(),
         scopes=(),
+        error_scopes=(),
         processes=(),
         outcome="NOT_REQUESTED",
         route="NOT_REQUESTED",
         preflight="NOT_REQUESTED",
         disconnect="NOT_REQUESTED",
+        attempts=(),
+        active_training_observed=False,
+        protocol_error_count=0,
         error_count=0,
     )
 
@@ -175,10 +192,13 @@ def _metadata(
             "n607": "project-governance-n607-v1",
         },
         "n607_requested": selected_remote.outcome != "NOT_REQUESTED",
+        "n607_outcome": selected_remote.outcome,
         "n607_route": selected_remote.route,
         "n607_preflight": selected_remote.preflight,
         "n607_disconnect": selected_remote.disconnect,
-        "n607_scan_error_count": selected_remote.error_count,
+        "n607_attempts": selected_remote.attempts,
+        "n607_active_training_observed": selected_remote.active_training_observed,
+        "n607_scan_error_count": selected_remote.protocol_error_count,
     }
 
 
@@ -302,6 +322,54 @@ def _scope_from_remote(record: Mapping[str, object], config: GovernanceConfig, s
     )
 
 
+def _error_scope_from_remote(
+    record: Mapping[str, object], config: GovernanceConfig, scan_id: str
+) -> ScopeResult:
+    if record.get("scan_id") != scan_id:
+        raise ValueError("remote scan error scan_id does not match the requested scan")
+    if record.get("location") != Location.N607.value:
+        raise ValueError("remote scan error location is not N607")
+    if record.get("root_id") != config.n607.root_id:
+        raise ValueError("remote scan error root_id does not match the configuration")
+    relative_raw = record.get("relative_path")
+    if not isinstance(relative_raw, str):
+        raise ValueError("remote scan error relative_path is invalid")
+    relative_path = (
+        ""
+        if relative_raw == ""
+        else normalize_relative_path(relative_raw, location=Location.N607)
+    )
+    operation = record.get("operation")
+    error_type = record.get("error_type")
+    error = record.get("error")
+    if not isinstance(operation, str) or not operation:
+        raise ValueError("remote scan error operation is invalid")
+    if not isinstance(error_type, str) or not error_type:
+        raise ValueError("remote scan error error_type is invalid")
+    if not isinstance(error, str) or not error:
+        raise ValueError("remote scan error message is invalid")
+    structured_error = json.dumps(
+        {
+            "record_type": "SCAN_ERROR",
+            "operation": operation,
+            "error_type": error_type,
+            "error": error,
+        },
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    return ScopeResult(
+        scan_id=scan_id,
+        location=Location.N607,
+        root_id=config.n607.root_id,
+        relative_path=relative_path,
+        status="SCAN_ERROR",
+        asset_ids=None,
+        error=structured_error,
+    )
+
+
 def _process_from_remote(record: Mapping[str, object]) -> Mapping[str, object]:
     pid = record.get("pid")
     ppid = record.get("ppid")
@@ -318,6 +386,111 @@ def _process_from_remote(record: Mapping[str, object]) -> Mapping[str, object]:
     return {"pid": pid, "cwd": cwd, "cmdline": cmdline, "run_root": None}
 
 
+def _connection_from_remote(
+    connection: ConnectionEvidence, *, attempt_pids: frozenset[int]
+) -> Mapping[str, object]:
+    if not isinstance(connection, ConnectionEvidence):
+        raise ValueError("remote attempt connection evidence has an invalid type")
+    if type(connection.pid) is not int or connection.pid <= 0 or connection.pid not in attempt_pids:
+        raise ValueError("remote attempt connection PID is invalid")
+    if connection.endpoint not in APPROVED_ENDPOINTS:
+        raise ValueError("remote attempt connection endpoint is not approved")
+    if connection.state not in _REMOTE_CONNECTION_STATES:
+        raise ValueError("remote attempt connection state is invalid")
+    return {
+        "pid": connection.pid,
+        "endpoint": connection.endpoint,
+        "state": connection.state,
+    }
+
+
+def _attempt_from_remote(attempt: AttemptReceipt) -> Mapping[str, object]:
+    if not isinstance(attempt, AttemptReceipt):
+        raise ValueError("remote receipt attempt has an invalid type")
+    if attempt.label not in _REMOTE_ATTEMPT_LABELS:
+        raise ValueError("remote receipt attempt label is invalid")
+    if attempt.child_pid is not None and (
+        type(attempt.child_pid) is not int or attempt.child_pid <= 0
+    ):
+        raise ValueError("remote receipt attempt child PID is invalid")
+    if not isinstance(attempt.proxy_child_pids, tuple) or any(
+        type(pid) is not int or pid <= 0 for pid in attempt.proxy_child_pids
+    ):
+        raise ValueError("remote receipt attempt proxy PIDs are invalid")
+    if len(set(attempt.proxy_child_pids)) != len(attempt.proxy_child_pids):
+        raise ValueError("remote receipt attempt proxy PIDs are not unique")
+    if attempt.returncode is not None and type(attempt.returncode) is not int:
+        raise ValueError("remote receipt attempt return code is invalid")
+    for field_name in ("timed_out", "child_exited", "proxy_children_exited"):
+        if type(getattr(attempt, field_name)) is not bool:
+            raise ValueError(f"remote receipt attempt {field_name} is invalid")
+    if attempt.disconnect_status not in {"VERIFIED", "UNKNOWN"}:
+        raise ValueError("remote receipt attempt disconnect status is invalid")
+    if not isinstance(attempt.stderr_tail, str):
+        raise ValueError("remote receipt attempt stderr tail is invalid")
+    if len(attempt.stderr_tail.encode("utf-8")) > _MAX_ATTEMPT_STDERR_BYTES:
+        raise ValueError("remote receipt attempt stderr tail exceeds the bound")
+    if not isinstance(attempt.lingering_connections, tuple):
+        raise ValueError("remote receipt lingering connections are invalid")
+    attempt_pids = frozenset(
+        (() if attempt.child_pid is None else (attempt.child_pid,)) + attempt.proxy_child_pids
+    )
+    lingering = tuple(
+        _connection_from_remote(connection, attempt_pids=attempt_pids)
+        for connection in attempt.lingering_connections
+    )
+    return {
+        "label": attempt.label,
+        "child_pid": attempt.child_pid,
+        "proxy_child_pids": attempt.proxy_child_pids,
+        "returncode": attempt.returncode,
+        "timed_out": attempt.timed_out,
+        "child_exited": attempt.child_exited,
+        "proxy_children_exited": attempt.proxy_children_exited,
+        "disconnect_status": attempt.disconnect_status,
+        "lingering_connections": lingering,
+        "stderr_tail": attempt.stderr_tail,
+    }
+
+
+def _attempts_from_remote(
+    attempts: tuple[AttemptReceipt, ...], *, route: str, outcome: str
+) -> tuple[Mapping[str, object], ...]:
+    if not isinstance(attempts, tuple):
+        raise ValueError("remote receipt attempts must be an immutable sequence")
+    converted = tuple(_attempt_from_remote(attempt) for attempt in attempts)
+    labels = tuple(str(attempt["label"]) for attempt in converted)
+    if len(set(labels)) != len(labels):
+        raise ValueError("remote receipt attempt labels are not unique")
+    expected = {
+        "DIRECT": ("PREFLIGHT", "DIRECT"),
+        "LAB_BRIDGE": ("PREFLIGHT", "LAB_BRIDGE"),
+    }.get(route)
+    if expected is not None and labels != expected:
+        raise ValueError("remote receipt attempts do not match the selected route")
+    if route == "NO_ROUTE" and labels not in {(), ("PREFLIGHT",)}:
+        raise ValueError("remote receipt attempts do not match the no-route outcome")
+    if outcome == RemoteOutcome.VERIFIED.value:
+        if any(
+            attempt["child_pid"] is None
+            or attempt["returncode"] != 0
+            or attempt["timed_out"]
+            or not attempt["child_exited"]
+            or not attempt["proxy_children_exited"]
+            or attempt["disconnect_status"] != "VERIFIED"
+            or attempt["lingering_connections"]
+            for attempt in converted
+        ):
+            raise ValueError("verified remote receipt has incomplete attempt evidence")
+        if any(
+            attempt["label"] in {"PREFLIGHT", "LAB_BRIDGE"}
+            and not attempt["proxy_child_pids"]
+            for attempt in converted
+        ):
+            raise ValueError("verified remote receipt lacks required proxy exit evidence")
+    return converted
+
+
 def _convert_remote(
     result: N607CollectionResult, config: GovernanceConfig, scan_id: str
 ) -> _RemoteFacts:
@@ -332,11 +505,16 @@ def _convert_remote(
         raise ValueError("remote receipt preflight state is invalid")
     if disconnect not in {"VERIFIED", "UNKNOWN"}:
         raise ValueError("remote receipt disconnect state is invalid")
+    if type(receipt.active_training_observed) is not bool:
+        raise ValueError("remote receipt active-training evidence is invalid")
+    attempts = _attempts_from_remote(receipt.attempts, route=route, outcome=outcome)
     assets: list[AssetRecord] = []
     scopes: list[ScopeResult] = []
+    error_scopes: list[ScopeResult] = []
     processes: list[Mapping[str, object]] = []
     reported_error_count: int | None = None
-    errors = 0
+    protocol_errors = 0
+    status_errors = 0
     for record in result.records:
         if not isinstance(record, Mapping):
             raise ValueError("remote collector returned a non-object record")
@@ -344,35 +522,47 @@ def _convert_remote(
         if record_type == "ASSET":
             asset = _asset_from_remote(record, config, scan_id)
             assets.append(asset)
-            errors += int(asset.access_status is AccessStatus.SCAN_ERROR)
+            status_errors += int(asset.access_status is AccessStatus.SCAN_ERROR)
         elif record_type == "SCOPE":
             scope = _scope_from_remote(record, config, scan_id)
             scopes.append(scope)
-            errors += int(scope.status == "SCAN_ERROR")
+            status_errors += int(scope.status == "SCAN_ERROR")
         elif record_type == "PROCESS":
             if record.get("scan_id") != scan_id:
                 raise ValueError("remote process scan_id does not match the requested scan")
             processes.append(_process_from_remote(record))
         elif record_type == "SCAN_ERROR":
-            errors += 1
+            protocol_errors += 1
+            error_scopes.append(_error_scope_from_remote(record, config, scan_id))
         elif record_type == "COLLECTION_COMPLETE":
+            if reported_error_count is not None:
+                raise ValueError("remote collection has multiple COLLECTION_COMPLETE records")
             count = record.get("scan_error_count")
             if type(count) is not int or count < 0:
                 raise ValueError("remote completion scan_error_count is invalid")
             reported_error_count = count
     if outcome == RemoteOutcome.VERIFIED.value and reported_error_count is None:
         raise ValueError("verified remote collection lacks COLLECTION_COMPLETE evidence")
-    if reported_error_count is not None:
-        errors = max(errors, reported_error_count)
+    if outcome == RemoteOutcome.VERIFIED.value and result.records[-1].get("record_type") != "COLLECTION_COMPLETE":
+        raise ValueError("verified remote collection is not terminally closed")
+    if reported_error_count is not None and reported_error_count != protocol_errors:
+        raise ValueError("remote COLLECTION_COMPLETE scan_error_count does not close")
+    closed_protocol_errors = (
+        reported_error_count if reported_error_count is not None else protocol_errors
+    )
     return _RemoteFacts(
         assets=tuple(assets),
         scopes=tuple(scopes),
+        error_scopes=tuple(error_scopes),
         processes=tuple(processes),
         outcome=outcome,
         route=route,
         preflight=preflight,
         disconnect=disconnect,
-        error_count=errors,
+        attempts=attempts,
+        active_training_observed=receipt.active_training_observed,
+        protocol_error_count=closed_protocol_errors,
+        error_count=max(closed_protocol_errors, status_errors),
     )
 
 
@@ -389,11 +579,15 @@ def _remote_failure_from_exception(error: Exception, *, scan_id: str, root_id: s
                 error=str(error),
             ),
         ),
+        error_scopes=(),
         processes=(),
         outcome=RemoteOutcome.UNKNOWN.value,
         route="NO_ROUTE",
         preflight="UNKNOWN",
         disconnect="UNKNOWN",
+        attempts=(),
+        active_training_observed=False,
+        protocol_error_count=0,
         error_count=1,
     )
 
@@ -401,13 +595,7 @@ def _remote_failure_from_exception(error: Exception, *, scan_id: str, root_id: s
 def _make_n607_collector(
     factory: Callable[..., object], config: GovernanceConfig, scan_id: str
 ) -> object:
-    try:
-        return factory(config, scan_id)
-    except TypeError as first_error:
-        try:
-            return factory()
-        except TypeError:
-            raise first_error
+    return factory(config, scan_id)
 
 
 def _ownership_and_assets(
@@ -417,13 +605,17 @@ def _ownership_and_assets(
     repository_seeds: Iterable[str | Path],
     root_paths: Mapping[object, str | Path],
     git_runner: GitCommandRunner | None,
-) -> tuple[tuple[AssetRecord, ...], tuple[GitOwnershipRecord, ...]]:
-    ownership = map_git_ownership(
-        local_assets,
-        repository_seeds=repository_seeds,
-        root_paths=root_paths,
-        runner=git_runner,
+) -> tuple[
+    tuple[AssetRecord, ...],
+    tuple[GitOwnershipRecord, ...],
+    tuple[RepositoryRecord, ...],
+]:
+    mapper = GitOwnershipMapper(
+        repository_seeds,
+        root_paths,
+        git_runner,
     )
+    ownership = mapper.map(local_assets)
     local_records = tuple(ownership[asset.asset_id] for asset in local_assets)
     attached_local = tuple(
         replace(asset, git_ownership=ownership[asset.asset_id].ownership)
@@ -436,18 +628,23 @@ def _ownership_and_assets(
     attached_remote = tuple(
         replace(asset, git_ownership=GitOwnership.REMOTE_NON_GIT) for asset in remote_assets
     )
-    return attached_local + attached_remote, local_records + remote_records
+    return attached_local + attached_remote, local_records + remote_records, mapper.repositories
 
 
-def _implementation_state(records: Iterable[GitOwnershipRecord]) -> tuple[str, str]:
-    selected = tuple(records)
+def _implementation_state(
+    records: Iterable[RepositoryRecord], *, implementation_repository: str | Path
+) -> tuple[str, str]:
+    target = Path(implementation_repository).resolve(strict=False)
+    selected = tuple(
+        record
+        for record in records
+        if Path(record.repository_root).resolve(strict=False) == target
+    )
     heads = sorted(
         {record.head_commit for record in selected if isinstance(record.head_commit, str) and record.head_commit}
     )
     if len(heads) == 1:
         head = heads[0]
-    elif len(heads) > 1:
-        head = "MULTIPLE_GIT_HEADS"
     else:
         head = "UNAVAILABLE"
     statuses = [record.status_summary for record in selected if record.status_summary is not None]
@@ -543,7 +740,7 @@ def _local_error_count(
 def _outcome_code(local_errors: int, remote: _RemoteFacts) -> int:
     if remote.outcome == RemoteOutcome.UNKNOWN.value or remote.disconnect == "UNKNOWN":
         return 3
-    if local_errors or remote.outcome == RemoteOutcome.FAILED.value:
+    if local_errors or remote.error_count or remote.outcome == RemoteOutcome.FAILED.value:
         return 2
     return 0
 
@@ -579,6 +776,7 @@ def run_scan(
     config: GovernanceConfig | None = None,
     git_runner: GitCommandRunner | None = None,
     repository_seeds: Iterable[str | Path] | None = None,
+    implementation_repository: str | Path | None = None,
     n607_collector_factory: Callable[..., object] | None = None,
     clock: Callable[[], str] = _utc_now,
 ) -> ScanOutcome:
@@ -587,7 +785,7 @@ def run_scan(
     scan_id = getattr(args, "scan_id", "") if isinstance(getattr(args, "scan_id", ""), str) else ""
     try:
         selected_config = config or load_config(getattr(args, "config", None), probe_local_paths=False)
-        _validate_request(args, selected_config)
+        git_target, external_target = _validate_request(args, selected_config)
     except (OSError, TypeError, ValueError) as exc:
         return ScanOutcome(4, scan_id, None, None, False, "NOT_STARTED", 0, 0, str(exc))
 
@@ -599,8 +797,20 @@ def run_scan(
         selected_config.local.root_id: selected_config.local.root,
         selected_config.n607.root_id: selected_config.n607.root,
     }
-    seeds = tuple(repository_seeds) if repository_seeds is not None else (Path(__file__).resolve().parents[2],)
-    attached_assets, git_records = _ownership_and_assets(
+    default_implementation_repository = Path(__file__).resolve().parents[2]
+    selected_implementation_repository = Path(
+        implementation_repository or default_implementation_repository
+    ).resolve(strict=False)
+    seeds = (
+        tuple(repository_seeds)
+        if repository_seeds is not None
+        else (selected_implementation_repository,)
+    )
+    if not any(
+        Path(seed).resolve(strict=False) == selected_implementation_repository for seed in seeds
+    ):
+        seeds = seeds + (selected_implementation_repository,)
+    attached_assets, git_records, repositories = _ownership_and_assets(
         local_assets,
         (),
         repository_seeds=seeds,
@@ -651,7 +861,10 @@ def run_scan(
     candidates = build_deletion_candidates(indexed_assets, evidence)
     final_assets = _with_retention(indexed_assets, decisions)
     completed_at_utc = clock()
-    head, tracked_state = _implementation_state(git_records)
+    head, tracked_state = _implementation_state(
+        repositories,
+        implementation_repository=selected_implementation_repository,
+    )
     metadata = _metadata(
         selected_config,
         local_scopes=local_scopes,
@@ -665,7 +878,7 @@ def run_scan(
         started_at_utc=started_at_utc,
         completed_at_utc=completed_at_utc,
         assets=final_assets,
-        scope_results=local_scopes + remote.scopes,
+        scope_results=local_scopes + remote.scopes + remote.error_scopes,
         git_ownership=git_records,
         experiments=tuple(experiment_index.values()),
         retention_decisions=decisions,
@@ -681,16 +894,22 @@ def run_scan(
             git_scan_max_bytes=selected_config.output.git_scan_max_bytes,
         ).emit()
     except (OSError, TypeError, ValueError) as exc:
+        local_errors = _local_error_count(final_assets, local_scopes, git_records)
+        exit_code = (
+            3
+            if remote.outcome == RemoteOutcome.UNKNOWN.value or remote.disconnect == "UNKNOWN"
+            else 2
+        )
         return ScanOutcome(
-            4,
+            exit_code,
             args.scan_id,
-            None,
-            None,
+            str(git_target) if git_target.exists() else None,
+            str(external_target) if external_target.exists() else None,
             remote.outcome != "NOT_REQUESTED",
             remote.outcome,
-            _local_error_count(final_assets, local_scopes, git_records),
+            local_errors,
             remote.error_count,
-            str(exc),
+            f"report emission failed after scanning; partial output may exist: {exc}",
         )
     local_errors = _local_error_count(final_assets, local_scopes, git_records)
     return ScanOutcome(
