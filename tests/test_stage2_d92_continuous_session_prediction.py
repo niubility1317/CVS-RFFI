@@ -13,6 +13,7 @@ import pytest
 from cvsrffi.stage2_d92_continuous_session_prediction import (
     ContinuousSessionPredictionError,
     _after_apply_manifest_lock,
+    _attach_registry_specific_prediction,
     _registration_resource,
     _original_d42_f0_prediction,
     prepare_continuous_session_support_deltas,
@@ -274,6 +275,30 @@ def test_after_apply_lock_accepts_the_required_stage2b_to_stage2c_transition() -
         after,
         SimpleNamespace(old_handles=("cls_old_a",), new_handles=("cls_new_a",)),
     )
+
+
+def test_registry_specific_phase_b_binds_each_prediction_to_its_own_query_tokens() -> None:
+    """Would fail if REG1 predictions were mislabeled with the REG0 query identity."""
+
+    features = np.arange(8, dtype=np.float32).reshape(2, 4)
+    observed_features: list[np.ndarray] = []
+
+    def predictor(_state_value: object, rows: np.ndarray) -> np.ndarray:
+        observed_features.append(np.array(rows, copy=True))
+        return np.asarray(("cls_old_a", "cls_new_a"))
+
+    result = _attach_registry_specific_prediction(
+        {"state": _state(("cls_old_a", "cls_new_a"))},
+        features=features,
+        query_tokens=("qid_after_old", "qid_after_new"),
+        scene="leo_clear_weak",
+        predictor=predictor,
+    )
+
+    assert result["query_tokens"] == ("qid_after_old", "qid_after_new")
+    assert result["scenarios"] == ("leo_clear_weak", "leo_clear_weak")
+    assert result["predictions"] == ("cls_old_a", "cls_new_a")
+    assert np.array_equal(observed_features[0], features)
 
 
 @pytest.mark.parametrize(

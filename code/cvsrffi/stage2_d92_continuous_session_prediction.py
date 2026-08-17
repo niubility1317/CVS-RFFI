@@ -819,6 +819,39 @@ def _unlabeled_query_features(
     return features, tokens, hashes
 
 
+def _attach_registry_specific_prediction(
+    row: Mapping[str, Any],
+    *,
+    features: np.ndarray,
+    query_tokens: Sequence[str],
+    scene: str,
+    predictor: Callable[[Any, np.ndarray], np.ndarray],
+) -> dict[str, Any]:
+    """Bind a prediction to the sealed query identity for its registry state."""
+
+    tokens = tuple(str(value) for value in query_tokens)
+    rows = np.asarray(features, dtype=np.float32)
+    if (
+        rows.ndim != 2
+        or rows.shape[0] != len(tokens)
+        or not tokens
+        or not np.isfinite(rows).all()
+    ):
+        raise ContinuousSessionPredictionError("registry-specific query feature drift")
+    started = time.perf_counter_ns()
+    prediction = np.asarray(predictor(row["state"], rows))
+    elapsed = time.perf_counter_ns() - started
+    if prediction.ndim != 1 or len(prediction) != len(tokens):
+        raise ContinuousSessionPredictionError("registry-specific prediction length drift")
+    return {
+        **dict(row),
+        "query_tokens": tokens,
+        "scenarios": tuple(scene for _ in tokens),
+        "predictions": tuple(str(value) for value in prediction.tolist()),
+        "query_prediction_wall_time_ns": int(elapsed),
+    }
+
+
 def _old_support_packets(
     payload: Mapping[str, Any],
     *,
@@ -1290,32 +1323,33 @@ def _run_real_continuous_session_prediction(
     result_scenes: dict[str, Any] = {}
     equivalence: dict[str, Any] = {}
     for scene, phase in phase_a.items():
-        before_features, before_tokens, before_hashes = _unlabeled_query_features(
+        before_features, before_tokens, _before_hashes = _unlabeled_query_features(
             _mapping(before_apply_payloads[scene], label="before apply scene"),
             feature_rows=feature_rows,
         )
-        after_features, after_tokens, after_hashes = _unlabeled_query_features(
+        after_features, after_tokens, _after_hashes = _unlabeled_query_features(
             _mapping(after_apply_payloads[scene], label="after apply scene"),
             feature_rows=feature_rows,
         )
-        if before_tokens != after_tokens or before_hashes != after_hashes:
-            raise ContinuousSessionPredictionError("fixed apply query token/IQ identity drift")
-
-        def attach_prediction(row: Mapping[str, Any], features: np.ndarray) -> dict[str, Any]:
-            started = time.perf_counter_ns()
-            prediction = _original_d42_f0_prediction(d42, row["state"], features)
-            elapsed = time.perf_counter_ns() - started
-            return {
-                **dict(row),
-                "query_tokens": before_tokens,
-                "scenarios": tuple(scene for _ in before_tokens),
-                "predictions": tuple(prediction.tolist()),
-                "query_prediction_wall_time_ns": int(elapsed),
-            }
-
-        enriched_baseline = attach_prediction(phase["baseline"], before_features)
+        predictor = lambda state, rows: _original_d42_f0_prediction(d42, state, rows)
+        enriched_baseline = _attach_registry_specific_prediction(
+            phase["baseline"],
+            features=before_features,
+            query_tokens=before_tokens,
+            scene=scene,
+            predictor=predictor,
+        )
         enriched_schedules = {
-            name: [attach_prediction(row, after_features) for row in rows]
+            name: [
+                _attach_registry_specific_prediction(
+                    row,
+                    features=after_features,
+                    query_tokens=after_tokens,
+                    scene=scene,
+                    predictor=predictor,
+                )
+                for row in rows
+            ]
             for name, rows in phase["schedules"].items()
         }
         equivalence[scene] = _strict_s5_equivalence(enriched_schedules)
