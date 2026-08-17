@@ -520,6 +520,40 @@ def _torch_from_array(value: Any, *, dtype):
     return torch.frombuffer(memoryview(array), dtype=dtype).reshape(array.shape).clone()
 
 
+def _load_preadapt_source_cache(path: Path):
+    """Load the frozen source cache under its exact v1 or current v2 contract."""
+
+    payload = _read_json(path.resolve(strict=True), context="preadapt source cache")
+    schema = str(payload.get("schema", ""))
+    if str(payload.get("cache_scope", "")) != "source_train":
+        raise ValueError("preadapt source cache scope drift")
+    if schema == "cvs_leo_weak_iq_cache_set_v2":
+        from cvsrffi.leo_weak_cache import load_verified_leo_weak_cache_set
+
+        return load_verified_leo_weak_cache_set(
+            path, expected_scope="source_train", allowed_roles={"source"}
+        )
+    if schema == "cvs_leo_weak_iq_cache_set_v1":
+        from paper_reproduction.scripts.build_adv3b02_paper_full_ci_bundle import (
+            load_comparison_leo_cache_set,
+        )
+
+        arrays, manifest, audit = load_comparison_leo_cache_set(
+            path, expected_scope="source_train", allowed_roles={"source"}
+        )
+        if (
+            manifest.get("schema") != "cvs_leo_weak_iq_cache_set_v1"
+            or manifest.get("cache_scope") != "source_train"
+            or audit.get("status") != "PASS_COMPARISON_SCOPE"
+        ):
+            raise ValueError("legacy preadapt source cache verification drift")
+        return arrays, manifest, {
+            **audit,
+            "legacy_source_cache_compatibility": "STRICT_V1",
+        }
+    raise ValueError(f"unsupported source cache-set schema: {schema!r}")
+
+
 def _read_existing_preadapt_receipt(job: Mapping[str, Any]) -> dict[str, Any]:
     from paper_reproduction.cvs_aligned.adv3b02_mrior_preadapt_ci import (
         load_verified_mrior_preadapt_artifact,
@@ -559,7 +593,6 @@ def _run_preadapt_job(
     import torch
     from torch.utils.data import DataLoader, TensorDataset
 
-    from cvsrffi.leo_weak_cache import load_verified_leo_weak_cache_set
     from cvsrffi.stage2_predictor_bundle import (
         _materialize_npz,
         _validate_support_arrays,
@@ -586,8 +619,8 @@ def _run_preadapt_job(
         job.get("source_cache_sha256"), field="preadapt source cache SHA"
     ):
         raise ValueError("preadapt source cache hash drift")
-    source_arrays, _cache_manifest, _cache_audit = load_verified_leo_weak_cache_set(
-        cache_path, expected_scope="source_train", allowed_roles={"source"}
+    source_arrays, _cache_manifest, _cache_audit = _load_preadapt_source_cache(
+        cache_path
     )
     package_root = Path(str(job["target_package_root"])).resolve(strict=True)
     seal_path = Path(str(job["target_package_seal_path"])).resolve(strict=True)

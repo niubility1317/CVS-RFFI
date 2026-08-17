@@ -30,6 +30,65 @@ def test_runner_bootstraps_code_root_from_independent_cwd(tmp_path: Path) -> Non
     assert "cvsrffi" in completed.stdout
 
 
+def test_preadapt_source_loader_accepts_only_the_locked_legacy_v1_contract(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The frozen Phase1 v1 source cache stays usable without relaxing other schemas."""
+
+    manifest_path = tmp_path / "cache_set.json"
+    manifest_path.write_text(
+        json.dumps(
+            {
+                "schema": "cvs_leo_weak_iq_cache_set_v1",
+                "cache_scope": "source_train",
+            }
+        ),
+        encoding="utf-8",
+    )
+    observed = {}
+
+    def fake_legacy_loader(path, *, expected_scope, allowed_roles):
+        observed.update(
+            path=Path(path),
+            expected_scope=expected_scope,
+            allowed_roles=set(allowed_roles),
+        )
+        return {"leo_clear_weak": {"dataset_role": ["source"]}}, {
+            "schema": "cvs_leo_weak_iq_cache_set_v1",
+            "cache_scope": "source_train",
+        }, {"status": "PASS_COMPARISON_SCOPE"}
+
+    from paper_reproduction.scripts import build_adv3b02_paper_full_ci_bundle
+
+    monkeypatch.setattr(
+        build_adv3b02_paper_full_ci_bundle,
+        "load_comparison_leo_cache_set",
+        fake_legacy_loader,
+    )
+    arrays, loaded_manifest, audit = runner._load_preadapt_source_cache(manifest_path)
+
+    assert arrays["leo_clear_weak"]["dataset_role"] == ["source"]
+    assert loaded_manifest["schema"] == "cvs_leo_weak_iq_cache_set_v1"
+    assert audit["legacy_source_cache_compatibility"] == "STRICT_V1"
+    assert observed == {
+        "path": manifest_path,
+        "expected_scope": "source_train",
+        "allowed_roles": {"source"},
+    }
+
+    manifest_path.write_text(
+        json.dumps(
+            {
+                "schema": "cvs_leo_weak_iq_cache_set_unknown",
+                "cache_scope": "source_train",
+            }
+        ),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="unsupported source cache-set schema"):
+        runner._load_preadapt_source_cache(manifest_path)
+
+
 def _plan_contract_sha256(plan: dict) -> str:
     payload = {
         key: value
