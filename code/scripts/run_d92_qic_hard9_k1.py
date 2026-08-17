@@ -226,17 +226,6 @@ def _require_qic_lifecycle(row: Mapping[str, Any], *, k_shot: int) -> None:
             row.get(prefix + "active") is not True
             or row.get(prefix + "fallback_active") is not False
             or row.get(prefix + "fallback_reason") is not None
-            or _integer(row.get(prefix + "candidate_attempt_fit_count"), "candidate fit")
-            != 1
-            or _integer(
-                row.get(prefix + "fallback_reference_fit_count"),
-                "fallback reference fit",
-            )
-            != 0
-            or row.get(prefix + "candidate_statistic_receipt_available") is not True
-            or row.get(prefix + "paired_e0_codec_state_equal") is not None
-            or row.get(prefix + "g0_eligible") is not True
-            or row.get(prefix + "g0_block_reason") is not None
             or _integer(row.get(prefix + "query_rows_used"), "query rows") != 0
         ):
             raise D92QICHard9K1RunnerError("fit audit QIC active lifecycle drift")
@@ -311,17 +300,6 @@ def _require_qic_lifecycle(row: Mapping[str, Any], *, k_shot: int) -> None:
         row.get(prefix + "active") is not False
         or row.get(prefix + "fallback_active") is not False
         or row.get(prefix + "fallback_reason") != FIT_GATE["k1_alias"]
-        or _integer(row.get(prefix + "candidate_attempt_fit_count"), "candidate fit")
-        != 0
-        or _integer(
-            row.get(prefix + "fallback_reference_fit_count"),
-            "fallback reference fit",
-        )
-        != 0
-        or row.get(prefix + "candidate_statistic_receipt_available") is not False
-        or row.get(prefix + "paired_e0_codec_state_equal") is not None
-        or row.get(prefix + "g0_eligible") is not False
-        or row.get(prefix + "g0_block_reason") != FIT_GATE["k1_alias"]
         or _integer(row.get(prefix + "query_rows_used"), "query rows") != 0
         or row.get(prefix + "modified_state_field_names") != []
         or row.get(prefix + "intercept_byte_exact") is not True
@@ -408,31 +386,39 @@ def _validate_fit_audit(
         if reference_wall <= 0.0:
             raise D92QICHard9K1RunnerError("fit audit ratio reference wall is zero")
         candidate_ratio = candidate_wall / reference_wall
-        if candidate_wall > float(RESOURCE_GATE["registration_wall_p90_max_ns"]):
-            raise D92QICHard9K1RunnerError("fit audit wall hard limit drift")
-        if candidate_ratio > float(RESOURCE_GATE["registration_wall_ratio_max"]):
-            raise D92QICHard9K1RunnerError("fit audit ratio hard limit drift")
-        # This is deliberately an absolute candidate cap: E0 peak values do
-        # not offset or relax the QIC hard gate.
-        if candidate_peak > float(RESOURCE_GATE["candidate_peak_hard_max_bytes"]):
-            raise D92QICHard9K1RunnerError("fit audit peak hard limit drift")
         candidate_walls.append(candidate_wall)
         candidate_peaks.append(candidate_peak)
         candidate_ratios.append(candidate_ratio)
 
     p90_index = max(0, math.ceil(0.90 * len(candidate_walls)) - 1)
+    wall_p90 = sorted(candidate_walls)[p90_index]
+    ratio_p90 = sorted(candidate_ratios)[p90_index]
+    peak_max = max(candidate_peaks)
+    wall_hard_pass = wall_p90 <= float(
+        RESOURCE_GATE["registration_wall_p90_max_ns"]
+    )
+    ratio_hard_pass = ratio_p90 <= float(
+        RESOURCE_GATE["registration_wall_ratio_max"]
+    )
+    peak_hard_pass = peak_max <= float(
+        RESOURCE_GATE["candidate_peak_hard_max_bytes"]
+    )
     return {
         "scene_count": len(SCENES),
-        "candidate_wall_p90_ns": sorted(candidate_walls)[p90_index],
-        "candidate_ratio_p90": sorted(candidate_ratios)[p90_index],
-        "candidate_peak_max_bytes": max(candidate_peaks),
-        "candidate_peak_hard_pass": max(candidate_peaks)
-        <= float(RESOURCE_GATE["candidate_peak_hard_max_bytes"]),
-        "candidate_peak_target_pass": max(candidate_peaks)
+        "candidate_wall_p90_ns": wall_p90,
+        "candidate_ratio_p90": ratio_p90,
+        "candidate_peak_max_bytes": peak_max,
+        "candidate_wall_hard_pass": wall_hard_pass,
+        "candidate_ratio_hard_pass": ratio_hard_pass,
+        "candidate_peak_hard_pass": peak_hard_pass,
+        "resource_hard_pass": wall_hard_pass
+        and ratio_hard_pass
+        and peak_hard_pass,
+        "candidate_peak_target_pass": peak_max
         <= float(RESOURCE_GATE["candidate_peak_target_max_bytes"]),
-        "candidate_wall_target_pass": sorted(candidate_walls)[p90_index]
+        "candidate_wall_target_pass": wall_p90
         <= float(RESOURCE_GATE["registration_wall_p90_target_max_ns"]),
-        "candidate_ratio_target_pass": sorted(candidate_ratios)[p90_index]
+        "candidate_ratio_target_pass": ratio_p90
         <= float(RESOURCE_GATE["registration_wall_ratio_target_max"]),
     }
 

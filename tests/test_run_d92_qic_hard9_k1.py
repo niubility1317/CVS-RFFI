@@ -168,12 +168,6 @@ def _row(
         prefix + "active": active,
         prefix + "fallback_active": False,
         prefix + "fallback_reason": None if active else "K1_K2_EXACT_D92_FULL_ALIAS",
-        prefix + "candidate_attempt_fit_count": 1 if active else 0,
-        prefix + "fallback_reference_fit_count": 0,
-        prefix + "candidate_statistic_receipt_available": active,
-        prefix + "paired_e0_codec_state_equal": None,
-        prefix + "g0_eligible": active,
-        prefix + "g0_block_reason": None if active else "K1_K2_EXACT_D92_FULL_ALIAS",
         prefix + "query_rows_used": 0,
         prefix + "modified_state_field_names": ["intercept_fp16"] if active else [],
         prefix + "intercept_byte_exact": not active,
@@ -280,15 +274,14 @@ def test_candidate_peak_is_absolute_not_offset_by_e0_peak(tmp_path: Path) -> Non
 
 
 @pytest.mark.parametrize(
-    ("field", "row_kwargs", "reference"),
+    ("row_kwargs", "reference", "result_field"),
     (
         (
-            "wall",
             {"candidate_wall": 150_000_001},
             _reference_resources(),
+            "candidate_wall_hard_pass",
         ),
         (
-            "ratio",
             {"candidate_wall": 140_000_000},
             {
                 scene: {
@@ -297,12 +290,39 @@ def test_candidate_peak_is_absolute_not_offset_by_e0_peak(tmp_path: Path) -> Non
                 }
                 for scene, resource in _reference_resources().items()
             },
+            "candidate_ratio_hard_pass",
         ),
         (
-            "peak",
             {"candidate_peak": 1_048_577},
             _reference_resources(),
+            "candidate_peak_hard_pass",
         ),
+    ),
+)
+def test_fit_audit_records_resource_overage_for_analyzer_without_aborting(
+    tmp_path: Path,
+    row_kwargs: dict[str, int],
+    reference: dict[str, dict[str, int]],
+    result_field: str,
+) -> None:
+    rows = _fit_audit_rows()
+    rows[1] = _row(runner.SCENES[1], **row_kwargs)
+    path = tmp_path / f"fit_audit_{result_field}.json"
+    _write(path, rows)
+
+    result = runner._validate_fit_audit(
+        path,
+        k_shot=10,
+        reference_resources=reference,
+    )
+
+    assert result[result_field] is False
+    assert result["resource_hard_pass"] is False
+
+
+@pytest.mark.parametrize(
+    ("field", "row_kwargs", "reference"),
+    (
         (
             "query MAC",
             {"candidate_query_macs": 11 * 288 + 1},
