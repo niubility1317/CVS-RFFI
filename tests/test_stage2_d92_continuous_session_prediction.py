@@ -5,12 +5,14 @@ import os
 import stat
 from dataclasses import dataclass
 from pathlib import Path
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
 
 from cvsrffi.stage2_d92_continuous_session_prediction import (
     ContinuousSessionPredictionError,
+    _after_apply_manifest_lock,
     _registration_resource,
     _original_d42_f0_prediction,
     prepare_continuous_session_support_deltas,
@@ -242,6 +244,36 @@ def test_frozen_da1_reg0_baseline_records_resources_without_applying_session_gat
     assert resource["registration_incremental_peak_working_set_bytes"] == 4 * 1024 * 1024 + 1
     assert resource["registration_hard_gate_enforced"] is False
     assert resource["registration_resource_scope"] == "frozen_da1_reg0_baseline_rebuild"
+
+
+def test_after_apply_lock_accepts_the_required_stage2b_to_stage2c_transition() -> None:
+    """Would fail if enrollment/apply stages had to be equal across registration."""
+
+    shared = {
+        "receiver": "20-1",
+        "seed": 713106,
+        "k_shot": 10,
+        "phase1_checkpoint_sha256": SHA_A,
+        "feature_runtime_sha256": SHA_B,
+        "method_lock_sha256": SHA_C,
+    }
+    before = {**shared, "stage": "stage2b"}
+    after = {
+        **shared,
+        "stage": "stage2c",
+        "profile": "apply_only",
+        "registration_state": "after",
+        "registered_classes": [
+            {"class_handle": "cls_old_a"},
+            {"class_handle": "cls_new_a"},
+        ],
+    }
+
+    _after_apply_manifest_lock(
+        before,
+        after,
+        SimpleNamespace(old_handles=("cls_old_a",), new_handles=("cls_new_a",)),
+    )
 
 
 @pytest.mark.parametrize(

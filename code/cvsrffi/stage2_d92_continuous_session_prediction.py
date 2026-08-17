@@ -958,10 +958,13 @@ def _scene_names(job: Mapping[str, Any] | None) -> tuple[str, ...]:
 def _after_apply_manifest_lock(
     before: Mapping[str, Any], after_apply: Mapping[str, Any], store: _PreparedDeltaStore
 ) -> None:
-    if after_apply.get("profile") != "apply_only" or after_apply.get("registration_state") != "after":
+    if (
+        after_apply.get("profile") != "apply_only"
+        or after_apply.get("registration_state") != "after"
+        or after_apply.get("stage") != "stage2c"
+    ):
         raise ContinuousSessionPredictionError("after apply profile/state drift")
     for field in (
-        "stage",
         "receiver",
         "seed",
         "k_shot",
