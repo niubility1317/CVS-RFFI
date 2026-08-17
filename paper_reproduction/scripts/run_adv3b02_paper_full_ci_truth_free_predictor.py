@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import os
@@ -68,6 +69,7 @@ MRIOR_PREADAPT_METHOD_TO_LEGACY = {
 MRIOR_PREADAPT_BINDINGS_SCHEMA = (
     "cvs.phase2.adv3b02_mrior_preadapt_predictor_bindings.v1"
 )
+MRIOR_PREADAPT_CHECKPOINT_SCHEMA = "adv3b02.torchscript_identity_runtime.v1"
 METHODS = (
     LEGACY_METHODS
     + tuple(MRIOR_PREADAPT_METHOD_TO_LEGACY)
@@ -335,17 +337,27 @@ def _load_mrior_preadapted_backbones(
     manifest: Mapping[str, Any],
     results: Mapping[str, Any],
     device: torch.device,
-) -> tuple[dict[str, tuple[torch.nn.Module, Any, dict[str, Any]]], list[dict[str, Any]]]:
+) -> tuple[
+    dict[str, tuple[torch.nn.Module, Any, dict[str, Any]]],
+    list[dict[str, Any]],
+    dict[str, Any],
+]:
+    roles = {item["artifact_role"]: item for item in manifest["members"]}
+    checkpoint_identity = _checkpoint_identity(roles.get("checkpoint"))
+    base_backbone, feature_fn, audit = _load_exact_backbone(
+        package_root,
+        manifest,
+        device=device,
+        verify_checkpoint_member=True,
+    )
     prepared: dict[str, tuple[torch.nn.Module, Any, dict[str, Any]]] = {}
     audits: list[dict[str, Any]] = []
     for scenario in FORMAL_LEO_WEAK_SCENARIOS:
-        backbone, feature_fn, audit = _load_exact_backbone(
-            package_root, manifest, device=device
-        )
+        backbone = copy.deepcopy(base_backbone)
         _restore_mrior_preadapted_backbone(backbone, results[scenario].model_state)
         prepared[scenario] = (backbone, feature_fn, audit)
         audits.append({"scenario": scenario, **audit})
-    return prepared, audits
+    return prepared, audits, checkpoint_identity
 
 
 def _old_support_token_sha256(
@@ -452,15 +464,48 @@ def _handles(indices: torch.Tensor, class_handles: list[str]) -> np.ndarray:
     return np.asarray([class_handles[int(value)] for value in values])
 
 
+def _checkpoint_identity(descriptor: Any) -> dict[str, Any]:
+    if not isinstance(descriptor, Mapping) or descriptor.get("artifact_role") != "checkpoint":
+        raise ValueError("MRIOR preadaptation checkpoint descriptor is missing")
+    relative_path = validate_relative_member_path(descriptor.get("relative_path"))
+    sha256 = _require_sha256(
+        descriptor.get("sha256"), field="MRIOR preadaptation checkpoint SHA"
+    )
+    size_bytes = descriptor.get("size_bytes")
+    if isinstance(size_bytes, bool) or not isinstance(size_bytes, int) or size_bytes < 0:
+        raise ValueError("MRIOR preadaptation checkpoint size is invalid")
+    if descriptor.get("schema") != MRIOR_PREADAPT_CHECKPOINT_SCHEMA:
+        raise ValueError("MRIOR preadaptation checkpoint schema drift")
+    if descriptor.get("scenario") is not None or descriptor.get("npz_members") != []:
+        raise ValueError("MRIOR preadaptation checkpoint descriptor drift")
+    return {
+        "relative_path": relative_path,
+        "sha256": sha256,
+        "size_bytes": size_bytes,
+        "schema": descriptor["schema"],
+    }
+
+
 def _load_exact_backbone(
     package_root: Path,
     manifest: Mapping[str, Any],
     *,
     device: torch.device,
+    verify_checkpoint_member: bool = False,
 ):
     roles = {item["artifact_role"]: item for item in manifest["members"]}
     descriptor = roles["checkpoint"]
+    checkpoint_identity = (
+        _checkpoint_identity(descriptor) if verify_checkpoint_member else None
+    )
     with open_regular_member_same_fd(package_root, descriptor["relative_path"]) as handle:
+        if checkpoint_identity is not None:
+            digest, size = _hash_handle(handle)
+            if (
+                digest != checkpoint_identity["sha256"]
+                or size != checkpoint_identity["size_bytes"]
+            ):
+                raise ValueError("MRIOR preadaptation checkpoint member digest drift")
         checkpoint = torch.load(handle, map_location="cpu", weights_only=False)
     exact, audit = build_exact_ssdg_model_from_checkpoint(
         checkpoint,
@@ -487,6 +532,8 @@ def _load_exact_backbone(
             raise ValueError("ADV3B02 identity backbone output drift")
         return feature.float(), logits.float()
 
+    if checkpoint_identity is not None:
+        audit = {**audit, "checkpoint_member_identity": checkpoint_identity}
     return exact.id_backbone.to(device), feature_fn, audit
 
 
@@ -618,7 +665,17 @@ def predict(args: argparse.Namespace) -> dict[str, Any]:
     package_root = Path(args.package_root).resolve(strict=True)
     mrior_preadapt_results: dict[str, Any] = {}
     mrior_preadapt_lineage_by_scenario: dict[str, dict[str, Any]] = {}
+    preadapted_backbones_by_scenario = {}
+    preadapt_checkpoint_audits: list[dict[str, Any]] = []
+    mrior_preadapt_checkpoint_identity: dict[str, Any] | None = None
+    mrior_preadapt_device: torch.device | None = None
     if is_mrior_preadapt:
+        mrior_preadapt_device = torch.device(
+            str(args.device) if torch.cuda.is_available() else "cpu"
+        )
+        if mrior_preadapt_device.type == "cuda":
+            torch.empty(0, device=mrior_preadapt_device)
+            torch.cuda.reset_peak_memory_stats(mrior_preadapt_device)
         metadata_manifest = _preflight_mrior_preadapt_metadata(
             package_root,
             detached_seal_path=args.detached_seal,
@@ -639,6 +696,16 @@ def predict(args: argparse.Namespace) -> dict[str, Any]:
             roles=metadata_roles,
             args=args,
         )
+        (
+            preadapted_backbones_by_scenario,
+            preadapt_checkpoint_audits,
+            mrior_preadapt_checkpoint_identity,
+        ) = _load_mrior_preadapted_backbones(
+            package_root=package_root,
+            manifest=metadata_manifest,
+            results=mrior_preadapt_results,
+            device=mrior_preadapt_device,
+        )
     manifest, _seal, package_audit = preflight_stage2_predictor_package(
         package_root,
         detached_seal_path=args.detached_seal,
@@ -654,11 +721,18 @@ def predict(args: argparse.Namespace) -> dict[str, Any]:
         raise ValueError("old class count is inconsistent with the class registry")
     if int(args.k_shot) > int(manifest["support_pool_max_k"]):
         raise ValueError("K exceeds sealed support pool")
-    device = torch.device(str(args.device) if torch.cuda.is_available() else "cpu")
-    if device.type == "cuda":
-        torch.empty(0, device=device)
-        torch.cuda.reset_peak_memory_stats(device)
     roles = {item["artifact_role"]: item for item in manifest["members"]}
+    if is_mrior_preadapt:
+        if mrior_preadapt_device is None or mrior_preadapt_checkpoint_identity is None:
+            raise ValueError("MRIOR preadaptation checkpoint preparation is missing")
+        if _checkpoint_identity(roles.get("checkpoint")) != mrior_preadapt_checkpoint_identity:
+            raise ValueError("MRIOR preadaptation checkpoint identity drift after preflight")
+        device = mrior_preadapt_device
+    else:
+        device = torch.device(str(args.device) if torch.cuda.is_available() else "cpu")
+        if device.type == "cuda":
+            torch.empty(0, device=device)
+            torch.cuda.reset_peak_memory_stats(device)
     output_dir = Path(args.output_dir).resolve()
     output_dir.mkdir(parents=True, exist_ok=False)
     base_state = _load_base_state(
@@ -674,21 +748,8 @@ def predict(args: argparse.Namespace) -> dict[str, Any]:
     resources = []
     loss_trace = []
     reference_support_tokens = None
-    checkpoint_audits = []
-    preadapted_backbones_by_scenario = {}
+    checkpoint_audits = list(preadapt_checkpoint_audits)
     training_started = time.perf_counter()
-
-    if is_mrior_preadapt:
-        (
-            preadapted_backbones_by_scenario,
-            preadapt_checkpoint_audits,
-        ) = _load_mrior_preadapted_backbones(
-            package_root=package_root,
-            manifest=manifest,
-            results=mrior_preadapt_results,
-            device=device,
-        )
-        checkpoint_audits.extend(preadapt_checkpoint_audits)
 
     # Enrollment: only checkpoint and support members are open.
     for scenario_index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS):

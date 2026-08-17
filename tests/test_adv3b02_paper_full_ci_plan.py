@@ -125,7 +125,15 @@ def test_mrior_preadapt_predictor_loads_every_verified_artifact_before_opening_n
         "candidate_lock_sha256": "e" * 64,
         "package_root_sha256": "f" * 64,
         "members": [
-            {"artifact_role": "checkpoint", "relative_path": "checkpoint.pt", "sha256": "a" * 64},
+            {
+                "artifact_role": "checkpoint",
+                "relative_path": "checkpoint.pt",
+                "sha256": "a" * 64,
+                "size_bytes": 123,
+                "schema": "adv3b02.torchscript_identity_runtime.v1",
+                "scenario": None,
+                "npz_members": [],
+            },
             {"artifact_role": "head", "relative_path": "head.pt"},
             *[
                 {
@@ -166,7 +174,7 @@ def test_mrior_preadapt_predictor_loads_every_verified_artifact_before_opening_n
         return SimpleNamespace(
             model_state={
                 "id_backbone.weight": torch.ones((1, 1)),
-                "id_backbone.bias": torch.zeros(1),
+                "id_backbone.bias": torch.tensor([float(scenarios.index(scene))]),
             },
             input_binding=binding_by_scene[scene],
             method_lock=method_lock,
@@ -184,12 +192,13 @@ def test_mrior_preadapt_predictor_loads_every_verified_artifact_before_opening_n
         role = descriptor["artifact_role"]
         events.append(f"open:{role}")
         if role.startswith("support:"):
-            assert [event for event in events if event.startswith("load:")] == [
-                f"load:{scene}" for scene in scenarios
-            ]
-            assert events.index("full_preflight") > max(
-                events.index(f"load:{scene}") for scene in scenarios
-            )
+            for prefix in ("load", "restore"):
+                assert [event for event in events if event.startswith(f"{prefix}:")] == [
+                    f"{prefix}:{scene}" for scene in scenarios
+                ]
+                assert events.index("full_preflight") > max(
+                    events.index(f"{prefix}:{scene}") for scene in scenarios
+                )
             raise SupportOpenObserved(role)
         raise AssertionError(f"query must not open in this ordering probe: {role}")
 
@@ -199,9 +208,10 @@ def test_mrior_preadapt_predictor_loads_every_verified_artifact_before_opening_n
 
     def fake_full_preflight(*_args, **_kwargs):
         events.append("full_preflight")
-        assert [event for event in events if event.startswith("load:")] == [
-            f"load:{scene}" for scene in scenarios
-        ]
+        for prefix in ("load", "restore"):
+            assert [event for event in events if event.startswith(f"{prefix}:")] == [
+                f"{prefix}:{scene}" for scene in scenarios
+            ]
         return manifest, {}, {}
 
     monkeypatch.setattr(
@@ -242,6 +252,13 @@ def test_mrior_preadapt_predictor_loads_every_verified_artifact_before_opening_n
     )
     monkeypatch.setattr(
         paper_full_predictor,
+        "_restore_mrior_preadapted_backbone",
+        lambda _backbone, state: events.append(
+            f"restore:{scenarios[int(state['id_backbone.bias'].item())]}"
+        ),
+    )
+    monkeypatch.setattr(
+        paper_full_predictor,
         "sha256_file",
         lambda _path: "9" * 64,
     )
@@ -266,9 +283,10 @@ def test_mrior_preadapt_predictor_loads_every_verified_artifact_before_opening_n
             )
         )
 
-    assert [event for event in events if event.startswith("load:")] == [
-        f"load:{scene}" for scene in scenarios
-    ]
+    for prefix in ("load", "restore"):
+        assert [event for event in events if event.startswith(f"{prefix}:")] == [
+            f"{prefix}:{scene}" for scene in scenarios
+        ]
 
 
 def test_mrior_preadapt_rejects_package_seed_mismatch_before_artifact_or_full_preflight(
