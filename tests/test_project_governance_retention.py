@@ -255,6 +255,9 @@ def test_regenerable_cache_requires_all_rebuild_evidence(
         ("generator_evidence_asset_ids", ("asset:LOCAL:FIXTURE:cache/item.bin",)),
         ("source_dependency_evidence_asset_ids", ("asset:LOCAL:FIXTURE:cache/item.bin",)),
         ("rebuild_command_evidence_asset_ids", ("asset:LOCAL:FIXTURE:cache/item.bin",)),
+        ("generator_evidence_asset_ids", (" asset:LOCAL:FIXTURE:cache/item.bin ",)),
+        ("source_dependency_evidence_asset_ids", (" asset:LOCAL:FIXTURE:cache/item.bin ",)),
+        ("rebuild_command_evidence_asset_ids", (" asset:LOCAL:FIXTURE:cache/item.bin ",)),
     ),
 )
 def test_regeneration_requires_nonself_traceable_evidence_for_every_proof_type(
@@ -263,6 +266,29 @@ def test_regeneration_requires_nonself_traceable_evidence_for_every_proof_type(
     retention = _retention_module()
     asset = _asset(evidence_role="cache")
     facts = _regenerable_facts(retention, asset, **{proof_field: invalid_ids})
+
+    decision = retention.classify_retention(asset, facts)
+
+    assert decision.retention_class is RetentionClass.REVIEW_REQUIRED
+    assert decision.rule_code == "INSUFFICIENT_EVIDENCE"
+
+
+@pytest.mark.parametrize(
+    "proof_field",
+    (
+        "generator_evidence_asset_ids",
+        "source_dependency_evidence_asset_ids",
+        "rebuild_command_evidence_asset_ids",
+    ),
+)
+def test_regeneration_requires_trimmed_canonical_proof_evidence_ids(proof_field: str):
+    retention = _retention_module()
+    asset = _asset(evidence_role="cache")
+    facts = _regenerable_facts(
+        retention,
+        asset,
+        **{proof_field: (" asset:LOCAL:FIXTURE:external-proof ",)},
+    )
 
     decision = retention.classify_retention(asset, facts)
 
@@ -429,6 +455,37 @@ def test_self_referential_canonical_copy_requires_review():
 
 
 @pytest.mark.parametrize(
+    "canonical_asset_id",
+    (
+        " asset:LOCAL:FIXTURE:cache/item.bin ",
+        "\tasset:LOCAL:FIXTURE:cache/item.bin\t",
+    ),
+)
+def test_whitespace_wrapped_self_referential_canonical_copy_requires_review(canonical_asset_id: str):
+    retention = _retention_module()
+    digest = "a" * 64
+    asset = _asset(evidence_role="cache", hash_status=HashStatus.SHA256, sha256=digest)
+    facts = _canonical_delete_facts(retention, asset, canonical_asset_id, digest)
+
+    decision = retention.classify_retention(asset, facts)
+
+    assert decision.retention_class is RetentionClass.REVIEW_REQUIRED
+    assert decision.rule_code == "INSUFFICIENT_EVIDENCE"
+
+
+def test_canonical_copy_requires_trimmed_identity():
+    retention = _retention_module()
+    digest = "a" * 64
+    asset = _asset(evidence_role="cache", hash_status=HashStatus.SHA256, sha256=digest)
+    facts = _canonical_delete_facts(retention, asset, " asset:LOCAL:FIXTURE:canonical/item.bin ", digest)
+
+    decision = retention.classify_retention(asset, facts)
+
+    assert decision.retention_class is RetentionClass.REVIEW_REQUIRED
+    assert decision.rule_code == "INSUFFICIENT_EVIDENCE"
+
+
+@pytest.mark.parametrize(
     "changes",
     (
         {"canonical_copy_verified": False},
@@ -495,6 +552,32 @@ def test_batch_rejects_mutually_referential_canonical_candidates():
     assert candidates == ()
 
 
+def test_batch_rejects_whitespace_wrapped_mutually_referential_canonical_candidates():
+    retention = _retention_module()
+    digest = "a" * 64
+    first = _asset(
+        asset_id="asset:LOCAL:FIXTURE:cache/first.bin",
+        evidence_role="cache",
+        hash_status=HashStatus.SHA256,
+        sha256=digest,
+    )
+    second = _asset(
+        asset_id="asset:LOCAL:FIXTURE:cache/second.bin",
+        evidence_role="cache",
+        hash_status=HashStatus.SHA256,
+        sha256=digest,
+    )
+    first_facts = _canonical_delete_facts(retention, first, f" {second.asset_id} ", digest)
+    second_facts = _canonical_delete_facts(retention, second, f" {first.asset_id} ", digest)
+
+    candidates = retention.build_deletion_candidates(
+        (first, second),
+        {first.asset_id: first_facts, second.asset_id: second_facts},
+    )
+
+    assert candidates == ()
+
+
 def _dangerous_package_calls(package_root: Path) -> list[str]:
     module_calls = {
         "os": {
@@ -541,9 +624,6 @@ def _dangerous_package_calls(package_root: Path) -> list[str]:
                     for alias in node.names:
                         if alias.name == "Path":
                             path_constructor_names.add(alias.asname or alias.name)
-        path_instance_names: set[str] = set()
-        path_return_functions: set[str] = set()
-
         def is_path_annotation(node: ast.AST | None) -> bool:
             if isinstance(node, ast.Name):
                 return node.id in path_constructor_names
@@ -554,23 +634,121 @@ def _dangerous_package_calls(package_root: Path) -> list[str]:
                 and node.attr == "Path"
             )
 
-        for node in ast.walk(tree):
-            if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                continue
-            arguments = (*node.args.posonlyargs, *node.args.args, *node.args.kwonlyargs)
-            for argument in arguments:
-                if is_path_annotation(argument.annotation):
-                    path_instance_names.add(argument.arg)
-            for argument in (node.args.vararg, node.args.kwarg):
-                if argument is not None and is_path_annotation(argument.annotation):
-                    path_instance_names.add(argument.arg)
+        module_scope = "module"
+        scope_for_node: dict[int, str] = {}
+        scope_parents: dict[str, str | None] = {module_scope: None}
+        scope_function_nodes: dict[str, ast.FunctionDef | ast.AsyncFunctionDef] = {}
+        functions_by_parent_scope: dict[str, dict[str, str]] = {}
 
-        def is_path_expression(node: ast.AST) -> bool:
+        class ScopeCollector(ast.NodeVisitor):
+            def __init__(self) -> None:
+                self.current_scope = module_scope
+                self.scope_index = 0
+
+            def generic_visit(self, node: ast.AST) -> None:
+                scope_for_node[id(node)] = self.current_scope
+                super().generic_visit(node)
+
+            def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+                self._visit_function(node)
+
+            def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
+                self._visit_function(node)
+
+            def _visit_function(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
+                parent_scope = self.current_scope
+                scope_for_node[id(node)] = parent_scope
+                for decorator in node.decorator_list:
+                    self.visit(decorator)
+                for default in (*node.args.defaults, *node.args.kw_defaults):
+                    if default is not None:
+                        self.visit(default)
+                self.scope_index += 1
+                function_scope = f"function:{self.scope_index}"
+                scope_parents[function_scope] = parent_scope
+                scope_function_nodes[function_scope] = node
+                functions_by_parent_scope.setdefault(parent_scope, {})[node.name] = function_scope
+                self.current_scope = function_scope
+                self.visit(node.args)
+                if node.returns is not None:
+                    self.visit(node.returns)
+                for statement in node.body:
+                    self.visit(statement)
+                self.current_scope = parent_scope
+
+        ScopeCollector().visit(tree)
+        scope_defined_names = {scope: set() for scope in scope_parents}
+        path_names_by_scope = {scope: set() for scope in scope_parents}
+
+        def add_target_names(target: ast.AST, names: set[str]) -> None:
+            if isinstance(target, ast.Name):
+                names.add(target.id)
+            elif isinstance(target, (ast.List, ast.Tuple)):
+                for element in target.elts:
+                    add_target_names(element, names)
+
+        for function_scope, function_node in scope_function_nodes.items():
+            parent_scope = scope_parents[function_scope]
+            if parent_scope is not None:
+                scope_defined_names[parent_scope].add(function_node.name)
+            arguments = (*function_node.args.posonlyargs, *function_node.args.args, *function_node.args.kwonlyargs)
+            for argument in arguments:
+                scope_defined_names[function_scope].add(argument.arg)
+                if is_path_annotation(argument.annotation):
+                    path_names_by_scope[function_scope].add(argument.arg)
+            for argument in (function_node.args.vararg, function_node.args.kwarg):
+                if argument is not None:
+                    scope_defined_names[function_scope].add(argument.arg)
+                    if is_path_annotation(argument.annotation):
+                        path_names_by_scope[function_scope].add(argument.arg)
+
+        for node in ast.walk(tree):
+            scope = scope_for_node.get(id(node), module_scope)
+            if isinstance(node, ast.Assign):
+                for target in node.targets:
+                    add_target_names(target, scope_defined_names[scope])
+            elif isinstance(node, ast.AnnAssign):
+                add_target_names(node.target, scope_defined_names[scope])
+                if is_path_annotation(node.annotation):
+                    add_target_names(node.target, path_names_by_scope[scope])
+            elif isinstance(node, (ast.For, ast.AsyncFor)):
+                add_target_names(node.target, scope_defined_names[scope])
+            elif isinstance(node, ast.Import):
+                for alias in node.names:
+                    scope_defined_names[scope].add(alias.asname or alias.name.split(".")[0])
+            elif isinstance(node, ast.ImportFrom):
+                for alias in node.names:
+                    scope_defined_names[scope].add(alias.asname or alias.name)
+
+        def is_path_name(name: str, scope: str) -> bool:
+            current_scope: str | None = scope
+            while current_scope is not None:
+                if name in path_names_by_scope[current_scope]:
+                    return True
+                if name in scope_defined_names[current_scope]:
+                    return False
+                current_scope = scope_parents[current_scope]
+            return False
+
+        path_return_function_scopes: set[str] = set()
+
+        def is_path_return_function(name: str, scope: str) -> bool:
+            current_scope: str | None = scope
+            while current_scope is not None:
+                function_scope = functions_by_parent_scope.get(current_scope, {}).get(name)
+                if function_scope is not None:
+                    return function_scope in path_return_function_scopes
+                if name in scope_defined_names[current_scope]:
+                    return False
+                current_scope = scope_parents[current_scope]
+            return False
+
+        def is_path_expression(node: ast.AST | None, scope: str) -> bool:
             if isinstance(node, ast.Name):
-                return node.id in path_instance_names
+                return is_path_name(node.id, scope)
             if isinstance(node, ast.Call):
                 if isinstance(node.func, ast.Name):
-                    return node.func.id in path_constructor_names or node.func.id in path_return_functions
+                    return node.func.id in path_constructor_names or is_path_return_function(node.func.id, scope)
                 if isinstance(node.func, ast.Attribute):
                     if (
                         isinstance(node.func.value, ast.Name)
@@ -578,34 +756,41 @@ def _dangerous_package_calls(package_root: Path) -> list[str]:
                         and node.func.attr == "Path"
                     ):
                         return True
-                    return is_path_expression(node.func.value)
+                    return is_path_expression(node.func.value, scope)
             if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Div):
-                return is_path_expression(node.left) or is_path_expression(node.right)
+                return is_path_expression(node.left, scope) or is_path_expression(node.right, scope)
             if isinstance(node, ast.Attribute) and node.attr == "parent":
-                return is_path_expression(node.value)
+                return is_path_expression(node.value, scope)
             return False
 
         changed = True
         while changed:
             changed = False
             for node in ast.walk(tree):
-                if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) or node.name in path_return_functions:
-                    continue
-                if any(
-                    isinstance(return_node, ast.Return)
-                    and return_node.value is not None
-                    and is_path_expression(return_node.value)
-                    for return_node in ast.walk(node)
-                ):
-                    path_return_functions.add(node.name)
-                    changed = True
-            for node in ast.walk(tree):
-                if isinstance(node, (ast.Assign, ast.AnnAssign)) and is_path_expression(node.value):
+                if isinstance(node, (ast.Assign, ast.AnnAssign)):
+                    scope = scope_for_node.get(id(node), module_scope)
+                    if not is_path_expression(node.value, scope):
+                        continue
                     targets = node.targets if isinstance(node, ast.Assign) else (node.target,)
                     for target in targets:
-                        if isinstance(target, ast.Name) and target.id not in path_instance_names:
-                            path_instance_names.add(target.id)
-                            changed = True
+                        target_names: set[str] = set()
+                        add_target_names(target, target_names)
+                        for target_name in target_names:
+                            if target_name not in path_names_by_scope[scope]:
+                                path_names_by_scope[scope].add(target_name)
+                                changed = True
+            for function_scope, function_node in scope_function_nodes.items():
+                if function_scope in path_return_function_scopes:
+                    continue
+                if is_path_annotation(function_node.returns) or any(
+                    isinstance(return_node, ast.Return)
+                    and return_node.value is not None
+                    and scope_for_node.get(id(return_node), module_scope) == function_scope
+                    and is_path_expression(return_node.value, function_scope)
+                    for return_node in ast.walk(function_node)
+                ):
+                    path_return_function_scopes.add(function_scope)
+                    changed = True
         for node in ast.walk(tree):
             if not isinstance(node, ast.Call):
                 continue
@@ -615,6 +800,7 @@ def _dangerous_package_calls(package_root: Path) -> list[str]:
             if not isinstance(node.func, ast.Attribute):
                 continue
             receiver = node.func.value
+            scope = scope_for_node.get(id(node), module_scope)
             if isinstance(receiver, ast.Name):
                 module = module_aliases.get(receiver.id)
                 if module in module_calls and node.func.attr in module_calls[module]:
@@ -629,7 +815,7 @@ def _dangerous_package_calls(package_root: Path) -> list[str]:
             if node.func.attr in path_mutation_methods:
                 findings.append(f"{source_path.name}:{node.lineno}:Path.{node.func.attr}")
                 continue
-            if node.func.attr == "replace" and is_path_expression(receiver):
+            if node.func.attr == "replace" and is_path_expression(receiver, scope):
                 findings.append(f"{source_path.name}:{node.lineno}:Path.replace")
     return findings
 
@@ -662,6 +848,17 @@ def test_ast_safety_scan_catches_real_path_and_process_mutation_without_false_re
         "def returned(src: P, dst: P):\n    rebound = return_path(src)\n    rebound.replace(dst)\n",
         encoding="utf-8",
     )
+    (package_root / "scoped.py").write_text(
+        "from pathlib import Path\n"
+        "import dataclasses\n"
+        "path = Path('module')\n"
+        "def path_receiver(path: Path, target: Path):\n    path.replace(target)\n"
+        "def string_receiver(path: str):\n    path.replace('old', 'new')\n"
+        "def path_named_dataclasses(dataclasses: Path, target: Path):\n    dataclasses.replace(target)\n"
+        "def pure_dataclasses(record):\n    return dataclasses.replace(record)\n"
+        "def module_receiver():\n    path.replace(Path('target'))\n",
+        encoding="utf-8",
+    )
     (package_root / "emit.py").write_text(
         "from pathlib import Path\noutput = Path('fresh')\noutput.write_text('fresh')\noutput.replace(Path('old'))\n",
         encoding="utf-8",
@@ -672,6 +869,7 @@ def test_ast_safety_scan_catches_real_path_and_process_mutation_without_false_re
     assert any(item.endswith(":Path.replace") for item in findings)
     assert any(item.endswith(":os.kill") for item in findings)
     assert sum(item.startswith("annotated.py:") and item.endswith(":Path.replace") for item in findings) == 3
+    assert sum(item.startswith("scoped.py:") and item.endswith(":Path.replace") for item in findings) == 3
     assert any(item.startswith("emit.py:") and item.endswith(":Path.replace") for item in findings)
     assert not any(item.startswith("emit.py:") and ":output.write_text" in item for item in findings)
     assert not any(item.startswith("safe.py:") for item in findings)

@@ -121,6 +121,15 @@ def _normalized_role(asset: AssetRecord) -> str:
     return (asset.evidence_role or "").strip().casefold().replace("-", "_").replace(" ", "_")
 
 
+def _canonical_asset_id(value: object) -> str | None:
+    """Accept only non-empty asset IDs already supplied in canonical form."""
+
+    if not isinstance(value, str):
+        return None
+    canonical_value = value.strip()
+    return canonical_value if canonical_value and value == canonical_value else None
+
+
 def _evidence_ids(asset: AssetRecord, facts: RetentionEvidence) -> tuple[str, ...]:
     identifiers = [asset.asset_id]
     for evidence_ids in (
@@ -130,9 +139,13 @@ def _evidence_ids(asset: AssetRecord, facts: RetentionEvidence) -> tuple[str, ..
         facts.rebuild_command_evidence_asset_ids,
     ):
         if isinstance(evidence_ids, tuple):
-            identifiers.extend(item for item in evidence_ids if isinstance(item, str) and item)
-    if facts.canonical_copy_asset_id:
-        identifiers.append(facts.canonical_copy_asset_id)
+            identifiers.extend(
+                canonical_asset_id
+                for evidence_asset_id in evidence_ids
+                if (canonical_asset_id := _canonical_asset_id(evidence_asset_id)) is not None
+            )
+    if (canonical_copy_asset_id := _canonical_asset_id(facts.canonical_copy_asset_id)) is not None:
+        identifiers.append(canonical_copy_asset_id)
     return tuple(dict.fromkeys(identifiers))
 
 
@@ -182,13 +195,14 @@ def _is_verified_historical_archive(facts: RetentionEvidence) -> bool:
 
 
 def _has_nonself_evidence_ids(asset: AssetRecord, evidence_asset_ids: tuple[str, ...]) -> bool:
+    asset_id = _canonical_asset_id(asset.asset_id)
     return (
-        isinstance(evidence_asset_ids, tuple)
+        asset_id is not None
+        and isinstance(evidence_asset_ids, tuple)
         and bool(evidence_asset_ids)
         and all(
-            isinstance(evidence_asset_id, str)
-            and bool(evidence_asset_id.strip())
-            and evidence_asset_id != asset.asset_id
+            (canonical_asset_id := _canonical_asset_id(evidence_asset_id)) is not None
+            and canonical_asset_id != asset_id
             for evidence_asset_id in evidence_asset_ids
         )
     )
@@ -249,10 +263,12 @@ def _is_sha256(value: str | None) -> bool:
 
 
 def _has_retained_canonical_copy(asset: AssetRecord, facts: RetentionEvidence) -> bool:
+    asset_id = _canonical_asset_id(asset.asset_id)
+    canonical_copy_asset_id = _canonical_asset_id(facts.canonical_copy_asset_id)
     return (
-        isinstance(facts.canonical_copy_asset_id, str)
-        and bool(facts.canonical_copy_asset_id.strip())
-        and facts.canonical_copy_asset_id != asset.asset_id
+        asset_id is not None
+        and canonical_copy_asset_id is not None
+        and canonical_copy_asset_id != asset_id
         and facts.canonical_copy_verified
         and facts.canonical_copy_retention_class in _RETAINED_CANONICAL_CLASSES
         and asset.hash_status is HashStatus.SHA256
@@ -406,17 +422,20 @@ def build_deletion_candidates(
         classified_assets.append((asset, facts, decision))
 
     batch_candidate_asset_ids = {
-        asset.asset_id
+        canonical_asset_id
         for asset, facts, decision in classified_assets
         if decision.retention_class is RetentionClass.DELETE_CANDIDATE
         and _is_fully_proven_delete_candidate(asset, facts)
+        and (canonical_asset_id := _canonical_asset_id(asset.asset_id)) is not None
     }
     candidates: list[DeletionCandidate] = []
     for asset, facts, decision in classified_assets:
-        if asset.asset_id not in batch_candidate_asset_ids:
+        asset_id = _canonical_asset_id(asset.asset_id)
+        if asset_id not in batch_candidate_asset_ids:
             continue
         uses_canonical_copy = _has_retained_canonical_copy(asset, facts) and not _is_proven_regenerable(asset, facts)
-        if uses_canonical_copy and facts.canonical_copy_asset_id in batch_candidate_asset_ids:
+        canonical_copy_asset_id = _canonical_asset_id(facts.canonical_copy_asset_id)
+        if uses_canonical_copy and canonical_copy_asset_id in batch_candidate_asset_ids:
             continue
         candidates.append(
             DeletionCandidate(
