@@ -69,6 +69,7 @@ _WINDOWS_RESERVED_NAMES = frozenset(
     | {f"COM{index}" for index in range(1, 10)}
     | {f"LPT{index}" for index in range(1, 10)}
 )
+_ALLOWED_SCOPE_STATUS = frozenset({"VERIFIED", "NOT_PRESENT", "SCAN_ERROR"})
 _REQUIRED_METADATA = frozenset(
     {
         "local_root",
@@ -143,9 +144,7 @@ def _csv_cell(value: Any) -> str:
 
     converted = _json_value(value)
     rendered = _cell(value)
-    if isinstance(converted, str) and rendered.lstrip(" \t\r\n").startswith(
-        ("=", "+", "-", "@")
-    ):
+    if isinstance(converted, str) and rendered.lstrip().startswith(("=", "+", "-", "@")):
         return "'" + rendered
     return rendered
 
@@ -319,6 +318,7 @@ def _validate_scan_id(value: Any) -> str:
         or windows_path.drive
         or windows_path.root
         or windows_path.anchor
+        or windows_path.is_reserved()
         or len(windows_path.parts) != 1
         or any(
             character in _INVALID_WINDOWS_NAME_CHARS or ord(character) < 32
@@ -394,6 +394,12 @@ def _validate_bundle_records(bundle: ScanBundle) -> dict[str, tuple[Any, ...]]:
                         raise ValueError(
                             f"{collection}[{index}].{field_name} must be {enum_type.__name__}"
                         )
+            if isinstance(record, ScopeResult) and (
+                type(record.status) is not str or record.status not in _ALLOWED_SCOPE_STATUS
+            ):
+                raise ValueError(
+                    f"{collection}[{index}].status must be a canonical scope state"
+                )
             if (
                 isinstance(record, (AssetRecord, ScopeResult))
                 and record.scan_id != bundle.scan_id

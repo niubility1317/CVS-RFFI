@@ -206,7 +206,17 @@ def test_emitter_produces_stable_small_outputs_with_required_encodings(tmp_path)
 
 
 @pytest.mark.parametrize(
-    "formula_path", ("=1+1", "+SUM(A1:A2)", "-2+3", "@cmd", "\t=1+1")
+    "formula_path",
+    (
+        "=1+1",
+        "+SUM(A1:A2)",
+        "-2+3",
+        "@cmd",
+        "\t=1+1",
+        "\v=1+1",
+        "\f=1+1",
+        "\u00a0=1+1",
+    ),
 )
 def test_emitter_neutralizes_text_formula_prefixes_in_csv_only(tmp_path, formula_path):
     bundle = replace(_bundle(), assets=(_asset(formula_path),))
@@ -260,11 +270,57 @@ def test_emitter_is_immutable_on_second_scan_id_and_receipt_is_last(tmp_path):
     assert writes[-1] == "scan_receipt.json"
 
 
-@pytest.mark.parametrize("scan_id", ("C:", "C:outside", "D:relative"))
+@pytest.mark.parametrize(
+    "scan_id",
+    (
+        "C:",
+        "C:outside",
+        "D:relative",
+        "COM¹",
+        "COM¹.txt",
+        "COM²",
+        "COM³",
+        "LPT¹",
+        "LPT².txt",
+        "LPT³",
+        "CONIN$",
+        "CONOUT$",
+        "CONIN$.txt",
+    ),
+)
 def test_emitter_rejects_windows_drive_relative_scan_ids_before_writing(tmp_path, scan_id):
+    original = _bundle()
+    bundle = replace(
+        original,
+        scan_id=scan_id,
+        assets=tuple(replace(asset, scan_id=scan_id) for asset in (original.assets or ())),
+        scope_results=tuple(
+            replace(scope, scan_id=scan_id) for scope in (original.scope_results or ())
+        ),
+    )
+
     with pytest.raises(ValueError, match="scan_id"):
         ReportEmitter(
-            replace(_bundle(), scan_id=scan_id),
+            bundle,
+            output_root=tmp_path / "git",
+            external_output_root=tmp_path / "external",
+            metadata=_metadata(),
+        )
+
+    assert not (tmp_path / "git").exists()
+    assert not (tmp_path / "external").exists()
+
+
+@pytest.mark.parametrize(
+    "status", (AccessStatus.SCAN_ERROR, "SCAN_ERROR ", " scan_error", "UNKNOWN")
+)
+def test_emitter_rejects_noncanonical_scope_status_before_writing(tmp_path, status):
+    bundle = _bundle()
+    scope = replace((bundle.scope_results or ())[0], status=status)
+
+    with pytest.raises(ValueError, match="scope_results"):
+        ReportEmitter(
+            replace(bundle, scope_results=(scope,)),
             output_root=tmp_path / "git",
             external_output_root=tmp_path / "external",
             metadata=_metadata(),
