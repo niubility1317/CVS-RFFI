@@ -51,6 +51,8 @@ _ARTIFACT_ORDER = (
     "asset_inventory_full.json",
 )
 _RECEIPT_NAME = "scan_receipt.json"
+_REQUESTED_N607_ROUTES = frozenset({"DIRECT", "LAB_BRIDGE", "NO_ROUTE"})
+_OBSERVED_N607_STATES = frozenset({"VERIFIED", "FAILED", "UNKNOWN"})
 _REQUIRED_METADATA = frozenset(
     {
         "local_root",
@@ -224,8 +226,10 @@ def _validate_metadata(metadata: Mapping[str, Any] | None) -> dict[str, Any]:
         "n607_disconnect",
     ):
         value = values[field]
-        if not isinstance(value, str) or not value.strip():
-            raise ValueError(f"receipt metadata field must be a non-empty string: {field}")
+        if not isinstance(value, str) or not value.strip() or value != value.strip():
+            raise ValueError(
+                f"receipt metadata field must be a trimmed non-empty string: {field}"
+            )
     for field in ("local_scopes", "n607_scopes"):
         scopes = values[field]
         if (
@@ -247,8 +251,11 @@ def _validate_metadata(metadata: Mapping[str, Any] | None) -> dict[str, Any]:
         values["n607_disconnect"],
     )
     if values["n607_requested"]:
-        if any(state in {"NOT_PROVIDED", "NOT_REQUESTED"} for state in n607_states):
-            raise ValueError("requested N607 receipt metadata must carry observed connection states")
+        route, preflight, disconnect = n607_states
+        if route not in _REQUESTED_N607_ROUTES:
+            raise ValueError("requested N607 receipt metadata has an uncontrolled route state")
+        if preflight not in _OBSERVED_N607_STATES or disconnect not in _OBSERVED_N607_STATES:
+            raise ValueError("requested N607 receipt metadata must carry controlled observed states")
     elif n607_states != ("NOT_REQUESTED", "NOT_REQUESTED", "NOT_REQUESTED") or error_count != 0:
         raise ValueError("unrequested N607 receipt metadata must use explicit NOT_REQUESTED states")
     return values
@@ -720,11 +727,17 @@ class ReportEmitter:
             external_target.parent.mkdir(parents=True, exist_ok=True)
             external_target.mkdir()
             external_output = external_target
+            external_entry_by_name: dict[str, dict[str, Any]] = {}
             for name in _ARTIFACT_ORDER:
                 external_path = external_target / name
                 self._write_exclusive(external_path, payloads[name], encoding="utf-8")
                 entry = _file_entry(external_path)
                 external_entries.append(entry)
+                external_entry_by_name[name] = entry
+
+            for name in _ARTIFACT_ORDER:
+                external_path = external_target / name
+                entry = external_entry_by_name[name]
                 if name == "report.md":
                     if len(payloads[name]) <= self.git_file_max_bytes:
                         self._write_exclusive(git_target / name, payloads[name], encoding="utf-8")

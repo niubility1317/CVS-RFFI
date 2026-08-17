@@ -154,7 +154,7 @@ def _metadata() -> dict[str, object]:
         "git_tracked_diff_state": "clean",
         "collector_versions": {"local": "1", "n607": "1"},
         "n607_requested": True,
-        "n607_route": "direct",
+        "n607_route": "DIRECT",
         "n607_preflight": "VERIFIED",
         "n607_disconnect": "VERIFIED",
         "n607_scan_error_count": 0,
@@ -331,7 +331,19 @@ def test_emitter_fails_when_a_csv_row_cannot_fit_a_git_shard(tmp_path):
         ).emit()
 
     output = tmp_path / "git" / "EMIT_FIXTURE"
+    external_output = tmp_path / "external" / "EMIT_FIXTURE"
+    expected_external = {
+        "report.md",
+        "asset_inventory_local.csv",
+        "asset_inventory_n607.csv",
+        "experiment_index.csv",
+        "git_ownership.csv",
+        "retention_decisions.csv",
+        "deletion_candidates.csv",
+        "asset_inventory_full.json",
+    }
     assert output.exists()
+    assert {path.name for path in external_output.iterdir()} == expected_external
     assert not output.joinpath("scan_receipt.json").exists()
 
 
@@ -470,6 +482,34 @@ def test_emitter_requires_complete_terminal_receipt_metadata(tmp_path):
     assert not (tmp_path / "git").exists()
 
 
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("n607_route", " DIRECT "),
+        ("n607_preflight", " NOT_PROVIDED "),
+        ("n607_disconnect", " VERIFIED "),
+        ("n607_route", "arbitrary-route"),
+        ("n607_preflight", "not_provided"),
+        ("n607_disconnect", "CLEAN"),
+    ),
+)
+def test_emitter_rejects_uncontrolled_requested_n607_states_before_writing(
+    tmp_path, field, value
+):
+    metadata = _metadata()
+    metadata[field] = value
+
+    with pytest.raises(ValueError, match="N607|metadata"):
+        ReportEmitter(
+            _bundle(),
+            output_root=tmp_path / "git",
+            external_output_root=tmp_path / "external",
+            metadata=metadata,
+        )
+
+    assert not (tmp_path / "git").exists()
+
+
 def test_emitter_accepts_explicit_not_requested_n607_evidence(tmp_path):
     metadata = _metadata()
     metadata.update(
@@ -504,7 +544,7 @@ def test_emitter_receipt_keeps_remote_evidence_and_zero_execution_fields(tmp_pat
     assert receipt["roots"]["n607"] == "/home/szu2070436088/2510044040/CV-SincNet"
     assert receipt["n607_evidence"] == {
         "requested": True,
-        "route": "direct",
+        "route": "DIRECT",
         "preflight": "VERIFIED",
         "disconnect": "VERIFIED",
     }
