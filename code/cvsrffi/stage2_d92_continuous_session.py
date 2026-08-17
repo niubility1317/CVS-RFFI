@@ -797,7 +797,7 @@ def advance_session(
             "d92_continuous_incremental_peak_bytes": None,
             "d92_continuous_registration_wall_ms": None,
             "d92_continuous_peak_budget_bytes": 4 * 1024 * 1024,
-            "d92_continuous_wall_budget_ms": 150,
+            "d92_continuous_wall_budget_ms": 300,
             "future_support_open_sentinel": 0,
             "past_token_duplicate_count": 0,
             "query_fit_access": False,

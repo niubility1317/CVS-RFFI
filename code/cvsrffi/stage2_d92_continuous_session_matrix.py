@@ -102,7 +102,7 @@ QUERY_CONTRACT = {
     "global_reassignment": False,
 }
 RESOURCE_GATE = {
-    "registration_wall_target_ns": 150_000_000,
+    "registration_wall_target_ns": 300_000_000,
     "registration_incremental_peak_hard_max_bytes": 4 * 1024 * 1024,
     "query_state_bytes_equal": True,
     "query_macs_equal": True,

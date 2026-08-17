@@ -187,7 +187,7 @@ def _artifact_state(root: Path, *, label: str) -> dict[str, Any]:
     resource = {
         **resource,
         "registration_wall_gate_pass": (
-            int(resource["registration_wall_time_ns"]) <= 150_000_000
+            int(resource["registration_wall_time_ns"]) <= 300_000_000
         ),
         "registration_peak_gate_pass": (
             int(resource["registration_incremental_peak_working_set_bytes"])
@@ -484,7 +484,7 @@ def analyze_continuous_session_run(
             "status": "PASS" if resource_failed == 0 else "REJECT_RESOURCE",
             "evaluated_state_count": resource_evaluated,
             "failed_state_count": resource_failed,
-            "wall_target_ns": 150_000_000,
+            "wall_target_ns": 300_000_000,
             "peak_hard_max_bytes": 4 * 1024 * 1024,
             "observed_wall_max_ns": resource_wall_max_ns,
             "observed_peak_max_bytes": resource_peak_max_bytes,

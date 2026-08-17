@@ -38,6 +38,7 @@ def _write_state(
     state_sha: str,
     classes: tuple[str, ...],
     peak_bytes: int = 20,
+    wall_time_ns: int = 10,
 ) -> dict[str, object]:
     root.mkdir(parents=True)
     tokens = np.asarray(("qid_old", "qid_new", "qid_future"))
@@ -57,7 +58,7 @@ def _write_state(
         "old_class_count": 6,
     })
     resource_sha = _write_json(root / "resource_audit.json", {
-        "registration_wall_time_ns": 10,
+        "registration_wall_time_ns": wall_time_ns,
         "registration_incremental_peak_working_set_bytes": peak_bytes,
         "support_bytes": 30,
         "state_bytes": 40,
@@ -93,7 +94,7 @@ def _write_state(
 
 
 def _fixture(
-    tmp_path: Path, *, peak_bytes: int = 20
+    tmp_path: Path, *, peak_bytes: int = 20, wall_time_ns: int = 10
 ) -> tuple[Path, Path, Path, Path]:
     output_root = tmp_path / "output"
     job_root = output_root / "jobs" / "outer0" / "full"
@@ -101,10 +102,10 @@ def _fixture(
     classes1 = classes0 + ("new_0",)
     scenes: dict[str, object] = {}
     for scene in SCENES:
-        baseline = _write_state(job_root / scene / "DA1_REG0", lifecycle="DA1_REG0", session_index=0, state_sha="a" * 64, classes=classes0, peak_bytes=peak_bytes)
+        baseline = _write_state(job_root / scene / "DA1_REG0", lifecycle="DA1_REG0", session_index=0, state_sha="a" * 64, classes=classes0, peak_bytes=peak_bytes, wall_time_ns=wall_time_ns)
         schedules: dict[str, object] = {}
         for schedule in SCHEDULES:
-            final = _write_state(job_root / scene / schedule / "session_01", lifecycle="DA1_REG1_S1", session_index=1, state_sha="b" * 64, classes=classes1, peak_bytes=peak_bytes)
+            final = _write_state(job_root / scene / schedule / "session_01", lifecycle="DA1_REG1_S1", session_index=1, state_sha="b" * 64, classes=classes1, peak_bytes=peak_bytes, wall_time_ns=wall_time_ns)
             schedules[schedule] = {"increments": [1], "arrival_order": [0], "sessions": [final]}
         scenes[scene] = {"DA1_REG0": baseline, "schedules": schedules}
     prediction_manifest = job_root / "prediction_manifest.json"
@@ -177,3 +178,39 @@ def test_resource_failure_preserves_metrics_and_reports_reject_resource(
     assert result["resource_gate"]["status"] == "REJECT_RESOURCE"
     assert result["resource_gate"]["failed_state_count"] > 0
     assert result["trajectories"]["outer0"]["leo_clear_weak"]["batch_5"]
+
+
+def test_truth_last_resource_gate_accepts_registration_wall_at_v2_300ms_limit(
+    tmp_path: Path,
+) -> None:
+    manifest, output_root, truth_root, analysis_root = _fixture(
+        tmp_path, wall_time_ns=300_000_000
+    )
+
+    result = analyze_continuous_session_run(
+        manifest_path=manifest,
+        output_root=output_root,
+        truth_root=truth_root,
+        analysis_root=analysis_root,
+    )
+
+    assert result["resource_gate"]["status"] == "PASS"
+    assert result["resource_gate"]["wall_target_ns"] == 300_000_000
+
+
+def test_truth_last_resource_gate_rejects_registration_wall_above_v2_300ms_limit(
+    tmp_path: Path,
+) -> None:
+    manifest, output_root, truth_root, analysis_root = _fixture(
+        tmp_path, wall_time_ns=300_000_001
+    )
+
+    result = analyze_continuous_session_run(
+        manifest_path=manifest,
+        output_root=output_root,
+        truth_root=truth_root,
+        analysis_root=analysis_root,
+    )
+
+    assert result["resource_gate"]["status"] == "REJECT_RESOURCE"
+    assert result["resource_gate"]["failed_state_count"] > 0

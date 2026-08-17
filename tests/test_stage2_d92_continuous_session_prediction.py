@@ -11,6 +11,7 @@ import pytest
 
 from cvsrffi.stage2_d92_continuous_session_prediction import (
     ContinuousSessionPredictionError,
+    _registration_resource,
     _original_d42_f0_prediction,
     prepare_continuous_session_support_deltas,
     run_continuous_session_prediction,
@@ -189,6 +190,38 @@ def test_prediction_seals_one_shared_da1_reg0_baseline_before_all_sessions(
     assert baseline["lifecycle_state"] == "DA1_REG0"
     assert baseline["registered_class_count"] == 2
     assert Path(baseline["output_root"]).joinpath("prediction_artifact.npz").is_file()
+
+
+def test_prediction_runtime_accepts_registration_wall_at_v2_300ms_limit() -> None:
+    """Would fail if the runtime still enforced the superseded 150ms gate."""
+
+    resource = _registration_resource(
+        {
+            "registration_wall_time_ns": 300_000_000,
+            "registration_incremental_peak_working_set_bytes": 4 * 1024 * 1024,
+        },
+        state=_state(("cls_old_a", "cls_old_b")),
+        support_bytes=10,
+        registered_class_count=2,
+    )
+
+    assert resource["registration_wall_time_ns"] == 300_000_000
+    assert resource["registration_wall_hard_max_ns"] == 300_000_000
+
+
+def test_prediction_runtime_rejects_registration_wall_above_v2_300ms_limit() -> None:
+    """Would fail if a runtime session above 300ms could publish."""
+
+    with pytest.raises(ContinuousSessionPredictionError, match="registration wall hard gate failed"):
+        _registration_resource(
+            {
+                "registration_wall_time_ns": 300_000_001,
+                "registration_incremental_peak_working_set_bytes": 4 * 1024 * 1024,
+            },
+            state=_state(("cls_old_a", "cls_old_b")),
+            support_bytes=10,
+            registered_class_count=2,
+        )
 
 
 @pytest.mark.parametrize(

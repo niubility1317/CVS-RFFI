@@ -410,7 +410,7 @@ def test_each_session_emits_one_full_solve_one_d42_codec_and_zero_query_access(
         result.state.persistent_state_sha256
     )
     assert result.audit["d92_continuous_peak_budget_bytes"] == 4 * 1024 * 1024
-    assert result.audit["d92_continuous_wall_budget_ms"] == 150
+    assert result.audit["d92_continuous_wall_budget_ms"] == 300
     assert result.ledger.anchor.da_anchor_id == "frozen-da-anchor-v1"
     assert result.ledger.next_session == 2
     assert set(inspect.signature(module.advance_session).parameters).isdisjoint(
