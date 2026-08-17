@@ -2,11 +2,32 @@ from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
 
 from paper_reproduction.scripts import run_adv3b02_mrior_preadapt_ci_plan as runner
+
+
+def test_runner_bootstraps_code_root_from_independent_cwd(tmp_path: Path) -> None:
+    script = Path(runner.__file__).resolve()
+    probe = (
+        "import runpy; "
+        f"runpy.run_path({str(script)!r}, run_name='mrior_runner_import_probe'); "
+        "import cvsrffi; "
+        "print(cvsrffi.__file__)"
+    )
+    completed = subprocess.run(
+        [sys.executable, "-c", probe],
+        cwd=tmp_path,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert completed.returncode == 0, completed.stderr
+    assert "cvsrffi" in completed.stdout
 
 
 def _plan_contract_sha256(plan: dict) -> str:

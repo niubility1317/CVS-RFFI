@@ -14,6 +14,13 @@ from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+CODE_ROOT = REPO_ROOT / "code"
+for _import_root in (REPO_ROOT, CODE_ROOT):
+    if str(_import_root) not in sys.path:
+        sys.path.insert(0, str(_import_root))
+
+
 RUN_ROOT_IDENTITY_SCHEMA = "cvs.phase2.adv3b02_mrior_preadapt_ci_run_root.v1"
 PLAN_SCHEMA = "cvs.phase2.adv3b02_mrior_preadapt_ci_plan.v1"
 HEALTH_STATE_SCHEMA = "cvs.phase2.adv3b02_mrior_preadapt_ci_health_state.v1"
