@@ -102,6 +102,12 @@ def _cell(value: Any) -> str:
     return str(converted)
 
 
+def _markdown_cell(value: Any) -> str:
+    """Render one table cell without allowing evidence text to break Markdown rows."""
+
+    return _cell(value).replace("\r\n", "<br>").replace("\r", "<br>").replace("\n", "<br>").replace("|", "\\|")
+
+
 def _record_dict(record: Any) -> dict[str, Any]:
     if not is_dataclass(record):
         raise TypeError(f"expected dataclass record, got {type(record)!r}")
@@ -135,15 +141,17 @@ def _csv_bytes(records: Iterable[Any], record_type: type[Any], *, sort_fields: S
 
 
 def _iso_utc(value: str | None) -> str:
-    if not value:
+    if value is None:
         current = datetime.now(timezone.utc)
         current -= timedelta(microseconds=current.microsecond)
         return current.isoformat()[:-6] + "Z"
+    if not isinstance(value, str) or not value or value != value.strip():
+        raise ValueError("timestamp must be an ISO 8601 value")
     try:
         iso_value = value[:-1] + "+00:00" if value.endswith("Z") else value
         parsed = datetime.fromisoformat(iso_value)
-    except ValueError:
-        return value
+    except ValueError as exc:
+        raise ValueError("timestamp must be an ISO 8601 value") from exc
     if parsed.tzinfo is None:
         parsed = datetime(
             parsed.year,
@@ -214,6 +222,12 @@ class ReportEmitter:
         self.output_root = Path(output_root).expanduser().resolve(strict=False)
         self.external_output_root = Path(external_output_root).expanduser().resolve(strict=False)
         self.metadata = dict(metadata or {})
+        for timestamp in (bundle.started_at_utc, bundle.completed_at_utc):
+            if timestamp is not None:
+                _iso_utc(timestamp)
+        n607_scan_error_count = self.metadata.get("n607_scan_error_count", 0)
+        if type(n607_scan_error_count) is not int or n607_scan_error_count < 0:
+            raise ValueError("n607_scan_error_count must be a non-negative integer")
         self.git_file_max_bytes = int(git_file_max_bytes)
         self.git_scan_max_bytes = int(git_scan_max_bytes)
         self._emission_now_utc: str | None = None
@@ -294,6 +308,11 @@ class ReportEmitter:
             for scope in records["scope_results"]
             if str(scope.status).upper() != "VERIFIED"
         ]
+        experiment_gaps = sorted(
+            f"{experiment.experiment_id}:{gap}"
+            for experiment in experiments
+            for gap in (experiment.closure_gaps or ())
+        )
         metadata = self.metadata
         n607_route = metadata.get("n607_route", "NOT_PROVIDED")
         n607_preflight = metadata.get("n607_preflight", "NOT_PROVIDED")
@@ -331,8 +350,10 @@ class ReportEmitter:
             "no_rows": "\u6ca1\u6709\u5f85\u5ba1\u6279\u6761\u76ee",
             "gaps": "\u8986\u76d6\u7f3a\u53e3\u4e0e\u9519\u8bef",
             "nonverified": "\u975eVERIFIED\u627f\u8f7d\u9762",
+            "experiment_gaps": "\u5b9e\u9a8c\u95ed\u5408\u7f3a\u53e3",
             "asset_error": "\u8d44\u4ea7SCAN_ERROR",
             "experiment_error": "\u5b9e\u9a8cSCAN_ERROR",
+            "n607_record_error": "N607\u534f\u8baeSCAN_ERROR",
             "remote": "N607\u8fde\u63a5\u7ed3\u679c",
             "route": "\u8def\u7531",
             "preflight": "\u9884\u68c0",
@@ -376,12 +397,25 @@ class ReportEmitter:
         lines.extend(f"|{key}|{retention[key]}|" for key in sorted(retention))
         if not retention:
             lines.append(f"|{zh['none']}|0|")
-        lines.extend(["", f"## {zh['deletion']}", "", f"|candidate_id|{zh['position']}|{zh['path']}|{zh['kind']}|{zh['size']}|{zh['reason']}|approval_state|execution_state|", "|---|---|---|---|---:|---|---|---|"])
+        deletion_fields = _record_fields(DeletionCandidate)
+        lines.extend(
+            [
+                "",
+                f"## {zh['deletion']}",
+                "",
+                "|" + "|".join(deletion_fields) + "|",
+                "|" + "|".join("---" for _ in deletion_fields) + "|",
+            ]
+        )
         for candidate in _sort_records(deletion_rows, fields_for_key=("candidate_id", "location", "absolute_path")):
-            lines.append("|{candidate_id}|{location}|{absolute_path}|{asset_kind}|{size_bytes}|{reason}|{approval_state}|{execution_state}|".format(**{name: _cell(getattr(candidate, name)) for name in ("candidate_id", "location", "absolute_path", "asset_kind", "size_bytes", "reason", "approval_state", "execution_state")}))
+            lines.append(
+                "|"
+                + "|".join(_markdown_cell(getattr(candidate, name)) for name in deletion_fields)
+                + "|"
+            )
         if not deletion_rows:
-            lines.append(f"|{zh['no_candidate']}|--|--|--|0|{zh['no_rows']}|AWAITING_USER_APPROVAL|NOT_AUTHORIZED|")
-        lines.extend(["", f"## {zh['gaps']}", "", f"- {zh['nonverified']}\uff1a`{'; '.join(gaps) if gaps else zh['none']}`", f"- {zh['asset_error']}\uff1a`{sum(asset.access_status is AccessStatus.SCAN_ERROR for asset in assets)}`", f"- {zh['experiment_error']}\uff1a`{sum(experiment.experiment_state is ExperimentState.SCAN_ERROR for experiment in experiments)}`", "", f"## {zh['remote']}", "", f"- {zh['route']}\uff1a`{n607_route}`", f"- {zh['preflight']}\uff1a`{n607_preflight}`", f"- {zh['disconnect']}\uff1a`{n607_disconnect}`", "", f"## {zh['boundary']}", "", zh["zero"], ""])
+            lines.extend(["", zh["no_rows"]])
+        lines.extend(["", f"## {zh['gaps']}", "", f"- {zh['nonverified']}\uff1a`{'; '.join(gaps) if gaps else zh['none']}`", f"- {zh['experiment_gaps']}\uff1a`{'; '.join(experiment_gaps) if experiment_gaps else zh['none']}`", f"- {zh['asset_error']}\uff1a`{sum(asset.access_status is AccessStatus.SCAN_ERROR for asset in assets)}`", f"- {zh['experiment_error']}\uff1a`{sum(experiment.experiment_state is ExperimentState.SCAN_ERROR for experiment in experiments)}`", f"- {zh['n607_record_error']}\uff1a`{int(metadata.get('n607_scan_error_count', 0))}`", "", f"## {zh['remote']}", "", f"- {zh['route']}\uff1a`{n607_route}`", f"- {zh['preflight']}\uff1a`{n607_preflight}`", f"- {zh['disconnect']}\uff1a`{n607_disconnect}`", "", f"## {zh['boundary']}", "", zh["zero"], ""])
         return "\n".join(lines)
 
     def _payloads(self, records: Mapping[str, tuple[Any, ...]]) -> dict[str, bytes]:
@@ -434,6 +468,7 @@ class ReportEmitter:
             "git_ownership": sum(record.ownership is GitOwnership.GIT_STATE_ERROR or bool(record.error) for record in git_records),
             "retention_decisions": 0,
             "deletion_candidates": 0,
+            "n607_records": int(metadata.get("n607_scan_error_count", 0)),
         }
         local_scopes = metadata.get(
             "local_scopes",
@@ -508,10 +543,21 @@ class ReportEmitter:
 
         if not name.endswith(".csv"):
             return []
-        lines = payload.splitlines(keepends=True)
-        if not lines:
+        try:
+            logical_rows = list(csv.reader(io.StringIO(payload.decode("utf-8-sig"), newline="")))
+        except (UnicodeDecodeError, csv.Error) as exc:
+            raise ValueError(f"invalid CSV payload for sharding: {name}") from exc
+        if not logical_rows:
             return []
-        header = lines[0]
+        header = logical_rows[0]
+
+        def encode_rows(rows: Sequence[Sequence[str]], *, bom: bool) -> bytes:
+            output = io.StringIO(newline="")
+            writer = csv.writer(output, lineterminator="\n")
+            writer.writerows(rows)
+            return output.getvalue().encode("utf-8-sig" if bom else "utf-8")
+
+        header_payload = encode_rows((header,), bom=True)
         shards: list[Path] = []
         current: list[bytes] = []
         current_size = 0
@@ -528,22 +574,23 @@ class ReportEmitter:
             current = []
             current_size = 0
 
-        for line in lines[1:]:
-            if len(line) + len(header) > self.git_file_max_bytes:
+        for row in logical_rows[1:]:
+            row_payload = encode_rows((row,), bom=False)
+            if len(row_payload) + len(header_payload) > self.git_file_max_bytes:
                 raise ValueError(
                     f"CSV row cannot fit git shard threshold for {name}: "
-                    f"row_bytes={len(line)} header_bytes={len(header)} "
+                    f"row_bytes={len(row_payload)} header_bytes={len(header_payload)} "
                     f"limit={self.git_file_max_bytes}"
                 )
             if not current:
-                current = [header]
-                current_size = len(header)
-            if current_size + len(line) > self.git_file_max_bytes:
+                current = [header_payload]
+                current_size = len(header_payload)
+            if current_size + len(row_payload) > self.git_file_max_bytes:
                 flush()
-                current = [header]
-                current_size = len(header)
-            current.append(line)
-            current_size += len(line)
+                current = [header_payload]
+                current_size = len(header_payload)
+            current.append(row_payload)
+            current_size += len(row_payload)
         flush()
         summary = {
             "artifact": name,
@@ -551,7 +598,7 @@ class ReportEmitter:
             "external_bytes": external_size,
             "external_sha256": external_sha256,
             "shards": [path.name for path in shards],
-            "row_count": max(0, len(lines) - 1),
+            "row_count": max(0, len(logical_rows) - 1),
         }
         self._write_exclusive(git_target / f"{name[:-4]}.summary.json", _json_bytes(summary), encoding="utf-8")
         return shards
@@ -610,6 +657,17 @@ class ReportEmitter:
                     }
                     self._write_exclusive(git_target / f"{name}.summary.json", _json_bytes(summary), encoding="utf-8")
 
+        oversized_git_files = [
+            path
+            for path in git_target.iterdir()
+            if path.is_file() and path.stat().st_size > self.git_file_max_bytes
+        ]
+        if oversized_git_files:
+            raise ValueError(
+                "git output exceeds per-file threshold: "
+                + ", ".join(path.name for path in sorted(oversized_git_files))
+            )
+
         receipt = self._receipt_base(records)
         receipt["artifact_route"] = "EXTERNAL_COMPLETE_WITH_GIT_SHARDS" if oversize else "GIT_COMPLETE"
         receipt["files"] = [
@@ -618,6 +676,11 @@ class ReportEmitter:
         ]
         receipt["external_files"] = sorted(external_entries, key=lambda item: item["path"])
         receipt_payload = _json_bytes(receipt)
+        if len(receipt_payload) > self.git_file_max_bytes:
+            raise ValueError(
+                "scan receipt exceeds git file threshold: "
+                f"bytes={len(receipt_payload)} limit={self.git_file_max_bytes}"
+            )
         self._write_exclusive(git_target / _RECEIPT_NAME, receipt_payload, encoding="utf-8")
         return EmissionResult(git_target, external_output, receipt)
 

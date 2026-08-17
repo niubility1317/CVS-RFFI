@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import hashlib
 import json
 from dataclasses import replace
@@ -228,6 +229,19 @@ def test_emitter_reuses_one_timestamp_when_bundle_times_are_missing(tmp_path):
     assert receipt["started_at_utc"].endswith("Z")
 
 
+def test_emitter_rejects_invalid_timestamp_before_creating_output(tmp_path):
+    bundle = replace(_bundle(), started_at_utc="not-an-iso-timestamp")
+
+    with pytest.raises(ValueError, match="ISO 8601"):
+        ReportEmitter(
+            bundle,
+            output_root=tmp_path / "git",
+            external_output_root=tmp_path / "external",
+        )
+
+    assert not (tmp_path / "git").exists()
+
+
 def test_emitter_retains_partial_output_without_receipt_on_failure(tmp_path):
     class FailingEmitter(ReportEmitter):
         def __init__(self, *args, **kwargs):
@@ -255,7 +269,7 @@ def test_emitter_routes_complete_oversized_tables_without_truncating_evidence(tm
         output_root=tmp_path / "git",
         external_output_root=tmp_path / "external",
         metadata=_metadata(),
-        git_file_max_bytes=1024,
+        git_file_max_bytes=10_000,
         git_scan_max_bytes=512,
     )
 
@@ -269,7 +283,7 @@ def test_emitter_routes_complete_oversized_tables_without_truncating_evidence(tm
     assert any(path.suffix == ".csv" for path in external_output.iterdir())
     assert any(path.name.endswith(".summary.json") for path in git_output.iterdir())
     assert any(path.name.endswith(".part.csv") for path in git_output.iterdir())
-    assert all(path.stat().st_size <= 1024 for path in git_output.iterdir() if path.name.endswith(".part.csv"))
+    assert all(path.stat().st_size <= 10_000 for path in git_output.iterdir())
     assert receipt["external_files"]
     assert all(Path(item["path"]).is_absolute() for item in receipt["external_files"])
     full_external_csv = next(path for path in external_output.iterdir() if path.name == "asset_inventory_local.csv")
@@ -293,6 +307,77 @@ def test_emitter_fails_when_a_csv_row_cannot_fit_a_git_shard(tmp_path):
     assert not output.joinpath("scan_receipt.json").exists()
 
 
+def test_emitter_treats_embedded_newline_as_one_csv_row_for_shard_limit(tmp_path):
+    multiline = "runs/" + "\n".join("x" * 120 for _ in range(8)) + ".json"
+    bundle = replace(
+        _bundle(),
+        assets=tuple(_bundle().assets or ()) + (_asset(multiline, location=Location.N607),),
+    )
+
+    with pytest.raises(ValueError, match="CSV row"):
+        ReportEmitter(
+            bundle,
+            output_root=tmp_path / "git",
+            external_output_root=tmp_path / "external",
+            git_file_max_bytes=900,
+            git_scan_max_bytes=256,
+        ).emit()
+
+    assert not (tmp_path / "git" / "EMIT_FIXTURE" / "scan_receipt.json").exists()
+
+
+def test_emitter_preserves_embedded_newline_in_complete_csv_shards(tmp_path):
+    multiline = "runs/line one\nline two.json"
+    original = _bundle()
+    bundle = replace(
+        original,
+        assets=tuple(original.assets or ()) + (_asset(multiline, location=Location.N607),),
+    )
+    result = ReportEmitter(
+        bundle,
+        output_root=tmp_path / "git",
+        external_output_root=tmp_path / "external",
+        git_file_max_bytes=10_000,
+        git_scan_max_bytes=256,
+    ).emit()
+
+    external_csv = (result.external_output_dir or Path()) / "asset_inventory_n607.csv"
+    with external_csv.open("r", encoding="utf-8-sig", newline="") as stream:
+        external_rows = list(csv.reader(stream))
+    shard_rows: list[list[str]] = []
+    for shard in sorted(result.git_output_dir.glob("asset_inventory_n607.*.part.csv")):
+        with shard.open("r", encoding="utf-8-sig", newline="") as stream:
+            rows = list(csv.reader(stream))
+        assert rows[0] == external_rows[0]
+        shard_rows.extend(rows[1:])
+
+    assert sorted(shard_rows) == sorted(external_rows[1:])
+    assert any(row[4] == multiline for row in shard_rows)
+
+
+def test_emitter_fails_instead_of_writing_an_oversized_receipt(tmp_path):
+    bundle = ScanBundle(
+        scan_id="SMALL_RECEIPT_LIMIT",
+        operator="fixture",
+        started_at_utc="2026-08-17T01:02:03Z",
+        completed_at_utc="2026-08-17T01:02:04Z",
+    )
+
+    with pytest.raises(ValueError, match="receipt exceeds"):
+        ReportEmitter(
+            bundle,
+            output_root=tmp_path / "git",
+            external_output_root=tmp_path / "external",
+            metadata=_metadata(),
+            git_file_max_bytes=512,
+            git_scan_max_bytes=256,
+        ).emit()
+
+    output = tmp_path / "git" / "SMALL_RECEIPT_LIMIT"
+    assert output.exists()
+    assert not output.joinpath("scan_receipt.json").exists()
+
+
 def test_emitter_receipt_keeps_remote_evidence_and_zero_execution_fields(tmp_path):
     result = ReportEmitter(
         _bundle(), output_root=tmp_path / "git", external_output_root=tmp_path / "external", metadata=_metadata()
@@ -312,6 +397,35 @@ def test_emitter_receipt_keeps_remote_evidence_and_zero_execution_fields(tmp_pat
     assert "\u5b9e\u9645\u79fb\u52a8\u3001\u8986\u76d6\u3001\u5220\u9664\u6570\u91cf\u4e3a0" in report
     assert "\u664b\u7ea7" not in report
     assert "promotion" not in report.casefold()
+
+
+def test_emitter_reports_all_remote_errors_closure_gaps_and_approval_evidence(tmp_path):
+    original = _bundle()
+    candidate = replace(
+        (original.deletion_candidates or ())[0],
+        evidence=("asset:evidence",),
+        dependencies=("asset:dependency",),
+        recoverability="REGENERABLE_FROM_RETAINED_SOURCE",
+        estimated_space_reclaim=42,
+    )
+    bundle = replace(original, deletion_candidates=(candidate,))
+    metadata = _metadata()
+    metadata["n607_scan_error_count"] = 3
+
+    result = ReportEmitter(
+        bundle,
+        output_root=tmp_path / "git",
+        external_output_root=tmp_path / "external",
+        metadata=metadata,
+    ).emit()
+    receipt = json.loads(result.git_output_dir.joinpath("scan_receipt.json").read_text(encoding="utf-8"))
+    report = result.git_output_dir.joinpath("report.md").read_text(encoding="utf-8")
+
+    assert receipt["scan_error_counts"]["n607_records"] == 3
+    assert "RUN_B:missing score" in report
+    assert "asset:evidence" in report
+    assert "asset:dependency" in report
+    assert "REGENERABLE_FROM_RETAINED_SOURCE" in report
 
 
 def test_emitter_has_no_destructive_execution_surface():
