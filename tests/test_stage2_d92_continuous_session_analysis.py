@@ -11,6 +11,8 @@ import pytest
 
 from cvsrffi.stage2_d92_continuous_session_analysis import (
     ContinuousSessionAnalysisError,
+    _native_artifact_root,
+    _prediction_manifest,
     analyze_continuous_session_run,
 )
 
@@ -28,6 +30,37 @@ def _write_json(path: Path, value: object) -> str:
     path.write_text(json.dumps(value, sort_keys=True, separators=(",", ":")), encoding="utf-8")
     os.chmod(path, stat.S_IREAD)
     return _sha(path)
+
+
+def test_local_retrieval_resolves_prediction_manifest_by_frozen_job_id(
+    tmp_path: Path,
+) -> None:
+    """Would fail when the retrieved job directory includes the session suffix."""
+
+    output = tmp_path / "output"
+    expected = output / "jobs" / "outer0__continuous_session" / "full" / "prediction_manifest.json"
+    _write_json(expected, {"schema": "fixture"})
+
+    actual = _prediction_manifest(
+        {
+            "outer_key": "outer0",
+            "job_id": "outer0__continuous_session",
+            "output_root": "/remote/run/output/jobs/outer0__continuous_session",
+        },
+        output,
+    )
+
+    assert actual == expected.resolve()
+
+
+@pytest.mark.skipif(os.name != "nt", reason="MSYS drive paths are Windows-specific")
+def test_local_retrieval_resolves_msys_artifact_root(tmp_path: Path) -> None:
+    native = (tmp_path / "state").resolve()
+    native.mkdir()
+    text = native.as_posix()
+    msys = Path(f"/{text[0].lower()}{text[2:]}")
+
+    assert _native_artifact_root(msys) == native
 
 
 def _write_state(
@@ -103,9 +136,11 @@ def _fixture(
     scenes: dict[str, object] = {}
     for scene in SCENES:
         baseline = _write_state(job_root / scene / "DA1_REG0", lifecycle="DA1_REG0", session_index=0, state_sha="a" * 64, classes=classes0, peak_bytes=peak_bytes, wall_time_ns=wall_time_ns)
+        baseline["output_root"] = f"/remote/run/output/outer0/full/{scene}/DA1_REG0"
         schedules: dict[str, object] = {}
         for schedule in SCHEDULES:
             final = _write_state(job_root / scene / schedule / "session_01", lifecycle="DA1_REG1_S1", session_index=1, state_sha="b" * 64, classes=classes1, peak_bytes=peak_bytes, wall_time_ns=wall_time_ns)
+            final["output_root"] = f"/remote/run/output/outer0/full/{scene}/{schedule}/session_01"
             schedules[schedule] = {"increments": [1], "arrival_order": [0], "sessions": [final]}
         scenes[scene] = {"DA1_REG0": baseline, "schedules": schedules}
     prediction_manifest = job_root / "prediction_manifest.json"

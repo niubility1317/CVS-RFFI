@@ -92,7 +92,23 @@ def _readonly(path: Path) -> bool:
     return path.is_file() and not path.is_symlink() and not (stat.S_IMODE(info.st_mode) & _WRITE_BITS)
 
 
+def _native_artifact_root(root: Path) -> Path:
+    """Translate an MSYS ``/x/...`` retrieval path for native Windows Python."""
+
+    text = root.as_posix()
+    if (
+        os.name == "nt"
+        and len(text) >= 4
+        and text[0] == "/"
+        and text[1].isalpha()
+        and text[2] == "/"
+    ):
+        return Path(f"{text[1].upper()}:{text[2:]}").resolve()
+    return root
+
+
 def _artifact_state(root: Path, *, label: str) -> dict[str, Any]:
+    root = _native_artifact_root(root)
     if root.is_symlink() or not root.is_dir():
         raise _fail(f"{label} state root drift")
     commit = _read_json(root / "COMMIT.json", label=f"{label} commit")
@@ -214,8 +230,10 @@ def _artifact_state(root: Path, *, label: str) -> dict[str, Any]:
 
 def _prediction_manifest(job: Mapping[str, Any], output_root: Path) -> Path:
     outer = str(job.get("outer_key", ""))
+    job_id = str(job.get("job_id", ""))
     candidates = (
         Path(str(job.get("output_root", ""))) / "full" / "prediction_manifest.json",
+        output_root / "jobs" / job_id / "full" / "prediction_manifest.json",
         output_root / "jobs" / outer / "full" / "prediction_manifest.json",
         output_root / "full" / "prediction_manifest.json",
         output_root / "prediction_manifest.json",
@@ -228,8 +246,22 @@ def _prediction_manifest(job: Mapping[str, Any], output_root: Path) -> Path:
     return next(iter(found))
 
 
+def _artifact_reference_root(reference: Mapping[str, Any], fallback: Path, *, label: str) -> Path:
+    """Resolve a sealed state after an N607 run is retrieved to a local root."""
+
+    declared = _native_artifact_root(Path(str(reference.get("output_root", ""))))
+    candidates = (declared, fallback)
+    found = {
+        path.resolve() for path in candidates if path.is_dir() and not path.is_symlink()
+    }
+    if len(found) != 1:
+        raise _fail(f"{label} state root location drift")
+    return next(iter(found))
+
+
 def _collect_prediction(job: Mapping[str, Any], output_root: Path) -> dict[str, Any]:
     manifest_path = _prediction_manifest(job, output_root)
+    job_full_root = manifest_path.parent
     manifest = _read_json(manifest_path, label="prediction manifest")
     if manifest.get("schema") != PREDICTION_SCHEMA or not isinstance(manifest.get("scenes"), Mapping):
         raise _fail("prediction manifest schema drift")
@@ -242,7 +274,14 @@ def _collect_prediction(job: Mapping[str, Any], output_root: Path) -> dict[str, 
         if not isinstance(surface, Mapping) or not isinstance(surface.get("DA1_REG0"), Mapping):
             raise _fail(f"prediction baseline closure drift: {scene}")
         baseline_ref = surface["DA1_REG0"]
-        baseline = _artifact_state(Path(str(baseline_ref.get("output_root", ""))), label=f"{scene}/DA1_REG0")
+        baseline = _artifact_state(
+            _artifact_reference_root(
+                baseline_ref,
+                job_full_root / scene / "DA1_REG0",
+                label=f"{scene}/DA1_REG0",
+            ),
+            label=f"{scene}/DA1_REG0",
+        )
         if baseline["lifecycle_state"] != "DA1_REG0" or baseline["session_index"] != 0:
             raise _fail(f"prediction baseline lifecycle drift: {scene}")
         schedules = surface.get("schedules")
@@ -259,7 +298,11 @@ def _collect_prediction(job: Mapping[str, Any], output_root: Path) -> dict[str, 
                 if not isinstance(reference, Mapping):
                     raise _fail(f"prediction session reference drift: {scene}/{schedule}")
                 row = _artifact_state(
-                    Path(str(reference.get("output_root", ""))),
+                    _artifact_reference_root(
+                        reference,
+                        job_full_root / scene / schedule / f"session_{index:02d}",
+                        label=f"{scene}/{schedule}/S{index}",
+                    ),
                     label=f"{scene}/{schedule}/S{index}",
                 )
                 if row["lifecycle_state"] != f"DA1_REG1_S{index}" or row["session_index"] != index:
