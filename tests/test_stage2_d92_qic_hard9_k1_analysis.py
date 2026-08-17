@@ -153,6 +153,25 @@ def test_qic_output_is_exclusive_seven_file_package(tmp_path: Path) -> None:
         analysis.write_analysis_outputs(result, output_root)
 
 
+def test_qic_score_binding_accepts_retrieved_remote_path_suffix(tmp_path: Path) -> None:
+    outer = "rx_7_7__seed_713103__k_10__new_5"
+    job_root = tmp_path / "jobs" / outer / analysis.ARM_ID
+    job_root.mkdir(parents=True)
+    local_binding = job_root / "score_binding.json"
+    local_binding.write_text("{}", encoding="utf-8")
+    remote_binding = (
+        "/home/user/project/runs/qic/jobs/"
+        f"{outer}/{analysis.ARM_ID}/score_binding.json"
+    )
+
+    assert analysis._resolve_score_binding_path(remote_binding, job_root) == local_binding.resolve()
+    with pytest.raises(analysis.D92QICHard9K1AnalysisError, match="path drift"):
+        analysis._resolve_score_binding_path(
+            f"/home/user/project/runs/qic/jobs/other/{analysis.ARM_ID}/score_binding.json",
+            job_root,
+        )
+
+
 def test_qic_markdown_exposes_all_four_da_registration_states() -> None:
     result = {
         "verdict": "REJECT_ROUTE",

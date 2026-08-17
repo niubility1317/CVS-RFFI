@@ -1269,6 +1269,26 @@ def _validate_receipt(
         raise _fail("job receipt truth-sidecar SHA drift")
 
 
+def _resolve_score_binding_path(binding_value: Any, job_root: Path) -> Path:
+    """Resolve an immutable score binding after a complete run is retrieved.
+
+    Receipts preserve the original N607 absolute path.  A retrieved run is
+    accepted only when that path keeps the exact jobs/<outer>/<arm> suffix;
+    the binding bytes and SHA remain independently verified below.
+    """
+
+    if not isinstance(binding_value, str) or not binding_value:
+        raise _fail("score binding evidence missing")
+    expected = (job_root / "score_binding.json").resolve()
+    normalized = binding_value.replace("\\", "/").rstrip("/")
+    suffix = f"/jobs/{job_root.parent.name}/{job_root.name}/score_binding.json"
+    if Path(binding_value).resolve() != expected and not normalized.endswith(suffix):
+        raise _fail("score binding path drift")
+    if not expected.is_file() or expected.is_symlink():
+        raise _fail("score binding path drift")
+    return expected
+
+
 def _validate_score_binding(
     score: Mapping[str, Any],
     receipt: Mapping[str, Any],
@@ -1293,12 +1313,7 @@ def _validate_score_binding(
     if str(score.get("before_prediction_sha256", "")).lower() != before_sha or str(score.get("after_prediction_sha256", "")).lower() != after_sha:
         raise _fail("score prediction binding drift")
     binding_value = receipt.get("score_binding")
-    expected_binding_path = (job_root / "score_binding.json").resolve()
-    if not isinstance(binding_value, str) or not binding_value:
-        raise _fail("score binding evidence missing")
-    binding_path = Path(binding_value).resolve()
-    if binding_path != expected_binding_path or not binding_path.is_file() or binding_path.is_symlink():
-        raise _fail("score binding path drift")
+    binding_path = _resolve_score_binding_path(binding_value, job_root)
     binding_sha = _sha(binding_path)
     if str(receipt.get("score_binding_sha256", "")).lower() != binding_sha:
         raise _fail("score binding SHA drift")
