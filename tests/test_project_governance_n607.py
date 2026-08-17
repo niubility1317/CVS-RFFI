@@ -685,6 +685,98 @@ def test_verified_collection_requires_root_and_every_configured_carrier_scope() 
         assert result.receipt.outcome is RemoteOutcome.FAILED
 
 
+def test_ndjson_rejects_not_present_root_scope() -> None:
+    from tools.project_governance.collect_n607 import _parse_ndjson
+
+    records = list(_ndjson())
+    root_index = next(
+        index
+        for index, line in enumerate(records)
+        if json.loads(line).get("record_type") == "SCOPE"
+        and json.loads(line).get("relative_path") == ""
+    )
+    root_scope = json.loads(records[root_index])
+    root_scope["status"] = "NOT_PRESENT"
+    records[root_index] = json.dumps(root_scope)
+
+    with pytest.raises(ValueError, match="root scope"):
+        _parse_ndjson(
+            tuple(records),
+            scan_id="SCAN-1",
+            expected_root="/home/szu2070436088/2510044040/CV-SincNet",
+            expected_carriers=("runs", "logs"),
+        )
+
+
+def test_ndjson_rejects_scan_error_root_scope() -> None:
+    from tools.project_governance.collect_n607 import _parse_ndjson
+
+    records = list(_ndjson())
+    root_index = next(
+        index
+        for index, line in enumerate(records)
+        if json.loads(line).get("record_type") == "SCOPE"
+        and json.loads(line).get("relative_path") == ""
+    )
+    root_scope = json.loads(records[root_index])
+    root_scope["status"] = "SCAN_ERROR"
+    records[root_index] = json.dumps(root_scope)
+
+    with pytest.raises(ValueError, match="root scope"):
+        _parse_ndjson(
+            tuple(records),
+            scan_id="SCAN-1",
+            expected_root="/home/szu2070436088/2510044040/CV-SincNet",
+            expected_carriers=("runs", "logs"),
+        )
+
+
+@pytest.mark.parametrize("duplicate_root", (False, True))
+def test_ndjson_rejects_missing_or_duplicate_root_scope(duplicate_root: bool) -> None:
+    from tools.project_governance.collect_n607 import _parse_ndjson
+
+    records = list(_ndjson())
+    root_index = next(
+        index
+        for index, line in enumerate(records)
+        if json.loads(line).get("record_type") == "SCOPE"
+        and json.loads(line).get("relative_path") == ""
+    )
+    if duplicate_root:
+        records.insert(-1, records[root_index])
+    else:
+        del records[root_index]
+    completion = json.loads(records[-1])
+    completion["record_count"] = len(records) - 1
+    records[-1] = json.dumps(completion)
+
+    with pytest.raises(ValueError, match="root/carrier scope coverage"):
+        _parse_ndjson(
+            tuple(records),
+            scan_id="SCAN-1",
+            expected_root="/home/szu2070436088/2510044040/CV-SincNet",
+            expected_carriers=("runs", "logs"),
+        )
+
+
+def test_ndjson_allows_not_present_optional_carrier_scope() -> None:
+    from tools.project_governance.collect_n607 import _parse_ndjson
+
+    records, _ = _parse_ndjson(
+        _ndjson(),
+        scan_id="SCAN-1",
+        expected_root="/home/szu2070436088/2510044040/CV-SincNet",
+        expected_carriers=("runs", "logs"),
+    )
+
+    assert any(
+        record.get("record_type") == "SCOPE"
+        and record.get("relative_path") == "logs"
+        and record.get("status") == "NOT_PRESENT"
+        for record in records
+    )
+
+
 def test_unknown_record_type_and_invalid_utf8_are_rejected() -> None:
     unknown = list(_ndjson())
     unknown.insert(

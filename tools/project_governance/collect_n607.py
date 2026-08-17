@@ -896,6 +896,9 @@ def _parse_ndjson(
         or set(observed_scope_paths) != set(expected_scope_paths)
     ):
         raise ValueError("NDJSON root/carrier scope coverage is incomplete")
+    root_scope = next(scope for scope in scope_records if scope.get("relative_path") == "")
+    if root_scope.get("status") != "VERIFIED":
+        raise ValueError("NDJSON root scope must be VERIFIED")
     asset_ids = [
         str(item.get("asset_id")) for item in records if item.get("record_type") == "ASSET"
     ]
