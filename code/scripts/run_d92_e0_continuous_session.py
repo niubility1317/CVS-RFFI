@@ -34,8 +34,8 @@ class D92ContinuousSessionRunnerError(RuntimeError):
     """Raised when the small continuous-session runner cannot proceed."""
 
 
-PredictionEntry = Callable[..., Mapping[str, Any] | None]
-DeltaEntry = Callable[..., Mapping[str, Any] | None]
+PredictionEntry = Callable[..., Mapping[str, Any]]
+DeltaEntry = Callable[..., Mapping[str, Any]]
 
 
 def _now() -> str:
@@ -215,11 +215,11 @@ def _load_delta_entry() -> DeltaEntry:
 
 
 def _invoke_entry(
-    entry: Callable[..., Mapping[str, Any] | None],
+    entry: Callable[..., Mapping[str, Any]],
     kwargs: dict[str, Any],
     *,
     label: str,
-) -> Mapping[str, Any] | None:
+) -> Mapping[str, Any]:
     try:
         signature = inspect.signature(entry)
     except (TypeError, ValueError):
@@ -239,9 +239,22 @@ def _invoke_entry(
         raise D92ContinuousSessionRunnerError(
             f"{label} entry signature/API mismatch: {error}"
         ) from error
-    if result is not None and not isinstance(result, Mapping):
+    if not isinstance(result, Mapping):
         raise D92ContinuousSessionRunnerError(f"{label} entry must return a mapping")
     return result
+
+
+def _require_completed_entry(
+    result: Mapping[str, Any],
+    *,
+    expected_status: str,
+    required_paths: Sequence[Path],
+    label: str,
+) -> None:
+    if result.get("status") != expected_status:
+        raise D92ContinuousSessionRunnerError(f"{label} entry did not complete")
+    if any(path.is_symlink() or not path.is_file() for path in required_paths):
+        raise D92ContinuousSessionRunnerError(f"{label} completion manifest is missing")
 
 
 def _invoke_prediction(
@@ -333,9 +346,18 @@ def prepare_deltas(
     for job in jobs:
         destination = _prepared_delta_root(manifest, job)
         _ensure_new_directory(destination, label="delta")
-        _invoke_entry(
+        result = _invoke_entry(
             entry,
             _delta_kwargs(manifest=manifest, job=job, output_root=destination),
+            label="delta",
+        )
+        _require_completed_entry(
+            result,
+            expected_status="PREPARED_DELTA_SUPPORT_COMPLETE",
+            required_paths=(
+                destination / "prepared_manifest.json",
+                destination / "COMMIT.json",
+            ),
             label="delta",
         )
         _write_json_new(
@@ -383,7 +405,7 @@ def smoke(
     output = job_root / "smoke"
     _ensure_new_directory(output, label="smoke")
     entry = prediction_entry or _load_prediction_entry()
-    _invoke_prediction(
+    result = _invoke_prediction(
         entry,
         manifest=manifest,
         job=job,
@@ -391,6 +413,14 @@ def smoke(
         prepared_delta_root=prepared_delta_root,
         output_root=output,
         device=device,
+    )
+    _require_completed_entry(
+        result,
+        expected_status=(
+            "D92_E0_CONTINUOUS_SESSION_TRUTH_FREE_PREDICTIONS_COMPLETE"
+        ),
+        required_paths=(output / "prediction_manifest.json",),
+        label="prediction",
     )
     receipt = {
         "schema": "cvs.phase2.d92_e0_continuous_session.smoke_receipt.v1",
@@ -425,7 +455,7 @@ def run_job(
     _require_prepared_delta(prepared_delta_root)
     _ensure_new_directory(output, label="job")
     entry = prediction_entry or _load_prediction_entry()
-    _invoke_prediction(
+    result = _invoke_prediction(
         entry,
         manifest=manifest,
         job=job,
@@ -433,6 +463,14 @@ def run_job(
         prepared_delta_root=prepared_delta_root,
         output_root=output,
         device=device,
+    )
+    _require_completed_entry(
+        result,
+        expected_status=(
+            "D92_E0_CONTINUOUS_SESSION_TRUTH_FREE_PREDICTIONS_COMPLETE"
+        ),
+        required_paths=(output / "prediction_manifest.json",),
+        label="prediction",
     )
     receipt = {
         "schema": matrix.JOB_RECEIPT_SCHEMA,

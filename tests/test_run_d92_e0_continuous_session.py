@@ -26,8 +26,11 @@ def _prepare_deltas(manifest_path: Path) -> dict[str, object]:
 
     def fake_delta(**kwargs: object) -> dict[str, object]:
         calls.append(dict(kwargs))
-        Path(str(kwargs["output_root"])).mkdir(parents=True, exist_ok=True)
-        return {"status": "MOCK_DELTAS"}
+        output = Path(str(kwargs["output_root"]))
+        output.mkdir(parents=True, exist_ok=True)
+        (output / "prepared_manifest.json").write_text("{}", encoding="utf-8")
+        (output / "COMMIT.json").write_text("{}", encoding="utf-8")
+        return {"status": "PREPARED_DELTA_SUPPORT_COMPLETE"}
 
     result = runner.prepare_deltas(
         manifest_path=manifest_path,
@@ -60,7 +63,12 @@ def test_smoke_uses_first_job_and_only_two_truth_free_schedules(tmp_path: Path) 
 
     def fake_prediction(**kwargs: object) -> dict[str, object]:
         calls.append(dict(kwargs))
-        return {"status": "MOCK_PREDICTION", "schedules": kwargs["schedules"]}
+        output = Path(str(kwargs["output_root"]))
+        (output / "prediction_manifest.json").write_text("{}", encoding="utf-8")
+        return {
+            "status": "D92_E0_CONTINUOUS_SESSION_TRUTH_FREE_PREDICTIONS_COMPLETE",
+            "schedules": kwargs["schedules"],
+        }
 
     receipt = runner.smoke(
         manifest_path=manifest_path,
@@ -87,7 +95,12 @@ def test_run_job_calls_all_four_schedules_once_without_truth(tmp_path: Path) -> 
 
     def fake_prediction(**kwargs: object) -> dict[str, object]:
         calls.append(dict(kwargs))
-        return {"status": "MOCK_PREDICTION", "schedules": kwargs["schedules"]}
+        output = Path(str(kwargs["output_root"]))
+        (output / "prediction_manifest.json").write_text("{}", encoding="utf-8")
+        return {
+            "status": "D92_E0_CONTINUOUS_SESSION_TRUTH_FREE_PREDICTIONS_COMPLETE",
+            "schedules": kwargs["schedules"],
+        }
 
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     receipt = runner.run_job(
@@ -122,6 +135,46 @@ def test_prepare_deltas_calls_public_delta_builder_once_per_job(tmp_path: Path) 
         for key in call
     )
     assert all(Path(str(call["output_root"])).is_dir() for call in calls)
+
+
+def test_runner_rejects_noop_entries_before_writing_completion_receipts(
+    tmp_path: Path,
+) -> None:
+    manifest_path = _prepare(tmp_path)
+
+    with pytest.raises(runner.D92ContinuousSessionRunnerError, match="mapping|complete"):
+        runner.prepare_deltas(
+            manifest_path=manifest_path,
+            job_id=json.loads(manifest_path.read_text())["jobs"][0]["job_id"],
+            delta_entry=lambda **_kwargs: None,
+        )
+
+    manifest = json.loads(manifest_path.read_text())
+    first = manifest["jobs"][0]
+    delta_root = Path(manifest["output_root"]) / "deltas" / first["job_id"]
+    assert not (delta_root / "delta_receipt.json").exists()
+
+
+def test_runner_requires_prediction_manifest_before_job_completion(
+    tmp_path: Path,
+) -> None:
+    manifest_path = _prepare(tmp_path)
+    _prepare_deltas(manifest_path)
+    manifest = json.loads(manifest_path.read_text())
+    first = manifest["jobs"][0]
+
+    def incomplete_prediction(**_kwargs: object) -> dict[str, object]:
+        return {
+            "status": "D92_E0_CONTINUOUS_SESSION_TRUTH_FREE_PREDICTIONS_COMPLETE"
+        }
+
+    with pytest.raises(runner.D92ContinuousSessionRunnerError, match="manifest|complete"):
+        runner.run_job(
+            manifest_path=manifest_path,
+            job_id=first["job_id"],
+            prediction_entry=incomplete_prediction,
+        )
+    assert not (Path(first["output_root"]) / "job_receipt.json").exists()
 
 
 def test_status_reports_only_technical_counts(tmp_path: Path) -> None:

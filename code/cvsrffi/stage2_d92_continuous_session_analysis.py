@@ -182,12 +182,22 @@ def _artifact_state(root: Path, *, label: str) -> dict[str, Any]:
             raise _fail(f"{label} resource field drift: {field}") from error
         if value < 0:
             raise _fail(f"{label} resource field is negative: {field}")
-    if (
-        int(resource["registration_wall_time_ns"]) > 150_000_000
-        or int(resource["registration_incremental_peak_working_set_bytes"]) > 4 * 1024 * 1024
-        or int(resource["query_macs"]) != len(classes) * 288
-    ):
-        raise _fail(f"{label} resource hard gate drift")
+    if int(resource["query_macs"]) != len(classes) * 288:
+        raise _fail(f"{label} query MAC drift")
+    resource = {
+        **resource,
+        "registration_wall_gate_pass": (
+            int(resource["registration_wall_time_ns"]) <= 150_000_000
+        ),
+        "registration_peak_gate_pass": (
+            int(resource["registration_incremental_peak_working_set_bytes"])
+            <= 4 * 1024 * 1024
+        ),
+    }
+    resource["resource_gate_pass"] = bool(
+        resource["registration_wall_gate_pass"]
+        and resource["registration_peak_gate_pass"]
+    )
     return {
         "root": root,
         "query_tokens": query_tokens,
@@ -426,6 +436,10 @@ def analyze_continuous_session_run(
     ]
     trajectories: dict[str, Any] = {}
     terminal: dict[str, Any] = {}
+    resource_evaluated = 0
+    resource_failed = 0
+    resource_wall_max_ns = 0
+    resource_peak_max_bytes = 0
     for job, prediction in collected:
         outer = str(job.get("outer_key", ""))
         if not outer or outer in trajectories:
@@ -443,6 +457,22 @@ def analyze_continuous_session_run(
                 ]
                 for name, rows in surface["schedules"].items()
             }
+            for rows in schedule_scores.values():
+                for row in rows:
+                    resource_evaluated += 1
+                    resource_failed += int(not row["resource"]["resource_gate_pass"])
+                    resource_wall_max_ns = max(
+                        resource_wall_max_ns,
+                        int(row["resource"]["registration_wall_time_ns"]),
+                    )
+                    resource_peak_max_bytes = max(
+                        resource_peak_max_bytes,
+                        int(
+                            row["resource"][
+                                "registration_incremental_peak_working_set_bytes"
+                            ]
+                        ),
+                    )
             trajectories[outer][scene] = {"DA1_REG0": baseline_score, **schedule_scores}
             terminal[outer][scene] = _terminal_equivalence(schedule_scores)
     result = {
@@ -450,6 +480,15 @@ def analyze_continuous_session_run(
         "status": "ANALYZED_TRUTH_LAST",
         "prediction_validation_complete_before_truth_open": True,
         "truth_sidecar_exposed_to_predictor": False,
+        "resource_gate": {
+            "status": "PASS" if resource_failed == 0 else "REJECT_RESOURCE",
+            "evaluated_state_count": resource_evaluated,
+            "failed_state_count": resource_failed,
+            "wall_target_ns": 150_000_000,
+            "peak_hard_max_bytes": 4 * 1024 * 1024,
+            "observed_wall_max_ns": resource_wall_max_ns,
+            "observed_peak_max_bytes": resource_peak_max_bytes,
+        },
         "trajectories": trajectories,
         "terminal_equivalence": terminal,
     }

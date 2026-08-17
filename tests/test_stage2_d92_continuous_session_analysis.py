@@ -30,7 +30,15 @@ def _write_json(path: Path, value: object) -> str:
     return _sha(path)
 
 
-def _write_state(root: Path, *, lifecycle: str, session_index: int, state_sha: str, classes: tuple[str, ...]) -> dict[str, object]:
+def _write_state(
+    root: Path,
+    *,
+    lifecycle: str,
+    session_index: int,
+    state_sha: str,
+    classes: tuple[str, ...],
+    peak_bytes: int = 20,
+) -> dict[str, object]:
     root.mkdir(parents=True)
     tokens = np.asarray(("qid_old", "qid_new", "qid_future"))
     scenarios = np.asarray((root.parents[1].name, ) * 3)
@@ -50,7 +58,7 @@ def _write_state(root: Path, *, lifecycle: str, session_index: int, state_sha: s
     })
     resource_sha = _write_json(root / "resource_audit.json", {
         "registration_wall_time_ns": 10,
-        "registration_incremental_peak_working_set_bytes": 20,
+        "registration_incremental_peak_working_set_bytes": peak_bytes,
         "support_bytes": 30,
         "state_bytes": 40,
         "query_macs": len(classes) * 288,
@@ -84,17 +92,19 @@ def _write_state(root: Path, *, lifecycle: str, session_index: int, state_sha: s
     }
 
 
-def _fixture(tmp_path: Path) -> tuple[Path, Path, Path, Path]:
+def _fixture(
+    tmp_path: Path, *, peak_bytes: int = 20
+) -> tuple[Path, Path, Path, Path]:
     output_root = tmp_path / "output"
     job_root = output_root / "jobs" / "outer0" / "full"
     classes0 = tuple(f"old_{index}" for index in range(6))
     classes1 = classes0 + ("new_0",)
     scenes: dict[str, object] = {}
     for scene in SCENES:
-        baseline = _write_state(job_root / scene / "DA1_REG0", lifecycle="DA1_REG0", session_index=0, state_sha="a" * 64, classes=classes0)
+        baseline = _write_state(job_root / scene / "DA1_REG0", lifecycle="DA1_REG0", session_index=0, state_sha="a" * 64, classes=classes0, peak_bytes=peak_bytes)
         schedules: dict[str, object] = {}
         for schedule in SCHEDULES:
-            final = _write_state(job_root / scene / schedule / "session_01", lifecycle="DA1_REG1_S1", session_index=1, state_sha="b" * 64, classes=classes1)
+            final = _write_state(job_root / scene / schedule / "session_01", lifecycle="DA1_REG1_S1", session_index=1, state_sha="b" * 64, classes=classes1, peak_bytes=peak_bytes)
             schedules[schedule] = {"increments": [1], "arrival_order": [0], "sessions": [final]}
         scenes[scene] = {"DA1_REG0": baseline, "schedules": schedules}
     prediction_manifest = job_root / "prediction_manifest.json"
@@ -147,3 +157,23 @@ def test_truth_last_rejects_missing_prediction_token_in_truth(tmp_path: Path) ->
             truth_root=truth_root,
             analysis_root=analysis_root,
         )
+
+
+def test_resource_failure_preserves_metrics_and_reports_reject_resource(
+    tmp_path: Path,
+) -> None:
+    manifest, output_root, truth_root, analysis_root = _fixture(
+        tmp_path, peak_bytes=4 * 1024 * 1024 + 1
+    )
+
+    result = analyze_continuous_session_run(
+        manifest_path=manifest,
+        output_root=output_root,
+        truth_root=truth_root,
+        analysis_root=analysis_root,
+    )
+
+    assert result["status"] == "ANALYZED_TRUTH_LAST"
+    assert result["resource_gate"]["status"] == "REJECT_RESOURCE"
+    assert result["resource_gate"]["failed_state_count"] > 0
+    assert result["trajectories"]["outer0"]["leo_clear_weak"]["batch_5"]
