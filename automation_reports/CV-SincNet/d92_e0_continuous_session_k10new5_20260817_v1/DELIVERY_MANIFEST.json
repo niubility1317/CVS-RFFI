@@ -1,0 +1,33 @@
+{
+  "schema": "cvs.phase2.d92_e0_continuous_session.delivery_manifest.v1",
+  "run_id": "d92_e0_continuous_session_k10new5_20260817_v1",
+  "git_commit": "ad483e5d",
+  "status": "LOCAL_VERIFIED_READY_FOR_N607_HANDOFF",
+  "performance_result": false,
+  "runtime_archive": "runtime/d92_e0_continuous_session_v1.tar.gz",
+  "runtime_archive_sha256": "1d8a91e5c7a1332c44289915de6d082ce22743cf155f13f461eb6230aa1da4b8",
+  "runtime_archive_size_bytes": 171172,
+  "launch_script": "launch.sh",
+  "matrix": {
+    "outer_jobs": 5,
+    "scenes": 3,
+    "schedules": 4,
+    "session_fit_count": 210,
+    "gpu_map": [0, 1, 2, 3, 4]
+  },
+  "verification": {
+    "bash_n": "PASS",
+    "archive_listing": "PASS:36 entries; no absolute or parent-traversal paths",
+    "extracted_imports": "PASS",
+    "runner_help": "PASS",
+    "analyzer_help": "PASS",
+    "archive_mode_prepare": "PASS:5 jobs;210 session fits"
+  },
+  "remote": {
+    "project_root": "/home/szu2070436088/2510044040/CV-SincNet",
+    "runs_root": "/home/szu2070436088/2510044040/CV-SincNet/runs",
+    "logs_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/d92_e0_continuous_session_k10new5_20260817_v1",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python"
+  },
+  "fresh_run_retry": false
+}
