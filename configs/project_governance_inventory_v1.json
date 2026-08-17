@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "local": {
+    "root_id": "TYPE10_7",
+    "root": "E:/type10-7",
+    "carrier_surfaces": [
+      "automation_reports/CV-SincNet",
+      "code/snapshots",
+      "local_artifacts",
+      "remote_artifacts",
+      "runs",
+      "logs",
+      "outputs",
+      "server_log_backups",
+      "runner_staging",
+      "github_publish/CVS-RFFI-repo"
+    ]
+  },
+  "n607": {
+    "root_id": "N607_CVS_SINCNET",
+    "root": "/home/szu2070436088/2510044040/CV-SincNet",
+    "carrier_surfaces": [
+      "automation_reports",
+      "runs",
+      "logs",
+      "releases",
+      "remote_artifacts",
+      "snapshots",
+      "code"
+    ]
+  },
+  "discovery": {
+    "control_evidence_max_depth": 3,
+    "hash_max_bytes": 10485760,
+    "text_read_max_bytes": 2097152
+  },
+  "output": {
+    "git_file_max_bytes": 10485760,
+    "git_scan_max_bytes": 52428800
+  }
+}
