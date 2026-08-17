@@ -15,6 +15,7 @@ import os
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any, Mapping
 
 import torch
@@ -626,8 +627,14 @@ def fit_mrior_preadapted_backbone(
         "dvkl_weight": method_lock["dvkl_weight"],
         "mrior_mu": method_lock["mrior_mu"],
     }
+    exact_model = copy.deepcopy(backbone)
+    if not hasattr(exact_model, "id_backbone"):
+        exact_model = SimpleNamespace(
+            id_backbone=exact_model,
+            id_feature_key=str(getattr(backbone, "id_feature_key", "feat_joint")),
+        )
     model = ADV3B02MethodModel(
-        copy.deepcopy(backbone),
+        exact_model,
         method=METHOD_ID,
         feature_dim=int(backbone.emb_dim),
     ).to(target_old_x.device)

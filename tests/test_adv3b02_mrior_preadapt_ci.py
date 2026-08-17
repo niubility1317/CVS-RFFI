@@ -269,6 +269,28 @@ def test_fit_reuses_mrior_minimax_path_with_target_old_support_only() -> None:
     assert result.is_formal is False
 
 
+def test_fit_accepts_the_exact_identity_backbone_returned_by_predictor_loader() -> None:
+    """The production loader returns CVSincNet itself, not its dual-model parent."""
+
+    source_x = torch.tensor([[1.0, 0.0], [0.0, 1.0]])
+    source_y = torch.tensor([0, 1])
+    identity_backbone = _TinyIdentityBackbone()
+    identity_backbone.emb_dim = 3
+    result = fit_mrior_preadapted_backbone(
+        identity_backbone,
+        DataLoader(TensorDataset(source_x, source_y), batch_size=2, shuffle=False),
+        source_x,
+        source_y,
+        binding=_binding(k_shot=1),
+        seed=713101,
+        adapt_steps=1,
+        estimate_steps=1,
+        _test_only_allow_nonfrozen_params=True,
+    )
+
+    assert any(name.startswith("id_backbone.") for name in result.model_state)
+
+
 def test_formal_fit_rejects_one_step_even_with_nominal_verified_binding() -> None:
     source_x = torch.tensor([[1.0, 0.0], [0.0, 1.0]])
     source_y = torch.tensor([0, 1])
