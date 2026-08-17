@@ -16,6 +16,7 @@ from cvsrffi.stage2_d92_continuous_session_prediction import (
     _attach_registry_specific_prediction,
     _registration_resource,
     _original_d42_f0_prediction,
+    _strict_s5_equivalence,
     prepare_continuous_session_support_deltas,
     run_continuous_session_prediction,
 )
@@ -303,6 +304,25 @@ def test_registry_specific_phase_b_binds_each_prediction_to_its_own_query_tokens
     assert result["scenarios"] == ("leo_clear_weak", "leo_clear_weak")
     assert result["predictions"] == ("cls_old_a", "cls_new_a")
     assert np.array_equal(observed_features[0], features)
+
+
+def test_truth_free_smoke_checks_terminal_equivalence_for_its_schedule_subset() -> None:
+    """Would fail if the two-schedule smoke were forced to contain the full matrix."""
+
+    state = _state(("cls_old_a", "cls_old_b", "cls_new_a"))
+    terminal = {
+        "state": state,
+        "state_sha256": "a" * 64,
+        "registered_classes": list(state.classes),
+        "predictions": ("cls_old_a", "cls_new_a"),
+    }
+
+    result = _strict_s5_equivalence(
+        {"batch_5": [terminal], "singleton_forward": [terminal]}
+    )
+
+    assert result["status"] == "STRICT_EQUAL"
+    assert result["checked_schedules"] == ["batch_5", "singleton_forward"]
 
 
 @pytest.mark.parametrize(

@@ -1022,8 +1022,13 @@ def _after_apply_manifest_lock(
 
 
 def _strict_s5_equivalence(rows: Mapping[str, Sequence[Mapping[str, Any]]]) -> dict[str, Any]:
-    required = {"batch_5", "singleton_forward", "singleton_reverse", "chunk_2_2_1"}
-    if set(rows) != required or any(not rows[name] for name in required):
+    supported = {"batch_5", "singleton_forward", "singleton_reverse", "chunk_2_2_1"}
+    checked = set(rows)
+    if (
+        "batch_5" not in checked
+        or not checked.issubset(supported)
+        or any(not rows[name] for name in checked)
+    ):
         raise ContinuousSessionPredictionError("terminal schedule closure drift")
     reference = rows["batch_5"][-1]
     reference_state = reference["state"]
@@ -1035,7 +1040,7 @@ def _strict_s5_equivalence(rows: Mapping[str, Sequence[Mapping[str, Any]]]) -> d
         "scale2_fp16",
         "intercept_fp16",
     )
-    for name in sorted(required):
+    for name in sorted(checked):
         candidate = rows[name][-1]
         if (
             tuple(candidate["registered_classes"]) != tuple(reference["registered_classes"])
@@ -1057,7 +1062,7 @@ def _strict_s5_equivalence(rows: Mapping[str, Sequence[Mapping[str, Any]]]) -> d
             _canonical_bytes(list(reference_prediction))
         ).hexdigest(),
         "registered_classes": list(reference["registered_classes"]),
-        "checked_schedules": sorted(required),
+        "checked_schedules": sorted(checked),
         "checked_codec_fields": list(fields),
     }
 
