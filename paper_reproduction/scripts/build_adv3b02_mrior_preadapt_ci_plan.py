@@ -386,6 +386,8 @@ def _package_evidence(
         detached_seal_path=seal_path,
         expected_seal_sha256=seal_sha256,
     )
+    if manifest.get("stage") != "stage2c":
+        raise ValueError("source package stage must be stage2c")
     if (
         manifest.get("receiver") != receiver
         or int(manifest.get("seed", -1)) != seed

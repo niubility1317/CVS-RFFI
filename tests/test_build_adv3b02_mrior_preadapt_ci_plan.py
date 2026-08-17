@@ -42,6 +42,7 @@ def _write_support_package(
     old_labels: list[str],
     max_k: int,
     old_token_salt: str = "old",
+    stage: str = "stage2c",
 ) -> Path:
     """Write one real sealed fixture package without exposing query values to tests."""
 
@@ -165,7 +166,7 @@ def _write_support_package(
     metadata = {
         "schema": PREDICTOR_PACKAGE_MANIFEST_SCHEMA,
         "artifact_stage": PREDICTOR_INPUT_STAGE,
-        "stage": "stage2c",
+        "stage": stage,
         "receiver": receiver,
         "seed": seed,
         "new_class_count": new_count,
@@ -473,6 +474,53 @@ def test_rejects_target_old_support_identity_drift_across_new_counts(
             expected_new_counts=values["new_counts"],
             expected_source_cache_path=str(values["source_cache"]),
         )
+
+
+def test_rejects_resealed_stage2b_predictor_package(tmp_path: Path) -> None:
+    """A valid seal from a different Stage2 input stage cannot bind MRIOR jobs."""
+
+    values = _miniature_v7_inputs(tmp_path)
+    source_path = values["source_plan"]
+    assert isinstance(source_path, Path)
+    payload = json.loads(source_path.read_text(encoding="utf-8"))
+    package = next(
+        value
+        for value in payload["packages"]
+        if value["receiver"] == "20-1"
+        and value["seed"] == 713101
+        and value["new_class_count"] == 2
+    )
+    stage2b_root = tmp_path / "stage2b_package" / "predictor"
+    stage2b_seal = _write_support_package(
+        stage2b_root,
+        receiver="20-1",
+        seed=713101,
+        new_count=2,
+        old_labels=[f"old_{index}" for index in range(6)],
+        max_k=2,
+        stage="stage2b",
+    )
+    package["predictor_package_root"] = str(stage2b_root)
+    package["detached_seal"] = str(stage2b_seal)
+    source_path.write_text(json.dumps(payload), encoding="utf-8")
+    module = importlib.import_module(
+        "paper_reproduction.scripts.build_adv3b02_mrior_preadapt_ci_plan"
+    )
+    with pytest.raises(ValueError, match="stage2c"):
+        module._build_for_test(
+            source_plan=source_path,
+            expected_source_plan_sha256=_sha256(source_path),
+            source_cache_manifest=values["source_cache"],
+            expected_source_cache_manifest_sha256=values["source_cache_sha256"],
+            run_root=values["run_root"],
+            output=values["output"],
+            expected_receivers=values["receivers"],
+            expected_seeds=values["seeds"],
+            expected_k_values=values["k_values"],
+            expected_new_counts=values["new_counts"],
+            expected_source_cache_path=str(values["source_cache"]),
+        )
+    assert not Path(values["output"]).exists()
 
 
 def test_rejects_duplicate_source_package_identity(tmp_path: Path) -> None:
