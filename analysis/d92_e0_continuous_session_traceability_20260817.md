@@ -11,7 +11,7 @@
 | 终态无顺序效应 | 三种连续调度S5与`batch_5`state/prediction/指标严格相等 |
 | query零更新 | 预测入口不接收truth/scorer；fit/update/selection/truth/role/quota/global均false |
 | 推理资源不变 | 相同注册类数下D42 state bytes和C×288 MAC与一次性E0相同 |
-| 注册资源 | 每sessionwall≤150ms；实测增量peak≤2MiB；累计wall另报 |
+| 注册资源 | 每sessionwall≤150ms；实测增量peak≤4MiB；累计wall另报 |
 | 指标合法 | scorer只在预测封存后读取truth；未注册真类不计分 |
 | 四态命名 | 固定DA1，输出`DA1_REG0`与`DA1_REG1_S*`；DA0=N/A |
 | 证据边界 | development-only continuous-session screen，不是Target125推广声明 |

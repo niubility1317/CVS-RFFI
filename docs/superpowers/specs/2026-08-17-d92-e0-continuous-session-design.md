@@ -77,7 +77,7 @@
 主裁决：
 
 1. `singleton_forward`、`singleton_reverse`和`chunk_2_2_1`的S5必须与`batch_5`终态state/prediction/八项指标完全相同。
-2. 单session注册wall目标`<=150ms`，增量peak硬门按用户放宽为`<=2MiB`；资源失败保留完整产物并判`REJECT_RESOURCE`，不得通过改阈值重跑同一run。
+2. 单session注册wall目标`<=150ms`，增量peak硬门按用户批准的两倍注册预算放宽为`<=4MiB`；资源失败保留完整产物并判`REJECT_RESOURCE`，不得通过改阈值重跑同一run。
 3. query state bytes和logical MAC必须与相同注册类数的一次性E0完全相同；推理端不允许新增持久状态或MAC。
 4. S1单类桥接单独报告，不用它替代S5原始E0性能结论。
 

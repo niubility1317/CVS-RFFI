@@ -32,7 +32,7 @@
 - 新建连续session矩阵模块、runner/analyzer CLI、配置和聚焦测试
 - 新建`automation_reports/CV-SincNet/<immutable-run-id>/report.md`
 
-**RED/GREEN：**锁定5 outer×3 scene×4 schedules、K10/new5、seed713106、receiver集合、`[5]`/`[1x5]`正反序/`[2,2,1]`、2MiB/150ms资源门、DA1生命周期命名。
+**RED/GREEN：**锁定5 outer×3 scene×4 schedules、K10/new5、seed713106、receiver集合、`[5]`/`[1x5]`正反序/`[2,2,1]`、4MiB/150ms资源门、DA1生命周期命名。
 
 ## Task 4：发布与分析
 
