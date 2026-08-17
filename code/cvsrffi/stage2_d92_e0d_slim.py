@@ -105,6 +105,13 @@ D92_E0D_ARMS: Mapping[str, D92E0DSlimArmSpec] = MappingProxyType(
             True,
             False,
         ),
+        "E0_FULL_D42_ALLCLASS_FOLD_CONSENSUS_PLANE": D92E0DSlimArmSpec(
+            "E0_FULL_D42_ALLCLASS_FOLD_CONSENSUS_PLANE",
+            "d92_e0_full_d42_allclass_fold_consensus_plane",
+            "full_only",
+            True,
+            False,
+        ),
     }
 )
 

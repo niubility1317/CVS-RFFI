@@ -70,6 +70,54 @@ def _tpce_support(
     return np.stack(rows), np.asarray(targets, dtype=np.int64)
 
 
+def _afcp_state(class_count: int = 11):
+    code1 = np.zeros((class_count, d42.FEATURE_DIM), dtype=np.int8)
+    for class_index in range(class_count):
+        code1[class_index, 20 + class_index] = 1
+    return d42.D42UnifiedShrinkageLDAState(
+        schema=d42.SCHEMA_INT8,
+        classes=tuple(f"tx_{index}" for index in range(class_count)),
+        old_class_count=OLD_CLASS_COUNT,
+        log_diag_fp32=np.zeros(d42.FEATURE_DIM, dtype=np.float32),
+        coef1_qint8=code1,
+        coef2_qint8=np.zeros_like(code1),
+        scale1_fp16=np.ones(
+            (class_count, len(d42.BLOCK_SLICES)), dtype=np.float16
+        ),
+        scale2_fp16=np.full(
+            (class_count, len(d42.BLOCK_SLICES)), 0.25, dtype=np.float16
+        ),
+        intercept_fp16=np.zeros(class_count, dtype=np.float16),
+        coef_fp32=np.zeros((0, d42.FEATURE_DIM), dtype=np.float32),
+        intercept_fp32=np.zeros(0, dtype=np.float32),
+        covariance_policy="sklearn_lsqr_auto_shrinkage_equal_prior",
+    )
+
+
+def _afcp_support(
+    class_count: int = 11, k_shot: int = 4
+) -> tuple[np.ndarray, np.ndarray]:
+    rows: list[np.ndarray] = []
+    targets: list[int] = []
+    for class_index in range(class_count):
+        for sample_index in range(k_shot):
+            row = np.zeros(d42.FEATURE_DIM, dtype=np.float32)
+            row[20 + class_index] = np.float32(0.1)
+            row[100 + class_index] = np.float32(0.001 * (sample_index + 1))
+            row[[0, 160, 256]] = np.float32(class_index - 5)
+            rows.append(row)
+            targets.append(class_index)
+    raw = np.stack(rows)
+    filler_coordinates = np.asarray(
+        [*range(120, 150), *range(200, 255)], dtype=np.int64
+    )
+    squared_norms = np.sum(np.square(raw, dtype=np.float64), axis=1)
+    raw[:, filler_coordinates] = np.sqrt(
+        (100.0 - squared_norms) / float(len(filler_coordinates))
+    ).astype(np.float32)[:, None]
+    return raw, np.asarray(targets, dtype=np.int64)
+
+
 def _deployed_affine_sha256(state) -> str:
     digest = hashlib.sha256()
     digest.update(
@@ -1516,6 +1564,81 @@ def test_qic_evaluator_runs_one_reg1_postprocess_and_closes_receipt(
     assert row["d92_e0d_qic_intercept_fp16_bit_change_count"] > 0
     assert row["d92_e0d_qic_coefficient_decode_count"] == 1
     assert row["d92_e0d_qic_additional_full_fit_count"] == 0
+    assert row["after_total_component_fit_count"] == 2
+    assert row["after_actual_component_inventory"]["actual_component_fit_count"] == 1
+    assert row["query_fit_access"] is False
+    assert row["query_truth_access"] is False
+
+
+def test_afcp_evaluator_publishes_one_guarded_support_only_state(monkeypatch):
+    """Would fail if AFCP were registered but skipped in the production fit path."""
+
+    arm = slim.D92_E0D_ARMS["E0_FULL_D42_ALLCLASS_FOLD_CONSENSUS_PLANE"]
+    base_state = _afcp_state()
+    rows, targets = _afcp_support()
+    classes = tuple(base_state.classes)
+    old_mask = targets < OLD_CLASS_COUNT
+    calls = {"fit": 0, "transform": 0}
+    original_transform = d42._transform
+
+    def fake_d42_fit(*_args, **_kwargs):
+        calls["fit"] += 1
+        base = _result(arm, k_shot=4)
+        return d42.D42UnifiedShrinkageLDAResult(
+            before_state=base.before_state,
+            state=base_state,
+            matched_fp32_before_state=base.before_state,
+            matched_fp32_state=base_state,
+            training_trace=tuple(base.training_trace),
+            geometry_audit=base.geometry_audit,
+            resource_audit=base.resource_audit,
+        )
+
+    def tracked_transform(*args, **kwargs):
+        calls["transform"] += 1
+        return original_transform(*args, **kwargs)
+
+    def fake_run(**_kwargs):
+        fitted = d81_eval.fit_d42_unified_shrinkage_lda(
+            rows[old_mask],
+            np.asarray(classes)[targets[old_mask]],
+            classes[:OLD_CLASS_COUNT],
+            rows[~old_mask],
+            np.asarray(classes)[targets[~old_mask]],
+            classes[OLD_CLASS_COUNT:],
+        )
+        row = d81_eval._audit_fit(
+            fitted,
+            scenario="leo_clear_weak",
+            k_shot=4,
+            old_count=OLD_CLASS_COUNT,
+            class_count=len(classes),
+        )
+        return {
+            "candidate": d81_eval.CANDIDATE_D81,
+            "schema": d81_eval.SCHEMA,
+            "afcp_fit_row": row,
+        }
+
+    monkeypatch.setattr(d81_eval, "fit_d42_unified_shrinkage_lda", fake_d42_fit)
+    monkeypatch.setattr(d81_eval, "run_d81_query_evaluation", fake_run)
+    monkeypatch.setattr(d42, "_transform", tracked_transform)
+    result = e0d_eval.run_d92_e0d_query_evaluation(
+        arm_id=arm.arm_id, **_allowed_kwargs()
+    )
+
+    row = result["afcp_fit_row"]
+    assert calls == {"fit": 1, "transform": 1}
+    assert row["after_state_postprocess_mode"] == "d42_allclass_fold_consensus_plane"
+    assert row["d92_e0d_afcp_active"] is True
+    assert row["d92_e0d_afcp_fallback_active"] is False
+    assert row["d92_e0d_afcp_final_state_sha256"] != row[
+        "d92_e0d_afcp_e0_state_sha256"
+    ]
+    assert row["d92_e0d_afcp_modified_state_field_names"] == ["coef2_qint8"]
+    assert row["d92_e0d_afcp_all_three_blocks_changed"] is True
+    assert row["d92_e0d_afcp_support_guard_pass"] is True
+    assert row["d92_e0d_afcp_query_macs_delta"] == 0
     assert row["after_total_component_fit_count"] == 2
     assert row["after_actual_component_inventory"]["actual_component_fit_count"] == 1
     assert row["query_fit_access"] is False

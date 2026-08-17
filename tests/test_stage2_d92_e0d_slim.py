@@ -593,6 +593,33 @@ def test_qic_arm_reuses_one_full_fit_and_preserves_low_k_aliases() -> None:
         assert low_audit["d92_e0d_k1_k2_exact_full_alias"] is True
 
 
+def test_afcp_arm_reuses_one_full_fit_and_preserves_low_k_aliases() -> None:
+    """Would fail if AFCP changed the frozen FULL lifecycle or K1/K2 route."""
+
+    arm = D92_E0D_ARMS["E0_FULL_D42_ALLCLASS_FOLD_CONSENSUS_PLANE"]
+    assert (
+        arm.candidate_id,
+        arm.registered_d_mode,
+        arm.b_enabled,
+        arm.e_enabled,
+    ) == (
+        "d92_e0_full_d42_allclass_fold_consensus_plane",
+        "full_only",
+        True,
+        False,
+    )
+    assert expected_total_component_fit_count(10, arm_id=arm.arm_id) == 2
+    _, _, audit, _, _ = _run(arm.arm_id, class_count=11, k_shot=5)
+    assert audit["d92_e0d_actual_component_fit_count"] == 1
+    assert audit["d92_e0d_total_component_fit_count"] == 2
+    for k_shot in (1, 2):
+        _, _, low_audit, _, _ = _run(
+            arm.arm_id, class_count=11, k_shot=k_shot, repeated=True
+        )
+        assert low_audit["d92_e0d_registered_d_mode_effective"] == "d92_full_alias"
+        assert low_audit["d92_e0d_k1_k2_exact_full_alias"] is True
+
+
 def test_csoas_arm_has_one_active_full_fit_and_an_explicit_low_k_e0_alias():
     """Would fail if CSOAS added a LOO/BLOCK fit or changed the frozen K2 route."""
 

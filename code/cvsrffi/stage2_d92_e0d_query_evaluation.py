@@ -504,6 +504,87 @@ _QIC_RECEIPT_FIELDS = tuple(
 _QIC_RAW_RECEIPT_FIELDS = frozenset(
     f"d92_qic_{suffix}" for suffix in _QIC_RECEIPT_SUFFIXES
 )
+_AFCP_ARM_IDS = frozenset({"E0_FULL_D42_ALLCLASS_FOLD_CONSENSUS_PLANE"})
+_AFCP_RECEIPT_SUFFIXES = (
+    "active",
+    "fallback_active",
+    "fallback_reason",
+    "formula_revision",
+    "state_postprocess_mode",
+    "direct_state_publish",
+    "support_only",
+    "all_class_symmetric",
+    "class_permutation_equivariant",
+    "row_permutation_invariant",
+    "task_swap_equivariant",
+    "support_row_canonicalization",
+    "fold_rule",
+    "fold_tie_policy",
+    "e0_state_sha256",
+    "final_state_sha256",
+    "modified_state_field_names",
+    "coef1_byte_exact",
+    "coef2_byte_exact",
+    "scale1_byte_exact",
+    "scale2_byte_exact",
+    "intercept_byte_exact",
+    "log_diag_byte_exact",
+    "coef_fp32_byte_exact",
+    "intercept_fp32_byte_exact",
+    "class_registry_byte_exact",
+    "state_shape_byte_exact",
+    "class_count",
+    "old_class_count",
+    "k_shot",
+    "block_coordinate_indices",
+    "block_changed_code2_counts",
+    "changed_code2_count",
+    "state_delta_code2_l1",
+    "all_three_blocks_changed",
+    "final_state_non_e0",
+    "support_margin_delta_max_abs",
+    "support_margin_quantum_pass",
+    "fold_class_all_margin_delta_mean",
+    "fold_old_to_new_cross_margin_delta_mean",
+    "fold_new_to_old_cross_margin_delta_mean",
+    "twofold_class_guard_pass",
+    "twofold_cross_guard_pass",
+    "support_guard_pass",
+    "requantize_call_count",
+    "additional_full_fit_count",
+    "block_fit_count",
+    "loo_fit_count",
+    "fisher_fit_count",
+    "tail_selection_count",
+    "rival_pair_selection_count",
+    "atomic_candidate_count",
+    "prefix_evaluation_count",
+    "candidate_scan_count",
+    "persistent_state_bytes_delta",
+    "query_macs_delta",
+    "query_rows_used",
+    "clean_sample_access",
+    "source_sample_access",
+    "query_fit_access",
+    "query_update_access",
+    "query_selection_access",
+    "query_truth_access",
+    "query_role_oracle_access",
+    "query_class_quota_access",
+    "query_global_reassignment",
+    "support_macs_upper_bound",
+    "support_rows_bytes_upper_bound",
+    "support_direction_bytes_upper_bound",
+    "support_graph_bytes_upper_bound",
+    "support_288_square_matrix_bytes",
+    "support_transient_bytes_upper_bound",
+)
+_AFCP_RECEIPT_FIELDS = tuple(
+    f"d92_e0d_afcp_{suffix}" for suffix in _AFCP_RECEIPT_SUFFIXES
+)
+_AFCP_RAW_RECEIPT_FIELDS = frozenset(
+    f"d92_afcp_{suffix}" for suffix in _AFCP_RECEIPT_SUFFIXES
+)
 _FLOORBOOST_RECEIPT_FIELDS = (
     "d92_e0d_floorboost_active",
     "d92_e0d_floorboost_lambda",
@@ -2850,6 +2931,383 @@ def _qic_support_receipt(
     return receipt
 
 
+def _mirror_afcp_receipt(raw_audit: Mapping[str, Any]) -> dict[str, Any]:
+    """Copy the complete frozen AFCP receipt into the E0D audit namespace."""
+
+    raw_fields = {
+        key for key in raw_audit if isinstance(key, str) and key.startswith("d92_afcp_")
+    }
+    if raw_fields != _AFCP_RAW_RECEIPT_FIELDS:
+        raise D92E0DQueryEvaluationError("D92-E0D AFCP raw receipt whitelist drift")
+    mirrored = {
+        f"d92_e0d_afcp_{suffix}": raw_audit[f"d92_afcp_{suffix}"]
+        for suffix in _AFCP_RECEIPT_SUFFIXES
+    }
+    if set(mirrored) != set(_AFCP_RECEIPT_FIELDS):
+        raise D92E0DQueryEvaluationError("D92-E0D AFCP mirror receipt drift")
+    return mirrored
+
+
+def _afcp_static_resource_values(state: Any, *, k_shot: int) -> dict[str, int]:
+    """Recompute AFCP's fixed support-only work without a 288-square matrix."""
+
+    from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
+
+    class_count = int(len(state.classes))
+    feature_dim = int(d42.FEATURE_DIM)
+    row_count = class_count * int(k_shot)
+    rows_bytes = row_count * feature_dim * np.dtype(np.float32).itemsize
+    score_bytes = row_count * class_count * np.dtype(np.float32).itemsize
+    direction_bytes = 4 * class_count * feature_dim * np.dtype(np.float64).itemsize
+    graph_bytes = 2 * class_count * class_count * np.dtype(np.float64).itemsize
+    code_bytes = class_count * feature_dim * np.dtype(np.int16).itemsize
+    decoded_bytes = class_count * feature_dim * np.dtype(np.float32).itemsize
+    return {
+        "support_macs_upper_bound": 2
+        * row_count
+        * class_count
+        * feature_dim,
+        "support_rows_bytes_upper_bound": rows_bytes,
+        "support_direction_bytes_upper_bound": direction_bytes,
+        "support_graph_bytes_upper_bound": graph_bytes,
+        "support_288_square_matrix_bytes": 0,
+        "support_transient_bytes_upper_bound": 2 * rows_bytes
+        + 2 * score_bytes
+        + direction_bytes
+        + graph_bytes
+        + code_bytes
+        + 2 * decoded_bytes,
+    }
+
+
+def _afcp_postprocess_state_closure(
+    e0_state: Any,
+    candidate_state: Any,
+    raw_audit: Mapping[str, Any],
+) -> None:
+    """Validate AFCP's sole direct qint8 residual-code publication."""
+
+    from cvsrffi import stage2_d92_d42_allclass_fold_consensus_plane as afcp
+
+    _mirror_afcp_receipt(raw_audit)
+    try:
+        e0_sha = afcp.d42_afcp_state_sha256(e0_state)
+        final_sha = afcp.d42_afcp_state_sha256(candidate_state)
+    except (afcp.D92D42AFCPError, TypeError, ValueError) as error:
+        raise D92E0DQueryEvaluationError("D92-E0D AFCP state closure drift") from error
+    if (
+        raw_audit["d92_afcp_e0_state_sha256"] != e0_sha
+        or raw_audit["d92_afcp_final_state_sha256"] != final_sha
+        or e0_state.schema != candidate_state.schema
+        or tuple(e0_state.classes) != tuple(candidate_state.classes)
+        or int(e0_state.old_class_count) != int(candidate_state.old_class_count)
+        or e0_state.covariance_policy != candidate_state.covariance_policy
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D AFCP state identity drift")
+    stable_names = tuple(name for name in _STATE_ARRAY_NAMES if name != "coef2_qint8")
+    if any(
+        np.ascontiguousarray(np.asarray(getattr(e0_state, name))).tobytes()
+        != np.ascontiguousarray(np.asarray(getattr(candidate_state, name))).tobytes()
+        for name in stable_names
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D AFCP non-code state drift")
+    flag_names = {
+        "coef1_qint8": "d92_afcp_coef1_byte_exact",
+        "scale1_fp16": "d92_afcp_scale1_byte_exact",
+        "scale2_fp16": "d92_afcp_scale2_byte_exact",
+        "intercept_fp16": "d92_afcp_intercept_byte_exact",
+        "log_diag_fp32": "d92_afcp_log_diag_byte_exact",
+        "coef_fp32": "d92_afcp_coef_fp32_byte_exact",
+        "intercept_fp32": "d92_afcp_intercept_fp32_byte_exact",
+    }
+    if (
+        any(raw_audit[field] is not True for field in flag_names.values())
+        or raw_audit["d92_afcp_class_registry_byte_exact"] is not True
+        or raw_audit["d92_afcp_state_shape_byte_exact"] is not True
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D AFCP stable-state receipt drift")
+    code_delta = np.asarray(candidate_state.coef2_qint8, dtype=np.int16) - np.asarray(
+        e0_state.coef2_qint8, dtype=np.int16
+    )
+    changed = int(np.count_nonzero(code_delta))
+    state_l1 = int(np.abs(code_delta).sum(dtype=np.int64))
+    active = raw_audit["d92_afcp_active"]
+    fallback = raw_audit["d92_afcp_fallback_active"]
+    if active is True:
+        if (
+            fallback is not False
+            or changed <= 0
+            or np.any(np.abs(code_delta) > 1)
+            or raw_audit["d92_afcp_changed_code2_count"] != changed
+            or raw_audit["d92_afcp_state_delta_code2_l1"] != state_l1
+            or state_l1 != changed
+            or raw_audit["d92_afcp_modified_state_field_names"] != ["coef2_qint8"]
+            or raw_audit["d92_afcp_coef2_byte_exact"] is not False
+        ):
+            raise D92E0DQueryEvaluationError("D92-E0D AFCP active state closure drift")
+        return
+    if (
+        active is not False
+        or changed != 0
+        or state_l1 != 0
+        or raw_audit["d92_afcp_changed_code2_count"] != 0
+        or raw_audit["d92_afcp_state_delta_code2_l1"] != 0
+        or raw_audit["d92_afcp_modified_state_field_names"] != []
+        or raw_audit["d92_afcp_coef2_byte_exact"] is not True
+        or final_sha != e0_sha
+        or not isinstance(fallback, bool)
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D AFCP exact-E0 state closure drift")
+
+
+def _afcp_support_receipt(
+    audit: dict[str, Any],
+    *,
+    arm: D92E0DSlimArmSpec,
+    registered: bool,
+    k_shot: int,
+    state: Any,
+) -> dict[str, Any]:
+    """Fail closed on AFCP lifecycle, support guard, or resource receipt drift."""
+
+    if arm.arm_id not in _AFCP_ARM_IDS:
+        return {}
+    afcp_fields = {
+        key for key in audit if isinstance(key, str) and key.startswith("d92_e0d_afcp_")
+    }
+    if afcp_fields != set(_AFCP_RECEIPT_FIELDS) or any(
+        isinstance(key, str) and key.startswith("d92_afcp_") for key in audit
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D AFCP receipt whitelist drift")
+    receipt = {field: audit[field] for field in _AFCP_RECEIPT_FIELDS}
+    prefix = "d92_e0d_afcp_"
+
+    def integer(name: str, *, lower: int = 0) -> int:
+        value = receipt[prefix + name]
+        if isinstance(value, bool) or not isinstance(value, (int, np.integer)):
+            raise D92E0DQueryEvaluationError(f"D92-E0D AFCP {name} receipt drift")
+        result = int(value)
+        if result < lower:
+            raise D92E0DQueryEvaluationError(f"D92-E0D AFCP {name} receipt drift")
+        return result
+
+    def finite(name: str, *, lower: float | None = None) -> float:
+        value = receipt[prefix + name]
+        if (
+            isinstance(value, bool)
+            or not isinstance(value, (int, float, np.integer, np.floating))
+            or not np.isfinite(float(value))
+            or (lower is not None and float(value) < lower)
+        ):
+            raise D92E0DQueryEvaluationError(f"D92-E0D AFCP {name} receipt drift")
+        return float(value)
+
+    def sha(name: str) -> str:
+        value = receipt[prefix + name]
+        if (
+            not isinstance(value, str)
+            or len(value) != 64
+            or any(character not in "0123456789abcdef" for character in value)
+        ):
+            raise D92E0DQueryEvaluationError(f"D92-E0D AFCP {name} receipt drift")
+        return value
+
+    from cvsrffi import stage2_d92_d42_allclass_fold_consensus_plane as afcp
+    from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
+
+    if (
+        not registered
+        or receipt[prefix + "formula_revision"] != afcp.FORMULA_REVISION
+        or receipt[prefix + "state_postprocess_mode"] != afcp.STATE_POSTPROCESS_MODE
+        or receipt[prefix + "direct_state_publish"] is not True
+        or receipt[prefix + "support_only"] is not True
+        or receipt[prefix + "all_class_symmetric"] is not True
+        or receipt[prefix + "class_permutation_equivariant"] is not True
+        or receipt[prefix + "row_permutation_invariant"] is not True
+        or receipt[prefix + "task_swap_equivariant"] is not True
+        or receipt[prefix + "support_row_canonicalization"]
+        != afcp.SUPPORT_ROW_CANONICALIZATION
+        or receipt[prefix + "fold_rule"] != afcp.FOLD_RULE
+        or receipt[prefix + "fold_tie_policy"] != afcp.FOLD_TIE_POLICY
+        or integer("class_count", lower=1) != len(state.classes)
+        or integer("old_class_count", lower=1) != int(state.old_class_count)
+        or integer("k_shot", lower=1) != int(k_shot)
+        or any(
+            integer(name) != 0
+            for name in (
+                "requantize_call_count",
+                "additional_full_fit_count",
+                "block_fit_count",
+                "loo_fit_count",
+                "fisher_fit_count",
+                "tail_selection_count",
+                "rival_pair_selection_count",
+                "atomic_candidate_count",
+                "prefix_evaluation_count",
+                "candidate_scan_count",
+                "persistent_state_bytes_delta",
+                "query_macs_delta",
+                "query_rows_used",
+                "support_288_square_matrix_bytes",
+            )
+        )
+        or receipt[prefix + "clean_sample_access"] is not False
+        or receipt[prefix + "source_sample_access"] is not False
+        or any(
+            receipt[prefix + f"query_{name}"] is not False
+            for name in (
+                "fit_access",
+                "update_access",
+                "selection_access",
+                "truth_access",
+                "role_oracle_access",
+                "class_quota_access",
+                "global_reassignment",
+            )
+        )
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D AFCP frozen receipt drift")
+    for name in (
+        "coef1_byte_exact",
+        "scale1_byte_exact",
+        "scale2_byte_exact",
+        "intercept_byte_exact",
+        "log_diag_byte_exact",
+        "coef_fp32_byte_exact",
+        "intercept_fp32_byte_exact",
+        "class_registry_byte_exact",
+        "state_shape_byte_exact",
+    ):
+        if receipt[prefix + name] is not True:
+            raise D92E0DQueryEvaluationError("D92-E0D AFCP stable-state guard drift")
+    final_sha = sha("final_state_sha256")
+    e0_sha = sha("e0_state_sha256")
+    try:
+        deployed_sha = afcp.d42_afcp_state_sha256(state)
+    except (afcp.D92D42AFCPError, TypeError, ValueError) as error:
+        raise D92E0DQueryEvaluationError("D92-E0D AFCP deployed state drift") from error
+    if deployed_sha != final_sha:
+        raise D92E0DQueryEvaluationError("D92-E0D AFCP deployed state SHA drift")
+    for name, expected in _afcp_static_resource_values(
+        state, k_shot=int(k_shot)
+    ).items():
+        if integer(name) != int(expected):
+            raise D92E0DQueryEvaluationError("D92-E0D AFCP static resource drift")
+    if integer("support_transient_bytes_upper_bound") >= 1_048_576:
+        raise D92E0DQueryEvaluationError("D92-E0D AFCP transient resource drift")
+
+    active = receipt[prefix + "active"]
+    fallback = receipt[prefix + "fallback_active"]
+    reason = receipt[prefix + "fallback_reason"]
+    changed = integer("changed_code2_count")
+    state_l1 = integer("state_delta_code2_l1")
+    coordinates = receipt[prefix + "block_coordinate_indices"]
+    block_counts = receipt[prefix + "block_changed_code2_counts"]
+    if (
+        not isinstance(coordinates, list)
+        or len(coordinates) != 3
+        or not isinstance(block_counts, list)
+        or len(block_counts) != 3
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D AFCP block receipt drift")
+
+    def inactive_fields_valid() -> bool:
+        return bool(
+            final_sha == e0_sha
+            and receipt[prefix + "modified_state_field_names"] == []
+            and receipt[prefix + "coef2_byte_exact"] is True
+            and changed == 0
+            and state_l1 == 0
+            and coordinates == [None, None, None]
+            and block_counts == [0, 0, 0]
+            and receipt[prefix + "all_three_blocks_changed"] is False
+            and receipt[prefix + "final_state_non_e0"] is False
+            and receipt[prefix + "support_margin_delta_max_abs"] is None
+            and receipt[prefix + "support_margin_quantum_pass"] is False
+            and receipt[prefix + "fold_class_all_margin_delta_mean"] is None
+            and receipt[prefix + "fold_old_to_new_cross_margin_delta_mean"] is None
+            and receipt[prefix + "fold_new_to_old_cross_margin_delta_mean"] is None
+            and receipt[prefix + "twofold_class_guard_pass"] is False
+            and receipt[prefix + "twofold_cross_guard_pass"] is False
+            and receipt[prefix + "support_guard_pass"] is False
+        )
+
+    if int(k_shot) <= 2:
+        if (
+            active is not False
+            or fallback is not False
+            or reason != "K1_K2_EXACT_D92_FULL_ALIAS"
+            or not inactive_fields_valid()
+        ):
+            raise D92E0DQueryEvaluationError("D92-E0D AFCP alias receipt drift")
+        return receipt
+    if fallback is True:
+        if (
+            active is not False
+            or not isinstance(reason, str)
+            or not reason
+            or not inactive_fields_valid()
+        ):
+            raise D92E0DQueryEvaluationError("D92-E0D AFCP fallback receipt drift")
+        return receipt
+    if fallback is not False:
+        raise D92E0DQueryEvaluationError("D92-E0D AFCP fallback flag drift")
+    if (
+        active is not True
+        or reason is not None
+        or final_sha == e0_sha
+        or receipt[prefix + "modified_state_field_names"] != ["coef2_qint8"]
+        or receipt[prefix + "coef2_byte_exact"] is not False
+        or changed <= 0
+        or changed > 3 * len(state.classes)
+        or state_l1 != changed
+        or sum(int(value) for value in block_counts) != changed
+        or any(int(value) <= 0 for value in block_counts)
+        or receipt[prefix + "all_three_blocks_changed"] is not True
+        or receipt[prefix + "final_state_non_e0"] is not True
+        or receipt[prefix + "support_margin_quantum_pass"] is not True
+        or receipt[prefix + "twofold_class_guard_pass"] is not True
+        or receipt[prefix + "twofold_cross_guard_pass"] is not True
+        or receipt[prefix + "support_guard_pass"] is not True
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D AFCP active receipt drift")
+    for coordinate, block in zip(coordinates, d42.BLOCK_SLICES):
+        if not isinstance(coordinate, (int, np.integer)) or not (
+            int(block.start) <= int(coordinate) < int(block.stop)
+        ):
+            raise D92E0DQueryEvaluationError("D92-E0D AFCP coordinate receipt drift")
+    finite("support_margin_delta_max_abs", lower=0.0)
+    if finite("support_margin_delta_max_abs") <= 0.0:
+        raise D92E0DQueryEvaluationError("D92-E0D AFCP margin quantum drift")
+    class_deltas = receipt[prefix + "fold_class_all_margin_delta_mean"]
+    old_cross = receipt[prefix + "fold_old_to_new_cross_margin_delta_mean"]
+    new_cross = receipt[prefix + "fold_new_to_old_cross_margin_delta_mean"]
+    if (
+        not isinstance(class_deltas, list)
+        or len(class_deltas) != 2
+        or any(not isinstance(values, list) or len(values) != len(state.classes) for values in class_deltas)
+        or not isinstance(old_cross, list)
+        or len(old_cross) != 2
+        or not isinstance(new_cross, list)
+        or len(new_cross) != 2
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D AFCP twofold receipt drift")
+    guard_values = [
+        *[value for values in class_deltas for value in values],
+        *old_cross,
+        *new_cross,
+    ]
+    if any(
+        isinstance(value, bool)
+        or not isinstance(value, (int, float, np.integer, np.floating))
+        or not np.isfinite(float(value))
+        or float(value) < 0.0
+        for value in guard_values
+    ):
+        raise D92E0DQueryEvaluationError("D92-E0D AFCP support guard drift")
+    return receipt
+
+
 def _audit_d92_e0d_fit(
     result: Any,
     *,
@@ -3102,6 +3560,13 @@ def _audit_d92_e0d_fit(
         k_shot=k_shot,
         state=result.state,
     )
+    after_afcp_receipt = _afcp_support_receipt(
+        after,
+        arm=arm,
+        registered=True,
+        k_shot=k_shot,
+        state=result.state,
+    )
     after_pareto_deployed_state_closure = _pareto_deployed_state_closure(
         result.state,
         after_pareto_distill_receipt,
@@ -3148,7 +3613,11 @@ def _audit_d92_e0d_fit(
                 else (
                     "d42_quantization_intercept_closure"
                     if arm.arm_id in _QIC_ARM_IDS and int(k_shot) > 2
-                    else None
+                    else (
+                        "d42_allclass_fold_consensus_plane"
+                        if arm.arm_id in _AFCP_ARM_IDS and int(k_shot) > 2
+                        else None
+                    )
                 )
             )
         ),
@@ -3190,6 +3659,7 @@ def _audit_d92_e0d_fit(
         **after_tpce_receipt,
         **after_tcra_receipt,
         **after_qic_receipt,
+        **after_afcp_receipt,
         "query_macs": int(after["d92_e0d_query_macs"]),
         "query_truth_access": False,
         "query_fit_access": False,
@@ -3691,13 +4161,21 @@ def run_d92_e0d_query_evaluation(
             new_classes,
             **kwargs,
         )
-        if arm.arm_id not in (_TPCE_ARM_IDS | _TCRA_ARM_IDS | _QIC_ARM_IDS):
+        if arm.arm_id not in (
+            _TPCE_ARM_IDS | _TCRA_ARM_IDS | _QIC_ARM_IDS | _AFCP_ARM_IDS
+        ):
             return result
         from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
 
         is_tcra = arm.arm_id in _TCRA_ARM_IDS
         is_qic = arm.arm_id in _QIC_ARM_IDS
-        if is_qic:
+        is_afcp = arm.arm_id in _AFCP_ARM_IDS
+        if is_afcp:
+            from cvsrffi import (
+                stage2_d92_d42_allclass_fold_consensus_plane as postprocess,
+            )
+            receipt_name = "AFCP"
+        elif is_qic:
             from cvsrffi import (
                 stage2_d92_d42_quantization_intercept_closure as postprocess,
             )
@@ -3718,9 +4196,9 @@ def run_d92_e0d_query_evaluation(
             raise D92E0DQueryEvaluationError(
                 f"D92-E0D {receipt_name} registry drift"
             )
-        if is_qic and not new_registry:
-            # QIC is a REG1-only post-codec closure.  REG0 must retain the
-            # exact E0 state and must not acquire a QIC receipt.
+        if (is_qic or is_afcp) and not new_registry:
+            # QIC/AFCP are REG1-only post-codec closures. REG0 retains the
+            # exact E0 state and does not acquire a direct-state receipt.
             return result
         mapping = {handle: index for index, handle in enumerate(registry)}
         try:
@@ -3752,7 +4230,13 @@ def run_d92_e0d_query_evaluation(
         k_value = int(class_counts[0])
         if k_value <= 2:
             candidate_state = result.state
-            if is_qic:
+            if is_afcp:
+                postprocess_audit = postprocess.d42_afcp_inactive_receipt(
+                    result.state,
+                    k_shot=k_value,
+                    old_class_count=len(old_registry),
+                )
+            elif is_qic:
                 postprocess_audit = postprocess.d42_qic_inactive_receipt(
                     result.state, k_shot=k_value
                 )
@@ -3771,6 +4255,13 @@ def run_d92_e0d_query_evaluation(
                 transformed = d42._transform(
                     all_rows, result.state.log_diag_fp32
                 )
+                if is_afcp:
+                    return postprocess.apply_d42_allclass_fold_consensus_plane(
+                        result.state,
+                        transformed,
+                        targets,
+                        old_class_count=len(old_registry),
+                    )
                 if is_qic:
                     return postprocess.apply_d42_quantization_intercept_closure(
                         result.state, transformed, targets
@@ -3795,7 +4286,12 @@ def run_d92_e0d_query_evaluation(
                 run_state_postprocess
             )
             candidate_state, postprocess_audit = measured
-        if is_qic:
+        if is_afcp:
+            _afcp_postprocess_state_closure(
+                result.state, candidate_state, postprocess_audit
+            )
+            formal_receipt = _mirror_afcp_receipt(postprocess_audit)
+        elif is_qic:
             _qic_postprocess_state_closure(
                 result.state, candidate_state, postprocess_audit
             )
@@ -3849,7 +4345,9 @@ def run_d92_e0d_query_evaluation(
             d81_eval.fit_d42_unified_shrinkage_lda = (
                 fit_with_final_state_technical_support_receipt
             )
-        elif arm.arm_id in (_TPCE_ARM_IDS | _TCRA_ARM_IDS | _QIC_ARM_IDS):
+        elif arm.arm_id in (
+            _TPCE_ARM_IDS | _TCRA_ARM_IDS | _QIC_ARM_IDS | _AFCP_ARM_IDS
+        ):
             d81_eval.fit_d42_unified_shrinkage_lda = fit_with_state_postprocess
         elif arm.arm_id in _CCOC_ARM_IDS:
             d81_eval.fit_d42_unified_shrinkage_lda = fit_with_csoas_codec_guard
