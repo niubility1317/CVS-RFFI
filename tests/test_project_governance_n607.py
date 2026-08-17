@@ -1,0 +1,584 @@
+from __future__ import annotations
+
+import ast
+import io
+import json
+from contextlib import redirect_stdout
+from dataclasses import dataclass, field
+from pathlib import Path
+
+import pytest
+
+from tools.project_governance.collect_n607 import (
+    APPROVED_BRIDGE_HOST,
+    APPROVED_N607_HOST,
+    BRIDGE_ROUTE,
+    DIRECT_ROUTE,
+    CommandResult,
+    ConnectionCheck,
+    ConnectionEvidence,
+    N607Collector,
+    RemoteOutcome,
+    build_remote_payload,
+)
+from tools.project_governance.config import CarrierSurface, DiscoveryConfig, LocationConfig
+from tools.project_governance.models import Location
+
+
+@dataclass
+class FakeRunner:
+    results: list[CommandResult]
+    connection_results: list[ConnectionCheck | tuple[ConnectionEvidence, ...]]
+    calls: list[dict[str, object]] = field(default_factory=list)
+    connection_calls: list[dict[str, object]] = field(default_factory=list)
+
+    def run(
+        self,
+        command: tuple[str, ...],
+        *,
+        input_text: str | None,
+        timeout_seconds: int,
+        label: str,
+    ) -> CommandResult:
+        self.calls.append(
+            {
+                "command": command,
+                "input_text": input_text,
+                "timeout_seconds": timeout_seconds,
+                "label": label,
+            }
+        )
+        if not self.results:
+            raise AssertionError("unexpected command execution")
+        result = self.results.pop(0)
+        assert result.command == command
+        return result
+
+    def check_connections(
+        self, *, attempt_pids: tuple[int, ...], endpoints: tuple[str, ...]
+    ) -> ConnectionCheck | tuple[ConnectionEvidence, ...]:
+        self.connection_calls.append(
+            {"attempt_pids": attempt_pids, "endpoints": endpoints}
+        )
+        if not self.connection_results:
+            raise AssertionError("unexpected disconnect check")
+        return self.connection_results.pop(0)
+
+
+def _config(root: str = "/srv/CV-SincNet") -> LocationConfig:
+    return LocationConfig(
+        location=Location.N607,
+        root_id="N607_CVS_SINCNET",
+        root=root,
+        carrier_surfaces=(
+            CarrierSurface("runs", "NOT_PRESENT"),
+            CarrierSurface("logs", "NOT_PRESENT"),
+        ),
+    )
+
+
+def _discovery() -> DiscoveryConfig:
+    return DiscoveryConfig(
+        control_evidence_max_depth=2,
+        hash_max_bytes=1024,
+        text_read_max_bytes=2048,
+    )
+
+
+def _preflight_command(script: Path = Path("C:/repo/tools/n607_ssh_preflight.ps1")) -> tuple[str, ...]:
+    return (
+        "powershell.exe",
+        "-NoLogo",
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        str(script),
+    )
+
+
+def _direct_command() -> tuple[str, ...]:
+    return (
+        "ssh",
+        "-T",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "ConnectTimeout=10",
+        "N607",
+        "python3",
+        "-",
+    )
+
+
+def _bridge_command() -> tuple[str, ...]:
+    proxy = (
+        "ProxyCommand=ssh -i C:/Users/lh594/.ssh/id_ed25519_lab_bridge_172_31_105_18 "
+        "-o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new "
+        "-W %h:%p administrator@172.31.105.18"
+    )
+    return (
+        "ssh",
+        "-i",
+        "C:/Users/lh594/.ssh/id_ed25519_n607",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "IdentitiesOnly=yes",
+        "-o",
+        "ConnectTimeout=10",
+        "-o",
+        "StrictHostKeyChecking=accept-new",
+        "-o",
+        proxy,
+        "szu2070436088@172.31.111.215",
+        "python3",
+        "-",
+    )
+
+
+def _result(
+    command: tuple[str, ...],
+    *,
+    pid: int,
+    stdout_lines: tuple[str, ...] = (),
+    stderr_tail: str = "",
+    returncode: int | None = 0,
+    child_exited: bool = True,
+    proxy_pids: tuple[int, ...] = (),
+    proxy_children_exited: bool = True,
+    timed_out: bool = False,
+) -> CommandResult:
+    return CommandResult(
+        command=command,
+        child_pid=pid,
+        proxy_child_pids=proxy_pids,
+        returncode=returncode,
+        child_exited=child_exited,
+        proxy_children_exited=proxy_children_exited,
+        stdout_lines=stdout_lines,
+        stderr_tail=stderr_tail,
+        timed_out=timed_out,
+    )
+
+
+def _preflight_ok(command: tuple[str, ...] | None = None) -> CommandResult:
+    command = command or _preflight_command()
+    return _result(
+        command,
+        pid=101,
+        stdout_lines=(
+            "Config OK: N607 is direct. user szu2070436088; hostname 172.31.111.215",
+            "Identity file OK: C:/Users/lh594/.ssh/id_ed25519_n607_codexsandboxoffline",
+            "Identity file OK: C:/Users/lh594/.ssh/id_ed25519_n607",
+            "user=szu2070436088",
+            "project_root=/home/szu2070436088/2510044040/CV-SincNet",
+            "Preflight OK: use ssh N607",
+        ),
+        proxy_pids=(102,),
+    )
+
+
+def _ndjson(*, scan_id: str = "SCAN-1", active: bool = False) -> tuple[str, ...]:
+    lines = [
+        json.dumps(
+            {
+                "schema_version": 1,
+                "scan_id": scan_id,
+                "record_type": "SERVER_INFO",
+                "hostname": "n607",
+                "server_time_utc": "2026-08-17T00:00:00Z",
+                "root": "/home/szu2070436088/2510044040/CV-SincNet",
+            }
+        ),
+        json.dumps(
+            {
+                "schema_version": 1,
+                "scan_id": scan_id,
+                "record_type": "ASSET",
+                "asset_id": "asset:N607:N607_CVS_SINCNET:runs/demo/report.md",
+                "location": "N607",
+                "root_id": "N607_CVS_SINCNET",
+                "relative_path": "runs/demo/report.md",
+                "display_name": "report.md",
+                "escaped_name": "report.md",
+                "asset_kind": "file",
+                "size_bytes": 12,
+                "mtime_utc": "2026-08-17T00:00:00Z",
+                "access_status": "OK",
+                "hash_status": "SHA256",
+                "sha256": "0" * 64,
+            }
+        ),
+    ]
+    if active:
+        lines.append(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "scan_id": scan_id,
+                    "record_type": "PROCESS",
+                    "pid": 5151,
+                    "ppid": 5000,
+                    "cwd": "/home/szu2070436088/2510044040/CV-SincNet",
+                    "cmdline": "python train.py",
+                    "training_like": True,
+                }
+            )
+        )
+    lines.append(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "scan_id": scan_id,
+                "record_type": "COLLECTION_COMPLETE",
+                "record_count": len(lines),
+                "scan_error_count": 0,
+            }
+        )
+    )
+    return tuple(lines)
+
+
+def _collector(runner: FakeRunner, *, scan_id: str = "SCAN-1") -> N607Collector:
+    return N607Collector(
+        _config("/home/szu2070436088/2510044040/CV-SincNet"),
+        _discovery(),
+        scan_id=scan_id,
+        runner=runner,
+        preflight_script=Path("C:/repo/tools/n607_ssh_preflight.ps1"),
+    )
+
+
+def test_remote_payload_is_ast_safe_and_imports_only_read_only_stdlib() -> None:
+    payload = build_remote_payload(_config(), _discovery(), scan_id="SCAN-AST")
+    tree = ast.parse(payload)
+    imports: set[str] = set()
+    forbidden_attributes = {
+        "write_text",
+        "write_bytes",
+        "unlink",
+        "remove",
+        "rmdir",
+        "rmtree",
+        "mkdir",
+        "makedirs",
+        "rename",
+        "replace",
+        "chmod",
+        "chown",
+        "kill",
+        "system",
+        "Popen",
+        "run",
+    }
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            imports.update(alias.name for alias in node.names)
+        elif isinstance(node, ast.ImportFrom):
+            imports.add(node.module or "")
+        elif isinstance(node, ast.Attribute):
+            assert node.attr not in forbidden_attributes
+        elif isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "open":
+            mode = None
+            if len(node.args) >= 2 and isinstance(node.args[1], ast.Constant):
+                mode = node.args[1].value
+            for keyword in node.keywords:
+                if keyword.arg == "mode" and isinstance(keyword.value, ast.Constant):
+                    mode = keyword.value.value
+            assert mode in {"r", "rt", "rb"}
+    assert imports == {
+        "datetime",
+        "hashlib",
+        "json",
+        "os",
+        "re",
+        "socket",
+        "stat",
+        "unicodedata",
+        "urllib.parse",
+    }
+    assert "subprocess" not in payload
+    assert "os.lstat(ROOT)" in payload
+
+
+def test_remote_payload_executes_locally_as_ndjson_without_mutating_source(tmp_path: Path) -> None:
+    root = tmp_path / "remote-root"
+    (root / "runs" / "demo").mkdir(parents=True)
+    (root / "logs").mkdir()
+    report = root / "runs" / "demo" / "report.md"
+    report.write_text("run_id: demo\nterminal: true\n", encoding="utf-8")
+    source = root / "runs" / "demo" / "worker.py"
+    source.write_text("TOKEN = 'not evidence text'\n", encoding="utf-8")
+    receipt = root / "runs" / "demo" / "scan_receipt.json"
+    receipt.write_text('{"run_id":"utf16-demo"}\n', encoding="utf-16")
+    before = {path.relative_to(root).as_posix() for path in root.rglob("*")}
+
+    payload = build_remote_payload(_config(root.as_posix()), _discovery(), scan_id="SCAN-EXEC")
+    output = io.StringIO()
+    with redirect_stdout(output):
+        exec(compile(payload, "<remote-payload>", "exec"), {"__name__": "__main__"})
+
+    after = {path.relative_to(root).as_posix() for path in root.rglob("*")}
+    records = [json.loads(line) for line in output.getvalue().splitlines()]
+    assert after == before
+    assert records[0]["record_type"] == "SERVER_INFO"
+    assert records[-1]["record_type"] == "COLLECTION_COMPLETE"
+    assert all(record["schema_version"] == 1 for record in records)
+    assert all(record["scan_id"] == "SCAN-EXEC" for record in records)
+    assets = [record for record in records if record["record_type"] == "ASSET"]
+    assert any(record["relative_path"] == "runs/demo/report.md" for record in assets)
+    assert all(not record["relative_path"].startswith("/") for record in assets)
+    report_record = next(record for record in assets if record["relative_path"].endswith("report.md"))
+    source_record = next(record for record in assets if record["relative_path"].endswith("worker.py"))
+    receipt_record = next(
+        record for record in assets if record["relative_path"].endswith("scan_receipt.json")
+    )
+    assert report_record["evidence_text"].startswith("run_id: demo")
+    assert "evidence_text" not in source_record
+    assert "utf16-demo" in receipt_record["evidence_text"]
+
+
+def test_direct_success_requires_markers_valid_ndjson_and_clean_disconnect() -> None:
+    preflight = _preflight_ok()
+    direct = _result(_direct_command(), pid=202, stdout_lines=_ndjson())
+    runner = FakeRunner([preflight, direct], [(), ()])
+
+    result = _collector(runner).collect()
+
+    assert result.receipt.outcome is RemoteOutcome.VERIFIED
+    assert result.receipt.route == DIRECT_ROUTE
+    assert result.receipt.disconnect_status == "VERIFIED"
+    assert len(result.records) == len(_ndjson())
+    assert [call["label"] for call in runner.calls] == ["PREFLIGHT", "DIRECT"]
+    assert runner.calls[1]["command"] == _direct_command()
+    assert runner.calls[1]["timeout_seconds"] == 45
+    assert "SCAN-1" in str(runner.calls[1]["input_text"])
+    assert runner.connection_calls[1]["attempt_pids"] == (202,)
+    assert runner.connection_calls[1]["endpoints"] == (
+        APPROVED_N607_HOST,
+        APPROVED_BRIDGE_HOST,
+    )
+
+
+def test_known_direct_path_failure_with_valid_identity_uses_exact_bridge() -> None:
+    preflight = _result(
+        _preflight_command(),
+        pid=301,
+        returncode=1,
+        stdout_lines=(
+            "Config OK: N607 is direct. user szu2070436088; hostname 172.31.111.215",
+            "Identity file OK: C:/Users/lh594/.ssh/id_ed25519_n607",
+        ),
+        stderr_tail="ssh: connect to host 172.31.111.215 port 22: Connection timed out",
+        proxy_pids=(311,),
+    )
+    bridge = _result(
+        _bridge_command(),
+        pid=302,
+        proxy_pids=(303,),
+        stdout_lines=_ndjson(),
+    )
+    runner = FakeRunner([preflight, bridge], [(), ()])
+
+    result = _collector(runner).collect()
+
+    assert result.receipt.outcome is RemoteOutcome.VERIFIED
+    assert result.receipt.route == BRIDGE_ROUTE
+    assert runner.calls[1]["command"] == _bridge_command()
+    assert runner.connection_calls[1]["attempt_pids"] == (302, 303)
+    assert "N607-admin" not in " ".join(_bridge_command())
+    assert "szu2310433034" not in " ".join(_bridge_command())
+
+
+def test_identity_ambiguity_fails_without_any_collection_attempt() -> None:
+    preflight = _result(
+        _preflight_command(),
+        pid=401,
+        returncode=1,
+        stderr_tail="No SSH identity file is configured for N607",
+    )
+    runner = FakeRunner([preflight], [()])
+
+    result = _collector(runner).collect()
+
+    assert result.receipt.outcome is RemoteOutcome.FAILED
+    assert result.receipt.route is None
+    assert len(runner.calls) == 1
+    assert "identity" in (result.receipt.error or "").casefold()
+
+
+@pytest.mark.parametrize(
+    ("command_result", "connections", "expected"),
+    [
+        (
+            _result(
+                _direct_command(),
+                pid=501,
+                returncode=None,
+                timed_out=True,
+                child_exited=False,
+            ),
+            (ConnectionEvidence(501, APPROVED_N607_HOST, "SYN_SENT"),),
+            RemoteOutcome.UNKNOWN,
+        ),
+        (
+            _result(_direct_command(), pid=502, stdout_lines=("not-json",)),
+            (),
+            RemoteOutcome.FAILED,
+        ),
+        (
+            _result(_direct_command(), pid=503, returncode=7, stderr_tail="remote error"),
+            (),
+            RemoteOutcome.FAILED,
+        ),
+        (
+            _result(_direct_command(), pid=504, stdout_lines=_ndjson()),
+            (ConnectionEvidence(504, APPROVED_N607_HOST, "ESTABLISHED"),),
+            RemoteOutcome.UNKNOWN,
+        ),
+        (
+            _result(_direct_command(), pid=505, stdout_lines=_ndjson(), child_exited=False),
+            (),
+            RemoteOutcome.UNKNOWN,
+        ),
+        (
+            _result(_direct_command(), pid=506, stdout_lines=_ndjson()[:-1]),
+            (),
+            RemoteOutcome.FAILED,
+        ),
+    ],
+)
+def test_failure_and_unknown_semantics(
+    command_result: CommandResult,
+    connections: tuple[ConnectionEvidence, ...],
+    expected: RemoteOutcome,
+) -> None:
+    runner = FakeRunner([_preflight_ok(), command_result], [(), connections])
+
+    result = _collector(runner).collect()
+
+    assert result.receipt.outcome is expected
+    assert len(runner.calls) == 2
+    assert result.receipt.outcome is not RemoteOutcome.VERIFIED
+
+
+def test_active_training_is_observed_but_never_intervened_in() -> None:
+    direct = _result(_direct_command(), pid=601, stdout_lines=_ndjson(active=True))
+    runner = FakeRunner([_preflight_ok(), direct], [(), ()])
+
+    result = _collector(runner).collect()
+
+    assert result.receipt.outcome is RemoteOutcome.VERIFIED
+    assert result.receipt.active_training_observed is True
+    assert len(runner.calls) == 2
+    combined_commands = " ".join(" ".join(call["command"]) for call in runner.calls)
+    assert all(token not in combined_commands for token in ("taskkill", "pkill", "killall"))
+
+
+def test_exit_zero_and_readable_output_are_not_preflight_success_evidence() -> None:
+    preflight = _result(
+        _preflight_command(),
+        pid=701,
+        stdout_lines=("some readable output",),
+    )
+    runner = FakeRunner([preflight], [()])
+
+    result = _collector(runner).collect()
+
+    assert result.receipt.outcome is RemoteOutcome.FAILED
+    assert len(runner.calls) == 1
+
+
+def test_preflight_requires_actual_remote_ordinary_user_evidence() -> None:
+    preflight = _result(
+        _preflight_command(),
+        pid=801,
+        proxy_pids=(802,),
+        stdout_lines=(
+            "Config OK: N607 is direct. user szu2070436088; hostname 172.31.111.215",
+            "Identity file OK: C:/Users/lh594/.ssh/id_ed25519_n607",
+            "user=someone_else",
+            "project_root=/home/szu2070436088/2510044040/CV-SincNet",
+            "Preflight OK: use ssh N607",
+        ),
+    )
+    runner = FakeRunner([preflight], [()])
+
+    result = _collector(runner).collect()
+
+    assert result.receipt.outcome is RemoteOutcome.FAILED
+    assert len(runner.calls) == 1
+    assert "identity" in (result.receipt.error or "").casefold()
+
+
+def test_missing_attempt_child_evidence_cannot_authorize_bridge_fallback() -> None:
+    preflight = _result(
+        _preflight_command(),
+        pid=901,
+        returncode=1,
+        stdout_lines=(
+            "Config OK: N607 is direct. user szu2070436088; hostname 172.31.111.215",
+            "Identity file OK: C:/Users/lh594/.ssh/id_ed25519_n607",
+        ),
+        stderr_tail="ssh: connect to host 172.31.111.215 port 22: Connection timed out",
+    )
+    runner = FakeRunner([preflight], [()])
+
+    result = _collector(runner).collect()
+
+    assert result.receipt.outcome is RemoteOutcome.UNKNOWN
+    assert len(runner.calls) == 1
+
+
+def test_disconnect_probe_failure_is_unknown_and_stops() -> None:
+    runner = FakeRunner(
+        [_preflight_ok()],
+        [ConnectionCheck(completed=False, error="netstat evidence unavailable")],
+    )
+
+    result = _collector(runner).collect()
+
+    assert result.receipt.outcome is RemoteOutcome.UNKNOWN
+    assert result.receipt.disconnect_status == "UNKNOWN"
+    assert len(runner.calls) == 1
+
+
+def test_preflight_path_fallback_requires_a_failed_preflight_exit() -> None:
+    preflight = _result(
+        _preflight_command(),
+        pid=1001,
+        proxy_pids=(1002,),
+        returncode=0,
+        stdout_lines=(
+            "Config OK: N607 is direct. user szu2070436088; hostname 172.31.111.215",
+            "Identity file OK: C:/Users/lh594/.ssh/id_ed25519_n607",
+        ),
+        stderr_tail="ssh: connect to host 172.31.111.215 port 22: Connection timed out",
+    )
+    runner = FakeRunner([preflight], [()])
+
+    result = _collector(runner).collect()
+
+    assert result.receipt.outcome is RemoteOutcome.FAILED
+    assert len(runner.calls) == 1
+
+
+def test_ndjson_requires_stable_asset_identity_and_one_final_completion() -> None:
+    bad_identity = list(_ndjson())
+    asset = json.loads(bad_identity[1])
+    asset["asset_id"] = "asset:N607:N607_CVS_SINCNET:wrong"
+    bad_identity[1] = json.dumps(asset)
+    duplicate_complete = list(_ndjson())
+    duplicate_complete.insert(-1, duplicate_complete[-1])
+    final = json.loads(duplicate_complete[-1])
+    final["record_count"] = len(duplicate_complete) - 1
+    duplicate_complete[-1] = json.dumps(final)
+
+    for pid, lines in ((1101, tuple(bad_identity)), (1102, tuple(duplicate_complete))):
+        runner = FakeRunner(
+            [_preflight_ok(), _result(_direct_command(), pid=pid, stdout_lines=lines)],
+            [(), ()],
+        )
+        result = _collector(runner).collect()
+        assert result.receipt.outcome is RemoteOutcome.FAILED
