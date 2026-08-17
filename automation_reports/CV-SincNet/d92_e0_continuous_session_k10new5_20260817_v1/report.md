@@ -49,7 +49,13 @@ tar -tzf runtime/d92_e0_continuous_session_v1.tar.gz
 
 交接顺序：解包runtime→`prepare`生成5-job manifest→`prepare-deltas`全部5 job→GPU0执行`smoke`（仅`batch_5`+`singleton_forward`）→正式5个`run-job`并发→只做技术状态计数。分析器和truth sidecar由后续主代理在预测封存后独立执行，本发布脚本不读取truth。
 
-精确命令入口见同目录`launch.sh`。预期每个session目录包含`prediction_artifact.npz`、`fit_audit.json`、`resource_audit.json`、`execution_receipt.json`和`COMMIT.json`，每个job包含`prediction_manifest.json`及job receipt。
+唯一detached启动命令：
+
+```bash
+cd /home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0_continuous_session_k10new5_20260817_v1 && nohup bash ./launch.sh >./launch.out 2>./launch.err </dev/null &
+```
+
+预期每个session目录包含`prediction_artifact.npz`、`fit_audit.json`、`resource_audit.json`、`execution_receipt.json`和`COMMIT.json`，每个job包含`prediction_manifest.json`及job receipt。
 
 ## 停止规则与风险
 
@@ -58,4 +64,3 @@ tar -tzf runtime/d92_e0_continuous_session_v1.tar.gz
 - 不因中间准确率、H、BA、floor或遗忘值停止。
 - `fresh_run_retry=false`；本run不可恢复续跑。
 - 若资源receipt超过冻结门，保留技术artifact并由主代理判定，不读取性能作解释。
-
