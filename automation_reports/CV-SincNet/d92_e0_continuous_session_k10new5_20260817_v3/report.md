@@ -53,3 +53,14 @@ cd /home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0_continuous_session_k10n
 - 不因中间accuracy、H、BA、floor或遗忘值停止。
 - `fresh_run_retry=false`；本run不可恢复续跑。
 - `DA1_REG1`资源receipt超过300ms/4MiB时保留技术artifact并停止，不读取性能作解释。
+
+## Runner失败态封口（2026-08-17）
+
+- 终态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+- 触发：GPU0 truth-free smoke出现确定性技术异常`ContinuousSessionPredictionError: before/after apply stage drift`。
+- formal dispatch：未启动；job receipt和prediction manifest计数均为0。
+- 接管runner未执行新的detached launch、未重试、未修改方法、矩阵、配置或远端已有artifact。
+- 封口核验：无本run绑定PID，GPU compute进程为空；异常触发后仅保全现有run/log内容。
+- 完整性：远端与本地runtime archive SHA-256均为`41ef83ad124398789f4b472c05ec8723e655fe5e4b26d43163133d2f553cd727`，launch SHA-256均为`1275ad7928d6c4209dfb13bb6e13211aa0f9d1941cc644e7d4f1fe32259fc20a`；归档31条目且无不安全路径；两端`bash -n launch.sh`通过。
+- 取回：`E:/type10-7/local_artifacts/d92_e0_continuous_session_k10new5_20260817_v3/run_root`和`.../log_root`中的相对路径与文件字节数分别和远端一致。
+- 边界：未复制或读取truth sidecar，未运行analyzer，未读取或解释accuracy、H、BA、floor、forgetting或任何性能值。

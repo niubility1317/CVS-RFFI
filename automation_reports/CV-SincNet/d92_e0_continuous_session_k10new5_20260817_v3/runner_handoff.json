@@ -1,0 +1,39 @@
+{
+  "run_id": "d92_e0_continuous_session_k10new5_20260817_v3",
+  "runner_role": "sole_n607_runner",
+  "terminal_state": "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT",
+  "trigger": "ContinuousSessionPredictionError: before/after apply stage drift during GPU0 truth-free smoke",
+  "formal_dispatch": "NOT_STARTED",
+  "retry_authority": false,
+  "remote": {
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0_continuous_session_k10new5_20260817_v3",
+    "log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/d92_e0_continuous_session_k10new5_20260817_v3",
+    "run_owned_processes": 0,
+    "gpu_compute_processes": 0,
+    "formal_job_receipts": 0,
+    "formal_prediction_manifests": 0
+  },
+  "release_integrity": {
+    "runtime_archive_sha256": "41ef83ad124398789f4b472c05ec8723e655fe5e4b26d43163133d2f553cd727",
+    "launch_sha256": "1275ad7928d6c4209dfb13bb6e13211aa0f9d1941cc644e7d4f1fe32259fc20a",
+    "runtime_archive_entries": 31,
+    "runtime_archive_safe_paths": true,
+    "remote_bash_n": "PASS",
+    "local_bash_n": "PASS"
+  },
+  "retrieval": {
+    "local_root": "E:/type10-7/local_artifacts/d92_e0_continuous_session_k10new5_20260817_v3",
+    "run_root_path_and_size_match": true,
+    "log_root_path_and_size_match": true,
+    "truth_sidecars_copied": false,
+    "truth_sidecar_content_read": false,
+    "analyzer_run": false,
+    "performance_content_read": false
+  },
+  "runner_actions": {
+    "launch_submitted_once": true,
+    "retry": false,
+    "remote_overwrite_or_delete": false,
+    "method_or_matrix_change": false
+  }
+}
