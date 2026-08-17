@@ -17,12 +17,13 @@ from collections import Counter
 from dataclasses import dataclass, fields, is_dataclass
 from datetime import datetime, timedelta, timezone
 from enum import Enum
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 from typing import Any, Iterable, Mapping, Sequence
 
 from .models import (
     AccessStatus,
     ApprovalState,
+    AssetKind,
     AssetRecord,
     DeletionCandidate,
     ExecutionState,
@@ -30,7 +31,9 @@ from .models import (
     ExperimentState,
     GitOwnership,
     GitOwnershipRecord,
+    HashStatus,
     Location,
+    RetentionClass,
     RetentionDecision,
     ScanBundle,
     ScopeResult,
@@ -60,6 +63,12 @@ _ROUTE_PREFLIGHT_STATE = {
     "DIRECT": "DIRECT_READY",
     "LAB_BRIDGE": "DIRECT_PATH_UNAVAILABLE",
 }
+_INVALID_WINDOWS_NAME_CHARS = frozenset('<>:"/\\|?*')
+_WINDOWS_RESERVED_NAMES = frozenset(
+    {"CON", "PRN", "AUX", "NUL"}
+    | {f"COM{index}" for index in range(1, 10)}
+    | {f"LPT{index}" for index in range(1, 10)}
+)
 _REQUIRED_METADATA = frozenset(
     {
         "local_root",
@@ -129,6 +138,18 @@ def _cell(value: Any) -> str:
     return str(converted)
 
 
+def _csv_cell(value: Any) -> str:
+    """Render one spreadsheet-safe cell without changing JSON evidence."""
+
+    converted = _json_value(value)
+    rendered = _cell(value)
+    if isinstance(converted, str) and rendered.lstrip(" \t\r\n").startswith(
+        ("=", "+", "-", "@")
+    ):
+        return "'" + rendered
+    return rendered
+
+
 def _markdown_cell(value: Any) -> str:
     """Render one table cell without allowing evidence text to break Markdown rows."""
 
@@ -163,7 +184,7 @@ def _csv_bytes(records: Iterable[Any], record_type: type[Any], *, sort_fields: S
     headers = _record_fields(record_type)
     writer.writerow(headers)
     for record in values:
-        writer.writerow([_cell(getattr(record, header)) for header in headers])
+        writer.writerow([_csv_cell(getattr(record, header)) for header in headers])
     return output.getvalue().encode("utf-8-sig")
 
 
@@ -288,6 +309,102 @@ def _validate_deletion_candidates(candidates: Iterable[DeletionCandidate]) -> No
             )
 
 
+def _validate_scan_id(value: Any) -> str:
+    if not isinstance(value, str) or not value or value != value.strip():
+        raise ValueError("scan_id must be a trimmed non-empty string")
+    windows_path = PureWindowsPath(value)
+    reserved_stem = value.rstrip(" .").split(".", 1)[0].upper()
+    if (
+        value in {".", ".."}
+        or windows_path.drive
+        or windows_path.root
+        or windows_path.anchor
+        or len(windows_path.parts) != 1
+        or any(
+            character in _INVALID_WINDOWS_NAME_CHARS or ord(character) < 32
+            for character in value
+        )
+        or value.endswith((" ", "."))
+        or reserved_stem in _WINDOWS_RESERVED_NAMES
+    ):
+        raise ValueError("scan_id must be one safe path component without a drive or anchor")
+    return value
+
+
+def _path_is_within(path: Path, root: Path) -> bool:
+    try:
+        path.relative_to(root)
+    except ValueError:
+        return False
+    return True
+
+
+def _paths_overlap(left: Path, right: Path) -> bool:
+    return _path_is_within(left, right) or _path_is_within(right, left)
+
+
+_RECORD_TYPES = {
+    "assets": AssetRecord,
+    "scope_results": ScopeResult,
+    "git_ownership": GitOwnershipRecord,
+    "experiments": ExperimentRecord,
+    "retention_decisions": RetentionDecision,
+    "deletion_candidates": DeletionCandidate,
+}
+_RECORD_ENUM_FIELDS = {
+    "assets": (
+        ("location", Location),
+        ("asset_kind", AssetKind),
+        ("access_status", AccessStatus),
+        ("hash_status", HashStatus),
+    ),
+    "scope_results": (("location", Location),),
+    "git_ownership": (("ownership", GitOwnership),),
+    "experiments": (("experiment_state", ExperimentState),),
+    "retention_decisions": (("retention_class", RetentionClass),),
+    "deletion_candidates": (("location", Location), ("asset_kind", AssetKind)),
+}
+
+
+def _validate_bundle_records(bundle: ScanBundle) -> dict[str, tuple[Any, ...]]:
+    records: dict[str, tuple[Any, ...]] = {}
+    for collection, record_type in _RECORD_TYPES.items():
+        raw_records = getattr(bundle, collection)
+        try:
+            selected = tuple(raw_records or ())
+        except TypeError as exc:
+            raise ValueError(f"{collection} must be an iterable of {record_type.__name__}") from exc
+        for index, record in enumerate(selected):
+            if not isinstance(record, record_type):
+                raise ValueError(
+                    f"{collection}[{index}] must be a {record_type.__name__} record"
+                )
+            for field_name, enum_type in _RECORD_ENUM_FIELDS[collection]:
+                if not isinstance(getattr(record, field_name), enum_type):
+                    raise ValueError(
+                        f"{collection}[{index}].{field_name} must be {enum_type.__name__}"
+                    )
+            if isinstance(record, AssetRecord):
+                for field_name, enum_type in (
+                    ("git_ownership", GitOwnership),
+                    ("retention_class", RetentionClass),
+                ):
+                    field_value = getattr(record, field_name)
+                    if field_value is not None and not isinstance(field_value, enum_type):
+                        raise ValueError(
+                            f"{collection}[{index}].{field_name} must be {enum_type.__name__}"
+                        )
+            if (
+                isinstance(record, (AssetRecord, ScopeResult))
+                and record.scan_id != bundle.scan_id
+            ):
+                raise ValueError(
+                    f"{collection}[{index}].scan_id does not match bundle scan_id"
+                )
+        records[collection] = selected
+    return records
+
+
 def _payload_entry(name: str, payload: bytes) -> dict[str, Any]:
     return {
         "path": name,
@@ -316,20 +433,22 @@ class ReportEmitter:
     ) -> None:
         if not isinstance(bundle, ScanBundle):
             raise TypeError("bundle must be a ScanBundle")
+        _validate_scan_id(bundle.scan_id)
         if (
-            not bundle.scan_id
-            or bundle.scan_id in {".", ".."}
-            or "/" in bundle.scan_id
-            or "\\" in bundle.scan_id
+            type(git_file_max_bytes) is not int
+            or type(git_scan_max_bytes) is not int
+            or git_file_max_bytes <= 0
+            or git_scan_max_bytes <= 0
         ):
-            raise ValueError("scan_id must be a single path component")
-        if git_file_max_bytes <= 0 or git_scan_max_bytes <= 0:
             raise ValueError("output thresholds must be positive")
         self.bundle = bundle
         self.output_root = Path(output_root).expanduser().resolve(strict=False)
         self.external_output_root = Path(external_output_root).expanduser().resolve(strict=False)
+        if _paths_overlap(self.output_root, self.external_output_root):
+            raise ValueError("Git and external output roots must not overlap")
         self.metadata = _validate_metadata(metadata)
-        _validate_deletion_candidates(bundle.deletion_candidates or ())
+        self._validated_records = _validate_bundle_records(bundle)
+        _validate_deletion_candidates(self._validated_records["deletion_candidates"])
         for timestamp in (bundle.started_at_utc, bundle.completed_at_utc):
             if timestamp is not None:
                 _iso_utc(timestamp)
@@ -349,8 +468,13 @@ class ReportEmitter:
         return self._emission_now_utc
 
     def _target_paths(self) -> tuple[Path, Path]:
-        git_target = self.output_root / self.scan_id
-        external_target = self.external_output_root / self.scan_id
+        git_target = (self.output_root / self.scan_id).resolve(strict=False)
+        external_target = (self.external_output_root / self.scan_id).resolve(strict=False)
+        if (
+            git_target.parent != self.output_root
+            or external_target.parent != self.external_output_root
+        ):
+            raise ValueError("scan_id resolved outside an output root")
         if git_target.exists():
             raise FileExistsError(f"governance output already exists: {git_target}")
         if external_target.exists():
@@ -375,15 +499,7 @@ class ReportEmitter:
             stream.write(payload)
 
     def _records(self) -> dict[str, tuple[Any, ...]]:
-        bundle = self.bundle
-        return {
-            "assets": tuple(bundle.assets or ()),
-            "scope_results": tuple(bundle.scope_results or ()),
-            "git_ownership": tuple(bundle.git_ownership or ()),
-            "experiments": tuple(bundle.experiments or ()),
-            "retention_decisions": tuple(bundle.retention_decisions or ()),
-            "deletion_candidates": tuple(bundle.deletion_candidates or ()),
-        }
+        return dict(self._validated_records)
 
     def _full_inventory(self, records: Mapping[str, tuple[Any, ...]]) -> dict[str, Any]:
         return {

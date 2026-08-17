@@ -205,8 +205,40 @@ def test_emitter_produces_stable_small_outputs_with_required_encodings(tmp_path)
     assert all(path["sha256"] and path["bytes"] >= 0 for path in receipt["files"])
 
 
+@pytest.mark.parametrize(
+    "formula_path", ("=1+1", "+SUM(A1:A2)", "-2+3", "@cmd", "\t=1+1")
+)
+def test_emitter_neutralizes_text_formula_prefixes_in_csv_only(tmp_path, formula_path):
+    bundle = replace(_bundle(), assets=(_asset(formula_path),))
+
+    result = ReportEmitter(
+        bundle,
+        output_root=tmp_path / "git",
+        external_output_root=tmp_path / "external",
+        metadata=_metadata(),
+    ).emit()
+    csv_path = result.git_output_dir / "asset_inventory_local.csv"
+    with csv_path.open("r", encoding="utf-8-sig", newline="") as stream:
+        rows = list(csv.DictReader(stream))
+    full = json.loads(
+        result.git_output_dir.joinpath("asset_inventory_full.json").read_text(encoding="utf-8")
+    )
+
+    assert rows[0]["relative_path"] == "'" + formula_path
+    assert full["assets"][0]["relative_path"] == formula_path
+
+
 def test_emitter_is_immutable_on_second_scan_id_and_receipt_is_last(tmp_path):
-    emitter = ReportEmitter(
+    writes: list[str] = []
+
+    class RecordingEmitter(ReportEmitter):
+        def _write_exclusive(self, path, payload, *, encoding="utf-8", newline=""):
+            writes.append(path.name)
+            return super()._write_exclusive(
+                path, payload, encoding=encoding, newline=newline
+            )
+
+    emitter = RecordingEmitter(
         _bundle(),
         output_root=tmp_path / "git",
         external_output_root=tmp_path / "external",
@@ -225,7 +257,111 @@ def test_emitter_is_immutable_on_second_scan_id_and_receipt_is_last(tmp_path):
 
     after = {path.name: path.read_bytes() for path in first.git_output_dir.iterdir()}
     assert after == before
-    assert list(before).index("scan_receipt.json") == len(before) - 1
+    assert writes[-1] == "scan_receipt.json"
+
+
+@pytest.mark.parametrize("scan_id", ("C:", "C:outside", "D:relative"))
+def test_emitter_rejects_windows_drive_relative_scan_ids_before_writing(tmp_path, scan_id):
+    with pytest.raises(ValueError, match="scan_id"):
+        ReportEmitter(
+            replace(_bundle(), scan_id=scan_id),
+            output_root=tmp_path / "git",
+            external_output_root=tmp_path / "external",
+            metadata=_metadata(),
+        )
+
+    assert not (tmp_path / "git").exists()
+    assert not (tmp_path / "external").exists()
+
+
+@pytest.mark.parametrize(
+    ("git_parts", "external_parts"),
+    (
+        (("shared",), ("shared",)),
+        (("git",), ("git", "external")),
+        (("external", "git"), ("external",)),
+    ),
+)
+def test_emitter_rejects_overlapping_output_roots_before_writing(
+    tmp_path, git_parts, external_parts
+):
+    output_root = tmp_path.joinpath(*git_parts)
+    external_output_root = tmp_path.joinpath(*external_parts)
+
+    with pytest.raises(ValueError, match="output roots"):
+        ReportEmitter(
+            _bundle(),
+            output_root=output_root,
+            external_output_root=external_output_root,
+            metadata=_metadata(),
+        )
+
+    assert not output_root.exists()
+    assert not external_output_root.exists()
+
+
+@pytest.mark.parametrize(
+    ("collection", "field", "value"),
+    (
+        ("assets", "location", "LOCAL"),
+        ("assets", "asset_kind", "file"),
+        ("assets", "access_status", "SCAN_ERROR"),
+        ("assets", "hash_status", "SHA256"),
+        ("assets", "git_ownership", "TRACKED_GIT"),
+        ("assets", "retention_class", "KEEP_IMMUTABLE"),
+        ("scope_results", "location", "LOCAL"),
+        ("git_ownership", "ownership", "GIT_STATE_ERROR"),
+        ("experiments", "experiment_state", "SCAN_ERROR"),
+        ("retention_decisions", "retention_class", "KEEP_IMMUTABLE"),
+        ("deletion_candidates", "location", "LOCAL"),
+        ("deletion_candidates", "asset_kind", "directory"),
+    ),
+)
+def test_emitter_rejects_untyped_nested_enum_values_before_writing(
+    tmp_path, collection, field, value
+):
+    bundle = _bundle()
+    record = (getattr(bundle, collection) or ())[0]
+    invalid = replace(record, **{field: value})
+
+    with pytest.raises(ValueError, match=collection):
+        ReportEmitter(
+            replace(bundle, **{collection: (invalid,)}),
+            output_root=tmp_path / "git",
+            external_output_root=tmp_path / "external",
+            metadata=_metadata(),
+        )
+
+    assert not (tmp_path / "git").exists()
+
+
+def test_emitter_rejects_wrong_nested_record_type_before_writing(tmp_path):
+    with pytest.raises(ValueError, match="assets"):
+        ReportEmitter(
+            replace(_bundle(), assets=({"access_status": "SCAN_ERROR"},)),
+            output_root=tmp_path / "git",
+            external_output_root=tmp_path / "external",
+            metadata=_metadata(),
+        )
+
+    assert not (tmp_path / "git").exists()
+
+
+@pytest.mark.parametrize("collection", ("assets", "scope_results"))
+def test_emitter_rejects_nested_scan_id_mismatch_before_writing(tmp_path, collection):
+    bundle = _bundle()
+    record = (getattr(bundle, collection) or ())[0]
+    invalid = replace(record, scan_id="OTHER_SCAN")
+
+    with pytest.raises(ValueError, match="scan_id"):
+        ReportEmitter(
+            replace(bundle, **{collection: (invalid,)}),
+            output_root=tmp_path / "git",
+            external_output_root=tmp_path / "external",
+            metadata=_metadata(),
+        )
+
+    assert not (tmp_path / "git").exists()
 
 
 def test_emitter_reuses_one_timestamp_when_bundle_times_are_missing(tmp_path):
