@@ -893,6 +893,50 @@ def _all_preadapt_receipts(plan: Mapping[str, Any]) -> list[dict[str, Any]]:
     return [_read_existing_preadapt_receipt(job) for job in plan["preadapt_jobs"]]
 
 
+def _collect_cell_closure_entries(plan: Mapping[str, Any]) -> list[dict[str, Any]]:
+    """Read every completed cell into the strict matrix-closure shape."""
+
+    entries: list[dict[str, Any]] = []
+    for cell in plan["cells"]:
+        cell_id = str(cell["cell_id"])
+        output_root = Path(str(cell["output_root"])).resolve()
+        receipt = _read_json(
+            output_root / "cell_receipt.json", context=f"MRIOR CI cell receipt {cell_id}"
+        )
+        if receipt.get("status") != "PASS" or receipt.get("cell_id") != cell_id:
+            raise ValueError(f"MRIOR CI cell receipt drift: {cell_id}")
+        if not (output_root / "predictor" / "prediction_artifact.cvspred").is_file():
+            raise ValueError(f"MRIOR CI prediction artifact is missing: {cell_id}")
+        scoring_receipt = _read_json(
+            output_root / "scoring" / "scoring_receipt.json",
+            context=f"MRIOR CI scoring receipt {cell_id}",
+        )
+        if scoring_receipt.get("status") != "PASS":
+            raise ValueError(f"MRIOR CI scoring receipt is not PASS: {cell_id}")
+        rows_payload = _read_json(
+            output_root / "scoring" / "formal_rows.json",
+            context=f"MRIOR CI formal rows {cell_id}",
+        )
+        rows = rows_payload.get("rows")
+        if (
+            rows_payload.get("schema") != "cvs.phase2.formal_metric_rows.v1"
+            or not isinstance(rows, list)
+            or len(rows) != len(FORMAL_SCENARIOS)
+            or any(not isinstance(row, Mapping) for row in rows)
+            or {str(row.get("scenario")) for row in rows} != set(FORMAL_SCENARIOS)
+        ):
+            raise ValueError(f"MRIOR CI formal rows are incomplete: {cell_id}")
+        entries.append(
+            {
+                "cell_id": cell_id,
+                "prediction": True,
+                "score": True,
+                "scenarios": [str(row["scenario"]) for row in rows],
+            }
+        )
+    return entries
+
+
 def _assert_dispatch_allowed(plan: Mapping[str, Any]) -> None:
     state = _read_health_state(Path(str(plan["run_root"])) / "run_health_state.json")
     if state.get("stop_dispatch") is True:
@@ -903,7 +947,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     plan = _load_plan(Path(args.plan))
     project_root = Path(args.project_root).resolve(strict=True)
     stage = str(args.stage)
-    if stage == "preadapt_shard":
+    if stage in {"preadapt_shard", "ci_shard"}:
         _verify_smoke_authority(plan, project_root=project_root)
     _claim_run_root(plan)
     invocation = [str(value) for value in getattr(args, "invocation", sys.argv)]
@@ -962,6 +1006,42 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                 raise
             completed.append(receipt["job_id"])
         return {"status": "PASS", "stage": stage, "completed": completed}
+    if stage == "ci_shard":
+        preadapt_receipts = _all_preadapt_receipts(plan)
+        if len(preadapt_receipts) != FORMAL_COUNTS["preadapt_jobs"]:
+            raise ValueError("ci_shard requires exactly 1200 verified preadapt artifacts")
+        selected = _select_shard(
+            plan["cells"],
+            shard_index=int(args.shard_index),
+            shard_count=int(args.shard_count),
+        )
+        completed = []
+        for cell in selected:
+            _assert_dispatch_allowed(plan)
+            try:
+                receipt = _run_smoke_cell(
+                    plan, cell, project_root=project_root, device_name=str(args.device)
+                )
+            except Exception as exc:
+                prediction_path = (
+                    Path(str(cell["output_root"]))
+                    / "predictor"
+                    / "prediction_artifact.cvspred"
+                )
+                _update_health_state(
+                    plan,
+                    row_id=str(cell["cell_id"]),
+                    exc=exc,
+                    prediction_produced=prediction_path.is_file(),
+                )
+                raise
+            completed.append(receipt["cell_id"])
+        return {
+            "status": "PASS",
+            "stage": stage,
+            "completed": completed,
+            "verified_preadapt_artifacts": len(preadapt_receipts),
+        }
     if stage == "smoke":
         if int(args.shard_index) != 0:
             raise ValueError("MRIOR preadapt CI smoke runs only on shard 0")
@@ -1012,7 +1092,31 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             },
         )
         return {"status": "PASS", "stage": stage, "completed": completed_cells}
-    raise ValueError("stage must be prepare, preadapt_smoke, preadapt_shard, or smoke")
+    if stage == "finalize":
+        artifacts = _all_preadapt_receipts(plan)
+        if len(artifacts) != FORMAL_COUNTS["preadapt_jobs"]:
+            raise ValueError("finalize requires exactly 1200 verified preadapt artifacts")
+        cells = _collect_cell_closure_entries(plan)
+        counts = _verify_matrix_closure(plan, artifacts=artifacts, cells=cells)
+        final_path = Path(str(plan["run_root"])) / "final_receipt.json"
+        _write_new(
+            final_path,
+            {
+                "schema": "cvs.phase2.adv3b02_mrior_preadapt_ci_final_receipt.v1",
+                "status": "PASS",
+                "plan_contract_sha256": plan["plan_contract_sha256"],
+                "counts": counts,
+            },
+        )
+        return {
+            "status": "PASS",
+            "stage": stage,
+            "final_receipt": str(final_path),
+            "counts": counts,
+        }
+    raise ValueError(
+        "stage must be prepare, preadapt_smoke, preadapt_shard, smoke, ci_shard, or finalize"
+    )
 
 
 def parse_args() -> argparse.Namespace:
@@ -1021,7 +1125,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--project-root", type=Path, required=True)
     parser.add_argument(
         "--stage",
-        choices=("prepare", "preadapt_smoke", "preadapt_shard", "smoke"),
+        choices=("prepare", "preadapt_smoke", "preadapt_shard", "smoke", "ci_shard", "finalize"),
         required=True,
     )
     parser.add_argument("--shard-index", type=int, default=0)

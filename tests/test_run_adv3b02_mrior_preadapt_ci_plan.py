@@ -4,6 +4,7 @@ import hashlib
 import json
 import subprocess
 import sys
+from types import SimpleNamespace
 from pathlib import Path
 
 import pytest
@@ -336,3 +337,135 @@ def test_closure_rejects_a_missing_prediction_or_scene_row(tmp_path: Path) -> No
 
     with pytest.raises(ValueError, match="800"):
         runner._verify_matrix_closure(plan, artifacts=artifacts, cells=cells)
+
+
+def _stage_args(plan_path: Path, project_root: Path, stage: str, shard_index: int = 0):
+    return SimpleNamespace(
+        plan=plan_path,
+        project_root=project_root,
+        stage=stage,
+        shard_index=shard_index,
+        shard_count=8,
+        device="cpu",
+    )
+
+
+def _write_formal_plan(tmp_path: Path) -> tuple[dict, Path]:
+    plan = _formal_plan(tmp_path)
+    plan_path = tmp_path / "plan.json"
+    plan_path.write_text(json.dumps(plan), encoding="utf-8")
+    return plan, plan_path
+
+
+def test_ci_shard_rejects_before_all_1200_verified_preadapt_artifacts(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """CI dispatch cannot start while even one formal MRIOR artifact is absent."""
+
+    plan, plan_path = _write_formal_plan(tmp_path)
+    monkeypatch.setattr(runner, "_verify_smoke_authority", lambda *args, **kwargs: None)
+    monkeypatch.setattr(
+        runner,
+        "_all_preadapt_receipts",
+        lambda _plan: [
+            {"job_id": job["job_id"]} for job in plan["preadapt_jobs"][:-1]
+        ],
+    )
+
+    with pytest.raises(ValueError, match="1200 verified preadapt artifacts"):
+        runner.run(_stage_args(plan_path, tmp_path, "ci_shard"))
+
+
+def test_ci_shard_dispatches_each_deterministic_cell_shard_once(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Two CI shards cover disjoint deterministic cell identities without duplication."""
+
+    plan, plan_path = _write_formal_plan(tmp_path)
+    monkeypatch.setattr(runner, "_verify_smoke_authority", lambda *args, **kwargs: None)
+    monkeypatch.setattr(
+        runner,
+        "_all_preadapt_receipts",
+        lambda _plan: [{"job_id": job["job_id"]} for job in plan["preadapt_jobs"]],
+    )
+    calls: list[str] = []
+
+    def fake_run_cell(_plan, cell, *, project_root, device_name):
+        del project_root, device_name
+        calls.append(str(cell["cell_id"]))
+        return {"cell_id": cell["cell_id"], "status": "PASS"}
+
+    monkeypatch.setattr(runner, "_run_smoke_cell", fake_run_cell)
+    first = runner.run(_stage_args(plan_path, tmp_path, "ci_shard", shard_index=0))
+    first_ids = set(calls)
+    calls.clear()
+    second = runner.run(_stage_args(plan_path, tmp_path, "ci_shard", shard_index=1))
+    second_ids = set(calls)
+
+    assert first["status"] == second["status"] == "PASS"
+    assert len(first_ids) == len(second_ids) == 100
+    assert first_ids.isdisjoint(second_ids)
+
+
+def test_finalize_rejects_a_missing_cell_before_writing_receipt(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Finalize must refuse a partial cell matrix and leave no final receipt."""
+
+    plan, plan_path = _write_formal_plan(tmp_path)
+    monkeypatch.setattr(
+        runner,
+        "_all_preadapt_receipts",
+        lambda _plan: [{"job_id": job["job_id"]} for job in plan["preadapt_jobs"]],
+    )
+    full_cells = [
+        {
+            "cell_id": cell["cell_id"],
+            "prediction": True,
+            "score": True,
+            "scenarios": list(plan["scenarios"]),
+        }
+        for cell in plan["cells"]
+    ]
+    monkeypatch.setattr(
+        runner, "_collect_cell_closure_entries", lambda _plan: full_cells[:-1], raising=False
+    )
+
+    with pytest.raises(ValueError, match="800"):
+        runner.run(_stage_args(plan_path, tmp_path, "finalize"))
+    assert not (Path(plan["run_root"]) / "final_receipt.json").exists()
+
+
+def test_finalize_writes_one_receipt_after_strict_matrix_closure(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Finalize writes the unique receipt only after all 1200/800/2400 units close."""
+
+    plan, plan_path = _write_formal_plan(tmp_path)
+    monkeypatch.setattr(
+        runner,
+        "_all_preadapt_receipts",
+        lambda _plan: [{"job_id": job["job_id"]} for job in plan["preadapt_jobs"]],
+    )
+    full_cells = [
+        {
+            "cell_id": cell["cell_id"],
+            "prediction": True,
+            "score": True,
+            "scenarios": list(plan["scenarios"]),
+        }
+        for cell in plan["cells"]
+    ]
+    monkeypatch.setattr(
+        runner, "_collect_cell_closure_entries", lambda _plan: full_cells, raising=False
+    )
+
+    result = runner.run(_stage_args(plan_path, tmp_path, "finalize"))
+    final_path = Path(plan["run_root"]) / "final_receipt.json"
+    assert result == {
+        "status": "PASS",
+        "stage": "finalize",
+        "final_receipt": str(final_path),
+        "counts": {"preadapt_jobs": 1200, "cells": 800, "scenario_rows": 2400},
+    }
+    assert json.loads(final_path.read_text(encoding="utf-8"))["status"] == "PASS"
