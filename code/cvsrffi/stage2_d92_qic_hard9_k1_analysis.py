@@ -380,9 +380,14 @@ def validate_truth_binding(
     expected = str(job.get("truth_sidecar_sha256", "")).lower()
     outer_key = str(job.get("outer_key", ""))
     expected_suffix = ("jobs", outer_key, "offline", "scorer", "truth_sidecar.json")
-    def suffix(path: Path) -> tuple[str, ...]:
-        return tuple(part for part in str(path).replace("\\", "/").split("/") if part)[-5:]
-    same_logical_path = bool(outer_key) and suffix(manifest_path) == expected_suffix and suffix(actual_path) == expected_suffix
+    def parts(path: Path) -> tuple[str, ...]:
+        return tuple(part for part in str(path).replace("\\", "/").split("/") if part)
+    manifest_parts = parts(manifest_path)
+    actual_parts = parts(actual_path)
+    same_logical_path = bool(outer_key) and manifest_parts[-5:] == expected_suffix and (
+        actual_parts[-5:] == expected_suffix
+        or actual_parts[-2:] == (outer_key, "truth_sidecar.json")
+    )
     if not (manifest_path == actual_path or same_logical_path) or not actual_path.is_file() or actual_path.is_symlink() or len(expected) != 64:
         raise _fail("truth sidecar path/hash closure drift")
     actual = _sha(actual_path)
@@ -509,7 +514,9 @@ def _logical_truth_path(job: Mapping[str, Any], truth_sidecar_root: str | Path |
         return Path(str(job["truth_sidecar"])).resolve(strict=True)
     root = Path(truth_sidecar_root).resolve(strict=True)
     outer = str(job["outer_key"])
-    return root / "jobs" / outer / "offline" / "scorer" / "truth_sidecar.json"
+    canonical = root / "jobs" / outer / "offline" / "scorer" / "truth_sidecar.json"
+    retrieved = root / outer / "truth_sidecar.json"
+    return retrieved if retrieved.is_file() and not retrieved.is_symlink() else canonical
 
 
 def _state_root(job_root: Path, state: str) -> Path:
@@ -567,6 +574,104 @@ def _fit_audit_prefix(row: Mapping[str, Any]) -> str:
     return "d92_e0d_qic_"
 
 
+def _query_access_is_zero(row: Mapping[str, Any], prefix: str) -> bool:
+    return all(
+        row.get(alias) is False
+        for field in QUERY_ZERO_FIELDS
+        for alias in (field, f"{prefix}{field}")
+    )
+
+
+_QIC_ZERO_COUNTS = (
+    "additional_full_fit_count",
+    "block_fit_count",
+    "loo_fit_count",
+    "fisher_scan_count",
+    "candidate_scan_count",
+    "requantize_call_count",
+)
+_QIC_BYTE_EXACT = (
+    "coef1_byte_exact",
+    "coef2_byte_exact",
+    "scale1_byte_exact",
+    "scale2_byte_exact",
+    "log_diag_byte_exact",
+    "coef_fp32_byte_exact",
+    "intercept_fp32_byte_exact",
+    "class_registry_byte_exact",
+    "state_shape_byte_exact",
+)
+
+
+def _validate_qic_lifecycle(
+    row: Mapping[str, Any],
+    *,
+    k_shot: int,
+    prefix: str,
+    total: int,
+    actual: int,
+    mode: str,
+) -> None:
+    active = k_shot > 2
+    expected_postprocess = "d42_quantization_intercept_closure" if active else None
+    if row.get("after_state_postprocess_mode") != expected_postprocess:
+        raise _fail("fit audit postprocess drift")
+    if active:
+        expected = (
+            matrix.FIT_GATE["k_gt_2_total"],
+            matrix.FIT_GATE["k_gt_2_actual"],
+            str(getattr(matrix, "REGISTERED_MODE", "full_only")),
+        )
+        if (total, actual, mode) != expected:
+            raise _fail("fit audit QIC K>2 inventory drift")
+        if (
+            row.get(prefix + "active") is not True
+            or row.get(prefix + "fallback_active") is not False
+            or row.get(prefix + "fallback_reason") is not None
+            or _integer(row.get(prefix + "query_rows_used"), "query rows") != 0
+            or row.get(prefix + "modified_state_field_names") != ["intercept_fp16"]
+            or row.get(prefix + "intercept_byte_exact") is not False
+            or any(row.get(prefix + name) is not True for name in _QIC_BYTE_EXACT)
+            or _integer(row.get(prefix + "coefficient_decode_count"), "QIC decode count") != 1
+            or any(_integer(row.get(prefix + name), f"QIC {name}") != 0 for name in _QIC_ZERO_COUNTS)
+            or row.get(prefix + "support_only") is not True
+            or row.get(prefix + "clean_sample_access") is not False
+            or row.get(prefix + "source_sample_access") is not False
+            or _integer(row.get(prefix + "persistent_state_bytes_delta"), "QIC state delta") != 0
+            or _integer(row.get(prefix + "query_macs_delta"), "QIC query MAC delta") != 0
+        ):
+            raise _fail("fit audit QIC active lifecycle drift")
+        e0_state = _sha256_value(row.get(prefix + "e0_state_sha256"), "QIC E0 state")
+        final_state = _sha256_value(row.get(prefix + "final_state_sha256"), "QIC final state")
+        bit_changes = _integer(row.get(prefix + "intercept_fp16_bit_change_count"), "QIC intercept bit change", lower=1)
+        if (
+            e0_state == final_state
+            or _integer(row.get(prefix + "candidate_intercept_fp16_bit_change_count"), "QIC candidate intercept bit change") != bit_changes
+        ):
+            raise _fail("fit audit QIC intercept transition drift")
+        e0_residual = _finite(row.get(prefix + "e0_residual_l1"), "QIC E0 residual", lower=0.0)
+        candidate_residual = _finite(row.get(prefix + "candidate_residual_l1"), "QIC candidate residual", lower=0.0)
+        reduction = _finite(row.get(prefix + "residual_reduction_l1"), "QIC residual reduction", lower=0.0)
+        if not candidate_residual < e0_residual or reduction <= 0.0 or abs(reduction - (e0_residual - candidate_residual)) > 1.0e-12:
+            raise _fail("fit audit QIC residual drift")
+        return
+    expected = (matrix.FIT_GATE["k1_total"], matrix.FIT_GATE["k1_actual"], "d92_full_alias")
+    if (total, actual, mode) != expected:
+        raise _fail("fit audit K1 alias inventory drift")
+    if (
+        row.get(prefix + "active") is not False
+        or row.get(prefix + "fallback_active") is not False
+        or row.get(prefix + "fallback_reason") != matrix.FIT_GATE["k1_alias"]
+        or _integer(row.get(prefix + "query_rows_used"), "query rows") != 0
+        or row.get(prefix + "modified_state_field_names") != []
+        or row.get(prefix + "intercept_byte_exact") is not True
+        or _integer(row.get(prefix + "coefficient_decode_count"), "QIC decode count") != 0
+        or any(row.get(prefix + name) is not None for name in ("e0_residual_l1", "candidate_residual_l1", "residual_reduction_l1"))
+        or row.get(prefix + "e0_state_sha256") != row.get(prefix + "final_state_sha256")
+    ):
+        raise _fail("fit audit K1 alias lifecycle drift")
+
+
 def _validate_fit_rows(
     job: Mapping[str, Any],
     job_root: Path,
@@ -589,33 +694,24 @@ def _validate_fit_rows(
         by_scene[scene] = row
         if row.get("arm_id") != ARM_ID or row.get("candidate_id") != CANDIDATE_ID:
             raise _fail("fit audit arm/candidate identity drift")
-        for field in QUERY_ZERO_FIELDS:
-            prefix = _fit_audit_prefix(row)
-            for alias in (field, f"d92_e0d_{field}", f"{prefix}{field}"):
-                if row.get(alias) is not False:
-                    raise _fail("fit audit query access is not zero")
-        k_shot = _integer(job.get("k_shot"), "job K", lower=1)
         prefix = _fit_audit_prefix(row)
+        if not _query_access_is_zero(row, prefix):
+            raise _fail("fit audit query access is not zero")
+        k_shot = _integer(job.get("k_shot"), "job K", lower=1)
         inventory = row.get("after_actual_component_inventory")
         if not isinstance(inventory, Mapping):
             raise _fail("fit audit component inventory missing")
         total = _integer(row.get("after_total_component_fit_count"), "fit total")
         actual = _integer(inventory.get("actual_component_fit_count"), "fit actual")
         mode = str(row.get("after_registered_d_mode_effective", ""))
-        if k_shot > 2:
-            expected = (
-                matrix.FIT_GATE["k_gt_2_total"],
-                matrix.FIT_GATE["k_gt_2_actual"],
-                str(getattr(matrix, "REGISTERED_MODE", "qic_full")),
-            )
-            if (total, actual, mode) != expected or row.get(prefix + "active") is not True or row.get(prefix + "fallback_active") is not False or row.get(prefix + "fallback_reason") is not None or _integer(row.get(prefix + "candidate_attempt_fit_count"), "candidate fit") != 1 or _integer(row.get(prefix + "fallback_reference_fit_count"), "fallback reference fit") != 0 or row.get(prefix + "candidate_statistic_receipt_available") is not True or row.get(prefix + "paired_e0_codec_state_equal") is not None or row.get(prefix + "g0_eligible") is not True or row.get(prefix + "g0_block_reason") is not None or _integer(row.get(prefix + "query_rows_used"), "query rows") != 0:
-                raise _fail("fit audit QIC active lifecycle drift")
-        else:
-            expected = (matrix.FIT_GATE["k1_total"], matrix.FIT_GATE["k1_actual"], "d92_full_alias")
-            if (total, actual, mode) != expected or row.get(prefix + "active") is not False or row.get(prefix + "fallback_active") is not False or row.get(prefix + "fallback_reason") != matrix.FIT_GATE["k1_alias"] or _integer(row.get(prefix + "candidate_attempt_fit_count"), "candidate fit") != 0 or _integer(row.get(prefix + "fallback_reference_fit_count"), "fallback reference fit") != 0 or row.get(prefix + "candidate_statistic_receipt_available") is not False or row.get(prefix + "paired_e0_codec_state_equal") is not None or row.get(prefix + "g0_eligible") is not False or row.get(prefix + "g0_block_reason") != matrix.FIT_GATE["k1_alias"] or _integer(row.get(prefix + "query_rows_used"), "query rows") != 0:
-                raise _fail("fit audit K1 alias lifecycle drift")
-        if row.get("after_state_postprocess_mode") is not None:
-            raise _fail("fit audit postprocess drift")
+        _validate_qic_lifecycle(
+            row,
+            k_shot=k_shot,
+            prefix=prefix,
+            total=total,
+            actual=actual,
+            mode=mode,
+        )
         class_count = _integer(row.get("registered_class_count"), "registered class count", lower=1)
         query_macs = _integer(row.get("query_macs"), "candidate query MACs")
         state_bytes = _integer(row.get("after_state_bytes"), "candidate state bytes", lower=1)

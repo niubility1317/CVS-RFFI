@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import sys
 from pathlib import Path
 
@@ -106,6 +107,17 @@ def test_qic_fit_audit_namespace_is_selected_from_receipt_shape() -> None:
     assert analysis._fit_audit_prefix({"d92_e0d_ccoc_active": True}) == "d92_e0d_ccoc_"
 
 
+def test_qic_query_zero_gate_uses_base_and_approved_mirror_only() -> None:
+    row = {
+        alias: False
+        for field in analysis.QUERY_ZERO_FIELDS
+        for alias in (field, f"d92_e0d_qic_{field}")
+    }
+    assert analysis._query_access_is_zero(row, "d92_e0d_qic_") is True
+    row["d92_e0d_qic_query_truth_access"] = True
+    assert analysis._query_access_is_zero(row, "d92_e0d_qic_") is False
+
+
 def test_qic_k1_is_liveness_and_hard_failure_precedes_revision() -> None:
     gates = {
         "complete_artifact_closure": True,
@@ -170,6 +182,26 @@ def test_qic_score_binding_accepts_retrieved_remote_path_suffix(tmp_path: Path) 
             f"/home/user/project/runs/qic/jobs/other/{analysis.ARM_ID}/score_binding.json",
             job_root,
         )
+
+
+def test_qic_truth_binding_accepts_flat_retrieval_root(tmp_path: Path) -> None:
+    outer = "rx_7_7__seed_713103__k_10__new_5"
+    truth_path = tmp_path / outer / "truth_sidecar.json"
+    truth_path.parent.mkdir(parents=True)
+    truth_path.write_text("{}", encoding="utf-8")
+    digest = hashlib.sha256(truth_path.read_bytes()).hexdigest()
+    job = {
+        "outer_key": outer,
+        "truth_sidecar": f"/sealed/jobs/{outer}/offline/scorer/truth_sidecar.json",
+        "truth_sidecar_sha256": digest,
+    }
+
+    assert analysis.validate_truth_binding(
+        {"truth_sidecar_sha256": digest},
+        {"truth_sidecar_sha256": digest},
+        job,
+        truth_path,
+    ) == digest
 
 
 def test_qic_markdown_exposes_all_four_da_registration_states() -> None:
