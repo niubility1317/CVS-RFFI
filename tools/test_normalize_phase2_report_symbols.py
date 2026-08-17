@@ -11,12 +11,17 @@ from docx import Document
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from normalize_phase2_report_symbols import audit, normalize
+from formalize_phase2_project_naming import formalize_report
 
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / (
     "docs/weekly_reports/"
     "CVS-RFFI_Phase2详细复现报告1_qKNN首次出现括号定义版_截至20260817.docx"
+)
+GROUPED_SOURCE = ROOT / (
+    "docs/weekly_reports/"
+    "CVS-RFFI_Phase2详细复现报告1_qKNN结果按配置拆分版_截至20260817.docx"
 )
 
 
@@ -150,6 +155,13 @@ class NormalizePhase2ReportSymbolsTests(unittest.TestCase):
         self.assertEqual(result["rows"], 153)
         self.assertEqual(result["references"], 5)
         self.assertGreaterEqual(result["omml"], 309)
+
+    def test_audit_accepts_ertb_idr_definition_instead_of_qknn_distinction(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output = Path(tmpdir) / "ertb-idr.docx"
+            formalize_report(GROUPED_SOURCE, output)
+            result = audit(output, allow_result_regrouping=True)
+            self.assertEqual(result["tables"], 52)
 
 
 if __name__ == "__main__":

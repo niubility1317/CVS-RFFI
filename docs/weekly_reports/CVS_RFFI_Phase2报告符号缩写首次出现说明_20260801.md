@@ -56,3 +56,11 @@
 - 从正文和表格中删除内部实验版本代号`ADV3B02`；后文使用“Phase1域泛化基座”等任务可读名称，不把版本号包装成未经验证的新算法贡献。
 - 第1章正文开头的项目名称、两个阶段方法名称和核心任务，以及Stage2-B/Stage2-C核心目标和qKNN正式结论，使用红色加粗突出；其他正文维持原有层级，避免过度标红。
 - 自动核验通过：内部版本代号出现次数为0；52张表、188个表格行、5条参考文献、491个Word数学对象及全部实验数字保持不变。
+
+## 2026-08-17中英文名称与D92 E0方法纠正
+
+- 新输出文档：`CVS-RFFI_Phase2详细复现报告1_正式中英文命名与ERTB-IDR版_截至20260817.docx`。
+- 项目英文名统一为“Ground-to-Satellite Cross-Domain Few-Shot Continual Radio-Frequency Fingerprint Identification”；Phase1英文名为“Ground-Based Cross-Receiver Domain-Generalized Radio-Frequency Fingerprint Representation Learning”；Phase2英文名为“Spaceborne Few-Shot Domain Adaptation and New-Class Incremental Registration for RFFI”。
+- 报告中的项目对比方法不是原始D92，也不再以`qKNN`命名；正式名称为“高效稳健任务均衡增量判别注册方法（Efficient Robust Task-Balanced Incremental Discriminant Registration, ERTB-IDR）”，对应`D92 E0_FULL_ONLY`。
+- 首次定义明确：ERTB-IDR保留288维联合特征、ground-spectrum Cauchy稳健中心、旧/新任务均衡收缩协方差和统一LDA仿射头；关闭原D92的Fisher/Pareto安全门和K折full/block双几何融合，注册态只执行一次full主几何闭式拟合。
+- 名称修改不得改变52张表、纯数值实验单元格、491个Word数学对象和5条参考文献。

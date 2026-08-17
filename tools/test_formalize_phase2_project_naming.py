@@ -15,9 +15,25 @@ from normalize_phase2_report_symbols import result_number_tokens
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "docs/weekly_reports/CVS-RFFI_Phase2详细复现报告1_qKNN结果按配置拆分版_截至20260817.docx"
 
-PROJECT_LINE = "项目名称：星地跨域少样本持续射频指纹识别（CVS-RFFI）"
-PHASE1_LINE = "Phase1方法：地面跨接收机域泛化射频指纹表征方法"
-PHASE2_LINE = "Phase2方法：星载少样本域适应与新类增量注册方法"
+PROJECT_LINE = (
+    "项目名称：星地跨域少样本持续射频指纹识别"
+    "（Ground-to-Satellite Cross-Domain Few-Shot Continual Radio-Frequency "
+    "Fingerprint Identification, CVS-RFFI）"
+)
+PHASE1_LINE = (
+    "Phase1方法：地面跨接收机域泛化射频指纹表征方法"
+    "（Ground-Based Cross-Receiver Domain-Generalized Radio-Frequency Fingerprint "
+    "Representation Learning）"
+)
+PHASE2_LINE = (
+    "Phase2方法：星载少样本域适应与新类增量注册方法"
+    "（Spaceborne Few-Shot Domain Adaptation and New-Class Incremental Registration for RFFI）"
+)
+ERTB_LINE = (
+    "Phase2对比方法：高效稳健任务均衡增量判别注册方法"
+    "（Efficient Robust Task-Balanced Incremental Discriminant Registration, "
+    "ERTB-IDR；对应D92 E0，而非原始D92）"
+)
 CORE_LINE = (
     "核心任务：Phase1学习跨接收机稳定表征；Phase2在LEO弱信道下使用少量target support，"
     "同时完成旧类域适应与新类增量注册。"
@@ -72,9 +88,12 @@ class FormalizePhase2ProjectNamingTest(unittest.TestCase):
             self.assertNotIn("ADV3B02", body)
             self.assertNotIn("Phase1域泛化基座 backbone", body)
             self.assertIn("Phase1域泛化基座", body)
-            self.assertIn("Phase2少样本适应与增量注册方法", body)
-            self.assertIn("qKNN", body)
-            for line in (PROJECT_LINE, PHASE1_LINE, PHASE2_LINE, CORE_LINE):
+            self.assertIn("星载少样本域适应与新类增量注册方法", body)
+            self.assertNotIn("qKNN", body)
+            self.assertIn("ERTB-IDR", body)
+            self.assertIn("D92 E0_FULL_ONLY", body)
+            self.assertIn("关闭原D92的Fisher/Pareto安全门和K折full/block双几何融合", body)
+            for line in (PROJECT_LINE, PHASE1_LINE, PHASE2_LINE, ERTB_LINE, CORE_LINE):
                 self.assertIn(line, body)
 
     def test_project_and_phase_lines_are_red_and_bold(self):
@@ -82,7 +101,7 @@ class FormalizePhase2ProjectNamingTest(unittest.TestCase):
             output = Path(tmpdir) / "formal.docx"
             formalize_report(SOURCE, output)
             result = Document(output)
-            for line in (PROJECT_LINE, PHASE1_LINE, PHASE2_LINE, CORE_LINE):
+            for line in (PROJECT_LINE, PHASE1_LINE, PHASE2_LINE, ERTB_LINE, CORE_LINE):
                 paragraph = find_paragraph(result, line)
                 self.assertEqual(red_bold_text(paragraph), line)
 
@@ -105,7 +124,7 @@ class FormalizePhase2ProjectNamingTest(unittest.TestCase):
             result = Document(output)
 
             self.assertEqual(len(result.tables), 52)
-            self.assertEqual(len(result.paragraphs), len(source.paragraphs) + 4)
+            self.assertEqual(len(result.paragraphs), len(source.paragraphs) + 5)
             self.assertEqual(
                 Counter(result_number_tokens(result)),
                 Counter(result_number_tokens(source)),
@@ -117,6 +136,18 @@ class FormalizePhase2ProjectNamingTest(unittest.TestCase):
                 len(result.element.xpath(".//m:oMath")),
                 len(source.element.xpath(".//m:oMath")),
             )
+
+    def test_k20_new3_configuration_starts_on_a_fresh_page(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output = Path(tmpdir) / "formal.docx"
+            formalize_report(SOURCE, output)
+            result = Document(output)
+
+            caption = next(
+                paragraph for paragraph in result.paragraphs
+                if paragraph_text(paragraph) == "配置：K=20，新类数=3"
+            )
+            self.assertTrue(caption.paragraph_format.page_break_before)
 
 
 if __name__ == "__main__":

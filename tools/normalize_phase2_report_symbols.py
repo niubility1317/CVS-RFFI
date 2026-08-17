@@ -373,8 +373,16 @@ def audit(
         raise RuntimeError(f"missing normalized symbols: {missing}")
     if "分别表示适应/注册前后的预测" in body:
         raise RuntimeError("ambiguous state phrase remains")
-    if "qKNN名称中的K不表示K-shot" not in body:
-        raise RuntimeError("qKNN/K-shot distinction missing")
+    if "qKNN" in body:
+        if "qKNN名称中的K不表示K-shot" not in body:
+            raise RuntimeError("qKNN/K-shot distinction missing")
+    elif "ERTB-IDR" in body:
+        ertb_required = ("D92 E0_FULL_ONLY", "而非原始D92", "Fisher/Pareto安全门")
+        ertb_missing = [token for token in ertb_required if token not in body]
+        if ertb_missing:
+            raise RuntimeError(f"ERTB-IDR/D92 E0 definition incomplete: {ertb_missing}")
+    else:
+        raise RuntimeError("Phase2 comparison-method definition missing")
     expected_tables = 52 if allow_result_regrouping else 17
     expected_rows = 188 if allow_result_regrouping else 153
     minimum_omml = 491 if allow_result_regrouping else 309

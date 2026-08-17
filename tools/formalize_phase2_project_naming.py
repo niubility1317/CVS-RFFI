@@ -9,9 +9,25 @@ from docx.oxml.ns import qn
 from docx.shared import Pt, RGBColor
 
 
-PROJECT_LINE = "项目名称：星地跨域少样本持续射频指纹识别（CVS-RFFI）"
-PHASE1_LINE = "Phase1方法：地面跨接收机域泛化射频指纹表征方法"
-PHASE2_LINE = "Phase2方法：星载少样本域适应与新类增量注册方法"
+PROJECT_LINE = (
+    "项目名称：星地跨域少样本持续射频指纹识别"
+    "（Ground-to-Satellite Cross-Domain Few-Shot Continual Radio-Frequency "
+    "Fingerprint Identification, CVS-RFFI）"
+)
+PHASE1_LINE = (
+    "Phase1方法：地面跨接收机域泛化射频指纹表征方法"
+    "（Ground-Based Cross-Receiver Domain-Generalized Radio-Frequency Fingerprint "
+    "Representation Learning）"
+)
+PHASE2_LINE = (
+    "Phase2方法：星载少样本域适应与新类增量注册方法"
+    "（Spaceborne Few-Shot Domain Adaptation and New-Class Incremental Registration for RFFI）"
+)
+ERTB_LINE = (
+    "Phase2对比方法：高效稳健任务均衡增量判别注册方法"
+    "（Efficient Robust Task-Balanced Incremental Discriminant Registration, "
+    "ERTB-IDR；对应D92 E0，而非原始D92）"
+)
 CORE_LINE = (
     "核心任务：Phase1学习跨接收机稳定表征；Phase2在LEO弱信道下使用少量target support，"
     "同时完成旧类域适应与新类增量注册。"
@@ -110,9 +126,10 @@ def formalize_report(source: Path | str, output: Path | str) -> None:
     document = Document(str(source_path))
 
     anchor = document.paragraphs[0]._p
-    anchor = insert_key_line(document, anchor, PROJECT_LINE, size=12, keep_next=True)
-    anchor = insert_key_line(document, anchor, PHASE1_LINE, size=10.5, keep_next=True)
-    anchor = insert_key_line(document, anchor, PHASE2_LINE, size=10.5, keep_next=True)
+    anchor = insert_key_line(document, anchor, PROJECT_LINE, size=11.5, keep_next=True)
+    anchor = insert_key_line(document, anchor, PHASE1_LINE, size=9.5, keep_next=True)
+    anchor = insert_key_line(document, anchor, PHASE2_LINE, size=9.5, keep_next=True)
+    anchor = insert_key_line(document, anchor, ERTB_LINE, size=9.5, keep_next=True)
     anchor = insert_key_line(document, anchor, CORE_LINE, size=10.5, keep_next=False)
     paragraph_wrapper = next(p for p in document.paragraphs if p._p is anchor)
     paragraph_wrapper.paragraph_format.space_after = Pt(6)
@@ -132,16 +149,33 @@ def formalize_report(source: Path | str, output: Path | str) -> None:
         ],
     )
 
+    ertb_intro = find_body_paragraph(document, "qKNN（quantized K-nearest neighbors")
+    rebuild_paragraph(
+        ertb_intro,
+        [
+            (
+                "ERTB-IDR（Efficient Robust Task-Balanced Incremental Discriminant "
+                "Registration，高效稳健任务均衡增量判别注册方法；对应D92 E0_FULL_ONLY，"
+                "而非原始D92）是本报告实际采用的项目对比方法。它读取Phase1域泛化基座和"
+                "当前row的target support：首先从固定LEO接收IQ提取288维联合特征，再使用"
+                "ground-spectrum Cauchy稳健中心减弱接收机/信道扰动；随后分别估计旧类任务"
+                "与新类任务的自动收缩协方差，并以固定等权形成任务均衡的共享判别几何；最后"
+                "仅执行一次full主几何LDA闭式拟合，编译面对全部已注册类的统一仿射分类头。"
+                "ERTB-IDR关闭原D92的Fisher/Pareto安全门和K折full/block双几何融合，不进行"
+                "梯度训练，也不保存原始exemplar。Stage2-B的S2B-old表示仅使用旧类target "
+                "support构造的DA1_REG0状态；Stage2-C再加入新类support形成DA1_REG1状态。",
+                False,
+            )
+        ],
+    )
+
     replacements = (
         ("ADV3B02", "Phase1域泛化基座"),
         ("同一Phase1域泛化基座地面域泛化checkpoint", "同一Phase1域泛化基座checkpoint"),
         ("Phase1域泛化基座增量更新", "Phase1基座更新"),
         ("Phase1域泛化基座 backbone", "Phase1域泛化基座backbone"),
         ("编码器接口替换为Phase1域泛化基座的160维", "编码器接口接入Phase1域泛化基座输出的160维"),
-        (
-            "本文按照项目命名约定，用qKNN统称Phase2轻量适配/注册路线。",
-            "qKNN是Phase2少样本适应与增量注册方法当前采用的轻量近邻/原型实现。",
-        ),
+        ("qKNN", "ERTB-IDR"),
         ("fc_bf_fp→zero-bias Fingerprints基座", "zero-bias Fingerprints基座"),
         (
             "COMPLETED_DIAGNOSTIC_NEGATIVE_NOT_PROMOTABLE",
@@ -174,9 +208,9 @@ def formalize_report(source: Path | str, output: Path | str) -> None:
         [(stage2c_key, True), (stage2c_text[len(stage2c_key) :], False)],
     )
 
-    conclusion = find_body_paragraph(document, "qKNN在五个共同切片上的旧新调和均值")
+    conclusion = find_body_paragraph(document, "ERTB-IDR在五个共同切片上的旧新调和均值")
     conclusion_text = visible_text(conclusion)
-    conclusion_key = "正式结论保持“诊断完成但结果为负，不具备晋级条件”，不能表述为qKNN已完成晋级。"
+    conclusion_key = "正式结论保持“诊断完成但结果为负，不具备晋级条件”，不能表述为ERTB-IDR已完成晋级。"
     if conclusion_key not in conclusion_text:
         raise RuntimeError("qKNN conclusion sentence not found")
     before, after = conclusion_text.split(conclusion_key, 1)
@@ -184,6 +218,11 @@ def formalize_report(source: Path | str, output: Path | str) -> None:
         conclusion,
         [(before, False), (conclusion_key, True), (after, False)],
     )
+
+    # Keep the K=20/new=3 result block away from the preceding page boundary.
+    # Native Word otherwise places part of this caption above the top margin.
+    k20_new3_caption = find_body_paragraph(document, "配置：K=20，新类数=3")
+    k20_new3_caption.paragraph_format.page_break_before = True
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     document.save(str(output_path))
