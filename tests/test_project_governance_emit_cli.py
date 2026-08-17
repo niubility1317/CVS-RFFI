@@ -1,10 +1,16 @@
 from __future__ import annotations
 
+import ast
 import csv
 import hashlib
+import io
 import json
+import os
+import runpy
+import subprocess
 from dataclasses import replace
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -848,3 +854,491 @@ def test_emitter_has_no_destructive_execution_surface():
         hasattr(ReportEmitter, name)
         for name in ("delete", "move", "overwrite", "cleanup", "execute_deletions")
     )
+
+
+def _cli_fixture_config(root: Path):
+    from tools.project_governance.config import (
+        CarrierSurface,
+        DiscoveryConfig,
+        GovernanceConfig,
+        LocationConfig,
+        OutputConfig,
+    )
+
+    return GovernanceConfig(
+        schema_version=1,
+        local=LocationConfig(
+            location=Location.LOCAL,
+            root_id="TYPE10_7",
+            root=str(root),
+            carrier_surfaces=(CarrierSurface("runs", "PRESENT"),),
+        ),
+        n607=LocationConfig(
+            location=Location.N607,
+            root_id="N607_CVS_SINCNET",
+            root="/home/szu2070436088/2510044040/CV-SincNet",
+            carrier_surfaces=(CarrierSurface("runs", "NOT_PRESENT"),),
+        ),
+        discovery=DiscoveryConfig(
+            control_evidence_max_depth=2,
+            hash_max_bytes=1024 * 1024,
+            text_read_max_bytes=1024 * 1024,
+        ),
+        output=OutputConfig(git_file_max_bytes=1024 * 1024, git_scan_max_bytes=4 * 1024 * 1024),
+    )
+
+
+def _cli_args(tmp_path: Path, *, include_n607: bool = False, print_plan: bool = False):
+    return SimpleNamespace(
+        command="scan",
+        config=str(tmp_path / "fixture-config.json"),
+        scan_id="CLI_FIXTURE",
+        output_root=str(tmp_path / "governance-git"),
+        external_output_root=str(tmp_path / "governance-external"),
+        operator="fixture-operator",
+        include_n607=include_n607,
+        print_plan=print_plan,
+    )
+
+
+def _fake_git_runner_factory(root: Path):
+    from tools.project_governance.collect_git import CommandResult
+
+    calls: list[tuple[str, tuple[str, ...]]] = []
+
+    def runner(cwd, args, *, input=b""):
+        cwd_text = os.fspath(cwd)
+        args = tuple(args)
+        calls.append((cwd_text, args))
+        if args == ("rev-parse", "--show-toplevel"):
+            return CommandResult(0, os.fsencode(str(root) + "\n"), b"")
+        if args == ("worktree", "list", "--porcelain"):
+            return CommandResult(0, os.fsencode(f"worktree {root}\n"), b"")
+        if args == ("rev-parse", "--git-common-dir"):
+            return CommandResult(0, os.fsencode(str(root / ".git") + "\n"), b"")
+        if args == ("symbolic-ref", "--quiet", "--short", "HEAD"):
+            return CommandResult(0, b"main\n", b"")
+        if args == ("rev-parse", "HEAD"):
+            return CommandResult(0, b"fixture-head\n", b"")
+        if args[:2] == ("status", "--porcelain=v2"):
+            return CommandResult(0, b"", b"")
+        if args[:2] == ("ls-files", "--stage"):
+            paths = args[args.index("--") + 1 :]
+            payload = b"".join(b"100644\t" + os.fsencode(path) + b"\x00" for path in paths)
+            return CommandResult(0, payload, b"")
+        if args[:2] == ("check-ignore", "-z"):
+            return CommandResult(1, b"", b"")
+        raise AssertionError(f"unexpected fake git command: {args!r}")
+
+    return runner, calls
+
+
+def _fake_n607_result(scan_id: str):
+    from tools.project_governance.collect_n607 import (
+        N607CollectionResult,
+        N607Receipt,
+        RemoteOutcome,
+    )
+
+    asset_id = "asset:N607:N607_CVS_SINCNET:runs/fixture/report.md"
+    records = (
+        {
+            "schema_version": 1,
+            "scan_id": scan_id,
+            "record_type": "SERVER_INFO",
+            "hostname": "fixture-n607",
+            "server_time_utc": "2026-08-17T00:00:00Z",
+            "root": "/home/szu2070436088/2510044040/CV-SincNet",
+        },
+        {
+            "schema_version": 1,
+            "scan_id": scan_id,
+            "record_type": "ASSET",
+            "asset_id": asset_id,
+            "location": "N607",
+            "root_id": "N607_CVS_SINCNET",
+            "relative_path": "runs/fixture/report.md",
+            "display_name": "report.md",
+            "escaped_name": "report.md",
+            "asset_kind": "file",
+            "size_bytes": 12,
+            "mtime_utc": "2026-08-17T00:00:00Z",
+            "access_status": "OK",
+            "hash_status": "SHA256",
+            "sha256": "0" * 64,
+            "evidence_role": "report",
+        },
+        {
+            "schema_version": 1,
+            "scan_id": scan_id,
+            "record_type": "SCOPE",
+            "location": "N607",
+            "root_id": "N607_CVS_SINCNET",
+            "relative_path": "",
+            "status": "VERIFIED",
+            "asset_ids": [asset_id],
+        },
+        {
+            "schema_version": 1,
+            "scan_id": scan_id,
+            "record_type": "SCOPE",
+            "location": "N607",
+            "root_id": "N607_CVS_SINCNET",
+            "relative_path": "runs",
+            "status": "VERIFIED",
+            "asset_ids": [],
+        },
+        {
+            "schema_version": 1,
+            "scan_id": scan_id,
+            "record_type": "PROCESS",
+            "pid": 123,
+            "ppid": 1,
+            "cwd": "/home/szu2070436088/2510044040/CV-SincNet/runs/fixture",
+            "cmdline": "python3 train_fixture.py",
+            "training_like": False,
+        },
+        {
+            "schema_version": 1,
+            "scan_id": scan_id,
+            "record_type": "COLLECTION_COMPLETE",
+            "record_count": 5,
+            "scan_error_count": 0,
+        },
+    )
+    return N607CollectionResult(
+        records=records,
+        receipt=N607Receipt(
+            outcome=RemoteOutcome.VERIFIED,
+            route="DIRECT",
+            preflight_status="DIRECT_READY",
+            disconnect_status="VERIFIED",
+            attempts=(),
+        ),
+    )
+
+
+def test_cli_requires_scan_and_explicit_scope_arguments():
+    from tools.project_governance.cli import parse_args
+
+    with pytest.raises(SystemExit):
+        parse_args([])
+    with pytest.raises(SystemExit):
+        parse_args(["scan"])
+    parsed = parse_args(
+        [
+            "scan",
+            "--config",
+            "config.json",
+            "--scan-id",
+            "SCAN_1",
+            "--output-root",
+            "git-output",
+            "--external-output-root",
+            "external-output",
+            "--operator",
+            "codex",
+        ]
+    )
+    assert parsed.include_n607 is False
+    assert parsed.print_plan is False
+
+
+@pytest.mark.parametrize("flag", ("--delete", "--cleanup", "--move", "--overwrite", "--kill", "--admin"))
+def test_cli_rejects_mutation_and_admin_flags(flag):
+    from tools.project_governance.cli import parse_args
+
+    with pytest.raises(SystemExit):
+        parse_args(
+            [
+                "scan",
+                "--config",
+                "config.json",
+                "--scan-id",
+                "SCAN_1",
+                "--output-root",
+                "git-output",
+                "--external-output-root",
+                "external-output",
+                "--operator",
+                "codex",
+                flag,
+            ]
+        )
+
+
+def test_cli_default_never_constructs_or_calls_n607(tmp_path):
+    from tools.project_governance.cli import run_scan
+
+    root = tmp_path / "local"
+    (root / "runs").mkdir(parents=True)
+    (root / "runs" / "report.md").write_text("run_id: RUN_LOCAL\n", encoding="utf-8")
+    config = _cli_fixture_config(root)
+    git_runner, calls = _fake_git_runner_factory(root)
+    outcome = run_scan(
+        _cli_args(tmp_path),
+        config=config,
+        git_runner=git_runner,
+        repository_seeds=(root,),
+        n607_collector_factory=lambda: (_ for _ in ()).throw(AssertionError("N607 contacted")),
+        clock=lambda: "2026-08-17T00:00:00Z",
+    )
+
+    assert outcome.exit_code == 0
+    assert outcome.remote_contacted is False
+    assert calls
+    assert not (tmp_path / "governance-external" / "CLI_FIXTURE").exists()
+
+
+def test_cli_print_plan_has_no_scan_git_network_or_output_side_effects(tmp_path, capsys):
+    from tools.project_governance.cli import print_plan
+
+    root = tmp_path / "local"
+    root.mkdir()
+    config = _cli_fixture_config(root)
+    args = _cli_args(tmp_path, include_n607=True, print_plan=True)
+    plan = print_plan(args, config=config)
+    captured = capsys.readouterr().out
+    payload = json.loads(captured)
+
+    assert plan["n607_contact"] is True
+    assert payload["local_root"] == str(root)
+    assert payload["n607_contact"] is True
+    assert payload["output_targets"]["git"].endswith("CLI_FIXTURE")
+    assert not (tmp_path / "governance-git").exists()
+    assert not (tmp_path / "governance-external").exists()
+
+
+def test_cli_fixture_scan_emits_joined_inventory_and_approval_only_rows(tmp_path):
+    from tools.project_governance.cli import run_scan
+
+    root = tmp_path / "local"
+    (root / "runs" / "fixture").mkdir(parents=True)
+    (root / "runs" / "fixture" / "report.md").write_text(
+        "run_id: RUN_FIXTURE\nphase: governance\n", encoding="utf-8"
+    )
+    (root / "runs" / "fixture" / "receipt.json").write_text(
+        '{"run_id":"RUN_FIXTURE","terminal":true}\n', encoding="utf-8"
+    )
+    (root / ".git").mkdir()
+    config = _cli_fixture_config(root)
+    git_runner, _ = _fake_git_runner_factory(root)
+
+    class FakeN607Collector:
+        def collect(self):
+            return _fake_n607_result("CLI_FIXTURE")
+
+    before = {
+        path.relative_to(tmp_path).as_posix(): path.read_bytes()
+        for path in root.rglob("*")
+        if path.is_file()
+    }
+    first = run_scan(
+        _cli_args(tmp_path, include_n607=True),
+        config=config,
+        git_runner=git_runner,
+        repository_seeds=(root,),
+        n607_collector_factory=lambda: FakeN607Collector(),
+        clock=lambda: "2026-08-17T00:00:00Z",
+    )
+    assert first.exit_code == 0
+    output = Path(first.output_dir)
+    expected = {
+        "report.md",
+        "asset_inventory_local.csv",
+        "asset_inventory_n607.csv",
+        "experiment_index.csv",
+        "git_ownership.csv",
+        "retention_decisions.csv",
+        "deletion_candidates.csv",
+        "asset_inventory_full.json",
+        "scan_receipt.json",
+    }
+    assert {path.name for path in output.iterdir()} == expected
+    full = json.loads(output.joinpath("asset_inventory_full.json").read_text(encoding="utf-8"))
+    assert {row["asset_id"] for row in full["assets"]} >= {
+        "asset:LOCAL:TYPE10_7:runs/fixture/report.md",
+        "asset:N607:N607_CVS_SINCNET:runs/fixture/report.md",
+    }
+    experiments = list(csv.DictReader(output.joinpath("experiment_index.csv").open("r", encoding="utf-8-sig", newline="")))
+    assert any(row["experiment_id"] == "RUN_FIXTURE" for row in experiments)
+    receipt = json.loads(output.joinpath("scan_receipt.json").read_text(encoding="utf-8"))
+    assert receipt["authorized_deletion_rows"] == 0
+    assert all(item["sha256"] for item in receipt["files"])
+    assert len(full["retention_decisions"]) == len(full["assets"])
+    assert all(
+        candidate["approval_state"] == "AWAITING_USER_APPROVAL"
+        and candidate["execution_state"] == "NOT_AUTHORIZED"
+        and candidate["approved_scope"] is None
+        for candidate in full["deletion_candidates"]
+    )
+    after = {
+        path.relative_to(tmp_path).as_posix(): path.read_bytes()
+        for path in root.rglob("*")
+        if path.is_file()
+    }
+    assert after == before
+
+
+@pytest.mark.parametrize(
+    ("outcome_name", "preflight", "disconnect", "expected_exit"),
+    (
+        ("FAILED", "FAILED", "VERIFIED", 2),
+        ("UNKNOWN", "UNKNOWN", "UNKNOWN", 3),
+    ),
+)
+def test_cli_maps_remote_failure_evidence_to_the_fixed_exit_codes(
+    tmp_path, outcome_name, preflight, disconnect, expected_exit
+):
+    from tools.project_governance.cli import run_scan
+    from tools.project_governance.collect_n607 import (
+        N607CollectionResult,
+        N607Receipt,
+        RemoteOutcome,
+    )
+
+    root = tmp_path / "local"
+    (root / "runs").mkdir(parents=True)
+    (root / "runs" / "report.md").write_text("run_id: RUN_LOCAL\n", encoding="utf-8")
+    config = _cli_fixture_config(root)
+    git_runner, _ = _fake_git_runner_factory(root)
+    remote_result = N607CollectionResult(
+        records=(),
+        receipt=N607Receipt(
+            outcome=RemoteOutcome(outcome_name),
+            route=None,
+            preflight_status=preflight,
+            disconnect_status=disconnect,
+            attempts=(),
+        ),
+    )
+
+    class FakeN607Collector:
+        def collect(self):
+            return remote_result
+
+    outcome = run_scan(
+        _cli_args(tmp_path, include_n607=True),
+        config=config,
+        git_runner=git_runner,
+        repository_seeds=(root,),
+        n607_collector_factory=lambda: FakeN607Collector(),
+        clock=lambda: "2026-08-17T00:00:00Z",
+    )
+
+    assert outcome.exit_code == expected_exit
+    assert outcome.remote_contacted is True
+    assert outcome.remote_outcome == outcome_name
+
+
+def test_cli_rejects_an_unsafe_output_component_before_collecting(tmp_path):
+    from tools.project_governance.cli import run_scan
+
+    root = tmp_path / "local"
+    root.mkdir()
+    config = _cli_fixture_config(root)
+    args = _cli_args(tmp_path)
+    args.scan_id = "../unsafe"
+
+    outcome = run_scan(
+        args,
+        config=config,
+        git_runner=lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("Git called")),
+        n607_collector_factory=lambda: (_ for _ in ()).throw(AssertionError("N607 called")),
+    )
+
+    assert outcome.exit_code == 4
+    assert outcome.output_dir is None
+    assert not (tmp_path / "governance-git").exists()
+    assert not (tmp_path / "governance-external").exists()
+
+
+def test_cli_entrypoint_has_no_destructive_process_control_in_package():
+    package_root = Path(__file__).resolve().parents[1] / "tools" / "project_governance"
+    # ``str.replace`` and dataclass replacement are ordinary immutable value
+    # operations used by the established package.  The safety boundary here
+    # is process control and destructive filesystem calls, which must never
+    # appear in the package-level CLI orchestration surface.
+    banned = {"Popen", "terminate", "kill", "send_signal", "unlink", "rmtree"}
+    for source_path in package_root.glob("*.py"):
+        tree = ast.parse(source_path.read_text(encoding="utf-8"))
+        assert not any(
+            isinstance(node, ast.Attribute) and node.attr in banned
+            for node in ast.walk(tree)
+        ), source_path
+
+
+def test_top_level_runner_rejects_unapproved_commands_without_invoking_processes():
+    entrypoint = Path(__file__).resolve().parents[1] / "tools" / "project_governance_inventory.py"
+    module = runpy.run_path(str(entrypoint), run_name="project_governance_inventory_test")
+    calls: list[tuple[object, ...]] = []
+    runner = module["ProductionCommandRunner"](
+        popen_factory=lambda *args, **kwargs: calls.append(args),
+    )
+
+    with pytest.raises(ValueError, match="approved"):
+        runner.run(
+            ("ssh", "unapproved-target"),
+            input_text=None,
+            timeout_seconds=1,
+            label="DIRECT",
+        )
+
+    assert calls == []
+
+
+def test_top_level_runner_streams_only_an_approved_preflight_through_fakes():
+    entrypoint = Path(__file__).resolve().parents[1] / "tools" / "project_governance_inventory.py"
+    module = runpy.run_path(str(entrypoint), run_name="project_governance_inventory_test")
+    from tools.project_governance.collect_n607 import DEFAULT_PREFLIGHT_SCRIPT
+
+    class FakeProcess:
+        def __init__(self):
+            self.pid = 321
+            self.stdin = io.BytesIO()
+            self.stdout = io.BytesIO(b"preflight line\\n")
+            self.stderr = io.BytesIO(b"")
+            self.returncode = 0
+
+        def poll(self):
+            return self.returncode
+
+        def wait(self, timeout=None):
+            return self.returncode
+
+    class FakeTracker:
+        proxy_child_pids = (654,)
+
+        def wait_for_exit(self):
+            return True
+
+        def close(self):
+            return None
+
+    seen: list[bytes] = []
+    runner = module["ProductionCommandRunner"](
+        popen_factory=lambda *args, **kwargs: FakeProcess(),
+        tracker_factory=lambda pid, required: FakeTracker(),
+    )
+    result = runner.run(
+        (
+            "powershell.exe",
+            "-NoLogo",
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            str(DEFAULT_PREFLIGHT_SCRIPT),
+        ),
+        input_text=None,
+        timeout_seconds=1,
+        label="PREFLIGHT",
+        stdout_line_handler=seen.append,
+    )
+
+    assert result.child_pid == 321
+    assert result.proxy_child_pids == (654,)
+    assert result.child_exited is True
+    assert result.proxy_children_exited is True
+    assert result.stdout_lines == (b"preflight line\\n",)
+    assert seen == [b"preflight line\\n"]
