@@ -9,6 +9,7 @@ formal intercepts use FP16.  No query input exists on the fit path.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 from dataclasses import dataclass
@@ -563,6 +564,43 @@ class D42UnifiedShrinkageLDAResult:
     resource_audit: dict[str, Any]
 
 
+@dataclass(frozen=True)
+class D42OldOnlyFitResult:
+    """Exact materialized D42 old-prefix state before any new support exists."""
+
+    state: D42UnifiedShrinkageLDAState
+    matched_fp32_state: D42UnifiedShrinkageLDAState
+    training_trace: tuple[dict[str, Any], ...]
+    covariance_audit: dict[str, Any]
+    metric_resource: dict[str, Any]
+    quantization_audit: dict[str, float]
+    old_k_shot: int
+
+    @property
+    def state_sha256(self) -> str:
+        digest = hashlib.sha256(b"cvs.phase2.d42.old_only_state.v1\0")
+        digest.update(
+            json.dumps(
+                {
+                    "schema": self.state.schema,
+                    "classes": list(self.state.classes),
+                    "old_class_count": int(self.state.old_class_count),
+                    "covariance_policy": self.state.covariance_policy,
+                },
+                ensure_ascii=True,
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode("utf-8")
+        )
+        for value in _state_snapshot(self.state):
+            digest.update(value)
+        return digest.hexdigest()
+
+    @property
+    def old_state_sha256(self) -> str:
+        return self.state_sha256
+
+
 def _compile_state(
     classes: tuple[str, ...],
     old_class_count: int,
@@ -670,18 +708,21 @@ def _lda_fit_macs(row_count: int, class_count: int) -> int:
     )
 
 
-def fit_d42_unified_shrinkage_lda(
+def fit_d42_old_only(
     old_support_features: np.ndarray,
     old_support_labels: Sequence[str],
     old_classes: Sequence[str],
-    new_support_features: np.ndarray,
-    new_support_labels: Sequence[str],
-    new_classes: Sequence[str],
     *,
     seed: int,
     device: torch.device | str = "cpu",
     config: D42UnifiedShrinkageLDAConfig | None = None,
-) -> D42UnifiedShrinkageLDAResult:
+) -> D42OldOnlyFitResult:
+    """Fit and materialize the exact D42 old-only affine state.
+
+    This entry has no new-support or query input surface.  It is the unchanged
+    pre-registration prefix already used by ``fit_d42_unified_shrinkage_lda``.
+    """
+
     _require_sklearn_runtime()
     locked = config or D42UnifiedShrinkageLDAConfig()
     del locked
@@ -705,27 +746,71 @@ def fit_d42_unified_shrinkage_lda(
     ):
         raise D42UnifiedShrinkageLDAError("D42 old-only B20 lifecycle drift")
     old_transformed = _transform(old_rows, log_diag)
-    before_coef, before_intercept, before_lda = _fit_equal_prior_lda(
+    coefficients, intercept, covariance_audit = _fit_equal_prior_lda(
         old_transformed, old_targets, len(old_registry), old_k
     )
-    before_state, before_quant = _compile_state(
+    state, quantization_audit = _compile_state(
         old_registry,
         len(old_registry),
         log_diag,
-        before_coef,
-        before_intercept,
-        str(before_lda["covariance_policy"]),
+        coefficients,
+        intercept,
+        str(covariance_audit["covariance_policy"]),
         precision="int8",
     )
-    matched_before, _ = _compile_state(
+    matched_fp32_state, _ = _compile_state(
         old_registry,
         len(old_registry),
         log_diag,
-        before_coef,
-        before_intercept,
-        str(before_lda["covariance_policy"]),
+        coefficients,
+        intercept,
+        str(covariance_audit["covariance_policy"]),
         precision="fp32",
     )
+    return D42OldOnlyFitResult(
+        state=state,
+        matched_fp32_state=matched_fp32_state,
+        training_trace=trace,
+        covariance_audit=dict(covariance_audit),
+        metric_resource=dict(metric_resource),
+        quantization_audit=dict(quantization_audit),
+        old_k_shot=int(old_k),
+    )
+
+
+def fit_d42_unified_shrinkage_lda(
+    old_support_features: np.ndarray,
+    old_support_labels: Sequence[str],
+    old_classes: Sequence[str],
+    new_support_features: np.ndarray,
+    new_support_labels: Sequence[str],
+    new_classes: Sequence[str],
+    *,
+    seed: int,
+    device: torch.device | str = "cpu",
+    config: D42UnifiedShrinkageLDAConfig | None = None,
+) -> D42UnifiedShrinkageLDAResult:
+    old_fit = fit_d42_old_only(
+        old_support_features,
+        old_support_labels,
+        old_classes,
+        seed=int(seed),
+        device=device,
+        config=config,
+    )
+    old_rows, old_targets, old_registry, old_k = _support(
+        old_support_features, old_support_labels, old_classes, "old support"
+    )
+    runtime_device = torch.device(device)
+    if int(old_fit.old_k_shot) != old_k or old_fit.state.classes != old_registry:
+        raise D42UnifiedShrinkageLDAError("D42 old-only fit registry drift")
+    log_diag = old_fit.state.log_diag_fp32
+    trace = old_fit.training_trace
+    metric_resource = old_fit.metric_resource
+    before_lda = old_fit.covariance_audit
+    before_state = old_fit.state
+    before_quant = old_fit.quantization_audit
+    matched_before = old_fit.matched_fp32_state
     before_snapshot = _state_snapshot(before_state)
     matched_before_snapshot = _state_snapshot(matched_before)
 
@@ -1064,11 +1149,13 @@ __all__ = [
     "BLOCK_DIMS",
     "D42UnifiedShrinkageLDAConfig",
     "D42UnifiedShrinkageLDAError",
+    "D42OldOnlyFitResult",
     "D42UnifiedShrinkageLDAResult",
     "D42UnifiedShrinkageLDAState",
     "FEATURE_DIM",
     "METRIC_EPOCHS",
     "decode_d42_coefficients",
+    "fit_d42_old_only",
     "fit_d42_unified_shrinkage_lda",
     "pairwise_support_diagnostics_d42",
     "predict_d42_unified_shrinkage_lda",

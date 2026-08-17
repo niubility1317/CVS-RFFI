@@ -19,6 +19,20 @@
 
 ---
 
+### Task 0: Source-only Phase1 DA0 old-state export
+
+**Files:**
+- Create:`code/cvsrffi/stage2_d92_da0_phase1_old_state.py`
+- Create:`code/scripts/export_d92_da0_phase1_old_state.py`
+- Update:`code/cvsrffi/stage2_d42_unified_shrinkage_lda.py`
+- Create:`tests/test_stage2_d92_da0_phase1_old_state.py`
+
+**Implemented boundary:**The exporter opens only a formal ADV3B02 deployment bundle and a verified`source_train`LEO weak cache set. It constructs D92's existing`registered_feature(z_id160,FFT96,RF32)`joint288 view from source received IQ and uses the unchanged D42 pre-registration calculation through public`fit_d42_old_only`. It persists only the int8 D42 predictive codec, FP16 intercept, frozen`log_diag`,old registry binding,and source/bundle member hashes. No target-old support,target-new support,target query,query truth,or SOMP-H target package is accepted or opened.
+
+**Verification recorded 2026-08-17:**RED failed because`fit_d42_old_only`did not exist. GREEN used`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m pytest tests/test_stage2_d92_da0_phase1_old_state.py tests/test_stage2_d42_unified_shrinkage_lda.py -q`;26 tests passed. The same interpreter compiled the D42 module,new sealer,and export script successfully.
+
+---
+
 ### Task 1: DA0 predictor and fail-closed audit
 
 **Files:**
