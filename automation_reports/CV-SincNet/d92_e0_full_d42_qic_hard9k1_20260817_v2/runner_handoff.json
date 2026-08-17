@@ -1,0 +1,67 @@
+{
+  "run_id": "d92_e0_full_d42_qic_hard9k1_20260817_v2",
+  "status": "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE",
+  "result_boundary": "NO_PERFORMANCE_RESULT",
+  "runner": "Luna/max",
+  "release_commit": "93111be81a218a46fe71ee58cb76fe6df86e9f72",
+  "runtime_commit": "6969796f7af6ceb5624c989fbe1f4405fcaf4a83",
+  "launch_count": 1,
+  "fresh_run_retry": false,
+  "analyzer_run": false,
+  "performance_read": false,
+  "precheck": {
+    "route": "N607_direct_ordinary",
+    "project_visible": true,
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "gpu_count": 8,
+    "same_run_paths_absent_before_sync": true,
+    "same_run_process_absent_before_launch": true
+  },
+  "sync": {
+    "archive_size_bytes": 320955,
+    "archive_sha256": "46cd187aeb902eaa5adc8ab79777e6f2a9b94bf0aa85009e85cadd65593175e1",
+    "archive_members": 50,
+    "launch_size_bytes": 6692,
+    "launch_sha256": "57c787f0f06968bf565d34d02b526af50bac2d3dd3df09005e758c817313c025",
+    "config_sha256": "6a8fc7942a2820b5779e5cf74e1222df22d800791864ce312db5708d7a47e8a8",
+    "bash_n": true
+  },
+  "command": "cd /home/szu2070436088/2510044040/CV-SincNet/runs && nohup bash ./d92_qic_hard9_k1_driver_d92_e0_full_d42_qic_hard9k1_20260817_v2.sh >./d92_qic_hard9_k1_driver_d92_e0_full_d42_qic_hard9k1_20260817_v2.out 2>./d92_qic_hard9_k1_driver_d92_e0_full_d42_qic_hard9k1_20260817_v2.err </dev/null &",
+  "failure": {
+    "phase": "truth_free_smoke",
+    "message": "D92 QIC Hard9+K1 failed: candidate fit is not finite",
+    "smoke_receipt": "ABSENT",
+    "marker": "ABSENT"
+  },
+  "technical_counts": {
+    "formal_prediction_before": 0,
+    "formal_prediction_after": 0,
+    "formal_commit": 0,
+    "formal_fit": 0,
+    "formal_resource": 0,
+    "formal_execution": 0,
+    "job_receipt": 0,
+    "score": 0,
+    "shard_summary": 0,
+    "shards_started": 0,
+    "smoke_technical_before": 1,
+    "smoke_technical_after": 1
+  },
+  "artifacts": {
+    "local_retrieval": "E:/type10-7/local_artifacts/d92_e0_full_d42_qic_hard9k1_20260817_v2",
+    "source_files": 94,
+    "output_files": 13,
+    "technical_log_files": 8,
+    "driver_out_bytes": 2506,
+    "driver_err_bytes": 0,
+    "truth_sidecars_generated": 0,
+    "truth_sidecars_retrieved": 0,
+    "remote_retained": true
+  },
+  "cleanup": {
+    "run_pid": 0,
+    "gpu_compute_empty": true,
+    "local_ssh_tcp22_established": false
+  },
+  "next_action": "Fix candidate fit non-finite issue locally, rerun focused checks and independent P0/P1 review, then register a new immutable run ID."
+}
