@@ -1,10 +1,12 @@
 import argparse
+import hashlib
 import importlib.util
 import inspect
 import json
 import subprocess
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -40,6 +42,11 @@ from paper_reproduction.scripts.run_adv3b02_paper_full_ci_truth_free_predictor i
     _load_base_state,
     _method_receipt_semantics,
 )
+import paper_reproduction.scripts.run_adv3b02_paper_full_ci_truth_free_predictor as paper_full_predictor
+from paper_reproduction.cvs_aligned.adv3b02_mrior_preadapt_ci import (
+    MRIORPreadaptInputBinding,
+    expected_mrior_preadapt_method_lock,
+)
 from paper_reproduction.scripts.verify_adv3b02_official_scale_cache_parity import (
     verify as verify_scale_cache_parity,
 )
@@ -53,6 +60,353 @@ CODE_SCRIPTS = Path(__file__).resolve().parents[1] / "code" / "scripts"
 if str(CODE_SCRIPTS) not in sys.path:
     sys.path.insert(0, str(CODE_SCRIPTS))
 from build_cvs_leo_weak_iq_cache import validate_build_spec
+
+
+def test_mrior_preadapt_predictor_loads_every_verified_artifact_before_opening_new_support(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Opening support before every verified DA1_REG0 artifact would break CI lineage."""
+
+    method = "mrior_sda_then_csil_paper_full"
+    scenarios = tuple(paper_full_predictor.FORMAL_LEO_WEAK_SCENARIOS)
+    method_lock = expected_mrior_preadapt_method_lock()
+    method_lock_sha256 = hashlib.sha256(
+        json.dumps(
+            method_lock,
+            ensure_ascii=True,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("ascii")
+    ).hexdigest()
+    artifact_root_by_scene: dict[str, Path] = {}
+    binding_by_scene: dict[str, MRIORPreadaptInputBinding] = {}
+    for scene_index, scene in enumerate(scenarios):
+        artifact_root = tmp_path / f"artifact_{scene}"
+        artifact_root.mkdir()
+        artifact_root_by_scene[scene] = artifact_root
+        binding_by_scene[scene] = MRIORPreadaptInputBinding.from_verified_values(
+            checkpoint_sha256="a" * 64,
+            source_cache_sha256="b" * 64,
+            support_token_sha256=f"{scene_index + 1:064x}",
+            target_package_seal_sha256="d" * 64,
+            receiver="20-1",
+            seed=713101,
+            k_shot=1,
+            scene=scene,
+        )
+    bindings_path = tmp_path / "preadapt_bindings.json"
+    bindings_path.write_text(
+        json.dumps(
+            {
+                "schema": "cvs.phase2.adv3b02_mrior_preadapt_predictor_bindings.v1",
+                "bindings": {
+                    scene: {
+                        "artifact_root": str(artifact_root_by_scene[scene]),
+                        "expected_input_binding_sha256": binding_by_scene[
+                            scene
+                        ].canonical_sha256,
+                        "expected_method_lock_sha256": method_lock_sha256,
+                    }
+                    for scene in scenarios
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    manifest = {
+        "stage": "stage2c",
+        "receiver": "20-1",
+        "seed": 713101,
+        "support_pool_max_k": 1,
+        "registered_classes": [
+            {"class_handle": "old_0"},
+            {"class_handle": "new_0"},
+        ],
+        "candidate_lock_sha256": "e" * 64,
+        "package_root_sha256": "f" * 64,
+        "members": [
+            {"artifact_role": "checkpoint", "relative_path": "checkpoint.pt", "sha256": "a" * 64},
+            {"artifact_role": "head", "relative_path": "head.pt"},
+            *[
+                {
+                    "artifact_role": f"support:{scene}",
+                    "relative_path": f"support_{scene}.npz",
+                }
+                for scene in scenarios
+            ],
+            *[
+                {
+                    "artifact_role": f"query:{scene}",
+                    "relative_path": f"query_{scene}.npz",
+                }
+                for scene in scenarios
+            ],
+        ],
+    }
+    events: list[str] = []
+
+    class SupportOpenObserved(RuntimeError):
+        pass
+
+    def fake_verified_loader(
+        artifact_root: Path | str,
+        *,
+        expected_input_binding_sha256: str,
+        expected_method_lock_sha256: str,
+    ) -> SimpleNamespace:
+        root = Path(artifact_root).resolve()
+        scene = next(
+            item
+            for item, candidate in artifact_root_by_scene.items()
+            if candidate.resolve() == root
+        )
+        assert expected_input_binding_sha256 == binding_by_scene[scene].canonical_sha256
+        assert expected_method_lock_sha256 == method_lock_sha256
+        events.append(f"load:{scene}")
+        return SimpleNamespace(
+            model_state={
+                "id_backbone.weight": torch.ones((1, 1)),
+                "id_backbone.bias": torch.zeros(1),
+            },
+            input_binding=binding_by_scene[scene],
+            method_lock=method_lock,
+            query_unopened_receipt={
+                "query_opened_before_model_lock": False,
+                "query_rows_used_for_training": 0,
+                "query_truth_access": False,
+                "query_role_access": False,
+                "query_class_quota_access": False,
+                "query_global_reassignment_access": False,
+            },
+        )
+
+    def fake_materialize(_package_root: Path, descriptor: dict[str, str]):
+        role = descriptor["artifact_role"]
+        events.append(f"open:{role}")
+        if role.startswith("support:"):
+            assert [event for event in events if event.startswith("load:")] == [
+                f"load:{scene}" for scene in scenarios
+            ]
+            assert events.index("full_preflight") > max(
+                events.index(f"load:{scene}") for scene in scenarios
+            )
+            raise SupportOpenObserved(role)
+        raise AssertionError(f"query must not open in this ordering probe: {role}")
+
+    def fake_metadata_preflight(*_args, **_kwargs):
+        events.append("metadata_preflight")
+        return manifest
+
+    def fake_full_preflight(*_args, **_kwargs):
+        events.append("full_preflight")
+        assert [event for event in events if event.startswith("load:")] == [
+            f"load:{scene}" for scene in scenarios
+        ]
+        return manifest, {}, {}
+
+    monkeypatch.setattr(
+        paper_full_predictor,
+        "METHODS",
+        paper_full_predictor.METHODS + (method,),
+    )
+    monkeypatch.setattr(
+        paper_full_predictor,
+        "preflight_stage2_predictor_package",
+        fake_full_preflight,
+    )
+    monkeypatch.setattr(
+        paper_full_predictor,
+        "_preflight_mrior_preadapt_metadata",
+        fake_metadata_preflight,
+        raising=False,
+    )
+    monkeypatch.setattr(
+        paper_full_predictor,
+        "_load_base_state",
+        lambda *_args, **_kwargs: {"receipt": {}},
+    )
+    monkeypatch.setattr(
+        paper_full_predictor,
+        "load_verified_mrior_preadapt_artifact",
+        fake_verified_loader,
+        raising=False,
+    )
+    monkeypatch.setattr(
+        paper_full_predictor,
+        "_load_exact_backbone",
+        lambda *_args, **_kwargs: (
+            torch.nn.Linear(1, 1),
+            lambda backbone, rows: (backbone(rows), backbone(rows)),
+            {},
+        ),
+    )
+    monkeypatch.setattr(
+        paper_full_predictor,
+        "sha256_file",
+        lambda _path: "9" * 64,
+    )
+    monkeypatch.setattr(paper_full_predictor, "_materialize_npz", fake_materialize)
+
+    with pytest.raises(SupportOpenObserved):
+        paper_full_predictor.predict(
+            argparse.Namespace(
+                package_root=tmp_path,
+                detached_seal=tmp_path / "package.seal.json",
+                expected_seal_sha256="d" * 64,
+                method=method,
+                old_class_count=1,
+                expected_total_capacity=2,
+                k_shot=1,
+                seed=713101,
+                row_id="ordering-red",
+                output_dir=tmp_path / "output",
+                device="cpu",
+                batch_size=8,
+                mrior_preadapt_bindings=bindings_path,
+            )
+        )
+
+    assert [event for event in events if event.startswith("load:")] == [
+        f"load:{scene}" for scene in scenarios
+    ]
+
+
+def test_mrior_preadapt_rejects_package_seed_mismatch_before_artifact_or_full_preflight(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The sealed package seed must bind before any artifact or support access."""
+
+    events: list[str] = []
+
+    monkeypatch.setattr(
+        paper_full_predictor,
+        "_preflight_mrior_preadapt_metadata",
+        lambda *_args, **_kwargs: {"stage": "stage2c", "seed": 713102},
+        raising=False,
+    )
+    monkeypatch.setattr(
+        paper_full_predictor,
+        "preflight_stage2_predictor_package",
+        lambda *_args, **_kwargs: events.append("full_preflight"),
+    )
+    monkeypatch.setattr(
+        paper_full_predictor,
+        "load_verified_mrior_preadapt_artifact",
+        lambda *_args, **_kwargs: events.append("artifact_load"),
+        raising=False,
+    )
+
+    with pytest.raises(ValueError, match="package seed does not match"):
+        paper_full_predictor.predict(
+            argparse.Namespace(
+                package_root=tmp_path,
+                detached_seal=tmp_path / "package.seal.json",
+                expected_seal_sha256="d" * 64,
+                method="mrior_sda_then_csil_paper_full",
+                old_class_count=1,
+                expected_total_capacity=2,
+                k_shot=1,
+                seed=713101,
+                row_id="seed-binding-red",
+                output_dir=tmp_path / "output",
+                device="cpu",
+                batch_size=8,
+                mrior_preadapt_bindings=tmp_path / "bindings.json",
+            )
+        )
+
+    assert events == []
+
+
+def test_mrior_preadapt_lineage_accepts_the_plan_bound_anchor_seal_for_new_count_reuse(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A reused preadapt artifact is anchored to the K-matched package, not every new-count seal."""
+
+    binding = MRIORPreadaptInputBinding.from_verified_values(
+        checkpoint_sha256="a" * 64,
+        source_cache_sha256="b" * 64,
+        support_token_sha256="c" * 64,
+        target_package_seal_sha256="d" * 64,
+        receiver="20-1",
+        seed=713101,
+        k_shot=5,
+        scene="leo_rain_weak",
+    )
+    result = SimpleNamespace(input_binding=binding)
+    monkeypatch.setattr(paper_full_predictor, "sha256_file", lambda _path: "e" * 64)
+
+    lineage = paper_full_predictor._validated_mrior_preadapt_lineage(
+        result,
+        artifact_root=tmp_path,
+        checkpoint_sha256="a" * 64,
+        target_package_seal_sha256="f" * 64,
+        receiver="20-1",
+        seed=713101,
+        k_shot=5,
+        scenario="leo_rain_weak",
+    )
+
+    assert lineage["state"] == "DA1_REG0"
+    assert lineage["target_package_seal_sha256"] == "d" * 64
+
+
+@pytest.mark.parametrize(
+    "method",
+    (
+        "mrior_sda_then_csil_paper_full",
+        "mrior_sda_then_mopc_hr_paper_full",
+    ),
+)
+def test_mrior_preadapt_method_rejects_missing_artifact_bindings_before_package_open(
+    tmp_path: Path, method: str
+) -> None:
+    """A preadapted method must not open a package when its frozen artifacts are absent."""
+
+    with pytest.raises(ValueError, match="require --mrior-preadapt-bindings"):
+        paper_full_predictor.predict(
+            argparse.Namespace(
+                package_root=tmp_path,
+                detached_seal=tmp_path / "package.seal.json",
+                expected_seal_sha256="a" * 64,
+                method=method,
+                old_class_count=1,
+                expected_total_capacity=2,
+                k_shot=1,
+                seed=713101,
+                row_id="missing-bindings",
+                output_dir=tmp_path / "output",
+                device="cpu",
+                batch_size=8,
+                mrior_preadapt_bindings=None,
+            )
+        )
+
+
+@pytest.mark.parametrize("method", ("csil_paper_full", "mopc_hr_paper_full"))
+def test_original_paper_full_method_rejects_any_mrior_preadapt_bindings(
+    tmp_path: Path, method: str
+) -> None:
+    """Passing an artifact to an original method must not silently change its route."""
+
+    with pytest.raises(ValueError, match="only MRIOR preadapted methods"):
+        paper_full_predictor.predict(
+            argparse.Namespace(
+                package_root=tmp_path,
+                detached_seal=tmp_path / "package.seal.json",
+                expected_seal_sha256="a" * 64,
+                method=method,
+                old_class_count=1,
+                expected_total_capacity=2,
+                k_shot=1,
+                seed=713101,
+                row_id="original-method-rejects-artifact",
+                output_dir=tmp_path / "output",
+                device="cpu",
+                batch_size=8,
+                mrior_preadapt_bindings=tmp_path / "untrusted-bindings.json",
+            )
+        )
 
 
 def test_real_wisig_builder_supports_cache_exclusion_contract():
