@@ -1,0 +1,70 @@
+{
+  "run_id": "d92_e0_continuous_session_k10new5_20260817_v7",
+  "terminal_status": "ARTIFACTS_COMPLETE / READY_FOR_PRIMARY_ANALYZER",
+  "analysis_eligible": true,
+  "performance_interpreted_by_runner": false,
+  "science_commit": "75fcf33b9c1d77fbb1ba83bf555209944ccd6d32",
+  "release_commit": "e9168973b15f45fea02756fd01407517a4d3a4c4",
+  "launch": {
+    "submission_count": 1,
+    "command": "cd /home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0_continuous_session_k10new5_20260817_v7 && nohup bash ./launch.sh >./launch.out 2>./launch.err </dev/null &",
+    "archive": {
+      "name": "d92_e0_continuous_session_v7.tar.gz",
+      "bytes": 171137,
+      "sha256": "791b1eb3f243b93371cec22f3bb5aabace8e6de57fb4a94f2890d1b9087e1054",
+      "members": 31
+    },
+    "launch_file": {
+      "name": "launch.sh",
+      "bytes": 2261,
+      "sha256": "6845226173379b07cf763d0dd9e1ff888a34d24d0361304189fc7dd2e7597775",
+      "bash_n": "PASS"
+    },
+    "local_ssh_cleanup": {
+      "stale_pid": 32276,
+      "graceful_termination": "FAILED",
+      "forced_termination": "VERIFIED",
+      "second_launch": false
+    }
+  },
+  "technical_health": {
+    "run_owned_pid_count": 0,
+    "gpu_compute_process_count": 0,
+    "technical_exception_markers": "NONE",
+    "smoke_schedules": ["batch_5", "singleton_forward"],
+    "formal_schedules": ["batch_5", "singleton_forward", "singleton_reverse", "chunk_2_2_1"],
+    "terminal_closure": "STRICT_EQUAL",
+    "query_truth_access": false,
+    "query_fit_access": false,
+    "query_update_access": false,
+    "query_selection_access": false,
+    "query_role_oracle_access": false,
+    "query_class_quota_access": false,
+    "query_global_reassignment": false
+  },
+  "artifact_counts": {
+    "matrix_manifest_json": 1,
+    "prepared_manifest_json": 5,
+    "delta_receipt_json": 5,
+    "prediction_manifest_json": 6,
+    "job_receipt_json": 5,
+    "execution_receipt_json": 246,
+    "fit_audit_json": 246,
+    "resource_audit_json": 246,
+    "commit_json": 251
+  },
+  "retrieval": {
+    "root": "E:/type10-7/local_artifacts/d92_e0_continuous_session_k10new5_20260817_v7",
+    "run_root_files": 1420,
+    "log_root_files": 10,
+    "truth_sidecars_copied": 5,
+    "truth_sidecar_content_read": false,
+    "job_receipts_preserved": 5,
+    "additional_scorer_receipt_found": false
+  },
+  "cleanup": {
+    "local_ssh_process_count": 0,
+    "local_scp_process_count": 0,
+    "n607_tcp22_established_count": 0
+  }
+}
