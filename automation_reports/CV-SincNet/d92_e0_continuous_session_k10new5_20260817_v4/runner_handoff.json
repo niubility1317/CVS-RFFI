@@ -1,0 +1,52 @@
+{
+  "run_id": "d92_e0_continuous_session_k10new5_20260817_v4",
+  "runner_role": "sole_n607_runner",
+  "terminal_state": "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT",
+  "trigger": "ContinuousSessionPredictionError: fixed apply query token/IQ identity drift during GPU0 truth-free smoke",
+  "formal_dispatch": "NOT_STARTED",
+  "retry_authority": false,
+  "remote": {
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0_continuous_session_k10new5_20260817_v4",
+    "log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/d92_e0_continuous_session_k10new5_20260817_v4",
+    "run_owned_processes": 0,
+    "gpu_compute_processes": 0,
+    "formal_job_receipts": 0,
+    "formal_prediction_manifests": 0
+  },
+  "release_integrity": {
+    "runtime_archive_sha256": "dec0db85258945b66b465d695bddfee33443a7d385ba86d1863b7ce3c8ef5b12",
+    "launch_sha256": "b952ada7c94ae6158daeced54082fc1bb6c86ceafb8492b311b38d1f3984f211",
+    "runtime_archive_entries": 31,
+    "runtime_archive_safe_paths": true,
+    "remote_bash_n": "PASS",
+    "local_bash_n": "PASS"
+  },
+  "retrieval": {
+    "local_root": "E:/type10-7/local_artifacts/d92_e0_continuous_session_k10new5_20260817_v4",
+    "run_root_path_and_size_match": true,
+    "log_root_path_and_size_match": true,
+    "truth_sidecars_copied": false,
+    "truth_sidecar_content_read": false,
+    "analyzer_run": false,
+    "performance_content_read": false
+  },
+  "apply_manifest_retrieval": {
+    "source_job": "/home/szu2070436088/2510044040/CV-SincNet/runs/d92_registration_balanced_125_retry2_20260720/jobs/rx_20_1__seed_713106__k_10__new_5",
+    "before_root": "offline/predictor/before/apply_only_staging",
+    "after_root": "offline/predictor/after/apply_only_staging",
+    "before_manifest": "ABSENT",
+    "after_manifest": "ABSENT",
+    "before_root_maxdepth1_filenames": [],
+    "after_root_maxdepth1_filenames": [],
+    "files_copied": false,
+    "content_read": false,
+    "expanded_scan": false,
+    "non_target_delta_manifest_duplicate": "PRESENT_UNREAD_NOT_USABLE"
+  },
+  "runner_actions": {
+    "launch_submitted_once": true,
+    "retry": false,
+    "remote_overwrite_or_delete": false,
+    "method_or_matrix_change": false
+  }
+}

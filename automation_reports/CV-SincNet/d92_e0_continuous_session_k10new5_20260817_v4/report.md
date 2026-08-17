@@ -50,3 +50,15 @@ cd /home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0_continuous_session_k10n
 - P0协议/安全越界、错误checkout、输出覆盖、query泄漏或launcher-wide确定性故障：停止精确run-owned进程并保留partial artifacts。
 - 两个outer在prediction前出现同一确定性异常：停止后续dispatch；不重试、不覆盖。
 - 不因中间性能停止。`fresh_run_retry=false`。
+
+## Runner失败态封口（2026-08-17）
+
+- 终态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+- 触发：GPU0 truth-free smoke出现确定性技术异常`ContinuousSessionPredictionError: fixed apply query token/IQ identity drift`。
+- formal dispatch：未启动；job receipt和prediction manifest计数均为0。
+- 接管runner未执行新的detached launch、未重试、未修改方法、矩阵、配置或远端已有artifact。
+- 封口核验：无本run绑定PID，GPU compute进程为空；异常触发后仅保全现有run/log内容。
+- 完整性：远端与本地runtime archive SHA-256均为`dec0db85258945b66b465d695bddfee33443a7d385ba86d1863b7ce3c8ef5b12`，launch SHA-256均为`b952ada7c94ae6158daeced54082fc1bb6c86ceafb8492b311b38d1f3984f211`；归档31条目且无不安全路径；两端`bash -n launch.sh`通过。
+- 取回：`E:/type10-7/local_artifacts/d92_e0_continuous_session_k10new5_20260817_v4/run_root`和`.../log_root`中的相对路径与文件字节数分别和远端一致。
+- 受限诊断：仅检查指定source job中`offline/predictor/before/apply_only_staging/manifest.json`与`offline/predictor/after/apply_only_staging/manifest.json`；两者均ABSENT，两个精确root的maxdepth1列表均为空，因此未复制apply manifest且未扩大扫描。此前创建的非目标delta manifest重复副本保留为未读取、不可用的本地冗余件，等待主代理处置。
+- 边界：未复制或读取truth sidecar，未读取NPZ/query/truth，未运行analyzer，未读取或解释任何性能值。
