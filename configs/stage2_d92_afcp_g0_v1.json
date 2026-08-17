@@ -1,0 +1,84 @@
+{
+  "schema": "cvs.phase2.d92_afcp.g0.v1",
+  "status": "FROZEN_TRUTH_FREE_G0",
+  "claim_scope": "TRUTH_FREE_TECHNICAL_G0_ONLY",
+  "protocol_schema": "p2_min_v1",
+  "candidate_id": "d92_e0_full_d42_allclass_fold_consensus_plane",
+  "outer_key": "rx_7_7__seed_713106__k_10__new_5",
+  "old_class_count": 6,
+  "registered_class_count": 11,
+  "k_shot": 10,
+  "scenes": [
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak"
+  ],
+  "arms": {
+    "reference": "E0_FULL_ONLY",
+    "candidate": "E0_FULL_D42_ALLCLASS_FOLD_CONSENSUS_PLANE"
+  },
+  "entry_arguments": [
+    "before_enrollment_package_root",
+    "before_enrollment_seal_path",
+    "before_enrollment_seal_sha256",
+    "before_apply_package_root",
+    "before_apply_seal_path",
+    "before_apply_seal_sha256",
+    "after_enrollment_package_root",
+    "after_enrollment_seal_path",
+    "after_enrollment_seal_sha256",
+    "after_apply_package_root",
+    "after_apply_seal_path",
+    "after_apply_seal_sha256",
+    "ground_component_dir",
+    "ground_manifest_sha256",
+    "reference_output_root",
+    "candidate_output_root",
+    "g0_validation_path",
+    "device"
+  ],
+  "receipt_prefix": "d92_e0d_afcp_",
+  "registration": {
+    "actual_full_fit_count": 1,
+    "wall_max_ns": 150000000,
+    "candidate_peak_max_bytes": 1048576
+  },
+  "query": {
+    "macs_exact_to_reference": true,
+    "persistent_state_bytes_exact_to_reference": true,
+    "per_sample_all_registered_classes": true,
+    "fit_access": false,
+    "update_access": false,
+    "selection_access": false,
+    "truth_access": false,
+    "role_oracle_access": false,
+    "class_quota_access": false,
+    "global_reassignment": false
+  },
+  "afcp_requirements": {
+    "active": true,
+    "fallback_active": false,
+    "final_state_non_e0": true,
+    "all_three_blocks_changed": true,
+    "support_margin_quantum_pass": true,
+    "twofold_class_guard_pass": true,
+    "twofold_cross_guard_pass": true,
+    "support_guard_pass": true,
+    "direct_state_publish": true,
+    "forbidden_count_fields_must_equal_zero": [
+      "requantize_call_count",
+      "additional_full_fit_count",
+      "block_fit_count",
+      "loo_fit_count",
+      "fisher_fit_count",
+      "tail_selection_count",
+      "rival_pair_selection_count",
+      "atomic_candidate_count",
+      "prefix_evaluation_count",
+      "candidate_scan_count",
+      "support_288_square_matrix_bytes"
+    ]
+  },
+  "pass_marker": "D92_AFCP_G0_ACTIVE_RESOURCE_PASS",
+  "technical_failure_marker": "D92_AFCP_G0_TECHNICAL_FAILURE"
+}
