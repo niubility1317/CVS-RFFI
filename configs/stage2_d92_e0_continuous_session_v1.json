@@ -1,0 +1,91 @@
+{
+  "schema": "cvs.phase2.d92_e0_continuous_session.method_lock.v1",
+  "matrix_schema": "cvs.phase2.d92_e0_continuous_session.matrix.v1",
+  "job_receipt_schema": "cvs.phase2.d92_e0_continuous_session.job_receipt.v1",
+  "experiment_id": "D92-E0-CONTINUOUS-SESSION-v1",
+  "method_id": "D92_E0_CUMULATIVE_REPLAY_SESSION_V1",
+  "protocol_schema": "p2_min_v1",
+  "claim_scope": "DEVELOPMENT_ONLY_CONTINUOUS_SESSION_SCREEN",
+  "selection_sha256": "3ab3d32c6b34f537baf6f659e4f529aaa4bcb35b630c41bd858b8180eac75415",
+  "fixed_components": {
+    "A": "joint288_z160_fft96_rf32",
+    "B": "ground-spectrum_cauchy_robust_center",
+    "C": "task_balanced_covariance_0.5_0.5",
+    "F": "f0_fp32_weight_fp32_bias",
+    "query": "single_f0_all_registered_classes"
+  },
+  "query_contract": {
+    "decision": "per_sample_all_registered_classes",
+    "truth_access": false,
+    "fit_access": false,
+    "update_access": false,
+    "selection_access": false,
+    "role_oracle_access": false,
+    "class_quota_access": false,
+    "global_reassignment": false
+  },
+  "matrix": {
+    "receiver_count": 5,
+    "scene_count": 3,
+    "schedule_count": 4,
+    "job_count": 5,
+    "session_fit_count": 210
+  },
+  "receivers": ["20-1", "3-19", "7-14", "7-7", "8-8"],
+  "scenes": ["leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"],
+  "seed": 713106,
+  "k_shot": 10,
+  "old_class_count": 6,
+  "new_class_count": 5,
+  "schedules": {
+    "batch_5": {
+      "session_increments": [5],
+      "arrival_order": [0, 1, 2, 3, 4]
+    },
+    "singleton_forward": {
+      "session_increments": [1, 1, 1, 1, 1],
+      "arrival_order": [0, 1, 2, 3, 4]
+    },
+    "singleton_reverse": {
+      "session_increments": [1, 1, 1, 1, 1],
+      "arrival_order": [4, 3, 2, 1, 0]
+    },
+    "chunk_2_2_1": {
+      "session_increments": [2, 2, 1],
+      "arrival_order": [0, 1, 2, 3, 4]
+    }
+  },
+  "resource_gate": {
+    "registration_wall_target_ns": 150000000,
+    "registration_incremental_peak_hard_max_bytes": 2097152,
+    "query_state_bytes_equal": true,
+    "query_macs_equal": true
+  },
+  "sealed_inputs": {
+    "context_sha256": "067a6365e9c859161407ab62ba6349d7beb93083f59f78fd7c780c6d8924731f",
+    "source_d92_output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/d92_registration_balanced_125_retry2_20260720",
+    "ground_component_dir": "/home/szu2070436088/2510044040/CV-SincNet/runs/d19_ciaf_int8_proto_20260717_1039/input/int8_component",
+    "ground_manifest_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/d19_ciaf_int8_proto_20260717_1039/input/int8_component/manifest.json",
+    "ground_manifest_sha256": "15b5e144f9af3989421d8e925c17758479c327be47e79222f6363dc63994629c",
+    "package_layout": {
+      "before_enrollment": {
+        "package_relative_path": ["offline", "predictor", "before", "enrollment_only"],
+        "seal_relative_path": ["offline", "seals", "before_enrollment.seal.json"]
+      },
+      "before_apply": {
+        "package_relative_path": ["offline", "predictor", "before", "apply_only_staging"],
+        "seal_relative_path": ["apply_seals", "before_apply.seal.json"]
+      },
+      "after_enrollment": {
+        "package_relative_path": ["offline", "predictor", "after", "enrollment_only"],
+        "seal_relative_path": ["offline", "seals", "after_enrollment.seal.json"]
+      },
+      "after_apply": {
+        "package_relative_path": ["offline", "predictor", "after", "apply_only_staging"],
+        "seal_relative_path": ["apply_seals", "after_apply.seal.json"]
+      }
+    }
+  },
+  "development_only": true,
+  "fresh_run_retry": false
+}
