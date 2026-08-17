@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import re
 import sys
 from pathlib import Path
 from typing import Any, Mapping
@@ -31,6 +32,8 @@ G0_SCENES = (
     "leo_low_elev_weak",
     "leo_rain_weak",
 )
+G0_RECEIVER = "7-7"
+G0_SEED = 713106
 REFERENCE_ARM = "E0_FULL_ONLY"
 CANDIDATE_ARM = "E0_FULL_D42_ALLCLASS_FOLD_CONSENSUS_PLANE"
 ALLOWED_ARMS = (REFERENCE_ARM, CANDIDATE_ARM)
@@ -38,6 +41,7 @@ G0_TECHNICAL_FAILURE = "D92_AFCP_G0_TECHNICAL_FAILURE"
 WALL_LIMIT_NS = 150_000_000
 PEAK_LIMIT_BYTES = 1024 * 1024
 _HEX = frozenset("0123456789abcdef")
+_ROW_HANDLE_RE = re.compile(r"row_[0-9a-f]{64}\Z")
 _QUERY_SUFFIXES = (
     "fit_access",
     "update_access",
@@ -192,6 +196,22 @@ def _rows_from_fit_audit(result: Mapping[str, Any], output_root: Path) -> dict[s
     return by_scene
 
 
+def _execution_receipt_from_output(output_root: Path) -> Mapping[str, Any]:
+    """Read the published after-state identity receipt, never a CLI label."""
+
+    receipt_path = output_root / "after" / "execution_receipt.json"
+    try:
+        with receipt_path.open("r", encoding="utf-8") as handle:
+            receipt = json.load(handle)
+    except (OSError, json.JSONDecodeError) as error:
+        raise D92AFCPG0Error(
+            f"G0 execution receipt cannot be read: {receipt_path}"
+        ) from error
+    if not isinstance(receipt, Mapping):
+        raise D92AFCPG0Error("G0 execution receipt is malformed")
+    return receipt
+
+
 def _query_zero(row: Mapping[str, Any], prefix: str = "") -> bool:
     return all(row.get(f"{prefix}query_{suffix}") is False for suffix in _QUERY_SUFFIXES)
 
@@ -242,6 +262,62 @@ def _twofold_class_margin_receipt(value: Any) -> bool:
 
 def _nonempty_text(value: Any) -> bool:
     return isinstance(value, str) and bool(value)
+
+
+def _exact_scene_receipt(value: Any) -> bool:
+    return isinstance(value, list) and tuple(value) == G0_SCENES
+
+
+def _outer_binding(
+    reference_receipt: Mapping[str, Any], candidate_receipt: Mapping[str, Any]
+) -> dict[str, Any]:
+    """Close the two persisted after-state receipts over the frozen outer row."""
+
+    def arm_gates(receipt: Mapping[str, Any], label: str) -> dict[str, bool]:
+        return {
+            f"{label}_registration_state": receipt.get("registration_state") == "after",
+            f"{label}_receiver": receipt.get("receiver") == G0_RECEIVER,
+            f"{label}_seed": _integer_gate(
+                receipt.get("seed"), f"{label} execution seed", expected=G0_SEED
+            ),
+            f"{label}_k_shot": _integer_gate(
+                receipt.get("k_shot"), f"{label} execution k", expected=10
+            ),
+            f"{label}_registered_class_count": _integer_gate(
+                receipt.get("registered_class_count"),
+                f"{label} execution class count",
+                expected=11,
+            ),
+            f"{label}_row_handle_shape": isinstance(receipt.get("row_handle"), str)
+            and _ROW_HANDLE_RE.fullmatch(str(receipt.get("row_handle"))) is not None,
+            f"{label}_support_scenes": _exact_scene_receipt(
+                receipt.get("support_scenarios")
+            ),
+            f"{label}_query_scenes": _exact_scene_receipt(
+                receipt.get("query_scenarios")
+            ),
+        }
+
+    gates = {
+        **arm_gates(reference_receipt, "reference"),
+        **arm_gates(candidate_receipt, "candidate"),
+        "receiver_equal": reference_receipt.get("receiver")
+        == candidate_receipt.get("receiver"),
+        "seed_equal": reference_receipt.get("seed") == candidate_receipt.get("seed"),
+        "k_shot_equal": reference_receipt.get("k_shot")
+        == candidate_receipt.get("k_shot"),
+        "registered_class_count_equal": reference_receipt.get(
+            "registered_class_count"
+        )
+        == candidate_receipt.get("registered_class_count"),
+        "row_handle_equal": reference_receipt.get("row_handle")
+        == candidate_receipt.get("row_handle"),
+        "support_scenes_equal": reference_receipt.get("support_scenarios")
+        == candidate_receipt.get("support_scenarios"),
+        "query_scenes_equal": reference_receipt.get("query_scenarios")
+        == candidate_receipt.get("query_scenarios"),
+    }
+    return {"pass": all(gates.values()), "gates": gates}
 
 
 def _candidate_scene_gates(
@@ -405,18 +481,28 @@ def _scene_validation(reference: Mapping[str, Any], candidate: Mapping[str, Any]
 def validate_afcp_g0(
     reference_rows: Mapping[str, Mapping[str, Any]],
     candidate_rows: Mapping[str, Mapping[str, Any]],
+    *,
+    reference_execution_receipt: Mapping[str, Any],
+    candidate_execution_receipt: Mapping[str, Any],
 ) -> dict[str, Any]:
     if set(reference_rows) != set(G0_SCENES) or set(candidate_rows) != set(G0_SCENES):
         raise D92AFCPG0Error("G0 scene set drift")
+    outer_binding = _outer_binding(
+        reference_execution_receipt, candidate_execution_receipt
+    )
     scenes = {
         scene: _scene_validation(reference_rows[scene], candidate_rows[scene])
         for scene in G0_SCENES
     }
+    for scene in scenes.values():
+        scene["gates"]["outer_binding"] = outer_binding["pass"]
+        scene["pass"] = all(scene["gates"].values())
     passed = all(value["pass"] is True for value in scenes.values())
     return {
         "schema": G0_SCHEMA,
         "marker": G0_MARKER if passed else G0_TECHNICAL_FAILURE,
         "pass": passed,
+        "outer_binding": outer_binding,
         "scenes": scenes,
         "scene_gates": {scene: value["pass"] for scene, value in scenes.items()},
     }
@@ -440,6 +526,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     validation = validate_afcp_g0(
         _rows_from_fit_audit(reference_result, reference_root),
         _rows_from_fit_audit(candidate_result, candidate_root),
+        reference_execution_receipt=_execution_receipt_from_output(reference_root),
+        candidate_execution_receipt=_execution_receipt_from_output(candidate_root),
     )
     status = G0_MARKER if validation["pass"] else G0_TECHNICAL_FAILURE
     artifact: dict[str, Any] = {

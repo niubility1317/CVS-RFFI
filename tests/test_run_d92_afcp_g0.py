@@ -217,11 +217,43 @@ def _row(scene: str, *, candidate: bool) -> dict[str, object]:
     return row
 
 
-def _persist_fake_audit(output_root: str | Path, rows: list[dict[str, object]]) -> None:
+def _execution_receipt(
+    *,
+    receiver: str = "7-7",
+    seed: int = 713106,
+    row_handle: str = "row_" + "a" * 64,
+) -> dict[str, object]:
+    from scripts import run_d92_afcp_g0
+
+    return {
+        "schema": "cvs.phase2.diag_cosine_exploration_receipt.v1",
+        "registration_state": "after",
+        "receiver": receiver,
+        "seed": seed,
+        "k_shot": 10,
+        "registered_class_count": 11,
+        "row_handle": row_handle,
+        "row_manifest_sha256": "f" * 64,
+        "support_scenarios": list(run_d92_afcp_g0.G0_SCENES),
+        "query_scenarios": list(run_d92_afcp_g0.G0_SCENES),
+    }
+
+
+def _persist_fake_audit(
+    output_root: str | Path,
+    rows: list[dict[str, object]],
+    *,
+    execution_receipt: dict[str, object] | None = None,
+) -> None:
     after = Path(output_root) / "after"
     after.mkdir(parents=True)
     (after / "fit_audit.json").write_text(
         json.dumps(rows), encoding="utf-8", newline="\n"
+    )
+    (after / "execution_receipt.json").write_text(
+        json.dumps(execution_receipt or _execution_receipt()),
+        encoding="utf-8",
+        newline="\n",
     )
 
 
@@ -252,6 +284,43 @@ def test_g0_reads_persisted_afcp_receipts_and_writes_active_marker(tmp_path, mon
     assert persisted["status"] == run_d92_afcp_g0.G0_MARKER
     assert persisted["validation"]["pass"] is True
     assert set(persisted["validation"]["scenes"]) == set(run_d92_afcp_g0.G0_SCENES)
+
+
+@pytest.mark.parametrize(
+    "identity_drift",
+    ("receiver", "seed", "row_handle"),
+)
+def test_g0_rejects_wrong_persisted_outer_binding_even_with_matching_k_class_and_scenes(
+    tmp_path, monkeypatch, identity_drift
+) -> None:
+    """A missing receipt-identity gate would incorrectly accept this run."""
+
+    from scripts import run_d92_afcp_g0
+    from cvsrffi import stage2_d92_e0d_query_evaluation as e0d
+
+    args = _args(tmp_path)
+
+    def fake_run(*, arm_id: str, output_root: str | Path, **_kwargs: object):
+        rows = [
+            _row(scene, candidate=arm_id == run_d92_afcp_g0.CANDIDATE_ARM)
+            for scene in run_d92_afcp_g0.G0_SCENES
+        ]
+        receipt = _execution_receipt()
+        if identity_drift == "receiver":
+            receipt["receiver"] = "8-8"
+        elif identity_drift == "seed":
+            receipt["seed"] = 713105
+        elif arm_id == run_d92_afcp_g0.CANDIDATE_ARM:
+            receipt["row_handle"] = "row_" + "b" * 64
+        _persist_fake_audit(output_root, rows, execution_receipt=receipt)
+        return {}
+
+    monkeypatch.setattr(e0d, "run_d92_e0d_query_evaluation", fake_run)
+    with pytest.raises(run_d92_afcp_g0.D92AFCPG0EntryError, match="validation failed"):
+        run_d92_afcp_g0.run(args)
+    persisted = json.loads(Path(args.g0_validation_path).read_text(encoding="utf-8"))
+    assert persisted["status"] == run_d92_afcp_g0.G0_TECHNICAL_FAILURE
+    assert persisted["validation"]["outer_binding"]["pass"] is False
 
 
 @pytest.mark.parametrize(
