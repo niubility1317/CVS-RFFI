@@ -1,0 +1,38 @@
+{
+  "schema": "cvs.phase2.d92_e0_continuous_session.delivery_manifest.v1",
+  "run_id": "d92_e0_continuous_session_k10new5_20260817_v7",
+  "git_commit": "75fcf33b9c1d77fbb1ba83bf555209944ccd6d32",
+  "status": "LOCAL_VERIFIED_READY_FOR_N607_HANDOFF",
+  "performance_result": false,
+  "runtime_archive": "runtime/d92_e0_continuous_session_v7.tar.gz",
+  "runtime_archive_sha256": "791b1eb3f243b93371cec22f3bb5aabace8e6de57fb4a94f2890d1b9087e1054",
+  "runtime_archive_size_bytes": 171137,
+  "launch_script": "launch.sh",
+  "launch_script_sha256": "6845226173379b07cf763d0dd9e1ff888a34d24d0361304189fc7dd2e7597775",
+  "launch_script_size_bytes": 2261,
+  "matrix": {"outer_jobs": 5, "scenes": 3, "schedules": 4, "session_fit_count": 210, "gpu_map": [0, 1, 2, 3, 4]},
+  "resource_gate": {
+    "evaluation_phase": "truth_last_analysis",
+    "scope": "DA1_REG1_sessions_only",
+    "registration_wall_hard_max_ns": 300000000,
+    "registration_incremental_peak_hard_max_bytes": 4194304,
+    "runtime_stop_on_resource_miss": false,
+    "query_state_bytes_equal": true,
+    "query_macs_equal": true
+  },
+  "verification": {
+    "focused_tests": "PASS:52",
+    "bash_n": "PASS",
+    "archive_listing": "PASS:31 files; no absolute or parent-traversal paths",
+    "extracted_imports": "PASS",
+    "runner_help": "PASS",
+    "analyzer_help": "PASS",
+    "archive_mode_prepare": "PASS:5 jobs;210 session fits"
+  },
+  "remote": {
+    "project_root": "/home/szu2070436088/2510044040/CV-SincNet",
+    "logs_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/d92_e0_continuous_session_k10new5_20260817_v7",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python"
+  },
+  "fresh_run_retry": false
+}
