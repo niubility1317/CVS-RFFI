@@ -725,7 +725,7 @@ Run:
 PYTHONUTF8=1 PYTHONIOENCODING=utf-8 conda run -n ssr-gpu python tools/project_governance_inventory.py scan --config configs/project_governance_inventory_v1.json --scan-id "$GOV_SCAN_ID" --output-root "$GOV_GIT_OUTPUT" --external-output-root "$GOV_EXTERNAL_OUTPUT" --operator codex --include-n607
 ```
 
-Do not rerun with the same scan ID. If it fails, preserve partial output, diagnose locally and use a new immutable scan ID after the concrete defect is fixed.
+If the command runner yields a live execution session, retain that session and poll it to an explicit process exit while reporting bounded progress; a session ID, empty stdout or observed child-process disappearance is not terminal evidence. Do not interrupt a live scan merely because output is delayed. Do not rerun with the same scan ID. If the final session evidence is lost or the scan fails, preserve partial output, mark that ID`UNKNOWN`or`FAILED`, diagnose locally and use a new immutable scan ID only after the concrete defect is fixed and recorded.
 
 - [ ] **Step 4: Verify coverage and zero mutation**
 

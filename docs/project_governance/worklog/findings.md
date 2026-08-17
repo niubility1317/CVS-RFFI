@@ -50,3 +50,12 @@
 - 当前收据schema只显式写入扫描时`implementation.git_head`，未单列主实施和修复提交。后续文档提交会把上述完整hash固化在`progress.md`，正式收据的HEAD会在Git历史中绑定该文档；显式`implementation_commits`数组作为非阻断P2列入后续工程优化。
 - Task9总审查发现并关闭两项根范围P1：本地配置根缺失现在产生`SCAN_ERROR`和退出码2；N607 NDJSON根scope必须唯一且为`VERIFIED`。可选承载面缺失仍保留`NOT_PRESENT`，不会被误判为错误。
 - Task9最终独立结论为`APPROVE，P0=0、P1=0、P2=3、Minor=0`。3个P2是预检stdout与`netstat`总输出仍可能整体缓冲、收据未显式保存实施commit列表、最后写入的收据不是原子发布；它们不增加删除、移动、覆盖、远端写入、自动终止或路由歧义。
+
+## 2026-08-18首次正式扫描尝试
+
+- scan ID`PGOV_20260817T185755Z`的零写入预览通过，明确包含本地根、10个本地承载面、N607根、7个N607承载面及`n607_contact=true`；预览前后两个输出目录均不存在。
+- 手工根权威预检最终exit0，普通账号`szu2070436088`、direct配置与identity、服务器时间、项目根和8张RTX3090均可见；首次未整体引用Windows路径的调用exit127且未触达N607，已归因为Git Bash路径引用错误。
+- 唯一正式扫描进程曾启动，但执行控制器没有保留到明确exit，stdout/stderr均无终态信息，且Git/external输出目录均未创建。因此不能推断成功或失败，必须把该ID标为`UNKNOWN / NO_RECEIPT`并禁止重跑。
+- 扫描后未见`ssh.exe`客户端或到两个固定TCP22端点的`ESTABLISHED`连接；仅N607直连端点存在PID0的`TIME_WAIT`闭合套接字，bridge端点无连接记录。
+- 本次尝试没有形成删除候选或任何可执行授权，原资产移动、覆盖、删除、权限修改和任务停止均为0；DOCX和`.docx_qa*`未触碰。
+- 具体执行缺陷是长运行命令会话没有持续轮询到明确process exit。计划已增加“保留同一session并轮询到终态”的规则；该规则提交后才能以新ID重试，不能把空输出或子进程消失当作完成证据。
