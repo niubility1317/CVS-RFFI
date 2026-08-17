@@ -13,14 +13,14 @@ from docx.shared import Inches, Pt, RGBColor
 
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "docs" / "CVS天基射频指纹识别_NTN与场景设计_20260817.docx"
+OUT = ROOT / "docs" / "CVS天基射频指纹识别_NTN与核心场景_精简版_20260817.docx"
 
 BLUE = "2E74B5"
 DARK_BLUE = "1F4D78"
 NAVY = "203748"
 GOLD = "A67C00"
 GRAY = "5A6470"
-LIGHT_BLUE = "EAF1F8"
+LIGHT_BLUE = "E8EEF5"
 LIGHT_GRAY = "F4F6F9"
 MID_GRAY = "D9E1E8"
 BLACK = "111111"
@@ -126,7 +126,7 @@ def set_cell_text(cell, text: str, bold=False, color=BLACK, size=9.2,
     set_run_font(run, size=size, color=color, bold=bold)
 
 
-def add_hyperlink(paragraph, text: str, url: str, color=BLUE, underline=True):
+def add_hyperlink(paragraph, text: str, url: str, color=BLUE, underline=True, size=9):
     part = paragraph.part
     r_id = part.relate_to(
         url,
@@ -145,6 +145,12 @@ def add_hyperlink(paragraph, text: str, url: str, color=BLUE, underline=True):
     c = OxmlElement("w:color")
     c.set(qn("w:val"), color)
     r_pr.append(c)
+    sz = OxmlElement("w:sz")
+    sz.set(qn("w:val"), str(int(size * 2)))
+    r_pr.append(sz)
+    sz_cs = OxmlElement("w:szCs")
+    sz_cs.set(qn("w:val"), str(int(size * 2)))
+    r_pr.append(sz_cs)
     if underline:
         u = OxmlElement("w:u")
         u.set(qn("w:val"), "single")
@@ -238,9 +244,9 @@ def add_custom_numbering(doc: Document) -> tuple[int, int]:
         num_el.append(abstract_ref)
         numbering.append(num_el)
 
-    abstract(abstract_id, "bullet", "", 540, 280)
+    abstract(abstract_id, "bullet", "", 540, 270)
     num(bullet_num_id, abstract_id)
-    abstract(decimal_abstract_id, "decimal", "%1.", 540, 280)
+    abstract(decimal_abstract_id, "decimal", "%1.", 540, 270)
     num(decimal_num_id, decimal_abstract_id)
     return bullet_num_id, decimal_num_id
 
@@ -260,12 +266,12 @@ def apply_num(paragraph, num_id: int) -> None:
 
 
 def add_body(doc: Document, text: str, bold_prefix: str | None = None,
-             align=WD_ALIGN_PARAGRAPH.JUSTIFY, after=8) -> None:
+             align=WD_ALIGN_PARAGRAPH.LEFT, after=6) -> None:
     p = doc.add_paragraph()
     p.alignment = align
     p.paragraph_format.space_before = Pt(0)
     p.paragraph_format.space_after = Pt(after)
-    p.paragraph_format.line_spacing = 1.333
+    p.paragraph_format.line_spacing = 1.25
     if bold_prefix and text.startswith(bold_prefix):
         r = p.add_run(bold_prefix)
         set_run_font(r, bold=True)
@@ -282,7 +288,7 @@ def add_bullet(doc: Document, text: str, bullet_id: int) -> None:
     apply_num(p, bullet_id)
     p.paragraph_format.space_before = Pt(0)
     p.paragraph_format.space_after = Pt(4)
-    p.paragraph_format.line_spacing = 1.208
+    p.paragraph_format.line_spacing = 1.25
     r = p.add_run(text)
     set_run_font(r)
 
@@ -292,26 +298,20 @@ def add_numbered(doc: Document, text: str, decimal_id: int) -> None:
     apply_num(p, decimal_id)
     p.paragraph_format.space_before = Pt(0)
     p.paragraph_format.space_after = Pt(4)
-    p.paragraph_format.line_spacing = 1.208
+    p.paragraph_format.line_spacing = 1.25
     r = p.add_run(text)
     set_run_font(r)
 
 
 def add_callout(doc: Document, label: str, text: str, fill=LIGHT_BLUE) -> None:
-    table = doc.add_table(rows=1, cols=1)
-    set_table_geometry(table, [9360])
-    cell = table.cell(0, 0)
-    set_cell_shading(cell, fill)
-    p = cell.paragraphs[0]
-    p.paragraph_format.space_before = Pt(3)
-    p.paragraph_format.space_after = Pt(3)
+    p = doc.add_paragraph()
+    p.paragraph_format.space_before = Pt(2)
+    p.paragraph_format.space_after = Pt(6)
     p.paragraph_format.line_spacing = 1.25
     r = p.add_run(label + "：")
     set_run_font(r, bold=True, color=DARK_BLUE)
     r = p.add_run(text)
     set_run_font(r, color=BLACK)
-    spacer = doc.add_paragraph()
-    spacer.paragraph_format.space_after = Pt(2)
 
 
 def add_heading(doc: Document, text: str, level: int = 1, page_break=False):
@@ -330,8 +330,8 @@ def add_table(doc: Document, headers: list[str], rows: list[list[str]], widths: 
     hdr = table.rows[0]
     set_repeat_table_header(hdr)
     for i, text in enumerate(headers):
-        set_cell_shading(hdr.cells[i], DARK_BLUE)
-        set_cell_text(hdr.cells[i], text, bold=True, color=WHITE, size=9,
+        set_cell_shading(hdr.cells[i], LIGHT_BLUE)
+        set_cell_text(hdr.cells[i], text, bold=True, color=DARK_BLUE, size=9,
                       align=WD_ALIGN_PARAGRAPH.CENTER)
     for row_data in rows:
         row = table.add_row()
@@ -339,8 +339,6 @@ def add_table(doc: Document, headers: list[str], rows: list[list[str]], widths: 
         cant_split = OxmlElement("w:cantSplit")
         tr_pr.append(cant_split)
         for i, text in enumerate(row_data):
-            if len(table.rows) % 2 == 1:
-                set_cell_shading(row.cells[i], LIGHT_GRAY)
             set_cell_text(row.cells[i], text, size=font_size,
                           align=WD_ALIGN_PARAGRAPH.CENTER if i in (0, 1) else WD_ALIGN_PARAGRAPH.LEFT)
     set_table_geometry(table, widths)
@@ -366,15 +364,15 @@ def configure_styles(doc: Document) -> None:
     normal._element.rPr.rFonts.set(qn("w:hAnsi"), "Calibri")
     normal._element.rPr.rFonts.set(qn("w:eastAsia"), "Microsoft YaHei")
     normal.font.size = Pt(11)
-    normal.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+    normal.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.LEFT
     normal.paragraph_format.space_before = Pt(0)
-    normal.paragraph_format.space_after = Pt(8)
-    normal.paragraph_format.line_spacing = 1.333
+    normal.paragraph_format.space_after = Pt(6)
+    normal.paragraph_format.line_spacing = 1.25
 
     heading_tokens = {
         1: (16, BLUE, 18, 10),
-        2: (13, BLUE, 12, 6),
-        3: (12, DARK_BLUE, 8, 4),
+        2: (13, BLUE, 14, 7),
+        3: (12, DARK_BLUE, 10, 5),
     }
     for level, (size, color, before, after) in heading_tokens.items():
         style = doc.styles[f"Heading {level}"]
@@ -395,82 +393,6 @@ def build_document() -> Path:
     doc = Document()
     configure_styles(doc)
     bullet_id, decimal_id = add_custom_numbering(doc)
-    section = doc.sections[0]
-
-    header = section.header
-    hp = header.paragraphs[0]
-    hp.alignment = WD_ALIGN_PARAGRAPH.LEFT
-    r = hp.add_run("CVS-RFFI／CV-SincNet研究场景设计")
-    set_run_font(r, size=9, color=GRAY)
-    footer = section.footer
-    add_page_number(footer.paragraphs[0])
-
-    # Editorial cover
-    p = doc.add_paragraph()
-    p.paragraph_format.space_before = Pt(92)
-    p.paragraph_format.space_after = Pt(16)
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r = p.add_run("研究场景白皮书")
-    set_run_font(r, size=11, color=GOLD, bold=True)
-
-    p = doc.add_paragraph()
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p.paragraph_format.space_after = Pt(10)
-    r = p.add_run("CVS天基射频指纹识别")
-    set_run_font(r, size=29, color=NAVY, bold=True)
-
-    p = doc.add_paragraph()
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p.paragraph_format.space_after = Pt(6)
-    r = p.add_run("NTN基础、现实机制与分阶段研究场景设计")
-    set_run_font(r, size=15, color=DARK_BLUE)
-
-    p = doc.add_paragraph()
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p.paragraph_format.space_after = Pt(78)
-    r = p.add_run("地面弱标注跨接收机学习·目标星载接收域适配·授权新类注册·开放世界扩展")
-    set_run_font(r, size=10.5, color=GRAY, italic=True)
-
-    p = doc.add_paragraph()
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p.paragraph_format.space_after = Pt(4)
-    r = p.add_run("适用对象：论文读者、项目评审者与后续研发人员")
-    set_run_font(r, size=10.5, color=NAVY)
-    p = doc.add_paragraph()
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p.paragraph_format.space_after = Pt(4)
-    r = p.add_run("版本日期：2026年8月17日")
-    set_run_font(r, size=10.5, color=NAVY)
-    p = doc.add_paragraph()
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r = p.add_run("定位：研究场景与证据边界说明，不替代项目协议或实验报告")
-    set_run_font(r, size=9.5, color=GRAY)
-    doc.add_page_break()
-
-    add_heading(doc, "摘要", 1)
-    add_body(doc, "CVS研究天基射频指纹识别中的地面弱标注跨接收机域泛化、目标星载接收域少样本适配与授权新类注册，并把未知拒识、跨卫星匿名关联和可信确权作为后续开放世界扩展。项目关注的不是固定接收机上的闭集分类，而是当发射机身份、接收机前端、星地传播、时间状态和注册类别库共同变化时，如何维持可迁移、可扩展且可审计的物理RF身份空间。")
-    add_body(doc, "本报告首先说明非地面网络（Non-Terrestrial Network，NTN）的定义、组成、轨道和载荷类型，再给出受控NTN终端注册、星载接收机commissioning、TT&C上行、环境DCP、跨卫星切换、维修重注册、未知干扰调查、ADS-B/AIS辅助核验及卫星下行指纹等九类场景。所有场景均予以保留，但按照当前Phase1/Phase2主线、Phase3计划和外部旁证分层，避免把不同信号方向、标签来源和完成状态混为同一任务。")
-    add_callout(doc, "核心定位", "CVS不是从太空自动给未知设备贴标签，而是把网络认证和运营登记形成的逻辑身份信任延伸到具体物理RF发射链，并在接收域变化和身份库扩展时维持可验证的一致性。")
-
-    add_heading(doc, "目录", 1)
-    toc = [
-        "1. NTN是什么",
-        "2. NTN为什么形成新的RFFI问题",
-        "3. CVS总体研究场景与对象定义",
-        "4. Phase1、Stage2-A/B/C与Phase3关系",
-        "5. 九类现实研究场景",
-        "6. 为什么需要星上计算",
-        "7. 统一科学问题与可观测效果",
-        "8. 数据证据阶梯与声明边界",
-        "9. 结论",
-        "参考资料",
-    ]
-    for item in toc:
-        p = doc.add_paragraph()
-        p.paragraph_format.left_indent = Inches(0.2)
-        p.paragraph_format.space_after = Pt(5)
-        r = p.add_run(item)
-        set_run_font(r, size=10.5, color=NAVY)
 
     add_heading(doc, "1. NTN是什么", 1)
     add_heading(doc, "1.1 基本定义", 2)
@@ -549,7 +471,7 @@ def build_document() -> Path:
               [1300, 2250, 2580, 3230], font_size=8.5)
     add_body(doc, "Phase2正式评价必须保持query零更新：每个query独立面对全部已注册类别，不能利用query真值、真实old/new角色、类别配额或跨query全局重排。数据协议中的LEO弱信道观测是物理启发压力代理，而不是对真实在轨接收链的复制。")
 
-    add_heading(doc, "5. 九类现实研究场景", 1, page_break=True)
+    add_heading(doc, "5. 九类现实研究场景", 1)
     add_heading(doc, "5.1 新星载接收机启用后的旧终端校准", 2)
     add_body(doc, "卫星运营方部署新卫星、更换接收载荷，或将已有终端切换到另一颗卫星。终端物理RF链没有改变，变化的是接收机前端、轨道几何和信号处理链。运营方在commissioning或计划维护窗口安排已登记旧终端执行受控参考发送，目标卫星采集每类K个独立burst，Stage2-B据此校准残余接收域偏移。")
     for text in [
@@ -619,7 +541,7 @@ def build_document() -> Path:
               ],
               [2350, 1550, 2780, 2680], font_size=8.25)
 
-    add_heading(doc, "6. 为什么需要星上计算", 1, page_break=True)
+    add_heading(doc, "6. 为什么需要星上计算", 1)
     add_body(doc, "CVS不需要声称所有训练都必须在天上完成。更准确的定位是：地面完成大规模表征学习，目标卫星执行推理、质量评估和受约束的轻量少样本适配或注册。当地面馈电链路容量充足时，把support特征下传到地面计算delta后再安全上注，应作为ground-assisted baseline。")
     for text in [
         "原始I/Q体量大，不适合持续回传；",
@@ -657,7 +579,7 @@ def build_document() -> Path:
               ],
               [1700, 1500, 1500, 4660], font_size=8.8)
 
-    add_heading(doc, "8. 数据证据阶梯与声明边界", 1, page_break=True)
+    add_heading(doc, "8. 数据证据阶梯与声明边界", 1)
     add_table(doc,
               ["证据层", "用途", "能够证明", "不能证明"],
               [
@@ -671,12 +593,12 @@ def build_document() -> Path:
     add_callout(doc, "严格边界", "WiSig／ManySig是真实地面OTA数据，不是卫星数据；对已接收地面I/Q追加数字LEO变换只能称为satellite-inspired link stress proxy，不能称为真实目标卫星数据或在轨验证。")
     add_body(doc, "当前可以声明：研究弱标注跨接收机域泛化、LEO弱信道压力下旧类少样本适配、具有合法K-shot support的新类注册与旧类保持，并为Phase3定义安全交接。当前不能声明：CVS已经完成真实在轨验证、自动未知语义确权、多星协同闭环，或RFFI可以替代密码学认证、定位和现场调查。")
 
-    add_heading(doc, "9. 结论", 1, page_break=True)
+    add_heading(doc, "9. 结论", 1)
     add_body(doc, "CVS最有说服力的研究价值，不是单独证明神经网络能够区分若干发射机，而是把五项现实约束放入同一可审计问题：地面标签有限；目标星载接收机在训练阶段不可见；部署后不能访问source样本；运营网络只能产生少量可信目标域support；物理身份库还会随终端接入、维修和时间持续演化。")
     add_body(doc, "由此形成三个互不替代的科学轴：接收域轴研究如何分离发射机身份与接收机、信道和时间扰动；类别轴研究如何注册新RF链并保持已有身份；开放世界轴研究标签缺失时如何拒识、关联和确权而不污染模型。受控NTN终端注册、TT&C、DCP、跨卫星切换、维修重注册、未知干扰、ADS-B／AIS和卫星下行RFFI等场景可以同时写入项目，但必须明确每个场景的信号方向、标签来源、研究阶段和证据边界。")
     add_callout(doc, "最终表述", "CVS研究的不是“从太空给无线设备贴标签”，而是在大规模星地融合网络中，如何把网络认证与运营登记建立的逻辑身份信任延伸到具体物理RF发射链，并在跨卫星、跨接收机和长期运行条件下持续维护这一绑定。")
 
-    add_heading(doc, "参考资料", 1, page_break=True)
+    add_heading(doc, "参考资料", 2)
     references = [
         ("[1] 3GPP，Non-Terrestrial Networks (NTN) overview。", "https://www.3gpp.org/technologies/ntn-overview"),
         ("[2] 3GPP，Authentication and Key Management for Applications (AKMA) in 5G。", "https://www.3gpp.org/technologies/akma"),
@@ -694,12 +616,12 @@ def build_document() -> Path:
     for label, url in references:
         p = doc.add_paragraph()
         p.paragraph_format.space_before = Pt(0)
-        p.paragraph_format.space_after = Pt(6)
-        p.paragraph_format.line_spacing = 1.15
+        p.paragraph_format.space_after = Pt(2)
+        p.paragraph_format.line_spacing = 1.05
         add_hyperlink(p, label, url)
 
     # Core properties and field update hint
-    doc.core_properties.title = "CVS天基射频指纹识别：NTN基础、现实机制与分阶段研究场景设计"
+    doc.core_properties.title = "CVS天基射频指纹识别：NTN与核心研究场景（精简版）"
     doc.core_properties.subject = "CVS-RFFI／CV-SincNet研究场景与证据边界"
     doc.core_properties.author = ""
     doc.core_properties.last_modified_by = ""
@@ -718,7 +640,7 @@ def build_document() -> Path:
 
 
 def structural_check(path: Path) -> None:
-    assert path.exists() and path.stat().st_size > 50_000
+    assert path.exists() and path.stat().st_size > 45_000
     with ZipFile(path) as zf:
         names = set(zf.namelist())
         assert "word/document.xml" in names
@@ -732,6 +654,10 @@ def structural_check(path: Path) -> None:
             "参考资料",
         ):
             assert required in xml, required
+        for removed in ("研究场景白皮书", "适用对象：", "摘要", "目录"):
+            assert removed not in xml, removed
+        assert not any(name.startswith("word/header") for name in names)
+        assert not any(name.startswith("word/footer") for name in names)
         assert "turn" not in xml
         assert "cite" not in xml
         assert "w:tblW" in xml and "w:tblGrid" in xml and "w:tcW" in xml
