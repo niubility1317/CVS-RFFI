@@ -1,8 +1,8 @@
 # ADV3B02 MRIOR预适应CI对比预注册
 
 - Run ID：`adv3b02_mrior_preadapt_ci_20260817_v1`
-- 状态：`LOCAL_VERIFIED`；尚未同步或启动N607。
-- 提交：待填（Task4提交后补入SHA）。
+- 状态：`LOCAL_VERIFIED / N607_PREFLIGHT_VERIFIED`；尚未同步或启动N607。
+- 冻结代码提交：`eae8b8481b92d86eea4fe45f8800cae8e51ad4d4`。
 - 操作角色：Task4运行闭环实现者；N607唯一runner待主任务交接。
 
 ## 目标与假设
@@ -27,6 +27,8 @@
 | `paper_reproduction/scripts/run_adv3b02_mrior_preadapt_ci_plan.py` | 不覆盖run root、8分片、MRIOR artifact、Task3 smoke predictor/scorer、smoke授权与命令收据 | 已核验 |
 | `tests/test_run_adv3b02_mrior_preadapt_ci_plan.py` | smoke门、run-root边界、300/800/2400、8分片与两行技术停机 | 已通过 |
 
+同步目标为N607项目根`/home/szu2070436088/2510044040/CV-SincNet`中的同名相对路径；同步文件包括Task1至Task4的4个生产脚本/模块，以及本报告。source cache固定为`/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_three_da_leoweakonly_20260715_v1/phase1_caches/source/cache_set.json`，SHA256=`dea3bdb01d4f5791d7e92a01dbdcdb7f3d66b26bf134a375264b88eff8c6e4c4`。
+
 本地命令：
 
 ```text
@@ -43,7 +45,7 @@ C:\Users\lh594\.conda\envs\ssr-gpu\python.exe -m py_compile paper_reproduction/s
 ```bash
 ROOT=/home/szu2070436088/2510044040/CV-SincNet
 PLAN=/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_mrior_preadapt_ci_20260817_v1/protocol_plan/mrior_preadapt_ci_plan.json
-PY=$ROOT/.conda/envs/CVS-RFFI/bin/python
+PY=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 cd "$ROOT"
 "$PY" paper_reproduction/scripts/run_adv3b02_mrior_preadapt_ci_plan.py --plan "$PLAN" --project-root "$ROOT" --stage prepare --device cuda:0
 ```
