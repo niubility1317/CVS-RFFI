@@ -1,0 +1,200 @@
+from __future__ import annotations
+
+import hashlib
+import json
+from pathlib import Path
+
+import pytest
+
+from paper_reproduction.scripts import run_adv3b02_mrior_preadapt_ci_plan as runner
+
+
+def _plan_contract_sha256(plan: dict) -> str:
+    payload = {
+        key: value
+        for key, value in plan.items()
+        if key not in {"launch_authority", "authority_state", "plan_contract_sha256"}
+    }
+    return hashlib.sha256(
+        json.dumps(
+            payload,
+            ensure_ascii=True,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("ascii")
+    ).hexdigest()
+
+
+def _formal_plan(tmp_path: Path) -> dict:
+    receivers = ["20-1", "3-19", "7-14", "7-7", "8-8"]
+    seeds = [713101, 713102, 713103, 713104, 713105]
+    k_values = [1, 5, 10, 20]
+    new_counts = [2, 5, 10, 20]
+    scenarios = ["leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"]
+    method_map = {
+        "csil_paper_full": "mrior_sda_then_csil_paper_full",
+        "mopc_hr_paper_full": "mrior_sda_then_mopc_hr_paper_full",
+    }
+    run_root = tmp_path / "run"
+    jobs = []
+    job_by_key = {}
+    for receiver in receivers:
+        for seed in seeds:
+            for k_shot in k_values:
+                for scenario in scenarios:
+                    job_id = f"job-{receiver}-{seed}-{k_shot}-{scenario}"
+                    job = {
+                        "job_id": job_id,
+                        "receiver": receiver,
+                        "seed": seed,
+                        "k_shot": k_shot,
+                        "scenario": scenario,
+                        "artifact_root": str(run_root / "preadapt_jobs" / job_id),
+                        "input_binding_sha256": "a" * 64,
+                        "method_lock_sha256": "b" * 64,
+                    }
+                    jobs.append(job)
+                    job_by_key[(receiver, seed, k_shot, scenario)] = job_id
+    cells = []
+    for receiver in receivers:
+        for seed in seeds:
+            for k_shot in k_values:
+                for new_count in new_counts:
+                    for source_method, method in method_map.items():
+                        cell_id = (
+                            f"cell-{receiver}-{seed}-{new_count}-{method}-{k_shot}"
+                        )
+                        cells.append(
+                            {
+                                "cell_id": cell_id,
+                                "baseline_v7_cell_id": f"v7-{cell_id}",
+                                "source_v7_method": source_method,
+                                "method": method,
+                                "receiver": receiver,
+                                "seed": seed,
+                                "new_class_count": new_count,
+                                "k_shot": k_shot,
+                                "output_root": str(run_root / "cells" / cell_id),
+                                "preadapt_job_ids_by_scenario": {
+                                    scenario: job_by_key[
+                                        (receiver, seed, k_shot, scenario)
+                                    ]
+                                    for scenario in scenarios
+                                },
+                            }
+                        )
+    plan = {
+        "schema": "cvs.phase2.adv3b02_mrior_preadapt_ci_plan.v1",
+        "experiment_id": "adv3b02_mrior_preadapt_ci_20260817_v1",
+        "run_root": str(run_root),
+        "methods": list(method_map.values()),
+        "source_methods": list(method_map),
+        "receivers": receivers,
+        "seeds": seeds,
+        "k_values": k_values,
+        "new_class_counts": new_counts,
+        "scenarios": scenarios,
+        "preadapt_jobs": jobs,
+        "cells": cells,
+        "counts": {"preadapt_jobs": 300, "cells": 800, "scenario_rows": 2400},
+        "smoke_preadapt_job_ids": [job["job_id"] for job in jobs[:3]],
+        "smoke_cell_ids": [cell["cell_id"] for cell in cells[:4]],
+        "launch_authority": False,
+        "authority_state": "N607_MRIOR_PREADAPT_CI_SMOKE_REQUIRED",
+    }
+    plan["plan_contract_sha256"] = _plan_contract_sha256(plan)
+    return plan
+
+
+def test_matrix_dispatch_requires_passed_smoke_authority() -> None:
+    """A full matrix cannot run until this immutable plan is smoke-authorized."""
+
+    plan = {
+        "launch_authority": False,
+        "authority_state": "N607_MRIOR_PREADAPT_CI_SMOKE_REQUIRED",
+    }
+
+    with pytest.raises(ValueError, match="smoke authority"):
+        runner._verify_smoke_authority(plan, project_root=Path.cwd())
+
+
+def test_runner_rejects_an_unowned_existing_run_root(tmp_path: Path) -> None:
+    """A stale directory must never become an implicit destination to overwrite."""
+
+    run_root = tmp_path / "run"
+    run_root.mkdir()
+    (run_root / "foreign-artifact.txt").write_text("preserve", encoding="utf-8")
+
+    with pytest.raises(RuntimeError, match="unowned existing run root"):
+        runner._claim_run_root(
+            {"run_root": str(run_root), "plan_contract_sha256": "a" * 64}
+        )
+
+
+def test_runner_requires_exact_300_800_2400_matrix_closure(tmp_path: Path) -> None:
+    """A formal run cannot silently release a partial or duplicate matrix."""
+
+    plan = _formal_plan(tmp_path)
+    runner._validate_plan_payload(plan)
+
+    plan["counts"] = {"preadapt_jobs": 300, "cells": 800, "scenario_rows": 2399}
+    with pytest.raises(ValueError, match="2400"):
+        runner._validate_plan_payload(plan)
+
+
+def test_eight_deterministic_shards_partition_preadapt_jobs_once(tmp_path: Path) -> None:
+    """All 300 job identities are assigned once across exactly eight shards."""
+
+    jobs = _formal_plan(tmp_path)["preadapt_jobs"]
+    assigned = [
+        job["job_id"]
+        for shard_index in range(8)
+        for job in runner._select_shard(jobs, shard_index=shard_index, shard_count=8)
+    ]
+
+    assert len(assigned) == 300
+    assert len(set(assigned)) == 300
+
+
+def test_two_matching_pre_prediction_failures_stop_with_no_performance_result(
+    tmp_path: Path,
+) -> None:
+    """Only repeatable execution faults stop dispatch; metrics never enter this gate."""
+
+    plan = {"run_root": str(tmp_path / "run")}
+    first = runner._update_health_state(
+        plan,
+        row_id="cell-a",
+        exc=RuntimeError("worker fault 100"),
+        prediction_produced=False,
+    )
+    second = runner._update_health_state(
+        plan,
+        row_id="cell-b",
+        exc=RuntimeError("worker fault 200"),
+        prediction_produced=False,
+    )
+
+    assert first["stop_dispatch"] is False
+    assert second["stop_dispatch"] is True
+    assert second["result_state"] == "NO_PERFORMANCE_RESULT"
+
+
+def test_closure_rejects_a_missing_prediction_or_scene_row(tmp_path: Path) -> None:
+    """The final receipt is unavailable unless every artifact has one complete row set."""
+
+    plan = _formal_plan(tmp_path)
+    artifacts = [{"job_id": job["job_id"]} for job in plan["preadapt_jobs"]]
+    cells = [
+        {
+            "cell_id": cell["cell_id"],
+            "prediction": True,
+            "score": True,
+            "scenarios": list(plan["scenarios"]),
+        }
+        for cell in plan["cells"]
+    ]
+    cells.pop()
+
+    with pytest.raises(ValueError, match="800"):
+        runner._verify_matrix_closure(plan, artifacts=artifacts, cells=cells)
