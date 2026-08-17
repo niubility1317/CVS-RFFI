@@ -65,21 +65,65 @@ STAGE2C_FORMAL = [
 COMMON_SLICES = [
     ["共同切片", "方法", "初始A_old", "注册后A_old", "A_new", "H_old,new", "F_old"],
     ["K1/new20", "ERTB-IDR", "68.144%", "44.033%", "27.150%", "33.410%", "24.111pp"],
-    ["K1/new20", "CSIL官方流程", "42.833%", "42.833%", "0.000%", "0.000%", "0.000pp"],
-    ["K1/new20", "MoPC-HR官方流程", "45.322%", "40.722%", "1.363%", "2.603%", "4.600pp"],
+    ["K1/new20", "CSIL", "42.833%", "42.833%", "0.000%", "0.000%", "0.000pp"],
+    ["K1/new20", "MoPC-HR", "45.322%", "40.722%", "1.363%", "2.603%", "4.600pp"],
     ["K5/new20", "ERTB-IDR", "81.267%", "63.711%", "58.883%", "60.955%", "17.556pp"],
-    ["K5/new20", "CSIL官方流程", "42.833%", "0.200%", "5.557%", "0.316%", "42.633pp"],
-    ["K5/new20", "MoPC-HR官方流程", "45.322%", "13.511%", "17.433%", "14.309%", "31.811pp"],
+    ["K5/new20", "CSIL", "42.833%", "0.200%", "5.557%", "0.316%", "42.633pp"],
+    ["K5/new20", "MoPC-HR", "45.322%", "13.511%", "17.433%", "14.309%", "31.811pp"],
     ["K10/new5", "ERTB-IDR", "86.111%", "76.189%", "74.133%", "74.803%", "9.922pp"],
-    ["K10/new5", "CSIL官方流程", "42.833%", "0.689%", "20.413%", "1.264%", "42.144pp"],
-    ["K10/new5", "MoPC-HR官方流程", "45.322%", "9.322%", "49.547%", "14.947%", "36.000pp"],
+    ["K10/new5", "CSIL", "42.833%", "0.689%", "20.413%", "1.264%", "42.144pp"],
+    ["K10/new5", "MoPC-HR", "45.322%", "9.322%", "49.547%", "14.947%", "36.000pp"],
     ["K10/new10", "ERTB-IDR", "86.111%", "72.533%", "66.353%", "69.106%", "13.578pp"],
-    ["K10/new10", "CSIL官方流程", "42.833%", "0.000%", "10.460%", "0.000%", "42.833pp"],
-    ["K10/new10", "MoPC-HR官方流程", "45.322%", "9.500%", "32.900%", "13.770%", "35.822pp"],
+    ["K10/new10", "CSIL", "42.833%", "0.000%", "10.460%", "0.000%", "42.833pp"],
+    ["K10/new10", "MoPC-HR", "45.322%", "9.500%", "32.900%", "13.770%", "35.822pp"],
     ["K10/new20", "ERTB-IDR", "86.111%", "71.333%", "68.150%", "69.555%", "14.778pp"],
-    ["K10/new20", "CSIL官方流程", "42.833%", "38.222%", "1.660%", "2.979%", "4.611pp"],
-    ["K10/new20", "MoPC-HR官方流程", "45.322%", "7.611%", "25.187%", "10.695%", "37.711pp"],
+    ["K10/new20", "CSIL", "42.833%", "38.222%", "1.660%", "2.979%", "4.611pp"],
+    ["K10/new20", "MoPC-HR", "45.322%", "7.611%", "25.187%", "10.695%", "37.711pp"],
 ]
+
+
+def build_combined_stage2c_results() -> list[list[str]]:
+    rows = [["结果口径", "配置", "方法", "初始A_old", "注册后A_old", "A_new", "H_old,new", "F_old"]]
+    for k, new_count, method, a_old, a_new, h_joint, forgetting in STAGE2C_FORMAL[1:]:
+        rows.append(
+            ["正式配置", f"K{k}/new{new_count}", method, "—", a_old, a_new, h_joint, forgetting]
+        )
+    for config, method, a_old_initial, a_old, a_new, h_joint, forgetting in COMMON_SLICES[1:]:
+        rows.append(
+            ["共同LEO切片", config, method, a_old_initial, a_old, a_new, h_joint, forgetting]
+        )
+    return rows
+
+
+def parse_metric(value: str) -> float:
+    return float(value.removesuffix("pp").removesuffix("%"))
+
+
+def bold_same_configuration_winners(table, data: list[list[str]]) -> None:
+    grouped: dict[tuple[str, str], list[int]] = {}
+    for row_index, row in enumerate(data[1:], start=1):
+        grouped.setdefault((row[0], row[1]), []).append(row_index)
+
+    for row_indexes in grouped.values():
+        if len(row_indexes) < 2:
+            continue
+        scores = {
+            row_index: (
+                parse_metric(data[row_index][6]),
+                parse_metric(data[row_index][5]),
+                parse_metric(data[row_index][4]),
+                -parse_metric(data[row_index][7]),
+            )
+            for row_index in row_indexes
+        }
+        best_score = max(scores.values())
+        for row_index in row_indexes:
+            if scores[row_index] != best_score:
+                continue
+            for cell in table.rows[row_index].cells:
+                for paragraph in cell.paragraphs:
+                    for run in paragraph.runs:
+                        run.bold = True
 
 
 SCENARIO_TABLE = [
@@ -322,26 +366,29 @@ def revise(source: Path, output: Path) -> None:
         chapter6_heading = find_paragraph(doc, "6.参考文献")
 
         remove_between(formal_heading, phenomenon_heading)
-        replace_paragraph_text(formal_heading, "4.5.1正式配置矩阵与联合性能图")
+        replace_paragraph_text(formal_heading, "4.5.1统一结果矩阵与联合性能图")
         append_paragraph_before(
             doc,
             phenomenon_heading,
             (
-                "原报告按K-shot和新类规模拆成18个配置段。为保留完整数值并减少重复，本节将24个方法结果"
-                "合并到同一张配置矩阵。A_old、A_new、H_old,new和F_old沿用2.3节定义；所有query均在模型"
-                "冻结后评价。CSIL与MoPC-HR的冻结new-class规模不同，未运行的组合不补零、不插值。"
+                "原报告将正式配置结果与共同LEO切片结果分别列示。为减少重复，本节将两者合并为一张统一表，"
+                "并用“结果口径”字段保留实验边界。A_old、A_new、H_old,new和F_old沿用2.3节定义；所有query"
+                "均在模型冻结后评价。加粗行表示同一结果口径、同一K和新类数下H_old,new最高的方法；H相同时"
+                "依次比较A_new、注册后A_old和F_old。单方法配置不作最强标记，未运行的组合不补零、不插值。"
             ),
             style="Body Text",
         )
-        add_result_table_before(
+        combined_stage2c_results = build_combined_stage2c_results()
+        combined_results_table = add_result_table_before(
             doc,
             phenomenon_heading,
-            STAGE2C_FORMAL,
-            fractions=[0.06, 0.09, 0.17, 0.19, 0.16, 0.18, 0.15],
-            font_size=7.7,
-            left_columns=(2,),
-            group_column=0,
+            combined_stage2c_results,
+            fractions=[0.12, 0.12, 0.15, 0.12, 0.14, 0.11, 0.13, 0.11],
+            font_size=7.1,
+            left_columns=(0, 1, 2),
+            group_column=1,
         )
+        bold_same_configuration_winners(combined_results_table, combined_stage2c_results)
         add_picture_before(
             doc,
             phenomenon_heading,
@@ -394,20 +441,11 @@ def revise(source: Path, output: Path) -> None:
             doc,
             chapter5_heading,
             (
-                "ERTB-IDR完成125／125个任务和375／375个LEO场景。下表把原来的5张共同切片表合并为"
-                "一张15行对照表。CSIL和MoPC-HR使用seed 713101–713105，ERTB-IDR使用"
-                "713102–713106；seed集合并非严格配对，因此只作描述性比较。"
+                "ERTB-IDR完成125／125个任务和375／375个LEO场景。共同LEO切片的15行结果已经并入"
+                "4.5.1统一表。CSIL和MoPC-HR使用seed 713101–713105，ERTB-IDR使用713102–713106；"
+                "seed集合并非严格配对，因此共同切片只作描述性比较，不能与正式配置口径交叉评选最强方法。"
             ),
             style="Body Text",
-        )
-        add_result_table_before(
-            doc,
-            chapter5_heading,
-            COMMON_SLICES,
-            fractions=[0.14, 0.20, 0.14, 0.14, 0.13, 0.13, 0.12],
-            font_size=7.6,
-            left_columns=(0, 1),
-            group_column=0,
         )
         add_picture_before(
             doc,
@@ -703,7 +741,7 @@ def structural_check(path: Path) -> None:
     doc = Document(path)
     visible = "\n".join(paragraph.text for paragraph in doc.paragraphs)
     required = (
-        "4.5.1正式配置矩阵与联合性能图",
+        "4.5.1统一结果矩阵与联合性能图",
         "5.1场景说明",
         "5.2天基射频指纹识别的意义",
         "5.3NTN注册",
@@ -714,11 +752,18 @@ def structural_check(path: Path) -> None:
     for text in required:
         if text not in visible:
             raise AssertionError(text)
-    for removed in ("配置：K=5，新类数=1", "共同切片：K=1，新类数=20", "Starlink", "ICAO地址", "DCP地址"):
+    for removed in (
+        "配置：K=5，新类数=1",
+        "共同切片：K=1，新类数=20",
+        "官方流程",
+        "Starlink",
+        "ICAO地址",
+        "DCP地址",
+    ):
         if removed in visible:
             raise AssertionError(f"obsolete text remains: {removed}")
-    if len(doc.tables) != 23:
-        raise AssertionError(f"expected 23 consolidated tables, found {len(doc.tables)}")
+    if len(doc.tables) != 22:
+        raise AssertionError(f"expected 22 consolidated tables, found {len(doc.tables)}")
     if len(doc.inline_shapes) != 3:
         raise AssertionError(f"expected 3 figures, found {len(doc.inline_shapes)}")
     with ZipFile(path) as archive:
