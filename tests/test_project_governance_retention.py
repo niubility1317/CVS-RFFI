@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import ast
 import importlib
-from dataclasses import replace
+from dataclasses import fields, replace
 from pathlib import Path
 
 import pytest
@@ -54,6 +54,11 @@ def _asset(
     )
 
 
+def _with_supported_evidence_fields(facts, **changes):
+    supported_names = {field.name for field in fields(facts)}
+    return replace(facts, **{name: value for name, value in changes.items() if name in supported_names})
+
+
 def _delete_facts(retention, **changes):
     facts = retention.RetentionEvidence(
         evidence_asset_ids=("asset:LOCAL:FIXTURE:generator", "asset:LOCAL:FIXTURE:sources"),
@@ -76,7 +81,51 @@ def _delete_facts(retention, **changes):
         estimated_space_reclaim=41,
         absolute_path="E:/fixture/cache/item.bin",
     )
+    facts = _with_supported_evidence_fields(
+        facts,
+        generator_evidence_asset_ids=("asset:LOCAL:FIXTURE:generator",),
+        source_dependency_evidence_asset_ids=("asset:LOCAL:FIXTURE:sources",),
+        rebuild_command_evidence_asset_ids=("asset:LOCAL:FIXTURE:rebuild-command",),
+    )
     return replace(facts, **changes)
+
+
+def _canonical_delete_facts(retention, asset: AssetRecord, canonical_asset_id: str, digest: str, **changes):
+    facts = _delete_facts(
+        retention,
+        generator_recorded=False,
+        source_dependencies_recorded=False,
+        rebuild_command_recorded=False,
+        canonical_copy_asset_id=canonical_asset_id,
+        canonical_copy_sha256=digest,
+    )
+    canonical_changes = {
+        "canonical_copy_verified": True,
+        "canonical_copy_retention_class": RetentionClass.KEEP_IMMUTABLE,
+    }
+    canonical_changes.update(changes)
+    return _with_supported_evidence_fields(
+        facts,
+        **canonical_changes,
+    )
+
+
+def _regenerable_facts(retention, asset: AssetRecord, **changes):
+    facts = retention.RetentionEvidence(
+        generator_recorded=True,
+        source_dependencies_recorded=True,
+        rebuild_command_recorded=True,
+    )
+    proof_changes = {
+        "generator_evidence_asset_ids": ("asset:LOCAL:FIXTURE:generator",),
+        "source_dependency_evidence_asset_ids": ("asset:LOCAL:FIXTURE:sources",),
+        "rebuild_command_evidence_asset_ids": ("asset:LOCAL:FIXTURE:rebuild-command",),
+    }
+    proof_changes.update(changes)
+    return _with_supported_evidence_fields(
+        facts,
+        **proof_changes,
+    )
 
 
 @pytest.mark.parametrize(
@@ -181,7 +230,9 @@ def test_regenerable_cache_requires_all_rebuild_evidence(
 ):
     retention = _retention_module()
     asset = _asset(evidence_role="cache")
-    facts = retention.RetentionEvidence(
+    facts = _regenerable_facts(
+        retention,
+        asset,
         generator_recorded=generator_recorded,
         source_dependencies_recorded=source_dependencies_recorded,
         rebuild_command_recorded=rebuild_command_recorded,
@@ -193,6 +244,30 @@ def test_regenerable_cache_requires_all_rebuild_evidence(
     assert decision.rule_code == (
         "PROVEN_REGENERABLE_CACHE" if expected_class is RetentionClass.REGENERABLE_CACHE else "INSUFFICIENT_EVIDENCE"
     )
+
+
+@pytest.mark.parametrize(
+    ("proof_field", "invalid_ids"),
+    (
+        ("generator_evidence_asset_ids", ()),
+        ("source_dependency_evidence_asset_ids", ()),
+        ("rebuild_command_evidence_asset_ids", ()),
+        ("generator_evidence_asset_ids", ("asset:LOCAL:FIXTURE:cache/item.bin",)),
+        ("source_dependency_evidence_asset_ids", ("asset:LOCAL:FIXTURE:cache/item.bin",)),
+        ("rebuild_command_evidence_asset_ids", ("asset:LOCAL:FIXTURE:cache/item.bin",)),
+    ),
+)
+def test_regeneration_requires_nonself_traceable_evidence_for_every_proof_type(
+    proof_field: str, invalid_ids: tuple[str, ...]
+):
+    retention = _retention_module()
+    asset = _asset(evidence_role="cache")
+    facts = _regenerable_facts(retention, asset, **{proof_field: invalid_ids})
+
+    decision = retention.classify_retention(asset, facts)
+
+    assert decision.retention_class is RetentionClass.REVIEW_REQUIRED
+    assert decision.rule_code == "INSUFFICIENT_EVIDENCE"
 
 
 @pytest.mark.parametrize(
@@ -277,7 +352,11 @@ def test_fully_proven_delete_candidate_is_only_an_approval_candidate():
     assert candidate.execution_state is ExecutionState.NOT_AUTHORIZED
     assert candidate.approved_scope is None
     assert candidate.estimated_space_reclaim == 41
-    assert candidate.dependencies == ("asset:LOCAL:FIXTURE:generator", "asset:LOCAL:FIXTURE:sources")
+    assert candidate.dependencies == (
+        "asset:LOCAL:FIXTURE:generator",
+        "asset:LOCAL:FIXTURE:sources",
+        "asset:LOCAL:FIXTURE:rebuild-command",
+    )
 
 
 def test_delete_candidate_requires_explicit_negative_dependency_checks():
@@ -318,14 +397,7 @@ def test_retained_canonical_copy_with_matching_sha256_can_prove_delete_candidate
     retention = _retention_module()
     digest = "a" * 64
     asset = _asset(evidence_role="cache", hash_status=HashStatus.SHA256, sha256=digest)
-    facts = _delete_facts(
-        retention,
-        generator_recorded=False,
-        source_dependencies_recorded=False,
-        rebuild_command_recorded=False,
-        canonical_copy_asset_id="asset:LOCAL:FIXTURE:canonical/item.bin",
-        canonical_copy_sha256=digest,
-    )
+    facts = _canonical_delete_facts(retention, asset, "asset:LOCAL:FIXTURE:canonical/item.bin", digest)
 
     decision = retention.classify_retention(asset, facts)
 
@@ -336,19 +408,91 @@ def test_retained_canonical_copy_with_matching_sha256_can_prove_delete_candidate
 def test_mismatched_canonical_copy_sha256_requires_review():
     retention = _retention_module()
     asset = _asset(evidence_role="cache", hash_status=HashStatus.SHA256, sha256="a" * 64)
-    facts = _delete_facts(
-        retention,
-        generator_recorded=False,
-        source_dependencies_recorded=False,
-        rebuild_command_recorded=False,
-        canonical_copy_asset_id="asset:LOCAL:FIXTURE:canonical/item.bin",
-        canonical_copy_sha256="b" * 64,
-    )
+    facts = _canonical_delete_facts(retention, asset, "asset:LOCAL:FIXTURE:canonical/item.bin", "b" * 64)
 
     decision = retention.classify_retention(asset, facts)
 
     assert decision.retention_class is RetentionClass.REVIEW_REQUIRED
     assert decision.rule_code == "INSUFFICIENT_EVIDENCE"
+
+
+def test_self_referential_canonical_copy_requires_review():
+    retention = _retention_module()
+    digest = "a" * 64
+    asset = _asset(evidence_role="cache", hash_status=HashStatus.SHA256, sha256=digest)
+    facts = _canonical_delete_facts(retention, asset, asset.asset_id, digest)
+
+    decision = retention.classify_retention(asset, facts)
+
+    assert decision.retention_class is RetentionClass.REVIEW_REQUIRED
+    assert decision.rule_code == "INSUFFICIENT_EVIDENCE"
+
+
+@pytest.mark.parametrize(
+    "changes",
+    (
+        {"canonical_copy_verified": False},
+        {"canonical_copy_retention_class": RetentionClass.REVIEW_REQUIRED},
+        {"canonical_copy_retention_class": RetentionClass.DELETE_CANDIDATE},
+    ),
+)
+def test_canonical_copy_requires_explicit_verified_retained_status(changes: dict[str, object]):
+    retention = _retention_module()
+    digest = "a" * 64
+    asset = _asset(evidence_role="cache", hash_status=HashStatus.SHA256, sha256=digest)
+    facts = _canonical_delete_facts(retention, asset, "asset:LOCAL:FIXTURE:canonical/item.bin", digest, **changes)
+
+    decision = retention.classify_retention(asset, facts)
+
+    assert decision.retention_class is RetentionClass.REVIEW_REQUIRED
+    assert decision.rule_code == "INSUFFICIENT_EVIDENCE"
+
+
+def test_batch_rejects_candidate_whose_canonical_copy_is_another_batch_candidate():
+    retention = _retention_module()
+    digest = "a" * 64
+    dependent = _asset(
+        asset_id="asset:LOCAL:FIXTURE:cache/dependent.bin",
+        evidence_role="cache",
+        hash_status=HashStatus.SHA256,
+        sha256=digest,
+    )
+    canonical = _asset(asset_id="asset:LOCAL:FIXTURE:cache/canonical.bin", evidence_role="cache")
+    dependent_facts = _canonical_delete_facts(retention, dependent, canonical.asset_id, digest)
+    canonical_facts = _delete_facts(retention)
+
+    candidates = retention.build_deletion_candidates(
+        (dependent, canonical),
+        {dependent.asset_id: dependent_facts, canonical.asset_id: canonical_facts},
+    )
+
+    assert [candidate.candidate_id for candidate in candidates] == [f"deletion-candidate:{canonical.asset_id}"]
+
+
+def test_batch_rejects_mutually_referential_canonical_candidates():
+    retention = _retention_module()
+    digest = "a" * 64
+    first = _asset(
+        asset_id="asset:LOCAL:FIXTURE:cache/first.bin",
+        evidence_role="cache",
+        hash_status=HashStatus.SHA256,
+        sha256=digest,
+    )
+    second = _asset(
+        asset_id="asset:LOCAL:FIXTURE:cache/second.bin",
+        evidence_role="cache",
+        hash_status=HashStatus.SHA256,
+        sha256=digest,
+    )
+    first_facts = _canonical_delete_facts(retention, first, second.asset_id, digest)
+    second_facts = _canonical_delete_facts(retention, second, first.asset_id, digest)
+
+    candidates = retention.build_deletion_candidates(
+        (first, second),
+        {first.asset_id: first_facts, second.asset_id: second_facts},
+    )
+
+    assert candidates == ()
 
 
 def _dangerous_package_calls(package_root: Path) -> list[str]:
@@ -398,13 +542,35 @@ def _dangerous_package_calls(package_root: Path) -> list[str]:
                         if alias.name == "Path":
                             path_constructor_names.add(alias.asname or alias.name)
         path_instance_names: set[str] = set()
+        path_return_functions: set[str] = set()
+
+        def is_path_annotation(node: ast.AST | None) -> bool:
+            if isinstance(node, ast.Name):
+                return node.id in path_constructor_names
+            return (
+                isinstance(node, ast.Attribute)
+                and isinstance(node.value, ast.Name)
+                and node.value.id in pathlib_aliases
+                and node.attr == "Path"
+            )
+
+        for node in ast.walk(tree):
+            if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                continue
+            arguments = (*node.args.posonlyargs, *node.args.args, *node.args.kwonlyargs)
+            for argument in arguments:
+                if is_path_annotation(argument.annotation):
+                    path_instance_names.add(argument.arg)
+            for argument in (node.args.vararg, node.args.kwarg):
+                if argument is not None and is_path_annotation(argument.annotation):
+                    path_instance_names.add(argument.arg)
 
         def is_path_expression(node: ast.AST) -> bool:
             if isinstance(node, ast.Name):
                 return node.id in path_instance_names
             if isinstance(node, ast.Call):
                 if isinstance(node.func, ast.Name):
-                    return node.func.id in path_constructor_names
+                    return node.func.id in path_constructor_names or node.func.id in path_return_functions
                 if isinstance(node.func, ast.Attribute):
                     if (
                         isinstance(node.func.value, ast.Name)
@@ -422,6 +588,17 @@ def _dangerous_package_calls(package_root: Path) -> list[str]:
         changed = True
         while changed:
             changed = False
+            for node in ast.walk(tree):
+                if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) or node.name in path_return_functions:
+                    continue
+                if any(
+                    isinstance(return_node, ast.Return)
+                    and return_node.value is not None
+                    and is_path_expression(return_node.value)
+                    for return_node in ast.walk(node)
+                ):
+                    path_return_functions.add(node.name)
+                    changed = True
             for node in ast.walk(tree):
                 if isinstance(node, (ast.Assign, ast.AnnAssign)) and is_path_expression(node.value):
                     targets = node.targets if isinstance(node, ast.Assign) else (node.target,)
@@ -477,11 +654,26 @@ def test_ast_safety_scan_catches_real_path_and_process_mutation_without_false_re
         "from pathlib import Path\nimport os\npath = Path('source')\npath.replace(Path('target'))\nos.kill(1, 9)\n",
         encoding="utf-8",
     )
+    (package_root / "annotated.py").write_text(
+        "from pathlib import Path as P\n"
+        "def direct(src: P, dst: P):\n    src.replace(dst)\n"
+        "def alias(src: P, dst: P):\n    copied = src\n    copied.replace(dst)\n"
+        "def return_path(src: P):\n    return src\n"
+        "def returned(src: P, dst: P):\n    rebound = return_path(src)\n    rebound.replace(dst)\n",
+        encoding="utf-8",
+    )
+    (package_root / "emit.py").write_text(
+        "from pathlib import Path\noutput = Path('fresh')\noutput.write_text('fresh')\noutput.replace(Path('old'))\n",
+        encoding="utf-8",
+    )
 
     findings = _dangerous_package_calls(package_root)
 
     assert any(item.endswith(":Path.replace") for item in findings)
     assert any(item.endswith(":os.kill") for item in findings)
+    assert sum(item.startswith("annotated.py:") and item.endswith(":Path.replace") for item in findings) == 3
+    assert any(item.startswith("emit.py:") and item.endswith(":Path.replace") for item in findings)
+    assert not any(item.startswith("emit.py:") and ":output.write_text" in item for item in findings)
     assert not any(item.startswith("safe.py:") for item in findings)
 
 

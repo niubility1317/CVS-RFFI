@@ -59,6 +59,14 @@ _CURRENT_GIT_OWNERSHIP = frozenset(
         GitOwnership.UNTRACKED_IN_GIT_WORKTREE,
     }
 )
+_RETAINED_CANONICAL_CLASSES = frozenset(
+    {
+        RetentionClass.KEEP_IMMUTABLE,
+        RetentionClass.KEEP_ACTIVE,
+        RetentionClass.KEEP_UNTIL_PUBLISHED,
+        RetentionClass.HISTORICAL_ARCHIVE,
+    }
+)
 
 
 @dataclass(frozen=True)
@@ -84,6 +92,9 @@ class RetentionEvidence:
     generator_recorded: bool = False
     source_dependencies_recorded: bool = False
     rebuild_command_recorded: bool = False
+    generator_evidence_asset_ids: tuple[str, ...] = ()
+    source_dependency_evidence_asset_ids: tuple[str, ...] = ()
+    rebuild_command_evidence_asset_ids: tuple[str, ...] = ()
     deletion_candidate_requested: bool = False
     provenance_known: bool = False
     purpose_known: bool = False
@@ -96,6 +107,8 @@ class RetentionEvidence:
     absolute_path: str | None = None
     canonical_copy_asset_id: str | None = None
     canonical_copy_sha256: str | None = None
+    canonical_copy_verified: bool = False
+    canonical_copy_retention_class: RetentionClass | None = None
     read_error: bool = False
     parse_error: bool = False
     git_error: bool = False
@@ -110,7 +123,14 @@ def _normalized_role(asset: AssetRecord) -> str:
 
 def _evidence_ids(asset: AssetRecord, facts: RetentionEvidence) -> tuple[str, ...]:
     identifiers = [asset.asset_id]
-    identifiers.extend(item for item in facts.evidence_asset_ids if isinstance(item, str) and item)
+    for evidence_ids in (
+        facts.evidence_asset_ids,
+        facts.generator_evidence_asset_ids,
+        facts.source_dependency_evidence_asset_ids,
+        facts.rebuild_command_evidence_asset_ids,
+    ):
+        if isinstance(evidence_ids, tuple):
+            identifiers.extend(item for item in evidence_ids if isinstance(item, str) and item)
     if facts.canonical_copy_asset_id:
         identifiers.append(facts.canonical_copy_asset_id)
     return tuple(dict.fromkeys(identifiers))
@@ -161,12 +181,32 @@ def _is_verified_historical_archive(facts: RetentionEvidence) -> bool:
     )
 
 
-def _is_proven_regenerable(facts: RetentionEvidence) -> bool:
-    return facts.generator_recorded and facts.source_dependencies_recorded and facts.rebuild_command_recorded
+def _has_nonself_evidence_ids(asset: AssetRecord, evidence_asset_ids: tuple[str, ...]) -> bool:
+    return (
+        isinstance(evidence_asset_ids, tuple)
+        and bool(evidence_asset_ids)
+        and all(
+            isinstance(evidence_asset_id, str)
+            and bool(evidence_asset_id.strip())
+            and evidence_asset_id != asset.asset_id
+            for evidence_asset_id in evidence_asset_ids
+        )
+    )
+
+
+def _is_proven_regenerable(asset: AssetRecord, facts: RetentionEvidence) -> bool:
+    return (
+        facts.generator_recorded
+        and facts.source_dependencies_recorded
+        and facts.rebuild_command_recorded
+        and _has_nonself_evidence_ids(asset, facts.generator_evidence_asset_ids)
+        and _has_nonself_evidence_ids(asset, facts.source_dependency_evidence_asset_ids)
+        and _has_nonself_evidence_ids(asset, facts.rebuild_command_evidence_asset_ids)
+    )
 
 
 def _is_regenerable_cache(asset: AssetRecord, facts: RetentionEvidence) -> bool:
-    return (facts.cache_designated or _normalized_role(asset) in _CACHE_ROLES) and _is_proven_regenerable(facts)
+    return (facts.cache_designated or _normalized_role(asset) in _CACHE_ROLES) and _is_proven_regenerable(asset, facts)
 
 
 def _has_current_dependency(asset: AssetRecord, facts: RetentionEvidence) -> bool:
@@ -210,7 +250,11 @@ def _is_sha256(value: str | None) -> bool:
 
 def _has_retained_canonical_copy(asset: AssetRecord, facts: RetentionEvidence) -> bool:
     return (
-        bool(facts.canonical_copy_asset_id)
+        isinstance(facts.canonical_copy_asset_id, str)
+        and bool(facts.canonical_copy_asset_id.strip())
+        and facts.canonical_copy_asset_id != asset.asset_id
+        and facts.canonical_copy_verified
+        and facts.canonical_copy_retention_class in _RETAINED_CANONICAL_CLASSES
         and asset.hash_status is HashStatus.SHA256
         and _is_sha256(asset.sha256)
         and _is_sha256(facts.canonical_copy_sha256)
@@ -238,7 +282,7 @@ def _is_fully_proven_delete_candidate(asset: AssetRecord, facts: RetentionEviden
         and _has_explicit_clear_dependencies(asset, facts)
         and facts.provenance_known
         and facts.purpose_known
-        and (_is_proven_regenerable(facts) or _has_retained_canonical_copy(asset, facts))
+        and (_is_proven_regenerable(asset, facts) or _has_retained_canonical_copy(asset, facts))
         and _has_recoverability_record(asset, facts)
     )
 
@@ -349,7 +393,7 @@ def build_deletion_candidates(
 ) -> tuple[DeletionCandidate, ...]:
     """Build approval-only rows for fully proven candidates; never execute them."""
 
-    candidates: list[DeletionCandidate] = []
+    classified_assets: list[tuple[AssetRecord, RetentionEvidence, RetentionDecision]] = []
     seen_asset_ids: set[str] = set()
     for asset in assets:
         if asset.asset_id in seen_asset_ids:
@@ -359,9 +403,20 @@ def build_deletion_candidates(
         if facts is None:
             continue
         decision = classify_retention(asset, facts)
-        if decision.retention_class is not RetentionClass.DELETE_CANDIDATE:
+        classified_assets.append((asset, facts, decision))
+
+    batch_candidate_asset_ids = {
+        asset.asset_id
+        for asset, facts, decision in classified_assets
+        if decision.retention_class is RetentionClass.DELETE_CANDIDATE
+        and _is_fully_proven_delete_candidate(asset, facts)
+    }
+    candidates: list[DeletionCandidate] = []
+    for asset, facts, decision in classified_assets:
+        if asset.asset_id not in batch_candidate_asset_ids:
             continue
-        if not _is_fully_proven_delete_candidate(asset, facts):
+        uses_canonical_copy = _has_retained_canonical_copy(asset, facts) and not _is_proven_regenerable(asset, facts)
+        if uses_canonical_copy and facts.canonical_copy_asset_id in batch_candidate_asset_ids:
             continue
         candidates.append(
             DeletionCandidate(
