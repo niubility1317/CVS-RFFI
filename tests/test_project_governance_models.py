@@ -261,12 +261,31 @@ def test_missing_optional_carrier_surfaces_are_retained_as_not_present(tmp_path)
         "local": {
             "root_id": "TYPE10_7",
             "root": "E:/type10-7",
-            "carrier_surfaces": ["missing/optional"],
+            "carrier_surfaces": [
+                "automation_reports/CV-SincNet",
+                "code/snapshots",
+                "local_artifacts",
+                "remote_artifacts",
+                "runs",
+                "logs",
+                "outputs",
+                "server_log_backups",
+                "runner_staging",
+                "github_publish/CVS-RFFI-repo",
+            ],
         },
         "n607": {
             "root_id": "N607_CVS_SINCNET",
             "root": "/home/szu2070436088/2510044040/CV-SincNet",
-            "carrier_surfaces": [],
+            "carrier_surfaces": [
+                "automation_reports",
+                "runs",
+                "logs",
+                "releases",
+                "remote_artifacts",
+                "snapshots",
+                "code",
+            ],
         },
         "discovery": {
             "control_evidence_max_depth": 3,
@@ -282,8 +301,63 @@ def test_missing_optional_carrier_surfaces_are_retained_as_not_present(tmp_path)
     path.write_text(json.dumps(payload), encoding="utf-8")
 
     config = load_config(path, location=Location.LOCAL, probe_local_paths=False)
-    assert [surface.relative_path for surface in config.local.carrier_surfaces] == [
-        "missing/optional",
+    assert [surface.relative_path for surface in config.local.carrier_surfaces] == payload["local"][
+        "carrier_surfaces"
     ]
     statuses = {surface.relative_path: surface.status for surface in config.local.carrier_surfaces}
-    assert statuses == {"missing/optional": "NOT_PRESENT"}
+    assert set(statuses.values()) == {"NOT_PRESENT"}
+
+
+def test_uncollected_evidence_collections_are_none_not_empty_tuples():
+    ownership = GitOwnershipRecord(
+        asset_id="asset:LOCAL:TYPE10_7:runs/A",
+        ownership=GitOwnership.NON_GIT_EVIDENCE,
+    )
+    experiment = ExperimentRecord(experiment_id="RUN_A")
+    decision = RetentionDecision(
+        asset_id="asset:LOCAL:TYPE10_7:runs/A",
+        retention_class=RetentionClass.REVIEW_REQUIRED,
+        rule_code="INSUFFICIENT_EVIDENCE",
+    )
+    bundle = ScanBundle(scan_id="SCAN_1")
+
+    assert ownership.linked_worktrees is None
+    scope = ScopeResult(
+        scan_id="SCAN_1",
+        location=Location.LOCAL,
+        root_id="TYPE10_7",
+        relative_path="runs",
+        status="NOT_PRESENT",
+    )
+    assert scope.asset_ids is None
+    assert experiment.local_artifact_paths is None
+    assert experiment.n607_artifact_paths is None
+    assert experiment.expected_artifacts is None
+    assert experiment.observed_artifacts is None
+    assert experiment.closure_gaps is None
+    assert decision.evidence_asset_ids is None
+    assert bundle.assets is None
+    assert bundle.scope_results is None
+    assert bundle.git_ownership is None
+    assert bundle.experiments is None
+    assert bundle.retention_decisions is None
+    assert bundle.deletion_candidates is None
+
+
+def test_load_config_rejects_replaced_or_reordered_carrier_surfaces(tmp_path):
+    source = Path(__file__).resolve().parents[1] / "configs" / "project_governance_inventory_v1.json"
+    payload = json.loads(source.read_text(encoding="utf-8"))
+    payload["local"]["carrier_surfaces"] = ["missing/optional"]
+    path = tmp_path / "replaced-carriers.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="carrier_surfaces"):
+        load_config(path, location=Location.LOCAL, probe_local_paths=False)
+
+    payload = json.loads(source.read_text(encoding="utf-8"))
+    payload["n607"]["carrier_surfaces"] = list(reversed(payload["n607"]["carrier_surfaces"]))
+    path = tmp_path / "reordered-carriers.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="carrier_surfaces"):
+        load_config(path, location=Location.N607, probe_local_paths=False)

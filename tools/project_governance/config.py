@@ -24,6 +24,29 @@ _EXPECTED_ROOTS = {
     Location.LOCAL: "E:/type10-7",
     Location.N607: "/home/szu2070436088/2510044040/CV-SincNet",
 }
+_EXPECTED_CARRIER_SURFACES = {
+    Location.LOCAL: (
+        "automation_reports/CV-SincNet",
+        "code/snapshots",
+        "local_artifacts",
+        "remote_artifacts",
+        "runs",
+        "logs",
+        "outputs",
+        "server_log_backups",
+        "runner_staging",
+        "github_publish/CVS-RFFI-repo",
+    ),
+    Location.N607: (
+        "automation_reports",
+        "runs",
+        "logs",
+        "releases",
+        "remote_artifacts",
+        "snapshots",
+        "code",
+    ),
+}
 _LIMIT_SECTIONS = {
     "discovery": (
         "control_evidence_max_depth",
@@ -152,6 +175,10 @@ def _parse_location_config(
     carrier_values = payload.get("carrier_surfaces")
     if not isinstance(carrier_values, list):
         raise ValueError(f"{location.value} carrier_surfaces must be a list")
+    if tuple(carrier_values) != _EXPECTED_CARRIER_SURFACES[location]:
+        raise ValueError(
+            f"{location.value} carrier_surfaces must match the fixed list and order"
+        )
 
     surfaces: list[CarrierSurface] = []
     for raw_value in carrier_values:

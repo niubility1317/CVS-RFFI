@@ -104,7 +104,7 @@ class ScopeResult:
     root_id: str
     relative_path: str
     status: str
-    asset_ids: tuple[str, ...] = ()
+    asset_ids: tuple[str, ...] | None = None
     error: str | None = None
 
 
@@ -117,7 +117,7 @@ class GitOwnershipRecord:
     branch: str | None = None
     head_commit: str | None = None
     status_summary: str | None = None
-    linked_worktrees: tuple[str, ...] = ()
+    linked_worktrees: tuple[str, ...] | None = None
     error: str | None = None
 
 
@@ -129,15 +129,15 @@ class ExperimentRecord:
     phase: str | None = None
     method_or_candidate: str | None = None
     report_path: str | None = None
-    local_artifact_paths: tuple[str, ...] = ()
-    n607_artifact_paths: tuple[str, ...] = ()
+    local_artifact_paths: tuple[str, ...] | None = None
+    n607_artifact_paths: tuple[str, ...] | None = None
     git_commit: str | None = None
     process_evidence: Any | None = None
     prediction_count: int | None = None
     score_count: int | None = None
-    expected_artifacts: tuple[str, ...] = ()
-    observed_artifacts: tuple[str, ...] = ()
-    closure_gaps: tuple[str, ...] = ()
+    expected_artifacts: tuple[str, ...] | None = None
+    observed_artifacts: tuple[str, ...] | None = None
+    closure_gaps: tuple[str, ...] | None = None
 
 
 @dataclass(frozen=True)
@@ -146,7 +146,7 @@ class RetentionDecision:
     retention_class: RetentionClass
     rule_code: str
     reason: str | None = None
-    evidence_asset_ids: tuple[str, ...] = ()
+    evidence_asset_ids: tuple[str, ...] | None = None
     recommended_action: str = "REVIEW"
 
 
@@ -174,12 +174,12 @@ class ScanBundle:
     operator: str | None = None
     started_at_utc: str | None = None
     completed_at_utc: str | None = None
-    assets: tuple[AssetRecord, ...] = ()
-    scope_results: tuple[ScopeResult, ...] = ()
-    git_ownership: tuple[GitOwnershipRecord, ...] = ()
-    experiments: tuple[ExperimentRecord, ...] = ()
-    retention_decisions: tuple[RetentionDecision, ...] = ()
-    deletion_candidates: tuple[DeletionCandidate, ...] = ()
+    assets: tuple[AssetRecord, ...] | None = None
+    scope_results: tuple[ScopeResult, ...] | None = None
+    git_ownership: tuple[GitOwnershipRecord, ...] | None = None
+    experiments: tuple[ExperimentRecord, ...] | None = None
+    retention_decisions: tuple[RetentionDecision, ...] | None = None
+    deletion_candidates: tuple[DeletionCandidate, ...] | None = None
 
 
 __all__ = [
