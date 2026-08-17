@@ -212,19 +212,23 @@ def test_prediction_runtime_accepts_registration_wall_at_v2_300ms_limit() -> Non
     assert resource["registration_wall_hard_max_ns"] == 300_000_000
 
 
-def test_prediction_runtime_rejects_registration_wall_above_v2_300ms_limit() -> None:
-    """Would fail if a runtime session above 300ms could publish."""
+def test_prediction_runtime_records_registration_overrun_for_truth_last_analysis() -> None:
+    """Would fail if a resource miss still stopped the performance experiment."""
 
-    with pytest.raises(ContinuousSessionPredictionError, match="registration wall hard gate failed"):
-        _registration_resource(
-            {
-                "registration_wall_time_ns": 300_000_001,
-                "registration_incremental_peak_working_set_bytes": 4 * 1024 * 1024,
-            },
-            state=_state(("cls_old_a", "cls_old_b")),
-            support_bytes=10,
-            registered_class_count=2,
-        )
+    resource = _registration_resource(
+        {
+            "registration_wall_time_ns": 300_000_001,
+            "registration_incremental_peak_working_set_bytes": 4 * 1024 * 1024,
+        },
+        state=_state(("cls_old_a", "cls_old_b")),
+        support_bytes=10,
+        registered_class_count=2,
+    )
+
+    assert resource["registration_wall_gate_pass"] is False
+    assert resource["registration_peak_gate_pass"] is True
+    assert resource["registration_resource_gate_pass"] is False
+    assert resource["registration_hard_gate_enforced"] is False
 
 
 def test_frozen_da1_reg0_baseline_records_resources_without_applying_session_gate() -> None:

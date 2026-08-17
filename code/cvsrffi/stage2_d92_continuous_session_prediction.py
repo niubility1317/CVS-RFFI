@@ -772,15 +772,20 @@ def _registration_resource(
     peak = int(resource.get("registration_incremental_peak_working_set_bytes", -1))
     if wall < 0 or peak < 0:
         raise ContinuousSessionPredictionError("registration resource receipt drift")
-    if enforce_hard_gate and wall > _REGISTRATION_WALL_HARD_MAX_NS:
-        raise ContinuousSessionPredictionError("registration wall hard gate failed")
-    if enforce_hard_gate and peak > _REGISTRATION_PEAK_HARD_MAX_BYTES:
-        raise ContinuousSessionPredictionError("registration peak hard gate failed")
+    wall_gate_pass = wall <= _REGISTRATION_WALL_HARD_MAX_NS
+    peak_gate_pass = peak <= _REGISTRATION_PEAK_HARD_MAX_BYTES
     resource.update(
         {
             "registration_wall_hard_max_ns": _REGISTRATION_WALL_HARD_MAX_NS,
             "registration_incremental_peak_hard_max_bytes": _REGISTRATION_PEAK_HARD_MAX_BYTES,
-            "registration_hard_gate_enforced": bool(enforce_hard_gate),
+            "registration_wall_gate_pass": bool(wall_gate_pass),
+            "registration_peak_gate_pass": bool(peak_gate_pass),
+            "registration_resource_gate_pass": bool(wall_gate_pass and peak_gate_pass),
+            "registration_resource_gate_applicable": bool(enforce_hard_gate),
+            "registration_hard_gate_enforced": False,
+            "registration_gate_evaluation_phase": (
+                "truth_last_analysis" if enforce_hard_gate else "not_applicable"
+            ),
             "registration_resource_scope": (
                 "cumulative_new_class_registration"
                 if enforce_hard_gate
