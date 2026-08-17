@@ -1,8 +1,31 @@
 # Project Instructions
 
+## Exclusive Minimal Experiment Workflow
+
+- This section is the highest-priority workflow rule for all CVS-RFFI/CV-SincNet research, implementation, N607 release, monitoring, scoring, and reporting. It supersedes extra reviews, gates, seals, signatures, hash layers, and approval systems in older goals, reports, specs, briefs, checklists, and conversations.
+- The only allowed blocking gates are this exhaustive whitelist:
+  1. Current protocol/data/query legality plus matching `p2_min_v1`, `VALIDATED_ONCE`, `capsule_id`, and `split_id`.
+  2. One Git commit for the actual code and configuration.
+  3. Focused protocol-negative tests and one real-checkpoint no-query smoke.
+  4. One independent P0/P1 review limited to defects that would directly make the next real run wrong, unauthorized, destructive, unlaunchable, or unable to produce legal predictions.
+  5. One minimal preregistration report containing candidate/matrix, commit, command, environment/CWD, paths, GPU, stop rule, and expected artifacts.
+  6. One immutable run/output root, one N607 preflight, one release archive with one local/remote SHA comparison, and one remote compile check.
+  7. One post-launch PID/CWD/cmdline/GPU/log-growth check plus the preregistered systemic-technical-failure stop rule.
+  8. Independent truth-side scoring only after prediction completion, followed by same-row analysis.
+- Everything outside the whitelist is `NONBLOCKING`. Record an attempted extra blocker as `REJECTED_EXTRA_GATE` and continue; do not implement, test, review, repair, or wait for it.
+- Forbidden blockers include: exact design/report/config/source-plan SHA; per-file/member/row/cell/support-token/receipt hashes; outer/detached/package/cell seals; signature or authority chains; receipt-of-receipt, closure hashes, parity receipts, access ledgers, and extra manifest chains; smoke authorization artifacts; same-process malicious-code, TOCTOU, same-FD, same-inode, environment/PATH/Bash spoof defenses; report-only review; seal/release permission; P2 documentation completeness; helper permission systems; future-stage machinery; and general publication platforms.
+- Git commit is the code/config identity. Do not require code, config, launcher, design, or report SHA. Transfer validates one release archive once; do not rehash members, Git blobs, extracted files, or retrieved reports.
+- Reuse `VALIDATED_ONCE` data. Method, adapter, hyperparameter, epoch, method lock, checkpoint, resource, report, refactor, or stage changes do not trigger hash, allowlist, provenance, ledger, pre-open, or data revalidation; experiments check only the minimal data handles.
+- Each candidate gets at most one independent review. A direct P0/P1 fix gets at most one targeted re-review of that issue; no full re-review, unchanged-code review, report-only review, post-commit duplicate review, seal review, or runner review. P2 never blocks.
+- Smoke is the launcher's first step and continues immediately on PASS; there is no smoke token or receipt. G0/G1/G2 require only the machinery consumed by that stage.
+- Start with a single-seed Target5/Target25 or smaller same-row falsification matrix. Run multi-seed/full125 only after the candidate passes preregistered scientific thresholds; full matrix and publication completeness are never early research gates.
+- Method summary, matrix, and stop rule live in the minimal report. No separate design approval, design SHA, feasibility gate, reentry card, authority, or signature is required.
+- One run ID has one launch owner, which may be the primary Agent or a designated runner. Extra Agents, supervisors, reviewers, and evidence auditors are optional execution choices and must not delay release.
+- Keep administrator authorization, destructive-action controls, data/output preservation, unrelated-process protection, query isolation, truth-blind scoring, immutable output roots, and exact run-owned stop checks; these prevent real damage or invalid evidence and are not removable formality.
+
 - Before CVS-RFFI/CV-SincNet research-scenario, data-protocol, Stage2-A/B/C interpretation, experiment or report work, read `docs/PROJECT_PROTOCOL.md`. It is the public source of truth only for scientific scenario, data protocol, receiver/TX sets, Phase1/Phase2 boundary, Stage2 permissions and claim semantics. Active targets, method routes, matrices and resource budgets belong in a separate goal document.
 - Project-related changes must use a Git-backed workflow. Before editing, run `git status -sb`; after editing, inspect `git diff`/`git status -sb`, run the narrowest useful verification, and commit the intended change unless the user explicitly says not to commit.
-- Project-relevant Markdown must stay synchronized with code/config/script/protocol changes. Update this file for workflow, Git, collaboration, or safety rules; update `docs/PROJECT_PROTOCOL.md` before changing CVS scientific/data-protocol/Stage2/metric-claim semantics; update README/docs when user-facing usage, reproduction scope, or publication boundaries change.
+- Update this file only for workflow/safety changes and update `docs/PROJECT_PROTOCOL.md` before changing scientific/data-protocol/Stage2/claim semantics. Ordinary code/config/script changes do not require README/docs/report updates before experiment; user-facing documentation may be completed after evidence returns and never becomes a release gate.
 - For tool-using or long-running tasks, send concise, evidence-based progress commentary before the first tool call, at meaningful phase changes, after reconnect or context-compaction recovery, whenever a blocker appears, and at least once every 60 seconds while work is active. Report observable actions, findings, and next steps; do not expose private chain-of-thought or dump raw logs. Commentary may be omitted only for short answer-only turns with no tools.
 - Do not commit datasets, trained weights, checkpoints, private runtime details, logs, generated experiment outputs, or local machine state. Keep `.gitignore` aligned with this boundary.
 - Do not claim deployment success from clean-view or diagnostic-only evidence. Any reported result must be tied to a concrete run, split, K-shot setting, satellite/LEO view, and same-row metric context.
