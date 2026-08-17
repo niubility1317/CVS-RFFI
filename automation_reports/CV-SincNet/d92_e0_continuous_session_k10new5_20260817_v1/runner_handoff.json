@@ -1,0 +1,72 @@
+{
+  "schema": "cvs.phase2.d92_e0_continuous_session.runner_handoff.v1",
+  "run_id": "d92_e0_continuous_session_k10new5_20260817_v1",
+  "runner": "Luna/max",
+  "sole_launch_owner": true,
+  "final_status": "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT",
+  "performance_result": false,
+  "fresh_run_retry": false,
+  "commits": {
+    "runtime_science_integration": "ad483e5d",
+    "release": "1c3412f7",
+    "report_command": "7cf13cf7"
+  },
+  "remote": {
+    "project_root": "/home/szu2070436088/2510044040/CV-SincNet",
+    "run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0_continuous_session_k10new5_20260817_v1",
+    "log_root": "/home/szu2070436088/2510044040/CV-SincNet/logs/d92_e0_continuous_session_k10new5_20260817_v1",
+    "python": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "host": "dell-DSS8440",
+    "user": "szu2070436088",
+    "ssh_route": "N607 direct"
+  },
+  "preflight": {
+    "direct_ssh": "VERIFIED",
+    "project_root_visible": "VERIFIED",
+    "gpu_indices": [0, 1, 2, 3, 4],
+    "gpu_startup_occupancy": "0% utilization, 1MiB used per GPU",
+    "same_run_processes": [],
+    "run_root_before_landing": "ABSENT",
+    "log_root_before_landing": "ABSENT",
+    "local_retrieval_before_landing": "ABSENT"
+  },
+  "landing": {
+    "archive_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0_continuous_session_k10new5_20260817_v1/release/d92_e0_continuous_session_v1.tar.gz",
+    "archive_size_bytes": 171172,
+    "archive_sha256": "1d8a91e5c7a1332c44289915de6d082ce22743cf155f13f461eb6230aa1da4b8",
+    "launch_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0_continuous_session_k10new5_20260817_v1/launch.sh",
+    "launch_size_bytes": 2294,
+    "launch_sha256": "cf6af9203533d26a143e2b3713c49971948b827ea180efe8c61fdcd9789142f7",
+    "remote_bash_n": "VERIFIED"
+  },
+  "launch": {
+    "detached_command": "cd /home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0_continuous_session_k10new5_20260817_v1 && nohup bash ./launch.sh >./launch.out 2>./launch.err </dev/null &",
+    "submission": "VERIFIED",
+    "prepare": "COMPLETED",
+    "prepare_deltas": "COMPLETED",
+    "smoke": "FAILED_BEFORE_PREDICTION"
+  },
+  "stop_trigger": "ContinuousSessionPredictionError: registration wall hard gate failed",
+  "counts": {
+    "formal_outer_launched": 0,
+    "formal_outer_completed": 0,
+    "formal_prediction_manifests": 0,
+    "formal_job_receipts": 0,
+    "formal_state_artifact_sets": 0,
+    "partial_output_files": 116,
+    "partial_output_bytes": 2154890,
+    "partial_log_files": 3,
+    "partial_log_bytes": 3177,
+    "runtime_snapshot_files": 58,
+    "runtime_snapshot_bytes": 1475530,
+    "truth_sidecars_retrieved": 0,
+    "analyzer_runs": 0
+  },
+  "cleanup": {
+    "run_owned_pids_after_stop": [],
+    "gpu_compute_apps_after_stop": [],
+    "ssh_cleanup": "VERIFIED",
+    "remote_artifacts_preserved": true
+  },
+  "local_retrieval": "E:/type10-7/local_artifacts/d92_e0_continuous_session_k10new5_20260817_v1/"
+}
