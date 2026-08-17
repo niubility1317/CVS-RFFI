@@ -203,12 +203,29 @@ def test_mapper_can_classify_assets_from_an_indexed_directory_without_recursive_
     assert not any(args[:2] == ("ls-files", "--others") for args in calls)
 
 
+def test_does_not_promote_an_ancestor_repo_without_seed_or_indexed_git_directory(git_fixture):
+    repo, _ = git_fixture
+    nested = repo / "ancestor-only"
+    nested.mkdir()
+    asset = _asset(repo, "ancestor-only/not-a-repository.txt")
+
+    mapper = GitOwnershipMapper(
+        repository_seeds=(),
+        root_paths={"FIXTURE": repo},
+    )
+    ownership = mapper.map((asset,))
+
+    assert ownership["ancestor-only/not-a-repository.txt"].ownership is GitOwnership.NON_GIT_EVIDENCE
+    assert mapper.repositories == ()
+
+
 def test_linked_worktree_is_expanded_and_queried_from_its_own_root(git_fixture):
     repo, _ = git_fixture
     linked = repo.parent / "linked-worktree"
     _git(repo, "worktree", "add", "--detach", str(linked))
     (linked / "linked-draft.txt").write_text("linked\n", encoding="utf-8")
-    asset = _asset(linked, "linked-draft.txt", root_id="LINKED")
+    linked_asset = _asset(linked, "linked-draft.txt", root_id="LINKED")
+    main_asset = _asset(repo, "tracked.txt", root_id="MAIN")
     calls: list[tuple[Path, tuple[str, ...]]] = []
 
     def recording_runner(cwd, args, *, input=b""):
@@ -216,15 +233,26 @@ def test_linked_worktree_is_expanded_and_queried_from_its_own_root(git_fixture):
         return subprocess_git_runner(cwd, args, input=input)
 
     ownership = map_git_ownership(
-        (asset,),
+        (main_asset, linked_asset),
         repository_seeds=(repo,),
-        root_paths={"LINKED": linked},
+        root_paths={"MAIN": repo, "LINKED": linked},
         runner=recording_runner,
     )
-    record = ownership["linked-draft.txt"]
+    main_record = ownership["tracked.txt"]
+    linked_record = ownership["linked-draft.txt"]
+    linked_head = _git(linked, "rev-parse", "HEAD").stdout.decode("ascii").strip()
 
-    assert record.ownership is GitOwnership.UNTRACKED_IN_GIT_WORKTREE
-    assert str(linked.resolve()) in (record.linked_worktrees or ())
+    assert main_record.repository_root == str(repo.resolve())
+    assert main_record.branch == "main"
+    assert linked_record.ownership is GitOwnership.UNTRACKED_IN_GIT_WORKTREE
+    assert linked_record.repository_root == str(linked.resolve())
+    assert linked_record.common_git_dir == str((repo / ".git").resolve())
+    assert linked_record.branch == "DETACHED"
+    assert linked_record.head_commit == linked_head
+    assert linked_record.status_summary is not None
+    assert "linked-draft.txt" in linked_record.status_summary
+    assert "? draft.txt" not in linked_record.status_summary
+    assert str(linked.resolve()) in (linked_record.linked_worktrees or ())
     assert any(
         cwd == linked.resolve() and args[:2] == ("ls-files", "--stage")
         for cwd, args in calls

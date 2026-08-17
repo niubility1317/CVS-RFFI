@@ -16,7 +16,7 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any, Callable
 
-from .models import AssetRecord, GitOwnership, GitOwnershipRecord, Location
+from .models import AssetKind, AssetRecord, GitOwnership, GitOwnershipRecord, Location
 from .paths import normalize_relative_path
 
 
@@ -97,21 +97,6 @@ def _under(path: Path, root: Path) -> bool:
         return True
     except ValueError:
         return _path_key(path).startswith(_path_key(root) + os.sep) or _path_key(path) == _path_key(root)
-
-
-def _iter_ancestor_candidates(seed: str | os.PathLike[str]) -> Iterable[Path]:
-    candidate = Path(seed)
-    if candidate.name == ".git":
-        candidate = candidate.parent
-    elif candidate.exists() and candidate.is_file():
-        candidate = candidate.parent
-
-    while True:
-        yield candidate
-        parent = candidate.parent
-        if parent == candidate:
-            break
-        candidate = parent
 
 
 def _is_git_marker(path: Path) -> bool:
@@ -272,42 +257,53 @@ class GitOwnershipMapper:
         return Path(self.repository_seeds[0]).joinpath(*relative.split("/"))
 
     def _candidate_paths(self, assets: Iterable[AssetRecord]) -> tuple[Path, ...]:
-        seeds: list[Path] = [Path(seed) for seed in self.repository_seeds]
-        seeds.extend(
-            path
-            for asset in assets
-            if (path := self._asset_path(asset)) is not None
-        )
-
         candidates: dict[str, Path] = {}
-        for seed in seeds:
-            for candidate in _iter_ancestor_candidates(seed):
-                if _is_git_marker(candidate):
-                    resolved = _resolved_path(candidate)
-                    candidates.setdefault(_path_key(resolved), resolved)
+
+        for seed in self.repository_seeds:
+            configured = Path(seed)
+            if configured.name == ".git" or (configured.exists() and configured.is_file()):
+                configured = configured.parent
+            resolved = self._resolve_configured_seed(configured)
+            if resolved is not None:
+                candidates.setdefault(_path_key(resolved), resolved)
+
+        for asset in assets:
+            if asset.location is not Location.LOCAL or asset.asset_kind is not AssetKind.DIRECTORY:
+                continue
+            path = self._asset_path(asset)
+            if path is None or not _is_git_marker(path):
+                continue
+            resolved = _resolved_path(path)
+            candidates.setdefault(_path_key(resolved), resolved)
         return tuple(candidates.values())
 
-    def _repository_record(self, candidate: Path) -> RepositoryRecord:
-        errors: list[str] = []
+    def _resolve_configured_seed(self, seed: Path) -> Path | None:
+        result = self._run(seed, ("rev-parse", "--show-toplevel"))
+        if result.returncode == 0 and _clean_text(result.stdout):
+            return _resolved_path(_clean_text(result.stdout))
+        if _is_git_marker(seed):
+            return _resolved_path(seed)
+        return None
 
-        root_result = self._run(candidate, ("rev-parse", "--show-toplevel"))
-        if root_result.returncode == 0 and _clean_text(root_result.stdout):
-            repository_root = _resolved_path(_clean_text(root_result.stdout))
-        else:
-            errors.append(_error_text(("rev-parse", "--show-toplevel"), root_result))
-            repository_root = _resolved_path(candidate)
+    def _worktree_record(
+        self,
+        worktree_root: Path,
+        linked_worktrees: tuple[str, ...],
+        inherited_errors: Iterable[str] = (),
+    ) -> RepositoryRecord:
+        errors = list(inherited_errors)
 
-        common_result = self._run(repository_root, ("rev-parse", "--git-common-dir"))
+        common_result = self._run(worktree_root, ("rev-parse", "--git-common-dir"))
         common_git_dir: str | None = None
         if common_result.returncode == 0 and _clean_text(common_result.stdout):
             common = Path(_clean_text(common_result.stdout))
             if not common.is_absolute():
-                common = repository_root / common
+                common = worktree_root / common
             common_git_dir = str(_resolved_path(common))
         else:
             errors.append(_error_text(("rev-parse", "--git-common-dir"), common_result))
 
-        branch_result = self._run(repository_root, ("symbolic-ref", "--quiet", "--short", "HEAD"))
+        branch_result = self._run(worktree_root, ("symbolic-ref", "--quiet", "--short", "HEAD"))
         branch: str | None
         if branch_result.returncode == 0:
             branch = _clean_text(branch_result.stdout) or None
@@ -319,7 +315,7 @@ class GitOwnershipMapper:
                 _error_text(("symbolic-ref", "--quiet", "--short", "HEAD"), branch_result)
             )
 
-        head_result = self._run(repository_root, ("rev-parse", "HEAD"))
+        head_result = self._run(worktree_root, ("rev-parse", "HEAD"))
         head_commit: str | None
         if head_result.returncode == 0:
             head_commit = _clean_text(head_result.stdout) or None
@@ -328,7 +324,7 @@ class GitOwnershipMapper:
             errors.append(_error_text(("rev-parse", "HEAD"), head_result))
 
         status_args = ("status", "--porcelain=v2", "-z")
-        status_result = self._run(repository_root, status_args)
+        status_result = self._run(worktree_root, status_args)
         status_summary: str | None
         if status_result.returncode == 0:
             status_summary = _decode(status_result.stdout)
@@ -336,18 +332,8 @@ class GitOwnershipMapper:
             status_summary = None
             errors.append(_error_text(status_args, status_result))
 
-        worktree_args = ("worktree", "list", "--porcelain")
-        worktree_result = self._run(repository_root, worktree_args)
-        linked_worktrees: tuple[str, ...] | None
-        if worktree_result.returncode == 0:
-            parsed = _parse_worktree_paths(worktree_result.stdout)
-            linked_worktrees = parsed or (str(repository_root),)
-        else:
-            linked_worktrees = None
-            errors.append(_error_text(worktree_args, worktree_result))
-
         return RepositoryRecord(
-            repository_root=str(repository_root),
+            repository_root=str(worktree_root),
             common_git_dir=common_git_dir,
             branch=branch,
             head_commit=head_commit,
@@ -356,22 +342,56 @@ class GitOwnershipMapper:
             error="; ".join(errors) if errors else None,
         )
 
+    def _repository_record(self, candidate: Path) -> tuple[RepositoryRecord, ...]:
+        errors: list[str] = []
+
+        root_result = self._run(candidate, ("rev-parse", "--show-toplevel"))
+        if root_result.returncode == 0 and _clean_text(root_result.stdout):
+            repository_root = _resolved_path(_clean_text(root_result.stdout))
+        else:
+            errors.append(_error_text(("rev-parse", "--show-toplevel"), root_result))
+            repository_root = _resolved_path(candidate)
+
+        worktree_args = ("worktree", "list", "--porcelain")
+        worktree_result = self._run(repository_root, worktree_args)
+        if worktree_result.returncode == 0:
+            parsed = _parse_worktree_paths(worktree_result.stdout)
+            linked_worktrees = parsed or (str(repository_root),)
+        else:
+            linked_worktrees = (str(repository_root),)
+            errors.append(_error_text(worktree_args, worktree_result))
+
+        return tuple(
+            self._worktree_record(
+                _resolved_path(worktree),
+                linked_worktrees,
+                errors,
+            )
+            for worktree in linked_worktrees
+        )
+
     def discover_repositories(
         self,
         indexed_assets: Iterable[AssetRecord] | None = None,
     ) -> tuple[RepositoryRecord, ...]:
         assets = self.indexed_assets if indexed_assets is None else tuple(indexed_assets)
         candidates = self._candidate_paths(assets)
-        self.repositories = tuple(self._repository_record(candidate) for candidate in candidates)
+        discovered: dict[str, RepositoryRecord] = {}
+        for candidate in candidates:
+            for record in self._repository_record(candidate):
+                key = _path_key(record.repository_root)
+                existing = discovered.get(key)
+                if existing is None or (existing.error and not record.error):
+                    discovered[key] = record
+        self.repositories = tuple(discovered.values())
         return self.repositories
 
     def _repository_for_path(self, path: Path) -> tuple[RepositoryRecord, Path] | None:
         matches: list[tuple[RepositoryRecord, Path]] = []
         for repository in self.repositories:
-            for worktree in repository.linked_worktrees or (repository.repository_root,):
-                worktree_root = _resolved_path(worktree)
-                if _under(path, worktree_root):
-                    matches.append((repository, worktree_root))
+            worktree_root = _resolved_path(repository.repository_root)
+            if _under(path, worktree_root):
+                matches.append((repository, worktree_root))
         if not matches:
             return None
         return max(matches, key=lambda item: len(str(item[1])))
@@ -477,21 +497,20 @@ class GitOwnershipMapper:
 
         mapped: list[GitOwnershipRecord] = list(direct)
         for repository in self.repositories:
-            for worktree in repository.linked_worktrees or (repository.repository_root,):
-                worktree_root = _resolved_path(worktree)
-                entries = grouped.get((repository.repository_root, str(worktree_root)), [])
-                for start in range(0, len(entries), self.batch_size):
-                    batch = entries[start : start + self.batch_size]
-                    batch_assets = tuple(item[0] for item in batch)
-                    batch_paths = tuple(item[1] for item in batch)
-                    mapped.extend(
-                        self._map_repo_batch(
-                            repository,
-                            batch_assets,
-                            batch_paths,
-                            worktree_root,
-                        )
+            worktree_root = _resolved_path(repository.repository_root)
+            entries = grouped.get((repository.repository_root, str(worktree_root)), [])
+            for start in range(0, len(entries), self.batch_size):
+                batch = entries[start : start + self.batch_size]
+                batch_assets = tuple(item[0] for item in batch)
+                batch_paths = tuple(item[1] for item in batch)
+                mapped.extend(
+                    self._map_repo_batch(
+                        repository,
+                        batch_assets,
+                        batch_paths,
+                        worktree_root,
                     )
+                )
 
         for record in mapped:
             records_by_id[record.asset_id] = record
