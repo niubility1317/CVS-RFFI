@@ -89,6 +89,18 @@ def test_preadapt_source_loader_accepts_only_the_locked_legacy_v1_contract(
         runner._load_preadapt_source_cache(manifest_path)
 
 
+def test_total_capacity_is_derived_from_the_frozen_registry_when_v7_omits_it() -> None:
+    package = {"old_class_labels": [f"old-{index}" for index in range(6)]}
+    plan = {"new_class_counts": [2, 5, 10, 20]}
+
+    assert runner._required_total_capacity({}, plan, package) == 26
+
+    with pytest.raises(ValueError, match="total capacity drift"):
+        runner._required_total_capacity(
+            {"required_total_capacity": 31}, plan, package
+        )
+
+
 def _plan_contract_sha256(plan: dict) -> str:
     payload = {
         key: value

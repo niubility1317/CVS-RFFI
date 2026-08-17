@@ -554,6 +554,34 @@ def _load_preadapt_source_cache(path: Path):
     raise ValueError(f"unsupported source cache-set schema: {schema!r}")
 
 
+def _required_total_capacity(
+    source: Mapping[str, Any],
+    plan: Mapping[str, Any],
+    package: Mapping[str, Any],
+) -> int:
+    """Recover the v7 capacity from its frozen class registry when omitted."""
+
+    old_labels = package.get("old_class_labels")
+    new_counts = plan.get("new_class_counts")
+    if (
+        not isinstance(old_labels, list)
+        or not old_labels
+        or not isinstance(new_counts, list)
+        or not new_counts
+        or any(isinstance(value, bool) or not isinstance(value, int) for value in new_counts)
+    ):
+        raise ValueError("source v7 class registry is incomplete")
+    inferred = len(old_labels) + max(new_counts)
+    declared = source.get("required_total_capacity", inferred)
+    if (
+        isinstance(declared, bool)
+        or not isinstance(declared, int)
+        or declared != inferred
+    ):
+        raise ValueError("source v7 total capacity drift")
+    return inferred
+
+
 def _read_existing_preadapt_receipt(job: Mapping[str, Any]) -> dict[str, Any]:
     from paper_reproduction.cvs_aligned.adv3b02_mrior_preadapt_ci import (
         load_verified_mrior_preadapt_artifact,
@@ -740,9 +768,7 @@ def _run_smoke_cell(
     old_labels = package.get("old_class_labels")
     if not isinstance(old_labels, list) or len(old_labels) != 6:
         raise ValueError("MRIOR CI cell old-class labels drift")
-    required_total_capacity = source.get("required_total_capacity")
-    if isinstance(required_total_capacity, bool) or not isinstance(required_total_capacity, int):
-        raise ValueError("source v7 required total capacity is missing")
+    required_total_capacity = _required_total_capacity(source, plan, package)
     build_receipt = _read_json(
         Path(str(package["build_receipt"])).resolve(strict=True),
         context="source v7 package build receipt",
