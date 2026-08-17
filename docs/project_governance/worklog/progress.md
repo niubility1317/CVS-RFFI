@@ -25,3 +25,21 @@
 - 创建`docs/superpowers/plans/2026-08-17-project-asset-governance.md`，覆盖本地/N607只读采集、Git归属、实验索引、保留分类、待审批清单、输出体积分流、断连验证和两阶段Git提交。
 - 完成实施计划自检：11个任务连续、文件职责一致、UTF-8读取通过、未保留未决实现选择，`git diff --check`通过。
 - 当前仍未实现扫描器、生成正式清单、连接N607、移动、覆盖或删除任何资产。
+
+## 2026-08-18
+
+- 用户选择子代理驱动实施；主代理按冻结计划集成Tasks1–8，并由独立代理分别执行规格和代码质量复审。
+- 完成本地资产采集、Git归属、实验索引、保留分类、N607只读采集协议、不可覆盖报告器和顶层CLI；默认路径不请求N607，`--print-plan`不创建输出、不连接网络。
+- 主实施提交为`5eb740bea4cdca86912bc784459f6437351f2d2a`（`feat: add read-only project asset governance inventory`）。
+- 关闭远端错误退出码、实施Git提交选择、原始N607错误证据、N607尝试级收据、结果状态闭合和有界stderr等复审问题；修复提交为`92b0ac5ead32200a68433f49096db4234c0f675b`（`fix: close governance CLI evidence gaps`）。
+- 关闭N607根scope可被伪造为`NOT_PRESENT`且仍成功的问题；提交为`b20dee2a79bf3b500c08448726f6c02367d2d4d8`（`fix: reject non-verified N607 roots`）。
+- 关闭本地配置根缺失被误报成功，并在CLI同时增加LOCAL/N607根唯一`VERIFIED`防御；提交为`dae859c8d85f0d159f0f461d653b81f0d969459e`（`fix: fail closed when local root is missing`）。
+- Task8规格复审达到`P0=0、P1=0、P2=0`；代码质量复审达到`P0=0、P1=0、P2=1`，剩余总输出缓冲问题已记录为正式扫描后的非阻断优化项。
+- Task9静态搜索已逐项审查：未发现破坏性执行路径、管理员N607路由、持久SSH连接或不安全主机密钥选项。
+- 修复后由主代理在`ssr-gpu`环境串行复验8个根边界用例和8个治理/N607测试文件：定点8项通过，完整256项通过；随后执行`compileall`，退出码为0。
+- 对`2a9cfe96..92b0ac5e`累计差异执行`git diff --check`，退出码为0。该范围含并行DOCX提交，不能据此把DOCX归入治理实现；治理代码采用逐文件提交和提交级复审。
+- Task9独立审查发现并关闭正式执行计划中的P1路径缺陷：手工预检改用具有相邻host-local配置的根权威脚本，未复制或修改SSH配置、身份文件和密钥。
+- 记录一个非阻断P2：收据只显式记录扫描时Git HEAD，未单列主实施与修复提交；本次文档提交会在该HEAD的Git历史中绑定上述4个完整hash，后续可增加受控`implementation_commits`字段。
+- Task9最终独立总审查为`APPROVE，P0=0、P1=0、P2=3、Minor=0`；除显式commit列表外，另两个P2是本地外部命令总输出可能整体缓冲和最终收据非原子发布，均转入扫描后优化清单。
+- 当前没有执行真实`powershell.exe`、`netstat.exe`、SSH、SCP、N607预检或网络连接，也没有移动、覆盖、删除、停止任务或远端写入。
+- 现有DOCX修改、DOCX删除状态和全部`.docx_qa*`目录保持未暂存、未触碰；独立总审查门禁已通过，下一步是预览后执行一次正式只读盘点。

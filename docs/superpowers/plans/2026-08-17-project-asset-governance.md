@@ -711,11 +711,11 @@ Expected: preview lists exactly the approved roots/surfaces, says N607 will be c
 Invoke only the existing reviewed script:
 
 ```bash
-GOV_PREFLIGHT_WIN="$(cygpath -w "$PWD/tools/n607_ssh_preflight.ps1")"
+GOV_PREFLIGHT_WIN="$(cygpath -w "/e/type10-7/tools/n607_ssh_preflight.ps1")"
 powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "$GOV_PREFLIGHT_WIN"
 ```
 
-Require verified direct SSH config/identity, server time, project-root visibility and GPU visibility. If identity/key/target is ambiguous, stop. If only direct TCP/SSH path is unavailable while identity/config remains valid, allow the collector's approved bridge fallback. Do not prompt for passwords.
+Use the root-authoritative host-local preflight because its reviewed`n607_ssh_config`is adjacent; do not copy that config or any key into the isolated worktree. The production collector pins the same script/config pair. Require verified direct SSH config/identity, server time, project-root visibility and GPU visibility. If identity/key/target is ambiguous, stop. If only direct TCP/SSH path is unavailable while identity/config remains valid, allow the collector's approved bridge fallback. Do not prompt for passwords.
 
 - [ ] **Step 3: Execute one immutable formal scan**
 

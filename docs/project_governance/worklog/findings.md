@@ -35,3 +35,18 @@
 - 顶层安全规则现要求所有Windows终端任务使用Git Bash且硬性禁止`pwsh`。实施计划据此使用精确Git Bash外壳；仅现有N607预检脚本可由Git Bash窄调用`powershell.exe`，不新增PowerShell实现。
 - 现有`tools/n607_training_inventory.py`已经提供远端进程识别的可复用分类逻辑，但正式资产采集仍需独立的路径深度、NDJSON、审批和断连证据边界。
 - 工程测试同时使用`pytest`与`unittest`，根`pytest.ini`已把`.`和`code`加入导入路径；新治理工具适合放在`tools/project_governance`并由根`tests`做纯标准库fixture测试。
+
+## 2026-08-18实施与验收发现
+
+- Tasks1–8已实现稳定资产身份、受控本地采集、精确Git归属、证据驱动实验索引、保留分级、N607有界NDJSON采集、不可覆盖报告输出和默认不接触N607的CLI编排。
+- 正式收据会记录实施工作树的精确Git提交、N607结果与路由、预检状态、每次尝试的child/proxy PID与退出证据、断连状态、残留端点、活跃训练观察和原始`SCAN_ERROR`证据；任一未知远端结果优先返回退出码3，已证实扫描错误返回2。
+- 所有删除候选只能处于`AWAITING_USER_APPROVAL`和`NOT_AUTHORIZED`；实现不提供删除、移动、覆盖、权限修改、停止进程、Git暂存、Git提交或Git推送执行路径。
+- 静态安全搜索中的危险词命中均来自负向测试、显式安全说明、字符串标准化、不可变数据替换或内存缓冲裁剪；管理员账号、`ControlMaster`、`ControlPersist`和不安全主机密钥选项无命中。
+- Task9修复后完整治理/N607聚焦套件共256项测试通过，`compileall`通过，累计实施差异的`git diff --check`通过。
+- Task8规格复审结论为`P0=0、P1=0、P2=0`；代码质量复审为`P0=0、P1=0、P2=1`。残余P2是受信预检stdout总量及本地`netstat`断连探针总输出仍可能整体缓冲；单行读取和stderr尾部已有界。该项不增加远端写入、删除、自动终止或路由歧义，记录到正式扫描后的工程优化清单。
+- 主实施提交为`5eb740bea4cdca86912bc784459f6437351f2d2a`，证据闭合修复为`92b0ac5ead32200a68433f49096db4234c0f675b`，N607根验证修复为`b20dee2a79bf3b500c08448726f6c02367d2d4d8`，本地根与CLI防御修复为`dae859c8d85f0d159f0f461d653b81f0d969459e`；正式扫描收据HEAD必须在Git历史中绑定这些版本事实。
+- 并行存在的DOCX修改、DOCX删除状态和`.docx_qa*`目录不是本任务资产；实施提交和修复提交均未暂存、恢复、删除或改写它们。
+- Task9独立审查发现Task10手工预检原先指向隔离工作树脚本，但该位置没有相邻`n607_ssh_config`，照计划会在本地安全失败。计划已改为根权威`E:/type10-7/tools/n607_ssh_preflight.ps1`；生产采集器本来就固定到同一脚本及相邻配置，不复制配置或密钥。
+- 当前收据schema只显式写入扫描时`implementation.git_head`，未单列主实施和修复提交。后续文档提交会把上述完整hash固化在`progress.md`，正式收据的HEAD会在Git历史中绑定该文档；显式`implementation_commits`数组作为非阻断P2列入后续工程优化。
+- Task9总审查发现并关闭两项根范围P1：本地配置根缺失现在产生`SCAN_ERROR`和退出码2；N607 NDJSON根scope必须唯一且为`VERIFIED`。可选承载面缺失仍保留`NOT_PRESENT`，不会被误判为错误。
+- Task9最终独立结论为`APPROVE，P0=0、P1=0、P2=3、Minor=0`。3个P2是预检stdout与`netstat`总输出仍可能整体缓冲、收据未显式保存实施commit列表、最后写入的收据不是原子发布；它们不增加删除、移动、覆盖、远端写入、自动终止或路由歧义。
