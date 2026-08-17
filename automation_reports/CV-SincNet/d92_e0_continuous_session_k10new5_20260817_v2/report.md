@@ -64,3 +64,13 @@ cd /home/szu2070436088/2510044040/CV-SincNet/runs/d92_e0_continuous_session_k10n
 - 不因中间准确率、H、BA、floor或遗忘值停止。
 - `fresh_run_retry=false`；本run不可恢复续跑。
 - 若资源receipt超过冻结门，保留技术artifact并由主代理判定，不读取性能作解释。
+
+## Runner失败态封口（2026-08-17）
+
+- 终态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+- 触发：GPU0 smoke触发预注册的registration peak hard gate失败；formal dispatch未启动。
+- 接管runner未执行新的detached launch、未重试、未修改方法、矩阵、配置或远端文件。
+- 封口核验：远端无本run绑定PID，GPU compute进程为空；run root保留178个文件，log root保留3个文件。
+- 完整性：远端和本地取回件的runtime archive SHA-256均为`854fb1f6b4f0139230ef858c2b8ce53433df176b4805922cbefc2898214c4903`；launch SHA-256均为`284422bc2224958af3bcfe7e42588208ab6a09de9ba86725bcf3b678a17f951e`；两端`bash -n launch.sh`通过。
+- 取回：`E:/type10-7/local_artifacts/d92_e0_continuous_session_k10new5_20260817_v2`中的run/log相对路径和文件字节数与远端逐项一致。
+- 边界：未取回或读取truth sidecar，未运行analyzer，未读取或解释accuracy、H、BA、floor、forgetting或任何性能值。
