@@ -162,15 +162,16 @@ def find_paragraph(doc: Document, prefix: str):
 
 
 def normalize_domain_tokens(paragraph) -> None:
-    replace_math_token(paragraph, "s", "src")
-    replace_math_token(paragraph, "t", "tgt")
+    replace_math_sequence(paragraph, ("s", "s"), "src,src")
+    replace_math_sequence(paragraph, ("t", "t"), "tgt,tgt")
+    replace_math_sequence(paragraph, ("s", "t"), "src,tgt")
     replace_math_token(paragraph, "ss", "src,src")
     replace_math_token(paragraph, "tt", "tgt,tgt")
     replace_math_token(paragraph, "st", "src,tgt")
     replace_math_token(paragraph, "source", "src")
     replace_math_token(paragraph, "target-support", "tgt-support")
-    replace_math_sequence(paragraph, tuple("source"), "src")
-    replace_math_sequence(paragraph, tuple("target-support"), "tgt-support")
+    replace_math_token(paragraph, "s", "src")
+    replace_math_token(paragraph, "t", "tgt")
 
 
 def normalize(source: Path, output: Path) -> None:
@@ -200,8 +201,10 @@ def normalize(source: Path, output: Path) -> None:
     # Domain labels use src/tgt; t is reserved for the incremental session index.
     replace_math_token(doc.paragraphs[2], "S", "src", expected=2)
     replace_math_token(doc.paragraphs[2], "T", "tgt", expected=2)
-    for index in (16, 17, 19, 20, 21, 81, 84, 85, 86, 88, 93, 94, 97, 98, 99, 100, 102):
+    for index in (16, 17, 19, 20, 21, 81, 84, 85, 86, 88, 93, 94, 97, 98, 99, 102):
         normalize_domain_tokens(doc.paragraphs[index])
+    replace_math_sequence(doc.paragraphs[100], tuple("source"), "src", expected=1)
+    replace_math_sequence(doc.paragraphs[100], tuple("target"), "tgt", expected=1)
 
     # The pointwise loss keeps the standard ell; the parameter-group index is j.
 

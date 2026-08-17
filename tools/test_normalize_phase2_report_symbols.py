@@ -111,6 +111,16 @@ class NormalizePhase2ReportSymbolsTests(unittest.TestCase):
         self.assertIn("src", mri_math)
         self.assertIn("tgt", mri_math)
         self.assertIn("ε₀", math_text(self.output_doc.paragraphs[82]))
+        domain_math = "\n".join(
+            math_text(self.output_doc.paragraphs[index])
+            for index in (81, 84, 85, 86, 88, 93, 94, 97, 98, 99, 100, 102)
+        )
+        self.assertNotIn("srcource", domain_math)
+        self.assertNotIn("tgtarget", domain_math)
+        self.assertNotIn("srcupport", domain_math)
+        self.assertIn("Ksrc,src", math_text(self.output_doc.paragraphs[98]))
+        self.assertIn("Ktgt,tgt", math_text(self.output_doc.paragraphs[98]))
+        self.assertIn("Ksrc,tgt", math_text(self.output_doc.paragraphs[98]))
 
         mopc_math = "\n".join(
             math_text(self.output_doc.paragraphs[index])
