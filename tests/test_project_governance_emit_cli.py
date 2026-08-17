@@ -155,7 +155,7 @@ def _metadata() -> dict[str, object]:
         "collector_versions": {"local": "1", "n607": "1"},
         "n607_requested": True,
         "n607_route": "DIRECT",
-        "n607_preflight": "VERIFIED",
+        "n607_preflight": "DIRECT_READY",
         "n607_disconnect": "VERIFIED",
         "n607_scan_error_count": 0,
     }
@@ -237,7 +237,9 @@ def test_emitter_reuses_one_timestamp_when_bundle_times_are_missing(tmp_path):
         metadata=_metadata(),
     ).emit()
     full = json.loads(result.git_output_dir.joinpath("asset_inventory_full.json").read_text(encoding="utf-8"))
-    receipt = json.loads(result.git_output_dir.joinpath("scan_receipt.json").read_text(encoding="utf-8"))
+    receipt = json.loads(
+        result.git_output_dir.joinpath("scan_receipt.json").read_text(encoding="utf-8")
+    )
 
     assert full["started_at_utc"] == full["completed_at_utc"]
     assert receipt["started_at_utc"] == receipt["completed_at_utc"] == receipt["emitted_at_utc"]
@@ -490,6 +492,7 @@ def test_emitter_requires_complete_terminal_receipt_metadata(tmp_path):
         ("n607_disconnect", " VERIFIED "),
         ("n607_route", "arbitrary-route"),
         ("n607_preflight", "not_provided"),
+        ("n607_preflight", "VERIFIED"),
         ("n607_disconnect", "CLEAN"),
     ),
 )
@@ -500,6 +503,69 @@ def test_emitter_rejects_uncontrolled_requested_n607_states_before_writing(
     metadata[field] = value
 
     with pytest.raises(ValueError, match="N607|metadata"):
+        ReportEmitter(
+            _bundle(),
+            output_root=tmp_path / "git",
+            external_output_root=tmp_path / "external",
+            metadata=metadata,
+        )
+
+    assert not (tmp_path / "git").exists()
+
+
+@pytest.mark.parametrize(
+    ("route", "preflight", "disconnect"),
+    (
+        ("DIRECT", "DIRECT_READY", "VERIFIED"),
+        ("LAB_BRIDGE", "DIRECT_PATH_UNAVAILABLE", "VERIFIED"),
+        ("NO_ROUTE", "FAILED", "VERIFIED"),
+        ("NO_ROUTE", "UNKNOWN", "UNKNOWN"),
+    ),
+)
+def test_emitter_accepts_collector_n607_state_vocabulary(
+    tmp_path, route, preflight, disconnect
+):
+    metadata = _metadata()
+    metadata.update(
+        {
+            "n607_route": route,
+            "n607_preflight": preflight,
+            "n607_disconnect": disconnect,
+        }
+    )
+
+    result = ReportEmitter(
+        _bundle(),
+        output_root=tmp_path / "git",
+        external_output_root=tmp_path / "external",
+        metadata=metadata,
+    ).emit()
+    receipt = json.loads(
+        result.git_output_dir.joinpath("scan_receipt.json").read_text(encoding="utf-8")
+    )
+
+    assert receipt["n607_evidence"] == {
+        "requested": True,
+        "route": route,
+        "preflight": preflight,
+        "disconnect": disconnect,
+    }
+
+
+@pytest.mark.parametrize(
+    ("route", "preflight"),
+    (
+        ("DIRECT", "DIRECT_PATH_UNAVAILABLE"),
+        ("LAB_BRIDGE", "DIRECT_READY"),
+    ),
+)
+def test_emitter_rejects_inconsistent_requested_n607_route_and_preflight(
+    tmp_path, route, preflight
+):
+    metadata = _metadata()
+    metadata.update({"n607_route": route, "n607_preflight": preflight})
+
+    with pytest.raises(ValueError, match="N607"):
         ReportEmitter(
             _bundle(),
             output_root=tmp_path / "git",
@@ -545,7 +611,7 @@ def test_emitter_receipt_keeps_remote_evidence_and_zero_execution_fields(tmp_pat
     assert receipt["n607_evidence"] == {
         "requested": True,
         "route": "DIRECT",
-        "preflight": "VERIFIED",
+        "preflight": "DIRECT_READY",
         "disconnect": "VERIFIED",
     }
     assert receipt["deletion_rows"][0]["execution_state"] == "NOT_AUTHORIZED"

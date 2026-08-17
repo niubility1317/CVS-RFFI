@@ -52,7 +52,14 @@ _ARTIFACT_ORDER = (
 )
 _RECEIPT_NAME = "scan_receipt.json"
 _REQUESTED_N607_ROUTES = frozenset({"DIRECT", "LAB_BRIDGE", "NO_ROUTE"})
-_OBSERVED_N607_STATES = frozenset({"VERIFIED", "FAILED", "UNKNOWN"})
+_REQUESTED_N607_PREFLIGHT_STATES = frozenset(
+    {"DIRECT_READY", "DIRECT_PATH_UNAVAILABLE", "FAILED", "UNKNOWN"}
+)
+_REQUESTED_N607_DISCONNECT_STATES = frozenset({"VERIFIED", "UNKNOWN"})
+_ROUTE_PREFLIGHT_STATE = {
+    "DIRECT": "DIRECT_READY",
+    "LAB_BRIDGE": "DIRECT_PATH_UNAVAILABLE",
+}
 _REQUIRED_METADATA = frozenset(
     {
         "local_root",
@@ -254,8 +261,14 @@ def _validate_metadata(metadata: Mapping[str, Any] | None) -> dict[str, Any]:
         route, preflight, disconnect = n607_states
         if route not in _REQUESTED_N607_ROUTES:
             raise ValueError("requested N607 receipt metadata has an uncontrolled route state")
-        if preflight not in _OBSERVED_N607_STATES or disconnect not in _OBSERVED_N607_STATES:
+        if (
+            preflight not in _REQUESTED_N607_PREFLIGHT_STATES
+            or disconnect not in _REQUESTED_N607_DISCONNECT_STATES
+        ):
             raise ValueError("requested N607 receipt metadata must carry controlled observed states")
+        expected_preflight = _ROUTE_PREFLIGHT_STATE.get(route)
+        if expected_preflight is not None and preflight != expected_preflight:
+            raise ValueError("requested N607 route and preflight states are inconsistent")
     elif n607_states != ("NOT_REQUESTED", "NOT_REQUESTED", "NOT_REQUESTED") or error_count != 0:
         raise ValueError("unrequested N607 receipt metadata must use explicit NOT_REQUESTED states")
     return values
