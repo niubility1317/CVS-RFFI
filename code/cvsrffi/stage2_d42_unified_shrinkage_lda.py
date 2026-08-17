@@ -36,6 +36,9 @@ FEATURE_DIM = 288
 BLOCK_SLICES = (slice(0, 160), slice(160, 256), slice(256, 288))
 BLOCK_DIMS = (160, 96, 32)
 ALLOWED_NEW_CLASS_COUNTS = (2, 5, 10, 20)
+# This is intentionally state-only.  The original D42 fit entry continues to
+# use ALLOWED_NEW_CLASS_COUNTS and therefore cannot fit a 1/3/4-class package.
+CONTINUOUS_SESSION_INTERMEDIATE_NEW_CLASS_COUNTS = (1, 3, 4)
 METRIC_EPOCHS = 20
 SCHEMA_INT8 = "cvs.phase2.d42.unified_shrinkage_lda_residual_int8.v1"
 SCHEMA_FP32 = "cvs.phase2.d42.unified_shrinkage_lda_fp32_ablation.v1"
@@ -440,20 +443,29 @@ class D42UnifiedShrinkageLDAState:
         new_count = count - int(self.old_class_count)
         is_int8 = self.schema == SCHEMA_INT8
         is_fp32 = self.schema == SCHEMA_FP32
+        allowed_state_new_counts = (
+            (0,)
+            + ALLOWED_NEW_CLASS_COUNTS
+            + CONTINUOUS_SESSION_INTERMEDIATE_NEW_CLASS_COUNTS
+        )
+        allowed_covariance_policy = self.covariance_policy in {
+            "sklearn_lsqr_auto_shrinkage_equal_prior",
+            "unit_covariance_equal_prior_nearest_centroid",
+        } or (
+            new_count == 1
+            and self.covariance_policy
+            == "standard_scaler_ledoit_wolf_singleton"
+        )
         if (
             not (is_int8 or is_fp32)
             or not 2 <= int(self.old_class_count) <= 20
-            or new_count not in (0,) + ALLOWED_NEW_CLASS_COUNTS
+            or new_count not in allowed_state_new_counts
             or len(set(self.classes)) != count
             or any(not value for value in self.classes)
             or self.log_diag_fp32.dtype != np.float32
             or self.log_diag_fp32.shape != (FEATURE_DIM,)
             or not np.isfinite(self.log_diag_fp32).all()
-            or self.covariance_policy
-            not in {
-                "sklearn_lsqr_auto_shrinkage_equal_prior",
-                "unit_covariance_equal_prior_nearest_centroid",
-            }
+            or not allowed_covariance_policy
         ):
             raise D42UnifiedShrinkageLDAError("D42 state drift")
         if is_int8:

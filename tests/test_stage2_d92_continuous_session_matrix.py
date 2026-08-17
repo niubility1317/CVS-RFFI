@@ -26,6 +26,12 @@ def test_frozen_matrix_constants_and_schedules() -> None:
     assert matrix.K_SHOT == 10
     assert matrix.OLD_CLASS_COUNT == 6
     assert matrix.NEW_CLASS_COUNT == 5
+    assert matrix.RESOURCE_GATE == {
+        "registration_wall_target_ns": 150_000_000,
+        "registration_incremental_peak_hard_max_bytes": 4 * 1024 * 1024,
+        "query_state_bytes_equal": True,
+        "query_macs_equal": True,
+    }
     assert matrix.SCHEDULES == {
         "batch_5": (5,),
         "singleton_forward": (1, 1, 1, 1, 1),
@@ -52,6 +58,7 @@ def test_config_is_a_truth_free_method_lock_with_four_sealed_layouts() -> None:
         "job_count": 5,
         "session_fit_count": 210,
     }
+    assert config["resource_gate"] == matrix.RESOURCE_GATE
     assert config["query_contract"] == {
         "decision": "per_sample_all_registered_classes",
         "truth_access": False,

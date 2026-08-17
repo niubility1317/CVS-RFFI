@@ -57,7 +57,7 @@
   },
   "resource_gate": {
     "registration_wall_target_ns": 150000000,
-    "registration_incremental_peak_hard_max_bytes": 2097152,
+    "registration_incremental_peak_hard_max_bytes": 4194304,
     "query_state_bytes_equal": true,
     "query_macs_equal": true
   },

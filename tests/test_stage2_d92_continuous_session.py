@@ -87,6 +87,16 @@ def _advance(module, ledger, new_count: int):
     return module.advance_session(ledger, packets)
 
 
+def _d42_unit_support(
+    prefix: str, class_count: int, *, offset: int
+) -> tuple[np.ndarray, np.ndarray, tuple[str, ...]]:
+    classes = tuple(f"{prefix}_{index}" for index in range(class_count))
+    rows = np.zeros((class_count, d42.FEATURE_DIM), dtype=np.float32)
+    for index in range(class_count):
+        rows[index, offset + index] = np.float32(1.0)
+    return rows, np.asarray(classes), classes
+
+
 def test_continuous_session_public_module_is_available() -> None:
     """This fails before Task1 production code exists."""
 
@@ -126,6 +136,9 @@ def test_s1_singleton_uses_standard_scaler_ledoit_wolf_bridge() -> None:
     assert result.audit["d92_continuous_bridge_policy"] == (
         "standard_scaler_ledoit_wolf_singleton"
     )
+    assert result.statistics.covariance_audit[
+        "d92_group_local_shrinkage_estimation_count"
+    ] == 2
     assert result.audit["d92_continuous_original_e0_equivalent"] is False
 
 
@@ -148,6 +161,87 @@ def test_s2_to_s4_use_the_d92_group_formula_prefix(new_count: int) -> None:
     )
     assert result.audit["d92_continuous_bridge_active"] is False
     assert result.audit["d92_continuous_original_e0_equivalent"] is False
+
+
+@pytest.mark.parametrize("new_count", [1, 3, 4])
+def test_intermediate_continuous_state_converts_to_original_d42_score_and_predict(
+    new_count: int,
+) -> None:
+    module = _module()
+    result = _advance(module, _ledger(module), new_count)
+    state = module.to_d42_unified_state(result.state)
+    raw_rows = np.concatenate(
+        [
+            record.rows
+            for record in result.ledger.anchor.old_records
+            + result.ledger.arrived_records
+        ],
+        axis=0,
+    ).astype(np.float32)
+
+    scores = d42.score_d42_unified_shrinkage_lda(state, raw_rows)
+    decoded = d42.decode_d42_coefficients(state)
+    transformed = d42._transform(raw_rows, state.log_diag_fp32)
+    expected_scores = np.stack(
+        [
+            np.asarray(
+                row @ decoded.T + state.intercept_fp16.astype(np.float32),
+                dtype=np.float32,
+            )
+            for row in transformed
+        ]
+    )
+    np.testing.assert_array_equal(scores, expected_scores)
+    np.testing.assert_array_equal(
+        d42.predict_d42_unified_shrinkage_lda(state, raw_rows),
+        np.asarray(state.classes)[np.argmax(expected_scores, axis=1)],
+    )
+    assert state.classes == result.state.classes
+    assert state.old_class_count == result.state.old_class_count
+    np.testing.assert_array_equal(state.log_diag_fp32, result.state.log_diag_fp32)
+    for name in (
+        "coef1_qint8",
+        "coef2_qint8",
+        "scale1_fp16",
+        "scale2_fp16",
+        "intercept_fp16",
+    ):
+        assert getattr(state, name).tobytes() == getattr(result.state, name).tobytes()
+    assert state.covariance_policy == result.state.covariance_policy
+
+
+@pytest.mark.parametrize("new_count", [1, 3, 4])
+def test_original_d42_fit_keeps_intermediate_new_counts_rejected(
+    monkeypatch: pytest.MonkeyPatch, new_count: int
+) -> None:
+    old_rows, old_labels, old_classes = _d42_unit_support("old", 2, offset=0)
+    new_rows, new_labels, new_classes = _d42_unit_support(
+        "new", new_count, offset=16
+    )
+
+    def frozen_old_metric(*args, **kwargs):
+        del args, kwargs
+        return (
+            np.zeros(d42.FEATURE_DIM, dtype=np.float32),
+            tuple(
+                {"optimizer_step": step}
+                for step in range(1, d42.METRIC_EPOCHS + 1)
+            ),
+            {"estimated_adaptation_macs": 0, "peak_cuda_memory_bytes": 0},
+        )
+
+    monkeypatch.setattr(d42, "_fit_old_only_b3_metric", frozen_old_metric)
+    assert d42.ALLOWED_NEW_CLASS_COUNTS == (2, 5, 10, 20)
+    with pytest.raises(d42.D42UnifiedShrinkageLDAError, match="class/K closure"):
+        d42.fit_d42_unified_shrinkage_lda(
+            old_rows,
+            old_labels,
+            old_classes,
+            new_rows,
+            new_labels,
+            new_classes,
+            seed=19,
+        )
 
 
 def test_s5_calls_original_d92_builder_with_byte_exact_statistics_and_affine() -> None:
@@ -315,6 +409,8 @@ def test_each_session_emits_one_full_solve_one_d42_codec_and_zero_query_access(
     assert result.audit["d92_continuous_query_state_sha256"] == (
         result.state.persistent_state_sha256
     )
+    assert result.audit["d92_continuous_peak_budget_bytes"] == 4 * 1024 * 1024
+    assert result.audit["d92_continuous_wall_budget_ms"] == 150
     assert result.ledger.anchor.da_anchor_id == "frozen-da-anchor-v1"
     assert result.ledger.next_session == 2
     assert set(inspect.signature(module.advance_session).parameters).isdisjoint(

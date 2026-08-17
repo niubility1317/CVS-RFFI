@@ -384,6 +384,40 @@ class ContinuousD42State:
             digest.update(np.ascontiguousarray(value).tobytes(order="C"))
         return digest.hexdigest()
 
+    def to_d42_unified_state(self) -> d42.D42UnifiedShrinkageLDAState:
+        """Return the original D42 scorer state without a second codec pass.
+
+        The D42 constructor is the only validation boundary for this adapter.
+        It receives the exact published residual-int8 arrays and frozen E0
+        log-diagonal, while the continuous-only ledger metadata stays outside
+        the query state.
+        """
+
+        return d42.D42UnifiedShrinkageLDAState(
+            schema=d42.SCHEMA_INT8,
+            classes=self.classes,
+            old_class_count=self.old_class_count,
+            log_diag_fp32=self.log_diag_fp32,
+            coef1_qint8=self.coef1_qint8,
+            coef2_qint8=self.coef2_qint8,
+            scale1_fp16=self.scale1_fp16,
+            scale2_fp16=self.scale2_fp16,
+            intercept_fp16=self.intercept_fp16,
+            coef_fp32=np.zeros((0, FEATURE_DIM), dtype=np.float32),
+            intercept_fp32=np.zeros(0, dtype=np.float32),
+            covariance_policy=self.covariance_policy,
+        )
+
+
+def to_d42_unified_state(
+    state: ContinuousD42State,
+) -> d42.D42UnifiedShrinkageLDAState:
+    """Explicit one-way adapter to the original D42 F0 scorer state."""
+
+    if not isinstance(state, ContinuousD42State):
+        raise D92ContinuousSessionError("continuous D42 state conversion drift")
+    return state.to_d42_unified_state()
+
 
 @dataclass(frozen=True)
 class ContinuousSessionResult:
@@ -591,9 +625,9 @@ def _build_prefix_statistics(
         "d92_balanced_eigenvalue_min": float(np.min(eigenvalues)),
         "d92_balanced_eigenvalue_max": float(np.max(eigenvalues)),
         "d92_shared_covariance_estimation_count": 1,
-        "d92_group_local_shrinkage_estimation_count": (
-            2 if new_class_count > 1 else 1
-        ),
+        # S1 still has two group-local covariance estimators: old sklearn
+        # auto-shrinkage plus the singleton StandardScaler/Ledoit-Wolf bridge.
+        "d92_group_local_shrinkage_estimation_count": 2,
         "d92_continuous_singleton_bridge": new_class_count == 1,
     }
     return ContinuousSessionStatistics(
@@ -762,7 +796,7 @@ def advance_session(
             "d92_continuous_resource_receipt_status": "NOT_MEASURED_CORE",
             "d92_continuous_incremental_peak_bytes": None,
             "d92_continuous_registration_wall_ms": None,
-            "d92_continuous_peak_budget_bytes": 2 * 1024 * 1024,
+            "d92_continuous_peak_budget_bytes": 4 * 1024 * 1024,
             "d92_continuous_wall_budget_ms": 150,
             "future_support_open_sentinel": 0,
             "past_token_duplicate_count": 0,
@@ -803,4 +837,5 @@ __all__ = [
     "SessionLedger",
     "SupportPacket",
     "advance_session",
+    "to_d42_unified_state",
 ]
