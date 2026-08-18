@@ -370,6 +370,15 @@ class GitOwnershipMapper:
             for worktree in linked_worktrees
         )
 
+    def _common_git_key(self, candidate: Path) -> str:
+        result = self._run(candidate, ("rev-parse", "--git-common-dir"))
+        if result.returncode != 0 or not _clean_text(result.stdout):
+            return _path_key(candidate)
+        common = Path(_clean_text(result.stdout))
+        if not common.is_absolute():
+            common = candidate / common
+        return _path_key(_resolved_path(common))
+
     def discover_repositories(
         self,
         indexed_assets: Iterable[AssetRecord] | None = None,
@@ -377,7 +386,12 @@ class GitOwnershipMapper:
         assets = self.indexed_assets if indexed_assets is None else tuple(indexed_assets)
         candidates = self._candidate_paths(assets)
         discovered: dict[str, RepositoryRecord] = {}
+        expanded_common_dirs: set[str] = set()
         for candidate in candidates:
+            common_key = self._common_git_key(candidate)
+            if common_key in expanded_common_dirs:
+                continue
+            expanded_common_dirs.add(common_key)
             for record in self._repository_record(candidate):
                 key = _path_key(record.repository_root)
                 existing = discovered.get(key)

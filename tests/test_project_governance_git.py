@@ -257,3 +257,34 @@ def test_linked_worktree_is_expanded_and_queried_from_its_own_root(git_fixture):
         cwd == linked.resolve() and args[:2] == ("ls-files", "--stage")
         for cwd, args in calls
     )
+
+
+def test_linked_candidates_expand_their_common_repository_only_once(git_fixture):
+    repo, _ = git_fixture
+    linked = repo.parent / "linked-candidate"
+    _git(repo, "worktree", "add", "--detach", str(linked))
+    main_asset = _asset(repo, "tracked.txt", root_id="MAIN")
+    linked_asset = _asset(linked, "tracked.txt", root_id="LINKED")
+    calls: list[tuple[Path, tuple[str, ...]]] = []
+
+    def recording_runner(cwd, args, *, input=b""):
+        calls.append((Path(cwd).resolve(), tuple(args)))
+        return subprocess_git_runner(cwd, args, input=input)
+
+    ownership = map_git_ownership(
+        (main_asset, linked_asset),
+        repository_seeds=(repo, linked),
+        root_paths={"MAIN": repo, "LINKED": linked},
+        runner=recording_runner,
+    )
+
+    assert ownership[main_asset.asset_id].repository_root == str(repo.resolve())
+    assert ownership[linked_asset.asset_id].repository_root == str(linked.resolve())
+    worktree_list_calls = [args for _, args in calls if args == ("worktree", "list", "--porcelain")]
+    status_roots = [
+        cwd
+        for cwd, args in calls
+        if args == ("status", "--porcelain=v2", "-z")
+    ]
+    assert len(worktree_list_calls) == 1
+    assert status_roots == [repo.resolve(), linked.resolve()]
