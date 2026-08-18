@@ -12,6 +12,8 @@ RUN_ID="${RUN_ID:-phase1_adv3b02_riei_drift_same_protocol_20260818_v1}"
 RUN_ROOT="${RUN_ROOT:-${ROOT}/runs/${RUN_ID}}"
 LOG_ROOT="${LOG_ROOT:-${ROOT}/logs/${RUN_ID}}"
 SEED="${SEED:-713101}"
+SEEDS_CSV="${SEEDS_CSV:-713101,713102}"
+LEO_SCENARIOS="${LEO_SCENARIOS:-leo_clear_weak,leo_low_elev_weak,leo_rain_weak}"
 EPOCHS="${EPOCHS:-200}"
 MAX_PER_GPU="${MAX_PER_GPU:-2}"
 GPU_IDS_CSV="${GPU_IDS_CSV:-0,1,2,3,4,5,6,7}"
@@ -24,7 +26,7 @@ Usage: launch_adv3b02_riei_drift_same_protocol_20260818.sh [options]
 
 Stages:
   --stage smoke       Run one rx7_d01 row per method (three jobs).
-  --stage matrix      Run six profiles x three methods (18 jobs).
+  --stage matrix      Run eight profiles x three methods x two seeds (48 jobs).
 
 Options:
   --root PATH         Project root.
@@ -34,6 +36,8 @@ Options:
   --log-root PATH     Log root.
   --gpu-ids CSV       GPU indices, default 0,1,2,3,4,5,6,7.
   --max-per-gpu N     Concurrent jobs per GPU, default 2.
+  --seeds CSV         Matrix seeds, default 713101,713102.
+  --leo-scenarios CSV Training/evaluation scenarios, default leo_clear_weak,leo_low_elev_weak,leo_rain_weak.
   EPOCHS=N             Override training epochs (smoke uses 1; formal matrix uses 200).
   --no-skip-done      Do not skip an output that already has metrics.
 EOF
@@ -49,6 +53,8 @@ while [ "$#" -gt 0 ]; do
     --log-root) LOG_ROOT="$2"; shift 2 ;;
     --gpu-ids) GPU_IDS_CSV="$2"; shift 2 ;;
     --max-per-gpu) MAX_PER_GPU="$2"; shift 2 ;;
+    --seeds) SEEDS_CSV="$2"; shift 2 ;;
+    --leo-scenarios) LEO_SCENARIOS="$2"; shift 2 ;;
     --no-skip-done) SKIP_DONE=0; shift ;;
     --help|-h) usage; exit 0 ;;
     *) echo "[ERROR] unknown argument: $1" >&2; usage >&2; exit 2 ;;
@@ -84,6 +90,15 @@ if [ "${#GPU_IDS[@]}" -lt 1 ]; then
   echo "[ERROR] no GPUs supplied" >&2
   exit 2
 fi
+IFS=',' read -r -a SEEDS <<< "${SEEDS_CSV}"
+if [ "${#SEEDS[@]}" -lt 1 ]; then
+  echo "[ERROR] no seeds supplied" >&2
+  exit 2
+fi
+if [ -z "${LEO_SCENARIOS//[[:space:]]/}" ]; then
+  echo "[ERROR] no LEO scenarios supplied" >&2
+  exit 2
+fi
 
 log() {
   echo "[$(date +%F_%T)] $*" | tee -a "${SCHED_LOG}"
@@ -93,10 +108,12 @@ log() {
 PROFILES=(
   "rx3_d0|0|2,3|0,3,6|7,8,9,10,11"
   "rx3_d01|0,1|2,3|0,3,6|7,8,9,10,11"
+  "rx5_d0|0|2,3|0,1,2,3,4|7,8,9,10,11"
   "rx5_d01|0,1|2,3|0,1,2,3,4|7,8,9,10,11"
   "rx7_d0|0|2,3|0,1,2,3,4,5,6|7,8,9,10,11"
   "rx7_d01|0,1|2,3|0,1,2,3,4,5,6|7,8,9,10,11"
   "rx7_d012|0,1,2|3|0,1,2,3,4,5,6|7,8,9,10,11"
+  "rx5_d012|0,1,2|3|0,1,2,3,4|7,8,9,10,11"
 )
 
 declare -A PROFILE_TRAIN_DAYS PROFILE_TEST_DAYS PROFILE_TRAIN_RXS PROFILE_TEST_RXS
@@ -109,40 +126,53 @@ for row in "${PROFILES[@]}"; do
 done
 
 METHODS=(adv3b02 riei_fd drift)
+declare -a JOBS
+TOTAL_JOBS=48
 if [ "${STAGE}" = "smoke" ]; then
-  JOBS=("adv3b02|rx7_d01" "riei_fd|rx7_d01" "drift|rx7_d01")
+  TOTAL_JOBS=3
+  JOBS=("adv3b02|rx7_d01|${SEEDS[0]}" "riei_fd|rx7_d01|${SEEDS[0]}" "drift|rx7_d01|${SEEDS[0]}")
 else
-  JOBS=()
-  for row in "${PROFILES[@]}"; do
-    IFS='|' read -r profile _rest <<< "${row}"
-    for method in "${METHODS[@]}"; do
-      JOBS+=("${method}|${profile}")
+  for seed in "${SEEDS[@]}"; do
+    for row in "${PROFILES[@]}"; do
+      IFS='|' read -r profile _rest <<< "${row}"
+      for method in "${METHODS[@]}"; do
+        JOBS+=("${method}|${profile}|${seed}")
+      done
     done
   done
 fi
 
-printf 'job_id\tmethod\tprofile\tgpu\toutput_dir\tlog_file\tcommand\n' > "${MANIFEST}"
+if [ "${#JOBS[@]}" -ne "${TOTAL_JOBS}" ]; then
+  echo "[ERROR] expected ${TOTAL_JOBS} jobs for stage=${STAGE}, got ${#JOBS[@]} (profiles=${#PROFILES[@]} methods=${#METHODS[@]} seeds=${#SEEDS[@]})" >&2
+  exit 2
+fi
+
+printf 'job_id\tmethod\tprofile\tseed\tgpu\toutput_dir\tlog_file\tcommand\n' > "${MANIFEST}"
 
 build_command() {
-  local method="$1" profile="$2" out_dir="$3"
+  local method="$1" profile="$2" job_seed="$3" out_dir="$4"
   local train_days="${PROFILE_TRAIN_DAYS[${profile}]}"
   local test_days="${PROFILE_TEST_DAYS[${profile}]}"
   local train_rxs="${PROFILE_TRAIN_RXS[${profile}]}"
   local test_rxs="${PROFILE_TEST_RXS[${profile}]}"
+  local sat_seed=$((job_seed + 2027))
   CMD=()
   if [ "${method}" = "adv3b02" ]; then
     CMD=("${PYTHON_BIN}" "${ROOT}/code/SSDG/train_ssdg.py"
       --baseline_ckpt "" --from_scratch true
       --split_mode tx_rx_day_1_7_2
-      --source_split_seed "${SEED}"
+      --source_split_seed "${job_seed}"
       --labeled_ratio 0.07 --unlabeled_ratio 0.63 --source_val_ratio 0.30
       --wisig_pkl "${WISIG_PKL}" --wisig_equalized 1 --wisig_domain rx_day --wisig_out_len 256
       --wisig_train_days "${train_days}" --wisig_test_days "${test_days}"
       --wisig_train_rxs "${train_rxs}" --wisig_test_rxs "${test_rxs}"
-      --seed "${SEED}" --output_dir "${out_dir}"
+      --seed "${job_seed}" --output_dir "${out_dir}"
       --epochs "${EPOCHS}" --checkpoint_selection final_only
       --test_eval_policy val_improved_final --test_eval_start_epoch 999999
-      --batch_size 128 --eval_batch_size 256 --num_workers 0 --device cuda:0)
+      --batch_size 128 --eval_batch_size 256 --num_workers 0 --device cuda:0
+      --use_sat_consistency --sat_train_scenario leo_clear_weak --sat_train_scenarios "${LEO_SCENARIOS}"
+      --sat_view_prob 1.0 --sat_view_seed "${sat_seed}"
+      --eval_sat_channel --eval_sat_scenarios "${LEO_SCENARIOS}" --eval_sat_on all)
   elif [ "${method}" = "riei_fd" ]; then
     CMD=("${PYTHON_BIN}" -m baselines.riei_fd.train_cvs
       --wisig_pkl "${WISIG_PKL}" --wisig_protocol cvs_day_rx
@@ -150,9 +180,11 @@ build_command() {
       --wisig_train_days "${train_days}" --wisig_test_days "${test_days}"
       --wisig_train_rxs "${train_rxs}" --wisig_test_rxs "${test_rxs}"
       --use_source_ssl_split --wisig_labeled_ratio 0.07 --wisig_unlabeled_ratio 0.63
-      --wisig_source_val_ratio 0.30 --wisig_cap_strategy front --wisig_split_seed "${SEED}"
-      --seed "${SEED}" --epochs "${EPOCHS}" --device cuda:0 --output_dir "${out_dir}"
-      --eval_sat_channel --eval_sat_scenarios clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit
+      --wisig_source_val_ratio 0.30 --wisig_cap_strategy front --wisig_split_seed "${job_seed}"
+      --seed "${job_seed}" --epochs "${EPOCHS}" --device cuda:0 --output_dir "${out_dir}"
+      --use_sat_channel_view_aug --sat_train_scenario leo_clear_weak --sat_train_scenarios "${LEO_SCENARIOS}"
+      --sat_view_prob 1.0 --sat_view_seed "${sat_seed}"
+      --eval_sat_channel --eval_sat_scenarios "${LEO_SCENARIOS}" --sat_seed "${sat_seed}"
       --eval_sat_on all --no_test_on_val_improve --test_eval_start_epoch 999999
       --paper_eval_last_n 0 --num_workers 0)
   else
@@ -162,27 +194,29 @@ build_command() {
       --wisig_train_days "${train_days}" --wisig_test_days "${test_days}"
       --wisig_train_rxs "${train_rxs}" --wisig_test_rxs "${test_rxs}"
       --use_source_ssl_split --wisig_labeled_ratio 0.07 --wisig_unlabeled_ratio 0.63
-      --wisig_source_val_ratio 0.30 --wisig_cap_strategy front --wisig_split_seed "${SEED}"
-      --seed "${SEED}" --epochs "${EPOCHS}" --device cuda:0 --output_dir "${out_dir}"
-      --eval_sat_channel --eval_sat_scenarios clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit
+      --wisig_source_val_ratio 0.30 --wisig_cap_strategy front --wisig_split_seed "${job_seed}"
+      --seed "${job_seed}" --epochs "${EPOCHS}" --device cuda:0 --output_dir "${out_dir}"
+      --use_sat_channel_view_aug --sat_train_scenario leo_clear_weak --sat_train_scenarios "${LEO_SCENARIOS}"
+      --sat_view_prob 1.0 --sat_view_seed "${sat_seed}"
+      --eval_sat_channel --eval_sat_scenarios "${LEO_SCENARIOS}" --sat_seed "${sat_seed}"
       --eval_sat_on all --no_test_on_val_improve --test_eval_start_epoch 999999
       --paper_eval_last_n 0 --num_workers 0)
   fi
 }
 
 run_job() {
-  local method="$1" profile="$2" gpu="$3"
-  local job_id="${method}__${profile}__seed${SEED}"
+  local method="$1" profile="$2" job_seed="$3" gpu="$4"
+  local job_id="${method}__${profile}__seed${job_seed}"
   local out_dir="${RUN_ROOT}/${job_id}"
   local log_file="${LOG_ROOT}/${job_id}.log"
   if [ "${SKIP_DONE}" = "1" ] && { [ -f "${out_dir}/metrics.json" ] || [ -f "${out_dir}/phase1_terminal_status.json" ]; }; then
     log "SKIP job=${job_id} existing_output=${out_dir}"
     return 0
   fi
-  build_command "${method}" "${profile}" "${out_dir}"
+  build_command "${method}" "${profile}" "${job_seed}" "${out_dir}"
   local pretty
   printf -v pretty '%q ' "${CMD[@]}"
-  printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "${job_id}" "${method}" "${profile}" "${gpu}" "${out_dir}" "${log_file}" "${pretty}" >> "${MANIFEST}"
+  printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "${job_id}" "${method}" "${profile}" "${job_seed}" "${gpu}" "${out_dir}" "${log_file}" "${pretty}" >> "${MANIFEST}"
   log "START job=${job_id} gpu=${gpu} out=${out_dir}"
   mkdir -p "${out_dir}"
   CUDA_VISIBLE_DEVICES="${gpu}" PYTHONUNBUFFERED=1 "${CMD[@]}" > "${log_file}" 2>&1
@@ -191,37 +225,76 @@ run_job() {
   return "${rc}"
 }
 
-log "RUN_ID=${RUN_ID} stage=${STAGE} seed=${SEED} epochs=${EPOCHS} jobs=${#JOBS[@]} max_per_gpu=${MAX_PER_GPU}"
-log "shared_input=ManySig equalized=1 out_len=256 domain=rx_day crop=center normalize=true"
+QUEUE_INDEX_FILE="${RUN_ROOT}/.queue_index"
+QUEUE_LOCK_DIR="${RUN_ROOT}/.queue_lock"
+FAILED_JOBS_FILE="${RUN_ROOT}/failed_jobs.tsv"
+printf '0\n' > "${QUEUE_INDEX_FILE}"
+: > "${FAILED_JOBS_FILE}"
 
-job_index=0
-wave=0
-overall_rc=0
-while [ "${job_index}" -lt "${#JOBS[@]}" ]; do
-  pids=()
-  labels=()
-  for gpu in "${GPU_IDS[@]}"; do
-    for _slot in $(seq 1 "${MAX_PER_GPU}"); do
-      [ "${job_index}" -lt "${#JOBS[@]}" ] || break 2
-      IFS='|' read -r method profile <<< "${JOBS[${job_index}]}"
-      (
-        run_job "${method}" "${profile}" "${gpu}"
-      ) &
-      pids+=("$!")
-      labels+=("${method}__${profile}")
-      job_index=$((job_index + 1))
-    done
+claim_next_job() {
+  local index spec
+  while ! mkdir "${QUEUE_LOCK_DIR}" 2>/dev/null; do
+    sleep 0.05
   done
-  log "WAVE_START wave=${wave} count=${#pids[@]}"
-  for i in "${!pids[@]}"; do
-    if ! wait "${pids[$i]}"; then
-      overall_rc=1
-      log "WAVE_JOB_FAILED wave=${wave} job=${labels[$i]}"
+  if ! read -r index < "${QUEUE_INDEX_FILE}"; then
+    index=0
+  fi
+  if [ "${index}" -ge "${#JOBS[@]}" ]; then
+    rmdir "${QUEUE_LOCK_DIR}"
+    return 1
+  fi
+  spec="${JOBS[${index}]}"
+  printf '%d\n' "$((index + 1))" > "${QUEUE_INDEX_FILE}"
+  rmdir "${QUEUE_LOCK_DIR}"
+  printf '%s\n' "${spec}"
+}
+
+record_failure() {
+  local job_spec="$1" gpu="$2" rc="$3"
+  while ! mkdir "${QUEUE_LOCK_DIR}" 2>/dev/null; do
+    sleep 0.05
+  done
+  printf '%s\t%s\t%s\n' "${job_spec}" "${gpu}" "${rc}" >> "${FAILED_JOBS_FILE}"
+  rmdir "${QUEUE_LOCK_DIR}"
+}
+
+run_worker() {
+  local gpu="$1" slot="$2" job_spec method profile job_seed
+  while job_spec="$(claim_next_job)"; do
+    IFS='|' read -r method profile job_seed <<< "${job_spec}"
+    if run_job "${method}" "${profile}" "${job_seed}" "${gpu}"; then
+      :
+    else
+      local rc=$?
+      record_failure "${job_spec}" "${gpu}" "${rc}"
+      log "JOB_FAILED job=${method}__${profile}__seed${job_seed} gpu=${gpu} rc=${rc}"
     fi
   done
-  log "WAVE_DONE wave=${wave}"
-  wave=$((wave + 1))
+  log "WORKER_DONE gpu=${gpu} slot=${slot}"
+}
+
+log "RUN_ID=${RUN_ID} stage=${STAGE} seeds=${SEEDS_CSV} leo_scenarios=${LEO_SCENARIOS} epochs=${EPOCHS} jobs=${TOTAL_JOBS} workers=$(( ${#GPU_IDS[@]} * MAX_PER_GPU ))"
+log "shared_input=ManySig equalized=1 out_len=256 domain=rx_day crop=center normalize=true"
+log "satellite_train_eval=leo_weak_only"
+
+worker_pids=()
+for gpu in "${GPU_IDS[@]}"; do
+  for slot in $(seq 1 "${MAX_PER_GPU}"); do
+    run_worker "${gpu}" "${slot}" &
+    worker_pids+=("$!")
+  done
+done
+for pid in "${worker_pids[@]}"; do
+  wait "${pid}"
 done
 
-log "RUN_DONE stage=${STAGE} rc=${overall_rc} manifest=${MANIFEST}"
+failed_count=0
+if [ -s "${FAILED_JOBS_FILE}" ]; then
+  failed_count="$(wc -l < "${FAILED_JOBS_FILE}" | tr -d ' ')"
+fi
+overall_rc=0
+if [ "${failed_count}" -gt 0 ]; then
+  overall_rc=1
+fi
+log "RUN_DONE stage=${STAGE} rc=${overall_rc} jobs=${TOTAL_JOBS} failed=${failed_count} manifest=${MANIFEST}"
 exit "${overall_rc}"
