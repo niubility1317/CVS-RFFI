@@ -40,6 +40,8 @@
 | 首次手工预检路径未整体加引号，被Git Bash剥除反斜杠 | 1 | 该次exit127且未连接N607；对根权威Windows路径整体加引号后预检通过 |
 | 正式扫描会话未保留到明确exit，且未生成收据或输出目录 | 1 | 将`PGOV_20260817T185755Z`封存为`UNKNOWN`、禁止重跑；补充会话持续轮询规则后才允许新ID |
 | 第二个扫描ID也未取得原始session终态，最终只留下0文件Git目录 | 1 | 将`PGOV_20260817T191013Z`封存为`UNKNOWN / NO_RECEIPT`；保留空目录，不删除、不复用ID |
+| 第三个扫描ID因界面会话丢失停在`GIT/STARTED`且无收据 | 1 | 以progress精确PID核验终态，封存为`UNKNOWN_ABRUPT_EXIT / NO_RECEIPT`；后续使用独立后台wrapper和原子退出码文件 |
+| 第四个扫描ID在Git阶段触发linked-worktree重复展开 | 1 | 精确终止本任务PID并保留退出码143；TDD按common Git目录去重，提交`eb42737a`后才允许新ID |
 | `ps -ef`按scan ID匹配命中监控脚本自身，错误报告进程持续存在 | 1 | 用`ps -W`和`tasklist.exe`交叉确认无扫描进程；后续仅接受原始session或启动时精确PID/父子绑定作为终态证据 |
 | 真实规模实验索引出现全资产与同组笛卡尔重复遍历 | 1 | 已以TDD建立等价路径索引、binding缓存和token倒排；盘符根/UNC语义修复后独立复审通过 |
 | 输出目录先创建、但CLI无阶段持久证据，执行session丢失后无法追溯 | 1 | 已增加独占progress journal、精确PID、收据三态和单次终态追加；三轮故障注入复审后P0/P1/P2均为0 |

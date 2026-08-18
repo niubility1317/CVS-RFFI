@@ -56,3 +56,8 @@
 - 终态证据经过三轮独立故障注入复审，最终达到`APPROVE，P0=0、P1=0、P2=0`；两个非阻断Minor随后也已关闭。
 - 主代理在`ssr-gpu`环境串行复验8个治理/N607测试文件，共301项通过；`compileall`和`5d8abc3b..5890cbfe`差异检查通过。工作树只保留未触碰的用户DOCX修改/删除和`.docx_qa*`目录。
 - 已核对正式Git输出目标位于本地采集深度4，超过控制证据深度上限3，不会把进行中的progress自我纳入清单。下一步提交本日志后生成全新不可覆盖ID，执行零写入预览和一次正式只读扫描。
+- 第三个不可覆盖ID`PGOV_20260818T023221Z`在界面执行会话丢失后仅保留3条progress记录，最后状态为`GIT/STARTED`；精确Windows PID`30260`已不存在，收据与external目录均不存在，SSH及两个固定端点连接为0。该ID封存为`UNKNOWN_ABRUPT_EXIT / NO_RECEIPT`，目录原样保留。
+- 第四个不可覆盖ID`PGOV_20260818T030132Z`采用独立后台执行、精确Windows PID和原子退出码文件，成功完成零写入预览及根权威N607预检；预检验证普通账户、项目根和8张RTX3090可见。
+- 第四次扫描在`GIT/STARTED`阶段暴露确定性性能缺陷：本地有66个直接Git工作树标记，实施仓库有72个linked worktree，旧实现会对每个候选重复展开同一common Git目录，最坏约执行`66×72×4=19008`次工作树元数据命令。该扫描尚未接触N607，已按精确PID仅终止本任务Python进程；退出码`143`已持久化，无收据，进度目录、runner日志和退出码文件均保留，未删除或覆盖任何资产。
+- 按TDD新增真实linked-worktree回归：旧实现准确失败为`worktree list`调用2次；修复按规范化common Git目录缓存展开结果后GREEN。Git专属9项、完整治理/N607 302项、`compileall`及差异检查全部通过。
+- Git归属性能修复提交为`eb42737af4b186d02dc308f5351c3e330675d3dd`（`fix: deduplicate linked Git ownership discovery`），提交精确只含`collect_git.py`及其测试；用户DOCX、`.docx_qa*`和所有扫描证据均未暂存。

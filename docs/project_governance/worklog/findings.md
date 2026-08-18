@@ -76,3 +76,12 @@
 - progress计入Git单文件和总量上限；token固定为48位小写十六进制。主child和全部proxy只有都证实退出时才记`EXITED`；timeout或proxy未证退出保持`LIVE_CHILD_UNKNOWN/UNKNOWN`。终态追加只尝试一次，异常处理本身不能遮蔽原始失败或制造重复终态。
 - 终态修复提交为`5890cbfe`。独立故障注入经过三轮复审后达到`APPROVE，P0=0、P1=0、P2=0、Minor=2`，随后两个Minor也已关闭。主代理在`ssr-gpu`环境串行复验8个治理/N607测试文件，共301项通过；`compileall`和`git diff --check`通过。
 - 当前Git输出目录位于`code/snapshots/<worktree>/docs/project_governance/<scan_id>`。相对`code/snapshots`承载面，progress文件处于受控证据深度4，超过配置上限3；普通目录本身也不作为控制证据记录。因此本次进行中的progress不会被本地采集器自我纳入或产生变化中哈希。
+
+## 2026-08-18 Git归属展开性能修复
+
+- `PGOV_20260818T023221Z`的持久化证据只到`GIT/STARTED`，精确PID消失且没有退出码或收据，只能封存为`UNKNOWN_ABRUPT_EXIT / NO_RECEIPT`；该结论不等于扫描成功或资产清单完成。
+- `PGOV_20260818T030132Z`首次把扫描与界面会话解耦，精确Windows PID为`25176`。本地阶段完成后，Git阶段长时间无新事件；只读静态核验发现`discover_repositories()`会为每个linked-worktree候选重新执行`worktree list`，再对同一组全部工作树重复读取common dir、branch、HEAD和status。
+- 当前本地快照面有66个`.git`标记，实施仓库有72个linked worktree；旧路径最坏会放大为4752次工作树展开、约19008次Git元数据命令。这是确定性重复计算，不是数据规模本身或N607故障。
+- 扫描在尚未进入N607时按progress绑定的精确PID有意终止，退出码`143`由独立wrapper持久化；无收据、无删除候选、无SSH连接、无远端写入，原资产移动、覆盖、删除、权限修改均为0。
+- 修复仅用common Git目录键去重仓库展开；不同工作树仍分别保留branch、HEAD和status，独立仓库不合并，资产分类和公开schema不变。真实Git工作树测试证明同一common目录的`worktree list`由2次降为1次，两个工作树status各保留1次。
+- 修复提交`eb42737af4b186d02dc308f5351c3e330675d3dd`通过Git专属9项、完整治理/N607 302项、编译与差异检查。下一次正式扫描必须使用新ID并绑定该提交之后的Git HEAD。
