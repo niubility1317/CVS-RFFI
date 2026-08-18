@@ -218,6 +218,7 @@ class GitOwnershipMapper:
         self.indexed_assets = tuple(indexed_assets)
         self.batch_size = batch_size
         self.repositories: tuple[RepositoryRecord, ...] = ()
+        self._repository_paths: tuple[tuple[RepositoryRecord, Path], ...] = ()
 
     def _run(
         self,
@@ -398,12 +399,15 @@ class GitOwnershipMapper:
                 if existing is None or (existing.error and not record.error):
                     discovered[key] = record
         self.repositories = tuple(discovered.values())
+        self._repository_paths = tuple(
+            (repository, _resolved_path(repository.repository_root))
+            for repository in self.repositories
+        )
         return self.repositories
 
     def _repository_for_path(self, path: Path) -> tuple[RepositoryRecord, Path] | None:
         matches: list[tuple[RepositoryRecord, Path]] = []
-        for repository in self.repositories:
-            worktree_root = _resolved_path(repository.repository_root)
+        for repository, worktree_root in self._repository_paths:
             if _under(path, worktree_root):
                 matches.append((repository, worktree_root))
         if not matches:
@@ -510,8 +514,7 @@ class GitOwnershipMapper:
             grouped.setdefault(group_key, []).append((asset, relative))
 
         mapped: list[GitOwnershipRecord] = list(direct)
-        for repository in self.repositories:
-            worktree_root = _resolved_path(repository.repository_root)
+        for repository, worktree_root in self._repository_paths:
             entries = grouped.get((repository.repository_root, str(worktree_root)), [])
             for start in range(0, len(entries), self.batch_size):
                 batch = entries[start : start + self.batch_size]

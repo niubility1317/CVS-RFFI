@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+import tools.project_governance.collect_git as collect_git_module
 from tools.project_governance.collect_git import (
     CommandResult,
     GitOwnershipMapper,
@@ -288,3 +289,34 @@ def test_linked_candidates_expand_their_common_repository_only_once(git_fixture)
     ]
     assert len(worktree_list_calls) == 1
     assert status_roots == [repo.resolve(), linked.resolve()]
+
+
+def test_repository_roots_are_resolved_once_not_once_per_asset(git_fixture, monkeypatch):
+    repo, _ = git_fixture
+    linked = repo.parent / "linked-root-cache"
+    _git(repo, "worktree", "add", "--detach", str(linked))
+    assets = tuple(
+        _asset(repo, f"main-{index}.txt", root_id="MAIN")
+        for index in range(40)
+    ) + tuple(
+        _asset(linked, f"linked-{index}.txt", root_id="LINKED")
+        for index in range(40)
+    )
+    real_resolved_path = collect_git_module._resolved_path
+    resolved_calls = 0
+
+    def counting_resolved_path(path):
+        nonlocal resolved_calls
+        resolved_calls += 1
+        return real_resolved_path(path)
+
+    monkeypatch.setattr(collect_git_module, "_resolved_path", counting_resolved_path)
+
+    ownership = map_git_ownership(
+        assets,
+        repository_seeds=(repo,),
+        root_paths={"MAIN": repo, "LINKED": linked},
+    )
+
+    assert len(ownership) == len(assets)
+    assert resolved_calls <= 20
