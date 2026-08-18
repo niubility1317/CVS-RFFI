@@ -12,6 +12,7 @@ RUN_ID="${RUN_ID:-phase1_adv3b02_riei_drift_same_protocol_20260818_v1}"
 RUN_ROOT="${RUN_ROOT:-${ROOT}/runs/${RUN_ID}}"
 LOG_ROOT="${LOG_ROOT:-${ROOT}/logs/${RUN_ID}}"
 SEED="${SEED:-713101}"
+EPOCHS="${EPOCHS:-200}"
 MAX_PER_GPU="${MAX_PER_GPU:-2}"
 GPU_IDS_CSV="${GPU_IDS_CSV:-0,1,2,3,4,5,6,7}"
 STAGE="matrix"
@@ -33,6 +34,7 @@ Options:
   --log-root PATH     Log root.
   --gpu-ids CSV       GPU indices, default 0,1,2,3,4,5,6,7.
   --max-per-gpu N     Concurrent jobs per GPU, default 2.
+  EPOCHS=N             Override training epochs (smoke uses 1; formal matrix uses 200).
   --no-skip-done      Do not skip an output that already has metrics.
 EOF
 }
@@ -138,7 +140,7 @@ build_command() {
       --wisig_train_days "${train_days}" --wisig_test_days "${test_days}"
       --wisig_train_rxs "${train_rxs}" --wisig_test_rxs "${test_rxs}"
       --seed "${SEED}" --output_dir "${out_dir}"
-      --epochs 200 --checkpoint_selection final_only
+      --epochs "${EPOCHS}" --checkpoint_selection final_only
       --test_eval_policy val_improved_final --test_eval_start_epoch 999999
       --batch_size 128 --eval_batch_size 256 --num_workers 0 --device cuda:0)
   elif [ "${method}" = "riei_fd" ]; then
@@ -149,7 +151,7 @@ build_command() {
       --wisig_train_rxs "${train_rxs}" --wisig_test_rxs "${test_rxs}"
       --use_source_ssl_split --wisig_labeled_ratio 0.07 --wisig_unlabeled_ratio 0.63
       --wisig_source_val_ratio 0.30 --wisig_cap_strategy front --wisig_split_seed "${SEED}"
-      --seed "${SEED}" --epochs 200 --device cuda:0 --output_dir "${out_dir}"
+      --seed "${SEED}" --epochs "${EPOCHS}" --device cuda:0 --output_dir "${out_dir}"
       --eval_sat_channel --eval_sat_scenarios clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit
       --eval_sat_on all --no_test_on_val_improve --test_eval_start_epoch 999999
       --paper_eval_last_n 0 --num_workers 0)
@@ -161,7 +163,7 @@ build_command() {
       --wisig_train_rxs "${train_rxs}" --wisig_test_rxs "${test_rxs}"
       --use_source_ssl_split --wisig_labeled_ratio 0.07 --wisig_unlabeled_ratio 0.63
       --wisig_source_val_ratio 0.30 --wisig_cap_strategy front --wisig_split_seed "${SEED}"
-      --seed "${SEED}" --epochs 200 --device cuda:0 --output_dir "${out_dir}"
+      --seed "${SEED}" --epochs "${EPOCHS}" --device cuda:0 --output_dir "${out_dir}"
       --eval_sat_channel --eval_sat_scenarios clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit
       --eval_sat_on all --no_test_on_val_improve --test_eval_start_epoch 999999
       --paper_eval_last_n 0 --num_workers 0)
@@ -189,7 +191,7 @@ run_job() {
   return "${rc}"
 }
 
-log "RUN_ID=${RUN_ID} stage=${STAGE} seed=${SEED} jobs=${#JOBS[@]} max_per_gpu=${MAX_PER_GPU}"
+log "RUN_ID=${RUN_ID} stage=${STAGE} seed=${SEED} epochs=${EPOCHS} jobs=${#JOBS[@]} max_per_gpu=${MAX_PER_GPU}"
 log "shared_input=ManySig equalized=1 out_len=256 domain=rx_day crop=center normalize=true"
 
 job_index=0
