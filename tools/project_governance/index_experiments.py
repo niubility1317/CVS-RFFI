@@ -166,6 +166,10 @@ def _same_path(left: IndexedPath | str, right: IndexedPath | str) -> bool:
     return _path_key(left) == _path_key(right)
 
 
+def _local_path_key_is_under(path_key: str, root_key: str) -> bool:
+    return path_key == root_key or path_key.startswith(root_key + os.sep)
+
+
 def _is_under(path: IndexedPath, root: IndexedPath) -> bool:
     if _is_remote_path(path) != _is_remote_path(root):
         return False
@@ -173,7 +177,7 @@ def _is_under(path: IndexedPath, root: IndexedPath) -> bool:
         return path == root or root in path.parents
     path_key = _path_key(path)
     root_key = _path_key(root)
-    return path_key == root_key or path_key.startswith(root_key + os.sep)
+    return _local_path_key_is_under(path_key, root_key)
 
 
 def _posix_comparison_key(path: IndexedPath) -> str:
@@ -185,9 +189,13 @@ def _posix_comparison_key(path: IndexedPath) -> str:
 def _ancestor_path_keys(path: IndexedPath) -> Iterable[str]:
     """Yield the normalized path itself and every normalized parent path."""
 
+    path_is_remote = _is_remote_path(path)
+    path_key = _path_key(path)
     current = path
     while True:
-        yield _path_key(current)
+        ancestor_key = _path_key(current)
+        if path_is_remote or _local_path_key_is_under(path_key, ancestor_key):
+            yield ancestor_key
         parent = current.parent
         if parent == current:
             return

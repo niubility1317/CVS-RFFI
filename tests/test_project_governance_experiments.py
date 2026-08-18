@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 import pytest
 
@@ -519,6 +519,59 @@ def test_explicit_bindings_scale_without_repeated_asset_or_commit_rescans(
     assert counters["same_path"] <= len(assets) * 2
     assert counters["direct_tokens"] <= len(assets)
     assert set(known_id_lengths) == {run_count}
+
+
+@pytest.mark.parametrize(
+    ("root", "paths", "expected_indices"),
+    (
+        pytest.param(
+            Path("C:/"),
+            (Path("C:/one/a"), Path("C:/"), Path("D:/other")),
+            (1,),
+            id="windows-drive-root-with-trailing-separator",
+        ),
+        pytest.param(
+            PurePosixPath("/"),
+            (PurePosixPath("/one/a"), PurePosixPath("/"), PurePosixPath("/other")),
+            (0, 1, 2),
+            id="posix-root",
+        ),
+        pytest.param(
+            Path("//server/share/"),
+            (
+                Path("//server/share/folder/a"),
+                Path("//server/share/"),
+                Path("//server/other/f"),
+            ),
+            (1,),
+            id="unc-share-root-with-trailing-separator",
+        ),
+        pytest.param(
+            Path(""),
+            (Path("child"), Path(""), Path("C:/other")),
+            (0, 1),
+            id="empty-local-root",
+        ),
+        pytest.param(
+            Path("C:/one"),
+            (Path("C:/one/a"), Path("C:/one"), Path("C:/one-more/a")),
+            (0, 1),
+            id="ordinary-local-root",
+        ),
+    ),
+)
+def test_descendant_path_index_matches_legacy_is_under_for_boundary_roots(
+    root, paths, expected_indices
+) -> None:
+    legacy_matches = tuple(
+        index
+        for index, path in enumerate(paths)
+        if experiment_index_module._is_under(path, root)
+    )
+    indexed_matches = experiment_index_module._index_asset_paths(paths).descendant_matches(root)
+
+    assert legacy_matches == expected_indices
+    assert indexed_matches == expected_indices
 
 
 def test_oversized_required_report_is_scan_error_even_with_live_binding(tmp_path: Path):
