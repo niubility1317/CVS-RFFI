@@ -219,6 +219,7 @@ def test_emitter_produces_stable_small_outputs_with_required_encodings(tmp_path)
         "retention_decisions.csv",
         "deletion_candidates.csv",
         "asset_inventory_full.json",
+        "scan_progress.ndjson",
         "scan_receipt.json",
     }
 
@@ -513,7 +514,8 @@ def test_emitter_retains_partial_output_without_receipt_on_failure(tmp_path):
     output = tmp_path / "git" / "EMIT_FIXTURE"
     assert output.exists()
     assert not output.joinpath("scan_receipt.json").exists()
-    assert len(tuple(output.iterdir())) == 1
+    assert {path.name for path in output.iterdir()} == {"report.md", "scan_progress.ndjson"}
+    assert _progress_records(output)[-1]["terminal_state"] == "FAILED"
 
 
 def test_emitter_routes_complete_oversized_tables_without_truncating_evidence(tmp_path):
@@ -640,7 +642,7 @@ def test_emitter_fails_instead_of_writing_an_oversized_receipt(tmp_path):
         completed_at_utc="2026-08-17T01:02:04Z",
     )
 
-    with pytest.raises(ValueError, match="receipt exceeds"):
+    with pytest.raises(ValueError, match="git output exceeds per-file threshold: scan_progress.ndjson"):
         ReportEmitter(
             bundle,
             output_root=tmp_path / "git",
@@ -1422,6 +1424,7 @@ def test_cli_fixture_scan_emits_joined_inventory_and_approval_only_rows(tmp_path
         "retention_decisions.csv",
         "deletion_candidates.csv",
         "asset_inventory_full.json",
+        "scan_progress.ndjson",
         "scan_receipt.json",
     }
     assert {path.name for path in output.iterdir()} == expected
@@ -2046,3 +2049,974 @@ def test_top_level_runner_bounds_each_stream_read_and_retains_only_a_marked_stde
     assert process.stderr.read_sizes and set(process.stderr.read_sizes) == {8193}
     assert "truncated" in result.stderr_tail
     assert len(result.stderr_tail.encode("utf-8")) <= 8192
+
+
+def _progress_records(output: Path) -> list[dict[str, object]]:
+    progress = output / "scan_progress.ndjson"
+    return [
+        json.loads(line)
+        for line in progress.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+
+
+def test_emitter_payload_failure_leaves_durable_failed_progress_not_an_empty_directory(tmp_path):
+    class PayloadFailure(ReportEmitter):
+        def _payloads(self, records):
+            raise MemoryError("fixture payload allocation failure")
+
+    with pytest.raises(MemoryError, match="fixture payload allocation failure"):
+        PayloadFailure(
+            _bundle(),
+            output_root=tmp_path / "git",
+            external_output_root=tmp_path / "external",
+            metadata=_metadata(),
+        ).emit()
+
+    output = tmp_path / "git" / "EMIT_FIXTURE"
+    records = _progress_records(output)
+    assert records[0]["schema_version"] == 1
+    assert records[0]["scan_id"] == "EMIT_FIXTURE"
+    assert records[0]["event"] == "INITIALIZED"
+    assert records[0]["windows_pid"] == os.getpid()
+    assert isinstance(records[0]["token"], str) and records[0]["token"]
+    assert records[-1]["event"] == "TERMINAL"
+    assert records[-1]["stage"] == "EMISSION"
+    assert records[-1]["terminal_state"] == "FAILED"
+    assert not output.joinpath("scan_receipt.json").exists()
+    assert {path.name for path in output.iterdir()} == {"scan_progress.ndjson"}
+
+
+def test_emitter_success_hashes_frozen_progress_before_the_last_receipt(tmp_path):
+    writes: list[str] = []
+
+    class RecordingEmitter(ReportEmitter):
+        def _write_exclusive(self, path, payload, *, encoding, newline=""):
+            writes.append(path.name)
+            return super()._write_exclusive(path, payload, encoding=encoding, newline=newline)
+
+    emitter = RecordingEmitter(
+        _bundle(),
+        output_root=tmp_path / "git",
+        external_output_root=tmp_path / "external",
+        metadata=_metadata(),
+    )
+    result = emitter.emit()
+    output = result.git_output_dir
+    records = _progress_records(output)
+    receipt = json.loads(output.joinpath("scan_receipt.json").read_text(encoding="utf-8"))
+
+    assert records[-1]["terminal_state"] == "COMPLETE_PENDING_RECEIPT"
+    assert receipt["terminal_state"] == "COMPLETE"
+    assert receipt["progress"] == {
+        "bytes": output.joinpath("scan_progress.ndjson").stat().st_size,
+        "sha256": hashlib.sha256(output.joinpath("scan_progress.ndjson").read_bytes()).hexdigest(),
+    }
+    assert writes[-1] == "scan_receipt.json"
+    before = output.joinpath("scan_progress.ndjson").read_bytes()
+    with pytest.raises(RuntimeError, match="receipt"):
+        emitter.progress_journal.record_failure("EMISSION", OSError("late failure"))
+    assert output.joinpath("scan_progress.ndjson").read_bytes() == before
+
+
+def test_emitter_compacts_an_8192_byte_receipt_without_dropping_journal_evidence(tmp_path):
+    base = _bundle(include_error=False)
+    bundle = replace(
+        base,
+        assets=tuple(
+            _asset(f"bulk/{index:03d}-{'x' * 80}.json")
+            for index in range(80)
+        ),
+    )
+    writes: list[str] = []
+
+    class RecordingEmitter(ReportEmitter):
+        def _write_exclusive(self, path, payload, *, encoding, newline=""):
+            writes.append(path.name)
+            return super()._write_exclusive(path, payload, encoding=encoding, newline=newline)
+
+    result = RecordingEmitter(
+        bundle,
+        output_root=tmp_path / "git",
+        external_output_root=tmp_path / "external",
+        metadata=_metadata(),
+        git_file_max_bytes=8192,
+        git_scan_max_bytes=1_000_000,
+    ).emit()
+    receipt_path = result.git_output_dir / "scan_receipt.json"
+    receipt_payload = receipt_path.read_bytes()
+    receipt = json.loads(receipt_payload)
+    progress_path = result.git_output_dir / "scan_progress.ndjson"
+
+    assert len(receipt_payload) <= 8192
+    assert receipt_payload != (
+        json.dumps(receipt, ensure_ascii=False, sort_keys=True, indent=2, separators=(",", ": "))
+        + "\n"
+    ).encode("utf-8")
+    assert receipt["receipt_file"] == {"path": "scan_receipt.json", "written_last": True}
+    assert receipt["terminal_state"] == "COMPLETE"
+    assert receipt["progress"] == {
+        "bytes": progress_path.stat().st_size,
+        "sha256": hashlib.sha256(progress_path.read_bytes()).hexdigest(),
+    }
+    assert writes[-1] == "scan_receipt.json"
+
+
+def test_progress_can_close_a_frozen_receipt_attempt_as_failed_before_receipt_exists(tmp_path):
+    from tools.project_governance.emit import ScanProgressJournal
+
+    target = tmp_path / "git" / "EMIT_FIXTURE"
+    journal = ScanProgressJournal.create(target, scan_id="EMIT_FIXTURE", token="e" * 48)
+    journal.ensure_emission_stage()
+    journal.freeze_for_receipt()
+    journal.record_failure("EMISSION", OSError("receipt write failed"))
+
+    reopened = ScanProgressJournal.open_existing(
+        target, scan_id="EMIT_FIXTURE", token=journal.token
+    )
+    records = _progress_records(target)
+    assert [record["terminal_state"] for record in records if record["event"] == "TERMINAL"] == [
+        "COMPLETE_PENDING_RECEIPT",
+        "FAILED",
+    ]
+    assert reopened.current_stage == "EMISSION"
+
+
+@pytest.mark.parametrize("token", ("a" * 47, "a" * 49, "A" * 48, "g" * 48))
+def test_scan_progress_rejects_noncanonical_or_oversized_tokens_without_creating_a_target(
+    tmp_path, token
+):
+    from tools.project_governance.emit import ScanProgressJournal
+
+    target = tmp_path / f"target-{len(token)}-{token[0]}"
+    with pytest.raises(ValueError, match="token"):
+        ScanProgressJournal.create(target, scan_id="EMIT_FIXTURE", token=token)
+    assert not target.exists()
+
+
+def test_emitter_rejects_progress_that_exceeds_the_file_limit_only_after_freeze(tmp_path):
+    from tools.project_governance.emit import ScanProgressJournal
+
+    target = tmp_path / "git" / "EMIT_FIXTURE"
+    journal = ScanProgressJournal.create(target, scan_id="EMIT_FIXTURE", token="f" * 48)
+    for stage in ("LOCAL", "GIT", "N607"):
+        journal.begin_stage(stage)
+    journal.record_n607_result(
+        requested=True,
+        outcome="VERIFIED",
+        attempts=tuple(
+            _attempt_metadata("DIRECT", 10_000 + index)
+            for index in range(200)
+        ),
+    )
+    for stage in ("INDEX", "RETENTION", "EMISSION"):
+        journal.begin_stage(stage)
+    pre_freeze_size = journal.progress_path.stat().st_size
+
+    with pytest.raises(ValueError, match="git output exceeds per-file threshold: scan_progress.ndjson"):
+        ReportEmitter(
+            _bundle(),
+            output_root=tmp_path / "git",
+            external_output_root=tmp_path / "external",
+            metadata=_metadata(),
+            git_file_max_bytes=pre_freeze_size,
+            git_scan_max_bytes=10_000_000,
+            progress_journal=journal,
+        ).emit()
+
+    records = _progress_records(target)
+    assert records[-1]["terminal_state"] == "FAILED"
+    assert not target.joinpath("scan_receipt.json").exists()
+
+
+@pytest.mark.parametrize("terminal_state", ("FAILED", "INTERRUPTED", "COMPLETE_PENDING_RECEIPT"))
+def test_emitter_refuses_reopened_terminal_progress_without_writing_artifacts(tmp_path, terminal_state):
+    from tools.project_governance.emit import ScanProgressJournal
+
+    target = tmp_path / "git" / "EMIT_FIXTURE"
+    journal = ScanProgressJournal.create(target, scan_id="EMIT_FIXTURE", token="b" * 48)
+    journal.ensure_emission_stage()
+    if terminal_state == "FAILED":
+        journal.record_failure("EMISSION", OSError("fixture failure"))
+    elif terminal_state == "INTERRUPTED":
+        journal.record_interrupt("EMISSION")
+    else:
+        journal.freeze_for_receipt()
+    reopened = ScanProgressJournal.open_existing(
+        target, scan_id="EMIT_FIXTURE", token=journal.token
+    )
+    before = {path.name: path.read_bytes() for path in target.iterdir()}
+
+    with pytest.raises(RuntimeError, match="terminal"):
+        ReportEmitter(
+            _bundle(),
+            output_root=tmp_path / "git",
+            external_output_root=tmp_path / "external",
+            metadata=_metadata(),
+            progress_journal=reopened,
+        ).emit()
+
+    assert {path.name: path.read_bytes() for path in target.iterdir()} == before
+    assert not target.joinpath("scan_receipt.json").exists()
+
+
+def test_progress_n607_liveness_requires_proxy_exit_evidence(tmp_path):
+    from tools.project_governance.emit import ScanProgressJournal
+
+    target = tmp_path / "git" / "EMIT_FIXTURE"
+    journal = ScanProgressJournal.create(target, scan_id="EMIT_FIXTURE", token="c" * 48)
+    for stage in ("LOCAL", "GIT", "N607"):
+        journal.begin_stage(stage)
+    journal.record_n607_result(
+        requested=True,
+        outcome="VERIFIED",
+        attempts=(
+            _attempt_metadata(
+                "DIRECT",
+                8800,
+                proxy_child_pids=(8801,),
+                timed_out=False,
+                child_exited=True,
+                proxy_children_exited=False,
+            ),
+        ),
+    )
+
+    attempt = _progress_records(target)[-1]["attempts"][0]
+    assert attempt["child_exited"] is True
+    assert attempt["proxy_children_exited"] is False
+    assert attempt["liveness"] == "UNKNOWN"
+    reopened = ScanProgressJournal.open_existing(
+        target, scan_id="EMIT_FIXTURE", token=journal.token
+    )
+    assert reopened.current_stage == "N607"
+
+
+def test_cli_returns_a_failed_terminal_outcome_when_receipt_write_is_partial(tmp_path, monkeypatch):
+    import tools.project_governance.cli as cli
+
+    class PartialReceiptEmitter(ReportEmitter):
+        def _write_exclusive(self, path, payload, *, encoding, newline=""):
+            if path.name == "scan_receipt.json":
+                with path.open("xb") as stream:
+                    stream.write(b"{")
+                raise OSError("fixture partial receipt write")
+            return super()._write_exclusive(path, payload, encoding=encoding, newline=newline)
+
+    root = tmp_path / "local"
+    (root / "runs").mkdir(parents=True)
+    config = _cli_fixture_config(root)
+    git_runner, _ = _fake_git_runner_factory(root)
+    monkeypatch.setattr(cli, "ReportEmitter", PartialReceiptEmitter)
+
+    outcome = cli.run_scan(
+        _cli_args(tmp_path),
+        config=config,
+        git_runner=git_runner,
+        repository_seeds=(root,),
+        implementation_repository=root,
+    )
+    target = tmp_path / "governance-git" / "CLI_FIXTURE"
+    records = _progress_records(target)
+
+    assert outcome.exit_code == 2
+    assert outcome.terminal_state == "FAILED"
+    assert outcome.stage == "EMISSION"
+    assert outcome.terminal_state != "NOT_STARTED"
+    assert target.joinpath("scan_receipt.json").read_bytes() == b"{"
+    assert records[-1]["terminal_state"] == "FAILED"
+    assert records[-1]["stage"] == "EMISSION"
+
+
+def test_cli_preserves_a_complete_receipt_when_post_write_close_raises(tmp_path, monkeypatch):
+    import tools.project_governance.cli as cli
+
+    class PostWriteFailureEmitter(ReportEmitter):
+        def _write_exclusive(self, path, payload, *, encoding, newline=""):
+            result = super()._write_exclusive(path, payload, encoding=encoding, newline=newline)
+            if path.name == "scan_receipt.json":
+                raise OSError("fixture receipt close failure")
+            return result
+
+    root = tmp_path / "local"
+    (root / "runs").mkdir(parents=True)
+    config = _cli_fixture_config(root)
+    git_runner, _ = _fake_git_runner_factory(root)
+    monkeypatch.setattr(cli, "ReportEmitter", PostWriteFailureEmitter)
+
+    outcome = cli.run_scan(
+        _cli_args(tmp_path),
+        config=config,
+        git_runner=git_runner,
+        repository_seeds=(root,),
+        implementation_repository=root,
+    )
+    target = tmp_path / "governance-git" / "CLI_FIXTURE"
+    progress_path = target / "scan_progress.ndjson"
+    receipt = json.loads(target.joinpath("scan_receipt.json").read_text(encoding="utf-8"))
+    records = _progress_records(target)
+
+    assert outcome.exit_code == 2
+    assert outcome.terminal_state == "FAILED"
+    assert outcome.stage == "EMISSION"
+    assert "complete receipt exists" in (outcome.message or "")
+    assert receipt["terminal_state"] == "COMPLETE"
+    assert receipt["progress"] == {
+        "bytes": progress_path.stat().st_size,
+        "sha256": hashlib.sha256(progress_path.read_bytes()).hexdigest(),
+    }
+    assert records[-1]["terminal_state"] == "COMPLETE_PENDING_RECEIPT"
+    assert not any(record.get("terminal_state") == "FAILED" for record in records)
+
+
+@pytest.mark.parametrize("operation", ("stat", "open"))
+def test_cli_quarantines_receipt_readback_oserror_without_appending_progress(
+    tmp_path, monkeypatch, operation
+):
+    import tools.project_governance.cli as cli
+
+    class PostWriteFailureEmitter(ReportEmitter):
+        receipt_written = False
+
+        def _write_exclusive(self, path, payload, *, encoding, newline=""):
+            result = super()._write_exclusive(path, payload, encoding=encoding, newline=newline)
+            if path.name == "scan_receipt.json":
+                type(self).receipt_written = True
+                raise OSError("fixture receipt close failure")
+            return result
+
+    injected = {"value": False}
+    if operation == "stat":
+        original_stat = Path.stat
+
+        def receipt_readback_stat_error(path, *args, **kwargs):
+            if (
+                PostWriteFailureEmitter.receipt_written
+                and path.name == "scan_receipt.json"
+                and not injected["value"]
+            ):
+                injected["value"] = True
+                raise OSError("fixture receipt stat failure")
+            return original_stat(path, *args, **kwargs)
+
+        monkeypatch.setattr(Path, "stat", receipt_readback_stat_error)
+    else:
+        original_open = Path.open
+
+        def receipt_readback_open_error(path, mode="r", *args, **kwargs):
+            if (
+                PostWriteFailureEmitter.receipt_written
+                and path.name == "scan_receipt.json"
+                and mode == "rb"
+                and not injected["value"]
+            ):
+                injected["value"] = True
+                raise OSError("fixture receipt open failure")
+            return original_open(path, mode, *args, **kwargs)
+
+        monkeypatch.setattr(Path, "open", receipt_readback_open_error)
+
+    root = tmp_path / "local"
+    (root / "runs").mkdir(parents=True)
+    config = _cli_fixture_config(root)
+    git_runner, _ = _fake_git_runner_factory(root)
+    monkeypatch.setattr(cli, "ReportEmitter", PostWriteFailureEmitter)
+
+    outcome = cli.run_scan(
+        _cli_args(tmp_path),
+        config=config,
+        git_runner=git_runner,
+        repository_seeds=(root,),
+        implementation_repository=root,
+    )
+    target = tmp_path / "governance-git" / "CLI_FIXTURE"
+    progress_path = target / "scan_progress.ndjson"
+    receipt = json.loads(target.joinpath("scan_receipt.json").read_text(encoding="utf-8"))
+    records = _progress_records(target)
+
+    assert injected["value"] is True
+    assert outcome.exit_code == 3
+    assert outcome.terminal_state == "FAILED"
+    assert "receipt readback UNKNOWN" in (outcome.message or "")
+    assert records[-1]["terminal_state"] == "COMPLETE_PENDING_RECEIPT"
+    assert not any(record.get("terminal_state") == "FAILED" for record in records)
+    assert receipt["progress"] == {
+        "bytes": progress_path.stat().st_size,
+        "sha256": hashlib.sha256(progress_path.read_bytes()).hexdigest(),
+    }
+
+
+@pytest.mark.parametrize(
+    ("failure", "terminal_state", "expected_exit"),
+    (
+        (MemoryError("fixture emitter memory"), "FAILED", 2),
+        (KeyboardInterrupt(), "INTERRUPTED", 130),
+    ),
+)
+def test_cli_does_not_repeat_a_terminal_append_that_landed_before_raising(
+    tmp_path, monkeypatch, failure, terminal_state, expected_exit
+):
+    import tools.project_governance.cli as cli
+    from tools.project_governance.emit import ScanProgressJournal
+
+    class FailingPayloadEmitter(ReportEmitter):
+        def _payloads(self, records):
+            raise failure
+
+    original_append = cli.ScanProgressJournal._append
+    terminal_appends: list[dict[str, object]] = []
+
+    def landed_terminal_then_error(self, record):
+        if record.get("event") == "TERMINAL" and record.get("terminal_state") == terminal_state:
+            terminal_appends.append(dict(record))
+            original_append(self, record)
+            raise OSError("fixture post-write terminal fsync failure")
+        return original_append(self, record)
+
+    root = tmp_path / "local"
+    (root / "runs").mkdir(parents=True)
+    config = _cli_fixture_config(root)
+    git_runner, _ = _fake_git_runner_factory(root)
+    monkeypatch.setattr(cli, "ReportEmitter", FailingPayloadEmitter)
+    monkeypatch.setattr(cli.ScanProgressJournal, "_append", landed_terminal_then_error)
+
+    outcome = cli.run_scan(
+        _cli_args(tmp_path),
+        config=config,
+        git_runner=git_runner,
+        repository_seeds=(root,),
+        implementation_repository=root,
+    )
+    target = tmp_path / "governance-git" / "CLI_FIXTURE"
+    records = _progress_records(target)
+    reopened = ScanProgressJournal.open_existing(
+        target, scan_id="CLI_FIXTURE", token=str(records[0]["token"])
+    )
+
+    assert outcome.exit_code == expected_exit
+    assert outcome.terminal_state == terminal_state
+    assert "durable progress was preserved" in (outcome.message or "")
+    assert len(terminal_appends) == 1
+    assert sum(record.get("terminal_state") == terminal_state for record in records) == 1
+    assert reopened.current_stage == "EMISSION"
+
+
+@pytest.mark.parametrize(
+    ("failure", "terminal_state", "expected_exit"),
+    (
+        (MemoryError("fixture emitter memory"), "FAILED", 2),
+        (KeyboardInterrupt(), "INTERRUPTED", 130),
+    ),
+)
+def test_cli_does_not_retry_terminal_append_when_its_readback_is_unknown(
+    tmp_path, monkeypatch, failure, terminal_state, expected_exit
+):
+    import tools.project_governance.cli as cli
+
+    class FailingPayloadEmitter(ReportEmitter):
+        def _payloads(self, records):
+            raise failure
+
+    original_append = cli.ScanProgressJournal._append
+    original_open = Path.open
+    terminal_append_count = 0
+    progress_after_first_attempt: list[bytes] = []
+    readback_armed = {"value": False}
+    readback_failed = {"value": False}
+    target_progress = tmp_path / "governance-git" / "CLI_FIXTURE" / "scan_progress.ndjson"
+
+    def terminal_append_error(self, record):
+        nonlocal terminal_append_count
+        if record.get("event") == "TERMINAL" and record.get("terminal_state") == terminal_state:
+            terminal_append_count += 1
+            if not progress_after_first_attempt:
+                progress_after_first_attempt.append(self.progress_path.read_bytes())
+            readback_armed["value"] = True
+            raise OSError("fixture terminal append failure")
+        return original_append(self, record)
+
+    def terminal_readback_error(path, mode="r", *args, **kwargs):
+        if (
+            readback_armed["value"]
+            and path == target_progress
+            and mode == "rb"
+            and not readback_failed["value"]
+        ):
+            readback_failed["value"] = True
+            raise OSError("fixture terminal readback failure")
+        return original_open(path, mode, *args, **kwargs)
+
+    root = tmp_path / "local"
+    (root / "runs").mkdir(parents=True)
+    config = _cli_fixture_config(root)
+    git_runner, _ = _fake_git_runner_factory(root)
+    monkeypatch.setattr(cli, "ReportEmitter", FailingPayloadEmitter)
+    monkeypatch.setattr(cli.ScanProgressJournal, "_append", terminal_append_error)
+    monkeypatch.setattr(Path, "open", terminal_readback_error)
+
+    outcome = cli.run_scan(
+        _cli_args(tmp_path),
+        config=config,
+        git_runner=git_runner,
+        repository_seeds=(root,),
+        implementation_repository=root,
+    )
+
+    assert outcome.exit_code == expected_exit
+    assert outcome.terminal_state == terminal_state
+    assert "terminal progress could not be persisted" in (outcome.message or "")
+    assert terminal_append_count == 1
+    assert readback_failed["value"] is True
+    assert progress_after_first_attempt
+    with original_open(target_progress, "rb") as stream:
+        assert stream.read() == progress_after_first_attempt[0]
+
+
+@pytest.mark.parametrize(
+    ("failure", "expected_code", "expected_terminal"),
+    (
+        (MemoryError("fixture local memory"), 2, "FAILED"),
+        (KeyboardInterrupt(), 130, "INTERRUPTED"),
+    ),
+)
+def test_cli_preserves_started_outcome_when_terminal_journal_write_fails(
+    tmp_path, monkeypatch, failure, expected_code, expected_terminal
+):
+    import tools.project_governance.cli as cli
+
+    class FailingLocalCollector:
+        def __init__(self, *args, **kwargs):
+            return None
+
+        def collect(self):
+            raise failure
+
+    original_append = cli.ScanProgressJournal._append
+
+    def journal_fsync_failure(self, record):
+        if record.get("event") == "TERMINAL":
+            raise OSError("fixture journal fsync failure")
+        return original_append(self, record)
+
+    root = tmp_path / "local"
+    root.mkdir()
+    config = _cli_fixture_config(root)
+    monkeypatch.setattr(cli, "LocalCollector", FailingLocalCollector)
+    monkeypatch.setattr(cli.ScanProgressJournal, "_append", journal_fsync_failure)
+
+    outcome = cli.run_scan(
+        _cli_args(tmp_path),
+        config=config,
+        git_runner=lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("Git called")),
+    )
+
+    assert outcome.exit_code == expected_code
+    assert outcome.terminal_state == expected_terminal
+    assert outcome.stage == "LOCAL"
+    assert outcome.terminal_state != "NOT_STARTED"
+    assert "terminal progress could not be persisted" in (outcome.message or "")
+    records = _progress_records(tmp_path / "governance-git" / "CLI_FIXTURE")
+    assert not any(record["event"] == "TERMINAL" for record in records)
+
+
+def test_cli_main_does_not_downgrade_a_started_failure_when_journal_fsync_fails(
+    tmp_path, monkeypatch, capsys
+):
+    import tools.project_governance.cli as cli
+
+    class FailingLocalCollector:
+        def __init__(self, *args, **kwargs):
+            return None
+
+        def collect(self):
+            raise MemoryError("fixture main memory")
+
+    root = tmp_path / "local"
+    root.mkdir()
+    config = _cli_fixture_config(root)
+    monkeypatch.setattr(cli, "load_config", lambda *args, **kwargs: config)
+    monkeypatch.setattr(cli, "LocalCollector", FailingLocalCollector)
+    original_append = cli.ScanProgressJournal._append
+
+    def journal_fsync_failure(self, record):
+        if record.get("event") == "TERMINAL":
+            raise OSError("fixture journal fsync failure")
+        return original_append(self, record)
+
+    monkeypatch.setattr(cli.ScanProgressJournal, "_append", journal_fsync_failure)
+
+    code = cli.main(
+        [
+            "scan",
+            "--config",
+            str(tmp_path / "config.json"),
+            "--scan-id",
+            "CLI_MAIN_JOURNAL_FAILURE",
+            "--output-root",
+            str(tmp_path / "git"),
+            "--external-output-root",
+            str(tmp_path / "external"),
+            "--operator",
+            "fixture",
+        ]
+    )
+    lines = [line for line in capsys.readouterr().out.splitlines() if line]
+
+    assert code == 2
+    assert len(lines) == 1
+    terminal = json.loads(lines[0])
+    assert terminal["terminal_state"] == "FAILED"
+    assert terminal["terminal_state"] != "NOT_STARTED"
+    assert terminal["stage"] == "LOCAL"
+    assert "terminal progress could not be persisted" in terminal["message"]
+
+
+@pytest.mark.parametrize(
+    ("failure", "journal_method"),
+    ((MemoryError("fixture original emitter failure"), "record_failure"), (KeyboardInterrupt(), "record_interrupt")),
+)
+def test_emitter_preserves_the_original_failure_when_terminal_journaling_fails(
+    tmp_path, monkeypatch, failure, journal_method
+):
+    from tools.project_governance.emit import ScanProgressJournal
+
+    class FailingPayloadEmitter(ReportEmitter):
+        def _payloads(self, records):
+            raise failure
+
+    monkeypatch.setattr(
+        ScanProgressJournal,
+        journal_method,
+        lambda *args, **kwargs: (_ for _ in ()).throw(OSError("fixture journal fsync failure")),
+    )
+    with pytest.raises(type(failure)):
+        FailingPayloadEmitter(
+            _bundle(),
+            output_root=tmp_path / "git",
+            external_output_root=tmp_path / "external",
+            metadata=_metadata(),
+        ).emit()
+
+
+def test_emitter_rejects_precreated_empty_wrong_token_extra_file_and_symlink(tmp_path):
+    from tools.project_governance.emit import ScanProgressJournal
+
+    empty_root = tmp_path / "empty-git"
+    empty_target = empty_root / "EMIT_FIXTURE"
+    empty_target.mkdir(parents=True)
+    with pytest.raises(FileExistsError):
+        ReportEmitter(
+            _bundle(),
+            output_root=empty_root,
+            external_output_root=tmp_path / "empty-external",
+            metadata=_metadata(),
+        ).emit()
+
+    wrong_root = tmp_path / "wrong-git"
+    target = wrong_root / "EMIT_FIXTURE"
+    owner = ScanProgressJournal.create(target, scan_id="EMIT_FIXTURE", token="a" * 48)
+    with pytest.raises(ValueError, match="token"):
+        ScanProgressJournal.open_existing(target, scan_id="EMIT_FIXTURE", token="b" * 48)
+    assert owner.token == "a" * 48
+
+    extra_root = tmp_path / "extra-git"
+    extra_target = extra_root / "EMIT_FIXTURE"
+    journal = ScanProgressJournal.create(extra_target, scan_id="EMIT_FIXTURE", token="c" * 48)
+    extra_target.joinpath("unexpected.txt").write_text("not a journal artifact", encoding="utf-8")
+    with pytest.raises(ValueError, match="unexpected"):
+        ReportEmitter(
+            _bundle(),
+            output_root=extra_root,
+            external_output_root=tmp_path / "extra-external",
+            metadata=_metadata(),
+            progress_journal=journal,
+        ).emit()
+
+    link_root = tmp_path / "link-git"
+    real_target = tmp_path / "real-target"
+    ScanProgressJournal.create(real_target, scan_id="EMIT_FIXTURE", token="d" * 48)
+    link_root.mkdir()
+    try:
+        (link_root / "EMIT_FIXTURE").symlink_to(real_target, target_is_directory=True)
+    except (NotImplementedError, OSError):
+        pytest.skip("symlink creation is unavailable on this Windows test host")
+    with pytest.raises(ValueError, match="symlink"):
+        ScanProgressJournal.open_existing(
+            link_root / "EMIT_FIXTURE", scan_id="EMIT_FIXTURE", token="d" * 48
+        )
+
+
+@pytest.mark.parametrize(
+    ("failure", "expected_exit", "terminal_state"),
+    ((MemoryError("fixture memory"), 2, "FAILED"), (KeyboardInterrupt(), 130, "INTERRUPTED")),
+)
+def test_cli_started_scan_records_terminal_progress_for_memory_and_interrupt(
+    tmp_path, monkeypatch, failure, expected_exit, terminal_state
+):
+    import tools.project_governance.cli as cli
+
+    class FailingLocalCollector:
+        def __init__(self, *args, **kwargs):
+            return None
+
+        def collect(self):
+            raise failure
+
+    root = tmp_path / "local"
+    root.mkdir()
+    config = _cli_fixture_config(root)
+    monkeypatch.setattr(cli, "LocalCollector", FailingLocalCollector)
+
+    try:
+        outcome = cli.run_scan(
+            _cli_args(tmp_path),
+            config=config,
+            git_runner=lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("Git called")),
+        )
+    except KeyboardInterrupt:
+        outcome = None
+
+    assert outcome is not None
+    assert outcome.exit_code == expected_exit
+    assert outcome.terminal_state == terminal_state
+    assert outcome.stage == "LOCAL"
+    records = _progress_records(tmp_path / "governance-git" / "CLI_FIXTURE")
+    assert records[-1]["stage"] == "LOCAL"
+    assert records[-1]["terminal_state"] == terminal_state
+    assert not (tmp_path / "governance-git" / "CLI_FIXTURE" / "scan_receipt.json").exists()
+
+
+def test_cli_main_prints_one_terminal_json_line_for_a_controlled_started_failure(
+    tmp_path, monkeypatch, capsys
+):
+    import tools.project_governance.cli as cli
+
+    root = tmp_path / "local"
+    root.mkdir()
+    config = _cli_fixture_config(root)
+
+    class FailingLocalCollector:
+        def __init__(self, *args, **kwargs):
+            return None
+
+        def collect(self):
+            raise MemoryError("fixture main memory")
+
+    monkeypatch.setattr(cli, "load_config", lambda *args, **kwargs: config)
+    monkeypatch.setattr(cli, "LocalCollector", FailingLocalCollector)
+    code = cli.main(
+        [
+            "scan",
+            "--config",
+            str(tmp_path / "config.json"),
+            "--scan-id",
+            "CLI_MAIN_FAILURE",
+            "--output-root",
+            str(tmp_path / "git"),
+            "--external-output-root",
+            str(tmp_path / "external"),
+            "--operator",
+            "fixture",
+        ]
+    )
+    lines = [line for line in capsys.readouterr().out.splitlines() if line]
+
+    assert code == 2
+    assert len(lines) == 1
+    terminal = json.loads(lines[0])
+    assert terminal["terminal_state"] == "FAILED"
+    assert terminal["stage"] == "LOCAL"
+
+
+def test_top_level_runner_timeout_preserves_live_child_pids_without_retry_or_exit_claim():
+    entrypoint = Path(__file__).resolve().parents[1] / "tools" / "project_governance_inventory.py"
+    module = runpy.run_path(str(entrypoint), run_name="project_governance_timeout_test")
+    from tools.project_governance.collect_n607 import DEFAULT_PREFLIGHT_SCRIPT
+
+    class FakeProcess:
+        pid = 7654
+        stdin = io.BytesIO()
+        stdout = io.BytesIO()
+        stderr = io.BytesIO()
+        wait_calls = 0
+
+        def wait(self, timeout=None):
+            self.wait_calls += 1
+            raise subprocess.TimeoutExpired("preflight", timeout)
+
+    class FakeTracker:
+        proxy_child_pids = (7655, 7656)
+
+        def wait_for_exit(self):
+            raise AssertionError("timeout must not claim an exited proxy")
+
+        def close(self):
+            return None
+
+    process = FakeProcess()
+    popen_calls: list[tuple[object, ...]] = []
+    runner = module["ProductionCommandRunner"](
+        popen_factory=lambda *args, **kwargs: popen_calls.append(args) or process,
+        tracker_factory=lambda pid, required: FakeTracker(),
+    )
+    result = runner.run(
+        (
+            "powershell.exe",
+            "-NoLogo",
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            str(DEFAULT_PREFLIGHT_SCRIPT),
+        ),
+        input_text=None,
+        timeout_seconds=1,
+        label="PREFLIGHT",
+    )
+
+    assert len(popen_calls) == 1
+    assert process.wait_calls == 1
+    assert result.child_pid == 7654
+    assert result.proxy_child_pids == (7655, 7656)
+    assert result.timed_out is True
+    assert result.returncode is None
+    assert result.child_exited is False
+    assert result.proxy_children_exited is False
+    assert "LIVE_CHILD_UNKNOWN" in result.stderr_tail
+
+
+@pytest.mark.parametrize("stage", ("LOCAL", "GIT", "N607", "INDEX", "RETENTION", "EMISSION"))
+def test_cli_records_the_actual_stage_for_each_controlled_post_start_exception(
+    tmp_path, monkeypatch, stage
+):
+    import tools.project_governance.cli as cli
+
+    root = tmp_path / "local"
+    (root / "runs").mkdir(parents=True)
+    config = _cli_fixture_config(root)
+    git_runner, _ = _fake_git_runner_factory(root)
+
+    def fail(*args, **kwargs):
+        raise MemoryError(f"fixture {stage} failure")
+
+    if stage == "LOCAL":
+        class FailingLocalCollector:
+            def __init__(self, *args, **kwargs):
+                return None
+
+            def collect(self):
+                fail()
+
+        monkeypatch.setattr(cli, "LocalCollector", FailingLocalCollector)
+    elif stage == "GIT":
+        monkeypatch.setattr(cli, "_ownership_and_assets", fail)
+    elif stage == "N607":
+        monkeypatch.setattr(cli.ScanProgressJournal, "record_n607_result", fail)
+    elif stage == "INDEX":
+        monkeypatch.setattr(cli, "index_experiments", fail)
+    elif stage == "RETENTION":
+        monkeypatch.setattr(cli, "classify_retentions", fail)
+    else:
+        monkeypatch.setattr(ReportEmitter, "_emit_into_initialized_target", fail)
+
+    outcome = cli.run_scan(
+        _cli_args(tmp_path),
+        config=config,
+        git_runner=git_runner,
+        repository_seeds=(root,),
+        implementation_repository=root,
+    )
+    records = _progress_records(tmp_path / "governance-git" / "CLI_FIXTURE")
+
+    assert outcome.exit_code == 2
+    assert outcome.terminal_state == "FAILED"
+    assert outcome.stage == stage
+    assert records[-1]["event"] == "TERMINAL"
+    assert records[-1]["stage"] == stage
+    assert records[-1]["terminal_state"] == "FAILED"
+    assert not (tmp_path / "governance-git" / "CLI_FIXTURE" / "scan_receipt.json").exists()
+
+
+def test_cli_forced_termination_leaves_a_nonterminal_progress_journal(tmp_path, monkeypatch):
+    import tools.project_governance.cli as cli
+
+    class ForcedTerminationLocalCollector:
+        def __init__(self, *args, **kwargs):
+            return None
+
+        def collect(self):
+            raise SystemExit(77)
+
+    root = tmp_path / "local"
+    root.mkdir()
+    config = _cli_fixture_config(root)
+    monkeypatch.setattr(cli, "LocalCollector", ForcedTerminationLocalCollector)
+    with pytest.raises(SystemExit) as raised:
+        cli.run_scan(_cli_args(tmp_path), config=config)
+
+    records = _progress_records(tmp_path / "governance-git" / "CLI_FIXTURE")
+    assert raised.value.code == 77
+    assert records[-1]["event"] == "STAGE"
+    assert records[-1]["stage"] == "LOCAL"
+    assert not any(record["event"] == "TERMINAL" for record in records)
+    assert not (tmp_path / "governance-git" / "CLI_FIXTURE" / "scan_receipt.json").exists()
+
+
+def test_cli_n607_progress_retains_timeout_child_and_proxy_pid_liveness(tmp_path):
+    import tools.project_governance.cli as cli
+    from tools.project_governance.collect_n607 import AttemptReceipt, N607CollectionResult, N607Receipt, RemoteOutcome
+
+    root = tmp_path / "local"
+    root.mkdir()
+    config = _cli_fixture_config(root)
+    git_runner, _ = _fake_git_runner_factory(root)
+
+    class TimeoutN607Collector:
+        def collect(self):
+            return N607CollectionResult(
+                records=(),
+                receipt=N607Receipt(
+                    outcome=RemoteOutcome.UNKNOWN,
+                    route=None,
+                    preflight_status="UNKNOWN",
+                    disconnect_status="UNKNOWN",
+                    attempts=(
+                        AttemptReceipt(
+                            label="PREFLIGHT",
+                            child_pid=901,
+                            proxy_child_pids=(902, 903),
+                            returncode=None,
+                            timed_out=True,
+                            child_exited=False,
+                            proxy_children_exited=False,
+                            disconnect_status="UNKNOWN",
+                            lingering_connections=(),
+                            stderr_tail="LIVE_CHILD_UNKNOWN",
+                        ),
+                    ),
+                ),
+            )
+
+    outcome = cli.run_scan(
+        _cli_args(tmp_path, include_n607=True),
+        config=config,
+        git_runner=git_runner,
+        repository_seeds=(root,),
+        implementation_repository=root,
+        n607_collector_factory=lambda *_: TimeoutN607Collector(),
+    )
+    records = _progress_records(tmp_path / "governance-git" / "CLI_FIXTURE")
+    n607 = next(record for record in records if record["event"] == "N607_RESULT")
+
+    assert outcome.exit_code == 3
+    assert n607["attempts"] == [
+        {
+            "label": "PREFLIGHT",
+            "child_pid": 901,
+            "proxy_child_pids": [902, 903],
+            "timed_out": True,
+            "child_exited": False,
+            "proxy_children_exited": False,
+            "liveness": "LIVE_CHILD_UNKNOWN",
+        }
+    ]

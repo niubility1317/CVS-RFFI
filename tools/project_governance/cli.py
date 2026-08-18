@@ -31,7 +31,7 @@ from .collect_n607 import (
     RemoteOutcome,
 )
 from .config import GovernanceConfig, load_config
-from .emit import ReportEmitter
+from .emit import ReportEmitter, ScanProgressJournal
 from .index_experiments import ExperimentIndex, index_experiments
 from .models import (
     AccessStatus,
@@ -69,6 +69,8 @@ class ScanOutcome:
     local_error_count: int
     remote_error_count: int
     message: str | None = None
+    terminal_state: str = "NOT_STARTED"
+    stage: str | None = None
 
     def as_dict(self) -> dict[str, object]:
         return {
@@ -81,6 +83,8 @@ class ScanOutcome:
             "local_error_count": self.local_error_count,
             "remote_error_count": self.remote_error_count,
             "message": self.message,
+            "terminal_state": self.terminal_state,
+            "stage": self.stage,
         }
 
 
@@ -831,109 +835,146 @@ def run_scan(
         git_target, external_target = _validate_request(args, selected_config)
     except (OSError, TypeError, ValueError) as exc:
         return ScanOutcome(4, scan_id, None, None, False, "NOT_STARTED", 0, 0, str(exc))
+    try:
+        journal = ScanProgressJournal.create(git_target, scan_id=args.scan_id)
+    except (OSError, TypeError, ValueError) as exc:
+        return ScanOutcome(
+            4,
+            args.scan_id,
+            None,
+            None,
+            False,
+            "NOT_STARTED",
+            0,
+            0,
+            str(exc),
+        )
 
-    started_at_utc = clock()
-    local_assets, local_scopes = LocalCollector(
-        selected_config.local, selected_config.discovery, scan_id=args.scan_id
-    ).collect()
-    local_scopes = _require_verified_root_scope(
-        local_scopes,
-        location=Location.LOCAL,
-        root_id=selected_config.local.root_id,
-        scan_id=args.scan_id,
-    )
-    root_paths: dict[str, str | Path] = {
-        selected_config.local.root_id: selected_config.local.root,
-        selected_config.n607.root_id: selected_config.n607.root,
-    }
-    default_implementation_repository = Path(__file__).resolve().parents[2]
-    selected_implementation_repository = Path(
-        implementation_repository or default_implementation_repository
-    ).resolve(strict=False)
-    seeds = (
-        tuple(repository_seeds)
-        if repository_seeds is not None
-        else (selected_implementation_repository,)
-    )
-    if not any(
-        Path(seed).resolve(strict=False) == selected_implementation_repository for seed in seeds
-    ):
-        seeds = seeds + (selected_implementation_repository,)
-    attached_assets, git_records, repositories = _ownership_and_assets(
-        local_assets,
-        (),
-        repository_seeds=seeds,
-        root_paths=root_paths,
-        git_runner=git_runner,
-    )
-
+    stage = "INITIALIZED"
+    local_scopes: tuple[ScopeResult, ...] = ()
+    git_records: tuple[GitOwnershipRecord, ...] = ()
+    final_assets: tuple[AssetRecord, ...] = ()
     remote = _not_requested_remote()
-    if bool(getattr(args, "include_n607", False)):
-        if n607_collector_factory is None:
-            remote = _remote_failure_from_exception(
-                RuntimeError("N607 collector was not supplied by the top-level entrypoint"),
-                scan_id=args.scan_id,
-                root_id=selected_config.n607.root_id,
-            )
-        else:
-            try:
-                collector = _make_n607_collector(n607_collector_factory, selected_config, args.scan_id)
-                collected = collector.collect()
-                if not isinstance(collected, N607CollectionResult):
-                    raise ValueError("N607 collector returned an invalid result")
-                remote = _convert_remote(collected, selected_config, args.scan_id)
-            except Exception as exc:
+    try:
+        started_at_utc = clock()
+        stage = "LOCAL"
+        journal.begin_stage(stage)
+        local_assets, local_scopes = LocalCollector(
+            selected_config.local, selected_config.discovery, scan_id=args.scan_id
+        ).collect()
+        local_scopes = _require_verified_root_scope(
+            local_scopes,
+            location=Location.LOCAL,
+            root_id=selected_config.local.root_id,
+            scan_id=args.scan_id,
+        )
+        root_paths: dict[str, str | Path] = {
+            selected_config.local.root_id: selected_config.local.root,
+            selected_config.n607.root_id: selected_config.n607.root,
+        }
+        default_implementation_repository = Path(__file__).resolve().parents[2]
+        selected_implementation_repository = Path(
+            implementation_repository or default_implementation_repository
+        ).resolve(strict=False)
+        seeds = (
+            tuple(repository_seeds)
+            if repository_seeds is not None
+            else (selected_implementation_repository,)
+        )
+        if not any(
+            Path(seed).resolve(strict=False) == selected_implementation_repository for seed in seeds
+        ):
+            seeds = seeds + (selected_implementation_repository,)
+
+        stage = "GIT"
+        journal.begin_stage(stage)
+        attached_assets, git_records, repositories = _ownership_and_assets(
+            local_assets,
+            (),
+            repository_seeds=seeds,
+            root_paths=root_paths,
+            git_runner=git_runner,
+        )
+
+        stage = "N607"
+        journal.begin_stage(stage)
+        if bool(getattr(args, "include_n607", False)):
+            if n607_collector_factory is None:
                 remote = _remote_failure_from_exception(
-                    exc,
+                    RuntimeError("N607 collector was not supplied by the top-level entrypoint"),
                     scan_id=args.scan_id,
                     root_id=selected_config.n607.root_id,
                 )
-
-    if remote.assets:
-        attached_assets = attached_assets + tuple(
-            replace(asset, git_ownership=GitOwnership.REMOTE_NON_GIT)
-            for asset in remote.assets
+            else:
+                try:
+                    collector = _make_n607_collector(n607_collector_factory, selected_config, args.scan_id)
+                    collected = collector.collect()
+                    if not isinstance(collected, N607CollectionResult):
+                        raise ValueError("N607 collector returned an invalid result")
+                    remote = _convert_remote(collected, selected_config, args.scan_id)
+                except Exception as exc:
+                    remote = _remote_failure_from_exception(
+                        exc,
+                        scan_id=args.scan_id,
+                        root_id=selected_config.n607.root_id,
+                    )
+        journal.record_n607_result(
+            requested=bool(getattr(args, "include_n607", False)),
+            outcome=remote.outcome,
+            attempts=remote.attempts,
         )
-        git_records = git_records + tuple(
-            GitOwnershipRecord(asset_id=asset.asset_id, ownership=GitOwnership.REMOTE_NON_GIT)
-            for asset in remote.assets
+        if remote.assets:
+            attached_assets = attached_assets + tuple(
+                replace(asset, git_ownership=GitOwnership.REMOTE_NON_GIT)
+                for asset in remote.assets
+            )
+            git_records = git_records + tuple(
+                GitOwnershipRecord(asset_id=asset.asset_id, ownership=GitOwnership.REMOTE_NON_GIT)
+                for asset in remote.assets
+            )
+
+        stage = "INDEX"
+        journal.begin_stage(stage)
+        experiment_index = index_experiments(
+            attached_assets,
+            root_paths=root_paths,
+            process_evidence=remote.processes,
+        )
+        indexed_assets = _assets_with_experiment_ids(attached_assets, experiment_index)
+
+        stage = "RETENTION"
+        journal.begin_stage(stage)
+        evidence = _retention_evidence(indexed_assets, experiment_index, root_paths)
+        decisions = classify_retentions(indexed_assets, evidence)
+        candidates = build_deletion_candidates(indexed_assets, evidence)
+        final_assets = _with_retention(indexed_assets, decisions)
+        completed_at_utc = clock()
+        head, tracked_state = _implementation_state(
+            repositories,
+            implementation_repository=selected_implementation_repository,
+        )
+        metadata = _metadata(
+            selected_config,
+            local_scopes=local_scopes,
+            remote=remote,
+            implementation_git_head=head,
+            git_tracked_diff_state=tracked_state,
+        )
+        bundle = ScanBundle(
+            scan_id=args.scan_id,
+            operator=args.operator,
+            started_at_utc=started_at_utc,
+            completed_at_utc=completed_at_utc,
+            assets=final_assets,
+            scope_results=local_scopes + remote.scopes + remote.error_scopes,
+            git_ownership=git_records,
+            experiments=tuple(experiment_index.values()),
+            retention_decisions=decisions,
+            deletion_candidates=candidates,
         )
 
-    experiment_index = index_experiments(
-        attached_assets,
-        root_paths=root_paths,
-        process_evidence=remote.processes,
-    )
-    indexed_assets = _assets_with_experiment_ids(attached_assets, experiment_index)
-    evidence = _retention_evidence(indexed_assets, experiment_index, root_paths)
-    decisions = classify_retentions(indexed_assets, evidence)
-    candidates = build_deletion_candidates(indexed_assets, evidence)
-    final_assets = _with_retention(indexed_assets, decisions)
-    completed_at_utc = clock()
-    head, tracked_state = _implementation_state(
-        repositories,
-        implementation_repository=selected_implementation_repository,
-    )
-    metadata = _metadata(
-        selected_config,
-        local_scopes=local_scopes,
-        remote=remote,
-        implementation_git_head=head,
-        git_tracked_diff_state=tracked_state,
-    )
-    bundle = ScanBundle(
-        scan_id=args.scan_id,
-        operator=args.operator,
-        started_at_utc=started_at_utc,
-        completed_at_utc=completed_at_utc,
-        assets=final_assets,
-        scope_results=local_scopes + remote.scopes + remote.error_scopes,
-        git_ownership=git_records,
-        experiments=tuple(experiment_index.values()),
-        retention_decisions=decisions,
-        deletion_candidates=candidates,
-    )
-    try:
+        stage = "EMISSION"
+        journal.begin_stage(stage)
         emission = ReportEmitter(
             bundle,
             output_root=args.output_root,
@@ -941,37 +982,124 @@ def run_scan(
             metadata=metadata,
             git_file_max_bytes=selected_config.output.git_file_max_bytes,
             git_scan_max_bytes=selected_config.output.git_scan_max_bytes,
+            progress_journal=journal,
         ).emit()
-    except (OSError, TypeError, ValueError) as exc:
         local_errors = _local_error_count(final_assets, local_scopes, git_records)
-        exit_code = (
-            3
-            if remote.outcome == RemoteOutcome.UNKNOWN.value or remote.disconnect == "UNKNOWN"
-            else 2
-        )
         return ScanOutcome(
-            exit_code,
+            _outcome_code(local_errors, remote),
             args.scan_id,
-            str(git_target) if git_target.exists() else None,
-            str(external_target) if external_target.exists() else None,
+            str(emission.git_output_dir),
+            str(emission.external_output_dir) if emission.external_output_dir is not None else None,
             remote.outcome != "NOT_REQUESTED",
             remote.outcome,
             local_errors,
             remote.error_count,
-            f"report emission failed after scanning; partial output may exist: {exc}",
+            None,
+            "COMPLETE",
+            stage,
         )
-    local_errors = _local_error_count(final_assets, local_scopes, git_records)
-    return ScanOutcome(
-        _outcome_code(local_errors, remote),
-        args.scan_id,
-        str(emission.git_output_dir),
-        str(emission.external_output_dir) if emission.external_output_dir is not None else None,
-        remote.outcome != "NOT_REQUESTED",
-        remote.outcome,
-        local_errors,
-        remote.error_count,
-        None,
-    )
+    except KeyboardInterrupt:
+        receipt_completed = journal.receipt_write_completed
+        receipt_readback_unknown = journal.receipt_readback_unknown
+        terminal_persisted = False
+        if not receipt_completed and not receipt_readback_unknown:
+            if journal.terminal_append_attempted:
+                terminal_persisted = journal.terminal_append_persisted
+            else:
+                try:
+                    terminal_persisted = journal.record_interrupt(stage)
+                except BaseException:
+                    # The original interrupt is the authoritative scan outcome even
+                    # when durable-terminal journaling itself cannot be flushed.
+                    terminal_persisted = False
+        if receipt_completed:
+            message = (
+                "complete receipt exists; terminal receipt call was interrupted "
+                f"during {stage}; journal was not modified"
+            )
+        elif receipt_readback_unknown:
+            message = (
+                "receipt readback UNKNOWN after terminal receipt call was interrupted "
+                f"during {stage}; journal was not modified; inspect partial journal"
+            )
+        elif terminal_persisted:
+            message = f"scan interrupted during {stage}; durable progress was preserved"
+        else:
+            message = (
+                f"scan interrupted during {stage}; terminal progress could not be persisted; "
+                "inspect partial journal"
+            )
+        return ScanOutcome(
+            130,
+            args.scan_id,
+            str(git_target),
+            str(external_target) if external_target.exists() else None,
+            remote.outcome != "NOT_REQUESTED",
+            remote.outcome,
+            _local_error_count(final_assets, local_scopes, git_records),
+            remote.error_count,
+            message,
+            "INTERRUPTED",
+            stage,
+        )
+    except Exception as exc:
+        receipt_completed = journal.receipt_write_completed
+        receipt_readback_unknown = journal.receipt_readback_unknown
+        terminal_persisted = False
+        if not receipt_completed and not receipt_readback_unknown:
+            if journal.terminal_append_attempted:
+                terminal_persisted = journal.terminal_append_persisted
+            else:
+                try:
+                    terminal_persisted = journal.record_failure(stage, exc)
+                except BaseException:
+                    # Preserve the scan failure rather than misreporting it as a
+                    # pre-start CLI failure if the evidence append also fails.
+                    terminal_persisted = False
+        if receipt_completed:
+            message = (
+                "complete receipt exists; terminal receipt call raised "
+                f"during {stage}: {type(exc).__name__}; journal was not modified"
+            )
+        elif receipt_readback_unknown:
+            message = (
+                "receipt readback UNKNOWN after terminal receipt call raised "
+                f"during {stage}: {type(exc).__name__}; journal was not modified; "
+                "inspect partial journal"
+            )
+        elif terminal_persisted:
+            message = (
+                f"report emission failed after scanning; durable progress was preserved during {stage}: {type(exc).__name__}"
+                if stage == "EMISSION"
+                else f"scan failed after initialization during {stage}; durable progress was preserved: {type(exc).__name__}"
+            )
+        else:
+            message = (
+                f"report emission failed after scanning; terminal progress could not be persisted; "
+                f"inspect partial journal: {type(exc).__name__}"
+                if stage == "EMISSION"
+                else f"scan failed after initialization during {stage}; terminal progress could not be persisted; "
+                f"inspect partial journal: {type(exc).__name__}"
+            )
+        return ScanOutcome(
+            3
+            if (
+                receipt_readback_unknown
+                or remote.outcome == RemoteOutcome.UNKNOWN.value
+                or remote.disconnect == "UNKNOWN"
+            )
+            else 2,
+            args.scan_id,
+            str(git_target),
+            str(external_target) if external_target.exists() else None,
+            remote.outcome != "NOT_REQUESTED",
+            remote.outcome,
+            _local_error_count(final_assets, local_scopes, git_records),
+            remote.error_count,
+            message,
+            "FAILED",
+            stage,
+        )
 
 
 def main(
@@ -992,7 +1120,21 @@ def main(
             config=config,
             n607_collector_factory=n607_collector_factory,
         )
-    except (OSError, TypeError, ValueError) as exc:
+    except KeyboardInterrupt:
+        outcome = ScanOutcome(
+            130,
+            getattr(args, "scan_id", ""),
+            None,
+            None,
+            False,
+            "NOT_STARTED",
+            0,
+            0,
+            "scan interrupted before durable progress initialization",
+            "INTERRUPTED",
+            "INITIALIZED",
+        )
+    except Exception as exc:
         outcome = ScanOutcome(4, getattr(args, "scan_id", ""), None, None, False, "NOT_STARTED", 0, 0, str(exc))
     print(json.dumps(outcome.as_dict(), ensure_ascii=True, sort_keys=True, separators=(",", ":")))
     return outcome.exit_code

@@ -395,6 +395,9 @@ class ProductionCommandRunner:
             child_exited = True
         except subprocess.TimeoutExpired:
             timed_out = True
+            stderr_tail.append(
+                b"LIVE_CHILD_UNKNOWN: approved child reached timeout without terminal exit evidence"
+            )
         except OSError as exc:
             stderr_tail.append(str(exc).encode("utf-8", errors="replace"))
 
