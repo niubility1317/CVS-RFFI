@@ -19,7 +19,11 @@ from .paths import normalize_relative_path, stable_asset_id
 
 
 SCHEMA_VERSION = 1
-SSH_TIMEOUT_SECONDS = 45
+# Connection setup remains independently capped by ``ConnectTimeout=10``.
+# The collection budget must cover the bounded depth-three metadata walk over
+# the configured carrier surfaces; the real N607 inventory cannot complete in
+# the former 45-second whole-command window.
+SSH_TIMEOUT_SECONDS = 15 * 60
 PREFLIGHT_TIMEOUT_SECONDS = 45
 DIRECT_ROUTE = "DIRECT"
 BRIDGE_ROUTE = "LAB_BRIDGE"

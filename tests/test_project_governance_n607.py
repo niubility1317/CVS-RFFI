@@ -410,7 +410,7 @@ def test_direct_success_requires_markers_valid_ndjson_and_clean_disconnect() -> 
     assert len(result.records) == len(_ndjson())
     assert [call["label"] for call in runner.calls] == ["PREFLIGHT", "DIRECT"]
     assert runner.calls[1]["command"] == _direct_command()
-    assert runner.calls[1]["timeout_seconds"] == 45
+    assert runner.calls[1]["timeout_seconds"] == 15 * 60
     assert runner.calls[1]["streamed"] is True
     assert "SCAN-1" in str(runner.calls[1]["input_text"])
     assert runner.connection_calls[1]["attempt_pids"] == (202,)
