@@ -362,11 +362,9 @@ def build_index(
         raise FileExistsError(f"governance index target already exists: {database_path}")
     if database_path.parent.resolve(strict=True) != external_root.resolve(strict=True):
         raise ValueError("governance index must be created directly in external_root")
-    temporary = database_path.with_name(f".{database_path.name}.building")
-    if temporary.exists():
-        raise FileExistsError(f"governance index temporary target exists: {temporary}")
-
-    connection = sqlite3.connect(temporary)
+    with database_path.open("xb"):
+        pass
+    connection = sqlite3.connect(database_path)
     try:
         _create_schema(connection)
         local_count = _import_csv(
@@ -428,8 +426,6 @@ def build_index(
         )
         _create_indexes(connection)
         connection.commit()
-        connection.close()
-        temporary.replace(database_path)
     finally:
         connection.close()
 

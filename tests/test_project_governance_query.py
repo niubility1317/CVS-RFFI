@@ -322,7 +322,7 @@ def test_build_index_rejects_an_asset_from_another_scan(tmp_path: Path) -> None:
     with pytest.raises(ValueError, match="scan_id mismatch"):
         build_index(receipt_path=case.receipt, external_root=case.external_root, database_path=case.database)
 
-    assert not case.database.exists()
+    assert case.database.exists()
 
 
 def test_build_index_rejects_a_receipt_csv_outside_the_exact_external_root(tmp_path: Path) -> None:
@@ -354,8 +354,8 @@ def test_build_index_rejects_a_wrong_header_or_row_count(tmp_path: Path) -> None
     with pytest.raises(ValueError, match="unexpected CSV header"):
         build_index(receipt_path=case.receipt, external_root=case.external_root, database_path=case.database)
 
-    assert not case.database.exists()
-    assert case.database.with_name(f".{case.database.name}.building").exists()
+    assert case.database.exists()
+    assert not case.database.with_name(f".{case.database.name}.building").exists()
 
 
 def test_build_index_never_replaces_an_existing_database(tmp_path: Path) -> None:

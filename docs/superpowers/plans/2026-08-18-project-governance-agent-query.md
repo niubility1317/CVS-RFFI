@@ -36,7 +36,7 @@
 - Produces: `build_index(*, receipt_path: Path, external_root: Path, database_path: Path) -> IndexBuildSummary`
 - Consumes: terminal `scan_receipt.json` and the six external CSV tables.
 
-- [ ] **Step 1: Add a fixture writer and a failing successful-build test**
+- [x] **Step 1: Add a fixture writer and a failing successful-build test**
 
 Create literal CSV fixtures with UTF-8 BOM and one local asset, one N607 asset, two experiments, two Git rows, two retention rows and zero deletion rows. Write a terminal receipt whose `counts` and `external_files` point at those files. The assertion must exercise the real SQLite output:
 
@@ -67,7 +67,7 @@ def test_build_index_streams_validated_tables_into_a_new_database(tmp_path: Path
 
 The production mutation caught by this test is a missing table import, wrong BOM handling, or failure to merge local/N607 assets.
 
-- [ ] **Step 2: Run the focused test and verify RED**
+- [x] **Step 2: Run the focused test and verify RED**
 
 Run serially:
 
@@ -78,9 +78,9 @@ conda run -n ssr-gpu python -m pytest tests/test_project_governance_query.py::te
 
 Expected: interpreter is inside `ssr-gpu`; pytest fails because `tools.project_governance.query_index` does not exist.
 
-- [ ] **Step 3: Implement the minimal schema and streamed importer**
+- [x] **Step 3: Implement the minimal schema and streamed importer**
 
-Implement exact table schemas for the source headers. Use `encoding="utf-8-sig"`, `newline=""`, `csv.DictReader`, parameterized `executemany` batches and a temporary database beside the target. Core shape:
+Implement exact table schemas for the source headers. Use `encoding="utf-8-sig"`, `newline=""`, `csv.DictReader`, parameterized `executemany` batches and an exclusively created new database. Core shape:
 
 ```python
 @dataclass(frozen=True)
@@ -94,27 +94,23 @@ def build_index(*, receipt_path: Path, external_root: Path, database_path: Path)
     receipt = _load_terminal_receipt(receipt_path)
     _require_new_database_target(database_path)
     sources = _resolve_csv_sources(receipt, external_root)
-    temporary = database_path.with_name(f".{database_path.name}.building")
-    _require_absent(temporary)
-    connection = sqlite3.connect(temporary)
+    _require_new_database_target(database_path)
+    with database_path.open("xb"):
+        pass
+    connection = sqlite3.connect(database_path)
     try:
         _create_schema(connection)
         counts = _import_all(connection, sources, scan_id=receipt["scan_id"])
         _validate_counts(receipt, counts)
         connection.commit()
+    finally:
         connection.close()
-        temporary.replace(database_path)
-    except BaseException:
-        connection.close()
-        if temporary.exists():
-            temporary.unlink()
-        raise
     return IndexBuildSummary(receipt["scan_id"], database_path, counts)
 ```
 
-The cleanup may remove only the temporary database created by this invocation; it must never unlink the requested final target or any source artifact.
+An import failure leaves the newly created partial database in place as evidence and never updates`latest.json`. The package does not delete, rename or replace the partial database or any source artifact.
 
-- [ ] **Step 4: Run the focused test and verify GREEN**
+- [x] **Step 4: Run the focused test and verify GREEN**
 
 ```bash
 conda run -n ssr-gpu python -m pytest tests/test_project_governance_query.py::test_build_index_streams_validated_tables_into_a_new_database -q
@@ -122,7 +118,7 @@ conda run -n ssr-gpu python -m pytest tests/test_project_governance_query.py::te
 
 Expected: `1 passed`.
 
-- [ ] **Step 5: Add failing validation and immutability tests**
+- [x] **Step 5: Add failing validation and immutability tests**
 
 Add parameterized tests proving the builder rejects, before publishing a final database:
 
@@ -152,7 +148,7 @@ def test_build_index_fails_closed_without_replacing_sources_or_target(tmp_path, 
 
 Add a separate test with an empty deletion CSV proving no deletion row is invented.
 
-- [ ] **Step 6: Run validation tests and verify RED**
+- [x] **Step 6: Run validation tests and verify RED**
 
 ```bash
 conda run -n ssr-gpu python -m pytest tests/test_project_governance_query.py -k 'build_index and (fails_closed or deletion)' -q
@@ -160,7 +156,7 @@ conda run -n ssr-gpu python -m pytest tests/test_project_governance_query.py -k 
 
 Expected: failures identify each missing validation branch.
 
-- [ ] **Step 7: Implement receipt, boundary, header and count validation**
+- [x] **Step 7: Implement receipt, boundary, header and count validation**
 
 Require:
 
@@ -174,7 +170,7 @@ receipt["deletions"] == 0
 
 Resolve each required CSV from `external_files`, require that its resolved parent is exactly `external_root.resolve()`, verify its byte size against the receipt, verify exact headers, and compare imported counts against receipt counts. Validate every asset row's `scan_id` against the receipt. Do not recompute multi-GB hashes.
 
-- [ ] **Step 8: Run all builder tests and commit Task 1**
+- [x] **Step 8: Run all builder tests and commit Task 1**
 
 ```bash
 conda run -n ssr-gpu python -m pytest tests/test_project_governance_query.py -k build_index -q
@@ -200,7 +196,7 @@ Expected: all builder tests pass; commit contains only the two Task 1 files.
 - Produces query methods: `status()`, `find_assets(query, limit)`, `experiment(run_id)`, `repo(path)`, `review(filters, limit)` returning JSON-serializable mappings.
 - Consumes: Task 1 SQLite schema and terminal receipt.
 
-- [ ] **Step 1: Add failing pointer and read-only-open tests**
+- [x] **Step 1: Add failing pointer and read-only-open tests**
 
 ```python
 def test_latest_pointer_opens_the_matching_database_read_only(tmp_path):
@@ -216,7 +212,7 @@ def test_latest_pointer_opens_the_matching_database_read_only(tmp_path):
 
 Mutation caught: opening SQLite in writable/default mode, creating side files, or accepting mismatched metadata.
 
-- [ ] **Step 2: Run pointer test and verify RED**
+- [x] **Step 2: Run pointer test and verify RED**
 
 ```bash
 conda run -n ssr-gpu python -m pytest tests/test_project_governance_query.py::test_latest_pointer_opens_the_matching_database_read_only -q
@@ -224,7 +220,7 @@ conda run -n ssr-gpu python -m pytest tests/test_project_governance_query.py::te
 
 Expected: fails because `LatestPointer`, `load_latest` and `QueryStore` are absent.
 
-- [ ] **Step 3: Implement strict pointer loading and read-only connection**
+- [x] **Step 3: Implement strict pointer loading and read-only connection**
 
 Use `Path.resolve(strict=True)`, exact schema keys and SQLite URI mode:
 
@@ -235,13 +231,13 @@ connection = sqlite3.connect(uri, uri=True)
 
 Validate pointer scan ID against both receipt and SQLite `metadata`; reject nonexistent paths, path roots outside the approved governance roots, nonterminal receipts and schema mismatch.
 
-- [ ] **Step 4: Run pointer test and verify GREEN**
+- [x] **Step 4: Run pointer test and verify GREEN**
 
 ```bash
 conda run -n ssr-gpu python -m pytest tests/test_project_governance_query.py::test_latest_pointer_opens_the_matching_database_read_only -q
 ```
 
-- [ ] **Step 5: Add failing real-behavior tests for all five queries**
+- [x] **Step 5: Add failing real-behavior tests for all five queries**
 
 Use literal expected results:
 
@@ -265,17 +261,17 @@ def test_review_never_promotes_review_rows_to_deletion_candidates(built_store):
 
 Also test: limit must be `1..100`; empty result is explicit; path-prefix queries are bounded; `SCAN_ERROR` is preserved.
 
-- [ ] **Step 6: Run query tests and verify RED**
+- [x] **Step 6: Run query tests and verify RED**
 
 ```bash
 conda run -n ssr-gpu python -m pytest tests/test_project_governance_query.py -k 'find or experiment or repo or review or limit' -q
 ```
 
-- [ ] **Step 7: Implement parameterized bounded queries**
+- [x] **Step 7: Implement parameterized bounded queries**
 
 All SQL values use parameter markers. `find_assets` tries exact asset ID, normalized absolute path and then bounded prefix. `experiment` joins only the exact normalized run ID. `repo` returns all distinct matching repository/worktree pairs and reports `AMBIGUOUS` when more than one remains. `review` accepts only controlled enum filters and reads deletion authorization exactly as stored.
 
-- [ ] **Step 8: Run Task 2 tests and commit**
+- [x] **Step 8: Run Task 2 tests and commit**
 
 ```bash
 conda run -n ssr-gpu python -m pytest tests/test_project_governance_query.py -q
@@ -297,7 +293,7 @@ git commit -m "feat: query project governance index"
 - Produces subcommands: `build-index`, `status`, `find`, `experiment`, `repo`, `review`.
 - Produces: one JSON object on stdout when `--json` is passed; stable exit codes `0`, `2`, `3`, `4`.
 
-- [ ] **Step 1: Add failing parser and no-side-effect tests**
+- [x] **Step 1: Add failing parser and no-side-effect tests**
 
 ```python
 @pytest.mark.parametrize("command", ("build-index", "status", "find", "experiment", "repo", "review"))
@@ -316,13 +312,13 @@ def test_query_commands_do_not_construct_collectors_or_create_outputs(tmp_path, 
 
 Mutation caught: routing a query through scan collection, accepting destructive flags, or writing output.
 
-- [ ] **Step 2: Run CLI parser tests and verify RED**
+- [x] **Step 2: Run CLI parser tests and verify RED**
 
 ```bash
 conda run -n ssr-gpu python -m pytest tests/test_project_governance_query.py -k cli -q
 ```
 
-- [ ] **Step 3: Extend `build_parser` and route commands before scan construction**
+- [x] **Step 3: Extend `build_parser` and route commands before scan construction**
 
 Add exact arguments:
 
@@ -340,17 +336,17 @@ review --latest PATH [--location {LOCAL,N607}]
 
 Dispatch query/build commands before any scan config, progress journal or collector is created.
 
-- [ ] **Step 4: Implement deterministic rendering and exit mapping**
+- [x] **Step 4: Implement deterministic rendering and exit mapping**
 
 JSON uses `ensure_ascii=False`, sorted keys and one terminal line. Text output is concise and never claims live N607 state. Map validation/database inconsistency to`2`, conservative receipt warnings to`3`, and pre-query unsafe input to`4`.
 
-- [ ] **Step 5: Run CLI tests and verify GREEN**
+- [x] **Step 5: Run CLI tests and verify GREEN**
 
 ```bash
 conda run -n ssr-gpu python -m pytest tests/test_project_governance_query.py -k cli -q
 ```
 
-- [ ] **Step 6: Run existing CLI regressions and commit**
+- [x] **Step 6: Run existing CLI regressions and commit**
 
 ```bash
 conda run -n ssr-gpu python -m pytest tests/test_project_governance_emit_cli.py tests/test_project_governance_query.py -q
@@ -374,7 +370,7 @@ git commit -m "feat: expose governance queries to project agents"
 - Produces: a Git-tracked latest pointer and minimal Agent workflow documentation.
 - Produces external file: `E:/type10-7/local_artifacts/project_governance/PGOV_20260818T062450Z/governance.sqlite`.
 
-- [ ] **Step 1: Build the real SQLite index once**
+- [x] **Step 1: Build the real SQLite index once**
 
 Run the exact offline command with no N607 flag:
 
@@ -388,11 +384,11 @@ conda run -n ssr-gpu python tools/project_governance_inventory.py build-index \
 
 Expected: one JSON summary, counts equal the receipt, no source mutation, no network.
 
-- [ ] **Step 2: Independently query the real database before publishing the pointer**
+- [x] **Step 2: Independently query the real database before publishing the pointer**
 
 Use a temporary pointer outside Git, run `status`, one exact known path query, one known run query and one repo query. Verify returned scan ID is`PGOV_20260818T062450Z`, SQLite opens read-only, and source CSV mtimes/bytes recorded before the build are unchanged.
 
-- [ ] **Step 3: Write `latest.json` and Agent usage documentation**
+- [x] **Step 3: Write `latest.json` and Agent usage documentation**
 
 `latest.json` uses schema version`1` and exact absolute paths. `agent-usage.md` documents:
 
@@ -403,15 +399,15 @@ End: record new run/path for later delta registration
 Never: full rescan per task, infer deletion, or treat governance as an extra gate
 ```
 
-- [ ] **Step 4: Add the minimal tracked `AGENTS.md` rule**
+- [x] **Step 4: Add the minimal tracked `AGENTS.md` rule**
 
 Add a short section that points Agents to `docs/project_governance/latest.json` and `agent-usage.md`. It must explicitly state that queries are navigation-only, current experimental safety rules remain authoritative, and deletion still needs explicit user approval.
 
-- [ ] **Step 5: Mark the approved spec as implemented only after real verification**
+- [x] **Step 5: Mark the approved spec as implemented only after real verification**
 
 Change the spec status from “书面设计等待用户复核” to “设计已批准；第一阶段已实现并验证”, and record the final implementation commit only after the code commits exist. Do not add hashes, seals or a new approval chain.
 
-- [ ] **Step 6: Validate docs and pointer, then commit**
+- [x] **Step 6: Validate docs and pointer, then commit**
 
 ```bash
 conda run -n ssr-gpu python tools/project_governance_inventory.py status \
@@ -436,7 +432,7 @@ Before committing, assert cached files are exactly the four listed paths.
 - Consumes all prior tasks.
 - Produces fresh evidence that the query layer and previous governance scanner coexist.
 
-- [ ] **Step 1: Run the complete governance test suite serially**
+- [x] **Step 1: Run the complete governance test suite serially**
 
 ```bash
 conda run -n ssr-gpu python -m pytest tests/test_project_governance*.py tests/test_n607_training_inventory.py -q
@@ -444,7 +440,7 @@ conda run -n ssr-gpu python -m pytest tests/test_project_governance*.py tests/te
 
 Expected: zero failures.
 
-- [ ] **Step 2: Compile and inspect the exact implementation surface**
+- [x] **Step 2: Compile and inspect the exact implementation surface**
 
 ```bash
 conda run -n ssr-gpu python -m compileall -q tools/project_governance tools/project_governance_inventory.py
@@ -454,7 +450,7 @@ git status -sb
 
 Expected: compile and diff checks exit`0`; status retains only pre-existing user DOCX/QA/historical scan state outside intended commits.
 
-- [ ] **Step 3: Run real read-only command probes**
+- [x] **Step 3: Run real read-only command probes**
 
 ```bash
 conda run -n ssr-gpu python tools/project_governance_inventory.py status --latest docs/project_governance/latest.json --json
@@ -464,7 +460,7 @@ conda run -n ssr-gpu python tools/project_governance_inventory.py review --lates
 
 Accept exit`3` only when the JSON explicitly reports the known conservative baseline warnings; no query may create or modify files.
 
-- [ ] **Step 4: Review commits and finish the branch**
+- [x] **Step 4: Review commits and finish the branch**
 
 ```bash
 git log --oneline --decorate -8
