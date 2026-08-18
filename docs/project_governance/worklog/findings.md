@@ -66,3 +66,13 @@
 - 先前长期报告的`process=PRESENT`是假阳性：监控命令使用`ps -ef`按scan ID匹配时，命中了监控脚本自身命令行中的`for run_id in ...`。最终由Windows原生`ps -W`和`tasklist.exe /FO CSV`交叉确认无Python/Conda扫描进程。后续不得用包含目标ID的监控命令行做单一存活证据；必须保留原始执行session，或使用启动时记录的精确Windows PID及父子绑定。
 - 终态独立核验同时确认`ssh.exe=0`、到`172.31.111.215:22`和`172.31.105.18:22`的`ESTABLISHED=0`。两次尝试均未形成删除候选或授权，原资产移动、覆盖、删除、权限修改、进程停止和远端写入均为0；两个空目录作为失败现场保留，未经用户明确同意不删除。
 - 静态性能审查发现`index_experiments.py`在显式run root、expected artifact、同commit binding和known run ID关联上存在多处全量笛卡尔遍历；真实资产规模下会放大为数千万至上亿次Python路径/字符串比较。源码未见无限循环，但该实现不能继续用于第三次正式扫描。下一步先以TDD改为等价的路径索引、binding缓存和token倒排，再用新ID启动唯一一次正式扫描。
+
+## 2026-08-18规模性能与终态证据修复闭合
+
+- 实验索引已改为一次性规范化路径索引、证据binding缓存、commit+token倒排和known run ID去重。180资产规模回归中，旧实现触发9580次路径包含判断；新实现受确定性调用计数约束，不依赖墙钟计时。性能提交为`08cd32fa7e705494877b46bc06f58c75269c9527`。
+- 独立复审发现首版路径索引对Windows盘符根和UNC共享根产生新增后代假绑定。修复复用旧LOCAL包含谓词，保持盘符根、UNC、普通LOCAL、POSIX根和N607反斜杠/大小写语义；修复提交为`ea2f4fca97012cfc0f6b8d93ea448a261a4df7ec`，最终复审`P0=0、P1=0、P2=0`。
+- CLI现在在安全校验后独占创建`scan_progress.ndjson`，以UTF-8 NDJSON、flush和fsync记录固定阶段、当前Windows PID、受控N607 child/proxy退出事实和组合liveness。既有空目录、错误token、额外文件、symlink及任一终态journal都不能被重新用于写出。
+- 收据仍最后写，保留既有`receipt_file`字段，并记录`terminal_state`及冻结progress的字节数和SHA-256。完整、部分和不可判定收据采用`MATCH/PARTIAL/UNKNOWN`三态；只有明确部分写入才允许追加失败终态，回读未知一律不再改写journal并返回退出码3。
+- progress计入Git单文件和总量上限；token固定为48位小写十六进制。主child和全部proxy只有都证实退出时才记`EXITED`；timeout或proxy未证退出保持`LIVE_CHILD_UNKNOWN/UNKNOWN`。终态追加只尝试一次，异常处理本身不能遮蔽原始失败或制造重复终态。
+- 终态修复提交为`5890cbfe`。独立故障注入经过三轮复审后达到`APPROVE，P0=0、P1=0、P2=0、Minor=2`，随后两个Minor也已关闭。主代理在`ssr-gpu`环境串行复验8个治理/N607测试文件，共301项通过；`compileall`和`git diff --check`通过。
+- 当前Git输出目录位于`code/snapshots/<worktree>/docs/project_governance/<scan_id>`。相对`code/snapshots`承载面，progress文件处于受控证据深度4，超过配置上限3；普通目录本身也不作为控制证据记录。因此本次进行中的progress不会被本地采集器自我纳入或产生变化中哈希。

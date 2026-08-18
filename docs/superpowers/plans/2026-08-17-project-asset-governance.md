@@ -719,7 +719,7 @@ Use the root-authoritative host-local preflight because its reviewed`n607_ssh_co
 
 - [ ] **Step 3: Execute one immutable formal scan**
 
-Before generating a new ID, require the real-scale experiment-index optimization and its focused/full regression tests to pass. Do not retry the pre-optimization implementation: two immutable IDs ended without a receipt and left only empty Git output directories. Preserve those directories as failure evidence; do not delete or reuse them.
+Before generating a new ID, require the real-scale experiment-index optimization and its focused/full regression tests to pass. This gate is satisfied by commits`08cd32fa`、`ea2f4fca`and`5890cbfe`, 301 serial governance/N607 tests and independent`P0=0、P1=0`reviews. Do not retry the pre-optimization implementation: two immutable IDs ended without a receipt and left only empty Git output directories. Preserve those directories as failure evidence; do not delete or reuse them.
 
 Run:
 
