@@ -9,7 +9,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 from types import MappingProxyType
-from typing import Iterable, Mapping, Sequence
+from typing import Mapping, Sequence
 
 
 INDEX_SCHEMA_VERSION = 1
@@ -104,6 +104,19 @@ class IndexBuildSummary:
     scan_id: str
     database_path: Path
     table_counts: Mapping[str, int]
+
+
+@dataclass(frozen=True)
+class LatestPointer:
+    """Validated pointer to one immutable governance query baseline."""
+
+    schema_version: int
+    scan_id: str
+    receipt_path: Path
+    external_root: Path
+    sqlite_path: Path
+    created_at_utc: str
+    implementation_git_head: str
 
 
 def _load_terminal_receipt(path: Path) -> Mapping[str, object]:
@@ -431,3 +444,276 @@ def build_index(
         database_path=database_path.resolve(),
         table_counts=MappingProxyType(counts),
     )
+
+
+def load_latest(pointer_path: Path) -> LatestPointer:
+    """Load a strict, local latest pointer without opening the database."""
+
+    pointer_path = Path(pointer_path)
+    try:
+        payload = json.loads(pointer_path.read_text(encoding="utf-8-sig"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise ValueError(f"unreadable governance latest pointer: {pointer_path}") from exc
+    expected_keys = {
+        "schema_version",
+        "scan_id",
+        "receipt_path",
+        "external_root",
+        "sqlite_path",
+        "created_at_utc",
+        "implementation_git_head",
+    }
+    if not isinstance(payload, dict) or set(payload) != expected_keys:
+        raise ValueError("latest pointer must contain the exact schema keys")
+    if payload["schema_version"] != INDEX_SCHEMA_VERSION:
+        raise ValueError("unsupported latest pointer schema")
+    scan_id = _require_str(payload["scan_id"], "latest.scan_id")
+    receipt_path = Path(_require_str(payload["receipt_path"], "latest.receipt_path"))
+    external_root = Path(_require_str(payload["external_root"], "latest.external_root"))
+    sqlite_path = Path(_require_str(payload["sqlite_path"], "latest.sqlite_path"))
+    if not receipt_path.is_absolute() or not external_root.is_absolute() or not sqlite_path.is_absolute():
+        raise ValueError("latest pointer paths must be absolute")
+    receipt_path = receipt_path.resolve(strict=True)
+    external_root = external_root.resolve(strict=True)
+    sqlite_path = sqlite_path.resolve(strict=True)
+    if receipt_path.name != "scan_receipt.json" or receipt_path.parent.name != scan_id:
+        raise ValueError("latest receipt path does not match scan_id")
+    if external_root.name != scan_id or sqlite_path.parent != external_root:
+        raise ValueError("latest external paths do not match scan_id")
+    if sqlite_path.name != "governance.sqlite":
+        raise ValueError("latest sqlite_path must name governance.sqlite")
+    created_at = _require_str(payload["created_at_utc"], "latest.created_at_utc")
+    git_head = _require_str(
+        payload["implementation_git_head"], "latest.implementation_git_head"
+    )
+    if len(git_head) != 40 or any(character not in "0123456789abcdef" for character in git_head):
+        raise ValueError("latest implementation_git_head must be 40 lowercase hex characters")
+    return LatestPointer(
+        schema_version=INDEX_SCHEMA_VERSION,
+        scan_id=scan_id,
+        receipt_path=receipt_path,
+        external_root=external_root,
+        sqlite_path=sqlite_path,
+        created_at_utc=created_at,
+        implementation_git_head=git_head,
+    )
+
+
+def _rows_as_dicts(cursor: sqlite3.Cursor) -> list[dict[str, object]]:
+    names = tuple(description[0] for description in cursor.description or ())
+    return [dict(zip(names, row)) for row in cursor.fetchall()]
+
+
+def _require_limit(limit: int) -> int:
+    if not isinstance(limit, int) or isinstance(limit, bool) or not 1 <= limit <= 100:
+        raise ValueError("limit must be between 1 and 100")
+    return limit
+
+
+def _like_prefix(value: str) -> str:
+    return value.replace("!", "!!").replace("%", "!%").replace("_", "!_") + "%"
+
+
+class QueryStore:
+    """Bounded, read-only queries over one validated governance index."""
+
+    def __init__(
+        self,
+        *,
+        pointer: LatestPointer,
+        receipt: Mapping[str, object],
+        connection: sqlite3.Connection,
+        metadata: Mapping[str, str],
+    ) -> None:
+        self.pointer = pointer
+        self.receipt = receipt
+        self._connection = connection
+        self._metadata = metadata
+
+    @classmethod
+    def open(cls, pointer: LatestPointer) -> "QueryStore":
+        receipt = _load_terminal_receipt(pointer.receipt_path)
+        if _validate_receipt_for_index(receipt) != pointer.scan_id:
+            raise ValueError("latest scan_id does not match receipt")
+        uri = f"{pointer.sqlite_path.as_uri()}?mode=ro&immutable=1"
+        try:
+            connection = sqlite3.connect(uri, uri=True)
+            connection.execute("PRAGMA query_only=ON")
+            rows = connection.execute("SELECT key, value FROM metadata").fetchall()
+        except sqlite3.Error as exc:
+            raise ValueError(f"unreadable governance SQLite index: {pointer.sqlite_path}") from exc
+        metadata = {str(key): str(value) for key, value in rows}
+        if metadata.get("schema_version") != str(INDEX_SCHEMA_VERSION):
+            connection.close()
+            raise ValueError("SQLite index schema_version does not match latest pointer")
+        if metadata.get("scan_id") != pointer.scan_id:
+            connection.close()
+            raise ValueError("latest scan_id does not match SQLite metadata")
+        if Path(metadata.get("external_root", "")).resolve() != pointer.external_root:
+            connection.close()
+            raise ValueError("latest external_root does not match SQLite metadata")
+        if Path(metadata.get("receipt_path", "")).resolve() != pointer.receipt_path:
+            connection.close()
+            raise ValueError("latest receipt_path does not match SQLite metadata")
+        return cls(
+            pointer=pointer,
+            receipt=receipt,
+            connection=connection,
+            metadata=MappingProxyType(metadata),
+        )
+
+    def close(self) -> None:
+        self._connection.close()
+
+    def status(self) -> dict[str, object]:
+        table_counts = json.loads(self._metadata["table_counts"])
+        scan_errors = json.loads(self._metadata.get("scan_error_counts", "{}"))
+        warning_count = sum(
+            value for value in scan_errors.values() if isinstance(value, int) and value > 0
+        )
+        return {
+            "created_at_utc": self.pointer.created_at_utc,
+            "database_path": str(self.pointer.sqlite_path),
+            "receipt_path": str(self.pointer.receipt_path),
+            "scan_error_counts": scan_errors,
+            "scan_id": self.pointer.scan_id,
+            "table_counts": table_counts,
+            "terminal_state": self.receipt["terminal_state"],
+            "warning_count": warning_count,
+        }
+
+    def _path_identity(self, query: str) -> tuple[str, str] | None:
+        local_root = self._metadata.get("local_root", "").replace("\\", "/").rstrip("/")
+        n607_root = self._metadata.get("n607_root", "").rstrip("/")
+        local_query = query.replace("\\", "/")
+        if local_root and (
+            local_query.casefold() == local_root.casefold()
+            or local_query.casefold().startswith(local_root.casefold() + "/")
+        ):
+            return "LOCAL", local_query[len(local_root) :].lstrip("/")
+        if n607_root and (query == n607_root or query.startswith(n607_root + "/")):
+            return "N607", query[len(n607_root) :].lstrip("/")
+        return None
+
+    def find_assets(self, query: str, *, limit: int = 20) -> dict[str, object]:
+        limit = _require_limit(limit)
+        query = _require_str(query, "query")
+        columns = (
+            "asset_id, scan_id, location, root_id, relative_path, display_name, "
+            "asset_kind, size_bytes, access_status, experiment_id, git_ownership, "
+            "evidence_role, retention_class, recommended_action, decision_reason"
+        )
+        cursor = self._connection.execute(
+            f"SELECT {columns} FROM assets WHERE asset_id = ? LIMIT ?", (query, limit + 1)
+        )
+        items = _rows_as_dicts(cursor)
+        identity = self._path_identity(query)
+        if not items and identity is not None:
+            location, relative_path = identity
+            cursor = self._connection.execute(
+                f"SELECT {columns} FROM assets "
+                "WHERE location = ? AND (relative_path = ? OR relative_path LIKE ? ESCAPE '!') "
+                "ORDER BY relative_path, asset_id LIMIT ?",
+                (location, relative_path, _like_prefix(relative_path.rstrip("/") + "/"), limit + 1),
+            )
+            items = _rows_as_dicts(cursor)
+        truncated = len(items) > limit
+        return {
+            "count": min(len(items), limit),
+            "items": items[:limit],
+            "query": query,
+            "truncated": truncated,
+        }
+
+    def experiment(self, run_id: str) -> dict[str, object]:
+        run_id = _require_str(run_id, "run_id")
+        rows = _rows_as_dicts(
+            self._connection.execute(
+                "SELECT * FROM experiments WHERE run_id = ? ORDER BY experiment_id LIMIT 2",
+                (run_id,),
+            )
+        )
+        if not rows:
+            return {"run_id": run_id, "status": "NOT_FOUND"}
+        if len(rows) > 1:
+            return {"count": len(rows), "run_id": run_id, "status": "AMBIGUOUS"}
+        result = rows[0]
+        counts = {
+            str(location): int(count)
+            for location, count in self._connection.execute(
+                "SELECT location, COUNT(*) FROM assets WHERE experiment_id = ? GROUP BY location",
+                (result["experiment_id"],),
+            )
+        }
+        result["assets_by_location"] = counts
+        result["status"] = "FOUND"
+        return result
+
+    def repo(self, path: str) -> dict[str, object]:
+        assets = self.find_assets(path, limit=2)
+        if assets["count"] == 0:
+            return {"items": [], "path": path, "status": "NOT_FOUND"}
+        if assets["count"] != 1 or assets["truncated"]:
+            return {"items": [], "path": path, "status": "AMBIGUOUS"}
+        asset_id = assets["items"][0]["asset_id"]
+        items = _rows_as_dicts(
+            self._connection.execute(
+                "SELECT DISTINCT ownership, repository_root, common_git_dir, branch, "
+                "head_commit, status_summary, linked_worktrees, error "
+                "FROM git_ownership WHERE asset_id = ? "
+                "ORDER BY repository_root, common_git_dir, branch, head_commit",
+                (asset_id,),
+            )
+        )
+        if not items:
+            status = "NOT_FOUND"
+        elif len(items) == 1:
+            status = "FOUND"
+        else:
+            status = "AMBIGUOUS"
+        return {"asset_id": asset_id, "items": items, "path": path, "status": status}
+
+    def review(
+        self, filters: Mapping[str, str] | None = None, *, limit: int = 20
+    ) -> dict[str, object]:
+        limit = _require_limit(limit)
+        filters = dict(filters or {})
+        allowed = {
+            "location": "a.location",
+            "retention_class": "r.retention_class",
+            "experiment_state": "e.experiment_state",
+            "ownership": "g.ownership",
+        }
+        if set(filters) - set(allowed):
+            raise ValueError("unsupported review filter")
+        clauses: list[str] = []
+        parameters: list[object] = []
+        for key in ("location", "retention_class", "experiment_state", "ownership"):
+            if key in filters:
+                clauses.append(f"{allowed[key]} = ?")
+                parameters.append(_require_str(filters[key], key))
+        where = " WHERE " + " AND ".join(clauses) if clauses else ""
+        query = (
+            "SELECT DISTINCT a.asset_id, a.location, a.relative_path, a.access_status, "
+            "a.experiment_id, r.retention_class, r.rule_code, r.reason, "
+            "r.recommended_action, e.experiment_state, g.ownership "
+            "FROM assets a "
+            "LEFT JOIN retention r ON r.asset_id = a.asset_id "
+            "LEFT JOIN experiments e ON e.experiment_id = a.experiment_id "
+            "LEFT JOIN git_ownership g ON g.asset_id = a.asset_id"
+            f"{where} ORDER BY a.location, a.relative_path, a.asset_id LIMIT ?"
+        )
+        parameters.append(limit + 1)
+        items = _rows_as_dicts(self._connection.execute(query, parameters))
+        authorized = self._connection.execute(
+            "SELECT COUNT(*) FROM deletion_candidates "
+            "WHERE approval_state = 'APPROVED' OR execution_state = 'AUTHORIZED'"
+        ).fetchone()[0]
+        truncated = len(items) > limit
+        return {
+            "authorized_deletion_count": int(authorized),
+            "count": min(len(items), limit),
+            "filters": filters,
+            "items": items[:limit],
+            "truncated": truncated,
+        }

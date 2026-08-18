@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from tools.project_governance.query_index import build_index
+from tools.project_governance.query_index import QueryStore, build_index, load_latest
 
 
 ASSET_HEADERS = (
@@ -211,7 +211,8 @@ def write_inventory_fixture(tmp_path: Path) -> InventoryFixture:
     _write_csv(deletion, DELETION_HEADERS, [])
 
     sources = (local, n607, experiments, ownership, retention, deletion)
-    receipt = tmp_path / "scan_receipt.json"
+    receipt = tmp_path / "git" / "PGOV_TEST_001" / "scan_receipt.json"
+    receipt.parent.mkdir(parents=True)
     payload = {
         "schema_version": 1,
         "scan_id": "PGOV_TEST_001",
@@ -361,3 +362,125 @@ def test_build_index_never_replaces_an_existing_database(tmp_path: Path) -> None
         build_index(receipt_path=case.receipt, external_root=case.external_root, database_path=case.database)
 
     assert case.database.read_bytes() == b"owned-existing-index"
+
+
+def _write_latest_pointer(case: InventoryFixture) -> Path:
+    pointer = case.receipt.parent.parent / "latest.json"
+    pointer.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "scan_id": "PGOV_TEST_001",
+                "receipt_path": str(case.receipt.resolve()),
+                "external_root": str(case.external_root.resolve()),
+                "sqlite_path": str(case.database.resolve()),
+                "created_at_utc": "2026-08-18T00:00:00Z",
+                "implementation_git_head": "c" * 40,
+            }
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    return pointer
+
+
+@pytest.fixture()
+def built_store(tmp_path: Path):
+    case = write_inventory_fixture(tmp_path)
+    build_index(receipt_path=case.receipt, external_root=case.external_root, database_path=case.database)
+    with sqlite3.connect(case.database) as connection:
+        connection.execute(
+            "INSERT INTO git_ownership VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                "asset-local",
+                "TRACKED_GIT",
+                "E:/type10-7/code/second-repo",
+                "E:/type10-7/code/second-repo/.git",
+                "feature",
+                "d" * 40,
+                "CLEAN",
+                "[]",
+                "",
+            ),
+        )
+        connection.commit()
+    pointer_path = _write_latest_pointer(case)
+    store = QueryStore.open(load_latest(pointer_path))
+    try:
+        yield store, case, pointer_path
+    finally:
+        store.close()
+
+
+def test_latest_pointer_opens_the_matching_database_read_only(tmp_path: Path) -> None:
+    case = write_inventory_fixture(tmp_path)
+    build_index(receipt_path=case.receipt, external_root=case.external_root, database_path=case.database)
+    pointer_path = _write_latest_pointer(case)
+    before = case.database.stat().st_mtime_ns
+
+    store = QueryStore.open(load_latest(pointer_path))
+    assert store.status()["scan_id"] == "PGOV_TEST_001"
+    store.close()
+
+    assert case.database.stat().st_mtime_ns == before
+    assert not Path(f"{case.database}-wal").exists()
+    assert not Path(f"{case.database}-shm").exists()
+
+
+def test_latest_pointer_rejects_a_scan_id_mismatch(tmp_path: Path) -> None:
+    case = write_inventory_fixture(tmp_path)
+    build_index(receipt_path=case.receipt, external_root=case.external_root, database_path=case.database)
+    pointer_path = _write_latest_pointer(case)
+    payload = json.loads(pointer_path.read_text(encoding="utf-8"))
+    payload["scan_id"] = "PGOV_WRONG"
+    pointer_path.write_text(json.dumps(payload), encoding="utf-8", newline="\n")
+
+    with pytest.raises(ValueError, match="scan_id"):
+        QueryStore.open(load_latest(pointer_path))
+
+
+def test_find_accepts_asset_id_and_normalized_absolute_path(built_store) -> None:
+    store, _, _ = built_store
+    assert store.find_assets("asset-local", limit=20)["items"][0]["relative_path"] == "runs/local-a"
+    assert store.find_assets(r"E:\type10-7\runs\local-a", limit=20)["items"][0]["asset_id"] == "asset-local"
+
+
+def test_find_prefix_is_bounded_and_empty_results_are_explicit(built_store) -> None:
+    store, _, _ = built_store
+    result = store.find_assets("E:/type10-7/runs", limit=1)
+    assert result["count"] == 1
+    assert result["truncated"] is False
+    assert store.find_assets("E:/type10-7/missing", limit=20) == {
+        "count": 0,
+        "items": [],
+        "query": "E:/type10-7/missing",
+        "truncated": False,
+    }
+    with pytest.raises(ValueError, match="between 1 and 100"):
+        store.find_assets("runs", limit=101)
+
+
+def test_experiment_keeps_one_run_evidence_together(built_store) -> None:
+    store, _, _ = built_store
+    result = store.experiment("RUN_A")
+    assert result["run_id"] == "RUN_A"
+    assert result["assets_by_location"] == {"LOCAL": 1, "N607": 1}
+    assert result["git_commit"] == "a" * 40
+
+
+def test_repo_returns_ambiguous_instead_of_guessing(built_store) -> None:
+    store, _, _ = built_store
+    result = store.repo(r"E:\type10-7\runs\local-a")
+    assert result["status"] == "AMBIGUOUS"
+    assert [item["repository_root"] for item in result["items"]] == [
+        "E:/type10-7/code/second-repo",
+        "E:/type10-7/github_publish/CVS-RFFI-repo",
+    ]
+
+
+def test_review_never_promotes_review_rows_to_deletion_candidates(built_store) -> None:
+    store, _, _ = built_store
+    result = store.review({"retention_class": "REVIEW_REQUIRED"}, limit=20)
+    assert result["count"] == 2
+    assert result["authorized_deletion_count"] == 0
+    assert {item["retention_class"] for item in result["items"]} == {"REVIEW_REQUIRED"}
