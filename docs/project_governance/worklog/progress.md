@@ -69,3 +69,8 @@
 - 该次扫描随后完成INDEX与RETENTION，但EMISSION因Git porcelain v2的NUL分隔状态写入CSV时触发`_csv.Error`；终态为`exit3/FAILED/NO_RECEIPT`。本地诊断ID`PGOVD_20260818T041946Z`复现同一堆栈，未请求N607。两个失败现场均原样保留，资产移动、覆盖、删除、权限修改、任务停止和远端写入仍为0。
 - CSV仅在表格单元格层把NUL转义为字面量`\\u0000`，完整JSON保留原始值；修复提交为`92cb63ebdcb5a411094ef2dc0505eb2f2454fbfd`（`fix: escape Git status separators in CSV`）。Emitter/CLI 151项及完整治理/N607 304项回归通过。
 - N607远端程序需对7个承载面执行深度3的只读控制证据遍历，旧45秒是整个采集总时限而非连接时限，与已观测资料规模不匹配。按TDD将整段有界采集预算改为15分钟，连接建立仍独立受`ConnectTimeout=10`约束，不增加重试、远端写入或持久连接；提交为`e702fcec`（`fix: allow bounded N607 inventory completion`）。N607专属33项、完整治理/N607 304项、`compileall`和差异检查通过。
+- 第七个不可覆盖ID`PGOV_20260818T044859Z`绑定`c95e0599`启动；LOCAL约3分钟、GIT约11分钟，N607约9分钟后DIRECT主child与全部proxy均正常退出、断连`VERIFIED`，但采集结果为`FAILED`。随后INDEX与RETENTION完成，EMISSION把8个完整文件分流到external后仍在Git侧生成约900MiB完整CSV分片，最终触发50MiB总限额并以`exit2/FAILED/NO_RECEIPT`闭合。
+- 失败现场原样保留：Git侧约895MiB、101个文件；external侧约2.1GiB、8个完整文件。没有收据，不能视为正式清单；移动、覆盖、删除、权限修改、任务停止和远端写入均为0，未经用户批准不得清理。
+- 独立N607诊断ID`PGOVN607D_20260818T052813Z`不创建清单目录，精确返回`malformed streaming NDJSON: NDJSON stream exceeds the bounded total size`；远端命令returncode为0、无timeout、DIRECT及全部proxy退出且断连`VERIFIED`。根因是未消费的`evidence_text`正文超过256MiB，并非路由、身份、服务器扫描或断连失败。
+- 大清单Emitter新增预算前置分流：只有完整CSV分片连同收据预算可进入Git时才写分片；否则external保留完整表及SHA，Git只写确定性摘要。N607非成功`receipt.error`同时写入根scope，避免详细失败原因被通用“根缺失”覆盖；修复提交为`44d5988d`（`fix: close large inventory emission`）。
+- N607 wire payload停止发送CLI从未消费的正文，只保留路径、类型、大小、mtime、访问状态、受限SHA、证据角色和范围/进程闭合字段；提交为`47b06b01`（`perf: omit unused remote evidence text`）。N607专属33项及完整治理/N607 305项回归、`compileall`和差异检查通过。

@@ -96,3 +96,12 @@
 - 同一正式扫描在EMISSION阶段因`git status --porcelain=v2 -z`的NUL分隔状态进入CSV writer而失败。`PGOVD_20260818T041946Z`用本地只读诊断准确复现`_csv.Error: need to escape, but no escapechar set`；修复只对CSV单元格转义NUL，JSON仍保留原值，提交为`92cb63eb`。
 - N607整段采集预算由45秒改为15分钟，仍是一次性有界命令，仍保持`ConnectTimeout=10`、流式NDJSON校验、无远端文件、无自动重试和终态/断连证据要求。TDD先使旧值精确失败，再以提交`e702fcec`转绿；完整治理/N607 304项测试通过。
 - `PGOV_20260818T035415Z`与诊断ID均无最终收据，不能作为资产总表。所有progress、runner log和exit证据保留；删除、移动、覆盖和清理任何失败现场仍需用户明确批准。
+
+## 2026-08-18真实规模输出与N607传输修复
+
+- `PGOV_20260818T044859Z`首次让N607采集自然运行到returncode0和明确断连。预检与DIRECT两次attempt均无timeout，主child和全部proxy均`EXITED`，断连为`VERIFIED`；因此N607结果`FAILED`不能归因于连接残留。
+- 独立只读诊断`PGOVN607D_20260818T052813Z`直接保留collector的错误文本，确认唯一失败为流式NDJSON超过256MiB总量上限。远端payload此前会为特定控制文件携带最多2MiB`evidence_text`，但CLI的`AssetRecord`转换完全不读取或保存该字段，实验索引也不消费它；这属于无效传输放大。
+- 提交`47b06b01`删除未消费正文的wire字段与解码路径，仍保留资产身份、相对路径、显示/转义名、类型、大小、mtime、访问状态、哈希状态、受限SHA、证据角色、scope、process、SCAN_ERROR和COLLECTION_COMPLETE。无效UTF-8控制文件现在按原始字节做受限SHA，不再因仅用于丢弃的文本解码而制造SCAN_ERROR。
+- 同一正式扫描的external侧已完整写出8项约2.1GiB文件；旧Emitter随后又把CSV完整复制为Git分片，Git侧写出101项约895MiB后才执行50MiB最终检查，所以没有收据。该失败正确阻止了伪成功，但分片策略在真实规模下不可完成。
+- 提交`44d5988d`在写分片前比较完整CSV字节与总预算，并为不可能容纳的情况选择`EXTERNAL_COMPLETE_WITH_GIT_SUMMARIES`；external完整表、绝对路径、字节数和SHA仍进入收据，Git不再复制注定超限的完整分片。新增400行规模测试由旧实现准确RED为`325265>50000`，修复后收据、摘要、外置完整表和总量均闭合。
+- 所有失败目录和external文件均作为诊断证据保留，未删除、移动或覆盖；它们不是最终资产总表，也不包含任何删除授权。
