@@ -87,6 +87,41 @@ class _Evidence:
     issues: list[str]
 
 
+@dataclass(frozen=True)
+class _ResolvedBindings:
+    """One-pass normalized bindings for an evidence item."""
+
+    run_ids: tuple[str, ...]
+    run_roots: tuple[IndexedPath, ...]
+    expected_artifacts: tuple[IndexedPath, ...]
+    direct_tokens: frozenset[str]
+
+
+@dataclass(frozen=True)
+class _AssetPathIndex:
+    """Normalized exact and descendant asset-path lookup tables."""
+
+    exact: Mapping[str, tuple[int, ...]]
+    posix_comparison: Mapping[str, tuple[int, ...]]
+    descendants: Mapping[str, tuple[int, ...]]
+    remote_flags: tuple[bool, ...]
+
+    def exact_matches(self, path: IndexedPath) -> tuple[int, ...]:
+        """Match ``_same_path`` semantics without a full asset traversal."""
+
+        matches = list(self.exact.get(_path_key(path), ()))
+        path_is_remote = _is_remote_path(path)
+        for index in self.posix_comparison.get(_posix_comparison_key(path), ()):
+            if self.remote_flags[index] != path_is_remote:
+                matches.append(index)
+        return tuple(sorted(set(matches)))
+
+    def descendant_matches(self, root: IndexedPath) -> tuple[int, ...]:
+        """Return exactly the assets for which ``_is_under(path, root)`` holds."""
+
+        return self.descendants.get(_path_key(root), ())
+
+
 class _UnionFind:
     def __init__(self, count: int) -> None:
         self._parents = list(range(count))
@@ -139,6 +174,47 @@ def _is_under(path: IndexedPath, root: IndexedPath) -> bool:
     path_key = _path_key(path)
     root_key = _path_key(root)
     return path_key == root_key or path_key.startswith(root_key + os.sep)
+
+
+def _posix_comparison_key(path: IndexedPath) -> str:
+    """Mirror the mixed-location comparison branch in ``_same_path``."""
+
+    return PurePosixPath(os.fspath(path)).as_posix()
+
+
+def _ancestor_path_keys(path: IndexedPath) -> Iterable[str]:
+    """Yield the normalized path itself and every normalized parent path."""
+
+    current = path
+    while True:
+        yield _path_key(current)
+        parent = current.parent
+        if parent == current:
+            return
+        current = parent
+
+
+def _index_asset_paths(paths: Sequence[IndexedPath | None]) -> _AssetPathIndex:
+    """Build stable path lookup tables once for all caller-indexed assets."""
+
+    exact: dict[str, list[int]] = defaultdict(list)
+    posix_comparison: dict[str, list[int]] = defaultdict(list)
+    descendants: dict[str, list[int]] = defaultdict(list)
+    remote_flags = [False] * len(paths)
+    for index, path in enumerate(paths):
+        if path is None:
+            continue
+        remote_flags[index] = _is_remote_path(path)
+        exact[_path_key(path)].append(index)
+        posix_comparison[_posix_comparison_key(path)].append(index)
+        for ancestor_key in _ancestor_path_keys(path):
+            descendants[ancestor_key].append(index)
+    return _AssetPathIndex(
+        exact={key: tuple(indices) for key, indices in exact.items()},
+        posix_comparison={key: tuple(indices) for key, indices in posix_comparison.items()},
+        descendants={key: tuple(indices) for key, indices in descendants.items()},
+        remote_flags=tuple(remote_flags),
+    )
 
 
 def _remote_absolute(value: str | os.PathLike[str]) -> PurePosixPath | None:
@@ -347,6 +423,17 @@ def _value_set(claims: Iterable[EvidenceClaim], field: str) -> tuple[Any, ...]:
     return tuple(values)
 
 
+def _normalized_run_ids(claims: Iterable[EvidenceClaim]) -> tuple[str, ...]:
+    """Normalize the explicit run IDs once while preserving first-seen order."""
+
+    run_ids: list[str] = []
+    for value in _value_set(claims, "run_id"):
+        run_id = _normalize_run_id(value)
+        if run_id is not None and run_id not in run_ids:
+            run_ids.append(run_id)
+    return tuple(run_ids)
+
+
 def _resolve_claim_path(
     value: Any,
     asset: AssetRecord,
@@ -385,12 +472,17 @@ def _explicit_run_roots(
 
 
 def _expected_artifact_paths(
-    item: _Evidence, root_paths: Mapping[Any, str | os.PathLike[str]]
+    item: _Evidence,
+    root_paths: Mapping[Any, str | os.PathLike[str]],
+    *,
+    run_roots: Sequence[IndexedPath] | None = None,
 ) -> tuple[IndexedPath, ...]:
     """Resolve only explicitly declared expected artifacts for one evidence item."""
 
     resolved_paths: list[IndexedPath] = []
-    run_roots = _explicit_run_roots(item, root_paths)
+    resolved_run_roots = (
+        tuple(run_roots) if run_roots is not None else _explicit_run_roots(item, root_paths)
+    )
     for value in _value_set(item.claims, "expected_artifacts"):
         if not isinstance(value, str) or not value.strip():
             continue
@@ -407,10 +499,10 @@ def _expected_artifact_paths(
                 relative = normalize_relative_path(value, location=item.asset.location)
             except ValueError:
                 continue
-            if run_roots:
+            if resolved_run_roots:
                 candidates = tuple(
                     resolved
-                    for root in run_roots
+                    for root in resolved_run_roots
                     if (resolved := _join_under(root, relative)) is not None
                 )
             else:
@@ -423,20 +515,54 @@ def _expected_artifact_paths(
 
 
 def _direct_binding_tokens(
-    item: _Evidence, root_paths: Mapping[Any, str | os.PathLike[str]]
+    item: _Evidence,
+    root_paths: Mapping[Any, str | os.PathLike[str]],
+    *,
+    run_ids: Sequence[str] | None = None,
+    run_roots: Sequence[IndexedPath] | None = None,
+    expected_artifacts: Sequence[IndexedPath] | None = None,
 ) -> frozenset[str]:
     """Return only run IDs and exact paths that are explicitly declared."""
 
     tokens: set[str] = set()
-    for value in _value_set(item.claims, "run_id"):
-        run_id = _normalize_run_id(value)
-        if run_id is not None:
-            tokens.add(f"run:{_run_key(run_id)}")
-    for root in _explicit_run_roots(item, root_paths):
+    resolved_run_ids = tuple(run_ids) if run_ids is not None else _normalized_run_ids(item.claims)
+    resolved_run_roots = (
+        tuple(run_roots) if run_roots is not None else _explicit_run_roots(item, root_paths)
+    )
+    resolved_expected_artifacts = (
+        tuple(expected_artifacts)
+        if expected_artifacts is not None
+        else _expected_artifact_paths(item, root_paths, run_roots=resolved_run_roots)
+    )
+    for run_id in resolved_run_ids:
+        tokens.add(f"run:{_run_key(run_id)}")
+    for root in resolved_run_roots:
         tokens.add(f"path:{_path_key(root)}")
-    for artifact in _expected_artifact_paths(item, root_paths):
+    for artifact in resolved_expected_artifacts:
         tokens.add(f"path:{_path_key(artifact)}")
     return frozenset(tokens)
+
+
+def _resolve_bindings(
+    item: _Evidence, root_paths: Mapping[Any, str | os.PathLike[str]]
+) -> _ResolvedBindings:
+    """Resolve all reusable direct bindings exactly once for one evidence item."""
+
+    run_ids = _normalized_run_ids(item.claims)
+    run_roots = _explicit_run_roots(item, root_paths)
+    expected_artifacts = _expected_artifact_paths(item, root_paths, run_roots=run_roots)
+    return _ResolvedBindings(
+        run_ids=run_ids,
+        run_roots=run_roots,
+        expected_artifacts=expected_artifacts,
+        direct_tokens=_direct_binding_tokens(
+            item,
+            root_paths,
+            run_ids=run_ids,
+            run_roots=run_roots,
+            expected_artifacts=expected_artifacts,
+        ),
+    )
 
 
 def _read_failure_blocks_classification(items: Sequence[_Evidence]) -> bool:
@@ -566,6 +692,8 @@ def index_experiments(
     assets = tuple(indexed_assets)
     paths = tuple(_path_from_asset(asset, root_paths) for asset in assets)
     evidence = [_parse_evidence(asset, path) for asset, path in zip(assets, paths)]
+    path_index = _index_asset_paths(paths)
+    bindings = tuple(_resolve_bindings(item, root_paths) for item in evidence)
     processes = tuple(_process_from_value(item) for item in process_evidence)
 
     union = _UnionFind(len(assets))
@@ -574,15 +702,13 @@ def index_experiments(
     root_bindings: list[tuple[int, IndexedPath]] = []
     expected_artifact_bindings: list[tuple[int, IndexedPath]] = []
 
-    for index, item in enumerate(evidence):
-        for value in _value_set(item.claims, "run_id"):
-            run_id = _normalize_run_id(value)
-            if run_id is not None:
-                by_run_id[_run_key(run_id)].append(index)
-        for run_root in _explicit_run_roots(item, root_paths):
+    for index, binding in enumerate(bindings):
+        for run_id in binding.run_ids:
+            by_run_id[_run_key(run_id)].append(index)
+        for run_root in binding.run_roots:
             root_bindings.append((index, run_root))
             by_root[_path_key(run_root)].append(index)
-        for artifact_path in _expected_artifact_paths(item, root_paths):
+        for artifact_path in binding.expected_artifacts:
             expected_artifact_bindings.append((index, artifact_path))
 
     for grouped in (*by_run_id.values(), *by_root.values()):
@@ -590,14 +716,12 @@ def index_experiments(
             union.union(grouped[0], member)
 
     for evidence_index, root in root_bindings:
-        for asset_index, path in enumerate(paths):
-            if path is not None and _is_under(path, root):
-                union.union(evidence_index, asset_index)
+        for asset_index in path_index.descendant_matches(root):
+            union.union(evidence_index, asset_index)
 
     for evidence_index, expected_path in expected_artifact_bindings:
-        for asset_index, path in enumerate(paths):
-            if path is not None and _same_path(path, expected_path):
-                union.union(evidence_index, asset_index)
+        for asset_index in path_index.exact_matches(expected_path):
+            union.union(evidence_index, asset_index)
 
     # A matching commit is only enough when a manifest or receipt already
     # carries a direct run/path binding.  Commit text alone never joins runs.
@@ -607,16 +731,23 @@ def index_experiments(
         if commits:
             by_commit[commits[0]].append(index)
     for members in by_commit.values():
-        for binding_member in members:
-            if evidence[binding_member].kind not in {"manifest", "receipt"}:
+        members_by_token: dict[str, list[int]] = defaultdict(list)
+        for member in members:
+            for token in bindings[member].direct_tokens:
+                members_by_token[token].append(member)
+        for token_members in members_by_token.values():
+            binding_member = next(
+                (
+                    member
+                    for member in token_members
+                    if evidence[member].kind in {"manifest", "receipt"}
+                ),
+                None,
+            )
+            if binding_member is None:
                 continue
-            binding_tokens = _direct_binding_tokens(evidence[binding_member], root_paths)
-            if not binding_tokens:
-                continue
-            for member in members:
-                if member == binding_member:
-                    continue
-                if binding_tokens.intersection(_direct_binding_tokens(evidence[member], root_paths)):
+            for member in token_members:
+                if member != binding_member:
                     union.union(binding_member, member)
 
     grouped_indices: dict[int, list[int]] = defaultdict(list)
@@ -627,12 +758,11 @@ def index_experiments(
     records: dict[str, ExperimentRecord] = {}
     claims_by_experiment: dict[str, tuple[EvidenceClaim, ...]] = {}
     occupied_keys: set[str] = set()
-    known_run_ids = tuple(
-        run_id
-        for item in evidence
-        for value in _value_set(item.claims, "run_id")
-        if (run_id := _normalize_run_id(value)) is not None
-    )
+    known_run_ids_by_key: dict[str, str] = {}
+    for binding in bindings:
+        for run_id in binding.run_ids:
+            known_run_ids_by_key.setdefault(_run_key(run_id), run_id)
+    known_run_ids = tuple(known_run_ids_by_key.values())
 
     for members in grouped_indices.values():
         group_items = [evidence[index] for index in members]
@@ -668,20 +798,21 @@ def index_experiments(
             gaps.append("CONFLICTING_GIT_COMMIT")
 
         run_roots: list[IndexedPath] = []
-        for item in group_items:
-            for resolved in _explicit_run_roots(item, root_paths):
+        for member in members:
+            for resolved in bindings[member].run_roots:
                 if not any(_same_path(resolved, seen) for seen in run_roots):
                     run_roots.append(resolved)
         expected_paths: list[IndexedPath] = []
-        for item in group_items:
-            for resolved in _expected_artifact_paths(item, root_paths):
+        for member in members:
+            for resolved in bindings[member].expected_artifacts:
                 if not any(_same_path(resolved, seen) for seen in expected_paths):
                     expected_paths.append(resolved)
 
+        member_indices = set(members)
         observed_paths = [
             expected
             for expected in expected_paths
-            if any(path is not None and _same_path(expected, path) for path in group_paths)
+            if any(index in member_indices for index in path_index.exact_matches(expected))
         ]
         if expected_paths and len(observed_paths) != len(expected_paths):
             gaps.append("MISSING_EXPECTED_ARTIFACT")

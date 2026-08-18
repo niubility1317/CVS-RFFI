@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+import tools.project_governance.index_experiments as experiment_index_module
 from tools.project_governance.index_experiments import EvidenceClaim, ProcessEvidence, index_experiments
 from tools.project_governance.models import (
     AccessStatus,
@@ -420,6 +421,104 @@ def test_explicit_root_relative_expected_artifact_associates_its_indexed_asset(t
     expected = index["RUN_EXPECTED"]
     assert expected.experiment_state is ExperimentState.COMPLETE_EVIDENCE
     assert any(path.replace("\\", "/").endswith("/runs/RUN_EXPECTED/predictions.json") for path in (expected.observed_artifacts or ()))
+
+
+def test_explicit_bindings_scale_without_repeated_asset_or_commit_rescans(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Catch repeated full scans while preserving distinct shared-commit runs.
+
+    Removing either the path indexes, the cached direct-binding tokens, or the
+    de-duplicated known IDs makes the corresponding counter grow with the
+    unrelated asset count or with the square of the shared-commit group.
+    """
+
+    root = tmp_path / "indexed-assets"
+    root.mkdir()
+    run_count = 20
+    unrelated_count = 120
+    assets = []
+    for number in range(run_count):
+        run_id = f"RUN_SCALE_{number:03d}"
+        run_relative = f"runs/{run_id}"
+        _write(
+            root,
+            f"{run_relative}/report.md",
+            "\n".join(
+                (
+                    f"run_id: {run_id}",
+                    "git_commit: shared-commit",
+                    f"run_root: {run_relative}",
+                    "status: COMPLETE",
+                    "expected_artifacts:",
+                    "- predictions.json",
+                    "",
+                )
+            ),
+        )
+        _write(
+            root,
+            f"{run_relative}/manifest.json",
+            json.dumps(
+                {
+                    "run_id": run_id,
+                    "git_commit": "shared-commit",
+                    "run_root": run_relative,
+                }
+            ),
+        )
+        assets.extend(
+            (
+                _asset(f"{run_relative}/report.md", evidence_role="report"),
+                _asset(f"{run_relative}/manifest.json", evidence_role="manifest"),
+                _asset(f"{run_relative}/predictions.json", evidence_role="prediction"),
+            )
+        )
+    assets.extend(
+        _asset(f"unrelated/asset-{number:03d}.json", evidence_role="prediction")
+        for number in range(unrelated_count)
+    )
+
+    counters = {"is_under": 0, "same_path": 0, "direct_tokens": 0}
+    known_id_lengths = []
+    original_is_under = experiment_index_module._is_under
+    original_same_path = experiment_index_module._same_path
+    original_direct_tokens = experiment_index_module._direct_binding_tokens
+    original_low_confidence = experiment_index_module._low_confidence_name_candidate
+
+    def count_is_under(*args, **kwargs):
+        counters["is_under"] += 1
+        return original_is_under(*args, **kwargs)
+
+    def count_same_path(*args, **kwargs):
+        counters["same_path"] += 1
+        return original_same_path(*args, **kwargs)
+
+    def count_direct_tokens(*args, **kwargs):
+        counters["direct_tokens"] += 1
+        return original_direct_tokens(*args, **kwargs)
+
+    def record_known_ids(asset, known_run_ids):
+        known_ids = tuple(known_run_ids)
+        known_id_lengths.append(len(known_ids))
+        return original_low_confidence(asset, known_ids)
+
+    monkeypatch.setattr(experiment_index_module, "_is_under", count_is_under)
+    monkeypatch.setattr(experiment_index_module, "_same_path", count_same_path)
+    monkeypatch.setattr(experiment_index_module, "_direct_binding_tokens", count_direct_tokens)
+    monkeypatch.setattr(experiment_index_module, "_low_confidence_name_candidate", record_known_ids)
+
+    index = index_experiments(assets, root_paths={ROOT_ID: root})
+
+    assert len(index) == run_count + unrelated_count
+    for number in range(run_count):
+        run_id = f"RUN_SCALE_{number:03d}"
+        assert index[run_id].experiment_state is ExperimentState.COMPLETE_EVIDENCE
+        assert "CONFLICTING_RUN_ID" not in (index[run_id].closure_gaps or ())
+    assert counters["is_under"] <= len(assets) * 3
+    assert counters["same_path"] <= len(assets) * 2
+    assert counters["direct_tokens"] <= len(assets)
+    assert set(known_id_lengths) == {run_count}
 
 
 def test_oversized_required_report_is_scan_error_even_with_live_binding(tmp_path: Path):
