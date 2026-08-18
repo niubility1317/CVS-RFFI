@@ -175,14 +175,14 @@ class PostStageTrainerEntrypointsTest(unittest.TestCase):
 
         labeled, unlabeled, val = train_ssdg.split_tx_rx_day_1_7_2(
             dataset,
-            labeled_ratio=0.10,
-            unlabeled_ratio=0.70,
-            source_val_ratio=0.20,
+            labeled_ratio=0.07,
+            unlabeled_ratio=0.63,
+            source_val_ratio=0.30,
         )
 
-        self.assertEqual(len(labeled), 8)
-        self.assertEqual(len(unlabeled), 56)
-        self.assertEqual(len(val), 16)
+        self.assertEqual(len(labeled), 5)
+        self.assertEqual(len(unlabeled), 51)
+        self.assertEqual(len(val), 24)
         self.assertEqual(set(labeled).intersection(unlabeled), set())
         self.assertEqual(set(labeled).intersection(val), set())
         self.assertEqual(set(unlabeled).intersection(val), set())

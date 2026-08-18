@@ -183,6 +183,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--baseline_ckpt", type=str, default="", help="Optional checkpoint. Empty means train SSDG from scratch.")
     parser.add_argument("--from_scratch", type=str2bool, default=True)
     parser.add_argument("--split_mode", type=str, default="tx_rx_day_1_6_3", choices=["tx_rx_day_1_6_3", "tx_rx_day_1_7_2"])
+    parser.add_argument(
+        "--source_split_seed",
+        type=int,
+        default=-1,
+        help="Optional seed for the common randomized source split; -1 keeps the legacy ordered split.",
+    )
     parser.add_argument("--labeled_ratio", type=float, default=0.08)
     parser.add_argument("--unlabeled_ratio", type=float, default=0.72)
     parser.add_argument("--source_val_ratio", type=float, default=0.20)
@@ -902,6 +908,7 @@ def split_tx_rx_day_1_7_2(
     labeled_ratio: float = 0.10,
     unlabeled_ratio: float = 0.70,
     source_val_ratio: float = 0.20,
+    source_split_seed: int | None = None,
 ) -> Tuple[List[int], List[int], List[int]]:
     total = float(labeled_ratio) + float(unlabeled_ratio) + float(source_val_ratio)
     if abs(total - 1.0) > 1e-6:
@@ -918,11 +925,14 @@ def split_tx_rx_day_1_7_2(
         key = (int(item.tx_i), int(item.rx_i), int(item.day_i), int(getattr(item, "eq_i", 0)))
         groups[key].append((int(getattr(item, "sig_i", global_i)), int(global_i)))
 
+    rng = np.random.default_rng(int(source_split_seed)) if source_split_seed is not None else None
     labeled: List[int] = []
     unlabeled: List[int] = []
     val: List[int] = []
     for _, pairs in sorted(groups.items()):
         ordered = [idx for _, idx in sorted(pairs, key=lambda z: z[0])]
+        if rng is not None:
+            ordered = [ordered[int(i)] for i in rng.permutation(len(ordered)).tolist()]
         n = len(ordered)
         if n == 0:
             continue
@@ -1008,12 +1018,14 @@ def split_tx_rx_day_1_6_3(
     labeled_ratio: float = 0.10,
     unlabeled_ratio: float = 0.60,
     source_val_ratio: float = 0.30,
+    source_split_seed: int | None = None,
 ) -> Tuple[List[int], List[int], List[int]]:
     return split_tx_rx_day_1_7_2(
         dataset,
         labeled_ratio=labeled_ratio,
         unlabeled_ratio=unlabeled_ratio,
         source_val_ratio=source_val_ratio,
+        source_split_seed=source_split_seed,
     )
 
 
@@ -1474,6 +1486,7 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         labeled_ratio=float(args.labeled_ratio),
         unlabeled_ratio=float(args.unlabeled_ratio),
         source_val_ratio=float(args.source_val_ratio),
+        source_split_seed=(int(args.source_split_seed) if int(args.source_split_seed) >= 0 else None),
     )
     labeled_ds = WiSigSubsetDataset(source_base, labeled_idx, split_source="ssdg_labeled_tx_visible")
     unlabeled_ds = WiSigSubsetDataset(source_base, unlabeled_idx, split_source="ssdg_unlabeled_tx_hidden")
@@ -1586,6 +1599,7 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         "class_id_to_tx": [str(value) for value in list(getattr(source_base, "tx_list", []) or [])],
         "split_info": {
             "mode": str(args.split_mode),
+            "source_split_seed": int(args.source_split_seed),
             "labeled_size": len(labeled_ds),
             "unlabeled_size": len(unlabeled_ds),
             "source_val_size": len(val_ds),

@@ -132,6 +132,7 @@ build_command() {
     CMD=("${PYTHON_BIN}" "${ROOT}/code/SSDG/train_ssdg.py"
       --baseline_ckpt "" --from_scratch true
       --split_mode tx_rx_day_1_7_2
+      --source_split_seed "${SEED}"
       --labeled_ratio 0.07 --unlabeled_ratio 0.63 --source_val_ratio 0.30
       --wisig_pkl "${WISIG_PKL}" --wisig_equalized 1 --wisig_domain rx_day --wisig_out_len 256
       --wisig_train_days "${train_days}" --wisig_test_days "${test_days}"
