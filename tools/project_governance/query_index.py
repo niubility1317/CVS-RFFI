@@ -644,13 +644,26 @@ class QueryStore:
         return result
 
     def repo(self, path: str) -> dict[str, object]:
-        assets = self.find_assets(path, limit=2)
-        if assets["count"] == 0:
+        path = _require_str(path, "path")
+        identity = self._path_identity(path)
+        if identity is not None:
+            location, relative_path = identity
+            asset_rows = self._connection.execute(
+                "SELECT asset_id FROM assets WHERE location = ? AND relative_path = ? "
+                "ORDER BY asset_id LIMIT 2",
+                (location, relative_path),
+            ).fetchall()
+        else:
+            asset_rows = self._connection.execute(
+                "SELECT asset_id FROM assets WHERE asset_id = ? ORDER BY asset_id LIMIT 2",
+                (path,),
+            ).fetchall()
+        if not asset_rows:
             return {"items": [], "path": path, "status": "NOT_FOUND"}
-        if assets["count"] != 1 or assets["truncated"]:
+        if len(asset_rows) != 1:
             return {"items": [], "path": path, "status": "AMBIGUOUS"}
-        asset_id = assets["items"][0]["asset_id"]
-        items = _rows_as_dicts(
+        asset_id = asset_rows[0][0]
+        raw_items = _rows_as_dicts(
             self._connection.execute(
                 "SELECT DISTINCT ownership, repository_root, common_git_dir, branch, "
                 "head_commit, status_summary, linked_worktrees, error "
@@ -659,6 +672,18 @@ class QueryStore:
                 (asset_id,),
             )
         )
+        items: list[dict[str, object]] = []
+        for row in raw_items:
+            try:
+                linked = json.loads(str(row.pop("linked_worktrees") or "[]"))
+            except json.JSONDecodeError:
+                linked = []
+            status_summary = str(row.pop("status_summary") or "")
+            row["linked_worktree_count"] = len(linked) if isinstance(linked, list) else 0
+            row["status_state"] = (
+                "CLEAN" if status_summary == "CLEAN" else "DIRTY_OR_UNKNOWN"
+            )
+            items.append(row)
         if not items:
             status = "NOT_FOUND"
         elif len(items) == 1:

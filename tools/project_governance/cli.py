@@ -1201,7 +1201,7 @@ def _emit_index_payload(payload: Mapping[str, object], *, compact: bool) -> None
         print(
             json.dumps(
                 payload,
-                ensure_ascii=False,
+                ensure_ascii=True,
                 sort_keys=True,
                 separators=(",", ":"),
             )
@@ -1213,7 +1213,7 @@ def _emit_index_payload(payload: Mapping[str, object], *, compact: bool) -> None
             f"warnings={payload.get('warning_count', 0)}"
         )
         return
-    print(json.dumps(payload, ensure_ascii=False, sort_keys=True, indent=2))
+    print(json.dumps(payload, ensure_ascii=True, sort_keys=True, indent=2))
 
 
 def _run_index_command(args: argparse.Namespace) -> int:

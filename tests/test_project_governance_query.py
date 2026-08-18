@@ -480,6 +480,58 @@ def test_repo_returns_ambiguous_instead_of_guessing(built_store) -> None:
         "E:/type10-7/code/second-repo",
         "E:/type10-7/github_publish/CVS-RFFI-repo",
     ]
+    assert set(result["items"][0]) == {
+        "branch",
+        "common_git_dir",
+        "error",
+        "head_commit",
+        "linked_worktree_count",
+        "ownership",
+        "repository_root",
+        "status_state",
+    }
+
+
+def test_repo_prefers_the_exact_asset_over_its_descendants(built_store) -> None:
+    store, case, pointer = built_store
+    store.close()
+    with sqlite3.connect(case.database) as connection:
+        original = connection.execute(
+            "SELECT * FROM assets WHERE asset_id = 'asset-local'"
+        ).fetchone()
+        child = list(original)
+        child[0] = "asset-local-child"
+        child[4] = "runs/local-a/prediction.json"
+        child[5] = "prediction.json"
+        connection.execute(
+            "INSERT INTO assets VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", child
+        )
+        connection.execute(
+            "INSERT INTO git_ownership VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                "asset-local-child",
+                "TRACKED_GIT",
+                "E:/type10-7/code/child-repo",
+                "E:/type10-7/code/child-repo/.git",
+                "main",
+                "e" * 40,
+                "CLEAN",
+                "[]",
+                "",
+            ),
+        )
+        connection.commit()
+    reopened = QueryStore.open(load_latest(pointer))
+    try:
+        result = reopened.repo(r"E:\type10-7\runs\local-a")
+    finally:
+        reopened.close()
+
+    assert result["status"] == "AMBIGUOUS"
+    assert [item["repository_root"] for item in result["items"]] == [
+        "E:/type10-7/code/second-repo",
+        "E:/type10-7/github_publish/CVS-RFFI-repo",
+    ]
 
 
 def test_review_never_promotes_review_rows_to_deletion_candidates(built_store) -> None:
@@ -569,3 +621,22 @@ def test_cli_find_and_review_return_bounded_json(built_store, capsys) -> None:
     reviewed = json.loads(capsys.readouterr().out)
     assert reviewed["count"] == 1
     assert reviewed["authorized_deletion_count"] == 0
+
+
+def test_cli_json_is_ascii_safe_when_indexed_names_contain_replacement_characters(
+    built_store, capsys
+) -> None:
+    store, case, pointer = built_store
+    store.close()
+    with sqlite3.connect(case.database) as connection:
+        connection.execute(
+            "UPDATE assets SET display_name = ? WHERE asset_id = 'asset-local'",
+            ("damaged-\ufffd-name",),
+        )
+        connection.commit()
+
+    assert cli.main(["find", "asset-local", "--latest", str(pointer), "--json"]) == 0
+    output = capsys.readouterr().out
+
+    assert output.encode("ascii")
+    assert json.loads(output)["items"][0]["display_name"] == "damaged-\ufffd-name"
