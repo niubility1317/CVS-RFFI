@@ -546,6 +546,13 @@ def _convert_remote(
         raise ValueError("remote receipt disconnect state is invalid")
     if type(receipt.active_training_observed) is not bool:
         raise ValueError("remote receipt active-training evidence is invalid")
+    if receipt.error is not None:
+        if not isinstance(receipt.error, str) or not receipt.error:
+            raise ValueError("remote receipt error is invalid")
+        if len(receipt.error.encode("utf-8")) > _MAX_ATTEMPT_STDERR_BYTES:
+            raise ValueError("remote receipt error exceeds the bound")
+        if outcome == RemoteOutcome.VERIFIED.value:
+            raise ValueError("verified remote receipt cannot contain an error")
     attempts = _attempts_from_remote(receipt.attempts, route=route, outcome=outcome)
     assets: list[AssetRecord] = []
     scopes: list[ScopeResult] = []
@@ -586,6 +593,21 @@ def _convert_remote(
     closed_protocol_errors = (
         reported_error_count if reported_error_count is not None else protocol_errors
     )
+    if (
+        outcome != RemoteOutcome.VERIFIED.value
+        and receipt.error is not None
+        and not any(scope.relative_path == "" for scope in scopes)
+    ):
+        scopes.append(
+            ScopeResult(
+                scan_id=scan_id,
+                location=Location.N607,
+                root_id=config.n607.root_id,
+                relative_path="",
+                status="SCAN_ERROR",
+                error=receipt.error,
+            )
+        )
     scopes = list(
         _require_verified_root_scope(
             scopes,

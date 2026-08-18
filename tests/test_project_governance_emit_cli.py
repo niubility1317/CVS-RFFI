@@ -575,6 +575,47 @@ def test_emitter_routes_complete_oversized_tables_without_truncating_evidence(tm
     assert long_path in full_external_csv.read_text(encoding="utf-8-sig")
 
 
+def test_emitter_uses_external_only_summaries_when_complete_csv_shards_exceed_scan_budget(
+    tmp_path,
+):
+    original = _bundle()
+    final_path = "bulk/399-" + ("x" * 120) + ".json"
+    bundle = replace(
+        original,
+        assets=tuple(original.assets or ())
+        + tuple(
+            _asset(f"bulk/{index:03d}-{'x' * 120}.json")
+            for index in range(400)
+        ),
+    )
+
+    result = ReportEmitter(
+        bundle,
+        output_root=tmp_path / "git",
+        external_output_root=tmp_path / "external",
+        metadata=_metadata(),
+        git_file_max_bytes=10_000,
+        git_scan_max_bytes=50_000,
+    ).emit()
+    git_output = result.git_output_dir
+    receipt = json.loads(git_output.joinpath("scan_receipt.json").read_text(encoding="utf-8"))
+
+    assert receipt["artifact_route"] == "EXTERNAL_COMPLETE_WITH_GIT_SUMMARIES"
+    assert not tuple(git_output.glob("*.part.csv"))
+    assert sum(path.stat().st_size for path in git_output.iterdir() if path.is_file()) <= 50_000
+    local_summary = json.loads(
+        git_output.joinpath("asset_inventory_local.summary.json").read_text(encoding="utf-8")
+    )
+    assert local_summary["shards"] == []
+    assert local_summary["git_representation"] == "EXTERNAL_ONLY"
+    assert local_summary["row_count"] == len(
+        tuple(asset for asset in bundle.assets or () if asset.location is Location.LOCAL)
+    )
+    assert final_path in (
+        result.external_output_dir / "asset_inventory_local.csv"
+    ).read_text(encoding="utf-8-sig")
+
+
 def test_emitter_fails_when_a_csv_row_cannot_fit_a_git_shard(tmp_path):
     long_path = "runs/" + ("x" * 512) + ".json"
 
@@ -585,7 +626,7 @@ def test_emitter_fails_when_a_csv_row_cannot_fit_a_git_shard(tmp_path):
             external_output_root=tmp_path / "external",
             metadata=_metadata(),
             git_file_max_bytes=128,
-            git_scan_max_bytes=256,
+            git_scan_max_bytes=100_000,
         ).emit()
 
     output = tmp_path / "git" / "EMIT_FIXTURE"
@@ -619,7 +660,7 @@ def test_emitter_treats_embedded_newline_as_one_csv_row_for_shard_limit(tmp_path
             external_output_root=tmp_path / "external",
             metadata=_metadata(),
             git_file_max_bytes=900,
-            git_scan_max_bytes=256,
+            git_scan_max_bytes=100_000,
         ).emit()
 
     assert not (tmp_path / "git" / "EMIT_FIXTURE" / "scan_receipt.json").exists()
@@ -1544,6 +1585,7 @@ def test_cli_maps_remote_failure_evidence_to_the_fixed_exit_codes(
             preflight_status=preflight,
             disconnect_status=disconnect,
             attempts=(),
+            error=f"fixture {outcome_name.casefold()} collection reason",
         ),
     )
 
@@ -1564,6 +1606,14 @@ def test_cli_maps_remote_failure_evidence_to_the_fixed_exit_codes(
     assert outcome.exit_code == expected_exit
     assert outcome.remote_contacted is True
     assert outcome.remote_outcome == outcome_name
+    full = json.loads(Path(outcome.output_dir, "asset_inventory_full.json").read_text(encoding="utf-8"))
+    remote_root = next(
+        scope
+        for scope in full["scope_results"]
+        if scope["location"] == "N607" and scope["relative_path"] == ""
+    )
+    assert remote_root["status"] == "SCAN_ERROR"
+    assert remote_root["error"] == f"fixture {outcome_name.casefold()} collection reason"
 
 
 @pytest.mark.parametrize(

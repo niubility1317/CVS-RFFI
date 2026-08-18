@@ -1634,6 +1634,29 @@ class ReportEmitter:
         )
         external_output: Path | None = None
         external_entries: list[dict[str, Any]] = []
+        csv_row_counts = {
+            "asset_inventory_local.csv": sum(
+                asset.location is Location.LOCAL for asset in records["assets"]
+            ),
+            "asset_inventory_n607.csv": sum(
+                asset.location is Location.N607 for asset in records["assets"]
+            ),
+            "experiment_index.csv": len(records["experiments"]),
+            "git_ownership.csv": len(records["git_ownership"]),
+            "retention_decisions.csv": len(records["retention_decisions"]),
+            "deletion_candidates.csv": len(records["deletion_candidates"]),
+        }
+        complete_csv_bytes = sum(
+            len(payloads[name]) for name in csv_row_counts
+        )
+        # Complete shards cannot be smaller than their source CSVs, and the
+        # receipt itself may consume up to one Git-file budget.  When the CSVs
+        # alone cannot fit the remaining scan budget, keep the complete tables
+        # externally and emit deterministic Git summaries instead of writing
+        # hundreds of doomed shards before the final aggregate-size check.
+        git_shards_fit_budget = complete_csv_bytes <= max(
+            0, self.git_scan_max_bytes - self.git_file_max_bytes
+        )
 
         if not oversize:
             for name in _ARTIFACT_ORDER:
@@ -1664,14 +1687,30 @@ class ReportEmitter:
                         ).encode("utf-8")
                         self._write_exclusive(git_target / name, compact, encoding="utf-8")
                 elif name.endswith(".csv"):
-                    self._write_shards(
-                        git_target,
-                        name,
-                        payloads[name],
-                        external_path=external_path,
-                        external_size=entry["bytes"],
-                        external_sha256=entry["sha256"],
-                    )
+                    if git_shards_fit_budget:
+                        self._write_shards(
+                            git_target,
+                            name,
+                            payloads[name],
+                            external_path=external_path,
+                            external_size=entry["bytes"],
+                            external_sha256=entry["sha256"],
+                        )
+                    else:
+                        summary = {
+                            "artifact": name,
+                            "external_path": str(external_path.resolve()),
+                            "external_bytes": entry["bytes"],
+                            "external_sha256": entry["sha256"],
+                            "shards": [],
+                            "row_count": csv_row_counts[name],
+                            "git_representation": "EXTERNAL_ONLY",
+                        }
+                        self._write_exclusive(
+                            git_target / f"{name[:-4]}.summary.json",
+                            _json_bytes(summary),
+                            encoding="utf-8",
+                        )
                 else:
                     summary = {
                         "artifact": name,
@@ -1686,7 +1725,13 @@ class ReportEmitter:
         self._ensure_git_file_limit(git_target)
         receipt = self._receipt_base(records)
         receipt["terminal_state"] = "COMPLETE"
-        receipt["artifact_route"] = "EXTERNAL_COMPLETE_WITH_GIT_SHARDS" if oversize else "GIT_COMPLETE"
+        receipt["artifact_route"] = (
+            "EXTERNAL_COMPLETE_WITH_GIT_SHARDS"
+            if oversize and git_shards_fit_budget
+            else "EXTERNAL_COMPLETE_WITH_GIT_SUMMARIES"
+            if oversize
+            else "GIT_COMPLETE"
+        )
         receipt["files"] = [
             _file_entry(git_target / name, relative_to=git_target)
             for name in sorted(path.name for path in git_target.iterdir())
