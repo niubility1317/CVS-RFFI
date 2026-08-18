@@ -221,6 +221,12 @@ run_job() {
   mkdir -p "${out_dir}"
   CUDA_VISIBLE_DEVICES="${gpu}" PYTHONUNBUFFERED=1 "${CMD[@]}" > "${log_file}" 2>&1
   local rc=$?
+  if [ "${method}" = "adv3b02" ] && [ "${rc}" -eq 8 ] \
+      && [ -f "${out_dir}/phase1_terminal_status.json" ] \
+      && grep -q 'NON_PROMOTABLE_P0_DISABLED' "${out_dir}/phase1_terminal_status.json"; then
+    log "DONE job=${job_id} gpu=${gpu} rc=${rc} status=NON_PROMOTABLE_P0_DISABLED artifact=usable"
+    return 0
+  fi
   log "DONE job=${job_id} gpu=${gpu} rc=${rc}"
   return "${rc}"
 }
