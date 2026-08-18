@@ -245,6 +245,29 @@ def test_emitter_produces_stable_small_outputs_with_required_encodings(tmp_path)
     assert all(path["sha256"] and path["bytes"] >= 0 for path in receipt["files"])
 
 
+def test_emitter_escapes_nul_in_csv_while_preserving_full_json(tmp_path):
+    bundle = _bundle()
+    status_summary = "? first.txt\x00? second.txt\x00"
+    ownership = replace(bundle.git_ownership[0], status_summary=status_summary)
+    result = ReportEmitter(
+        replace(bundle, git_ownership=(ownership,)),
+        output_root=tmp_path / "git",
+        external_output_root=tmp_path / "external",
+        metadata=_metadata(),
+    ).emit()
+
+    with result.git_output_dir.joinpath("git_ownership.csv").open(
+        "r", encoding="utf-8-sig", newline=""
+    ) as stream:
+        rows = list(csv.DictReader(stream))
+    full_inventory = json.loads(
+        result.git_output_dir.joinpath("asset_inventory_full.json").read_text(encoding="utf-8")
+    )
+
+    assert rows[0]["status_summary"] == "? first.txt\\u0000? second.txt\\u0000"
+    assert full_inventory["git_ownership"][0]["status_summary"] == status_summary
+
+
 @pytest.mark.parametrize(
     "formula_path",
     (

@@ -726,13 +726,13 @@ def _cell(value: Any) -> str:
 
 
 def _csv_cell(value: Any) -> str:
-    """Render one spreadsheet-safe cell without changing JSON evidence."""
+    """Render one spreadsheet-safe cell without changing full JSON evidence."""
 
     converted = _json_value(value)
     rendered = _cell(value)
     if isinstance(converted, str) and rendered.lstrip().startswith(("=", "+", "-", "@")):
-        return "'" + rendered
-    return rendered
+        rendered = "'" + rendered
+    return rendered.replace("\x00", "\\u0000")
 
 
 def _markdown_cell(value: Any) -> str:
