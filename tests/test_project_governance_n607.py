@@ -392,10 +392,69 @@ def test_remote_payload_executes_locally_as_ndjson_without_mutating_source(tmp_p
     receipt_record = next(
         record for record in assets if record["relative_path"].endswith("scan_receipt.json")
     )
+    redundant_wire_fields = {
+        "asset_id",
+        "location",
+        "root_id",
+        "display_name",
+        "escaped_name",
+    }
+    assert all(redundant_wire_fields.isdisjoint(record) for record in assets)
     assert report_record["hash_status"] == "SHA256"
     assert receipt_record["hash_status"] == "SHA256"
     assert all("evidence_text" not in record for record in assets)
     assert "evidence_text" not in source_record
+
+
+def test_compact_asset_wire_record_is_hydrated_and_spoofed_redundancy_is_rejected() -> None:
+    from tools.project_governance.collect_n607 import _parse_ndjson
+
+    compact_lines: list[str] = []
+    for line in _ndjson():
+        record = json.loads(line)
+        if record["record_type"] == "ASSET":
+            for field_name in (
+                "asset_id",
+                "location",
+                "root_id",
+                "display_name",
+                "escaped_name",
+            ):
+                record.pop(field_name)
+        compact_lines.append(json.dumps(record))
+
+    records, _ = _parse_ndjson(
+        compact_lines,
+        scan_id="SCAN-1",
+        expected_root="/home/szu2070436088/2510044040/CV-SincNet",
+        expected_carriers=("runs", "logs"),
+    )
+    asset = next(record for record in records if record["record_type"] == "ASSET")
+    assert asset["asset_id"] == "asset:N607:N607_CVS_SINCNET:runs/demo/report.md"
+    assert asset["location"] == "N607"
+    assert asset["root_id"] == "N607_CVS_SINCNET"
+    assert asset["display_name"] == "report.md"
+    assert asset["escaped_name"] == "report.md"
+
+    for field_name, invalid_value in (
+        ("asset_id", "asset:N607:N607_CVS_SINCNET:runs/wrong.md"),
+        ("location", "LOCAL"),
+        ("root_id", "WRONG_ROOT"),
+        ("display_name", "wrong.md"),
+        ("escaped_name", "wrong.md"),
+    ):
+        tampered = [json.loads(line) for line in compact_lines]
+        tampered_asset = next(
+            record for record in tampered if record["record_type"] == "ASSET"
+        )
+        tampered_asset[field_name] = invalid_value
+        with pytest.raises(ValueError, match="asset"):
+            _parse_ndjson(
+                [json.dumps(record) for record in tampered],
+                scan_id="SCAN-1",
+                expected_root="/home/szu2070436088/2510044040/CV-SincNet",
+                expected_carriers=("runs", "logs"),
+            )
 
 
 def test_direct_success_requires_markers_valid_ndjson_and_clean_disconnect() -> None:

@@ -8,6 +8,7 @@ behind a runner interface so unit tests never contact a network endpoint.
 from __future__ import annotations
 
 import json
+import unicodedata
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
@@ -277,6 +278,7 @@ def _record_asset(path, relative_path, evidence_role, metadata=None):
         metadata = metadata if metadata is not None else os.lstat(path)
         asset_kind = _kind(metadata)
         name = relative_path.rsplit("/", 1)[-1]
+        asset_id = _asset_id(relative_path)
         suffix = os.path.splitext(name)[1].casefold()
         hash_status = "METADATA_ONLY"
         digest = None
@@ -289,14 +291,7 @@ def _record_asset(path, relative_path, evidence_role, metadata=None):
                 hash_status = "ERROR"
                 _error(relative_path, "bounded_file_read", error)
         fields = {
-            "asset_id": _asset_id(relative_path),
-            "location": "N607",
-            "root_id": ROOT_ID,
             "relative_path": _normalize_relative(relative_path),
-            "display_name": unicodedata.normalize("NFC", name),
-            "escaped_name": unicodedata.normalize("NFC", name).encode(
-                "unicode_escape"
-            ).decode("ascii"),
             "asset_kind": asset_kind,
             "size_bytes": metadata.st_size,
             "mtime_utc": _mtime_utc(metadata.st_mtime),
@@ -305,11 +300,11 @@ def _record_asset(path, relative_path, evidence_role, metadata=None):
             "sha256": digest,
             "evidence_role": evidence_role,
         }
-        if fields["asset_id"] in _asset_ids_emitted:
-            return fields["asset_id"], asset_kind
-        _asset_ids_emitted.add(fields["asset_id"])
+        if asset_id in _asset_ids_emitted:
+            return asset_id, asset_kind
+        _asset_ids_emitted.add(asset_id)
         _emit("ASSET", **fields)
-        return fields["asset_id"], asset_kind
+        return asset_id, asset_kind
     except (OSError, ValueError) as error:
         _error(relative_path, "lstat", error)
         return None, "error"
@@ -776,15 +771,25 @@ def _parse_ndjson(
             ):
                 raise ValueError(f"NDJSON server evidence is incomplete at line {index}")
         if record_type == "ASSET":
-            if value.get("location") != "N607" or value.get("root_id") != "N607_CVS_SINCNET":
-                raise ValueError(f"NDJSON asset scope mismatch at line {index}")
             relative_path = value.get("relative_path")
             if not isinstance(relative_path, str) or not relative_path:
                 raise ValueError(f"NDJSON asset path missing at line {index}")
-            if value.get("asset_id") != stable_asset_id(
-                Location.N607, "N607_CVS_SINCNET", relative_path
-            ):
-                raise ValueError(f"NDJSON asset identity mismatch at line {index}")
+            display_name = unicodedata.normalize("NFC", relative_path.rsplit("/", 1)[-1])
+            hydrated_fields = {
+                "asset_id": stable_asset_id(
+                    Location.N607, "N607_CVS_SINCNET", relative_path
+                ),
+                "location": "N607",
+                "root_id": "N607_CVS_SINCNET",
+                "display_name": display_name,
+                "escaped_name": display_name.encode("unicode_escape").decode("ascii"),
+            }
+            for field_name, expected_value in hydrated_fields.items():
+                if field_name in value and value[field_name] != expected_value:
+                    raise ValueError(
+                        f"NDJSON asset {field_name} mismatch at line {index}"
+                    )
+            value.update(hydrated_fields)
             if (
                 value.get("asset_kind") not in _ALLOWED_ASSET_KINDS
                 or not _is_int(value.get("size_bytes"))
