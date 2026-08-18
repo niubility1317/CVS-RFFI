@@ -65,3 +65,7 @@
 - 进一步定位到`_repository_for_path()`为每条资产重复解析全部仓库根；80资产、2工作树的RED回归触发171次`Path.resolve()`。该扫描尚未进入N607，已按精确PID仅终止本任务进程，退出码`143`持久化，无收据，所有证据原样保留。
 - 修复在仓库发现完成后一次性缓存`RepositoryRecord→Path`，归属匹配和批处理共同复用；相同80资产回归降至不超过20次解析。Git专属10项、完整治理/N607 303项、`compileall`和差异检查全部通过。
 - 第二项Git性能提交为`04dcce542313301496eef2438548d56449a4ea07`（`perf: cache Git repository roots during ownership mapping`），精确只含`collect_git.py`及其测试。
+- 第六个不可覆盖ID`PGOV_20260818T035415Z`绑定`cfb1c6ab`启动；本地与Git阶段完成，根权威预检继续验证普通账户、项目根和8张RTX3090可见。N607直连采集触发旧45秒整段总时限，收据状态为`UNKNOWN`；事后按尝试记录的精确child/proxy PID核验均已退出，本机`ssh.exe=0`，两个固定TCP22端点`ESTABLISHED=0`。
+- 该次扫描随后完成INDEX与RETENTION，但EMISSION因Git porcelain v2的NUL分隔状态写入CSV时触发`_csv.Error`；终态为`exit3/FAILED/NO_RECEIPT`。本地诊断ID`PGOVD_20260818T041946Z`复现同一堆栈，未请求N607。两个失败现场均原样保留，资产移动、覆盖、删除、权限修改、任务停止和远端写入仍为0。
+- CSV仅在表格单元格层把NUL转义为字面量`\\u0000`，完整JSON保留原始值；修复提交为`92cb63ebdcb5a411094ef2dc0505eb2f2454fbfd`（`fix: escape Git status separators in CSV`）。Emitter/CLI 151项及完整治理/N607 304项回归通过。
+- N607远端程序需对7个承载面执行深度3的只读控制证据遍历，旧45秒是整个采集总时限而非连接时限，与已观测资料规模不匹配。按TDD将整段有界采集预算改为15分钟，连接建立仍独立受`ConnectTimeout=10`约束，不增加重试、远端写入或持久连接；提交为`e702fcec`（`fix: allow bounded N607 inventory completion`）。N607专属33项、完整治理/N607 304项、`compileall`和差异检查通过。

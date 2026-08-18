@@ -88,3 +88,11 @@
 - `PGOV_20260818T032541Z`在common目录去重后仍于Git阶段持续占用单核。10秒累计CPU增加10秒且无Git子进程，把问题进一步收敛到Python内部资产归属匹配，而不是`git status`或服务器I/O。
 - `_repository_for_path()`原实现对每条资产遍历仓库时都重新调用`_resolved_path(repository.repository_root)`。真实Git fixture的80资产、2工作树测试测得171次解析；缓存仓库根后降为常数级不超过20次，同时保持最长根优先和原有Windows包含语义。
 - 第二项修复提交`04dcce542313301496eef2438548d56449a4ea07`通过Git专属10项、完整治理/N607 303项、编译与差异检查。该扫描在N607前被精确终止，退出码`143`，无远端连接、无收据、无删除候选和资产变更。
+
+## 2026-08-18首次全链到达N607后的闭合修复
+
+- `PGOV_20260818T035415Z`证明LOCAL、GIT、INDEX和RETENTION可在真实规模下完成；N607根权威预检为`DIRECT_READY`，但远端只读采集在旧45秒整段总时限处返回`UNKNOWN`。该时限同时覆盖7个承载面的深度3遍历和受限控制文件读取，而SSH连接建立另有10秒限制，因此失败证据指向采集预算不足，不是身份、路由或连接建立歧义。
+- timeout尝试记录的主child PID`18132`和proxy PID`16640/21764/31512/35228`均在事后精确核验中不存在；本机无`ssh.exe`，到`172.31.111.215:22`与`172.31.105.18:22`的`ESTABLISHED`连接均为0。不得把timeout当作成功；本次正式结果保持`UNKNOWN`，也没有改走非授权路由。
+- 同一正式扫描在EMISSION阶段因`git status --porcelain=v2 -z`的NUL分隔状态进入CSV writer而失败。`PGOVD_20260818T041946Z`用本地只读诊断准确复现`_csv.Error: need to escape, but no escapechar set`；修复只对CSV单元格转义NUL，JSON仍保留原值，提交为`92cb63eb`。
+- N607整段采集预算由45秒改为15分钟，仍是一次性有界命令，仍保持`ConnectTimeout=10`、流式NDJSON校验、无远端文件、无自动重试和终态/断连证据要求。TDD先使旧值精确失败，再以提交`e702fcec`转绿；完整治理/N607 304项测试通过。
+- `PGOV_20260818T035415Z`与诊断ID均无最终收据，不能作为资产总表。所有progress、runner log和exit证据保留；删除、移动、覆盖和清理任何失败现场仍需用户明确批准。
