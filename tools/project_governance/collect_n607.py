@@ -272,26 +272,6 @@ def _hash_file(path, size_bytes, suffix):
     return "SHA256", hashlib.sha256(payload).hexdigest()
 
 
-def _evidence_text(path, size_bytes, suffix, name):
-    lowered_name = name.casefold()
-    if (
-        suffix not in TEXT_SUFFIXES
-        or size_bytes > TEXT_READ_MAX_BYTES
-        or not any(token in lowered_name for token in EVIDENCE_NAME_TOKENS)
-    ):
-        return None
-    payload = _bounded_bytes(path, TEXT_READ_MAX_BYTES)
-    if payload.startswith((b"\xff\xfe", b"\xfe\xff")):
-        try:
-            return payload.decode("utf-16")
-        except UnicodeDecodeError:
-            return None
-    try:
-        return payload.decode("utf-8-sig")
-    except UnicodeDecodeError:
-        return payload.decode("gb18030")
-
-
 def _record_asset(path, relative_path, evidence_role, metadata=None):
     try:
         metadata = metadata if metadata is not None else os.lstat(path)
@@ -300,12 +280,10 @@ def _record_asset(path, relative_path, evidence_role, metadata=None):
         suffix = os.path.splitext(name)[1].casefold()
         hash_status = "METADATA_ONLY"
         digest = None
-        evidence_text = None
         access_status = "OK"
         if asset_kind == "file":
             try:
                 hash_status, digest = _hash_file(path, metadata.st_size, suffix)
-                evidence_text = _evidence_text(path, metadata.st_size, suffix, name)
             except (OSError, OverflowError, UnicodeError) as error:
                 access_status = "SCAN_ERROR"
                 hash_status = "ERROR"
@@ -327,8 +305,6 @@ def _record_asset(path, relative_path, evidence_role, metadata=None):
             "sha256": digest,
             "evidence_role": evidence_role,
         }
-        if evidence_text is not None:
-            fields["evidence_text"] = evidence_text
         if fields["asset_id"] in _asset_ids_emitted:
             return fields["asset_id"], asset_kind
         _asset_ids_emitted.add(fields["asset_id"])
@@ -583,12 +559,9 @@ def build_remote_payload(
         "CARRIER_SURFACES": tuple(surface.relative_path for surface in location_config.carrier_surfaces),
         "MAX_DEPTH": discovery_config.control_evidence_max_depth,
         "HASH_MAX_BYTES": discovery_config.hash_max_bytes,
-        "TEXT_READ_MAX_BYTES": discovery_config.text_read_max_bytes,
         "CONTROL_SUFFIXES": (".json", ".md", ".markdown", ".py", ".sh", ".toml", ".yaml", ".yml"),
-        "TEXT_SUFFIXES": (".json", ".md", ".markdown", ".receipt", ".txt", ".yaml", ".yml"),
         "PROTECTED_SUFFIXES": (".pt", ".pth", ".ckpt", ".npy", ".npz", ".pkl", ".h5", ".mat", ".tar", ".zip", ".7z"),
         "SUMMARY_DIRECTORY_NAMES": ("prediction", "predictions", "score", "scores"),
-        "EVIDENCE_NAME_TOKENS": ("report", "receipt", "manifest", "metrics", "status", "state"),
     }
     assignments = "\n".join(
         f"{name} = {json.dumps(value, ensure_ascii=True, separators=(',', ':'))}"

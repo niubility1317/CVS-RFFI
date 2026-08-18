@@ -392,9 +392,10 @@ def test_remote_payload_executes_locally_as_ndjson_without_mutating_source(tmp_p
     receipt_record = next(
         record for record in assets if record["relative_path"].endswith("scan_receipt.json")
     )
-    assert report_record["evidence_text"].startswith("run_id: demo")
+    assert report_record["hash_status"] == "SHA256"
+    assert receipt_record["hash_status"] == "SHA256"
+    assert all("evidence_text" not in record for record in assets)
     assert "evidence_text" not in source_record
-    assert "utf16-demo" in receipt_record["evidence_text"]
 
 
 def test_direct_success_requires_markers_valid_ndjson_and_clean_disconnect() -> None:
@@ -835,7 +836,9 @@ def test_payload_records_partial_proc_visibility_instead_of_silently_skipping() 
     assert "123" in records[0]["error"]
 
 
-def test_payload_deduplicates_revisited_assets_and_records_decode_errors(tmp_path: Path) -> None:
+def test_payload_deduplicates_revisited_assets_and_hashes_opaque_text_without_exporting_it(
+    tmp_path: Path,
+) -> None:
     payload = build_remote_payload(_config(), _discovery(), scan_id="SCAN-DEDUPE")
     namespace: dict[str, object] = {"__name__": "payload_test"}
     exec(compile(payload, "<remote-payload>", "exec"), namespace)
@@ -859,9 +862,11 @@ def test_payload_deduplicates_revisited_assets_and_records_decode_errors(tmp_pat
             os.lstat(invalid_report),
         )
     records = [json.loads(line) for line in output.getvalue().splitlines()]
-    assert records[0]["record_type"] == "SCAN_ERROR"
-    assert records[-1]["record_type"] == "ASSET"
-    assert records[-1]["access_status"] == "SCAN_ERROR"
+    assert [record["record_type"] for record in records] == ["ASSET"]
+    assert records[0]["access_status"] == "OK"
+    assert records[0]["hash_status"] == "SHA256"
+    assert isinstance(records[0]["sha256"], str) and len(records[0]["sha256"]) == 64
+    assert "evidence_text" not in records[0]
 
 
 def test_payload_requires_ppid_for_a_project_bound_process() -> None:
