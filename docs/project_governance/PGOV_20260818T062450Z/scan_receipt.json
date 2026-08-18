@@ -1,0 +1,214 @@
+{
+  "artifact_route": "EXTERNAL_COMPLETE_WITH_GIT_SUMMARIES",
+  "authorized_deletion_rows": 0,
+  "collector_versions": {
+    "cli": "project-governance-cli-v1",
+    "git": "project-governance-git-v1",
+    "local": "project-governance-local-v1",
+    "n607": "project-governance-n607-v1"
+  },
+  "completed_at_utc": "2026-08-18T06:46:09Z",
+  "counts": {
+    "assets": 619283,
+    "assets_local": 183077,
+    "assets_n607": 436206,
+    "deletion_candidates": 0,
+    "experiments": 618904,
+    "git_ownership": 619283,
+    "retention_decisions": 619283,
+    "scopes": 20
+  },
+  "deletion_rows": [],
+  "deletions": 0,
+  "emitted_at_utc": "2026-08-18T06:46:10Z",
+  "external_files": [
+    {
+      "bytes": 2505388161,
+      "path": "E:\\type10-7\\local_artifacts\\project_governance\\PGOV_20260818T062450Z\\asset_inventory_full.json",
+      "sha256": "3efa7652a55397ac84574f618eabf9f5be15af8c12e5f3471495fb1a7c940068"
+    },
+    {
+      "bytes": 92754333,
+      "path": "E:\\type10-7\\local_artifacts\\project_governance\\PGOV_20260818T062450Z\\asset_inventory_local.csv",
+      "sha256": "8404e83953de685672b421bd9f31a7aab79d184723d68a199cec245e4e20b3d5"
+    },
+    {
+      "bytes": 248541041,
+      "path": "E:\\type10-7\\local_artifacts\\project_governance\\PGOV_20260818T062450Z\\asset_inventory_n607.csv",
+      "sha256": "40680554c642fd34ef2549a44fc2694924c959e0ae365c22421859612713c01d"
+    },
+    {
+      "bytes": 175,
+      "path": "E:\\type10-7\\local_artifacts\\project_governance\\PGOV_20260818T062450Z\\deletion_candidates.csv",
+      "sha256": "c2df08daec4478f524a957450c3ab042bdbd87e1df19935de967b4af38795f9a"
+    },
+    {
+      "bytes": 212410404,
+      "path": "E:\\type10-7\\local_artifacts\\project_governance\\PGOV_20260818T062450Z\\experiment_index.csv",
+      "sha256": "e50125bd2e8e67c20a0a6bbf053ba241a66d2c004f6c7b5f140e229188f558e7"
+    },
+    {
+      "bytes": 797641947,
+      "path": "E:\\type10-7\\local_artifacts\\project_governance\\PGOV_20260818T062450Z\\git_ownership.csv",
+      "sha256": "7d1a46bf9ffdcde7761709697506be7061bda9a2156f6245c097f526863606a2"
+    },
+    {
+      "bytes": 99657342,
+      "path": "E:\\type10-7\\local_artifacts\\project_governance\\PGOV_20260818T062450Z\\report.md",
+      "sha256": "5ac3a362f209d9cee2bf4dfb3e25db0f43a8459d3bbece93af66096463200d8d"
+    },
+    {
+      "bytes": 247418080,
+      "path": "E:\\type10-7\\local_artifacts\\project_governance\\PGOV_20260818T062450Z\\retention_decisions.csv",
+      "sha256": "8a18c524d1418c2b1f3114fb16f2e85da1fe7dbfa0abfebff5c35f7d9c945479"
+    }
+  ],
+  "files": [
+    {
+      "bytes": 289,
+      "path": "asset_inventory_full.json.summary.json",
+      "sha256": "a96226ef1208bdbdd3f55775f1c59430393f7f2d283e35ccf6b7becee564cecd"
+    },
+    {
+      "bytes": 367,
+      "path": "asset_inventory_local.summary.json",
+      "sha256": "90ae4a09ef71fd55bf9cad1aad09db34bae4e86035475e7f11c1979d64743ba3"
+    },
+    {
+      "bytes": 366,
+      "path": "asset_inventory_n607.summary.json",
+      "sha256": "f0d6bb4c09ce26a075c462867326bdb6339af6e7cf14d0ebf3579ef20428efaf"
+    },
+    {
+      "bytes": 353,
+      "path": "deletion_candidates.summary.json",
+      "sha256": "5ecb6fa3f28eab2066f3114ea56348686af06d9a131ede0e490801f2a8bc1876"
+    },
+    {
+      "bytes": 358,
+      "path": "experiment_index.summary.json",
+      "sha256": "f94de72868aa7b56c9f604a215dbc9fb2a779a19cb0c68afc3ef581d98eda8a0"
+    },
+    {
+      "bytes": 352,
+      "path": "git_ownership.summary.json",
+      "sha256": "866f7c74878443ab36d2a30de43cce2dc6a3e7360da6d01fb05204df497e2e4c"
+    },
+    {
+      "bytes": 209,
+      "path": "report.md",
+      "sha256": "3da8649a50bd9727dd7229e4b51a664a4b5c50cdb4292a6f77f290291aeed584"
+    },
+    {
+      "bytes": 364,
+      "path": "retention_decisions.summary.json",
+      "sha256": "0a09e98879848f30c21f9860a3a7404638cfe5a156bdf4ba4813e07e3d32fd6d"
+    }
+  ],
+  "implementation": {
+    "git_head": "791c775ec19f3aee78f67cc544fd6f0a287de71a",
+    "tracked_diff_state": "DIRTY_OR_UNKNOWN"
+  },
+  "moves": 0,
+  "n607_evidence": {
+    "active_training_observed": false,
+    "attempts": [
+      {
+        "child_exited": true,
+        "child_pid": 404,
+        "disconnect_status": "VERIFIED",
+        "label": "PREFLIGHT",
+        "lingering_connections": [],
+        "proxy_child_pids": [
+          12512,
+          18128,
+          19028,
+          25172,
+          25496,
+          31384,
+          31980,
+          32888,
+          37756
+        ],
+        "proxy_children_exited": true,
+        "returncode": 0,
+        "stderr_tail": "",
+        "timed_out": false
+      },
+      {
+        "child_exited": true,
+        "child_pid": 3360,
+        "disconnect_status": "VERIFIED",
+        "label": "DIRECT",
+        "lingering_connections": [],
+        "proxy_child_pids": [
+          30236,
+          31756,
+          39216
+        ],
+        "proxy_children_exited": true,
+        "returncode": 0,
+        "stderr_tail": "",
+        "timed_out": false
+      }
+    ],
+    "disconnect": "VERIFIED",
+    "outcome": "VERIFIED",
+    "preflight": "DIRECT_READY",
+    "requested": true,
+    "route": "DIRECT"
+  },
+  "operator": "codex",
+  "overwrites": 0,
+  "progress": {
+    "bytes": 2552,
+    "sha256": "37327a9ad5710f5de3d09f53c67e023a87fd9798b51b3ad99ee86688b6410074"
+  },
+  "receipt_file": {
+    "path": "scan_receipt.json",
+    "written_last": true
+  },
+  "roots": {
+    "local": "E:/type10-7",
+    "n607": "/home/szu2070436088/2510044040/CV-SincNet"
+  },
+  "scan_error_counts": {
+    "assets": 0,
+    "deletion_candidates": 0,
+    "experiments": 35111,
+    "git_ownership": 0,
+    "n607_records": 1,
+    "retention_decisions": 0,
+    "scopes": 1
+  },
+  "scan_id": "PGOV_20260818T062450Z",
+  "schema_version": 1,
+  "scopes": {
+    "local": [
+      ".:VERIFIED",
+      "automation_reports/CV-SincNet:VERIFIED",
+      "code/snapshots:VERIFIED",
+      "github_publish/CVS-RFFI-repo:VERIFIED",
+      "local_artifacts:VERIFIED",
+      "logs:VERIFIED",
+      "outputs:VERIFIED",
+      "remote_artifacts:VERIFIED",
+      "runner_staging:VERIFIED",
+      "runs:VERIFIED",
+      "server_log_backups:VERIFIED"
+    ],
+    "n607": [
+      ".:VERIFIED",
+      "automation_reports:VERIFIED",
+      "code:VERIFIED",
+      "logs:VERIFIED",
+      "releases:VERIFIED",
+      "remote_artifacts:VERIFIED",
+      "runs:VERIFIED",
+      "snapshots:VERIFIED"
+    ]
+  },
+  "source_asset_mutations": 0,
+  "started_at_utc": "2026-08-18T06:25:25Z",
+  "terminal_state": "COMPLETE"
+}

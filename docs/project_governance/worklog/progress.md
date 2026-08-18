@@ -74,3 +74,13 @@
 - 独立N607诊断ID`PGOVN607D_20260818T052813Z`不创建清单目录，精确返回`malformed streaming NDJSON: NDJSON stream exceeds the bounded total size`；远端命令returncode为0、无timeout、DIRECT及全部proxy退出且断连`VERIFIED`。根因是未消费的`evidence_text`正文超过256MiB，并非路由、身份、服务器扫描或断连失败。
 - 大清单Emitter新增预算前置分流：只有完整CSV分片连同收据预算可进入Git时才写分片；否则external保留完整表及SHA，Git只写确定性摘要。N607非成功`receipt.error`同时写入根scope，避免详细失败原因被通用“根缺失”覆盖；修复提交为`44d5988d`（`fix: close large inventory emission`）。
 - N607 wire payload停止发送CLI从未消费的正文，只保留路径、类型、大小、mtime、访问状态、受限SHA、证据角色和范围/进程闭合字段；提交为`47b06b01`（`perf: omit unused remote evidence text`）。N607专属33项及完整治理/N607 305项回归、`compileall`和差异检查通过。
+- `44d5988d`与`47b06b01`的一次性独立定点复审为`APPROVE，P0=0、P1=0`。首次闭合扫描`PGOV_20260818T054619Z`保留本地183075项资产及完整收据，但N607仍因329443890字节元数据超过256MiB上限而`FAILED`；该次约2.22GB外置文件和11.5KiB Git摘要均保留，不删除、不复用ID。
+- 只读尺寸诊断确认N607共有436217条记录，其中436206条资产、8条scope、1条`SCAN_ERROR`，原wire总量329443890字节。按TDD仅从远端ASSET记录省略可由canonical relative path确定重建的`asset_id/location/root_id/display_name/escaped_name`；本地解析器补全全部字段，并拒绝旧格式显式携带的任一矛盾值。
+- 压缩后真实N607尺寸复测为192735445字节，记录数完全不变，较原wire减少41.5%，且16MiB单行与256MiB总量上限均未放宽。提交`791c775ec19f3aee78f67cc544fd6f0a287de71a`通过N607专属34项、CLI 150项、完整治理/N607 306项、`compileall`和差异检查；一次性独立复审为`APPROVE，P0=0、P1=0`。
+- 最终不可覆盖ID`PGOV_20260818T062450Z`完成零写入预览和根权威普通账户预检。N607为`DIRECT_READY/DIRECT/VERIFIED`，预检及采集child/proxy全部退出、无timeout、无lingering connection、断连`VERIFIED`；8个本地GPU在预检时可见且无计算负载。
+- 最终收据`terminal_state=COMPLETE`，实施HEAD为`791c775e`；资产619283项，其中本地183077项、N607 436206项；实验索引618904项、Git归属619283项、保留决策619283项、scope 20项且LOCAL/N607全部`VERIFIED`。
+- N607资产包含2027个目录、434054个文件和125个符号链接，436206项`access_status`全部为`OK`；433673项控制文件形成SHA256，25项因大小上限不哈希。唯一远端错误为普通账户无法读取1037个`/proc`进程条目，operation为`proc_partial_visibility`；资产错误为0、scope仍全部`VERIFIED`。CLI据此保守返回exit2，不误报0。
+- 保留分级为`KEEP_ACTIVE=851`、`REVIEW_REQUIRED=618432`；全部建议动作仍为`REVIEW`。实验状态为`OPEN_INCOMPLETE=2395`、`ORPHAN_REVIEW=581398`、`SCAN_ERROR=35111`，扫描时没有项目绑定进程证据，不把任何实验误报为运行中。
+- Git归属覆盖71个仓库：`TRACKED_GIT=135419`、`UNTRACKED_IN_GIT_WORKTREE=9453`、`IGNORED_REGENERABLE=97`、`NON_GIT_EVIDENCE=38108`、`REMOTE_NON_GIT=436206`，Git错误为0。
+- 完整清单采用`EXTERNAL_COMPLETE_WITH_GIT_SUMMARIES`：8个外置文件合计4203811483字节，Git侧10个文件合计11682字节。逐字节复算全部外置文件、全部Git摘要和progress的字节数/SHA均与收据一致，收据mtime晚于其余文件并声明`written_last=true`。
+- 删除候选0、授权删除0、移动0、覆盖0、删除0、源资产变更0。用户DOCX修改/删除状态、`.docx_qa*`目录及全部失败扫描现场均保持未暂存、未触碰；本轮未使用管理员账户、未写N607、未停止任务。
