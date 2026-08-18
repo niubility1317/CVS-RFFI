@@ -367,7 +367,6 @@ def build_index(
         raise FileExistsError(f"governance index temporary target exists: {temporary}")
 
     connection = sqlite3.connect(temporary)
-    published = False
     try:
         _create_schema(connection)
         local_count = _import_csv(
@@ -431,13 +430,8 @@ def build_index(
         connection.commit()
         connection.close()
         temporary.replace(database_path)
-        published = True
     finally:
-        try:
-            connection.close()
-        finally:
-            if not published and temporary.exists():
-                temporary.unlink()
+        connection.close()
 
     return IndexBuildSummary(
         scan_id=scan_id,

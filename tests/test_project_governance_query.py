@@ -8,6 +8,7 @@ from pathlib import Path
 
 import pytest
 
+from tools.project_governance import cli
 from tools.project_governance.query_index import QueryStore, build_index, load_latest
 
 
@@ -353,6 +354,9 @@ def test_build_index_rejects_a_wrong_header_or_row_count(tmp_path: Path) -> None
     with pytest.raises(ValueError, match="unexpected CSV header"):
         build_index(receipt_path=case.receipt, external_root=case.external_root, database_path=case.database)
 
+    assert not case.database.exists()
+    assert case.database.with_name(f".{case.database.name}.building").exists()
+
 
 def test_build_index_never_replaces_an_existing_database(tmp_path: Path) -> None:
     case = write_inventory_fixture(tmp_path)
@@ -484,3 +488,84 @@ def test_review_never_promotes_review_rows_to_deletion_candidates(built_store) -
     assert result["count"] == 2
     assert result["authorized_deletion_count"] == 0
     assert {item["retention_class"] for item in result["items"]} == {"REVIEW_REQUIRED"}
+
+
+@pytest.mark.parametrize(
+    ("argv", "command"),
+    (
+        (("build-index", "--receipt", "r", "--external-root", "e", "--database", "d"), "build-index"),
+        (("status", "--latest", "p"), "status"),
+        (("find", "asset", "--latest", "p"), "find"),
+        (("experiment", "RUN_A", "--latest", "p"), "experiment"),
+        (("repo", "E:/type10-7/code", "--latest", "p"), "repo"),
+        (("review", "--latest", "p"), "review"),
+    ),
+)
+def test_cli_exposes_the_approved_query_surface(argv: tuple[str, ...], command: str) -> None:
+    assert cli.build_parser().parse_args(argv).command == command
+
+
+def test_cli_build_index_emits_a_json_summary(tmp_path: Path, capsys) -> None:
+    case = write_inventory_fixture(tmp_path)
+
+    exit_code = cli.main(
+        [
+            "build-index",
+            "--receipt",
+            str(case.receipt),
+            "--external-root",
+            str(case.external_root),
+            "--database",
+            str(case.database),
+            "--json",
+        ]
+    )
+
+    payload = json.loads(capsys.readouterr().out)
+    assert exit_code == 0
+    assert payload["scan_id"] == "PGOV_TEST_001"
+    assert payload["table_counts"]["assets"] == 2
+
+
+def test_cli_query_never_constructs_collectors_or_writes_the_index(
+    tmp_path: Path, capsys, monkeypatch
+) -> None:
+    case = write_inventory_fixture(tmp_path)
+    build_index(receipt_path=case.receipt, external_root=case.external_root, database_path=case.database)
+    pointer = _write_latest_pointer(case)
+    before = case.database.read_bytes()
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("query command must not construct a collector")
+
+    monkeypatch.setattr(cli, "LocalCollector", forbidden)
+    exit_code = cli.main(["status", "--latest", str(pointer), "--json"])
+
+    payload = json.loads(capsys.readouterr().out)
+    assert exit_code == 3
+    assert payload["scan_id"] == "PGOV_TEST_001"
+    assert payload["warning_count"] == 1
+    assert case.database.read_bytes() == before
+
+
+def test_cli_find_and_review_return_bounded_json(built_store, capsys) -> None:
+    _, _, pointer = built_store
+    assert cli.main(["find", "asset-local", "--latest", str(pointer), "--limit", "1", "--json"]) == 0
+    found = json.loads(capsys.readouterr().out)
+    assert found["items"][0]["asset_id"] == "asset-local"
+
+    assert cli.main(
+        [
+            "review",
+            "--latest",
+            str(pointer),
+            "--retention-class",
+            "REVIEW_REQUIRED",
+            "--limit",
+            "1",
+            "--json",
+        ]
+    ) == 0
+    reviewed = json.loads(capsys.readouterr().out)
+    assert reviewed["count"] == 1
+    assert reviewed["authorized_deletion_count"] == 0

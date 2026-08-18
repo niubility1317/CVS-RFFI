@@ -47,6 +47,7 @@ from .models import (
     ScopeResult,
 )
 from .paths import normalize_relative_path, stable_asset_id
+from .query_index import QueryStore, build_index, load_latest
 
 
 CLI_VERSION = "project-governance-cli-v1"
@@ -130,6 +131,37 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="validate and print the exact plan without collecting or writing",
     )
+    build = commands.add_parser(
+        "build-index", help="build a local SQLite query index from one completed scan"
+    )
+    build.add_argument("--receipt", required=True, help="completed scan_receipt.json")
+    build.add_argument("--external-root", required=True, help="exact external CSV directory")
+    build.add_argument("--database", required=True, help="new external governance.sqlite")
+    build.add_argument("--json", action="store_true", help="emit compact JSON")
+
+    def add_latest(command: argparse.ArgumentParser) -> None:
+        command.add_argument("--latest", required=True, help="validated latest.json pointer")
+        command.add_argument("--json", action="store_true", help="emit compact JSON")
+
+    status = commands.add_parser("status", help="show the latest governance baseline")
+    add_latest(status)
+    find = commands.add_parser("find", help="find an asset by ID or absolute path")
+    find.add_argument("query")
+    find.add_argument("--limit", type=int, default=20)
+    add_latest(find)
+    experiment = commands.add_parser("experiment", help="summarize one exact run ID")
+    experiment.add_argument("run_id")
+    add_latest(experiment)
+    repo = commands.add_parser("repo", help="show Git ownership for one exact path")
+    repo.add_argument("path")
+    add_latest(repo)
+    review = commands.add_parser("review", help="list bounded manual-review records")
+    review.add_argument("--location", choices=("LOCAL", "N607"))
+    review.add_argument("--retention-class")
+    review.add_argument("--experiment-state")
+    review.add_argument("--ownership")
+    review.add_argument("--limit", type=int, default=20)
+    add_latest(review)
     return parser
 
 
@@ -1129,9 +1161,11 @@ def main(
     *,
     n607_collector_factory: Callable[..., object] | None = None,
 ) -> int:
-    """CLI boundary that always prints one JSON line for a parsed command."""
+    """CLI boundary for scans and bounded local governance queries."""
 
     args = parse_args(argv)
+    if args.command != "scan":
+        return _run_index_command(args)
     try:
         config = load_config(args.config, probe_local_paths=False)
         if args.print_plan:
@@ -1160,6 +1194,85 @@ def main(
         outcome = ScanOutcome(4, getattr(args, "scan_id", ""), None, None, False, "NOT_STARTED", 0, 0, str(exc))
     print(json.dumps(outcome.as_dict(), ensure_ascii=True, sort_keys=True, separators=(",", ":")))
     return outcome.exit_code
+
+
+def _emit_index_payload(payload: Mapping[str, object], *, compact: bool) -> None:
+    if compact:
+        print(
+            json.dumps(
+                payload,
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            )
+        )
+        return
+    if "scan_id" in payload and "terminal_state" in payload:
+        print(
+            f"scan_id={payload['scan_id']} terminal_state={payload['terminal_state']} "
+            f"warnings={payload.get('warning_count', 0)}"
+        )
+        return
+    print(json.dumps(payload, ensure_ascii=False, sort_keys=True, indent=2))
+
+
+def _run_index_command(args: argparse.Namespace) -> int:
+    """Run one local-only index command before any scanner is constructed."""
+
+    try:
+        if args.command == "build-index":
+            summary = build_index(
+                receipt_path=Path(args.receipt),
+                external_root=Path(args.external_root),
+                database_path=Path(args.database),
+            )
+            payload: dict[str, object] = {
+                "database_path": str(summary.database_path),
+                "scan_id": summary.scan_id,
+                "table_counts": dict(summary.table_counts),
+            }
+            exit_code = 0
+        else:
+            pointer = load_latest(Path(args.latest))
+            store = QueryStore.open(pointer)
+            try:
+                if args.command == "status":
+                    payload = store.status()
+                    exit_code = 3 if payload["warning_count"] else 0
+                elif args.command == "find":
+                    payload = store.find_assets(args.query, limit=args.limit)
+                    exit_code = 0
+                elif args.command == "experiment":
+                    payload = store.experiment(args.run_id)
+                    exit_code = 0
+                elif args.command == "repo":
+                    payload = store.repo(args.path)
+                    exit_code = 0
+                elif args.command == "review":
+                    filters = {
+                        key: value
+                        for key, value in {
+                            "location": args.location,
+                            "retention_class": args.retention_class,
+                            "experiment_state": args.experiment_state,
+                            "ownership": args.ownership,
+                        }.items()
+                        if value is not None
+                    }
+                    payload = store.review(filters, limit=args.limit)
+                    exit_code = 0
+                else:
+                    raise ValueError(f"unsupported index command: {args.command}")
+            finally:
+                store.close()
+    except FileExistsError as exc:
+        payload = {"error": str(exc), "status": "REJECTED"}
+        exit_code = 4
+    except (OSError, ValueError) as exc:
+        payload = {"error": str(exc), "status": "INDEX_UNAVAILABLE"}
+        exit_code = 2
+    _emit_index_payload(payload, compact=bool(args.json))
+    return exit_code
 
 
 __all__ = ["CLI_VERSION", "ScanOutcome", "build_parser", "main", "parse_args", "print_plan", "run_scan"]
