@@ -719,13 +719,15 @@ Use the root-authoritative host-local preflight because its reviewed`n607_ssh_co
 
 - [ ] **Step 3: Execute one immutable formal scan**
 
+Before generating a new ID, require the real-scale experiment-index optimization and its focused/full regression tests to pass. Do not retry the pre-optimization implementation: two immutable IDs ended without a receipt and left only empty Git output directories. Preserve those directories as failure evidence; do not delete or reuse them.
+
 Run:
 
 ```bash
 PYTHONUTF8=1 PYTHONIOENCODING=utf-8 conda run -n ssr-gpu python tools/project_governance_inventory.py scan --config configs/project_governance_inventory_v1.json --scan-id "$GOV_SCAN_ID" --output-root "$GOV_GIT_OUTPUT" --external-output-root "$GOV_EXTERNAL_OUTPUT" --operator codex --include-n607
 ```
 
-If the command runner yields a live execution session, retain that session and poll it to an explicit process exit while reporting bounded progress; a session ID, empty stdout or observed child-process disappearance is not terminal evidence. Do not interrupt a live scan merely because output is delayed. Do not rerun with the same scan ID. If the final session evidence is lost or the scan fails, preserve partial output, mark that ID`UNKNOWN`or`FAILED`, diagnose locally and use a new immutable scan ID only after the concrete defect is fixed and recorded.
+If the command runner yields a live execution session, retain that session and poll it to an explicit process exit while reporting bounded progress; a session ID, empty stdout or observed child-process disappearance is not terminal evidence. Record the exact Windows PID and parent-child binding at launch. A fallback process probe must use that exact PID and the native Windows process table; never treat a scan-ID substring match as sole liveness evidence because the monitoring command can match itself. Do not interrupt a live scan merely because output is delayed. Do not rerun with the same scan ID. If the final session evidence is lost or the scan fails, preserve partial output, mark that ID`UNKNOWN`or`FAILED`, diagnose locally and use a new immutable scan ID only after the concrete defect is fixed and recorded.
 
 - [ ] **Step 4: Verify coverage and zero mutation**
 

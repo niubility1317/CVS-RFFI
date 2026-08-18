@@ -59,3 +59,10 @@
 - 扫描后未见`ssh.exe`客户端或到两个固定TCP22端点的`ESTABLISHED`连接；仅N607直连端点存在PID0的`TIME_WAIT`闭合套接字，bridge端点无连接记录。
 - 本次尝试没有形成删除候选或任何可执行授权，原资产移动、覆盖、删除、权限修改和任务停止均为0；DOCX和`.docx_qa*`未触碰。
 - 具体执行缺陷是长运行命令会话没有持续轮询到明确process exit。计划已增加“保留同一session并轮询到终态”的规则；该规则提交后才能以新ID重试，不能把空输出或子进程消失当作完成证据。
+
+## 2026-08-18两次正式扫描终态纠正
+
+- 首个ID`PGOV_20260817T185755Z`和第二个ID`PGOV_20260817T191013Z`最终均无活动Python/Conda进程。两个Git输出目录存在但均为0文件，两个external目录均不存在，`scan_receipt.json`均不存在；由于原始执行会话和退出码已丢失，两个ID都只能封存为`UNKNOWN / NO_RECEIPT`，不得重跑同一ID。
+- 先前长期报告的`process=PRESENT`是假阳性：监控命令使用`ps -ef`按scan ID匹配时，命中了监控脚本自身命令行中的`for run_id in ...`。最终由Windows原生`ps -W`和`tasklist.exe /FO CSV`交叉确认无Python/Conda扫描进程。后续不得用包含目标ID的监控命令行做单一存活证据；必须保留原始执行session，或使用启动时记录的精确Windows PID及父子绑定。
+- 终态独立核验同时确认`ssh.exe=0`、到`172.31.111.215:22`和`172.31.105.18:22`的`ESTABLISHED=0`。两次尝试均未形成删除候选或授权，原资产移动、覆盖、删除、权限修改、进程停止和远端写入均为0；两个空目录作为失败现场保留，未经用户明确同意不删除。
+- 静态性能审查发现`index_experiments.py`在显式run root、expected artifact、同commit binding和known run ID关联上存在多处全量笛卡尔遍历；真实资产规模下会放大为数千万至上亿次Python路径/字符串比较。源码未见无限循环，但该实现不能继续用于第三次正式扫描。下一步先以TDD改为等价的路径索引、binding缓存和token倒排，再用新ID启动唯一一次正式扫描。
