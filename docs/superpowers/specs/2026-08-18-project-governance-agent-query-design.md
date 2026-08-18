@@ -113,12 +113,12 @@ python tools/project_governance_inventory.py <command>
 ```json
 {
   "schema_version": 1,
-  "scan_id": "PGOV_...",
-  "receipt_path": "E:/.../scan_receipt.json",
-  "external_root": "E:/.../<scan_id>",
-  "sqlite_path": "E:/.../<scan_id>/governance.sqlite",
-  "created_at_utc": "...",
-  "implementation_git_head": "..."
+  "scan_id": "PGOV_20260818T062450Z",
+  "receipt_path": "E:/type10-7/code/snapshots/project_governance_20260813_wt/docs/project_governance/PGOV_20260818T062450Z/scan_receipt.json",
+  "external_root": "E:/type10-7/local_artifacts/project_governance/PGOV_20260818T062450Z",
+  "sqlite_path": "E:/type10-7/local_artifacts/project_governance/PGOV_20260818T062450Z/governance.sqlite",
+  "created_at_utc": "2026-08-18T06:46:10Z",
+  "implementation_git_head": "791c775ec19f3aee78f67cc544fd6f0a287de71a"
 }
 ```
 
@@ -186,6 +186,10 @@ SQLite只保存查询所需的原字段，不创造新的科学事实。第一�
 8.不读取或存储文件正文、模型内容、数据样本、SSH密钥和服务器凭据。
 
 ## 9.命令设计
+
+### 9.0`build-index`
+
+离线管理命令，从一个已闭合扫描的收据和外置CSV流式构建SQLite。它要求显式提供`--receipt`、`--external-root`和`--database`，只写新的外置数据库临时文件及最终数据库，不更新原始清单、不连接N607，也不自动修改`latest.json`。日常Agent不调用此命令。
 
 ### 9.1`status`
 
