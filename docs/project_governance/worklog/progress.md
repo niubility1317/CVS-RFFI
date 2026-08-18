@@ -61,3 +61,7 @@
 - 第四次扫描在`GIT/STARTED`阶段暴露确定性性能缺陷：本地有66个直接Git工作树标记，实施仓库有72个linked worktree，旧实现会对每个候选重复展开同一common Git目录，最坏约执行`66×72×4=19008`次工作树元数据命令。该扫描尚未接触N607，已按精确PID仅终止本任务Python进程；退出码`143`已持久化，无收据，进度目录、runner日志和退出码文件均保留，未删除或覆盖任何资产。
 - 按TDD新增真实linked-worktree回归：旧实现准确失败为`worktree list`调用2次；修复按规范化common Git目录缓存展开结果后GREEN。Git专属9项、完整治理/N607 302项、`compileall`及差异检查全部通过。
 - Git归属性能修复提交为`eb42737af4b186d02dc308f5351c3e330675d3dd`（`fix: deduplicate linked Git ownership discovery`），提交精确只含`collect_git.py`及其测试；用户DOCX、`.docx_qa*`和所有扫描证据均未暂存。
+- 第五个不可覆盖ID`PGOV_20260818T032541Z`绑定`8f63c217`启动；本地阶段正常完成，但Git阶段仍持续约20分钟。10秒只读累计CPU对比从`0:23:09`增至`0:23:19`，且无`git.exe`子进程，证明主Python进程持续占满单核而非等待外部Git命令。
+- 进一步定位到`_repository_for_path()`为每条资产重复解析全部仓库根；80资产、2工作树的RED回归触发171次`Path.resolve()`。该扫描尚未进入N607，已按精确PID仅终止本任务进程，退出码`143`持久化，无收据，所有证据原样保留。
+- 修复在仓库发现完成后一次性缓存`RepositoryRecord→Path`，归属匹配和批处理共同复用；相同80资产回归降至不超过20次解析。Git专属10项、完整治理/N607 303项、`compileall`和差异检查全部通过。
+- 第二项Git性能提交为`04dcce542313301496eef2438548d56449a4ea07`（`perf: cache Git repository roots during ownership mapping`），精确只含`collect_git.py`及其测试。
