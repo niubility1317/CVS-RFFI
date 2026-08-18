@@ -9,6 +9,12 @@
 - Phase2 follows `protocol_schema=p2_min_v1`: one randomly selected allowed LEO weak observation per physical sample; K independent support samples; scenario and support/query physical-ID separation; query-only testing; no clean/source runtime access except immutable int8 multi-sample Phase1 knowledge jointly sealed with the checkpoint; and independent all-registered-class decisions without query truth/role, true batch counts, quota or global reassignment.
 - After a builder returns matching `capsule_id`, `split_id` and `phase2_data_status=VALIDATED_ONCE`, reuse the data across methods. Revalidate only for received-IQ bytes, physical IDs, receiver/TX sets, scenario, K, support/query split or schema changes. Candidate, adapter, hyperparameter, epoch, prototype rule, method lock, model state and resource changes do not trigger data revalidation; one-time provenance/hash/allowlist/runtime checks belong to the validator appendix.
 
+## Project Governance Query Workflow
+
+- At the start of a project task, read `docs/project_governance/latest.json` and use the bounded commands documented in `docs/project_governance/agent-usage.md` to query only the relevant asset, run ID or Git ownership. Do not reload the complete inventory or trigger a full scan for ordinary work.
+- Governance queries are navigation-only and never add an experiment, release or performance gate. Current scientific, safety, Git and N607 rules remain authoritative; live process/GPU/remote facts still require the existing bounded real-time checks when relevant.
+- `REVIEW_REQUIRED`, `ORPHAN_REVIEW`, `SCAN_ERROR`, zero-byte and non-Git records are not deletion authorization. Every deletion still requires the user's explicit approval for exact entries or an exact batch.
+
 ## Administrator Account Authorization Boundary
 
 - Administrator and privileged remote accounts are denied by default. Use an ordinary non-privileged account unless the user explicitly authorizes administrator-account use for a concrete, bounded task in the current request.
