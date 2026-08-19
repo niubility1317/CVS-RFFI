@@ -4497,10 +4497,14 @@ D92 E0的技术artifact已经闭合，但方法结论仍是：
 2.模块B在本screen中没有可分辨的平均贡献。该结论只表示当前K、receiver、场景和单一new-class draw下的整体效应接近零，不等于地面知识在所有任务上都无效。
 3.模块C和模块E属于小效应模块：前者主要改善旧类/H并牺牲少量新类，后者提供小幅旧类保护；它们不能被写成主导性能来源。
 4.模块D的D0/D1/D2不是严格单因素消融，因为这些路径同时改变Fisher和rollback相关行为。当前结果只能支持“几何功能组存在差异”，不能支持“full、block或Fisher单独最优”的因果断言。
-6.补充的P2-A1/P2-A2单分支实验显示，在同一批D92 E0物理样本和同row评分下，identity160+FFT96的H比identity160+RF32高26.54个百分点；因此FFT96是当前应优先保留的辅助分支，RF32-only不能作为D92 E0的替代路径。该结论不等于RF32在完整288维中的条件边际贡献已经被严格识别。
 5.模块F主要验证数值格式和状态大小，而不是算法判别能力。当前结果支持约49%的仿射head存储压缩和近乎不变的预测，但没有目标硬件整数kernel或端到端时延，所以不能写成INT8推理加速。
+6.补充的P2-A1/P2-A2单分支实验显示，在同一批D92 E0物理样本和同row评分下，identity160+FFT96的H比identity160+RF32高26.54个百分点；因此FFT96是当前应优先保留的辅助分支，RF32-only不能作为D92 E0的替代路径。该结论不等于RF32在完整288维中的条件边际贡献已经被严格识别。
 
 本节没有重新启动实验，原因是上述每个实验臂都已有同协议、同row、可连接truth的正式结果；重复启动会产生第二套screening证据而不会补足科学缺口。当前真正缺少的是fresh confirmation：至少5个fresh seed和不少于3个new-class draw，并对D组拆出严格单因素臂。现有结果来自3个development seed和1个new-class draw，bootstrap区间仅是条件于该draw的screening不确定性，不能替代最终确认。
+
+### 21.8全量消融汇总报告
+
+截至2026-08-19，Phase1冻结bundle消融、Phase2 States、Stage2-C原始19臂矩阵以及P2-A1/P2-A2特征补充矩阵已统一汇总到`docs/D92_E0_ALL_ABLATION_EXPERIMENTS_REPORT_20260819.md`。该报告给出全部方法/控制臂绝对结果、原始同row配对效应、同权限基线、K/receiver/场景/类别分层、fallback/Fisher/rollback行为、量化资源和证据边界。汇总只整合已完成artifact，没有启动新实验。
 
 ## 22.与域适应论文复现方法的对比
 

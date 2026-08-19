@@ -17,6 +17,7 @@
 - E:/type10-7/automation_reports/CV-SincNet/d92_e0_fft96_rf32_ablation_screen_20260819_v1/report.md
 - analysis/d92_e0_fft96_rf32_ablation_screen_20260819.md
 - automation_reports/.../retrieved/runner_summary.json（本地独立取回并验证）
+- docs/D92_E0_ALL_ABLATION_EXPERIMENTS_REPORT_20260819.md
 
 ## 追踪表
 
@@ -30,6 +31,7 @@
 |D92-ABL-06|将FFT96-only与RF32-only登记为P2-A1/P2-A2，并保持相对P2-FULL仅改变feature_profile|full_ablation_spec.py、stage2_ablation_factory.py、正式结果报告|verified|工厂目录测试验证单一配置差异；正式同row结果显示A1优于A2|
 |D92-ABL-07|从完整288维D92特征按固定β_aux=4和两级归一化生成FFT-only/RF-only特征，保留无query拟合边界|stage2_ablation_executors.py、正式结果报告|verified|feature projection及Stage2聚焦回归通过；150行prediction/score闭合且query truth后接|
 |D92-ABL-08|完成D92 E0 FFT96/RF32正式筛选并记录场景、K/新类、receiver和资源分层结果|正式实验报告、D92主报告§21.5.1|verified|225/225 scenario unit/arm闭合；A1−A2的H差值为+0.265428，资源和量化检查全部闭合|
+|D92-ABL-09|汇总Phase1上游、Phase2 States、Stage2-C全部消融/基线及A1/A2补充数据|全量汇总报告、D92主报告§21.8|verified|逐臂绝对指标、配对效应、分层、资源、fallback和证据边界均已写入|
 
 ## 结果口径
 
@@ -43,7 +45,7 @@
 
 1.检查报告UTF-8可读、无替换字符、消融臂覆盖完整且章节顺序不变。
 2.检查新增表中关键数值与N607 runner summary及正式结果报告逐项一致。
-3.检查`git diff --check`，只提交报告、结果镜像、主D92报告和本追踪文件，不提交工作区其他未归属artifact。
+3.检查`git diff --check`，只提交全量汇总报告、主D92报告和本追踪文件，不提交工作区其他未归属artifact。
 
 ## 当前最高风险
 
