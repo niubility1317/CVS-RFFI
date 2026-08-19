@@ -69,6 +69,13 @@
 - The generated index is stored under `E:\type10-7\conversation_index\` and includes source paths back to the Codex rollout summary or session JSONL when available.
 - Do not treat the index as a replacement for experiment reports. For N607 experiment design, launch, monitor, or completion analysis, still create or update the required report under `E:\type10-7\automation_reports\CV-SincNet\...`.
 
+## Git auto-push rule
+
+- 每次实验、实验报告、结果记录、分析总结、周报或交接记录完成时，只要属于本项目的正式交付物，就必须在同一工作流中显式stage相关文件、提交并自动push；不得等用户提醒，也不得只留在本地工作树或聊天记录中。
+- 如果正式报告或记录位于非Git根目录（例如`E:\type10-7`），完成后先镜像到约定的Git承载面和当前治理分支，再提交、自动push并独立核对远端分支OID与本地`HEAD`一致。
+- 只stage本次正式报告/记录及其必要说明，不得使用`git add -A`把数据集、checkpoint、日志、运行产物、`local_artifacts`、临时目录或未准备发布的文件一并推送。
+- 自动push失败时保留本地提交并报告`FAILED`或`UNKNOWN`；不得通过强制推送或改写历史掩盖失败。
+
 ## Version Management
 
 - Every project-related change must enter a Git-backed workflow. Before editing code, config, scripts, prompts, matrices, reports, or project Markdown, locate the relevant Git repository and run `git status -sb` or report that the target tree is not a Git repository. After editing, inspect `git diff` / `git status -sb`, run the narrowest useful verification, and record the changed files plus verification result in the relevant report or Markdown handoff.
