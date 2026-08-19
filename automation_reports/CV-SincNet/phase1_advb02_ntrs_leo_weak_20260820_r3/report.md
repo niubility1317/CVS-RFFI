@@ -2,7 +2,7 @@
 
 ## 当前结论
 
-- 状态：`LOCAL_VERIFIED`
+- 状态：`RUNNING`
 - r3是r2确定性非有限梯度技术停止后的唯一新run；不覆盖r1/r2任何artifact。
 - 仅修复NTRS零残差RMS的反向数值稳定性；候选结构、loss权重、数据角色、seed、训练日程和LEO_WEAK场景均不变。
 
@@ -66,5 +66,16 @@ nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_
 
 - 本地release归档：`E:\type10-7\local_artifacts\phase1_advb02_ntrs_leo_weak_20260820_r3\phase1_advb02_ntrs_leo_weak_20260820_r3_7c32ac84.tar.gz`
 - 远端归档：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_ntrs_leo_weak_20260820/7c32ac84/phase1_advb02_ntrs_leo_weak_20260820_r3_7c32ac84.tar.gz`
-- 单次本地到远端SHA、远端编译、CUDA AMP训练步、真实checkpoint无query冒烟、资源preflight和启动证据将在执行后追加。
+- 单次本地到远端SHA256：`e397c2de7ca1d3bc7d3b2b5f245a31d09a8a18d6ba133af8e17fdc1e92b3a2ad`，两端一致。
 
+## 发布、冒烟与启动证据
+
+- 远端release workspace完成相关Python文件编译检查，launcher完成Bash语法检查。
+- GPU1上的CUDA AMP训练步冒烟通过：初始GradScaler回退后，第4步取得有限梯度并完成优化器更新，结果为`PASS_NTRS_S1_CUDA_AMP finite_step=4 final_scale=8192`。
+- 真实`ADV3B02_CORE90_SOFT_E200`checkpoint与一个ManySig源样本完成无query冒烟；结果为`PASS_REAL_ADV3B02_CHECKPOINT_SOURCE_ONLY_NO_QUERY source_samples=1 query_samples=0 missing_ntrs=63 unexpected=0`。`missing_ntrs=63`是旧checkpoint不含新增NTRS参数的预期兼容加载结果。
+- r3于`2026-08-20T03:01:25+08:00`在GPU1启动。launcher PID为`3466737`，trainer PID为`3466758`；二者CWD均为本报告声明的`7c32ac84/workspace`，trainer命令、run root、GPU映射和日志增长均已核对。
+- 启动命令确认仅含`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`，未使用`mixed_orbit`；源角色比例和seed与预登记一致。
+- E001：`train_skipped_nonfinite_grad=0.0222222`，`train_optimizer_step_applied=0.9777778`，`val_tx_acc=28.6746%`。
+- E002：`train_skipped_nonfinite_grad=0.0`，`train_optimizer_step_applied=1.0`，`val_tx_acc=30.2619%`，梯度遥测为`total=24.444`、`backbone=24.438`、`domain=0.846`。
+- 截至E002，日志中无`Traceback`、`RuntimeError`、CUDA error、OOM、`FAIL`或`ERROR`。与r2每个epoch均100%跳过、0%优化器更新相比，零残差梯度污染已被真实训练证据消除。
+- 当前只确认启动与修复有效，不构成最终性能结论。训练完成后launcher必须继续执行clean及三种LEO_WEAK逐场景独立测试，产物闭合后方可标记`ARTIFACTS_COMPLETE`。
