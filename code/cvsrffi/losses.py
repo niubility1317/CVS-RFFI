@@ -224,7 +224,15 @@ def ntrs_correctability_loss(
     raw_ce = F.cross_entropy(raw_logits.detach().float(), labels, reduction="none")
     robust_ce = F.cross_entropy(robust_logits.detach().float(), labels, reduction="none")
     target = (robust_ce < raw_ce - max(0.0, float(improvement_epsilon))).float()
-    loss = F.binary_cross_entropy(predicted.clamp(1e-6, 1.0 - 1e-6), target)
+    # ``predicted`` is already a sigmoid probability because the same value
+    # gates the robust path.  CUDA AMP deliberately rejects probability-form
+    # BCE inside an autocast region, so evaluate this numerically sensitive
+    # scalar loss in explicit float32 while preserving its gradient.
+    with torch.autocast(device_type=predicted.device.type, enabled=False):
+        loss = F.binary_cross_entropy(
+            predicted.float().clamp(1e-6, 1.0 - 1e-6),
+            target.float(),
+        )
     return loss, target, {
         "valid_count": float(target.numel()),
         "positive_rate": float(target.mean().item()) if target.numel() else 0.0,

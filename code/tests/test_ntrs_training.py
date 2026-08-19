@@ -163,6 +163,30 @@ def test_correctability_target_is_derived_from_per_sample_source_improvement():
     assert predicted.grad is not None
 
 
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA AMP regression requires a CUDA device")
+def test_correctability_probability_loss_is_safe_under_cuda_amp_autocast():
+    device = torch.device("cuda")
+    raw_logits = torch.tensor([[0.2, 2.0], [2.0, 0.2]], device=device)
+    robust_logits = torch.tensor([[3.0, 0.1], [0.2, 2.0]], device=device)
+    labels = torch.tensor([0, 0], device=device)
+    predicted = torch.tensor([0.8, 0.2], device=device, requires_grad=True)
+
+    with torch.autocast(device_type="cuda", dtype=torch.float16):
+        loss, target, _info = ntrs_correctability_loss(
+            raw_logits,
+            robust_logits,
+            labels,
+            predicted,
+            improvement_epsilon=0.01,
+        )
+
+    assert target.tolist() == [1.0, 0.0]
+    assert torch.isfinite(loss)
+    loss.backward()
+    assert predicted.grad is not None
+    assert torch.isfinite(predicted.grad).all()
+
+
 def test_open_set_safety_penalizes_unsafe_knownness_gain_and_class_attraction():
     raw = torch.tensor([[0.0, 0.0], [2.0, 0.0]])
     robust = torch.tensor([[5.0, 0.0], [2.5, 0.0]], requires_grad=True)
