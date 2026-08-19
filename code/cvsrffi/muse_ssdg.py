@@ -528,10 +528,14 @@ def candidate_set_mask(
     if value.dtype in (torch.float16, torch.bfloat16):
         value = value.float()
     mass = float(mass)
-    if not torch.isfinite(torch.tensor(mass)).item() or not 0.0 <= mass <= 1.0:
-        raise ValueError("mass must be finite and in [0, 1]")
-    if not isinstance(max_classes, int) or isinstance(max_classes, bool) or max_classes < 1:
-        raise ValueError("max_classes must be a positive integer")
+    if not torch.isfinite(torch.tensor(mass)).item() or not 0.75 <= mass <= 1.0:
+        raise ValueError("mass must be finite and in [0.75, 1]")
+    if (
+        not isinstance(max_classes, int)
+        or isinstance(max_classes, bool)
+        or not 1 <= max_classes <= 3
+    ):
+        raise ValueError("max_classes must be an integer in [1, 3]")
 
     class_count = value.shape[-1]
     if class_count == 0:
@@ -554,7 +558,7 @@ def candidate_set_mask(
 
 def candidate_set_cross_entropy(
     logits: torch.Tensor,
-    candidate_mask: torch.Tensor,
+    candidate_mask: torch.Tensor | tuple[torch.Tensor, torch.Tensor],
     weights: object | None,
     sample_mask: object,
 ) -> torch.Tensor:
@@ -566,7 +570,14 @@ def candidate_set_cross_entropy(
     """
 
     flat_logits, sample_shape = _loss_logits(logits)
-    candidates = candidate_mask if torch.is_tensor(candidate_mask) else torch.as_tensor(candidate_mask)
+    candidate_active = None
+    if isinstance(candidate_mask, tuple):
+        if len(candidate_mask) != 2:
+            raise ValueError("candidate_mask tuple must contain mask and active")
+        candidates, candidate_active = candidate_mask
+    else:
+        candidates = candidate_mask
+    candidates = candidates if torch.is_tensor(candidates) else torch.as_tensor(candidates)
     expected_shape = tuple(sample_shape) + (flat_logits.shape[-1],)
     if candidates.shape != expected_shape:
         raise ValueError("candidate_mask must have the same shape as logits")
@@ -575,6 +586,14 @@ def candidate_set_cross_entropy(
     candidates = candidates.reshape_as(flat_logits).to(dtype=torch.bool)
     sample = _sample_mask(sample_mask, flat_logits.shape[0], flat_logits.device, "sample_mask")
     valid = sample & candidates.any(dim=-1)
+    if candidate_active is not None:
+        active = _sample_mask(
+            candidate_active,
+            flat_logits.shape[0],
+            flat_logits.device,
+            "candidate_active",
+        )
+        valid = valid & active
     if not bool(valid.any().item()):
         return flat_logits.sum() * 0.0
     probability = torch.softmax(flat_logits, dim=-1)
@@ -654,9 +673,9 @@ class MUSETemporalMemory:
         if (
             not isinstance(stability_steps, int)
             or isinstance(stability_steps, bool)
-            or stability_steps < 1
+            or stability_steps < _TEMPORAL_STABILITY_STEPS
         ):
-            raise ValueError("stability_steps must be a positive integer")
+            raise ValueError("stability_steps must be at least three")
         self.stability_steps = int(stability_steps)
         self._entries: dict[tuple[Any, ...], dict[str, Any]] = {}
         self._frozen = False
@@ -720,11 +739,17 @@ class MUSETemporalMemory:
         }
 
     def load_state_dict(self, state: Mapping[str, Any]) -> None:
+        if self._frozen:
+            raise RuntimeError("cannot load state into a frozen temporal memory")
         if not isinstance(state, Mapping):
             raise TypeError("state must be a mapping")
         steps = state.get("stability_steps", _TEMPORAL_STABILITY_STEPS)
-        if not isinstance(steps, int) or isinstance(steps, bool) or steps < 1:
-            raise ValueError("state stability_steps must be a positive integer")
+        if (
+            not isinstance(steps, int)
+            or isinstance(steps, bool)
+            or steps < _TEMPORAL_STABILITY_STEPS
+        ):
+            raise ValueError("state stability_steps must be at least three")
         entries = state.get("entries", {})
         if not isinstance(entries, Mapping):
             raise ValueError("state entries must be a mapping")
@@ -876,6 +901,8 @@ class MUSEClassificationPrototypeBank:
         }
 
     def load_state_dict(self, state: Mapping[str, Any]) -> None:
+        if self._frozen:
+            raise RuntimeError("cannot load state into a frozen prototype bank")
         if not isinstance(state, Mapping):
             raise TypeError("state must be a mapping")
         feature_dim = state.get("feature_dim")

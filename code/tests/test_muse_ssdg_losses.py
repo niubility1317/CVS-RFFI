@@ -1,3 +1,4 @@
+import pytest
 import torch
 
 from cvsrffi.muse_ssdg import (
@@ -14,6 +15,38 @@ def test_candidate_set_caps_at_three_and_rejects_unreachable_mass():
     mask, active = candidate_set_mask(prob, mass=0.75, max_classes=3)
     assert mask[0].sum().item() == 3
     assert active.tolist() == [True, False]
+
+
+@pytest.mark.parametrize("mass", [0.0, 0.749999])
+def test_candidate_set_rejects_mass_below_fixed_quality_floor(mass):
+    with pytest.raises(ValueError, match="mass"):
+        candidate_set_mask(torch.tensor([[0.8, 0.1, 0.1]]), mass=mass)
+
+
+def test_candidate_set_rejects_class_cap_above_three():
+    with pytest.raises(ValueError, match="max_classes"):
+        candidate_set_mask(torch.tensor([[0.8, 0.1, 0.1]]), max_classes=4)
+
+
+def test_inactive_candidate_from_mask_and_active_cannot_backpropagate_identity():
+    logits = torch.tensor(
+        [[2.0, 0.0, -1.0, -2.0, -3.0], [0.2, 0.1, 0.0, -0.1, -0.2]],
+        requires_grad=True,
+    )
+    probability = torch.tensor(
+        [[0.80, 0.10, 0.05, 0.03, 0.02], [0.24, 0.23, 0.22, 0.16, 0.15]]
+    )
+    candidate, active = candidate_set_mask(probability, mass=0.75, max_classes=3)
+    assert active.tolist() == [True, False]
+    loss = candidate_set_cross_entropy(
+        logits,
+        (candidate, active),
+        torch.ones(2),
+        torch.ones(2, dtype=torch.bool),
+    )
+    loss.backward()
+    assert torch.equal(logits.grad[1], torch.zeros_like(logits.grad[1]))
+    assert logits.grad[0].abs().sum().item() > 0.0
 
 
 def test_inactive_low_confidence_row_has_zero_identity_gradient():
