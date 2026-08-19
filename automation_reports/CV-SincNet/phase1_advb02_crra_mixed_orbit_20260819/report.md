@@ -56,6 +56,12 @@ bash code/scripts/launch_phase1_advb02_crra_mixed_orbit_20260819.sh --dry-run
 
 待预测闭合后只记录同row结果：clean TX、V_select上的`mixed_orbit`source-validation TX、receiver/day分层（若该row产生）、CRRA遥测和最终判定。不得拼接不同row的单指标最高值，也不得把本报告的单批冒烟当作性能证据。
 
+## 发布与启动记录
+
+- 最终唯一run owner：dispatcher PID=`3148486`；当前控制行PID=`3148489`，CRRA改造行在控制行完成后由同一launcher顺序启动。
+- 启动绑定已核验：CWD=`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_crra_mixed_orbit_20260819_r1_a5ca5594`；数据=`/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl`；物理GPU=`0`；控制日志已增长至E002/200。
+- 运行时配置已核验：`L_s/U_s/V_cal/V_select=5880/52920/12600/12600`，比例`0.070/0.630/0.150/0.150`，角色协议为`l_s_u_s_v_cal_v_select`；卫星训练为`mixed_orbit`+`concat_masked`，`B+B`，satellite损失登记为`CE+nuisance+shell`，pair/KL为0。
+
 ## 当前状态
 
-`LANDED`：前两次技术启动失败已被保留并隔离；最终`_r2`启动命令已绑定已验证的数据路径，代码归档已落地并完成远端编译，待启动唯一run owner。所有远端旧历史任务保持monitor-only。
+`RUNNING`：最终`_r2`控制行已通过PID/CWD/cmdline/GPU/log增长检查；当前尚无完整prediction结果，不提前宣称性能提升。前两次技术启动失败已被保留并隔离，所有远端旧历史任务保持monitor-only。
