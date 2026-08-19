@@ -282,7 +282,7 @@ Run: `conda activate ssr-gpu && python -m pytest code/tests/test_crra_protocol_n
 
 Then run the repository's existing real-checkpoint no-query smoke with CRRA disabled and enabled on one batch. Expected: PASS with finite logits, stable output shapes, `scenario=mixed_orbit`, and no query access.
 
-- [ ] **Step 5: Commit compatibility and negatives**
+- [x] **Step 5: Commit compatibility and negatives**
 
 ```bash
 git add code/cvsrffi/checkpoint_loading.py code/tests/test_exact_ssdg_checkpoint_loading.py code/tests/test_crra_protocol_negatives.py analysis/advb02_crra_traceability.md
@@ -300,7 +300,7 @@ git commit -m "test: enforce CRRA Phase1 mixed-orbit and checkpoint boundaries"
 - Consumes: all completed code and tests from Tasks 1–5.
 - Produces: one immutable CRRA run root, one minimal pre-registered historical `mixed_orbit` screen, same-row results, and a decision for the next candidate.
 
-- [ ] **Step 1: Run local verification in `ssr-gpu`**
+- [x] **Step 1: Run local verification in `ssr-gpu`**
 
 Run:
 
@@ -312,7 +312,7 @@ python -m compileall -q code/crra.py code/model.py code/model_dual_cvsincnet.py 
 
 Expected: focused suite PASS and compile succeeds.
 
-- [ ] **Step 2: Fix the release commit and record the minimal report**
+- [x] **Step 2: Fix the release commit and record the minimal report**
 
 Record changed files, commit, exact command, CWD, environment, input/output paths, GPU, stopping rule, and expected artifacts. Do not add extra seal, authority, receipt, per-file hash, or report-only gate.
 
@@ -328,7 +328,7 @@ Use the historical Phase1 split and `mixed_orbit` for every satellite row. Start
 
 After prediction closure, connect truth only in the independent scorer. Report clean/satellite TX accuracy, same-row source-val satellite harmonic score, receiver split, correction energy, gate/alpha, nuisance loss, and any old/new/unknown metrics that actually exist. Do not combine maxima across rows. Decide whether to expand to multi-seed/full confirmation based on the pre-registered scientific threshold; low performance is an analysis result, not a technical stop.
 
-- [ ] **Step 6: Commit the launch/report handoff**
+- [x] **Step 6: Commit the launch/report handoff**
 
 ```bash
 git add code/scripts/launch_phase1_advb02_crra_mixed_orbit_20260819.sh automation_reports/CV-SincNet/phase1_advb02_crra_mixed_orbit_20260819/report.md analysis/advb02_crra_traceability.md
