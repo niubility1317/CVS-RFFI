@@ -21,7 +21,7 @@
 | 远端项目根 | `/home/szu2070436088/2510044040/CV-SincNet` |
 | 远端run根 | `/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_advb02_crra_mixed_orbit_20260819_r2` |
 | 远端log根 | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_advb02_crra_mixed_orbit_20260819_r2` |
-| GPU | `3`；最终发布前复核GPU3仅有一个既有轻量Stage2预测进程且利用率为0，因此再放置本run后不超过两个进程；不超过单GPU默认两个训练进程 |
+| GPU | `0`；最终发布前复核GPU0利用率为0，仅有两个各338MiB的既有轻量Stage2预测进程、无训练进程；本run为该GPU上的第一个训练实验，不超过单GPU默认两个训练实验 |
 | 环境 | 远端既有`CVS-RFFI`Python环境；本地验证使用`ssr-gpu` |
 | 技术停止 | 仅协议越权、错误checkout、输出覆盖、launcher/确定性启动故障、无prediction闭合；不因低性能停止 |
 
