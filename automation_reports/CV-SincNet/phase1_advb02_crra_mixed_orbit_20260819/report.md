@@ -24,6 +24,8 @@
 | 环境 | 远端既有`CVS-RFFI`Python环境；本地验证使用`ssr-gpu` |
 | 技术停止 | 仅协议越权、错误checkout、输出覆盖、launcher/确定性启动故障、无prediction闭合；不因低性能停止 |
 
+本地固定提交：`2d31cca4`（CRRA实现及本次Phase1启动交接）。
+
 唯一启动入口：
 
 ```bash
