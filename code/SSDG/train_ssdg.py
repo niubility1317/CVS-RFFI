@@ -1779,6 +1779,10 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         source_select_idx = []
     labeled_ds = WiSigSubsetDataset(source_base, labeled_idx, split_source="ssdg_labeled_tx_visible")
     unlabeled_ds = WiSigSubsetDataset(source_base, unlabeled_idx, split_source="ssdg_unlabeled_tx_hidden")
+    if bool(getattr(args, "use_muse_ssdg", False)) and _muse_level_capabilities(
+        getattr(args, "muse_level", "M0")
+    )["base"]:
+        unlabeled_ds = _MUSEUnlabeledDatasetView(unlabeled_ds)
     cal_ds = WiSigSubsetDataset(source_base, source_cal_idx, split_source="ssdg_source_v_cal")
     val_ds = WiSigSubsetDataset(source_base, val_idx, split_source="ssdg_source_v_select")
 
@@ -2294,8 +2298,7 @@ def _maybe_export_phase2_prototypes_ssdg(
     if bool(getattr(args, "formal_ablation", False)):
         if Path(checkpoint_path).resolve() != Path(default_checkpoint).resolve():
             raise ValueError(
-                "formal Phase1 export must use the "
-                "source-validation-selected checkpoint"
+                "formal Phase1 export must use the final training checkpoint"
             )
     if str(getattr(args, "checkpoint_selection", "")) == "final_only":
         if Path(checkpoint_path).resolve() != Path(default_checkpoint).resolve():
@@ -2927,10 +2930,10 @@ def _formal_ablation_terminal_flags(
             )
             <= 1e-12
         ),
-        "source_validation_only_selection": (
+        "final_only_selection": (
             bool(getattr(args, "phase1_source_val_selection_only", False))
             and str(getattr(args, "checkpoint_selection", ""))
-            == "source_validation_only"
+            == "final_only"
         ),
         "representation_mode_matches_arm": str(
             getattr(args, "representation_mode", "")
@@ -2996,12 +2999,12 @@ def _formal_ablation_terminal_flags(
         == 0,
     }
     p1_flags = {
-        "selected_checkpoint_is_source_validation": selected_checkpoint.name
-        == "best_source_validation_ssdg.pth",
-        "selected_checkpoint_role_source_validation": str(
+        "selected_checkpoint_is_final": selected_checkpoint.name
+        == "final_ssdg.pth",
+        "selected_checkpoint_role_final": str(
             selected_checkpoint_evidence.get("checkpoint_role", "")
         )
-        == "source_validation_selected",
+        == "training_final_only",
         "phase2_export_prototypes": bool(
             getattr(args, "phase2_export_prototypes", False)
         ),
@@ -4430,6 +4433,9 @@ def format_ssdg_epoch_block(
     pseudo_selected = int(round(_log_value(train_logs, "train/pseudo_selected")))
     pseudo_correct = int(round(_log_value(train_logs, "train/pseudo_correct")))
     pseudo_precision = 100.0 * pseudo_correct / max(1, pseudo_selected)
+    pseudo_truth_available = _log_value(
+        train_logs, "train/pseudo_truth_available", 1.0
+    ) > 0.0
     test_stats = test_stats or {}
     named_test_stats = named_test_stats or {}
     named_test_meta = named_test_meta or {}
@@ -4672,8 +4678,12 @@ def format_ssdg_epoch_block(
         "[LOSS-PSEUDO]   "
         f"u={loss_u:.4f} reliable={reliable:.3f} conf={pseudo_conf:.3f} "
         f"domain_pass={domain_pass:.3f} temporal_pass={temporal_pass:.3f} strong_pass={strong_pass:.3f} "
-        f"total={pseudo_total} selected={pseudo_selected}/{pseudo_total} correct={pseudo_correct} "
-        f"precision={pseudo_precision:.3f}%"
+        f"total={pseudo_total} selected={pseudo_selected}/{pseudo_total} "
+        + (
+            f"correct={pseudo_correct} precision={pseudo_precision:.3f}%"
+            if pseudo_truth_available
+            else "correct=N/A precision=N/A"
+        )
     )
     lines.append(minor)
     lines.append(
@@ -4961,6 +4971,89 @@ def _muse_level_capabilities(level: str) -> Dict[str, bool]:
     }
 
 
+def _enforce_muse_source_protocol(args) -> None:
+    """Resolve legacy parser defaults to MUSE roles and reject other drift."""
+
+    if not bool(getattr(args, "use_muse_ssdg", False)):
+        return
+    capabilities = _muse_level_capabilities(getattr(args, "muse_level", "M0"))
+    if not capabilities["base"]:
+        return
+    legacy_defaults = {
+        "split_mode": "tx_rx_day_1_6_3",
+        "labeled_ratio": 0.08,
+        "unlabeled_ratio": 0.72,
+        "source_val_ratio": 0.20,
+        "source_cal_ratio": 0.0,
+        "source_select_ratio": 0.0,
+        "phase1_source_role_protocol": "legacy_l_u_v",
+    }
+    required = {
+        "split_mode": "tx_rx_day_1_7_2",
+        "labeled_ratio": 0.07,
+        "unlabeled_ratio": 0.63,
+        "source_val_ratio": 0.30,
+        "source_cal_ratio": 0.15,
+        "source_select_ratio": 0.15,
+        "phase1_source_role_protocol": "l_s_u_s_v_cal_v_select",
+    }
+    mismatches = []
+    for name, expected in required.items():
+        actual = getattr(args, name, None)
+        legacy = legacy_defaults[name]
+        if isinstance(expected, float):
+            matches_expected = actual is not None and abs(float(actual) - expected) <= 1e-12
+            matches_legacy = actual is not None and abs(float(actual) - float(legacy)) <= 1e-12
+        else:
+            matches_expected = str(actual) == expected
+            matches_legacy = str(actual) == legacy
+        if matches_expected:
+            continue
+        if matches_legacy:
+            setattr(args, name, expected)
+            continue
+        mismatches.append(f"{name}={actual!r} expected={expected!r}")
+    if mismatches:
+        raise ValueError("MUSE source protocol mismatch: " + "; ".join(mismatches))
+
+
+class _MUSEUnlabeledDatasetView:
+    """Expose U_s IQ/domain metadata while removing TX truth at the dataset edge."""
+
+    _TX_KEYS = frozenset({"tx", "tx_i", "true_tx_i", "tx_label", "y_tx"})
+
+    def __init__(self, base) -> None:
+        self.base = base
+
+    def __len__(self) -> int:
+        return len(self.base)
+
+    def __getitem__(self, index):
+        sample = self.base[index]
+        if not isinstance(sample, (tuple, list)) or len(sample) < 4:
+            raise ValueError("MUSE U_s dataset samples must contain IQ, TX, domain, and metadata")
+        x_u, _, domain_u, raw_metadata = sample[:4]
+        metadata = dict(raw_metadata or {})
+        for key in self._TX_KEYS:
+            metadata.pop(key, None)
+        metadata["tx_label_visible"] = False
+        return x_u, domain_u, metadata
+
+
+def _move_muse_unlabeled_batch(batch, device):
+    """Move a label-free U_s batch without materializing a TX tensor."""
+
+    if not isinstance(batch, (tuple, list)) or len(batch) != 3:
+        raise ValueError("MUSE U_s batches must be label-free (IQ, domain, metadata)")
+    x_u, domain_u, metadata_u = batch
+    if not torch.is_tensor(x_u):
+        raise TypeError("MUSE U_s IQ batch must be a tensor")
+    x_u = x_u.to(device, non_blocking=True)
+    if torch.is_tensor(domain_u):
+        domain_u = domain_u.to(device, non_blocking=True)
+    return x_u, (domain_u, metadata_u)
+
+
 def _muse_epoch_pairs(labeled_loader, unlabeled_loader, *, use_muse: bool):
     """Yield a legacy epoch or an unlabeled-length MUSE epoch.
 
@@ -5094,7 +5187,7 @@ def _muse_prototype_distance(features, pseudo, prototype_bank) -> torch.Tensor:
     for index, class_id in enumerate(pseudo.detach().cpu().tolist()):
         prototype = prototypes.get(int(class_id))
         if prototype is None:
-            distances.append(normalized.new_zeros(()))
+            distances.append(normalized.new_full((), float("inf")))
             continue
         reference = F.normalize(
             prototype.to(device=normalized.device, dtype=normalized.dtype),
@@ -5103,6 +5196,85 @@ def _muse_prototype_distance(features, pseudo, prototype_bank) -> torch.Tensor:
         )
         distances.append((1.0 - (normalized[index] * reference).sum()).clamp_min(0.0))
     return torch.stack(distances) if distances else normalized.new_zeros((0,))
+
+
+def _compute_muse_labeled_auxiliary_loss(z_id, labels, domains, muse_state):
+    """Supervise the local head and seed classification prototypes from L_s."""
+
+    zero = z_id.sum() * 0.0
+    if muse_state is None:
+        return zero
+    heads = muse_state["heads"]
+    if domains is None or not torch.is_tensor(domains):
+        return zero
+    labels = labels.to(device=z_id.device, dtype=torch.long).reshape(-1)
+    domains = domains.to(device=z_id.device, dtype=torch.long).reshape(-1)
+    if labels.numel() != z_id.shape[0] or domains.numel() != z_id.shape[0]:
+        return zero
+    valid = (
+        (labels >= 0)
+        & (labels < int(heads.num_classes))
+        & (domains >= 0)
+        & (domains < int(heads.num_domains))
+    )
+    if not bool(valid.any()):
+        return zero
+    local_probability = heads.local_prob(z_id[valid], domains[valid])
+    loss = F.nll_loss(local_probability.clamp_min(1e-8).log(), labels[valid])
+    schedule = muse_state.get("schedule_state")
+    if schedule is not None and schedule.freeze_statistics:
+        muse_state["classification_prototypes"].freeze()
+    muse_state["classification_prototypes"].observe(
+        z_id,
+        labels,
+        domains,
+        valid,
+        valid,
+        float(muse_state["args"].muse_unlabeled_prototype_weight),
+    )
+    return loss
+
+
+def _build_muse_nuisance_view(
+    model,
+    x_u,
+    domains,
+    args,
+    *,
+    grl_lambda: float,
+    generator,
+):
+    """Build a paired simulated U_s view for M1+ nuisance regression."""
+
+    if apply_sat_channel_for_scenario is None or normalize_crra_nuisance_meta is None:
+        raise ImportError("MUSE nuisance regression requires satellite simulator metadata")
+    with torch.no_grad():
+        x_view, raw_metadata = apply_sat_channel_for_scenario(
+            x_u,
+            str(args.sat_train_scenario),
+            args,
+            gen=generator,
+            return_meta=True,
+        )
+        _, nuisance, nuisance_valid, _ = normalize_crra_nuisance_meta(
+            raw_metadata,
+            scenario=str(args.sat_train_scenario),
+            batch_size=int(x_u.size(0)),
+            device=x_u.device,
+        )
+        if torch.is_tensor(nuisance):
+            nuisance = nuisance[:, : int(args.muse_nuisance_dim)]
+    outputs = model(
+        _safe_iq_tensor(x_view),
+        y_tx=None,
+        grl_lambda=float(grl_lambda),
+        return_aux=True,
+        domain_labels=domains,
+    )
+    return outputs, {
+        "nuisance": nuisance,
+        "nuisance_valid": nuisance_valid,
+    }
 
 
 def _muse_cross_receiver_alignment(features, pseudo, receivers, mask) -> torch.Tensor:
@@ -5172,13 +5344,16 @@ def _compute_muse_unlabeled_losses(
     loss_self = heads.self_supervised_loss(weak["z_id"], strong["z_id"])
     nuisance = simulator_metadata.get("nuisance")
     nuisance_valid = simulator_metadata.get("nuisance_valid")
+    nuisance_outputs = student_outputs.get("nuisance")
     if (
         torch.is_tensor(nuisance)
         and nuisance.shape == (sample_count, int(heads.nuisance_dim))
         and nuisance_valid is not None
+        and isinstance(nuisance_outputs, Mapping)
+        and torch.is_tensor(nuisance_outputs.get("z_dom"))
     ):
         loss_nuisance = heads.nuisance_loss(
-            strong["z_dom"], nuisance, nuisance_valid
+            nuisance_outputs["z_dom"], nuisance, nuisance_valid
         )
     else:
         loss_nuisance = strong["z_dom"].sum() * 0.0
@@ -5190,6 +5365,9 @@ def _compute_muse_unlabeled_losses(
     )
 
     loss_identity = zero
+    hard_loss = zero
+    soft_loss = zero
+    candidate_loss = zero
     loss_satellite = zero
     loss_cross_receiver = zero
     route = route_muse_reliability(
@@ -5257,31 +5435,27 @@ def _compute_muse_unlabeled_losses(
             high_threshold=float(args.muse_high_threshold),
             low_threshold=float(args.muse_low_threshold),
         )
-        high_loss = weighted_soft_cross_entropy(
-            strong["tx_logits"], fused, reliability.detach(), route.high
+        if bool(route.high.any()):
+            hard_loss = F.cross_entropy(
+                strong["tx_logits"][route.high].float(),
+                pseudo[route.high].detach(),
+            )
+        soft_loss = weighted_soft_cross_entropy(
+            strong["tx_logits"], fused, reliability.detach(), route.mid
         )
-        candidate = candidate_set_mask(
-            fused,
-            mass=float(args.muse_candidate_mass),
-            max_classes=int(args.muse_candidate_max_classes),
-        )
-        mid_loss = candidate_set_cross_entropy(
-            strong["tx_logits"], candidate, reliability.detach(), route.mid
-        )
-        student_log_probability = F.log_softmax(strong["tx_logits"].float(), dim=-1)
-        student_probability_for_entropy = student_log_probability.exp()
-        per_sample_entropy = -(
-            student_probability_for_entropy * student_log_probability
-        ).sum(dim=-1)
-        low_entropy_loss = (
-            -per_sample_entropy[route.low].mean()
-            if bool(route.low.any())
-            else zero
-        )
+        if bool(schedule.candidate_enabled):
+            candidate = candidate_set_mask(
+                fused,
+                mass=float(args.muse_candidate_mass),
+                max_classes=int(args.muse_candidate_max_classes),
+            )
+            candidate_loss = candidate_set_cross_entropy(
+                strong["tx_logits"], candidate, reliability.detach(), route.low
+            )
         loss_identity = float(schedule.lambda_u) * (
-            float(args.muse_lambda_high) * high_loss
-            + float(args.muse_lambda_mid) * mid_loss
-            + float(args.muse_lambda_low_entropy) * low_entropy_loss
+            float(args.muse_lambda_high) * hard_loss
+            + float(args.muse_lambda_mid) * soft_loss
+            + float(args.muse_lambda_low_entropy) * candidate_loss
         )
 
         if capabilities["satellite"] and schedule.pseudo_enabled:
@@ -5316,6 +5490,9 @@ def _compute_muse_unlabeled_losses(
         "total": total,
         "base": loss_base,
         "identity": loss_identity,
+        "hard": hard_loss,
+        "soft": soft_loss,
+        "candidate": candidate_loss,
         "domain": loss_domain,
         "adv": loss_adv,
         "self": loss_self,
@@ -5326,17 +5503,6 @@ def _compute_muse_unlabeled_losses(
         "reliability": reliability,
         "stable": stable,
         "pseudo": pseudo,
-    }
-
-
-@torch.no_grad()
-def _muse_unlabeled_label_diagnostics(pseudo, true_labels, selected) -> Dict[str, int]:
-    selected_mask = selected.to(device=pseudo.device, dtype=torch.bool)
-    truth = true_labels.to(device=pseudo.device).reshape(-1)
-    return {
-        "total": int(pseudo.numel()),
-        "selected": int(selected_mask.sum().item()),
-        "correct": int(((pseudo == truth) & selected_mask).sum().item()),
     }
 
 
@@ -5387,6 +5553,7 @@ def train(args) -> int:
     training_wall_started = time.time()
     muse_capabilities = _muse_level_capabilities(getattr(args, "muse_level", "M0"))
     muse_active = bool(getattr(args, "use_muse_ssdg", False)) and muse_capabilities["base"]
+    _enforce_muse_source_protocol(args)
     if muse_active and int(getattr(args, "epochs", 0)) <= 0:
         args.epochs = int(args.muse_final_epoch)
         args.label_epochs = int(args.muse_final_epoch)
@@ -5394,6 +5561,10 @@ def train(args) -> int:
     ablation_manifest = None
     if bool(getattr(args, "formal_ablation", False)):
         ablation_manifest = apply_phase1_ablation(args)
+        if str(getattr(args, "checkpoint_selection", "")) != "final_only":
+            raise ValueError(
+                "formal Phase1 ablation configuration is incompatible with mandatory final-only checkpoint selection"
+            )
         if not str(getattr(args, "run_id", "")).strip():
             raise ValueError("formal Phase1 ablation requires --run_id")
         if str(getattr(args, "candidate_id", "")).strip() != str(args.ablation_id):
@@ -5492,11 +5663,7 @@ def train(args) -> int:
             "Phase1 is source-only: --phase1_source_val_selection_only must remain true; "
             "held-out receiver/day/satellite test feedback is forbidden during training."
         )
-    expected_checkpoint_selection = (
-        "source_validation_only"
-        if bool(getattr(args, "formal_ablation", False))
-        else "final_only"
-    )
+    expected_checkpoint_selection = "final_only"
     if str(getattr(args, "checkpoint_selection", "")) != expected_checkpoint_selection:
         raise ValueError(
             "Phase1 checkpoint selection drift: "
@@ -5614,7 +5781,6 @@ def train(args) -> int:
         out_dir / "phase1_terminal_status.json",
         out_dir / "phase1_training_completion_receipt.json",
         out_dir / "phase1_ablation_manifest.json",
-        out_dir / "best_source_validation_ssdg.pth",
         out_dir / f"best_{args.best_metric}_ssdg.pth",
         out_dir / "final_ssdg.pth",
         out_dir / "latest_ssdg.pth",
@@ -5676,7 +5842,6 @@ def train(args) -> int:
     metrics_csv_path = Path(str(args.metrics_csv).strip()) if str(args.metrics_csv).strip() else out_dir / "metrics_epoch.csv"
     metrics_jsonl_path = Path(str(args.metrics_jsonl).strip()) if str(args.metrics_jsonl).strip() else out_dir / "metrics_epoch.jsonl"
     final_path = out_dir / "final_ssdg.pth"
-    source_validation_path = out_dir / "best_source_validation_ssdg.pth"
     default_safe_best_name = f"best_{args.best_metric}_ssdg.pth" if _joint_safe_guard_enabled(args) else f"best_{args.best_metric}_safe_ssdg.pth"
     safe_best_path = Path(str(args.safe_best_path).strip()) if str(args.safe_best_path).strip() else out_dir / default_safe_best_name
     safe_latest_path = Path(str(args.safe_latest_path).strip()) if str(args.safe_latest_path).strip() else out_dir / "latest_safe_ssdg.pth"
@@ -6220,6 +6385,12 @@ def train(args) -> int:
                 else:
                     loss_fishr_l = out_l["tx_logits"].sum() * 0.0
                 z_id_l = out_l["z_id"]
+                loss_muse_local_l = _compute_muse_labeled_auxiliary_loss(
+                    z_id_l,
+                    y_l,
+                    d_l,
+                    muse_state,
+                )
                 loss_zid_invariance_l = z_id_l.sum() * 0.0
                 zid_invariance_info: Dict[str, float] = {
                     "active": 0.0,
@@ -7166,6 +7337,7 @@ def train(args) -> int:
                     )
                 loss_closed_l = (
                     loss_tx_l
+                    + loss_muse_local_l
                     + cur_w["dom"] * loss_dom_l
                     + cur_w["adv"] * loss_adv_l
                     + cur_w["orth"] * loss_orth_l
@@ -7218,7 +7390,9 @@ def train(args) -> int:
                 if muse_state is not None:
                     if muse_unlabeled_batch is None:
                         raise RuntimeError("MUSE epoch pair is missing its U_s batch")
-                    x_u, y_u, extra_u = move_batch(muse_unlabeled_batch, device)
+                    x_u, extra_u = _move_muse_unlabeled_batch(
+                        muse_unlabeled_batch, device
+                    )
                     unlabeled_count = int(x_u.size(0))
                     receiver_u = _metadata_label_tensor(
                         extra_u, "rx_i", device, unlabeled_count
@@ -7247,63 +7421,19 @@ def train(args) -> int:
                         return_aux=True,
                         domain_labels=d_u,
                     )
-                    out_u_sat = None
-                    simulator_metadata: Dict[str, Any] = {}
+                    out_u_nuisance, simulator_metadata = _build_muse_nuisance_view(
+                        model,
+                        x_u,
+                        d_u,
+                        args,
+                        grl_lambda=float(schedule.grl_lambda),
+                        generator=sat_gen,
+                    )
                     satellite_draw = False
                     if muse_state["capabilities"]["satellite"] and float(schedule.p_sat) > 0.0:
                         draw = torch.rand((), device=x_u.device, generator=sat_gen)
                         satellite_draw = bool(draw.item() < float(schedule.p_sat))
-                    if satellite_draw and concat_sat_aug is not None:
-                        satellite_view = concat_sat_aug.transform(
-                            x_u,
-                            args=args,
-                            epoch=epoch,
-                            batch_idx=int(batch_idx) + 300000,
-                        )
-                        out_u_sat = model(
-                            _safe_iq_tensor(satellite_view.x),
-                            y_tx=None,
-                            grl_lambda=float(schedule.grl_lambda),
-                            return_aux=True,
-                            domain_labels=d_u,
-                        )
-                        nuisance = satellite_view.nuisance
-                        nuisance_valid = satellite_view.nuisance_valid
-                        if torch.is_tensor(nuisance):
-                            nuisance = nuisance[:, : int(args.muse_nuisance_dim)]
-                        simulator_metadata = {
-                            "nuisance": nuisance,
-                            "nuisance_valid": nuisance_valid,
-                        }
-                    elif satellite_draw and apply_sat_channel_for_scenario is not None:
-                        with torch.no_grad():
-                            x_u_sat, raw_muse_sat_meta = apply_sat_channel_for_scenario(
-                                x_u,
-                                str(args.sat_train_scenario),
-                                args,
-                                gen=sat_gen,
-                                return_meta=True,
-                            )
-                        if normalize_crra_nuisance_meta is not None:
-                            _, nuisance, nuisance_valid, _ = normalize_crra_nuisance_meta(
-                                raw_muse_sat_meta,
-                                scenario=str(args.sat_train_scenario),
-                                batch_size=unlabeled_count,
-                                device=x_u.device,
-                            )
-                            if torch.is_tensor(nuisance):
-                                nuisance = nuisance[:, : int(args.muse_nuisance_dim)]
-                            simulator_metadata = {
-                                "nuisance": nuisance,
-                                "nuisance_valid": nuisance_valid,
-                            }
-                        out_u_sat = model(
-                            _safe_iq_tensor(x_u_sat),
-                            y_tx=None,
-                            grl_lambda=float(schedule.grl_lambda),
-                            return_aux=True,
-                            domain_labels=d_u,
-                        )
+                    out_u_sat = out_u_nuisance if satellite_draw else None
                     meta_u = _meta_from_extra(extra_u) or {}
                     memory_columns = {
                         name: _as_plain_list(meta_u.get(name))
@@ -7339,18 +7469,17 @@ def train(args) -> int:
                         student_outputs={
                             "weak": out_w,
                             "strong": out_s,
+                            "nuisance": out_u_nuisance,
                             "satellite": out_u_sat,
                         },
                         muse_state=muse_state,
                         simulator_metadata=simulator_metadata,
                     )
                     mask = muse_losses["route"].high | muse_losses["route"].mid
-                    diagnostics = _muse_unlabeled_label_diagnostics(
-                        muse_losses["pseudo"], y_u, mask
-                    )
-                    pseudo_total = int(diagnostics["total"])
-                    pseudo_selected = int(diagnostics["selected"])
-                    pseudo_correct = int(diagnostics["correct"])
+                    pseudo_total = int(muse_losses["pseudo"].numel())
+                    pseudo_selected = int(mask.sum().detach().item())
+                    pseudo_correct = 0
+                    pseudo_truth_available = 0.0
                     pseudo = muse_losses["pseudo"]
                     zero_u = out_s["tx_logits"].sum() * 0.0
                     loss_u = muse_losses["total"]
@@ -7447,6 +7576,7 @@ def train(args) -> int:
                     pseudo_total = int(pseudo.numel())
                     pseudo_selected = int(mask.sum().detach().item())
                     pseudo_correct = int(((pseudo == y_u) & mask).sum().detach().item())
+                    pseudo_truth_available = 1.0
                     if bool(mask.any()):
                         loss_u = F.cross_entropy(out_s["tx_logits"][mask], pseudo[mask])
                     else:
@@ -7949,6 +8079,7 @@ def train(args) -> int:
                     pseudo_total = 0
                     pseudo_selected = 0
                     pseudo_correct = 0
+                    pseudo_truth_available = 0.0
                 loss_closed = _compose_unlabeled_closed_loss(
                     loss_closed_l,
                     args=args,
@@ -8264,6 +8395,7 @@ def train(args) -> int:
                         os_grad_info.get("objective_u_geometry_effective_norm", float("nan"))
                     ),
                     "train/loss_tx_labeled": loss_tx_l.detach(),
+                    "train/loss_muse_local_labeled": loss_muse_local_l.detach(),
                     "train/loss_domain_labeled": loss_dom_l.detach(),
                     "train/loss_adv_labeled": loss_adv_l.detach(),
                     "train/loss_cons_labeled": loss_cons_l.detach(),
@@ -8536,6 +8668,7 @@ def train(args) -> int:
                     "train/pseudo_total": pseudo_total,
                     "train/pseudo_selected": pseudo_selected,
                     "train/pseudo_correct": pseudo_correct,
+                    "train/pseudo_truth_available": pseudo_truth_available,
                     "train/proto_pull_cos": proto_info.get("proto_pull_cos", float("nan")),
                     "train/proto_domain_align": proto_info.get("proto_domain_align", float("nan")),
                     "train/proto_push": proto_info.get("proto_push", float("nan")),
@@ -9023,6 +9156,9 @@ def train(args) -> int:
         train_logs["train/pseudo_total"] = _sum_log_values(epoch_logs, "train/pseudo_total")
         train_logs["train/pseudo_selected"] = _sum_log_values(epoch_logs, "train/pseudo_selected")
         train_logs["train/pseudo_correct"] = _sum_log_values(epoch_logs, "train/pseudo_correct")
+        train_logs["train/pseudo_truth_available"] = _sum_log_values(
+            epoch_logs, "train/pseudo_truth_available"
+        )
         test_stats = _aggregate_main_test(named_stats, str(args.dataset)) if test_ran_this_epoch else {
             "tx_acc": float("nan"),
             "tx_correct": 0,
@@ -9078,11 +9214,7 @@ def train(args) -> int:
         }
         payload.update(_muse_checkpoint_state(muse_state))
         latest_path = out_dir / "NOT_SAVED_FINAL_ONLY"
-        best_path = (
-            source_validation_path
-            if bool(getattr(args, "formal_ablation", False))
-            else final_path
-        )
+        best_path = final_path
         protected_metrics = protected_metric_snapshot(
             val_stats=val_stats,
             test_stats=test_stats,
@@ -9383,19 +9515,6 @@ def train(args) -> int:
             best_test = float(test_stats["tx_acc"])
             best_epoch = int(epoch)
             is_best = True
-            if bool(getattr(args, "formal_ablation", False)):
-                selected_payload = deepcopy(payload)
-                selected_payload.update(
-                    {
-                        "checkpoint_role": "source_validation_selected",
-                        "checkpoint_selection": "source_validation_only",
-                        "selection_source": "source_validation_only",
-                        "selection_metric": str(args.best_metric),
-                        "selection_score": float(current_best_score),
-                        "selection_epoch": int(epoch),
-                    }
-                )
-                save_payload(source_validation_path, selected_payload)
         elapsed = time.time() - t0
         telemetry_rows.append(
             _build_ssdg_epoch_telemetry_row(
@@ -9477,6 +9596,7 @@ def train(args) -> int:
     selected_checkpoint = final_path
     selected_epoch = int(epoch)
     selected_role = "training_final_only"
+    selected_source = "training_final_only"
     final_source_val_tail = _evaluate_source_val_tail_geometry(model, data_ctx, device, args)
     final_zid_leakage_probe = _evaluate_zid_leakage_probes(model, data_ctx, device, args)
     leakage_decision = _assess_zid_leakage_probe(final_zid_leakage_probe, args)
@@ -9678,11 +9798,7 @@ def train(args) -> int:
         )
     final_payload["joint_guard"] = dict(guard_state)
     final_payload["checkpoint_status"] = {
-        "state": (
-            "SOURCE_VALIDATION_SELECTED"
-            if bool(getattr(args, "formal_ablation", False))
-            else "FINAL_ONLY"
-        ),
+        "state": "FINAL_ONLY",
         "checkpoint_safe": not bool(phase1_v2_final_blocked),
         "phase1_v2_final_blocked": bool(phase1_v2_final_blocked),
         "reason": str(guard_state.get("reason", "")),

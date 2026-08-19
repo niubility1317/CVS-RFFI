@@ -72,7 +72,7 @@ def test_muse_unlabeled_path_never_passes_y_u_to_identity_losses():
     assert "proxy_unknown" not in muse_block.split("def ", 2)[0]
 
 
-def test_muse_training_uses_true_u_s_labels_only_in_no_grad_diagnostics():
+def test_muse_training_step_has_no_u_s_truth_or_in_loop_label_diagnostics():
     text = Path("code/SSDG/train_ssdg.py").read_text(encoding="utf-8")
     start = text.index(
         '                if muse_state is not None:\n'
@@ -85,21 +85,49 @@ def test_muse_training_uses_true_u_s_labels_only_in_no_grad_diagnostics():
     muse_train_block = text[start:end]
     assert "unlabeled_count = int(x_u.size(0))" in muse_train_block
     assert "int(y_u.numel())" not in muse_train_block
-    assert muse_train_block.count("y_u") == 2
+    assert "y_u" not in muse_train_block
+    assert "_muse_unlabeled_label_diagnostics" not in text
 
-    tree = ast.parse(text)
-    diagnostic = next(
-        node
-        for node in tree.body
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
-        and node.name == "_muse_unlabeled_label_diagnostics"
+
+def test_muse_unlabeled_dataset_view_removes_tx_truth_before_collation():
+    class _SourceDataset:
+        def __len__(self):
+            return 1
+
+        def __getitem__(self, index):
+            assert index == 0
+            return (
+                torch.ones(2, 8),
+                17,
+                3,
+                {
+                    "tx_i": 17,
+                    "tx": "secret-tx",
+                    "true_tx_i": 17,
+                    "rx_i": 3,
+                    "day_i": 1,
+                    "eq_i": 0,
+                    "sig_i": 9,
+                    "base_index": 99,
+                },
+            )
+
+    sample = train_ssdg._MUSEUnlabeledDatasetView(_SourceDataset())[0]
+    assert len(sample) == 3
+    x_u, domain_u, metadata_u = sample
+    assert x_u.shape == (2, 8)
+    assert domain_u == 3
+    assert {"tx_i", "tx", "true_tx_i"}.isdisjoint(metadata_u)
+    moved_x, moved_extra = train_ssdg._move_muse_unlabeled_batch(
+        (
+            x_u.unsqueeze(0),
+            torch.tensor([domain_u]),
+            {key: torch.tensor([value]) for key, value in metadata_u.items()},
+        ),
+        torch.device("cpu"),
     )
-    assert any(
-        isinstance(decorator, ast.Call)
-        and isinstance(decorator.func, ast.Attribute)
-        and decorator.func.attr == "no_grad"
-        for decorator in diagnostic.decorator_list
-    )
+    assert moved_x.shape == (1, 2, 8)
+    assert len(moved_extra) == 2
 
 
 def test_muse_parser_defaults_to_final_only_and_joint_epoch():
@@ -108,6 +136,25 @@ def test_muse_parser_defaults_to_final_only_and_joint_epoch():
     )
     assert args.checkpoint_selection == "final_only"
     assert args.muse_epoch_basis == "unlabeled_loader"
+
+
+def test_muse_enablement_resolves_and_validates_exact_four_role_source_protocol():
+    args = _args("M1")
+    train_ssdg._enforce_muse_source_protocol(args)
+    assert args.split_mode == "tx_rx_day_1_7_2"
+    assert args.phase1_source_role_protocol == "l_s_u_s_v_cal_v_select"
+    assert (
+        args.labeled_ratio,
+        args.unlabeled_ratio,
+        args.source_cal_ratio,
+        args.source_select_ratio,
+        args.source_val_ratio,
+    ) == (0.07, 0.63, 0.15, 0.15, 0.30)
+
+    mismatched = _args("M1")
+    mismatched.source_cal_ratio = 0.10
+    with pytest.raises(ValueError, match="MUSE source protocol mismatch"):
+        train_ssdg._enforce_muse_source_protocol(mismatched)
 
 
 def test_muse_parser_exposes_schedule_routing_and_loss_hyperparameters():
@@ -186,6 +233,97 @@ def test_muse_initialization_adds_training_heads_to_optimizer_parameters():
     assert all(id(parameter) in parameter_ids for parameter in state["heads"].parameters())
 
 
+def test_muse_labeled_auxiliary_trains_local_head_and_updates_legal_prototypes():
+    state = train_ssdg._initialize_muse_training_state(
+        _args("M2"), _TinyMUSEModel(), torch.device("cpu")
+    )
+    state["schedule_state"] = muse_schedule_for_epoch(17, state["config"])
+    z_id_l = torch.tensor(
+        [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0]],
+        requires_grad=True,
+    )
+    loss = train_ssdg._compute_muse_labeled_auxiliary_loss(
+        z_id_l,
+        torch.tensor([0, 1]),
+        torch.tensor([0, 1]),
+        state,
+    )
+    loss.backward()
+    local_parameters = [
+        parameter
+        for name, parameter in state["heads"].named_parameters()
+        if name.startswith(("shared_projection", "shared_classifier", "domain_delta"))
+    ]
+    assert all(parameter.grad is not None for parameter in local_parameters)
+    assert all(torch.isfinite(parameter.grad).all() for parameter in local_parameters)
+    assert any(torch.count_nonzero(parameter.grad).item() > 0 for parameter in local_parameters)
+    assert state["classification_prototypes"].state_dict()["counts"] == {0: 1.0, 1: 1.0}
+
+
+def test_muse_nuisance_loss_uses_the_paired_simulated_view_z_dom():
+    state = train_ssdg._initialize_muse_training_state(
+        _args("M1"), _TinyMUSEModel(), torch.device("cpu")
+    )
+    state["schedule_state"] = muse_schedule_for_epoch(1, state["config"])
+    weak, strong = _outputs()
+    nuisance_z_dom = torch.randn(2, 4, requires_grad=True)
+    losses = train_ssdg._compute_muse_unlabeled_losses(
+        x_u=torch.randn(2, 2, 8),
+        metadata=_metadata(),
+        teacher_outputs=weak,
+        student_outputs={
+            "weak": weak,
+            "strong": strong,
+            "nuisance": {"z_dom": nuisance_z_dom},
+            "satellite": None,
+        },
+        muse_state=state,
+        simulator_metadata={
+            "nuisance": torch.ones(2, 6),
+            "nuisance_valid": torch.ones(2, dtype=torch.bool),
+        },
+    )
+    losses["nuisance"].backward()
+    assert nuisance_z_dom.grad is not None
+    assert torch.isfinite(nuisance_z_dom.grad).all()
+    assert torch.count_nonzero(nuisance_z_dom.grad).item() > 0
+    assert strong["z_dom"].grad is None
+
+
+def test_muse_nuisance_view_is_built_for_m1_without_satellite_identity_output(monkeypatch):
+    x_u = torch.zeros(2, 2, 8)
+    d_u = torch.tensor([0, 1])
+    nuisance = torch.arange(12, dtype=torch.float32).reshape(2, 6)
+    valid = torch.ones(2, dtype=torch.bool)
+
+    def fake_apply(x, scenario, args, gen, return_meta):
+        assert return_meta is True
+        return x + 3.0, {"scenario": scenario}
+
+    def fake_normalize(raw, scenario, batch_size, device):
+        assert raw == {"scenario": scenario}
+        assert batch_size == 2
+        return raw, nuisance.to(device), valid.to(device), ("a", "b", "c", "d", "e", "f")
+
+    class _ViewModel(nn.Module):
+        def forward(self, x, **kwargs):
+            return {"z_dom": x.flatten(1)[:, :4], "tx_logits": torch.ones(2, 3)}
+
+    monkeypatch.setattr(train_ssdg, "apply_sat_channel_for_scenario", fake_apply)
+    monkeypatch.setattr(train_ssdg, "normalize_crra_nuisance_meta", fake_normalize)
+    outputs, metadata = train_ssdg._build_muse_nuisance_view(
+        _ViewModel(),
+        x_u,
+        d_u,
+        _args("M1"),
+        grl_lambda=0.05,
+        generator=None,
+    )
+    assert torch.equal(outputs["z_dom"], torch.full((2, 4), 3.0))
+    assert torch.equal(metadata["nuisance"], nuisance)
+    assert torch.equal(metadata["nuisance_valid"], valid)
+
+
 @pytest.mark.parametrize("level", ["M1", "M2", "M3"])
 def test_muse_s1_reads_unlabeled_without_identity_classification_gradient(level):
     state = train_ssdg._initialize_muse_training_state(
@@ -220,6 +358,13 @@ def test_muse_m2_routes_are_a_partition_and_m3_updates_only_classification_bank(
         _args("M3"), _TinyMUSEModel(), torch.device("cpu")
     )
     weak, strong = _outputs()
+    state["schedule_state"] = muse_schedule_for_epoch(69, state["config"])
+    train_ssdg._compute_muse_labeled_auxiliary_loss(
+        weak["z_id"],
+        torch.tensor([0, 1]),
+        torch.tensor([0, 1]),
+        state,
+    )
     losses = None
     for epoch in (69, 70, 71):
         state["schedule_state"] = muse_schedule_for_epoch(epoch, state["config"])
@@ -237,10 +382,13 @@ def test_muse_m2_routes_are_a_partition_and_m3_updates_only_classification_bank(
         torch.stack([route.high, route.mid, route.low]).int().sum(0),
         torch.ones(2, dtype=torch.int),
     )
-    assert state["classification_prototypes"].state_dict()["counts"]
+    assert state["classification_prototypes"].state_dict()["counts"] == {
+        0: 2.0,
+        1: 2.0,
+    }
 
 
-def test_muse_m2_low_route_uses_unlabeled_entropy_not_true_identity_targets():
+def test_muse_m2_low_route_uses_candidate_set_not_true_identity_targets():
     args = _args("M2")
     args.muse_high_threshold = 1.0
     args.muse_low_threshold = 0.99
@@ -250,7 +398,7 @@ def test_muse_m2_low_route_uses_unlabeled_entropy_not_true_identity_targets():
     )
     state["schedule_state"] = muse_schedule_for_epoch(69, state["config"])
     weak, strong = _outputs()
-    without_low = train_ssdg._compute_muse_unlabeled_losses(
+    without_candidate = train_ssdg._compute_muse_unlabeled_losses(
         torch.randn(2, 2, 8),
         _metadata(),
         weak,
@@ -259,7 +407,7 @@ def test_muse_m2_low_route_uses_unlabeled_entropy_not_true_identity_targets():
         {},
     )
     args.muse_lambda_low_entropy = 1.0
-    with_low = train_ssdg._compute_muse_unlabeled_losses(
+    with_candidate = train_ssdg._compute_muse_unlabeled_losses(
         torch.randn(2, 2, 8),
         _metadata(),
         weak,
@@ -267,9 +415,83 @@ def test_muse_m2_low_route_uses_unlabeled_entropy_not_true_identity_targets():
         state,
         {},
     )
-    assert without_low["route"].low.tolist() == [True, True]
-    assert without_low["identity"].item() == 0.0
-    assert with_low["identity"].item() < 0.0
+    assert without_candidate["route"].low.tolist() == [True, True]
+    assert without_candidate["identity"].item() == 0.0
+    assert with_candidate["candidate"].item() > 0.0
+    assert with_candidate["identity"].item() > 0.0
+
+
+@pytest.mark.parametrize("epoch, candidate_active", [(17, False), (40, False), (41, True)])
+def test_muse_candidate_supervision_starts_only_at_s2b(epoch, candidate_active):
+    args = _args("M2")
+    args.muse_high_threshold = 1.0
+    args.muse_low_threshold = 1.0
+    args.muse_candidate_mass = 0.75
+    args.muse_candidate_max_classes = 1
+    state = train_ssdg._initialize_muse_training_state(
+        args, _TinyMUSEModel(), torch.device("cpu")
+    )
+    state["schedule_state"] = muse_schedule_for_epoch(epoch, state["config"])
+    weak, strong = _outputs()
+    losses = train_ssdg._compute_muse_unlabeled_losses(
+        torch.randn(2, 2, 8),
+        {**_metadata(), "epoch": epoch},
+        weak,
+        {"weak": weak, "strong": strong, "nuisance": None, "satellite": None},
+        state,
+        {},
+    )
+    assert losses["route"].low.tolist() == [True, True]
+    assert (losses["candidate"].item() > 0.0) is candidate_active
+
+
+@pytest.mark.parametrize(
+    "high_threshold,low_threshold,expected_key",
+    [(0.0, 0.0, "hard"), (1.0, 0.0, "soft")],
+)
+def test_muse_s2a_uses_hard_high_and_soft_mid_only(
+    high_threshold, low_threshold, expected_key
+):
+    args = _args("M2")
+    args.muse_high_threshold = high_threshold
+    args.muse_low_threshold = low_threshold
+    state = train_ssdg._initialize_muse_training_state(
+        args, _TinyMUSEModel(), torch.device("cpu")
+    )
+    state["schedule_state"] = muse_schedule_for_epoch(17, state["config"])
+    weak, strong = _outputs()
+    losses = train_ssdg._compute_muse_unlabeled_losses(
+        torch.randn(2, 2, 8),
+        {**_metadata(), "epoch": 17},
+        weak,
+        {"weak": weak, "strong": strong, "nuisance": None, "satellite": None},
+        state,
+        {},
+    )
+    assert losses[expected_key].item() > 0.0
+    assert losses["candidate"].item() == 0.0
+    other_key = "soft" if expected_key == "hard" else "hard"
+    assert losses[other_key].item() == 0.0
+
+
+def test_missing_classification_prototype_contributes_zero_reliability_evidence():
+    state = train_ssdg._initialize_muse_training_state(
+        _args("M2"), _TinyMUSEModel(), torch.device("cpu")
+    )
+    distances = train_ssdg._muse_prototype_distance(
+        torch.tensor([[1.0, 0.0, 0.0, 0.0]]),
+        torch.tensor([2]),
+        state["classification_prototypes"],
+    )
+    reliability = train_ssdg.compute_muse_reliability(
+        torch.ones(1),
+        torch.ones(1),
+        torch.zeros(1),
+        distances,
+        torch.ones(1),
+        weights=[0.0, 0.0, 0.0, 1.0, 0.0],
+    )
+    assert reliability.item() == 0.0
 
 
 @pytest.mark.parametrize("level", ["M1", "M2", "M3"])
@@ -377,3 +599,11 @@ def test_muse_unlabeled_total_is_not_rescaled_by_legacy_pseudo_weights():
         **legacy,
     )
     assert combined.item() == 5.0
+
+
+def test_final_only_source_contains_no_source_validation_checkpoint_branch():
+    source = Path("code/SSDG/train_ssdg.py").read_text(encoding="utf-8")
+    assert "best_source_validation_ssdg.pth" not in source
+    assert '"checkpoint_selection": "source_validation_only"' not in source
+    assert '"selection_source": "source_validation_only"' not in source
+    assert '"checkpoint_role": "source_validation_selected"' not in source
