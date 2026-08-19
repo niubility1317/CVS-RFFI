@@ -194,6 +194,8 @@ def _probability_heads(probabilities: Sequence[torch.Tensor]) -> list[torch.Tens
             dtype = torch.promote_types(dtype, tensor.dtype)
     if not reference.is_floating_point():
         dtype = torch.get_default_dtype()
+    if dtype in (torch.float16, torch.bfloat16):
+        dtype = torch.float32
     return [tensor.to(device=reference.device, dtype=dtype) for tensor in tensors]
 
 
@@ -329,6 +331,8 @@ def _evidence_tensors(values: Sequence[object]) -> list[torch.Tensor]:
                     raise TypeError("reliability evidence must be real-valued")
                 if value.is_floating_point():
                     dtype = torch.promote_types(dtype, value.dtype)
+    if dtype in (torch.float16, torch.bfloat16):
+        dtype = torch.float32
     tensors = [torch.as_tensor(value, dtype=dtype, device=device) for value in values]
     try:
         return list(torch.broadcast_tensors(*tensors))
@@ -351,7 +355,7 @@ def compute_muse_reliability(
     )
     confidence = torch.nan_to_num(confidence, nan=0.0, posinf=1.0, neginf=0.0).clamp(0.0, 1.0)
     margin = torch.nan_to_num(margin, nan=0.0, posinf=1.0, neginf=0.0).clamp(0.0, 1.0)
-    js = torch.nan_to_num(js, nan=1.0, posinf=1.0, neginf=0.0).clamp(0.0, 1.0)
+    js = torch.nan_to_num(js, nan=1.0, posinf=1.0e6, neginf=0.0).clamp_min(0.0)
     proto_distance = torch.nan_to_num(
         proto_distance,
         nan=1.0e6,
@@ -361,7 +365,7 @@ def compute_muse_reliability(
     stability = torch.nan_to_num(stability, nan=0.0, posinf=1.0, neginf=0.0).clamp(0.0, 1.0)
 
     evidence = torch.stack(
-        [confidence, margin, 1.0 - js, torch.exp(-proto_distance), stability],
+        [confidence, margin, torch.exp(-js), torch.exp(-proto_distance), stability],
         dim=0,
     )
     if weights is None:

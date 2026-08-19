@@ -22,6 +22,17 @@ def test_three_head_fusion_is_normalized_and_routing_is_a_partition():
     assert stacked.tolist() == [1, 1, 1]
 
 
+def test_default_fusion_weights_match_documented_explicit_weights():
+    heads = [
+        torch.tensor([[0.80, 0.15, 0.05]]),
+        torch.tensor([[0.75, 0.20, 0.05]]),
+        torch.tensor([[0.85, 0.10, 0.05]]),
+    ]
+    default = geometric_fuse_probabilities(heads)
+    explicit = geometric_fuse_probabilities(heads, [0.50, 0.25, 0.25])
+    assert torch.allclose(default, explicit, atol=1e-7)
+
+
 def test_fusion_sanitizes_nonfinite_probabilities_and_rejects_zero_weight_sum():
     probabilities = [
         torch.tensor([[float("nan"), float("inf"), -1.0]]),
@@ -34,6 +45,18 @@ def test_fusion_sanitizes_nonfinite_probabilities_and_rejects_zero_weight_sum():
 
     with pytest.raises(ValueError, match="weight"):
         geometric_fuse_probabilities(probabilities, [0.0, 0.0])
+
+
+def test_fp16_zero_and_nonfinite_probability_heads_stay_finite():
+    bad_heads = [
+        torch.tensor([[0.0, 0.0, 0.0]], dtype=torch.float16),
+        torch.tensor([[float("nan"), float("-inf"), 0.0]], dtype=torch.float16),
+    ]
+    fused = geometric_fuse_probabilities(bad_heads, [0.5, 0.5])
+    disagreement = js_head_disagreement(bad_heads)
+    assert torch.isfinite(fused).all()
+    assert torch.isfinite(disagreement).all()
+    assert torch.allclose(fused.sum(dim=-1), torch.ones(1), atol=1e-6)
 
 
 def test_source_domain_prior_alignment_clips_ratio_and_normalizes():
@@ -84,6 +107,12 @@ def test_reliability_decreases_when_head_disagreement_increases():
     assert stable.item() > disputed.item()
 
 
+def test_reliability_keeps_decreasing_for_js_values_above_one():
+    lower = compute_muse_reliability(0.9, 0.5, 1.0, 0.1, 1.0)
+    higher = compute_muse_reliability(0.9, 0.5, 1.5, 0.1, 1.0)
+    assert lower.item() > higher.item()
+
+
 def test_reliability_is_bounded_and_monotone_for_each_evidence_axis():
     baseline = compute_muse_reliability(0.5, 0.5, 0.1, 0.1, 0.5)
     assert 0.0 <= baseline.item() <= 1.0
@@ -119,4 +148,3 @@ def test_routing_uses_high_inclusive_low_exclusive_boundaries():
     assert torch.all(
         torch.stack([route.high, route.mid, route.low]).int().sum(dim=0) == 1
     )
-
