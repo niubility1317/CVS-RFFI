@@ -25,7 +25,7 @@
 | 环境 | 远端既有`CVS-RFFI`Python环境；本地验证使用`ssr-gpu` |
 | 技术停止 | 仅协议越权、错误checkout、输出覆盖、launcher/确定性启动故障、无prediction闭合；不因低性能停止 |
 
-首次归档已落地但因launcher过期参数启动失败；该artifact保留，不覆盖。修复后的新归档和新run使用`_r1`后缀，详情在后续发布记录中追加。
+首次归档已落地但因launcher过期参数启动失败；该artifact保留，不覆盖。修复后的归档：本地`E:/type10-7/local_artifacts/phase1_advb02_crra_mixed_orbit_20260819/cvs-rffi-a5ca5594.tar.gz`→远端`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_crra_mixed_orbit_20260819_r1_a5ca5594.tar.gz`；单次归档SHA256=`fb09605f4ed92f9327d67428e8e39948c8563d714039235ba9ff0c36bf3faca6`。远端展开目录为`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_crra_mixed_orbit_20260819_r1_a5ca5594`，远端Python编译与launcher语法检查已通过。
 
 本地固定提交：实现`cd970f1f`（`exp: align ADVB02 CRRA concat supervision with Phase1 roles`），启动修复`21a23878`（`fix: remove stale ADVB02 launch argument`）。
 
@@ -58,4 +58,4 @@ bash code/scripts/launch_phase1_advb02_crra_mixed_orbit_20260819.sh --dry-run
 
 ## 当前状态
 
-`LOCAL_VERIFIED`：首次归档已落地但启动在argparse阶段技术失败；修复后的launcher已通过本地dry-run并确认不再包含过期参数，待以新的`_r1`归档重新落地和启动。所有远端旧历史任务保持monitor-only。
+`LANDED`：首次归档的argparse技术失败已被保留并隔离；修复后的`_r1`归档已落地N607并完成远端编译，待启动唯一run owner。所有远端旧历史任务保持monitor-only。
