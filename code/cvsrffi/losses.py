@@ -12,6 +12,287 @@ from cvsrffi.eval import accuracy_from_logits
 from cvsrffi.tensors import get_nested_tensor, safe_cosine_similarity, safe_l2_normalize
 
 
+def _ntrs_zero(reference: Optional[torch.Tensor]) -> torch.Tensor:
+    if torch.is_tensor(reference):
+        return reference.sum() * 0.0
+    return torch.tensor(0.0)
+
+
+def _ntrs_normalized(value: torch.Tensor) -> torch.Tensor:
+    return F.normalize(
+        torch.nan_to_num(value.float(), nan=0.0, posinf=0.0, neginf=0.0),
+        dim=1,
+        eps=1e-6,
+    )
+
+
+def ntrs_margin_preservation_loss(
+    clean_z: Optional[torch.Tensor],
+    satellite_z: Optional[torch.Tensor],
+    labels: Optional[torch.Tensor],
+    prototypes: Optional[torch.Tensor],
+    *,
+    epsilon: float = 0.05,
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    """Preserve clean class angular margin without forcing pointwise equality."""
+
+    if not all(torch.is_tensor(value) for value in (clean_z, satellite_z, labels, prototypes)):
+        return _ntrs_zero(satellite_z), {"valid_count": 0.0, "mean_drop": 0.0}
+    if clean_z.shape != satellite_z.shape or clean_z.dim() != 2:
+        raise ValueError("NTRS margin clean and satellite features must share [B, D]")
+    labels = labels.to(device=satellite_z.device).view(-1).long()
+    if int(labels.numel()) != int(satellite_z.size(0)):
+        raise ValueError("NTRS margin labels must align with the feature batch")
+    if prototypes.dim() != 2 or int(prototypes.size(1)) != int(satellite_z.size(1)):
+        raise ValueError("NTRS margin prototypes must be shaped [C, D]")
+    if labels.numel() == 0:
+        return _ntrs_zero(satellite_z), {"valid_count": 0.0, "mean_drop": 0.0}
+    clean_similarity = _ntrs_normalized(clean_z) @ _ntrs_normalized(prototypes).transpose(0, 1)
+    sat_similarity = _ntrs_normalized(satellite_z) @ _ntrs_normalized(prototypes).transpose(0, 1)
+    if bool(((labels < 0) | (labels >= int(prototypes.size(0)))).any()):
+        raise ValueError("NTRS margin labels must index a prototype")
+    row = torch.arange(labels.numel(), device=labels.device)
+    clean_true = clean_similarity[row, labels]
+    sat_true = sat_similarity[row, labels]
+    exclusion = F.one_hot(labels, num_classes=int(prototypes.size(0))).bool()
+    clean_other = clean_similarity.masked_fill(exclusion, float("-inf")).max(dim=1).values
+    sat_other = sat_similarity.masked_fill(exclusion, float("-inf")).max(dim=1).values
+    clean_margin = (clean_true - clean_other).detach()
+    sat_margin = sat_true - sat_other
+    drop = torch.relu(clean_margin - max(0.0, float(epsilon)) - sat_margin)
+    return drop.mean(), {
+        "valid_count": float(labels.numel()),
+        "mean_drop": float(drop.detach().mean().item()),
+    }
+
+
+def ntrs_relation_distillation_loss(
+    clean_z: Optional[torch.Tensor],
+    satellite_z: Optional[torch.Tensor],
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    """Match clean/satellite batch relation matrices rather than points."""
+
+    if not torch.is_tensor(satellite_z) or not torch.is_tensor(clean_z):
+        return _ntrs_zero(satellite_z), {"valid_count": 0.0, "mean_abs_error": 0.0}
+    if clean_z.shape != satellite_z.shape or clean_z.dim() != 2:
+        raise ValueError("NTRS relation views must share [B, D]")
+    if int(clean_z.size(0)) == 0:
+        return _ntrs_zero(satellite_z), {"valid_count": 0.0, "mean_abs_error": 0.0}
+    clean_gram = (_ntrs_normalized(clean_z) @ _ntrs_normalized(clean_z).transpose(0, 1)).detach()
+    sat_unit = _ntrs_normalized(satellite_z)
+    sat_gram = sat_unit @ sat_unit.transpose(0, 1)
+    error = sat_gram - clean_gram
+    return error.square().mean(), {
+        "valid_count": float(clean_z.size(0)),
+        "mean_abs_error": float(error.detach().abs().mean().item()),
+    }
+
+
+def ntrs_class_conditional_alignment_loss(
+    clean_z: Optional[torch.Tensor],
+    satellite_z: Optional[torch.Tensor],
+    labels: Optional[torch.Tensor],
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    """Align per-class means and covariances without globally mixing TXs."""
+
+    if not all(torch.is_tensor(value) for value in (clean_z, satellite_z, labels)):
+        return _ntrs_zero(satellite_z), {"active_classes": 0.0}
+    if clean_z.shape != satellite_z.shape or clean_z.dim() != 2:
+        raise ValueError("NTRS class-conditional views must share [B, D]")
+    labels = labels.to(device=satellite_z.device).view(-1).long()
+    if int(labels.numel()) != int(clean_z.size(0)):
+        raise ValueError("NTRS class-conditional labels must align with views")
+    clean = _ntrs_normalized(clean_z)
+    satellite = _ntrs_normalized(satellite_z)
+    terms = []
+    active = 0
+    for class_id in torch.unique(labels):
+        mask = labels == class_id
+        if not bool(mask.any()):
+            continue
+        clean_class = clean[mask]
+        sat_class = satellite[mask]
+        mean_term = (sat_class.mean(dim=0) - clean_class.mean(dim=0).detach()).square().mean()
+        if int(clean_class.size(0)) > 1:
+            clean_centered = clean_class - clean_class.mean(dim=0, keepdim=True)
+            sat_centered = sat_class - sat_class.mean(dim=0, keepdim=True)
+            clean_cov = (clean_centered.transpose(0, 1) @ clean_centered / float(clean_class.size(0) - 1)).detach()
+            sat_cov = sat_centered.transpose(0, 1) @ sat_centered / float(sat_class.size(0) - 1)
+            mean_term = mean_term + (sat_cov - clean_cov).square().mean()
+        terms.append(mean_term)
+        active += 1
+    if not terms:
+        return _ntrs_zero(satellite_z), {"active_classes": 0.0}
+    return torch.stack(terms).mean(), {"active_classes": float(active)}
+
+
+def ntrs_conditional_decorrelation_loss(
+    z_id: Optional[torch.Tensor],
+    z_dom: Optional[torch.Tensor],
+    labels: Optional[torch.Tensor],
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    """Penalize identity/domain covariance separately inside every TX."""
+
+    if not all(torch.is_tensor(value) for value in (z_id, z_dom, labels)):
+        return _ntrs_zero(z_id), {"active_classes": 0.0}
+    if z_id.dim() != 2 or z_dom.dim() != 2 or int(z_id.size(0)) != int(z_dom.size(0)):
+        raise ValueError("NTRS conditional decorrelation expects aligned rank-2 features")
+    labels = labels.to(device=z_id.device).view(-1).long()
+    if int(labels.numel()) != int(z_id.size(0)):
+        raise ValueError("NTRS conditional decorrelation labels must align with features")
+    terms = []
+    for class_id in torch.unique(labels):
+        mask = labels == class_id
+        count = int(mask.sum().item())
+        if count < 2:
+            continue
+        identity = torch.nan_to_num(z_id[mask].float(), nan=0.0, posinf=0.0, neginf=0.0)
+        domain = torch.nan_to_num(z_dom[mask].float(), nan=0.0, posinf=0.0, neginf=0.0)
+        identity = identity - identity.mean(dim=0, keepdim=True)
+        domain = domain - domain.mean(dim=0, keepdim=True)
+        covariance = identity.transpose(0, 1) @ domain / float(count - 1)
+        terms.append(covariance.square().mean())
+    if not terms:
+        return _ntrs_zero(z_id), {"active_classes": 0.0}
+    return torch.stack(terms).mean(), {"active_classes": float(len(terms))}
+
+
+def ntrs_shared_receiver_offset_loss(
+    z_id: Optional[torch.Tensor],
+    labels: Optional[torch.Tensor],
+    receiver_labels: Optional[torch.Tensor],
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    """Make receiver offsets shared across TX classes instead of class-specific."""
+
+    if not all(torch.is_tensor(value) for value in (z_id, labels, receiver_labels)):
+        return _ntrs_zero(z_id), {"active_receivers": 0.0, "offset_count": 0.0}
+    if z_id.dim() != 2:
+        raise ValueError("NTRS shared receiver offsets require rank-2 identity features")
+    labels = labels.to(device=z_id.device).view(-1).long()
+    receivers = receiver_labels.to(device=z_id.device).view(-1).long()
+    if int(labels.numel()) != int(z_id.size(0)) or int(receivers.numel()) != int(z_id.size(0)):
+        raise ValueError("NTRS receiver labels must align with identity features")
+    features = torch.nan_to_num(z_id.float(), nan=0.0, posinf=0.0, neginf=0.0)
+    classes = torch.unique(labels)
+    receiver_terms = []
+    active_receivers = 0
+    offset_count = 0
+    for receiver_id in torch.unique(receivers):
+        offsets = []
+        for class_id in classes:
+            class_mask = labels == class_id
+            class_receivers = torch.unique(receivers[class_mask])
+            if int(class_receivers.numel()) < 2 or not bool((class_receivers == receiver_id).any()):
+                continue
+            reference_receiver = class_receivers.min()
+            current = class_mask & (receivers == receiver_id)
+            reference = class_mask & (receivers == reference_receiver)
+            offsets.append(features[current].mean(dim=0) - features[reference].mean(dim=0))
+        if len(offsets) < 2:
+            continue
+        stacked = torch.stack(offsets)
+        receiver_terms.append((stacked - stacked.mean(dim=0, keepdim=True)).square().mean())
+        active_receivers += 1
+        offset_count += len(offsets)
+    if not receiver_terms:
+        return _ntrs_zero(z_id), {"active_receivers": 0.0, "offset_count": 0.0}
+    return torch.stack(receiver_terms).mean(), {
+        "active_receivers": float(active_receivers),
+        "offset_count": float(offset_count),
+    }
+
+
+def ntrs_correctability_loss(
+    raw_logits: Optional[torch.Tensor],
+    robust_logits: Optional[torch.Tensor],
+    labels: Optional[torch.Tensor],
+    predicted_correctability: Optional[torch.Tensor],
+    *,
+    improvement_epsilon: float = 0.01,
+) -> Tuple[torch.Tensor, torch.Tensor, Dict[str, float]]:
+    """Learn whether robust inference improves source-view per-sample CE."""
+
+    if not all(torch.is_tensor(value) for value in (raw_logits, robust_logits, labels, predicted_correctability)):
+        zero = _ntrs_zero(predicted_correctability)
+        return zero, zero.new_zeros((0,)), {"valid_count": 0.0, "positive_rate": 0.0}
+    if raw_logits.shape != robust_logits.shape or raw_logits.dim() != 2:
+        raise ValueError("NTRS correctability logits must share [B, C]")
+    labels = labels.to(device=raw_logits.device).view(-1).long()
+    predicted = predicted_correctability.to(device=raw_logits.device).view(-1).float()
+    if int(labels.numel()) != int(raw_logits.size(0)) or int(predicted.numel()) != int(raw_logits.size(0)):
+        raise ValueError("NTRS correctability inputs must align by batch")
+    raw_ce = F.cross_entropy(raw_logits.detach().float(), labels, reduction="none")
+    robust_ce = F.cross_entropy(robust_logits.detach().float(), labels, reduction="none")
+    target = (robust_ce < raw_ce - max(0.0, float(improvement_epsilon))).float()
+    loss = F.binary_cross_entropy(predicted.clamp(1e-6, 1.0 - 1e-6), target)
+    return loss, target, {
+        "valid_count": float(target.numel()),
+        "positive_rate": float(target.mean().item()) if target.numel() else 0.0,
+    }
+
+
+def ntrs_score_stability_loss(
+    raw_logits: Optional[torch.Tensor],
+    robust_logits: Optional[torch.Tensor],
+    *,
+    correction_energy: Optional[torch.Tensor],
+    energy_threshold: float,
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    """Prevent unsafe corrections from increasing source-derived knownness."""
+
+    if not all(torch.is_tensor(value) for value in (raw_logits, robust_logits, correction_energy)):
+        return _ntrs_zero(robust_logits), {"unsafe_count": 0.0, "mean_knownness_gain": 0.0}
+    if raw_logits.shape != robust_logits.shape or raw_logits.dim() != 2:
+        raise ValueError("NTRS score stability logits must share [B, C]")
+    energy = correction_energy.to(device=raw_logits.device).view(-1)
+    if int(energy.numel()) != int(raw_logits.size(0)):
+        raise ValueError("NTRS score stability energy must align with logits")
+    disagreement = raw_logits.detach().argmax(dim=1) != robust_logits.detach().argmax(dim=1)
+    unsafe = disagreement | (energy.detach() > float(energy_threshold))
+    knownness_gain = torch.logsumexp(robust_logits.float(), dim=1) - torch.logsumexp(
+        raw_logits.detach().float(), dim=1
+    )
+    if not bool(unsafe.any()):
+        return _ntrs_zero(robust_logits), {"unsafe_count": 0.0, "mean_knownness_gain": 0.0}
+    penalty = torch.relu(knownness_gain[unsafe])
+    return penalty.mean(), {
+        "unsafe_count": float(unsafe.sum().item()),
+        "mean_knownness_gain": float(knownness_gain[unsafe].detach().mean().item()),
+    }
+
+
+def ntrs_class_attraction_loss(
+    anchor_z: Optional[torch.Tensor],
+    correction: Optional[torch.Tensor],
+    *,
+    raw_logits: Optional[torch.Tensor],
+    prototypes: Optional[torch.Tensor],
+    max_cosine: float = 0.50,
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    """Discourage nuisance removal from becoming a predicted-class attractor."""
+
+    if not all(torch.is_tensor(value) for value in (anchor_z, correction, raw_logits, prototypes)):
+        return _ntrs_zero(correction), {"active_count": 0.0, "mean_cosine": 0.0}
+    if anchor_z.shape != correction.shape or anchor_z.dim() != 2:
+        raise ValueError("NTRS class attraction anchor and correction must share [B, D]")
+    if raw_logits.dim() != 2 or int(raw_logits.size(0)) != int(anchor_z.size(0)):
+        raise ValueError("NTRS class attraction logits must align with anchors")
+    if prototypes.dim() != 2 or int(prototypes.size(1)) != int(anchor_z.size(1)):
+        raise ValueError("NTRS class attraction prototypes must be shaped [C, D]")
+    predicted = raw_logits.detach().argmax(dim=1)
+    target_direction = prototypes.to(device=anchor_z.device, dtype=anchor_z.dtype)[predicted] - anchor_z.detach()
+    applied_delta = -correction
+    valid = (applied_delta.norm(dim=1) > 1e-8) & (target_direction.norm(dim=1) > 1e-8)
+    if not bool(valid.any()):
+        return _ntrs_zero(correction), {"active_count": 0.0, "mean_cosine": 0.0}
+    cosine = F.cosine_similarity(applied_delta[valid].float(), target_direction[valid].float(), dim=1)
+    loss = torch.relu(cosine - float(max_cosine)).mean()
+    return loss, {
+        "active_count": float(valid.sum().item()),
+        "mean_cosine": float(cosine.detach().mean().item()),
+    }
+
+
 def crra_nuisance_huber_loss(
     prediction: Optional[torch.Tensor],
     target: Optional[torch.Tensor],

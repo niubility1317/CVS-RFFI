@@ -144,7 +144,11 @@ def test_frequency_dual_view_changes_frequency_embedding_without_changing_pa_emb
     model = _tiny_model(use_ntrs=True, ntrs_q_dim=16, ntrs_fast_dim=8, ntrs_slow_dim=8)
     backbone = model.id_backbone.eval()
     raw = torch.randn(2, 2, 64)
-    corrected = raw.roll(shifts=3, dims=-1)
+    # A circular shift preserves FFT magnitude and can legitimately leave the
+    # magnitude-only frequency branch unchanged. Use a deterministic spectral
+    # shaping perturbation to verify the dual-view selector instead.
+    envelope = torch.linspace(0.25, 1.75, raw.size(-1)).view(1, 1, -1)
+    corrected = raw * envelope
 
     with torch.no_grad():
         raw_mix = backbone(
@@ -164,4 +168,3 @@ def test_frequency_dual_view_changes_frequency_embedding_without_changing_pa_emb
     assert corrected_mix["ntrs_frequency_dual_view"] is True
     assert not torch.allclose(raw_mix["f_emb"], corrected_mix["f_emb"])
     assert torch.allclose(raw_mix["pa_local"], corrected_mix["pa_local"])
-

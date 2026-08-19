@@ -1653,7 +1653,10 @@ class CVSincNet(nn.Module):
                     mix = mix.clamp(0.0, 1.0)
                 feat_f = raw_feat_f + mix[:, None, None] * (feat_f - raw_feat_f)
                 dac_stats = raw_dac_stats + mix[:, None] * (dac_stats - raw_dac_stats)
-                pa_stats = raw_pa_stats + mix[:, None] * (pa_stats - raw_pa_stats)
+                # The PA fingerprint path is an immutable identity anchor for
+                # NTRS: both its convolutional input and statistic residual
+                # must come from the original IQ, never from corrected IQ.
+                pa_stats = raw_pa_stats
                 if rho is not None and raw_rho is not None:
                     rho = raw_rho + mix[:, None] * (rho - raw_rho)
                 frequency_dual_view = True

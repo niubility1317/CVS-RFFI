@@ -27,6 +27,7 @@ from cvsrffi.eval import (  # noqa: E402
     make_loader,
 )
 from cvsrffi.crra_evaluation import restore_crra_eval_epoch  # noqa: E402
+from cvsrffi.ntrs_evaluation import restore_ntrs_eval_epoch  # noqa: E402
 from evaluation.collaborative_inference_eval import (  # noqa: E402
     build_model_from_checkpoint_args,
     build_wisig_context_from_checkpoint,
@@ -89,6 +90,11 @@ def _build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Record read-only CRRA clean/satellite diagnostics in satellite evaluation JSON.",
     )
+    parser.add_argument(
+        "--eval_ntrs_telemetry",
+        action="store_true",
+        help="Record read-only NTRS raw/robust/fused and safety diagnostics.",
+    )
     parser.add_argument("--sat_fs_hz", type=float, default=25e6)
     parser.add_argument("--sat_fc_hz", type=float, default=2.462e9)
     parser.add_argument("--wisig_pkl", default="")
@@ -125,6 +131,7 @@ def main() -> int:
         max_unexpected=int(args.max_unexpected_keys),
     )
     crra_eval_epoch = restore_crra_eval_epoch(model, payload)
+    ntrs_eval_epoch = restore_ntrs_eval_epoch(model, payload)
     model.eval()
 
     val_loader = make_loader(
@@ -167,6 +174,7 @@ def main() -> int:
         f"[CVS-EVAL] ckpt={args.ckpt}",
         f"[CVS-EVAL] run_name={identity.get('run_name')} sha256={identity.get('checkpoint_sha256')}",
         f"[CVS-EVAL] crra_eval_epoch={crra_eval_epoch if crra_eval_epoch is not None else 'not_applicable'}",
+        f"[CVS-EVAL] ntrs_eval_epoch={ntrs_eval_epoch if ntrs_eval_epoch is not None else 'not_applicable'}",
         f"[CVS-EVAL] device={device} eval_max_batches={int(args.eval_max_batches)} sat_eval_max_batches={int(args.sat_eval_max_batches)}",
         f"[CVS-EVAL] missing_keys={load_report['missing_count']} unexpected_keys={load_report['unexpected_count']}",
         f"[CVS-EVAL] val tx_acc={float(val_stats.get('tx_acc', 0.0)):.6f} dom_acc={float(val_stats.get('dom_acc', 0.0)):.6f}",
@@ -183,6 +191,7 @@ def main() -> int:
         "checkpoint_identity": identity,
         "checkpoint_epoch": payload.get("epoch"),
         "crra_eval_epoch": crra_eval_epoch,
+        "ntrs_eval_epoch": ntrs_eval_epoch,
         "load_report": load_report,
         "eval_args": vars(args),
         "split_info": context.split_info,

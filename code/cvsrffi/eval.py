@@ -8,7 +8,13 @@ from torch.utils.data import DataLoader
 
 from training_controls import sat_channel_config_for_scenario
 from training_test_eval import aggregate_named_stats, format_named_test_lines
+from baseline_origin_sat_view import normalize_crra_nuisance_meta
 from cvsrffi.crra_evaluation import CRRATelemetryAccumulator
+from cvsrffi.ntrs_evaluation import (
+    NTRSTelemetryAccumulator,
+    ntrs_prototypes_from_model,
+    ntrs_unknown_rescue_from_model,
+)
 from cvsrffi.tensors import (
     extract_domain_from_extra,
     make_torch_generator,
@@ -33,6 +39,13 @@ def _safe_nan(v: float) -> str:
 
 
 safe_nan = _safe_nan
+
+
+def _model_uses_ntrs(model: Any) -> bool:
+    for candidate in (model, getattr(model, "_orig_mod", None), getattr(model, "module", None)):
+        if candidate is not None and bool(getattr(candidate, "use_ntrs", False)):
+            return True
+    return False
 
 
 def accuracy_from_logits(logits: torch.Tensor, y: torch.Tensor) -> float:
@@ -138,7 +151,13 @@ def evaluate_loader(model, loader, device, domain_label_map: Dict[int, int], max
         d_raw = extract_domain_from_extra(extra, device)
         d = remap_domain_tensor(d_raw, domain_label_map, device) if d_raw is not None else None
 
-        out = model(x, y_tx=None, grl_lambda=1.0, return_aux=True)
+        out = model(
+            x,
+            y_tx=None,
+            grl_lambda=1.0,
+            return_aux=True,
+            domain_labels=d,
+        )
         tx_logits = out["tx_logits"]
         tx_pred = tx_logits.argmax(dim=1)
         tx_correct += int((tx_pred == y).sum().item())
@@ -185,26 +204,70 @@ def evaluate_loader_sat_channel(
     tx_correct = tx_total = 0
     dom_correct = dom_total = 0
     gen = make_torch_generator(device, int(seed))
-    telemetry = CRRATelemetryAccumulator() if bool(getattr(args, "eval_crra_telemetry", False)) else None
+    crra_telemetry = CRRATelemetryAccumulator() if bool(getattr(args, "eval_crra_telemetry", False)) else None
+    ntrs_telemetry = (
+        NTRSTelemetryAccumulator(
+            prototypes=ntrs_prototypes_from_model(model),
+            unknown_rescue=ntrs_unknown_rescue_from_model(model),
+        )
+        if bool(getattr(args, "eval_ntrs_telemetry", False))
+        else None
+    )
     try:
         with torch.no_grad():
             for bi, batch in enumerate(loader):
                 x, y, extra = unpack_batch(batch)
                 x = x.to(device, non_blocking=True)
                 y = y.to(device, non_blocking=True)
-                x_sat, _ = apply_sat_channel_for_scenario(x, scenario, args, gen=gen, return_meta=False)
+                use_ntrs = _model_uses_ntrs(model)
+                x_sat, raw_sat_meta = apply_sat_channel_for_scenario(
+                    x,
+                    scenario,
+                    args,
+                    gen=gen,
+                    return_meta=use_ntrs,
+                )
                 d_raw = extract_domain_from_extra(extra, device)
                 d = remap_domain_tensor(d_raw, domain_label_map, device) if d_raw is not None else None
+                ntrs_metadata = None
+                ntrs_metadata_valid = None
+                if use_ntrs:
+                    _, ntrs_metadata, ntrs_metadata_valid, _ = normalize_crra_nuisance_meta(
+                        raw_sat_meta,
+                        scenario=str(scenario),
+                        batch_size=int(x.size(0)),
+                        device=x.device,
+                    )
 
-                clean_out = model(x, y_tx=None, grl_lambda=1.0, return_aux=True) if telemetry is not None else None
-                out = model(x_sat, y_tx=None, grl_lambda=1.0, return_aux=True)
+                clean_out = (
+                    model(
+                        x,
+                        y_tx=None,
+                        grl_lambda=1.0,
+                        return_aux=True,
+                        domain_labels=d,
+                    )
+                    if crra_telemetry is not None or ntrs_telemetry is not None
+                    else None
+                )
+                out = model(
+                    x_sat,
+                    y_tx=None,
+                    grl_lambda=1.0,
+                    return_aux=True,
+                    domain_labels=d,
+                    ntrs_metadata=ntrs_metadata,
+                    ntrs_metadata_valid=ntrs_metadata_valid,
+                )
                 tx_logits = out["tx_logits"]
                 tx_pred = tx_logits.argmax(dim=1)
                 tx_correct += int((tx_pred == y).sum().item())
                 tx_total += int(y.numel())
 
-                if telemetry is not None and clean_out is not None:
-                    telemetry.update(clean_out, out, y)
+                if crra_telemetry is not None and clean_out is not None:
+                    crra_telemetry.update(clean_out, out, y)
+                if ntrs_telemetry is not None and clean_out is not None:
+                    ntrs_telemetry.update(clean_out, out, y)
 
                 if d is not None:
                     valid = d >= 0
@@ -225,10 +288,13 @@ def evaluate_loader_sat_channel(
         "tx_correct": int(tx_correct),
         "tx_total": int(tx_total),
     }
-    if telemetry is not None:
-        result["crra_telemetry"] = telemetry.summary()
+    if crra_telemetry is not None:
+        result["crra_telemetry"] = crra_telemetry.summary()
         # Internal only: evaluate_sat_scenarios merges it before serialising named rows.
-        result["_crra_telemetry_state"] = telemetry
+        result["_crra_telemetry_state"] = crra_telemetry
+    if ntrs_telemetry is not None:
+        result["ntrs_telemetry"] = ntrs_telemetry.summary()
+        result["_ntrs_telemetry_state"] = ntrs_telemetry
     return result
 
 
@@ -245,10 +311,19 @@ def evaluate_sat_scenarios(
     out = {}
     seed_base = int(getattr(args, "sat_seed", 2027))
     collect_crra_telemetry = bool(getattr(args, "eval_crra_telemetry", False))
+    collect_ntrs_telemetry = bool(getattr(args, "eval_ntrs_telemetry", False))
     for si, scenario in enumerate(scenario_names):
         named_stats = {}
         named_seeds = {}
         scenario_telemetry = CRRATelemetryAccumulator() if collect_crra_telemetry else None
+        scenario_ntrs_telemetry = (
+            NTRSTelemetryAccumulator(
+                prototypes=ntrs_prototypes_from_model(model),
+                unknown_rescue=ntrs_unknown_rescue_from_model(model),
+            )
+            if collect_ntrs_telemetry
+            else None
+        )
         for li, name in enumerate(selected_names):
             eval_seed = seed_base + si * 1009 + li * 97
             stats = evaluate_loader_sat_channel(
@@ -264,6 +339,9 @@ def evaluate_sat_scenarios(
             telemetry_state = stats.pop("_crra_telemetry_state", None)
             if scenario_telemetry is not None and telemetry_state is not None:
                 scenario_telemetry.merge(telemetry_state)
+            ntrs_telemetry_state = stats.pop("_ntrs_telemetry_state", None)
+            if scenario_ntrs_telemetry is not None and ntrs_telemetry_state is not None:
+                scenario_ntrs_telemetry.merge(ntrs_telemetry_state)
             named_stats[name] = dict(stats, sat_seed=int(eval_seed))
             named_seeds[name] = int(eval_seed)
         main_keys = [k for k in ["test_unseen_day_seen_rx", "test_seen_day_unseen_rx", "test_unseen_day_unseen_rx"] if k in named_stats]
@@ -313,6 +391,8 @@ def evaluate_sat_scenarios(
         }
         if scenario_telemetry is not None:
             out[scenario]["crra_telemetry"] = scenario_telemetry.summary()
+        if scenario_ntrs_telemetry is not None:
+            out[scenario]["ntrs_telemetry"] = scenario_ntrs_telemetry.summary()
     return out
 
 

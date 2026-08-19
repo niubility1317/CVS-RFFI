@@ -34,6 +34,15 @@ from cvsrffi.crra_training import (
     validate_crra_phase1_config,
     validate_crra_phase1_scenarios,
 )
+from cvsrffi.ntrs_training import (
+    compute_ntrs_loss_bundle,
+    is_ntrs_parameter_name,
+    ntrs_source_update_mask,
+    ntrs_training_stage,
+    set_ntrs_optimizer_learning_rates,
+    validate_ntrs_phase1_config,
+    validate_ntrs_phase1_scenarios,
+)
 
 try:
     import torch
@@ -93,6 +102,14 @@ try:
         tx_conditional_domain_invariance_loss,
         crra_nuisance_huber_loss,
         crra_satellite_shell_loss,
+        ntrs_class_attraction_loss,
+        ntrs_class_conditional_alignment_loss,
+        ntrs_conditional_decorrelation_loss,
+        ntrs_correctability_loss,
+        ntrs_margin_preservation_loss,
+        ntrs_relation_distillation_loss,
+        ntrs_score_stability_loss,
+        ntrs_shared_receiver_offset_loss,
         unlabeled_known_acceptance_quarantine_loss,
         zid_compactness_loss,
     )
@@ -157,6 +174,14 @@ except ModuleNotFoundError:
     tx_conditional_domain_invariance_loss = None
     crra_nuisance_huber_loss = None
     crra_satellite_shell_loss = None
+    ntrs_class_attraction_loss = None
+    ntrs_class_conditional_alignment_loss = None
+    ntrs_conditional_decorrelation_loss = None
+    ntrs_correctability_loss = None
+    ntrs_margin_preservation_loss = None
+    ntrs_relation_distillation_loss = None
+    ntrs_score_stability_loss = None
+    ntrs_shared_receiver_offset_loss = None
     unlabeled_known_acceptance_quarantine_loss = None
     zid_compactness_loss = None
     export_phase2_prototypes = None
@@ -366,6 +391,38 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--lambda_crra_gate_l1", type=float, default=0.001)
     parser.add_argument("--lambda_crra_nuisance", type=float, default=0.02)
     parser.add_argument("--lambda_crra_condition_tx_adv", type=float, default=0.02)
+    parser.add_argument("--use_ntrs", dest="use_ntrs", action="store_true", default=False)
+    parser.add_argument("--no_use_ntrs", dest="use_ntrs", action="store_false")
+    parser.add_argument("--ntrs_rank", type=int, default=8)
+    parser.add_argument("--ntrs_alpha_max", type=float, default=0.20)
+    parser.add_argument("--ntrs_q_dim", type=int, default=32)
+    parser.add_argument("--ntrs_fast_dim", type=int, default=24)
+    parser.add_argument("--ntrs_slow_dim", type=int, default=24)
+    parser.add_argument("--ntrs_metadata_dim", type=int, default=9)
+    parser.add_argument("--ntrs_slow_ema_decay", type=float, default=0.95)
+    parser.add_argument("--ntrs_support_tau", type=float, default=1.0)
+    parser.add_argument("--ntrs_energy_threshold", type=float, default=0.10)
+    parser.add_argument("--ntrs_unknown_rescue", type=str2bool, default=False)
+    parser.add_argument("--ntrs_target_adapter", type=str2bool, default=False)
+    parser.add_argument("--ntrs_margin_epsilon", type=float, default=0.05)
+    parser.add_argument("--ntrs_correctability_epsilon", type=float, default=0.01)
+    parser.add_argument("--ntrs_class_attraction_max_cosine", type=float, default=0.50)
+    parser.add_argument("--lambda_ntrs_sat_kl", type=float, default=0.01)
+    parser.add_argument("--lambda_ntrs_margin", type=float, default=0.03)
+    parser.add_argument("--lambda_ntrs_relation", type=float, default=0.02)
+    parser.add_argument("--lambda_ntrs_class_conditional", type=float, default=0.01)
+    parser.add_argument("--lambda_ntrs_receiver", type=float, default=0.02)
+    parser.add_argument("--lambda_ntrs_day", type=float, default=0.02)
+    parser.add_argument("--lambda_ntrs_channel", type=float, default=0.02)
+    parser.add_argument("--lambda_ntrs_cond_decorr", type=float, default=0.01)
+    parser.add_argument("--lambda_ntrs_shared_rx", type=float, default=0.01)
+    parser.add_argument("--lambda_ntrs_context_tx_adv", type=float, default=0.02)
+    parser.add_argument("--lambda_ntrs_min_correction", type=float, default=0.001)
+    parser.add_argument("--lambda_ntrs_alpha", type=float, default=0.001)
+    parser.add_argument("--lambda_ntrs_subspace", type=float, default=0.02)
+    parser.add_argument("--lambda_ntrs_correctability", type=float, default=0.02)
+    parser.add_argument("--lambda_ntrs_score_stability", type=float, default=0.01)
+    parser.add_argument("--lambda_ntrs_class_attraction", type=float, default=0.01)
     parser.add_argument("--sat_protocol_disjoint_required", type=str2bool, default=False)
     parser.add_argument("--lambda_sat_cls", type=float, default=0.10)
     parser.add_argument("--lambda_sat_cons", type=float, default=0.0)
@@ -1527,6 +1584,17 @@ def _apply_model_cli_args(model_args, args):
         "crra_start_epoch",
         "crra_ramp_epochs",
         "crra_support_tau",
+        "use_ntrs",
+        "ntrs_rank",
+        "ntrs_alpha_max",
+        "ntrs_q_dim",
+        "ntrs_fast_dim",
+        "ntrs_slow_dim",
+        "ntrs_metadata_dim",
+        "ntrs_slow_ema_decay",
+        "ntrs_support_tau",
+        "ntrs_energy_threshold",
+        "ntrs_unknown_rescue",
     ):
         if hasattr(args, key):
             setattr(model_args, key, getattr(args, key))
@@ -4913,26 +4981,68 @@ def _is_crra_parameter_name(name: str) -> bool:
     return any(part.startswith("crra_") for part in str(name).split("."))
 
 
+def _slice_batch_output(output: Mapping[str, Any], selection) -> Dict[str, Any]:
+    """Slice top-level per-row tensors while retaining static output values."""
+
+    batch = int(output["tx_logits"].size(0))
+    sliced: Dict[str, Any] = {}
+    for key, value in output.items():
+        if torch.is_tensor(value) and value.dim() > 0 and int(value.size(0)) == batch:
+            sliced[key] = value[selection]
+        else:
+            sliced[key] = value
+    return sliced
+
+
+def _ntrs_raw_prototype_weight(model) -> torch.Tensor:
+    candidate = getattr(model, "module", model)
+    id_backbone = getattr(candidate, "id_backbone", None)
+    cls_head = getattr(id_backbone, "cls_head", None)
+    head = getattr(cls_head, "head", None)
+    weight = getattr(head, "weight", None)
+    if not torch.is_tensor(weight):
+        raise ValueError("ADVB02 NTRS requires the raw CosFace prototype weight")
+    return weight
+
+
+def _ntrs_update_tangent(model, clean_z: torch.Tensor, satellite_z: torch.Tensor) -> None:
+    candidate = getattr(model, "module", model)
+    if hasattr(candidate, "update_ntrs_tangent"):
+        candidate.update_ntrs_tangent(clean_z, satellite_z)
+
+
 def build_optimizer_with_crra_groups(
     model,
     *,
     base_lr: float,
     weight_decay: float,
     use_crra: bool,
+    use_ntrs: bool = False,
 ):
-    """Build AdamW groups so CRRA can enter its conservative S3 rate."""
+    """Build exclusive core/CRRA/NTRS AdamW parameter groups."""
+
+    if bool(use_crra) and bool(use_ntrs):
+        raise ValueError("ADVB02 CRRA and NTRS are independent candidates")
 
     core_params = []
     crra_params = []
+    ntrs_params = []
     for name, parameter in model.named_parameters():
         if not parameter.requires_grad:
             continue
-        (crra_params if bool(use_crra) and _is_crra_parameter_name(name) else core_params).append(parameter)
+        if bool(use_crra) and _is_crra_parameter_name(name):
+            crra_params.append(parameter)
+        elif bool(use_ntrs) and is_ntrs_parameter_name(name):
+            ntrs_params.append(parameter)
+        else:
+            core_params.append(parameter)
     groups = []
     if core_params:
         groups.append({"params": core_params, "lr": float(base_lr), "group_name": "core"})
     if crra_params:
         groups.append({"params": crra_params, "lr": float(base_lr), "group_name": "crra"})
+    if ntrs_params:
+        groups.append({"params": ntrs_params, "lr": float(base_lr), "group_name": "ntrs"})
     if not groups:
         raise ValueError("no trainable parameters available for optimizer")
     return torch.optim.AdamW(groups, lr=float(base_lr), weight_decay=float(weight_decay))
@@ -5030,6 +5140,7 @@ def train(args) -> int:
                 f"got {float(args.source_val_ratio):.6f} vs {requested_validation:.6f}"
             )
     validate_crra_phase1_config(args)
+    validate_ntrs_phase1_config(args)
     if float(getattr(args, "crra_support_tau", 1.0)) <= 0.0:
         raise ValueError("--crra_support_tau must be positive")
     if float(getattr(args, "crra_s3_lr_scale", 0.25)) <= 0.0:
@@ -5064,6 +5175,8 @@ def train(args) -> int:
             args.sat_train_protocol_scenario_list,
             crra_scenario=str(getattr(args, "crra_scenario", DEFAULT_CRRA_CHANNEL_FAMILY)),
         )
+    if bool(getattr(args, "use_ntrs", False)):
+        validate_ntrs_phase1_scenarios(args.sat_train_protocol_scenario_list)
     args.eval_sat_scenario_list = (
         parse_sat_scenarios(args.eval_sat_scenarios) if bool(args.eval_sat_channel) else []
     )
@@ -5318,6 +5431,7 @@ def train(args) -> int:
         base_lr=float(args.lr),
         weight_decay=float(args.weight_decay),
         use_crra=bool(getattr(args, "use_crra", False)),
+        use_ntrs=bool(getattr(args, "use_ntrs", False)),
     )
     scaler = GradScaler(enabled=bool(args.amp and device.type == "cuda"))
     proto_bank = None
@@ -5636,14 +5750,24 @@ def train(args) -> int:
         phase = "label" if epoch <= int(args.label_epochs) else "pseudo"
         stage_state = _stage_state_for_epoch(epoch, args, phase)
         cur_w = _loss_weights(args, stage_state)
-        crra_optimizer_lr = set_crra_optimizer_learning_rate(
-            optimizer,
-            epoch=int(epoch),
-            base_lr=float(args.lr),
-            start_epoch=int(getattr(args, "crra_start_epoch", 17)),
-            ramp_epochs=int(getattr(args, "crra_ramp_epochs", 30)),
-            s3_lr_scale=float(getattr(args, "crra_s3_lr_scale", 0.25)),
-        )
+        ntrs_stage = ntrs_training_stage(epoch)
+        if bool(getattr(args, "use_ntrs", False)):
+            ntrs_optimizer_rates = set_ntrs_optimizer_learning_rates(
+                optimizer,
+                epoch=int(epoch),
+                base_lr=float(args.lr),
+            )
+            crra_optimizer_lr = float(args.lr)
+        else:
+            crra_optimizer_lr = set_crra_optimizer_learning_rate(
+                optimizer,
+                epoch=int(epoch),
+                base_lr=float(args.lr),
+                start_epoch=int(getattr(args, "crra_start_epoch", 17)),
+                ramp_epochs=int(getattr(args, "crra_ramp_epochs", 30)),
+                s3_lr_scale=float(getattr(args, "crra_s3_lr_scale", 0.25)),
+            )
+            ntrs_optimizer_rates = {"core": float(args.lr), "ntrs": 0.0}
         tail_rollback_cooldown_active = bool(tail_rollback_cooldown_remaining > 0)
         tail_closed_scale = (
             max(0.0, min(1.0, float(args.tail_rollback_closed_scale)))
@@ -5675,10 +5799,16 @@ def train(args) -> int:
             aug_state = _fallback_aug_state(args)
         if hasattr(model, "set_crra_epoch"):
             model.set_crra_epoch(int(epoch))
+        if hasattr(model, "set_ntrs_epoch"):
+            model.set_ntrs_epoch(int(epoch))
         if ema_model is not None and hasattr(ema_model, "set_crra_epoch"):
             ema_model.set_crra_epoch(int(epoch))
+        if ema_model is not None and hasattr(ema_model, "set_ntrs_epoch"):
+            ema_model.set_ntrs_epoch(int(epoch))
         if teacher_model is not None and hasattr(teacher_model, "set_crra_epoch"):
             teacher_model.set_crra_epoch(int(epoch))
+        if teacher_model is not None and hasattr(teacher_model, "set_ntrs_epoch"):
+            teacher_model.set_ntrs_epoch(int(epoch))
         model.train()
         balanced_train_sampler = data_ctx.get("balanced_train_sampler")
         if balanced_train_sampler is not None and hasattr(balanced_train_sampler, "set_epoch"):
@@ -5735,6 +5865,25 @@ def train(args) -> int:
                 )
             else:
                 x_l_main = x_l
+            ntrs_main_metadata = None
+            ntrs_main_metadata_valid = None
+            if bool(getattr(args, "use_ntrs", False)) and concat_sat_full_batch:
+                candidate_metadata = concat_sat_info.get("crra_nuisance")
+                candidate_valid = concat_sat_info.get("crra_nuisance_valid")
+                if torch.is_tensor(candidate_metadata) and int(candidate_metadata.size(0)) == int(x_l_main.size(0)):
+                    ntrs_main_metadata = candidate_metadata
+                    ntrs_main_metadata_valid = candidate_valid
+            ntrs_update_mask = (
+                ntrs_source_update_mask(
+                    batch_size=int(x_l_main.size(0)),
+                    clean_count=int(concat_sat_clean_bsz),
+                    concat_expanded=bool(concat_sat_full_batch),
+                    device=x_l_main.device,
+                )
+                if bool(getattr(args, "use_ntrs", False))
+                else None
+            )
+            ntrs_tangent_pair = None
             optimizer.zero_grad(set_to_none=True)
             with autocast(enabled=bool(args.amp and device.type == "cuda")):
                 out_l = model(
@@ -5751,6 +5900,14 @@ def train(args) -> int:
                         and concat_sat_clean_bsz > 0
                         else None
                     ),
+                    ntrs_epoch=int(epoch),
+                    update_ntrs_source=(
+                        bool(getattr(args, "use_ntrs", False))
+                        and float(ntrs_stage.nuisance_scale) > 0.0
+                    ),
+                    ntrs_source_mask=ntrs_update_mask,
+                    ntrs_metadata=ntrs_main_metadata,
+                    ntrs_metadata_valid=ntrs_main_metadata_valid,
                 )
                 domain_stats = {"valid": (d_l >= 0) if d_l is not None else None}
                 domain_gates = {
@@ -6450,10 +6607,17 @@ def train(args) -> int:
                         "lambda_crra_condition_tx_adv",
                     )
                 ) or (bool(getattr(args, "use_crra", False)) and crra_sat_kl_weight > 0.0)
+                ntrs_sat_objective_active = bool(getattr(args, "use_ntrs", False)) and int(epoch) >= 17
+                ntrs_sat_kl_active = (
+                    bool(getattr(args, "use_ntrs", False))
+                    and float(ntrs_stage.geometry_scale) > 0.0
+                    and float(getattr(args, "lambda_ntrs_sat_kl", 0.0)) > 0.0
+                )
                 sat_objective_active = (
                     cur_w["sat_cls"] > 0.0
                     or sat_cons_effective_weight > 0.0
                     or crra_sat_objective_active
+                    or ntrs_sat_objective_active
                 )
                 sat_objective_start_epoch = (
                     min(
@@ -6463,6 +6627,8 @@ def train(args) -> int:
                     if crra_sat_objective_active
                     else int(args.sat_cons_start_epoch)
                 )
+                if ntrs_sat_objective_active:
+                    sat_objective_start_epoch = min(int(sat_objective_start_epoch), 17)
                 use_sat_train = (
                     bool(args.use_sat_consistency)
                     and (not concat_sat_full_batch)
@@ -6487,7 +6653,7 @@ def train(args) -> int:
                     sat_nuisance_fields = tuple(concat_sat_info.get("crra_nuisance_fields") or ())
                     if cur_w["sat_cls"] > 0.0:
                         loss_sat_cls_l = F.cross_entropy(sat_logits, sat_y)
-                    if crra_sat_kl_active:
+                    if crra_sat_kl_active or ntrs_sat_kl_active:
                         clean_prob = out_l["tx_logits"][clean_slice].detach().softmax(dim=1)
                         loss_sat_cons_l = F.kl_div(
                             F.log_softmax(sat_logits, dim=1),
@@ -6527,16 +6693,26 @@ def train(args) -> int:
                             str(sat_train_scenario),
                             args,
                             gen=sat_gen,
-                            return_meta=bool(getattr(args, "use_crra", False)),
+                            return_meta=bool(getattr(args, "use_crra", False) or getattr(args, "use_ntrs", False)),
                         )
-                    if bool(getattr(args, "use_crra", False)) and normalize_crra_nuisance_meta is not None:
+                    if bool(getattr(args, "use_crra", False) or getattr(args, "use_ntrs", False)) and normalize_crra_nuisance_meta is not None:
                         _, sat_nuisance, sat_nuisance_valid, sat_nuisance_fields = normalize_crra_nuisance_meta(
                             raw_sat_meta,
                             scenario=str(sat_train_scenario),
                             batch_size=int(x_l.size(0)),
                             device=x_l.device,
                         )
-                    out_sat = model(x_sat, y_tx=y_l, grl_lambda=1.0, return_aux=True, domain_labels=d_l)
+                    out_sat = model(
+                        x_sat,
+                        y_tx=y_l,
+                        grl_lambda=1.0,
+                        return_aux=True,
+                        domain_labels=d_l,
+                        ntrs_epoch=int(epoch),
+                        update_ntrs_source=False,
+                        ntrs_metadata=sat_nuisance,
+                        ntrs_metadata_valid=sat_nuisance_valid,
+                    )
                     sat_z_id_l = out_sat["z_id"]
                     sat_zid_pair_applied = True
                     loss_sat_cls_l = (
@@ -6563,7 +6739,17 @@ def train(args) -> int:
                         )
                 elif concat_sat_ce_view is not None and epoch >= int(args.sat_cons_start_epoch):
                     x_sat = _safe_iq_tensor(concat_sat_ce_view.x)
-                    out_sat = model(x_sat, y_tx=y_l, grl_lambda=1.0, return_aux=True, domain_labels=d_l)
+                    out_sat = model(
+                        x_sat,
+                        y_tx=y_l,
+                        grl_lambda=1.0,
+                        return_aux=True,
+                        domain_labels=d_l,
+                        ntrs_epoch=int(epoch),
+                        update_ntrs_source=False,
+                        ntrs_metadata=concat_sat_ce_view.nuisance,
+                        ntrs_metadata_valid=concat_sat_ce_view.nuisance_valid,
+                    )
                     sat_z_id_l = out_sat["z_id"]
                     sat_zid_pair_applied = bool(float(concat_sat_info.get("applied", 0.0)) > 0.0)
                     sat_nuisance = concat_sat_ce_view.nuisance
@@ -6571,7 +6757,7 @@ def train(args) -> int:
                     sat_nuisance_fields = tuple(concat_sat_ce_view.nuisance_fields or ())
                     if cur_w["sat_cls"] > 0.0:
                         loss_sat_cls_l = float(args.concat_sat_ce_weight) * F.cross_entropy(out_sat["tx_logits"], y_l)
-                    if crra_sat_kl_active:
+                    if crra_sat_kl_active or ntrs_sat_kl_active:
                         clean_prob = out_l["tx_logits"].detach().softmax(dim=1)
                         loss_sat_cons_l = F.kl_div(
                             F.log_softmax(out_sat["tx_logits"], dim=1),
@@ -6601,6 +6787,91 @@ def train(args) -> int:
                     sat_nuisance = concat_sat_info.get("crra_nuisance")
                     sat_nuisance_valid = concat_sat_info.get("crra_nuisance_valid")
                     sat_nuisance_fields = tuple(concat_sat_info.get("crra_nuisance_fields") or ())
+
+                ntrs_bundle = {
+                    "losses": {
+                        name: zero_sat
+                        for name in (
+                            "sat_kl",
+                            "margin",
+                            "relation",
+                            "class_conditional",
+                            "receiver",
+                            "day",
+                            "channel",
+                            "context_tx_adv",
+                            "conditional_decorrelation",
+                            "shared_receiver",
+                            "minimum_correction",
+                            "alpha",
+                            "subspace",
+                            "correctability",
+                            "score_stability",
+                            "class_attraction",
+                        )
+                    },
+                    "info": {},
+                }
+                if bool(getattr(args, "use_ntrs", False)):
+                    if compute_ntrs_loss_bundle is None:
+                        raise ImportError("cvsrffi.ntrs_training.compute_ntrs_loss_bundle is required for NTRS")
+                    if concat_sat_full_batch and concat_sat_clean_bsz > 0:
+                        clean_slice = slice(0, concat_sat_clean_bsz)
+                        sat_slice = slice(concat_sat_clean_bsz, 2 * concat_sat_clean_bsz)
+                        ntrs_clean_output = _slice_batch_output(out_l, clean_slice)
+                        ntrs_clean_labels = y_l[clean_slice]
+                        ntrs_clean_receivers = receiver_l[clean_slice] if torch.is_tensor(receiver_l) else None
+                        ntrs_clean_days = day_l[clean_slice] if torch.is_tensor(day_l) else None
+                        ntrs_clean_channels = channel_l[clean_slice]
+                        if sat_zid_pair_applied:
+                            ntrs_sat_output = _slice_batch_output(out_l, sat_slice)
+                            ntrs_sat_labels = y_l[sat_slice]
+                            ntrs_sat_receivers = receiver_l[sat_slice] if torch.is_tensor(receiver_l) else None
+                            ntrs_sat_days = day_l[sat_slice] if torch.is_tensor(day_l) else None
+                            ntrs_sat_channels = channel_l[sat_slice]
+                        else:
+                            ntrs_sat_output = None
+                            ntrs_sat_labels = None
+                            ntrs_sat_receivers = None
+                            ntrs_sat_days = None
+                            ntrs_sat_channels = None
+                    else:
+                        ntrs_clean_output = out_l
+                        ntrs_clean_labels = y_l
+                        ntrs_clean_receivers = receiver_l
+                        ntrs_clean_days = day_l
+                        ntrs_clean_channels = channel_l
+                        ntrs_sat_output = out_sat if out_sat is not None and sat_zid_pair_applied else None
+                        ntrs_sat_labels = y_l if ntrs_sat_output is not None else None
+                        ntrs_sat_receivers = receiver_l if ntrs_sat_output is not None else None
+                        ntrs_sat_days = day_l if ntrs_sat_output is not None else None
+                        ntrs_sat_channels = (
+                            torch.ones_like(channel_l) if ntrs_sat_output is not None else None
+                        )
+                    if ntrs_sat_output is not None and float(ntrs_stage.nuisance_scale) > 0.0:
+                        ntrs_tangent_pair = (
+                            ntrs_clean_output["ntrs_z_anchor"].detach(),
+                            ntrs_sat_output["ntrs_z_anchor"].detach(),
+                        )
+                    ntrs_bundle = compute_ntrs_loss_bundle(
+                        ntrs_clean_output,
+                        ntrs_sat_output,
+                        clean_labels=ntrs_clean_labels,
+                        satellite_labels=ntrs_sat_labels,
+                        clean_receivers=ntrs_clean_receivers,
+                        satellite_receivers=ntrs_sat_receivers,
+                        clean_days=ntrs_clean_days,
+                        satellite_days=ntrs_sat_days,
+                        clean_channels=ntrs_clean_channels,
+                        satellite_channels=ntrs_sat_channels,
+                        prototypes=_ntrs_raw_prototype_weight(model),
+                        margin_epsilon=float(getattr(args, "ntrs_margin_epsilon", 0.05)),
+                        correctability_epsilon=float(getattr(args, "ntrs_correctability_epsilon", 0.01)),
+                        energy_threshold=float(getattr(args, "ntrs_energy_threshold", 0.10)),
+                        class_attraction_max_cosine=float(
+                            getattr(args, "ntrs_class_attraction_max_cosine", 0.50)
+                        ),
+                    )
 
                 if bool(getattr(args, "use_crra", False)):
                     clean_crra_slice = (
@@ -6758,6 +7029,7 @@ def train(args) -> int:
                     zid_invariance_info["channel_pair_angle_deg"] = float(
                         sat_zid_pair_info.get("channel_pair_angle_deg", float("nan"))
                     )
+                ntrs_losses = ntrs_bundle["losses"]
                 loss_closed_l = (
                     loss_tx_l
                     + cur_w["dom"] * loss_dom_l
@@ -6787,6 +7059,54 @@ def train(args) -> int:
                     )
                     + crra_stage_scale * float(getattr(args, "lambda_crra_condition_tx_adv", 0.0)) * sanitize_loss(
                         "crra_condition_tx_adv", loss_crra_condition_tx_adv_l, z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_sat_kl", 0.0)) * sanitize_loss(
+                        "ntrs_sat_kl", ntrs_losses["sat_kl"], z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_margin", 0.0)) * sanitize_loss(
+                        "ntrs_margin", ntrs_losses["margin"], z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_relation", 0.0)) * sanitize_loss(
+                        "ntrs_relation", ntrs_losses["relation"], z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_class_conditional", 0.0)) * sanitize_loss(
+                        "ntrs_class_conditional", ntrs_losses["class_conditional"], z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.nuisance_scale) * float(getattr(args, "lambda_ntrs_receiver", 0.0)) * sanitize_loss(
+                        "ntrs_receiver", ntrs_losses["receiver"], z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.nuisance_scale) * float(getattr(args, "lambda_ntrs_day", 0.0)) * sanitize_loss(
+                        "ntrs_day", ntrs_losses["day"], z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.nuisance_scale) * float(getattr(args, "lambda_ntrs_channel", 0.0)) * sanitize_loss(
+                        "ntrs_channel", ntrs_losses["channel"], z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.nuisance_scale) * float(getattr(args, "lambda_ntrs_context_tx_adv", 0.0)) * sanitize_loss(
+                        "ntrs_context_tx_adv", ntrs_losses["context_tx_adv"], z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_cond_decorr", 0.0)) * sanitize_loss(
+                        "ntrs_conditional_decorrelation", ntrs_losses["conditional_decorrelation"], z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_shared_rx", 0.0)) * sanitize_loss(
+                        "ntrs_shared_receiver", ntrs_losses["shared_receiver"], z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_min_correction", 0.0)) * sanitize_loss(
+                        "ntrs_minimum_correction", ntrs_losses["minimum_correction"], z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_alpha", 0.0)) * sanitize_loss(
+                        "ntrs_alpha", ntrs_losses["alpha"], z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_subspace", 0.0)) * sanitize_loss(
+                        "ntrs_subspace", ntrs_losses["subspace"], z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.safety_scale) * float(getattr(args, "lambda_ntrs_correctability", 0.0)) * sanitize_loss(
+                        "ntrs_correctability", ntrs_losses["correctability"], z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.safety_scale) * float(getattr(args, "lambda_ntrs_score_stability", 0.0)) * sanitize_loss(
+                        "ntrs_score_stability", ntrs_losses["score_stability"], z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.safety_scale) * float(getattr(args, "lambda_ntrs_class_attraction", 0.0)) * sanitize_loss(
+                        "ntrs_class_attraction", ntrs_losses["class_attraction"], z_id_l, loss_warn_counts
                     )
                     + (float(args.lambda_teacher_clean_kl) * teacher_scale) * sanitize_loss("teacher_clean_kl", loss_teacher_clean_kl_l, z_id_l, loss_warn_counts)
                     + (float(args.lambda_teacher_sat_kl) * teacher_scale) * sanitize_loss("teacher_sat_kl", loss_teacher_sat_kl_l, z_id_l, loss_warn_counts)
@@ -7528,6 +7848,12 @@ def train(args) -> int:
                 if grads_finite:
                     scaler.step(optimizer)
                     optimizer_step_applied = True
+                    if ntrs_tangent_pair is not None:
+                        _ntrs_update_tangent(
+                            model,
+                            ntrs_tangent_pair[0],
+                            ntrs_tangent_pair[1],
+                        )
                     if ema_model is not None:
                         _update_ema_model(ema_model, model, float(args.ema_decay))
                 else:
@@ -7723,6 +8049,42 @@ def train(args) -> int:
                     "train/crra_sat_shell_mean_excess_rad": float(
                         crra_sat_shell_info.get("mean_excess_rad", 0.0)
                     ),
+                    "train/ntrs_stage_code": float({"S1": 1, "S2-a": 2, "S2-b": 3, "S3": 4}[ntrs_stage.name]),
+                    "train/ntrs_core_lr": float(ntrs_optimizer_rates["core"]),
+                    "train/ntrs_optimizer_lr": float(ntrs_optimizer_rates["ntrs"]),
+                    "train/loss_ntrs_sat_kl": ntrs_losses["sat_kl"].detach(),
+                    "train/loss_ntrs_margin": ntrs_losses["margin"].detach(),
+                    "train/loss_ntrs_relation": ntrs_losses["relation"].detach(),
+                    "train/loss_ntrs_class_conditional": ntrs_losses["class_conditional"].detach(),
+                    "train/loss_ntrs_receiver": ntrs_losses["receiver"].detach(),
+                    "train/loss_ntrs_day": ntrs_losses["day"].detach(),
+                    "train/loss_ntrs_channel": ntrs_losses["channel"].detach(),
+                    "train/loss_ntrs_context_tx_adv": ntrs_losses["context_tx_adv"].detach(),
+                    "train/loss_ntrs_conditional_decorrelation": ntrs_losses["conditional_decorrelation"].detach(),
+                    "train/loss_ntrs_shared_receiver": ntrs_losses["shared_receiver"].detach(),
+                    "train/loss_ntrs_minimum_correction": ntrs_losses["minimum_correction"].detach(),
+                    "train/loss_ntrs_alpha": ntrs_losses["alpha"].detach(),
+                    "train/loss_ntrs_subspace": ntrs_losses["subspace"].detach(),
+                    "train/loss_ntrs_correctability": ntrs_losses["correctability"].detach(),
+                    "train/loss_ntrs_score_stability": ntrs_losses["score_stability"].detach(),
+                    "train/loss_ntrs_class_attraction": ntrs_losses["class_attraction"].detach(),
+                    "train/ntrs_gate": out_l.get("ntrs_gate", zero_sat).detach().float().mean(),
+                    "train/ntrs_safe_gate": out_l.get("ntrs_safe_gate", zero_sat).detach().float().mean(),
+                    "train/ntrs_alpha": out_l.get("ntrs_alpha", zero_sat).detach().float().mean(),
+                    "train/ntrs_correction_energy": out_l.get("ntrs_correction_energy", zero_sat).detach().float().mean(),
+                    "train/ntrs_physical_correction_energy": out_l.get(
+                        "ntrs_physical_correction_energy", zero_sat
+                    ).detach().float().mean(),
+                    "train/ntrs_support_distance": out_l.get("ntrs_support_distance", zero_sat).detach().float().mean(),
+                    "train/ntrs_correctability": out_l.get("ntrs_correctability", zero_sat).detach().float().mean(),
+                    "train/ntrs_uncertainty": out_l.get("ntrs_uncertainty", zero_sat).detach().float().mean(),
+                    "train/ntrs_subspace_residual": out_l.get("ntrs_subspace_residual", zero_sat).detach().float().mean(),
+                    "train/ntrs_correctability_positive_rate": float(
+                        ntrs_bundle["info"].get("correctability", {}).get("positive_rate", 0.0)
+                    ),
+                    "train/ntrs_class_attraction_cosine": float(
+                        ntrs_bundle["info"].get("class_attraction", {}).get("mean_cosine", 0.0)
+                    ),
                     "train/loss_teacher_clean_kl": loss_teacher_clean_kl_l.detach(),
                     "train/loss_teacher_sat_kl": loss_teacher_sat_kl_l.detach(),
                     "train/loss_teacher_zid_mse": loss_teacher_zid_mse_l.detach(),
@@ -7766,6 +8128,45 @@ def train(args) -> int:
                         crra_stage_scale
                         * float(getattr(args, "lambda_crra_condition_tx_adv", 0.0))
                         * loss_crra_condition_tx_adv_l
+                    ).detach(),
+                    "train/w_loss_ntrs_sat_kl": (
+                        float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_sat_kl", 0.0)) * ntrs_losses["sat_kl"]
+                    ).detach(),
+                    "train/w_loss_ntrs_margin": (
+                        float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_margin", 0.0)) * ntrs_losses["margin"]
+                    ).detach(),
+                    "train/w_loss_ntrs_relation": (
+                        float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_relation", 0.0)) * ntrs_losses["relation"]
+                    ).detach(),
+                    "train/w_loss_ntrs_class_conditional": (
+                        float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_class_conditional", 0.0)) * ntrs_losses["class_conditional"]
+                    ).detach(),
+                    "train/w_loss_ntrs_factor": (
+                        float(ntrs_stage.nuisance_scale)
+                        * (
+                            float(getattr(args, "lambda_ntrs_receiver", 0.0)) * ntrs_losses["receiver"]
+                            + float(getattr(args, "lambda_ntrs_day", 0.0)) * ntrs_losses["day"]
+                            + float(getattr(args, "lambda_ntrs_channel", 0.0)) * ntrs_losses["channel"]
+                            + float(getattr(args, "lambda_ntrs_context_tx_adv", 0.0)) * ntrs_losses["context_tx_adv"]
+                        )
+                    ).detach(),
+                    "train/w_loss_ntrs_geometry": (
+                        float(ntrs_stage.geometry_scale)
+                        * (
+                            float(getattr(args, "lambda_ntrs_cond_decorr", 0.0)) * ntrs_losses["conditional_decorrelation"]
+                            + float(getattr(args, "lambda_ntrs_shared_rx", 0.0)) * ntrs_losses["shared_receiver"]
+                            + float(getattr(args, "lambda_ntrs_min_correction", 0.0)) * ntrs_losses["minimum_correction"]
+                            + float(getattr(args, "lambda_ntrs_alpha", 0.0)) * ntrs_losses["alpha"]
+                            + float(getattr(args, "lambda_ntrs_subspace", 0.0)) * ntrs_losses["subspace"]
+                        )
+                    ).detach(),
+                    "train/w_loss_ntrs_safety": (
+                        float(ntrs_stage.safety_scale)
+                        * (
+                            float(getattr(args, "lambda_ntrs_correctability", 0.0)) * ntrs_losses["correctability"]
+                            + float(getattr(args, "lambda_ntrs_score_stability", 0.0)) * ntrs_losses["score_stability"]
+                            + float(getattr(args, "lambda_ntrs_class_attraction", 0.0)) * ntrs_losses["class_attraction"]
+                        )
                     ).detach(),
                     "train/w_loss_teacher_clean_kl": ((float(args.lambda_teacher_clean_kl) * teacher_scale) * loss_teacher_clean_kl_l).detach(),
                     "train/w_loss_teacher_sat_kl": ((float(args.lambda_teacher_sat_kl) * teacher_scale) * loss_teacher_sat_kl_l).detach(),
