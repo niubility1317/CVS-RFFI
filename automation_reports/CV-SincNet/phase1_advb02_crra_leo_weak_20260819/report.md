@@ -45,7 +45,8 @@
 - `LOCAL_FOCUSED_SUITE_PASS`：CRRA核心、模型、协议、训练、评估遥测和启动器聚焦测试共46项通过；`py_compile`、启动器`bash -n`和`git diff --check`通过。
 - `LOCAL_COMMAND_PARSE_PASS`：启动器完整训练命令由`SSDG.train_ssdg.build_arg_parser()`成功解析；`--eval_sat_on main`与`--sat_eval_max_batches -1`均为已注册参数。
 - `P0_REVIEW_FIXED`：审查发现独立checkpoint评估重建模型后默认`crra_epoch=1`，会关闭最终CRRA门控。已增加`restore_crra_eval_epoch()`，独立评估和协作评估都会从checkpoint恢复训练轮次；定点测试通过。
-- `PENDING_N607_PREFLIGHT`：待本地提交并推送后执行N607直连预检、单一release归档校验和远端编译。
+- `N607_DIRECT_PREFLIGHT_VERIFIED`：2026-08-19 23:52（Asia/Hong_Kong）确认N607项目根目录和8张GPU可见；GPU0空闲，GPU1–3已有其他任务，本run不干预它们。
+- `RELEASE_ARCHIVE_READY`：实现提交`f32f52b8f8d8fc51873a830888e4e2ea3a6d8d27`的`code/`和独立评估器归档为`advb02_crra_leo_weak_f32f52b8.tar`，本地SHA256=`2c74568313552b26d544bbb0994ef31c4a0fa918b22d4bb02a345e88440757da`。计划上传到`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_crra_leo_weak_20260819/f32f52b8/`，解压到其`workspace/`子目录；训练输出和日志仍写入主项目的唯一run根目录。
 
 ## 结果与解释
 
