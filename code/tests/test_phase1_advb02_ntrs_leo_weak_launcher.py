@@ -8,13 +8,14 @@ SCRIPT = "code/scripts/launch_phase1_advb02_ntrs_leo_weak_20260820.sh"
 BASH = r"C:\Program Files\Git\bin\bash.exe"
 
 
-def _dry_run() -> str:
+def _dry_run(profile: str = "full") -> str:
     result = subprocess.run(
         [BASH, SCRIPT, "--dry-run"],
         cwd=PROJECT_ROOT,
         text=True,
         capture_output=True,
         check=True,
+        env={**os.environ, "NTRS_PROFILE": profile},
     )
     return result.stdout.replace("\\", "")
 
@@ -76,3 +77,80 @@ def test_ntrs_launcher_rejects_non_source_dataset_paths():
     )
     assert result.returncode == 4
     assert "refusing non-source" in result.stderr
+
+
+def test_ntrs_matrix_control_disables_only_ntrs():
+    out = _dry_run("control")
+    assert "candidate=ADVB02_CORE90_LEO_WEAK_CONTROL_E200" in out
+    assert "profile=control" in out
+    assert "--no_use_ntrs" in out
+    assert "--use_ntrs" not in out
+    assert "--sat_training_mode concat_masked" in out
+    assert "--sat_train_scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak" in out
+    assert "--seed 392034" in out
+    assert "mixed_orbit" not in out
+    assert "--eval_ntrs_telemetry" not in out
+
+
+def test_ntrs_matrix_identity_structure_ablation_is_group_local():
+    out = _dry_run("no_identity_structure")
+    assert "candidate=ADVB02_NTRS_NO_IDSTRUCT_LEO_WEAK_E200" in out
+    assert "profile=no_identity_structure" in out
+    assert "--use_ntrs" in out
+    assert "--lambda_ntrs_sat_kl 0" in out
+    assert "--lambda_ntrs_margin 0" in out
+    assert "--lambda_ntrs_relation 0" in out
+    assert "--lambda_ntrs_class_conditional 0" in out
+    assert "--lambda_ntrs_receiver 0.02" in out
+    assert "--lambda_ntrs_correctability 0.02" in out
+
+
+def test_ntrs_matrix_nuisance_factorization_ablation_is_group_local():
+    out = _dry_run("no_nuisance_factorization")
+    assert "candidate=ADVB02_NTRS_NO_NUISANCE_LEO_WEAK_E200" in out
+    assert "profile=no_nuisance_factorization" in out
+    assert "--lambda_ntrs_receiver 0" in out
+    assert "--lambda_ntrs_day 0" in out
+    assert "--lambda_ntrs_channel 0" in out
+    assert "--lambda_ntrs_context_tx_adv 0" in out
+    assert "--lambda_ntrs_cond_decorr 0" in out
+    assert "--lambda_ntrs_shared_rx 0" in out
+    assert "--lambda_ntrs_margin 0.03" in out
+    assert "--lambda_ntrs_correctability 0.02" in out
+
+
+def test_ntrs_matrix_embed_residual_ablation_is_group_local():
+    out = _dry_run("no_embed_residual")
+    assert "candidate=ADVB02_NTRS_NO_EMBEDRES_LEO_WEAK_E200" in out
+    assert "profile=no_embed_residual" in out
+    assert "--ntrs_alpha_max 0" in out
+    assert "--lambda_ntrs_min_correction 0" in out
+    assert "--lambda_ntrs_alpha 0" in out
+    assert "--lambda_ntrs_subspace 0" in out
+    assert "--lambda_ntrs_margin 0.03" in out
+    assert "--lambda_ntrs_receiver 0.02" in out
+
+
+def test_ntrs_matrix_safety_loss_ablation_is_group_local():
+    out = _dry_run("no_safety_losses")
+    assert "candidate=ADVB02_NTRS_NO_SAFETY_LEO_WEAK_E200" in out
+    assert "profile=no_safety_losses" in out
+    assert "--lambda_ntrs_correctability 0" in out
+    assert "--lambda_ntrs_score_stability 0" in out
+    assert "--lambda_ntrs_class_attraction 0" in out
+    assert "--lambda_ntrs_margin 0.03" in out
+    assert "--lambda_ntrs_receiver 0.02" in out
+    assert "--ntrs_alpha_max 0.20" in out
+
+
+def test_ntrs_launcher_rejects_unknown_matrix_profile():
+    result = subprocess.run(
+        [BASH, SCRIPT, "--dry-run"],
+        cwd=PROJECT_ROOT,
+        text=True,
+        capture_output=True,
+        encoding="utf-8",
+        env={**os.environ, "NTRS_PROFILE": "not_a_profile"},
+    )
+    assert result.returncode == 2
+    assert "unknown NTRS_PROFILE" in result.stderr

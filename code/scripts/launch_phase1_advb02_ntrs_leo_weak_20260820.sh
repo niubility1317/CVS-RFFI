@@ -11,10 +11,73 @@ GPU="${GPU:-1}"
 SEED="${SEED:-392034}"
 MAX_ACTIVE_PER_GPU="${MAX_ACTIVE_PER_GPU:-2}"
 DRY_RUN="${DRY_RUN:-0}"
+NTRS_PROFILE="${NTRS_PROFILE:-full}"
 
-readonly CANDIDATE="ADVB02_NTRS_LEO_WEAK_E200"
 readonly LEO_SCENARIOS="leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
 readonly CORE90_LEO_SCHEDULE="1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
+
+USE_NTRS=1
+CANDIDATE="ADVB02_NTRS_LEO_WEAK_E200"
+NTRS_ALPHA_MAX="0.20"
+L_NTRS_SAT_KL="0.01"
+L_NTRS_MARGIN="0.03"
+L_NTRS_RELATION="0.02"
+L_NTRS_CLASS_CONDITIONAL="0.01"
+L_NTRS_RECEIVER="0.02"
+L_NTRS_DAY="0.02"
+L_NTRS_CHANNEL="0.02"
+L_NTRS_COND_DECORR="0.01"
+L_NTRS_SHARED_RX="0.01"
+L_NTRS_CONTEXT_TX_ADV="0.02"
+L_NTRS_MIN_CORRECTION="0.001"
+L_NTRS_ALPHA="0.001"
+L_NTRS_SUBSPACE="0.02"
+L_NTRS_CORRECTABILITY="0.02"
+L_NTRS_SCORE_STABILITY="0.01"
+L_NTRS_CLASS_ATTRACTION="0.01"
+
+case "${NTRS_PROFILE}" in
+  full)
+    ;;
+  control)
+    USE_NTRS=0
+    CANDIDATE="ADVB02_CORE90_LEO_WEAK_CONTROL_E200"
+    ;;
+  no_identity_structure)
+    CANDIDATE="ADVB02_NTRS_NO_IDSTRUCT_LEO_WEAK_E200"
+    L_NTRS_SAT_KL="0"
+    L_NTRS_MARGIN="0"
+    L_NTRS_RELATION="0"
+    L_NTRS_CLASS_CONDITIONAL="0"
+    ;;
+  no_nuisance_factorization)
+    CANDIDATE="ADVB02_NTRS_NO_NUISANCE_LEO_WEAK_E200"
+    L_NTRS_RECEIVER="0"
+    L_NTRS_DAY="0"
+    L_NTRS_CHANNEL="0"
+    L_NTRS_COND_DECORR="0"
+    L_NTRS_SHARED_RX="0"
+    L_NTRS_CONTEXT_TX_ADV="0"
+    ;;
+  no_embed_residual)
+    CANDIDATE="ADVB02_NTRS_NO_EMBEDRES_LEO_WEAK_E200"
+    NTRS_ALPHA_MAX="0"
+    L_NTRS_MIN_CORRECTION="0"
+    L_NTRS_ALPHA="0"
+    L_NTRS_SUBSPACE="0"
+    ;;
+  no_safety_losses)
+    CANDIDATE="ADVB02_NTRS_NO_SAFETY_LEO_WEAK_E200"
+    L_NTRS_CORRECTABILITY="0"
+    L_NTRS_SCORE_STABILITY="0"
+    L_NTRS_CLASS_ATTRACTION="0"
+    ;;
+  *)
+    echo "[NTRS-LEO-ERROR] unknown NTRS_PROFILE: ${NTRS_PROFILE}" >&2
+    exit 2
+    ;;
+esac
+readonly CANDIDATE
 
 for arg in "$@"; do
   case "${arg}" in
@@ -224,37 +287,6 @@ build_train_command() {
     --sat_cons_start_epoch 17
     --lambda_sat_cls 0.68
     --lambda_sat_cons 0.0
-    --use_ntrs
-    --ntrs_rank 8
-    --ntrs_alpha_max 0.20
-    --ntrs_q_dim 32
-    --ntrs_fast_dim 24
-    --ntrs_slow_dim 24
-    --ntrs_metadata_dim 9
-    --ntrs_slow_ema_decay 0.95
-    --ntrs_support_tau 1.0
-    --ntrs_energy_threshold 0.10
-    --ntrs_unknown_rescue false
-    --ntrs_target_adapter false
-    --ntrs_margin_epsilon 0.05
-    --ntrs_correctability_epsilon 0.01
-    --ntrs_class_attraction_max_cosine 0.50
-    --lambda_ntrs_sat_kl 0.01
-    --lambda_ntrs_margin 0.03
-    --lambda_ntrs_relation 0.02
-    --lambda_ntrs_class_conditional 0.01
-    --lambda_ntrs_receiver 0.02
-    --lambda_ntrs_day 0.02
-    --lambda_ntrs_channel 0.02
-    --lambda_ntrs_cond_decorr 0.01
-    --lambda_ntrs_shared_rx 0.01
-    --lambda_ntrs_context_tx_adv 0.02
-    --lambda_ntrs_min_correction 0.001
-    --lambda_ntrs_alpha 0.001
-    --lambda_ntrs_subspace 0.02
-    --lambda_ntrs_correctability 0.02
-    --lambda_ntrs_score_stability 0.01
-    --lambda_ntrs_class_attraction 0.01
     --eval_sat_channel true
     --eval_sat_scenarios "${LEO_SCENARIOS}"
     --eval_sat_on main
@@ -262,6 +294,42 @@ build_train_command() {
     --sat_seed 2027
     --device cuda:0
     --seed "${SEED}")
+  if [[ "${USE_NTRS}" == "1" ]]; then
+    TRAIN_CMD+=(
+      --use_ntrs
+      --ntrs_rank 8
+      --ntrs_alpha_max "${NTRS_ALPHA_MAX}"
+      --ntrs_q_dim 32
+      --ntrs_fast_dim 24
+      --ntrs_slow_dim 24
+      --ntrs_metadata_dim 9
+      --ntrs_slow_ema_decay 0.95
+      --ntrs_support_tau 1.0
+      --ntrs_energy_threshold 0.10
+      --ntrs_unknown_rescue false
+      --ntrs_target_adapter false
+      --ntrs_margin_epsilon 0.05
+      --ntrs_correctability_epsilon 0.01
+      --ntrs_class_attraction_max_cosine 0.50
+      --lambda_ntrs_sat_kl "${L_NTRS_SAT_KL}"
+      --lambda_ntrs_margin "${L_NTRS_MARGIN}"
+      --lambda_ntrs_relation "${L_NTRS_RELATION}"
+      --lambda_ntrs_class_conditional "${L_NTRS_CLASS_CONDITIONAL}"
+      --lambda_ntrs_receiver "${L_NTRS_RECEIVER}"
+      --lambda_ntrs_day "${L_NTRS_DAY}"
+      --lambda_ntrs_channel "${L_NTRS_CHANNEL}"
+      --lambda_ntrs_cond_decorr "${L_NTRS_COND_DECORR}"
+      --lambda_ntrs_shared_rx "${L_NTRS_SHARED_RX}"
+      --lambda_ntrs_context_tx_adv "${L_NTRS_CONTEXT_TX_ADV}"
+      --lambda_ntrs_min_correction "${L_NTRS_MIN_CORRECTION}"
+      --lambda_ntrs_alpha "${L_NTRS_ALPHA}"
+      --lambda_ntrs_subspace "${L_NTRS_SUBSPACE}"
+      --lambda_ntrs_correctability "${L_NTRS_CORRECTABILITY}"
+      --lambda_ntrs_score_stability "${L_NTRS_SCORE_STABILITY}"
+      --lambda_ntrs_class_attraction "${L_NTRS_CLASS_ATTRACTION}")
+  else
+    TRAIN_CMD+=(--no_use_ntrs)
+  fi
 }
 
 build_eval_command() {
@@ -280,8 +348,11 @@ build_eval_command() {
     --eval_sat_channel
     --eval_sat_scenarios "${LEO_SCENARIOS}"
     --eval_sat_on main
-    --sat_seed 2027
-    --eval_ntrs_telemetry
+    --sat_seed 2027)
+  if [[ "${USE_NTRS}" == "1" ]]; then
+    EVAL_CMD+=(--eval_ntrs_telemetry)
+  fi
+  EVAL_CMD+=(
     --output_json "${eval_dir}/final_eval.json"
     --output_txt "${eval_dir}/final_eval.txt")
 }
@@ -296,7 +367,7 @@ run() {
 
   build_train_command "${out_dir}"
   build_eval_command "${checkpoint_path}" "${eval_dir}"
-  echo "[NTRS-LEO-RUN] run_id=${RUN_ID} candidate=${CANDIDATE} gpu=${GPU} seed=${SEED} ratios=0.07/0.63/0.15/0.15 roles=L_s/U_s/V_cal/V_select channel=leo_weak only source_only=1 target_receiver_samples_in_training=0 target_unknown_training_count=0 ntrs_variant=NTRS-v1 sat_training_mode=concat_masked core90_schedule=E1-40_p0.30,E41-90_p0.60,E91-200_p0.80"
+  echo "[NTRS-LEO-RUN] run_id=${RUN_ID} candidate=${CANDIDATE} profile=${NTRS_PROFILE} gpu=${GPU} seed=${SEED} ratios=0.07/0.63/0.15/0.15 roles=L_s/U_s/V_cal/V_select channel=leo_weak only source_only=1 target_receiver_samples_in_training=0 target_unknown_training_count=0 ntrs_variant=NTRS-v1 sat_training_mode=concat_masked core90_schedule=E1-40_p0.30,E41-90_p0.60,E91-200_p0.80"
   printf "[NTRS-LEO-TRAIN-CMD] "; printf "%q " "${TRAIN_CMD[@]}"; printf "\n"
   printf "[NTRS-LEO-EVAL-CMD] "; printf "%q " "${EVAL_CMD[@]}"; printf "\n"
   if [[ "${DRY_RUN}" == "1" ]]; then
