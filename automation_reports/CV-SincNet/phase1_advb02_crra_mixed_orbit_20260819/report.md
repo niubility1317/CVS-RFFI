@@ -2,7 +2,7 @@
 
 ## 预登记
 
-- 实验ID：`phase1_advb02_crra_mixed_orbit_20260819`。
+- 实验ID：`phase1_advb02_crra_mixed_orbit_20260819_r1`；首次技术失败尝试保留为`phase1_advb02_crra_mixed_orbit_20260819`。
 - 目标：在当前Phase1数据协议下，验证ADVB02 CRRA对历史`mixed_orbit`星地信道视图的拼接监督训练闭环、稳定性遥测和同row性能方向。
 - 数据比例：WiSig `0.07/0.63/0.15/0.15`，分别对应`L_s/U_s/V_cal/V_select`；`V_select`只用于源侧选模，`V_cal`只用于校准/导出，不访问目标接收机、目标阈值或query truth。
 - 星地信道：训练增强仅使用历史`mixed_orbit`（代码规范名）；本任务不使用`leo_*_weak`作为训练星地信道。
@@ -19,20 +19,20 @@
 | 本地Git承载 | `E:/type10-7/github_publish/CVS-RFFI-repo` |
 | launcher | `code/scripts/launch_phase1_advb02_crra_mixed_orbit_20260819.sh` |
 | 远端项目根 | `/home/szu2070436088/2510044040/CV-SincNet` |
-| 远端run根 | `/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_advb02_crra_mixed_orbit_20260819` |
-| 远端log根 | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_advb02_crra_mixed_orbit_20260819` |
+| 远端run根 | `/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_advb02_crra_mixed_orbit_20260819_r1` |
+| 远端log根 | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_advb02_crra_mixed_orbit_20260819_r1` |
 | GPU | `3`；发布前复核GPU3–7空闲，GPU0–2保留给既有历史任务；不超过单GPU默认两个训练进程 |
 | 环境 | 远端既有`CVS-RFFI`Python环境；本地验证使用`ssr-gpu` |
 | 技术停止 | 仅协议越权、错误checkout、输出覆盖、launcher/确定性启动故障、无prediction闭合；不因低性能停止 |
 
-发布归档：本地`E:/type10-7/local_artifacts/phase1_advb02_crra_mixed_orbit_20260819/cvs-rffi-b3bbbcaa.tar.gz`→远端`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_crra_mixed_orbit_20260819_b3bbbcaa.tar.gz`；单次归档SHA256=`6b9554af2dcb49652e3be81c37d6b26a03da755ff11031cffe62cab3e9f19b03`。远端展开目录为`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_crra_mixed_orbit_20260819_b3bbbcaa`，远端Python编译与launcher语法检查已通过。
+首次归档已落地但因launcher过期参数启动失败；该artifact保留，不覆盖。修复后的新归档和新run使用`_r1`后缀，详情在后续发布记录中追加。
 
-本地固定提交：`cd970f1f`（`exp: align ADVB02 CRRA concat supervision with Phase1 roles`）。
+本地固定提交：实现`cd970f1f`（`exp: align ADVB02 CRRA concat supervision with Phase1 roles`），启动修复`21a23878`（`fix: remove stale ADVB02 launch argument`）。
 
-唯一启动入口：
+唯一启动入口（重试run）：
 
 ```bash
-bash code/scripts/launch_phase1_advb02_crra_mixed_orbit_20260819.sh --only=ADVB02_CRRA_MIXED_ORBIT_E200
+bash code/scripts/launch_phase1_advb02_crra_mixed_orbit_20260819.sh
 ```
 
 先做dry-run：
@@ -44,13 +44,13 @@ bash code/scripts/launch_phase1_advb02_crra_mixed_orbit_20260819.sh --dry-run
 ## 本地验证
 
 - `MSYSTEM=MINGW64`已核验；终端使用Git Bash，测试环境为`ssr-gpu`。
-- CRRA、Phase1四角色拆分、协议负测、旧checkpoint兼容性和launcher聚焦集：30 passed；无失败。
+- CRRA、Phase1四角色拆分、协议负测、旧checkpoint兼容性和launcher聚焦集：30 passed；无失败；两条dry-run命令均通过当前argparse参数解析。
 - 真实checkpoint无query冒烟：本地`best_joint_safe_ssdg.pth`旧模型严格重建通过；CRRA关闭与CRRA结构补入后分别对clean和同一次生成的`mixed_orbit`视图前向，logits有限且shape一致。
 - 拼接监督：`concat_masked`保持clean主损失完整，satellite只进入独立CE/nuisance/shell路径；首轮`lambda_crra_pair=0`、`lambda_crra_sat_kl=0`，不会引入clean-sat点对点/KL监督。
 - CRRA卫星KL回归：代码验证`lambda_sat_cons=0`时仍可由独立`lambda_crra_sat_kl>0`在E17后物化；本轮显式置零，E1–16不提前计算。
 - 元数据契约：`snr_db,cfo_hz,residual_cfo_hz,fD_hz,pl_db,K_db,theta_deg,h_km,state`始终固定9维；缺字段整行无效，不做左移拼接或截断回归。
 - Phase1角色：训练日志打印`L_s/U_s/V_cal/V_select`；`V_select`进入选模，`V_cal`进入校准/导出，四个角色物理样本索引两两不交。
-- 本地实现已固定为`cd970f1f`；N607只读preflight、传输归档和远端compile结果在发布后追加；不增加额外seal、authority或逐文件hash门。
+- 本地实现已固定为`cd970f1f`；首次启动失败指纹是旧launcher传入不存在的`--dom_feature_key feat_imp`，控制行在argparse阶段退出，未进入训练，旧run/log完整保留。修复后仅删除该过期参数并改用不可覆盖`_r1`run ID，不改变模型、数据协议或损失设定；不增加额外seal、authority或逐文件hash门。
 
 ## 结果记录
 
@@ -58,4 +58,4 @@ bash code/scripts/launch_phase1_advb02_crra_mixed_orbit_20260819.sh --dry-run
 
 ## 当前状态
 
-`LANDED`：代码、配置、launcher和报告已固定；发布归档已落地N607并完成远端编译。远端旧历史任务保持monitor-only，尚未因本任务被停止、重启或修改；待启动本run后更新为`RUNNING`。
+`LOCAL_VERIFIED`：首次归档已落地但启动在argparse阶段技术失败；修复后的launcher已通过本地dry-run并确认不再包含过期参数，待以新的`_r1`归档重新落地和启动。所有远端旧历史任务保持monitor-only。
