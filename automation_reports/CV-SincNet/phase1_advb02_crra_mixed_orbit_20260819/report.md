@@ -32,7 +32,7 @@
 唯一启动入口（最终重试run）：
 
 ```bash
-ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_crra_mixed_orbit_20260819_r1_a5ca5594 WISIG_PKL=/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl GPU=3 RUN_ID=phase1_advb02_crra_mixed_orbit_20260819_r2 bash code/scripts/launch_phase1_advb02_crra_mixed_orbit_20260819.sh
+ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_crra_mixed_orbit_20260819_r1_a5ca5594 WISIG_PKL=/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl GPU=0 RUN_ID=phase1_advb02_crra_mixed_orbit_20260819_r2 bash code/scripts/launch_phase1_advb02_crra_mixed_orbit_20260819.sh
 ```
 
 先做dry-run：
@@ -51,17 +51,31 @@ bash code/scripts/launch_phase1_advb02_crra_mixed_orbit_20260819.sh --dry-run
 - 元数据契约：`snr_db,cfo_hz,residual_cfo_hz,fD_hz,pl_db,K_db,theta_deg,h_km,state`始终固定9维；缺字段整行无效，不做左移拼接或截断回归。
 - Phase1角色：训练日志打印`L_s/U_s/V_cal/V_select`；`V_select`进入选模，`V_cal`进入校准/导出，四个角色物理样本索引两两不交。
 - 本地实现已固定为`cd970f1f`，启动修复为`21a23878`；首次失败是旧launcher传入不存在的`--dom_feature_key feat_imp`，第二次`_r1`失败是发布目录不含外部WiSig数据路径，二者均未进入有效训练且run/log完整保留。最终启动只显式绑定项目根只读数据文件并改用不可覆盖`_r2`run ID，不改变模型、数据协议或损失设定；不增加额外seal、authority或逐文件hash门。
+- 训练期间的`[TEST] overall_tx=nan% (0/0)`是协议保护行为：held-out receiver/day和卫星测试不能参与Phase1训练或选模。训练结束后内部`frozen_phase1_heldout_eval.json`为`COMPLETE`，并另外使用固定测试工具对最终checkpoint补做了`leo_weak`测试；该测试只读、不回写checkpoint、不参与选模。
 
 ## 结果记录
 
-待预测闭合后只记录同row结果：clean TX、V_select上的`mixed_orbit`source-validation TX、receiver/day分层（若该row产生）、CRRA遥测和最终判定。不得拼接不同row的单指标最高值，也不得把本报告的单批冒烟当作性能证据。
+控制行已完成E200并产生最终checkpoint；但launcher在控制行返回`exit=8`后停止，CRRA改造行没有启动，因此本run不是完整的控制/CRRA双候选比较。
+
+最终checkpoint的独立`leo_weak`测试结果如下，测试场景与训练场景明确分离：
+
+| 测试场景 | TX准确率 | strict UDU | 样本数 |
+|---|---:|---:|---:|
+| `leo_clear_weak` | 58.5765% | 50.9317% | 204000 |
+| `leo_low_elev_weak` | 55.9819% | 49.2150% | 204000 |
+| `leo_rain_weak` | 55.8373% | 49.1150% | 204000 |
+
+同一checkpoint的clean held-out TX为84.4456%（204000个样本），验证集TX为98.0298%；严格加载检查为`missing=0/unexpected=0`。结果artifact位于远端`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_advb02_crra_mixed_orbit_20260819_r2_eval_leo_weak/`，本地复核副本位于`E:/type10-7/local_artifacts/phase1_advb02_crra_mixed_orbit_20260819_r2_completed_analysis/`。
+
+此前为核对训练场景而运行的`mixed_orbit`复测不作为本次最终测试结论；本报告最终测试以`leo_weak`三场景为准。
 
 ## 发布与启动记录
 
-- 最终唯一run owner：dispatcher PID=`3148486`；当前控制行PID=`3148489`，CRRA改造行在控制行完成后由同一launcher顺序启动。
-- 启动绑定已核验：CWD=`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_crra_mixed_orbit_20260819_r1_a5ca5594`；数据=`/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl`；物理GPU=`0`；控制日志已增长至E002/200。
+- 最终唯一run owner：dispatcher PID=`3148486`；控制行PID=`3148489`已结束，退出码为`8`；CRRA改造行未启动。
+- 启动绑定已核验：CWD=`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_crra_mixed_orbit_20260819_r1_a5ca5594`；数据=`/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl`；物理GPU=`0`；控制行已完成E200并产生`final_ssdg.pth`。
 - 运行时配置已核验：`L_s/U_s/V_cal/V_select=5880/52920/12600/12600`，比例`0.070/0.630/0.150/0.150`，角色协议为`l_s_u_s_v_cal_v_select`；卫星训练为`mixed_orbit`+`concat_masked`，`B+B`，satellite损失登记为`CE+nuisance+shell`，pair/KL为0。
+- 训练后独立测试命令使用`tools/eval_cvs_checkpoint_sat_channel.py`，卫星测试场景为`leo_clear_weak,leo_low_elev_weak,leo_rain_weak`，输出目录为`phase1_advb02_crra_mixed_orbit_20260819_r2_eval_leo_weak`。
 
 ## 当前状态
 
-`RUNNING`：最终`_r2`控制行已通过PID/CWD/cmdline/GPU/log增长检查；当前尚无完整prediction结果，不提前宣称性能提升。前两次技术启动失败已被保留并隔离，所有远端旧历史任务保持monitor-only。
+`CONTROL_TRAIN_COMPLETE_TEST_COMPLETE_LEO_WEAK_CRRA_NOT_STARTED`：控制行完成E200并已补齐独立`leo_weak`最终测试；`exit=8`对应`NON_PROMOTABLE_P0_DISABLED`，不是测试缺失，但它使同一launcher未继续启动CRRA候选。当前不能据此宣称CRRA带来性能提升，也不能把控制行结果写成双候选比较。前两次技术启动失败已被保留并隔离，所有远端旧历史任务保持monitor-only。
