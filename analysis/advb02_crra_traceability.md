@@ -11,13 +11,13 @@
 
 | ID | Design requirement | Target | Status | Verification |
 |---|---|---|---|---|
-| CRRA-01 | 稳健层位于身份路径共享Sinc/IQ与高频特征之后 | `code/model.py`、`code/model_dual_cvsincnet.py` | planned | `test_advb02_crra_model.py` |
+| CRRA-01 | 稳健层位于身份路径共享Sinc/IQ与高频特征之后 | `code/model.py`、`code/model_dual_cvsincnet.py` | verified | `python -m pytest code/tests/test_advb02_crra_model.py -q` |
 | CRRA-02 | 选择性复数I/Q 2x2协方差收缩白化 | `code/crra.py` | verified | `python -m pytest code/tests/test_crra_adapter.py -q` |
 | CRRA-03 | 有界残差门控，初始近似恒等映射 | `code/crra.py` | verified | `python -m pytest code/tests/test_crra_adapter.py -q` |
 | CRRA-04 | rank=8低秩深度卷积残差、上投影零初始化 | `code/crra.py` | verified | `python -m pytest code/tests/test_crra_adapter.py -q` |
 | CRRA-05 | 条件向量由RCN统计与GAP特征生成并stop-gradient | `code/crra.py` | verified | `python -m pytest code/tests/test_crra_adapter.py -q` |
 | CRRA-06 | 源域支持门和修正能量可观测 | `code/crra.py` | verified | `python -m pytest code/tests/test_crra_adapter.py -q` |
-| CRRA-07 | 域分支读取原始共享特征，PA分支保留旁路 | `code/model.py`、`code/model_dual_cvsincnet.py` | planned | `test_advb02_crra_model.py` |
+| CRRA-07 | 域分支读取原始共享特征，PA分支保留旁路 | `code/model.py`、`code/model_dual_cvsincnet.py` | verified | `python -m pytest code/tests/test_advb02_crra_model.py -q` |
 | CRRA-08 | clean/satellite成对余弦与现有satellite KL一致性 | `code/SSDG/train_ssdg.py`、`code/cvsrffi/losses.py` | planned | `test_crra_training_plumbing.py` |
 | CRRA-09 | 最小干预能量、gate L1和同视图干扰回归 | `code/SSDG/train_ssdg.py`、`code/cvsrffi/losses.py` | planned | `test_crra_training_plumbing.py` |
 | CRRA-10 | E1–16恒等、E17–46渐进、E47后固定 | `code/crra.py`、`code/SSDG/train_ssdg.py` | planned | `test_crra_training_plumbing.py` |

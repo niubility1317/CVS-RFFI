@@ -6,6 +6,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from crra import CRRAAdapter
+
 
 # ----------------------- input length adapter -----------------------
 def pad_crop_iq(
@@ -949,6 +951,12 @@ class CVSincNet(nn.Module):
         freq_stability_mode: str = "off",
         time_stability_channels: int = 8,
         freq_stability_channels: int = 4,
+        use_crra: bool = False,
+        crra_rank: int = 8,
+        crra_alpha_max: float = 0.25,
+        crra_shrinkage: float = 0.10,
+        crra_condition_dim: int = 32,
+        crra_nuisance_dim: int = 8,
     ):
         super().__init__()
         self.dataset = str(dataset)
@@ -988,6 +996,10 @@ class CVSincNet(nn.Module):
         )
         self.time_stability_channels = int(max(1, time_stability_channels))
         self.freq_stability_channels = int(max(1, freq_stability_channels))
+        self.use_crra = bool(use_crra)
+        self.crra_rank = int(crra_rank)
+        self.crra_alpha_max = float(crra_alpha_max)
+        self.crra_epoch = 1
         self.branch_ablation = self._parse_branch_ablation(branch_ablation)
         self.use_time_path = not self._ablated("no_time")
         self.use_dac_path = not self._ablated("no_dac")
@@ -1028,6 +1040,20 @@ class CVSincNet(nn.Module):
             if (self.use_time_path or self.use_dac_path or self.freq_uses_sinc or self.pa_uses_sinc) else None
         )
         self.hf = HighFreqEmphasis() if (self.use_time_path or self.use_dac_path) else None
+        self.crra_time = (
+            CRRAAdapter(
+                iq_channels=int(sinc_out),
+                feature_channels=2 * int(sinc_out),
+                rank=int(crra_rank),
+                alpha_max=float(crra_alpha_max),
+                condition_dim=int(crra_condition_dim),
+                nuisance_dim=int(crra_nuisance_dim),
+                use_whitening=True,
+                shrinkage=float(crra_shrinkage),
+            )
+            if self.use_crra and self.use_time_path
+            else None
+        )
 
         time_in = 2 * sinc_out + 4
         if self.use_nonlinear_basis:
@@ -1092,6 +1118,20 @@ class CVSincNet(nn.Module):
         self.f_pool = nn.AdaptiveAvgPool1d(1) if self.use_freq_path else None
         self.f_proj = nn.Linear(int(freq_ch3), emb_dim) if self.use_freq_path else None
         self.freq_gate = FreqBandGate1d(freq_in, k=5, alpha=freq_gate_alpha) if (self.use_freq_path and self.use_freq_band_gate) else nn.Identity()
+        self.crra_freq = (
+            CRRAAdapter(
+                iq_channels=None,
+                feature_channels=4,
+                rank=int(crra_rank),
+                alpha_max=float(crra_alpha_max),
+                condition_dim=int(crra_condition_dim),
+                nuisance_dim=0,
+                use_whitening=False,
+                shrinkage=float(crra_shrinkage),
+            )
+            if self.use_crra and self.use_freq_path
+            else None
+        )
         self.dac_subband_agg = (
             SubbandGatedAggregator(in_ch=4, emb_dim=emb_dim, hidden=64, temperature=1.0)
             if (self.use_stats_path and self.use_dac_path) else None
@@ -1161,6 +1201,21 @@ class CVSincNet(nn.Module):
         )
 
         self._init_weights()
+        self._reset_crra_identity_init()
+
+    def _reset_crra_identity_init(self) -> None:
+        for adapter in (self.crra_time, self.crra_freq):
+            if adapter is None:
+                continue
+            nn.init.zeros_(adapter.residual.up.weight)
+            nn.init.zeros_(adapter.residual.up.bias)
+            nn.init.zeros_(adapter.alpha_head.weight)
+            nn.init.zeros_(adapter.alpha_head.bias)
+            nn.init.zeros_(adapter.gate_head.weight)
+            nn.init.zeros_(adapter.gate_head.bias)
+
+    def set_crra_epoch(self, epoch: int) -> None:
+        self.crra_epoch = max(1, int(epoch))
 
     @staticmethod
     def _parse_branch_ablation(branch_ablation: str):
@@ -1430,6 +1485,8 @@ class CVSincNet(nn.Module):
         y: Optional[torch.Tensor] = None,
         return_aux: bool = False,
         domain_labels: Optional[torch.Tensor] = None,
+        crra_epoch: Optional[int] = None,
+        update_crra_support: bool = False,
     ):
         x = pad_crop_iq(x, self.input_len, mode=self.pad_crop_mode)
         B = x.size(0)
@@ -1443,18 +1500,30 @@ class CVSincNet(nn.Module):
 
         sinc_iq = self._sinc_on_iq(x) if need_sinc else None
         hf = self.hf(x) if need_sinc and self.hf is not None else None
+        current_crra_epoch = self.crra_epoch if crra_epoch is None else max(1, int(crra_epoch))
+        crra_time_out = None
+        crra_freq_out = None
+        sinc_iq_identity = sinc_iq
+        if self.crra_time is not None and sinc_iq is not None:
+            crra_time_out = self.crra_time(
+                sinc_iq,
+                raw_iq=x,
+                epoch=current_crra_epoch,
+                update_source_support=bool(update_crra_support),
+            )
+            sinc_iq_identity = crra_time_out.feature
 
         # ----- shared time branch -----
         if need_time:
-            feats_t = [sinc_iq]
+            feats_t = [sinc_iq_identity]
             if self.use_nonlinear_basis:
-                z_abs2, z_abs4 = self._nonlinear_basis_after_filterbank(sinc_iq)
+                z_abs2, z_abs4 = self._nonlinear_basis_after_filterbank(sinc_iq_identity)
                 feats_t.append(z_abs2)
                 if self.include_z_abs4 and z_abs4 is not None:
                     feats_t.append(z_abs4)
             feats_t.append(hf)
             if self.time_stability is not None:
-                feats_t.append(self.time_stability(sinc_iq))
+                feats_t.append(self.time_stability(sinc_iq_identity))
             t = torch.cat(feats_t, dim=1)
             t = self.time_fuse(t)
             t = self.time_down(t)
@@ -1487,6 +1556,14 @@ class CVSincNet(nn.Module):
         # ----- freq branch -----
         if need_freq:
             feat_f, rho, dac_stats, pa_stats = self._mirror_compressed_features(x, sinc_iq=sinc_iq)
+            if self.crra_freq is not None:
+                crra_freq_out = self.crra_freq(
+                    feat_f,
+                    raw_iq=x,
+                    epoch=current_crra_epoch,
+                    update_source_support=bool(update_crra_support),
+                )
+                feat_f = crra_freq_out.feature
             if self.freq_stability is not None:
                 feat_f = torch.cat([feat_f, self.freq_stability(feat_f)], dim=1)
             feat_f = self.freq_gate(feat_f)
@@ -1581,6 +1658,23 @@ class CVSincNet(nn.Module):
             'pa_stats': pa_stats,
             'base': base,
             'feat_joint': feat_joint,
+            'crra_enabled': bool(self.use_crra),
+            'crra_pa_bypass': True,
+            'crra_correction_energy': (
+                crra_time_out.correction_energy if crra_time_out is not None else x.new_zeros((B,))
+            ),
+            'crra_gate': crra_time_out.gate if crra_time_out is not None else x.new_zeros((B,)),
+            'crra_alpha': crra_time_out.alpha if crra_time_out is not None else x.new_zeros((B,)),
+            'crra_support_distance': (
+                crra_time_out.support_distance if crra_time_out is not None else x.new_zeros((B,))
+            ),
+            'crra_q': crra_time_out.q if crra_time_out is not None else None,
+            'crra_nuisance_pred': (
+                crra_time_out.nuisance_pred if crra_time_out is not None else None
+            ),
+            'crra_freq_correction_energy': (
+                crra_freq_out.correction_energy if crra_freq_out is not None else x.new_zeros((B,))
+            ),
         }
 
 
@@ -1615,6 +1709,12 @@ def build_model(
     freq_stability_mode: str = "off",
     time_stability_channels: int = 8,
     freq_stability_channels: int = 4,
+    use_crra: bool = False,
+    crra_rank: int = 8,
+    crra_alpha_max: float = 0.25,
+    crra_shrinkage: float = 0.10,
+    crra_condition_dim: int = 32,
+    crra_nuisance_dim: int = 8,
 ):
     ds = str(dataset).lower()
     ms = str(model_size).upper().strip()
@@ -1786,5 +1886,11 @@ def build_model(
         freq_stability_mode=freq_stability_mode,
         time_stability_channels=time_stability_channels,
         freq_stability_channels=freq_stability_channels,
+        use_crra=use_crra,
+        crra_rank=crra_rank,
+        crra_alpha_max=crra_alpha_max,
+        crra_shrinkage=crra_shrinkage,
+        crra_condition_dim=crra_condition_dim,
+        crra_nuisance_dim=crra_nuisance_dim,
         **cfg,
     )

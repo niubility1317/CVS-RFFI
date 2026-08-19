@@ -337,6 +337,12 @@ def build_baseline_model(model_args, device: torch.device) -> nn.Module:
         domain_freq_stability_mode=str(getattr(model_args, "domain_freq_stability_mode", "off")),
         time_stability_channels=int(getattr(model_args, "time_stability_channels", 8)),
         freq_stability_channels=int(getattr(model_args, "freq_stability_channels", 4)),
+        use_crra=bool(getattr(model_args, "use_crra", False)),
+        crra_rank=int(getattr(model_args, "crra_rank", 8)),
+        crra_alpha_max=float(getattr(model_args, "crra_alpha_max", 0.25)),
+        crra_shrinkage=float(getattr(model_args, "crra_shrinkage", 0.10)),
+        crra_condition_dim=int(getattr(model_args, "crra_condition_dim", 32)),
+        crra_nuisance_dim=int(getattr(model_args, "crra_nuisance_dim", 8)),
         fast_infer_when_no_aux=bool(getattr(model_args, "fast_infer_when_no_aux", True)),
         arch_family=str(getattr(model_args, "arch_family", "cvsincnet")),
         representation_mode=str(

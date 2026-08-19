@@ -54,14 +54,36 @@ def build_single_model_compat(**kwargs):
             "freq_stability_mode",
             "time_stability_channels",
             "freq_stability_channels",
+            "use_crra",
+            "crra_rank",
+            "crra_alpha_max",
+            "crra_shrinkage",
+            "crra_condition_dim",
+            "crra_nuisance_dim",
         ):
             fallback.pop(key, None)
         return build_single_model(**fallback)
 
 
-def backbone_forward_compat(backbone, x, *, y=None, return_aux: bool = True, domain_labels=None):
+def backbone_forward_compat(
+    backbone,
+    x,
+    *,
+    y=None,
+    return_aux: bool = True,
+    domain_labels=None,
+    crra_epoch: Optional[int] = None,
+    update_crra_support: bool = False,
+):
     try:
-        return backbone(x, y=y, return_aux=return_aux, domain_labels=domain_labels)
+        return backbone(
+            x,
+            y=y,
+            return_aux=return_aux,
+            domain_labels=domain_labels,
+            crra_epoch=crra_epoch,
+            update_crra_support=update_crra_support,
+        )
     except TypeError:
         return backbone(x, y=y, return_aux=return_aux)
 
@@ -393,6 +415,12 @@ def build_arch_backbone(
     freq_stability_mode: str = "off",
     time_stability_channels: int = 8,
     freq_stability_channels: int = 4,
+    use_crra: bool = False,
+    crra_rank: int = 8,
+    crra_alpha_max: float = 0.25,
+    crra_shrinkage: float = 0.10,
+    crra_condition_dim: int = 32,
+    crra_nuisance_dim: int = 8,
 ) -> nn.Module:
     family = str(arch_family or "cvsincnet").lower().strip()
     if family == "cvsincnet":
@@ -426,6 +454,12 @@ def build_arch_backbone(
             freq_stability_mode=freq_stability_mode,
             time_stability_channels=int(time_stability_channels),
             freq_stability_channels=int(freq_stability_channels),
+            use_crra=bool(use_crra),
+            crra_rank=int(crra_rank),
+            crra_alpha_max=float(crra_alpha_max),
+            crra_shrinkage=float(crra_shrinkage),
+            crra_condition_dim=int(crra_condition_dim),
+            crra_nuisance_dim=int(crra_nuisance_dim),
         )
     return FeatureBackboneAdapter(
         family,
@@ -490,6 +524,12 @@ class DualCVSincNetDisentangle(nn.Module):
         use_tx_adv_on_zdom: bool = False,
         arch_family: str = "cvsincnet",
         representation_mode: str = "dual",
+        use_crra: bool = False,
+        crra_rank: int = 8,
+        crra_alpha_max: float = 0.25,
+        crra_shrinkage: float = 0.10,
+        crra_condition_dim: int = 32,
+        crra_nuisance_dim: int = 8,
     ):
         super().__init__()
         self.num_classes = int(num_classes)
@@ -512,6 +552,8 @@ class DualCVSincNetDisentangle(nn.Module):
         self.mixstyle_on = bool(mixstyle_on)
         self.fast_infer_when_no_aux = bool(fast_infer_when_no_aux)
         self.use_tx_adv_on_zdom = bool(use_tx_adv_on_zdom)
+        self.use_crra = bool(use_crra)
+        self.crra_epoch = 1
         self.id_time_stability_mode = str(id_time_stability_mode or "off").lower().strip()
         self.id_freq_stability_mode = str(id_freq_stability_mode or "off").lower().strip()
         self.domain_time_stability_mode = self._resolve_domain_stability_mode(
@@ -554,6 +596,12 @@ class DualCVSincNetDisentangle(nn.Module):
             freq_stability_mode=self.id_freq_stability_mode,
             time_stability_channels=int(time_stability_channels),
             freq_stability_channels=int(freq_stability_channels),
+            use_crra=bool(use_crra),
+            crra_rank=int(crra_rank),
+            crra_alpha_max=float(crra_alpha_max),
+            crra_shrinkage=float(crra_shrinkage),
+            crra_condition_dim=int(crra_condition_dim),
+            crra_nuisance_dim=int(crra_nuisance_dim),
         )
         self.dom_backbone = build_arch_backbone(
             self.arch_family,
@@ -578,6 +626,7 @@ class DualCVSincNetDisentangle(nn.Module):
             freq_stability_mode=self.domain_freq_stability_mode,
             time_stability_channels=int(time_stability_channels),
             freq_stability_channels=int(freq_stability_channels),
+            use_crra=False,
         )
         if self.arch_family == "cvsincnet" and self.model_variant in {"lite_b", "lite_d", "lite_e", "lite_f", "lite_g", "lite_h"}:
             self._share_early_stem()
@@ -632,6 +681,12 @@ class DualCVSincNetDisentangle(nn.Module):
             self.dom_head = None
             self.adv_head = None
             self.tx_adv_head = None
+
+    def set_crra_epoch(self, epoch: int) -> None:
+        self.crra_epoch = max(1, int(epoch))
+        for backbone in (self.id_backbone, self.dom_backbone):
+            if backbone is not None and hasattr(backbone, "set_crra_epoch"):
+                backbone.set_crra_epoch(self.crra_epoch)
 
     def _share_early_stem(self) -> None:
         """Share the lowest-level IQ/filterbank stem only for Lite-B.
@@ -691,6 +746,8 @@ class DualCVSincNetDisentangle(nn.Module):
         grl_lambda: float = 1.0,
         return_aux: bool = False,
         domain_labels: Optional[torch.Tensor] = None,
+        crra_epoch: Optional[int] = None,
+        update_crra_support: bool = False,
     ):
         if self.representation_mode == "single_parameter_matched":
             aux_id = backbone_forward_compat(
@@ -699,6 +756,8 @@ class DualCVSincNetDisentangle(nn.Module):
                 y=y_tx,
                 return_aux=True,
                 domain_labels=domain_labels,
+                crra_epoch=crra_epoch,
+                update_crra_support=update_crra_support,
             )
             base_logits = aux_id["logits"]
             base_z_id = self._pick_z_id(aux_id)
@@ -736,10 +795,28 @@ class DualCVSincNetDisentangle(nn.Module):
                 y=y_tx,
                 return_aux=False,
                 domain_labels=domain_labels,
+                crra_epoch=crra_epoch,
+                update_crra_support=update_crra_support,
             )
 
-        aux_id = backbone_forward_compat(self.id_backbone, x, y=y_tx, return_aux=True, domain_labels=domain_labels)
-        aux_dom = backbone_forward_compat(self.dom_backbone, x, y=None, return_aux=True, domain_labels=None)
+        aux_id = backbone_forward_compat(
+            self.id_backbone,
+            x,
+            y=y_tx,
+            return_aux=True,
+            domain_labels=domain_labels,
+            crra_epoch=crra_epoch,
+            update_crra_support=update_crra_support,
+        )
+        aux_dom = backbone_forward_compat(
+            self.dom_backbone,
+            x,
+            y=None,
+            return_aux=True,
+            domain_labels=None,
+            crra_epoch=crra_epoch,
+            update_crra_support=False,
+        )
 
         tx_logits = aux_id["logits"]
         z_id = self._pick_z_id(aux_id)
@@ -771,6 +848,17 @@ class DualCVSincNetDisentangle(nn.Module):
             "representation_mode": self.representation_mode,
             "aux_id": aux_id,
             "aux_dom": aux_dom,
+            "crra_enabled": bool(self.use_crra),
+            "crra_correction_energy": aux_id.get(
+                "crra_correction_energy", x.new_zeros((x.size(0),))
+            ),
+            "crra_gate": aux_id.get("crra_gate", x.new_zeros((x.size(0),))),
+            "crra_alpha": aux_id.get("crra_alpha", x.new_zeros((x.size(0),))),
+            "crra_support_distance": aux_id.get(
+                "crra_support_distance", x.new_zeros((x.size(0),))
+            ),
+            "crra_q": aux_id.get("crra_q", None),
+            "crra_nuisance_pred": aux_id.get("crra_nuisance_pred", None),
         }
         if torch.is_tensor(tx_adv_logits):
             out["tx_adv_logits"] = tx_adv_logits
@@ -847,6 +935,12 @@ def build_dual_model(
     use_tx_adv_on_zdom: bool = False,
     arch_family: str = "cvsincnet",
     representation_mode: str = "dual",
+    use_crra: bool = False,
+    crra_rank: int = 8,
+    crra_alpha_max: float = 0.25,
+    crra_shrinkage: float = 0.10,
+    crra_condition_dim: int = 32,
+    crra_nuisance_dim: int = 8,
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -890,4 +984,10 @@ def build_dual_model(
         use_tx_adv_on_zdom=use_tx_adv_on_zdom,
         arch_family=arch_family,
         representation_mode=representation_mode,
+        use_crra=use_crra,
+        crra_rank=crra_rank,
+        crra_alpha_max=crra_alpha_max,
+        crra_shrinkage=crra_shrinkage,
+        crra_condition_dim=crra_condition_dim,
+        crra_nuisance_dim=crra_nuisance_dim,
     )

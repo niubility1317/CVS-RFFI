@@ -92,7 +92,7 @@ git commit -m "feat: add ADVB02 CRRA robust adapter core"
 - Consumes: `CRRAAdapter` from Task 1 and existing `CVSincNet` Sinc/HF stem.
 - Produces: `aux_id["crra_*" ]`, `DualCVSincNetDisentangle` top-level CRRA telemetry, and builder arguments with CRRA disabled by default for backward compatibility.
 
-- [ ] **Step 1: Write failing model integration tests**
+- [x] **Step 1: Write failing model integration tests**
 
 ```python
 def test_crra_is_only_enabled_on_identity_backbone():
@@ -109,17 +109,17 @@ def test_crra_does_not_replace_pa_features():
     assert out["aux_id"]["crra_pa_bypass"] is True
 ```
 
-- [ ] **Step 2: Run tests and verify failure**
+- [x] **Step 2: Run tests and verify failure**
 
 Run: `conda activate ssr-gpu && python -m pytest code/tests/test_advb02_crra_model.py -q`
 
 Expected: FAIL because the builder and `CVSincNet` do not accept CRRA arguments.
 
-- [ ] **Step 3: Wire CRRA through the model**
+- [x] **Step 3: Wire CRRA through the model**
 
 Add explicit CRRA parameters to `CVSincNet`, `build_model`, `build_arch_backbone`, `DualCVSincNetDisentangle`, `build_dual_model`, and `post_stage_common.build_baseline_model`. Apply CRRA to the identity time feature after Sinc/HF construction and before `time_fuse`; use a separate frequency adapter on compressed frequency features when the frequency branch is active; leave raw input PA construction and domain-backbone features untouched. Preserve existing state-dict loading by making CRRA disabled by default and using `strict=False` for old checkpoints. Return CRRA telemetry in both `aux_id` and the dual-model top level.
 
-- [ ] **Step 4: Run model integration tests**
+- [x] **Step 4: Run model integration tests**
 
 Run: `conda activate ssr-gpu && python -m pytest code/tests/test_advb02_crra_model.py code/tests/test_backbone_stability_options.py -q`
 
