@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT="${ROOT:-/home/szu2070436088/2510044040/CV-SincNet}"
 PYTHON="${PYTHON:-/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python}"
-RUN_ID="${RUN_ID:-phase1_advb02_crra_mixed_orbit_20260819}"
+RUN_ID="${RUN_ID:-phase1_advb02_crra_mixed_orbit_20260819_r1}"
 RUNS_ROOT="${RUNS_ROOT:-${ROOT}/runs/${RUN_ID}}"
 LOG_ROOT="${LOG_ROOT:-${ROOT}/logs/${RUN_ID}}"
 WISIG_PKL="${WISIG_PKL:-${ROOT}/Dataset_WigSig/ManySig.pkl}"
@@ -55,7 +55,6 @@ build_command() {
     --from_scratch true
     --model_variant lite_d
     --id_feature_key feat_joint
-    --dom_feature_key feat_imp
     --domain_enhancer rcn_stats
     --phase1_source_val_selection_only true
     --checkpoint_selection final_only
