@@ -3,6 +3,9 @@ set -euo pipefail
 
 ROOT="${ROOT:-/home/szu2070436088/2510044040/CV-SincNet}"
 PYTHON="${PYTHON:-/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python}"
+RUN_ID_INPUT="${RUN_ID:-}"
+RUNS_ROOT_INPUT="${RUNS_ROOT:-}"
+LOG_ROOT_INPUT="${LOG_ROOT:-}"
 RUN_ID="${RUN_ID:-phase1_adv3_mechanism32_queue_20260701}"
 RUNS_ROOT="${RUNS_ROOT:-${ROOT}/runs/${RUN_ID}}"
 LOG_ROOT="${LOG_ROOT:-${ROOT}/logs/${RUN_ID}}"
@@ -11,14 +14,22 @@ STAGE2_MAX_ACTIVE_PER_GPU="${STAGE2_MAX_ACTIVE_PER_GPU:-2}"
 LAUNCH_STABILIZE_SEC="${LAUNCH_STABILIZE_SEC:-35}"
 DRY_RUN="${DRY_RUN:-0}"
 ONLY_CANDIDATES="${ONLY_CANDIDATES:-}"
+CIPG_SCREEN="${CIPG_SCREEN:-0}"
 
 for arg in "$@"; do
   case "${arg}" in
     --dry-run) DRY_RUN=1 ;;
     --only=*) ONLY_CANDIDATES="${arg#--only=}" ;;
+    --cipg-screen) CIPG_SCREEN=1 ;;
     *) echo "[ERROR] unknown argument: ${arg}" >&2; exit 2 ;;
   esac
 done
+
+if [[ "${CIPG_SCREEN}" == "1" && -z "${RUN_ID_INPUT}" && -z "${RUNS_ROOT_INPUT}" && -z "${LOG_ROOT_INPUT}" ]]; then
+  RUN_ID="phase1_advb02_cipg_mixed_screen_20260819"
+  RUNS_ROOT="${ROOT}/runs/${RUN_ID}"
+  LOG_ROOT="${ROOT}/logs/${RUN_ID}"
+fi
 
 candidate_enabled() {
   local cid="$1"
@@ -103,6 +114,11 @@ set_candidate_defaults() {
   sat_start=80
   lambda_sat_cls=0.68
   lambda_sat_cons=0
+  lambda_zid_channel=0
+  zid_pair_weight=1.0
+  sat_train_scenario="leo_clear_weak"
+  sat_train_scenarios="leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
+  sat_eval_scenarios="leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
   sat_schedule="1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
 }
 
@@ -206,6 +222,21 @@ apply_candidate_variant() {
     ADV3B32_BAL_LONG_E240)
       mechanism="long balanced consolidation 240 epochs"
       epochs=240; label_epochs=150; proxy_start=50; soft_start=30; warmup=30; lambda_proxy=0.0045; lambda_source=0.0040 ;;
+    ADV3B02_MIXED_ORBIT_E200)
+      mechanism="historical ADV3B02 mixed_orbit control"
+      proxy_core_q=0.90; proxy_accept_q=0.85; proxy_cvar_alpha=0.30; proxy_core_w=0.45
+      sat_train_scenario="mixed_orbit"
+      sat_train_scenarios="mixed_orbit"
+      sat_eval_scenarios="mixed_orbit"
+      sat_schedule="1@0.30:mixed_orbit;41@0.60:mixed_orbit;91@0.80:mixed_orbit" ;;
+    ADV3B02_CIPG_MIXED_E200)
+      mechanism="ADV3B02 mixed_orbit plus TX-conditioned clean-satellite z_id geometry"
+      proxy_core_q=0.90; proxy_accept_q=0.85; proxy_cvar_alpha=0.30; proxy_core_w=0.45
+      lambda_zid_channel=0.18; zid_pair_weight=1.0
+      sat_train_scenario="mixed_orbit"
+      sat_train_scenarios="mixed_orbit"
+      sat_eval_scenarios="mixed_orbit"
+      sat_schedule="1@0.30:mixed_orbit;41@0.60:mixed_orbit;91@0.80:mixed_orbit" ;;
     *)
       echo "[ERROR] unknown candidate variant: ${cid}" >&2
       exit 2 ;;
@@ -354,12 +385,14 @@ build_command() {
     --use_sat_consistency
     --use_concat_sat_channel_aug
     --concat_sat_ce_only
-    --sat_train_scenario leo_clear_weak
-    --sat_train_scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak
+    --sat_train_scenario "${sat_train_scenario}"
+    --sat_train_scenarios "${sat_train_scenarios}"
     --sat_view_schedule "${sat_schedule}"
     --sat_cons_start_epoch "${sat_start}"
     --lambda_sat_cls "${lambda_sat_cls}"
     --lambda_sat_cons "${lambda_sat_cons}"
+    --lambda_zid_channel_invariance "${lambda_zid_channel}"
+    --zid_channel_pair_weight "${zid_pair_weight}"
     --lambda_u 0.16
     --lambda_ent 0.01
     --lambda_domain 1
@@ -371,7 +404,7 @@ build_command() {
     --pseudo_quantile 0.86
     --use_ema_teacher true
     --eval_sat_channel true
-    --eval_sat_scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak
+    --eval_sat_scenarios "${sat_eval_scenarios}"
     --sat_eval_max_batches -1
     --device cuda:0
     --seed "${seed}")
@@ -440,6 +473,13 @@ slot_queue() {
 
 echo "[ADV3M32-RUN] run_id=${RUN_ID} dry_run=${DRY_RUN} candidates=32 gpus=0-7 slot_queues=16 cap_per_gpu=${STAGE2_MAX_ACTIVE_PER_GPU}"
 print_gpu_baseline
+
+if [[ "${CIPG_SCREEN}" == "1" ]]; then
+  echo "[ADV3M32-CIPG-SCREEN] run_id=${RUN_ID} dry_run=${DRY_RUN} candidates=2 channel=mixed_orbit baseline=ADV3B02_MIXED_ORBIT_E200 candidate=ADV3B02_CIPG_MIXED_E200"
+  slot_queue 0 0 ADV3B02_MIXED_ORBIT_E200 392033 ADV3B02_CIPG_MIXED_E200 392034
+  echo "[ADV3M32-CIPG-SCREEN-DONE] run_id=${RUN_ID}"
+  exit 0
+fi
 
 if [[ "${DRY_RUN}" == "1" ]]; then
   slot_queue 0 0 ADV3B01_CORE80_STRICT_E200 392001 ADV3B02_CORE90_SOFT_E200 392002

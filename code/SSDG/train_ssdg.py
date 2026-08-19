@@ -1123,6 +1123,70 @@ def _channel_view_labels(total_count: int, clean_count: int, applied: bool, devi
     return labels
 
 
+def _labeled_channel_pair_invariance_loss(
+    clean_z_id: torch.Tensor,
+    satellite_z_id: torch.Tensor,
+    tx_labels: torch.Tensor,
+    *,
+    channel_weight: float,
+    channel_pair_weight: float,
+    min_groups: int,
+    min_samples_per_group: int,
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    """Align a labeled clean/satellite pair without widening the CE-only batch.
+
+    The CE-only satellite path intentionally keeps the clean batch as the
+    main forward pass. This helper builds the smallest temporary pair view
+    only for the TX-conditioned ``z_id`` geometry objective, so satellite
+    features cannot enter receiver/day/domain losses or be counted twice by
+    TX cross-entropy.
+    """
+
+    if clean_z_id.dim() != 2 or satellite_z_id.dim() != 2:
+        raise ValueError("clean and satellite z_id features must both be rank-2 tensors")
+    if clean_z_id.size(0) != satellite_z_id.size(0):
+        raise ValueError("clean and satellite z_id batches must have the same size")
+    labels = tx_labels.view(-1).long()
+    if labels.numel() != clean_z_id.size(0):
+        raise ValueError("TX labels must align with the clean/satellite z_id pair")
+    if float(channel_weight) <= 0.0 or float(channel_pair_weight) <= 0.0 or labels.numel() == 0:
+        zero = clean_z_id.sum() * 0.0
+        return zero, {
+            "active": 0.0,
+            "channel_active": 0.0,
+            "channel_pair_active": 0.0,
+            "channel_loss": 0.0,
+            "channel_pair_loss": 0.0,
+            "channel_pair_count": 0.0,
+        }
+
+    pair_count = int(labels.numel())
+    pair_z_id = torch.cat([clean_z_id, satellite_z_id], dim=0)
+    pair_labels = torch.cat([labels, labels], dim=0)
+    pair_channels = torch.cat(
+        [
+            torch.zeros(pair_count, device=labels.device, dtype=torch.long),
+            torch.ones(pair_count, device=labels.device, dtype=torch.long),
+        ],
+        dim=0,
+    )
+    loss, metrics = tx_conditional_domain_invariance_loss(
+        pair_z_id,
+        pair_labels,
+        channel_labels=pair_channels,
+        channel_weight=float(channel_weight),
+        channel_pair_weight=float(channel_pair_weight),
+        paired_view_count=pair_count,
+        min_groups=int(min_groups),
+        min_samples_per_group=int(min_samples_per_group),
+    )
+    metrics = dict(metrics)
+    metrics["channel_pair_active"] = 1.0
+    metrics["channel_active"] = max(float(metrics.get("channel_active", 0.0)), 1.0)
+    metrics["active"] = max(float(metrics.get("active", 0.0)), 1.0)
+    return loss, metrics
+
+
 class FrozenDirectMetricReferenceBank:
     """Window-frozen TX/domain/view anchors for direct acceptance geometry."""
 
@@ -5310,9 +5374,13 @@ def train(args) -> int:
                     "receiver_active": 0.0,
                     "day_active": 0.0,
                     "channel_active": 0.0,
+                    "channel_pair_active": 0.0,
                     "receiver_loss": 0.0,
                     "day_loss": 0.0,
                     "channel_loss": 0.0,
+                    "channel_pair_loss": 0.0,
+                    "channel_pair_count": 0.0,
+                    "channel_pair_angle_deg": float("nan"),
                 }
                 if any(
                     float(value) > 0.0
@@ -5893,6 +5961,8 @@ def train(args) -> int:
                 zero_sat = out_l["tx_logits"].sum() * 0.0
                 loss_sat_cls_l = zero_sat
                 loss_sat_cons_l = zero_sat
+                sat_z_id_l = None
+                sat_zid_pair_applied = False
                 use_sat_train = (
                     bool(args.use_sat_consistency)
                     and (not concat_sat_full_batch)
@@ -5956,6 +6026,8 @@ def train(args) -> int:
                             return_meta=False,
                         )
                     out_sat = model(x_sat, y_tx=y_l, grl_lambda=1.0, return_aux=True, domain_labels=d_l)
+                    sat_z_id_l = out_sat["z_id"]
+                    sat_zid_pair_applied = True
                     loss_sat_cls_l = (
                         F.cross_entropy(out_sat["tx_logits"], y_l)
                         if cur_w["sat_cls"] > 0.0
@@ -5981,6 +6053,8 @@ def train(args) -> int:
                 elif concat_sat_ce_view is not None and epoch >= int(args.sat_cons_start_epoch):
                     x_sat = _safe_iq_tensor(concat_sat_ce_view.x)
                     out_sat = model(x_sat, y_tx=y_l, grl_lambda=1.0, return_aux=True, domain_labels=d_l)
+                    sat_z_id_l = out_sat["z_id"]
+                    sat_zid_pair_applied = bool(float(concat_sat_info.get("applied", 0.0)) > 0.0)
                     if cur_w["sat_cls"] > 0.0:
                         loss_sat_cls_l = float(args.concat_sat_ce_weight) * F.cross_entropy(out_sat["tx_logits"], y_l)
                     if cur_w["sat_cons"] > 0.0:
@@ -6001,6 +6075,49 @@ def train(args) -> int:
                             teacher_clean_out["tx_logits"],
                             temperature=float(args.teacher_distill_temperature),
                         )
+                if (
+                    sat_z_id_l is not None
+                    and sat_zid_pair_applied
+                    and float(args.lambda_zid_channel_invariance) > 0.0
+                    and float(args.zid_channel_pair_weight) > 0.0
+                ):
+                    if tx_conditional_domain_invariance_loss is None:
+                        raise ImportError("cvsrffi.losses.tx_conditional_domain_invariance_loss is required")
+                    loss_sat_zid_pair_l, sat_zid_pair_info = _labeled_channel_pair_invariance_loss(
+                        z_id_l,
+                        sat_z_id_l,
+                        y_l,
+                        channel_weight=float(args.lambda_zid_channel_invariance),
+                        channel_pair_weight=float(args.zid_channel_pair_weight),
+                        min_groups=int(args.zid_invariance_min_groups),
+                        min_samples_per_group=int(args.zid_invariance_min_samples_per_group),
+                    )
+                    loss_zid_invariance_l = loss_zid_invariance_l + loss_sat_zid_pair_l
+                    zid_invariance_info["active"] = max(
+                        float(zid_invariance_info.get("active", 0.0)),
+                        float(sat_zid_pair_info.get("active", 0.0)),
+                    )
+                    zid_invariance_info["channel_active"] = max(
+                        float(zid_invariance_info.get("channel_active", 0.0)),
+                        float(sat_zid_pair_info.get("channel_active", 0.0)),
+                    )
+                    zid_invariance_info["channel_pair_active"] = max(
+                        float(zid_invariance_info.get("channel_pair_active", 0.0)),
+                        float(sat_zid_pair_info.get("channel_pair_active", 0.0)),
+                    )
+                    zid_invariance_info["channel_loss"] = float(
+                        zid_invariance_info.get("channel_loss", 0.0)
+                    ) + float(sat_zid_pair_info.get("channel_loss", 0.0))
+                    zid_invariance_info["channel_pair_loss"] = float(
+                        zid_invariance_info.get("channel_pair_loss", 0.0)
+                    ) + float(sat_zid_pair_info.get("channel_pair_loss", 0.0))
+                    zid_invariance_info["channel_pair_count"] = max(
+                        float(zid_invariance_info.get("channel_pair_count", 0.0)),
+                        float(sat_zid_pair_info.get("channel_pair_count", 0.0)),
+                    )
+                    zid_invariance_info["channel_pair_angle_deg"] = float(
+                        sat_zid_pair_info.get("channel_pair_angle_deg", float("nan"))
+                    )
                 loss_closed_l = (
                     loss_tx_l
                     + cur_w["dom"] * loss_dom_l
