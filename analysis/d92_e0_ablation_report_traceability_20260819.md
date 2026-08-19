@@ -11,6 +11,9 @@
 - code/cvsrffi/full_ablation_spec.py
 - code/cvsrffi/stage2_ablation_factory.py
 - code/cvsrffi/stage2_ablation_executors.py
+- tests/test_stage2_ablation_factory_catalog.py
+- tests/test_stage2_ablation_executors.py
+- tests/test_stage2_ablation_release.py
 
 ## 追踪表
 
@@ -21,6 +24,8 @@
 |D92-ABL-03|加入FULL−ablation同row配对效应与分层bootstrap区间|报告§21.6|verified|每项使用225/225配对单位；bootstrap=10000|
 |D92-ABL-04|披露D组非严格单因素、F3物理别名和量化证据边界|报告§21.4、§21.7|verified|执行器映射和完成矩阵结论均明确记录|
 |D92-ABL-05|若无真实结果才启动实验；若已有结果则不重复启动|报告§21.7|verified|已存在正式闭合结果；本次没有新增N607运行|
+|D92-ABL-06|将FFT96-only与RF32-only登记为P2-A1/P2-A2，并保持相对P2-FULL仅改变feature_profile|full_ablation_spec.py、stage2_ablation_factory.py|implemented|工厂目录测试验证P2-A1/P2-A2的单一配置差异|
+|D92-ABL-07|从完整288维D92特征按固定β_aux=4和两级归一化生成FFT-only/RF-only特征，保留无query拟合边界|stage2_ablation_executors.py|verified|feature projection单元测试及Stage2工厂/执行器/row executor聚焦回归通过|
 
 ## 结果口径
 
@@ -28,6 +33,7 @@
 - 共75个identity、225个场景单位；P2-F3是P2-FULL的物理别名。
 - 当前结果只有3个development seed和1个new-class draw，bootstrap区间是条件于该draw的screening区间。
 - fresh confirmation仍需要至少5个fresh seed、至少3个new-class draw，以及D组严格单因素拆解。
+- 本次追加的P2-A1/P2-A2尚无性能结果；在真实运行完成前只能标记为已实现、待screening证据。
 
 ## 变更后的最小验证
 

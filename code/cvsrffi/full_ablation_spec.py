@@ -283,6 +283,8 @@ PHASE2_T1_ARMS = (
     ArmSpec("P2-FULL", "stage2c", "M", "reference", "current full Phase2"),
     *PHASE2_BASELINE_ARMS,
     ArmSpec("P2-A0", "stage2c", "M", "joint_feature", "P2-FULL"),
+    ArmSpec("P2-A1", "stage2c", "M", "joint_feature", "P2-FULL"),
+    ArmSpec("P2-A2", "stage2c", "M", "joint_feature", "P2-FULL"),
     ArmSpec("P2-B0", "stage2c", "M", "robust_center", "P2-FULL"),
     ArmSpec("P2-C3", "stage2c", "M", "task_covariance", "P2-FULL"),
     ArmSpec("P2-D0", "stage2c", "M", "dual_geometry", "P2-FULL"),

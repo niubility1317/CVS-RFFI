@@ -284,7 +284,7 @@ def test_child_request_tampering_is_a_p0_release_failure(
         )
 
 
-def test_full_t1_screening_seals_1425_logical_to_1350_physical(
+def test_full_t1_screening_seals_1575_logical_to_1500_physical(
     tmp_path: Path,
 ) -> None:
     rows = build_phase2_rows(
@@ -345,8 +345,8 @@ def test_full_t1_screening_seals_1425_logical_to_1350_physical(
         review_p1_count=0,
         write_requests=False,
     )
-    assert sealed["logical_row_count"] == 1425
-    assert sealed["physical_execution_count"] == 1350
+    assert sealed["logical_row_count"] == 1575
+    assert sealed["physical_execution_count"] == 1500
     assert sealed["alias_logical_count"] == 75
     assert {
         (

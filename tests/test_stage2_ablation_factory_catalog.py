@@ -31,6 +31,8 @@ EXPECTED_MAIN_IDS = (
     "P2-BASE-FULL-BLOCK-LDA",
     "P2-BASE-ADAPTER-HEAD",
     "P2-A0",
+    "P2-A1",
+    "P2-A2",
     "P2-B0",
     "P2-C3",
     "P2-D0",
@@ -53,8 +55,23 @@ def test_catalog_has_frozen_state_main_and_baseline_membership() -> None:
     )
     assert tuple(spec.ablation_id for spec in STAGE2_MAIN_ARMS) == EXPECTED_MAIN_IDS
     assert len(STAGE2_BASELINE_ARMS) == 7
-    assert len(STAGE2_T1_ARMS) == 23
+    assert len(STAGE2_T1_ARMS) == 25
     validate_stage2_catalog()
+
+
+def test_fft_rf_single_branch_arms_change_only_the_feature_profile() -> None:
+    full_profile = resolve_stage2_config("P2-FULL")["feature_profile"]
+    fft_profile = resolve_stage2_config("P2-A1")["feature_profile"]
+    rf_profile = resolve_stage2_config("P2-A2")["feature_profile"]
+    assert full_profile == "identity160_fft96_rf32_beta4_blocknorm_globalnorm"
+    assert fft_profile == "identity160_fft96_beta4_blocknorm_globalnorm"
+    assert rf_profile == "identity160_rf32_beta4_blocknorm_globalnorm"
+    assert stage2_config_diff("P2-A1") == {
+        "feature_profile": (full_profile, fft_profile)
+    }
+    assert stage2_config_diff("P2-A2") == {
+        "feature_profile": (full_profile, rf_profile)
+    }
 
 
 def test_every_non_alias_arm_has_exactly_its_declared_single_diff() -> None:
