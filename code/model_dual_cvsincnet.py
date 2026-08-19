@@ -62,6 +62,8 @@ def build_single_model_compat(**kwargs):
             "crra_nuisance_dim",
             "crra_start_epoch",
             "crra_ramp_epochs",
+            "crra_support_domains",
+            "crra_support_tau",
         ):
             fallback.pop(key, None)
         return build_single_model(**fallback)
@@ -427,6 +429,8 @@ def build_arch_backbone(
     crra_nuisance_dim: int = 9,
     crra_start_epoch: int = 17,
     crra_ramp_epochs: int = 30,
+    crra_support_domains: int = 1,
+    crra_support_tau: float = 1.0,
 ) -> nn.Module:
     family = str(arch_family or "cvsincnet").lower().strip()
     if family == "cvsincnet":
@@ -468,6 +472,8 @@ def build_arch_backbone(
             crra_nuisance_dim=int(crra_nuisance_dim),
             crra_start_epoch=int(crra_start_epoch),
             crra_ramp_epochs=int(crra_ramp_epochs),
+            crra_support_domains=int(crra_support_domains),
+            crra_support_tau=float(crra_support_tau),
         )
     return FeatureBackboneAdapter(
         family,
@@ -540,6 +546,8 @@ class DualCVSincNetDisentangle(nn.Module):
         crra_nuisance_dim: int = 9,
         crra_start_epoch: int = 17,
         crra_ramp_epochs: int = 30,
+        crra_support_domains: int = 0,
+        crra_support_tau: float = 1.0,
     ):
         super().__init__()
         self.num_classes = int(num_classes)
@@ -563,6 +571,8 @@ class DualCVSincNetDisentangle(nn.Module):
         self.fast_infer_when_no_aux = bool(fast_infer_when_no_aux)
         self.use_tx_adv_on_zdom = bool(use_tx_adv_on_zdom)
         self.use_crra = bool(use_crra)
+        self.crra_support_domains = int(crra_support_domains) if int(crra_support_domains) > 0 else self.num_domains
+        self.crra_support_tau = float(crra_support_tau)
         self.crra_epoch = 1
         self.id_time_stability_mode = str(id_time_stability_mode or "off").lower().strip()
         self.id_freq_stability_mode = str(id_freq_stability_mode or "off").lower().strip()
@@ -614,6 +624,8 @@ class DualCVSincNetDisentangle(nn.Module):
             crra_nuisance_dim=int(crra_nuisance_dim),
             crra_start_epoch=int(crra_start_epoch),
             crra_ramp_epochs=int(crra_ramp_epochs),
+            crra_support_domains=self.crra_support_domains,
+            crra_support_tau=self.crra_support_tau,
         )
         self.dom_backbone = build_arch_backbone(
             self.arch_family,
@@ -811,6 +823,9 @@ class DualCVSincNetDisentangle(nn.Module):
                 "domain_freq_stability_mode": "not_present",
                 "tx_adv_on_zdom": False,
                 "crra_condition_tx_adv_logits": None,
+                "crra_branch_reliability": aux_id.get(
+                    "crra_branch_reliability", tx_logits.new_zeros((tx_logits.size(0), 3))
+                ),
                 "aux_id": aux_id,
                 "aux_dom": {},
             }
@@ -893,6 +908,18 @@ class DualCVSincNetDisentangle(nn.Module):
             "crra_alpha": aux_id.get("crra_alpha", x.new_zeros((x.size(0),))),
             "crra_support_distance": aux_id.get(
                 "crra_support_distance", x.new_zeros((x.size(0),))
+            ),
+            "crra_branch_reliability": aux_id.get(
+                "crra_branch_reliability", x.new_zeros((x.size(0), 3))
+            ),
+            "crra_reliability_time": aux_id.get(
+                "crra_reliability_time", x.new_zeros((x.size(0),))
+            ),
+            "crra_reliability_freq": aux_id.get(
+                "crra_reliability_freq", x.new_zeros((x.size(0),))
+            ),
+            "crra_reliability_pa": aux_id.get(
+                "crra_reliability_pa", x.new_zeros((x.size(0),))
             ),
             "crra_q": aux_id.get("crra_q", None),
             "crra_q_raw": aux_id.get("crra_q_raw", None),
@@ -984,6 +1011,8 @@ def build_dual_model(
     crra_nuisance_dim: int = 9,
     crra_start_epoch: int = 17,
     crra_ramp_epochs: int = 30,
+    crra_support_domains: int = 0,
+    crra_support_tau: float = 1.0,
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -1035,4 +1064,6 @@ def build_dual_model(
         crra_nuisance_dim=crra_nuisance_dim,
         crra_start_epoch=crra_start_epoch,
         crra_ramp_epochs=crra_ramp_epochs,
+        crra_support_domains=crra_support_domains,
+        crra_support_tau=crra_support_tau,
     )

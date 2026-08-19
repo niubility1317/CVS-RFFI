@@ -47,3 +47,34 @@ def test_crra_can_be_disabled_without_changing_builder_contract():
     model = _tiny_model(use_crra=False)
     out = model(torch.randn(2, 2, 64), return_aux=True)
     assert out["aux_id"].get("crra_enabled", False) is False
+
+
+def test_crra_reliability_fuses_time_frequency_and_pa_without_freq_reconstruction():
+    model = _tiny_model(use_crra=True, crra_rank=4)
+    out = model(
+        torch.randn(2, 2, 64),
+        return_aux=True,
+        domain_labels=torch.tensor([0, 1]),
+        crra_epoch=47,
+    )
+    reliability = out["crra_branch_reliability"]
+    assert reliability.shape == (2, 3)
+    assert torch.allclose(reliability.sum(dim=1), torch.ones(2), atol=1e-6)
+    assert torch.isfinite(reliability).all()
+    assert model.id_backbone.crra_freq is None
+    assert out["aux_id"]["crra_reliability_pa"].shape == (2,)
+
+
+def test_crra_support_centres_receive_source_domains_only():
+    model = _tiny_model(use_crra=True, crra_rank=4)
+    model.train()
+    model(
+        torch.randn(2, 2, 64),
+        return_aux=True,
+        domain_labels=torch.tensor([0, 1]),
+        update_crra_support=True,
+        crra_epoch=1,
+    )
+    counts = model.id_backbone.crra_time.support.counts
+    assert counts.tolist() == [1, 1]
+    assert model.dom_backbone.crra_time is None

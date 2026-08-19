@@ -171,6 +171,65 @@ class DSQFreqStabilityStem(nn.Module):
         return self.proj(torch.nan_to_num(raw, nan=0.0, posinf=8.0, neginf=-8.0))
 
 
+class CRRAResidualReliabilityFusion(nn.Module):
+    """q-conditioned residual fusion for time, frequency and PA embeddings.
+
+    The PA embedding is consumed as produced by the raw-IQ PA branch: it is
+    neither whitened nor reconstructed. CRRA only uses a bounded residual
+    interpolation between the three already-computed branch embeddings.
+    """
+
+    def __init__(self, feature_dim: int, condition_dim: int):
+        super().__init__()
+        self.feature_dim = int(feature_dim)
+        self.condition_dim = int(condition_dim)
+        if self.feature_dim <= 0 or self.condition_dim <= 0:
+            raise ValueError("CRRA reliability feature_dim and condition_dim must be positive")
+        self.logit_head = nn.Linear(self.condition_dim, 3, bias=True)
+        nn.init.zeros_(self.logit_head.weight)
+        nn.init.zeros_(self.logit_head.bias)
+
+    def forward(
+        self,
+        time_feature: Optional[torch.Tensor],
+        freq_feature: Optional[torch.Tensor],
+        pa_feature: Optional[torch.Tensor],
+        *,
+        q: torch.Tensor,
+        gate: torch.Tensor,
+    ) -> tuple[Optional[torch.Tensor], Optional[torch.Tensor], Optional[torch.Tensor], torch.Tensor]:
+        features = (time_feature, freq_feature, pa_feature)
+        first = next((feature for feature in features if torch.is_tensor(feature)), None)
+        if first is None:
+            raise ValueError("CRRA reliability fusion needs at least one branch feature")
+        if q.dim() != 2 or int(q.size(0)) != int(first.size(0)):
+            raise ValueError("CRRA reliability condition must align with branch features")
+        if gate.view(-1).numel() != int(first.size(0)):
+            raise ValueError("CRRA reliability gate must align with branch features")
+        available = torch.tensor(
+            [torch.is_tensor(feature) for feature in features],
+            device=first.device,
+            dtype=torch.bool,
+        )
+        logits = self.logit_head(q)
+        logits = logits.masked_fill(~available.unsqueeze(0), torch.finfo(logits.dtype).min)
+        reliability = torch.softmax(logits, dim=1)
+        zero = torch.zeros_like(first)
+        stacked = torch.stack(
+            [feature if torch.is_tensor(feature) else zero for feature in features],
+            dim=1,
+        )
+        fused = (stacked * reliability.unsqueeze(-1)).sum(dim=1)
+        bounded_gate = gate.detach().to(device=first.device, dtype=first.dtype).view(-1, 1).clamp(0.0, 1.0)
+        updated = tuple(
+            feature + bounded_gate * reliability[:, index : index + 1] * (fused - feature)
+            if torch.is_tensor(feature)
+            else None
+            for index, feature in enumerate(features)
+        )
+        return updated[0], updated[1], updated[2], reliability
+
+
 # ----------------------- SincConv -----------------------
 class SincConv1d(nn.Module):
     """
@@ -959,6 +1018,8 @@ class CVSincNet(nn.Module):
         crra_nuisance_dim: int = 9,
         crra_start_epoch: int = 17,
         crra_ramp_epochs: int = 30,
+        crra_support_domains: int = 1,
+        crra_support_tau: float = 1.0,
     ):
         super().__init__()
         self.dataset = str(dataset)
@@ -1054,6 +1115,8 @@ class CVSincNet(nn.Module):
                 shrinkage=float(crra_shrinkage),
                 start_epoch=int(crra_start_epoch),
                 ramp_epochs=int(crra_ramp_epochs),
+                support_domains=int(crra_support_domains),
+                support_tau=float(crra_support_tau),
             )
             if self.use_crra and self.use_time_path
             else None
@@ -1122,22 +1185,10 @@ class CVSincNet(nn.Module):
         self.f_pool = nn.AdaptiveAvgPool1d(1) if self.use_freq_path else None
         self.f_proj = nn.Linear(int(freq_ch3), emb_dim) if self.use_freq_path else None
         self.freq_gate = FreqBandGate1d(freq_in, k=5, alpha=freq_gate_alpha) if (self.use_freq_path and self.use_freq_band_gate) else nn.Identity()
-        self.crra_freq = (
-            CRRAAdapter(
-                iq_channels=None,
-                feature_channels=4,
-                rank=int(crra_rank),
-                alpha_max=float(crra_alpha_max),
-                condition_dim=int(crra_condition_dim),
-                nuisance_dim=0,
-                use_whitening=False,
-                shrinkage=float(crra_shrinkage),
-                start_epoch=int(crra_start_epoch),
-                ramp_epochs=int(crra_ramp_epochs),
-            )
-            if self.use_crra and self.use_freq_path
-            else None
-        )
+        # CRRA-S intervenes only at the paired Sinc/IQ identity feature. The
+        # frequency branch remains an independent evidence branch rather than
+        # receiving a second generic robustifier.
+        self.crra_freq = None
         self.dac_subband_agg = (
             SubbandGatedAggregator(in_ch=4, emb_dim=emb_dim, hidden=64, temperature=1.0)
             if (self.use_stats_path and self.use_dac_path) else None
@@ -1171,6 +1222,14 @@ class CVSincNet(nn.Module):
                 nn.ReLU(inplace=True),
                 nn.Dropout(drop * 0.25),
             ) if self.use_pa_path else None
+        )
+        self.crra_reliability = (
+            CRRAResidualReliabilityFusion(
+                int(emb_dim),
+                int(crra_condition_dim),
+            )
+            if self.use_crra and (self.use_time_path or self.use_freq_path or self.use_pa_path)
+            else None
         )
 
         # fuse + projection
@@ -1210,7 +1269,7 @@ class CVSincNet(nn.Module):
         self._reset_crra_identity_init()
 
     def _reset_crra_identity_init(self) -> None:
-        for adapter in (self.crra_time, self.crra_freq):
+        for adapter in (self.crra_time,):
             if adapter is None:
                 continue
             nn.init.zeros_(adapter.residual.up.weight)
@@ -1219,6 +1278,9 @@ class CVSincNet(nn.Module):
             nn.init.zeros_(adapter.alpha_head.bias)
             nn.init.zeros_(adapter.gate_head.weight)
             nn.init.zeros_(adapter.gate_head.bias)
+        if self.crra_reliability is not None:
+            nn.init.zeros_(self.crra_reliability.logit_head.weight)
+            nn.init.zeros_(self.crra_reliability.logit_head.bias)
 
     def set_crra_epoch(self, epoch: int) -> None:
         self.crra_epoch = max(1, int(epoch))
@@ -1509,7 +1571,7 @@ class CVSincNet(nn.Module):
         hf = self.hf(x) if need_sinc and self.hf is not None else None
         current_crra_epoch = self.crra_epoch if crra_epoch is None else max(1, int(crra_epoch))
         crra_time_out = None
-        crra_freq_out = None
+        crra_reliability = x.new_zeros((B, 3))
         sinc_iq_identity = sinc_iq
         if self.crra_time is not None and sinc_iq is not None:
             crra_time_out = self.crra_time(
@@ -1518,6 +1580,7 @@ class CVSincNet(nn.Module):
                 epoch=current_crra_epoch,
                 update_source_support=bool(update_crra_support),
                 source_support_mask=crra_support_mask,
+                source_support_domains=domain_labels,
             )
             sinc_iq_identity = crra_time_out.feature
 
@@ -1564,15 +1627,6 @@ class CVSincNet(nn.Module):
         # ----- freq branch -----
         if need_freq:
             feat_f, rho, dac_stats, pa_stats = self._mirror_compressed_features(x, sinc_iq=sinc_iq)
-            if self.crra_freq is not None:
-                crra_freq_out = self.crra_freq(
-                    feat_f,
-                    raw_iq=x,
-                    epoch=current_crra_epoch,
-                    update_source_support=bool(update_crra_support),
-                    source_support_mask=crra_support_mask,
-                )
-                feat_f = crra_freq_out.feature
             if self.freq_stability is not None:
                 feat_f = torch.cat([feat_f, self.freq_stability(feat_f)], dim=1)
             feat_f = self.freq_gate(feat_f)
@@ -1613,6 +1667,18 @@ class CVSincNet(nn.Module):
         else:
             pa_local = zero_emb
             pa_delta = zero_emb
+
+        if self.crra_reliability is not None and crra_time_out is not None:
+            time_feature = t_emb if need_time else None
+            freq_feature = f_emb if need_freq else None
+            pa_feature = pa_local if need_pa else None
+            t_emb, f_emb, pa_local, crra_reliability = self.crra_reliability(
+                time_feature,
+                freq_feature,
+                pa_feature,
+                q=crra_time_out.q,
+                gate=crra_time_out.gate,
+            )
 
         base_parts = []
         if need_time:
@@ -1682,9 +1748,11 @@ class CVSincNet(nn.Module):
             'crra_nuisance_pred': (
                 crra_time_out.nuisance_pred if crra_time_out is not None else None
             ),
-            'crra_freq_correction_energy': (
-                crra_freq_out.correction_energy if crra_freq_out is not None else x.new_zeros((B,))
-            ),
+            'crra_freq_correction_energy': x.new_zeros((B,)),
+            'crra_branch_reliability': crra_reliability,
+            'crra_reliability_time': crra_reliability[:, 0],
+            'crra_reliability_freq': crra_reliability[:, 1],
+            'crra_reliability_pa': crra_reliability[:, 2],
         }
 
 
@@ -1727,6 +1795,8 @@ def build_model(
     crra_nuisance_dim: int = 9,
     crra_start_epoch: int = 17,
     crra_ramp_epochs: int = 30,
+    crra_support_domains: int = 1,
+    crra_support_tau: float = 1.0,
 ):
     ds = str(dataset).lower()
     ms = str(model_size).upper().strip()
@@ -1906,5 +1976,7 @@ def build_model(
         crra_nuisance_dim=crra_nuisance_dim,
         crra_start_epoch=crra_start_epoch,
         crra_ramp_epochs=crra_ramp_epochs,
+        crra_support_domains=crra_support_domains,
+        crra_support_tau=crra_support_tau,
         **cfg,
     )

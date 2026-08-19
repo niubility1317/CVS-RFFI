@@ -7,30 +7,76 @@ from typing import Any
 from crra import crra_gate_scale
 
 
+LEO_WEAK_SCENARIOS = (
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak",
+)
+
+
+def _normalize_scenario(value: Any) -> str:
+    return str(value or "").strip().lower().replace("-", "_")
+
+
 def validate_crra_phase1_config(args: Any) -> None:
     """Reject CRRA configurations that leave the current Phase1 boundary."""
 
-    scenario = str(getattr(args, "crra_scenario", "mixed_orbit") or "").strip().lower().replace("-", "_")
-    if scenario != "mixed_orbit":
-        raise ValueError("ADVB02 CRRA Phase1 requires the historical mixed_orbit channel")
+    scenario = _normalize_scenario(getattr(args, "crra_scenario", "mixed_orbit"))
+    if scenario not in {"mixed_orbit", "leo_weak"}:
+        raise ValueError(
+            "ADVB02 CRRA Phase1 channel family must be mixed_orbit or leo_weak; "
+            f"got {scenario or '<empty>'}"
+        )
     if bool(getattr(args, "crra_target_adapter", False)):
         raise ValueError("CRRA target adapter is not allowed in the Phase1 source-only training path")
 
 
-def validate_crra_phase1_scenarios(scenarios: Any) -> None:
-    """Keep every CRRA training view on the historical mixed_orbit channel."""
+def validate_crra_phase1_scenarios(
+    scenarios: Any,
+    *,
+    crra_scenario: str = "mixed_orbit",
+) -> None:
+    """Keep CRRA training views inside the configured Phase1 channel family."""
 
     if isinstance(scenarios, str):
         values = [item for item in scenarios.replace(";", ",").split(",") if item.strip()]
     else:
         values = list(scenarios or [])
-    normalized = [str(value or "").strip().lower().replace("-", "_") for value in values]
-    bad = [value for value in normalized if value and value != "mixed_orbit"]
-    if bad:
-        raise ValueError(
-            "ADVB02 CRRA Phase1 satellite views must remain the historical mixed_orbit channel; "
-            f"got {bad}"
-        )
+    normalized = [_normalize_scenario(value) for value in values if _normalize_scenario(value)]
+    family = _normalize_scenario(crra_scenario)
+    if family == "mixed_orbit":
+        bad = [value for value in normalized if value != "mixed_orbit"]
+        if bad:
+            raise ValueError(
+                "ADVB02 CRRA Phase1 mixed_orbit views must all be mixed_orbit; "
+                f"got {bad}"
+            )
+        return
+    if family == "leo_weak":
+        scenario_set = set(normalized)
+        required_set = set(LEO_WEAK_SCENARIOS)
+        bad = sorted(scenario_set - required_set)
+        missing = sorted(required_set - scenario_set)
+        if bad or missing:
+            details = []
+            if bad:
+                details.append(f"unexpected={bad}")
+            if missing:
+                details.append(f"missing={missing}")
+            raise ValueError(
+                "ADVB02 CRRA Phase1 leo_weak training requires exactly "
+                f"{list(LEO_WEAK_SCENARIOS)}; " + ", ".join(details)
+            )
+        return
+    raise ValueError(
+        "ADVB02 CRRA Phase1 channel family must be mixed_orbit or leo_weak; "
+        f"got {family or '<empty>'}"
+    )
 
 
-__all__ = ["crra_gate_scale", "validate_crra_phase1_config", "validate_crra_phase1_scenarios"]
+__all__ = [
+    "LEO_WEAK_SCENARIOS",
+    "crra_gate_scale",
+    "validate_crra_phase1_config",
+    "validate_crra_phase1_scenarios",
+]

@@ -4,6 +4,7 @@ from types import SimpleNamespace
 
 import pytest
 import torch
+import torch.nn as nn
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -14,8 +15,12 @@ if str(CODE_ROOT) not in sys.path:
 from SSDG.train_ssdg import (  # noqa: E402
     _crra_satellite_aux_regularizers_active,
     _crra_satellite_kl_active,
+    _resolve_phase1_terminal_status,
     _resolve_sat_training_mode,
+    build_optimizer_with_crra_groups,
     build_arg_parser,
+    resolve_crra_satellite_kl_weight,
+    set_crra_optimizer_learning_rate,
     split_tx_rx_day_1_7_2_roles,
 )
 from cvsrffi.crra_training import (  # noqa: E402
@@ -36,28 +41,36 @@ def test_crra_schedule_has_identity_ramp_and_fixed_tail():
     assert crra_gate_scale(47) == 1.0
 
 
-def test_phase1_crra_defaults_to_mixed_orbit_and_has_no_target_access():
+def test_phase1_crra_legacy_defaults_and_leo_controls_are_explicit():
     args = build_arg_parser().parse_args(["--output_dir", "x"])
     assert args.sat_train_scenario == "mixed_orbit"
     assert args.crra_scenario == "mixed_orbit"
     assert args.crra_target_adapter is False
     assert args.lambda_crra_pair == pytest.approx(0.05)
-    assert args.lambda_crra_sat_kl == pytest.approx(0.05)
+    assert args.lambda_crra_sat_kl == pytest.approx(0.0)
     assert args.lambda_crra_energy == pytest.approx(0.001)
     assert args.lambda_crra_nuisance == pytest.approx(0.02)
     assert args.lambda_crra_condition_tx_adv == pytest.approx(0.02)
+    assert args.crra_s3_lr_scale == pytest.approx(0.25)
+    assert args.crra_support_tau == pytest.approx(1.0)
 
 
-def test_phase1_crra_rejects_wrong_channel_and_target_adapter():
-    with pytest.raises(ValueError, match="mixed_orbit"):
-        validate_crra_phase1_config(SimpleNamespace(crra_scenario="leo_weak", crra_target_adapter=False))
+def test_phase1_crra_accepts_leo_weak_family_and_rejects_target_adapter():
+    validate_crra_phase1_config(SimpleNamespace(crra_scenario="leo_weak", crra_target_adapter=False))
+    validate_crra_phase1_scenarios(
+        ["leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"],
+        crra_scenario="leo_weak",
+    )
     with pytest.raises(ValueError, match="target adapter"):
-        validate_crra_phase1_config(SimpleNamespace(crra_scenario="mixed_orbit", crra_target_adapter=True))
+        validate_crra_phase1_config(SimpleNamespace(crra_scenario="leo_weak", crra_target_adapter=True))
 
 
-def test_phase1_crra_rejects_non_historical_satellite_scenarios():
-    with pytest.raises(ValueError, match="historical mixed_orbit"):
-        validate_crra_phase1_scenarios(["mixed_orbit", "leo_low_elev_weak"])
+def test_phase1_crra_rejects_scenarios_outside_the_selected_leo_family():
+    with pytest.raises(ValueError, match="leo_weak"):
+        validate_crra_phase1_scenarios(
+            ["leo_clear_weak", "leo_low_elev_weak", "mixed_orbit"],
+            crra_scenario="leo_weak",
+        )
 
 
 def test_nuisance_loss_uses_valid_same_view_metadata_only():
@@ -80,7 +93,7 @@ def test_nuisance_loss_is_zero_with_no_valid_same_view_targets():
     assert pred.grad is not None
 
 
-def test_crra_satellite_kl_is_active_without_legacy_sat_cons_weight():
+def test_crra_satellite_kl_is_active_only_after_its_stage_scale():
     assert not _crra_satellite_kl_active(
         0.0,
         use_crra=True,
@@ -99,6 +112,63 @@ def test_crra_satellite_kl_is_active_without_legacy_sat_cons_weight():
         crra_stage_scale=0.0,
         crra_sat_kl_weight=0.0,
     )
+
+
+def test_crra_satellite_kl_has_one_effective_weight():
+    assert resolve_crra_satellite_kl_weight(0.05, 0.0, use_crra=True) == pytest.approx(0.05)
+    assert resolve_crra_satellite_kl_weight(0.0, 0.05, use_crra=True) == pytest.approx(0.05)
+    with pytest.raises(ValueError, match="only one"):
+        resolve_crra_satellite_kl_weight(0.05, 0.05, use_crra=True)
+
+
+def test_crra_optimizer_enters_quarter_rate_at_epoch_47_only():
+    class TinyModel(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.core = nn.Linear(2, 2)
+            self.crra_adapter = nn.Linear(2, 2)
+
+    optimizer = build_optimizer_with_crra_groups(
+        TinyModel(),
+        base_lr=2e-4,
+        weight_decay=1e-4,
+        use_crra=True,
+    )
+    set_crra_optimizer_learning_rate(
+        optimizer,
+        epoch=46,
+        base_lr=2e-4,
+        start_epoch=17,
+        ramp_epochs=30,
+        s3_lr_scale=0.25,
+    )
+    rates = {group["group_name"]: group["lr"] for group in optimizer.param_groups}
+    assert rates == {"core": pytest.approx(2e-4), "crra": pytest.approx(2e-4)}
+    set_crra_optimizer_learning_rate(
+        optimizer,
+        epoch=47,
+        base_lr=2e-4,
+        start_epoch=17,
+        ramp_epochs=30,
+        s3_lr_scale=0.25,
+    )
+    rates = {group["group_name"]: group["lr"] for group in optimizer.param_groups}
+    assert rates == {"core": pytest.approx(2e-4), "crra": pytest.approx(5e-5)}
+
+
+def test_nonformal_valid_checkpoint_becomes_artifacts_complete_despite_diagnostic_gates():
+    status = _resolve_phase1_terminal_status(
+        tail_stopped=False,
+        export_failed=False,
+        final_blocked=False,
+        selected_checkpoint_exists=True,
+        heldout_eval_status="COMPLETE",
+        p0_mechanisms_ready=False,
+        p1_mechanisms_ready=False,
+        endpoint_export_ready=False,
+        enforce_promotion_gates=False,
+    )
+    assert status == "ARTIFACTS_COMPLETE"
 
 
 def test_nuisance_loss_rejects_field_dimension_drift():

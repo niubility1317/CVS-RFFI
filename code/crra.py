@@ -151,14 +151,21 @@ class ComplexIQShrinkageWhitening(nn.Module):
 
 
 class LowRankDepthwiseResidual(nn.Module):
-    """Low-rank depthwise temporal residual with zero-init up projection."""
+    """FiLM-conditioned low-rank temporal residual with zero-init up projection."""
 
-    def __init__(self, feature_channels: int, rank: int = 8, kernel_size: int = 5):
+    def __init__(
+        self,
+        feature_channels: int,
+        rank: int = 8,
+        condition_dim: int = 0,
+        kernel_size: int = 5,
+    ):
         super().__init__()
         feature_channels = int(feature_channels)
         rank = int(rank)
-        if feature_channels <= 0 or rank <= 0:
-            raise ValueError("feature_channels and rank must be positive")
+        condition_dim = int(condition_dim)
+        if feature_channels <= 0 or rank <= 0 or condition_dim <= 0:
+            raise ValueError("feature_channels, rank and condition_dim must be positive")
         if int(kernel_size) % 2 == 0:
             raise ValueError("CRRA depthwise kernel_size must be odd")
         self.depthwise = nn.Conv1d(
@@ -170,40 +177,74 @@ class LowRankDepthwiseResidual(nn.Module):
             bias=False,
         )
         self.down = nn.Conv1d(feature_channels, rank, kernel_size=1, bias=False)
+        self.film = nn.Linear(condition_dim, 2 * rank, bias=True)
         self.up = nn.Conv1d(rank, feature_channels, kernel_size=1, bias=True)
+        nn.init.zeros_(self.film.weight)
+        nn.init.zeros_(self.film.bias)
         nn.init.zeros_(self.up.weight)
         nn.init.zeros_(self.up.bias)
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.up(F.silu(self.down(self.depthwise(x))))
+    def forward(self, x: torch.Tensor, q: torch.Tensor) -> torch.Tensor:
+        if q.dim() != 2 or int(q.size(0)) != int(x.size(0)):
+            raise ValueError("CRRA FiLM condition must be shaped [B, condition_dim]")
+        residual = self.down(self.depthwise(x))
+        gamma, beta = self.film(q).chunk(2, dim=1)
+        residual = residual * (1.0 + gamma.unsqueeze(-1)) + beta.unsqueeze(-1)
+        return self.up(F.silu(residual))
 
 
 class SourceSupportGate(nn.Module):
-    """Source-only running support statistics for the condition vector."""
+    """Source-only multi-centre diagonal-Mahalanobis support statistics."""
 
-    def __init__(self, q_dim: int, momentum: float = 0.95, eps: float = 1e-5):
+    def __init__(
+        self,
+        q_dim: int,
+        num_domains: int = 1,
+        tau: float = 1.0,
+        momentum: float = 0.95,
+        eps: float = 1e-5,
+    ):
         super().__init__()
+        q_dim = int(q_dim)
+        num_domains = int(num_domains)
+        if q_dim <= 0 or num_domains <= 0:
+            raise ValueError("q_dim and num_domains must be positive")
         self.momentum = float(momentum)
         self.eps = float(eps)
-        self.register_buffer("center", torch.zeros(int(q_dim)))
-        self.register_buffer("scale", torch.ones(int(q_dim)))
+        self.tau = float(max(float(tau), self.eps))
+        self.num_domains = num_domains
+        self.register_buffer("centers", torch.zeros(num_domains, q_dim))
+        self.register_buffer("scales", torch.ones(num_domains, q_dim))
+        self.register_buffer("counts", torch.zeros(num_domains, dtype=torch.long))
         self.register_buffer("count", torch.zeros((), dtype=torch.long))
 
     @torch.no_grad()
-    def update(self, q: torch.Tensor) -> None:
+    def update(self, q: torch.Tensor, domains: Optional[torch.Tensor] = None) -> None:
         if q.numel() == 0:
             return
         q = q.detach().float()
-        mean = q.mean(dim=0)
-        std = q.std(dim=0, unbiased=False).clamp_min(self.eps)
-        if int(self.count.item()) == 0:
-            self.center.copy_(mean)
-            self.scale.copy_(std)
-        else:
-            m = self.momentum
-            self.center.mul_(m).add_(mean, alpha=1.0 - m)
-            self.scale.mul_(m).add_(std, alpha=1.0 - m)
-        self.count.add_(int(q.size(0)))
+        if domains is None:
+            domains = torch.zeros(q.size(0), dtype=torch.long, device=q.device)
+        domains = domains.detach().to(device=q.device).view(-1).long()
+        if int(domains.numel()) != int(q.size(0)):
+            raise ValueError("CRRA source support domains must align with the condition batch")
+        valid = (domains >= 0) & (domains < self.num_domains)
+        for domain in torch.unique(domains[valid]).tolist():
+            domain_i = int(domain)
+            q_domain = q[domains == domain_i]
+            if q_domain.numel() == 0:
+                continue
+            mean = q_domain.mean(dim=0)
+            std = q_domain.std(dim=0, unbiased=False).clamp_min(self.eps)
+            if int(self.counts[domain_i].item()) == 0:
+                self.centers[domain_i].copy_(mean)
+                self.scales[domain_i].copy_(std)
+            else:
+                m = self.momentum
+                self.centers[domain_i].mul_(m).add_(mean, alpha=1.0 - m)
+                self.scales[domain_i].mul_(m).add_(std, alpha=1.0 - m)
+            self.counts[domain_i].add_(int(q_domain.size(0)))
+            self.count.add_(int(q_domain.size(0)))
 
     def forward(
         self,
@@ -211,19 +252,31 @@ class SourceSupportGate(nn.Module):
         *,
         update_source: bool = False,
         update_mask: Optional[torch.Tensor] = None,
+        update_domains: Optional[torch.Tensor] = None,
     ) -> tuple[torch.Tensor, torch.Tensor]:
         if self.training and update_source:
             q_update = q
+            domains_update = update_domains
             if update_mask is not None:
                 mask = update_mask.to(device=q.device).view(-1).bool()
                 if mask.numel() != q.size(0):
                     raise ValueError("CRRA source support mask must align with the condition batch")
                 q_update = q[mask]
+                if domains_update is not None:
+                    domains_update = domains_update.to(device=q.device).view(-1)[mask]
             if q_update.numel() > 0:
-                self.update(q_update)
-        normalized = (q - self.center.to(device=q.device, dtype=q.dtype)) / self.scale.to(device=q.device, dtype=q.dtype).clamp_min(self.eps)
-        distance = normalized.pow(2).mean(dim=1).sqrt()
-        support = torch.exp(-0.5 * distance).clamp(0.0, 1.0)
+                self.update(q_update, domains=domains_update)
+        active = self.counts > 0
+        if not bool(active.any()):
+            return q.new_ones(q.size(0)), q.new_zeros(q.size(0))
+        centers = self.centers.to(device=q.device, dtype=q.dtype)
+        scales = self.scales.to(device=q.device, dtype=q.dtype).clamp_min(self.eps)
+        normalized = (q[:, None, :] - centers[None, :, :]) / scales[None, :, :]
+        distance_squared = normalized.pow(2).mean(dim=2)
+        distance_squared = distance_squared.masked_fill(~active.to(device=q.device)[None, :], float("inf"))
+        nearest_distance_squared = distance_squared.min(dim=1).values.clamp_min(0.0)
+        distance = nearest_distance_squared.sqrt()
+        support = torch.exp(-nearest_distance_squared / self.tau).clamp(0.0, 1.0)
         return support, distance
 
 
@@ -256,6 +309,8 @@ class CRRAAdapter(nn.Module):
         kernel_size: int = 5,
         start_epoch: int = 17,
         ramp_epochs: int = 30,
+        support_domains: int = 1,
+        support_tau: float = 1.0,
     ):
         super().__init__()
         self.feature_channels = int(feature_channels)
@@ -286,14 +341,24 @@ class CRRAAdapter(nn.Module):
             nn.SiLU(inplace=True),
             nn.Linear(hidden, self.condition_dim),
         )
-        self.alpha_head = nn.Linear(self.condition_dim, 1)
+        self.alpha_pairs = int(self.iq_channels) if self.iq_channels is not None else 1
+        self.alpha_head = nn.Linear(self.condition_dim, self.alpha_pairs)
         self.gate_head = nn.Linear(self.condition_dim, 1)
         nn.init.zeros_(self.alpha_head.weight)
         nn.init.zeros_(self.alpha_head.bias)
         nn.init.zeros_(self.gate_head.weight)
         nn.init.zeros_(self.gate_head.bias)
-        self.residual = LowRankDepthwiseResidual(self.feature_channels, rank=self.rank, kernel_size=kernel_size)
-        self.support = SourceSupportGate(self.condition_dim)
+        self.residual = LowRankDepthwiseResidual(
+            self.feature_channels,
+            rank=self.rank,
+            condition_dim=self.condition_dim,
+            kernel_size=kernel_size,
+        )
+        self.support = SourceSupportGate(
+            self.condition_dim,
+            num_domains=int(support_domains),
+            tau=float(support_tau),
+        )
         self.nuisance_head = nn.Linear(self.condition_dim, int(nuisance_dim)) if int(nuisance_dim) > 0 else None
 
     def _condition(
@@ -318,6 +383,7 @@ class CRRAAdapter(nn.Module):
         epoch: int = 1,
         update_source_support: bool = False,
         source_support_mask: Optional[torch.Tensor] = None,
+        source_support_domains: Optional[torch.Tensor] = None,
     ) -> CRRAOutput:
         if feature.dim() != 3 or int(feature.size(1)) != self.feature_channels:
             raise ValueError(f"CRRA feature expects [B, {self.feature_channels}, T]")
@@ -326,6 +392,7 @@ class CRRAAdapter(nn.Module):
             q,
             update_source=bool(update_source_support),
             update_mask=source_support_mask,
+            update_domains=source_support_domains,
         )
         scale = feature.new_tensor(
             crra_gate_scale(
@@ -334,12 +401,18 @@ class CRRAAdapter(nn.Module):
                 ramp_epochs=self.ramp_epochs,
             )
         )
-        alpha = self.alpha_max * torch.sigmoid(self.alpha_head(q)).view(-1)
+        alpha = self.alpha_max * torch.sigmoid(self.alpha_head(q))
+        if not self.use_whitening:
+            alpha = alpha.view(-1)
         gate = scale * support * torch.sigmoid(self.gate_head(q)).view(-1)
         whitened = self.whitening(feature) if self.use_whitening else feature
         intervention = whitened - feature
-        low_rank = self.residual(feature)
-        correction = alpha[:, None, None] * intervention + low_rank
+        low_rank = self.residual(feature, q)
+        if self.use_whitening:
+            alpha_channels = torch.cat([alpha, alpha], dim=1).unsqueeze(-1)
+        else:
+            alpha_channels = alpha[:, None, None]
+        correction = alpha_channels * intervention + low_rank
         robust = feature + gate[:, None, None] * correction
         correction_energy = (robust - feature).pow(2).mean(dim=(1, 2)).sqrt()
         nuisance_pred = self.nuisance_head(q_raw) if self.nuisance_head is not None else None
@@ -360,6 +433,7 @@ __all__ = [
     "CRRAOutput",
     "ComplexIQShrinkageWhitening",
     "LowRankDepthwiseResidual",
+    "SourceSupportGate",
     "compute_crra_rcn_stats",
     "crra_gate_scale",
 ]

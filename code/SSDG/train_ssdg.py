@@ -340,9 +340,11 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--crra_nuisance_dim", type=int, default=9)
     parser.add_argument("--crra_start_epoch", type=int, default=17)
     parser.add_argument("--crra_ramp_epochs", type=int, default=30)
+    parser.add_argument("--crra_support_tau", type=float, default=1.0)
+    parser.add_argument("--crra_s3_lr_scale", type=float, default=0.25)
     parser.add_argument("--crra_target_adapter", type=str2bool, default=False)
     parser.add_argument("--lambda_crra_pair", type=float, default=0.05)
-    parser.add_argument("--lambda_crra_sat_kl", type=float, default=0.05)
+    parser.add_argument("--lambda_crra_sat_kl", type=float, default=0.0)
     parser.add_argument("--lambda_crra_sat_shell", type=float, default=0.0)
     parser.add_argument("--crra_sat_shell_width_deg", type=float, default=12.0)
     parser.add_argument("--lambda_crra_energy", type=float, default=0.001)
@@ -1509,6 +1511,7 @@ def _apply_model_cli_args(model_args, args):
         "crra_nuisance_dim",
         "crra_start_epoch",
         "crra_ramp_epochs",
+        "crra_support_tau",
     ):
         if hasattr(args, key):
             setattr(model_args, key, getattr(args, key))
@@ -2776,8 +2779,9 @@ def _resolve_phase1_terminal_status(
     p0_mechanisms_ready: bool = True,
     p1_mechanisms_ready: bool = True,
     endpoint_export_ready: bool = True,
+    enforce_promotion_gates: bool = True,
 ) -> str:
-    """Resolve a fail-closed Phase1 terminal state without overstating promotion readiness."""
+    """Resolve Phase1 technical completion separately from promotion diagnostics."""
 
     if tail_stopped:
         return "STOPPED_TAIL"
@@ -2785,17 +2789,19 @@ def _resolve_phase1_terminal_status(
         return "FAILED_EXPORT"
     if final_blocked:
         return "NON_PROMOTABLE_GUARD_BLOCKED"
-    if not p0_mechanisms_ready:
-        return "NON_PROMOTABLE_P0_DISABLED"
-    if not p1_mechanisms_ready:
-        return "NON_PROMOTABLE_P1_DISABLED"
     if not selected_checkpoint_exists:
         return "NO_SAFE_CHECKPOINT"
     if str(heldout_eval_status).upper() != "COMPLETE":
         return "HELDOUT_EVAL_INCOMPLETE"
-    if not endpoint_export_ready:
-        return "NON_PROMOTABLE_ENDPOINT_NOT_EXPORTED"
-    return "COMPLETE"
+    if bool(enforce_promotion_gates):
+        if not p0_mechanisms_ready:
+            return "NON_PROMOTABLE_P0_DISABLED"
+        if not p1_mechanisms_ready:
+            return "NON_PROMOTABLE_P1_DISABLED"
+        if not endpoint_export_ready:
+            return "NON_PROMOTABLE_ENDPOINT_NOT_EXPORTED"
+        return "COMPLETE"
+    return "ARTIFACTS_COMPLETE"
 
 
 def _formal_ablation_terminal_flags(
@@ -4866,6 +4872,78 @@ def _crra_satellite_aux_regularizers_active(args) -> bool:
     return str(getattr(args, "sat_training_mode", "") or "").strip().lower() != "concat_masked"
 
 
+def resolve_crra_satellite_kl_weight(
+    satellite_consistency_weight: float,
+    crra_compatibility_weight: float,
+    *,
+    use_crra: bool,
+) -> float:
+    """Resolve one CRRA satellite-KL source without double-counting it."""
+
+    primary = float(satellite_consistency_weight)
+    alias = float(crra_compatibility_weight)
+    if primary < 0.0 or alias < 0.0:
+        raise ValueError("CRRA satellite KL weights must be non-negative")
+    if not bool(use_crra):
+        return primary
+    if primary > 0.0 and alias > 0.0:
+        raise ValueError(
+            "CRRA satellite KL accepts only one non-zero weight: use lambda_sat_cons "
+            "or the legacy lambda_crra_sat_kl alias, not both"
+        )
+    return primary if primary > 0.0 else alias
+
+
+def _is_crra_parameter_name(name: str) -> bool:
+    return any(part.startswith("crra_") for part in str(name).split("."))
+
+
+def build_optimizer_with_crra_groups(
+    model,
+    *,
+    base_lr: float,
+    weight_decay: float,
+    use_crra: bool,
+):
+    """Build AdamW groups so CRRA can enter its conservative S3 rate."""
+
+    core_params = []
+    crra_params = []
+    for name, parameter in model.named_parameters():
+        if not parameter.requires_grad:
+            continue
+        (crra_params if bool(use_crra) and _is_crra_parameter_name(name) else core_params).append(parameter)
+    groups = []
+    if core_params:
+        groups.append({"params": core_params, "lr": float(base_lr), "group_name": "core"})
+    if crra_params:
+        groups.append({"params": crra_params, "lr": float(base_lr), "group_name": "crra"})
+    if not groups:
+        raise ValueError("no trainable parameters available for optimizer")
+    return torch.optim.AdamW(groups, lr=float(base_lr), weight_decay=float(weight_decay))
+
+
+def set_crra_optimizer_learning_rate(
+    optimizer,
+    *,
+    epoch: int,
+    base_lr: float,
+    start_epoch: int,
+    ramp_epochs: int,
+    s3_lr_scale: float,
+) -> float:
+    """Keep CRRA at base LR through its ramp, then use the S3 rate."""
+
+    scale = float(s3_lr_scale)
+    if scale <= 0.0:
+        raise ValueError("crra_s3_lr_scale must be positive")
+    fixed_epoch = max(1, int(start_epoch)) + max(1, int(ramp_epochs))
+    crra_lr = float(base_lr) * (scale if int(epoch) >= fixed_epoch else 1.0)
+    for group in optimizer.param_groups:
+        group["lr"] = crra_lr if str(group.get("group_name", "core")) == "crra" else float(base_lr)
+    return crra_lr
+
+
 def _crra_satellite_kl_active(
     legacy_sat_cons_weight: float,
     *,
@@ -4936,6 +5014,15 @@ def train(args) -> int:
                 f"got {float(args.source_val_ratio):.6f} vs {requested_validation:.6f}"
             )
     validate_crra_phase1_config(args)
+    if float(getattr(args, "crra_support_tau", 1.0)) <= 0.0:
+        raise ValueError("--crra_support_tau must be positive")
+    if float(getattr(args, "crra_s3_lr_scale", 0.25)) <= 0.0:
+        raise ValueError("--crra_s3_lr_scale must be positive")
+    args.crra_effective_sat_kl_weight = resolve_crra_satellite_kl_weight(
+        float(getattr(args, "lambda_sat_cons", 0.0)),
+        float(getattr(args, "lambda_crra_sat_kl", 0.0)),
+        use_crra=bool(getattr(args, "use_crra", False)),
+    )
     sat_train_spec = str(getattr(args, "sat_train_scenarios", "") or "").strip()
     if sat_train_spec:
         if parse_sat_scenarios is not None:
@@ -4965,7 +5052,10 @@ def train(args) -> int:
         dict.fromkeys(str(value).strip().lower().replace("-", "_") for value in scheduled_train_scenarios)
     )
     if bool(getattr(args, "use_crra", False)):
-        validate_crra_phase1_scenarios(args.sat_train_protocol_scenario_list)
+        validate_crra_phase1_scenarios(
+            args.sat_train_protocol_scenario_list,
+            crra_scenario=str(getattr(args, "crra_scenario", "mixed_orbit")),
+        )
     args.eval_sat_scenario_list = (
         parse_sat_scenarios(args.eval_sat_scenarios) if bool(args.eval_sat_channel) else []
     )
@@ -5215,7 +5305,12 @@ def train(args) -> int:
         teacher_model.eval()
         for param in teacher_model.parameters():
             param.requires_grad = False
-    optimizer = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=float(args.lr), weight_decay=float(args.weight_decay))
+    optimizer = build_optimizer_with_crra_groups(
+        model,
+        base_lr=float(args.lr),
+        weight_decay=float(args.weight_decay),
+        use_crra=bool(getattr(args, "use_crra", False)),
+    )
     scaler = GradScaler(enabled=bool(args.amp and device.type == "cuda"))
     proto_bank = None
     if bool(getattr(args, "use_proto_memory", False)) or float(getattr(args, "lambda_proto", 0.0)) > 0.0:
@@ -5533,6 +5628,14 @@ def train(args) -> int:
         phase = "label" if epoch <= int(args.label_epochs) else "pseudo"
         stage_state = _stage_state_for_epoch(epoch, args, phase)
         cur_w = _loss_weights(args, stage_state)
+        crra_optimizer_lr = set_crra_optimizer_learning_rate(
+            optimizer,
+            epoch=int(epoch),
+            base_lr=float(args.lr),
+            start_epoch=int(getattr(args, "crra_start_epoch", 17)),
+            ramp_epochs=int(getattr(args, "crra_ramp_epochs", 30)),
+            s3_lr_scale=float(getattr(args, "crra_s3_lr_scale", 0.25)),
+        )
         tail_rollback_cooldown_active = bool(tail_rollback_cooldown_remaining > 0)
         tail_closed_scale = (
             max(0.0, min(1.0, float(args.tail_rollback_closed_scale)))
@@ -6311,24 +6414,37 @@ def train(args) -> int:
                     if bool(getattr(args, "use_crra", False))
                     else 0.0
                 )
+                crra_sat_kl_weight = (
+                    float(cur_w["sat_cons"])
+                    if bool(getattr(args, "use_crra", False))
+                    and float(getattr(args, "lambda_sat_cons", 0.0)) > 0.0
+                    else float(getattr(args, "crra_effective_sat_kl_weight", 0.0))
+                )
+                sat_cons_effective_weight = (
+                    crra_stage_scale * crra_sat_kl_weight
+                    if bool(getattr(args, "use_crra", False))
+                    else float(cur_w["sat_cons"])
+                )
                 crra_sat_kl_active = _crra_satellite_kl_active(
-                    cur_w["sat_cons"],
+                    0.0 if bool(getattr(args, "use_crra", False)) else cur_w["sat_cons"],
                     use_crra=bool(getattr(args, "use_crra", False)),
                     crra_stage_scale=crra_stage_scale,
-                    crra_sat_kl_weight=float(getattr(args, "lambda_crra_sat_kl", 0.0)),
+                    crra_sat_kl_weight=crra_sat_kl_weight,
                 )
                 crra_sat_objective_active = bool(getattr(args, "use_crra", False)) and any(
                     float(getattr(args, name, 0.0)) > 0.0
                     for name in (
                         "lambda_crra_pair",
-                        "lambda_crra_sat_kl",
                         "lambda_crra_sat_shell",
+                        "lambda_crra_energy",
+                        "lambda_crra_gate_l1",
                         "lambda_crra_nuisance",
+                        "lambda_crra_condition_tx_adv",
                     )
-                )
+                ) or (bool(getattr(args, "use_crra", False)) and crra_sat_kl_weight > 0.0)
                 sat_objective_active = (
                     cur_w["sat_cls"] > 0.0
-                    or cur_w["sat_cons"] > 0.0
+                    or sat_cons_effective_weight > 0.0
                     or crra_sat_objective_active
                 )
                 sat_objective_start_epoch = (
@@ -6643,8 +6759,7 @@ def train(args) -> int:
                     + cur_w["group_ce"] * loss_group_ce_l
                     + cur_w["fishr"] * loss_fishr_l
                     + cur_w["sat_cls"] * loss_sat_cls_l
-                    + cur_w["sat_cons"] * loss_sat_cons_l
-                    + crra_stage_scale * float(getattr(args, "lambda_crra_sat_kl", 0.0)) * sanitize_loss(
+                    + sat_cons_effective_weight * sanitize_loss(
                         "crra_sat_kl", loss_sat_cons_l, z_id_l, loss_warn_counts
                     )
                     + crra_stage_scale * float(getattr(args, "lambda_crra_pair", 0.0)) * sanitize_loss(
@@ -7584,6 +7699,8 @@ def train(args) -> int:
                     "train/crra_pair_cosine_labeled": crra_pair_cosine_l.detach(),
                     "train/crra_condition_tx_adv_accuracy": crra_condition_tx_adv_acc_l.detach(),
                     "train/crra_stage_scale": float(crra_stage_scale),
+                    "train/crra_optimizer_lr": float(crra_optimizer_lr),
+                    "train/crra_effective_sat_kl_weight": float(crra_sat_kl_weight),
                     "train/crra_correction_energy": out_l.get(
                         "crra_correction_energy", zero_sat
                     ).detach().float().mean(),
@@ -7616,12 +7733,12 @@ def train(args) -> int:
                     "train/w_loss_source_episode": ((cur_w["source_episode"] * source_episode_stage_scale) * loss_source_episode_l).detach(),
                     "train/w_loss_direct_metric_accept": ((cur_w["direct_metric_accept"] * direct_metric_stage_scale) * loss_direct_metric_accept_l).detach(),
                     "train/w_loss_sat_cls_labeled": (cur_w["sat_cls"] * loss_sat_cls_l).detach(),
-                    "train/w_loss_sat_cons_labeled": (cur_w["sat_cons"] * loss_sat_cons_l).detach(),
+                    "train/w_loss_sat_cons_labeled": (sat_cons_effective_weight * loss_sat_cons_l).detach(),
                     "train/w_loss_crra_pair_labeled": (
                         crra_stage_scale * float(getattr(args, "lambda_crra_pair", 0.0)) * loss_crra_pair_l
                     ).detach(),
                     "train/w_loss_crra_sat_kl_labeled": (
-                        crra_stage_scale * float(getattr(args, "lambda_crra_sat_kl", 0.0)) * loss_sat_cons_l
+                        sat_cons_effective_weight * loss_sat_cons_l
                     ).detach(),
                     "train/w_loss_crra_energy_labeled": (
                         crra_stage_scale * float(getattr(args, "lambda_crra_energy", 0.0)) * loss_crra_energy_l
@@ -9251,9 +9368,11 @@ def train(args) -> int:
         p0_mechanisms_ready=bool(p0_mechanisms_ready),
         p1_mechanisms_ready=bool(p1_mechanisms_ready),
         endpoint_export_ready=bool(endpoint_export_ready),
+        enforce_promotion_gates=bool(getattr(args, "formal_ablation", False)),
     )
     terminal_exit_code = int(exit_code)
-    if terminal_exit_code == 0 and terminal_status != "COMPLETE":
+    terminal_success = terminal_status in {"COMPLETE", "ARTIFACTS_COMPLETE"}
+    if terminal_exit_code == 0 and not terminal_success:
         terminal_exit_code = {
             "STOPPED_TAIL": 4,
             "NON_PROMOTABLE_GUARD_BLOCKED": 5,
@@ -9433,7 +9552,7 @@ def train(args) -> int:
         "resource_summary": resource_summary,
         "terminal_status": terminal_status,
         "exit_code": int(terminal_exit_code),
-        "phase1_training_complete": terminal_status == "COMPLETE",
+        "phase1_training_complete": terminal_success,
         "deployment_bundle_status": "PENDING_PHASE1_W2_SEAL",
         "formal_performance_claim": False,
         "claim": "PHASE1_SOURCE_ONLY_TRAINING_RECEIPT",

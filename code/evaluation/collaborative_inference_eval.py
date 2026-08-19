@@ -16,6 +16,7 @@ from dataset_wisig import load_wisig_compact_pkl, make_wisig_trainval_test_by_da
 from federated.reliability_fusion import collaborative_probability_fusion, normalize_probabilities
 from model_dual_cvsincnet import build_dual_model
 from cvsrffi.eval import MAIN_SAT_EVAL_ON, apply_sat_channel_for_scenario, make_loader, resolve_sat_eval_loader_names
+from cvsrffi.crra_evaluation import restore_crra_eval_epoch
 from cvsrffi.tensors import build_domain_label_map, make_torch_generator, parse_csv_indices, unpack_batch
 from training_controls import parse_sat_scenarios
 
@@ -373,6 +374,15 @@ def build_model_from_checkpoint_args(context, overrides: argparse.Namespace, dev
         domain_freq_stability_mode=str(_get_arg(args, "domain_freq_stability_mode", "off")),
         time_stability_channels=int(_get_arg(args, "time_stability_channels", 8)),
         freq_stability_channels=int(_get_arg(args, "freq_stability_channels", 4)),
+        use_crra=bool(_get_arg(args, "use_crra", False)),
+        crra_rank=int(_get_arg(args, "crra_rank", 8)),
+        crra_alpha_max=float(_get_arg(args, "crra_alpha_max", 0.25)),
+        crra_shrinkage=float(_get_arg(args, "crra_shrinkage", 0.10)),
+        crra_condition_dim=int(_get_arg(args, "crra_condition_dim", 32)),
+        crra_nuisance_dim=int(_get_arg(args, "crra_nuisance_dim", 9)),
+        crra_start_epoch=int(_get_arg(args, "crra_start_epoch", 17)),
+        crra_ramp_epochs=int(_get_arg(args, "crra_ramp_epochs", 30)),
+        crra_support_tau=float(_get_arg(args, "crra_support_tau", 1.0)),
         fast_infer_when_no_aux=bool(_get_arg(args, "fast_infer_when_no_aux", True)),
         use_tx_adv_on_zdom=bool(_get_arg(args, "use_tx_adv_on_zdom", False)),
     ).to(device)
@@ -457,6 +467,7 @@ def run_checkpoint_collaborative_eval(args: argparse.Namespace) -> dict[str, Any
         max_missing=int(args.max_missing_keys),
         max_unexpected=int(args.max_unexpected_keys),
     )
+    crra_eval_epoch = restore_crra_eval_epoch(model, payload)
     names = _selected_splits(context.named_tests, args.eval_on)
     requested_counts = _requested_collab_counts(args)
     split_results = OrderedDict()
@@ -522,6 +533,7 @@ def run_checkpoint_collaborative_eval(args: argparse.Namespace) -> dict[str, Any
         "checkpoint": str(args.ckpt),
         "checkpoint_identity": identity_report,
         "checkpoint_epoch": int(payload.get("epoch", -1)) if isinstance(payload.get("epoch", -1), int) else payload.get("epoch", -1),
+        "crra_eval_epoch": crra_eval_epoch,
         "load_report": load_report,
         "eval_on": list(names),
         "collab_counts": str(args.collab_counts),

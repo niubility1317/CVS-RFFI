@@ -8,6 +8,7 @@ from torch.utils.data import DataLoader
 
 from training_controls import sat_channel_config_for_scenario
 from training_test_eval import aggregate_named_stats, format_named_test_lines
+from cvsrffi.crra_evaluation import CRRATelemetryAccumulator
 from cvsrffi.tensors import (
     extract_domain_from_extra,
     make_torch_generator,
@@ -179,41 +180,56 @@ def evaluate_loader_sat_channel(
     max_batches: int = 0,
     seed: int = 0,
 ):
+    was_training = bool(getattr(model, "training", False))
     model.eval()
     tx_correct = tx_total = 0
     dom_correct = dom_total = 0
     gen = make_torch_generator(device, int(seed))
-    for bi, batch in enumerate(loader):
-        x, y, extra = unpack_batch(batch)
-        x = x.to(device, non_blocking=True)
-        y = y.to(device, non_blocking=True)
-        x_sat, _ = apply_sat_channel_for_scenario(x, scenario, args, gen=gen, return_meta=False)
-        d_raw = extract_domain_from_extra(extra, device)
-        d = remap_domain_tensor(d_raw, domain_label_map, device) if d_raw is not None else None
+    telemetry = CRRATelemetryAccumulator() if bool(getattr(args, "eval_crra_telemetry", False)) else None
+    try:
+        with torch.no_grad():
+            for bi, batch in enumerate(loader):
+                x, y, extra = unpack_batch(batch)
+                x = x.to(device, non_blocking=True)
+                y = y.to(device, non_blocking=True)
+                x_sat, _ = apply_sat_channel_for_scenario(x, scenario, args, gen=gen, return_meta=False)
+                d_raw = extract_domain_from_extra(extra, device)
+                d = remap_domain_tensor(d_raw, domain_label_map, device) if d_raw is not None else None
 
-        out = model(x_sat, y_tx=None, grl_lambda=1.0, return_aux=True)
-        tx_logits = out["tx_logits"]
-        tx_pred = tx_logits.argmax(dim=1)
-        tx_correct += int((tx_pred == y).sum().item())
-        tx_total += int(y.numel())
+                clean_out = model(x, y_tx=None, grl_lambda=1.0, return_aux=True) if telemetry is not None else None
+                out = model(x_sat, y_tx=None, grl_lambda=1.0, return_aux=True)
+                tx_logits = out["tx_logits"]
+                tx_pred = tx_logits.argmax(dim=1)
+                tx_correct += int((tx_pred == y).sum().item())
+                tx_total += int(y.numel())
 
-        if d is not None:
-            valid = d >= 0
-            if valid.any():
-                dom_y = d[valid]
-                dom_correct += int((out["dom_logits"][valid].argmax(dim=1) == dom_y).sum().item())
-                dom_total += int(dom_y.numel())
+                if telemetry is not None and clean_out is not None:
+                    telemetry.update(clean_out, out, y)
 
-        if max_batches > 0 and (bi + 1) >= max_batches:
-            break
+                if d is not None:
+                    valid = d >= 0
+                    if valid.any():
+                        dom_y = d[valid]
+                        dom_correct += int((out["dom_logits"][valid].argmax(dim=1) == dom_y).sum().item())
+                        dom_total += int(dom_y.numel())
 
-    return {
+                if max_batches > 0 and (bi + 1) >= max_batches:
+                    break
+    finally:
+        model.train(was_training)
+
+    result = {
         "tx_acc": 100.0 * tx_correct / max(1, tx_total),
         "dom_acc": 100.0 * dom_correct / max(1, dom_total) if dom_total > 0 else float("nan"),
         "probe_dom_acc": float("nan"),
         "tx_correct": int(tx_correct),
         "tx_total": int(tx_total),
     }
+    if telemetry is not None:
+        result["crra_telemetry"] = telemetry.summary()
+        # Internal only: evaluate_sat_scenarios merges it before serialising named rows.
+        result["_crra_telemetry_state"] = telemetry
+    return result
 
 
 def evaluate_sat_scenarios(
@@ -228,9 +244,11 @@ def evaluate_sat_scenarios(
     selected_names = resolve_sat_eval_loader_names(named_loaders, getattr(args, "eval_sat_on", MAIN_SAT_EVAL_ON))
     out = {}
     seed_base = int(getattr(args, "sat_seed", 2027))
+    collect_crra_telemetry = bool(getattr(args, "eval_crra_telemetry", False))
     for si, scenario in enumerate(scenario_names):
         named_stats = {}
         named_seeds = {}
+        scenario_telemetry = CRRATelemetryAccumulator() if collect_crra_telemetry else None
         for li, name in enumerate(selected_names):
             eval_seed = seed_base + si * 1009 + li * 97
             stats = evaluate_loader_sat_channel(
@@ -243,6 +261,9 @@ def evaluate_sat_scenarios(
                 max_batches=max_batches,
                 seed=eval_seed,
             )
+            telemetry_state = stats.pop("_crra_telemetry_state", None)
+            if scenario_telemetry is not None and telemetry_state is not None:
+                scenario_telemetry.merge(telemetry_state)
             named_stats[name] = dict(stats, sat_seed=int(eval_seed))
             named_seeds[name] = int(eval_seed)
         main_keys = [k for k in ["test_unseen_day_seen_rx", "test_seen_day_unseen_rx", "test_unseen_day_unseen_rx"] if k in named_stats]
@@ -290,6 +311,8 @@ def evaluate_sat_scenarios(
             "receiver_seen_day_floor": _receiver_floor(receiver_seen_day),
             "receiver_strict_floor": _receiver_floor(receiver_strict),
         }
+        if scenario_telemetry is not None:
+            out[scenario]["crra_telemetry"] = scenario_telemetry.summary()
     return out
 
 

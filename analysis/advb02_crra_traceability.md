@@ -3,11 +3,14 @@
 ## Source
 
 - 用户设计原文：`E:/codex/home/attachments/2cf19e77-82bf-42ec-9cbe-3e24d0198789/pasted-text.txt`
+- 已确认CRRA完整设计：`E:/codex/home/attachments/bd0330d7-5397-4eeb-8979-915357e07237/pasted-text.txt`
 - 当前科学/协议边界：`E:/type10-7/项目.md`
 - 当前代码承载：`code/model.py`、`code/model_dual_cvsincnet.py`、`code/SSDG/train_ssdg.py`、`code/baseline_origin_sat_view.py`、`code/sat_channel.py`
-- 当前历史星地信道：`mixed_orbit`
+- 历史星地信道：`mixed_orbit`；本次候选训练与测试：`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`
 
-## Requirement Trace
+## 历史实现映射
+
+下表记录旧`mixed_orbit`CRRA原型的实现状态，不构成本次LEO弱信道候选已完成的证据。
 
 | ID | Design requirement | Target | Status | Verification |
 |---|---|---|---|---|
@@ -34,6 +37,22 @@
 - 当前设计实现不把Phase2目标域adapter能力宣称为Phase1结果；Phase1配置明确拒绝目标adapter开关。
 - 历史远端实验与新CRRA实现分离；新实验必须使用新的run ID和不可覆盖输出根目录。
 
+## 当前CRRA-S LEO弱信道映射
+
+| ID | 已确认要求 | 实现目标 | 状态 | 验证 |
+|---|---|---|---|---|
+| CRRA-L01 | 训练和测试均仅使用三种`leo_weak`场景 | `crra_training.py`、LEO launcher | local-verified | `python -m pytest code/tests/test_crra_protocol_negatives.py code/tests/test_crra_mixed_orbit_metadata.py code/tests/test_phase1_advb02_crra_leo_weak_launcher.py -q` |
+| CRRA-L02 | 复用Core90三段LEO日程和E200超参数 | LEO launcher | local-verified | `python -m pytest code/tests/test_phase1_advb02_crra_leo_weak_launcher.py -q`；完整训练命令经`build_arg_parser()`解析通过 |
+| CRRA-L03 | 每对I/Q独立alpha与收缩白化 | `crra.py` | local-verified | `python -m pytest code/tests/test_crra_adapter.py -q` |
+| CRRA-L04 | FiLM条件rank8残差与零初始化上投影 | `crra.py` | local-verified | `python -m pytest code/tests/test_crra_adapter.py -q` |
+| CRRA-L05 | 源域多中心对角Mahalanobis支持门 | `crra.py` | local-verified | `python -m pytest code/tests/test_crra_adapter.py -q` |
+| CRRA-L06 | q条件时间/频率/PA可靠度融合，PA不重构 | `model.py`、`model_dual_cvsincnet.py` | local-verified | `python -m pytest code/tests/test_advb02_crra_model.py -q` |
+| CRRA-L07 | 唯一`lambda_sat_cons=0.05`，禁止KL双计 | `train_ssdg.py` | local-verified | `python -m pytest code/tests/test_crra_training_plumbing.py -q` |
+| CRRA-L08 | E1–16/E17–46/E47+与CRRA LR=0.25 | `crra.py`、`train_ssdg.py` | local-verified | `python -m pytest code/tests/test_crra_training_plumbing.py -q` |
+| CRRA-L09 | 合法final checkpoint不得被诊断性P0/P1阻断后测 | `train_ssdg.py`、LEO launcher | local-verified | `python -m pytest code/tests/test_crra_training_plumbing.py code/tests/test_phase1_advb02_crra_leo_weak_launcher.py -q` |
+| CRRA-L10 | clean和三种LEO的独立指标与CRRA遥测 | `crra_evaluation.py`、评估器 | local-verified | `python -m pytest code/tests/test_crra_evaluation.py code/tests/test_cvsrffi_sat_eval.py code/tests/test_phase1_advb02_crra_leo_weak_launcher.py -q`；独立重建会恢复checkpoint的CRRA训练轮次；N607同row指标待产生 |
+| CRRA-L11 | Phase1不访问target、不启用CRRA-C | 训练配置与负测 | local-verified | `python -m pytest code/tests/test_crra_protocol_negatives.py -q` |
+
 ## Reverse Audit
 
-实现完成后逐项把`Status`从`planned`改为`implemented`或`verified`，并在`Verification`中填写实际测试命令、同row实验报告路径和最终Git提交。若任何条目未实现，不得将CRRA标记为完成。
+以上状态只表示本地实现与聚焦测试已验证，并不表示性能提升已经得到证实。N607训练、clean和三种LEO逐场景独立评估完成后，才在本表和同row实验报告中记录结果与最终Git提交。

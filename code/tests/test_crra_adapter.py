@@ -10,7 +10,12 @@ CODE_ROOT = PROJECT_ROOT / "code"
 if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
-from crra import CRRAAdapter, crra_gate_scale  # noqa: E402
+from crra import (  # noqa: E402
+    CRRAAdapter,
+    LowRankDepthwiseResidual,
+    SourceSupportGate,
+    crra_gate_scale,
+)
 
 
 def test_crra_is_identity_before_gate_warmup():
@@ -74,3 +79,49 @@ def test_source_support_mask_updates_only_clean_rows():
         source_support_mask=torch.tensor([True, True, False, False]),
     )
     assert int(adapter.support.count.item()) == 2
+
+
+def test_crra_uses_an_alpha_for_each_iq_filter_pair():
+    adapter = CRRAAdapter(
+        iq_channels=3,
+        feature_channels=6,
+        rank=2,
+        alpha_max=0.25,
+    )
+    out = adapter(
+        torch.randn(4, 6, 32),
+        raw_iq=torch.randn(4, 2, 32),
+        epoch=47,
+    )
+    assert out.alpha.shape == (4, 3)
+    assert torch.all(out.alpha >= 0.0)
+    assert float(out.alpha.detach().max()) <= 0.25 + 1e-6
+
+
+def test_low_rank_residual_is_film_conditioned_and_zero_initialized():
+    residual = LowRankDepthwiseResidual(
+        feature_channels=4,
+        rank=2,
+        condition_dim=3,
+        kernel_size=5,
+    )
+    x = torch.randn(2, 4, 16)
+    q0 = torch.zeros(2, 3)
+    q1 = torch.ones(2, 3)
+    assert torch.allclose(residual(x, q0), torch.zeros_like(x), atol=1e-7)
+    with torch.no_grad():
+        residual.up.weight.fill_(0.1)
+        residual.film.weight.fill_(0.1)
+    assert not torch.allclose(residual(x, q0), residual(x, q1))
+
+
+def test_source_support_gate_uses_domain_centres_and_mahalanobis_kernel():
+    support = SourceSupportGate(q_dim=2, num_domains=2, tau=0.5, momentum=0.0)
+    support.train()
+    q_source = torch.tensor([[0.0, 0.0], [0.0, 0.0], [4.0, 4.0], [4.0, 4.0]])
+    support(q_source, update_source=True, update_domains=torch.tensor([0, 0, 1, 1]))
+    q_eval = torch.tensor([[0.0, 0.0], [4.0, 4.0], [8.0, 8.0]])
+    value, distance = support(q_eval)
+    assert torch.allclose(value[:2], torch.ones(2), atol=1e-5)
+    assert float(value[2]) < 0.1
+    assert torch.allclose(value[2], torch.exp(-(distance[2].square()) / 0.5), atol=1e-5)

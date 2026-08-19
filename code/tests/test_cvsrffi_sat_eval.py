@@ -11,6 +11,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 
 from cvsrffi import eval as sat_eval  # noqa: E402
+from cvsrffi.crra_evaluation import CRRATelemetryAccumulator  # noqa: E402
 
 
 def test_eval_sat_on_all_records_per_receiver_results_and_explicit_seeds(monkeypatch):
@@ -106,3 +107,44 @@ def test_main_sat_eval_preserves_aggregate_without_receiver_evidence(monkeypatch
     assert result["aggregate"]["tx_acc"] == 75.0
     assert result["receiver_named"] == {}
     assert result["receiver_floor"] != result["receiver_floor"]
+
+
+def test_sat_eval_exposes_pooled_crra_telemetry_when_requested(monkeypatch):
+    def fake_evaluate_loader_sat_channel(*args, **kwargs):
+        accumulator = CRRATelemetryAccumulator()
+        out = {
+            "z_id": torch.tensor([[1.0, 0.0], [0.0, 1.0]]),
+            "crra_correction_energy": torch.tensor([0.1, 0.2]),
+            "crra_alpha": torch.tensor([[0.1], [0.2]]),
+            "crra_gate": torch.tensor([0.2, 0.3]),
+            "crra_support_distance": torch.tensor([0.4, 0.5]),
+            "crra_branch_reliability": torch.tensor([[0.4, 0.4, 0.2], [0.3, 0.3, 0.4]]),
+            "crra_condition_tx_adv_logits": torch.tensor([[2.0, 0.0], [0.0, 2.0]]),
+        }
+        accumulator.update(out, out, torch.tensor([0, 1]))
+        return {
+            "tx_acc": 75.0,
+            "tx_correct": 3,
+            "tx_total": 4,
+            "crra_telemetry": accumulator.summary(),
+            "_crra_telemetry_state": accumulator,
+        }
+
+    monkeypatch.setattr(sat_eval, "evaluate_loader_sat_channel", fake_evaluate_loader_sat_channel)
+    named_loaders = {
+        "test_unseen_day_seen_rx": object(),
+        "test_seen_day_unseen_rx": object(),
+        "test_unseen_day_unseen_rx": object(),
+    }
+    result = sat_eval.evaluate_sat_scenarios(
+        object(),
+        named_loaders,
+        torch.device("cpu"),
+        {},
+        ["leo_clear_weak"],
+        SimpleNamespace(eval_sat_on="main", sat_seed=2027, eval_crra_telemetry=True),
+    )["leo_clear_weak"]
+
+    assert result["crra_telemetry"]["satellite"]["alpha"]["count"] == 6
+    assert result["crra_telemetry"]["paired"]["view_cosine_distance"]["count"] == 6
+    assert "_crra_telemetry_state" not in result["named"]["test_unseen_day_seen_rx"]

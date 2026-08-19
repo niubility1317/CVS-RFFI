@@ -2,6 +2,7 @@ import sys
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
 import torch
 
 
@@ -53,6 +54,30 @@ def test_mixed_orbit_metadata_is_carried_with_the_same_satellite_view():
     assert view.nuisance.shape == (3, 9)
     assert bool(view.nuisance_valid.all()) is True
     assert view.nuisance_fields[0] == "snr_db"
+
+
+@pytest.mark.parametrize(
+    "scenario",
+    ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"),
+)
+def test_leo_weak_metadata_keeps_the_fixed_crra_nuisance_contract(scenario):
+    aug = BaselineOriginSatViewAugment(
+        scenarios=[scenario],
+        p=1.0,
+        seed=7,
+        apply_fn=_fake_apply,
+    )
+    view = aug.transform(
+        torch.randn(3, 2, 32),
+        args=SimpleNamespace(),
+        epoch=1,
+        batch_idx=1,
+    )
+    assert view.applied is True
+    assert view.meta["scenario"] == scenario
+    assert view.nuisance.shape == (3, len(CRRA_NUISANCE_FIELDS))
+    assert view.nuisance_fields == CRRA_NUISANCE_FIELDS
+    assert bool(view.nuisance_valid.all()) is True
 
 
 def test_expand_masks_clean_rows_and_keeps_satellite_nuisance_alignment():
