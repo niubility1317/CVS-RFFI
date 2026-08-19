@@ -6,6 +6,8 @@
 
 Task 8审计日期：2026-08-20
 
+Final fix实现提交：`3f3809b1527c840a72f6ff75edd92c74cd87e085`。
+
 ## Final fix wave追踪（2026-08-20）
 
 |ID|来源|规范化要求|实现目标|状态|验证|备注|
@@ -63,15 +65,16 @@ Task 8审计日期：2026-08-20
 
 ## 单一N607 release归档清单
 
-Task 8只完成发布准备，不创建归档、不连接N607。建议单一归档名为`adv3b02_muse_ssdg_code_4c66489ea058.tar.gz`，只包含下列3个Tasks 1–7生产文件；代码身份固定为`4c66489ea058f5fe8401c29a237a58708bd7451f`。
+本final fix wave只完成本地修复与发布准备，不创建归档、不连接N607。后续建议单一归档名为`adv3b02_muse_ssdg_code_3f3809b1527c.tar.gz`，只包含下列4个MUSE正式运行文件；代码身份固定为`3f3809b1527c840a72f6ff75edd92c74cd87e085`。两个factory迁移文件不被MUSE launcher消费，不加入该运行归档。
 
 |归档成员|远端相对落点|用途|
 |---|---|---|
 |`code/cvsrffi/muse_ssdg.py`|同名路径|MUSE日程、路由、loss、memory和训练期头|
 |`code/SSDG/train_ssdg.py`|同名路径|ADV3B02/MUSE训练接线和telemetry/checkpoint|
 |`code/scripts/launch_phase1_adv3b02_muse_ssdg_20260819.sh`|同名路径|M0–M3不可覆盖launcher与四场景评测闭环|
+|`code/scripts/eval_ssdg_sat_per_rx.py`|同名路径|唯一canonical target evaluator及strict checkpoint reconstruction|
 
-归档创建与N607落地仍为`pending`：后续runner须按最小流程只计算一次归档本地SHA和一次远端SHA，随后执行远端`python -m py_compile code/cvsrffi/muse_ssdg.py code/SSDG/train_ssdg.py`及`bash -n code/scripts/launch_phase1_adv3b02_muse_ssdg_20260819.sh`。不得增加成员级SHA、seal、receipt或额外发布gate。
+归档创建与N607落地仍为`pending`：后续runner须按最小流程只计算一次归档本地SHA和一次远端SHA，随后执行远端`python -m py_compile code/cvsrffi/muse_ssdg.py code/SSDG/train_ssdg.py code/scripts/eval_ssdg_sat_per_rx.py`及`bash -n code/scripts/launch_phase1_adv3b02_muse_ssdg_20260819.sh`。不得增加成员级SHA、seal、receipt或额外发布gate。
 
 ## 当前汇总与声明边界
 

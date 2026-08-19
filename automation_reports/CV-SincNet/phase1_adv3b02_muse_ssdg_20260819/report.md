@@ -285,10 +285,14 @@ Task 8不创建归档、不执行SSH/SCP、不启动实验。后续唯一runner�
 
 ### 发布与证据边界
 
-- final fix实现提交：本轮代码与测试提交；精确OID将在提交后写入本报告的发布闭环提交并由远端分支独立读回确认。
+- final fix实现提交：`3f3809b1527c840a72f6ff75edd92c74cd87e085`（`fix: close MUSE SSDG final review findings`）；该提交已由post-commit hook推送并读回同OID，最终证据提交仍将在本轮结束时再次独立核对远端分支OID。
 - 验证范围：聚焦RED/GREEN、完整MUSE/launcher/evaluator/protocol/factory pytest、changed Python `py_compile`、launcher `bash -n`、M3 dry-run、真实ADV3B02 one-batch no-query smoke和`git diff --check`。不连接N607，不执行target评测。
 - final fix合并测试：16个文件、175项全部通过；退出码0。
 - final fix真实checkpoint smoke：`E:/type10-7/local_artifacts/adv3b02_muse_ssdg_final_fix_20260820/m3_true_prototype_identity_strict_state_no_query_smoke.pt`，279,773字节；严格加载0 missing/0 unexpected；真实三头为global/local/prototype，prior alignment最大变化`0.06568282842636108`；稳定SHA mask选择2条strong与2条satellite；S3C strict状态回环和独立artifact回读通过；query、target truth与target eval计数均为0。
 - 真实M0–M3训练：未运行。
 - 真实clean及三LEO场景性能：未产生。
 - 当前状态仍是本地实现与验证闭合，不是`ARTIFACTS_COMPLETE`、`ANALYZED`或性能晋级证据。
+
+### Final fix后续单一release清单
+
+旧Task 8的3成员归档计划已由本final fix覆盖。后续若由唯一runner执行N607发布，归档代码身份必须为`3f3809b1527c840a72f6ff75edd92c74cd87e085`，并包含`code/cvsrffi/muse_ssdg.py`、`code/SSDG/train_ssdg.py`、`code/scripts/launch_phase1_adv3b02_muse_ssdg_20260819.sh`和`code/scripts/eval_ssdg_sat_per_rx.py`共4个运行文件；strict evaluator不能遗漏。两个活动factory迁移文件不被MUSE运行链消费，不加入该归档。不在本final fix wave创建归档或连接N607。
