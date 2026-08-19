@@ -3,6 +3,7 @@ set -euo pipefail
 
 ROOT="${ROOT:-/home/szu2070436088/2510044040/CV-SincNet}"
 PYTHON="${PYTHON:-/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python}"
+CONTROL_PYTHON="${CONTROL_PYTHON:-${PYTHON}}"
 RUN_ID="${RUN_ID:-phase1_adv3b02_muse_ssdg_20260819}"
 RUNS_ROOT="${RUNS_ROOT:-${ROOT}/runs/${RUN_ID}}"
 WISIG_PKL="${WISIG_PKL:-${ROOT}/Dataset_WigSig/ManySig.pkl}"
@@ -76,6 +77,12 @@ build_train_command() {
     --phase1_source_val_selection_only true
     --checkpoint_selection final_only
     --best_metric source_val_sat_hmean
+    --paic_guard_enabled true
+    --paic_guard_sat_ce_delta 0.12
+    --paic_guard_grad_delta 3.0
+    --paic_guard_reliable_drop 0.01
+    --paic_guard_cooldown_epochs 1
+    --paic_guard_sat_scale 0.75
     --use_muse_ssdg true
     --muse_level "${level}"
     --muse_epoch_basis unlabeled_loader
@@ -218,25 +225,140 @@ build_train_command() {
 }
 
 build_eval_command() {
-  local scenario="$1"
-  local candidate_root="$2"
-  local eval_scenario="${scenario}"
-  if [[ "${scenario}" == "clean" ]]; then
-    # The real evaluator always materializes clean fields alongside a scenario.
-    eval_scenario="leo_clear_weak"
-  fi
+  local candidate_root="$1"
   EVAL_CMD=(env
     "PYTHONPATH=${ROOT}/code:${ROOT}:${PYTHONPATH:-}"
     "CUDA_VISIBLE_DEVICES=${GPU}"
     "${PYTHON}" -u "${ROOT}/code/scripts/eval_ssdg_sat_per_rx.py"
     --ckpt "${candidate_root}/final_ssdg.pth"
-    --output_json "${candidate_root}/metrics_${scenario}.json"
+    --output_json "${candidate_root}/metrics_joint.json"
     --eval_on unseen_rx
-    --scenarios "${eval_scenario}"
+    --scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak
     --device cuda:0
     --max_batches -1
     --sat_seed "${SEED}"
   )
+}
+
+split_joint_metrics() {
+  local candidate_root="$1"
+  local joint_json="${candidate_root}/metrics_joint.json"
+  local error_file="${candidate_root}/metrics_split_error.txt"
+  "${CONTROL_PYTHON}" -c '
+import json
+import sys
+from pathlib import Path
+
+joint_path = Path(sys.argv[1])
+output_root = Path(sys.argv[2])
+error_path = Path(sys.argv[3])
+leo_scenarios = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
+all_scenarios = ("clean", *leo_scenarios)
+
+def fail(scenario, message):
+    error_path.write_text(f"EVAL_FAILED_{scenario.upper()}\n{message}\n", encoding="utf-8")
+    raise SystemExit(31)
+
+def checked_metric(row, prefix, scenario):
+    required = (f"{prefix}_acc", f"{prefix}_correct", f"{prefix}_total")
+    if any(key not in row for key in required):
+        fail(scenario, "missing metric fields")
+    correct = int(row[required[1]])
+    total = int(row[required[2]])
+    accuracy = float(row[required[0]])
+    if total <= 0 or correct < 0 or correct > total:
+        fail(scenario, "invalid metric counts")
+    expected = 100.0 * correct / total
+    if abs(accuracy - expected) > 1e-6:
+        fail(scenario, "metric accuracy does not match counts")
+    return correct, total, expected
+
+error_path.unlink(missing_ok=True)
+data = json.loads(joint_path.read_text(encoding="utf-8"))
+rows = data.get("rows")
+if not isinstance(rows, list) or not rows:
+    fail("clean", "joint evaluator returned no rows")
+
+common_keys = ("name", "rx_idx", "rx_label", "days_label")
+clean_by_key = {}
+for row in rows:
+    correct, total, accuracy = checked_metric(row, "clean", "clean")
+    identity = tuple(str(row.get(key, "")) for key in common_keys)
+    normalized = {
+        **{key: row.get(key) for key in common_keys},
+        "scenario": "clean",
+        "tx_acc": accuracy,
+        "tx_correct": correct,
+        "tx_total": total,
+    }
+    previous = clean_by_key.get(identity)
+    if previous is not None and previous != normalized:
+        fail("clean", "inconsistent repeated clean metrics")
+    clean_by_key[identity] = normalized
+
+normalized_rows = {"clean": list(clean_by_key.values())}
+for scenario in leo_scenarios:
+    selected = [row for row in rows if str(row.get("scenario")) == scenario]
+    if not selected:
+        fail(scenario, "joint evaluator omitted scenario rows")
+    normalized_rows[scenario] = []
+    for row in selected:
+        correct, total, accuracy = checked_metric(row, "sat", scenario)
+        normalized_rows[scenario].append(
+            {
+                **{key: row.get(key) for key in common_keys},
+                "scenario": scenario,
+                "tx_acc": accuracy,
+                "tx_correct": correct,
+                "tx_total": total,
+            }
+        )
+
+payloads = {}
+for scenario in all_scenarios:
+    scenario_rows = normalized_rows[scenario]
+    correct = sum(int(row["tx_correct"]) for row in scenario_rows)
+    total = sum(int(row["tx_total"]) for row in scenario_rows)
+    if total <= 0:
+        fail(scenario, "scenario aggregate has no samples")
+    aggregate = {
+        "scenario": scenario,
+        "tx_acc": 100.0 * correct / total,
+        "tx_correct": correct,
+        "tx_total": total,
+    }
+    payloads[scenario] = {
+        "schema": "ssdg_phase1_scenario_eval_v1",
+        "source_schema": data.get("schema"),
+        "checkpoint": data.get("checkpoint"),
+        "checkpoint_epoch": data.get("checkpoint_epoch"),
+        "run_name": data.get("run_name"),
+        "reconstruction": data.get("reconstruction"),
+        "eval_on": data.get("eval_on"),
+        "group_loader": data.get("group_loader"),
+        "group_key": data.get("group_key"),
+        "selected_names": data.get("selected_names"),
+        "split": data.get("split"),
+        "sat_seed": data.get("sat_seed"),
+        "scenario": scenario,
+        "aggregate": aggregate,
+        "rows": scenario_rows,
+    }
+
+for scenario in all_scenarios:
+    payload = payloads[scenario]
+    (output_root / f"metrics_{scenario}.json").write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    aggregate = payload["aggregate"]
+    (output_root / f"eval_{scenario}.log").write_text(
+        ("[MUSE-EVAL-SPLIT] scenario={scenario} tx_acc={tx_acc:.6f} "
+         "correct={tx_correct} total={tx_total}\n").format(**aggregate)
+        + f"source={joint_path}\n",
+        encoding="utf-8",
+    )
+' "${joint_json}" "${candidate_root}" "${error_file}"
 }
 
 write_config() {
@@ -255,14 +377,16 @@ run_candidate() {
   local status
   capabilities="$(capability_label "${level}")"
   build_train_command "${level}" "${candidate_root}"
+  build_eval_command "${candidate_root}"
 
   echo "[MUSE-CANDIDATE] candidate=${level} capabilities=${capabilities} output=${candidate_root} seed=${SEED} epochs=200"
   printf '[MUSE-TRAIN-CMD] '; printf '%q ' "${TRAIN_CMD[@]}"; printf '\n'
+  printf '[MUSE-EVAL-CMD] scenarios=clean,leo_clear_weak,leo_low_elev_weak,leo_rain_weak log=%s ' "${candidate_root}/eval_joint.log"
+  printf '%q ' "${EVAL_CMD[@]}"
+  printf '\n'
   for scenario in clean leo_clear_weak leo_low_elev_weak leo_rain_weak; do
-    build_eval_command "${scenario}" "${candidate_root}"
-    printf '[MUSE-EVAL-CMD] scenario=%s log=%s ' "${scenario}" "${candidate_root}/eval_${scenario}.log"
-    printf '%q ' "${EVAL_CMD[@]}"
-    printf '\n'
+    printf '[MUSE-EVAL-OUTPUT] scenario=%s metrics=%s log=%s\n' \
+      "${scenario}" "${candidate_root}/metrics_${scenario}.json" "${candidate_root}/eval_${scenario}.log"
   done
   if [[ "${DRY_RUN}" == "1" ]]; then
     return 0
@@ -286,25 +410,33 @@ run_candidate() {
     return 5
   fi
 
-  for scenario in clean leo_clear_weak leo_low_elev_weak leo_rain_weak; do
-    build_eval_command "${scenario}" "${candidate_root}"
-    if ! "${EVAL_CMD[@]}" > "${candidate_root}/eval_${scenario}.log" 2>&1; then
-      status="EVAL_FAILED_${scenario^^}"
-      printf '%s\n' "${status}" > "${candidate_root}/status.txt"
-      echo "[MUSE-ERROR] candidate=${level} status=${status}; training outputs preserved" >&2
-      return 6
+  if ! "${EVAL_CMD[@]}" > "${candidate_root}/eval_joint.log" 2>&1; then
+    printf 'EVAL_FAILED_JOINT\n' > "${candidate_root}/status.txt"
+    echo "[MUSE-ERROR] candidate=${level} status=EVAL_FAILED_JOINT; training outputs preserved" >&2
+    return 6
+  fi
+  if [[ ! -s "${candidate_root}/eval_joint.log" || ! -s "${candidate_root}/metrics_joint.json" ]]; then
+    printf 'EVAL_FAILED_JOINT\n' > "${candidate_root}/status.txt"
+    echo "[MUSE-ERROR] candidate=${level} status=EVAL_FAILED_JOINT; empty joint artifact" >&2
+    return 7
+  fi
+  if ! split_joint_metrics "${candidate_root}"; then
+    status="$(sed -n '1p' "${candidate_root}/metrics_split_error.txt" 2>/dev/null || printf 'EVAL_FAILED_METRICS_SPLIT')"
+    if [[ "${status}" != EVAL_FAILED_* ]]; then
+      status="EVAL_FAILED_METRICS_SPLIT"
     fi
+    printf '%s\n' "${status}" > "${candidate_root}/status.txt"
+    echo "[MUSE-ERROR] candidate=${level} status=${status}; training outputs preserved" >&2
+    return 8
+  fi
+
+  for scenario in clean leo_clear_weak leo_low_elev_weak leo_rain_weak; do
     if [[ ! -s "${candidate_root}/eval_${scenario}.log" || ! -s "${candidate_root}/metrics_${scenario}.json" ]]; then
       status="EVAL_FAILED_${scenario^^}"
       printf '%s\n' "${status}" > "${candidate_root}/status.txt"
-      echo "[MUSE-ERROR] candidate=${level} status=${status}; empty evaluation artifact" >&2
-      return 7
+      echo "[MUSE-ERROR] candidate=${level} status=${status}; empty split artifact" >&2
+      return 9
     fi
-  done
-
-  for scenario in clean leo_clear_weak leo_low_elev_weak leo_rain_weak; do
-    [[ -s "${candidate_root}/eval_${scenario}.log" ]]
-    [[ -s "${candidate_root}/metrics_${scenario}.json" ]]
   done
   printf 'ARTIFACTS_COMPLETE\n' > "${candidate_root}/status.txt"
   echo "[MUSE-COMPLETE] candidate=${level} status=ARTIFACTS_COMPLETE root=${candidate_root}"

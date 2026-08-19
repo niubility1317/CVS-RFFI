@@ -5070,15 +5070,35 @@ def _move_muse_unlabeled_batch(batch, device):
     return x_u, (domain_u, metadata_u)
 
 
-def _muse_epoch_pairs(labeled_loader, unlabeled_loader, *, use_muse: bool):
-    """Yield a legacy epoch or an unlabeled-length MUSE epoch.
+def _muse_epoch_pairs(
+    labeled_loader,
+    unlabeled_loader,
+    *,
+    use_muse: bool,
+    use_unlabeled_step_budget: bool = False,
+):
+    """Yield a legacy epoch or an unlabeled-length MUSE ablation epoch.
 
     MUSE owns the joint epoch length.  Each U_s batch is consumed exactly once,
-    while L_s is restarted only when its iterator is exhausted.
+    while L_s is restarted only when its iterator is exhausted.  M0 uses only
+    ``len(unlabeled_loader)`` as its step budget and never fetches a U_s batch.
     """
 
     if not bool(use_muse):
-        for labeled_batch in labeled_loader:
+        if not bool(use_unlabeled_step_budget):
+            for labeled_batch in labeled_loader:
+                yield labeled_batch, None
+            return
+        labeled_iter = iter(labeled_loader)
+        for _ in range(len(unlabeled_loader)):
+            try:
+                labeled_batch = next(labeled_iter)
+            except StopIteration:
+                labeled_iter = iter(labeled_loader)
+                try:
+                    labeled_batch = next(labeled_iter)
+                except StopIteration as exc:
+                    raise RuntimeError("MUSE M0 requires a non-empty labeled_loader") from exc
             yield labeled_batch, None
         return
     labeled_iter = iter(labeled_loader)
@@ -5092,6 +5112,17 @@ def _muse_epoch_pairs(labeled_loader, unlabeled_loader, *, use_muse: bool):
             except StopIteration as exc:
                 raise RuntimeError("MUSE requires a non-empty labeled_loader") from exc
         yield labeled_batch, unlabeled_batch
+
+
+def _legacy_unlabeled_active(args, *, muse_state, phase: str) -> bool:
+    """Keep the pre-MUSE pseudo-label path out of every MUSE ablation arm."""
+
+    return bool(
+        muse_state is None
+        and not bool(getattr(args, "use_muse_ssdg", False))
+        and str(phase) == "pseudo"
+        and bool(args.use_unlabeled)
+    )
 
 
 def _muse_config_from_args(args):
@@ -6316,15 +6347,21 @@ def train(args) -> int:
         if balanced_train_sampler is not None and hasattr(balanced_train_sampler, "set_epoch"):
             balanced_train_sampler.set_epoch(epoch)
         epoch_logs = []
+        legacy_unlabeled_active = _legacy_unlabeled_active(
+            args,
+            muse_state=muse_state,
+            phase=phase,
+        )
         unlabeled_iter = (
             iter(data_ctx["unlabeled_loader"])
-            if muse_state is None and phase == "pseudo" and bool(args.use_unlabeled)
+            if legacy_unlabeled_active
             else None
         )
         epoch_pairs = _muse_epoch_pairs(
             data_ctx["train_loader"],
             data_ctx["unlabeled_loader"],
             use_muse=muse_state is not None,
+            use_unlabeled_step_budget=bool(getattr(args, "use_muse_ssdg", False)),
         )
         for batch_idx, (labeled_batch, muse_unlabeled_batch) in enumerate(epoch_pairs, start=1):
             x_l, y_l, extra_l = move_batch(labeled_batch, device)
@@ -7568,7 +7605,7 @@ def train(args) -> int:
                     )
                     temporal_mask = muse_losses["stable"]
                     strong_mask = mask
-                elif phase == "pseudo" and bool(args.use_unlabeled):
+                elif legacy_unlabeled_active:
                     try:
                         unlabeled_batch = next(unlabeled_iter)
                     except StopIteration:

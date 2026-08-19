@@ -79,7 +79,7 @@ def test_muse_training_step_has_no_u_s_truth_or_in_loop_label_diagnostics():
         '                    if muse_unlabeled_batch is None:'
     )
     end = text.index(
-        '                elif phase == "pseudo" and bool(args.use_unlabeled):',
+        "                elif legacy_unlabeled_active:",
         start,
     )
     muse_train_block = text[start:end]
@@ -196,6 +196,68 @@ def test_muse_epoch_pairs_use_every_unlabeled_batch_and_cycle_labeled_batches():
         ("l1", "u3"),
         ("l0", "u4"),
     ]
+
+
+def test_m0_and_m1_share_unlabeled_length_optimizer_budget_without_m0_consuming_u_s():
+    class _BudgetOnlyLoader:
+        def __len__(self):
+            return 5
+
+        def __iter__(self):
+            raise AssertionError("M0 must not fetch or consume U_s batches")
+
+    m0_pairs = list(
+        train_ssdg._muse_epoch_pairs(
+            ["l0", "l1"],
+            _BudgetOnlyLoader(),
+            use_muse=False,
+            use_unlabeled_step_budget=True,
+        )
+    )
+    m1_pairs = list(
+        train_ssdg._muse_epoch_pairs(
+            ["l0", "l1"],
+            ["u0", "u1", "u2", "u3", "u4"],
+            use_muse=True,
+            use_unlabeled_step_budget=True,
+        )
+    )
+
+    assert len(m0_pairs) == len(m1_pairs) == 5
+    assert m0_pairs == [
+        ("l0", None),
+        ("l1", None),
+        ("l0", None),
+        ("l1", None),
+        ("l0", None),
+    ]
+    assert all(unlabeled_batch is None for _, unlabeled_batch in m0_pairs)
+    assert train_ssdg._initialize_muse_training_state(
+        _args("M0"), _TinyMUSEModel(), torch.device("cpu")
+    ) is None
+
+
+def test_m0_disables_legacy_u_s_loss_path_while_plain_legacy_keeps_it():
+    m0_args = _args("M0")
+    legacy_args = train_ssdg.build_arg_parser().parse_args(
+        ["--output_dir", "out", "--use_muse_ssdg", "false"]
+    )
+
+    assert not train_ssdg._legacy_unlabeled_active(
+        m0_args,
+        muse_state=None,
+        phase="pseudo",
+    )
+    assert train_ssdg._legacy_unlabeled_active(
+        legacy_args,
+        muse_state=None,
+        phase="pseudo",
+    )
+    assert not train_ssdg._legacy_unlabeled_active(
+        m0_args,
+        muse_state=None,
+        phase="label",
+    )
 
 
 def test_muse_levels_enable_capabilities_monotonically_and_m0_is_legacy():
