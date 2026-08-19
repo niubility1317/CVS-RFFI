@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import hashlib
 from numbers import Real
 from typing import Any, Mapping, Sequence
 
@@ -668,6 +669,59 @@ def _observation_vector(
     return result.reshape(-1)
 
 
+def stable_sample_keys(extra: Mapping[str, object]) -> list[tuple[int, int, int, int, int]]:
+    """Return batch-order-independent MUSE sample identities from metadata."""
+
+    if not isinstance(extra, Mapping):
+        raise TypeError("extra must be a metadata mapping")
+    names = ("rx_i", "day_i", "eq_i", "sig_i", "base_index")
+    columns: list[list[object]] = []
+    for name in names:
+        if name not in extra:
+            raise ValueError(f"extra is missing required MUSE key {name!r}")
+        value = extra[name]
+        if torch.is_tensor(value):
+            values = value.detach().cpu().reshape(-1).tolist()
+        elif isinstance(value, (str, bytes)):
+            values = [value]
+        else:
+            try:
+                values = list(value)  # type: ignore[arg-type]
+            except TypeError:
+                values = [value]
+        columns.append(values)
+    count = len(columns[0])
+    if count == 0 or any(len(column) != count for column in columns[1:]):
+        raise ValueError("MUSE metadata keys must be non-empty and have equal lengths")
+    try:
+        return [tuple(int(column[index]) for column in columns) for index in range(count)]
+    except (TypeError, ValueError) as exc:
+        raise ValueError("MUSE metadata keys must contain integer identities") from exc
+
+
+def select_satellite_student_mask(
+    keys: object,
+    epoch: int,
+    probability: float,
+    seed: int,
+) -> torch.Tensor:
+    """Select satellite students by stable identity, independent of batch order."""
+
+    if not isinstance(epoch, int) or isinstance(epoch, bool):
+        raise TypeError("epoch must be an int")
+    if not isinstance(seed, int) or isinstance(seed, bool):
+        raise TypeError("seed must be an int")
+    probability = _probability(probability)
+    normalized_keys = _temporal_keys(keys)
+    threshold = int(probability * (1 << 64))
+    selected = []
+    for rx, day, eq, sig, base_index in normalized_keys:
+        payload = f"{seed}|{epoch}|{rx}|{day}|{eq}|{sig}|{base_index}".encode("utf-8")
+        draw = int.from_bytes(hashlib.sha256(payload).digest()[:8], byteorder="big")
+        selected.append(draw < threshold)
+    return torch.tensor(selected, dtype=torch.bool)
+
+
 class MUSETemporalMemory:
     """Track per-key pseudo-label runs and expose stable observations after 3 hits."""
 
@@ -1136,6 +1190,8 @@ __all__ = [
     "weighted_soft_cross_entropy",
     "candidate_set_mask",
     "candidate_set_cross_entropy",
+    "stable_sample_keys",
+    "select_satellite_student_mask",
     "MUSETemporalMemory",
     "MUSEClassificationPrototypeBank",
     "MUSETrainingHeads",

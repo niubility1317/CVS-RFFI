@@ -64,6 +64,7 @@ try:
     from cvsrffi.muse_ssdg import (
         MUSEClassificationPrototypeBank,
         MUSEConfig,
+        MUSEScheduleState,
         MUSETemporalMemory,
         MUSETrainingHeads,
         candidate_set_cross_entropy,
@@ -73,6 +74,8 @@ try:
         js_head_disagreement,
         muse_schedule_for_epoch,
         route_muse_reliability,
+        select_satellite_student_mask,
+        stable_sample_keys,
         weighted_soft_cross_entropy,
     )
     from cvsrffi.eval import (
@@ -152,10 +155,11 @@ except ModuleNotFoundError:
     F = None
     GradScaler = autocast = DataLoader = None
     BalancedTxDomainBatchSampler = None
-    MUSEClassificationPrototypeBank = MUSEConfig = MUSETemporalMemory = None
+    MUSEClassificationPrototypeBank = MUSEConfig = MUSEScheduleState = MUSETemporalMemory = None
     MUSETrainingHeads = candidate_set_cross_entropy = candidate_set_mask = None
     compute_muse_reliability = geometric_fuse_probabilities = None
     js_head_disagreement = muse_schedule_for_epoch = route_muse_reliability = None
+    select_satellite_student_mask = stable_sample_keys = None
     weighted_soft_cross_entropy = None
     WiSigCompactDataset = WiSigSubsetDataset = None
     PrototypeMemoryBank = None
@@ -4173,6 +4177,18 @@ def _build_ssdg_epoch_telemetry_row(
     _flatten_telemetry(row, "protected", protected_metrics or {})
     _flatten_telemetry(row, "joint_guard", guard_state or {})
     _flatten_telemetry(row, "phase2_audit", phase2_audit_state or {})
+    for name, default in (
+        ("high_ratio", 0.0),
+        ("mid_ratio", 0.0),
+        ("low_ratio", 0.0),
+        ("effective_weight", 0.0),
+        ("head_js", 0.0),
+        ("proto_update_weight", 0.0),
+        ("pseudo_precision_diagnostic", "N/A"),
+    ):
+        row[f"train_muse_{name}"] = _telemetry_scalar(
+            train_logs.get(f"muse/{name}", default)
+        )
     for name in (
         "lambda_domain",
         "lambda_adv",
@@ -5370,6 +5386,8 @@ def _compute_muse_unlabeled_losses(
     candidate_loss = zero
     loss_satellite = zero
     loss_cross_receiver = zero
+    head_js = zero
+    proto_update_weight = zero
     route = route_muse_reliability(
         torch.zeros(sample_count, device=zero.device),
         high_threshold=float(args.muse_high_threshold),
@@ -5416,10 +5434,11 @@ def _compute_muse_unlabeled_losses(
             pseudo,
             muse_state["classification_prototypes"],
         )
+        head_js = js_head_disagreement(probabilities)
         reliability = compute_muse_reliability(
             confidence,
             margin,
-            js_head_disagreement(probabilities),
+            head_js,
             prototype_distance,
             stable.float(),
             weights=[
@@ -5460,7 +5479,15 @@ def _compute_muse_unlabeled_losses(
 
         if capabilities["satellite"] and schedule.pseudo_enabled:
             satellite = student_outputs.get("satellite")
-            accepted = route.high | route.mid
+            satellite_mask = metadata.get("satellite_mask")
+            if satellite_mask is None:
+                satellite_mask = torch.zeros(sample_count, device=zero.device, dtype=torch.bool)
+            satellite_mask = torch.as_tensor(
+                satellite_mask, device=zero.device, dtype=torch.bool
+            ).reshape(-1)
+            if satellite_mask.numel() != sample_count:
+                raise ValueError("satellite_mask must contain one value per U_s sample")
+            accepted = (route.high | route.mid) & satellite_mask
             if satellite is not None and bool(accepted.any()):
                 loss_satellite = F.kl_div(
                     F.log_softmax(satellite["tx_logits"][accepted].float(), dim=-1),
@@ -5470,6 +5497,11 @@ def _compute_muse_unlabeled_losses(
             loss_cross_receiver = _muse_cross_receiver_alignment(
                 strong["z_id"], pseudo, metadata.get("receivers"), route.high & stable
             )
+            proto_update_mask = route.high & stable
+            if bool(proto_update_mask.any()):
+                proto_update_weight = zero.new_tensor(
+                    float(args.muse_unlabeled_prototype_weight)
+                )
             muse_state["classification_prototypes"].observe(
                 strong["z_id"],
                 pseudo,
@@ -5503,6 +5535,8 @@ def _compute_muse_unlabeled_losses(
         "reliability": reliability,
         "stable": stable,
         "pseudo": pseudo,
+        "head_js": head_js,
+        "proto_update_weight": proto_update_weight,
     }
 
 
@@ -5523,6 +5557,29 @@ def _muse_checkpoint_state(muse_state) -> Dict[str, Any]:
         ].state_dict(),
         "muse_schedule_state": dict(vars(schedule)) if schedule is not None else None,
     }
+
+
+def _restore_muse_checkpoint_state(muse_state, checkpoint: Mapping[str, Any]) -> None:
+    """Restore MUSE-only training state without modifying deployment model weights."""
+
+    if muse_state is None:
+        return
+    if not isinstance(checkpoint, Mapping):
+        raise TypeError("MUSE checkpoint must be a mapping")
+    heads = checkpoint.get("muse_training_heads")
+    if heads is not None:
+        muse_state["heads"].load_state_dict(heads, strict=True)
+    memory = checkpoint.get("muse_temporal_memory")
+    if memory is not None:
+        muse_state["temporal_memory"].load_state_dict(memory)
+    prototypes = checkpoint.get("muse_classification_prototypes")
+    if prototypes is not None:
+        muse_state["classification_prototypes"].load_state_dict(prototypes)
+    schedule = checkpoint.get("muse_schedule_state")
+    if schedule is not None:
+        if not isinstance(schedule, Mapping):
+            raise ValueError("MUSE schedule state must be a mapping")
+        muse_state["schedule_state"] = MUSEScheduleState(**dict(schedule))
 
 
 def _compose_unlabeled_closed_loss(
@@ -5858,6 +5915,8 @@ def train(args) -> int:
         for name, param in model.named_parameters():
             param.requires_grad = any(key in name for key in ("cls_head", "dom_head", "adv_head"))
     muse_state = _initialize_muse_training_state(args, model, device)
+    if muse_state is not None and use_ckpt:
+        _restore_muse_checkpoint_state(muse_state, ckpt)
     trainable_params = int(sum(p.numel() for p in _optimizer_parameters(model, muse_state)))
     total_params = int(sum(p.numel() for p in model.parameters()))
     if muse_state is not None:
@@ -7429,40 +7488,28 @@ def train(args) -> int:
                         grl_lambda=float(schedule.grl_lambda),
                         generator=sat_gen,
                     )
-                    satellite_draw = False
-                    if muse_state["capabilities"]["satellite"] and float(schedule.p_sat) > 0.0:
-                        draw = torch.rand((), device=x_u.device, generator=sat_gen)
-                        satellite_draw = bool(draw.item() < float(schedule.p_sat))
-                    out_u_sat = out_u_nuisance if satellite_draw else None
                     meta_u = _meta_from_extra(extra_u) or {}
-                    memory_columns = {
-                        name: _as_plain_list(meta_u.get(name))
-                        for name in ("rx_i", "day_i", "eq_i", "sig_i", "base_index")
-                    }
-                    if len(memory_columns["base_index"]) < unlabeled_count:
-                        memory_columns["base_index"] = memory_columns["sig_i"]
-                    if all(
-                        len(values) >= unlabeled_count
-                        for values in memory_columns.values()
-                    ):
-                        memory_keys = [
-                            tuple(
-                                int(memory_columns[name][index])
-                                for name in ("rx_i", "day_i", "eq_i", "sig_i", "base_index")
-                            )
-                            for index in range(unlabeled_count)
-                        ]
-                    else:
-                        memory_keys = [
-                            (0, 0, 0, int(index), int(index))
-                            for index in range(unlabeled_count)
-                        ]
+                    memory_keys = stable_sample_keys(meta_u)
+                    if len(memory_keys) != unlabeled_count:
+                        raise ValueError("MUSE metadata cardinality does not match the U_s batch")
+                    satellite_mask = select_satellite_student_mask(
+                        memory_keys,
+                        epoch=int(epoch),
+                        probability=(
+                            float(schedule.p_sat)
+                            if muse_state["capabilities"]["satellite"]
+                            else 0.0
+                        ),
+                        seed=int(args.seed),
+                    ).to(device=x_u.device)
+                    out_u_sat = out_u_nuisance if bool(satellite_mask.any()) else None
                     muse_losses = _compute_muse_unlabeled_losses(
                         x_u=x_u,
                         metadata={
                             "domains": d_u,
                             "receivers": receiver_u,
                             "memory_keys": memory_keys,
+                            "satellite_mask": satellite_mask,
                             "epoch": int(epoch),
                         },
                         teacher_outputs=out_w,
@@ -7490,9 +7537,7 @@ def train(args) -> int:
                     loss_u_direct_metric = zero_u
                     loss_u_quarantine = zero_u
                     loss_u_zid_invariance = zero_u
-                    u_sat_pair_count = int(
-                        out_u_sat is not None and pseudo_total > 0
-                    ) * pseudo_total
+                    u_sat_pair_count = int(satellite_mask.sum().detach().item())
                     u_dm_info = {
                         "active": 0.0,
                         "selected": 0.0,
@@ -8669,6 +8714,34 @@ def train(args) -> int:
                     "train/pseudo_selected": pseudo_selected,
                     "train/pseudo_correct": pseudo_correct,
                     "train/pseudo_truth_available": pseudo_truth_available,
+                    "muse/high_ratio": muse_losses["route"].high.float().mean().detach()
+                    if muse_state is not None
+                    else 0.0,
+                    "muse/mid_ratio": muse_losses["route"].mid.float().mean().detach()
+                    if muse_state is not None
+                    else 0.0,
+                    "muse/low_ratio": muse_losses["route"].low.float().mean().detach()
+                    if muse_state is not None
+                    else 0.0,
+                    "muse/effective_weight": (
+                        float(muse_state["schedule_state"].lambda_u)
+                        * (
+                            float(args.muse_lambda_high)
+                            * muse_losses["route"].high.float().mean()
+                            + float(args.muse_lambda_mid)
+                            * muse_losses["route"].mid.float().mean()
+                            + float(args.muse_lambda_low_entropy)
+                            * muse_losses["route"].low.float().mean()
+                        )
+                    ).detach()
+                    if muse_state is not None
+                    else 0.0,
+                    "muse/head_js": muse_losses["head_js"].mean().detach()
+                    if muse_state is not None
+                    else 0.0,
+                    "muse/proto_update_weight": muse_losses["proto_update_weight"].detach()
+                    if muse_state is not None
+                    else 0.0,
                     "train/proto_pull_cos": proto_info.get("proto_pull_cos", float("nan")),
                     "train/proto_domain_align": proto_info.get("proto_domain_align", float("nan")),
                     "train/proto_push": proto_info.get("proto_push", float("nan")),
