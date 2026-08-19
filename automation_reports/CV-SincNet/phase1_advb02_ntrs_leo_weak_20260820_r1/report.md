@@ -39,7 +39,7 @@ NTRS按指导完整实现：40维分组物理描述符、fast/slow上下文、`L
 ## 精确启动命令
 
 ```bash
-nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_ntrs_leo_weak_20260820/11d2cfd4/workspace WISIG_PKL=/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl RUN_ID=phase1_advb02_ntrs_leo_weak_20260820_r1 RUNS_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_advb02_ntrs_leo_weak_20260820_r1 LOG_ROOT=/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_advb02_ntrs_leo_weak_20260820_r1 GPU=1 bash /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_ntrs_leo_weak_20260820/11d2cfd4/workspace/code/scripts/launch_phase1_advb02_ntrs_leo_weak_20260820.sh > /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_advb02_ntrs_leo_weak_20260820_r1.launcher.out 2>&1 &
+nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_ntrs_leo_weak_20260820/11d2cfd4/workspace WISIG_PKL=/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl RUN_ID=phase1_advb02_ntrs_leo_weak_20260820_r1 RUNS_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_advb02_ntrs_leo_weak_20260820_r1 LOG_ROOT=/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_advb02_ntrs_leo_weak_20260820_r1 GPU=1 bash /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_ntrs_leo_weak_20260820/11d2cfd4/workspace/code/scripts/launch_phase1_advb02_ntrs_leo_weak_20260820.sh </dev/null > /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_advb02_ntrs_leo_weak_20260820_r1.launcher.out 2>&1 &
 ```
 
 ## 技术停止规则
