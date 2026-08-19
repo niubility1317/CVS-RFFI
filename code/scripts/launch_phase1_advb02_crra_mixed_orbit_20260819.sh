@@ -29,10 +29,9 @@ candidate_enabled() {
 build_command() {
   local cid="$1"
   local crra_flag="--no_use_crra"
-  local sat_start="80"
+  local sat_start="17"
   if [[ "${cid}" == "ADVB02_CRRA_MIXED_ORBIT_E200" ]]; then
     crra_flag="--use_crra"
-    sat_start="17"
   fi
   CMD=(env
     "PYTHONPATH=${ROOT}/code:${ROOT}:${PYTHONPATH:-}"
@@ -43,6 +42,9 @@ build_command() {
     --labeled_ratio 0.07
     --unlabeled_ratio 0.63
     --source_val_ratio 0.30
+    --source_cal_ratio 0.15
+    --source_select_ratio 0.15
+    --phase1_source_role_protocol l_s_u_s_v_cal_v_select
     --output_dir "${RUNS_ROOT}/${cid}"
     --run_id "${RUN_ID}"
     --candidate_id "${cid}"
@@ -59,17 +61,17 @@ build_command() {
     --checkpoint_selection final_only
     --best_metric source_val_sat_hmean
     --use_unlabeled true
-    --use_sat_consistency
+    --no_use_sat_consistency
     --use_concat_sat_channel_aug
     --concat_sat_ce_only
+    --sat_training_mode concat_masked
     --concat_sat_ce_weight 1.0
     --sat_train_scenario mixed_orbit
     --sat_train_scenarios mixed_orbit
-    --sat_view_schedule "1@0.30:mixed_orbit;41@0.60:mixed_orbit;91@0.80:mixed_orbit"
     --sat_cons_start_epoch "${sat_start}"
     --sat_view_prob 1.0
     --sat_view_seed "${SEED}"
-    --lambda_sat_cls 0.68
+    --lambda_sat_cls 0.50
     --lambda_sat_cons 0.0
     --lambda_domain 1.0
     --lambda_adv 0.35
@@ -87,8 +89,10 @@ build_command() {
     --crra_start_epoch 17
     --crra_ramp_epochs 30
     --crra_target_adapter false
-    --lambda_crra_pair 0.05
-    --lambda_crra_sat_kl 0.05
+    --lambda_crra_pair 0.0
+    --lambda_crra_sat_kl 0.0
+    --lambda_crra_sat_shell 0.15
+    --crra_sat_shell_width_deg 12.0
     --lambda_crra_energy 0.001
     --lambda_crra_gate_l1 0.001
     --lambda_crra_nuisance 0.02
@@ -139,7 +143,7 @@ run_candidate() {
   return "${status}"
 }
 
-echo "[CRRA-RUN] run_id=${RUN_ID} dry_run=${DRY_RUN} gpu=${GPU} seed=${SEED} ratios=0.07/0.63/0.30 channel=mixed_orbit"
+echo "[CRRA-RUN] run_id=${RUN_ID} dry_run=${DRY_RUN} gpu=${GPU} seed=${SEED} ratios=0.07/0.63/0.15/0.15 roles=L_s/U_s/V_cal/V_select channel=mixed_orbit sat_training_mode=concat_masked kl=0 pair=0 shell=0.15"
 run_candidate ADV3B02_MIXED_ORBIT_E200
 run_candidate ADVB02_CRRA_MIXED_ORBIT_E200
 echo "[CRRA-DONE] run_id=${RUN_ID}"

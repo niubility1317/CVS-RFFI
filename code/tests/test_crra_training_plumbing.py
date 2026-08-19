@@ -12,15 +12,21 @@ if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
 from SSDG.train_ssdg import (  # noqa: E402
+    _crra_satellite_aux_regularizers_active,
     _crra_satellite_kl_active,
+    _resolve_sat_training_mode,
     build_arg_parser,
+    split_tx_rx_day_1_7_2_roles,
 )
 from cvsrffi.crra_training import (  # noqa: E402
     crra_gate_scale,
     validate_crra_phase1_config,
     validate_crra_phase1_scenarios,
 )
-from cvsrffi.losses import crra_nuisance_huber_loss  # noqa: E402
+from cvsrffi.losses import (  # noqa: E402
+    crra_nuisance_huber_loss,
+    crra_satellite_shell_loss,
+)
 
 
 def test_crra_schedule_has_identity_ramp_and_fixed_tail():
@@ -102,3 +108,63 @@ def test_nuisance_loss_rejects_field_dimension_drift():
             torch.zeros(2, 9),
             torch.tensor([True, True]),
         )
+
+
+def test_latest_guidance_resolves_pair_masked_concat_to_clean_anchor_plus_sat_aux():
+    args = SimpleNamespace(
+        sat_training_mode="concat_masked",
+        use_concat_sat_channel_aug=False,
+        concat_sat_ce_only=False,
+    )
+    assert _resolve_sat_training_mode(args) == "concat_masked"
+    assert args.use_concat_sat_channel_aug is True
+    assert args.concat_sat_ce_only is True
+    assert not _crra_satellite_aux_regularizers_active(args)
+
+
+def test_satellite_shell_loss_allows_bounded_class_shift():
+    clean_z = torch.tensor([[1.0, 0.0], [0.0, 1.0], [1.0, 0.0], [0.0, 1.0]])
+    clean_y = torch.tensor([0, 1, 0, 1])
+    sat_z = torch.tensor([[0.0, 1.0], [1.0, 0.0]], requires_grad=True)
+    sat_y = torch.tensor([0, 1])
+    loss, info = crra_satellite_shell_loss(
+        clean_z,
+        clean_y,
+        sat_z,
+        sat_y,
+        shell_width_rad=0.01,
+    )
+    assert float(loss.detach()) > 0.0
+    assert info["valid_count"] == 2
+    loss.backward()
+    assert sat_z.grad is not None
+
+
+def test_current_phase1_source_roles_are_four_way_and_disjoint():
+    rows = []
+    for tx_i in range(2):
+        for rx_i in range(2):
+            for sig_i in range(100):
+                rows.append(
+                    SimpleNamespace(
+                        tx_i=tx_i,
+                        rx_i=rx_i,
+                        day_i=0,
+                        eq_i=0,
+                        sig_i=sig_i,
+                    )
+                )
+    dataset = SimpleNamespace(index=rows)
+    labeled, unlabeled, v_cal, v_select = split_tx_rx_day_1_7_2_roles(
+        dataset,
+        labeled_ratio=0.07,
+        unlabeled_ratio=0.63,
+        source_cal_ratio=0.15,
+        source_select_ratio=0.15,
+    )
+    buckets = [set(labeled), set(unlabeled), set(v_cal), set(v_select)]
+    assert sum(map(len, buckets)) == len(rows)
+    assert all(not (buckets[i] & buckets[j]) for i in range(4) for j in range(i + 1, 4))
+    assert len(v_cal) > 0
+    assert len(v_select) > 0
+    assert len(labeled) / (len(labeled) + len(unlabeled)) <= 0.1

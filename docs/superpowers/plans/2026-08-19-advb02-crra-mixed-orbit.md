@@ -2,13 +2,19 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 在当前Phase1数据协议下，为ADVB02加入CRRA（Channel–Receiver Robust Adapter）并在历史`mixed_orbit`星地信道上实现可测量的信道/接收机干扰抑制。
+**Goal:** 在当前Phase1数据协议下，为ADVB02加入CRRA（Channel–Receiver Robust Adapter），把主线改为`concat_masked`拼接监督，并在历史`mixed_orbit`星地信道上实现可测量的信道/接收机干扰抑制。
 
 **Architecture:** CRRA位于身份分支共享Sinc/IQ与高频特征之后，只修正身份路径的时间/频率特征；域分支继续读取未稳健化的共享特征，PA分支保留直通路径。CRRA由选择性复数I/Q收缩白化、零初始化低秩深度卷积残差、stop-gradient条件向量、源域支持门和最小干预约束组成。Phase1只使用同一次`mixed_orbit`生成的卫星视图及其元数据，不引入目标接收机访问或Phase2在线校准。
 
 **Tech Stack:** Python 3、PyTorch、pytest、现有ADVB02双CV-SincNet、现有`mixed_orbit`卫星仿真与SSDG训练器、`ssr-gpu`环境。
 
 **Spec:** `E:/codex/home/attachments/2cf19e77-82bf-42ec-9cbe-3e24d0198789/pasted-text.txt`；逐条映射见`analysis/advb02_crra_traceability.md`。
+
+## 最新指导覆盖
+
+- 星地训练增强固定为历史`mixed_orbit`；`leo_*_weak`只保留为规定的评测场景，不进入本轮训练。
+- 主训练路径使用`concat_masked`：clean分支保留完整主损失，satellite分支单独前向并使用TX CE、同视图nuisance监督和有界类别壳层；首轮关闭clean-satellite点对点pair与KL。
+- 当前Phase1 launcher显式使用`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`；`V_select`用于选模，`V_cal`用于校准/导出，旧三段`L/U/V`仅保留历史兼容。
 
 ## Global Constraints
 
@@ -223,7 +229,7 @@ Expected: FAIL because CRRA parser/config/schedule/loss functions are not wired.
 
 - [x] **Step 3: Implement parser, schedule, losses, and model calls**
 
-Add `--use_crra`, `--crra_rank 8`, `--crra_alpha_max 0.25`, `--crra_start_epoch 17`, `--crra_ramp_epochs 30`, `--crra_scenario mixed_orbit`, `--lambda_crra_pair`, `--lambda_crra_sat_kl`, `--lambda_crra_energy`, `--lambda_crra_gate_l1`, `--lambda_crra_nuisance`, `--lambda_crra_condition_tx_adv 0.02`, and `--crra_target_adapter` defaulting to false. Add an explicit schedule helper and include CRRA terms in the labeled clean/satellite path without changing existing pair ordering. Use `z_id` clean/satellite cosine consistency, existing satellite KL, correction energy/gate L1, finite same-view nuisance Huber regression, and optional condition TX adversary. CRRA losses must be zero before their scheduled epoch and must not create a second channel view. Add raw/weighted telemetry keys for pair cosine, correction energy, alpha, gate, nuisance loss, and condition TX accuracy.
+Add `--use_crra`, `--sat_training_mode concat_masked`, `--crra_rank 8`, `--crra_alpha_max 0.25`, `--crra_start_epoch 17`, `--crra_ramp_epochs 30`, `--crra_scenario mixed_orbit`, `--lambda_crra_pair`, `--lambda_crra_sat_kl`, `--lambda_crra_sat_shell`, `--crra_sat_shell_width_deg`, `--lambda_crra_energy`, `--lambda_crra_gate_l1`, `--lambda_crra_nuisance`, `--lambda_crra_condition_tx_adv 0.02`, and `--crra_target_adapter` defaulting to false. Keep the clean branch on the full ADVB02 objective and use a separate satellite forward for supervised TX CE, finite same-view nuisance Huber regression, and the bounded class shell. The first screen sets pair/KL to zero; the code retains them as independently testable optional losses. CRRA losses must be zero before their scheduled epoch and must not create a second channel view. Add raw/weighted telemetry keys for satellite CE, shell, pair/KL, correction energy, alpha, gate, nuisance loss, and condition TX accuracy.
 
 - [x] **Step 4: Run focused and adjacent training tests**
 
@@ -322,7 +328,7 @@ Run the required direct N607 preflight first. Sync the local release archive wit
 
 - [ ] **Step 4: Launch the minimal same-row screen**
 
-Use the historical Phase1 split and `mixed_orbit` for every satellite row. Start with the existing control and one CRRA candidate, one paired seed, and the smallest registered Target5/Target25 screen. Verify PID/CWD/cmdline/GPU/log growth once. Stop only for protocol violation, wrong checkout, output collision, launcher fault, or missing prediction closure.
+Use the current Phase1 `L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15` role split and `mixed_orbit` for every satellite training row. Start with the existing control and one CRRA candidate, one paired seed, and the smallest registered screen. Verify PID/CWD/cmdline/GPU/log growth once. Stop only for protocol violation, wrong checkout, output collision, launcher fault, or missing prediction closure.
 
 - [ ] **Step 5: Score and analyze without mixing rows**
 
@@ -343,6 +349,7 @@ git commit -m "exp: register ADVB02 CRRA mixed-orbit Phase1 screen"
 - Stop-gradient condition vector and source support gate: Tasks 1 and 4.
 - PA bypass and unmodified domain representation: Task 2.
 - Clean/satellite pair cosine, satellite KL, energy/gate regularization: Task 4.
+- `concat_masked`clean-anchor plus supervised satellite CE/nuisance/shell: Task 4 and the latest-guidance override.
 - Same-view `mixed_orbit` nuisance regression: Task 3 and Task 4.
 - E1–16/E17–46/E47 schedule: Tasks 1 and 4.
 - Phase1 target-access boundary and `mixed_orbit` lock: Task 5.

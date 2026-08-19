@@ -59,6 +59,63 @@ def crra_nuisance_huber_loss(
     }
 
 
+def crra_satellite_shell_loss(
+    clean_z: Optional[torch.Tensor],
+    clean_y: Optional[torch.Tensor],
+    sat_z: Optional[torch.Tensor],
+    sat_y: Optional[torch.Tensor],
+    *,
+    shell_width_rad: float = math.radians(12.0),
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    """Keep satellite identity features inside a detached clean-class shell."""
+
+    if not torch.is_tensor(sat_z):
+        ref = clean_z if torch.is_tensor(clean_z) else torch.tensor(0.0)
+        return ref.sum() * 0.0, {"valid_count": 0.0, "active_classes": 0.0, "mean_excess_rad": 0.0}
+    zero = sat_z.sum() * 0.0
+    if not all(torch.is_tensor(value) for value in (clean_z, clean_y, sat_y)):
+        return zero, {"valid_count": 0.0, "active_classes": 0.0, "mean_excess_rad": 0.0}
+    if clean_z.dim() != 2 or sat_z.dim() != 2 or clean_z.size(1) != sat_z.size(1):
+        raise ValueError("CRRA shell clean and satellite features must be aligned rank-2 tensors")
+    clean_y = clean_y.to(device=clean_z.device).view(-1).long()
+    sat_y = sat_y.to(device=sat_z.device).view(-1).long()
+    if clean_z.size(0) != clean_y.numel() or sat_z.size(0) != sat_y.numel():
+        raise ValueError("CRRA shell features and labels must have aligned batch dimensions")
+    clean_unit = safe_l2_normalize(
+        torch.nan_to_num(clean_z.float(), nan=0.0, posinf=0.0, neginf=0.0), dim=1
+    ).detach()
+    sat_unit = safe_l2_normalize(
+        torch.nan_to_num(sat_z.float(), nan=0.0, posinf=0.0, neginf=0.0), dim=1
+    )
+    width = max(0.0, float(shell_width_rad))
+    losses = []
+    excess_values = []
+    active_classes = 0
+    for cls in torch.unique(sat_y):
+        clean_mask = clean_y == cls.to(device=clean_y.device)
+        sat_mask = sat_y == cls.to(device=sat_y.device)
+        if not bool(clean_mask.any()) or not bool(sat_mask.any()):
+            continue
+        center = safe_l2_normalize(
+            clean_unit[clean_mask].mean(dim=0, keepdim=True), dim=1
+        ).squeeze(0).detach()
+        clean_angles = torch.acos(torch.clamp(clean_unit[clean_mask] @ center, -1.0 + 1e-6, 1.0 - 1e-6))
+        clean_radius = clean_angles.max().detach()
+        sat_angles = torch.acos(torch.clamp(sat_unit[sat_mask] @ center, -1.0 + 1e-6, 1.0 - 1e-6))
+        excess = torch.relu(sat_angles - (clean_radius + width))
+        losses.append(excess.mean())
+        excess_values.append(excess.detach())
+        active_classes += 1
+    if not losses:
+        return zero, {"valid_count": 0.0, "active_classes": 0.0, "mean_excess_rad": 0.0}
+    excess_all = torch.cat(excess_values)
+    return torch.stack(losses).mean(), {
+        "valid_count": float(sat_y.numel()),
+        "active_classes": float(active_classes),
+        "mean_excess_rad": float(excess_all.mean().item()),
+    }
+
+
 def covariance_orth_loss(z_id: torch.Tensor, z_dom: torch.Tensor) -> torch.Tensor:
     z_id = torch.nan_to_num(z_id.float(), nan=0.0, posinf=0.0, neginf=0.0)
     z_dom = torch.nan_to_num(z_dom.float(), nan=0.0, posinf=0.0, neginf=0.0)

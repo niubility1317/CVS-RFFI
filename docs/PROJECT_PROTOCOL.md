@@ -1,6 +1,6 @@
 # CVS项目场景与数据协议
 
-版本：2026-07-18
+版本：2026-08-19
 协议模式：`p2_min_v1`
 
 ## 文件职责
@@ -36,7 +36,7 @@ U_s = {(x_j,d_j): receiver(x_j) ∈ R_s, y_j hidden or unavailable}
 rho_label ≤ 0.1
 ```
 
-当前统一划分语义为相对source全池`0.07/0.63/0.30`：有TX标签训练集、无TX标签训练集、互斥source validation。三部分均不得包含`R_t`。Phase1可使用source clean与卫星增强训练，但这不授予Phase2访问这些样本或派生状态的权限。
+当前统一划分语义为相对source全池`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`：有TX标签训练集、无TX标签训练集、校准validation与选模validation。四个角色均不得包含`R_t`，物理样本ID两两不交；`V_select`只能用于源侧模型选择，`V_cal`只能用于源侧校准与导出，不得反向传播、更新EMA或更新其他持久状态。Phase1可使用source clean与卫星增强训练，但这不授予Phase2访问这些样本或派生状态的权限。
 
 ## Phase2最小数据协议
 

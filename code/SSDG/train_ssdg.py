@@ -87,6 +87,7 @@ try:
         source_episode_three_sigma_loss,
         tx_conditional_domain_invariance_loss,
         crra_nuisance_huber_loss,
+        crra_satellite_shell_loss,
         unlabeled_known_acceptance_quarantine_loss,
         zid_compactness_loss,
     )
@@ -150,6 +151,7 @@ except ModuleNotFoundError:
     source_episode_three_sigma_loss = None
     tx_conditional_domain_invariance_loss = None
     crra_nuisance_huber_loss = None
+    crra_satellite_shell_loss = None
     unlabeled_known_acceptance_quarantine_loss = None
     zid_compactness_loss = None
     export_phase2_prototypes = None
@@ -193,6 +195,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--labeled_ratio", type=float, default=0.08)
     parser.add_argument("--unlabeled_ratio", type=float, default=0.72)
     parser.add_argument("--source_val_ratio", type=float, default=0.20)
+    parser.add_argument("--source_cal_ratio", type=float, default=0.0)
+    parser.add_argument("--source_select_ratio", type=float, default=0.0)
+    parser.add_argument(
+        "--phase1_source_role_protocol",
+        type=str,
+        default="legacy_l_u_v",
+        choices=["l_s_u_s_v_cal_v_select", "legacy_l_u_v"],
+    )
     parser.add_argument("--pseudo_threshold_mode", type=str, default="rx_day_quantile", choices=["global", "rx_day_quantile"])
     parser.add_argument("--pseudo_quantile", type=float, default=0.70)
     parser.add_argument("--tau_conf", type=float, default=0.0, help="Alias for --tau_min used by older launchers.")
@@ -308,6 +318,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--no_use_concat_sat_channel_aug", dest="use_concat_sat_channel_aug", action="store_false")
     parser.add_argument("--concat_sat_ce_only", dest="concat_sat_ce_only", action="store_true", default=False)
     parser.add_argument("--no_concat_sat_ce_only", dest="concat_sat_ce_only", action="store_false")
+    parser.add_argument(
+        "--sat_training_mode",
+        type=str,
+        default="",
+        choices=["", "disabled", "view_aux", "concat_ce_only", "concat_full", "concat_masked", "concat_legacy"],
+    )
     parser.add_argument("--concat_sat_ce_weight", type=float, default=1.0)
     parser.add_argument("--concat_sat_deduplicate_tx_ce", type=str2bool, default=False)
     parser.add_argument("--concat_sat_teacher_clean_only", type=str2bool, default=False)
@@ -327,6 +343,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--crra_target_adapter", type=str2bool, default=False)
     parser.add_argument("--lambda_crra_pair", type=float, default=0.05)
     parser.add_argument("--lambda_crra_sat_kl", type=float, default=0.05)
+    parser.add_argument("--lambda_crra_sat_shell", type=float, default=0.0)
+    parser.add_argument("--crra_sat_shell_width_deg", type=float, default=12.0)
     parser.add_argument("--lambda_crra_energy", type=float, default=0.001)
     parser.add_argument("--lambda_crra_gate_l1", type=float, default=0.001)
     parser.add_argument("--lambda_crra_nuisance", type=float, default=0.02)
@@ -1026,6 +1044,68 @@ def split_tx_rx_day_1_7_2(
     return sorted(labeled), sorted(unlabeled), sorted(val)
 
 
+def split_tx_rx_day_1_7_2_roles(
+    dataset,
+    *,
+    labeled_ratio: float = 0.07,
+    unlabeled_ratio: float = 0.63,
+    source_cal_ratio: float = 0.15,
+    source_select_ratio: float = 0.15,
+) -> Tuple[List[int], List[int], List[int], List[int]]:
+    """Build the current Phase1 L_s/U_s/V_cal/V_select source split.
+
+    The legacy grouped splitter remains the allocator for L_s/U_s and the
+    combined validation pool. The combined pool is then deterministically
+    partitioned into two disjoint validation roles; V_select is the only
+    selection input and V_cal is reserved for calibration/export.
+    """
+    ratios = (
+        float(labeled_ratio),
+        float(unlabeled_ratio),
+        float(source_cal_ratio),
+        float(source_select_ratio),
+    )
+    if any(value <= 0.0 for value in ratios):
+        raise ValueError("Phase1 source role ratios must all be positive")
+    if abs(sum(ratios) - 1.0) > 1e-6:
+        raise ValueError(f"Phase1 source role ratios must sum to 1.0, got {sum(ratios)}")
+    train_total = ratios[0] + ratios[1]
+    rho_label = ratios[0] / train_total if train_total > 0.0 else float("inf")
+    if not math.isfinite(rho_label) or rho_label > 0.1 + 1e-8:
+        raise ValueError(
+            "Phase1 weak-label protocol requires rho_label=|L_s|/(|L_s|+|U_s|)<=0.1, "
+            f"got {rho_label:.6f}"
+        )
+    labeled, unlabeled, validation = split_tx_rx_day_1_7_2(
+        dataset,
+        labeled_ratio=ratios[0],
+        unlabeled_ratio=ratios[1],
+        source_val_ratio=ratios[2] + ratios[3],
+    )
+    ordered_validation = sorted(
+        validation,
+        key=lambda index: (
+            int(getattr(dataset.index[int(index)], "tx_i", 0)),
+            int(getattr(dataset.index[int(index)], "rx_i", 0)),
+            int(getattr(dataset.index[int(index)], "day_i", 0)),
+            int(getattr(dataset.index[int(index)], "eq_i", 0)),
+            int(getattr(dataset.index[int(index)], "sig_i", index)),
+            int(index),
+        ),
+    )
+    validation_total = len(ordered_validation)
+    if validation_total < 2:
+        raise ValueError("Phase1 current source-role split requires both V_cal and V_select")
+    cal_fraction = ratios[2] / (ratios[2] + ratios[3])
+    cal_count = int(round(validation_total * cal_fraction))
+    cal_count = min(validation_total - 1, max(1, cal_count))
+    v_cal = sorted(ordered_validation[:cal_count])
+    v_select = sorted(ordered_validation[cal_count:])
+    if set(v_cal) & set(v_select):
+        raise ValueError("Phase1 V_cal and V_select physical indices overlap")
+    return sorted(labeled), sorted(unlabeled), v_cal, v_select
+
+
 def split_tx_rx_day_1_6_3(
     dataset,
     *,
@@ -1447,19 +1527,41 @@ def _build_source_split_receipt(
     unlabeled_indices: Sequence[Any],
     source_validation_indices: Sequence[Any],
     wisig_pkl_sha256: str,
+    source_calibration_indices: Sequence[Any] | None = None,
+    source_selection_indices: Sequence[Any] | None = None,
     requested_labeled_ratio: float | None = None,
     requested_unlabeled_ratio: float | None = None,
     requested_source_val_ratio: float | None = None,
+    requested_source_cal_ratio: float | None = None,
+    requested_source_select_ratio: float | None = None,
+    source_role_protocol: str = "legacy_l_u_v",
     realized_rho_tolerance: float = 0.002,
     realized_source_val_tolerance: float = 0.002,
 ) -> Dict[str, Any]:
     labeled_size = int(len(labeled_indices))
     unlabeled_size = int(len(unlabeled_indices))
+    source_calibration_indices = (
+        list(source_calibration_indices)
+        if source_calibration_indices is not None
+        else list(source_validation_indices)
+    )
+    source_selection_indices = (
+        list(source_selection_indices)
+        if source_selection_indices is not None
+        else []
+    )
+    source_calibration_size = int(len(source_calibration_indices))
+    source_selection_size = int(len(source_selection_indices))
     source_validation_size = int(len(source_validation_indices))
     train_size = labeled_size + unlabeled_size
-    source_pool_size = train_size + source_validation_size
+    role_validation_size = (
+        source_calibration_size + source_selection_size
+        if str(source_role_protocol) == "l_s_u_s_v_cal_v_select"
+        else source_validation_size
+    )
+    source_pool_size = train_size + role_validation_size
     realized_rho = float(labeled_size) / float(max(1, train_size))
-    realized_source_val_fraction = float(source_validation_size) / float(
+    realized_source_val_fraction = float(role_validation_size) / float(
         max(1, source_pool_size)
     )
     if requested_labeled_ratio is None:
@@ -1504,13 +1606,33 @@ def _build_source_split_receipt(
         "source_validation_indices_sha256": _canonical_json_sha256(
             [int(value) for value in source_validation_indices]
         ),
+        "source_calibration_indices_sha256": _canonical_json_sha256(
+            [int(value) for value in source_calibration_indices]
+        ),
+        "source_selection_indices_sha256": _canonical_json_sha256(
+            [int(value) for value in source_selection_indices]
+        ),
         "labeled_size": labeled_size,
         "unlabeled_size": unlabeled_size,
         "source_validation_size": source_validation_size,
+        "source_role_validation_size": role_validation_size,
+        "source_calibration_size": source_calibration_size,
+        "source_selection_size": source_selection_size,
+        "source_role_protocol": str(source_role_protocol),
         "source_pool_size": source_pool_size,
         "requested_labeled_ratio": float(requested_labeled_ratio),
         "requested_unlabeled_ratio": float(requested_unlabeled_ratio),
         "requested_source_val_ratio": float(requested_source_val_ratio),
+        "requested_source_cal_ratio": (
+            float(requested_source_cal_ratio)
+            if requested_source_cal_ratio is not None
+            else float(source_calibration_size) / float(max(1, source_pool_size))
+        ),
+        "requested_source_select_ratio": (
+            float(requested_source_select_ratio)
+            if requested_source_select_ratio is not None
+            else float(source_selection_size) / float(max(1, source_pool_size))
+        ),
         "requested_rho_label": requested_rho,
         "realized_rho_label": realized_rho,
         "realized_source_val_fraction": realized_source_val_fraction,
@@ -1564,16 +1686,38 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         seed=int(args.seed),
         build_index=True,
     )
-    split_fn = split_tx_rx_day_1_6_3 if str(args.split_mode) == "tx_rx_day_1_6_3" else split_tx_rx_day_1_7_2
-    labeled_idx, unlabeled_idx, val_idx = split_fn(
-        source_base,
-        labeled_ratio=float(args.labeled_ratio),
-        unlabeled_ratio=float(args.unlabeled_ratio),
-        source_val_ratio=float(args.source_val_ratio),
-    )
+    source_role_protocol = str(
+        getattr(args, "phase1_source_role_protocol", "legacy_l_u_v")
+    ).strip().lower()
+    source_cal_idx: List[int] = []
+    source_select_idx: List[int] = []
+    if source_role_protocol == "l_s_u_s_v_cal_v_select":
+        if str(args.split_mode) != "tx_rx_day_1_7_2":
+            raise ValueError(
+                "current Phase1 L_s/U_s/V_cal/V_select protocol requires split_mode=tx_rx_day_1_7_2"
+            )
+        labeled_idx, unlabeled_idx, source_cal_idx, source_select_idx = split_tx_rx_day_1_7_2_roles(
+            source_base,
+            labeled_ratio=float(args.labeled_ratio),
+            unlabeled_ratio=float(args.unlabeled_ratio),
+            source_cal_ratio=float(args.source_cal_ratio),
+            source_select_ratio=float(args.source_select_ratio),
+        )
+        val_idx = list(source_select_idx)
+    else:
+        split_fn = split_tx_rx_day_1_6_3 if str(args.split_mode) == "tx_rx_day_1_6_3" else split_tx_rx_day_1_7_2
+        labeled_idx, unlabeled_idx, val_idx = split_fn(
+            source_base,
+            labeled_ratio=float(args.labeled_ratio),
+            unlabeled_ratio=float(args.unlabeled_ratio),
+            source_val_ratio=float(args.source_val_ratio),
+        )
+        source_cal_idx = list(val_idx)
+        source_select_idx = []
     labeled_ds = WiSigSubsetDataset(source_base, labeled_idx, split_source="ssdg_labeled_tx_visible")
     unlabeled_ds = WiSigSubsetDataset(source_base, unlabeled_idx, split_source="ssdg_unlabeled_tx_hidden")
-    val_ds = WiSigSubsetDataset(source_base, val_idx, split_source="ssdg_source_val")
+    cal_ds = WiSigSubsetDataset(source_base, source_cal_idx, split_source="ssdg_source_v_cal")
+    val_ds = WiSigSubsetDataset(source_base, val_idx, split_source="ssdg_source_v_select")
 
     _, _, _, named_tests, named_meta, test_split_info = make_wisig_trainval_test_by_day_rx(
         ds_w,
@@ -1642,7 +1786,24 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         True,
         int(args.prefetch_factor),
     )
-    val_loader = make_loader(val_ds, int(args.eval_batch_size), False, int(args.num_workers), device, False, int(args.prefetch_factor))
+    source_cal_loader = make_loader(
+        cal_ds,
+        int(args.eval_batch_size),
+        False,
+        int(args.num_workers),
+        device,
+        False,
+        int(args.prefetch_factor),
+    )
+    val_loader = make_loader(
+        val_ds,
+        int(args.eval_batch_size),
+        False,
+        int(args.num_workers),
+        device,
+        False,
+        int(args.prefetch_factor),
+    )
     named_test_loaders = {
         name: make_loader(ds, int(args.eval_batch_size), False, int(args.num_workers), device, False, int(args.prefetch_factor))
         for name, ds in named_tests.items()
@@ -1659,9 +1820,14 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         unlabeled_indices=unlabeled_idx,
         source_validation_indices=val_idx,
         wisig_pkl_sha256=str(args.wisig_pkl_sha256),
+        source_calibration_indices=source_cal_idx,
+        source_selection_indices=source_select_idx,
         requested_labeled_ratio=float(args.labeled_ratio),
         requested_unlabeled_ratio=float(args.unlabeled_ratio),
         requested_source_val_ratio=float(args.source_val_ratio),
+        requested_source_cal_ratio=float(getattr(args, "source_cal_ratio", 0.0)),
+        requested_source_select_ratio=float(getattr(args, "source_select_ratio", 0.0)),
+        source_role_protocol=source_role_protocol,
         realized_rho_tolerance=float(
             args.phase1_realized_rho_tolerance
         ),
@@ -1674,6 +1840,7 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         "balanced_train_sampler": balanced_sampler,
         "probe_train_loader": probe_train_loader,
         "unlabeled_loader": unlabeled_loader,
+        "source_calibration_loader": source_cal_loader,
         "val_loader": val_loader,
         "named_test_loaders": named_test_loaders,
         "domain_label_map": domain_label_map,
@@ -1685,6 +1852,15 @@ def _build_ssdg_wisig_data(args, device: torch.device):
             "labeled_size": len(labeled_ds),
             "unlabeled_size": len(unlabeled_ds),
             "source_val_size": len(val_ds),
+            "source_calibration_size": len(cal_ds),
+            "source_selection_size": len(val_ds),
+            "source_role_protocol": source_role_protocol,
+            "source_role_ratios": {
+                "L_s": float(args.labeled_ratio),
+                "U_s": float(args.unlabeled_ratio),
+                "V_cal": float(getattr(args, "source_cal_ratio", 0.0)),
+                "V_select": float(getattr(args, "source_select_ratio", 0.0)),
+            },
             "rho_label": float(len(labeled_ds)) / float(max(1, len(labeled_ds) + len(unlabeled_ds))),
             "balanced_sampler_active": bool(balanced_sampler is not None),
             "balanced_sampler_batch_size": int(balanced_sampler.batch_size) if balanced_sampler is not None else int(args.batch_size),
@@ -2154,7 +2330,7 @@ def _maybe_export_phase2_prototypes_ssdg(
                 raise ImportError("endpoint_accept_v1 source-val calibration support is unavailable")
             calibration = extract_endpoint_calibration_features(
                 model,
-                data_ctx["val_loader"],
+                data_ctx.get("source_calibration_loader", data_ctx["val_loader"]),
                 device=device,
                 feature_key=str(getattr(args, "phase2_export_feature_key", "z_id") or "z_id"),
                 max_batches=int(getattr(args, "phase2_export_max_batches", 0) or 0),
@@ -3857,6 +4033,11 @@ def _build_ssdg_epoch_telemetry_row(
         "labeled_ratio": float(getattr(args, "labeled_ratio", 0.0)),
         "unlabeled_ratio": float(getattr(args, "unlabeled_ratio", 0.0)),
         "source_val_ratio": float(getattr(args, "source_val_ratio", 0.0)),
+        "source_cal_ratio": float(getattr(args, "source_cal_ratio", 0.0)),
+        "source_select_ratio": float(getattr(args, "source_select_ratio", 0.0)),
+        "phase1_source_role_protocol": str(
+            getattr(args, "phase1_source_role_protocol", "legacy_l_u_v")
+        ),
         "label_epochs": int(getattr(args, "label_epochs", 0)),
         "pseudo_epochs": int(getattr(args, "pseudo_epochs", 0)),
         "optimizer": "AdamW",
@@ -3902,6 +4083,7 @@ def _build_ssdg_epoch_telemetry_row(
         "sat_train_scenario": str(getattr(args, "sat_train_scenario", "")),
         "sat_train_scenarios": ",".join(getattr(args, "sat_train_scenario_list", []) or []),
         "sat_view_schedule": str(getattr(args, "sat_view_schedule", "") or ""),
+        "sat_training_mode": str(getattr(args, "sat_training_mode", "") or ""),
         "use_concat_sat_channel_aug": bool(getattr(args, "use_concat_sat_channel_aug", False)),
         "concat_sat_ce_only": bool(getattr(args, "concat_sat_ce_only", False)),
         "concat_sat_deduplicate_tx_ce": bool(getattr(args, "concat_sat_deduplicate_tx_ce", False)),
@@ -3913,6 +4095,9 @@ def _build_ssdg_epoch_telemetry_row(
         ),
         "eval_sat_channel": bool(getattr(args, "eval_sat_channel", False)),
         "eval_sat_scenarios": str(getattr(args, "eval_sat_scenarios", "")),
+        "lambda_crra_pair": float(getattr(args, "lambda_crra_pair", 0.0)),
+        "lambda_crra_sat_kl": float(getattr(args, "lambda_crra_sat_kl", 0.0)),
+        "lambda_crra_sat_shell": float(getattr(args, "lambda_crra_sat_shell", 0.0)),
         "nonfinite_train_metric_count": _count_nonfinite(train_logs),
         "nonfinite_val_metric_count": _count_nonfinite(val_stats),
         "nonfinite_test_metric_count": _count_nonfinite(test_stats),
@@ -4600,7 +4785,9 @@ def _prepare_concat_sat_batch_for_training(
     }
     if concat_sat_aug is None or int(epoch) < int(getattr(args, "concat_sat_start_epoch", 1)):
         return x, y, d, None, info
-    if bool(getattr(args, "concat_sat_ce_only", False)):
+    if str(getattr(args, "sat_training_mode", "")) in {"concat_ce_only", "concat_masked"} or bool(
+        getattr(args, "concat_sat_ce_only", False)
+    ):
         sat_view = concat_sat_aug.transform(x, args=args, epoch=epoch, batch_idx=batch_idx)
         info.update(
             {
@@ -4645,6 +4832,38 @@ def _prepare_concat_sat_batch_for_training(
         }
     )
     return _safe_iq_tensor(concat_batch.x), concat_batch.y, concat_batch.d_raw, None, info
+
+
+def _resolve_sat_training_mode(args) -> str:
+    """Resolve the explicit satellite path while retaining legacy flags."""
+    explicit = str(getattr(args, "sat_training_mode", "") or "").strip().lower()
+    if not explicit:
+        if not bool(getattr(args, "use_concat_sat_channel_aug", False)):
+            explicit = "view_aux" if bool(getattr(args, "use_sat_consistency", True)) else "disabled"
+        elif bool(getattr(args, "concat_sat_ce_only", False)):
+            explicit = "concat_ce_only"
+        else:
+            explicit = "concat_legacy"
+    if explicit in {"concat_ce_only", "concat_masked"}:
+        args.use_concat_sat_channel_aug = True
+        args.concat_sat_ce_only = True
+    elif explicit == "concat_full":
+        args.use_concat_sat_channel_aug = True
+        args.concat_sat_ce_only = False
+    elif explicit == "concat_legacy":
+        args.use_concat_sat_channel_aug = True
+    elif explicit in {"disabled", "view_aux"}:
+        args.use_concat_sat_channel_aug = False
+        args.concat_sat_ce_only = False
+    else:
+        raise ValueError(f"unsupported satellite training mode: {explicit}")
+    args.sat_training_mode = explicit
+    return explicit
+
+
+def _crra_satellite_aux_regularizers_active(args) -> bool:
+    """Keep concat_masked satellite supervision limited to its registered losses."""
+    return str(getattr(args, "sat_training_mode", "") or "").strip().lower() != "concat_masked"
 
 
 def _crra_satellite_kl_active(
@@ -4708,6 +4927,14 @@ def train(args) -> int:
         args.lambda_u = 0.0
     args.sat_train_scenario = str(args.sat_train_scenario or "mixed_orbit").strip().lower().replace("-", "_")
     args.crra_scenario = str(getattr(args, "crra_scenario", "mixed_orbit") or "mixed_orbit").strip().lower().replace("-", "_")
+    _resolve_sat_training_mode(args)
+    if str(getattr(args, "phase1_source_role_protocol", "legacy_l_u_v")) == "l_s_u_s_v_cal_v_select":
+        requested_validation = float(args.source_cal_ratio) + float(args.source_select_ratio)
+        if abs(float(args.source_val_ratio) - requested_validation) > 1e-6:
+            raise ValueError(
+                "current Phase1 source_val_ratio must equal source_cal_ratio + source_select_ratio; "
+                f"got {float(args.source_val_ratio):.6f} vs {requested_validation:.6f}"
+            )
     validate_crra_phase1_config(args)
     sat_train_spec = str(getattr(args, "sat_train_scenarios", "") or "").strip()
     if sat_train_spec:
@@ -5026,8 +5253,12 @@ def train(args) -> int:
                 f"from_scratch={int(bool(args.from_scratch))} freeze_backbone={int(bool(args.freeze_backbone))}",
                 "[CONFIG-DATA] "
                 f"dataset={getattr(args, 'dataset', 'wisig')} split_mode={args.split_mode} "
-                f"L/U/V={data_ctx['split_info']['labeled_size']}/{data_ctx['split_info']['unlabeled_size']}/{data_ctx['split_info']['source_val_size']} "
-                f"ratios={float(args.labeled_ratio):.3f}/{float(args.unlabeled_ratio):.3f}/{float(args.source_val_ratio):.3f}",
+                f"L/U/Vcal/Vselect={data_ctx['split_info']['labeled_size']}/{data_ctx['split_info']['unlabeled_size']}/"
+                f"{data_ctx['split_info'].get('source_calibration_size', data_ctx['split_info']['source_val_size'])}/"
+                f"{data_ctx['split_info'].get('source_selection_size', 0)} "
+                f"ratios={float(args.labeled_ratio):.3f}/{float(args.unlabeled_ratio):.3f}/"
+                f"{float(getattr(args, 'source_cal_ratio', 0.0)):.3f}/{float(getattr(args, 'source_select_ratio', 0.0)):.3f} "
+                f"role_protocol={getattr(args, 'phase1_source_role_protocol', 'legacy_l_u_v')}",
                 "[CONFIG-OPT] "
                 f"optimizer=AdamW lr={float(args.lr):.6g} weight_decay={float(args.weight_decay):.6g} amp={int(bool(args.amp))} "
                 f"params_trainable={trainable_params} params_total={total_params} "
@@ -5120,12 +5351,16 @@ def train(args) -> int:
                 f"train_scenarios={','.join(getattr(args, 'sat_train_scenario_list', [args.sat_train_scenario]))} "
                 f"use_concat_sat_channel_aug={int(bool(getattr(args, 'use_concat_sat_channel_aug', False)))} "
                 f"concat_sat_ce_only={int(bool(getattr(args, 'concat_sat_ce_only', False)))} "
+                f"sat_training_mode={getattr(args, 'sat_training_mode', '') or '<legacy-inferred>'} "
                 f"sat_view_schedule={getattr(args, 'sat_view_schedule', '') or '<none>'} "
                 f"sat_cons_start_epoch={int(args.sat_cons_start_epoch)} eval_sat_channel={int(bool(args.eval_sat_channel))} "
                 f"eval_sat_scenarios={args.eval_sat_scenarios}",
                 "[CONFIG-CONCAT-SAT] "
                 f"enabled={int(concat_sat_aug is not None)} "
-                f"mode={'ce_only_aux' if bool(getattr(args, 'concat_sat_ce_only', False)) else 'full_2b_core_domain'} "
+                f"mode={getattr(args, 'sat_training_mode', '') or '<legacy-inferred>'} "
+                f"forward_count={2 if getattr(args, 'sat_training_mode', '') in {'concat_ce_only', 'concat_masked'} else 1} "
+                f"samples_per_step={('B+B' if getattr(args, 'sat_training_mode', '') in {'concat_ce_only', 'concat_masked'} else '2B' if getattr(args, 'sat_training_mode', '') in {'concat_full', 'concat_legacy'} else 'B')} "
+                f"sat_losses=ce+nuisance+shell;kl={float(getattr(args, 'lambda_crra_sat_kl', 0.0)):.6g};pair={float(getattr(args, 'lambda_crra_pair', 0.0)):.6g} "
                 f"scenario_cycle={','.join(concat_sat_aug.scenarios) if concat_sat_aug is not None else '<none>'} "
                 f"start_epoch={int(getattr(args, 'concat_sat_start_epoch', 1))} "
                 f"view_prob={float(getattr(args, 'sat_view_prob', 1.0)):.3f} "
@@ -5213,7 +5448,12 @@ def train(args) -> int:
     )
     print(
         f"[SSDG-TRAIN] init={'scratch' if not use_ckpt else args.baseline_ckpt} split={data_ctx['split_info']['mode']} "
-        f"L/U/V={data_ctx['split_info']['labeled_size']}/{data_ctx['split_info']['unlabeled_size']}/{data_ctx['split_info']['source_val_size']} "
+        f"L/U/Vcal/Vselect={data_ctx['split_info']['labeled_size']}/{data_ctx['split_info']['unlabeled_size']}/"
+        f"{data_ctx['split_info'].get('source_calibration_size', data_ctx['split_info']['source_val_size'])}/"
+        f"{data_ctx['split_info'].get('source_selection_size', 0)} "
+        f"ratios={float(args.labeled_ratio):.3f}/{float(args.unlabeled_ratio):.3f}/"
+        f"{float(getattr(args, 'source_cal_ratio', 0.0)):.3f}/{float(getattr(args, 'source_select_ratio', 0.0)):.3f} "
+        f"role_protocol={getattr(args, 'phase1_source_role_protocol', 'legacy_l_u_v')} "
         f"label_epochs={args.label_epochs} pseudo_epochs={args.pseudo_epochs} "
         f"lambda_domain={float(args.lambda_domain):.3f} lambda_fishr={float(args.lambda_fishr):.3f} "
         f"threshold={args.pseudo_threshold_mode} domain_gate={int(args.pseudo_domain_gate)} "
@@ -6047,9 +6287,15 @@ def train(args) -> int:
                 loss_crra_energy_l = zero_sat
                 loss_crra_gate_l1_l = zero_sat
                 loss_crra_nuisance_l = zero_sat
+                loss_crra_sat_shell_l = zero_sat
                 loss_crra_condition_tx_adv_l = zero_sat
                 crra_pair_cosine_l = zero_sat
                 crra_condition_tx_adv_acc_l = zero_sat
+                crra_sat_shell_info = {
+                    "valid_count": 0.0,
+                    "active_classes": 0.0,
+                    "mean_excess_rad": 0.0,
+                }
                 out_sat = None
                 sat_z_id_l = None
                 sat_zid_pair_applied = False
@@ -6073,7 +6319,12 @@ def train(args) -> int:
                 )
                 crra_sat_objective_active = bool(getattr(args, "use_crra", False)) and any(
                     float(getattr(args, name, 0.0)) > 0.0
-                    for name in ("lambda_crra_pair", "lambda_crra_sat_kl", "lambda_crra_nuisance")
+                    for name in (
+                        "lambda_crra_pair",
+                        "lambda_crra_sat_kl",
+                        "lambda_crra_sat_shell",
+                        "lambda_crra_nuisance",
+                    )
                 )
                 sat_objective_active = (
                     cur_w["sat_cls"] > 0.0
@@ -6245,6 +6496,11 @@ def train(args) -> int:
                         clean_alpha = clean_alpha[clean_crra_slice]
                     sat_z_crra = sat_z_id_l if sat_z_id_l is not None and sat_zid_pair_applied else None
                     if torch.is_tensor(sat_z_crra):
+                        clean_y_crra = y_l
+                        sat_y_crra = y_l
+                        if concat_sat_full_batch and concat_sat_clean_bsz > 0:
+                            clean_y_crra = y_l[:concat_sat_clean_bsz]
+                            sat_y_crra = y_l[concat_sat_clean_bsz : 2 * concat_sat_clean_bsz]
                         pair_count = min(int(clean_z_crra.size(0)), int(sat_z_crra.size(0)))
                         if pair_count > 0:
                             pair_cos = (
@@ -6254,9 +6510,24 @@ def train(args) -> int:
                             crra_pair_cosine_l = pair_cos.mean()
                         if float(getattr(args, "lambda_crra_pair", 0.0)) > 0.0 and pair_count > 0:
                             loss_crra_pair_l = (1.0 - pair_cos).mean()
+                        if float(getattr(args, "lambda_crra_sat_shell", 0.0)) > 0.0:
+                            if crra_satellite_shell_loss is None:
+                                raise ImportError(
+                                    "cvsrffi.losses.crra_satellite_shell_loss is required for CRRA satellite shell loss"
+                                )
+                            loss_crra_sat_shell_l, crra_sat_shell_info = crra_satellite_shell_loss(
+                                clean_z_crra,
+                                clean_y_crra,
+                                sat_z_crra,
+                                sat_y_crra,
+                                shell_width_rad=math.radians(
+                                    float(getattr(args, "crra_sat_shell_width_deg", 12.0))
+                                ),
+                            )
                     energy_terms = [value for value in (clean_energy,) if torch.is_tensor(value)]
                     gate_terms = [value for value in (clean_gate, clean_alpha) if torch.is_tensor(value)]
-                    if out_sat is not None:
+                    sat_aux_regularizers_active = _crra_satellite_aux_regularizers_active(args)
+                    if out_sat is not None and sat_aux_regularizers_active:
                         sat_energy = out_sat.get("crra_correction_energy")
                         sat_gate = out_sat.get("crra_gate")
                         sat_alpha = out_sat.get("crra_alpha")
@@ -6266,7 +6537,11 @@ def train(args) -> int:
                             gate_terms.append(sat_gate)
                         if torch.is_tensor(sat_alpha):
                             gate_terms.append(sat_alpha)
-                    elif concat_sat_full_batch and concat_sat_clean_bsz > 0:
+                    elif (
+                        concat_sat_full_batch
+                        and concat_sat_clean_bsz > 0
+                        and sat_aux_regularizers_active
+                    ):
                         sat_slice = slice(concat_sat_clean_bsz, 2 * concat_sat_clean_bsz)
                         full_energy = out_l.get("crra_correction_energy")
                         full_gate = out_l.get("crra_gate")
@@ -6374,6 +6649,9 @@ def train(args) -> int:
                     )
                     + crra_stage_scale * float(getattr(args, "lambda_crra_pair", 0.0)) * sanitize_loss(
                         "crra_pair", loss_crra_pair_l, z_id_l, loss_warn_counts
+                    )
+                    + crra_stage_scale * float(getattr(args, "lambda_crra_sat_shell", 0.0)) * sanitize_loss(
+                        "crra_sat_shell", loss_crra_sat_shell_l, z_id_l, loss_warn_counts
                     )
                     + crra_stage_scale * float(getattr(args, "lambda_crra_energy", 0.0)) * sanitize_loss(
                         "crra_energy", loss_crra_energy_l, z_id_l, loss_warn_counts
@@ -7301,6 +7579,7 @@ def train(args) -> int:
                     "train/loss_crra_energy_labeled": loss_crra_energy_l.detach(),
                     "train/loss_crra_gate_l1_labeled": loss_crra_gate_l1_l.detach(),
                     "train/loss_crra_nuisance_labeled": loss_crra_nuisance_l.detach(),
+                    "train/loss_crra_sat_shell_labeled": loss_crra_sat_shell_l.detach(),
                     "train/loss_crra_condition_tx_adv_labeled": loss_crra_condition_tx_adv_l.detach(),
                     "train/crra_pair_cosine_labeled": crra_pair_cosine_l.detach(),
                     "train/crra_condition_tx_adv_accuracy": crra_condition_tx_adv_acc_l.detach(),
@@ -7314,6 +7593,11 @@ def train(args) -> int:
                         "crra_support_distance", zero_sat
                     ).detach().float().mean(),
                     "train/crra_nuisance_valid_count": float(crra_nuisance_info.get("valid_count", 0.0)),
+                    "train/crra_sat_shell_valid_count": float(crra_sat_shell_info.get("valid_count", 0.0)),
+                    "train/crra_sat_shell_active_classes": float(crra_sat_shell_info.get("active_classes", 0.0)),
+                    "train/crra_sat_shell_mean_excess_rad": float(
+                        crra_sat_shell_info.get("mean_excess_rad", 0.0)
+                    ),
                     "train/loss_teacher_clean_kl": loss_teacher_clean_kl_l.detach(),
                     "train/loss_teacher_sat_kl": loss_teacher_sat_kl_l.detach(),
                     "train/loss_teacher_zid_mse": loss_teacher_zid_mse_l.detach(),
@@ -7344,6 +7628,11 @@ def train(args) -> int:
                     ).detach(),
                     "train/w_loss_crra_gate_l1_labeled": (
                         crra_stage_scale * float(getattr(args, "lambda_crra_gate_l1", 0.0)) * loss_crra_gate_l1_l
+                    ).detach(),
+                    "train/w_loss_crra_sat_shell_labeled": (
+                        crra_stage_scale
+                        * float(getattr(args, "lambda_crra_sat_shell", 0.0))
+                        * loss_crra_sat_shell_l
                     ).detach(),
                     "train/w_loss_crra_nuisance_labeled": (
                         crra_stage_scale * float(getattr(args, "lambda_crra_nuisance", 0.0)) * loss_crra_nuisance_l
