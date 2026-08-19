@@ -39,6 +39,7 @@ class M24InferenceState:
     schema: str
     classes: tuple[str, ...]
     compiled_affine_state: CompiledAffineState
+    input_log_diag_fp32: np.ndarray
     domain_digest: str
     config_hash: str
     audit: Mapping[str, Any]
@@ -46,10 +47,25 @@ class M24InferenceState:
     def __post_init__(self) -> None:
         if self.schema != INFERENCE_SCHEMA or len(self.classes) != self.compiled_affine_state.class_count:
             raise ValueError("M2.4 inference state identity drift")
+        log_diag = np.asarray(self.input_log_diag_fp32, dtype=np.float32)
+        if log_diag.shape not in {(0,), (self.compiled_affine_state.feature_dim,)} or not np.isfinite(log_diag).all():
+            raise ValueError("M2.4 frozen input metric drift")
+        log_diag = np.array(log_diag, copy=True)
+        log_diag.setflags(write=False)
+        object.__setattr__(self, "input_log_diag_fp32", log_diag)
         object.__setattr__(self, "audit", MappingProxyType(dict(self.audit)))
 
     def score(self, features: Any) -> np.ndarray:
-        return np.asarray(score_affine_state(self.compiled_affine_state, features), dtype=np.float32)
+        rows = np.asarray(features, dtype=np.float32)
+        if self.input_log_diag_fp32.size:
+            if rows.ndim != 2 or rows.shape[1] != self.compiled_affine_state.feature_dim:
+                raise ValueError("M2.4 query feature geometry drift")
+            rows = rows * np.exp(self.input_log_diag_fp32)[None, :]
+            norm = np.linalg.norm(rows, axis=1, keepdims=True)
+            if not np.isfinite(norm).all() or np.any(norm <= 1.0e-12):
+                raise ValueError("M2.4 frozen input metric is degenerate")
+            rows = np.asarray(rows / norm, dtype=np.float32)
+        return np.asarray(score_affine_state(self.compiled_affine_state, rows), dtype=np.float32)
 
     def predict(self, features: Any) -> np.ndarray:
         return np.asarray(self.classes)[np.argmax(self.score(features), axis=-1)]
@@ -65,10 +81,20 @@ def compile_m24_head(
     support_features: Any,
     transient_workspace_bytes: int,
     block_sizes: Sequence[int] | None = None,
+    input_log_diag: Any | None = None,
 ) -> tuple[M24InferenceState, dict[str, int], dict[str, float]]:
     reference_coefficient = np.asarray(coefficient, dtype=np.float32)
     reference_bias = np.asarray(bias, dtype=np.float32)
     support = np.asarray(support_features, dtype=np.float32)
+    frozen_log_diag = np.empty(0, dtype=np.float32) if input_log_diag is None else np.asarray(input_log_diag, dtype=np.float32)
+    if frozen_log_diag.size:
+        if frozen_log_diag.shape != (reference_coefficient.shape[1],) or not np.isfinite(frozen_log_diag).all():
+            raise ValueError("input_log_diag must match the affine feature dimension")
+        support = support * np.exp(frozen_log_diag)[None, :]
+        norm = np.linalg.norm(support, axis=1, keepdims=True)
+        if not np.isfinite(norm).all() or np.any(norm <= 1.0e-12):
+            raise ValueError("input_log_diag produces degenerate support")
+        support = np.asarray(support / norm, dtype=np.float32)
     compiled = compile_affine_state(reference_coefficient, reference_bias, arm_id=F3, block_sizes=block_sizes)
     reference_scores = support @ reference_coefficient.T + reference_bias[None, :]
     compiled_scores = np.asarray(score_affine_state(compiled, support), dtype=np.float32)
@@ -78,13 +104,14 @@ def compile_m24_head(
         schema=INFERENCE_SCHEMA,
         classes=tuple(str(item) for item in classes),
         compiled_affine_state=compiled,
+        input_log_diag_fp32=frozen_log_diag,
         domain_digest=str(domain_digest),
         config_hash=str(config_hash),
         audit=audit,
     )
     metadata_bytes = sum(len(value.encode("utf-8")) for value in (state.schema, *state.classes, state.domain_digest, state.config_hash))
     resource = {
-        "compiled_inference_state_bytes": int(compiled.state_bytes + metadata_bytes),
+        "compiled_inference_state_bytes": int(compiled.state_bytes + frozen_log_diag.nbytes + metadata_bytes),
         "persistent_update_state_bytes": 0,
         "transient_registration_workspace_peak_bytes": int(transient_workspace_bytes),
     }

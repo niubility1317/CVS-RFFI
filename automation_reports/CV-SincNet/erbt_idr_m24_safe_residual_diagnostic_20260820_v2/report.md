@@ -32,3 +32,15 @@ M2.4把M2.3的共享质量、中心、先验、不确定性和RF路径拆为D0�
 ## 证据边界
 
 本轮为研发筛选证据，不是独立fresh confirmation、完整125结论、Phase3开放世界能力或星载部署证明。最终结果保持receiver、seed、draw、K、新类数、场景和候选同row，不拼接跨row最优值。
+
+## 执行结果与技术停止
+
+最终状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / D1_PARITY_GATE_FAILED / NO_PERFORMANCE_RESULT`。
+
+- K1/new20完成D0–D10，D1与历史F1逐query一致；这些prediction保持truth未打开。
+- K10/new5在D1发现14/660条prediction不一致，一致率97.8788%；suite按预登记规则立即停止，未运行D2–D10。
+- 本run没有调用truth scorer，因此不得产生或引用性能结论；K1的已完成prediction仅作为故障定位证据。
+- 根因为D1把历史F1的冻结对角度量与逐样本归一化错误近似为固定support中位数尺度。修复版显式保留256维冻结log-diag预处理，并复用历史量化头；真实K10缓存回归达到0/660差异，紧凑推理态7677B。
+- v2输出和日志完整保留，不覆盖、不补跑；修复后的正式验证使用新run ID。
+
+定点复审工具因本机旧CLI模型／配置兼容问题未形成有效结果，记为`UNKNOWN`。修复后本地`compileall`通过，M2.4聚焦及M2.3相邻回归42项通过；真实K10 regression在truth-unopened条件下通过。

@@ -12,6 +12,7 @@ import numpy as np
 
 from cvsrffi.somph_predictor_bundle import FORMAL_LEO_WEAK_SCENARIOS
 from cvsrffi.stage2_ablation_feature_cache import load_feature_cache
+from cvsrffi.stage2_ablation_quantization import decode_affine_state
 from cvsrffi.stage2_ablation_truth_scorer import BEHAVIOR_RECEIPT_SCHEMA, QUANTIZATION_RECEIPT_SCHEMA, RESOURCE_RECEIPT_SCHEMA
 from cvsrffi.stage2_m23_overlay_cache import load_m23_overlay_cache
 from cvsrffi.stage2_m23_rfguard import build_ground_manifold, estimate_stage2b_domain_state
@@ -50,18 +51,14 @@ def _exclusive_json(path: Path, payload: Mapping[str, Any]) -> None:
         os.close(descriptor)
 
 
-def _f1_reference_head(state: Any, support_blocks: Any) -> tuple[np.ndarray, np.ndarray]:
-    coefficient = np.asarray(state.audit.get("d81_actual_coefficient_fp32"), dtype=np.float32)
-    bias = np.asarray(state.audit.get("d81_actual_intercept_fp32"), dtype=np.float32)
+def _f1_reference_head(state: Any, support_blocks: Any) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    coefficient, bias = decode_affine_state(state.compiled_affine_state)
     if coefficient.shape != (len(state.classes), 288) or bias.shape != (len(state.classes),):
         raise M24RowExecutionError("historical F1 FP32 reference is missing")
-    physical = prepare_query_features(support_blocks, feature_dim=256).astype(np.float64)
-    scale = np.exp(np.asarray(state.log_diag_fp32[:256], dtype=np.float64))
-    transformed_norm = np.linalg.norm(physical * scale[None, :], axis=1)
-    global_support_scale = float(np.median(transformed_norm))
     return (
-        np.asarray(coefficient[:, :256], dtype=np.float64) * scale[None, :],
-        np.asarray(bias, dtype=np.float64) * global_support_scale,
+        np.asarray(coefficient[:, :256], dtype=np.float64),
+        np.asarray(bias, dtype=np.float64),
+        np.asarray(state.log_diag_fp32[:256], dtype=np.float32),
     )
 
 
@@ -181,7 +178,7 @@ def execute_m24_row(
             all_support_blocks = np.concatenate([compact["old_support_blocks"], compact["new_support_blocks"]])
             all_support_labels = np.concatenate([compact["old_support_labels"], compact["new_support_labels"]])
             all_support_quality = np.concatenate([compact["old_support_quality"], compact["new_support_quality"]])
-            coefficient, bias = _f1_reference_head(historical_after, all_support_blocks)
+            coefficient, bias, f1_log_diag = _f1_reference_head(historical_after, all_support_blocks)
             domain_state = estimate_stage2b_domain_state(
                 compact["old_support_blocks"],
                 compact["old_support_labels"],
@@ -200,6 +197,7 @@ def execute_m24_row(
                 old_class_count=len(old_classes),
                 f1_coefficient=coefficient,
                 f1_bias=bias,
+                f1_log_diag=f1_log_diag,
                 domain_digest=domain_state.digest,
                 ground_prior_identity=manifold.class_centres,
                 nuisance_covariance_identity=domain_state.nuisance_covariance,

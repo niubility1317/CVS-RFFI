@@ -121,9 +121,14 @@ def _candidate_is_safe(
     candidate_bias: np.ndarray,
     support: np.ndarray,
     targets: np.ndarray,
+    base_log_diag: np.ndarray | None = None,
 ) -> tuple[bool, dict[str, float | int]]:
     base_feature_dim = base_coefficient.shape[1]
-    base_scores = support[:, :base_feature_dim] @ base_coefficient.T + base_bias[None, :]
+    base_support = np.asarray(support[:, :base_feature_dim], dtype=np.float64)
+    if base_log_diag is not None:
+        base_support *= np.exp(np.asarray(base_log_diag, dtype=np.float64))[None, :]
+        base_support /= np.maximum(np.linalg.norm(base_support, axis=1, keepdims=True), 1.0e-12)
+    base_scores = base_support @ base_coefficient.T + base_bias[None, :]
     candidate_scores = support @ candidate_coefficient.T + candidate_bias[None, :]
     base_prediction = np.argmax(base_scores, axis=1)
     candidate_prediction = np.argmax(candidate_scores, axis=1)
@@ -151,6 +156,7 @@ def fit_m24_safe_residual(
     old_class_count: int,
     f1_coefficient: Any,
     f1_bias: Any,
+    f1_log_diag: Any | None = None,
     domain_digest: str,
     ground_prior_identity: Any | None = None,
     nuisance_covariance_identity: Any | None = None,
@@ -167,14 +173,18 @@ def fit_m24_safe_residual(
     base_rows = physical_if256(blocks)
     base_coefficient = np.asarray(f1_coefficient, dtype=np.float64)
     base_bias = np.asarray(f1_bias, dtype=np.float64)
+    base_log_diag = None if f1_log_diag is None else np.asarray(f1_log_diag, dtype=np.float32)
     if base_coefficient.shape != (len(registry), IF_DIM) or base_bias.shape != (len(registry),):
         raise M24SafeResidualError("F1 reference head geometry drift")
+    if base_log_diag is not None and (base_log_diag.shape != (IF_DIM,) or not np.isfinite(base_log_diag).all()):
+        raise M24SafeResidualError("F1 frozen input metric geometry drift")
 
     if arm == D1 or k_shot == 1:
         coefficient = base_coefficient
         bias = base_bias
         feature_dim = IF_DIM
         support_for_compile = base_rows
+        compile_log_diag = base_log_diag
         workspace = M24RegistrationWorkspace(
             support_center=np.empty((0, IF_DIM)),
             decision_center=np.empty((0, IF_DIM)),
@@ -193,6 +203,7 @@ def fit_m24_safe_residual(
             "rf_enabled": False,
         }
     else:
+        compile_log_diag = None
         raw_center = quality if arm == D3 else np.ones(len(blocks))
         raw_covariance = quality if arm == D4 else np.ones(len(blocks))
         if arm == D5:
@@ -288,12 +299,14 @@ def fit_m24_safe_residual(
             np.asarray(bias),
             support_for_compile,
             targets,
+            base_log_diag,
         )
         if not safe:
             coefficient = base_coefficient
             bias = base_bias
             feature_dim = IF_DIM
             support_for_compile = base_rows
+            compile_log_diag = base_log_diag
         safety = {**safety_counts, "whole_candidate_fallback_to_f1": not safe, "reason": "support_no_harm" if safe else "support_harm"}
         workspace = M24RegistrationWorkspace(
             support_center=support_center,
@@ -328,6 +341,7 @@ def fit_m24_safe_residual(
         support_features=np.asarray(support_for_compile, dtype=np.float32),
         transient_workspace_bytes=workspace.nbytes,
         block_sizes=(160, 96) if feature_dim == IF_DIM else (160, 96, 10),
+        input_log_diag=compile_log_diag,
     )
     audit = MappingProxyType({
         "schema": "cvs.erbt_idr.m24.fit_audit.v1",

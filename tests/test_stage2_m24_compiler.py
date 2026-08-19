@@ -77,6 +77,7 @@ def test_compiled_inference_state_contains_no_registration_workspace() -> None:
         "schema",
         "classes",
         "compiled_affine_state",
+        "input_log_diag_fp32",
         "domain_digest",
         "config_hash",
         "audit",
@@ -84,6 +85,28 @@ def test_compiled_inference_state_contains_no_registration_workspace() -> None:
     assert resource["persistent_update_state_bytes"] == 0
     assert resource["transient_registration_workspace_peak_bytes"] == 4096
     assert resource["compiled_inference_state_bytes"] >= state.compiled_affine_state.state_bytes
+
+
+def test_compiled_head_applies_frozen_f1_metric_before_scoring() -> None:
+    coefficient = np.array([[1.0, -0.4], [-0.2, 0.8]], dtype=np.float32)
+    bias = np.array([0.15, -0.05], dtype=np.float32)
+    support = np.array([[1.0, 1.0], [2.0, -1.0]], dtype=np.float32)
+    log_diag = np.log(np.array([2.0, 0.5], dtype=np.float32))
+    state, resource, _audit = compile_m24_head(
+        coefficient,
+        bias,
+        classes=("a", "b"),
+        domain_digest="d" * 64,
+        config_hash="c" * 64,
+        support_features=support,
+        transient_workspace_bytes=0,
+        input_log_diag=log_diag,
+    )
+    prepared = support * np.exp(log_diag)[None, :]
+    prepared /= np.linalg.norm(prepared, axis=1, keepdims=True)
+    expected = prepared @ coefficient.T + bias[None, :]
+    assert np.array_equal(np.argmax(state.score(support), axis=1), np.argmax(expected, axis=1))
+    assert resource["compiled_inference_state_bytes"] >= state.compiled_affine_state.state_bytes + log_diag.nbytes
 
 
 def test_d1_is_exact_f1_and_d3_d4_enable_only_their_declared_quality_path() -> None:

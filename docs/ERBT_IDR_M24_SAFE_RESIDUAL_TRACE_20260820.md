@@ -8,7 +8,7 @@
 
 |ID|设计要求|实现落点|验证|状态|
 |---|---|---|---|---|
-|M24-01|物理256维F1：`normalize([normalize(id);4 normalize(fft)])`|`m24_features.py`|与历史F1逐row分数／预测等价测试|local_verified|
+|M24-01|物理256维F1：`normalize([normalize(id);4 normalize(fft)])`，随后复用冻结F1对角度量、逐样本归一化和量化头|`m24_features.py`、`m24_compiler.py`|真实K10缓存660条query零差异；紧凑态7677B|verified|
 |M24-02|D1不得包含quality、prior、uncertainty、nuisance、RF-lite和二次单边加权|D1配置锁和fit审计|D1审计、系数维度与禁用项测试|local_verified|
 |M24-03|support center、decision center、covariance center分离|`m24_center.py`|三个中心独立变化测试|local_verified|
 |M24-04|固定floor改为相对trace jitter且保持PSD|`m24_covariance.py`|缩放等变、最小特征值和退化输入测试|local_verified|
@@ -41,3 +41,7 @@
 ## 证据边界
 
 诊断与扩展筛选均为研发证据。除非后续完成预注册的独立确认矩阵，否则不得表述为fresh confirmation、Phase3开放世界能力或星载部署结论。
+
+## D1纠错追踪
+
+v2的K1 D1通过，但K10 D1出现14/660个预测差异，触发预登记硬停止且未打开truth。问题不是physical256定义本身，而是旧实现把冻结对角度量后的逐样本归一化近似成固定support中位数bias缩放。纠错后推理态显式持久化256维冻结log-diag，先执行逐样本变换，再使用由历史F1量化状态解码并按相同两块语义重编译的紧凑头。真实K10 cache的三个场景合计660条query全部与历史F1一致，状态7677B，满足不超过历史F1 1.25倍的预设资源界限。
