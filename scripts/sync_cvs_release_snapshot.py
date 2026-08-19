@@ -510,7 +510,7 @@ def maybe_commit_and_push(args: argparse.Namespace, manifest_path: Path) -> None
     print(commit.stdout)
     if args.push:
         push = subprocess.run(
-            ["git", "push"],
+            ["git", "push", "--set-upstream", "origin", "HEAD"],
             cwd=str(repo_root),
             text=True,
             stdout=subprocess.PIPE,

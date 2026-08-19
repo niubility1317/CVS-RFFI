@@ -131,10 +131,10 @@ bash scripts/launchers/run_cvs_baseline_queue.sh --methods drift --wisig-protoco
 
 ## CVS-only自动整理
 
-本仓库包含自动整理脚本`scripts/run_cvs_snapshot_cycle.ps1`。该脚本从`E:\type10-7`同步CVS相关核心代码、协议、工具、launcher、测试和必要发布说明，生成`docs/RELEASE_SNAPSHOT.md`和`docs/release_manifest_latest.json`，然后按参数提交并推送到GitHub。脚本不会上传`experiment_records/`、本地工作区笔记、AI审查提示/输出或baseline历史运行产物。详细边界见`docs/AUTOMATION_GITHUB_REVIEW.md`和`docs/PUBLISH_SCOPE.md`。
+本仓库包含自动整理脚本`scripts/run_cvs_snapshot_cycle.ps1`。该脚本从`E:\type10-7`同步CVS相关核心代码、协议、工具、launcher、测试和必要发布说明，生成`docs/RELEASE_SNAPSHOT.md`和`docs/release_manifest_latest.json`，然后按参数提交并推送到GitHub。脚本不会上传`experiment_records/`、本地工作区笔记、AI审查提示/输出或baseline历史运行产物。详细边界见`docs/AUTOMATION_GITHUB_REVIEW.md`、`docs/GIT_PUSH_WORKFLOW.md`和`docs/PUBLISH_SCOPE.md`。
 
 ## 变更纪律
 
-项目相关改动必须进入Git流程。改动前检查`git status -sb`，改动后检查`git diff`/`git status -sb`并运行必要验证；完成后提交到明确分支，除非用户明确要求不要提交。每次代码、配置、脚本或协议变更都要同步检查`AGENTS.md`、`docs/PROJECT_PROTOCOL.md`、README、docs和报告类Markdown是否需要更新。
+项目相关改动必须进入Git流程。改动前检查`git status -sb`，改动后检查`git diff`/`git status -sb`并运行必要验证；完成后提交到明确分支并自动推送，除非用户明确要求不要提交或不要推送。每次代码、配置、脚本或协议变更都要同步检查`AGENTS.md`、`docs/PROJECT_PROTOCOL.md`、README、docs和报告类Markdown是否需要更新。具体分支和推送规则见`docs/GIT_PUSH_WORKFLOW.md`。
 
 协作输出规则：对于使用工具或长时间运行的任务，首次工具调用前、关键阶段切换时、重连或上下文压缩恢复后、出现阻塞时，以及持续工作期间至少每60秒，必须发送简洁、基于证据的进度更新；只报告可观察操作、发现和下一步，不披露私有思维链，不倾倒原始日志。仅无工具的简短问答可以省略过程更新。

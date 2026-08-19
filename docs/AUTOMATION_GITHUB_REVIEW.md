@@ -5,11 +5,12 @@
 ## 自动化链路
 
 1. 读取`E:\type10-7\AGENTS.md`和`E:\type10-7\项目.md`，以本地协议为准。
-2. 执行`scripts/run_cvs_snapshot_cycle.ps1`。
-3. 将核心代码、CVS对照baseline源码、论文复现CVS扩展、测试、工具、launcher和协议控制文件同步到发布仓库。
-4. 写入`docs/RELEASE_SNAPSHOT.md`、`docs/release_manifest_<timestamp>.json`和`docs/release_manifest_latest.json`。
-5. 提交并按参数推送到GitHub。
-6. 若后续需要AI审查，审查结果应进入PR/Issue评论或本地报告，不写入本仓库的发布文件树。
+2. 首次使用或工作树恢复后执行`scripts/install_auto_push_hook.sh`。
+3. 执行`scripts/run_cvs_snapshot_cycle.ps1`或等价的Python入口。
+4. 将核心代码、CVS对照baseline源码、论文复现CVS扩展、测试、工具、launcher和协议控制文件同步到发布仓库。
+5. 写入`docs/RELEASE_SNAPSHOT.md`、`docs/release_manifest_<timestamp>.json`和`docs/release_manifest_latest.json`。
+6. 提交后由`post-commit`钩子自动推送并复核远端分支；显式`--push`仍会执行同样的上游设置。
+7. 若后续需要AI审查，审查结果应进入PR/Issue评论或本地报告，不写入本仓库的发布文件树。
 
 ## 上传范围
 
@@ -35,6 +36,14 @@
 自动化不再上传`optimizer_execution_registry.jsonl`的tail、最近实验报告副本或网页端ChatGPT Pro提示。需要复盘实验时，以本地`E:\type10-7\automation_reports\CV-SincNet\...`和N607实际输出为准。
 
 ## 手动运行
+
+推荐使用Git Bash入口，避免在Windows命令行中丢失UTF-8或上游分支信息：
+
+```bash
+cd /e/type10-7/github_publish/CVS-RFFI-repo
+bash scripts/install_auto_push_hook.sh
+conda run --no-capture-output -n ssr-gpu python scripts/sync_cvs_release_snapshot.py --commit --push
+```
 
 ```powershell
 cd E:\type10-7\github_publish\CVS-RFFI-repo
