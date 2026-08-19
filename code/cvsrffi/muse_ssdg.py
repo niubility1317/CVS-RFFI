@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from numbers import Real
-from typing import Sequence
+from typing import Any, Mapping, Sequence
 
 import torch
 
@@ -13,6 +13,10 @@ _PROBABILITY_EPS = 1e-8
 _DEFAULT_FUSION_WEIGHTS = (0.50, 0.25, 0.25)
 _DEFAULT_RATIO_CLIP = (0.5, 2.0)
 _DEFAULT_RELIABILITY_WEIGHTS = (0.25, 0.20, 0.20, 0.20, 0.15)
+_DEFAULT_UNLABELED_PROTOTYPE_WEIGHT = 0.075
+_MIN_UNLABELED_PROTOTYPE_WEIGHT = 0.05
+_MAX_UNLABELED_PROTOTYPE_WEIGHT = 0.10
+_TEMPORAL_STABILITY_STEPS = 3
 
 
 @dataclass(frozen=True)
@@ -408,6 +412,507 @@ def route_muse_reliability(
     return MUSERoute(high=high, mid=mid, low=low)
 
 
+def _loss_logits(logits: torch.Tensor, name: str = "logits") -> tuple[torch.Tensor, tuple[int, ...]]:
+    """Validate and flatten logits while retaining a gradient path to the input."""
+
+    value = logits if torch.is_tensor(logits) else torch.as_tensor(logits)
+    if value.ndim < 2:
+        raise ValueError(f"{name} must have at least two dimensions")
+    if value.is_complex():
+        raise TypeError(f"{name} must be real-valued")
+    if not value.is_floating_point():
+        value = value.to(dtype=torch.get_default_dtype())
+    if value.dtype in (torch.float16, torch.bfloat16):
+        value = value.float()
+    shape = tuple(value.shape[:-1])
+    return value.reshape(-1, value.shape[-1]), shape
+
+
+def _sample_mask(mask: object, sample_count: int, device: torch.device, name: str) -> torch.Tensor:
+    """Convert a sample mask to a flat boolean tensor."""
+
+    value = torch.as_tensor(mask, device=device)
+    if value.is_complex():
+        raise TypeError(f"{name} must be real-valued")
+    if value.numel() == 1 and sample_count != 1:
+        value = value.reshape(1).expand(sample_count)
+    elif value.numel() != sample_count:
+        raise ValueError(f"{name} must contain one value per sample")
+    return value.reshape(-1).to(dtype=torch.bool)
+
+
+def _sample_weights(
+    weights: object | None,
+    sample_count: int,
+    device: torch.device,
+    dtype: torch.dtype,
+) -> torch.Tensor:
+    """Convert per-sample weights and reject values that cannot define a mean."""
+
+    if weights is None:
+        value = torch.ones(sample_count, device=device, dtype=dtype)
+    else:
+        value = torch.as_tensor(weights, device=device, dtype=dtype)
+        if value.numel() == 1 and sample_count != 1:
+            value = value.reshape(1).expand(sample_count)
+        elif value.numel() != sample_count:
+            raise ValueError("weights must contain one value per sample")
+        else:
+            value = value.reshape(-1)
+    if not torch.isfinite(value).all() or (value < 0).any():
+        raise ValueError("weights must be finite and non-negative")
+    return value.reshape(-1)
+
+
+def _weighted_sample_mean(
+    values: torch.Tensor,
+    weights: object | None,
+    mask: object,
+    graph: torch.Tensor,
+) -> torch.Tensor:
+    """Reduce sample losses by the selected weight mass, preserving an empty graph."""
+
+    flat_values = values.reshape(-1)
+    selected = _sample_mask(mask, flat_values.numel(), flat_values.device, "mask")
+    if not bool(selected.any().item()):
+        return graph.sum() * 0.0
+    flat_weights = _sample_weights(weights, flat_values.numel(), flat_values.device, flat_values.dtype)
+    selected_weights = flat_weights[selected]
+    denominator = selected_weights.sum().clamp_min(_PROBABILITY_EPS)
+    return (flat_values[selected] * selected_weights).sum() / denominator
+
+
+def weighted_soft_cross_entropy(
+    student_logits: torch.Tensor,
+    teacher_prob: torch.Tensor,
+    weights: object | None,
+    mask: object,
+) -> torch.Tensor:
+    """Compute a masked, per-sample weighted soft-label cross entropy.
+
+    The denominator is the selected weight mass.  Teacher probabilities are
+    detached targets; only the student logits receive identity gradients.
+    """
+
+    logits, sample_shape = _loss_logits(student_logits, "student_logits")
+    teacher = teacher_prob if torch.is_tensor(teacher_prob) else torch.as_tensor(teacher_prob)
+    if teacher.shape != tuple(sample_shape) + (logits.shape[-1],):
+        raise ValueError("teacher_prob must have the same shape as student_logits")
+    if teacher.is_complex():
+        raise TypeError("teacher_prob must be real-valued")
+    teacher = teacher.to(device=logits.device, dtype=logits.dtype).reshape_as(logits).detach()
+    teacher = _normalize_probability(teacher)
+    per_sample = -(teacher * torch.log_softmax(logits, dim=-1)).sum(dim=-1)
+    return _weighted_sample_mean(per_sample, weights, mask, logits)
+
+
+def candidate_set_mask(
+    prob: torch.Tensor,
+    mass: float = 0.75,
+    max_classes: int = 3,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Select the smallest top-probability candidate set up to ``max_classes``.
+
+    ``active`` is false when the requested mass cannot be reached by the cap.
+    The returned mask still exposes the capped top classes, allowing callers to
+    retain diagnostics while passing ``active`` as the loss sample mask.
+    """
+
+    value = prob if torch.is_tensor(prob) else torch.as_tensor(prob)
+    if value.ndim < 1:
+        raise ValueError("prob must have a class dimension")
+    if value.is_complex():
+        raise TypeError("prob must be real-valued")
+    if not value.is_floating_point():
+        value = value.to(dtype=torch.get_default_dtype())
+    if value.dtype in (torch.float16, torch.bfloat16):
+        value = value.float()
+    mass = float(mass)
+    if not torch.isfinite(torch.tensor(mass)).item() or not 0.0 <= mass <= 1.0:
+        raise ValueError("mass must be finite and in [0, 1]")
+    if not isinstance(max_classes, int) or isinstance(max_classes, bool) or max_classes < 1:
+        raise ValueError("max_classes must be a positive integer")
+
+    class_count = value.shape[-1]
+    if class_count == 0:
+        raise ValueError("prob must have a non-empty class dimension")
+    normalized = _normalize_probability(value)
+    flat = normalized.reshape(-1, class_count)
+    k = min(max_classes, class_count)
+    top_values, top_indices = torch.topk(flat, k=k, dim=-1)
+    cumulative = top_values.cumsum(dim=-1)
+    reached = cumulative >= mass
+    active = reached[:, -1]
+    first_reached = reached.to(dtype=torch.long).argmax(dim=-1) + 1
+    selected_count = torch.where(active, first_reached, torch.full_like(first_reached, k))
+    rank = torch.arange(k, device=value.device).reshape(1, -1)
+    selected = rank < selected_count.reshape(-1, 1)
+    flat_mask = torch.zeros_like(flat, dtype=torch.bool)
+    flat_mask.scatter_(1, top_indices, selected)
+    return flat_mask.reshape(value.shape), active.reshape(value.shape[:-1])
+
+
+def candidate_set_cross_entropy(
+    logits: torch.Tensor,
+    candidate_mask: torch.Tensor,
+    weights: object | None,
+    sample_mask: object,
+) -> torch.Tensor:
+    """Train against the total probability assigned to a candidate set.
+
+    No uniform target is imposed inside the set.  Rows without candidates are
+    excluded from the reduction, so an unreachable set cannot create an
+    identity gradient.
+    """
+
+    flat_logits, sample_shape = _loss_logits(logits)
+    candidates = candidate_mask if torch.is_tensor(candidate_mask) else torch.as_tensor(candidate_mask)
+    expected_shape = tuple(sample_shape) + (flat_logits.shape[-1],)
+    if candidates.shape != expected_shape:
+        raise ValueError("candidate_mask must have the same shape as logits")
+    if candidates.device != flat_logits.device:
+        candidates = candidates.to(device=flat_logits.device)
+    candidates = candidates.reshape_as(flat_logits).to(dtype=torch.bool)
+    sample = _sample_mask(sample_mask, flat_logits.shape[0], flat_logits.device, "sample_mask")
+    valid = sample & candidates.any(dim=-1)
+    if not bool(valid.any().item()):
+        return flat_logits.sum() * 0.0
+    probability = torch.softmax(flat_logits, dim=-1)
+    candidate_mass = (probability * candidates.to(dtype=probability.dtype)).sum(dim=-1)
+    per_sample = -candidate_mass.clamp_min(_PROBABILITY_EPS).log()
+    return _weighted_sample_mean(per_sample, weights, valid, flat_logits)
+
+
+def _python_key_atom(value: Any) -> Any:
+    """Convert scalar tensor/sequence key members into hashable Python values."""
+
+    if torch.is_tensor(value):
+        if value.numel() != 1:
+            raise ValueError("memory key members must be scalar")
+        value = value.detach().cpu().item()
+    if isinstance(value, list):
+        value = tuple(_python_key_atom(item) for item in value)
+    elif isinstance(value, tuple):
+        value = tuple(_python_key_atom(item) for item in value)
+    try:
+        hash(value)
+    except TypeError as exc:
+        raise ValueError("memory key members must be hashable scalars") from exc
+    return value
+
+
+def _temporal_keys(keys: object) -> list[tuple[Any, ...]]:
+    """Normalize a batch of five-member stable keys."""
+
+    if torch.is_tensor(keys):
+        if keys.ndim == 1:
+            if keys.numel() != 5:
+                raise ValueError("each memory key must contain five members")
+            raw_keys = [keys.detach().cpu().tolist()]
+        elif keys.ndim == 2 and keys.shape[1] == 5:
+            raw_keys = keys.detach().cpu().tolist()
+        else:
+            raise ValueError("keys must have shape [N, 5]")
+    elif isinstance(keys, tuple) and len(keys) == 5 and not any(
+        isinstance(item, (tuple, list)) for item in keys
+    ):
+        raw_keys = [keys]
+    elif isinstance(keys, list) and len(keys) == 5 and not any(
+        isinstance(item, (tuple, list)) for item in keys
+    ):
+        raw_keys = [keys]
+    else:
+        raw_keys = list(keys)  # type: ignore[arg-type]
+    normalized: list[tuple[Any, ...]] = []
+    for key in raw_keys:
+        if len(key) != 5:
+            raise ValueError("each memory key must contain five members")
+        normalized.append(tuple(_python_key_atom(item) for item in key))
+    return normalized
+
+
+def _observation_vector(
+    values: object,
+    count: int,
+    device: torch.device,
+    name: str,
+) -> torch.Tensor:
+    """Normalize one-dimensional observation values, allowing scalar broadcast."""
+
+    result = torch.as_tensor(values, device=device)
+    if result.numel() == 1 and count != 1:
+        result = result.reshape(1).expand(count)
+    elif result.numel() != count:
+        raise ValueError(f"{name} must contain one value per key")
+    return result.reshape(-1)
+
+
+class MUSETemporalMemory:
+    """Track per-key pseudo-label runs and expose stable observations after 3 hits."""
+
+    def __init__(self, stability_steps: int = _TEMPORAL_STABILITY_STEPS) -> None:
+        if (
+            not isinstance(stability_steps, int)
+            or isinstance(stability_steps, bool)
+            or stability_steps < 1
+        ):
+            raise ValueError("stability_steps must be a positive integer")
+        self.stability_steps = int(stability_steps)
+        self._entries: dict[tuple[Any, ...], dict[str, Any]] = {}
+        self._frozen = False
+
+    def observe(
+        self,
+        keys: object,
+        predictions: object,
+        confidence: object,
+        epoch: int,
+    ) -> torch.Tensor:
+        """Observe one batch and return the stable mask for its keys."""
+
+        normalized_keys = _temporal_keys(keys)
+        prediction_tensor = predictions if torch.is_tensor(predictions) else torch.as_tensor(predictions)
+        if prediction_tensor.is_complex():
+            raise TypeError("predictions must be real-valued")
+        prediction_tensor = prediction_tensor.reshape(-1)
+        prediction_tensor = _observation_vector(
+            prediction_tensor, len(normalized_keys), prediction_tensor.device, "predictions"
+        )
+        confidence_tensor = _observation_vector(
+            confidence, len(normalized_keys), prediction_tensor.device, "confidence"
+        )
+        if not isinstance(epoch, int) or isinstance(epoch, bool):
+            raise TypeError("epoch must be an int")
+
+        stable: list[bool] = []
+        for index, key in enumerate(normalized_keys):
+            prediction = prediction_tensor[index].detach().cpu().item()
+            confidence_value = confidence_tensor[index].detach().cpu().item()
+            existing = self._entries.get(key)
+            if existing is not None and existing["prediction"] == prediction:
+                streak = min(int(existing["streak"]) + 1, self.stability_steps)
+            else:
+                streak = 1
+            is_stable = streak >= self.stability_steps
+            stable.append(is_stable)
+            if not self._frozen:
+                self._entries[key] = {
+                    "prediction": prediction,
+                    "confidence": float(confidence_value),
+                    "epoch": int(epoch),
+                    "streak": int(streak),
+                }
+            elif existing is None:
+                is_stable = False
+                stable[-1] = False
+        return torch.tensor(stable, dtype=torch.bool, device=prediction_tensor.device)
+
+    def freeze(self) -> None:
+        self._frozen = True
+
+    def state_dict(self) -> dict[str, Any]:
+        return {
+            "stability_steps": self.stability_steps,
+            "frozen": self._frozen,
+            "entries": {
+                key: dict(value) for key, value in self._entries.items()
+            },
+        }
+
+    def load_state_dict(self, state: Mapping[str, Any]) -> None:
+        if not isinstance(state, Mapping):
+            raise TypeError("state must be a mapping")
+        steps = state.get("stability_steps", _TEMPORAL_STABILITY_STEPS)
+        if not isinstance(steps, int) or isinstance(steps, bool) or steps < 1:
+            raise ValueError("state stability_steps must be a positive integer")
+        entries = state.get("entries", {})
+        if not isinstance(entries, Mapping):
+            raise ValueError("state entries must be a mapping")
+        restored: dict[tuple[Any, ...], dict[str, Any]] = {}
+        for raw_key, raw_entry in entries.items():
+            key = _temporal_keys([raw_key])[0]
+            if not isinstance(raw_entry, Mapping):
+                raise ValueError("each memory entry must be a mapping")
+            restored[key] = {
+                "prediction": _python_key_atom(raw_entry["prediction"]),
+                "confidence": float(raw_entry["confidence"]),
+                "epoch": int(raw_entry["epoch"]),
+                "streak": int(raw_entry["streak"]),
+            }
+        self.stability_steps = int(steps)
+        self._entries = restored
+        self._frozen = bool(state.get("frozen", False))
+
+
+def _prototype_weight(value: object) -> float:
+    """Validate the bounded contribution weight for unlabeled prototypes."""
+
+    try:
+        result = float(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("unlabeled_weight must be in [0.05, 0.10]") from exc
+    if not torch.isfinite(torch.tensor(result)).item() or not (
+        _MIN_UNLABELED_PROTOTYPE_WEIGHT <= result <= _MAX_UNLABELED_PROTOTYPE_WEIGHT
+    ):
+        raise ValueError("unlabeled_weight must be in [0.05, 0.10]")
+    return result
+
+
+class MUSEClassificationPrototypeBank:
+    """EMA class prototypes fed only by high-confidence stable pseudo-labels."""
+
+    def __init__(
+        self,
+        feature_dim: int | None = None,
+        unlabeled_weight: float = _DEFAULT_UNLABELED_PROTOTYPE_WEIGHT,
+    ) -> None:
+        if feature_dim is not None and (
+            not isinstance(feature_dim, int)
+            or isinstance(feature_dim, bool)
+            or feature_dim < 1
+        ):
+            raise ValueError("feature_dim must be a positive integer")
+        self._feature_dim = feature_dim
+        self._unlabeled_weight = _prototype_weight(unlabeled_weight)
+        self._prototypes: dict[int, torch.Tensor] = {}
+        self._counts: dict[int, float] = {}
+        self._domain_counts: dict[tuple[int, Any], float] = {}
+        self._frozen = False
+
+    @property
+    def feature_dim(self) -> int | None:
+        return self._feature_dim
+
+    @property
+    def unlabeled_weight(self) -> float:
+        return self._unlabeled_weight
+
+    @property
+    def prototypes(self) -> dict[int, torch.Tensor]:
+        return {class_id: value.clone() for class_id, value in self._prototypes.items()}
+
+    def observe(
+        self,
+        features: torch.Tensor,
+        pseudo: object,
+        domains: object,
+        high_mask: object,
+        stable_mask: object,
+        unlabeled_weight: float | None = None,
+    ) -> None:
+        """Update class prototypes using only ``high_mask & stable_mask`` rows."""
+
+        update_weight = self._unlabeled_weight if unlabeled_weight is None else _prototype_weight(unlabeled_weight)
+        value = features if torch.is_tensor(features) else torch.as_tensor(features)
+        if value.ndim != 2:
+            raise ValueError("features must have shape [N, D]")
+        if value.is_complex():
+            raise TypeError("features must be real-valued")
+        if not value.is_floating_point():
+            value = value.to(dtype=torch.get_default_dtype())
+        if self._feature_dim is None:
+            if self._frozen:
+                return
+            self._feature_dim = int(value.shape[1])
+        if value.shape[1] != self._feature_dim:
+            raise ValueError("feature dimension does not match the prototype bank")
+        sample_count = value.shape[0]
+        pseudo_tensor = _observation_vector(pseudo, sample_count, value.device, "pseudo")
+        if torch.is_tensor(domains):
+            domain_values = domains.reshape(-1).detach().cpu().tolist()
+        elif isinstance(domains, (str, bytes)):
+            domain_values = [domains]
+        else:
+            try:
+                domain_values = list(domains)  # type: ignore[arg-type]
+            except TypeError:
+                domain_values = [domains]
+        if len(domain_values) == 1 and sample_count != 1:
+            domain_values = domain_values * sample_count
+        if len(domain_values) != sample_count:
+            raise ValueError("domains must contain one value per feature")
+        high = _sample_mask(high_mask, sample_count, value.device, "high_mask")
+        stable = _sample_mask(stable_mask, sample_count, value.device, "stable_mask")
+        accepted = high & stable
+        if self._frozen or not bool(accepted.any().item()):
+            return
+
+        detached = value.detach().float()
+        labels = pseudo_tensor.detach().cpu().tolist()
+        accepted_indices = accepted.detach().cpu().tolist()
+        accepted_by_class: dict[int, list[int]] = {}
+        for index, (label, is_accepted) in enumerate(zip(labels, accepted_indices)):
+            if not is_accepted:
+                continue
+            class_id = int(label)
+            accepted_by_class.setdefault(class_id, []).append(index)
+            domain = _python_key_atom(domain_values[index])
+            domain_key = (class_id, domain)
+            self._domain_counts[domain_key] = self._domain_counts.get(domain_key, 0.0) + 1.0
+
+        for class_id, indices in accepted_by_class.items():
+            batch_mean = detached[indices].mean(dim=0)
+            old = self._prototypes.get(class_id)
+            if old is None:
+                self._prototypes[class_id] = batch_mean.clone()
+            else:
+                old = old.to(device=batch_mean.device, dtype=batch_mean.dtype)
+                self._prototypes[class_id] = (1.0 - update_weight) * old + update_weight * batch_mean
+            self._counts[class_id] = self._counts.get(class_id, 0.0) + float(len(indices))
+
+    def freeze(self) -> None:
+        self._frozen = True
+
+    def state_dict(self) -> dict[str, Any]:
+        return {
+            "feature_dim": self._feature_dim,
+            "unlabeled_weight": self._unlabeled_weight,
+            "frozen": self._frozen,
+            "prototypes": {
+                int(class_id): value.clone() for class_id, value in self._prototypes.items()
+            },
+            "counts": dict(self._counts),
+            "domain_counts": dict(self._domain_counts),
+        }
+
+    def load_state_dict(self, state: Mapping[str, Any]) -> None:
+        if not isinstance(state, Mapping):
+            raise TypeError("state must be a mapping")
+        feature_dim = state.get("feature_dim")
+        if feature_dim is not None:
+            feature_dim = int(feature_dim)
+        if self._feature_dim is not None and feature_dim is not None and self._feature_dim != feature_dim:
+            raise ValueError("state feature dimension does not match the prototype bank")
+        prototypes = state.get("prototypes", {})
+        if not isinstance(prototypes, Mapping):
+            raise ValueError("state prototypes must be a mapping")
+        restored: dict[int, torch.Tensor] = {}
+        inferred_dim = feature_dim
+        for raw_class_id, raw_value in prototypes.items():
+            class_id = int(raw_class_id)
+            tensor = torch.as_tensor(raw_value).detach().clone()
+            if tensor.ndim != 1:
+                raise ValueError("each prototype must be one-dimensional")
+            if inferred_dim is None:
+                inferred_dim = int(tensor.numel())
+            if tensor.numel() != inferred_dim:
+                raise ValueError("state prototypes have inconsistent feature dimensions")
+            restored[class_id] = tensor
+        self._feature_dim = inferred_dim
+        self._unlabeled_weight = _prototype_weight(
+            state.get("unlabeled_weight", self._unlabeled_weight)
+        )
+        self._prototypes = restored
+        counts = state.get("counts", {})
+        domain_counts = state.get("domain_counts", {})
+        self._counts = {int(class_id): float(value) for class_id, value in dict(counts).items()}
+        self._domain_counts = {
+            (int(key[0]), _python_key_atom(key[1])): float(value)
+            for key, value in dict(domain_counts).items()
+        }
+        self._frozen = bool(state.get("frozen", False))
+
+
 __all__ = [
     "MUSEConfig",
     "MUSEScheduleState",
@@ -418,4 +923,9 @@ __all__ = [
     "js_head_disagreement",
     "compute_muse_reliability",
     "route_muse_reliability",
+    "weighted_soft_cross_entropy",
+    "candidate_set_mask",
+    "candidate_set_cross_entropy",
+    "MUSETemporalMemory",
+    "MUSEClassificationPrototypeBank",
 ]
