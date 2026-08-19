@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import numpy as np
@@ -15,6 +16,7 @@ from cvsrffi.stage2_m24_row_executor import (
     execute_m24_row,
 )
 from cvsrffi.stage2_m24_safe_residual import D1, M24_ARMS
+from scripts import preflight_m24_safe_residual as preflight
 from scripts import run_m24_safe_residual_suite as suite_runner
 from test_stage2_m23_integration import NEW, OLD, _inputs
 
@@ -83,6 +85,36 @@ def test_suite_freezes_one_seed_across_all_eleven_arms() -> None:
     assert suite_runner._arm_seed_plan(7282101, M24_ARMS) == {
         arm: 7282101 for arm in M24_ARMS
     }
+
+
+def test_preflight_accepts_legacy_base_protocol_bound_by_overlay_and_split(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    common = {
+        "capsule_id": "capsule-fixed",
+        "split_id": "p2_min_v1-rx3-19-m7282101-k1-new20",
+        "receiver": "3-19",
+        "k_shot": 1,
+        "method_seed": 7282101,
+    }
+    base = {**common, "phase2_data_status": "VALIDATED_ONCE"}
+    overlay = {**common, "phase2_data_status": "VALIDATED_ONCE", "protocol_schema": "p2_min_v1"}
+    scoring = {"schema": "cvs.phase2.scoring_sidecar_manifest.v2", "truth_sidecar_json": "truth.json"}
+    paths = []
+    for name, value in (("base", base), ("overlay", overlay), ("scoring", scoring)):
+        path = tmp_path / f"{name}.json"
+        path.write_text(json.dumps(value), encoding="utf-8")
+        paths.append(path)
+    monkeypatch.setattr(preflight.subprocess, "check_output", lambda *args, **kwargs: "abc123\n")
+    receipt = preflight.run_preflight(
+        base_manifest=paths[0],
+        overlay_manifest=paths[1],
+        scoring_manifest=paths[2],
+        output_root=tmp_path / "absent-output",
+        expected_commit="abc123",
+        repository=tmp_path,
+    )
+    assert receipt["status"] == "PASS"
 
 
 def test_d1_row_publishes_truth_unopened_four_state_and_nonoverwriting_output(tmp_path: Path) -> None:

@@ -44,7 +44,14 @@ def run_preflight(
     base = _json_object(base_manifest)
     overlay = _json_object(overlay_manifest)
     scoring = _json_object(scoring_manifest)
-    if base.get("protocol_schema") != "p2_min_v1" or base.get("phase2_data_status") != "VALIDATED_ONCE":
+    protocol_schema = base.get("protocol_schema", overlay.get("protocol_schema"))
+    split_id = str(base.get("split_id", ""))
+    if (
+        protocol_schema != "p2_min_v1"
+        or not split_id.startswith("p2_min_v1-")
+        or base.get("phase2_data_status") != "VALIDATED_ONCE"
+        or overlay.get("phase2_data_status") != "VALIDATED_ONCE"
+    ):
         raise ValueError("base manifest protocol status drift")
     for field in ("capsule_id", "split_id", "receiver", "k_shot", "method_seed"):
         if base.get(field) != overlay.get(field):

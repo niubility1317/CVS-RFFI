@@ -5,7 +5,7 @@
 |字段|值|
 |---|---|
 |run ID|`erbt_idr_m24_safe_residual_diagnostic_20260820_v1`|
-|当前状态|`LOCAL_VERIFIED / PREREGISTERED / NOT_YET_LANDED`|
+|当前状态|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`|
 |实现提交|`e85146f27ce9ecc0863bc7f3496b60718f673ec3`，分支`work/m24-safe-residual`|
 |候选／矩阵|receiver=`3-19`，method seed=`7282101`；`K1/new20`与`K10/new5`两条row；每条按D0→D10固定顺序运行11臂及`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`三场景|
 |科学停止规则|D1必须与历史F1逐query预测完全一致；若任一row出现差异，当前suite在D1后停止，不运行D2–D10，修正几何后使用新run ID|
@@ -32,3 +32,7 @@ M2.4把M2.3的共享质量、中心、先验、不确定性和RF路径拆成D0�
 ## 证据边界
 
 本轮为研发筛选证据，不是独立fresh confirmation、完整125结论、Phase3开放世界能力或星载部署证明。最终结果必须保持receiver、seed、draw、K、新类数、场景和候选同row，不拼接跨row最优值。
+
+## v1技术停止
+
+release归档本地与N607 SHA256一致，远端编译通过；但正式预检发现既有合法v3 base manifest不含顶层`protocol_schema`，协议由其`split_id=p2_min_v1-*`与匹配overlay的`protocol_schema=p2_min_v1`共同绑定。预检实现错误地要求base顶层字段，导致两条row均在输出目录创建前安全失败。该问题属于launcher级确定性pre-prediction故障；v1没有prediction或性能结果。修复后使用新run ID发布，不覆盖本run。
