@@ -79,3 +79,4 @@ nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_
 - E002：`train_skipped_nonfinite_grad=0.0`，`train_optimizer_step_applied=1.0`，`val_tx_acc=30.2619%`，梯度遥测为`total=24.444`、`backbone=24.438`、`domain=0.846`。
 - 截至E002，日志中无`Traceback`、`RuntimeError`、CUDA error、OOM、`FAIL`或`ERROR`。与r2每个epoch均100%跳过、0%优化器更新相比，零残差梯度污染已被真实训练证据消除。
 - 当前只确认启动与修复有效，不构成最终性能结论。训练完成后launcher必须继续执行clean及三种LEO_WEAK逐场景独立测试，产物闭合后方可标记`ARTIFACTS_COMPLETE`。
+- 纳入因果矩阵后的E039检查：`train_optimizer_step_applied=1.0`，`train_skipped_nonfinite_grad=0.0`，train TX=`61.5625%`，source val TX=`93.9683%`；当前完整日志无确定性异常标记。
