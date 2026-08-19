@@ -2,7 +2,7 @@
 
 ## 预登记
 
-- 实验ID：`phase1_advb02_crra_mixed_orbit_20260819_r1`；首次技术失败尝试保留为`phase1_advb02_crra_mixed_orbit_20260819`。
+- 实验ID：`phase1_advb02_crra_mixed_orbit_20260819_r2`；前两次技术失败尝试分别保留为`phase1_advb02_crra_mixed_orbit_20260819`和`phase1_advb02_crra_mixed_orbit_20260819_r1`。
 - 目标：在当前Phase1数据协议下，验证ADVB02 CRRA对历史`mixed_orbit`星地信道视图的拼接监督训练闭环、稳定性遥测和同row性能方向。
 - 数据比例：WiSig `0.07/0.63/0.15/0.15`，分别对应`L_s/U_s/V_cal/V_select`；`V_select`只用于源侧选模，`V_cal`只用于校准/导出，不访问目标接收机、目标阈值或query truth。
 - 星地信道：训练增强仅使用历史`mixed_orbit`（代码规范名）；本任务不使用`leo_*_weak`作为训练星地信道。
@@ -19,20 +19,20 @@
 | 本地Git承载 | `E:/type10-7/github_publish/CVS-RFFI-repo` |
 | launcher | `code/scripts/launch_phase1_advb02_crra_mixed_orbit_20260819.sh` |
 | 远端项目根 | `/home/szu2070436088/2510044040/CV-SincNet` |
-| 远端run根 | `/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_advb02_crra_mixed_orbit_20260819_r1` |
-| 远端log根 | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_advb02_crra_mixed_orbit_20260819_r1` |
-| GPU | `6`；发布前复核GPU6仅有一个既有轻量Stage2预测进程且利用率为0，GPU3已有两个既有预测进程，因此固定使用GPU6；不超过单GPU默认两个训练进程 |
+| 远端run根 | `/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_advb02_crra_mixed_orbit_20260819_r2` |
+| 远端log根 | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_advb02_crra_mixed_orbit_20260819_r2` |
+| GPU | `3`；最终发布前复核GPU3仅有一个既有轻量Stage2预测进程且利用率为0，因此再放置本run后不超过两个进程；不超过单GPU默认两个训练进程 |
 | 环境 | 远端既有`CVS-RFFI`Python环境；本地验证使用`ssr-gpu` |
 | 技术停止 | 仅协议越权、错误checkout、输出覆盖、launcher/确定性启动故障、无prediction闭合；不因低性能停止 |
 
-首次归档已落地但因launcher过期参数启动失败；该artifact保留，不覆盖。修复后的归档：本地`E:/type10-7/local_artifacts/phase1_advb02_crra_mixed_orbit_20260819/cvs-rffi-a5ca5594.tar.gz`→远端`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_crra_mixed_orbit_20260819_r1_a5ca5594.tar.gz`；单次归档SHA256=`fb09605f4ed92f9327d67428e8e39948c8563d714039235ba9ff0c36bf3faca6`。远端展开目录为`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_crra_mixed_orbit_20260819_r1_a5ca5594`，远端Python编译与launcher语法检查已通过。
+前两次启动artifact均已保留，不覆盖。最终归档：本地`E:/type10-7/local_artifacts/phase1_advb02_crra_mixed_orbit_20260819/cvs-rffi-a5ca5594.tar.gz`→远端`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_crra_mixed_orbit_20260819_r1_a5ca5594.tar.gz`；单次归档SHA256=`fb09605f4ed92f9327d67428e8e39948c8563d714039235ba9ff0c36bf3faca6`。远端展开目录为`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_crra_mixed_orbit_20260819_r1_a5ca5594`，远端Python编译与launcher语法检查已通过；训练数据固定读取项目根的`/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl`。
 
 本地固定提交：实现`cd970f1f`（`exp: align ADVB02 CRRA concat supervision with Phase1 roles`），启动修复`21a23878`（`fix: remove stale ADVB02 launch argument`）。
 
-唯一启动入口（重试run）：
+唯一启动入口（最终重试run）：
 
 ```bash
-bash code/scripts/launch_phase1_advb02_crra_mixed_orbit_20260819.sh
+ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_crra_mixed_orbit_20260819_r1_a5ca5594 WISIG_PKL=/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl GPU=3 RUN_ID=phase1_advb02_crra_mixed_orbit_20260819_r2 bash code/scripts/launch_phase1_advb02_crra_mixed_orbit_20260819.sh
 ```
 
 先做dry-run：
@@ -50,7 +50,7 @@ bash code/scripts/launch_phase1_advb02_crra_mixed_orbit_20260819.sh --dry-run
 - CRRA卫星KL回归：代码验证`lambda_sat_cons=0`时仍可由独立`lambda_crra_sat_kl>0`在E17后物化；本轮显式置零，E1–16不提前计算。
 - 元数据契约：`snr_db,cfo_hz,residual_cfo_hz,fD_hz,pl_db,K_db,theta_deg,h_km,state`始终固定9维；缺字段整行无效，不做左移拼接或截断回归。
 - Phase1角色：训练日志打印`L_s/U_s/V_cal/V_select`；`V_select`进入选模，`V_cal`进入校准/导出，四个角色物理样本索引两两不交。
-- 本地实现已固定为`cd970f1f`；首次启动失败指纹是旧launcher传入不存在的`--dom_feature_key feat_imp`，控制行在argparse阶段退出，未进入训练，旧run/log完整保留。修复后仅删除该过期参数并改用不可覆盖`_r1`run ID，不改变模型、数据协议或损失设定；不增加额外seal、authority或逐文件hash门。
+- 本地实现已固定为`cd970f1f`，启动修复为`21a23878`；首次失败是旧launcher传入不存在的`--dom_feature_key feat_imp`，第二次`_r1`失败是发布目录不含外部WiSig数据路径，二者均未进入有效训练且run/log完整保留。最终启动只显式绑定项目根只读数据文件并改用不可覆盖`_r2`run ID，不改变模型、数据协议或损失设定；不增加额外seal、authority或逐文件hash门。
 
 ## 结果记录
 
@@ -58,4 +58,4 @@ bash code/scripts/launch_phase1_advb02_crra_mixed_orbit_20260819.sh --dry-run
 
 ## 当前状态
 
-`LANDED`：首次归档的argparse技术失败已被保留并隔离；修复后的`_r1`归档已落地N607并完成远端编译，待启动唯一run owner。所有远端旧历史任务保持monitor-only。
+`LANDED`：前两次技术启动失败已被保留并隔离；最终`_r2`启动命令已绑定已验证的数据路径，代码归档已落地并完成远端编译，待启动唯一run owner。所有远端旧历史任务保持monitor-only。
