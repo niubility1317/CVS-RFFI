@@ -1,0 +1,135 @@
+from __future__ import annotations
+
+from pathlib import Path
+
+import numpy as np
+import pytest
+
+from cvsrffi.stage2_m23_overlay_builder import compose_m23_overlay_payloads
+from cvsrffi.stage2_m24_row_executor import (
+    DA0_REG0,
+    DA0_REG1,
+    DA1_REG0,
+    DA1_REG1,
+    M24RowExecutionError,
+    execute_m24_row,
+)
+from cvsrffi.stage2_m24_safe_residual import D1, M24_ARMS
+from scripts import run_m24_safe_residual_suite as suite_runner
+from test_stage2_m23_integration import NEW, OLD, _inputs
+
+
+def _caches() -> tuple[dict, dict]:
+    base, support, query = _inputs()
+    payloads = compose_m23_overlay_payloads(
+        base, support, query, old_classes=OLD, new_classes=NEW, k_shot=2
+    )
+    rng = np.random.default_rng(2420)
+    ground = {
+        "core_q": rng.integers(-30, 31, size=(6, 160), dtype=np.int8),
+        "core_scale": np.full(6, 0.01, dtype=np.float16),
+        "residual_basis_q": rng.integers(-20, 21, size=(6, 2, 160), dtype=np.int8),
+        "residual_basis_scale": np.full((6, 2), 0.005, dtype=np.float16),
+        "residual_coeff_q": rng.integers(-20, 21, size=(4, 6, 2), dtype=np.int8),
+        "residual_coeff_scale": np.full((4, 6), 0.004, dtype=np.float16),
+        "domain_registry": np.asarray([f"domain_{index}" for index in range(5)]),
+        "residual_domain_registry": np.asarray([f"domain_{index}" for index in range(1, 5)]),
+        "class_registry": np.asarray(OLD),
+        "center_domain_handle": np.asarray("domain_0"),
+    }
+    basis, _ = np.linalg.qr(rng.normal(size=(160, 3)))
+    base.update({
+        "manifest": {
+            "receiver": "3-19",
+            "k_shot": 2,
+            "method_seed": 7282101,
+            "capsule_id": "capsule-fixed",
+            "split_id": "split-fixed",
+            "phase2_data_status": "VALIDATED_ONCE",
+        },
+        "old_classes": OLD,
+        "new_classes": NEW,
+        "ground_basis": basis,
+        "ground_spectral_weights": np.asarray([0.5, 0.3, 0.2]),
+        "ground_audit": {
+            "d81_basis_sha256": "a" * 64,
+            "d81_spectral_weight_sha256": "b" * 64,
+            "d81_participation_ratio_effective_rank": 2.6,
+            "d81_retained_rank": 3,
+            "d81_rank_policy": "ceil_participation_ratio_effective_rank",
+            "ground_component_input_count": 84,
+            "ground_statistic_semantics": "class_centered_cross_domain_centroid_drift_eigenspectrum",
+        },
+    })
+    overlay = {
+        "manifest": {
+            "receiver": "3-19",
+            "k_shot": 2,
+            "method_seed": 7282101,
+            "capsule_id": "capsule-fixed",
+            "split_id": "split-fixed",
+            "predictor_package_root_sha256": "3" * 64,
+            "predictor_package_seal_sha256": "4" * 64,
+        },
+        "old_classes": OLD,
+        "new_classes": NEW,
+        "scenario_payloads": payloads,
+        "ground_component": ground,
+    }
+    return base, overlay
+
+
+def test_suite_freezes_one_seed_across_all_eleven_arms() -> None:
+    assert suite_runner._arm_seed_plan(7282101, M24_ARMS) == {
+        arm: 7282101 for arm in M24_ARMS
+    }
+
+
+def test_d1_row_publishes_truth_unopened_four_state_and_nonoverwriting_output(tmp_path: Path) -> None:
+    base, overlay = _caches()
+    receipt = execute_m24_row(
+        arm=D1,
+        row_id="synthetic_m24_d1",
+        receiver="3-19",
+        base_cache=base,
+        overlay_cache=overlay,
+        output_root=tmp_path / "row",
+        seed=7282101,
+    )
+    assert receipt["status"] == "PREDICTIONS_COMPLETE_TRUTH_UNOPENED"
+    assert receipt["query_truth_opened"] is False
+    assert receipt["fit_query_rows_used"] == 0
+    assert receipt["per_query_independent_all_class_argmax"] is True
+    assert receipt["four_state_prediction_columns"] == {
+        DA0_REG0: "identity_before",
+        DA1_REG0: "candidate_before",
+        DA0_REG1: "identity_after",
+        DA1_REG1: "candidate_after",
+    }
+    assert Path(receipt["prediction"]["path"]).is_file()
+    assert receipt["resource"]["persistent_update_state_bytes"] == 0
+    assert "r_p99" in receipt["quantization"]["margin_normalized"]
+    with pytest.raises(FileExistsError):
+        execute_m24_row(
+            arm=D1,
+            row_id="synthetic_m24_d1_repeat",
+            receiver="3-19",
+            base_cache=base,
+            overlay_cache=overlay,
+            output_root=tmp_path / "row",
+            seed=7282101,
+        )
+
+
+def test_row_fails_closed_on_seed_drift(tmp_path: Path) -> None:
+    base, overlay = _caches()
+    with pytest.raises(M24RowExecutionError, match="row identity"):
+        execute_m24_row(
+            arm=D1,
+            row_id="synthetic_m24_wrong_seed",
+            receiver="3-19",
+            base_cache=base,
+            overlay_cache=overlay,
+            output_root=tmp_path / "wrong",
+            seed=7282102,
+        )
