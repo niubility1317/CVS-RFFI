@@ -47,6 +47,9 @@
 - `P0_REVIEW_FIXED`：审查发现独立checkpoint评估重建模型后默认`crra_epoch=1`，会关闭最终CRRA门控。已增加`restore_crra_eval_epoch()`，独立评估和协作评估都会从checkpoint恢复训练轮次；定点测试通过。
 - `N607_DIRECT_PREFLIGHT_VERIFIED`：2026-08-19 23:52（Asia/Hong_Kong）确认N607项目根目录和8张GPU可见；GPU0空闲，GPU1–3已有其他任务，本run不干预它们。
 - `RELEASE_ARCHIVE_READY`：实现提交`f32f52b8f8d8fc51873a830888e4e2ea3a6d8d27`的`code/`和独立评估器归档为`advb02_crra_leo_weak_f32f52b8.tar`，本地SHA256=`2c74568313552b26d544bbb0994ef31c4a0fa918b22d4bb02a345e88440757da`。计划上传到`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_crra_leo_weak_20260819/f32f52b8/`，解压到其`workspace/`子目录；训练输出和日志仍写入主项目的唯一run根目录。
+- `RELEASE_ARCHIVE_LANDED_VERIFIED`：远端同一归档SHA256回读为`2c74568313552b26d544bbb0994ef31c4a0fa918b22d4bb02a345e88440757da`；仅做本地/远端这一轮归档校验。
+- `REMOTE_COMPILE_AND_DRY_RUN_PASS`：隔离`workspace/`内的改动模块均已编译；启动器干跑显示固定seed、四角色、三段LEO日程和`channel=leo_weak only`，并确认输出中不含`mixed_orbit`。
+- `REAL_CHECKPOINT_NOQUERY_SMOKE_PASS`：CPU上严格重建并加载历史`ADV3B02_CORE90_SOFT_E200`真实checkpoint，`missing=0,unexpected=0`；该冒烟不读取query、不参与本次候选性能比较。
 
 ## 结果与解释
 
