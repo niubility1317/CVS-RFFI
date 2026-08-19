@@ -7,6 +7,8 @@ from numbers import Real
 from typing import Any, Mapping, Sequence
 
 import torch
+from torch import nn
+from torch.nn import functional as F
 
 
 _PROBABILITY_EPS = 1e-8
@@ -940,6 +942,187 @@ class MUSEClassificationPrototypeBank:
         self._frozen = bool(state.get("frozen", False))
 
 
+class MUSETrainingHeads(nn.Module):
+    """Training-only local, self-supervised, and nuisance heads for MUSE.
+
+    The local classifier keeps one shared projection and base classifier.  A
+    domain selects only a small factorized logit delta, so source-domain
+    conditioning does not replicate a full ``z_id -> class`` classifier.
+    None of these parameters are part of the deployment state.
+    """
+
+    _LOCAL_RANK = 32
+    _LOCAL_DELTA_RANK = 4
+    _PROJECTION_DIM = 128
+    _PREDICTION_HIDDEN_DIM = 64
+    _NUISANCE_HIDDEN_DIM = 32
+
+    def __init__(
+        self,
+        z_id_dim: int,
+        z_dom_dim: int,
+        num_classes: int,
+        num_domains: int,
+        nuisance_dim: int,
+    ) -> None:
+        super().__init__()
+        dimensions = {
+            "z_id_dim": z_id_dim,
+            "z_dom_dim": z_dom_dim,
+            "num_classes": num_classes,
+            "num_domains": num_domains,
+            "nuisance_dim": nuisance_dim,
+        }
+        for name, value in dimensions.items():
+            if not isinstance(value, int) or isinstance(value, bool) or value < 1:
+                raise ValueError(f"{name} must be a positive integer")
+
+        self.z_id_dim = z_id_dim
+        self.z_dom_dim = z_dom_dim
+        self.num_classes = num_classes
+        self.num_domains = num_domains
+        self.nuisance_dim = nuisance_dim
+        self.local_rank = min(self._LOCAL_RANK, z_id_dim)
+        self.local_delta_rank = min(self._LOCAL_DELTA_RANK, self.local_rank, num_classes)
+        projection_dim = min(self._PROJECTION_DIM, max(16, z_id_dim))
+
+        self.shared_projection = nn.Linear(z_id_dim, self.local_rank, bias=False)
+        self.shared_classifier = nn.Linear(self.local_rank, num_classes)
+        self.domain_delta_left = nn.Parameter(
+            torch.empty(num_domains, self.local_rank, self.local_delta_rank)
+        )
+        self.domain_delta_right = nn.Parameter(
+            torch.empty(num_domains, self.local_delta_rank, num_classes)
+        )
+
+        self.self_projection = nn.Sequential(
+            nn.Linear(z_id_dim, projection_dim),
+            nn.ReLU(),
+            nn.Linear(projection_dim, projection_dim),
+        )
+        self.self_prediction = nn.Sequential(
+            nn.Linear(projection_dim, self._PREDICTION_HIDDEN_DIM),
+            nn.ReLU(),
+            nn.Linear(self._PREDICTION_HIDDEN_DIM, projection_dim),
+        )
+        self.nuisance_head = nn.Sequential(
+            nn.Linear(z_dom_dim, self._NUISANCE_HIDDEN_DIM),
+            nn.ReLU(),
+            nn.Linear(self._NUISANCE_HIDDEN_DIM, nuisance_dim),
+        )
+
+        nn.init.normal_(self.domain_delta_left, mean=0.0, std=0.02)
+        nn.init.normal_(self.domain_delta_right, mean=0.0, std=0.02)
+
+    @staticmethod
+    def _feature_matrix(value: torch.Tensor, width: int, name: str, dtype: torch.dtype) -> torch.Tensor:
+        if not torch.is_tensor(value):
+            value = torch.as_tensor(value)
+        if value.ndim != 2 or value.shape[1] != width:
+            raise ValueError(f"{name} must have shape [N, {width}]")
+        if value.is_complex():
+            raise TypeError(f"{name} must be real-valued")
+        return torch.nan_to_num(value.to(dtype=dtype), nan=0.0, posinf=0.0, neginf=0.0)
+
+    def _module_dtype(self) -> torch.dtype:
+        return self.shared_projection.weight.dtype
+
+    def _domain_indices(self, domains: object, sample_count: int, device: torch.device) -> torch.Tensor:
+        values = domains if torch.is_tensor(domains) else torch.as_tensor(domains)
+        if values.is_complex() or values.dtype == torch.bool:
+            raise TypeError("domains must be integer-valued")
+        values = values.reshape(-1)
+        if values.numel() == 1 and sample_count != 1:
+            values = values.expand(sample_count)
+        if values.numel() != sample_count:
+            raise ValueError("domains must contain one value per feature")
+        if values.is_floating_point():
+            if not torch.isfinite(values).all() or not torch.equal(values, values.round()):
+                raise ValueError("domains must contain finite integer values")
+        values = values.to(device=device, dtype=torch.long)
+        if bool((values < 0).any().item()) or bool((values >= self.num_domains).any().item()):
+            raise ValueError(f"domains must be in [0, {self.num_domains})")
+        return values
+
+    def local_prob(self, z_id: torch.Tensor, domains: object) -> torch.Tensor:
+        """Return source-domain-conditioned class probabilities."""
+
+        features = self._feature_matrix(z_id, self.z_id_dim, "z_id", self._module_dtype())
+        domain_indices = self._domain_indices(domains, features.shape[0], features.device)
+        projected = self.shared_projection(features)
+        logits = self.shared_classifier(projected)
+        left = self.domain_delta_left[domain_indices]
+        right = self.domain_delta_right[domain_indices]
+        delta = torch.bmm(torch.bmm(projected.unsqueeze(1), left), right).squeeze(1)
+        logits = torch.nan_to_num(logits + delta, nan=0.0, posinf=0.0, neginf=0.0)
+        return F.softmax(logits.float(), dim=-1).to(dtype=logits.dtype)
+
+    def self_supervised_loss(self, z_id_a: torch.Tensor, z_id_b: torch.Tensor) -> torch.Tensor:
+        """Compute symmetric stop-gradient negative cosine consistency loss."""
+
+        first = self._feature_matrix(z_id_a, self.z_id_dim, "z_id_a", self._module_dtype())
+        second = self._feature_matrix(z_id_b, self.z_id_dim, "z_id_b", self._module_dtype())
+        if first.shape != second.shape:
+            raise ValueError("z_id_a and z_id_b must have matching shapes")
+
+        projected_a = self.self_projection(first)
+        projected_b = self.self_projection(second)
+        predicted_a = self.self_prediction(projected_a)
+        predicted_b = self.self_prediction(projected_b)
+        target_a = F.normalize(projected_a.detach(), dim=-1, eps=1e-8)
+        target_b = F.normalize(projected_b.detach(), dim=-1, eps=1e-8)
+        predicted_a = F.normalize(predicted_a, dim=-1, eps=1e-8)
+        predicted_b = F.normalize(predicted_b, dim=-1, eps=1e-8)
+        loss_a = -(predicted_a * target_b).sum(dim=-1).mean()
+        loss_b = -(predicted_b * target_a).sum(dim=-1).mean()
+        return torch.nan_to_num(0.5 * (loss_a + loss_b), nan=0.0, posinf=0.0, neginf=0.0)
+
+    def _nuisance_prediction(self, z_dom: torch.Tensor) -> torch.Tensor:
+        features = self._feature_matrix(z_dom, self.z_dom_dim, "z_dom", self._module_dtype())
+        return torch.nan_to_num(
+            self.nuisance_head(features),
+            nan=0.0,
+            posinf=0.0,
+            neginf=0.0,
+        )
+
+    def nuisance_loss(
+        self,
+        z_dom: torch.Tensor,
+        targets: torch.Tensor,
+        valid_mask: object,
+    ) -> torch.Tensor:
+        """Return masked smooth-L1 regression loss for six nuisance targets."""
+
+        features = self._feature_matrix(z_dom, self.z_dom_dim, "z_dom", self._module_dtype())
+        target_tensor = targets if torch.is_tensor(targets) else torch.as_tensor(targets)
+        if target_tensor.ndim != 2 or target_tensor.shape != (features.shape[0], self.nuisance_dim):
+            raise ValueError(
+                f"targets must have shape [{features.shape[0]}, {self.nuisance_dim}]"
+            )
+        mask = valid_mask if torch.is_tensor(valid_mask) else torch.as_tensor(valid_mask)
+        mask = mask.reshape(-1)
+        if mask.numel() != features.shape[0]:
+            raise ValueError("valid_mask must contain one value per sample")
+        mask = mask.to(device=features.device, dtype=torch.bool)
+        if not bool(mask.any().item()):
+            return features.sum() * 0.0
+
+        prediction = self._nuisance_prediction(features)
+        target_tensor = target_tensor.to(device=prediction.device, dtype=prediction.dtype)
+        return F.smooth_l1_loss(prediction[mask], target_tensor[mask], reduction="mean")
+
+    def training_state_dict(self) -> dict[str, torch.Tensor]:
+        """Return a detached checkpoint copy of training-only parameters."""
+
+        return {key: value.detach().clone() for key, value in self.state_dict().items()}
+
+    def deployment_state_dict(self) -> dict[str, torch.Tensor]:
+        """Training-only parameters must never enter the Phase2 bundle."""
+
+        return {}
+
+
 __all__ = [
     "MUSEConfig",
     "MUSEScheduleState",
@@ -955,4 +1138,5 @@ __all__ = [
     "candidate_set_cross_entropy",
     "MUSETemporalMemory",
     "MUSEClassificationPrototypeBank",
+    "MUSETrainingHeads",
 ]
