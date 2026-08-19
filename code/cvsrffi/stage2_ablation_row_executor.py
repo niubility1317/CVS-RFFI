@@ -122,8 +122,17 @@ def _fit(
     ground_audit: Mapping[str, Any],
     seed: int,
     device: Any,
+    module2_mode: str = "baseline",
 ) -> Stage2AblationFittedState:
     stage = get_stage2_arm(ablation_id).stage
+    if module2_mode not in {"baseline", "td_htrc_m21", "td_htrc_m22"}:
+        raise Stage2AblationRowExecutionError(
+            "unknown module2 mode"
+        )
+    if module2_mode != "baseline" and stage != "stage2c":
+        raise Stage2AblationRowExecutionError(
+            "TD-HTRC M2.1/M2.2 requires a Stage2-C registration row"
+        )
     if stage == "stage2a":
         return fit_stage2_ablation(
             ablation_id=ablation_id,
@@ -157,6 +166,23 @@ def _fit(
                     payload, "new_support_labels"
                 ),
                 "new_classes": new_classes,
+            }
+        )
+    if module2_mode != "baseline":
+        prototypes = np.asarray(deployment_prototypes, dtype=np.float64)
+        if (
+            prototypes.ndim != 2
+            or prototypes.shape[0] != len(old_classes)
+            or prototypes.shape[1] < 160
+            or not np.isfinite(prototypes).all()
+        ):
+            raise Stage2AblationRowExecutionError(
+                "TD-HTRC deployment prototypes lack a finite identity anchor block"
+            )
+        kwargs.update(
+            {
+                "module2_mode": module2_mode,
+                "ground_class_centers": prototypes[:, :160],
             }
         )
     return fit_stage2_ablation(**kwargs)
@@ -341,6 +367,7 @@ def execute_feature_row(
     output_root: str | Path,
     seed: int,
     device: Any = "cpu",
+    module2_mode: str = "baseline",
     shared_view_count: int = 1,
     feature_cache_bytes: int = 0,
     deployment_state_bytes: int = 0,
@@ -350,6 +377,12 @@ def execute_feature_row(
     """Execute one logical row without opening or accepting query truth."""
 
     spec = get_stage2_arm(ablation_id)
+    if module2_mode not in {"baseline", "td_htrc_m21", "td_htrc_m22"}:
+        raise Stage2AblationRowExecutionError("unknown module2 mode")
+    if module2_mode != "baseline" and spec.stage != "stage2c":
+        raise Stage2AblationRowExecutionError(
+            "TD-HTRC M2.1/M2.2 requires a Stage2-C registration row"
+        )
     required_input_identity = {
         "stage_scope",
         "k_shot",
@@ -541,6 +574,7 @@ def execute_feature_row(
                 ground_audit=ground_audit,
                 seed=scenario_seed,
                 device=device,
+                module2_mode=module2_mode,
             )
             candidate_registration_seconds += (
                 time.perf_counter() - candidate_started
@@ -697,6 +731,7 @@ def execute_feature_row(
         "schema": ROW_EXECUTION_SCHEMA,
         "status": "PREDICTIONS_COMPLETE_TRUTH_UNOPENED",
         "ablation_id": ablation_id,
+        "module2_mode": module2_mode,
         "stage": spec.stage,
         "row_id": row_id,
         "receiver": receiver,

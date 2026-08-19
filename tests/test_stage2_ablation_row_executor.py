@@ -208,6 +208,56 @@ def test_feature_row_executor_has_no_truth_or_dataset_surface() -> None:
     )
 
 
+def test_fit_forwards_td_htrc_mode_with_identity_anchor_slice(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    captured: dict[str, object] = {}
+    sentinel = object()
+
+    def fake_fit_stage2_ablation(**kwargs):
+        captured.update(kwargs)
+        return sentinel
+
+    monkeypatch.setattr(
+        row_executor,
+        "fit_stage2_ablation",
+        fake_fit_stage2_ablation,
+    )
+    old_classes = tuple(f"old-{index}" for index in range(6))
+    new_classes = tuple(f"new-{index}" for index in range(5))
+    payload = {
+        "old_support_features": np.zeros((12, 288), dtype=np.float32),
+        "old_support_labels": np.asarray(
+            [old_classes[index % len(old_classes)] for index in range(12)]
+        ),
+        "new_support_features": np.zeros((10, 288), dtype=np.float32),
+        "new_support_labels": np.asarray(
+            [new_classes[index % len(new_classes)] for index in range(10)]
+        ),
+    }
+    prototypes = np.arange(6 * 288, dtype=np.float32).reshape(6, 288)
+
+    result = row_executor._fit(
+        "P2-E0",
+        payload=payload,
+        old_classes=old_classes,
+        new_classes=new_classes,
+        deployment_prototypes=prototypes,
+        ground_basis=np.zeros((160, 1), dtype=np.float64),
+        ground_spectral_weights=np.ones(1, dtype=np.float64),
+        ground_audit={},
+        seed=7,
+        device="cpu",
+        module2_mode="td_htrc_m21",
+    )
+
+    assert result is sentinel
+    assert captured["module2_mode"] == "td_htrc_m21"
+    np.testing.assert_array_equal(
+        captured["ground_class_centers"], prototypes[:, :160]
+    )
+
+
 def test_stage2a_publishes_zero_support_immutable_predictions(
     tmp_path: Path,
 ) -> None:

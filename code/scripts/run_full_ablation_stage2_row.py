@@ -62,7 +62,11 @@ def _load_request(path: str | Path) -> dict[str, Any]:
     return dict(request)
 
 
-def run_request(path: str | Path) -> dict[str, Any]:
+def run_request(
+    path: str | Path,
+    *,
+    module2_mode: str = "baseline",
+) -> dict[str, Any]:
     request = _load_request(path)
     ablation_id = str(request["ablation_id"])
     spec = get_stage2_arm(ablation_id)
@@ -151,6 +155,7 @@ def run_request(path: str | Path) -> dict[str, Any]:
         output_root=request["output_root"],
         seed=int(request["seed"]),
         device=str(request["device"]),
+        module2_mode=module2_mode,
         shared_view_count=int(request["shared_view_count"]),
         feature_cache_bytes=Path(
             request["feature_cache_payload"]
@@ -179,11 +184,17 @@ def _parser() -> argparse.ArgumentParser:
         )
     )
     parser.add_argument("--request", required=True)
+    parser.add_argument(
+        "--module2-mode",
+        choices=("baseline", "td_htrc_m21", "td_htrc_m22"),
+        default="baseline",
+    )
     return parser
 
 
 def main() -> int:
-    receipt = run_request(_parser().parse_args().request)
+    args = _parser().parse_args()
+    receipt = run_request(args.request, module2_mode=args.module2_mode)
     print(json.dumps(receipt, ensure_ascii=False, sort_keys=True))
     return 0
 
