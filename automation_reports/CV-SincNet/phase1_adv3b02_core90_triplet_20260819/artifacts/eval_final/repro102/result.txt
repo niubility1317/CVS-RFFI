@@ -1,0 +1,24 @@
+[CVS-EVAL] ckpt=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_core90_repro_seed392002_102_20260819_legacy/final_ssdg.pth
+[CVS-EVAL] run_name=post_stage sha256=bb07fe82fe86de6d0eae01a049b3a5014e069ce33387cf32155cfc578fe4a567
+[CVS-EVAL] device=cuda:4 eval_max_batches=0 sat_eval_max_batches=0
+[CVS-EVAL] missing_keys=0 unexpected_keys=0
+[CVS-EVAL] val tx_acc=98.611111 dom_acc=94.435426
+[CVS-EVAL] test_aggregate tx_acc=89.362745 dom_acc=0.000000
+          unseen_day_seen_rx(days=['2021_03_15', '2021_03_23'], rxs=[0, 1, 2, 3, 4, 5, 6]): tx=93.39% (78451/84000)
+          seen_day_unseen_rx(days=['2021_03_01', '2021_03_08'], rxs=[7, 8, 9, 10, 11]): tx=87.81% (52683/60000)
+          unseen_day_unseen_rx(days=['2021_03_15', '2021_03_23'], rxs=[7, 8, 9, 10, 11]): tx=85.28% (51166/60000)
+          day=2021_03_15 on seen_rxs=[0, 1, 2, 3, 4, 5, 6]: tx=95.06% (39924/42000)
+          day=2021_03_23 on seen_rxs=[0, 1, 2, 3, 4, 5, 6]: tx=91.73% (38527/42000)
+          rx=7 on seen_days=['2021_03_01', '2021_03_08']: tx=80.32% (9638/12000)
+          rx=8 on seen_days=['2021_03_01', '2021_03_08']: tx=80.96% (9715/12000)
+          rx=9 on seen_days=['2021_03_01', '2021_03_08']: tx=98.05% (11766/12000)
+          rx=10 on seen_days=['2021_03_01', '2021_03_08']: tx=95.68% (11482/12000)
+          rx=11 on seen_days=['2021_03_01', '2021_03_08']: tx=84.02% (10082/12000)
+          rx=7 on unseen_days=['2021_03_15', '2021_03_23']: tx=86.00% (10320/12000)
+          rx=8 on unseen_days=['2021_03_15', '2021_03_23']: tx=73.93% (8872/12000)
+          rx=9 on unseen_days=['2021_03_15', '2021_03_23']: tx=96.97% (11637/12000)
+          rx=10 on unseen_days=['2021_03_15', '2021_03_23']: tx=95.59% (11471/12000)
+          rx=11 on unseen_days=['2021_03_15', '2021_03_23']: tx=73.88% (8866/12000)
+[SAT-TEST] scenario=leo_clear_weak selected=test_unseen_day_seen_rx,test_seen_day_unseen_rx,test_unseen_day_unseen_rx overall_tx=77.25% strict_udu=71.22% (157600/204000)
+[SAT-TEST] scenario=leo_low_elev_weak selected=test_unseen_day_seen_rx,test_seen_day_unseen_rx,test_unseen_day_unseen_rx overall_tx=74.76% strict_udu=68.93% (152504/204000)
+[SAT-TEST] scenario=leo_rain_weak selected=test_unseen_day_seen_rx,test_seen_day_unseen_rx,test_unseen_day_unseen_rx overall_tx=74.52% strict_udu=68.57% (152022/204000)
