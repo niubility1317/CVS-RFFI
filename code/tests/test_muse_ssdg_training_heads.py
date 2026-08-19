@@ -50,6 +50,10 @@ def test_nuisance_empty_mask_returns_zero_with_zero_gradient():
     assert loss.item() == 0.0
     loss.backward()
     assert torch.equal(z_dom.grad, torch.zeros_like(z_dom))
+    for parameter in heads.nuisance_head.parameters():
+        assert parameter.grad is not None
+        assert torch.isfinite(parameter.grad).all()
+        assert torch.equal(parameter.grad, torch.zeros_like(parameter.grad))
 
 
 def test_training_state_contains_trainable_heads_but_no_deployment_state():

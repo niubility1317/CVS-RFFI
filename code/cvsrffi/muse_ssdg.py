@@ -1105,10 +1105,10 @@ class MUSETrainingHeads(nn.Module):
         if mask.numel() != features.shape[0]:
             raise ValueError("valid_mask must contain one value per sample")
         mask = mask.to(device=features.device, dtype=torch.bool)
-        if not bool(mask.any().item()):
-            return features.sum() * 0.0
-
         prediction = self._nuisance_prediction(features)
+        if not bool(mask.any().item()):
+            return prediction.sum() * 0.0
+
         target_tensor = target_tensor.to(device=prediction.device, dtype=prediction.dtype)
         return F.smooth_l1_loss(prediction[mask], target_tensor[mask], reduction="mean")
 
