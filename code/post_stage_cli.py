@@ -3,6 +3,8 @@ from __future__ import annotations
 import argparse
 from typing import Any, Dict
 
+from training_controls import LEO_WEAK_SCENARIOS_CSV
+
 
 MAIN_SAT_EVAL_ON = "test_unseen_day_seen_rx,test_seen_day_unseen_rx,test_unseen_day_unseen_rx"
 
@@ -98,7 +100,7 @@ def add_sat_eval_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--eval_sat_scenarios",
         type=str,
-        default="leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+        default=LEO_WEAK_SCENARIOS_CSV,
         help=(
             "Satellite scenarios to evaluate. The CVS deployment-primary default is "
             "leo_clear_weak,leo_low_elev_weak,leo_rain_weak; legacy full-physics scenarios "

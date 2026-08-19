@@ -38,6 +38,10 @@ rho_label ≤ 0.1
 
 当前统一划分语义为相对source全池`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`：有TX标签训练集、无TX标签训练集、校准validation与选模validation。四个角色均不得包含`R_t`，物理样本ID两两不交；`V_select`只能用于源侧模型选择，`V_cal`只能用于源侧校准与导出，不得反向传播、更新EMA或更新其他持久状态。Phase1可使用source clean与卫星增强训练，但这不授予Phase2访问这些样本或派生状态的权限。
 
+### Phase1星地信道增强默认
+
+新建Phase1训练与最终星地测试默认使用`LEO_WEAK`三场景：`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`。未显式给出训练场景时，训练在三种LEO弱信道视图间轮换；最终测试逐场景报告三项结果。clean只保留为无星地增强对照，不能替代LEO弱信道结果。`mixed_orbit`只可作为历史复现、显式对照或诊断压力路径，不能作为新建训练/测试的默认值；该变化不追溯改写历史实验。
+
 ## Phase2最小数据协议
 
 ### 单物理样本单LEO接收观测

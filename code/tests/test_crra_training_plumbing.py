@@ -41,10 +41,25 @@ def test_crra_schedule_has_identity_ramp_and_fixed_tail():
     assert crra_gate_scale(47) == 1.0
 
 
-def test_phase1_crra_legacy_defaults_and_leo_controls_are_explicit():
+def test_phase1_crra_defaults_use_the_complete_leo_weak_family():
+    import training_controls
+
     args = build_arg_parser().parse_args(["--output_dir", "x"])
-    assert args.sat_train_scenario == "mixed_orbit"
-    assert args.crra_scenario == "mixed_orbit"
+    resolve_scenarios = getattr(training_controls, "resolve_phase1_sat_training_scenarios", None)
+    assert callable(resolve_scenarios)
+    assert resolve_scenarios(args.sat_train_scenario, args.sat_train_scenarios) == [
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak",
+    ]
+    explicit_legacy = build_arg_parser().parse_args(
+        ["--output_dir", "x", "--sat_train_scenario", "mixed_orbit"]
+    )
+    assert resolve_scenarios(
+        explicit_legacy.sat_train_scenario,
+        explicit_legacy.sat_train_scenarios,
+    ) == ["mixed_orbit"]
+    assert args.crra_scenario == "leo_weak"
     assert args.crra_target_adapter is False
     assert args.lambda_crra_pair == pytest.approx(0.05)
     assert args.lambda_crra_sat_kl == pytest.approx(0.0)

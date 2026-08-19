@@ -6,6 +6,8 @@ from typing import Any, Callable, Iterable, Mapping, Optional
 
 import torch
 
+from training_controls import LEO_WEAK_SCENARIOS
+
 
 ApplySatFn = Callable[..., tuple]
 
@@ -154,7 +156,13 @@ def build_default_sat_view_stages(
     if parsed:
         return parsed
     names = tuple(normalize_scenario_name(name) for name in (scenarios or []) if normalize_scenario_name(name))
-    return (SatViewStage(start_epoch=1, scenarios=names or ("mixed_orbit",), view_prob=_clamp_prob(default_prob)),)
+    return (
+        SatViewStage(
+            start_epoch=1,
+            scenarios=names or LEO_WEAK_SCENARIOS,
+            view_prob=_clamp_prob(default_prob),
+        ),
+    )
 
 
 def _concat_optional_domain(d_raw: Optional[torch.Tensor], device: torch.device) -> Optional[torch.Tensor]:

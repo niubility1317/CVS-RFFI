@@ -12,6 +12,16 @@ import json
 from typing import Dict, List
 
 
+LEO_WEAK_SCENARIOS = (
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak",
+)
+LEO_WEAK_SCENARIOS_CSV = ",".join(LEO_WEAK_SCENARIOS)
+DEFAULT_LEO_WEAK_TRAIN_SCENARIO = LEO_WEAK_SCENARIOS[0]
+DEFAULT_CRRA_CHANNEL_FAMILY = "leo_weak"
+
+
 def _finite_float(value, default: float) -> float:
     try:
         out = float(value)
@@ -309,6 +319,21 @@ def parse_sat_scenarios(raw: str) -> List[str]:
         seen.add(name)
         out.append(name)
     return out
+
+
+def resolve_phase1_sat_training_scenarios(
+    sat_train_scenario: str | None,
+    sat_train_scenarios: str | None,
+) -> List[str]:
+    """Resolve Phase1 satellite views without masking an explicit legacy override."""
+
+    requested = parse_sat_scenarios(str(sat_train_scenarios or ""))
+    if requested:
+        return requested
+    single = str(sat_train_scenario or "").strip().lower().replace("-", "_")
+    if single:
+        return [single]
+    return list(LEO_WEAK_SCENARIOS)
 
 
 def satellite_protocol_manifest(

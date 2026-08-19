@@ -18,7 +18,7 @@ from model_dual_cvsincnet import build_dual_model
 from cvsrffi.eval import MAIN_SAT_EVAL_ON, apply_sat_channel_for_scenario, make_loader, resolve_sat_eval_loader_names
 from cvsrffi.crra_evaluation import restore_crra_eval_epoch
 from cvsrffi.tensors import build_domain_label_map, make_torch_generator, parse_csv_indices, unpack_batch
-from training_controls import parse_sat_scenarios
+from training_controls import LEO_WEAK_SCENARIOS_CSV, parse_sat_scenarios
 
 
 def parse_collab_counts(spec: str | Sequence[int] | None, *, receiver_count: int) -> list[int]:
@@ -561,7 +561,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--collab_fusion", default="soft", choices=["soft", "adaptive", "conservative"])
     parser.add_argument("--max_batches", type=int, default=0)
     parser.add_argument("--eval_sat_channel", action="store_true", help="Also evaluate receiver collaborative inference after satellite-channel transforms.")
-    parser.add_argument("--eval_sat_scenarios", default="clear_leo,low_elev_leo,rain_leo,storm_mp,mixed_orbit")
+    parser.add_argument("--eval_sat_scenarios", default=LEO_WEAK_SCENARIOS_CSV)
     parser.add_argument("--eval_sat_on", default=MAIN_SAT_EVAL_ON, help="Satellite eval split spec: main, all, or comma-separated named tests.")
     parser.add_argument("--sat_eval_max_batches", type=int, default=0, help="Max batches for satellite collaborative eval; 0 means full.")
     parser.add_argument("--sat_seed", type=int, default=2027)

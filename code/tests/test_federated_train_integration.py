@@ -131,7 +131,7 @@ class FederatedTrainIntegrationTest(unittest.TestCase):
         self.assertIn('parser.add_argument("--eval_sat_on", type=str, default=FEDERATED_MAIN_SAT_EVAL_ON', text)
         self.assertIn('Federated WiSig training must use --wisig_train_ratio 0.1', text)
         self.assertIn('parser.add_argument("--fl_sat_aug_mode", type=str, default="baseline_view"', text)
-        self.assertIn('parser.add_argument("--sat_train_scenario", type=str, default="mixed_orbit")', text)
+        self.assertIn("resolve_phase1_sat_training_scenarios", text)
         self.assertIn('getattr(self.cfg, "fl_sat_aug_mode", "baseline_view")', fed_text)
         self.assertIn('getattr(cfg, "fl_num_workers", 0)', fed_text)
         self.assertIn('"style_collab"', fed_text)

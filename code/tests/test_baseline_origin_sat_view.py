@@ -5,6 +5,17 @@ import torch
 
 
 class BaselineOriginSatViewAugmentTest(unittest.TestCase):
+    def test_missing_scenario_defaults_to_complete_leo_weak_family(self):
+        from baseline_origin_sat_view import build_default_sat_view_stages
+
+        stages = build_default_sat_view_stages(scenarios=None)
+
+        self.assertEqual(len(stages), 1)
+        self.assertEqual(
+            stages[0].scenarios,
+            ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"),
+        )
+
     def test_schedule_parser_supports_probabilities_and_repeated_scenarios(self):
         from baseline_origin_sat_view import parse_sat_view_schedule
 

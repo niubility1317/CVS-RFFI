@@ -38,9 +38,11 @@ from dataset_wisig import (
 from model_dual_cvsincnet import build_dual_model
 from DataAugmentation import build_augmentor, apply_receiver_dg
 from training_controls import (
+    LEO_WEAK_SCENARIOS_CSV,
     collapse_guard_decision,
     compute_mixstyle_epoch_state,
     parse_sat_scenarios,
+    resolve_phase1_sat_training_scenarios,
     sat_channel_config_for_scenario,
 )
 from training_test_eval import (
@@ -177,7 +179,7 @@ from cvsrffi.ssl_pseudo_label import PseudoLabelGateConfig, select_pseudo_labels
 # "w_cls" "w_dom" "w_adv" "w_cls_pa" "w_sat_cls" "w_proto" "w_fishr"
 # name.startswith("test_unseen_day_rx_") on unseen_days
 
-SAT_EVAL_SCENARIOS_DEFAULT = "leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
+SAT_EVAL_SCENARIOS_DEFAULT = LEO_WEAK_SCENARIOS_CSV
 FEDERATED_MAIN_SAT_EVAL_ON = "test_unseen_day_seen_rx,test_seen_day_unseen_rx,test_unseen_day_unseen_rx"
 
 
@@ -2453,9 +2455,18 @@ def main():
                  "Use concatenated satellite-channel views in the main CVS loss path")
     parser.add_argument("--concat_sat_ce_weight", type=float, default=1.0,
                         help="Weight for CE-only satellite-channel views when --concat_sat_ce_only is enabled.")
-    parser.add_argument("--sat_train_scenario", type=str, default="mixed_orbit")
-    parser.add_argument("--sat_train_scenarios", type=str, default="",
-                        help="Comma-separated satellite training scenarios. When set, batches cycle through the list.")
+    parser.add_argument(
+        "--sat_train_scenario",
+        type=str,
+        default="",
+        help="Explicit single satellite training scenario. When no training scenario is given, use the LEO_WEAK family.",
+    )
+    parser.add_argument(
+        "--sat_train_scenarios",
+        type=str,
+        default="",
+        help=f"Comma-separated satellite training scenarios. Default: {LEO_WEAK_SCENARIOS_CSV}.",
+    )
     parser.add_argument("--sat_view_schedule", type=str, default="",
                         help="Optional BOSV schedule like '1:mixed_orbit;61:mixed_orbit*2,low_elev_leo,rain_leo'.")
     parser.add_argument("--sat_view_prob", type=float, default=1.0,
@@ -2638,9 +2649,10 @@ def main():
         args.swad_save_path = derive_checkpoint_path(args.best_save_path, "swad")
 
     args.eval_sat_scenario_list = parse_sat_scenarios(args.eval_sat_scenarios) if bool(args.eval_sat_channel) else []
-    args.sat_train_scenario = str(args.sat_train_scenario or "mixed_orbit").strip().lower().replace("-", "_")
-    sat_train_spec = str(getattr(args, "sat_train_scenarios", "") or "").strip()
-    args.sat_train_scenario_list = parse_sat_scenarios(sat_train_spec) if sat_train_spec else [args.sat_train_scenario]
+    args.sat_train_scenario_list = resolve_phase1_sat_training_scenarios(
+        getattr(args, "sat_train_scenario", ""),
+        getattr(args, "sat_train_scenarios", ""),
+    )
     args.sat_view_schedule = str(getattr(args, "sat_view_schedule", "") or "").strip()
     use_concat_sat = bool(getattr(args, "use_concat_sat_channel_aug", False))
     if float(getattr(args, "concat_sat_ce_weight", 1.0)) < 0.0:

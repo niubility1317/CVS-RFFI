@@ -5,13 +5,8 @@ from __future__ import annotations
 from typing import Any
 
 from crra import crra_gate_scale
+from training_controls import DEFAULT_CRRA_CHANNEL_FAMILY, LEO_WEAK_SCENARIOS
 
-
-LEO_WEAK_SCENARIOS = (
-    "leo_clear_weak",
-    "leo_low_elev_weak",
-    "leo_rain_weak",
-)
 
 
 def _normalize_scenario(value: Any) -> str:
@@ -21,7 +16,7 @@ def _normalize_scenario(value: Any) -> str:
 def validate_crra_phase1_config(args: Any) -> None:
     """Reject CRRA configurations that leave the current Phase1 boundary."""
 
-    scenario = _normalize_scenario(getattr(args, "crra_scenario", "mixed_orbit"))
+    scenario = _normalize_scenario(getattr(args, "crra_scenario", DEFAULT_CRRA_CHANNEL_FAMILY))
     if scenario not in {"mixed_orbit", "leo_weak"}:
         raise ValueError(
             "ADVB02 CRRA Phase1 channel family must be mixed_orbit or leo_weak; "
@@ -34,7 +29,7 @@ def validate_crra_phase1_config(args: Any) -> None:
 def validate_crra_phase1_scenarios(
     scenarios: Any,
     *,
-    crra_scenario: str = "mixed_orbit",
+    crra_scenario: str = DEFAULT_CRRA_CHANNEL_FAMILY,
 ) -> None:
     """Keep CRRA training views inside the configured Phase1 channel family."""
 

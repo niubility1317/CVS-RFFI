@@ -1,5 +1,6 @@
 import sys
 import unittest
+import argparse
 from pathlib import Path
 
 import torch
@@ -86,6 +87,27 @@ class _LogitModel(torch.nn.Module):
 
 
 class CollaborativeInferenceEvalTest(unittest.TestCase):
+    def test_collaborative_cli_defaults_to_complete_leo_weak_family(self):
+        from evaluation import collaborative_inference_eval
+
+        captured_defaults = []
+        original_add_argument = argparse.ArgumentParser.add_argument
+
+        def record_eval_sat_scenarios(parser, *args, **kwargs):
+            if "--eval_sat_scenarios" in args:
+                captured_defaults.append(kwargs.get("default"))
+            return original_add_argument(parser, *args, **kwargs)
+
+        with unittest.mock.patch.object(
+            argparse.ArgumentParser,
+            "add_argument",
+            new=record_eval_sat_scenarios,
+        ):
+            with self.assertRaises(SystemExit):
+                collaborative_inference_eval.main(["--help"])
+
+        self.assertEqual(captured_defaults, ["leo_clear_weak,leo_low_elev_weak,leo_rain_weak"])
+
     def test_parse_collab_counts_accepts_all_or_explicit_one_to_receiver_count(self):
         from evaluation.collaborative_inference_eval import parse_collab_counts
 

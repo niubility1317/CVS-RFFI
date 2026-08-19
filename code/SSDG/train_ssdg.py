@@ -20,6 +20,11 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from post_stage_cli import add_common_data_args, add_sat_eval_args, str2bool
+from training_controls import (
+    DEFAULT_CRRA_CHANNEL_FAMILY,
+    LEO_WEAK_SCENARIOS_CSV,
+    resolve_phase1_sat_training_scenarios,
+)
 from cvsrffi.phase1_ablation_factory import (
     apply_phase1_ablation,
     phase1_ablation_config,
@@ -311,8 +316,18 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--teacher_distill_warmup_epochs", type=int, default=0)
     parser.add_argument("--use_sat_consistency", dest="use_sat_consistency", action="store_true", default=True)
     parser.add_argument("--no_use_sat_consistency", dest="use_sat_consistency", action="store_false")
-    parser.add_argument("--sat_train_scenario", type=str, default="mixed_orbit")
-    parser.add_argument("--sat_train_scenarios", type=str, default="")
+    parser.add_argument(
+        "--sat_train_scenario",
+        type=str,
+        default="",
+        help="Explicit single satellite training scenario. When no training scenario is given, use the LEO_WEAK family.",
+    )
+    parser.add_argument(
+        "--sat_train_scenarios",
+        type=str,
+        default="",
+        help=f"Comma-separated satellite training scenarios. Default: {LEO_WEAK_SCENARIOS_CSV}.",
+    )
     parser.add_argument("--sat_view_schedule", type=str, default="")
     parser.add_argument("--use_concat_sat_channel_aug", dest="use_concat_sat_channel_aug", action="store_true", default=False)
     parser.add_argument("--no_use_concat_sat_channel_aug", dest="use_concat_sat_channel_aug", action="store_false")
@@ -332,7 +347,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--sat_view_seed", type=int, default=2027)
     parser.add_argument("--use_crra", dest="use_crra", action="store_true", default=False)
     parser.add_argument("--no_use_crra", dest="use_crra", action="store_false")
-    parser.add_argument("--crra_scenario", type=str, default="mixed_orbit")
+    parser.add_argument("--crra_scenario", type=str, default=DEFAULT_CRRA_CHANNEL_FAMILY)
     parser.add_argument("--crra_rank", type=int, default=8)
     parser.add_argument("--crra_alpha_max", type=float, default=0.25)
     parser.add_argument("--crra_shrinkage", type=float, default=0.10)
@@ -5003,8 +5018,9 @@ def train(args) -> int:
         args.tau_min = float(args.tau_conf)
     if not bool(args.use_unlabeled):
         args.lambda_u = 0.0
-    args.sat_train_scenario = str(args.sat_train_scenario or "mixed_orbit").strip().lower().replace("-", "_")
-    args.crra_scenario = str(getattr(args, "crra_scenario", "mixed_orbit") or "mixed_orbit").strip().lower().replace("-", "_")
+    args.crra_scenario = str(
+        getattr(args, "crra_scenario", DEFAULT_CRRA_CHANNEL_FAMILY) or DEFAULT_CRRA_CHANNEL_FAMILY
+    ).strip().lower().replace("-", "_")
     _resolve_sat_training_mode(args)
     if str(getattr(args, "phase1_source_role_protocol", "legacy_l_u_v")) == "l_s_u_s_v_cal_v_select":
         requested_validation = float(args.source_cal_ratio) + float(args.source_select_ratio)
@@ -5023,18 +5039,10 @@ def train(args) -> int:
         float(getattr(args, "lambda_crra_sat_kl", 0.0)),
         use_crra=bool(getattr(args, "use_crra", False)),
     )
-    sat_train_spec = str(getattr(args, "sat_train_scenarios", "") or "").strip()
-    if sat_train_spec:
-        if parse_sat_scenarios is not None:
-            args.sat_train_scenario_list = list(parse_sat_scenarios(sat_train_spec))
-        else:
-            args.sat_train_scenario_list = [
-                part.strip().lower().replace("-", "_") for part in sat_train_spec.split(",") if part.strip()
-            ]
-    else:
-        args.sat_train_scenario_list = [args.sat_train_scenario]
-    if not args.sat_train_scenario_list:
-        args.sat_train_scenario_list = [args.sat_train_scenario]
+    args.sat_train_scenario_list = resolve_phase1_sat_training_scenarios(
+        getattr(args, "sat_train_scenario", ""),
+        getattr(args, "sat_train_scenarios", ""),
+    )
     args.sat_train_scenario = args.sat_train_scenario_list[0]
     args.sat_view_schedule = str(getattr(args, "sat_view_schedule", "") or "").strip()
     if float(getattr(args, "sat_view_prob", 1.0)) < 0.0 or float(getattr(args, "sat_view_prob", 1.0)) > 1.0:
@@ -5054,7 +5062,7 @@ def train(args) -> int:
     if bool(getattr(args, "use_crra", False)):
         validate_crra_phase1_scenarios(
             args.sat_train_protocol_scenario_list,
-            crra_scenario=str(getattr(args, "crra_scenario", "mixed_orbit")),
+            crra_scenario=str(getattr(args, "crra_scenario", DEFAULT_CRRA_CHANNEL_FAMILY)),
         )
     args.eval_sat_scenario_list = (
         parse_sat_scenarios(args.eval_sat_scenarios) if bool(args.eval_sat_channel) else []
