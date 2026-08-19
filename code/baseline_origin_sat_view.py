@@ -193,21 +193,24 @@ def _normalize_nuisance_meta(
     if "residual_cfo_hz" not in raw and "cfo_hz" in raw:
         raw["residual_cfo_hz"] = raw["cfo_hz"]
     columns = []
-    fields = []
+    missing_fields = []
     for field in CRRA_NUISANCE_FIELDS:
         column = _batch_meta_column(raw.get(field), int(batch_size), device)
         if column is None:
-            continue
-        fields.append(field)
+            missing_fields.append(field)
+            column = torch.zeros(int(batch_size), device=device, dtype=torch.float32)
         columns.append(column / float(CRRA_NUISANCE_SCALES[field]))
-    if not columns:
-        raw["valid"] = False
-        return raw, None, None, ()
     nuisance = torch.stack(columns, dim=1)
-    valid = torch.isfinite(nuisance).all(dim=1)
+    finite_valid = torch.isfinite(nuisance).all(dim=1)
+    valid = (
+        torch.zeros(int(batch_size), dtype=torch.bool, device=device)
+        if missing_fields
+        else finite_valid
+    )
     nuisance = torch.nan_to_num(nuisance, nan=0.0, posinf=0.0, neginf=0.0)
     raw["valid"] = bool(valid.any().item())
-    return raw, nuisance, valid, tuple(fields)
+    raw["missing_fields"] = tuple(missing_fields)
+    return raw, nuisance, valid, CRRA_NUISANCE_FIELDS
 
 
 normalize_crra_nuisance_meta = _normalize_nuisance_meta

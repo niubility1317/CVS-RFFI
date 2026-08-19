@@ -10,7 +10,11 @@ CODE_ROOT = PROJECT_ROOT / "code"
 if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
-from baseline_origin_sat_view import BaselineOriginSatViewAugment  # noqa: E402
+from baseline_origin_sat_view import (  # noqa: E402
+    CRRA_NUISANCE_FIELDS,
+    BaselineOriginSatViewAugment,
+    normalize_crra_nuisance_meta,
+)
 
 
 def _fake_apply(x, scenario, args, gen=None, return_meta=False):
@@ -87,3 +91,28 @@ def test_clean_duplicate_does_not_invent_nuisance_targets():
     assert view.applied is False
     assert view.nuisance is None
     assert view.nuisance_valid is None
+
+
+def test_missing_mixed_orbit_field_keeps_fixed_nine_dim_and_invalidates_rows():
+    meta = {
+        "scenario": "mixed_orbit",
+        "snr_db": torch.tensor([5.0, 6.0]),
+        "cfo_hz": torch.tensor([1.0, 2.0]),
+        "residual_cfo_hz": torch.tensor([0.5, 0.6]),
+        "fD_hz": torch.tensor([3.0, 4.0]),
+        "pl_db": torch.tensor([120.0, 121.0]),
+        "K_db": torch.tensor([4.0, 4.0]),
+        "theta_deg": torch.tensor([45.0, 45.0]),
+        # h_km intentionally omitted to test the fixed-field contract.
+        "state": torch.tensor([0.0, 1.0]),
+    }
+    normalized, nuisance, valid, fields = normalize_crra_nuisance_meta(
+        meta,
+        scenario="mixed_orbit",
+        batch_size=2,
+        device=torch.device("cpu"),
+    )
+    assert normalized["missing_fields"] == ("h_km",)
+    assert nuisance.shape == (2, len(CRRA_NUISANCE_FIELDS))
+    assert fields == CRRA_NUISANCE_FIELDS
+    assert not bool(valid.any())

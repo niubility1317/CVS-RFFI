@@ -4647,6 +4647,24 @@ def _prepare_concat_sat_batch_for_training(
     return _safe_iq_tensor(concat_batch.x), concat_batch.y, concat_batch.d_raw, None, info
 
 
+def _crra_satellite_kl_active(
+    legacy_sat_cons_weight: float,
+    *,
+    use_crra: bool,
+    crra_stage_scale: float,
+    crra_sat_kl_weight: float,
+) -> bool:
+    """Whether clean-to-satellite KL must be materialized for this batch."""
+    return bool(
+        float(legacy_sat_cons_weight) > 0.0
+        or (
+            bool(use_crra)
+            and float(crra_stage_scale) > 0.0
+            and float(crra_sat_kl_weight) > 0.0
+        )
+    )
+
+
 def train(args) -> int:
     training_wall_started = time.time()
     ablation_manifest = None
@@ -6047,6 +6065,12 @@ def train(args) -> int:
                     if bool(getattr(args, "use_crra", False))
                     else 0.0
                 )
+                crra_sat_kl_active = _crra_satellite_kl_active(
+                    cur_w["sat_cons"],
+                    use_crra=bool(getattr(args, "use_crra", False)),
+                    crra_stage_scale=crra_stage_scale,
+                    crra_sat_kl_weight=float(getattr(args, "lambda_crra_sat_kl", 0.0)),
+                )
                 crra_sat_objective_active = bool(getattr(args, "use_crra", False)) and any(
                     float(getattr(args, name, 0.0)) > 0.0
                     for name in ("lambda_crra_pair", "lambda_crra_sat_kl", "lambda_crra_nuisance")
@@ -6088,7 +6112,7 @@ def train(args) -> int:
                     sat_nuisance_fields = tuple(concat_sat_info.get("crra_nuisance_fields") or ())
                     if cur_w["sat_cls"] > 0.0:
                         loss_sat_cls_l = F.cross_entropy(sat_logits, sat_y)
-                    if cur_w["sat_cons"] > 0.0:
+                    if crra_sat_kl_active:
                         clean_prob = out_l["tx_logits"][clean_slice].detach().softmax(dim=1)
                         loss_sat_cons_l = F.kl_div(
                             F.log_softmax(sat_logits, dim=1),
@@ -6172,7 +6196,7 @@ def train(args) -> int:
                     sat_nuisance_fields = tuple(concat_sat_ce_view.nuisance_fields or ())
                     if cur_w["sat_cls"] > 0.0:
                         loss_sat_cls_l = float(args.concat_sat_ce_weight) * F.cross_entropy(out_sat["tx_logits"], y_l)
-                    if cur_w["sat_cons"] > 0.0:
+                    if crra_sat_kl_active:
                         clean_prob = out_l["tx_logits"].detach().softmax(dim=1)
                         loss_sat_cons_l = F.kl_div(
                             F.log_softmax(out_sat["tx_logits"], dim=1),

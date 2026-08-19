@@ -11,7 +11,10 @@ CODE_ROOT = PROJECT_ROOT / "code"
 if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
-from SSDG.train_ssdg import build_arg_parser  # noqa: E402
+from SSDG.train_ssdg import (  # noqa: E402
+    _crra_satellite_kl_active,
+    build_arg_parser,
+)
 from cvsrffi.crra_training import (  # noqa: E402
     crra_gate_scale,
     validate_crra_phase1_config,
@@ -69,3 +72,33 @@ def test_nuisance_loss_is_zero_with_no_valid_same_view_targets():
     assert info["valid_count"] == 0
     loss.backward()
     assert pred.grad is not None
+
+
+def test_crra_satellite_kl_is_active_without_legacy_sat_cons_weight():
+    assert not _crra_satellite_kl_active(
+        0.0,
+        use_crra=True,
+        crra_stage_scale=0.0,
+        crra_sat_kl_weight=0.05,
+    )
+    assert _crra_satellite_kl_active(
+        0.0,
+        use_crra=True,
+        crra_stage_scale=0.5,
+        crra_sat_kl_weight=0.05,
+    )
+    assert _crra_satellite_kl_active(
+        0.05,
+        use_crra=False,
+        crra_stage_scale=0.0,
+        crra_sat_kl_weight=0.0,
+    )
+
+
+def test_nuisance_loss_rejects_field_dimension_drift():
+    with pytest.raises(ValueError, match="same fixed field dimension"):
+        crra_nuisance_huber_loss(
+            torch.zeros(2, 8),
+            torch.zeros(2, 9),
+            torch.tensor([True, True]),
+        )

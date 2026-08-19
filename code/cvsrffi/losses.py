@@ -38,12 +38,16 @@ def crra_nuisance_huber_loss(
     valid = valid_mask.to(device=prediction.device).view(-1).bool()
     if valid.numel() != prediction.size(0) or not bool(valid.any()):
         return zero, {"valid_count": 0.0, "field_count": 0.0}
-    field_count = min(int(prediction.size(1)), int(target.size(1)))
+    if int(prediction.size(1)) != int(target.size(1)):
+        raise ValueError(
+            "CRRA nuisance prediction and target must have the same fixed field dimension"
+        )
+    field_count = int(target.size(1))
     if field_count <= 0:
         return zero, {"valid_count": 0.0, "field_count": 0.0}
-    pred = torch.nan_to_num(prediction[valid, :field_count].float(), nan=0.0, posinf=0.0, neginf=0.0)
+    pred = torch.nan_to_num(prediction[valid].float(), nan=0.0, posinf=0.0, neginf=0.0)
     truth = torch.nan_to_num(
-        target.to(device=prediction.device, dtype=torch.float32)[valid, :field_count],
+        target.to(device=prediction.device, dtype=torch.float32)[valid],
         nan=0.0,
         posinf=0.0,
         neginf=0.0,
