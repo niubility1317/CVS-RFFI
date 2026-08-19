@@ -2,7 +2,7 @@
 
 ## 当前结论
 
-- 状态：`LANDED`
+- 状态：`RUNNING`
 - r2是r1首batch CUDA AMP确定性技术失败后的唯一新run；不覆盖r1任何partial artifact。
 - 当前只证明修复、配置和本地回归闭合；尚无r2训练或性能结果。
 
@@ -71,6 +71,9 @@ nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_
 - release远端编译及launcher语法检查通过。
 - CUDA AMP定点验证：`PASS_NTRS_CORRECTABILITY_CUDA_AMP`，loss和梯度均有限，target为`[1.0,0.0]`。
 - 真实checkpoint无query冒烟：`PASS_REAL_ADV3B02_CHECKPOINT_SOURCE_ONLY_NO_QUERY`；只读取1条source样本、0条query，63个预期NTRS新增键、0个unexpected key，评估态NTRS状态修改数为0。
+- 2026-08-20T01:59:15+08:00唯一启动；launcher PID=`3433901`，trainer PID=`3433919`。PID为启动时快照。
+- launcher与trainer的实际CWD均为`e3f17fce/workspace`；release入口、run ID、candidate、`--use_ntrs`和三种LEO_WEAK参数匹配，`mixed_orbit`缺席。
+- GPU1进程映射到trainer；训练日志从12111增长到29110字节，已出现`[EPOCH-END] E004/200`且无Traceback。
 
 ## 发布映射
 
@@ -82,6 +85,6 @@ nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_
 
 - `LOCAL_VERIFIED`：AMP修复提交已推送，远端分支OID与本地`HEAD`一致；85项聚焦测试通过。
 - `LANDED`：新release归档同步、单次SHA比对、远端编译、真实checkpoint无query冒烟和AMP定点验证均通过。
-- `RUNNING`：待唯一launcher启动并完成一次PID/CWD/cmdline/GPU/log增长核对后记录。
+- `RUNNING`：唯一launcher已启动；PID/CWD/cmdline/GPU/log增长核对通过，观察到E004/200且无Traceback。
 - `ARTIFACTS_COMPLETE`：仅在训练及clean和三种LEO_WEAK独立测试全部完成后记录。
 - `ANALYZED`：仅在同row结果分析完成后记录。
