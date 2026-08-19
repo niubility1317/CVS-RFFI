@@ -21,9 +21,11 @@
 | 远端项目根 | `/home/szu2070436088/2510044040/CV-SincNet` |
 | 远端run根 | `/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_advb02_crra_mixed_orbit_20260819` |
 | 远端log根 | `/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_advb02_crra_mixed_orbit_20260819` |
-| GPU | 待N607发布前置空闲GPU复核后固定；不超过单GPU默认两个训练进程 |
+| GPU | `3`；发布前复核GPU3–7空闲，GPU0–2保留给既有历史任务；不超过单GPU默认两个训练进程 |
 | 环境 | 远端既有`CVS-RFFI`Python环境；本地验证使用`ssr-gpu` |
 | 技术停止 | 仅协议越权、错误checkout、输出覆盖、launcher/确定性启动故障、无prediction闭合；不因低性能停止 |
+
+发布归档：本地`E:/type10-7/local_artifacts/phase1_advb02_crra_mixed_orbit_20260819/cvs-rffi-b3bbbcaa.tar.gz`→远端`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_crra_mixed_orbit_20260819_b3bbbcaa.tar.gz`；单次归档SHA256=`6b9554af2dcb49652e3be81c37d6b26a03da755ff11031cffe62cab3e9f19b03`。远端展开目录为`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_crra_mixed_orbit_20260819_b3bbbcaa`，远端Python编译与launcher语法检查已通过。
 
 本地固定提交：`cd970f1f`（`exp: align ADVB02 CRRA concat supervision with Phase1 roles`）。
 
@@ -56,4 +58,4 @@ bash code/scripts/launch_phase1_advb02_crra_mixed_orbit_20260819.sh --dry-run
 
 ## 当前状态
 
-`LOCAL_VERIFIED`：代码、配置、launcher和报告已在本地Git工作区固定；远端旧历史任务保持monitor-only，尚未因本任务被停止、重启或修改。
+`LANDED`：代码、配置、launcher和报告已固定；发布归档已落地N607并完成远端编译。远端旧历史任务保持monitor-only，尚未因本任务被停止、重启或修改；待启动本run后更新为`RUNNING`。
