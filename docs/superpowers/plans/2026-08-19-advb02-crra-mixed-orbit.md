@@ -73,7 +73,7 @@ Run: `conda activate ssr-gpu && python -m pytest code/tests/test_crra_adapter.py
 
 Expected: all CRRA core tests PASS.
 
-- [ ] **Step 5: Commit the isolated core**
+- [x] **Step 5: Commit the isolated core**
 
 ```bash
 git add code/crra.py code/tests/test_crra_adapter.py analysis/advb02_crra_traceability.md
@@ -125,7 +125,7 @@ Run: `conda activate ssr-gpu && python -m pytest code/tests/test_advb02_crra_mod
 
 Expected: new CRRA tests and existing backbone plumbing tests PASS.
 
-- [ ] **Step 5: Commit model wiring**
+- [x] **Step 5: Commit model wiring**
 
 ```bash
 git add code/model.py code/model_dual_cvsincnet.py code/post_stage_common.py code/tests/test_advb02_crra_model.py
@@ -175,7 +175,7 @@ Run: `conda activate ssr-gpu && python -m pytest code/tests/test_crra_mixed_orbi
 
 Expected: all tests PASS.
 
-- [ ] **Step 5: Commit metadata propagation**
+- [x] **Step 5: Commit metadata propagation**
 
 ```bash
 git add code/baseline_origin_sat_view.py code/concat_sat_channel_aug.py code/cvsrffi/eval.py code/tests/test_crra_mixed_orbit_metadata.py
@@ -194,7 +194,7 @@ git commit -m "feat: preserve mixed-orbit nuisance metadata with satellite views
 - Consumes: Task 2 model telemetry, Task 3 same-view nuisance metadata, existing clean/satellite pair ordering, and existing `mixed_orbit` KL/pair consistency.
 - Produces: CRRA CLI controls, epoch schedule, nuisance Huber loss, correction-energy/gate penalties, TX-adversarial condition loss, and epoch telemetry.
 
-- [ ] **Step 1: Write failing training-plumbing tests**
+- [x] **Step 1: Write failing training-plumbing tests**
 
 ```python
 def test_crra_schedule_has_identity_ramp_and_fixed_tail():
@@ -215,23 +215,23 @@ def test_nuisance_loss_uses_valid_same_view_metadata_only():
     assert torch.isfinite(loss)
 ```
 
-- [ ] **Step 2: Run tests and verify failure**
+- [x] **Step 2: Run tests and verify failure**
 
 Run: `conda activate ssr-gpu && python -m pytest code/tests/test_crra_training_plumbing.py -q`
 
 Expected: FAIL because CRRA parser/config/schedule/loss functions are not wired.
 
-- [ ] **Step 3: Implement parser, schedule, losses, and model calls**
+- [x] **Step 3: Implement parser, schedule, losses, and model calls**
 
 Add `--use_crra`, `--crra_rank 8`, `--crra_alpha_max 0.25`, `--crra_start_epoch 17`, `--crra_ramp_epochs 30`, `--crra_scenario mixed_orbit`, `--lambda_crra_pair`, `--lambda_crra_sat_kl`, `--lambda_crra_energy`, `--lambda_crra_gate_l1`, `--lambda_crra_nuisance`, `--lambda_crra_condition_tx_adv 0.02`, and `--crra_target_adapter` defaulting to false. Add an explicit schedule helper and include CRRA terms in the labeled clean/satellite path without changing existing pair ordering. Use `z_id` clean/satellite cosine consistency, existing satellite KL, correction energy/gate L1, finite same-view nuisance Huber regression, and optional condition TX adversary. CRRA losses must be zero before their scheduled epoch and must not create a second channel view. Add raw/weighted telemetry keys for pair cosine, correction energy, alpha, gate, nuisance loss, and condition TX accuracy.
 
-- [ ] **Step 4: Run focused and adjacent training tests**
+- [x] **Step 4: Run focused and adjacent training tests**
 
 Run: `conda activate ssr-gpu && python -m pytest code/tests/test_crra_training_plumbing.py code/tests/test_phase1_advb02_cipg_launcher.py code/tests/test_federated_trainer_smoke.py -q`
 
 Expected: all focused tests PASS; unrelated historical failures remain separately identified if present.
 
-- [ ] **Step 5: Commit training integration**
+- [x] **Step 5: Commit training integration**
 
 ```bash
 git add code/SSDG/train_ssdg.py code/cvsrffi/logging.py code/cvsrffi/losses.py code/tests/test_crra_training_plumbing.py
@@ -250,7 +250,7 @@ git commit -m "feat: train ADVB02 CRRA with mixed-orbit consistency losses"
 - Consumes: the completed CRRA model/training implementation and an existing real ADVB02 checkpoint.
 - Produces: backward-compatible checkpoint loading, explicit negative tests for target access and wrong channel name, and a reproducible no-query inference smoke.
 
-- [ ] **Step 1: Write failing protocol-negative tests**
+- [x] **Step 1: Write failing protocol-negative tests**
 
 ```python
 def test_crra_rejects_wrong_phase1_channel_name():
@@ -266,17 +266,17 @@ def test_old_checkpoint_loads_with_crra_disabled():
     assert model.crra_enabled is False
 ```
 
-- [ ] **Step 2: Run tests and verify failure**
+- [x] **Step 2: Run tests and verify failure**
 
 Run: `conda activate ssr-gpu && python -m pytest code/tests/test_crra_protocol_negatives.py code/tests/test_exact_ssdg_checkpoint_loading.py -q`
 
 Expected: the new negative tests FAIL before validation/compatibility code exists.
 
-- [ ] **Step 3: Implement validation and compatibility**
+- [x] **Step 3: Implement validation and compatibility**
 
 Reject any Phase1 CRRA configuration whose channel is not `mixed_orbit` or whose target-adapter flag is enabled. Ensure old checkpoints instantiate with CRRA disabled and missing CRRA keys tolerated. Add a no-query smoke function that loads a real checkpoint, runs clean and `mixed_orbit` IQ only, and verifies that no query truth, target receiver label, or target calibration state is passed to the model.
 
-- [ ] **Step 4: Run the protocol suite and real-checkpoint smoke**
+- [x] **Step 4: Run the protocol suite and real-checkpoint smoke**
 
 Run: `conda activate ssr-gpu && python -m pytest code/tests/test_crra_protocol_negatives.py code/tests/test_exact_ssdg_checkpoint_loading.py code/tests/test_phase1_p1_protocol.py -q`
 

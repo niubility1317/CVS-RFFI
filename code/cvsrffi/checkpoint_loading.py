@@ -79,6 +79,7 @@ def build_exact_ssdg_model_from_checkpoint(
     audit = {
         "loader": "exact_ssdg_training_architecture_v1",
         "checkpoint_load_strict": True,
+        "crra_enabled": bool(checkpoint_args.get("use_crra", False)),
         "missing_keys": 0,
         "unexpected_keys": 0,
         "skipped_mismatch": 0,

@@ -21,6 +21,18 @@ CRRA_NUISANCE_FIELDS = (
     "state",
 )
 
+CRRA_NUISANCE_SCALES = {
+    "snr_db": 20.0,
+    "cfo_hz": 100_000.0,
+    "residual_cfo_hz": 100_000.0,
+    "fD_hz": 100_000.0,
+    "pl_db": 200.0,
+    "K_db": 20.0,
+    "theta_deg": 90.0,
+    "h_km": 2_000.0,
+    "state": 2.0,
+}
+
 
 @dataclass(frozen=True)
 class SatViewStage:
@@ -178,6 +190,8 @@ def _normalize_nuisance_meta(
         return {"scenario": str(scenario), "valid": False}, None, None, ()
     raw = dict(meta)
     raw.setdefault("scenario", str(scenario))
+    if "residual_cfo_hz" not in raw and "cfo_hz" in raw:
+        raw["residual_cfo_hz"] = raw["cfo_hz"]
     columns = []
     fields = []
     for field in CRRA_NUISANCE_FIELDS:
@@ -185,7 +199,7 @@ def _normalize_nuisance_meta(
         if column is None:
             continue
         fields.append(field)
-        columns.append(column)
+        columns.append(column / float(CRRA_NUISANCE_SCALES[field]))
     if not columns:
         raw["valid"] = False
         return raw, None, None, ()
@@ -194,6 +208,9 @@ def _normalize_nuisance_meta(
     nuisance = torch.nan_to_num(nuisance, nan=0.0, posinf=0.0, neginf=0.0)
     raw["valid"] = bool(valid.any().item())
     return raw, nuisance, valid, tuple(fields)
+
+
+normalize_crra_nuisance_meta = _normalize_nuisance_meta
 
 
 def _expand_nuisance(

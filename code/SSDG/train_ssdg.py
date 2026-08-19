@@ -24,6 +24,11 @@ from cvsrffi.phase1_ablation_factory import (
     apply_phase1_ablation,
     phase1_ablation_config,
 )
+from cvsrffi.crra_training import (
+    crra_gate_scale,
+    validate_crra_phase1_config,
+    validate_crra_phase1_scenarios,
+)
 
 try:
     import torch
@@ -52,7 +57,7 @@ try:
         set_seed,
     )
     from training_controls import parse_sat_scenarios, satellite_protocol_manifest
-    from baseline_origin_sat_view import parse_sat_view_schedule
+    from baseline_origin_sat_view import parse_sat_view_schedule, normalize_crra_nuisance_meta
     from concat_sat_channel_aug import ConcatSatChannelAugment
     from cvsrffi.tensors import build_domain_label_map
     from cvsrffi.balanced_tx_rx_sampler import BalancedTxDomainBatchSampler
@@ -81,6 +86,7 @@ try:
         soft_unknown_mixup_loss,
         source_episode_three_sigma_loss,
         tx_conditional_domain_invariance_loss,
+        crra_nuisance_huber_loss,
         unlabeled_known_acceptance_quarantine_loss,
         zid_compactness_loss,
     )
@@ -143,6 +149,7 @@ except ModuleNotFoundError:
     soft_unknown_mixup_loss = None
     source_episode_three_sigma_loss = None
     tx_conditional_domain_invariance_loss = None
+    crra_nuisance_huber_loss = None
     unlabeled_known_acceptance_quarantine_loss = None
     zid_compactness_loss = None
     export_phase2_prototypes = None
@@ -156,7 +163,7 @@ except ModuleNotFoundError:
     build_baseline_model = domain_from_extra = ensure_dir = load_checkpoint = None
     mean_logs = merge_checkpoint_args = move_batch = resolve_device = save_payload = set_seed = None
     parse_sat_scenarios = satellite_protocol_manifest = None
-    parse_sat_view_schedule = None
+    parse_sat_view_schedule = normalize_crra_nuisance_meta = None
     ConcatSatChannelAugment = None
     build_domain_label_map = evaluate_loader = evaluate_named_loaders = make_loader = parse_csv_indices = None
     apply_sat_channel_for_scenario = fishr_logit_gradient_variance_loss = make_torch_generator = None
@@ -307,6 +314,23 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--concat_sat_start_epoch", type=int, default=1)
     parser.add_argument("--sat_view_prob", type=float, default=1.0)
     parser.add_argument("--sat_view_seed", type=int, default=2027)
+    parser.add_argument("--use_crra", dest="use_crra", action="store_true", default=False)
+    parser.add_argument("--no_use_crra", dest="use_crra", action="store_false")
+    parser.add_argument("--crra_scenario", type=str, default="mixed_orbit")
+    parser.add_argument("--crra_rank", type=int, default=8)
+    parser.add_argument("--crra_alpha_max", type=float, default=0.25)
+    parser.add_argument("--crra_shrinkage", type=float, default=0.10)
+    parser.add_argument("--crra_condition_dim", type=int, default=32)
+    parser.add_argument("--crra_nuisance_dim", type=int, default=9)
+    parser.add_argument("--crra_start_epoch", type=int, default=17)
+    parser.add_argument("--crra_ramp_epochs", type=int, default=30)
+    parser.add_argument("--crra_target_adapter", type=str2bool, default=False)
+    parser.add_argument("--lambda_crra_pair", type=float, default=0.05)
+    parser.add_argument("--lambda_crra_sat_kl", type=float, default=0.05)
+    parser.add_argument("--lambda_crra_energy", type=float, default=0.001)
+    parser.add_argument("--lambda_crra_gate_l1", type=float, default=0.001)
+    parser.add_argument("--lambda_crra_nuisance", type=float, default=0.02)
+    parser.add_argument("--lambda_crra_condition_tx_adv", type=float, default=0.02)
     parser.add_argument("--sat_protocol_disjoint_required", type=str2bool, default=False)
     parser.add_argument("--lambda_sat_cls", type=float, default=0.10)
     parser.add_argument("--lambda_sat_cons", type=float, default=0.0)
@@ -1397,6 +1421,14 @@ def _apply_model_cli_args(model_args, args):
         "mixstyle_mix",
         "mixstyle_strength",
         "mixstyle_fallback",
+        "use_crra",
+        "crra_rank",
+        "crra_alpha_max",
+        "crra_shrinkage",
+        "crra_condition_dim",
+        "crra_nuisance_dim",
+        "crra_start_epoch",
+        "crra_ramp_epochs",
     ):
         if hasattr(args, key):
             setattr(model_args, key, getattr(args, key))
@@ -4580,6 +4612,10 @@ def _prepare_concat_sat_batch_for_training(
                 "stage_start_epoch": float(int(sat_view.stage_start_epoch)),
                 "stage_index": float(int(sat_view.stage_index)),
                 "scenario_code": float(abs(hash(str(sat_view.scenario))) % 1000000),
+                "crra_nuisance": sat_view.nuisance,
+                "crra_nuisance_valid": sat_view.nuisance_valid,
+                "crra_nuisance_fields": sat_view.nuisance_fields,
+                "crra_meta": sat_view.meta,
             }
         )
         return x, y, d, sat_view, info
@@ -4602,6 +4638,10 @@ def _prepare_concat_sat_batch_for_training(
             "stage_start_epoch": float(int(concat_batch.stage_start_epoch)),
             "stage_index": float(int(concat_batch.stage_index)),
             "scenario_code": float(abs(hash(str(concat_batch.scenario))) % 1000000),
+            "crra_nuisance": concat_batch.nuisance,
+            "crra_nuisance_valid": concat_batch.nuisance_valid,
+            "crra_nuisance_fields": concat_batch.nuisance_fields,
+            "crra_meta": concat_batch.meta,
         }
     )
     return _safe_iq_tensor(concat_batch.x), concat_batch.y, concat_batch.d_raw, None, info
@@ -4649,6 +4689,8 @@ def train(args) -> int:
     if not bool(args.use_unlabeled):
         args.lambda_u = 0.0
     args.sat_train_scenario = str(args.sat_train_scenario or "mixed_orbit").strip().lower().replace("-", "_")
+    args.crra_scenario = str(getattr(args, "crra_scenario", "mixed_orbit") or "mixed_orbit").strip().lower().replace("-", "_")
+    validate_crra_phase1_config(args)
     sat_train_spec = str(getattr(args, "sat_train_scenarios", "") or "").strip()
     if sat_train_spec:
         if parse_sat_scenarios is not None:
@@ -4677,6 +4719,8 @@ def train(args) -> int:
     args.sat_train_protocol_scenario_list = list(
         dict.fromkeys(str(value).strip().lower().replace("-", "_") for value in scheduled_train_scenarios)
     )
+    if bool(getattr(args, "use_crra", False)):
+        validate_crra_phase1_scenarios(args.sat_train_protocol_scenario_list)
     args.eval_sat_scenario_list = (
         parse_sat_scenarios(args.eval_sat_scenarios) if bool(args.eval_sat_channel) else []
     )
@@ -5260,6 +5304,12 @@ def train(args) -> int:
             aug_state = configure_augmentor_for_epoch(augmentor, aug_base_cfg, min(epoch, int(args.label_epochs)), args)
         else:
             aug_state = _fallback_aug_state(args)
+        if hasattr(model, "set_crra_epoch"):
+            model.set_crra_epoch(int(epoch))
+        if ema_model is not None and hasattr(ema_model, "set_crra_epoch"):
+            ema_model.set_crra_epoch(int(epoch))
+        if teacher_model is not None and hasattr(teacher_model, "set_crra_epoch"):
+            teacher_model.set_crra_epoch(int(epoch))
         model.train()
         balanced_train_sampler = data_ctx.get("balanced_train_sampler")
         if balanced_train_sampler is not None and hasattr(balanced_train_sampler, "set_epoch"):
@@ -5318,7 +5368,21 @@ def train(args) -> int:
                 x_l_main = x_l
             optimizer.zero_grad(set_to_none=True)
             with autocast(enabled=bool(args.amp and device.type == "cuda")):
-                out_l = model(x_l_main, y_tx=y_l, grl_lambda=1.0, return_aux=True, domain_labels=d_l)
+                out_l = model(
+                    x_l_main,
+                    y_tx=y_l,
+                    grl_lambda=1.0,
+                    return_aux=True,
+                    domain_labels=d_l,
+                    update_crra_support=bool(getattr(args, "use_crra", False)),
+                    crra_support_mask=(
+                        torch.arange(x_l_main.size(0), device=x_l_main.device) < int(concat_sat_clean_bsz)
+                        if bool(getattr(args, "use_crra", False))
+                        and concat_sat_full_batch
+                        and concat_sat_clean_bsz > 0
+                        else None
+                    ),
+                )
                 domain_stats = {"valid": (d_l >= 0) if d_l is not None else None}
                 domain_gates = {
                     "dom": d_l is not None and "dom_logits" in out_l and cur_w["dom"] > 0.0,
@@ -5961,26 +6025,67 @@ def train(args) -> int:
                 zero_sat = out_l["tx_logits"].sum() * 0.0
                 loss_sat_cls_l = zero_sat
                 loss_sat_cons_l = zero_sat
+                loss_crra_pair_l = zero_sat
+                loss_crra_energy_l = zero_sat
+                loss_crra_gate_l1_l = zero_sat
+                loss_crra_nuisance_l = zero_sat
+                loss_crra_condition_tx_adv_l = zero_sat
+                crra_pair_cosine_l = zero_sat
+                crra_condition_tx_adv_acc_l = zero_sat
+                out_sat = None
                 sat_z_id_l = None
                 sat_zid_pair_applied = False
+                sat_nuisance = None
+                sat_nuisance_valid = None
+                sat_nuisance_fields = tuple()
+                crra_stage_scale = (
+                    crra_gate_scale(
+                        int(epoch),
+                        start_epoch=int(getattr(args, "crra_start_epoch", 17)),
+                        ramp_epochs=int(getattr(args, "crra_ramp_epochs", 30)),
+                    )
+                    if bool(getattr(args, "use_crra", False))
+                    else 0.0
+                )
+                crra_sat_objective_active = bool(getattr(args, "use_crra", False)) and any(
+                    float(getattr(args, name, 0.0)) > 0.0
+                    for name in ("lambda_crra_pair", "lambda_crra_sat_kl", "lambda_crra_nuisance")
+                )
+                sat_objective_active = (
+                    cur_w["sat_cls"] > 0.0
+                    or cur_w["sat_cons"] > 0.0
+                    or crra_sat_objective_active
+                )
+                sat_objective_start_epoch = (
+                    min(
+                        int(args.sat_cons_start_epoch),
+                        int(getattr(args, "crra_start_epoch", args.sat_cons_start_epoch)),
+                    )
+                    if crra_sat_objective_active
+                    else int(args.sat_cons_start_epoch)
+                )
                 use_sat_train = (
                     bool(args.use_sat_consistency)
                     and (not concat_sat_full_batch)
                     and concat_sat_ce_view is None
-                    and epoch >= int(args.sat_cons_start_epoch)
-                    and (cur_w["sat_cls"] > 0.0 or cur_w["sat_cons"] > 0.0)
+                    and epoch >= sat_objective_start_epoch
+                    and sat_objective_active
                 )
                 if (
                     concat_sat_full_batch
                     and concat_sat_clean_bsz > 0
                     and int(y_l.numel()) >= 2 * concat_sat_clean_bsz
-                    and epoch >= int(args.sat_cons_start_epoch)
-                    and (cur_w["sat_cls"] > 0.0 or cur_w["sat_cons"] > 0.0)
+                    and epoch >= sat_objective_start_epoch
+                    and sat_objective_active
                 ):
                     clean_slice = slice(0, concat_sat_clean_bsz)
                     sat_slice = slice(concat_sat_clean_bsz, 2 * concat_sat_clean_bsz)
                     sat_logits = out_l["tx_logits"][sat_slice]
                     sat_y = y_l[sat_slice]
+                    sat_z_id_l = out_l["z_id"][sat_slice]
+                    sat_nuisance = concat_sat_info.get("crra_nuisance")
+                    sat_nuisance_valid = concat_sat_info.get("crra_nuisance_valid")
+                    sat_nuisance_fields = tuple(concat_sat_info.get("crra_nuisance_fields") or ())
                     if cur_w["sat_cls"] > 0.0:
                         loss_sat_cls_l = F.cross_entropy(sat_logits, sat_y)
                     if cur_w["sat_cons"] > 0.0:
@@ -6018,12 +6123,19 @@ def train(args) -> int:
                         (int(epoch) + int(batch_idx) - 2) % max(1, len(sat_train_scenarios))
                     ]
                     with torch.no_grad():
-                        x_sat, _ = apply_sat_channel_for_scenario(
+                        x_sat, raw_sat_meta = apply_sat_channel_for_scenario(
                             x_l,
                             str(sat_train_scenario),
                             args,
                             gen=sat_gen,
-                            return_meta=False,
+                            return_meta=bool(getattr(args, "use_crra", False)),
+                        )
+                    if bool(getattr(args, "use_crra", False)) and normalize_crra_nuisance_meta is not None:
+                        _, sat_nuisance, sat_nuisance_valid, sat_nuisance_fields = normalize_crra_nuisance_meta(
+                            raw_sat_meta,
+                            scenario=str(sat_train_scenario),
+                            batch_size=int(x_l.size(0)),
+                            device=x_l.device,
                         )
                     out_sat = model(x_sat, y_tx=y_l, grl_lambda=1.0, return_aux=True, domain_labels=d_l)
                     sat_z_id_l = out_sat["z_id"]
@@ -6055,6 +6167,9 @@ def train(args) -> int:
                     out_sat = model(x_sat, y_tx=y_l, grl_lambda=1.0, return_aux=True, domain_labels=d_l)
                     sat_z_id_l = out_sat["z_id"]
                     sat_zid_pair_applied = bool(float(concat_sat_info.get("applied", 0.0)) > 0.0)
+                    sat_nuisance = concat_sat_ce_view.nuisance
+                    sat_nuisance_valid = concat_sat_ce_view.nuisance_valid
+                    sat_nuisance_fields = tuple(concat_sat_ce_view.nuisance_fields or ())
                     if cur_w["sat_cls"] > 0.0:
                         loss_sat_cls_l = float(args.concat_sat_ce_weight) * F.cross_entropy(out_sat["tx_logits"], y_l)
                     if cur_w["sat_cons"] > 0.0:
@@ -6075,6 +6190,108 @@ def train(args) -> int:
                             teacher_clean_out["tx_logits"],
                             temperature=float(args.teacher_distill_temperature),
                         )
+                if (
+                    concat_sat_full_batch
+                    and concat_sat_clean_bsz > 0
+                    and int(y_l.numel()) >= 2 * concat_sat_clean_bsz
+                ):
+                    clean_slice = slice(0, concat_sat_clean_bsz)
+                    sat_slice = slice(concat_sat_clean_bsz, 2 * concat_sat_clean_bsz)
+                    sat_z_id_l = out_l["z_id"][sat_slice]
+                    sat_zid_pair_applied = bool(float(concat_sat_info.get("applied", 0.0)) > 0.0)
+                    sat_nuisance = concat_sat_info.get("crra_nuisance")
+                    sat_nuisance_valid = concat_sat_info.get("crra_nuisance_valid")
+                    sat_nuisance_fields = tuple(concat_sat_info.get("crra_nuisance_fields") or ())
+
+                if bool(getattr(args, "use_crra", False)):
+                    clean_crra_slice = (
+                        slice(0, concat_sat_clean_bsz)
+                        if concat_sat_full_batch and concat_sat_clean_bsz > 0
+                        else slice(None)
+                    )
+                    clean_z_crra = out_l["z_id"][clean_crra_slice]
+                    clean_energy = out_l.get("crra_correction_energy")
+                    clean_gate = out_l.get("crra_gate")
+                    clean_alpha = out_l.get("crra_alpha")
+                    if torch.is_tensor(clean_energy):
+                        clean_energy = clean_energy[clean_crra_slice]
+                    if torch.is_tensor(clean_gate):
+                        clean_gate = clean_gate[clean_crra_slice]
+                    if torch.is_tensor(clean_alpha):
+                        clean_alpha = clean_alpha[clean_crra_slice]
+                    sat_z_crra = sat_z_id_l if sat_z_id_l is not None and sat_zid_pair_applied else None
+                    if torch.is_tensor(sat_z_crra):
+                        pair_count = min(int(clean_z_crra.size(0)), int(sat_z_crra.size(0)))
+                        if pair_count > 0:
+                            pair_cos = (
+                                F.normalize(clean_z_crra[:pair_count].float(), dim=1)
+                                * F.normalize(sat_z_crra[:pair_count].float(), dim=1)
+                            ).sum(dim=1)
+                            crra_pair_cosine_l = pair_cos.mean()
+                        if float(getattr(args, "lambda_crra_pair", 0.0)) > 0.0 and pair_count > 0:
+                            loss_crra_pair_l = (1.0 - pair_cos).mean()
+                    energy_terms = [value for value in (clean_energy,) if torch.is_tensor(value)]
+                    gate_terms = [value for value in (clean_gate, clean_alpha) if torch.is_tensor(value)]
+                    if out_sat is not None:
+                        sat_energy = out_sat.get("crra_correction_energy")
+                        sat_gate = out_sat.get("crra_gate")
+                        sat_alpha = out_sat.get("crra_alpha")
+                        if torch.is_tensor(sat_energy):
+                            energy_terms.append(sat_energy)
+                        if torch.is_tensor(sat_gate):
+                            gate_terms.append(sat_gate)
+                        if torch.is_tensor(sat_alpha):
+                            gate_terms.append(sat_alpha)
+                    elif concat_sat_full_batch and concat_sat_clean_bsz > 0:
+                        sat_slice = slice(concat_sat_clean_bsz, 2 * concat_sat_clean_bsz)
+                        full_energy = out_l.get("crra_correction_energy")
+                        full_gate = out_l.get("crra_gate")
+                        full_alpha = out_l.get("crra_alpha")
+                        if torch.is_tensor(full_energy):
+                            energy_terms.append(full_energy[sat_slice])
+                        if torch.is_tensor(full_gate):
+                            gate_terms.append(full_gate[sat_slice])
+                        if torch.is_tensor(full_alpha):
+                            gate_terms.append(full_alpha[sat_slice])
+                    if energy_terms and float(getattr(args, "lambda_crra_energy", 0.0)) > 0.0:
+                        loss_crra_energy_l = torch.cat([value.reshape(-1) for value in energy_terms]).mean()
+                    if gate_terms and float(getattr(args, "lambda_crra_gate_l1", 0.0)) > 0.0:
+                        loss_crra_gate_l1_l = torch.cat([value.reshape(-1) for value in gate_terms]).abs().mean()
+                    nuisance_pred = None
+                    if out_sat is not None:
+                        nuisance_pred = out_sat.get("crra_nuisance_pred")
+                    elif concat_sat_full_batch and concat_sat_clean_bsz > 0:
+                        nuisance_pred = out_l.get("crra_nuisance_pred")
+                        if torch.is_tensor(nuisance_pred):
+                            nuisance_pred = nuisance_pred[concat_sat_clean_bsz : 2 * concat_sat_clean_bsz]
+                    if torch.is_tensor(sat_nuisance) and torch.is_tensor(nuisance_pred):
+                        if sat_nuisance.size(0) == int(y_l.numel()) and concat_sat_full_batch:
+                            sat_nuisance = sat_nuisance[concat_sat_clean_bsz : 2 * concat_sat_clean_bsz]
+                            if torch.is_tensor(sat_nuisance_valid):
+                                sat_nuisance_valid = sat_nuisance_valid[concat_sat_clean_bsz : 2 * concat_sat_clean_bsz]
+                        if crra_nuisance_huber_loss is None:
+                            raise ImportError("cvsrffi.losses.crra_nuisance_huber_loss is required for CRRA nuisance regression")
+                        loss_crra_nuisance_l, crra_nuisance_info = crra_nuisance_huber_loss(
+                            nuisance_pred,
+                            sat_nuisance,
+                            sat_nuisance_valid,
+                        )
+                    else:
+                        crra_nuisance_info = {"valid_count": 0.0, "field_count": 0.0}
+                    crra_condition_tx_adv = out_l.get("crra_condition_tx_adv_logits")
+                    if (
+                        torch.is_tensor(crra_condition_tx_adv)
+                        and int(crra_condition_tx_adv.size(0)) == int(y_l.numel())
+                    ):
+                        crra_condition_tx_adv_acc_l = (
+                            crra_condition_tx_adv.detach().argmax(dim=1) == y_l.long()
+                        ).float().mean()
+                        if float(getattr(args, "lambda_crra_condition_tx_adv", 0.0)) > 0.0:
+                            loss_crra_condition_tx_adv_l = F.cross_entropy(
+                                crra_condition_tx_adv.float(), y_l.long()
+                            )
+                else:
+                    crra_nuisance_info = {"valid_count": 0.0, "field_count": 0.0}
                 if (
                     sat_z_id_l is not None
                     and sat_zid_pair_applied
@@ -6128,6 +6345,24 @@ def train(args) -> int:
                     + cur_w["fishr"] * loss_fishr_l
                     + cur_w["sat_cls"] * loss_sat_cls_l
                     + cur_w["sat_cons"] * loss_sat_cons_l
+                    + crra_stage_scale * float(getattr(args, "lambda_crra_sat_kl", 0.0)) * sanitize_loss(
+                        "crra_sat_kl", loss_sat_cons_l, z_id_l, loss_warn_counts
+                    )
+                    + crra_stage_scale * float(getattr(args, "lambda_crra_pair", 0.0)) * sanitize_loss(
+                        "crra_pair", loss_crra_pair_l, z_id_l, loss_warn_counts
+                    )
+                    + crra_stage_scale * float(getattr(args, "lambda_crra_energy", 0.0)) * sanitize_loss(
+                        "crra_energy", loss_crra_energy_l, z_id_l, loss_warn_counts
+                    )
+                    + crra_stage_scale * float(getattr(args, "lambda_crra_gate_l1", 0.0)) * sanitize_loss(
+                        "crra_gate_l1", loss_crra_gate_l1_l, z_id_l, loss_warn_counts
+                    )
+                    + crra_stage_scale * float(getattr(args, "lambda_crra_nuisance", 0.0)) * sanitize_loss(
+                        "crra_nuisance", loss_crra_nuisance_l, z_id_l, loss_warn_counts
+                    )
+                    + crra_stage_scale * float(getattr(args, "lambda_crra_condition_tx_adv", 0.0)) * sanitize_loss(
+                        "crra_condition_tx_adv", loss_crra_condition_tx_adv_l, z_id_l, loss_warn_counts
+                    )
                     + (float(args.lambda_teacher_clean_kl) * teacher_scale) * sanitize_loss("teacher_clean_kl", loss_teacher_clean_kl_l, z_id_l, loss_warn_counts)
                     + (float(args.lambda_teacher_sat_kl) * teacher_scale) * sanitize_loss("teacher_sat_kl", loss_teacher_sat_kl_l, z_id_l, loss_warn_counts)
                     + (float(args.lambda_teacher_zid_mse) * teacher_scale) * sanitize_loss("teacher_zid_mse", loss_teacher_zid_mse_l, z_id_l, loss_warn_counts)
@@ -7038,6 +7273,23 @@ def train(args) -> int:
                     "train/loss_direct_metric_accept": loss_direct_metric_accept_l.detach(),
                     "train/loss_sat_cls_labeled": loss_sat_cls_l.detach(),
                     "train/loss_sat_cons_labeled": loss_sat_cons_l.detach(),
+                    "train/loss_crra_pair_labeled": loss_crra_pair_l.detach(),
+                    "train/loss_crra_energy_labeled": loss_crra_energy_l.detach(),
+                    "train/loss_crra_gate_l1_labeled": loss_crra_gate_l1_l.detach(),
+                    "train/loss_crra_nuisance_labeled": loss_crra_nuisance_l.detach(),
+                    "train/loss_crra_condition_tx_adv_labeled": loss_crra_condition_tx_adv_l.detach(),
+                    "train/crra_pair_cosine_labeled": crra_pair_cosine_l.detach(),
+                    "train/crra_condition_tx_adv_accuracy": crra_condition_tx_adv_acc_l.detach(),
+                    "train/crra_stage_scale": float(crra_stage_scale),
+                    "train/crra_correction_energy": out_l.get(
+                        "crra_correction_energy", zero_sat
+                    ).detach().float().mean(),
+                    "train/crra_gate": out_l.get("crra_gate", zero_sat).detach().float().mean(),
+                    "train/crra_alpha": out_l.get("crra_alpha", zero_sat).detach().float().mean(),
+                    "train/crra_support_distance": out_l.get(
+                        "crra_support_distance", zero_sat
+                    ).detach().float().mean(),
+                    "train/crra_nuisance_valid_count": float(crra_nuisance_info.get("valid_count", 0.0)),
                     "train/loss_teacher_clean_kl": loss_teacher_clean_kl_l.detach(),
                     "train/loss_teacher_sat_kl": loss_teacher_sat_kl_l.detach(),
                     "train/loss_teacher_zid_mse": loss_teacher_zid_mse_l.detach(),
@@ -7057,6 +7309,26 @@ def train(args) -> int:
                     "train/w_loss_direct_metric_accept": ((cur_w["direct_metric_accept"] * direct_metric_stage_scale) * loss_direct_metric_accept_l).detach(),
                     "train/w_loss_sat_cls_labeled": (cur_w["sat_cls"] * loss_sat_cls_l).detach(),
                     "train/w_loss_sat_cons_labeled": (cur_w["sat_cons"] * loss_sat_cons_l).detach(),
+                    "train/w_loss_crra_pair_labeled": (
+                        crra_stage_scale * float(getattr(args, "lambda_crra_pair", 0.0)) * loss_crra_pair_l
+                    ).detach(),
+                    "train/w_loss_crra_sat_kl_labeled": (
+                        crra_stage_scale * float(getattr(args, "lambda_crra_sat_kl", 0.0)) * loss_sat_cons_l
+                    ).detach(),
+                    "train/w_loss_crra_energy_labeled": (
+                        crra_stage_scale * float(getattr(args, "lambda_crra_energy", 0.0)) * loss_crra_energy_l
+                    ).detach(),
+                    "train/w_loss_crra_gate_l1_labeled": (
+                        crra_stage_scale * float(getattr(args, "lambda_crra_gate_l1", 0.0)) * loss_crra_gate_l1_l
+                    ).detach(),
+                    "train/w_loss_crra_nuisance_labeled": (
+                        crra_stage_scale * float(getattr(args, "lambda_crra_nuisance", 0.0)) * loss_crra_nuisance_l
+                    ).detach(),
+                    "train/w_loss_crra_condition_tx_adv_labeled": (
+                        crra_stage_scale
+                        * float(getattr(args, "lambda_crra_condition_tx_adv", 0.0))
+                        * loss_crra_condition_tx_adv_l
+                    ).detach(),
                     "train/w_loss_teacher_clean_kl": ((float(args.lambda_teacher_clean_kl) * teacher_scale) * loss_teacher_clean_kl_l).detach(),
                     "train/w_loss_teacher_sat_kl": ((float(args.lambda_teacher_sat_kl) * teacher_scale) * loss_teacher_sat_kl_l).detach(),
                     "train/w_loss_teacher_zid_mse": ((float(args.lambda_teacher_zid_mse) * teacher_scale) * loss_teacher_zid_mse_l).detach(),

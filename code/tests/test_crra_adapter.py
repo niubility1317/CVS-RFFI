@@ -19,6 +19,7 @@ def test_crra_is_identity_before_gate_warmup():
     out = adapter(x, raw_iq=torch.randn(3, 2, 32), epoch=1)
     assert torch.allclose(out.feature, x, atol=1e-6)
     assert torch.allclose(out.gate, torch.zeros_like(out.gate))
+    assert torch.allclose(out.correction_energy, torch.zeros_like(out.correction_energy))
     assert crra_gate_scale(16) == 0.0
 
 
@@ -60,3 +61,16 @@ def test_crra_gate_schedule_ramps_and_then_stays_fixed():
 def test_crra_rejects_unpaired_feature_channels():
     with pytest.raises(ValueError, match="even"):
         CRRAAdapter(iq_channels=3, feature_channels=5, rank=2)
+
+
+def test_source_support_mask_updates_only_clean_rows():
+    adapter = CRRAAdapter(iq_channels=2, feature_channels=4, rank=2)
+    adapter.train()
+    adapter(
+        torch.randn(4, 4, 16),
+        raw_iq=torch.randn(4, 2, 16),
+        epoch=1,
+        update_source_support=True,
+        source_support_mask=torch.tensor([True, True, False, False]),
+    )
+    assert int(adapter.support.count.item()) == 2

@@ -33,6 +33,7 @@ def test_crra_is_only_enabled_on_identity_backbone():
     assert out["aux_id"]["crra_enabled"] is True
     assert out["aux_dom"].get("crra_enabled", False) is False
     assert "crra_correction_energy" in out
+    assert out["crra_condition_tx_adv_logits"].shape == (2, 3)
 
 
 def test_crra_does_not_replace_pa_features():

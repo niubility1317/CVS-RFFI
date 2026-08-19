@@ -205,9 +205,22 @@ class SourceSupportGate(nn.Module):
             self.scale.mul_(m).add_(std, alpha=1.0 - m)
         self.count.add_(int(q.size(0)))
 
-    def forward(self, q: torch.Tensor, *, update_source: bool = False) -> tuple[torch.Tensor, torch.Tensor]:
+    def forward(
+        self,
+        q: torch.Tensor,
+        *,
+        update_source: bool = False,
+        update_mask: Optional[torch.Tensor] = None,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
         if self.training and update_source:
-            self.update(q)
+            q_update = q
+            if update_mask is not None:
+                mask = update_mask.to(device=q.device).view(-1).bool()
+                if mask.numel() != q.size(0):
+                    raise ValueError("CRRA source support mask must align with the condition batch")
+                q_update = q[mask]
+            if q_update.numel() > 0:
+                self.update(q_update)
         normalized = (q - self.center.to(device=q.device, dtype=q.dtype)) / self.scale.to(device=q.device, dtype=q.dtype).clamp_min(self.eps)
         distance = normalized.pow(2).mean(dim=1).sqrt()
         support = torch.exp(-0.5 * distance).clamp(0.0, 1.0)
@@ -222,6 +235,7 @@ class CRRAOutput:
     correction_energy: torch.Tensor
     support_distance: torch.Tensor
     q: torch.Tensor
+    q_raw: Optional[torch.Tensor] = None
     nuisance_pred: Optional[torch.Tensor] = None
 
 
@@ -240,6 +254,8 @@ class CRRAAdapter(nn.Module):
         use_whitening: bool = True,
         shrinkage: float = 0.10,
         kernel_size: int = 5,
+        start_epoch: int = 17,
+        ramp_epochs: int = 30,
     ):
         super().__init__()
         self.feature_channels = int(feature_channels)
@@ -247,6 +263,8 @@ class CRRAAdapter(nn.Module):
         self.alpha_max = float(max(0.0, alpha_max))
         self.condition_dim = int(condition_dim)
         self.use_whitening = bool(use_whitening)
+        self.start_epoch = max(1, int(start_epoch))
+        self.ramp_epochs = max(1, int(ramp_epochs))
         if self.feature_channels <= 0:
             raise ValueError("feature_channels must be positive")
         if self.use_whitening:
@@ -278,14 +296,19 @@ class CRRAAdapter(nn.Module):
         self.support = SourceSupportGate(self.condition_dim)
         self.nuisance_head = nn.Linear(self.condition_dim, int(nuisance_dim)) if int(nuisance_dim) > 0 else None
 
-    def _condition(self, feature: torch.Tensor, raw_iq: Optional[torch.Tensor]) -> torch.Tensor:
+    def _condition(
+        self,
+        feature: torch.Tensor,
+        raw_iq: Optional[torch.Tensor],
+    ) -> tuple[torch.Tensor, torch.Tensor]:
         if raw_iq is None:
             stats = feature.new_zeros((feature.size(0), 18))
         else:
             stats = compute_crra_rcn_stats(raw_iq).to(device=feature.device, dtype=feature.dtype)
         gap = torch.nan_to_num(feature.detach().float(), nan=0.0, posinf=0.0, neginf=0.0).mean(dim=-1)
         condition_input = torch.cat([stats.detach().float(), gap.detach().float()], dim=1)
-        return self.condition_encoder(condition_input).tanh().detach()
+        q_raw = self.condition_encoder(condition_input).tanh()
+        return q_raw, q_raw.detach()
 
     def forward(
         self,
@@ -294,12 +317,23 @@ class CRRAAdapter(nn.Module):
         raw_iq: Optional[torch.Tensor] = None,
         epoch: int = 1,
         update_source_support: bool = False,
+        source_support_mask: Optional[torch.Tensor] = None,
     ) -> CRRAOutput:
         if feature.dim() != 3 or int(feature.size(1)) != self.feature_channels:
             raise ValueError(f"CRRA feature expects [B, {self.feature_channels}, T]")
-        q = self._condition(feature, raw_iq)
-        support, support_distance = self.support(q, update_source=bool(update_source_support))
-        scale = feature.new_tensor(crra_gate_scale(int(epoch)))
+        q_raw, q = self._condition(feature, raw_iq)
+        support, support_distance = self.support(
+            q,
+            update_source=bool(update_source_support),
+            update_mask=source_support_mask,
+        )
+        scale = feature.new_tensor(
+            crra_gate_scale(
+                int(epoch),
+                start_epoch=self.start_epoch,
+                ramp_epochs=self.ramp_epochs,
+            )
+        )
         alpha = self.alpha_max * torch.sigmoid(self.alpha_head(q)).view(-1)
         gate = scale * support * torch.sigmoid(self.gate_head(q)).view(-1)
         whitened = self.whitening(feature) if self.use_whitening else feature
@@ -307,8 +341,8 @@ class CRRAAdapter(nn.Module):
         low_rank = self.residual(feature)
         correction = alpha[:, None, None] * intervention + low_rank
         robust = feature + gate[:, None, None] * correction
-        correction_energy = correction.pow(2).mean(dim=(1, 2)).sqrt()
-        nuisance_pred = self.nuisance_head(q) if self.nuisance_head is not None else None
+        correction_energy = (robust - feature).pow(2).mean(dim=(1, 2)).sqrt()
+        nuisance_pred = self.nuisance_head(q_raw) if self.nuisance_head is not None else None
         return CRRAOutput(
             feature=robust,
             alpha=alpha,
@@ -316,6 +350,7 @@ class CRRAAdapter(nn.Module):
             correction_energy=correction_energy,
             support_distance=support_distance,
             q=q,
+            q_raw=q_raw,
             nuisance_pred=nuisance_pred,
         )
 

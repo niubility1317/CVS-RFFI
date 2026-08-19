@@ -67,6 +67,7 @@ def test_exact_loader_uses_checkpoint_args_and_loads_every_tensor() -> None:
     assert fake.seen["input_len"] == 256
     assert fake.seen["num_domains"] == 3
     assert audit["checkpoint_load_strict"] is True
+    assert audit["crra_enabled"] is False
     assert audit["missing_keys"] == 0
     assert audit["unexpected_keys"] == 0
     assert audit["skipped_mismatch"] == 0

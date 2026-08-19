@@ -12,6 +12,49 @@ from cvsrffi.eval import accuracy_from_logits
 from cvsrffi.tensors import get_nested_tensor, safe_cosine_similarity, safe_l2_normalize
 
 
+def crra_nuisance_huber_loss(
+    prediction: Optional[torch.Tensor],
+    target: Optional[torch.Tensor],
+    valid_mask: Optional[torch.Tensor],
+    *,
+    delta: float = 1.0,
+) -> Tuple[torch.Tensor, Dict[str, float]]:
+    """Regress only nuisance values carried by the same satellite view.
+
+    Clean duplicates, missing metadata and invalid rows contribute a connected
+    zero rather than a fabricated target. The helper is intentionally generic
+    so it can consume the normalized `mixed_orbit` metadata tensor from the
+    view augmenter without reading receiver truth.
+    """
+
+    if not torch.is_tensor(prediction):
+        zero = torch.tensor(0.0)
+        return zero, {"valid_count": 0.0, "field_count": 0.0}
+    zero = prediction.sum() * 0.0
+    if not torch.is_tensor(target) or not torch.is_tensor(valid_mask):
+        return zero, {"valid_count": 0.0, "field_count": 0.0}
+    if prediction.dim() != 2 or target.dim() != 2 or prediction.size(0) != target.size(0):
+        raise ValueError("CRRA nuisance prediction and target must be aligned rank-2 tensors")
+    valid = valid_mask.to(device=prediction.device).view(-1).bool()
+    if valid.numel() != prediction.size(0) or not bool(valid.any()):
+        return zero, {"valid_count": 0.0, "field_count": 0.0}
+    field_count = min(int(prediction.size(1)), int(target.size(1)))
+    if field_count <= 0:
+        return zero, {"valid_count": 0.0, "field_count": 0.0}
+    pred = torch.nan_to_num(prediction[valid, :field_count].float(), nan=0.0, posinf=0.0, neginf=0.0)
+    truth = torch.nan_to_num(
+        target.to(device=prediction.device, dtype=torch.float32)[valid, :field_count],
+        nan=0.0,
+        posinf=0.0,
+        neginf=0.0,
+    )
+    loss = F.huber_loss(pred, truth, reduction="mean", delta=float(delta))
+    return loss, {
+        "valid_count": float(valid.sum().detach().item()),
+        "field_count": float(field_count),
+    }
+
+
 def covariance_orth_loss(z_id: torch.Tensor, z_dom: torch.Tensor) -> torch.Tensor:
     z_id = torch.nan_to_num(z_id.float(), nan=0.0, posinf=0.0, neginf=0.0)
     z_dom = torch.nan_to_num(z_dom.float(), nan=0.0, posinf=0.0, neginf=0.0)

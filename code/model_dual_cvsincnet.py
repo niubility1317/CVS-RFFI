@@ -60,6 +60,8 @@ def build_single_model_compat(**kwargs):
             "crra_shrinkage",
             "crra_condition_dim",
             "crra_nuisance_dim",
+            "crra_start_epoch",
+            "crra_ramp_epochs",
         ):
             fallback.pop(key, None)
         return build_single_model(**fallback)
@@ -74,6 +76,7 @@ def backbone_forward_compat(
     domain_labels=None,
     crra_epoch: Optional[int] = None,
     update_crra_support: bool = False,
+    crra_support_mask: Optional[torch.Tensor] = None,
 ):
     try:
         return backbone(
@@ -83,6 +86,7 @@ def backbone_forward_compat(
             domain_labels=domain_labels,
             crra_epoch=crra_epoch,
             update_crra_support=update_crra_support,
+            crra_support_mask=crra_support_mask,
         )
     except TypeError:
         return backbone(x, y=y, return_aux=return_aux)
@@ -420,7 +424,9 @@ def build_arch_backbone(
     crra_alpha_max: float = 0.25,
     crra_shrinkage: float = 0.10,
     crra_condition_dim: int = 32,
-    crra_nuisance_dim: int = 8,
+    crra_nuisance_dim: int = 9,
+    crra_start_epoch: int = 17,
+    crra_ramp_epochs: int = 30,
 ) -> nn.Module:
     family = str(arch_family or "cvsincnet").lower().strip()
     if family == "cvsincnet":
@@ -460,6 +466,8 @@ def build_arch_backbone(
             crra_shrinkage=float(crra_shrinkage),
             crra_condition_dim=int(crra_condition_dim),
             crra_nuisance_dim=int(crra_nuisance_dim),
+            crra_start_epoch=int(crra_start_epoch),
+            crra_ramp_epochs=int(crra_ramp_epochs),
         )
     return FeatureBackboneAdapter(
         family,
@@ -529,7 +537,9 @@ class DualCVSincNetDisentangle(nn.Module):
         crra_alpha_max: float = 0.25,
         crra_shrinkage: float = 0.10,
         crra_condition_dim: int = 32,
-        crra_nuisance_dim: int = 8,
+        crra_nuisance_dim: int = 9,
+        crra_start_epoch: int = 17,
+        crra_ramp_epochs: int = 30,
     ):
         super().__init__()
         self.num_classes = int(num_classes)
@@ -602,6 +612,8 @@ class DualCVSincNetDisentangle(nn.Module):
             crra_shrinkage=float(crra_shrinkage),
             crra_condition_dim=int(crra_condition_dim),
             crra_nuisance_dim=int(crra_nuisance_dim),
+            crra_start_epoch=int(crra_start_epoch),
+            crra_ramp_epochs=int(crra_ramp_epochs),
         )
         self.dom_backbone = build_arch_backbone(
             self.arch_family,
@@ -645,6 +657,16 @@ class DualCVSincNetDisentangle(nn.Module):
             if self.use_tx_adv_on_zdom
             else None
         )
+        self.crra_condition_tx_adv_head = (
+            MLPHead(
+                int(crra_condition_dim),
+                self.num_classes,
+                hidden=max(64, int(crra_condition_dim) // 2),
+                drop=drop,
+            )
+            if self.use_crra
+            else None
+        )
         self.identity_capacity = None
         if self.representation_mode == "single_parameter_matched":
             replaced_modules = (
@@ -653,6 +675,7 @@ class DualCVSincNetDisentangle(nn.Module):
                 self.dom_head,
                 self.adv_head,
                 self.tx_adv_head,
+                self.crra_condition_tx_adv_head,
             )
             retained_parameter_ids = {
                 id(parameter) for parameter in self.id_backbone.parameters()
@@ -681,6 +704,7 @@ class DualCVSincNetDisentangle(nn.Module):
             self.dom_head = None
             self.adv_head = None
             self.tx_adv_head = None
+            self.crra_condition_tx_adv_head = None
 
     def set_crra_epoch(self, epoch: int) -> None:
         self.crra_epoch = max(1, int(epoch))
@@ -748,6 +772,7 @@ class DualCVSincNetDisentangle(nn.Module):
         domain_labels: Optional[torch.Tensor] = None,
         crra_epoch: Optional[int] = None,
         update_crra_support: bool = False,
+        crra_support_mask: Optional[torch.Tensor] = None,
     ):
         if self.representation_mode == "single_parameter_matched":
             aux_id = backbone_forward_compat(
@@ -758,6 +783,7 @@ class DualCVSincNetDisentangle(nn.Module):
                 domain_labels=domain_labels,
                 crra_epoch=crra_epoch,
                 update_crra_support=update_crra_support,
+                crra_support_mask=crra_support_mask,
             )
             base_logits = aux_id["logits"]
             base_z_id = self._pick_z_id(aux_id)
@@ -784,6 +810,7 @@ class DualCVSincNetDisentangle(nn.Module):
                 "domain_time_stability_mode": "not_present",
                 "domain_freq_stability_mode": "not_present",
                 "tx_adv_on_zdom": False,
+                "crra_condition_tx_adv_logits": None,
                 "aux_id": aux_id,
                 "aux_dom": {},
             }
@@ -797,6 +824,7 @@ class DualCVSincNetDisentangle(nn.Module):
                 domain_labels=domain_labels,
                 crra_epoch=crra_epoch,
                 update_crra_support=update_crra_support,
+                crra_support_mask=crra_support_mask,
             )
 
         aux_id = backbone_forward_compat(
@@ -807,6 +835,7 @@ class DualCVSincNetDisentangle(nn.Module):
             domain_labels=domain_labels,
             crra_epoch=crra_epoch,
             update_crra_support=update_crra_support,
+            crra_support_mask=crra_support_mask,
         )
         aux_dom = backbone_forward_compat(
             self.dom_backbone,
@@ -816,6 +845,7 @@ class DualCVSincNetDisentangle(nn.Module):
             domain_labels=None,
             crra_epoch=crra_epoch,
             update_crra_support=False,
+            crra_support_mask=None,
         )
 
         tx_logits = aux_id["logits"]
@@ -826,6 +856,12 @@ class DualCVSincNetDisentangle(nn.Module):
         dom_logits = self.dom_head(z_dom)
         adv_dom_logits = self.adv_head(grad_reverse(z_id, grl_lambda))
         tx_adv_logits = self.tx_adv_head(grad_reverse(z_dom, grl_lambda)) if self.tx_adv_head is not None else None
+        crra_q_raw = aux_id.get("crra_q_raw", None)
+        crra_condition_tx_adv_logits = (
+            self.crra_condition_tx_adv_head(grad_reverse(crra_q_raw, grl_lambda))
+            if self.crra_condition_tx_adv_head is not None and torch.is_tensor(crra_q_raw)
+            else None
+        )
 
         if not return_aux:
             return tx_logits
@@ -845,6 +881,7 @@ class DualCVSincNetDisentangle(nn.Module):
             "domain_time_stability_mode": self.domain_time_stability_mode,
             "domain_freq_stability_mode": self.domain_freq_stability_mode,
             "tx_adv_on_zdom": self.tx_adv_head is not None,
+            "crra_condition_tx_adv_on_q": self.crra_condition_tx_adv_head is not None,
             "representation_mode": self.representation_mode,
             "aux_id": aux_id,
             "aux_dom": aux_dom,
@@ -858,10 +895,14 @@ class DualCVSincNetDisentangle(nn.Module):
                 "crra_support_distance", x.new_zeros((x.size(0),))
             ),
             "crra_q": aux_id.get("crra_q", None),
+            "crra_q_raw": aux_id.get("crra_q_raw", None),
             "crra_nuisance_pred": aux_id.get("crra_nuisance_pred", None),
+            "crra_condition_tx_adv_logits": crra_condition_tx_adv_logits,
         }
         if torch.is_tensor(tx_adv_logits):
             out["tx_adv_logits"] = tx_adv_logits
+        if torch.is_tensor(crra_condition_tx_adv_logits):
+            out["crra_condition_tx_adv_logits"] = crra_condition_tx_adv_logits
         if torch.is_tensor(z_dom_rcn):
             out["z_dom_rcn"] = z_dom_rcn
 
@@ -940,7 +981,9 @@ def build_dual_model(
     crra_alpha_max: float = 0.25,
     crra_shrinkage: float = 0.10,
     crra_condition_dim: int = 32,
-    crra_nuisance_dim: int = 8,
+    crra_nuisance_dim: int = 9,
+    crra_start_epoch: int = 17,
+    crra_ramp_epochs: int = 30,
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -990,4 +1033,6 @@ def build_dual_model(
         crra_shrinkage=crra_shrinkage,
         crra_condition_dim=crra_condition_dim,
         crra_nuisance_dim=crra_nuisance_dim,
+        crra_start_epoch=crra_start_epoch,
+        crra_ramp_epochs=crra_ramp_epochs,
     )

@@ -342,7 +342,9 @@ def build_baseline_model(model_args, device: torch.device) -> nn.Module:
         crra_alpha_max=float(getattr(model_args, "crra_alpha_max", 0.25)),
         crra_shrinkage=float(getattr(model_args, "crra_shrinkage", 0.10)),
         crra_condition_dim=int(getattr(model_args, "crra_condition_dim", 32)),
-        crra_nuisance_dim=int(getattr(model_args, "crra_nuisance_dim", 8)),
+        crra_nuisance_dim=int(getattr(model_args, "crra_nuisance_dim", 9)),
+        crra_start_epoch=int(getattr(model_args, "crra_start_epoch", 17)),
+        crra_ramp_epochs=int(getattr(model_args, "crra_ramp_epochs", 30)),
         fast_infer_when_no_aux=bool(getattr(model_args, "fast_infer_when_no_aux", True)),
         arch_family=str(getattr(model_args, "arch_family", "cvsincnet")),
         representation_mode=str(

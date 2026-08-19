@@ -956,7 +956,9 @@ class CVSincNet(nn.Module):
         crra_alpha_max: float = 0.25,
         crra_shrinkage: float = 0.10,
         crra_condition_dim: int = 32,
-        crra_nuisance_dim: int = 8,
+        crra_nuisance_dim: int = 9,
+        crra_start_epoch: int = 17,
+        crra_ramp_epochs: int = 30,
     ):
         super().__init__()
         self.dataset = str(dataset)
@@ -1050,6 +1052,8 @@ class CVSincNet(nn.Module):
                 nuisance_dim=int(crra_nuisance_dim),
                 use_whitening=True,
                 shrinkage=float(crra_shrinkage),
+                start_epoch=int(crra_start_epoch),
+                ramp_epochs=int(crra_ramp_epochs),
             )
             if self.use_crra and self.use_time_path
             else None
@@ -1128,6 +1132,8 @@ class CVSincNet(nn.Module):
                 nuisance_dim=0,
                 use_whitening=False,
                 shrinkage=float(crra_shrinkage),
+                start_epoch=int(crra_start_epoch),
+                ramp_epochs=int(crra_ramp_epochs),
             )
             if self.use_crra and self.use_freq_path
             else None
@@ -1487,6 +1493,7 @@ class CVSincNet(nn.Module):
         domain_labels: Optional[torch.Tensor] = None,
         crra_epoch: Optional[int] = None,
         update_crra_support: bool = False,
+        crra_support_mask: Optional[torch.Tensor] = None,
     ):
         x = pad_crop_iq(x, self.input_len, mode=self.pad_crop_mode)
         B = x.size(0)
@@ -1510,6 +1517,7 @@ class CVSincNet(nn.Module):
                 raw_iq=x,
                 epoch=current_crra_epoch,
                 update_source_support=bool(update_crra_support),
+                source_support_mask=crra_support_mask,
             )
             sinc_iq_identity = crra_time_out.feature
 
@@ -1562,6 +1570,7 @@ class CVSincNet(nn.Module):
                     raw_iq=x,
                     epoch=current_crra_epoch,
                     update_source_support=bool(update_crra_support),
+                    source_support_mask=crra_support_mask,
                 )
                 feat_f = crra_freq_out.feature
             if self.freq_stability is not None:
@@ -1669,6 +1678,7 @@ class CVSincNet(nn.Module):
                 crra_time_out.support_distance if crra_time_out is not None else x.new_zeros((B,))
             ),
             'crra_q': crra_time_out.q if crra_time_out is not None else None,
+            'crra_q_raw': crra_time_out.q_raw if crra_time_out is not None else None,
             'crra_nuisance_pred': (
                 crra_time_out.nuisance_pred if crra_time_out is not None else None
             ),
@@ -1714,7 +1724,9 @@ def build_model(
     crra_alpha_max: float = 0.25,
     crra_shrinkage: float = 0.10,
     crra_condition_dim: int = 32,
-    crra_nuisance_dim: int = 8,
+    crra_nuisance_dim: int = 9,
+    crra_start_epoch: int = 17,
+    crra_ramp_epochs: int = 30,
 ):
     ds = str(dataset).lower()
     ms = str(model_size).upper().strip()
@@ -1892,5 +1904,7 @@ def build_model(
         crra_shrinkage=crra_shrinkage,
         crra_condition_dim=crra_condition_dim,
         crra_nuisance_dim=crra_nuisance_dim,
+        crra_start_epoch=crra_start_epoch,
+        crra_ramp_epochs=crra_ramp_epochs,
         **cfg,
     )
