@@ -476,7 +476,7 @@ print_gpu_baseline
 
 if [[ "${CIPG_SCREEN}" == "1" ]]; then
   echo "[ADV3M32-CIPG-SCREEN] run_id=${RUN_ID} dry_run=${DRY_RUN} candidates=2 channel=mixed_orbit baseline=ADV3B02_MIXED_ORBIT_E200 candidate=ADV3B02_CIPG_MIXED_E200"
-  slot_queue 0 0 ADV3B02_MIXED_ORBIT_E200 392033 ADV3B02_CIPG_MIXED_E200 392034
+  slot_queue 0 0 ADV3B02_MIXED_ORBIT_E200 392033 ADV3B02_CIPG_MIXED_E200 392033
   echo "[ADV3M32-CIPG-SCREEN-DONE] run_id=${RUN_ID}"
   exit 0
 fi
