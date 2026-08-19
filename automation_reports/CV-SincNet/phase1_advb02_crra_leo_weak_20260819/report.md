@@ -7,7 +7,7 @@
 |运行ID|`phase1_advb02_crra_leo_weak_20260819_r1`|
 |候选|`ADVB02_CRRA_S_LEO_WEAK_E200`|
 |状态|`LOCAL_VERIFIED`；尚未发布到N607|
-|Git提交|待本地聚焦验证完成后填写|
+|实现Git提交|`fc4629beb90ccbc74dc98287925c07f5019d7e45`，远端分支OID已独立核对一致|
 |工作目录|`E:/type10-7/github_publish/CVS-RFFI-repo/.worktrees/advb02-crra-leo-weak-20260819`|
 |远端工作目录|`/home/szu2070436088/2510044040/CV-SincNet`|
 |环境|本地`ssr-gpu`；远端`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
