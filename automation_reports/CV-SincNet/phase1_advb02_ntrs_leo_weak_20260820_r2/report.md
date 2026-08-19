@@ -2,7 +2,7 @@
 
 ## 当前结论
 
-- 状态：`LOCAL_VERIFIED`
+- 状态：`LANDED`
 - r2是r1首batch CUDA AMP确定性技术失败后的唯一新run；不覆盖r1任何partial artifact。
 - 当前只证明修复、配置和本地回归闭合；尚无r2训练或性能结果。
 
@@ -66,16 +66,22 @@ nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_
 - 候选已完成一次独立P0/P1审查；不重复全量审查。r2只接受针对已定位AMP问题的定点验证。
 - 已知非阻断旧测试：`test_post_stage_trainers.py`两项基线陈旧断言仍要求历史`mixed_orbit`默认值及旧损失源码字面量；不会据此退回旧协议。
 
+## N607发布验证
+
+- release远端编译及launcher语法检查通过。
+- CUDA AMP定点验证：`PASS_NTRS_CORRECTABILITY_CUDA_AMP`，loss和梯度均有限，target为`[1.0,0.0]`。
+- 真实checkpoint无query冒烟：`PASS_REAL_ADV3B02_CHECKPOINT_SOURCE_ONLY_NO_QUERY`；只读取1条source样本、0条query，63个预期NTRS新增键、0个unexpected key，评估态NTRS状态修改数为0。
+
 ## 发布映射
 
 - 本地唯一release归档：`E:\type10-7\local_artifacts\phase1_advb02_ntrs_leo_weak_20260820_r2\phase1_advb02_ntrs_leo_weak_20260820_r2_e3f17fce.tar.gz`
 - 远端归档：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_ntrs_leo_weak_20260820/e3f17fce/phase1_advb02_ntrs_leo_weak_20260820_r2_e3f17fce.tar.gz`
-- SHA256：待本地生成和远端单次比对后填写。
+- SHA256：`e6d68d372abb8ba58f63488f56b4bfb12548d825a009befdfb47558cad663741`；本地与远端单次比对一致。
 
 ## 状态记录
 
 - `LOCAL_VERIFIED`：AMP修复提交已推送，远端分支OID与本地`HEAD`一致；85项聚焦测试通过。
-- `LANDED`：待新release归档同步、单次SHA比对、远端编译、真实checkpoint无query冒烟和AMP定点验证完成后记录。
+- `LANDED`：新release归档同步、单次SHA比对、远端编译、真实checkpoint无query冒烟和AMP定点验证均通过。
 - `RUNNING`：待唯一launcher启动并完成一次PID/CWD/cmdline/GPU/log增长核对后记录。
 - `ARTIFACTS_COMPLETE`：仅在训练及clean和三种LEO_WEAK独立测试全部完成后记录。
 - `ANALYZED`：仅在同row结果分析完成后记录。
