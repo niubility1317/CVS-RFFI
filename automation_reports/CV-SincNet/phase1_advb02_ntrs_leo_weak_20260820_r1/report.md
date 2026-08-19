@@ -2,8 +2,8 @@
 
 ## 当前结论
 
-- 状态：`LANDED`
-- 当前只证明代码、配置、协议负测与本地回归闭合；尚无N607训练或性能结果。
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
+- r1已在首batch因CUDA AMP技术错误自然结束；没有checkpoint、独立测试或性能结果。
 - 本实验是`ADV3B02_CORE90_SOFT_E200`上的独立新版本`ADVB02_NTRS_LEO_WEAK_E200`，不修改正在运行的CRRA实验。
 
 ## 最小预登记
@@ -69,6 +69,15 @@ nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_
 - 真实checkpoint无query冒烟：`PASS_REAL_ADV3B02_CHECKPOINT_SOURCE_ONLY_NO_QUERY`。
 - 冒烟只读取1条source样本、0条query；ADV3B02 checkpoint加载到NTRS模型时有63个预期NTRS新增键、0个unexpected key；前向输出有限，评估态NTRS状态修改数为0。
 
+## 系统技术失败与处置
+
+- 启动时间：`2026-08-20T01:48:28+08:00`；结束时间：`2026-08-20T01:48:56+08:00`。
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+- trainer在首batch进入`ntrs_correctability_loss`时，CUDA AMP拒绝概率形式`binary_cross_entropy`，报错为`binary_cross_entropy and BCELoss are unsafe to autocast`。
+- `train_exit=1`；因无`final_ssdg.pth`，独立测试记`eval_exit=6`，clean和三种LEO_WEAK均无结果。
+- r1进程已自然结束，没有执行进程终止；run root、训练日志、outer log和status均原地保留，不删除、不覆盖。
+- 根因在本地CUDA环境同函数稳定复现；修复提交`e3f17fcef2e57d1c76dd9027e2e01e748393d566`只把该概率BCE置于显式float32、autocast关闭的小范围内，并新增CUDA AMP回归测试。正式实验转入全新r2。
+
 ## 发布映射
 
 - 本地唯一release归档：`E:\type10-7\local_artifacts\phase1_advb02_ntrs_leo_weak_20260820_r1\phase1_advb02_ntrs_leo_weak_20260820_r1_11d2cfd4.tar.gz`
@@ -79,6 +88,6 @@ nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_
 
 - `LOCAL_VERIFIED`：实现提交已推送，远端分支OID与本地`HEAD`一致；N607直连、路径、数据、checkpoint和GPU只读preflight通过。
 - `LANDED`：release归档同步、单次SHA比对、远端编译和真实checkpoint无query冒烟均通过。
-- `RUNNING`：待唯一launcher启动并完成一次PID/CWD/cmdline/GPU/log增长核对后记录。
-- `ARTIFACTS_COMPLETE`：仅在训练及clean和三种LEO_WEAK独立测试全部完成后记录。
-- `ANALYZED`：仅在同row结果分析完成后记录。
+- `STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`：首batch AMP异常，`train_exit=1`、`eval_exit=6`；r1不重启、不覆盖，后续使用r2。
+- `ARTIFACTS_COMPLETE`：未达到。
+- `ANALYZED`：仅完成技术失败归因，不存在性能分析。
