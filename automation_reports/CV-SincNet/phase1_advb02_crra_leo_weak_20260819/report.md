@@ -40,6 +40,21 @@
 
 训练器即使将历史P0/P1阈值标为诊断性信息，只要`final_ssdg.pth`合法存在，启动器仍必须完成独立测试。最终状态只能在clean和全部三种LEO逐场景结果都保存后标为`ARTIFACTS_COMPLETE`。
 
+## 启动记录
+
+|字段|值|
+|---|---|
+|启动时间|2026-08-19 23:58（Asia/Hong_Kong）|
+|状态|`RUNNING`|
+|启动器PID|`3375058`|
+|训练子进程PID|`3375076`|
+|GPU|GPU0；启动后`nvidia-smi pmon`确认该PID为GPU0唯一计算进程|
+|代码绑定|`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_crra_leo_weak_20260819/f32f52b8/workspace/code/SSDG/train_ssdg.py`|
+|运行根|`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_advb02_crra_leo_weak_20260819_r1/ADVB02_CRRA_S_LEO_WEAK_E200`|
+|启动器日志|`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_advb02_crra_leo_weak_20260819_r1/launcher.out`|
+
+首次启动后检查确认训练日志已增长，并写入`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`、`channel=leo_weak only`、三段LEO日程、`concat_masked`、唯一`lambda_sat_cons=0.05`和`lambda_crra_sat_kl=0`。外层nohup shell的CWD为用户主目录，但实际Python脚本、`PYTHONPATH`和run根均显式绑定到上述隔离release与唯一输出目录。
+
 ## 本地验证记录
 
 - `LOCAL_FOCUSED_SUITE_PASS`：CRRA核心、模型、协议、训练、评估遥测和启动器聚焦测试共46项通过；`py_compile`、启动器`bash -n`和`git diff --check`通过。
