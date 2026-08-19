@@ -253,6 +253,22 @@ build_command() {
   local gpu="$2"
   local seed="$3"
   local pseudo_epochs=$((epochs - label_epochs))
+  local best_metric="joint_safe"
+  local joint_safe_guard="true"
+  local test_eval_policy="interval_final"
+  local test_eval_start_epoch=1
+  local test_eval_interval=10
+  local test_eval_final_window=20
+  local test_eval_final_interval=2
+  if [[ "${CIPG_SCREEN}" == "1" ]]; then
+    best_metric="source_val_sat_hmean"
+    joint_safe_guard="false"
+    test_eval_policy="val_improved_final"
+    test_eval_start_epoch=999999
+    test_eval_interval=0
+    test_eval_final_window=0
+    test_eval_final_interval=0
+  fi
   CMD=(env PYTHONPATH="${ROOT}/code:${ROOT}:${PYTHONPATH:-}" CUDA_VISIBLE_DEVICES="${gpu}" "${PYTHON}" -u "${ROOT}/code/SSDG/train_ssdg.py"
     --wisig_pkl "${WISIG_PKL}"
     --split_mode tx_rx_day_1_7_2
@@ -267,8 +283,8 @@ build_command() {
     --label_epochs "${label_epochs}"
     --pseudo_epochs "${pseudo_epochs}"
     --from_scratch true
-    --best_metric joint_safe
-    --enable_joint_safe_guard true
+    --best_metric "${best_metric}"
+    --enable_joint_safe_guard "${joint_safe_guard}"
     --one_epoch_drop_guard_pp 2.0
     --paic_guard_enabled true
     --paic_guard_sat_ce_delta 0.12
@@ -382,11 +398,11 @@ build_command() {
     --phase2_fuse_max_p95_increase_deg 2.0
     --phase2_fuse_keep_tail_sentinel true
     --phase2_fuse_global_ball_accept false
-    --test_eval_policy interval_final
-    --test_eval_start_epoch 1
-    --test_eval_interval 10
-    --test_eval_final_window 20
-    --test_eval_final_interval 2
+    --test_eval_policy "${test_eval_policy}"
+    --test_eval_start_epoch "${test_eval_start_epoch}"
+    --test_eval_interval "${test_eval_interval}"
+    --test_eval_final_window "${test_eval_final_window}"
+    --test_eval_final_interval "${test_eval_final_interval}"
     --use_sat_consistency
     --use_concat_sat_channel_aug
     --concat_sat_ce_only

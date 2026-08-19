@@ -27,6 +27,8 @@ def test_cipg_screen_locks_historical_mixed_orbit_and_only_changes_pair_loss():
     assert "--labeled_ratio 0.07" in output
     assert "--unlabeled_ratio 0.63" in output
     assert "--source_val_ratio 0.30" in output
+    assert "--best_metric source_val_sat_hmean" in output
+    assert "--enable_joint_safe_guard false" in output
     assert "--sat_train_scenario mixed_orbit" in output
     assert "--sat_train_scenarios mixed_orbit" in output
     assert "--sat_view_schedule 1@0.30:mixed_orbit;41@0.60:mixed_orbit;91@0.80:mixed_orbit" in output
