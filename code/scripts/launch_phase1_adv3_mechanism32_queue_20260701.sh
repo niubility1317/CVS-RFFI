@@ -116,6 +116,9 @@ set_candidate_defaults() {
   lambda_sat_cons=0
   lambda_zid_channel=0
   zid_pair_weight=1.0
+  labeled_ratio=0.10
+  unlabeled_ratio=0.70
+  source_val_ratio=0.20
   sat_train_scenario="leo_clear_weak"
   sat_train_scenarios="leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
   sat_eval_scenarios="leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
@@ -225,6 +228,7 @@ apply_candidate_variant() {
     ADV3B02_MIXED_ORBIT_E200)
       mechanism="historical ADV3B02 mixed_orbit control"
       proxy_core_q=0.90; proxy_accept_q=0.85; proxy_cvar_alpha=0.30; proxy_core_w=0.45
+      labeled_ratio=0.07; unlabeled_ratio=0.63; source_val_ratio=0.30
       sat_train_scenario="mixed_orbit"
       sat_train_scenarios="mixed_orbit"
       sat_eval_scenarios="mixed_orbit"
@@ -233,6 +237,7 @@ apply_candidate_variant() {
       mechanism="ADV3B02 mixed_orbit plus TX-conditioned clean-satellite z_id geometry"
       proxy_core_q=0.90; proxy_accept_q=0.85; proxy_cvar_alpha=0.30; proxy_core_w=0.45
       lambda_zid_channel=0.18; zid_pair_weight=1.0
+      labeled_ratio=0.07; unlabeled_ratio=0.63; source_val_ratio=0.30
       sat_train_scenario="mixed_orbit"
       sat_train_scenarios="mixed_orbit"
       sat_eval_scenarios="mixed_orbit"
@@ -251,9 +256,9 @@ build_command() {
   CMD=(env PYTHONPATH="${ROOT}/code:${ROOT}:${PYTHONPATH:-}" CUDA_VISIBLE_DEVICES="${gpu}" "${PYTHON}" -u "${ROOT}/code/SSDG/train_ssdg.py"
     --wisig_pkl "${WISIG_PKL}"
     --split_mode tx_rx_day_1_7_2
-    --labeled_ratio 0.10
-    --unlabeled_ratio 0.70
-    --source_val_ratio 0.20
+    --labeled_ratio "${labeled_ratio}"
+    --unlabeled_ratio "${unlabeled_ratio}"
+    --source_val_ratio "${source_val_ratio}"
     --output_dir "${RUNS_ROOT}/${cid}"
     --run_id "${RUN_ID}"
     --candidate_id "${cid}"

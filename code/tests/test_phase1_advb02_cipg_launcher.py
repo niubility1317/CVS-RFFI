@@ -24,6 +24,9 @@ def test_cipg_screen_locks_historical_mixed_orbit_and_only_changes_pair_loss():
     output = result.stdout.replace(r"\;", ";")
     assert "ADV3B02_MIXED_ORBIT_E200" in output
     assert "ADV3B02_CIPG_MIXED_E200" in output
+    assert "--labeled_ratio 0.07" in output
+    assert "--unlabeled_ratio 0.63" in output
+    assert "--source_val_ratio 0.30" in output
     assert "--sat_train_scenario mixed_orbit" in output
     assert "--sat_train_scenarios mixed_orbit" in output
     assert "--sat_view_schedule 1@0.30:mixed_orbit;41@0.60:mixed_orbit;91@0.80:mixed_orbit" in output
