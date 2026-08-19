@@ -2,9 +2,9 @@
 
 ## 当前结论
 
-- 状态：`RUNNING`
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - r2是r1首batch CUDA AMP确定性技术失败后的唯一新run；不覆盖r1任何partial artifact。
-- 当前只证明修复、配置和本地回归闭合；尚无r2训练或性能结果。
+- r2因确定性非有限梯度导致所有优化步被跳过，已按预登记技术停止规则停止；没有r2性能结果。
 
 ## 最小预登记
 
@@ -88,3 +88,14 @@ nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_
 - `RUNNING`：唯一launcher已启动；PID/CWD/cmdline/GPU/log增长核对通过，观察到E004/200且无Traceback。
 - `ARTIFACTS_COMPLETE`：仅在训练及clean和三种LEO_WEAK独立测试全部完成后记录。
 - `ANALYZED`：仅在同row结果分析完成后记录。
+
+## 最终技术诊断与停止记录
+
+- 最终状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+- 2026-08-20T02:50:19+08:00在再次核对PID、CWD、cmdline和run root归属后，仅向r2 trainer PID=`3433919`发送`SIGTERM`；launcher随后自行退出。r1、CRRA和其他任务未受影响。
+- 停止时完整`metrics_epoch.csv`包含E001–E069共69行：`train_skipped_nonfinite_grad`始终为1.0，`train_optimizer_step_applied`始终为0.0，`train_tx_acc`始终为0.0%，`val_tx_acc`始终为0.238095%；这证明69个epoch的所有优化步骤均被非有限梯度保护跳过。
+- 完整训练日志没有Traceback；该run不是进程崩溃，而是确定性的数值反向异常和训练无进展。由于没有任何成功优化步，r2数据不得解释为候选性能。
+- launcher收尾状态为`train_exit=143`；由于按技术停止规则终止且不存在`final_ssdg.pth`，独立评测记录为`eval_exit=6 reason=final_ssdg_missing`。没有clean或三种LEO_WEAK最终测试结果，不能标记为`ARTIFACTS_COMPLETE`。
+- 根因已在本地最小复现：NTRS的物理校正能量、切空间残差、预校正能量和最终校正能量直接使用`sqrt(mean(square))`。NTRS初始化和S1冻结阶段会产生精确零残差，零点处开平方导数为无穷；即使对应NTRS损失权重为0，反向图仍出现`0×Inf -> NaN`并污染主干梯度。
+- 修复将上述4处改为零值仍精确为0、零点导数有限的RMS计算，并新增S1零权重NTRS损失不得污染主干梯度的回归测试；S1、S2-a、S2-b和S3真实模型反向均已验证为有限。
+- r2原始日志、69行CSV/JSONL和所有partial artifacts均原路径保留，不覆盖、不删除；新验证必须使用新的run ID。

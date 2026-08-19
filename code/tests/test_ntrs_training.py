@@ -377,6 +377,11 @@ def test_real_ntrs_model_pair_supports_backward_then_tangent_update():
         satellite_out["tx_logits"], labels
     )
     total.backward()
+    assert [
+        name
+        for name, parameter in model.named_parameters()
+        if parameter.grad is not None and not torch.isfinite(parameter.grad).all()
+    ] == []
     assert any(
         parameter.grad is not None and torch.isfinite(parameter.grad).all()
         for name, parameter in model.named_parameters()
@@ -387,3 +392,65 @@ def test_real_ntrs_model_pair_supports_backward_then_tangent_update():
         satellite_out["ntrs_z_anchor"].detach(),
     )
     assert int(model.ntrs_robustifier.tangent.update_count.item()) == 1
+
+
+def test_s1_zero_weighted_ntrs_losses_do_not_poison_core_gradients():
+    """S1 freezes NTRS, so its zero-weight terms must not create NaN gradients."""
+
+    torch.manual_seed(392034)
+    model = build_dual_model(
+        num_classes=2,
+        num_domains=2,
+        model_size="S",
+        dataset="wisig",
+        input_len=64,
+        sample_rate_hz=25e6,
+        model_variant="lite_h",
+        id_feature_key="feat_joint",
+        dom_feature_key="feat_imp",
+        use_ntrs=True,
+        ntrs_rank=8,
+        ntrs_q_dim=16,
+        ntrs_fast_dim=8,
+        ntrs_slow_dim=8,
+        ntrs_metadata_dim=3,
+    )
+    model.train()
+    labels = torch.tensor([0, 1, 0, 1])
+    domains = torch.tensor([0, 1, 0, 1])
+    output = model(
+        torch.randn(4, 2, 64),
+        y_tx=labels,
+        return_aux=True,
+        domain_labels=domains,
+        ntrs_epoch=1,
+        update_ntrs_source=False,
+        ntrs_source_mask=torch.ones(4, dtype=torch.bool),
+    )
+    bundle = compute_ntrs_loss_bundle(
+        output,
+        None,
+        clean_labels=labels,
+        satellite_labels=None,
+        clean_receivers=domains,
+        satellite_receivers=None,
+        clean_days=domains,
+        satellite_days=None,
+        clean_channels=torch.zeros(4, dtype=torch.long),
+        satellite_channels=None,
+        prototypes=model.id_backbone.cls_head.head.weight,
+        margin_epsilon=0.05,
+        correctability_epsilon=0.01,
+        energy_threshold=0.10,
+        class_attraction_max_cosine=0.50,
+    )
+    loss = torch.nn.functional.cross_entropy(output["tx_logits"], labels)
+    loss = loss + sum(0.0 * term for term in bundle["losses"].values())
+    loss.backward()
+
+    nonfinite = [
+        name
+        for name, parameter in model.named_parameters()
+        if parameter.grad is not None and not torch.isfinite(parameter.grad).all()
+    ]
+    assert nonfinite == []

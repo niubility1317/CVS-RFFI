@@ -16,6 +16,15 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
+def _zero_preserving_rms(value: torch.Tensor, dim) -> torch.Tensor:
+    """RMS with a finite derivative at an exactly zero residual."""
+
+    squared_mean = value.float().square().mean(dim=dim)
+    epsilon = 1.0e-8
+    adjusted = ((squared_mean + epsilon).sqrt() - epsilon**0.5).clamp_min(0.0)
+    return torch.where(squared_mean == 0.0, squared_mean, adjusted)
+
+
 def _finite_detached_iq(x: torch.Tensor) -> torch.Tensor:
     if x.dim() != 3 or int(x.size(1)) != 2:
         raise ValueError("NTRS expects IQ tensors shaped [B, 2, T]")
@@ -433,7 +442,7 @@ class BoundedWidelyLinearCorrector(nn.Module):
         corrected_complex = signal + gate[:, None].float() * (candidate - signal)
         corrected = torch.stack([corrected_complex.real, corrected_complex.imag], dim=1).to(dtype=source_dtype)
         reference = iq.to(dtype=corrected.dtype)
-        energy = (corrected - reference).float().square().mean(dim=(1, 2)).sqrt()
+        energy = _zero_preserving_rms(corrected - reference, dim=(1, 2))
         return PhysicalCorrection(
             corrected=corrected,
             energy=energy,
@@ -495,7 +504,7 @@ class NuisanceTangentBasis(nn.Module):
             raise ValueError("NTRS delta must be shaped [B, embedding_dim]")
         basis = self.basis.to(device=delta.device, dtype=delta.dtype)
         projected = (delta @ basis) @ basis.transpose(0, 1)
-        return (delta - projected).square().mean(dim=1).sqrt()
+        return _zero_preserving_rms(delta - projected, dim=1)
 
 
 class NTRSSourceSupport(nn.Module):
@@ -720,7 +729,7 @@ class NTRSRobustifier(nn.Module):
         tangent_delta = self.tangent.project(coefficients)
         alpha = (self.alpha_max * torch.sigmoid(self.alpha_head(q))).view(-1)
         bounded_delta = alpha[:, None] * tangent_delta
-        pre_energy = bounded_delta.square().mean(dim=1).sqrt()
+        pre_energy = _zero_preserving_rms(bounded_delta, dim=1)
         correctability_input = torch.cat(
             [q, uncertainty[:, None], pre_energy[:, None], raw_margin[:, None]],
             dim=1,
@@ -736,7 +745,7 @@ class NTRSRobustifier(nn.Module):
         correction = gate[:, None] * bounded_delta
         z_corrected = z_anchor - correction
         z_rob = F.normalize(F.layer_norm(z_corrected, (self.embedding_dim,)), dim=1, eps=1e-6)
-        correction_energy = correction.square().mean(dim=1).sqrt()
+        correction_energy = _zero_preserving_rms(correction, dim=1)
         subspace_residual = self.tangent.off_subspace_energy(correction)
         return NTRSOutput(
             z_rob=z_rob,
