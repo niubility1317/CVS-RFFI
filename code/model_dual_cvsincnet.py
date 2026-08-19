@@ -9,6 +9,15 @@ from typing import Dict, Optional, Sequence, Tuple
 import torch
 import torch.nn as nn
 
+from ntrs import (
+    BoundedWidelyLinearCorrector,
+    FastSlowContext,
+    NTRSCosFaceHead,
+    NTRSRobustifier,
+    ntrs_safe_fuse_logits,
+    ntrs_stage_scale,
+)
+
 _CODE_ROOT = Path(__file__).resolve().parent
 _REPO_ROOT = Path(__file__).resolve().parents[1]
 for _path in (_CODE_ROOT, _REPO_ROOT):
@@ -79,6 +88,8 @@ def backbone_forward_compat(
     crra_epoch: Optional[int] = None,
     update_crra_support: bool = False,
     crra_support_mask: Optional[torch.Tensor] = None,
+    original_iq: Optional[torch.Tensor] = None,
+    frequency_dual_mix: Optional[torch.Tensor] = None,
 ):
     try:
         return backbone(
@@ -89,6 +100,8 @@ def backbone_forward_compat(
             crra_epoch=crra_epoch,
             update_crra_support=update_crra_support,
             crra_support_mask=crra_support_mask,
+            original_iq=original_iq,
+            frequency_dual_mix=frequency_dual_mix,
         )
     except TypeError:
         return backbone(x, y=y, return_aux=return_aux)
@@ -548,6 +561,17 @@ class DualCVSincNetDisentangle(nn.Module):
         crra_ramp_epochs: int = 30,
         crra_support_domains: int = 0,
         crra_support_tau: float = 1.0,
+        use_ntrs: bool = False,
+        ntrs_rank: int = 8,
+        ntrs_alpha_max: float = 0.20,
+        ntrs_q_dim: int = 32,
+        ntrs_fast_dim: int = 24,
+        ntrs_slow_dim: int = 24,
+        ntrs_metadata_dim: int = 9,
+        ntrs_slow_ema_decay: float = 0.95,
+        ntrs_support_tau: float = 1.0,
+        ntrs_energy_threshold: float = 0.10,
+        ntrs_unknown_rescue: bool = False,
     ):
         super().__init__()
         self.num_classes = int(num_classes)
@@ -571,9 +595,17 @@ class DualCVSincNetDisentangle(nn.Module):
         self.fast_infer_when_no_aux = bool(fast_infer_when_no_aux)
         self.use_tx_adv_on_zdom = bool(use_tx_adv_on_zdom)
         self.use_crra = bool(use_crra)
+        self.use_ntrs = bool(use_ntrs)
+        if self.use_crra and self.use_ntrs:
+            raise ValueError("ADVB02 CRRA and NTRS are independent candidates and cannot be enabled together")
+        if self.use_ntrs and self.representation_mode != "dual":
+            raise ValueError("ADVB02 NTRS requires the dual identity/domain representation")
         self.crra_support_domains = int(crra_support_domains) if int(crra_support_domains) > 0 else self.num_domains
         self.crra_support_tau = float(crra_support_tau)
         self.crra_epoch = 1
+        self.ntrs_epoch = 1
+        self.ntrs_energy_threshold = float(ntrs_energy_threshold)
+        self.ntrs_unknown_rescue = bool(ntrs_unknown_rescue)
         self.id_time_stability_mode = str(id_time_stability_mode or "off").lower().strip()
         self.id_freq_stability_mode = str(id_freq_stability_mode or "off").lower().strip()
         self.domain_time_stability_mode = self._resolve_domain_stability_mode(
@@ -656,6 +688,69 @@ class DualCVSincNetDisentangle(nn.Module):
             self._share_early_stem()
 
         self.emb_dim = self._infer_emb_dim(self.id_backbone)
+        if self.use_ntrs and self.arch_family != "cvsincnet":
+            raise ValueError("ADVB02 NTRS currently requires the CV-SincNet physical backbone")
+        self.ntrs_context = (
+            FastSlowContext(
+                descriptor_dim=40,
+                q_dim=int(ntrs_q_dim),
+                fast_dim=int(ntrs_fast_dim),
+                slow_dim=int(ntrs_slow_dim),
+                metadata_dim=int(ntrs_metadata_dim),
+                num_domains=self.num_domains,
+                slow_ema_decay=float(ntrs_slow_ema_decay),
+            )
+            if self.use_ntrs
+            else None
+        )
+        self.ntrs_corrector = (
+            BoundedWidelyLinearCorrector(q_dim=int(ntrs_q_dim), taps=3)
+            if self.use_ntrs
+            else None
+        )
+        self.ntrs_robustifier = (
+            NTRSRobustifier(
+                embedding_dim=self.emb_dim,
+                q_dim=int(ntrs_q_dim),
+                rank=int(ntrs_rank),
+                alpha_max=float(ntrs_alpha_max),
+                support_domains=self.num_domains,
+                support_tau=float(ntrs_support_tau),
+            )
+            if self.use_ntrs
+            else None
+        )
+        self.ntrs_robust_head = (
+            NTRSCosFaceHead(self.emb_dim, self.num_classes)
+            if self.use_ntrs
+            else None
+        )
+        if self.ntrs_robust_head is not None:
+            raw_head = getattr(getattr(self.id_backbone, "cls_head", None), "head", None)
+            raw_weight = getattr(raw_head, "weight", None)
+            if not torch.is_tensor(raw_weight):
+                raise ValueError("ADVB02 NTRS requires a raw CosFace prototype head")
+            self.ntrs_robust_head.initialize_from(raw_weight)
+        self.ntrs_receiver_head = (
+            MLPHead(int(ntrs_q_dim), self.num_domains, hidden=max(32, int(ntrs_q_dim)), drop=drop)
+            if self.use_ntrs
+            else None
+        )
+        self.ntrs_day_head = (
+            MLPHead(int(ntrs_q_dim), self.num_domains, hidden=max(32, int(ntrs_q_dim)), drop=drop)
+            if self.use_ntrs
+            else None
+        )
+        self.ntrs_channel_head = (
+            MLPHead(int(ntrs_q_dim), 2, hidden=max(32, int(ntrs_q_dim)), drop=drop)
+            if self.use_ntrs
+            else None
+        )
+        self.ntrs_context_tx_adv_head = (
+            MLPHead(int(ntrs_q_dim), self.num_classes, hidden=max(32, int(ntrs_q_dim)), drop=drop)
+            if self.use_ntrs
+            else None
+        )
         self.dom_enhancer = DomainFeatureEnhancer(
             self.emb_dim,
             mode=str(domain_enhancer),
@@ -724,6 +819,23 @@ class DualCVSincNetDisentangle(nn.Module):
             if backbone is not None and hasattr(backbone, "set_crra_epoch"):
                 backbone.set_crra_epoch(self.crra_epoch)
 
+    def set_ntrs_epoch(self, epoch: int) -> None:
+        self.ntrs_epoch = max(1, int(epoch))
+
+    @torch.no_grad()
+    def update_ntrs_tangent(self, clean_z: torch.Tensor, satellite_z: torch.Tensor) -> None:
+        if self.ntrs_robustifier is not None:
+            self.ntrs_robustifier.tangent.update(clean_z, satellite_z)
+
+    @staticmethod
+    def _classification_margin(logits: torch.Tensor) -> torch.Tensor:
+        if logits.dim() != 2:
+            raise ValueError("NTRS logits must be shaped [B, C]")
+        if int(logits.size(1)) < 2:
+            return logits.detach().new_zeros(logits.size(0))
+        top = logits.detach().float().topk(k=2, dim=1).values
+        return (top[:, 0] - top[:, 1]).to(device=logits.device, dtype=logits.dtype)
+
     def _share_early_stem(self) -> None:
         """Share the lowest-level IQ/filterbank stem only for Lite-B.
 
@@ -785,6 +897,11 @@ class DualCVSincNetDisentangle(nn.Module):
         crra_epoch: Optional[int] = None,
         update_crra_support: bool = False,
         crra_support_mask: Optional[torch.Tensor] = None,
+        ntrs_epoch: Optional[int] = None,
+        update_ntrs_source: bool = False,
+        ntrs_source_mask: Optional[torch.Tensor] = None,
+        ntrs_metadata: Optional[torch.Tensor] = None,
+        ntrs_metadata_valid: Optional[torch.Tensor] = None,
     ):
         if self.representation_mode == "single_parameter_matched":
             aux_id = backbone_forward_compat(
@@ -830,7 +947,7 @@ class DualCVSincNetDisentangle(nn.Module):
                 "aux_dom": {},
             }
 
-        if (not return_aux) and self.fast_infer_when_no_aux:
+        if (not return_aux) and self.fast_infer_when_no_aux and not self.use_ntrs:
             return backbone_forward_compat(
                 self.id_backbone,
                 x,
@@ -840,6 +957,25 @@ class DualCVSincNetDisentangle(nn.Module):
                 crra_epoch=crra_epoch,
                 update_crra_support=update_crra_support,
                 crra_support_mask=crra_support_mask,
+            )
+
+        current_ntrs_epoch = self.ntrs_epoch if ntrs_epoch is None else max(1, int(ntrs_epoch))
+        ntrs_context_out = None
+        ntrs_physical_out = None
+        aux_phys: Dict[str, torch.Tensor] = {}
+        if self.use_ntrs:
+            ntrs_context_out = self.ntrs_context(
+                x,
+                metadata=ntrs_metadata,
+                metadata_valid=ntrs_metadata_valid,
+                domains=domain_labels,
+                update_slow=bool(update_ntrs_source),
+                update_mask=ntrs_source_mask,
+            )
+            ntrs_physical_out = self.ntrs_corrector(
+                x,
+                ntrs_context_out.q,
+                stage_scale=ntrs_stage_scale(current_ntrs_epoch),
             )
 
         aux_id = backbone_forward_compat(
@@ -852,6 +988,19 @@ class DualCVSincNetDisentangle(nn.Module):
             update_crra_support=update_crra_support,
             crra_support_mask=crra_support_mask,
         )
+        if self.use_ntrs:
+            aux_phys = backbone_forward_compat(
+                self.id_backbone,
+                ntrs_physical_out.corrected,
+                y=y_tx,
+                return_aux=True,
+                domain_labels=domain_labels,
+                crra_epoch=crra_epoch,
+                update_crra_support=False,
+                crra_support_mask=None,
+                original_iq=x,
+                frequency_dual_mix=ntrs_physical_out.gate,
+            )
         aux_dom = backbone_forward_compat(
             self.dom_backbone,
             x,
@@ -863,8 +1012,51 @@ class DualCVSincNetDisentangle(nn.Module):
             crra_support_mask=None,
         )
 
-        tx_logits = aux_id["logits"]
-        z_id = self._pick_z_id(aux_id)
+        raw_tx_logits = aux_id["logits"]
+        z_anchor = self._pick_z_id(aux_id)
+        ntrs_robust_out = None
+        ntrs_robust_logits = raw_tx_logits
+        ntrs_safe_gate = raw_tx_logits.new_zeros(raw_tx_logits.size(0))
+        ntrs_agreement = torch.ones(raw_tx_logits.size(0), dtype=torch.bool, device=raw_tx_logits.device)
+        ntrs_raw_margin = self._classification_margin(raw_tx_logits)
+        ntrs_receiver_logits = None
+        ntrs_day_logits = None
+        ntrs_channel_logits = None
+        ntrs_context_tx_adv_logits = None
+        if self.use_ntrs:
+            z_phys = self._pick_z_id(aux_phys)
+            ntrs_robust_out = self.ntrs_robustifier(
+                z_anchor,
+                z_phys,
+                ntrs_context_out.q,
+                uncertainty=ntrs_context_out.uncertainty,
+                raw_margin=ntrs_raw_margin,
+                epoch=current_ntrs_epoch,
+                update_source_support=bool(update_ntrs_source),
+                source_domains=domain_labels,
+                source_support_mask=ntrs_source_mask,
+            )
+            ntrs_robust_logits = self.ntrs_robust_head(ntrs_robust_out.z_rob, labels=y_tx)
+            tx_logits, ntrs_safe_gate, ntrs_agreement = ntrs_safe_fuse_logits(
+                raw_tx_logits,
+                ntrs_robust_logits,
+                ntrs_robust_out.gate,
+                correction_energy=ntrs_robust_out.correction_energy,
+                energy_threshold=self.ntrs_energy_threshold,
+                unknown_rescue=self.ntrs_unknown_rescue,
+            )
+            z_id = z_anchor + ntrs_safe_gate[:, None].to(dtype=z_anchor.dtype) * (
+                ntrs_robust_out.z_rob.to(dtype=z_anchor.dtype) - z_anchor
+            )
+            ntrs_receiver_logits = self.ntrs_receiver_head(ntrs_context_out.q)
+            ntrs_day_logits = self.ntrs_day_head(ntrs_context_out.q)
+            ntrs_channel_logits = self.ntrs_channel_head(ntrs_context_out.q)
+            ntrs_context_tx_adv_logits = self.ntrs_context_tx_adv_head(
+                grad_reverse(ntrs_context_out.q, grl_lambda)
+            )
+        else:
+            tx_logits = raw_tx_logits
+            z_id = z_anchor
         z_dom_raw = self._pick_z_dom(aux_dom)
         z_dom, z_dom_rcn = self.dom_enhancer(z_dom_raw, x)
 
@@ -899,6 +1091,7 @@ class DualCVSincNetDisentangle(nn.Module):
             "crra_condition_tx_adv_on_q": self.crra_condition_tx_adv_head is not None,
             "representation_mode": self.representation_mode,
             "aux_id": aux_id,
+            "aux_phys": aux_phys,
             "aux_dom": aux_dom,
             "crra_enabled": bool(self.use_crra),
             "crra_correction_energy": aux_id.get(
@@ -925,6 +1118,57 @@ class DualCVSincNetDisentangle(nn.Module):
             "crra_q_raw": aux_id.get("crra_q_raw", None),
             "crra_nuisance_pred": aux_id.get("crra_nuisance_pred", None),
             "crra_condition_tx_adv_logits": crra_condition_tx_adv_logits,
+            "ntrs_enabled": bool(self.use_ntrs),
+            "ntrs_raw_logits": raw_tx_logits,
+            "ntrs_robust_logits": ntrs_robust_logits,
+            "ntrs_z_anchor": z_anchor,
+            "ntrs_z_rob": (
+                ntrs_robust_out.z_rob if ntrs_robust_out is not None else z_anchor
+            ),
+            "ntrs_safe_gate": ntrs_safe_gate,
+            "ntrs_agreement": ntrs_agreement,
+            "ntrs_raw_margin": ntrs_raw_margin,
+            "ntrs_gate": (
+                ntrs_robust_out.gate if ntrs_robust_out is not None else x.new_zeros((x.size(0),))
+            ),
+            "ntrs_alpha": (
+                ntrs_robust_out.alpha if ntrs_robust_out is not None else x.new_zeros((x.size(0),))
+            ),
+            "ntrs_correctability": (
+                ntrs_robust_out.correctability if ntrs_robust_out is not None else x.new_zeros((x.size(0),))
+            ),
+            "ntrs_correction": (
+                ntrs_robust_out.correction if ntrs_robust_out is not None else x.new_zeros((x.size(0), self.emb_dim))
+            ),
+            "ntrs_correction_energy": (
+                ntrs_robust_out.correction_energy if ntrs_robust_out is not None else x.new_zeros((x.size(0),))
+            ),
+            "ntrs_support": (
+                ntrs_robust_out.support if ntrs_robust_out is not None else x.new_ones((x.size(0),))
+            ),
+            "ntrs_support_distance": (
+                ntrs_robust_out.support_distance if ntrs_robust_out is not None else x.new_zeros((x.size(0),))
+            ),
+            "ntrs_uncertainty": (
+                ntrs_robust_out.uncertainty if ntrs_robust_out is not None else x.new_zeros((x.size(0),))
+            ),
+            "ntrs_subspace_residual": (
+                ntrs_robust_out.subspace_residual if ntrs_robust_out is not None else x.new_zeros((x.size(0),))
+            ),
+            "ntrs_physical_correction_energy": (
+                ntrs_physical_out.energy if ntrs_physical_out is not None else x.new_zeros((x.size(0),))
+            ),
+            "ntrs_physical_gate": (
+                ntrs_physical_out.gate if ntrs_physical_out is not None else x.new_zeros((x.size(0),))
+            ),
+            "ntrs_q": ntrs_context_out.q if ntrs_context_out is not None else None,
+            "ntrs_q_fast": ntrs_context_out.q_fast if ntrs_context_out is not None else None,
+            "ntrs_q_slow": ntrs_context_out.q_slow if ntrs_context_out is not None else None,
+            "ntrs_q_meta": ntrs_context_out.q_meta if ntrs_context_out is not None else None,
+            "ntrs_receiver_logits": ntrs_receiver_logits,
+            "ntrs_day_logits": ntrs_day_logits,
+            "ntrs_channel_logits": ntrs_channel_logits,
+            "ntrs_context_tx_adv_logits": ntrs_context_tx_adv_logits,
         }
         if torch.is_tensor(tx_adv_logits):
             out["tx_adv_logits"] = tx_adv_logits
@@ -1013,6 +1257,17 @@ def build_dual_model(
     crra_ramp_epochs: int = 30,
     crra_support_domains: int = 0,
     crra_support_tau: float = 1.0,
+    use_ntrs: bool = False,
+    ntrs_rank: int = 8,
+    ntrs_alpha_max: float = 0.20,
+    ntrs_q_dim: int = 32,
+    ntrs_fast_dim: int = 24,
+    ntrs_slow_dim: int = 24,
+    ntrs_metadata_dim: int = 9,
+    ntrs_slow_ema_decay: float = 0.95,
+    ntrs_support_tau: float = 1.0,
+    ntrs_energy_threshold: float = 0.10,
+    ntrs_unknown_rescue: bool = False,
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -1066,4 +1321,15 @@ def build_dual_model(
         crra_ramp_epochs=crra_ramp_epochs,
         crra_support_domains=crra_support_domains,
         crra_support_tau=crra_support_tau,
+        use_ntrs=use_ntrs,
+        ntrs_rank=ntrs_rank,
+        ntrs_alpha_max=ntrs_alpha_max,
+        ntrs_q_dim=ntrs_q_dim,
+        ntrs_fast_dim=ntrs_fast_dim,
+        ntrs_slow_dim=ntrs_slow_dim,
+        ntrs_metadata_dim=ntrs_metadata_dim,
+        ntrs_slow_ema_decay=ntrs_slow_ema_decay,
+        ntrs_support_tau=ntrs_support_tau,
+        ntrs_energy_threshold=ntrs_energy_threshold,
+        ntrs_unknown_rescue=ntrs_unknown_rescue,
     )

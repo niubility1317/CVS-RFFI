@@ -576,6 +576,62 @@ def ntrs_stage_scale(epoch: int) -> float:
     return 1.0
 
 
+class NTRSCosFaceHead(nn.Module):
+    """Independent robust CosFace head initialized from the raw prototypes."""
+
+    def __init__(self, in_features: int, out_features: int, s: float = 30.0, m: float = 0.35):
+        super().__init__()
+        self.in_features = int(in_features)
+        self.out_features = int(out_features)
+        self.s = float(s)
+        self.m = float(m)
+        if self.in_features <= 0 or self.out_features <= 0:
+            raise ValueError("NTRS CosFace dimensions must be positive")
+        self.weight = nn.Parameter(torch.randn(self.out_features, self.in_features) * 0.01)
+
+    @torch.no_grad()
+    def initialize_from(self, raw_weight: torch.Tensor) -> None:
+        if tuple(raw_weight.shape) != tuple(self.weight.shape):
+            raise ValueError("NTRS robust-head and raw-head weights must share shape")
+        self.weight.copy_(raw_weight.detach().to(device=self.weight.device, dtype=self.weight.dtype))
+
+    def forward(self, x: torch.Tensor, labels: Optional[torch.Tensor] = None) -> torch.Tensor:
+        x_normalized = F.normalize(x.float(), dim=1, eps=1e-4)
+        weight_normalized = F.normalize(self.weight.float(), dim=1, eps=1e-4)
+        cosine = F.linear(x_normalized, weight_normalized)
+        if labels is not None:
+            labels = labels.view(-1).long()
+            one_hot = torch.zeros_like(cosine)
+            one_hot.scatter_(1, labels[:, None], 1.0)
+            cosine = cosine - one_hot * self.m
+        return cosine * self.s
+
+
+def ntrs_safe_fuse_logits(
+    raw_logits: torch.Tensor,
+    robust_logits: torch.Tensor,
+    gate: torch.Tensor,
+    *,
+    correction_energy: torch.Tensor,
+    energy_threshold: float,
+    unknown_rescue: bool = False,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Fuse robust logits only for bounded, prediction-compatible corrections."""
+
+    if raw_logits.shape != robust_logits.shape or raw_logits.dim() != 2:
+        raise ValueError("NTRS raw and robust logits must share shape [B, C]")
+    gate = gate.view(-1).to(device=raw_logits.device, dtype=raw_logits.dtype)
+    correction_energy = correction_energy.view(-1).to(device=raw_logits.device, dtype=raw_logits.dtype)
+    if int(gate.numel()) != int(raw_logits.size(0)) or int(correction_energy.numel()) != int(raw_logits.size(0)):
+        raise ValueError("NTRS gate and correction energy must align with logits")
+    agreement = raw_logits.detach().argmax(dim=1) == robust_logits.detach().argmax(dim=1)
+    energy_ok = correction_energy.detach() <= float(energy_threshold)
+    eligible = energy_ok if bool(unknown_rescue) else (energy_ok & agreement)
+    safe_gate = gate.clamp(0.0, 1.0) * eligible.to(dtype=gate.dtype)
+    fused = raw_logits + safe_gate[:, None] * (robust_logits - raw_logits)
+    return fused, safe_gate, agreement
+
+
 @dataclass
 class NTRSOutput:
     z_rob: torch.Tensor
@@ -701,11 +757,13 @@ __all__ = [
     "BoundedWidelyLinearCorrector",
     "FastSlowContext",
     "NTRSContext",
+    "NTRSCosFaceHead",
     "NTRSOutput",
     "NTRSRobustifier",
     "NTRSSourceSupport",
     "NuisanceTangentBasis",
     "PhysicalCorrection",
     "compute_grouped_physical_descriptors",
+    "ntrs_safe_fuse_logits",
     "ntrs_stage_scale",
 ]

@@ -1556,8 +1556,18 @@ class CVSincNet(nn.Module):
         crra_epoch: Optional[int] = None,
         update_crra_support: bool = False,
         crra_support_mask: Optional[torch.Tensor] = None,
+        original_iq: Optional[torch.Tensor] = None,
+        frequency_dual_mix: Optional[torch.Tensor] = None,
     ):
         x = pad_crop_iq(x, self.input_len, mode=self.pad_crop_mode)
+        physical_view = torch.is_tensor(original_iq)
+        raw_iq = (
+            pad_crop_iq(original_iq, self.input_len, mode=self.pad_crop_mode)
+            if physical_view
+            else x
+        )
+        if raw_iq.shape != x.shape:
+            raise ValueError("NTRS original_iq must share the corrected IQ shape")
         B = x.size(0)
         zero_emb = x.new_zeros((B, self.emb_dim))
         need_time = self.use_time_path
@@ -1627,6 +1637,26 @@ class CVSincNet(nn.Module):
         # ----- freq branch -----
         if need_freq:
             feat_f, rho, dac_stats, pa_stats = self._mirror_compressed_features(x, sinc_iq=sinc_iq)
+            frequency_dual_view = False
+            if physical_view:
+                raw_sinc_iq = self._sinc_on_iq(raw_iq) if self.freq_uses_sinc else sinc_iq
+                raw_feat_f, raw_rho, raw_dac_stats, raw_pa_stats = self._mirror_compressed_features(
+                    raw_iq,
+                    sinc_iq=raw_sinc_iq,
+                )
+                if frequency_dual_mix is None:
+                    mix = x.new_full((B,), 0.5)
+                else:
+                    mix = frequency_dual_mix.to(device=x.device, dtype=x.dtype).view(-1)
+                    if int(mix.numel()) != B:
+                        raise ValueError("NTRS frequency_dual_mix must align with the batch")
+                    mix = mix.clamp(0.0, 1.0)
+                feat_f = raw_feat_f + mix[:, None, None] * (feat_f - raw_feat_f)
+                dac_stats = raw_dac_stats + mix[:, None] * (dac_stats - raw_dac_stats)
+                pa_stats = raw_pa_stats + mix[:, None] * (pa_stats - raw_pa_stats)
+                if rho is not None and raw_rho is not None:
+                    rho = raw_rho + mix[:, None] * (rho - raw_rho)
+                frequency_dual_view = True
             if self.freq_stability is not None:
                 feat_f = torch.cat([feat_f, self.freq_stability(feat_f)], dim=1)
             feat_f = self.freq_gate(feat_f)
@@ -1644,6 +1674,7 @@ class CVSincNet(nn.Module):
                 dac_stats = torch.zeros_like(dac_stats)
                 pa_stats = torch.zeros_like(pa_stats)
         else:
+            frequency_dual_view = False
             f_emb = zero_emb
             dac_delta = zero_emb
             rho = x.new_zeros((B, 1)) if self.use_circularity else None
@@ -1654,7 +1685,8 @@ class CVSincNet(nn.Module):
 
         # ----- PA branch -----
         if need_pa:
-            pa_input = self._sinc_lowrank_iq(sinc_iq) if self.pa_feature_source == "sinc_lowrank" else x
+            pa_sinc_iq = self._sinc_on_iq(raw_iq) if physical_view and self.pa_feature_source == "sinc_lowrank" else sinc_iq
+            pa_input = self._sinc_lowrank_iq(pa_sinc_iq) if self.pa_feature_source == "sinc_lowrank" else raw_iq
             pa_feat = self.pa_lift(pa_input)
             pa_feat = self.pa_gate(pa_feat, pa_input)
             p = self.pa_b1(pa_feat)
@@ -1753,6 +1785,9 @@ class CVSincNet(nn.Module):
             'crra_reliability_time': crra_reliability[:, 0],
             'crra_reliability_freq': crra_reliability[:, 1],
             'crra_reliability_pa': crra_reliability[:, 2],
+            'ntrs_physical_view': bool(physical_view),
+            'ntrs_frequency_dual_view': bool(frequency_dual_view),
+            'ntrs_pa_uses_original_iq': bool(physical_view),
         }
 
 
