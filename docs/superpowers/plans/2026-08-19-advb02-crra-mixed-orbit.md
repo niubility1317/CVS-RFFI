@@ -144,7 +144,7 @@ git commit -m "feat: wire CRRA into ADVB02 identity path"
 - Consumes: metadata returned by the exact existing `apply_sat_gnd_channel_batch(..., return_meta=True)` call.
 - Produces: optional per-sample nuisance tensor/mapping attached to `SatViewTransform` and `BaselineOriginSatViewBatch`; no regenerated or second satellite view.
 
-- [ ] **Step 1: Write failing metadata tests**
+- [x] **Step 1: Write failing metadata tests**
 
 ```python
 def test_mixed_orbit_metadata_is_carried_with_the_same_satellite_view():
@@ -159,17 +159,17 @@ def test_non_mixed_orbit_or_clean_duplicate_does_not_invent_nuisance_targets():
     assert view.meta is None or view.meta.get("valid", False) is False
 ```
 
-- [ ] **Step 2: Run tests and verify failure**
+- [x] **Step 2: Run tests and verify failure**
 
 Run: `conda activate ssr-gpu && python -m pytest code/tests/test_crra_mixed_orbit_metadata.py -q`
 
 Expected: FAIL because transform dataclasses currently discard `return_meta=True` output.
 
-- [ ] **Step 3: Implement metadata carriage**
+- [x] **Step 3: Implement metadata carriage**
 
 Change only the view-carriage layer: call the existing channel function once with `return_meta=True`, retain CPU metadata without changing IQ bytes, normalize numeric fields (`snr_db`, `cfo_hz`, `residual_cfo_hz`, `fD_hz`, `pl_db`, `K_db`, `theta_deg`, `h_km`, `state`) into a finite `[B,D]` nuisance tensor plus a field map, and attach it to the transform/batch. Clean duplicates carry an invalid mask. The implementation must retain `scenario="mixed_orbit"` and must not access target receiver labels.
 
-- [ ] **Step 4: Run metadata and legacy view tests**
+- [x] **Step 4: Run metadata and legacy view tests**
 
 Run: `conda activate ssr-gpu && python -m pytest code/tests/test_crra_mixed_orbit_metadata.py code/tests/test_baseline_origin_sat_view.py code/tests/test_concat_sat_channel_aug.py -q`
 

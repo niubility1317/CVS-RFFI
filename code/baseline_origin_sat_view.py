@@ -2,12 +2,24 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import math
-from typing import Any, Callable, Iterable, Optional
+from typing import Any, Callable, Iterable, Mapping, Optional
 
 import torch
 
 
 ApplySatFn = Callable[..., tuple]
+
+CRRA_NUISANCE_FIELDS = (
+    "snr_db",
+    "cfo_hz",
+    "residual_cfo_hz",
+    "fD_hz",
+    "pl_db",
+    "K_db",
+    "theta_deg",
+    "h_km",
+    "state",
+)
 
 
 @dataclass(frozen=True)
@@ -26,6 +38,10 @@ class SatViewTransform:
     view_prob: float
     applied: bool
     clean_batch_size: int
+    meta: Optional[dict[str, Any]] = None
+    nuisance: Optional[torch.Tensor] = None
+    nuisance_valid: Optional[torch.Tensor] = None
+    nuisance_fields: tuple[str, ...] = ()
 
 
 @dataclass
@@ -40,6 +56,10 @@ class BaselineOriginSatViewBatch:
     stage_index: int
     view_prob: float
     applied: bool
+    meta: Optional[dict[str, Any]] = None
+    nuisance: Optional[torch.Tensor] = None
+    nuisance_valid: Optional[torch.Tensor] = None
+    nuisance_fields: tuple[str, ...] = ()
 
 
 def normalize_scenario_name(name: str) -> str:
@@ -132,6 +152,62 @@ def _concat_optional_domain(d_raw: Optional[torch.Tensor], device: torch.device)
     return torch.cat([d_view, d_view], dim=0)
 
 
+def _batch_meta_column(value: Any, batch_size: int, device: torch.device) -> Optional[torch.Tensor]:
+    try:
+        if torch.is_tensor(value):
+            column = value.detach().to(device=device, dtype=torch.float32).reshape(-1)
+        else:
+            column = torch.as_tensor(value, device=device, dtype=torch.float32).reshape(-1)
+    except (TypeError, ValueError, RuntimeError):
+        return None
+    if column.numel() == 1 and int(batch_size) > 1:
+        column = column.expand(int(batch_size))
+    if column.numel() != int(batch_size):
+        return None
+    return column
+
+
+def _normalize_nuisance_meta(
+    meta: Any,
+    *,
+    scenario: str,
+    batch_size: int,
+    device: torch.device,
+) -> tuple[Optional[dict[str, Any]], Optional[torch.Tensor], Optional[torch.Tensor], tuple[str, ...]]:
+    if not isinstance(meta, Mapping):
+        return {"scenario": str(scenario), "valid": False}, None, None, ()
+    raw = dict(meta)
+    raw.setdefault("scenario", str(scenario))
+    columns = []
+    fields = []
+    for field in CRRA_NUISANCE_FIELDS:
+        column = _batch_meta_column(raw.get(field), int(batch_size), device)
+        if column is None:
+            continue
+        fields.append(field)
+        columns.append(column)
+    if not columns:
+        raw["valid"] = False
+        return raw, None, None, ()
+    nuisance = torch.stack(columns, dim=1)
+    valid = torch.isfinite(nuisance).all(dim=1)
+    nuisance = torch.nan_to_num(nuisance, nan=0.0, posinf=0.0, neginf=0.0)
+    raw["valid"] = bool(valid.any().item())
+    return raw, nuisance, valid, tuple(fields)
+
+
+def _expand_nuisance(
+    nuisance: Optional[torch.Tensor],
+    valid: Optional[torch.Tensor],
+    clean_count: int,
+) -> tuple[Optional[torch.Tensor], Optional[torch.Tensor]]:
+    if nuisance is None or valid is None:
+        return None, None
+    clean_nuisance = nuisance.new_zeros((int(clean_count), int(nuisance.size(1))))
+    clean_valid = torch.zeros(int(clean_count), dtype=torch.bool, device=valid.device)
+    return torch.cat([clean_nuisance, nuisance], dim=0), torch.cat([clean_valid, valid], dim=0)
+
+
 class BaselineOriginSatViewAugment:
     """Baseline-origin supervised satellite view generator.
 
@@ -198,9 +274,16 @@ class BaselineOriginSatViewAugment:
                 view_prob=p,
                 applied=False,
                 clean_batch_size=clean_bsz,
+                meta={"scenario": "clean_duplicate", "valid": False},
             )
         scenario = self._select_scenario(stage, gen, x.device)
-        x_sat, _ = self.apply_fn(x, scenario, args, gen=gen, return_meta=False)
+        x_sat, raw_meta = self.apply_fn(x, scenario, args, gen=gen, return_meta=True)
+        meta, nuisance, nuisance_valid, nuisance_fields = _normalize_nuisance_meta(
+            raw_meta,
+            scenario=scenario,
+            batch_size=clean_bsz,
+            device=x.device,
+        )
         return SatViewTransform(
             x=x_sat.to(device=x.device, dtype=x.dtype),
             scenario=scenario,
@@ -209,6 +292,10 @@ class BaselineOriginSatViewAugment:
             view_prob=p,
             applied=True,
             clean_batch_size=clean_bsz,
+            meta=meta,
+            nuisance=nuisance,
+            nuisance_valid=nuisance_valid,
+            nuisance_fields=nuisance_fields,
         )
 
     def expand(
@@ -226,6 +313,11 @@ class BaselineOriginSatViewAugment:
         x_cat = torch.cat([x, view.x], dim=0)
         y_cat = torch.cat([y_view, y_view], dim=0)
         d_cat = _concat_optional_domain(d_raw, x.device)
+        nuisance, nuisance_valid = _expand_nuisance(
+            view.nuisance,
+            view.nuisance_valid,
+            int(x.size(0)),
+        )
         return BaselineOriginSatViewBatch(
             x=x_cat,
             y=y_cat,
@@ -237,4 +329,8 @@ class BaselineOriginSatViewAugment:
             stage_index=int(view.stage_index),
             view_prob=float(view.view_prob),
             applied=bool(view.applied),
+            meta=view.meta,
+            nuisance=nuisance,
+            nuisance_valid=nuisance_valid,
+            nuisance_fields=view.nuisance_fields,
         )
