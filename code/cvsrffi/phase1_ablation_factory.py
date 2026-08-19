@@ -72,7 +72,7 @@ _FULL_CONFIG: dict[str, Any] = {
     "num_workers": 4,
     "prefetch_factor": 2,
     "eval_max_batches": 0,
-    "checkpoint_selection": "source_validation_only",
+    "checkpoint_selection": "final_only",
     "phase1_source_val_selection_only": True,
     "best_metric": "source_val_sat_hmean",
     # Physical dual-representation backbone.

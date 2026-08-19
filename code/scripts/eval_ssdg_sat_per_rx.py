@@ -214,7 +214,30 @@ def _build_model(args: SimpleNamespace, num_domains: int, input_len: int, device
     ).to(device)
 
 
-def _build_exact_ssdg_context(ckpt: Dict[str, Any], overrides: argparse.Namespace, device: torch.device):
+def _load_checkpoint_state(
+    model,
+    state: Dict[str, Any],
+    *,
+    strict_reconstruction: bool,
+) -> Dict[str, Any]:
+    incompatible = model.load_state_dict(state, strict=bool(strict_reconstruction))
+    missing = list(getattr(incompatible, "missing_keys", incompatible[0]))
+    unexpected = list(getattr(incompatible, "unexpected_keys", incompatible[1]))
+    return {
+        "checkpoint_load_strict": bool(strict_reconstruction),
+        "missing_keys": len(missing),
+        "unexpected_keys": len(unexpected),
+        "shape_mismatches": 0,
+    }
+
+
+def _build_exact_ssdg_context(
+    ckpt: Dict[str, Any],
+    overrides: argparse.Namespace,
+    device: torch.device,
+    *,
+    strict_reconstruction: bool = False,
+):
     if ssdg_mod is None:
         raise ImportError("SSDG.train_ssdg could not be imported for exact checkpoint reconstruction")
     parser = ssdg_mod.build_arg_parser()
@@ -241,7 +264,11 @@ def _build_exact_ssdg_context(ckpt: Dict[str, Any], overrides: argparse.Namespac
     )
     model_args = ssdg_mod._apply_model_cli_args(model_args, args)
     model = ssdg_mod.build_baseline_model(model_args, device)
-    missing, unexpected = model.load_state_dict(ckpt["model"], strict=False)
+    load_audit = _load_checkpoint_state(
+        model,
+        ckpt["model"],
+        strict_reconstruction=bool(strict_reconstruction),
+    )
     return (
         model,
         data_ctx["named_test_loaders"],
@@ -249,9 +276,64 @@ def _build_exact_ssdg_context(ckpt: Dict[str, Any], overrides: argparse.Namespac
         data_ctx["domain_label_map"],
         data_ctx["split_info"],
         args,
-        missing,
-        unexpected,
+        load_audit,
     )
+
+
+def _build_direct_context(
+    ckpt: Dict[str, Any],
+    overrides: argparse.Namespace,
+    device: torch.device,
+):
+    args = _args_from_checkpoint(ckpt, overrides)
+    named_loaders, named_meta, domain_label_map, split_info = _build_named_loaders(args, device)
+    model = _build_model(args, len(domain_label_map), int(args.wisig_out_len), device)
+    load_audit = _load_checkpoint_state(
+        model,
+        ckpt["model"],
+        strict_reconstruction=False,
+    )
+    return (
+        model,
+        named_loaders,
+        named_meta,
+        domain_label_map,
+        split_info,
+        args,
+        load_audit,
+    )
+
+
+def _build_evaluation_context(
+    ckpt: Dict[str, Any],
+    overrides: argparse.Namespace,
+    device: torch.device,
+    *,
+    strict_reconstruction: bool,
+):
+    try:
+        context = _build_exact_ssdg_context(
+            ckpt,
+            overrides,
+            device,
+            strict_reconstruction=bool(strict_reconstruction),
+        )
+        reconstruction = "SSDG.train_ssdg"
+        fallback_used = False
+    except Exception as exc:
+        if strict_reconstruction:
+            raise RuntimeError(f"strict SSDG reconstruction failed: {exc}") from exc
+        print(f"[WARN] exact SSDG reconstruction failed, falling back to direct builder: {exc}", flush=True)
+        context = _build_direct_context(ckpt, overrides, device)
+        reconstruction = "direct_builder_fallback"
+        fallback_used = True
+    *base_context, load_audit = context
+    reconstruction_audit = {
+        "strict_requested": bool(strict_reconstruction),
+        **dict(load_audit),
+        "fallback_used": bool(fallback_used),
+    }
+    return (*base_context, reconstruction, reconstruction_audit)
 
 
 def _select_names(named_loaders: Dict[str, Any], spec: str) -> List[str]:
@@ -347,24 +429,26 @@ def main() -> None:
     parser.add_argument("--prefetch_factor", type=int, default=2)
     parser.add_argument("--max_batches", type=int, default=-1)
     parser.add_argument("--sat_seed", type=int, default=2027)
+    parser.add_argument("--strict_reconstruction", action="store_true")
     args_cli = parser.parse_args()
 
     device = torch.device(args_cli.device if torch.cuda.is_available() or not str(args_cli.device).startswith("cuda") else "cpu")
     ckpt = torch.load(args_cli.ckpt, map_location=device)
-    try:
-        model, named_loaders, named_meta, domain_label_map, split_info, args, missing, unexpected = _build_exact_ssdg_context(
-            ckpt,
-            args_cli,
-            device,
-        )
-        reconstruction = "SSDG.train_ssdg"
-    except Exception as exc:
-        print(f"[WARN] exact SSDG reconstruction failed, falling back to direct builder: {exc}", flush=True)
-        args = _args_from_checkpoint(ckpt, args_cli)
-        named_loaders, named_meta, domain_label_map, split_info = _build_named_loaders(args, device)
-        model = _build_model(args, len(domain_label_map), int(args.wisig_out_len), device)
-        missing, unexpected = model.load_state_dict(ckpt["model"], strict=False)
-        reconstruction = "direct_builder_fallback"
+    (
+        model,
+        named_loaders,
+        named_meta,
+        domain_label_map,
+        split_info,
+        args,
+        reconstruction,
+        reconstruction_audit,
+    ) = _build_evaluation_context(
+        ckpt,
+        args_cli,
+        device,
+        strict_reconstruction=bool(args_cli.strict_reconstruction),
+    )
     group_loader = str(args_cli.group_loader or "").strip()
     if not group_loader and str(args_cli.eval_on).strip().lower() in {"unseen_rx", "unseen_day_rx", "target_rx"}:
         group_loader = "test_unseen_day_unseen_rx"
@@ -374,8 +458,13 @@ def main() -> None:
         selected_names = [group_loader]
     else:
         selected_names = _select_names(named_loaders, args_cli.eval_on)
-    if missing or unexpected:
-        print(f"[WARN] checkpoint load missing={len(missing)} unexpected={len(unexpected)}", flush=True)
+    if reconstruction_audit["missing_keys"] or reconstruction_audit["unexpected_keys"]:
+        print(
+            "[WARN] checkpoint load "
+            f"missing={reconstruction_audit['missing_keys']} "
+            f"unexpected={reconstruction_audit['unexpected_keys']}",
+            flush=True,
+        )
 
     max_batches = int(args_cli.max_batches)
     scenarios = parse_sat_scenarios(args_cli.scenarios)
@@ -481,6 +570,7 @@ def main() -> None:
         "checkpoint_epoch": ckpt.get("epoch"),
         "run_name": str(getattr(args, "run_name", "")),
         "reconstruction": reconstruction,
+        "reconstruction_audit": reconstruction_audit,
         "eval_on": str(args_cli.eval_on),
         "group_loader": group_loader,
         "group_key": str(args_cli.group_key),

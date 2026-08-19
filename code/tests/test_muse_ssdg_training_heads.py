@@ -64,3 +64,33 @@ def test_training_state_contains_trainable_heads_but_no_deployment_state():
     assert state
     assert all(torch.isfinite(value).all() for value in state.values())
     assert heads.deployment_state_dict() == {}
+
+
+def test_frozen_local_teacher_survives_train_calls_and_optimizer_steps():
+    heads = MUSETrainingHeads(4, 4, 3, 2, 6)
+    fixed_z_id = torch.tensor([[1.0, 0.0, 0.0, 0.0]])
+    domain = torch.tensor([0])
+    heads.freeze_local_teacher()
+    before_output = heads.local_prob(fixed_z_id, domain).detach().clone()
+    before_parameters = {
+        name: parameter.detach().clone()
+        for name, parameter in heads.named_parameters()
+        if name.startswith(("shared_projection", "shared_classifier", "domain_delta"))
+    }
+
+    heads.train()
+    optimizer = torch.optim.SGD(heads.parameters(), lr=0.2)
+    optimizer.zero_grad(set_to_none=True)
+    loss = heads.nuisance_loss(
+        torch.ones(1, 4),
+        torch.zeros(1, 6),
+        torch.ones(1, dtype=torch.bool),
+    )
+    loss.backward()
+    optimizer.step()
+
+    assert heads.local_teacher_frozen is True
+    assert torch.equal(heads.local_prob(fixed_z_id, domain), before_output)
+    for name, parameter in heads.named_parameters():
+        if name in before_parameters:
+            assert torch.equal(parameter, before_parameters[name])

@@ -28,12 +28,11 @@ def test_muse_checkpoint_round_trip_restores_training_state_without_deployment_h
     state["temporal_memory"].observe(
         [(1, 2, 3, 4, 5)], torch.tensor([2]), torch.tensor([0.95]), epoch=40
     )
-    state["classification_prototypes"].observe(
+    state["classification_prototypes"].observe_labeled(
         torch.tensor([[1.0, 0.0, 0.0, 0.0]]),
         torch.tensor([2]),
         torch.tensor([1]),
-        torch.tensor([True]),
-        torch.tensor([True]),
+        momentum=0.95,
     )
     payload = {"model": {"weight": torch.ones(1)}}
     payload.update(train_ssdg._muse_checkpoint_state(state))
@@ -55,3 +54,24 @@ def test_muse_checkpoint_round_trip_restores_training_state_without_deployment_h
     assert torch.equal(restored_prototypes["prototypes"][2], original_prototypes["prototypes"][2])
     assert restored["schedule_state"] == state["schedule_state"]
     assert "muse_training_heads" not in payload["model"]
+
+
+def test_s3c_checkpoint_round_trip_restores_frozen_local_teacher_and_prior_state():
+    state = train_ssdg._initialize_muse_training_state(
+        _args(), _TinyMUSEModel(), torch.device("cpu")
+    )
+    train_ssdg._configure_muse_epoch_state(state, 181)
+    state["source_global_class_counts"].copy_(torch.tensor([3.0, 2.0, 1.0]))
+    payload = train_ssdg._muse_checkpoint_state(state)
+
+    restored = train_ssdg._initialize_muse_training_state(
+        _args(), _TinyMUSEModel(), torch.device("cpu")
+    )
+    train_ssdg._restore_muse_checkpoint_state(restored, payload)
+
+    assert restored["heads"].local_teacher_frozen is True
+    assert restored["source_prior_frozen"] is True
+    assert torch.equal(
+        restored["source_global_class_counts"],
+        state["source_global_class_counts"],
+    )

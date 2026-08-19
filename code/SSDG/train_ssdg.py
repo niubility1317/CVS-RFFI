@@ -67,6 +67,7 @@ try:
         MUSEScheduleState,
         MUSETemporalMemory,
         MUSETrainingHeads,
+        align_source_domain_prior,
         candidate_set_cross_entropy,
         candidate_set_mask,
         compute_muse_reliability,
@@ -157,7 +158,7 @@ except ModuleNotFoundError:
     BalancedTxDomainBatchSampler = None
     MUSEClassificationPrototypeBank = MUSEConfig = MUSEScheduleState = MUSETemporalMemory = None
     MUSETrainingHeads = candidate_set_cross_entropy = candidate_set_mask = None
-    compute_muse_reliability = geometric_fuse_probabilities = None
+    align_source_domain_prior = compute_muse_reliability = geometric_fuse_probabilities = None
     js_head_disagreement = muse_schedule_for_epoch = route_muse_reliability = None
     select_satellite_student_mask = stable_sample_keys = None
     weighted_soft_cross_entropy = None
@@ -327,6 +328,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--ema_decay", type=float, default=0.999)
     parser.add_argument("--use_muse_ssdg", type=str2bool, default=False)
     parser.add_argument("--muse_level", type=str, default="M0", choices=["M0", "M1", "M2", "M3"])
+    parser.add_argument("--muse_external_final_eval", type=str2bool, default=False)
     parser.add_argument(
         "--muse_epoch_basis",
         type=str,
@@ -351,7 +353,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--muse_candidate_max_classes", type=int, default=3)
     parser.add_argument("--muse_fusion_global_weight", type=float, default=0.50)
     parser.add_argument("--muse_fusion_local_weight", type=float, default=0.25)
-    parser.add_argument("--muse_fusion_student_weight", type=float, default=0.25)
+    parser.add_argument("--muse_fusion_prototype_weight", type=float, default=0.25)
+    parser.add_argument("--muse_prior_alignment_gamma", type=float, default=0.35)
     parser.add_argument("--muse_reliability_confidence_weight", type=float, default=0.25)
     parser.add_argument("--muse_reliability_margin_weight", type=float, default=0.20)
     parser.add_argument("--muse_reliability_js_weight", type=float, default=0.20)
@@ -2766,6 +2769,27 @@ def _load_phase1_checkpoint_strict(model, checkpoint: Mapping[str, Any], path: s
         raise ValueError(f"Phase1 checkpoint/model strict-load mismatch: {path}: {exc}") from exc
 
 
+def _run_final_heldout_evaluation(
+    args,
+    model,
+    data_ctx,
+    device,
+    checkpoint_path: str | Path,
+) -> Dict[str, Any]:
+    """Delegate MUSE target evaluation to its launcher while preserving legacy behavior."""
+
+    if bool(getattr(args, "use_muse_ssdg", False)) and bool(
+        getattr(args, "muse_external_final_eval", False)
+    ):
+        return {
+            "status": "DELEGATED_TO_MUSE_LAUNCHER",
+            "selection_source": str(getattr(args, "checkpoint_selection", "")),
+            "checkpoint": str(Path(checkpoint_path)),
+            "claim": "PHASE1_TARGET_EVAL_DELEGATED_NO_INTERNAL_METRICS",
+        }
+    return _evaluate_frozen_phase1_checkpoint(args, model, data_ctx, device, checkpoint_path)
+
+
 def _evaluate_frozen_phase1_checkpoint(args, model, data_ctx, device, checkpoint_path: str | Path) -> Dict[str, Any]:
     """Evaluate held-out receiver/day and satellite views once after source-val selection is frozen."""
 
@@ -2843,6 +2867,7 @@ def _resolve_phase1_terminal_status(
     final_blocked: bool,
     selected_checkpoint_exists: bool,
     heldout_eval_status: str,
+    external_final_eval: bool = False,
     p0_mechanisms_ready: bool = True,
     p1_mechanisms_ready: bool = True,
     endpoint_export_ready: bool = True,
@@ -2861,7 +2886,11 @@ def _resolve_phase1_terminal_status(
         return "NON_PROMOTABLE_P1_DISABLED"
     if not selected_checkpoint_exists:
         return "NO_SAFE_CHECKPOINT"
-    if str(heldout_eval_status).upper() != "COMPLETE":
+    heldout_status = str(heldout_eval_status).upper()
+    heldout_complete = heldout_status == "COMPLETE" or (
+        bool(external_final_eval) and heldout_status == "DELEGATED_TO_MUSE_LAUNCHER"
+    )
+    if not heldout_complete:
         return "HELDOUT_EVAL_INCOMPLETE"
     if not endpoint_export_ready:
         return "NON_PROMOTABLE_ENDPOINT_NOT_EXPORTED"
@@ -5199,9 +5228,32 @@ def _initialize_muse_training_state(args, model, device):
             feature_dim=z_dim,
             unlabeled_weight=float(args.muse_unlabeled_prototype_weight),
         ),
+        "source_global_class_counts": torch.zeros(
+            num_classes, device=device, dtype=torch.float32
+        ),
+        "source_domain_class_counts": torch.zeros(
+            num_domains, num_classes, device=device, dtype=torch.float32
+        ),
+        "source_prior_frozen": False,
         "schedule_state": None,
         "args": args,
     }
+
+
+def _configure_muse_epoch_state(muse_state, epoch: int):
+    """Apply one schedule boundary, including irreversible S3C freezes."""
+
+    if muse_state is None:
+        return None
+    schedule = muse_schedule_for_epoch(int(epoch), muse_state["config"])
+    muse_state["schedule_state"] = schedule
+    muse_state["heads"].train()
+    if schedule.freeze_statistics:
+        muse_state["temporal_memory"].freeze()
+        muse_state["classification_prototypes"].freeze()
+        muse_state["source_prior_frozen"] = True
+        muse_state["heads"].freeze_local_teacher()
+    return schedule
 
 
 def _optimizer_parameters(model, muse_state) -> List[torch.nn.Parameter]:
@@ -5245,6 +5297,59 @@ def _muse_prototype_distance(features, pseudo, prototype_bank) -> torch.Tensor:
     return torch.stack(distances) if distances else normalized.new_zeros((0,))
 
 
+def _update_muse_source_class_priors(labels, domains, valid, muse_state) -> None:
+    """Accumulate class priors only from legal labeled source observations."""
+
+    if bool(muse_state.get("source_prior_frozen", False)):
+        return
+    global_counts = muse_state["source_global_class_counts"]
+    domain_counts = muse_state["source_domain_class_counts"]
+    selected_labels = labels[valid].detach().to(
+        device=global_counts.device, dtype=torch.long
+    )
+    selected_domains = domains[valid].detach().to(
+        device=domain_counts.device, dtype=torch.long
+    )
+    if selected_labels.numel() == 0:
+        return
+    global_counts.add_(
+        torch.bincount(selected_labels, minlength=global_counts.numel()).to(
+            dtype=global_counts.dtype
+        )
+    )
+    flat = selected_domains * int(global_counts.numel()) + selected_labels
+    domain_counts.add_(
+        torch.bincount(
+            flat,
+            minlength=int(domain_counts.numel()),
+        ).reshape_as(domain_counts).to(dtype=domain_counts.dtype)
+    )
+
+
+def _muse_source_class_priors(muse_state, domains, *, device, dtype):
+    """Return smoothed per-row domain priors and the legal L_s global prior."""
+
+    global_counts = muse_state["source_global_class_counts"].to(
+        device=device, dtype=dtype
+    )
+    domain_counts = muse_state["source_domain_class_counts"].to(
+        device=device, dtype=dtype
+    )
+    global_prior = (global_counts + 1.0) / (
+        global_counts.sum() + float(global_counts.numel())
+    )
+    smoothed_domains = domain_counts + 1.0
+    smoothed_domains = smoothed_domains / smoothed_domains.sum(
+        dim=1, keepdim=True
+    ).clamp_min(1e-8)
+    domain_indices = domains.to(device=device, dtype=torch.long).reshape(-1)
+    valid = (domain_indices >= 0) & (domain_indices < smoothed_domains.shape[0])
+    domain_prior = global_prior.expand(domain_indices.numel(), -1).clone()
+    if bool(valid.any()):
+        domain_prior[valid] = smoothed_domains[domain_indices[valid]]
+    return domain_prior, global_prior
+
+
 def _compute_muse_labeled_auxiliary_loss(z_id, labels, domains, muse_state):
     """Supervise the local head and seed classification prototypes from L_s."""
 
@@ -5266,18 +5371,20 @@ def _compute_muse_labeled_auxiliary_loss(z_id, labels, domains, muse_state):
     )
     if not bool(valid.any()):
         return zero
+    _update_muse_source_class_priors(labels, domains, valid, muse_state)
     local_probability = heads.local_prob(z_id[valid], domains[valid])
     loss = F.nll_loss(local_probability.clamp_min(1e-8).log(), labels[valid])
     schedule = muse_state.get("schedule_state")
     if schedule is not None and schedule.freeze_statistics:
+        muse_state["temporal_memory"].freeze()
         muse_state["classification_prototypes"].freeze()
-    muse_state["classification_prototypes"].observe(
-        z_id,
-        labels,
-        domains,
-        valid,
-        valid,
-        float(muse_state["args"].muse_unlabeled_prototype_weight),
+        muse_state["source_prior_frozen"] = True
+        heads.freeze_local_teacher()
+    muse_state["classification_prototypes"].observe_labeled(
+        z_id[valid],
+        labels[valid],
+        domains[valid],
+        momentum=(float(schedule.proto_momentum) if schedule is not None else 0.95),
     )
     return loss
 
@@ -5364,11 +5471,53 @@ def _compute_muse_unlabeled_losses(
     if schedule.freeze_statistics:
         muse_state["temporal_memory"].freeze()
         muse_state["classification_prototypes"].freeze()
+        muse_state["source_prior_frozen"] = True
+        muse_state["heads"].freeze_local_teacher()
     heads = muse_state["heads"]
     strong = student_outputs["strong"]
     weak = student_outputs.get("weak", teacher_outputs)
     zero = strong["tx_logits"].sum() * 0.0
     sample_count = int(strong["tx_logits"].shape[0])
+    identity_satellite_mask = torch.zeros(
+        sample_count, device=zero.device, dtype=torch.bool
+    )
+    identity_logits = strong["tx_logits"]
+    identity_z_id = strong["z_id"]
+    if capabilities["satellite"] and schedule.pseudo_enabled:
+        requested_mask = metadata.get("satellite_mask")
+        if requested_mask is not None:
+            identity_satellite_mask = torch.as_tensor(
+                requested_mask, device=zero.device, dtype=torch.bool
+            ).reshape(-1)
+            if identity_satellite_mask.numel() != sample_count:
+                raise ValueError("satellite_mask must contain one value per U_s sample")
+        satellite_identity = student_outputs.get("satellite")
+        if bool(identity_satellite_mask.any()):
+            if not isinstance(satellite_identity, Mapping):
+                raise ValueError("selected satellite identity rows require satellite outputs")
+            for name, strong_tensor in (
+                ("tx_logits", strong["tx_logits"]),
+                ("z_id", strong["z_id"]),
+            ):
+                satellite_tensor = satellite_identity.get(name)
+                if not torch.is_tensor(satellite_tensor) or satellite_tensor.shape != strong_tensor.shape:
+                    raise ValueError(
+                        f"satellite {name} must match the strong identity tensor shape"
+                    )
+            identity_logits = torch.where(
+                identity_satellite_mask.unsqueeze(1),
+                satellite_identity["tx_logits"],
+                strong["tx_logits"],
+            )
+            identity_z_id = torch.where(
+                identity_satellite_mask.unsqueeze(1),
+                satellite_identity["z_id"],
+                strong["z_id"],
+            )
+    identity_student = {
+        "tx_logits": identity_logits,
+        "z_id": identity_z_id,
+    }
     domains = metadata.get("domains")
     if torch.is_tensor(domains) and domains.numel() == sample_count:
         domains = domains.to(device=strong["tx_logits"].device, dtype=torch.long).reshape(-1)
@@ -5388,7 +5537,7 @@ def _compute_muse_unlabeled_losses(
             loss_adv = F.cross_entropy(
                 strong["adv_dom_logits"][valid_domain].float(), domains[valid_domain]
             )
-    loss_self = heads.self_supervised_loss(weak["z_id"], strong["z_id"])
+    loss_self = heads.self_supervised_loss(weak["z_id"], identity_z_id)
     nuisance = simulator_metadata.get("nuisance")
     nuisance_valid = simulator_metadata.get("nuisance_valid")
     nuisance_outputs = student_outputs.get("nuisance")
@@ -5426,21 +5575,47 @@ def _compute_muse_unlabeled_losses(
     )
     reliability = torch.zeros(sample_count, device=zero.device)
     stable = torch.zeros(sample_count, dtype=torch.bool, device=zero.device)
+    global_probability = F.softmax(
+        teacher_outputs["tx_logits"].detach().float(), dim=-1
+    )
+    evidence_probabilities: Dict[str, torch.Tensor] = {}
+    fused = global_probability
     pseudo = teacher_outputs["tx_logits"].argmax(dim=-1)
     if capabilities["fusion"]:
-        global_probability = F.softmax(teacher_outputs["tx_logits"].detach().float(), dim=-1)
         local_probability = heads.local_prob(
             teacher_outputs["z_id"].detach(), domains.clamp(0, heads.num_domains - 1)
         )
-        student_probability = F.softmax(strong["tx_logits"].detach().float(), dim=-1)
-        probabilities = [global_probability, local_probability, student_probability]
+        prototype_probability = muse_state[
+            "classification_prototypes"
+        ].class_probabilities(
+            teacher_outputs["z_id"].detach(),
+            num_classes=int(heads.num_classes),
+        )
+        evidence_probabilities = {
+            "global": global_probability,
+            "local": local_probability,
+            "prototype": prototype_probability,
+        }
+        probabilities = list(evidence_probabilities.values())
         fused = geometric_fuse_probabilities(
             probabilities,
             [
                 float(args.muse_fusion_global_weight),
                 float(args.muse_fusion_local_weight),
-                float(args.muse_fusion_student_weight),
+                float(args.muse_fusion_prototype_weight),
             ],
+        )
+        domain_prior, global_prior = _muse_source_class_priors(
+            muse_state,
+            domains,
+            device=fused.device,
+            dtype=fused.dtype,
+        )
+        fused = align_source_domain_prior(
+            fused,
+            domain_prior,
+            global_prior,
+            gamma=float(args.muse_prior_alignment_gamma),
         )
         top_values, top_indices = fused.topk(k=min(2, fused.shape[-1]), dim=-1)
         pseudo = top_indices[:, 0]
@@ -5487,11 +5662,11 @@ def _compute_muse_unlabeled_losses(
         )
         if bool(route.high.any()):
             hard_loss = F.cross_entropy(
-                strong["tx_logits"][route.high].float(),
+                identity_logits[route.high].float(),
                 pseudo[route.high].detach(),
             )
         soft_loss = weighted_soft_cross_entropy(
-            strong["tx_logits"], fused, reliability.detach(), route.mid
+            identity_logits, fused, reliability.detach(), route.mid
         )
         if bool(schedule.candidate_enabled):
             candidate = candidate_set_mask(
@@ -5500,7 +5675,7 @@ def _compute_muse_unlabeled_losses(
                 max_classes=int(args.muse_candidate_max_classes),
             )
             candidate_loss = candidate_set_cross_entropy(
-                strong["tx_logits"], candidate, reliability.detach(), route.low
+                identity_logits, candidate, reliability.detach(), route.low
             )
         loss_identity = float(schedule.lambda_u) * (
             float(args.muse_lambda_high) * hard_loss
@@ -5509,24 +5684,15 @@ def _compute_muse_unlabeled_losses(
         )
 
         if capabilities["satellite"] and schedule.pseudo_enabled:
-            satellite = student_outputs.get("satellite")
-            satellite_mask = metadata.get("satellite_mask")
-            if satellite_mask is None:
-                satellite_mask = torch.zeros(sample_count, device=zero.device, dtype=torch.bool)
-            satellite_mask = torch.as_tensor(
-                satellite_mask, device=zero.device, dtype=torch.bool
-            ).reshape(-1)
-            if satellite_mask.numel() != sample_count:
-                raise ValueError("satellite_mask must contain one value per U_s sample")
-            accepted = (route.high | route.mid) & satellite_mask
-            if satellite is not None and bool(accepted.any()):
+            accepted = (route.high | route.mid) & identity_satellite_mask
+            if bool(accepted.any()):
                 loss_satellite = F.kl_div(
-                    F.log_softmax(satellite["tx_logits"][accepted].float(), dim=-1),
+                    F.log_softmax(identity_logits[accepted].float(), dim=-1),
                     fused[accepted].detach(),
                     reduction="batchmean",
                 )
             loss_cross_receiver = _muse_cross_receiver_alignment(
-                strong["z_id"], pseudo, metadata.get("receivers"), route.high & stable
+                identity_z_id, pseudo, metadata.get("receivers"), route.high & stable
             )
             proto_update_mask = route.high & stable
             if bool(proto_update_mask.any()):
@@ -5534,12 +5700,13 @@ def _compute_muse_unlabeled_losses(
                     float(args.muse_unlabeled_prototype_weight)
                 )
             muse_state["classification_prototypes"].observe(
-                strong["z_id"],
+                identity_z_id,
                 pseudo,
                 domains,
                 route.high,
                 stable,
                 float(args.muse_unlabeled_prototype_weight),
+                momentum=float(schedule.proto_momentum),
             )
 
     total = (
@@ -5568,6 +5735,11 @@ def _compute_muse_unlabeled_losses(
         "pseudo": pseudo,
         "head_js": head_js,
         "proto_update_weight": proto_update_weight,
+        "proto_momentum": zero.new_tensor(float(schedule.proto_momentum)),
+        "evidence_probabilities": evidence_probabilities,
+        "fused_probability": fused,
+        "identity_student": identity_student,
+        "identity_student_satellite_mask": identity_satellite_mask,
     }
 
 
@@ -5577,6 +5749,9 @@ def _muse_checkpoint_state(muse_state) -> Dict[str, Any]:
             "muse_training_heads": None,
             "muse_temporal_memory": None,
             "muse_classification_prototypes": None,
+            "muse_source_global_class_counts": None,
+            "muse_source_domain_class_counts": None,
+            "muse_source_prior_frozen": None,
             "muse_schedule_state": None,
         }
     schedule = muse_state.get("schedule_state")
@@ -5586,6 +5761,13 @@ def _muse_checkpoint_state(muse_state) -> Dict[str, Any]:
         "muse_classification_prototypes": muse_state[
             "classification_prototypes"
         ].state_dict(),
+        "muse_source_global_class_counts": muse_state[
+            "source_global_class_counts"
+        ].detach().clone(),
+        "muse_source_domain_class_counts": muse_state[
+            "source_domain_class_counts"
+        ].detach().clone(),
+        "muse_source_prior_frozen": bool(muse_state["source_prior_frozen"]),
         "muse_schedule_state": dict(vars(schedule)) if schedule is not None else None,
     }
 
@@ -5606,6 +5788,21 @@ def _restore_muse_checkpoint_state(muse_state, checkpoint: Mapping[str, Any]) ->
     prototypes = checkpoint.get("muse_classification_prototypes")
     if prototypes is not None:
         muse_state["classification_prototypes"].load_state_dict(prototypes)
+    for checkpoint_key, state_key in (
+        ("muse_source_global_class_counts", "source_global_class_counts"),
+        ("muse_source_domain_class_counts", "source_domain_class_counts"),
+    ):
+        value = checkpoint.get(checkpoint_key)
+        if value is None:
+            continue
+        target = muse_state[state_key]
+        restored = torch.as_tensor(value, device=target.device, dtype=target.dtype)
+        if restored.shape != target.shape:
+            raise ValueError(f"{checkpoint_key} shape does not match MUSE state")
+        target.copy_(restored)
+    muse_state["source_prior_frozen"] = bool(
+        checkpoint.get("muse_source_prior_frozen", False)
+    )
     schedule = checkpoint.get("muse_schedule_state")
     if schedule is not None:
         if not isinstance(schedule, Mapping):
@@ -6300,10 +6497,7 @@ def train(args) -> int:
 
         t0 = time.time()
         if muse_state is not None:
-            muse_state["schedule_state"] = muse_schedule_for_epoch(
-                int(epoch), muse_state["config"]
-            )
-            muse_state["heads"].train()
+            _configure_muse_epoch_state(muse_state, int(epoch))
         phase = "label" if epoch <= int(args.label_epochs) else "pseudo"
         stage_state = _stage_state_for_epoch(epoch, args, phase)
         cur_w = _loss_weights(args, stage_state)
@@ -9920,7 +10114,13 @@ def train(args) -> int:
         encoding="utf-8",
     )
     try:
-        frozen_eval = _evaluate_frozen_phase1_checkpoint(args, model, data_ctx, device, selected_checkpoint)
+        frozen_eval = _run_final_heldout_evaluation(
+            args,
+            model,
+            data_ctx,
+            device,
+            selected_checkpoint,
+        )
     except Exception as exc:
         frozen_eval = {
             "status": "FAILED",
@@ -9929,7 +10129,11 @@ def train(args) -> int:
             "checkpoint": str(selected_checkpoint),
             "claim": "PHASE1_FROZEN_HELDOUT_EVAL_INCOMPLETE",
         }
-    heldout_eval_path = out_dir / "frozen_phase1_heldout_eval.json"
+    heldout_eval_path = out_dir / (
+        "external_final_eval_pending.json"
+        if str(frozen_eval.get("status", "")).upper() == "DELEGATED_TO_MUSE_LAUNCHER"
+        else "frozen_phase1_heldout_eval.json"
+    )
     heldout_eval_path.write_text(
         json.dumps(frozen_eval, ensure_ascii=False, indent=2, default=str),
         encoding="utf-8",
@@ -10180,6 +10384,7 @@ def train(args) -> int:
         final_blocked=bool(phase1_v2_final_blocked),
         selected_checkpoint_exists=bool(selected_checkpoint_exists),
         heldout_eval_status=str(frozen_eval.get("status", "")),
+        external_final_eval=bool(getattr(args, "muse_external_final_eval", False)),
         p0_mechanisms_ready=bool(p0_mechanisms_ready),
         p1_mechanisms_ready=bool(p1_mechanisms_ready),
         endpoint_export_ready=bool(endpoint_export_ready),

@@ -85,6 +85,7 @@ build_train_command() {
     --paic_guard_sat_scale 0.75
     --use_muse_ssdg true
     --muse_level "${level}"
+    --muse_external_final_eval true
     --muse_epoch_basis unlabeled_loader
     --muse_final_epoch 200
     --use_unlabeled true
@@ -237,6 +238,7 @@ build_eval_command() {
     --device cuda:0
     --max_batches -1
     --sat_seed "${SEED}"
+    --strict_reconstruction
   )
 }
 
@@ -275,6 +277,18 @@ def checked_metric(row, prefix, scenario):
 
 error_path.unlink(missing_ok=True)
 data = json.loads(joint_path.read_text(encoding="utf-8"))
+reconstruction_audit = data.get("reconstruction_audit")
+if not isinstance(reconstruction_audit, dict):
+    fail("joint", "missing strict reconstruction audit")
+if reconstruction_audit.get("strict_requested") is not True:
+    fail("joint", "strict reconstruction was not requested")
+if reconstruction_audit.get("checkpoint_load_strict") is not True:
+    fail("joint", "checkpoint was not restored with strict=True")
+if reconstruction_audit.get("fallback_used") is not False:
+    fail("joint", "fallback reconstruction is forbidden")
+for key in ("missing_keys", "unexpected_keys", "shape_mismatches"):
+    if int(reconstruction_audit.get(key, -1)) != 0:
+        fail("joint", f"strict reconstruction reported {key}")
 rows = data.get("rows")
 if not isinstance(rows, list) or not rows:
     fail("clean", "joint evaluator returned no rows")
@@ -334,6 +348,7 @@ for scenario in all_scenarios:
         "checkpoint_epoch": data.get("checkpoint_epoch"),
         "run_name": data.get("run_name"),
         "reconstruction": data.get("reconstruction"),
+        "reconstruction_audit": reconstruction_audit,
         "eval_on": data.get("eval_on"),
         "group_loader": data.get("group_loader"),
         "group_key": data.get("group_key"),

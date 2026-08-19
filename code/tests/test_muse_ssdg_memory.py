@@ -100,6 +100,12 @@ def test_frozen_temporal_memory_rejects_load_and_round_trip_stays_frozen():
 
 def test_prototype_bank_updates_only_high_and_stable_samples():
     bank = MUSEClassificationPrototypeBank(feature_dim=2)
+    bank.observe_labeled(
+        torch.tensor([[1.0, 0.0]]),
+        torch.tensor([4]),
+        ["d0"],
+        momentum=0.95,
+    )
     bank.observe(
         features=torch.tensor([[1.0, 0.0], [0.0, 1.0], [9.0, 9.0]]),
         pseudo=torch.tensor([4, 4, 5]),
@@ -113,6 +119,31 @@ def test_prototype_bank_updates_only_high_and_stable_samples():
     assert torch.allclose(state["prototypes"][4], torch.tensor([1.0, 0.0]))
 
 
+def test_classification_prototype_probabilities_are_normalized_with_explicit_missing_classes():
+    bank = MUSEClassificationPrototypeBank(feature_dim=2)
+    bank.observe_labeled(
+        features=torch.tensor([[1.0, 0.0], [0.0, 1.0]]),
+        labels=torch.tensor([0, 2]),
+        domains=["d0", "d1"],
+        momentum=0.95,
+    )
+
+    probability = bank.class_probabilities(
+        torch.tensor([[1.0, 0.0], [0.0, 1.0]]),
+        num_classes=4,
+    )
+
+    assert probability.shape == (2, 4)
+    assert torch.isfinite(probability).all()
+    assert torch.allclose(probability.sum(dim=1), torch.ones(2), atol=1e-6)
+    assert torch.equal(probability[:, 1], torch.zeros(2))
+    assert torch.equal(probability[:, 3], torch.zeros(2))
+
+    empty = MUSEClassificationPrototypeBank(feature_dim=2)
+    fallback = empty.class_probabilities(torch.randn(3, 2), num_classes=4)
+    assert torch.allclose(fallback, torch.full((3, 4), 0.25))
+
+
 def test_prototype_bank_validates_unlabeled_weight_at_construction():
     assert MUSEClassificationPrototypeBank(feature_dim=2).unlabeled_weight == 0.075
     for value in (0.049, 0.101):
@@ -120,15 +151,53 @@ def test_prototype_bank_validates_unlabeled_weight_at_construction():
             MUSEClassificationPrototypeBank(feature_dim=2, unlabeled_weight=value)
 
 
-def test_prototype_bank_state_round_trip_and_freeze_are_observable():
-    bank = MUSEClassificationPrototypeBank(feature_dim=2, unlabeled_weight=0.08)
+def test_prototype_momentum_and_unlabeled_contribution_are_distinct_controls():
+    bank = MUSEClassificationPrototypeBank(feature_dim=2)
+    bank.observe_labeled(
+        torch.tensor([[1.0, 0.0]]),
+        torch.tensor([0]),
+        ["d0"],
+        momentum=0.95,
+    )
     bank.observe(
-        torch.tensor([[1.0, 2.0]]),
-        torch.tensor([4]),
+        torch.tensor([[0.0, 1.0]]),
+        torch.tensor([0]),
+        ["d1"],
+        torch.tensor([True]),
+        torch.tensor([True]),
+        unlabeled_weight=0.10,
+        momentum=0.95,
+    )
+
+    # alpha=(1-momentum)*unlabeled_weight=0.005, not either control alone.
+    assert torch.allclose(
+        bank.state_dict()["prototypes"][0],
+        torch.tensor([0.995, 0.005]),
+        atol=1e-7,
+    )
+
+
+def test_unlabeled_observation_cannot_create_a_class_without_l_s_seed():
+    bank = MUSEClassificationPrototypeBank(feature_dim=2)
+    bank.observe(
+        torch.tensor([[1.0, 0.0]]),
+        torch.tensor([1]),
         ["d0"],
         torch.tensor([True]),
         torch.tensor([True]),
-        0.08,
+        unlabeled_weight=0.075,
+        momentum=0.95,
+    )
+    assert bank.state_dict()["prototypes"] == {}
+
+
+def test_prototype_bank_state_round_trip_and_freeze_are_observable():
+    bank = MUSEClassificationPrototypeBank(feature_dim=2, unlabeled_weight=0.08)
+    bank.observe_labeled(
+        torch.tensor([[1.0, 2.0]]),
+        torch.tensor([4]),
+        ["d0"],
+        momentum=0.95,
     )
     state = bank.state_dict()
     restored = MUSEClassificationPrototypeBank(feature_dim=2)
@@ -150,25 +219,21 @@ def test_prototype_bank_state_round_trip_and_freeze_are_observable():
 
 def test_frozen_prototype_bank_rejects_load_and_round_trip_stays_frozen():
     bank = MUSEClassificationPrototypeBank(feature_dim=2)
-    bank.observe(
+    bank.observe_labeled(
         torch.tensor([[1.0, 2.0]]),
         torch.tensor([4]),
         ["d0"],
-        torch.tensor([True]),
-        torch.tensor([True]),
-        0.075,
+        momentum=0.95,
     )
     bank.freeze()
     frozen_state = copy.deepcopy(bank.state_dict())
 
     replacement = MUSEClassificationPrototypeBank(feature_dim=2)
-    replacement.observe(
+    replacement.observe_labeled(
         torch.tensor([[8.0, 9.0]]),
         torch.tensor([5]),
         ["d1"],
-        torch.tensor([True]),
-        torch.tensor([True]),
-        0.075,
+        momentum=0.95,
     )
     with pytest.raises(RuntimeError, match="frozen"):
         bank.load_state_dict(replacement.state_dict())

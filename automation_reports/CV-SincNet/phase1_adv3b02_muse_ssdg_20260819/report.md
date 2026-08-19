@@ -262,3 +262,33 @@ Task 8不创建归档、不执行SSH/SCP、不启动实验。后续唯一runner�
 - 最高风险剩余项是尚无真实M0–M3单seed训练及其clean/三LEO逐场景结果；同时缺少MUSE-002实际loader receipt和MUSE-018独立训练外precision诊断入口。不能据当前本地证据判断性能、晋级或发表价值。
 - MUSE-002须在实际loader receipt读回四角色物理ID互斥、source/target receiver不相交和target计数0后升级；MUSE-014须在真实四臂矩阵落盘后升级；MUSE-015、016、018须在真实训练、评测与训练外诊断闭合后升级。
 - release归档创建、N607资源/路径preflight、单次SHA比对、远端编译、启动后PID/CWD/cmdline/GPU/log增长检查均留给后续唯一runner；本Task未越权执行。
+
+## Final fix wave（FFR-1至FFR-7）
+
+### 修复结论
+
+- FFR-1：M2/M3第三路融合证据已改为`MUSEClassificationPrototypeBank`基于`z_id`产生的真实classification prototype概率；缺失类概率为0，概率有限且归一化。`L_s`标签与domain计数产生的全局/source-domain prior已在真实融合主链routing前执行alignment；不读取`U_s` TX truth。
+- FFR-2：`proto_momentum`已控制有标签和稳定高置信未标注classification prototype的EMA更新，并与0.05–0.10未标注贡献分离。epoch 181进入S3C后，temporal memory、classification prototype、threshold/statistics、`L_s` prior和local teacher均冻结；后续`train()`与optimizer step不能改变local teacher。
+- FFR-3：M3已按稳定SHA mask逐样本从strong或satellite/nuisance输出中唯一选择identity logits与`z_id`，H/M/L及相关identity consistency只消费所选分支；M1/M2强制只使用strong identity。
+- FFR-4：MUSE训练入口在`--muse_external_final_eval true`时返回`DELEGATED_TO_MUSE_LAUNCHER`，不执行内部target held-out评测，也不生成`frozen_phase1_heldout_eval.json`；launcher保持唯一一次canonical joint target eval。非MUSE默认内部评测行为不变。
+- FFR-5：formal evaluator新增strict checkpoint reconstruction模式，使用`strict=True`、禁止direct-builder fallback，并在任何missing、unexpected、shape mismatch或重建异常时于metrics写入前非零退出。launcher强制strict模式并验证`reconstruction_audit`，不合格时写`EVAL_FAILED_JOINT`而非`ARTIFACTS_COMPLETE`。未请求strict时保留旧fallback行为。
+- FFR-6：`full_ablation_spec.py`和`phase1_ablation_factory.py`的活动生产配置已从parser非法的`source_validation_only`迁移为`final_only`；共享入口解析与formal final checkpoint角色测试已闭合。
+- FFR-7：traceability与本报告已引用真实调用链测试；完整RED/GREEN、文件、commit及push/OID记录写入`.superpowers/sdd/2026-08-19-adv3b02-muse-ssdg/final-fix-report.md`。
+
+### 真实调用链证据
+
+- prototype与prior：`test_classification_prototype_probabilities_are_normalized_with_explicit_missing_classes`、`test_m2_fusion_uses_global_local_prototype_and_l_s_prior_alignment`。
+- schedule与S3C冻结：`test_proto_momentum_boundary_is_095_then_099_at_s3b_and_s3c`、`test_prototype_momentum_and_unlabeled_contribution_are_distinct_controls`、`test_epoch_181_freezes_muse_statistics_prior_and_local_teacher_state`、`test_s3c_checkpoint_round_trip_restores_frozen_local_teacher_and_prior_state`。
+- identity选择：`test_m3_sha_mask_selects_exactly_one_identity_student_per_row`、`test_m1_m2_never_enable_satellite_identity_student`。
+- 唯一评测与strict恢复：`test_muse_can_delegate_final_target_eval_without_changing_legacy`、`test_fake_joint_evaluator_runs_once_and_writes_four_semantic_metrics_before_complete`、`test_strict_reconstruction_failure_exits_before_metrics_are_written`、`test_launcher_rejects_non_strict_or_fallback_reconstruction_metadata`。
+- factory迁移：`test_active_phase1_row_factories_emit_parser_valid_final_only_selection`、`test_active_ablation_configs_pass_shared_checkpoint_parser`。
+
+### 发布与证据边界
+
+- final fix实现提交：本轮代码与测试提交；精确OID将在提交后写入本报告的发布闭环提交并由远端分支独立读回确认。
+- 验证范围：聚焦RED/GREEN、完整MUSE/launcher/evaluator/protocol/factory pytest、changed Python `py_compile`、launcher `bash -n`、M3 dry-run、真实ADV3B02 one-batch no-query smoke和`git diff --check`。不连接N607，不执行target评测。
+- final fix合并测试：16个文件、175项全部通过；退出码0。
+- final fix真实checkpoint smoke：`E:/type10-7/local_artifacts/adv3b02_muse_ssdg_final_fix_20260820/m3_true_prototype_identity_strict_state_no_query_smoke.pt`，279,773字节；严格加载0 missing/0 unexpected；真实三头为global/local/prototype，prior alignment最大变化`0.06568282842636108`；稳定SHA mask选择2条strong与2条satellite；S3C strict状态回环和独立artifact回读通过；query、target truth与target eval计数均为0。
+- 真实M0–M3训练：未运行。
+- 真实clean及三LEO场景性能：未产生。
+- 当前状态仍是本地实现与验证闭合，不是`ARTIFACTS_COMPLETE`、`ANALYZED`或性能晋级证据。

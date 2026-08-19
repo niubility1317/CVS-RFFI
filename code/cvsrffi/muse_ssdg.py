@@ -839,6 +839,18 @@ def _prototype_weight(value: object) -> float:
     return result
 
 
+def _prototype_momentum(value: object) -> float:
+    """Validate the EMA momentum independently of U_s contribution weight."""
+
+    try:
+        result = float(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("momentum must be finite and in [0, 1)") from exc
+    if not torch.isfinite(torch.tensor(result)).item() or not 0.0 <= result < 1.0:
+        raise ValueError("momentum must be finite and in [0, 1)")
+    return result
+
+
 class MUSEClassificationPrototypeBank:
     """EMA class prototypes fed only by high-confidence stable pseudo-labels."""
 
@@ -872,18 +884,89 @@ class MUSEClassificationPrototypeBank:
     def prototypes(self) -> dict[int, torch.Tensor]:
         return {class_id: value.clone() for class_id, value in self._prototypes.items()}
 
-    def observe(
+    def class_probabilities(
         self,
         features: torch.Tensor,
-        pseudo: object,
-        domains: object,
-        high_mask: object,
-        stable_mask: object,
-        unlabeled_weight: float | None = None,
-    ) -> None:
-        """Update class prototypes using only ``high_mask & stable_mask`` rows."""
+        *,
+        num_classes: int,
+        temperature: float = 0.10,
+    ) -> torch.Tensor:
+        """Score ``z_id`` against registered classification prototypes.
 
-        update_weight = self._unlabeled_weight if unlabeled_weight is None else _prototype_weight(unlabeled_weight)
+        Classes without a prototype receive exactly zero probability.  When
+        the bank is empty, the only non-fabricated fallback is a uniform
+        distribution over the declared classification classes.
+        """
+
+        if (
+            not isinstance(num_classes, int)
+            or isinstance(num_classes, bool)
+            or num_classes < 1
+        ):
+            raise ValueError("num_classes must be a positive integer")
+        try:
+            temperature = float(temperature)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("temperature must be finite and positive") from exc
+        if not torch.isfinite(torch.tensor(temperature)).item() or temperature <= 0.0:
+            raise ValueError("temperature must be finite and positive")
+
+        value = features if torch.is_tensor(features) else torch.as_tensor(features)
+        if value.ndim != 2:
+            raise ValueError("features must have shape [N, D]")
+        if value.is_complex():
+            raise TypeError("features must be real-valued")
+        if not value.is_floating_point():
+            value = value.to(dtype=torch.get_default_dtype())
+        if self._feature_dim is not None and int(value.shape[1]) != self._feature_dim:
+            raise ValueError("feature dimension does not match the prototype bank")
+        if not self._prototypes:
+            return value.new_full(
+                (int(value.shape[0]), num_classes),
+                1.0 / float(num_classes),
+            )
+
+        present = sorted(int(class_id) for class_id in self._prototypes)
+        if present[0] < 0 or present[-1] >= num_classes:
+            raise ValueError("prototype class id falls outside num_classes")
+        normalized = F.normalize(value.float(), dim=-1, eps=_PROBABILITY_EPS)
+        prototype_matrix = torch.stack(
+            [
+                self._prototypes[class_id].to(
+                    device=normalized.device,
+                    dtype=normalized.dtype,
+                )
+                for class_id in present
+            ],
+            dim=0,
+        )
+        prototype_matrix = F.normalize(
+            prototype_matrix,
+            dim=-1,
+            eps=_PROBABILITY_EPS,
+        )
+        present_probability = F.softmax(
+            (normalized @ prototype_matrix.transpose(0, 1)) / temperature,
+            dim=-1,
+        )
+        probability = normalized.new_zeros((normalized.shape[0], num_classes))
+        probability[:, present] = present_probability
+        return probability.to(dtype=value.dtype)
+
+    def _observe_rows(
+        self,
+        features: torch.Tensor,
+        labels: object,
+        domains: object,
+        accepted_mask: object,
+        *,
+        momentum: float,
+        contribution: float,
+        allow_new_classes: bool,
+    ) -> None:
+        """Apply one validated EMA update without mixing control semantics."""
+
+        momentum = _prototype_momentum(momentum)
         value = features if torch.is_tensor(features) else torch.as_tensor(features)
         if value.ndim != 2:
             raise ValueError("features must have shape [N, D]")
@@ -898,7 +981,7 @@ class MUSEClassificationPrototypeBank:
         if value.shape[1] != self._feature_dim:
             raise ValueError("feature dimension does not match the prototype bank")
         sample_count = value.shape[0]
-        pseudo_tensor = _observation_vector(pseudo, sample_count, value.device, "pseudo")
+        label_tensor = _observation_vector(labels, sample_count, value.device, "labels")
         if torch.is_tensor(domains):
             domain_values = domains.reshape(-1).detach().cpu().tolist()
         elif isinstance(domains, (str, bytes)):
@@ -912,20 +995,26 @@ class MUSEClassificationPrototypeBank:
             domain_values = domain_values * sample_count
         if len(domain_values) != sample_count:
             raise ValueError("domains must contain one value per feature")
-        high = _sample_mask(high_mask, sample_count, value.device, "high_mask")
-        stable = _sample_mask(stable_mask, sample_count, value.device, "stable_mask")
-        accepted = high & stable
+        accepted = _sample_mask(
+            accepted_mask, sample_count, value.device, "accepted_mask"
+        )
         if self._frozen or not bool(accepted.any().item()):
             return
 
         detached = value.detach().float()
-        labels = pseudo_tensor.detach().cpu().tolist()
+        label_values = label_tensor.detach().cpu().tolist()
         accepted_indices = accepted.detach().cpu().tolist()
         accepted_by_class: dict[int, list[int]] = {}
-        for index, (label, is_accepted) in enumerate(zip(labels, accepted_indices)):
+        for index, (label, is_accepted) in enumerate(
+            zip(label_values, accepted_indices)
+        ):
             if not is_accepted:
                 continue
             class_id = int(label)
+            if class_id < 0:
+                raise ValueError("classification prototype labels must be non-negative")
+            if not allow_new_classes and class_id not in self._prototypes:
+                continue
             accepted_by_class.setdefault(class_id, []).append(index)
             domain = _python_key_atom(domain_values[index])
             domain_key = (class_id, domain)
@@ -938,8 +1027,63 @@ class MUSEClassificationPrototypeBank:
                 self._prototypes[class_id] = batch_mean.clone()
             else:
                 old = old.to(device=batch_mean.device, dtype=batch_mean.dtype)
-                self._prototypes[class_id] = (1.0 - update_weight) * old + update_weight * batch_mean
+                alpha = (1.0 - momentum) * float(contribution)
+                self._prototypes[class_id] = (1.0 - alpha) * old + alpha * batch_mean
             self._counts[class_id] = self._counts.get(class_id, 0.0) + float(len(indices))
+
+    def observe_labeled(
+        self,
+        features: torch.Tensor,
+        labels: object,
+        domains: object,
+        *,
+        momentum: float,
+    ) -> None:
+        """Initialize/update prototypes from legal L_s labels with full EMA mass."""
+
+        value = features if torch.is_tensor(features) else torch.as_tensor(features)
+        sample_count = int(value.shape[0]) if value.ndim >= 1 else 0
+        self._observe_rows(
+            value,
+            labels,
+            domains,
+            torch.ones(sample_count, dtype=torch.bool, device=value.device),
+            momentum=momentum,
+            contribution=1.0,
+            allow_new_classes=True,
+        )
+
+    def observe(
+        self,
+        features: torch.Tensor,
+        pseudo: object,
+        domains: object,
+        high_mask: object,
+        stable_mask: object,
+        unlabeled_weight: float | None = None,
+        *,
+        momentum: float = 0.95,
+    ) -> None:
+        """Update L_s-seeded classes using only stable high-confidence U_s rows."""
+
+        update_weight = (
+            self._unlabeled_weight
+            if unlabeled_weight is None
+            else _prototype_weight(unlabeled_weight)
+        )
+        value = features if torch.is_tensor(features) else torch.as_tensor(features)
+        sample_count = int(value.shape[0]) if value.ndim >= 1 else 0
+        high = _sample_mask(high_mask, sample_count, value.device, "high_mask")
+        stable = _sample_mask(stable_mask, sample_count, value.device, "stable_mask")
+        self._observe_rows(
+            value,
+            pseudo,
+            domains,
+            high & stable,
+            momentum=momentum,
+            contribution=update_weight,
+            allow_new_classes=False,
+        )
 
     def freeze(self) -> None:
         self._frozen = True
@@ -1064,9 +1208,46 @@ class MUSETrainingHeads(nn.Module):
             nn.ReLU(),
             nn.Linear(self._NUISANCE_HIDDEN_DIM, nuisance_dim),
         )
+        self.register_buffer(
+            "_local_teacher_frozen_state",
+            torch.tensor(False, dtype=torch.bool),
+            persistent=True,
+        )
 
         nn.init.normal_(self.domain_delta_left, mean=0.0, std=0.02)
         nn.init.normal_(self.domain_delta_right, mean=0.0, std=0.02)
+
+    @property
+    def local_teacher_frozen(self) -> bool:
+        return bool(self._local_teacher_frozen_state.item())
+
+    def _local_teacher_parameters(self):
+        yield from self.shared_projection.parameters()
+        yield from self.shared_classifier.parameters()
+        yield self.domain_delta_left
+        yield self.domain_delta_right
+
+    def freeze_local_teacher(self) -> None:
+        """Permanently freeze the source-domain local teacher for S3C."""
+
+        self._local_teacher_frozen_state.fill_(True)
+        for parameter in self._local_teacher_parameters():
+            parameter.requires_grad_(False)
+        self.shared_projection.eval()
+        self.shared_classifier.eval()
+
+    def train(self, mode: bool = True):
+        super().train(mode)
+        if self.local_teacher_frozen:
+            self.shared_projection.eval()
+            self.shared_classifier.eval()
+        return self
+
+    def load_state_dict(self, state_dict, strict: bool = True, assign: bool = False):
+        result = super().load_state_dict(state_dict, strict=strict, assign=assign)
+        if self.local_teacher_frozen:
+            self.freeze_local_teacher()
+        return result
 
     @staticmethod
     def _feature_matrix(value: torch.Tensor, width: int, name: str, dtype: torch.dtype) -> torch.Tensor:

@@ -18,6 +18,14 @@ def test_muse_schedule_matches_five_training_segments():
     assert muse_schedule_for_epoch(200, cfg).lambda_u == 0.25
 
 
+def test_proto_momentum_boundary_is_095_then_099_at_s3b_and_s3c():
+    cfg = MUSEConfig()
+    assert muse_schedule_for_epoch(160, cfg).proto_momentum == 0.95
+    assert muse_schedule_for_epoch(161, cfg).proto_momentum == 0.99
+    assert muse_schedule_for_epoch(180, cfg).proto_momentum == 0.99
+    assert muse_schedule_for_epoch(181, cfg).proto_momentum == 0.99
+
+
 def test_muse_schedule_ramps_include_both_endpoints():
     cfg = MUSEConfig()
 

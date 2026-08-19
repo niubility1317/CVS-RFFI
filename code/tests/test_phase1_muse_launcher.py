@@ -60,6 +60,7 @@ from pathlib import Path
 
 parser = argparse.ArgumentParser(add_help=False)
 parser.add_argument("--output_dir", required=True)
+parser.add_argument("--muse_external_final_eval", default="false")
 args, _ = parser.parse_known_args()
 with Path(os.environ["FAKE_CALL_LOG"]).open("a", encoding="utf-8") as handle:
     handle.write("train\\n")
@@ -67,6 +68,12 @@ print("fake trainer invoked", flush=True)
 if os.environ.get("FAKE_TRAIN") == "fail":
     raise SystemExit(19)
 Path(args.output_dir, "final_ssdg.pth").write_bytes(b"fake-checkpoint")
+if str(args.muse_external_final_eval).lower() not in {"1", "true", "yes"}:
+    with Path(os.environ["FAKE_CALL_LOG"]).open("a", encoding="utf-8") as handle:
+        handle.write("internal_eval\\n")
+    Path(args.output_dir, "frozen_phase1_heldout_eval.json").write_text(
+        "{}", encoding="utf-8"
+    )
 """,
         encoding="utf-8",
         newline="\n",
@@ -82,6 +89,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--ckpt", required=True)
 parser.add_argument("--output_json", required=True)
 parser.add_argument("--scenarios", required=True)
+parser.add_argument("--strict_reconstruction", action="store_true")
 args, _ = parser.parse_known_args()
 scenarios = [item for item in args.scenarios.split(",") if item]
 with Path(os.environ["FAKE_CALL_LOG"]).open("a", encoding="utf-8") as handle:
@@ -122,6 +130,14 @@ payload = {
     "checkpoint_epoch": 200,
     "run_name": "fake",
     "reconstruction": "fixture",
+    "reconstruction_audit": {
+        "strict_requested": bool(args.strict_reconstruction),
+        "checkpoint_load_strict": bool(args.strict_reconstruction),
+        "fallback_used": mode == "fallback_metadata",
+        "missing_keys": 0,
+        "unexpected_keys": 0,
+        "shape_mismatches": 0,
+    },
     "eval_on": "unseen_rx",
     "group_loader": "test_unseen_day_unseen_rx",
     "group_key": "rx_i",
@@ -204,6 +220,8 @@ def test_m3_dry_run_prints_one_training_and_one_joint_real_evaluation_without_ou
     assert result.stdout.count("[MUSE-EVAL-OUTPUT]") == 4
     assert "--muse_level M3" in result.stdout
     assert "--base_candidate ADV3B02_CORE90_SOFT_E200" in result.stdout
+    assert "--muse_external_final_eval true" in result.stdout
+    assert "--strict_reconstruction" in result.stdout
     assert "eval_ssdg_sat_per_rx.py" in result.stdout
     assert "--scenarios leo_clear_weak\\,leo_low_elev_weak\\,leo_rain_weak" in result.stdout
     for scenario in SCENARIOS:
@@ -304,6 +322,7 @@ def test_fake_joint_evaluator_runs_once_and_writes_four_semantic_metrics_before_
         "train",
         "eval:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
     ]
+    assert not (candidate_root / "frozen_phase1_heldout_eval.json").exists()
     expected_acc = {
         "clean": 85.0,
         "leo_clear_weak": 75.0,
@@ -321,3 +340,15 @@ def test_fake_joint_evaluator_runs_once_and_writes_four_semantic_metrics_before_
         assert log_path.stat().st_size > 0
         assert f"scenario={scenario}" in log_path.read_text(encoding="utf-8")
     assert (candidate_root / "status.txt").read_text(encoding="utf-8").strip() == "ARTIFACTS_COMPLETE"
+
+
+def test_launcher_rejects_non_strict_or_fallback_reconstruction_metadata(tmp_path):
+    result, candidate_root, _call_log = _fake_run(
+        tmp_path,
+        fake_eval="fallback_metadata",
+    )
+
+    assert result.returncode != 0
+    assert (candidate_root / "status.txt").read_text(encoding="utf-8").strip() == "EVAL_FAILED_JOINT"
+    assert not (candidate_root / "metrics_clean.json").exists()
+    assert "ARTIFACTS_COMPLETE" not in (candidate_root / "status.txt").read_text(encoding="utf-8")

@@ -138,6 +138,34 @@ def test_muse_parser_defaults_to_final_only_and_joint_epoch():
     assert args.muse_epoch_basis == "unlabeled_loader"
 
 
+def test_muse_can_delegate_final_target_eval_without_changing_legacy(monkeypatch):
+    calls = []
+
+    def fake_internal(*_args, **_kwargs):
+        calls.append("internal")
+        return {"status": "COMPLETE"}
+
+    monkeypatch.setattr(
+        train_ssdg, "_evaluate_frozen_phase1_checkpoint", fake_internal
+    )
+    muse_args = _args("M3")
+    muse_args.muse_external_final_eval = True
+    delegated = train_ssdg._run_final_heldout_evaluation(
+        muse_args, object(), {}, torch.device("cpu"), "final_ssdg.pth"
+    )
+    assert delegated["status"] == "DELEGATED_TO_MUSE_LAUNCHER"
+    assert calls == []
+
+    legacy_args = train_ssdg.build_arg_parser().parse_args(
+        ["--output_dir", "out", "--use_muse_ssdg", "false"]
+    )
+    completed = train_ssdg._run_final_heldout_evaluation(
+        legacy_args, object(), {}, torch.device("cpu"), "final_ssdg.pth"
+    )
+    assert completed["status"] == "COMPLETE"
+    assert calls == ["internal"]
+
+
 def test_muse_enablement_resolves_and_validates_exact_four_role_source_protocol():
     args = _args("M1")
     train_ssdg._enforce_muse_source_protocol(args)
@@ -168,7 +196,8 @@ def test_muse_parser_exposes_schedule_routing_and_loss_hyperparameters():
         "muse_candidate_max_classes",
         "muse_fusion_global_weight",
         "muse_fusion_local_weight",
-        "muse_fusion_student_weight",
+        "muse_fusion_prototype_weight",
+        "muse_prior_alignment_gamma",
         "muse_unlabeled_prototype_weight",
         "muse_temporal_stability_steps",
         "muse_lambda_domain",
@@ -179,6 +208,66 @@ def test_muse_parser_exposes_schedule_routing_and_loss_hyperparameters():
         "muse_lambda_cross_receiver",
     ):
         assert hasattr(args, name)
+
+
+def test_m2_fusion_uses_global_local_prototype_and_l_s_prior_alignment():
+    args = _args("M2")
+    state = train_ssdg._initialize_muse_training_state(
+        args, _TinyMUSEModel(), torch.device("cpu")
+    )
+    state["schedule_state"] = muse_schedule_for_epoch(69, state["config"])
+    weak, strong = _outputs()
+    train_ssdg._compute_muse_labeled_auxiliary_loss(
+        weak["z_id"],
+        torch.tensor([0, 1]),
+        torch.tensor([0, 1]),
+        state,
+    )
+
+    first = train_ssdg._compute_muse_unlabeled_losses(
+        torch.randn(2, 2, 8),
+        {**_metadata(), "epoch": 69},
+        weak,
+        {"weak": weak, "strong": strong, "satellite": None},
+        state,
+        {},
+    )
+    changed_student = {**strong, "tx_logits": -strong["tx_logits"]}
+    second = train_ssdg._compute_muse_unlabeled_losses(
+        torch.randn(2, 2, 8),
+        {**_metadata(), "epoch": 69},
+        weak,
+        {"weak": weak, "strong": changed_student, "satellite": None},
+        state,
+        {},
+    )
+
+    evidence = first["evidence_probabilities"]
+    assert tuple(evidence) == ("global", "local", "prototype")
+    assert torch.allclose(
+        evidence["prototype"],
+        state["classification_prototypes"].class_probabilities(
+            weak["z_id"], num_classes=3
+        ),
+    )
+    assert torch.allclose(first["fused_probability"], second["fused_probability"])
+    assert not torch.allclose(
+        evidence["prototype"],
+        torch.softmax(strong["tx_logits"].detach().float(), dim=-1),
+    )
+
+    before_prior_change = first["fused_probability"].clone()
+    state["source_global_class_counts"].copy_(torch.tensor([90.0, 5.0, 5.0]))
+    state["source_domain_class_counts"][0].copy_(torch.tensor([5.0, 90.0, 5.0]))
+    after = train_ssdg._compute_muse_unlabeled_losses(
+        torch.randn(2, 2, 8),
+        {**_metadata(), "epoch": 69},
+        weak,
+        {"weak": weak, "strong": strong, "satellite": None},
+        state,
+        {},
+    )
+    assert not torch.allclose(before_prior_change[0], after["fused_probability"][0])
 
 
 def test_muse_epoch_pairs_use_every_unlabeled_batch_and_cycle_labeled_batches():
@@ -450,6 +539,90 @@ def test_muse_m2_routes_are_a_partition_and_m3_updates_only_classification_bank(
     }
 
 
+def test_m3_sha_mask_selects_exactly_one_identity_student_per_row():
+    args = _args("M3")
+    args.muse_high_threshold = 0.0
+    args.muse_low_threshold = 0.0
+    state = train_ssdg._initialize_muse_training_state(
+        args, _TinyMUSEModel(), torch.device("cpu")
+    )
+    state["schedule_state"] = muse_schedule_for_epoch(69, state["config"])
+    weak, strong = _outputs()
+    train_ssdg._compute_muse_labeled_auxiliary_loss(
+        weak["z_id"], torch.tensor([0, 1]), torch.tensor([0, 1]), state
+    )
+    keys = [(0, 0, 0, 0, 100), (0, 0, 0, 1, 101)]
+    satellite_mask = train_ssdg.select_satellite_student_mask(
+        keys, epoch=69, probability=0.5, seed=392002
+    )
+    assert satellite_mask.tolist() == [False, True]
+    satellite = {
+        **strong,
+        "tx_logits": torch.tensor(
+            [[-4.0, 4.0, 0.0], [4.0, -4.0, 0.0]], requires_grad=True
+        ),
+        "z_id": torch.tensor(
+            [[-1.0, -1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0]],
+            requires_grad=True,
+        ),
+    }
+    losses = train_ssdg._compute_muse_unlabeled_losses(
+        torch.randn(2, 2, 8),
+        {
+            **_metadata(),
+            "memory_keys": keys,
+            "satellite_mask": satellite_mask,
+            "epoch": 69,
+        },
+        weak,
+        {"weak": weak, "strong": strong, "satellite": satellite},
+        state,
+        {},
+    )
+
+    selected = losses["identity_student"]
+    assert torch.equal(selected["tx_logits"][0], strong["tx_logits"][0])
+    assert torch.equal(selected["tx_logits"][1], satellite["tx_logits"][1])
+    assert torch.equal(selected["z_id"][0], strong["z_id"][0])
+    assert torch.equal(selected["z_id"][1], satellite["z_id"][1])
+    assert losses["identity_student_satellite_mask"].tolist() == [False, True]
+    assert torch.allclose(
+        losses["self"],
+        state["heads"].self_supervised_loss(weak["z_id"], selected["z_id"]),
+    )
+
+    losses["hard"].backward()
+    assert torch.count_nonzero(strong["tx_logits"].grad[0]).item() > 0
+    assert torch.count_nonzero(strong["tx_logits"].grad[1]).item() == 0
+    assert torch.count_nonzero(satellite["tx_logits"].grad[0]).item() == 0
+    assert torch.count_nonzero(satellite["tx_logits"].grad[1]).item() > 0
+
+
+@pytest.mark.parametrize("level", ["M1", "M2"])
+def test_m1_m2_never_enable_satellite_identity_student(level):
+    state = train_ssdg._initialize_muse_training_state(
+        _args(level), _TinyMUSEModel(), torch.device("cpu")
+    )
+    state["schedule_state"] = muse_schedule_for_epoch(69, state["config"])
+    weak, strong = _outputs()
+    satellite = {
+        **strong,
+        "tx_logits": -strong["tx_logits"],
+        "z_id": -strong["z_id"],
+    }
+    losses = train_ssdg._compute_muse_unlabeled_losses(
+        torch.randn(2, 2, 8),
+        {**_metadata(), "satellite_mask": torch.tensor([True, True]), "epoch": 69},
+        weak,
+        {"weak": weak, "strong": strong, "satellite": satellite},
+        state,
+        {},
+    )
+    assert torch.equal(losses["identity_student"]["tx_logits"], strong["tx_logits"])
+    assert torch.equal(losses["identity_student"]["z_id"], strong["z_id"])
+    assert losses["identity_student_satellite_mask"].tolist() == [False, False]
+
+
 def test_muse_m2_low_route_uses_candidate_set_not_true_identity_targets():
     args = _args("M2")
     args.muse_high_threshold = 1.0
@@ -575,6 +748,67 @@ def test_muse_s3c_freezes_temporal_and_classification_statistics(level):
     assert state["classification_prototypes"].state_dict()["frozen"] is True
 
 
+def test_epoch_181_freezes_muse_statistics_prior_and_local_teacher_state():
+    state = train_ssdg._initialize_muse_training_state(
+        _args("M3"), _TinyMUSEModel(), torch.device("cpu")
+    )
+    train_ssdg._configure_muse_epoch_state(state, 180)
+    weak, strong = _outputs()
+    train_ssdg._compute_muse_labeled_auxiliary_loss(
+        weak["z_id"],
+        torch.tensor([0, 1]),
+        torch.tensor([0, 1]),
+        state,
+    )
+    state["temporal_memory"].observe(
+        _metadata()["memory_keys"],
+        torch.tensor([0, 1]),
+        torch.tensor([0.9, 0.9]),
+        180,
+    )
+
+    schedule = train_ssdg._configure_muse_epoch_state(state, 181)
+    before_memory = state["temporal_memory"].state_dict()
+    before_prototype = state["classification_prototypes"].state_dict()
+    before_global_prior = state["source_global_class_counts"].clone()
+    before_domain_prior = state["source_domain_class_counts"].clone()
+    fixed_output = state["heads"].local_prob(
+        weak["z_id"].detach(), torch.tensor([0, 1])
+    ).detach().clone()
+
+    state["heads"].train()
+    train_ssdg._compute_muse_labeled_auxiliary_loss(
+        strong["z_id"],
+        torch.tensor([2, 2]),
+        torch.tensor([0, 1]),
+        state,
+    )
+    train_ssdg._compute_muse_unlabeled_losses(
+        torch.randn(2, 2, 8),
+        {**_metadata(), "epoch": 181},
+        weak,
+        {"weak": weak, "strong": strong, "satellite": strong},
+        state,
+        {},
+    )
+
+    assert schedule.freeze_statistics is True
+    assert state["heads"].local_teacher_frozen is True
+    assert state["temporal_memory"].state_dict() == before_memory
+    after_prototype = state["classification_prototypes"].state_dict()
+    assert after_prototype["counts"] == before_prototype["counts"]
+    assert all(
+        torch.equal(after_prototype["prototypes"][key], value)
+        for key, value in before_prototype["prototypes"].items()
+    )
+    assert torch.equal(state["source_global_class_counts"], before_global_prior)
+    assert torch.equal(state["source_domain_class_counts"], before_domain_prior)
+    assert torch.equal(
+        state["heads"].local_prob(weak["z_id"].detach(), torch.tensor([0, 1])),
+        fixed_output,
+    )
+
+
 def test_muse_rejects_any_u_s_open_geometry_update():
     with pytest.raises(
         RuntimeError, match="MUSE_PROTOCOL_U_S_OPEN_GEOMETRY_FORBIDDEN"
@@ -609,6 +843,9 @@ def test_muse_checkpoint_state_has_all_training_only_fields():
         "muse_training_heads",
         "muse_temporal_memory",
         "muse_classification_prototypes",
+        "muse_source_global_class_counts",
+        "muse_source_domain_class_counts",
+        "muse_source_prior_frozen",
         "muse_schedule_state",
     }
     assert checkpoint["muse_training_heads"]
