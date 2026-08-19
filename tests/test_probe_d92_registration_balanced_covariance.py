@@ -52,6 +52,70 @@ def test_lock_has_no_scene_receiver_seed_or_query_tuning():
     assert "scene" not in probe.FORMULA.lower()
 
 
+def test_td_htrc_builder_is_explicit_opt_in_and_reaches_d92_components():
+    rng = np.random.default_rng(922)
+    basis, _ = np.linalg.qr(rng.normal(size=(160, 3)))
+    weights = np.asarray([0.5, 0.3, 0.2], dtype=np.float64)
+    ground_centers = rng.normal(size=(6, 160))
+    fit, call_records, transform_records = probe.build_td_htrc_fit(
+        d42,
+        basis,
+        weights,
+        _ground_audit("e" * 64, "f" * 64),
+        ground_centers,
+    )
+    classes, shots = 11, 5
+    labels = np.repeat(np.arange(classes), shots)
+    means = rng.normal(size=(classes, 288))
+    rows = (
+        means[labels] + 0.08 * rng.normal(size=(classes * shots, 288))
+    ).astype(np.float32)
+    coefficient, intercept, audit = fit(rows, labels, classes, shots)
+    assert coefficient.shape == (classes, 288)
+    assert intercept.shape == (classes,)
+    assert np.isfinite(coefficient).all()
+    assert np.isfinite(intercept).all()
+    assert audit["td_htrc_method"] == "TD-HTRC-M2.1"
+    assert audit["td_htrc_query_rows_used"] == 0
+    assert audit["td_htrc_query_transform_compiled_into_intercept"] is True
+    assert audit["d92_registration_balanced_active"] is True
+    assert len(call_records) > 0
+    assert len(transform_records) == 1
+
+
+def test_td_htrc_m22_builder_passes_posterior_uncertainty_into_d92():
+    rng = np.random.default_rng(923)
+    basis, _ = np.linalg.qr(rng.normal(size=(160, 3)))
+    weights = np.asarray([0.5, 0.3, 0.2], dtype=np.float64)
+    ground_audit = _ground_audit("1" * 64, "2" * 64)
+    ground_full = rng.normal(size=(6, 288))
+    fit, call_records, transform_records = probe.build_td_htrc_m22_fit(
+        d42,
+        basis,
+        weights,
+        ground_audit,
+        ground_full[:, :160],
+        ground_full_centers=ground_full,
+    )
+    classes, shots = 11, 5
+    labels = np.repeat(np.arange(classes), shots)
+    means = rng.normal(size=(classes, 288))
+    rows = (
+        means[labels] + 0.08 * rng.normal(size=(classes * shots, 288))
+    ).astype(np.float32)
+    coefficient, intercept, audit = fit(rows, labels, classes, shots)
+    assert coefficient.shape == (classes, 288)
+    assert intercept.shape == (classes,)
+    assert np.isfinite(coefficient).all()
+    assert np.isfinite(intercept).all()
+    assert audit["td_htrc_method"] == "TD-HTRC-M2.2"
+    assert audit["td_htrc_m22_posterior_uncertainty_enabled"] is True
+    assert audit["d92_center_uncertainty_enabled"] is True
+    assert audit["d92_center_uncertainty_trace"] > 0.0
+    assert len(call_records) > 0
+    assert len(transform_records) == 1
+
+
 def test_registration_before_head_is_exact_d81_for_k5():
     rng = np.random.default_rng(921)
     basis, _ = np.linalg.qr(rng.normal(size=(160, 3)))

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Callable
+from typing import Any, Callable, Sequence
 
 import numpy as np
 
@@ -12,10 +12,17 @@ from cvsrffi.stage2_d92_registration_balanced_covariance import (
     OLD_CLASS_COUNT,
     build_registration_balanced_equal_lda,
 )
+from cvsrffi.stage2_td_htrc_target_transport import (
+    build_td_htrc_component_fit,
+)
+from cvsrffi.stage2_td_htrc_m22 import (
+    build_td_htrc_m22_component_fit,
+)
 
 
 d62, d43 = d81.d62, d81.d43
 load_ground_basis = d81.load_ground_basis
+load_ground_class_centers = d81.load_ground_class_centers
 ARM = "registration_balanced_covariance"
 STRUCTURE = "d81_center_with_fixed_equal_old_new_auto_shrinkage_covariance"
 FORMULA = (
@@ -41,6 +48,10 @@ def build_d92_fit(
     *,
     apply_ground_center: bool = True,
     allow_fp32_centering_argmax_drift: bool = False,
+    center_uncertainty_provider: Callable[
+        [np.ndarray, np.ndarray, int, int], np.ndarray
+    ]
+    | None = None,
 ) -> tuple[Callable[..., Any], list[dict[str, Any]], list[dict[str, Any]]]:
     aliases = (d62.d43, d62.d61.d43, d62.d61.d46.d43, d62.d61.d46.d45.d43)
     if any(alias is not d43 for alias in aliases):
@@ -71,7 +82,10 @@ def build_d92_fit(
     )
 
     d92_full = build_registration_balanced_equal_lda(
-        d42, original_fit, arm="full"
+        d42,
+        original_fit,
+        arm="full",
+        center_uncertainty_provider=center_uncertainty_provider,
     )
 
     def collect(component_fit: Callable[..., Any], arm: str) -> Callable[..., Any]:
@@ -120,7 +134,10 @@ def build_d92_fit(
             **centering_kwargs,
         )
         d92_block = build_registration_balanced_equal_lda(
-            d42, baseline_block, arm="block3_centered"
+            d42,
+            baseline_block,
+            arm="block3_centered",
+            center_uncertainty_provider=center_uncertainty_provider,
         )
         component = collect(d92_block, arm)
         return (
@@ -243,4 +260,124 @@ def build_d92_fit(
     return fit, call_records, transform_records
 
 
-__all__ = ["ARM", "FORMULA", "STRUCTURE", "build_d92_fit", "load_ground_basis"]
+def build_td_htrc_fit(
+    d42: Any,
+    basis: np.ndarray,
+    spectral_weights: np.ndarray,
+    ground_audit: dict[str, Any],
+    ground_class_centers: np.ndarray,
+    *,
+    ground_class_registry: Sequence[str] | None = None,
+    target_old_class_registry: Sequence[str] | None = None,
+    allow_fp32_centering_argmax_drift: bool = False,
+) -> tuple[Callable[..., Any], list[dict[str, Any]], list[dict[str, Any]]]:
+    """Build D92's registration head with the opt-in TD-HTRC M2.1 module.
+
+    The default ``build_d92_fit`` path remains unchanged.  This builder first
+    constructs the same D92 full/block component fit without the legacy
+    classwise wrapper, then applies TD-HTRC's shared transport followed by the
+    locked Cauchy centre rule.  The returned intercept is in raw target-query
+    coordinates, so callers retain the existing scoring interface.
+    """
+
+    base_fit, call_records, _ = build_d92_fit(
+        d42,
+        basis,
+        spectral_weights,
+        ground_audit,
+        apply_ground_center=False,
+        allow_fp32_centering_argmax_drift=allow_fp32_centering_argmax_drift,
+    )
+    transform_records: list[dict[str, Any]] = []
+    fit = build_td_htrc_component_fit(
+        base_fit,
+        ground_class_centers=ground_class_centers,
+        basis=basis,
+        spectral_weights=spectral_weights,
+        component_arm=ARM,
+        collector=transform_records,
+        old_class_count=OLD_CLASS_COUNT,
+        ground_class_registry=ground_class_registry,
+        target_old_class_registry=target_old_class_registry,
+    )
+    return fit, call_records, transform_records
+
+
+def build_td_htrc_m22_fit(
+    d42: Any,
+    basis: np.ndarray,
+    spectral_weights: np.ndarray,
+    ground_audit: dict[str, Any],
+    ground_class_centers: np.ndarray,
+    *,
+    ground_full_centers: np.ndarray | None = None,
+    ground_class_registry: Sequence[str] | None = None,
+    target_old_class_registry: Sequence[str] | None = None,
+    allow_fp32_centering_argmax_drift: bool = False,
+) -> tuple[Callable[..., Any], list[dict[str, Any]], list[dict[str, Any]]]:
+    """Build D92 with the explicit support-only TD-HTRC M2.2 wrapper.
+
+    The mutable holder is registration-scoped only: M2.2 writes its diagonal
+    posterior uncertainty immediately before fitting the D92 components, and
+    the provider is cleared in the wrapper's ``finally`` block. It is never
+    consulted by query scoring.
+    """
+
+    uncertainty_holder: dict[str, np.ndarray | None] = {"value": None}
+
+    def center_uncertainty_provider(
+        rows: np.ndarray,
+        labels: np.ndarray,
+        class_count: int,
+        k_shot: int,
+    ) -> np.ndarray:
+        value = uncertainty_holder["value"]
+        if value is None:
+            return np.zeros((int(class_count), int(d42.FEATURE_DIM)), dtype=np.float64)
+        array = np.asarray(value, dtype=np.float64)
+        if array.shape != (int(class_count), int(d42.FEATURE_DIM)):
+            raise D92ProbeError("TD-HTRC M2.2 centre uncertainty shape drift")
+        return array
+
+    base_fit, call_records, _ = build_d92_fit(
+        d42,
+        basis,
+        spectral_weights,
+        ground_audit,
+        apply_ground_center=False,
+        allow_fp32_centering_argmax_drift=allow_fp32_centering_argmax_drift,
+        center_uncertainty_provider=center_uncertainty_provider,
+    )
+    transform_records: list[dict[str, Any]] = []
+
+    def set_uncertainty(value: np.ndarray | None) -> None:
+        uncertainty_holder["value"] = None if value is None else np.asarray(
+            value, dtype=np.float64
+        )
+
+    fit = build_td_htrc_m22_component_fit(
+        base_fit,
+        ground_class_centers=ground_class_centers,
+        ground_full_centers=ground_full_centers,
+        basis=basis,
+        spectral_weights=spectral_weights,
+        component_arm=ARM,
+        collector=transform_records,
+        center_uncertainty_setter=set_uncertainty,
+        old_class_count=OLD_CLASS_COUNT,
+        ground_class_registry=ground_class_registry,
+        target_old_class_registry=target_old_class_registry,
+    )
+    return fit, call_records, transform_records
+
+
+__all__ = [
+    "ARM",
+    "FORMULA",
+    "STRUCTURE",
+    "build_d92_fit",
+    "build_td_htrc_fit",
+    "build_td_htrc_m22_fit",
+    "load_ground_basis",
+    "load_ground_class_centers",
+]

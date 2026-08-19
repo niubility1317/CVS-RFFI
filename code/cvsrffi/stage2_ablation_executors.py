@@ -17,7 +17,7 @@ import torch
 
 from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
 from cvsrffi import stage2_ablation_quantization as quantization
-from cvsrffi.stage2_ablation_factory import get_stage2_arm
+from cvsrffi.stage2_ablation_factory import get_stage2_arm, resolve_stage2_config
 
 
 class Stage2AblationExecutionError(RuntimeError):
@@ -66,6 +66,47 @@ def _normalize(rows: np.ndarray) -> np.ndarray:
     if not np.isfinite(norm).all() or bool(np.any(norm <= 1e-12)):
         raise Stage2AblationExecutionError("feature normalization is degenerate")
     return np.asarray(values / norm, dtype=np.float32)
+
+
+_FULL_FEATURE_PROFILE = "identity160_fft96_rf32_beta4_blocknorm_globalnorm"
+_FFT_ONLY_FEATURE_PROFILE = "identity160_fft96_beta4_blocknorm_globalnorm"
+_RF_ONLY_FEATURE_PROFILE = "identity160_rf32_beta4_blocknorm_globalnorm"
+
+
+def _project_feature_profile(
+    rows: np.ndarray,
+    feature_profile: str,
+) -> np.ndarray:
+    """Apply one locked D92 feature profile to final 288-D rows."""
+
+    values = _rows(rows, name="feature profile input")
+    profile = str(feature_profile)
+    if profile in {"full288", _FULL_FEATURE_PROFILE}:
+        return values
+    if profile == "identity160_only":
+        projected = np.zeros_like(values)
+        projected[:, :160] = _normalize(values[:, :160])
+        return projected
+    if profile not in {_FFT_ONLY_FEATURE_PROFILE, _RF_ONLY_FEATURE_PROFILE}:
+        raise Stage2AblationExecutionError(
+            f"unsupported D92 feature profile: {profile!r}"
+        )
+
+    primary = _normalize(values[:, :160])
+    auxiliary = values[:, 160:] * (np.sqrt(17.0) / 4.0)
+    if profile == _FFT_ONLY_FEATURE_PROFILE:
+        active = _normalize(auxiliary[:, :96])
+        selected = np.concatenate(
+            [active, np.zeros((len(values), 32), dtype=np.float32)],
+            axis=1,
+        )
+    else:
+        active = _normalize(auxiliary[:, 96:])
+        selected = np.concatenate(
+            [np.zeros((len(values), 96), dtype=np.float32), active],
+            axis=1,
+        )
+    return _normalize(np.concatenate([primary, 4.0 * selected], axis=1))
 
 
 def _class_means(
@@ -331,6 +372,11 @@ def _component_builder(
     ground_basis: np.ndarray,
     ground_weights: np.ndarray,
     ground_audit: dict[str, Any],
+    ground_class_centers: Any | None = None,
+    ground_full_centers: Any | None = None,
+    ground_class_registry: Sequence[str] | None = None,
+    target_old_class_registry: Sequence[str] | None = None,
+    module2_mode: str = "baseline",
 ):
     from scripts import probe_d43_structured_covariance as d43
     from scripts import probe_d44_full_block_rms_fusion as d44
@@ -338,6 +384,66 @@ def _component_builder(
     from scripts import probe_d62_crossfitted_fisher_row_splice as d62
     from scripts import probe_d81_ground_nuisance_cauchy_center as d81
     from scripts import probe_d92_registration_balanced_covariance as d92
+
+    if module2_mode not in {"baseline", "td_htrc_m21", "td_htrc_m22"}:
+        raise Stage2AblationExecutionError("unknown module2 mode")
+    if module2_mode in {"td_htrc_m21", "td_htrc_m22"}:
+        if ablation_id not in {"P2-FULL", "P2-E0"}:
+            raise Stage2AblationExecutionError(
+                "TD-HTRC M2.1/M2.2 is currently scoped to the D92 registration head"
+            )
+        if ground_class_centers is None:
+            raise Stage2AblationExecutionError(
+                "TD-HTRC M2.1/M2.2 requires immutable old-class ground centres"
+            )
+        original_d62_builder = d92.d62.build_d62_fit
+        try:
+            if ablation_id == "P2-E0":
+                d92.d62.build_d62_fit = lambda module, **_kwargs: (
+                    d46.build_classwise_loo_reliability_fit(
+                        module,
+                        allow_fp32_centering_argmax_drift=True,
+                    ),
+                    [],
+                )
+            if module2_mode == "td_htrc_m21":
+                fit, _, _ = d92.build_td_htrc_fit(
+                    d42,
+                    ground_basis,
+                    ground_weights,
+                    ground_audit,
+                    ground_class_centers,
+                    ground_class_registry=ground_class_registry,
+                    target_old_class_registry=target_old_class_registry,
+                    allow_fp32_centering_argmax_drift=True,
+                )
+            else:
+                fit, _, _ = d92.build_td_htrc_m22_fit(
+                    d42,
+                    ground_basis,
+                    ground_weights,
+                    ground_audit,
+                    ground_class_centers,
+                    ground_full_centers=ground_full_centers,
+                    ground_class_registry=ground_class_registry,
+                    target_old_class_registry=target_old_class_registry,
+                    allow_fp32_centering_argmax_drift=True,
+                )
+        finally:
+            d92.d62.build_d62_fit = original_d62_builder
+        return fit, (
+            (
+                "d92_e0_td_htrc_m21"
+                if ablation_id == "P2-E0"
+                else "d92_td_htrc_m21"
+            )
+            if module2_mode == "td_htrc_m21"
+            else (
+                "d92_e0_td_htrc_m22"
+                if ablation_id == "P2-E0"
+                else "d92_td_htrc_m22"
+            )
+        )
 
     if ablation_id == "P2-B0":
         return (
@@ -452,11 +558,7 @@ class Stage2AblationFittedState:
 
     def _prepared(self, features: Any) -> np.ndarray:
         values = _rows(features, name="query")
-        if self.feature_profile == "identity160_only":
-            prepared = np.zeros_like(values)
-            prepared[:, :160] = _normalize(values[:, :160])
-        else:
-            prepared = values
+        prepared = _project_feature_profile(values, self.feature_profile)
         prepared = d42._transform(prepared, self.log_diag_fp32)
         if self.score_kind == "adapter_cosine_affine":
             from cvsrffi import (
@@ -531,12 +633,22 @@ def fit_stage2_ablation(
     ground_basis: Any | None = None,
     ground_spectral_weights: Any | None = None,
     ground_audit: Mapping[str, Any] | None = None,
+    ground_class_centers: Any | None = None,
+    ground_full_centers: Any | None = None,
+    ground_class_registry: Sequence[str] | None = None,
+    module2_mode: str = "baseline",
     seed: int,
     device: Any = "cpu",
 ) -> Stage2AblationFittedState:
     """Fit one frozen arm from deployment state and legal support only."""
 
     spec = get_stage2_arm(ablation_id)
+    if module2_mode not in {"baseline", "td_htrc_m21", "td_htrc_m22"}:
+        raise Stage2AblationExecutionError("unknown module2 mode")
+    if module2_mode in {"td_htrc_m21", "td_htrc_m22"} and spec.stage != "stage2c":
+        raise Stage2AblationExecutionError(
+            "TD-HTRC M2.1/M2.2 requires a registered Stage2-C support set"
+        )
     old_registry = tuple(str(value) for value in old_classes)
     if spec.stage == "stage2a":
         prototypes = _rows(deployment_prototypes, name="deployment prototype")
@@ -608,17 +720,16 @@ def fit_stage2_ablation(
             old_k,
         )
 
-    feature_profile = (
-        "identity160_only" if ablation_id == "P2-A0" else "full288"
+    resolved_feature_profile = str(
+        resolve_stage2_config(ablation_id)["feature_profile"]
     )
-    if feature_profile == "identity160_only":
-        model_rows = np.zeros_like(rows)
-        model_rows[:, :160] = _normalize(rows[:, :160])
-        model_old_rows = np.zeros_like(old_rows)
-        model_old_rows[:, :160] = _normalize(old_rows[:, :160])
-    else:
-        model_rows = rows
-        model_old_rows = old_rows
+    feature_profile = (
+        "full288"
+        if resolved_feature_profile == _FULL_FEATURE_PROFILE
+        else resolved_feature_profile
+    )
+    model_rows = _project_feature_profile(rows, feature_profile)
+    model_old_rows = _project_feature_profile(old_rows, feature_profile)
     metric_enabled = ablation_id not in {
         "P2-S2B-PROTO",
         "P2-S2B-DIAGOFF",
@@ -752,6 +863,11 @@ def fit_stage2_ablation(
                 ground_basis=basis,
                 ground_weights=weights,
                 ground_audit=basis_audit,
+                ground_class_centers=ground_class_centers,
+                ground_full_centers=ground_full_centers,
+                ground_class_registry=ground_class_registry,
+                target_old_class_registry=old_registry,
+                module2_mode=module2_mode,
             )
         coefficient, intercept, audit = _fit_with_fp32_centering_audit(
             fit, transformed, targets, len(classes), k_shot
@@ -766,6 +882,8 @@ def fit_stage2_ablation(
             "P2-FULL",
             "P2-F3",
             "P2-A0",
+            "P2-A1",
+            "P2-A2",
             "P2-B0",
             "P2-C3",
             "P2-D0",
@@ -828,6 +946,8 @@ def fit_stage2_ablation(
                 if compiled_affine_state is not None
                 else False
             ),
+            "module2_mode": module2_mode,
+            "feature_profile": feature_profile,
         }
     )
     resource = {
@@ -853,6 +973,23 @@ def fit_stage2_ablation(
         "clean_sample_access": False,
         "source_sample_access": False,
     }
+    td_htrc_audit = merged_audit.get("td_htrc_transport_audit")
+    if not isinstance(td_htrc_audit, Mapping):
+        td_htrc_audit = merged_audit.get("td_htrc_m22_transport_audit")
+    if isinstance(td_htrc_audit, Mapping):
+        resource.update(
+            {
+                "td_htrc_registration_macs": int(
+                    td_htrc_audit.get("estimated_registration_macs", 0)
+                ),
+                "td_htrc_transport_state_persistent_bytes": 0,
+                "estimated_adaptation_macs": int(
+                    resource.get("estimated_adaptation_macs", 0)
+                    + int(td_htrc_audit.get("estimated_registration_macs", 0))
+                ),
+                "td_htrc_query_extra_macs": 0,
+            }
+        )
     return Stage2AblationFittedState(
         ablation_id=ablation_id,
         stage=spec.stage,

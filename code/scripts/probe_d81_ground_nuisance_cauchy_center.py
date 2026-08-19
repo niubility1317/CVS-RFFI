@@ -129,6 +129,68 @@ def load_ground_basis(
     return basis, weights, combined
 
 
+def load_ground_class_centers(
+    component_dir: Path,
+    manifest_sha256: str,
+    feature_dim: int,
+) -> tuple[np.ndarray, tuple[str, ...], dict[str, Any]]:
+    """Load only aggregate old-class centres from the immutable Phase1 bundle.
+
+    The loader deliberately reuses D66's strict manifest/NPZ validation and
+    returns class means across retained ground domains.  It never exposes
+    members, counts, radii, or sample identifiers to the Stage2 fit.
+    """
+
+    _, validation_audit = d66.load_ground_domain_reliability(
+        component_dir, manifest_sha256, feature_dim
+    )
+    npz_path = Path(component_dir) / d66.NPZ_NAME
+    with np.load(npz_path, allow_pickle=False) as payload:
+        q = np.asarray(payload["domain_class_q"], dtype=np.int8)
+        scales = np.asarray(payload["domain_class_scale"], dtype=np.float16)
+        mask = np.asarray(payload["domain_class_mask"], dtype=np.uint8)
+        domains = np.asarray(payload["domain_registry"], dtype=np.int16)
+        classes = np.asarray(payload["class_registry"]).astype(str)
+    domain_order = np.argsort(domains, kind="stable")
+    class_order = np.argsort(classes, kind="stable")
+    q = q[domain_order][:, class_order]
+    scales = scales[domain_order][:, class_order]
+    mask = mask[domain_order][:, class_order]
+    classes = classes[class_order]
+    active = mask.astype(bool)
+    if (
+        q.ndim != 3
+        or q.shape[2] != 160
+        or scales.shape != q.shape[:2]
+        or mask.shape != q.shape[:2]
+        or np.any(np.sum(active, axis=0) < 2)
+        or not np.isfinite(scales).all()
+        or np.any(scales[active] <= 0.0)
+        or int(feature_dim) < 160
+    ):
+        raise D81ProbeError("D81 ground class-centre schema drift")
+    dequantized = q.astype(np.float64) * scales.astype(np.float64)[..., None]
+    weighted = np.where(active[..., None], dequantized, 0.0)
+    counts = np.sum(active, axis=0).astype(np.float64)
+    centers = np.sum(weighted, axis=0) / counts[:, None]
+    if centers.shape[1] != 160 or not np.isfinite(centers).all():
+        raise D81ProbeError("D81 ground class-centre numerical drift")
+    audit = {
+        "d81_ground_class_centers_schema": "phase1_int8_domain_class_centers_mean_v1",
+        "d81_ground_class_centers_source": "immutable_phase1_aggregate_domain_class_q_scale_mask",
+        "d81_ground_class_centers_domain_count": int(q.shape[0]),
+        "d81_ground_class_centers_class_count": int(q.shape[1]),
+        "d81_ground_class_centers_active_domain_counts": counts.astype(int).tolist(),
+        "d81_ground_class_centers_query_access": False,
+        "d81_ground_class_centers_member_access": False,
+        "d81_ground_class_centers_sample_count_access": False,
+        "d81_ground_class_centers_validation_component_manifest_sha256": validation_audit[
+            "component_manifest_sha256"
+        ],
+    }
+    return centers, tuple(str(value) for value in classes.tolist()), audit
+
+
 def build_d81_fit(
     d42: Any,
     basis: np.ndarray,

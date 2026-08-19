@@ -8,6 +8,7 @@ import pytest
 from cvsrffi.stage2_ablation_factory import STAGE2_T1_ARMS
 from cvsrffi.stage2_ablation_executors import (
     _fit_with_fp32_centering_audit,
+    _project_feature_profile,
     fit_stage2_ablation,
 )
 
@@ -52,6 +53,73 @@ def _fixture(k_shot: int = 2):
         "new_classes": new_classes,
         **ground,
     }
+
+
+def _full_registered_feature_rows(row_count: int = 4) -> np.ndarray:
+    rng = np.random.default_rng(9411)
+    identity = rng.normal(size=(row_count, 160)).astype(np.float32)
+    fft = rng.normal(size=(row_count, 96)).astype(np.float32)
+    rf = rng.normal(size=(row_count, 32)).astype(np.float32)
+
+    def normalize(rows: np.ndarray) -> np.ndarray:
+        return rows / np.linalg.norm(rows, axis=1, keepdims=True)
+
+    primary = normalize(identity)
+    auxiliary = normalize(np.concatenate([normalize(fft), normalize(rf)], axis=1))
+    return normalize(np.concatenate([primary, 4.0 * auxiliary], axis=1))
+
+
+def test_feature_profile_projection_reconstructs_fft_only_and_rf_only_geometry() -> None:
+    full = _full_registered_feature_rows()
+    primary = full[:, :160] * np.sqrt(17.0)
+    auxiliary = full[:, 160:] * (np.sqrt(17.0) / 4.0)
+
+    expected_fft_auxiliary = np.concatenate(
+        [
+            auxiliary[:, :96]
+            / np.linalg.norm(auxiliary[:, :96], axis=1, keepdims=True),
+            np.zeros((len(full), 32), dtype=np.float32),
+        ],
+        axis=1,
+    )
+    expected_fft = np.concatenate(
+        [
+            primary / np.linalg.norm(primary, axis=1, keepdims=True),
+            4.0 * expected_fft_auxiliary,
+        ],
+        axis=1,
+    )
+    expected_fft /= np.linalg.norm(expected_fft, axis=1, keepdims=True)
+
+    expected_rf_auxiliary = np.concatenate(
+        [
+            np.zeros((len(full), 96), dtype=np.float32),
+            auxiliary[:, 96:]
+            / np.linalg.norm(auxiliary[:, 96:], axis=1, keepdims=True),
+        ],
+        axis=1,
+    )
+    expected_rf = np.concatenate(
+        [
+            primary / np.linalg.norm(primary, axis=1, keepdims=True),
+            4.0 * expected_rf_auxiliary,
+        ],
+        axis=1,
+    )
+    expected_rf /= np.linalg.norm(expected_rf, axis=1, keepdims=True)
+
+    np.testing.assert_allclose(
+        _project_feature_profile(full, "identity160_fft96_beta4_blocknorm_globalnorm"),
+        expected_fft,
+        rtol=2e-6,
+        atol=2e-6,
+    )
+    np.testing.assert_allclose(
+        _project_feature_profile(full, "identity160_rf32_beta4_blocknorm_globalnorm"),
+        expected_rf,
+        rtol=2e-6,
+        atol=2e-6,
+    )
 
 
 def test_fit_api_has_no_query_surface() -> None:
@@ -215,6 +283,45 @@ def test_full_k2_uses_exact_low_k_fallback_and_all_class_argmax() -> None:
     )
     assert state.score(query).shape == (2, 11)
     assert state.predict(query).shape == (2,)
+
+
+def test_td_htrc_m21_is_reachable_as_an_explicit_opt_in_mode() -> None:
+    fixture = _fixture(2)
+    rng = np.random.default_rng(941)
+    state = fit_stage2_ablation(
+        ablation_id="P2-E0",
+        seed=820001,
+        device="cpu",
+        ground_class_centers=rng.normal(size=(6, 160)),
+        module2_mode="td_htrc_m21",
+        **fixture,
+    )
+    assert state.audit["module2_mode"] == "td_htrc_m21"
+    assert state.audit["td_htrc_method"] == "TD-HTRC-M2.1"
+    assert state.audit["td_htrc_query_rows_used"] == 0
+    assert state.resource["td_htrc_query_extra_macs"] == 0
+    assert state.score(fixture["new_support_features"][:2]).shape == (2, 11)
+
+
+def test_td_htrc_m22_is_reachable_and_keeps_query_path_unchanged() -> None:
+    fixture = _fixture(5)
+    rng = np.random.default_rng(942)
+    ground_full = rng.normal(size=(6, 288))
+    state = fit_stage2_ablation(
+        ablation_id="P2-E0",
+        seed=820001,
+        device="cpu",
+        ground_class_centers=ground_full[:, :160],
+        ground_full_centers=ground_full,
+        module2_mode="td_htrc_m22",
+        **fixture,
+    )
+    assert state.audit["module2_mode"] == "td_htrc_m22"
+    assert state.audit["td_htrc_method"] == "TD-HTRC-M2.2"
+    assert state.audit["td_htrc_m22_query_rows_used"] == 0
+    assert state.resource["td_htrc_query_extra_macs"] == 0
+    assert state.resource["td_htrc_registration_macs"] > 0
+    assert state.score(fixture["new_support_features"][:2]).shape == (2, 11)
 
 
 def test_adapter_head_baseline_trains_a_real_support_only_adapter() -> None:

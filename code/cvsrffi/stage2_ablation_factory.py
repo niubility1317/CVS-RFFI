@@ -104,6 +104,8 @@ STAGE2_MAIN_ARMS: tuple[Stage2ArmSpec, ...] = (
     _spec("P2-FULL", stage="stage2c", table="main", factor="reference", diff=None),
     *STAGE2_BASELINE_ARMS,
     _spec("P2-A0", stage="stage2c", table="main", factor="joint_feature", diff="feature_profile"),
+    _spec("P2-A1", stage="stage2c", table="main", factor="joint_feature", diff="feature_profile"),
+    _spec("P2-A2", stage="stage2c", table="main", factor="joint_feature", diff="feature_profile"),
     _spec("P2-B0", stage="stage2c", table="main", factor="robust_center", diff="center_profile"),
     _spec("P2-C3", stage="stage2c", table="main", factor="task_covariance", diff="covariance_profile"),
     _spec("P2-D0", stage="stage2c", table="main", factor="dual_geometry", diff="geometry_profile"),
@@ -140,6 +142,8 @@ _OVERRIDES: dict[str, dict[str, Any]] = {
     "P2-BASE-FULL-BLOCK-LDA": {"method_family": "full_block_shrinkage_lda_no_robust_center"},
     "P2-BASE-ADAPTER-HEAD": {"method_family": "frozen_lightweight_adapter_equal_prior_head"},
     "P2-A0": {"feature_profile": "identity160_only"},
+    "P2-A1": {"feature_profile": "identity160_fft96_beta4_blocknorm_globalnorm"},
+    "P2-A2": {"feature_profile": "identity160_rf32_beta4_blocknorm_globalnorm"},
     "P2-B0": {"center_profile": "support_plain_mean_no_ground_spectrum"},
     "P2-C3": {"covariance_profile": "d81_all_classes_equal_ledoit_wolf"},
     "P2-D0": {"geometry_profile": "full_only"},
@@ -231,6 +235,7 @@ class Stage2AblationMethod:
         new_classes: Any = (),
         seed: int,
         device: Any = "cpu",
+        module2_mode: str = "baseline",
     ) -> Any:
         """Fit from immutable deployment state and legal support only."""
 
@@ -250,6 +255,10 @@ class Stage2AblationMethod:
                 "ground_spectral_weights"
             ),
             ground_audit=deployment_bundle.get("ground_audit"),
+            ground_class_centers=deployment_bundle.get("ground_class_centers"),
+            ground_full_centers=deployment_bundle.get("ground_full_centers"),
+            ground_class_registry=deployment_bundle.get("ground_class_registry"),
+            module2_mode=module2_mode,
             seed=int(seed),
             device=device,
         )
@@ -269,8 +278,8 @@ def validate_stage2_catalog() -> None:
         raise Stage2AblationConfigError("Stage2 catalog contains duplicate IDs")
     if len(STAGE2_STATE_ARMS) != 4:
         raise Stage2AblationConfigError("Stage2 state catalog must contain 4 arms")
-    if len(STAGE2_MAIN_ARMS) != 19:
-        raise Stage2AblationConfigError("Stage2 main catalog must contain 19 logical arms")
+    if len(STAGE2_MAIN_ARMS) != 21:
+        raise Stage2AblationConfigError("Stage2 main catalog must contain 21 logical arms")
     if len(STAGE2_BASELINE_ARMS) != 7:
         raise Stage2AblationConfigError("Stage2 baseline catalog must contain 7 arms")
     if set(ids) != set(_OVERRIDES):

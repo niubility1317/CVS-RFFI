@@ -23,7 +23,11 @@ class D92RegistrationBalancedCovarianceError(RuntimeError):
 
 
 def _group_covariance(
-    d42: Any, rows: np.ndarray, labels: np.ndarray, class_indices: np.ndarray
+    d42: Any,
+    rows: np.ndarray,
+    labels: np.ndarray,
+    class_indices: np.ndarray,
+    center_uncertainty: np.ndarray | None = None,
 ) -> np.ndarray:
     mask = np.isin(labels, class_indices)
     group_rows = rows[mask]
@@ -48,7 +52,24 @@ def _group_covariance(
             "D92 group-local sklearn class order drift"
         )
     covariance = np.asarray(estimator.covariance_, dtype=np.float64)
-    return 0.5 * (covariance + covariance.T)
+    covariance = 0.5 * (covariance + covariance.T)
+    if center_uncertainty is not None:
+        uncertainty = np.asarray(center_uncertainty, dtype=np.float64)
+        if (
+            uncertainty.ndim != 2
+            or uncertainty.shape[0] < int(np.max(class_indices)) + 1
+            or uncertainty.shape[1] != covariance.shape[0]
+            or not np.isfinite(uncertainty).all()
+            or np.any(uncertainty < 0.0)
+        ):
+            raise D92RegistrationBalancedCovarianceError(
+                "D92 centre uncertainty must be finite non-negative class diagonals"
+            )
+        covariance += np.diag(
+            np.mean(uncertainty[class_indices], axis=0)
+        )
+        covariance = 0.5 * (covariance + covariance.T)
+    return covariance
 
 
 def build_registration_balanced_equal_lda(
@@ -56,6 +77,10 @@ def build_registration_balanced_equal_lda(
     baseline_fit: Callable[..., tuple[np.ndarray, np.ndarray, dict[str, Any]]],
     *,
     arm: str,
+    center_uncertainty_provider: Callable[
+        [np.ndarray, np.ndarray, int, int], np.ndarray
+    ]
+    | None = None,
 ) -> Callable[..., tuple[np.ndarray, np.ndarray, dict[str, Any]]]:
     """Build the fixed D92 full or block-diagonal component fit."""
 
@@ -121,6 +146,8 @@ def build_registration_balanced_equal_lda(
                     "d92_scene_receiver_seed_specific_branch": False,
                     "d92_class_id_specific_formula": False,
                     "d92_registration_state_support_only": True,
+                    "d92_center_uncertainty_enabled": False,
+                    "d92_center_uncertainty_trace": 0.0,
                 }
             )
             return coefficient, intercept, audit
@@ -128,10 +155,22 @@ def build_registration_balanced_equal_lda(
         means = np.stack(
             [rows[labels == index].mean(axis=0) for index in range(classes)]
         )
+        center_uncertainty = (
+            None
+            if center_uncertainty_provider is None
+            else np.asarray(
+                center_uncertainty_provider(rows, labels, classes, shots),
+                dtype=np.float64,
+            )
+        )
         old_indices = np.arange(OLD_CLASS_COUNT, dtype=np.int64)
         new_indices = np.arange(OLD_CLASS_COUNT, classes, dtype=np.int64)
-        old_covariance = _group_covariance(d42, rows, labels, old_indices)
-        new_covariance = _group_covariance(d42, rows, labels, new_indices)
+        old_covariance = _group_covariance(
+            d42, rows, labels, old_indices, center_uncertainty
+        )
+        new_covariance = _group_covariance(
+            d42, rows, labels, new_indices, center_uncertainty
+        )
         covariance = TASK_WEIGHT * old_covariance + TASK_WEIGHT * new_covariance
         if arm == "block3_centered":
             structured = np.zeros_like(covariance)
@@ -181,6 +220,12 @@ def build_registration_balanced_equal_lda(
             "d92_scene_receiver_seed_specific_branch": False,
             "d92_class_id_specific_formula": False,
             "d92_registration_state_support_only": True,
+            "d92_center_uncertainty_enabled": center_uncertainty is not None,
+            "d92_center_uncertainty_trace": (
+                0.0
+                if center_uncertainty is None
+                else float(np.sum(center_uncertainty))
+            ),
             "d92_class_common_affine_omitted_before_fp32": True,
             "d92_centered_coefficient_mean_max_abs": float(
                 np.max(np.abs(coefficient64.mean(axis=0)))
