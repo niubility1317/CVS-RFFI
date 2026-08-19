@@ -18,6 +18,7 @@ from cvsrffi.stage2_m24_row_executor import (
 from cvsrffi.stage2_m24_safe_residual import D1, M24_ARMS
 from scripts import preflight_m24_safe_residual as preflight
 from scripts import run_m24_safe_residual_suite as suite_runner
+from scripts import score_m24_safe_residual_suite as suite_scorer
 from test_stage2_m23_integration import NEW, OLD, _inputs
 
 
@@ -165,3 +166,34 @@ def test_row_fails_closed_on_seed_drift(tmp_path: Path) -> None:
             output_root=tmp_path / "wrong",
             seed=7282102,
         )
+
+
+def test_scorer_adapter_preserves_extended_m24_audits_outside_legacy_contract() -> None:
+    quantization = {
+        "schema": "q",
+        "max_logit_abs_error": 0.2,
+        "mean_logit_abs_error": 0.1,
+        "argmax_flip_rate": 0.0,
+        "prediction_agreement_rate": 1.0,
+        "margin_normalized": {"r_p99": 0.3},
+    }
+    resource = {key: 0 for key in suite_scorer._SCORER_RESOURCE_KEYS}
+    resource.update({
+        "schema": "r",
+        "candidate_peak_memory_isolated": False,
+        "end_to_end_query_latency_available": False,
+        "end_to_end_query_latency_ms": None,
+        "batch1_head_resource": None,
+        "auxiliary_state_cost_in_candidate_resource": False,
+        "auxiliary_prediction_cost_in_candidate_latency": False,
+        "compiled_inference_state_bytes": 123,
+        "persistent_update_state_bytes": 0,
+        "transient_registration_workspace_peak_bytes": 456,
+    })
+    scorer_quantization, scorer_resource = suite_scorer._legacy_scorer_receipts(
+        quantization, resource
+    )
+    assert set(scorer_quantization) == set(suite_scorer._SCORER_QUANTIZATION_KEYS)
+    assert set(scorer_resource) == set(suite_scorer._SCORER_RESOURCE_KEYS)
+    assert quantization["margin_normalized"]["r_p99"] == 0.3
+    assert resource["compiled_inference_state_bytes"] == 123

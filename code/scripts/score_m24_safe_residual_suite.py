@@ -14,6 +14,33 @@ from cvsrffi.stage2_m24_safe_residual import D1
 
 
 SCORED_SUITE_SCHEMA = "cvs.erbt_idr.m24.scored_suite.v1"
+_SCORER_QUANTIZATION_KEYS = (
+    "schema",
+    "max_logit_abs_error",
+    "mean_logit_abs_error",
+    "argmax_flip_rate",
+    "prediction_agreement_rate",
+)
+_SCORER_RESOURCE_KEYS = (
+    "schema",
+    "feature_cache_bytes",
+    "deployment_state_bytes",
+    "state_bytes",
+    "registration_time_ms",
+    "row_peak_rss_bytes",
+    "row_peak_vram_bytes",
+    "candidate_peak_memory_isolated",
+    "closed_form_fit_count",
+    "mac_equivalent_upper_bound",
+    "query_head_mac",
+    "candidate_head_batch_query_latency_ms_per_row",
+    "end_to_end_query_latency_available",
+    "end_to_end_query_latency_ms",
+    "batch1_head_resource",
+    "row_orchestration_time_ms",
+    "auxiliary_state_cost_in_candidate_resource",
+    "auxiliary_prediction_cost_in_candidate_latency",
+)
 
 
 def _load(path: str | Path) -> dict[str, Any]:
@@ -21,6 +48,17 @@ def _load(path: str | Path) -> dict[str, Any]:
     if not isinstance(value, Mapping):
         raise ValueError("JSON root must be an object")
     return dict(value)
+
+
+def _legacy_scorer_receipts(
+    quantization: Mapping[str, Any], resource: Mapping[str, Any]
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Project extended M2.4 audits onto the legacy truth-scorer contract."""
+
+    return (
+        {key: quantization[key] for key in _SCORER_QUANTIZATION_KEYS},
+        {key: resource[key] for key in _SCORER_RESOURCE_KEYS},
+    )
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -61,6 +99,9 @@ def main() -> int:
             "effective_config_hash": str(receipt["candidate_lock_sha256"]),
             "alias_of": None,
         }
+        scorer_quantization, scorer_resource = _legacy_scorer_receipts(
+            receipt["quantization"], receipt["resource"]
+        )
         score = score_full_ablation_row(
             prediction["path"],
             args.scoring_manifest,
@@ -69,8 +110,8 @@ def main() -> int:
             expected_scoring_manifest_sha256=args.scoring_manifest_sha256,
             row_identity=row_identity,
             behavior_receipt=receipt["behavior"],
-            quantization_receipt=receipt["quantization"],
-            resource_receipt=receipt["resource"],
+            quantization_receipt=scorer_quantization,
+            resource_receipt=scorer_resource,
         )
         arm_root = output / arm
         arm_root.mkdir(parents=False, exist_ok=False)
