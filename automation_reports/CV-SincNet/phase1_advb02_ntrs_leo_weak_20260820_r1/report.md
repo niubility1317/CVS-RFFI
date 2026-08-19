@@ -2,7 +2,7 @@
 
 ## 当前结论
 
-- 状态：`LOCAL_VERIFIED`
+- 状态：`LANDED`
 - 当前只证明代码、配置、协议负测与本地回归闭合；尚无N607训练或性能结果。
 - 本实验是`ADV3B02_CORE90_SOFT_E200`上的独立新版本`ADVB02_NTRS_LEO_WEAK_E200`，不修改正在运行的CRRA实验。
 
@@ -62,16 +62,22 @@ nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_
 - 独立P0/P1审查：无P0/P1；审查员独立验证77项NTRS/CRRA回归、launcher和训练/评测入口，未修改文件。
 - 已知非阻断旧测试：`test_post_stage_trainers.py`仍有两项基线陈旧断言，分别要求历史`mixed_orbit`默认值及旧损失源码字面量；`HEAD`基线已存在，不由NTRS引入。本实验不会退回`mixed_orbit`。
 
+## N607发布验证
+
+- release远端编译及launcher语法检查通过。
+- 真实checkpoint无query冒烟：`PASS_REAL_ADV3B02_CHECKPOINT_SOURCE_ONLY_NO_QUERY`。
+- 冒烟只读取1条source样本、0条query；ADV3B02 checkpoint加载到NTRS模型时有63个预期NTRS新增键、0个unexpected key；前向输出有限，评估态NTRS状态修改数为0。
+
 ## 发布映射
 
 - 本地唯一release归档：`E:\type10-7\local_artifacts\phase1_advb02_ntrs_leo_weak_20260820_r1\phase1_advb02_ntrs_leo_weak_20260820_r1_11d2cfd4.tar.gz`
 - 远端归档：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_ntrs_leo_weak_20260820/11d2cfd4/phase1_advb02_ntrs_leo_weak_20260820_r1_11d2cfd4.tar.gz`
-- SHA256：待归档生成与单次本地/远端比对后填写。
+- SHA256：`cea74494ccb30dbe83b32227f9fa8e205dc140d131f01f5562ef3763a24168f5`；本地与远端单次比对一致。
 
 ## 状态记录
 
 - `LOCAL_VERIFIED`：实现提交已推送，远端分支OID与本地`HEAD`一致；N607直连、路径、数据、checkpoint和GPU只读preflight通过。
-- `LANDED`：待release归档同步、单次SHA比对和远端编译完成后记录。
+- `LANDED`：release归档同步、单次SHA比对、远端编译和真实checkpoint无query冒烟均通过。
 - `RUNNING`：待唯一launcher启动并完成一次PID/CWD/cmdline/GPU/log增长核对后记录。
 - `ARTIFACTS_COMPLETE`：仅在训练及clean和三种LEO_WEAK独立测试全部完成后记录。
 - `ANALYZED`：仅在同row结果分析完成后记录。
