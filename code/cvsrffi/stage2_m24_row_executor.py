@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 from pathlib import Path
 import time
@@ -17,7 +18,7 @@ from cvsrffi.stage2_ablation_truth_scorer import BEHAVIOR_RECEIPT_SCHEMA, QUANTI
 from cvsrffi.stage2_m23_overlay_cache import load_m23_overlay_cache
 from cvsrffi.stage2_m23_rfguard import build_ground_manifold, estimate_stage2b_domain_state
 from cvsrffi.stage2_m23_row_executor import M23_F1_IF, _OverlayGroundComponent, _cosine_prediction, _legacy_states
-from cvsrffi.stage2_m24_safe_residual import D0, M24_ARMS, arm_config_hash, fit_m24_safe_residual, prepare_query_features
+from cvsrffi.stage2_m24_safe_residual import D0, D1, M24_ARMS, arm_config_hash, fit_m24_safe_residual, prepare_query_features
 from cvsrffi.stage2_prediction_artifact import publish_prediction_artifact
 
 
@@ -70,6 +71,50 @@ def _physical_cosine_head(blocks: Any, labels: Any, classes: tuple[str, ...]) ->
     return centres, np.zeros(len(classes), dtype=np.float64)
 
 
+def d1_overlay_from_base_cache(base_cache: Mapping[str, Any]) -> dict[str, Any]:
+    """Construct the RF-independent D1 view directly from one legal base cache."""
+
+    manifest = base_cache["manifest"]
+    payloads: dict[str, dict[str, np.ndarray]] = {}
+    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+        legacy = base_cache["scenario_payloads"][scenario]
+
+        def blocks(name: str) -> np.ndarray:
+            rows = np.asarray(legacy[name], dtype=np.float32)
+            return np.concatenate(
+                [rows[:, :256], np.ones((len(rows), 10), dtype=np.float32)], axis=1
+            )
+
+        old_blocks = blocks("old_support_features")
+        new_blocks = blocks("new_support_features")
+        payloads[scenario] = {
+            "old_support_blocks": old_blocks,
+            "old_support_labels": np.asarray(legacy["old_support_labels"]).astype(str),
+            "old_support_quality": np.ones(len(old_blocks), dtype=np.float32),
+            "new_support_blocks": new_blocks,
+            "new_support_labels": np.asarray(legacy["new_support_labels"]).astype(str),
+            "new_support_quality": np.ones(len(new_blocks), dtype=np.float32),
+            "query_blocks": blocks("query_features"),
+            "query_tokens": np.asarray(legacy["query_tokens"]).astype(str),
+        }
+    return {
+        "manifest": {
+            "receiver": manifest["receiver"],
+            "k_shot": manifest["k_shot"],
+            "method_seed": manifest["method_seed"],
+            "capsule_id": manifest["capsule_id"],
+            "split_id": manifest["split_id"],
+            "phase2_data_status": manifest["phase2_data_status"],
+            "predictor_package_root_sha256": manifest["package_root_sha256"],
+            "predictor_package_seal_sha256": manifest["package_seal_sha256"],
+            "d1_base_only": True,
+        },
+        "old_classes": tuple(str(item) for item in base_cache["old_classes"]),
+        "new_classes": tuple(str(item) for item in base_cache["new_classes"]),
+        "scenario_payloads": payloads,
+    }
+
+
 def execute_m24_row(
     *,
     arm: str,
@@ -106,8 +151,11 @@ def execute_m24_row(
         raise M24RowExecutionError("formal scenario coverage drift")
     output = Path(output_root).absolute()
     output.mkdir(parents=True, exist_ok=False)
-    component = _OverlayGroundComponent(overlay_cache["ground_component"])
-    manifold = build_ground_manifold(component)
+    base_only_d1 = bool(overlay_manifest.get("d1_base_only", False))
+    if base_only_d1 and arm != D1:
+        raise M24RowExecutionError("base-only compact view is restricted to D1")
+    component = None if base_only_d1 else _OverlayGroundComponent(overlay_cache["ground_component"])
+    manifold = None if component is None else build_ground_manifold(component)
 
     candidate_after: list[np.ndarray] = []
     candidate_before: list[np.ndarray] = []
@@ -179,13 +227,23 @@ def execute_m24_row(
             all_support_labels = np.concatenate([compact["old_support_labels"], compact["new_support_labels"]])
             all_support_quality = np.concatenate([compact["old_support_quality"], compact["new_support_quality"]])
             coefficient, bias, f1_log_diag = _f1_reference_head(historical_after, all_support_blocks)
-            domain_state = estimate_stage2b_domain_state(
-                compact["old_support_blocks"],
-                compact["old_support_labels"],
-                old_classes,
-                np.ones(len(compact["old_support_quality"]), dtype=np.float32),
-                manifold,
-            )
+            if manifold is None:
+                domain_digest = hashlib.sha256(
+                    str(base_manifest["split_id"]).encode("utf-8")
+                ).hexdigest()
+                ground_prior = None
+                nuisance_covariance = None
+            else:
+                domain_state = estimate_stage2b_domain_state(
+                    compact["old_support_blocks"],
+                    compact["old_support_labels"],
+                    old_classes,
+                    np.ones(len(compact["old_support_quality"]), dtype=np.float32),
+                    manifold,
+                )
+                domain_digest = domain_state.digest
+                ground_prior = manifold.class_centres
+                nuisance_covariance = domain_state.nuisance_covariance
             fit_started = time.perf_counter()
             state, audit, _workspace = fit_m24_safe_residual(
                 arm=arm,
@@ -198,9 +256,9 @@ def execute_m24_row(
                 f1_coefficient=coefficient,
                 f1_bias=bias,
                 f1_log_diag=f1_log_diag,
-                domain_digest=domain_state.digest,
-                ground_prior_identity=manifold.class_centres,
-                nuisance_covariance_identity=domain_state.nuisance_covariance,
+                domain_digest=domain_digest,
+                ground_prior_identity=ground_prior,
+                nuisance_covariance_identity=nuisance_covariance,
             )
             registration_seconds += time.perf_counter() - fit_started
             feature_dim = state.compiled_affine_state.feature_dim
@@ -218,9 +276,9 @@ def execute_m24_row(
                 old_class_count=len(old_classes),
                 f1_coefficient=old_coefficient,
                 f1_bias=old_bias,
-                domain_digest=domain_state.digest,
-                ground_prior_identity=manifold.class_centres,
-                nuisance_covariance_identity=domain_state.nuisance_covariance,
+                domain_digest=domain_digest,
+                ground_prior_identity=ground_prior,
+                nuisance_covariance_identity=nuisance_covariance,
             )
             before_query_features = prepare_query_features(
                 compact["query_blocks"], feature_dim=before_state.compiled_affine_state.feature_dim
@@ -272,7 +330,7 @@ def execute_m24_row(
     resource_receipt = {
         "schema": RESOURCE_RECEIPT_SCHEMA,
         "feature_cache_bytes": int(base_cache_bytes + overlay_cache_bytes),
-        "deployment_state_bytes": int(component.resource_audit()["logical_deployment_state_bytes"]),
+        "deployment_state_bytes": int(component.resource_audit()["logical_deployment_state_bytes"]) if component is not None else 0,
         "state_bytes": int(max(state_bytes)),
         "compiled_inference_state_bytes": int(max(state_bytes)),
         "persistent_update_state_bytes": 0 if arm != D0 else int(max(int(audits[s].get("resource", {}).get("persistent_update_state_bytes", 0)) for s in audits)),
@@ -370,4 +428,36 @@ def run_m24_row_from_caches(
     )
 
 
-__all__ = ["DA0_REG0", "DA1_REG0", "DA0_REG1", "DA1_REG1", "M24_ROW_EXECUTION_SCHEMA", "M24RowExecutionError", "execute_m24_row", "run_m24_row_from_caches"]
+def run_m24_d1_row_from_base_cache(
+    *,
+    row_id: str,
+    receiver: str,
+    base_feature_cache_payload: str | Path,
+    base_feature_cache_manifest: str | Path,
+    base_feature_cache_payload_sha256: str,
+    base_feature_cache_manifest_sha256: str,
+    output_root: str | Path,
+    seed: int,
+    device: Any = "cpu",
+) -> dict[str, Any]:
+    base = load_feature_cache(
+        base_feature_cache_payload,
+        base_feature_cache_manifest,
+        expected_payload_sha256=str(base_feature_cache_payload_sha256).lower(),
+        expected_manifest_sha256=str(base_feature_cache_manifest_sha256).lower(),
+    )
+    return execute_m24_row(
+        arm=D1,
+        row_id=row_id,
+        receiver=receiver,
+        base_cache=base,
+        overlay_cache=d1_overlay_from_base_cache(base),
+        output_root=output_root,
+        seed=int(seed),
+        device=device,
+        base_cache_bytes=Path(base_feature_cache_payload).stat().st_size,
+        overlay_cache_bytes=0,
+    )
+
+
+__all__ = ["DA0_REG0", "DA1_REG0", "DA0_REG1", "DA1_REG1", "M24_ROW_EXECUTION_SCHEMA", "M24RowExecutionError", "d1_overlay_from_base_cache", "execute_m24_row", "run_m24_d1_row_from_base_cache", "run_m24_row_from_caches"]

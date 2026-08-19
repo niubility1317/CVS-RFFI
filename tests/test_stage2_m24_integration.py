@@ -13,12 +13,14 @@ from cvsrffi.stage2_m24_row_executor import (
     DA1_REG0,
     DA1_REG1,
     M24RowExecutionError,
+    d1_overlay_from_base_cache,
     execute_m24_row,
 )
 from cvsrffi.stage2_m24_safe_residual import D1, M24_ARMS
 from scripts import preflight_m24_safe_residual as preflight
 from scripts import run_m24_safe_residual_suite as suite_runner
 from scripts import score_m24_safe_residual_suite as suite_scorer
+from scripts import run_m24_d1_expanded_matrix as expanded_runner
 from test_stage2_m23_integration import NEW, OLD, _inputs
 
 
@@ -88,6 +90,13 @@ def test_suite_freezes_one_seed_across_all_eleven_arms() -> None:
     }
 
 
+def test_expanded_d1_matrix_is_five_receivers_three_seeds_four_conditions() -> None:
+    assert len(expanded_runner.DEFAULT_RECEIVERS) == 5
+    assert len(expanded_runner.DEFAULT_SEEDS) == 3
+    assert expanded_runner.DEFAULT_CONDITIONS == ((1, 20), (5, 20), (10, 20), (10, 5))
+    assert len(expanded_runner.DEFAULT_RECEIVERS) * len(expanded_runner.DEFAULT_SEEDS) * len(expanded_runner.DEFAULT_CONDITIONS) == 60
+
+
 def test_preflight_accepts_legacy_base_protocol_bound_by_overlay_and_split(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -152,6 +161,27 @@ def test_d1_row_publishes_truth_unopened_four_state_and_nonoverwriting_output(tm
             output_root=tmp_path / "row",
             seed=7282101,
         )
+
+
+def test_d1_base_only_view_preserves_physical_blocks_without_rf_state(tmp_path: Path) -> None:
+    base, _overlay = _caches()
+    base["manifest"].update({
+        "package_root_sha256": "3" * 64,
+        "package_seal_sha256": "4" * 64,
+    })
+    compact = d1_overlay_from_base_cache(base)
+    assert compact["manifest"]["d1_base_only"] is True
+    receipt = execute_m24_row(
+        arm=D1,
+        row_id="synthetic_m24_d1_base_only",
+        receiver="3-19",
+        base_cache=base,
+        overlay_cache=compact,
+        output_root=tmp_path / "base_only",
+        seed=7282101,
+    )
+    assert receipt["d1_historical_parity"]["prediction_disagreements"] == 0
+    assert receipt["resource"]["deployment_state_bytes"] == 0
 
 
 def test_row_fails_closed_on_seed_drift(tmp_path: Path) -> None:

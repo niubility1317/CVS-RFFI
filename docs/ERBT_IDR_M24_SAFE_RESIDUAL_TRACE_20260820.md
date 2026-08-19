@@ -29,6 +29,7 @@
 |M24-19|canonical manifest、依赖、非覆盖和提交绑定预检|M2.4 preflight|错误manifest、已存在输出和错误commit测试|local_verified|
 |M24-20|truth-last评分复用同row配对诊断|M2.4 scorer|score前预测不可变和帮助／伤害归因测试|local_verified|
 |M24-21|旧M2.3和D92默认路径不变|全新opt-in入口|M2.3及相邻回归测试|local_verified|
+|M24-22|D1扩展覆盖5个receiver、3个真实method seed和4个K／新类条件|base-cache-only D1矩阵runner／scorer|60-row计划、真实K10 parity及truth-last边界测试|local_verified|
 
 ## 冻结实验顺序
 
