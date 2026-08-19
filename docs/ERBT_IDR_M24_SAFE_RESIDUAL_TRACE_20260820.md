@@ -9,7 +9,7 @@
 |ID|设计要求|实现落点|验证|状态|
 |---|---|---|---|---|
 |M24-01|物理256维F1：`normalize([normalize(id);4 normalize(fft)])`，随后复用冻结F1对角度量、逐样本归一化和量化头|`m24_features.py`、`m24_compiler.py`|真实K10缓存660条query零差异；紧凑态7677B|verified|
-|M24-02|D1不得包含quality、prior、uncertainty、nuisance、RF-lite和二次单边加权|D1配置锁和fit审计|D1审计、系数维度与禁用项测试|local_verified|
+|M24-02|D1不得包含quality、prior、uncertainty、nuisance、RF-lite和二次单边加权|D1配置锁和fit审计|D1审计、系数维度与禁用项测试；60行正式prediction保持D1锁|verified|
 |M24-03|support center、decision center、covariance center分离|`m24_center.py`|三个中心独立变化测试|local_verified|
 |M24-04|固定floor改为相对trace jitter且保持PSD|`m24_covariance.py`|缩放等变、最小特征值和退化输入测试|local_verified|
 |M24-05|quality权重与uniform混合并满足`ESS>=max(3,K/2)`|`m24_quality.py`|极端quality、K1/K2/K5/K10边界测试|local_verified|
@@ -24,12 +24,12 @@
 |M24-14|量化增加margin归一化误差P50/P95/P99/max和阈值比例|`m24_compiler.py`|手算margin fixture测试|local_verified|
 |M24-15|持久态只保留量化仿射头、registry、schema和摘要|`M24InferenceState`|禁止保留workspace／FP32旁路与字节审计测试|local_verified|
 |M24-16|瞬时注册态独立计量|`M24RegistrationWorkspace`和resource receipt|三种字节口径测试|local_verified|
-|M24-17|D0–D10完整因果臂且同row同seed|M2.4 row executor／suite|目录、seed计划和11臂闭合测试|local_verified|
-|M24-18|四状态显式命名与query独立全类argmax|row receipt／prediction artifact|四状态及truth-unopened集成测试|local_verified|
+|M24-17|D0–D10完整因果臂且同row同seed|M2.4 row executor／suite|两条件×11臂×3场景真实N607诊断闭合|verified|
+|M24-18|四状态显式命名与query独立全类argmax|row receipt／prediction artifact|22个诊断臂及60个扩展行truth-last评分通过|verified|
 |M24-19|canonical manifest、依赖、非覆盖和提交绑定预检|M2.4 preflight|错误manifest、已存在输出和错误commit测试|local_verified|
-|M24-20|truth-last评分复用同row配对诊断|M2.4 scorer|score前预测不可变和帮助／伤害归因测试|local_verified|
-|M24-21|旧M2.3和D92默认路径不变|全新opt-in入口|M2.3及相邻回归测试|local_verified|
-|M24-22|D1扩展覆盖5个receiver、3个真实method seed和4个K／新类条件|base-cache-only D1矩阵runner／scorer|60-row计划、真实K10 parity及truth-last边界测试|local_verified|
+|M24-20|truth-last评分复用同row配对诊断|M2.4 scorer|诊断22行与扩展60行均在prediction闭合后独立评分|verified|
+|M24-21|旧M2.3和D92默认路径不变|全新opt-in入口|M2.3及相邻回归最终47项通过|verified|
+|M24-22|D1扩展覆盖5个receiver、3个真实method seed和4个K／新类条件|base-cache-only D1矩阵runner／scorer／汇总器|60/60行、180场景、零parity分歧、truth-last评分PASS|verified|
 
 ## 冻结实验顺序
 
@@ -46,3 +46,10 @@
 ## D1纠错追踪
 
 v2的K1 D1通过，但K10 D1出现14/660个预测差异，触发预登记硬停止且未打开truth。问题不是physical256定义本身，而是旧实现把冻结对角度量后的逐样本归一化近似成固定support中位数bias缩放。纠错后推理态显式持久化256维冻结log-diag，先执行逐样本变换，再使用由历史F1量化状态解码并按相同两块语义重编译的紧凑头。真实K10 cache的三个场景合计660条query全部与历史F1一致，状态7677B，满足不超过历史F1 1.25倍的预设资源界限。
+
+## 最终实验判定
+
+- 诊断run：`erbt_idr_m24_safe_residual_diagnostic_20260820_v3`，22个臂结果完成；D1在K1与K10分别达到1560/1560和660/660逐query一致。
+- 模块判定：D2–D10未晋级。K1无独立输出差异，K10在三个场景均触发support-harm整候选回退。
+- 扩展run：`erbt_idr_m24_d1_expanded_20260820_v1`，5个receiver×3个method seed×4条件=60行、180场景；60行评分PASS且总预测分歧为0。
+- 科学判定：D1可作为稳定研发基线；本轮未证明附加模块带来性能增益。

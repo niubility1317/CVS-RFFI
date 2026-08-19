@@ -1,25 +1,117 @@
-# ERBT-IDR M2.4 D1扩展矩阵实验报告
+# ERBT-IDR M2.4 D1扩展矩阵正式实验报告
 
-## 启动前登记
+日期：2026-08-20
 
-|字段|值|
+run ID：`erbt_idr_m24_d1_expanded_20260820_v1`
+
+最终状态：`ANALYZED / DEVELOPMENT_EXPANDED_EVIDENCE / D1_PARITY_PASS`
+
+实现分支：`work/m24-safe-residual`
+
+冻结提交：`b49a24754c4aeb6d745e379142ff1d4753a6b2ed`
+
+## 一、结论先行
+
+本轮60行、180个`leo_*_weak`场景单元全部完成prediction与truth-last独立评分，60行均为`PASS`，D1相对历史F1的逐query预测分歧为0。由此确认：M2.4物理256维D1在5个receiver、3个真实method seed和4种K-shot／新类条件上保持历史F1的注册后决策等价性。
+
+扩展结果也清楚显示K-shot是当前性能的主导变量：`K1/new20`的平均`H=0.3345`，`K5/new20`升至`0.6085`，`K10/new20`升至`0.6906`；当K10的新类数由20降至5时，`H`进一步达到`0.7727`，平均遗忘`F`降至`0.0193`。这属于D1稳定性与能力边界证据，不是D2–D10模块收益或fresh confirmation。
+
+## 二、矩阵与协议
+
+|维度|取值|
 |---|---|
-|run ID|`erbt_idr_m24_d1_expanded_20260820_v1`|
-|当前状态|`LOCAL_VERIFIED / PREREGISTERED / NOT_YET_LANDED`|
-|候选|仅`M24-D1-PHYSICAL256-F1`；D2–D10在诊断K10三个场景均触发support-harm整体回退，无候选具备扩展资格|
-|矩阵|5个receiver：`20-1`、`3-19`、`7-14`、`7-7`、`8-8`；3个真实method seed：`7282101`、`7282102`、`7282103`；4条件：`K1/new20`、`K5/new20`、`K10/new20`、`K10/new5`；合计60个row、180个场景单元|
-|协议|`p2_min_v1`、`VALIDATED_ONCE`；只读复用既有base feature cache；不重验received IQ；query不更新状态|
-|prediction边界|全部60个row先完成不可变prediction且D1逐query parity为零差异，之后scorer才允许接入truth|
-|环境／CWD|N607 CPU闭式执行；使用不可变Git release；`PYTHONPATH=code`|
-|输出|`/home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m24_d1_expanded_20260820_v1`，不可覆盖|
-|资源|默认2个CPU worker；不创建GPU计算进程，不干预既有任务|
-|停止规则|错误cache身份、协议越界、输出覆盖、任一D1 parity差异、prediction不完整或scorer接线错误；不因性能停止|
-|预期artifact|60个row receipt、60个不可变prediction、prediction matrix index、60个same-row score、60个four-state score、scored matrix index|
+|receiver|`20-1`、`3-19`、`7-14`、`7-7`、`8-8`|
+|真实method seed|`7282101`、`7282102`、`7282103`|
+|条件|`K1/new20`、`K5/new20`、`K10/new20`、`K10/new5`|
+|规模|60行；每行3个场景；共180个场景单元|
+|候选|仅`M24-D1-PHYSICAL256-F1`|
+|协议|`p2_min_v1`、`VALIDATED_ONCE`；复用合法base feature cache，不重验received IQ|
+|query边界|每个query独立在全部已注册类上决策；prediction阶段不读取truth、不更新状态|
+|评分边界|60行prediction及matrix index全部闭合后，独立scorer才连接truth|
 
-## 本地验证
+选择只扩展D1是诊断证据驱动的结果：D2–D10在K10诊断的三个场景中均触发support-harm整体回退，扩展这些候选只会制造与D1重复的结果，不能增加有效因果信息。
 
-M2.4聚焦及M2.3相邻测试45项通过。真实`3-19/K10/new5` base-cache-only D1回归达到660/660逐query一致；推理态7677B，`persistent_update_state_bytes=0`，不需要RF overlay或ground component持久状态。
+## 三、完整性与等价性核验
 
-## 证据边界
+|检查项|结果|
+|---|---|
+|prediction receipt|60/60|
+|same-row score|60/60|
+|four-state score|60/60|
+|场景单元|180/180|
+|prediction阶段`query_truth_opened`|全部为`false`|
+|评分阶段`truth_opened_after_prediction_commit`|60/60为`true`|
+|D1历史F1逐query分歧|0|
+|scored matrix index|`PASS`|
 
-该矩阵用于刻画D1在receiver、method seed、support/query seed、new-class draw和K条件上的研发稳定性。它不是新增模块收益矩阵，也不是独立fresh confirmation；D2–D10的未晋级状态不因D1扩展而改变。
+评分启动出现过两次truth前技术失败：首次缺少模块搜索路径，第二次误预建了评分器要求不存在的输出根。两次均未产生score、未打开truth；第三次使用新输出根`scores_retry2`完成60行评分。失败日志和最终评分均已保留。
+
+## 四、按条件聚合结果
+
+下表为15行／条件的均值±总体标准差；每行指标先按三个场景的query数加权。
+
+|条件|`A_o_pre`|`A_o_post`|`A_n`|`H`|`F`|`min_old`|`min_new`|
+|---|---:|---:|---:|---:|---:|---:|---:|
+|K1/new20|0.5967±0.0882|0.3963±0.0879|0.3003±0.0684|0.3345±0.0709|0.2004±0.0406|0.0789±0.0529|0.0178±0.0187|
+|K5/new20|0.7522±0.0840|0.6350±0.0576|0.5895±0.0917|0.6085±0.0731|0.1172±0.0426|0.3033±0.1097|0.1700±0.0603|
+|K10/new20|0.7820±0.0867|0.7007±0.0787|0.6839±0.0793|0.6906±0.0744|0.0813±0.0354|0.3711±0.1287|0.2978±0.0884|
+|K10/new5|0.7820±0.0867|0.7628±0.0711|0.7882±0.0767|0.7727±0.0665|0.0193±0.0451|0.4600±0.1265|0.5678±0.1037|
+
+### 关键变化
+
+- `K1/new20→K5/new20`：平均`H`增加0.2739，平均`F`减少0.0831，说明极低shot是当前主要瓶颈。
+- `K5/new20→K10/new20`：平均`H`再增加0.0821，`min_new`由0.1700升至0.2978。
+- `K10/new20→K10/new5`：相同K下减少并发新类规模后，平均`H`增加0.0822，`F`减少0.0620，说明注册竞争规模也是显著因素。
+- `K1/new20`的`min_new`均值仅0.0178，不能据此声称低shot新类底线已经解决。
+
+## 五、receiver与seed稳定性
+
+|receiver|平均`H`|平均`F`|平均`min_old`|平均`min_new`|
+|---|---:|---:|---:|---:|
+|20-1|0.6095|0.0928|0.3639|0.3083|
+|3-19|0.4688|0.0657|0.1847|0.1681|
+|7-14|0.6447|0.1134|0.2847|0.2986|
+|7-7|0.6541|0.1162|0.4278|0.2861|
+|8-8|0.6308|0.1345|0.2556|0.2556|
+
+`3-19`在四条件平均`H`最低，仍是后续机制分析的重点困难receiver。`8-8`平均遗忘最高，而`7-7`平均`H`与旧类底线最高；这些是跨条件描述，不应用于替代同row晋级比较。
+
+|method seed|平均`H`|平均`F`|
+|---|---:|---:|
+|7282101|0.6026|0.0936|
+|7282102|0.5985|0.1043|
+|7282103|0.6036|0.1157|
+
+三个seed的平均`H`范围仅0.0051，整体中心性能较稳定；但`F`仍随seed有0.0221范围，后续应保留多seed报告，不能只报最佳seed。
+
+## 六、资源结果
+
+|资源项|最小|均值|最大|
+|---|---:|---:|---:|
+|编译推理态字节|7677|14314.5|16527|
+|持久更新态字节|0|0|0|
+|注册时间／ms|8.661|19.844|52.164|
+|批量query head耗时／ms/row|0.562|3.763|12.868|
+|单query head MAC|2816|5696|6656|
+
+所有行都不持久化注册更新态；状态大小随新类数变化。这里的延迟是闭式head与行级测量，不等同于完整端到端无线接收链路延迟。
+
+## 七、科学解释与后续建议
+
+1. D1实现已经跨矩阵证明“物理256维重构后保持历史F1注册后决策”的工程正确性，可作为M2.4稳定基线。
+2. D2–D10未被本轮晋级。诊断中K1与D1结果相同，K10又全部安全回退；因此没有真实模块增益证据。
+3. 下一轮若继续优化，应优先针对`K1/new20`的新类底线与`3-19`困难receiver，设计能在support侧产生可辨识差异且不过度整体回退的新候选。
+4. 任何新候选仍应与D1同row比较；本轮60行可作为研发参考面，但不能被称为独立确认集。
+
+## 八、证据与复现入口
+
+- 机器可读汇总：`results_summary.json`
+- 完整本地原始证据：`evidence/remote_run/`，共246个文件、约133MB
+- prediction：`evidence/remote_run/predictions/`
+- 最终评分：`evidence/remote_run/scores_retry2/`
+- 运行与失败保留日志：`evidence/remote_run/logs/`
+- 可复现汇总器：`code/scripts/summarize_m24_d1_expanded.py`
+
+## 九、证据边界
+
+本报告支持M2.4 D1扩展稳定性、历史F1等价性、K-shot／新类规模／receiver／seed差异分析。它不支持D2–D10有效、M2.4优于历史F1、fresh confirmation、完整125结论、Phase3开放世界能力或星载部署结论。

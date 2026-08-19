@@ -1,0 +1,535 @@
+{
+  "schema": "cvs.erbt_idr.m24.diagnostic_results_summary.v1",
+  "run_id": "erbt_idr_m24_safe_residual_diagnostic_20260820_v3",
+  "status": "ANALYZED / SMALL_MATRIX_DEVELOPMENT_EVIDENCE / D1_PARITY_PASS / M2.4_MODULES_NOT_PROMOTED",
+  "row_count": 22,
+  "conditions": [
+    "K1/new20",
+    "K10/new5"
+  ],
+  "scenario_count_per_row": 3,
+  "truth_last_scoring": true,
+  "rows": [
+    {
+      "condition": "K1/new20",
+      "arm": "M24-D0-HISTORICAL-F1",
+      "metrics": {
+        "A_o_pre": 0.5416666666666666,
+        "A_o_post": 0.3555555555555555,
+        "A_n": 0.145,
+        "H": 0.2058219270442516,
+        "F": 0.18611111111111114,
+        "min_old": 0.0,
+        "min_new": 0.0
+      },
+      "d1_historical_parity": {
+        "agreement_rate": null,
+        "prediction_disagreements": 0,
+        "query_rows": 0
+      },
+      "whole_candidate_fallback_scenarios": 0,
+      "support_harm_total": 0,
+      "state_bytes": 15340,
+      "compiled_inference_state_bytes": 15340,
+      "persistent_update_state_bytes": 0
+    },
+    {
+      "condition": "K1/new20",
+      "arm": "M24-D1-PHYSICAL256-F1",
+      "metrics": {
+        "A_o_pre": 0.5166666666666667,
+        "A_o_post": 0.3555555555555555,
+        "A_n": 0.145,
+        "H": 0.2058219270442516,
+        "F": 0.16111111111111112,
+        "min_old": 0.0,
+        "min_new": 0.0
+      },
+      "d1_historical_parity": {
+        "agreement_rate": 1.0,
+        "prediction_disagreements": 0,
+        "query_rows": 1560
+      },
+      "whole_candidate_fallback_scenarios": 0,
+      "support_harm_total": 0,
+      "state_bytes": 16527,
+      "compiled_inference_state_bytes": 16527,
+      "persistent_update_state_bytes": 0
+    },
+    {
+      "condition": "K1/new20",
+      "arm": "M24-D10-RF-LITE-SAFE-GATE",
+      "metrics": {
+        "A_o_pre": 0.5166666666666667,
+        "A_o_post": 0.3555555555555555,
+        "A_n": 0.145,
+        "H": 0.2058219270442516,
+        "F": 0.16111111111111112,
+        "min_old": 0.0,
+        "min_new": 0.0
+      },
+      "d1_historical_parity": {
+        "agreement_rate": null,
+        "prediction_disagreements": 0,
+        "query_rows": 0
+      },
+      "whole_candidate_fallback_scenarios": 0,
+      "support_harm_total": 0,
+      "state_bytes": 16527,
+      "compiled_inference_state_bytes": 16527,
+      "persistent_update_state_bytes": 0
+    },
+    {
+      "condition": "K1/new20",
+      "arm": "M24-D2-RELATIVE-PSD-JITTER",
+      "metrics": {
+        "A_o_pre": 0.5166666666666667,
+        "A_o_post": 0.3555555555555555,
+        "A_n": 0.145,
+        "H": 0.2058219270442516,
+        "F": 0.16111111111111112,
+        "min_old": 0.0,
+        "min_new": 0.0
+      },
+      "d1_historical_parity": {
+        "agreement_rate": null,
+        "prediction_disagreements": 0,
+        "query_rows": 0
+      },
+      "whole_candidate_fallback_scenarios": 0,
+      "support_harm_total": 0,
+      "state_bytes": 16527,
+      "compiled_inference_state_bytes": 16527,
+      "persistent_update_state_bytes": 0
+    },
+    {
+      "condition": "K1/new20",
+      "arm": "M24-D3-RF-QUALITY-CENTER",
+      "metrics": {
+        "A_o_pre": 0.5166666666666667,
+        "A_o_post": 0.3555555555555555,
+        "A_n": 0.145,
+        "H": 0.2058219270442516,
+        "F": 0.16111111111111112,
+        "min_old": 0.0,
+        "min_new": 0.0
+      },
+      "d1_historical_parity": {
+        "agreement_rate": null,
+        "prediction_disagreements": 0,
+        "query_rows": 0
+      },
+      "whole_candidate_fallback_scenarios": 0,
+      "support_harm_total": 0,
+      "state_bytes": 16527,
+      "compiled_inference_state_bytes": 16527,
+      "persistent_update_state_bytes": 0
+    },
+    {
+      "condition": "K1/new20",
+      "arm": "M24-D4-RF-QUALITY-COVARIANCE",
+      "metrics": {
+        "A_o_pre": 0.5166666666666667,
+        "A_o_post": 0.3555555555555555,
+        "A_n": 0.145,
+        "H": 0.2058219270442516,
+        "F": 0.16111111111111112,
+        "min_old": 0.0,
+        "min_new": 0.0
+      },
+      "d1_historical_parity": {
+        "agreement_rate": null,
+        "prediction_disagreements": 0,
+        "query_rows": 0
+      },
+      "whole_candidate_fallback_scenarios": 0,
+      "support_harm_total": 0,
+      "state_bytes": 16527,
+      "compiled_inference_state_bytes": 16527,
+      "persistent_update_state_bytes": 0
+    },
+    {
+      "condition": "K1/new20",
+      "arm": "M24-D5-IF-RESIDUAL-RELIABILITY",
+      "metrics": {
+        "A_o_pre": 0.5166666666666667,
+        "A_o_post": 0.3555555555555555,
+        "A_n": 0.145,
+        "H": 0.2058219270442516,
+        "F": 0.16111111111111112,
+        "min_old": 0.0,
+        "min_new": 0.0
+      },
+      "d1_historical_parity": {
+        "agreement_rate": null,
+        "prediction_disagreements": 0,
+        "query_rows": 0
+      },
+      "whole_candidate_fallback_scenarios": 0,
+      "support_harm_total": 0,
+      "state_bytes": 16527,
+      "compiled_inference_state_bytes": 16527,
+      "persistent_update_state_bytes": 0
+    },
+    {
+      "condition": "K1/new20",
+      "arm": "M24-D6-GATED-GROUND-PRIOR",
+      "metrics": {
+        "A_o_pre": 0.5166666666666667,
+        "A_o_post": 0.3555555555555555,
+        "A_n": 0.145,
+        "H": 0.2058219270442516,
+        "F": 0.16111111111111112,
+        "min_old": 0.0,
+        "min_new": 0.0
+      },
+      "d1_historical_parity": {
+        "agreement_rate": null,
+        "prediction_disagreements": 0,
+        "query_rows": 0
+      },
+      "whole_candidate_fallback_scenarios": 0,
+      "support_harm_total": 0,
+      "state_bytes": 16527,
+      "compiled_inference_state_bytes": 16527,
+      "persistent_update_state_bytes": 0
+    },
+    {
+      "condition": "K1/new20",
+      "arm": "M24-D7-NUISANCE-COVARIANCE",
+      "metrics": {
+        "A_o_pre": 0.5166666666666667,
+        "A_o_post": 0.3555555555555555,
+        "A_n": 0.145,
+        "H": 0.2058219270442516,
+        "F": 0.16111111111111112,
+        "min_old": 0.0,
+        "min_new": 0.0
+      },
+      "d1_historical_parity": {
+        "agreement_rate": null,
+        "prediction_disagreements": 0,
+        "query_rows": 0
+      },
+      "whole_candidate_fallback_scenarios": 0,
+      "support_harm_total": 0,
+      "state_bytes": 16527,
+      "compiled_inference_state_bytes": 16527,
+      "persistent_update_state_bytes": 0
+    },
+    {
+      "condition": "K1/new20",
+      "arm": "M24-D8-NORMALIZED-UNCERTAINTY",
+      "metrics": {
+        "A_o_pre": 0.5166666666666667,
+        "A_o_post": 0.3555555555555555,
+        "A_n": 0.145,
+        "H": 0.2058219270442516,
+        "F": 0.16111111111111112,
+        "min_old": 0.0,
+        "min_new": 0.0
+      },
+      "d1_historical_parity": {
+        "agreement_rate": null,
+        "prediction_disagreements": 0,
+        "query_rows": 0
+      },
+      "whole_candidate_fallback_scenarios": 0,
+      "support_harm_total": 0,
+      "state_bytes": 16527,
+      "compiled_inference_state_bytes": 16527,
+      "persistent_update_state_bytes": 0
+    },
+    {
+      "condition": "K1/new20",
+      "arm": "M24-D9-RF-LITE-DIAG-RESIDUAL",
+      "metrics": {
+        "A_o_pre": 0.5166666666666667,
+        "A_o_post": 0.3555555555555555,
+        "A_n": 0.145,
+        "H": 0.2058219270442516,
+        "F": 0.16111111111111112,
+        "min_old": 0.0,
+        "min_new": 0.0
+      },
+      "d1_historical_parity": {
+        "agreement_rate": null,
+        "prediction_disagreements": 0,
+        "query_rows": 0
+      },
+      "whole_candidate_fallback_scenarios": 0,
+      "support_harm_total": 0,
+      "state_bytes": 16527,
+      "compiled_inference_state_bytes": 16527,
+      "persistent_update_state_bytes": 0
+    },
+    {
+      "condition": "K10/new5",
+      "arm": "M24-D0-HISTORICAL-F1",
+      "metrics": {
+        "A_o_pre": 0.75,
+        "A_o_post": 0.6777777777777778,
+        "A_n": 0.6433333333333333,
+        "H": 0.6600423891291826,
+        "F": 0.07222222222222219,
+        "min_old": 0.35,
+        "min_new": 0.45
+      },
+      "d1_historical_parity": {
+        "agreement_rate": null,
+        "prediction_disagreements": 0,
+        "query_rows": 0
+      },
+      "whole_candidate_fallback_scenarios": 0,
+      "support_harm_total": 0,
+      "state_bytes": 6490,
+      "compiled_inference_state_bytes": 6490,
+      "persistent_update_state_bytes": 0
+    },
+    {
+      "condition": "K10/new5",
+      "arm": "M24-D1-PHYSICAL256-F1",
+      "metrics": {
+        "A_o_pre": 0.625,
+        "A_o_post": 0.6777777777777778,
+        "A_n": 0.6433333333333333,
+        "H": 0.6600423891291826,
+        "F": -0.052777777777777785,
+        "min_old": 0.35,
+        "min_new": 0.45
+      },
+      "d1_historical_parity": {
+        "agreement_rate": 1.0,
+        "prediction_disagreements": 0,
+        "query_rows": 660
+      },
+      "whole_candidate_fallback_scenarios": 0,
+      "support_harm_total": 0,
+      "state_bytes": 7677,
+      "compiled_inference_state_bytes": 7677,
+      "persistent_update_state_bytes": 0
+    },
+    {
+      "condition": "K10/new5",
+      "arm": "M24-D10-RF-LITE-SAFE-GATE",
+      "metrics": {
+        "A_o_pre": 0.625,
+        "A_o_post": 0.6777777777777778,
+        "A_n": 0.6433333333333333,
+        "H": 0.6600423891291826,
+        "F": -0.052777777777777785,
+        "min_old": 0.35,
+        "min_new": 0.45
+      },
+      "d1_historical_parity": {
+        "agreement_rate": null,
+        "prediction_disagreements": 0,
+        "query_rows": 0
+      },
+      "whole_candidate_fallback_scenarios": 3,
+      "support_harm_total": 107,
+      "state_bytes": 7677,
+      "compiled_inference_state_bytes": 7677,
+      "persistent_update_state_bytes": 0
+    },
+    {
+      "condition": "K10/new5",
+      "arm": "M24-D2-RELATIVE-PSD-JITTER",
+      "metrics": {
+        "A_o_pre": 0.625,
+        "A_o_post": 0.6777777777777778,
+        "A_n": 0.6433333333333333,
+        "H": 0.6600423891291826,
+        "F": -0.052777777777777785,
+        "min_old": 0.35,
+        "min_new": 0.45
+      },
+      "d1_historical_parity": {
+        "agreement_rate": null,
+        "prediction_disagreements": 0,
+        "query_rows": 0
+      },
+      "whole_candidate_fallback_scenarios": 3,
+      "support_harm_total": 99,
+      "state_bytes": 7677,
+      "compiled_inference_state_bytes": 7677,
+      "persistent_update_state_bytes": 0
+    },
+    {
+      "condition": "K10/new5",
+      "arm": "M24-D3-RF-QUALITY-CENTER",
+      "metrics": {
+        "A_o_pre": 0.625,
+        "A_o_post": 0.6777777777777778,
+        "A_n": 0.6433333333333333,
+        "H": 0.6600423891291826,
+        "F": -0.052777777777777785,
+        "min_old": 0.35,
+        "min_new": 0.45
+      },
+      "d1_historical_parity": {
+        "agreement_rate": null,
+        "prediction_disagreements": 0,
+        "query_rows": 0
+      },
+      "whole_candidate_fallback_scenarios": 3,
+      "support_harm_total": 107,
+      "state_bytes": 7677,
+      "compiled_inference_state_bytes": 7677,
+      "persistent_update_state_bytes": 0
+    },
+    {
+      "condition": "K10/new5",
+      "arm": "M24-D4-RF-QUALITY-COVARIANCE",
+      "metrics": {
+        "A_o_pre": 0.625,
+        "A_o_post": 0.6777777777777778,
+        "A_n": 0.6433333333333333,
+        "H": 0.6600423891291826,
+        "F": -0.052777777777777785,
+        "min_old": 0.35,
+        "min_new": 0.45
+      },
+      "d1_historical_parity": {
+        "agreement_rate": null,
+        "prediction_disagreements": 0,
+        "query_rows": 0
+      },
+      "whole_candidate_fallback_scenarios": 3,
+      "support_harm_total": 100,
+      "state_bytes": 7677,
+      "compiled_inference_state_bytes": 7677,
+      "persistent_update_state_bytes": 0
+    },
+    {
+      "condition": "K10/new5",
+      "arm": "M24-D5-IF-RESIDUAL-RELIABILITY",
+      "metrics": {
+        "A_o_pre": 0.625,
+        "A_o_post": 0.6777777777777778,
+        "A_n": 0.6433333333333333,
+        "H": 0.6600423891291826,
+        "F": -0.052777777777777785,
+        "min_old": 0.35,
+        "min_new": 0.45
+      },
+      "d1_historical_parity": {
+        "agreement_rate": null,
+        "prediction_disagreements": 0,
+        "query_rows": 0
+      },
+      "whole_candidate_fallback_scenarios": 3,
+      "support_harm_total": 105,
+      "state_bytes": 7677,
+      "compiled_inference_state_bytes": 7677,
+      "persistent_update_state_bytes": 0
+    },
+    {
+      "condition": "K10/new5",
+      "arm": "M24-D6-GATED-GROUND-PRIOR",
+      "metrics": {
+        "A_o_pre": 0.625,
+        "A_o_post": 0.6777777777777778,
+        "A_n": 0.6433333333333333,
+        "H": 0.6600423891291826,
+        "F": -0.052777777777777785,
+        "min_old": 0.35,
+        "min_new": 0.45
+      },
+      "d1_historical_parity": {
+        "agreement_rate": null,
+        "prediction_disagreements": 0,
+        "query_rows": 0
+      },
+      "whole_candidate_fallback_scenarios": 3,
+      "support_harm_total": 101,
+      "state_bytes": 7677,
+      "compiled_inference_state_bytes": 7677,
+      "persistent_update_state_bytes": 0
+    },
+    {
+      "condition": "K10/new5",
+      "arm": "M24-D7-NUISANCE-COVARIANCE",
+      "metrics": {
+        "A_o_pre": 0.625,
+        "A_o_post": 0.6777777777777778,
+        "A_n": 0.6433333333333333,
+        "H": 0.6600423891291826,
+        "F": -0.052777777777777785,
+        "min_old": 0.35,
+        "min_new": 0.45
+      },
+      "d1_historical_parity": {
+        "agreement_rate": null,
+        "prediction_disagreements": 0,
+        "query_rows": 0
+      },
+      "whole_candidate_fallback_scenarios": 3,
+      "support_harm_total": 69,
+      "state_bytes": 7677,
+      "compiled_inference_state_bytes": 7677,
+      "persistent_update_state_bytes": 0
+    },
+    {
+      "condition": "K10/new5",
+      "arm": "M24-D8-NORMALIZED-UNCERTAINTY",
+      "metrics": {
+        "A_o_pre": 0.625,
+        "A_o_post": 0.6777777777777778,
+        "A_n": 0.6433333333333333,
+        "H": 0.6600423891291826,
+        "F": -0.052777777777777785,
+        "min_old": 0.35,
+        "min_new": 0.45
+      },
+      "d1_historical_parity": {
+        "agreement_rate": null,
+        "prediction_disagreements": 0,
+        "query_rows": 0
+      },
+      "whole_candidate_fallback_scenarios": 3,
+      "support_harm_total": 99,
+      "state_bytes": 7677,
+      "compiled_inference_state_bytes": 7677,
+      "persistent_update_state_bytes": 0
+    },
+    {
+      "condition": "K10/new5",
+      "arm": "M24-D9-RF-LITE-DIAG-RESIDUAL",
+      "metrics": {
+        "A_o_pre": 0.625,
+        "A_o_post": 0.6777777777777778,
+        "A_n": 0.6433333333333333,
+        "H": 0.6600423891291826,
+        "F": -0.052777777777777785,
+        "min_old": 0.35,
+        "min_new": 0.45
+      },
+      "d1_historical_parity": {
+        "agreement_rate": null,
+        "prediction_disagreements": 0,
+        "query_rows": 0
+      },
+      "whole_candidate_fallback_scenarios": 3,
+      "support_harm_total": 106,
+      "state_bytes": 7677,
+      "compiled_inference_state_bytes": 7677,
+      "persistent_update_state_bytes": 0
+    }
+  ],
+  "decision": {
+    "expanded_candidate": "M24-D1-PHYSICAL256-F1",
+    "rejected_for_expansion": [
+      "M24-D2-RELATIVE-PSD-JITTER",
+      "M24-D3-RF-QUALITY-CENTER",
+      "M24-D4-RF-QUALITY-COVARIANCE",
+      "M24-D5-IF-RESIDUAL-RELIABILITY",
+      "M24-D6-GATED-GROUND-PRIOR",
+      "M24-D7-NUISANCE-COVARIANCE",
+      "M24-D8-NORMALIZED-UNCERTAINTY",
+      "M24-D9-RF-LITE-DIAG-RESIDUAL",
+      "M24-D10-RF-LITE-SAFE-GATE"
+    ],
+    "reason": "All K10 module arms triggered whole-candidate support-harm fallback in all three scenarios; K1 is forced to exact F1 by design."
+  }
+}
