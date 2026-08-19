@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m23_rfguard_targetscreen_20260820_v1/f02f9fb0/workspace/code/scripts/build_m23_rfguard_overlay.py", line 50, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m23_rfguard_targetscreen_20260820_v1/f02f9fb0/workspace/code/scripts/build_m23_rfguard_overlay.py", line 30, in main
+    result = build_m23_overlay_from_sealed_inputs(
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m23_rfguard_targetscreen_20260820_v1/f02f9fb0/workspace/code/cvsrffi/stage2_m23_overlay_builder.py", line 232, in build_m23_overlay_from_sealed_inputs
+    base = load_feature_cache(
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m23_rfguard_targetscreen_20260820_v1/f02f9fb0/workspace/code/cvsrffi/stage2_ablation_feature_cache.py", line 502, in load_feature_cache
+    raise Stage2AblationFeatureCacheError(
+cvsrffi.stage2_ablation_feature_cache.Stage2AblationFeatureCacheError: feature-cache manifest SHA256 mismatch

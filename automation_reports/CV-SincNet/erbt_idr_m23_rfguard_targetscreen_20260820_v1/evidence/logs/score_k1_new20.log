@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m23_rfguard_targetscreen_20260820_v1/f02f9fb0/workspace/code/scripts/score_m23_rfguard_suite.py", line 130, in <module>
+    raise SystemExit(main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m23_rfguard_targetscreen_20260820_v1/f02f9fb0/workspace/code/scripts/score_m23_rfguard_suite.py", line 66, in main
+    score = score_full_ablation_row(
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m23_rfguard_targetscreen_20260820_v1/f02f9fb0/workspace/code/cvsrffi/stage2_ablation_truth_scorer.py", line 440, in score_full_ablation_row
+    truth, scoring_manifest, scoring_audit = load_verified_scoring_sidecar(
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m23_rfguard_targetscreen_20260820_v1/f02f9fb0/workspace/code/cvsrffi/stage2_metric_scorer.py", line 345, in load_verified_scoring_sidecar
+    raise Stage2ScoringError("truth sidecar schema drift")
+cvsrffi.stage2_metric_scorer.Stage2ScoringError: truth sidecar schema drift

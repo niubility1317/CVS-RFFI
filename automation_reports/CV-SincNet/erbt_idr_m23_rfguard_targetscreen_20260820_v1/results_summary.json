@@ -1,0 +1,50 @@
+{
+  "schema": "cvs.erbt_idr.m23.results_summary.v1",
+  "run_id": "erbt_idr_m23_rfguard_targetscreen_20260820_v1",
+  "status": "ANALYZED_SMALL_MATRIX_M23_NOT_PROMOTED",
+  "implementation_commit": "f02f9fb09e480efa09601de6512b3dac374ff03e",
+  "baseline_anchor": "045c5433ec3778ab56e325333cefa9d75304b160",
+  "release_archive_sha256": "f6f150ae4bf7b832f6670a4b17b1eb86391bfa3fdbac8dbd12e903e09232192d",
+  "protocol_schema": "p2_min_v1",
+  "phase2_data_status": "VALIDATED_ONCE",
+  "receiver": "3-19",
+  "method_seed": 7282101,
+  "rows": [
+    {
+      "row": "K1/new20",
+      "k_shot": 1,
+      "new_class_count": 20,
+      "query_count_per_arm": 1560,
+      "scored_suite_status": "PASS",
+      "arms": {
+        "M23-F0-CURRENT-FULL": {"accuracy": 0.194872, "A_o_pre": 0.519444, "A_o_post": 0.363889, "A_n": 0.144167, "H": 0.206212, "F": 0.155556, "delta_vs_f1": 0.002564, "N_help": 41, "N_harm": 37},
+        "M23-F1-IDENTITY-FFT": {"accuracy": 0.192308, "A_o_pre": 0.538889, "A_o_post": 0.352778, "A_n": 0.144167, "H": 0.204557, "F": 0.186111, "delta_vs_f1": 0.0, "N_help": 0, "N_harm": 0},
+        "M23-F2-RF32-LOW": {"accuracy": 0.192308, "A_o_pre": 0.541667, "A_o_post": 0.352778, "A_n": 0.144167, "H": 0.204557, "F": 0.188889, "delta_vs_f1": 0.0, "N_help": 0, "N_harm": 0},
+        "M23-F3-RF-QUALITY": {"accuracy": 0.183333, "A_o_pre": 0.483333, "A_o_post": 0.355556, "A_n": 0.131667, "H": 0.191298, "F": 0.127778, "delta_vs_f1": -0.008974, "N_help": 57, "N_harm": 71},
+        "M23-F4-RF-LITE-DIAG": {"accuracy": 0.183333, "A_o_pre": 0.483333, "A_o_post": 0.355556, "A_n": 0.131667, "H": 0.191298, "F": 0.127778, "delta_vs_f1": -0.008974, "N_help": 57, "N_harm": 71},
+        "M23-F5-RF-LITE-GATED": {"accuracy": 0.183333, "A_o_pre": 0.483333, "A_o_post": 0.355556, "A_n": 0.131667, "H": 0.191298, "F": 0.127778, "delta_vs_f1": -0.008974, "N_help": 57, "N_harm": 71, "mcnemar_exact_pvalue": 0.25044, "accuracy_delta_ci95": [-0.029487, 0.010897]}
+      }
+    },
+    {
+      "row": "K10/new5",
+      "k_shot": 10,
+      "new_class_count": 5,
+      "query_count_per_arm": 660,
+      "scored_suite_status": "PASS",
+      "arms": {
+        "M23-F0-CURRENT-FULL": {"accuracy": 0.634848, "A_o_pre": 0.730556, "A_o_post": 0.666667, "A_n": 0.596667, "H": 0.629343, "F": 0.063889, "delta_vs_f1": -0.024242, "N_help": 22, "N_harm": 38},
+        "M23-F1-IDENTITY-FFT": {"accuracy": 0.659091, "A_o_pre": 0.752778, "A_o_post": 0.677778, "A_n": 0.636667, "H": 0.656517, "F": 0.075, "delta_vs_f1": 0.0, "N_help": 0, "N_harm": 0},
+        "M23-F2-RF32-LOW": {"accuracy": 0.642424, "A_o_pre": 0.738889, "A_o_post": 0.672222, "A_n": 0.606667, "H": 0.637092, "F": 0.066667, "delta_vs_f1": -0.016667, "N_help": 23, "N_harm": 34},
+        "M23-F3-RF-QUALITY": {"accuracy": 0.510606, "A_o_pre": 0.716667, "A_o_post": 0.544444, "A_n": 0.47, "H": 0.48804, "F": 0.172222, "delta_vs_f1": -0.148485, "N_help": 37, "N_harm": 135},
+        "M23-F4-RF-LITE-DIAG": {"accuracy": 0.515152, "A_o_pre": 0.722222, "A_o_post": 0.55, "A_n": 0.473333, "H": 0.49386, "F": 0.172222, "delta_vs_f1": -0.143939, "N_help": 35, "N_harm": 130},
+        "M23-F5-RF-LITE-GATED": {"accuracy": 0.512121, "A_o_pre": 0.711111, "A_o_post": 0.536111, "A_n": 0.483333, "H": 0.499952, "F": 0.175, "delta_vs_f1": -0.14697, "N_help": 35, "N_harm": 132, "mcnemar_exact_pvalue": 1.879775551356234e-14, "accuracy_delta_ci95": [-0.236364, -0.046932]}
+      }
+    }
+  ],
+  "decision": {
+    "promote_m23": false,
+    "expand_to_multiseed_or_125": false,
+    "reason": "F5 has no verified gain at K1 and causes significant same-row harm at K10; F3 shows that the primary failure precedes the RF-lite classification increment."
+  },
+  "evidence_root": "evidence"
+}

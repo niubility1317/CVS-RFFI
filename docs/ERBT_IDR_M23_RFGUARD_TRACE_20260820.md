@@ -26,7 +26,7 @@
 |M23-16|K1/K2独立保守统计区间|K1为IF prototype/对角头，K2为IF对角任务头；两者RF分类门恒为0且不做LOO|K1/K2分支单测|verified|
 |M23-17|IF-base／RF-lite-diag安全LOO|K5聚合全support的help/harm后只作一次全局门控和回退；K10才执行类别级门控；均含复杂度惩罚|K5全类gate严格相等、K10门范围、强复杂度回退和no-harm审计单测|verified|
 |M23-18|F3紧凑量化|256/266维头使用双层INT8残差、FP16块scale和bias；量化前FP32参数只在fit中瞬时用于support一致性审计，不进入持久状态|无FP32旁路、support一致率、compiled bytes和完整retained-state bytes单测|verified|
-|M23-19|预测翻转归因|独立truth-last分析输出`N_help/N_harm`、错误迁移、McNemar和类簇bootstrap，并按scene/K/receiver/role/class分层|纯函数单测通过；真实scorer待prediction|deferred_by_evidence|
+|M23-19|预测翻转归因|独立truth-last分析输出`N_help/N_harm`、错误迁移、McNemar和类簇bootstrap，并按scene/K/receiver/role/class分层|纯函数单测与两条真实N607 row评分均通过；两个scored suite均为`PASS`|verified|
 |M23-20|完整因果臂F0–F5|F0原生`P2-FULL`、F1原生`P2-A1`、F2低权重RF32、F3 RF-quality、F4 RF-lite-diag、F5安全门控|目录、配置哈希与合成row闭合单测|verified|
 |M23-21|四状态命名|输出显式标记`DA0_REG0/DA1_REG0/DA0_REG1/DA1_REG1`；REG0新类指标写`N/A_UNREGISTERED`|四状态主效应和difference-in-differences单测|verified|
 |M23-22|query边界|fit API不接收query；每条query独立全注册类argmax；无配额、重排或状态更新|fit签名和truth-unopened artifact单测|verified|
@@ -41,6 +41,15 @@
 - 首轮只用于可证伪筛选。若F5相对F1的同row`H`、`min-old`或`min-new`出现明确伤害，保留完整负结果并停止扩矩阵；低性能不触发技术停止。
 - 技术停止仅限协议/query越界、错误输入或checkout、输出覆盖、非PSD、无prediction闭合、scorer连接错误或重复确定性执行故障。
 
+### 实际闭合结果
+
+- 实现与实验提交：`f02f9fb09e480efa09601de6512b3dac374ff03e`；release归档本地/远端SHA256均为`f6f150ae4bf7b832f6670a4b17b1eb86391bfa3fdbac8dbd12e903e09232192d`。
+- 12个prediction artifact全部在`query_truth_opened=false`下闭合；两个独立scored suite随后均为`PASS`，且`scorer_output_must_not_feed_predictor=true`。
+- K1/new20：F5相对F1准确率差-0.897个百分点，95%类簇bootstrap区间[-2.949，+1.090]个百分点，`p=0.250`，`N_help/N_harm=57/71`；F3、F4、F5预测一致，验证K≤2时RF分类门为0。
+- K10/new5：F5相对F1准确率差-14.697个百分点，区间[-23.636，-4.693]个百分点，`p=1.88e-14`，`N_help/N_harm=35/132`；三个场景均为负。
+- F3、F4、F5在K10上相对F1分别为-14.848、-14.394和-14.697个百分点，主要失效已在RF-quality、显式中心/不确定性和注册竞争的共同路径出现，不是RF-lite分类增量或量化单独造成。
+- 决策：`M2.3_NOT_PROMOTED / DO_NOT_EXPAND_MATRIX`。完整score、四状态、配对诊断、execution receipt和日志见同run的`automation_reports`证据目录。
+
 ## 证据边界
 
-M2.3完成代码和单测只证明实现闭合；真实scorer返回前状态为`NO_PERFORMANCE_RESULT`。两条首轮row即使为正，也只构成小矩阵研发证据，不自动成为fresh confirmation、完整125晋级或星载部署结论。
+M2.3的代码、单测和真实小矩阵均已闭合，但结果为不晋级的研发负证据。两条row不构成fresh confirmation、完整125晋级、Phase3能力或星载部署结论。
