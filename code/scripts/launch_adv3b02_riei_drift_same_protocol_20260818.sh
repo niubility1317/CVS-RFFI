@@ -14,6 +14,10 @@ LOG_ROOT="${LOG_ROOT:-${ROOT}/logs/${RUN_ID}}"
 SEED="${SEED:-713101}"
 SEEDS_CSV="${SEEDS_CSV:-713101,713102}"
 LEO_SCENARIOS="${LEO_SCENARIOS:-leo_clear_weak,leo_low_elev_weak,leo_rain_weak}"
+# Keep the ADV3B02 training augmentation on the historical mixed-orbit view by
+# default; its evaluation remains the explicit LEO scenario list above.
+ADV3B02_TRAIN_SCENARIOS="${ADV3B02_TRAIN_SCENARIOS:-mixed_orbit}"
+METHODS_CSV="${METHODS_CSV:-adv3b02,riei_fd,drift}"
 EPOCHS="${EPOCHS:-200}"
 MAX_PER_GPU="${MAX_PER_GPU:-2}"
 GPU_IDS_CSV="${GPU_IDS_CSV:-0,1,2,3,4,5,6,7}"
@@ -37,7 +41,9 @@ Options:
   --gpu-ids CSV       GPU indices, default 0,1,2,3,4,5,6,7.
   --max-per-gpu N     Concurrent jobs per GPU, default 2.
   --seeds CSV         Matrix seeds, default 713101,713102.
-  --leo-scenarios CSV Training/evaluation scenarios, default leo_clear_weak,leo_low_elev_weak,leo_rain_weak.
+  --leo-scenarios CSV Evaluation scenarios (and RIEI/DRIFT train views), default leo_clear_weak,leo_low_elev_weak,leo_rain_weak.
+  --adv3b02-train-scenarios CSV ADV3B02 training views, default mixed_orbit.
+  --methods CSV Methods to run, default adv3b02,riei_fd,drift.
   EPOCHS=N             Override training epochs (smoke uses 1; formal matrix uses 200).
   --no-skip-done      Do not skip an output that already has metrics.
 EOF
@@ -55,6 +61,8 @@ while [ "$#" -gt 0 ]; do
     --max-per-gpu) MAX_PER_GPU="$2"; shift 2 ;;
     --seeds) SEEDS_CSV="$2"; shift 2 ;;
     --leo-scenarios) LEO_SCENARIOS="$2"; shift 2 ;;
+    --adv3b02-train-scenarios) ADV3B02_TRAIN_SCENARIOS="$2"; shift 2 ;;
+    --methods) METHODS_CSV="$2"; shift 2 ;;
     --no-skip-done) SKIP_DONE=0; shift ;;
     --help|-h) usage; exit 0 ;;
     *) echo "[ERROR] unknown argument: $1" >&2; usage >&2; exit 2 ;;
@@ -99,6 +107,10 @@ if [ -z "${LEO_SCENARIOS//[[:space:]]/}" ]; then
   echo "[ERROR] no LEO scenarios supplied" >&2
   exit 2
 fi
+if [ -z "${ADV3B02_TRAIN_SCENARIOS//[[:space:]]/}" ]; then
+  echo "[ERROR] no ADV3B02 training scenarios supplied" >&2
+  exit 2
+fi
 
 log() {
   echo "[$(date +%F_%T)] $*" | tee -a "${SCHED_LOG}"
@@ -125,13 +137,26 @@ for row in "${PROFILES[@]}"; do
   PROFILE_TEST_RXS["${name}"]="${test_rxs}"
 done
 
-METHODS=(adv3b02 riei_fd drift)
+IFS=',' read -r -a METHODS <<< "${METHODS_CSV}"
+if [ "${#METHODS[@]}" -lt 1 ]; then
+  echo "[ERROR] no methods supplied" >&2
+  exit 2
+fi
+for method in "${METHODS[@]}"; do
+  case "${method}" in
+    adv3b02|riei_fd|drift) ;;
+    *) echo "[ERROR] unsupported method: ${method}" >&2; exit 2 ;;
+  esac
+done
 declare -a JOBS
 TOTAL_JOBS=48
 if [ "${STAGE}" = "smoke" ]; then
-  TOTAL_JOBS=3
-  JOBS=("adv3b02|rx7_d01|${SEEDS[0]}" "riei_fd|rx7_d01|${SEEDS[0]}" "drift|rx7_d01|${SEEDS[0]}")
+  TOTAL_JOBS="${#METHODS[@]}"
+  for method in "${METHODS[@]}"; do
+    JOBS+=("${method}|rx7_d01|${SEEDS[0]}")
+  done
 else
+  TOTAL_JOBS=$(( ${#PROFILES[@]} * ${#METHODS[@]} * ${#SEEDS[@]} ))
   for seed in "${SEEDS[@]}"; do
     for row in "${PROFILES[@]}"; do
       IFS='|' read -r profile _rest <<< "${row}"
@@ -170,7 +195,7 @@ build_command() {
       --epochs "${EPOCHS}" --checkpoint_selection final_only
       --test_eval_policy val_improved_final --test_eval_start_epoch 999999
       --batch_size 128 --eval_batch_size 256 --num_workers 0 --device cuda:0
-      --use_sat_consistency --sat_train_scenario leo_clear_weak --sat_train_scenarios "${LEO_SCENARIOS}"
+      --use_sat_consistency --sat_train_scenario "${ADV3B02_TRAIN_SCENARIOS%%,*}" --sat_train_scenarios "${ADV3B02_TRAIN_SCENARIOS}"
       --sat_view_prob 1.0 --sat_view_seed "${sat_seed}"
       --eval_sat_channel --eval_sat_scenarios "${LEO_SCENARIOS}" --eval_sat_on all)
   elif [ "${method}" = "riei_fd" ]; then
@@ -279,9 +304,9 @@ run_worker() {
   log "WORKER_DONE gpu=${gpu} slot=${slot}"
 }
 
-log "RUN_ID=${RUN_ID} stage=${STAGE} seeds=${SEEDS_CSV} leo_scenarios=${LEO_SCENARIOS} epochs=${EPOCHS} jobs=${TOTAL_JOBS} workers=$(( ${#GPU_IDS[@]} * MAX_PER_GPU ))"
+log "RUN_ID=${RUN_ID} stage=${STAGE} seeds=${SEEDS_CSV} methods=${METHODS_CSV} leo_eval_scenarios=${LEO_SCENARIOS} adv3b02_train_scenarios=${ADV3B02_TRAIN_SCENARIOS} epochs=${EPOCHS} jobs=${TOTAL_JOBS} workers=$(( ${#GPU_IDS[@]} * MAX_PER_GPU ))"
 log "shared_input=ManySig equalized=1 out_len=256 domain=rx_day crop=center normalize=true"
-log "satellite_train_eval=leo_weak_only"
+log "satellite_train_eval=ADV3B02:${ADV3B02_TRAIN_SCENARIOS};RIEI_DRIFT:${LEO_SCENARIOS};eval:${LEO_SCENARIOS}"
 
 worker_pids=()
 for gpu in "${GPU_IDS[@]}"; do

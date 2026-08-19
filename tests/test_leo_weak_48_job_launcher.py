@@ -20,6 +20,15 @@ def test_direct_matrix_launcher_uses_leo_weak_for_train_and_eval_and_declares_48
     assert "TOTAL_JOBS=48" in text
 
 
+def test_adv3b02_can_use_mixed_orbit_training_with_leo_weak_eval():
+    text = LAUNCHER.read_text(encoding="utf-8")
+    assert 'ADV3B02_TRAIN_SCENARIOS="${ADV3B02_TRAIN_SCENARIOS:-mixed_orbit}"' in text
+    assert "--adv3b02-train-scenarios" in text
+    assert "--methods" in text
+    assert '--sat_train_scenarios "${ADV3B02_TRAIN_SCENARIOS}"' in text
+    assert '--eval_sat_scenarios "${LEO_SCENARIOS}"' in text
+
+
 def test_direct_matrix_launcher_has_dynamic_worker_queue():
     text = LAUNCHER.read_text(encoding="utf-8")
     assert "claim_next_job" in text
