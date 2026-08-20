@@ -4,7 +4,7 @@
 
 run ID：`erbt_idr_m25_g0_anchored_residual_full125_20260821_v2`
 
-当前状态：`LOCAL_VERIFIED / PREREGISTERED / N607_NOT_LAUNCHED`
+当前状态：`RUNNING`
 
 实现分支：`work/m24-safe-residual`
 
@@ -58,7 +58,9 @@ s_c(q)=s_c^{G0}(q)+\lambda g(q)\bar r_c(q).
 |Python|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
 |资源|CPU，`--max-workers 2`；不占用GPU，不干预既有训练|
 
-v2必须使用新的单一release归档、新release/run/log根和新的真实cache无truth smoke；不得续写或复用v1 partial输出。
+v2单一release归档本地与N607的SHA-256均为`c523d45633392ce2fdb8a71f775265d0e169b67cd33dff76a4b93d361db59583`，远端编译通过。真实cache无truth smoke先确认B0–B3在K5均可闭合；随后使用v1已知会进入非零分支的`rx20-1/m7282101/K10/new20/B1`定点验证，三场景强度为`[0.04,0,0]`，局部原型MAC为6656，状态为`PREDICTIONS_COMPLETE_TRUTH_UNOPENED`。两次smoke均位于独立目录，不进入正式矩阵。
+
+正式v2 prediction于2026-08-21 05:16（Asia/Hong_Kong）只启动一次，父PID为`42383`。首次健康检查确认CWD、cmdline、run root绑定正确，2个worker属于该父进程，日志持续增长，8个正式receipt已闭合，异常指纹为0。
 
 ## 五、冻结命令
 

@@ -17,16 +17,18 @@
 |M25-09|十五|双原型只进入残差，不替换G0|同上B3|verified_local|高margin与lambda0测试|避免G4全头退化|
 |M25-10|十九|多原型MAC按`256*sum_c M_c`统计|row executor|verified_local|资源receipt测试|强度为0时按真实跳过计0|
 |M25-11|协议|query逐样本独立、truth-last|row executor、runner、scorer|verified_local|truth-unopened row测试|query不更新任何状态|
-|M25-12|用户要求|B0–B3每臂完整125|full125 runner|v1_stopped_v2_preregistered|v1在352/500个partial receipt后技术退出；无matrix index、truth未打开|v1证据保留；v2使用新不可覆盖run ID|
+|M25-12|用户要求|B0–B3每臂完整125|full125 runner|v1_stopped_v2_running|v1在352/500个partial receipt后技术退出；v2非零分支smoke PASS并单次启动|v1证据保留；v2父PID `42383`|
 |M25-13|分析要求|输出全部分层、四状态和资源对比|summarizer、正式报告|implemented|共享full125汇总器接线|待真实结果验证|
 |M25-14|十、十八|1:4/1:1×D92/cosine归因矩阵|独立后续诊断|deferred|不进入本轮性能候选|避免扩大当前实现面；不影响B0–B3 full125|
 
 本地验证：56项M2.4/M2.5聚焦与相邻回归通过；五个生产脚本/模块编译通过；`git diff --check`通过。独立审查初审发现3项P1：B0 parity未闭锁、task/receipt身份未核对、summary可覆盖。三项均完成定点修复，定点复审结论为`NO_P0_P1`。
 
-当前状态：`V1_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / V2_LOCAL_VERIFIED`。
+当前状态：`V1_STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / V2_RUNNING`。
 
 实现提交：`d3228c257ef36537354a9043d0c0953c44bdbbb1`；远端分支OID已独立回读一致。
 
 N607发布：release归档SHA-256=`4b01a466f34eea6bdc4288c188f29bd8aaf499e51547d71b94ab6aaa6b65ecfe`，远端编译和真实cache无truth smoke通过；正式prediction父PID=`4124155`。
 
 v1故障根因：非零残差行进入资源统计时引用了row executor中未定义的`IF_DIM`；强度0行短路掩盖了该分支。新增非零分支回归测试后改为使用同一row的真实`feature_dim`，57项聚焦与相邻回归通过。v1没有matrix index或性能结果，禁止局部评分；v2修复提交为`e847e0d41883d39c70f9633292e6f87aabcb7349`，远端OID已独立回读一致。
+
+v2发布归档SHA-256=`c523d45633392ce2fdb8a71f775265d0e169b67cd33dff76a4b93d361db59583`；真实K10非零残差smoke强度`[0.04,0,0]`、局部原型MAC=6656并闭合。正式prediction父PID=`42383`，首次健康检查8个receipt、2个worker、异常指纹0。
