@@ -20,6 +20,9 @@ ARMS = (
     "M24-D1-REFIT",
 )
 REFERENCE_ARM = ARMS[0]
+EXPECTED_INPUT_IDENTITIES = 125
+SUMMARY_SCHEMA = "cvs.erbt_idr.m24.d1_refit_full125.results_summary.v1"
+SUMMARY_VERDICT = "D1_COMPILE_PARITY_PASS_AND_R2_FULL125_MEASURED"
 METRICS = ("A_o_pre", "A_o_post", "A_n", "H", "F", "min_old", "min_new")
 RESOURCE_METRICS = (
     "state_bytes",
@@ -202,10 +205,11 @@ def build_summary(prediction_root: Path, score_root: Path) -> dict[str, Any]:
     scored = _load(score_root / "scored_matrix_index.json")
     if matrix.get("status") != "PREDICTIONS_COMPLETE_TRUTH_UNOPENED":
         raise ValueError("prediction matrix is not truth-unopened complete")
-    if scored.get("status") != "PASS" or int(scored.get("row_count", -1)) != 375:
+    expected_rows = EXPECTED_INPUT_IDENTITIES * len(ARMS)
+    if scored.get("status") != "PASS" or int(scored.get("row_count", -1)) != expected_rows:
         raise ValueError("scored matrix is incomplete")
     identities = {entry["row_id"]: entry for entry in scored["entries"]}
-    if len(identities) != 375:
+    if len(identities) != expected_rows:
         raise ValueError("scored matrix row identities are not unique")
 
     row_records: list[dict[str, Any]] = []
@@ -357,7 +361,7 @@ def build_summary(prediction_root: Path, score_root: Path) -> dict[str, Any]:
     arm_counts = defaultdict(int)
     for row in row_records:
         arm_counts[row["arm"]] += 1
-    if dict(arm_counts) != {arm: 125 for arm in ARMS}:
+    if dict(arm_counts) != {arm: EXPECTED_INPUT_IDENTITIES for arm in ARMS}:
         raise ValueError(f"unexpected arm counts: {dict(arm_counts)}")
     parity_rows = [row for row in row_records if row["arm"] == "M24-D1-COMPILE-PARITY"]
     parity_before = sum(int(row["parity"]["before_prediction_disagreements"]) for row in parity_rows)
@@ -421,10 +425,10 @@ def build_summary(prediction_root: Path, score_root: Path) -> dict[str, Any]:
         }
 
     summary = {
-        "schema": "cvs.erbt_idr.m24.d1_refit_full125.results_summary.v1",
+        "schema": SUMMARY_SCHEMA,
         "run_id": matrix["run_id"],
         "status": "ANALYZED",
-        "verdict": "D1_COMPILE_PARITY_PASS_AND_R2_FULL125_MEASURED",
+        "verdict": SUMMARY_VERDICT,
         "evidence_boundary": "Same-row full-125 Stage2-C evidence under p2_min_v1; not Phase3 or deployment evidence.",
         "protocol": {
             "protocol_schema": "p2_min_v1",

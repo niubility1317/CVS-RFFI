@@ -24,6 +24,7 @@ from scripts.run_m24_d1_refit_matrix import (
 
 
 SCORED_MATRIX_SCHEMA = "cvs.erbt_idr.m24.d1_refit_scored_matrix.v1"
+CANDIDATE_ARMS = (D1, D1_REFIT)
 
 
 def _sha256(path: Path) -> str:
@@ -210,11 +211,11 @@ def main() -> int:
         })
     paired_outputs = []
     for key, group in groups.items():
-        if set(group) != {D0, D1, D1_REFIT}:
-            raise ValueError(f"R0/R1/R2 group incomplete: {key}")
+        if set(group) != set(EVIDENCE_ARMS):
+            raise ValueError(f"reference/candidate group incomplete: {key}")
         reference = group[D0]
         reference_prediction = reference["receipt"]["prediction"]
-        for arm in (D1, D1_REFIT):
+        for arm in CANDIDATE_ARMS:
             candidate = group[arm]
             candidate_prediction = candidate["receipt"]["prediction"]
             paired = score_m23_paired_artifacts(

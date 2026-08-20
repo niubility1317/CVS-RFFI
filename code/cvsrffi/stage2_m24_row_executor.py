@@ -19,6 +19,11 @@ from cvsrffi.stage2_m23_overlay_cache import load_m23_overlay_cache
 from cvsrffi.stage2_m23_rfguard import build_ground_manifold, estimate_stage2b_domain_state
 from cvsrffi.stage2_m23_row_executor import M23_F1_IF, _OverlayGroundComponent, _cosine_prediction, _legacy_states
 from cvsrffi.stage2_m24_refit import fit_m24_d1_refit
+from cvsrffi.stage2_m24_invariance_breaking import (
+    M24_INVARIANCE_ARMS,
+    fit_m24_invariance_breaking,
+    invariance_arm_config_hash,
+)
 from cvsrffi.stage2_m24_safe_residual import (
     D0,
     D1,
@@ -85,6 +90,22 @@ def _support_center_angles(
     rows = prepare_query_features(blocks, feature_dim=256).astype(np.float64)
     target = np.asarray(labels).astype(str)
     centres = np.stack([np.mean(rows[target == item], axis=0) for item in classes])
+    centres /= np.maximum(np.linalg.norm(centres, axis=1, keepdims=True), 1.0e-12)
+    left, right = np.triu_indices(len(classes), k=1)
+    cosine = np.clip(np.sum(centres[left] * centres[right], axis=1), -1.0, 1.0)
+    return (
+        np.asarray(classes, dtype=str)[left],
+        np.asarray(classes, dtype=str)[right],
+        np.degrees(np.arccos(cosine)).astype(np.float32),
+    )
+
+
+def _support_center_angles_from_features(
+    rows: Any, labels: Any, classes: tuple[str, ...]
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    features = np.asarray(rows, dtype=np.float64)
+    target = np.asarray(labels).astype(str)
+    centres = np.stack([np.mean(features[target == item], axis=0) for item in classes])
     centres /= np.maximum(np.linalg.norm(centres, axis=1, keepdims=True), 1.0e-12)
     left, right = np.triu_indices(len(classes), k=1)
     cosine = np.clip(np.sum(centres[left] * centres[right], axis=1), -1.0, 1.0)
@@ -175,7 +196,7 @@ def execute_m24_row(
     base_cache_bytes: int = 0,
     overlay_cache_bytes: int = 0,
 ) -> dict[str, Any]:
-    if arm not in M24_ARMS:
+    if arm not in M24_ARMS + M24_INVARIANCE_ARMS:
         raise M24RowExecutionError("unknown M2.4 arm")
     base_manifest = base_cache["manifest"]
     overlay_manifest = overlay_cache["manifest"]
@@ -199,7 +220,7 @@ def execute_m24_row(
     output = Path(output_root).absolute()
     output.mkdir(parents=True, exist_ok=False)
     base_only_d1 = bool(overlay_manifest.get("d1_base_only", False))
-    if base_only_d1 and arm not in {D0, D1, D1_REFIT}:
+    if base_only_d1 and arm not in {D0, D1, D1_REFIT, *M24_INVARIANCE_ARMS}:
         raise M24RowExecutionError("base-only compact view is restricted to D1 evidence arms")
     component = None if base_only_d1 else _OverlayGroundComponent(overlay_cache["ground_component"])
     manifold = None if component is None else build_ground_manifold(component)
@@ -235,7 +256,7 @@ def execute_m24_row(
         compact_tokens = np.asarray(compact["query_tokens"]).astype(str)
         if not np.array_equal(legacy_tokens, compact_tokens):
             raise M24RowExecutionError(f"{scenario} base/overlay query token drift")
-        if arm == D1_REFIT:
+        if arm == D1_REFIT or arm in M24_INVARIANCE_ARMS:
             prepared = {
                 "old": np.asarray(legacy["old_support_features"], dtype=np.float32),
                 "new": np.asarray(legacy["new_support_features"], dtype=np.float32),
@@ -311,7 +332,24 @@ def execute_m24_row(
                 ground_prior = manifold.class_centres
                 nuisance_covariance = domain_state.nuisance_covariance
             fit_started = time.perf_counter()
-            if arm == D1:
+            if arm in M24_INVARIANCE_ARMS:
+                state, audit = fit_m24_invariance_breaking(
+                    arm=arm,
+                    support_blocks=all_support_blocks,
+                    support_labels=all_support_labels,
+                    classes=old_classes + new_classes,
+                    k_shot=int(overlay_manifest["k_shot"]),
+                    domain_digest=domain_digest,
+                )
+                before_state, before_audit = fit_m24_invariance_breaking(
+                    arm=arm,
+                    support_blocks=compact["old_support_blocks"],
+                    support_labels=compact["old_support_labels"],
+                    classes=old_classes,
+                    k_shot=int(overlay_manifest["k_shot"]),
+                    domain_digest=domain_digest,
+                )
+            elif arm == D1:
                 coefficient, bias, f1_log_diag = _f1_reference_head(
                     historical_after, all_support_blocks
                 )
@@ -398,11 +436,16 @@ def execute_m24_row(
                     nuisance_covariance_identity=nuisance_covariance,
                 )
             registration_seconds += time.perf_counter() - fit_started
-            feature_dim = state.compiled_affine_state.feature_dim
-            query_features = prepare_query_features(compact["query_blocks"], feature_dim=feature_dim)
-            before_query_features = prepare_query_features(
-                compact["query_blocks"], feature_dim=before_state.compiled_affine_state.feature_dim
-            )
+            if arm in M24_INVARIANCE_ARMS:
+                feature_dim = state.feature_dim
+                query_features = compact["query_blocks"]
+                before_query_features = compact["query_blocks"]
+            else:
+                feature_dim = state.compiled_affine_state.feature_dim
+                query_features = prepare_query_features(compact["query_blocks"], feature_dim=feature_dim)
+                before_query_features = prepare_query_features(
+                    compact["query_blocks"], feature_dim=before_state.compiled_affine_state.feature_dim
+                )
             query_started = time.perf_counter()
             selected_scores = state.score(query_features)
             selected_after = np.asarray(state.classes)[np.argmax(selected_scores, axis=-1)]
@@ -416,11 +459,11 @@ def execute_m24_row(
                 "compiled_inference_state_bytes": max(
                     int(after_resource["compiled_inference_state_bytes"]),
                     int(before_resource["compiled_inference_state_bytes"]),
-                ) if arm == D1 else int(after_resource["compiled_inference_state_bytes"]),
+                ) if arm == D1 or arm in M24_INVARIANCE_ARMS else int(after_resource["compiled_inference_state_bytes"]),
                 "transient_registration_workspace_peak_bytes": max(
                     int(after_resource["transient_registration_workspace_peak_bytes"]),
                     int(before_resource["transient_registration_workspace_peak_bytes"]),
-                ) if arm == D1 else int(after_resource["transient_registration_workspace_peak_bytes"]),
+                ) if arm == D1 or arm in M24_INVARIANCE_ARMS else int(after_resource["transient_registration_workspace_peak_bytes"]),
             }
             audit = {**dict(audit), "before_registration_fit": dict(before_audit)}
             if arm == D1:
@@ -439,11 +482,18 @@ def execute_m24_row(
         top2_margins.append(
             np.asarray(ordered_scores[:, -1] - ordered_scores[:, -2], dtype=np.float32)
         )
-        centre_left, centre_right, centre_angle = _support_center_angles(
-            np.concatenate([compact["old_support_blocks"], compact["new_support_blocks"]]),
-            np.concatenate([compact["old_support_labels"], compact["new_support_labels"]]),
-            old_classes + new_classes,
-        )
+        if arm in M24_INVARIANCE_ARMS:
+            centre_left, centre_right, centre_angle = _support_center_angles_from_features(
+                state.transform(np.concatenate([compact["old_support_blocks"], compact["new_support_blocks"]])),
+                np.concatenate([compact["old_support_labels"], compact["new_support_labels"]]),
+                old_classes + new_classes,
+            )
+        else:
+            centre_left, centre_right, centre_angle = _support_center_angles(
+                np.concatenate([compact["old_support_blocks"], compact["new_support_blocks"]]),
+                np.concatenate([compact["old_support_labels"], compact["new_support_labels"]]),
+                old_classes + new_classes,
+            )
         center_scenarios.append(np.asarray([scenario] * len(centre_angle)))
         center_class_left.append(centre_left)
         center_class_right.append(centre_right)
@@ -487,6 +537,8 @@ def execute_m24_row(
         "registration_timing_scope": (
             "compile_only_existing_p2_a1_head"
             if arm == D1
+            else "support_only_invariance_breaking_head"
+            if arm in M24_INVARIANCE_ARMS
             else "support_to_compiled_head"
             if arm == D1_REFIT
             else "historical_or_candidate_specific"
@@ -506,7 +558,11 @@ def execute_m24_row(
         "auxiliary_state_cost_in_candidate_resource": False,
         "auxiliary_prediction_cost_in_candidate_latency": False,
     }
-    lock = arm_config_hash(arm)
+    lock = (
+        invariance_arm_config_hash(arm)
+        if arm in M24_INVARIANCE_ARMS
+        else arm_config_hash(arm)
+    )
     prediction = publish_prediction_artifact(
         output / "predictions.cvspred",
         stage="Stage2-C",
@@ -669,4 +725,39 @@ def run_m24_d1_evidence_row_from_base_cache(
     )
 
 
-__all__ = ["DA0_REG0", "DA1_REG0", "DA0_REG1", "DA1_REG1", "M24_ROW_EXECUTION_SCHEMA", "M24RowExecutionError", "d1_overlay_from_base_cache", "execute_m24_row", "run_m24_d1_evidence_row_from_base_cache", "run_m24_d1_row_from_base_cache", "run_m24_row_from_caches"]
+def run_m24_invariance_row_from_base_cache(
+    *,
+    arm: str,
+    row_id: str,
+    receiver: str,
+    base_feature_cache_payload: str | Path,
+    base_feature_cache_manifest: str | Path,
+    base_feature_cache_payload_sha256: str,
+    base_feature_cache_manifest_sha256: str,
+    output_root: str | Path,
+    seed: int,
+    device: Any = "cpu",
+) -> dict[str, Any]:
+    if arm not in {D0, *M24_INVARIANCE_ARMS}:
+        raise M24RowExecutionError("invariance runner accepts only G0-G4")
+    base = load_feature_cache(
+        base_feature_cache_payload,
+        base_feature_cache_manifest,
+        expected_payload_sha256=str(base_feature_cache_payload_sha256).lower(),
+        expected_manifest_sha256=str(base_feature_cache_manifest_sha256).lower(),
+    )
+    return execute_m24_row(
+        arm=arm,
+        row_id=row_id,
+        receiver=receiver,
+        base_cache=base,
+        overlay_cache=d1_overlay_from_base_cache(base),
+        output_root=output_root,
+        seed=int(seed),
+        device=device,
+        base_cache_bytes=Path(base_feature_cache_payload).stat().st_size,
+        overlay_cache_bytes=0,
+    )
+
+
+__all__ = ["DA0_REG0", "DA1_REG0", "DA0_REG1", "DA1_REG1", "M24_ROW_EXECUTION_SCHEMA", "M24RowExecutionError", "d1_overlay_from_base_cache", "execute_m24_row", "run_m24_d1_evidence_row_from_base_cache", "run_m24_d1_row_from_base_cache", "run_m24_invariance_row_from_base_cache", "run_m24_row_from_caches"]

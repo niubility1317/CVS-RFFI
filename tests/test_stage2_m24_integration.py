@@ -16,11 +16,13 @@ from cvsrffi.stage2_m24_row_executor import (
     d1_overlay_from_base_cache,
     execute_m24_row,
 )
+from cvsrffi.stage2_m24_invariance_breaking import G1, G4
 from cvsrffi.stage2_m24_safe_residual import D1, D1_REFIT, M24_ARMS
 from scripts import preflight_m24_safe_residual as preflight
 from scripts import run_m24_safe_residual_suite as suite_runner
 from scripts import score_m24_safe_residual_suite as suite_scorer
 from scripts import run_m24_d1_expanded_matrix as expanded_runner
+from scripts import run_m24_invariance_breaking_full125 as invariance_runner
 from test_stage2_m23_integration import NEW, OLD, _inputs
 
 
@@ -95,6 +97,12 @@ def test_expanded_d1_matrix_is_five_receivers_three_seeds_four_conditions() -> N
     assert len(expanded_runner.DEFAULT_SEEDS) == 3
     assert expanded_runner.DEFAULT_CONDITIONS == ((1, 20), (5, 20), (10, 20), (10, 5))
     assert len(expanded_runner.DEFAULT_RECEIVERS) * len(expanded_runner.DEFAULT_SEEDS) * len(expanded_runner.DEFAULT_CONDITIONS) == 60
+
+
+def test_invariance_matrix_is_five_complete_full125_arms() -> None:
+    assert invariance_runner.EXPECTED_INPUT_IDENTITIES == 125
+    assert len(invariance_runner.EVIDENCE_ARMS) == 5
+    assert invariance_runner.EXPECTED_METHOD_ROWS == 625
 
 
 def test_preflight_accepts_legacy_base_protocol_bound_by_overlay_and_split(
@@ -230,6 +238,61 @@ def test_d1_refit_does_not_consume_historical_head_parameters(
     assert receipt["resource"]["prerequisite_p2_a1_fit_included"] is True
     assert all(
         item["fresh_support_refit"] is True
+        for item in receipt["scenario_audit"].values()
+    )
+
+
+def test_invariance_breaking_row_is_base_only_and_never_consumes_historical_head(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    base, _overlay = _caches()
+    base["manifest"].update({
+        "package_root_sha256": "3" * 64,
+        "package_seal_sha256": "4" * 64,
+    })
+    compact = d1_overlay_from_base_cache(base)
+
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("invariance-breaking head consumed historical P2-A1 state")
+
+    monkeypatch.setattr("cvsrffi.stage2_m24_row_executor._legacy_states", forbidden)
+    receipt = execute_m24_row(
+        arm=G1,
+        row_id="synthetic_m24_g1",
+        receiver="3-19",
+        base_cache=base,
+        overlay_cache=compact,
+        output_root=tmp_path / "g1",
+        seed=7282101,
+    )
+    assert receipt["status"] == "PREDICTIONS_COMPLETE_TRUTH_UNOPENED"
+    assert receipt["fit_query_rows_used"] == 0
+    assert receipt["resource"]["deployment_state_bytes"] == 0
+    assert receipt["resource"]["registration_timing_scope"] == "support_only_invariance_breaking_head"
+    assert receipt["resource"]["prerequisite_p2_a1_fit_included"] is False
+    assert all(
+        item["historical_f1_fallback"] is False
+        for item in receipt["scenario_audit"].values()
+    )
+
+
+def test_g4_row_k2_uses_the_registered_k2_specialization(tmp_path: Path) -> None:
+    base, _overlay = _caches()
+    base["manifest"].update({
+        "package_root_sha256": "3" * 64,
+        "package_seal_sha256": "4" * 64,
+    })
+    receipt = execute_m24_row(
+        arm=G4,
+        row_id="synthetic_m24_g4_k2",
+        receiver="3-19",
+        base_cache=base,
+        overlay_cache=d1_overlay_from_base_cache(base),
+        output_root=tmp_path / "g4",
+        seed=7282101,
+    )
+    assert all(
+        item["k_specialization"] == "K2_PROJECTED_SINGLE_PROTOTYPE"
         for item in receipt["scenario_audit"].values()
     )
 
