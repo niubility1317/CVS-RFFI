@@ -46,6 +46,10 @@
 - 首次启动结果：GPU2、4–7的五臂已进入训练；GPU3的`NO_PROTO`在prototype bank初始化时因旧验证器拒绝`unlabeled_weight=0`而确定性`TRAIN_FAILED`，原run ID下的config、status和train log完整保留，不覆盖重启。
 - GPU3定点修复：提交`24ab0a3cd4493a55407ddaf9b89c1ce10f9bfc27`把0定义为未标注prototype更新的显式禁用哨兵，并保证prototype、class count和domain count均不变化；正常启用仍只接受0.05–0.10。本地新增RED→GREEN测试后，16个指定文件共185项全部通过，相关Python编译、launcher语法和diff检查通过。
 - 修复重启边界：只在空闲GPU3以新run ID`phase1_adv3b02_muse_ssdg_noproto_r1_s392002_20260820`重启`NO_PROTO`；GPU0/1既有队列及GPU2、4–7健康消融均不改变。修复run同样固定seed 392002、200epoch及训练后clean与三种LEO弱信道自动评测。
+- GPU3修复release：本地`E:/type10-7/local_artifacts/releases/phase1_adv3b02_muse_ssdg_noproto_r1_s392002_20260820.tar.gz`→远端同名`releases`归档→解压根`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_muse_ssdg_noproto_r1_s392002_20260820`；唯一归档SHA-256本地与远端均为`6fe8f5cc49b4955458576335bdb5e22c45f229eca1c51835f7a457ae66f6d306`。远端编译、launcher语法及1 train/1 eval/4 outputs dry-run通过且无run-root副作用。
+- 正式启动PID：GPU2 `NO_PRIOR`=`3699905`；GPU3修复`NO_PROTO`=`3704934`；GPU4 `NO_TEMPORAL`=`3699907`；GPU5 `NO_SATELLITE`=`3699908`；GPU6 `NO_CROSSRX`=`3699909`；GPU7 `NO_NUISANCE`=`3699910`。GPU0/1原队列PID`3680151`和`3684782`仍存活。
+- 启动健康证据：六个launcher及各自训练子进程均存活；子进程cmdline逐一绑定对应release、run root和`M3_<ARM>`目录，`CUDA_VISIBLE_DEVICES`分别严格为2–7。实际子进程CWD均为`/home/szu2070436088`，但训练脚本、`PYTHONPATH`、release与输出均使用已核对的绝对路径，不存在checkout歧义。
+- 运行状态：GPU2、4–7各已有4个epoch标记，GPU3修复臂已越过原prototype构造失败并进入GPU训练；GPU0–7均有非零训练占用。六臂训练日志当前均无Traceback、RuntimeError、OOM、UnboundLocalError或ValueError，状态为`RUNNING`，尚不是`ARTIFACTS_COMPLETE`。
 - 停止规则：仅因协议/路径/checkout/output冲突、训练或评测执行错误、缺失final checkpoint、缺失prediction/metrics闭合、OOM/NaN或相同确定性启动前异常停止对应运行；不得因中间或最终性能高低停止。
 
 ## 候选矩阵
