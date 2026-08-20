@@ -365,6 +365,7 @@ def test_ntrs_loss_bundle_connects_all_four_report_groups():
         "class_attraction",
     }
     assert expected <= set(bundle["losses"])
+    assert float(bundle["losses"]["minimum_correction"].detach()) == pytest.approx(0.0025)
     total = torch.stack([bundle["losses"][name] for name in sorted(expected)]).sum()
     assert torch.isfinite(total)
     total.backward()

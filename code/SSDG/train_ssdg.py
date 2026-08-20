@@ -6894,6 +6894,7 @@ def train(args) -> int:
                         class_attraction_max_cosine=float(
                             getattr(args, "ntrs_class_attraction_max_cosine", 0.50)
                         ),
+                        variant=str(getattr(args, "ntrs_variant", "v1")),
                     )
 
                 if bool(getattr(args, "use_crra", False)):

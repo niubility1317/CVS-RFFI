@@ -208,6 +208,7 @@ def compute_ntrs_loss_bundle(
     correctability_epsilon: float,
     energy_threshold: float,
     class_attraction_max_cosine: float,
+    variant: str = "v1",
 ) -> dict[str, Any]:
     """Compute the four report loss groups from paired source views.
 
@@ -311,11 +312,21 @@ def compute_ntrs_loss_bundle(
     residual = _concatenate_output_tensor(outputs, "ntrs_subspace_residual")
     correction = _concatenate_output_tensor(outputs, "ntrs_correction")
     candidate_correction = _concatenate_output_tensor(outputs, "ntrs_correction")
-    losses["minimum_correction"] = (
-        ntrs_relative_correction_loss(anchor, candidate_correction)
-        if torch.is_tensor(anchor) and torch.is_tensor(candidate_correction)
-        else zero
-    )
+    variant = str(variant or "v1").lower().strip()
+    if variant == "v2_min":
+        losses["minimum_correction"] = (
+            ntrs_relative_correction_loss(anchor, candidate_correction)
+            if torch.is_tensor(anchor) and torch.is_tensor(candidate_correction)
+            else zero
+        )
+    elif variant == "v1":
+        losses["minimum_correction"] = (
+            (robust - anchor).square().sum(dim=1).mean()
+            if torch.is_tensor(anchor) and torch.is_tensor(robust)
+            else zero
+        )
+    else:
+        raise ValueError(f"unsupported NTRS loss variant: {variant}")
     losses["alpha"] = alpha.abs().mean() if torch.is_tensor(alpha) else zero
     losses["subspace"] = residual.square().mean() if torch.is_tensor(residual) else zero
 
