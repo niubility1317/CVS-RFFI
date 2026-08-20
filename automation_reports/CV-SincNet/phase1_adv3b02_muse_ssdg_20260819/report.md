@@ -39,6 +39,10 @@
 - 唯一launch owner：本主Agent负责六臂一次发布与健康检查；不允许第二运行者重复启动或修改矩阵。
 - 输出与日志：候选根分别为`M3_NO_PRIOR`、`M3_NO_PROTO`、`M3_NO_TEMPORAL`、`M3_NO_SATELLITE`、`M3_NO_CROSSRX`、`M3_NO_NUISANCE`；外层启动日志根为`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_muse_ssdg_ablate6_s392002_20260820`。
 - 本地验证：`ssr-gpu`环境内16个指定测试文件共184项全部通过；launcher `bash -n`和`git diff --check`通过。每个命名消融dry-run均必须产生1条训练命令、1条联合评测命令和4个场景输出定位，且不创建run root。
+- release映射：本地`E:/type10-7/local_artifacts/releases/phase1_adv3b02_muse_ssdg_ablate6_s392002_20260820.tar.gz`→远端`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_muse_ssdg_ablate6_s392002_20260820.tar.gz`→解压根`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_muse_ssdg_ablate6_s392002_20260820`。
+- 唯一release归档SHA-256：本地与远端均为`edacf428589f404463167f6170cf6fc607c3bccb5f4ad168c172633e462d6e4e`；远端三个运行期Python文件编译和launcher语法检查通过。
+- N607发布前检查：直连普通账户成功；项目、主数据和固定Python可见；GPU0/1分别有既有M0/M2任务，GPU2–7均为1MiB/0%且无compute app；新run root、log root、归档和release root在发布前均不存在。
+- 六臂远端dry-run：GPU2–7对应六个预登记arm均通过；每臂恰好1条训练命令、1条联合评测命令、4个场景输出定位，candidate ID与精确消融参数一致；六次dry-run后run root仍不存在。
 - 停止规则：仅因协议/路径/checkout/output冲突、训练或评测执行错误、缺失final checkpoint、缺失prediction/metrics闭合、OOM/NaN或相同确定性启动前异常停止对应运行；不得因中间或最终性能高低停止。
 
 ## 候选矩阵
