@@ -83,7 +83,7 @@ prediction闭合要求：`matrix_index.status=PREDICTIONS_COMPLETE_TRUTH_UNOPENE
 
 truth-last评分发生两次可复现的连接失败，局部结果均保留且未进入统计：
 
-1.预登记的补充root少写`artifacts/packages`，在50个正式身份后因manifest未命中退出；
+1.预登记的补充root少写`artifacts/packages`，在75个方法行后因manifest未命中退出；
 2.纠正路径后，补充truth sidecar仍标记为v2，在75行后被正式v3 loader拒绝为`truth sidecar schema drift`。
 
 最终复用M2.4 D1 v3已验证的`scoring_root_repaired_v3`。该root只把20个补充truth sidecar的schema由v2发布为v3，22200条truth row内容不变。预检确认全部50个唯一scoring身份均恰好命中一个manifest。最终`scores_complete`完成625个same-row score、625个four-state score、500个paired-vs-G0结果和500个`F_within/F_std`结果，`scored_matrix_index.status=PASS`。汇总器另修复了G0–G4矩阵误读D1专属`d1_historical_parity`字段的问题；修复提交为`d5b004a396b4ac306601129645072a9e6e317718`，19项聚焦测试和N607远端编译通过，最终汇总状态为`ANALYZED`。
