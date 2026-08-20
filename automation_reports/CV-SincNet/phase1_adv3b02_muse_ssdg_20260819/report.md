@@ -52,6 +52,27 @@
 - 运行状态：GPU2、4–7各已有4个epoch标记，GPU3修复臂已越过原prototype构造失败并进入GPU训练；GPU0–7均有非零训练占用。六臂训练日志当前均无Traceback、RuntimeError、OOM、UnboundLocalError或ValueError，状态为`RUNNING`，尚不是`ARTIFACTS_COMPLETE`。
 - 停止规则：仅因协议/路径/checkout/output冲突、训练或评测执行错误、缺失final checkpoint、缺失prediction/metrics闭合、OOM/NaN或相同确定性启动前异常停止对应运行；不得因中间或最终性能高低停止。
 
+## 2026-08-20T11:21:49+08:00进度快照
+
+本次以只读方式完整解析4个相关run root中的全部候选`train.log`、launcher log、status、checkpoint及metrics文件，并核对活动PID和GPU占用；没有启动、停止、重启或修改远端任务。
+
+| GPU | 当前候选 | 最新完成epoch | 进度 | 根训练PID | 状态 |
+|---:|---|---:|---:|---:|---|
+| 0 | `M0` | 30/200 | 15.0% | 3680160 | `RUNNING` |
+| 1 | `M2`修复run | 26/200 | 13.0% | 3684788 | `RUNNING` |
+| 2 | `M3_NO_PRIOR` | 18/200 | 9.0% | 3699926 | `RUNNING` |
+| 3 | `M3_NO_PROTO`修复run | 16/200 | 8.0% | 3704937 | `RUNNING` |
+| 4 | `M3_NO_TEMPORAL` | 18/200 | 9.0% | 3699923 | `RUNNING` |
+| 5 | `M3_NO_SATELLITE` | 18/200 | 9.0% | 3699929 | `RUNNING` |
+| 6 | `M3_NO_CROSSRX` | 18/200 | 9.0% | 3699925 | `RUNNING` |
+| 7 | `M3_NO_NUISANCE` | 18/200 | 9.0% | 3699927 | `RUNNING` |
+
+- GPU0队列中的`M1`与GPU1修复队列中的完整`M3`尚未创建候选目录，确认是等待前序`M0`与`M2`训练完成后由现有launcher自动启动，不是丢失任务。
+- 8张GPU当前显存占用约2.39–2.94GB，利用率约19%–38%；全部launcher和训练进程存活，日志mtime持续更新。
+- 活动训练日志完整扫描中，Traceback、RuntimeError、OOM、UnboundLocalError、ValueError、AssertionError和Killed均为0。训练内出现的`nan% (0/0)`、`sat_cos=nan`等是target/final评测与未激活统计项的占位值；对应active flag与分母为0，未伴随loss NaN、异常退出或停滞，当前不判为数值故障。
+- 当前8个活动候选均尚未生成`final_ssdg.pth`、`metrics_clean.json`或三种LEO弱信道metrics；因此clean与`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`自动评测尚未开始。状态不能标记为`ARTIFACTS_COMPLETE`。
+- 原始M2的`UnboundLocalError`失败目录与原始`NO_PROTO`的权重验证失败目录继续保留为技术证据；当前表格只列修复后健康run，不把旧失败计入活动候选。
+
 ## 候选矩阵
 
 | 候选 | 固定基座 | 能力 | seed | epoch | source角色比例 | checkpoint选择 |
