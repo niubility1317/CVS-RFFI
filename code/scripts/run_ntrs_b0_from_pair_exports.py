@@ -17,7 +17,10 @@ for value in (str(REPO_ROOT), str(CODE_ROOT)):
     if value not in sys.path:
         sys.path.insert(0, value)
 
-from cvsrffi.ntrs_b0_diagnostics import analyze_paired_shift  # noqa: E402
+from cvsrffi.ntrs_b0_diagnostics import (  # noqa: E402
+    analyze_paired_shift,
+    torch_from_numpy_compatible as _torch_from_numpy_compatible,
+)
 
 
 def _load_payload(path: Path) -> tuple[dict[str, np.ndarray], dict]:
@@ -104,12 +107,12 @@ def main() -> int:
         raise ValueError("B0 diagnostics require exactly the three LEO_WEAK family scenarios")
     repeats = len(sat_features)
     result = analyze_paired_shift(
-        torch.from_numpy(np.tile(clean_features, (repeats, 1))),
-        torch.from_numpy(np.concatenate(sat_features, axis=0)),
-        torch.from_numpy(np.concatenate(labels, axis=0)),
+        _torch_from_numpy_compatible(np.tile(clean_features, (repeats, 1))),
+        _torch_from_numpy_compatible(np.concatenate(sat_features, axis=0)),
+        _torch_from_numpy_compatible(np.concatenate(labels, axis=0)),
         _classifier_weight(args.checkpoint),
-        tx_ids=torch.from_numpy(np.concatenate(tx_ids, axis=0)),
-        scenario_ids=torch.from_numpy(np.concatenate(scenario_ids, axis=0)),
+        tx_ids=_torch_from_numpy_compatible(np.concatenate(tx_ids, axis=0)),
+        scenario_ids=_torch_from_numpy_compatible(np.concatenate(scenario_ids, axis=0)),
     )
     result["protocol"] = {
         "source_only": True,

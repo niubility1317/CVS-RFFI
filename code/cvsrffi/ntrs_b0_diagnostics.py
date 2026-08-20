@@ -12,6 +12,22 @@ import torch
 import torch.nn.functional as F
 
 
+def torch_from_numpy_compatible(value: np.ndarray) -> torch.Tensor:
+    """Convert through the buffer protocol for Torch2.1/NumPy2 ABI compatibility."""
+
+    array = np.ascontiguousarray(value)
+    dtype_map = {
+        np.dtype(np.float32): torch.float32,
+        np.dtype(np.float64): torch.float64,
+        np.dtype(np.int64): torch.int64,
+        np.dtype(np.int32): torch.int32,
+        np.dtype(np.bool_): torch.bool,
+    }
+    if array.dtype not in dtype_map:
+        raise TypeError(f"unsupported B0 NumPy dtype: {array.dtype}")
+    return torch.frombuffer(memoryview(array), dtype=dtype_map[array.dtype]).reshape(array.shape).clone()
+
+
 def _logits(embedding: torch.Tensor, weight: torch.Tensor) -> torch.Tensor:
     return F.normalize(embedding.float(), dim=1) @ F.normalize(weight.float(), dim=1).transpose(0, 1)
 
@@ -157,7 +173,7 @@ def _tensor(payload: Mapping[str, np.ndarray], key: str, required: bool = True) 
         if required:
             raise KeyError(f"missing required array: {key}")
         return None
-    return torch.from_numpy(np.asarray(payload[key]))
+    return torch_from_numpy_compatible(np.asarray(payload[key]))
 
 
 def main() -> None:

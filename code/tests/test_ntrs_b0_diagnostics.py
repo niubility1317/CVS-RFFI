@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 from cvsrffi.ntrs_b0_diagnostics import analyze_paired_shift
-from scripts.run_ntrs_b0_from_pair_exports import _require_exact_pair
+from scripts.run_ntrs_b0_from_pair_exports import _require_exact_pair, _torch_from_numpy_compatible
 
 
 def test_b0_diagnostic_reports_rank_oracle_and_continuous_gate():
@@ -80,3 +80,12 @@ def test_b0_pair_requires_vcal_manifest_and_exact_physical_ids():
             {**common, "channel_view": "clean"},
             {**common, "channel_view": "satellite", "sat_scenario": "leo_clear_weak"},
         )
+
+
+def test_b0_numpy_conversion_does_not_depend_on_torch_from_numpy(monkeypatch):
+    array = np.arange(12, dtype=np.float32).reshape(3, 4)
+    monkeypatch.setattr(torch, "from_numpy", lambda _value: (_ for _ in ()).throw(TypeError("ABI mismatch")))
+    tensor = _torch_from_numpy_compatible(array)
+    assert tensor.shape == (3, 4)
+    assert tensor.dtype == torch.float32
+    assert torch.equal(tensor, torch.arange(12, dtype=torch.float32).reshape(3, 4))
