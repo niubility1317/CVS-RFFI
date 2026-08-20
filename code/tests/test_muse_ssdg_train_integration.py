@@ -900,6 +900,18 @@ def test_muse_unlabeled_total_is_not_rescaled_by_legacy_pseudo_weights():
     assert combined.item() == 5.0
 
 
+def test_muse_pseudo_gate_pass_rates_are_defined_for_first_batch_telemetry():
+    domain_pass, temporal_pass, strong_pass = train_ssdg._pseudo_gate_pass_rates(
+        domain_mask=torch.tensor([True, False, True, False]),
+        temporal_mask=torch.tensor([True, True, True, False]),
+        strong_mask=torch.tensor([False, True, False, False]),
+    )
+
+    assert domain_pass.item() == 0.5
+    assert temporal_pass.item() == 0.75
+    assert strong_pass.item() == 0.25
+
+
 def test_final_only_source_contains_no_source_validation_checkpoint_branch():
     source = Path("code/SSDG/train_ssdg.py").read_text(encoding="utf-8")
     assert "best_source_validation_ssdg.pth" not in source

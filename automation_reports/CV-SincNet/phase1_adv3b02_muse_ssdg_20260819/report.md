@@ -14,6 +14,15 @@
 - 唯一release归档SHA-256：本地与远端均为`03f0585ec8184dab6a28d79ddebdbca07d021f8b4c0df6f2ee498995ee3bf505`；远端Python编译、launcher语法检查和M3 dry-run均通过，dry-run恰好产生1条训练命令与1条联合评测命令，且未创建run root。
 - 实际启动命令框架：GPU0使用`--only=M0,M1`，GPU1使用`--only=M2,M3`；共同设置`ROOT=<release根>`、`RUN_ID=phase1_adv3b02_muse_ssdg_20260820_e5b321b`、`RUNS_ROOT=<正式输出根>`、`WISIG_PKL=<主项目ManySig.pkl>`和固定远端Python。
 
+### 启动健康检查与M2定点修复
+
+- 启动PID：GPU0队列`3680151`，GPU1队列`3680152`；两者CWD均为固定release根，启动日志均非空。M0与M2候选目录分别创建，未发生输出覆盖。
+- M0健康：GPU0队列持续运行；检查时已进入E003/200，前三个epoch约86–89秒，显存约2.2GB，日志持续增长且未发现Traceback/OOM/NaN。
+- M2技术失败：首batch在`train_ssdg.py`统一遥测字典读取未赋值的`domain_pass`，触发`UnboundLocalError`；候选状态为`TRAIN_FAILED`，原始训练日志和全部失败产物保留。GPU1 launcher按预登记规则退出，M3未启动。
+- 根因：MUSE分支已生成`domain_mask/temporal_mask/strong_mask`，但遗漏了legacy分支已有的三个通过率标量计算；该问题不涉及数据权限、loss、路由或性能。
+- 本地TDD：新增`test_muse_pseudo_gate_pass_rates_are_defined_for_first_batch_telemetry`；生产修复前以缺少统一pass-rate入口产生预期RED，随后MUSE与legacy共同调用同一计算函数，单测及MUSE聚焦回归转GREEN。
+- 重启边界：不覆盖或重启仍健康的M0/M1队列；仅以新run ID`phase1_adv3b02_muse_ssdg_20260820_m23_r1`在GPU1重启缺失的`M2,M3`，保留原M2失败目录作为技术证据。
+
 ## 候选矩阵
 
 | 候选 | 固定基座 | 能力 | seed | epoch | source角色比例 | checkpoint选择 |

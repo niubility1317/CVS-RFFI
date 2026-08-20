@@ -5810,6 +5810,19 @@ def _restore_muse_checkpoint_state(muse_state, checkpoint: Mapping[str, Any]) ->
         muse_state["schedule_state"] = MUSEScheduleState(**dict(schedule))
 
 
+def _pseudo_gate_pass_rates(
+    *,
+    domain_mask: torch.Tensor,
+    temporal_mask: torch.Tensor,
+    strong_mask: torch.Tensor,
+) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    return (
+        domain_mask.float().mean(),
+        temporal_mask.float().mean(),
+        strong_mask.float().mean(),
+    )
+
+
 def _compose_unlabeled_closed_loss(
     base,
     *,
@@ -7799,6 +7812,11 @@ def train(args) -> int:
                     )
                     temporal_mask = muse_losses["stable"]
                     strong_mask = mask
+                    domain_pass, temporal_pass, strong_pass = _pseudo_gate_pass_rates(
+                        domain_mask=domain_mask,
+                        temporal_mask=temporal_mask,
+                        strong_mask=strong_mask,
+                    )
                 elif legacy_unlabeled_active:
                     try:
                         unlabeled_batch = next(unlabeled_iter)
@@ -8292,9 +8310,11 @@ def train(args) -> int:
                             )
                     reliable_ratio = mask.float().mean()
                     pseudo_conf = conf.mean()
-                    domain_pass = domain_mask.float().mean()
-                    temporal_pass = temporal_mask.float().mean()
-                    strong_pass = strong_mask.float().mean()
+                    domain_pass, temporal_pass, strong_pass = _pseudo_gate_pass_rates(
+                        domain_mask=domain_mask,
+                        temporal_mask=temporal_mask,
+                        strong_mask=strong_mask,
+                    )
                 else:
                     z = out_l["tx_logits"].sum() * 0.0
                     loss_u = z
