@@ -45,12 +45,11 @@ def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=tuple(MODE_CONSTANTS))
     parser.add_argument("--controller", type=Path, required=True)
-    parser.add_argument("controller_args", nargs=argparse.REMAINDER)
     return parser
 
 
 def main() -> int:
-    args = _parser().parse_args()
+    args, forwarded = _parser().parse_known_args()
     module = _load_controller(args.controller.absolute())
     for name, value in patched_constants(args.mode).items():
         if not hasattr(module, name):
@@ -58,7 +57,7 @@ def main() -> int:
         setattr(module, name, value)
     if not callable(getattr(module, "main", None)):
         raise AttributeError("controller lacks callable main()")
-    forwarded = list(args.controller_args)
+    forwarded = list(forwarded)
     if forwarded and forwarded[0] == "--":
         forwarded = forwarded[1:]
     sys.argv = [str(args.controller), *forwarded]
