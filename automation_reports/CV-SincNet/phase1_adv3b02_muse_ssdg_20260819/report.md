@@ -24,6 +24,9 @@
 - 重启边界：不覆盖或重启仍健康的M0/M1队列；仅以新run ID`phase1_adv3b02_muse_ssdg_20260820_m23_r1`在GPU1重启缺失的`M2,M3`，保留原M2失败目录作为技术证据。
 - 修复release提交：`4816dbbdc08235718174cefc2b8f13375ab1f635`；本地`E:/type10-7/local_artifacts/releases/phase1_adv3b02_muse_ssdg_20260820_m23_r1.tar.gz`→远端同名`releases`归档→解压根`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_muse_ssdg_20260820_m23_r1`。
 - 修复release SHA-256：本地与远端均为`12cfd49b5a23b36db240b54a093a3c271c8da391f667a38c8e5d3f9a6e70d9ba`；远端编译、launcher语法与`--only=M2,M3`dry-run通过，恰好产生2条训练和2条严格联合评测命令，且未创建新run root。
+- 修复队列启动：GPU1 launcher PID`3684782`，CWD为修复release根，命令固定`--only=M2,M3`；M2新候选目录与非空启动/训练日志已创建，原失败目录未覆盖。
+- 修复后健康检查：M2越过原57秒故障窗口并完成E001/200，首epoch用时133.6秒；GPU1显存约2.35GB、利用率21%、功耗约138W，训练日志由6272字节增长到11910字节，未发现`UnboundLocalError`、Traceback、OOM或NaN。状态为`RUNNING`，不是`ARTIFACTS_COMPLETE`。
+- 当前多点矩阵：原队列M0运行、M1等待；修复队列M2运行、M3等待。四点均保持同seed、同split、同epoch预算与独立候选目录；不在单seed结果前复制多seed矩阵。
 
 ## 候选矩阵
 
