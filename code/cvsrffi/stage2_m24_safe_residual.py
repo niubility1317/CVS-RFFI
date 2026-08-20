@@ -10,6 +10,7 @@ from typing import Any, Mapping, Sequence
 
 import numpy as np
 
+from cvsrffi.stage2_ablation_quantization import F0, CompiledAffineState
 from cvsrffi.stage2_m24_center import estimate_centers
 from cvsrffi.stage2_m24_compiler import M24InferenceState, compile_m24_head
 from cvsrffi.stage2_m24_covariance import relative_psd_jitter
@@ -104,6 +105,7 @@ def compile_m24_d1_from_f1_head(
     f1_coefficient: Any,
     f1_bias: Any,
     f1_log_diag: Any,
+    f1_compiled_affine_state: CompiledAffineState | None = None,
     classes: Sequence[str],
     domain_digest: str,
     support_blocks: Any,
@@ -145,6 +147,8 @@ def compile_m24_d1_from_f1_head(
         transient_workspace_bytes=0,
         block_sizes=(160, 96),
         input_log_diag=log_diag[:IF_DIM],
+        compile_arm=F0 if f1_compiled_affine_state is None else f1_compiled_affine_state.arm_id,
+        frozen_compiled_affine_state=f1_compiled_affine_state,
     )
     audit = MappingProxyType({
         "schema": "cvs.erbt_idr.m24.d1_compile_audit.v1",
@@ -155,6 +159,12 @@ def compile_m24_d1_from_f1_head(
         "compiled_feature_dim": IF_DIM,
         "rf32_input_semantics": "constant_zero_removed",
         "frozen_input_metric_retained": True,
+        "source_storage_precision": (
+            "P2-FP32"
+            if f1_compiled_affine_state is None
+            else f1_compiled_affine_state.arm_id
+        ),
+        "source_compiled_prefix_reused": f1_compiled_affine_state is not None,
         "query_rows_used": 0,
         "support_only": True,
         "quantization": quantization,

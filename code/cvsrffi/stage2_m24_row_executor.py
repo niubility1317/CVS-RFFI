@@ -319,6 +319,7 @@ def execute_m24_row(
                     f1_coefficient=coefficient,
                     f1_bias=bias,
                     f1_log_diag=f1_log_diag,
+                    f1_compiled_affine_state=historical_after.compiled_affine_state,
                     classes=old_classes + new_classes,
                     domain_digest=domain_digest,
                     support_blocks=all_support_blocks,
@@ -330,6 +331,7 @@ def execute_m24_row(
                     f1_coefficient=before_coefficient,
                     f1_bias=before_bias,
                     f1_log_diag=before_log_diag,
+                    f1_compiled_affine_state=historical_before.compiled_affine_state,
                     classes=old_classes,
                     domain_digest=domain_digest,
                     support_blocks=compact["old_support_blocks"],
@@ -407,7 +409,19 @@ def execute_m24_row(
             selected_before = before_state.predict(before_query_features)
             query_seconds += time.perf_counter() - query_started
             quantization = audit["quantization"]
-            resource = audit["resource"]
+            after_resource = dict(audit["resource"])
+            before_resource = dict(before_audit["resource"])
+            resource = {
+                **after_resource,
+                "compiled_inference_state_bytes": max(
+                    int(after_resource["compiled_inference_state_bytes"]),
+                    int(before_resource["compiled_inference_state_bytes"]),
+                ) if arm == D1 else int(after_resource["compiled_inference_state_bytes"]),
+                "transient_registration_workspace_peak_bytes": max(
+                    int(after_resource["transient_registration_workspace_peak_bytes"]),
+                    int(before_resource["transient_registration_workspace_peak_bytes"]),
+                ) if arm == D1 else int(after_resource["transient_registration_workspace_peak_bytes"]),
+            }
             audit = {**dict(audit), "before_registration_fit": dict(before_audit)}
             if arm == D1:
                 parity_disagreements += int(np.sum(selected_after != historical_after_prediction))

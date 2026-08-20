@@ -33,6 +33,32 @@ def test_refit_matrix_is_three_arms_over_complete_125_inputs() -> None:
     )
 
 
+def test_full125_controller_requires_explicit_run_id() -> None:
+    parser = runner._parser()
+    common = ["--feature-root", "features", "--output-root", "predictions"]
+    with pytest.raises(SystemExit):
+        parser.parse_args(common)
+    args = parser.parse_args([*common, "--run-id", "erbt_idr_m24_d1_refit_full125_v2"])
+    assert args.run_id == "erbt_idr_m24_d1_refit_full125_v2"
+
+
+def test_full125_controller_rejects_cross_run_prediction_reuse() -> None:
+    parser = runner._parser()
+    with pytest.raises(SystemExit):
+        parser.parse_args(
+            [
+                "--run-id",
+                "erbt_idr_m24_d1_refit_full125_v2",
+                "--feature-root",
+                "features",
+                "--output-root",
+                "predictions",
+                "--reuse-prediction-root",
+                "old-predictions",
+            ]
+        )
+
+
 def test_standardized_forgetting_uses_r0_candidate_pre_for_every_arm() -> None:
     r0 = {
         "scenario_rows": [

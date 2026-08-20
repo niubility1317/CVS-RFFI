@@ -8,7 +8,14 @@ from typing import Any, Mapping, Sequence
 
 import numpy as np
 
-from cvsrffi.stage2_ablation_quantization import F3, CompiledAffineState, compile_affine_state, score_affine_state
+from cvsrffi.stage2_ablation_quantization import (
+    F0,
+    F3,
+    CompiledAffineState,
+    compile_affine_state,
+    decode_affine_state,
+    score_affine_state,
+)
 
 
 INFERENCE_SCHEMA = "cvs.erbt_idr.m24.inference_state.v1"
@@ -82,6 +89,8 @@ def compile_m24_head(
     transient_workspace_bytes: int,
     block_sizes: Sequence[int] | None = None,
     input_log_diag: Any | None = None,
+    compile_arm: str = F3,
+    frozen_compiled_affine_state: CompiledAffineState | None = None,
 ) -> tuple[M24InferenceState, dict[str, int], dict[str, float]]:
     reference_coefficient = np.asarray(coefficient, dtype=np.float32)
     reference_bias = np.asarray(bias, dtype=np.float32)
@@ -95,11 +104,59 @@ def compile_m24_head(
         if not np.isfinite(norm).all() or np.any(norm <= 1.0e-12):
             raise ValueError("input_log_diag produces degenerate support")
         support = np.asarray(support / norm, dtype=np.float32)
-    compiled = compile_affine_state(reference_coefficient, reference_bias, arm_id=F3, block_sizes=block_sizes)
+    if frozen_compiled_affine_state is None:
+        compiled = compile_affine_state(
+            reference_coefficient,
+            reference_bias,
+            arm_id=compile_arm,
+            block_sizes=block_sizes,
+        )
+    else:
+        source = frozen_compiled_affine_state
+        feature_dim = reference_coefficient.shape[1]
+        if feature_dim not in source.block_offsets[1:]:
+            raise ValueError("frozen affine prefix must end on a source block boundary")
+        source_coefficient, source_bias = decode_affine_state(source)
+        if (
+            source.class_count != reference_coefficient.shape[0]
+            or source.feature_dim < feature_dim
+            or not np.array_equal(source_coefficient[:, :feature_dim], reference_coefficient)
+            or not np.array_equal(source_bias, reference_bias)
+        ):
+            raise ValueError("frozen affine source does not match the supplied reference")
+        block_count = source.block_offsets.index(feature_dim)
+
+        def readonly_prefix(value: np.ndarray, *, columns: int | None = None) -> np.ndarray:
+            result = np.array(
+                value if columns is None else value[:, :columns], copy=True, order="C"
+            )
+            result.setflags(write=False)
+            return result
+
+        compiled = CompiledAffineState(
+            arm_id=source.arm_id,
+            class_count=source.class_count,
+            feature_dim=feature_dim,
+            block_offsets=tuple(source.block_offsets[: block_count + 1]),
+            coefficient_layers=tuple(
+                readonly_prefix(layer, columns=feature_dim)
+                for layer in source.coefficient_layers
+            ),
+            scale_layers=tuple(
+                readonly_prefix(scale, columns=block_count)
+                for scale in source.scale_layers
+            ),
+            bias=readonly_prefix(source.bias),
+        )
     reference_scores = support @ reference_coefficient.T + reference_bias[None, :]
     compiled_scores = np.asarray(score_affine_state(compiled, support), dtype=np.float32)
     quantization = margin_normalized_quantization_audit(reference_scores, compiled_scores)
-    audit = {"quantization": quantization, "has_fp32_coefficient_sidecar": False}
+    audit = {
+        "quantization": quantization,
+        "has_fp32_coefficient_sidecar": False,
+        "compiled_storage_arm": compiled.arm_id,
+        "frozen_source_prefix_reused": frozen_compiled_affine_state is not None,
+    }
     state = M24InferenceState(
         schema=INFERENCE_SCHEMA,
         classes=tuple(str(item) for item in classes),

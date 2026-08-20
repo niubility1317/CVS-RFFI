@@ -154,6 +154,16 @@ def test_d1_row_publishes_truth_unopened_four_state_and_nonoverwriting_output(tm
     assert receipt["resource"]["prerequisite_p2_a1_fit_included"] is False
     assert receipt["d1_historical_parity"]["before_prediction_disagreements"] == 0
     assert "r_p99" in receipt["quantization"]["margin_normalized"]
+    expected_state_bytes = max(
+        max(
+            scenario_audit["resource"]["compiled_inference_state_bytes"],
+            scenario_audit["before_registration_fit"]["resource"][
+                "compiled_inference_state_bytes"
+            ],
+        )
+        for scenario_audit in receipt["scenario_audit"].values()
+    )
+    assert receipt["resource"]["compiled_inference_state_bytes"] == expected_state_bytes
     with pytest.raises(FileExistsError):
         execute_m24_row(
             arm=D1,

@@ -46,6 +46,7 @@ def _write_exclusive(path: Path, value: dict[str, Any]) -> None:
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--run-id", required=True)
     parser.add_argument("--feature-root", required=True)
     parser.add_argument("--supplemental-feature-root")
     parser.add_argument("--output-root", required=True)
@@ -158,7 +159,7 @@ def main() -> int:
     completed.sort(key=lambda row: str(row["row_id"]))
     matrix = {
         "schema": MATRIX_SCHEMA,
-        "run_id": "erbt_idr_m24_d1_refit_full125_20260820_v1",
+        "run_id": str(args.run_id),
         "status": "PREDICTIONS_COMPLETE_TRUTH_UNOPENED",
         "row_count": len(completed),
         "paired_input_identity_count": EXPECTED_INPUT_IDENTITIES,

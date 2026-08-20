@@ -4,6 +4,12 @@ from dataclasses import fields
 
 import numpy as np
 
+from cvsrffi.stage2_ablation_quantization import (
+    F0,
+    F3,
+    compile_affine_state,
+    decode_affine_state,
+)
 from cvsrffi.stage2_m24_compiler import (
     M24InferenceState,
     compile_m24_head,
@@ -184,6 +190,61 @@ def test_d1_compile_is_a_pure_288_to_256_head_compiler() -> None:
     assert audit["method_identity"] == "P2_A1_IF256_COMPILE_PARITY"
     assert audit["fresh_support_refit"] is False
     assert audit["resource"]["transient_registration_workspace_peak_bytes"] == 0
+
+
+def test_d1_compile_preserves_fp32_source_order_below_fp16_bias_resolution() -> None:
+    blocks = np.ones((2, 256), dtype=np.float32)
+    coefficient = np.zeros((2, 288), dtype=np.float32)
+    bias = np.array([1.0, 1.0001], dtype=np.float32)
+    state, audit, _workspace = compile_m24_d1_from_f1_head(
+        f1_coefficient=coefficient,
+        f1_bias=bias,
+        f1_log_diag=np.zeros(288, dtype=np.float32),
+        f1_compiled_affine_state=None,
+        classes=("a", "b"),
+        domain_digest="d" * 64,
+        support_blocks=blocks,
+    )
+    features = __import__(
+        "cvsrffi.stage2_m24_safe_residual", fromlist=["prepare_query_features"]
+    ).prepare_query_features(blocks, feature_dim=256)
+    assert state.compiled_affine_state.arm_id == F0
+    assert state.predict(features).tolist() == ["b", "b"]
+    assert audit["source_storage_precision"] == "P2-FP32"
+
+
+def test_d1_compile_crops_existing_f3_state_without_requantizing_prefix() -> None:
+    rng = np.random.default_rng(2412)
+    source_coefficient = rng.normal(size=(3, 288)).astype(np.float32)
+    source_bias = rng.normal(size=3).astype(np.float32)
+    source = compile_affine_state(
+        source_coefficient,
+        source_bias,
+        arm_id=F3,
+        block_sizes=(160, 96, 32),
+    )
+    decoded_coefficient, decoded_bias = decode_affine_state(source)
+    blocks = rng.normal(size=(5, 256)).astype(np.float32)
+    state, audit, _workspace = compile_m24_d1_from_f1_head(
+        f1_coefficient=decoded_coefficient,
+        f1_bias=decoded_bias,
+        f1_log_diag=np.zeros(288, dtype=np.float32),
+        f1_compiled_affine_state=source,
+        classes=("a", "b", "c"),
+        domain_digest="d" * 64,
+        support_blocks=blocks,
+    )
+    compact = state.compiled_affine_state
+    assert compact.arm_id == F3
+    assert compact.block_offsets == (0, 160, 256)
+    for compact_layer, source_layer in zip(
+        compact.coefficient_layers, source.coefficient_layers
+    ):
+        np.testing.assert_array_equal(compact_layer, source_layer[:, :256])
+    for compact_scale, source_scale in zip(compact.scale_layers, source.scale_layers):
+        np.testing.assert_array_equal(compact_scale, source_scale[:, :2])
+    np.testing.assert_array_equal(compact.bias, source.bias)
+    assert audit["source_storage_precision"] == "P2-F3"
 
 
 def test_m24_arm_catalog_is_complete_d0_through_d10() -> None:
