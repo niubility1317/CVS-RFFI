@@ -4,7 +4,10 @@ import pytest
 
 from scripts import run_m24_d1_refit_matrix as runner
 from scripts.extend_m24_full125_inputs import patched_constants
-from scripts.score_m24_d1_refit_matrix import standardized_forgetting
+from scripts.score_m24_d1_refit_matrix import (
+    _validate_complete_matrix,
+    standardized_forgetting,
+)
 from cvsrffi.stage2_m24_safe_residual import D0, D1, D1_REFIT
 
 
@@ -74,3 +77,24 @@ def test_full125_input_extension_adds_exactly_two_seeds() -> None:
         "EXPECTED_TASKS": 50,
         "EXPECTED_SCOPE_CACHES": 150,
     }
+
+
+def test_scorer_rejects_duplicate_identity_that_masks_missing_full125_row() -> None:
+    entries = []
+    for receiver in runner.DEFAULT_RECEIVERS:
+        for seed in runner.DEFAULT_SEEDS:
+            for k_shot, new_count in runner.DEFAULT_CONDITIONS:
+                for arm in runner.EVIDENCE_ARMS:
+                    entries.append({
+                        "row_id": f"{receiver}-{seed}-{k_shot}-{new_count}-{arm}",
+                        "receiver": receiver,
+                        "method_seed": seed,
+                        "k_shot": k_shot,
+                        "new_class_count": new_count,
+                        "arm": arm,
+                    })
+    _validate_complete_matrix(entries)
+    malformed = list(entries)
+    malformed[-1] = dict(malformed[0], row_id="duplicate-row-id-content")
+    with pytest.raises(ValueError, match="complete 125 identity grid"):
+        _validate_complete_matrix(malformed)

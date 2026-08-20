@@ -13,11 +13,17 @@ from cvsrffi.stage2_ablation_truth_scorer import score_full_ablation_row, write_
 from cvsrffi.stage2_m23_truth_diagnostics import score_m23_four_state_artifact, score_m23_paired_artifacts
 from cvsrffi.stage2_m24_safe_residual import D0, D1, D1_REFIT
 from scripts.score_m24_safe_residual_suite import _legacy_scorer_receipts
+from scripts.run_m24_d1_refit_matrix import (
+    DEFAULT_CONDITIONS,
+    DEFAULT_RECEIVERS,
+    DEFAULT_SEEDS,
+    EVIDENCE_ARMS,
+    EXPECTED_INPUT_IDENTITIES,
+    EXPECTED_METHOD_ROWS,
+)
 
 
 SCORED_MATRIX_SCHEMA = "cvs.erbt_idr.m24.d1_refit_scored_matrix.v1"
-EXPECTED_INPUT_IDENTITIES = 125
-EXPECTED_METHOD_ROWS = 375
 
 
 def _sha256(path: Path) -> str:
@@ -47,6 +53,48 @@ def standardized_forgetting(
             "F_std": reference_pre - post,
         })
     return output
+
+
+def _validate_complete_matrix(entries: list[dict[str, Any]]) -> None:
+    expected_identities = {
+        (receiver, seed, k_shot, new_count)
+        for receiver in DEFAULT_RECEIVERS
+        for seed in DEFAULT_SEEDS
+        for k_shot, new_count in DEFAULT_CONDITIONS
+    }
+    observed_identities: set[tuple[str, int, int, int]] = set()
+    observed_pairs: set[tuple[tuple[str, int, int, int], str]] = set()
+    row_ids: set[str] = set()
+    arms_by_identity: dict[tuple[str, int, int, int], set[str]] = {}
+    for entry in entries:
+        identity = (
+            str(entry.get("receiver")),
+            int(entry.get("method_seed", -1)),
+            int(entry.get("k_shot", -1)),
+            int(entry.get("new_class_count", -1)),
+        )
+        arm = str(entry.get("arm"))
+        row_id = str(entry.get("row_id"))
+        pair = (identity, arm)
+        if (
+            identity not in expected_identities
+            or arm not in EVIDENCE_ARMS
+            or pair in observed_pairs
+            or not row_id
+            or row_id in row_ids
+        ):
+            raise ValueError("prediction entries do not form the complete 125 identity grid")
+        observed_identities.add(identity)
+        observed_pairs.add(pair)
+        row_ids.add(row_id)
+        arms_by_identity.setdefault(identity, set()).add(arm)
+    if (
+        len(entries) != EXPECTED_METHOD_ROWS
+        or observed_identities != expected_identities
+        or len(observed_pairs) != EXPECTED_METHOD_ROWS
+        or any(arms != set(EVIDENCE_ARMS) for arms in arms_by_identity.values())
+    ):
+        raise ValueError("prediction entries do not form the complete 125 identity grid")
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -102,6 +150,7 @@ def main() -> int:
         or len(entries) != EXPECTED_METHOD_ROWS
     ):
         raise ValueError("D1 refit prediction matrix is incomplete")
+    _validate_complete_matrix(entries)
     scoring_roots = [Path(args.scoring_root).absolute()]
     if args.supplemental_scoring_root:
         scoring_roots.append(Path(args.supplemental_scoring_root).absolute())

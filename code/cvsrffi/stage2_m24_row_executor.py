@@ -235,19 +235,32 @@ def execute_m24_row(
         compact_tokens = np.asarray(compact["query_tokens"]).astype(str)
         if not np.array_equal(legacy_tokens, compact_tokens):
             raise M24RowExecutionError(f"{scenario} base/overlay query token drift")
-        historical_before, historical_after, prepared = _legacy_states(
-            M23_F1_IF,
-            legacy,
-            old_classes,
-            new_classes,
-            ground_basis=base_cache["ground_basis"],
-            ground_weights=base_cache["ground_spectral_weights"],
-            ground_audit=base_cache["ground_audit"],
-            seed=int(seed) + scenario_index,
-            device=device,
-        )
-        historical_after_prediction = historical_after.predict(prepared["query_after"])
-        historical_before_prediction = historical_before.predict(prepared["query_before"])
+        if arm == D1_REFIT:
+            prepared = {
+                "old": np.asarray(legacy["old_support_features"], dtype=np.float32),
+                "new": np.asarray(legacy["new_support_features"], dtype=np.float32),
+                "query": np.asarray(legacy["query_features"], dtype=np.float32),
+                "query_before": np.asarray(legacy["query_features"], dtype=np.float32),
+                "query_after": np.asarray(legacy["query_features"], dtype=np.float32),
+            }
+            historical_before = None
+            historical_after = None
+            historical_after_prediction = None
+            historical_before_prediction = None
+        else:
+            historical_before, historical_after, prepared = _legacy_states(
+                M23_F1_IF,
+                legacy,
+                old_classes,
+                new_classes,
+                ground_basis=base_cache["ground_basis"],
+                ground_weights=base_cache["ground_spectral_weights"],
+                ground_audit=base_cache["ground_audit"],
+                seed=int(seed) + scenario_index,
+                device=device,
+            )
+            historical_after_prediction = historical_after.predict(prepared["query_after"])
+            historical_before_prediction = historical_before.predict(prepared["query_before"])
         identity_before_prediction = _cosine_prediction(
             prepared["old"], legacy["old_support_labels"], old_classes, prepared["query"], 288
         )
@@ -396,7 +409,7 @@ def execute_m24_row(
             quantization = audit["quantization"]
             resource = audit["resource"]
             audit = {**dict(audit), "before_registration_fit": dict(before_audit)}
-            if arm in {D1, D1_REFIT}:
+            if arm == D1:
                 parity_disagreements += int(np.sum(selected_after != historical_after_prediction))
                 before_parity_disagreements += int(np.sum(selected_before != historical_before_prediction))
                 parity_rows += len(selected_after)

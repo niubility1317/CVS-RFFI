@@ -203,6 +203,9 @@ def test_d1_refit_does_not_consume_historical_head_parameters(
     monkeypatch.setattr(
         "cvsrffi.stage2_m24_row_executor._f1_reference_head", forbidden
     )
+    monkeypatch.setattr(
+        "cvsrffi.stage2_m24_row_executor._legacy_states", forbidden
+    )
     receipt = execute_m24_row(
         arm=D1_REFIT,
         row_id="synthetic_m24_d1_refit",
