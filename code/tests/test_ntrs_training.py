@@ -169,6 +169,27 @@ def test_adapter_only_freeze_excludes_raw_backbone_and_head_from_optimizer():
     assert all(parameter.requires_grad for parameter in model.ntrs_robustifier.parameters())
 
 
+def test_trainable_summary_handles_control_model_without_ntrs_modules():
+    model = build_dual_model(
+        num_classes=3,
+        num_domains=2,
+        model_size="S",
+        dataset="wisig",
+        input_len=64,
+        sample_rate_hz=25e6,
+        model_variant="lite_h",
+        id_feature_key="feat_joint",
+        dom_feature_key="feat_imp",
+        use_ntrs=False,
+    )
+    summary = configure_ntrs_trainable_parameters(
+        model,
+        SimpleNamespace(ntrs_variant="v1"),
+    )
+    assert summary["raw_trainable_parameters"] > 0
+    assert summary["q_trainable_parameters"] == 0
+    assert summary["adapter_trainable_parameters"] == 0
+
 def test_adapter_only_raw_reference_reports_zero_then_detects_parameter_drift():
     model = build_dual_model(
         num_classes=3,

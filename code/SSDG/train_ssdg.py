@@ -5069,15 +5069,21 @@ def configure_ntrs_trainable_parameters(model, args) -> Dict[str, int]:
     candidate = getattr(model, "module", model)
     variant = str(getattr(args, "ntrs_variant", "v1") or "v1").lower().strip()
     if variant != "v3_adapter":
+        context = getattr(candidate, "ntrs_context", None)
+        robustifier = getattr(candidate, "ntrs_robustifier", None)
         return {
             "raw_trainable_parameters": int(
                 sum(p.numel() for n, p in candidate.named_parameters() if p.requires_grad and not is_ntrs_parameter_name(n))
             ),
             "q_trainable_parameters": int(
-                sum(p.numel() for p in getattr(candidate, "ntrs_context", nn.Module()).parameters() if p.requires_grad)
+                sum(p.numel() for p in context.parameters() if p.requires_grad)
+                if context is not None
+                else 0
             ),
             "adapter_trainable_parameters": int(
-                sum(p.numel() for p in getattr(candidate, "ntrs_robustifier", nn.Module()).parameters() if p.requires_grad)
+                sum(p.numel() for p in robustifier.parameters() if p.requires_grad)
+                if robustifier is not None
+                else 0
             ),
         }
 
