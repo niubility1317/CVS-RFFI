@@ -73,6 +73,26 @@
 - 当前8个活动候选均尚未生成`final_ssdg.pth`、`metrics_clean.json`或三种LEO弱信道metrics；因此clean与`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`自动评测尚未开始。状态不能标记为`ARTIFACTS_COMPLETE`。
 - 原始M2的`UnboundLocalError`失败目录与原始`NO_PROTO`的权重验证失败目录继续保留为技术证据；当前表格只列修复后健康run，不把旧失败计入活动候选。
 
+## 2026-08-20T15:55:55+08:00进度快照
+
+本次再次只读完整解析4个run root的所有训练日志与artifact，并实时核对8张GPU、launcher及排队目录；没有修改远端状态。
+
+| GPU | 当前候选 | 最新完成epoch | 进度 | 异常指纹 | 当前阶段 |
+|---:|---|---:|---:|---:|---|
+| 0 | `M0` | 62/200 | 31.0% | 0 | 训练 |
+| 1 | `M2`修复run | 57/200 | 28.5% | 0 | 训练 |
+| 2 | `M3_NO_PRIOR` | 48/200 | 24.0% | 0 | 训练 |
+| 3 | `M3_NO_PROTO`修复run | 48/200 | 24.0% | 0 | 训练 |
+| 4 | `M3_NO_TEMPORAL` | 59/200 | 29.5% | 0 | 训练 |
+| 5 | `M3_NO_SATELLITE` | 59/200 | 29.5% | 0 | 训练 |
+| 6 | `M3_NO_CROSSRX` | 59/200 | 29.5% | 0 | 训练 |
+| 7 | `M3_NO_NUISANCE` | 59/200 | 29.5% | 0 | 训练 |
+
+- 8个launcher均存活；GPU显存约2.83–6.14GB，实时利用率21%–99%，无空卡或失联任务。
+- 活动日志完整扫描中，Traceback、RuntimeError、OOM、UnboundLocalError、ValueError、AssertionError和Killed均为0。
+- GPU0队列的`M1`和GPU1队列的完整`M3`仍等待当前`M0`、`M2`完成后自动启动，候选目录尚未创建。
+- 所有活动候选仍未生成`final_ssdg.pth`、clean metrics或三种LEO metrics，自动评测尚未开始；当前状态仍为`RUNNING`。
+
 ## 候选矩阵
 
 | 候选 | 固定基座 | 能力 | seed | epoch | source角色比例 | checkpoint选择 |
