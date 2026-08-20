@@ -28,6 +28,19 @@
 - 修复后健康检查：M2越过原57秒故障窗口并完成E001/200，首epoch用时133.6秒；GPU1显存约2.35GB、利用率21%、功耗约138W，训练日志由6272字节增长到11910字节，未发现`UnboundLocalError`、Traceback、OOM或NaN。状态为`RUNNING`，不是`ARTIFACTS_COMPLETE`。
 - 当前多点矩阵：原队列M0运行、M1等待；修复队列M2运行、M3等待。四点均保持同seed、同split、同epoch预算与独立候选目录；不在单seed结果前复制多seed矩阵。
 
+## 2026-08-20六卡同seed单因素消融预登记
+
+- 运行ID：`phase1_adv3b02_muse_ssdg_ablate6_s392002_20260820`；输出根：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_muse_ssdg_ablate6_s392002_20260820`，禁止覆盖。
+- 固定实现：`work/cvs-active`提交`f1db4fd48a315e3cad637d79710f8e7c39fdb072`；新增只能与`--only=M3`绑定的六个命名消融臂，原M0–M3队列不变。
+- 固定种子与资源：六臂全部`seed=392002`、200epoch；GPU2=`NO_PRIOR`、GPU3=`NO_PROTO`、GPU4=`NO_TEMPORAL`、GPU5=`NO_SATELLITE`、GPU6=`NO_CROSSRX`、GPU7=`NO_NUISANCE`。GPU0/1保留已在运行的M0–M3队列，不重启、不改参、不覆盖。
+- 因果对照：每臂仅从M3去除一类机制，其他数据划分、source角色比例`0.07/0.63/0.15/0.15`、`tx_rx_day_1_7_2`、PAIC、epoch预算、checkpoint规则与训练后评测保持一致。
+- 消融定义：`NO_PRIOR`移除source-domain prior alignment；`NO_PROTO`移除classification prototype融合、prototype reliability及未标注prototype更新；`NO_TEMPORAL`移除temporal-stability reliability证据；`NO_SATELLITE`移除satellite identity student和MUSE satellite loss，但保留共同ADV3B02卫星增强；`NO_CROSSRX`移除cross-receiver loss；`NO_NUISANCE`移除nuisance loss。
+- 必需评测：每臂训练成功后，仅用其`final_only`最终checkpoint自动执行一次canonical联合评测，分别保留`clean`、`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`的独立log与metrics；任一场景缺失或严格checkpoint重建失败均不得写`ARTIFACTS_COMPLETE`。
+- 唯一launch owner：本主Agent负责六臂一次发布与健康检查；不允许第二运行者重复启动或修改矩阵。
+- 输出与日志：候选根分别为`M3_NO_PRIOR`、`M3_NO_PROTO`、`M3_NO_TEMPORAL`、`M3_NO_SATELLITE`、`M3_NO_CROSSRX`、`M3_NO_NUISANCE`；外层启动日志根为`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_muse_ssdg_ablate6_s392002_20260820`。
+- 本地验证：`ssr-gpu`环境内16个指定测试文件共184项全部通过；launcher `bash -n`和`git diff --check`通过。每个命名消融dry-run均必须产生1条训练命令、1条联合评测命令和4个场景输出定位，且不创建run root。
+- 停止规则：仅因协议/路径/checkout/output冲突、训练或评测执行错误、缺失final checkpoint、缺失prediction/metrics闭合、OOM/NaN或相同确定性启动前异常停止对应运行；不得因中间或最终性能高低停止。
+
 ## 候选矩阵
 
 | 候选 | 固定基座 | 能力 | seed | epoch | source角色比例 | checkpoint选择 |
