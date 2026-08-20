@@ -4,7 +4,7 @@
 
 run ID：`erbt_idr_m24_invariance_break_full125_20260820_v1`
 
-当前状态：`LANDED / REAL-CACHE-SMOKE-PASS / READY_TO_LAUNCH`
+当前状态：`RUNNING / PREDICTIONS_TRUTH_UNOPENED`
 
 ## 一、目标与机制
 
@@ -79,4 +79,4 @@ prediction闭合要求：`matrix_index.status=PREDICTIONS_COMPLETE_TRUTH_UNOPENE
 
 ## 七、结果
 
-待N607完整prediction与truth-last评分后填写。当前没有性能结论。
+正式prediction已于2026-08-20启动一次，父PID为`4020112`。启动核对确认CWD为冻结release的`code`目录，命令行、run root和`--max-workers 2`与预登记一致，输出根已创建；自动闭环心跳为`m2-4-125`。待N607完整prediction与truth-last评分后填写，当前没有性能结论。
