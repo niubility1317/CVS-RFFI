@@ -4,7 +4,7 @@
 
 run ID：`erbt_idr_m24_invariance_break_full125_20260820_v1`
 
-当前状态：`LOCAL_VERIFIED / PRE-REGISTERED / NOT_LAUNCHED`
+当前状态：`LANDED / REAL-CACHE-SMOKE-PASS / READY_TO_LAUNCH`
 
 ## 一、目标与机制
 
@@ -53,6 +53,8 @@ run ID：`erbt_idr_m24_invariance_break_full125_20260820_v1`
 |资源|CPU，`--max-workers 2`；不占用GPU，不干预既有Phase1训练|
 
 N607只读预检已确认项目根、两组feature root和两组scoring root可见，新run/log根不存在。
+
+单一release归档本地与N607的SHA-256均为`ef29aad0e47a7c635b050d7be6efad66fa74804d6ba65cc2924da7ea9cff53fd`，远端编译通过。真实cache无query smoke使用`rx3-19/m7282101/K1/new20`，G0–G4共5行全部生成`PREDICTIONS_COMPLETE_TRUTH_UNOPENED` prediction并返回`PASS`；smoke位于本run的独立`smoke`子目录，不进入625行正式矩阵。
 
 ## 五、冻结命令
 
