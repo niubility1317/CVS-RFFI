@@ -517,3 +517,9 @@ prediction没有重跑。补充scoring package中的truth sidecar结构与正式
 |prediction index|`automation_reports/CV-SincNet/erbt_idr_m24_d1_refit_full125_20260820_v3/evidence/matrix_index.json`|
 |scored matrix index|`automation_reports/CV-SincNet/erbt_idr_m24_d1_refit_full125_20260820_v3/evidence/scored_matrix_index.json`|
 |scoring修复摘要|`automation_reports/CV-SincNet/erbt_idr_m24_d1_refit_full125_20260820_v3/evidence/scoring_repair_summary.json`|
+
+### 20.11完整125与历史D92 E0综合比较补充
+
+完整综合分析见`automation_reports/CV-SincNet/erbt_idr_m24_d1_full125_comprehensive_comparison_20260820_v1/report.md`，机器可读汇总见同目录`comparison_summary.json`。
+
+该分析纠正了一个影响跨run解读的聚合口径差异：M2.4 D1主表使用query加权均值，历史D92 E0总表使用row等权均值。统一为row等权后，完整125 R0的H为0.564803，历史P2-A1为0.565038，差值仅−0.000235；五个K/new条件的最大H差为0.002406，三个scene最大H差为0.003766，五个receiver最大H差为0.009477。该结果支持去RF32基线在新增seed上的稳定复现，但仍属于跨run描述性证据，不替代FULL-vs-A1同run边际消融。

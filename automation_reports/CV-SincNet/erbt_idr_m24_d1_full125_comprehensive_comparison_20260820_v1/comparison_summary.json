@@ -1,0 +1,252 @@
+{
+  "schema": "erbt_idr_m24_d1_comprehensive_comparison_v1",
+  "generated_date": "2026-08-20",
+  "status": "COMPLETE",
+  "primary_run_id": "erbt_idr_m24_d1_refit_full125_20260820_v3",
+  "primary_baseline": "P2-A1_NO_RF32",
+  "evidence_classes": {
+    "A_same_run_same_row": [
+      "M24-D1-COMPILE-PARITY minus M24-D0-HISTORICAL-F1",
+      "M24-D1-REFIT minus M24-D0-HISTORICAL-F1"
+    ],
+    "B_historical_same_row": [
+      "P2-A1 minus P2-A2",
+      "P2-FULL minus P2-A0/B0/C3/D0/D1/D2/E0/F0/F1/F2/F3"
+    ],
+    "C_cross_run_descriptive_only": [
+      "full125 R0 versus historical P2-A1",
+      "full125 R0 versus historical P2-FULL",
+      "full125 R0 versus historical same-permission baselines"
+    ]
+  },
+  "matrix": {
+    "paired_input_identity_count": 125,
+    "formal_row_count": 375,
+    "scenario_unit_count": 1125,
+    "arm_counts": {
+      "M24-D0-HISTORICAL-F1": 125,
+      "M24-D1-COMPILE-PARITY": 125,
+      "M24-D1-REFIT": 125
+    },
+    "receivers": ["20-1", "3-19", "7-14", "7-7", "8-8"],
+    "method_seeds": [7282101, 7282102, 7282103, 7282104, 7282105],
+    "conditions": ["K1_new20", "K2_new20", "K5_new20", "K10_new20", "K10_new5"],
+    "pass_rows": 375,
+    "R1_before_prediction_disagreements": 0,
+    "R1_after_prediction_disagreements": 0
+  },
+  "aggregation_note": {
+    "current_primary_table": "pooled query-weighted mean; parentheses are population standard deviation across 125 row values",
+    "historical_d92_table": "equal-weight mean across rows",
+    "aligned_cross_run_comparison": "equal-weight row mean",
+    "warning": "Do not subtract current pooled query-weighted values from historical equal-row values."
+  },
+  "current_full125_query_weighted": {
+    "R0_D92_E0_no_RF32": {
+      "A_o_pre": 0.740929,
+      "A_o_post": 0.573497,
+      "A_n": 0.515814,
+      "H": 0.537558,
+      "F": 0.167432,
+      "min_old": 0.254104,
+      "min_new": 0.173606
+    },
+    "R1_compile_parity": {
+      "A_o_pre": 0.740929,
+      "A_o_post": 0.573497,
+      "A_n": 0.515814,
+      "H": 0.537558,
+      "F": 0.167432,
+      "min_old": 0.254104,
+      "min_new": 0.173606
+    },
+    "R2_support_refit": {
+      "A_o_pre": 0.740821,
+      "A_o_post": 0.573497,
+      "A_n": 0.515814,
+      "H": 0.537558,
+      "F_within": 0.167325,
+      "F_std": 0.167432,
+      "min_old": 0.254104,
+      "min_new": 0.173606
+    }
+  },
+  "strict_same_row_delta_vs_R0": {
+    "R1": {
+      "A_o_pre": 0.0,
+      "A_o_post": 0.0,
+      "A_n": 0.0,
+      "H": 0.0,
+      "F": 0.0,
+      "min_old": 0.0,
+      "min_new": 0.0,
+      "post_query_count": 172500,
+      "N_help": 0,
+      "N_harm": 0
+    },
+    "R2": {
+      "A_o_pre": -0.000133,
+      "A_o_post": 0.0,
+      "A_n": 0.0,
+      "H": 0.0,
+      "F_within": -0.000133,
+      "F_std": 0.0,
+      "min_old": 0.0,
+      "min_new": 0.0,
+      "post_query_count": 172500,
+      "N_help": 0,
+      "N_harm": 0,
+      "pre_degraded_rows": 4
+    }
+  },
+  "current_full125_R0_equal_row": {
+    "A_o_pre": 0.753911,
+    "A_o_post": 0.595978,
+    "A_n": 0.546820,
+    "H": 0.564803,
+    "F": 0.157933,
+    "min_old": 0.278400,
+    "min_new": 0.216267
+  },
+  "historical_overall_equal_row": {
+    "P2_A1_no_RF32": {
+      "A_o_pre": 0.749444,
+      "A_o_post": 0.594630,
+      "A_n": 0.548556,
+      "H": 0.565038,
+      "F": 0.154815,
+      "min_old": 0.275333,
+      "min_new": 0.222222
+    },
+    "P2_FULL_with_RF32": {
+      "A_o_pre": 0.749400,
+      "A_o_post": 0.592300,
+      "A_n": 0.533200,
+      "H": 0.554200,
+      "F": 0.157100,
+      "min_old": 0.278400,
+      "min_new": 0.219300
+    },
+    "P2_A2_RF32_only": {
+      "A_o_pre": 0.749444,
+      "A_o_post": 0.359074,
+      "A_n": 0.271344,
+      "H": 0.299610,
+      "F": 0.390370,
+      "min_old": 0.118222,
+      "min_new": 0.069333
+    }
+  },
+  "aligned_cross_run_delta_full125_R0_minus_historical": {
+    "P2_A1_no_RF32": {
+      "A_o_pre": 0.004467,
+      "A_o_post": 0.001348,
+      "A_n": -0.001736,
+      "H": -0.000235,
+      "F": 0.003118,
+      "min_old": 0.003067,
+      "min_new": -0.005955,
+      "claim_class": "CROSS_RUN_DESCRIPTIVE_ONLY"
+    },
+    "P2_FULL_with_RF32": {
+      "A_o_pre": 0.004511,
+      "A_o_post": 0.003678,
+      "A_n": 0.013620,
+      "H": 0.010603,
+      "F": 0.000833,
+      "min_old": 0.0,
+      "min_new": -0.003033,
+      "claim_class": "CROSS_RUN_DESCRIPTIVE_ONLY"
+    }
+  },
+  "H_by_condition_equal_row": [
+    {"condition": "K1_new20", "full125_R0": 0.332070, "historical_P2_A1": 0.334476, "delta": -0.002406, "historical_P2_FULL": 0.314800},
+    {"condition": "K2_new20", "full125_R0": 0.418885, "historical_P2_A1": 0.418428, "delta": 0.000457, "historical_P2_FULL": 0.389800},
+    {"condition": "K5_new20", "full125_R0": 0.607455, "historical_P2_A1": 0.608786, "delta": -0.001331, "historical_P2_FULL": 0.605900},
+    {"condition": "K10_new20", "full125_R0": 0.691927, "historical_P2_A1": 0.690392, "delta": 0.001535, "historical_P2_FULL": 0.693000},
+    {"condition": "K10_new5", "full125_R0": 0.773678, "historical_P2_A1": 0.773110, "delta": 0.000568, "historical_P2_FULL": 0.767300}
+  ],
+  "H_by_scene_equal_row": [
+    {"scene": "leo_clear_weak", "full125_R0": 0.618048, "historical_P2_A1": 0.615871, "delta": 0.002177, "historical_P2_FULL": 0.599500},
+    {"scene": "leo_low_elev_weak", "full125_R0": 0.541585, "historical_P2_A1": 0.540703, "delta": 0.000882, "historical_P2_FULL": 0.533200},
+    {"scene": "leo_rain_weak", "full125_R0": 0.534775, "historical_P2_A1": 0.538541, "delta": -0.003766, "historical_P2_FULL": 0.529700}
+  ],
+  "H_by_receiver_equal_row": [
+    {"receiver": "20-1", "full125_R0": 0.568482, "historical_P2_A1": 0.571497, "delta": -0.003015, "historical_P2_FULL": 0.562576},
+    {"receiver": "3-19", "full125_R0": 0.415221, "historical_P2_A1": 0.424698, "delta": -0.009477, "historical_P2_FULL": 0.414054},
+    {"receiver": "7-14", "full125_R0": 0.613709, "historical_P2_A1": 0.612372, "delta": 0.001337, "historical_P2_FULL": 0.598420},
+    {"receiver": "7-7", "full125_R0": 0.625733, "historical_P2_A1": 0.620112, "delta": 0.005621, "historical_P2_FULL": 0.615255},
+    {"receiver": "8-8", "full125_R0": 0.600870, "historical_P2_A1": 0.596513, "delta": 0.004357, "historical_P2_FULL": 0.580459}
+  ],
+  "historical_strict_same_row_effects": {
+    "P2_A1_minus_P2_A2": {
+      "A_o_post": 0.235556,
+      "A_n": 0.277212,
+      "H": 0.265428,
+      "F": -0.235555,
+      "min_old": 0.157111,
+      "min_new": 0.152889
+    },
+    "P2_FULL_minus_ablations_H": {
+      "P2_A0": 0.308100,
+      "P2_B0": 0.000030,
+      "P2_C3": 0.002700,
+      "P2_D0": -0.001500,
+      "P2_D1": 0.007800,
+      "P2_D2": 0.003200,
+      "P2_E0": 0.001400,
+      "P2_F0": 0.000020,
+      "P2_F1": 0.000010,
+      "P2_F2": 0.000200,
+      "P2_F3": 0.0
+    }
+  },
+  "historical_same_permission_baselines_H": {
+    "POOLED_LW_LDA": 0.549600,
+    "FULL_BLOCK_LDA": 0.547400,
+    "QKNN": 0.492900,
+    "EUCLIDEAN": 0.471100,
+    "COSINE": 0.470000,
+    "ADAPTER_HEAD": 0.449900,
+    "DIAG_LDA": 0.411600
+  },
+  "four_state_query_weighted": {
+    "R0_R1": {
+      "DA0_REG0_old": 0.706206,
+      "DA1_REG0_old": 0.740929,
+      "DA0_REG1_old": 0.538031,
+      "DA0_REG1_new": 0.433253,
+      "DA0_REG1_H": 0.475373,
+      "DA1_REG1_old": 0.573497,
+      "DA1_REG1_new": 0.515814,
+      "DA1_REG1_H": 0.537558
+    },
+    "R2": {
+      "DA0_REG0_old": 0.694416,
+      "DA1_REG0_old": 0.740821,
+      "DA0_REG1_old": 0.516738,
+      "DA0_REG1_new": 0.401068,
+      "DA0_REG1_H": 0.446253,
+      "DA1_REG1_old": 0.573497,
+      "DA1_REG1_new": 0.515814,
+      "DA1_REG1_H": 0.537558
+    }
+  },
+  "resource_summary": {
+    "R0": {"state_bytes": 14493.48, "registration_time_ms": 0.0, "query_head_MAC": 7074.78},
+    "R1": {"state_bytes": 15688.70, "registration_time_ms": 13.12, "head_latency_ms": 3.071, "query_head_MAC": 6288.70},
+    "R2": {"state_bytes": 15680.48, "registration_time_ms": 57992.74, "head_latency_ms": 2.905, "query_head_MAC": 6288.70},
+    "claim_boundary": "R0 lacks comparable head latency, so no measured runtime speedup claim is allowed."
+  },
+  "verdict": {
+    "D92_E0_no_RF32": "PRIMARY_BASELINE",
+    "R1_compile_parity": "PASS_DECISION_EQUIVALENT_NOT_ACCURACY_GAIN",
+    "R2_support_refit": "DO_NOT_PROMOTE",
+    "historical_P2_FULL_with_RF32": "HISTORICAL_CONTROL_NOT_DEFAULT_BASELINE"
+  },
+  "source_paths": [
+    "automation_reports/CV-SincNet/erbt_idr_m24_d1_refit_full125_20260820_v3/report.md",
+    "automation_reports/CV-SincNet/erbt_idr_m24_d1_refit_full125_20260820_v3/results_summary.json",
+    "docs/D92_E0_ALL_ABLATION_EXPERIMENTS_REPORT_20260819.md"
+  ]
+}
