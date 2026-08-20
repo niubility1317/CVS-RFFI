@@ -30,7 +30,7 @@
 |NTRS-16|17、18|S1/S2-a/S2-b/S3交替日程与骨干:NTRS=1:5学习率|training helper|implemented|阶段与optimizer测试|S1 gate严格为0|
 |NTRS-17|20|第一版配置rank=8、alpha=0.20、slow EMA=0.95、原始PA旁路|launcher、config|implemented|dry-run与模型回归|冻结配置|
 |NTRS-18|当前协议|Core90、seed=392034、0.07/0.63/0.15/0.15和三种LEO_WEAK|launcher、负测|implemented|launcher与协议负测|拒绝隐式mixed_orbit|
-|NTRS-19|评测要求|final checkpoint独立clean和三种LEO逐场景测试|launcher、evaluation|code_ready_runtime_pending|独立评估命令与遥测测试|训练完成后自动执行；真实结果待run结束|
+|NTRS-19|评测要求|final checkpoint独立clean和三种LEO逐场景测试|launcher、evaluation|verified|M1-DIAG及恢复矩阵完整E200独立评测|评测构模缺失V2结构标志的问题由`b27e3b16`修复后补测闭合|
 |NTRS-20|11.1–11.3、19 P2|扩展接收机链路模拟器和困难增强挖掘|后续独立候选|deferred|不阻断本run|本run保持Core90同一LEO增强，便于机制归因|
 |NTRS-21|14、19 P3-1/P3-2|Phase2类共享低秩接收机映射和capture-level prototype calibration|后续Phase2候选|deferred|不阻断本run|不属于Phase1模型|
 |NTRS-22|15|使用无标签query更新q_slow、映射或prototype|无|rejected|协议审查|当前query只用于测试，不得更新状态|

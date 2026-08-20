@@ -263,15 +263,15 @@ V2-1不启用安全损失，因此不报告unknown FAR、OSCR或真实unknown成
 
 |ID|来源章节|要求|目标文件|状态|验证|说明|
 |---|---|---|---|---|---|---|
-|R01|报告第3、11节|NTRS候选core LR与M0公平|`code/cvsrffi/ntrs_training.py`、训练器|pending|LR单元测试|D2单独保留v1 LR|
-|R02|报告第4、11节|零修正严格恒等且移除LayerNorm|`code/ntrs.py`、模型|pending|真实模型`<1e-6`恒等测试|V2路径限定|
-|R03|报告第5、11节|删除独立robust head并共享CosFace|模型、checkpoint兼容|pending|参数身份与logit测试|v1历史路径不变|
-|R04|报告第6、11节|首轮避免随机双身份前向|模型V2 forward|pending|hook调用次数测试|V2-1只前向一次|
-|R05|报告第7节|minimum correction直接约束`delta_z`|NTRS loss bundle|pending|零值和单调性测试|不再比较LN输出|
-|R06|报告第10节|补做M1三头与gate只读诊断|评估器、M1诊断run|pending|JSON schema和完整场景|不得反馈调参|
-|R07|报告第11、12节|实现共享头最小V2-1|NTRS模块、模型、训练器|pending|聚焦回归和真实smoke|不含teacher basis之后模块|
-|R08|报告第12节|发布D1、D2、D3、V2-1矩阵|launcher、实验报告|pending|dry-run和N607启动检查|D0复用现有同行结果|
-|R09|报告第13节|按恒等、闭集和rescue门槛晋级|实验报告/scorer|pending|同行最终指标|单seed只作筛选|
+|R01|报告第3、11节|NTRS候选core LR与M0公平|`code/cvsrffi/ntrs_training.py`、训练器|verified|LR测试及D1/D2/D3完整曲线|D2单独保留v1 LR，D1/D3/V2-1全程baseline LR|
+|R02|报告第4、11节|零修正严格恒等且移除LayerNorm|`code/ntrs.py`、模型|verified|真实模型`<1e-6`恒等测试及D1三头一致|V2路径限定；D1单seed性能等价门因正向偏差仍未满足|
+|R03|报告第5、11节|删除独立robust head并共享CosFace|模型、checkpoint兼容|verified|参数身份、logit测试及V2-1严格加载|v1历史路径不变|
+|R04|报告第6、11节|首轮避免随机双身份前向|模型V2 forward|verified|hook调用次数测试|V2-1只前向一次|
+|R05|报告第7节|minimum correction直接约束`delta_z`|NTRS loss bundle|verified|零值、单调性测试及E1–200曲线|不再比较LN输出|
+|R06|报告第10节|补做M1三头与gate只读诊断|评估器、M1诊断run|verified|M1 clean及三LEO_WEAK完整JSON|raw/robust/fused与转移已保存；三个gate阈值比例字段未序列化，报告明确限制|
+|R07|报告第11、12节|实现共享头最小V2-1|NTRS模块、模型、训练器|verified|聚焦回归、真实smoke及E200独立测试|科学结果为负，不含teacher basis之后模块|
+|R08|报告第12节|发布D1、D2、D3、V2-1矩阵|launcher、实验报告|verified|四组E200、六行clean＋三LEO_WEAK矩阵|D0复用现有同行结果，M1只读诊断|
+|R09|报告第13节|按恒等、闭集和rescue门槛晋级|实验报告/scorer|verified|同行最终指标与门槛逐项判定|D1等价门及V2-1四项晋级门未通过，停止V2-2至V2-6和多seed|
 |R10|当前`项目.md`|固定source角色和三LEO_WEAK|launcher、协议负测|verified|现有协议及本设计复核|优先于旧报告|
 |R11|报告中的旧默认描述|继续以mixed_orbit为ADVB02默认|无|rejected|与`项目.md`冲突|本轮禁止mixed_orbit|
 |R12|报告第11.4、11.5、12节|确定性teacher basis、fast/slow support、物理IQ校正、安全损失|后续V2-2至V2-6|deferred|仅在V2-1晋级后设计|避免首轮重新堆叠|
