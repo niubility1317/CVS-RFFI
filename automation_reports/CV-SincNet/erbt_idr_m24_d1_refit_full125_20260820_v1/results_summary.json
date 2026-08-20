@@ -1,0 +1,32 @@
+{
+  "schema": "cvs.erbt_idr.m24.d1_refit_full125.technical_stop.v1",
+  "run_id": "erbt_idr_m24_d1_refit_full125_20260820_v1",
+  "status": "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE",
+  "performance_result": "NO_PERFORMANCE_RESULT",
+  "prediction_receipt_count": 375,
+  "expected_prediction_row_count": 375,
+  "matrix_index_present": false,
+  "truth_opened": false,
+  "scoring_started": false,
+  "failure": {
+    "type": "D1_COMPILE_PARITY_FAILURE",
+    "row_id": "rx20-1_m7282101_k10_new20__M24-D1-COMPILE-PARITY",
+    "arm": "M24-D1-COMPILE-PARITY",
+    "query_row_count": 1560,
+    "after_prediction_disagreements": 0,
+    "before_prediction_disagreements": 1,
+    "scenario": "leo_rain_weak",
+    "query_token": "qid_29b3f575fa647024e1bf91c23e216fcdb002e7ce0bfb422c5893eed0852115a6",
+    "r0_before_prediction": "cls_75aa6d506081240f50cf48f419627870ec01738b7e8ff9364252ddc0ff18e7b3458",
+    "r1_before_prediction": "cls_8b02d99905a8fe579368ac8e37eff51c505aaa89a646eba8892d5d800aa08416",
+    "controller_error": "RuntimeError: D1 compile parity failed for rx20-1_m7282101_k10_new20__M24-D1-COMPILE-PARITY"
+  },
+  "evidence_policy": {
+    "receipts_preserved": true,
+    "predictions_preserved": true,
+    "diagnostics_preserved": true,
+    "matrix_index_fabricated": false,
+    "partial_performance_claim_allowed": false,
+    "rerun_in_this_run_id_allowed": false
+  }
+}

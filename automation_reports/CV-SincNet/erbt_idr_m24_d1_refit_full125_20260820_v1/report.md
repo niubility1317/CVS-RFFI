@@ -95,4 +95,18 @@ run ID：`erbt_idr_m24_d1_refit_full125_20260820_v1`
 
 ## 八、结果
 
-待真实N607实验与truth-last评分完成后追加。
+### 8.1技术裁决
+
+本run于2026-08-20产生375个`row_execution_receipt.json`后停止，状态为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。控制器没有生成`predictions/matrix_index.json`，独立scorer未连接truth，因此本run没有合法性能结果，也不能进入R2与R0的晋级比较。
+
+停止原因是R1编译等价硬约束失败。唯一失败行是`rx20-1_m7282101_k10_new20__M24-D1-COMPILE-PARITY`：注册后预测与R0完全一致（0/1560不一致），但注册前预测出现1/1560不一致。差异位于`leo_rain_weak`的query`qid_29b3f575fa647024e1bf91c23e216fcdb002e7ce0bfb422c5893eed0852115a6`；R0注册前预测为`cls_75aa6d506081240f50cf3b79a0bd91714fa0084a635a472ca63194e57ec1dca2`，R1注册前预测为`cls_8b02d99905a8fe579368ac8e37eff51c505aaa89a646eba8892d5d800aa08416`。
+
+### 8.2证据边界与处置
+
+- 预测父进程PID`3738921`已退出；控制器日志记录`RuntimeError: D1 compile parity failed`。
+- 375个row receipt及其sealed prediction、truth-blind diagnostics全部原地保留，不删除、不覆盖。
+- `matrix_index.json`不存在；query truth保持关闭，未创建`scores/`。
+- 不使用375个孤立receipt补造矩阵索引，不忽略1个注册前差异，不以局部或非闭合结果形成性能结论。
+- 本轮未重启、未重复启动失败行。后续若修复编译等价实现，必须使用新的不可覆盖run ID重新取得完整125×3预测证据；本run永久保留为技术失败记录。
+
+机器可读裁决见同目录`results_summary.json`。
