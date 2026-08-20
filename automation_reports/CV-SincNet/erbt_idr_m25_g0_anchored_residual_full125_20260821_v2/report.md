@@ -42,7 +42,7 @@ s_c(q)=s_c^{G0}(q)+\lambda g(q)\bar r_c(q).
 - 独立P0/P1审查初审发现3项P1，均已定点修复；定点复审结论为`NO_P0_P1`；
 - v1在352/500个partial receipt后因局部原型MAC统计引用未定义`IF_DIM`而退出，未生成matrix index，truth未打开且无性能结果；v1全部证据原位保留；
 - 新增非零残差MAC分支回归测试，定点修复改为使用当前row的真实`feature_dim`；57项聚焦与相邻回归通过；
-- 实验代码固定提交：`PENDING_FIX_COMMIT`。
+- 实验代码固定提交：`e847e0d41883d39c70f9633292e6f87aabcb7349`；远端`origin/work/m24-safe-residual`已独立回读为同一OID。
 
 ## 四、N607路径与资源
 

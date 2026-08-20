@@ -29,4 +29,4 @@
 
 N607发布：release归档SHA-256=`4b01a466f34eea6bdc4288c188f29bd8aaf499e51547d71b94ab6aaa6b65ecfe`，远端编译和真实cache无truth smoke通过；正式prediction父PID=`4124155`。
 
-v1故障根因：非零残差行进入资源统计时引用了row executor中未定义的`IF_DIM`；强度0行短路掩盖了该分支。新增非零分支回归测试后改为使用同一row的真实`feature_dim`，57项聚焦与相邻回归通过。v1没有matrix index或性能结果，禁止局部评分；v2待新提交发布。
+v1故障根因：非零残差行进入资源统计时引用了row executor中未定义的`IF_DIM`；强度0行短路掩盖了该分支。新增非零分支回归测试后改为使用同一row的真实`feature_dim`，57项聚焦与相邻回归通过。v1没有matrix index或性能结果，禁止局部评分；v2修复提交为`e847e0d41883d39c70f9633292e6f87aabcb7349`，远端OID已独立回读一致。
