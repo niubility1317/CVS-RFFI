@@ -43,6 +43,9 @@
 - 唯一release归档SHA-256：本地与远端均为`edacf428589f404463167f6170cf6fc607c3bccb5f4ad168c172633e462d6e4e`；远端三个运行期Python文件编译和launcher语法检查通过。
 - N607发布前检查：直连普通账户成功；项目、主数据和固定Python可见；GPU0/1分别有既有M0/M2任务，GPU2–7均为1MiB/0%且无compute app；新run root、log root、归档和release root在发布前均不存在。
 - 六臂远端dry-run：GPU2–7对应六个预登记arm均通过；每臂恰好1条训练命令、1条联合评测命令、4个场景输出定位，candidate ID与精确消融参数一致；六次dry-run后run root仍不存在。
+- 首次启动结果：GPU2、4–7的五臂已进入训练；GPU3的`NO_PROTO`在prototype bank初始化时因旧验证器拒绝`unlabeled_weight=0`而确定性`TRAIN_FAILED`，原run ID下的config、status和train log完整保留，不覆盖重启。
+- GPU3定点修复：提交`24ab0a3cd4493a55407ddaf9b89c1ce10f9bfc27`把0定义为未标注prototype更新的显式禁用哨兵，并保证prototype、class count和domain count均不变化；正常启用仍只接受0.05–0.10。本地新增RED→GREEN测试后，16个指定文件共185项全部通过，相关Python编译、launcher语法和diff检查通过。
+- 修复重启边界：只在空闲GPU3以新run ID`phase1_adv3b02_muse_ssdg_noproto_r1_s392002_20260820`重启`NO_PROTO`；GPU0/1既有队列及GPU2、4–7健康消融均不改变。修复run同样固定seed 392002、200epoch及训练后clean与三种LEO弱信道自动评测。
 - 停止规则：仅因协议/路径/checkout/output冲突、训练或评测执行错误、缺失final checkpoint、缺失prediction/metrics闭合、OOM/NaN或相同确定性启动前异常停止对应运行；不得因中间或最终性能高低停止。
 
 ## 候选矩阵
