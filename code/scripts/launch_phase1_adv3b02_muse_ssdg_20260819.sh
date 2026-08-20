@@ -9,6 +9,7 @@ RUNS_ROOT="${RUNS_ROOT:-${ROOT}/runs/${RUN_ID}}"
 WISIG_PKL="${WISIG_PKL:-${ROOT}/Dataset_WigSig/ManySig.pkl}"
 GPU="${GPU:-0}"
 SEED=392002
+ABLATION="${ABLATION:-NONE}"
 DRY_RUN=0
 ONLY_CANDIDATES="M0,M1,M2,M3"
 
@@ -42,6 +43,52 @@ validate_only() {
   done
 }
 
+validate_ablation() {
+  case "${ABLATION}" in
+    NONE|NO_PRIOR|NO_PROTO|NO_TEMPORAL|NO_SATELLITE|NO_CROSSRX|NO_NUISANCE) ;;
+    *) echo "[MUSE-ERROR] unknown ablation: ${ABLATION}" >&2; return 2 ;;
+  esac
+  if [[ "${ABLATION}" != "NONE" && "${ONLY_CANDIDATES}" != "M3" ]]; then
+    echo "[MUSE-ERROR] named ablation requires --only=M3" >&2
+    return 2
+  fi
+}
+
+build_ablation_args() {
+  ABLATION_ARGS=()
+  case "${ABLATION}" in
+    NONE) ;;
+    NO_PRIOR)
+      ABLATION_ARGS+=(--muse_prior_alignment_gamma 0)
+      ;;
+    NO_PROTO)
+      ABLATION_ARGS+=(
+        --muse_fusion_global_weight 0.6666667
+        --muse_fusion_local_weight 0.3333333
+        --muse_fusion_prototype_weight 0
+        --muse_reliability_prototype_weight 0
+        --muse_unlabeled_prototype_weight 0
+      )
+      ;;
+    NO_TEMPORAL)
+      ABLATION_ARGS+=(--muse_reliability_stability_weight 0)
+      ;;
+    NO_SATELLITE)
+      ABLATION_ARGS+=(
+        --muse_p_sat_s2a_end 0
+        --muse_p_sat_full 0
+        --muse_lambda_satellite 0
+      )
+      ;;
+    NO_CROSSRX)
+      ABLATION_ARGS+=(--muse_lambda_cross_receiver 0)
+      ;;
+    NO_NUISANCE)
+      ABLATION_ARGS+=(--muse_lambda_nuisance 0)
+      ;;
+  esac
+}
+
 capability_label() {
   case "$1" in
     M0) echo "ADV3B02_CONTROL" ;;
@@ -54,6 +101,7 @@ capability_label() {
 build_train_command() {
   local level="$1"
   local candidate_root="$2"
+  local candidate_id="$3"
   TRAIN_CMD=(env
     "PYTHONPATH=${ROOT}/code:${ROOT}:${PYTHONPATH:-}"
     "CUDA_VISIBLE_DEVICES=${GPU}"
@@ -68,7 +116,7 @@ build_train_command() {
     --phase1_source_role_protocol l_s_u_s_v_cal_v_select
     --output_dir "${candidate_root}"
     --run_id "${RUN_ID}"
-    --candidate_id "${level}"
+    --candidate_id "${candidate_id}"
     --base_candidate ADV3B02_CORE90_SOFT_E200
     --epochs 200
     --label_epochs 130
@@ -223,6 +271,7 @@ build_train_command() {
     --device cuda:0
     --seed "${SEED}"
   )
+  TRAIN_CMD+=("${ABLATION_ARGS[@]}")
 }
 
 build_eval_command() {
@@ -378,23 +427,28 @@ for scenario in all_scenarios:
 
 write_config() {
   local level="$1"
-  local capabilities="$2"
-  local candidate_root="$3"
-  printf '{\n  "run_id": "%s",\n  "candidate": "%s",\n  "base_candidate": "ADV3B02_CORE90_SOFT_E200",\n  "capabilities": "%s",\n  "seed": %d,\n  "epochs": 200,\n  "ratios": {"L_s": 0.07, "U_s": 0.63, "V_cal": 0.15, "V_select": 0.15},\n  "checkpoint_selection": "final_only"\n}\n' \
-    "${RUN_ID}" "${level}" "${capabilities}" "${SEED}" > "${candidate_root}/config.json"
+  local candidate_id="$2"
+  local capabilities="$3"
+  local candidate_root="$4"
+  printf '{\n  "run_id": "%s",\n  "candidate": "%s",\n  "muse_level": "%s",\n  "ablation": "%s",\n  "base_candidate": "ADV3B02_CORE90_SOFT_E200",\n  "capabilities": "%s",\n  "seed": %d,\n  "epochs": 200,\n  "ratios": {"L_s": 0.07, "U_s": 0.63, "V_cal": 0.15, "V_select": 0.15},\n  "checkpoint_selection": "final_only"\n}\n' \
+    "${RUN_ID}" "${candidate_id}" "${level}" "${ABLATION}" "${capabilities}" "${SEED}" > "${candidate_root}/config.json"
 }
 
 run_candidate() {
   local level="$1"
   local capabilities
-  local candidate_root="${RUNS_ROOT}/${level}"
+  local candidate_id="${level}"
+  if [[ "${ABLATION}" != "NONE" ]]; then
+    candidate_id="${level}_${ABLATION}"
+  fi
+  local candidate_root="${RUNS_ROOT}/${candidate_id}"
   local scenario
   local status
   capabilities="$(capability_label "${level}")"
-  build_train_command "${level}" "${candidate_root}"
+  build_train_command "${level}" "${candidate_root}" "${candidate_id}"
   build_eval_command "${candidate_root}"
 
-  echo "[MUSE-CANDIDATE] candidate=${level} capabilities=${capabilities} output=${candidate_root} seed=${SEED} epochs=200"
+  echo "[MUSE-CANDIDATE] candidate=${candidate_id} capabilities=${capabilities} muse_level=${level} ablation=${ABLATION} output=${candidate_root} seed=${SEED} epochs=200"
   printf '[MUSE-TRAIN-CMD] '; printf '%q ' "${TRAIN_CMD[@]}"; printf '\n'
   printf '[MUSE-EVAL-CMD] scenarios=clean,leo_clear_weak,leo_low_elev_weak,leo_rain_weak log=%s ' "${candidate_root}/eval_joint.log"
   printf '%q ' "${EVAL_CMD[@]}"
@@ -412,7 +466,7 @@ run_candidate() {
     return 3
   fi
   mkdir -p "${candidate_root}"
-  write_config "${level}" "${capabilities}" "${candidate_root}"
+  write_config "${level}" "${candidate_id}" "${capabilities}" "${candidate_root}"
 
   if ! "${TRAIN_CMD[@]}" > "${candidate_root}/train.log" 2>&1; then
     printf 'TRAIN_FAILED\n' > "${candidate_root}/status.txt"
@@ -458,7 +512,9 @@ run_candidate() {
 }
 
 validate_only
-echo "[MUSE-RUN] run_id=${RUN_ID} root=${RUNS_ROOT} dry_run=${DRY_RUN} gpu=${GPU} seed=${SEED} ratios=0.07/0.63/0.15/0.15 roles=L_s/U_s/V_cal/V_select checkpoint_selection=final_only"
+validate_ablation
+build_ablation_args
+echo "[MUSE-RUN] run_id=${RUN_ID} root=${RUNS_ROOT} dry_run=${DRY_RUN} gpu=${GPU} seed=${SEED} ablation=${ABLATION} ratios=0.07/0.63/0.15/0.15 roles=L_s/U_s/V_cal/V_select checkpoint_selection=final_only"
 for level in M0 M1 M2 M3; do
   if candidate_selected "${level}"; then
     run_candidate "${level}"

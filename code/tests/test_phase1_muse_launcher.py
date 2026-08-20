@@ -34,11 +34,16 @@ def _base_env(tmp_path: Path) -> dict[str, str]:
     return env
 
 
-def _dry_run(tmp_path: Path, only: str) -> subprocess.CompletedProcess[str]:
+def _dry_run(
+    tmp_path: Path, only: str, *, ablation: str | None = None
+) -> subprocess.CompletedProcess[str]:
+    env = _base_env(tmp_path)
+    if ablation is not None:
+        env["ABLATION"] = ablation
     return subprocess.run(
         [GIT_BASH.as_posix(), LAUNCHER.relative_to(ROOT).as_posix(), "--dry-run", f"--only={only}"],
         cwd=ROOT,
-        env=_base_env(tmp_path),
+        env=env,
         text=True,
         capture_output=True,
         check=False,
@@ -162,6 +167,8 @@ def _fake_run(
     *,
     fake_train: str = "success",
     fake_eval: str = "success",
+    only: str = "M0",
+    ablation: str | None = None,
 ) -> tuple[subprocess.CompletedProcess[str], Path, Path]:
     fake_root, call_log, runs_root = _prepare_fake_project(tmp_path)
     env = os.environ.copy()
@@ -177,15 +184,18 @@ def _fake_run(
             "FAKE_EVAL": fake_eval,
         }
     )
+    if ablation is not None:
+        env["ABLATION"] = ablation
     result = subprocess.run(
-        [GIT_BASH.as_posix(), LAUNCHER.relative_to(ROOT).as_posix(), "--only=M0"],
+        [GIT_BASH.as_posix(), LAUNCHER.relative_to(ROOT).as_posix(), f"--only={only}"],
         cwd=ROOT,
         env=env,
         text=True,
         capture_output=True,
         check=False,
     )
-    return result, runs_root / "M0", call_log
+    candidate = only if ablation is None else f"{only}_{ablation}"
+    return result, runs_root / candidate, call_log
 
 
 def test_launcher_freezes_protocol_paic_base_and_all_required_evaluations():
@@ -253,6 +263,79 @@ def test_dry_run_maps_levels_and_shares_paic_base_across_all_four_arms(tmp_path)
     assert "candidate=M1 capabilities=BASE" in result.stdout
     assert "candidate=M2 capabilities=BASE_FUSION_HML" in result.stdout
     assert "candidate=M3 capabilities=BASE_FUSION_HML_SATELLITE_CROSSRX_PROTO" in result.stdout
+
+
+@pytest.mark.parametrize(
+    ("arm", "expected_overrides"),
+    (
+        ("NO_PRIOR", ("--muse_prior_alignment_gamma 0",)),
+        (
+            "NO_PROTO",
+            (
+                "--muse_fusion_global_weight 0.6666667",
+                "--muse_fusion_local_weight 0.3333333",
+                "--muse_fusion_prototype_weight 0",
+                "--muse_reliability_prototype_weight 0",
+                "--muse_unlabeled_prototype_weight 0",
+            ),
+        ),
+        ("NO_TEMPORAL", ("--muse_reliability_stability_weight 0",)),
+        (
+            "NO_SATELLITE",
+            (
+                "--muse_p_sat_s2a_end 0",
+                "--muse_p_sat_full 0",
+                "--muse_lambda_satellite 0",
+            ),
+        ),
+        ("NO_CROSSRX", ("--muse_lambda_cross_receiver 0",)),
+        ("NO_NUISANCE", ("--muse_lambda_nuisance 0",)),
+    ),
+)
+def test_m3_named_ablation_dry_run_emits_isolated_candidate_and_exact_overrides(
+    tmp_path, arm, expected_overrides
+):
+    result = _dry_run(tmp_path, "M3", ablation=arm)
+
+    assert result.returncode == 0, result.stderr
+    assert f"candidate=M3_{arm}" in result.stdout
+    assert f"ablation={arm}" in result.stdout
+    assert f"--candidate_id M3_{arm}" in result.stdout
+    assert "--muse_level M3" in result.stdout
+    for option in expected_overrides:
+        assert option in result.stdout
+    assert result.stdout.count("[MUSE-TRAIN-CMD]") == 1
+    assert result.stdout.count("[MUSE-EVAL-CMD]") == 1
+    assert result.stdout.count("[MUSE-EVAL-OUTPUT]") == 4
+    assert not (tmp_path / "runs").exists()
+
+
+def test_named_ablation_rejects_non_m3_candidate_without_outputs(tmp_path):
+    result = _dry_run(tmp_path, "M2", ablation="NO_PRIOR")
+
+    assert result.returncode == 2
+    assert "named ablation requires --only=m3" in result.stderr.lower()
+    assert not (tmp_path / "runs").exists()
+
+
+def test_named_ablation_fake_run_keeps_clean_and_three_leo_evaluation_closure(tmp_path):
+    result, candidate_root, call_log = _fake_run(
+        tmp_path, only="M3", ablation="NO_NUISANCE"
+    )
+
+    assert result.returncode == 0, result.stderr
+    config = json.loads((candidate_root / "config.json").read_text(encoding="utf-8"))
+    assert config["candidate"] == "M3_NO_NUISANCE"
+    assert config["muse_level"] == "M3"
+    assert config["ablation"] == "NO_NUISANCE"
+    assert call_log.read_text(encoding="utf-8").splitlines() == [
+        "train",
+        "eval:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+    ]
+    for scenario in SCENARIOS:
+        assert (candidate_root / f"metrics_{scenario}.json").stat().st_size > 0
+        assert (candidate_root / f"eval_{scenario}.log").stat().st_size > 0
+    assert (candidate_root / "status.txt").read_text(encoding="utf-8").strip() == "ARTIFACTS_COMPLETE"
 
 
 def test_only_rejects_unknown_candidate_without_creating_outputs(tmp_path):
