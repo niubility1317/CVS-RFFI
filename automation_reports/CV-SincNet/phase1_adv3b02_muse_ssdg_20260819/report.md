@@ -22,6 +22,8 @@
 - 根因：MUSE分支已生成`domain_mask/temporal_mask/strong_mask`，但遗漏了legacy分支已有的三个通过率标量计算；该问题不涉及数据权限、loss、路由或性能。
 - 本地TDD：新增`test_muse_pseudo_gate_pass_rates_are_defined_for_first_batch_telemetry`；生产修复前以缺少统一pass-rate入口产生预期RED，随后MUSE与legacy共同调用同一计算函数，单测及MUSE聚焦回归转GREEN。
 - 重启边界：不覆盖或重启仍健康的M0/M1队列；仅以新run ID`phase1_adv3b02_muse_ssdg_20260820_m23_r1`在GPU1重启缺失的`M2,M3`，保留原M2失败目录作为技术证据。
+- 修复release提交：`4816dbbdc08235718174cefc2b8f13375ab1f635`；本地`E:/type10-7/local_artifacts/releases/phase1_adv3b02_muse_ssdg_20260820_m23_r1.tar.gz`→远端同名`releases`归档→解压根`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_muse_ssdg_20260820_m23_r1`。
+- 修复release SHA-256：本地与远端均为`12cfd49b5a23b36db240b54a093a3c271c8da391f667a38c8e5d3f9a6e70d9ba`；远端编译、launcher语法与`--only=M2,M3`dry-run通过，恰好产生2条训练和2条严格联合评测命令，且未创建新run root。
 
 ## 候选矩阵
 
