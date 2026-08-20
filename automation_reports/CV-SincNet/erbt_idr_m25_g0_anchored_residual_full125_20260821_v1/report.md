@@ -40,7 +40,7 @@ s_c(q)=s_c^{G0}(q)+\lambda g(q)\bar r_c(q).
 - prediction全部闭合后，独立scorer才连接truth；
 - 本地聚焦与相邻回归56项通过，五个生产脚本/模块编译通过，`git diff --check`通过；
 - 独立P0/P1审查初审发现3项P1，均已定点修复；定点复审结论为`NO_P0_P1`；
-- 实验代码固定提交：`PENDING_IMPLEMENTATION_COMMIT`。
+- 实验代码固定提交：`d3228c257ef36537354a9043d0c0953c44bdbbb1`；远端`origin/work/m24-safe-residual`已独立回读为同一OID。
 
 ## 四、N607路径与资源
 

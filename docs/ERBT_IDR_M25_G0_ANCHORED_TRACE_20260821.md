@@ -24,3 +24,5 @@
 本地验证：56项M2.4/M2.5聚焦与相邻回归通过；五个生产脚本/模块编译通过；`git diff --check`通过。独立审查初审发现3项P1：B0 parity未闭锁、task/receipt身份未核对、summary可覆盖。三项均完成定点修复，定点复审结论为`NO_P0_P1`。
 
 当前状态：`LOCAL_VERIFIED / NO_P0_P1 / N607_NOT_LAUNCHED`。
+
+实现提交：`d3228c257ef36537354a9043d0c0953c44bdbbb1`；远端分支OID已独立回读一致。
