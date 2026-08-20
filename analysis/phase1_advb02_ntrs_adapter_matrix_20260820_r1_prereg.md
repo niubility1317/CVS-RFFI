@@ -63,3 +63,14 @@ env RUN_ID=phase1_advb02_ntrs_adapter_matrix_20260820_r1 NTRS_PROFILE=<profile> 
 - NTRS行raw/robust/fused、rescued/harmed、relative correction p50/p95、rotation angle p50/p95
 
 训练完成但独立测试缺失时，不得标记实验完成。
+
+## 实际发布状态
+
+- 主release归档：`advb02_ntrs_adapter_f87bb889.tar.gz`，本地/远端SHA256均为`1149d0820685d8cd3c5f13f86e0082da5e216ec646d76b275da8494138b01f19`，远端编译通过。
+- 真实D1 checkpoint无query smoke通过：q梯度`0.3939596293`、adapter梯度`47.0598971173`、raw梯度`0`，加载成熟raw状态195项。
+- A1-R/A1/A2已在GPU3/4/6进入训练；启动后PID、命令、run root、日志增长和GPU绑定通过核验。
+- 原A0/A0-B在非v3参数统计路径触发确定性`NameError`，均未产生性能结果；原产物保留并记为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+- 修复提交：`a6f6a3f8fc7a7b4e01413ed6dc35bcb9217b354d`；本地聚焦验证更新为`67 passed`。
+- hotfix归档：`advb02_ntrs_adapter_a6f6a3f8.tar.gz`，本地/远端SHA256均为`d9e012e07239b5708fbd04d5c9963d070236ea98697ba8f2c2fd1774031a52d4`，远端编译和control summary smoke通过。
+- A0/A0-B使用新run ID`phase1_advb02_ntrs_adapter_matrix_20260820_a0_fix1`在GPU0/2重发；新PID、命令、run root、日志增长和GPU绑定均通过核验。
+- 当前五个有效行均为`RUNNING`。A3/A4继续遵循顺序晋级门槛，未越级发布。
