@@ -1,6 +1,6 @@
 # D1严格旁路实验
 
-- 状态：`LOCAL_VERIFIED`
+- 状态：`RUNNING`
 - run ID：`phase1_advb02_ntrs_v2_recovery_20260820_d1_bypass`
 - commit：`b8bb34ee299e984dccd52a0a06765d26b3a8419e`
 - profile：`v2_identity_bypass`
@@ -12,3 +12,4 @@
 - 命令：`RUN_ID=phase1_advb02_ntrs_v2_recovery_20260820_d1_bypass GPU=0 SEED=392034 NTRS_PROFILE=v2_identity_bypass bash code/scripts/launch_phase1_advb02_ntrs_leo_weak_20260820.sh`
 - 预期artifact：E200`final_ssdg.pth`、训练日志、clean及三种LEO_WEAK逐场景`final_eval.json/txt`。
 - 停止规则：仅系统性技术失败；低性能不停止。
+- 启动：launcher PID=`3739404`，trainer PID=`3739463`，CWD/profile/GPU/seed/输出绑定已核验，日志已增长。

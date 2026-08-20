@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-- 状态：`LOCAL_VERIFIED`
+- 状态：`RUNNING`
 - 实现提交：`b8bb34ee299e984dccd52a0a06765d26b3a8419e`
 - 目标：按回退诊断报告分离学习率不公平、非严格恒等、独立分类头和旧V1结构的影响，并验证最小共享头V2能否恢复LEO_WEAK性能。
 - 数据协议：Phase1 source-only，`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`，seed=`392034`。
@@ -45,6 +45,21 @@ D1/D2/D3/V2-1均完整训练200轮；不会因中途性能低而停止。D0与M1
 - 远端数据：`/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl`
 - 训练输出：`/home/szu2070436088/2510044040/CV-SincNet/runs/<run-id>`
 - 日志：`/home/szu2070436088/2510044040/CV-SincNet/logs/<run-id>`
+- release归档：`phase1_advb02_ntrs_v2_recovery_20260820_b8bb34ee.tar.gz`。
+- 本地/远端单次SHA256：`9a0970b7f6837115b0a5dfc66eee8bb6246db395001e3fc8682faea57bc63935`，一致。
+- 远端Python编译、launcher语法和四个profile干跑均通过。
+
+## 启动证据
+
+|行|launcher/eval PID|trainer PID|GPU|状态|
+|---|---:|---:|---:|---|
+|D1|3739404|3739463|0|RUNNING|
+|D2|3739406|3739460|1|RUNNING|
+|D3|3739408|3739466|2|RUNNING|
+|V2-1|3739411|3739457|3|RUNNING|
+|M1-DIAG|3739416|N/A|4|RUNNING|
+
+五个进程均绑定`b8bb34ee/workspace`和各自唯一output/log root；四个训练器命令确认seed=`392034`、角色比例`0.07/0.63/0.15/0.15`、200轮及三种LEO_WEAK，GPU0–4均未超过每卡两个训练/评估进程。训练日志已增长且启动扫描无Traceback、RuntimeError、CUDA OOM或KeyError。
 
 ## 技术停止规则
 
