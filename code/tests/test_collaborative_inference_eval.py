@@ -2,6 +2,7 @@ import sys
 import unittest
 import argparse
 from pathlib import Path
+from types import SimpleNamespace
 
 import torch
 from torch.utils.data import DataLoader, Dataset
@@ -87,6 +88,38 @@ class _LogitModel(torch.nn.Module):
 
 
 class CollaborativeInferenceEvalTest(unittest.TestCase):
+    def test_checkpoint_model_rebuild_restores_ntrs_v2_structure_flags(self):
+        from evaluation.collaborative_inference_eval import build_model_from_checkpoint_args
+
+        context = SimpleNamespace(
+            num_classes=3,
+            num_domains=2,
+            input_len=64,
+            ckpt_args={
+                "model_size": "S",
+                "model_variant": "lite_h",
+                "branch_ablation": "none",
+                "domain_branch_ablation": "same",
+                "use_ntrs": True,
+                "ntrs_q_dim": 16,
+                "ntrs_fast_dim": 8,
+                "ntrs_variant": "v2_min",
+                "ntrs_identity_bypass": True,
+            },
+        )
+        overrides = argparse.Namespace(
+            sample_rate_hz=0.0,
+            model_size="",
+            model_variant="",
+            branch_ablation="",
+            domain_branch_ablation="",
+        )
+
+        model = build_model_from_checkpoint_args(context, overrides, torch.device("cpu"))
+
+        self.assertEqual(model.ntrs_variant, "v2_min")
+        self.assertTrue(model.ntrs_identity_bypass)
+
     def test_collaborative_cli_defaults_to_complete_leo_weak_family(self):
         from evaluation import collaborative_inference_eval
 

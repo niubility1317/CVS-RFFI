@@ -394,6 +394,8 @@ def build_model_from_checkpoint_args(context, overrides: argparse.Namespace, dev
         ntrs_support_tau=float(_get_arg(args, "ntrs_support_tau", 1.0)),
         ntrs_energy_threshold=float(_get_arg(args, "ntrs_energy_threshold", 0.10)),
         ntrs_unknown_rescue=bool(_get_arg(args, "ntrs_unknown_rescue", False)),
+        ntrs_variant=str(_get_arg(args, "ntrs_variant", "v1")),
+        ntrs_identity_bypass=bool(_get_arg(args, "ntrs_identity_bypass", False)),
         fast_infer_when_no_aux=bool(_get_arg(args, "fast_infer_when_no_aux", True)),
         use_tx_adv_on_zdom=bool(_get_arg(args, "use_tx_adv_on_zdom", False)),
     ).to(device)
