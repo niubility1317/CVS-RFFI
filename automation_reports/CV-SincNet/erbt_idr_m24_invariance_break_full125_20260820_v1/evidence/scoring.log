@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m24_invariance_break_full125_20260820_v1/code/scripts/score_m24_invariance_breaking_full125.py", line 29, in <module>
+    raise SystemExit(shared.main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m24_invariance_break_full125_20260820_v1/code/scripts/score_m24_d1_refit_matrix.py", line 165, in main
+    scoring_manifest = _scoring_manifest(roots, entry)
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m24_invariance_break_full125_20260820_v1/code/scripts/score_m24_d1_refit_matrix.py", line 137, in _scoring_manifest
+    raise FileNotFoundError(
+FileNotFoundError: expected exactly one scoring manifest for rx=20-1, seed=7282104, new=20; found=0

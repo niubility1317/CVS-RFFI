@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m24_invariance_break_full125_20260820_v1/code/scripts/score_m24_invariance_breaking_full125.py", line 29, in <module>
+    raise SystemExit(shared.main())
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m24_invariance_break_full125_20260820_v1/code/scripts/score_m24_d1_refit_matrix.py", line 175, in main
+    score = score_full_ablation_row(
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m24_invariance_break_full125_20260820_v1/code/cvsrffi/stage2_ablation_truth_scorer.py", line 440, in score_full_ablation_row
+    truth, scoring_manifest, scoring_audit = load_verified_scoring_sidecar(
+  File "/home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m24_invariance_break_full125_20260820_v1/code/cvsrffi/stage2_metric_scorer.py", line 345, in load_verified_scoring_sidecar
+    raise Stage2ScoringError("truth sidecar schema drift")
+cvsrffi.stage2_metric_scorer.Stage2ScoringError: truth sidecar schema drift
