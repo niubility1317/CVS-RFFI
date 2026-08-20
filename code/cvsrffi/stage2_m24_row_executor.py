@@ -34,6 +34,11 @@ from cvsrffi.stage2_m24_safe_residual import (
     fit_m24_safe_residual,
     prepare_query_features,
 )
+from cvsrffi.stage2_m25_anchored_residual import (
+    M25_ANCHORED_ARMS,
+    anchored_arm_config_hash,
+    fit_m25_anchored_residual,
+)
 from cvsrffi.stage2_prediction_artifact import publish_prediction_artifact
 
 
@@ -196,7 +201,7 @@ def execute_m24_row(
     base_cache_bytes: int = 0,
     overlay_cache_bytes: int = 0,
 ) -> dict[str, Any]:
-    if arm not in M24_ARMS + M24_INVARIANCE_ARMS:
+    if arm not in M24_ARMS + M24_INVARIANCE_ARMS + M25_ANCHORED_ARMS:
         raise M24RowExecutionError("unknown M2.4 arm")
     base_manifest = base_cache["manifest"]
     overlay_manifest = overlay_cache["manifest"]
@@ -220,7 +225,7 @@ def execute_m24_row(
     output = Path(output_root).absolute()
     output.mkdir(parents=True, exist_ok=False)
     base_only_d1 = bool(overlay_manifest.get("d1_base_only", False))
-    if base_only_d1 and arm not in {D0, D1, D1_REFIT, *M24_INVARIANCE_ARMS}:
+    if base_only_d1 and arm not in {D0, D1, D1_REFIT, *M24_INVARIANCE_ARMS, *M25_ANCHORED_ARMS}:
         raise M24RowExecutionError("base-only compact view is restricted to D1 evidence arms")
     component = None if base_only_d1 else _OverlayGroundComponent(overlay_cache["ground_component"])
     manifold = None if component is None else build_ground_manifold(component)
@@ -247,6 +252,13 @@ def execute_m24_row(
     parity_disagreements = 0
     before_parity_disagreements = 0
     parity_rows = 0
+    anchored_parity_disagreements = 0
+    anchored_before_parity_disagreements = 0
+    anchored_parity_rows = 0
+    local_prototype_macs: list[int] = []
+    local_exp_counts: list[int] = []
+    local_log_counts: list[int] = []
+    local_aggregation_counts: list[int] = []
     started = time.perf_counter()
 
     for scenario_index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS):
@@ -349,6 +361,51 @@ def execute_m24_row(
                     k_shot=int(overlay_manifest["k_shot"]),
                     domain_digest=domain_digest,
                 )
+            elif arm in M25_ANCHORED_ARMS:
+                coefficient, bias, f1_log_diag = _f1_reference_head(
+                    historical_after, all_support_blocks
+                )
+                base_state, _base_audit, _base_workspace = compile_m24_d1_from_f1_head(
+                    f1_coefficient=coefficient,
+                    f1_bias=bias,
+                    f1_log_diag=f1_log_diag,
+                    f1_compiled_affine_state=historical_after.compiled_affine_state,
+                    classes=old_classes + new_classes,
+                    domain_digest=domain_digest,
+                    support_blocks=all_support_blocks,
+                )
+                state, audit = fit_m25_anchored_residual(
+                    arm=arm,
+                    base_state=base_state,
+                    support_blocks=all_support_blocks,
+                    support_labels=all_support_labels,
+                    classes=old_classes + new_classes,
+                    k_shot=int(overlay_manifest["k_shot"]),
+                    old_class_count=len(old_classes),
+                    domain_digest=domain_digest,
+                )
+                before_coefficient, before_bias, before_log_diag = _f1_reference_head(
+                    historical_before, compact["old_support_blocks"]
+                )
+                before_base_state, _before_base_audit, _before_base_workspace = compile_m24_d1_from_f1_head(
+                    f1_coefficient=before_coefficient,
+                    f1_bias=before_bias,
+                    f1_log_diag=before_log_diag,
+                    f1_compiled_affine_state=historical_before.compiled_affine_state,
+                    classes=old_classes,
+                    domain_digest=domain_digest,
+                    support_blocks=compact["old_support_blocks"],
+                )
+                before_state, before_audit = fit_m25_anchored_residual(
+                    arm=arm,
+                    base_state=before_base_state,
+                    support_blocks=compact["old_support_blocks"],
+                    support_labels=compact["old_support_labels"],
+                    classes=old_classes,
+                    k_shot=int(overlay_manifest["k_shot"]),
+                    old_class_count=len(old_classes),
+                    domain_digest=domain_digest,
+                )
             elif arm == D1:
                 coefficient, bias, f1_log_diag = _f1_reference_head(
                     historical_after, all_support_blocks
@@ -436,7 +493,7 @@ def execute_m24_row(
                     nuisance_covariance_identity=nuisance_covariance,
                 )
             registration_seconds += time.perf_counter() - fit_started
-            if arm in M24_INVARIANCE_ARMS:
+            if arm in M24_INVARIANCE_ARMS or arm in M25_ANCHORED_ARMS:
                 feature_dim = state.feature_dim
                 query_features = compact["query_blocks"]
                 before_query_features = compact["query_blocks"]
@@ -459,17 +516,21 @@ def execute_m24_row(
                 "compiled_inference_state_bytes": max(
                     int(after_resource["compiled_inference_state_bytes"]),
                     int(before_resource["compiled_inference_state_bytes"]),
-                ) if arm == D1 or arm in M24_INVARIANCE_ARMS else int(after_resource["compiled_inference_state_bytes"]),
+                ) if arm == D1 or arm in M24_INVARIANCE_ARMS or arm in M25_ANCHORED_ARMS else int(after_resource["compiled_inference_state_bytes"]),
                 "transient_registration_workspace_peak_bytes": max(
                     int(after_resource["transient_registration_workspace_peak_bytes"]),
                     int(before_resource["transient_registration_workspace_peak_bytes"]),
-                ) if arm == D1 or arm in M24_INVARIANCE_ARMS else int(after_resource["transient_registration_workspace_peak_bytes"]),
+                ) if arm == D1 or arm in M24_INVARIANCE_ARMS or arm in M25_ANCHORED_ARMS else int(after_resource["transient_registration_workspace_peak_bytes"]),
             }
             audit = {**dict(audit), "before_registration_fit": dict(before_audit)}
             if arm == D1:
                 parity_disagreements += int(np.sum(selected_after != historical_after_prediction))
                 before_parity_disagreements += int(np.sum(selected_before != historical_before_prediction))
                 parity_rows += len(selected_after)
+            if arm in M25_ANCHORED_ARMS:
+                anchored_parity_disagreements += int(np.sum(selected_after != historical_after_prediction))
+                anchored_before_parity_disagreements += int(np.sum(selected_before != historical_before_prediction))
+                anchored_parity_rows += len(selected_after)
 
         candidate_after.append(np.asarray(selected_after).astype(str))
         candidate_before.append(np.asarray(selected_before).astype(str))
@@ -488,6 +549,14 @@ def execute_m24_row(
                 np.concatenate([compact["old_support_labels"], compact["new_support_labels"]]),
                 old_classes + new_classes,
             )
+        elif arm in M25_ANCHORED_ARMS:
+            centre_left, centre_right, centre_angle = _support_center_angles_from_features(
+                state.metric_features(
+                    np.concatenate([compact["old_support_blocks"], compact["new_support_blocks"]])
+                ),
+                np.concatenate([compact["old_support_labels"], compact["new_support_labels"]]),
+                old_classes + new_classes,
+            )
         else:
             centre_left, centre_right, centre_angle = _support_center_angles(
                 np.concatenate([compact["old_support_blocks"], compact["new_support_blocks"]]),
@@ -503,6 +572,14 @@ def execute_m24_row(
         state_bytes.append(int(resource["compiled_inference_state_bytes"]))
         transient_bytes.append(int(resource["transient_registration_workspace_peak_bytes"]))
         feature_dims.append(feature_dim)
+        if arm in M25_ANCHORED_ARMS:
+            active = float(audit["selected_strength"]) > 0.0
+            counts = [int(value) for value in audit["prototype_count_by_class"]]
+            multi = sum(max(0, value - 1) for value in counts)
+            local_prototype_macs.append(IF_DIM * sum(counts) if active else 0)
+            local_exp_counts.append(multi if active else 0)
+            local_log_counts.append(sum(1 for value in counts if value > 1) if active else 0)
+            local_aggregation_counts.append(sum(1 for value in counts if value > 1) if active else 0)
 
     maximum_error = max(float(item["max_logit_abs_error"]) for item in quantization_audits)
     quantization_receipt = {
@@ -525,6 +602,8 @@ def execute_m24_row(
         "failure_closure_count": 0,
     }
     total_queries = sum(len(item) for item in tokens_all)
+    local_prototype_mac = max(local_prototype_macs, default=0)
+    base_query_head_mac = int(max(feature_dims) * len(old_classes + new_classes))
     resource_receipt = {
         "schema": RESOURCE_RECEIPT_SCHEMA,
         "feature_cache_bytes": int(base_cache_bytes + overlay_cache_bytes),
@@ -539,6 +618,8 @@ def execute_m24_row(
             if arm == D1
             else "support_only_invariance_breaking_head"
             if arm in M24_INVARIANCE_ARMS
+            else "g0_anchored_support_only_residual"
+            if arm in M25_ANCHORED_ARMS
             else "support_to_compiled_head"
             if arm == D1_REFIT
             else "historical_or_candidate_specific"
@@ -548,8 +629,13 @@ def execute_m24_row(
         "row_peak_vram_bytes": 0,
         "candidate_peak_memory_isolated": False,
         "closed_form_fit_count": len(FORMAL_LEO_WEAK_SCENARIOS),
-        "mac_equivalent_upper_bound": int(max(feature_dims) * len(old_classes + new_classes) * total_queries),
-        "query_head_mac": int(max(feature_dims) * len(old_classes + new_classes)),
+        "mac_equivalent_upper_bound": int((base_query_head_mac + local_prototype_mac) * total_queries),
+        "query_head_mac": int(base_query_head_mac + local_prototype_mac),
+        "base_affine_query_head_mac": base_query_head_mac,
+        "local_evidence_prototype_mac": int(local_prototype_mac),
+        "local_evidence_exp_count": int(max(local_exp_counts, default=0)),
+        "local_evidence_log_count": int(max(local_log_counts, default=0)),
+        "local_evidence_aggregation_count": int(max(local_aggregation_counts, default=0)),
         "candidate_head_batch_query_latency_ms_per_row": float(1000.0 * query_seconds / len(FORMAL_LEO_WEAK_SCENARIOS)),
         "end_to_end_query_latency_available": False,
         "end_to_end_query_latency_ms": None,
@@ -561,6 +647,8 @@ def execute_m24_row(
     lock = (
         invariance_arm_config_hash(arm)
         if arm in M24_INVARIANCE_ARMS
+        else anchored_arm_config_hash(arm)
+        if arm in M25_ANCHORED_ARMS
         else arm_config_hash(arm)
     )
     prediction = publish_prediction_artifact(
@@ -611,6 +699,13 @@ def execute_m24_row(
             "before_prediction_disagreements": before_parity_disagreements,
             "agreement_rate": float(1.0 - parity_disagreements / parity_rows) if parity_rows else None,
             "before_agreement_rate": float(1.0 - before_parity_disagreements / parity_rows) if parity_rows else None,
+        },
+        "anchored_base_parity": {
+            "query_rows": anchored_parity_rows,
+            "prediction_disagreements": anchored_parity_disagreements,
+            "before_prediction_disagreements": anchored_before_parity_disagreements,
+            "agreement_rate": float(1.0 - anchored_parity_disagreements / anchored_parity_rows) if anchored_parity_rows else None,
+            "before_agreement_rate": float(1.0 - anchored_before_parity_disagreements / anchored_parity_rows) if anchored_parity_rows else None,
         },
         "prediction": prediction,
         "truth_blind_diagnostics": diagnostics,
@@ -760,4 +855,39 @@ def run_m24_invariance_row_from_base_cache(
     )
 
 
-__all__ = ["DA0_REG0", "DA1_REG0", "DA0_REG1", "DA1_REG1", "M24_ROW_EXECUTION_SCHEMA", "M24RowExecutionError", "d1_overlay_from_base_cache", "execute_m24_row", "run_m24_d1_evidence_row_from_base_cache", "run_m24_d1_row_from_base_cache", "run_m24_invariance_row_from_base_cache", "run_m24_row_from_caches"]
+def run_m25_anchored_row_from_base_cache(
+    *,
+    arm: str,
+    row_id: str,
+    receiver: str,
+    base_feature_cache_payload: str | Path,
+    base_feature_cache_manifest: str | Path,
+    base_feature_cache_payload_sha256: str,
+    base_feature_cache_manifest_sha256: str,
+    output_root: str | Path,
+    seed: int,
+    device: Any = "cpu",
+) -> dict[str, Any]:
+    if arm not in {D1, *M25_ANCHORED_ARMS}:
+        raise M24RowExecutionError("anchored residual runner accepts only B0-B3")
+    base = load_feature_cache(
+        base_feature_cache_payload,
+        base_feature_cache_manifest,
+        expected_payload_sha256=str(base_feature_cache_payload_sha256).lower(),
+        expected_manifest_sha256=str(base_feature_cache_manifest_sha256).lower(),
+    )
+    return execute_m24_row(
+        arm=arm,
+        row_id=row_id,
+        receiver=receiver,
+        base_cache=base,
+        overlay_cache=d1_overlay_from_base_cache(base),
+        output_root=output_root,
+        seed=int(seed),
+        device=device,
+        base_cache_bytes=Path(base_feature_cache_payload).stat().st_size,
+        overlay_cache_bytes=0,
+    )
+
+
+__all__ = ["DA0_REG0", "DA1_REG0", "DA0_REG1", "DA1_REG1", "M24_ROW_EXECUTION_SCHEMA", "M24RowExecutionError", "d1_overlay_from_base_cache", "execute_m24_row", "run_m24_d1_evidence_row_from_base_cache", "run_m24_d1_row_from_base_cache", "run_m24_invariance_row_from_base_cache", "run_m25_anchored_row_from_base_cache", "run_m24_row_from_caches"]
