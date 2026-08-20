@@ -18,7 +18,17 @@ from cvsrffi.stage2_ablation_truth_scorer import BEHAVIOR_RECEIPT_SCHEMA, QUANTI
 from cvsrffi.stage2_m23_overlay_cache import load_m23_overlay_cache
 from cvsrffi.stage2_m23_rfguard import build_ground_manifold, estimate_stage2b_domain_state
 from cvsrffi.stage2_m23_row_executor import M23_F1_IF, _OverlayGroundComponent, _cosine_prediction, _legacy_states
-from cvsrffi.stage2_m24_safe_residual import D0, D1, M24_ARMS, arm_config_hash, fit_m24_safe_residual, prepare_query_features
+from cvsrffi.stage2_m24_refit import fit_m24_d1_refit
+from cvsrffi.stage2_m24_safe_residual import (
+    D0,
+    D1,
+    D1_REFIT,
+    M24_ARMS,
+    arm_config_hash,
+    compile_m24_d1_from_f1_head,
+    fit_m24_safe_residual,
+    prepare_query_features,
+)
 from cvsrffi.stage2_prediction_artifact import publish_prediction_artifact
 
 
@@ -52,14 +62,51 @@ def _exclusive_json(path: Path, payload: Mapping[str, Any]) -> None:
         os.close(descriptor)
 
 
+def _exclusive_npz(path: Path, **arrays: Any) -> dict[str, Any]:
+    descriptor = os.open(
+        path,
+        os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_BINARY", 0),
+        0o444,
+    )
+    try:
+        with os.fdopen(descriptor, "wb", closefd=False) as stream:
+            np.savez_compressed(stream, **arrays)
+            stream.flush()
+            os.fsync(stream.fileno())
+    finally:
+        os.close(descriptor)
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    return {"path": str(path), "sha256": digest, "size_bytes": path.stat().st_size}
+
+
+def _support_center_angles(
+    blocks: Any, labels: Any, classes: tuple[str, ...]
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    rows = prepare_query_features(blocks, feature_dim=256).astype(np.float64)
+    target = np.asarray(labels).astype(str)
+    centres = np.stack([np.mean(rows[target == item], axis=0) for item in classes])
+    centres /= np.maximum(np.linalg.norm(centres, axis=1, keepdims=True), 1.0e-12)
+    left, right = np.triu_indices(len(classes), k=1)
+    cosine = np.clip(np.sum(centres[left] * centres[right], axis=1), -1.0, 1.0)
+    return (
+        np.asarray(classes, dtype=str)[left],
+        np.asarray(classes, dtype=str)[right],
+        np.degrees(np.arccos(cosine)).astype(np.float32),
+    )
+
+
 def _f1_reference_head(state: Any, support_blocks: Any) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    coefficient, bias = decode_affine_state(state.compiled_affine_state)
+    if state.compiled_affine_state is None:
+        coefficient = np.asarray(state.coefficient_fp32, dtype=np.float32)
+        bias = np.asarray(state.intercept_fp32, dtype=np.float32)
+    else:
+        coefficient, bias = decode_affine_state(state.compiled_affine_state)
     if coefficient.shape != (len(state.classes), 288) or bias.shape != (len(state.classes),):
         raise M24RowExecutionError("historical F1 FP32 reference is missing")
     return (
-        np.asarray(coefficient[:, :256], dtype=np.float64),
+        np.asarray(coefficient, dtype=np.float64),
         np.asarray(bias, dtype=np.float64),
-        np.asarray(state.log_diag_fp32[:256], dtype=np.float32),
+        np.asarray(state.log_diag_fp32, dtype=np.float32),
     )
 
 
@@ -152,8 +199,8 @@ def execute_m24_row(
     output = Path(output_root).absolute()
     output.mkdir(parents=True, exist_ok=False)
     base_only_d1 = bool(overlay_manifest.get("d1_base_only", False))
-    if base_only_d1 and arm != D1:
-        raise M24RowExecutionError("base-only compact view is restricted to D1")
+    if base_only_d1 and arm not in {D0, D1, D1_REFIT}:
+        raise M24RowExecutionError("base-only compact view is restricted to D1 evidence arms")
     component = None if base_only_d1 else _OverlayGroundComponent(overlay_cache["ground_component"])
     manifold = None if component is None else build_ground_manifold(component)
 
@@ -164,6 +211,11 @@ def execute_m24_row(
     direct: list[np.ndarray] = []
     tokens_all: list[np.ndarray] = []
     scenarios_all: list[np.ndarray] = []
+    top2_margins: list[np.ndarray] = []
+    center_scenarios: list[np.ndarray] = []
+    center_class_left: list[np.ndarray] = []
+    center_class_right: list[np.ndarray] = []
+    center_angles: list[np.ndarray] = []
     audits: dict[str, Any] = {}
     quantization_audits: list[Mapping[str, Any]] = []
     state_bytes: list[int] = []
@@ -172,6 +224,7 @@ def execute_m24_row(
     registration_seconds = 0.0
     query_seconds = 0.0
     parity_disagreements = 0
+    before_parity_disagreements = 0
     parity_rows = 0
     started = time.perf_counter()
 
@@ -206,6 +259,7 @@ def execute_m24_row(
             288,
         )
         if arm == D0:
+            selected_scores = np.asarray(historical_after.score(prepared["query_after"]), dtype=np.float32)
             selected_after = historical_after_prediction
             selected_before = historical_before_prediction
             audit = {
@@ -226,7 +280,6 @@ def execute_m24_row(
             all_support_blocks = np.concatenate([compact["old_support_blocks"], compact["new_support_blocks"]])
             all_support_labels = np.concatenate([compact["old_support_labels"], compact["new_support_labels"]])
             all_support_quality = np.concatenate([compact["old_support_quality"], compact["new_support_quality"]])
-            coefficient, bias, f1_log_diag = _f1_reference_head(historical_after, all_support_blocks)
             if manifold is None:
                 domain_digest = hashlib.sha256(
                     str(base_manifest["split_id"]).encode("utf-8")
@@ -245,53 +298,108 @@ def execute_m24_row(
                 ground_prior = manifold.class_centres
                 nuisance_covariance = domain_state.nuisance_covariance
             fit_started = time.perf_counter()
-            state, audit, _workspace = fit_m24_safe_residual(
-                arm=arm,
-                support_blocks=all_support_blocks,
-                support_labels=all_support_labels,
-                classes=old_classes + new_classes,
-                support_quality=all_support_quality,
-                k_shot=int(overlay_manifest["k_shot"]),
-                old_class_count=len(old_classes),
-                f1_coefficient=coefficient,
-                f1_bias=bias,
-                f1_log_diag=f1_log_diag,
-                domain_digest=domain_digest,
-                ground_prior_identity=ground_prior,
-                nuisance_covariance_identity=nuisance_covariance,
-            )
+            if arm == D1:
+                coefficient, bias, f1_log_diag = _f1_reference_head(
+                    historical_after, all_support_blocks
+                )
+                state, audit, _workspace = compile_m24_d1_from_f1_head(
+                    f1_coefficient=coefficient,
+                    f1_bias=bias,
+                    f1_log_diag=f1_log_diag,
+                    classes=old_classes + new_classes,
+                    domain_digest=domain_digest,
+                    support_blocks=all_support_blocks,
+                )
+                before_coefficient, before_bias, before_log_diag = _f1_reference_head(
+                    historical_before, compact["old_support_blocks"]
+                )
+                before_state, before_audit, _before_workspace = compile_m24_d1_from_f1_head(
+                    f1_coefficient=before_coefficient,
+                    f1_bias=before_bias,
+                    f1_log_diag=before_log_diag,
+                    classes=old_classes,
+                    domain_digest=domain_digest,
+                    support_blocks=compact["old_support_blocks"],
+                )
+            elif arm == D1_REFIT:
+                state, audit, _workspace = fit_m24_d1_refit(
+                    support_blocks=all_support_blocks,
+                    support_labels=all_support_labels,
+                    classes=old_classes + new_classes,
+                    old_class_count=len(old_classes),
+                    domain_digest=domain_digest,
+                    ground_basis=base_cache["ground_basis"],
+                    ground_spectral_weights=base_cache["ground_spectral_weights"],
+                    ground_audit=base_cache["ground_audit"],
+                    seed=int(seed) + scenario_index,
+                    device=device,
+                )
+                before_state, before_audit, _before_workspace = fit_m24_d1_refit(
+                    support_blocks=compact["old_support_blocks"],
+                    support_labels=compact["old_support_labels"],
+                    classes=old_classes,
+                    old_class_count=len(old_classes),
+                    domain_digest=domain_digest,
+                    ground_basis=base_cache["ground_basis"],
+                    ground_spectral_weights=base_cache["ground_spectral_weights"],
+                    ground_audit=base_cache["ground_audit"],
+                    seed=int(seed) + scenario_index,
+                    device=device,
+                )
+            else:
+                coefficient, bias, f1_log_diag = _f1_reference_head(
+                    historical_after, all_support_blocks
+                )
+                state, audit, _workspace = fit_m24_safe_residual(
+                    arm=arm,
+                    support_blocks=all_support_blocks,
+                    support_labels=all_support_labels,
+                    classes=old_classes + new_classes,
+                    support_quality=all_support_quality,
+                    k_shot=int(overlay_manifest["k_shot"]),
+                    old_class_count=len(old_classes),
+                    f1_coefficient=coefficient[:, :256],
+                    f1_bias=bias,
+                    f1_log_diag=f1_log_diag[:256],
+                    domain_digest=domain_digest,
+                    ground_prior_identity=ground_prior,
+                    nuisance_covariance_identity=nuisance_covariance,
+                )
+                old_coefficient, old_bias = _physical_cosine_head(
+                    compact["old_support_blocks"], compact["old_support_labels"], old_classes
+                )
+                before_state, before_audit, _before_workspace = fit_m24_safe_residual(
+                    arm=arm,
+                    support_blocks=compact["old_support_blocks"],
+                    support_labels=compact["old_support_labels"],
+                    classes=old_classes,
+                    support_quality=compact["old_support_quality"],
+                    k_shot=int(overlay_manifest["k_shot"]),
+                    old_class_count=len(old_classes),
+                    f1_coefficient=old_coefficient,
+                    f1_bias=old_bias,
+                    domain_digest=domain_digest,
+                    ground_prior_identity=ground_prior,
+                    nuisance_covariance_identity=nuisance_covariance,
+                )
             registration_seconds += time.perf_counter() - fit_started
             feature_dim = state.compiled_affine_state.feature_dim
             query_features = prepare_query_features(compact["query_blocks"], feature_dim=feature_dim)
-            old_coefficient, old_bias = _physical_cosine_head(
-                compact["old_support_blocks"], compact["old_support_labels"], old_classes
-            )
-            before_state, before_audit, _before_workspace = fit_m24_safe_residual(
-                arm=arm,
-                support_blocks=compact["old_support_blocks"],
-                support_labels=compact["old_support_labels"],
-                classes=old_classes,
-                support_quality=compact["old_support_quality"],
-                k_shot=int(overlay_manifest["k_shot"]),
-                old_class_count=len(old_classes),
-                f1_coefficient=old_coefficient,
-                f1_bias=old_bias,
-                domain_digest=domain_digest,
-                ground_prior_identity=ground_prior,
-                nuisance_covariance_identity=nuisance_covariance,
-            )
             before_query_features = prepare_query_features(
                 compact["query_blocks"], feature_dim=before_state.compiled_affine_state.feature_dim
             )
             query_started = time.perf_counter()
-            selected_after = state.predict(query_features)
+            selected_scores = state.score(query_features)
+            selected_after = np.asarray(state.classes)[np.argmax(selected_scores, axis=-1)]
             selected_before = before_state.predict(before_query_features)
             query_seconds += time.perf_counter() - query_started
             quantization = audit["quantization"]
             resource = audit["resource"]
             audit = {**dict(audit), "before_registration_fit": dict(before_audit)}
-            parity_disagreements += int(np.sum(selected_after != historical_after_prediction)) if arm.endswith("PHYSICAL256-F1") else 0
-            parity_rows += len(selected_after) if arm.endswith("PHYSICAL256-F1") else 0
+            if arm in {D1, D1_REFIT}:
+                parity_disagreements += int(np.sum(selected_after != historical_after_prediction))
+                before_parity_disagreements += int(np.sum(selected_before != historical_before_prediction))
+                parity_rows += len(selected_after)
 
         candidate_after.append(np.asarray(selected_after).astype(str))
         candidate_before.append(np.asarray(selected_before).astype(str))
@@ -300,6 +408,19 @@ def execute_m24_row(
         direct.append(np.asarray(identity_after_prediction).astype(str))
         tokens_all.append(compact_tokens)
         scenarios_all.append(np.asarray([scenario] * len(compact_tokens)))
+        ordered_scores = np.partition(np.asarray(selected_scores), -2, axis=1)
+        top2_margins.append(
+            np.asarray(ordered_scores[:, -1] - ordered_scores[:, -2], dtype=np.float32)
+        )
+        centre_left, centre_right, centre_angle = _support_center_angles(
+            np.concatenate([compact["old_support_blocks"], compact["new_support_blocks"]]),
+            np.concatenate([compact["old_support_labels"], compact["new_support_labels"]]),
+            old_classes + new_classes,
+        )
+        center_scenarios.append(np.asarray([scenario] * len(centre_angle)))
+        center_class_left.append(centre_left)
+        center_class_right.append(centre_right)
+        center_angles.append(centre_angle)
         audits[scenario] = dict(audit)
         quantization_audits.append(dict(quantization))
         state_bytes.append(int(resource["compiled_inference_state_bytes"]))
@@ -336,6 +457,14 @@ def execute_m24_row(
         "persistent_update_state_bytes": 0 if arm != D0 else int(max(int(audits[s].get("resource", {}).get("persistent_update_state_bytes", 0)) for s in audits)),
         "transient_registration_workspace_peak_bytes": int(max(transient_bytes)),
         "registration_time_ms": float(1000.0 * registration_seconds),
+        "registration_timing_scope": (
+            "compile_only_existing_p2_a1_head"
+            if arm == D1
+            else "support_to_compiled_head"
+            if arm == D1_REFIT
+            else "historical_or_candidate_specific"
+        ),
+        "prerequisite_p2_a1_fit_included": arm == D1_REFIT,
         "row_peak_rss_bytes": 0,
         "row_peak_vram_bytes": 0,
         "candidate_peak_memory_isolated": False,
@@ -369,6 +498,17 @@ def execute_m24_row(
         direct=np.concatenate(direct),
         shared_view_counts=np.ones(total_queries, dtype=np.uint8),
     )
+    diagnostics = _exclusive_npz(
+        output / "truth_blind_diagnostics.npz",
+        query_tokens=np.concatenate(tokens_all),
+        scenarios=np.concatenate(scenarios_all),
+        predicted_classes=np.concatenate(candidate_after),
+        top2_margin=np.concatenate(top2_margins),
+        center_scenarios=np.concatenate(center_scenarios),
+        center_class_left=np.concatenate(center_class_left),
+        center_class_right=np.concatenate(center_class_right),
+        center_angle_degrees=np.concatenate(center_angles),
+    )
     receipt = {
         "schema": M24_ROW_EXECUTION_SCHEMA,
         "status": "PREDICTIONS_COMPLETE_TRUTH_UNOPENED",
@@ -382,8 +522,15 @@ def execute_m24_row(
         "fit_query_rows_used": 0,
         "query_truth_opened": False,
         "per_query_independent_all_class_argmax": True,
-        "d1_historical_parity": {"query_rows": parity_rows, "prediction_disagreements": parity_disagreements, "agreement_rate": float(1.0 - parity_disagreements / parity_rows) if parity_rows else None},
+        "d1_historical_parity": {
+            "query_rows": parity_rows,
+            "prediction_disagreements": parity_disagreements,
+            "before_prediction_disagreements": before_parity_disagreements,
+            "agreement_rate": float(1.0 - parity_disagreements / parity_rows) if parity_rows else None,
+            "before_agreement_rate": float(1.0 - before_parity_disagreements / parity_rows) if parity_rows else None,
+        },
         "prediction": prediction,
+        "truth_blind_diagnostics": diagnostics,
         "behavior": behavior_receipt,
         "quantization": quantization_receipt,
         "resource": resource_receipt,
@@ -460,4 +607,39 @@ def run_m24_d1_row_from_base_cache(
     )
 
 
-__all__ = ["DA0_REG0", "DA1_REG0", "DA0_REG1", "DA1_REG1", "M24_ROW_EXECUTION_SCHEMA", "M24RowExecutionError", "d1_overlay_from_base_cache", "execute_m24_row", "run_m24_d1_row_from_base_cache", "run_m24_row_from_caches"]
+def run_m24_d1_evidence_row_from_base_cache(
+    *,
+    arm: str,
+    row_id: str,
+    receiver: str,
+    base_feature_cache_payload: str | Path,
+    base_feature_cache_manifest: str | Path,
+    base_feature_cache_payload_sha256: str,
+    base_feature_cache_manifest_sha256: str,
+    output_root: str | Path,
+    seed: int,
+    device: Any = "cpu",
+) -> dict[str, Any]:
+    if arm not in {D0, D1, D1_REFIT}:
+        raise M24RowExecutionError("D1 evidence runner accepts only R0/R1/R2")
+    base = load_feature_cache(
+        base_feature_cache_payload,
+        base_feature_cache_manifest,
+        expected_payload_sha256=str(base_feature_cache_payload_sha256).lower(),
+        expected_manifest_sha256=str(base_feature_cache_manifest_sha256).lower(),
+    )
+    return execute_m24_row(
+        arm=arm,
+        row_id=row_id,
+        receiver=receiver,
+        base_cache=base,
+        overlay_cache=d1_overlay_from_base_cache(base),
+        output_root=output_root,
+        seed=int(seed),
+        device=device,
+        base_cache_bytes=Path(base_feature_cache_payload).stat().st_size,
+        overlay_cache_bytes=0,
+    )
+
+
+__all__ = ["DA0_REG0", "DA1_REG0", "DA0_REG1", "DA1_REG1", "M24_ROW_EXECUTION_SCHEMA", "M24RowExecutionError", "d1_overlay_from_base_cache", "execute_m24_row", "run_m24_d1_evidence_row_from_base_cache", "run_m24_d1_row_from_base_cache", "run_m24_row_from_caches"]

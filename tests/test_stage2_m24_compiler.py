@@ -10,7 +10,15 @@ from cvsrffi.stage2_m24_compiler import (
     margin_normalized_quantization_audit,
 )
 from cvsrffi.stage2_m24_rf_residual import safe_rf_residual
-from cvsrffi.stage2_m24_safe_residual import D1, D3, D4, M24_ARMS, fit_m24_safe_residual
+from cvsrffi.stage2_m24_safe_residual import (
+    D1,
+    D1_REFIT,
+    D3,
+    D4,
+    M24_ARMS,
+    compile_m24_d1_from_f1_head,
+    fit_m24_safe_residual,
+)
 
 
 def test_rf_residual_never_exceeds_alpha_point_one_and_k2_is_off() -> None:
@@ -151,7 +159,36 @@ def test_d1_is_exact_f1_and_d3_d4_enable_only_their_declared_quality_path() -> N
         assert audit["modules"]["quality_covariance_enabled"] is covariance_enabled
 
 
+def test_d1_compile_is_a_pure_288_to_256_head_compiler() -> None:
+    rng = np.random.default_rng(2411)
+    blocks = rng.normal(size=(10, 266))
+    coefficient = rng.normal(size=(2, 288))
+    bias = rng.normal(size=2)
+    log_diag = rng.normal(scale=0.05, size=288)
+    state, audit, workspace = compile_m24_d1_from_f1_head(
+        f1_coefficient=coefficient,
+        f1_bias=bias,
+        f1_log_diag=log_diag,
+        classes=("a", "b"),
+        domain_digest="d" * 64,
+        support_blocks=blocks,
+    )
+    features = __import__(
+        "cvsrffi.stage2_m24_safe_residual", fromlist=["prepare_query_features"]
+    ).prepare_query_features(blocks, feature_dim=256)
+    prepared = features * np.exp(log_diag[:256])[None, :]
+    prepared /= np.linalg.norm(prepared, axis=1, keepdims=True)
+    expected = prepared @ coefficient[:, :256].T + bias[None, :]
+    assert np.array_equal(np.argmax(state.score(features), axis=1), np.argmax(expected, axis=1))
+    assert workspace.nbytes == 0
+    assert audit["method_identity"] == "P2_A1_IF256_COMPILE_PARITY"
+    assert audit["fresh_support_refit"] is False
+    assert audit["resource"]["transient_registration_workspace_peak_bytes"] == 0
+
+
 def test_m24_arm_catalog_is_complete_d0_through_d10() -> None:
-    assert len(M24_ARMS) == 11
+    assert len(M24_ARMS) == 12
     assert M24_ARMS[0].startswith("M24-D0-")
+    assert M24_ARMS[1] == "M24-D1-COMPILE-PARITY"
+    assert D1_REFIT == "M24-D1-REFIT"
     assert M24_ARMS[-1].startswith("M24-D10-")

@@ -24,7 +24,8 @@ RF_LITE_DIM = 10
 COMPACT_DIM = IF_DIM + RF_LITE_DIM
 
 D0 = "M24-D0-HISTORICAL-F1"
-D1 = "M24-D1-PHYSICAL256-F1"
+D1 = "M24-D1-COMPILE-PARITY"
+D1_REFIT = "M24-D1-REFIT"
 D2 = "M24-D2-RELATIVE-PSD-JITTER"
 D3 = "M24-D3-RF-QUALITY-CENTER"
 D4 = "M24-D4-RF-QUALITY-COVARIANCE"
@@ -34,7 +35,7 @@ D7 = "M24-D7-NUISANCE-COVARIANCE"
 D8 = "M24-D8-NORMALIZED-UNCERTAINTY"
 D9 = "M24-D9-RF-LITE-DIAG-RESIDUAL"
 D10 = "M24-D10-RF-LITE-SAFE-GATE"
-M24_ARMS = (D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10)
+M24_ARMS = (D0, D1, D1_REFIT, D2, D3, D4, D5, D6, D7, D8, D9, D10)
 
 
 class M24SafeResidualError(ValueError):
@@ -58,6 +59,16 @@ class M24RegistrationWorkspace:
             self.support_weights,
             self.covariance_diagonal,
         )))
+
+
+def _empty_workspace() -> M24RegistrationWorkspace:
+    return M24RegistrationWorkspace(
+        support_center=np.empty((0, IF_DIM)),
+        decision_center=np.empty((0, IF_DIM)),
+        covariance_center=np.empty((0, IF_DIM)),
+        support_weights=np.empty(0),
+        covariance_diagonal=np.empty(0),
+    )
 
 
 def arm_config_hash(arm: str) -> str:
@@ -86,6 +97,83 @@ def prepare_query_features(blocks: Any, *, feature_dim: int) -> np.ndarray:
     rf = rows[:, IF_DIM:COMPACT_DIM]
     rf = rf / np.maximum(np.linalg.norm(rf, axis=1, keepdims=True), 1.0e-12)
     return np.concatenate([base, rf], axis=1).astype(np.float32)
+
+
+def compile_m24_d1_from_f1_head(
+    *,
+    f1_coefficient: Any,
+    f1_bias: Any,
+    f1_log_diag: Any,
+    classes: Sequence[str],
+    domain_digest: str,
+    support_blocks: Any,
+) -> tuple[M24InferenceState, Mapping[str, Any], M24RegistrationWorkspace]:
+    """Compile one already-fitted 288-D P2-A1 head into physical IF256.
+
+    This function intentionally performs no centre, covariance, prior, quality,
+    uncertainty, or residual fit.  The omitted RF32 input is the semantic zero
+    block of P2-A1; the frozen input metric remains necessary for exact scoring.
+    """
+
+    registry = tuple(str(item) for item in classes)
+    coefficient = np.asarray(f1_coefficient, dtype=np.float64)
+    bias = np.asarray(f1_bias, dtype=np.float64)
+    log_diag = np.asarray(f1_log_diag, dtype=np.float32)
+    blocks = np.asarray(support_blocks, dtype=np.float64)
+    if (
+        not registry
+        or coefficient.shape != (len(registry), 288)
+        or bias.shape != (len(registry),)
+        or log_diag.shape != (288,)
+        or blocks.ndim != 2
+        or blocks.shape[1] < IF_DIM
+        or not np.isfinite(coefficient).all()
+        or not np.isfinite(bias).all()
+        or not np.isfinite(log_diag).all()
+        or not np.isfinite(blocks[:, :IF_DIM]).all()
+    ):
+        raise M24SafeResidualError("P2-A1 compile input geometry drift")
+    support = physical_if256(blocks)
+    workspace = _empty_workspace()
+    state, resource, quantization = compile_m24_head(
+        coefficient[:, :IF_DIM].astype(np.float32),
+        bias.astype(np.float32),
+        classes=registry,
+        domain_digest=str(domain_digest),
+        config_hash=arm_config_hash(D1),
+        support_features=support,
+        transient_workspace_bytes=0,
+        block_sizes=(160, 96),
+        input_log_diag=log_diag[:IF_DIM],
+    )
+    audit = MappingProxyType({
+        "schema": "cvs.erbt_idr.m24.d1_compile_audit.v1",
+        "arm": D1,
+        "method_identity": "P2_A1_IF256_COMPILE_PARITY",
+        "fresh_support_refit": False,
+        "source_head_feature_dim": 288,
+        "compiled_feature_dim": IF_DIM,
+        "rf32_input_semantics": "constant_zero_removed",
+        "frozen_input_metric_retained": True,
+        "query_rows_used": 0,
+        "support_only": True,
+        "quantization": quantization,
+        "resource": resource,
+        "modules": {
+            "quality_center_enabled": False,
+            "quality_covariance_enabled": False,
+            "if_residual_enabled": False,
+            "prior_enabled": False,
+            "nuisance_enabled": False,
+            "uncertainty_enabled": False,
+            "rf_enabled": False,
+        },
+        "whole_candidate_safety": {
+            "whole_candidate_fallback_to_f1": False,
+            "reason": "algebraic_compile_parity",
+        },
+    })
+    return state, audit, workspace
 
 
 def _targets(labels: np.ndarray, classes: tuple[str, ...]) -> np.ndarray:
@@ -185,13 +273,7 @@ def fit_m24_safe_residual(
         feature_dim = IF_DIM
         support_for_compile = base_rows
         compile_log_diag = base_log_diag
-        workspace = M24RegistrationWorkspace(
-            support_center=np.empty((0, IF_DIM)),
-            decision_center=np.empty((0, IF_DIM)),
-            covariance_center=np.empty((0, IF_DIM)),
-            support_weights=np.empty(0),
-            covariance_diagonal=np.empty(0),
-        )
+        workspace = _empty_workspace()
         safety = {"whole_candidate_fallback_to_f1": False, "reason": "exact_f1" if arm == D1 else "forced_f1_k1"}
         module_audit: dict[str, Any] = {
             "quality_center_enabled": False,
@@ -359,7 +441,7 @@ def fit_m24_safe_residual(
 
 
 __all__ = [
-    "COMPACT_DIM", "D0", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10",
+    "COMPACT_DIM", "D0", "D1", "D1_REFIT", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10",
     "M24_ARMS", "M24RegistrationWorkspace", "M24SafeResidualError", "arm_config_hash",
-    "fit_m24_safe_residual", "prepare_query_features",
+    "compile_m24_d1_from_f1_head", "fit_m24_safe_residual", "prepare_query_features",
 ]

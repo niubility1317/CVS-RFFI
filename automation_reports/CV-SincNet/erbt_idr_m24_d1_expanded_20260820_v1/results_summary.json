@@ -2,7 +2,9 @@
   "schema": "cvs.erbt_idr.m24.d1_expanded.results_summary.v1",
   "run_id": "erbt_idr_m24_d1_expanded_20260820_v1",
   "status": "ANALYZED / DEVELOPMENT_EXPANDED_EVIDENCE / D1_PARITY_PASS",
-  "evidence_boundary": "D1 stability and historical-F1 parity evidence; not M2.4 module gain, fresh confirmation, Phase3, or deployment evidence.",
+  "method_identity": "M24-D1-COMPILE-PARITY_FROM_FITTED_P2-A1_HEAD",
+  "primary_d92_e0_baseline": "P2-A1_NO_RF32",
+  "evidence_boundary": "Compile-parity stability against a fitted P2-A1 head; not independent IF256 support refit, M2.4 module gain, fresh confirmation, Phase3, or deployment evidence.",
   "protocol": {
     "protocol_schema": "p2_min_v1",
     "phase2_data_status": "VALIDATED_ONCE",
@@ -50,7 +52,7 @@
     "A_o_post": "DA0_REG1 old-class accuracy",
     "A_n": "DA0_REG1 new-class accuracy",
     "H": "DA0_REG1 old/new harmonic mean",
-    "F": "A_o_pre - A_o_post (positive means forgetting)",
+    "F": "historical report value; cross-method comparison requires a common P2-A1 DA1_REG0 reference and F_std",
     "min_old": "minimum registered old-class accuracy",
     "min_new": "minimum registered new-class accuracy",
     "aggregate": "query-count-weighted mean over three leo_*_weak scenarios"

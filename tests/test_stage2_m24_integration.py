@@ -16,7 +16,7 @@ from cvsrffi.stage2_m24_row_executor import (
     d1_overlay_from_base_cache,
     execute_m24_row,
 )
-from cvsrffi.stage2_m24_safe_residual import D1, M24_ARMS
+from cvsrffi.stage2_m24_safe_residual import D1, D1_REFIT, M24_ARMS
 from scripts import preflight_m24_safe_residual as preflight
 from scripts import run_m24_safe_residual_suite as suite_runner
 from scripts import score_m24_safe_residual_suite as suite_scorer
@@ -84,7 +84,7 @@ def _caches() -> tuple[dict, dict]:
     return base, overlay
 
 
-def test_suite_freezes_one_seed_across_all_eleven_arms() -> None:
+def test_suite_freezes_one_seed_across_all_twelve_arms() -> None:
     assert suite_runner._arm_seed_plan(7282101, M24_ARMS) == {
         arm: 7282101 for arm in M24_ARMS
     }
@@ -150,6 +150,9 @@ def test_d1_row_publishes_truth_unopened_four_state_and_nonoverwriting_output(tm
     }
     assert Path(receipt["prediction"]["path"]).is_file()
     assert receipt["resource"]["persistent_update_state_bytes"] == 0
+    assert receipt["resource"]["registration_timing_scope"] == "compile_only_existing_p2_a1_head"
+    assert receipt["resource"]["prerequisite_p2_a1_fit_included"] is False
+    assert receipt["d1_historical_parity"]["before_prediction_disagreements"] == 0
     assert "r_p99" in receipt["quantization"]["margin_normalized"]
     with pytest.raises(FileExistsError):
         execute_m24_row(
@@ -182,6 +185,40 @@ def test_d1_base_only_view_preserves_physical_blocks_without_rf_state(tmp_path: 
     )
     assert receipt["d1_historical_parity"]["prediction_disagreements"] == 0
     assert receipt["resource"]["deployment_state_bytes"] == 0
+
+
+def test_d1_refit_does_not_consume_historical_head_parameters(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    base, _overlay = _caches()
+    base["manifest"].update({
+        "package_root_sha256": "3" * 64,
+        "package_seal_sha256": "4" * 64,
+    })
+    compact = d1_overlay_from_base_cache(base)
+
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("D1-REFIT consumed a historical fitted head")
+
+    monkeypatch.setattr(
+        "cvsrffi.stage2_m24_row_executor._f1_reference_head", forbidden
+    )
+    receipt = execute_m24_row(
+        arm=D1_REFIT,
+        row_id="synthetic_m24_d1_refit",
+        receiver="3-19",
+        base_cache=base,
+        overlay_cache=compact,
+        output_root=tmp_path / "refit",
+        seed=7282101,
+    )
+    assert receipt["status"] == "PREDICTIONS_COMPLETE_TRUTH_UNOPENED"
+    assert receipt["resource"]["registration_timing_scope"] == "support_to_compiled_head"
+    assert receipt["resource"]["prerequisite_p2_a1_fit_included"] is True
+    assert all(
+        item["fresh_support_refit"] is True
+        for item in receipt["scenario_audit"].values()
+    )
 
 
 def test_row_fails_closed_on_seed_drift(tmp_path: Path) -> None:

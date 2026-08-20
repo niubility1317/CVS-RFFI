@@ -14,6 +14,8 @@ run ID：`erbt_idr_m24_d1_expanded_20260820_v1`
 
 本轮60行、180个`leo_*_weak`场景单元全部完成prediction与truth-last独立评分，60行均为`PASS`，D1相对历史F1的逐query预测分歧为0。由此确认：M2.4物理256维D1在5个receiver、3个真实method seed和4种K-shot／新类条件上保持历史F1的注册后决策等价性。
 
+复盘后的方法身份修正：该D1先拟合P2-A1，再截取前256维仿射系数并重新量化，因此应命名为`M24-D1-COMPILE-PARITY`。它证明的是P2-A1去除恒零RF32后的编译等价性，不是“IF256 support独立拟合出同等分类器”。报告中的约20ms只覆盖已有P2-A1头之后的slice+compile，不含P2-A1前置拟合。
+
 扩展结果也清楚显示K-shot是当前性能的主导变量：`K1/new20`的平均`H=0.3345`，`K5/new20`升至`0.6085`，`K10/new20`升至`0.6906`；当K10的新类数由20降至5时，`H`进一步达到`0.7727`，平均遗忘`F`降至`0.0193`。这属于D1稳定性与能力边界证据，不是D2–D10模块收益或fresh confirmation。
 
 ## 二、矩阵与协议
@@ -24,7 +26,7 @@ run ID：`erbt_idr_m24_d1_expanded_20260820_v1`
 |真实method seed|`7282101`、`7282102`、`7282103`|
 |条件|`K1/new20`、`K5/new20`、`K10/new20`、`K10/new5`|
 |规模|60行；每行3个场景；共180个场景单元|
-|候选|仅`M24-D1-PHYSICAL256-F1`|
+|候选|历史名称`M24-D1-PHYSICAL256-F1`；复盘后规范名称`M24-D1-COMPILE-PARITY`|
 |协议|`p2_min_v1`、`VALIDATED_ONCE`；复用合法base feature cache，不重验received IQ|
 |query边界|每个query独立在全部已注册类上决策；prediction阶段不读取truth、不更新状态|
 |评分边界|60行prediction及matrix index全部闭合后，独立scorer才连接truth|
@@ -94,11 +96,11 @@ run ID：`erbt_idr_m24_d1_expanded_20260820_v1`
 |批量query head耗时／ms/row|0.562|3.763|12.868|
 |单query head MAC|2816|5696|6656|
 
-所有行都不持久化注册更新态；状态大小随新类数变化。这里的延迟是闭式head与行级测量，不等同于完整端到端无线接收链路延迟。
+所有行都不持久化注册更新态；状态大小随新类数变化。`input_log_diag_fp32`实际参与query缩放和重新归一化，不能作为死metric删除。这里约20ms的注册时间仅表示已有P2-A1头之后的编译时间，不是从support开始的端到端注册耗时，也不等同于完整无线接收链路延迟。
 
 ## 七、科学解释与后续建议
 
-1. D1实现已经跨矩阵证明“物理256维重构后保持历史F1注册后决策”的工程正确性，可作为M2.4稳定基线。
+1. D1实现已经跨矩阵证明“从历史P2-A1头删除恒零RF32并编译为物理256维头后保持决策”的工程正确性，可作为部署编译基线。
 2. D2–D10未被本轮晋级。诊断中K1与D1结果相同，K10又全部安全回退；因此没有真实模块增益证据。
 3. 下一轮若继续优化，应优先针对`K1/new20`的新类底线与`3-19`困难receiver，设计能在support侧产生可辨识差异且不过度整体回退的新候选。
 4. 任何新候选仍应与D1同row比较；本轮60行可作为研发参考面，但不能被称为独立确认集。
@@ -114,4 +116,4 @@ run ID：`erbt_idr_m24_d1_expanded_20260820_v1`
 
 ## 九、证据边界
 
-本报告支持M2.4 D1扩展稳定性、历史F1等价性、K-shot／新类规模／receiver／seed差异分析。它不支持D2–D10有效、M2.4优于历史F1、fresh confirmation、完整125结论、Phase3开放世界能力或星载部署结论。
+本报告支持M2.4 D1编译扩展稳定性、历史P2-A1等价性、K-shot／新类规模／receiver／seed差异分析。它不支持D1独立support refit等价、D2–D10有效、M2.4优于历史P2-A1、fresh confirmation、完整125结论、Phase3开放世界能力或星载部署结论。

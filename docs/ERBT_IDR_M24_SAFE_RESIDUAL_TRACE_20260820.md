@@ -24,7 +24,7 @@
 |M24-14|量化增加margin归一化误差P50/P95/P99/max和阈值比例|`m24_compiler.py`|手算margin fixture测试|local_verified|
 |M24-15|持久态只保留量化仿射头、registry、schema和摘要|`M24InferenceState`|禁止保留workspace／FP32旁路与字节审计测试|local_verified|
 |M24-16|瞬时注册态独立计量|`M24RegistrationWorkspace`和resource receipt|三种字节口径测试|local_verified|
-|M24-17|D0–D10完整因果臂且同row同seed|M2.4 row executor／suite|两条件×11臂×3场景真实N607诊断闭合|verified|
+|M24-17|D0–D10完整因果臂且同row同seed|M2.4 row executor／suite|历史两条件×11臂×3场景真实N607诊断闭合；复盘后另增D1-REFIT证据臂|verified|
 |M24-18|四状态显式命名与query独立全类argmax|row receipt／prediction artifact|22个诊断臂及60个扩展行truth-last评分通过|verified|
 |M24-19|canonical manifest、依赖、非覆盖和提交绑定预检|M2.4 preflight|错误manifest、已存在输出和错误commit测试|local_verified|
 |M24-20|truth-last评分复用同row配对诊断|M2.4 scorer|诊断22行与扩展60行均在prediction闭合后独立评分|verified|
@@ -52,4 +52,4 @@ v2的K1 D1通过，但K10 D1出现14/660个预测差异，触发预登记硬停�
 - 诊断run：`erbt_idr_m24_safe_residual_diagnostic_20260820_v3`，22个臂结果完成；D1在K1与K10分别达到1560/1560和660/660逐query一致。
 - 模块判定：D2–D10未晋级。K1无独立输出差异，K10在三个场景均触发support-harm整候选回退。
 - 扩展run：`erbt_idr_m24_d1_expanded_20260820_v1`，5个receiver×3个method seed×4条件=60行、180场景；60行评分PASS且总预测分歧为0。
-- 科学判定：D1可作为稳定研发基线；本轮未证明附加模块带来性能增益。
+- 科学判定：历史D1只可作为`M24-D1-COMPILE-PARITY`部署编译基线；尚未证明IF256独立support refit等价，也未证明附加模块带来性能增益。
