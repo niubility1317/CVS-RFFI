@@ -372,7 +372,7 @@ def build_phase1_t1_rows(
                         "source_validation": 0.30,
                     },
                     "epochs": 200,
-                    "checkpoint_selection": "source_validation_only",
+                    "checkpoint_selection": "final_only",
                     "executor_status": arm.executor_status,
                 }
             )
@@ -430,7 +430,7 @@ def build_phase1_label_rows(
                     "split_fractions": split_fractions,
                     "train_seed": seed,
                     "epochs": 200,
-                    "checkpoint_selection": "source_validation_only",
+                    "checkpoint_selection": "final_only",
                     "executor_status": "LOCAL_IMPLEMENTED_PENDING_REVIEW",
                 }
             )

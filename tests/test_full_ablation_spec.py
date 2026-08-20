@@ -4,6 +4,7 @@ import copy
 
 import pytest
 
+from SSDG.train_ssdg import build_arg_parser
 from cvsrffi.full_ablation_spec import (
     LEO_SCENARIOS,
     PHASE1_T1_ARMS,
@@ -74,7 +75,7 @@ def test_phase1_label_matrix_is_four_lower_rates_and_fourteen_new_runs() -> None
         == pytest.approx(0.70 * (1.0 - row["rho_label"]))
         and row["split_fractions"]["source_validation"]
         == pytest.approx(0.30)
-        and row["checkpoint_selection"] == "source_validation_only"
+        and row["checkpoint_selection"] == "final_only"
         for row in rows
     )
     assert len({tuple(row["worker"].values()) for row in rows}) == 14
@@ -83,6 +84,31 @@ def test_phase1_label_matrix_is_four_lower_rates_and_fourteen_new_runs() -> None
         sum(row["worker"]["gpu"] == gpu for row in rows) <= 2
         for gpu in range(8)
     )
+
+
+def test_active_phase1_row_factories_emit_parser_valid_final_only_selection() -> None:
+    parser = build_arg_parser()
+    rows = [
+        *build_phase1_t1_rows(
+            [810001, 810002, 810003, 810004, 810005],
+            git_commit="a" * 40,
+        ),
+        *build_phase1_label_rows(
+            [810001, 810002, 810003, 810004, 810005],
+            git_commit="a" * 40,
+        ),
+    ]
+
+    for row in rows:
+        args = parser.parse_args(
+            [
+                "--output_dir",
+                "out",
+                "--checkpoint_selection",
+                row["checkpoint_selection"],
+            ]
+        )
+        assert args.checkpoint_selection == "final_only"
 
 
 def test_phase1_label_matrix_requires_five_registered_seeds() -> None:

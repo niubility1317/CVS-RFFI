@@ -111,9 +111,19 @@ def test_common_protocol_and_budget_never_drift() -> None:
     } == {(0.07, 0.63, 0.30)}
     assert {config["epochs"] for config in configs} == {200}
     assert {config["checkpoint_selection"] for config in configs} == {
-        "source_validation_only"
+        "final_only"
     }
     assert all(config["phase1_source_val_selection_only"] for config in configs)
+
+
+def test_active_ablation_configs_pass_shared_checkpoint_parser() -> None:
+    parser = build_arg_parser()
+    for ablation_id in (*PHASE1_ABLATION_IDS, *PHASE1_LABEL_ABLATION_IDS):
+        selection = phase1_ablation_config(ablation_id)["checkpoint_selection"]
+        args = parser.parse_args(
+            ["--output_dir", "out", "--checkpoint_selection", selection]
+        )
+        assert args.checkpoint_selection == "final_only"
 
 
 def test_p1_b0_changes_only_pseudo_ce_and_entropy() -> None:
@@ -386,7 +396,7 @@ def test_arm_aware_terminal_contract_accepts_intentional_disabled_groups(
     )
     assert train(args) == 0
     evidence = {
-        "checkpoint_role": "source_validation_selected",
+        "checkpoint_role": "training_final_only",
         "args": vars(args),
     }
     source_pool_size = 10000
@@ -425,7 +435,7 @@ def test_arm_aware_terminal_contract_accepts_intentional_disabled_groups(
     )
     p0_flags, p1_flags = _formal_ablation_terminal_flags(
         args,
-        selected_checkpoint=Path("best_source_validation_ssdg.pth"),
+        selected_checkpoint=Path("final_ssdg.pth"),
         selected_checkpoint_evidence=evidence,
         selected_checkpoint_sha256="b" * 64,
         export_status={
@@ -438,23 +448,23 @@ def test_arm_aware_terminal_contract_accepts_intentional_disabled_groups(
     assert all(p1_flags.values()), p1_flags
 
 
-def test_formal_checkpoint_validation_accepts_source_validation_selection() -> None:
+def test_formal_checkpoint_validation_accepts_final_only_selection() -> None:
     args = Namespace(
         run_id="run",
         candidate_id="P1-SUP",
         best_metric="source_val_sat_hmean",
-        checkpoint_selection="source_validation_only",
+        checkpoint_selection="final_only",
     )
     payload = {
         "checkpoint_schema": "ssdg_phase1_training_state_v2",
-        "checkpoint_role": "source_validation_selected",
-        "checkpoint_selection": "source_validation_only",
+        "checkpoint_role": "training_final_only",
+        "checkpoint_selection": "final_only",
         "run_id": "run",
         "candidate_id": "P1-SUP",
         "model": {},
         "args": {
             "best_metric": "source_val_sat_hmean",
-            "checkpoint_selection": "source_validation_only",
+            "checkpoint_selection": "final_only",
         },
     }
     assert (
