@@ -53,6 +53,14 @@ class M24RowExecutionError(RuntimeError):
     pass
 
 
+def _local_prototype_mac(
+    *, feature_dim: int, prototype_counts: Any, active: bool
+) -> int:
+    if not active:
+        return 0
+    return int(feature_dim) * sum(int(value) for value in prototype_counts)
+
+
 def _canonical_json(value: Mapping[str, Any]) -> bytes:
     return json.dumps(value, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
 
@@ -576,7 +584,13 @@ def execute_m24_row(
             active = float(audit["selected_strength"]) > 0.0
             counts = [int(value) for value in audit["prototype_count_by_class"]]
             multi = sum(max(0, value - 1) for value in counts)
-            local_prototype_macs.append(IF_DIM * sum(counts) if active else 0)
+            local_prototype_macs.append(
+                _local_prototype_mac(
+                    feature_dim=feature_dim,
+                    prototype_counts=counts,
+                    active=active,
+                )
+            )
             local_exp_counts.append(multi if active else 0)
             local_log_counts.append(sum(1 for value in counts if value > 1) if active else 0)
             local_aggregation_counts.append(sum(1 for value in counts if value > 1) if active else 0)

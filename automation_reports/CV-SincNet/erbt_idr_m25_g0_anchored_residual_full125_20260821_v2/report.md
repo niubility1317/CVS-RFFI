@@ -2,9 +2,9 @@
 
 日期：2026-08-21
 
-run ID：`erbt_idr_m25_g0_anchored_residual_full125_20260821_v1`
+run ID：`erbt_idr_m25_g0_anchored_residual_full125_20260821_v2`
 
-当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
+当前状态：`LOCAL_VERIFIED / PREREGISTERED / N607_NOT_LAUNCHED`
 
 实现分支：`work/m24-safe-residual`
 
@@ -40,7 +40,9 @@ s_c(q)=s_c^{G0}(q)+\lambda g(q)\bar r_c(q).
 - prediction全部闭合后，独立scorer才连接truth；
 - 本地聚焦与相邻回归56项通过，五个生产脚本/模块编译通过，`git diff --check`通过；
 - 独立P0/P1审查初审发现3项P1，均已定点修复；定点复审结论为`NO_P0_P1`；
-- 实验代码固定提交：`d3228c257ef36537354a9043d0c0953c44bdbbb1`；远端`origin/work/m24-safe-residual`已独立回读为同一OID。
+- v1在352/500个partial receipt后因局部原型MAC统计引用未定义`IF_DIM`而退出，未生成matrix index，truth未打开且无性能结果；v1全部证据原位保留；
+- 新增非零残差MAC分支回归测试，定点修复改为使用当前row的真实`feature_dim`；57项聚焦与相邻回归通过；
+- 实验代码固定提交：`PENDING_FIX_COMMIT`。
 
 ## 四、N607路径与资源
 
@@ -50,37 +52,33 @@ s_c(q)=s_c^{G0}(q)+\lambda g(q)\bar r_c(q).
 |补充feature root|`/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/erbt_idr_m24_d1_refit_full125_20260820_v1_supplement_features/artifacts/features`|
 |既有scoring root|`/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_sidecar_t1_20260730_v3_47212437/artifacts/sidecars`|
 |补充scoring root|`/home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m24_d1_refit_full125_20260820_v3/scoring_root_repaired_v3`|
-|release root|`/home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m25_g0_anchored_residual_full125_20260821_v1`|
-|run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m25_g0_anchored_residual_full125_20260821_v1`|
-|log root|`/home/szu2070436088/2510044040/CV-SincNet/logs/erbt_idr_m25_g0_anchored_residual_full125_20260821_v1`|
+|release root|`/home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m25_g0_anchored_residual_full125_20260821_v2`|
+|run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m25_g0_anchored_residual_full125_20260821_v2`|
+|log root|`/home/szu2070436088/2510044040/CV-SincNet/logs/erbt_idr_m25_g0_anchored_residual_full125_20260821_v2`|
 |Python|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
 |资源|CPU，`--max-workers 2`；不占用GPU，不干预既有训练|
 
-单一release归档本地与N607的SHA-256均为`4b01a466f34eea6bdc4288c188f29bd8aaf499e51547d71b94ab6aaa6b65ecfe`，远端五个生产文件编译通过。真实cache无truth smoke使用`rx3-19/m7282101/K1/new20`，B0–B3共4行全部生成`PREDICTIONS_COMPLETE_TRUTH_UNOPENED` prediction；B0 parity闭锁通过，K1的B1–B3按冻结规则回退G0。smoke位于独立`smoke`子目录，不计入正式500行矩阵。
-
-正式prediction于2026-08-21 01:23（Asia/Hong_Kong）只启动一次，父PID为`4124155`。首次健康检查确认CWD、cmdline、run root绑定正确，2个worker属于该父进程，日志持续增长，8个正式receipt已闭合，确定性异常指纹为0。
-
-2026-08-21 05:00，正式prediction在352/500个row receipt后确定性退出，未生成`matrix_index.json`，因此truth从未打开，本run没有性能结果。完整异常为`NameError: name 'IF_DIM' is not defined`，触发点是K5/K10行首次选出非零残差后进入局部原型MAC统计；K1/K2及本地合成测试因强度0短路未执行该分支。v1全部partial prediction、receipt和日志原位保留，禁止续写、覆盖、局部评分或用于性能比较。修复必须进入新提交和新run ID。
+v2必须使用新的单一release归档、新release/run/log根和新的真实cache无truth smoke；不得续写或复用v1 partial输出。
 
 ## 五、冻结命令
 
 prediction：
 
 ```bash
-cd /home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m25_g0_anchored_residual_full125_20260821_v1/code
-PYTHONPATH=. /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u scripts/run_m25_anchored_residual_full125.py --run-id erbt_idr_m25_g0_anchored_residual_full125_20260821_v1 --feature-root /home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_feature_t1_20260730_v3_47212437/artifacts/features --supplemental-feature-root /home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/erbt_idr_m24_d1_refit_full125_20260820_v1_supplement_features/artifacts/features --output-root /home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m25_g0_anchored_residual_full125_20260821_v1/predictions --device cpu --max-workers 2
+cd /home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m25_g0_anchored_residual_full125_20260821_v2/code
+PYTHONPATH=. /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u scripts/run_m25_anchored_residual_full125.py --run-id erbt_idr_m25_g0_anchored_residual_full125_20260821_v2 --feature-root /home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_feature_t1_20260730_v3_47212437/artifacts/features --supplemental-feature-root /home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/erbt_idr_m24_d1_refit_full125_20260820_v1_supplement_features/artifacts/features --output-root /home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m25_g0_anchored_residual_full125_20260821_v2/predictions --device cpu --max-workers 2
 ```
 
 truth-last scorer：
 
 ```bash
-PYTHONPATH=. /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u scripts/score_m25_anchored_residual_full125.py --matrix-index /home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m25_g0_anchored_residual_full125_20260821_v1/predictions/matrix_index.json --scoring-root /home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_sidecar_t1_20260730_v3_47212437/artifacts/sidecars --supplemental-scoring-root /home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m24_d1_refit_full125_20260820_v3/scoring_root_repaired_v3 --output-root /home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m25_g0_anchored_residual_full125_20260821_v1/scores --bootstrap-repeats 2000
+PYTHONPATH=. /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u scripts/score_m25_anchored_residual_full125.py --matrix-index /home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m25_g0_anchored_residual_full125_20260821_v2/predictions/matrix_index.json --scoring-root /home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_sidecar_t1_20260730_v3_47212437/artifacts/sidecars --supplemental-scoring-root /home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m24_d1_refit_full125_20260820_v3/scoring_root_repaired_v3 --output-root /home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m25_g0_anchored_residual_full125_20260821_v2/scores --bootstrap-repeats 2000
 ```
 
 summary：
 
 ```bash
-PYTHONPATH=. /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u scripts/summarize_m25_anchored_residual_full125.py --prediction-root /home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m25_g0_anchored_residual_full125_20260821_v1/predictions --score-root /home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m25_g0_anchored_residual_full125_20260821_v1/scores --output /home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m25_g0_anchored_residual_full125_20260821_v1/results_summary.json
+PYTHONPATH=. /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u scripts/summarize_m25_anchored_residual_full125.py --prediction-root /home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m25_g0_anchored_residual_full125_20260821_v2/predictions --score-root /home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m25_g0_anchored_residual_full125_20260821_v2/scores --output /home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m25_g0_anchored_residual_full125_20260821_v2/results_summary.json
 ```
 
 ## 六、闭合、停止与分析要求

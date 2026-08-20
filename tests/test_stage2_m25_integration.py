@@ -83,6 +83,13 @@ def test_b1_b3_rows_report_real_prototype_mac(tmp_path: Path) -> None:
         assert receipt["resource"]["query_head_mac"] >= expected
 
 
+def test_active_local_prototype_mac_uses_row_feature_dim() -> None:
+    from cvsrffi.stage2_m24_row_executor import _local_prototype_mac
+
+    assert _local_prototype_mac(feature_dim=256, prototype_counts=(1, 2), active=True) == 768
+    assert _local_prototype_mac(feature_dim=256, prototype_counts=(1, 2), active=False) == 0
+
+
 def test_full125_runner_freezes_four_125_row_arms() -> None:
     from scripts import run_m25_anchored_residual_full125 as runner
 
