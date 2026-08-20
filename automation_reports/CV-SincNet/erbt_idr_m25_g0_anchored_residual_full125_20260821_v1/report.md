@@ -4,7 +4,7 @@
 
 run ID：`erbt_idr_m25_g0_anchored_residual_full125_20260821_v1`
 
-当前状态：`LOCAL_VERIFIED / PREREGISTERED / N607_NOT_LAUNCHED`
+当前状态：`RUNNING`
 
 实现分支：`work/m24-safe-residual`
 
@@ -55,6 +55,10 @@ s_c(q)=s_c^{G0}(q)+\lambda g(q)\bar r_c(q).
 |log root|`/home/szu2070436088/2510044040/CV-SincNet/logs/erbt_idr_m25_g0_anchored_residual_full125_20260821_v1`|
 |Python|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`|
 |资源|CPU，`--max-workers 2`；不占用GPU，不干预既有训练|
+
+单一release归档本地与N607的SHA-256均为`4b01a466f34eea6bdc4288c188f29bd8aaf499e51547d71b94ab6aaa6b65ecfe`，远端五个生产文件编译通过。真实cache无truth smoke使用`rx3-19/m7282101/K1/new20`，B0–B3共4行全部生成`PREDICTIONS_COMPLETE_TRUTH_UNOPENED` prediction；B0 parity闭锁通过，K1的B1–B3按冻结规则回退G0。smoke位于独立`smoke`子目录，不计入正式500行矩阵。
+
+正式prediction于2026-08-21 01:23（Asia/Hong_Kong）只启动一次，父PID为`4124155`。首次健康检查确认CWD、cmdline、run root绑定正确，2个worker属于该父进程，日志持续增长，8个正式receipt已闭合，确定性异常指纹为0。
 
 ## 五、冻结命令
 

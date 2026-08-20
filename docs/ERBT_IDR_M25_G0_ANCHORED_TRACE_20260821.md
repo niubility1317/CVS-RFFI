@@ -17,12 +17,14 @@
 |M25-09|十五|双原型只进入残差，不替换G0|同上B3|verified_local|高margin与lambda0测试|避免G4全头退化|
 |M25-10|十九|多原型MAC按`256*sum_c M_c`统计|row executor|verified_local|资源receipt测试|强度为0时按真实跳过计0|
 |M25-11|协议|query逐样本独立、truth-last|row executor、runner、scorer|verified_local|truth-unopened row测试|query不更新任何状态|
-|M25-12|用户要求|B0–B3每臂完整125|full125 runner|implemented|静态500行、每臂125|N607尚未启动|
+|M25-12|用户要求|B0–B3每臂完整125|full125 runner|running_n607|真实smoke 4/4 PASS；正式prediction已单次启动|父PID `4124155`，待500行闭合|
 |M25-13|分析要求|输出全部分层、四状态和资源对比|summarizer、正式报告|implemented|共享full125汇总器接线|待真实结果验证|
 |M25-14|十、十八|1:4/1:1×D92/cosine归因矩阵|独立后续诊断|deferred|不进入本轮性能候选|避免扩大当前实现面；不影响B0–B3 full125|
 
 本地验证：56项M2.4/M2.5聚焦与相邻回归通过；五个生产脚本/模块编译通过；`git diff --check`通过。独立审查初审发现3项P1：B0 parity未闭锁、task/receipt身份未核对、summary可覆盖。三项均完成定点修复，定点复审结论为`NO_P0_P1`。
 
-当前状态：`LOCAL_VERIFIED / NO_P0_P1 / N607_NOT_LAUNCHED`。
+当前状态：`RUNNING / NO_P0_P1`。
 
 实现提交：`d3228c257ef36537354a9043d0c0953c44bdbbb1`；远端分支OID已独立回读一致。
+
+N607发布：release归档SHA-256=`4b01a466f34eea6bdc4288c188f29bd8aaf499e51547d71b94ab6aaa6b65ecfe`，远端编译和真实cache无truth smoke通过；正式prediction父PID=`4124155`。
