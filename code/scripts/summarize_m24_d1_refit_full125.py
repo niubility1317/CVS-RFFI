@@ -20,6 +20,7 @@ ARMS = (
     "M24-D1-REFIT",
 )
 REFERENCE_ARM = ARMS[0]
+PARITY_ARM: str | None = "M24-D1-COMPILE-PARITY"
 EXPECTED_INPUT_IDENTITIES = 125
 SUMMARY_SCHEMA = "cvs.erbt_idr.m24.d1_refit_full125.results_summary.v1"
 SUMMARY_VERDICT = "D1_COMPILE_PARITY_PASS_AND_R2_FULL125_MEASURED"
@@ -38,6 +39,19 @@ RESOURCE_METRICS = (
 def _load(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8-sig") as handle:
         return json.load(handle)
+
+
+def _parity_for_identity(
+    identity: Mapping[str, Any], *, parity_arm: str | None
+) -> Mapping[str, Any] | None:
+    if parity_arm is None:
+        return None
+    if str(identity.get("arm")) != parity_arm:
+        return identity.get("d1_historical_parity")
+    parity = identity.get("d1_historical_parity")
+    if not isinstance(parity, Mapping):
+        raise ValueError(f"{parity_arm} row is missing d1_historical_parity")
+    return parity
 
 
 def _quantile(values: Sequence[float], probability: float) -> float:
@@ -297,7 +311,7 @@ def build_summary(prediction_root: Path, score_root: Path) -> dict[str, Any]:
                 **aggregate,
                 "status": score["status"],
                 "truth_opened_after_prediction_commit": score["truth_opened_after_prediction_commit"],
-                "parity": identity["d1_historical_parity"],
+                "parity": _parity_for_identity(identity, parity_arm=PARITY_ARM),
                 **{key: resource.get(key) for key in RESOURCE_METRICS},
             }
         )
@@ -363,7 +377,7 @@ def build_summary(prediction_root: Path, score_root: Path) -> dict[str, Any]:
         arm_counts[row["arm"]] += 1
     if dict(arm_counts) != {arm: EXPECTED_INPUT_IDENTITIES for arm in ARMS}:
         raise ValueError(f"unexpected arm counts: {dict(arm_counts)}")
-    parity_rows = [row for row in row_records if row["arm"] == "M24-D1-COMPILE-PARITY"]
+    parity_rows = [row for row in row_records if PARITY_ARM is not None and row["arm"] == PARITY_ARM]
     parity_before = sum(int(row["parity"]["before_prediction_disagreements"]) for row in parity_rows)
     parity_after = sum(int(row["parity"]["prediction_disagreements"]) for row in parity_rows)
     if parity_before or parity_after:

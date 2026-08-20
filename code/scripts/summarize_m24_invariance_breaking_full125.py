@@ -23,6 +23,7 @@ def main() -> int:
     args = parser.parse_args()
     shared.ARMS = ARMS
     shared.REFERENCE_ARM = D0
+    shared.PARITY_ARM = None
     shared.EXPECTED_INPUT_IDENTITIES = 125
     shared.SUMMARY_SCHEMA = "cvs.erbt_idr.m24.invariance_breaking_full125.results_summary.v1"
     shared.SUMMARY_VERDICT = "G0_G4_FULL125_MEASURED"
@@ -36,4 +37,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
