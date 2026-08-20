@@ -9,7 +9,10 @@
 - 必需评测：每个完成训练的候选必须由同一最终checkpoint执行一次联合评测，并分别保留`clean`、`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`日志与metrics。任一场景失败不得写`ARTIFACTS_COMPLETE`。
 - N607只读预检：2026-08-20T09:54:06+08:00直连普通账户成功；项目根、`Dataset_WigSig/ManySig.pkl`和`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`可见；8块RTX3090均为1MiB/0%且无compute app或既有项目训练任务。
 - 停止规则：仅在协议/路径/checkout/output冲突、训练或评测执行错误、缺失final checkpoint、缺失prediction/metrics闭合、OOM/NaN或相同确定性启动前异常时停止对应运行；不得因性能高低停止。
-- 预期远端发布：一个release归档、一次本地/远端SHA-256比较、远端Python编译和launcher语法检查；发布根与归档路径在实际同步后追加。
+- 实际release提交：`29316416cd4fed806fe1030562c0204448f09681`；归档提交包含预登记报告，实际训练代码仍由`e5b321bdf95dc8a696a12b6d64f0fbc9405da603`固定。
+- release映射：本地`E:/type10-7/local_artifacts/releases/phase1_adv3b02_muse_ssdg_20260820_e5b321b.tar.gz`→远端`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_muse_ssdg_20260820_e5b321b.tar.gz`→解压根`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_muse_ssdg_20260820_e5b321b`。
+- 唯一release归档SHA-256：本地与远端均为`03f0585ec8184dab6a28d79ddebdbca07d021f8b4c0df6f2ee498995ee3bf505`；远端Python编译、launcher语法检查和M3 dry-run均通过，dry-run恰好产生1条训练命令与1条联合评测命令，且未创建run root。
+- 实际启动命令框架：GPU0使用`--only=M0,M1`，GPU1使用`--only=M2,M3`；共同设置`ROOT=<release根>`、`RUN_ID=phase1_adv3b02_muse_ssdg_20260820_e5b321b`、`RUNS_ROOT=<正式输出根>`、`WISIG_PKL=<主项目ManySig.pkl>`和固定远端Python。
 
 ## 候选矩阵
 
