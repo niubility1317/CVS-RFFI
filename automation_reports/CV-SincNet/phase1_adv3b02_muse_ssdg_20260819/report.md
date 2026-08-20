@@ -1,5 +1,16 @@
 # ADV3B02-MUSE-SSDG Phase1最小预登记
 
+## 2026-08-20正式N607运行预登记
+
+- 运行ID：`phase1_adv3b02_muse_ssdg_20260820_e5b321b`；输出根：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_muse_ssdg_20260820_e5b321b`，禁止覆盖。
+- 固定实现：`work/cvs-active`合并提交`e5b321bdf95dc8a696a12b6d64f0fbc9405da603`；该提交的两个父提交为主线`ed890015ddb9968663609727c28fdb4d749d4334`与最终复审通过的MUSE提交`e767bad0082b3564f01c1d765b543a1780aa03d6`。
+- 候选与资源：单seed`392002`、200epoch；GPU0顺序运行`M0,M1`，GPU1顺序运行`M2,M3`。同一主Agent为唯一launch owner，不并行重复启动任何候选。
+- 数据与边界：`ManySig.pkl`；`tx_rx_day_1_7_2`；`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`；训练期零目标接收机访问；checkpoint选择固定为`final_only`。
+- 必需评测：每个完成训练的候选必须由同一最终checkpoint执行一次联合评测，并分别保留`clean`、`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`日志与metrics。任一场景失败不得写`ARTIFACTS_COMPLETE`。
+- N607只读预检：2026-08-20T09:54:06+08:00直连普通账户成功；项目根、`Dataset_WigSig/ManySig.pkl`和`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`可见；8块RTX3090均为1MiB/0%且无compute app或既有项目训练任务。
+- 停止规则：仅在协议/路径/checkout/output冲突、训练或评测执行错误、缺失final checkpoint、缺失prediction/metrics闭合、OOM/NaN或相同确定性启动前异常时停止对应运行；不得因性能高低停止。
+- 预期远端发布：一个release归档、一次本地/远端SHA-256比较、远端Python编译和launcher语法检查；发布根与归档路径在实际同步后追加。
+
 ## 候选矩阵
 
 | 候选 | 固定基座 | 能力 | seed | epoch | source角色比例 | checkpoint选择 |
