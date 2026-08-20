@@ -826,16 +826,21 @@ class MUSETemporalMemory:
 
 
 def _prototype_weight(value: object) -> float:
-    """Validate the bounded contribution weight for unlabeled prototypes."""
+    """Validate the bounded contribution weight or explicit disabled sentinel."""
 
     try:
         result = float(value)
     except (TypeError, ValueError) as exc:
-        raise ValueError("unlabeled_weight must be in [0.05, 0.10]") from exc
+        raise ValueError(
+            "unlabeled_weight must be 0 or in [0.05, 0.10]"
+        ) from exc
     if not torch.isfinite(torch.tensor(result)).item() or not (
-        _MIN_UNLABELED_PROTOTYPE_WEIGHT <= result <= _MAX_UNLABELED_PROTOTYPE_WEIGHT
+        result == 0.0
+        or _MIN_UNLABELED_PROTOTYPE_WEIGHT
+        <= result
+        <= _MAX_UNLABELED_PROTOTYPE_WEIGHT
     ):
-        raise ValueError("unlabeled_weight must be in [0.05, 0.10]")
+        raise ValueError("unlabeled_weight must be 0 or in [0.05, 0.10]")
     return result
 
 
@@ -1071,6 +1076,8 @@ class MUSEClassificationPrototypeBank:
             if unlabeled_weight is None
             else _prototype_weight(unlabeled_weight)
         )
+        if update_weight == 0.0:
+            return
         value = features if torch.is_tensor(features) else torch.as_tensor(features)
         sample_count = int(value.shape[0]) if value.ndim >= 1 else 0
         high = _sample_mask(high_mask, sample_count, value.device, "high_mask")

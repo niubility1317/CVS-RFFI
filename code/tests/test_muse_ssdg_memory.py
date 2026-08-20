@@ -151,6 +151,32 @@ def test_prototype_bank_validates_unlabeled_weight_at_construction():
             MUSEClassificationPrototypeBank(feature_dim=2, unlabeled_weight=value)
 
 
+def test_zero_unlabeled_weight_is_explicit_disabled_sentinel_without_state_updates():
+    bank = MUSEClassificationPrototypeBank(feature_dim=2, unlabeled_weight=0)
+    bank.observe_labeled(
+        torch.tensor([[1.0, 0.0]]),
+        torch.tensor([0]),
+        ["d0"],
+        momentum=0.95,
+    )
+    before = bank.state_dict()
+
+    bank.observe(
+        torch.tensor([[0.0, 1.0]]),
+        torch.tensor([0]),
+        ["d1"],
+        torch.tensor([True]),
+        torch.tensor([True]),
+        momentum=0.95,
+    )
+
+    after = bank.state_dict()
+    assert after["unlabeled_weight"] == 0
+    assert torch.equal(after["prototypes"][0], before["prototypes"][0])
+    assert after["counts"] == before["counts"]
+    assert after["domain_counts"] == before["domain_counts"]
+
+
 def test_prototype_momentum_and_unlabeled_contribution_are_distinct_controls():
     bank = MUSEClassificationPrototypeBank(feature_dim=2)
     bank.observe_labeled(
