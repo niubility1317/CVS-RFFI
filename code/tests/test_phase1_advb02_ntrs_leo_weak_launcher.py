@@ -251,3 +251,28 @@ def test_adapter_only_matrix_profiles_freeze_checkpoint_q_losses_and_leo_weak_pr
         assert "--source_select_ratio 0.15" in output
         assert "mixed_orbit" not in output
         assert "--eval_sat_scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak" in output
+
+
+def test_v4_counterfactual_operator_matrix_profiles_are_orthogonal_and_leo_weak_only():
+    expected = {
+        "b0_constant": ("B0_CONSTANT", "--ntrs_context_mode constant", "--ntrs_operator_mode operator"),
+        "b0_shuffled": ("B0_SHUFFLED", "--ntrs_context_mode shuffled", "--ntrs_operator_mode operator"),
+        "b0_random_feature": ("B0_RANDOM_FEATURE", "--ntrs_context_mode normalized", "--ntrs_q_trainable false"),
+        "b1_metadata": ("B1_METADATA", "--ntrs_context_mode metadata_teacher", "--lambda_ntrs_q_distill 1.0"),
+        "b1_normalized": ("B1_NORMALIZED", "--ntrs_context_mode normalized", "--lambda_ntrs_q_distill 0"),
+        "b2_additive": ("B2_ADDITIVE", "--ntrs_operator_mode pca_additive", "--ntrs_q_trainable false"),
+        "b2_operator": ("B2_OPERATOR", "--ntrs_operator_mode operator", "--lambda_ntrs_pair_shift 1.0"),
+        "b3_risk": ("B3_RISK", "--lambda_ntrs_harm 2.0", "--lambda_ntrs_rescue 1.0"),
+    }
+    for profile, needles in expected.items():
+        out = _dry_run(profile)
+        assert "--ntrs_variant v4_operator" in out
+        assert "--ntrs_adapter_only true" in out
+        assert "--from_scratch false" in out
+        assert "--seed 392034" in out
+        assert "mixed_orbit" not in out
+        assert "--sat_train_scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak" in out
+        assert "--eval_sat_scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak" in out
+        for needle in needles:
+            assert needle in out
+    assert "--ntrs_pca_artifact" in _dry_run("b2_additive")

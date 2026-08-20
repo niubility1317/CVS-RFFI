@@ -9,6 +9,8 @@ the current samples as source updates.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import json
+from pathlib import Path
 from typing import Optional
 
 import torch
@@ -383,6 +385,123 @@ class NTRSFastContext(nn.Module):
             uncertainty=q.new_zeros(batch),
             descriptors=descriptors.detach(),
             metadata_valid=torch.zeros(batch, dtype=torch.bool, device=x.device),
+        )
+
+
+class NTRSNormalizedMetadataContext(nn.Module):
+    """IQ context with fixed robust normalization and a train-only metadata teacher.
+
+    The selected context uses simulator metadata only while training. Evaluation
+    always uses the IQ-derived context, so deployment does not require simulator
+    fields. ``set_descriptor_statistics`` can install source-calibration
+    median/IQR values before training; signed-log compression is used by default.
+    """
+
+    MODES = {"normalized", "metadata_teacher", "constant", "shuffled"}
+
+    def __init__(
+        self,
+        *,
+        descriptor_dim: int = 40,
+        metadata_dim: int = 9,
+        q_dim: int = 32,
+        fast_dim: int = 24,
+        mode: str = "normalized",
+    ):
+        super().__init__()
+        self.descriptor_dim = int(descriptor_dim)
+        self.metadata_dim = int(metadata_dim)
+        self.q_dim = int(q_dim)
+        self.mode = str(mode or "normalized").lower().strip()
+        if self.mode not in self.MODES:
+            raise ValueError(f"NTRS V4 context mode must be one of {sorted(self.MODES)}")
+        if min(self.descriptor_dim, self.metadata_dim, self.q_dim) <= 0:
+            raise ValueError("NTRS V4 context dimensions must be positive")
+        hidden = max(32, int(fast_dim), 2 * self.q_dim)
+        self.iq_encoder = nn.Sequential(
+            nn.Linear(self.descriptor_dim, hidden),
+            nn.SiLU(inplace=True),
+            nn.Linear(hidden, self.q_dim),
+        )
+        self.metadata_encoder = nn.Sequential(
+            nn.Linear(self.metadata_dim, hidden),
+            nn.SiLU(inplace=True),
+            nn.Linear(hidden, self.q_dim),
+        )
+        self.register_buffer("descriptor_center", torch.zeros(self.descriptor_dim))
+        self.register_buffer("descriptor_scale", torch.ones(self.descriptor_dim))
+
+    @torch.no_grad()
+    def set_descriptor_statistics(
+        self,
+        median: torch.Tensor,
+        iqr: torch.Tensor,
+    ) -> None:
+        median = torch.as_tensor(median, dtype=self.descriptor_center.dtype).view(-1)
+        iqr = torch.as_tensor(iqr, dtype=self.descriptor_scale.dtype).view(-1)
+        if median.numel() != self.descriptor_dim or iqr.numel() != self.descriptor_dim:
+            raise ValueError("NTRS descriptor statistics must match descriptor_dim")
+        if not torch.isfinite(median).all() or not torch.isfinite(iqr).all():
+            raise ValueError("NTRS descriptor statistics must be finite")
+        self.descriptor_center.copy_(median)
+        self.descriptor_scale.copy_(iqr.clamp_min(1e-4))
+
+    def _normalize_descriptors(self, descriptors: torch.Tensor) -> torch.Tensor:
+        compressed = descriptors.sign() * torch.log1p(descriptors.abs())
+        center = self.descriptor_center.to(device=descriptors.device, dtype=descriptors.dtype)
+        scale = self.descriptor_scale.to(device=descriptors.device, dtype=descriptors.dtype)
+        return ((compressed - center) / scale.clamp_min(1e-4)).clamp(-8.0, 8.0)
+
+    def forward(
+        self,
+        x: torch.Tensor,
+        *,
+        metadata: Optional[torch.Tensor] = None,
+        metadata_valid: Optional[torch.Tensor] = None,
+        **_ignored,
+    ) -> NTRSContext:
+        raw_descriptors = compute_grouped_physical_descriptors(x)
+        dtype = next(self.parameters()).dtype
+        descriptors = self._normalize_descriptors(
+            raw_descriptors.to(device=x.device, dtype=dtype)
+        )
+        q_iq = torch.tanh(self.iq_encoder(descriptors))
+        batch = int(x.size(0))
+        if metadata is None:
+            metadata_tensor = descriptors.new_zeros((batch, self.metadata_dim))
+            valid = torch.zeros(batch, dtype=torch.bool, device=x.device)
+        else:
+            metadata_tensor = torch.nan_to_num(
+                metadata.detach().to(device=x.device, dtype=dtype),
+                nan=0.0,
+                posinf=0.0,
+                neginf=0.0,
+            )
+            if metadata_tensor.shape != (batch, self.metadata_dim):
+                raise ValueError("NTRS V4 metadata must be shaped [B, metadata_dim]")
+            if metadata_valid is None:
+                valid = torch.isfinite(metadata.detach().to(device=x.device)).all(dim=1)
+            else:
+                valid = metadata_valid.detach().to(device=x.device).view(-1).bool()
+                if int(valid.numel()) != batch:
+                    raise ValueError("NTRS V4 metadata_valid must align with the batch")
+        q_meta = torch.tanh(self.metadata_encoder(metadata_tensor))
+        if self.mode == "constant":
+            q = q_iq.new_zeros(q_iq.shape)
+        elif self.mode == "shuffled" and batch > 1:
+            q = torch.roll(q_iq, shifts=1, dims=0)
+        elif self.mode == "metadata_teacher" and self.training:
+            q = torch.where(valid[:, None], q_meta, q_iq)
+        else:
+            q = q_iq
+        return NTRSContext(
+            q=q,
+            q_fast=q_iq,
+            q_slow=q_iq.new_zeros((batch, 0)),
+            q_meta=q_meta,
+            uncertainty=(~valid).to(dtype=dtype),
+            descriptors=descriptors.detach(),
+            metadata_valid=valid,
         )
 
 
@@ -964,6 +1083,110 @@ class NTRSAdapterOnlyResidual(nn.Module):
         )
 
 
+class NTRSConditionalLowRankOperator(nn.Module):
+    """Bounded adapter-only additive or q-conditioned low-rank correction."""
+
+    MODES = {"additive", "operator", "pca_additive"}
+
+    def __init__(
+        self,
+        *,
+        embedding_dim: int,
+        q_dim: int,
+        rank: int = 8,
+        alpha_max: float = 0.02,
+        operator_mode: str = "operator",
+        pca_artifact_path: str = "",
+    ):
+        super().__init__()
+        self.embedding_dim = int(embedding_dim)
+        self.q_dim = int(q_dim)
+        self.rank = int(rank)
+        self.alpha_max = float(alpha_max)
+        self.operator_mode = str(operator_mode or "operator").lower().strip()
+        if self.operator_mode not in self.MODES:
+            raise ValueError(f"NTRS V4 operator_mode must be one of {sorted(self.MODES)}")
+        if self.rank <= 0 or self.rank > self.embedding_dim:
+            raise ValueError("NTRS V4 rank must be in [1, embedding_dim]")
+        if self.alpha_max < 0.0 or self.alpha_max > 0.05:
+            raise ValueError("NTRS V4 alpha_max must be in [0, 0.05]")
+        hidden = max(32, 2 * self.q_dim)
+        self.coefficient_head = nn.Sequential(
+            nn.Linear(self.q_dim, hidden),
+            nn.SiLU(inplace=True),
+            nn.Linear(hidden, self.rank),
+        )
+        left, _ = torch.linalg.qr(torch.randn(self.embedding_dim, self.rank), mode="reduced")
+        right, _ = torch.linalg.qr(torch.randn(self.embedding_dim, self.rank), mode="reduced")
+        self.left_basis = nn.Parameter(left[:, : self.rank].contiguous())
+        self.right_basis = nn.Parameter(right[:, : self.rank].contiguous())
+        nn.init.zeros_(self.coefficient_head[-1].weight)
+        nn.init.zeros_(self.coefficient_head[-1].bias)
+        fixed_shift = torch.zeros(self.embedding_dim, dtype=torch.float32)
+        artifact_path = Path(str(pca_artifact_path)).expanduser() if str(pca_artifact_path).strip() else None
+        if self.operator_mode == "pca_additive":
+            if artifact_path is None or not artifact_path.is_file():
+                raise ValueError("NTRS PCA additive mode requires an existing B0 PCA artifact")
+            payload = json.loads(artifact_path.read_text(encoding="utf-8"))
+            fixed_shift = torch.as_tensor(
+                payload.get("pca_transport", {}).get("mean_shift", []),
+                dtype=torch.float32,
+            ).view(-1)
+            if int(fixed_shift.numel()) != self.embedding_dim or not torch.isfinite(fixed_shift).all():
+                raise ValueError("NTRS B0 PCA mean_shift must be finite and match embedding_dim")
+        self.register_buffer("pca_mean_shift", fixed_shift)
+
+    def forward(self, z_anchor: torch.Tensor, q: torch.Tensor, *, epoch: int, **_ignored) -> NTRSOutput:
+        del epoch
+        if z_anchor.dim() != 2 or int(z_anchor.size(1)) != self.embedding_dim:
+            raise ValueError("NTRS V4 anchor must be shaped [B, embedding_dim]")
+        if q.shape != (z_anchor.size(0), self.q_dim):
+            raise ValueError("NTRS V4 q must align with the embedding batch")
+        anchor = z_anchor.detach()
+        coefficients = torch.tanh(self.coefficient_head(q))
+        left = self.left_basis.to(device=q.device, dtype=q.dtype)
+        if self.operator_mode == "pca_additive":
+            # Keep a zero-valued graph edge so the existing adapter-only trainer
+            # can audit zero gradients without changing the frozen correction.
+            raw_delta = self.pca_mean_shift.to(device=q.device, dtype=q.dtype)[None, :].expand(
+                z_anchor.size(0), -1
+            ) + coefficients.sum(dim=1, keepdim=True) * 0.0
+        elif self.operator_mode == "operator":
+            right = self.right_basis.to(device=q.device, dtype=q.dtype)
+            projected_anchor = anchor.to(dtype=q.dtype) @ right
+            latent = coefficients * projected_anchor
+            raw_delta = latent @ left.transpose(0, 1)
+        else:
+            latent = coefficients
+            raw_delta = latent @ left.transpose(0, 1)
+        anchor_norm = anchor.norm(dim=1, keepdim=True).clamp_min(1e-6)
+        raw_norm = raw_delta.norm(dim=1, keepdim=True)
+        bound = self.alpha_max * anchor_norm
+        correction = raw_delta * torch.clamp(bound / raw_norm.clamp_min(1e-6), max=1.0)
+        z_rob = anchor - correction
+        alpha = correction.norm(dim=1) / anchor_norm.view(-1)
+        zeros = anchor.new_zeros(anchor.size(0))
+        orth_left = left.transpose(0, 1) @ left - torch.eye(self.rank, device=left.device, dtype=left.dtype)
+        if self.operator_mode == "operator":
+            orth_right = right.transpose(0, 1) @ right - torch.eye(self.rank, device=right.device, dtype=right.dtype)
+            subspace_residual = 0.5 * (orth_left.square().mean() + orth_right.square().mean())
+        else:
+            subspace_residual = orth_left.square().mean()
+        return NTRSOutput(
+            z_rob=z_rob,
+            correction=correction,
+            coefficients=coefficients,
+            alpha=alpha,
+            gate=anchor.new_ones(anchor.size(0)),
+            correctability=anchor.new_ones(anchor.size(0)),
+            correction_energy=_zero_preserving_rms(correction, dim=1),
+            support=anchor.new_ones(anchor.size(0)),
+            support_distance=zeros,
+            uncertainty=zeros,
+            subspace_residual=subspace_residual.expand(anchor.size(0)),
+        )
+
+
 __all__ = [
     "BoundedWidelyLinearCorrector",
     "FastSlowContext",
@@ -974,6 +1197,8 @@ __all__ = [
     "NTRSRobustifier",
     "NTRSMinimalResidual",
     "NTRSAdapterOnlyResidual",
+    "NTRSConditionalLowRankOperator",
+    "NTRSNormalizedMetadataContext",
     "NTRSSourceSupport",
     "NuisanceTangentBasis",
     "PhysicalCorrection",

@@ -14,6 +14,7 @@ DRY_RUN="${DRY_RUN:-0}"
 NTRS_PROFILE="${NTRS_PROFILE:-full}"
 REPEAT="${REPEAT:-r1}"
 BASELINE_CKPT="${BASELINE_CKPT:-${ROOT}/runs/phase1_advb02_ntrs_v2_recovery_20260820_d1_bypass/ADVB02_NTRS_V2_D1_BYPASS_E200/final_ssdg.pth}"
+NTRS_PCA_ARTIFACT="${NTRS_PCA_ARTIFACT:-${RUNS_ROOT}/B0_PCA/ntrs_b0_pca.json}"
 A2_GATE_FILE="${A2_GATE_FILE:-}"
 A3_GATE_FILE="${A3_GATE_FILE:-}"
 
@@ -55,6 +56,14 @@ L_NTRS_SCORE_STABILITY="0.01"
 L_NTRS_CLASS_ATTRACTION="0.01"
 L_NTRS_CLEAN_ZERO="0"
 L_NTRS_SAT_RELATIVE="0"
+NTRS_CONTEXT_MODE="normalized"
+NTRS_OPERATOR_MODE="operator"
+L_NTRS_Q_DISTILL="0"
+L_NTRS_PAIR_SHIFT="0"
+L_NTRS_PAIR_COSINE="0"
+L_NTRS_HARM="0"
+L_NTRS_RESCUE="0"
+L_NTRS_CLEAN_TAIL="0"
 
 configure_adapter_profile() {
   NTRS_VARIANT="v3_adapter"
@@ -86,6 +95,20 @@ configure_adapter_profile() {
   L_NTRS_CLASS_ATTRACTION="0"
   L_NTRS_CLEAN_ZERO="1.0"
   L_NTRS_SAT_RELATIVE="0.10"
+}
+
+configure_v4_profile() {
+  configure_adapter_profile
+  NTRS_VARIANT="v4_operator"
+  NTRS_ALPHA_MAX="0.02"
+  NTRS_CONTEXT_MODE="normalized"
+  NTRS_OPERATOR_MODE="operator"
+  L_NTRS_ROBUST_CE="0"
+  L_NTRS_CLEAN_ZERO="0"
+  L_NTRS_SAT_RELATIVE="0.02"
+  L_NTRS_PAIR_SHIFT="1.0"
+  L_NTRS_PAIR_COSINE="0.20"
+  L_NTRS_CLEAN_TAIL="1.0"
 }
 
 case "${NTRS_PROFILE}" in
@@ -159,6 +182,51 @@ case "${NTRS_PROFILE}" in
     L_TEACHER_CLEAN_KL="1.0"
     L_TEACHER_ZID_MSE="1.0"
     CANDIDATE="ADVB02_NTRS_A4_JOINT_CORE_${REPEAT}_E200"
+    ;;
+  b0_constant)
+    configure_v4_profile
+    NTRS_CONTEXT_MODE="constant"
+    CANDIDATE="ADVB02_NTRS_B0_CONSTANT_${REPEAT}_E200"
+    ;;
+  b0_shuffled)
+    configure_v4_profile
+    NTRS_CONTEXT_MODE="shuffled"
+    CANDIDATE="ADVB02_NTRS_B0_SHUFFLED_${REPEAT}_E200"
+    ;;
+  b0_random_feature)
+    configure_v4_profile
+    NTRS_Q_TRAINABLE="false"
+    CANDIDATE="ADVB02_NTRS_B0_RANDOM_FEATURE_${REPEAT}_E200"
+    ;;
+  b1_metadata)
+    configure_v4_profile
+    NTRS_CONTEXT_MODE="metadata_teacher"
+    L_NTRS_Q_DISTILL="1.0"
+    CANDIDATE="ADVB02_NTRS_B1_METADATA_${REPEAT}_E200"
+    ;;
+  b1_normalized)
+    configure_v4_profile
+    CANDIDATE="ADVB02_NTRS_B1_NORMALIZED_${REPEAT}_E200"
+    ;;
+  b2_additive)
+    configure_v4_profile
+    NTRS_Q_TRAINABLE="false"
+    NTRS_OPERATOR_MODE="pca_additive"
+    CANDIDATE="ADVB02_NTRS_B2_ADDITIVE_${REPEAT}_E200"
+    ;;
+  b2_operator)
+    configure_v4_profile
+    NTRS_CONTEXT_MODE="metadata_teacher"
+    L_NTRS_Q_DISTILL="1.0"
+    CANDIDATE="ADVB02_NTRS_B2_OPERATOR_${REPEAT}_E200"
+    ;;
+  b3_risk)
+    configure_v4_profile
+    NTRS_CONTEXT_MODE="metadata_teacher"
+    L_NTRS_Q_DISTILL="1.0"
+    L_NTRS_HARM="2.0"
+    L_NTRS_RESCUE="1.0"
+    CANDIDATE="ADVB02_NTRS_B3_RISK_${REPEAT}_E200"
     ;;
   no_identity_structure)
     CANDIDATE="ADVB02_NTRS_NO_IDSTRUCT_LEO_WEAK_E200"
@@ -483,6 +551,9 @@ build_train_command() {
       --ntrs_identity_bypass "${NTRS_IDENTITY_BYPASS}"
       --ntrs_q_trainable "${NTRS_Q_TRAINABLE}"
       --ntrs_use_support_gate "${NTRS_USE_SUPPORT_GATE}"
+      --ntrs_context_mode "${NTRS_CONTEXT_MODE}"
+      --ntrs_operator_mode "${NTRS_OPERATOR_MODE}"
+      --ntrs_pca_artifact "${NTRS_PCA_ARTIFACT}"
       --ntrs_adapter_only "${NTRS_ADAPTER_ONLY}"
       --ntrs_core_lr_mode "${NTRS_CORE_LR_MODE}"
       --ntrs_core_lr_ratio "${NTRS_CORE_LR_RATIO}"
@@ -509,6 +580,13 @@ build_train_command() {
     TRAIN_CMD+=(
       --lambda_ntrs_clean_zero "${L_NTRS_CLEAN_ZERO}"
       --lambda_ntrs_sat_relative "${L_NTRS_SAT_RELATIVE}")
+    TRAIN_CMD+=(
+      --lambda_ntrs_q_distill "${L_NTRS_Q_DISTILL}"
+      --lambda_ntrs_pair_shift "${L_NTRS_PAIR_SHIFT}"
+      --lambda_ntrs_pair_cosine "${L_NTRS_PAIR_COSINE}"
+      --lambda_ntrs_harm "${L_NTRS_HARM}"
+      --lambda_ntrs_rescue "${L_NTRS_RESCUE}"
+      --lambda_ntrs_clean_tail "${L_NTRS_CLEAN_TAIL}")
   else
     TRAIN_CMD+=(--no_use_ntrs)
   fi

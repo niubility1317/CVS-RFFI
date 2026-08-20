@@ -41,7 +41,7 @@ def ntrs_training_stage(epoch: int, *, variant: str = "v1") -> NTRSTrainingStage
 
     epoch = max(1, int(epoch))
     variant = str(variant or "v1").lower().strip()
-    if variant == "v3_adapter":
+    if variant in {"v3_adapter", "v4_operator"}:
         return NTRSTrainingStage("ADAPTER", 0.0, 1.0, 0.0, 1.0, 0.0)
     if variant == "v2_min":
         if epoch <= 90:
@@ -242,7 +242,7 @@ def compute_ntrs_loss_bundle(
     zero = _connected_zero(clean_output)
     losses: dict[str, torch.Tensor] = {}
     info: dict[str, Any] = {}
-    if variant == "v3_adapter" and satellite_output is not None:
+    if variant in {"v3_adapter", "v4_operator"} and satellite_output is not None:
         losses["robust_ce"], info["robust_ce"] = _factor_cross_entropy(
             [satellite_output], [satellite_labels], "ntrs_robust_logits", zero
         )
@@ -256,6 +256,12 @@ def compute_ntrs_loss_bundle(
     losses["class_conditional"] = zero
     losses["clean_zero"] = zero
     losses["satellite_relative"] = zero
+    losses["q_distill"] = zero
+    losses["pair_shift"] = zero
+    losses["pair_cosine"] = zero
+    losses["harm"] = zero
+    losses["rescue"] = zero
+    losses["clean_tail"] = zero
     if satellite_output is not None:
         clean_anchor = clean_output.get("ntrs_z_anchor")
         satellite_robust = satellite_output.get("ntrs_z_rob")
@@ -326,7 +332,7 @@ def compute_ntrs_loss_bundle(
     residual = _concatenate_output_tensor(outputs, "ntrs_subspace_residual")
     correction = _concatenate_output_tensor(outputs, "ntrs_correction")
     candidate_correction = _concatenate_output_tensor(outputs, "ntrs_correction")
-    if variant == "v3_adapter":
+    if variant in {"v3_adapter", "v4_operator"}:
         clean_correction = clean_output.get("ntrs_correction")
         satellite_anchor = satellite_output.get("ntrs_z_anchor") if satellite_output is not None else None
         satellite_correction = satellite_output.get("ntrs_correction") if satellite_output is not None else None
@@ -337,6 +343,89 @@ def compute_ntrs_loss_bundle(
                 satellite_anchor, satellite_correction
             )
         losses["minimum_correction"] = losses["satellite_relative"]
+        if variant == "v4_operator" and satellite_output is not None:
+            clean_anchor_v4 = clean_output.get("ntrs_z_anchor")
+            satellite_anchor_v4 = satellite_output.get("ntrs_z_anchor")
+            satellite_correction_v4 = satellite_output.get("ntrs_correction")
+            satellite_robust_v4 = satellite_output.get("ntrs_z_rob")
+            if all(
+                torch.is_tensor(value)
+                for value in (
+                    clean_anchor_v4,
+                    satellite_anchor_v4,
+                    satellite_correction_v4,
+                    satellite_robust_v4,
+                )
+            ):
+                if clean_anchor_v4.shape != satellite_anchor_v4.shape:
+                    raise ValueError("NTRS V4 paired anchors must share shape")
+                target_shift = (satellite_anchor_v4 - clean_anchor_v4).detach()
+                losses["pair_shift"] = F.smooth_l1_loss(
+                    satellite_correction_v4.float(), target_shift.float()
+                )
+                losses["pair_cosine"] = (
+                    1.0
+                    - F.cosine_similarity(
+                        satellite_robust_v4.float(),
+                        clean_anchor_v4.detach().float(),
+                        dim=1,
+                        eps=1e-6,
+                    )
+                ).mean()
+
+            q_iq = satellite_output.get("ntrs_q_iq")
+            q_meta = satellite_output.get("ntrs_q_meta")
+            metadata_valid = satellite_output.get("ntrs_metadata_valid")
+            if torch.is_tensor(q_iq) and torch.is_tensor(q_meta):
+                if q_iq.shape != q_meta.shape:
+                    raise ValueError("NTRS V4 q teacher and student must share shape")
+                valid = (
+                    metadata_valid.to(device=q_iq.device).view(-1).bool()
+                    if torch.is_tensor(metadata_valid)
+                    else torch.ones(q_iq.size(0), dtype=torch.bool, device=q_iq.device)
+                )
+                if int(valid.numel()) != int(q_iq.size(0)):
+                    raise ValueError("NTRS V4 metadata validity must align with q")
+                if bool(valid.any()):
+                    losses["q_distill"] = F.mse_loss(
+                        q_iq[valid].float(), q_meta[valid].detach().float()
+                    )
+
+            clean_relative = None
+            if torch.is_tensor(clean_anchor_v4) and torch.is_tensor(clean_correction):
+                clean_relative = clean_correction.float().norm(dim=1) / clean_anchor_v4.detach().float().norm(dim=1).clamp_min(1e-6)
+                losses["clean_tail"] = F.relu(clean_relative - 0.002).mean()
+
+            raw_sat_logits = satellite_output.get("ntrs_raw_logits")
+            robust_sat_logits = satellite_output.get("ntrs_robust_logits")
+            clean_raw_logits = clean_output.get("ntrs_raw_logits")
+            if all(torch.is_tensor(value) for value in (raw_sat_logits, robust_sat_logits, clean_raw_logits)):
+                labels_v4 = satellite_labels.to(device=raw_sat_logits.device).view(-1).long()
+                if int(labels_v4.numel()) != int(raw_sat_logits.size(0)):
+                    raise ValueError("NTRS V4 labels must align with paired logits")
+
+                def _true_margin(logits: torch.Tensor) -> torch.Tensor:
+                    values = logits.float()
+                    true_value = values.gather(1, labels_v4[:, None]).squeeze(1)
+                    masked = values.clone()
+                    masked.scatter_(1, labels_v4[:, None], float("-inf"))
+                    return true_value - masked.max(dim=1).values
+
+                raw_margin_v4 = _true_margin(raw_sat_logits)
+                robust_margin_v4 = _true_margin(robust_sat_logits)
+                clean_margin_v4 = _true_margin(clean_raw_logits)
+                protect = raw_margin_v4.detach() > 0.0
+                rescue = (clean_margin_v4.detach() > 0.0) & (raw_margin_v4.detach() < 0.0)
+                if bool(protect.any()):
+                    losses["harm"] = F.relu(
+                        raw_margin_v4.detach()[protect]
+                        - robust_margin_v4[protect]
+                        - float(margin_epsilon)
+                    ).mean()
+                if bool(rescue.any()):
+                    losses["rescue"] = F.softplus(
+                        float(margin_epsilon) - robust_margin_v4[rescue]
+                    ).mean()
     elif variant == "v2_min":
         losses["minimum_correction"] = (
             ntrs_relative_correction_loss(anchor, candidate_correction)
@@ -420,16 +509,31 @@ def validate_ntrs_phase1_config(args: Any) -> None:
         raise ValueError("ntrs_rank must be positive")
     variant = str(getattr(args, "ntrs_variant", "v1") or "v1").lower().strip()
     alpha_max = float(getattr(args, "ntrs_alpha_max", 0.20))
-    alpha_cap = 0.05 if variant == "v3_adapter" else 0.20
+    alpha_cap = 0.05 if variant in {"v3_adapter", "v4_operator"} else 0.20
     if alpha_max < 0.0 or alpha_max > alpha_cap:
         raise ValueError(f"ntrs_alpha_max must remain in [0, {alpha_cap:.2f}] for {variant}")
-    if variant == "v3_adapter":
+    if variant in {"v3_adapter", "v4_operator"}:
         if not str(getattr(args, "baseline_ckpt", "")).strip() or bool(getattr(args, "from_scratch", True)):
             raise ValueError("NTRS adapter-only requires a mature baseline_ckpt and from_scratch=false")
         if bool(getattr(args, "ntrs_adapter_only", False)) and str(
             getattr(args, "ntrs_core_lr_mode", "baseline")
         ) == "adapter_joint":
             raise ValueError("adapter-only mode cannot enable joint core learning rate")
+    if variant == "v4_operator":
+        context_mode = str(getattr(args, "ntrs_context_mode", "normalized") or "normalized").lower().strip()
+        operator_mode = str(getattr(args, "ntrs_operator_mode", "operator") or "operator").lower().strip()
+        if context_mode not in {"normalized", "metadata_teacher", "constant", "shuffled"}:
+            raise ValueError("unsupported NTRS V4 context mode")
+        if operator_mode not in {"additive", "operator", "pca_additive"}:
+            raise ValueError("unsupported NTRS V4 operator mode")
+        if operator_mode == "pca_additive" and not str(
+            getattr(args, "ntrs_pca_artifact", "")
+        ).strip():
+            raise ValueError("NTRS V4 PCA additive mode requires ntrs_pca_artifact")
+        if float(getattr(args, "lambda_ntrs_harm", 0.0)) > 0.0 and float(
+            getattr(args, "lambda_ntrs_harm", 0.0)
+        ) <= float(getattr(args, "lambda_ntrs_rescue", 0.0)):
+            raise ValueError("NTRS V4 harm weight must exceed rescue weight")
     if float(getattr(args, "ntrs_support_tau", 1.0)) <= 0.0:
         raise ValueError("ntrs_support_tau must be positive")
     if float(getattr(args, "ntrs_energy_threshold", 0.10)) <= 0.0:

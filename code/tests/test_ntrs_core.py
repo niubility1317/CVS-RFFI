@@ -1,14 +1,102 @@
+import json
+
 import torch
 
 from ntrs import (
     BoundedWidelyLinearCorrector,
     FastSlowContext,
     NTRSAdapterOnlyResidual,
+    NTRSConditionalLowRankOperator,
+    NTRSNormalizedMetadataContext,
     NTRSRobustifier,
     NuisanceTangentBasis,
     compute_grouped_physical_descriptors,
     ntrs_stage_scale,
 )
+
+
+def test_v4_context_uses_metadata_teacher_only_during_training_and_iq_at_eval():
+    torch.manual_seed(7)
+    context = NTRSNormalizedMetadataContext(
+        descriptor_dim=40,
+        metadata_dim=9,
+        q_dim=12,
+        mode="metadata_teacher",
+    )
+    x = torch.randn(4, 2, 256)
+    metadata = torch.randn(4, 9)
+    valid = torch.ones(4, dtype=torch.bool)
+
+    context.train()
+    train_out = context(x, metadata=metadata, metadata_valid=valid)
+    assert train_out.q.shape == (4, 12)
+    assert torch.allclose(train_out.q, train_out.q_meta)
+    assert not torch.allclose(train_out.q_fast, train_out.q_meta)
+
+    context.eval()
+    eval_with_meta = context(x, metadata=metadata, metadata_valid=valid)
+    eval_without_meta = context(x, metadata=None, metadata_valid=None)
+    assert torch.allclose(eval_with_meta.q, eval_with_meta.q_fast)
+    assert torch.allclose(eval_with_meta.q, eval_without_meta.q)
+
+
+def test_v4_context_constant_and_shuffled_controls_are_distinct():
+    x = torch.randn(5, 2, 256)
+    constant = NTRSNormalizedMetadataContext(
+        descriptor_dim=40, metadata_dim=9, q_dim=8, mode="constant"
+    )
+    shuffled = NTRSNormalizedMetadataContext(
+        descriptor_dim=40, metadata_dim=9, q_dim=8, mode="shuffled"
+    )
+    constant_out = constant(x)
+    shuffled_out = shuffled(x)
+    assert torch.allclose(constant_out.q, constant_out.q[:1].expand_as(constant_out.q))
+    assert torch.allclose(shuffled_out.q, torch.roll(shuffled_out.q_fast, shifts=1, dims=0))
+
+
+def test_v4_operator_depends_on_anchor_but_does_not_backpropagate_into_it():
+    module = NTRSConditionalLowRankOperator(
+        embedding_dim=12,
+        q_dim=6,
+        rank=4,
+        alpha_max=0.02,
+        operator_mode="operator",
+    )
+    with torch.no_grad():
+        module.coefficient_head[-1].weight.fill_(0.05)
+    q = torch.randn(3, 6, requires_grad=True)
+    anchor_a = torch.randn(3, 12, requires_grad=True)
+    anchor_b = (anchor_a.detach() + 0.5).requires_grad_(True)
+    out_a = module(anchor_a, q, epoch=1)
+    out_b = module(anchor_b, q, epoch=1)
+    assert not torch.allclose(out_a.correction, out_b.correction)
+    assert torch.all(out_a.alpha <= 0.02 + 1e-6)
+    out_a.z_rob.square().mean().backward()
+    assert anchor_a.grad is None
+    assert q.grad is not None and float(q.grad.abs().sum()) > 0.0
+
+
+def test_v4_pca_additive_uses_frozen_b0_mean_shift(tmp_path):
+    artifact = tmp_path / "b0.json"
+    fixed = torch.linspace(-0.2, 0.2, 12)
+    artifact.write_text(
+        json.dumps({"pca_transport": {"mean_shift": fixed.tolist()}}),
+        encoding="utf-8",
+    )
+    module = NTRSConditionalLowRankOperator(
+        embedding_dim=12,
+        q_dim=6,
+        rank=4,
+        alpha_max=0.05,
+        operator_mode="pca_additive",
+        pca_artifact_path=str(artifact),
+    )
+    anchor = torch.full((3, 12), 10.0)
+    out_a = module(anchor, torch.randn(3, 6), epoch=1)
+    out_b = module(anchor, torch.randn(3, 6), epoch=1)
+    assert torch.allclose(out_a.correction, fixed.expand_as(out_a.correction))
+    assert torch.allclose(out_a.correction, out_b.correction)
+    assert "pca_mean_shift" in module.state_dict()
 
 
 def test_adapter_only_residual_trains_q_without_backpropagating_into_anchor():

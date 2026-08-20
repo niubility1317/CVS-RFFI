@@ -75,6 +75,7 @@ try:
     from baseline_origin_sat_view import parse_sat_view_schedule, normalize_crra_nuisance_meta
     from concat_sat_channel_aug import ConcatSatChannelAugment
     from cvsrffi.tensors import build_domain_label_map
+    from ntrs import compute_grouped_physical_descriptors
     from cvsrffi.balanced_tx_rx_sampler import BalancedTxDomainBatchSampler
     from cvsrffi.eval import (
         aggregate_named_stats,
@@ -405,10 +406,13 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--ntrs_energy_threshold", type=float, default=0.10)
     parser.add_argument("--ntrs_unknown_rescue", type=str2bool, default=False)
     parser.add_argument("--ntrs_target_adapter", type=str2bool, default=False)
-    parser.add_argument("--ntrs_variant", type=str, choices=["v1", "v2_min", "v3_adapter"], default="v1")
+    parser.add_argument("--ntrs_variant", type=str, choices=["v1", "v2_min", "v3_adapter", "v4_operator"], default="v1")
     parser.add_argument("--ntrs_identity_bypass", type=str2bool, default=False)
     parser.add_argument("--ntrs_q_trainable", type=str2bool, default=True)
     parser.add_argument("--ntrs_use_support_gate", type=str2bool, default=False)
+    parser.add_argument("--ntrs_context_mode", type=str, choices=["normalized", "metadata_teacher", "constant", "shuffled"], default="normalized")
+    parser.add_argument("--ntrs_operator_mode", type=str, choices=["additive", "operator", "pca_additive"], default="operator")
+    parser.add_argument("--ntrs_pca_artifact", type=str, default="")
     parser.add_argument("--ntrs_adapter_only", type=str2bool, default=False)
     parser.add_argument("--ntrs_core_lr_mode", type=str, choices=["v1", "baseline", "adapter_joint"], default="v1")
     parser.add_argument("--ntrs_core_lr_ratio", type=float, default=0.02)
@@ -434,6 +438,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--lambda_ntrs_class_attraction", type=float, default=0.01)
     parser.add_argument("--lambda_ntrs_clean_zero", type=float, default=0.0)
     parser.add_argument("--lambda_ntrs_sat_relative", type=float, default=0.0)
+    parser.add_argument("--lambda_ntrs_q_distill", type=float, default=0.0)
+    parser.add_argument("--lambda_ntrs_pair_shift", type=float, default=0.0)
+    parser.add_argument("--lambda_ntrs_pair_cosine", type=float, default=0.0)
+    parser.add_argument("--lambda_ntrs_harm", type=float, default=0.0)
+    parser.add_argument("--lambda_ntrs_rescue", type=float, default=0.0)
+    parser.add_argument("--lambda_ntrs_clean_tail", type=float, default=0.0)
     parser.add_argument("--sat_protocol_disjoint_required", type=str2bool, default=False)
     parser.add_argument("--lambda_sat_cls", type=float, default=0.10)
     parser.add_argument("--lambda_sat_cons", type=float, default=0.0)
@@ -1610,6 +1620,9 @@ def _apply_model_cli_args(model_args, args):
         "ntrs_identity_bypass",
         "ntrs_q_trainable",
         "ntrs_use_support_gate",
+        "ntrs_context_mode",
+        "ntrs_operator_mode",
+        "ntrs_pca_artifact",
     ):
         if hasattr(args, key):
             setattr(model_args, key, getattr(args, key))
@@ -5068,7 +5081,7 @@ def configure_ntrs_trainable_parameters(model, args) -> Dict[str, int]:
 
     candidate = getattr(model, "module", model)
     variant = str(getattr(args, "ntrs_variant", "v1") or "v1").lower().strip()
-    if variant != "v3_adapter":
+    if variant not in {"v3_adapter", "v4_operator"}:
         context = getattr(candidate, "ntrs_context", None)
         robustifier = getattr(candidate, "ntrs_robustifier", None)
         return {
@@ -5119,6 +5132,37 @@ def configure_ntrs_trainable_parameters(model, args) -> Dict[str, int]:
     }
 
 
+@torch.no_grad()
+def install_ntrs_descriptor_statistics(model, loader, device) -> Dict[str, float]:
+    """Install one fixed signed-log median/IQR fit from Phase1 V_cal IQ only."""
+
+    candidate = getattr(model, "module", model)
+    context = getattr(candidate, "ntrs_context", None)
+    setter = getattr(context, "set_descriptor_statistics", None)
+    if not callable(setter):
+        return {"descriptor_stats_installed": 0.0, "descriptor_stats_samples": 0.0}
+    rows = []
+    for batch in loader:
+        x = batch[0].to(device, non_blocking=True)
+        descriptors = compute_grouped_physical_descriptors(x)
+        compressed = descriptors.sign() * torch.log1p(descriptors.abs())
+        rows.append(compressed.detach().cpu().float())
+    if not rows:
+        raise ValueError("NTRS descriptor statistics require a non-empty V_cal loader")
+    values = torch.cat(rows, dim=0)
+    median = values.median(dim=0).values
+    q1 = torch.quantile(values, 0.25, dim=0)
+    q3 = torch.quantile(values, 0.75, dim=0)
+    iqr = (q3 - q1).clamp_min(1e-4)
+    setter(median, iqr)
+    return {
+        "descriptor_stats_installed": 1.0,
+        "descriptor_stats_samples": float(values.size(0)),
+        "descriptor_stats_min_iqr": float(iqr.min().item()),
+        "descriptor_stats_max_iqr": float(iqr.max().item()),
+    }
+
+
 def _load_training_checkpoint_state(
     model,
     checkpoint: Mapping[str, Any],
@@ -5130,7 +5174,7 @@ def _load_training_checkpoint_state(
     if not isinstance(state, Mapping):
         raise ValueError("training checkpoint is missing a model state mapping")
     variant = str(getattr(args, "ntrs_variant", "v1") or "v1").lower().strip()
-    ntrs_state_skipped = variant == "v3_adapter"
+    ntrs_state_skipped = variant in {"v3_adapter", "v4_operator"}
     selected_state = (
         {name: value for name, value in state.items() if not is_ntrs_parameter_name(name)}
         if ntrs_state_skipped
@@ -5186,7 +5230,7 @@ def _set_ntrs_training_mode(model, args) -> None:
 
     model.train()
     variant = str(getattr(args, "ntrs_variant", "v1") or "v1").lower().strip()
-    if variant != "v3_adapter" or not bool(getattr(args, "ntrs_adapter_only", False)):
+    if variant not in {"v3_adapter", "v4_operator"} or not bool(getattr(args, "ntrs_adapter_only", False)):
         return
     candidate = getattr(model, "module", model)
     for name, child in candidate.named_children():
@@ -5542,14 +5586,24 @@ def train(args) -> int:
     checkpoint_load_report = {}
     if use_ckpt:
         checkpoint_load_report = _load_training_checkpoint_state(model, ckpt, args)
+    ntrs_descriptor_stats_report = (
+        install_ntrs_descriptor_statistics(
+            model,
+            data_ctx["source_calibration_loader"],
+            device,
+        )
+        if str(getattr(args, "ntrs_variant", "v1")) == "v4_operator"
+        else {"descriptor_stats_installed": 0.0, "descriptor_stats_samples": 0.0}
+    )
     ntrs_trainable_summary = configure_ntrs_trainable_parameters(model, args)
+    ntrs_trainable_summary.update(ntrs_descriptor_stats_report)
     ntrs_raw_reference = (
         _capture_ntrs_raw_reference(model)
-        if str(getattr(args, "ntrs_variant", "v1")) == "v3_adapter"
+        if str(getattr(args, "ntrs_variant", "v1")) in {"v3_adapter", "v4_operator"}
         and bool(getattr(args, "ntrs_adapter_only", False))
         else {}
     )
-    if bool(args.freeze_backbone) and str(getattr(args, "ntrs_variant", "v1")) != "v3_adapter":
+    if bool(args.freeze_backbone) and str(getattr(args, "ntrs_variant", "v1")) not in {"v3_adapter", "v4_operator"}:
         for name, param in model.named_parameters():
             param.requires_grad = any(key in name for key in ("cls_head", "dom_head", "adv_head"))
     trainable_params = int(sum(p.numel() for p in model.parameters() if p.requires_grad))
@@ -6991,6 +7045,12 @@ def train(args) -> int:
                             "class_attraction",
                             "clean_zero",
                             "satellite_relative",
+                            "q_distill",
+                            "pair_shift",
+                            "pair_cosine",
+                            "harm",
+                            "rescue",
+                            "clean_tail",
                         )
                     },
                     "info": {},
@@ -7301,6 +7361,24 @@ def train(args) -> int:
                     + float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_sat_relative", 0.0)) * sanitize_loss(
                         "ntrs_satellite_relative", ntrs_losses["satellite_relative"], z_id_l, loss_warn_counts
                     )
+                    + float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_q_distill", 0.0)) * sanitize_loss(
+                        "ntrs_q_distill", ntrs_losses["q_distill"], z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_pair_shift", 0.0)) * sanitize_loss(
+                        "ntrs_pair_shift", ntrs_losses["pair_shift"], z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_pair_cosine", 0.0)) * sanitize_loss(
+                        "ntrs_pair_cosine", ntrs_losses["pair_cosine"], z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_harm", 0.0)) * sanitize_loss(
+                        "ntrs_harm", ntrs_losses["harm"], z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_rescue", 0.0)) * sanitize_loss(
+                        "ntrs_rescue", ntrs_losses["rescue"], z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_clean_tail", 0.0)) * sanitize_loss(
+                        "ntrs_clean_tail", ntrs_losses["clean_tail"], z_id_l, loss_warn_counts
+                    )
                     + (float(args.lambda_teacher_clean_kl) * teacher_scale) * sanitize_loss("teacher_clean_kl", loss_teacher_clean_kl_l, z_id_l, loss_warn_counts)
                     + (float(args.lambda_teacher_sat_kl) * teacher_scale) * sanitize_loss("teacher_sat_kl", loss_teacher_sat_kl_l, z_id_l, loss_warn_counts)
                     + (float(args.lambda_teacher_zid_mse) * teacher_scale) * sanitize_loss("teacher_zid_mse", loss_teacher_zid_mse_l, z_id_l, loss_warn_counts)
@@ -7342,7 +7420,7 @@ def train(args) -> int:
                             return_aux=True,
                             domain_labels=d_u,
                             ntrs_force_raw_primary=(
-                                str(getattr(args, "ntrs_variant", "v1")) == "v3_adapter"
+                                str(getattr(args, "ntrs_variant", "v1")) in {"v3_adapter", "v4_operator"}
                             ),
                         )
                         if ema_model is None:
@@ -8275,6 +8353,12 @@ def train(args) -> int:
                     "train/loss_ntrs_robust_ce": ntrs_losses["robust_ce"].detach(),
                     "train/loss_ntrs_clean_zero": ntrs_losses["clean_zero"].detach(),
                     "train/loss_ntrs_satellite_relative": ntrs_losses["satellite_relative"].detach(),
+                    "train/loss_ntrs_q_distill": ntrs_losses["q_distill"].detach(),
+                    "train/loss_ntrs_pair_shift": ntrs_losses["pair_shift"].detach(),
+                    "train/loss_ntrs_pair_cosine": ntrs_losses["pair_cosine"].detach(),
+                    "train/loss_ntrs_harm": ntrs_losses["harm"].detach(),
+                    "train/loss_ntrs_rescue": ntrs_losses["rescue"].detach(),
+                    "train/loss_ntrs_clean_tail": ntrs_losses["clean_tail"].detach(),
                     "train/loss_ntrs_margin": ntrs_losses["margin"].detach(),
                     "train/loss_ntrs_relation": ntrs_losses["relation"].detach(),
                     "train/loss_ntrs_class_conditional": ntrs_losses["class_conditional"].detach(),
@@ -10041,6 +10125,8 @@ def train(args) -> int:
         "adapter_only": bool(getattr(args, "ntrs_adapter_only", False)),
         "q_trainable": bool(getattr(args, "ntrs_q_trainable", True)),
         "support_gate": bool(getattr(args, "ntrs_use_support_gate", False)),
+        "context_mode": str(getattr(args, "ntrs_context_mode", "normalized")),
+        "operator_mode": str(getattr(args, "ntrs_operator_mode", "operator")),
         **ntrs_trainable_summary,
         "q_gradient_seen": bool(ntrs_q_grad_seen),
         "adapter_gradient_seen": bool(ntrs_adapter_grad_seen),

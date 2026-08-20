@@ -32,6 +32,8 @@ from eval_feature_diagnosis import (  # noqa: E402
     load_state_dict_safely,
     strip_module_prefix,
 )
+from dataset_wisig import WiSigSubsetDataset  # noqa: E402
+from SSDG.train_ssdg import split_tx_rx_day_1_7_2_roles  # noqa: E402
 from training_controls import parse_sat_scenarios, sat_channel_config_for_scenario  # noqa: E402
 
 
@@ -61,10 +63,14 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--branch_ablation", default=None)
     parser.add_argument("--sample_rate_hz", type=float, default=None)
     parser.add_argument("--max_samples_per_combo", type=int, default=0)
-    parser.add_argument("--max_samples_per_tx", type=int, default=1600)
+    parser.add_argument("--max_samples_per_tx", type=int, default=0)
     parser.add_argument("--batch_size", type=int, default=512)
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--seed", type=int, default=4070311)
+    parser.add_argument("--labeled_ratio", type=float, default=0.07)
+    parser.add_argument("--unlabeled_ratio", type=float, default=0.63)
+    parser.add_argument("--source_cal_ratio", type=float, default=0.15)
+    parser.add_argument("--source_select_ratio", type=float, default=0.15)
     parser.add_argument("--sat_scenarios", default="leo_clear_weak,leo_low_elev_weak,leo_rain_weak")
     parser.add_argument("--star_ground_channel_impl", default="simplified_leo_residual", choices=["legacy_satellite", "simplified_leo_residual"])
     parser.add_argument("--sat_fs_hz", type=float, default=25e6)
@@ -87,6 +93,32 @@ def main(argv: Sequence[str] | None = None) -> int:
         max_samples_per_tx=int(args.max_samples_per_tx),
         seed=int(args.seed),
     )
+    source_base_size = int(len(source_ds))
+    _labeled_idx, _unlabeled_idx, source_cal_idx, _source_select_idx = split_tx_rx_day_1_7_2_roles(
+        source_ds,
+        labeled_ratio=float(args.labeled_ratio),
+        unlabeled_ratio=float(args.unlabeled_ratio),
+        source_cal_ratio=float(args.source_cal_ratio),
+        source_select_ratio=float(args.source_select_ratio),
+    )
+    source_ds = WiSigSubsetDataset(
+        source_ds,
+        source_cal_idx,
+        split_source="ssdg_source_v_cal",
+    )
+    source_info = {
+        **source_info,
+        "base_size": source_base_size,
+        "size": int(len(source_ds)),
+        "phase1_role": "V_cal",
+        "role_ratios": {
+            "L_s": float(args.labeled_ratio),
+            "U_s": float(args.unlabeled_ratio),
+            "V_cal": float(args.source_cal_ratio),
+            "V_select": float(args.source_select_ratio),
+        },
+        "seed": int(args.seed),
+    }
     ckpt = torch.load(args.ckpt, map_location="cpu")
     if "args" not in ckpt or "model" not in ckpt:
         raise KeyError("checkpoint must contain 'args' and 'model'")
@@ -106,7 +138,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "checkpoint": str(args.ckpt),
         "source": source_info,
         "source_tx_ids": source_info["tx_labels"],
-        "source_pair_role": "source",
+        "source_pair_role": "V_cal",
         "uses_target_clean": False,
         "uses_target_labels": False,
         "uses_unknown_query": False,

@@ -16,6 +16,8 @@ from ntrs import (
     NTRSFastContext,
     NTRSCosFaceHead,
     NTRSAdapterOnlyResidual,
+    NTRSConditionalLowRankOperator,
+    NTRSNormalizedMetadataContext,
     NTRSRobustifier,
     NTRSMinimalResidual,
     ntrs_safe_fuse_logits,
@@ -580,6 +582,9 @@ class DualCVSincNetDisentangle(nn.Module):
         ntrs_identity_bypass: bool = False,
         ntrs_q_trainable: bool = True,
         ntrs_use_support_gate: bool = False,
+        ntrs_context_mode: str = "normalized",
+        ntrs_operator_mode: str = "operator",
+        ntrs_pca_artifact: str = "",
     ):
         super().__init__()
         self.num_classes = int(num_classes)
@@ -605,11 +610,14 @@ class DualCVSincNetDisentangle(nn.Module):
         self.use_crra = bool(use_crra)
         self.use_ntrs = bool(use_ntrs)
         self.ntrs_variant = str(ntrs_variant or "v1").lower().strip()
-        if self.ntrs_variant not in {"v1", "v2_min", "v3_adapter"}:
-            raise ValueError("ntrs_variant must be v1, v2_min, or v3_adapter")
+        if self.ntrs_variant not in {"v1", "v2_min", "v3_adapter", "v4_operator"}:
+            raise ValueError("ntrs_variant must be v1, v2_min, v3_adapter, or v4_operator")
         self.ntrs_identity_bypass = bool(ntrs_identity_bypass)
         self.ntrs_q_trainable = bool(ntrs_q_trainable)
         self.ntrs_use_support_gate = bool(ntrs_use_support_gate)
+        self.ntrs_context_mode = str(ntrs_context_mode or "normalized").lower().strip()
+        self.ntrs_operator_mode = str(ntrs_operator_mode or "operator").lower().strip()
+        self.ntrs_pca_artifact = str(ntrs_pca_artifact or "")
         if self.use_crra and self.use_ntrs:
             raise ValueError("ADVB02 CRRA and NTRS are independent candidates and cannot be enabled together")
         if self.use_ntrs and self.representation_mode != "dual":
@@ -710,7 +718,13 @@ class DualCVSincNetDisentangle(nn.Module):
             else None
         )
         self.ntrs_context = (
-            (NTRSFastContext(
+            (NTRSNormalizedMetadataContext(
+                descriptor_dim=40,
+                metadata_dim=int(ntrs_metadata_dim),
+                q_dim=int(ntrs_q_dim),
+                fast_dim=int(ntrs_fast_dim),
+                mode=self.ntrs_context_mode,
+            ) if self.ntrs_variant == "v4_operator" else NTRSFastContext(
                 descriptor_dim=40,
                 q_dim=int(ntrs_q_dim),
                 fast_dim=int(ntrs_fast_dim),
@@ -732,7 +746,14 @@ class DualCVSincNetDisentangle(nn.Module):
             else None
         )
         self.ntrs_robustifier = (
-            (NTRSAdapterOnlyResidual(
+            (NTRSConditionalLowRankOperator(
+                embedding_dim=self.emb_dim,
+                q_dim=int(ntrs_q_dim),
+                rank=int(ntrs_rank),
+                alpha_max=float(ntrs_alpha_max),
+                operator_mode=self.ntrs_operator_mode,
+                pca_artifact_path=self.ntrs_pca_artifact,
+            ) if self.ntrs_variant == "v4_operator" else NTRSAdapterOnlyResidual(
                 embedding_dim=self.emb_dim,
                 q_dim=int(ntrs_q_dim),
                 rank=int(ntrs_rank),
@@ -1224,7 +1245,10 @@ class DualCVSincNetDisentangle(nn.Module):
             "ntrs_identity_bypass": bool(self.ntrs_identity_bypass),
             "ntrs_q_trainable": bool(self.ntrs_q_trainable),
             "ntrs_use_support_gate": bool(self.ntrs_use_support_gate),
-            "ntrs_shared_head": bool(self.use_ntrs and self.ntrs_variant in {"v2_min", "v3_adapter"}),
+            "ntrs_shared_head": bool(self.use_ntrs and self.ntrs_variant in {"v2_min", "v3_adapter", "v4_operator"}),
+            "ntrs_context_mode": self.ntrs_context_mode,
+            "ntrs_operator_mode": self.ntrs_operator_mode,
+            "ntrs_pca_artifact": self.ntrs_pca_artifact,
             "ntrs_raw_logits": raw_tx_logits,
             "ntrs_robust_logits": ntrs_robust_logits,
             "ntrs_z_anchor": z_anchor,
@@ -1234,6 +1258,9 @@ class DualCVSincNetDisentangle(nn.Module):
             "ntrs_safe_gate": ntrs_safe_gate,
             "ntrs_agreement": ntrs_agreement,
             "ntrs_raw_margin": ntrs_raw_margin,
+            "ntrs_q_iq": ntrs_context_out.q_fast if ntrs_context_out is not None else None,
+            "ntrs_q_meta": ntrs_context_out.q_meta if ntrs_context_out is not None else None,
+            "ntrs_metadata_valid": ntrs_context_out.metadata_valid if ntrs_context_out is not None else None,
             "ntrs_gate": (
                 ntrs_robust_out.gate if ntrs_robust_out is not None else x.new_zeros((x.size(0),))
             ),
@@ -1378,6 +1405,9 @@ def build_dual_model(
     ntrs_identity_bypass: bool = False,
     ntrs_q_trainable: bool = True,
     ntrs_use_support_gate: bool = False,
+    ntrs_context_mode: str = "normalized",
+    ntrs_operator_mode: str = "operator",
+    ntrs_pca_artifact: str = "",
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -1446,4 +1476,7 @@ def build_dual_model(
         ntrs_identity_bypass=ntrs_identity_bypass,
         ntrs_q_trainable=ntrs_q_trainable,
         ntrs_use_support_gate=ntrs_use_support_gate,
+        ntrs_context_mode=ntrs_context_mode,
+        ntrs_operator_mode=ntrs_operator_mode,
+        ntrs_pca_artifact=ntrs_pca_artifact,
     )

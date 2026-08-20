@@ -12,6 +12,7 @@ from SSDG.train_ssdg import (
     build_arg_parser,
     build_optimizer_with_crra_groups,
     configure_ntrs_trainable_parameters,
+    install_ntrs_descriptor_statistics,
 )
 from cvsrffi.losses import (
     ntrs_class_attraction_loss,
@@ -34,6 +35,24 @@ from cvsrffi.ntrs_training import (
     validate_ntrs_phase1_scenarios,
 )
 from model_dual_cvsincnet import build_dual_model
+from ntrs import NTRSNormalizedMetadataContext
+
+
+def test_v4_descriptor_statistics_are_installed_once_from_source_calibration():
+    class TinyModel(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.ntrs_context = NTRSNormalizedMetadataContext(
+                descriptor_dim=40, metadata_dim=9, q_dim=8, mode="normalized"
+            )
+
+    model = TinyModel()
+    loader = [(torch.randn(6, 2, 256) * 3.0,)]
+    report = install_ntrs_descriptor_statistics(model, loader, torch.device("cpu"))
+    assert report["descriptor_stats_installed"] == 1.0
+    assert report["descriptor_stats_samples"] == 6.0
+    assert torch.isfinite(model.ntrs_context.descriptor_center).all()
+    assert torch.all(model.ntrs_context.descriptor_scale >= 1e-4)
 
 
 def test_ntrs_defaults_match_the_frozen_first_version_report():
@@ -365,6 +384,73 @@ def test_adapter_loss_uses_satellite_ce_and_separates_clean_zero_from_satellite_
     total.backward()
     assert satellite_robust_logits.grad is not None
     assert clean_robust_logits.grad is None
+
+
+def test_v4_counterfactual_losses_protect_raw_correct_and_target_channel_errors():
+    labels = torch.tensor([0, 1, 0, 1])
+    clean_anchor = torch.tensor(
+        [[1.0, 0.0], [0.0, 1.0], [1.0, 0.0], [0.0, 1.0]]
+    )
+    satellite_anchor = clean_anchor + torch.tensor(
+        [[0.1, 0.0], [0.0, 0.1], [0.2, -0.1], [-0.1, 0.2]]
+    )
+    correction = (satellite_anchor - clean_anchor).clone().requires_grad_(True)
+    clean_logits = torch.tensor([[5.0, 0.0], [0.0, 5.0], [5.0, 0.0], [0.0, 5.0]])
+    raw_sat_logits = torch.tensor([[4.0, 0.0], [0.0, 4.0], [0.0, 2.0], [2.0, 0.0]])
+    robust_sat_logits = torch.tensor(
+        [[3.0, 0.0], [0.0, 3.0], [2.0, 0.0], [0.0, 2.0]], requires_grad=True
+    )
+
+    def _out(anchor, corr, raw, robust, q_iq=None, q_meta=None, valid=None):
+        return {
+            "tx_logits": raw,
+            "z_id": anchor,
+            "z_dom": anchor,
+            "ntrs_raw_logits": raw,
+            "ntrs_robust_logits": robust,
+            "ntrs_z_anchor": anchor,
+            "ntrs_z_rob": anchor - corr,
+            "ntrs_correction": corr,
+            "ntrs_alpha": corr.norm(dim=1) / anchor.norm(dim=1).clamp_min(1e-6),
+            "ntrs_correctability": torch.ones(anchor.size(0)),
+            "ntrs_correction_energy": corr.norm(dim=1),
+            "ntrs_subspace_residual": torch.zeros(anchor.size(0)),
+            "ntrs_q_iq": q_iq,
+            "ntrs_q_meta": q_meta,
+            "ntrs_metadata_valid": valid,
+        }
+
+    q_iq = torch.zeros(4, 3, requires_grad=True)
+    q_meta = torch.ones(4, 3)
+    valid = torch.tensor([True, True, False, True])
+    bundle = compute_ntrs_loss_bundle(
+        _out(clean_anchor, torch.zeros_like(clean_anchor), clean_logits, clean_logits),
+        _out(satellite_anchor, correction, raw_sat_logits, robust_sat_logits, q_iq, q_meta, valid),
+        clean_labels=labels,
+        satellite_labels=labels,
+        clean_receivers=None,
+        satellite_receivers=None,
+        clean_days=None,
+        satellite_days=None,
+        clean_channels=None,
+        satellite_channels=None,
+        prototypes=torch.eye(2),
+        margin_epsilon=0.05,
+        correctability_epsilon=0.01,
+        energy_threshold=0.10,
+        class_attraction_max_cosine=0.50,
+        variant="v4_operator",
+    )
+    losses = bundle["losses"]
+    assert float(losses["pair_shift"].detach()) == pytest.approx(0.0, abs=1e-7)
+    assert float(losses["pair_cosine"].detach()) == pytest.approx(0.0, abs=1e-7)
+    assert float(losses["harm"].detach()) > 0.0
+    assert float(losses["rescue"].detach()) > 0.0
+    assert float(losses["q_distill"].detach()) == pytest.approx(1.0)
+    total = sum(losses[name] for name in ("harm", "rescue", "pair_shift", "pair_cosine", "q_distill"))
+    total.backward()
+    assert robust_sat_logits.grad is not None
+    assert q_iq.grad is not None
 
 
 def test_source_update_mask_uses_only_clean_source_rows_for_concat_pairs():
