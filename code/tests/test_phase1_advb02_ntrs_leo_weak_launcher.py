@@ -156,6 +156,19 @@ def test_ntrs_launcher_rejects_unknown_matrix_profile():
     assert "unknown NTRS_PROFILE" in result.stderr
 
 
+def test_recovery_launcher_rejects_seed_override():
+    result = subprocess.run(
+        [BASH, SCRIPT, "--dry-run"],
+        cwd=PROJECT_ROOT,
+        text=True,
+        capture_output=True,
+        encoding="utf-8",
+        env={**os.environ, "NTRS_PROFILE": "v2_min_shared_head", "SEED": "999"},
+    )
+    assert result.returncode == 4
+    assert "seed must be 392034" in result.stderr
+
+
 def test_recovery_matrix_profiles_freeze_bypass_lr_and_shared_head_controls():
     d1 = _dry_run("v2_identity_bypass")
     assert "candidate=ADVB02_NTRS_V2_D1_BYPASS_E200" in d1

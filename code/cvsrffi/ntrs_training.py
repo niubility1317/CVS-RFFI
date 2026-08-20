@@ -46,7 +46,7 @@ def ntrs_training_stage(epoch: int, *, variant: str = "v1") -> NTRSTrainingStage
             return NTRSTrainingStage("V2-S0", 1.0, 0.0, 0.0, 0.0, 0.0)
         if epoch <= 130:
             ramp = float(epoch - 90) / 40.0
-            return NTRSTrainingStage("V2-RAMP", 1.0, ramp, 0.0, ramp, 0.0)
+            return NTRSTrainingStage("V2-RAMP", 1.0, 1.0, 0.0, ramp, 0.0)
         return NTRSTrainingStage("V2-FULL", 1.0, 1.0, 0.0, 1.0, 0.0)
     if variant != "v1":
         raise ValueError(f"unsupported NTRS variant: {variant}")
@@ -57,6 +57,25 @@ def ntrs_training_stage(epoch: int, *, variant: str = "v1") -> NTRSTrainingStage
     if epoch <= 68:
         return NTRSTrainingStage("S2-b", 0.20, 1.0, 1.0, 1.0, 0.0)
     return NTRSTrainingStage("S3", 0.10, 0.50, 1.0, 1.0, 1.0)
+
+
+def ntrs_stage_code(stage: NTRSTrainingStage) -> int:
+    codes = {"S1": 1, "S2-a": 2, "S2-b": 3, "S3": 4, "V2-S0": 5, "V2-RAMP": 6, "V2-FULL": 7}
+    if stage.name not in codes:
+        raise ValueError(f"unsupported NTRS stage name: {stage.name}")
+    return codes[stage.name]
+
+
+def ntrs_relative_correction_loss(
+    anchor: torch.Tensor,
+    correction: torch.Tensor,
+    eps: float = 1e-6,
+) -> torch.Tensor:
+    if anchor.shape != correction.shape or anchor.dim() != 2:
+        raise ValueError("NTRS relative correction requires aligned [B, D] tensors")
+    numerator = correction.float().square().sum(dim=1)
+    denominator = anchor.detach().float().square().sum(dim=1).add(float(eps))
+    return (numerator / denominator).mean()
 
 
 def is_ntrs_parameter_name(name: str) -> bool:
@@ -215,6 +234,9 @@ def compute_ntrs_loss_bundle(
     zero = _connected_zero(clean_output)
     losses: dict[str, torch.Tensor] = {}
     info: dict[str, Any] = {}
+    losses["robust_ce"], info["robust_ce"] = _factor_cross_entropy(
+        outputs, label_values, "ntrs_robust_logits", zero
+    )
     losses["sat_kl"] = zero
     losses["margin"] = zero
     losses["relation"] = zero
@@ -288,9 +310,10 @@ def compute_ntrs_loss_bundle(
     alpha = _concatenate_output_tensor(outputs, "ntrs_alpha")
     residual = _concatenate_output_tensor(outputs, "ntrs_subspace_residual")
     correction = _concatenate_output_tensor(outputs, "ntrs_correction")
+    candidate_correction = _concatenate_output_tensor(outputs, "ntrs_correction")
     losses["minimum_correction"] = (
-        (robust - anchor).square().sum(dim=1).mean()
-        if torch.is_tensor(anchor) and torch.is_tensor(robust)
+        ntrs_relative_correction_loss(anchor, candidate_correction)
+        if torch.is_tensor(anchor) and torch.is_tensor(candidate_correction)
         else zero
     )
     losses["alpha"] = alpha.abs().mean() if torch.is_tensor(alpha) else zero
@@ -380,6 +403,8 @@ __all__ = [
     "NTRSTrainingStage",
     "is_ntrs_parameter_name",
     "ntrs_source_update_mask",
+    "ntrs_stage_code",
+    "ntrs_relative_correction_loss",
     "ntrs_training_stage",
     "set_ntrs_optimizer_learning_rates",
     "validate_ntrs_phase1_config",

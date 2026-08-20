@@ -38,6 +38,7 @@ from cvsrffi.ntrs_training import (
     compute_ntrs_loss_bundle,
     is_ntrs_parameter_name,
     ntrs_source_update_mask,
+    ntrs_stage_code,
     ntrs_training_stage,
     set_ntrs_optimizer_learning_rates,
     validate_ntrs_phase1_config,
@@ -411,6 +412,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--ntrs_correctability_epsilon", type=float, default=0.01)
     parser.add_argument("--ntrs_class_attraction_max_cosine", type=float, default=0.50)
     parser.add_argument("--lambda_ntrs_sat_kl", type=float, default=0.01)
+    parser.add_argument("--lambda_ntrs_robust_ce", type=float, default=0.0)
     parser.add_argument("--lambda_ntrs_margin", type=float, default=0.03)
     parser.add_argument("--lambda_ntrs_relation", type=float, default=0.02)
     parser.add_argument("--lambda_ntrs_class_conditional", type=float, default=0.01)
@@ -5926,8 +5928,13 @@ def train(args) -> int:
                     "cons": d_l is not None and cur_w["cons"] > 0.0,
                     "group_ce": d_l is not None and cur_w["group_ce"] > 0.0,
                 }
+                core_output_l = out_l
+                if str(getattr(args, "ntrs_variant", "v1")) == "v2_min":
+                    core_output_l = dict(out_l)
+                    core_output_l["tx_logits"] = out_l["ntrs_raw_logits"]
+                    core_output_l["z_id"] = out_l["ntrs_z_anchor"]
                 core_losses = compute_core_losses(
-                    out_l,
+                    core_output_l,
                     y_l,
                     d_l,
                     domain_stats,
@@ -6766,7 +6773,12 @@ def train(args) -> int:
                     sat_nuisance_valid = concat_sat_ce_view.nuisance_valid
                     sat_nuisance_fields = tuple(concat_sat_ce_view.nuisance_fields or ())
                     if cur_w["sat_cls"] > 0.0:
-                        loss_sat_cls_l = float(args.concat_sat_ce_weight) * F.cross_entropy(out_sat["tx_logits"], y_l)
+                        sat_core_logits = (
+                            out_sat["ntrs_raw_logits"]
+                            if str(getattr(args, "ntrs_variant", "v1")) == "v2_min"
+                            else out_sat["tx_logits"]
+                        )
+                        loss_sat_cls_l = float(args.concat_sat_ce_weight) * F.cross_entropy(sat_core_logits, y_l)
                     if crra_sat_kl_active or ntrs_sat_kl_active:
                         clean_prob = out_l["tx_logits"].detach().softmax(dim=1)
                         loss_sat_cons_l = F.kl_div(
@@ -6802,6 +6814,7 @@ def train(args) -> int:
                     "losses": {
                         name: zero_sat
                         for name in (
+                            "robust_ce",
                             "sat_kl",
                             "margin",
                             "relation",
@@ -7069,6 +7082,9 @@ def train(args) -> int:
                     )
                     + crra_stage_scale * float(getattr(args, "lambda_crra_condition_tx_adv", 0.0)) * sanitize_loss(
                         "crra_condition_tx_adv", loss_crra_condition_tx_adv_l, z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_robust_ce", 0.0)) * sanitize_loss(
+                        "ntrs_robust_ce", ntrs_losses["robust_ce"], z_id_l, loss_warn_counts
                     )
                     + float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_sat_kl", 0.0)) * sanitize_loss(
                         "ntrs_sat_kl", ntrs_losses["sat_kl"], z_id_l, loss_warn_counts
@@ -8059,10 +8075,11 @@ def train(args) -> int:
                     "train/crra_sat_shell_mean_excess_rad": float(
                         crra_sat_shell_info.get("mean_excess_rad", 0.0)
                     ),
-                    "train/ntrs_stage_code": float({"S1": 1, "S2-a": 2, "S2-b": 3, "S3": 4}[ntrs_stage.name]),
+                    "train/ntrs_stage_code": float(ntrs_stage_code(ntrs_stage)),
                     "train/ntrs_core_lr": float(ntrs_optimizer_rates["core"]),
                     "train/ntrs_optimizer_lr": float(ntrs_optimizer_rates["ntrs"]),
                     "train/loss_ntrs_sat_kl": ntrs_losses["sat_kl"].detach(),
+                    "train/loss_ntrs_robust_ce": ntrs_losses["robust_ce"].detach(),
                     "train/loss_ntrs_margin": ntrs_losses["margin"].detach(),
                     "train/loss_ntrs_relation": ntrs_losses["relation"].detach(),
                     "train/loss_ntrs_class_conditional": ntrs_losses["class_conditional"].detach(),

@@ -23,6 +23,7 @@ NTRS_VARIANT="v1"
 NTRS_IDENTITY_BYPASS="false"
 NTRS_CORE_LR_MODE="v1"
 L_NTRS_SAT_KL="0.01"
+L_NTRS_ROBUST_CE="0"
 L_NTRS_MARGIN="0.03"
 L_NTRS_RELATION="0.02"
 L_NTRS_CLASS_CONDITIONAL="0.01"
@@ -109,6 +110,7 @@ case "${NTRS_PROFILE}" in
     CANDIDATE="ADVB02_NTRS_V2_MIN_SHARED_E200"
     NTRS_VARIANT="v2_min"
     NTRS_CORE_LR_MODE="baseline"
+    L_NTRS_ROBUST_CE="1.0"
     L_NTRS_RELATION="0"
     L_NTRS_CLASS_CONDITIONAL="0"
     L_NTRS_RECEIVER="0"
@@ -366,6 +368,7 @@ build_train_command() {
       --ntrs_correctability_epsilon 0.01
       --ntrs_class_attraction_max_cosine 0.50
       --lambda_ntrs_sat_kl "${L_NTRS_SAT_KL}"
+      --lambda_ntrs_robust_ce "${L_NTRS_ROBUST_CE}"
       --lambda_ntrs_margin "${L_NTRS_MARGIN}"
       --lambda_ntrs_relation "${L_NTRS_RELATION}"
       --lambda_ntrs_class_conditional "${L_NTRS_CLASS_CONDITIONAL}"
@@ -475,4 +478,8 @@ run() {
 }
 
 validate_source_wisig_pkl "${WISIG_PKL}"
+if [[ "${SEED}" != "392034" ]]; then
+  echo "[NTRS-LEO-ERROR] seed must be 392034, got ${SEED}" >&2
+  exit 4
+fi
 run

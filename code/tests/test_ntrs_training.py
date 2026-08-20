@@ -21,6 +21,8 @@ from cvsrffi.losses import (
 from cvsrffi.ntrs_training import (
     compute_ntrs_loss_bundle,
     ntrs_source_update_mask,
+    ntrs_stage_code,
+    ntrs_relative_correction_loss,
     ntrs_training_stage,
     set_ntrs_optimizer_learning_rates,
     validate_ntrs_phase1_config,
@@ -81,9 +83,11 @@ def test_ntrs_v2_schedule_keeps_core_fair_and_delays_residual_until_epoch_91():
     assert ntrs_training_stage(1, variant="v2_min").name == "V2-S0"
     assert ntrs_training_stage(90, variant="v2_min").ntrs_lr_scale == 0.0
     assert ntrs_training_stage(91, variant="v2_min").name == "V2-RAMP"
-    assert 0.0 < ntrs_training_stage(110, variant="v2_min").ntrs_lr_scale < 1.0
+    assert ntrs_training_stage(91, variant="v2_min").ntrs_lr_scale == pytest.approx(1.0)
+    assert 0.0 < ntrs_training_stage(110, variant="v2_min").geometry_scale < 1.0
     assert ntrs_training_stage(130, variant="v2_min").ntrs_lr_scale == pytest.approx(1.0)
     assert ntrs_training_stage(200, variant="v2_min").core_lr_scale == pytest.approx(1.0)
+    assert [ntrs_stage_code(ntrs_training_stage(epoch, variant="v2_min")) for epoch in (1, 91, 131)] == [5, 6, 7]
 
 
 def test_ntrs_core_lr_mode_separates_fair_and_historical_controls():
@@ -143,6 +147,15 @@ def test_margin_and_relation_losses_preserve_geometry_without_pointwise_collapse
     assert float(relation_bad.detach()) > 0.0
     (margin_bad + relation_bad).backward()
     assert collapsed.grad is not None
+
+
+def test_v2_direct_residual_penalty_is_relative_to_anchor_norm():
+    anchor = torch.tensor([[3.0, 4.0], [0.0, 2.0]])
+    candidate = torch.tensor([[0.3, 0.4], [0.0, 0.2]], requires_grad=True)
+    loss = ntrs_relative_correction_loss(anchor, candidate)
+    assert float(loss.detach()) == pytest.approx(0.01, rel=1e-5)
+    loss.backward()
+    assert candidate.grad is not None
 
 
 def test_class_conditional_alignment_is_zero_for_identical_views_and_connected():
@@ -333,6 +346,7 @@ def test_ntrs_loss_bundle_connects_all_four_report_groups():
     )
 
     expected = {
+        "robust_ce",
         "sat_kl",
         "margin",
         "relation",

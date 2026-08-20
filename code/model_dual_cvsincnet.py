@@ -1087,9 +1087,18 @@ class DualCVSincNetDisentangle(nn.Module):
                 )
                 raw_head = self.id_backbone.cls_head.head
                 ntrs_robust_logits = raw_head(ntrs_robust_out.z_rob, y_tx)
-                tx_logits = ntrs_robust_logits
-                z_id = ntrs_robust_out.z_rob
-                ntrs_safe_gate = ntrs_robust_out.gate
+                energy_ok = (
+                    ntrs_robust_out.correction_energy.detach() <= self.ntrs_energy_threshold
+                )
+                ntrs_safe_gate = ntrs_robust_out.gate * energy_ok.to(
+                    dtype=ntrs_robust_out.gate.dtype
+                )
+                tx_logits = raw_tx_logits + ntrs_safe_gate[:, None] * (
+                    ntrs_robust_logits - raw_tx_logits
+                )
+                z_id = z_anchor + ntrs_safe_gate[:, None].to(dtype=z_anchor.dtype) * (
+                    ntrs_robust_out.z_rob.to(dtype=z_anchor.dtype) - z_anchor
+                )
                 ntrs_agreement = raw_tx_logits.detach().argmax(dim=1) == ntrs_robust_logits.detach().argmax(dim=1)
         else:
             tx_logits = raw_tx_logits

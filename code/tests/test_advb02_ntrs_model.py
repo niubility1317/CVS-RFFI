@@ -11,6 +11,7 @@ if str(CODE_ROOT) not in sys.path:
 
 from model_dual_cvsincnet import build_dual_model  # noqa: E402
 from ntrs import ntrs_safe_fuse_logits  # noqa: E402
+from ntrs import NTRSMinimalResidual  # noqa: E402
 
 
 def _tiny_model(**kwargs):
@@ -153,6 +154,22 @@ def test_ntrs_v2_min_uses_shared_head_no_layernorm_and_one_identity_forward():
     assert torch.equal(out_frozen["ntrs_z_rob"], out_frozen["ntrs_z_anchor"])
     assert torch.equal(out_frozen["ntrs_robust_logits"], out_frozen["ntrs_raw_logits"])
     assert out_active["ntrs_shared_head"] is True
+    expected = out_active["ntrs_raw_logits"] + out_active["ntrs_safe_gate"][:, None] * (
+        out_active["ntrs_robust_logits"] - out_active["ntrs_raw_logits"]
+    )
+    assert torch.allclose(out_active["tx_logits"], expected)
+
+
+def test_ntrs_v2_min_stops_context_gradient_and_bounds_relative_candidate():
+    module = NTRSMinimalResidual(embedding_dim=4, q_dim=3, alpha_max=0.20)
+    with torch.no_grad():
+        module.residual_head[-1].bias.fill_(1.0)
+    anchor = torch.tensor([[3.0, 4.0, 0.0, 0.0]], requires_grad=True)
+    q = torch.randn(1, 3, requires_grad=True)
+    out = module(anchor, q, epoch=91)
+    out.correction.sum().backward()
+    assert q.grad is None
+    assert out.correction.norm(dim=1).item() <= 1.0 + 1e-5
 
 
 def test_ntrs_safe_fusion_falls_back_to_raw_on_disagreement_or_excess_energy():

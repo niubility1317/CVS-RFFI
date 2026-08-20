@@ -830,14 +830,14 @@ class NTRSMinimalResidual(nn.Module):
             raise ValueError("NTRS V2 anchor must be shaped [B, embedding_dim]")
         if q.shape != (z_anchor.size(0), self.q_dim):
             raise ValueError("NTRS V2 q must align with the embedding batch")
-        raw_delta = torch.tanh(self.residual_head(torch.cat([z_anchor, q], dim=1)))
+        raw_delta = torch.tanh(self.residual_head(torch.cat([z_anchor, q.detach()], dim=1)))
         raw_norm = raw_delta.norm(dim=1, keepdim=True)
         anchor_norm = z_anchor.detach().norm(dim=1, keepdim=True).clamp_min(1e-6)
         bound = self.alpha_max * anchor_norm
         bounded_delta = raw_delta * torch.clamp(bound / raw_norm.clamp_min(1e-6), max=1.0)
         gate_value = ntrs_stage_scale(epoch, variant="v2_min")
         gate = z_anchor.new_full((z_anchor.size(0),), float(gate_value))
-        correction = gate[:, None] * bounded_delta
+        correction = bounded_delta
         z_rob = z_anchor - correction
         energy = _zero_preserving_rms(correction, dim=1)
         alpha = correction.norm(dim=1) / anchor_norm.view(-1)
