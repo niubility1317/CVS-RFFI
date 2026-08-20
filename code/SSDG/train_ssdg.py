@@ -405,9 +405,13 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--ntrs_energy_threshold", type=float, default=0.10)
     parser.add_argument("--ntrs_unknown_rescue", type=str2bool, default=False)
     parser.add_argument("--ntrs_target_adapter", type=str2bool, default=False)
-    parser.add_argument("--ntrs_variant", type=str, choices=["v1", "v2_min"], default="v1")
+    parser.add_argument("--ntrs_variant", type=str, choices=["v1", "v2_min", "v3_adapter"], default="v1")
     parser.add_argument("--ntrs_identity_bypass", type=str2bool, default=False)
-    parser.add_argument("--ntrs_core_lr_mode", type=str, choices=["v1", "baseline"], default="v1")
+    parser.add_argument("--ntrs_q_trainable", type=str2bool, default=True)
+    parser.add_argument("--ntrs_use_support_gate", type=str2bool, default=False)
+    parser.add_argument("--ntrs_adapter_only", type=str2bool, default=False)
+    parser.add_argument("--ntrs_core_lr_mode", type=str, choices=["v1", "baseline", "adapter_joint"], default="v1")
+    parser.add_argument("--ntrs_core_lr_ratio", type=float, default=0.02)
     parser.add_argument("--ntrs_margin_epsilon", type=float, default=0.05)
     parser.add_argument("--ntrs_correctability_epsilon", type=float, default=0.01)
     parser.add_argument("--ntrs_class_attraction_max_cosine", type=float, default=0.50)
@@ -428,6 +432,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--lambda_ntrs_correctability", type=float, default=0.02)
     parser.add_argument("--lambda_ntrs_score_stability", type=float, default=0.01)
     parser.add_argument("--lambda_ntrs_class_attraction", type=float, default=0.01)
+    parser.add_argument("--lambda_ntrs_clean_zero", type=float, default=0.0)
+    parser.add_argument("--lambda_ntrs_sat_relative", type=float, default=0.0)
     parser.add_argument("--sat_protocol_disjoint_required", type=str2bool, default=False)
     parser.add_argument("--lambda_sat_cls", type=float, default=0.10)
     parser.add_argument("--lambda_sat_cons", type=float, default=0.0)
@@ -1602,6 +1608,8 @@ def _apply_model_cli_args(model_args, args):
         "ntrs_unknown_rescue",
         "ntrs_variant",
         "ntrs_identity_bypass",
+        "ntrs_q_trainable",
+        "ntrs_use_support_gate",
     ):
         if hasattr(args, key):
             setattr(model_args, key, getattr(args, key))
@@ -5055,6 +5063,133 @@ def build_optimizer_with_crra_groups(
     return torch.optim.AdamW(groups, lr=float(base_lr), weight_decay=float(weight_decay))
 
 
+def configure_ntrs_trainable_parameters(model, args) -> Dict[str, int]:
+    """Freeze the mature identity path and expose only registered adapter groups."""
+
+    candidate = getattr(model, "module", model)
+    variant = str(getattr(args, "ntrs_variant", "v1") or "v1").lower().strip()
+    if variant != "v3_adapter":
+        return {
+            "raw_trainable_parameters": int(
+                sum(p.numel() for n, p in candidate.named_parameters() if p.requires_grad and not is_ntrs_parameter_name(n))
+            ),
+            "q_trainable_parameters": int(
+                sum(p.numel() for p in getattr(candidate, "ntrs_context", nn.Module()).parameters() if p.requires_grad)
+            ),
+            "adapter_trainable_parameters": int(
+                sum(p.numel() for p in getattr(candidate, "ntrs_robustifier", nn.Module()).parameters() if p.requires_grad)
+            ),
+        }
+
+    adapter_only = bool(getattr(args, "ntrs_adapter_only", False))
+    q_trainable = bool(getattr(args, "ntrs_q_trainable", True))
+    for _name, parameter in candidate.named_parameters():
+        parameter.requires_grad = False
+    for parameter in candidate.ntrs_robustifier.parameters():
+        parameter.requires_grad = True
+    for parameter in candidate.ntrs_context.parameters():
+        parameter.requires_grad = q_trainable
+    if not adapter_only:
+        for name, parameter in candidate.named_parameters():
+            if is_ntrs_parameter_name(name):
+                continue
+            if ".cls_head." in name or name.startswith("id_backbone.cls_head."):
+                continue
+            parameter.requires_grad = True
+
+    raw_count = int(
+        sum(
+            parameter.numel()
+            for name, parameter in candidate.named_parameters()
+            if parameter.requires_grad and not is_ntrs_parameter_name(name)
+        )
+    )
+    q_count = int(sum(p.numel() for p in candidate.ntrs_context.parameters() if p.requires_grad))
+    adapter_count = int(sum(p.numel() for p in candidate.ntrs_robustifier.parameters() if p.requires_grad))
+    return {
+        "raw_trainable_parameters": raw_count,
+        "q_trainable_parameters": q_count,
+        "adapter_trainable_parameters": adapter_count,
+    }
+
+
+def _load_training_checkpoint_state(
+    model,
+    checkpoint: Mapping[str, Any],
+    args,
+) -> Dict[str, Any]:
+    """Load a mature checkpoint without importing obsolete NTRS internals."""
+
+    state = checkpoint.get("model")
+    if not isinstance(state, Mapping):
+        raise ValueError("training checkpoint is missing a model state mapping")
+    variant = str(getattr(args, "ntrs_variant", "v1") or "v1").lower().strip()
+    ntrs_state_skipped = variant == "v3_adapter"
+    selected_state = (
+        {name: value for name, value in state.items() if not is_ntrs_parameter_name(name)}
+        if ntrs_state_skipped
+        else dict(state)
+    )
+    result = model.load_state_dict(selected_state, strict=False)
+    unexpected = list(result.unexpected_keys)
+    if unexpected:
+        raise ValueError(f"unexpected checkpoint keys while rebuilding training model: {unexpected[:8]}")
+    return {
+        "ntrs_state_skipped": bool(ntrs_state_skipped),
+        "loaded_parameter_count": int(len(selected_state)),
+        "missing_keys": list(result.missing_keys),
+        "unexpected_keys": unexpected,
+    }
+
+
+def _capture_ntrs_raw_reference(model) -> Dict[str, torch.Tensor]:
+    """Snapshot mature raw parameters and buffers for an exact drift audit."""
+
+    candidate = getattr(model, "module", model)
+    return {
+        name: value.detach().cpu().clone()
+        for name, value in candidate.state_dict().items()
+        if not is_ntrs_parameter_name(name)
+    }
+
+
+def _ntrs_raw_max_abs_drift(
+    model,
+    reference: Mapping[str, torch.Tensor],
+) -> float:
+    """Return the largest absolute raw-parameter change from a frozen snapshot."""
+
+    if not reference:
+        return 0.0
+    candidate = getattr(model, "module", model)
+    current = candidate.state_dict()
+    max_drift = 0.0
+    for name, original in reference.items():
+        if name not in current:
+            raise KeyError(f"raw parameter disappeared during training: {name}")
+        value = current[name].detach().cpu()
+        if value.shape != original.shape:
+            raise ValueError(f"raw parameter shape changed during training: {name}")
+        if value.numel() > 0:
+            max_drift = max(max_drift, float((value - original).abs().max().item()))
+    return max_drift
+
+
+def _set_ntrs_training_mode(model, args) -> None:
+    """Train only q/adapter modules while the mature raw path stays in eval mode."""
+
+    model.train()
+    variant = str(getattr(args, "ntrs_variant", "v1") or "v1").lower().strip()
+    if variant != "v3_adapter" or not bool(getattr(args, "ntrs_adapter_only", False)):
+        return
+    candidate = getattr(model, "module", model)
+    for name, child in candidate.named_children():
+        if name not in {"ntrs_context", "ntrs_robustifier"}:
+            child.eval()
+    candidate.ntrs_robustifier.train()
+    candidate.ntrs_context.train(bool(getattr(args, "ntrs_q_trainable", True)))
+
+
 def set_crra_optimizer_learning_rate(
     optimizer,
     *,
@@ -5398,9 +5533,17 @@ def train(args) -> int:
     model_args = merge_checkpoint_args(ckpt, args, input_len=int(data_ctx["input_len"]), num_domains=int(data_ctx["num_domains"]))
     model_args = _apply_model_cli_args(model_args, args)
     model = build_baseline_model(model_args, device)
+    checkpoint_load_report = {}
     if use_ckpt:
-        model.load_state_dict(ckpt["model"], strict=False)
-    if bool(args.freeze_backbone):
+        checkpoint_load_report = _load_training_checkpoint_state(model, ckpt, args)
+    ntrs_trainable_summary = configure_ntrs_trainable_parameters(model, args)
+    ntrs_raw_reference = (
+        _capture_ntrs_raw_reference(model)
+        if str(getattr(args, "ntrs_variant", "v1")) == "v3_adapter"
+        and bool(getattr(args, "ntrs_adapter_only", False))
+        else {}
+    )
+    if bool(args.freeze_backbone) and str(getattr(args, "ntrs_variant", "v1")) != "v3_adapter":
         for name, param in model.named_parameters():
             param.requires_grad = any(key in name for key in ("cls_head", "dom_head", "adv_head"))
     trainable_params = int(sum(p.numel() for p in model.parameters() if p.requires_grad))
@@ -5724,6 +5867,11 @@ def train(args) -> int:
     last_source_val_tail_geometry: Dict[str, Any] = {}
     last_source_val_sat_stats: Dict[str, Dict[str, Any]] = {}
     last_source_val_heavy_eval_epoch = 0
+    ntrs_q_grad_norm_max = 0.0
+    ntrs_adapter_grad_norm_max = 0.0
+    ntrs_raw_grad_norm_max = 0.0
+    ntrs_q_grad_seen = False
+    ntrs_adapter_grad_seen = False
     phase1_v2_tail_machine = None
     phase1_v2_final_blocked = False
     phase1_v2_reasons: List[str] = []
@@ -5768,6 +5916,7 @@ def train(args) -> int:
                 base_lr=float(args.lr),
                 variant=str(getattr(args, "ntrs_variant", "v1")),
                 core_lr_mode=str(getattr(args, "ntrs_core_lr_mode", "v1")),
+                core_lr_ratio=float(getattr(args, "ntrs_core_lr_ratio", 0.02)),
             )
             crra_optimizer_lr = float(args.lr)
         else:
@@ -5821,7 +5970,7 @@ def train(args) -> int:
             teacher_model.set_crra_epoch(int(epoch))
         if teacher_model is not None and hasattr(teacher_model, "set_ntrs_epoch"):
             teacher_model.set_ntrs_epoch(int(epoch))
-        model.train()
+        _set_ntrs_training_mode(model, args)
         balanced_train_sampler = data_ctx.get("balanced_train_sampler")
         if balanced_train_sampler is not None and hasattr(balanced_train_sampler, "set_epoch"):
             balanced_train_sampler.set_epoch(epoch)
@@ -5915,7 +6064,10 @@ def train(args) -> int:
                     ntrs_epoch=int(epoch),
                     update_ntrs_source=(
                         bool(getattr(args, "use_ntrs", False))
-                        and float(ntrs_stage.nuisance_scale) > 0.0
+                        and (
+                            float(ntrs_stage.nuisance_scale) > 0.0
+                            or bool(getattr(args, "ntrs_use_support_gate", False))
+                        )
                     ),
                     ntrs_source_mask=ntrs_update_mask,
                     ntrs_metadata=ntrs_main_metadata,
@@ -6831,6 +6983,8 @@ def train(args) -> int:
                             "correctability",
                             "score_stability",
                             "class_attraction",
+                            "clean_zero",
+                            "satellite_relative",
                         )
                     },
                     "info": {},
@@ -7135,6 +7289,12 @@ def train(args) -> int:
                     + float(ntrs_stage.safety_scale) * float(getattr(args, "lambda_ntrs_class_attraction", 0.0)) * sanitize_loss(
                         "ntrs_class_attraction", ntrs_losses["class_attraction"], z_id_l, loss_warn_counts
                     )
+                    + float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_clean_zero", 0.0)) * sanitize_loss(
+                        "ntrs_clean_zero", ntrs_losses["clean_zero"], z_id_l, loss_warn_counts
+                    )
+                    + float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_sat_relative", 0.0)) * sanitize_loss(
+                        "ntrs_satellite_relative", ntrs_losses["satellite_relative"], z_id_l, loss_warn_counts
+                    )
                     + (float(args.lambda_teacher_clean_kl) * teacher_scale) * sanitize_loss("teacher_clean_kl", loss_teacher_clean_kl_l, z_id_l, loss_warn_counts)
                     + (float(args.lambda_teacher_sat_kl) * teacher_scale) * sanitize_loss("teacher_sat_kl", loss_teacher_sat_kl_l, z_id_l, loss_warn_counts)
                     + (float(args.lambda_teacher_zid_mse) * teacher_scale) * sanitize_loss("teacher_zid_mse", loss_teacher_zid_mse_l, z_id_l, loss_warn_counts)
@@ -7169,9 +7329,18 @@ def train(args) -> int:
                     pseudo_source = ema_model if ema_model is not None else model
                     with torch.no_grad():
                         pseudo_source.eval()
-                        out_w = pseudo_source(x_u, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d_u)
+                        out_w = pseudo_source(
+                            x_u,
+                            y_tx=None,
+                            grl_lambda=1.0,
+                            return_aux=True,
+                            domain_labels=d_u,
+                            ntrs_force_raw_primary=(
+                                str(getattr(args, "ntrs_variant", "v1")) == "v3_adapter"
+                            ),
+                        )
                         if ema_model is None:
-                            model.train()
+                            _set_ntrs_training_mode(model, args)
                         prob_w = out_w["tx_logits"].softmax(dim=1)
                         conf, pseudo = prob_w.max(dim=1)
                         conf_mask = _threshold_mask(conf, d_u, args)
@@ -7765,6 +7934,9 @@ def train(args) -> int:
             skipped_nonfinite_loss = 0
             skipped_nonfinite_grad = 0
             optimizer_step_applied = False
+            ntrs_q_grad_norm = float("nan")
+            ntrs_adapter_grad_norm = float("nan")
+            ntrs_raw_grad_norm = float("nan")
             os_grad_info = {
                 "active": 0.0,
                 "conflict": 0.0,
@@ -7860,6 +8032,20 @@ def train(args) -> int:
                 else:
                     scaler.scale(loss).backward()
                 scaler.unscale_(optimizer)
+                ntrs_q_grad_norm = _grad_norm(model, lambda name: "ntrs_context." in name)
+                ntrs_adapter_grad_norm = _grad_norm(model, lambda name: "ntrs_robustifier." in name)
+                ntrs_raw_grad_norm = _grad_norm(model, lambda name: not is_ntrs_parameter_name(name))
+                if math.isfinite(ntrs_q_grad_norm):
+                    ntrs_q_grad_norm_max = max(ntrs_q_grad_norm_max, ntrs_q_grad_norm)
+                    ntrs_q_grad_seen = ntrs_q_grad_seen or ntrs_q_grad_norm > 0.0
+                if math.isfinite(ntrs_adapter_grad_norm):
+                    ntrs_adapter_grad_norm_max = max(
+                        ntrs_adapter_grad_norm_max,
+                        ntrs_adapter_grad_norm,
+                    )
+                    ntrs_adapter_grad_seen = ntrs_adapter_grad_seen or ntrs_adapter_grad_norm > 0.0
+                if math.isfinite(ntrs_raw_grad_norm):
+                    ntrs_raw_grad_norm_max = max(ntrs_raw_grad_norm_max, ntrs_raw_grad_norm)
                 grad_norm_before_clip = _grad_norm(model)
                 if float(getattr(args, "max_grad_norm", 0.0)) > 0.0:
                     torch.nn.utils.clip_grad_norm_(
@@ -8081,6 +8267,8 @@ def train(args) -> int:
                     "train/ntrs_optimizer_lr": float(ntrs_optimizer_rates["ntrs"]),
                     "train/loss_ntrs_sat_kl": ntrs_losses["sat_kl"].detach(),
                     "train/loss_ntrs_robust_ce": ntrs_losses["robust_ce"].detach(),
+                    "train/loss_ntrs_clean_zero": ntrs_losses["clean_zero"].detach(),
+                    "train/loss_ntrs_satellite_relative": ntrs_losses["satellite_relative"].detach(),
                     "train/loss_ntrs_margin": ntrs_losses["margin"].detach(),
                     "train/loss_ntrs_relation": ntrs_losses["relation"].detach(),
                     "train/loss_ntrs_class_conditional": ntrs_losses["class_conditional"].detach(),
@@ -8159,6 +8347,16 @@ def train(args) -> int:
                     ).detach(),
                     "train/w_loss_ntrs_sat_kl": (
                         float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_sat_kl", 0.0)) * ntrs_losses["sat_kl"]
+                    ).detach(),
+                    "train/w_loss_ntrs_clean_zero": (
+                        float(ntrs_stage.geometry_scale)
+                        * float(getattr(args, "lambda_ntrs_clean_zero", 0.0))
+                        * ntrs_losses["clean_zero"]
+                    ).detach(),
+                    "train/w_loss_ntrs_satellite_relative": (
+                        float(ntrs_stage.geometry_scale)
+                        * float(getattr(args, "lambda_ntrs_sat_relative", 0.0))
+                        * ntrs_losses["satellite_relative"]
                     ).detach(),
                     "train/w_loss_ntrs_margin": (
                         float(ntrs_stage.geometry_scale) * float(getattr(args, "lambda_ntrs_margin", 0.0)) * ntrs_losses["margin"]
@@ -8353,6 +8551,18 @@ def train(args) -> int:
                     "train/grad_backbone": grad_backbone,
                     "train/grad_aux": grad_aux,
                     "train/grad_domain": grad_domain,
+                    "train/ntrs_q_grad_norm": ntrs_q_grad_norm,
+                    "train/ntrs_adapter_grad_norm": ntrs_adapter_grad_norm,
+                    "train/ntrs_raw_grad_norm": ntrs_raw_grad_norm,
+                    "train/ntrs_q_trainable_parameters": float(
+                        ntrs_trainable_summary.get("q_trainable_parameters", 0)
+                    ),
+                    "train/ntrs_adapter_trainable_parameters": float(
+                        ntrs_trainable_summary.get("adapter_trainable_parameters", 0)
+                    ),
+                    "train/ntrs_raw_trainable_parameters": float(
+                        ntrs_trainable_summary.get("raw_trainable_parameters", 0)
+                    ),
                     "train/skipped_nonfinite_loss": skipped_nonfinite_loss,
                     "train/skipped_nonfinite_grad": skipped_nonfinite_grad,
                     "train/optimizer_step_applied": 1.0 if optimizer_step_applied else 0.0,
@@ -9819,6 +10029,30 @@ def train(args) -> int:
             "NON_PROMOTABLE_P1_DISABLED": 11,
             "NON_PROMOTABLE_ENDPOINT_NOT_EXPORTED": 9,
         }.get(terminal_status, 10)
+    ntrs_mechanism_evidence = {
+        "schema": "cvs.phase1.ntrs_adapter_mechanism.v1",
+        "variant": str(getattr(args, "ntrs_variant", "v1")),
+        "adapter_only": bool(getattr(args, "ntrs_adapter_only", False)),
+        "q_trainable": bool(getattr(args, "ntrs_q_trainable", True)),
+        "support_gate": bool(getattr(args, "ntrs_use_support_gate", False)),
+        **ntrs_trainable_summary,
+        "q_gradient_seen": bool(ntrs_q_grad_seen),
+        "adapter_gradient_seen": bool(ntrs_adapter_grad_seen),
+        "q_gradient_norm_max": float(ntrs_q_grad_norm_max),
+        "adapter_gradient_norm_max": float(ntrs_adapter_grad_norm_max),
+        "raw_gradient_norm_max": float(ntrs_raw_grad_norm_max),
+        "raw_parameter_max_abs_drift": float(
+            _ntrs_raw_max_abs_drift(model, ntrs_raw_reference)
+        ),
+        "raw_reference_parameter_count": int(len(ntrs_raw_reference)),
+        "checkpoint_load": checkpoint_load_report,
+    }
+    ntrs_mechanism_path = out_dir / "ntrs_adapter_mechanism.json"
+    ntrs_mechanism_path.write_text(
+        json.dumps(ntrs_mechanism_evidence, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
     resource_summary = {
         "schema": "cvs.phase1.resource_summary.v1",
         "run_id": str(getattr(args, "run_id", "")),
@@ -9844,6 +10078,7 @@ def train(args) -> int:
         "resource_claim": (
             "THROUGHPUT_SCHEDULE_OBSERVATION_NOT_ISOLATED_LATENCY"
         ),
+        "ntrs_adapter_mechanism": ntrs_mechanism_evidence,
     }
     resource_summary_path = out_dir / "phase1_resource_summary.json"
     resource_summary_path.write_text(
@@ -9911,6 +10146,8 @@ def train(args) -> int:
         "final_guard_reason": str((guard_state or {}).get("reason", "")),
         "prototype_export": export_status,
         "resource_summary": resource_summary,
+        "ntrs_adapter_mechanism": ntrs_mechanism_evidence,
+        "ntrs_adapter_mechanism_path": str(ntrs_mechanism_path),
         "p0_mechanism_flags": p0_mechanism_flags,
         "legacy_p0_mechanism_flags_diagnostic_only": legacy_p0_mechanism_flags,
         "p0_mechanism_evidence_checkpoint_epoch": int(

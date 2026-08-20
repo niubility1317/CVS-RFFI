@@ -197,3 +197,57 @@ def test_recovery_matrix_profiles_freeze_bypass_lr_and_shared_head_controls():
     assert "--lambda_ntrs_min_correction 0.001" in v2
     assert "--lambda_ntrs_receiver 0" in v2
     assert "--lambda_ntrs_correctability 0" in v2
+
+
+def test_adapter_only_matrix_profiles_freeze_checkpoint_q_losses_and_leo_weak_protocol():
+    a0 = _dry_run("a0_control")
+    assert "candidate=ADVB02_NTRS_A0_CONTROL_r1_E200" in a0
+    assert "--from_scratch true" in a0
+    assert "--no_use_ntrs" in a0
+
+    bypass = _dry_run("a0_bypass")
+    assert "candidate=ADVB02_NTRS_A0_BYPASS_r1_E200" in bypass
+    assert "--ntrs_variant v2_min" in bypass
+    assert "--ntrs_identity_bypass true" in bypass
+    assert "--from_scratch true" in bypass
+
+    random_q = _dry_run("a1_random_q")
+    assert "candidate=ADVB02_NTRS_A1_RANDOM_Q_r1_E200" in random_q
+    assert "--ntrs_variant v3_adapter" in random_q
+    assert "--ntrs_q_trainable false" in random_q
+    assert "--ntrs_adapter_only true" in random_q
+    assert "--from_scratch false" in random_q
+    assert "--ntrs_alpha_max 0.02" in random_q
+    assert "--lambda_ntrs_robust_ce 1.0" in random_q
+    assert "--lambda_ntrs_clean_zero 1.0" in random_q
+    assert "--lambda_ntrs_sat_relative 0.10" in random_q
+
+    trainable_q = _dry_run("a1_trainable_q")
+    assert "candidate=ADVB02_NTRS_A1_TRAINABLE_Q_r1_E200" in trainable_q
+    assert "--ntrs_q_trainable true" in trainable_q
+    assert "--ntrs_use_support_gate false" in trainable_q
+    assert "--use_ema_teacher false" in trainable_q
+
+    a2 = _dry_run("a2_teacher_margin")
+    assert "candidate=ADVB02_NTRS_A2_TEACHER_MARGIN_r1_E200" in a2
+    assert "--ntrs_alpha_max 0.05" in a2
+    assert "--lambda_ntrs_sat_kl 0.01" in a2
+    assert "--lambda_ntrs_margin 0.03" in a2
+
+    a3 = _dry_run("a3_support_gate")
+    assert "--ntrs_use_support_gate true" in a3
+    a4 = _dry_run("a4_joint_core")
+    assert "--ntrs_adapter_only false" in a4
+    assert "--ntrs_core_lr_mode adapter_joint" in a4
+    assert "--ntrs_core_lr_ratio 0.02" in a4
+    assert "--lambda_teacher_clean_kl 1.0" in a4
+    assert "--lambda_teacher_zid_mse 1.0" in a4
+
+    for output in (a0, bypass, random_q, trainable_q, a2, a3, a4):
+        assert "--seed 392034" in output
+        assert "--labeled_ratio 0.07" in output
+        assert "--unlabeled_ratio 0.63" in output
+        assert "--source_cal_ratio 0.15" in output
+        assert "--source_select_ratio 0.15" in output
+        assert "mixed_orbit" not in output
+        assert "--eval_sat_scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak" in output

@@ -857,6 +857,113 @@ class NTRSMinimalResidual(nn.Module):
         )
 
 
+class NTRSAdapterOnlyResidual(nn.Module):
+    """Trainable q-only low-rank correction on a detached identity anchor."""
+
+    def __init__(
+        self,
+        *,
+        embedding_dim: int,
+        q_dim: int,
+        rank: int = 8,
+        alpha_max: float = 0.05,
+        support_domains: int = 1,
+        support_tau: float = 1.0,
+        use_support_gate: bool = False,
+    ):
+        super().__init__()
+        self.embedding_dim = int(embedding_dim)
+        self.q_dim = int(q_dim)
+        self.rank = int(rank)
+        self.alpha_max = float(alpha_max)
+        self.use_support_gate = bool(use_support_gate)
+        if self.embedding_dim <= 0 or self.q_dim <= 0:
+            raise ValueError("NTRS adapter dimensions must be positive")
+        if self.rank <= 0 or self.rank > self.embedding_dim:
+            raise ValueError("NTRS adapter rank must be in [1, embedding_dim]")
+        if self.alpha_max < 0.0 or self.alpha_max > 0.05:
+            raise ValueError("NTRS adapter alpha_max must be in [0, 0.05]")
+
+        hidden = max(32, 2 * self.q_dim)
+        self.coefficient_head = nn.Sequential(
+            nn.Linear(self.q_dim, hidden),
+            nn.SiLU(inplace=True),
+            nn.Linear(hidden, self.rank),
+        )
+        initial_basis, _ = torch.linalg.qr(
+            torch.randn(self.embedding_dim, self.rank), mode="reduced"
+        )
+        self.basis = nn.Parameter(initial_basis[:, : self.rank].contiguous())
+        nn.init.normal_(self.coefficient_head[-1].weight, mean=0.0, std=1e-3)
+        nn.init.zeros_(self.coefficient_head[-1].bias)
+        self.support_model = (
+            NTRSSourceSupport(
+                self.q_dim,
+                int(support_domains),
+                tau=float(support_tau),
+            )
+            if self.use_support_gate
+            else None
+        )
+
+    def forward(
+        self,
+        z_anchor: torch.Tensor,
+        q: torch.Tensor,
+        *,
+        epoch: int,
+        update_source_support: bool = False,
+        source_domains: Optional[torch.Tensor] = None,
+        source_support_mask: Optional[torch.Tensor] = None,
+    ) -> NTRSOutput:
+        del epoch
+        if z_anchor.dim() != 2 or int(z_anchor.size(1)) != self.embedding_dim:
+            raise ValueError("NTRS adapter anchor must be shaped [B, embedding_dim]")
+        if q.shape != (z_anchor.size(0), self.q_dim):
+            raise ValueError("NTRS adapter q must align with the embedding batch")
+
+        anchor = z_anchor.detach()
+        low_rank_coefficients = torch.tanh(self.coefficient_head(q))
+        basis = self.basis.to(device=q.device, dtype=q.dtype)
+        raw_delta = low_rank_coefficients @ basis.transpose(0, 1)
+        raw_norm = raw_delta.norm(dim=1, keepdim=True)
+        anchor_norm = anchor.norm(dim=1, keepdim=True).clamp_min(1e-6)
+        bound = self.alpha_max * anchor_norm
+        bounded_delta = raw_delta * torch.clamp(
+            bound / raw_norm.clamp_min(1e-6), max=1.0
+        )
+
+        if self.support_model is None:
+            support = q.new_ones(q.size(0))
+            support_distance = q.new_zeros(q.size(0))
+        else:
+            support, support_distance = self.support_model(
+                q.detach(),
+                update_source=bool(update_source_support),
+                domains=source_domains,
+                update_mask=source_support_mask,
+            )
+        gate = support.clamp(0.0, 1.0)
+        correction = gate[:, None] * bounded_delta
+        z_rob = anchor - correction
+        correction_energy = _zero_preserving_rms(correction, dim=1)
+        alpha = correction.norm(dim=1) / anchor_norm.view(-1)
+        zeros = anchor.new_zeros(anchor.size(0))
+        return NTRSOutput(
+            z_rob=z_rob,
+            correction=correction,
+            coefficients=raw_delta,
+            alpha=alpha,
+            gate=gate,
+            correctability=anchor.new_ones(anchor.size(0)),
+            correction_energy=correction_energy,
+            support=support,
+            support_distance=support_distance,
+            uncertainty=zeros,
+            subspace_residual=zeros,
+        )
+
+
 __all__ = [
     "BoundedWidelyLinearCorrector",
     "FastSlowContext",
@@ -866,6 +973,7 @@ __all__ = [
     "NTRSOutput",
     "NTRSRobustifier",
     "NTRSMinimalResidual",
+    "NTRSAdapterOnlyResidual",
     "NTRSSourceSupport",
     "NuisanceTangentBasis",
     "PhysicalCorrection",

@@ -19,6 +19,8 @@ _DISTRIBUTION_FIELDS = (
     "correctability",
     "uncertainty",
     "subspace_residual",
+    "relative_correction",
+    "rotation_angle_deg",
     "class_attraction_cosine",
 )
 
@@ -32,13 +34,14 @@ def _finite_flatten(value: Any) -> torch.Tensor:
 
 def _distribution_summary(values: list[torch.Tensor]) -> dict[str, float | int]:
     if not values:
-        return {"count": 0, "mean": float("nan"), "p95": float("nan")}
+        return {"count": 0, "mean": float("nan"), "p50": float("nan"), "p95": float("nan")}
     stacked = torch.cat(values, dim=0)
     if int(stacked.numel()) == 0:
-        return {"count": 0, "mean": float("nan"), "p95": float("nan")}
+        return {"count": 0, "mean": float("nan"), "p50": float("nan"), "p95": float("nan")}
     return {
         "count": int(stacked.numel()),
         "mean": float(stacked.mean().item()),
+        "p50": float(torch.quantile(stacked, 0.50).item()),
         "p95": float(torch.quantile(stacked, 0.95).item()),
     }
 
@@ -147,6 +150,28 @@ class NTRSTelemetryAccumulator:
             if int(values.numel()) > 0:
                 self._values[role]["class_attraction_cosine"].append(values)
 
+    def _record_geometry(self, role: str, output: Mapping[str, Any]) -> None:
+        anchor = output.get("ntrs_z_anchor")
+        robust = output.get("ntrs_z_rob")
+        correction = output.get("ntrs_correction")
+        if not all(torch.is_tensor(value) and value.dim() == 2 for value in (anchor, robust, correction)):
+            return
+        count = min(int(anchor.size(0)), int(robust.size(0)), int(correction.size(0)))
+        if count <= 0:
+            return
+        anchor_value = anchor[:count].detach().float()
+        robust_value = robust[:count].detach().float()
+        correction_value = correction[:count].detach().float()
+        relative = correction_value.norm(dim=1) / anchor_value.norm(dim=1).clamp_min(1e-8)
+        cosine = F.cosine_similarity(anchor_value, robust_value, dim=1).clamp(-1.0, 1.0)
+        rotation = torch.rad2deg(torch.acos(cosine))
+        relative_values = _finite_flatten(relative)
+        rotation_values = _finite_flatten(rotation)
+        if int(relative_values.numel()) > 0:
+            self._values[role]["relative_correction"].append(relative_values)
+        if int(rotation_values.numel()) > 0:
+            self._values[role]["rotation_angle_deg"].append(rotation_values)
+
     def _record_output(
         self,
         role: str,
@@ -169,6 +194,7 @@ class NTRSTelemetryAccumulator:
             if int(values.numel()) > 0:
                 self._values[role][name].append(values)
         self._record_class_attraction(role, output)
+        self._record_geometry(role, output)
         self._record_paths(output)
 
         if not torch.is_tensor(labels):

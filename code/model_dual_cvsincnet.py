@@ -8,12 +8,14 @@ from typing import Dict, Optional, Sequence, Tuple
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 from ntrs import (
     BoundedWidelyLinearCorrector,
     FastSlowContext,
     NTRSFastContext,
     NTRSCosFaceHead,
+    NTRSAdapterOnlyResidual,
     NTRSRobustifier,
     NTRSMinimalResidual,
     ntrs_safe_fuse_logits,
@@ -576,6 +578,8 @@ class DualCVSincNetDisentangle(nn.Module):
         ntrs_unknown_rescue: bool = False,
         ntrs_variant: str = "v1",
         ntrs_identity_bypass: bool = False,
+        ntrs_q_trainable: bool = True,
+        ntrs_use_support_gate: bool = False,
     ):
         super().__init__()
         self.num_classes = int(num_classes)
@@ -601,9 +605,11 @@ class DualCVSincNetDisentangle(nn.Module):
         self.use_crra = bool(use_crra)
         self.use_ntrs = bool(use_ntrs)
         self.ntrs_variant = str(ntrs_variant or "v1").lower().strip()
-        if self.ntrs_variant not in {"v1", "v2_min"}:
-            raise ValueError("ntrs_variant must be v1 or v2_min")
+        if self.ntrs_variant not in {"v1", "v2_min", "v3_adapter"}:
+            raise ValueError("ntrs_variant must be v1, v2_min, or v3_adapter")
         self.ntrs_identity_bypass = bool(ntrs_identity_bypass)
+        self.ntrs_q_trainable = bool(ntrs_q_trainable)
+        self.ntrs_use_support_gate = bool(ntrs_use_support_gate)
         if self.use_crra and self.use_ntrs:
             raise ValueError("ADVB02 CRRA and NTRS are independent candidates and cannot be enabled together")
         if self.use_ntrs and self.representation_mode != "dual":
@@ -708,7 +714,7 @@ class DualCVSincNetDisentangle(nn.Module):
                 descriptor_dim=40,
                 q_dim=int(ntrs_q_dim),
                 fast_dim=int(ntrs_fast_dim),
-            ) if self.ntrs_variant == "v2_min" else FastSlowContext(
+            ) if self.ntrs_variant in {"v2_min", "v3_adapter"} else FastSlowContext(
                 descriptor_dim=40,
                 q_dim=int(ntrs_q_dim),
                 fast_dim=int(ntrs_fast_dim),
@@ -726,7 +732,15 @@ class DualCVSincNetDisentangle(nn.Module):
             else None
         )
         self.ntrs_robustifier = (
-            (NTRSMinimalResidual(
+            (NTRSAdapterOnlyResidual(
+                embedding_dim=self.emb_dim,
+                q_dim=int(ntrs_q_dim),
+                rank=int(ntrs_rank),
+                alpha_max=float(ntrs_alpha_max),
+                support_domains=self.num_domains,
+                support_tau=float(ntrs_support_tau),
+                use_support_gate=self.ntrs_use_support_gate,
+            ) if self.ntrs_variant == "v3_adapter" else NTRSMinimalResidual(
                 embedding_dim=self.emb_dim,
                 q_dim=int(ntrs_q_dim),
                 alpha_max=float(ntrs_alpha_max),
@@ -910,6 +924,22 @@ class DualCVSincNetDisentangle(nn.Module):
     def _pick_z_dom(self, aux: Dict[str, torch.Tensor]) -> torch.Tensor:
         return self._pick_from_keys(aux, self.dom_feature_key, ("feat_imp", "feat_pa", "feat_dac", "base", "feat_con", "feat_cls", "feat_joint"))
 
+    @staticmethod
+    def _frozen_cosface_logits(head: nn.Module, z: torch.Tensor, labels: Optional[torch.Tensor]) -> torch.Tensor:
+        weight = getattr(head, "weight", None)
+        if not torch.is_tensor(weight):
+            raise ValueError("NTRS adapter requires a shared CosFace weight")
+        cosine = F.linear(
+            F.normalize(z.float(), dim=1, eps=1e-4),
+            F.normalize(weight.detach().float(), dim=1, eps=1e-4),
+        )
+        if labels is not None:
+            labels = labels.view(-1).long()
+            one_hot = torch.zeros_like(cosine)
+            one_hot.scatter_(1, labels[:, None], 1.0)
+            cosine = cosine - one_hot * float(getattr(head, "m", 0.35))
+        return cosine * float(getattr(head, "s", 30.0))
+
     def forward(
         self,
         x: torch.Tensor,
@@ -925,6 +955,7 @@ class DualCVSincNetDisentangle(nn.Module):
         ntrs_source_mask: Optional[torch.Tensor] = None,
         ntrs_metadata: Optional[torch.Tensor] = None,
         ntrs_metadata_valid: Optional[torch.Tensor] = None,
+        ntrs_force_raw_primary: bool = False,
     ):
         if self.representation_mode == "single_parameter_matched":
             aux_id = backbone_forward_compat(
@@ -1079,7 +1110,7 @@ class DualCVSincNetDisentangle(nn.Module):
                 ntrs_context_tx_adv_logits = self.ntrs_context_tx_adv_head(
                     grad_reverse(ntrs_context_out.q, grl_lambda)
                 )
-            else:
+            elif self.ntrs_variant == "v2_min":
                 ntrs_robust_out = self.ntrs_robustifier(
                     z_anchor,
                     ntrs_context_out.q,
@@ -1100,6 +1131,30 @@ class DualCVSincNetDisentangle(nn.Module):
                     ntrs_robust_out.z_rob.to(dtype=z_anchor.dtype) - z_anchor
                 )
                 ntrs_agreement = raw_tx_logits.detach().argmax(dim=1) == ntrs_robust_logits.detach().argmax(dim=1)
+            else:
+                ntrs_robust_out = self.ntrs_robustifier(
+                    z_anchor,
+                    ntrs_context_out.q,
+                    epoch=current_ntrs_epoch,
+                    update_source_support=bool(update_ntrs_source),
+                    source_domains=domain_labels,
+                    source_support_mask=ntrs_source_mask,
+                )
+                raw_head = self.id_backbone.cls_head.head
+                ntrs_robust_logits = self._frozen_cosface_logits(
+                    raw_head, ntrs_robust_out.z_rob, y_tx
+                )
+                ntrs_safe_gate = ntrs_robust_out.gate
+                ntrs_agreement = (
+                    raw_tx_logits.detach().argmax(dim=1)
+                    == ntrs_robust_logits.detach().argmax(dim=1)
+                )
+                if self.training or bool(ntrs_force_raw_primary):
+                    tx_logits = raw_tx_logits
+                    z_id = z_anchor
+                else:
+                    tx_logits = ntrs_robust_logits
+                    z_id = ntrs_robust_out.z_rob.to(dtype=z_anchor.dtype)
         else:
             tx_logits = raw_tx_logits
             z_id = z_anchor
@@ -1167,7 +1222,9 @@ class DualCVSincNetDisentangle(nn.Module):
             "ntrs_enabled": bool(self.use_ntrs),
             "ntrs_variant": self.ntrs_variant,
             "ntrs_identity_bypass": bool(self.ntrs_identity_bypass),
-            "ntrs_shared_head": bool(self.use_ntrs and self.ntrs_variant == "v2_min"),
+            "ntrs_q_trainable": bool(self.ntrs_q_trainable),
+            "ntrs_use_support_gate": bool(self.ntrs_use_support_gate),
+            "ntrs_shared_head": bool(self.use_ntrs and self.ntrs_variant in {"v2_min", "v3_adapter"}),
             "ntrs_raw_logits": raw_tx_logits,
             "ntrs_robust_logits": ntrs_robust_logits,
             "ntrs_z_anchor": z_anchor,
@@ -1319,6 +1376,8 @@ def build_dual_model(
     ntrs_unknown_rescue: bool = False,
     ntrs_variant: str = "v1",
     ntrs_identity_bypass: bool = False,
+    ntrs_q_trainable: bool = True,
+    ntrs_use_support_gate: bool = False,
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -1385,4 +1444,6 @@ def build_dual_model(
         ntrs_unknown_rescue=ntrs_unknown_rescue,
         ntrs_variant=ntrs_variant,
         ntrs_identity_bypass=ntrs_identity_bypass,
+        ntrs_q_trainable=ntrs_q_trainable,
+        ntrs_use_support_gate=ntrs_use_support_gate,
     )

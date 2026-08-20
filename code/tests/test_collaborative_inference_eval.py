@@ -105,6 +105,8 @@ class CollaborativeInferenceEvalTest(unittest.TestCase):
                 "ntrs_fast_dim": 8,
                 "ntrs_variant": "v2_min",
                 "ntrs_identity_bypass": True,
+                "ntrs_q_trainable": False,
+                "ntrs_use_support_gate": True,
             },
         )
         overrides = argparse.Namespace(
@@ -119,6 +121,8 @@ class CollaborativeInferenceEvalTest(unittest.TestCase):
 
         self.assertEqual(model.ntrs_variant, "v2_min")
         self.assertTrue(model.ntrs_identity_bypass)
+        self.assertFalse(model.ntrs_q_trainable)
+        self.assertTrue(model.ntrs_use_support_gate)
 
     def test_collaborative_cli_defaults_to_complete_leo_weak_family(self):
         from evaluation import collaborative_inference_eval

@@ -30,6 +30,7 @@ def _output(role: str):
         "ntrs_raw_logits": raw,
         "ntrs_robust_logits": robust,
         "ntrs_z_anchor": anchor,
+        "ntrs_z_rob": anchor - correction,
         "ntrs_correction": correction,
         "ntrs_gate": torch.tensor([0.1, 0.2, 0.3, 0.4]),
         "ntrs_safe_gate": torch.tensor([0.1, 0.2, 0.0, 0.4]),
@@ -67,6 +68,10 @@ def test_ntrs_telemetry_reports_raw_robust_fused_transitions_and_safety():
     assert transitions["harmed_correct"] == 0
     assert transitions["both_wrong"] == 0
     assert summary["satellite"]["gate"]["count"] == 4
+    assert summary["satellite"]["gate"]["p50"] == pytest.approx(0.25)
+    assert summary["satellite"]["relative_correction"]["count"] == 4
+    assert summary["satellite"]["rotation_angle_deg"]["count"] == 4
+    assert summary["satellite"]["rotation_angle_deg"]["p95"] > 0.0
     assert summary["satellite"]["gate_active_rate"] == pytest.approx(1.0)
     assert summary["satellite"]["safe_gate_active_rate"] == pytest.approx(0.75)
     assert summary["satellite"]["subspace_residual"]["mean"] == pytest.approx(0.0)

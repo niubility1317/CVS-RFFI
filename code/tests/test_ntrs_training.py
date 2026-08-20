@@ -5,8 +5,13 @@ import torch
 import torch.nn as nn
 
 from SSDG.train_ssdg import (
+    _capture_ntrs_raw_reference,
+    _load_training_checkpoint_state,
+    _ntrs_raw_max_abs_drift,
+    _set_ntrs_training_mode,
     build_arg_parser,
     build_optimizer_with_crra_groups,
+    configure_ntrs_trainable_parameters,
 )
 from cvsrffi.losses import (
     ntrs_class_attraction_loss,
@@ -121,6 +126,224 @@ def test_ntrs_core_lr_mode_separates_fair_and_historical_controls():
         core_lr_mode="v1",
     )
     assert historical == {"core": pytest.approx(2e-5), "ntrs": pytest.approx(1e-4)}
+
+
+def test_adapter_only_freeze_excludes_raw_backbone_and_head_from_optimizer():
+    model = build_dual_model(
+        num_classes=3,
+        num_domains=2,
+        model_size="S",
+        dataset="wisig",
+        input_len=64,
+        sample_rate_hz=25e6,
+        model_variant="lite_h",
+        id_feature_key="feat_joint",
+        dom_feature_key="feat_imp",
+        use_ntrs=True,
+        ntrs_variant="v3_adapter",
+        ntrs_rank=4,
+        ntrs_alpha_max=0.05,
+        ntrs_q_dim=8,
+        ntrs_fast_dim=8,
+    )
+    args = SimpleNamespace(
+        ntrs_variant="v3_adapter",
+        ntrs_adapter_only=True,
+        ntrs_q_trainable=True,
+        ntrs_core_lr_mode="baseline",
+    )
+    summary = configure_ntrs_trainable_parameters(model, args)
+
+    assert summary["raw_trainable_parameters"] == 0
+    assert summary["q_trainable_parameters"] > 0
+    assert summary["adapter_trainable_parameters"] > 0
+    assert all(not parameter.requires_grad for parameter in model.id_backbone.parameters())
+    assert all(not parameter.requires_grad for parameter in model.dom_backbone.parameters())
+    assert all(parameter.requires_grad for parameter in model.ntrs_context.parameters())
+    assert all(parameter.requires_grad for parameter in model.ntrs_robustifier.parameters())
+
+    args.ntrs_q_trainable = False
+    summary = configure_ntrs_trainable_parameters(model, args)
+    assert summary["q_trainable_parameters"] == 0
+    assert all(not parameter.requires_grad for parameter in model.ntrs_context.parameters())
+    assert all(parameter.requires_grad for parameter in model.ntrs_robustifier.parameters())
+
+
+def test_adapter_only_raw_reference_reports_zero_then_detects_parameter_drift():
+    model = build_dual_model(
+        num_classes=3,
+        num_domains=2,
+        model_size="S",
+        dataset="wisig",
+        input_len=64,
+        sample_rate_hz=25e6,
+        model_variant="lite_h",
+        id_feature_key="feat_joint",
+        dom_feature_key="feat_imp",
+        use_ntrs=True,
+        ntrs_variant="v3_adapter",
+        ntrs_rank=4,
+        ntrs_alpha_max=0.05,
+        ntrs_q_dim=8,
+        ntrs_fast_dim=8,
+    )
+    reference = _capture_ntrs_raw_reference(model)
+    assert reference
+    assert _ntrs_raw_max_abs_drift(model, reference) == pytest.approx(0.0)
+
+    with torch.no_grad():
+        next(model.id_backbone.parameters()).view(-1)[0].add_(0.125)
+    assert _ntrs_raw_max_abs_drift(model, reference) == pytest.approx(0.125)
+
+
+def test_adapter_only_training_mode_keeps_mature_raw_modules_in_eval_mode():
+    model = build_dual_model(
+        num_classes=3,
+        num_domains=2,
+        model_size="S",
+        dataset="wisig",
+        input_len=64,
+        sample_rate_hz=25e6,
+        model_variant="lite_h",
+        id_feature_key="feat_joint",
+        dom_feature_key="feat_imp",
+        use_ntrs=True,
+        ntrs_variant="v3_adapter",
+        ntrs_rank=4,
+        ntrs_alpha_max=0.05,
+        ntrs_q_dim=8,
+        ntrs_fast_dim=8,
+    )
+    args = SimpleNamespace(
+        ntrs_variant="v3_adapter",
+        ntrs_adapter_only=True,
+        ntrs_q_trainable=True,
+    )
+    _set_ntrs_training_mode(model, args)
+
+    assert model.training is True
+    assert model.id_backbone.training is False
+    assert model.dom_backbone.training is False
+    assert model.ntrs_context.training is True
+    assert model.ntrs_robustifier.training is True
+
+    output = model(
+        torch.randn(3, 2, 64),
+        y_tx=torch.tensor([0, 1, 2]),
+        return_aux=True,
+        ntrs_epoch=1,
+    )
+    assert torch.equal(output["tx_logits"], output["ntrs_raw_logits"])
+    assert torch.equal(output["z_id"], output["ntrs_z_anchor"])
+
+    model.eval()
+    _set_ntrs_training_mode(model, args)
+    assert model.training is True
+    assert model.id_backbone.training is False
+    restored = model(
+        torch.randn(3, 2, 64),
+        y_tx=torch.tensor([0, 1, 2]),
+        return_aux=True,
+        ntrs_epoch=1,
+    )
+    assert torch.equal(restored["tx_logits"], restored["ntrs_raw_logits"])
+    assert torch.equal(restored["z_id"], restored["ntrs_z_anchor"])
+
+
+def test_adapter_checkpoint_loads_only_mature_raw_path_and_keeps_new_adapter_initialization():
+    common = dict(
+        num_classes=3,
+        num_domains=2,
+        model_size="S",
+        dataset="wisig",
+        input_len=64,
+        sample_rate_hz=25e6,
+        model_variant="lite_h",
+        id_feature_key="feat_joint",
+        dom_feature_key="feat_imp",
+        use_ntrs=True,
+        ntrs_rank=4,
+        ntrs_alpha_max=0.05,
+        ntrs_q_dim=8,
+        ntrs_fast_dim=8,
+    )
+    mature = build_dual_model(**common, ntrs_variant="v2_min")
+    adapter = build_dual_model(**common, ntrs_variant="v3_adapter")
+    adapter_basis_before = adapter.ntrs_robustifier.basis.detach().clone()
+    mature_raw = {
+        name: value.detach().clone()
+        for name, value in mature.state_dict().items()
+        if not name.startswith("ntrs_")
+    }
+
+    report = _load_training_checkpoint_state(
+        adapter,
+        {"model": mature.state_dict()},
+        SimpleNamespace(ntrs_variant="v3_adapter"),
+    )
+
+    adapter_state = adapter.state_dict()
+    assert report["ntrs_state_skipped"] is True
+    assert report["loaded_parameter_count"] == len(mature_raw)
+    assert all(torch.equal(adapter_state[name], value) for name, value in mature_raw.items())
+    assert torch.equal(adapter.ntrs_robustifier.basis, adapter_basis_before)
+
+def test_adapter_loss_uses_satellite_ce_and_separates_clean_zero_from_satellite_relative():
+    labels = torch.tensor([0, 1])
+    anchor = torch.tensor([[3.0, 4.0], [0.0, 2.0]])
+    clean_correction = torch.tensor([[0.3, 0.4], [0.0, 0.2]], requires_grad=True)
+    satellite_correction = torch.tensor([[0.6, 0.8], [0.0, 0.4]], requires_grad=True)
+    clean_robust_logits = torch.tensor([[0.0, 8.0], [8.0, 0.0]], requires_grad=True)
+    satellite_robust_logits = torch.tensor([[8.0, 0.0], [0.0, 8.0]], requires_grad=True)
+
+    def _output(correction, robust_logits):
+        return {
+            "tx_logits": torch.zeros(2, 2),
+            "z_id": anchor,
+            "z_dom": anchor.flip(1),
+            "ntrs_raw_logits": torch.tensor([[8.0, 0.0], [0.0, 8.0]]),
+            "ntrs_robust_logits": robust_logits,
+            "ntrs_z_anchor": anchor,
+            "ntrs_z_rob": anchor - correction,
+            "ntrs_correction": correction,
+            "ntrs_alpha": torch.zeros(2),
+            "ntrs_correctability": torch.ones(2),
+            "ntrs_correction_energy": correction.norm(dim=1),
+            "ntrs_subspace_residual": torch.zeros(2),
+        }
+
+    bundle = compute_ntrs_loss_bundle(
+        _output(clean_correction, clean_robust_logits),
+        _output(satellite_correction, satellite_robust_logits),
+        clean_labels=labels,
+        satellite_labels=labels,
+        clean_receivers=None,
+        satellite_receivers=None,
+        clean_days=None,
+        satellite_days=None,
+        clean_channels=None,
+        satellite_channels=None,
+        prototypes=torch.eye(2),
+        margin_epsilon=0.05,
+        correctability_epsilon=0.01,
+        energy_threshold=0.10,
+        class_attraction_max_cosine=0.50,
+        variant="v3_adapter",
+    )
+
+    assert float(bundle["losses"]["robust_ce"].detach()) == pytest.approx(
+        float(torch.nn.functional.cross_entropy(satellite_robust_logits, labels).detach())
+    )
+    assert float(bundle["losses"]["clean_zero"].detach()) == pytest.approx(0.145)
+    assert float(bundle["losses"]["satellite_relative"].detach()) == pytest.approx(0.04)
+    total = (
+        bundle["losses"]["robust_ce"]
+        + bundle["losses"]["clean_zero"]
+        + bundle["losses"]["satellite_relative"]
+    )
+    total.backward()
+    assert satellite_robust_logits.grad is not None
+    assert clean_robust_logits.grad is None
 
 
 def test_source_update_mask_uses_only_clean_source_rows_for_concat_pairs():

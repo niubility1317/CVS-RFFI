@@ -172,6 +172,65 @@ def test_ntrs_v2_min_stops_context_gradient_and_bounds_relative_candidate():
     assert out.correction.norm(dim=1).item() <= 1.0 + 1e-5
 
 
+def test_ntrs_adapter_only_keeps_training_primary_raw_and_evaluates_always_on_robust():
+    model = _tiny_model(
+        use_ntrs=True,
+        ntrs_variant="v3_adapter",
+        ntrs_rank=4,
+        ntrs_alpha_max=0.05,
+        ntrs_q_dim=8,
+        ntrs_fast_dim=8,
+    )
+    x = torch.randn(3, 2, 64)
+    labels = torch.tensor([0, 1, 2])
+
+    model.train()
+    train_out = model(x, y_tx=labels, return_aux=True, ntrs_epoch=1)
+    assert torch.equal(train_out["tx_logits"], train_out["ntrs_raw_logits"])
+    assert torch.equal(train_out["z_id"], train_out["ntrs_z_anchor"])
+    assert not torch.equal(train_out["ntrs_robust_logits"], train_out["ntrs_raw_logits"])
+
+    model.eval()
+    with torch.no_grad():
+        eval_out = model(x, y_tx=labels, return_aux=True, ntrs_epoch=200)
+    assert torch.equal(eval_out["tx_logits"], eval_out["ntrs_robust_logits"])
+    assert torch.equal(eval_out["z_id"], eval_out["ntrs_z_rob"])
+    assert torch.equal(eval_out["ntrs_safe_gate"], torch.ones(3))
+
+
+def test_ntrs_adapter_only_robust_loss_updates_q_not_identity_backbone():
+    model = _tiny_model(
+        use_ntrs=True,
+        ntrs_variant="v3_adapter",
+        ntrs_rank=4,
+        ntrs_alpha_max=0.02,
+        ntrs_q_dim=8,
+        ntrs_fast_dim=8,
+    ).train()
+    out = model(
+        torch.randn(4, 2, 64),
+        y_tx=torch.tensor([0, 1, 2, 0]),
+        return_aux=True,
+        ntrs_epoch=1,
+    )
+    out["ntrs_robust_logits"].square().mean().backward()
+
+    q_grad = sum(
+        float(parameter.grad.abs().sum())
+        for parameter in model.ntrs_context.parameters()
+        if parameter.grad is not None
+    )
+    backbone_grad = sum(
+        float(parameter.grad.abs().sum())
+        for parameter in model.id_backbone.parameters()
+        if parameter.grad is not None
+    )
+    assert q_grad > 0.0
+    assert backbone_grad == 0.0
+    assert model.ntrs_robust_head is None
+    assert not any(isinstance(module, torch.nn.LayerNorm) for module in model.ntrs_robustifier.modules())
+
+
 def test_ntrs_safe_fusion_falls_back_to_raw_on_disagreement_or_excess_energy():
     raw = torch.tensor([[4.0, 1.0, 0.0], [4.0, 1.0, 0.0], [4.0, 1.0, 0.0]])
     robust = torch.tensor([[1.0, 5.0, 0.0], [5.0, 2.0, 0.0], [5.0, 2.0, 0.0]])

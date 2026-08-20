@@ -41,6 +41,8 @@ def ntrs_training_stage(epoch: int, *, variant: str = "v1") -> NTRSTrainingStage
 
     epoch = max(1, int(epoch))
     variant = str(variant or "v1").lower().strip()
+    if variant == "v3_adapter":
+        return NTRSTrainingStage("ADAPTER", 0.0, 1.0, 0.0, 1.0, 0.0)
     if variant == "v2_min":
         if epoch <= 90:
             return NTRSTrainingStage("V2-S0", 1.0, 0.0, 0.0, 0.0, 0.0)
@@ -60,7 +62,7 @@ def ntrs_training_stage(epoch: int, *, variant: str = "v1") -> NTRSTrainingStage
 
 
 def ntrs_stage_code(stage: NTRSTrainingStage) -> int:
-    codes = {"S1": 1, "S2-a": 2, "S2-b": 3, "S3": 4, "V2-S0": 5, "V2-RAMP": 6, "V2-FULL": 7}
+    codes = {"S1": 1, "S2-a": 2, "S2-b": 3, "S3": 4, "V2-S0": 5, "V2-RAMP": 6, "V2-FULL": 7, "ADAPTER": 8}
     if stage.name not in codes:
         raise ValueError(f"unsupported NTRS stage name: {stage.name}")
     return codes[stage.name]
@@ -89,6 +91,7 @@ def set_ntrs_optimizer_learning_rates(
     base_lr: float,
     variant: str = "v1",
     core_lr_mode: str = "v1",
+    core_lr_ratio: float = 0.02,
 ) -> dict[str, float]:
     """Apply the frozen backbone/robustifier rates and return their values."""
 
@@ -96,13 +99,16 @@ def set_ntrs_optimizer_learning_rates(
         raise ValueError("NTRS base_lr must be positive")
     stage = ntrs_training_stage(epoch, variant=variant)
     core_lr_mode = str(core_lr_mode or "v1").lower().strip()
-    if core_lr_mode not in {"v1", "baseline"}:
+    if core_lr_mode not in {"v1", "baseline", "adapter_joint"}:
         raise ValueError(f"unsupported NTRS core_lr_mode: {core_lr_mode}")
-    core_scale = (
-        float(ntrs_training_stage(epoch, variant="v1").core_lr_scale)
-        if core_lr_mode == "v1"
-        else 1.0
-    )
+    if core_lr_mode == "v1":
+        core_scale = float(ntrs_training_stage(epoch, variant="v1").core_lr_scale)
+    elif core_lr_mode == "adapter_joint":
+        core_scale = float(core_lr_ratio)
+        if core_scale < 0.01 or core_scale > 0.05:
+            raise ValueError("NTRS adapter joint core LR ratio must be in [0.01, 0.05]")
+    else:
+        core_scale = 1.0
     rates = {
         "core": float(base_lr) * core_scale,
         "ntrs": float(base_lr) * float(stage.ntrs_lr_scale),
@@ -218,6 +224,7 @@ def compute_ntrs_loss_bundle(
 
     if not torch.is_tensor(clean_labels) or not torch.is_tensor(prototypes):
         raise ValueError("NTRS loss bundle requires source labels and raw prototypes")
+    variant = str(variant or "v1").lower().strip()
     outputs = [clean_output]
     label_values: list[Optional[torch.Tensor]] = [clean_labels]
     receiver_values = [clean_receivers]
@@ -235,13 +242,20 @@ def compute_ntrs_loss_bundle(
     zero = _connected_zero(clean_output)
     losses: dict[str, torch.Tensor] = {}
     info: dict[str, Any] = {}
-    losses["robust_ce"], info["robust_ce"] = _factor_cross_entropy(
-        outputs, label_values, "ntrs_robust_logits", zero
-    )
+    if variant == "v3_adapter" and satellite_output is not None:
+        losses["robust_ce"], info["robust_ce"] = _factor_cross_entropy(
+            [satellite_output], [satellite_labels], "ntrs_robust_logits", zero
+        )
+    else:
+        losses["robust_ce"], info["robust_ce"] = _factor_cross_entropy(
+            outputs, label_values, "ntrs_robust_logits", zero
+        )
     losses["sat_kl"] = zero
     losses["margin"] = zero
     losses["relation"] = zero
     losses["class_conditional"] = zero
+    losses["clean_zero"] = zero
+    losses["satellite_relative"] = zero
     if satellite_output is not None:
         clean_anchor = clean_output.get("ntrs_z_anchor")
         satellite_robust = satellite_output.get("ntrs_z_rob")
@@ -312,8 +326,18 @@ def compute_ntrs_loss_bundle(
     residual = _concatenate_output_tensor(outputs, "ntrs_subspace_residual")
     correction = _concatenate_output_tensor(outputs, "ntrs_correction")
     candidate_correction = _concatenate_output_tensor(outputs, "ntrs_correction")
-    variant = str(variant or "v1").lower().strip()
-    if variant == "v2_min":
+    if variant == "v3_adapter":
+        clean_correction = clean_output.get("ntrs_correction")
+        satellite_anchor = satellite_output.get("ntrs_z_anchor") if satellite_output is not None else None
+        satellite_correction = satellite_output.get("ntrs_correction") if satellite_output is not None else None
+        if torch.is_tensor(clean_correction):
+            losses["clean_zero"] = clean_correction.float().square().sum(dim=1).mean()
+        if torch.is_tensor(satellite_anchor) and torch.is_tensor(satellite_correction):
+            losses["satellite_relative"] = ntrs_relative_correction_loss(
+                satellite_anchor, satellite_correction
+            )
+        losses["minimum_correction"] = losses["satellite_relative"]
+    elif variant == "v2_min":
         losses["minimum_correction"] = (
             ntrs_relative_correction_loss(anchor, candidate_correction)
             if torch.is_tensor(anchor) and torch.is_tensor(candidate_correction)
@@ -394,9 +418,18 @@ def validate_ntrs_phase1_config(args: Any) -> None:
         raise ValueError("NTRS unknown rescue must remain disabled in the first Phase1 candidate")
     if int(getattr(args, "ntrs_rank", 0)) <= 0:
         raise ValueError("ntrs_rank must be positive")
+    variant = str(getattr(args, "ntrs_variant", "v1") or "v1").lower().strip()
     alpha_max = float(getattr(args, "ntrs_alpha_max", 0.20))
-    if alpha_max < 0.0 or alpha_max > 0.20:
-        raise ValueError("ntrs_alpha_max must remain in [0, 0.20] for the first candidate")
+    alpha_cap = 0.05 if variant == "v3_adapter" else 0.20
+    if alpha_max < 0.0 or alpha_max > alpha_cap:
+        raise ValueError(f"ntrs_alpha_max must remain in [0, {alpha_cap:.2f}] for {variant}")
+    if variant == "v3_adapter":
+        if not str(getattr(args, "baseline_ckpt", "")).strip() or bool(getattr(args, "from_scratch", True)):
+            raise ValueError("NTRS adapter-only requires a mature baseline_ckpt and from_scratch=false")
+        if bool(getattr(args, "ntrs_adapter_only", False)) and str(
+            getattr(args, "ntrs_core_lr_mode", "baseline")
+        ) == "adapter_joint":
+            raise ValueError("adapter-only mode cannot enable joint core learning rate")
     if float(getattr(args, "ntrs_support_tau", 1.0)) <= 0.0:
         raise ValueError("ntrs_support_tau must be positive")
     if float(getattr(args, "ntrs_energy_threshold", 0.10)) <= 0.0:

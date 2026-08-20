@@ -3,11 +3,55 @@ import torch
 from ntrs import (
     BoundedWidelyLinearCorrector,
     FastSlowContext,
+    NTRSAdapterOnlyResidual,
     NTRSRobustifier,
     NuisanceTangentBasis,
     compute_grouped_physical_descriptors,
     ntrs_stage_scale,
 )
+
+
+def test_adapter_only_residual_trains_q_without_backpropagating_into_anchor():
+    module = NTRSAdapterOnlyResidual(
+        embedding_dim=16,
+        q_dim=8,
+        rank=4,
+        alpha_max=0.05,
+    )
+    z_anchor = torch.randn(6, 16, requires_grad=True)
+    q = torch.randn(6, 8, requires_grad=True)
+
+    output = module(z_anchor, q, epoch=1)
+    loss = output.z_rob.square().mean()
+    loss.backward()
+
+    assert q.grad is not None
+    assert float(q.grad.abs().sum()) > 0.0
+    assert z_anchor.grad is None
+    assert torch.all(output.alpha <= 0.05 + 1e-6)
+
+
+def test_adapter_only_residual_is_q_only_low_rank_without_layernorm():
+    module = NTRSAdapterOnlyResidual(
+        embedding_dim=12,
+        q_dim=5,
+        rank=3,
+        alpha_max=0.02,
+    )
+    assert not any(isinstance(child, torch.nn.LayerNorm) for child in module.modules())
+    assert module.basis.shape == (12, 3)
+
+    q = torch.randn(4, 5)
+    anchor_a = torch.randn(4, 12)
+    anchor_b = torch.randn(4, 12) * 7.0
+    out_a = module(anchor_a, q, epoch=1)
+    out_b = module(anchor_b, q, epoch=1)
+
+    direction_a = torch.nn.functional.normalize(out_a.coefficients, dim=1)
+    direction_b = torch.nn.functional.normalize(out_b.coefficients, dim=1)
+    assert torch.allclose(direction_a, direction_b, atol=1e-6, rtol=1e-6)
+    assert torch.all(out_a.alpha <= 0.02 + 1e-6)
+    assert torch.all(out_b.alpha <= 0.02 + 1e-6)
 
 
 def test_grouped_physical_descriptors_are_finite_detached_and_40_dimensional():
@@ -169,4 +213,3 @@ def test_robustifier_is_zero_in_s1_and_bounded_inside_rank8_subspace_after_ramp(
     assert torch.max(module.tangent.off_subspace_energy(active.correction)).item() < 1e-5
     assert torch.max(active.subspace_residual).item() < 1e-5
     assert torch.isfinite(active.z_rob).all()
-
