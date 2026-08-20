@@ -225,6 +225,13 @@ class NTRSTelemetryAccumulator:
         for role in ("clean", "satellite"):
             for name in _DISTRIBUTION_FIELDS:
                 result[role][name] = _distribution_summary(self._values[role][name])
+            for name in ("gate", "safe_gate"):
+                values = self._values[role][name]
+                count = sum(int(value.numel()) for value in values)
+                active = sum(int((value > 0.0).sum().item()) for value in values)
+                result[role][f"{name}_active_rate"] = (
+                    float(active / count) if count > 0 else float("nan")
+                )
             total = int(self._correct[role]["total"])
             for name in ("raw", "robust", "fused"):
                 result[role][f"{name}_accuracy"] = (

@@ -357,6 +357,8 @@ def build_baseline_model(model_args, device: torch.device) -> nn.Module:
         ntrs_support_tau=float(getattr(model_args, "ntrs_support_tau", 1.0)),
         ntrs_energy_threshold=float(getattr(model_args, "ntrs_energy_threshold", 0.10)),
         ntrs_unknown_rescue=bool(getattr(model_args, "ntrs_unknown_rescue", False)),
+        ntrs_variant=str(getattr(model_args, "ntrs_variant", "v1")),
+        ntrs_identity_bypass=bool(getattr(model_args, "ntrs_identity_bypass", False)),
         fast_infer_when_no_aux=bool(getattr(model_args, "fast_infer_when_no_aux", True)),
         arch_family=str(getattr(model_args, "arch_family", "cvsincnet")),
         representation_mode=str(

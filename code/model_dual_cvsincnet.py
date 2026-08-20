@@ -12,8 +12,10 @@ import torch.nn as nn
 from ntrs import (
     BoundedWidelyLinearCorrector,
     FastSlowContext,
+    NTRSFastContext,
     NTRSCosFaceHead,
     NTRSRobustifier,
+    NTRSMinimalResidual,
     ntrs_safe_fuse_logits,
     ntrs_stage_scale,
 )
@@ -572,6 +574,8 @@ class DualCVSincNetDisentangle(nn.Module):
         ntrs_support_tau: float = 1.0,
         ntrs_energy_threshold: float = 0.10,
         ntrs_unknown_rescue: bool = False,
+        ntrs_variant: str = "v1",
+        ntrs_identity_bypass: bool = False,
     ):
         super().__init__()
         self.num_classes = int(num_classes)
@@ -596,6 +600,10 @@ class DualCVSincNetDisentangle(nn.Module):
         self.use_tx_adv_on_zdom = bool(use_tx_adv_on_zdom)
         self.use_crra = bool(use_crra)
         self.use_ntrs = bool(use_ntrs)
+        self.ntrs_variant = str(ntrs_variant or "v1").lower().strip()
+        if self.ntrs_variant not in {"v1", "v2_min"}:
+            raise ValueError("ntrs_variant must be v1 or v2_min")
+        self.ntrs_identity_bypass = bool(ntrs_identity_bypass)
         if self.use_crra and self.use_ntrs:
             raise ValueError("ADVB02 CRRA and NTRS are independent candidates and cannot be enabled together")
         if self.use_ntrs and self.representation_mode != "dual":
@@ -690,8 +698,17 @@ class DualCVSincNetDisentangle(nn.Module):
         self.emb_dim = self._infer_emb_dim(self.id_backbone)
         if self.use_ntrs and self.arch_family != "cvsincnet":
             raise ValueError("ADVB02 NTRS currently requires the CV-SincNet physical backbone")
+        ntrs_rng_state = (
+            torch.random.get_rng_state()
+            if self.use_ntrs and self.ntrs_identity_bypass
+            else None
+        )
         self.ntrs_context = (
-            FastSlowContext(
+            (NTRSFastContext(
+                descriptor_dim=40,
+                q_dim=int(ntrs_q_dim),
+                fast_dim=int(ntrs_fast_dim),
+            ) if self.ntrs_variant == "v2_min" else FastSlowContext(
                 descriptor_dim=40,
                 q_dim=int(ntrs_q_dim),
                 fast_dim=int(ntrs_fast_dim),
@@ -699,30 +716,34 @@ class DualCVSincNetDisentangle(nn.Module):
                 metadata_dim=int(ntrs_metadata_dim),
                 num_domains=self.num_domains,
                 slow_ema_decay=float(ntrs_slow_ema_decay),
-            )
+            ))
             if self.use_ntrs
             else None
         )
         self.ntrs_corrector = (
             BoundedWidelyLinearCorrector(q_dim=int(ntrs_q_dim), taps=3)
-            if self.use_ntrs
+            if self.use_ntrs and self.ntrs_variant == "v1"
             else None
         )
         self.ntrs_robustifier = (
-            NTRSRobustifier(
+            (NTRSMinimalResidual(
+                embedding_dim=self.emb_dim,
+                q_dim=int(ntrs_q_dim),
+                alpha_max=float(ntrs_alpha_max),
+            ) if self.ntrs_variant == "v2_min" else NTRSRobustifier(
                 embedding_dim=self.emb_dim,
                 q_dim=int(ntrs_q_dim),
                 rank=int(ntrs_rank),
                 alpha_max=float(ntrs_alpha_max),
                 support_domains=self.num_domains,
                 support_tau=float(ntrs_support_tau),
-            )
+            ))
             if self.use_ntrs
             else None
         )
         self.ntrs_robust_head = (
             NTRSCosFaceHead(self.emb_dim, self.num_classes)
-            if self.use_ntrs
+            if self.use_ntrs and self.ntrs_variant == "v1"
             else None
         )
         if self.ntrs_robust_head is not None:
@@ -733,24 +754,26 @@ class DualCVSincNetDisentangle(nn.Module):
             self.ntrs_robust_head.initialize_from(raw_weight)
         self.ntrs_receiver_head = (
             MLPHead(int(ntrs_q_dim), self.num_domains, hidden=max(32, int(ntrs_q_dim)), drop=drop)
-            if self.use_ntrs
+            if self.use_ntrs and self.ntrs_variant == "v1"
             else None
         )
         self.ntrs_day_head = (
             MLPHead(int(ntrs_q_dim), self.num_domains, hidden=max(32, int(ntrs_q_dim)), drop=drop)
-            if self.use_ntrs
+            if self.use_ntrs and self.ntrs_variant == "v1"
             else None
         )
         self.ntrs_channel_head = (
             MLPHead(int(ntrs_q_dim), 2, hidden=max(32, int(ntrs_q_dim)), drop=drop)
-            if self.use_ntrs
+            if self.use_ntrs and self.ntrs_variant == "v1"
             else None
         )
         self.ntrs_context_tx_adv_head = (
             MLPHead(int(ntrs_q_dim), self.num_classes, hidden=max(32, int(ntrs_q_dim)), drop=drop)
-            if self.use_ntrs
+            if self.use_ntrs and self.ntrs_variant == "v1"
             else None
         )
+        if ntrs_rng_state is not None:
+            torch.random.set_rng_state(ntrs_rng_state)
         self.dom_enhancer = DomainFeatureEnhancer(
             self.emb_dim,
             mode=str(domain_enhancer),
@@ -824,7 +847,7 @@ class DualCVSincNetDisentangle(nn.Module):
 
     @torch.no_grad()
     def update_ntrs_tangent(self, clean_z: torch.Tensor, satellite_z: torch.Tensor) -> None:
-        if self.ntrs_robustifier is not None:
+        if self.ntrs_robustifier is not None and hasattr(self.ntrs_robustifier, "tangent"):
             self.ntrs_robustifier.tangent.update(clean_z, satellite_z)
 
     @staticmethod
@@ -963,7 +986,7 @@ class DualCVSincNetDisentangle(nn.Module):
         ntrs_context_out = None
         ntrs_physical_out = None
         aux_phys: Dict[str, torch.Tensor] = {}
-        if self.use_ntrs:
+        if self.use_ntrs and not self.ntrs_identity_bypass:
             ntrs_context_out = self.ntrs_context(
                 x,
                 metadata=ntrs_metadata,
@@ -972,11 +995,12 @@ class DualCVSincNetDisentangle(nn.Module):
                 update_slow=bool(update_ntrs_source),
                 update_mask=ntrs_source_mask,
             )
-            ntrs_physical_out = self.ntrs_corrector(
-                x,
-                ntrs_context_out.q,
-                stage_scale=ntrs_stage_scale(current_ntrs_epoch),
-            )
+            if self.ntrs_variant == "v1":
+                ntrs_physical_out = self.ntrs_corrector(
+                    x,
+                    ntrs_context_out.q,
+                    stage_scale=ntrs_stage_scale(current_ntrs_epoch),
+                )
 
         aux_id = backbone_forward_compat(
             self.id_backbone,
@@ -988,7 +1012,7 @@ class DualCVSincNetDisentangle(nn.Module):
             update_crra_support=update_crra_support,
             crra_support_mask=crra_support_mask,
         )
-        if self.use_ntrs:
+        if self.use_ntrs and self.ntrs_variant == "v1" and not self.ntrs_identity_bypass:
             aux_phys = backbone_forward_compat(
                 self.id_backbone,
                 ntrs_physical_out.corrected,
@@ -1023,37 +1047,50 @@ class DualCVSincNetDisentangle(nn.Module):
         ntrs_day_logits = None
         ntrs_channel_logits = None
         ntrs_context_tx_adv_logits = None
-        if self.use_ntrs:
-            z_phys = self._pick_z_id(aux_phys)
-            ntrs_robust_out = self.ntrs_robustifier(
-                z_anchor,
-                z_phys,
-                ntrs_context_out.q,
-                uncertainty=ntrs_context_out.uncertainty,
-                raw_margin=ntrs_raw_margin,
-                epoch=current_ntrs_epoch,
-                update_source_support=bool(update_ntrs_source),
-                source_domains=domain_labels,
-                source_support_mask=ntrs_source_mask,
-            )
-            ntrs_robust_logits = self.ntrs_robust_head(ntrs_robust_out.z_rob, labels=y_tx)
-            tx_logits, ntrs_safe_gate, ntrs_agreement = ntrs_safe_fuse_logits(
-                raw_tx_logits,
-                ntrs_robust_logits,
-                ntrs_robust_out.gate,
-                correction_energy=ntrs_robust_out.correction_energy,
-                energy_threshold=self.ntrs_energy_threshold,
-                unknown_rescue=self.ntrs_unknown_rescue,
-            )
-            z_id = z_anchor + ntrs_safe_gate[:, None].to(dtype=z_anchor.dtype) * (
-                ntrs_robust_out.z_rob.to(dtype=z_anchor.dtype) - z_anchor
-            )
-            ntrs_receiver_logits = self.ntrs_receiver_head(ntrs_context_out.q)
-            ntrs_day_logits = self.ntrs_day_head(ntrs_context_out.q)
-            ntrs_channel_logits = self.ntrs_channel_head(ntrs_context_out.q)
-            ntrs_context_tx_adv_logits = self.ntrs_context_tx_adv_head(
-                grad_reverse(ntrs_context_out.q, grl_lambda)
-            )
+        if self.use_ntrs and not self.ntrs_identity_bypass:
+            if self.ntrs_variant == "v1":
+                z_phys = self._pick_z_id(aux_phys)
+                ntrs_robust_out = self.ntrs_robustifier(
+                    z_anchor,
+                    z_phys,
+                    ntrs_context_out.q,
+                    uncertainty=ntrs_context_out.uncertainty,
+                    raw_margin=ntrs_raw_margin,
+                    epoch=current_ntrs_epoch,
+                    update_source_support=bool(update_ntrs_source),
+                    source_domains=domain_labels,
+                    source_support_mask=ntrs_source_mask,
+                )
+                ntrs_robust_logits = self.ntrs_robust_head(ntrs_robust_out.z_rob, labels=y_tx)
+                tx_logits, ntrs_safe_gate, ntrs_agreement = ntrs_safe_fuse_logits(
+                    raw_tx_logits,
+                    ntrs_robust_logits,
+                    ntrs_robust_out.gate,
+                    correction_energy=ntrs_robust_out.correction_energy,
+                    energy_threshold=self.ntrs_energy_threshold,
+                    unknown_rescue=self.ntrs_unknown_rescue,
+                )
+                z_id = z_anchor + ntrs_safe_gate[:, None].to(dtype=z_anchor.dtype) * (
+                    ntrs_robust_out.z_rob.to(dtype=z_anchor.dtype) - z_anchor
+                )
+                ntrs_receiver_logits = self.ntrs_receiver_head(ntrs_context_out.q)
+                ntrs_day_logits = self.ntrs_day_head(ntrs_context_out.q)
+                ntrs_channel_logits = self.ntrs_channel_head(ntrs_context_out.q)
+                ntrs_context_tx_adv_logits = self.ntrs_context_tx_adv_head(
+                    grad_reverse(ntrs_context_out.q, grl_lambda)
+                )
+            else:
+                ntrs_robust_out = self.ntrs_robustifier(
+                    z_anchor,
+                    ntrs_context_out.q,
+                    epoch=current_ntrs_epoch,
+                )
+                raw_head = self.id_backbone.cls_head.head
+                ntrs_robust_logits = raw_head(ntrs_robust_out.z_rob, y_tx)
+                tx_logits = ntrs_robust_logits
+                z_id = ntrs_robust_out.z_rob
+                ntrs_safe_gate = ntrs_robust_out.gate
+                ntrs_agreement = raw_tx_logits.detach().argmax(dim=1) == ntrs_robust_logits.detach().argmax(dim=1)
         else:
             tx_logits = raw_tx_logits
             z_id = z_anchor
@@ -1119,6 +1156,9 @@ class DualCVSincNetDisentangle(nn.Module):
             "crra_nuisance_pred": aux_id.get("crra_nuisance_pred", None),
             "crra_condition_tx_adv_logits": crra_condition_tx_adv_logits,
             "ntrs_enabled": bool(self.use_ntrs),
+            "ntrs_variant": self.ntrs_variant,
+            "ntrs_identity_bypass": bool(self.ntrs_identity_bypass),
+            "ntrs_shared_head": bool(self.use_ntrs and self.ntrs_variant == "v2_min"),
             "ntrs_raw_logits": raw_tx_logits,
             "ntrs_robust_logits": ntrs_robust_logits,
             "ntrs_z_anchor": z_anchor,
@@ -1268,6 +1308,8 @@ def build_dual_model(
     ntrs_support_tau: float = 1.0,
     ntrs_energy_threshold: float = 0.10,
     ntrs_unknown_rescue: bool = False,
+    ntrs_variant: str = "v1",
+    ntrs_identity_bypass: bool = False,
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -1332,4 +1374,6 @@ def build_dual_model(
         ntrs_support_tau=ntrs_support_tau,
         ntrs_energy_threshold=ntrs_energy_threshold,
         ntrs_unknown_rescue=ntrs_unknown_rescue,
+        ntrs_variant=ntrs_variant,
+        ntrs_identity_bypass=ntrs_identity_bypass,
     )

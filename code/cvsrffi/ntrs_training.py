@@ -36,10 +36,20 @@ class NTRSTrainingStage:
     safety_scale: float
 
 
-def ntrs_training_stage(epoch: int) -> NTRSTrainingStage:
-    """Map an epoch to the four-stage schedule specified for NTRS v1."""
+def ntrs_training_stage(epoch: int, *, variant: str = "v1") -> NTRSTrainingStage:
+    """Map an epoch to the historical v1 or recovery-v2 schedule."""
 
     epoch = max(1, int(epoch))
+    variant = str(variant or "v1").lower().strip()
+    if variant == "v2_min":
+        if epoch <= 90:
+            return NTRSTrainingStage("V2-S0", 1.0, 0.0, 0.0, 0.0, 0.0)
+        if epoch <= 130:
+            ramp = float(epoch - 90) / 40.0
+            return NTRSTrainingStage("V2-RAMP", 1.0, ramp, 0.0, ramp, 0.0)
+        return NTRSTrainingStage("V2-FULL", 1.0, 1.0, 0.0, 1.0, 0.0)
+    if variant != "v1":
+        raise ValueError(f"unsupported NTRS variant: {variant}")
     if epoch <= 16:
         return NTRSTrainingStage("S1", 1.0, 0.0, 0.0, 0.0, 0.0)
     if epoch <= 40:
@@ -58,14 +68,24 @@ def set_ntrs_optimizer_learning_rates(
     *,
     epoch: int,
     base_lr: float,
+    variant: str = "v1",
+    core_lr_mode: str = "v1",
 ) -> dict[str, float]:
     """Apply the frozen backbone/robustifier rates and return their values."""
 
     if float(base_lr) <= 0.0:
         raise ValueError("NTRS base_lr must be positive")
-    stage = ntrs_training_stage(epoch)
+    stage = ntrs_training_stage(epoch, variant=variant)
+    core_lr_mode = str(core_lr_mode or "v1").lower().strip()
+    if core_lr_mode not in {"v1", "baseline"}:
+        raise ValueError(f"unsupported NTRS core_lr_mode: {core_lr_mode}")
+    core_scale = (
+        float(ntrs_training_stage(epoch, variant="v1").core_lr_scale)
+        if core_lr_mode == "v1"
+        else 1.0
+    )
     rates = {
-        "core": float(base_lr) * float(stage.core_lr_scale),
+        "core": float(base_lr) * core_scale,
         "ntrs": float(base_lr) * float(stage.ntrs_lr_scale),
     }
     for group in optimizer.param_groups:

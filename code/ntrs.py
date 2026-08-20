@@ -355,6 +355,37 @@ class FastSlowContext(nn.Module):
         )
 
 
+class NTRSFastContext(nn.Module):
+    """Deterministic descriptor-only context for the minimal V2 path."""
+
+    def __init__(self, *, descriptor_dim: int = 40, q_dim: int = 32, fast_dim: int = 24):
+        super().__init__()
+        hidden = max(32, int(fast_dim))
+        self.q_dim = int(q_dim)
+        self.fast_encoder = nn.Sequential(
+            nn.Linear(int(descriptor_dim), hidden),
+            nn.SiLU(inplace=True),
+            nn.Linear(hidden, self.q_dim),
+        )
+
+    def forward(self, x: torch.Tensor, **_ignored) -> NTRSContext:
+        descriptors = compute_grouped_physical_descriptors(x).to(
+            device=x.device,
+            dtype=next(self.parameters()).dtype,
+        )
+        q = torch.tanh(self.fast_encoder(descriptors))
+        batch = int(x.size(0))
+        return NTRSContext(
+            q=q,
+            q_fast=q,
+            q_slow=q.new_zeros((batch, 0)),
+            q_meta=q.new_zeros((batch, 0)),
+            uncertainty=q.new_zeros(batch),
+            descriptors=descriptors.detach(),
+            metadata_valid=torch.zeros(batch, dtype=torch.bool, device=x.device),
+        )
+
+
 @dataclass
 class PhysicalCorrection:
     corrected: torch.Tensor
@@ -572,10 +603,19 @@ class NTRSSourceSupport(nn.Module):
         return support, distance
 
 
-def ntrs_stage_scale(epoch: int) -> float:
+def ntrs_stage_scale(epoch: int, *, variant: str = "v1") -> float:
     """S1=0, S2-a rises to 0.5, S2-b rises to 1, S3 stays at 1."""
 
     epoch = int(epoch)
+    variant = str(variant or "v1").lower().strip()
+    if variant == "v2_min":
+        if epoch <= 90:
+            return 0.0
+        if epoch <= 130:
+            return float(epoch - 90) / 40.0
+        return 1.0
+    if variant != "v1":
+        raise ValueError(f"unsupported NTRS variant: {variant}")
     if epoch <= 16:
         return 0.0
     if epoch <= 40:
@@ -762,13 +802,70 @@ class NTRSRobustifier(nn.Module):
         )
 
 
+class NTRSMinimalResidual(nn.Module):
+    """Shared-coordinate bounded residual without LayerNorm or a second head."""
+
+    def __init__(self, *, embedding_dim: int, q_dim: int, alpha_max: float = 0.20):
+        super().__init__()
+        self.embedding_dim = int(embedding_dim)
+        self.q_dim = int(q_dim)
+        self.alpha_max = float(alpha_max)
+        hidden = max(64, self.embedding_dim)
+        self.residual_head = nn.Sequential(
+            nn.Linear(self.embedding_dim + self.q_dim, hidden),
+            nn.SiLU(inplace=True),
+            nn.Linear(hidden, self.embedding_dim),
+        )
+        nn.init.zeros_(self.residual_head[-1].weight)
+        nn.init.zeros_(self.residual_head[-1].bias)
+
+    def forward(
+        self,
+        z_anchor: torch.Tensor,
+        q: torch.Tensor,
+        *,
+        epoch: int,
+    ) -> NTRSOutput:
+        if z_anchor.dim() != 2 or int(z_anchor.size(1)) != self.embedding_dim:
+            raise ValueError("NTRS V2 anchor must be shaped [B, embedding_dim]")
+        if q.shape != (z_anchor.size(0), self.q_dim):
+            raise ValueError("NTRS V2 q must align with the embedding batch")
+        raw_delta = torch.tanh(self.residual_head(torch.cat([z_anchor, q], dim=1)))
+        raw_norm = raw_delta.norm(dim=1, keepdim=True)
+        anchor_norm = z_anchor.detach().norm(dim=1, keepdim=True).clamp_min(1e-6)
+        bound = self.alpha_max * anchor_norm
+        bounded_delta = raw_delta * torch.clamp(bound / raw_norm.clamp_min(1e-6), max=1.0)
+        gate_value = ntrs_stage_scale(epoch, variant="v2_min")
+        gate = z_anchor.new_full((z_anchor.size(0),), float(gate_value))
+        correction = gate[:, None] * bounded_delta
+        z_rob = z_anchor - correction
+        energy = _zero_preserving_rms(correction, dim=1)
+        alpha = correction.norm(dim=1) / anchor_norm.view(-1)
+        zeros = z_anchor.new_zeros(z_anchor.size(0))
+        return NTRSOutput(
+            z_rob=z_rob,
+            correction=correction,
+            coefficients=raw_delta,
+            alpha=alpha,
+            gate=gate,
+            correctability=z_anchor.new_ones(z_anchor.size(0)),
+            correction_energy=energy,
+            support=z_anchor.new_ones(z_anchor.size(0)),
+            support_distance=zeros,
+            uncertainty=zeros,
+            subspace_residual=zeros,
+        )
+
+
 __all__ = [
     "BoundedWidelyLinearCorrector",
     "FastSlowContext",
+    "NTRSFastContext",
     "NTRSContext",
     "NTRSCosFaceHead",
     "NTRSOutput",
     "NTRSRobustifier",
+    "NTRSMinimalResidual",
     "NTRSSourceSupport",
     "NuisanceTangentBasis",
     "PhysicalCorrection",

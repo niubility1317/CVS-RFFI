@@ -404,6 +404,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--ntrs_energy_threshold", type=float, default=0.10)
     parser.add_argument("--ntrs_unknown_rescue", type=str2bool, default=False)
     parser.add_argument("--ntrs_target_adapter", type=str2bool, default=False)
+    parser.add_argument("--ntrs_variant", type=str, choices=["v1", "v2_min"], default="v1")
+    parser.add_argument("--ntrs_identity_bypass", type=str2bool, default=False)
+    parser.add_argument("--ntrs_core_lr_mode", type=str, choices=["v1", "baseline"], default="v1")
     parser.add_argument("--ntrs_margin_epsilon", type=float, default=0.05)
     parser.add_argument("--ntrs_correctability_epsilon", type=float, default=0.01)
     parser.add_argument("--ntrs_class_attraction_max_cosine", type=float, default=0.50)
@@ -1595,6 +1598,8 @@ def _apply_model_cli_args(model_args, args):
         "ntrs_support_tau",
         "ntrs_energy_threshold",
         "ntrs_unknown_rescue",
+        "ntrs_variant",
+        "ntrs_identity_bypass",
     ):
         if hasattr(args, key):
             setattr(model_args, key, getattr(args, key))
@@ -5750,12 +5755,17 @@ def train(args) -> int:
         phase = "label" if epoch <= int(args.label_epochs) else "pseudo"
         stage_state = _stage_state_for_epoch(epoch, args, phase)
         cur_w = _loss_weights(args, stage_state)
-        ntrs_stage = ntrs_training_stage(epoch)
+        ntrs_stage = ntrs_training_stage(
+            epoch,
+            variant=str(getattr(args, "ntrs_variant", "v1")),
+        )
         if bool(getattr(args, "use_ntrs", False)):
             ntrs_optimizer_rates = set_ntrs_optimizer_learning_rates(
                 optimizer,
                 epoch=int(epoch),
                 base_lr=float(args.lr),
+                variant=str(getattr(args, "ntrs_variant", "v1")),
+                core_lr_mode=str(getattr(args, "ntrs_core_lr_mode", "v1")),
             )
             crra_optimizer_lr = float(args.lr)
         else:

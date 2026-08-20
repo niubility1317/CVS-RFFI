@@ -19,6 +19,9 @@ readonly CORE90_LEO_SCHEDULE="1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,le
 USE_NTRS=1
 CANDIDATE="ADVB02_NTRS_LEO_WEAK_E200"
 NTRS_ALPHA_MAX="0.20"
+NTRS_VARIANT="v1"
+NTRS_IDENTITY_BYPASS="false"
+NTRS_CORE_LR_MODE="v1"
 L_NTRS_SAT_KL="0.01"
 L_NTRS_MARGIN="0.03"
 L_NTRS_RELATION="0.02"
@@ -68,6 +71,54 @@ case "${NTRS_PROFILE}" in
     ;;
   no_safety_losses)
     CANDIDATE="ADVB02_NTRS_NO_SAFETY_LEO_WEAK_E200"
+    L_NTRS_CORRECTABILITY="0"
+    L_NTRS_SCORE_STABILITY="0"
+    L_NTRS_CLASS_ATTRACTION="0"
+    ;;
+  v2_identity_bypass|v2_identity_bypass_v1_lr)
+    NTRS_VARIANT="v2_min"
+    NTRS_IDENTITY_BYPASS="true"
+    NTRS_CORE_LR_MODE="baseline"
+    CANDIDATE="ADVB02_NTRS_V2_D1_BYPASS_E200"
+    if [[ "${NTRS_PROFILE}" == "v2_identity_bypass_v1_lr" ]]; then
+      NTRS_CORE_LR_MODE="v1"
+      CANDIDATE="ADVB02_NTRS_V2_D2_BYPASS_V1LR_E200"
+    fi
+    L_NTRS_SAT_KL="0"
+    L_NTRS_MARGIN="0"
+    L_NTRS_RELATION="0"
+    L_NTRS_CLASS_CONDITIONAL="0"
+    L_NTRS_RECEIVER="0"
+    L_NTRS_DAY="0"
+    L_NTRS_CHANNEL="0"
+    L_NTRS_COND_DECORR="0"
+    L_NTRS_SHARED_RX="0"
+    L_NTRS_CONTEXT_TX_ADV="0"
+    L_NTRS_MIN_CORRECTION="0"
+    L_NTRS_ALPHA="0"
+    L_NTRS_SUBSPACE="0"
+    L_NTRS_CORRECTABILITY="0"
+    L_NTRS_SCORE_STABILITY="0"
+    L_NTRS_CLASS_ATTRACTION="0"
+    ;;
+  v1_fair_core_lr)
+    CANDIDATE="ADVB02_NTRS_V1_D3_FAIRLR_E200"
+    NTRS_CORE_LR_MODE="baseline"
+    ;;
+  v2_min_shared_head)
+    CANDIDATE="ADVB02_NTRS_V2_MIN_SHARED_E200"
+    NTRS_VARIANT="v2_min"
+    NTRS_CORE_LR_MODE="baseline"
+    L_NTRS_RELATION="0"
+    L_NTRS_CLASS_CONDITIONAL="0"
+    L_NTRS_RECEIVER="0"
+    L_NTRS_DAY="0"
+    L_NTRS_CHANNEL="0"
+    L_NTRS_COND_DECORR="0"
+    L_NTRS_SHARED_RX="0"
+    L_NTRS_CONTEXT_TX_ADV="0"
+    L_NTRS_ALPHA="0"
+    L_NTRS_SUBSPACE="0"
     L_NTRS_CORRECTABILITY="0"
     L_NTRS_SCORE_STABILITY="0"
     L_NTRS_CLASS_ATTRACTION="0"
@@ -308,6 +359,9 @@ build_train_command() {
       --ntrs_energy_threshold 0.10
       --ntrs_unknown_rescue false
       --ntrs_target_adapter false
+      --ntrs_variant "${NTRS_VARIANT}"
+      --ntrs_identity_bypass "${NTRS_IDENTITY_BYPASS}"
+      --ntrs_core_lr_mode "${NTRS_CORE_LR_MODE}"
       --ntrs_margin_epsilon 0.05
       --ntrs_correctability_epsilon 0.01
       --ntrs_class_attraction_max_cosine 0.50
@@ -367,7 +421,7 @@ run() {
 
   build_train_command "${out_dir}"
   build_eval_command "${checkpoint_path}" "${eval_dir}"
-  echo "[NTRS-LEO-RUN] run_id=${RUN_ID} candidate=${CANDIDATE} profile=${NTRS_PROFILE} gpu=${GPU} seed=${SEED} ratios=0.07/0.63/0.15/0.15 roles=L_s/U_s/V_cal/V_select channel=leo_weak only source_only=1 target_receiver_samples_in_training=0 target_unknown_training_count=0 ntrs_variant=NTRS-v1 sat_training_mode=concat_masked core90_schedule=E1-40_p0.30,E41-90_p0.60,E91-200_p0.80"
+  echo "[NTRS-LEO-RUN] run_id=${RUN_ID} candidate=${CANDIDATE} profile=${NTRS_PROFILE} gpu=${GPU} seed=${SEED} ratios=0.07/0.63/0.15/0.15 roles=L_s/U_s/V_cal/V_select channel=leo_weak only source_only=1 target_receiver_samples_in_training=0 target_unknown_training_count=0 ntrs_variant=${NTRS_VARIANT} ntrs_identity_bypass=${NTRS_IDENTITY_BYPASS} ntrs_core_lr_mode=${NTRS_CORE_LR_MODE} sat_training_mode=concat_masked core90_schedule=E1-40_p0.30,E41-90_p0.60,E91-200_p0.80"
   printf "[NTRS-LEO-TRAIN-CMD] "; printf "%q " "${TRAIN_CMD[@]}"; printf "\n"
   printf "[NTRS-LEO-EVAL-CMD] "; printf "%q " "${EVAL_CMD[@]}"; printf "\n"
   if [[ "${DRY_RUN}" == "1" ]]; then

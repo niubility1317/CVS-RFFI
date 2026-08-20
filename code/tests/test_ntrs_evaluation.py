@@ -67,6 +67,8 @@ def test_ntrs_telemetry_reports_raw_robust_fused_transitions_and_safety():
     assert transitions["harmed_correct"] == 0
     assert transitions["both_wrong"] == 0
     assert summary["satellite"]["gate"]["count"] == 4
+    assert summary["satellite"]["gate_active_rate"] == pytest.approx(1.0)
+    assert summary["satellite"]["safe_gate_active_rate"] == pytest.approx(0.75)
     assert summary["satellite"]["subspace_residual"]["mean"] == pytest.approx(0.0)
     assert summary["satellite"]["class_attraction_cosine"]["count"] == 4
     assert summary["safety"]["unknown_rescue_enabled"] is False

@@ -74,6 +74,87 @@ def test_ntrs_robust_head_is_independent_but_initialized_from_raw_cosface():
     assert torch.allclose(raw_weight, robust_weight)
 
 
+def test_ntrs_v2_identity_bypass_is_bitwise_raw_and_skips_all_ntrs_modules():
+    model = _tiny_model(
+        use_ntrs=True,
+        ntrs_variant="v2_min",
+        ntrs_identity_bypass=True,
+        ntrs_q_dim=16,
+        ntrs_fast_dim=8,
+    ).eval()
+    x = torch.randn(2, 2, 64)
+    labels = torch.tensor([0, 1])
+    with torch.no_grad():
+        out = model(x, y_tx=labels, return_aux=True, ntrs_epoch=200)
+
+    assert torch.equal(out["tx_logits"], out["ntrs_raw_logits"])
+    assert torch.equal(out["z_id"], out["ntrs_z_anchor"])
+    assert torch.equal(out["ntrs_z_rob"], out["ntrs_z_anchor"])
+    assert torch.count_nonzero(out["ntrs_correction"]) == 0
+    assert out["ntrs_identity_bypass"] is True
+    assert out["aux_phys"] == {}
+
+
+def test_ntrs_v2_identity_bypass_does_not_shift_core_initialization_rng():
+    torch.manual_seed(392034)
+    control = _tiny_model(use_ntrs=False)
+    control_core = {
+        name: value.detach().clone()
+        for name, value in control.state_dict().items()
+        if "ntrs_" not in name
+    }
+    torch.manual_seed(392034)
+    bypass = _tiny_model(
+        use_ntrs=True,
+        ntrs_variant="v2_min",
+        ntrs_identity_bypass=True,
+        ntrs_q_dim=16,
+        ntrs_fast_dim=8,
+    )
+    bypass_core = {
+        name: value.detach().clone()
+        for name, value in bypass.state_dict().items()
+        if "ntrs_" not in name
+    }
+    assert control_core.keys() == bypass_core.keys()
+    assert all(torch.equal(control_core[name], bypass_core[name]) for name in control_core)
+
+
+def test_ntrs_v2_min_uses_shared_head_no_layernorm_and_one_identity_forward():
+    model = _tiny_model(
+        use_ntrs=True,
+        ntrs_variant="v2_min",
+        ntrs_q_dim=16,
+        ntrs_fast_dim=8,
+    )
+    assert model.ntrs_robust_head is None
+    assert not any(isinstance(module, torch.nn.LayerNorm) for module in model.ntrs_context.modules())
+    assert not any(isinstance(module, torch.nn.LayerNorm) for module in model.ntrs_robustifier.modules())
+
+    identity_calls = []
+    hook = model.id_backbone.register_forward_pre_hook(lambda _module, _args: identity_calls.append(1))
+    try:
+        out_frozen = model(
+            torch.randn(2, 2, 64),
+            y_tx=torch.tensor([0, 1]),
+            return_aux=True,
+            ntrs_epoch=90,
+        )
+        out_active = model(
+            torch.randn(2, 2, 64),
+            y_tx=torch.tensor([0, 1]),
+            return_aux=True,
+            ntrs_epoch=130,
+        )
+    finally:
+        hook.remove()
+
+    assert len(identity_calls) == 2
+    assert torch.equal(out_frozen["ntrs_z_rob"], out_frozen["ntrs_z_anchor"])
+    assert torch.equal(out_frozen["ntrs_robust_logits"], out_frozen["ntrs_raw_logits"])
+    assert out_active["ntrs_shared_head"] is True
+
+
 def test_ntrs_safe_fusion_falls_back_to_raw_on_disagreement_or_excess_energy():
     raw = torch.tensor([[4.0, 1.0, 0.0], [4.0, 1.0, 0.0], [4.0, 1.0, 0.0]])
     robust = torch.tensor([[1.0, 5.0, 0.0], [5.0, 2.0, 0.0], [5.0, 2.0, 0.0]])

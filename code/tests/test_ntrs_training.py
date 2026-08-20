@@ -77,6 +77,48 @@ def test_ntrs_stage_contract_and_optimizer_ratio_are_explicit():
     assert rates["ntrs"] / rates["core"] == pytest.approx(5.0)
 
 
+def test_ntrs_v2_schedule_keeps_core_fair_and_delays_residual_until_epoch_91():
+    assert ntrs_training_stage(1, variant="v2_min").name == "V2-S0"
+    assert ntrs_training_stage(90, variant="v2_min").ntrs_lr_scale == 0.0
+    assert ntrs_training_stage(91, variant="v2_min").name == "V2-RAMP"
+    assert 0.0 < ntrs_training_stage(110, variant="v2_min").ntrs_lr_scale < 1.0
+    assert ntrs_training_stage(130, variant="v2_min").ntrs_lr_scale == pytest.approx(1.0)
+    assert ntrs_training_stage(200, variant="v2_min").core_lr_scale == pytest.approx(1.0)
+
+
+def test_ntrs_core_lr_mode_separates_fair_and_historical_controls():
+    class TinyModel(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.core = nn.Linear(2, 2)
+            self.ntrs_context = nn.Linear(2, 2)
+
+    optimizer = build_optimizer_with_crra_groups(
+        TinyModel(),
+        base_lr=2e-4,
+        weight_decay=1e-4,
+        use_crra=False,
+        use_ntrs=True,
+    )
+    fair = set_ntrs_optimizer_learning_rates(
+        optimizer,
+        epoch=69,
+        base_lr=2e-4,
+        variant="v1",
+        core_lr_mode="baseline",
+    )
+    assert fair == {"core": pytest.approx(2e-4), "ntrs": pytest.approx(1e-4)}
+
+    historical = set_ntrs_optimizer_learning_rates(
+        optimizer,
+        epoch=69,
+        base_lr=2e-4,
+        variant="v1",
+        core_lr_mode="v1",
+    )
+    assert historical == {"core": pytest.approx(2e-5), "ntrs": pytest.approx(1e-4)}
+
+
 def test_source_update_mask_uses_only_clean_source_rows_for_concat_pairs():
     mask = ntrs_source_update_mask(batch_size=8, clean_count=4, concat_expanded=True)
     assert mask.tolist() == [True, True, True, True, False, False, False, False]

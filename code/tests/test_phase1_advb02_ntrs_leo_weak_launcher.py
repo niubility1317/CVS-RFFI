@@ -154,3 +154,33 @@ def test_ntrs_launcher_rejects_unknown_matrix_profile():
     )
     assert result.returncode == 2
     assert "unknown NTRS_PROFILE" in result.stderr
+
+
+def test_recovery_matrix_profiles_freeze_bypass_lr_and_shared_head_controls():
+    d1 = _dry_run("v2_identity_bypass")
+    assert "candidate=ADVB02_NTRS_V2_D1_BYPASS_E200" in d1
+    assert "--ntrs_variant v2_min" in d1
+    assert "--ntrs_identity_bypass true" in d1
+    assert "--ntrs_core_lr_mode baseline" in d1
+
+    d2 = _dry_run("v2_identity_bypass_v1_lr")
+    assert "candidate=ADVB02_NTRS_V2_D2_BYPASS_V1LR_E200" in d2
+    assert "--ntrs_identity_bypass true" in d2
+    assert "--ntrs_core_lr_mode v1" in d2
+
+    d3 = _dry_run("v1_fair_core_lr")
+    assert "candidate=ADVB02_NTRS_V1_D3_FAIRLR_E200" in d3
+    assert "--ntrs_variant v1" in d3
+    assert "--ntrs_identity_bypass false" in d3
+    assert "--ntrs_core_lr_mode baseline" in d3
+
+    v2 = _dry_run("v2_min_shared_head")
+    assert "candidate=ADVB02_NTRS_V2_MIN_SHARED_E200" in v2
+    assert "--ntrs_variant v2_min" in v2
+    assert "--ntrs_identity_bypass false" in v2
+    assert "--ntrs_core_lr_mode baseline" in v2
+    assert "--lambda_ntrs_sat_kl 0.01" in v2
+    assert "--lambda_ntrs_margin 0.03" in v2
+    assert "--lambda_ntrs_min_correction 0.001" in v2
+    assert "--lambda_ntrs_receiver 0" in v2
+    assert "--lambda_ntrs_correctability 0" in v2
