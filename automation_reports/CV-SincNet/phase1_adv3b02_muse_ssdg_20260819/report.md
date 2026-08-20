@@ -93,6 +93,29 @@
 - GPU0队列的`M1`和GPU1队列的完整`M3`仍等待当前`M0`、`M2`完成后自动启动，候选目录尚未创建。
 - 所有活动候选仍未生成`final_ssdg.pth`、clean metrics或三种LEO metrics，自动评测尚未开始；当前状态仍为`RUNNING`。
 
+## 2026-08-20T16:03:24+08:00 ETA与ADV3B02耗时归因
+
+本次完整读取历史`ADV3B02_CORE90_SOFT_E200/metrics_epoch.csv`和`metrics_epoch.jsonl`共200个epoch记录，并以各活动训练最近5个已完成epoch重新估计。ETA仅用于资源规划；MUSE阶段切换、同卡第二任务结束或启动、最终评测耗时都会改变实际完成时间。
+
+| GPU | 当前候选 | 最新完成epoch | 最近5 epoch均值 | 预计剩余训练 |
+|---:|---|---:|---:|---:|
+| 0 | `M0` | 63/200 | 487.5秒 | 约18.6小时 |
+| 1 | `M2`修复run | 58/200 | 486.7秒 | 约19.2小时 |
+| 2 | `M3_NO_PRIOR` | 49/200 | 529.7秒 | 约22.2小时 |
+| 3 | `M3_NO_PROTO`修复run | 49/200 | 518.3秒 | 约21.7小时 |
+| 4 | `M3_NO_TEMPORAL` | 60/200 | 339.2秒 | 约13.2小时 |
+| 5 | `M3_NO_SATELLITE` | 60/200 | 331.0秒 | 约12.9小时 |
+| 6 | `M3_NO_CROSSRX` | 60/200 | 338.3秒 | 约13.2小时 |
+| 7 | `M3_NO_NUISANCE` | 61/200 | 337.6秒 | 约13.0小时 |
+
+- 历史ADV3B02的200个`epoch_time_s`总和为3.98小时，均值71.6秒、中位数60.2秒；前30个epoch均值46.7秒。当前各活动候选与历史相同epoch前缀比较，单epoch约慢6.0–10.2倍。
+- 首要原因是epoch语义改变。历史ADV3B02为`L/U/V=0.10/0.70/0.20`，legacy训练循环每epoch由`len(L_s loader)`决定；当前MUSE协议为`0.07/0.63/0.30`，所有M0–M3均固定由`len(U_s loader)`决定，M0也循环L_s直至走满U_s长度。按全池比例近似，单epoch optimizer step预算从约10%扩大到63%，即约6.3倍；这是M0也明显变慢的主因。
+- 当前source校准/选模池由历史20%增至30%，评估数据量约增加50%；训练继续启用`concat_masked`，每个step包含clean与卫星视图两次前向。M1–M3还增加domain/GRL/self/nuisance、融合与H/M/L路由；M3进一步包含temporal、classification prototype、satellite identity和cross-receiver路径。MUSE的S1/S2A/S2B/S3A/S3B/S3C阶段还会改变后半程单epoch成本。
+- GPU0、1、4–7各只有本矩阵一个compute app；GPU2同时运行`M3_NO_PRIOR`和独立NTRS候选，GPU3同时运行`M3_NO_PROTO`和独立NTRS候选，因此GPU2/3显存约5.6–6.1GB、利用率约98%–99%，其ETA长于GPU4–7。该并发符合每卡最多两个训练的既定资源规则，本次监控未干预任何任务。
+- 服务器有96个逻辑CPU，检查时load average约13、可用内存442GiB，不是整机CPU或内存耗尽；GPU0/1/4–7利用率多为21%–38%，说明主要是单任务的数据生成、星地增强、多视图前向和DataLoader供给间歇，而非纯GPU算力饱和。
+- GPU4–7单臂预计再需约13–18小时训练；GPU2/3若第二任务持续并发，预计约22–30小时，若NTRS先结束则可能缩短。每个训练结束后还需执行clean与三种LEO弱信道评测，暂按每候选额外0.5–2小时保守预留。
+- GPU0的`M1`要等待M0训练和四场景评测完成后才启动；GPU1的完整`M3`同理等待M2。按当前速度外推，包含这两个排队候选及全部最终评测的整个矩阵预计还需约42–60小时，即大致在2026-08-22上午至2026-08-23凌晨闭合。该时间窗不是完成承诺，下一次阶段切换后应使用新近epoch重新估计。
+
 ## 候选矩阵
 
 | 候选 | 固定基座 | 能力 | seed | epoch | source角色比例 | checkpoint选择 |
