@@ -4,7 +4,7 @@
 
 run ID：`erbt_idr_m24_d1_refit_full125_20260820_v2`
 
-当前状态：`LOCAL_VERIFIED`
+当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 
 ## 一、修复目标与根因
 
@@ -57,7 +57,7 @@ v1在375个row receipt全部生成后因R1注册前编译一致性失败而停�
 |---|---|
 |release|`/home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m24_d1_refit_full125_20260820_v2`|
 |既有feature root|`/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_feature_t1_20260730_v3_47212437/artifacts/features`|
-|补充feature root|`/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/erbt_idr_m24_d1_refit_full125_20260820_v1_supplement_features`|
+|补充feature root|`/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/erbt_idr_m24_d1_refit_full125_20260820_v1_supplement_features/artifacts/features`|
 |既有scoring root|`/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_sidecar_t1_20260730_v3_47212437/artifacts/sidecars`|
 |补充scoring root|`/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/erbt_idr_m24_d1_refit_full125_20260820_v1_supplement_packages`|
 |run root|`/home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m24_d1_refit_full125_20260820_v2`|
@@ -84,4 +84,11 @@ v1在375个row receipt全部生成后因R1注册前编译一致性失败而停�
 
 ## 七、结果
 
-待N607完整实验闭合后追加。
+真实失败行smoke已完成，注册前／后均为0/1560差异，证明编译修复有效。随后完整controller在生成任何row receipt前退出：启动命令把补充feature root错误写成补充构建根，缺少末级`artifacts/features`，因此无法定位seed`7282104/7282105`缓存。
+
+- prediction父PID：`3864001`，已退出；
+- 完整矩阵receipt：0；
+- `matrix_index.json`：不存在；
+- truth：未打开；
+- v2输出与日志原地保留，不删除、不覆盖、不复用run ID；
+- 后续使用新run ID`erbt_idr_m24_d1_refit_full125_20260820_v3`和纠正后的补充feature root重新启动完整375行。

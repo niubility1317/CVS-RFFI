@@ -1,0 +1,24 @@
+{
+  "run_id": "erbt_idr_m24_d1_refit_full125_20260820_v2",
+  "status": "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE",
+  "performance_result": false,
+  "truth_opened": false,
+  "smoke": {
+    "status": "PASS",
+    "query_rows": 1560,
+    "prediction_disagreements": 0,
+    "before_prediction_disagreements": 0
+  },
+  "full_matrix": {
+    "receipt_count": 0,
+    "matrix_index_exists": false,
+    "controller_pid": 3864001,
+    "controller_running": false
+  },
+  "failure": {
+    "type": "SUPPLEMENTAL_FEATURE_ROOT_PATH",
+    "detail": "missing artifacts/features suffix",
+    "missing_identity": "rx20-1 seed7282104 K1 new20"
+  },
+  "successor_run_id": "erbt_idr_m24_d1_refit_full125_20260820_v3"
+}
