@@ -2,7 +2,7 @@
 
 ## 当前结论
 
-- 状态：`RUNNING`
+- 状态：`ANALYZED`
 - r3是r2确定性非有限梯度技术停止后的唯一新run；不覆盖r1/r2任何artifact。
 - 仅修复NTRS零残差RMS的反向数值稳定性；候选结构、loss权重、数据角色、seed、训练日程和LEO_WEAK场景均不变。
 
@@ -80,3 +80,15 @@ nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_
 - 截至E002，日志中无`Traceback`、`RuntimeError`、CUDA error、OOM、`FAIL`或`ERROR`。与r2每个epoch均100%跳过、0%优化器更新相比，零残差梯度污染已被真实训练证据消除。
 - 当前只确认启动与修复有效，不构成最终性能结论。训练完成后launcher必须继续执行clean及三种LEO_WEAK逐场景独立测试，产物闭合后方可标记`ARTIFACTS_COMPLETE`。
 - 纳入因果矩阵后的E039检查：`train_optimizer_step_applied=1.0`，`train_skipped_nonfinite_grad=0.0`，train TX=`61.5625%`，source val TX=`93.9683%`；当前完整日志无确定性异常标记。
+
+## 最终结果
+
+- 训练与测试：E200最终checkpoint，`train_exit=0`、`eval_exit=0`、`ARTIFACTS_COMPLETE`，checkpoint加载键差异为0。
+- clean总体：`84.313%`；严格unseen day/unseen RX：`77.695%`；严格RX floor：`64.975%`。
+- `leo_clear_weak`：总体`52.865%`，严格`45.497%`。
+- `leo_low_elev_weak`：总体`50.796%`，严格`44.197%`。
+- `leo_rain_weak`：总体`51.194%`，严格`44.515%`。
+- LEO均值/最差场景：`51.618%/50.796%`；严格均值/最差场景：`44.736%/44.197%`。
+- 200行训练记录完整；8/9000个batch发生AMP梯度跳步，优化步执行率`99.911%`，没有非有限loss跳步或异常终止。
+- checkpoint SHA256：`5c124c7eca5b843cb11b16ae5f25ce9851808a4b7587b45a481f2df3e31fdef6`。
+- 矩阵结论：相对M0，clean下降`3.224`个百分点，LEO均值下降`18.839`个百分点，严格LEO均值下降`19.188`个百分点；完整NTRS不晋级。

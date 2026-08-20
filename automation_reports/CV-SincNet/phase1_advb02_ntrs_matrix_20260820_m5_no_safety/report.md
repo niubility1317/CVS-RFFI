@@ -1,6 +1,6 @@
 # NTRS矩阵M5无安全损失实验报告
 
-- 状态：`RUNNING`
+- 状态：`ANALYZED`
 - run ID：`phase1_advb02_ntrs_matrix_20260820_m5_no_safety`
 - candidate：`ADVB02_NTRS_NO_SAFETY_LEO_WEAK_E200`
 - profile：`no_safety_losses`
@@ -23,3 +23,13 @@ nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_
 启动于`2026-08-20T03:26:55+08:00`；launcher PID=`3481983`，trainer PID=`3482067`。PID/CWD/cmdline/run root/GPU5映射和日志增长均已核对，启动前GPU5活跃训练数为0。
 
 E003检查：`train_optimizer_step_applied=1.0`，`train_skipped_nonfinite_grad=0.0`，train TX=`2.7604%`，source val TX=`79.4762%`；当前完整日志无确定性异常标记。
+
+## 最终结果
+
+- E200最终checkpoint独立测试闭合，`train_exit=0`、`eval_exit=0`、加载键差异为0。
+- clean总体/严格/floor：`84.211%/77.555%/64.575%`。
+- clear、low-elev、rain总体：`54.049%/51.495%/51.983%`；LEO均值`52.509%`。
+- 三场景严格值：`46.242%/44.452%/44.872%`；严格均值`45.188%`。
+- 7/9000个batch发生AMP梯度跳步，优化步执行率`99.922%`，没有非有限loss跳步或异常终止。
+- checkpoint SHA256：`f5e2f44292906e3e9fc263ce5fa8d9c8ff10976d61ffbd7ef7c7761d825839cb`。
+- 相对完整M1，LEO均值提高`0.891`个百分点；但相对M0仍下降`17.948`个百分点，不晋级。
