@@ -2,6 +2,7 @@
 set -euo pipefail
 
 ROOT="${ROOT:-/home/szu2070436088/2510044040/CV-SincNet}"
+CODE_ROOT="${CODE_ROOT:-${ROOT}}"
 PYTHON="${PYTHON:-/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python}"
 CONTROL_PYTHON="${CONTROL_PYTHON:-${PYTHON}}"
 RUN_ID="${RUN_ID:-phase1_adv3b02_muse_ssdg_20260819}"
@@ -138,9 +139,9 @@ build_train_command() {
   local candidate_root="$2"
   local candidate_id="$3"
   TRAIN_CMD=(env
-    "PYTHONPATH=${ROOT}/code:${ROOT}:${PYTHONPATH:-}"
+    "PYTHONPATH=${CODE_ROOT}/code:${CODE_ROOT}:${PYTHONPATH:-}"
     "CUDA_VISIBLE_DEVICES=${GPU}"
-    "${PYTHON}" -u "${ROOT}/code/SSDG/train_ssdg.py"
+    "${PYTHON}" -u "${CODE_ROOT}/code/SSDG/train_ssdg.py"
     --wisig_pkl "${WISIG_PKL}"
     --split_mode tx_rx_day_1_7_2
     --labeled_ratio 0.07
@@ -327,9 +328,9 @@ build_train_command() {
 build_eval_command() {
   local candidate_root="$1"
   EVAL_CMD=(env
-    "PYTHONPATH=${ROOT}/code:${ROOT}:${PYTHONPATH:-}"
+    "PYTHONPATH=${CODE_ROOT}/code:${CODE_ROOT}:${PYTHONPATH:-}"
     "CUDA_VISIBLE_DEVICES=${GPU}"
-    "${PYTHON}" -u "${ROOT}/code/scripts/eval_ssdg_sat_per_rx.py"
+    "${PYTHON}" -u "${CODE_ROOT}/code/scripts/eval_ssdg_sat_per_rx.py"
     --ckpt "${candidate_root}/final_ssdg.pth"
     --output_json "${candidate_root}/metrics_joint.json"
     --eval_on unseen_rx

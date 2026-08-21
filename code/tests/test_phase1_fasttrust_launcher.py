@@ -86,6 +86,38 @@ def test_filters_select_one_candidate_or_one_gpu_pair(tmp_path):
     assert "R4_NO_NUISANCE_U256" in pair.stdout
 
 
+def test_release_code_root_is_separate_from_project_data_and_run_root(tmp_path):
+    env = os.environ.copy()
+    env.update(
+        {
+            "ROOT": "/srv/CV-SincNet",
+            "CODE_ROOT": _bash_path(ROOT),
+            "MATRIX": _bash_path(MATRIX),
+            "RUNS_ROOT": "/srv/CV-SincNet/runs/fasttrust",
+            "PYTHON": "/opt/conda/envs/cvs/bin/python",
+            "CONTROL_PYTHON": os.sys.executable,
+        }
+    )
+    result = subprocess.run(
+        [
+            GIT_BASH.as_posix(),
+            LAUNCHER.relative_to(ROOT).as_posix(),
+            "--dry-run",
+            "--only=R4_FAST_FULL_U256",
+        ],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert f"{_bash_path(ROOT)}/code/SSDG/train_ssdg.py" in result.stdout
+    assert "/srv/CV-SincNet/Dataset_WigSig/ManySig.pkl" in result.stdout
+    assert "/srv/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701" in result.stdout
+
+
 def test_real_dispatch_invokes_both_rows_on_each_selected_gpu_and_preserves_failures(tmp_path):
     fake_worker = tmp_path / "fake_worker.sh"
     fake_worker.write_text(

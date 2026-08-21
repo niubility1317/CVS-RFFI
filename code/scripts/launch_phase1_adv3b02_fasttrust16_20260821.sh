@@ -2,12 +2,13 @@
 set -euo pipefail
 
 ROOT="${ROOT:-/home/szu2070436088/2510044040/CV-SincNet}"
+CODE_ROOT="${CODE_ROOT:-${ROOT}}"
 PYTHON="${PYTHON:-/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python}"
 CONTROL_PYTHON="${CONTROL_PYTHON:-${PYTHON}}"
-MATRIX="${MATRIX:-${ROOT}/configs/phase1_adv3b02_fasttrust16_s392002_20260821.json}"
+MATRIX="${MATRIX:-${CODE_ROOT}/configs/phase1_adv3b02_fasttrust16_s392002_20260821.json}"
 RUN_ID="${RUN_ID:-phase1_adv3b02_fasttrust16_s392002_20260821}"
 RUNS_ROOT="${RUNS_ROOT:-${ROOT}/runs/${RUN_ID}}"
-WORKER_LAUNCHER="${WORKER_LAUNCHER:-${ROOT}/code/scripts/launch_phase1_adv3b02_muse_ssdg_20260819.sh}"
+WORKER_LAUNCHER="${WORKER_LAUNCHER:-${CODE_ROOT}/code/scripts/launch_phase1_adv3b02_muse_ssdg_20260819.sh}"
 ONLY_CANDIDATE=""
 GPU_FILTER=""
 DRY_RUN=0
@@ -123,6 +124,7 @@ run_row() {
   fi
   env \
     ROOT="${ROOT}" \
+    CODE_ROOT="${CODE_ROOT}" \
     PYTHON="${PYTHON}" \
     CONTROL_PYTHON="${CONTROL_PYTHON}" \
     RUN_ID="${RUN_ID}" \
