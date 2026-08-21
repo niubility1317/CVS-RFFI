@@ -444,3 +444,11 @@ M0末轮从历史最高99.27%降至33.33%，属于明显末期退化；但在hel
 - `M3_NO_PRIOR`按最近10轮343.9秒/轮估计，剩余4轮约23分钟，保守范围20–35分钟。它是否触发同一导出错误须等真实终态，当前只记为高风险，不预判失败。
 - 当前矩阵按“计划候选”计为：7条E200但导出失败、1条训练中、2条排队未启动、0条完成四场景评测；因此没有任何候选可标为`ARTIFACTS_COMPLETE`或`ANALYZED`。
 - 本次为只读监控，没有启动补评、修改代码、重启队列或干预任何进程。下一步应先定点修复或绕开训练后Phase2原型导出对Phase1 final eval的阻断，再对已保留的7个checkpoint逐一执行strict clean+三LEO评测；该动作尚未在本快照中执行。
+
+## 2026-08-21 final checkpoint恢复评测预登记
+
+- 恢复评测ID：`final_eval_recovery_20260821_1135`；目的仅为使用已保留的`final_ssdg.pth`补齐held-out clean、`leo_clear_weak`、`leo_low_elev_weak`和`leo_rain_weak`四场景结果，不重训、不改checkpoint、不覆盖原训练目录中的既有文件。
+- 代码与配置：每条checkpoint使用其原release中的`eval_ssdg_sat_per_rx.py`，共同设置`--eval_on unseen_rx --scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak --max_batches -1 --sat_seed 392002 --strict_reconstruction`；任何missing、unexpected、shape mismatch或fallback均作为该条评测技术失败。
+- 首批GPU映射：GPU0=M0，GPU1=M2，GPU3=M3_NO_PROTO，GPU4=M3_NO_TEMPORAL，GPU5=M3_NO_SATELLITE，GPU6=M3_NO_CROSSRX，GPU7=M3_NO_NUISANCE。GPU2上的M3_NO_PRIOR仍在训练，训练结束并释放GPU2后再加入同一恢复评测ID；不干预其现有进程。
+- 输出路径：每个候选原目录下新增且禁止覆盖的`final_eval_recovery_20260821_1135/`；预期包含`metrics_joint.json`、`eval_joint.log`、四个`metrics_<scenario>.json`、四个`eval_<scenario>.log`、评测状态和PID记录。
+- 技术停止规则：strict重建失败、评测异常、指标计数不一致、输出目录冲突或缺少任一场景artifact时，仅停止并保留对应候选的恢复评测输出，不影响其他候选、原训练checkpoint或无关进程。完整四场景artifact产生前不标记`ARTIFACTS_COMPLETE`。
