@@ -415,6 +415,15 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--ntrs_operator_mode", type=str, choices=["additive", "operator", "pca_additive"], default="operator")
     parser.add_argument("--ntrs_pca_artifact", type=str, default="")
     parser.add_argument("--ntrs_adapter_only", type=str2bool, default=False)
+    parser.add_argument(
+        "--sid_fft96_mode",
+        type=str,
+        choices=["off", "center", "phase", "sid"],
+        default="off",
+    )
+    parser.add_argument("--sid_mask_path", type=str, default="")
+    parser.add_argument("--sid_residual_scale", type=float, default=1.0)
+    parser.add_argument("--sid_adapter_only", type=str2bool, default=True)
     parser.add_argument("--ntrs_core_lr_mode", type=str, choices=["v1", "baseline", "adapter_joint"], default="v1")
     parser.add_argument("--ntrs_core_lr_ratio", type=float, default=0.02)
     parser.add_argument("--ntrs_margin_epsilon", type=float, default=0.05)
@@ -1625,6 +1634,9 @@ def _apply_model_cli_args(model_args, args):
         "ntrs_context_mode",
         "ntrs_operator_mode",
         "ntrs_pca_artifact",
+        "sid_fft96_mode",
+        "sid_mask_path",
+        "sid_residual_scale",
     ):
         if hasattr(args, key):
             setattr(model_args, key, getattr(args, key))
@@ -4157,6 +4169,10 @@ def _build_ssdg_epoch_telemetry_row(
         "phase1_source_role_protocol": str(
             getattr(args, "phase1_source_role_protocol", "legacy_l_u_v")
         ),
+        "sid_fft96_mode": str(getattr(args, "sid_fft96_mode", "off")),
+        "sid_mask_path": str(getattr(args, "sid_mask_path", "")),
+        "sid_residual_scale": float(getattr(args, "sid_residual_scale", 1.0)),
+        "sid_adapter_only": bool(getattr(args, "sid_adapter_only", True)),
         "label_epochs": int(getattr(args, "label_epochs", 0)),
         "pseudo_epochs": int(getattr(args, "pseudo_epochs", 0)),
         "optimizer": "AdamW",
@@ -5134,6 +5150,53 @@ def configure_ntrs_trainable_parameters(model, args) -> Dict[str, int]:
     }
 
 
+def configure_sid_trainable_parameters(model, args) -> Dict[str, int]:
+    """Freeze ADV3B02 and expose only the SID-FFT96 residual projector."""
+
+    candidate = getattr(model, "module", model)
+    mode = str(getattr(args, "sid_fft96_mode", "off") or "off").lower().strip()
+    if mode == "off":
+        return {
+            "raw_trainable_parameters": int(
+                sum(
+                    parameter.numel()
+                    for name, parameter in candidate.named_parameters()
+                    if parameter.requires_grad and not name.startswith("sid_fft96.")
+                )
+            ),
+            "sid_trainable_parameters": 0,
+        }
+    if not bool(getattr(args, "sid_adapter_only", True)):
+        raise ValueError("SID-FFT96 requires sid_adapter_only=true on the mature ADV3B02 path")
+    sid_module = getattr(candidate, "sid_fft96", None)
+    if sid_module is None:
+        raise ValueError("SID-FFT96 mode is active but the model has no sid_fft96 module")
+    for parameter in candidate.parameters():
+        parameter.requires_grad = False
+    for parameter in sid_module.parameters():
+        parameter.requires_grad = True
+    raw_count = int(
+        sum(
+            parameter.numel()
+            for name, parameter in candidate.named_parameters()
+            if parameter.requires_grad and not name.startswith("sid_fft96.")
+        )
+    )
+    sid_count = int(
+        sum(
+            parameter.numel()
+            for name, parameter in candidate.named_parameters()
+            if parameter.requires_grad and name.startswith("sid_fft96.")
+        )
+    )
+    if sid_count <= 0 or raw_count != 0:
+        raise ValueError("SID-FFT96 trainability whitelist is empty or leaked into the mature path")
+    return {
+        "raw_trainable_parameters": raw_count,
+        "sid_trainable_parameters": sid_count,
+    }
+
+
 @torch.no_grad()
 def install_ntrs_descriptor_statistics(model, loader, device) -> Dict[str, float]:
     """Install one fixed signed-log median/IQR fit from Phase1 V_cal IQ only."""
@@ -5182,14 +5245,23 @@ def _load_training_checkpoint_state(
         if ntrs_state_skipped
         else dict(state)
     )
-    result = model.load_state_dict(selected_state, strict=False)
+    try:
+        result = model.load_state_dict(selected_state, strict=False)
+    except RuntimeError as exc:
+        raise ValueError(f"non-SID checkpoint drift: {exc}") from exc
     unexpected = list(result.unexpected_keys)
     if unexpected:
         raise ValueError(f"unexpected checkpoint keys while rebuilding training model: {unexpected[:8]}")
+    missing = list(result.missing_keys)
+    sid_active = str(getattr(args, "sid_fft96_mode", "off") or "off").lower().strip() != "off"
+    if sid_active:
+        invalid_missing = [name for name in missing if not name.startswith("sid_fft96.")]
+        if invalid_missing:
+            raise ValueError(f"non-SID checkpoint drift: missing keys {invalid_missing[:8]}")
     return {
         "ntrs_state_skipped": bool(ntrs_state_skipped),
         "loaded_parameter_count": int(len(selected_state)),
-        "missing_keys": list(result.missing_keys),
+        "missing_keys": missing,
         "unexpected_keys": unexpected,
     }
 
@@ -5335,6 +5407,16 @@ def train(args) -> int:
             )
     validate_crra_phase1_config(args)
     validate_ntrs_phase1_config(args)
+    sid_mode = str(getattr(args, "sid_fft96_mode", "off") or "off").lower().strip()
+    if sid_mode != "off":
+        if bool(getattr(args, "use_crra", False)) or bool(getattr(args, "use_ntrs", False)):
+            raise ValueError("SID-FFT96, CRRA, and NTRS are independent candidates")
+        if not str(getattr(args, "sid_mask_path", "")).strip():
+            raise ValueError("SID-FFT96 requires --sid_mask_path")
+        if float(getattr(args, "sid_residual_scale", 1.0)) < 0.0:
+            raise ValueError("--sid_residual_scale must be non-negative")
+        if not bool(getattr(args, "sid_adapter_only", True)):
+            raise ValueError("SID-FFT96 requires --sid_adapter_only true")
     if float(getattr(args, "crra_support_tau", 1.0)) <= 0.0:
         raise ValueError("--crra_support_tau must be positive")
     if float(getattr(args, "crra_s3_lr_scale", 0.25)) <= 0.0:
@@ -5605,9 +5687,14 @@ def train(args) -> int:
         and bool(getattr(args, "ntrs_adapter_only", False))
         else {}
     )
-    if bool(args.freeze_backbone) and str(getattr(args, "ntrs_variant", "v1")) not in {"v3_adapter", "v4_operator"}:
+    if (
+        bool(args.freeze_backbone)
+        and str(getattr(args, "ntrs_variant", "v1")) not in {"v3_adapter", "v4_operator"}
+        and sid_mode == "off"
+    ):
         for name, param in model.named_parameters():
             param.requires_grad = any(key in name for key in ("cls_head", "dom_head", "adv_head"))
+    sid_trainable_summary = configure_sid_trainable_parameters(model, args)
     trainable_params = int(sum(p.numel() for p in model.parameters() if p.requires_grad))
     total_params = int(sum(p.numel() for p in model.parameters()))
     ema_model = None
@@ -5691,6 +5778,7 @@ def train(args) -> int:
                 "[CONFIG-OPT] "
                 f"optimizer=AdamW lr={float(args.lr):.6g} weight_decay={float(args.weight_decay):.6g} amp={int(bool(args.amp))} "
                 f"params_trainable={trainable_params} params_total={total_params} "
+                f"sid_mode={sid_mode} sid_params={int(sid_trainable_summary['sid_trainable_parameters'])} "
                 f"label_epochs={int(args.label_epochs)} pseudo_epochs={int(args.pseudo_epochs)} total_epochs={int(total_epochs)} "
                 f"best_metric={args.best_metric}",
                 "[CONFIG-LOSS] "
@@ -8634,6 +8722,25 @@ def train(args) -> int:
                         "tri_pseudo_component_agreement_rate", float("nan")
                     ),
                     "train/tx_acc": 100.0 * (out_l["tx_logits"].argmax(dim=1) == y_l).float().mean().detach(),
+                    "train/sid_raw_sid_agreement": (
+                        (
+                            out_l["logits_raw"].detach().argmax(dim=1)
+                            == out_l["logits_sid"].detach().argmax(dim=1)
+                        ).float().mean()
+                        if torch.is_tensor(out_l.get("logits_raw"))
+                        and torch.is_tensor(out_l.get("logits_sid"))
+                        else float("nan")
+                    ),
+                    "train/sid_delta_norm": (
+                        out_l["sid_delta"].detach().float().norm(dim=1).mean()
+                        if torch.is_tensor(out_l.get("sid_delta"))
+                        else float("nan")
+                    ),
+                    "train/sid_valid_bin_ratio": (
+                        out_l["sid_valid_bin_ratio"].detach().float().mean()
+                        if torch.is_tensor(out_l.get("sid_valid_bin_ratio"))
+                        else float("nan")
+                    ),
                     "train/dom_acc": core_losses.get("dom_acc", float("nan")),
                     "train/cons_cos": core_losses.get("cons_cos", float("nan")),
                     "train/grad_before_clip": grad_norm_before_clip,

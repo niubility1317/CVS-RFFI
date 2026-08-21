@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -12,6 +13,10 @@ if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
 from model_dual_cvsincnet import build_dual_model  # noqa: E402
+from SSDG.train_ssdg import (  # noqa: E402
+    _load_training_checkpoint_state,
+    configure_sid_trainable_parameters,
+)
 
 
 def _write_mask(tmp_path: Path, fft_bins: int = 64) -> Path:
@@ -75,3 +80,39 @@ def test_sid_off_preserves_parameter_count_and_fast_path():
     x = torch.randn(2, 2, 64)
     with torch.no_grad():
         assert torch.equal(control(x), explicit_off(x))
+
+
+def _sid_args(**overrides):
+    values = {
+        "sid_fft96_mode": "sid",
+        "sid_adapter_only": True,
+        "ntrs_variant": "v1",
+    }
+    values.update(overrides)
+    return SimpleNamespace(**values)
+
+
+def test_checkpoint_loader_allows_only_new_sid_keys(tmp_path):
+    base = _tiny_model(sid_fft96_mode="off")
+    sid = _tiny_model(sid_fft96_mode="sid", sid_mask_path=str(_write_mask(tmp_path)))
+
+    report = _load_training_checkpoint_state(sid, {"model": base.state_dict()}, _sid_args())
+
+    assert report["missing_keys"]
+    assert all(key.startswith("sid_fft96.") for key in report["missing_keys"])
+    bad = dict(base.state_dict())
+    bad.pop(next(iter(bad)))
+    with pytest.raises(ValueError, match="non-SID checkpoint drift"):
+        _load_training_checkpoint_state(sid, {"model": bad}, _sid_args())
+
+
+def test_sid_only_training_freezes_mature_path(tmp_path):
+    model = _tiny_model(sid_fft96_mode="sid", sid_mask_path=str(_write_mask(tmp_path)))
+
+    summary = configure_sid_trainable_parameters(model, _sid_args())
+    trainable = [name for name, parameter in model.named_parameters() if parameter.requires_grad]
+
+    assert trainable
+    assert all(name.startswith("sid_fft96.") for name in trainable)
+    assert summary["raw_trainable_parameters"] == 0
+    assert summary["sid_trainable_parameters"] > 0

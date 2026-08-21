@@ -70,6 +70,10 @@ def test_ssdg_parser_defaults_to_core90_concat_and_leo_weak_testing():
     assert args.lambda_sat_cons == pytest.approx(0.0)
     assert args.eval_sat_channel is True
     assert args.eval_sat_scenarios == LEO_WEAK_SCENARIOS_CSV
+    assert args.sid_fft96_mode == "off"
+    assert args.sid_mask_path == ""
+    assert args.sid_residual_scale == pytest.approx(1.0)
+    assert args.sid_adapter_only is True
 
 
 def test_centralized_parser_receives_the_same_core90_defaults(monkeypatch):
