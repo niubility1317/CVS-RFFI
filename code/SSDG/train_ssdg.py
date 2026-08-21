@@ -64,9 +64,11 @@ try:
     from cvsrffi.muse_ssdg import (
         MUSEClassificationPrototypeBank,
         MUSEConfig,
+        MUSERoute,
         MUSEScheduleState,
         MUSETemporalMemory,
         MUSETrainingHeads,
+        adv3b02_core90_u_satellite_policy,
         align_source_domain_prior,
         candidate_set_cross_entropy,
         candidate_set_mask,
@@ -74,8 +76,10 @@ try:
         geometric_fuse_probabilities,
         js_head_disagreement,
         muse_schedule_for_epoch,
+        route_fasttrust,
         route_muse_reliability,
         select_satellite_student_mask,
+        select_adv3b02_u_satellite_scenario,
         stable_sample_keys,
         weighted_soft_cross_entropy,
     )
@@ -111,7 +115,9 @@ try:
     )
     from cvsrffi.leakage_probe import frozen_ridge_linear_probe
     from cvsrffi.phase2_prototypes import (
+        Phase1CalibrationError,
         PrototypeFusionConfig,
+        audit_identity_feature_contract,
         attach_endpoint_accept_v1_manifest,
         calibrate_endpoint_accept_v1,
         export_phase2_prototypes,
@@ -156,10 +162,11 @@ except ModuleNotFoundError:
     F = None
     GradScaler = autocast = DataLoader = None
     BalancedTxDomainBatchSampler = None
-    MUSEClassificationPrototypeBank = MUSEConfig = MUSEScheduleState = MUSETemporalMemory = None
+    MUSEClassificationPrototypeBank = MUSEConfig = MUSERoute = MUSEScheduleState = MUSETemporalMemory = None
     MUSETrainingHeads = candidate_set_cross_entropy = candidate_set_mask = None
+    adv3b02_core90_u_satellite_policy = select_adv3b02_u_satellite_scenario = None
     align_source_domain_prior = compute_muse_reliability = geometric_fuse_probabilities = None
-    js_head_disagreement = muse_schedule_for_epoch = route_muse_reliability = None
+    js_head_disagreement = muse_schedule_for_epoch = route_fasttrust = route_muse_reliability = None
     select_satellite_student_mask = stable_sample_keys = None
     weighted_soft_cross_entropy = None
     WiSigCompactDataset = WiSigSubsetDataset = None
@@ -182,6 +189,7 @@ except ModuleNotFoundError:
     fuse_tx_domain_prototypes = None
     save_phase2_prototype_export = None
     PrototypeFusionConfig = None
+    Phase1CalibrationError = audit_identity_feature_contract = None
     attach_endpoint_accept_v1_manifest = verify_endpoint_accept_v1_manifest = None
     LocalComponentHardGate = None
     calibrate_endpoint_accept_v1 = extract_endpoint_calibration_features = None
@@ -335,6 +343,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
         default="unlabeled_loader",
         choices=["unlabeled_loader"],
     )
+    parser.add_argument("--muse_unlabeled_batch_size", type=int, default=256)
+    parser.add_argument("--muse_fused_student_forward", type=str2bool, default=True)
+    parser.add_argument(
+        "--muse_lr_schedule",
+        type=str,
+        default="fasttrust",
+        choices=["off", "fasttrust"],
+    )
     parser.add_argument("--muse_s2a_start", type=int, default=17)
     parser.add_argument("--muse_s2b_start", type=int, default=41)
     parser.add_argument("--muse_s3a_start", type=int, default=69)
@@ -349,6 +365,10 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--muse_grl_max", type=float, default=0.10)
     parser.add_argument("--muse_high_threshold", type=float, default=0.80)
     parser.add_argument("--muse_low_threshold", type=float, default=0.30)
+    parser.add_argument("--muse_hard_max_fraction", type=float, default=0.25)
+    parser.add_argument("--muse_identity_max_fraction", type=float, default=0.50)
+    parser.add_argument("--muse_class_balanced_cap", type=str2bool, default=True)
+    parser.add_argument("--muse_require_temporal_stability", type=str2bool, default=True)
     parser.add_argument("--muse_candidate_mass", type=float, default=0.75)
     parser.add_argument("--muse_candidate_max_classes", type=int, default=3)
     parser.add_argument("--muse_fusion_global_weight", type=float, default=0.50)
@@ -361,13 +381,17 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--muse_reliability_prototype_weight", type=float, default=0.20)
     parser.add_argument("--muse_reliability_stability_weight", type=float, default=0.15)
     parser.add_argument("--muse_unlabeled_prototype_weight", type=float, default=0.075)
+    parser.add_argument("--muse_enable_u_prototype_update", type=str2bool, default=None)
+    parser.add_argument("--muse_use_prototype_evidence", type=str2bool, default=True)
     parser.add_argument("--muse_temporal_stability_steps", type=int, default=3)
     parser.add_argument("--muse_nuisance_dim", type=int, default=6)
     parser.add_argument("--muse_lambda_domain", type=float, default=1.0)
     parser.add_argument("--muse_lambda_adv", type=float, default=1.0)
     parser.add_argument("--muse_lambda_self", type=float, default=0.10)
     parser.add_argument("--muse_lambda_nuisance", type=float, default=0.10)
-    parser.add_argument("--muse_lambda_satellite", type=float, default=0.10)
+    parser.add_argument("--muse_nuisance_detached", type=str2bool, default=False)
+    parser.add_argument("--muse_lambda_satellite", type=float, default=0.68)
+    parser.add_argument("--muse_enable_u_satellite_identity", type=str2bool, default=True)
     parser.add_argument("--muse_lambda_cross_receiver", type=float, default=0.10)
     parser.add_argument("--muse_lambda_high", type=float, default=1.0)
     parser.add_argument("--muse_lambda_mid", type=float, default=0.50)
@@ -1114,6 +1138,122 @@ def split_tx_rx_day_1_7_2(
     return sorted(labeled), sorted(unlabeled), sorted(val)
 
 
+def _source_validation_record_key(dataset, index: int) -> Tuple[int, int, int, int, int, int]:
+    record = dataset.index[int(index)]
+    return (
+        int(getattr(record, "tx_i", -1)),
+        int(getattr(record, "rx_i", -1)),
+        int(getattr(record, "day_i", -1)),
+        int(getattr(record, "eq_i", -1)),
+        int(getattr(record, "sig_i", index)),
+        int(getattr(record, "base_index", index)),
+    )
+
+
+def _partition_source_validation_roles(
+    dataset,
+    validation: Sequence[int],
+    *,
+    cal_fraction: float,
+    min_class_samples: int = 4,
+) -> Tuple[List[int], List[int], Dict[str, Any]]:
+    """Partition source validation within TX and receiver/day strata."""
+
+    fraction = float(cal_fraction)
+    minimum = max(1, int(min_class_samples))
+    if not 0.0 < fraction < 1.0:
+        raise ValueError("source validation cal_fraction must be in (0,1)")
+    by_class: Dict[int, Dict[Tuple[int, int], List[int]]] = defaultdict(
+        lambda: defaultdict(list)
+    )
+    for raw_index in validation:
+        index = int(raw_index)
+        tx, rx, day, *_ = _source_validation_record_key(dataset, index)
+        by_class[tx][(rx, day)].append(index)
+    if not by_class:
+        raise ValueError("MISSING_CLASS_IN_V_CAL: source validation pool is empty")
+
+    v_cal: List[int] = []
+    v_select: List[int] = []
+    for tx in sorted(by_class):
+        strata = by_class[tx]
+        class_total = sum(len(values) for values in strata.values())
+        if class_total < 2 * minimum:
+            raise ValueError(
+                "INSUFFICIENT_CLASS_SAMPLES: "
+                f"class={tx} validation_count={class_total} required={2 * minimum}"
+            )
+        class_cal: List[int] = []
+        class_select: List[int] = []
+        singletons: List[int] = []
+        for stratum in sorted(strata):
+            values = sorted(
+                strata[stratum],
+                key=lambda index: hashlib.sha256(
+                    repr(_source_validation_record_key(dataset, index)).encode("utf-8")
+                ).hexdigest(),
+            )
+            if len(values) == 1:
+                singletons.extend(values)
+                continue
+            cal_count = int(round(len(values) * fraction))
+            cal_count = min(len(values) - 1, max(1, cal_count))
+            class_cal.extend(values[:cal_count])
+            class_select.extend(values[cal_count:])
+        for index in sorted(singletons, key=lambda item: _source_validation_record_key(dataset, item)):
+            if len(class_cal) <= len(class_select):
+                class_cal.append(index)
+            else:
+                class_select.append(index)
+        while len(class_cal) < minimum and len(class_select) > minimum:
+            class_cal.append(class_select.pop())
+        while len(class_select) < minimum and len(class_cal) > minimum:
+            class_select.append(class_cal.pop())
+        if len(class_cal) < minimum or len(class_select) < minimum:
+            raise ValueError(
+                "INSUFFICIENT_CLASS_SAMPLES: "
+                f"class={tx} V_cal={len(class_cal)} V_select={len(class_select)} "
+                f"required_each={minimum}"
+            )
+        v_cal.extend(class_cal)
+        v_select.extend(class_select)
+
+    cal_set = set(v_cal)
+    select_set = set(v_select)
+    overlap = cal_set & select_set
+    if overlap or cal_set | select_set != {int(index) for index in validation}:
+        raise ValueError("Phase1 V_cal/V_select partition lost or duplicated physical indices")
+
+    def per_class(indices: Sequence[int]) -> Dict[str, int]:
+        counts: Dict[str, int] = defaultdict(int)
+        for index in indices:
+            counts[str(_source_validation_record_key(dataset, int(index))[0])] += 1
+        return dict(sorted(counts.items(), key=lambda item: int(item[0])))
+
+    receipt = {
+        "schema": "phase1_source_validation_roles_v2",
+        "physical_id_overlap_count": len(overlap),
+        "per_role_per_class": {
+            "V_cal": per_class(v_cal),
+            "V_select": per_class(v_select),
+        },
+    }
+    return sorted(v_cal), sorted(v_select), receipt
+
+
+def _resolve_unlabeled_batch_size(args) -> int:
+    if not bool(getattr(args, "use_muse_ssdg", False)):
+        return int(args.batch_size)
+    value = int(getattr(args, "muse_unlabeled_batch_size", 256))
+    if value < 1:
+        raise ValueError("muse_unlabeled_batch_size must be positive")
+    return value
+
+
+def _unlabeled_drop_last(args) -> bool:
+    return not bool(getattr(args, "use_muse_ssdg", False))
+
+
 def split_tx_rx_day_1_7_2_roles(
     dataset,
     *,
@@ -1152,25 +1292,16 @@ def split_tx_rx_day_1_7_2_roles(
         unlabeled_ratio=ratios[1],
         source_val_ratio=ratios[2] + ratios[3],
     )
-    ordered_validation = sorted(
-        validation,
-        key=lambda index: (
-            int(getattr(dataset.index[int(index)], "tx_i", 0)),
-            int(getattr(dataset.index[int(index)], "rx_i", 0)),
-            int(getattr(dataset.index[int(index)], "day_i", 0)),
-            int(getattr(dataset.index[int(index)], "eq_i", 0)),
-            int(getattr(dataset.index[int(index)], "sig_i", index)),
-            int(index),
-        ),
-    )
-    validation_total = len(ordered_validation)
+    validation_total = len(validation)
     if validation_total < 2:
         raise ValueError("Phase1 current source-role split requires both V_cal and V_select")
     cal_fraction = ratios[2] / (ratios[2] + ratios[3])
-    cal_count = int(round(validation_total * cal_fraction))
-    cal_count = min(validation_total - 1, max(1, cal_count))
-    v_cal = sorted(ordered_validation[:cal_count])
-    v_select = sorted(ordered_validation[cal_count:])
+    v_cal, v_select, _ = _partition_source_validation_roles(
+        dataset,
+        validation,
+        cal_fraction=cal_fraction,
+        min_class_samples=4,
+    )
     if set(v_cal) & set(v_select):
         raise ValueError("Phase1 V_cal and V_select physical indices overlap")
     return sorted(labeled), sorted(unlabeled), v_cal, v_select
@@ -1853,11 +1984,11 @@ def _build_ssdg_wisig_data(args, device: torch.device):
     )
     unlabeled_loader = make_loader(
         unlabeled_ds,
-        int(args.batch_size),
+        _resolve_unlabeled_batch_size(args),
         bool(getattr(args, "u_unlabeled_shuffle", True)),
         int(args.num_workers),
         device,
-        True,
+        _unlabeled_drop_last(args),
         int(args.prefetch_factor),
     )
     source_cal_loader = make_loader(
@@ -2407,7 +2538,22 @@ def _maybe_export_phase2_prototypes_ssdg(
                 device=device,
                 feature_key=str(getattr(args, "phase2_export_feature_key", "z_id") or "z_id"),
                 max_batches=int(getattr(args, "phase2_export_max_batches", 0) or 0),
+                require_identity_contract=True,
             )
+            identity_feature_audit = audit_identity_feature_contract(
+                calibration["z_id_features"],
+                calibration["feat_joint_features"],
+                calibration["labels"],
+                calibration["domains"],
+                calibration["logits"],
+                expected_classes=int(getattr(args, "num_classes", 0)),
+                min_class_samples=int(
+                    getattr(args, "endpoint_calibration_min_class_samples", 4)
+                ),
+            )
+            package_metadata = dict(package.get("metadata", {}) or {})
+            package_metadata["identity_feature_contract_audit"] = identity_feature_audit
+            package["metadata"] = package_metadata
             package = calibrate_endpoint_accept_v1(
                 package,
                 calibration["features"],
@@ -2871,6 +3017,8 @@ def _resolve_phase1_terminal_status(
     p0_mechanisms_ready: bool = True,
     p1_mechanisms_ready: bool = True,
     endpoint_export_ready: bool = True,
+    mechanism_gates_required: bool = True,
+    endpoint_export_required: bool = True,
 ) -> str:
     """Resolve a fail-closed Phase1 terminal state without overstating promotion readiness."""
 
@@ -2880,9 +3028,9 @@ def _resolve_phase1_terminal_status(
         return "FAILED_EXPORT"
     if final_blocked:
         return "NON_PROMOTABLE_GUARD_BLOCKED"
-    if not p0_mechanisms_ready:
+    if bool(mechanism_gates_required) and not p0_mechanisms_ready:
         return "NON_PROMOTABLE_P0_DISABLED"
-    if not p1_mechanisms_ready:
+    if bool(mechanism_gates_required) and not p1_mechanisms_ready:
         return "NON_PROMOTABLE_P1_DISABLED"
     if not selected_checkpoint_exists:
         return "NO_SAFE_CHECKPOINT"
@@ -2892,7 +3040,7 @@ def _resolve_phase1_terminal_status(
     )
     if not heldout_complete:
         return "HELDOUT_EVAL_INCOMPLETE"
-    if not endpoint_export_ready:
+    if bool(endpoint_export_required) and not endpoint_export_ready:
         return "NON_PROMOTABLE_ENDPOINT_NOT_EXPORTED"
     return "COMPLETE"
 
@@ -5016,6 +5164,11 @@ def _muse_level_capabilities(level: str) -> Dict[str, bool]:
     }
 
 
+def _muse_u_prototype_update_enabled(args, capabilities: Mapping[str, bool]) -> bool:
+    override = getattr(args, "muse_enable_u_prototype_update", None)
+    return bool(capabilities.get("satellite", False)) if override is None else bool(override)
+
+
 def _enforce_muse_source_protocol(args) -> None:
     """Resolve legacy parser defaults to MUSE roles and reject other drift."""
 
@@ -5274,6 +5427,127 @@ def _optimizer_parameters(model, muse_state) -> List[torch.nn.Parameter]:
     return deduplicated
 
 
+def _fasttrust_optimizer_groups(model, muse_state) -> List[Dict[str, Any]]:
+    backbone: List[torch.nn.Parameter] = []
+    other: List[torch.nn.Parameter] = []
+    for name, parameter in model.named_parameters():
+        if not parameter.requires_grad:
+            continue
+        (backbone if "backbone" in str(name).lower() else other).append(parameter)
+    if muse_state is not None:
+        other.extend(
+            parameter
+            for parameter in muse_state["heads"].parameters()
+            if parameter.requires_grad
+        )
+    groups: List[Dict[str, Any]] = []
+    if backbone:
+        groups.append({"params": backbone, "fasttrust_role": "backbone"})
+    if other:
+        groups.append({"params": other, "fasttrust_role": "other"})
+    if not groups:
+        raise ValueError("optimizer has no trainable parameters")
+    return groups
+
+
+def _fasttrust_lr_enabled(args) -> bool:
+    return bool(getattr(args, "use_muse_ssdg", False)) and str(
+        getattr(args, "muse_lr_schedule", "off")
+    ) == "fasttrust"
+
+
+def _fasttrust_lr_scales(epoch: int) -> Tuple[float, float]:
+    """Return global and backbone-tail LR multipliers for E1-E200."""
+
+    epoch = int(epoch)
+    if not 1 <= epoch <= 200:
+        raise ValueError("FastTrust LR epoch must be in [1,200]")
+    if epoch <= 5:
+        global_scale = epoch / 5.0
+    elif epoch <= 160:
+        progress = (epoch - 6) / float(160 - 6)
+        global_scale = 0.1 + 0.9 * 0.5 * (1.0 + math.cos(math.pi * progress))
+    else:
+        global_scale = 0.1
+    backbone_tail = 1.0 if epoch <= 160 else (0.2 if epoch <= 180 else 0.05)
+    return float(global_scale), float(backbone_tail)
+
+
+def _apply_fasttrust_lr(optimizer, *, base_lr: float, epoch: int) -> None:
+    global_scale, backbone_tail = _fasttrust_lr_scales(int(epoch))
+    for group in optimizer.param_groups:
+        role_scale = backbone_tail if group.get("fasttrust_role") == "backbone" else 1.0
+        group["lr"] = float(base_lr) * global_scale * role_scale
+
+
+def _fasttrust_epoch_resource_metrics(
+    *,
+    u_samples_per_step: float,
+    u_forward_samples_per_step: float,
+    steps: int,
+    elapsed_s: float,
+    peak_memory_bytes: int,
+) -> Dict[str, float]:
+    elapsed = max(float(elapsed_s), 1e-12)
+    step_count = max(int(steps), 0)
+    return {
+        "muse/u_samples_per_s": float(u_samples_per_step) * step_count / elapsed,
+        "muse/u_forward_samples_per_s": (
+            float(u_forward_samples_per_step) * step_count / elapsed
+        ),
+        "muse/peak_cuda_memory_mb": float(peak_memory_bytes) / float(1024**2),
+    }
+
+
+def _split_muse_output(value: Any, split_at: int, total: int) -> Tuple[Any, Any]:
+    if torch.is_tensor(value) and value.ndim >= 1 and int(value.shape[0]) == total:
+        return value[:split_at], value[split_at:]
+    if isinstance(value, Mapping):
+        left: Dict[str, Any] = {}
+        right: Dict[str, Any] = {}
+        for key, nested in value.items():
+            left[key], right[key] = _split_muse_output(nested, split_at, total)
+        return left, right
+    return value, value
+
+
+def _forward_muse_student_views(
+    model,
+    strong_x,
+    nuisance_x,
+    domains,
+    *,
+    grl_lambda: float,
+    fused: bool,
+) -> Dict[str, Any]:
+    common = {
+        "y_tx": None,
+        "grl_lambda": float(grl_lambda),
+        "return_aux": True,
+    }
+    if nuisance_x is None:
+        return {
+            "strong": model(strong_x, domain_labels=domains, **common),
+            "nuisance": None,
+        }
+    if not bool(fused):
+        return {
+            "strong": model(strong_x, domain_labels=domains, **common),
+            "nuisance": model(nuisance_x, domain_labels=domains, **common),
+        }
+    if strong_x.shape != nuisance_x.shape:
+        raise ValueError("fused MUSE student views must have matching shapes")
+    combined = torch.cat([strong_x, nuisance_x], dim=0)
+    combined_domains = (
+        torch.cat([domains, domains], dim=0) if torch.is_tensor(domains) else domains
+    )
+    output = model(combined, domain_labels=combined_domains, **common)
+    strong_output, nuisance_output = _split_muse_output(
+        output, int(strong_x.shape[0]), int(combined.shape[0])
+    )
+    return {"strong": strong_output, "nuisance": nuisance_output}
+
+
 def _assert_muse_open_geometry_role(dataset_role: str) -> None:
     if str(dataset_role).strip() == "U_s":
         raise RuntimeError("MUSE_PROTOCOL_U_S_OPEN_GEOMETRY_FORBIDDEN")
@@ -5389,6 +5663,41 @@ def _compute_muse_labeled_auxiliary_loss(z_id, labels, domains, muse_state):
     return loss
 
 
+def _build_muse_nuisance_iq(
+    x_u,
+    args,
+    *,
+    generator,
+    scenario: str | None = None,
+):
+    """Build one paired simulated U_s IQ view without a model forward."""
+
+    if apply_sat_channel_for_scenario is None or normalize_crra_nuisance_meta is None:
+        raise ImportError("MUSE nuisance regression requires satellite simulator metadata")
+    with torch.no_grad():
+        selected_scenario = str(scenario or args.sat_train_scenario)
+        x_view, raw_metadata = apply_sat_channel_for_scenario(
+            x_u,
+            selected_scenario,
+            args,
+            gen=generator,
+            return_meta=True,
+        )
+        _, nuisance, nuisance_valid, _ = normalize_crra_nuisance_meta(
+            raw_metadata,
+            scenario=selected_scenario,
+            batch_size=int(x_u.size(0)),
+            device=x_u.device,
+        )
+        if torch.is_tensor(nuisance):
+            nuisance = nuisance[:, : int(args.muse_nuisance_dim)]
+    return _safe_iq_tensor(x_view), {
+        "nuisance": nuisance,
+        "nuisance_valid": nuisance_valid,
+        "scenario": selected_scenario,
+    }
+
+
 def _build_muse_nuisance_view(
     model,
     x_u,
@@ -5397,38 +5706,24 @@ def _build_muse_nuisance_view(
     *,
     grl_lambda: float,
     generator,
+    scenario: str | None = None,
 ):
-    """Build a paired simulated U_s view for M1+ nuisance regression."""
+    """Compatibility wrapper for one paired U_s nuisance forward."""
 
-    if apply_sat_channel_for_scenario is None or normalize_crra_nuisance_meta is None:
-        raise ImportError("MUSE nuisance regression requires satellite simulator metadata")
-    with torch.no_grad():
-        x_view, raw_metadata = apply_sat_channel_for_scenario(
-            x_u,
-            str(args.sat_train_scenario),
-            args,
-            gen=generator,
-            return_meta=True,
-        )
-        _, nuisance, nuisance_valid, _ = normalize_crra_nuisance_meta(
-            raw_metadata,
-            scenario=str(args.sat_train_scenario),
-            batch_size=int(x_u.size(0)),
-            device=x_u.device,
-        )
-        if torch.is_tensor(nuisance):
-            nuisance = nuisance[:, : int(args.muse_nuisance_dim)]
+    x_view, metadata = _build_muse_nuisance_iq(
+        x_u,
+        args,
+        generator=generator,
+        scenario=scenario,
+    )
     outputs = model(
-        _safe_iq_tensor(x_view),
+        x_view,
         y_tx=None,
         grl_lambda=float(grl_lambda),
         return_aux=True,
         domain_labels=domains,
     )
-    return outputs, {
-        "nuisance": nuisance,
-        "nuisance_valid": nuisance_valid,
-    }
+    return outputs, metadata
 
 
 def _muse_cross_receiver_alignment(features, pseudo, receivers, mask) -> torch.Tensor:
@@ -5491,29 +5786,6 @@ def _compute_muse_unlabeled_losses(
             ).reshape(-1)
             if identity_satellite_mask.numel() != sample_count:
                 raise ValueError("satellite_mask must contain one value per U_s sample")
-        satellite_identity = student_outputs.get("satellite")
-        if bool(identity_satellite_mask.any()):
-            if not isinstance(satellite_identity, Mapping):
-                raise ValueError("selected satellite identity rows require satellite outputs")
-            for name, strong_tensor in (
-                ("tx_logits", strong["tx_logits"]),
-                ("z_id", strong["z_id"]),
-            ):
-                satellite_tensor = satellite_identity.get(name)
-                if not torch.is_tensor(satellite_tensor) or satellite_tensor.shape != strong_tensor.shape:
-                    raise ValueError(
-                        f"satellite {name} must match the strong identity tensor shape"
-                    )
-            identity_logits = torch.where(
-                identity_satellite_mask.unsqueeze(1),
-                satellite_identity["tx_logits"],
-                strong["tx_logits"],
-            )
-            identity_z_id = torch.where(
-                identity_satellite_mask.unsqueeze(1),
-                satellite_identity["z_id"],
-                strong["z_id"],
-            )
     identity_student = {
         "tx_logits": identity_logits,
         "z_id": identity_z_id,
@@ -5548,8 +5820,11 @@ def _compute_muse_unlabeled_losses(
         and isinstance(nuisance_outputs, Mapping)
         and torch.is_tensor(nuisance_outputs.get("z_dom"))
     ):
+        nuisance_z_dom = nuisance_outputs["z_dom"]
+        if bool(getattr(args, "muse_nuisance_detached", False)):
+            nuisance_z_dom = nuisance_z_dom.detach()
         loss_nuisance = heads.nuisance_loss(
-            nuisance_outputs["z_dom"], nuisance, nuisance_valid
+            nuisance_z_dom, nuisance, nuisance_valid
         )
     else:
         loss_nuisance = strong["z_dom"].sum() * 0.0
@@ -5568,6 +5843,10 @@ def _compute_muse_unlabeled_losses(
     loss_cross_receiver = zero
     head_js = zero
     proto_update_weight = zero
+    prototype_update_count = zero
+    satellite_identity_selected_count = zero
+    identity_selected_count = zero
+    three_head_agreement_rate = zero
     route = route_muse_reliability(
         torch.zeros(sample_count, device=zero.device),
         high_threshold=float(args.muse_high_threshold),
@@ -5581,6 +5860,39 @@ def _compute_muse_unlabeled_losses(
     evidence_probabilities: Dict[str, torch.Tensor] = {}
     fused = global_probability
     pseudo = teacher_outputs["tx_logits"].argmax(dim=-1)
+    if not bool(schedule.pseudo_enabled) or not bool(capabilities["fusion"]):
+        total = loss_base
+        return {
+            "stage": str(schedule.stage),
+            "total": total,
+            "base": loss_base,
+            "identity": loss_identity,
+            "hard": hard_loss,
+            "soft": soft_loss,
+            "candidate": candidate_loss,
+            "domain": loss_domain,
+            "adv": loss_adv,
+            "self": loss_self,
+            "nuisance": loss_nuisance,
+            "satellite": loss_satellite,
+            "cross_receiver": loss_cross_receiver,
+            "route": route,
+            "fasttrust_route": None,
+            "reliability": reliability,
+            "stable": stable,
+            "pseudo": pseudo,
+            "head_js": head_js,
+            "proto_update_weight": proto_update_weight,
+            "proto_momentum": zero.new_tensor(float(schedule.proto_momentum)),
+            "prototype_update_count": prototype_update_count,
+            "u_identity_selected_count": identity_selected_count,
+            "u_satellite_identity_selected_count": satellite_identity_selected_count,
+            "three_head_agreement_rate": three_head_agreement_rate,
+            "evidence_probabilities": evidence_probabilities,
+            "fused_probability": fused,
+            "identity_student": identity_student,
+            "identity_student_satellite_mask": identity_satellite_mask,
+        }
     if capabilities["fusion"]:
         local_probability = heads.local_prob(
             teacher_outputs["z_id"].detach(), domains.clamp(0, heads.num_domains - 1)
@@ -5591,11 +5903,14 @@ def _compute_muse_unlabeled_losses(
             teacher_outputs["z_id"].detach(),
             num_classes=int(heads.num_classes),
         )
+        if not bool(getattr(args, "muse_use_prototype_evidence", True)):
+            prototype_probability = global_probability
         evidence_probabilities = {
             "global": global_probability,
             "local": local_probability,
             "prototype": prototype_probability,
         }
+        consensus_pseudo = global_probability.argmax(dim=-1)
         probabilities = list(evidence_probabilities.values())
         fused = geometric_fuse_probabilities(
             probabilities,
@@ -5631,13 +5946,13 @@ def _compute_muse_unlabeled_losses(
                 memory_keys = [(0, 0, 0, index, index) for index in range(sample_count)]
             stable = muse_state["temporal_memory"].observe(
                 memory_keys,
-                pseudo,
+                consensus_pseudo,
                 confidence,
                 int(metadata.get("epoch", 1)),
             )
         prototype_distance = _muse_prototype_distance(
             teacher_outputs["z_id"].detach(),
-            pseudo,
+            consensus_pseudo,
             muse_state["classification_prototypes"],
         )
         head_js = js_head_disagreement(probabilities)
@@ -5655,11 +5970,31 @@ def _compute_muse_unlabeled_losses(
                 float(args.muse_reliability_stability_weight),
             ],
         )
-        route = route_muse_reliability(
+        fasttrust_route = route_fasttrust(
             reliability,
+            stable
+            if bool(getattr(args, "muse_require_temporal_stability", True))
+            else torch.ones_like(stable),
+            evidence_probabilities,
             high_threshold=float(args.muse_high_threshold),
             low_threshold=float(args.muse_low_threshold),
+            hard_max_fraction=float(args.muse_hard_max_fraction),
+            identity_max_fraction=float(args.muse_identity_max_fraction),
+            class_balanced_cap=bool(getattr(args, "muse_class_balanced_cap", True)),
         )
+        route = MUSERoute(
+            high=fasttrust_route.hard,
+            mid=fasttrust_route.soft,
+            low=fasttrust_route.candidate | fasttrust_route.no_identity,
+        )
+        pseudo = pseudo.clone()
+        pseudo[fasttrust_route.hard] = consensus_pseudo[fasttrust_route.hard]
+        identity_selected_count = (
+            fasttrust_route.hard
+            | fasttrust_route.soft
+            | fasttrust_route.candidate
+        ).sum().to(dtype=zero.dtype)
+        three_head_agreement_rate = fasttrust_route.agreement.float().mean()
         if bool(route.high.any()):
             hard_loss = F.cross_entropy(
                 identity_logits[route.high].float(),
@@ -5675,7 +6010,10 @@ def _compute_muse_unlabeled_losses(
                 max_classes=int(args.muse_candidate_max_classes),
             )
             candidate_loss = candidate_set_cross_entropy(
-                identity_logits, candidate, reliability.detach(), route.low
+                identity_logits,
+                candidate,
+                reliability.detach(),
+                fasttrust_route.candidate,
             )
         loss_identity = float(schedule.lambda_u) * (
             float(args.muse_lambda_high) * hard_loss
@@ -5684,35 +6022,63 @@ def _compute_muse_unlabeled_losses(
         )
 
         if capabilities["satellite"] and schedule.pseudo_enabled:
-            accepted = (route.high | route.mid) & identity_satellite_mask
-            if bool(accepted.any()):
-                loss_satellite = F.kl_div(
-                    F.log_softmax(identity_logits[accepted].float(), dim=-1),
-                    fused[accepted].detach(),
-                    reduction="batchmean",
+            accepted = fasttrust_route.hard & identity_satellite_mask
+            if (
+                bool(getattr(args, "muse_enable_u_satellite_identity", True))
+                and float(args.muse_lambda_satellite) > 0.0
+                and bool(accepted.any())
+            ):
+                satellite_identity = student_outputs.get("satellite")
+                if not isinstance(satellite_identity, Mapping):
+                    raise ValueError("selected U_H satellite rows require satellite outputs")
+                satellite_logits = satellite_identity.get("tx_logits")
+                if (
+                    not torch.is_tensor(satellite_logits)
+                    or satellite_logits.shape != strong["tx_logits"].shape
+                ):
+                    raise ValueError(
+                        "satellite tx_logits must match the strong identity tensor shape"
+                    )
+                loss_satellite = (
+                    float(schedule.lambda_u)
+                    * float(args.muse_lambda_satellite)
+                    * F.cross_entropy(
+                        satellite_logits[accepted].float(),
+                        pseudo[accepted].detach(),
+                    )
                 )
+                satellite_identity_selected_count = accepted.sum().to(dtype=zero.dtype)
             loss_cross_receiver = _muse_cross_receiver_alignment(
-                identity_z_id, pseudo, metadata.get("receivers"), route.high & stable
+                identity_z_id,
+                pseudo,
+                metadata.get("receivers"),
+                fasttrust_route.hard,
             )
-            proto_update_mask = route.high & stable
+        if (
+            schedule.pseudo_enabled
+            and _muse_u_prototype_update_enabled(args, capabilities)
+            and float(args.muse_unlabeled_prototype_weight) > 0.0
+        ):
+            proto_update_mask = fasttrust_route.hard
             if bool(proto_update_mask.any()):
                 proto_update_weight = zero.new_tensor(
                     float(args.muse_unlabeled_prototype_weight)
                 )
-            muse_state["classification_prototypes"].observe(
-                identity_z_id,
-                pseudo,
-                domains,
-                route.high,
-                stable,
-                float(args.muse_unlabeled_prototype_weight),
-                momentum=float(schedule.proto_momentum),
-            )
+                prototype_update_count = proto_update_mask.sum().to(dtype=zero.dtype)
+                muse_state["classification_prototypes"].observe(
+                    identity_z_id,
+                    pseudo,
+                    domains,
+                    proto_update_mask,
+                    proto_update_mask,
+                    float(args.muse_unlabeled_prototype_weight),
+                    momentum=float(schedule.proto_momentum),
+                )
 
     total = (
         loss_base
         + loss_identity
-        + float(args.muse_lambda_satellite) * loss_satellite
+        + loss_satellite
         + float(args.muse_lambda_cross_receiver) * loss_cross_receiver
     )
     return {
@@ -5730,12 +6096,17 @@ def _compute_muse_unlabeled_losses(
         "satellite": loss_satellite,
         "cross_receiver": loss_cross_receiver,
         "route": route,
+        "fasttrust_route": fasttrust_route,
         "reliability": reliability,
         "stable": stable,
         "pseudo": pseudo,
         "head_js": head_js,
         "proto_update_weight": proto_update_weight,
         "proto_momentum": zero.new_tensor(float(schedule.proto_momentum)),
+        "prototype_update_count": prototype_update_count,
+        "u_identity_selected_count": identity_selected_count,
+        "u_satellite_identity_selected_count": satellite_identity_selected_count,
+        "three_head_agreement_rate": three_head_agreement_rate,
         "evidence_probabilities": evidence_probabilities,
         "fused_probability": fused,
         "identity_student": identity_student,
@@ -6190,8 +6561,13 @@ def train(args) -> int:
         teacher_model.eval()
         for param in teacher_model.parameters():
             param.requires_grad = False
+    optimizer_parameters = (
+        _fasttrust_optimizer_groups(model, muse_state)
+        if _fasttrust_lr_enabled(args)
+        else _optimizer_parameters(model, muse_state)
+    )
     optimizer = torch.optim.AdamW(
-        _optimizer_parameters(model, muse_state),
+        optimizer_parameters,
         lr=float(args.lr),
         weight_decay=float(args.weight_decay),
     )
@@ -6509,6 +6885,10 @@ def train(args) -> int:
             direct_metric_reference_bank.maybe_promote(epoch)
 
         t0 = time.time()
+        if _fasttrust_lr_enabled(args) and device.type == "cuda":
+            torch.cuda.reset_peak_memory_stats(device)
+        if _fasttrust_lr_enabled(args):
+            _apply_fasttrust_lr(optimizer, base_lr=float(args.lr), epoch=int(epoch))
         if muse_state is not None:
             _configure_muse_epoch_state(muse_state, int(epoch))
         phase = "label" if epoch <= int(args.label_epochs) else "pseudo"
@@ -6571,6 +6951,7 @@ def train(args) -> int:
             use_unlabeled_step_budget=bool(getattr(args, "use_muse_ssdg", False)),
         )
         for batch_idx, (labeled_batch, muse_unlabeled_batch) in enumerate(epoch_pairs, start=1):
+            muse_identity_grad_norm = float("nan")
             x_l, y_l, extra_l = move_batch(labeled_batch, device)
             if muse_state is not None:
                 _assert_muse_open_geometry_role("L_s")
@@ -7717,21 +8098,40 @@ def train(args) -> int:
                         if ema_model is None:
                             model.train()
                     x_s = _strong_augment(x_u, float(args.strong_noise_std))
-                    out_s = model(
-                        x_s,
-                        y_tx=None,
-                        grl_lambda=float(schedule.grl_lambda),
-                        return_aux=True,
-                        domain_labels=d_u,
+                    u_sat_probability, _ = adv3b02_core90_u_satellite_policy(
+                        int(epoch)
                     )
-                    out_u_nuisance, simulator_metadata = _build_muse_nuisance_view(
+                    u_sat_scenario = select_adv3b02_u_satellite_scenario(
+                        int(epoch), int(batch_idx), int(args.seed)
+                    )
+                    need_nuisance_view = (
+                        float(args.muse_lambda_nuisance) > 0.0
+                        or bool(muse_state["capabilities"]["satellite"])
+                    )
+                    if need_nuisance_view:
+                        x_u_nuisance, simulator_metadata = _build_muse_nuisance_iq(
+                            x_u,
+                            args,
+                            generator=sat_gen,
+                            scenario=u_sat_scenario,
+                        )
+                    else:
+                        x_u_nuisance = None
+                        simulator_metadata = {
+                            "nuisance": None,
+                            "nuisance_valid": None,
+                            "scenario": u_sat_scenario,
+                        }
+                    student_views = _forward_muse_student_views(
                         model,
-                        x_u,
+                        x_s,
+                        x_u_nuisance,
                         d_u,
-                        args,
                         grl_lambda=float(schedule.grl_lambda),
-                        generator=sat_gen,
+                        fused=bool(args.muse_fused_student_forward),
                     )
+                    out_s = student_views["strong"]
+                    out_u_nuisance = student_views["nuisance"]
                     meta_u = _meta_from_extra(extra_u) or {}
                     memory_keys = stable_sample_keys(meta_u)
                     if len(memory_keys) != unlabeled_count:
@@ -7740,7 +8140,7 @@ def train(args) -> int:
                         memory_keys,
                         epoch=int(epoch),
                         probability=(
-                            float(schedule.p_sat)
+                            float(u_sat_probability)
                             if muse_state["capabilities"]["satellite"]
                             else 0.0
                         ),
@@ -7766,6 +8166,31 @@ def train(args) -> int:
                         muse_state=muse_state,
                         simulator_metadata=simulator_metadata,
                     )
+                    if int(epoch) <= 16:
+                        if (
+                            float(muse_losses["u_identity_selected_count"].detach().item()) != 0.0
+                            or float(muse_losses["u_satellite_identity_selected_count"].detach().item()) != 0.0
+                            or float(muse_losses["identity"].detach().item()) != 0.0
+                        ):
+                            raise RuntimeError(
+                                "MUSE_S1_IDENTITY_GRADIENT_PROTOCOL_VIOLATION"
+                            )
+                    if batch_idx == 1:
+                        identity_objective = (
+                            muse_losses["identity"] + muse_losses["satellite"]
+                        )
+                        identity_grads = torch.autograd.grad(
+                            identity_objective,
+                            _optimizer_parameters(model, muse_state),
+                            retain_graph=True,
+                            allow_unused=True,
+                        )
+                        identity_norm_sq = sum(
+                            float(gradient.detach().float().square().sum().item())
+                            for gradient in identity_grads
+                            if gradient is not None
+                        )
+                        muse_identity_grad_norm = math.sqrt(identity_norm_sq)
                     mask = muse_losses["route"].high | muse_losses["route"].mid
                     pseudo_total = int(muse_losses["pseudo"].numel())
                     pseudo_selected = int(mask.sum().detach().item())
@@ -8993,6 +9418,38 @@ def train(args) -> int:
                     "muse/proto_update_weight": muse_losses["proto_update_weight"].detach()
                     if muse_state is not None
                     else 0.0,
+                    "muse/u_identity_selected_count": muse_losses[
+                        "u_identity_selected_count"
+                    ].detach()
+                    if muse_state is not None
+                    else 0.0,
+                    "muse/u_identity_loss": muse_losses["identity"].detach()
+                    if muse_state is not None
+                    else 0.0,
+                    "muse/u_identity_gradient_norm": muse_identity_grad_norm,
+                    "muse/u_satellite_identity_selected_count": muse_losses[
+                        "u_satellite_identity_selected_count"
+                    ].detach()
+                    if muse_state is not None
+                    else 0.0,
+                    "muse/prototype_update_count": muse_losses[
+                        "prototype_update_count"
+                    ].detach()
+                    if muse_state is not None
+                    else 0.0,
+                    "muse/three_head_agreement_rate": muse_losses[
+                        "three_head_agreement_rate"
+                    ].detach()
+                    if muse_state is not None
+                    else 0.0,
+                    "muse/u_samples": float(unlabeled_count)
+                    if muse_state is not None
+                    else 0.0,
+                    "muse/u_forward_samples": float(
+                        unlabeled_count * (2 if out_u_nuisance is not None else 1)
+                    )
+                    if muse_state is not None
+                    else 0.0,
                     "train/proto_pull_cos": proto_info.get("proto_pull_cos", float("nan")),
                     "train/proto_domain_align": proto_info.get("proto_domain_align", float("nan")),
                     "train/proto_push": proto_info.get("proto_push", float("nan")),
@@ -9840,6 +10297,23 @@ def train(args) -> int:
             best_epoch = int(epoch)
             is_best = True
         elapsed = time.time() - t0
+        if muse_state is not None:
+            peak_memory_bytes = (
+                int(torch.cuda.max_memory_allocated(device))
+                if device.type == "cuda"
+                else 0
+            )
+            train_logs.update(
+                _fasttrust_epoch_resource_metrics(
+                    u_samples_per_step=float(train_logs.get("muse/u_samples", 0.0)),
+                    u_forward_samples_per_step=float(
+                        train_logs.get("muse/u_forward_samples", 0.0)
+                    ),
+                    steps=len(epoch_logs),
+                    elapsed_s=elapsed,
+                    peak_memory_bytes=peak_memory_bytes,
+                )
+            )
         telemetry_rows.append(
             _build_ssdg_epoch_telemetry_row(
                 args=args,
@@ -10398,6 +10872,9 @@ def train(args) -> int:
     endpoint_export_ready = bool(
         export_status.get("status") == "COMPLETE" and export_status.get("endpoint_artifact_ready", False)
     )
+    muse_external_eval = bool(getattr(args, "use_muse_ssdg", False)) and bool(
+        getattr(args, "muse_external_final_eval", False)
+    )
     terminal_status = _resolve_phase1_terminal_status(
         tail_stopped=bool(tail_early_stop_requested),
         export_failed=bool(exit_code),
@@ -10408,6 +10885,11 @@ def train(args) -> int:
         p0_mechanisms_ready=bool(p0_mechanisms_ready),
         p1_mechanisms_ready=bool(p1_mechanisms_ready),
         endpoint_export_ready=bool(endpoint_export_ready),
+        mechanism_gates_required=not muse_external_eval,
+        endpoint_export_required=(
+            bool(getattr(args, "endpoint_require_artifact_on_export", True))
+            and not muse_external_eval
+        ),
     )
     terminal_exit_code = int(exit_code)
     if terminal_exit_code == 0 and terminal_status != "COMPLETE":

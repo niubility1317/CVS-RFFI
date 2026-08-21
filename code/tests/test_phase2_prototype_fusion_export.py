@@ -642,7 +642,15 @@ def test_ssdg_export_hook_attaches_and_verifies_endpoint_artifact(monkeypatch, t
     monkeypatch.setattr(
         train_ssdg,
         "extract_endpoint_calibration_features",
-        lambda *a, **k: {"features": features, "labels": labels, "logits": logits},
+        lambda *a, **k: {
+            "features": features,
+            "z_id_features": features,
+            "feat_joint_features": features + torch.tensor([0.01, 0.01]),
+            "labels": labels,
+            "domains": torch.tensor([0, 1, 0, 1, 0, 1, 0, 1]),
+            "logits": logits,
+            "identity_feature_contract_required": True,
+        },
     )
 
     def fake_save(package, output_path):
@@ -678,8 +686,9 @@ def test_ssdg_export_hook_attaches_and_verifies_endpoint_artifact(monkeypatch, t
         endpoint_calibration_split="source_val",
         endpoint_accept_policy_id="endpoint_accept_v1",
         dataset="wisig",
-        split_mode="tx_rx_day_1_7_2",
-    )
+            split_mode="tx_rx_day_1_7_2",
+            num_classes=2,
+        )
 
     package = train_ssdg._maybe_export_phase2_prototypes_ssdg(
         args,

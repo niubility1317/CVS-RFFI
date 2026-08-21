@@ -6,6 +6,7 @@ from cvsrffi.muse_ssdg import (
     compute_muse_reliability,
     geometric_fuse_probabilities,
     js_head_disagreement,
+    route_fasttrust,
     route_muse_reliability,
 )
 
@@ -148,3 +149,98 @@ def test_routing_uses_high_inclusive_low_exclusive_boundaries():
     assert torch.all(
         torch.stack([route.high, route.mid, route.low]).int().sum(dim=0) == 1
     )
+
+
+def test_fasttrust_hard_requires_stability_three_head_agreement_and_balanced_cap():
+    reliability = torch.tensor([0.99, 0.98, 0.97, 0.96, 0.95, 0.94, 0.60, 0.55])
+    stable = torch.tensor([True, True, True, True, False, True, True, True])
+    predictions = (
+        torch.tensor([0, 0, 0, 1, 1, 1, 0, 1]),
+        torch.tensor([0, 0, 0, 1, 1, 0, 0, 1]),
+        torch.tensor([0, 0, 0, 1, 1, 1, 0, 1]),
+    )
+    evidence = [torch.nn.functional.one_hot(row, num_classes=2).float() for row in predictions]
+
+    route = route_fasttrust(
+        reliability,
+        stable,
+        evidence,
+        high_threshold=0.80,
+        low_threshold=0.30,
+        hard_max_fraction=0.25,
+        identity_max_fraction=0.50,
+    )
+
+    assert route.agreement.tolist() == [True, True, True, True, True, False, True, True]
+    assert route.hard.tolist() == [True, False, False, True, False, False, False, False]
+    assert int(route.hard.sum()) == 2
+    assert int((route.hard | route.soft | route.candidate).sum()) == 4
+    assert not route.hard[4]
+    assert not route.hard[5]
+    assert torch.all(
+        torch.stack([route.hard, route.soft, route.candidate, route.no_identity])
+        .int()
+        .sum(0)
+        == 1
+    )
+
+
+def test_fasttrust_routing_is_deterministic_for_ties_and_handles_empty_batches():
+    evidence = [torch.tensor([[0.8, 0.2]] * 8)] * 3
+    first = route_fasttrust(
+        torch.full((8,), 0.9),
+        torch.ones(8, dtype=torch.bool),
+        evidence,
+        high_threshold=0.8,
+        low_threshold=0.3,
+    )
+    second = route_fasttrust(
+        torch.full((8,), 0.9),
+        torch.ones(8, dtype=torch.bool),
+        evidence,
+        high_threshold=0.8,
+        low_threshold=0.3,
+    )
+    assert torch.equal(first.hard, second.hard)
+    assert first.hard.nonzero().flatten().tolist() == [0, 1]
+
+    empty = route_fasttrust(
+        torch.empty(0),
+        torch.empty(0, dtype=torch.bool),
+        [torch.empty(0, 2)] * 3,
+        high_threshold=0.8,
+        low_threshold=0.3,
+    )
+    assert empty.hard.numel() == 0
+    assert empty.no_identity.numel() == 0
+
+
+def test_fasttrust_no_class_balanced_cap_keeps_global_reliability_order():
+    reliability = torch.tensor([0.99, 0.98, 0.97, 0.96])
+    stable = torch.ones(4, dtype=torch.bool)
+    predictions = torch.tensor([0, 0, 0, 1])
+    evidence = [torch.nn.functional.one_hot(predictions, num_classes=2).float()] * 3
+
+    balanced = route_fasttrust(
+        reliability,
+        stable,
+        evidence,
+        high_threshold=0.8,
+        low_threshold=0.3,
+        hard_max_fraction=0.5,
+        identity_max_fraction=0.5,
+        class_balanced_cap=True,
+    )
+    global_only = route_fasttrust(
+        reliability,
+        stable,
+        evidence,
+        high_threshold=0.8,
+        low_threshold=0.3,
+        hard_max_fraction=0.5,
+        identity_max_fraction=0.5,
+        class_balanced_cap=False,
+    )
+
+    assert balanced.hard.tolist() == [True, False, False, True]
+    assert global_only.hard.tolist() == [True, True, False, False]

@@ -4,7 +4,7 @@
 
 ```text
 run_id=phase1_adv3b02_fasttrust16_s392002_20260821
-status=LOCAL_DESIGN_FROZEN_NOT_LAUNCHED
+status=LOCAL_VERIFIED_AWAITING_RELEASE
 seed=392002
 epochs=200
 matrix_rows=16
@@ -12,7 +12,21 @@ gpu_count=8
 rows_per_gpu=2
 ```
 
-本报告发布矩阵和实现边界，不表示代码已经修改、同步或启动。正式启动只能使用完成TDD和真实checkpoint smoke后的Git提交；每个candidate使用不可覆盖输出目录。
+2026-08-21 12:38 CST按用户要求执行停止核验：N607直连预检通过；项目实验进程匹配为空，`nvidia-smi`计算进程为空，GPU0–7均为0%利用且各仅1MiB占用。因此没有可归属实验需要终止，未执行kill，既有checkpoint、日志和部分产物均保留。
+
+本轮代码已在本地按TDD完成并通过真实checkpoint无query smoke；尚未同步或启动。正式启动只使用本轮提交固定的代码与配置；每个candidate使用不可覆盖输出目录。
+
+## 本地实现与验证
+
+- FastTrust严格路由已接入：hard必须同时满足high、temporal stable、三头一致与class-balanced cap；全批hard上限25%，全部身份样本上限50%。
+- E1–E16在base domain/self/nuisance后提前返回，不执行融合、temporal observe或U prototype更新；E17以后才启用身份路由。
+- U侧卫星身份CE仅消费严格U_H，伪标签detach，权重为`lambda_u(epoch)×0.68`，复用nuisance/satellite视图，不增加第三次student前向。
+- L batch固定128，U batch独立为256；GPU3保留128/384配对。strong与nuisance/satellite通过拼接完成一次student调用，新增U samples/s、前向samples/s和CUDA峰值显存遥测。
+- source validation改为按TX及receiver/day分层的`V_cal/V_select`互斥划分；双空间审计在导出边界检查类别覆盖、有限/非零特征、类间几何和类别顺序。
+- 16条launcher从机器矩阵读取候选，每张卡最多并发两条；每条只执行一次严格联合评测，再拆分clean和三种LEO弱信道JSON/log。输出根已存在时拒绝覆盖。
+- 聚焦联合回归：188项收集，186项通过、2项按既有条件跳过；退出码0。`bash -n`、`py_compile`、`git diff --check`和16条dry-run均通过；dry-run计数为row16、train16、联合eval16、分场景输出64，且没有创建输出目录。
+- 真实checkpoint无query smoke：严格恢复ADV3B02 checkpoint，missing/unexpected均为0；CPU单batch前向、FastTrust hard身份、U satellite CE、U prototype更新、反向、grad clip和AdamW step均完成，`tx_logits=[2,6]`、`z_id=[2,160]`，hard/satellite/prototype计数均为2，query与target truth读取均为0。仅出现既有AMP弃用warning，不影响数值有限性或退出码。
+- 独立P0/P1审查首轮发现4项阻断：可选export被旧终态误判、U尾批丢弃、prior可能翻转hard标签、M0未执行统一LR。四项均按TDD修复；唯一一次定点复审逐项GREEN，最终结论为GO。未扩大审查范围，未增加发布gate。
 
 ## 共同协议与配置
 
@@ -71,18 +85,19 @@ bundle导出artifact独立记录；其失败不能删除checkpoint、覆盖训�
 
 | ID | 来源 | 要求 | 目标文件 | 状态 | 验证 | 备注 |
 |---|---|---|---|---|---|---|
-| FT-01 | 用户 | ADV3B02 CORE90同款星地增强 | train、launcher、tests | pending | 待边界测试 | L_s与U_H共享场景日程 |
-| FT-02 | 用户 | U获得伪身份后加入星地增强 | train、MUSE loss、tests | pending | 待梯度/样本mask测试 | 仅U_H |
-| FT-03 | 用户 | 优化伪标签精度 | muse_ssdg、train、tests | pending | 待H/M/L路由测试 | stable+三头一致+class cap |
-| FT-04 | 用户 | 优化训练速度 | loader、train、launcher、benchmark | pending | 待吞吐与峰值显存 | 不降低U每epoch覆盖率 |
-| FT-05 | 指导P0-4 | S1身份梯度严格为0 | train、tests、telemetry | pending | 待E1/E16/E17测试 | 禁止误导selected遥测 |
-| FT-06 | 指导P0-1/P0-2 | class-complete V_cal/V_select与准确异常分类 | split、prototype、tests | pending | 待类别覆盖/错误类型测试 | 训练前P0 |
-| FT-07 | 指导P0-3 | train/eval/export解耦 | launcher、tests | pending | 待失败注入测试 | eval不得被bundle失败阻断 |
-| FT-08 | 指导稳定性 | warmup/cosine/tail LR与grad clip | train、launcher、tests | pending | 待边界测试 | `max_grad_norm=5` |
+| FT-01 | 用户 | ADV3B02 CORE90同款星地增强 | train、launcher、tests | verified | 日程边界与launcher参数测试通过 | L_s与U_H共享场景日程 |
+| FT-02 | 用户 | U获得伪身份后加入星地增强 | train、MUSE loss、tests | verified | 严格U_H mask、梯度与真实checkpoint smoke通过 | 仅U_H |
+| FT-03 | 用户 | 优化伪标签精度 | muse_ssdg、train、tests | verified | H/M/L、稳定性、三头一致与cap测试通过 | stable+三头一致+class cap |
+| FT-04 | 用户 | 优化训练速度 | loader、train、launcher、telemetry | verified | U batch、融合前向、LR与遥测测试通过 | 实际吞吐待运行后同卡分析 |
+| FT-05 | 指导P0-4 | S1身份梯度严格为0 | train、tests、telemetry | verified | E1/E16/E17边界测试通过 | 首批分项梯度，其他batch不重复反向 |
+| FT-06 | 指导P0-1/P0-2 | class-complete V_cal/V_select与准确异常分类 | split、prototype、tests | verified | 类别覆盖、互斥与五类错误测试通过 | 训练前失败关闭 |
+| FT-07 | 指导P0-3 | train/eval/export解耦 | launcher、tests | verified | 失败注入测试通过 | export非必要失败不阻断eval |
+| FT-08 | 指导稳定性 | warmup/cosine/tail LR与grad clip | train、launcher、tests | verified | E1/E5/E160/E161/E180/E181/E200测试通过 | `max_grad_norm=5` |
 | FT-09 | 用户 | 每GPU两条实验 | matrix、launcher | verified | JSON统计16条、每GPU2条 | 尚未启动 |
-| FT-10 | 项目规则 | final clean+三LEO自动评测 | launcher、tests | pending | 待fake+真实smoke | 四场景分文件 |
+| FT-10 | 项目规则 | final clean+三LEO自动评测 | launcher、tests | verified | 单次联合eval、四场景拆分与缺失失败注入通过 | 真实metrics待训练结束后生成 |
+| FT-11 | 指导P0-5 | `z_id/feat_joint`双空间审计与identity feature contract | train、phase2_prototypes、tests | verified | finite/nonzero/coverage/geometry/contract测试通过 | export前失败关闭 |
 
-当前追踪计数：`verified=1`、`pending=9`、`deferred=0`、`rejected=0`、`blocked=0`。最高风险是U batch384与拼接student forward在两进程同卡时的峰值显存；launcher必须在启动前执行单batch非阻断microbenchmark并记录结果，若超显存则该行技术失败，不自动改变矩阵或覆盖输出。
+当前追踪计数：`verified=11`、`pending=0`、`deferred=0`、`rejected=0`、`blocked=0`。当前没有性能结果；代码验证不能替代真实训练结论。主要运行期资源风险是U batch384与两进程同卡的峰值显存，launcher会保留每条技术失败和部分产物，不自动改变矩阵或覆盖输出。
 
 ## 计划启动形式
 
@@ -94,4 +109,4 @@ MATRIX=configs/phase1_adv3b02_fasttrust16_s392002_20260821.json
 bash code/scripts/launch_phase1_adv3b02_fasttrust16_20260821.sh
 ```
 
-当前launcher尚未实现，因此本命令仅冻结接口，不可执行。矩阵进入`LANDED/RUNNING`前必须写入真实Git commit、N607 CWD、release路径、PID与GPU映射。
+launcher已实现并完成本地dry-run；矩阵进入`LANDED/RUNNING`前仍需写入真实Git commit、N607 CWD、release路径、PID与GPU映射。

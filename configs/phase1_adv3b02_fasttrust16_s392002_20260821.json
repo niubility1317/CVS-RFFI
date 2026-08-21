@@ -1,11 +1,13 @@
 {
   "schema": "cvs.phase1.fasttrust_matrix.v1",
   "run_id": "phase1_adv3b02_fasttrust16_s392002_20260821",
-  "status": "DESIGN_FROZEN_NOT_LAUNCHED",
+  "status": "LOCAL_VERIFIED_AWAITING_RELEASE",
   "seed": 392002,
   "epochs": 200,
   "launch_mode": "two_concurrent_per_gpu",
   "max_training_processes_per_gpu": 2,
+  "launcher": "code/scripts/launch_phase1_adv3b02_fasttrust16_20260821.sh",
+  "candidate_worker": "code/scripts/launch_phase1_adv3b02_muse_ssdg_20260819.sh",
   "source_roles": {
     "L_s": 0.07,
     "U_s": 0.63,

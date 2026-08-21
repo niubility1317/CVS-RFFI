@@ -49,6 +49,124 @@ class PrototypeFusionConfig:
     eps: float = 1e-6
 
 
+class Phase1CalibrationError(ValueError):
+    """A source-calibration failure with one non-aliased machine code."""
+
+    def __init__(self, code: str, details: Mapping[str, Any]):
+        self.code = str(code)
+        self.details = dict(details)
+        super().__init__(f"{self.code}: {json.dumps(self.details, sort_keys=True)}")
+
+
+def audit_identity_feature_contract(
+    z_id: torch.Tensor,
+    feat_joint: torch.Tensor,
+    labels: torch.Tensor,
+    domains: torch.Tensor,
+    logits: torch.Tensor,
+    *,
+    expected_classes: int,
+    min_class_samples: int = 4,
+) -> Dict[str, Any]:
+    """Audit the classification and export identity spaces before calibration."""
+
+    expected = int(expected_classes)
+    minimum = max(1, int(min_class_samples))
+    y = torch.as_tensor(labels).detach().view(-1).long().cpu()
+    d = torch.as_tensor(domains).detach().view(-1).long().cpu()
+    logit = torch.as_tensor(logits).detach().float().cpu()
+    spaces = {
+        "z_id": torch.as_tensor(z_id).detach().float().cpu(),
+        "feat_joint": torch.as_tensor(feat_joint).detach().float().cpu(),
+    }
+    details: Dict[str, Any] = {
+        "class_count": expected,
+        "sample_count": int(y.numel()),
+        "logit_class_order": list(range(expected)),
+    }
+    if expected < 1 or logit.ndim != 2 or int(logit.shape[1]) != expected:
+        details["logit_width"] = int(logit.shape[1]) if logit.ndim == 2 else -1
+        raise Phase1CalibrationError("CLASS_ORDER_MISMATCH", details)
+    if d.numel() != y.numel() or any(
+        value.ndim != 2 or int(value.shape[0]) != y.numel()
+        for value in spaces.values()
+    ):
+        details["domain_count"] = int(d.numel())
+        raise Phase1CalibrationError("CLASS_ORDER_MISMATCH", details)
+    if not torch.isfinite(logit).all() or any(
+        not torch.isfinite(value).all() for value in spaces.values()
+    ):
+        raise Phase1CalibrationError("NONFINITE_FEATURE", details)
+
+    class_counts = {
+        str(class_id): int((y == class_id).sum().item())
+        for class_id in range(expected)
+    }
+    details["class_counts"] = class_counts
+    missing = [class_id for class_id in range(expected) if class_counts[str(class_id)] == 0]
+    if missing:
+        details["missing_classes"] = missing
+        raise Phase1CalibrationError("MISSING_CLASS_IN_V_CAL", details)
+    insufficient = {
+        key: count for key, count in class_counts.items() if count < minimum
+    }
+    if insufficient:
+        details["insufficient_classes"] = insufficient
+        details["min_class_samples"] = minimum
+        raise Phase1CalibrationError("INSUFFICIENT_CLASS_SAMPLES", details)
+
+    space_audit: Dict[str, Any] = {}
+    for name, value in spaces.items():
+        norms = torch.linalg.vector_norm(value, dim=1)
+        zero = norms <= 1e-8
+        zero_count = int(zero.sum().item())
+        audit = {
+            "feature_dim": int(value.shape[1]),
+            "zero_count": zero_count,
+            "norm_min": float(norms.min().item()),
+            "norm_p50": float(torch.quantile(norms, 0.50).item()),
+            "norm_p95": float(torch.quantile(norms, 0.95).item()),
+            "norm_max": float(norms.max().item()),
+        }
+        space_audit[name] = audit
+        if zero_count:
+            details["space"] = name
+            details.update(audit)
+            raise Phase1CalibrationError("ZERO_DIRECTION_FEATURE", details)
+
+    centers = []
+    normalized_z = F.normalize(spaces["z_id"], dim=1, eps=1e-8)
+    for class_id in range(expected):
+        centers.append(F.normalize(normalized_z[y == class_id].mean(0), dim=0, eps=1e-8))
+    center_matrix = torch.stack(centers)
+    similarity = center_matrix @ center_matrix.t()
+    off_diagonal = similarity[~torch.eye(expected, dtype=torch.bool)]
+    min_interclass_angle = (
+        float(torch.rad2deg(torch.acos(off_diagonal.clamp(-1.0 + 1e-6, 1.0 - 1e-6))).min().item())
+        if off_diagonal.numel()
+        else 180.0
+    )
+    return {
+        "status": "PASS",
+        "class_count": expected,
+        "class_counts": class_counts,
+        "class_coverage_pass": True,
+        "finite_feature_pass": True,
+        "nonzero_direction_pass": True,
+        "interclass_geometry_pass": min_interclass_angle > 0.0,
+        "min_interclass_angle_deg": min_interclass_angle,
+        "feature_key_contract_pass": True,
+        "classification_feature_key": "feat_joint",
+        "prototype_feature_key": "z_id",
+        "open_set_geometry_feature_key": "z_id",
+        "phase2_export_feature_key": "z_id",
+        "runtime_inference_feature_key": "z_id",
+        "spaces": space_audit,
+        "domain_count": int(torch.unique(d[d >= 0]).numel()),
+        "logit_class_order": list(range(expected)),
+    }
+
+
 class BalancedPrototypeBank:
     """Momentum prototype bank with optional group-balanced updates.
 
@@ -823,6 +941,7 @@ def extract_endpoint_calibration_features(
     feature_key: str = "z_id",
     max_batches: int = 0,
     grl_lambda: float = 1.0,
+    require_identity_contract: bool = False,
 ) -> Dict[str, torch.Tensor | str]:
     """Extract source-validation geometry and logits for endpoint calibration."""
 
@@ -830,6 +949,7 @@ def extract_endpoint_calibration_features(
     was_training = bool(getattr(model, "training", False))
     model.eval()
     feats, labels, domains, logits = [], [], [], []
+    z_id_features, feat_joint_features = [], []
     try:
         for batch_idx, batch in enumerate(loader):
             if int(max_batches) > 0 and batch_idx >= int(max_batches):
@@ -840,6 +960,15 @@ def extract_endpoint_calibration_features(
             d = extract_domain_from_extra(extra, dev)
             out = model(x, y_tx=y, grl_lambda=float(grl_lambda), return_aux=True, domain_labels=d)
             z = _select_phase2_feature(out, feature_key)
+            if bool(require_identity_contract):
+                z_id = _select_phase2_feature(out, "z_id")
+                feat_joint = _select_phase2_feature(out, "feat_joint")
+                if z_id.ndim != 2 or feat_joint.ndim != 2:
+                    raise ValueError("identity feature contract requires rank-2 z_id and feat_joint")
+                if z_id.size(0) != y.numel() or feat_joint.size(0) != y.numel():
+                    raise ValueError("identity feature contract batch cardinality mismatch")
+                z_id_features.append(z_id.detach().float().cpu())
+                feat_joint_features.append(feat_joint.detach().float().cpu())
             tx_logits = out.get("tx_logits")
             if not torch.is_tensor(tx_logits) or tx_logits.ndim != 2:
                 raise ValueError("endpoint_accept_v1 calibration requires rank-2 tx_logits")
@@ -859,13 +988,18 @@ def extract_endpoint_calibration_features(
             model.train()
     if not feats:
         raise ValueError("No source-validation batches were available for endpoint calibration")
-    return {
+    result: Dict[str, torch.Tensor | str | bool] = {
         "features": torch.cat(feats, dim=0),
         "labels": torch.cat(labels, dim=0).long(),
         "domains": torch.cat(domains, dim=0).long(),
         "logits": torch.cat(logits, dim=0).float(),
         "feature_key": str(feature_key),
+        "identity_feature_contract_required": bool(require_identity_contract),
     }
+    if bool(require_identity_contract):
+        result["z_id_features"] = torch.cat(z_id_features, dim=0)
+        result["feat_joint_features"] = torch.cat(feat_joint_features, dim=0)
+    return result
 
 
 def _finite_quantile(values: torch.Tensor, q: float) -> float:

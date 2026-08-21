@@ -166,6 +166,23 @@ def test_muse_can_delegate_final_target_eval_without_changing_legacy(monkeypatch
     assert calls == ["internal"]
 
 
+def test_muse_external_eval_terminal_ignores_optional_legacy_promotion_gates():
+    status = train_ssdg._resolve_phase1_terminal_status(
+        tail_stopped=False,
+        export_failed=False,
+        final_blocked=False,
+        selected_checkpoint_exists=True,
+        heldout_eval_status="DELEGATED_TO_MUSE_LAUNCHER",
+        external_final_eval=True,
+        p0_mechanisms_ready=False,
+        p1_mechanisms_ready=False,
+        endpoint_export_ready=False,
+        mechanism_gates_required=False,
+        endpoint_export_required=False,
+    )
+    assert status == "COMPLETE"
+
+
 def test_muse_enablement_resolves_and_validates_exact_four_role_source_protocol():
     args = _args("M1")
     train_ssdg._enforce_muse_source_protocol(args)
@@ -206,8 +223,33 @@ def test_muse_parser_exposes_schedule_routing_and_loss_hyperparameters():
         "muse_lambda_nuisance",
         "muse_lambda_satellite",
         "muse_lambda_cross_receiver",
+        "muse_enable_u_prototype_update",
+        "muse_enable_u_satellite_identity",
+        "muse_use_prototype_evidence",
+        "muse_require_temporal_stability",
+        "muse_class_balanced_cap",
+        "muse_nuisance_detached",
     ):
         assert hasattr(args, name)
+
+
+def test_u_prototype_update_override_can_enable_m2_and_disable_m3():
+    m2 = _args("M2")
+    m3 = _args("M3")
+    assert not train_ssdg._muse_u_prototype_update_enabled(
+        m2, train_ssdg._muse_level_capabilities("M2")
+    )
+    assert train_ssdg._muse_u_prototype_update_enabled(
+        m3, train_ssdg._muse_level_capabilities("M3")
+    )
+    m2.muse_enable_u_prototype_update = True
+    m3.muse_enable_u_prototype_update = False
+    assert train_ssdg._muse_u_prototype_update_enabled(
+        m2, train_ssdg._muse_level_capabilities("M2")
+    )
+    assert not train_ssdg._muse_u_prototype_update_enabled(
+        m3, train_ssdg._muse_level_capabilities("M3")
+    )
 
 
 def test_m2_fusion_uses_global_local_prototype_and_l_s_prior_alignment():
@@ -441,6 +483,40 @@ def test_muse_nuisance_loss_uses_the_paired_simulated_view_z_dom():
     assert strong["z_dom"].grad is None
 
 
+def test_nuisance_detached_ablation_blocks_backbone_view_gradient():
+    args = _args("M1")
+    args.muse_nuisance_detached = True
+    state = train_ssdg._initialize_muse_training_state(
+        args, _TinyMUSEModel(), torch.device("cpu")
+    )
+    state["schedule_state"] = muse_schedule_for_epoch(1, state["config"])
+    weak, strong = _outputs()
+    nuisance_z_dom = torch.randn(2, 4, requires_grad=True)
+    losses = train_ssdg._compute_muse_unlabeled_losses(
+        x_u=torch.randn(2, 2, 8),
+        metadata=_metadata(),
+        teacher_outputs=weak,
+        student_outputs={
+            "weak": weak,
+            "strong": strong,
+            "nuisance": {"z_dom": nuisance_z_dom},
+            "satellite": None,
+        },
+        muse_state=state,
+        simulator_metadata={
+            "nuisance": torch.ones(2, 6),
+            "nuisance_valid": torch.ones(2, dtype=torch.bool),
+        },
+    )
+    losses["nuisance"].backward()
+    assert nuisance_z_dom.grad is None
+    assert any(
+        parameter.grad is not None
+        for name, parameter in state["heads"].named_parameters()
+        if name.startswith("nuisance_head")
+    )
+
+
 def test_muse_nuisance_view_is_built_for_m1_without_satellite_identity_output(monkeypatch):
     x_u = torch.zeros(2, 2, 8)
     d_u = torch.tensor([0, 1])
@@ -476,12 +552,20 @@ def test_muse_nuisance_view_is_built_for_m1_without_satellite_identity_output(mo
 
 
 @pytest.mark.parametrize("level", ["M1", "M2", "M3"])
-def test_muse_s1_reads_unlabeled_without_identity_classification_gradient(level):
+def test_muse_s1_reads_unlabeled_without_identity_graph_or_updates(level, monkeypatch):
     state = train_ssdg._initialize_muse_training_state(
         _args(level), _TinyMUSEModel(), torch.device("cpu")
     )
     state["schedule_state"] = muse_schedule_for_epoch(1, state["config"])
     weak, strong = _outputs()
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("S1 must not build the U identity graph")
+
+    monkeypatch.setattr(state["heads"], "local_prob", forbidden)
+    monkeypatch.setattr(
+        state["classification_prototypes"], "class_probabilities", forbidden
+    )
+    monkeypatch.setattr(state["temporal_memory"], "observe", forbidden)
     for _ in range(3):
         losses = train_ssdg._compute_muse_unlabeled_losses(
             x_u=torch.randn(2, 2, 8),
@@ -496,6 +580,10 @@ def test_muse_s1_reads_unlabeled_without_identity_classification_gradient(level)
         )
     assert losses["stage"] == "S1"
     assert losses["identity"].item() == 0.0
+    assert losses["u_identity_selected_count"].item() == 0.0
+    assert losses["u_satellite_identity_selected_count"].item() == 0.0
+    assert losses["prototype_update_count"].item() == 0.0
+    assert losses["evidence_probabilities"] == {}
     assert losses["base"].requires_grad
     losses["total"].backward()
     assert strong["tx_logits"].grad is None or torch.equal(
@@ -505,8 +593,11 @@ def test_muse_s1_reads_unlabeled_without_identity_classification_gradient(level)
 
 
 def test_muse_m2_routes_are_a_partition_and_m3_updates_only_classification_bank():
+    args = _args("M3")
+    args.muse_hard_max_fraction = 1.0
+    args.muse_identity_max_fraction = 1.0
     state = train_ssdg._initialize_muse_training_state(
-        _args("M3"), _TinyMUSEModel(), torch.device("cpu")
+        args, _TinyMUSEModel(), torch.device("cpu")
     )
     weak, strong = _outputs()
     state["schedule_state"] = muse_schedule_for_epoch(69, state["config"])
@@ -515,6 +606,16 @@ def test_muse_m2_routes_are_a_partition_and_m3_updates_only_classification_bank(
         torch.tensor([0, 1]),
         torch.tensor([0, 1]),
         state,
+    )
+    agreed_probability = torch.softmax(weak["tx_logits"].detach().float(), dim=-1)
+    state["heads"].local_prob = lambda features, domains: agreed_probability.to(
+        features.device
+    )
+    state["classification_prototypes"].class_probabilities = (
+        lambda features, num_classes: agreed_probability.to(features.device)
+    )
+    state["temporal_memory"].observe = lambda keys, pseudo, confidence, epoch: torch.ones(
+        pseudo.numel(), dtype=torch.bool, device=pseudo.device
     )
     losses = None
     for epoch in (69, 70, 71):
@@ -533,23 +634,35 @@ def test_muse_m2_routes_are_a_partition_and_m3_updates_only_classification_bank(
         torch.stack([route.high, route.mid, route.low]).int().sum(0),
         torch.ones(2, dtype=torch.int),
     )
-    assert state["classification_prototypes"].state_dict()["counts"] == {
-        0: 2.0,
-        1: 2.0,
-    }
+    counts = state["classification_prototypes"].state_dict()["counts"]
+    assert counts[0] > 1.0
+    assert counts[1] > 1.0
 
 
-def test_m3_sha_mask_selects_exactly_one_identity_student_per_row():
+def test_m3_satellite_identity_ce_uses_only_strict_hard_rows():
     args = _args("M3")
     args.muse_high_threshold = 0.0
     args.muse_low_threshold = 0.0
+    args.muse_hard_max_fraction = 1.0
+    args.muse_identity_max_fraction = 1.0
+    args.muse_lambda_satellite = 0.68
     state = train_ssdg._initialize_muse_training_state(
         args, _TinyMUSEModel(), torch.device("cpu")
+    )
+    state["temporal_memory"].observe = lambda keys, pseudo, confidence, epoch: torch.ones(
+        pseudo.numel(), dtype=torch.bool, device=pseudo.device
     )
     state["schedule_state"] = muse_schedule_for_epoch(69, state["config"])
     weak, strong = _outputs()
     train_ssdg._compute_muse_labeled_auxiliary_loss(
         weak["z_id"], torch.tensor([0, 1]), torch.tensor([0, 1]), state
+    )
+    agreed_probability = torch.softmax(weak["tx_logits"].detach().float(), dim=-1)
+    state["heads"].local_prob = lambda features, domains: agreed_probability.to(
+        features.device
+    )
+    state["classification_prototypes"].class_probabilities = (
+        lambda features, num_classes: agreed_probability.to(features.device)
     )
     keys = [(0, 0, 0, 0, 100), (0, 0, 0, 1, 101)]
     satellite_mask = train_ssdg.select_satellite_student_mask(
@@ -581,21 +694,66 @@ def test_m3_sha_mask_selects_exactly_one_identity_student_per_row():
     )
 
     selected = losses["identity_student"]
-    assert torch.equal(selected["tx_logits"][0], strong["tx_logits"][0])
-    assert torch.equal(selected["tx_logits"][1], satellite["tx_logits"][1])
-    assert torch.equal(selected["z_id"][0], strong["z_id"][0])
-    assert torch.equal(selected["z_id"][1], satellite["z_id"][1])
+    assert torch.equal(selected["tx_logits"], strong["tx_logits"])
+    assert torch.equal(selected["z_id"], strong["z_id"])
     assert losses["identity_student_satellite_mask"].tolist() == [False, True]
     assert torch.allclose(
         losses["self"],
         state["heads"].self_supervised_loss(weak["z_id"], selected["z_id"]),
     )
 
-    losses["hard"].backward()
-    assert torch.count_nonzero(strong["tx_logits"].grad[0]).item() > 0
-    assert torch.count_nonzero(strong["tx_logits"].grad[1]).item() == 0
+    losses["satellite"].backward()
+    assert losses["u_satellite_identity_selected_count"].item() == 1.0
+    assert strong["tx_logits"].grad is None or torch.count_nonzero(strong["tx_logits"].grad).item() == 0
     assert torch.count_nonzero(satellite["tx_logits"].grad[0]).item() == 0
     assert torch.count_nonzero(satellite["tx_logits"].grad[1]).item() > 0
+
+
+def test_fasttrust_hard_target_remains_three_head_consensus_when_prior_flips_fusion():
+    args = _args("M2")
+    args.muse_high_threshold = 0.0
+    args.muse_low_threshold = 0.0
+    args.muse_hard_max_fraction = 1.0
+    args.muse_identity_max_fraction = 1.0
+    args.muse_prior_alignment_gamma = 1.0
+    args.muse_reliability_confidence_weight = 1.0
+    args.muse_reliability_margin_weight = 0.0
+    args.muse_reliability_js_weight = 0.0
+    args.muse_reliability_prototype_weight = 0.0
+    args.muse_reliability_stability_weight = 0.0
+    state = train_ssdg._initialize_muse_training_state(
+        args, _TinyMUSEModel(), torch.device("cpu")
+    )
+    state["schedule_state"] = muse_schedule_for_epoch(69, state["config"])
+    state["temporal_memory"].observe = lambda keys, pseudo, confidence, epoch: torch.ones(
+        pseudo.numel(), dtype=torch.bool, device=pseudo.device
+    )
+    state["source_global_class_counts"].copy_(torch.tensor([100.0, 100.0, 1.0]))
+    state["source_domain_class_counts"][0].copy_(torch.tensor([1000.0, 1.0, 1.0]))
+    state["source_domain_class_counts"][1].copy_(torch.tensor([1000.0, 1.0, 1.0]))
+    consensus = torch.tensor([[0.51, 0.49, 1e-6], [0.51, 0.49, 1e-6]])
+    consensus = consensus / consensus.sum(dim=-1, keepdim=True)
+    state["heads"].local_prob = lambda features, domains: consensus.to(features.device)
+    state["classification_prototypes"].class_probabilities = (
+        lambda features, num_classes: consensus.to(features.device)
+    )
+    weak, strong = _outputs()
+    weak["tx_logits"] = consensus.log()
+    losses = train_ssdg._compute_muse_unlabeled_losses(
+        torch.randn(2, 2, 8),
+        {**_metadata(), "epoch": 69},
+        weak,
+        {"weak": weak, "strong": strong, "nuisance": None, "satellite": None},
+        state,
+        {},
+    )
+
+    assert losses["fused_probability"].argmax(dim=-1).tolist() == [1, 1]
+    assert losses["pseudo"].tolist() == [0, 0]
+    assert torch.allclose(
+        losses["hard"],
+        torch.nn.functional.cross_entropy(strong["tx_logits"], torch.zeros(2, dtype=torch.long)),
+    )
 
 
 @pytest.mark.parametrize("level", ["M1", "M2"])
@@ -682,9 +840,9 @@ def test_muse_candidate_supervision_starts_only_at_s2b(epoch, candidate_active):
 
 @pytest.mark.parametrize(
     "high_threshold,low_threshold,expected_key",
-    [(0.0, 0.0, "hard"), (1.0, 0.0, "soft")],
+    [(0.0, 0.0, "soft"), (1.0, 0.0, "soft")],
 )
-def test_muse_s2a_uses_hard_high_and_soft_mid_only(
+def test_muse_s2a_first_observation_routes_unstable_high_as_soft(
     high_threshold, low_threshold, expected_key
 ):
     args = _args("M2")
@@ -705,8 +863,7 @@ def test_muse_s2a_uses_hard_high_and_soft_mid_only(
     )
     assert losses[expected_key].item() > 0.0
     assert losses["candidate"].item() == 0.0
-    other_key = "soft" if expected_key == "hard" else "hard"
-    assert losses[other_key].item() == 0.0
+    assert losses["hard"].item() == 0.0
 
 
 def test_missing_classification_prototype_contributes_zero_reliability_evidence():

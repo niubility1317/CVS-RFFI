@@ -31,6 +31,30 @@ def test_stable_sample_keys_preserve_metadata_identity_order():
     assert muse_ssdg.stable_sample_keys(extra) == [(2, 4, 6, 8, 10), (3, 5, 7, 9, 11)]
 
 
+def test_u_satellite_policy_matches_adv3b02_core90_epoch_boundaries():
+    assert muse_ssdg.adv3b02_core90_u_satellite_policy(1) == (
+        0.30,
+        ("leo_clear_weak",),
+    )
+    assert muse_ssdg.adv3b02_core90_u_satellite_policy(40) == (
+        0.30,
+        ("leo_clear_weak",),
+    )
+    assert muse_ssdg.adv3b02_core90_u_satellite_policy(41) == (
+        0.60,
+        ("leo_low_elev_weak", "leo_rain_weak"),
+    )
+    assert muse_ssdg.adv3b02_core90_u_satellite_policy(90) == (
+        0.60,
+        ("leo_low_elev_weak", "leo_rain_weak"),
+    )
+    assert muse_ssdg.adv3b02_core90_u_satellite_policy(91) == (
+        0.80,
+        ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"),
+    )
+    assert muse_ssdg.adv3b02_core90_u_satellite_policy(200)[0] == 0.80
+
+
 def test_muse_telemetry_exposes_fixed_satellite_and_reliability_fields():
     args = SimpleNamespace(
         output_dir="out",

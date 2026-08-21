@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import hashlib
+import math
 from numbers import Real
 from typing import Any, Mapping, Sequence
 
@@ -20,6 +21,31 @@ _DEFAULT_UNLABELED_PROTOTYPE_WEIGHT = 0.075
 _MIN_UNLABELED_PROTOTYPE_WEIGHT = 0.05
 _MAX_UNLABELED_PROTOTYPE_WEIGHT = 0.10
 _TEMPORAL_STABILITY_STEPS = 3
+
+
+def adv3b02_core90_u_satellite_policy(epoch: int) -> tuple[float, tuple[str, ...]]:
+    """Return the exact ADV3B02 CORE90 LEO weak schedule for a U_s view."""
+
+    if not isinstance(epoch, int) or isinstance(epoch, bool) or not 1 <= epoch <= 200:
+        raise ValueError("ADV3B02 CORE90 U satellite epoch must be in [1,200]")
+    if epoch <= 40:
+        return 0.30, ("leo_clear_weak",)
+    if epoch <= 90:
+        return 0.60, ("leo_low_elev_weak", "leo_rain_weak")
+    return 0.80, (
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak",
+    )
+
+
+def select_adv3b02_u_satellite_scenario(epoch: int, batch_index: int, seed: int) -> str:
+    """Select one scheduled scenario deterministically without reading TX truth."""
+
+    _, scenarios = adv3b02_core90_u_satellite_policy(int(epoch))
+    payload = f"{int(seed)}:{int(epoch)}:{int(batch_index)}".encode("utf-8")
+    position = int.from_bytes(hashlib.sha256(payload).digest()[:8], "big") % len(scenarios)
+    return scenarios[position]
 
 
 @dataclass(frozen=True)
@@ -174,6 +200,18 @@ class MUSERoute:
     high: torch.Tensor
     mid: torch.Tensor
     low: torch.Tensor
+
+
+@dataclass(frozen=True)
+class FastTrustRoute:
+    """Mutually exclusive identity routes plus hard-gate evidence."""
+
+    hard: torch.Tensor
+    soft: torch.Tensor
+    candidate: torch.Tensor
+    no_identity: torch.Tensor
+    agreement: torch.Tensor
+    class_cap: torch.Tensor
 
 
 def _probability_heads(probabilities: Sequence[torch.Tensor]) -> list[torch.Tensor]:
@@ -413,6 +451,115 @@ def route_muse_reliability(
     low = value < low_threshold
     mid = ~(high | low)
     return MUSERoute(high=high, mid=mid, low=low)
+
+
+def route_fasttrust(
+    reliability: torch.Tensor,
+    stable: torch.Tensor,
+    evidence_probabilities: Sequence[torch.Tensor] | Mapping[str, torch.Tensor],
+    *,
+    high_threshold: float,
+    low_threshold: float,
+    hard_max_fraction: float = 0.25,
+    identity_max_fraction: float = 0.50,
+    class_balanced_cap: bool = True,
+) -> FastTrustRoute:
+    """Route identity supervision with strict hard evidence and deterministic caps."""
+
+    value = reliability if torch.is_tensor(reliability) else torch.as_tensor(reliability)
+    if value.ndim != 1:
+        raise ValueError("FastTrust reliability must be one-dimensional")
+    if value.is_complex():
+        raise TypeError("FastTrust reliability must be real-valued")
+    if not value.is_floating_point():
+        value = value.float()
+    value = torch.nan_to_num(value, nan=0.0, posinf=1.0, neginf=0.0).clamp(0.0, 1.0)
+    batch_size = int(value.numel())
+    stable_mask = torch.as_tensor(stable, device=value.device, dtype=torch.bool).reshape(-1)
+    if stable_mask.numel() != batch_size:
+        raise ValueError("FastTrust stable must contain one value per sample")
+    heads = (
+        list(evidence_probabilities.values())
+        if isinstance(evidence_probabilities, Mapping)
+        else list(evidence_probabilities)
+    )
+    if len(heads) != 3:
+        raise ValueError("FastTrust requires exactly three identity evidence heads")
+    normalized_heads = _probability_heads(heads)
+    if any(head.ndim != 2 or int(head.shape[0]) != batch_size for head in normalized_heads):
+        raise ValueError("FastTrust evidence heads must have shape [batch, classes]")
+    predictions = torch.stack(
+        [_normalize_probability(head).argmax(dim=-1) for head in normalized_heads],
+        dim=0,
+    )
+    agreement = (predictions == predictions[0].unsqueeze(0)).all(dim=0)
+    pseudo = predictions[0]
+
+    hard_fraction = float(hard_max_fraction)
+    identity_fraction = float(identity_max_fraction)
+    if not (
+        math.isfinite(hard_fraction)
+        and math.isfinite(identity_fraction)
+        and 0.0 <= hard_fraction <= identity_fraction <= 1.0
+    ):
+        raise ValueError(
+            "FastTrust fractions must satisfy 0 <= hard_max_fraction <= identity_max_fraction <= 1"
+        )
+    base = route_muse_reliability(value, high_threshold, low_threshold)
+    hard_limit = int(math.floor(batch_size * hard_fraction + 1e-12))
+    identity_limit = int(math.floor(batch_size * identity_fraction + 1e-12))
+    hard = torch.zeros(batch_size, device=value.device, dtype=torch.bool)
+    class_cap = torch.zeros_like(hard)
+
+    def ranked_indices(mask: torch.Tensor) -> list[int]:
+        indices = mask.nonzero(as_tuple=False).reshape(-1).detach().cpu().tolist()
+        scores = value.detach().cpu().tolist()
+        return sorted(indices, key=lambda index: (-float(scores[index]), int(index)))
+
+    hard_eligible = base.high & stable_mask & agreement
+    active_classes = sorted(
+        int(item)
+        for item in torch.unique(pseudo[hard_eligible]).detach().cpu().tolist()
+    )
+    if hard_limit > 0 and active_classes:
+        if bool(class_balanced_cap):
+            per_class_limit = int(math.ceil(hard_limit / float(len(active_classes))))
+            selected: list[int] = []
+            for class_id in active_classes:
+                class_mask = hard_eligible & (pseudo == class_id)
+                selected.extend(ranked_indices(class_mask)[:per_class_limit])
+            selected = sorted(
+                selected, key=lambda index: (-float(value[index].item()), int(index))
+            )[:hard_limit]
+        else:
+            selected = ranked_indices(hard_eligible)[:hard_limit]
+        if selected:
+            selected_tensor = torch.as_tensor(selected, device=value.device, dtype=torch.long)
+            hard[selected_tensor] = True
+            class_cap[selected_tensor] = True
+
+    remaining = max(0, identity_limit - int(hard.sum().item()))
+    soft = torch.zeros_like(hard)
+    soft_pool = base.mid | (base.high & ~hard)
+    soft_selected = ranked_indices(soft_pool)[:remaining]
+    if soft_selected:
+        soft[torch.as_tensor(soft_selected, device=value.device, dtype=torch.long)] = True
+    remaining -= len(soft_selected)
+    candidate = torch.zeros_like(hard)
+    candidate_selected = ranked_indices(base.low)[: max(0, remaining)]
+    if candidate_selected:
+        candidate[
+            torch.as_tensor(candidate_selected, device=value.device, dtype=torch.long)
+        ] = True
+    no_identity = ~(hard | soft | candidate)
+    return FastTrustRoute(
+        hard=hard,
+        soft=soft,
+        candidate=candidate,
+        no_identity=no_identity,
+        agreement=agreement,
+        class_cap=class_cap,
+    )
 
 
 def _loss_logits(logits: torch.Tensor, name: str = "logits") -> tuple[torch.Tensor, tuple[int, ...]]:
