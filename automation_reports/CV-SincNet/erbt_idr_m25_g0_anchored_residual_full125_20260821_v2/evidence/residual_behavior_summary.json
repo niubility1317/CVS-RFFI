@@ -1,0 +1,46 @@
+{
+  "schema": "cvs.erbt_idr.m25.anchored_residual_behavior_summary.v1",
+  "run_id": "erbt_idr_m25_g0_anchored_residual_full125_20260821_v2",
+  "source": "500 formal row_execution_receipt.json files after prediction closure; truth-blind fields only",
+  "arms": {
+    "M25-B1-G0-BOUNDED-LOCAL-RESIDUAL": {
+      "row_count": 125,
+      "scene_fit_count": 375,
+      "selected_strength_counts": {"0.0": 305, "0.02": 7, "0.04": 13, "0.08": 50},
+      "selected_nonzero_scene_count": 70,
+      "query_count": 172500,
+      "prediction_disagreement_count_vs_b0": 464,
+      "prediction_disagreement_fraction_vs_b0": 0.002689855072463768,
+      "rows_with_prediction_disagreement": 43,
+      "scene_class_state_count": 8625,
+      "accepted_dual_prototype_state_count": 0,
+      "accepted_dual_prototype_fraction": 0.0
+    },
+    "M25-B2-G0-SHRINKAGE-RADIUS-RESIDUAL": {
+      "row_count": 125,
+      "scene_fit_count": 375,
+      "selected_strength_counts": {"0.0": 293, "0.02": 9, "0.04": 10, "0.08": 63},
+      "selected_nonzero_scene_count": 82,
+      "query_count": 172500,
+      "prediction_disagreement_count_vs_b0": 697,
+      "prediction_disagreement_fraction_vs_b0": 0.004040579710144927,
+      "rows_with_prediction_disagreement": 50,
+      "scene_class_state_count": 8625,
+      "accepted_dual_prototype_state_count": 0,
+      "accepted_dual_prototype_fraction": 0.0
+    },
+    "M25-B3-G0-STABLE-DUAL-PROTOTYPE-RESIDUAL": {
+      "row_count": 125,
+      "scene_fit_count": 375,
+      "selected_strength_counts": {"0.0": 282, "0.02": 12, "0.04": 11, "0.08": 70},
+      "selected_nonzero_scene_count": 93,
+      "query_count": 172500,
+      "prediction_disagreement_count_vs_b0": 785,
+      "prediction_disagreement_fraction_vs_b0": 0.0045507246376811595,
+      "rows_with_prediction_disagreement": 51,
+      "scene_class_state_count": 8625,
+      "accepted_dual_prototype_state_count": 745,
+      "accepted_dual_prototype_fraction": 0.08637681159420289
+    }
+  }
+}
