@@ -39,6 +39,18 @@ rows_per_gpu=2
 - 启动约2分钟后的只读复查：16/16个训练进程存活，16/16个candidate日志非空且持续增长，错误指纹计数为0；15/16条已记录`[EPOCH-END] E001/200`，`R4_FAST_FULL_U128`仍在首轮初始化。该候选的U batch为128，每epoch步数多于U256/U384，因此首轮更慢属于预期速度差异，不能解释为崩溃。
 - 当前尚无最终性能结果。每条训练完成E200并写出`final_ssdg.pth`后，launcher才会自动执行一次严格联合评测并拆分保存clean、`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`结果；四场景未齐全前不会标记`ARTIFACTS_COMPLETE`。
 
+## 发布后逻辑与负载复核
+
+2026-08-21 13:42 CST按用户要求对实际发布面执行一次主Agent只读一致性复核，不新增独立审查gate，也不干预健康训练。复核范围限定为矩阵唯一性、同seed、每卡并发上限、batch参数传递、U_s完整覆盖、FastTrust身份路由、不可覆盖输出、训练后`final_ssdg.pth`严格恢复和clean+三LEO评测闭环。
+
+- 矩阵逻辑检查为`VERIFIED`：16条candidate名称唯一、seed统一为392002、E200、GPU0–7各2条；每张卡的U batch总和均为512。
+- GPU0、1、2、4、5、6、7均为`256+256`；GPU3为`128+384`。因此大batch与较小batch已经位于同一卡，且与其他GPU形成精确相同的batch总负载。
+- FastTrust launcher、protocol、speed、MUSE训练集成和U侧星地身份增强聚焦回归退出码为0，共69项通过；提交后`git diff --check`通过且没有未提交的已跟踪修改。
+- N607只读快照显示dispatch PID`266946`持续运行，16个训练进程仍为每卡2个，GPU利用率94%–98%，错误指纹计数为0；各候选已到E001–E004。GPU3总显存占用约5.99GB/24GB，没有出现大/小batch配对导致的显存风险。
+- 用户本次文本写作“batch383”，但已发布并正在运行的候选是`R4_FAST_FULL_U384`。本轮不把健康运行中的384静默改成383，也不覆盖run root；若后续明确要求精确batch383，应创建新的不可覆盖矩阵，并用较小batch129与其同卡组成`383+129=512`，不能改写本run的实验身份。
+
+复核结论：未发现会导致本轮训练跑错、数据角色越权、输出覆盖、每卡超过2个进程、`final_ssdg.pth`遗漏评测或四场景结果伪闭合的逻辑硬伤。当前矩阵保持`RUNNING`，不重复发布。
+
 ## 共同协议与配置
 
 - source角色：`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`，物理样本两两不交，source/target receiver不相交。
