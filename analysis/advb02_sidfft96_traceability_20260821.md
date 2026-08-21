@@ -4,11 +4,11 @@
 
 指导来源：用户提供的《CVS项目优化的核心方向：从“后验修正特征”转向“前端可辨识分解”》
 
-当前阶段：设计、P0、P1模型/训练/诊断与S0–S3 launcher已实现；本地闭合与N607发布进行中。
+当前阶段：设计、P0、P1模型/训练/诊断与S0–S3 launcher已实现；本地验证与唯一一次独立P0/P1审查已闭合，N607发布进行中。
 
 |ID|来源章节|需求|目标文件|状态|验证|说明|
 |---|---|---|---|---|---|---|
-|SID-001|总体判断、P0|先构建source-only频谱可辨识性地图|`code/scripts/audit_phase1_spectral_identifiability.py`、`code/cvsrffi/spectral_identifiability.py`|verified|5项P0聚焦测试与真实ManySig单批source smoke|只用`L_s`TX标签，不读取target或`U_s`真值|
+|SID-001|总体判断、P0|先构建source-only频谱可辨识性地图|`code/scripts/audit_phase1_spectral_identifiability.py`、`code/cvsrffi/spectral_identifiability.py`|verified|6项P0聚焦测试与修复后真实ManySig单批source smoke|只用`L_s`TX标签，不读取target或`U_s`真值；跨域散度先按TX条件化|
 |SID-002|4.2|计算并分别输出TX散度、跨RX/day/LEO散度、估计噪声与`J_b`|同上|verified|手工小样本统计fixture区分TX带与RX带|禁止只输出最终比值|
 |SID-003|4.1、9.1|支持中心带、相位带和P0多频带三种固定掩码|`code/cvsrffi/spectral_identifiability.py`|verified|掩码边界、空掩码和稳定排序测试|第一轮不学习频带拓扑|
 |SID-004|8.1|实现严格96维SID-FFT96五组描述|`code/cvsrffi/spectral_identifiability.py`|verified|维数、有限值、单位范数与phase分组测试|带宽不足时称为带内边缘残差|

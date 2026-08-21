@@ -2,14 +2,14 @@
 
 ## 当前结论
 
-- 状态：`LOCAL_VERIFICATION_IN_PROGRESS`。
+- 状态：`LOCAL_VERIFIED`；N607矩阵等待release落地。
 - 本轮仅发布前端频谱可辨识性路线P0与S0–S3单seed矩阵；尚无N607性能结果，不声明优于CORE90。
 - 基座固定为`ADV3B02_CORE90_SOFT_E200`，不修改Phase2/Phase3，不使用target/query，不与NTRS或CRRA组合。
 
 ## 最小预登记
 
 - run ID：`phase1_advb02_sidfft96_leo_weak_20260821_v1`
-- 实现基线提交：`e139e8078b6e3bc39f80432751601d6d5f683d1d`
+- 实现提交：`c71dd4da67154d4210834e78c2b3ec68ac2866ce`
 - Git分支：`codex/advb02-ntrs-v2-recovery-20260820`
 - 单seed：`392002`
 - Phase1源角色：`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`
@@ -59,6 +59,21 @@ bash code/scripts/launch_phase1_advb02_sidfft96_leo_weak_20260821.sh --only=S3
 
 GPU由发布时只读preflight后通过`GPU_P0/GPU_S0/GPU_S1/GPU_S2/GPU_S3`记录；每GPU训练进程不超过2个。
 
+## 本地验证与独立审查
+
+- 聚焦测试：SID相关21项及直接稳定性测试4项，共25项通过；`py_compile`、launcher`bash -n`和`git diff --check`通过。
+- 修复后P0真实小样本：只读取`L_s`，8个物理样本形成clean及3种LEO_WEAK共32个source视图，`query_input_count=0`、`target_input_count=0`，状态`VERIFIED`。
+- 真实ADV3B02 checkpoint无query smoke：仅允许5个`sid_fft96.*`新键缺失，无unexpected key；`raw_sid_logit_max_abs=0`、`raw_sid_z_max_abs=0`；成熟路径可训练参数为0，SID可训练参数为41,280，梯度仅进入4个`sid_fft96.projector.*`参数。
+- 唯一一次独立P0/P1审查初次发现：跨域散度未按TX条件化，可能在域间TX构成不均衡时污染`J_b`。
+- 修复：每个TX内部计算跨(receiver,day,LEO view)散度，再对TX等权聚合；新增不平衡fixture。旧实现该fixture得到错误`domain_scatter=6.25`并失败，修复后通过。
+- 原审查员定点复审：原P1已闭合，无残留机制，结论`READY`。未增加第二次全量审查。
+
+## N607只读资源预检
+
+- 2026-08-21 22:29–22:31（Asia/Hong_Kong）直连普通账号成功；服务器`dell-DSS8440`、8张RTX 3090、数据与项目控制面可见。
+- 每张GPU当前均有2个计算进程，利用率约83%–99%，已达到默认上限。不得启动S1–S3，也不得终止、修改或挤占现有Phase1任务。
+- release仍可按最小流程落地并完成编译/dry-run；矩阵发布状态在资源释放前标记为`READY_QUEUED`，不伪报`RUNNING`。
+
 ## 科学停止与晋级规则
 
 - 技术停止只允许：协议/数据角色/seed/场景错误、错误release或CWD、输出碰撞、进程归属不清、确定性同类预prediction异常至少重复两次、无法产生checkpoint或独立prediction闭合。
@@ -75,8 +90,6 @@ GPU由发布时只读preflight后通过`GPU_P0/GPU_S0/GPU_S1/GPU_S2/GPU_S3`记�
 
 ## 发布后待追加
 
-- 本地聚焦验证与真实checkpoint无query smoke
-- 一次独立P0/P1正确性审查
 - release本地/远端单次SHA比较及远端编译/dry-run
 - P0完成证据、各row PID/CWD/cmdline/GPU/log增长证据
 - prediction闭合后的同row指标、异常、解释与下一候选决定
