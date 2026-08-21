@@ -4,7 +4,7 @@
 
 指导来源：用户提供的《CVS项目优化的核心方向：从“后验修正特征”转向“前端可辨识分解”》
 
-当前阶段：设计、P0、P1模型/训练/诊断与S0–S3 launcher已实现；本地验证与唯一一次独立P0/P1审查已闭合，N607发布进行中。
+当前阶段：设计、P0、P1模型/训练/诊断与S0–S3 launcher已实现；本地验证与唯一一次独立P0/P1审查已闭合，N607 release与矩阵已发布为`READY_QUEUED`。
 
 |ID|来源章节|需求|目标文件|状态|验证|说明|
 |---|---|---|---|---|---|---|
@@ -25,14 +25,14 @@
 |SID-015|10、11、13、P3|MUSE新路由、跨RX SupCon、episodic DG和pseudo-new几何|无，本轮不修改|deferred|P2前端证明有效后再设计|不作为本轮发布门|
 |SID-016|20|禁止强GRL、强KL、NTRS放大、任意全矩阵Koopman和删除中高频|模型、训练配置、launcher|verified|SID与NTRS/CRRA互斥测试及launcher负断言|属于明确的候选边界|
 |SID-017|18|不从S0直接跳到完整S12|设计、launcher、报告|verified|本设计仅包含P0和S0–S3|后续阶段独立发布|
-|SID-018|Exclusive Minimal Experiment Workflow|只执行八项白名单，不增加seal/receipt/SHA链|报告、发布流程|pending|发布前反向审计|release归档仅一次本地/远端SHA|
+|SID-018|Exclusive Minimal Experiment Workflow|只执行八项白名单，不增加seal/receipt/SHA链|报告、发布流程|verified|单一release归档本地/远端SHA一致，远端编译与dry-run通过|未创建成员SHA、seal、receipt或额外发布gate|
 
 ## 当前计数
 
-- verified：13
-- pending：2
+- verified：14
+- pending：1
 - deferred：3
 - rejected：0
 - blocked：0
 
-当前未闭合项为SID-012与SID-018：必须等N607真实prediction完成后，才能报告clean/逐LEO/Strict UDU/floor/转换/probe同row结果；发布阶段仍只允许一次release归档本地/远端SHA比较。
+当前仅未闭合SID-012：必须等N607真实prediction完成后，才能报告clean/逐LEO/Strict UDU/floor/转换/probe同row结果。当前全部GPU均达到每卡2个计算进程上限，矩阵保持`READY_QUEUED`，不得伪报`RUNNING`或干预现有任务。

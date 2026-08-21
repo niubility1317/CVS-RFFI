@@ -2,7 +2,7 @@
 
 ## 当前结论
 
-- 状态：`LOCAL_VERIFIED`；N607矩阵等待release落地。
+- 状态：`READY_QUEUED`；N607矩阵已发布，因全部GPU达到并发上限而尚未启动。
 - 本轮仅发布前端频谱可辨识性路线P0与S0–S3单seed矩阵；尚无N607性能结果，不声明优于CORE90。
 - 基座固定为`ADV3B02_CORE90_SOFT_E200`，不修改Phase2/Phase3，不使用target/query，不与NTRS或CRRA组合。
 
@@ -10,6 +10,7 @@
 
 - run ID：`phase1_advb02_sidfft96_leo_weak_20260821_v1`
 - 实现提交：`c71dd4da67154d4210834e78c2b3ec68ac2866ce`
+- 发布提交：`9a7172029a9182e1cec3be7ec49d778ad2e77f3a`
 - Git分支：`codex/advb02-ntrs-v2-recovery-20260820`
 - 单seed：`392002`
 - Phase1源角色：`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`
@@ -74,6 +75,16 @@ GPU由发布时只读preflight后通过`GPU_P0/GPU_S0/GPU_S1/GPU_S2/GPU_S3`记�
 - 每张GPU当前均有2个计算进程，利用率约83%–99%，已达到默认上限。不得启动S1–S3，也不得终止、修改或挤占现有Phase1任务。
 - release仍可按最小流程落地并完成编译/dry-run；矩阵发布状态在资源释放前标记为`READY_QUEUED`，不伪报`RUNNING`。
 
+## N607发布结果
+
+- 本地归档：`E:\type10-7\local_artifacts\releases\phase1_advb02_sidfft96_leo_weak_20260821_v1\phase1_advb02_sidfft96_9a717202.tar.gz`
+- 远端归档：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_sidfft96_9a717202.tar.gz`
+- 不可覆盖release：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_sidfft96_9a717202`
+- 唯一归档SHA-256：本地与远端均为`1a3281933b2879ef3077b0af386e39d976f881f7b04594aef3a3d1ca59774305`，比较结果`VERIFIED`。
+- 远端解压文件数：16；远端关键Python模块编译、launcher语法检查和完整矩阵dry-run均为`VERIFIED`。
+- dry-run回读固定矩阵`P0,S0,S1,S2,S3`、seed`392002`、比例`0.07/0.63/0.15/0.15`及三种LEO_WEAK场景。
+- 当前8张GPU各有2个既有计算进程，P0/S0/S1/S2/S3均未启动；未创建PID、未占用额外GPU、未修改现有run。合法空槽出现后，按预登记独立row命令启动并执行一次PID/CWD/cmdline/GPU/log增长检查。
+
 ## 科学停止与晋级规则
 
 - 技术停止只允许：协议/数据角色/seed/场景错误、错误release或CWD、输出碰撞、进程归属不清、确定性同类预prediction异常至少重复两次、无法产生checkpoint或独立prediction闭合。
@@ -90,6 +101,5 @@ GPU由发布时只读preflight后通过`GPU_P0/GPU_S0/GPU_S1/GPU_S2/GPU_S3`记�
 
 ## 发布后待追加
 
-- release本地/远端单次SHA比较及远端编译/dry-run
 - P0完成证据、各row PID/CWD/cmdline/GPU/log增长证据
 - prediction闭合后的同row指标、异常、解释与下一候选决定
