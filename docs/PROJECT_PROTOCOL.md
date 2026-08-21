@@ -40,7 +40,7 @@ rho_label ≤ 0.1
 
 ### Phase1星地信道增强默认
 
-新建Phase1训练与最终星地测试默认使用`LEO_WEAK`三场景：`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`。未显式给出训练场景时，训练在三种LEO弱信道视图间轮换；最终测试逐场景报告三项结果。clean只保留为无星地增强对照，不能替代LEO弱信道结果。`mixed_orbit`只可作为历史复现、显式对照或诊断压力路径，不能作为新建训练/测试的默认值；该变化不追溯改写历史实验。
+新建Phase1训练默认严格复用`ADV3B02_CORE90_SOFT_E200`的拼接式星地信道增强：每个clean训练批次生成一个卫星视图批次并执行`clean+satellite`拼接，卫星视图只承载TX交叉熵监督（`concat_sat_ce_only=true`、有效CE权重`0.68`、`lambda_sat_cons=0`），不默认启用其他星地一致性损失或其他星地增强族。训练与最终星地测试默认使用`LEO_WEAK`三场景：`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`。默认视图日程为E1–40使用`leo_clear_weak,p=0.30`，E41–90使用`leo_low_elev_weak,leo_rain_weak,p=0.60`，E91–200使用三场景并集`p=0.80`；卫星辅助CE从E80开始计入训练总损失。最终测试逐场景报告三项结果；clean只保留为无星地增强对照，不能替代LEO弱信道结果。`mixed_orbit`及其他星地场景只可作为历史复现、显式对照或诊断压力路径，不能作为新建训练/测试的默认值；该变化不追溯改写历史实验。
 
 ## Phase2最小数据协议
 

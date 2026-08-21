@@ -21,6 +21,59 @@ LEO_WEAK_SCENARIOS_CSV = ",".join(LEO_WEAK_SCENARIOS)
 DEFAULT_LEO_WEAK_TRAIN_SCENARIO = LEO_WEAK_SCENARIOS[0]
 DEFAULT_CRRA_CHANNEL_FAMILY = "leo_weak"
 
+PHASE1_CORE90_SAT_VIEW_SCHEDULE = (
+    "1@0.30:leo_clear_weak;"
+    "41@0.60:leo_low_elev_weak,leo_rain_weak;"
+    "91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
+)
+PHASE1_CORE90_SAT_EFFECTIVE_CE_WEIGHT = 0.68
+PHASE1_CORE90_SAT_SUPERVISION_START_EPOCH = 80
+PHASE1_CORE90_SAT_DEFAULTS = {
+    "use_concat_sat_channel_aug": True,
+    "concat_sat_ce_only": True,
+    "concat_sat_ce_weight": 1.0,
+    "concat_sat_start_epoch": 1,
+    "use_sat_consistency": True,
+    "lambda_sat_cls": PHASE1_CORE90_SAT_EFFECTIVE_CE_WEIGHT,
+    "lambda_sat_cons": 0.0,
+    "sat_cons_start_epoch": PHASE1_CORE90_SAT_SUPERVISION_START_EPOCH,
+    "sat_train_scenario": "",
+    "sat_train_scenarios": "",
+    "sat_view_schedule": PHASE1_CORE90_SAT_VIEW_SCHEDULE,
+    "sat_view_prob": 1.0,
+    "sat_view_seed": 2027,
+    "eval_sat_channel": True,
+    "eval_sat_scenarios": LEO_WEAK_SCENARIOS_CSV,
+}
+
+
+def apply_phase1_core90_satellite_defaults(
+    parser,
+    *,
+    concat_sat_ce_weight_override: float | None = None,
+    concat_sat_start_epoch_override: int | None = None,
+):
+    """Apply the frozen ADV3B02 CORE90 satellite defaults to known CLI fields.
+
+    Explicit command-line arguments still override these parser defaults. Fields
+    absent from a narrower parser are intentionally ignored.
+    """
+
+    defaults = dict(PHASE1_CORE90_SAT_DEFAULTS)
+    if concat_sat_ce_weight_override is not None:
+        defaults["concat_sat_ce_weight"] = float(concat_sat_ce_weight_override)
+    if concat_sat_start_epoch_override is not None:
+        defaults["concat_sat_start_epoch"] = int(concat_sat_start_epoch_override)
+    known_destinations = {action.dest for action in parser._actions}
+    parser.set_defaults(
+        **{
+            key: value
+            for key, value in defaults.items()
+            if key in known_destinations
+        }
+    )
+    return parser
+
 
 def _finite_float(value, default: float) -> float:
     try:
@@ -328,9 +381,17 @@ def resolve_phase1_sat_training_scenarios(
     """Resolve Phase1 satellite views without masking an explicit legacy override."""
 
     requested = parse_sat_scenarios(str(sat_train_scenarios or ""))
+    single = str(sat_train_scenario or "").strip().lower().replace("-", "_")
+    if (
+        single
+        and single != DEFAULT_LEO_WEAK_TRAIN_SCENARIO
+        and requested == list(LEO_WEAK_SCENARIOS)
+    ):
+        # The complete LEO_WEAK list is now the parser default. Preserve the
+        # historical one-flag diagnostic override instead of masking it.
+        return [single]
     if requested:
         return requested
-    single = str(sat_train_scenario or "").strip().lower().replace("-", "_")
     if single:
         return [single]
     return list(LEO_WEAK_SCENARIOS)

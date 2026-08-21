@@ -23,6 +23,7 @@ from post_stage_cli import add_common_data_args, add_sat_eval_args, str2bool
 from training_controls import (
     DEFAULT_CRRA_CHANNEL_FAMILY,
     LEO_WEAK_SCENARIOS_CSV,
+    apply_phase1_core90_satellite_defaults,
     resolve_phase1_sat_training_scenarios,
 )
 from cvsrffi.phase1_ablation_factory import (
@@ -1030,6 +1031,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
         default=0.002,
     )
     add_sat_eval_args(parser)
+    apply_phase1_core90_satellite_defaults(parser)
     return parser
 
 

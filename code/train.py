@@ -39,6 +39,9 @@ from model_dual_cvsincnet import build_dual_model
 from DataAugmentation import build_augmentor, apply_receiver_dg
 from training_controls import (
     LEO_WEAK_SCENARIOS_CSV,
+    PHASE1_CORE90_SAT_EFFECTIVE_CE_WEIGHT,
+    PHASE1_CORE90_SAT_SUPERVISION_START_EPOCH,
+    apply_phase1_core90_satellite_defaults,
     collapse_guard_decision,
     compute_mixstyle_epoch_state,
     parse_sat_scenarios,
@@ -2593,6 +2596,14 @@ def main():
     parser.add_argument("--swad_tolerance", type=float, default=2.0,
                         help="Collect epochs whose primary OOD score is within this margin of the best-so-far score.")
     parser.add_argument("--swad_save_path", type=str, default="")
+    # train.py weights the CE-only path directly with concat_sat_ce_weight,
+    # while SSDG multiplies concat_sat_ce_weight by lambda_sat_cls. Preserve
+    # the same effective Core90 satellite CE weight across both entrypoints.
+    apply_phase1_core90_satellite_defaults(
+        parser,
+        concat_sat_ce_weight_override=PHASE1_CORE90_SAT_EFFECTIVE_CE_WEIGHT,
+        concat_sat_start_epoch_override=PHASE1_CORE90_SAT_SUPERVISION_START_EPOCH,
+    )
     args = parser.parse_args()
     explicit_group_ce_min_domains = None
     explicit_fishr_min_domains = None

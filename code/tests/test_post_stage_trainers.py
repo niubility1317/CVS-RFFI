@@ -248,7 +248,7 @@ class PostStageTrainerEntrypointsTest(unittest.TestCase):
         text = (pathlib.Path(__file__).resolve().parents[1] / "SSDG" / "train_ssdg.py").read_text(encoding="utf-8")
 
         self.assertIn("loss_sat_cons_l", text)
-        self.assertIn('cur_w["sat_cons"] * loss_sat_cons_l', text)
+        self.assertIn('sat_cons_effective_weight * sanitize_loss(', text)
         self.assertIn('"train/loss_sat_cons_labeled": loss_sat_cons_l.detach()', text)
 
     def test_train_ssdg_defaults_to_two_stage_1_6_3_protocol(self):
@@ -276,9 +276,24 @@ class PostStageTrainerEntrypointsTest(unittest.TestCase):
         self.assertAlmostEqual(args.lambda_group_ce, 0.10)
         self.assertAlmostEqual(args.lambda_fishr, 0.02)
         self.assertTrue(args.use_sat_consistency)
-        self.assertEqual(args.sat_train_scenario, "mixed_orbit")
-        self.assertAlmostEqual(args.lambda_sat_cls, 0.10)
+        self.assertTrue(args.use_concat_sat_channel_aug)
+        self.assertTrue(args.concat_sat_ce_only)
+        self.assertEqual(args.sat_training_mode, "")
+        self.assertEqual(args.sat_train_scenario, "")
+        self.assertEqual(args.sat_train_scenarios, "")
+        self.assertEqual(
+            args.sat_view_schedule,
+            "1@0.30:leo_clear_weak;"
+            "41@0.60:leo_low_elev_weak,leo_rain_weak;"
+            "91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+        )
+        self.assertAlmostEqual(args.lambda_sat_cls, 0.68)
         self.assertAlmostEqual(args.lambda_sat_cons, 0.00)
+        self.assertTrue(args.eval_sat_channel)
+        self.assertEqual(
+            args.eval_sat_scenarios,
+            "leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+        )
         self.assertTrue(args.pseudo_domain_gate)
         self.assertTrue(args.pseudo_temporal_gate)
         self.assertTrue(args.pseudo_strong_agreement)
