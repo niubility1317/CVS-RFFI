@@ -452,3 +452,150 @@ M0末轮从历史最高99.27%降至33.33%，属于明显末期退化；但在hel
 - 首批GPU映射：GPU0=M0，GPU1=M2，GPU3=M3_NO_PROTO，GPU4=M3_NO_TEMPORAL，GPU5=M3_NO_SATELLITE，GPU6=M3_NO_CROSSRX，GPU7=M3_NO_NUISANCE。GPU2上的M3_NO_PRIOR仍在训练，训练结束并释放GPU2后再加入同一恢复评测ID；不干预其现有进程。
 - 输出路径：每个候选原目录下新增且禁止覆盖的`final_eval_recovery_20260821_1135/`；预期包含`metrics_joint.json`、`eval_joint.log`、四个`metrics_<scenario>.json`、四个`eval_<scenario>.log`、评测状态和PID记录。
 - 技术停止规则：strict重建失败、评测异常、指标计数不一致、输出目录冲突或缺少任一场景artifact时，仅停止并保留对应候选的恢复评测输出，不影响其他候选、原训练checkpoint或无关进程。完整四场景artifact产生前不标记`ARTIFACTS_COMPLETE`。
+
+## 2026-08-21`final_ssdg.pth`严格测试与原型失败综合分析
+
+### 结论先行
+
+本轮把两个表面相似、实际独立的问题分开闭合：
+
+1. 8条已完成训练的候选全部在Phase2原型导出时失败，直接根因不是“class3的`z_id`全部为零”，而是`V_cal`没有任何class3样本。校准代码把缺类的`0/0`强制记为零方向比例`1.0`，随后抛出具有误导性的zero-direction异常。该缺陷同时解释8条候选为何在同一class、同一阈值处失败。
+2. 8个`final_ssdg.pth`均可严格重建并完成clean与3种LEO弱信道测试，因此checkpoint本体并未因原型导出异常损坏。但是，除数值崩溃的M0外，其余候选clean只有64.91%～75.85%，LEO均值只有31.23%～34.09%，显著低于历史`ADV3B02_CORE90_SOFT_E200`。这是真实的表征/训练失败，不能用导出bug解释或掩盖。
+3. 当前可用候选中`M3_NO_SATELLITE`在clean和全部LEO聚合/底线指标上最佳。这是强诊断信号：当前卫星分支没有带来预期鲁棒性，反而与性能下降一致。但完整M3没有启动，故不能把该观察写成严格的单因素消融因果结论。
+
+### 最终checkpoint严格测试结果
+
+评测共同使用seed=`392002`、`--eval_on unseen_rx`，实际loader为`test_unseen_day_unseen_rx`：5个未见接收机、2个未见日期、每场景60,000条样本。每条恢复评测均满足：
+
+- `strict_requested=true`；
+- `checkpoint_load_strict=true`；
+- `fallback_used=false`；
+- missing/unexpected/shape mismatch均为0；
+- clean、`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`各有独立JSON和日志；
+- 10个预期文件全部存在且非空，日志未发现Traceback、RuntimeError或`EVAL_FAILED`指纹，状态均为`ARTIFACTS_COMPLETE`。
+
+| 候选 | clean | clean底线 | clear | low-elev | rain | LEO均值 | LEO三场景最差接收机底线范围 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| M0 | 16.67% | 16.67% | 16.67% | 16.67% | 16.67% | 16.67% | 16.67%–16.67% |
+| M2 | 73.33% | 55.62% | 33.91% | 33.19% | 33.48% | 33.53% | 22.92%–23.35% |
+| M3_NO_PRIOR | 73.06% | 57.82% | 33.22% | 32.63% | 32.69% | 32.85% | 22.52%–23.27% |
+| M3_NO_PROTO | 68.56% | 45.27% | 33.62% | 33.33% | 33.16% | 33.37% | 26.35%–26.61% |
+| M3_NO_TEMPORAL | 72.21% | 59.91% | 31.89% | 30.99% | 30.80% | 31.23% | 22.12%–22.58% |
+| **M3_NO_SATELLITE** | **75.85%** | **61.05%** | **34.57%** | **33.85%** | **33.86%** | **34.09%** | **26.05%–26.35%** |
+| M3_NO_CROSSRX | 68.08% | 48.33% | 31.61% | 31.37% | 31.25% | 31.41% | 20.91%–21.49% |
+| M3_NO_NUISANCE | 64.91% | 41.58% | 32.81% | 32.27% | 32.08% | 32.39% | 22.39%–22.67% |
+
+恢复artifact统一位于各候选目录下的`final_eval_recovery_20260821_1135/`。例如M2完整结果位于：
+
+```text
+/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_muse_ssdg_20260820_m23_r1/M2/final_eval_recovery_20260821_1135/
+```
+
+其中包含`metrics_joint.json`、`eval_joint.log`、4份`metrics_<scenario>.json`、4份`eval_<scenario>.log`和`status.txt`。其余候选分别沿用原训练目录；本次没有覆盖原日志或checkpoint。
+
+### 与历史ADV3B02同口径比较
+
+历史`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`保存于epoch194。其checkpoint保护指标和同epoch原始`metrics_epoch.csv`给出的严格UDU结果为：clean 86.09%、clear 72.56%、low-elev 69.87%、rain 69.27%、LEO均值70.56%。这与本轮同为`test_unseen_day_unseen_rx`口径，可用于直接诊断差距。
+
+| 对象 | clean | clear | low-elev | rain | LEO均值 |
+|---|---:|---:|---:|---:|---:|
+| 历史ADV3B02，epoch194 | 86.09% | 72.56% | 69.87% | 69.27% | 70.56% |
+| 当前最佳M3_NO_SATELLITE | 75.85% | 34.57% | 33.85% | 33.86% | 34.09% |
+| 差值 | -10.25pp | -37.99pp | -36.02pp | -35.41pp | -36.47pp |
+| M2 | 73.33% | 33.91% | 33.19% | 33.48% | 33.53% |
+| M2差值 | -12.76pp | -38.64pp | -36.68pp | -35.79pp | -37.04pp |
+
+模型在clean上仍保留部分区分能力，但LEO条件下额外损失约36～37pp，说明主要失败点不是简单的分类欠拟合，而是身份表征对接收机/信道扰动缺乏稳定性。
+
+### 为什么“原型到处失败”
+
+#### P0：`V_cal/V_select`切分按TX全局排序后直接一刀切
+
+`code/SSDG/train_ssdg.py:1155-1173`先把整份source validation按`(tx_i,rx_i,day_i,eq_i,sig_i,index)`全局排序，再在总长度中点切成`V_cal`和`V_select`。在6个均衡TX、0.15/0.15等比例划分下，真实类别计数是：
+
+| 角色 | 总数 | TX类别计数 |
+|---|---:|---|
+| L_s | 5,880 | 0–5各980 |
+| U_s | 52,920 | 0–5各8,820 |
+| V_cal | 12,600 | class0/1/2各4,200；class3/4/5为0 |
+| V_select | 12,600 | class3/4/5各4,200；class0/1/2为0 |
+
+因此，这不是随机偶发现象，而是当前排序键与50/50切点共同导致的确定性类分离。它有三重后果：
+
+- Phase2原型校准要求逐类真实source-val样本，但`V_cal`只覆盖前3类；
+- source选模/诊断只在后3类上计算，93%左右的`V_select`准确率不是6类完整验证结果；
+- M1和完整M3所在的顺序launcher被首个候选非零退出阻断，至今未产生可比较checkpoint。
+
+#### P0：校准器把“缺类”错误编码成“100%零向量”
+
+`code/cvsrffi/phase2_prototypes.py:933-948`逐类统计零方向比例。当`class_count==0`时，代码直接令`class_zero_fraction=1.0`，随后抛出：
+
+```text
+endpoint_accept_v1 zero-direction fraction exceeds per-class limit:
+class=3 fraction=1.000000000 limit=0.001000000
+```
+
+所以异常中的class3是第一个缺失类，不是已经证明其特征范数全为0。后续同文件`990-997`本来具有更准确的`insufficient true-class samples`错误，但程序在前面的零方向审计已经提前退出，无法到达该分支。
+
+#### P1：导出失败错误地阻断了Phase1必需的最终评测
+
+训练先写出`final_ssdg.pth`，随后原型导出抛异常，训练进程以`FAILED_EXPORT`结束；launcher把它统称为`TRAIN_FAILED`并跳过外部final eval。结果是权重本来可严格加载，却因独立的Phase2 bundle后处理错误而没有自动执行Phase1 clean和三LEO测试。本次恢复评测证明这8个checkpoint均可正常评测。
+
+### 为什么方法性能失败
+
+#### 1. 名义上“基于ADV3B02”，实际从头训练并丢弃强底座
+
+M2最终checkpoint明确记录`from_scratch=true`、`baseline_ckpt=''`、`teacher_ckpt=''`，教师KL/MSE权重为0。也就是说，本轮继承了结构和部分目标配置，却没有继承历史86.09% clean、70.56% LEO均值的权重或教师约束。仅用7%有标签数据从头学习，再依赖63%无标签伪标签自举，风险远高于从强底座微调或蒸馏。
+
+#### 2. 伪标签从第1轮起全量接收，形成无外部制动的确认偏差
+
+M2在E1即`reliable=1.000`并接收52,864/52,864个`U_s`样本，平均置信度仅0.588；E200仍是52,864/52,864全接收，置信度0.949。与此同时E200有标签训练TX准确率只有48.70%。按协议，训练内不读取`U_s`真值，因此precision保持`N/A`是正确的数据权限行为；但“全部接收+低有标签准确率+验证只覆盖半数类别”说明伪标签没有可信的独立质量控制，极易把早期错误持续放大。
+
+#### 3. 卫星分类损失很大，真正的信道不变性约束却为0
+
+M2 E200的加权损失主项为：clean TX CE 6.2184、卫星CE 8.5318、domain CE 1.5409、group CE 1.4483、adversarial 0.9151；而prototype 0.0011、open-world feature 0.0003、source episode 0.0002。与此同时`lambda_sat_cons=0`、`lambda_zid_channel_invariance=0`，未标注域/对抗/卫星一致性/直接几何/quarantine权重也均为0。
+
+这意味着卫星分支主要要求模型对强扰动样本继续做分类，却没有直接约束同一身份的clean与LEO`z_id`保持一致。主CE比几何正则大2～4个数量级，身份空间的跨信道稳定性无法与分类梯度竞争。`M3_NO_SATELLITE`反而成为当前最好候选，与这一失衡一致。
+
+#### 4. `z_id`明显携带接收机、日期和信道信息，但泄漏guard被关闭
+
+M2最终checkpoint的source train-to-val泄漏probe为：receiver excess 0.64897（上限0.20）、day excess 0.26746（上限0.15）、channel excess 0.42472（上限0.15）。三项都显著超限，但`zid_leakage_probe_required=false`，`joint_guard.zid_leakage_probe_fired=false`。这直接说明`z_id`没有实现所需的身份/域解耦，也是未见接收机和LEO条件下性能骤降的最强内部证据。
+
+#### 5. 身份几何目标没有建立健康形态
+
+M2 E200记录`source_overflow=0.8858`，约88.6%的source episode样本超出安全半径；`OW-FEAT`的domain alignment损失原值仍为0.6047，但加权open-world项只有0.0003。最终source-val几何又只覆盖3类，因此其known TPR、accept和proxy accept等指标不能代表完整6类。当前几何既没有足够的优化权重，也没有完整校准数据。
+
+#### 6. M0在E173后发生数值崩溃，final-only仍导出了坏尾点
+
+M0 E172尚为train 97.78%、source-val 99.06%左右；E173加权adversarial损失从0.9156跃升到364.3285，训练准确率降至36.82%；E174 adversarial升到704.7528、梯度总量986.274、训练准确率0%，有效step rate仅0.005；E175有效step rate为0，之后尾段基本无法更新。其最终严格测试恰为6类随机水平16.67%。
+
+该候选设置`max_grad_norm=0`，没有梯度裁剪；source-val健康guard关闭、joint guard关闭、final-only不保留或选择E166附近的健康状态。因此M0不是“正常训练但泛化差”，而是训练尾段已经数值毁坏，仍机械写出了E200最终权重。
+
+#### 7. 当前实验矩阵不能给出完整消融因果
+
+完整M3和M1因前序导出非零退出而未启动。因此现在只能说：在8个已得到checkpoint的候选中，去卫星分支最好、去temporal最差之一、去nuisance损害clean明显；不能计算“完整M3减去某消融”的合法配对效应，也不能判定prototype本身对性能的独立贡献。`M3_NO_PROTO`能正常严格测试且LEO均值33.37%，进一步说明“所有候选导出失败”来自共享校准数据链，不是prototype训练分支是否启用。
+
+### 修复优先级与下一轮最小实验
+
+P0必须先修：
+
+1. 将`V_cal/V_select`改为按TX分层的确定性切分；最好进一步在`(tx,rx,day,eq)`cell内分层，强制两边都覆盖全部已知TX，并新增类别覆盖负测。
+2. 校准器先检查每类`class_count>=min_class_samples`，缺类时报`insufficient true-class samples`；零方向比例只对存在样本的类计算，不能把`0/0`改写成1.0。
+3. 解耦Phase1最终评测与Phase2原型导出：只要`final_ssdg.pth`已写出且可严格恢复，clean和三LEO测试仍必须运行；导出失败单独标记，不得再次吞掉Phase1评测。
+4. M0/MUSE统一启用有限梯度裁剪、非有限step硬停和泄漏超限硬停；final-only协议可保留，但不得在系统性数值崩溃后继续把坏尾点当有效最终模型。
+
+下一轮只建议先做同seed最小配对，不立即扩大矩阵：
+
+- A：历史ADV3B02权重初始化+当前7/63/15/15合法分层数据；
+- B：A+延迟伪标签，仅在warmup后按类平衡、置信度/时间一致性联合门控，并限制每轮接收比例；
+- C：B+降低卫星CE，同时启用明确的clean/LEO`z_id`一致性；
+- D：C+MUSE prototype/local/prior完整机制。
+
+每条仍使用seed392002、E200、final-only，并在训练后自动进行clean和3种LEO弱信道严格测试。先要求B/C相对A在LEO均值和接收机底线上出现同向增益，再进入完整M1/M2/M3消融。当前8条结果全部属于负证据，不晋级为新的Phase1底座。
+
+### 状态与声明边界
+
+- 8个已有`final_ssdg.pth`：四场景评测`ARTIFACTS_COMPLETE`，本节分析完成后记为`ANALYZED / NEGATIVE_EVIDENCE`。
+- 原训练run的`FAILED_EXPORT`状态保留，不回写或伪装成训练成功；恢复评测是独立、不覆盖的补测。
+- M1与完整M3：`NOT_STARTED`，没有checkpoint与性能数据。
+- 该评测是Phase1冻结checkpoint的目标接收机诊断，不涉及Phase2 support、适配、新类注册或真实unknown声明。
