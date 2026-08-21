@@ -62,6 +62,19 @@ class SpectralIdentifiabilityAccumulator:
             return np.zeros(values.shape[1], dtype=np.float64)
         return np.stack(means, axis=0).var(axis=0).mean(axis=-1)
 
+    @classmethod
+    def _tx_conditioned_domain_scatter(
+        cls,
+        values: np.ndarray,
+        tx: np.ndarray,
+        domain: np.ndarray,
+    ) -> np.ndarray:
+        per_tx = [
+            cls._scatter(values[tx == tx_value], domain[tx == tx_value])
+            for tx_value in np.unique(tx)
+        ]
+        return np.stack(per_tx, axis=0).mean(axis=0)
+
     def finalize(self) -> Dict[str, np.ndarray]:
         if not self._descriptors:
             raise ValueError("cannot finalize an empty identifiability accumulator")
@@ -70,7 +83,7 @@ class SpectralIdentifiabilityAccumulator:
         domain_values = np.asarray(self._domain, dtype=np.int64)
         _, domain = np.unique(domain_values, axis=0, return_inverse=True)
         tx_scatter = self._scatter(values, tx)
-        domain_scatter = self._scatter(values, domain)
+        domain_scatter = self._tx_conditioned_domain_scatter(values, tx, domain)
 
         residual = np.empty_like(values)
         for tx_value in np.unique(tx):

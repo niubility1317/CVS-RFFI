@@ -69,6 +69,29 @@ def test_identifiability_prefers_tx_separating_low_domain_band():
     assert stats["domain_scatter"][1] > stats["domain_scatter"][0]
 
 
+def test_domain_scatter_is_conditioned_on_tx_under_imbalanced_domain_composition():
+    accumulator = SpectralIdentifiabilityAccumulator(num_bands=1, feature_dim=1)
+    domain_tx_counts = {
+        0: {0: 3, 1: 1},
+        1: {0: 1, 1: 3},
+    }
+    for rx, tx_counts in domain_tx_counts.items():
+        for tx, count in tx_counts.items():
+            for _ in range(count):
+                accumulator.update(
+                    np.array([[float(tx) * 10.0]]),
+                    tx=tx,
+                    rx=rx,
+                    day=0,
+                    view=0,
+                )
+
+    stats = accumulator.finalize()
+
+    assert stats["tx_scatter"][0] > 0.0
+    assert stats["domain_scatter"][0] == pytest.approx(0.0)
+
+
 def test_mask_selection_is_stable_on_equal_scores():
     mask = select_sid_mask({"j_score": np.ones(8)}, keep_fraction=0.25, dc_notch=0)
 
