@@ -1,0 +1,59 @@
+{
+  "schema": "cvs.phase1.fasttrust_matrix.v1",
+  "run_id": "phase1_adv3b02_fasttrust16_s392002_20260821",
+  "status": "DESIGN_FROZEN_NOT_LAUNCHED",
+  "seed": 392002,
+  "epochs": 200,
+  "launch_mode": "two_concurrent_per_gpu",
+  "max_training_processes_per_gpu": 2,
+  "source_roles": {
+    "L_s": 0.07,
+    "U_s": 0.63,
+    "V_cal": 0.15,
+    "V_select": 0.15
+  },
+  "checkpoint_selection": "final_only",
+  "base_checkpoint": "runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
+  "satellite_training": {
+    "mode": "concat_ce_only",
+    "lambda_sat_cls": 0.68,
+    "lambda_sat_cons": 0.0,
+    "schedule": "1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
+    "u_satellite_identity_mask": "hard_and_temporal_stable_and_three_head_agreement_and_class_cap"
+  },
+  "final_evaluation": [
+    "clean",
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak"
+  ],
+  "fasttrust_defaults": {
+    "s1_identity_disabled_through_epoch": 16,
+    "temporal_stability_steps": 3,
+    "hard_max_fraction": 0.25,
+    "identity_max_fraction": 0.50,
+    "unlabeled_batch_size": 256,
+    "labeled_batch_size": 128,
+    "max_grad_norm": 5.0,
+    "complete_u_coverage_per_epoch": true,
+    "fused_student_forward": true
+  },
+  "rows": [
+    {"gpu": 0, "slot": "A", "candidate": "R0_SCRATCH_CONTROL_U256", "init": "scratch", "muse": "off", "u_batch": 256, "changes": ["control"]},
+    {"gpu": 0, "slot": "B", "candidate": "R1_ADV_INIT_CONTROL_U256", "init": "adv3b02_core90", "muse": "off", "u_batch": 256, "changes": ["adv_init"]},
+    {"gpu": 1, "slot": "A", "candidate": "R2_FAST_HML_U256", "init": "adv3b02_core90", "muse": "fast_hml", "u_batch": 256, "changes": ["no_u_proto_update", "no_u_sat_identity"]},
+    {"gpu": 1, "slot": "B", "candidate": "R3_FAST_HML_UPROTO_U256", "init": "adv3b02_core90", "muse": "fast_hml", "u_batch": 256, "changes": ["u_proto_update", "no_u_sat_identity"]},
+    {"gpu": 2, "slot": "A", "candidate": "R4_FAST_FULL_U256", "init": "adv3b02_core90", "muse": "fasttrust_full", "u_batch": 256, "changes": ["full"]},
+    {"gpu": 2, "slot": "B", "candidate": "R4_NO_U_SAT_ID_U256", "init": "adv3b02_core90", "muse": "fasttrust_full", "u_batch": 256, "changes": ["no_u_sat_identity"]},
+    {"gpu": 3, "slot": "A", "candidate": "R4_FAST_FULL_U128", "init": "adv3b02_core90", "muse": "fasttrust_full", "u_batch": 128, "changes": ["u_batch_128"]},
+    {"gpu": 3, "slot": "B", "candidate": "R4_FAST_FULL_U384", "init": "adv3b02_core90", "muse": "fasttrust_full", "u_batch": 384, "changes": ["u_batch_384"]},
+    {"gpu": 4, "slot": "A", "candidate": "R4_NO_PROTO_EVIDENCE_U256", "init": "adv3b02_core90", "muse": "fasttrust_full", "u_batch": 256, "changes": ["no_prototype_fusion_evidence"]},
+    {"gpu": 4, "slot": "B", "candidate": "R4_NO_U_PROTO_UPDATE_U256", "init": "adv3b02_core90", "muse": "fasttrust_full", "u_batch": 256, "changes": ["no_u_prototype_update"]},
+    {"gpu": 5, "slot": "A", "candidate": "R4_NO_TEMPORAL_U256", "init": "adv3b02_core90", "muse": "fasttrust_full", "u_batch": 256, "changes": ["no_temporal_gate"]},
+    {"gpu": 5, "slot": "B", "candidate": "R4_NO_PRIOR_U256", "init": "adv3b02_core90", "muse": "fasttrust_full", "u_batch": 256, "changes": ["no_prior_alignment"]},
+    {"gpu": 6, "slot": "A", "candidate": "R4_NUISANCE_DETACHED_U256", "init": "adv3b02_core90", "muse": "fasttrust_full", "u_batch": 256, "changes": ["nuisance_detached"]},
+    {"gpu": 6, "slot": "B", "candidate": "R4_NO_NUISANCE_U256", "init": "adv3b02_core90", "muse": "fasttrust_full", "u_batch": 256, "changes": ["no_nuisance"]},
+    {"gpu": 7, "slot": "A", "candidate": "R4_NO_CROSSRX_U256", "init": "adv3b02_core90", "muse": "fasttrust_full", "u_batch": 256, "changes": ["no_cross_receiver"]},
+    {"gpu": 7, "slot": "B", "candidate": "R4_NO_CLASS_CAP_U256", "init": "adv3b02_core90", "muse": "fasttrust_full", "u_batch": 256, "changes": ["no_class_balanced_cap"]}
+  ]
+}
