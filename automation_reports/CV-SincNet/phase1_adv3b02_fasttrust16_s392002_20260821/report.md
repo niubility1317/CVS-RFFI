@@ -51,6 +51,20 @@ rows_per_gpu=2
 
 复核结论：未发现会导致本轮训练跑错、数据角色越权、输出覆盖、每卡超过2个进程、`final_ssdg.pth`遗漏评测或四场景结果伪闭合的逻辑硬伤。当前矩阵保持`RUNNING`，不重复发布。
 
+## 2026-08-21 15:21 CST全量训练健康复查
+
+本次按监控请求完整解析16个candidate从E1到最新epoch的全部`metrics_epoch.jsonl`记录和完整`train.log`，并读取dispatch、16个GPU进程、GPU温度/显存/利用率和磁盘状态。该复查是运行中证据，不是E200性能结论。
+
+- 系统执行面健康：dispatch PID`266946`存活；16个Python训练进程均存活且每卡2个；GPU利用率91%–99%，显存4.27–5.83GB/24GB，温度57–79°C；磁盘剩余7.3TB；Traceback、RuntimeError、OOM、Killed、`TRAIN_FAILED`和`EVAL_FAILED`均为0。
+- 数据与日志结构未见异常：16条均严格使用`L/U/Vcal/Vselect=5880/52920/12600/12600`；16个JSONL均可完整解析、epoch从1连续到最新且没有缺号；核心loss、accuracy、gradient norm和epoch time序列中没有序列化NaN/Inf。训练期`TEST=nan(0/0)`、inactive direct-metric字段和`nonfinite_*_metric_count`来自尚未运行的test/关闭分支占位，不是数据损坏。
+- 当前进度：R0/R1为E038，U256系列为E036左右，`R4_FAST_FULL_U384`为E047，`R4_FAST_FULL_U128`为E024；尚无`final_ssdg.pth`和正式clean/三LEO结果。
+- 发现严重数值优化异常：`train/skipped_nonfinite_grad`是逐batch真实0/1跳步标志，`train/optimizer_step_applied`是epoch平均实际更新率。R0/R1控制组最近更新率分别为100.0%和99.7%；所有MUSE候选从E17起更新率均为0.0%，即U256每epoch约207个batch、U128约414个batch、U384约138个batch全部因非有限梯度跳过optimizer step。
+- 异常在S1已经出现：MUSE候选E1–16平均更新率仅22.9%–53.9%，首个低于50%的epoch位于E5–E11；E17身份路由开放后共同降到0%。关闭U卫星身份、U prototype更新、prototype evidence、temporal、prior、nuisance、cross-RX或class cap均未恢复更新，故问题不属于单一消融项或数据切分，更可能位于所有MUSE候选共享的CUDA AMP/backward梯度路径。现有日志没有记录具体首个非有限参数，不能进一步宣称唯一根因。
+- CPU单batch smoke之所以未发现，是因为它只证明CPU单步有限，未覆盖N607 CUDA AMP、多batch累计和E17后的身份路径。当前异常说明此前“无逻辑硬伤”的判断被真实GPU长程证据推翻。
+- 若不干预，按最近5个完整epoch机械外推：U384约2026-08-21 23:00完成训练；控制/U256多数约2026-08-22 01:30–02:50；恒定双进程负载下U128约2026-08-22 14:00。考虑同卡伙伴先结束后U128可能加速，矩阵训练完成规划区间为2026-08-22 08:00–14:00，四场景评测闭合再预留约1–2小时。该ETA只表示进程何时跑完，不表示结果科学有效。
+
+健康裁决：`SYSTEM_RUNNING_HEALTHY`，但`MUSE_OPTIMIZATION_UNHEALTHY`。即使继续到E200并自动完成clean和三LEO测试，当前MUSE权重在E17后没有更新，结果不得作为有效FastTrust性能证据。依据monitor-only边界，本次未停止、重启或修改任何远端进程；建议取得用户明确授权后停止本run并保留全部artifact，再对CUDA AMP下首个非有限梯度参数进行最小复现和修复。
+
 ## 共同协议与配置
 
 - source角色：`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`，物理样本两两不交，source/target receiver不相交。
