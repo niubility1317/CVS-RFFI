@@ -471,6 +471,35 @@ def summarize_score(tx_test_ncm: float, dom_val: float, inv_cos: float, centroid
 # =============================
 # feature collection
 # =============================
+def summarize_sid_transitions(
+    raw_logits: torch.Tensor,
+    sid_logits: torch.Tensor,
+    labels: torch.Tensor,
+) -> Dict[str, int]:
+    """Count paired raw-to-SID decision transitions on the same sample rows."""
+    if raw_logits.ndim != 2 or sid_logits.ndim != 2:
+        raise ValueError("raw_logits and sid_logits must have shape [B, C]")
+    if raw_logits.shape != sid_logits.shape:
+        raise ValueError("raw_logits and sid_logits must have identical shapes")
+    labels = labels.view(-1).long()
+    if labels.numel() != raw_logits.shape[0]:
+        raise ValueError("labels must align with the raw/SID batch")
+    if not torch.isfinite(raw_logits).all() or not torch.isfinite(sid_logits).all():
+        raise ValueError("raw/SID logits must contain only finite values")
+    raw_correct = raw_logits.argmax(dim=1) == labels
+    sid_correct = sid_logits.argmax(dim=1) == labels
+    counts = {
+        "kept_correct": int((raw_correct & sid_correct).sum().item()),
+        "rescued": int((~raw_correct & sid_correct).sum().item()),
+        "harmed": int((raw_correct & ~sid_correct).sum().item()),
+        "kept_wrong": int((~raw_correct & ~sid_correct).sum().item()),
+        "count": int(labels.numel()),
+    }
+    if sum(counts[key] for key in ("kept_correct", "rescued", "harmed", "kept_wrong")) != counts["count"]:
+        raise RuntimeError("raw/SID transition counts are not exhaustive")
+    return counts
+
+
 def collect_feature_dict(out: Dict[str, Any]) -> Dict[str, torch.Tensor]:
     feats = {
         "z_id": out["z_id"],
@@ -495,6 +524,16 @@ def collect_feature_dict(out: Dict[str, Any]) -> Dict[str, torch.Tensor]:
         v = aux_dom.get(k, None)
         if torch.is_tensor(v):
             feats[f"dom_{k}"] = v
+    for key in (
+        "z_id_raw",
+        "z_id_sid",
+        "sid_fft96",
+        "sid_group_norms",
+        "sid_valid_bin_ratio",
+    ):
+        value = out.get(key)
+        if torch.is_tensor(value):
+            feats[key] = value
     return feats
 
 
