@@ -364,6 +364,9 @@ def build_baseline_model(model_args, device: torch.device) -> nn.Module:
         ntrs_context_mode=str(getattr(model_args, "ntrs_context_mode", "normalized")),
         ntrs_operator_mode=str(getattr(model_args, "ntrs_operator_mode", "operator")),
         ntrs_pca_artifact=str(getattr(model_args, "ntrs_pca_artifact", "")),
+        sid_fft96_mode=str(getattr(model_args, "sid_fft96_mode", "off")),
+        sid_mask_path=str(getattr(model_args, "sid_mask_path", "")),
+        sid_residual_scale=float(getattr(model_args, "sid_residual_scale", 1.0)),
         fast_infer_when_no_aux=bool(getattr(model_args, "fast_infer_when_no_aux", True)),
         arch_family=str(getattr(model_args, "arch_family", "cvsincnet")),
         representation_mode=str(

@@ -10,6 +10,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from cvsrffi.spectral_identifiability import SIDFFT96Residual, load_sid_mask
+
 from ntrs import (
     BoundedWidelyLinearCorrector,
     FastSlowContext,
@@ -585,6 +587,9 @@ class DualCVSincNetDisentangle(nn.Module):
         ntrs_context_mode: str = "normalized",
         ntrs_operator_mode: str = "operator",
         ntrs_pca_artifact: str = "",
+        sid_fft96_mode: str = "off",
+        sid_mask_path: str = "",
+        sid_residual_scale: float = 1.0,
     ):
         super().__init__()
         self.num_classes = int(num_classes)
@@ -609,6 +614,12 @@ class DualCVSincNetDisentangle(nn.Module):
         self.use_tx_adv_on_zdom = bool(use_tx_adv_on_zdom)
         self.use_crra = bool(use_crra)
         self.use_ntrs = bool(use_ntrs)
+        self.sid_fft96_mode = str(sid_fft96_mode or "off").lower().strip()
+        if self.sid_fft96_mode not in {"off", "center", "phase", "sid"}:
+            raise ValueError("sid_fft96_mode must be off, center, phase, or sid")
+        self.sid_mask_path = str(sid_mask_path or "")
+        self.sid_residual_scale = float(sid_residual_scale)
+        self.use_sid_fft96 = self.sid_fft96_mode != "off"
         self.ntrs_variant = str(ntrs_variant or "v1").lower().strip()
         if self.ntrs_variant not in {"v1", "v2_min", "v3_adapter", "v4_operator"}:
             raise ValueError("ntrs_variant must be v1, v2_min, v3_adapter, or v4_operator")
@@ -620,6 +631,10 @@ class DualCVSincNetDisentangle(nn.Module):
         self.ntrs_pca_artifact = str(ntrs_pca_artifact or "")
         if self.use_crra and self.use_ntrs:
             raise ValueError("ADVB02 CRRA and NTRS are independent candidates and cannot be enabled together")
+        if self.use_sid_fft96 and (self.use_crra or self.use_ntrs):
+            raise ValueError("ADVB02 SID-FFT96, CRRA, and NTRS are independent candidates")
+        if self.use_sid_fft96 and self.representation_mode != "dual":
+            raise ValueError("ADVB02 SID-FFT96 requires the dual identity/domain representation")
         if self.use_ntrs and self.representation_mode != "dual":
             raise ValueError("ADVB02 NTRS requires the dual identity/domain representation")
         self.crra_support_domains = int(crra_support_domains) if int(crra_support_domains) > 0 else self.num_domains
@@ -710,6 +725,16 @@ class DualCVSincNetDisentangle(nn.Module):
             self._share_early_stem()
 
         self.emb_dim = self._infer_emb_dim(self.id_backbone)
+        self.sid_fft96 = (
+            SIDFFT96Residual(
+                embedding_dim=self.emb_dim,
+                mode=self.sid_fft96_mode,
+                mask=load_sid_mask(self.sid_mask_path, int(input_len)),
+                residual_scale=self.sid_residual_scale,
+            )
+            if self.use_sid_fft96
+            else None
+        )
         if self.use_ntrs and self.arch_family != "cvsincnet":
             raise ValueError("ADVB02 NTRS currently requires the CV-SincNet physical backbone")
         ntrs_rng_state = (
@@ -1022,7 +1047,12 @@ class DualCVSincNetDisentangle(nn.Module):
                 "aux_dom": {},
             }
 
-        if (not return_aux) and self.fast_infer_when_no_aux and not self.use_ntrs:
+        if (
+            (not return_aux)
+            and self.fast_infer_when_no_aux
+            and not self.use_ntrs
+            and not self.use_sid_fft96
+        ):
             return backbone_forward_compat(
                 self.id_backbone,
                 x,
@@ -1090,6 +1120,15 @@ class DualCVSincNetDisentangle(nn.Module):
 
         raw_tx_logits = aux_id["logits"]
         z_anchor = self._pick_z_id(aux_id)
+        sid_output = None
+        sid_logits = raw_tx_logits
+        if self.use_sid_fft96:
+            sid_output = self.sid_fft96(x, z_anchor)
+            sid_logits = self._frozen_cosface_logits(
+                self.id_backbone.cls_head.head,
+                sid_output["z_sid"],
+                y_tx,
+            )
         ntrs_robust_out = None
         ntrs_robust_logits = raw_tx_logits
         ntrs_safe_gate = raw_tx_logits.new_zeros(raw_tx_logits.size(0))
@@ -1177,8 +1216,8 @@ class DualCVSincNetDisentangle(nn.Module):
                     tx_logits = ntrs_robust_logits
                     z_id = ntrs_robust_out.z_rob.to(dtype=z_anchor.dtype)
         else:
-            tx_logits = raw_tx_logits
-            z_id = z_anchor
+            tx_logits = sid_logits
+            z_id = sid_output["z_sid"] if sid_output is not None else z_anchor
         z_dom_raw = self._pick_z_dom(aux_dom)
         z_dom, z_dom_rcn = self.dom_enhancer(z_dom_raw, x)
 
@@ -1302,6 +1341,16 @@ class DualCVSincNetDisentangle(nn.Module):
             "ntrs_day_logits": ntrs_day_logits,
             "ntrs_channel_logits": ntrs_channel_logits,
             "ntrs_context_tx_adv_logits": ntrs_context_tx_adv_logits,
+            "sid_fft96_enabled": bool(self.use_sid_fft96),
+            "sid_fft96_mode": self.sid_fft96_mode,
+            "z_id_raw": z_anchor,
+            "logits_raw": raw_tx_logits,
+            "z_id_sid": sid_output["z_sid"] if sid_output is not None else z_anchor,
+            "logits_sid": sid_logits,
+            "sid_fft96": sid_output["sid_fft96"] if sid_output is not None else None,
+            "sid_delta": sid_output["sid_delta"] if sid_output is not None else None,
+            "sid_group_norms": sid_output["sid_group_norms"] if sid_output is not None else None,
+            "sid_valid_bin_ratio": sid_output["sid_valid_bin_ratio"] if sid_output is not None else None,
         }
         if torch.is_tensor(tx_adv_logits):
             out["tx_adv_logits"] = tx_adv_logits
@@ -1408,6 +1457,9 @@ def build_dual_model(
     ntrs_context_mode: str = "normalized",
     ntrs_operator_mode: str = "operator",
     ntrs_pca_artifact: str = "",
+    sid_fft96_mode: str = "off",
+    sid_mask_path: str = "",
+    sid_residual_scale: float = 1.0,
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -1479,4 +1531,7 @@ def build_dual_model(
         ntrs_context_mode=ntrs_context_mode,
         ntrs_operator_mode=ntrs_operator_mode,
         ntrs_pca_artifact=ntrs_pca_artifact,
+        sid_fft96_mode=sid_fft96_mode,
+        sid_mask_path=sid_mask_path,
+        sid_residual_scale=sid_residual_scale,
     )

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Dict, List, Tuple
 
 import numpy as np
@@ -113,6 +114,18 @@ def select_sid_mask(
     mask = np.zeros(scores.size, dtype=bool)
     mask[selected] = True
     return mask
+
+
+def load_sid_mask(path: str | Path, fft_bins: int) -> Tensor:
+    """Load the fixed P0 FFT mask without accepting pickled objects."""
+    mask_path = Path(path)
+    if not mask_path.is_file():
+        raise FileNotFoundError(f"SID mask does not exist: {mask_path}")
+    with np.load(mask_path, allow_pickle=False) as payload:
+        if "mask" not in payload.files:
+            raise ValueError(f"SID mask artifact lacks 'mask': {mask_path}")
+        mask = np.asarray(payload["mask"])
+    return validate_sid_mask(torch.as_tensor(mask), fft_bins)
 
 
 def build_center_mask(fft_bins: int, half_width: int, dc_notch: int = 0) -> Tensor:
@@ -309,7 +322,10 @@ class SIDFFT96Residual(nn.Module):
             raise ValueError("z_raw must have shape [B, D]")
         features, diagnostics = extract_sid_fft96(iq, self.mask, mode=self.mode)
         delta = self.projector(features)
-        z_sid = F.normalize(z_raw + self.residual_scale * delta, dim=1)
+        # The shared CosFace head performs the final direction normalization.
+        # Keeping this residual in the backbone's native scale makes the
+        # zero-initialized candidate exactly identical to the mature path.
+        z_sid = z_raw + self.residual_scale * delta
         return {
             "z_raw": z_raw,
             "z_sid": z_sid,
