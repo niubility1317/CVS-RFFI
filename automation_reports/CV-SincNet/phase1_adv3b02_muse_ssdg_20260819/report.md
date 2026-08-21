@@ -412,3 +412,35 @@ Task 8不创建归档、不执行SSH/SCP、不启动实验。后续唯一runner�
 ### Final fix后续单一release清单
 
 旧Task 8的3成员归档计划已由本final fix覆盖。后续若由唯一runner执行N607发布，归档代码身份必须为`3f3809b1527c840a72f6ff75edd92c74cd87e085`，并包含`code/cvsrffi/muse_ssdg.py`、`code/SSDG/train_ssdg.py`、`code/scripts/launch_phase1_adv3b02_muse_ssdg_20260819.sh`和`code/scripts/eval_ssdg_sat_per_rx.py`共4个运行文件；strict evaluator不能遗漏。两个活动factory迁移文件不被MUSE运行链消费，不加入该归档。不在本final fix wave创建归档或连接N607。
+
+## 2026-08-21T11:14:58+08:00进度与失败快照
+
+### 结论
+
+- 8张GPU的首波同seed实验中，7条候选已完成E200训练并写出`final_ssdg.pth`，GPU2上的`M3_NO_PRIOR`仍在E196/200；GPU0、1、3–7已空闲，GPU2仍有约3.4GB显存占用且进程、CWD和run root归属匹配。
+- 已完成训练的7条候选均在E200之后、外部final eval之前发生同一技术失败：`SSDG Phase2 prototype export failed: endpoint_accept_v1 zero-direction fraction exceeds per-class limit: class=3 fraction=1.000000000 limit=0.001000000`。终态为`FAILED_EXPORT`、launcher状态为`TRAIN_FAILED`，训练checkpoint与完整日志均已保留。
+- 因launcher在导出失败后立即退出，7条候选都没有生成`metrics_clean.json`、`metrics_leo_clear_weak.json`、`metrics_leo_low_elev_weak.json`和`metrics_leo_rain_weak.json`，也没有对应评测日志。因此当前没有可报告的held-out clean或三种LEO弱信道最终准确率，任何训练期source-val数据都不能替代最终测试。
+- GPU0排队的`M1`和GPU1排队的完整`M3`均未创建输出目录，状态为`NOT_STARTED`；它们被前一候选的非零退出阻断。旧首轮失败的M2和NO_PROTO仍原样保留，不计入下表有效首波结果。
+
+### 训练期详细数据
+
+共同设置为seed=`392002`、E200、`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`。下表“源验证”与“源验证卫星”均是训练期source validation诊断，不是held-out target clean/LEO最终测试。
+
+| GPU | 候选 | 状态 | 最新epoch | 末轮训练TX | 末轮源验证TX | 历史最高源验证TX | 末轮源验证卫星均值/底线 | 最近10轮均时 |
+|---:|---|---|---:|---:|---:|---:|---:|---:|
+| 0 | M0 | `FAILED_EXPORT`，checkpoint已保留 | 200/200 | 0.00% | 33.33% | 99.27% | 33.33%/33.33% | 223.8秒 |
+| 1 | M2（修复轮） | `FAILED_EXPORT`，checkpoint已保留 | 200/200 | 48.70% | 93.66% | 93.66% | 40.32%/39.77% | 450.3秒 |
+| 2 | M3_NO_PRIOR | `RUNNING` | 196/200 | 51.67% | 93.90% | 93.90% | 39.85%/39.36% | 343.9秒 |
+| 3 | M3_NO_PROTO（修复轮） | `FAILED_EXPORT`，checkpoint已保留 | 200/200 | 42.14% | 88.39% | 88.39% | 45.07%/44.71% | 339.3秒 |
+| 4 | M3_NO_TEMPORAL | `FAILED_EXPORT`，checkpoint已保留 | 200/200 | 44.39% | 92.25% | 92.34% | 35.92%/35.44% | 361.2秒 |
+| 5 | M3_NO_SATELLITE | `FAILED_EXPORT`，checkpoint已保留 | 200/200 | 45.91% | 93.39% | 93.39% | 40.76%/40.35% | 445.7秒 |
+| 6 | M3_NO_CROSSRX | `FAILED_EXPORT`，checkpoint已保留 | 200/200 | 43.06% | 91.55% | 91.55% | 38.11%/37.82% | 352.2秒 |
+| 7 | M3_NO_NUISANCE | `FAILED_EXPORT`，checkpoint已保留 | 200/200 | 28.69% | 81.33% | 81.33% | 41.48%/41.17% | 446.8秒 |
+
+M0末轮从历史最高99.27%降至33.33%，属于明显末期退化；但在held-out clean和三LEO测试缺失前，不能据此完成方法排名。其余已完成候选的末轮源验证TX为81.33%–93.66%，末轮source-val卫星均值为35.92%–45.07%；这些仅用于定位训练行为。
+
+### 剩余时间与状态边界
+
+- `M3_NO_PRIOR`按最近10轮343.9秒/轮估计，剩余4轮约23分钟，保守范围20–35分钟。它是否触发同一导出错误须等真实终态，当前只记为高风险，不预判失败。
+- 当前矩阵按“计划候选”计为：7条E200但导出失败、1条训练中、2条排队未启动、0条完成四场景评测；因此没有任何候选可标为`ARTIFACTS_COMPLETE`或`ANALYZED`。
+- 本次为只读监控，没有启动补评、修改代码、重启队列或干预任何进程。下一步应先定点修复或绕开训练后Phase2原型导出对Phase1 final eval的阻断，再对已保留的7个checkpoint逐一执行strict clean+三LEO评测；该动作尚未在本快照中执行。
