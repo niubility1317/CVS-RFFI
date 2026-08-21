@@ -1,6 +1,7 @@
 import sys
 from pathlib import Path
 
+import numpy as np
 import pytest
 import torch
 
@@ -13,6 +14,8 @@ if str(CODE_ROOT) not in sys.path:
 from cvsrffi.spectral_identifiability import (  # noqa: E402
     build_center_mask,
     extract_sid_fft96,
+    select_sid_mask,
+    SpectralIdentifiabilityAccumulator,
     validate_sid_mask,
 )
 
@@ -45,3 +48,28 @@ def test_empty_or_wrong_shape_mask_is_rejected():
         validate_sid_mask(torch.zeros(128), 128)
     with pytest.raises(ValueError, match="fft_bins"):
         validate_sid_mask(torch.ones(64), 128)
+
+
+def test_identifiability_prefers_tx_separating_low_domain_band():
+    accumulator = SpectralIdentifiabilityAccumulator(num_bands=2, feature_dim=1)
+    for tx in (0, 1):
+        for rx in (0, 1):
+            accumulator.update(
+                np.array([[float(tx) * 4.0], [float(rx) * 4.0]]),
+                tx=tx,
+                rx=rx,
+                day=0,
+                view=0,
+            )
+
+    stats = accumulator.finalize()
+
+    assert stats["j_score"][0] > stats["j_score"][1]
+    assert stats["tx_scatter"][0] > stats["tx_scatter"][1]
+    assert stats["domain_scatter"][1] > stats["domain_scatter"][0]
+
+
+def test_mask_selection_is_stable_on_equal_scores():
+    mask = select_sid_mask({"j_score": np.ones(8)}, keep_fraction=0.25, dc_notch=0)
+
+    assert np.flatnonzero(mask).tolist() == [0, 1]

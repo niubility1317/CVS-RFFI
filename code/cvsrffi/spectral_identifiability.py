@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 
+import numpy as np
 import torch
 from torch import Tensor, nn
 import torch.nn.functional as F
@@ -19,6 +20,99 @@ SID_GROUP_NAMES = (
     "band_edge_residual",
 )
 SID_MODES = {"center", "phase", "sid"}
+
+
+class SpectralIdentifiabilityAccumulator:
+    """Accumulate source-label separability and source-domain scatter by band."""
+
+    def __init__(self, num_bands: int, feature_dim: int, eps: float = 1e-8) -> None:
+        if num_bands <= 0 or feature_dim <= 0:
+            raise ValueError("num_bands and feature_dim must be positive")
+        self.num_bands = int(num_bands)
+        self.feature_dim = int(feature_dim)
+        self.eps = float(eps)
+        self._descriptors: List[np.ndarray] = []
+        self._tx: List[int] = []
+        self._domain: List[Tuple[int, int, int]] = []
+
+    def update(
+        self,
+        descriptor: np.ndarray,
+        *,
+        tx: int,
+        rx: int,
+        day: int,
+        view: int,
+    ) -> None:
+        descriptor = np.asarray(descriptor, dtype=np.float64)
+        expected = (self.num_bands, self.feature_dim)
+        if descriptor.shape != expected:
+            raise ValueError(f"descriptor must have shape {expected}, got {descriptor.shape}")
+        if not np.isfinite(descriptor).all():
+            raise ValueError("descriptor must contain only finite values")
+        self._descriptors.append(descriptor)
+        self._tx.append(int(tx))
+        self._domain.append((int(rx), int(day), int(view)))
+
+    @staticmethod
+    def _scatter(values: np.ndarray, groups: np.ndarray) -> np.ndarray:
+        means = [values[groups == group].mean(axis=0) for group in np.unique(groups)]
+        if len(means) <= 1:
+            return np.zeros(values.shape[1], dtype=np.float64)
+        return np.stack(means, axis=0).var(axis=0).mean(axis=-1)
+
+    def finalize(self) -> Dict[str, np.ndarray]:
+        if not self._descriptors:
+            raise ValueError("cannot finalize an empty identifiability accumulator")
+        values = np.stack(self._descriptors, axis=0)
+        tx = np.asarray(self._tx, dtype=np.int64)
+        domain_values = np.asarray(self._domain, dtype=np.int64)
+        _, domain = np.unique(domain_values, axis=0, return_inverse=True)
+        tx_scatter = self._scatter(values, tx)
+        domain_scatter = self._scatter(values, domain)
+
+        residual = np.empty_like(values)
+        for tx_value in np.unique(tx):
+            selected = tx == tx_value
+            residual[selected] = values[selected] - values[selected].mean(axis=0, keepdims=True)
+        noise_scatter = residual.var(axis=0).mean(axis=-1)
+        j_score = tx_scatter / (domain_scatter + noise_scatter + self.eps)
+        return {
+            "j_score": j_score,
+            "tx_scatter": tx_scatter,
+            "domain_scatter": domain_scatter,
+            "noise_scatter": noise_scatter,
+            "count": np.asarray([values.shape[0]], dtype=np.int64),
+        }
+
+
+def select_sid_mask(
+    stats: Dict[str, np.ndarray],
+    keep_fraction: float,
+    dc_notch: int = 0,
+) -> np.ndarray:
+    """Select the highest-scoring bands with deterministic index tie-breaking."""
+    scores = np.asarray(stats.get("j_score"), dtype=np.float64)
+    if scores.ndim != 1 or scores.size == 0 or not np.isfinite(scores).all():
+        raise ValueError("j_score must be a non-empty finite one-dimensional array")
+    if not 0.0 < keep_fraction <= 1.0:
+        raise ValueError("keep_fraction must be in (0, 1]")
+    if dc_notch < 0:
+        raise ValueError("dc_notch must be non-negative")
+    eligible = np.ones(scores.size, dtype=bool)
+    if dc_notch:
+        center = scores.size // 2
+        eligible[max(0, center - dc_notch) : min(scores.size, center + dc_notch + 1)] = False
+    eligible_indices = np.flatnonzero(eligible)
+    if eligible_indices.size == 0:
+        raise ValueError("dc_notch removes every spectral band")
+    keep = max(1, int(np.ceil(scores.size * keep_fraction)))
+    keep = min(keep, eligible_indices.size)
+    order = np.lexsort((eligible_indices, -scores[eligible_indices]))
+    selected = eligible_indices[order[:keep]]
+    mask = np.zeros(scores.size, dtype=bool)
+    mask[selected] = True
+    return mask
 
 
 def build_center_mask(fft_bins: int, half_width: int, dc_notch: int = 0) -> Tensor:
@@ -74,6 +168,33 @@ def _complex_iq(iq: Tensor) -> Tensor:
     if not torch.isfinite(iq).all():
         raise ValueError("iq must contain only finite values")
     return torch.complex(iq[:, 0], iq[:, 1])
+
+
+def extract_band_descriptors(iq: Tensor, num_bands: int, eps: float = 1e-6) -> Tensor:
+    """Return per-band amplitude and phase descriptors with shape [B, bands, 5]."""
+    if num_bands <= 0:
+        raise ValueError("num_bands must be positive")
+    signal = _complex_iq(iq)
+    fft_bins = signal.shape[-1]
+    if num_bands > fft_bins:
+        raise ValueError("num_bands cannot exceed the IQ sequence length")
+    signal = signal - signal.mean(dim=-1, keepdim=True)
+    signal = signal / signal.abs().square().mean(dim=-1, keepdim=True).sqrt().clamp_min(eps)
+    window = torch.hann_window(fft_bins, dtype=signal.real.dtype, device=signal.device)
+    spectrum = torch.fft.fftshift(torch.fft.fft(signal * window, dim=-1), dim=-1)
+    amplitude = spectrum.abs().clamp_min(eps)
+    log_amplitude = amplitude.log()
+    phase_step = torch.angle(spectrum[:, 1:] * spectrum[:, :-1].conj())
+    phase_step = F.pad(phase_step, (1, 0))
+    curvature = _safe_difference(phase_step)
+    mirror = torch.flip(spectrum, dims=(1,)).conj()
+    mirror_coupling = (spectrum * mirror.conj()).real / (amplitude * mirror.abs()).clamp_min(eps)
+    channels = torch.stack(
+        (log_amplitude, phase_step.sin(), phase_step.cos(), curvature.cos(), mirror_coupling),
+        dim=1,
+    )
+    pooled = F.adaptive_avg_pool1d(channels, num_bands)
+    return torch.nan_to_num(pooled.transpose(1, 2))
 
 
 def extract_sid_fft96(
