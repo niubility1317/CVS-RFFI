@@ -57,3 +57,13 @@ dispatch_log=/home/szu2070436088/2510044040/CV-SincNet/launcher_logs/phase1_adv3
 - 启动健康快照：GPU利用率94%–99%，显存4.64–5.83GB/24GB，温度65–87°C；GPU7温度较高但尚无OOM、Xid、thermal failure或训练异常，后续只读监控继续观察。
 
 当前状态为`RUNNING`，尚无E200性能结果。只有每条`final_ssdg.pth`完成clean和三种LEO弱信道测试后，才可进入`ARTIFACTS_COMPLETE`与性能分析。
+
+## 2026-08-21 17:00 CST长程健康复核
+
+- dispatch PID`335414`持续存活，16个GPU主训练进程仍为GPU0–7各2个；Traceback、RuntimeError、OOM、`TRAIN_FAILED`、`EVAL_FAILED`和`FASTTRUST-SYSTEMIC-FAILURE`指纹均为0。
+- 16条最新进度范围为E16–E30：U128为E16，U256主体为E23–E24，R0/R1为E27，U384为E30。该顺序与每epoch步数相符。
+- 16条最新完整epoch的optimizer step率范围为99.52%–100%，零更新候选为0；13条为100%，其余3条为99.52%或99.76%。没有任何候选接近“连续两个完整epoch零更新”的技术停止条件。
+- 这是对旧故障的直接真实训练回归：旧run的MUSE候选在E7附近已进入持续0%更新，而r2已经越过E16并保持至少99.52%更新率。因此AMP概率下溢导致的长期非有限梯度故障已不再复现。
+- GPU利用率80%–99%，显存4.37–5.65GB/24GB，温度54–68°C，均为P2；启动初期GPU7的87°C瞬时高温已回落，当前无热故障或资源异常。
+
+裁决：`RUNNING_HEALTHY`。此裁决只证明训练执行与数值更新健康，不构成E200性能结果；实验继续按冻结矩阵运行，训练结束后仍须由launcher自动闭合clean和三种LEO弱信道测试。
