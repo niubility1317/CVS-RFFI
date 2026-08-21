@@ -116,15 +116,15 @@ def select_sid_mask(
     return mask
 
 
-def load_sid_mask(path: str | Path, fft_bins: int) -> Tensor:
+def load_sid_mask(path: str | Path, fft_bins: int, key: str = "mask") -> Tensor:
     """Load the fixed P0 FFT mask without accepting pickled objects."""
     mask_path = Path(path)
     if not mask_path.is_file():
         raise FileNotFoundError(f"SID mask does not exist: {mask_path}")
     with np.load(mask_path, allow_pickle=False) as payload:
-        if "mask" not in payload.files:
-            raise ValueError(f"SID mask artifact lacks 'mask': {mask_path}")
-        mask = np.asarray(payload["mask"])
+        if key not in payload.files:
+            raise ValueError(f"SID mask artifact lacks {key!r}: {mask_path}")
+        mask = np.asarray(payload[key])
     return validate_sid_mask(torch.as_tensor(mask), fft_bins)
 
 

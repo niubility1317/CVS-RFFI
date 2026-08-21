@@ -401,6 +401,9 @@ def build_model_from_checkpoint_args(context, overrides: argparse.Namespace, dev
         ntrs_context_mode=str(_get_arg(args, "ntrs_context_mode", "normalized")),
         ntrs_operator_mode=str(_get_arg(args, "ntrs_operator_mode", "operator")),
         ntrs_pca_artifact=str(_get_arg(args, "ntrs_pca_artifact", "")),
+        sid_fft96_mode=str(_get_arg(args, "sid_fft96_mode", "off")),
+        sid_mask_path=str(_get_arg(args, "sid_mask_path", "")),
+        sid_residual_scale=float(_get_arg(args, "sid_residual_scale", 1.0)),
         fast_infer_when_no_aux=bool(_get_arg(args, "fast_infer_when_no_aux", True)),
         use_tx_adv_on_zdom=bool(_get_arg(args, "use_tx_adv_on_zdom", False)),
     ).to(device)

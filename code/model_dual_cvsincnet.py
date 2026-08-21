@@ -729,7 +729,14 @@ class DualCVSincNetDisentangle(nn.Module):
             SIDFFT96Residual(
                 embedding_dim=self.emb_dim,
                 mode=self.sid_fft96_mode,
-                mask=load_sid_mask(self.sid_mask_path, int(input_len)),
+                mask=load_sid_mask(
+                    self.sid_mask_path,
+                    int(input_len),
+                    key={"center": "center_mask", "phase": "phase_mask"}.get(
+                        self.sid_fft96_mode,
+                        "mask",
+                    ),
+                ),
                 residual_scale=self.sid_residual_scale,
             )
             if self.use_sid_fft96

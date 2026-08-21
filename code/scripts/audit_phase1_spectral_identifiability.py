@@ -28,6 +28,7 @@ from SSDG.train_ssdg import _build_ssdg_wisig_data, build_arg_parser  # noqa: E4
 from cvsrffi.eval import apply_sat_channel_for_scenario  # noqa: E402
 from cvsrffi.spectral_identifiability import (  # noqa: E402
     SpectralIdentifiabilityAccumulator,
+    build_center_mask,
     extract_band_descriptors,
     select_sid_mask,
 )
@@ -258,9 +259,21 @@ def main(argv: list[str] | None = None) -> int:
     }
     _atomic_json(expected_outputs[0], payload)
     _atomic_csv(expected_outputs[1], stats, band_mask)
+    center_mask = build_center_mask(
+        int(args.fft_bins),
+        half_width=max(2, int(args.fft_bins) // 4),
+        dc_notch=int(args.dc_notch),
+    ).cpu().numpy()
+    phase_mask = build_center_mask(
+        int(args.fft_bins),
+        half_width=max(2, int(args.fft_bins) // 2),
+        dc_notch=int(args.dc_notch),
+    ).cpu().numpy()
     _atomic_npz(
         expected_outputs[3],
         mask=fft_mask.astype(np.uint8),
+        center_mask=center_mask.astype(np.uint8),
+        phase_mask=phase_mask.astype(np.uint8),
         band_mask=band_mask.astype(np.uint8),
         j_score=stats["j_score"].astype(np.float32),
         fft_bins=np.asarray([int(args.fft_bins)], dtype=np.int64),
