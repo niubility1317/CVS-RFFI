@@ -4,7 +4,7 @@
 
 ```text
 run_id=phase1_adv3b02_fasttrust16_s392002_20260821
-status=LOCAL_VERIFIED_AWAITING_RELEASE
+status=RUNNING
 seed=392002
 epochs=200
 matrix_rows=16
@@ -14,7 +14,7 @@ rows_per_gpu=2
 
 2026-08-21 12:38 CST按用户要求执行停止核验：N607直连预检通过；项目实验进程匹配为空，`nvidia-smi`计算进程为空，GPU0–7均为0%利用且各仅1MiB占用。因此没有可归属实验需要终止，未执行kill，既有checkpoint、日志和部分产物均保留。
 
-本轮代码已在本地按TDD完成并通过真实checkpoint无query smoke；尚未同步或启动。正式启动只使用本轮提交固定的代码与配置；每个candidate使用不可覆盖输出目录。
+本轮代码已在本地按TDD完成并通过真实checkpoint无query smoke，随后完成Git固定、N607发布和正式启动。正式运行使用不可覆盖run root，每个candidate使用独立输出目录。
 
 ## 本地实现与验证
 
@@ -27,6 +27,17 @@ rows_per_gpu=2
 - 聚焦联合回归：188项收集，186项通过、2项按既有条件跳过；退出码0。`bash -n`、`py_compile`、`git diff --check`和16条dry-run均通过；dry-run计数为row16、train16、联合eval16、分场景输出64，且没有创建输出目录。
 - 真实checkpoint无query smoke：严格恢复ADV3B02 checkpoint，missing/unexpected均为0；CPU单batch前向、FastTrust hard身份、U satellite CE、U prototype更新、反向、grad clip和AdamW step均完成，`tx_logits=[2,6]`、`z_id=[2,160]`，hard/satellite/prototype计数均为2，query与target truth读取均为0。仅出现既有AMP弃用warning，不影响数值有限性或退出码。
 - 独立P0/P1审查首轮发现4项阻断：可选export被旧终态误判、U尾批丢弃、prior可能翻转hard标签、M0未执行统一LR。四项均按TDD修复；唯一一次定点复审逐项GREEN，最终结论为GO。未扩大审查范围，未增加发布gate。
+
+## 发布与启动证据
+
+- 实际代码与配置提交：`0fde2fa92fa8e93b077b954750888198aae67837`；自动push后独立读取远端`origin/work/cvs-active`，OID与本地`HEAD`一致。
+- 单一release归档：本地`E:\type10-7\release_archives\phase1_fasttrust_cd3045d8.tar.gz`映射到远端`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_fasttrust_cd3045d8.tar.gz`；本地与远端SHA-256均为`efef54b0923a8eded085b6dbeddce81ff8551f20cd8e7d48e193c5ba715d957e`。归档后仅将提交`0fde2fa`修复的两个launcher文件补充同步到解压release，不创建第二个归档或额外校验门。
+- 远端release目录：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_fasttrust_cd3045d8`；远端生产Python编译、两个launcher语法检查和16条dry-run均通过，dry-run得到row16、train16、eval16、分场景输出64且未创建run输出。
+- 正式启动时间约为2026-08-21 13:31 CST；dispatch PID为`266946`，PPID为1，启动后状态为`S`；dispatch CWD为`/home/szu2070436088`，cmdline绑定上述release launcher。
+- dispatch日志：`/home/szu2070436088/2510044040/CV-SincNet/launcher_logs/phase1_adv3b02_fasttrust16_s392002_20260821.dispatch.log`；run root：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fasttrust16_s392002_20260821`。
+- 启动快照中GPU0–7均恰好有2个本run的Python训练进程：GPU0=`267011,267019`，GPU1=`267012,267015`，GPU2=`267018,267020`，GPU3=`267016,267022`，GPU4=`267024,267027`，GPU5=`267028,267031`，GPU6=`267033,267037`，GPU7=`267034,267035`。
+- 启动约2分钟后的只读复查：16/16个训练进程存活，16/16个candidate日志非空且持续增长，错误指纹计数为0；15/16条已记录`[EPOCH-END] E001/200`，`R4_FAST_FULL_U128`仍在首轮初始化。该候选的U batch为128，每epoch步数多于U256/U384，因此首轮更慢属于预期速度差异，不能解释为崩溃。
+- 当前尚无最终性能结果。每条训练完成E200并写出`final_ssdg.pth`后，launcher才会自动执行一次严格联合评测并拆分保存clean、`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`结果；四场景未齐全前不会标记`ARTIFACTS_COMPLETE`。
 
 ## 共同协议与配置
 
@@ -93,7 +104,7 @@ bundle导出artifact独立记录；其失败不能删除checkpoint、覆盖训�
 | FT-06 | 指导P0-1/P0-2 | class-complete V_cal/V_select与准确异常分类 | split、prototype、tests | verified | 类别覆盖、互斥与五类错误测试通过 | 训练前失败关闭 |
 | FT-07 | 指导P0-3 | train/eval/export解耦 | launcher、tests | verified | 失败注入测试通过 | export非必要失败不阻断eval |
 | FT-08 | 指导稳定性 | warmup/cosine/tail LR与grad clip | train、launcher、tests | verified | E1/E5/E160/E161/E180/E181/E200测试通过 | `max_grad_norm=5` |
-| FT-09 | 用户 | 每GPU两条实验 | matrix、launcher | verified | JSON统计16条、每GPU2条 | 尚未启动 |
+| FT-09 | 用户 | 每GPU两条实验 | matrix、launcher | verified | JSON统计16条且启动快照每GPU2条 | 16条均已启动 |
 | FT-10 | 项目规则 | final clean+三LEO自动评测 | launcher、tests | verified | 单次联合eval、四场景拆分与缺失失败注入通过 | 真实metrics待训练结束后生成 |
 | FT-11 | 指导P0-5 | `z_id/feat_joint`双空间审计与identity feature contract | train、phase2_prototypes、tests | verified | finite/nonzero/coverage/geometry/contract测试通过 | export前失败关闭 |
 
@@ -109,4 +120,4 @@ MATRIX=configs/phase1_adv3b02_fasttrust16_s392002_20260821.json
 bash code/scripts/launch_phase1_adv3b02_fasttrust16_20260821.sh
 ```
 
-launcher已实现并完成本地dry-run；矩阵进入`LANDED/RUNNING`前仍需写入真实Git commit、N607 CWD、release路径、PID与GPU映射。
+launcher已按上述调用面完成正式启动，矩阵当前为`RUNNING`。本报告已经记录真实Git commit、N607 CWD、release路径、dispatch PID、GPU映射和首次日志增长证据；后续只读监控不得改变冻结矩阵或干预健康进程。

@@ -121,6 +121,6 @@
 - [x] **Step 1:** 运行FastTrust聚焦测试、既有MUSE联合回归、`py_compile`、`bash -n`和16条dry-run。
 - [x] **Step 2:** 使用真实ADV3B02 checkpoint执行单batch、无target query的本地或N607 smoke，验证strict恢复和输出路径。
 - [x] **Step 3:** 执行一次独立P0/P1正确性审查；只修复会导致真实实验跑错、越权、覆盖、误杀、不能启动或不能形成合法prediction的问题。
-- [ ] **Step 4:** 更新追踪表、实际命令、验证结果、风险和release映射；显式stage本轮文件，提交、自动push并核对远端OID。
-- [ ] **Step 5:** 创建单个release归档并做一次本地/远端SHA比较，远端编译与dry-run通过后启动8个GPU worker。
-- [ ] **Step 6:** 启动后核验PID、CWD、run-root、GPU映射和日志增长；状态进入`RUNNING`。
+- [x] **Step 4:** 更新追踪表、实际命令、验证结果、风险和release映射；显式stage本轮文件，提交、自动push并核对远端OID。
+- [x] **Step 5:** 创建单个release归档并做一次本地/远端SHA比较，远端编译与dry-run通过后启动8个GPU worker。
+- [x] **Step 6:** 启动后核验PID、CWD、run-root、GPU映射和日志增长；状态进入`RUNNING`。
