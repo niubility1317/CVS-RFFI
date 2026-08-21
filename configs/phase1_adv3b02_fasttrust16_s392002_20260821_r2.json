@@ -1,7 +1,7 @@
 {
   "schema": "cvs.phase1.fasttrust_matrix.v1",
-  "run_id": "phase1_adv3b02_fasttrust16_s392002_20260821",
-  "status": "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE",
+  "run_id": "phase1_adv3b02_fasttrust16_s392002_20260821_r2",
+  "status": "LOCAL_VERIFIED",
   "seed": 392002,
   "epochs": 200,
   "launch_mode": "two_concurrent_per_gpu",
@@ -38,7 +38,8 @@
     "labeled_batch_size": 128,
     "max_grad_norm": 5.0,
     "complete_u_coverage_per_epoch": true,
-    "fused_student_forward": true
+    "fused_student_forward": true,
+    "amp_local_probability_dtype": "float32"
   },
   "rows": [
     {"gpu": 0, "slot": "A", "candidate": "R0_SCRATCH_CONTROL_U256", "init": "scratch", "muse": "off", "u_batch": 256, "changes": ["control"]},

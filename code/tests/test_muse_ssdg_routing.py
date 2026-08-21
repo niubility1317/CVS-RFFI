@@ -2,6 +2,7 @@ import pytest
 import torch
 
 from cvsrffi.muse_ssdg import (
+    MUSETrainingHeads,
     align_source_domain_prior,
     compute_muse_reliability,
     geometric_fuse_probabilities,
@@ -9,6 +10,34 @@ from cvsrffi.muse_ssdg import (
     route_fasttrust,
     route_muse_reliability,
 )
+
+
+def test_local_probability_keeps_finite_gradients_when_amp_probabilities_underflow():
+    heads = MUSETrainingHeads(4, 4, 3, 1, 2).half()
+    with torch.no_grad():
+        heads.shared_projection.weight.zero_()
+        heads.shared_classifier.weight.zero_()
+        heads.shared_classifier.bias.copy_(
+            torch.tensor([0.0, -20.0, -40.0], dtype=torch.float16)
+        )
+        heads.domain_delta_left.zero_()
+        heads.domain_delta_right.zero_()
+
+    features = torch.ones(1, 4, dtype=torch.float16, requires_grad=True)
+    probability = heads.local_prob(features, torch.tensor([0]))
+    loss = torch.nn.functional.nll_loss(
+        probability.clamp_min(1e-8).log(),
+        torch.tensor([0]),
+    )
+    loss.backward()
+
+    assert probability.dtype == torch.float32
+    assert torch.isfinite(loss)
+    assert torch.isfinite(features.grad).all()
+    assert all(
+        parameter.grad is None or torch.isfinite(parameter.grad).all()
+        for parameter in heads.parameters()
+    )
 
 
 def test_three_head_fusion_is_normalized_and_routing_is_a_partition():

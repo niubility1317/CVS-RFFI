@@ -1444,7 +1444,11 @@ class MUSETrainingHeads(nn.Module):
         right = self.domain_delta_right[domain_indices]
         delta = torch.bmm(torch.bmm(projected.unsqueeze(1), left), right).squeeze(1)
         logits = torch.nan_to_num(logits + delta, nan=0.0, posinf=0.0, neginf=0.0)
-        return F.softmax(logits.float(), dim=-1).to(dtype=logits.dtype)
+        # Keep probabilities in float32 under AMP.  Casting them back to
+        # float16 can underflow non-target classes to exact zero; the later
+        # log-probability supervision then has a finite forward value for the
+        # target row but produces 0/0 NaN gradients for zero-probability rows.
+        return F.softmax(logits.float(), dim=-1)
 
     def self_supervised_loss(self, z_id_a: torch.Tensor, z_id_b: torch.Tensor) -> torch.Tensor:
         """Compute symmetric stop-gradient negative cosine consistency loss."""

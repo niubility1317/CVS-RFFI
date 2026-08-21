@@ -4,6 +4,7 @@ from types import SimpleNamespace
 import pytest
 import torch
 
+from SSDG import train_ssdg
 from SSDG.train_ssdg import _partition_source_validation_roles
 from cvsrffi.phase2_prototypes import (
     Phase1CalibrationError,
@@ -26,6 +27,24 @@ def _record(tx, rx, day, sig):
         sig_i=sig,
         base_index=10_000 + sig,
     )
+
+
+def test_fasttrust_zero_optimizer_step_streak_aborts_only_after_two_full_epochs():
+    streak = train_ssdg._next_fasttrust_zero_step_streak(
+        {"train/optimizer_step_applied": 0.0}, 0
+    )
+    assert streak == 1
+    streak = train_ssdg._next_fasttrust_zero_step_streak(
+        {"train/optimizer_step_applied": 0.0}, streak
+    )
+    assert streak == 2
+    assert train_ssdg._fasttrust_zero_step_abort_required(streak)
+
+    recovered = train_ssdg._next_fasttrust_zero_step_streak(
+        {"train/optimizer_step_applied": 1.0 / 207.0}, streak
+    )
+    assert recovered == 0
+    assert not train_ssdg._fasttrust_zero_step_abort_required(recovered)
 
 
 def test_validation_roles_are_class_complete_receiver_day_stratified_and_disjoint():

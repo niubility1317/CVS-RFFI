@@ -5456,6 +5456,23 @@ def _fasttrust_lr_enabled(args) -> bool:
     ) == "fasttrust"
 
 
+def _next_fasttrust_zero_step_streak(
+    train_logs: Mapping[str, Any], previous_streak: int
+) -> int:
+    """Count consecutive full epochs with no optimizer update at all."""
+
+    step_rate = float(train_logs.get("train/optimizer_step_applied", float("nan")))
+    if math.isfinite(step_rate) and step_rate <= 0.0:
+        return max(0, int(previous_streak)) + 1
+    return 0
+
+
+def _fasttrust_zero_step_abort_required(streak: int) -> bool:
+    """Fail closed after the same zero-update fingerprint repeats twice."""
+
+    return int(streak) >= 2
+
+
 def _fasttrust_lr_scales(epoch: int) -> Tuple[float, float]:
     """Return global and backbone-tail LR multipliers for E1-E200."""
 
@@ -6858,6 +6875,7 @@ def train(args) -> int:
     phase1_v2_tail_machine = None
     phase1_v2_final_blocked = False
     phase1_v2_reasons: List[str] = []
+    fasttrust_zero_step_streak = 0
     if bool(getattr(args, "tail_safety_state_machine", False)):
         if TailSafetyStateMachine is None or TailSafetyConfig is None:
             raise ImportError("cvsrffi.phase1_v2_control is required for --tail_safety_state_machine.")
@@ -9926,6 +9944,12 @@ def train(args) -> int:
         else:
             named_stats = {}
         train_logs = mean_logs(epoch_logs)
+        if _fasttrust_lr_enabled(args):
+            fasttrust_zero_step_streak = _next_fasttrust_zero_step_streak(
+                train_logs, fasttrust_zero_step_streak
+            )
+        else:
+            fasttrust_zero_step_streak = 0
         for tail_key in (
             "train/dm_accept_zid_p95_deg",
             "train/dm_accept_zid_p99_deg",
@@ -10379,6 +10403,14 @@ def train(args) -> int:
             ),
             flush=True,
         )
+        if _fasttrust_zero_step_abort_required(fasttrust_zero_step_streak):
+            print(
+                f"[FASTTRUST-SYSTEMIC-FAILURE] epoch={int(epoch)} "
+                f"zero_step_epoch_streak={int(fasttrust_zero_step_streak)} "
+                "reason=consecutive_full_epochs_without_optimizer_update",
+                flush=True,
+            )
+            raise RuntimeError("FASTTRUST_CONSECUTIVE_ZERO_OPTIMIZER_STEP_EPOCHS")
         if test_ran_this_epoch and not tail_rollback_applied:
             previous_protected_metrics = dict(protected_metrics)
         if not tail_rollback_applied:

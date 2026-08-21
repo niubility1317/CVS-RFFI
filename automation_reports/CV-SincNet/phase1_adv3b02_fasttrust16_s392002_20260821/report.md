@@ -4,7 +4,7 @@
 
 ```text
 run_id=phase1_adv3b02_fasttrust16_s392002_20260821
-status=RUNNING
+status=STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT
 seed=392002
 epochs=200
 matrix_rows=16
@@ -64,6 +64,18 @@ rows_per_gpu=2
 - 若不干预，按最近5个完整epoch机械外推：U384约2026-08-21 23:00完成训练；控制/U256多数约2026-08-22 01:30–02:50；恒定双进程负载下U128约2026-08-22 14:00。考虑同卡伙伴先结束后U128可能加速，矩阵训练完成规划区间为2026-08-22 08:00–14:00，四场景评测闭合再预留约1–2小时。该ETA只表示进程何时跑完，不表示结果科学有效。
 
 健康裁决：`SYSTEM_RUNNING_HEALTHY`，但`MUSE_OPTIMIZATION_UNHEALTHY`。即使继续到E200并自动完成clean和三LEO测试，当前MUSE权重在E17后没有更新，结果不得作为有效FastTrust性能证据。依据monitor-only边界，本次未停止、重启或修改任何远端进程；建议取得用户明确授权后停止本run并保留全部artifact，再对CUDA AMP下首个非有限梯度参数进行最小复现和修复。
+
+## 2026-08-21 15:36–15:50 CST技术停止与根因定位
+
+用户授权“查找定位分析问题，修复问题后重新发布实验”后，本run按预注册系统技术失败规则停止。停止前重新解析早期epoch，修正上一节“E17后才全部失败”的粗粒度表述：MUSE候选从E1已出现少量非有限梯度跳步，E3–E6跳步率持续上升，主候选在E7起更新率已降为0；E17仅是身份路由开启边界，不是故障首次发生点。R0/R1控制组同期维持约99%–100%更新率。
+
+- 停止前精确绑定dispatch PID`266946`、release路径和run ID，共解析出233个run-owned进程（16个训练进程、launcher/worker及DataLoader后代）；233/233均由该run ID或专属release路径归属，没有混入无关任务。
+- 仅对这棵进程树按叶节点到根节点发送SIGTERM；20秒边界内全部退出，不需要SIGKILL。独立回读为根PID不存在、run命令行匹配0、GPU0–7利用率0%且各1MiB、旧run root仍存在。
+- 旧run目录`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fasttrust16_s392002_20260821`、全部日志、部分checkpoint和metrics均原位保留；未删除、移动或覆盖任何artifact。
+- 最小数值复现确认根因在所有MUSE候选共享的本地分类头AMP路径：`local_prob`先以float32做softmax，随后又把概率转回float16；置信度升高时非目标类概率下溢为精确0。`NLL(log(clamp_min(1e-8)))`中的`1e-8`在float16同样下溢为0，导致标量loss仍有限时反向传播产生`0/0`NaN梯度。极端三类logit`[0,-20,-40]`复现中，forward loss有限，但输入梯度及本地头五组参数梯度全部非有限。
+- 这一路径只存在于MUSE候选，且从E1即参与L_s本地头监督，因此同时解释了控制组正常、所有MUSE消融共同失败、前几轮间歇跳步和随后全批次跳步；它不依赖U伪标签、prototype、prior、temporal、nuisance或LEO身份分支。
+
+当前裁决固定为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。本run不得用于FastTrust性能结论，也不会继续执行final clean/三LEO测试；修复后的实验必须使用新的不可覆盖run ID和output root。
 
 ## 共同协议与配置
 
@@ -146,4 +158,4 @@ MATRIX=configs/phase1_adv3b02_fasttrust16_s392002_20260821.json
 bash code/scripts/launch_phase1_adv3b02_fasttrust16_20260821.sh
 ```
 
-launcher已按上述调用面完成正式启动，矩阵当前为`RUNNING`。本报告已经记录真实Git commit、N607 CWD、release路径、dispatch PID、GPU映射和首次日志增长证据；后续只读监控不得改变冻结矩阵或干预健康进程。
+launcher曾按上述调用面完成正式启动；矩阵现已因确定性非有限梯度故障停止，最终状态为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。本报告保留原Git commit、N607 CWD、release路径、dispatch PID、GPU映射、故障和停止证据；修复后只允许使用新的run ID重新发布。
