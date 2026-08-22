@@ -4,7 +4,7 @@
 
 ```text
 run_id=phase1_adv3b02_sat_anchor_ssl8_s392002_20260822
-status=LOCAL_VERIFIED_AWAITING_RELEASE
+status=LANDED_READY
 seed=392002
 epochs=200
 matrix_rows=8
@@ -94,3 +94,39 @@ GIT_DIFF_CHECK: PASS
 ```
 
 独立P0/P1定点审查结论：修复`V_cal`二维穷举的启动性能风险、固定50%对照语义和A0多余U前向后，未发现会导致协议越权、训练跑错、输出覆盖、无法启动或不能产生合法prediction的剩余P0/P1。未新增SHA、seal、receipt或额外审批门；如后续出现此类要求，记录为`REJECTED_EXTRA_GATE`并继续白名单最小流程。
+
+## N607发布与启动前证据
+
+```text
+experiment_code_commit=b293b1aba5fd2b6bab6830d283f79f23d79f5fd2
+local_release_archive=E:/type10-7/release_artifacts/phase1_sat_anchor_ssl_b293b1ab.tar.gz
+remote_release_archive=/home/szu2070436088/2510044040/CV-SincNet/releases/incoming/phase1_sat_anchor_ssl_b293b1ab.tar.gz
+release_archive_sha256=6cf5e1aebc72a155cff03b824c7eced9062e8b9140d44cc06ac7ca66e6a0abe2
+remote_release_root=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_sat_anchor_ssl_b293b1ab
+remote_compile=VERIFIED
+remote_dry_run=VERIFIED rows=8 trains=8 joint_evals=8 scenario_outputs=32
+real_checkpoint_smoke=VERIFIED input_len=256 classes=6 domains=14 trusted=1
+adapter_up_grad=0.00005296
+adapter_logit_grad=0.05044098
+id_backbone_u_grad=NONE
+frozen_teacher_grad=NONE
+```
+
+启动前资源快照：
+
+- GPU0已有1个现有训练CUDA进程，约2046MiB；GPU1已有1个，约1072MiB。
+- GPU2–GPU7无CUDA计算进程；项目根所在磁盘剩余约7.3TiB。
+- 本矩阵每GPU新增1条训练，因此GPU0/1启动后为每卡2条，GPU2–7为每卡1条，不超过默认上限。
+- 现有任务属于`phase1_advb02_sidfft96_guarded_20260822_v1`；本任务不终止、不修改、不覆盖该任务。
+
+精确启动面：
+
+```text
+cwd=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_sat_anchor_ssl_b293b1ab
+launcher=code/scripts/launch_phase1_adv3b02_sat_anchor_ssl8_20260822.sh
+data_root=/home/szu2070436088/2510044040/CV-SincNet
+run_root=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_sat_anchor_ssl8_s392002_20260822
+dispatcher_log=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_sat_anchor_ssl8_s392002_20260822.dispatcher.log
+dispatcher_pid=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_sat_anchor_ssl8_s392002_20260822.dispatcher.pid
+python=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
+```
