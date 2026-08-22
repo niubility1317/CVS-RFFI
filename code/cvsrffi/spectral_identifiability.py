@@ -138,7 +138,7 @@ def load_sid_mask(path: str | Path, fft_bins: int, key: str = "mask") -> Tensor:
         if key not in payload.files:
             raise ValueError(f"SID mask artifact lacks {key!r}: {mask_path}")
         mask = np.asarray(payload[key])
-    return validate_sid_mask(torch.as_tensor(mask), fft_bins)
+    return validate_sid_mask(torch.tensor(mask.tolist()), fft_bins)
 
 
 def build_center_mask(fft_bins: int, half_width: int, dc_notch: int = 0) -> Tensor:

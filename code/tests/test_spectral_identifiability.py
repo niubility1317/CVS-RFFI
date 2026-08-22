@@ -14,6 +14,7 @@ if str(CODE_ROOT) not in sys.path:
 from cvsrffi.spectral_identifiability import (  # noqa: E402
     build_center_mask,
     extract_sid_fft96,
+    load_sid_mask,
     select_sid_mask,
     SpectralIdentifiabilityAccumulator,
     validate_sid_mask,
@@ -108,3 +109,20 @@ def test_torch_mask_boundary_returns_current_numpy_uint8_array():
     assert converted.__class__ is np.ndarray
     assert converted.dtype == np.uint8
     assert converted.tolist() == [1, 0, 1]
+
+
+def test_load_sid_mask_crosses_numpy_torch_boundary_via_python_values(tmp_path, monkeypatch):
+    artifact = tmp_path / "sid_mask.npz"
+    np.savez_compressed(artifact, mask=np.asarray([1, 0, 1, 0], dtype=np.uint8))
+    original_as_tensor = torch.as_tensor
+
+    def guarded_as_tensor(value, *args, **kwargs):
+        assert not isinstance(value, np.ndarray)
+        return original_as_tensor(value, *args, **kwargs)
+
+    monkeypatch.setattr(torch, "as_tensor", guarded_as_tensor)
+
+    loaded = load_sid_mask(artifact, fft_bins=4)
+
+    assert loaded.dtype == torch.bool
+    assert loaded.tolist() == [True, False, True, False]

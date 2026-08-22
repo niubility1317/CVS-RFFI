@@ -2,7 +2,7 @@
 
 ## 当前结论
 
-- 状态：`REPAIRING_P0_NPZ_BOUNDARY`；S0已完成，完整独立release v2已验证；P0第二次启动完成统计后在NPZ写入边界技术失败，定点修复后仅重发P0，S1–S3继续等待合法mask。
+- 状态：`REPAIRING_S1_S3_NUMPY_TORCH_BOUNDARY`；P0与S0均已完成；S1–S3首次启动在训练前命中同一NumPy→PyTorch类型边界异常并自动退出，定点修复后只重发这三行。
 - 本轮仅发布前端频谱可辨识性路线P0与S0–S3单seed矩阵；尚无N607性能结果，不声明优于CORE90。
 - 基座固定为`ADV3B02_CORE90_SOFT_E200`，不修改Phase2/Phase3，不使用target/query，不与NTRS或CRRA组合。
 
@@ -101,6 +101,10 @@ GPU由发布时只读preflight后通过`GPU_P0/GPU_S0/GPU_S1/GPU_S2/GPU_S3`记�
 - 只允许重发首次技术失败且无artifact的P0；S0不重启，S1–S3继续等待P0合法mask。
 - P0在release v2完成全部统计并写出JSON/CSV后，于`np.savez_compressed`失败：`center_mask`和`phase_mask`由PyTorch`.numpy()`产生，表面类型为`numpy.ndarray`，但其类对象与NumPy2.2.5当前`np.ndarray`不同；与当前NumPy数组共同进入`__array_function__`分派时触发`TypeError`。未产生合法`sid_mask.npz`，S1–S3未启动。
 - 定点修复：新增`_torch_mask_to_numpy`，通过CPU `uint8`值列表重建当前NumPy类数组；只替换两个PyTorch掩码的转换边界，不改变统计、选带或训练逻辑。边界测试先失败后通过，SID及launcher相关24项聚焦测试全部通过，`py_compile`与`git diff --check`通过。
+- P0修复后重发成功：处理23,520个source视图，日志状态`VERIFIED`；JSON、CSV、PNG、NPZ四个产物均非空，`sid_mask.npz`可在`allow_pickle=False`下加载，包含6个预期数组，SID FFT mask为256维并选中128维。P0状态`ARTIFACTS_COMPLETE`。
+- 2026-08-22 11:56发布S1/S2/S3，launcher PID分别为`851523/851524/851525`，预定GPU分别为`2/4/5`。三行均在创建模型、真正训练前自动退出，异常一致：`torch.as_tensor(mask)`无法推断`numpy.uint8`类型；GPU未形成计算占用，无训练指标，不构成性能结果。
+- 第二个边界根因：N607上的PyTorch与NumPy2.2.5不仅在PyTorch→NumPy写出时存在数组类边界，在NumPy→PyTorch读入时也不能直接桥接。修复将已禁用pickle的NPZ数组先转换为Python值，再由PyTorch构造tensor，随后仍执行原有shape、finite和非空验证。
+- 第二个边界TDD：新测试要求加载器不得把NumPy数组直接传给`torch.as_tensor`；修复前定点失败，修复后通过。SID、模型、诊断、release overlay、launcher及Core90默认值相关25项测试全部通过，两个Python模块编译和`git diff --check`通过。
 - S0状态：`ARTIFACTS_COMPLETE`。clean aggregate TX为90.1402%，Strict UDU为86.09%；`leo_clear_weak` overall/Strict UDU为78.47%/72.55%，`leo_low_elev_weak`为75.65%/69.86%，`leo_rain_weak`为75.29%/69.27%。结果仅作为同checkpoint基线，不是SID收益。
 - 2026-08-22 11:39:51（Asia/Hong_Kong）再次直连复核：GPU0、1、2、4、5、6、7无计算进程，GPU3仅1个既有进程；正式run/log root仍不存在，release、ManySig与CORE90 checkpoint均可见。按上述实际GPU分配进入`LAUNCHING`，不使用GPU3，不干预既有PID335489。
 
