@@ -123,6 +123,32 @@ class MLPHead(nn.Module):
         return self.net(x)
 
 
+class SatAnchorIdentityAdapter(nn.Module):
+    """Zero-initialized low-rank identity residual and logit correction."""
+
+    def __init__(self, feature_dim: int, num_classes: int, rank: int = 8):
+        super().__init__()
+        feature_dim = int(feature_dim)
+        num_classes = int(num_classes)
+        rank = int(rank)
+        if min(feature_dim, num_classes, rank) < 1:
+            raise ValueError("feature_dim, num_classes and rank must be positive")
+        self.down = nn.Linear(feature_dim, rank, bias=False)
+        self.up = nn.Linear(rank, feature_dim, bias=False)
+        self.logit_correction = nn.Linear(feature_dim, num_classes, bias=False)
+        nn.init.kaiming_uniform_(self.down.weight, a=math.sqrt(5))
+        nn.init.zeros_(self.up.weight)
+        nn.init.zeros_(self.logit_correction.weight)
+
+    def forward(
+        self, feature: torch.Tensor, *, detach_backbone: bool = False
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
+        source = feature.detach() if bool(detach_backbone) else feature
+        residual = self.up(torch.nn.functional.gelu(self.down(source)))
+        adapted = source + residual
+        return adapted, self.logit_correction(adapted)
+
+
 class RCNStatEncoder(nn.Module):
     """Lightweight receiver/channel/noise statistic encoder for the domain path."""
 
@@ -540,6 +566,8 @@ class DualCVSincNetDisentangle(nn.Module):
         crra_nuisance_dim: int = 9,
         crra_start_epoch: int = 17,
         crra_ramp_epochs: int = 30,
+        sat_anchor_adapter: bool = False,
+        sat_anchor_adapter_rank: int = 8,
     ):
         super().__init__()
         self.num_classes = int(num_classes)
@@ -644,6 +672,15 @@ class DualCVSincNetDisentangle(nn.Module):
             self._share_early_stem()
 
         self.emb_dim = self._infer_emb_dim(self.id_backbone)
+        self.sat_anchor_identity_adapter = (
+            SatAnchorIdentityAdapter(
+                self.emb_dim,
+                self.num_classes,
+                rank=int(sat_anchor_adapter_rank),
+            )
+            if bool(sat_anchor_adapter)
+            else None
+        )
         self.dom_enhancer = DomainFeatureEnhancer(
             self.emb_dim,
             mode=str(domain_enhancer),
@@ -773,6 +810,7 @@ class DualCVSincNetDisentangle(nn.Module):
         crra_epoch: Optional[int] = None,
         update_crra_support: bool = False,
         crra_support_mask: Optional[torch.Tensor] = None,
+        sat_anchor_detach_backbone: bool = False,
     ):
         if self.representation_mode == "single_parameter_matched":
             aux_id = backbone_forward_compat(
@@ -789,6 +827,17 @@ class DualCVSincNetDisentangle(nn.Module):
             base_z_id = self._pick_z_id(aux_id)
             z_id, correction = self.identity_capacity(base_z_id)
             tx_logits = base_logits + correction
+            if self.sat_anchor_identity_adapter is not None:
+                z_id, sat_correction = self.sat_anchor_identity_adapter(
+                    z_id,
+                    detach_backbone=bool(sat_anchor_detach_backbone),
+                )
+                base_tx_logits = (
+                    tx_logits.detach()
+                    if bool(sat_anchor_detach_backbone)
+                    else tx_logits
+                )
+                tx_logits = base_tx_logits + sat_correction
             if not return_aux:
                 return tx_logits
             zero_domain_logits = tx_logits.new_zeros(
@@ -815,7 +864,11 @@ class DualCVSincNetDisentangle(nn.Module):
                 "aux_dom": {},
             }
 
-        if (not return_aux) and self.fast_infer_when_no_aux:
+        if (
+            (not return_aux)
+            and self.fast_infer_when_no_aux
+            and self.sat_anchor_identity_adapter is None
+        ):
             return backbone_forward_compat(
                 self.id_backbone,
                 x,
@@ -850,6 +903,17 @@ class DualCVSincNetDisentangle(nn.Module):
 
         tx_logits = aux_id["logits"]
         z_id = self._pick_z_id(aux_id)
+        if self.sat_anchor_identity_adapter is not None:
+            z_id, sat_correction = self.sat_anchor_identity_adapter(
+                z_id,
+                detach_backbone=bool(sat_anchor_detach_backbone),
+            )
+            base_tx_logits = (
+                tx_logits.detach()
+                if bool(sat_anchor_detach_backbone)
+                else tx_logits
+            )
+            tx_logits = base_tx_logits + sat_correction
         z_dom_raw = self._pick_z_dom(aux_dom)
         z_dom, z_dom_rcn = self.dom_enhancer(z_dom_raw, x)
 
@@ -984,6 +1048,8 @@ def build_dual_model(
     crra_nuisance_dim: int = 9,
     crra_start_epoch: int = 17,
     crra_ramp_epochs: int = 30,
+    sat_anchor_adapter: bool = False,
+    sat_anchor_adapter_rank: int = 8,
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -1035,4 +1101,6 @@ def build_dual_model(
         crra_nuisance_dim=crra_nuisance_dim,
         crra_start_epoch=crra_start_epoch,
         crra_ramp_epochs=crra_ramp_epochs,
+        sat_anchor_adapter=sat_anchor_adapter,
+        sat_anchor_adapter_rank=sat_anchor_adapter_rank,
     )

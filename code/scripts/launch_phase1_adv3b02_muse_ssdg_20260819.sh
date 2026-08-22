@@ -15,6 +15,15 @@ INIT_MODE="${INIT_MODE:-scratch}"
 BASE_CKPT="${BASE_CKPT:-${ROOT}/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth}"
 CANDIDATE_ID_OVERRIDE="${CANDIDATE_ID_OVERRIDE:-}"
 MUSE_UNLABELED_BATCH_SIZE="${MUSE_UNLABELED_BATCH_SIZE:-256}"
+SAT_ANCHOR_SSL="${SAT_ANCHOR_SSL:-false}"
+SAT_ANCHOR_LAMBDA_PAIR="${SAT_ANCHOR_LAMBDA_PAIR:-0.02}"
+SAT_ANCHOR_PAIR_INTERVAL="${SAT_ANCHOR_PAIR_INTERVAL:-1}"
+SAT_ANCHOR_LAMBDA_SATELLITE="${SAT_ANCHOR_LAMBDA_SATELLITE:-0.10}"
+SAT_ANCHOR_LAMBDA_CLEAN_KL="${SAT_ANCHOR_LAMBDA_CLEAN_KL:-0.10}"
+SAT_ANCHOR_FILL_TO_FRACTION="${SAT_ANCHOR_FILL_TO_FRACTION:-0}"
+SAT_ANCHOR_RECEIVER_CAP="${SAT_ANCHOR_RECEIVER_CAP:-false}"
+SAT_ANCHOR_ADAPTER="${SAT_ANCHOR_ADAPTER:-false}"
+SAT_ANCHOR_GRADIENT_SCOPE="${SAT_ANCHOR_GRADIENT_SCOPE:-full}"
 DRY_RUN=0
 ONLY_CANDIDATES="M0,M1,M2,M3"
 
@@ -321,6 +330,30 @@ build_train_command() {
   else
     echo "[MUSE-ERROR] unknown INIT_MODE: ${INIT_MODE}" >&2
     return 2
+  fi
+  if [[ "${SAT_ANCHOR_SSL}" == "true" ]]; then
+    if [[ "${level}" != "M3" || "${INIT_MODE}" != "adv3b02_core90" ]]; then
+      echo "[MUSE-ERROR] SAT-Anchor-SSL requires M3 and adv3b02_core90 init" >&2
+      return 2
+    fi
+    TRAIN_CMD+=(
+      --sat_anchor_ssl true
+      --teacher_ckpt "${BASE_CKPT}"
+      --sat_anchor_beta 0.5
+      --sat_anchor_calibration_epsilon 0.02
+      --sat_anchor_hard_max_fraction 0.25
+      --sat_anchor_fill_to_fraction "${SAT_ANCHOR_FILL_TO_FRACTION}"
+      --sat_anchor_receiver_balanced_cap "${SAT_ANCHOR_RECEIVER_CAP}"
+      --sat_anchor_lambda_pair "${SAT_ANCHOR_LAMBDA_PAIR}"
+      --sat_anchor_pair_interval "${SAT_ANCHOR_PAIR_INTERVAL}"
+      --sat_anchor_lambda_satellite "${SAT_ANCHOR_LAMBDA_SATELLITE}"
+      --sat_anchor_lambda_clean_kl "${SAT_ANCHOR_LAMBDA_CLEAN_KL}"
+      --sat_anchor_temperature 2
+      --sat_anchor_identity_start_epoch 80
+      --sat_anchor_u_gradient_scope "${SAT_ANCHOR_GRADIENT_SCOPE}"
+      --sat_anchor_adapter "${SAT_ANCHOR_ADAPTER}"
+      --sat_anchor_adapter_rank 8
+    )
   fi
   TRAIN_CMD+=("${ABLATION_ARGS[@]}")
 }

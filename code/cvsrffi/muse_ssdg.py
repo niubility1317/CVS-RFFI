@@ -214,6 +214,30 @@ class FastTrustRoute:
     class_cap: torch.Tensor
 
 
+@dataclass(frozen=True)
+class SATAnchorThresholds:
+    """Per-class confidence and margin thresholds calibrated on ``V_cal``."""
+
+    confidence: torch.Tensor
+    margin: torch.Tensor
+
+
+@dataclass(frozen=True)
+class SATAnchorRoute:
+    """Truth-free routing decision for strict satellite identity supervision."""
+
+    pseudo: torch.Tensor
+    confidence: torch.Tensor
+    margin: torch.Tensor
+    agreement: torch.Tensor
+    strict: torch.Tensor
+    trusted: torch.Tensor
+    filled: torch.Tensor
+    no_identity: torch.Tensor
+    class_cap: torch.Tensor
+    receiver_cap: torch.Tensor
+
+
 def _probability_heads(probabilities: Sequence[torch.Tensor]) -> list[torch.Tensor]:
     """Convert probability heads to a common floating dtype and validate shape."""
 
@@ -560,6 +584,235 @@ def route_fasttrust(
         agreement=agreement,
         class_cap=class_cap,
     )
+
+
+def fuse_anchor_ema_probabilities(
+    anchor_probabilities: torch.Tensor,
+    ema_probabilities: torch.Tensor,
+    *,
+    beta: float = 0.5,
+) -> torch.Tensor:
+    """Fuse frozen-anchor and EMA probabilities with a normalized geometric mean."""
+
+    anchor, ema = _probability_heads([anchor_probabilities, ema_probabilities])
+    if anchor.shape != ema.shape or anchor.ndim != 2:
+        raise ValueError("anchor and EMA probabilities must have matching [batch, classes] shape")
+    weight = float(beta)
+    if not math.isfinite(weight) or not 0.0 <= weight <= 1.0:
+        raise ValueError("beta must be finite and in [0, 1]")
+    anchor = _normalize_probability(anchor).clamp_min(_PROBABILITY_EPS)
+    ema = _normalize_probability(ema).clamp_min(_PROBABILITY_EPS)
+    log_fused = weight * anchor.log() + (1.0 - weight) * ema.log()
+    return F.softmax(log_fused, dim=-1)
+
+
+def calibrate_sat_anchor_thresholds(
+    probabilities: torch.Tensor,
+    labels: torch.Tensor,
+    *,
+    num_classes: int,
+    epsilon: float = 0.02,
+) -> SATAnchorThresholds:
+    """Choose class-complete ``V_cal`` thresholds under a selected-error bound."""
+
+    probability = _normalize_probability(probabilities)
+    if probability.ndim != 2 or int(probability.shape[1]) != int(num_classes):
+        raise ValueError("probabilities must have shape [samples, num_classes]")
+    truth = torch.as_tensor(labels, device=probability.device).reshape(-1).long()
+    if truth.numel() != probability.shape[0]:
+        raise ValueError("labels must contain one value per probability row")
+    risk_limit = float(epsilon)
+    if not math.isfinite(risk_limit) or not 0.0 <= risk_limit <= 1.0:
+        raise ValueError("epsilon must be finite and in [0, 1]")
+
+    confidence, predicted = probability.max(dim=-1)
+    top2 = probability.topk(min(2, probability.shape[1]), dim=-1).values
+    margin = top2[:, 0] - (top2[:, 1] if top2.shape[1] == 2 else 0.0)
+    confidence_thresholds = probability.new_full((int(num_classes),), float("inf"))
+    margin_thresholds = probability.new_full((int(num_classes),), float("inf"))
+
+    for class_id in range(int(num_classes)):
+        class_rows = (predicted == class_id).nonzero(as_tuple=False).reshape(-1)
+        if class_rows.numel() == 0:
+            continue
+        class_confidence = confidence[class_rows]
+        class_margin = margin[class_rows]
+        order = torch.argsort(class_confidence, descending=True, stable=True)
+        ordered_rows = class_rows[order]
+        ordered_confidence = class_confidence[order]
+        ordered_margin = class_margin[order]
+        errors = (predicted[ordered_rows] != truth[ordered_rows]).to(torch.float32)
+        counts = torch.arange(
+            1,
+            int(class_rows.numel()) + 1,
+            device=probability.device,
+            dtype=torch.float32,
+        )
+        safe = errors.cumsum(dim=0) / counts <= risk_limit + 1e-12
+        confidence_boundary = torch.ones_like(safe)
+        if confidence_boundary.numel() > 1:
+            confidence_boundary[:-1] = (
+                ordered_confidence[:-1] > ordered_confidence[1:]
+            )
+        safe_prefixes = (safe & confidence_boundary).nonzero(as_tuple=False).reshape(-1)
+        if safe_prefixes.numel() > 0:
+            prefix_end = int(safe_prefixes[-1].item())
+            confidence_thresholds[class_id] = ordered_confidence[prefix_end]
+            margin_thresholds[class_id] = ordered_margin[: prefix_end + 1].min()
+    return SATAnchorThresholds(
+        confidence=confidence_thresholds,
+        margin=margin_thresholds,
+    )
+
+
+def route_sat_anchor_trusted(
+    anchor_probabilities: torch.Tensor,
+    ema_probabilities: torch.Tensor,
+    *,
+    confidence_thresholds: torch.Tensor,
+    margin_thresholds: torch.Tensor,
+    receivers: torch.Tensor | None = None,
+    beta: float = 0.5,
+    hard_max_fraction: float = 0.25,
+    fill_to_fraction: float = 0.0,
+    class_balanced_cap: bool = True,
+    receiver_balanced_cap: bool = False,
+) -> SATAnchorRoute:
+    """Route only teacher-agreed, calibrated samples unless a control enables fill."""
+
+    anchor, ema = _probability_heads([anchor_probabilities, ema_probabilities])
+    if anchor.shape != ema.shape or anchor.ndim != 2:
+        raise ValueError("anchor and EMA probabilities must have matching [batch, classes] shape")
+    batch_size, num_classes = anchor.shape
+    confidence_thresholds = torch.as_tensor(
+        confidence_thresholds, device=anchor.device, dtype=anchor.dtype
+    ).reshape(-1)
+    margin_thresholds = torch.as_tensor(
+        margin_thresholds, device=anchor.device, dtype=anchor.dtype
+    ).reshape(-1)
+    if confidence_thresholds.numel() != num_classes or margin_thresholds.numel() != num_classes:
+        raise ValueError("threshold tensors must contain one value per class")
+    hard_fraction = float(hard_max_fraction)
+    fill_fraction = float(fill_to_fraction)
+    if not (math.isfinite(hard_fraction) and math.isfinite(fill_fraction)):
+        raise ValueError("routing fractions must be finite")
+    if not 0.0 <= hard_fraction <= 1.0 or not 0.0 <= fill_fraction <= 1.0:
+        raise ValueError("routing fractions must be in [0, 1]")
+
+    fused = fuse_anchor_ema_probabilities(anchor, ema, beta=beta)
+    confidence, pseudo = fused.max(dim=-1)
+    top2 = fused.topk(min(2, num_classes), dim=-1).values
+    margin = top2[:, 0] - (top2[:, 1] if top2.shape[1] == 2 else 0.0)
+    agreement = anchor.argmax(dim=-1) == ema.argmax(dim=-1)
+    strict = agreement & (confidence >= confidence_thresholds[pseudo]) & (
+        margin >= margin_thresholds[pseudo]
+    )
+
+    score = confidence.detach().cpu().tolist()
+    def ranked(mask: torch.Tensor) -> list[int]:
+        indices = mask.nonzero(as_tuple=False).reshape(-1).detach().cpu().tolist()
+        return sorted(indices, key=lambda index: (-float(score[index]), int(index)))
+
+    limit = int(math.floor(int(batch_size) * hard_fraction + 1e-12))
+    trusted = torch.zeros(int(batch_size), dtype=torch.bool, device=anchor.device)
+    class_cap = torch.zeros_like(trusted)
+    receiver_cap = torch.zeros_like(trusted)
+    selected: list[int] = []
+    active_classes = sorted(int(value) for value in torch.unique(pseudo[strict]).cpu().tolist())
+    if limit > 0 and active_classes:
+        class_limit = (
+            int(math.ceil(limit / float(len(active_classes))))
+            if class_balanced_cap
+            else limit
+        )
+        receiver_values = None
+        if receivers is not None:
+            receiver_values = torch.as_tensor(receivers, device=anchor.device).reshape(-1)
+            if receiver_values.numel() != batch_size:
+                raise ValueError("receivers must contain one value per sample")
+        for class_id in active_classes:
+            class_mask = strict & (pseudo == class_id)
+            class_selected: list[int] = []
+            if receiver_balanced_cap and receiver_values is not None:
+                active_receivers = sorted(
+                    int(value) for value in torch.unique(receiver_values[class_mask]).cpu().tolist()
+                )
+                cell_limit = int(math.ceil(class_limit / float(max(1, len(active_receivers)))))
+                for receiver_id in active_receivers:
+                    cell_mask = class_mask & (receiver_values == receiver_id)
+                    class_selected.extend(ranked(cell_mask)[:cell_limit])
+                class_selected = sorted(
+                    class_selected, key=lambda index: (-float(score[index]), int(index))
+                )[:class_limit]
+            else:
+                class_selected = ranked(class_mask)[:class_limit]
+            selected.extend(class_selected)
+        selected = sorted(selected, key=lambda index: (-float(score[index]), int(index)))[:limit]
+    if selected:
+        selected_tensor = torch.as_tensor(selected, dtype=torch.long, device=anchor.device)
+        trusted[selected_tensor] = True
+        class_cap[selected_tensor] = True
+        receiver_cap[selected_tensor] = True
+
+    filled = torch.zeros_like(trusted)
+    fill_limit = int(math.floor(int(batch_size) * fill_fraction + 1e-12))
+    remaining = max(0, fill_limit - int(trusted.sum().item()))
+    if remaining:
+        fill_candidates = ~trusted
+        fill_indices = ranked(fill_candidates)[:remaining]
+        if fill_indices:
+            fill_tensor = torch.as_tensor(fill_indices, dtype=torch.long, device=anchor.device)
+            trusted[fill_tensor] = True
+            filled[fill_tensor] = True
+    return SATAnchorRoute(
+        pseudo=pseudo,
+        confidence=confidence,
+        margin=margin,
+        agreement=agreement,
+        strict=strict,
+        trusted=trusted,
+        filled=filled,
+        no_identity=~trusted,
+        class_cap=class_cap,
+        receiver_cap=receiver_cap,
+    )
+
+
+def sat_anchor_clean_kl(
+    student_logits: torch.Tensor,
+    frozen_teacher_logits: torch.Tensor,
+    *,
+    temperature: float = 2.0,
+) -> torch.Tensor:
+    """One-way clean-view KL whose frozen-teacher argument never receives gradients."""
+
+    scale = float(temperature)
+    if not math.isfinite(scale) or scale <= 0.0:
+        raise ValueError("temperature must be finite and positive")
+    teacher_probability = F.softmax(frozen_teacher_logits.detach().float() / scale, dim=-1)
+    student_log_probability = F.log_softmax(student_logits.float() / scale, dim=-1)
+    return F.kl_div(student_log_probability, teacher_probability, reduction="batchmean") * (scale**2)
+
+
+def trusted_satellite_cross_entropy(
+    satellite_logits: torch.Tensor,
+    pseudo_labels: torch.Tensor,
+    trusted_mask: torch.Tensor,
+    *,
+    full_unlabeled_batch_size: int,
+) -> torch.Tensor:
+    """Satellite CE normalized by the full U batch, never the selected count."""
+
+    mask = torch.as_tensor(trusted_mask, device=satellite_logits.device, dtype=torch.bool).reshape(-1)
+    labels = torch.as_tensor(pseudo_labels, device=satellite_logits.device, dtype=torch.long).reshape(-1)
+    if satellite_logits.shape[0] != mask.numel() or labels.numel() != mask.numel():
+        raise ValueError("logits, pseudo labels and trusted mask must share a batch dimension")
+    denominator = int(full_unlabeled_batch_size)
+    if denominator <= 0:
+        raise ValueError("full_unlabeled_batch_size must be positive")
+    if not bool(mask.any().item()):
+        return satellite_logits.sum() * 0.0
+    return F.cross_entropy(satellite_logits[mask], labels[mask], reduction="sum") / float(denominator)
 
 
 def _loss_logits(logits: torch.Tensor, name: str = "logits") -> tuple[torch.Tensor, tuple[int, ...]]:
@@ -1469,6 +1722,11 @@ class MUSETrainingHeads(nn.Module):
         loss_a = -(predicted_a * target_b).sum(dim=-1).mean()
         loss_b = -(predicted_b * target_a).sum(dim=-1).mean()
         return torch.nan_to_num(0.5 * (loss_a + loss_b), nan=0.0, posinf=0.0, neginf=0.0)
+
+    def sat_anchor_pair_loss(self, clean_z_id: torch.Tensor, satellite_z_id: torch.Tensor) -> torch.Tensor:
+        """Symmetric clean-satellite SimSiam objective used by SAT-Anchor-SSL."""
+
+        return self.self_supervised_loss(clean_z_id, satellite_z_id)
 
     def _nuisance_prediction(self, z_dom: torch.Tensor) -> torch.Tensor:
         features = self._feature_matrix(z_dom, self.z_dom_dim, "z_dom", self._module_dtype())

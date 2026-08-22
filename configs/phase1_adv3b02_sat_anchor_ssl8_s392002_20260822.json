@@ -1,0 +1,36 @@
+{
+  "schema": "cvs.phase1.sat_anchor_matrix.v1",
+  "run_id": "phase1_adv3b02_sat_anchor_ssl8_s392002_20260822",
+  "status": "PRE_REGISTERED",
+  "seed": 392002,
+  "epochs": 200,
+  "launch_mode": "one_training_process_per_gpu",
+  "max_training_processes_per_gpu": 1,
+  "launcher": "code/scripts/launch_phase1_adv3b02_sat_anchor_ssl8_20260822.sh",
+  "candidate_worker": "code/scripts/launch_phase1_adv3b02_muse_ssdg_20260819.sh",
+  "base_checkpoint": "runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
+  "source_roles": {
+    "L_s": 0.07,
+    "U_s": 0.63,
+    "V_cal": 0.15,
+    "V_select": 0.15
+  },
+  "checkpoint_selection": "final_only",
+  "unlabeled_batch_size": 256,
+  "final_evaluation": [
+    "clean",
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak"
+  ],
+  "rows": [
+    {"gpu": 0, "candidate": "A0_CONTROL", "muse_level": "M0", "sat_anchor_ssl": false, "lambda_pair": 0.0, "pair_interval": 1, "lambda_satellite": 0.0, "lambda_clean_kl": 0.0, "fill_to_fraction": 0.0, "receiver_cap": false, "adapter": false, "gradient_scope": "full"},
+    {"gpu": 1, "candidate": "A1_STRICT_USAT", "muse_level": "M3", "sat_anchor_ssl": true, "lambda_pair": 0.0, "pair_interval": 1, "lambda_satellite": 0.1, "lambda_clean_kl": 0.0, "fill_to_fraction": 0.0, "receiver_cap": false, "adapter": false, "gradient_scope": "full"},
+    {"gpu": 2, "candidate": "A2_USAT_ANCHOR", "muse_level": "M3", "sat_anchor_ssl": true, "lambda_pair": 0.0, "pair_interval": 1, "lambda_satellite": 0.1, "lambda_clean_kl": 0.1, "fill_to_fraction": 0.0, "receiver_cap": false, "adapter": false, "gradient_scope": "full"},
+    {"gpu": 3, "candidate": "A3_ADAPTIVE_NO_FILL", "muse_level": "M3", "sat_anchor_ssl": true, "lambda_pair": 0.02, "pair_interval": 1, "lambda_satellite": 0.1, "lambda_clean_kl": 0.1, "fill_to_fraction": 0.0, "receiver_cap": false, "adapter": false, "gradient_scope": "full"},
+    {"gpu": 4, "candidate": "A3_FIXED_50_FILL", "muse_level": "M3", "sat_anchor_ssl": true, "lambda_pair": 0.02, "pair_interval": 1, "lambda_satellite": 0.1, "lambda_clean_kl": 0.1, "fill_to_fraction": 0.5, "receiver_cap": false, "adapter": false, "gradient_scope": "full"},
+    {"gpu": 5, "candidate": "A3_PAIR_INTERVAL2", "muse_level": "M3", "sat_anchor_ssl": true, "lambda_pair": 0.02, "pair_interval": 2, "lambda_satellite": 0.1, "lambda_clean_kl": 0.1, "fill_to_fraction": 0.0, "receiver_cap": false, "adapter": false, "gradient_scope": "full"},
+    {"gpu": 6, "candidate": "A4_CLASS_RX_CAP", "muse_level": "M3", "sat_anchor_ssl": true, "lambda_pair": 0.02, "pair_interval": 2, "lambda_satellite": 0.1, "lambda_clean_kl": 0.1, "fill_to_fraction": 0.0, "receiver_cap": true, "adapter": false, "gradient_scope": "full"},
+    {"gpu": 7, "candidate": "A5_ADAPTER_TAIL", "muse_level": "M3", "sat_anchor_ssl": true, "lambda_pair": 0.02, "pair_interval": 2, "lambda_satellite": 0.1, "lambda_clean_kl": 0.1, "fill_to_fraction": 0.0, "receiver_cap": true, "adapter": true, "gradient_scope": "adapter_tail"}
+  ]
+}
