@@ -24,6 +24,14 @@ SAT_ANCHOR_FILL_TO_FRACTION="${SAT_ANCHOR_FILL_TO_FRACTION:-0}"
 SAT_ANCHOR_RECEIVER_CAP="${SAT_ANCHOR_RECEIVER_CAP:-false}"
 SAT_ANCHOR_ADAPTER="${SAT_ANCHOR_ADAPTER:-false}"
 SAT_ANCHOR_GRADIENT_SCOPE="${SAT_ANCHOR_GRADIENT_SCOPE:-full}"
+FASTTRUST_RC4="${FASTTRUST_RC4:-false}"
+RC4_USE_ANCHOR="${RC4_USE_ANCHOR:-true}"
+RC4_USE_CALIBRATION="${RC4_USE_CALIBRATION:-true}"
+RC4_ENABLE_HARD="${RC4_ENABLE_HARD:-true}"
+RC4_ENABLE_PARTIAL="${RC4_ENABLE_PARTIAL:-true}"
+RC4_ENABLE_NEGATIVE="${RC4_ENABLE_NEGATIVE:-true}"
+RC4_CLASS_RX_CAP="${RC4_CLASS_RX_CAP:-true}"
+RC4_SATELLITE="${RC4_SATELLITE:-false}"
 DRY_RUN=0
 ONLY_CANDIDATES="M0,M1,M2,M3"
 
@@ -353,6 +361,33 @@ build_train_command() {
       --sat_anchor_u_gradient_scope "${SAT_ANCHOR_GRADIENT_SCOPE}"
       --sat_anchor_adapter "${SAT_ANCHOR_ADAPTER}"
       --sat_anchor_adapter_rank 8
+    )
+  fi
+  if [[ "${FASTTRUST_RC4}" == "true" ]]; then
+    if [[ "${level}" != "M3" || "${INIT_MODE}" != "adv3b02_core90" ]]; then
+      echo "[MUSE-ERROR] FastTrust-RC4 requires M3 and adv3b02_core90 init" >&2
+      return 2
+    fi
+    TRAIN_CMD+=(
+      --fasttrust_rc4 true
+      --teacher_ckpt "${BASE_CKPT}"
+      --rc4_use_anchor "${RC4_USE_ANCHOR}"
+      --rc4_use_correctness_calibration "${RC4_USE_CALIBRATION}"
+      --rc4_enable_hard "${RC4_ENABLE_HARD}"
+      --rc4_enable_partial "${RC4_ENABLE_PARTIAL}"
+      --rc4_enable_negative "${RC4_ENABLE_NEGATIVE}"
+      --rc4_class_receiver_cap "${RC4_CLASS_RX_CAP}"
+      --rc4_satellite_hard_only "${RC4_SATELLITE}"
+      --rc4_identity_start_epoch 11
+      --rc4_calibration_update_epochs 1,41,91,161
+      --rc4_lambda_hard 0.60
+      --rc4_lambda_partial 0.40
+      --rc4_lambda_negative 0.20
+      --rc4_lambda_domain 1.0
+      --rc4_lambda_self 0.10
+      --rc4_lambda_satellite 0.10
+      --sat_anchor_hard_max_fraction 0.25
+      --muse_candidate_max_classes 3
     )
   fi
   TRAIN_CMD+=("${ABLATION_ARGS[@]}")

@@ -1,0 +1,19 @@
+{
+  "schema": "cvs.phase1.fasttrust_rc4_matrix.v1",
+  "run_id": "phase1_adv3b02_fasttrust_rc4_s392002_20260822",
+  "seed": 392002,
+  "epochs": 200,
+  "unlabeled_batch_size": 256,
+  "source_roles": {"L_s": 0.07, "U_s": 0.63, "V_cal": 0.15, "V_select": 0.15},
+  "base_checkpoint": "runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
+  "rows": [
+    {"gpu": 0, "candidate": "P0_NO_U_ID", "anchor": true, "calibration": true, "hard": false, "partial": false, "negative": false, "class_rx_cap": false, "satellite": false},
+    {"gpu": 1, "candidate": "P1_NO_FILL_RAW_H", "anchor": false, "calibration": false, "hard": true, "partial": false, "negative": false, "class_rx_cap": false, "satellite": false},
+    {"gpu": 2, "candidate": "P2_CALIBRATED_H", "anchor": false, "calibration": true, "hard": true, "partial": false, "negative": false, "class_rx_cap": false, "satellite": false},
+    {"gpu": 3, "candidate": "P3_DUAL_TEACHER_H", "anchor": true, "calibration": true, "hard": true, "partial": false, "negative": false, "class_rx_cap": false, "satellite": false},
+    {"gpu": 4, "candidate": "P4_PARTIAL", "anchor": true, "calibration": true, "hard": true, "partial": true, "negative": false, "class_rx_cap": false, "satellite": false},
+    {"gpu": 5, "candidate": "P5_NEGATIVE", "anchor": true, "calibration": true, "hard": true, "partial": true, "negative": true, "class_rx_cap": false, "satellite": false},
+    {"gpu": 6, "candidate": "P6_CLASS_RX_CAP", "anchor": true, "calibration": true, "hard": true, "partial": true, "negative": true, "class_rx_cap": true, "satellite": false},
+    {"gpu": 7, "candidate": "P7_H_SAT_VIEW", "anchor": true, "calibration": true, "hard": true, "partial": true, "negative": true, "class_rx_cap": true, "satellite": true}
+  ]
+}

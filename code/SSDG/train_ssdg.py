@@ -73,7 +73,10 @@ try:
         candidate_set_cross_entropy,
         candidate_set_mask,
         compute_muse_reliability,
+        build_rc4_calibration,
         calibrate_sat_anchor_thresholds,
+        rc4_identity_losses,
+        route_fasttrust_rc4,
         route_sat_anchor_trusted,
         sat_anchor_clean_kl,
         trusted_satellite_cross_entropy,
@@ -172,6 +175,7 @@ except ModuleNotFoundError:
     align_source_domain_prior = compute_muse_reliability = geometric_fuse_probabilities = None
     calibrate_sat_anchor_thresholds = route_sat_anchor_trusted = None
     sat_anchor_clean_kl = trusted_satellite_cross_entropy = None
+    build_rc4_calibration = rc4_identity_losses = route_fasttrust_rc4 = None
     js_head_disagreement = muse_schedule_for_epoch = route_fasttrust = route_muse_reliability = None
     select_satellite_student_mask = stable_sample_keys = None
     weighted_soft_cross_entropy = None
@@ -422,6 +426,22 @@ def build_arg_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--sat_anchor_adapter", type=str2bool, default=False)
     parser.add_argument("--sat_anchor_adapter_rank", type=int, default=8)
+    parser.add_argument("--fasttrust_rc4", type=str2bool, default=False)
+    parser.add_argument("--rc4_use_anchor", type=str2bool, default=True)
+    parser.add_argument("--rc4_use_correctness_calibration", type=str2bool, default=True)
+    parser.add_argument("--rc4_enable_hard", type=str2bool, default=True)
+    parser.add_argument("--rc4_enable_partial", type=str2bool, default=True)
+    parser.add_argument("--rc4_enable_negative", type=str2bool, default=True)
+    parser.add_argument("--rc4_class_receiver_cap", type=str2bool, default=True)
+    parser.add_argument("--rc4_satellite_hard_only", type=str2bool, default=False)
+    parser.add_argument("--rc4_identity_start_epoch", type=int, default=11)
+    parser.add_argument("--rc4_calibration_update_epochs", type=str, default="1,41,91,161")
+    parser.add_argument("--rc4_lambda_hard", type=float, default=0.60)
+    parser.add_argument("--rc4_lambda_partial", type=float, default=0.40)
+    parser.add_argument("--rc4_lambda_negative", type=float, default=0.20)
+    parser.add_argument("--rc4_lambda_domain", type=float, default=1.0)
+    parser.add_argument("--rc4_lambda_self", type=float, default=0.10)
+    parser.add_argument("--rc4_lambda_satellite", type=float, default=0.10)
     parser.add_argument("--teacher_ckpt", type=str, default="", help="Optional frozen teacher checkpoint for ADV3B02 distillation.")
     parser.add_argument("--lambda_teacher_clean_kl", type=float, default=0.0)
     parser.add_argument("--lambda_teacher_sat_kl", type=float, default=0.0)
@@ -3279,8 +3299,14 @@ def _sat_anchor_requested(args) -> bool:
     )
 
 
+def _rc4_requested(args) -> bool:
+    return bool(getattr(args, "use_muse_ssdg", False)) and bool(
+        getattr(args, "fasttrust_rc4", False)
+    )
+
+
 def _frozen_teacher_requested(args) -> bool:
-    return _teacher_distill_requested(args) or _sat_anchor_requested(args)
+    return _teacher_distill_requested(args) or _sat_anchor_requested(args) or _rc4_requested(args)
 
 
 def _stage_gate_scale(epoch: int, *, start_epoch: int = 1, warmup_epochs: int = 0) -> float:
@@ -5426,8 +5452,10 @@ def _initialize_muse_training_state(args, model, device):
             num_domains, num_classes, device=device, dtype=torch.float32
         ),
         "source_prior_frozen": False,
-        "sat_anchor_ssl": bool(getattr(args, "sat_anchor_ssl", False)),
+        "sat_anchor_ssl": bool(getattr(args, "sat_anchor_ssl", False)) or bool(getattr(args, "fasttrust_rc4", False)),
+        "fasttrust_rc4": bool(getattr(args, "fasttrust_rc4", False)),
         "sat_anchor_thresholds": None,
+        "rc4_calibration": None,
         "schedule_state": None,
         "args": args,
     }
@@ -5711,6 +5739,61 @@ def _calibrate_sat_anchor_vcal(
     )
 
 
+def _calibrate_rc4_vcal(
+    anchor_model,
+    ema_model,
+    calibration_loader,
+    *,
+    args,
+    domain_label_map,
+    device,
+    num_classes: int,
+    num_domains: int,
+):
+    """Fit one stage-frozen RC4 package from source-only ``V_cal``."""
+
+    anchor_logits, ema_1_logits, ema_2_logits = [], [], []
+    labels, domains, z_norms = [], [], []
+    anchor_model.eval()
+    ema_model.eval()
+    with torch.no_grad():
+        for batch in calibration_loader:
+            x_cal, y_cal, extra_cal = move_batch(batch, device)
+            d_cal = domain_from_extra(extra_cal, domain_label_map, device)
+            weak_2 = _strong_augment(x_cal, max(1e-5, float(args.strong_noise_std) * 0.25))
+            combined = torch.cat([x_cal, weak_2], dim=0)
+            combined_domains = torch.cat([d_cal, d_cal], dim=0)
+            ema_output = ema_model(
+                combined, y_tx=None, grl_lambda=0.0, return_aux=True,
+                domain_labels=combined_domains,
+            )
+            ema_1, ema_2 = _split_muse_output(
+                ema_output, int(x_cal.shape[0]), int(combined.shape[0])
+            )
+            if bool(args.rc4_use_anchor):
+                anchor_output = anchor_model(
+                    x_cal, y_tx=None, grl_lambda=0.0, return_aux=True,
+                    domain_labels=d_cal,
+                )
+            else:
+                anchor_output = ema_1
+            anchor_logits.append(anchor_output["tx_logits"].float())
+            ema_1_logits.append(ema_1["tx_logits"].float())
+            ema_2_logits.append(ema_2["tx_logits"].float())
+            labels.append(y_cal.long())
+            domains.append(d_cal.long())
+            z_norms.append(ema_1["z_id"].float().norm(dim=-1))
+    if not labels:
+        raise RuntimeError("RC4_VCAL_EMPTY")
+    return build_rc4_calibration(
+        torch.cat(anchor_logits), torch.cat(ema_1_logits), torch.cat(ema_2_logits),
+        torch.cat(labels), torch.cat(domains), torch.cat(z_norms),
+        num_classes=int(num_classes), num_domains=int(num_domains), folds=5,
+        hard_precision_target=0.98, partial_coverage_target=0.95,
+        negative_false_exclusion_target=0.01,
+    )
+
+
 def _compute_sat_anchor_unlabeled_losses(
     *,
     route,
@@ -5828,6 +5911,86 @@ def _compute_sat_anchor_unlabeled_losses(
         "pair_active": clean_logits.new_tensor(float(full_pair)),
         "pair_drift": pair_drift,
         "filled_count": route.filled.sum().to(dtype=clean_logits.dtype),
+    }
+
+
+def _compute_rc4_unlabeled_losses(*, route, ema_outputs, student_views, domains, muse_state, epoch: int):
+    """Compute RC4 H/P/N identity plus all-U domain/self objectives."""
+
+    args = muse_state["args"]
+    strong = student_views["clean"]
+    satellite = student_views["satellite"]
+    indices = student_views["satellite_indices"]
+    logits = strong["tx_logits"]
+    rows = int(logits.shape[0])
+    identity_active = int(epoch) >= int(args.rc4_identity_start_epoch)
+    hard = route.hard if identity_active else torch.zeros_like(route.hard)
+    partial = route.partial if identity_active else torch.zeros_like(route.partial)
+    negative = route.negative if identity_active else torch.zeros_like(route.negative)
+    identity = rc4_identity_losses(
+        logits,
+        route.fused_probability,
+        pseudo=route.pseudo,
+        candidate_mask=route.candidate_mask,
+        hard_mask=hard,
+        partial_mask=partial,
+        negative_mask=negative,
+        weights=route.weights,
+        full_unlabeled_batch_size=rows,
+    )
+    valid_domain = (domains >= 0) & (domains < int(muse_state["heads"].num_domains))
+    zero = logits.sum() * 0.0
+    loss_domain = (
+        F.cross_entropy(strong["dom_logits"][valid_domain].float(), domains[valid_domain])
+        if bool(valid_domain.any()) and "dom_logits" in strong else zero
+    )
+    loss_adv = (
+        F.cross_entropy(strong["adv_dom_logits"][valid_domain].float(), domains[valid_domain])
+        if bool(valid_domain.any()) and "adv_dom_logits" in strong else zero
+    )
+    loss_self = muse_state["heads"].self_supervised_loss(
+        ema_outputs["z_id"].detach(), strong["z_id"]
+    )
+    full_satellite_logits = torch.zeros_like(logits)
+    if satellite is not None and indices.numel() > 0:
+        full_satellite_logits = full_satellite_logits.index_copy(0, indices, satellite["tx_logits"])
+    loss_satellite = (
+        trusted_satellite_cross_entropy(
+            full_satellite_logits, route.pseudo, hard,
+            full_unlabeled_batch_size=rows,
+        )
+        if bool(args.rc4_satellite_hard_only) and float(args.rc4_lambda_satellite) > 0.0
+        else zero
+    )
+    identity_scale = 0.4 if int(epoch) >= 181 else 1.0
+    total = (
+        identity_scale * (
+            float(args.rc4_lambda_hard) * identity["hard"]
+            + float(args.rc4_lambda_partial) * identity["partial"]
+            + float(args.rc4_lambda_negative) * identity["negative"]
+        )
+        + float(args.rc4_lambda_domain) * (loss_domain + loss_adv)
+        + float(args.rc4_lambda_self) * loss_self
+        + float(args.rc4_lambda_satellite) * loss_satellite
+    )
+    route_compat = MUSERoute(high=hard, mid=partial | negative, low=~(hard | partial | negative))
+    return {
+        "total": total, "identity": identity["total"], "hard": identity["hard"],
+        "soft": identity["partial"], "candidate": identity["negative"],
+        "domain": loss_domain, "adv": loss_adv, "self": loss_self,
+        "nuisance": zero, "satellite": loss_satellite, "clean_anchor": zero,
+        "cross_receiver": zero, "route": route_compat, "fasttrust_route": None,
+        "sat_anchor_route": None, "rc4_route": route, "reliability": route.risk,
+        "stable": route.agreement, "pseudo": route.pseudo,
+        "head_js": route.disagreement, "proto_update_weight": zero.detach(),
+        "proto_momentum": zero.detach(), "prototype_update_count": zero.detach(),
+        "u_identity_selected_count": (hard | partial | negative).sum().to(logits.dtype),
+        "u_satellite_identity_selected_count": hard.sum().to(logits.dtype),
+        "three_head_agreement_rate": route.agreement.float().mean(),
+        "evidence_probabilities": None, "fused_probability": route.fused_probability,
+        "identity_student": logits, "identity_student_satellite_mask": hard,
+        "pair_active": logits.new_tensor(1.0), "pair_drift": zero.detach(),
+        "filled_count": zero.detach(),
     }
 
 
@@ -6433,6 +6596,7 @@ def _muse_checkpoint_state(muse_state) -> Dict[str, Any]:
             if muse_state.get("sat_anchor_thresholds") is not None
             else None
         ),
+        "rc4_calibration": muse_state.get("rc4_calibration"),
     }
 
 
@@ -6486,6 +6650,8 @@ def _restore_muse_checkpoint_state(muse_state, checkpoint: Mapping[str, Any]) ->
                 device=muse_state["source_global_class_counts"].device,
             ),
         )
+    if checkpoint.get("rc4_calibration") is not None:
+        muse_state["rc4_calibration"] = checkpoint["rc4_calibration"]
 
 
 def _pseudo_gate_pass_rates(
@@ -6539,6 +6705,11 @@ def train(args) -> int:
             raise ValueError("adapter_tail gradient scope requires --sat_anchor_adapter true")
         if int(getattr(args, "sat_anchor_pair_interval", 1)) < 1:
             raise ValueError("SAT-Anchor pair interval must be positive")
+    if _rc4_requested(args):
+        if str(getattr(args, "muse_level", "")).upper() != "M3":
+            raise ValueError("FastTrust-RC4 requires --muse_level M3")
+        if int(getattr(args, "rc4_identity_start_epoch", 11)) < 1:
+            raise ValueError("RC4 identity start epoch must be positive")
     _enforce_muse_source_protocol(args)
     if muse_active and int(getattr(args, "epochs", 0)) <= 0:
         args.epochs = int(args.muse_final_epoch)
@@ -7218,6 +7389,19 @@ def train(args) -> int:
             _apply_fasttrust_lr(optimizer, base_lr=float(args.lr), epoch=int(epoch))
         if muse_state is not None:
             _configure_muse_epoch_state(muse_state, int(epoch))
+            if bool(muse_state.get("fasttrust_rc4", False)):
+                update_epochs = {
+                    int(value.strip())
+                    for value in str(args.rc4_calibration_update_epochs).split(",")
+                    if value.strip()
+                }
+                if int(epoch) in update_epochs:
+                    muse_state["rc4_calibration"] = _calibrate_rc4_vcal(
+                        teacher_model, ema_model, data_ctx["source_calibration_loader"],
+                        args=args, domain_label_map=data_ctx["domain_label_map"],
+                        device=device, num_classes=int(model.num_classes),
+                        num_domains=int(model.num_domains),
+                    )
         phase = "label" if epoch <= int(args.label_epochs) else "pseudo"
         stage_state = _stage_state_for_epoch(epoch, args, phase)
         cur_w = _loss_weights(args, stage_state)
@@ -8419,13 +8603,27 @@ def train(args) -> int:
                     pseudo_source = ema_model if ema_model is not None else model
                     with torch.no_grad():
                         pseudo_source.eval()
-                        out_w = pseudo_source(
-                            x_u,
-                            y_tx=None,
-                            grl_lambda=float(schedule.grl_lambda),
-                            return_aux=True,
-                            domain_labels=d_u,
-                        )
+                        out_w2 = None
+                        if bool(muse_state.get("fasttrust_rc4", False)):
+                            x_w2 = _strong_augment(
+                                x_u, max(1e-5, float(args.strong_noise_std) * 0.25)
+                            )
+                            combined_w = torch.cat([x_u, x_w2], dim=0)
+                            combined_d = torch.cat([d_u, d_u], dim=0)
+                            combined_out = pseudo_source(
+                                combined_w, y_tx=None,
+                                grl_lambda=float(schedule.grl_lambda), return_aux=True,
+                                domain_labels=combined_d,
+                            )
+                            out_w, out_w2 = _split_muse_output(
+                                combined_out, unlabeled_count, int(combined_w.shape[0])
+                            )
+                        else:
+                            out_w = pseudo_source(
+                                x_u, y_tx=None,
+                                grl_lambda=float(schedule.grl_lambda), return_aux=True,
+                                domain_labels=d_u,
+                            )
                         out_anchor = None
                         if bool(muse_state.get("sat_anchor_ssl", False)):
                             if teacher_model is None:
@@ -8440,9 +8638,12 @@ def train(args) -> int:
                         if ema_model is None:
                             model.train()
                     x_s = (
-                        x_u
-                        if bool(muse_state.get("sat_anchor_ssl", False))
-                        else _strong_augment(x_u, float(args.strong_noise_std))
+                        _strong_augment(x_u, float(args.strong_noise_std))
+                        if bool(muse_state.get("fasttrust_rc4", False))
+                        else (
+                            x_u if bool(muse_state.get("sat_anchor_ssl", False))
+                            else _strong_augment(x_u, float(args.strong_noise_std))
+                        )
                     )
                     u_sat_probability, _ = adv3b02_core90_u_satellite_policy(
                         int(epoch)
@@ -8451,34 +8652,69 @@ def train(args) -> int:
                         int(epoch), int(batch_idx), int(args.seed)
                     )
                     sat_anchor_route = None
+                    rc4_route = None
                     sat_anchor_pair_active = False
                     if bool(muse_state.get("sat_anchor_ssl", False)):
-                        thresholds = muse_state.get("sat_anchor_thresholds")
-                        if thresholds is None:
-                            raise RuntimeError("SAT_ANCHOR_VCAL_THRESHOLDS_MISSING")
-                        sat_anchor_route = route_sat_anchor_trusted(
-                            out_anchor["tx_logits"].float().softmax(dim=-1),
-                            out_w["tx_logits"].float().softmax(dim=-1),
-                            confidence_thresholds=thresholds.confidence,
-                            margin_thresholds=thresholds.margin,
-                            receivers=receiver_u,
-                            beta=float(args.sat_anchor_beta),
-                            hard_max_fraction=float(args.sat_anchor_hard_max_fraction),
-                            fill_to_fraction=float(args.sat_anchor_fill_to_fraction),
-                            class_balanced_cap=bool(args.muse_class_balanced_cap),
-                            receiver_balanced_cap=bool(
-                                args.sat_anchor_receiver_balanced_cap
-                            ),
-                        )
+                        if bool(muse_state.get("fasttrust_rc4", False)):
+                            calibration = muse_state.get("rc4_calibration")
+                            if calibration is None or out_w2 is None:
+                                raise RuntimeError("RC4_VCAL_PACKAGE_MISSING")
+                            anchor_logits = (
+                                out_anchor["tx_logits"] if bool(args.rc4_use_anchor)
+                                else out_w["tx_logits"]
+                            )
+                            rc4_route = route_fasttrust_rc4(
+                                anchor_logits, out_w["tx_logits"], out_w2["tx_logits"],
+                                domains=d_u, receivers=receiver_u,
+                                z_norm=out_w["z_id"].float().norm(dim=-1),
+                                calibration=calibration,
+                                hard_max_fraction=float(args.sat_anchor_hard_max_fraction),
+                                candidate_max_classes=int(args.muse_candidate_max_classes),
+                                enable_hard=bool(args.rc4_enable_hard),
+                                enable_partial=bool(args.rc4_enable_partial),
+                                enable_negative=bool(args.rc4_enable_negative),
+                                class_receiver_cap=bool(args.rc4_class_receiver_cap),
+                                use_calibrated_risk=bool(args.rc4_use_correctness_calibration),
+                            )
+                            sat_anchor_route = argparse.Namespace(
+                                pseudo=rc4_route.pseudo,
+                                confidence=rc4_route.risk,
+                                margin=1.0 - rc4_route.disagreement,
+                                agreement=rc4_route.agreement,
+                                strict=rc4_route.hard,
+                                trusted=rc4_route.hard,
+                                filled=torch.zeros_like(rc4_route.hard),
+                                no_identity=~rc4_route.hard,
+                                class_cap=rc4_route.class_receiver_cap,
+                                receiver_cap=rc4_route.class_receiver_cap,
+                            )
+                        else:
+                            thresholds = muse_state.get("sat_anchor_thresholds")
+                            if thresholds is None:
+                                raise RuntimeError("SAT_ANCHOR_VCAL_THRESHOLDS_MISSING")
+                            sat_anchor_route = route_sat_anchor_trusted(
+                                out_anchor["tx_logits"].float().softmax(dim=-1),
+                                out_w["tx_logits"].float().softmax(dim=-1),
+                                confidence_thresholds=thresholds.confidence,
+                                margin_thresholds=thresholds.margin,
+                                receivers=receiver_u, beta=float(args.sat_anchor_beta),
+                                hard_max_fraction=float(args.sat_anchor_hard_max_fraction),
+                                fill_to_fraction=float(args.sat_anchor_fill_to_fraction),
+                                class_balanced_cap=bool(args.muse_class_balanced_cap),
+                                receiver_balanced_cap=bool(args.sat_anchor_receiver_balanced_cap),
+                            )
                         sat_anchor_pair_active = (
+                            not bool(muse_state.get("fasttrust_rc4", False))
+                            and
                             float(args.sat_anchor_lambda_pair) > 0.0
                             and _sat_anchor_pair_step(
                                 int(batch_idx), int(args.sat_anchor_pair_interval)
                             )
                         )
                         identity_active = (
-                            int(epoch) >= int(args.sat_anchor_identity_start_epoch)
-                            and float(args.sat_anchor_lambda_satellite) > 0.0
+                            int(epoch) >= int(args.rc4_identity_start_epoch)
+                            if bool(muse_state.get("fasttrust_rc4", False))
+                            else int(epoch) >= int(args.sat_anchor_identity_start_epoch)
                         )
                         satellite_mask = (
                             torch.ones(
@@ -8488,8 +8724,14 @@ def train(args) -> int:
                             )
                             if sat_anchor_pair_active
                             else (
-                                sat_anchor_route.trusted
-                                if identity_active
+                                (
+                                    (
+                                        rc4_route.hard
+                                        if bool(args.rc4_satellite_hard_only)
+                                        else torch.zeros_like(rc4_route.hard)
+                                    ) if bool(muse_state.get("fasttrust_rc4", False))
+                                    else sat_anchor_route.trusted
+                                ) if identity_active
                                 else torch.zeros(
                                     unlabeled_count,
                                     dtype=torch.bool,
@@ -8519,7 +8761,8 @@ def train(args) -> int:
                         }
                     if bool(muse_state.get("sat_anchor_ssl", False)):
                         sat_anchor_include_clean = (
-                            sat_anchor_pair_active
+                            bool(muse_state.get("fasttrust_rc4", False))
+                            or sat_anchor_pair_active
                             or float(args.sat_anchor_lambda_clean_kl) > 0.0
                         )
                         student_views = _forward_sat_anchor_student_views(
@@ -8577,14 +8820,18 @@ def train(args) -> int:
                         ).to(device=x_u.device)
                     out_u_sat = out_u_nuisance if bool(satellite_mask.any()) else None
                     if bool(muse_state.get("sat_anchor_ssl", False)):
-                        muse_losses = _compute_sat_anchor_unlabeled_losses(
-                            route=sat_anchor_route,
-                            anchor_outputs=out_anchor,
-                            student_views=student_views,
-                            muse_state=muse_state,
-                            epoch=int(epoch),
-                            pair_active=sat_anchor_pair_active,
-                        )
+                        if bool(muse_state.get("fasttrust_rc4", False)):
+                            muse_losses = _compute_rc4_unlabeled_losses(
+                                route=rc4_route, ema_outputs=out_w,
+                                student_views=student_views, domains=d_u,
+                                muse_state=muse_state, epoch=int(epoch),
+                            )
+                        else:
+                            muse_losses = _compute_sat_anchor_unlabeled_losses(
+                                route=sat_anchor_route, anchor_outputs=out_anchor,
+                                student_views=student_views, muse_state=muse_state,
+                                epoch=int(epoch), pair_active=sat_anchor_pair_active,
+                            )
                     else:
                         muse_losses = _compute_muse_unlabeled_losses(
                             x_u=x_u,
@@ -8605,7 +8852,11 @@ def train(args) -> int:
                             muse_state=muse_state,
                             simulator_metadata=simulator_metadata,
                         )
-                    if int(epoch) <= 16:
+                    identity_forbidden_through = (
+                        int(args.rc4_identity_start_epoch) - 1
+                        if bool(muse_state.get("fasttrust_rc4", False)) else 16
+                    )
+                    if int(epoch) <= identity_forbidden_through:
                         if (
                             float(muse_losses["u_identity_selected_count"].detach().item()) != 0.0
                             or float(muse_losses["u_satellite_identity_selected_count"].detach().item()) != 0.0
@@ -9940,6 +10191,13 @@ def train(args) -> int:
                     )
                     if muse_state is not None
                     else 0.0,
+                    "rc4/hard_count": rc4_route.hard.sum().detach() if rc4_route is not None else 0.0,
+                    "rc4/partial_count": rc4_route.partial.sum().detach() if rc4_route is not None else 0.0,
+                    "rc4/negative_count": rc4_route.negative.sum().detach() if rc4_route is not None else 0.0,
+                    "rc4/representation_count": rc4_route.representation.sum().detach() if rc4_route is not None else 0.0,
+                    "rc4/effective_weighted_coverage": rc4_route.weights.sum().detach() / float(max(1, unlabeled_count)) if rc4_route is not None else 0.0,
+                    "rc4/risk_mean": rc4_route.risk.mean().detach() if rc4_route is not None else 0.0,
+                    "rc4/candidate_size_mean": rc4_route.candidate_mask.sum(dim=-1).float().mean().detach() if rc4_route is not None else 0.0,
                     "sat_anchor/trusted_count": (
                         sat_anchor_route.trusted.sum().detach()
                         if muse_state is not None

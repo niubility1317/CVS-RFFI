@@ -238,6 +238,51 @@ class SATAnchorRoute:
     receiver_cap: torch.Tensor
 
 
+@dataclass(frozen=True)
+class RC4Calibration:
+    """Stage-frozen source ``V_cal`` package for risk-calibrated pseudo labels."""
+
+    temperature: float
+    feature_mean: torch.Tensor
+    feature_scale: torch.Tensor
+    correctness_weight: torch.Tensor
+    aps_global: float
+    aps_by_class: torch.Tensor
+    aps_by_domain: torch.Tensor
+    hard_risk_threshold: float
+    hard_ready: bool
+    partial_ready: bool
+    negative_ready: bool
+    hard_precision: float
+    hard_coverage: float
+    partial_coverage: float
+    partial_mean_size: float
+    negative_false_exclusion: float
+    calibration_rows: int
+    crossfit_folds: int
+    num_classes: int
+    num_domains: int
+
+
+@dataclass(frozen=True)
+class RC4Route:
+    """Mutually exclusive H/P/N/R routing without an identity fill quota."""
+
+    pseudo: torch.Tensor
+    fused_probability: torch.Tensor
+    risk: torch.Tensor
+    candidate_mask: torch.Tensor
+    excluded_mask: torch.Tensor
+    hard: torch.Tensor
+    partial: torch.Tensor
+    negative: torch.Tensor
+    representation: torch.Tensor
+    agreement: torch.Tensor
+    disagreement: torch.Tensor
+    weights: torch.Tensor
+    class_receiver_cap: torch.Tensor
+
+
 def _probability_heads(probabilities: Sequence[torch.Tensor]) -> list[torch.Tensor]:
     """Convert probability heads to a common floating dtype and validate shape."""
 
@@ -604,6 +649,513 @@ def fuse_anchor_ema_probabilities(
     ema = _normalize_probability(ema).clamp_min(_PROBABILITY_EPS)
     log_fused = weight * anchor.log() + (1.0 - weight) * ema.log()
     return F.softmax(log_fused, dim=-1)
+
+
+def _rc4_fused_probability(
+    anchor_logits: torch.Tensor,
+    ema_logits_1: torch.Tensor,
+    ema_logits_2: torch.Tensor,
+    temperature: float,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Return three calibrated teacher distributions and their log-opinion pool."""
+
+    anchor, ema_1, ema_2 = _probability_heads(
+        [anchor_logits.float(), ema_logits_1.float(), ema_logits_2.float()]
+    )
+    if anchor.ndim != 2:
+        raise ValueError("RC4 teacher logits must have shape [batch, classes]")
+    scale = float(temperature)
+    if not math.isfinite(scale) or scale <= 0.0:
+        raise ValueError("RC4 temperature must be finite and positive")
+    anchor_p = F.softmax(anchor / scale, dim=-1)
+    ema_1_p = F.softmax(ema_1 / scale, dim=-1)
+    ema_2_p = F.softmax(ema_2 / scale, dim=-1)
+    fused = geometric_fuse_probabilities(
+        [anchor_p, ema_1_p, ema_2_p], weights=(0.5, 0.25, 0.25)
+    )
+    return anchor_p, ema_1_p, ema_2_p, fused
+
+
+def _rc4_features(
+    anchor_p: torch.Tensor,
+    ema_1_p: torch.Tensor,
+    ema_2_p: torch.Tensor,
+    fused: torch.Tensor,
+    z_norm: torch.Tensor,
+) -> torch.Tensor:
+    """Build the seven truth-free correctness features defined by RC4."""
+
+    top = fused.topk(min(2, fused.shape[1]), dim=-1).values
+    confidence = top[:, 0]
+    margin = top[:, 0] - (top[:, 1] if top.shape[1] == 2 else 0.0)
+    entropy = -(fused * fused.clamp_min(_PROBABILITY_EPS).log()).sum(dim=-1)
+    entropy = entropy / max(math.log(max(2, int(fused.shape[1]))), _PROBABILITY_EPS)
+    ema_mean = _normalize_probability(0.5 * (ema_1_p + ema_2_p))
+    anchor_ema_js = js_head_disagreement([anchor_p, ema_mean])
+    ema_view_js = js_head_disagreement([ema_1_p, ema_2_p])
+    norm = torch.as_tensor(z_norm, device=fused.device, dtype=fused.dtype).reshape(-1)
+    if norm.numel() != fused.shape[0]:
+        raise ValueError("z_norm must contain one value per RC4 row")
+    norm = torch.log1p(torch.nan_to_num(norm, nan=0.0, posinf=1.0e6, neginf=0.0).clamp_min(0.0))
+    predictions = torch.stack(
+        [anchor_p.argmax(dim=-1), ema_1_p.argmax(dim=-1), ema_2_p.argmax(dim=-1)],
+        dim=0,
+    )
+    agreement = (predictions == predictions[0:1]).all(dim=0).to(fused.dtype)
+    return torch.stack(
+        [confidence, margin, entropy, anchor_ema_js, ema_view_js, norm, agreement],
+        dim=-1,
+    )
+
+
+def _rc4_design_matrix(
+    features: torch.Tensor,
+    predicted: torch.Tensor,
+    domains: torch.Tensor,
+    *,
+    feature_mean: torch.Tensor,
+    feature_scale: torch.Tensor,
+    num_classes: int,
+    num_domains: int,
+) -> torch.Tensor:
+    standardized = (features - feature_mean) / feature_scale.clamp_min(1e-6)
+    class_one_hot = F.one_hot(predicted.long(), num_classes=int(num_classes)).to(standardized.dtype)
+    domain_one_hot = F.one_hot(domains.long(), num_classes=int(num_domains)).to(standardized.dtype)
+    return torch.cat(
+        [
+            torch.ones(features.shape[0], 1, device=features.device, dtype=features.dtype),
+            standardized,
+            class_one_hot,
+            domain_one_hot,
+        ],
+        dim=1,
+    )
+
+
+def _fit_rc4_logistic(design: torch.Tensor, target: torch.Tensor, l2: float) -> torch.Tensor:
+    """Fit a tiny regularized logistic model by bounded Newton iterations."""
+
+    x = design.detach().double().cpu()
+    y = target.detach().double().cpu().reshape(-1)
+    if x.shape[0] != y.numel() or x.shape[0] == 0:
+        raise ValueError("RC4 logistic inputs must be non-empty and aligned")
+    beta = torch.zeros(x.shape[1], dtype=torch.float64)
+    penalty = torch.eye(x.shape[1], dtype=torch.float64) * float(l2)
+    penalty[0, 0] = 0.0
+    for _ in range(12):
+        probability = torch.sigmoid(x @ beta).clamp(1e-6, 1.0 - 1e-6)
+        gradient = x.t().mv(probability - y) / float(x.shape[0]) + penalty.mv(beta)
+        curvature = probability * (1.0 - probability)
+        hessian = (x.t() @ (x * curvature.unsqueeze(1))) / float(x.shape[0]) + penalty
+        hessian = hessian + torch.eye(x.shape[1], dtype=x.dtype) * 1e-6
+        try:
+            step = torch.linalg.solve(hessian, gradient)
+        except RuntimeError:
+            step = torch.linalg.pinv(hessian).mv(gradient)
+        beta = (beta - step).clamp(-20.0, 20.0)
+        if float(step.abs().max().item()) < 1e-6:
+            break
+    return beta.float()
+
+
+def _rc4_quantile(values: torch.Tensor, coverage: float) -> float:
+    ordered = values.detach().float().reshape(-1).sort().values
+    if ordered.numel() == 0:
+        return float("nan")
+    rank = min(
+        int(ordered.numel()) - 1,
+        max(0, int(math.ceil((ordered.numel() + 1) * float(coverage))) - 1),
+    )
+    return float(ordered[rank].item())
+
+
+def _rc4_aps_mask(probability: torch.Tensor, thresholds: torch.Tensor) -> torch.Tensor:
+    """Return APS-style variable-size sets, always including the crossing class."""
+
+    values, indices = probability.sort(dim=-1, descending=True)
+    before = values.cumsum(dim=-1) - values
+    selected = before < thresholds.reshape(-1, 1)
+    mask = torch.zeros_like(selected)
+    mask.scatter_(1, indices, selected)
+    return mask
+
+
+def build_rc4_calibration(
+    anchor_logits: torch.Tensor,
+    ema_logits_1: torch.Tensor,
+    ema_logits_2: torch.Tensor,
+    labels: torch.Tensor,
+    domains: torch.Tensor,
+    z_norm: torch.Tensor,
+    *,
+    num_classes: int,
+    num_domains: int,
+    folds: int = 5,
+    l2: float = 0.01,
+    min_stratum_samples: int = 16,
+    hard_precision_target: float = 0.98,
+    hard_min_coverage: float = 0.01,
+    partial_coverage_target: float = 0.95,
+    negative_false_exclusion_target: float = 0.01,
+) -> RC4Calibration:
+    """Fit temperature, cross-fitted correctness risk, and APS thresholds on ``V_cal``."""
+
+    labels = torch.as_tensor(labels, device=anchor_logits.device).long().reshape(-1)
+    domains = torch.as_tensor(domains, device=anchor_logits.device).long().reshape(-1)
+    rows = int(labels.numel())
+    if rows == 0 or domains.numel() != rows:
+        raise ValueError("RC4 V_cal labels/domains must be non-empty and aligned")
+    if bool((domains < 0).any()) or bool((domains >= int(num_domains)).any()):
+        raise ValueError("RC4 V_cal domains are outside the declared source-domain range")
+    mean_logits = (anchor_logits.float() + ema_logits_1.float() + ema_logits_2.float()) / 3.0
+    temperatures = torch.linspace(0.25, 4.0, steps=76, device=mean_logits.device)
+    losses = torch.stack(
+        [F.cross_entropy(mean_logits / value, labels, reduction="mean") for value in temperatures]
+    )
+    temperature = float(temperatures[int(losses.argmin().item())].item())
+    anchor_p, ema_1_p, ema_2_p, fused = _rc4_fused_probability(
+        anchor_logits, ema_logits_1, ema_logits_2, temperature
+    )
+    features = _rc4_features(anchor_p, ema_1_p, ema_2_p, fused, z_norm)
+    feature_mean = features.mean(dim=0)
+    feature_scale = features.std(dim=0, unbiased=False).clamp_min(1e-3)
+    predicted = fused.argmax(dim=-1)
+    correct = predicted.eq(labels).float()
+    design = _rc4_design_matrix(
+        features,
+        predicted,
+        domains,
+        feature_mean=feature_mean,
+        feature_scale=feature_scale,
+        num_classes=int(num_classes),
+        num_domains=int(num_domains),
+    )
+    fold_count = max(1, min(int(folds), rows))
+    oof_risk = torch.empty(rows, device=design.device, dtype=design.dtype)
+    row_index = torch.arange(rows, device=design.device)
+    if fold_count > 1:
+        for fold in range(fold_count):
+            held = row_index.remainder(fold_count).eq(fold)
+            train = ~held
+            beta_fold = _fit_rc4_logistic(design[train], correct[train], float(l2)).to(design.device)
+            oof_risk[held] = torch.sigmoid(design[held] @ beta_fold)
+    else:
+        beta_fold = _fit_rc4_logistic(design, correct, float(l2)).to(design.device)
+        oof_risk = torch.sigmoid(design @ beta_fold)
+    final_weight = _fit_rc4_logistic(design, correct, float(l2))
+
+    order = torch.argsort(oof_risk, descending=True, stable=True)
+    ordered_correct = correct[order]
+    precision = ordered_correct.cumsum(0) / torch.arange(
+        1, rows + 1, device=correct.device, dtype=correct.dtype
+    )
+    coverage = torch.arange(1, rows + 1, device=correct.device, dtype=correct.dtype) / float(rows)
+    valid_hard = (precision >= float(hard_precision_target)) & (coverage >= float(hard_min_coverage))
+    if bool(valid_hard.any()):
+        hard_end = int(valid_hard.nonzero(as_tuple=False)[-1].item())
+        hard_threshold = float(oof_risk[order[hard_end]].item())
+        hard_precision = float(precision[hard_end].item())
+        hard_coverage = float(coverage[hard_end].item())
+        hard_ready = True
+    else:
+        hard_threshold = 1.0
+        hard_precision = 0.0
+        hard_coverage = 0.0
+        hard_ready = False
+
+    sorted_probability, sorted_index = fused.sort(dim=-1, descending=True)
+    cumulative = sorted_probability.cumsum(dim=-1)
+    inverse_rank = torch.empty_like(sorted_index)
+    rank = torch.arange(int(num_classes), device=fused.device).expand_as(sorted_index)
+    inverse_rank.scatter_(1, sorted_index, rank)
+    true_rank = inverse_rank.gather(1, labels.reshape(-1, 1)).squeeze(1)
+    true_score = cumulative.gather(1, true_rank.reshape(-1, 1)).squeeze(1)
+    aps_target = max(
+        float(partial_coverage_target),
+        1.0 - float(negative_false_exclusion_target),
+    )
+    aps_global = _rc4_quantile(true_score, aps_target)
+    aps_class = fused.new_full((int(num_classes),), float("nan"))
+    aps_domain = fused.new_full((int(num_domains),), float("nan"))
+    for class_id in range(int(num_classes)):
+        selected = labels.eq(class_id)
+        if int(selected.sum().item()) >= int(min_stratum_samples):
+            aps_class[class_id] = _rc4_quantile(true_score[selected], aps_target)
+    for domain_id in range(int(num_domains)):
+        selected = domains.eq(domain_id)
+        if int(selected.sum().item()) >= int(min_stratum_samples):
+            aps_domain[domain_id] = _rc4_quantile(true_score[selected], aps_target)
+    row_threshold = aps_class[predicted]
+    row_threshold = torch.where(torch.isfinite(row_threshold), row_threshold, aps_domain[domains])
+    row_threshold = torch.where(
+        torch.isfinite(row_threshold), row_threshold, fused.new_full((rows,), aps_global)
+    )
+    candidate = _rc4_aps_mask(fused, row_threshold)
+    contains_truth = candidate.gather(1, labels.reshape(-1, 1)).squeeze(1)
+    partial_coverage = float(contains_truth.float().mean().item())
+    partial_mean_size = float(candidate.sum(dim=1).float().mean().item())
+    false_exclusion = 1.0 - partial_coverage
+    return RC4Calibration(
+        temperature=temperature,
+        feature_mean=feature_mean.detach().cpu(),
+        feature_scale=feature_scale.detach().cpu(),
+        correctness_weight=final_weight.detach().cpu(),
+        aps_global=float(aps_global),
+        aps_by_class=aps_class.detach().cpu(),
+        aps_by_domain=aps_domain.detach().cpu(),
+        hard_risk_threshold=hard_threshold,
+        hard_ready=bool(hard_ready),
+        partial_ready=bool(
+            partial_coverage >= float(partial_coverage_target)
+            and partial_mean_size <= 2.5
+        ),
+        negative_ready=bool(false_exclusion <= float(negative_false_exclusion_target)),
+        hard_precision=hard_precision,
+        hard_coverage=hard_coverage,
+        partial_coverage=partial_coverage,
+        partial_mean_size=partial_mean_size,
+        negative_false_exclusion=float(false_exclusion),
+        calibration_rows=rows,
+        crossfit_folds=fold_count,
+        num_classes=int(num_classes),
+        num_domains=int(num_domains),
+    )
+
+
+def route_fasttrust_rc4(
+    anchor_logits: torch.Tensor,
+    ema_logits_1: torch.Tensor,
+    ema_logits_2: torch.Tensor,
+    *,
+    domains: torch.Tensor,
+    receivers: torch.Tensor,
+    z_norm: torch.Tensor,
+    calibration: RC4Calibration,
+    hard_max_fraction: float = 0.25,
+    candidate_max_classes: int = 3,
+    partial_min_risk: float = 0.50,
+    enable_hard: bool = True,
+    enable_partial: bool = True,
+    enable_negative: bool = True,
+    class_receiver_cap: bool = True,
+    use_calibrated_risk: bool = True,
+) -> RC4Route:
+    """Apply stage-frozen source risk rules to U rows without reading TX truth."""
+
+    anchor_p, ema_1_p, ema_2_p, fused = _rc4_fused_probability(
+        anchor_logits, ema_logits_1, ema_logits_2, calibration.temperature
+    )
+    rows, classes = fused.shape
+    if classes != calibration.num_classes:
+        raise ValueError("RC4 calibration class count does not match teacher logits")
+    domains = torch.as_tensor(domains, device=fused.device).long().reshape(-1)
+    receivers = torch.as_tensor(receivers, device=fused.device).long().reshape(-1)
+    if domains.numel() != rows or receivers.numel() != rows:
+        raise ValueError("RC4 domains/receivers must contain one value per U row")
+    features = _rc4_features(anchor_p, ema_1_p, ema_2_p, fused, z_norm)
+    predicted = fused.argmax(dim=-1)
+    design = _rc4_design_matrix(
+        features,
+        predicted,
+        domains,
+        feature_mean=calibration.feature_mean.to(fused.device, fused.dtype),
+        feature_scale=calibration.feature_scale.to(fused.device, fused.dtype),
+        num_classes=calibration.num_classes,
+        num_domains=calibration.num_domains,
+    )
+    risk = (
+        torch.sigmoid(design @ calibration.correctness_weight.to(fused.device, fused.dtype))
+        if bool(use_calibrated_risk)
+        else fused.max(dim=-1).values
+    )
+    threshold = calibration.aps_by_class.to(fused.device, fused.dtype)[predicted]
+    domain_threshold = calibration.aps_by_domain.to(fused.device, fused.dtype)[domains]
+    threshold = torch.where(torch.isfinite(threshold), threshold, domain_threshold)
+    threshold = torch.where(
+        torch.isfinite(threshold), threshold, fused.new_full((rows,), calibration.aps_global)
+    )
+    candidate = _rc4_aps_mask(fused, threshold)
+    set_size = candidate.sum(dim=-1)
+    predictions = torch.stack(
+        [anchor_p.argmax(dim=-1), ema_1_p.argmax(dim=-1), ema_2_p.argmax(dim=-1)], dim=0
+    )
+    agreement = (predictions == predictions[0:1]).all(dim=0)
+    disagreement = js_head_disagreement([anchor_p, ema_1_p, ema_2_p])
+    hard_threshold = (
+        float(calibration.hard_risk_threshold) if bool(use_calibrated_risk) else 0.95
+    )
+    hard_ready = bool(calibration.hard_ready) if bool(use_calibrated_risk) else True
+    hard_eligible = (
+        bool(enable_hard)
+        & hard_ready
+        & set_size.eq(1)
+        & risk.ge(hard_threshold)
+        & agreement
+    )
+    limit = int(math.floor(rows * float(hard_max_fraction) + 1e-12))
+    hard = torch.zeros(rows, dtype=torch.bool, device=fused.device)
+    cap_mask = torch.zeros_like(hard)
+    score = risk.detach().cpu().tolist()
+
+    def ranked(mask: torch.Tensor) -> list[int]:
+        ids = mask.nonzero(as_tuple=False).reshape(-1).detach().cpu().tolist()
+        return sorted(ids, key=lambda index: (-float(score[index]), int(index)))
+
+    if limit > 0:
+        selected: list[int] = []
+        active_classes = sorted(int(value) for value in torch.unique(predicted[hard_eligible]).cpu().tolist())
+        per_class = int(math.ceil(limit / float(max(1, len(active_classes)))))
+        for class_id in active_classes:
+            class_mask = hard_eligible & predicted.eq(class_id)
+            if class_receiver_cap:
+                active_receivers = sorted(
+                    int(value) for value in torch.unique(receivers[class_mask]).cpu().tolist()
+                )
+                per_cell = int(math.ceil(per_class / float(max(1, len(active_receivers)))))
+                class_selected: list[int] = []
+                for receiver_id in active_receivers:
+                    class_selected.extend(ranked(class_mask & receivers.eq(receiver_id))[:per_cell])
+                selected.extend(sorted(class_selected, key=lambda index: (-score[index], index))[:per_class])
+            else:
+                selected.extend(ranked(class_mask)[:per_class])
+        selected = sorted(selected, key=lambda index: (-score[index], index))[:limit]
+        if selected:
+            tensor = torch.as_tensor(selected, device=fused.device, dtype=torch.long)
+            hard[tensor] = True
+            cap_mask[tensor] = True
+    partial = (
+        ~hard
+        & bool(enable_partial)
+        & bool(calibration.partial_ready)
+        & set_size.ge(2)
+        & set_size.le(int(candidate_max_classes))
+        & risk.ge(float(partial_min_risk))
+    )
+    negative = (
+        ~(hard | partial)
+        & bool(enable_negative)
+        & bool(calibration.negative_ready)
+        & set_size.gt(0)
+        & set_size.lt(classes)
+    )
+    representation = ~(hard | partial | negative)
+    risk_floor = torch.where(
+        hard,
+        risk.new_full((rows,), hard_threshold),
+        torch.where(
+            partial,
+            risk.new_full((rows,), float(partial_min_risk)),
+            torch.zeros_like(risk),
+        ),
+    )
+    risk_weight = ((risk - risk_floor) / (1.0 - risk_floor).clamp_min(1e-6)).clamp(0.0, 1.0).square()
+    agree_weight = torch.exp(-2.0 * disagreement)
+    set_weight = set_size.clamp_min(1).to(fused.dtype).reciprocal()
+    balance = torch.ones_like(risk)
+    if bool(hard.any()):
+        cells = predicted * (int(receivers.max().item()) + 1) + receivers
+        hard_cells = cells[hard]
+        counts = torch.bincount(hard_cells, minlength=int(cells.max().item()) + 1).float()
+        mean_count = counts[counts > 0].mean().clamp_min(1.0)
+        balance[hard] = torch.sqrt(mean_count / counts[hard_cells].clamp_min(1.0)).clamp(max=4.0)
+    weights = (risk_weight * agree_weight * set_weight * balance).clamp(0.0, 4.0)
+    weights = torch.where(hard | partial | negative, weights, torch.zeros_like(weights))
+    return RC4Route(
+        pseudo=predicted,
+        fused_probability=fused,
+        risk=risk,
+        candidate_mask=candidate,
+        excluded_mask=~candidate,
+        hard=hard,
+        partial=partial,
+        negative=negative,
+        representation=representation,
+        agreement=agreement,
+        disagreement=disagreement,
+        weights=weights,
+        class_receiver_cap=cap_mask,
+    )
+
+
+def rc4_identity_losses(
+    student_logits: torch.Tensor,
+    teacher_probability: torch.Tensor,
+    *,
+    pseudo: torch.Tensor,
+    candidate_mask: torch.Tensor,
+    hard_mask: torch.Tensor,
+    partial_mask: torch.Tensor,
+    negative_mask: torch.Tensor,
+    weights: torch.Tensor,
+    full_unlabeled_batch_size: int,
+) -> dict[str, torch.Tensor]:
+    """Return H/P/N losses normalized by the complete physical U batch."""
+
+    logits, _ = _loss_logits(student_logits, "student_logits")
+    rows, classes = logits.shape
+    denominator = int(full_unlabeled_batch_size)
+    if denominator <= 0 or rows != denominator:
+        raise ValueError("RC4 student rows must equal full_unlabeled_batch_size")
+    teacher = torch.as_tensor(teacher_probability, device=logits.device, dtype=logits.dtype)
+    if teacher.shape != logits.shape:
+        raise ValueError("RC4 teacher_probability must match student_logits")
+    teacher = _normalize_probability(teacher.detach())
+    candidates = torch.as_tensor(candidate_mask, device=logits.device, dtype=torch.bool)
+    if candidates.shape != logits.shape:
+        raise ValueError("RC4 candidate_mask must match student_logits")
+    hard = _sample_mask(hard_mask, rows, logits.device, "hard_mask")
+    partial = _sample_mask(partial_mask, rows, logits.device, "partial_mask")
+    negative = _sample_mask(negative_mask, rows, logits.device, "negative_mask")
+    weight = _sample_weights(weights, rows, logits.device, logits.dtype)
+    pseudo = torch.as_tensor(pseudo, device=logits.device, dtype=torch.long).reshape(-1)
+    if pseudo.numel() != rows:
+        raise ValueError("RC4 pseudo must contain one label per student row")
+    zero = logits.sum() * 0.0
+    hard_loss = (
+        (F.cross_entropy(logits[hard], pseudo[hard], reduction="none") * weight[hard]).sum()
+        / float(denominator)
+        if bool(hard.any())
+        else zero
+    )
+    log_probability = F.log_softmax(logits, dim=-1)
+    probability = log_probability.exp()
+    candidate_float = candidates.to(logits.dtype)
+    restricted = teacher * candidate_float
+    restricted = restricted / restricted.sum(dim=-1, keepdim=True).clamp_min(_PROBABILITY_EPS)
+    per_partial_positive = (
+        restricted
+        * (restricted.clamp_min(_PROBABILITY_EPS).log() - log_probability)
+    ).sum(dim=-1)
+    excluded = ~candidates
+    excluded_count = excluded.sum(dim=-1).clamp_min(1).to(logits.dtype)
+    per_negative = -(
+        torch.log1p(-probability.clamp(max=1.0 - _PROBABILITY_EPS))
+        * excluded.to(logits.dtype)
+    ).sum(dim=-1) / excluded_count
+    partial_positive = (
+        (per_partial_positive[partial] * weight[partial]).sum() / float(denominator)
+        if bool(partial.any())
+        else zero
+    )
+    partial_negative = (
+        (per_negative[partial] * weight[partial]).sum() / float(denominator)
+        if bool(partial.any())
+        else zero
+    )
+    negative_loss = (
+        (per_negative[negative] * weight[negative]).sum() / float(denominator)
+        if bool(negative.any())
+        else zero
+    )
+    partial_loss = partial_positive + partial_negative
+    return {
+        "hard": hard_loss,
+        "partial_positive": partial_positive,
+        "partial_negative": partial_negative,
+        "partial": partial_loss,
+        "negative": negative_loss,
+        "total": hard_loss + partial_loss + negative_loss,
+    }
 
 
 def calibrate_sat_anchor_thresholds(
