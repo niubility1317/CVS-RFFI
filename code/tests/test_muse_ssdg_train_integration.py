@@ -1015,12 +1015,12 @@ def test_muse_checkpoint_state_has_all_training_only_fields():
         "muse_temporal_memory",
         "muse_classification_prototypes",
         "muse_source_global_class_counts",
-            "muse_source_domain_class_counts",
-            "muse_source_prior_frozen",
-            "muse_schedule_state",
-            "rc4_calibration",
-            "sat_anchor_thresholds",
-        }
+        "muse_source_domain_class_counts",
+        "muse_source_prior_frozen",
+        "muse_schedule_state",
+        "rc4_calibration",
+        "sat_anchor_thresholds",
+    }
     assert checkpoint["muse_training_heads"]
     assert checkpoint["muse_schedule_state"]["stage"] == "S2B"
 
