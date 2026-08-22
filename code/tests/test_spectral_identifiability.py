@@ -18,6 +18,7 @@ from cvsrffi.spectral_identifiability import (  # noqa: E402
     SpectralIdentifiabilityAccumulator,
     validate_sid_mask,
 )
+from scripts import audit_phase1_spectral_identifiability as spectral_audit  # noqa: E402
 
 
 def test_sid_fft96_has_fixed_groups_and_finite_unit_norm():
@@ -96,3 +97,14 @@ def test_mask_selection_is_stable_on_equal_scores():
     mask = select_sid_mask({"j_score": np.ones(8)}, keep_fraction=0.25, dc_notch=0)
 
     assert np.flatnonzero(mask).tolist() == [0, 1]
+
+
+def test_torch_mask_boundary_returns_current_numpy_uint8_array():
+    assert hasattr(spectral_audit, "_torch_mask_to_numpy")
+    mask = torch.tensor([True, False, True])
+
+    converted = spectral_audit._torch_mask_to_numpy(mask)
+
+    assert converted.__class__ is np.ndarray
+    assert converted.dtype == np.uint8
+    assert converted.tolist() == [1, 0, 1]

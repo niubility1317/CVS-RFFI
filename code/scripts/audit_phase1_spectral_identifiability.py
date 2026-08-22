@@ -92,6 +92,11 @@ def _atomic_npz(path: Path, **arrays: np.ndarray) -> None:
     os.replace(temporary, path)
 
 
+def _torch_mask_to_numpy(mask: torch.Tensor) -> np.ndarray:
+    values = mask.detach().to(device="cpu", dtype=torch.uint8).tolist()
+    return np.asarray(values, dtype=np.uint8)
+
+
 def _atomic_plot(path: Path, stats: Mapping[str, np.ndarray], mask: np.ndarray) -> None:
     temporary = path.with_suffix(path.suffix + ".tmp")
     x = np.arange(mask.size)
@@ -259,16 +264,20 @@ def main(argv: list[str] | None = None) -> int:
     }
     _atomic_json(expected_outputs[0], payload)
     _atomic_csv(expected_outputs[1], stats, band_mask)
-    center_mask = build_center_mask(
-        int(args.fft_bins),
-        half_width=max(2, int(args.fft_bins) // 4),
-        dc_notch=int(args.dc_notch),
-    ).cpu().numpy()
-    phase_mask = build_center_mask(
-        int(args.fft_bins),
-        half_width=max(2, int(args.fft_bins) // 2),
-        dc_notch=int(args.dc_notch),
-    ).cpu().numpy()
+    center_mask = _torch_mask_to_numpy(
+        build_center_mask(
+            int(args.fft_bins),
+            half_width=max(2, int(args.fft_bins) // 4),
+            dc_notch=int(args.dc_notch),
+        )
+    )
+    phase_mask = _torch_mask_to_numpy(
+        build_center_mask(
+            int(args.fft_bins),
+            half_width=max(2, int(args.fft_bins) // 2),
+            dc_notch=int(args.dc_notch),
+        )
+    )
     _atomic_npz(
         expected_outputs[3],
         mask=fft_mask.astype(np.uint8),

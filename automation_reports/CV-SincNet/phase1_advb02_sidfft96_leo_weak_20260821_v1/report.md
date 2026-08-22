@@ -2,7 +2,7 @@
 
 ## 当前结论
 
-- 状态：`LAUNCHING_RELEASE_V2`；S0已完成，P0因changed-files release依赖闭合失败退出，转为完整独立release v2后仅重发P0。
+- 状态：`REPAIRING_P0_NPZ_BOUNDARY`；S0已完成，完整独立release v2已验证；P0第二次启动完成统计后在NPZ写入边界技术失败，定点修复后仅重发P0，S1–S3继续等待合法mask。
 - 本轮仅发布前端频谱可辨识性路线P0与S0–S3单seed矩阵；尚无N607性能结果，不声明优于CORE90。
 - 基座固定为`ADV3B02_CORE90_SOFT_E200`，不修改Phase2/Phase3，不使用target/query，不与NTRS或CRRA组合。
 
@@ -97,7 +97,10 @@ GPU由发布时只读preflight后通过`GPU_P0/GPU_S0/GPU_S1/GPU_S2/GPU_S3`记�
 - TDD证据：修复前`cvsrffi`与`SSDG`两个overlay导入用例均失败；修复后2项通过，SID聚焦21项继续通过，`py_compile`与`git diff --check`通过。
 - 远端overlay导入进一步发现：release中的新`train_ssdg.py`要求`DEFAULT_CRRA_CHANNEL_FAMILY`，而N607旧主工程`training_controls.py`不含该符号。由此确认根因是分支级依赖闭合，不应继续逐文件补洞。
 - 发布修复：保留失败release与全部日志，创建当前Git提交的完整独立release v2，使代码依赖不再回退到N607旧主工程；不改变数据、checkpoint、run ID、row、GPU、seed或科学配置。
+- 完整独立release v2：本地归档`E:\type10-7\local_artifacts\releases\phase1_advb02_sidfft96_leo_weak_20260821_v2\phase1_advb02_sidfft96_full_3d29039d.tar.gz`，远端release`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_sidfft96_full_3d29039d`；归档本地/远端SHA-256均为`1f953f8f518a11957f130977cc0102f4e8deefd351df728bfc7faa6b9188678c`，4,230个文件，远端编译、导入及dry-run均为`VERIFIED`。
 - 只允许重发首次技术失败且无artifact的P0；S0不重启，S1–S3继续等待P0合法mask。
+- P0在release v2完成全部统计并写出JSON/CSV后，于`np.savez_compressed`失败：`center_mask`和`phase_mask`由PyTorch`.numpy()`产生，表面类型为`numpy.ndarray`，但其类对象与NumPy2.2.5当前`np.ndarray`不同；与当前NumPy数组共同进入`__array_function__`分派时触发`TypeError`。未产生合法`sid_mask.npz`，S1–S3未启动。
+- 定点修复：新增`_torch_mask_to_numpy`，通过CPU `uint8`值列表重建当前NumPy类数组；只替换两个PyTorch掩码的转换边界，不改变统计、选带或训练逻辑。边界测试先失败后通过，SID及launcher相关24项聚焦测试全部通过，`py_compile`与`git diff --check`通过。
 - S0状态：`ARTIFACTS_COMPLETE`。clean aggregate TX为90.1402%，Strict UDU为86.09%；`leo_clear_weak` overall/Strict UDU为78.47%/72.55%，`leo_low_elev_weak`为75.65%/69.86%，`leo_rain_weak`为75.29%/69.27%。结果仅作为同checkpoint基线，不是SID收益。
 - 2026-08-22 11:39:51（Asia/Hong_Kong）再次直连复核：GPU0、1、2、4、5、6、7无计算进程，GPU3仅1个既有进程；正式run/log root仍不存在，release、ManySig与CORE90 checkpoint均可见。按上述实际GPU分配进入`LAUNCHING`，不使用GPU3，不干预既有PID335489。
 
