@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import math
+from collections import defaultdict
+from collections.abc import Mapping
 from typing import Any, Dict, List, Tuple
 
 import torch
+import numpy as np
 from torch.utils.data import DataLoader
 
 from training_controls import sat_channel_config_for_scenario
@@ -144,6 +147,8 @@ def evaluate_loader(model, loader, device, domain_label_map: Dict[int, int], max
     model.eval()
     tx_correct = tx_total = 0
     dom_correct = dom_total = 0
+    receiver_counts: Dict[int, List[int]] = defaultdict(lambda: [0, 0])
+    receiver_day_counts: Dict[Tuple[int, int], List[int]] = defaultdict(lambda: [0, 0])
     for bi, batch in enumerate(loader):
         x, y, extra = unpack_batch(batch)
         x = x.to(device, non_blocking=True)
@@ -160,8 +165,31 @@ def evaluate_loader(model, loader, device, domain_label_map: Dict[int, int], max
         )
         tx_logits = out["tx_logits"]
         tx_pred = tx_logits.argmax(dim=1)
-        tx_correct += int((tx_pred == y).sum().item())
+        correct_mask = tx_pred == y
+        tx_correct += int(correct_mask.sum().item())
         tx_total += int(y.numel())
+
+        metadata = extra[1] if isinstance(extra, (tuple, list)) and len(extra) >= 2 else extra
+        if isinstance(metadata, Mapping):
+            rx_raw = metadata.get("rx_i")
+            day_raw = metadata.get("day_i")
+            if rx_raw is not None:
+                rx_values = torch.as_tensor(rx_raw).reshape(-1).detach().cpu().tolist()
+                day_values = (
+                    torch.as_tensor(day_raw).reshape(-1).detach().cpu().tolist()
+                    if day_raw is not None
+                    else []
+                )
+                correct_values = correct_mask.detach().cpu().tolist()
+                if len(rx_values) == len(correct_values):
+                    for index, (receiver, correct) in enumerate(zip(rx_values, correct_values)):
+                        receiver_key = int(receiver)
+                        receiver_counts[receiver_key][0] += int(bool(correct))
+                        receiver_counts[receiver_key][1] += 1
+                        if len(day_values) == len(correct_values):
+                            receiver_day_key = (receiver_key, int(day_values[index]))
+                            receiver_day_counts[receiver_day_key][0] += int(bool(correct))
+                            receiver_day_counts[receiver_day_key][1] += 1
 
         if d is not None:
             valid = d >= 0
@@ -173,12 +201,18 @@ def evaluate_loader(model, loader, device, domain_label_map: Dict[int, int], max
         if max_batches > 0 and (bi + 1) >= max_batches:
             break
 
+    receiver_scores = [100.0 * correct / total for correct, total in receiver_counts.values() if total > 0]
+    receiver_day_scores = [100.0 * correct / total for correct, total in receiver_day_counts.values() if total > 0]
     return {
         "tx_acc": 100.0 * tx_correct / max(1, tx_total),
         "dom_acc": 100.0 * dom_correct / max(1, dom_total) if dom_total > 0 else float("nan"),
         "probe_dom_acc": float("nan"),
         "tx_correct": int(tx_correct),
         "tx_total": int(tx_total),
+        "receiver_floor": min(receiver_scores) if receiver_scores else float("nan"),
+        "receiver_day_floor": min(receiver_day_scores) if receiver_day_scores else float("nan"),
+        "receiver_group_count": len(receiver_scores),
+        "receiver_day_group_count": len(receiver_day_scores),
     }
 
 
@@ -187,6 +221,85 @@ def evaluate_named_loaders(model, named_loaders: Dict[str, DataLoader], device, 
     for name, loader in named_loaders.items():
         out[name] = evaluate_loader(model, loader, device, domain_label_map=domain_label_map, max_batches=max_batches)
     return out
+
+
+@torch.no_grad()
+def collect_hsid_predictions(
+    model,
+    loader,
+    device,
+    domain_label_map: Dict[int, int],
+    *,
+    split_name: str,
+    scenario: str = "clean",
+    args=None,
+    max_batches: int = 0,
+    seed: int = 2027,
+) -> Dict[str, np.ndarray]:
+    """Collect same-row Raw/spec/fused HSID diagnostics without model updates."""
+
+    model.eval()
+    buffers: Dict[str, List[np.ndarray]] = defaultdict(list)
+    generator = make_torch_generator(device, int(seed)) if scenario != "clean" else None
+    offset = 0
+    for batch_index, batch in enumerate(loader):
+        x, y, extra = unpack_batch(batch)
+        x = x.to(device, non_blocking=True)
+        y = y.to(device, non_blocking=True).long()
+        if scenario != "clean":
+            if args is None:
+                raise ValueError("satellite HSID prediction export requires evaluation args")
+            x = apply_sat_channel_for_scenario(x, scenario, args, gen=generator, return_meta=False)[0]
+        d_raw = extract_domain_from_extra(extra, device)
+        d = remap_domain_tensor(d_raw, domain_label_map, device) if d_raw is not None else None
+        output = model(x, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d)
+        required = ("logits_raw", "sid_spec_logits", "logits_fused", "sid_quality", "sid_fusion_gate")
+        missing = [key for key in required if not torch.is_tensor(output.get(key))]
+        if missing:
+            raise ValueError(f"HSID prediction export is missing outputs: {missing}")
+        raw_logits = output["logits_raw"].float()
+        spec_logits = output["sid_spec_logits"].float()
+        fused_logits = output["logits_fused"].float()
+
+        def margin(logits: torch.Tensor) -> torch.Tensor:
+            top = logits.topk(2, dim=1).values
+            return top[:, 0] - top[:, 1]
+
+        count = int(y.numel())
+        metadata = extra[1] if isinstance(extra, (tuple, list)) and len(extra) >= 2 else {}
+
+        def metadata_vector(key: str) -> torch.Tensor:
+            value = metadata.get(key) if isinstance(metadata, Mapping) else None
+            if value is None:
+                return torch.full((count,), -1, dtype=torch.long)
+            tensor = torch.as_tensor(value).reshape(-1).long().cpu()
+            return tensor if tensor.numel() == count else torch.full((count,), -1, dtype=torch.long)
+
+        tensors = {
+            "sample_index": torch.arange(offset, offset + count, dtype=torch.long),
+            "y": y.detach().cpu(),
+            "tx": y.detach().cpu(),
+            "rx": metadata_vector("rx_i"),
+            "day": metadata_vector("day_i"),
+            "raw_pred": raw_logits.argmax(dim=1).detach().cpu(),
+            "spec_pred": spec_logits.argmax(dim=1).detach().cpu(),
+            "fused_pred": fused_logits.argmax(dim=1).detach().cpu(),
+            "raw_margin": margin(raw_logits).detach().cpu(),
+            "spec_margin": margin(spec_logits).detach().cpu(),
+            "fused_margin": margin(fused_logits).detach().cpu(),
+            "fusion_gate": output["sid_fusion_gate"].detach().float().cpu(),
+            "quality": output["sid_quality"].detach().float().cpu(),
+        }
+        for key, value in tensors.items():
+            buffers[key].append(value.numpy())
+        buffers["split"].append(np.full((count,), str(split_name)))
+        buffers["scenario"].append(np.full((count,), str(scenario)))
+        offset += count
+        if max_batches > 0 and batch_index + 1 >= max_batches:
+            break
+    if not buffers:
+        raise ValueError(f"HSID prediction export received no samples for {split_name}/{scenario}")
+    return {key: np.concatenate(values, axis=0) for key, values in buffers.items()}
 
 
 def evaluate_loader_sat_channel(

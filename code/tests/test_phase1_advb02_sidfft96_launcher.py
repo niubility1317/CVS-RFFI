@@ -6,6 +6,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = "code/scripts/launch_phase1_advb02_sidfft96_leo_weak_20260821.sh"
 GUARDED_SCRIPT = "code/scripts/launch_phase1_advb02_sidfft96_guarded_20260822.sh"
+HSID_SCRIPT = "code/scripts/launch_phase1_advb02_hsid_20260823.sh"
 BASH = r"C:\Program Files\Git\bin\bash.exe"
 
 
@@ -23,6 +24,17 @@ def _run(*arguments: str, **environment: str) -> subprocess.CompletedProcess:
 def _run_guarded(*arguments: str, **environment: str) -> subprocess.CompletedProcess:
     return subprocess.run(
         [BASH, GUARDED_SCRIPT, *arguments],
+        cwd=PROJECT_ROOT,
+        text=True,
+        capture_output=True,
+        encoding="utf-8",
+        env={**os.environ, **{key: str(value) for key, value in environment.items()}},
+    )
+
+
+def _run_hsid(*arguments: str, **environment: str) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        [BASH, HSID_SCRIPT, *arguments],
         cwd=PROJECT_ROOT,
         text=True,
         capture_output=True,
@@ -87,3 +99,21 @@ def test_guarded_launcher_is_a_minimal_source_selected_falsification_matrix():
     assert "--source_cal_ratio 0.15" in output
     assert "--source_select_ratio 0.15" in output
     assert "leo_clear_weak,leo_low_elev_weak,leo_rain_weak" in output
+
+
+def test_hsid_launcher_requires_prepared_p0_then_runs_checkpoint_smoke_first():
+    p0 = _run_hsid("--dry-run", "--prepare-p0", "--only=X2")
+    assert p0.returncode == 0, p0.stderr
+    p0_output = p0.stdout.replace("\\", "")
+    assert "[HSID-P0-CMD]" in p0_output
+    assert "--bootstrap_repeats 64" in p0_output
+
+    result = _run_hsid("--dry-run", "--only=X2")
+    assert result.returncode == 0, result.stderr
+    output = result.stdout.replace("\\", "")
+    assert "[HSID-P0-CMD]" not in output
+    assert output.index("[HSID-SMOKE-CMD]") < output.index("[HSID-X2-TRAIN-CMD]")
+    assert "--sid_architecture hsid" in output
+    assert "--best_metric source_hsid" in output
+    assert "sid_mask_hierarchical.npz" in output
+    assert "--hsid_predictions_npz" in output

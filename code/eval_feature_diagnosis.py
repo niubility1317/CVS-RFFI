@@ -530,6 +530,16 @@ def collect_feature_dict(out: Dict[str, Any]) -> Dict[str, torch.Tensor]:
         "sid_fft96",
         "sid_group_norms",
         "sid_valid_bin_ratio",
+        "sid_quality",
+        "sid_spectral_embedding",
+        "sid_spec_logits",
+        "logits_raw",
+        "logits_fused",
+        "sid_fusion_gate",
+        "sid_raw_margin",
+        "sid_spec_margin",
+        "sid_js_divergence",
+        "sid_agreement",
     ):
         value = out.get(key)
         if torch.is_tensor(value):

@@ -424,9 +424,18 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--sid_mask_path", type=str, default="")
     parser.add_argument("--sid_residual_scale", type=float, default=1.0)
     parser.add_argument("--sid_max_residual_ratio", type=float, default=0.0)
+    parser.add_argument("--sid_architecture", type=str, choices=["residual", "hsid"], default="residual")
+    parser.add_argument("--sid_fusion_mode", type=str, choices=["raw", "spec", "fused"], default="fused")
+    parser.add_argument("--sid_spectral_dim", type=int, default=48)
+    parser.add_argument("--sid_fusion_alpha_max", type=float, default=0.20)
     parser.add_argument("--sid_adapter_only", type=str2bool, default=True)
     parser.add_argument("--sid_guarded_training", type=str2bool, default=False)
     parser.add_argument("--lambda_sid_identity_anchor", type=float, default=0.05)
+    parser.add_argument("--lambda_hsid_cross_rx", type=float, default=0.05)
+    parser.add_argument("--lambda_hsid_receiver_cvar", type=float, default=0.10)
+    parser.add_argument("--lambda_hsid_interaction", type=float, default=0.02)
+    parser.add_argument("--lambda_hsid_margin_safety", type=float, default=0.10)
+    parser.add_argument("--hsid_harm_margin", type=float, default=0.50)
     parser.add_argument("--ntrs_core_lr_mode", type=str, choices=["v1", "baseline", "adapter_joint"], default="v1")
     parser.add_argument("--ntrs_core_lr_ratio", type=float, default=0.02)
     parser.add_argument("--ntrs_margin_epsilon", type=float, default=0.05)
@@ -465,7 +474,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
         "--best_metric",
         type=str,
         default="clean_val_tx",
-        choices=["clean_val_tx", "source_val_sat_hmean", "test_overall_tx", "sat_mean_tx", "sat_worst_tx", "joint_safe"],
+        choices=["clean_val_tx", "source_val_sat_hmean", "source_hsid", "test_overall_tx", "sat_mean_tx", "sat_worst_tx", "joint_safe"],
         help="Source-val telemetry metric only; Phase1 checkpoint selection is final-only.",
     )
     parser.add_argument(
@@ -1641,6 +1650,10 @@ def _apply_model_cli_args(model_args, args):
         "sid_mask_path",
         "sid_residual_scale",
         "sid_max_residual_ratio",
+        "sid_architecture",
+        "sid_fusion_mode",
+        "sid_spectral_dim",
+        "sid_fusion_alpha_max",
     ):
         if hasattr(args, key):
             setattr(model_args, key, getattr(args, key))
@@ -2105,6 +2118,18 @@ def _best_score(
             return float("-inf")
         sat_floor = min(sat_scores)
         return 2.0 * clean * sat_floor / max(1e-8, clean + sat_floor)
+    if metric == "source_hsid":
+        clean = float(val_stats.get("tx_acc", float("-inf")))
+        sat_scores = _satellite_tx_scores(sat_test_stats)
+        if not sat_scores:
+            return float("-inf")
+        return source_hsid_selection_score(
+            clean_acc=clean,
+            sat_mean=sum(sat_scores) / len(sat_scores),
+            sat_floor=min(sat_scores),
+            receiver_floor=float(val_stats.get("receiver_floor", float("-inf"))),
+            receiver_day_floor=float(val_stats.get("receiver_day_floor", float("-inf"))),
+        )
     sat_scores = _satellite_tx_scores(sat_test_stats)
     if not sat_scores:
         return float(val_stats.get("tx_acc", float("-inf")))
@@ -4177,9 +4202,17 @@ def _build_ssdg_epoch_telemetry_row(
         "sid_mask_path": str(getattr(args, "sid_mask_path", "")),
         "sid_residual_scale": float(getattr(args, "sid_residual_scale", 1.0)),
         "sid_max_residual_ratio": float(getattr(args, "sid_max_residual_ratio", 0.0)),
+        "sid_architecture": str(getattr(args, "sid_architecture", "residual")),
+        "sid_fusion_mode": str(getattr(args, "sid_fusion_mode", "fused")),
+        "sid_spectral_dim": int(getattr(args, "sid_spectral_dim", 48)),
+        "sid_fusion_alpha_max": float(getattr(args, "sid_fusion_alpha_max", 0.20)),
         "sid_adapter_only": bool(getattr(args, "sid_adapter_only", True)),
         "sid_guarded_training": bool(getattr(args, "sid_guarded_training", False)),
         "lambda_sid_identity_anchor": float(getattr(args, "lambda_sid_identity_anchor", 0.05)),
+        "lambda_hsid_cross_rx": float(getattr(args, "lambda_hsid_cross_rx", 0.05)),
+        "lambda_hsid_receiver_cvar": float(getattr(args, "lambda_hsid_receiver_cvar", 0.10)),
+        "lambda_hsid_interaction": float(getattr(args, "lambda_hsid_interaction", 0.02)),
+        "lambda_hsid_margin_safety": float(getattr(args, "lambda_hsid_margin_safety", 0.10)),
         "label_epochs": int(getattr(args, "label_epochs", 0)),
         "pseudo_epochs": int(getattr(args, "pseudo_epochs", 0)),
         "optimizer": "AdamW",
@@ -5158,7 +5191,7 @@ def configure_ntrs_trainable_parameters(model, args) -> Dict[str, int]:
 
 
 def configure_sid_trainable_parameters(model, args) -> Dict[str, int]:
-    """Freeze ADV3B02 and expose only the SID-FFT96 residual projector."""
+    """Freeze ADV3B02 and expose only the selected SID evidence module."""
 
     candidate = getattr(model, "module", model)
     mode = str(getattr(args, "sid_fft96_mode", "off") or "off").lower().strip()
@@ -5247,6 +5280,148 @@ def compose_sid_adapter_objective(
         + float(identity_anchor_weight) * identity_anchor
     )
     return total, {"identity_anchor": identity_anchor}
+
+
+def _hsid_cross_receiver_supcon(
+    embedding: torch.Tensor,
+    labels: torch.Tensor,
+    receiver_labels: torch.Tensor,
+    temperature: float = 0.10,
+) -> torch.Tensor:
+    normalized = F.normalize(embedding, dim=1, eps=1e-8)
+    similarity = normalized @ normalized.transpose(0, 1) / float(temperature)
+    losses = []
+    for index in range(normalized.size(0)):
+        positives = (labels == labels[index]) & (receiver_labels != receiver_labels[index])
+        positives[index] = False
+        denominator = torch.ones_like(positives, dtype=torch.bool)
+        denominator[index] = False
+        if not bool(positives.any()) or not bool(denominator.any()):
+            continue
+        log_probability = similarity[index] - torch.logsumexp(similarity[index][denominator], dim=0)
+        losses.append(-log_probability[positives].mean())
+    return torch.stack(losses).mean() if losses else embedding.sum() * 0.0
+
+
+def _hsid_receiver_cvar(
+    spectral_logits: torch.Tensor,
+    labels: torch.Tensor,
+    receiver_labels: torch.Tensor,
+    tail_fraction: float = 0.30,
+) -> torch.Tensor:
+    group_losses = []
+    for receiver in receiver_labels.unique():
+        selected = receiver_labels == receiver
+        if bool(selected.any()):
+            group_losses.append(F.cross_entropy(spectral_logits[selected], labels[selected]))
+    if not group_losses:
+        return spectral_logits.sum() * 0.0
+    stacked = torch.stack(group_losses)
+    tail_count = max(1, int(math.ceil(stacked.numel() * float(tail_fraction))))
+    return stacked.topk(tail_count).values.mean()
+
+
+def _hsid_tx_receiver_interaction(
+    embedding: torch.Tensor,
+    labels: torch.Tensor,
+    receiver_labels: torch.Tensor,
+) -> torch.Tensor:
+    cells = []
+    cell_tx = []
+    cell_rx = []
+    for tx_value in labels.unique():
+        for receiver in receiver_labels[labels == tx_value].unique():
+            selected = (labels == tx_value) & (receiver_labels == receiver)
+            if bool(selected.any()):
+                cells.append(embedding[selected].mean(dim=0))
+                cell_tx.append(tx_value)
+                cell_rx.append(receiver)
+    if len(cells) <= 1:
+        return embedding.sum() * 0.0
+    cell_values = torch.stack(cells)
+    grand = cell_values.mean(dim=0)
+    residuals = []
+    for cell, tx_value, receiver in zip(cells, cell_tx, cell_rx):
+        tx_mean = torch.stack([value for value, value_tx in zip(cells, cell_tx) if value_tx == tx_value]).mean(dim=0)
+        rx_mean = torch.stack([value for value, value_rx in zip(cells, cell_rx) if value_rx == receiver]).mean(dim=0)
+        residuals.append(cell - tx_mean - rx_mean + grand)
+    return torch.stack(residuals).square().mean()
+
+
+def compose_hsid_objective(
+    *,
+    spectral_logits: torch.Tensor,
+    spectral_embedding: torch.Tensor,
+    fused_logits: torch.Tensor,
+    raw_logits: torch.Tensor,
+    labels: torch.Tensor,
+    receiver_labels: torch.Tensor,
+    lambda_cross_rx: float,
+    lambda_receiver_cvar: float,
+    lambda_interaction: float,
+    lambda_margin_safety: float,
+    harm_margin: float,
+) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
+    """Train independent SID evidence and penalize receiver risk and Raw harm."""
+
+    weights = (lambda_cross_rx, lambda_receiver_cvar, lambda_interaction, lambda_margin_safety)
+    if min(float(value) for value in weights) < 0.0:
+        raise ValueError("HSID objective weights must be non-negative")
+    spectral_ce = F.cross_entropy(spectral_logits, labels)
+    cross_rx = _hsid_cross_receiver_supcon(spectral_embedding, labels, receiver_labels)
+    receiver_cvar = _hsid_receiver_cvar(spectral_logits, labels, receiver_labels)
+    interaction = _hsid_tx_receiver_interaction(spectral_embedding, labels, receiver_labels)
+    raw_top2 = raw_logits.topk(2, dim=1).values
+    raw_margin = raw_top2[:, 0] - raw_top2[:, 1]
+    raw_correct = raw_logits.argmax(dim=1) == labels
+    true_fused = fused_logits.gather(1, labels[:, None]).squeeze(1)
+    other_fused = fused_logits.masked_fill(F.one_hot(labels, fused_logits.shape[1]).bool(), float("-inf"))
+    fused_margin = true_fused - other_fused.max(dim=1).values
+    protected = raw_correct & (raw_margin > float(harm_margin))
+    margin_safety = (
+        F.relu(raw_margin[protected].detach() - fused_margin[protected]).mean()
+        if bool(protected.any())
+        else fused_logits.sum() * 0.0
+    )
+    total = (
+        spectral_ce
+        + float(lambda_cross_rx) * cross_rx
+        + float(lambda_receiver_cvar) * receiver_cvar
+        + float(lambda_interaction) * interaction
+        + float(lambda_margin_safety) * margin_safety
+    )
+    return total, {
+        "spectral_ce": spectral_ce,
+        "cross_rx": cross_rx,
+        "receiver_cvar": receiver_cvar,
+        "interaction": interaction,
+        "margin_safety": margin_safety,
+    }
+
+
+def source_hsid_selection_score(
+    *,
+    clean_acc: float,
+    sat_mean: float,
+    sat_floor: float,
+    receiver_floor: float,
+    receiver_day_floor: float,
+) -> float:
+    """Source-only HSID selection with explicit receiver and receiver-day floors."""
+
+    values = (clean_acc, sat_mean, sat_floor, receiver_floor, receiver_day_floor)
+    if not all(math.isfinite(float(value)) for value in values):
+        return float("-inf")
+    sat_hmean = 2.0 * float(sat_mean) * float(sat_floor) / max(
+        1e-8,
+        float(sat_mean) + float(sat_floor),
+    )
+    return (
+        0.20 * float(clean_acc)
+        + 0.20 * sat_hmean
+        + 0.30 * float(receiver_floor)
+        + 0.30 * float(receiver_day_floor)
+    )
 
 
 @torch.no_grad()
@@ -5471,7 +5646,22 @@ def train(args) -> int:
             raise ValueError("--sid_max_residual_ratio must be non-negative")
         if not bool(getattr(args, "sid_adapter_only", True)):
             raise ValueError("SID-FFT96 requires --sid_adapter_only true")
-        if sid_guarded_training_enabled(args):
+        sid_architecture = str(getattr(args, "sid_architecture", "residual"))
+        if sid_architecture == "hsid":
+            if int(getattr(args, "sid_spectral_dim", 48)) <= 0:
+                raise ValueError("--sid_spectral_dim must be positive")
+            alpha_max = float(getattr(args, "sid_fusion_alpha_max", 0.20))
+            if not 0.0 <= alpha_max <= 1.0:
+                raise ValueError("--sid_fusion_alpha_max must be in [0, 1]")
+            hsid_weights = (
+                "lambda_hsid_cross_rx",
+                "lambda_hsid_receiver_cvar",
+                "lambda_hsid_interaction",
+                "lambda_hsid_margin_safety",
+            )
+            if any(float(getattr(args, name, 0.0)) < 0.0 for name in hsid_weights):
+                raise ValueError("HSID objective weights must be non-negative")
+        if sid_guarded_training_enabled(args) and sid_architecture == "residual":
             ratio = float(getattr(args, "sid_max_residual_ratio", 0.0))
             if not 0.0 < ratio <= 1.0:
                 raise ValueError(
@@ -5544,13 +5734,13 @@ def train(args) -> int:
         raise ValueError(
             "Phase1 final-only mode forbids tail checkpoint rollback; retain tail references as metrics only."
         )
-    if str(args.best_metric) not in {"clean_val_tx", "source_val_sat_hmean"}:
+    if str(args.best_metric) not in {"clean_val_tx", "source_val_sat_hmean", "source_hsid"}:
         raise ValueError(
             "Phase1 source-only checkpoint selection forbids test/receiver/satellite-test best metrics; "
-            "use --best_metric clean_val_tx or source_val_sat_hmean."
+            "use --best_metric clean_val_tx, source_val_sat_hmean, or source_hsid."
         )
-    if str(args.best_metric) == "source_val_sat_hmean" and not bool(getattr(args, "eval_sat_channel", False)):
-        raise ValueError("source_val_sat_hmean requires --eval_sat_channel true")
+    if str(args.best_metric) in {"source_val_sat_hmean", "source_hsid"} and not bool(getattr(args, "eval_sat_channel", False)):
+        raise ValueError(f"{args.best_metric} requires --eval_sat_channel true")
     if int(getattr(args, "source_val_heavy_eval_start_epoch", 1)) < 1:
         raise ValueError("--source_val_heavy_eval_start_epoch must be >= 1")
     if int(getattr(args, "source_val_heavy_eval_interval", 1)) < 1:
@@ -7546,18 +7736,50 @@ def train(args) -> int:
                     "ssdg_source_episode", loss_source_episode_l, z_id_l, loss_warn_counts
                 )
                 loss_open_l = loss_open_invariant_l + loss_open_boundary_l + loss_open_source_l
-                loss_sid_identity_anchor_l = z_id_l.sum() * 0.0
+                zero_sid = z_id_l.sum() * 0.0
+                loss_sid_identity_anchor_l = zero_sid
+                sid_objective_info = {
+                    "spectral_ce": zero_sid,
+                    "cross_rx": zero_sid,
+                    "receiver_cvar": zero_sid,
+                    "interaction": zero_sid,
+                    "margin_safety": zero_sid,
+                }
                 if sid_guarded_training_enabled(args):
-                    loss_closed_l, sid_objective_info = compose_sid_adapter_objective(
-                        clean_tx_loss=loss_tx_l,
-                        satellite_tx_loss=loss_sat_cls_l,
-                        z_sid=z_id_l,
-                        z_raw=out_l["z_id_raw"],
-                        satellite_weight=float(cur_w["sat_cls"]),
-                        identity_anchor_weight=float(args.lambda_sid_identity_anchor),
-                    )
-                    loss_sid_identity_anchor_l = sid_objective_info["identity_anchor"]
-                    zero_sid = z_id_l.sum() * 0.0
+                    if str(getattr(args, "sid_architecture", "residual")) == "hsid":
+                        required_hsid = (
+                            "sid_spec_logits",
+                            "sid_spectral_embedding",
+                            "logits_fused",
+                            "logits_raw",
+                        )
+                        missing_hsid = [key for key in required_hsid if not torch.is_tensor(out_l.get(key))]
+                        if missing_hsid:
+                            raise RuntimeError(f"HSID forward output is missing {missing_hsid}")
+                        hsid_total, sid_objective_info = compose_hsid_objective(
+                            spectral_logits=out_l["sid_spec_logits"],
+                            spectral_embedding=out_l["sid_spectral_embedding"],
+                            fused_logits=out_l["logits_fused"],
+                            raw_logits=out_l["logits_raw"],
+                            labels=y_l,
+                            receiver_labels=receiver_l,
+                            lambda_cross_rx=float(args.lambda_hsid_cross_rx),
+                            lambda_receiver_cvar=float(args.lambda_hsid_receiver_cvar),
+                            lambda_interaction=float(args.lambda_hsid_interaction),
+                            lambda_margin_safety=float(args.lambda_hsid_margin_safety),
+                            harm_margin=float(args.hsid_harm_margin),
+                        )
+                        loss_closed_l = loss_tx_l + float(cur_w["sat_cls"]) * loss_sat_cls_l + hsid_total
+                    else:
+                        loss_closed_l, residual_sid_info = compose_sid_adapter_objective(
+                            clean_tx_loss=loss_tx_l,
+                            satellite_tx_loss=loss_sat_cls_l,
+                            z_sid=z_id_l,
+                            z_raw=out_l["z_id_raw"],
+                            satellite_weight=float(cur_w["sat_cls"]),
+                            identity_anchor_weight=float(args.lambda_sid_identity_anchor),
+                        )
+                        loss_sid_identity_anchor_l = residual_sid_info["identity_anchor"]
                     loss_open_invariant_l = zero_sid
                     loss_open_boundary_l = zero_sid
                     loss_open_source_l = zero_sid
@@ -8494,6 +8716,11 @@ def train(args) -> int:
                         float(getattr(args, "lambda_sid_identity_anchor", 0.05))
                         * loss_sid_identity_anchor_l
                     ).detach(),
+                    "train/loss_hsid_spectral_ce": sid_objective_info["spectral_ce"].detach(),
+                    "train/loss_hsid_cross_rx": sid_objective_info["cross_rx"].detach(),
+                    "train/loss_hsid_receiver_cvar": sid_objective_info["receiver_cvar"].detach(),
+                    "train/loss_hsid_interaction": sid_objective_info["interaction"].detach(),
+                    "train/loss_hsid_margin_safety": sid_objective_info["margin_safety"].detach(),
                     "train/loss_crra_pair_labeled": loss_crra_pair_l.detach(),
                     "train/loss_crra_energy_labeled": loss_crra_energy_l.detach(),
                     "train/loss_crra_gate_l1_labeled": loss_crra_gate_l1_l.detach(),
@@ -9695,12 +9922,13 @@ def train(args) -> int:
         safe_checkpoint_saved = False
         is_best = False
         best_metric_name = str(args.best_metric)
-        best_metric_needs_test = best_metric_name not in {"clean_val_tx", "source_val_sat_hmean"}
+        source_only_best_metrics = {"clean_val_tx", "source_val_sat_hmean", "source_hsid"}
+        best_metric_needs_test = best_metric_name not in source_only_best_metrics
         current_best_score = (
             _best_score(
                 val_stats,
                 test_stats,
-                source_val_sat_stats if best_metric_name == "source_val_sat_hmean" else sat_test_stats,
+                source_val_sat_stats if best_metric_name in {"source_val_sat_hmean", "source_hsid"} else sat_test_stats,
                 best_metric_name,
                 named_stats,
                 args,
@@ -9708,7 +9936,7 @@ def train(args) -> int:
             if (test_ran_this_epoch or not best_metric_needs_test)
             else float("-inf")
         )
-        source_val_best_is_fresh = best_metric_name != "source_val_sat_hmean" or source_val_heavy_eval_ran
+        source_val_best_is_fresh = best_metric_name not in {"source_val_sat_hmean", "source_hsid"} or source_val_heavy_eval_ran
         allow_best_update = (test_ran_this_epoch or not best_metric_needs_test) and source_val_best_is_fresh
         if allow_best_update and current_best_score > best_score:
             best_score = float(current_best_score)

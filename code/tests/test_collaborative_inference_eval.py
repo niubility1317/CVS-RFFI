@@ -1,10 +1,12 @@
 import sys
 import unittest
 import argparse
+import tempfile
 from pathlib import Path
 from types import SimpleNamespace
 
 import torch
+import numpy as np
 from torch.utils.data import DataLoader, Dataset
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -88,6 +90,47 @@ class _LogitModel(torch.nn.Module):
 
 
 class CollaborativeInferenceEvalTest(unittest.TestCase):
+    def test_checkpoint_model_rebuild_restores_hsid_structure_and_state(self):
+        from evaluation.collaborative_inference_eval import build_model_from_checkpoint_args, load_model_state
+
+        with tempfile.TemporaryDirectory() as directory:
+            mask_path = Path(directory) / "mask.npz"
+            np.savez_compressed(mask_path, mask=np.ones(64, dtype=np.uint8))
+            context = SimpleNamespace(
+                num_classes=3,
+                num_domains=2,
+                input_len=64,
+                ckpt_args={
+                    "model_size": "S",
+                    "model_variant": "lite_h",
+                    "branch_ablation": "none",
+                    "domain_branch_ablation": "same",
+                    "sid_fft96_mode": "sid",
+                    "sid_mask_path": str(mask_path),
+                    "sid_architecture": "hsid",
+                    "sid_fusion_mode": "fused",
+                    "sid_spectral_dim": 16,
+                    "sid_fusion_alpha_max": 0.17,
+                },
+            )
+            overrides = argparse.Namespace(
+                sample_rate_hz=0.0,
+                model_size="",
+                model_variant="",
+                branch_ablation="",
+                domain_branch_ablation="",
+            )
+            source = build_model_from_checkpoint_args(context, overrides, torch.device("cpu"))
+            rebuilt = build_model_from_checkpoint_args(context, overrides, torch.device("cpu"))
+            report = load_model_state(rebuilt, {"model": source.state_dict()})
+
+        self.assertEqual(rebuilt.sid_architecture, "hsid")
+        self.assertEqual(rebuilt.sid_fusion_mode, "fused")
+        self.assertEqual(rebuilt.sid_fft96.evidence.prototypes.shape, (3, 16))
+        self.assertEqual(rebuilt.sid_fft96.evidence.alpha_max, 0.17)
+        self.assertEqual(report["missing_count"], 0)
+        self.assertEqual(report["unexpected_count"], 0)
+
     def test_checkpoint_model_rebuild_restores_ntrs_v2_structure_flags(self):
         from evaluation.collaborative_inference_eval import build_model_from_checkpoint_args
 

@@ -404,6 +404,11 @@ def build_model_from_checkpoint_args(context, overrides: argparse.Namespace, dev
         sid_fft96_mode=str(_get_arg(args, "sid_fft96_mode", "off")),
         sid_mask_path=str(_get_arg(args, "sid_mask_path", "")),
         sid_residual_scale=float(_get_arg(args, "sid_residual_scale", 1.0)),
+        sid_max_residual_ratio=float(_get_arg(args, "sid_max_residual_ratio", 0.0)),
+        sid_architecture=str(_get_arg(args, "sid_architecture", "residual")),
+        sid_fusion_mode=str(_get_arg(args, "sid_fusion_mode", "fused")),
+        sid_spectral_dim=int(_get_arg(args, "sid_spectral_dim", 48)),
+        sid_fusion_alpha_max=float(_get_arg(args, "sid_fusion_alpha_max", 0.20)),
         fast_infer_when_no_aux=bool(_get_arg(args, "fast_infer_when_no_aux", True)),
         use_tx_adv_on_zdom=bool(_get_arg(args, "use_tx_adv_on_zdom", False)),
     ).to(device)

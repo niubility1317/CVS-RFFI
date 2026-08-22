@@ -367,6 +367,11 @@ def build_baseline_model(model_args, device: torch.device) -> nn.Module:
         sid_fft96_mode=str(getattr(model_args, "sid_fft96_mode", "off")),
         sid_mask_path=str(getattr(model_args, "sid_mask_path", "")),
         sid_residual_scale=float(getattr(model_args, "sid_residual_scale", 1.0)),
+        sid_max_residual_ratio=float(getattr(model_args, "sid_max_residual_ratio", 0.0)),
+        sid_architecture=str(getattr(model_args, "sid_architecture", "residual")),
+        sid_fusion_mode=str(getattr(model_args, "sid_fusion_mode", "fused")),
+        sid_spectral_dim=int(getattr(model_args, "sid_spectral_dim", 48)),
+        sid_fusion_alpha_max=float(getattr(model_args, "sid_fusion_alpha_max", 0.20)),
         fast_infer_when_no_aux=bool(getattr(model_args, "fast_infer_when_no_aux", True)),
         arch_family=str(getattr(model_args, "arch_family", "cvsincnet")),
         representation_mode=str(

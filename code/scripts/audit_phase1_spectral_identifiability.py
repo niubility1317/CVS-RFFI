@@ -30,6 +30,7 @@ from cvsrffi.spectral_identifiability import (  # noqa: E402
     SpectralIdentifiabilityAccumulator,
     build_center_mask,
     extract_band_descriptors,
+    select_hsid_role_masks,
     select_sid_mask,
 )
 from cvsrffi.tensors import make_torch_generator, set_seed, unpack_batch  # noqa: E402
@@ -162,6 +163,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--keep_fraction", type=float, default=0.50)
     parser.add_argument("--dc_notch", type=int, default=1)
     parser.add_argument("--max_batches", type=int, default=0)
+    parser.add_argument("--bootstrap_repeats", type=int, default=64)
+    parser.add_argument("--bootstrap_keep_fraction", type=float, default=0.30)
     args = parser.parse_args(argv)
     _validate_protocol(args)
     if int(args.num_bands) <= 0 or int(args.num_bands) > int(args.fft_bins):
@@ -174,6 +177,7 @@ def main(argv: list[str] | None = None) -> int:
         output_dir / "spectral_identifiability.csv",
         output_dir / "spectral_identifiability.png",
         output_dir / "sid_mask.npz",
+        output_dir / "sid_mask_hierarchical.npz",
     )
     if any(path.exists() for path in expected_outputs):
         raise FileExistsError(f"refusing to overwrite P0 output in {output_dir}")
@@ -194,6 +198,7 @@ def main(argv: list[str] | None = None) -> int:
     }
     sample_views = 0
     batches = 0
+    physical_offset = 0
     for batch_index, batch in enumerate(data_context["probe_train_loader"], start=1):
         if int(args.max_batches) > 0 and batch_index > int(args.max_batches):
             break
@@ -227,15 +232,28 @@ def main(argv: list[str] | None = None) -> int:
                     rx=int(rx[row]),
                     day=int(day[row]),
                     view=view_index,
+                    cluster=physical_offset + row,
                 )
             sample_views += int(y_np.size)
+        physical_offset += int(y_np.size)
         batches += 1
 
-    stats = accumulator.finalize()
+    stats = accumulator.finalize(
+        bootstrap_repeats=int(args.bootstrap_repeats),
+        bootstrap_keep_fraction=float(args.bootstrap_keep_fraction),
+        bootstrap_seed=int(args.seed) + 4049,
+    )
     band_mask = select_sid_mask(stats, float(args.keep_fraction), int(args.dc_notch))
+    role_band_masks = select_hsid_role_masks(stats, dc_notch=int(args.dc_notch))
     fft_mask = _expand_band_mask(band_mask, int(args.fft_bins))
+    role_fft_masks = {
+        name: _expand_band_mask(mask, int(args.fft_bins))
+        for name, mask in role_band_masks.items()
+    }
     if not fft_mask.any():
         raise RuntimeError("P0 selected an empty FFT mask")
+    if not role_fft_masks["common_mask"].any():
+        raise RuntimeError("P0 selected an empty HSID common-spectrum mask")
 
     payload = {
         "schema": "phase1_spectral_identifiability_v1",
@@ -250,6 +268,9 @@ def main(argv: list[str] | None = None) -> int:
         "dc_notch": int(args.dc_notch),
         "batches": batches,
         "sample_views": sample_views,
+        "physical_samples": physical_offset,
+        "bootstrap_repeats": int(args.bootstrap_repeats),
+        "bootstrap_keep_fraction": float(args.bootstrap_keep_fraction),
         "views": ["clean", *LEO_WEAK_SCENARIOS],
         "source_split_receipt": split_info.get("source_split_receipt", {}),
         "source_role_counts": {
@@ -261,6 +282,12 @@ def main(argv: list[str] | None = None) -> int:
         "statistics": stats,
         "selected_band_indices": np.flatnonzero(band_mask),
         "selected_fft_indices": np.flatnonzero(fft_mask),
+        "hsid_role_band_indices": {
+            name: np.flatnonzero(mask) for name, mask in role_band_masks.items()
+        },
+        "hsid_role_fft_indices": {
+            name: np.flatnonzero(mask) for name, mask in role_fft_masks.items()
+        },
     }
     _atomic_json(expected_outputs[0], payload)
     _atomic_csv(expected_outputs[1], stats, band_mask)
@@ -285,6 +312,21 @@ def main(argv: list[str] | None = None) -> int:
         phase_mask=phase_mask.astype(np.uint8),
         band_mask=band_mask.astype(np.uint8),
         j_score=stats["j_score"].astype(np.float32),
+        fft_bins=np.asarray([int(args.fft_bins)], dtype=np.int64),
+    )
+    _atomic_npz(
+        expected_outputs[4],
+        mask=role_fft_masks["common_mask"].astype(np.uint8),
+        common_mask=role_fft_masks["common_mask"].astype(np.uint8),
+        nonlinear_mask=role_fft_masks["nonlinear_mask"].astype(np.uint8),
+        domain_mask=role_fft_masks["domain_mask"].astype(np.uint8),
+        common_band_mask=role_band_masks["common_mask"].astype(np.uint8),
+        nonlinear_band_mask=role_band_masks["nonlinear_mask"].astype(np.uint8),
+        domain_band_mask=role_band_masks["domain_mask"].astype(np.uint8),
+        j_score=stats["j_score"].astype(np.float32),
+        nonlinear_score=stats["nonlinear_score"].astype(np.float32),
+        domain_score=stats["domain_score"].astype(np.float32),
+        bootstrap_selection_probability=stats["bootstrap_selection_probability"].astype(np.float32),
         fft_bins=np.asarray([int(args.fft_bins)], dtype=np.int64),
     )
     _atomic_plot(expected_outputs[2], stats, band_mask)

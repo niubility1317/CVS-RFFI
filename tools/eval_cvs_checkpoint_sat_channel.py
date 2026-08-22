@@ -18,11 +18,13 @@ def _add_project_paths() -> None:
 _add_project_paths()
 
 import torch  # noqa: E402
+import numpy as np  # noqa: E402
 
 from cvsrffi.eval import (  # noqa: E402
     evaluate_loader,
     evaluate_named_loaders,
     evaluate_sat_scenarios,
+    collect_hsid_predictions,
     format_sat_test_lines,
     make_loader,
 )
@@ -71,6 +73,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--ckpt", required=True, help="Checkpoint path saved by train.py.")
     parser.add_argument("--output_json", default="", help="Optional JSON result path.")
     parser.add_argument("--output_txt", default="", help="Optional text summary path.")
+    parser.add_argument("--hsid_predictions_npz", default="", help="Optional same-row Raw/spec/fused HSID diagnostics.")
     parser.add_argument("--expect_run_name", default="", help="Fail unless this token appears in checkpoint identity.")
     parser.add_argument("--expect_sha256", default="", help="Fail unless checkpoint SHA256 matches this value.")
     parser.add_argument("--max_missing_keys", type=int, default=0)
@@ -208,6 +211,34 @@ def main() -> int:
         out_json = Path(args.output_json)
         out_json.parent.mkdir(parents=True, exist_ok=True)
         out_json.write_text(json.dumps(_jsonable(result), ensure_ascii=False, indent=2), encoding="utf-8")
+    if args.hsid_predictions_npz:
+        scenario_names = ["clean"]
+        if bool(args.eval_sat_channel):
+            scenario_names.extend(parse_sat_scenarios(args.eval_sat_scenarios))
+        prediction_parts = []
+        for split_index, (split_name, loader) in enumerate(named_loaders.items()):
+            for scenario_index, scenario in enumerate(scenario_names):
+                prediction_parts.append(
+                    collect_hsid_predictions(
+                        model,
+                        loader,
+                        device,
+                        context.domain_label_map,
+                        split_name=split_name,
+                        scenario=scenario,
+                        args=args,
+                        max_batches=int(args.sat_eval_max_batches if scenario != "clean" else args.eval_max_batches),
+                        seed=int(args.sat_seed) + 1009 * split_index + 97 * scenario_index,
+                    )
+                )
+        keys = prediction_parts[0].keys()
+        predictions = {key: np.concatenate([part[key] for part in prediction_parts], axis=0) for key in keys}
+        prediction_path = Path(args.hsid_predictions_npz)
+        prediction_path.parent.mkdir(parents=True, exist_ok=True)
+        temporary = prediction_path.with_suffix(prediction_path.suffix + ".tmp")
+        with temporary.open("wb") as handle:
+            np.savez_compressed(handle, **predictions)
+        temporary.replace(prediction_path)
     return 0
 
 

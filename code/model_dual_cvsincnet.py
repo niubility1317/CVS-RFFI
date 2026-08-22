@@ -10,7 +10,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from cvsrffi.spectral_identifiability import SIDFFT96Residual, load_sid_mask
+from cvsrffi.spectral_identifiability import HSIDFFT96Evidence, SIDFFT96Residual, load_sid_mask
 
 from ntrs import (
     BoundedWidelyLinearCorrector,
@@ -591,6 +591,10 @@ class DualCVSincNetDisentangle(nn.Module):
         sid_mask_path: str = "",
         sid_residual_scale: float = 1.0,
         sid_max_residual_ratio: float = 0.0,
+        sid_architecture: str = "residual",
+        sid_fusion_mode: str = "fused",
+        sid_spectral_dim: int = 48,
+        sid_fusion_alpha_max: float = 0.20,
     ):
         super().__init__()
         self.num_classes = int(num_classes)
@@ -621,6 +625,14 @@ class DualCVSincNetDisentangle(nn.Module):
         self.sid_mask_path = str(sid_mask_path or "")
         self.sid_residual_scale = float(sid_residual_scale)
         self.sid_max_residual_ratio = float(sid_max_residual_ratio)
+        self.sid_architecture = str(sid_architecture or "residual").lower().strip()
+        if self.sid_architecture not in {"residual", "hsid"}:
+            raise ValueError("sid_architecture must be residual or hsid")
+        self.sid_fusion_mode = str(sid_fusion_mode or "fused").lower().strip()
+        if self.sid_fusion_mode not in {"raw", "spec", "fused"}:
+            raise ValueError("sid_fusion_mode must be raw, spec, or fused")
+        self.sid_spectral_dim = int(sid_spectral_dim)
+        self.sid_fusion_alpha_max = float(sid_fusion_alpha_max)
         self.use_sid_fft96 = self.sid_fft96_mode != "off"
         self.ntrs_variant = str(ntrs_variant or "v1").lower().strip()
         if self.ntrs_variant not in {"v1", "v2_min", "v3_adapter", "v4_operator"}:
@@ -727,24 +739,36 @@ class DualCVSincNetDisentangle(nn.Module):
             self._share_early_stem()
 
         self.emb_dim = self._infer_emb_dim(self.id_backbone)
-        self.sid_fft96 = (
-            SIDFFT96Residual(
-                embedding_dim=self.emb_dim,
-                mode=self.sid_fft96_mode,
-                mask=load_sid_mask(
-                    self.sid_mask_path,
-                    int(input_len),
-                    key={"center": "center_mask", "phase": "phase_mask"}.get(
-                        self.sid_fft96_mode,
-                        "mask",
-                    ),
+        sid_mask = (
+            load_sid_mask(
+                self.sid_mask_path,
+                int(input_len),
+                key={"center": "center_mask", "phase": "phase_mask"}.get(
+                    self.sid_fft96_mode,
+                    "mask",
                 ),
-                residual_scale=self.sid_residual_scale,
-                max_residual_ratio=self.sid_max_residual_ratio,
             )
             if self.use_sid_fft96
             else None
         )
+        if not self.use_sid_fft96:
+            self.sid_fft96 = None
+        elif self.sid_architecture == "hsid":
+            self.sid_fft96 = HSIDFFT96Evidence(
+                num_classes=self.num_classes,
+                mode=self.sid_fft96_mode,
+                mask=sid_mask,
+                spectral_dim=self.sid_spectral_dim,
+                alpha_max=self.sid_fusion_alpha_max,
+            )
+        else:
+            self.sid_fft96 = SIDFFT96Residual(
+                embedding_dim=self.emb_dim,
+                mode=self.sid_fft96_mode,
+                mask=sid_mask,
+                residual_scale=self.sid_residual_scale,
+                max_residual_ratio=self.sid_max_residual_ratio,
+            )
         if self.use_ntrs and self.arch_family != "cvsincnet":
             raise ValueError("ADVB02 NTRS currently requires the CV-SincNet physical backbone")
         ntrs_rng_state = (
@@ -1132,13 +1156,20 @@ class DualCVSincNetDisentangle(nn.Module):
         z_anchor = self._pick_z_id(aux_id)
         sid_output = None
         sid_logits = raw_tx_logits
+        fused_sid_logits = raw_tx_logits
         if self.use_sid_fft96:
-            sid_output = self.sid_fft96(x, z_anchor)
-            sid_logits = self._frozen_cosface_logits(
-                self.id_backbone.cls_head.head,
-                sid_output["z_sid"],
-                y_tx,
-            )
+            if self.sid_architecture == "hsid":
+                sid_output = self.sid_fft96(x, raw_tx_logits)
+                sid_logits = sid_output["spectral_logits"]
+                fused_sid_logits = sid_output["fused_logits"]
+            else:
+                sid_output = self.sid_fft96(x, z_anchor)
+                sid_logits = self._frozen_cosface_logits(
+                    self.id_backbone.cls_head.head,
+                    sid_output["z_sid"],
+                    y_tx,
+                )
+                fused_sid_logits = sid_logits
         ntrs_robust_out = None
         ntrs_robust_logits = raw_tx_logits
         ntrs_safe_gate = raw_tx_logits.new_zeros(raw_tx_logits.size(0))
@@ -1226,8 +1257,16 @@ class DualCVSincNetDisentangle(nn.Module):
                     tx_logits = ntrs_robust_logits
                     z_id = ntrs_robust_out.z_rob.to(dtype=z_anchor.dtype)
         else:
-            tx_logits = sid_logits
-            z_id = sid_output["z_sid"] if sid_output is not None else z_anchor
+            if sid_output is not None and self.sid_architecture == "hsid":
+                tx_logits = {
+                    "raw": raw_tx_logits,
+                    "spec": sid_logits,
+                    "fused": fused_sid_logits,
+                }[self.sid_fusion_mode]
+                z_id = z_anchor
+            else:
+                tx_logits = sid_logits
+                z_id = sid_output["z_sid"] if sid_output is not None else z_anchor
         z_dom_raw = self._pick_z_dom(aux_dom)
         z_dom, z_dom_rcn = self.dom_enhancer(z_dom_raw, x)
 
@@ -1353,15 +1392,30 @@ class DualCVSincNetDisentangle(nn.Module):
             "ntrs_context_tx_adv_logits": ntrs_context_tx_adv_logits,
             "sid_fft96_enabled": bool(self.use_sid_fft96),
             "sid_fft96_mode": self.sid_fft96_mode,
+            "sid_architecture": self.sid_architecture,
+            "sid_fusion_mode": self.sid_fusion_mode,
             "z_id_raw": z_anchor,
             "logits_raw": raw_tx_logits,
-            "z_id_sid": sid_output["z_sid"] if sid_output is not None else z_anchor,
+            "z_id_sid": (
+                sid_output["z_sid"]
+                if sid_output is not None and "z_sid" in sid_output
+                else z_anchor
+            ),
             "logits_sid": sid_logits,
+            "logits_fused": fused_sid_logits,
             "sid_fft96": sid_output["sid_fft96"] if sid_output is not None else None,
-            "sid_delta": sid_output["sid_delta"] if sid_output is not None else None,
-            "sid_delta_raw": sid_output["sid_delta_raw"] if sid_output is not None else None,
+            "sid_delta": sid_output.get("sid_delta") if sid_output is not None else None,
+            "sid_delta_raw": sid_output.get("sid_delta_raw") if sid_output is not None else None,
             "sid_group_norms": sid_output["sid_group_norms"] if sid_output is not None else None,
             "sid_valid_bin_ratio": sid_output["sid_valid_bin_ratio"] if sid_output is not None else None,
+            "sid_quality": sid_output.get("sid_quality") if sid_output is not None else None,
+            "sid_spectral_embedding": sid_output.get("spectral_embedding") if sid_output is not None else None,
+            "sid_spec_logits": sid_output.get("spectral_logits") if sid_output is not None else None,
+            "sid_fusion_gate": sid_output.get("fusion_gate") if sid_output is not None else None,
+            "sid_raw_margin": sid_output.get("raw_margin") if sid_output is not None else None,
+            "sid_spec_margin": sid_output.get("spectral_margin") if sid_output is not None else None,
+            "sid_js_divergence": sid_output.get("js_divergence") if sid_output is not None else None,
+            "sid_agreement": sid_output.get("agreement") if sid_output is not None else None,
         }
         if torch.is_tensor(tx_adv_logits):
             out["tx_adv_logits"] = tx_adv_logits
@@ -1472,6 +1526,10 @@ def build_dual_model(
     sid_mask_path: str = "",
     sid_residual_scale: float = 1.0,
     sid_max_residual_ratio: float = 0.0,
+    sid_architecture: str = "residual",
+    sid_fusion_mode: str = "fused",
+    sid_spectral_dim: int = 48,
+    sid_fusion_alpha_max: float = 0.20,
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -1547,4 +1605,8 @@ def build_dual_model(
         sid_mask_path=sid_mask_path,
         sid_residual_scale=sid_residual_scale,
         sid_max_residual_ratio=sid_max_residual_ratio,
+        sid_architecture=sid_architecture,
+        sid_fusion_mode=sid_fusion_mode,
+        sid_spectral_dim=sid_spectral_dim,
+        sid_fusion_alpha_max=sid_fusion_alpha_max,
     )

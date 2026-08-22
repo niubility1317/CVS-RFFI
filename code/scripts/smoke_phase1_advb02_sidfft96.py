@@ -28,6 +28,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--wisig_pkl", required=True)
     parser.add_argument("--sid_mask_path", required=True)
     parser.add_argument("--output_json", required=True)
+    parser.add_argument("--sid_architecture", choices=("residual", "hsid"), default="hsid")
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--seed", type=int, default=392002)
     parser.add_argument("--batch_size", type=int, default=4)
@@ -72,12 +73,18 @@ def main(argv: list[str] | None = None) -> int:
     model_args.sid_fft96_mode = "sid"
     model_args.sid_mask_path = str(cli.sid_mask_path)
     model_args.sid_residual_scale = 1.0
+    model_args.sid_max_residual_ratio = 0.10
+    model_args.sid_architecture = str(cli.sid_architecture)
+    model_args.sid_fusion_mode = "fused"
+    model_args.sid_spectral_dim = 48
+    model_args.sid_fusion_alpha_max = 0.20
     model_args.use_crra = False
     model_args.use_ntrs = False
     model = ssdg.build_baseline_model(model_args, device)
     sid_args = argparse.Namespace(
         sid_fft96_mode="sid",
         sid_adapter_only=True,
+        sid_architecture=str(cli.sid_architecture),
         ntrs_variant="v1",
     )
     load_report = ssdg._load_training_checkpoint_state(model, checkpoint, sid_args)
@@ -94,16 +101,28 @@ def main(argv: list[str] | None = None) -> int:
 
     model.train()
     output = model(x, y_tx=y, return_aux=True)
-    for key in ("tx_logits", "z_id", "logits_raw", "logits_sid", "z_id_raw", "z_id_sid", "sid_fft96"):
+    required = ["tx_logits", "z_id", "logits_raw", "logits_sid", "z_id_raw", "z_id_sid", "sid_fft96"]
+    if str(cli.sid_architecture) == "hsid":
+        required.extend(("logits_fused", "sid_spec_logits", "sid_spectral_embedding", "sid_quality"))
+    for key in required:
         value = output.get(key)
         if not torch.is_tensor(value) or not torch.isfinite(value).all():
             raise ValueError(f"non-finite or missing smoke output: {key}")
     raw_sid_logit_max_abs = float((output["logits_raw"] - output["logits_sid"]).abs().max().item())
     raw_sid_z_max_abs = float((output["z_id_raw"] - output["z_id_sid"]).abs().max().item())
-    if raw_sid_logit_max_abs > 1e-7 or raw_sid_z_max_abs > 1e-7:
-        raise ValueError("zero-initialized SID path is not identical to raw ADV3B02")
+    primary_raw_logit_max_abs = float((output["logits_raw"] - output["tx_logits"]).abs().max().item())
+    if str(cli.sid_architecture) == "residual":
+        if raw_sid_logit_max_abs > 1e-7 or raw_sid_z_max_abs > 1e-7:
+            raise ValueError("zero-initialized residual SID path is not identical to raw ADV3B02")
+        smoke_loss = F.cross_entropy(output["tx_logits"].float(), y)
+    else:
+        if primary_raw_logit_max_abs > 1e-7 or raw_sid_z_max_abs > 1e-7:
+            raise ValueError("zero-initialized HSID fusion does not preserve raw ADV3B02")
+        smoke_loss = F.cross_entropy(output["tx_logits"].float(), y) + F.cross_entropy(
+            output["sid_spec_logits"].float(), y
+        )
 
-    F.cross_entropy(output["tx_logits"].float(), y).backward()
+    smoke_loss.backward()
     gradient_names = sorted(name for name, parameter in model.named_parameters() if parameter.grad is not None)
     if not gradient_names or any(not name.startswith("sid_fft96.") for name in gradient_names):
         raise ValueError(f"gradient escaped the SID whitelist: {gradient_names}")
@@ -113,6 +132,7 @@ def main(argv: list[str] | None = None) -> int:
         "checkpoint": str(cli.checkpoint),
         "sid_mask_path": str(cli.sid_mask_path),
         "batch_role": "L_s",
+        "sid_architecture": str(cli.sid_architecture),
         "batch_size": int(y.numel()),
         "source_sample_count": int(y.numel()),
         "query_input_count": 0,
@@ -121,6 +141,7 @@ def main(argv: list[str] | None = None) -> int:
         "unexpected_keys": list(load_report["unexpected_keys"]),
         "raw_sid_logit_max_abs": raw_sid_logit_max_abs,
         "raw_sid_z_max_abs": raw_sid_z_max_abs,
+        "primary_raw_logit_max_abs": primary_raw_logit_max_abs,
         "all_outputs_finite": True,
         "gradient_parameter_names": gradient_names,
         **trainable_report,
