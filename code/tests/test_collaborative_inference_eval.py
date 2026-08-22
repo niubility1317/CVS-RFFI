@@ -1,9 +1,11 @@
 import sys
 import unittest
 import argparse
+import tempfile
 from pathlib import Path
 from types import SimpleNamespace
 
+import numpy as np
 import torch
 from torch.utils.data import DataLoader, Dataset
 
@@ -88,6 +90,40 @@ class _LogitModel(torch.nn.Module):
 
 
 class CollaborativeInferenceEvalTest(unittest.TestCase):
+    def test_checkpoint_model_rebuild_restores_sid_residual_cap(self):
+        from evaluation.collaborative_inference_eval import build_model_from_checkpoint_args
+
+        with tempfile.TemporaryDirectory() as directory:
+            mask_path = Path(directory) / "sid_mask.npz"
+            np.savez_compressed(mask_path, mask=np.ones(64, dtype=np.uint8))
+            context = SimpleNamespace(
+                num_classes=3,
+                num_domains=2,
+                input_len=64,
+                ckpt_args={
+                    "model_size": "S",
+                    "model_variant": "lite_h",
+                    "branch_ablation": "none",
+                    "domain_branch_ablation": "same",
+                    "sid_fft96_mode": "sid",
+                    "sid_mask_path": str(mask_path),
+                    "sid_residual_scale": 1.0,
+                    "sid_max_residual_ratio": 0.10,
+                },
+            )
+            overrides = argparse.Namespace(
+                sample_rate_hz=0.0,
+                model_size="",
+                model_variant="",
+                branch_ablation="",
+                domain_branch_ablation="",
+            )
+
+            model = build_model_from_checkpoint_args(context, overrides, torch.device("cpu"))
+
+        self.assertIsNotNone(model.sid_fft96)
+        self.assertAlmostEqual(model.sid_fft96.max_residual_ratio, 0.10)
+
     def test_checkpoint_model_rebuild_restores_ntrs_v2_structure_flags(self):
         from evaluation.collaborative_inference_eval import build_model_from_checkpoint_args
 

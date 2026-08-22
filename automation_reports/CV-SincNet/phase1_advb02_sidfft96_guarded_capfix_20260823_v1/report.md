@@ -19,7 +19,7 @@
 |必评场景|clean、`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`|
 |本地工作区|`E:\type10-7\github_publish\CVS-RFFI-repo\.worktrees\advb02-sid-capfix-20260823`|
 |Git分支|`codex/advb02-sid-capfix-20260823`|
-|Git提交|待本地验证与一次P0/P1审查后写回|
+|Git提交|训练构建修复`52fc45852828f2d336fe65849394648bf2ed9265`；评估重建定点修复待提交|
 |N607环境/CWD|`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；release目录待提交后冻结|
 |运行目录|`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_advb02_sidfft96_guarded_capfix_20260823_v1`|
 |日志目录|`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_advb02_sidfft96_guarded_capfix_20260823_v1`|
@@ -43,6 +43,7 @@
 |R2|逐样本残差范数不超过原始身份嵌入的10%|`SIDFFT96Residual.forward`既有裁剪逻辑|构建后实际SID前向并检查每个样本比值|`VERIFIED_LOCAL`|
 |R3|真实checkpoint无query smoke且仅SID参数可训练|既有smoke与训练配置|本地真实checkpoint smoke|`PENDING`|
 |R4|只重跑修正S3G并闭合clean及三种LEO_WEAK|既有guarded launcher的`--only=S3G`|N607完整artifact与同row评分|`PENDING`|
+|R5|独立最终评估重建保持相同的0.10上界|`code/evaluation/collaborative_inference_eval.py::build_model_from_checkpoint_args`|checkpoint参数驱动的实际评估模型构建测试|`VERIFIED_LOCAL`|
 
 ## 工作区隔离说明
 
@@ -56,4 +57,11 @@
 - 新测试将SID projector权重放大后执行实际前向，4/4个样本的残差比均不超过`0.100001`。
 - `py_compile`、launcher语法检查与`git diff --check`均通过。
 
-据此，R1和R2状态更新为`VERIFIED_LOCAL`；R3等待真实ADV3B02 checkpoint无query smoke，R4等待N607真实性能artifact。
+据此，R1、R2和R5状态更新为`VERIFIED_LOCAL`；R3等待真实ADV3B02 checkpoint无query smoke，R4等待N607真实性能artifact。
+
+## 独立P0/P1审查与定点修复
+
+- 首次独立审查未发现P0，但发现1个P1：训练公共构建器已得到0.10，launcher调用的独立最终评估构建器仍漏传该参数，导致clean及三种LEO_WEAK可能以0.0上界评估。
+- 按TDD定点复现：checkpoint参数为0.10时，修复前评估模型运行时属性为0.0。
+- 最小修复：仅在评估构建器增加同一参数透传；对应测试转绿，训练/评估两条构建路径及相关SID、launcher测试共29项通过。
+- 首版release`phase1_advb02_sidfft96_guarded_capfix_52fc4585`在审查返回前只完成归档传输、SHA核对、远端编译和dry-run，从未启动训练，现标记为`SUPERSEDED_NOT_LAUNCHED`。真实实验只能使用包含评估修复的新release。
