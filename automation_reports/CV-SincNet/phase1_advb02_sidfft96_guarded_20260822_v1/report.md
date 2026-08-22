@@ -3,7 +3,7 @@
 ## 当前状态
 
 - run ID：`phase1_advb02_sidfft96_guarded_20260822_v1`
-- 状态：`LOCAL_TDD_RED`
+- 状态：`READY_TO_LAUNCH`
 - 目的：验证首轮坍缩是否由SID适配器承受冻结Core90辅助损失并形成无界残差所致。
 - 结论边界：本报告当前只记录诊断和预登记，不声明修复有效或优于CORE90。
 
@@ -32,7 +32,30 @@ S3G只包含同一机制边界内的三项修复：逐样本残差范数不超�
 - seed：`392002`。
 - 必评场景：clean、`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`。
 - 本地CWD：`E:\type10-7\github_publish\CVS-RFFI-repo\.worktrees\advb02-ntrs-leo-weak-20260820`。
-- N607 CWD、release、run root、log root、GPU和精确命令在本地验证完成后回填。
+- Git提交：`633da733b9c849592b9f90eeaf11f031095b949e`；远端分支OID与本地`HEAD`一致。
+- N607 release：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_sidfft96_guarded_633da733`。
+- run root：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_advb02_sidfft96_guarded_20260822_v1`。
+- log root：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_advb02_sidfft96_guarded_20260822_v1`。
+- GPU：S0使用GPU0，S3G使用GPU1；发布前8张GPU均无计算进程。
+
+## 本地与release验证
+
+- 新增测试先因受控接口不存在而失败，修复后SID相关22项测试全部通过。
+- 三个Python模块`py_compile`、launcher`bash -n`、训练参数dry-run和`git diff --check`通过。
+- release归档：`E:\type10-7\local_artifacts\releases\phase1_advb02_sidfft96_guarded_20260822_v1\phase1_advb02_sidfft96_guarded_633da733.tar.gz`。
+- 远端归档：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_sidfft96_guarded_633da733.tar.gz`。
+- 唯一归档SHA-256：本地与远端均为`0023abf9a98c6344d7204361d0b92b297b12ac74d62e653e9c5c0a19c1f36de0`，状态`VERIFIED`。
+- 远端编译、import与launcher dry-run为`VERIFIED`；远端未安装pytest，重复单元测试记为`NONBLOCKING`，未增加安装或发布gate。
+- 真实ADV3B02 checkpoint无query smoke：只读取4个`L_s`样本，`query_input_count=0`、`target_input_count=0`；raw/SID logits与嵌入最大差均为0，非SID可训练参数为0，梯度只进入4个SID projector参数，状态`VERIFIED`。
+
+## 精确发布命令
+
+在release CWD下分别以不可覆盖输出启动：
+
+```bash
+ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_sidfft96_guarded_633da733 RUNS_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_advb02_sidfft96_guarded_20260822_v1 LOG_ROOT=/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_advb02_sidfft96_guarded_20260822_v1 WISIG_PKL=/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl BASELINE_CKPT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth SID_MASK_PATH=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_advb02_sidfft96_leo_weak_20260821_v1/P0_SPECTRAL_AUDIT/sid_mask.npz GPU_S0=0 bash code/scripts/launch_phase1_advb02_sidfft96_guarded_20260822.sh --only=S0
+ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_sidfft96_guarded_633da733 RUNS_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_advb02_sidfft96_guarded_20260822_v1 LOG_ROOT=/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_advb02_sidfft96_guarded_20260822_v1 WISIG_PKL=/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl BASELINE_CKPT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth SID_MASK_PATH=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_advb02_sidfft96_leo_weak_20260821_v1/P0_SPECTRAL_AUDIT/sid_mask.npz GPU_S3G=1 bash code/scripts/launch_phase1_advb02_sidfft96_guarded_20260822.sh --only=S3G
+```
 
 ## 停止与判定规则
 
