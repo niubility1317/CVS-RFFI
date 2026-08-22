@@ -1057,7 +1057,9 @@ def route_fasttrust_rc4(
         hard_cells = cells[hard]
         counts = torch.bincount(hard_cells, minlength=int(cells.max().item()) + 1).float()
         mean_count = counts[counts > 0].mean().clamp_min(1.0)
-        balance[hard] = torch.sqrt(mean_count / counts[hard_cells].clamp_min(1.0)).clamp(max=4.0)
+        balance[hard] = torch.sqrt(
+            mean_count / counts[hard_cells].clamp_min(1.0)
+        ).clamp(max=4.0).to(balance.dtype)
     weights = (risk_weight * agree_weight * set_weight * balance).clamp(0.0, 4.0)
     weights = torch.where(hard | partial | negative, weights, torch.zeros_like(weights))
     return RC4Route(

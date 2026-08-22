@@ -99,6 +99,42 @@ def test_rc4_route_partitions_h_p_n_r_without_any_fill():
     assert torch.all(route.weights <= 4.0)
 
 
+def test_rc4_class_receiver_balance_preserves_amp_dtype():
+    anchor, ema1, ema2, labels, domains, z_norm = _calibration_fixture()
+    package = build_rc4_calibration(
+        anchor,
+        ema1,
+        ema2,
+        labels,
+        domains,
+        z_norm,
+        num_classes=3,
+        num_domains=2,
+        folds=2,
+        min_stratum_samples=2,
+        hard_precision_target=0.80,
+        partial_coverage_target=0.80,
+        negative_false_exclusion_target=0.20,
+    )
+
+    with torch.autocast(device_type="cpu", dtype=torch.bfloat16):
+        route = route_fasttrust_rc4(
+            anchor,
+            ema1,
+            ema2,
+            domains=domains,
+            receivers=domains,
+            z_norm=z_norm,
+            calibration=package,
+            hard_max_fraction=1.0,
+            candidate_max_classes=3,
+            class_receiver_cap=True,
+        )
+
+    assert route.hard.any()
+    assert torch.isfinite(route.weights).all()
+
+
 def test_rc4_losses_use_full_u_denominator_and_do_not_train_teacher():
     student = torch.tensor(
         [[3.0, 0.0, -1.0], [0.0, 2.0, 1.0], [0.0, 1.0, 2.0], [1.0, 1.0, 1.0]],
