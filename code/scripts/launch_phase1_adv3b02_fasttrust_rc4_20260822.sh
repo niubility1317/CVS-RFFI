@@ -9,6 +9,8 @@ MATRIX="${MATRIX:-${CODE_ROOT}/configs/phase1_adv3b02_fasttrust_rc4_s392002_2026
 RUN_ID="${RUN_ID:-phase1_adv3b02_fasttrust_rc4_s392002_20260822}"
 RUNS_ROOT="${RUNS_ROOT:-${ROOT}/runs/${RUN_ID}}"
 WORKER="${WORKER:-${CODE_ROOT}/code/scripts/launch_phase1_adv3b02_muse_ssdg_20260819.sh}"
+RESOURCE_SLOT_LIMIT="${RESOURCE_SLOT_LIMIT:-2}"
+RESOURCE_POLL_SECONDS="${RESOURCE_POLL_SECONDS:-60}"
 DRY_RUN=0
 [[ "${1:-}" == "--dry-run" ]] && DRY_RUN=1
 [[ -f "${MATRIX}" && -f "${WORKER}" ]] || { echo "[RC4-ERROR] matrix/worker missing" >&2; exit 2; }
@@ -38,6 +40,21 @@ run_row() {
     RC4_SATELLITE="${satellite}" bash "${WORKER}" --only=M3 "${extra[@]}"
 }
 
+wait_for_gpu_slot() {
+  local gpu="$1" uuid count
+  uuid="$(nvidia-smi --query-gpu=index,uuid --format=csv,noheader,nounits | awk -F ', ' -v gpu="${gpu}" '$1==gpu {print $2}')"
+  [[ -n "${uuid}" ]] || { echo "[RC4-ERROR] cannot resolve GPU${gpu} UUID" >&2; return 2; }
+  while true; do
+    count="$(nvidia-smi --query-compute-apps=gpu_uuid --format=csv,noheader,nounits 2>/dev/null | awk -v uuid="${uuid}" '$1==uuid {n++} END{print n+0}')"
+    if (( count < RESOURCE_SLOT_LIMIT )); then
+      echo "[RC4-SLOT] gpu=${gpu} compute_apps=${count} limit=${RESOURCE_SLOT_LIMIT} action=launch"
+      return 0
+    fi
+    echo "[RC4-SLOT-WAIT] gpu=${gpu} compute_apps=${count} limit=${RESOURCE_SLOT_LIMIT} poll=${RESOURCE_POLL_SECONDS}s"
+    sleep "${RESOURCE_POLL_SECONDS}"
+  done
+}
+
 echo "[RC4-RUN] run_id=${RUN_ID} rows=${#ROWS[@]} dry_run=${DRY_RUN} U=256"
 if [[ "${DRY_RUN}" == 1 ]]; then
   for row in "${ROWS[@]}"; do IFS=$'\t' read -r gpu candidate anchor calibration hard partial negative cap satellite checkpoint <<<"${row}"; echo "[RC4-ROW] gpu=${gpu} candidate=${candidate} H=${hard} P=${partial} N=${negative} cap=${cap} sat=${satellite}"; run_row "$gpu" "$candidate" "$anchor" "$calibration" "$hard" "$partial" "$negative" "$cap" "$satellite" "$checkpoint"; done
@@ -46,7 +63,7 @@ fi
 [[ ! -e "${RUNS_ROOT}" ]] || { echo "[RC4-ERROR] refusing overwrite: ${RUNS_ROOT}" >&2; exit 3; }
 mkdir -p "${RUNS_ROOT}/dispatcher_logs"
 pids=(); names=()
-for row in "${ROWS[@]}"; do IFS=$'\t' read -r gpu candidate anchor calibration hard partial negative cap satellite checkpoint <<<"${row}"; (run_row "$gpu" "$candidate" "$anchor" "$calibration" "$hard" "$partial" "$negative" "$cap" "$satellite" "$checkpoint") >"${RUNS_ROOT}/dispatcher_logs/${candidate}.log" 2>&1 & pids+=("$!"); names+=("${candidate}"); done
+for row in "${ROWS[@]}"; do IFS=$'\t' read -r gpu candidate anchor calibration hard partial negative cap satellite checkpoint <<<"${row}"; (wait_for_gpu_slot "$gpu" && run_row "$gpu" "$candidate" "$anchor" "$calibration" "$hard" "$partial" "$negative" "$cap" "$satellite" "$checkpoint") >"${RUNS_ROOT}/dispatcher_logs/${candidate}.log" 2>&1 & pids+=("$!"); names+=("${candidate}"); done
 failed=0
 for i in "${!pids[@]}"; do wait "${pids[$i]}" || { echo "[RC4-WORKER-FAILED] ${names[$i]}" >&2; failed=1; }; done
 [[ "${failed}" == 0 ]] || exit 4

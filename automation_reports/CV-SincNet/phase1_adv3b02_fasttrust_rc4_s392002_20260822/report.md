@@ -60,3 +60,7 @@ run_id=`phase1_adv3b02_fasttrust_rc4_s392002_20260822`
 ## 停止规则与声明边界
 
 只因协议/query泄漏、错误split/seed/矩阵、输出覆盖、错误checkout、无prediction闭合、确定性重复异常或进程归属不清停止；不得因中期性能差停止。当前只有实现与本地验证证据，没有N607运行结果，不能声称RC4提高了伪标签精度或最终性能。
+
+## N607发布前资源读回
+
+2026-08-22 18:41 CST直连preflight为`VERIFIED`：项目根可见，8张RTX3090可见，home剩余约7.3TiB。GPU0、2–7各有1个现有训练compute app；GPU1有2个。dispatcher设置`RESOURCE_SLOT_LIMIT=2`：有槽位的7行立即启动，GPU1的P1只读轮询并在compute app少于2时启动；不干预SIDFFT96或已运行SAT-Anchor任务。
