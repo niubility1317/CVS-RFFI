@@ -435,6 +435,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--rc4_class_receiver_cap", type=str2bool, default=True)
     parser.add_argument("--rc4_satellite_hard_only", type=str2bool, default=False)
     parser.add_argument("--rc4_identity_start_epoch", type=int, default=11)
+    parser.add_argument("--rc4_consolidation_start_epoch", type=int, default=181)
     parser.add_argument("--rc4_calibration_update_epochs", type=str, default="1,41,91,161")
     parser.add_argument("--rc4_lambda_hard", type=float, default=0.60)
     parser.add_argument("--rc4_lambda_partial", type=float, default=0.40)
@@ -5962,7 +5963,9 @@ def _compute_rc4_unlabeled_losses(*, route, ema_outputs, student_views, domains,
         if bool(args.rc4_satellite_hard_only) and float(args.rc4_lambda_satellite) > 0.0
         else zero
     )
-    identity_scale = 0.4 if int(epoch) >= 181 else 1.0
+    identity_scale = (
+        0.4 if int(epoch) >= int(args.rc4_consolidation_start_epoch) else 1.0
+    )
     total = (
         identity_scale * (
             float(args.rc4_lambda_hard) * identity["hard"]

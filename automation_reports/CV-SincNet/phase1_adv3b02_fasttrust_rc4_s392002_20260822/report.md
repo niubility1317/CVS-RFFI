@@ -1,5 +1,7 @@
 # FastTrust-RC4风险校准四态伪标签实验报告
 
+> `SUPERSEDED_DO_NOT_LAUNCH`：用户已将训练预算压缩为50/100epoch。本报告保留为200epoch设计记录，正式发布转入`phase1_adv3b02_fasttrust_rc4_e50e100_s392002_20260822`。
+
 ## 当前状态
 
 `LOCAL_VERIFIED`

@@ -15,6 +15,14 @@ INIT_MODE="${INIT_MODE:-scratch}"
 BASE_CKPT="${BASE_CKPT:-${ROOT}/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth}"
 CANDIDATE_ID_OVERRIDE="${CANDIDATE_ID_OVERRIDE:-}"
 MUSE_UNLABELED_BATCH_SIZE="${MUSE_UNLABELED_BATCH_SIZE:-256}"
+TOTAL_EPOCHS="${TOTAL_EPOCHS:-200}"
+LABEL_EPOCHS="${LABEL_EPOCHS:-130}"
+PSEUDO_EPOCHS="${PSEUDO_EPOCHS:-70}"
+MUSE_S2A_START="${MUSE_S2A_START:-17}"
+MUSE_S2B_START="${MUSE_S2B_START:-41}"
+MUSE_S3A_START="${MUSE_S3A_START:-69}"
+MUSE_S3B_START="${MUSE_S3B_START:-161}"
+MUSE_S3C_START="${MUSE_S3C_START:-181}"
 SAT_ANCHOR_SSL="${SAT_ANCHOR_SSL:-false}"
 SAT_ANCHOR_LAMBDA_PAIR="${SAT_ANCHOR_LAMBDA_PAIR:-0.02}"
 SAT_ANCHOR_PAIR_INTERVAL="${SAT_ANCHOR_PAIR_INTERVAL:-1}"
@@ -32,6 +40,9 @@ RC4_ENABLE_PARTIAL="${RC4_ENABLE_PARTIAL:-true}"
 RC4_ENABLE_NEGATIVE="${RC4_ENABLE_NEGATIVE:-true}"
 RC4_CLASS_RX_CAP="${RC4_CLASS_RX_CAP:-true}"
 RC4_SATELLITE="${RC4_SATELLITE:-false}"
+RC4_IDENTITY_START="${RC4_IDENTITY_START:-11}"
+RC4_CONSOLIDATION_START="${RC4_CONSOLIDATION_START:-181}"
+RC4_CALIBRATION_EPOCHS="${RC4_CALIBRATION_EPOCHS:-1,41,91,161}"
 DRY_RUN=0
 ONLY_CANDIDATES="M0,M1,M2,M3"
 
@@ -171,10 +182,10 @@ build_train_command() {
     --run_id "${RUN_ID}"
     --candidate_id "${candidate_id}"
     --base_candidate ADV3B02_CORE90_SOFT_E200
-    --epochs 200
+    --epochs "${TOTAL_EPOCHS}"
     --batch_size 128
-    --label_epochs 130
-    --pseudo_epochs 70
+    --label_epochs "${LABEL_EPOCHS}"
+    --pseudo_epochs "${PSEUDO_EPOCHS}"
     --phase1_source_val_selection_only true
     --checkpoint_selection final_only
     --best_metric source_val_sat_hmean
@@ -193,7 +204,12 @@ build_train_command() {
     --muse_lr_schedule fasttrust
     --muse_hard_max_fraction 0.25
     --muse_identity_max_fraction 0.50
-    --muse_final_epoch 200
+    --muse_s2a_start "${MUSE_S2A_START}"
+    --muse_s2b_start "${MUSE_S2B_START}"
+    --muse_s3a_start "${MUSE_S3A_START}"
+    --muse_s3b_start "${MUSE_S3B_START}"
+    --muse_s3c_start "${MUSE_S3C_START}"
+    --muse_final_epoch "${TOTAL_EPOCHS}"
     --use_unlabeled true
     --use_phase2_ground_prototypes true
     --use_feature_masks true
@@ -378,8 +394,9 @@ build_train_command() {
       --rc4_enable_negative "${RC4_ENABLE_NEGATIVE}"
       --rc4_class_receiver_cap "${RC4_CLASS_RX_CAP}"
       --rc4_satellite_hard_only "${RC4_SATELLITE}"
-      --rc4_identity_start_epoch 11
-      --rc4_calibration_update_epochs 1,41,91,161
+      --rc4_identity_start_epoch "${RC4_IDENTITY_START}"
+      --rc4_consolidation_start_epoch "${RC4_CONSOLIDATION_START}"
+      --rc4_calibration_update_epochs "${RC4_CALIBRATION_EPOCHS}"
       --rc4_lambda_hard 0.60
       --rc4_lambda_partial 0.40
       --rc4_lambda_negative 0.20

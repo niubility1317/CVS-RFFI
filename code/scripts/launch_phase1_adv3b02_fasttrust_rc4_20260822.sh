@@ -6,7 +6,7 @@ CODE_ROOT="${CODE_ROOT:-${ROOT}}"
 PYTHON="${PYTHON:-/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python}"
 CONTROL_PYTHON="${CONTROL_PYTHON:-${PYTHON}}"
 MATRIX="${MATRIX:-${CODE_ROOT}/configs/phase1_adv3b02_fasttrust_rc4_s392002_20260822.json}"
-RUN_ID="${RUN_ID:-phase1_adv3b02_fasttrust_rc4_s392002_20260822}"
+RUN_ID="${RUN_ID:-phase1_adv3b02_fasttrust_rc4_e50e100_s392002_20260822}"
 RUNS_ROOT="${RUNS_ROOT:-${ROOT}/runs/${RUN_ID}}"
 WORKER="${WORKER:-${CODE_ROOT}/code/scripts/launch_phase1_adv3b02_muse_ssdg_20260819.sh}"
 RESOURCE_SLOT_LIMIT="${RESOURCE_SLOT_LIMIT:-2}"
@@ -19,20 +19,31 @@ mapfile -t ROWS < <("${CONTROL_PYTHON}" -c '
 import json, sys
 from pathlib import Path
 d=json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
-assert d["schema"]=="cvs.phase1.fasttrust_rc4_matrix.v1" and d["seed"]==392002 and d["epochs"]==200
+assert d["schema"]=="cvs.phase1.fasttrust_rc4_compressed_matrix.v1" and d["seed"]==392002 and d["epoch_budgets"]==[50,100]
 rows=d["rows"]
 assert len(rows)==8 and {r["gpu"] for r in rows}==set(range(8)) and len({r["candidate"] for r in rows})==8
 for r in rows:
- print("\t".join([str(r["gpu"]),r["candidate"]]+[str(bool(r[k])).lower() for k in ("anchor","calibration","hard","partial","negative","class_rx_cap","satellite")]+[d["base_checkpoint"]]))
+ assert r["epochs"] in (50,100)
+ print("\t".join([str(r["gpu"]),str(r["epochs"]),r["candidate"]]+[str(bool(r[k])).lower() for k in ("anchor","calibration","hard","partial","negative","class_rx_cap","satellite")]+[d["base_checkpoint"]]))
 ' "${MATRIX}")
 
 run_row() {
-  local gpu="$1" candidate="$2" anchor="$3" calibration="$4" hard="$5" partial="$6" negative="$7" cap="$8" satellite="$9" checkpoint="${10}"
+  local gpu="$1" epochs="$2" candidate="$3" anchor="$4" calibration="$5" hard="$6" partial="$7" negative="$8" cap="$9" satellite="${10}" checkpoint="${11}"
   checkpoint="${checkpoint%$'\r'}"
-  local extra=()
+  local extra=() label_epochs pseudo_epochs s2a s2b s3a s3b s3c identity_start consolidation calibration_epochs
+  if [[ "${epochs}" == 50 ]]; then
+    label_epochs=33; pseudo_epochs=17; s2a=5; s2b=11; s3a=18; s3b=41; s3c=46; identity_start=4; consolidation=46; calibration_epochs=1,11,24,41
+  elif [[ "${epochs}" == 100 ]]; then
+    label_epochs=65; pseudo_epochs=35; s2a=9; s2b=21; s3a=35; s3b=81; s3c=91; identity_start=6; consolidation=91; calibration_epochs=1,21,46,81
+  else
+    echo "[RC4-ERROR] unsupported epoch budget: ${epochs}" >&2; return 2
+  fi
   [[ "${DRY_RUN}" == 1 ]] && extra+=(--dry-run)
   env ROOT="${ROOT}" CODE_ROOT="${CODE_ROOT}" PYTHON="${PYTHON}" CONTROL_PYTHON="${CONTROL_PYTHON}" \
     RUN_ID="${RUN_ID}" RUNS_ROOT="${RUNS_ROOT}" GPU="${gpu}" INIT_MODE=adv3b02_core90 \
+    TOTAL_EPOCHS="${epochs}" LABEL_EPOCHS="${label_epochs}" PSEUDO_EPOCHS="${pseudo_epochs}" \
+    MUSE_S2A_START="${s2a}" MUSE_S2B_START="${s2b}" MUSE_S3A_START="${s3a}" MUSE_S3B_START="${s3b}" MUSE_S3C_START="${s3c}" \
+    RC4_IDENTITY_START="${identity_start}" RC4_CONSOLIDATION_START="${consolidation}" RC4_CALIBRATION_EPOCHS="${calibration_epochs}" \
     BASE_CKPT="${ROOT}/${checkpoint}" CANDIDATE_ID_OVERRIDE="${candidate}" ABLATION=NONE \
     MUSE_UNLABELED_BATCH_SIZE=256 FASTTRUST_RC4=true SAT_ANCHOR_SSL=false \
     RC4_USE_ANCHOR="${anchor}" RC4_USE_CALIBRATION="${calibration}" RC4_ENABLE_HARD="${hard}" \
@@ -55,15 +66,15 @@ wait_for_gpu_slot() {
   done
 }
 
-echo "[RC4-RUN] run_id=${RUN_ID} rows=${#ROWS[@]} dry_run=${DRY_RUN} U=256"
+echo "[RC4-RUN] run_id=${RUN_ID} rows=${#ROWS[@]} dry_run=${DRY_RUN} budgets=50,100 U=256"
 if [[ "${DRY_RUN}" == 1 ]]; then
-  for row in "${ROWS[@]}"; do IFS=$'\t' read -r gpu candidate anchor calibration hard partial negative cap satellite checkpoint <<<"${row}"; echo "[RC4-ROW] gpu=${gpu} candidate=${candidate} H=${hard} P=${partial} N=${negative} cap=${cap} sat=${satellite}"; run_row "$gpu" "$candidate" "$anchor" "$calibration" "$hard" "$partial" "$negative" "$cap" "$satellite" "$checkpoint"; done
+  for row in "${ROWS[@]}"; do IFS=$'\t' read -r gpu epochs candidate anchor calibration hard partial negative cap satellite checkpoint <<<"${row}"; echo "[RC4-ROW] gpu=${gpu} epochs=${epochs} candidate=${candidate} H=${hard} P=${partial} N=${negative} cap=${cap} sat=${satellite}"; run_row "$gpu" "$epochs" "$candidate" "$anchor" "$calibration" "$hard" "$partial" "$negative" "$cap" "$satellite" "$checkpoint"; done
   exit 0
 fi
 [[ ! -e "${RUNS_ROOT}" ]] || { echo "[RC4-ERROR] refusing overwrite: ${RUNS_ROOT}" >&2; exit 3; }
 mkdir -p "${RUNS_ROOT}/dispatcher_logs"
 pids=(); names=()
-for row in "${ROWS[@]}"; do IFS=$'\t' read -r gpu candidate anchor calibration hard partial negative cap satellite checkpoint <<<"${row}"; (wait_for_gpu_slot "$gpu" && run_row "$gpu" "$candidate" "$anchor" "$calibration" "$hard" "$partial" "$negative" "$cap" "$satellite" "$checkpoint") >"${RUNS_ROOT}/dispatcher_logs/${candidate}.log" 2>&1 & pids+=("$!"); names+=("${candidate}"); done
+for row in "${ROWS[@]}"; do IFS=$'\t' read -r gpu epochs candidate anchor calibration hard partial negative cap satellite checkpoint <<<"${row}"; (wait_for_gpu_slot "$gpu" && run_row "$gpu" "$epochs" "$candidate" "$anchor" "$calibration" "$hard" "$partial" "$negative" "$cap" "$satellite" "$checkpoint") >"${RUNS_ROOT}/dispatcher_logs/${candidate}.log" 2>&1 & pids+=("$!"); names+=("${candidate}"); done
 failed=0
 for i in "${!pids[@]}"; do wait "${pids[$i]}" || { echo "[RC4-WORKER-FAILED] ${names[$i]}" >&2; failed=1; }; done
 [[ "${failed}" == 0 ]] || exit 4
