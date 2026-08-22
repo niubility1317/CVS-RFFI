@@ -1,6 +1,6 @@
 # ADV3B02 CORE90 CVS-HSID最小实验报告
 
-状态：`LOCAL_VERIFIED / P0P1_REVIEW_PASS / RELEASE_PENDING`
+状态：`LOCAL_VERIFIED / P0P1_REVIEW_PASS / N607_PREFLIGHT_PASS / RELEASE_PENDING`
 
 ## 1.目标与边界
 
@@ -66,15 +66,19 @@
 
 ## 5.发布预登记
 
-- 环境：本地`ssr-gpu`；远端环境在preflight后记录。
-- CWD：本地为上述隔离工作树；远端计划为单一不可覆盖release目录。
+- 实现提交：`445a966b2f53fadcc9a807c625a776d295e93590`；已推送到`origin/codex/advb02-hsid-20260823`并独立核对远端OID一致。
+- 环境：本地`ssr-gpu`；远端Python=`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
+- CWD：本地为上述隔离工作树；远端为`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_hsid_minimal_s392002_20260823_v1-<release-commit8>`。
 - 输入：上述ADV3B02 CORE90 checkpoint与Phase1 source划分。
 - 输出：`runs/phase1_advb02_hsid_minimal_s392002_20260823_v1/`。
 - 日志：`logs/phase1_advb02_hsid_minimal_s392002_20260823_v1/`。
-- GPU：由发布前N607资源preflight确定；每GPU不超过2个训练进程。
+- GPU：GPU0/GPU1。2026-08-23 02:55 CST直接N607只读preflight通过；两卡当时各有1个既有训练进程，本实验每卡再发布1个并保持上限2。其余既有进程不干预。
 - 技术停止规则：仅在协议/query泄漏、错误checkpoint/checkout/row、输出冲突、无prediction闭合、确定性重复异常、OOM/NaN或进程归属不清时停止精确run-owned进程树；不得因低性能停止。
 - 预期artifact：分层mask与统计、每row checkpoint和训练日志、clean与三种LEO_WEAK结果、逐样本raw/spec/fused prediction、paired rescue/harm字段、terminal status。
-- 精确启动命令、Git提交、release归档映射、远端环境/CWD和GPU分配将在launcher冻结及preflight后补入本节。
+- 资源与路径：项目盘剩余7.3TB；ManySig、基线checkpoint和远端Python均存在；本run的`runs/`、`logs/`和release目标均不存在。
+- P0准备命令：`cd <release> && RUN_ID=phase1_advb02_hsid_minimal_s392002_20260823_v1 GPU_0=0 GPU_1=1 bash code/scripts/launch_phase1_advb02_hsid_20260823.sh --prepare-p0 --only=R3,X0,F0,X2`。
+- 正式启动命令：`cd <release> && nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet RUN_ID=phase1_advb02_hsid_minimal_s392002_20260823_v1 GPU_0=0 GPU_1=1 MAX_ACTIVE_PER_GPU=2 bash code/scripts/launch_phase1_advb02_hsid_20260823.sh --only=S0,R3,X0,F0,X2 > /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_advb02_hsid_minimal_s392002_20260823_v1/driver.out 2>&1 < /dev/null &`。
+- release同步：对一个Git release归档执行一次本地/远端SHA-256比较，远端解压后只执行一次Python编译和launcher语法检查；不增加成员hash、seal或receipt。
 
 ## 6.额外gate处理
 
