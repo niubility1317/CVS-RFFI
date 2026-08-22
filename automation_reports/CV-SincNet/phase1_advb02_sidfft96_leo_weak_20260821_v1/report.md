@@ -2,7 +2,7 @@
 
 ## 当前结论
 
-- 状态：`READY_QUEUED`；N607矩阵已发布，因全部GPU达到并发上限而尚未启动。
+- 状态：`LAUNCHING`；2026-08-22资源复核出现合法空槽，开始按依赖顺序发布正式row。
 - 本轮仅发布前端频谱可辨识性路线P0与S0–S3单seed矩阵；尚无N607性能结果，不声明优于CORE90。
 - 基座固定为`ADV3B02_CORE90_SOFT_E200`，不修改Phase2/Phase3，不使用target/query，不与NTRS或CRRA组合。
 
@@ -60,6 +60,8 @@ bash code/scripts/launch_phase1_advb02_sidfft96_leo_weak_20260821.sh --only=S3
 
 GPU由发布时只读preflight后通过`GPU_P0/GPU_S0/GPU_S1/GPU_S2/GPU_S3`记录；每GPU训练进程不超过2个。
 
+2026-08-22实际分配：`GPU_P0=0`、`GPU_S0=1`、`GPU_S1=2`、`GPU_S2=4`、`GPU_S3=5`。P0与S0先行；S1–S3仅在P0的`sid_mask.npz`完整后启动。
+
 ## 本地验证与独立审查
 
 - 聚焦测试：SID相关21项及直接稳定性测试4项，共25项通过；`py_compile`、launcher`bash -n`和`git diff --check`通过。
@@ -84,6 +86,7 @@ GPU由发布时只读preflight后通过`GPU_P0/GPU_S0/GPU_S1/GPU_S2/GPU_S3`记�
 - 远端解压文件数：16；远端关键Python模块编译、launcher语法检查和完整矩阵dry-run均为`VERIFIED`。
 - dry-run回读固定矩阵`P0,S0,S1,S2,S3`、seed`392002`、比例`0.07/0.63/0.15/0.15`及三种LEO_WEAK场景。
 - 当前8张GPU各有2个既有计算进程，P0/S0/S1/S2/S3均未启动；未创建PID、未占用额外GPU、未修改现有run。合法空槽出现后，按预登记独立row命令启动并执行一次PID/CWD/cmdline/GPU/log增长检查。
+- 2026-08-22 11:39:51（Asia/Hong_Kong）再次直连复核：GPU0、1、2、4、5、6、7无计算进程，GPU3仅1个既有进程；正式run/log root仍不存在，release、ManySig与CORE90 checkpoint均可见。按上述实际GPU分配进入`LAUNCHING`，不使用GPU3，不干预既有PID335489。
 
 ## 科学停止与晋级规则
 
