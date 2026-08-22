@@ -3,7 +3,7 @@
 ## 当前状态
 
 - run_id：phase1_adv3b02_fasttrust_rc4_logitq_e200_s392002_20260823
-- 状态：LOCAL_VERIFIED
+- 状态：RUNNING
 - 目标：修复RC4非有限损失，降低低质量P/N伪监督的有效权重占比，分离H/P/N可靠度语义并提高U_s有效利用率。
 - 正式训练预算：200epoch；seed=392002；U batch=256。
 - 初始化与数据：同ADV3B02 Core90 checkpoint、同Phase1 split、同训练步数；U_s TX真值隐藏。
@@ -43,3 +43,16 @@
 ## P0/P1正确性审查
 
 审查范围只覆盖会使下一次真实实验跑错、越权、覆盖输出、误杀进程、不能启动或不能产生合法prediction的问题。未发现P0/P1：U_s标签未进入训练；Core90原调度未改；run root拒绝覆盖；launcher每GPU槽位上限为2；训练结束后仍要求clean和三个LEO场景闭合。V_select盲评分器与0.05/0.15预算敏感性属于NONBLOCKING后续诊断，未扩展本次矩阵。
+
+## 发布与启动
+
+- release commit：852e61529f158fbaddc44052e7a7347f86137370；origin/work/cvs-active远端OID已与本地HEAD一致。
+- release归档：E:/type10-7/release_artifacts/phase1_fasttrust_rc4_logitq_e200_852e6152.tar.gz。
+- 远端归档：/home/szu2070436088/2510044040/CV-SincNet/releases/incoming/phase1_fasttrust_rc4_logitq_e200_852e6152.tar.gz。
+- 唯一本地/远端归档SHA-256比较：两端均为7ba490f2b7acfeab25feff1eda79460f6f06aa53d7b0e35294d795f32af8278f。
+- release root：/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_fasttrust_rc4_logitq_e200_852e6152；远端Python编译、shell语法、JSON结构与6行dry-run均VERIFIED。
+- run root：/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fasttrust_rc4_logitq_e200_s392002_20260823。
+- dispatcher PID=1269130；dispatcher CWD=/home/szu2070436088，cmdline使用release下绝对launcher路径。CWD不是release目录，因此最初“CWD必须等于release”的附加断言返回非零；后续只读证据确认6个训练主进程全部使用同一release的绝对train_ssdg.py、正确run root、200epoch、seed392002、U batch256和Core90 checkpoint，归属无歧义。
+- GPU0–5各新增1个训练进程；启动前各已有1个进程，启动后均为2个，未超过每GPU上限；GPU6–7保持1个。6行dispatcher日志与train.log均非空并增长。
+- 启动状态：RUNNING。尚无性能结果，不能称为ARTIFACTS_COMPLETE或ANALYZED。
+- 预计耗时：历史同配置E200约15.1GPU小时/行；考虑每卡双任务共享，预计约16–20小时完成训练，随后还需clean和三个LEO场景评测。
