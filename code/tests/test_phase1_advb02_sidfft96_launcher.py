@@ -102,13 +102,28 @@ def test_guarded_launcher_is_a_minimal_source_selected_falsification_matrix():
 
 
 def test_hsid_launcher_requires_prepared_p0_then_runs_checkpoint_smoke_first():
-    p0 = _run_hsid("--dry-run", "--prepare-p0", "--only=X2")
+    release_root = "/tmp/hsid-release"
+    project_root = "/tmp/hsid-project"
+    p0 = _run_hsid(
+        "--dry-run",
+        "--prepare-p0",
+        "--only=X2",
+        ROOT=release_root,
+        PROJECT_ROOT=project_root,
+    )
     assert p0.returncode == 0, p0.stderr
     p0_output = p0.stdout.replace("\\", "")
     assert "[HSID-P0-CMD]" in p0_output
     assert "--bootstrap_repeats 64" in p0_output
+    assert f"{release_root}/code/scripts/audit_phase1_spectral_identifiability.py" in p0_output
+    assert f"{project_root}/runs/phase1_advb02_hsid_minimal_s392002_20260823_v1" in p0_output
 
-    result = _run_hsid("--dry-run", "--only=X2")
+    result = _run_hsid(
+        "--dry-run",
+        "--only=X2",
+        ROOT=release_root,
+        PROJECT_ROOT=project_root,
+    )
     assert result.returncode == 0, result.stderr
     output = result.stdout.replace("\\", "")
     assert "[HSID-P0-CMD]" not in output

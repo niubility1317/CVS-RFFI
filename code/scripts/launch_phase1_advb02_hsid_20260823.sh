@@ -2,12 +2,13 @@
 set -euo pipefail
 
 ROOT="${ROOT:-/home/szu2070436088/2510044040/CV-SincNet}"
+PROJECT_ROOT="${PROJECT_ROOT:-/home/szu2070436088/2510044040/CV-SincNet}"
 PYTHON="${PYTHON:-/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python}"
 RUN_ID="${RUN_ID:-phase1_advb02_hsid_minimal_s392002_20260823_v1}"
-RUNS_ROOT="${RUNS_ROOT:-${ROOT}/runs/${RUN_ID}}"
-LOG_ROOT="${LOG_ROOT:-${ROOT}/logs/${RUN_ID}}"
-WISIG_PKL="${WISIG_PKL:-${ROOT}/Dataset_WigSig/ManySig.pkl}"
-BASELINE_CKPT="${BASELINE_CKPT:-${ROOT}/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth}"
+RUNS_ROOT="${RUNS_ROOT:-${PROJECT_ROOT}/runs/${RUN_ID}}"
+LOG_ROOT="${LOG_ROOT:-${PROJECT_ROOT}/logs/${RUN_ID}}"
+WISIG_PKL="${WISIG_PKL:-${PROJECT_ROOT}/Dataset_WigSig/ManySig.pkl}"
+BASELINE_CKPT="${BASELINE_CKPT:-${PROJECT_ROOT}/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth}"
 SEED="${SEED:-392002}"
 GPU_0="${GPU_0:-0}"
 GPU_1="${GPU_1:-1}"
