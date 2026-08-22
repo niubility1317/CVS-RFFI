@@ -3,7 +3,7 @@
 ## 当前状态
 
 - run ID：`phase1_advb02_sidfft96_guarded_20260822_v1`
-- 状态：`READY_TO_LAUNCH`
+- 状态：`RUNNING`
 - 目的：验证首轮坍缩是否由SID适配器承受冻结Core90辅助损失并形成无界残差所致。
 - 结论边界：本报告当前只记录诊断和预登记，不声明修复有效或优于CORE90。
 
@@ -70,3 +70,12 @@ ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_sidfft96_g
 - `metrics_epoch.csv`与`metrics_epoch.jsonl`
 - `phase1_terminal_status.json`
 - `independent_final_eval/final_eval.json`与`final_eval.txt`
+
+## 启动与早期健康证据
+
+- 2026-08-22 18:12（Asia/Hong_Kong）启动S0和S3G；dispatch PID分别为`1015276`和`1015277`，主Python PID分别为`1015306`和`1015308`。
+- S0绑定GPU0，S3G绑定GPU1；PID、CWD、cmdline、release、run root和GPU映射均与预登记一致，其他GPU未占用。
+- S3G已完成E4/200，CSV与JSONL持续增长，`best_source_validation_ssdg.pth`已写出；未出现Traceback、RuntimeError、OOM或Killed。
+- E4总损失为0.5907，等于受控closed loss；open loss为0。域对抗和正交损失仍被记录，但不计入总损失。
+- E4有效SID残差比例为0.00352，低于0.10上界；raw/SID预测一致率为99.91%，训练/验证TX准确率为95.82%/98.86%，非有限loss和gradient计数均为0。
+- 当前单epoch约15秒，训练预计约50分钟，随后进行checkpoint闭合与clean/三种LEO_WEAK独立评测；ETA范围为2026-08-22 19:05–19:25（Asia/Hong_Kong）。
