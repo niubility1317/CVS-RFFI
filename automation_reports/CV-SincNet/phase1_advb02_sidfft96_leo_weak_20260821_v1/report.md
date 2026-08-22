@@ -2,7 +2,7 @@
 
 ## 当前结论
 
-- 状态：`REPAIRING_S1_S3_NUMPY_TORCH_BOUNDARY`；P0与S0均已完成；S1–S3首次启动在训练前命中同一NumPy→PyTorch类型边界异常并自动退出，定点修复后只重发这三行。
+- 状态：`RUNNING`；P0与S0均已完成，S1–S3修复NumPy→PyTorch类型边界后已重发并进入训练。
 - 本轮仅发布前端频谱可辨识性路线P0与S0–S3单seed矩阵；尚无N607性能结果，不声明优于CORE90。
 - 基座固定为`ADV3B02_CORE90_SOFT_E200`，不修改Phase2/Phase3，不使用target/query，不与NTRS或CRRA组合。
 
@@ -105,6 +105,8 @@ GPU由发布时只读preflight后通过`GPU_P0/GPU_S0/GPU_S1/GPU_S2/GPU_S3`记�
 - 2026-08-22 11:56发布S1/S2/S3，launcher PID分别为`851523/851524/851525`，预定GPU分别为`2/4/5`。三行均在创建模型、真正训练前自动退出，异常一致：`torch.as_tensor(mask)`无法推断`numpy.uint8`类型；GPU未形成计算占用，无训练指标，不构成性能结果。
 - 第二个边界根因：N607上的PyTorch与NumPy2.2.5不仅在PyTorch→NumPy写出时存在数组类边界，在NumPy→PyTorch读入时也不能直接桥接。修复将已禁用pickle的NPZ数组先转换为Python值，再由PyTorch构造tensor，随后仍执行原有shape、finite和非空验证。
 - 第二个边界TDD：新测试要求加载器不得把NumPy数组直接传给`torch.as_tensor`；修复前定点失败，修复后通过。SID、模型、诊断、release overlay、launcher及Core90默认值相关25项测试全部通过，两个Python模块编译和`git diff --check`通过。
+- N607真实掩码回归：`load_sid_mask`从P0正式NPZ成功加载256维`torch.bool`掩码，选中128维，状态`REMOTE_SID_MASK_LOAD=VERIFIED`。
+- 2026-08-22 12:10（Asia/Hong_Kong）仅重发S1/S2/S3：launcher PID为`858162/858163/858164`，训练PID为`858206/858202/858204`，分别绑定GPU2/GPU4/GPU5。三个CWD与cmdline均指向独立release v2及各自不可覆盖run root；GPU进程映射匹配预登记，三份日志均已越过模型初始化、写出协议比例和训练配置并持续增长。GPU3既有PID`335489`保持不变，未干预无关任务。
 - S0状态：`ARTIFACTS_COMPLETE`。clean aggregate TX为90.1402%，Strict UDU为86.09%；`leo_clear_weak` overall/Strict UDU为78.47%/72.55%，`leo_low_elev_weak`为75.65%/69.86%，`leo_rain_weak`为75.29%/69.27%。结果仅作为同checkpoint基线，不是SID收益。
 - 2026-08-22 11:39:51（Asia/Hong_Kong）再次直连复核：GPU0、1、2、4、5、6、7无计算进程，GPU3仅1个既有进程；正式run/log root仍不存在，release、ManySig与CORE90 checkpoint均可见。按上述实际GPU分配进入`LAUNCHING`，不使用GPU3，不干预既有PID335489。
 
