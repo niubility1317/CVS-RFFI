@@ -39,6 +39,30 @@ def adv3b02_core90_u_satellite_policy(epoch: int) -> tuple[float, tuple[str, ...
     )
 
 
+def rc4_tail_transition_scale(
+    epoch: int,
+    *,
+    start_epoch: int = 91,
+    ramp_epochs: int = 20,
+    floor: float = 0.25,
+) -> float:
+    """Ramp RC4 all-U alignment back in after the Core90 E91 stage change."""
+
+    if not isinstance(epoch, int) or isinstance(epoch, bool) or epoch < 1:
+        raise ValueError("RC4 tail epoch must be a positive integer")
+    if not isinstance(start_epoch, int) or isinstance(start_epoch, bool) or start_epoch < 1:
+        raise ValueError("RC4 tail start_epoch must be a positive integer")
+    if not isinstance(ramp_epochs, int) or isinstance(ramp_epochs, bool) or ramp_epochs < 1:
+        raise ValueError("RC4 tail ramp_epochs must be a positive integer")
+    floor = float(floor)
+    if not math.isfinite(floor) or not 0.0 <= floor <= 1.0:
+        raise ValueError("RC4 tail floor must be finite and in [0,1]")
+    if epoch < start_epoch or epoch >= start_epoch + ramp_epochs:
+        return 1.0
+    progress = (epoch - start_epoch) / float(ramp_epochs)
+    return float(floor + (1.0 - floor) * progress)
+
+
 def select_adv3b02_u_satellite_scenario(epoch: int, batch_index: int, seed: int) -> str:
     """Select one scheduled scenario deterministically without reading TX truth."""
 
@@ -246,6 +270,8 @@ class RC4Calibration:
     feature_mean: torch.Tensor
     feature_scale: torch.Tensor
     correctness_weight: torch.Tensor
+    partial_safety_weight: torch.Tensor
+    exclusion_safety_weight: torch.Tensor
     aps_global: float
     aps_by_class: torch.Tensor
     aps_by_domain: torch.Tensor
@@ -271,6 +297,9 @@ class RC4Route:
     pseudo: torch.Tensor
     fused_probability: torch.Tensor
     risk: torch.Tensor
+    p_correct: torch.Tensor
+    p_set_safe: torch.Tensor
+    p_exclusion_safe: torch.Tensor
     candidate_mask: torch.Tensor
     excluded_mask: torch.Tensor
     hard: torch.Tensor
@@ -752,10 +781,17 @@ def _fit_rc4_logistic(design: torch.Tensor, target: torch.Tensor, l2: float) -> 
             step = torch.linalg.solve(hessian, gradient)
         except RuntimeError:
             step = torch.linalg.pinv(hessian).mv(gradient)
-        beta = (beta - step).clamp(-20.0, 20.0)
+        beta = (beta - step).clamp(-8.0, 8.0)
         if float(step.abs().max().item()) < 1e-6:
             break
     return beta.float()
+
+
+def _rc4_calibrated_probability(design: torch.Tensor, weight: torch.Tensor) -> torch.Tensor:
+    """Return a finite, non-saturated calibrated event probability."""
+
+    logit = design @ weight.to(design.device, design.dtype)
+    return torch.sigmoid(logit.clamp(-12.0, 12.0)).clamp(1e-4, 1.0 - 1e-4)
 
 
 def _rc4_quantile(values: torch.Tensor, coverage: float) -> float:
@@ -830,18 +866,21 @@ def build_rc4_calibration(
         num_classes=int(num_classes),
         num_domains=int(num_domains),
     )
-    fold_count = max(1, min(int(folds), rows))
+    unique_domains = torch.unique(domains, sorted=True)
+    fold_count = max(1, min(int(folds), int(unique_domains.numel())))
     oof_risk = torch.empty(rows, device=design.device, dtype=design.dtype)
-    row_index = torch.arange(rows, device=design.device)
     if fold_count > 1:
         for fold in range(fold_count):
-            held = row_index.remainder(fold_count).eq(fold)
+            held_domains = unique_domains[
+                torch.arange(unique_domains.numel(), device=domains.device).remainder(fold_count).eq(fold)
+            ]
+            held = (domains.reshape(-1, 1) == held_domains.reshape(1, -1)).any(dim=1)
             train = ~held
             beta_fold = _fit_rc4_logistic(design[train], correct[train], float(l2)).to(design.device)
-            oof_risk[held] = torch.sigmoid(design[held] @ beta_fold)
+            oof_risk[held] = _rc4_calibrated_probability(design[held], beta_fold)
     else:
         beta_fold = _fit_rc4_logistic(design, correct, float(l2)).to(design.device)
-        oof_risk = torch.sigmoid(design @ beta_fold)
+        oof_risk = _rc4_calibrated_probability(design, beta_fold)
     final_weight = _fit_rc4_logistic(design, correct, float(l2))
 
     order = torch.argsort(oof_risk, descending=True, stable=True)
@@ -892,6 +931,9 @@ def build_rc4_calibration(
     )
     candidate = _rc4_aps_mask(fused, row_threshold)
     contains_truth = candidate.gather(1, labels.reshape(-1, 1)).squeeze(1)
+    containment_target = contains_truth.float()
+    partial_safety_weight = _fit_rc4_logistic(design, containment_target, float(l2))
+    exclusion_safety_weight = _fit_rc4_logistic(design, containment_target, float(l2))
     partial_coverage = float(contains_truth.float().mean().item())
     partial_mean_size = float(candidate.sum(dim=1).float().mean().item())
     false_exclusion = 1.0 - partial_coverage
@@ -900,6 +942,8 @@ def build_rc4_calibration(
         feature_mean=feature_mean.detach().cpu(),
         feature_scale=feature_scale.detach().cpu(),
         correctness_weight=final_weight.detach().cpu(),
+        partial_safety_weight=partial_safety_weight.detach().cpu(),
+        exclusion_safety_weight=exclusion_safety_weight.detach().cpu(),
         aps_global=float(aps_global),
         aps_by_class=aps_class.detach().cpu(),
         aps_by_domain=aps_domain.detach().cpu(),
@@ -934,6 +978,8 @@ def route_fasttrust_rc4(
     hard_max_fraction: float = 0.25,
     candidate_max_classes: int = 3,
     partial_min_risk: float = 0.50,
+    partial_effective_budget: float = 0.10,
+    negative_effective_budget: float = 0.10,
     enable_hard: bool = True,
     enable_partial: bool = True,
     enable_negative: bool = True,
@@ -963,11 +1009,22 @@ def route_fasttrust_rc4(
         num_classes=calibration.num_classes,
         num_domains=calibration.num_domains,
     )
-    risk = (
-        torch.sigmoid(design @ calibration.correctness_weight.to(fused.device, fused.dtype))
+    p_correct = (
+        _rc4_calibrated_probability(design, calibration.correctness_weight)
         if bool(use_calibrated_risk)
         else fused.max(dim=-1).values
     )
+    p_set_safe = (
+        _rc4_calibrated_probability(design, calibration.partial_safety_weight)
+        if bool(use_calibrated_risk)
+        else fused.max(dim=-1).values
+    )
+    p_exclusion_safe = (
+        _rc4_calibrated_probability(design, calibration.exclusion_safety_weight)
+        if bool(use_calibrated_risk)
+        else p_set_safe
+    )
+    risk = p_correct
     threshold = calibration.aps_by_class.to(fused.device, fused.dtype)[predicted]
     domain_threshold = calibration.aps_by_domain.to(fused.device, fused.dtype)[domains]
     threshold = torch.where(torch.isfinite(threshold), threshold, domain_threshold)
@@ -1029,7 +1086,7 @@ def route_fasttrust_rc4(
         & bool(calibration.partial_ready)
         & set_size.ge(2)
         & set_size.le(int(candidate_max_classes))
-        & risk.ge(float(partial_min_risk))
+        & p_set_safe.ge(float(partial_min_risk))
     )
     negative = (
         ~(hard | partial)
@@ -1037,35 +1094,76 @@ def route_fasttrust_rc4(
         & bool(calibration.negative_ready)
         & set_size.gt(0)
         & set_size.lt(classes)
+        & p_exclusion_safe.ge(float(partial_min_risk))
     )
-    representation = ~(hard | partial | negative)
+    route_probability = torch.where(hard, p_correct, torch.where(partial, p_set_safe, p_exclusion_safe))
     risk_floor = torch.where(
         hard,
         risk.new_full((rows,), hard_threshold),
         torch.where(
-            partial,
+            partial | negative,
             risk.new_full((rows,), float(partial_min_risk)),
             torch.zeros_like(risk),
         ),
     )
-    risk_weight = ((risk - risk_floor) / (1.0 - risk_floor).clamp_min(1e-6)).clamp(0.0, 1.0).square()
+    risk_weight = ((route_probability - risk_floor) / (1.0 - risk_floor).clamp_min(1e-6)).clamp(0.0, 1.0).square()
     agree_weight = torch.exp(-2.0 * disagreement)
     set_weight = set_size.clamp_min(1).to(fused.dtype).reciprocal()
     balance = torch.ones_like(risk)
-    if bool(hard.any()):
+    routed = hard | partial | negative
+    if bool(routed.any()):
         cells = predicted * (int(receivers.max().item()) + 1) + receivers
-        hard_cells = cells[hard]
-        counts = torch.bincount(hard_cells, minlength=int(cells.max().item()) + 1).float()
-        mean_count = counts[counts > 0].mean().clamp_min(1.0)
-        balance[hard] = torch.sqrt(
-            mean_count / counts[hard_cells].clamp_min(1.0)
-        ).clamp(max=4.0).to(balance.dtype)
+        for state in (hard, partial, negative):
+            if not bool(state.any()):
+                continue
+            state_cells = cells[state]
+            counts = torch.bincount(state_cells, minlength=int(cells.max().item()) + 1).float()
+            mean_count = counts[counts > 0].mean().clamp_min(1.0)
+            balance[state] = torch.sqrt(
+                mean_count / counts[state_cells].clamp_min(1.0)
+            ).clamp(max=4.0).to(balance.dtype)
     weights = (risk_weight * agree_weight * set_weight * balance).clamp(0.0, 4.0)
-    weights = torch.where(hard | partial | negative, weights, torch.zeros_like(weights))
+    weights = torch.where(routed, weights, torch.zeros_like(weights))
+
+    def apply_effective_budget(mask: torch.Tensor, budget_fraction: float) -> torch.Tensor:
+        budget_fraction = float(budget_fraction)
+        if not math.isfinite(budget_fraction) or not 0.0 <= budget_fraction <= 1.0:
+            raise ValueError("RC4 effective budget must be finite and in [0,1]")
+        selected = torch.zeros_like(mask)
+        budget = float(rows) * budget_fraction
+        if budget <= 0.0 or not bool(mask.any()):
+            return selected
+        ordered = sorted(
+            mask.nonzero(as_tuple=False).reshape(-1).detach().cpu().tolist(),
+            key=lambda index: (-float(weights[index].detach().cpu().item()), int(index)),
+        )
+        used = 0.0
+        for index in ordered:
+            value = float(weights[index].detach().cpu().item())
+            if value <= 0.0:
+                continue
+            if used + value <= budget + 1e-12:
+                selected[index] = True
+                used += value
+        if not bool(selected.any()) and ordered and budget > 0.0:
+            selected[ordered[0]] = True
+            weights[ordered[0]] = min(float(weights[ordered[0]].item()), budget)
+        return selected
+
+    kept_partial = apply_effective_budget(partial, partial_effective_budget)
+    kept_negative = apply_effective_budget(negative, negative_effective_budget)
+    partial = kept_partial
+    negative = kept_negative
+    routed = hard | partial | negative
+    weights = torch.where(routed, weights, torch.zeros_like(weights))
+    representation = ~routed
     return RC4Route(
         pseudo=predicted,
         fused_probability=fused,
         risk=risk,
+        p_correct=p_correct,
+        p_set_safe=p_set_safe,
+        p_exclusion_safe=p_exclusion_safe,
         candidate_mask=candidate,
         excluded_mask=~candidate,
         hard=hard,
@@ -1090,6 +1188,9 @@ def rc4_identity_losses(
     negative_mask: torch.Tensor,
     weights: torch.Tensor,
     full_unlabeled_batch_size: int,
+    enable_partial_set: bool = True,
+    enable_partial_conditional: bool = True,
+    enable_negative_set: bool = True,
 ) -> dict[str, torch.Tensor]:
     """Return H/P/N losses normalized by the complete physical U batch."""
 
@@ -1108,6 +1209,9 @@ def rc4_identity_losses(
     hard = _sample_mask(hard_mask, rows, logits.device, "hard_mask")
     partial = _sample_mask(partial_mask, rows, logits.device, "partial_mask")
     negative = _sample_mask(negative_mask, rows, logits.device, "negative_mask")
+    selected_set_rows = partial | negative
+    if bool(selected_set_rows.any()) and bool((~candidates[selected_set_rows].any(dim=-1)).any()):
+        raise ValueError("RC4 selected P/N row must have a non-empty allowed set")
     weight = _sample_weights(weights, rows, logits.device, logits.dtype)
     pseudo = torch.as_tensor(pseudo, device=logits.device, dtype=torch.long).reshape(-1)
     if pseudo.numel() != rows:
@@ -1119,42 +1223,47 @@ def rc4_identity_losses(
         if bool(hard.any())
         else zero
     )
-    log_probability = F.log_softmax(logits, dim=-1)
-    probability = log_probability.exp()
-    candidate_float = candidates.to(logits.dtype)
-    restricted = teacher * candidate_float
-    restricted = restricted / restricted.sum(dim=-1, keepdim=True).clamp_min(_PROBABILITY_EPS)
-    per_partial_positive = (
-        restricted
-        * (restricted.clamp_min(_PROBABILITY_EPS).log() - log_probability)
+    work_logits = logits.float()
+    all_lse = torch.logsumexp(work_logits, dim=-1)
+    allowed_lse = torch.logsumexp(work_logits.masked_fill(~candidates, float("-inf")), dim=-1)
+    per_set_mass = all_lse - allowed_lse
+    candidate_float = candidates.to(work_logits.dtype)
+    restricted = teacher.float() * candidate_float
+    restricted = restricted / restricted.sum(dim=-1, keepdim=True).clamp_min(1e-12)
+    log_restricted = restricted.clamp_min(1e-12).log()
+    log_student_conditional = torch.where(
+        candidates, work_logits - allowed_lse.unsqueeze(1), torch.zeros_like(work_logits)
+    )
+    per_partial_conditional = torch.where(
+        candidates, restricted * (log_restricted - log_student_conditional), torch.zeros_like(work_logits)
     ).sum(dim=-1)
-    excluded = ~candidates
-    excluded_count = excluded.sum(dim=-1).clamp_min(1).to(logits.dtype)
-    per_negative = -(
-        torch.log1p(-probability.clamp(max=1.0 - _PROBABILITY_EPS))
-        * excluded.to(logits.dtype)
-    ).sum(dim=-1) / excluded_count
-    partial_positive = (
-        (per_partial_positive[partial] * weight[partial]).sum() / float(denominator)
+    partial_set = (
+        (per_set_mass[partial] * weight[partial].float()).sum() / float(denominator)
         if bool(partial.any())
         else zero
     )
-    partial_negative = (
-        (per_negative[partial] * weight[partial]).sum() / float(denominator)
+    partial_conditional = (
+        (per_partial_conditional[partial] * weight[partial].float()).sum() / float(denominator)
         if bool(partial.any())
         else zero
     )
-    negative_loss = (
-        (per_negative[negative] * weight[negative]).sum() / float(denominator)
+    negative_set = (
+        (per_set_mass[negative] * weight[negative].float()).sum() / float(denominator)
         if bool(negative.any())
         else zero
     )
-    partial_loss = partial_positive + partial_negative
+    partial_loss = (partial_set if bool(enable_partial_set) else zero) + (
+        partial_conditional if bool(enable_partial_conditional) else zero
+    )
+    negative_loss = negative_set if bool(enable_negative_set) else zero
     return {
         "hard": hard_loss,
-        "partial_positive": partial_positive,
-        "partial_negative": partial_negative,
+        "partial_set": partial_set,
+        "partial_conditional": partial_conditional,
+        "partial_positive": partial_set,
+        "partial_negative": partial_conditional,
         "partial": partial_loss,
+        "negative_set": negative_set,
         "negative": negative_loss,
         "total": hard_loss + partial_loss + negative_loss,
     }

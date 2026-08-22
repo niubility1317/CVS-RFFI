@@ -1,0 +1,19 @@
+{
+  "schema": "cvs.phase1.fasttrust_rc4_logitq_e200_matrix.v1",
+  "run_id": "phase1_adv3b02_fasttrust_rc4_logitq_e200_s392002_20260823",
+  "seed": 392002,
+  "epochs": 200,
+  "unlabeled_batch_size": 256,
+  "partial_effective_budget": 0.10,
+  "negative_effective_budget": 0.10,
+  "source_roles": {"L_s": 0.07, "U_s": 0.63, "V_cal": 0.15, "V_select": 0.15},
+  "base_checkpoint": "runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
+  "rows": [
+    {"gpu": 0, "candidate": "E200_P0_NO_U_ID", "hard": false, "partial": false, "partial_set": false, "partial_conditional": false, "negative": false, "class_rx_cap": false, "satellite": false},
+    {"gpu": 1, "candidate": "E200_P3_DUAL_H", "hard": true, "partial": false, "partial_set": false, "partial_conditional": false, "negative": false, "class_rx_cap": true, "satellite": false},
+    {"gpu": 2, "candidate": "E200_P4_H_PSET_B10", "hard": true, "partial": true, "partial_set": true, "partial_conditional": false, "negative": false, "class_rx_cap": true, "satellite": false},
+    {"gpu": 3, "candidate": "E200_P5_H_PSETCOND_B10", "hard": true, "partial": true, "partial_set": true, "partial_conditional": true, "negative": false, "class_rx_cap": true, "satellite": false},
+    {"gpu": 4, "candidate": "E200_P6_H_PSETCOND_N_B10_CAP", "hard": true, "partial": true, "partial_set": true, "partial_conditional": true, "negative": true, "class_rx_cap": true, "satellite": false},
+    {"gpu": 5, "candidate": "E200_P7_P6_HSAT", "hard": true, "partial": true, "partial_set": true, "partial_conditional": true, "negative": true, "class_rx_cap": true, "satellite": true}
+  ]
+}

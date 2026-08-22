@@ -76,6 +76,7 @@ try:
         build_rc4_calibration,
         calibrate_sat_anchor_thresholds,
         rc4_identity_losses,
+        rc4_tail_transition_scale,
         route_fasttrust_rc4,
         route_sat_anchor_trusted,
         sat_anchor_clean_kl,
@@ -175,7 +176,7 @@ except ModuleNotFoundError:
     align_source_domain_prior = compute_muse_reliability = geometric_fuse_probabilities = None
     calibrate_sat_anchor_thresholds = route_sat_anchor_trusted = None
     sat_anchor_clean_kl = trusted_satellite_cross_entropy = None
-    build_rc4_calibration = rc4_identity_losses = route_fasttrust_rc4 = None
+    build_rc4_calibration = rc4_identity_losses = rc4_tail_transition_scale = route_fasttrust_rc4 = None
     js_head_disagreement = muse_schedule_for_epoch = route_fasttrust = route_muse_reliability = None
     select_satellite_student_mask = stable_sample_keys = None
     weighted_soft_cross_entropy = None
@@ -431,7 +432,11 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--rc4_use_correctness_calibration", type=str2bool, default=True)
     parser.add_argument("--rc4_enable_hard", type=str2bool, default=True)
     parser.add_argument("--rc4_enable_partial", type=str2bool, default=True)
+    parser.add_argument("--rc4_enable_partial_set", type=str2bool, default=True)
+    parser.add_argument("--rc4_enable_partial_conditional", type=str2bool, default=True)
     parser.add_argument("--rc4_enable_negative", type=str2bool, default=True)
+    parser.add_argument("--rc4_partial_effective_budget", type=float, default=0.10)
+    parser.add_argument("--rc4_negative_effective_budget", type=float, default=0.10)
     parser.add_argument("--rc4_class_receiver_cap", type=str2bool, default=True)
     parser.add_argument("--rc4_satellite_hard_only", type=str2bool, default=False)
     parser.add_argument("--rc4_identity_start_epoch", type=int, default=11)
@@ -443,6 +448,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--rc4_lambda_domain", type=float, default=1.0)
     parser.add_argument("--rc4_lambda_self", type=float, default=0.10)
     parser.add_argument("--rc4_lambda_satellite", type=float, default=0.10)
+    parser.add_argument("--rc4_tail_transition_start_epoch", type=int, default=91)
+    parser.add_argument("--rc4_tail_transition_epochs", type=int, default=20)
+    parser.add_argument("--rc4_tail_transition_floor", type=float, default=0.25)
     parser.add_argument("--teacher_ckpt", type=str, default="", help="Optional frozen teacher checkpoint for ADV3B02 distillation.")
     parser.add_argument("--lambda_teacher_clean_kl", type=float, default=0.0)
     parser.add_argument("--lambda_teacher_sat_kl", type=float, default=0.0)
@@ -5956,6 +5964,9 @@ def _compute_rc4_unlabeled_losses(*, route, ema_outputs, student_views, domains,
         negative_mask=negative,
         weights=route.weights,
         full_unlabeled_batch_size=rows,
+        enable_partial_set=bool(args.rc4_enable_partial_set),
+        enable_partial_conditional=bool(args.rc4_enable_partial_conditional),
+        enable_negative_set=bool(args.rc4_enable_negative),
     )
     valid_domain = (domains >= 0) & (domains < int(muse_state["heads"].num_domains))
     zero = logits.sum() * 0.0
@@ -5984,13 +5995,19 @@ def _compute_rc4_unlabeled_losses(*, route, ema_outputs, student_views, domains,
     identity_scale = (
         0.4 if int(epoch) >= int(args.rc4_consolidation_start_epoch) else 1.0
     )
+    tail_scale = rc4_tail_transition_scale(
+        int(epoch),
+        start_epoch=int(args.rc4_tail_transition_start_epoch),
+        ramp_epochs=int(args.rc4_tail_transition_epochs),
+        floor=float(args.rc4_tail_transition_floor),
+    )
     total = (
         identity_scale * (
             float(args.rc4_lambda_hard) * identity["hard"]
             + float(args.rc4_lambda_partial) * identity["partial"]
             + float(args.rc4_lambda_negative) * identity["negative"]
         )
-        + float(args.rc4_lambda_domain) * (loss_domain + loss_adv)
+        + tail_scale * float(args.rc4_lambda_domain) * (loss_domain + loss_adv)
         + float(args.rc4_lambda_self) * loss_self
         + float(args.rc4_lambda_satellite) * loss_satellite
     )
@@ -6012,6 +6029,16 @@ def _compute_rc4_unlabeled_losses(*, route, ema_outputs, student_views, domains,
         "identity_student": logits, "identity_student_satellite_mask": hard,
         "pair_active": logits.new_tensor(1.0), "pair_drift": zero.detach(),
         "filled_count": zero.detach(),
+        "rc4_partial_set": identity["partial_set"],
+        "rc4_partial_conditional": identity["partial_conditional"],
+        "rc4_negative_set": identity["negative_set"],
+        "rc4_tail_scale": logits.new_tensor(tail_scale),
+        "rc4_components_finite": torch.stack([
+            identity["hard"].detach().float(),
+            identity["partial_set"].detach().float(),
+            identity["partial_conditional"].detach().float(),
+            identity["negative_set"].detach().float(),
+        ]).isfinite().all().to(logits.dtype),
     }
 
 
@@ -8691,6 +8718,8 @@ def train(args) -> int:
                                 calibration=calibration,
                                 hard_max_fraction=float(args.sat_anchor_hard_max_fraction),
                                 candidate_max_classes=int(args.muse_candidate_max_classes),
+                                partial_effective_budget=float(args.rc4_partial_effective_budget),
+                                negative_effective_budget=float(args.rc4_negative_effective_budget),
                                 enable_hard=bool(args.rc4_enable_hard),
                                 enable_partial=bool(args.rc4_enable_partial),
                                 enable_negative=bool(args.rc4_enable_negative),
@@ -10216,6 +10245,17 @@ def train(args) -> int:
                     "rc4/representation_count": rc4_route.representation.sum().detach() if rc4_route is not None else 0.0,
                     "rc4/effective_weighted_coverage": rc4_route.weights.sum().detach() / float(max(1, unlabeled_count)) if rc4_route is not None else 0.0,
                     "rc4/risk_mean": rc4_route.risk.mean().detach() if rc4_route is not None else 0.0,
+                    "rc4/p_correct_mean": rc4_route.p_correct.mean().detach() if rc4_route is not None else 0.0,
+                    "rc4/p_set_safe_mean": rc4_route.p_set_safe.mean().detach() if rc4_route is not None else 0.0,
+                    "rc4/p_exclusion_safe_mean": rc4_route.p_exclusion_safe.mean().detach() if rc4_route is not None else 0.0,
+                    "rc4/hard_effective_coverage": rc4_route.weights[rc4_route.hard].sum().detach() / float(max(1, unlabeled_count)) if rc4_route is not None else 0.0,
+                    "rc4/partial_effective_coverage": rc4_route.weights[rc4_route.partial].sum().detach() / float(max(1, unlabeled_count)) if rc4_route is not None else 0.0,
+                    "rc4/negative_effective_coverage": rc4_route.weights[rc4_route.negative].sum().detach() / float(max(1, unlabeled_count)) if rc4_route is not None else 0.0,
+                    "rc4/partial_set_loss": muse_losses.get("rc4_partial_set", 0.0) if muse_state is not None else 0.0,
+                    "rc4/partial_conditional_loss": muse_losses.get("rc4_partial_conditional", 0.0) if muse_state is not None else 0.0,
+                    "rc4/negative_set_loss": muse_losses.get("rc4_negative_set", 0.0) if muse_state is not None else 0.0,
+                    "rc4/tail_scale": muse_losses.get("rc4_tail_scale", 1.0) if muse_state is not None else 1.0,
+                    "rc4/components_finite": muse_losses.get("rc4_components_finite", 1.0) if muse_state is not None else 1.0,
                     "rc4/candidate_size_mean": rc4_route.candidate_mask.sum(dim=-1).float().mean().detach() if rc4_route is not None else 0.0,
                     "sat_anchor/trusted_count": (
                         sat_anchor_route.trusted.sum().detach()
