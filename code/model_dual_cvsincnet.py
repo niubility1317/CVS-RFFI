@@ -590,6 +590,7 @@ class DualCVSincNetDisentangle(nn.Module):
         sid_fft96_mode: str = "off",
         sid_mask_path: str = "",
         sid_residual_scale: float = 1.0,
+        sid_max_residual_ratio: float = 0.0,
     ):
         super().__init__()
         self.num_classes = int(num_classes)
@@ -619,6 +620,7 @@ class DualCVSincNetDisentangle(nn.Module):
             raise ValueError("sid_fft96_mode must be off, center, phase, or sid")
         self.sid_mask_path = str(sid_mask_path or "")
         self.sid_residual_scale = float(sid_residual_scale)
+        self.sid_max_residual_ratio = float(sid_max_residual_ratio)
         self.use_sid_fft96 = self.sid_fft96_mode != "off"
         self.ntrs_variant = str(ntrs_variant or "v1").lower().strip()
         if self.ntrs_variant not in {"v1", "v2_min", "v3_adapter", "v4_operator"}:
@@ -738,6 +740,7 @@ class DualCVSincNetDisentangle(nn.Module):
                     ),
                 ),
                 residual_scale=self.sid_residual_scale,
+                max_residual_ratio=self.sid_max_residual_ratio,
             )
             if self.use_sid_fft96
             else None
@@ -1356,6 +1359,7 @@ class DualCVSincNetDisentangle(nn.Module):
             "logits_sid": sid_logits,
             "sid_fft96": sid_output["sid_fft96"] if sid_output is not None else None,
             "sid_delta": sid_output["sid_delta"] if sid_output is not None else None,
+            "sid_delta_raw": sid_output["sid_delta_raw"] if sid_output is not None else None,
             "sid_group_norms": sid_output["sid_group_norms"] if sid_output is not None else None,
             "sid_valid_bin_ratio": sid_output["sid_valid_bin_ratio"] if sid_output is not None else None,
         }
@@ -1467,6 +1471,7 @@ def build_dual_model(
     sid_fft96_mode: str = "off",
     sid_mask_path: str = "",
     sid_residual_scale: float = 1.0,
+    sid_max_residual_ratio: float = 0.0,
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -1541,4 +1546,5 @@ def build_dual_model(
         sid_fft96_mode=sid_fft96_mode,
         sid_mask_path=sid_mask_path,
         sid_residual_scale=sid_residual_scale,
+        sid_max_residual_ratio=sid_max_residual_ratio,
     )

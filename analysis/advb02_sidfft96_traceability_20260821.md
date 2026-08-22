@@ -4,7 +4,7 @@
 
 指导来源：用户提供的《CVS项目优化的核心方向：从“后验修正特征”转向“前端可辨识分解”》
 
-当前阶段：设计、P0、P1模型/训练/诊断与S0–S3 launcher已实现；本地验证与唯一一次独立P0/P1审查已闭合，N607 release与矩阵已发布为`READY_QUEUED`。
+当前阶段：首轮S0–S3已完成。S1–S3均出现无界残差漂移并退化到六分类随机水平；正在实现受控残差、SID专用目标隔离和source validation checkpoint选择，并发布单seed最小证伪实验。
 
 |ID|来源章节|需求|目标文件|状态|验证|说明|
 |---|---|---|---|---|---|---|
@@ -26,13 +26,17 @@
 |SID-016|20|禁止强GRL、强KL、NTRS放大、任意全矩阵Koopman和删除中高频|模型、训练配置、launcher|verified|SID与NTRS/CRRA互斥测试及launcher负断言|属于明确的候选边界|
 |SID-017|18|不从S0直接跳到完整S12|设计、launcher、报告|verified|本设计仅包含P0和S0–S3|后续阶段独立发布|
 |SID-018|Exclusive Minimal Experiment Workflow|只执行八项白名单，不增加seal/receipt/SHA链|报告、发布流程|verified|单一release归档本地/远端SHA一致，远端编译与dry-run通过|未创建成员SHA、seal、receipt或额外发布gate|
+|SID-019|首轮矩阵故障分析|SID适配器不得承受冻结Core90辅助头的域对抗、正交、Fishr与开放集梯度|`code/SSDG/train_ssdg.py`|planned|SID专用目标组合单元测试、真实checkpoint无query smoke|保留clean TX CE、既定satellite TX CE和身份锚定，其他损失仅记录不反传SID|
+|SID-020|首轮矩阵故障分析|SID残差能量不得无界超过原始身份嵌入|`code/cvsrffi/spectral_identifiability.py`、`code/model_dual_cvsincnet.py`|planned|极端投影权重fixture验证逐样本残差比例上界|首轮残差范数从约0.04膨胀到9,983–21,262|
+|SID-021|Phase1 source-only选择边界|SID adapter-only使用`V_select`上的`source_val_sat_hmean`选择checkpoint|`code/SSDG/train_ssdg.py`、新launcher|planned|选择策略单元测试、launcher dry-run、checkpoint回读|不读取target/query或测试truth，不启用formal ablation额外流程|
 
 ## 当前计数
 
 - verified：14
 - pending：1
+- planned：3
 - deferred：3
 - rejected：0
 - blocked：0
 
-当前仅未闭合SID-012：必须等N607真实prediction完成后，才能报告clean/逐LEO/Strict UDU/floor/转换/probe同row结果。当前全部GPU均达到每卡2个计算进程上限，矩阵保持`READY_QUEUED`，不得伪报`RUNNING`或干预现有任务。
+SID-012的首轮prediction已完成，但S1–S3均因训练目标与可训练参数边界不匹配而科学失败，不能晋级。SID-019至SID-021必须先由聚焦测试和真实checkpoint无query smoke闭合，再发布单seed受控验证；不得直接重跑完整矩阵。

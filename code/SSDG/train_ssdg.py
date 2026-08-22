@@ -423,7 +423,10 @@ def build_arg_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--sid_mask_path", type=str, default="")
     parser.add_argument("--sid_residual_scale", type=float, default=1.0)
+    parser.add_argument("--sid_max_residual_ratio", type=float, default=0.0)
     parser.add_argument("--sid_adapter_only", type=str2bool, default=True)
+    parser.add_argument("--sid_guarded_training", type=str2bool, default=False)
+    parser.add_argument("--lambda_sid_identity_anchor", type=float, default=0.05)
     parser.add_argument("--ntrs_core_lr_mode", type=str, choices=["v1", "baseline", "adapter_joint"], default="v1")
     parser.add_argument("--ntrs_core_lr_ratio", type=float, default=0.02)
     parser.add_argument("--ntrs_margin_epsilon", type=float, default=0.05)
@@ -1637,6 +1640,7 @@ def _apply_model_cli_args(model_args, args):
         "sid_fft96_mode",
         "sid_mask_path",
         "sid_residual_scale",
+        "sid_max_residual_ratio",
     ):
         if hasattr(args, key):
             setattr(model_args, key, getattr(args, key))
@@ -4172,7 +4176,10 @@ def _build_ssdg_epoch_telemetry_row(
         "sid_fft96_mode": str(getattr(args, "sid_fft96_mode", "off")),
         "sid_mask_path": str(getattr(args, "sid_mask_path", "")),
         "sid_residual_scale": float(getattr(args, "sid_residual_scale", 1.0)),
+        "sid_max_residual_ratio": float(getattr(args, "sid_max_residual_ratio", 0.0)),
         "sid_adapter_only": bool(getattr(args, "sid_adapter_only", True)),
+        "sid_guarded_training": bool(getattr(args, "sid_guarded_training", False)),
+        "lambda_sid_identity_anchor": float(getattr(args, "lambda_sid_identity_anchor", 0.05)),
         "label_epochs": int(getattr(args, "label_epochs", 0)),
         "pseudo_epochs": int(getattr(args, "pseudo_epochs", 0)),
         "optimizer": "AdamW",
@@ -5197,6 +5204,51 @@ def configure_sid_trainable_parameters(model, args) -> Dict[str, int]:
     }
 
 
+def sid_guarded_training_enabled(args) -> bool:
+    """Whether the bounded, SID-only Phase1 optimization policy is active."""
+
+    return bool(
+        str(getattr(args, "sid_fft96_mode", "off") or "off").lower().strip() != "off"
+        and bool(getattr(args, "sid_adapter_only", True))
+        and bool(getattr(args, "sid_guarded_training", False))
+    )
+
+
+def resolve_phase1_checkpoint_selection(args) -> str:
+    """Resolve the only checkpoint source permitted for the active Phase1 policy."""
+
+    if bool(getattr(args, "formal_ablation", False)) or sid_guarded_training_enabled(args):
+        return "source_validation_only"
+    return "final_only"
+
+
+def compose_sid_adapter_objective(
+    *,
+    clean_tx_loss: torch.Tensor,
+    satellite_tx_loss: torch.Tensor,
+    z_sid: torch.Tensor,
+    z_raw: torch.Tensor,
+    satellite_weight: float,
+    identity_anchor_weight: float,
+) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
+    """Compose the isolated objective for a frozen-base SID residual adapter."""
+
+    if satellite_weight < 0.0 or identity_anchor_weight < 0.0:
+        raise ValueError("SID objective weights must be non-negative")
+    identity_anchor = 1.0 - F.cosine_similarity(
+        z_sid,
+        z_raw.detach(),
+        dim=1,
+        eps=1e-8,
+    ).mean()
+    total = (
+        clean_tx_loss
+        + float(satellite_weight) * satellite_tx_loss
+        + float(identity_anchor_weight) * identity_anchor
+    )
+    return total, {"identity_anchor": identity_anchor}
+
+
 @torch.no_grad()
 def install_ntrs_descriptor_statistics(model, loader, device) -> Dict[str, float]:
     """Install one fixed signed-log median/IQR fit from Phase1 V_cal IQ only."""
@@ -5415,8 +5467,18 @@ def train(args) -> int:
             raise ValueError("SID-FFT96 requires --sid_mask_path")
         if float(getattr(args, "sid_residual_scale", 1.0)) < 0.0:
             raise ValueError("--sid_residual_scale must be non-negative")
+        if float(getattr(args, "sid_max_residual_ratio", 0.0)) < 0.0:
+            raise ValueError("--sid_max_residual_ratio must be non-negative")
         if not bool(getattr(args, "sid_adapter_only", True)):
             raise ValueError("SID-FFT96 requires --sid_adapter_only true")
+        if sid_guarded_training_enabled(args):
+            ratio = float(getattr(args, "sid_max_residual_ratio", 0.0))
+            if not 0.0 < ratio <= 1.0:
+                raise ValueError(
+                    "guarded SID-FFT96 requires --sid_max_residual_ratio in (0, 1]"
+                )
+            if float(getattr(args, "lambda_sid_identity_anchor", 0.05)) < 0.0:
+                raise ValueError("--lambda_sid_identity_anchor must be non-negative")
     if float(getattr(args, "crra_support_tau", 1.0)) <= 0.0:
         raise ValueError("--crra_support_tau must be positive")
     if float(getattr(args, "crra_s3_lr_scale", 0.25)) <= 0.0:
@@ -5472,11 +5534,7 @@ def train(args) -> int:
             "Phase1 is source-only: --phase1_source_val_selection_only must remain true; "
             "held-out receiver/day/satellite test feedback is forbidden during training."
         )
-    expected_checkpoint_selection = (
-        "source_validation_only"
-        if bool(getattr(args, "formal_ablation", False))
-        else "final_only"
-    )
+    expected_checkpoint_selection = resolve_phase1_checkpoint_selection(args)
     if str(getattr(args, "checkpoint_selection", "")) != expected_checkpoint_selection:
         raise ValueError(
             "Phase1 checkpoint selection drift: "
@@ -7488,6 +7546,22 @@ def train(args) -> int:
                     "ssdg_source_episode", loss_source_episode_l, z_id_l, loss_warn_counts
                 )
                 loss_open_l = loss_open_invariant_l + loss_open_boundary_l + loss_open_source_l
+                loss_sid_identity_anchor_l = z_id_l.sum() * 0.0
+                if sid_guarded_training_enabled(args):
+                    loss_closed_l, sid_objective_info = compose_sid_adapter_objective(
+                        clean_tx_loss=loss_tx_l,
+                        satellite_tx_loss=loss_sat_cls_l,
+                        z_sid=z_id_l,
+                        z_raw=out_l["z_id_raw"],
+                        satellite_weight=float(cur_w["sat_cls"]),
+                        identity_anchor_weight=float(args.lambda_sid_identity_anchor),
+                    )
+                    loss_sid_identity_anchor_l = sid_objective_info["identity_anchor"]
+                    zero_sid = z_id_l.sum() * 0.0
+                    loss_open_invariant_l = zero_sid
+                    loss_open_boundary_l = zero_sid
+                    loss_open_source_l = zero_sid
+                    loss_open_l = zero_sid
                 loss_l = loss_closed_l + loss_open_l
                 if phase == "pseudo" and bool(args.use_unlabeled):
                     try:
@@ -8069,6 +8143,10 @@ def train(args) -> int:
                     * sanitize_loss("ssdg_u_quarantine_accept", loss_u_quarantine, z_id_l, loss_warn_counts)
                 )
                 loss_open = loss_open_l + loss_open_u
+                if sid_guarded_training_enabled(args):
+                    loss_closed = loss_closed_l
+                    loss_open_u = z_id_l.sum() * 0.0
+                    loss_open = z_id_l.sum() * 0.0
                 open_objective_losses = {
                     "boundary": loss_open_boundary_l,
                     "source": loss_open_source_l,
@@ -8411,6 +8489,11 @@ def train(args) -> int:
                     "train/loss_direct_metric_accept": loss_direct_metric_accept_l.detach(),
                     "train/loss_sat_cls_labeled": loss_sat_cls_l.detach(),
                     "train/loss_sat_cons_labeled": loss_sat_cons_l.detach(),
+                    "train/loss_sid_identity_anchor": loss_sid_identity_anchor_l.detach(),
+                    "train/w_loss_sid_identity_anchor": (
+                        float(getattr(args, "lambda_sid_identity_anchor", 0.05))
+                        * loss_sid_identity_anchor_l
+                    ).detach(),
                     "train/loss_crra_pair_labeled": loss_crra_pair_l.detach(),
                     "train/loss_crra_energy_labeled": loss_crra_energy_l.detach(),
                     "train/loss_crra_gate_l1_labeled": loss_crra_gate_l1_l.detach(),
@@ -8734,6 +8817,20 @@ def train(args) -> int:
                     "train/sid_delta_norm": (
                         out_l["sid_delta"].detach().float().norm(dim=1).mean()
                         if torch.is_tensor(out_l.get("sid_delta"))
+                        else float("nan")
+                    ),
+                    "train/sid_delta_raw_norm": (
+                        out_l["sid_delta_raw"].detach().float().norm(dim=1).mean()
+                        if torch.is_tensor(out_l.get("sid_delta_raw"))
+                        else float("nan")
+                    ),
+                    "train/sid_effective_residual_ratio": (
+                        (
+                            out_l["sid_delta"].detach().float().norm(dim=1)
+                            / out_l["z_id_raw"].detach().float().norm(dim=1).clamp_min(1e-12)
+                        ).mean()
+                        if torch.is_tensor(out_l.get("sid_delta"))
+                        and torch.is_tensor(out_l.get("z_id_raw"))
                         else float("nan")
                     ),
                     "train/sid_valid_bin_ratio": (
@@ -9316,7 +9413,7 @@ def train(args) -> int:
         latest_path = out_dir / "NOT_SAVED_FINAL_ONLY"
         best_path = (
             source_validation_path
-            if bool(getattr(args, "formal_ablation", False))
+            if str(getattr(args, "checkpoint_selection", "")) == "source_validation_only"
             else final_path
         )
         protected_metrics = protected_metric_snapshot(
@@ -9619,7 +9716,7 @@ def train(args) -> int:
             best_test = float(test_stats["tx_acc"])
             best_epoch = int(epoch)
             is_best = True
-            if bool(getattr(args, "formal_ablation", False)):
+            if str(getattr(args, "checkpoint_selection", "")) == "source_validation_only":
                 selected_payload = deepcopy(payload)
                 selected_payload.update(
                     {
@@ -9710,11 +9807,11 @@ def train(args) -> int:
                 flush=True,
             )
             break
-    if bool(getattr(args, "formal_ablation", False)):
+    if str(getattr(args, "checkpoint_selection", "")) == "source_validation_only":
         selected_checkpoint = source_validation_path
         if not selected_checkpoint.is_file():
             raise RuntimeError(
-                "formal Phase1 ablation produced no source-validation-selected checkpoint"
+                "Phase1 produced no source-validation-selected checkpoint"
             )
         selected_epoch_payload = _validate_phase1_checkpoint_payload(
             load_checkpoint(str(selected_checkpoint), device),
@@ -9937,7 +10034,7 @@ def train(args) -> int:
     final_payload["checkpoint_status"] = {
         "state": (
             "SOURCE_VALIDATION_SELECTED"
-            if bool(getattr(args, "formal_ablation", False))
+            if str(getattr(args, "checkpoint_selection", "")) == "source_validation_only"
             else "FINAL_ONLY"
         ),
         "checkpoint_safe": not bool(phase1_v2_final_blocked),
@@ -9946,6 +10043,11 @@ def train(args) -> int:
     }
     final_payload["final_only_evidence"]["reference_to_final_tail_safety"] = reference_final_tail_gate
     save_payload(selected_checkpoint, final_payload)
+    if selected_checkpoint != final_path:
+        endpoint_payload = deepcopy(final_payload)
+        endpoint_payload["checkpoint_role"] = "source_validation_selected_export"
+        endpoint_payload["selected_checkpoint_path"] = str(selected_checkpoint)
+        save_payload(final_path, endpoint_payload)
     (out_dir / "reference_to_final_tail_safety.json").write_text(
         json.dumps(reference_final_tail_gate, ensure_ascii=False, indent=2, default=str),
         encoding="utf-8",

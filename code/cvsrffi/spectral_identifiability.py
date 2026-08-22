@@ -310,6 +310,7 @@ class SIDFFT96Residual(nn.Module):
         mode: str,
         mask: Tensor,
         residual_scale: float = 1.0,
+        max_residual_ratio: float = 0.0,
     ) -> None:
         super().__init__()
         if embedding_dim <= 0:
@@ -318,9 +319,12 @@ class SIDFFT96Residual(nn.Module):
             raise ValueError(f"unsupported SID mode: {mode!r}")
         if residual_scale < 0:
             raise ValueError("residual_scale must be non-negative")
+        if max_residual_ratio < 0:
+            raise ValueError("max_residual_ratio must be non-negative")
         mask = validate_sid_mask(mask, int(torch.as_tensor(mask).numel()))
         self.mode = mode
         self.residual_scale = float(residual_scale)
+        self.max_residual_ratio = float(max_residual_ratio)
         self.register_buffer("mask", mask, persistent=True)
         self.projector = nn.Sequential(
             nn.Linear(SID_FFT96_DIM, embedding_dim),
@@ -334,16 +338,20 @@ class SIDFFT96Residual(nn.Module):
         if z_raw.ndim != 2:
             raise ValueError("z_raw must have shape [B, D]")
         features, diagnostics = extract_sid_fft96(iq, self.mask, mode=self.mode)
-        delta = self.projector(features)
-        # The shared CosFace head performs the final direction normalization.
-        # Keeping this residual in the backbone's native scale makes the
-        # zero-initialized candidate exactly identical to the mature path.
-        z_sid = z_raw + self.residual_scale * delta
+        delta_raw = self.projector(features)
+        delta = self.residual_scale * delta_raw
+        if self.max_residual_ratio > 0.0:
+            raw_norm = z_raw.detach().norm(dim=1, keepdim=True)
+            delta_norm = delta.norm(dim=1, keepdim=True).clamp_min(1e-12)
+            max_norm = self.max_residual_ratio * raw_norm
+            delta = delta * (max_norm / delta_norm).clamp(max=1.0)
+        z_sid = z_raw + delta
         return {
             "z_raw": z_raw,
             "z_sid": z_sid,
             "sid_fft96": features,
             "sid_delta": delta,
+            "sid_delta_raw": delta_raw,
             "sid_group_norms": diagnostics["group_norms"],
             "sid_valid_bin_ratio": diagnostics["valid_bin_ratio"],
         }

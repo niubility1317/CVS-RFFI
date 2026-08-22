@@ -2,8 +2,8 @@
 
 ## 当前结论
 
-- 状态：`RUNNING`；P0与S0均已完成，S1–S3修复NumPy→PyTorch类型边界后已重发并进入训练。
-- 本轮仅发布前端频谱可辨识性路线P0与S0–S3单seed矩阵；尚无N607性能结果，不声明优于CORE90。
+- 状态：`ANALYZED`；P0、S0和S1–S3均已完成，训练checkpoint与clean/三种LEO_WEAK独立prediction闭合。
+- 科学结论：S1–S3均退化到六分类随机水平，判定为`SCIENTIFIC_FAILURE_NO_PROMOTION`，不优于CORE90。
 - 基座固定为`ADV3B02_CORE90_SOFT_E200`，不修改Phase2/Phase3，不使用target/query，不与NTRS或CRRA组合。
 
 ## 最小预登记
@@ -124,7 +124,25 @@ GPU由发布时只读preflight后通过`GPU_P0/GPU_S0/GPU_S1/GPU_S2/GPU_S3`记�
 - S1–S3：`final_ssdg.pth`、`metrics_epoch.csv`、`metrics_epoch.jsonl`、`phase1_terminal_status.json`、`independent_final_eval/final_eval.json`、`independent_final_eval/final_eval.txt`
 - 所有完成训练的候选必须保留checkpoint身份、clean和三种LEO_WEAK逐场景结果。
 
-## 发布后待追加
+## 最终同row结果
 
-- P0完成证据、各row PID/CWD/cmdline/GPU/log增长证据
-- prediction闭合后的同row指标、异常、解释与下一候选决定
+|row|clean overall/Strict UDU|clear overall/Strict UDU|low elevation overall/Strict UDU|rain overall/Strict UDU|结论|
+|---|---:|---:|---:|---:|---|
+|S0|90.1402/86.0900|78.4691/72.5533|75.6461/69.8633|75.2912/69.2717|冻结CORE90基线|
+|S1|16.6627/16.6667|16.6637/16.6667|16.6632/16.6667|16.6662/16.6667|随机水平，拒绝|
+|S2|18.3975/17.8067|17.3725/16.8700|17.2936/16.9217|17.2858/16.9933|接近随机水平，拒绝|
+|S3|16.6525/16.6700|16.6608/16.6700|16.6588/16.6783|16.6608/16.6717|随机水平，拒绝|
+
+S1、S2、S3的终态均为`ARTIFACTS_COMPLETE`且`exit_code=0`，各自保留200行CSV和200条JSONL记录；日志未出现Traceback、RuntimeError、OOM或Killed。因此，本轮是训练机制的科学失败，不是发布、数据或评测技术失败。
+
+## 坍缩定位
+
+- 三个最终checkpoint中195个非SID状态张量相对基线的最大绝对差均为0，证明成熟ADV3B02路径没有被意外更新。
+- `train_sid_delta_norm`从E1的0.0396–0.0452增长到E200的9,982.57–21,261.57；raw/SID预测一致率同期降到0.38%–4.05%。
+- S1、S2、S3的加权域对抗损失与残差范数相关系数分别为0.99994、0.99995和0.99995；残差与验证准确率相关系数分别为-0.574、-0.767和-0.759。
+- S1在E28后raw/SID一致率低于50%，E45后验证准确率低于50%；S2对应E78/E90；S3对应E67/E88。E200时加权域对抗损失分别达到15,743.99、5,700.51和12,121.43。
+- 直接根因是SID采用adapter-only冻结策略，却继续让域对抗、正交、Fishr、开放集和source episode等整套Core90辅助目标反向驱动唯一可训练的无界残差投影。`final_only`又固定选择E200，暴露了后期漂移。
+
+## 下一候选决定
+
+不扩大到多seed或完整新矩阵。下一轮只发布S0和单seed S3G：将有效SID残差限制为原始身份嵌入范数的10%，只允许clean TX CE、既定satellite TX CE和轻量身份锚定进入SID梯度，并用source-only `V_select`上的`source_val_sat_hmean`选择checkpoint。该候选的预登记见`phase1_advb02_sidfft96_guarded_20260822_v1/report.md`。

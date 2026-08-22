@@ -12,6 +12,7 @@ if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
 from cvsrffi.spectral_identifiability import (  # noqa: E402
+    SIDFFT96Residual,
     build_center_mask,
     extract_sid_fft96,
     load_sid_mask,
@@ -126,3 +127,25 @@ def test_load_sid_mask_crosses_numpy_torch_boundary_via_python_values(tmp_path, 
 
     assert loaded.dtype == torch.bool
     assert loaded.tolist() == [True, False, True, False]
+
+
+def test_sid_residual_energy_is_bounded_relative_to_raw_embedding():
+    module = SIDFFT96Residual(
+        embedding_dim=8,
+        mode="sid",
+        mask=torch.ones(64, dtype=torch.bool),
+        residual_scale=1.0,
+        max_residual_ratio=0.10,
+    )
+    with torch.no_grad():
+        for parameter in module.projector.parameters():
+            parameter.fill_(100.0)
+    iq = torch.randn(4, 2, 64)
+    z_raw = torch.randn(4, 8)
+
+    output = module(iq, z_raw)
+
+    allowed = 0.10 * z_raw.norm(dim=1)
+    assert torch.all(output["sid_delta"].norm(dim=1) <= allowed + 1e-6)
+    assert torch.allclose(output["z_sid"], z_raw + output["sid_delta"])
+    assert torch.all(output["sid_delta_raw"].norm(dim=1) >= output["sid_delta"].norm(dim=1))

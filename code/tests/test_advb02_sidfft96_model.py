@@ -15,7 +15,9 @@ if str(CODE_ROOT) not in sys.path:
 from model_dual_cvsincnet import build_dual_model  # noqa: E402
 from SSDG.train_ssdg import (  # noqa: E402
     _load_training_checkpoint_state,
+    compose_sid_adapter_objective,
     configure_sid_trainable_parameters,
+    resolve_phase1_checkpoint_selection,
 )
 
 
@@ -86,6 +88,7 @@ def _sid_args(**overrides):
     values = {
         "sid_fft96_mode": "sid",
         "sid_adapter_only": True,
+        "sid_guarded_training": True,
         "ntrs_variant": "v1",
     }
     values.update(overrides)
@@ -116,3 +119,32 @@ def test_sid_only_training_freezes_mature_path(tmp_path):
     assert all(name.startswith("sid_fft96.") for name in trainable)
     assert summary["raw_trainable_parameters"] == 0
     assert summary["sid_trainable_parameters"] > 0
+
+
+def test_sid_adapter_objective_contains_only_tx_satellite_and_identity_anchor():
+    z_raw = torch.tensor([[1.0, 0.0], [0.0, 1.0]])
+    z_sid = torch.tensor([[0.8, 0.2], [0.1, 0.9]], requires_grad=True)
+    clean_tx = z_sid.sum() * 0.0 + 2.0
+    satellite_tx = z_sid.sum() * 0.0 + 3.0
+
+    total, diagnostics = compose_sid_adapter_objective(
+        clean_tx_loss=clean_tx,
+        satellite_tx_loss=satellite_tx,
+        z_sid=z_sid,
+        z_raw=z_raw,
+        satellite_weight=0.68,
+        identity_anchor_weight=0.05,
+    )
+
+    expected_anchor = 1.0 - torch.nn.functional.cosine_similarity(z_sid, z_raw, dim=1).mean()
+    assert torch.allclose(diagnostics["identity_anchor"], expected_anchor)
+    assert torch.allclose(total, clean_tx + 0.68 * satellite_tx + 0.05 * expected_anchor)
+
+
+def test_sid_adapter_uses_source_validation_checkpoint_selection():
+    assert resolve_phase1_checkpoint_selection(
+        _sid_args(formal_ablation=False)
+    ) == "source_validation_only"
+    assert resolve_phase1_checkpoint_selection(
+        _sid_args(sid_fft96_mode="off", formal_ablation=False)
+    ) == "final_only"
