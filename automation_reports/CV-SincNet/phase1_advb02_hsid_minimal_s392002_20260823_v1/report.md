@@ -1,6 +1,6 @@
 # ADV3B02 CORE90 CVS-HSID最小实验报告
 
-状态：`LOCAL_VERIFIED / P0P1_REVIEW_PASS / N607_PREFLIGHT_PASS / RELEASE_PENDING`
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 
 ## 1.目标与边界
 
@@ -83,3 +83,10 @@
 ## 6.额外gate处理
 
 除项目八项白名单外不增加任何审核、seal、receipt或逐文件哈希。若旧文件要求额外gate，记录`REJECTED_EXTRA_GATE`并继续最小流程。
+
+## 7.P0技术失败闭合
+
+- 2026-08-23 02:55 CST，release归档`a53296ac`远端编译通过后执行P0准备；P0在任何训练启动前退出码2。
+- 精确错误：Python尝试读取项目根下不存在的`/home/szu2070436088/2510044040/CV-SincNet/code/scripts/audit_phase1_spectral_identifiability.py`。根因是launcher把release源码根和项目数据根复用为同一个`ROOT`。
+- 读回：P0输出目录不存在，本run无训练进程、无prediction、无性能结果；失败日志保留于`logs/phase1_advb02_hsid_minimal_s392002_20260823_v1/P0_SPECTRAL_AUDIT.out`，未删除或覆盖。
+- 定点修复：提交`45fd122d0d6d25d78fe2fb7b368eb64f486e5013`将`ROOT`限定为release源码根、`PROJECT_ROOT`限定为数据/runs/logs根，并新增双根dry-run回归。由于不可覆盖规则，后续使用新run ID `phase1_advb02_hsid_minimal_s392002_20260823_v2`。
