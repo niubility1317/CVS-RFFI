@@ -2,7 +2,7 @@
 
 ## 当前结论
 
-- 状态：`LAUNCHING_P0_REPAIR`；S0运行中，P0首次启动因release overlay包发现失败退出，完成本地定点修复后重发。
+- 状态：`LAUNCHING_RELEASE_V2`；S0已完成，P0因changed-files release依赖闭合失败退出，转为完整独立release v2后仅重发P0。
 - 本轮仅发布前端频谱可辨识性路线P0与S0–S3单seed矩阵；尚无N607性能结果，不声明优于CORE90。
 - 基座固定为`ADV3B02_CORE90_SOFT_E200`，不修改Phase2/Phase3，不使用target/query，不与NTRS或CRRA组合。
 
@@ -95,7 +95,10 @@ GPU由发布时只读preflight后通过`GPU_P0/GPU_S0/GPU_S1/GPU_S2/GPU_S3`记�
 - 根因：changed-files release包含新增`cvsrffi/spectral_identifiability.py`与`SSDG/train_ssdg.py`，但缺少两个常规包的`__init__.py`，主工程包遮蔽release overlay。
 - 最小修复：`code/cvsrffi/__init__.py`与`code/SSDG/__init__.py`使用标准`pkgutil.extend_path`，允许release新增模块与主工程既有模块联合发现；不改变算法、数据或训练配置。
 - TDD证据：修复前`cvsrffi`与`SSDG`两个overlay导入用例均失败；修复后2项通过，SID聚焦21项继续通过，`py_compile`与`git diff --check`通过。
+- 远端overlay导入进一步发现：release中的新`train_ssdg.py`要求`DEFAULT_CRRA_CHANNEL_FAMILY`，而N607旧主工程`training_controls.py`不含该符号。由此确认根因是分支级依赖闭合，不应继续逐文件补洞。
+- 发布修复：保留失败release与全部日志，创建当前Git提交的完整独立release v2，使代码依赖不再回退到N607旧主工程；不改变数据、checkpoint、run ID、row、GPU、seed或科学配置。
 - 只允许重发首次技术失败且无artifact的P0；S0不重启，S1–S3继续等待P0合法mask。
+- S0状态：`ARTIFACTS_COMPLETE`。clean aggregate TX为90.1402%，Strict UDU为86.09%；`leo_clear_weak` overall/Strict UDU为78.47%/72.55%，`leo_low_elev_weak`为75.65%/69.86%，`leo_rain_weak`为75.29%/69.27%。结果仅作为同checkpoint基线，不是SID收益。
 - 2026-08-22 11:39:51（Asia/Hong_Kong）再次直连复核：GPU0、1、2、4、5、6、7无计算进程，GPU3仅1个既有进程；正式run/log root仍不存在，release、ManySig与CORE90 checkpoint均可见。按上述实际GPU分配进入`LAUNCHING`，不使用GPU3，不干预既有PID335489。
 
 ## 科学停止与晋级规则
