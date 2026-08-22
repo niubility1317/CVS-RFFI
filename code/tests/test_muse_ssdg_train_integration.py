@@ -138,6 +138,20 @@ def test_muse_parser_defaults_to_final_only_and_joint_epoch():
     assert args.muse_epoch_basis == "unlabeled_loader"
 
 
+def test_optional_component_gradient_accepts_graphless_zero():
+    parameter = nn.Parameter(torch.tensor(2.0))
+
+    graphless = train_ssdg._autograd_grad_or_none(
+        torch.tensor(0.0), [parameter], retain_graph=True
+    )
+    connected = train_ssdg._autograd_grad_or_none(
+        parameter.square(), [parameter], retain_graph=False
+    )
+
+    assert graphless == (None,)
+    assert torch.allclose(connected[0], torch.tensor(4.0))
+
+
 def test_muse_can_delegate_final_target_eval_without_changing_legacy(monkeypatch):
     calls = []
 
@@ -1001,10 +1015,12 @@ def test_muse_checkpoint_state_has_all_training_only_fields():
         "muse_temporal_memory",
         "muse_classification_prototypes",
         "muse_source_global_class_counts",
-        "muse_source_domain_class_counts",
-        "muse_source_prior_frozen",
-        "muse_schedule_state",
-    }
+            "muse_source_domain_class_counts",
+            "muse_source_prior_frozen",
+            "muse_schedule_state",
+            "rc4_calibration",
+            "sat_anchor_thresholds",
+        }
     assert checkpoint["muse_training_heads"]
     assert checkpoint["muse_schedule_state"]["stage"] == "S2B"
 

@@ -5496,6 +5496,24 @@ def _optimizer_parameters(model, muse_state) -> List[torch.nn.Parameter]:
     return deduplicated
 
 
+def _autograd_grad_or_none(
+    objective: torch.Tensor,
+    parameters: Sequence[torch.nn.Parameter],
+    *,
+    retain_graph: bool,
+):
+    """Return empty component gradients when telemetry receives a graphless zero."""
+
+    if not torch.is_tensor(objective) or not objective.requires_grad:
+        return tuple(None for _ in parameters)
+    return torch.autograd.grad(
+        objective,
+        parameters,
+        retain_graph=retain_graph,
+        allow_unused=True,
+    )
+
+
 def _fasttrust_optimizer_groups(model, muse_state) -> List[Dict[str, Any]]:
     backbone: List[torch.nn.Parameter] = []
     other: List[torch.nn.Parameter] = []
@@ -8872,11 +8890,10 @@ def train(args) -> int:
                         identity_objective = (
                             muse_losses["identity"] + muse_losses["satellite"]
                         )
-                        identity_grads = torch.autograd.grad(
+                        identity_grads = _autograd_grad_or_none(
                             identity_objective,
                             _optimizer_parameters(model, muse_state),
                             retain_graph=True,
-                            allow_unused=True,
                         )
                         identity_norm_sq = sum(
                             float(gradient.detach().float().square().sum().item())
@@ -8888,11 +8905,10 @@ def train(args) -> int:
                             parameters = _optimizer_parameters(model, muse_state)
                             component_gradients = {}
                             for component in ("self", "satellite", "clean_anchor"):
-                                component_gradients[component] = torch.autograd.grad(
+                                component_gradients[component] = _autograd_grad_or_none(
                                     muse_losses[component],
                                     parameters,
                                     retain_graph=True,
-                                    allow_unused=True,
                                 )
 
                             def component_norm(gradients):
