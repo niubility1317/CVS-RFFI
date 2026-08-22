@@ -3,7 +3,7 @@
 ## 当前状态
 
 - run ID：`phase1_advb02_sidfft96_guarded_capfix_20260823_v1`
-- 状态：`READY_TO_LAUNCH`
+- 状态：`RUNNING`
 - 目标：修复公共模型构建器漏传`sid_max_residual_ratio`的问题，仅重跑修正后的`S3G_SIDFFT96_GUARDED`，复用上一轮已完成的S0，不扩大矩阵。
 - 科学边界：本轮仍是Phase1 source-only代理实验，不引入target/query，不声明Phase2适应、新类注册、Phase3未知拒识或真实在轨性能。
 
@@ -42,7 +42,7 @@
 |R1|公共构建器显式透传`sid_max_residual_ratio`|`code/post_stage_common.py::build_baseline_model`|新回归测试构建实际模型并检查运行时属性|`VERIFIED_LOCAL`|
 |R2|逐样本残差范数不超过原始身份嵌入的10%|`SIDFFT96Residual.forward`既有裁剪逻辑|构建后实际SID前向并检查每个样本比值|`VERIFIED_LOCAL`|
 |R3|真实checkpoint无query smoke且仅SID参数可训练|既有smoke与训练配置|N607 release真实checkpoint smoke|`VERIFIED`|
-|R4|只重跑修正S3G并闭合clean及三种LEO_WEAK|既有guarded launcher的`--only=S3G`|N607完整artifact与同row评分|`READY`|
+|R4|只重跑修正S3G并闭合clean及三种LEO_WEAK|既有guarded launcher的`--only=S3G`|N607完整artifact与同row评分|`RUNNING`|
 |R5|独立最终评估重建保持相同的0.10上界|`code/evaluation/collaborative_inference_eval.py::build_model_from_checkpoint_args`|checkpoint参数驱动的实际评估模型构建测试|`VERIFIED_LOCAL`|
 
 ## 工作区隔离说明
@@ -74,3 +74,11 @@
 - 远端`py_compile`和只选择S3G的完整命令dry-run均为`VERIFIED`；dry-run确认训练和独立评估均从修复release加载代码。
 - 真实ADV3B02 checkpoint smoke为`VERIFIED`：`batch_role=L_s`、`query_input_count=0`、`target_input_count=0`、raw/SID初始差异为0、非SID可训练参数为0、SID可训练参数为41,280。
 - 新run root在preflight时不存在；log root仅包含本轮smoke，不存在S3G训练输出，launcher仍可执行其不可覆盖检查。
+
+## 启动健康检查
+
+- N607服务器时间2026-08-23 02:42（Asia/Hong_Kong）启动；launcher PID为`1252254`，主训练PID为`1252274`。
+- launcher CWD和训练代码均绑定`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_sidfft96_guarded_capfix_26477fc4`，cmdline绑定唯一run root、seed 392002、`--only=S3G`和`--sid_max_residual_ratio 0.10`。
+- GPU7在启动前计算进程数为0，启动后`nvidia-smi pmon`确认PID`1252274`为GPU7计算进程；没有触碰GPU0–6的既有任务。
+- 首个5秒采样恰处于日志静默窗口，训练日志保持12,474字节；随后的只读复核增长至18,167字节并闭合E2/200，因此日志增长状态为`VERIFIED`，不是启动失败。
+- E2时source validation TX为98.83%，source satellite mean/floor为87.93%/86.20%；heldout test保持按预登记不在训练期执行。未发现Traceback、OOM、Killed或协议错误。
