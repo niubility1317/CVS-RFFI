@@ -2,7 +2,7 @@
 
 ## 当前结论
 
-- 状态：`LAUNCHING`；2026-08-22资源复核出现合法空槽，开始按依赖顺序发布正式row。
+- 状态：`LAUNCHING_P0_REPAIR`；S0运行中，P0首次启动因release overlay包发现失败退出，完成本地定点修复后重发。
 - 本轮仅发布前端频谱可辨识性路线P0与S0–S3单seed矩阵；尚无N607性能结果，不声明优于CORE90。
 - 基座固定为`ADV3B02_CORE90_SOFT_E200`，不修改Phase2/Phase3，不使用target/query，不与NTRS或CRRA组合。
 
@@ -86,6 +86,16 @@ GPU由发布时只读preflight后通过`GPU_P0/GPU_S0/GPU_S1/GPU_S2/GPU_S3`记�
 - 远端解压文件数：16；远端关键Python模块编译、launcher语法检查和完整矩阵dry-run均为`VERIFIED`。
 - dry-run回读固定矩阵`P0,S0,S1,S2,S3`、seed`392002`、比例`0.07/0.63/0.15/0.15`及三种LEO_WEAK场景。
 - 当前8张GPU各有2个既有计算进程，P0/S0/S1/S2/S3均未启动；未创建PID、未占用额外GPU、未修改现有run。合法空槽出现后，按预登记独立row命令启动并执行一次PID/CWD/cmdline/GPU/log增长检查。
+
+## 启动与技术修复记录
+
+- 2026-08-22 11:41:31启动P0与S0：P0 launcher PID`841018`绑定GPU0，S0 launcher PID`841019`、子进程PID`841047`绑定GPU1；CWD均为不可变release目录。
+- S0启动回读：launcher与子进程存活，GPU1显存约2,030MiB、利用率33%，`S0_FROZEN_CORE90.out`已创建。
+- P0首次启动：PID退出、GPU0未占用、P0输出目录未创建；完整日志唯一异常为`ModuleNotFoundError: cvsrffi.spectral_identifiability`，无数据读取、无部分mask、无输出覆盖。
+- 根因：changed-files release包含新增`cvsrffi/spectral_identifiability.py`与`SSDG/train_ssdg.py`，但缺少两个常规包的`__init__.py`，主工程包遮蔽release overlay。
+- 最小修复：`code/cvsrffi/__init__.py`与`code/SSDG/__init__.py`使用标准`pkgutil.extend_path`，允许release新增模块与主工程既有模块联合发现；不改变算法、数据或训练配置。
+- TDD证据：修复前`cvsrffi`与`SSDG`两个overlay导入用例均失败；修复后2项通过，SID聚焦21项继续通过，`py_compile`与`git diff --check`通过。
+- 只允许重发首次技术失败且无artifact的P0；S0不重启，S1–S3继续等待P0合法mask。
 - 2026-08-22 11:39:51（Asia/Hong_Kong）再次直连复核：GPU0、1、2、4、5、6、7无计算进程，GPU3仅1个既有进程；正式run/log root仍不存在，release、ManySig与CORE90 checkpoint均可见。按上述实际GPU分配进入`LAUNCHING`，不使用GPU3，不干预既有PID335489。
 
 ## 科学停止与晋级规则
