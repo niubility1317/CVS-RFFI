@@ -1,0 +1,71 @@
+{
+  "schema": "cvs.stage2b.structured_late_block_target_matrix.v1",
+  "run_id": "adv3b02_stage2b_lateblock_t5t25_s713101_20260824_v1",
+  "candidate_id": "TIME_FUSION_V1",
+  "protocol_schema": "p2_min_v1",
+  "phase2_data_status": "VALIDATED_ONCE",
+  "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
+  "class_binding": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2c_t1_20260730_v3_47212437/analysis/d19_adv3b02_class_binding_20260717.json",
+  "seed": 713101,
+  "method_seed": 7282101,
+  "support_seed": 7282201,
+  "query_seed": 7282301,
+  "new_class_draw_seed": 0,
+  "receivers": [
+    "20-1",
+    "3-19",
+    "7-14",
+    "7-7",
+    "8-8"
+  ],
+  "scenarios": [
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak"
+  ],
+  "target5_conditions": [
+    {
+      "k_shot": 5,
+      "new_count": 20
+    }
+  ],
+  "target25_conditions": [
+    {
+      "k_shot": 1,
+      "new_count": 20
+    },
+    {
+      "k_shot": 2,
+      "new_count": 20
+    },
+    {
+      "k_shot": 5,
+      "new_count": 20
+    },
+    {
+      "k_shot": 10,
+      "new_count": 20
+    },
+    {
+      "k_shot": 10,
+      "new_count": 5
+    }
+  ],
+  "target25_reuses_target5_rows": true,
+  "adaptation": {
+    "steps": 24,
+    "hard_step_limit": 40,
+    "learning_rate": 0.0002,
+    "trainable_parameter_hard_ratio": 0.2,
+    "expected_trainable_parameter_ratio": 0.073105228811
+  },
+  "input_roots": {
+    "predictor_package": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_{receiver_path}/method_7282101/before/predictor",
+    "validated_manifest": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_feature_t1_20260730_v3_47212437/artifacts/features/rx_{receiver_path}/method_7282101/new{new_count}/k_{k_shot}/stage2b/features.manifest.json",
+    "scorer": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_{receiver_path}/method_7282101/before/scorer"
+  },
+  "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_stage2b_lateblock_t5t25_s713101_20260824_v1",
+  "gpu_pool": [0, 1, 3, 4],
+  "max_training_processes_per_gpu": 1,
+  "hard_stop_hong_kong": "2026-08-24T05:00:00+08:00"
+}

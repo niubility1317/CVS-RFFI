@@ -275,8 +275,35 @@ def _validate_authoritative_row_manifest(
         )
     ):
         raise ValueError(
-            "authoritative VALIDATED_ONCE manifest does not bind the support row"
+            "authoritative VALIDATED_ONCE manifest does not bind the target row"
         )
+
+
+def _validate_query_package_row(
+    package_manifest: dict[str, Any],
+    row: dict[str, Any],
+) -> None:
+    if (
+        str(package_manifest.get("stage")) != "stage2b"
+        or str(package_manifest.get("receiver")) != str(row["receiver"])
+        or int(package_manifest.get("seed", -1)) != int(row["method_seed"])
+        or str(row["scenario"])
+        not in tuple(package_manifest.get("target_channel_scenarios") or ())
+        or any(
+            bool(package_manifest.get(name, False))
+            for name in (
+                "phase2_source_sample_access",
+                "phase2_source_cache_access",
+                "phase2_source_derived_signal_access",
+                "phase2_source_replay",
+                "phase2_clean_dataset_reachable",
+                "phase2_query_role_oracle_access",
+                "phase2_query_true_batch_class_count_access",
+                "phase2_query_class_quota_access",
+            )
+        )
+    ):
+        raise ValueError("query package does not match the frozen row whitelist")
 
 
 def _load_support_only(path: Path) -> tuple[np.ndarray, np.ndarray]:
@@ -435,17 +462,15 @@ def prepare_query(args: argparse.Namespace) -> dict[str, Any]:
     query_package_path = Path(args.query_package).resolve()
     package_manifest = _read_json(Path(args.package_manifest).resolve())
     row = _read_row_binding(Path(args.row_binding).resolve())
+    validated_manifest = _read_json(Path(args.validated_row_manifest).resolve())
+    _validate_query_package_row(package_manifest, row)
+    _validate_authoritative_row_manifest(validated_manifest, package_manifest, row)
     _package_member(
         package_manifest,
         role="query",
         scenario=str(row["scenario"]),
         filename=query_package_path.name,
     )
-    if (
-        str(package_manifest.get("receiver")) != str(row["receiver"])
-        or int(package_manifest.get("seed", -1)) != int(row["method_seed"])
-    ):
-        raise ValueError("query package is not bound to the frozen row")
     with np.load(query_package_path, allow_pickle=False) as source_query:
         member_names = tuple(source_query.files)
         if any(
@@ -623,6 +648,7 @@ def build_parser() -> argparse.ArgumentParser:
     query_parser = subparsers.add_parser("prepare-query")
     query_parser.add_argument("--query-package", required=True)
     query_parser.add_argument("--package-manifest", required=True)
+    query_parser.add_argument("--validated-row-manifest", required=True)
     query_parser.add_argument("--row-binding", required=True)
     query_parser.add_argument("--output", required=True)
     query_parser.set_defaults(handler=prepare_query)
