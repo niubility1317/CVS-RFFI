@@ -230,7 +230,7 @@ def test_repair_legacy_stage2b_manifest_adds_only_builder_protocol_field(
     )
     payload_path = tmp_path / "features.npz"
     current_manifest_path = tmp_path / "current.manifest.json"
-    publish_feature_cache(
+    published = publish_feature_cache(
         payload_path,
         current_manifest_path,
         **payload,
@@ -246,8 +246,17 @@ def test_repair_legacy_stage2b_manifest_adds_only_builder_protocol_field(
     ).encode("utf-8")
     legacy_path = tmp_path / "legacy.manifest.json"
     legacy_path.write_bytes(legacy_bytes + b"\n")
+    legacy_path.chmod(0o444)
     legacy_sha256 = hashlib.sha256(legacy_bytes).hexdigest()
     repaired_path = tmp_path / "features.manifest.json"
+
+    loaded_legacy = load_feature_cache(
+        payload_path,
+        legacy_path,
+        expected_payload_sha256=published["payload_sha256"],
+        expected_manifest_sha256=legacy_sha256,
+    )
+    assert "protocol_schema" not in loaded_legacy["manifest"]
 
     result = feature_cache_module.repair_legacy_stage2b_manifest_protocol_schema(
         legacy_path,

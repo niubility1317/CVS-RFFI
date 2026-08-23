@@ -496,6 +496,10 @@ def repair_legacy_stage2b_manifest_protocol_schema(
         raise Stage2AblationFeatureCacheError(
             "legacy feature-cache manifest is invalid"
         ) from exc
+    if not isinstance(manifest, dict):
+        raise Stage2AblationFeatureCacheError(
+            "legacy feature-cache manifest is not an object"
+        )
     split_id = str(manifest.get("split_id", ""))
     split_match = re.fullmatch(
         rf"{re.escape(PROTOCOL_SCHEMA)}-rx(?P<receiver>.+)-m(?P<method>\d+)"
@@ -504,8 +508,7 @@ def repair_legacy_stage2b_manifest_protocol_schema(
         split_id,
     )
     if (
-        not isinstance(manifest, dict)
-        or "protocol_schema" in manifest
+        "protocol_schema" in manifest
         or manifest.get("schema") != FEATURE_CACHE_MANIFEST_SCHEMA
         or manifest.get("feature_cache_schema") != FEATURE_CACHE_SCHEMA
         or manifest.get("stage_scope") != "stage2b"
@@ -532,6 +535,8 @@ def repair_legacy_stage2b_manifest_protocol_schema(
         or int(manifest.get("method_seed", -1)) != int(split_values["method"])
         or int(manifest.get("support_seed", -1)) != int(split_values["support"])
         or int(manifest.get("query_seed", -1)) != int(split_values["query"])
+        or int(manifest.get("new_class_draw_seed", -1))
+        not in {0, int(split_values["draw"])}
         or int(manifest.get("k_shot", -1)) != int(split_values["k"])
         or re.fullmatch(
             rf"d18-reuse-validated-once-rx{re.escape(split_values['receiver'])}"
@@ -609,7 +614,7 @@ def load_feature_cache(
     if (
         manifest.get("schema") != FEATURE_CACHE_MANIFEST_SCHEMA
         or manifest.get("feature_cache_schema") != FEATURE_CACHE_SCHEMA
-        or manifest.get("protocol_schema") != PROTOCOL_SCHEMA
+        or manifest.get("protocol_schema") not in {None, PROTOCOL_SCHEMA}
         or manifest.get("payload_file") != payload_file.name
         or manifest.get("payload_sha256") != expected_payload_sha256
         or manifest.get("query_truth_present") is not False
