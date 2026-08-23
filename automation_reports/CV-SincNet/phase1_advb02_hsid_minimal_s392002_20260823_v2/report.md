@@ -1,6 +1,6 @@
 # ADV3B02 CORE90 CVS-HSID最小实验报告v2
 
-状态：`LOCAL_VERIFIED / P0P1_REVIEW_PASS / N607_PREFLIGHT_PASS / RELEASE_PENDING`
+状态：`RUNNING`（发布、P0、首步smoke与启动健康检查均已验证；尚无性能结论）
 
 ## 1.预登记
 
@@ -9,7 +9,7 @@
 - 数据角色：Phase1 source-only `L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`；mask、训练和选模均不得读取target/query。
 - 矩阵：`S0_CORE90`、`R3_SPEC_PROTO`、`X0_HIER_PROTO`、`F0_HIER_FUSION`、`X2_RX_ROBUST`；seed=`392002`；训练行200epoch。
 - LEO_WEAK：`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`；每行训练完成后必须保留clean及三个逐场景结果。
-- GPU：GPU0/GPU1；02:55 CST预检时各有1个既有训练进程，本run每卡最多再增加1个，保持每卡不超过2个。
+- GPU：GPU0/GPU1；发布前再次回读时GPU0空闲、GPU1有1个既有训练进程；本run每卡最多增加1个，保持每卡不超过2个。
 - 输出：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_advb02_hsid_minimal_s392002_20260823_v2/`。
 - 日志：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_advb02_hsid_minimal_s392002_20260823_v2/`。
 - 技术停止：仅协议/query泄漏、错误checkpoint/checkout/row、输出冲突、无prediction闭合、确定性重复异常、OOM/NaN或进程归属不清；低性能不停止。
@@ -27,12 +27,23 @@
 
 ## 3.发布命令
 
-- release源码根：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_hsid_minimal_s392002_20260823_v2-<release-commit8>`。
+- release提交：`5ae1930be85e750a2649288dbd80227461234041`。
+- release源码根：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_hsid_minimal_s392002_20260823_v2-5ae1930b`。
 - 项目数据根：`/home/szu2070436088/2510044040/CV-SincNet`。
 - P0准备：`cd <release> && env ROOT=<release> PROJECT_ROOT=/home/szu2070436088/2510044040/CV-SincNet RUN_ID=phase1_advb02_hsid_minimal_s392002_20260823_v2 GPU_0=0 GPU_1=1 MAX_ACTIVE_PER_GPU=2 bash code/scripts/launch_phase1_advb02_hsid_20260823.sh --prepare-p0 --only=R3,X0,F0,X2`。
 - 正式启动：`cd <release> && nohup env ROOT=<release> PROJECT_ROOT=/home/szu2070436088/2510044040/CV-SincNet RUN_ID=phase1_advb02_hsid_minimal_s392002_20260823_v2 GPU_0=0 GPU_1=1 MAX_ACTIVE_PER_GPU=2 bash code/scripts/launch_phase1_advb02_hsid_20260823.sh --only=S0,R3,X0,F0,X2 > /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_advb02_hsid_minimal_s392002_20260823_v2/driver.out 2>&1 < /dev/null &`。
 - release传输只对一个Git归档做一次本地/远端SHA-256比较；不增加成员hash、seal或receipt。
 
-## 4.额外gate处理
+## 4.发布与启动证据
+
+- release归档：`phase1_advb02_hsid_minimal_s392002_20260823_v2-5ae1930b.tar.gz`；本地与远端SHA-256均为`faa50021573b203f6c9911bb34a715c0f6469cf6122dc8167d778e1f978146a6`；远端Python编译与launcher语法检查通过。
+- P0频谱审计：`VERIFIED`；`source_only=true`、`target_or_query_access=false`，覆盖23,520个source视图；bootstrap选择概率范围0–1、8个离散值且非全1；`common/nonlinear/domain`三类mask的DC位均为0。严格稳定性阈值下`nonlinear/domain`为空，作为本次真实P0退化选择保留，不作为协议或启动停止理由。
+- 正式启动时间：2026-08-23 11:35 CST；driver PID=`1482192`。
+- driver CWD：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_advb02_hsid_minimal_s392002_20260823_v2-5ae1930b`；cmdline=`bash code/scripts/launch_phase1_advb02_hsid_20260823.sh --only=S0,R3,X0,F0,X2`。
+- 首步真实checkpoint smoke：`VERIFIED`；`query_input_count=0`、`target_input_count=0`、Raw可训练参数0、HSID可训练参数14,570、`primary_raw_logit_max_abs=0`、所有输出有限。
+- 启动后检查：driver存活并进入`S0_CORE90`；子进程PID=`1482425`绑定GPU0与本release评估脚本；`driver.out`和`SMOKE.out`已产生并增长；GPU1既有PID=`1269217`未被触碰。
+- 当前仅完成发布与运行健康闭合；训练行、逐场景评估、same-row prediction及独立scorer尚未完成，因此不声明任何性能提升。
+
+## 5.额外gate处理
 
 除项目八项白名单外不增加审核、seal、receipt或逐文件哈希；旧要求若形成额外gate，记录`REJECTED_EXTRA_GATE`并继续最小流程。
