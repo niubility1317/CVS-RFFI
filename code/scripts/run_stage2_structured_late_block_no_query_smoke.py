@@ -40,7 +40,6 @@ from paper_reproduction.cvs_aligned.adv3b02_supervised_da_runner import (  # noq
 
 
 SUPPORT_KEYS = frozenset({"received_iq", "support_class_indices"})
-QUERY_KEYS = frozenset({"received_iq"})
 PROTOTYPE_KEYS = frozenset(
     {
         "prototypes",
@@ -459,11 +458,15 @@ def prepare(args: argparse.Namespace) -> dict[str, Any]:
     }
 
 
-def prepare_query(args: argparse.Namespace) -> dict[str, Any]:
-    query_package_path = Path(args.query_package).resolve()
-    package_manifest = _read_json(Path(args.package_manifest).resolve())
-    row = _read_row_binding(Path(args.row_binding).resolve())
-    validated_manifest = _read_json(Path(args.validated_row_manifest).resolve())
+def _load_query_received_iq(
+    query_package_path: Path,
+    package_manifest_path: Path,
+    validated_manifest_path: Path,
+    row_binding_path: Path,
+) -> np.ndarray:
+    package_manifest = _read_json(package_manifest_path.resolve())
+    row = _read_row_binding(row_binding_path.resolve())
+    validated_manifest = _read_json(validated_manifest_path.resolve())
     _validate_query_package_row(package_manifest, row)
     _validate_authoritative_row_manifest(validated_manifest, package_manifest, row)
     _package_member(
@@ -490,6 +493,16 @@ def prepare_query(args: argparse.Namespace) -> dict[str, Any]:
         or not np.isfinite(received_iq).all()
     ):
         raise ValueError("query received IQ is invalid")
+    return received_iq
+
+
+def prepare_query(args: argparse.Namespace) -> dict[str, Any]:
+    received_iq = _load_query_received_iq(
+        Path(args.query_package).resolve(),
+        Path(args.package_manifest).resolve(),
+        Path(args.validated_row_manifest).resolve(),
+        Path(args.row_binding).resolve(),
+    )
     output = Path(args.output).resolve()
     _ensure_absent(output)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -575,11 +588,12 @@ def run_row(args: argparse.Namespace) -> dict[str, Any]:
     if any(parameter.requires_grad for parameter in model.parameters()):
         raise ValueError("adaptation did not freeze model before query open")
 
-    query_path = Path(args.query_only).resolve()
-    with np.load(query_path, allow_pickle=False) as query_bundle:
-        if frozenset(query_bundle.files) != QUERY_KEYS:
-            raise ValueError("Phase2 query input is not the exhaustive IQ-only whitelist")
-        query_received_iq = np.asarray(query_bundle["received_iq"], dtype=np.float32)
+    query_received_iq = _load_query_received_iq(
+        Path(args.query_package).resolve(),
+        Path(args.package_manifest).resolve(),
+        Path(args.validated_row_manifest).resolve(),
+        Path(args.row_binding).resolve(),
+    )
     prototypes, prototype_class_ids, _ = _load_prototypes(
         Path(args.frozen_prototypes).resolve()
     )
@@ -660,7 +674,10 @@ def build_parser() -> argparse.ArgumentParser:
 
     row_parser = subparsers.add_parser("run-row")
     _add_adaptation_inputs(row_parser)
-    row_parser.add_argument("--query-only", required=True)
+    row_parser.add_argument("--query-package", required=True)
+    row_parser.add_argument("--package-manifest", required=True)
+    row_parser.add_argument("--validated-row-manifest", required=True)
+    row_parser.add_argument("--row-binding", required=True)
     row_parser.set_defaults(handler=run_row)
     return parser
 
