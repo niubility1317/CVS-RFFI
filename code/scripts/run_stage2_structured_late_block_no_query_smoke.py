@@ -245,7 +245,8 @@ def _validate_authoritative_row_manifest(
     row: dict[str, Any],
 ) -> None:
     if (
-        str(validated_manifest.get("phase2_data_status")) != "VALIDATED_ONCE"
+        str(validated_manifest.get("protocol_schema")) != "p2_min_v1"
+        or str(validated_manifest.get("phase2_data_status")) != "VALIDATED_ONCE"
         or str(validated_manifest.get("capsule_id")) != str(row["capsule_id"])
         or str(validated_manifest.get("split_id")) != str(row["split_id"])
         or str(validated_manifest.get("receiver")) != str(row["receiver"])

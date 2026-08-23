@@ -57,6 +57,7 @@ def _package_manifest(filename: str) -> dict[str, object]:
 
 def _validated_manifest(*, package_root_sha256: str) -> dict[str, object]:
     return {
+        "protocol_schema": "p2_min_v1",
         "phase2_data_status": "VALIDATED_ONCE",
         "capsule_id": "capsule-fixed",
         "split_id": "split-fixed",
@@ -136,3 +137,30 @@ def test_prepare_query_emits_iq_only_after_full_row_binding(tmp_path: Path) -> N
     with np.load(output_path, allow_pickle=False) as query_only:
         assert query_only.files == ["received_iq"]
         assert np.array_equal(query_only["received_iq"], received_iq)
+
+
+def test_prepare_query_rejects_self_reported_protocol_without_builder_field(
+    tmp_path: Path,
+) -> None:
+    query_path = tmp_path / "query_leo_clear_weak.npz"
+    np.savez(query_path, query_leo_weak_iq=np.zeros((2, 2, 8), dtype=np.float32))
+    package_path = tmp_path / "package_manifest.json"
+    row_path = tmp_path / "row.json"
+    validated_path = tmp_path / "validated.json"
+    output_path = tmp_path / "query_only.npz"
+    _write_json(package_path, _package_manifest(query_path.name))
+    _write_json(row_path, _row_binding())
+    validated = _validated_manifest(package_root_sha256="package-root-a")
+    validated.pop("protocol_schema")
+    _write_json(validated_path, validated)
+
+    with pytest.raises(ValueError, match="VALIDATED_ONCE"):
+        prepare_query(
+            SimpleNamespace(
+                query_package=query_path,
+                package_manifest=package_path,
+                validated_row_manifest=validated_path,
+                row_binding=row_path,
+                output=output_path,
+            )
+        )

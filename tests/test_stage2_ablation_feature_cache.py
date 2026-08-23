@@ -8,6 +8,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+import cvsrffi.stage2_ablation_feature_cache as feature_cache_module
 from cvsrffi.stage2_ablation_feature_cache import (
     Stage2AblationFeatureCacheError,
     load_feature_cache,
@@ -138,6 +139,7 @@ def test_feature_cache_is_immutable_reusable_and_row_executor_compatible(
     manifest_text = manifest_path.read_text(encoding="utf-8").lower()
     assert '"query_truth_present":false' in manifest_text
     assert '"query_role_present":false' in manifest_text
+    assert loaded["manifest"]["protocol_schema"] == "p2_min_v1"
     assert loaded["manifest"]["k_shot"] == 2
 
     receipt = execute_feature_row(
@@ -209,6 +211,56 @@ def test_feature_cache_is_immutable_reusable_and_row_executor_compatible(
             manifest_path,
             **_payload(),
         )
+
+
+def test_repair_legacy_stage2b_manifest_adds_only_builder_protocol_field(
+    tmp_path: Path,
+) -> None:
+    payload = _payload()
+    payload["stage_scope"] = "stage2b"
+    payload["new_classes"] = ()
+    for scenario in payload["scenario_payloads"].values():
+        scenario.pop("new_support_features")
+        scenario.pop("new_support_labels")
+    payload["capsule_id"] = (
+        "d18-reuse-validated-once-rx20-1-seed713101-m840001-k2-new20"
+    )
+    payload["split_id"] = (
+        "p2_min_v1-rx20-1-m840001-s840002-q840003-d850001-k2-new20"
+    )
+    payload_path = tmp_path / "features.npz"
+    current_manifest_path = tmp_path / "current.manifest.json"
+    publish_feature_cache(
+        payload_path,
+        current_manifest_path,
+        **payload,
+    )
+    legacy = json.loads(current_manifest_path.read_text(encoding="utf-8"))
+    legacy.pop("protocol_schema")
+    legacy_bytes = json.dumps(
+        legacy,
+        ensure_ascii=True,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    legacy_path = tmp_path / "legacy.manifest.json"
+    legacy_path.write_bytes(legacy_bytes + b"\n")
+    legacy_sha256 = hashlib.sha256(legacy_bytes).hexdigest()
+    repaired_path = tmp_path / "features.manifest.json"
+
+    result = feature_cache_module.repair_legacy_stage2b_manifest_protocol_schema(
+        legacy_path,
+        repaired_path,
+        expected_source_manifest_sha256=legacy_sha256,
+    )
+
+    repaired = json.loads(repaired_path.read_text(encoding="utf-8"))
+    assert repaired == {**legacy, "protocol_schema": "p2_min_v1"}
+    assert result["source_manifest_sha256"] == legacy_sha256
+    assert result["manifest_sha256"] == hashlib.sha256(
+        repaired_path.read_bytes().rstrip(b"\n")
+    ).hexdigest()
 
 
 def test_feature_cache_rejects_truth_bearing_ground_audit(

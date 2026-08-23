@@ -21,6 +21,7 @@ from typing import Any, Mapping, Sequence
 
 import numpy as np
 
+from cvsrffi.full_ablation_spec import PROTOCOL_SCHEMA
 from cvsrffi.phase2_runtime_contract import PHASE2_FULL_CONTRACT
 from cvsrffi.somph_predictor_bundle import FORMAL_LEO_WEAK_SCENARIOS
 
@@ -392,6 +393,7 @@ def publish_feature_cache(
     manifest = {
         "schema": FEATURE_CACHE_MANIFEST_SCHEMA,
         "feature_cache_schema": FEATURE_CACHE_SCHEMA,
+        "protocol_schema": PROTOCOL_SCHEMA,
         "stage_scope": scope,
         "phase2_data_status": "VALIDATED_ONCE",
         "capsule_id": str(capsule_id),
@@ -462,6 +464,107 @@ def publish_feature_cache(
     }
 
 
+def repair_legacy_stage2b_manifest_protocol_schema(
+    source_manifest_path: str | Path,
+    destination_manifest_path: str | Path,
+    *,
+    expected_source_manifest_sha256: str,
+) -> dict[str, str]:
+    """Repair only the protocol field omitted by the legacy Stage2-B builder."""
+
+    source = Path(source_manifest_path)
+    destination = Path(destination_manifest_path)
+    source_info = os.lstat(source)
+    if stat.S_ISLNK(source_info.st_mode) or not stat.S_ISREG(source_info.st_mode):
+        raise Stage2AblationFeatureCacheError(
+            "legacy feature-cache manifest is not a regular file"
+        )
+    source_bytes = source.read_bytes()
+    if source_bytes.endswith(b"\n"):
+        source_bytes = source_bytes[:-1]
+    source_sha256 = _sha256_bytes(source_bytes)
+    if source_sha256 != _hash(
+        expected_source_manifest_sha256,
+        name="expected_source_manifest_sha256",
+    ):
+        raise Stage2AblationFeatureCacheError(
+            "legacy feature-cache manifest SHA256 mismatch"
+        )
+    try:
+        manifest = json.loads(source_bytes.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise Stage2AblationFeatureCacheError(
+            "legacy feature-cache manifest is invalid"
+        ) from exc
+    split_id = str(manifest.get("split_id", ""))
+    split_match = re.fullmatch(
+        rf"{re.escape(PROTOCOL_SCHEMA)}-rx(?P<receiver>.+)-m(?P<method>\d+)"
+        rf"-s(?P<support>\d+)-q(?P<query>\d+)-d(?P<draw>\d+)"
+        rf"-k(?P<k>\d+)-new(?P<new>\d+)",
+        split_id,
+    )
+    if (
+        not isinstance(manifest, dict)
+        or "protocol_schema" in manifest
+        or manifest.get("schema") != FEATURE_CACHE_MANIFEST_SCHEMA
+        or manifest.get("feature_cache_schema") != FEATURE_CACHE_SCHEMA
+        or manifest.get("stage_scope") != "stage2b"
+        or manifest.get("phase2_data_status") != "VALIDATED_ONCE"
+        or not str(manifest.get("capsule_id", "")).strip()
+        or split_match is None
+        or manifest.get("query_truth_present") is not False
+        or manifest.get("query_role_present") is not False
+        or manifest.get("clean_source_samples_present") is not False
+        or tuple(manifest.get("scenarios", ()))
+        != tuple(FORMAL_LEO_WEAK_SCENARIOS)
+        or any(
+            manifest.get(key) != value
+            for key, value in PHASE2_FULL_CONTRACT.items()
+        )
+    ):
+        raise Stage2AblationFeatureCacheError(
+            "legacy Stage2-B manifest contract drift"
+        )
+    assert split_match is not None
+    split_values = split_match.groupdict()
+    if (
+        str(manifest.get("receiver")) != split_values["receiver"]
+        or int(manifest.get("method_seed", -1)) != int(split_values["method"])
+        or int(manifest.get("support_seed", -1)) != int(split_values["support"])
+        or int(manifest.get("query_seed", -1)) != int(split_values["query"])
+        or int(manifest.get("k_shot", -1)) != int(split_values["k"])
+        or re.fullmatch(
+            rf"d18-reuse-validated-once-rx{re.escape(split_values['receiver'])}"
+            rf"-seed\d+-m{split_values['method']}-k{split_values['k']}"
+            rf"-new{split_values['new']}",
+            str(manifest["capsule_id"]),
+        )
+        is None
+    ):
+        raise Stage2AblationFeatureCacheError(
+            "legacy Stage2-B row identity drift"
+        )
+    for key in (
+        "payload_sha256",
+        "package_root_sha256",
+        "package_seal_sha256",
+        "phase1_bundle_sha256",
+        "phase1_prototype_sha256",
+    ):
+        _hash(manifest.get(key), name=key)
+    repaired = dict(manifest)
+    repaired["protocol_schema"] = PROTOCOL_SCHEMA
+    repaired_bytes = _canonical_json(repaired)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    _write_exclusive_readonly(destination, repaired_bytes + b"\n")
+    return {
+        "source_manifest_sha256": source_sha256,
+        "manifest_path": str(destination),
+        "manifest_sha256": _sha256_bytes(repaired_bytes),
+        "protocol_schema": PROTOCOL_SCHEMA,
+    }
+
+
 def load_feature_cache(
     payload_path: str | Path,
     manifest_path: str | Path,
@@ -506,6 +609,7 @@ def load_feature_cache(
     if (
         manifest.get("schema") != FEATURE_CACHE_MANIFEST_SCHEMA
         or manifest.get("feature_cache_schema") != FEATURE_CACHE_SCHEMA
+        or manifest.get("protocol_schema") != PROTOCOL_SCHEMA
         or manifest.get("payload_file") != payload_file.name
         or manifest.get("payload_sha256") != expected_payload_sha256
         or manifest.get("query_truth_present") is not False
@@ -598,4 +702,5 @@ __all__ = [
     "Stage2AblationFeatureCacheError",
     "load_feature_cache",
     "publish_feature_cache",
+    "repair_legacy_stage2b_manifest_protocol_schema",
 ]
