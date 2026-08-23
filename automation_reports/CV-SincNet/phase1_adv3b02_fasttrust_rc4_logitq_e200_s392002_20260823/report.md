@@ -3,7 +3,7 @@
 ## 当前状态
 
 - run_id：phase1_adv3b02_fasttrust_rc4_logitq_e200_s392002_20260823
-- 状态：RUNNING
+- 状态：PARTIAL_TECHNICAL_FAILURE / ANALYZED
 - 目标：修复RC4非有限损失，降低低质量P/N伪监督的有效权重占比，分离H/P/N可靠度语义并提高U_s有效利用率。
 - 正式训练预算：200epoch；seed=392002；U batch=256。
 - 初始化与数据：同ADV3B02 Core90 checkpoint、同Phase1 split、同训练步数；U_s TX真值隐藏。
@@ -56,3 +56,40 @@
 - GPU0–5各新增1个训练进程；启动前各已有1个进程，启动后均为2个，未超过每GPU上限；GPU6–7保持1个。6行dispatcher日志与train.log均非空并增长。
 - 启动状态：RUNNING。尚无性能结果，不能称为ARTIFACTS_COMPLETE或ANALYZED。
 - 预计耗时：历史同配置E200约15.1GPU小时/行；考虑每卡双任务共享，预计约16–20小时完成训练，随后还需clean和三个LEO场景评测。
+
+## 2026-08-23终态综合分析
+
+### 终态
+
+2026-08-23 19:10 CST只读回查确认：P3、P5、P6均完成E200、保存200条连续可解析JSONL、`final_ssdg.pth`和clean＋三LEO逐场景指标；所有评测严格重建，missing/unexpected/shape mismatch均为0。P0、P4、P7分别在E131、E89和E124发生CUDA OOM，没有final checkpoint与性能结果。相关进程均已退出，8张RTX3090均为空闲。
+
+矩阵终态为`PARTIAL_TECHNICAL_FAILURE / ANALYZED`：3条有效性能行，3条`TRAIN_FAILED / NO_PERFORMANCE_RESULT`。上文`RUNNING`段仅保留为启动时快照，不再代表当前状态。
+
+### 最终结果
+
+|候选|状态|epoch|clean/%|clear/%|low-elev/%|rain/%|LEO均值/%|floor/%|
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+|E200_P0_NO_U_ID|OOM|131/200|N/A|N/A|N/A|N/A|N/A|N/A|
+|E200_P3_DUAL_H|完成|200/200|85.500|75.690|73.685|72.563|73.979|58.558|
+|E200_P4_H_PSET_B10|OOM|89/200|N/A|N/A|N/A|N/A|N/A|N/A|
+|E200_P5_H_PSETCOND_B10|完成|200/200|84.822|75.330|73.357|72.402|73.696|58.050|
+|E200_P6_H_PSETCOND_N_B10_CAP|完成|200/200|84.783|75.372|73.433|72.445|73.750|58.175|
+|E200_P7_P6_HSAT|OOM|124/200|N/A|N/A|N/A|N/A|N/A|N/A|
+
+### 同row机制比较
+
+|比较|clean差值|LEO均值差值|floor差值|
+|---|---:|---:|---:|
+|P5−P3|-0.678pp|-0.283pp|-0.508pp|
+|P6−P3|-0.717pp|-0.229pp|-0.383pp|
+|P6−P5|-0.038pp|+0.054pp|+0.125pp|
+
+P3有效阶段平均每批H/P/N/R为23.96/0/0/231.69，有效加权coverage约9.08%；P5为16.06/38.63/0/200.97，coverage约16.04%；P6为25.73/38.07/7.46/184.39，coverage约21.86%。P5/P6确实提高了无标签身份信息覆盖，但没有超过严格H。P6只在P5基础上获得0.054pp LEO均值和0.125pp floor，同时clean继续下降。
+
+### 技术失败
+
+P0、P4、P7的完整日志分别在E131、E89、E124结束于`torch.cuda.OutOfMemoryError`。失败时单卡总显存已接近23.55GiB；虽然每卡进程数没有超过2，但既有任务与本run的实际activation组合没有足够显存余量。三条失败行不能以最后一个source validation epoch或中间checkpoint替代正式结果，也未授权原地重跑。
+
+### 裁决
+
+LogitQ修复成功消除了早期RC4集合损失的非有限问题，P3/P5/P6平均optimizer step应用率均约99.91%，证明H/P/N路由可以完成E200训练。科学结果仍为负：当前P集合质量、候选条件蒸馏和N集合质量没有提供高于严格H的有效信息密度。P3是本轮有效行最佳点，但P0因OOM缺少最终反事实，因此不能在本run内量化严格H相对无U身份的E200增益。当前不晋级P5/P6，也不把P7的中间数据作为星地辅助证据。

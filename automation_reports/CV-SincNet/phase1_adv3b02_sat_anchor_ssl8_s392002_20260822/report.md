@@ -4,7 +4,7 @@
 
 ```text
 run_id=phase1_adv3b02_sat_anchor_ssl8_s392002_20260822
-status=LANDED_READY
+status=PARTIAL_TECHNICAL_FAILURE / ANALYZED
 seed=392002
 epochs=200
 matrix_rows=8
@@ -130,3 +130,37 @@ dispatcher_log=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_sat
 dispatcher_pid=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_sat_anchor_ssl8_s392002_20260822.dispatcher.pid
 python=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python
 ```
+
+## 2026-08-23终态分析
+
+### 终态
+
+2026-08-23 19:10 CST只读回查确认：A0—A4共7条候选均完成E200，分别保存200条可解析`metrics_epoch.jsonl`、`final_ssdg.pth`以及clean和三种LEO弱信道评测；所有评测均为strict reconstruction，missing/unexpected/shape mismatch为0。A5在E63因连续两个完整epoch无优化器更新而终止，没有final checkpoint和性能结果。相关训练进程已全部退出，8张RTX3090均空闲。
+
+矩阵终态为`PARTIAL_TECHNICAL_FAILURE / ANALYZED`：7条有效性能行，1条`TRAIN_FAILED / NO_PERFORMANCE_RESULT`。
+
+### 最终结果
+
+|候选|clean/%|clear/%|low-elev/%|rain/%|LEO均值/%|四场景floor/%|
+|---|---:|---:|---:|---:|---:|---:|
+|A0_CONTROL|84.847|75.215|73.128|72.113|73.486|58.467|
+|A1_STRICT_USAT|85.075|75.447|73.365|72.293|73.702|58.408|
+|A2_USAT_ANCHOR|84.673|75.372|73.305|72.277|73.651|59.408|
+|A3_ADAPTIVE_NO_FILL|84.567|75.508|73.553|72.558|73.873|58.208|
+|A3_FIXED_50_FILL|84.670|75.518|73.583|72.652|73.918|58.550|
+|A3_PAIR_INTERVAL2|84.590|75.335|73.260|72.337|73.644|58.900|
+|A4_CLASS_RX_CAP|84.345|75.232|73.253|72.360|73.615|58.975|
+|A5_ADAPTER_TAIL|N/A|N/A|N/A|N/A|N/A|N/A|
+
+相对A0，A1的clean/LEO/floor变化为+0.228/+0.216/-0.058pp；A2为-0.173/+0.166/+0.942pp；A3 adaptive为-0.280/+0.388/-0.258pp；A3 fixed-fill为-0.177/+0.432/+0.083pp；A3 interval2为-0.257/+0.158/+0.433pp；A4为-0.502/+0.129/+0.508pp。
+
+### 路由与训练健康
+
+- A1/A2/A3 adaptive/A3 interval2/A4在有效阶段平均消费约63.91/256条可信U样本；A3 fixed-fill为127.83/256，其中约63.91条来自回填。
+- A3 interval2和A4的pair active比例为0.4976；每step pair的A3 adaptive/fixed-fill为1.0。
+- A0—A4平均optimizer step应用率约99.91%，完整日志没有Traceback、OOM或系统性非有限更新。
+- A5从E43开始出现零更新；E59的clip前梯度达到71,646.6、总loss713.54，E60和E63的`train_skipped_nonfinite_loss=1.0`且optimizer step率为0。source satellite mean从最高89.836%降至16.667%，随后触发预注册的`FASTTRUST_CONSECUTIVE_ZERO_OPTIMIZER_STEP_EPOCHS`。
+
+### 裁决
+
+SAT-Anchor证明adaptive no-fill的严格U星地身份监督可以稳定训练，但7条有效行的LEO增益只有0.129—0.432pp，且clean、LEO均值和floor的最优点分属不同候选。当前没有一条同时满足显著LEO提升、floor提升和clean保护；单seed证据不足以晋级为新的Phase1默认方法。
