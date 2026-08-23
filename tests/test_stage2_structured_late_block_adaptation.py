@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import inspect
 
+import numpy as np
+import cvsrffi.stage2_structured_late_block_adaptation as adaptation_module
 from cvsrffi.stage2_structured_late_block_adaptation import (
     Phase2Context,
     StructuredLateBlockConfig,
@@ -12,6 +14,24 @@ from cvsrffi.stage2_structured_late_block_adaptation import (
 import pytest
 import torch
 import torch.nn as nn
+
+
+def test_numpy_inputs_cross_to_torch_by_values_not_array_identity(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def reject_array_identity_bridge(*args, **kwargs):
+        raise AssertionError("torch.as_tensor must not bridge NumPy in this runtime")
+
+    monkeypatch.setattr(torch, "as_tensor", reject_array_identity_bridge)
+    rows = adaptation_module._validate_received_iq(
+        np.ones((2, 2, 8), dtype=np.float32), name="support"
+    )
+    prototypes, class_ids = adaptation_module._validate_prototypes(
+        np.eye(2, dtype=np.float32), ("a", "b")
+    )
+    assert tuple(rows.shape) == (2, 2, 8)
+    assert tuple(prototypes.shape) == (2, 2)
+    assert class_ids == ("a", "b")
 
 
 class _ToyBackbone(nn.Module):

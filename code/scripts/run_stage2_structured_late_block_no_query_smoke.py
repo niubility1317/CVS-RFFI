@@ -404,7 +404,10 @@ def prepare(args: argparse.Namespace) -> dict[str, Any]:
         raise ValueError("support package does not match row K-shot selection")
 
     weight = model.id_backbone.cls_head.head.weight.detach().float().cpu()
-    prototypes = F.normalize(weight, dim=1, eps=1.0e-4).numpy().astype(np.float32)
+    prototypes = np.asarray(
+        F.normalize(weight, dim=1, eps=1.0e-4).tolist(),
+        dtype=np.float32,
+    )
     if prototypes.shape[0] != len(class_ids):
         raise ValueError("checkpoint head and class mapping disagree")
     support_output = output_dir / "support_only.npz"

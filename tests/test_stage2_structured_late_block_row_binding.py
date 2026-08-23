@@ -8,7 +8,11 @@ from types import SimpleNamespace
 import numpy as np
 import pytest
 
-from scripts.run_stage2_structured_late_block_no_query_smoke import prepare_query, run_row
+from scripts.run_stage2_structured_late_block_no_query_smoke import (
+    prepare,
+    prepare_query,
+    run_row,
+)
 
 
 def _write_json(path: Path, value: dict[str, object]) -> None:
@@ -173,3 +177,7 @@ def test_formal_row_first_opens_raw_query_after_adaptation_freezes() -> None:
         "_load_query_received_iq"
     )
     assert "query_only" not in source
+
+
+def test_prepare_does_not_export_torch_arrays_by_numpy_identity() -> None:
+    assert ".numpy()" not in inspect.getsource(prepare)

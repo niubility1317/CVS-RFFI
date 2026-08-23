@@ -120,8 +120,15 @@ class PredictionResult:
     scores: torch.Tensor
 
 
+def _float_tensor_from_values(value: Any) -> torch.Tensor:
+    if isinstance(value, torch.Tensor):
+        return value.detach().to(dtype=torch.float32)
+    plain_values = value.tolist() if hasattr(value, "tolist") else value
+    return torch.tensor(plain_values, dtype=torch.float32)
+
+
 def _validate_received_iq(value: Any, *, name: str) -> torch.Tensor:
-    rows = torch.as_tensor(value, dtype=torch.float32)
+    rows = _float_tensor_from_values(value)
     if (
         rows.ndim != 3
         or rows.shape[0] < 1
@@ -138,7 +145,7 @@ def _validate_prototypes(
     frozen_prototypes: Any,
     prototype_class_ids: Sequence[str],
 ) -> tuple[torch.Tensor, tuple[str, ...]]:
-    prototypes = torch.as_tensor(frozen_prototypes, dtype=torch.float32)
+    prototypes = _float_tensor_from_values(frozen_prototypes)
     class_ids = tuple(str(value) for value in prototype_class_ids)
     if (
         prototypes.ndim != 2
@@ -413,7 +420,7 @@ def adapt_on_target_support(
         )
     )
     prototypes_unchanged = torch.equal(
-        prototypes_cpu, torch.as_tensor(frozen_prototypes, dtype=torch.float32)
+        prototypes_cpu, _float_tensor_from_values(frozen_prototypes)
     )
     if not changed_selected:
         raise StructuredLateBlockError(
