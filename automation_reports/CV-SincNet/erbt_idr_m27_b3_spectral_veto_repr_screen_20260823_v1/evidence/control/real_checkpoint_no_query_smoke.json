@@ -1,0 +1,24 @@
+{
+  "all_outputs_finite": true,
+  "batch_size": 2,
+  "checkpoint_audit": {
+    "checkpoint_load_strict": true,
+    "crra_enabled": false,
+    "input_len": 256,
+    "loader": "exact_ssdg_training_architecture_v1",
+    "missing_keys": 0,
+    "num_domains_from_state": 14,
+    "skipped_mismatch": 0,
+    "state_tensor_count": 195,
+    "unexpected_keys": 0
+  },
+  "checkpoint_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
+  "checkpoint_sha256": "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98",
+  "implementation_commit": "f231080d2e33223f99e64faf2b8414907562f826",
+  "input_len": 256,
+  "output_tensor_count": 75,
+  "query_input_count": 0,
+  "run_id": "erbt_idr_m27_b3_spectral_veto_repr_screen_20260823_v1",
+  "status": "PASS",
+  "truth_opened": false
+}

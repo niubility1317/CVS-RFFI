@@ -1,0 +1,23 @@
+{
+  "arm_counts": {
+    "M24-D1-COMPILE-PARITY": 4,
+    "M25-B3-G0-STABLE-DUAL-PROTOTYPE-RESIDUAL": 4,
+    "M27-V1-B3-MGD-CONSENSUS-VETO": 4,
+    "M27-V2-B3-PHASE32-CONSENSUS-VETO": 4
+  },
+  "b0_before_after_disagreements": 0,
+  "b0_d1_parity_rows": 4,
+  "m27_reliability_counts": {
+    "False": 19,
+    "True": 5
+  },
+  "m27_scenario_allowlist_checks": 24,
+  "matrix_status": "PREDICTIONS_COMPLETE_TRUTH_UNOPENED",
+  "paired_input_identity_count": 4,
+  "query_truth_opened": false,
+  "row_count": 16,
+  "run_id": "erbt_idr_m27_b3_spectral_veto_repr_screen_20260823_v1",
+  "scenario_unit_count": 48,
+  "score_root_absent_before_validation": true,
+  "status": "PASS"
+}

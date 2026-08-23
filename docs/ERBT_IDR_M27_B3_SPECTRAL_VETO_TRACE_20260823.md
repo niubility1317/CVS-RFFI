@@ -12,7 +12,7 @@ M2.7不再构造独立类别残差。候选先计算B0与B3；只有当B3改变�
 
 目标域状态只由当前row的合法target support估计；query表征只参与逐样本推理，不更新中心、阈值、门控或持久状态。RF32始终不读取。
 
-## 需求追踪
+## 需求追踪（本地实现阶段）
 
 |ID|来源|可验证要求|实现目标|状态|验证|
 |---|---|---|---|---|---|
@@ -51,4 +51,30 @@ M2.7不再构造独立类别残差。候选先计算B0与B3；只有当B3改变�
 - `git diff --check`通过。
 - 独立审查首次`P0=0、P1=1`，定位scorer接受自声明部分矩阵；修复后唯一一次定点复审为`P0=0、P1=0、READY`。
 - N607直连只读预检确认正式feature/scoring/checkpoint输入存在，screen release/run/log目标路径不存在；prediction固定CPU执行。
-- 当前证据状态仅为`LOCAL_VERIFIED`；N607真实checkpoint无query smoke、4-identity prediction、truth-last评分和screen裁决尚未执行。
+- 本地实现阶段状态为`LOCAL_VERIFIED`；下述N607最终验证已在同一冻结实现上完成。
+
+## N607最终验证
+
+- 实现提交：`f231080d2e33223f99e64faf2b8414907562f826`；
+- 正式run：`erbt_idr_m27_b3_spectral_veto_repr_screen_20260823_v1`；
+- release归档本地/远端SHA-256：`b5b7a27d3c4d59e581a1e883f452b62838a7651f4c6dffd22bb18291bc607c4d`，一致；
+- 真实checkpoint无query smoke：missing=0、unexpected=0、75个输出张量有限、query输入0；
+- Phase32缓存：4/4闭合，query truth/role均未打开，不访问source/clean/raw数据；
+- prediction：16/16行，四臂各4行，4个paired identity，48个场景单元；
+- prediction状态：`PREDICTIONS_COMPLETE_TRUTH_UNOPENED`，B0注册前/后分歧均为0；
+- truth-last scorer：16行全部通过，错误0；
+- 汇总状态：`ANALYZED`；
+- screen裁决：`SCREEN_NEGATIVE_NO_FULL125`。
+
+## 最终机制结果
+
+|arm|H|相对B0 H|相对B3 H|help/harm vs B0|裁决|
+|---|---:|---:|---:|---:|---|
+|B0|0.610486|0|−0.005385|—|去RF32部署主基线|
+|B3|0.615871|+0.005385|0|28/5|现有完整125科学分支|
+|V1 MGD96否决|0.611788|+0.001302|−0.004083|6/0|screen失败|
+|V2 Phase32否决|0.610486|0|−0.005385|0/0|screen失败|
+
+V1在49个B3翻转中接受6个、否决43个；6个接受翻转全部正确，但只召回B3的28个有效纠正中的6个。V2的12个scene级可靠度全部失败，因而精确退化为B0。R01–R14的协议、实现和truth-last要求均已由正式run验证，但R12科学晋级门槛未通过，所以没有启动完整125。
+
+正式报告、机器可读汇总和109个轻量证据文件位于`automation_reports/CV-SincNet/erbt_idr_m27_b3_spectral_veto_repr_screen_20260823_v1/`。
