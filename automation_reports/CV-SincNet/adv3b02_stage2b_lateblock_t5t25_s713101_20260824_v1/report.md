@@ -85,3 +85,10 @@
 - DA1资源与边界：真实训练参数`76,736/1,049,665=7.31052%`，24步；仅`t3+t_proj+fuse`改变，非选中参数、buffer和冻结prototype不变；source输入0，query truth/role未加载，query状态未更新。该row状态为`ANALYZED`，不是完整Target5结论。
 - 远端artifact：`predictions/rx20_1_k5_new20_clear_da0_reg0_297ed2bd.json`、`predictions/rx20_1_k5_new20_clear_da1_reg0_297ed2bd.json`和`scores/rx20_1_k5_new20_clear_pair_297ed2bd.json`已独立回读存在；04:49未发现本run进程。
 - 当前科学判断：这一row超过相对DA0的`+1.0pp/+0.5pp`门槛，但Target5仅完成`1/15`个scenario row，Target25未开始；合规同row source-free MRIOR仍不存在，MRIOR比较保持`UNKNOWN`，因此不得晋级或宣称超越。
+
+## 04:58 Target5终局更新
+
+- TIME_FUSION_V1的Target5已完成5个receiver×3个scenario=`15/15`个同row成对评分。DA0_REG0旧类等权均值`73.444%`，DA1_REG0为`73.722%`，净增`+0.278pp`；全矩阵旧类floor从`20.0%`升至`25.0%`，净增`+5.0pp`。mean未达到`+1.0pp`，结论为`SCIENTIFIC_FAILURE_NO_PROMOTION`。
+- 其间剩余12个row首次prepare因命令把模板`rx_{receiver_path}`误拼为不存在的`rx3_19`类路径而在文件打开前统一失败；无输出目录、无prediction、无进程。只读定位后修正为预登记实际目录`rx_3_19`类路径，全部row以原不可覆盖目标成功闭合；没有覆盖或删除artifact。
+- FREQ_FUSION_V1训练参数`57,984/1,049,665=5.523%`，同样24步、support-only和冻结query边界。其Target5也完成`15/15`：DA0_REG0与DA1_REG0旧类等权均值均为`73.444%`，全矩阵floor均为`20.0%`，mean/floor差值均为`0.0pp`，结论为`SCIENTIFIC_FAILURE_NO_PROMOTION`。
+- 两个预登记少层候选均未达到晋级门槛；合规同row source-free MRIOR仍不存在，MRIOR比较为`UNKNOWN`。Target25未启动，不能宣称完成完整Target5/Target25矩阵或取得晋级性能结论。
