@@ -321,5 +321,6 @@ M2.6的绝对H高于历史full125是因为screen只包含两个receiver、一个
 - prediction闭合、score、控制证据和日志：同目录`evidence/`；
 - 实现追踪：`docs/ERBT_IDR_M26_TD_SRC256_TRACE_20260823.md`；
 - 历史总对比：`docs/D92_E0_ALL_ABLATION_EXPERIMENTS_REPORT_20260819.md`。
+- 正式结果发布提交：`50aff7ca0bf11817b9771d84b56646df8c53e824`，已推送至`origin/codex/m26-td-src256-20260823`并独立确认远端OID一致。
 
 最终结论：M2.6工程与协议验证通过，科学screen未通过。目标域域偏移不是不存在，而是当前“类内可靠度→独立类别分数”的作用方式错误；CEP96无独立收益，MGD96只有低幅、局部安全信号。模块二下一步应保留去RF32 B0和M2.5 B3，把目标域与新频域表征降级为有界共识/否决信息，直接优化注册后的old/new竞争，而不是再次替换稳健中心。
