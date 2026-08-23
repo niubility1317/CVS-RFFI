@@ -75,3 +75,13 @@
 - 版本管理：根目录`E:\type10-7`不是Git仓库，本报告同步镜像到正式Git承载工作树的同名路径
 
 > 香港时间2026-08-24 05:00为本目标的硬停止时间。到点后不得启动、派发、扩展或切换任何新候选、实验、审查或实现工作；不得终止届时仍在正常运行的N607实验。只汇总真实状态、已有证据、正在运行的任务和未完成条件，不得将`RUNNING`表述为已完成或已取得性能结论。
+
+## 04:49正式证据更新
+
+- 原`protocol_schema`阻断已闭合：只读取25份既有Stage2-B JSON manifest，不打开NPZ/payload/query；逐份核对原SHA、split、capsule、receiver、seed、K和package-root后，以不可覆盖新文件仅补入`protocol_schema=p2_min_v1`。远端新目录含25/25份只读manifest，旧artifact未覆盖。
+- N607运行时发现NumPy2.2.5与PyTorch2.1.0之间的ndarray身份桥不兼容。提交`49eede03fa8f1948fb9f94eab668d106c332eb58`改为显式值复制，聚焦RED→GREEN、相关回归和远端编译均通过；第一次失败目录保留，未删除或覆盖。
+- 提交`297ed2bd7f61b0ab18f9b7bbc72af553bba18dca`新增精确DA0_REG0冻结推理和成对truth-last scorer。两份prediction都携带unlabeled query包内既有opaque token；scorer在打开truth前先验证两份prediction完整性、无truth/role/query状态更新、句柄一致和token唯一性，再用token集合精确连接，不按位置猜测。最新相关回归`34/34`通过，远端编译通过；本地HEAD与远端分支OID一致。
+- 已完成一个正式同row：receiver=`20-1`、`K5/new20`、scenario=`leo_clear_weak`、seed=`713101`。DA0_REG0旧类均值`67.5%`、floor`25.0%`；DA1_REG0旧类均值`70.0%`、floor`35.0%`；`DA1_REG0-DA0_REG0`分别为`+2.5pp`和`+10.0pp`。旧类评分120条；两状态各520条prediction均与truth侧520个opaque token精确连接。REG0新类指标为`N/A`。
+- DA1资源与边界：真实训练参数`76,736/1,049,665=7.31052%`，24步；仅`t3+t_proj+fuse`改变，非选中参数、buffer和冻结prototype不变；source输入0，query truth/role未加载，query状态未更新。该row状态为`ANALYZED`，不是完整Target5结论。
+- 远端artifact：`predictions/rx20_1_k5_new20_clear_da0_reg0_297ed2bd.json`、`predictions/rx20_1_k5_new20_clear_da1_reg0_297ed2bd.json`和`scores/rx20_1_k5_new20_clear_pair_297ed2bd.json`已独立回读存在；04:49未发现本run进程。
+- 当前科学判断：这一row超过相对DA0的`+1.0pp/+0.5pp`门槛，但Target5仅完成`1/15`个scenario row，Target25未开始；合规同row source-free MRIOR仍不存在，MRIOR比较保持`UNKNOWN`，因此不得晋级或宣称超越。
