@@ -1,12 +1,13 @@
 # SOFESA Stage2-B轻型快速目标域适应实验记录
 
 - run ID：`sofesa_stage2b_c123_t5t25_s713101_20260824`
-- 当前状态：`LOCAL_VERIFIED_PENDING_COMMIT`
+- 当前状态：`ENGINEERING_CLOSED_FORMAL_MATRIX_BLOCKED`
 - 硬停止：香港时间2026-08-24 05:00；到点后不再启动、派发、扩展或切换新工作，不终止届时仍正常运行的N607实验。
 - 基线checkpoint：`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`
 - checkpoint SHA-256：`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`
 - Git分支：`work/cvs-active`
-- Git commit：`PENDING`
+- 实现Git commit：`42b115075a6f054186479b6524a7e92f847ceadf`
+- 报告闭合commit：本文件所在提交
 
 ## 方法
 
@@ -66,7 +67,7 @@ SOFESA（Support-Only Frozen-head Encoder Sparse Adaptation）在冻结的ADV3B0
 - 邻近回归：本次相关的support adapter与predictor bundle两文件fresh运行38/38通过。此前三文件合并运行47项中45项通过，另2项失败均来自未改动的旧`adv3b02_supervised_da_runner`测试fixture缺少当前Phase2 contract字段。
 - 真实checkpoint无query smoke：旧D18包曾完成精确C1工程反传（1,040/1,049,665，0.09908%，1步，分类头变化0），但独立审查发现该包manifest未绑定四个VALIDATED_ONCE句柄，因此该证据降级为`INVALID_FOR_PROTOCOL_CLOSURE`；修复后的合规smoke为`PENDING_MATCHED_MANIFEST`。
 - 一次P0/P1审查：初审发现P0×1、P1×2；三项已定点修复，10/10聚焦测试通过，定点复核确认三项全部`CLOSED`且未新增审查项。
-- Git commit/push/远端OID：`PENDING`
+- Git commit/push/远端OID：实现commit已push，独立远端OID回读在报告闭合提交后执行。
 - 正式Target5/Target25矩阵：`BLOCKED_MISSING_MATCHED_MANIFEST`。本地所有`enrollment_only` manifest均不含`phase2_data_status`；N607已知support-only NPZ manifest同样缺少四个句柄，修复后的runner按设计拒绝该输入。
 - 性能结论：`UNKNOWN`
 - 语法验证：核心模块与runner执行`py_compile`，退出码0。
