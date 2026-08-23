@@ -39,6 +39,15 @@ from cvsrffi.stage2_m25_anchored_residual import (
     anchored_arm_config_hash,
     fit_m25_anchored_residual,
 )
+from cvsrffi.stage2_m26_spectral_anchor import (
+    Phase1SpectralAnchor,
+    load_m26_spectral_anchor,
+)
+from cvsrffi.stage2_m26_td_src256 import (
+    M26_ARMS,
+    fit_m26_td_src256,
+    m26_arm_config_hash,
+)
 from cvsrffi.stage2_prediction_artifact import publish_prediction_artifact
 
 
@@ -208,8 +217,9 @@ def execute_m24_row(
     device: Any = "cpu",
     base_cache_bytes: int = 0,
     overlay_cache_bytes: int = 0,
+    source_anchor: Phase1SpectralAnchor | None = None,
 ) -> dict[str, Any]:
-    if arm not in M24_ARMS + M24_INVARIANCE_ARMS + M25_ANCHORED_ARMS:
+    if arm not in M24_ARMS + M24_INVARIANCE_ARMS + M25_ANCHORED_ARMS + M26_ARMS:
         raise M24RowExecutionError("unknown M2.4 arm")
     base_manifest = base_cache["manifest"]
     overlay_manifest = overlay_cache["manifest"]
@@ -230,10 +240,15 @@ def execute_m24_row(
         raise M24RowExecutionError("base/overlay row identity drift")
     if set(base_cache["scenario_payloads"]) != set(FORMAL_LEO_WEAK_SCENARIOS) or set(overlay_cache["scenario_payloads"]) != set(FORMAL_LEO_WEAK_SCENARIOS):
         raise M24RowExecutionError("formal scenario coverage drift")
+    m26_candidate_lock = None
+    if arm in M26_ARMS:
+        if source_anchor is None or tuple(source_anchor.class_registry) != old_classes:
+            raise M24RowExecutionError("M2.6 requires the checkpoint-bound six-class source anchor")
+        m26_candidate_lock = m26_arm_config_hash(arm, source_anchor.component_id)
     output = Path(output_root).absolute()
     output.mkdir(parents=True, exist_ok=False)
     base_only_d1 = bool(overlay_manifest.get("d1_base_only", False))
-    if base_only_d1 and arm not in {D0, D1, D1_REFIT, *M24_INVARIANCE_ARMS, *M25_ANCHORED_ARMS}:
+    if base_only_d1 and arm not in {D0, D1, D1_REFIT, *M24_INVARIANCE_ARMS, *M25_ANCHORED_ARMS, *M26_ARMS}:
         raise M24RowExecutionError("base-only compact view is restricted to D1 evidence arms")
     component = None if base_only_d1 else _OverlayGroundComponent(overlay_cache["ground_component"])
     manifold = None if component is None else build_ground_manifold(component)
@@ -267,6 +282,7 @@ def execute_m24_row(
     local_exp_counts: list[int] = []
     local_log_counts: list[int] = []
     local_aggregation_counts: list[int] = []
+    target_domain_residual_macs: list[int] = []
     started = time.perf_counter()
 
     for scenario_index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS):
@@ -414,6 +430,53 @@ def execute_m24_row(
                     old_class_count=len(old_classes),
                     domain_digest=domain_digest,
                 )
+            elif arm in M26_ARMS:
+                coefficient, bias, f1_log_diag = _f1_reference_head(
+                    historical_after, all_support_blocks
+                )
+                base_state, _base_audit, _base_workspace = compile_m24_d1_from_f1_head(
+                    f1_coefficient=coefficient,
+                    f1_bias=bias,
+                    f1_log_diag=f1_log_diag,
+                    f1_compiled_affine_state=historical_after.compiled_affine_state,
+                    classes=old_classes + new_classes,
+                    domain_digest=domain_digest,
+                    support_blocks=all_support_blocks,
+                )
+                state, audit = fit_m26_td_src256(
+                    arm=arm,
+                    base_state=base_state,
+                    support_blocks=all_support_blocks,
+                    support_labels=all_support_labels,
+                    classes=old_classes + new_classes,
+                    k_shot=int(overlay_manifest["k_shot"]),
+                    old_class_count=len(old_classes),
+                    source_anchor=source_anchor,
+                    domain_digest=domain_digest,
+                )
+                before_coefficient, before_bias, before_log_diag = _f1_reference_head(
+                    historical_before, compact["old_support_blocks"]
+                )
+                before_base_state, _before_base_audit, _before_base_workspace = compile_m24_d1_from_f1_head(
+                    f1_coefficient=before_coefficient,
+                    f1_bias=before_bias,
+                    f1_log_diag=before_log_diag,
+                    f1_compiled_affine_state=historical_before.compiled_affine_state,
+                    classes=old_classes,
+                    domain_digest=domain_digest,
+                    support_blocks=compact["old_support_blocks"],
+                )
+                before_state, before_audit = fit_m26_td_src256(
+                    arm=arm,
+                    base_state=before_base_state,
+                    support_blocks=compact["old_support_blocks"],
+                    support_labels=compact["old_support_labels"],
+                    classes=old_classes,
+                    k_shot=int(overlay_manifest["k_shot"]),
+                    old_class_count=len(old_classes),
+                    source_anchor=source_anchor,
+                    domain_digest=domain_digest,
+                )
             elif arm == D1:
                 coefficient, bias, f1_log_diag = _f1_reference_head(
                     historical_after, all_support_blocks
@@ -501,7 +564,7 @@ def execute_m24_row(
                     nuisance_covariance_identity=nuisance_covariance,
                 )
             registration_seconds += time.perf_counter() - fit_started
-            if arm in M24_INVARIANCE_ARMS or arm in M25_ANCHORED_ARMS:
+            if arm in M24_INVARIANCE_ARMS or arm in M25_ANCHORED_ARMS or arm in M26_ARMS:
                 feature_dim = state.feature_dim
                 query_features = compact["query_blocks"]
                 before_query_features = compact["query_blocks"]
@@ -512,7 +575,11 @@ def execute_m24_row(
                     compact["query_blocks"], feature_dim=before_state.compiled_affine_state.feature_dim
                 )
             query_started = time.perf_counter()
-            selected_scores = state.score(query_features)
+            if arm in M26_ARMS:
+                selected_scores, query_application = state.score_with_audit(query_features)
+                audit = {**dict(audit), "query_application": dict(query_application)}
+            else:
+                selected_scores = state.score(query_features)
             selected_after = np.asarray(state.classes)[np.argmax(selected_scores, axis=-1)]
             selected_before = before_state.predict(before_query_features)
             query_seconds += time.perf_counter() - query_started
@@ -524,11 +591,11 @@ def execute_m24_row(
                 "compiled_inference_state_bytes": max(
                     int(after_resource["compiled_inference_state_bytes"]),
                     int(before_resource["compiled_inference_state_bytes"]),
-                ) if arm == D1 or arm in M24_INVARIANCE_ARMS or arm in M25_ANCHORED_ARMS else int(after_resource["compiled_inference_state_bytes"]),
+                ) if arm == D1 or arm in M24_INVARIANCE_ARMS or arm in M25_ANCHORED_ARMS or arm in M26_ARMS else int(after_resource["compiled_inference_state_bytes"]),
                 "transient_registration_workspace_peak_bytes": max(
                     int(after_resource["transient_registration_workspace_peak_bytes"]),
                     int(before_resource["transient_registration_workspace_peak_bytes"]),
-                ) if arm == D1 or arm in M24_INVARIANCE_ARMS or arm in M25_ANCHORED_ARMS else int(after_resource["transient_registration_workspace_peak_bytes"]),
+                ) if arm == D1 or arm in M24_INVARIANCE_ARMS or arm in M25_ANCHORED_ARMS or arm in M26_ARMS else int(after_resource["transient_registration_workspace_peak_bytes"]),
             }
             audit = {**dict(audit), "before_registration_fit": dict(before_audit)}
             if arm == D1:
@@ -565,6 +632,14 @@ def execute_m24_row(
                 np.concatenate([compact["old_support_labels"], compact["new_support_labels"]]),
                 old_classes + new_classes,
             )
+        elif arm in M26_ARMS:
+            centre_left, centre_right, centre_angle = _support_center_angles_from_features(
+                state.metric_features(
+                    np.concatenate([compact["old_support_blocks"], compact["new_support_blocks"]])
+                ),
+                np.concatenate([compact["old_support_labels"], compact["new_support_labels"]]),
+                old_classes + new_classes,
+            )
         else:
             centre_left, centre_right, centre_angle = _support_center_angles(
                 np.concatenate([compact["old_support_blocks"], compact["new_support_blocks"]]),
@@ -594,6 +669,8 @@ def execute_m24_row(
             local_exp_counts.append(multi if active else 0)
             local_log_counts.append(sum(1 for value in counts if value > 1) if active else 0)
             local_aggregation_counts.append(sum(1 for value in counts if value > 1) if active else 0)
+        if arm in M26_ARMS:
+            target_domain_residual_macs.append(int(audit["resource"]["residual_query_mac"]))
 
     maximum_error = max(float(item["max_logit_abs_error"]) for item in quantization_audits)
     quantization_receipt = {
@@ -617,6 +694,7 @@ def execute_m24_row(
     }
     total_queries = sum(len(item) for item in tokens_all)
     local_prototype_mac = max(local_prototype_macs, default=0)
+    target_domain_residual_mac = max(target_domain_residual_macs, default=0)
     base_query_head_mac = int(max(feature_dims) * len(old_classes + new_classes))
     resource_receipt = {
         "schema": RESOURCE_RECEIPT_SCHEMA,
@@ -634,6 +712,8 @@ def execute_m24_row(
             if arm in M24_INVARIANCE_ARMS
             else "g0_anchored_support_only_residual"
             if arm in M25_ANCHORED_ARMS
+            else "g0_anchored_source_target_domain_residual"
+            if arm in M26_ARMS
             else "support_to_compiled_head"
             if arm == D1_REFIT
             else "historical_or_candidate_specific"
@@ -643,10 +723,11 @@ def execute_m24_row(
         "row_peak_vram_bytes": 0,
         "candidate_peak_memory_isolated": False,
         "closed_form_fit_count": len(FORMAL_LEO_WEAK_SCENARIOS),
-        "mac_equivalent_upper_bound": int((base_query_head_mac + local_prototype_mac) * total_queries),
-        "query_head_mac": int(base_query_head_mac + local_prototype_mac),
+        "mac_equivalent_upper_bound": int((base_query_head_mac + local_prototype_mac + target_domain_residual_mac) * total_queries),
+        "query_head_mac": int(base_query_head_mac + local_prototype_mac + target_domain_residual_mac),
         "base_affine_query_head_mac": base_query_head_mac,
         "local_evidence_prototype_mac": int(local_prototype_mac),
+        "target_domain_residual_mac": int(target_domain_residual_mac),
         "local_evidence_exp_count": int(max(local_exp_counts, default=0)),
         "local_evidence_log_count": int(max(local_log_counts, default=0)),
         "local_evidence_aggregation_count": int(max(local_aggregation_counts, default=0)),
@@ -663,6 +744,8 @@ def execute_m24_row(
         if arm in M24_INVARIANCE_ARMS
         else anchored_arm_config_hash(arm)
         if arm in M25_ANCHORED_ARMS
+        else m26_candidate_lock
+        if arm in M26_ARMS
         else arm_config_hash(arm)
     )
     prediction = publish_prediction_artifact(
@@ -728,6 +811,15 @@ def execute_m24_row(
         "resource": resource_receipt,
         "scenario_audit": audits,
     }
+    if arm in M26_ARMS:
+        receipt["source_anchor"] = {
+            "schema": "cvs.erbt_idr.m26.source_anchor_receipt.v1",
+            "checkpoint_sha256": source_anchor.checkpoint_sha256,
+            "component_id": source_anchor.component_id,
+            "class_registry": list(source_anchor.class_registry),
+            "state_bytes": source_anchor.state_bytes,
+            "sample_or_member_rows_available": False,
+        }
     _exclusive_json(output / "row_execution_receipt.json", receipt)
     return receipt
 
@@ -904,4 +996,48 @@ def run_m25_anchored_row_from_base_cache(
     )
 
 
-__all__ = ["DA0_REG0", "DA1_REG0", "DA0_REG1", "DA1_REG1", "M24_ROW_EXECUTION_SCHEMA", "M24RowExecutionError", "d1_overlay_from_base_cache", "execute_m24_row", "run_m24_d1_evidence_row_from_base_cache", "run_m24_d1_row_from_base_cache", "run_m24_invariance_row_from_base_cache", "run_m25_anchored_row_from_base_cache", "run_m24_row_from_caches"]
+def run_m26_td_src256_row_from_base_cache(
+    *,
+    arm: str,
+    row_id: str,
+    receiver: str,
+    base_feature_cache_payload: str | Path,
+    base_feature_cache_manifest: str | Path,
+    base_feature_cache_payload_sha256: str,
+    base_feature_cache_manifest_sha256: str,
+    source_anchor_path: str | Path,
+    expected_checkpoint_sha256: str,
+    output_root: str | Path,
+    seed: int,
+    device: Any = "cpu",
+) -> dict[str, Any]:
+    if arm not in {D1, *M26_ARMS}:
+        raise M24RowExecutionError("M2.6 runner accepts only B0 and T1-T5")
+    base = load_feature_cache(
+        base_feature_cache_payload,
+        base_feature_cache_manifest,
+        expected_payload_sha256=str(base_feature_cache_payload_sha256).lower(),
+        expected_manifest_sha256=str(base_feature_cache_manifest_sha256).lower(),
+    )
+    anchor = None
+    if arm in M26_ARMS:
+        anchor = load_m26_spectral_anchor(
+            source_anchor_path,
+            expected_checkpoint_sha256=str(expected_checkpoint_sha256).lower(),
+        )
+    return execute_m24_row(
+        arm=arm,
+        row_id=row_id,
+        receiver=receiver,
+        base_cache=base,
+        overlay_cache=d1_overlay_from_base_cache(base),
+        output_root=output_root,
+        seed=int(seed),
+        device=device,
+        base_cache_bytes=Path(base_feature_cache_payload).stat().st_size,
+        overlay_cache_bytes=0,
+        source_anchor=anchor,
+    )
+
+
+__all__ = ["DA0_REG0", "DA1_REG0", "DA0_REG1", "DA1_REG1", "M24_ROW_EXECUTION_SCHEMA", "M24RowExecutionError", "d1_overlay_from_base_cache", "execute_m24_row", "run_m24_d1_evidence_row_from_base_cache", "run_m24_d1_row_from_base_cache", "run_m24_invariance_row_from_base_cache", "run_m25_anchored_row_from_base_cache", "run_m26_td_src256_row_from_base_cache", "run_m24_row_from_caches"]
