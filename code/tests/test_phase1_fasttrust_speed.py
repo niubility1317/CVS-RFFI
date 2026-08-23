@@ -64,6 +64,50 @@ def test_fasttrust_epoch_resource_metrics_report_realized_throughput_and_peak_me
     }
 
 
+def test_rc4_defaults_use_safe_domain_scale_and_nonfinite_guard():
+    args = train_ssdg.build_arg_parser().parse_args(["--output_dir", "out"])
+
+    assert args.rc4_lambda_domain == 0.16
+    assert args.rc4_nonfinite_guard_min_count == 8
+    assert args.rc4_nonfinite_guard_fraction == 0.05
+
+
+def test_fasttrust_log_snapshot_never_retains_autograd_graphs():
+    source = torch.tensor(2.0, requires_grad=True)
+    derived = source.square()
+    snapshot = train_ssdg._detach_log_mapping({"loss": derived, "count": 3.0})
+
+    assert torch.is_tensor(snapshot["loss"])
+    assert snapshot["loss"].item() == 4.0
+    assert snapshot["loss"].requires_grad is False
+    assert snapshot["loss"].grad_fn is None
+    assert snapshot["count"] == 3.0
+
+
+def test_rc4_nonfinite_guard_requires_both_absolute_count_and_fraction():
+    assert not train_ssdg._rc4_nonfinite_guard_triggered(7, 7, min_count=8, fraction=0.05)
+    assert not train_ssdg._rc4_nonfinite_guard_triggered(8, 200, min_count=8, fraction=0.05)
+    assert train_ssdg._rc4_nonfinite_guard_triggered(8, 100, min_count=8, fraction=0.05)
+
+
+def test_sparse_heavy_source_val_schedule_runs_56_times_for_e200():
+    args = SimpleNamespace(
+        source_val_heavy_eval_start_epoch=1,
+        source_val_heavy_eval_interval=5,
+        source_val_heavy_eval_final_window=20,
+        source_val_heavy_eval_final_interval=1,
+    )
+    selected = [
+        epoch
+        for epoch in range(1, 201)
+        if train_ssdg._should_run_source_val_heavy_eval(epoch, 200, args)
+    ]
+
+    assert len(selected) == 56
+    assert selected[:3] == [5, 10, 15]
+    assert selected[-20:] == list(range(181, 201))
+
+
 class _CountingModel(nn.Module):
     def __init__(self):
         super().__init__()

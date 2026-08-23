@@ -437,6 +437,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--rc4_enable_negative", type=str2bool, default=True)
     parser.add_argument("--rc4_partial_effective_budget", type=float, default=0.10)
     parser.add_argument("--rc4_negative_effective_budget", type=float, default=0.10)
+    parser.add_argument("--rc4_total_identity_effective_budget", type=float, default=0.0)
+    parser.add_argument("--rc4_use_calibrated_partial_threshold", type=str2bool, default=False)
     parser.add_argument("--rc4_class_receiver_cap", type=str2bool, default=True)
     parser.add_argument("--rc4_satellite_hard_only", type=str2bool, default=False)
     parser.add_argument("--rc4_identity_start_epoch", type=int, default=11)
@@ -445,12 +447,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--rc4_lambda_hard", type=float, default=0.60)
     parser.add_argument("--rc4_lambda_partial", type=float, default=0.40)
     parser.add_argument("--rc4_lambda_negative", type=float, default=0.20)
-    parser.add_argument("--rc4_lambda_domain", type=float, default=1.0)
+    parser.add_argument("--rc4_lambda_domain", type=float, default=0.16)
     parser.add_argument("--rc4_lambda_self", type=float, default=0.10)
     parser.add_argument("--rc4_lambda_satellite", type=float, default=0.10)
     parser.add_argument("--rc4_tail_transition_start_epoch", type=int, default=91)
     parser.add_argument("--rc4_tail_transition_epochs", type=int, default=20)
     parser.add_argument("--rc4_tail_transition_floor", type=float, default=0.25)
+    parser.add_argument("--rc4_nonfinite_guard_min_count", type=int, default=8)
+    parser.add_argument("--rc4_nonfinite_guard_fraction", type=float, default=0.05)
     parser.add_argument("--teacher_ckpt", type=str, default="", help="Optional frozen teacher checkpoint for ADV3B02 distillation.")
     parser.add_argument("--lambda_teacher_clean_kl", type=float, default=0.0)
     parser.add_argument("--lambda_teacher_sat_kl", type=float, default=0.0)
@@ -5611,6 +5615,41 @@ def _fasttrust_epoch_resource_metrics(
     }
 
 
+def _detach_log_mapping(values: Mapping[str, Any]) -> Dict[str, Any]:
+    """Detach every tensor before an epoch log retains the batch snapshot."""
+
+    def detach(value: Any) -> Any:
+        if torch.is_tensor(value):
+            return value.detach()
+        if isinstance(value, Mapping):
+            return {key: detach(nested) for key, nested in value.items()}
+        if isinstance(value, tuple):
+            return tuple(detach(nested) for nested in value)
+        if isinstance(value, list):
+            return [detach(nested) for nested in value]
+        return value
+
+    return {key: detach(value) for key, value in values.items()}
+
+
+def _rc4_nonfinite_guard_triggered(
+    nonfinite_batches: int,
+    steps_seen: int,
+    *,
+    min_count: int,
+    fraction: float,
+) -> bool:
+    """Stop a systemic RC4 numeric failure before skipped graphs exhaust memory."""
+
+    count = max(0, int(nonfinite_batches))
+    steps = max(1, int(steps_seen))
+    required = max(1, int(min_count))
+    ratio = float(fraction)
+    if not math.isfinite(ratio) or not 0.0 <= ratio <= 1.0:
+        raise ValueError("RC4 nonfinite guard fraction must be finite and in [0,1]")
+    return count >= required and count / float(steps) >= ratio
+
+
 def _split_muse_output(value: Any, split_at: int, total: int) -> Tuple[Any, Any]:
     if torch.is_tensor(value) and value.ndim >= 1 and int(value.shape[0]) == total:
         return value[:split_at], value[split_at:]
@@ -5817,6 +5856,8 @@ def _calibrate_rc4_vcal(
         torch.cat(labels), torch.cat(domains), torch.cat(z_norms),
         num_classes=int(num_classes), num_domains=int(num_domains), folds=5,
         hard_precision_target=0.98, partial_coverage_target=0.95,
+        partial_precision_target=0.98, partial_min_coverage=0.01,
+        partial_candidate_max_classes=int(args.muse_candidate_max_classes),
         negative_false_exclusion_target=0.01,
     )
 
@@ -6758,6 +6799,18 @@ def train(args) -> int:
             raise ValueError("FastTrust-RC4 requires --muse_level M3")
         if int(getattr(args, "rc4_identity_start_epoch", 11)) < 1:
             raise ValueError("RC4 identity start epoch must be positive")
+        total_identity_budget = float(
+            getattr(args, "rc4_total_identity_effective_budget", 0.0)
+        )
+        if not 0.0 <= total_identity_budget <= 1.0:
+            raise ValueError("RC4 total identity effective budget must be in [0,1]")
+        if total_identity_budget > 0.0 and bool(getattr(args, "rc4_enable_negative", False)):
+            raise ValueError("RC4 quality-budget mode requires negative routing disabled")
+        if int(getattr(args, "rc4_nonfinite_guard_min_count", 8)) < 1:
+            raise ValueError("RC4 nonfinite guard min count must be positive")
+        guard_fraction = float(getattr(args, "rc4_nonfinite_guard_fraction", 0.05))
+        if not 0.0 <= guard_fraction <= 1.0:
+            raise ValueError("RC4 nonfinite guard fraction must be in [0,1]")
     _enforce_muse_source_protocol(args)
     if muse_active and int(getattr(args, "epochs", 0)) <= 0:
         args.epochs = int(args.muse_final_epoch)
@@ -7493,6 +7546,7 @@ def train(args) -> int:
         if balanced_train_sampler is not None and hasattr(balanced_train_sampler, "set_epoch"):
             balanced_train_sampler.set_epoch(epoch)
         epoch_logs = []
+        rc4_nonfinite_batches = 0
         legacy_unlabeled_active = _legacy_unlabeled_active(
             args,
             muse_state=muse_state,
@@ -8720,6 +8774,12 @@ def train(args) -> int:
                                 candidate_max_classes=int(args.muse_candidate_max_classes),
                                 partial_effective_budget=float(args.rc4_partial_effective_budget),
                                 negative_effective_budget=float(args.rc4_negative_effective_budget),
+                                total_identity_effective_budget=float(
+                                    args.rc4_total_identity_effective_budget
+                                ),
+                                use_calibrated_partial_threshold=bool(
+                                    args.rc4_use_calibrated_partial_threshold
+                                ),
                                 enable_hard=bool(args.rc4_enable_hard),
                                 enable_partial=bool(args.rc4_enable_partial),
                                 enable_negative=bool(args.rc4_enable_negative),
@@ -9817,7 +9877,7 @@ def train(args) -> int:
                     u_tri_accept_rate = 0.0
                 u_tri_ambiguous_tail_count = max(0.0, u_tri_query_count * max(0.0, min(1.0, u_tri_accept_rate)))
                 u_tri_outside_reject_count = max(0.0, u_tri_query_count - u_tri_ambiguous_tail_count)
-            epoch_logs.append(
+            epoch_logs.append(_detach_log_mapping(
                 {
                     "train/loss": loss.detach(),
                     "train/loss_labeled": loss_l.detach(),
@@ -10246,8 +10306,10 @@ def train(args) -> int:
                     "rc4/effective_weighted_coverage": rc4_route.weights.sum().detach() / float(max(1, unlabeled_count)) if rc4_route is not None else 0.0,
                     "rc4/risk_mean": rc4_route.risk.mean().detach() if rc4_route is not None else 0.0,
                     "rc4/p_correct_mean": rc4_route.p_correct.mean().detach() if rc4_route is not None else 0.0,
+                    "rc4/estimated_error_mean": (1.0 - rc4_route.p_correct).mean().detach() if rc4_route is not None else 0.0,
                     "rc4/p_set_safe_mean": rc4_route.p_set_safe.mean().detach() if rc4_route is not None else 0.0,
                     "rc4/p_exclusion_safe_mean": rc4_route.p_exclusion_safe.mean().detach() if rc4_route is not None else 0.0,
+                    "rc4/partial_safety_threshold": rc4_route.partial_threshold.detach() if rc4_route is not None else 0.0,
                     "rc4/hard_effective_coverage": rc4_route.weights[rc4_route.hard].sum().detach() / float(max(1, unlabeled_count)) if rc4_route is not None else 0.0,
                     "rc4/partial_effective_coverage": rc4_route.weights[rc4_route.partial].sum().detach() / float(max(1, unlabeled_count)) if rc4_route is not None else 0.0,
                     "rc4/negative_effective_coverage": rc4_route.weights[rc4_route.negative].sum().detach() / float(max(1, unlabeled_count)) if rc4_route is not None else 0.0,
@@ -10727,7 +10789,23 @@ def train(args) -> int:
                     },
                     "train/dm_accept_stage_scale": float(direct_metric_stage_scale),
                 }
-            )
+            ))
+            if bool(muse_state is not None and muse_state.get("fasttrust_rc4", False)):
+                rc4_nonfinite_batches += int(
+                    bool(skipped_nonfinite_loss) or bool(skipped_nonfinite_grad)
+                )
+                if _rc4_nonfinite_guard_triggered(
+                    rc4_nonfinite_batches,
+                    batch_idx,
+                    min_count=int(args.rc4_nonfinite_guard_min_count),
+                    fraction=float(args.rc4_nonfinite_guard_fraction),
+                ):
+                    raise RuntimeError(
+                        "RC4_SYSTEMIC_NONFINITE_BATCH_GUARD "
+                        f"epoch={int(epoch)} batch={int(batch_idx)} "
+                        f"nonfinite={int(rc4_nonfinite_batches)} "
+                        f"fraction={rc4_nonfinite_batches / float(max(1, batch_idx)):.6f}"
+                    )
 
         val_stats = evaluate_loader(model, data_ctx["val_loader"], device, data_ctx["domain_label_map"], max_batches=int(args.eval_max_batches))
         current_source_val = float(val_stats.get("tx_acc", float("nan")))

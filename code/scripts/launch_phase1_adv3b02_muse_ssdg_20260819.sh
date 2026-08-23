@@ -15,6 +15,11 @@ INIT_MODE="${INIT_MODE:-scratch}"
 BASE_CKPT="${BASE_CKPT:-${ROOT}/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth}"
 CANDIDATE_ID_OVERRIDE="${CANDIDATE_ID_OVERRIDE:-}"
 MUSE_UNLABELED_BATCH_SIZE="${MUSE_UNLABELED_BATCH_SIZE:-256}"
+EVAL_BATCH_SIZE="${EVAL_BATCH_SIZE:-256}"
+SOURCE_VAL_HEAVY_EVAL_START_EPOCH="${SOURCE_VAL_HEAVY_EVAL_START_EPOCH:-1}"
+SOURCE_VAL_HEAVY_EVAL_INTERVAL="${SOURCE_VAL_HEAVY_EVAL_INTERVAL:-1}"
+SOURCE_VAL_HEAVY_EVAL_FINAL_WINDOW="${SOURCE_VAL_HEAVY_EVAL_FINAL_WINDOW:-0}"
+SOURCE_VAL_HEAVY_EVAL_FINAL_INTERVAL="${SOURCE_VAL_HEAVY_EVAL_FINAL_INTERVAL:-1}"
 TOTAL_EPOCHS="${TOTAL_EPOCHS:-200}"
 LABEL_EPOCHS="${LABEL_EPOCHS:-130}"
 PSEUDO_EPOCHS="${PSEUDO_EPOCHS:-70}"
@@ -42,6 +47,8 @@ RC4_ENABLE_PARTIAL_CONDITIONAL="${RC4_ENABLE_PARTIAL_CONDITIONAL:-true}"
 RC4_ENABLE_NEGATIVE="${RC4_ENABLE_NEGATIVE:-true}"
 RC4_PARTIAL_EFFECTIVE_BUDGET="${RC4_PARTIAL_EFFECTIVE_BUDGET:-0.10}"
 RC4_NEGATIVE_EFFECTIVE_BUDGET="${RC4_NEGATIVE_EFFECTIVE_BUDGET:-0.10}"
+RC4_TOTAL_IDENTITY_EFFECTIVE_BUDGET="${RC4_TOTAL_IDENTITY_EFFECTIVE_BUDGET:-0}"
+RC4_USE_CALIBRATED_PARTIAL_THRESHOLD="${RC4_USE_CALIBRATED_PARTIAL_THRESHOLD:-false}"
 RC4_CLASS_RX_CAP="${RC4_CLASS_RX_CAP:-true}"
 RC4_SATELLITE="${RC4_SATELLITE:-false}"
 RC4_IDENTITY_START="${RC4_IDENTITY_START:-11}"
@@ -50,6 +57,9 @@ RC4_CALIBRATION_EPOCHS="${RC4_CALIBRATION_EPOCHS:-1,41,91,161}"
 RC4_TAIL_TRANSITION_START="${RC4_TAIL_TRANSITION_START:-91}"
 RC4_TAIL_TRANSITION_EPOCHS="${RC4_TAIL_TRANSITION_EPOCHS:-20}"
 RC4_TAIL_TRANSITION_FLOOR="${RC4_TAIL_TRANSITION_FLOOR:-0.25}"
+RC4_LAMBDA_DOMAIN="${RC4_LAMBDA_DOMAIN:-0.16}"
+RC4_NONFINITE_GUARD_MIN_COUNT="${RC4_NONFINITE_GUARD_MIN_COUNT:-8}"
+RC4_NONFINITE_GUARD_FRACTION="${RC4_NONFINITE_GUARD_FRACTION:-0.05}"
 DRY_RUN=0
 ONLY_CANDIDATES="M0,M1,M2,M3"
 
@@ -191,11 +201,16 @@ build_train_command() {
     --base_candidate ADV3B02_CORE90_SOFT_E200
     --epochs "${TOTAL_EPOCHS}"
     --batch_size 128
+    --eval_batch_size "${EVAL_BATCH_SIZE}"
     --label_epochs "${LABEL_EPOCHS}"
     --pseudo_epochs "${PSEUDO_EPOCHS}"
     --phase1_source_val_selection_only true
     --checkpoint_selection final_only
     --best_metric source_val_sat_hmean
+    --source_val_heavy_eval_start_epoch "${SOURCE_VAL_HEAVY_EVAL_START_EPOCH}"
+    --source_val_heavy_eval_interval "${SOURCE_VAL_HEAVY_EVAL_INTERVAL}"
+    --source_val_heavy_eval_final_window "${SOURCE_VAL_HEAVY_EVAL_FINAL_WINDOW}"
+    --source_val_heavy_eval_final_interval "${SOURCE_VAL_HEAVY_EVAL_FINAL_INTERVAL}"
     --paic_guard_enabled true
     --paic_guard_sat_ce_delta 0.12
     --paic_guard_grad_delta 3.0
@@ -403,6 +418,8 @@ build_train_command() {
       --rc4_enable_negative "${RC4_ENABLE_NEGATIVE}"
       --rc4_partial_effective_budget "${RC4_PARTIAL_EFFECTIVE_BUDGET}"
       --rc4_negative_effective_budget "${RC4_NEGATIVE_EFFECTIVE_BUDGET}"
+      --rc4_total_identity_effective_budget "${RC4_TOTAL_IDENTITY_EFFECTIVE_BUDGET}"
+      --rc4_use_calibrated_partial_threshold "${RC4_USE_CALIBRATED_PARTIAL_THRESHOLD}"
       --rc4_class_receiver_cap "${RC4_CLASS_RX_CAP}"
       --rc4_satellite_hard_only "${RC4_SATELLITE}"
       --rc4_identity_start_epoch "${RC4_IDENTITY_START}"
@@ -414,9 +431,11 @@ build_train_command() {
       --rc4_lambda_hard 0.60
       --rc4_lambda_partial 0.40
       --rc4_lambda_negative 0.20
-      --rc4_lambda_domain 1.0
+      --rc4_lambda_domain "${RC4_LAMBDA_DOMAIN}"
       --rc4_lambda_self 0.10
       --rc4_lambda_satellite 0.10
+      --rc4_nonfinite_guard_min_count "${RC4_NONFINITE_GUARD_MIN_COUNT}"
+      --rc4_nonfinite_guard_fraction "${RC4_NONFINITE_GUARD_FRACTION}"
       --sat_anchor_hard_max_fraction 0.25
       --muse_candidate_max_classes 3
     )
@@ -436,6 +455,7 @@ build_eval_command() {
     --scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak
     --device cuda:0
     --max_batches -1
+    --eval_batch_size "${EVAL_BATCH_SIZE}"
     --sat_seed "${SEED}"
     --strict_reconstruction
   )

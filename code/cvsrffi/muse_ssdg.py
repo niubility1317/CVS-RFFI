@@ -276,12 +276,15 @@ class RC4Calibration:
     aps_by_class: torch.Tensor
     aps_by_domain: torch.Tensor
     hard_risk_threshold: float
+    partial_safety_threshold: float
     hard_ready: bool
     partial_ready: bool
     negative_ready: bool
     hard_precision: float
     hard_coverage: float
     partial_coverage: float
+    partial_precision: float
+    partial_selected_coverage: float
     partial_mean_size: float
     negative_false_exclusion: float
     calibration_rows: int
@@ -300,6 +303,7 @@ class RC4Route:
     p_correct: torch.Tensor
     p_set_safe: torch.Tensor
     p_exclusion_safe: torch.Tensor
+    partial_threshold: torch.Tensor
     candidate_mask: torch.Tensor
     excluded_mask: torch.Tensor
     hard: torch.Tensor
@@ -832,6 +836,9 @@ def build_rc4_calibration(
     hard_precision_target: float = 0.98,
     hard_min_coverage: float = 0.01,
     partial_coverage_target: float = 0.95,
+    partial_precision_target: float = 0.98,
+    partial_min_coverage: float = 0.01,
+    partial_candidate_max_classes: int = 3,
     negative_false_exclusion_target: float = 0.01,
 ) -> RC4Calibration:
     """Fit temperature, cross-fitted correctness risk, and APS thresholds on ``V_cal``."""
@@ -932,10 +939,70 @@ def build_rc4_calibration(
     candidate = _rc4_aps_mask(fused, row_threshold)
     contains_truth = candidate.gather(1, labels.reshape(-1, 1)).squeeze(1)
     containment_target = contains_truth.float()
+    oof_partial_safety = torch.empty(rows, device=design.device, dtype=design.dtype)
+    if fold_count > 1:
+        for fold in range(fold_count):
+            held_domains = unique_domains[
+                torch.arange(unique_domains.numel(), device=domains.device).remainder(fold_count).eq(fold)
+            ]
+            held = (domains.reshape(-1, 1) == held_domains.reshape(1, -1)).any(dim=1)
+            train = ~held
+            beta_fold = _fit_rc4_logistic(
+                design[train], containment_target[train], float(l2)
+            ).to(design.device)
+            oof_partial_safety[held] = _rc4_calibrated_probability(
+                design[held], beta_fold
+            )
+    else:
+        beta_fold = _fit_rc4_logistic(design, containment_target, float(l2)).to(
+            design.device
+        )
+        oof_partial_safety = _rc4_calibrated_probability(design, beta_fold)
     partial_safety_weight = _fit_rc4_logistic(design, containment_target, float(l2))
     exclusion_safety_weight = _fit_rc4_logistic(design, containment_target, float(l2))
     partial_coverage = float(contains_truth.float().mean().item())
-    partial_mean_size = float(candidate.sum(dim=1).float().mean().item())
+    candidate_size = candidate.sum(dim=1)
+    partial_mean_size = float(candidate_size.float().mean().item())
+    partial_eligible = candidate_size.ge(2) & candidate_size.le(
+        int(partial_candidate_max_classes)
+    )
+    eligible_order = torch.argsort(
+        oof_partial_safety[partial_eligible], descending=True, stable=True
+    )
+    eligible_ids = partial_eligible.nonzero(as_tuple=False).reshape(-1)[eligible_order]
+    if eligible_ids.numel() > 0:
+        ordered_safe = containment_target[eligible_ids]
+        partial_precision_curve = ordered_safe.cumsum(0) / torch.arange(
+            1,
+            eligible_ids.numel() + 1,
+            device=ordered_safe.device,
+            dtype=ordered_safe.dtype,
+        )
+        partial_coverage_curve = torch.arange(
+            1,
+            eligible_ids.numel() + 1,
+            device=ordered_safe.device,
+            dtype=ordered_safe.dtype,
+        ) / float(rows)
+        valid_partial = (
+            partial_precision_curve.ge(float(partial_precision_target))
+            & partial_coverage_curve.ge(float(partial_min_coverage))
+        )
+    else:
+        partial_precision_curve = fused.new_empty(0)
+        partial_coverage_curve = fused.new_empty(0)
+        valid_partial = torch.zeros(0, dtype=torch.bool, device=fused.device)
+    if bool(valid_partial.any()):
+        partial_end = int(valid_partial.nonzero(as_tuple=False)[-1].item())
+        partial_threshold = float(oof_partial_safety[eligible_ids[partial_end]].item())
+        partial_precision = float(partial_precision_curve[partial_end].item())
+        partial_selected_coverage = float(partial_coverage_curve[partial_end].item())
+        partial_ready = partial_mean_size <= 2.5
+    else:
+        partial_threshold = 1.0
+        partial_precision = 0.0
+        partial_selected_coverage = 0.0
+        partial_ready = False
     false_exclusion = 1.0 - partial_coverage
     return RC4Calibration(
         temperature=temperature,
@@ -948,15 +1015,15 @@ def build_rc4_calibration(
         aps_by_class=aps_class.detach().cpu(),
         aps_by_domain=aps_domain.detach().cpu(),
         hard_risk_threshold=hard_threshold,
+        partial_safety_threshold=partial_threshold,
         hard_ready=bool(hard_ready),
-        partial_ready=bool(
-            partial_coverage >= float(partial_coverage_target)
-            and partial_mean_size <= 2.5
-        ),
+        partial_ready=bool(partial_ready),
         negative_ready=bool(false_exclusion <= float(negative_false_exclusion_target)),
         hard_precision=hard_precision,
         hard_coverage=hard_coverage,
         partial_coverage=partial_coverage,
+        partial_precision=partial_precision,
+        partial_selected_coverage=partial_selected_coverage,
         partial_mean_size=partial_mean_size,
         negative_false_exclusion=float(false_exclusion),
         calibration_rows=rows,
@@ -964,6 +1031,52 @@ def build_rc4_calibration(
         num_classes=int(num_classes),
         num_domains=int(num_domains),
     )
+
+
+def apply_rc4_quality_budget(
+    hard: torch.Tensor,
+    partial: torch.Tensor,
+    weights: torch.Tensor,
+    *,
+    total_budget: float,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Apply one exact H-first effective budget and let P fill only the residual."""
+
+    hard = torch.as_tensor(hard, device=weights.device, dtype=torch.bool).reshape(-1)
+    partial = torch.as_tensor(partial, device=weights.device, dtype=torch.bool).reshape(-1)
+    adjusted = torch.as_tensor(weights).clone().reshape(-1)
+    if hard.numel() != adjusted.numel() or partial.numel() != adjusted.numel():
+        raise ValueError("RC4 quality-budget masks and weights must be aligned")
+    if bool((hard & partial).any()):
+        raise ValueError("RC4 quality-budget H and P masks must be disjoint")
+    fraction = float(total_budget)
+    if not math.isfinite(fraction) or not 0.0 <= fraction <= 1.0:
+        raise ValueError("RC4 total effective identity budget must be finite and in [0,1]")
+    adjusted = torch.nan_to_num(adjusted, nan=0.0, posinf=0.0, neginf=0.0).clamp_min(0.0)
+    kept_hard = torch.zeros_like(hard)
+    kept_partial = torch.zeros_like(partial)
+    remaining = float(adjusted.numel()) * fraction
+
+    def consume(mask: torch.Tensor, kept: torch.Tensor) -> None:
+        nonlocal remaining
+        ordered = sorted(
+            mask.nonzero(as_tuple=False).reshape(-1).detach().cpu().tolist(),
+            key=lambda index: (-float(adjusted[index].detach().cpu().item()), int(index)),
+        )
+        for index in ordered:
+            value = float(adjusted[index].detach().cpu().item())
+            if value <= 0.0 or remaining <= 1e-12:
+                adjusted[index] = 0.0
+                continue
+            used = min(value, remaining)
+            adjusted[index] = used
+            kept[index] = True
+            remaining -= used
+
+    consume(hard, kept_hard)
+    consume(partial, kept_partial)
+    adjusted = torch.where(kept_hard | kept_partial, adjusted, torch.zeros_like(adjusted))
+    return kept_hard, kept_partial, adjusted
 
 
 def route_fasttrust_rc4(
@@ -980,6 +1093,8 @@ def route_fasttrust_rc4(
     partial_min_risk: float = 0.50,
     partial_effective_budget: float = 0.10,
     negative_effective_budget: float = 0.10,
+    total_identity_effective_budget: float = 0.0,
+    use_calibrated_partial_threshold: bool = False,
     enable_hard: bool = True,
     enable_partial: bool = True,
     enable_negative: bool = True,
@@ -1080,13 +1195,18 @@ def route_fasttrust_rc4(
             tensor = torch.as_tensor(selected, device=fused.device, dtype=torch.long)
             hard[tensor] = True
             cap_mask[tensor] = True
+    partial_threshold = (
+        float(calibration.partial_safety_threshold)
+        if bool(use_calibrated_risk) and bool(use_calibrated_partial_threshold)
+        else float(partial_min_risk)
+    )
     partial = (
         ~hard
         & bool(enable_partial)
         & bool(calibration.partial_ready)
         & set_size.ge(2)
         & set_size.le(int(candidate_max_classes))
-        & p_set_safe.ge(float(partial_min_risk))
+        & p_set_safe.ge(partial_threshold)
     )
     negative = (
         ~(hard | partial)
@@ -1101,9 +1221,13 @@ def route_fasttrust_rc4(
         hard,
         risk.new_full((rows,), hard_threshold),
         torch.where(
-            partial | negative,
-            risk.new_full((rows,), float(partial_min_risk)),
-            torch.zeros_like(risk),
+            partial,
+            risk.new_full((rows,), partial_threshold),
+            torch.where(
+                negative,
+                risk.new_full((rows,), float(partial_min_risk)),
+                torch.zeros_like(risk),
+            ),
         ),
     )
     risk_weight = ((route_probability - risk_floor) / (1.0 - risk_floor).clamp_min(1e-6)).clamp(0.0, 1.0).square()
@@ -1150,10 +1274,22 @@ def route_fasttrust_rc4(
             weights[ordered[0]] = min(float(weights[ordered[0]].item()), budget)
         return selected
 
-    kept_partial = apply_effective_budget(partial, partial_effective_budget)
-    kept_negative = apply_effective_budget(negative, negative_effective_budget)
-    partial = kept_partial
-    negative = kept_negative
+    if float(total_identity_effective_budget) > 0.0:
+        if bool(enable_negative):
+            raise ValueError("RC4 total identity quality budget requires negative routing disabled")
+        hard, partial, weights = apply_rc4_quality_budget(
+            hard,
+            partial,
+            weights,
+            total_budget=float(total_identity_effective_budget),
+        )
+        negative = torch.zeros_like(negative)
+        cap_mask = cap_mask & hard
+    else:
+        kept_partial = apply_effective_budget(partial, partial_effective_budget)
+        kept_negative = apply_effective_budget(negative, negative_effective_budget)
+        partial = kept_partial
+        negative = kept_negative
     routed = hard | partial | negative
     weights = torch.where(routed, weights, torch.zeros_like(weights))
     representation = ~routed
@@ -1164,6 +1300,7 @@ def route_fasttrust_rc4(
         p_correct=p_correct,
         p_set_safe=p_set_safe,
         p_exclusion_safe=p_exclusion_safe,
+        partial_threshold=fused.new_tensor(partial_threshold),
         candidate_mask=candidate,
         excluded_mask=~candidate,
         hard=hard,

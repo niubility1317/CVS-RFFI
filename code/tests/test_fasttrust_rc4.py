@@ -4,6 +4,7 @@ import pytest
 import torch
 
 from cvsrffi.muse_ssdg import (
+    apply_rc4_quality_budget,
     build_rc4_calibration,
     rc4_identity_losses,
     rc4_tail_transition_scale,
@@ -57,6 +58,33 @@ def test_rc4_calibration_is_source_only_frozen_and_finite():
     assert torch.isfinite(package.correctness_weight).all()
     assert 0.0 < package.aps_global <= 1.0
     assert package.calibration_rows == labels.numel()
+
+
+def test_rc4_calibration_derives_partial_safety_threshold_from_source_oof_rows():
+    anchor, ema1, ema2, labels, domains, z_norm = _calibration_fixture()
+    package = build_rc4_calibration(
+        anchor,
+        ema1,
+        ema2,
+        labels,
+        domains,
+        z_norm,
+        num_classes=3,
+        num_domains=2,
+        folds=2,
+        min_stratum_samples=2,
+        partial_precision_target=0.80,
+        partial_min_coverage=0.10,
+    )
+
+    assert 0.0 <= package.partial_safety_threshold <= 1.0
+    assert 0.0 <= package.partial_precision <= 1.0
+    assert 0.0 <= package.partial_selected_coverage <= 1.0
+    assert package.partial_ready == (
+        package.partial_precision >= 0.80
+        and package.partial_selected_coverage >= 0.10
+        and package.partial_mean_size <= 2.5
+    )
 
 
 def test_rc4_route_partitions_h_p_n_r_without_any_fill():
@@ -295,6 +323,60 @@ def test_rc4_partial_effective_weight_budget_caps_quality_mass():
     assert torch.allclose(route.p_correct, route.risk)
     assert torch.isfinite(route.p_set_safe).all()
     assert torch.isfinite(route.p_exclusion_safe).all()
+
+
+def test_rc4_quality_budget_is_hard_first_and_partial_only_fills_the_residual():
+    hard = torch.tensor([True, True, False, False, False, False])
+    partial = torch.tensor([False, False, True, True, True, False])
+    weights = torch.tensor([1.25, 0.75, 1.0, 0.8, 0.6, 0.0])
+
+    kept_hard, kept_partial, adjusted = apply_rc4_quality_budget(
+        hard,
+        partial,
+        weights,
+        total_budget=0.50,
+    )
+
+    assert torch.equal(kept_hard, hard)
+    assert kept_partial[2]
+    assert not kept_partial[3:].any()
+    assert adjusted[kept_hard].sum().item() == pytest.approx(2.0)
+    assert adjusted[kept_partial].sum().item() == pytest.approx(1.0)
+    assert adjusted.sum().item() == pytest.approx(3.0)
+
+
+def test_rc4_route_uses_calibrated_partial_threshold_instead_of_fixed_half():
+    anchor, ema1, ema2, labels, domains, z_norm = _calibration_fixture()
+    package = build_rc4_calibration(
+        anchor, ema1, ema2, labels, domains, z_norm,
+        num_classes=3, num_domains=2, folds=2, min_stratum_samples=2,
+        hard_precision_target=0.80, partial_coverage_target=0.80,
+        negative_false_exclusion_target=0.20,
+    )
+    partial_weight = torch.zeros_like(package.partial_safety_weight)
+    partial_weight[0] = 8.0
+    package = replace(
+        package,
+        partial_ready=True,
+        partial_safety_threshold=0.9999,
+        aps_global=0.80,
+        aps_by_class=torch.full_like(package.aps_by_class, 0.80),
+        aps_by_domain=torch.full_like(package.aps_by_domain, 0.80),
+        partial_safety_weight=partial_weight,
+    )
+    route = route_fasttrust_rc4(
+        anchor, ema1, ema2, domains=domains, receivers=domains, z_norm=z_norm,
+        calibration=package, hard_max_fraction=0.0, candidate_max_classes=3,
+        partial_min_risk=0.0, partial_effective_budget=1.0,
+        total_identity_effective_budget=0.15,
+        use_calibrated_partial_threshold=True,
+        enable_hard=False, enable_partial=True, enable_negative=False,
+        class_receiver_cap=False,
+    )
+
+    assert not route.partial.any()
+    assert route.partial_threshold.item() == pytest.approx(0.9999)
+    assert route.weights.sum().item() == 0.0
 
 
 def test_rc4_tail_transition_restarts_all_u_weight_without_changing_core90_schedule():
