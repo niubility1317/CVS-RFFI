@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-`LOCAL_VERIFIED`
+`RUNNING / STARTUP_HEALTH_VERIFIED / NO_PERFORMANCE_RESULT`
 
 - run_id：`phase1_adv3b02_fasttrust_rc4_qb_e200_s392002_20260823_r1`
 - 实际代码与配置提交：`de0b0a5d6cf58232aac99deb65efde4f41fce627`
@@ -68,3 +68,33 @@ nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet CODE_ROOT=/home/szu2070
 ## 科学判定
 
 QB2相对QB1的预登记晋级条件：三LEO均值至少`+0.30pp`、receiver-cell floor至少`+0.30pp`、clean下降不超过`0.50pp`。低性能不属于技术失败；必须等待三行E200训练与clean＋三LEO评估完整闭合后再分析。
+
+## 2026-08-23 20:14 CST发布与启动读回
+
+### 状态
+
+`RUNNING / STARTUP_HEALTH_VERIFIED / NO_PERFORMANCE_RESULT`
+
+- 20:11:46 CST普通账号只读preflight通过；GPU0–7均无compute app，目标run/release/archive路径均不存在。
+- 数据集大小2359341461字节；Core90 checkpoint大小8582116字节；远端PyTorch2.1.0＋cu121识别8张GPU。
+- 唯一release归档大小35267753字节；本地/远端唯一SHA-256均为`b4395f6623d772b6a5d737d89414320fdc055c04473a836c3a8e0b722f05b5da`。
+- release已落到`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_fasttrust_rc4_qb_de0b0a5d`；远端Python编译、两个launcher语法和预算向量`[0.0,0.15,0.15]`读回均为`VERIFIED`。
+- dispatcher PID=`1707450`；CWD严格绑定上述release，cmdline为`bash code/scripts/launch_phase1_adv3b02_fasttrust_rc4_qb_e200_20260823.sh`。
+
+### 一次启动健康核验
+
+|GPU|候选|训练PID|显存/MiB|利用率|启动判定|
+|---:|---|---:|---:|---:|---|
+|0|`E200_QB0_NO_U_ID_SAFE`|1707492|1880|23%|RUNNING|
+|1|`E200_QB1_STRICT_H_SAFE`|1707497|1878|38%|RUNNING|
+|2|`E200_QB2_H_PRESID_B15`|1707500|1888|23%|RUNNING|
+
+- 每张GPU只有1个本矩阵compute app；GPU3–7继续空闲，没有干预其他run。
+- 15秒窗口内，三份candidate dispatcher日志已存在；三份`train.log`由尚未创建变为6935/6943/6935字节，证明训练子进程已产生新日志。
+- 进程树、训练cmdline、`--run_id`、`--candidate_id`、`--epochs 200`、U batch256、预算0/0.15/0.15和`rc4_lambda_domain=0.16`均与预登记一致。
+- 错误扫描未输出Traceback、CUDA OOM、RC4非有限保护、TRAIN_FAILED或segmentation fault。健康脚本最终退出码1来自`pipefail`下`grep`零匹配；其前置PID/CWD/cmdline/GPU/log读回均已完成，因此该退出码不代表远端训练失败。
+- 当前没有完整epoch、final checkpoint或clean/三LEO结果，严禁把`RUNNING`称为实验性能完成。
+
+### ETA
+
+按加速设计和旧P3约11.94小时基线，预计三行矩阵训练加四场景评估总墙钟约8–10小时，即约在2026-08-24 04:15–06:15 CST闭合；受服务器瞬时I/O和评估耗时影响，该区间仅为工程估计。
