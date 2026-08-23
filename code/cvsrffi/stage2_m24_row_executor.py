@@ -58,6 +58,11 @@ from cvsrffi.stage2_m27_spectral_veto import (
     fit_m27_spectral_veto,
     m27_arm_config_hash,
 )
+from cvsrffi.stage2_m28_local_flip_risk import (
+    M28_LOCAL_RISK_ARMS,
+    fit_m28_local_flip_risk,
+    m28_arm_config_hash,
+)
 from cvsrffi.stage2_prediction_artifact import publish_prediction_artifact
 
 
@@ -230,7 +235,7 @@ def execute_m24_row(
     source_anchor: Phase1SpectralAnchor | None = None,
     phase_side_cache: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    if arm not in M24_ARMS + M24_INVARIANCE_ARMS + M25_ANCHORED_ARMS + M26_ARMS + M27_SPECTRAL_VETO_ARMS:
+    if arm not in M24_ARMS + M24_INVARIANCE_ARMS + M25_ANCHORED_ARMS + M26_ARMS + M27_SPECTRAL_VETO_ARMS + M28_LOCAL_RISK_ARMS:
         raise M24RowExecutionError("unknown M2.4 arm")
     base_manifest = base_cache["manifest"]
     overlay_manifest = overlay_cache["manifest"]
@@ -289,7 +294,7 @@ def execute_m24_row(
     output = Path(output_root).absolute()
     output.mkdir(parents=True, exist_ok=False)
     base_only_d1 = bool(overlay_manifest.get("d1_base_only", False))
-    if base_only_d1 and arm not in {D0, D1, D1_REFIT, *M24_INVARIANCE_ARMS, *M25_ANCHORED_ARMS, *M26_ARMS, *M27_SPECTRAL_VETO_ARMS}:
+    if base_only_d1 and arm not in {D0, D1, D1_REFIT, *M24_INVARIANCE_ARMS, *M25_ANCHORED_ARMS, *M26_ARMS, *M27_SPECTRAL_VETO_ARMS, *M28_LOCAL_RISK_ARMS}:
         raise M24RowExecutionError("base-only compact view is restricted to D1 evidence arms")
     component = None if base_only_d1 else _OverlayGroundComponent(overlay_cache["ground_component"])
     manifold = None if component is None else build_ground_manifold(component)
@@ -538,6 +543,51 @@ def execute_m24_row(
                         else phase_payload["old_support_phase32"]
                     ),
                 )
+            elif arm in M28_LOCAL_RISK_ARMS:
+                coefficient, bias, f1_log_diag = _f1_reference_head(
+                    historical_after, all_support_blocks
+                )
+                base_state, _base_audit, _base_workspace = compile_m24_d1_from_f1_head(
+                    f1_coefficient=coefficient,
+                    f1_bias=bias,
+                    f1_log_diag=f1_log_diag,
+                    f1_compiled_affine_state=historical_after.compiled_affine_state,
+                    classes=old_classes + new_classes,
+                    domain_digest=domain_digest,
+                    support_blocks=all_support_blocks,
+                )
+                state, audit = fit_m28_local_flip_risk(
+                    arm=arm,
+                    base_state=base_state,
+                    support_blocks=all_support_blocks,
+                    support_labels=all_support_labels,
+                    classes=old_classes + new_classes,
+                    k_shot=int(overlay_manifest["k_shot"]),
+                    old_class_count=len(old_classes),
+                    domain_digest=domain_digest,
+                )
+                before_coefficient, before_bias, before_log_diag = _f1_reference_head(
+                    historical_before, compact["old_support_blocks"]
+                )
+                before_base_state, _before_base_audit, _before_base_workspace = compile_m24_d1_from_f1_head(
+                    f1_coefficient=before_coefficient,
+                    f1_bias=before_bias,
+                    f1_log_diag=before_log_diag,
+                    f1_compiled_affine_state=historical_before.compiled_affine_state,
+                    classes=old_classes,
+                    domain_digest=domain_digest,
+                    support_blocks=compact["old_support_blocks"],
+                )
+                before_state, before_audit = fit_m28_local_flip_risk(
+                    arm=arm,
+                    base_state=before_base_state,
+                    support_blocks=compact["old_support_blocks"],
+                    support_labels=compact["old_support_labels"],
+                    classes=old_classes,
+                    k_shot=int(overlay_manifest["k_shot"]),
+                    old_class_count=len(old_classes),
+                    domain_digest=domain_digest,
+                )
             elif arm in M26_ARMS:
                 coefficient, bias, f1_log_diag = _f1_reference_head(
                     historical_after, all_support_blocks
@@ -672,7 +722,7 @@ def execute_m24_row(
                     nuisance_covariance_identity=nuisance_covariance,
                 )
             registration_seconds += time.perf_counter() - fit_started
-            if arm in M24_INVARIANCE_ARMS or arm in M25_ANCHORED_ARMS or arm in M26_ARMS or arm in M27_SPECTRAL_VETO_ARMS:
+            if arm in M24_INVARIANCE_ARMS or arm in M25_ANCHORED_ARMS or arm in M26_ARMS or arm in M27_SPECTRAL_VETO_ARMS or arm in M28_LOCAL_RISK_ARMS:
                 feature_dim = state.feature_dim
                 query_features = compact["query_blocks"]
                 before_query_features = compact["query_blocks"]
@@ -701,12 +751,22 @@ def execute_m24_row(
                     "query_application": dict(query_application),
                     "before_query_application": dict(before_query_application),
                 }
+            elif arm in M28_LOCAL_RISK_ARMS:
+                selected_scores, query_application = state.score_with_audit(query_features)
+                before_scores, before_query_application = before_state.score_with_audit(
+                    before_query_features
+                )
+                audit = {
+                    **dict(audit),
+                    "query_application": dict(query_application),
+                    "before_query_application": dict(before_query_application),
+                }
             else:
                 selected_scores = state.score(query_features)
             selected_after = np.asarray(state.classes)[np.argmax(selected_scores, axis=-1)]
             selected_before = (
                 np.asarray(before_state.classes)[np.argmax(before_scores, axis=-1)]
-                if arm in M27_SPECTRAL_VETO_ARMS
+                if arm in M27_SPECTRAL_VETO_ARMS or arm in M28_LOCAL_RISK_ARMS
                 else before_state.predict(before_query_features)
             )
             query_seconds += time.perf_counter() - query_started
@@ -718,11 +778,11 @@ def execute_m24_row(
                 "compiled_inference_state_bytes": max(
                     int(after_resource["compiled_inference_state_bytes"]),
                     int(before_resource["compiled_inference_state_bytes"]),
-                ) if arm == D1 or arm in M24_INVARIANCE_ARMS or arm in M25_ANCHORED_ARMS or arm in M26_ARMS or arm in M27_SPECTRAL_VETO_ARMS else int(after_resource["compiled_inference_state_bytes"]),
+                ) if arm == D1 or arm in M24_INVARIANCE_ARMS or arm in M25_ANCHORED_ARMS or arm in M26_ARMS or arm in M27_SPECTRAL_VETO_ARMS or arm in M28_LOCAL_RISK_ARMS else int(after_resource["compiled_inference_state_bytes"]),
                 "transient_registration_workspace_peak_bytes": max(
                     int(after_resource["transient_registration_workspace_peak_bytes"]),
                     int(before_resource["transient_registration_workspace_peak_bytes"]),
-                ) if arm == D1 or arm in M24_INVARIANCE_ARMS or arm in M25_ANCHORED_ARMS or arm in M26_ARMS or arm in M27_SPECTRAL_VETO_ARMS else int(after_resource["transient_registration_workspace_peak_bytes"]),
+                ) if arm == D1 or arm in M24_INVARIANCE_ARMS or arm in M25_ANCHORED_ARMS or arm in M26_ARMS or arm in M27_SPECTRAL_VETO_ARMS or arm in M28_LOCAL_RISK_ARMS else int(after_resource["transient_registration_workspace_peak_bytes"]),
             }
             audit = {**dict(audit), "before_registration_fit": dict(before_audit)}
             if arm == D1:
@@ -792,6 +852,21 @@ def execute_m24_row(
                 old_classes + new_classes,
             )
             audit = {**dict(audit), "centre_diagnostic_basis": centre_basis}
+        elif arm in M28_LOCAL_RISK_ARMS:
+            combined_blocks = np.concatenate(
+                [compact["old_support_blocks"], compact["new_support_blocks"]]
+            )
+            representation_features = state.representation_features(combined_blocks)
+            centre_features = state.risk_model.transform(representation_features)
+            centre_left, centre_right, centre_angle = _support_center_angles_from_features(
+                centre_features,
+                np.concatenate([compact["old_support_labels"], compact["new_support_labels"]]),
+                old_classes + new_classes,
+            )
+            audit = {
+                **dict(audit),
+                "centre_diagnostic_basis": "TARGET_CENTERED_MGD96",
+            }
         elif arm in M26_ARMS:
             centre_left, centre_right, centre_angle = _support_center_angles_from_features(
                 state.metric_features(
@@ -854,6 +929,31 @@ def execute_m24_row(
                     * audit["representation_fit"]["class_count"]
                 )
             )
+        if arm in M28_LOCAL_RISK_ARMS:
+            b3_audit = audit["b3"]
+            active = float(b3_audit["selected_strength"]) > 0.0
+            counts = [int(value) for value in b3_audit["prototype_count_by_class"]]
+            multi = sum(max(0, value - 1) for value in counts)
+            local_prototype_macs.append(
+                _local_prototype_mac(
+                    feature_dim=feature_dim,
+                    prototype_counts=counts,
+                    active=active,
+                )
+            )
+            local_exp_counts.append(multi if active else 0)
+            local_log_counts.append(
+                sum(1 for value in counts if value > 1) if active else 0
+            )
+            local_aggregation_counts.append(
+                sum(1 for value in counts if value > 1) if active else 0
+            )
+            spectral_consensus_macs.append(
+                int(
+                    audit["risk_fit"]["feature_dim"]
+                    * audit["risk_fit"]["class_count"]
+                )
+            )
         if arm in M26_ARMS:
             target_domain_residual_macs.append(int(audit["resource"]["residual_query_mac"]))
 
@@ -902,6 +1002,8 @@ def execute_m24_row(
             if arm in M26_ARMS
             else "b3_conditioned_support_only_spectral_veto"
             if arm in M27_SPECTRAL_VETO_ARMS
+            else "b3_conditioned_support_only_local_flip_risk"
+            if arm in M28_LOCAL_RISK_ARMS
             else "support_to_compiled_head"
             if arm == D1_REFIT
             else "historical_or_candidate_specific"
@@ -937,6 +1039,8 @@ def execute_m24_row(
         if arm in M26_ARMS
         else m27_arm_config_hash(arm)
         if arm in M27_SPECTRAL_VETO_ARMS
+        else m28_arm_config_hash(arm)
+        if arm in M28_LOCAL_RISK_ARMS
         else arm_config_hash(arm)
     )
     prediction = publish_prediction_artifact(
@@ -1313,4 +1417,41 @@ def run_m27_spectral_veto_row_from_base_cache(
     )
 
 
-__all__ = ["DA0_REG0", "DA1_REG0", "DA0_REG1", "DA1_REG1", "M24_ROW_EXECUTION_SCHEMA", "M24RowExecutionError", "d1_overlay_from_base_cache", "execute_m24_row", "run_m24_d1_evidence_row_from_base_cache", "run_m24_d1_row_from_base_cache", "run_m24_invariance_row_from_base_cache", "run_m25_anchored_row_from_base_cache", "run_m26_td_src256_row_from_base_cache", "run_m27_spectral_veto_row_from_base_cache", "run_m24_row_from_caches"]
+def run_m28_local_flip_risk_row_from_base_cache(
+    *,
+    arm: str,
+    row_id: str,
+    receiver: str,
+    base_feature_cache_payload: str | Path,
+    base_feature_cache_manifest: str | Path,
+    base_feature_cache_payload_sha256: str,
+    base_feature_cache_manifest_sha256: str,
+    output_root: str | Path,
+    seed: int,
+    device: Any = "cpu",
+) -> dict[str, Any]:
+    from cvsrffi.stage2_m25_anchored_residual import B3
+
+    if arm not in {D1, B3, *M28_LOCAL_RISK_ARMS}:
+        raise M24RowExecutionError("M2.8 runner accepts only B0, B3, C1 and C2")
+    base = load_feature_cache(
+        base_feature_cache_payload,
+        base_feature_cache_manifest,
+        expected_payload_sha256=str(base_feature_cache_payload_sha256).lower(),
+        expected_manifest_sha256=str(base_feature_cache_manifest_sha256).lower(),
+    )
+    return execute_m24_row(
+        arm=arm,
+        row_id=row_id,
+        receiver=receiver,
+        base_cache=base,
+        overlay_cache=d1_overlay_from_base_cache(base),
+        output_root=output_root,
+        seed=int(seed),
+        device=device,
+        base_cache_bytes=Path(base_feature_cache_payload).stat().st_size,
+        overlay_cache_bytes=0,
+    )
+
+
+__all__ = ["DA0_REG0", "DA1_REG0", "DA0_REG1", "DA1_REG1", "M24_ROW_EXECUTION_SCHEMA", "M24RowExecutionError", "d1_overlay_from_base_cache", "execute_m24_row", "run_m24_d1_evidence_row_from_base_cache", "run_m24_d1_row_from_base_cache", "run_m24_invariance_row_from_base_cache", "run_m25_anchored_row_from_base_cache", "run_m26_td_src256_row_from_base_cache", "run_m27_spectral_veto_row_from_base_cache", "run_m28_local_flip_risk_row_from_base_cache", "run_m24_row_from_caches"]
