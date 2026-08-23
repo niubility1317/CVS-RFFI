@@ -46,11 +46,38 @@
 
 ## 发布字段（实现提交后回填）
 
-- Git commit：待回填
+- 实现Git commit：`e6eb5dc7a63b79cc70811302ff9f84f72da382b0`
+- 实现远端OID：`e6eb5dc7a63b79cc70811302ff9f84f72da382b0`（独立核对一致）
 - 本地环境：`ssr-gpu`
-- N607环境/CWD/GPU：待preflight回填
-- 输入、输出、日志和scoring roots：待发布前回填
+- N607 Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`
+- N607 CWD：release内`code`目录
+- prediction设备：CPU；`max-workers=2`
+- feature root：`/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_feature_t1_20260730_v3_47212437/artifacts/features`
+- supplemental feature root：`/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/erbt_idr_m24_d1_refit_full125_20260820_v1_supplement_features/artifacts/features`
+- scoring root：`/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_sidecar_t1_20260730_v3_47212437/artifacts/sidecars`
+- supplemental scoring root：`/home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m24_d1_refit_full125_20260820_v3/scoring_root_repaired_v3`
+- checkpoint：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`
+- checkpoint SHA-256：`2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98`
+- release root：`/home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m28_local_conformal_flip_risk_screen_20260823_v1`
+- run root：`/home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m28_local_conformal_flip_risk_screen_20260823_v1`
+- log root：`/home/szu2070436088/2510044040/CV-SincNet/logs/erbt_idr_m28_local_conformal_flip_risk_screen_20260823_v1`
 - 预期artifact：`matrix_index.json`、16个`row_execution_receipt.json`、16个prediction、独立score root、`results_summary.json`
+
+2026-08-23直连只读preflight通过：普通账户、项目根、Python、checkpoint、feature/scoring roots均存在；release/run/log及release archive目标均不存在。GPU0–2有其他负载，GPU3–7空闲；本轮CPU预测不占用GPU。
+
+## 预登记执行命令
+
+prediction：
+
+    PYTHONPATH=. /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u scripts/run_m28_local_flip_risk_matrix.py --run-id erbt_idr_m28_local_conformal_flip_risk_screen_20260823_v1 --matrix-kind screen --feature-root /home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_feature_t1_20260730_v3_47212437/artifacts/features --supplemental-feature-root /home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/erbt_idr_m24_d1_refit_full125_20260820_v1_supplement_features/artifacts/features --output-root /home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m28_local_conformal_flip_risk_screen_20260823_v1/predictions --device cpu --max-workers 2
+
+truth-last scorer：
+
+    PYTHONPATH=. /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u scripts/score_m28_local_flip_risk_matrix.py --matrix-index /home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m28_local_conformal_flip_risk_screen_20260823_v1/predictions/matrix_index.json --scoring-root /home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_sidecar_t1_20260730_v3_47212437/artifacts/sidecars --supplemental-scoring-root /home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m24_d1_refit_full125_20260820_v3/scoring_root_repaired_v3 --output-root /home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m28_local_conformal_flip_risk_screen_20260823_v1/scores --bootstrap-repeats 2000
+
+汇总：
+
+    PYTHONPATH=. /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u scripts/summarize_m28_local_flip_risk_matrix.py --prediction-root /home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m28_local_conformal_flip_risk_screen_20260823_v1/predictions --score-root /home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m28_local_conformal_flip_risk_screen_20260823_v1/scores --output /home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m28_local_conformal_flip_risk_screen_20260823_v1/results_summary.json
 
 ## 本地实现与验证
 
