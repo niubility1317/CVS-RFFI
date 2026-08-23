@@ -1,6 +1,6 @@
 # CVS项目场景与数据协议
 
-版本：2026-08-19
+版本：2026-08-24
 协议模式：`p2_min_v1`
 
 ## 文件职责
@@ -55,9 +55,11 @@ c_i ∈ {leo_clear_weak,leo_low_elev_weak,leo_rain_weak}
 
 ### 允许输入与禁止输入
 
-Phase2只允许读取不可变Phase1 bundle、一次验证的固定接收IQ capsule、support标签/注册类别表/无query真值split及算法配置。禁止clean/raw/source样本、样本级source feature、source cache/replay、clean派生信号和外部source状态。
+Phase2运行时采用穷尽式白名单，只允许读取：`p2_min_v1`、`VALIDATED_ONCE`固定目标域LEO received IQ及匹配的`capsule_id/split_id`；当前row合法target support标签、必要注册类别表和无query真值/角色split；地面预先计算、随checkpoint上传并保持不可变的类原型及必要类别映射；冻结checkpoint和预登记算法配置。
 
-唯一例外是在target访问前由Phase1多样本聚合、与checkpoint共同封存、只读且不可更新的int8域×类模型知识及量化尺度。它不得包含raw IQ、单样本feature、全精度exemplar、source cache、可逆索引或可独立替换sidecar。
+除此之外，不得读取、构造或恢复任何地面source/clean样本、源域数据加载器、source replay/cache、源域特征、样本级embedding、源域统计量、源域BatchNorm状态、伪源域样本、生成式源数据、可还原源样本的中间信息或其他外部source状态。不得读取query真值、query角色、真实query batch类别集合/数量或其他query反馈。
+
+地面类原型只能作为不可训练的类别锚点和冻结判决依据；不得反向更新、在线重估、追加源域信息，或扩展为D92式协方差、LDA、持久分类头、样本级记忆或类条件源域统计。缺少合规原型时不得回读地面样本重建。
 
 ### query只测试
 

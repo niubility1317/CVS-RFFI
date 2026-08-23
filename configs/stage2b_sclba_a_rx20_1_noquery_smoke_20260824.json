@@ -1,0 +1,14 @@
+{
+  "protocol_schema": "p2_min_v1",
+  "phase2_data_status": "VALIDATED_ONCE",
+  "capsule_id": "d18-enrollment-before-rx20-1-seed713101-k10-smoke-reuse",
+  "split_id": "stage2b-rx20-1-seed713101-before-support-prefix",
+  "checkpoint_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
+  "support_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2b_sclba_a_t5t25_s713101_20260824_v1/input/support_rx20_1_k10_clear_smoke.npz",
+  "prototype_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2b_sclba_a_t5t25_s713101_20260824_v1/input/frozen_class_prototypes.npz",
+  "candidate": "freq_f3_proj",
+  "steps": 1,
+  "learning_rate": 0.0005,
+  "seed": 713101,
+  "k_shot": 10
+}
