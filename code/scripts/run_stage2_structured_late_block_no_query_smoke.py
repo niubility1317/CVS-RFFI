@@ -466,7 +466,7 @@ def _load_query_received_iq(
     package_manifest_path: Path,
     validated_manifest_path: Path,
     row_binding_path: Path,
-) -> np.ndarray:
+) -> tuple[np.ndarray, np.ndarray]:
     package_manifest = _read_json(package_manifest_path.resolve())
     row = _read_row_binding(row_binding_path.resolve())
     validated_manifest = _read_json(validated_manifest_path.resolve())
@@ -486,9 +486,10 @@ def _load_query_received_iq(
             for token in FORBIDDEN_QUERY_MEMBER_TOKENS
         ):
             raise ValueError("query package contains forbidden feedback")
-        if "query_leo_weak_iq" not in member_names:
-            raise ValueError("query package is missing received IQ")
+        if not {"query_leo_weak_iq", "query_tokens"} <= set(member_names):
+            raise ValueError("query package is missing received IQ or opaque tokens")
         received_iq = np.asarray(source_query["query_leo_weak_iq"], dtype=np.float32)
+        query_tokens = np.asarray(source_query["query_tokens"]).astype(str)
     if (
         received_iq.ndim != 3
         or received_iq.shape[0] < 1
@@ -496,11 +497,18 @@ def _load_query_received_iq(
         or not np.isfinite(received_iq).all()
     ):
         raise ValueError("query received IQ is invalid")
-    return received_iq
+    if (
+        query_tokens.ndim != 1
+        or query_tokens.shape[0] != received_iq.shape[0]
+        or any(not token for token in query_tokens.tolist())
+        or len(set(query_tokens.tolist())) != query_tokens.shape[0]
+    ):
+        raise ValueError("query opaque tokens are invalid")
+    return received_iq, query_tokens
 
 
 def prepare_query(args: argparse.Namespace) -> dict[str, Any]:
-    received_iq = _load_query_received_iq(
+    received_iq, _ = _load_query_received_iq(
         Path(args.query_package).resolve(),
         Path(args.package_manifest).resolve(),
         Path(args.validated_row_manifest).resolve(),
@@ -586,12 +594,99 @@ def smoke(args: argparse.Namespace) -> dict[str, Any]:
     return result
 
 
+def _load_frozen_baseline(
+    args: argparse.Namespace,
+) -> tuple[
+    torch.nn.Module,
+    dict[str, Any],
+    dict[str, Any],
+    tuple[str, ...],
+    np.ndarray,
+]:
+    context_value = _read_context(Path(args.context).resolve())
+    prototypes, class_ids, prototype_checkpoint_sha256 = _load_prototypes(
+        Path(args.frozen_prototypes).resolve()
+    )
+    model, checkpoint_info = _exact_adv3b02(
+        Path(args.checkpoint).resolve(), device=torch.device(args.device)
+    )
+    if (
+        str(checkpoint_info["checkpoint_sha256"])
+        != prototype_checkpoint_sha256
+        or str(context_value["checkpoint_sha256"])
+        != prototype_checkpoint_sha256
+    ):
+        raise ValueError("checkpoint/prototype/context binding mismatch")
+    for parameter in model.parameters():
+        parameter.requires_grad_(False)
+    model.eval()
+    if any(parameter.requires_grad for parameter in model.parameters()):
+        raise ValueError("DA0_REG0 baseline checkpoint is not frozen")
+    return model, checkpoint_info, context_value, class_ids, prototypes
+
+
+def run_baseline(args: argparse.Namespace) -> dict[str, Any]:
+    model, checkpoint_info, context_value, class_ids, prototypes = (
+        _load_frozen_baseline(args)
+    )
+    query_received_iq, query_tokens = _load_query_received_iq(
+        Path(args.query_package).resolve(),
+        Path(args.package_manifest).resolve(),
+        Path(args.validated_row_manifest).resolve(),
+        Path(args.row_binding).resolve(),
+    )
+    prediction = predict_query_read_only(
+        model,
+        query_received_iq,
+        prototypes,
+        class_ids,
+        context=Phase2Context(
+            protocol_schema=str(context_value["protocol_schema"]),
+            phase2_data_status=str(context_value["phase2_data_status"]),
+            capsule_id=str(context_value["capsule_id"]),
+            split_id=str(context_value["split_id"]),
+        ),
+    )
+    rows = [
+        {
+            "sample_index": index,
+            "query_token": str(query_tokens[index]),
+            "predicted_class_id": prediction.predicted_class_ids[index],
+            "scores": prediction.scores[index].tolist(),
+        }
+        for index in range(len(prediction.predicted_class_ids))
+    ]
+    result = {
+        "status": "PREDICTIONS_COMPLETE",
+        "state": "DA0_REG0",
+        "checkpoint_load_strict": bool(checkpoint_info["checkpoint_load_strict"]),
+        "source_input_count": 0,
+        "support_input_count": 0,
+        "query_input_count": len(rows),
+        "query_truth_loaded": False,
+        "query_role_loaded": False,
+        "query_batch_state_updated": False,
+        "audit": {
+            "candidate_id": "FROZEN_BASELINE",
+            "protocol_schema": str(context_value["protocol_schema"]),
+            "phase2_data_status": str(context_value["phase2_data_status"]),
+            "capsule_id": str(context_value["capsule_id"]),
+            "split_id": str(context_value["split_id"]),
+            "steps_completed": 0,
+            "trainable_parameter_count": 0,
+        },
+        "predictions": rows,
+    }
+    _write_json(Path(args.output).resolve(), result)
+    return result
+
+
 def run_row(args: argparse.Namespace) -> dict[str, Any]:
     model, checkpoint_info, context_value, audit, class_ids = _adapt_from_whitelist(args)
     if any(parameter.requires_grad for parameter in model.parameters()):
         raise ValueError("adaptation did not freeze model before query open")
 
-    query_received_iq = _load_query_received_iq(
+    query_received_iq, query_tokens = _load_query_received_iq(
         Path(args.query_package).resolve(),
         Path(args.package_manifest).resolve(),
         Path(args.validated_row_manifest).resolve(),
@@ -617,6 +712,7 @@ def run_row(args: argparse.Namespace) -> dict[str, Any]:
     rows = [
         {
             "sample_index": index,
+            "query_token": str(query_tokens[index]),
             "predicted_class_id": prediction.predicted_class_ids[index],
             "scores": prediction.scores[index].tolist(),
         }
@@ -624,6 +720,7 @@ def run_row(args: argparse.Namespace) -> dict[str, Any]:
     ]
     result = {
         "status": "PREDICTIONS_COMPLETE",
+        "state": "DA1_REG0",
         "checkpoint_load_strict": bool(checkpoint_info["checkpoint_load_strict"]),
         "source_input_count": 0,
         "query_input_count": len(rows),
@@ -682,6 +779,18 @@ def build_parser() -> argparse.ArgumentParser:
     row_parser.add_argument("--validated-row-manifest", required=True)
     row_parser.add_argument("--row-binding", required=True)
     row_parser.set_defaults(handler=run_row)
+
+    baseline_parser = subparsers.add_parser("run-baseline")
+    baseline_parser.add_argument("--checkpoint", required=True)
+    baseline_parser.add_argument("--frozen-prototypes", required=True)
+    baseline_parser.add_argument("--context", required=True)
+    baseline_parser.add_argument("--output", required=True)
+    baseline_parser.add_argument("--device", default="cpu")
+    baseline_parser.add_argument("--query-package", required=True)
+    baseline_parser.add_argument("--package-manifest", required=True)
+    baseline_parser.add_argument("--validated-row-manifest", required=True)
+    baseline_parser.add_argument("--row-binding", required=True)
+    baseline_parser.set_defaults(handler=run_baseline)
     return parser
 
 

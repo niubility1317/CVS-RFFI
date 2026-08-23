@@ -11,6 +11,7 @@ import pytest
 from scripts.run_stage2_structured_late_block_no_query_smoke import (
     prepare,
     prepare_query,
+    run_baseline,
     run_row,
 )
 
@@ -89,7 +90,11 @@ def _validated_manifest(*, package_root_sha256: str) -> dict[str, object]:
 
 def test_prepare_query_requires_same_validated_package_root(tmp_path: Path) -> None:
     query_path = tmp_path / "query_leo_clear_weak.npz"
-    np.savez(query_path, query_leo_weak_iq=np.zeros((2, 2, 8), dtype=np.float32))
+    np.savez(
+        query_path,
+        query_leo_weak_iq=np.zeros((2, 2, 8), dtype=np.float32),
+        query_tokens=np.asarray(["q0", "q1"]),
+    )
     package_path = tmp_path / "package_manifest.json"
     row_path = tmp_path / "row.json"
     validated_path = tmp_path / "validated.json"
@@ -116,7 +121,11 @@ def test_prepare_query_requires_same_validated_package_root(tmp_path: Path) -> N
 def test_prepare_query_emits_iq_only_after_full_row_binding(tmp_path: Path) -> None:
     query_path = tmp_path / "query_leo_clear_weak.npz"
     received_iq = np.ones((2, 2, 8), dtype=np.float32)
-    np.savez(query_path, query_leo_weak_iq=received_iq)
+    np.savez(
+        query_path,
+        query_leo_weak_iq=received_iq,
+        query_tokens=np.asarray(["q0", "q1"]),
+    )
     package_path = tmp_path / "package_manifest.json"
     row_path = tmp_path / "row.json"
     validated_path = tmp_path / "validated.json"
@@ -148,7 +157,11 @@ def test_prepare_query_rejects_self_reported_protocol_without_builder_field(
     tmp_path: Path,
 ) -> None:
     query_path = tmp_path / "query_leo_clear_weak.npz"
-    np.savez(query_path, query_leo_weak_iq=np.zeros((2, 2, 8), dtype=np.float32))
+    np.savez(
+        query_path,
+        query_leo_weak_iq=np.zeros((2, 2, 8), dtype=np.float32),
+        query_tokens=np.asarray(["q0", "q1"]),
+    )
     package_path = tmp_path / "package_manifest.json"
     row_path = tmp_path / "row.json"
     validated_path = tmp_path / "validated.json"
@@ -177,7 +190,16 @@ def test_formal_row_first_opens_raw_query_after_adaptation_freezes() -> None:
         "_load_query_received_iq"
     )
     assert "query_only" not in source
+    assert '"query_token"' in source
 
 
 def test_prepare_does_not_export_torch_arrays_by_numpy_identity() -> None:
     assert ".numpy()" not in inspect.getsource(prepare)
+
+
+def test_da0_baseline_freezes_checkpoint_before_raw_query_open() -> None:
+    source = inspect.getsource(run_baseline)
+    assert source.index("_load_frozen_baseline") < source.index(
+        "_load_query_received_iq"
+    )
+    assert "adapt_on_target_support" not in source
