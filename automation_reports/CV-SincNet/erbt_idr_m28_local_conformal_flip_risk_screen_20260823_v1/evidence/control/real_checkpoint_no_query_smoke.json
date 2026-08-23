@@ -1,0 +1,22 @@
+{
+  "checkpoint_load_audit": {
+    "checkpoint_load_strict": true,
+    "crra_enabled": false,
+    "input_len": 256,
+    "loader": "exact_ssdg_training_architecture_v1",
+    "missing_keys": 0,
+    "num_domains_from_state": 14,
+    "skipped_mismatch": 0,
+    "state_tensor_count": 195,
+    "unexpected_keys": 0
+  },
+  "checkpoint_sha256": "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98",
+  "input_shape": [2, 2, 256],
+  "output_all_finite": true,
+  "output_tensor_count": 75,
+  "query_input_count": 0,
+  "query_truth_opened": false,
+  "release_commit": "fe349c3f4dd3c756ac7299b23350aad6dbd4f770",
+  "run_id": "erbt_idr_m28_local_conformal_flip_risk_screen_20260823_v1",
+  "status": "PASS"
+}

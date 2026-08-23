@@ -1,0 +1,28 @@
+{
+  "arm_counts": {
+    "M24-D1-COMPILE-PARITY": 4,
+    "M25-B3-G0-STABLE-DUAL-PROTOTYPE-RESIDUAL": 4,
+    "M28-C1-B3-MGD-PAIR-POSTERIOR": 4,
+    "M28-C2-B3-MGD-LOCAL-CONFORMAL-RECALL": 4
+  },
+  "fit_query_rows_used_sum": 0,
+  "m28_accepted_b3_flip_count_before_plus_after": 0,
+  "m28_b3_flip_count_before_plus_after": 170,
+  "m28_bad_allowlist_count": 0,
+  "m28_bad_representation_count": 0,
+  "m28_payload_source_counts": {
+    "EXACT_B0": 8
+  },
+  "m28_query_rows_used_sum": 0,
+  "m28_query_state_update_count": 0,
+  "m28_scenario_count": 24,
+  "m28_vetoed_b3_flip_count_before_plus_after": 170,
+  "matrix_status": "PREDICTIONS_COMPLETE_TRUTH_UNOPENED",
+  "paired_input_identity_count": 4,
+  "parity_after_disagreements": 0,
+  "parity_before_disagreements": 0,
+  "query_truth_opened_count": 0,
+  "row_count": 16,
+  "scenario_unit_count": 48,
+  "status": "PASS"
+}
