@@ -48,6 +48,16 @@ from cvsrffi.stage2_m26_td_src256 import (
     fit_m26_td_src256,
     m26_arm_config_hash,
 )
+from cvsrffi.stage2_m27_phase_side_cache import (
+    PHASE_SIDE_MANIFEST_SCHEMA,
+    load_phase_side_cache,
+)
+from cvsrffi.stage2_m27_spectral_veto import (
+    M27_SPECTRAL_VETO_ARMS,
+    V2,
+    fit_m27_spectral_veto,
+    m27_arm_config_hash,
+)
 from cvsrffi.stage2_prediction_artifact import publish_prediction_artifact
 
 
@@ -218,8 +228,9 @@ def execute_m24_row(
     base_cache_bytes: int = 0,
     overlay_cache_bytes: int = 0,
     source_anchor: Phase1SpectralAnchor | None = None,
+    phase_side_cache: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    if arm not in M24_ARMS + M24_INVARIANCE_ARMS + M25_ANCHORED_ARMS + M26_ARMS:
+    if arm not in M24_ARMS + M24_INVARIANCE_ARMS + M25_ANCHORED_ARMS + M26_ARMS + M27_SPECTRAL_VETO_ARMS:
         raise M24RowExecutionError("unknown M2.4 arm")
     base_manifest = base_cache["manifest"]
     overlay_manifest = overlay_cache["manifest"]
@@ -240,6 +251,36 @@ def execute_m24_row(
         raise M24RowExecutionError("base/overlay row identity drift")
     if set(base_cache["scenario_payloads"]) != set(FORMAL_LEO_WEAK_SCENARIOS) or set(overlay_cache["scenario_payloads"]) != set(FORMAL_LEO_WEAK_SCENARIOS):
         raise M24RowExecutionError("formal scenario coverage drift")
+    if arm == V2:
+        if phase_side_cache is None:
+            raise M24RowExecutionError("M2.7 V2 requires a truth-free Phase32 side cache")
+        phase_manifest = phase_side_cache.get("manifest", {})
+        if (
+            phase_manifest.get("schema") != PHASE_SIDE_MANIFEST_SCHEMA
+            or phase_manifest.get("protocol_schema") != "p2_min_v1"
+            or phase_manifest.get("phase2_data_status") != "VALIDATED_ONCE"
+            or phase_manifest.get("query_truth_present") is not False
+            or phase_manifest.get("query_role_present") is not False
+            or phase_manifest.get("query_state_update") is not False
+            or str(phase_manifest.get("receiver")) != str(receiver)
+            or int(phase_manifest.get("method_seed", -1)) != int(seed)
+            or int(phase_manifest.get("k_shot", -1)) != int(overlay_manifest["k_shot"])
+            or phase_manifest.get("capsule_id") != base_manifest["capsule_id"]
+            or phase_manifest.get("split_id") != base_manifest["split_id"]
+            or tuple(str(item) for item in phase_side_cache.get("old_classes", ())) != old_classes
+            or tuple(str(item) for item in phase_side_cache.get("new_classes", ())) != new_classes
+            or set(phase_side_cache.get("scenario_payloads", {})) != set(FORMAL_LEO_WEAK_SCENARIOS)
+        ):
+            raise M24RowExecutionError("M2.7 Phase32 side-cache row identity drift")
+        for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+            phase_tokens = np.asarray(
+                phase_side_cache["scenario_payloads"][scenario]["query_tokens"]
+            ).astype(str)
+            compact_tokens = np.asarray(
+                overlay_cache["scenario_payloads"][scenario]["query_tokens"]
+            ).astype(str)
+            if not np.array_equal(phase_tokens, compact_tokens):
+                raise M24RowExecutionError(f"{scenario} phase/query token drift")
     m26_candidate_lock = None
     if arm in M26_ARMS:
         if source_anchor is None or tuple(source_anchor.class_registry) != old_classes:
@@ -248,7 +289,7 @@ def execute_m24_row(
     output = Path(output_root).absolute()
     output.mkdir(parents=True, exist_ok=False)
     base_only_d1 = bool(overlay_manifest.get("d1_base_only", False))
-    if base_only_d1 and arm not in {D0, D1, D1_REFIT, *M24_INVARIANCE_ARMS, *M25_ANCHORED_ARMS, *M26_ARMS}:
+    if base_only_d1 and arm not in {D0, D1, D1_REFIT, *M24_INVARIANCE_ARMS, *M25_ANCHORED_ARMS, *M26_ARMS, *M27_SPECTRAL_VETO_ARMS}:
         raise M24RowExecutionError("base-only compact view is restricted to D1 evidence arms")
     component = None if base_only_d1 else _OverlayGroundComponent(overlay_cache["ground_component"])
     manifold = None if component is None else build_ground_manifold(component)
@@ -283,11 +324,17 @@ def execute_m24_row(
     local_log_counts: list[int] = []
     local_aggregation_counts: list[int] = []
     target_domain_residual_macs: list[int] = []
+    spectral_consensus_macs: list[int] = []
     started = time.perf_counter()
 
     for scenario_index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS):
         legacy = base_cache["scenario_payloads"][scenario]
         compact = overlay_cache["scenario_payloads"][scenario]
+        phase_payload = (
+            None
+            if phase_side_cache is None
+            else phase_side_cache["scenario_payloads"][scenario]
+        )
         legacy_tokens = np.asarray(legacy["query_tokens"]).astype(str)
         compact_tokens = np.asarray(compact["query_tokens"]).astype(str)
         if not np.array_equal(legacy_tokens, compact_tokens):
@@ -430,6 +477,67 @@ def execute_m24_row(
                     old_class_count=len(old_classes),
                     domain_digest=domain_digest,
                 )
+            elif arm in M27_SPECTRAL_VETO_ARMS:
+                coefficient, bias, f1_log_diag = _f1_reference_head(
+                    historical_after, all_support_blocks
+                )
+                base_state, _base_audit, _base_workspace = compile_m24_d1_from_f1_head(
+                    f1_coefficient=coefficient,
+                    f1_bias=bias,
+                    f1_log_diag=f1_log_diag,
+                    f1_compiled_affine_state=historical_after.compiled_affine_state,
+                    classes=old_classes + new_classes,
+                    domain_digest=domain_digest,
+                    support_blocks=all_support_blocks,
+                )
+                all_support_phase = (
+                    None
+                    if arm != V2
+                    else np.concatenate(
+                        [
+                            phase_payload["old_support_phase32"],
+                            phase_payload["new_support_phase32"],
+                        ]
+                    )
+                )
+                state, audit = fit_m27_spectral_veto(
+                    arm=arm,
+                    base_state=base_state,
+                    support_blocks=all_support_blocks,
+                    support_labels=all_support_labels,
+                    classes=old_classes + new_classes,
+                    k_shot=int(overlay_manifest["k_shot"]),
+                    old_class_count=len(old_classes),
+                    domain_digest=domain_digest,
+                    support_phase32=all_support_phase,
+                )
+                before_coefficient, before_bias, before_log_diag = _f1_reference_head(
+                    historical_before, compact["old_support_blocks"]
+                )
+                before_base_state, _before_base_audit, _before_base_workspace = compile_m24_d1_from_f1_head(
+                    f1_coefficient=before_coefficient,
+                    f1_bias=before_bias,
+                    f1_log_diag=before_log_diag,
+                    f1_compiled_affine_state=historical_before.compiled_affine_state,
+                    classes=old_classes,
+                    domain_digest=domain_digest,
+                    support_blocks=compact["old_support_blocks"],
+                )
+                before_state, before_audit = fit_m27_spectral_veto(
+                    arm=arm,
+                    base_state=before_base_state,
+                    support_blocks=compact["old_support_blocks"],
+                    support_labels=compact["old_support_labels"],
+                    classes=old_classes,
+                    k_shot=int(overlay_manifest["k_shot"]),
+                    old_class_count=len(old_classes),
+                    domain_digest=domain_digest,
+                    support_phase32=(
+                        None
+                        if arm != V2
+                        else phase_payload["old_support_phase32"]
+                    ),
+                )
             elif arm in M26_ARMS:
                 coefficient, bias, f1_log_diag = _f1_reference_head(
                     historical_after, all_support_blocks
@@ -564,7 +672,7 @@ def execute_m24_row(
                     nuisance_covariance_identity=nuisance_covariance,
                 )
             registration_seconds += time.perf_counter() - fit_started
-            if arm in M24_INVARIANCE_ARMS or arm in M25_ANCHORED_ARMS or arm in M26_ARMS:
+            if arm in M24_INVARIANCE_ARMS or arm in M25_ANCHORED_ARMS or arm in M26_ARMS or arm in M27_SPECTRAL_VETO_ARMS:
                 feature_dim = state.feature_dim
                 query_features = compact["query_blocks"]
                 before_query_features = compact["query_blocks"]
@@ -578,10 +686,29 @@ def execute_m24_row(
             if arm in M26_ARMS:
                 selected_scores, query_application = state.score_with_audit(query_features)
                 audit = {**dict(audit), "query_application": dict(query_application)}
+            elif arm in M27_SPECTRAL_VETO_ARMS:
+                query_phase = (
+                    None if arm != V2 else phase_payload["query_phase32"]
+                )
+                selected_scores, query_application = state.score_with_audit(
+                    query_features, phase32=query_phase
+                )
+                before_scores, before_query_application = before_state.score_with_audit(
+                    before_query_features, phase32=query_phase
+                )
+                audit = {
+                    **dict(audit),
+                    "query_application": dict(query_application),
+                    "before_query_application": dict(before_query_application),
+                }
             else:
                 selected_scores = state.score(query_features)
             selected_after = np.asarray(state.classes)[np.argmax(selected_scores, axis=-1)]
-            selected_before = before_state.predict(before_query_features)
+            selected_before = (
+                np.asarray(before_state.classes)[np.argmax(before_scores, axis=-1)]
+                if arm in M27_SPECTRAL_VETO_ARMS
+                else before_state.predict(before_query_features)
+            )
             query_seconds += time.perf_counter() - query_started
             quantization = audit["quantization"]
             after_resource = dict(audit["resource"])
@@ -591,11 +718,11 @@ def execute_m24_row(
                 "compiled_inference_state_bytes": max(
                     int(after_resource["compiled_inference_state_bytes"]),
                     int(before_resource["compiled_inference_state_bytes"]),
-                ) if arm == D1 or arm in M24_INVARIANCE_ARMS or arm in M25_ANCHORED_ARMS or arm in M26_ARMS else int(after_resource["compiled_inference_state_bytes"]),
+                ) if arm == D1 or arm in M24_INVARIANCE_ARMS or arm in M25_ANCHORED_ARMS or arm in M26_ARMS or arm in M27_SPECTRAL_VETO_ARMS else int(after_resource["compiled_inference_state_bytes"]),
                 "transient_registration_workspace_peak_bytes": max(
                     int(after_resource["transient_registration_workspace_peak_bytes"]),
                     int(before_resource["transient_registration_workspace_peak_bytes"]),
-                ) if arm == D1 or arm in M24_INVARIANCE_ARMS or arm in M25_ANCHORED_ARMS or arm in M26_ARMS else int(after_resource["transient_registration_workspace_peak_bytes"]),
+                ) if arm == D1 or arm in M24_INVARIANCE_ARMS or arm in M25_ANCHORED_ARMS or arm in M26_ARMS or arm in M27_SPECTRAL_VETO_ARMS else int(after_resource["transient_registration_workspace_peak_bytes"]),
             }
             audit = {**dict(audit), "before_registration_fit": dict(before_audit)}
             if arm == D1:
@@ -632,6 +759,39 @@ def execute_m24_row(
                 np.concatenate([compact["old_support_labels"], compact["new_support_labels"]]),
                 old_classes + new_classes,
             )
+        elif arm in M27_SPECTRAL_VETO_ARMS:
+            combined_blocks = np.concatenate(
+                [compact["old_support_blocks"], compact["new_support_blocks"]]
+            )
+            combined_phase = (
+                None
+                if arm != V2
+                else np.concatenate(
+                    [
+                        phase_payload["old_support_phase32"],
+                        phase_payload["new_support_phase32"],
+                    ]
+                )
+            )
+            representation_features = state.representation_features(
+                combined_blocks, phase32=combined_phase
+            )
+            if state.representation_model.reliability_accepted:
+                centre_features = state.representation_model.transform(
+                    representation_features
+                )
+                centre_basis = "TARGET_CENTERED_REPRESENTATION"
+            else:
+                centre_features = np.asarray(
+                    representation_features, dtype=np.float32
+                )
+                centre_basis = "RAW_REPRESENTATION_EXACT_B0_FALLBACK"
+            centre_left, centre_right, centre_angle = _support_center_angles_from_features(
+                centre_features,
+                np.concatenate([compact["old_support_labels"], compact["new_support_labels"]]),
+                old_classes + new_classes,
+            )
+            audit = {**dict(audit), "centre_diagnostic_basis": centre_basis}
         elif arm in M26_ARMS:
             centre_left, centre_right, centre_angle = _support_center_angles_from_features(
                 state.metric_features(
@@ -669,6 +829,31 @@ def execute_m24_row(
             local_exp_counts.append(multi if active else 0)
             local_log_counts.append(sum(1 for value in counts if value > 1) if active else 0)
             local_aggregation_counts.append(sum(1 for value in counts if value > 1) if active else 0)
+        if arm in M27_SPECTRAL_VETO_ARMS:
+            b3_audit = audit["b3"]
+            active = float(b3_audit["selected_strength"]) > 0.0
+            counts = [int(value) for value in b3_audit["prototype_count_by_class"]]
+            multi = sum(max(0, value - 1) for value in counts)
+            local_prototype_macs.append(
+                _local_prototype_mac(
+                    feature_dim=feature_dim,
+                    prototype_counts=counts,
+                    active=active,
+                )
+            )
+            local_exp_counts.append(multi if active else 0)
+            local_log_counts.append(
+                sum(1 for value in counts if value > 1) if active else 0
+            )
+            local_aggregation_counts.append(
+                sum(1 for value in counts if value > 1) if active else 0
+            )
+            spectral_consensus_macs.append(
+                int(
+                    audit["representation_fit"]["feature_dim"]
+                    * audit["representation_fit"]["class_count"]
+                )
+            )
         if arm in M26_ARMS:
             target_domain_residual_macs.append(int(audit["resource"]["residual_query_mac"]))
 
@@ -695,6 +880,7 @@ def execute_m24_row(
     total_queries = sum(len(item) for item in tokens_all)
     local_prototype_mac = max(local_prototype_macs, default=0)
     target_domain_residual_mac = max(target_domain_residual_macs, default=0)
+    spectral_consensus_mac = max(spectral_consensus_macs, default=0)
     base_query_head_mac = int(max(feature_dims) * len(old_classes + new_classes))
     resource_receipt = {
         "schema": RESOURCE_RECEIPT_SCHEMA,
@@ -714,6 +900,8 @@ def execute_m24_row(
             if arm in M25_ANCHORED_ARMS
             else "g0_anchored_source_target_domain_residual"
             if arm in M26_ARMS
+            else "b3_conditioned_support_only_spectral_veto"
+            if arm in M27_SPECTRAL_VETO_ARMS
             else "support_to_compiled_head"
             if arm == D1_REFIT
             else "historical_or_candidate_specific"
@@ -723,11 +911,12 @@ def execute_m24_row(
         "row_peak_vram_bytes": 0,
         "candidate_peak_memory_isolated": False,
         "closed_form_fit_count": len(FORMAL_LEO_WEAK_SCENARIOS),
-        "mac_equivalent_upper_bound": int((base_query_head_mac + local_prototype_mac + target_domain_residual_mac) * total_queries),
-        "query_head_mac": int(base_query_head_mac + local_prototype_mac + target_domain_residual_mac),
+        "mac_equivalent_upper_bound": int((base_query_head_mac + local_prototype_mac + target_domain_residual_mac + spectral_consensus_mac) * total_queries),
+        "query_head_mac": int(base_query_head_mac + local_prototype_mac + target_domain_residual_mac + spectral_consensus_mac),
         "base_affine_query_head_mac": base_query_head_mac,
         "local_evidence_prototype_mac": int(local_prototype_mac),
         "target_domain_residual_mac": int(target_domain_residual_mac),
+        "spectral_consensus_mac": int(spectral_consensus_mac),
         "local_evidence_exp_count": int(max(local_exp_counts, default=0)),
         "local_evidence_log_count": int(max(local_log_counts, default=0)),
         "local_evidence_aggregation_count": int(max(local_aggregation_counts, default=0)),
@@ -746,6 +935,8 @@ def execute_m24_row(
         if arm in M25_ANCHORED_ARMS
         else m26_candidate_lock
         if arm in M26_ARMS
+        else m27_arm_config_hash(arm)
+        if arm in M27_SPECTRAL_VETO_ARMS
         else arm_config_hash(arm)
     )
     prediction = publish_prediction_artifact(
@@ -819,6 +1010,18 @@ def execute_m24_row(
             "class_registry": list(source_anchor.class_registry),
             "state_bytes": source_anchor.state_bytes,
             "sample_or_member_rows_available": False,
+        }
+    if arm == V2:
+        receipt["phase_side_cache"] = {
+            "schema": PHASE_SIDE_MANIFEST_SCHEMA,
+            "base_feature_cache_manifest_sha256": phase_side_cache["manifest"][
+                "base_feature_cache_manifest_sha256"
+            ],
+            "capsule_id": phase_side_cache["manifest"]["capsule_id"],
+            "split_id": phase_side_cache["manifest"]["split_id"],
+            "query_truth_present": False,
+            "query_role_present": False,
+            "query_state_update": False,
         }
     _exclusive_json(output / "row_execution_receipt.json", receipt)
     return receipt
@@ -1040,4 +1243,74 @@ def run_m26_td_src256_row_from_base_cache(
     )
 
 
-__all__ = ["DA0_REG0", "DA1_REG0", "DA0_REG1", "DA1_REG1", "M24_ROW_EXECUTION_SCHEMA", "M24RowExecutionError", "d1_overlay_from_base_cache", "execute_m24_row", "run_m24_d1_evidence_row_from_base_cache", "run_m24_d1_row_from_base_cache", "run_m24_invariance_row_from_base_cache", "run_m25_anchored_row_from_base_cache", "run_m26_td_src256_row_from_base_cache", "run_m24_row_from_caches"]
+def run_m27_spectral_veto_row_from_base_cache(
+    *,
+    arm: str,
+    row_id: str,
+    receiver: str,
+    base_feature_cache_payload: str | Path,
+    base_feature_cache_manifest: str | Path,
+    base_feature_cache_payload_sha256: str,
+    base_feature_cache_manifest_sha256: str,
+    output_root: str | Path,
+    seed: int,
+    phase_side_cache_payload: str | Path | None = None,
+    phase_side_cache_manifest: str | Path | None = None,
+    phase_side_cache_payload_sha256: str | None = None,
+    phase_side_cache_manifest_sha256: str | None = None,
+    device: Any = "cpu",
+) -> dict[str, Any]:
+    from cvsrffi.stage2_m25_anchored_residual import B3
+
+    if arm not in {D1, B3, *M27_SPECTRAL_VETO_ARMS}:
+        raise M24RowExecutionError("M2.7 runner accepts only B0, B3, V1 and V2")
+    base = load_feature_cache(
+        base_feature_cache_payload,
+        base_feature_cache_manifest,
+        expected_payload_sha256=str(base_feature_cache_payload_sha256).lower(),
+        expected_manifest_sha256=str(base_feature_cache_manifest_sha256).lower(),
+    )
+    overlay = d1_overlay_from_base_cache(base)
+    phase = None
+    phase_bytes = 0
+    if arm == V2:
+        if any(
+            value is None
+            for value in (
+                phase_side_cache_payload,
+                phase_side_cache_manifest,
+                phase_side_cache_payload_sha256,
+                phase_side_cache_manifest_sha256,
+            )
+        ):
+            raise M24RowExecutionError("M2.7 V2 side-cache paths and SHA256 are required")
+        phase = load_phase_side_cache(
+            phase_side_cache_payload,
+            phase_side_cache_manifest,
+            expected_payload_sha256=str(phase_side_cache_payload_sha256).lower(),
+            expected_manifest_sha256=str(phase_side_cache_manifest_sha256).lower(),
+            expected_base_manifest_sha256=str(base_feature_cache_manifest_sha256).lower(),
+            expected_capsule_id=str(base["manifest"]["capsule_id"]),
+            expected_split_id=str(base["manifest"]["split_id"]),
+            expected_query_tokens_by_scenario={
+                scenario: overlay["scenario_payloads"][scenario]["query_tokens"]
+                for scenario in FORMAL_LEO_WEAK_SCENARIOS
+            },
+        )
+        phase_bytes = Path(phase_side_cache_payload).stat().st_size
+    return execute_m24_row(
+        arm=arm,
+        row_id=row_id,
+        receiver=receiver,
+        base_cache=base,
+        overlay_cache=overlay,
+        phase_side_cache=phase,
+        output_root=output_root,
+        seed=int(seed),
+        device=device,
+        base_cache_bytes=Path(base_feature_cache_payload).stat().st_size,
+        overlay_cache_bytes=phase_bytes,
+    )
+
+
+__all__ = ["DA0_REG0", "DA1_REG0", "DA0_REG1", "DA1_REG1", "M24_ROW_EXECUTION_SCHEMA", "M24RowExecutionError", "d1_overlay_from_base_cache", "execute_m24_row", "run_m24_d1_evidence_row_from_base_cache", "run_m24_d1_row_from_base_cache", "run_m24_invariance_row_from_base_cache", "run_m25_anchored_row_from_base_cache", "run_m26_td_src256_row_from_base_cache", "run_m27_spectral_veto_row_from_base_cache", "run_m24_row_from_caches"]
