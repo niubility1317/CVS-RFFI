@@ -4,7 +4,8 @@
 - 当前状态：`LOCAL_VERIFIED`；尚未commit/push、尚未LANDED或RUNNING，不得表述为已启动或已有性能结果
 - 本地实现分支：`codex/stage2b-lateblock-20260824`
 - 基线Git提交：`403d264a38508600180b6c7ecb6a0a5c86a0dfd8`
-- 实际发布提交：`PENDING`
+- 实现提交：`e5994ec06b7ee870c2e0eff84e2ccadbd20faa71`
+- Git分支：`codex/stage2b-lateblock-20260824`；post-commit hook自动push后，独立`ls-remote`回读远端分支OID=`e5994ec06b7ee870c2e0eff84e2ccadbd20faa71`，与本地实现提交一致，状态`VERIFIED`
 - 本地工作树：`E:\type10-7\github_publish\CVS-RFFI-repo\.worktrees\stage2b-lateblock-20260824`
 - 本地环境：`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe`，Python UTF-8
 - 冻结checkpoint：`E:\type10-7\automation_reports\CV-SincNet\qknnv42_strict_dual125_20260714_183556\artifacts\best_joint_safe_ssdg.pth`
@@ -63,7 +64,7 @@
 ## 当前证据与未完成条件
 
 - 已完成：项目协议与白名单核对；历史MRIOR权限审计；真实checkpoint严格重建和候选参数比例计算；隔离Git工作树创建；RED→GREEN→邻近回归；真实checkpoint无query smoke；N607只读preflight
-- 未完成：Target5/Target25精确`VALIDATED_ONCE/capsule_id/split_id`权威manifest闭合；commit/push/远端OID回读；正式release同步、远端编译、启动、prediction、独立评分和最终结论
+- 未完成：Target5/Target25精确`VALIDATED_ONCE/capsule_id/split_id`权威manifest闭合；正式release同步、远端编译、启动、prediction、独立评分和最终结论
 - 版本管理：根目录`E:\type10-7`不是Git仓库，本报告同步镜像到正式Git承载工作树的同名路径
 
 > 香港时间2026-08-24 05:00为本目标的硬停止时间。到点后不得启动、派发、扩展或切换任何新候选、实验、审查或实现工作；不得终止届时仍在正常运行的N607实验。只汇总真实状态、已有证据、正在运行的任务和未完成条件，不得将`RUNNING`表述为已完成或已取得性能结论。
