@@ -31,6 +31,35 @@ def test_m26_paired_score_filename_matches_shared_summary_contract() -> None:
     assert scorer.PAIRED_SCORE_FILENAME == "paired_vs_r0.json"
 
 
+@pytest.mark.parametrize(
+    ("matrix_kind", "identity_count", "expected_boundary"),
+    (
+        (
+            "screen",
+            4,
+            "Same-row 4-identity screening evidence under p2_min_v1; not full-125 confirmation, Phase3, or deployment evidence.",
+        ),
+        (
+            "full125",
+            125,
+            "Same-row full-125 Stage2-C evidence under p2_min_v1; not Phase3 or deployment evidence.",
+        ),
+    ),
+)
+def test_m26_summary_evidence_boundary_matches_matrix_kind(
+    matrix_kind: str, identity_count: int, expected_boundary: str
+) -> None:
+    from scripts import summarize_m26_td_src256_matrix as summarizer
+
+    result = {"matrix": {"paired_input_identity_count": identity_count}}
+    summarizer._apply_m26_evidence_boundary(
+        result,
+        {"matrix_kind": matrix_kind, "paired_input_identity_count": identity_count},
+    )
+    assert result["matrix"]["matrix_kind"] == matrix_kind
+    assert result["evidence_boundary"] == expected_boundary
+
+
 def test_m26_summary_collects_domain_shift_and_application_diagnostics(tmp_path) -> None:
     from scripts import summarize_m26_td_src256_matrix as summarizer
 

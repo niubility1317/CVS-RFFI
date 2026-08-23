@@ -1,0 +1,32 @@
+{
+  "anchor_class_registry": [
+    "cls_75aa6d506081240f50cf3b79a0bd91714fa0084a635a472ca63194e57ec1dca2",
+    "cls_8b02d99905a8fe579368ac8e37eff51c505aaa89a646eba8892d5d800aa08416",
+    "cls_1f33441efa14970113b27483344b7df852a9041984b38d34ce570fafbab6689c",
+    "cls_f8dfc2edcccc5344f8e2535a959f13b53a1cddfd6fb22aed6e714de382b58d24",
+    "cls_a53ca1280d8fca58e3f4d6d1e9ddabfdab6027a941ee8c3f8c01d9d8ec945725",
+    "cls_33bbd16556c6e6305d1b7162f5ea71393afba910a922f9abca5999d5921a2d9d"
+  ],
+  "anchor_component_id": "236823c57210de9a58a47ee1868d27a907368864f8ad9f710c2eda0c51258da5",
+  "anchor_query_rows_used": 0,
+  "anchor_source_row_count": 2400,
+  "anchor_state_bytes": 1560,
+  "anchor_target_rows_used": 0,
+  "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
+  "checkpoint_sha256": "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98",
+  "device": "cpu",
+  "finite": true,
+  "missing_keys": [],
+  "num_domains": 14,
+  "query_input_count": 0,
+  "status": "PASS",
+  "tx_logits_shape": [
+    2,
+    6
+  ],
+  "unexpected_keys": [],
+  "z_id_shape": [
+    2,
+    160
+  ]
+}

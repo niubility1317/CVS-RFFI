@@ -15,17 +15,22 @@
 |M26-07|安全接口|D92主分数不变，仅低margin加入不超过alpha的残差|M26模块、row executor|verified|高margin逐位回退及逐logit上界测试通过|alpha网格固定|
 |M26-08|支持选择|强度只由support留一old/new双边无害证据选择|`stage2_m26_td_src256.py`|verified|K1五臂严格B0，K≥2执行support-LOO|query不参与选择|
 |M26-09|消融归因|冻结B0、T1–T5六臂同row矩阵|runner、scorer、summarizer|verified|screen=24行、full125=750行常量测试通过|T1身份、T2/T3 CEP、T4/T5 MGD|
-|M26-10|协议闭合|复用VALIDATED_ONCE，prediction truth-unopened，独立scorer truth-last|row executor、runner、scorer|verified|合成三场景T5行完整闭合；query应用门控和有界增量审计通过|真实checkpoint smoke仍待执行|
-|M26-11|完整分析|输出总体及全部预登记切片、偏移诊断和资源|summarizer、正式报告|implemented|配对文件契约、域偏移/LOO可靠度/强度/门控/回退汇总测试通过|待真实实验填充，不得只报总体H|
-|M26-12|版本发布|本地验证、一次P0/P1审查、commit、push、远端OID回读|Git及正式报告|pending|待发布|只stage本轮文件|
+|M26-10|协议闭合|复用VALIDATED_ONCE，prediction truth-unopened，独立scorer truth-last|row executor、runner、scorer|verified|真实checkpoint无query smoke通过；24/24 prediction闭合后truth-last评分，89份score且状态PASS|query输入和拟合计数均为0|
+|M26-11|完整分析|输出总体及全部预登记切片、偏移诊断和资源|summarizer、正式报告|verified|总体、K/new、receiver、seed、scene、四状态、old/new、class、margin、中心角距、help/harm、F_within/F_std、域偏移、LOO、门控和资源均已生成|正式裁决`SCREEN_NEGATIVE_NO_FULL125`|
+|M26-12|版本发布|本地验证、一次P0/P1审查、commit、push、远端OID回读|Git及正式报告|in_progress|实现与预登记提交均已推送并核对；最终结果提交待完成|只stage本轮文件|
+|M26-13|screen证据边界|4 identity screen不得标为full125|M2.6 summarizer、汇总和报告|verified|新增screen/full125证据边界回归测试；正式汇总`matrix.matrix_kind=screen`|仅修正标签和裁决，所有实验数值数组保持不变|
 
 ## 当前反向审计
 
-- verified：10
-- implemented：1
+- verified：12
+- implemented：0
 - deferred：0
 - rejected：0
 - blocked：0
-- pending：1
+- in_progress：1
 
-本地M2.6聚焦测试18项及M2.4/M2.5/M2.6相邻回归25项通过。首次独立审查为P0=0、P1=2；两个P1均已按原问题定点修复，允许的一次定点复审确认原P1-1/P1-2关闭，终态P0=0、P1=0、READY。当前最高风险：必须在N607上从checkpoint一致的混合导出中只筛选source特征构建正式锚点，并用真实ADV3B02 checkpoint完成无query smoke；不得以目标support代替源域锚点。参考Phase1实验已经否定无界SID独立头，因此本轮只保留B0主判决和有界残差。
+本地M2.6聚焦测试18项及M2.4/M2.5/M2.6相邻回归25项通过。首次独立审查为P0=0、P1=2；两个P1均已按原问题定点修复，允许的一次定点复审确认原P1-1/P1-2关闭，终态P0=0、P1=0、READY。
+
+正式run为`erbt_idr_m26_td_src256_repr_screen_20260823_v1`。Phase1锚点只消费2400条source行，target/query均为0，component ID为`236823c57210de9a58a47ee1868d27a907368864f8ad9f710c2eda0c51258da5`。真实checkpoint无query smoke、远端编译和不可覆盖路径检查均通过；24行prediction完成后才连接truth，最终状态`ANALYZED`。
+
+screen结果：T3相对B0的`ΔH=−0.000929`、help/harm=17/13；T5为`−0.000729`、15/12。T4 MGD96获得唯一正H差`+0.000242`，但远低于`+0.002`门槛。故不启动完整125，M2.6不晋级。该结果验证“目标域状态确实进入决策”，同时否定“support类内LOO可靠度足以决定独立目标域残差”的假设。下一候选应把目标域和复频域特征改为M2.5 B3的共识/否决器，而非替换或平移D92稳健中心。

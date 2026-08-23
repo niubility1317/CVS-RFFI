@@ -127,6 +127,27 @@ def _write_summary_exclusive(path: Path, payload: dict) -> None:
         handle.write("\n")
 
 
+def _apply_m26_evidence_boundary(
+    result: dict[str, Any], matrix: dict[str, Any]
+) -> None:
+    matrix_kind = str(matrix.get("matrix_kind", ""))
+    identity_count = int(matrix["paired_input_identity_count"])
+    if matrix_kind == "screen":
+        boundary = (
+            f"Same-row {identity_count}-identity screening evidence under p2_min_v1; "
+            "not full-125 confirmation, Phase3, or deployment evidence."
+        )
+    elif matrix_kind == "full125":
+        boundary = (
+            "Same-row full-125 Stage2-C evidence under p2_min_v1; "
+            "not Phase3 or deployment evidence."
+        )
+    else:
+        raise ValueError(f"unsupported M2.6 matrix_kind: {matrix_kind!r}")
+    result["matrix"]["matrix_kind"] = matrix_kind
+    result["evidence_boundary"] = boundary
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--prediction-root", required=True)
@@ -142,6 +163,7 @@ def main() -> int:
     shared.SUMMARY_SCHEMA = "cvs.erbt_idr.m26.td_src256.results_summary.v1"
     shared.SUMMARY_VERDICT = "M26_TD_SRC256_MATRIX_MEASURED"
     result = shared.build_summary(prediction_root, Path(args.score_root))
+    _apply_m26_evidence_boundary(result, matrix)
     result["m26_diagnostics"] = _build_m26_diagnostics(matrix)
     _write_summary_exclusive(Path(args.output), result)
     print(json.dumps({"status": result["status"], "row_count": result["matrix"]["row_count"]}, sort_keys=True))
