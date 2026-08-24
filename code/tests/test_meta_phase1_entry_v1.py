@@ -635,6 +635,33 @@ def test_meta_phase1_non_dry_run_loads_checkpoint_trains_curves_selects_and_writ
     assert json.loads((output_root / "run_summary.json").read_text(encoding="utf-8"))["status"] == "ARTIFACTS_COMPLETE"
 
 
+def test_meta_phase1_uses_train_cli_inputs_after_release_relocation(tmp_path):
+    config = valid_config()
+    config["base_checkpoint"] = "runs/base/best.pth"
+    config["wisig_pkl"] = "Dataset_WigSig/ManySig.pkl"
+    config_path = tmp_path / "release" / "configs" / "meta.json"
+    config_path.parent.mkdir(parents=True)
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+    base_path = tmp_path / "project-root" / "runs" / "base" / "best.pth"
+    wisig_path = tmp_path / "project-root" / "Dataset_WigSig" / "ManySig.pkl"
+    base_path.parent.mkdir(parents=True)
+    wisig_path.parent.mkdir(parents=True)
+    wisig_path.write_bytes(b"fixture")
+    torch.save({"model": _ToyLegacyModel(3).state_dict()}, base_path)
+
+    def batches(config, ds_w, model):
+        del config, ds_w, model
+        return {"train": [_toy_batch("L_s")] * 4, "eval": [_toy_batch("V_cal"), _toy_batch("V_select")]}
+
+    output_root = tmp_path / "run-root"
+    args = _toy_args(config_path, output_root, base_path, wisig_path, batches)
+    args.init_checkpoint = str(base_path)
+    result = run_meta_phase1(args, {"rx_list": list(range(7)), "tx_list": ["a", "b", "c"]})
+
+    assert result["status"] == "ARTIFACTS_COMPLETE"
+    assert (output_root / "selected_meta_bundle.pt").is_file()
+
+
 def test_meta_phase1_training_exception_keeps_failed_diagnostics_without_completion(tmp_path):
     config = valid_config()
     config["base_checkpoint"] = "base.pth"

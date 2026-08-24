@@ -1509,8 +1509,20 @@ def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
             )
 
     config_source = getattr(args, "meta_config", None) or getattr(args, "meta_phase1_config", None)
-    base_path = _resolve_config_path(config["base_checkpoint"], config_source=config_source)
-    wisig_path = _resolve_config_path(config["wisig_pkl"], config_source=config_source)
+    requested_base_path = (
+        getattr(args, "init_checkpoint", None) or getattr(args, "base_checkpoint", None)
+    )
+    requested_wisig_path = getattr(args, "wisig_pkl", None)
+    base_path = (
+        Path(str(requested_base_path)).expanduser().resolve()
+        if requested_base_path is not None and str(requested_base_path).strip()
+        else _resolve_config_path(config["base_checkpoint"], config_source=config_source)
+    )
+    wisig_path = (
+        Path(str(requested_wisig_path)).expanduser().resolve()
+        if requested_wisig_path is not None and str(requested_wisig_path).strip()
+        else _resolve_config_path(config["wisig_pkl"], config_source=config_source)
+    )
     _require_readable_file(base_path, field_name="base_checkpoint")
     _require_readable_file(wisig_path, field_name="wisig_pkl")
 
