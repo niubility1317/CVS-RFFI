@@ -1532,6 +1532,20 @@ def main():
     add_bool_arg(parser, "use_meta_ssl_cvs", False,
                  "Enable the default-off centralized Meta-SSL-CVS-R04 protocol path",
                  "Keep Meta-SSL-CVS disabled")
+    add_bool_arg(parser, "use_cvs_meta_adapter", False,
+                 "Route WiSig Phase1 through the frozen CVS meta-adapter entry",
+                 "Keep CVS meta-adapter Phase1 disabled")
+    parser.add_argument(
+        "--meta_config",
+        type=str,
+        default="configs/phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260824.json",
+        help="Frozen CVS meta-adapter Phase1 configuration.",
+    )
+    parser.add_argument("--meta_adapter_rank", type=int, default=0)
+    parser.add_argument("--meta_adapter_sites", type=str, default="")
+    parser.add_argument("--meta_inner_steps", type=int, default=3)
+    parser.add_argument("--meta_inner_max_steps", type=int, default=5)
+    parser.add_argument("--meta_output_root", type=str, default="")
     add_bool_arg(parser, "meta_ssl_protocol_check_only", False,
                  "Run Meta-SSL-CVS split/gate/episode/loss protocol checks and exit before training",
                  "Run normal training instead of the Meta-SSL protocol check")
@@ -2583,6 +2597,11 @@ def main():
                         help="Collect epochs whose primary OOD score is within this margin of the best-so-far score.")
     parser.add_argument("--swad_save_path", type=str, default="")
     args = parser.parse_args()
+    if bool(getattr(args, "use_cvs_meta_adapter", False)):
+        if int(getattr(args, "meta_adapter_rank", 0)) == 0:
+            args.meta_adapter_rank = 4
+        if not str(getattr(args, "meta_adapter_sites", "") or "").strip():
+            args.meta_adapter_sites = "time,freq,fusion"
     explicit_group_ce_min_domains = None
     explicit_fishr_min_domains = None
     argv_items = sys.argv[1:]
@@ -2775,6 +2794,12 @@ def main():
         if infer_nc > 0 and args.num_classes != infer_nc:
             print(f"[WISIG] overriding num_classes {args.num_classes} -> {infer_nc}")
             args.num_classes = infer_nc
+
+        if bool(getattr(args, "use_cvs_meta_adapter", False)):
+            from cvsrffi.meta_phase1_entry import run_meta_phase1
+
+            run_meta_phase1(args, ds_w)
+            return
 
         eq2 = "both" if str(args.wisig_equalized).lower() == "both" else int(args.wisig_equalized)
         protocol = str(getattr(args, "wisig_protocol", "cvs_day_rx")).lower()
