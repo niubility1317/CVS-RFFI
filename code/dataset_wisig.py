@@ -106,6 +106,19 @@ class WiSigIndex:
     sig_i: int
 
 
+def wisig_physical_sample_id(item: WiSigIndex) -> str:
+    return (
+        f"tx{int(item.tx_i)}|rx{int(item.rx_i)}|day{int(item.day_i)}|"
+        f"eq{int(item.eq_i)}|sig{int(item.sig_i)}"
+    )
+
+
+def wisig_capture_block_id(item: WiSigIndex, block_size: int = 8) -> int:
+    if int(block_size) <= 0:
+        raise ValueError("capture block_size must be positive")
+    return int(item.sig_i) // int(block_size)
+
+
 class WiSigCompactDataset(Dataset):
     def __init__(
         self,
@@ -125,6 +138,7 @@ class WiSigCompactDataset(Dataset):
         sample_strategy: str = "front",
         seed: int = 0,
         build_index: bool = True,
+        capture_block_size: int = 8,
     ):
         super().__init__()
         self.ds = ds
@@ -140,6 +154,9 @@ class WiSigCompactDataset(Dataset):
         self.domain = str(domain)
         self.transform = transform
         self.max_samples_per_combo = max_samples_per_combo
+        self.capture_block_size = int(capture_block_size)
+        if self.capture_block_size <= 0:
+            raise ValueError("capture_block_size must be positive")
         self.sample_strategy = _normalize_strategy(
             sample_strategy,
             name="sample_strategy",
@@ -239,6 +256,9 @@ class WiSigCompactDataset(Dataset):
             "rx": self.rx_list[it.rx_i] if it.rx_i < len(self.rx_list) else it.rx_i,
             "day": self.day_list[it.day_i] if it.day_i < len(self.day_list) else it.day_i,
             "equalized": self.eq_list[it.eq_i] if it.eq_i < len(self.eq_list) else None,
+            "physical_sample_id": wisig_physical_sample_id(it),
+            "capture_block_i": wisig_capture_block_id(it, self.capture_block_size),
+            "capture_block_semantics": "sig_index_time_block_proxy",
         }
         return x_t, y, d, meta
 

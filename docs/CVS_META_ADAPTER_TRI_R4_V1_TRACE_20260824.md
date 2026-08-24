@@ -7,7 +7,7 @@
 |META-01|用户确认方案；设计规格§2|Phase1只使用source角色，Phase2严格`p2_min_v1/VALIDATED_ONCE`|`dataset_wisig.py`、Phase2 runner|specified|协议负测＋真实checkpoint无query smoke|严格实现|
 |META-02|用户扩展query要求；设计规格§3～4|query支持类别、receiver、day/channel和LEO多层级任务|`meta_episodes.py`|specified|episode采样单测和分布统计|`capture_block`是代理变量|
 |META-03|设计规格§4.1|区分`Y_adapt`和`Y_guard`，不得把query-only类伪装成已适配类|`meta_episodes.py`、`meta_objectives.py`|specified|类别覆盖和loss路由单测|严格实现|
-|META-04|设计规格§2、§12|support/query按physical sample ID隔离，同物理样本视图不得跨边界|`dataset_wisig.py`、`meta_episodes.py`|specified|重叠负测|严格实现|
+|META-04|设计规格§2、§12|support/query按physical sample ID隔离，同物理样本视图不得跨边界|`dataset_wisig.py`、`meta_episodes.py`|implemented|`conda run -n ssr-gpu python -m pytest code/tests/test_meta_episode_sampler_v1.py tests/test_baseline_training_behaviors.py -q`：20 passed|本任务完成WiSig物理样本ID和capture block代理metadata；episode隔离仍由后续Task实现|
 |META-05|设计报告adapter-BOIL路线；设计规格§5|time/freq/fusion插入rank-4残差adapter|`meta_adapter.py`、`model.py`|specified|形状、初始化和forward回归|由rank-8优化为≤1%的rank-4|
 |META-06|用户轻型快速要求；设计规格§5、§9|Phase2训练参数≤1%，固定3步，最多5步，硬上限40步|adapter参数白名单、Phase2 runner|specified|真实checkpoint参数计数和step审计|严格实现|
 |META-07|设计报告元学习路线；设计规格§6|真实FOMAML内外循环和模块级Meta-SGD|`meta_inner_loop.py`、`meta_trainer.py`|specified|梯度更新、可复现和有限差分测试|一阶近似|
