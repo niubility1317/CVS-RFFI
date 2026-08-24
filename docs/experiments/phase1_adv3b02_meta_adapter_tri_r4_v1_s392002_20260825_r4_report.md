@@ -22,6 +22,7 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 - 环境：现有`CVS-RFFI`；Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`
 - GPU：0；r3结束并完成只读资源preflight前不得占用。
 - 预定release归档本地路径：`E:\type10-7\release_archives\phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260825_r4_70961b7a.tar.gz`
+- 本地release归档已按固定提交生成：35482849字节、5004个条目，包含r4配置；SHA256=`0f54bf1c5ca587986de6c1789455c3aec867c6c2fd13fc64107288368d571a20`。
 - 预定release归档远端路径：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260825_r4/phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260825_r4_70961b7a.tar.gz`
 - 预定远端CWD：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260825_r4/checkout`
 - 冻结checkpoint：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`
@@ -32,7 +33,7 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 - expected artifacts：每个P1～P4子目录的`logs.jsonl`、`metrics.csv`、`selected_meta_bundle.pt`、`source_adaptation_curve.json`、`run_summary.json`、`p0_control_evaluation.json`、`final_checkpoint_evaluation.json`、`frozen_prototypes.npz`，以及矩阵级`candidate_matrix_summary.json`。
 - 技术停止规则：仅在协议越权、错误checkout/output root、输出覆盖、无法产生规定artifact、launcher-wide故障，或至少两个候选出现相同确定性pre-artifact异常时停止；不得因低准确率停止。
 
-## 尚未执行
+## 待触发步骤
 
-- 尚未创建release归档，尚未进行本地到远端SHA比较、远端编译、资源/路径preflight、同步、启动或启动健康检查。
+- 本地release归档已准备完成；尚未进行远端同步、本地到远端SHA比较、远端编译、资源/路径preflight、启动或启动健康检查。
 - 以上步骤不是缺失授权，而是受“r3只读监控且不重复启动”约束而有意等待；r3若正常完成，r4保持`NOT_LAUNCHED`并不再使用。
