@@ -1,7 +1,7 @@
 # CVS_META_ADAPTER_TRI_R4_V1 P4 Target5 r2最小预登记报告
 
 - run ID：`stage2_meta_adapter_target5_p4_s392002_20260825_r2`
-- 状态：`LOCAL_VERIFIED`
+- 状态：`LANDED`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 修复代码提交：`6b66fce0c1e3a4a9315e539999fbe62f0798881e`
 - 固定计划提交：`c489dc8df100ea6c7cd79ad135f9a0f07725d2d0`
@@ -41,3 +41,11 @@
 ## 科学晋级规则
 
 prediction完整后才由独立scorer连接truth。15个同row score聚合`DA1_REG0-DA0_REG0`：旧类均值至少+1.0pp且旧类floor至少+0.5pp才晋级Target25；否则记录`SCIENTIFIC_FAILURE_NO_PROMOTION`并推进下一少层候选。
+
+## N607发布与smoke证据
+
+- 启动前核对新release root、r2 smoke root、prediction root和stdout日志均不存在；GPU0～GPU7均无计算进程，项目盘剩余7.3TiB。
+- release归档仅同步一次；远端SHA256=`890927e0815b1893f5fee933c58729d6bbdc403f7272555854c2a8e48cfb044e`，与本地一致；8个相关生产入口远端编译通过。
+- N607现有`CVS-RFFI`环境未安装pytest，未改动环境或安装包；运行时验证由真实checkpoint smoke承担。
+- P4真实checkpoint无query smoke通过：`status=REAL_META_CHECKPOINT_NO_QUERY_SMOKE_PASS`、`checkpoint_load_strict=true`、`backward_count=3`、`trainable_fraction=0.008192066640147174`、`query_opened=false`、`source_opened=false`、`query_state_update_count=0`，且`performance_result=null`。
+- 当前最高状态为`LANDED`；下一步立即启动唯一一次15-row truth-free prediction矩阵并执行PID／CWD／cmdline／GPU／日志增长健康检查。
