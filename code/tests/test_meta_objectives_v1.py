@@ -20,6 +20,8 @@ from cvsrffi.meta_objectives import (  # noqa: E402
     outer_objective,
     support_objective,
 )
+from cvsrffi.meta_adapter import iter_inner_adapter_parameters  # noqa: E402
+from model_dual_cvsincnet import build_dual_model  # noqa: E402
 
 
 def _outputs(
@@ -511,6 +513,94 @@ def test_l2sp_rejects_non_v1_adapter_full_names(key):
             outputs,
             labels,
             prototypes,
+            {key: torch.zeros(2, 2)},
+            {key: torch.ones(2, 2)},
+            MetaObjectiveConfig(),
+        )
+
+
+@pytest.mark.parametrize("fallback", ["feat_joint", "base"])
+def test_feat_cls_does_not_silently_ignore_conflicting_semantic_fallback(fallback):
+    logits = torch.randn(2, 3, requires_grad=True)
+    embedding = torch.randn(2, 4, requires_grad=True)
+    labels = torch.tensor([0, 1])
+    prototypes = torch.randn(3, 4)
+    with pytest.raises(ValueError, match="embedding.*semantic"):
+        support_objective(
+            {"logits": logits, "feat_cls": embedding, fallback: embedding + 0.1},
+            labels,
+            prototypes,
+            {},
+            {},
+            MetaObjectiveConfig(),
+        )
+    with pytest.raises(ValueError, match="embedding.*semantic"):
+        support_objective(
+            {"logits": logits, "feat_cls": embedding, fallback: torch.randn(3, 4)},
+            labels,
+            prototypes,
+            {},
+            {},
+            MetaObjectiveConfig(),
+        )
+    with pytest.raises(ValueError, match="embedding.*semantic"):
+        support_objective(
+            {"logits": logits, "feat_cls": embedding, fallback: embedding.double()},
+            labels,
+            prototypes,
+            {},
+            {},
+            MetaObjectiveConfig(),
+        )
+
+
+def test_l2sp_accepts_real_dual_model_inner_snapshot_names():
+    model = build_dual_model(
+        num_classes=3,
+        num_domains=2,
+        dataset="wisig",
+        input_len=64,
+        meta_adapter_rank=4,
+        meta_adapter_sites="time,freq,fusion",
+    ).eval()
+    outputs = model(torch.randn(2, 2, 64), return_aux=True)
+    initial = {
+        name: parameter.detach().clone()
+        for name, parameter in iter_inner_adapter_parameters(model)
+    }
+    current = {
+        name: parameter.detach().clone().requires_grad_()
+        for name, parameter in iter_inner_adapter_parameters(model)
+    }
+    result = support_objective(
+        outputs,
+        torch.tensor([0, 1]),
+        torch.randn(3, outputs["z_id"].shape[1]),
+        initial,
+        current,
+        MetaObjectiveConfig(),
+    )
+    assert torch.isfinite(result.total)
+    result.total.backward()
+    assert all(parameter.grad is not None for parameter in current.values())
+
+
+@pytest.mark.parametrize(
+    "key",
+    [
+        "wrapper.id_backbone.meta_adapter_time.gate",
+        "id_backbone.meta_adapter_fake.gate",
+        "id_backbone.meta_adapter_time.norm.weight",
+        "id_backbone.meta_adapter_time.log_step_size",
+    ],
+)
+def test_l2sp_rejects_pseudo_nested_or_invalid_dual_names(key):
+    outputs = _outputs(torch.randn(2, 2, requires_grad=True), torch.randn(2, 2, requires_grad=True))
+    with pytest.raises(ValueError, match="adapter|log_step_size"):
+        support_objective(
+            outputs,
+            torch.tensor([0, 1]),
+            torch.eye(2),
             {key: torch.zeros(2, 2)},
             {key: torch.ones(2, 2)},
             MetaObjectiveConfig(),

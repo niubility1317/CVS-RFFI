@@ -19,8 +19,9 @@ from torch.nn import functional as F
 
 
 _LOGIT_KEYS = ("logits", "tx_logits")
-# ``feat_cls`` is the canonical CVSincNet identity embedding.  The remaining
-# names cover the real ADV3B02 dual-model aliases without changing semantics.
+# ``feat_cls`` is the canonical single-model identity embedding and ``z_id``
+# is the canonical dual-model embedding.  ``feat_joint``/``base`` are distinct
+# auxiliary representations, not unconditional aliases for either canonical.
 _EMBEDDING_DIRECT_KEYS = ("feat_cls", "z_id")
 _EMBEDDING_FALLBACK_KEYS = (
     "id_feat_cls",
@@ -31,6 +32,17 @@ _EMBEDDING_FALLBACK_KEYS = (
 )
 _DUAL_ID_ALIAS_KEYS = ("id_feat_cls", "id_feat_joint", "id_base")
 _DUAL_ID_FEATURE_NAMES = frozenset({"feat_cls", "feat_joint", "feat_con", "base"})
+_SINGLE_RETURN_AUX_SIGNATURE = frozenset(
+    {
+        "feat_cls",
+        "feat_joint",
+        "base",
+        "feat_con",
+        "feat_imp",
+        "feat_dac",
+        "feat_pa",
+    }
+)
 _FORBIDDEN_ADAPTER_KEY_PARTS = (
     "log_step_size",
     "cls_head",
@@ -48,11 +60,10 @@ _INNER_LEAF_NAMES = frozenset(
         "gate",
     }
 )
-_INNER_ADAPTER_PREFIXES = (
-    "meta_adapter_time.",
-    "meta_adapter_freq.",
-    "meta_adapter_fusion.",
+_INNER_ADAPTER_SITES = frozenset(
+    {"meta_adapter_time", "meta_adapter_freq", "meta_adapter_fusion"}
 )
+_OPTIONAL_BACKBONE_PREFIXES = ("id_backbone.", "dom_backbone.")
 
 
 @dataclass(frozen=True)
@@ -198,6 +209,14 @@ def _extract_outputs(outputs: Mapping[str, Any], *, role: str) -> tuple[Tensor, 
         embedding_keys.extend(direct_keys)
         if "feat_cls" in outputs and "id_feat_cls" in outputs:
             embedding_keys.append("id_feat_cls")
+        distinct_auxiliary_keys = [
+            key for key in ("feat_joint", "base") if key in outputs
+        ]
+        if distinct_auxiliary_keys and not _SINGLE_RETURN_AUX_SIGNATURE.issubset(outputs):
+            raise ValueError(
+                f"{role} has ambiguous embedding semantic keys: "
+                f"feat_cls with {', '.join(distinct_auxiliary_keys)}"
+            )
         if "z_id" in outputs:
             selected_key = outputs.get("z_id_key")
             if selected_key is None:
@@ -212,6 +231,11 @@ def _extract_outputs(outputs: Mapping[str, Any], *, role: str) -> tuple[Tensor, 
                     embedding_keys.append(selected_alias)
     else:
         fallback_present = tuple(key for key in _EMBEDDING_FALLBACK_KEYS if key in outputs)
+        if len(fallback_present) > 1:
+            raise ValueError(
+                f"{role} has ambiguous embedding semantic fallback keys: "
+                f"{', '.join(fallback_present)}"
+            )
         embedding_keys.extend(fallback_present)
 
     embedding = collect_aliases(tuple(dict.fromkeys(embedding_keys)), "embedding")
@@ -314,15 +338,16 @@ def _validate_adapter_mapping(
             if "log_step_size" in lowered:
                 raise ValueError("log_step_size is not an inner adapter parameter")
             raise ValueError(f"{name}[{key!r}] is not an allowed adapter-only parameter")
-        prefix = next(
-            (candidate for candidate in _INNER_ADAPTER_PREFIXES if key.startswith(candidate)),
-            None,
-        )
-        if prefix is None:
+        remainder = key
+        for candidate in _OPTIONAL_BACKBONE_PREFIXES:
+            if key.startswith(candidate):
+                remainder = key[len(candidate) :]
+                break
+        site, separator, leaf = remainder.partition(".")
+        if not separator or site not in _INNER_ADAPTER_SITES:
             raise ValueError(
                 f"{name}[{key!r}] must belong to the V1 meta_adapter_time/freq/fusion sites"
             )
-        leaf = key[len(prefix) :]
         if leaf not in _INNER_LEAF_NAMES:
             raise ValueError(f"{name}[{key!r}] is not an allowed inner adapter parameter")
         if not value.is_floating_point():
