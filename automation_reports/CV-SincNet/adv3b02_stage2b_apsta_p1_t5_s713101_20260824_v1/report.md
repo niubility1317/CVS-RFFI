@@ -36,7 +36,7 @@
 
 - 本地工作树：`E:\type10-7\github_publish\CVS-RFFI-repo\.worktrees\stage2b-lateblock-20260824`
 - Git分支：`codex/apsta-p1-robust-20260824`
-- Git提交：`PENDING`
+- 实现提交：`8bf9f752ff3cfa2a1a45c32313cbaf6e4a1a2b63`；GitHub远端分支OID独立回读一致
 - N607 Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`
 - N607 CWD：`/home/szu2070436088/2510044040/CV-SincNet`
 - 不可覆盖输出根：`/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_stage2b_apsta_p1_t5_s713101_20260824_v1`
