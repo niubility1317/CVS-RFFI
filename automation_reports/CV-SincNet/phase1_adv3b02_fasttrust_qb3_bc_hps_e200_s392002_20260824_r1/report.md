@@ -3,10 +3,11 @@
 ## 当前状态
 
 - run_id：`phase1_adv3b02_fasttrust_qb3_bc_hps_e200_s392002_20260824_r1`
-- 状态：`LOCAL_VERIFIED`
+- 状态：`RUNNING`
 - 实现提交：`37de27cc83943283a54d8d19b93dc4f89159f5f6`
+- release/report提交：`a4fbb465cc9c94e3b1af41efe73ccc32ce9ee750`
 - Git发布：`VERIFIED`，本地HEAD与`origin/work/cvs-active`OID一致。
-- 性能状态：尚未启动，不能声称性能完成。
+- 性能状态：5行正式E200矩阵已启动且通过启动健康读回；尚无完整epoch与最终评测，不能声称性能完成。
 
 ## 设计依据与实际调整
 
@@ -74,3 +75,15 @@ C4使用冻结Core90对U clean view生成的`z_id`作为目标，约束student s
 
 只有五行各自完成final checkpoint、clean和三种LEO weak场景评测后，状态才能从`RUNNING`进入`ARTIFACTS_COMPLETE`。单seed只支持同row机制判断；target结果不得用于改参、候选重排或补跑。
 
+## N607发布与启动证据
+
+- 启动确认时间：`2026-08-24T12:23:31+08:00`。
+- 普通账号只读preflight：`VERIFIED`。用户为`szu2070436088`，主机为`dell-DSS8440`，项目根可见；启动前GPU0–7均为1MiB、0%利用率，且无compute process。
+- release归档：`E:\type10-7\release_artifacts\phase1_fasttrust_qb3_a4fbb465.tar.gz`→`/home/szu2070436088/2510044040/CV-SincNet/releases/incoming/phase1_fasttrust_qb3_a4fbb465.tar.gz`；按规则仅进行一次本地/远端SHA核对，双方均为`4ac8035b5b4ff2529e445b398e5783817ded1fb2228c1d635480d4d1b48c5890`。
+- 不可变release目录：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_fasttrust_qb3_a4fbb465`。
+- 远端发布前验证：两个launcher的`bash -n`、三个Python生产文件编译、完整5行`--dry-run`均通过；干跑后正式run root仍不存在。
+- 正式dispatcher：PID`2163660`，父PID为1，命令行为不可变release中的QB3 launcher；CWD为`/home/szu2070436088`，代码、matrix和worker均通过显式`CODE_ROOT/MATRIX/WORKER`绑定到上述release。
+- 启动进程/GPU：5个主训练进程分别绑定GPU0–4，显存约1746–1880MiB，读回利用率为19%–42%；GPU5–7仍为1MiB、0%。未超过每GPU两个训练进程限制。
+- 日志：5个候选的`train.log`均已创建，大小为6895–7015字节；8秒首epoch窗口内未追加epoch行，GPU计算仍活跃，符合按epoch落盘的初始化阶段表现。外层dispatcher日志已记录正式`rows=5,dry_run=0,epochs=200,U=256`。
+- 异常扫描：未发现Traceback、CUDA OOM或非有限异常指纹。
+- 当前最高证据状态：`RUNNING`。预计自启动起约7.5–9小时完成训练与四场景评测；该ETA仍是基于历史吞吐与本轮加速设置的估计。
