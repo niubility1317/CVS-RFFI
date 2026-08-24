@@ -1,0 +1,117 @@
+{
+  "schema": "cvs.stage2.meta_adapter.target_factory_plan.v1",
+  "target": "Target5",
+  "candidate_id": "P1",
+  "bundle_id": "phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260825_r5:P1",
+  "checkpoint_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260825_r5/P1/selected_meta_bundle.pt",
+  "prototype_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260825_r5/P1/frozen_prototypes.npz",
+  "protocol_schema": "p2_min_v1",
+  "phase2_data_status": "VALIDATED_ONCE",
+  "seed": 392002,
+  "steps": 3,
+  "entries": [
+    {
+      "receiver": "20-1",
+      "operating_point": "K10/new5",
+      "k_shot": 10,
+      "manifest_path": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_feature_t1_20260730_v3_47212437/artifacts/features/rx_20_1/method_7282101/new5/k_10/stage2b/features.manifest.json",
+      "scenario_inputs": {
+        "leo_clear_weak": {
+          "support_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/before/predictor/support_leo_clear_weak.npz",
+          "query_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/new5/predictor/query_leo_clear_weak.npz"
+        },
+        "leo_low_elev_weak": {
+          "support_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/before/predictor/support_leo_low_elev_weak.npz",
+          "query_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/new5/predictor/query_leo_low_elev_weak.npz"
+        },
+        "leo_rain_weak": {
+          "support_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/before/predictor/support_leo_rain_weak.npz",
+          "query_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/new5/predictor/query_leo_rain_weak.npz"
+        }
+      }
+    },
+    {
+      "receiver": "20-1",
+      "operating_point": "K10/new10",
+      "k_shot": 10,
+      "manifest_path": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/adv3b02_meta_adapter_target5_new10_s713101_20260825_v1_ce07a101/artifacts/feature_k10_new10/stage2b/features.manifest.json",
+      "scenario_inputs": {
+        "leo_clear_weak": {
+          "support_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/before/predictor/support_leo_clear_weak.npz",
+          "query_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/adv3b02_meta_adapter_target5_new10_s713101_20260825_v1_ce07a101/artifacts/packages/rx_20_1/method_7282101/new10/predictor/query_leo_clear_weak.npz"
+        },
+        "leo_low_elev_weak": {
+          "support_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/before/predictor/support_leo_low_elev_weak.npz",
+          "query_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/adv3b02_meta_adapter_target5_new10_s713101_20260825_v1_ce07a101/artifacts/packages/rx_20_1/method_7282101/new10/predictor/query_leo_low_elev_weak.npz"
+        },
+        "leo_rain_weak": {
+          "support_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/before/predictor/support_leo_rain_weak.npz",
+          "query_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/adv3b02_meta_adapter_target5_new10_s713101_20260825_v1_ce07a101/artifacts/packages/rx_20_1/method_7282101/new10/predictor/query_leo_rain_weak.npz"
+        }
+      }
+    },
+    {
+      "receiver": "20-1",
+      "operating_point": "K10/new20",
+      "k_shot": 10,
+      "manifest_path": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_feature_t1_20260730_v3_47212437/artifacts/features/rx_20_1/method_7282101/new20/k_10/stage2b/features.manifest.json",
+      "scenario_inputs": {
+        "leo_clear_weak": {
+          "support_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/before/predictor/support_leo_clear_weak.npz",
+          "query_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/new20/predictor/query_leo_clear_weak.npz"
+        },
+        "leo_low_elev_weak": {
+          "support_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/before/predictor/support_leo_low_elev_weak.npz",
+          "query_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/new20/predictor/query_leo_low_elev_weak.npz"
+        },
+        "leo_rain_weak": {
+          "support_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/before/predictor/support_leo_rain_weak.npz",
+          "query_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/new20/predictor/query_leo_rain_weak.npz"
+        }
+      }
+    },
+    {
+      "receiver": "20-1",
+      "operating_point": "K5/new20",
+      "k_shot": 5,
+      "manifest_path": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_feature_t1_20260730_v3_47212437/artifacts/features/rx_20_1/method_7282101/new20/k_5/stage2b/features.manifest.json",
+      "scenario_inputs": {
+        "leo_clear_weak": {
+          "support_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/before/predictor/support_leo_clear_weak.npz",
+          "query_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/new20/predictor/query_leo_clear_weak.npz"
+        },
+        "leo_low_elev_weak": {
+          "support_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/before/predictor/support_leo_low_elev_weak.npz",
+          "query_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/new20/predictor/query_leo_low_elev_weak.npz"
+        },
+        "leo_rain_weak": {
+          "support_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/before/predictor/support_leo_rain_weak.npz",
+          "query_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/new20/predictor/query_leo_rain_weak.npz"
+        }
+      }
+    },
+    {
+      "receiver": "20-1",
+      "operating_point": "K1/new20",
+      "k_shot": 1,
+      "manifest_path": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_feature_t1_20260730_v3_47212437/artifacts/features/rx_20_1/method_7282101/new20/k_1/stage2b/features.manifest.json",
+      "scenario_inputs": {
+        "leo_clear_weak": {
+          "support_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/before/predictor/support_leo_clear_weak.npz",
+          "query_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/new20/predictor/query_leo_clear_weak.npz"
+        },
+        "leo_low_elev_weak": {
+          "support_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/before/predictor/support_leo_low_elev_weak.npz",
+          "query_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/new20/predictor/query_leo_low_elev_weak.npz"
+        },
+        "leo_rain_weak": {
+          "support_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/before/predictor/support_leo_rain_weak.npz",
+          "query_input": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_package_t1_20260730_v2_0903163e/artifacts/packages/rx_20_1/method_7282101/new20/predictor/query_leo_rain_weak.npz"
+        }
+      }
+    }
+  ]
+}
+
+
+
