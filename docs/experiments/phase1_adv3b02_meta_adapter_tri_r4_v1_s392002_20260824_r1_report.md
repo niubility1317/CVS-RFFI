@@ -117,3 +117,11 @@ Task13将以当前`LOCAL_VERIFIED`代码为基础，写入最小N607预登记字
 - 只读回读确认：output root不存在、stdout日志不存在、该launcher进程为空、GPU计算进程列表为空。
 - N607现有可用环境：`CVS-RFFI`为Python3.10.19、PyTorch2.1.0+cu121、NumPy2.2.5、CUDA可用；`SDG-SEI`为Python3.8.20、PyTorch1.11.0+cu113、NumPy1.24.4、CUDA可用。
 - 继续条件：需要明确授权本run改用现有`CVS-RFFI`环境，或明确授权在N607创建／克隆名为`ssr-gpu`的持久环境。获得授权前不执行远端编译、启动或环境变更。
+
+## Task13环境授权与有效启动命令
+
+- 授权时间：2026-08-25 00:49（Asia/Hong_Kong）。
+- 用户已明确授权本次实验改用N607现有`CVS-RFFI`环境；不创建、克隆或修改服务器Conda环境。
+- 有效Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
+- 有效启动命令：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/scripts/launch_phase1_adv3b02_meta_adapter_tri_r4_v1.py --config configs/phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260824.json --output-root /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260824_r1 --python /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python --gpu 0`。
+- 授权解除环境阻塞；状态保持`LANDED/NOT_LAUNCHED`，直到远端编译通过并完成正式启动健康核对。
