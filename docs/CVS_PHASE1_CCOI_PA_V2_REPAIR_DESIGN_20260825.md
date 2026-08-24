@@ -2,7 +2,9 @@
 
 日期：2026-08-25
 
-当前状态：V2设计、实现和本地验证完成；35项CCOI聚焦测试、Python语法编译和C0–C4 dry-run通过。真实checkpoint smoke、N607矩阵和科学增益仍为`PENDING`。
+当前状态：V2设计、实现、本地验证和N607单seed C0–C4矩阵均已完成。真实checkpoint smoke、receiver导出、四场景prediction/truth和独立评分为`VERIFIED`；科学结论为`SCIENTIFIC_FAILURE_NO_PROMOTION`。
+
+最终实验`PHASE1_CCOI_PA_V2_S20260824_20260825A`显示：最佳候选相对C1的LEO均值仅`+0.0095`个百分点，最佳LEO receiver-floor均值仅`+0.0361`个百分点，均未达到`+0.30`个百分点。C4 holdout NMSE相对C1下降`92.50%`且`R²=0.87407`，说明受控拟合链路有效；但真实配对相对shuffle仅改善`2.815%`。更关键的是，soft effective codes达到`35.216/48`时，hard argmax仍只有`4/48`个码被使用，top占比`70.52%`。因此V2否定了“receiver缺失或融合尺度失配是唯一瓶颈”，并定位出soft均衡不能替代离散挑战状态辨识。
 
 ## 1. 结论
 
