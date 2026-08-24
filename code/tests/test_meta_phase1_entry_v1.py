@@ -10,6 +10,7 @@ import torch
 from torch import nn
 
 from cvsrffi.meta_phase1_entry import (
+    _build_refs,
     _candidate_from_curves,
     _compute_frozen_class_prototypes,
     _evaluate_final_checkpoint_scenarios,
@@ -466,6 +467,34 @@ def test_source_manifest_checks_physical_ids_without_decoding_iq(monkeypatch):
 
     assert manifest["clean_test_physical_disjoint"] is True
     assert manifest["clean_test_size"] > 0
+
+
+def test_episode_refs_use_wisig_index_without_decoding_iq():
+    class IndexOnlyDataset:
+        capture_block_size = 4
+        index = [
+            types.SimpleNamespace(tx_i=0, rx_i=2, day_i=1, eq_i=0, sig_i=3),
+            types.SimpleNamespace(tx_i=1, rx_i=4, day_i=0, eq_i=0, sig_i=9),
+        ]
+
+        def __len__(self):
+            return len(self.index)
+
+        def __getitem__(self, index):
+            raise AssertionError(f"IQ decoding is forbidden during ref build: {index}")
+
+    dataset = IndexOnlyDataset()
+    refs, returned_dataset = _build_refs(dataset, "L_s")
+
+    assert returned_dataset is dataset
+    assert len(refs) == len(dataset) * 4
+    assert {(ref.dataset_index, ref.tx_i) for ref in refs} == {(0, 0), (1, 1)}
+    assert {ref.physical_sample_id for ref in refs} == {
+        "tx0|rx2|day1|eq0|sig3",
+        "tx1|rx4|day0|eq0|sig9",
+    }
+    assert {ref.capture_block_i for ref in refs if ref.dataset_index == 0} == {0}
+    assert {ref.capture_block_i for ref in refs if ref.dataset_index == 1} == {2}
 
 
 def test_final_scenario_evaluation_uses_declared_clean_test_not_v_select():

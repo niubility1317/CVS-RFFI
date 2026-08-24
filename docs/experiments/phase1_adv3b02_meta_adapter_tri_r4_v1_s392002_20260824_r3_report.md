@@ -117,3 +117,10 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 - 每个row只调用已验证exporter，输出support的`received_iq/support_labels/support_physical_ids`和query的`received_iq/query_ids`；plan和CLI均没有truth/scorer输入字段。
 - RED阶段4项测试以模块缺失稳定失败；GREEN后factory/exporter/matrix/runner聚焦46项通过，加入完整Meta-Adapter宽回归后259项通过，生产入口`py_compile`与`git diff --check`均通过；新增负测拒绝把K10/new20 manifest冒充K10/new10。
 - 工厂需要最终选中的`selected_meta_bundle.pt`和`frozen_prototypes.npz`路径，因此本轮只闭合实现和测试；正式15行配置仍必须等待r3 source选择结果，不能用占位checkpoint提前发布。
+
+## Phase1 episode引用快路径补全
+
+- 只读分析r3旧release后确认：此前`12410f2a`只让source/clean物理ID重叠检查避开IQ解码，但`_build_refs`仍会遍历L_s、V_cal和V_select的全部样本并调用dataset `__getitem__`，因此后备新run仍可能重复长时间pre-artifact准备。
+- 新RED负测用只允许读取`dataset.index`、禁止`__getitem__`的WiSig载体稳定复现失败；GREEN后`_build_refs`直接从索引读取`tx_i/rx_i/day_i/eq_i/sig_i`，并用项目既有函数生成完全相同的physical ID和capture block。
+- ref仍保留原dataset index、source角色及`clean/leo_clear_weak/leo_low_elev_weak/leo_rain_weak`四个view；实际IQ只在确定性episode被选中后由`_episode_batch`物化，不改变样本划分、K、训练参数、目标函数或评价。
+- Phase1真实入口33项、入口/episode采样器/trainer联合78项及当前Phase1/Phase2 Meta-Adapter 14文件宽回归255项通过，仅有既存AMP API弃用警告。该修复只供r3发生预登记技术失败后的新不可覆盖run使用；当前r3仍保持只读运行，不重启、不覆盖。

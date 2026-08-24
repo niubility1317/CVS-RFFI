@@ -941,8 +941,42 @@ def _build_refs(dataset: Any, role: str) -> tuple[tuple[Any, ...], Any]:
     from cvsrffi.meta_episodes import MetaSampleRef
 
     refs: list[MetaSampleRef] = []
-    for index in range(len(dataset)):
-        _x, y, meta = _dataset_item(dataset, index)
+    sample_index = getattr(dataset, "index", None)
+    if sample_index is not None:
+        if len(sample_index) != len(dataset):
+            raise ValueError("WiSig dataset index length does not match dataset length")
+        from dataset_wisig import wisig_capture_block_id, wisig_physical_sample_id
+
+        base = getattr(dataset, "base", None)
+        capture_block_size = int(
+            getattr(dataset, "capture_block_size", getattr(base, "capture_block_size", 8))
+        )
+
+        def iter_rows():
+            for index, item in enumerate(sample_index):
+                required = ("tx_i", "rx_i", "day_i", "eq_i", "sig_i")
+                if any(not hasattr(item, key) for key in required):
+                    raise ValueError("WiSig index item is missing required source metadata")
+                yield (
+                    int(index),
+                    int(item.tx_i),
+                    {
+                        "rx_i": int(item.rx_i),
+                        "day_i": int(item.day_i),
+                        "eq_i": int(item.eq_i),
+                        "capture_block_i": int(
+                            wisig_capture_block_id(item, capture_block_size)
+                        ),
+                        "physical_sample_id": str(wisig_physical_sample_id(item)),
+                    },
+                )
+    else:
+        def iter_rows():
+            for index in range(len(dataset)):
+                _x, y, meta = _dataset_item(dataset, index)
+                yield int(index), int(y), meta
+
+    for index, y, meta in iter_rows():
         required = ("rx_i", "day_i", "eq_i", "capture_block_i", "physical_sample_id")
         if any(key not in meta for key in required):
             raise ValueError(f"{role} dataset metadata is missing one of {required!r}")
