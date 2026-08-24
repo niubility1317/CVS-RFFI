@@ -14,11 +14,11 @@
 | APSTA-08 | 十二 | `0/10/30/100/300`多步checkpoint | runtime | verified | 正式配置锁定与checkpoint trace测试通过 | query不得参与选择 |
 | APSTA-09 | 12.4、13.3 | robust LOO+worst-margin Pareto安全回退 | runtime | verified | 风险改善但margin下降时回退step0的fixture通过 | step0永远保留 |
 | APSTA-10 | 十三 | class/sample软门控 | none | deferred | 首候选范围核对 | 先验证representation适配 |
-| APSTA-11 | 十四、十九 | 时间/融合首候选，雨衰频率候选第二 | config/report | implemented | 正式配置解析为15个Target5 row | 第二候选仅在首候选后决策 |
+| APSTA-11 | 十四、十九 | 时间/融合首候选，雨衰频率候选第二 | config/report | verified-failed | Target5均值`-3.444pp`、floor`-5.0pp` | 首候选不晋级；频率机制留作后续独立候选 |
 | APSTA-12 | 十五 | 多域地面原型包 | none | rejected | `项目.md`5.3.1 | 需要新prototype-only协议 |
 | APSTA-13 | 十六 | 地面episodic元训练适配器 | none | deferred | 后续Phase1研究 | 不属于当前p2_min_v1运行时 |
-| APSTA-14 | 十七 | 逐row/逐类、选择步数、翻转和场景诊断 | scorer/aggregator/report | implemented | truth-last聚合测试通过 | 不反馈predictor；最终诊断待N607结果 |
-| APSTA-15 | 十八、十九 | 单seed Target5首个正式主检 | config/matrix/report | implemented | 15-row配置与不可覆盖矩阵测试通过 | 15/15 paired score待N607 |
+| APSTA-14 | 十七 | 逐row/逐类、选择步数、翻转和场景诊断 | scorer/aggregator/report | verified | 15份truth-last score与90个class-cell诊断 | 不反馈predictor |
+| APSTA-15 | 十八、十九 | 单seed Target5首个正式主检 | config/matrix/report | verified-failed | 15/15 paired score、failed=0 | 未达门槛，不扩Target25 |
 | APSTA-16 | 七、十三 | 冻结teacher路径和student分数分开保存 | runner/artifact | verified | runner schema与query零状态变更测试通过 | 支持离线归因 |
 | APSTA-17 | 一、十 | 资源指标记录但不作为研发硬门槛 | audit/report | verified | 真实checkpoint计数`76,736/1,049,665=7.311%` | 按复盘报告放宽旧≤1%门，不允许全量更新 |
 
