@@ -1606,11 +1606,13 @@ class CVSincNet(nn.Module):
             p = self.pa_b1(pa_feat)
             p = self.pa_b2(p)
             p = self.pa_b3(p)
+            pa_token_map = p
             p = self.pa_pool(p).squeeze(-1)
             pa_local = self.pa_proj(p)
             pa_delta = self.pa_stats_proj(pa_stats) if (need_stats and self.pa_stats_proj is not None) else zero_emb
             pa_local = pa_local + 0.25 * pa_delta
         else:
+            pa_token_map = x.new_zeros((B, 0, 0))
             pa_local = zero_emb
             pa_delta = zero_emb
 
@@ -1661,6 +1663,7 @@ class CVSincNet(nn.Module):
             'f_emb': f_emb,
             'dac_local': dac_local,
             'pa_local': pa_local,
+            'pa_token_map': pa_token_map,
             'rho': rho,
             'f_stats': dac_stats,     # backward-compatible alias
             'dac_stats': dac_stats,

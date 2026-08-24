@@ -3,9 +3,17 @@
 日期：2026-08-24
 设计代号：`CCOI-PA-V1`（Challenge-Conditioned Operator Identification with PA，挑战条件化PA算子辨识）
 配套追踪表：`docs/CVS_PHASE1_CCOI_PA_V1_TRACE_20260824.md`
-当前状态：完成设计、现有代码落点审计与证据边界核对；未实现新增代码，未启动本地训练或N607实验。
+当前状态：完成优化设计、本地实现、协议负测和一次P0/P1定点修复；本地聚焦测试已通过，真实Core90 checkpoint smoke与N607实验尚待发布验证，因此技术交付状态为`LOCAL_VERIFIED`，科学增益仍为`UNKNOWN`。
 
 ## 0. 结论先行
+
+### 0.1 对粘贴文本的吸收、修正与否定
+
+本设计吸收了粘贴文本中最有价值的四层递进：第一，内容对齐只用于控制激励，不能宣称自动消除了信道与接收机；第二，把单个固定指纹向量改写为“挑战条件—局部响应—集合算子”；第三，用同挑战跨domain、异TX同挑战和DiD保持相对设备几何；第四，用留出挑战预测、负对照和coverage曲线区分“分类增益”与“系统辨识证据”。这些内容都已映射为可运行模块、损失或诊断。
+
+本设计没有原样接受五类主张：没有可靠重复payload/前导元数据时，模型近邻只能叫M2代理挑战匹配，不能冒充M1真实语义对齐；内容对齐不能被解释为接收机/信道消除；V1不同时引入Soft-DTW、partial OT、多机制生成器和状态子空间；不把同TX样本无条件压成单点；不在主C4中人为删除挑战分区制造“未见挑战”，因为这会改变训练分布并破坏C3/C4同row归因。最后一项改为只读码本稀疏/未占用诊断，严格跨挑战OOD留给单独等预算实验。
+
+这些取舍是合理的：它们保留了文本的物理核心和可证伪实验，同时删除了缺少真实元数据支持、会混淆因果归因或显著扩大V1变量面的部分。当前设计只能检验“受限PA挑战范围内的条件响应”，不能直接证明恢复了发射机的完整物理系统。
 
 粘贴文本提出的方向与现有Phase1并不冲突，但不能把它理解成“再加一个内容对齐loss”。现有Phase1已经具有适合承载该设计的三个基础：`z_id/z_dom`双分支、记忆多项式PA/包络特征路径，以及按TX×接收域构造矩形批次的采样器。真正缺少的是一条明确的条件系统辨识闭环：先描述当前输入激励，再估计设备在该激励下的局部响应，最后跨多个挑战聚合为设备级算子，并用未参与估计的挑战检验该算子能否预测响应。
 
@@ -149,13 +157,17 @@ T=\left\lfloor\frac{256-64}{16}\right\rfloor+1=13
 
 个token。每个token编码为32维`q_t`，再对48个源域挑战原型做软分配。32维和48类是粘贴文本建议范围内的工程起点，需要通过码本占用、熵和泄漏探针检验，不是预先成立的物理类别数。
 
-挑战码预训练使用三类信号：
+挑战码预训练使用五类信号：
 
 - 同一物理IQ的clean/satellite视图：作为可靠正对，约束q对传播扰动稳定。
 - 同一视图的轻度内容保持增强：约束局部一致性。
+- 掩码内容统计重建：从未被直接观察的邻域上下文预测被掩码token的RMS、PAPR、谱质心、谱平坦度和相邻差分统计；目标由固定、stop-gradient的解析函数产生，解码器不能读取TX/RX标签。
+- 局部时序预测：用当前token挑战码预测下一非重叠锚点的固定内容统计，防止q退化为单样本实例编号。
 - 跨样本近邻：只在冻结挑战编码器后作为带置信权重的代理匹配，不参与端到端互相强化。
 
-为防止q携带设备或接收域，训练和评估都记录TX/RX/day线性探针；同时进行四个负对照：随机码、batch内shuffle码、RX标签码和时间位置码。真实q必须同时优于这些对照的系统辨识指标，并保持TX/RX泄漏接近机会水平。这里的“接近”按归一化机会优势报告，例如`probe_acc−chance_acc≤0.05`，而不是对所有类别使用固定绝对准确率。
+为防止q携带设备或接收域，预训练时使用梯度反转TX/RX探针，评估时另行拟合冻结q的TX/RX/day线性探针；同时进行四个负对照：随机码、batch内shuffle码、RX标签码和时间位置码。真实q必须同时优于这些对照的系统辨识指标，并保持TX/RX泄漏接近机会水平。这里的“接近”按归一化机会优势报告，例如`probe_acc−chance_acc≤0.05`，而不是对所有类别使用固定绝对准确率。
+
+`challenge_dim`和`challenge_codebook_size`是两个独立量。V1固定`challenge_dim=32`、`challenge_codebook_size=48`，只验证一次码本占用和塌缩；不得同时扫描两者。原文的“32～64个粗挑战类型”对应码本规模，不等同于连续挑战向量维度。
 
 ### 4.4 条件PA响应
 
@@ -220,7 +232,7 @@ a_t=\operatorname{softmax}_t(s(u_t)+\log w_t),
 - 硬负对：`(TX_a,domain_1,q)`与`(TX_b,domain_1,q')`，其中`q≈q'`。
 - 第二域对照：`(TX_a,domain_2,q)`与`(TX_b,domain_2,q')`。
 
-局部条件对比损失只在匹配置信超过源域预注册门槛时计算；没有有效匹配时该项安全跳过并记录coverage，禁止为了凑足配额放宽到全batch全局重排。
+局部条件对比损失只在匹配置信超过源域预注册门槛时计算；没有有效匹配时该项安全跳过并记录coverage，禁止为了凑足配额放宽到全batch全局重排。C1使用相同容量、相同temperature的普通TX SupCon；C2将正样本限制为同TX、跨domain且挑战相似，将有效困难负样本限制为异TX、同domain且挑战相似。二者的区别只能是挑战条件mask。
 
 ### 5.3 差中之差约束
 
@@ -243,13 +255,13 @@ L_{DiD}=1-\cos\left(\Delta^{(d_1)}_{ab},\Delta^{(d_2)}_{ab}\right)
 
 ### 6.1 任务定义
 
-每个样本的挑战token按固定哈希或码本bin分为support-challenge和holdout-challenge。`OperatorPool`只能读取support部分得到`theta_pa`；预测头接收`theta_pa`与holdout的`q_t`，预测holdout条件响应统计：
+每个样本只从窗口长度64、间隔64的非重叠锚点中划分support-challenge和holdout-challenge；步长16产生的其他重叠token只参与身份分类，不参与holdout预测。C4把support与holdout原始采样区间分别置入两个只读冻结Core90前向，避免PA卷积感受野跨区共享原始采样；`OperatorPool`只能读取support隔离视图得到`theta_pa`，预测头接收`theta_pa`与holdout的`q_t`，预测holdout隔离视图的冻结PA响应图：
 
 \[
 \hat r_t^{hold}=G(\hat\theta_{PA}^{support},q_t^{hold}).
 \]
 
-损失使用归一化MSE、余弦误差或低维响应统计误差，不直接要求重建完整IQ。其关键对照是同容量但不读取q的预测头。若条件算子确实描述设备响应，它应在未参与估计的挑战上比非条件集合头更准确。
+holdout目标由holdout隔离视图经过冻结Core90的PA池化前特征产生并强制stop-gradient；响应头和预测头不能改变目标。C1的FiLM、attention和holdout预测全程使用同一个可学习常量条件，不允许集合权重暗中读取真实q。损失使用归一化MSE和余弦误差，不直接要求重建完整IQ。若条件算子确实描述设备响应，C4应在未参与估计的挑战上比C1更准确。
 
 ### 6.2 不能接受的替代指标
 
@@ -270,20 +282,26 @@ L_{DiD}=1-\cos\left(\Delta^{(d_1)}_{ab},\Delta^{(d_2)}_{ab}\right)
 
 ### 7.2 V1新增损失
 
-第一版只增加五项：
+第一版增加七项，其中挑战编码器预训练项与冻结后的身份侧训练项分阶段启用：
 
 \[
-L_{CCOI}=\lambda_qL_{q\_aug}+\lambda_cL_{cond\_cls}
-+\lambda_dL_{DiD}+\lambda_hL_{holdout}+\lambda_vL_{var}.
+L_{CCOI}=\lambda_qL_{q\_aug}+\lambda_mL_{masked}
++\lambda_tL_{temporal}+\lambda_cL_{cond\_cls}+\lambda_pL_{pair}
++\lambda_dL_{DiD}+\lambda_hL_{holdout}+\lambda_vL_{var}
++\lambda_bL_{code}.
 \]
 
 | 损失 | 作用 | 初始权重 | 边界 |
 |---|---|---:|---|
 | `L_q_aug` | 同物理IQ跨clean/satellite挑战一致性 | 0.25 | q预训练后冻结；不读TX真值即可用于`U_s` |
+| `L_masked` | 从上下文预测被掩码token的固定内容统计 | 0.50 | 目标stop-gradient；不重建设备残差 |
+| `L_temporal` | 预测下一非重叠锚点的固定内容统计 | 0.20 | 不允许相邻重叠窗口作为预测目标 |
 | `L_cond_cls` | `theta_pa`独立身份分类 | 1.00 | 只在`L_s`使用TX标签 |
+| `L_pair` | C1普通SupCon或C2–C4挑战匹配SupCon | 0.15 | 相同temperature和容量；无有效pair时安全跳过 |
 | `L_DiD` | 跨domain保持设备对相对差 | 0.10 | 只在有效2TX×2domain矩形计算 |
 | `L_holdout` | 预测未参与聚合的挑战响应 | 0.20 | `L_s/U_s`均可，但U不读TX标签 |
 | `L_var` | 防止theta或码本塌缩 | 0.02 | 只做方差下界，不强迫均匀类别配额 |
+| `L_code` | clean/satellite码本一致性、批次占用和单token置信度 | 0.25/0.05/0.005 | 只作用于源域q预训练，不使用类别配额或目标数据 |
 
 这些数值是首个head-only smoke的工程起点，不是已验证最优超参数。初始训练冻结现有主干和挑战编码器，只训练条件头、集合池化、算子分类头和holdout预测头，建议新头学习率`3e-4`。若C2/C3达到门槛，再以`3e-5`解冻PA最后一个block及joint投影；不先全量解冻。
 
@@ -292,7 +310,7 @@ L_{CCOI}=\lambda_qL_{q\_aug}+\lambda_cL_{cond\_cls}
 | 阶段 | 变化 | 核心输出 | 进入下一阶段条件 |
 |---|---|---|---|
 | A 数据/物理审计 | 核查M1真实挑战元数据、幅度动态、截断和token覆盖 | 可辨识性审计表 | 明确M1存在或正式标注为代理匹配 |
-| B 挑战编码器 | 只做双视图、码本、泄漏探针 | q覆盖、熵、TX/RX/day探针 | 不塌缩且不以TX/RX为主 |
+| B 挑战编码器 | 双视图、掩码内容统计、局部时序、码本与泄漏探针 | 内容预测、q覆盖、熵、TX/RX/day探针 | 内容预测优于常量基线，不塌缩且不以TX/RX为主 |
 | C 条件头 | 冻结骨干，对比C1/C2 | 分类、margin、覆盖、算子logits | C2相对C1达到最小收益且clean不显著退化 |
 | D DiD | 在C2上加入矩形DiD | 跨域设备差保持率 | floor/跨域稳定性改善 |
 | E 留出预测 | 在C3上加入holdout预测 | NMSE、R²、对照差 | 满足算子证据门槛 |
@@ -312,8 +330,8 @@ L_{CCOI}=\lambda_qL_{q\_aug}+\lambda_cL_{cond\_cls}
 | row | 基线主干 | 同容量PA集合头 | 挑战条件q | DiD | 留出预测 | 要回答的问题 |
 |---|---|---|---|---|---|---|
 | C0 | 冻结Core90 | 否 | 否 | 否 | 否 | 当前真实控制性能是什么 |
-| C1 | 同C0 | 是 | 否 | 否 | 否 | 普通增参/集合池化本身带来多少收益 |
-| C2 | 同C0 | 是 | 是 | 否 | 否 | 条件化是否优于同容量非条件头 |
+| C1 | 同C0 | 是 | 否 | 否 | 否 | 普通增参、集合池化和普通SupCon本身带来多少收益 |
+| C2 | 同C0 | 是 | 是 | 否 | 否 | 挑战匹配SupCon是否优于同容量普通SupCon |
 | C3 | 同C0 | 是 | 是 | 是 | 否 | 相对设备差的跨域保持是否改善floor |
 | C4 | 同C0 | 是 | 是 | 是 | 是 | 表示是否具备留出挑战预测能力 |
 
@@ -330,12 +348,24 @@ C2–C4至少加入四个不额外训练或低成本复算的q对照：
 
 如果真实q与shuffle无差异，说明模型没有使用挑战条件；如果RX-code最好，说明所谓算子主要依赖接收域；如果time-code等价，说明挑战码可能只记住包内位置。
 
+每个row还必须从冻结prediction计算三种距离：
+
+\[
+d_1=d(r_{i,d_1,q},r_{i,d_2,q}),\quad
+d_2=d(r_{i,d_1,q_1},r_{i,d_2,q_2}),\quad
+d_3=d(r_{i,d,q},r_{j,d,q}).
+\]
+
+目标关系为`d1<d2<d3`。若`d1≈d2`，内容不是主要类内变化来源；若`d1>d3`，域影响超过设备间隔；若三者同时下降，检查表示坍塌。该诊断只读取已产生的源域或冻结目标prediction，不增加训练row。
+
+完成C4后只读报告源域码本占用、稀疏bin和未占用bin，不把未占用bin伪称为已有样本上的真实OOD性能。原先“主C4训练删除固定分区、评估保留分区”的方案被否定，因为它会使C4与C3使用不同训练分布并混淆holdout损失归因。严格跨挑战OOD改为后续独立等预算row，必须同时固定幅度/PAPR/谱统计分区且不用于目标域选模。
+
 ### 8.3 晋级阈值
 
 V1先使用以下预注册门槛：
 
-- C2或更高row相对同容量C1：LEO三场景均值至少`+0.30`个百分点。
-- receiver-cell floor至少`+0.30`个百分点。
+- C2或更高row相对同容量C1：LEO三场景均值增益至少超过`max(0.30个百分点,2×control复评标准差)`。
+- receiver-cell floor增益至少超过`max(0.30个百分点,2×control复评标准差)`。
 - clean下降不超过`0.50`个百分点。
 - identity margin retention不低于C1的`0.995`，或统计上无明确下降。
 - 三个LEO场景不得出现大于`0.50`个百分点的单场景退化而被均值掩盖。
@@ -412,11 +442,13 @@ R_{stable}=\mathbb E\cos(\Delta^{d_1}_{ab},\Delta^{d_2}_{ab}).
 
 | 文件 | 计划修改 | 兼容性要求 |
 |---|---|---|
-| `code/model.py` | 为PA路径增加显式`return_feature_maps`，暴露池化前时序图 | 默认返回和state_dict不变 |
-| `code/model_dual_cvsincnet.py` | 提供wrapper需要的PA图和原始logits接口 | `ccoi.enabled=false`严格复现旧行为 |
-| `code/cvsrffi/ccoi_pa.py`（新） | 双视图、挑战编码器、FiLM响应、集合池化、holdout预测、门控 | 组件独立、可单测、无全局状态 |
-| `code/SSDG/losses.py` | 添加条件分类、DiD、holdout和方差下界损失 | 空匹配/空矩形时返回零损失并记录原因 |
-| `code/SSDG/train_ssdg.py` | 接入阶段化冻结、M0/M2匹配、指标记录和晚融合 | 不改变默认Core90配置 |
+| `code/model.py` | 在现有aux中暴露PA池化前`pa_token_map` | 不新增参数，默认logits和state_dict不变 |
+| `code/model_dual_cvsincnet.py` | 复用现有`aux_id`和原始`tx_logits`接口 | 无需修改 |
+| `code/cvsrffi/ccoi_pa.py`（新） | 双视图、固定内容统计、挑战码本、FiLM响应、集合池化和隔离holdout预测 | 组件独立、无样本级持久状态 |
+| `code/cvsrffi/ccoi_pa.py`（新） | 双视图、固定内容统计、挑战编码器、FiLM响应、集合池化、holdout预测、门控和诊断 | 组件独立、可单测、无全局状态 |
+| `code/cvsrffi/ccoi_losses.py`（新） | 普通/挑战匹配SupCon、DiD、非循环holdout、三距离诊断 | 空匹配/空矩形时返回零损失并记录原因 |
+| `code/train_phase1_ccoi_pa.py`（新） | 冻结真实Core90 checkpoint，执行挑战预训练、C0–C4训练、四场景prediction与指标导出 | 不改变默认`train_ssdg.py`；训练和评估只读源域角色 |
+| `code/score_phase1_ccoi_pa.py`（新） | prediction闭合后独立连接truth并输出同row指标 | prediction流不含truth |
 | `code/cvsrffi/balanced_tx_rx_sampler.py` | 仅增加四元组索引导出或复用现有矩形统计 | 不创建跨batch全局配额 |
 | `code/tests/test_ccoi_pa.py`（新） | 组件形状、排列不变、mask、梯度和负对照测试 | CPU可跑 |
 | `code/tests/test_ccoi_protocol.py`（新） | `physical_id`、split、无target/query、K计数负测 | 协议失败必须硬报错 |
@@ -439,7 +471,10 @@ ccoi:
   min_match_confidence: 0.70
   fusion_alpha: 0.15
   loss_q_aug: 0.25
+  loss_masked: 0.50
+  loss_temporal: 0.20
   loss_cond_cls: 1.00
+  loss_pair: 0.15
   loss_did: 0.10
   loss_holdout: 0.20
   loss_variance: 0.02
@@ -473,6 +508,8 @@ Phase1 deployment bundle仍保留现有特征、prototype、radius、energy和ta
 4. 跨query集合聚合或按batch类别配额决策时失败。
 5. M2代理匹配被标为M1真实匹配时报告字段校验失败。
 6. 最终结果缺少任一LEO场景时不得标记Phase1完成。
+7. holdout support与target窗口原始采样区间重叠时立即失败。
+8. holdout目标未detach或来自可训练响应头时立即失败。
 
 ### 12.2 模型单元与回归测试
 
@@ -482,6 +519,8 @@ Phase1 deployment bundle仍保留现有特征、prototype、radius、energy和ta
 - 同一q、不同设备响应可分；同一设备、同挑战跨domain相对距离缩小。
 - q常量时C2退化为同容量非条件头，而不是获得额外信息。
 - q shuffle后holdout预测下降。
+- 普通SupCon、挑战匹配SupCon和DiD使用相同输入维度与temperature。
+- `d1/d2/d3`诊断在手工构造几何上恢复预期排序。
 - `ccoi.enabled=false`和`fusion_alpha=0`分别复现旧模型结构与旧logits。
 - 旧真实checkpoint进行一次无query smoke并产生合法prediction。
 
@@ -539,13 +578,13 @@ PA-V1达到分类、floor和holdout预测门槛后，才按“PA记忆→差分�
 3. **跨域算子稳定成立**：DiD提高receiver floor和相对设备差保持率，三LEO场景均不受损。可以说PA算子证据具有源域到卫星弱场景的稳定性。
 4. **开放世界可部署候选**：多seed确认后，算子原型进入Phase1 bundle，并在Phase2严格support/query边界下独立验证。此前不得声称已解决新类注册或目标域适应。
 
-当前只达到“设计级严格覆盖”。没有新增代码、prediction、score或N607结果，因此CCOI-PA的技术状态是`pending`，科学增益是`UNKNOWN`。
+当前达到`LOCAL_VERIFIED`：新增代码、配置、launcher、独立scorer和聚焦测试已完成；本机Git Bash因路由错误记为`FAILED`，脚本将由N607远端`bash -n`验证。尚无真实checkpoint smoke、prediction、score或N607性能结果，因此科学增益仍为`UNKNOWN`，不得把本地单测写成方法有效性证据。
 
 ## 17. 推荐执行顺序
 
-1. 完成数据可辨识性审计，优先解决M1真实挑战匹配证据是否存在。
-2. 实现双视图、挑战编码器及泄漏探针，先冻结q。
-3. 用wrapper实现同容量C1和条件C2；完成旧checkpoint兼容与协议负测。
+1. 完成数据可辨识性审计，覆盖接收功率、CFO、PAPR、谱平坦度、饱和、挑战覆盖和TX—RX—内容混杂，并优先解决M1真实挑战匹配证据是否存在；无法可靠估计的信道相干时间标为`UNKNOWN`。
+2. 实现双视图、固定内容统计、掩码/时序挑战预训练及泄漏探针，先冻结q。
+3. 用wrapper实现普通SupCon C1和挑战匹配SupCon C2；完成旧checkpoint兼容与协议负测。
 4. C2通过后加入DiD形成C3；再加入holdout预测形成C4。
 5. 完成本地真实checkpoint无query smoke和一次独立P0/P1审查。
 6. 形成最小预登记报告，提交Git，执行N607 preflight、单release归档SHA核对和远端编译。

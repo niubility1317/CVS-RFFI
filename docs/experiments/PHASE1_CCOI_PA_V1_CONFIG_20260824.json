@@ -1,0 +1,41 @@
+{
+  "schema": "cvs.phase1.ccoi_pa_experiment.v1",
+  "design": "CCOI-PA-V1",
+  "seed": 20260824,
+  "rows": ["C0", "C1", "C2", "C3", "C4"],
+  "same_capacity_rows": ["C1", "C2", "C3", "C4"],
+  "source_roles": {
+    "L_s": 0.07,
+    "U_s": 0.63,
+    "V_cal": 0.15,
+    "V_select": 0.15
+  },
+  "rho_label_max": 0.1,
+  "source_role_protocol": "l_s_u_s_v_cal_v_select",
+  "split_mode": "tx_rx_day_1_7_2",
+  "scenarios": ["clean", "leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"],
+  "challenge": {
+    "token_length": 64,
+    "stride": 16,
+    "token_count_for_256": 13,
+    "q_dim": 32,
+    "codebook_size": 48,
+    "q_pretrain_epochs": 10,
+    "q_learning_rate": 0.0003,
+    "code_consistency_weight": 0.25,
+    "code_utilization_weight": 0.05,
+    "code_confidence_weight": 0.005
+  },
+  "sidecar": {
+    "response_dim": 64,
+    "operator_dim": 64,
+    "head_epochs": 20,
+    "head_learning_rate": 0.0003,
+    "initial_fusion_alpha": 0.15,
+    "calibration_grid": [0.0, 0.05, 0.1, 0.15, 0.2]
+  },
+  "target_or_query_training_access": false,
+  "truth_join": "independent_scorer_after_prediction_complete",
+  "early_matrix": "single_seed_C0_to_C4",
+  "scientific_claim_before_results": "UNKNOWN"
+}

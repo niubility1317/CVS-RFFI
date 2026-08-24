@@ -3,7 +3,7 @@
 日期：2026-08-24
 设计代号：`CCOI-PA-V1`（Challenge-Conditioned Operator Identification with PA）
 配套报告：`docs/CVS_PHASE1_CCOI_PA_V1_DESIGN_20260824.md`
-当前交付状态：设计与代码落点审计完成；新增实现、训练和N607实验均未开始。
+当前交付状态：优化设计与本地实现完成，聚焦协议/组件/回归测试通过；真实checkpoint smoke和N607实验尚未开始，科学增益为`UNKNOWN`。
 
 ## 1. 状态定义
 
@@ -24,19 +24,19 @@
 | T05 | 粘贴文本“跨四元组结构” | 批次中具备至少两个TX×两个domain的矩形单元 | `code/cvsrffi/balanced_tx_rx_sampler.py` | verified | 核对`BalancedTxDomainBatchSampler`与`tx_rx_rectangles` | 可直接支撑DiD采样 |
 | T06 | `项目.md` Phase1完成定义 | 最终评估包含clean、`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak` | 现有评估器与报告链路 | verified | 核对历史正式报告的分场景输出 | 不允许仅报LEO均值 |
 | T07 | `项目.md` Phase1交付 | 保留prototype/radius/energy/tail等部署知识导出能力 | 现有deployment bundle构建链 | verified | 核对现有部署报告与代码入口 | 新算子原型只能追加，不能替换既有输出 |
-| T08 | 现有模型兼容性 | 默认关闭CCOI时保持旧checkpoint严格加载与原模型输出 | `code/model_dual_cvsincnet.py`、checkpoint加载器 | verified | 核对当前严格加载路径；V1设计采用外部wrapper | 真正实现后仍需回归测试 |
-| T09 | 粘贴文本“双视图” | 同一固定接收IQ产生强标准化内容视图与弱处理指纹视图 | 新建`code/cvsrffi/ccoi_pa.py`，训练数据视图函数 | pending | 单元测试两视图同源、形状一致、无目标数据 | 内容视图不得做逐token幅度归一化而抹除PA激励 |
-| T10 | 粘贴文本“挑战编码” | 以长度64、步长16切分256点IQ，输出32维token挑战码 | `code/cvsrffi/ccoi_pa.py::PAChallengeEncoder` | pending | 形状、边界、梯度和确定性测试 | 13个重叠token是工程起点，不是科学结论 |
-| T11 | 粘贴文本“挑战类型覆盖” | 维护48类源域挑战码本及软分配、熵和覆盖率 | `PAChallengeEncoder`、配置 | pending | 码本占用、熵、塌缩测试 | 码本只由源域拟合并冻结 |
+| T08 | 现有模型兼容性 | 默认关闭CCOI时保持旧checkpoint严格加载与原模型输出 | `code/model.py`、checkpoint加载器、CCOI wrapper | pending | 真实checkpoint严格加载；`alpha=0`逐logit等价 | 现有加载路径已核对，但新增实现尚未验证 |
+| T09 | 粘贴文本“双视图” | 同一固定接收IQ产生强标准化内容视图与弱处理指纹视图 | `code/cvsrffi/ccoi_pa.py` | verified | 两视图同源、指纹不变、13-token单测通过 | 内容视图只做包级标准化，不做逐token归一化 |
+| T10 | 粘贴文本“挑战编码” | 以长度64、步长16切分256点IQ，输出32维token挑战码 | `code/cvsrffi/ccoi_pa.py::PAChallengeEncoder` | verified | 形状、固定目标、梯度测试通过 | 13个token是工程起点，不是科学结论 |
+| T11 | 粘贴文本“挑战类型覆盖” | 维护48类源域挑战码本及软分配、熵和覆盖率 | `PAChallengeEncoder`、配置 | verified | code head梯度、一致性和占用损失测试通过 | 真实占用仍待N607 artifact |
 | T12 | 粘贴文本“编码器不能携带设备/域” | 记录TX/RX/day探针，训练时用源域泄漏约束而非目标域校正 | trainer、`code/SSDG/losses.py`、分析脚本 | pending | 与随机、shuffle、RX-code、time-code对照 | 探针接近机会水平的阈值按类别数归一化报告 |
-| T13 | 粘贴文本“局部条件响应” | 从现有PA分支暴露池化前`B×64×64`时序图 | `code/model.py` | pending | 旧输出不变、特征图形状、checkpoint兼容测试 | 仅在显式flag下返回中间图 |
-| T14 | 粘贴文本“FiLM/条件归一化” | 由挑战码生成逐token缩放/平移，得到条件PA响应`r_t` | `ccoi_pa.py::PAConditionalResponseHead` | pending | q置乱、q常量、梯度路径及数值稳定测试 | 避免q与响应分支端到端串谋 |
-| T15 | 粘贴文本“同挑战公平比较” | clean/同物理样本卫星视图作为已知同挑战锚点；跨样本匹配使用冻结q与置信权重 | trainer、匹配器 | pending | 已知锚点召回、代理匹配覆盖率、置信校准 | 代理最近邻不能冒充真实语义匹配 |
-| T16 | 粘贴文本“四元组与DiD” | 同TX同挑战跨domain拉近；异TX同挑战同domain推远；跨domain保持TX相对差 | trainer、`losses.py` | pending | 合成矩形批次符号测试、无有效四元组安全跳过 | 复用T05采样器，不另建全局重排器 |
-| T17 | 粘贴文本“集合级系统辨识” | 对条件响应做带置信度的DeepSets/attention池化，输出64维`theta_pa` | `ccoi_pa.py::OperatorPool` | pending | 排列不变性、空掩码、单token与多token测试 | V1采用线性复杂度集合池化 |
-| T18 | 粘贴文本“留出挑战预测” | 从挑战子集估计`theta_pa`，预测同一样本/集合内未见挑战响应统计 | `ccoi_pa.py::HeldoutChallengePredictor`、trainer | pending | 固定holdout mask、NMSE/R²、对照头比较 | 不跨目标query聚合，不使用query truth |
+| T13 | 粘贴文本“局部条件响应” | 从现有PA分支暴露池化前时序图 | `code/model.py` | verified | aux形状与state_dict键不变测试通过 | 只增加无参数aux键`pa_token_map` |
+| T14 | 粘贴文本“FiLM/条件归一化” | 由挑战码生成逐token缩放/平移，得到条件PA响应`r_t` | `ccoi_pa.py::PAConditionalResponseHead` | verified | 条件/常量路径、梯度与形状测试通过 | C1的FiLM和attention均不读取真实q |
+| T15 | 粘贴文本“同挑战公平比较” | clean/同物理样本卫星视图作为已知同挑战锚点；跨样本匹配使用冻结q与置信权重 | runner、匹配器 | verified | paired clean/satellite batch与冻结q测试通过 | 代理最近邻明确标为M2 |
+| T16 | 粘贴文本“四元组与DiD” | 同TX同挑战跨domain拉近；异TX同挑战同domain推远；跨domain保持TX相对差 | runner、`ccoi_losses.py` | verified | 合成pair和既有矩形测试通过 | 复用T05采样器 |
+| T17 | 粘贴文本“集合级系统辨识” | 对条件响应做带置信度的attention池化，输出64维`theta_pa` | `ccoi_pa.py::OperatorPool` | verified | 排列不变、全无效mask和coverage测试通过 | V1采用线性复杂度集合池化 |
+| T18 | 粘贴文本“留出挑战预测” | 从挑战子集估计`theta_pa`，预测未见挑战响应 | `HeldoutChallengePredictor`、runner | verified | 梯度隔离、原始区间隔离和三次冻结前向测试通过 | 诊断只使用源域`V_select`truth |
 | T19 | 粘贴文本“可辨识性门控” | 输出coverage/entropy/有效挑战数和证据充足度，不足时仅标记低置信 | `ccoi_pa.py::ObservabilityGate`、scorer | pending | 覆盖率—准确率曲线、全部拒绝防护测试 | Phase1已知类评估中低置信样本仍计错，不得删样本 |
-| T20 | 粘贴文本“晚期证据融合” | 基线CosFace logits与算子logits独立，源域固定融合系数 | wrapper、配置、评估器 | pending | `alpha=0`严格复现基线；alpha扫描仅用`V_cal/V_select` | 禁止早期拼接把算子侧变成普通增维 |
+| T20 | 粘贴文本“晚期证据融合” | 基线CosFace logits与算子logits独立，源域固定融合系数 | wrapper、配置、评估器 | verified | C0/零融合基线等价与`V_cal`网格代码测试通过 | 真实数值待N607 |
 | T21 | 粘贴文本“对照与归因” | 完成C0–C4同row单seed矩阵，逐项加入条件化、DiD、留出预测 | 配置、launcher、正式报告 | pending | 同checkpoint/split/seed/budget逐row核对 | 先小矩阵证伪，达门槛后再扩多seed |
 | T22 | 粘贴文本“指标体系” | 报告ID/RX/day probe、margin retention、NMSE/R²、coverage/entropy、单包/多包及四场景性能 | 分析脚本、正式报告 | pending | 指标单测、字段完整性和同row检查 | 所有指标均按源域选择规则冻结 |
 | T23 | 粘贴文本“情况B” | Soft-DTW用于顺序相同但时间偏移的挑战对齐 | 后续`ccoi_alignment.py` | deferred | 仅当V1证明q条件化有效且局部错位成为主误差时立项 | Soft-DTW时间和空间复杂度为二次量级 |
@@ -50,17 +50,23 @@
 | T31 | `项目.md`数据权限 | 用目标域、query、query role或query truth训练/校准挑战编码器和门控 | 无 | rejected | 协议负测 | 属于硬协议失败 |
 | T32 | `项目.md`独立query决策 | 跨目标query联合估计一个设备算子或按batch配额重分配 | 无 | rejected | 独立决策负测 | Phase2只能在合法support内部聚合，query逐条独立 |
 | T33 | 粘贴文本“匹配精度/召回/覆盖” | 给出真实语义挑战匹配的precision/recall，而非只报码本代理一致性 | 数据元数据或人工核验子集 | blocked | 需要先确认WiSig记录中是否存在可靠重复payload/前导字段或建立人工核验集 | 这是当前最高风险缺口，不能用模型置信度自证 |
+| T34 | 粘贴文本阶段B | 挑战编码器通过掩码内容统计重建和局部时序预测学习激励 | `code/cvsrffi/ccoi_pa.py`、runner | verified | 固定目标detach、mask、非重叠时序测试通过 | U_s不读TX标签 |
+| T35 | 粘贴文本实验4 | C1普通SupCon与C2挑战匹配SupCon保持容量、temperature和数据一致 | `ccoi_losses.py`、runner | verified | 手工pair mask与同容量矩阵测试通过 | C1全路径使用常量条件 |
+| T36 | 粘贴文本实验1 | 输出`d1<d2<d3`三距离诊断及失败解释 | `ccoi_losses.py`、源域audit | verified | 手工几何测试通过 | target/query truth不进入诊断 |
+| T37 | 粘贴文本实验5 | holdout目标来自冻结PA图并detach，support/holdout使用隔离原始区间 | `ccoi_pa.py`、runner | verified | 梯度隔离、原始区间不重叠、独立冻结前向测试通过 | 修复共享卷积感受野循环风险 |
+| T38 | 粘贴文本实验6 | 固定分区的严格未见挑战评估 | 后续独立等预算row | deferred | 需不改变C3/C4主对照的独立实验 | 主C4仅报告只读码本稀疏/未占用诊断 |
+| T39 | 粘贴文本阶段A | 审计接收功率、CFO、PAPR、谱平坦度、饱和、覆盖和混杂 | runner、实验报告 | pending | 源域审计artifact | 无法可靠估计项写`UNKNOWN` |
 
 ## 3. 状态统计
 
 | 状态 | 数量 |
 |---|---:|
-| verified | 8 |
-| pending | 14 |
-| deferred | 5 |
+| verified | 21 |
+| pending | 6 |
+| deferred | 6 |
 | rejected | 5 |
 | blocked | 1 |
-| 合计 | 33 |
+| 合计 | 39 |
 
 ## 4. 进入实现前的最小闭环
 
@@ -71,4 +77,4 @@
 
 ## 5. 追踪结论
 
-本追踪表实现的是“设计级严格覆盖”：粘贴文本中的核心物理主张、V1机制、可证伪实验和协议边界均已映射到现有能力或明确代码落点。它不是“实现级完成”；T09–T22仍为`pending`，T33仍为`blocked`，因此当前不得声称CCOI-PA已训练、有效或优于现有Phase1。
+本追踪表已达到本地实现级闭环：21项需求有代码与聚焦测试支撑，6项必须等待真实checkpoint或实验artifact，T38因同row归因风险延期，T33仍因缺少真实语义挑战元数据而`blocked`。因此可以声称实现已`LOCAL_VERIFIED`，不能声称CCOI-PA已训练、有效或优于现有Phase1。
