@@ -1,7 +1,7 @@
 # CVS_META_ADAPTER_TRI_R4_V1 r3 N607预登记报告
 
 - run ID：`phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260824_r3`
-- 状态：`LOCAL_VERIFIED/NOT_LAUNCHED`
+- 状态：`RUNNING`
 - 时间：2026-08-25（Asia/Hong_Kong）
 - 修复提交：`2c092018888153e91434b1bf2f418d18b63f2597`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
@@ -64,3 +64,17 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 - 修复后的scorer先验证receipt及DA0_REG0／DA1_REG0两份完整prediction，再验证冻结`d19`类绑定的class index集合与bundle注册类一致，最后才打开truth。它按receipt场景精确连接全部opaque token，只把`target_old`通过冻结handle→class index映射送入旧类均值和floor；target new token只参与完整性连接，REG0新类指标仍为`N/A`。
 - 简化整数truth保持向后兼容；真实sidecar RED→GREEN及scorer／runner／exporter联合52项通过。
 - 独立scorer根已定位为既有`.../before/scorer/truth_sidecar.json`，当前只核对路径名和文件大小，尚未为本方法打开truth内容。
+
+## 2026-08-25 02:28只读运行复核
+
+- r3 launcher PID`2498514`与P1训练子PID`2498587`仍存在，cmdline继续精确绑定r3 checkout、output root、绝对checkpoint、ManySig和GPU0。
+- P1子进程累计运行约4886秒，保持`R`状态和100%CPU，RSS约3.67GiB；GPU0为0%利用率、496MiB显存。日志仍为6399字节，run root仍只有`_configs/P1.json`与`P1/config_snapshot.json`。
+- `/proc/2498587/io`显示累计`rchar=2394463497`且进程持续获得CPU；日志未发现`Traceback/Error/Exception/FAILED`。最高可证状态仍为`RUNNING`，没有P1训练完成、四场景评价或性能结果。
+- 该状态符合旧release在全量manifest阶段逐条解码IQ的已知慢路径，不构成预登记技术失败；不得终止、重启或重复启动r3。
+
+## Phase2 Target5数据切片核对
+
+- 正式Meta-Adapter设计和项目既有125定义均固定五个切片为`K10/new5`、`K10/new10`、`K10/new20`、`K5/new20`和`K1/new20`；不得因现有文件方便把`K10/new10`替换成`K2/new20`。
+- 只读核对晚块实验复制的25份`VALIDATED_ONCE`manifest后确认，该资产属于另一套`K1/K2/K5/K10/new5/new20`矩阵，每个receiver只有`K10/new5`、`K10/new20`、`K5/new20`、`K2/new20`和`K1/new20`，没有`K10/new10`。
+- N607的既有`stage2_inputs`与run目录定向文件名搜索均未找到权威`K10/new10`manifest；现有package根也只包含`before/new5/new20`。因此当前不得把`K10/new20`句柄改名或伪装为`K10/new10`。
+- Phase1 source选择通过后，Target5启动前必须从固定received-IQ资产按一次性builder边界补齐真实`K10/new10`切片并取得其`p2_min_v1/VALIDATED_ONCE/capsule_id/split_id`；这属于缺失数据row补建，不改变Meta-Adapter方法，也不触发其他已验证切片重验。
