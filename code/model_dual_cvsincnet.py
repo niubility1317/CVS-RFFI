@@ -62,6 +62,8 @@ def build_single_model_compat(**kwargs):
             "crra_nuisance_dim",
             "crra_start_epoch",
             "crra_ramp_epochs",
+            "meta_adapter_rank",
+            "meta_adapter_sites",
         ):
             fallback.pop(key, None)
         return build_single_model(**fallback)
@@ -453,6 +455,8 @@ def build_arch_backbone(
     crra_nuisance_dim: int = 9,
     crra_start_epoch: int = 17,
     crra_ramp_epochs: int = 30,
+    meta_adapter_rank: int = 0,
+    meta_adapter_sites: str = "",
 ) -> nn.Module:
     family = str(arch_family or "cvsincnet").lower().strip()
     if family == "cvsincnet":
@@ -494,6 +498,8 @@ def build_arch_backbone(
             crra_nuisance_dim=int(crra_nuisance_dim),
             crra_start_epoch=int(crra_start_epoch),
             crra_ramp_epochs=int(crra_ramp_epochs),
+            meta_adapter_rank=int(meta_adapter_rank),
+            meta_adapter_sites=str(meta_adapter_sites),
         )
     return FeatureBackboneAdapter(
         family,
@@ -568,6 +574,8 @@ class DualCVSincNetDisentangle(nn.Module):
         crra_ramp_epochs: int = 30,
         sat_anchor_adapter: bool = False,
         sat_anchor_adapter_rank: int = 8,
+        meta_adapter_rank: int = 0,
+        meta_adapter_sites: str = "",
     ):
         super().__init__()
         self.num_classes = int(num_classes)
@@ -642,6 +650,8 @@ class DualCVSincNetDisentangle(nn.Module):
             crra_nuisance_dim=int(crra_nuisance_dim),
             crra_start_epoch=int(crra_start_epoch),
             crra_ramp_epochs=int(crra_ramp_epochs),
+            meta_adapter_rank=int(meta_adapter_rank),
+            meta_adapter_sites=str(meta_adapter_sites),
         )
         self.dom_backbone = build_arch_backbone(
             self.arch_family,
@@ -667,6 +677,8 @@ class DualCVSincNetDisentangle(nn.Module):
             time_stability_channels=int(time_stability_channels),
             freq_stability_channels=int(freq_stability_channels),
             use_crra=False,
+            meta_adapter_rank=int(meta_adapter_rank),
+            meta_adapter_sites=str(meta_adapter_sites),
         )
         if self.arch_family == "cvsincnet" and self.model_variant in {"lite_b", "lite_d", "lite_e", "lite_f", "lite_g", "lite_h"}:
             self._share_early_stem()
@@ -1050,6 +1062,8 @@ def build_dual_model(
     crra_ramp_epochs: int = 30,
     sat_anchor_adapter: bool = False,
     sat_anchor_adapter_rank: int = 8,
+    meta_adapter_rank: int = 0,
+    meta_adapter_sites: str = "",
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -1103,4 +1117,6 @@ def build_dual_model(
         crra_ramp_epochs=crra_ramp_epochs,
         sat_anchor_adapter=sat_anchor_adapter,
         sat_anchor_adapter_rank=sat_anchor_adapter_rank,
+        meta_adapter_rank=meta_adapter_rank,
+        meta_adapter_sites=meta_adapter_sites,
     )

@@ -7,6 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from crra import CRRAAdapter
+from cvsrffi.meta_adapter import ResidualMetaAdapter, parse_meta_adapter_sites
 
 
 # ----------------------- input length adapter -----------------------
@@ -959,6 +960,8 @@ class CVSincNet(nn.Module):
         crra_nuisance_dim: int = 9,
         crra_start_epoch: int = 17,
         crra_ramp_epochs: int = 30,
+        meta_adapter_rank: int = 0,
+        meta_adapter_sites: str = "",
     ):
         super().__init__()
         self.dataset = str(dataset)
@@ -1002,6 +1005,11 @@ class CVSincNet(nn.Module):
         self.crra_rank = int(crra_rank)
         self.crra_alpha_max = float(crra_alpha_max)
         self.crra_epoch = 1
+        self.meta_adapter_rank = int(meta_adapter_rank)
+        self.meta_adapter_sites = parse_meta_adapter_sites(
+            meta_adapter_sites,
+            self.meta_adapter_rank,
+        )
         self.branch_ablation = self._parse_branch_ablation(branch_ablation)
         self.use_time_path = not self._ablated("no_time")
         self.use_dac_path = not self._ablated("no_dac")
@@ -1088,6 +1096,13 @@ class CVSincNet(nn.Module):
         self.t3 = DSConvBlock1d(int(time_ch2), int(time_ch3), k=3, pool=1, drop=0.10) if self.use_time_path else None
         self.t_pool = nn.AdaptiveAvgPool1d(1) if self.use_time_path else None
         self.t_proj = nn.Linear(int(time_ch3), emb_dim) if self.use_time_path else None
+        self.meta_adapter_time = (
+            ResidualMetaAdapter(emb_dim, rank=self.meta_adapter_rank)
+            if self.meta_adapter_rank > 0
+            and "time" in self.meta_adapter_sites
+            and self.use_time_path
+            else nn.Identity()
+        )
 
         # DAC branch: widely-linear complex conv over filterbank channels + injected HF details
         self.dac_hf_proj = (
@@ -1149,6 +1164,13 @@ class CVSincNet(nn.Module):
                 nn.Dropout(drop * 0.25),
             ) if (self.use_stats_path and self.use_freq_stats) else None
         )
+        self.meta_adapter_freq = (
+            ResidualMetaAdapter(emb_dim, rank=self.meta_adapter_rank)
+            if self.meta_adapter_rank > 0
+            and "freq" in self.meta_adapter_sites
+            and self.use_freq_path
+            else nn.Identity()
+        )
         self.pa_stats_proj = (
             nn.Sequential(
                 nn.Linear(3, emb_dim),
@@ -1187,6 +1209,11 @@ class CVSincNet(nn.Module):
             nn.Linear(fuse_in, emb_dim),
             nn.ReLU(inplace=True),
             nn.Dropout(drop),
+        )
+        self.meta_adapter_fusion = (
+            ResidualMetaAdapter(emb_dim, rank=self.meta_adapter_rank)
+            if self.meta_adapter_rank > 0 and "fusion" in self.meta_adapter_sites
+            else nn.Identity()
         )
         self.con_proj = nn.Sequential(
             nn.Linear(emb_dim, emb_dim),
@@ -1542,7 +1569,7 @@ class CVSincNet(nn.Module):
             t = self._apply_mixstyle(t, "t2", domain_labels, y)
             t = self.t3(t)
             t = self.t_pool(t).squeeze(-1)
-            t_emb = self.t_proj(t)
+            t_emb = self.meta_adapter_time(self.t_proj(t))
 
             if self.training and self.branch_drop_p > 0:
                 drop_mask = (torch.rand((B, 1), device=t_emb.device) < self.branch_drop_p).float()
@@ -1585,6 +1612,7 @@ class CVSincNet(nn.Module):
             f_emb = self.f_proj(f)
             if need_stats and self.use_freq_stats and (self.freq_stats_proj is not None):
                 f_emb = f_emb + self.freq_stats_proj(dac_stats)
+            f_emb = self.meta_adapter_freq(f_emb)
             if (not need_stats) and rho is not None:
                 rho = torch.zeros_like(rho)
                 dac_stats = torch.zeros_like(dac_stats)
@@ -1624,7 +1652,7 @@ class CVSincNet(nn.Module):
         if len(base_parts) == 0:
             base_parts.append(zero_emb)
         base_in = torch.cat(base_parts, dim=1)
-        base = self.fuse(base_in)
+        base = self.meta_adapter_fusion(self.fuse(base_in))
 
         if not return_aux:
             return self.cls_head.forward_logits(
@@ -1727,6 +1755,8 @@ def build_model(
     crra_nuisance_dim: int = 9,
     crra_start_epoch: int = 17,
     crra_ramp_epochs: int = 30,
+    meta_adapter_rank: int = 0,
+    meta_adapter_sites: str = "",
 ):
     ds = str(dataset).lower()
     ms = str(model_size).upper().strip()
@@ -1906,5 +1936,7 @@ def build_model(
         crra_nuisance_dim=crra_nuisance_dim,
         crra_start_epoch=crra_start_epoch,
         crra_ramp_epochs=crra_ramp_epochs,
+        meta_adapter_rank=meta_adapter_rank,
+        meta_adapter_sites=meta_adapter_sites,
         **cfg,
     )
