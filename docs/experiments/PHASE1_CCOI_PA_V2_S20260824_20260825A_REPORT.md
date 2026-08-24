@@ -2,7 +2,7 @@
 
 ## 预登记
 
-- 状态：`LOCAL_VERIFIED/PRE_REGISTERED`；尚未启动N607实验。
+- 状态：`RUNNING`；smoke已通过，正式C0–C4矩阵训练中。
 - 候选：`CCOI-PA-V2`，单seed最小矩阵`C0/C1/C2/C3/C4`。
 - 科学对照：冻结`ADV3B02_CORE90_SOFT_E200`；沿用V1的同split、同seed、同训练/评估预算和四场景，C1–C4保持同容量。
 - 修复范围：原始`meta.rx_i`接收机导出；算子独立分类与源域`V_cal`尺度对齐凸融合；有界码本有效数/集中度正则。Core90、source roles、场景和目标/query边界不变。
@@ -31,3 +31,7 @@
 +- 2026-08-25 01:07：release归档已同步；远端SHA256读回为`976bfe2919f4632e5b5b277b915ec418c7754866c9d2a058859439429eab5628`，与本地一致，传输状态`VERIFIED`。
 - release目录已新建且未覆盖旧目录；三个V2生产Python文件远端编译通过，三个对应`.pyc`均完成独立读回；launcher远端`bash -n`通过。
 - 启动前资源再次确认：无`train_phase1_ccoi_pa.py`进程、无NVIDIA compute app，目标run和smoke根均不存在。
++- 2026-08-25 01:09：唯一launcher PID`2500917`已启动，PPID为1，CWD为release目录；正式训练PID`2501324`，完整cmdline、run-root、seed、GPU0和日志路径均与预登记一致。
+- smoke已先行通过并由`protocol_and_smoke.json`独立读回：`Phase1_source_only`、source roles为5,880/52,920/12,600/12,600，比例`0.07/0.63/0.15/0.15`，`rho_label=0.1`；源/目标receiver交集为0；checkpoint严格加载`missing/unexpected/mismatch=0/0/0`，195个state tensor；PA图`[64,64,64]`、logits`[64,6]`且有限；`target_or_query_access=false`。
+- launcher日志已依次出现`REAL CHECKPOINT NO-QUERY SMOKE`、`[CCOI-SMOKE] PASS`、`[CCOI-V2-SMOKE] PASS`和`FULL MATRIX`，正式矩阵已健康进入训练。
+- 启动后GPU0出现另一条先于本run启动的无关meta-adapter训练PID`2498587`，占约486MiB；本run占约620MiB，两条训练进程未超过每GPU允许上限。该无关进程不属于本run，不做任何干预。
