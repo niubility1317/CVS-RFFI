@@ -1,9 +1,531 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Dict, List, Sequence
+from collections import defaultdict
+from dataclasses import dataclass, field
+from enum import Enum
+import math
+import random
+from typing import Any, Dict, Iterable, List, Mapping, Sequence, Tuple
 
 import numpy as np
+
+
+class EpisodeKind(str, Enum):
+    SAME_DOMAIN = "Q_SAME_DOMAIN"
+    RX_HOLDOUT = "Q_RX_HOLDOUT"
+    DAY_CHANNEL_HOLDOUT = "Q_DAY_CHANNEL_HOLDOUT"
+    CLEAN_TO_LEO = "Q_CLEAN_TO_LEO"
+    LEO_CROSS = "Q_LEO_CROSS"
+
+
+_DEFAULT_EPISODE_WEIGHTS = {
+    EpisodeKind.SAME_DOMAIN: 0.40,
+    EpisodeKind.RX_HOLDOUT: 0.20,
+    EpisodeKind.DAY_CHANNEL_HOLDOUT: 0.15,
+    EpisodeKind.CLEAN_TO_LEO: 0.15,
+    EpisodeKind.LEO_CROSS: 0.10,
+}
+
+
+@dataclass(frozen=True)
+class MetaSampleRef:
+    dataset_index: int
+    tx_i: int
+    rx_i: int
+    day_i: int
+    eq_i: int
+    capture_block_i: int
+    physical_sample_id: str
+    role: str
+    view: str
+
+
+@dataclass(frozen=True)
+class MetaEpisode:
+    kind: EpisodeKind
+    support: tuple[MetaSampleRef, ...]
+    query_adapt: tuple[MetaSampleRef, ...]
+    query_guard: tuple[MetaSampleRef, ...]
+    adapt_class_ids: frozenset[int]
+    guard_class_ids: frozenset[int]
+    k_shot: int
+    seed: int
+
+
+def _episode_kind(value: Any) -> EpisodeKind:
+    if isinstance(value, EpisodeKind):
+        return value
+    try:
+        return EpisodeKind(str(value))
+    except ValueError:
+        try:
+            return EpisodeKind[str(value)]
+        except KeyError as exc:
+            raise ValueError(f"Unknown meta episode kind: {value!r}") from exc
+
+
+def _normalise_episode_weights(
+    weights: Mapping[Any, float] | None,
+) -> Dict[EpisodeKind, float]:
+    normalised = {kind: 0.0 for kind in EpisodeKind}
+    source = _DEFAULT_EPISODE_WEIGHTS if weights is None else weights
+    for key, value in source.items():
+        kind = _episode_kind(key)
+        try:
+            numeric = float(value)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"episode weight for {kind.value} must be numeric") from exc
+        if not math.isfinite(numeric) or numeric < 0.0:
+            raise ValueError(f"episode weight for {kind.value} must be finite and non-negative")
+        normalised[kind] = numeric
+    if sum(normalised.values()) <= 0.0:
+        raise ValueError("episode_weights must contain at least one positive weight")
+    return normalised
+
+
+@dataclass(frozen=True)
+class MetaEpisodeSamplerConfig:
+    k_choices: tuple[int, ...] = (1, 2, 5, 10)
+    query_per_class: int = 2
+    allowed_roles: tuple[str, ...] | None = None
+    training: bool = True
+    episode_weights: Mapping[Any, float] = field(
+        default_factory=lambda: dict(_DEFAULT_EPISODE_WEIGHTS)
+    )
+    partial_coverage_probability: float = 0.30
+    partial_class_fraction: tuple[float, float] = (0.50, 0.80)
+
+    def __post_init__(self) -> None:
+        choices = tuple(int(value) for value in self.k_choices)
+        if not choices or any(value <= 0 for value in choices):
+            raise ValueError("k_choices must contain at least one positive integer")
+        object.__setattr__(self, "k_choices", choices)
+
+        query_per_class = int(self.query_per_class)
+        if query_per_class <= 0:
+            raise ValueError("query_per_class must be positive")
+        object.__setattr__(self, "query_per_class", query_per_class)
+
+        expected_roles = ("L_s",) if bool(self.training) else ("V_cal", "V_select")
+        if self.allowed_roles is None:
+            roles = expected_roles
+        else:
+            roles = tuple(str(role) for role in self.allowed_roles)
+        if roles != expected_roles:
+            sampler_name = "training" if bool(self.training) else "evaluation"
+            raise ValueError(
+                f"{sampler_name} sampler allowed_roles must be exactly {expected_roles!r}; "
+                f"got {roles!r}"
+            )
+        object.__setattr__(self, "allowed_roles", roles)
+        object.__setattr__(self, "training", bool(self.training))
+        object.__setattr__(
+            self,
+            "episode_weights",
+            _normalise_episode_weights(self.episode_weights),
+        )
+
+        probability = float(self.partial_coverage_probability)
+        if not math.isfinite(probability) or not 0.0 <= probability <= 1.0:
+            raise ValueError("partial_coverage_probability must be in [0, 1]")
+        object.__setattr__(self, "partial_coverage_probability", probability)
+
+        try:
+            lower, upper = tuple(float(value) for value in self.partial_class_fraction)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("partial_class_fraction must contain two numeric bounds") from exc
+        if (
+            not math.isfinite(lower)
+            or not math.isfinite(upper)
+            or not 0.0 < lower <= upper < 1.0
+        ):
+            raise ValueError("partial_class_fraction must satisfy 0 < lower <= upper < 1")
+        object.__setattr__(self, "partial_class_fraction", (lower, upper))
+
+
+class HierarchicalMetaEpisodeSampler:
+    """Sample source-only episodes with explicit cross-domain relationships."""
+
+    _LEO_PREFIX = "leo_"
+    _LEO_SUFFIX = "_weak"
+
+    def __init__(
+        self,
+        refs: Sequence[MetaSampleRef],
+        config: MetaEpisodeSamplerConfig | None = None,
+    ) -> None:
+        self.config = config if config is not None else MetaEpisodeSamplerConfig()
+        self.refs = tuple(refs)
+        if not self.refs:
+            raise ValueError("Meta episode sampler requires a non-empty sample pool")
+
+        allowed_roles = set(self.config.allowed_roles or ())
+        invalid_roles = sorted({str(ref.role) for ref in self.refs if ref.role not in allowed_roles})
+        if invalid_roles:
+            raise ValueError(
+                "Meta episode sample pool contains role(s) outside allowed_roles: "
+                f"{invalid_roles!r}; allowed_roles={self.config.allowed_roles!r}"
+            )
+
+        self._by_class: Dict[int, Tuple[MetaSampleRef, ...]] = {}
+        grouped: Dict[int, List[MetaSampleRef]] = defaultdict(list)
+        for ref in self.refs:
+            if not str(ref.physical_sample_id):
+                raise ValueError("Meta episode refs require a non-empty physical_sample_id")
+            grouped[int(ref.tx_i)].append(ref)
+        for class_id, rows in grouped.items():
+            self._by_class[int(class_id)] = tuple(
+                sorted(rows, key=lambda row: (int(row.dataset_index), str(row.view)))
+            )
+        self._class_ids = tuple(sorted(self._by_class))
+
+    @staticmethod
+    def _is_leo(view: str) -> bool:
+        value = str(view)
+        return value.startswith(HierarchicalMetaEpisodeSampler._LEO_PREFIX) and value.endswith(
+            HierarchicalMetaEpisodeSampler._LEO_SUFFIX
+        )
+
+    @staticmethod
+    def _row_matches(row: MetaSampleRef, spec: Mapping[str, Any]) -> bool:
+        for attr, expected in spec.items():
+            if attr == "view":
+                if str(row.view) != str(expected):
+                    return False
+            elif attr == "is_leo":
+                if HierarchicalMetaEpisodeSampler._is_leo(row.view) != bool(expected):
+                    return False
+            elif int(getattr(row, attr)) != int(expected):
+                return False
+        return True
+
+    def _pool(self, class_id: int, spec: Mapping[str, Any]) -> Dict[str, MetaSampleRef]:
+        unique: Dict[str, MetaSampleRef] = {}
+        for row in self._by_class[int(class_id)]:
+            if self._row_matches(row, spec):
+                physical_id = str(row.physical_sample_id)
+                previous = unique.get(physical_id)
+                if previous is None or int(row.dataset_index) < int(previous.dataset_index):
+                    unique[physical_id] = row
+        return unique
+
+    @staticmethod
+    def _descriptor_set(refs: Iterable[MetaSampleRef]) -> set[tuple[Any, ...]]:
+        return {
+            (
+                int(row.rx_i),
+                int(row.day_i),
+                int(row.eq_i),
+                int(row.capture_block_i),
+                str(row.view),
+            )
+            for row in refs
+        }
+
+    def _candidate_plans(
+        self,
+        kind: EpisodeKind,
+    ) -> list[tuple[dict[str, Any], dict[str, Any]]]:
+        descriptors = self._descriptor_set(self.refs)
+        plans: set[tuple[tuple[tuple[str, Any], ...], tuple[tuple[str, Any], ...]]] = set()
+
+        def add(support_spec: dict[str, Any], query_spec: dict[str, Any]) -> None:
+            support_key = tuple(sorted(support_spec.items()))
+            query_key = tuple(sorted(query_spec.items()))
+            plans.add((support_key, query_key))
+
+        if kind is EpisodeKind.SAME_DOMAIN:
+            for rx_i, day_i, eq_i, _block_i, view in descriptors:
+                add(
+                    {"rx_i": rx_i, "day_i": day_i, "eq_i": eq_i, "view": view},
+                    {"rx_i": rx_i, "day_i": day_i, "eq_i": eq_i, "view": view},
+                )
+        elif kind is EpisodeKind.RX_HOLDOUT:
+            for support in descriptors:
+                for query in descriptors:
+                    if support[1:] == query[1:] and support[0] != query[0]:
+                        add(
+                            {
+                                "rx_i": support[0],
+                                "day_i": support[1],
+                                "eq_i": support[2],
+                                "capture_block_i": support[3],
+                                "view": support[4],
+                            },
+                            {
+                                "rx_i": query[0],
+                                "day_i": query[1],
+                                "eq_i": query[2],
+                                "capture_block_i": query[3],
+                                "view": query[4],
+                            },
+                        )
+        elif kind is EpisodeKind.DAY_CHANNEL_HOLDOUT:
+            for support in descriptors:
+                for query in descriptors:
+                    same_receiver = support[0] == query[0]
+                    same_equalization = support[2] == query[2]
+                    same_view = support[4] == query[4]
+                    changed_day_or_block = (support[1], support[3]) != (query[1], query[3])
+                    if same_receiver and same_equalization and same_view and changed_day_or_block:
+                        add(
+                            {
+                                "rx_i": support[0],
+                                "day_i": support[1],
+                                "eq_i": support[2],
+                                "capture_block_i": support[3],
+                                "view": support[4],
+                            },
+                            {
+                                "rx_i": query[0],
+                                "day_i": query[1],
+                                "eq_i": query[2],
+                                "capture_block_i": query[3],
+                                "view": query[4],
+                            },
+                        )
+        elif kind is EpisodeKind.CLEAN_TO_LEO:
+            for rx_i, day_i, eq_i, block_i, view in descriptors:
+                if view != "clean":
+                    continue
+                for leo_rx, leo_day, leo_eq, leo_block, leo_view in descriptors:
+                    if (
+                        (rx_i, day_i, eq_i, block_i) == (leo_rx, leo_day, leo_eq, leo_block)
+                        and self._is_leo(leo_view)
+                    ):
+                        add(
+                            {
+                                "rx_i": rx_i,
+                                "day_i": day_i,
+                                "eq_i": eq_i,
+                                "capture_block_i": block_i,
+                                "view": "clean",
+                            },
+                            {
+                                "rx_i": leo_rx,
+                                "day_i": leo_day,
+                                "eq_i": leo_eq,
+                                "capture_block_i": leo_block,
+                                "view": leo_view,
+                            },
+                        )
+        elif kind is EpisodeKind.LEO_CROSS:
+            for support in descriptors:
+                if not self._is_leo(support[4]):
+                    continue
+                for query in descriptors:
+                    if (
+                        self._is_leo(query[4])
+                        and support[:4] == query[:4]
+                        and support[4] != query[4]
+                    ):
+                        add(
+                            {
+                                "rx_i": support[0],
+                                "day_i": support[1],
+                                "eq_i": support[2],
+                                "capture_block_i": support[3],
+                                "view": support[4],
+                            },
+                            {
+                                "rx_i": query[0],
+                                "day_i": query[1],
+                                "eq_i": query[2],
+                                "capture_block_i": query[3],
+                                "view": query[4],
+                            },
+                        )
+        else:  # pragma: no cover - protected by EpisodeKind and config normalization
+            raise ValueError(f"Unsupported meta episode kind: {kind!r}")
+
+        return [
+            (dict(support_key), dict(query_key))
+            for support_key, query_key in sorted(plans, key=repr)
+        ]
+
+    def _plan_available(
+        self,
+        plan: tuple[dict[str, Any], dict[str, Any]],
+        adapt_class_ids: Sequence[int],
+        guard_class_ids: Sequence[int],
+        k_shot: int,
+    ) -> bool:
+        support_spec, query_spec = plan
+        query_count = int(self.config.query_per_class)
+        for class_id in adapt_class_ids:
+            support_pool = self._pool(class_id, support_spec)
+            query_pool = self._pool(class_id, query_spec)
+            if len(support_pool) < k_shot or len(query_pool) < query_count:
+                return False
+            if len(set(support_pool).union(query_pool)) < k_shot + query_count:
+                return False
+        for class_id in guard_class_ids:
+            if len(self._pool(class_id, query_spec)) < query_count:
+                return False
+        return True
+
+    @staticmethod
+    def _choose_rows(
+        pool: Mapping[str, MetaSampleRef],
+        count: int,
+        rng: random.Random,
+        blocked_ids: set[str],
+    ) -> tuple[MetaSampleRef, ...]:
+        candidates = [
+            row for physical_id, row in pool.items() if str(physical_id) not in blocked_ids
+        ]
+        if len(candidates) < int(count):
+            raise ValueError(
+                "Meta episode pool does not contain enough disjoint physical samples: "
+                f"need {int(count)}, available {len(candidates)}"
+            )
+        rng.shuffle(candidates)
+        selected = candidates[: int(count)]
+        return tuple(sorted(selected, key=lambda row: int(row.dataset_index)))
+
+    def _sample_partition(
+        self,
+        plan: tuple[dict[str, Any], dict[str, Any]],
+        adapt_class_ids: Sequence[int],
+        guard_class_ids: Sequence[int],
+        k_shot: int,
+        rng: random.Random,
+    ) -> tuple[tuple[MetaSampleRef, ...], tuple[MetaSampleRef, ...], tuple[MetaSampleRef, ...]]:
+        support_spec, query_spec = plan
+        query_count = int(self.config.query_per_class)
+        used_ids: set[str] = set()
+        support_rows: list[MetaSampleRef] = []
+        query_adapt_rows: list[MetaSampleRef] = []
+        query_guard_rows: list[MetaSampleRef] = []
+
+        class_order = list(adapt_class_ids) + list(guard_class_ids)
+        rng.shuffle(class_order)
+        adapt_set = set(adapt_class_ids)
+        for class_id in class_order:
+            query_pool = self._pool(class_id, query_spec)
+            if class_id in adapt_set:
+                support_pool = self._pool(class_id, support_spec)
+                selected_support = self._choose_rows(support_pool, k_shot, rng, used_ids)
+                used_ids.update(str(row.physical_sample_id) for row in selected_support)
+                selected_query = self._choose_rows(query_pool, query_count, rng, used_ids)
+                used_ids.update(str(row.physical_sample_id) for row in selected_query)
+                support_rows.extend(selected_support)
+                query_adapt_rows.extend(selected_query)
+            else:
+                selected_guard = self._choose_rows(query_pool, query_count, rng, used_ids)
+                used_ids.update(str(row.physical_sample_id) for row in selected_guard)
+                query_guard_rows.extend(selected_guard)
+
+        return (
+            tuple(sorted(support_rows, key=lambda row: (int(row.tx_i), int(row.dataset_index)))),
+            tuple(sorted(query_adapt_rows, key=lambda row: (int(row.tx_i), int(row.dataset_index)))),
+            tuple(sorted(query_guard_rows, key=lambda row: (int(row.tx_i), int(row.dataset_index)))),
+        )
+
+    def _sample_class_sets(self, rng: random.Random) -> tuple[frozenset[int], frozenset[int]]:
+        classes = list(self._class_ids)
+        if len(classes) <= 1 or rng.random() >= self.config.partial_coverage_probability:
+            return frozenset(classes), frozenset()
+
+        lower, upper = self.config.partial_class_fraction
+        min_count = max(1, int(math.ceil(len(classes) * lower)))
+        max_count = min(len(classes) - 1, int(math.floor(len(classes) * upper)))
+        if max_count < min_count:
+            min_count = max_count = max(1, len(classes) - 1)
+        adapt_count = rng.randint(min_count, max_count)
+        adapt = frozenset(rng.sample(classes, adapt_count))
+        guard = frozenset(set(classes).difference(adapt))
+        return adapt, guard
+
+    def _choose_kind(self, rng: random.Random) -> EpisodeKind:
+        kinds = list(EpisodeKind)
+        weights = [float(self.config.episode_weights.get(kind, 0.0)) for kind in kinds]
+        return rng.choices(kinds, weights=weights, k=1)[0]
+
+    def sample(self, seed: int) -> MetaEpisode:
+        """Return one deterministic episode for ``seed`` or reject its pool."""
+        seed_i = int(seed)
+        rng = random.Random(seed_i)
+        kind = self._choose_kind(rng)
+        k_shot = int(rng.choice(self.config.k_choices))
+        adapt_class_ids, guard_class_ids = self._sample_class_sets(rng)
+
+        plans = self._candidate_plans(kind)
+        rng.shuffle(plans)
+        valid_plans = [
+            plan
+            for plan in plans
+            if self._plan_available(plan, sorted(adapt_class_ids), sorted(guard_class_ids), k_shot)
+        ]
+        if not valid_plans:
+            raise ValueError(
+                f"Cannot construct {kind.value} meta episode: no domain plan has "
+                f"enough disjoint physical samples for k_shot={k_shot} and "
+                f"query_per_class={self.config.query_per_class}"
+            )
+
+        last_error: ValueError | None = None
+        for plan in valid_plans:
+            try:
+                support, query_adapt, query_guard = self._sample_partition(
+                    plan,
+                    sorted(adapt_class_ids),
+                    sorted(guard_class_ids),
+                    k_shot,
+                    rng,
+                )
+                break
+            except ValueError as exc:
+                last_error = exc
+        else:
+            raise ValueError(
+                f"Cannot construct {kind.value} meta episode with globally disjoint "
+                "physical sample IDs"
+            ) from last_error
+
+        episode = MetaEpisode(
+            kind=kind,
+            support=support,
+            query_adapt=query_adapt,
+            query_guard=query_guard,
+            adapt_class_ids=frozenset(adapt_class_ids),
+            guard_class_ids=frozenset(guard_class_ids),
+            k_shot=k_shot,
+            seed=seed_i,
+        )
+        self._assert_episode(episode)
+        return episode
+
+    def _assert_episode(self, episode: MetaEpisode) -> None:
+        rows = episode.support + episode.query_adapt + episode.query_guard
+        if not rows:
+            raise ValueError("Meta episode cannot be empty")
+        allowed_roles = set(self.config.allowed_roles or ())
+        if any(row.role not in allowed_roles for row in rows):
+            raise ValueError("Meta episode contains a row outside allowed_roles")
+        support_ids = [str(row.physical_sample_id) for row in episode.support]
+        query_ids = [
+            str(row.physical_sample_id)
+            for row in episode.query_adapt + episode.query_guard
+        ]
+        if len(set(support_ids)) != len(support_ids):
+            raise ValueError("Meta episode support contains duplicate physical_sample_id")
+        if len(set(query_ids)) != len(query_ids):
+            raise ValueError("Meta episode query contains duplicate physical_sample_id")
+        if set(support_ids).intersection(query_ids):
+            raise ValueError("Meta episode support/query physical_sample_id overlap")
+
+        support_classes = frozenset(int(row.tx_i) for row in episode.support)
+        adapt_query_classes = frozenset(int(row.tx_i) for row in episode.query_adapt)
+        guard_query_classes = frozenset(int(row.tx_i) for row in episode.query_guard)
+        if support_classes != episode.adapt_class_ids:
+            raise ValueError("Meta episode support classes do not match adapt_class_ids")
+        if not adapt_query_classes.issubset(episode.adapt_class_ids):
+            raise ValueError("query_adapt contains a class outside adapt_class_ids")
+        if guard_query_classes != episode.guard_class_ids:
+            raise ValueError("query_guard classes do not match guard_class_ids")
+        if episode.adapt_class_ids.intersection(episode.guard_class_ids):
+            raise ValueError("adapt_class_ids and guard_class_ids must be disjoint")
 
 
 @dataclass(frozen=True)
