@@ -33,6 +33,8 @@ from .stage2_meta_adapter_adaptation import (
 
 _CONFIG_ALLOWLIST = frozenset(
     {
+        "candidate_id",
+        "bundle_id",
         "protocol_schema",
         "phase2_data_status",
         "capsule_id",
@@ -78,6 +80,9 @@ def _validate_config(
             f"missing={sorted(allowed - actual)} extra={sorted(actual - allowed)}"
         )
     resolved = dict(config)
+    for key in ("candidate_id", "bundle_id"):
+        if not isinstance(resolved[key], str) or not resolved[key].strip():
+            raise MetaAdapterStage2RunnerError(f"{key} must be a nonempty string")
     if resolved["protocol_schema"] != "p2_min_v1":
         raise MetaAdapterStage2RunnerError("protocol_schema must be p2_min_v1")
     if resolved["phase2_data_status"] != "VALIDATED_ONCE":
@@ -708,6 +713,9 @@ def run_meta_adapter_stage2_row(
         receipt: dict[str, Any] = {
             "status": "PREDICTIONS_COMPLETE",
             "states": ["DA0_REG0", "DA1_REG0"],
+            "candidate_id": resolved["candidate_id"],
+            "bundle_id": resolved["bundle_id"],
+            "registered_class_ids": class_ids.detach().cpu().tolist(),
             "protocol_schema": resolved["protocol_schema"],
             "phase2_data_status": resolved["phase2_data_status"],
             "capsule_id": resolved["capsule_id"],

@@ -23,6 +23,7 @@ from cvsrffi.stage2_meta_adapter_adaptation import (  # noqa: E402
     adapt_meta_adapter_on_support,
     predict_with_frozen_meta_adapter,
 )
+from cvsrffi.stage2_meta_adapter_scorer import score_meta_adapter_pair  # noqa: E402
 
 
 class _ToyBundleModel(nn.Module):
@@ -95,6 +96,8 @@ def _write_row_inputs(tmp_path: Path) -> dict[str, Path]:
 
 def _row_config(paths: dict[str, Path]) -> dict[str, object]:
     return {
+        "candidate_id": "CVS_META_ADAPTER_TRI_R4_V1",
+        "bundle_id": "ADV3B02_CORE90_SOFT_E200_META_TRI_R4_V1",
         "protocol_schema": "p2_min_v1",
         "phase2_data_status": "VALIDATED_ONCE",
         "capsule_id": "capsule-fixed-received-iq",
@@ -211,7 +214,38 @@ def test_runner_adapts_before_query_is_opened_and_emits_two_states(
     assert receipt["source_opened"] is False
     assert receipt["query_state_update_count"] == 0
     assert receipt["query_ids"] == ["query-fixed-002", "query-fixed-001"]
+    assert receipt["candidate_id"] == "CVS_META_ADAPTER_TRI_R4_V1"
+    assert receipt["bundle_id"] == "ADV3B02_CORE90_SOFT_E200_META_TRI_R4_V1"
+    assert receipt["registered_class_ids"] == [10, 20]
     assert Path(receipt["receipt_path"]).is_file()
+
+
+@pytest.mark.parametrize("missing_key", ["candidate_id", "bundle_id"])
+def test_runner_requires_candidate_and_bundle_ids(tmp_path: Path, missing_key: str):
+    import cvsrffi.stage2_meta_adapter_runner as sut
+
+    paths = _write_row_inputs(tmp_path)
+    config = _row_config(paths)
+    config.pop(missing_key)
+    with pytest.raises(ValueError, match="allowlist"):
+        sut.run_meta_adapter_stage2_row(config, tmp_path / "out", "cpu")
+
+
+@pytest.mark.parametrize(
+    ("key", "invalid"),
+    [("candidate_id", ""), ("candidate_id", "   "), ("candidate_id", None),
+     ("bundle_id", ""), ("bundle_id", "   "), ("bundle_id", None)],
+)
+def test_runner_rejects_invalid_candidate_or_bundle_id(
+    tmp_path: Path, key: str, invalid: object
+):
+    import cvsrffi.stage2_meta_adapter_runner as sut
+
+    paths = _write_row_inputs(tmp_path)
+    config = _row_config(paths)
+    config[key] = invalid
+    with pytest.raises(ValueError, match=key):
+        sut.run_meta_adapter_stage2_row(config, tmp_path / "out", "cpu")
 
 
 def test_runner_refuses_existing_output_root(tmp_path: Path):
@@ -285,6 +319,39 @@ def test_prediction_artifacts_are_same_row_and_truth_blind(
     persisted = json.loads((tmp_path / "out" / "receipt.json").read_text(encoding="utf-8"))
     assert persisted["states"] == ["DA0_REG0", "DA1_REG0"]
     assert persisted["query_role_opened"] is False
+
+
+def test_runner_receipt_and_predictions_close_before_truth_last_scoring(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    import cvsrffi.stage2_meta_adapter_runner as sut
+
+    paths = _write_row_inputs(tmp_path)
+    events: list[str] = []
+    _install_fake_bundle_loader(monkeypatch, sut, events)
+    output = tmp_path / "out"
+    receipt = sut.run_meta_adapter_stage2_row(_row_config(paths), output, "cpu")
+
+    receipt_path = output / "receipt.json"
+    da0_path = output / "predictions_DA0_REG0.npz"
+    da1_path = output / "predictions_DA1_REG0.npz"
+    assert receipt_path.is_file() and da0_path.is_file() and da1_path.is_file()
+    assert receipt["registered_class_ids"] == [10, 20]
+
+    # Truth is deliberately materialized only after both prediction artifacts
+    # and their binding receipt are complete.
+    truth_path = tmp_path / "truth.npz"
+    np.savez(
+        truth_path,
+        query_ids=np.asarray(receipt["query_ids"]),
+        true_class_ids=np.asarray([20, 10], dtype=np.int64),
+    )
+    score = score_meta_adapter_pair(
+        da0_path, da1_path, truth_path, receipt_path=receipt_path
+    )
+    assert score.candidate_id == receipt["candidate_id"]
+    assert score.bundle_id == receipt["bundle_id"]
+    assert score.registered_class_ids == (10, 20)
 
 
 @pytest.mark.parametrize("target_name", ["predictions_DA0_REG0.npz", "predictions_DA1_REG0.npz"])
@@ -362,6 +429,8 @@ def test_no_query_smoke_has_no_query_path_and_three_updates(
     monkeypatch.setattr(smoke, "load_meta_bundle_strict", runner.load_meta_bundle_strict)
     result = smoke.run_meta_adapter_no_query_smoke(
         {
+            "candidate_id": "CVS_META_ADAPTER_TRI_R4_V1",
+            "bundle_id": "ADV3B02_CORE90_SOFT_E200_META_TRI_R4_V1",
             "protocol_schema": "p2_min_v1",
             "phase2_data_status": "VALIDATED_ONCE",
             "capsule_id": "capsule-fixed-received-iq",
