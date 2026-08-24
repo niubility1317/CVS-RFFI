@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from collections import OrderedDict
 from collections.abc import Iterable, Mapping, Sequence
+import copy
 from dataclasses import dataclass, field, fields, replace, is_dataclass
 import math
 import time
@@ -25,7 +26,7 @@ from .meta_adapter import (
     adapter_step_size_by_parameter,
     iter_inner_adapter_parameters,
 )
-from .meta_episodes import MetaEpisode
+from .meta_episodes import MetaEpisode, MetaSampleRef
 from .meta_inner_loop import (
     FastAdapterState,
     MetaInnerLoopError,
@@ -66,6 +67,7 @@ class MetaTrainerConfig:
     inner steps; the adaptation diagnostic has its own fixed step list.
     """
 
+    source_receiver_ids: tuple[int, ...]
     adapter_outer_lr: float = 1.0e-3
     weight_decay: float = 0.0
     meta_batch_size: int = 4
@@ -75,6 +77,14 @@ class MetaTrainerConfig:
     objective_config: MetaObjectiveConfig = field(default_factory=MetaObjectiveConfig)
 
     def __post_init__(self) -> None:
+        receiver_ids = tuple(self.source_receiver_ids)
+        if not receiver_ids:
+            raise ValueError("source_receiver_ids must be a non-empty tuple of integers")
+        if any(isinstance(value, bool) or not isinstance(value, int) for value in receiver_ids):
+            raise TypeError("source_receiver_ids must contain integers only")
+        if len(set(receiver_ids)) != len(receiver_ids):
+            raise ValueError("source_receiver_ids must not contain duplicates")
+        object.__setattr__(self, "source_receiver_ids", receiver_ids)
         for name in ("adapter_outer_lr", "weight_decay", "phase1c_backbone_lr_ratio"):
             value = float(getattr(self, name))
             if not math.isfinite(value) or value < 0.0:
@@ -125,6 +135,7 @@ class MetaEpisodeBatch:
     def __post_init__(self) -> None:
         if not isinstance(self.episode, MetaEpisode):
             raise TypeError("episode must be a Task2 MetaEpisode")
+        _validate_meta_episode_structure(self.episode)
         for name in ("support_x", "query_x", "frozen_prototypes"):
             value = getattr(self, name)
             if not torch.is_tensor(value) or not value.is_floating_point():
@@ -316,12 +327,16 @@ class SourceCheckpointCandidate:
         holdouts = tuple(self.source_holdouts)
         if any(not isinstance(item, SourceHoldoutDelta) for item in holdouts):
             raise TypeError("source_holdouts must contain SourceHoldoutDelta values")
-        derived = deltas + tuple(item.delta_pp for item in holdouts)
+        if not holdouts:
+            raise ValueError("source_holdouts must contain typed source curve rows")
+        derived = tuple(item.delta_pp for item in holdouts)
         worst = self.worst_a3_delta_pp
         if worst is None:
-            if not derived:
-                raise ValueError("candidate requires source holdout A(3)-A(0) evidence")
             worst = min(derived)
+        elif not math.isclose(float(worst), min(derived), rel_tol=0.0, abs_tol=1.0e-9):
+            raise ValueError(
+                "claimed worst_a3_delta_pp disagrees with derived source_holdouts minimum"
+            )
         worst = float(worst)
         if not math.isfinite(worst):
             raise ValueError("worst_a3_delta_pp must be finite")
@@ -333,7 +348,13 @@ class SourceCheckpointCandidate:
 
     @property
     def worst_source_holdout_delta_pp(self) -> float:
-        return float(self.worst_a3_delta_pp)
+        return float(min(item.delta_pp for item in self.source_holdouts))
+
+    @property
+    def derived_worst_a3_delta_pp(self) -> float:
+        """Return the source-curve-derived worst A(3)-A(0) in pp."""
+
+        return float(min(item.delta_pp for item in self.source_holdouts))
 
 
 def _module_parameters(model: nn.Module, module_names: frozenset[str]) -> list[tuple[str, nn.Parameter]]:
@@ -423,7 +444,8 @@ def build_phase1b_optimizer(
 
     if not isinstance(model, nn.Module):
         raise TypeError("model must be a torch.nn.Module")
-    config = MetaTrainerConfig() if config is None else config
+    if config is None:
+        raise TypeError("config with explicit source_receiver_ids is required")
     if not isinstance(config, MetaTrainerConfig):
         raise TypeError("config must be a MetaTrainerConfig")
     return _make_optimizer(model, config, _adapter_outer_parameters(model), ())
@@ -437,7 +459,8 @@ def build_phase1c_optimizer(
 
     if not isinstance(model, nn.Module):
         raise TypeError("model must be a torch.nn.Module")
-    config = MetaTrainerConfig() if config is None else config
+    if config is None:
+        raise TypeError("config with explicit source_receiver_ids is required")
     if not isinstance(config, MetaTrainerConfig):
         raise TypeError("config must be a MetaTrainerConfig")
     return _make_optimizer(
@@ -513,7 +536,63 @@ def _episode_rows(episode: MetaEpisode):
     return episode.support + episode.query_adapt + episode.query_guard
 
 
-def _validate_episode_roles(batch: MetaEpisodeBatch, allowed: frozenset[str]) -> None:
+def _validate_meta_episode_structure(episode: MetaEpisode) -> None:
+    partitions = (
+        ("support", episode.support),
+        ("query_adapt", episode.query_adapt),
+        ("query_guard", episode.query_guard),
+    )
+    partition_ids: dict[str, set[str]] = {}
+    for partition_name, rows in partitions:
+        if not isinstance(rows, tuple):
+            raise ValueError(f"MetaEpisode.{partition_name} must be a tuple")
+        ids: set[str] = set()
+        for row in rows:
+            if not isinstance(row, MetaSampleRef):
+                raise ValueError(f"MetaEpisode.{partition_name} contains a non-MetaSampleRef row")
+            physical_id = str(row.physical_sample_id)
+            if not physical_id:
+                raise ValueError("MetaEpisode physical_sample_id must be non-empty")
+            if physical_id in ids:
+                raise ValueError(
+                    f"MetaEpisode {partition_name} contains duplicate physical_sample_id={physical_id!r}"
+                )
+            ids.add(physical_id)
+        partition_ids[partition_name] = ids
+    support_ids = partition_ids["support"]
+    query_adapt_ids = partition_ids["query_adapt"]
+    query_guard_ids = partition_ids["query_guard"]
+    overlaps = {
+        "support/query_adapt": support_ids & query_adapt_ids,
+        "support/query_guard": support_ids & query_guard_ids,
+        "query_adapt/query_guard": query_adapt_ids & query_guard_ids,
+    }
+    overlap = next(((name, ids) for name, ids in overlaps.items() if ids), None)
+    if overlap is not None:
+        name, ids = overlap
+        raise ValueError(f"MetaEpisode {name} physical_sample_id overlap: {sorted(ids)!r}")
+
+
+def _validate_source_receiver_ids(batch: MetaEpisodeBatch, source_receiver_ids: tuple[int, ...]) -> None:
+    allowlist = set(source_receiver_ids)
+    for row in _episode_rows(batch.episode):
+        if isinstance(row.rx_i, bool) or not isinstance(row.rx_i, int):
+            raise ValueError(
+                f"episode rx_i={row.rx_i!r} must be an integer source receiver ID"
+            )
+        if row.rx_i not in allowlist:
+            raise ValueError(
+                f"episode rx_i={row.rx_i!r} is outside source_receiver_ids={source_receiver_ids!r}"
+            )
+
+
+def _validate_episode_roles(
+    batch: MetaEpisodeBatch,
+    allowed: frozenset[str],
+    source_receiver_ids: tuple[int, ...],
+) -> None:
+    _validate_meta_episode_structure(batch.episode)
+    _validate_source_receiver_ids(batch, source_receiver_ids)
     marker = _forbidden_metadata(_episode_rows(batch.episode), path="episode")
     if marker:
         raise ValueError(f"source-only episode contains forbidden target/query field: {marker}")
@@ -646,6 +725,19 @@ def _state_changed_names(model: nn.Module, snapshot) -> set[str]:
     return changed
 
 
+def _snapshot_gradients(model: nn.Module) -> dict[int, Tensor | None]:
+    return {
+        id(parameter): None if parameter.grad is None else parameter.grad.detach().clone()
+        for parameter in model.parameters()
+    }
+
+
+def _restore_gradients(model: nn.Module, snapshot: Mapping[int, Tensor | None]) -> None:
+    for parameter in model.parameters():
+        saved = snapshot[id(parameter)]
+        parameter.grad = None if saved is None else saved.clone().to(parameter)
+
+
 def run_meta_train_step(
     model: nn.Module,
     episodes: Sequence[MetaEpisodeBatch],
@@ -658,7 +750,8 @@ def run_meta_train_step(
         raise TypeError("model must be a torch.nn.Module")
     if not isinstance(optimizer, torch.optim.Optimizer):
         raise TypeError("optimizer must be a torch.optim.Optimizer")
-    config = MetaTrainerConfig() if config is None else config
+    if config is None:
+        raise TypeError("config with explicit source_receiver_ids is required")
     if not isinstance(config, MetaTrainerConfig):
         raise TypeError("config must be a MetaTrainerConfig")
     if isinstance(episodes, MetaEpisodeBatch):
@@ -672,9 +765,10 @@ def run_meta_train_step(
     for batch in episodes:
         if not isinstance(batch, MetaEpisodeBatch):
             raise TypeError("run_meta_train_step accepts MetaEpisodeBatch values only")
-        _validate_episode_roles(batch, _SOURCE_ROLES)
+        _validate_episode_roles(batch, _SOURCE_ROLES, config.source_receiver_ids)
     optimizer_names = _validate_optimizer_scope(model, optimizer)
     snapshot = _snapshot_state(model)
+    optimizer_snapshot = copy.deepcopy(optimizer.state_dict())
     optimizer.zero_grad(set_to_none=True)
     outer_losses: list[Tensor] = []
     logs: list[Mapping[str, object]] = []
@@ -779,6 +873,10 @@ def run_meta_train_step(
         )
     except Exception:
         _restore_state(snapshot)
+        try:
+            optimizer.load_state_dict(optimizer_snapshot)
+        except Exception as restore_error:
+            raise MetaTrainerError("failed to restore optimizer state after outer-step failure") from restore_error
         raise
     finally:
         for parameter in model.parameters():
@@ -806,10 +904,13 @@ def _eval_role(batch: MetaEpisodeBatch) -> str:
     return "+".join(roles)
 
 
-def _validate_source_eval_batch(batch: MetaEpisodeBatch) -> None:
+def _validate_source_eval_batch(
+    batch: MetaEpisodeBatch,
+    source_receiver_ids: tuple[int, ...],
+) -> None:
     if not isinstance(batch, MetaEpisodeBatch):
         raise TypeError("evaluate_adaptation_curve accepts MetaEpisodeBatch values only")
-    _validate_episode_roles(batch, _SOURCE_EVAL_ROLES)
+    _validate_episode_roles(batch, _SOURCE_EVAL_ROLES, source_receiver_ids)
     rows = _episode_rows(batch.episode)
     if any(isinstance(row.rx_i, str) and "target" in row.rx_i.lower() for row in rows):
         raise ValueError("target receiver identifiers are forbidden in source adaptation curves")
@@ -888,7 +989,8 @@ def evaluate_adaptation_curve(
 
     if not isinstance(model, nn.Module):
         raise TypeError("model must be a torch.nn.Module")
-    config = MetaTrainerConfig() if config is None else config
+    if config is None:
+        raise TypeError("config with explicit source_receiver_ids is required")
     if not isinstance(config, MetaTrainerConfig):
         raise TypeError("config must be a MetaTrainerConfig")
     if isinstance(episodes, MetaEpisodeBatch):
@@ -898,11 +1000,12 @@ def evaluate_adaptation_curve(
     if not episodes:
         raise ValueError("source adaptation curve requires at least one episode")
     for batch in episodes:
-        _validate_source_eval_batch(batch)
+        _validate_source_eval_batch(batch, config.source_receiver_ids)
 
-    for parameter in model.parameters():
-        parameter.grad = None
     snapshot = _snapshot_state(model)
+    gradient_snapshot = _snapshot_gradients(model)
+    training_snapshot = tuple((module, module.training) for module in model.modules())
+    model.eval()
     rows: list[AdaptationCurveRow] = []
     try:
         for episode_index, batch in enumerate(episodes):
@@ -951,8 +1054,9 @@ def evaluate_adaptation_curve(
                 rows.append(replace(row, adaptation_delta_pp=delta))
     finally:
         _restore_state(snapshot)
-        for parameter in model.parameters():
-            parameter.grad = None
+        _restore_gradients(model, gradient_snapshot)
+        for module, was_training in training_snapshot:
+            module.training = was_training
     changed = _state_changed_names(model, snapshot)
     if changed:
         raise MetaTrainerError(f"source curve changed model state: {sorted(changed)!r}")
@@ -985,7 +1089,7 @@ def select_source_checkpoint(
         raise ValueError("no eligible source checkpoint candidate remains")
     eligible.sort(
         key=lambda candidate: (
-            -float(candidate.worst_a3_delta_pp),
+            -float(candidate.derived_worst_a3_delta_pp),
             int(candidate.parameter_count),
             float(candidate.latency_ms),
             str(candidate.candidate_id),

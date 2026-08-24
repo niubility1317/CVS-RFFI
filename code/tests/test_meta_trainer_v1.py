@@ -20,6 +20,7 @@ from cvsrffi.meta_trainer import (  # noqa: E402
     MetaEpisodeBatch,
     MetaTrainerConfig,
     SourceCheckpointCandidate,
+    SourceHoldoutDelta,
     build_phase1b_optimizer,
     build_phase1c_optimizer,
     evaluate_adaptation_curve,
@@ -27,6 +28,7 @@ from cvsrffi.meta_trainer import (  # noqa: E402
     run_meta_train_step,
     select_source_checkpoint,
 )
+from model import build_model  # noqa: E402
 
 
 class TinyMetaModel(nn.Module):
@@ -38,6 +40,7 @@ class TinyMetaModel(nn.Module):
         self.meta_adapter_time = ResidualMetaAdapter(4, rank=2)
         self.meta_adapter_freq = ResidualMetaAdapter(4, rank=2)
         self.meta_adapter_fusion = ResidualMetaAdapter(4, rank=2)
+        self.dropout = nn.Dropout(p=0.2)
         self.cls_head = nn.Linear(4, class_count)
         self.register_buffer("frozen_counter", torch.tensor(3.0))
 
@@ -50,7 +53,7 @@ class TinyMetaModel(nn.Module):
         del y
         t = self.meta_adapter_time(self.t_proj(x))
         f = self.meta_adapter_freq(self.f_proj(x))
-        z = self.meta_adapter_fusion(self.fuse(torch.cat((t, f), dim=1)))
+        z = self.dropout(self.meta_adapter_fusion(self.fuse(torch.cat((t, f), dim=1))))
         logits = self.cls_head(z)
         if not return_aux:
             return {"logits": logits}
@@ -60,6 +63,11 @@ class TinyMetaModel(nn.Module):
 def _model() -> TinyMetaModel:
     torch.manual_seed(7)
     return TinyMetaModel()
+
+
+def _config(**kwargs) -> MetaTrainerConfig:
+    kwargs.setdefault("source_receiver_ids", (0,))
+    return MetaTrainerConfig(**kwargs)
 
 
 def _episode(role: str = "L_s", *, rx_i: int | str = 0) -> MetaEpisode:
@@ -151,9 +159,34 @@ def _parameter_snapshot(model: nn.Module) -> dict[str, torch.Tensor]:
     }
 
 
+def _candidate(
+    candidate_id: str,
+    clean_delta_pp: float,
+    guard_floor_delta_pp: float,
+    worst_a3_delta_pp: float,
+    parameter_count: int,
+    latency_ms: float,
+) -> SourceCheckpointCandidate:
+    return SourceCheckpointCandidate(
+        candidate_id=candidate_id,
+        clean_delta_pp=clean_delta_pp,
+        guard_floor_delta_pp=guard_floor_delta_pp,
+        worst_a3_delta_pp=worst_a3_delta_pp,
+        parameter_count=parameter_count,
+        latency_ms=latency_ms,
+        source_holdouts=(
+            SourceHoldoutDelta(
+                holdout_id=f"{candidate_id}-holdout",
+                a0=0.0,
+                a3=worst_a3_delta_pp / 100.0,
+            ),
+        ),
+    )
+
+
 def test_phase1b_optimizer_contains_exact_adapter_and_log_step_size_parameters():
     model = _model()
-    optimizer = build_phase1b_optimizer(model, MetaTrainerConfig())
+    optimizer = build_phase1b_optimizer(model, _config())
     names = set(optimizer_parameter_names(model, optimizer))
     expected = {
         name
@@ -174,7 +207,7 @@ def test_phase1b_optimizer_contains_exact_adapter_and_log_step_size_parameters()
 
 def test_phase1c_optimizer_adds_only_real_backbone_projection_parameters_at_ratio_lr():
     model = _model()
-    config = MetaTrainerConfig(adapter_outer_lr=2.0e-3)
+    config = _config(adapter_outer_lr=2.0e-3)
     optimizer = build_phase1c_optimizer(model, config)
     names = set(optimizer_parameter_names(model, optimizer))
     phase1b_names = {
@@ -208,16 +241,16 @@ def test_phase1c_optimizer_adds_only_real_backbone_projection_parameters_at_rati
 
 
 def test_meta_batch_defaults_to_four_and_inner_loop_to_three_steps():
-    config = MetaTrainerConfig()
+    config = _config()
     assert config.meta_batch_size == 4
     assert config.inner_steps == 3
 
 
 def test_run_meta_train_step_averages_four_independent_episodes_and_logs_finite_terms():
     model = _model()
-    optimizer = build_phase1b_optimizer(model, MetaTrainerConfig())
+    optimizer = build_phase1b_optimizer(model, _config())
     before = _parameter_snapshot(model)
-    result = run_meta_train_step(model, [_batch() for _ in range(4)], optimizer)
+    result = run_meta_train_step(model, [_batch() for _ in range(4)], optimizer, _config())
     assert torch.isfinite(result.loss)
     assert len(result.episode_logs) == 4
     assert all(log["episode_kind"] == EpisodeKind.CLEAN_TO_LEO.value for log in result.episode_logs)
@@ -239,29 +272,59 @@ def test_run_meta_train_step_averages_four_independent_episodes_and_logs_finite_
 
 def test_run_meta_train_step_rejects_validation_roles_and_wrong_meta_batch_size():
     model = _model()
-    optimizer = build_phase1b_optimizer(model, MetaTrainerConfig())
+    optimizer = build_phase1b_optimizer(model, _config())
     with pytest.raises(ValueError, match="L_s"):
-        run_meta_train_step(model, [_batch("V_cal") for _ in range(4)], optimizer)
+        run_meta_train_step(model, [_batch("V_cal") for _ in range(4)], optimizer, _config())
     with pytest.raises(ValueError, match="meta batch"):
-        run_meta_train_step(model, [_batch()], optimizer)
+        run_meta_train_step(model, [_batch()], optimizer, _config())
 
 
 def test_outer_step_does_not_change_head_backbone_or_buffers():
     model = _model()
-    optimizer = build_phase1b_optimizer(model, MetaTrainerConfig())
+    optimizer = build_phase1b_optimizer(model, _config())
     before = _parameter_snapshot(model)
-    result = run_meta_train_step(model, [_batch() for _ in range(4)], optimizer)
+    result = run_meta_train_step(model, [_batch() for _ in range(4)], optimizer, _config())
     whitelist = set(result.optimizer_parameter_names)
     for name, value in list(model.named_parameters()) + list(model.named_buffers()):
         if name not in whitelist:
             assert torch.equal(value.detach(), before[name]), name
 
 
+def test_meta_episode_batch_rejects_physical_id_overlap_and_train_revalidates():
+    base = _batch()
+    duplicate_support = replace(
+        base.episode.support[1],
+        physical_sample_id=base.episode.support[0].physical_sample_id,
+    )
+    invalid = replace(base.episode, support=(base.episode.support[0], duplicate_support))
+    with pytest.raises(ValueError, match="physical_sample_id"):
+        replace(base, episode=invalid)
+
+    bypass = _batch()
+    object.__setattr__(bypass, "episode", invalid)
+    model = _model()
+    optimizer = build_phase1b_optimizer(model, _config())
+    with pytest.raises(ValueError, match="physical_sample_id"):
+        run_meta_train_step(model, [bypass] * 4, optimizer, _config())
+
+
+def test_source_receiver_allowlist_is_explicit_and_rejects_unknown_ids():
+    with pytest.raises((TypeError, ValueError), match="source_receiver_ids"):
+        MetaTrainerConfig()
+    config = _config()
+    model = _model()
+    optimizer = build_phase1b_optimizer(model, config)
+    with pytest.raises(ValueError, match="source_receiver_ids|999"):
+        run_meta_train_step(model, [_batch(rx_i=999)] * 4, optimizer, config)
+    with pytest.raises(ValueError, match="source_receiver_ids|999"):
+        evaluate_adaptation_curve(model, [_batch("V_cal", rx_i=999)], config)
+
+
 def test_evaluate_adaptation_curve_has_fixed_steps_and_preserves_model_state_and_grads():
     model = _model()
     model.train()
     before = _parameter_snapshot(model)
-    curve = evaluate_adaptation_curve(model, [_batch("V_cal"), _batch("V_select")])
+    curve = evaluate_adaptation_curve(model, [_batch("V_cal"), _batch("V_select")], _config())
     assert isinstance(curve, AdaptationCurve)
     assert curve.steps == (0, 1, 3, 5, 10)
     assert len(curve.rows) == 10
@@ -276,62 +339,61 @@ def test_evaluate_adaptation_curve_has_fixed_steps_and_preserves_model_state_and
     assert all(torch.equal(before[name], after[name]) for name in before)
 
 
+def test_evaluate_adaptation_curve_preserves_callers_existing_gradients():
+    model = _model()
+    expected = {}
+    for index, parameter in enumerate(model.parameters()):
+        parameter.grad = torch.full_like(parameter, float(index + 1))
+        expected[id(parameter)] = parameter.grad.detach().clone()
+    evaluate_adaptation_curve(model, [_batch("V_cal")], _config())
+    for parameter in model.parameters():
+        assert parameter.grad is not None
+        assert torch.equal(parameter.grad, expected[id(parameter)])
+
+
+def test_evaluate_adaptation_curve_temporarily_uses_eval_mode_and_restores_nested_flags():
+    model = _model()
+    model.train()
+    model.dropout.eval()
+    before = {id(module): module.training for module in model.modules()}
+    observed = []
+    handle = model.dropout.register_forward_hook(lambda module, args, output: observed.append(module.training))
+    try:
+        evaluate_adaptation_curve(model, [_batch("V_cal")], _config())
+    finally:
+        handle.remove()
+    assert observed and not any(observed)
+    assert {id(module): module.training for module in model.modules()} == before
+
+
 def test_evaluate_adaptation_curve_rejects_training_role_and_target_receiver_marker():
     model = _model()
     with pytest.raises(ValueError, match="V_cal|V_select"):
-        evaluate_adaptation_curve(model, [_batch("L_s")])
+        evaluate_adaptation_curve(model, [_batch("L_s")], _config())
     with pytest.raises(ValueError, match="target"):
-        evaluate_adaptation_curve(model, [_batch("V_cal", rx_i="target_receiver")])
+        evaluate_adaptation_curve(model, [_batch("V_cal", rx_i="target_receiver")], _config())
 
 
 def test_source_selection_filters_floor_and_zero_step_then_uses_deterministic_ties():
     candidates = [
-        SourceCheckpointCandidate(
-            candidate_id="bad_clean",
-            clean_delta_pp=-0.6,
-            guard_floor_delta_pp=0.0,
-            worst_a3_delta_pp=9.0,
-            parameter_count=1,
-            latency_ms=1.0,
-        ),
-        SourceCheckpointCandidate(
-            candidate_id="bad_guard",
-            clean_delta_pp=0.0,
-            guard_floor_delta_pp=-0.1,
-            worst_a3_delta_pp=9.0,
-            parameter_count=1,
-            latency_ms=1.0,
-        ),
-        SourceCheckpointCandidate(
-            candidate_id="valid_large",
-            clean_delta_pp=-0.2,
-            guard_floor_delta_pp=0.0,
-            worst_a3_delta_pp=1.1,
-            parameter_count=20,
-            latency_ms=2.0,
-        ),
-        SourceCheckpointCandidate(
-            candidate_id="valid_small",
-            clean_delta_pp=-0.2,
-            guard_floor_delta_pp=0.0,
-            worst_a3_delta_pp=1.1,
-            parameter_count=10,
-            latency_ms=3.0,
-        ),
+        _candidate("bad_clean", -0.6, 0.0, 9.0, 1, 1.0),
+        _candidate("bad_guard", 0.0, -0.1, 9.0, 1, 1.0),
+        _candidate("valid_large", -0.2, 0.0, 1.1, 20, 2.0),
+        _candidate("valid_small", -0.2, 0.0, 1.1, 10, 3.0),
     ]
     assert select_source_checkpoint(candidates).candidate_id == "valid_small"
 
 
 def test_source_selection_uses_latency_then_candidate_id_and_fails_when_empty():
     tied = [
-        SourceCheckpointCandidate("zeta", 0.0, 0.0, 2.0, 10, 4.0),
-        SourceCheckpointCandidate("alpha", 0.0, 0.0, 2.0, 10, 4.0),
-        SourceCheckpointCandidate("beta", 0.0, 0.0, 2.0, 10, 3.0),
+        _candidate("zeta", 0.0, 0.0, 2.0, 10, 4.0),
+        _candidate("alpha", 0.0, 0.0, 2.0, 10, 4.0),
+        _candidate("beta", 0.0, 0.0, 2.0, 10, 3.0),
     ]
     assert select_source_checkpoint(tied).candidate_id == "beta"
     with pytest.raises(ValueError, match="eligible|candidate"):
         select_source_checkpoint(
-            [SourceCheckpointCandidate("bad", -0.6, -0.1, 3.0, 1, 1.0)]
+            [_candidate("bad", -0.6, -0.1, 3.0, 1, 1.0)]
         )
     with pytest.raises(ValueError, match="empty|candidate"):
         select_source_checkpoint([])
@@ -344,5 +406,77 @@ def test_source_checkpoint_candidate_rejects_target_or_query_fields():
             clean_delta_pp=0.0,
             guard_floor_delta_pp=0.0,
             worst_a3_delta_pp=1.0,
+            source_holdouts=(SourceHoldoutDelta("bad-holdout", 0.0, 0.01),),
             target_accuracy=0.9,  # type: ignore[call-arg]
         )
+
+
+def test_source_checkpoint_rejects_claimed_worst_delta_that_disagrees_with_curve():
+    with pytest.raises(ValueError, match="derived|worst"):
+        SourceCheckpointCandidate(
+            candidate_id="claimed",
+            clean_delta_pp=0.0,
+            guard_floor_delta_pp=0.0,
+            worst_a3_delta_pp=99.0,
+            parameter_count=1,
+            latency_ms=1.0,
+            source_holdouts=(SourceHoldoutDelta("h", 0.90, 0.0),),
+        )
+
+
+def test_run_meta_train_step_rolls_back_optimizer_state_after_partial_step_failure():
+    class PartialFailOptimizer(torch.optim.Optimizer):
+        def __init__(self, params):
+            super().__init__(params, {"lr": 1.0})
+
+        @torch.no_grad()
+        def step(self, closure=None):
+            del closure
+            parameter = self.param_groups[0]["params"][0]
+            parameter.add_(1.0)
+            self.state[parameter]["partial_marker"] = torch.tensor(1.0)
+            raise RuntimeError("synthetic partial optimizer failure")
+
+    config = _config()
+    model = _model()
+    baseline_optimizer = build_phase1b_optimizer(model, config)
+    params = [parameter for group in baseline_optimizer.param_groups for parameter in group["params"]]
+    optimizer = PartialFailOptimizer(params)
+    before = _parameter_snapshot(model)
+    with pytest.raises(RuntimeError, match="partial optimizer failure"):
+        run_meta_train_step(model, [_batch()] * 4, optimizer, config)
+    for name, value in list(model.named_parameters()) + list(model.named_buffers()):
+        assert torch.equal(value.detach(), before[name]), name
+    assert optimizer.state_dict()["state"] == {}
+
+
+def test_real_cvsincnet_phase1_parameter_groups_are_18_and_24_names():
+    config = _config(adapter_outer_lr=2.0e-3)
+    model_b = build_model(
+        dataset="wisig",
+        input_len=256,
+        model_variant="base",
+        meta_adapter_rank=4,
+        meta_adapter_sites="time,freq,fusion",
+    )
+    optimizer_b = build_phase1b_optimizer(model_b, config)
+    names_b = set(optimizer_parameter_names(model_b, optimizer_b))
+    assert len(names_b) == 18
+    model_c = build_model(
+        dataset="wisig",
+        input_len=256,
+        model_variant="base",
+        meta_adapter_rank=4,
+        meta_adapter_sites="time,freq,fusion",
+    )
+    optimizer_c = build_phase1c_optimizer(model_c, config)
+    names_c = set(optimizer_parameter_names(model_c, optimizer_c))
+    assert len(names_c) == 24
+    assert names_c - names_b == {
+        "t_proj.weight",
+        "t_proj.bias",
+        "f_proj.weight",
+        "f_proj.bias",
+        "fuse.0.weight",
+        "fuse.0.bias",
+    }
