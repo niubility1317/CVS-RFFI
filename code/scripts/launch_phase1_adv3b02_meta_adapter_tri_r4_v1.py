@@ -28,10 +28,32 @@ def _resolve_path(value: str | os.PathLike[str], *, base: Path) -> Path:
     return path if path.is_absolute() else (base / path)
 
 
+def _resolve_config_asset(value: str | os.PathLike[str], *, config_path: Path) -> Path:
+    path = Path(value)
+    if path.is_absolute():
+        return path.resolve()
+    beside_config = (config_path.parent / path).resolve()
+    if beside_config.exists():
+        return beside_config
+    return (PROJECT_ROOT / path).resolve()
+
+
+def _require_readable_file(path: Path, *, field_name: str) -> None:
+    if not path.is_file() or path.is_symlink():
+        raise FileNotFoundError(f"{field_name} is not a readable regular file: {path}")
+    try:
+        with path.open("rb") as handle:
+            handle.read(1)
+    except OSError as exc:
+        raise OSError(f"{field_name} is not readable: {path}") from exc
+
+
 def _build_command(
     *,
     config_path: Path,
     config: Mapping[str, Any],
+    base_checkpoint: Path,
+    wisig_pkl: Path,
     output_root: Path,
     python_executable: str,
     gpu: str,
@@ -42,9 +64,9 @@ def _build_command(
         "--dataset",
         "wisig",
         "--wisig_pkl",
-        str(_resolve_path(str(config["wisig_pkl"]), base=PROJECT_ROOT)),
+        str(wisig_pkl),
         "--init_checkpoint",
-        str(_resolve_path(str(config["base_checkpoint"]), base=PROJECT_ROOT)),
+        str(base_checkpoint),
         "--use_cvs_meta_adapter",
         "--meta_config",
         str(config_path),
@@ -79,6 +101,10 @@ def build_launch_plan(
 
     config_path_abs = _resolve_path(config_path, base=PROJECT_ROOT).resolve()
     config = load_meta_phase1_config(config_path_abs)
+    resolved_checkpoint = _resolve_config_asset(str(config["base_checkpoint"]), config_path=config_path_abs)
+    resolved_wisig = _resolve_config_asset(str(config["wisig_pkl"]), config_path=config_path_abs)
+    _require_readable_file(resolved_checkpoint, field_name="base_checkpoint")
+    _require_readable_file(resolved_wisig, field_name="wisig_pkl")
     resolved_output = (
         _resolve_path(output_root, base=PROJECT_ROOT)
         if output_root is not None and str(output_root).strip()
@@ -91,22 +117,25 @@ def build_launch_plan(
     command = _build_command(
         config_path=config_path_abs,
         config=config,
+        base_checkpoint=resolved_checkpoint,
+        wisig_pkl=resolved_wisig,
         output_root=resolved_output,
         python_executable=selected_python,
         gpu=selected_gpu,
     )
     expected_artifacts = (
-        "report.md",
         "logs.jsonl",
         "metrics.csv",
         "selected_meta_bundle.pt",
+        "run_summary.json",
+        "config_snapshot.json",
         "source_adaptation_curve.json",
     )
     return {
         "schema": config["schema"],
         "run_id": config["run_id"],
-        "base_checkpoint": str(_resolve_path(config["base_checkpoint"], base=PROJECT_ROOT)),
-        "wisig_pkl": str(_resolve_path(config["wisig_pkl"], base=PROJECT_ROOT)),
+        "base_checkpoint": str(resolved_checkpoint),
+        "wisig_pkl": str(resolved_wisig),
         "source_receiver_ids": list(config["source_receiver_ids"]),
         "gpu": selected_gpu or "cpu",
         "python": selected_python,
@@ -151,8 +180,6 @@ def main(argv: Sequence[str] | None = None) -> int:
         print("dry_run=true")
         return 0
 
-    output_root = Path(plan["output_root"])
-    output_root.mkdir(parents=True, exist_ok=False)
     env = dict(os.environ)
     if args.gpu is not None:
         env["CUDA_VISIBLE_DEVICES"] = str(args.gpu)

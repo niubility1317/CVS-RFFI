@@ -2798,7 +2798,13 @@ def main():
         if bool(getattr(args, "use_cvs_meta_adapter", False)):
             from cvsrffi.meta_phase1_entry import run_meta_phase1
 
-            run_meta_phase1(args, ds_w)
+            meta_summary = run_meta_phase1(args, ds_w)
+            print(
+                f"[META-PHASE1-ROUTE] status={meta_summary.get('status')} "
+                f"run_id={meta_summary.get('run_id')} "
+                f"outer_steps={meta_summary.get('task7_outer_steps')}",
+                flush=True,
+            )
             return
 
         eq2 = "both" if str(args.wisig_equalized).lower() == "both" else int(args.wisig_equalized)

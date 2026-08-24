@@ -1,19 +1,25 @@
-"""Thin, source-only entrypoint for the frozen Phase1 meta-adapter run.
+"""Executable source-only Phase1 entrypoint for the frozen meta-adapter run.
 
-Task8 owns configuration validation, source split construction and the CLI
-handoff.  The actual FOMAML implementation remains in ``meta_trainer``; this
-module deliberately does not duplicate a training loop or expose target/Phase2
-inputs.
+This module owns orchestration only.  The typed Task2 carriers, Task6 inner
+loop, Task7 trainer and Task4 checkpoint migration remain the implementation
+authorities; this entrypoint wires them together and persists only artifacts
+that were produced by the real path.
 """
 
 from __future__ import annotations
 
 import argparse
+import csv
+from dataclasses import asdict
 import json
 import math
 import os
 from pathlib import Path
+import traceback
 from typing import Any, Mapping, MutableMapping, Sequence
+
+import torch
+from torch import nn
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -26,6 +32,8 @@ CANONICAL_SOURCE_ROLES = {
     "V_select": 0.15,
 }
 CANONICAL_SOURCE_RECEIVER_IDS = (0, 1, 2, 3, 4, 5, 6)
+CANONICAL_SOURCE_SPLIT = "tx_rx_day_1_7_2"
+CANONICAL_SOURCE_DAYS = (0, 1)
 CANONICAL_ADAPTER = {
     "rank": 4,
     "sites": ("time", "freq", "fusion"),
@@ -42,6 +50,9 @@ CANONICAL_EPISODE_WEIGHTS = {
 }
 CANONICAL_K_CHOICES = (1, 2, 5, 10)
 CANONICAL_EVALUATE_STEPS = (0, 1, 3, 5, 10)
+CANONICAL_DEFAULT_META_TRAIN_STEPS = 200
+CANONICAL_DEFAULT_META_EVAL_EPISODES = 4
+CANONICAL_DEFAULT_META_QUERY_PER_CLASS = 2
 
 
 def _as_mapping(value: Any, *, field_name: str) -> Mapping[str, Any]:
@@ -124,6 +135,27 @@ def _check_source_receiver_ids(value: Any) -> tuple[int, ...]:
     return result
 
 
+def _validate_model_config(value: Any) -> dict[str, Any]:
+    """Validate the small frozen model-builder surface used by Task8."""
+
+    raw = dict(_as_mapping(value, field_name="model"))
+    builder = str(raw.get("builder", "dual")).strip().lower()
+    if builder not in {"single", "dual"}:
+        raise ValueError("model.builder must be 'single' or 'dual'")
+    raw["builder"] = builder
+    for name in ("num_classes", "input_len"):
+        if name in raw:
+            _require_int(raw[name], field_name=f"model.{name}", minimum=1)
+    if builder == "dual":
+        _require_int(raw.get("num_domains"), field_name="model.num_domains", minimum=1)
+    if "sample_rate_hz" in raw:
+        _finite_number(raw["sample_rate_hz"], field_name="model.sample_rate_hz")
+    for name in ("model_size", "dataset", "model_variant", "branch_ablation", "domain_branch_ablation"):
+        if name in raw and not isinstance(raw[name], str):
+            raise ValueError(f"model.{name} must be a string")
+    return raw
+
+
 def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
     """Validate and normalize the Task8 frozen source-only configuration."""
 
@@ -144,6 +176,8 @@ def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
         "base_checkpoint",
         "wisig_pkl",
         "source_receiver_ids",
+        "source_split",
+        "source_days",
         "source_roles",
         "adapter",
         "episode_weights",
@@ -151,6 +185,10 @@ def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
         "meta_batch_size",
         "phase1c_backbone_lr_ratio",
         "evaluate_steps",
+        "meta_train_steps",
+        "meta_eval_episodes",
+        "meta_query_per_class",
+        "model",
     }
     missing = sorted(required.difference(config))
     if missing:
@@ -164,6 +202,14 @@ def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
     base_checkpoint = _require_token(config["base_checkpoint"], field_name="base_checkpoint")
     wisig_pkl = _require_token(config["wisig_pkl"], field_name="wisig_pkl")
     source_receiver_ids = _check_source_receiver_ids(config["source_receiver_ids"])
+    source_split = _require_token(config["source_split"], field_name="source_split")
+    if source_split != CANONICAL_SOURCE_SPLIT:
+        raise ValueError(
+            f"source_split must be frozen at {CANONICAL_SOURCE_SPLIT!r}; got {source_split!r}"
+        )
+    source_days = _check_exact_int_sequence(
+        config["source_days"], CANONICAL_SOURCE_DAYS, field_name="source_days"
+    )
 
     source_roles = _check_exact_float_map(
         config["source_roles"],
@@ -221,9 +267,16 @@ def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
     evaluate_steps = _check_exact_int_sequence(
         config["evaluate_steps"], CANONICAL_EVALUATE_STEPS, field_name="evaluate_steps"
     )
-    source_days: tuple[int, ...] | None = None
-    if "source_days" in config:
-        source_days = _check_exact_int_sequence(config["source_days"], (0, 1), field_name="source_days")
+    meta_train_steps = _require_int(
+        config["meta_train_steps"], field_name="meta_train_steps", minimum=1
+    )
+    meta_eval_episodes = _require_int(
+        config["meta_eval_episodes"], field_name="meta_eval_episodes", minimum=2
+    )
+    meta_query_per_class = _require_int(
+        config["meta_query_per_class"], field_name="meta_query_per_class", minimum=1
+    )
+    model = _validate_model_config(config["model"])
 
     normalized: dict[str, Any] = dict(config)
     normalized.update(
@@ -234,6 +287,8 @@ def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
             "base_checkpoint": base_checkpoint,
             "wisig_pkl": wisig_pkl,
             "source_receiver_ids": list(source_receiver_ids),
+            "source_split": source_split,
+            "source_days": list(source_days),
             "source_roles": source_roles,
             "adapter": {
                 "rank": adapter["rank"],
@@ -247,10 +302,12 @@ def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
             "meta_batch_size": meta_batch_size,
             "phase1c_backbone_lr_ratio": phase1c_ratio,
             "evaluate_steps": list(evaluate_steps),
+            "meta_train_steps": meta_train_steps,
+            "meta_eval_episodes": meta_eval_episodes,
+            "meta_query_per_class": meta_query_per_class,
+            "model": model,
         }
     )
-    if source_days is not None:
-        normalized["source_days"] = list(source_days)
     return normalized
 
 
@@ -316,7 +373,12 @@ def _parse_index_list(value: Any, *, field_name: str, default: Sequence[int]) ->
 
 
 def _source_role_manifest(ds_w: Mapping[str, Any], config: Mapping[str, Any], args: Any) -> dict[str, Any]:
-    """Build only source role metadata; no target split or query is opened."""
+    """Build only the frozen source role split; no target split is opened."""
+
+    if config.get("source_split") != CANONICAL_SOURCE_SPLIT:
+        raise ValueError("Phase1 meta entry requires source_split=tx_rx_day_1_7_2")
+    if tuple(config.get("source_days", ())) != CANONICAL_SOURCE_DAYS:
+        raise ValueError("Phase1 meta entry requires source_days=[0,1]")
 
     rx_list = list(ds_w.get("rx_list", []))
     for receiver_id in config["source_receiver_ids"]:
@@ -342,7 +404,7 @@ def _source_role_manifest(ds_w: Mapping[str, Any], config: Mapping[str, Any], ar
     equalized = getattr(args, "wisig_equalized", 1)
     if isinstance(equalized, str) and equalized.lower() != "both":
         equalized = int(equalized)
-    configured_days = config.get("source_days")
+    configured_days = config["source_days"]
     train_days = _parse_index_list(
         configured_days if configured_days is not None else getattr(args, "wisig_train_days", None),
         field_name="source_days" if configured_days is not None else "wisig_train_days",
@@ -391,13 +453,528 @@ def _source_role_manifest(ds_w: Mapping[str, Any], config: Mapping[str, Any], ar
     }
 
 
-def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
-    """Validate the frozen entry and prepare its source-only role manifest.
+def _resolve_config_path(value: str | os.PathLike[str], *, config_source: Any) -> Path:
+    path = Path(value)
+    if path.is_absolute():
+        return path.resolve()
+    config_path = Path(config_source) if isinstance(config_source, (str, os.PathLike)) else None
+    if config_path is not None and config_path.is_file():
+        beside_config = (config_path.parent / path).resolve()
+        if beside_config.exists():
+            return beside_config
+    return (PROJECT_ROOT / path).resolve()
 
-    The function is intentionally a thin handoff.  Task7 owns the optimizer and
-    episode step; this entry does not duplicate that loop or consume ``U_s``
-    labels, target receivers, Phase2 data or query truth.
+
+def _require_readable_file(path: Path, *, field_name: str) -> None:
+    if not path.is_file() or path.is_symlink():
+        raise FileNotFoundError(f"{field_name} is not a readable regular file: {path}")
+    try:
+        with path.open("rb") as handle:
+            handle.read(1)
+    except OSError as exc:
+        raise OSError(f"{field_name} is not readable: {path}") from exc
+
+
+def _load_checkpoint_payload(path: Path, device: torch.device) -> dict[str, Any]:
+    try:
+        from post_stage_common import load_checkpoint
+
+        loaded = load_checkpoint(str(path), device)
+        if isinstance(loaded, Mapping):
+            return dict(loaded)
+    except (ImportError, ModuleNotFoundError):
+        pass
+    try:
+        payload = torch.load(path, map_location=device, weights_only=True)
+    except TypeError:
+        payload = torch.load(path, map_location=device)
+    if isinstance(payload, Mapping) and isinstance(payload.get("model"), Mapping):
+        return dict(payload)
+    if isinstance(payload, Mapping):
+        return {"model": dict(payload), "args": {}}
+    raise ValueError(f"base checkpoint payload must be a mapping: {path}")
+
+
+def _model_args_for_run(
+    config: Mapping[str, Any],
+    ds_w: Mapping[str, Any],
+    payload: Mapping[str, Any],
+) -> dict[str, Any]:
+    model_config = dict(config.get("model", {}))
+    checkpoint_args = payload.get("args", {})
+    merged: dict[str, Any] = dict(checkpoint_args) if isinstance(checkpoint_args, Mapping) else {}
+    merged.update(model_config)
+    merged.pop("builder", None)
+    builder = str(model_config.get("builder", "dual")).strip().lower()
+    class_count = int(model_config.get("num_classes", len(ds_w.get("tx_list", [])) or 1))
+    merged.setdefault("num_classes", class_count)
+    merged.setdefault("dataset", "wisig")
+    merged.setdefault("input_len", int(getattr(ds_w, "input_len", 256) or 256))
+    merged.setdefault("model_size", "M" if builder == "dual" else "M")
+    merged.setdefault("model_variant", "lite_d" if builder == "dual" else "base")
+    if builder == "dual":
+        merged.setdefault(
+            "num_domains",
+            max(1, len(config["source_receiver_ids"]) * len(config["source_days"])),
+        )
+        merged.setdefault("id_feature_key", "feat_joint")
+        merged.setdefault("dom_feature_key", "feat_imp")
+    merged["meta_adapter_rank"] = int(config["adapter"]["rank"])
+    merged["meta_adapter_sites"] = ",".join(config["adapter"]["sites"])
+    merged["builder"] = builder
+    return merged
+
+
+def _build_meta_model(
+    config: Mapping[str, Any],
+    ds_w: Mapping[str, Any],
+    payload: Mapping[str, Any],
+    device: torch.device,
+    *,
+    adapter_rank: int | None = None,
+    adapter_sites: str | None = None,
+) -> tuple[nn.Module, dict[str, Any]]:
+    model_args = _model_args_for_run(config, ds_w, payload)
+    if adapter_rank is not None:
+        model_args["meta_adapter_rank"] = int(adapter_rank)
+        model_args["meta_adapter_sites"] = str(adapter_sites or "")
+    builder = str(model_args.pop("builder", "dual")).lower()
+    if builder == "dual":
+        from model_dual_cvsincnet import build_dual_model
+
+        builder_fn = build_dual_model
+    else:
+        from model import build_model
+
+        builder_fn = build_model
+    import inspect
+
+    allowed = set(inspect.signature(builder_fn).parameters)
+    kwargs = {key: value for key, value in model_args.items() if key in allowed}
+    # Historical SSDG checkpoints store ``use_mixstyle`` while the repository
+    # builder uses the explicit ``mixstyle_on`` spelling.
+    if "mixstyle_on" in allowed and "mixstyle_on" not in kwargs and "use_mixstyle" in model_args:
+        kwargs["mixstyle_on"] = bool(model_args["use_mixstyle"])
+    model = builder_fn(**kwargs).to(device)
+    model_args = dict(kwargs)
+    model_args["builder"] = builder
+    return model, model_args
+
+
+def _validate_rank4_three_site_model(model: nn.Module, config: Mapping[str, Any]) -> None:
+    from cvsrffi.meta_adapter import ResidualMetaAdapter
+
+    rank = int(config["adapter"]["rank"])
+    sites = tuple(str(site) for site in config["adapter"]["sites"])
+    for site in sites:
+        suffix = f"meta_adapter_{site}"
+        modules = [
+            module
+            for name, module in model.named_modules()
+            if str(name).endswith(suffix) and isinstance(module, ResidualMetaAdapter)
+        ]
+        if not modules:
+            raise ValueError(f"meta model is missing rank-{rank} {site} adapter")
+        if any(int(module.down.out_features) != rank for module in modules):
+            observed = sorted({int(module.down.out_features) for module in modules})
+            raise ValueError(
+                f"meta_adapter_{site} rank drift: expected {rank}, got {observed}"
+            )
+
+
+def _load_legacy_checkpoint_into_meta_model(
+    model: nn.Module,
+    config: Mapping[str, Any],
+    ds_w: Mapping[str, Any],
+    payload: Mapping[str, Any],
+    device: torch.device,
+    *,
+    allow_nested_dual_bridge: bool,
+) -> tuple[Any, str]:
+    """Load Task4 legacy weights, bridging nested dual adapters when needed.
+
+    Task4's loader intentionally allows only top-level ``meta_adapter_*``
+    missing keys.  The dual backbone registers the same adapters below
+    ``id_backbone`` and ``dom_backbone``, so a rank-4 dual target otherwise
+    looks like a legacy checkpoint with missing non-adapter keys.  Build a
+    rank-0 shell through the same repository builder, let Task4 validate and
+    load the legacy checkpoint there, then copy only shape-compatible base
+    tensors into the already validated rank-4 target.  Injected test models
+    stay on the direct Task4 path and cannot silently opt into this bridge.
     """
+
+    from cvsrffi.meta_checkpoint import load_legacy_base_for_meta
+
+    direct_error: ValueError | None = None
+    try:
+        return load_legacy_base_for_meta(model, payload), "direct"
+    except ValueError as exc:
+        direct_error = exc
+        if not allow_nested_dual_bridge or "missing non-adapter keys" not in str(direct_error):
+            raise
+
+    from cvsrffi.meta_adapter import ResidualMetaAdapter
+
+    nested_adapter_modules = tuple(
+        name
+        for name, module in model.named_modules()
+        if isinstance(module, ResidualMetaAdapter) and "." in str(name)
+    )
+    if not nested_adapter_modules:
+        raise ValueError(
+            "Task4 legacy migration failed and no nested dual adapter bridge is available"
+        ) from direct_error
+
+    legacy_model, _legacy_model_args = _build_meta_model(
+        config,
+        ds_w,
+        payload,
+        device,
+        adapter_rank=0,
+        adapter_sites="",
+    )
+    legacy_audit = load_legacy_base_for_meta(legacy_model, payload)
+    legacy_state = legacy_model.state_dict()
+    target_state = model.state_dict()
+    incompatible_shapes = tuple(
+        key
+        for key, value in legacy_state.items()
+        if key not in target_state
+        or not torch.is_tensor(value)
+        or not torch.is_tensor(target_state[key])
+        or tuple(value.shape) != tuple(target_state[key].shape)
+    )
+    if incompatible_shapes:
+        raise ValueError(
+            "rank-0 legacy shell has base tensors incompatible with rank-4 target: "
+            f"keys={list(incompatible_shapes)}"
+        ) from direct_error
+
+    compatible_state = {
+        key: value
+        for key, value in legacy_state.items()
+        if key in target_state
+        and torch.is_tensor(value)
+        and torch.is_tensor(target_state[key])
+        and tuple(value.shape) == tuple(target_state[key].shape)
+    }
+    incompatible = model.load_state_dict(compatible_state, strict=False)
+    unexpected = tuple(sorted(str(key) for key in incompatible.unexpected_keys))
+    missing_non_adapter = tuple(
+        sorted(
+            str(key)
+            for key in incompatible.missing_keys
+            if "meta_adapter_" not in str(key)
+        )
+    )
+    if unexpected or missing_non_adapter:
+        raise ValueError(
+            "rank-0 legacy shell migration did not cover the rank-4 base: "
+            f"missing={list(missing_non_adapter)} unexpected={list(unexpected)}"
+        ) from direct_error
+    return legacy_audit, "rank0_legacy_shell"
+
+
+def _model_forward(model: nn.Module, x: torch.Tensor, y: torch.Tensor) -> Mapping[str, Any]:
+    import inspect
+
+    parameters = inspect.signature(model.forward).parameters
+    kwargs: dict[str, Any] = {"return_aux": True}
+    if "y" in parameters:
+        kwargs["y"] = y
+    elif "y_tx" in parameters:
+        kwargs["y_tx"] = y
+    return model(x, **kwargs)
+
+
+def _embedding_from_output(output: Mapping[str, Any]) -> torch.Tensor:
+    for key in ("z_id", "feat_cls", "id_feat_cls", "id_feat_joint", "feat_joint", "base"):
+        value = output.get(key)
+        if torch.is_tensor(value) and value.ndim == 2:
+            return value
+    raise ValueError("meta Phase1 model output has no identity embedding")
+
+
+def _dataset_item(dataset: Any, index: int) -> tuple[torch.Tensor, int, Mapping[str, Any]]:
+    item = dataset[int(index)]
+    if not isinstance(item, (tuple, list)) or len(item) < 3:
+        raise ValueError("source role dataset item must contain x,y,domain,metadata")
+    x = item[0]
+    y = item[1]
+    metadata = item[-1]
+    if not torch.is_tensor(x):
+        x = torch.as_tensor(x)
+    if not isinstance(metadata, Mapping):
+        raise ValueError("source role dataset item metadata must be a mapping")
+    return x.detach().float(), int(y), metadata
+
+
+_SOURCE_META_VIEWS = ("clean", "leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
+
+
+def _build_refs(dataset: Any, role: str) -> tuple[tuple[Any, ...], Any]:
+    from cvsrffi.meta_episodes import MetaSampleRef
+
+    refs: list[MetaSampleRef] = []
+    for index in range(len(dataset)):
+        _x, y, meta = _dataset_item(dataset, index)
+        required = ("rx_i", "day_i", "eq_i", "capture_block_i", "physical_sample_id")
+        if any(key not in meta for key in required):
+            raise ValueError(f"{role} dataset metadata is missing one of {required!r}")
+        for view in _SOURCE_META_VIEWS:
+            refs.append(
+                MetaSampleRef(
+                    dataset_index=int(index),
+                    tx_i=int(y),
+                    rx_i=int(meta["rx_i"]),
+                    day_i=int(meta["day_i"]),
+                    eq_i=int(meta["eq_i"]),
+                    capture_block_i=int(meta["capture_block_i"]),
+                    physical_sample_id=str(meta["physical_sample_id"]),
+                    role=str(role),
+                    view=view,
+                )
+            )
+    if not refs:
+        raise ValueError(f"{role} source role has no rows for meta episodes")
+    return tuple(refs), dataset
+
+
+def _sample_episode(sampler: Any, *, seed: int) -> Any:
+    last_error: Exception | None = None
+    for offset in range(256):
+        try:
+            return sampler.sample(int(seed) + offset)
+        except (ValueError, RuntimeError) as exc:
+            last_error = exc
+    raise ValueError(f"cannot construct source meta episode after 256 seeds: {last_error}")
+
+
+def _episode_batch(
+    episode: Any,
+    dataset: Any,
+    *,
+    model: nn.Module,
+    num_classes: int,
+    device: torch.device,
+) -> Any:
+    from cvsrffi.meta_trainer import MetaEpisodeBatch
+
+    refs = episode.support + episode.query_adapt + episode.query_guard
+    tensors: dict[tuple[int, str], torch.Tensor] = {}
+    labels: dict[tuple[int, str], int] = {}
+    for ref in refs:
+        key = (int(ref.dataset_index), str(ref.view))
+        if key not in tensors:
+            x, y, _meta = _dataset_item(dataset, int(ref.dataset_index))
+            tensors[key] = x
+            labels[key] = int(y)
+
+    def stack(rows: Sequence[Any]) -> tuple[torch.Tensor, torch.Tensor]:
+        if not rows:
+            raise ValueError("meta episode partition cannot be empty")
+        values = [tensors[(int(row.dataset_index), str(row.view))] for row in rows]
+        ys = [int(row.tx_i) for row in rows]
+        return torch.stack(values).to(device), torch.tensor(ys, dtype=torch.long, device=device)
+
+    support_x, support_y = stack(episode.support)
+    query_rows = episode.query_adapt + episode.query_guard
+    query_x, query_y = stack(query_rows)
+    adapt_mask = torch.tensor(
+        [True] * len(episode.query_adapt) + [False] * len(episode.query_guard),
+        dtype=torch.bool,
+        device=device,
+    )
+    guard_mask = ~adapt_mask
+    with torch.no_grad():
+        embedding = _embedding_from_output(_model_forward(model, support_x[:1], support_y[:1]))
+    frozen_prototypes = torch.zeros(
+        int(num_classes), int(embedding.shape[1]), dtype=embedding.dtype, device=device
+    )
+    return MetaEpisodeBatch(
+        episode=episode,
+        support_x=support_x,
+        support_y=support_y,
+        query_x=query_x,
+        query_y=query_y,
+        adapt_mask=adapt_mask,
+        guard_mask=guard_mask,
+        frozen_prototypes=frozen_prototypes,
+    )
+
+
+def _build_source_batches(
+    role_datasets: Mapping[str, Any],
+    config: Mapping[str, Any],
+    model: nn.Module,
+    device: torch.device,
+) -> tuple[list[Any], list[Any]]:
+    from cvsrffi.meta_episodes import HierarchicalMetaEpisodeSampler, MetaEpisodeSamplerConfig
+
+    weights = config["episode_weights"]
+    train_refs, train_dataset = _build_refs(role_datasets["L_s"], "L_s")
+    sampler_config = MetaEpisodeSamplerConfig(
+        k_choices=tuple(config["k_choices"]),
+        query_per_class=int(config["meta_query_per_class"]),
+        allowed_roles=("L_s",),
+        training=True,
+        episode_weights=weights,
+    )
+    train_sampler = HierarchicalMetaEpisodeSampler(train_refs, sampler_config)
+    num_classes = int(config["model"].get("num_classes", len(getattr(train_dataset, "tx_list", []) or [])) or 1)
+    train_batches = [
+        _episode_batch(
+            _sample_episode(train_sampler, seed=int(config["seed"]) + index),
+            train_dataset,
+            model=model,
+            num_classes=num_classes,
+            device=device,
+        )
+        for index in range(int(config["meta_batch_size"]))
+    ]
+
+    eval_config = MetaEpisodeSamplerConfig(
+        k_choices=tuple(config["k_choices"]),
+        query_per_class=int(config["meta_query_per_class"]),
+        allowed_roles=("V_cal", "V_select"),
+        training=False,
+        episode_weights=weights,
+    )
+    eval_batches: list[Any] = []
+    eval_count = int(config["meta_eval_episodes"])
+    for role_index, role in enumerate(("V_cal", "V_select")):
+        refs, dataset = _build_refs(role_datasets[role], role)
+        sampler = HierarchicalMetaEpisodeSampler(refs, eval_config)
+        count = max(1, eval_count // 2 + (1 if role_index < eval_count % 2 else 0))
+        for index in range(count):
+            eval_batches.append(
+                _episode_batch(
+                    _sample_episode(
+                        sampler,
+                        seed=int(config["seed"]) + 10000 + role_index * 1000 + index,
+                    ),
+                    dataset,
+                    model=model,
+                    num_classes=num_classes,
+                    device=device,
+                )
+            )
+    return train_batches, eval_batches
+
+
+def _validate_injected_batches(value: Any, config: Mapping[str, Any]) -> tuple[list[Any], list[Any]]:
+    from cvsrffi.meta_trainer import MetaEpisodeBatch
+
+    if not isinstance(value, Mapping):
+        raise TypeError("meta_episode_batch_factory must return a mapping")
+    train_batches = list(value.get("train", ()))
+    eval_batches = list(value.get("eval", ()))
+    if len(train_batches) != int(config["meta_batch_size"]):
+        raise ValueError("injected train episode count does not match meta_batch_size")
+    if len(eval_batches) < 2:
+        raise ValueError("injected evaluation episodes must contain V_cal and V_select")
+    if any(not isinstance(batch, MetaEpisodeBatch) for batch in train_batches + eval_batches):
+        raise TypeError("injected episode carriers must be MetaEpisodeBatch values")
+    train_roles = {str(row.role) for batch in train_batches for row in batch.episode.support + batch.episode.query_adapt + batch.episode.query_guard}
+    eval_roles = {str(row.role) for batch in eval_batches for row in batch.episode.support + batch.episode.query_adapt + batch.episode.query_guard}
+    if train_roles != {"L_s"}:
+        raise ValueError(f"injected training carriers must be L_s-only, got {sorted(train_roles)!r}")
+    if not eval_roles.issubset({"V_cal", "V_select"}) or not {"V_cal", "V_select"}.issubset(eval_roles):
+        raise ValueError("injected evaluation carriers must cover V_cal and V_select only")
+    return train_batches, eval_batches
+
+
+def _resolve_output_root(args: Any, config: Mapping[str, Any]) -> Path:
+    value = str(getattr(args, "meta_output_root", "") or "").strip()
+    root = Path(value) if value else PROJECT_ROOT / "runs" / str(config["run_id"])
+    if not root.is_absolute():
+        root = PROJECT_ROOT / root
+    return root.resolve()
+
+
+def _write_json_exclusive(path: Path, payload: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("x", encoding="utf-8", newline="\n") as handle:
+        json.dump(payload, handle, ensure_ascii=False, indent=2, sort_keys=True, default=str)
+        handle.write("\n")
+
+
+def _curve_payload(curve: Any) -> dict[str, Any]:
+    return {
+        "steps": list(curve.steps),
+        "source_only": bool(curve.source_only),
+        "rows": [asdict(row) for row in curve.rows],
+    }
+
+
+def _candidate_from_curves(
+    baseline: Any,
+    final: Any,
+    *,
+    candidate_id: str,
+    model: nn.Module,
+) -> Any:
+    from cvsrffi.meta_trainer import SourceCheckpointCandidate, SourceHoldoutDelta
+
+    baseline_rows = {(int(row.episode_index), int(row.step)): row for row in baseline.rows}
+    final_rows = {(int(row.episode_index), int(row.step)): row for row in final.rows}
+    holdouts: list[SourceHoldoutDelta] = []
+    clean_deltas: list[float] = []
+    guard_deltas: list[float] = []
+    for key, final_row in sorted(final_rows.items()):
+        base_row = baseline_rows.get(key)
+        if base_row is None:
+            continue
+        if int(final_row.step) == 0:
+            if final_row.clean_step0_accuracy is not None and base_row.clean_step0_accuracy is not None:
+                clean_deltas.append(100.0 * (float(final_row.clean_step0_accuracy) - float(base_row.clean_step0_accuracy)))
+            if final_row.floor_accuracy is not None and base_row.floor_accuracy is not None:
+                guard_deltas.append(100.0 * (float(final_row.floor_accuracy) - float(base_row.floor_accuracy)))
+        if int(final_row.step) == 3 and final_row.mean_accuracy is not None and base_row.mean_accuracy is not None:
+            holdouts.append(
+                SourceHoldoutDelta(
+                    holdout_id=f"{final_row.role}:{final_row.episode_index}",
+                    a0=float(base_row.mean_accuracy),
+                    a3=float(final_row.mean_accuracy),
+                )
+            )
+    if not holdouts:
+        raise ValueError("source V_cal/V_select curves produced no finite step-3 holdouts")
+    return SourceCheckpointCandidate(
+        candidate_id=candidate_id,
+        clean_delta_pp=float(sum(clean_deltas) / len(clean_deltas)) if clean_deltas else 0.0,
+        guard_floor_delta_pp=min(guard_deltas) if guard_deltas else 0.0,
+        worst_a3_delta_pp=min(item.delta_pp for item in holdouts),
+        parameter_count=int(sum(parameter.numel() for parameter in model.parameters())),
+        latency_ms=float(sum(float(row.latency_ms) for row in final.rows) / max(1, len(final.rows))),
+        source_holdouts=tuple(holdouts),
+    )
+
+
+def _bundle_model_args(model_args: Mapping[str, Any], config: Mapping[str, Any]) -> dict[str, Any]:
+    result = dict(model_args)
+    result["meta_adapter_rank"] = int(config["adapter"]["rank"])
+    result["meta_adapter_sites"] = ",".join(config["adapter"]["sites"])
+    return result
+
+
+def _write_failed_summary(root: Path, exc: BaseException) -> None:
+    path = root / "run_summary.json"
+    if path.exists():
+        return
+    _write_json_exclusive(
+        path,
+        {
+            "status": "FAILED",
+            "error_type": type(exc).__name__,
+            "error": str(exc),
+            "traceback": traceback.format_exc(),
+        },
+    )
+
+
+def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
+    """Run the real source-only Phase1 Task2→Task7→Task4 path."""
 
     if not isinstance(ds_w, Mapping):
         raise TypeError("run_meta_phase1 expects the loaded WiSig mapping")
@@ -432,7 +1009,7 @@ def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
                 "wisig_train_rxs does not match frozen source_receiver_ids: "
                 f"{parsed_source_rxs!r} != {tuple(config['source_receiver_ids'])!r}"
             )
-    configured_days = config.get("source_days")
+    configured_days = config["source_days"]
     if configured_days is not None and getattr(args, "wisig_train_days", None) not in (None, ""):
         parsed_source_days = tuple(
             _parse_index_list(getattr(args, "wisig_train_days"), field_name="wisig_train_days", default=())
@@ -443,28 +1020,165 @@ def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
                 f"{parsed_source_days!r} != {tuple(configured_days)!r}"
             )
 
-    source_manifest = _source_role_manifest(ds_w, config, args)
-    result = {
-        "status": "READY",
-        "schema": config["schema"],
-        "run_id": config["run_id"],
-        "seed": config["seed"],
-        "source_only": True,
-        "source_receiver_ids": tuple(config["source_receiver_ids"]),
-        "source_roles": dict(config["source_roles"]),
-        "supervised_training_role": "L_s",
-        "validation_roles": ("V_cal", "V_select"),
-        "u_s_labels_for_supervised_loss": False,
-        "config": config,
-        "source_manifest": source_manifest,
-    }
-    print(
-        "[META-PHASE1] "
-        f"run_id={config['run_id']} source_receiver_ids={config['source_receiver_ids']} "
-        f"roles={config['source_roles']} supervised=L_s validation=V_cal,V_select",
-        flush=True,
-    )
-    return result
+    config_source = getattr(args, "meta_config", None) or getattr(args, "meta_phase1_config", None)
+    base_path = _resolve_config_path(config["base_checkpoint"], config_source=config_source)
+    wisig_path = _resolve_config_path(config["wisig_pkl"], config_source=config_source)
+    _require_readable_file(base_path, field_name="base_checkpoint")
+    _require_readable_file(wisig_path, field_name="wisig_pkl")
+
+    output_root = _resolve_output_root(args, config)
+    if output_root.exists() or output_root.is_symlink():
+        raise FileExistsError(f"immutable meta Phase1 output root already exists: {output_root}")
+    output_root.mkdir(parents=True, exist_ok=False)
+    try:
+        _write_json_exclusive(output_root / "config_snapshot.json", config)
+        device = torch.device(str(getattr(args, "device", "cpu") or "cpu"))
+        payload = _load_checkpoint_payload(base_path, device)
+        model_factory = getattr(args, "meta_model_factory", None)
+        if callable(model_factory):
+            model = model_factory(config, ds_w, device)
+            model_args = _bundle_model_args(dict(config["model"]), config)
+        else:
+            model, model_args = _build_meta_model(config, ds_w, payload, device)
+        if not isinstance(model, nn.Module):
+            raise TypeError("meta_model_factory must return torch.nn.Module")
+        model = model.to(device)
+        _validate_rank4_three_site_model(model, config)
+        from cvsrffi.meta_checkpoint import load_legacy_base_for_meta, save_meta_bundle
+        from cvsrffi.meta_trainer import (
+            MetaTrainerConfig,
+            build_phase1b_optimizer,
+            evaluate_adaptation_curve,
+            run_meta_train_step,
+            select_source_checkpoint,
+        )
+
+        checkpoint_audit, adapter_migration = _load_legacy_checkpoint_into_meta_model(
+            model,
+            config,
+            ds_w,
+            payload,
+            device,
+            allow_nested_dual_bridge=not callable(model_factory),
+        )
+        source_manifest = _source_role_manifest(ds_w, config, args)
+        batch_factory = getattr(args, "meta_episode_batch_factory", None)
+        if callable(batch_factory):
+            train_batches, eval_batches = _validate_injected_batches(
+                batch_factory(config, ds_w, model), config
+            )
+        else:
+            if not source_manifest.get("available"):
+                raise ValueError("WiSig source data is required for the non-injected meta Phase1 path")
+            train_batches, eval_batches = _build_source_batches(
+                source_manifest["role_datasets"], config, model, device
+            )
+        trainer_config = MetaTrainerConfig(
+            source_receiver_ids=tuple(config["source_receiver_ids"]),
+            meta_batch_size=int(config["meta_batch_size"]),
+            inner_steps=int(config["adapter"]["inner_steps"]),
+            phase1c_backbone_lr_ratio=float(config["phase1c_backbone_lr_ratio"]),
+        )
+        baseline_curve = evaluate_adaptation_curve(model, eval_batches, trainer_config)
+        optimizer = build_phase1b_optimizer(model, trainer_config)
+        logs_path = output_root / "logs.jsonl"
+        metrics_path = output_root / "metrics.csv"
+        with logs_path.open("x", encoding="utf-8", newline="\n") as logs_handle, metrics_path.open(
+            "x", encoding="utf-8", newline=""
+        ) as metrics_handle:
+            writer = csv.DictWriter(metrics_handle, fieldnames=("train_step", "outer_loss", "updated_parameter_count"))
+            writer.writeheader()
+            for train_step in range(int(config["meta_train_steps"])):
+                result = run_meta_train_step(model, train_batches, optimizer, trainer_config)
+                writer.writerow(
+                    {
+                        "train_step": int(train_step),
+                        "outer_loss": float(result.loss.detach().cpu().item()),
+                        "updated_parameter_count": len(result.updated_parameter_names),
+                    }
+                )
+                for episode_log in result.episode_logs:
+                    record = {"train_step": int(train_step), **dict(episode_log)}
+                    logs_handle.write(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n")
+        final_curve = evaluate_adaptation_curve(model, eval_batches, trainer_config)
+        candidate = _candidate_from_curves(
+            baseline_curve,
+            final_curve,
+            candidate_id=f"{config['run_id']}:step{int(config['meta_train_steps'])}",
+            model=model,
+        )
+        selected = select_source_checkpoint([candidate])
+        curve_payload = {
+            "baseline": _curve_payload(baseline_curve),
+            "final": _curve_payload(final_curve),
+            "selected_candidate": asdict(selected),
+            "source_only": True,
+        }
+        _write_json_exclusive(output_root / "source_adaptation_curve.json", curve_payload)
+        tx_list = list(ds_w.get("tx_list", []))
+        class_count = int(model_args.get("num_classes", len(tx_list) or 1))
+        class_mapping = {
+            str(index): str(tx_list[index] if index < len(tx_list) else index)
+            for index in range(class_count)
+        }
+        with torch.no_grad():
+            first_batch = train_batches[0]
+            prototype = torch.zeros_like(first_batch.frozen_prototypes).detach().cpu()
+        bundle_config = {
+            "model_args": _bundle_model_args(model_args, config),
+            "meta_adapter_config": {
+                "rank": int(config["adapter"]["rank"]),
+                "sites": list(config["adapter"]["sites"]),
+                "phase2_steps": int(config["adapter"]["deployment_max_steps"]),
+            },
+            "base_checkpoint": {
+                "id": f"{config['run_id']}:legacy_adv3b02",
+                "role": "legacy_adv3b02",
+            },
+            "class_mapping": class_mapping,
+            "prototypes": prototype,
+        }
+        save_meta_bundle(
+            output_root / "selected_meta_bundle.pt",
+            model,
+            bundle_config,
+            {"source_split": "V_select", "criterion": "max_min_source_holdout_delta", "seed": int(config["seed"])},
+        )
+        summary = {
+            "status": "ARTIFACTS_COMPLETE",
+            "schema": config["schema"],
+            "run_id": config["run_id"],
+            "source_only": True,
+            "source_receiver_ids": list(config["source_receiver_ids"]),
+            "source_split": config["source_split"],
+            "source_days": list(config["source_days"]),
+            "task7_outer_steps": int(config["meta_train_steps"]),
+            "checkpoint_load": asdict(checkpoint_audit),
+            "adapter_migration": adapter_migration,
+            "selected_candidate": asdict(selected),
+            "artifacts": {
+                name: str(output_root / name)
+                for name in (
+                    "logs.jsonl",
+                    "metrics.csv",
+                    "selected_meta_bundle.pt",
+                    "source_adaptation_curve.json",
+                    "run_summary.json",
+                    "config_snapshot.json",
+                )
+            },
+        }
+        _write_json_exclusive(output_root / "run_summary.json", summary)
+        print(
+            "[META-PHASE1] "
+            f"run_id={config['run_id']} status=ARTIFACTS_COMPLETE "
+            f"outer_steps={config['meta_train_steps']} source_receiver_ids={config['source_receiver_ids']}",
+            flush=True,
+        )
+        return summary
+    except Exception as exc:
+        _write_failed_summary(output_root, exc)
+        raise
 
 
 __all__ = [
@@ -473,6 +1187,8 @@ __all__ = [
     "CANONICAL_EPISODE_WEIGHTS",
     "CANONICAL_K_CHOICES",
     "CANONICAL_SOURCE_RECEIVER_IDS",
+    "CANONICAL_SOURCE_SPLIT",
+    "CANONICAL_SOURCE_DAYS",
     "CANONICAL_SOURCE_ROLES",
     "DEFAULT_CONFIG_PATH",
     "META_PHASE1_SCHEMA",
