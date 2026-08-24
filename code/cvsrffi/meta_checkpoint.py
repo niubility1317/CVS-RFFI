@@ -9,6 +9,8 @@ creates an optimizer or reads any Phase2 data.
 from __future__ import annotations
 
 import copy
+import math
+import re
 from dataclasses import asdict, dataclass, field, is_dataclass
 from pathlib import Path
 from types import MappingProxyType
@@ -40,6 +42,145 @@ _META_CONFIG_KEYS = {
 }
 _STATE_CONTAINER_KEYS = ("model", "model_state_dict", "state_dict")
 _FORBIDDEN_TRAINABLE_FRAGMENTS = ("cls_head", "classifier", "lda", "cov")
+_META_ADAPTER_SITES = ("time", "freq", "fusion")
+_LEGACY_ADAPTER_PREFIXES = tuple(
+    f"meta_adapter_{site}." for site in _META_ADAPTER_SITES
+)
+_MODEL_ARG_KEYS = frozenset(
+    {
+        "num_classes",
+        "num_domains",
+        "model_size",
+        "dataset",
+        "input_len",
+        "sample_rate_hz",
+        "id_feature_key",
+        "dom_feature_key",
+        "model_variant",
+        "branch_ablation",
+        "mixstyle_on",
+        "mixstyle_p",
+        "mixstyle_alpha",
+        "mixstyle_eps",
+        "mixstyle_layers",
+        "mixstyle_use_domain_label",
+        "mixstyle_mix",
+        "mixstyle_strength",
+        "mixstyle_fallback",
+        "domain_branch_ablation",
+        "domain_enhancer",
+        "domain_enhancer_strength",
+        "use_circularity",
+        "use_freq_stats",
+        "use_pa_stats",
+        "use_freq_band_gate",
+        "freq_feature_source",
+        "pa_feature_source",
+        "pa_orders",
+        "use_aux_spectral_stats",
+        "channel_trim_scale",
+        "time_stability_mode",
+        "freq_stability_mode",
+        "id_time_stability_mode",
+        "id_freq_stability_mode",
+        "domain_time_stability_mode",
+        "domain_freq_stability_mode",
+        "time_stability_channels",
+        "freq_stability_channels",
+        "fast_infer_when_no_aux",
+        "use_tx_adv_on_zdom",
+        "arch_family",
+        "representation_mode",
+        "use_crra",
+        "crra_rank",
+        "crra_alpha_max",
+        "crra_shrinkage",
+        "crra_condition_dim",
+        "crra_nuisance_dim",
+        "crra_start_epoch",
+        "crra_ramp_epochs",
+        "sat_anchor_adapter",
+        "sat_anchor_adapter_rank",
+        "meta_adapter_rank",
+        "meta_adapter_sites",
+        "builder",
+        "model_builder",
+        "model_kind",
+    }
+)
+_MODEL_ARG_INT_KEYS = frozenset(
+    {
+        "num_classes",
+        "num_domains",
+        "input_len",
+        "time_stability_channels",
+        "freq_stability_channels",
+        "crra_rank",
+        "crra_condition_dim",
+        "crra_nuisance_dim",
+        "crra_start_epoch",
+        "crra_ramp_epochs",
+        "sat_anchor_adapter_rank",
+        "meta_adapter_rank",
+    }
+)
+_MODEL_ARG_FLOAT_KEYS = frozenset(
+    {
+        "sample_rate_hz",
+        "mixstyle_p",
+        "mixstyle_alpha",
+        "mixstyle_eps",
+        "mixstyle_strength",
+        "domain_enhancer_strength",
+        "channel_trim_scale",
+        "crra_alpha_max",
+        "crra_shrinkage",
+    }
+)
+_MODEL_ARG_BOOL_KEYS = frozenset(
+    {
+        "mixstyle_on",
+        "mixstyle_use_domain_label",
+        "use_circularity",
+        "use_freq_stats",
+        "use_pa_stats",
+        "use_freq_band_gate",
+        "use_aux_spectral_stats",
+        "fast_infer_when_no_aux",
+        "use_tx_adv_on_zdom",
+        "use_crra",
+        "sat_anchor_adapter",
+    }
+)
+_MODEL_BUILDER_HINTS = frozenset(
+    {
+        "build_model",
+        "model.build_model",
+        "build_dual_model",
+        "model_dual_cvsincnet.build_dual_model",
+        "dual",
+        "single",
+    }
+)
+_META_ADAPTER_CONFIG_KEYS = frozenset(
+    {"rank", "sites", "phase2_steps", "meta_adapter_rank", "meta_adapter_sites"}
+)
+_SELECTION_KEYS = frozenset({"source_split", "criterion", "seed"})
+_SOURCE_SPLITS = frozenset({"V_cal", "V_select", "source_meta_validation", "L_s"})
+_SOURCE_CRITERIA = frozenset(
+    {
+        "max_min_source_holdout_delta",
+        "source_meta_validation",
+        "source_holdout_min_delta",
+        "source_only",
+        "source_selection",
+        "source_validation",
+    }
+)
+_BASE_CHECKPOINT_KEYS = frozenset({"id", "role"})
+_BASE_CHECKPOINT_ROLES = frozenset({"source_only", "legacy_adv3b02"})
+_TOKEN_RE = re.compile(r"^[A-Za-z0-9_.:+,\-]+$")
+_CLASS_KEY_RE = re.compile(r"^[0-9]+$")
 
 
 @dataclass(frozen=True)
@@ -78,6 +219,311 @@ def _as_mapping(value: Any, *, field_name: str) -> Mapping[str, Any]:
     if not isinstance(value, Mapping):
         raise ValueError(f"{field_name} must be a mapping")
     return value
+
+
+def _exact_mapping(
+    value: Any,
+    *,
+    field_name: str,
+    allowed_keys: frozenset[str],
+    required_keys: frozenset[str] = frozenset(),
+) -> dict[str, Any]:
+    mapping = _as_mapping(value, field_name=field_name)
+    keys = set(mapping)
+    if any(not isinstance(key, str) for key in keys):
+        raise ValueError(f"{field_name} keys must be strings")
+    unexpected = keys.difference(allowed_keys)
+    missing = required_keys.difference(keys)
+    if unexpected or missing:
+        raise ValueError(
+            f"{field_name} field allowlist mismatch: "
+            f"missing={sorted(missing)} unexpected={sorted(unexpected)}"
+        )
+    return {str(key): mapping[key] for key in keys}
+
+
+def _require_int(value: Any, *, field_name: str, minimum: int = 0) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or value < minimum:
+        raise ValueError(f"{field_name} must be an integer >= {minimum}")
+    return int(value)
+
+
+def _require_float(value: Any, *, field_name: str, positive: bool = False) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f"{field_name} must be a finite number")
+    result = float(value)
+    if not math.isfinite(result) or (positive and result <= 0.0):
+        raise ValueError(f"{field_name} must be a finite number")
+    return result
+
+
+def _require_token(value: Any, *, field_name: str, allow_empty: bool = False) -> str:
+    if not isinstance(value, str) or (not allow_empty and not value):
+        raise ValueError(f"{field_name} must be a non-empty token string")
+    if value and _TOKEN_RE.fullmatch(value) is None:
+        raise ValueError(f"{field_name} contains characters outside its token allowlist")
+    return value
+
+
+def _validate_sites(
+    value: Any, *, field_name: str, require_all: bool, allow_empty: bool = False
+) -> tuple[str, ...]:
+    if isinstance(value, str):
+        raw = tuple(item.strip() for item in value.split(",") if item.strip())
+    elif isinstance(value, (list, tuple)):
+        if any(not isinstance(item, str) for item in value):
+            raise ValueError(f"{field_name} entries must be strings")
+        raw = tuple(item.strip() for item in value)
+    else:
+        raise ValueError(f"{field_name} must be a comma string or string sequence")
+    if not raw and allow_empty:
+        return ()
+    if not raw or len(set(raw)) != len(raw):
+        raise ValueError(f"{field_name} must contain unique adapter sites")
+    if any(item not in _META_ADAPTER_SITES for item in raw):
+        raise ValueError(f"{field_name} contains an unauthorized adapter site")
+    if require_all and set(raw) != set(_META_ADAPTER_SITES):
+        raise ValueError(f"{field_name} must contain exactly time,freq,fusion")
+    return tuple(site for site in _META_ADAPTER_SITES if site in raw)
+
+
+def _validate_model_args(value: Any) -> dict[str, Any]:
+    args = _exact_mapping(
+        value,
+        field_name="model_args",
+        allowed_keys=_MODEL_ARG_KEYS,
+        required_keys=frozenset({"num_classes", "dataset", "input_len"}),
+    )
+    for key, item in args.items():
+        if key in _MODEL_ARG_INT_KEYS:
+            minimum = 0
+            if key in {"num_classes", "num_domains", "input_len"}:
+                minimum = 1
+            _require_int(item, field_name=f"model_args.{key}", minimum=minimum)
+        elif key in _MODEL_ARG_FLOAT_KEYS:
+            _require_float(
+                item,
+                field_name=f"model_args.{key}",
+                positive=key in {"sample_rate_hz", "mixstyle_eps"},
+            )
+        elif key in _MODEL_ARG_BOOL_KEYS:
+            if not isinstance(item, bool):
+                raise ValueError(f"model_args.{key} must be a boolean")
+        elif key == "pa_orders":
+            if item is None:
+                continue
+            if isinstance(item, str):
+                values = tuple(part.strip() for part in item.split(",") if part.strip())
+                if not values or any(not part.isdigit() for part in values):
+                    raise ValueError("model_args.pa_orders has invalid string shape")
+                parsed = tuple(int(part) for part in values)
+            elif isinstance(item, (list, tuple)):
+                parsed = tuple(
+                    _require_int(part, field_name="model_args.pa_orders entry", minimum=1)
+                    for part in item
+                )
+            else:
+                raise ValueError("model_args.pa_orders must be a string or integer sequence")
+            if any(part % 2 == 0 for part in parsed):
+                raise ValueError("model_args.pa_orders must contain odd orders")
+        elif key == "meta_adapter_sites":
+            _validate_sites(
+                item,
+                field_name="model_args.meta_adapter_sites",
+                require_all=False,
+                allow_empty=True,
+            )
+        elif key in {"builder", "model_builder", "model_kind"}:
+            token = _require_token(item, field_name=f"model_args.{key}")
+            if key == "model_kind" and token not in {"single", "dual"}:
+                raise ValueError("model_args.model_kind must be single or dual")
+            if key != "model_kind" and token not in _MODEL_BUILDER_HINTS:
+                raise ValueError(f"model_args.{key} is not an allowed builder hint")
+        else:
+            _require_token(item, field_name=f"model_args.{key}", allow_empty=key == "branch_ablation")
+
+    if "meta_adapter_sites" in args:
+        if "meta_adapter_rank" not in args:
+            raise ValueError("model_args.meta_adapter_sites requires meta_adapter_rank")
+        adapter_rank = int(args["meta_adapter_rank"])
+        if adapter_rank not in {0, 4}:
+            raise ValueError("model_args.meta_adapter_rank must be 0 or the fixed V1 rank 4")
+        _validate_sites(
+            args["meta_adapter_sites"],
+            field_name="model_args.meta_adapter_sites",
+            require_all=adapter_rank == 4,
+            allow_empty=adapter_rank == 0,
+        )
+
+    dual_hint = any(
+        str(args.get(key, "")).lower() in {"dual", "build_dual_model", "model_dual_cvsincnet.build_dual_model"}
+        for key in ("builder", "model_builder", "model_kind")
+    )
+    dual_keys = {"num_domains", "id_feature_key", "dom_feature_key"}.intersection(args)
+    if dual_hint or dual_keys:
+        required_dual = {"num_domains", "id_feature_key", "dom_feature_key"}
+        if not required_dual.issubset(args):
+            raise ValueError("dual model_args require num_domains,id_feature_key,dom_feature_key")
+    return args
+
+
+def _validate_meta_adapter_config(value: Any) -> dict[str, Any]:
+    config = _exact_mapping(
+        value,
+        field_name="meta_adapter_config",
+        allowed_keys=_META_ADAPTER_CONFIG_KEYS,
+    )
+    rank_keys = {key for key in ("rank", "meta_adapter_rank") if key in config}
+    site_keys = {key for key in ("sites", "meta_adapter_sites") if key in config}
+    if len(rank_keys) != 1 or len(site_keys) != 1:
+        raise ValueError(
+            "meta_adapter_config must contain exactly one rank key and one sites key"
+        )
+    rank_key = next(iter(rank_keys))
+    site_key = next(iter(site_keys))
+    rank = _require_int(config[rank_key], field_name=f"meta_adapter_config.{rank_key}", minimum=1)
+    if rank != 4:
+        raise ValueError("meta_adapter_config.rank must be the fixed V1 rank 4")
+    _validate_sites(
+        config[site_key],
+        field_name=f"meta_adapter_config.{site_key}",
+        require_all=True,
+    )
+    if "phase2_steps" in config:
+        _require_int(config["phase2_steps"], field_name="meta_adapter_config.phase2_steps", minimum=1)
+        if int(config["phase2_steps"]) > 5:
+            raise ValueError("meta_adapter_config.phase2_steps must be <= 5")
+    return config
+
+
+def _validate_selection(value: Any) -> dict[str, Any]:
+    try:
+        selection = _exact_mapping(
+            value,
+            field_name="selection",
+            allowed_keys=_SELECTION_KEYS,
+            required_keys=_SELECTION_KEYS,
+        )
+    except ValueError as exc:
+        raise ValueError(
+            f"Phase1 source selection must use the exact source-only field allowlist: {exc}"
+        ) from exc
+    if not isinstance(selection["source_split"], str) or selection["source_split"] not in _SOURCE_SPLITS:
+        raise ValueError("selection.source_split must identify a source-only split")
+    if not isinstance(selection["criterion"], str) or selection["criterion"] not in _SOURCE_CRITERIA:
+        raise ValueError("selection.criterion is not an allowed source-only criterion")
+    _require_int(selection["seed"], field_name="selection.seed", minimum=0)
+    return selection
+
+
+def _validate_base_checkpoint(value: Any) -> dict[str, Any]:
+    checkpoint = _exact_mapping(
+        value,
+        field_name="base_checkpoint",
+        allowed_keys=_BASE_CHECKPOINT_KEYS,
+        required_keys=_BASE_CHECKPOINT_KEYS,
+    )
+    _require_token(checkpoint["id"], field_name="base_checkpoint.id")
+    if not isinstance(checkpoint["role"], str) or checkpoint["role"] not in _BASE_CHECKPOINT_ROLES:
+        raise ValueError("base_checkpoint.role must identify source-only legacy provenance")
+    return checkpoint
+
+
+def _validate_class_mapping(value: Any) -> dict[str, str]:
+    mapping = _as_mapping(value, field_name="class_mapping")
+    if not mapping:
+        raise ValueError("class_mapping must be non-empty")
+    if any(not isinstance(key, str) or _CLASS_KEY_RE.fullmatch(key) is None for key in mapping):
+        raise ValueError("class_mapping keys must be contiguous decimal strings")
+    indices = sorted(int(key) for key in mapping)
+    if indices != list(range(len(indices))):
+        raise ValueError("class_mapping keys must be contiguous from zero")
+    result: dict[str, str] = {}
+    for key, label in mapping.items():
+        result[key] = _require_token(label, field_name=f"class_mapping[{key}]")
+    return result
+
+
+def _validate_prototypes(value: Any, *, class_mapping: Mapping[str, str]) -> Any:
+    if torch.is_tensor(value):
+        if value.ndim != 2 or value.shape[0] != len(class_mapping):
+            raise ValueError("prototypes tensor must have shape [class_count,feature_dim]")
+        if not torch.is_floating_point(value) or not torch.isfinite(value).all():
+            raise ValueError("prototypes tensor must be finite floating-point data")
+        return value
+    mapping = _as_mapping(value, field_name="prototypes")
+    if set(mapping) != set(class_mapping):
+        raise ValueError("prototypes keys must exactly match class_mapping keys")
+    shape: tuple[int, ...] | None = None
+    result: dict[str, Tensor] = {}
+    for key, prototype in mapping.items():
+        if not isinstance(key, str):
+            raise ValueError("prototypes keys must be strings")
+        if not torch.is_tensor(prototype) or prototype.ndim != 1 or prototype.numel() <= 0:
+            raise ValueError("each prototype must be a non-empty rank-1 tensor")
+        if not torch.is_floating_point(prototype) or not torch.isfinite(prototype).all():
+            raise ValueError("each prototype must be finite floating-point data")
+        if shape is None:
+            shape = tuple(prototype.shape)
+        elif tuple(prototype.shape) != shape:
+            raise ValueError("all prototypes must have the same shape")
+        result[key] = prototype
+    return result
+
+
+def _validate_bundle_metadata(
+    config: Mapping[str, Any], selection: Mapping[str, Any], *, bundle: bool = False
+) -> dict[str, Any]:
+    config_mapping = _as_mapping(config, field_name="config")
+    if bundle:
+        if set(config_mapping) != REQUIRED_META_BUNDLE_KEYS:
+            raise ValueError(
+                "meta bundle top-level fields must be exactly schema,model_args,"
+                "meta_adapter_config,selection,base_checkpoint,class_mapping,"
+                "prototypes,model_state"
+            )
+        metadata = {key: config_mapping[key] for key in _META_CONFIG_KEYS}
+    else:
+        if set(config_mapping) != _META_CONFIG_KEYS:
+            raise ValueError(
+                "config top-level fields must be exactly model_args,meta_adapter_config,"
+                "base_checkpoint,class_mapping,prototypes"
+            )
+        metadata = config_mapping
+    model_args = _validate_model_args(metadata["model_args"])
+    meta_adapter_config = _validate_meta_adapter_config(metadata["meta_adapter_config"])
+    rank_key = "meta_adapter_rank" if "meta_adapter_rank" in meta_adapter_config else "rank"
+    site_key = "meta_adapter_sites" if "meta_adapter_sites" in meta_adapter_config else "sites"
+    if "meta_adapter_rank" in model_args and model_args["meta_adapter_rank"] != meta_adapter_config[rank_key]:
+        raise ValueError("model_args and meta_adapter_config adapter rank mismatch")
+    if "meta_adapter_sites" in model_args:
+        model_sites = _validate_sites(
+            model_args["meta_adapter_sites"],
+            field_name="model_args.meta_adapter_sites",
+            require_all=True,
+        )
+        config_sites = _validate_sites(
+            meta_adapter_config[site_key],
+            field_name=f"meta_adapter_config.{site_key}",
+            require_all=True,
+        )
+        if model_sites != config_sites:
+            raise ValueError("model_args and meta_adapter_config adapter sites mismatch")
+    class_mapping = _validate_class_mapping(metadata["class_mapping"])
+    return {
+        "model_args": model_args,
+        "meta_adapter_config": meta_adapter_config,
+        "selection": _validate_selection(selection),
+        "base_checkpoint": _validate_base_checkpoint(metadata["base_checkpoint"]),
+        "class_mapping": class_mapping,
+        "prototypes": _validate_prototypes(
+            metadata["prototypes"], class_mapping=class_mapping
+        ),
+    }
+
+
+def _is_legacy_adapter_state_key(name: str) -> bool:
+    return any(name.startswith(prefix) for prefix in _LEGACY_ADAPTER_PREFIXES)
 
 
 def _checkpoint_identifier(value: Any) -> str:
@@ -214,10 +660,11 @@ def load_legacy_base_for_meta(
     """
 
     state, container = _extract_state_dict(payload)
-    if any("meta_adapter_" in key for key in state):
+    adapter_state_keys = [key for key in state if _is_legacy_adapter_state_key(key)]
+    if adapter_state_keys:
         raise ValueError(
             "legacy payload must not contain adapter state; "
-            f"keys={sorted(key for key in state if 'meta_adapter_' in key)}"
+            f"keys={sorted(adapter_state_keys)}"
         )
 
     try:
@@ -243,8 +690,11 @@ def load_legacy_base_for_meta(
         base_checkpoint_id=_checkpoint_id_from_payload(payload),
         state_container=container,
     )
+    target_state_keys = set(model.state_dict())
     allowed_missing = {
-        name for name in model.state_dict() if "meta_adapter_" in name
+        name
+        for name in target_state_keys
+        if _is_legacy_adapter_state_key(name)
     }
     non_adapter_missing = tuple(
         name for name in missing if name not in allowed_missing
@@ -256,34 +706,6 @@ def load_legacy_base_for_meta(
             "legacy checkpoint is missing non-adapter keys", audit
         )
     return audit
-
-
-def _selection_is_target_or_query_derived(value: Any, *, key_context: str = "") -> bool:
-    if isinstance(value, Mapping):
-        for key, nested in value.items():
-            key_text = str(key).lower()
-            if (
-                "target" in key_text
-                or "truth" in key_text
-                or "phase2" in key_text
-                or ("query" in key_text and "source" not in key_text)
-            ):
-                return True
-            if _selection_is_target_or_query_derived(nested, key_context=key_text):
-                return True
-        return False
-    if isinstance(value, (list, tuple, set)):
-        return any(
-            _selection_is_target_or_query_derived(nested, key_context=key_context)
-            for nested in value
-        )
-    if isinstance(value, str):
-        text = value.lower()
-        return any(
-            fragment in text
-            for fragment in ("target query", "query truth", "phase2")
-        )
-    return False
 
 
 def _bundle_model_state(model: nn.Module) -> dict[str, Tensor]:
@@ -307,29 +729,17 @@ def save_meta_bundle(
     if output.exists() or output.is_symlink():
         raise FileExistsError(f"meta bundle path already exists: {output}")
     config_mapping = _as_mapping(config, field_name="config")
-    missing = _META_CONFIG_KEYS.difference(config_mapping)
-    if missing:
-        raise ValueError(f"config missing required fields: {sorted(missing)}")
-    model_args = _as_mapping(config_mapping["model_args"], field_name="model_args")
-    meta_adapter_config = _as_mapping(
-        config_mapping["meta_adapter_config"], field_name="meta_adapter_config"
-    )
-    selection_mapping = _as_mapping(selection, field_name="selection")
-    if _selection_is_target_or_query_derived(selection_mapping):
-        raise ValueError(
-            "selection must contain Phase1 source selection information only; "
-            "target/query-derived information is forbidden"
-        )
+    validated = _validate_bundle_metadata(config_mapping, selection, bundle=False)
 
     payload = {
         "schema": META_BUNDLE_SCHEMA,
         "model_state": _bundle_model_state(model),
-        "model_args": _snapshot_for_payload(model_args),
-        "meta_adapter_config": _snapshot_for_payload(meta_adapter_config),
-        "selection": _snapshot_for_payload(selection_mapping),
-        "base_checkpoint": _snapshot_for_payload(config_mapping["base_checkpoint"]),
-        "class_mapping": _snapshot_for_payload(config_mapping["class_mapping"]),
-        "prototypes": _snapshot_for_payload(config_mapping["prototypes"]),
+        "model_args": _snapshot_for_payload(validated["model_args"]),
+        "meta_adapter_config": _snapshot_for_payload(validated["meta_adapter_config"]),
+        "selection": _snapshot_for_payload(validated["selection"]),
+        "base_checkpoint": _snapshot_for_payload(validated["base_checkpoint"]),
+        "class_mapping": _snapshot_for_payload(validated["class_mapping"]),
+        "prototypes": _snapshot_for_payload(validated["prototypes"]),
     }
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open("xb") as handle:
@@ -421,24 +831,32 @@ def load_meta_bundle_strict(
     if source.is_symlink() or not source.is_file():
         raise ValueError(f"meta bundle path is not a regular file: {source}")
     try:
-        payload = torch.load(source, map_location="cpu", weights_only=False)
+        payload = torch.load(source, map_location="cpu", weights_only=True)
+    except TypeError as exc:
+        raise ValueError(
+            "weights_only=True is required for strict meta bundle loading; "
+            "this PyTorch runtime does not support the safe loader"
+        ) from exc
     except Exception as exc:  # pragma: no cover - torch error wording is version-specific
         raise ValueError(f"cannot load meta bundle: {source}") from exc
     if not isinstance(payload, Mapping):
         raise ValueError("meta bundle payload must be a mapping")
-    if set(payload) != REQUIRED_META_BUNDLE_KEYS:
+    payload_keys = set(payload)
+    if any(not isinstance(key, str) for key in payload_keys):
+        raise ValueError("meta bundle top-level keys must be strings")
+    if payload_keys != REQUIRED_META_BUNDLE_KEYS:
         raise ValueError(
             "meta bundle top-level fields must be exactly required fields: "
-            f"missing={sorted(REQUIRED_META_BUNDLE_KEYS.difference(payload))} "
-            f"unexpected={sorted(set(payload).difference(REQUIRED_META_BUNDLE_KEYS))}"
+            f"missing={sorted(REQUIRED_META_BUNDLE_KEYS.difference(payload_keys))} "
+            f"unexpected={sorted(payload_keys.difference(REQUIRED_META_BUNDLE_KEYS))}"
         )
-    if payload.get("schema") != META_BUNDLE_SCHEMA:
-        raise ValueError(f"meta bundle schema mismatch: {payload.get('schema')!r}")
+    schema = payload.get("schema")
+    if not isinstance(schema, str) or schema != META_BUNDLE_SCHEMA:
+        raise ValueError(f"meta bundle schema mismatch: {schema!r}")
 
-    model_args = _as_mapping(payload["model_args"], field_name="model_args")
-    meta_adapter_config = _as_mapping(
-        payload["meta_adapter_config"], field_name="meta_adapter_config"
-    )
+    validated = _validate_bundle_metadata(payload, payload["selection"], bundle=True)
+    model_args = validated["model_args"]
+    meta_adapter_config = validated["meta_adapter_config"]
     state = _bundle_state(payload)
     try:
         model = _build_repository_model(model_args, meta_adapter_config)
@@ -517,10 +935,10 @@ def load_meta_bundle_strict(
         trainable_count=trainable_count,
         total_parameters=total_parameters,
         trainable_fraction=trainable_fraction,
-        base_checkpoint_id=_checkpoint_identifier(payload["base_checkpoint"]),
-        class_mapping=_freeze_for_audit(payload["class_mapping"]),
-        prototypes=_freeze_for_audit(payload["prototypes"]),
-        selection=_freeze_for_audit(payload["selection"]),
+        base_checkpoint_id=_checkpoint_identifier(validated["base_checkpoint"]),
+        class_mapping=_freeze_for_audit(validated["class_mapping"]),
+        prototypes=_freeze_for_audit(validated["prototypes"]),
+        selection=_freeze_for_audit(validated["selection"]),
     )
     return model, audit
 

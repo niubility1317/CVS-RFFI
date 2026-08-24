@@ -8,13 +8,13 @@
 |META-02|用户扩展query要求；设计规格§3～4|query支持类别、receiver、day/channel和LEO多层级任务|`meta_episodes.py`|implemented|`conda run -n ssr-gpu python -m pytest code/tests/test_meta_episode_sampler_v1.py code/tests/test_meta_ssl_split.py code/tests/test_meta_ssl_train_loop.py -q`：22 passed|五类domain关系、`capture_block`代理变量和固定seed采样已验证|
 |META-03|设计规格§4.1|区分`Y_adapt`和`Y_guard`，不得把query-only类伪装成已适配类|`meta_episodes.py`、`meta_objectives.py`|implemented|上述GREEN命令：22 passed；覆盖部分类模式、guard路由和标签置换计数不变|本任务仅实现episode侧路由，`meta_objectives.py`仍由后续Task实现|
 |META-04|设计规格§2、§12|support/query按physical sample ID隔离，同物理样本视图不得跨边界|`dataset_wisig.py`、`meta_episodes.py`|implemented|上述GREEN命令：22 passed；Task2单测覆盖support/query物理ID互斥和视图隔离|WiSig物理样本ID与capture block代理metadata来自Task1；本任务完成episode侧联合隔离断言|
-|META-05|设计报告adapter-BOIL路线；设计规格§5|time/freq/fusion插入rank-4残差adapter|`meta_adapter.py`、`model.py`、`meta_checkpoint.py`|implemented|Task3模型/邻近回归通过；Task4严格bundle由真实`build_model(model_args)`重建并逐键加载|Task3完成三hook；Task4不改变adapter结构或legacy默认路径|
-|META-06|用户轻型快速要求；设计规格§5、§9|Phase2训练参数≤1%，固定3步，最多5步，硬上限40步|adapter参数白名单、`meta_checkpoint.py`、Phase2 runner|partial|Task4单测验证真实总参数计数、inner`down/up/gate`白名单、`log_step_size`冻结和>1%失败；固定步数与Phase2 step审计待Task6/9|本任务不实现训练器、optimizer或Phase2更新|
+|META-05|设计报告adapter-BOIL路线；设计规格§5|time/freq/fusion插入rank-4残差adapter|`meta_adapter.py`、`model.py`、`meta_checkpoint.py`|implemented|Task3模型/邻近回归通过；Task4严格bundle由真实`build_model(model_args)`重建并逐键加载；legacy缺失集合仅为目标state中`meta_adapter_time/freq/fusion`三站点|Task3完成三hook；Task4不改变adapter结构或legacy默认路径|
+|META-06|用户轻型快速要求；设计规格§5、§9|Phase2训练参数≤1%，固定3步，最多5步，硬上限40步|adapter参数白名单、`meta_checkpoint.py`、Phase2 runner|partial|Task4单测验证真实总参数计数、inner`down/up/gate`白名单、`log_step_size`冻结和>1%失败；bundle嵌套metadata类型/形状双侧校验；固定步数与Phase2 step审计待Task6/9|本任务不实现训练器、optimizer或Phase2更新|
 |META-07|设计报告元学习路线；设计规格§6|真实FOMAML内外循环和模块级Meta-SGD|`meta_inner_loop.py`、`meta_trainer.py`|specified|梯度更新、可复现和有限差分测试|一阶近似|
 |META-08|APSTA复盘；设计规格§7～8|用独立query outer loss学习support梯度泛化，记录梯度余弦|`meta_objectives.py`、`meta_trainer.py`|specified|source meta-validation曲线|严格实现outer目标；余弦仅诊断|
 |META-09|项目Phase1协议；设计规格§6.1|复用ADV3B02 Core90 LEO_WEAK日程|Phase1 launcher/config|specified|配置单测和日志字段|严格复用|
-|META-10|设计规格§8|checkpoint只由source meta-validation选择|`meta_trainer.py`、`meta_checkpoint.py`、selection summary|partial|Task4只持久化Phase1`selection`并拒绝target/query/truth派生字段；实际source meta-validation选择器待Task7|不得把bundle保存视为已完成Phase1训练选择|
-|META-11|用户禁止D92头；设计规格§2、§9|不创建或训练协方差、LDA和持久分类头|模型、`meta_checkpoint.py`和Phase2 runner|partial|Task3模型state dict无新增分类头/协方差/LDA；Task4严格加载后仅Task3 inner白名单可训练并拒绝`cls_head/classifier/lda/cov`名称；Phase2 runner侧审计待Task9|本任务不创建optimizer、分类头、LDA或协方差状态|
+|META-10|设计规格§8|checkpoint只由source meta-validation选择|`meta_trainer.py`、`meta_checkpoint.py`、selection summary|partial|Task4只持久化明确allowlist中的Phase1源域`source_split/criterion/seed`，保存和严格加载双侧拒绝嵌套改名、target/query/truth或cache夹带；实际source meta-validation选择器待Task7|不得把bundle保存视为已完成Phase1训练选择|
+|META-11|用户禁止D92头；设计规格§2、§9|不创建或训练协方差、LDA和持久分类头|模型、`meta_checkpoint.py`和Phase2 runner|partial|Task3模型state dict无新增分类头/协方差/LDA；Task4使用`weights_only=True`安全加载，严格加载后仅Task3 inner白名单可训练并拒绝`cls_head/classifier/lda/cov`名称；Phase2 runner侧审计待Task9|本任务不创建optimizer、分类头、LDA或协方差状态|
 |META-12|项目四状态规范；设计规格§9～10|显式输出`DA0_REG0/DA1_REG0`，Stage2-C接口保留`DA0_REG1/DA1_REG1`|Phase2 runner和scorer schema|specified|schema单测和同row配对|REG0新类指标为`N/A`|
 |META-13|设计规格§10|Stage2-C先冻结旧类适配状态，再交给现有注册链|Stage2-C接口|specified|状态复用测试|V1不让新类support参与encoder更新|
 |META-14|项目最小实验工作流；设计规格§12～14|RED→GREEN→邻近回归→真实smoke→一次审查→Git/N607发布→truth-last评分|tests、报告、release脚本|specified|逐阶段真实artifact|严格实现|
@@ -26,4 +26,4 @@
 - 为满足不超过1%的运行时参数预算，三个rank-8 adapter被优化为三个rank-4 adapter；这是有依据的结构收缩，不是静默偏离。
 - 设计报告中的二阶MAML、`z_dom`条件初始化、多专家、IQ输入adapter和新类support联合适配均明确延期，不属于V1缺失实现。
 - 截至Task3，`meta_adapter.py`、CVSincNet三站点hook、参数白名单及默认兼容路径已有代码、单测和邻近回归证据；META-05为`implemented`，META-06与META-11为`partial`。
-- Task4已完成legacy checkpoint迁移、固定schema bundle、严格重建、1%预算和冻结白名单；Task6/9涉及的inner loop与固定步数、Phase2 runner及真实checkpoint smoke、训练和性能证据仍为`pending`；当前不声明实验完成或性能结果。
+- Task4已完成legacy checkpoint迁移、固定schema bundle、嵌套metadata类型/形状双侧校验、`weights_only=True`严格重建、1%预算和冻结白名单；Fix Round1聚焦36项、Task3邻近回归共49项通过。Task6/9涉及的inner loop与固定步数、Phase2 runner及真实checkpoint smoke、训练和性能证据仍为`pending`；当前不声明实验完成或性能结果。

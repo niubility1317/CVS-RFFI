@@ -141,6 +141,24 @@ def test_legacy_loader_rejects_adapter_values_in_a_legacy_payload():
         load_legacy_base_for_meta(_model(), payload)
 
 
+def test_legacy_loader_rejects_missing_unauthorized_adapter_site():
+    class UnauthorizedAdapterModel(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.base = torch.nn.Linear(2, 2)
+            self.meta_adapter_fake = torch.nn.Linear(2, 2)
+
+    model = UnauthorizedAdapterModel()
+    payload = {
+        "model": {
+            "base.weight": model.base.weight.detach().clone(),
+            "base.bias": model.base.bias.detach().clone(),
+        }
+    }
+    with pytest.raises(ValueError, match="non-adapter"):
+        load_legacy_base_for_meta(model, payload)
+
+
 def test_save_bundle_writes_fixed_schema_cpu_state_and_never_overwrites(tmp_path):
     path = tmp_path / "meta_bundle.pth"
     model = _model()
@@ -170,6 +188,39 @@ def test_save_bundle_rejects_target_query_selection_information(tmp_path):
             _config(),
             {"target_query_accuracy": 0.99},
         )
+
+
+@pytest.mark.parametrize("field", ["model_args", "meta_adapter_config", "selection", "base_checkpoint", "class_mapping", "prototypes"])
+def test_save_bundle_rejects_nested_renamed_or_embedded_fields(tmp_path, field):
+    config = _config()
+    selection = _selection()
+    if field == "model_args":
+        config["model_args"]["num_classes_renamed"] = config["model_args"].pop("num_classes")
+    elif field == "meta_adapter_config":
+        config["meta_adapter_config"]["renamed_phase2_limit"] = 3
+    elif field == "selection":
+        selection["source_only"] = {"renamed_metric": 0.9}
+    elif field == "base_checkpoint":
+        config["base_checkpoint"]["source_samples"] = ["sample-id"]
+    elif field == "class_mapping":
+        config["class_mapping"]["0"] = {"source_samples": ["sample-id"]}
+    elif field == "prototypes":
+        config["prototypes"]["0"] = {"query_truth": [1]}
+
+    with pytest.raises(ValueError):
+        save_meta_bundle(tmp_path / f"invalid_{field}.pth", _model(), config, selection)
+
+
+def test_save_bundle_validates_class_mapping_and_prototype_shapes(tmp_path):
+    config = _config()
+    config["class_mapping"] = {"0": "tx_a", "2": "tx_c"}
+    with pytest.raises(ValueError, match="class_mapping"):
+        save_meta_bundle(tmp_path / "gapped_classes.pth", _model(), config, _selection())
+
+    config = _config()
+    config["prototypes"]["1"] = torch.ones(3)
+    with pytest.raises(ValueError, match="prototypes"):
+        save_meta_bundle(tmp_path / "inconsistent_prototypes.pth", _model(), config, _selection())
 
 
 @pytest.mark.parametrize(
@@ -207,6 +258,59 @@ def test_strict_loader_fails_closed_on_bundle_schema_or_state_drift(
 
     with pytest.raises(ValueError, match=message):
         load_meta_bundle_strict(broken, "cpu")
+
+
+@pytest.mark.parametrize("field", ["model_args", "meta_adapter_config", "selection", "base_checkpoint", "class_mapping", "prototypes"])
+def test_strict_loader_rejects_nested_field_drift(tmp_path, field):
+    source = tmp_path / "source_nested.pth"
+    _save_valid_bundle(source)
+    payload = torch.load(source, map_location="cpu", weights_only=False)
+    if field == "model_args":
+        payload[field]["num_classes_renamed"] = payload[field].pop("num_classes")
+    elif field == "meta_adapter_config":
+        payload[field]["renamed_phase2_limit"] = 3
+    elif field == "selection":
+        payload[field]["source_only"] = {"renamed_metric": 0.9}
+    elif field == "base_checkpoint":
+        payload[field]["source_samples"] = ["sample-id"]
+    elif field == "class_mapping":
+        payload[field]["0"] = {"source_samples": ["sample-id"]}
+    elif field == "prototypes":
+        payload[field]["0"] = {"query_truth": [1]}
+    broken = tmp_path / f"broken_nested_{field}.pth"
+    torch.save(payload, broken)
+
+    with pytest.raises(ValueError):
+        load_meta_bundle_strict(broken, "cpu")
+
+
+def test_strict_loader_requests_weights_only_true(monkeypatch, tmp_path):
+    path = tmp_path / "weights_only.pth"
+    _save_valid_bundle(path)
+    original_load = torch.load
+    calls = []
+
+    def recording_load(*args, **kwargs):
+        calls.append(dict(kwargs))
+        return original_load(*args, **kwargs)
+
+    monkeypatch.setattr(torch, "load", recording_load)
+    load_meta_bundle_strict(path, "cpu")
+    assert calls and calls[0].get("weights_only") is True
+
+
+def test_strict_loader_fails_explicitly_when_weights_only_is_unsupported(monkeypatch, tmp_path):
+    path = tmp_path / "unsupported_weights_only.pth"
+    _save_valid_bundle(path)
+
+    def unsupported_load(*args, **kwargs):
+        if kwargs.get("weights_only") is True:
+            raise TypeError("weights_only is unsupported")
+        raise AssertionError("must not fall back to pickle loading")
+
+    monkeypatch.setattr(torch, "load", unsupported_load)
+    with pytest.raises(ValueError, match="weights_only"):
+        load_meta_bundle_strict(path, "cpu")
 
 
 def test_strict_load_rebuilds_true_model_with_exact_state_and_freeze_allowlist(tmp_path):
