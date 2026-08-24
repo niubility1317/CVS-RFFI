@@ -1,0 +1,642 @@
+"""Truth-blind, same-row Phase2-B runner for the tri-R4 meta adapter.
+
+The runner owns one immutable row.  It loads the strict meta bundle, keeps a
+frozen DA0 snapshot, adapts only from the validated received-IQ support
+carrier, and opens the query payload exactly once after DA1 is frozen.  The
+two prediction artifacts use that one query ID vector and contain no truth or
+role fields.
+"""
+
+from __future__ import annotations
+
+import copy
+import inspect
+import json
+from pathlib import Path
+from typing import Any, Mapping
+
+import numpy as np
+import torch
+from torch import Tensor, nn
+from torch.nn import functional as F
+
+from .meta_checkpoint import load_meta_bundle_strict
+from .stage2_meta_adapter_adaptation import (
+    MetaAdapterPhase2Config,
+    ValidatedTargetSupportBatch,
+    adapt_meta_adapter_on_support,
+    predict_with_frozen_meta_adapter,
+)
+
+
+_CONFIG_ALLOWLIST = frozenset(
+    {
+        "protocol_schema",
+        "phase2_data_status",
+        "capsule_id",
+        "split_id",
+        "checkpoint_path",
+        "support_path",
+        "query_path",
+        "prototype_path",
+        "receiver",
+        "scenario",
+        "operating_point",
+        "seed",
+        "k_shot",
+        "steps",
+    }
+)
+_SMOKE_CONFIG_ALLOWLIST = _CONFIG_ALLOWLIST - {"query_path"}
+_CONTEXT_KEYS = ("protocol_schema", "phase2_data_status", "capsule_id", "split_id")
+_SUPPORT_KEYS = frozenset({"received_iq", "support_labels"})
+_QUERY_KEYS = frozenset({"received_iq", "query_ids"})
+_PROTOTYPE_KEYS = frozenset({"prototypes", "class_ids"})
+_DECISION_RULE = "frozen_prototype_cosine_v1"
+
+
+class MetaAdapterStage2RunnerError(ValueError):
+    """Raised when one Phase2 row violates the closed runner contract."""
+
+
+def _validate_config(
+    config: Mapping[str, Any], *, require_query: bool = True
+) -> dict[str, Any]:
+    if not isinstance(config, Mapping) or any(not isinstance(key, str) for key in config):
+        raise MetaAdapterStage2RunnerError(
+            "runner config must be a string-keyed allowlist mapping"
+        )
+    allowed = _CONFIG_ALLOWLIST if require_query else _SMOKE_CONFIG_ALLOWLIST
+    actual = frozenset(config)
+    if actual != allowed:
+        raise MetaAdapterStage2RunnerError(
+            "runner config allowlist mismatch: "
+            f"missing={sorted(allowed - actual)} extra={sorted(actual - allowed)}"
+        )
+    resolved = dict(config)
+    if resolved["protocol_schema"] != "p2_min_v1":
+        raise MetaAdapterStage2RunnerError("protocol_schema must be p2_min_v1")
+    if resolved["phase2_data_status"] != "VALIDATED_ONCE":
+        raise MetaAdapterStage2RunnerError(
+            "phase2_data_status must be VALIDATED_ONCE"
+        )
+    for key in (
+        "capsule_id",
+        "split_id",
+        "checkpoint_path",
+        "support_path",
+        "prototype_path",
+        "receiver",
+        "scenario",
+        "operating_point",
+    ):
+        if not str(resolved[key]).strip():
+            raise MetaAdapterStage2RunnerError(f"{key} must be nonempty")
+    if require_query and not str(resolved["query_path"]).strip():
+        raise MetaAdapterStage2RunnerError("query_path must be nonempty")
+    steps = resolved["steps"]
+    if isinstance(steps, bool) or not isinstance(steps, int) or steps != 3:
+        raise MetaAdapterStage2RunnerError(
+            "formal Phase2 meta adapter steps must be exactly 3"
+        )
+    k_shot = resolved["k_shot"]
+    if isinstance(k_shot, bool) or not isinstance(k_shot, int) or k_shot < 1:
+        raise MetaAdapterStage2RunnerError("k_shot must be a positive integer")
+    seed = resolved["seed"]
+    if isinstance(seed, bool) or not isinstance(seed, int):
+        raise MetaAdapterStage2RunnerError("seed must be an integer")
+    return resolved
+
+
+def _validate_exact_keys(
+    payload: Mapping[str, Any], allowed: frozenset[str], *, label: str
+) -> None:
+    actual = frozenset(payload)
+    if actual != allowed:
+        raise MetaAdapterStage2RunnerError(
+            f"{label} payload allowlist mismatch: "
+            f"missing={sorted(allowed - actual)} extra={sorted(actual - allowed)}"
+        )
+
+
+def _load_npz(
+    path: str | Path,
+    *,
+    allowed: frozenset[str],
+    label: str,
+) -> dict[str, np.ndarray]:
+    resolved = Path(path)
+    if resolved.is_symlink() or not resolved.is_file() or resolved.suffix.lower() != ".npz":
+        raise MetaAdapterStage2RunnerError(
+            f"{label} NPZ input is missing or invalid: {resolved}"
+        )
+    try:
+        with np.load(resolved, allow_pickle=False) as archive:
+            names = tuple(str(name) for name in archive.files)
+            _validate_exact_keys(dict.fromkeys(names), allowed, label=label)
+            return {name: np.asarray(archive[name]).copy() for name in names}
+    except MetaAdapterStage2RunnerError:
+        raise
+    except (OSError, ValueError) as exc:
+        raise MetaAdapterStage2RunnerError(
+            f"cannot load {label} NPZ input: {resolved}"
+        ) from exc
+
+
+def _received_iq_tensor(value: np.ndarray, *, label: str) -> Tensor:
+    array = np.asarray(value)
+    if (
+        array.ndim != 3
+        or array.shape[0] < 1
+        or array.shape[1] != 2
+        or array.shape[2] < 1
+        or not np.issubdtype(array.dtype, np.number)
+        or not np.isfinite(array).all()
+    ):
+        raise MetaAdapterStage2RunnerError(
+            f"{label} received_iq must be finite nonempty [N,2,L]"
+        )
+    return torch.from_numpy(np.ascontiguousarray(array, dtype=np.float32)).clone()
+
+
+def _integer_tensor(value: np.ndarray, *, label: str) -> Tensor:
+    array = np.asarray(value)
+    if (
+        array.ndim != 1
+        or array.shape[0] < 1
+        or not np.issubdtype(array.dtype, np.integer)
+    ):
+        raise MetaAdapterStage2RunnerError(
+            f"{label} must be a nonempty integer vector"
+        )
+    return torch.from_numpy(np.ascontiguousarray(array, dtype=np.int64)).clone()
+
+
+def _prototype_tensors(
+    payload: Mapping[str, np.ndarray],
+) -> tuple[Tensor, Tensor]:
+    _validate_exact_keys(payload, _PROTOTYPE_KEYS, label="prototype")
+    array = np.asarray(payload["prototypes"])
+    if (
+        array.ndim != 2
+        or array.shape[0] < 1
+        or array.shape[1] < 1
+        or not np.issubdtype(array.dtype, np.number)
+        or not np.isfinite(array).all()
+    ):
+        raise MetaAdapterStage2RunnerError(
+            "prototype array must be a finite nonempty 2D matrix"
+        )
+    class_ids = _integer_tensor(payload["class_ids"], label="prototype class_ids")
+    if class_ids.shape[0] != array.shape[0]:
+        raise MetaAdapterStage2RunnerError(
+            "prototype matrix and class_ids must align"
+        )
+    if torch.unique(class_ids).numel() != class_ids.numel():
+        raise MetaAdapterStage2RunnerError("prototype class_ids must be unique")
+    prototypes = torch.from_numpy(
+        np.ascontiguousarray(array, dtype=np.float32)
+    ).clone()
+    prototypes.requires_grad_(False)
+    return prototypes, class_ids
+
+
+def _query_ids(value: np.ndarray, *, expected_rows: int) -> np.ndarray:
+    array = np.asarray(value)
+    if array.ndim != 1 or array.shape[0] != expected_rows:
+        raise MetaAdapterStage2RunnerError(
+            "query_ids must be a one-dimensional vector aligned with query IQ"
+        )
+    if array.dtype.kind not in {"U", "S"}:
+        raise MetaAdapterStage2RunnerError(
+            "query_ids must use a non-object string dtype"
+        )
+    result = array.astype(str)
+    if any(not item.strip() for item in result.tolist()):
+        raise MetaAdapterStage2RunnerError("query_ids must be nonempty strings")
+    if len(set(result.tolist())) != result.shape[0]:
+        raise MetaAdapterStage2RunnerError("query_ids must be unique")
+    return result
+
+
+def _audit_value(audit: Any, key: str, default: Any = None) -> Any:
+    if isinstance(audit, Mapping):
+        return audit.get(key, default)
+    return getattr(audit, key, default)
+
+
+def _require_strict_audit(audit: Any) -> dict[str, Any]:
+    strict = _audit_value(audit, "checkpoint_load_strict", False)
+    if strict is not True:
+        raise MetaAdapterStage2RunnerError(
+            "meta bundle must report checkpoint_load_strict=true"
+        )
+    fraction = float(_audit_value(audit, "trainable_fraction", 0.0))
+    if not np.isfinite(fraction) or fraction > 0.01:
+        raise MetaAdapterStage2RunnerError(
+            "meta bundle trainable parameter fraction exceeds 1%"
+        )
+    return {
+        "checkpoint_load_strict": True,
+        "trainable_fraction": fraction,
+        "base_checkpoint_id": _audit_value(audit, "base_checkpoint_id"),
+    }
+
+
+def _state_snapshot(model: nn.Module) -> dict[str, Tensor]:
+    return {
+        name: value.detach().clone()
+        for name, value in model.state_dict().items()
+        if torch.is_tensor(value)
+    }
+
+
+def _state_diff_count(
+    before: Mapping[str, Tensor], after_model: nn.Module
+) -> int:
+    after = after_model.state_dict()
+    return sum(
+        1
+        for name, value in before.items()
+        if name not in after or not torch.equal(value, after[name].detach())
+    )
+
+
+def _freeze_model(model: nn.Module) -> None:
+    model.eval()
+    for parameter in model.parameters():
+        parameter.requires_grad_(False)
+
+
+def _model_device_dtype(model: nn.Module) -> tuple[torch.device, torch.dtype]:
+    for parameter in model.parameters():
+        if parameter.is_floating_point():
+            return parameter.device, parameter.dtype
+    for buffer in model.buffers():
+        if buffer.is_floating_point():
+            return buffer.device, buffer.dtype
+    raise MetaAdapterStage2RunnerError("model has no floating-point state")
+
+
+def _forward_kwargs(model: nn.Module) -> dict[str, object]:
+    try:
+        parameters = inspect.signature(model.forward).parameters
+    except (TypeError, ValueError) as exc:
+        raise MetaAdapterStage2RunnerError(
+            "cannot inspect meta bundle model.forward signature"
+        ) from exc
+    kwargs: dict[str, object] = {}
+    if "return_aux" in parameters:
+        kwargs["return_aux"] = True
+    label_names = [name for name in ("y", "y_tx") if name in parameters]
+    if len(label_names) > 1:
+        raise MetaAdapterStage2RunnerError(
+            "model.forward exposes ambiguous label arguments"
+        )
+    if label_names:
+        kwargs[label_names[0]] = None
+    return kwargs
+
+
+def _extract_embedding(outputs: Any, *, batch_size: int) -> Tensor:
+    if torch.is_tensor(outputs):
+        embedding = outputs
+    elif isinstance(outputs, Mapping):
+        preferred: list[str] = []
+        if "z_id" in outputs:
+            z_id_key = outputs.get("z_id_key")
+            if isinstance(z_id_key, str) and f"id_{z_id_key}" in outputs:
+                preferred.append(f"id_{z_id_key}")
+            preferred.append("z_id")
+        preferred.extend(
+            key
+            for key in (
+                "feat_cls",
+                "id_feat_joint",
+                "embedding",
+                "features",
+                "feature",
+                "feat_joint",
+                "base",
+            )
+            if key not in preferred
+        )
+        embedding = None
+        for key in preferred:
+            if key in outputs:
+                value = outputs[key]
+                if not torch.is_tensor(value):
+                    raise MetaAdapterStage2RunnerError(
+                        f"model embedding key {key!r} must be a tensor"
+                    )
+                embedding = value
+                break
+        if embedding is None:
+            raise MetaAdapterStage2RunnerError(
+                "model output lacks a supported identity embedding"
+            )
+    else:
+        raise MetaAdapterStage2RunnerError(
+            "meta bundle model must return a tensor or mapping"
+        )
+    if (
+        embedding.ndim != 2
+        or embedding.size(0) != batch_size
+        or not embedding.is_floating_point()
+        or not bool(torch.isfinite(embedding).all())
+    ):
+        raise MetaAdapterStage2RunnerError(
+            "model embedding must be finite floating-point [batch, dimension]"
+        )
+    return embedding
+
+
+def _cosine_logits(embedding: Tensor, prototypes: Tensor) -> Tensor:
+    if embedding.size(1) != prototypes.size(1):
+        raise MetaAdapterStage2RunnerError(
+            "model embedding dimension must match frozen prototypes"
+        )
+    return F.normalize(embedding, dim=1) @ F.normalize(
+        prototypes.to(device=embedding.device, dtype=embedding.dtype), dim=1
+    ).transpose(0, 1)
+
+
+@torch.no_grad()
+def _predict_with_scores(
+    model: nn.Module,
+    query_iq: Tensor,
+    prototypes: Tensor,
+    class_ids: Tensor,
+) -> tuple[Tensor, Tensor]:
+    inference_model = copy.deepcopy(model)
+    _freeze_model(inference_model)
+    device, dtype = _model_device_dtype(inference_model)
+    query = query_iq.detach().to(device=device, dtype=dtype)
+    outputs = inference_model(query, **_forward_kwargs(inference_model))
+    embedding = _extract_embedding(outputs, batch_size=query.size(0))
+    scores = _cosine_logits(embedding, prototypes.detach())
+    predicted = class_ids.to(device=scores.device, dtype=torch.long)[
+        scores.argmax(dim=1)
+    ]
+    return predicted.detach().cpu(), scores.detach().cpu()
+
+
+def _validate_support(
+    support_iq: Tensor,
+    support_labels: Tensor,
+    class_ids: Tensor,
+    *,
+    k_shot: int,
+) -> None:
+    if support_iq.size(0) != support_labels.size(0):
+        raise MetaAdapterStage2RunnerError("support IQ and labels must align")
+    if torch.unique(support_labels).numel() != class_ids.numel():
+        raise MetaAdapterStage2RunnerError(
+            "support labels must cover exactly the registered prototype classes"
+        )
+    for class_id in class_ids.tolist():
+        count = int((support_labels == int(class_id)).sum().item())
+        if count != k_shot:
+            raise MetaAdapterStage2RunnerError(
+                "support payload must contain exactly K-shot rows per class"
+            )
+
+
+def _load_bundle_and_support(
+    resolved: Mapping[str, Any],
+    *,
+    device: torch.device,
+) -> tuple[nn.Module, dict[str, Any], ValidatedTargetSupportBatch, Tensor, Tensor]:
+    model, bundle_audit = load_meta_bundle_strict(
+        resolved["checkpoint_path"], device
+    )
+    audit = _require_strict_audit(bundle_audit)
+    if not isinstance(model, nn.Module):
+        raise MetaAdapterStage2RunnerError("strict meta bundle did not return a model")
+
+    support_payload = _load_npz(
+        resolved["support_path"], allowed=_SUPPORT_KEYS, label="support"
+    )
+    support_iq = _received_iq_tensor(support_payload["received_iq"], label="support")
+    support_labels = _integer_tensor(
+        support_payload["support_labels"], label="support_labels"
+    )
+    prototype_payload = _load_npz(
+        resolved["prototype_path"], allowed=_PROTOTYPE_KEYS, label="prototype"
+    )
+    prototypes, class_ids = _prototype_tensors(prototype_payload)
+    _validate_support(
+        support_iq,
+        support_labels,
+        class_ids,
+        k_shot=int(resolved["k_shot"]),
+    )
+    receiver = resolved["receiver"]
+    physical_ids = tuple(
+        f"receiver={receiver};support_physical_index={index:08d}"
+        for index in range(int(support_iq.size(0)))
+    )
+    context = {key: resolved[key] for key in _CONTEXT_KEYS}
+    support_batch = ValidatedTargetSupportBatch(
+        received_iq=support_iq,
+        labels=support_labels,
+        support_physical_ids=physical_ids,
+        receiver_id=receiver,
+        context=context,
+    )
+    return model, audit, support_batch, prototypes, class_ids
+
+
+def _adapt(
+    model: nn.Module,
+    support_batch: ValidatedTargetSupportBatch,
+    prototypes: Tensor,
+    class_ids: Tensor,
+    resolved: Mapping[str, Any],
+) -> Any:
+    prototype_before = prototypes.detach().clone()
+    handle = adapt_meta_adapter_on_support(
+        model,
+        support_batch,
+        prototypes,
+        class_ids,
+        MetaAdapterPhase2Config(
+            expected_capsule_id=str(resolved["capsule_id"]),
+            expected_split_id=str(resolved["split_id"]),
+        ),
+    )
+    if model.training or any(parameter.requires_grad for parameter in model.parameters()):
+        raise MetaAdapterStage2RunnerError(
+            "support adaptation did not return a fully frozen DA1 model"
+        )
+    if not torch.equal(prototypes, prototype_before) or prototypes.requires_grad:
+        raise MetaAdapterStage2RunnerError(
+            "support adaptation changed immutable prototypes"
+        )
+    audit = getattr(handle, "audit", None)
+    updates = int(_audit_value(audit, "gradient_updates", -1))
+    if updates != 3:
+        raise MetaAdapterStage2RunnerError(
+            "formal Phase2 support adaptation must perform exactly three updates"
+        )
+    return handle
+
+
+def _write_prediction(
+    path: Path,
+    *,
+    query_ids: np.ndarray,
+    predicted_class_ids: Tensor,
+    scores: Tensor,
+) -> None:
+    np.savez(
+        path,
+        query_ids=query_ids,
+        predicted_class_ids=predicted_class_ids.detach().cpu().numpy().astype(np.int64),
+        scores=scores.detach().cpu().numpy().astype(np.float32),
+    )
+
+
+def run_meta_adapter_stage2_row(
+    config: Mapping[str, Any],
+    output_dir: str | Path,
+    device: str | torch.device,
+) -> Mapping[str, Any]:
+    """Run one DA0_REG0/DA1_REG0 row with query opened only after DA1 freeze."""
+
+    resolved = _validate_config(config, require_query=True)
+    destination = Path(output_dir)
+    if destination.exists() or destination.is_symlink():
+        raise FileExistsError(f"output directory already exists: {destination}")
+
+    target_device = torch.device(device)
+    seed = int(resolved["seed"])
+    torch.manual_seed(seed)
+    if target_device.type == "cuda":
+        torch.cuda.manual_seed_all(seed)
+
+    model, bundle_audit, support_batch, prototypes, class_ids = _load_bundle_and_support(
+        resolved, device=target_device
+    )
+    da0_model = copy.deepcopy(model)
+    _freeze_model(da0_model)
+    handle = _adapt(model, support_batch, prototypes, class_ids, resolved)
+
+    # The query payload is intentionally opened once, at this point only.
+    query_payload = _load_npz(
+        resolved["query_path"], allowed=_QUERY_KEYS, label="query"
+    )
+    query_iq = _received_iq_tensor(query_payload["received_iq"], label="query")
+    query_ids = _query_ids(
+        query_payload["query_ids"], expected_rows=int(query_iq.size(0))
+    )
+    query_state_before_da0 = _state_snapshot(da0_model)
+    query_state_before_da1 = _state_snapshot(handle.model)
+    prototype_before = prototypes.detach().clone()
+
+    da0_predictions, da0_scores = _predict_with_scores(
+        da0_model, query_iq, prototypes, class_ids
+    )
+    da1_predictions = predict_with_frozen_meta_adapter(
+        handle,
+        query_iq,
+        prototypes,
+        class_ids,
+    )
+    if not torch.is_tensor(da1_predictions):
+        raise MetaAdapterStage2RunnerError(
+            "DA1 prediction must be a tensor of class IDs"
+        )
+    _, da1_scores = _predict_with_scores(
+        handle.model, query_iq, prototypes, class_ids
+    )
+    da1_predictions = da1_predictions.detach().cpu().to(dtype=torch.long)
+    if da1_predictions.ndim != 1 or da1_predictions.numel() != query_iq.size(0):
+        raise MetaAdapterStage2RunnerError(
+            "DA1 predictions must align with query rows"
+        )
+    if da0_predictions.shape != da1_predictions.shape:
+        raise MetaAdapterStage2RunnerError(
+            "DA0/DA1 predictions must have the same query row shape"
+        )
+    if da0_scores.shape != da1_scores.shape or not bool(torch.isfinite(da1_scores).all()):
+        raise MetaAdapterStage2RunnerError(
+            "DA0/DA1 score matrices must be finite and shape-aligned"
+        )
+
+    query_state_update_count = _state_diff_count(
+        query_state_before_da0, da0_model
+    ) + _state_diff_count(query_state_before_da1, handle.model)
+    if query_state_update_count:
+        raise MetaAdapterStage2RunnerError(
+            "query inference mutated frozen model state"
+        )
+    if not torch.equal(prototypes, prototype_before) or prototypes.requires_grad:
+        raise MetaAdapterStage2RunnerError(
+            "query inference changed immutable prototypes"
+        )
+
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.mkdir(parents=False, exist_ok=False)
+    da0_path = destination / "predictions_DA0_REG0.npz"
+    da1_path = destination / "predictions_DA1_REG0.npz"
+    receipt_path = destination / "receipt.json"
+    _write_prediction(
+        da0_path,
+        query_ids=query_ids,
+        predicted_class_ids=da0_predictions,
+        scores=da0_scores,
+    )
+    _write_prediction(
+        da1_path,
+        query_ids=query_ids,
+        predicted_class_ids=da1_predictions,
+        scores=da1_scores,
+    )
+    adaptation_audit = getattr(handle, "audit", None)
+    receipt: dict[str, Any] = {
+        "status": "PREDICTIONS_COMPLETE",
+        "states": ["DA0_REG0", "DA1_REG0"],
+        "protocol_schema": resolved["protocol_schema"],
+        "phase2_data_status": resolved["phase2_data_status"],
+        "capsule_id": resolved["capsule_id"],
+        "split_id": resolved["split_id"],
+        "receiver": resolved["receiver"],
+        "scenario": resolved["scenario"],
+        "operating_point": resolved["operating_point"],
+        "seed": int(resolved["seed"]),
+        "k_shot": int(resolved["k_shot"]),
+        "steps": 3,
+        "checkpoint_load_strict": bundle_audit["checkpoint_load_strict"],
+        "trainable_fraction": float(
+            _audit_value(adaptation_audit, "trainable_fraction", bundle_audit["trainable_fraction"])
+        ),
+        "backward_count": int(_audit_value(adaptation_audit, "gradient_updates", 3)),
+        "support_samples": int(support_batch.received_iq.size(0)),
+        "query_samples": int(query_iq.size(0)),
+        "query_opened_before_adaptation": False,
+        "query_opened": True,
+        "source_opened": False,
+        "query_truth_opened": False,
+        "query_role_opened": False,
+        "query_state_update_count": 0,
+        "decision_rule": _DECISION_RULE,
+        "states_same_row": True,
+        "query_ids": query_ids.tolist(),
+        "prediction_paths": {
+            "DA0_REG0": str(da0_path),
+            "DA1_REG0": str(da1_path),
+        },
+        "receipt_path": str(receipt_path),
+    }
+    receipt_path.write_text(
+        json.dumps(receipt, ensure_ascii=False, sort_keys=True, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    return receipt
+
+
+__all__ = [
+    "MetaAdapterStage2RunnerError",
+    "run_meta_adapter_stage2_row",
+]
