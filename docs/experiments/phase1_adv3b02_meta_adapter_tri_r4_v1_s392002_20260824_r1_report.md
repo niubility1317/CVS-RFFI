@@ -87,3 +87,24 @@ Fix Round1定点复审：
 
 Task13将以当前`LOCAL_VERIFIED`代码为基础，写入最小N607预登记字段，执行只读资源/路径preflight，制作一个release归档并只进行一次本地到远端SHA比较和一次远端编译。随后顺序发布P1～P4，P0由每个候选训练前的冻结step0评估产生。启动后只做一次PID/CWD/cmdline/GPU/log增长核对，状态只能写`RUNNING`，不能提前写性能收益。
 
+
+## Task13 N607最小预登记
+
+- 预登记状态：`LOCAL_VERIFIED/NOT_LAUNCHED`
+- release Git提交：`fe886b4e2fa4ed40aadeb617c5cdd4e50460f842`
+- 候选矩阵：P0冻结control；顺序运行P1随机adapter、P2监督adapter、P3 FOMAML固定LR、P4 FOMAML+Meta-SGD。
+- N607账户：普通`N607`用户`szu2070436088`
+- GPU：0；preflight时GPU0显存1/24576MiB、利用率0%，每GPU并发训练数计划为1。
+- release归档本地路径：`E:\type10-7\release_archives\phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260824_r1_fe886b4e.tar.gz`
+- release归档远端路径：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260824_r1/phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260824_r1_fe886b4e.tar.gz`
+- 远端CWD：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260824_r1/checkout`
+- 输入checkpoint：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`
+- 输入WiSig：`/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl`
+- output root：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260824_r1`
+- stdout日志：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260824_r1.out`
+- Python：`/home/szu2070436088/.conda/envs/ssr-gpu/bin/python`
+- 启动命令：`/home/szu2070436088/.conda/envs/ssr-gpu/bin/python code/scripts/launch_phase1_adv3b02_meta_adapter_tri_r4_v1.py --config configs/phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260824.json --output-root /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260824_r1 --python /home/szu2070436088/.conda/envs/ssr-gpu/bin/python --gpu 0`
+- expected artifacts：每个P1～P4子目录中的`logs.jsonl`、`metrics.csv`、`selected_meta_bundle.pt`、`source_adaptation_curve.json`、`run_summary.json`、`p0_control_evaluation.json`、`final_checkpoint_evaluation.json`、`frozen_prototypes.npz`，以及矩阵级`candidate_matrix_summary.json`。
+- 技术停止规则：仅当协议越权、错误checkout/output root、输出覆盖、无法产生规定artifact、launcher-wide故障，或至少两个候选出现相同确定性pre-artifact异常时停止该run；不得因低准确率停止。
+- 当前没有启动PID、没有`RUNNING`状态，也没有性能结果。
+
