@@ -34,3 +34,11 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 - 技术停止规则：仅在协议越权、错误checkout/output root、输出覆盖、无法产生规定artifact、launcher-wide故障，或至少两个候选出现相同确定性pre-artifact异常时停止；不得因低准确率停止。
 
 `r1`已封为技术失败且不再使用。`r2`在归档SHA核对、远端编译和启动健康检查完成前不声明`RUNNING`，当前没有性能结果。
+
+## r2启动技术失败
+
+- 启动时间：2026-08-25 00:59（Asia/Hong_Kong）；launcher PID为`2494285`。
+- launcher层已把绝对checkpoint和ManySig正确传给`train.py`，但`meta_phase1_entry`再次从候选配置读取相对路径，导致其检查`checkout/runs/.../best_joint_safe_ssdg.pth`失败。
+- 健康核对确认：主PID退出、日志停止增长、GPU计算进程为空；仅创建了矩阵root与候选配置，训练step和GPU计算均未开始。
+- 最终状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。保留全部日志与目录，不覆盖、不删除、不复用`r2`。
+- 第二层根因修复让Phase1入口消费`train.py`已经携带的`init_checkpoint/wisig_pkl`，RED→GREEN及99项聚焦／邻近测试通过；修复提交为`2c092018888153e91434b1bf2f418d18b63f2597`，转入新的不可覆盖`r3` run。
