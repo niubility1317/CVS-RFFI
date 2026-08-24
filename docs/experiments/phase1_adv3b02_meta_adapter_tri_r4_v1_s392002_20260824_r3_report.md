@@ -1,7 +1,7 @@
 # CVS_META_ADAPTER_TRI_R4_V1 r3 N607预登记报告
 
 - run ID：`phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260824_r3`
-- 状态：`RUNNING`
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 时间：2026-08-25（Asia/Hong_Kong）
 - 修复提交：`2c092018888153e91434b1bf2f418d18b63f2597`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
@@ -146,3 +146,17 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 - 仅以文件元数据核对`new5`、`new20`和新建`new10`的scoring manifest与truth sidecar路径均存在；未读取任何sidecar内容、query真值或query角色。
 - `K10/new5`使用new5 sidecar；`K10/new10`使用新建new10 sidecar；`K10/new20`、`K5/new20`和`K1/new20`共享同一固定new20 query/sidecar，但必须由各自K行的receipt绑定独立DA0_REG0/DA1_REG0 prediction，不能跨行复用分数。
 - 独立scorer仍固定先验证receipt和两份完整prediction，再首次打开对应truth sidecar，并使用冻结`analysis/d19_adv3b02_class_binding_20260717.json`把旧类handle映射到class index；prediction未完整时不得评分。
+
+## 2026-08-25 05:23终态与失败归因
+
+- r3完成P1的source-only冻结控制评价、随机adapter source选择曲线和最终checkpoint的clean／三类LEO弱场景评价后，在写入`frozen_prototypes.npz`时确定性失败。launcher PID`2498514`与训练子PID`2498587`均已自然退出，GPU0无本run进程；没有执行kill、重启或重复启动。
+- 远端`P1/run_summary.json`明确记录`status=FAILED`、`error_type=TypeError`。stdout和traceback均定位到`meta_phase1_entry.py`中的`np.savez`：`no implementation found for 'numpy.savez' on types that implement __array_function__`。
+- `P1/frozen_prototypes.npz`为0字节，`selected_meta_bundle.pt`不存在，P2～P4未执行，矩阵级summary不存在。因此r3没有可供Phase2消费的checkpoint，也没有DA0_REG0／DA1_REG0性能结果；最高状态封为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+- 同一`CVS-RFFI`环境的内存复现确认：NumPy为2.2.5，Torch为2.1.0+cu121；`torch.Tensor.numpy()`返回的对象显示为`numpy.ndarray`，但其类型身份不等于当前`np.ndarray`，随后`np.savez`稳定触发同一异常。根因是既有Torch／NumPy数组ABI边界，不是原型数值非有限或数据协议错误。
+- r4归档`0f54bf1c5ca587986de6c1789455c3aec867c6c2fd13fc64107288368d571a20`尚未同步或启动，且包含同一原型写入路径；它不再具备发布资格，将由修复后的新不可覆盖run取代。
+
+## r3已形成但不可晋级的source-only证据
+
+- P0冻结base：clean旧类均值92.03%、floor 88.03%；`leo_clear_weak`均值79.20%、floor 52.54%；`leo_low_elev_weak`均值75.12%、floor 45.46%；`leo_rain_weak`均值74.92%、floor 44.09%。每个场景均为84000条、每类14000条。
+- P1最终checkpoint：clean旧类均值92.02%、floor 87.87%；`leo_clear_weak`均值79.18%、floor 52.29%；`leo_low_elev_weak`均值75.13%、floor 45.30%；`leo_rain_weak`均值74.90%、floor 43.90%。
+- P1的source选择曲线给出`SOURCE_SELECTION_ELIGIBLE`，选中source holdout增量为0；这只证明随机adapter控制路径完成source侧选择，不是目标域适应正收益。P1相对P0在四场景没有形成满足晋级门槛的证据，且缺少合法bundle，禁止据此进入Target5或声明正向DA。

@@ -73,6 +73,20 @@ CANONICAL_CANDIDATE_PLAN = (
 )
 
 
+def _numpy_array_abi_safe(value: torch.Tensor, *, dtype: Any) -> np.ndarray:
+    """Bridge bounded Phase1 state without Torch's NumPy C-API boundary.
+
+    N607 pairs NumPy 2.x with a Torch build whose ``Tensor.numpy()`` can return
+    an ndarray owned by a different NumPy type identity.  NumPy's
+    ``__array_function__`` dispatcher then rejects that array in ``np.savez``.
+    Frozen class prototypes are tiny source-only state, so a detached list
+    bridge is bounded and preserves the requested dtype without touching any
+    training or query path.
+    """
+
+    return np.asarray(value.detach().cpu().tolist(), dtype=dtype)
+
+
 def _as_mapping(value: Any, *, field_name: str) -> Mapping[str, Any]:
     if not isinstance(value, Mapping):
         raise ValueError(f"{field_name} must be a mapping")
@@ -1822,10 +1836,11 @@ def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
             for index in range(class_count)
         }
         prototype = frozen_prototypes.detach().cpu().clone()
+        prototype_array = _numpy_array_abi_safe(prototype, dtype=np.float32)
         with (output_root / "frozen_prototypes.npz").open("xb") as handle:
             np.savez(
                 handle,
-                prototypes=prototype.numpy().astype(np.float32),
+                prototypes=prototype_array,
                 class_ids=np.arange(class_count, dtype=np.int64),
             )
         bundle_config = {

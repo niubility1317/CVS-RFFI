@@ -812,6 +812,39 @@ def test_meta_phase1_non_dry_run_loads_checkpoint_trains_curves_selects_and_writ
     assert json.loads((output_root / "run_summary.json").read_text(encoding="utf-8"))["status"] == "ARTIFACTS_COMPLETE"
 
 
+def test_meta_phase1_prototype_artifact_avoids_torch_numpy_abi_bridge(tmp_path, monkeypatch):
+    config = valid_config()
+    config_path = tmp_path / "meta.json"
+    config["base_checkpoint"] = "base.pth"
+    config["wisig_pkl"] = "ManySig.pkl"
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+    base_path = tmp_path / "base.pth"
+    wisig_path = tmp_path / "ManySig.pkl"
+    wisig_path.write_bytes(b"fixture")
+    torch.save({"model": _ToyLegacyModel(3).state_dict()}, base_path)
+
+    def batches(config, ds_w, model):
+        del config, ds_w, model
+        return {"train": [_toy_batch("L_s")] * 4, "eval": [_toy_batch("V_cal"), _toy_batch("V_select")]}
+
+    def reject_incompatible_numpy_bridge(self):
+        del self
+        raise TypeError("simulated Torch/NumPy ndarray identity mismatch")
+
+    monkeypatch.setattr(torch.Tensor, "numpy", reject_incompatible_numpy_bridge)
+    output_root = tmp_path / "run-root"
+    result = run_meta_phase1(
+        _toy_args(config_path, output_root, base_path, wisig_path, batches),
+        {"rx_list": list(range(7)), "tx_list": ["a", "b", "c"]},
+    )
+
+    assert result["status"] == "ARTIFACTS_COMPLETE"
+    with np.load(output_root / "frozen_prototypes.npz", allow_pickle=False) as archive:
+        assert type(archive["prototypes"]) is np.ndarray
+        assert archive["prototypes"].dtype == np.float32
+        assert archive["class_ids"].dtype == np.int64
+
+
 def test_meta_phase1_uses_train_cli_inputs_after_release_relocation(tmp_path):
     config = valid_config()
     config["base_checkpoint"] = "runs/base/best.pth"
