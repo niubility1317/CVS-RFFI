@@ -56,39 +56,11 @@ def run_meta_adapter_no_query_smoke(
         raise _runner.MetaAdapterStage2RunnerError(
             "strict meta bundle did not return a model"
         )
-    support_payload = _runner._load_npz(
-        resolved["support_path"],
-        allowed=_runner._SUPPORT_KEYS,
-        label="support",
-    )
-    support_iq = _runner._received_iq_tensor(
-        support_payload["received_iq"], label="support"
-    )
-    support_labels = _runner._integer_tensor(
-        support_payload["support_labels"], label="support_labels"
-    )
-    prototype_payload = _runner._load_npz(
-        resolved["prototype_path"],
-        allowed=_runner._PROTOTYPE_KEYS,
-        label="prototype",
-    )
-    prototypes, class_ids = _runner._prototype_tensors(prototype_payload)
-    _runner._validate_support(
-        support_iq,
-        support_labels,
-        class_ids,
-        k_shot=int(resolved["k_shot"]),
-    )
-    physical_ids = tuple(
-        f"receiver={resolved['receiver']};support_physical_index={index:08d}"
-        for index in range(int(support_iq.size(0)))
-    )
-    support_batch = _runner.ValidatedTargetSupportBatch(
-        received_iq=support_iq,
-        labels=support_labels,
-        support_physical_ids=physical_ids,
-        receiver_id=resolved["receiver"],
-        context={key: resolved[key] for key in _runner._CONTEXT_KEYS},
+    # Freeze DA0 before opening the validated support/prototype slice, then
+    # perform the formal support update.  Query is absent from this route.
+    _runner._snapshot_frozen_model(model)
+    support_batch, prototypes, class_ids = _runner._load_support_and_prototypes(
+        resolved
     )
     handle = _runner._adapt(
         model, support_batch, prototypes, class_ids, resolved
@@ -107,35 +79,41 @@ def run_meta_adapter_no_query_smoke(
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.mkdir(parents=False, exist_ok=False)
     receipt_path = destination / "smoke_receipt.json"
-    receipt: dict[str, Any] = {
-        "status": "REAL_META_CHECKPOINT_NO_QUERY_SMOKE_PASS",
-        "protocol_schema": resolved["protocol_schema"],
-        "phase2_data_status": resolved["phase2_data_status"],
-        "capsule_id": resolved["capsule_id"],
-        "split_id": resolved["split_id"],
-        "receiver": resolved["receiver"],
-        "scenario": resolved["scenario"],
-        "operating_point": resolved["operating_point"],
-        "seed": seed,
-        "k_shot": int(resolved["k_shot"]),
-        "steps": 3,
-        "query_opened": False,
-        "source_opened": False,
-        "backward_count": backward_count,
-        "checkpoint_load_strict": bool(bundle_audit["checkpoint_load_strict"]),
-        "trainable_fraction": float(
-            _runner._audit_value(
-                audit, "trainable_fraction", bundle_audit["trainable_fraction"]
-            )
-        ),
-        "query_state_update_count": 0,
-        "performance_result": None,
-        "receipt_path": str(receipt_path),
-    }
-    receipt_path.write_text(
-        json.dumps(receipt, ensure_ascii=False, sort_keys=True, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    completed_stages: list[str] = []
+    try:
+        receipt: dict[str, Any] = {
+            "status": "REAL_META_CHECKPOINT_NO_QUERY_SMOKE_PASS",
+            "protocol_schema": resolved["protocol_schema"],
+            "phase2_data_status": resolved["phase2_data_status"],
+            "capsule_id": resolved["capsule_id"],
+            "split_id": resolved["split_id"],
+            "receiver": resolved["receiver"],
+            "scenario": resolved["scenario"],
+            "operating_point": resolved["operating_point"],
+            "seed": seed,
+            "k_shot": int(resolved["k_shot"]),
+            "steps": 3,
+            "query_opened": False,
+            "source_opened": False,
+            "backward_count": backward_count,
+            "checkpoint_load_strict": bool(bundle_audit["checkpoint_load_strict"]),
+            "trainable_fraction": float(
+                _runner._audit_value(
+                    audit, "trainable_fraction", bundle_audit["trainable_fraction"]
+                )
+            ),
+            "query_state_update_count": 0,
+            "performance_result": None,
+            "receipt_path": str(receipt_path),
+        }
+        _runner._write_receipt(receipt_path, receipt)
+        completed_stages.append("smoke_receipt")
+    except Exception as exc:
+        try:
+            _runner._write_failure_receipt(destination, exc, completed_stages)
+        except Exception:
+            pass
+        raise
     return receipt
 
 

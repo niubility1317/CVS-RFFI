@@ -60,6 +60,14 @@ def _write_row_inputs(tmp_path: Path) -> dict[str, Path]:
             dtype=np.float32,
         ),
         support_labels=np.asarray([10, 10, 20, 20], dtype=np.int64),
+        support_physical_ids=np.asarray(
+            [
+                "physical-support-000",
+                "physical-support-001",
+                "physical-support-002",
+                "physical-support-003",
+            ]
+        ),
     )
     np.savez(
         query_path,
@@ -125,6 +133,19 @@ def _install_fake_bundle_loader(monkeypatch: pytest.MonkeyPatch, sut, events: li
     return model
 
 
+def _rewrite_support_ids(paths: dict[str, Path], ids: list[str] | None) -> None:
+    with np.load(paths["support_path"], allow_pickle=False) as archive:
+        received_iq = np.asarray(archive["received_iq"]).copy()
+        support_labels = np.asarray(archive["support_labels"]).copy()
+    payload = {
+        "received_iq": received_iq,
+        "support_labels": support_labels,
+    }
+    if ids is not None:
+        payload["support_physical_ids"] = np.asarray(ids)
+    np.savez(paths["support_path"], **payload)
+
+
 def test_runner_adapts_before_query_is_opened_and_emits_two_states(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
@@ -137,28 +158,54 @@ def test_runner_adapts_before_query_is_opened_and_emits_two_states(
     def traced_load_npz(path, *args, **kwargs):
         if Path(path) == paths["support_path"]:
             events.append("open_support")
+        if Path(path) == paths["prototype_path"]:
+            events.append("open_prototype")
         if Path(path) == paths["query_path"]:
-            assert "adapt" in events
+            assert "freeze_da1" in events
             assert model.training is False
             assert all(not parameter.requires_grad for parameter in model.parameters())
             events.append("open_query")
         return real_load_npz(path, *args, **kwargs)
 
     monkeypatch.setattr(sut, "_load_npz", traced_load_npz)
+    real_snapshot = getattr(sut, "_snapshot_frozen_model", None)
+
+    def traced_snapshot(snapshot_model):
+        events.append("freeze_da0")
+        if real_snapshot is not None:
+            return real_snapshot(snapshot_model)
+        return snapshot_model
+
+    monkeypatch.setattr(sut, "_snapshot_frozen_model", traced_snapshot, raising=False)
     real_adapt = sut.adapt_meta_adapter_on_support
 
     def traced_adapt(*args, **kwargs):
         assert "open_support" in events
+        assert "open_prototype" in events
         assert "open_query" not in events
+        support_batch = args[1]
+        assert support_batch.support_physical_ids == (
+            "physical-support-000",
+            "physical-support-001",
+            "physical-support-002",
+            "physical-support-003",
+        )
         handle = real_adapt(*args, **kwargs)
         events.append("adapt")
+        assert handle.model.training is False
+        assert all(not parameter.requires_grad for parameter in handle.model.parameters())
+        events.append("freeze_da1")
         return handle
 
     monkeypatch.setattr(sut, "adapt_meta_adapter_on_support", traced_adapt)
 
     receipt = sut.run_meta_adapter_stage2_row(_row_config(paths), tmp_path / "out", "cpu")
 
-    assert events.index("open_support") < events.index("adapt") < events.index("open_query")
+    assert events.index("load_bundle") < events.index("freeze_da0")
+    assert events.index("freeze_da0") < events.index("open_support")
+    assert events.index("open_support") < events.index("open_prototype")
+    assert events.index("open_prototype") < events.index("adapt")
+    assert events.index("adapt") < events.index("freeze_da1") < events.index("open_query")
     assert receipt["query_opened_before_adaptation"] is False
     assert receipt["states"] == ["DA0_REG0", "DA1_REG0"]
     assert receipt["source_opened"] is False
@@ -189,6 +236,33 @@ def test_runner_rejects_source_or_query_truth_role_config(
     assert not (tmp_path / "out").exists()
 
 
+@pytest.mark.parametrize(
+    ("label", "ids"),
+    [
+        ("missing", None),
+        ("duplicate", ["physical-support-000"] * 4),
+        (
+            "length",
+            ["physical-support-000", "physical-support-001", "physical-support-002"],
+        ),
+    ],
+)
+def test_runner_requires_real_support_physical_ids(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    label: str,
+    ids: list[str] | None,
+):
+    import cvsrffi.stage2_meta_adapter_runner as sut
+
+    paths = _write_row_inputs(tmp_path)
+    _rewrite_support_ids(paths, ids)
+    events: list[str] = []
+    _install_fake_bundle_loader(monkeypatch, sut, events)
+    with pytest.raises(ValueError, match="physical_ids|allowlist"):
+        sut.run_meta_adapter_stage2_row(_row_config(paths), tmp_path / f"out-{label}", "cpu")
+
+
 def test_prediction_artifacts_are_same_row_and_truth_blind(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
@@ -211,6 +285,63 @@ def test_prediction_artifacts_are_same_row_and_truth_blind(
     persisted = json.loads((tmp_path / "out" / "receipt.json").read_text(encoding="utf-8"))
     assert persisted["states"] == ["DA0_REG0", "DA1_REG0"]
     assert persisted["query_role_opened"] is False
+
+
+@pytest.mark.parametrize("target_name", ["predictions_DA0_REG0.npz", "predictions_DA1_REG0.npz"])
+def test_runner_writes_failed_receipt_when_prediction_write_fails(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, target_name: str
+):
+    import cvsrffi.stage2_meta_adapter_runner as sut
+
+    paths = _write_row_inputs(tmp_path)
+    events: list[str] = []
+    _install_fake_bundle_loader(monkeypatch, sut, events)
+    real_write = sut._write_prediction
+
+    def fail_target(path, **kwargs):
+        if Path(path).name == target_name:
+            raise OSError(f"injected {target_name} write failure")
+        return real_write(path, **kwargs)
+
+    monkeypatch.setattr(sut, "_write_prediction", fail_target)
+    output = tmp_path / "write-failure"
+    with pytest.raises(OSError, match="injected"):
+        sut.run_meta_adapter_stage2_row(_row_config(paths), output, "cpu")
+    failure_path = output / "failure_receipt.json"
+    assert failure_path.is_file()
+    failure = json.loads(failure_path.read_text(encoding="utf-8"))
+    assert failure["status"] == "FAILED"
+    assert failure["error_type"] == "OSError"
+    serialized = json.dumps(failure, ensure_ascii=False).lower()
+    assert "truth" not in serialized
+    assert "role" not in serialized
+    assert not (output / "receipt.json").exists()
+
+
+def test_runner_writes_failed_receipt_when_final_receipt_write_fails(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    import cvsrffi.stage2_meta_adapter_runner as sut
+
+    paths = _write_row_inputs(tmp_path)
+    events: list[str] = []
+    _install_fake_bundle_loader(monkeypatch, sut, events)
+
+    def fail_receipt(*args, **kwargs):
+        raise OSError("injected receipt write failure")
+
+    monkeypatch.setattr(sut, "_write_receipt", fail_receipt, raising=False)
+    output = tmp_path / "receipt-failure"
+    with pytest.raises(OSError, match="injected receipt"):
+        sut.run_meta_adapter_stage2_row(_row_config(paths), output, "cpu")
+    failure = json.loads(
+        (output / "failure_receipt.json").read_text(encoding="utf-8")
+    )
+    assert failure["status"] == "FAILED"
+    assert failure["error_type"] == "OSError"
+    assert "DA0_REG0" in failure["completed_stages"]
+    assert "DA1_REG0" in failure["completed_stages"]
+    assert not (output / "receipt.json").exists()
 
 
 def test_no_query_smoke_has_no_query_path_and_three_updates(

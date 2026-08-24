@@ -12,6 +12,8 @@ from __future__ import annotations
 import copy
 import inspect
 import json
+import os
+import re
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -49,7 +51,9 @@ _CONFIG_ALLOWLIST = frozenset(
 )
 _SMOKE_CONFIG_ALLOWLIST = _CONFIG_ALLOWLIST - {"query_path"}
 _CONTEXT_KEYS = ("protocol_schema", "phase2_data_status", "capsule_id", "split_id")
-_SUPPORT_KEYS = frozenset({"received_iq", "support_labels"})
+_SUPPORT_KEYS = frozenset(
+    {"received_iq", "support_labels", "support_physical_ids"}
+)
 _QUERY_KEYS = frozenset({"received_iq", "query_ids"})
 _PROTOTYPE_KEYS = frozenset({"prototypes", "class_ids"})
 _DECISION_RULE = "frozen_prototype_cosine_v1"
@@ -217,6 +221,32 @@ def _query_ids(value: np.ndarray, *, expected_rows: int) -> np.ndarray:
     if len(set(result.tolist())) != result.shape[0]:
         raise MetaAdapterStage2RunnerError("query_ids must be unique")
     return result
+
+
+def _support_physical_ids(
+    value: np.ndarray, *, expected_rows: int
+) -> tuple[str, ...]:
+    array = np.asarray(value)
+    if array.ndim != 1 or array.shape[0] != expected_rows:
+        raise MetaAdapterStage2RunnerError(
+            "support_physical_ids must be a one-dimensional vector aligned "
+            "with support IQ"
+        )
+    if array.dtype.kind not in {"U", "S"}:
+        raise MetaAdapterStage2RunnerError(
+            "support_physical_ids must use a non-object string dtype"
+        )
+    result = array.astype(str)
+    values = result.tolist()
+    if any(not item.strip() for item in values):
+        raise MetaAdapterStage2RunnerError(
+            "support_physical_ids must contain non-empty physical IDs"
+        )
+    if len(set(values)) != len(values):
+        raise MetaAdapterStage2RunnerError(
+            "support_physical_ids must be non-empty and unique"
+        )
+    return tuple(values)
 
 
 def _audit_value(audit: Any, key: str, default: Any = None) -> Any:
@@ -402,17 +432,29 @@ def _validate_support(
             )
 
 
-def _load_bundle_and_support(
+def _load_bundle(
     resolved: Mapping[str, Any],
     *,
     device: torch.device,
-) -> tuple[nn.Module, dict[str, Any], ValidatedTargetSupportBatch, Tensor, Tensor]:
+) -> tuple[nn.Module, dict[str, Any]]:
     model, bundle_audit = load_meta_bundle_strict(
         resolved["checkpoint_path"], device
     )
     audit = _require_strict_audit(bundle_audit)
     if not isinstance(model, nn.Module):
         raise MetaAdapterStage2RunnerError("strict meta bundle did not return a model")
+    return model, audit
+
+
+def _snapshot_frozen_model(model: nn.Module) -> nn.Module:
+    snapshot = copy.deepcopy(model)
+    _freeze_model(snapshot)
+    return snapshot
+
+
+def _load_support_and_prototypes(
+    resolved: Mapping[str, Any],
+) -> tuple[ValidatedTargetSupportBatch, Tensor, Tensor]:
 
     support_payload = _load_npz(
         resolved["support_path"], allowed=_SUPPORT_KEYS, label="support"
@@ -431,11 +473,11 @@ def _load_bundle_and_support(
         class_ids,
         k_shot=int(resolved["k_shot"]),
     )
-    receiver = resolved["receiver"]
-    physical_ids = tuple(
-        f"receiver={receiver};support_physical_index={index:08d}"
-        for index in range(int(support_iq.size(0)))
+    physical_ids = _support_physical_ids(
+        support_payload["support_physical_ids"],
+        expected_rows=int(support_iq.size(0)),
     )
+    receiver = resolved["receiver"]
     context = {key: resolved[key] for key in _CONTEXT_KEYS}
     support_batch = ValidatedTargetSupportBatch(
         received_iq=support_iq,
@@ -444,6 +486,18 @@ def _load_bundle_and_support(
         receiver_id=receiver,
         context=context,
     )
+    return support_batch, prototypes, class_ids
+
+
+def _load_bundle_and_support(
+    resolved: Mapping[str, Any],
+    *,
+    device: torch.device,
+) -> tuple[nn.Module, dict[str, Any], ValidatedTargetSupportBatch, Tensor, Tensor]:
+    """Compatibility wrapper for callers that need the combined inputs."""
+
+    model, audit = _load_bundle(resolved, device=device)
+    support_batch, prototypes, class_ids = _load_support_and_prototypes(resolved)
     return model, audit, support_batch, prototypes, class_ids
 
 
@@ -489,12 +543,62 @@ def _write_prediction(
     predicted_class_ids: Tensor,
     scores: Tensor,
 ) -> None:
-    np.savez(
-        path,
-        query_ids=query_ids,
-        predicted_class_ids=predicted_class_ids.detach().cpu().numpy().astype(np.int64),
-        scores=scores.detach().cpu().numpy().astype(np.float32),
+    temporary = path.with_name(f".{path.name}.tmp")
+    if path.exists() or path.is_symlink():
+        raise FileExistsError(f"prediction artifact already exists: {path}")
+    if temporary.exists() or temporary.is_symlink():
+        raise FileExistsError(f"prediction temporary artifact already exists: {temporary}")
+    with temporary.open("wb") as handle:
+        np.savez(
+            handle,
+            query_ids=query_ids,
+            predicted_class_ids=predicted_class_ids.detach()
+            .cpu()
+            .numpy()
+            .astype(np.int64),
+            scores=scores.detach().cpu().numpy().astype(np.float32),
+        )
+    if path.exists() or path.is_symlink():
+        raise FileExistsError(f"prediction artifact appeared during write: {path}")
+    os.replace(temporary, path)
+
+
+def _write_json_atomically(path: Path, payload: Mapping[str, Any]) -> None:
+    temporary = path.with_name(f".{path.name}.tmp")
+    if path.exists() or path.is_symlink():
+        raise FileExistsError(f"JSON artifact already exists: {path}")
+    if temporary.exists() or temporary.is_symlink():
+        raise FileExistsError(f"JSON temporary artifact already exists: {temporary}")
+    temporary.write_text(
+        json.dumps(payload, ensure_ascii=False, sort_keys=True, indent=2) + "\n",
+        encoding="utf-8",
     )
+    if path.exists() or path.is_symlink():
+        raise FileExistsError(f"JSON artifact appeared during write: {path}")
+    os.replace(temporary, path)
+
+
+def _write_receipt(path: Path, receipt: Mapping[str, Any]) -> None:
+    _write_json_atomically(path, receipt)
+
+
+def _safe_failure_message(error: BaseException) -> str:
+    message = str(error)
+    return re.sub(r"truth|role", "[redacted]", message, flags=re.IGNORECASE)
+
+
+def _write_failure_receipt(
+    destination: Path,
+    error: BaseException,
+    completed_stages: list[str],
+) -> None:
+    payload = {
+        "status": "FAILED",
+        "error_type": type(error).__name__,
+        "error_message": _safe_failure_message(error),
+        "completed_stages": list(completed_stages),
+    }
+    _write_json_atomically(destination / "failure_receipt.json", payload)
 
 
 def run_meta_adapter_stage2_row(
@@ -515,11 +619,11 @@ def run_meta_adapter_stage2_row(
     if target_device.type == "cuda":
         torch.cuda.manual_seed_all(seed)
 
-    model, bundle_audit, support_batch, prototypes, class_ids = _load_bundle_and_support(
-        resolved, device=target_device
-    )
-    da0_model = copy.deepcopy(model)
-    _freeze_model(da0_model)
+    # Keep the protocol order closed: strict bundle, frozen DA0 snapshot,
+    # support/prototype opening, formal adaptation, frozen DA1, then query.
+    model, bundle_audit = _load_bundle(resolved, device=target_device)
+    da0_model = _snapshot_frozen_model(model)
+    support_batch, prototypes, class_ids = _load_support_and_prototypes(resolved)
     handle = _adapt(model, support_batch, prototypes, class_ids, resolved)
 
     # The query payload is intentionally opened once, at this point only.
@@ -581,58 +685,77 @@ def run_meta_adapter_stage2_row(
     da0_path = destination / "predictions_DA0_REG0.npz"
     da1_path = destination / "predictions_DA1_REG0.npz"
     receipt_path = destination / "receipt.json"
-    _write_prediction(
-        da0_path,
-        query_ids=query_ids,
-        predicted_class_ids=da0_predictions,
-        scores=da0_scores,
-    )
-    _write_prediction(
-        da1_path,
-        query_ids=query_ids,
-        predicted_class_ids=da1_predictions,
-        scores=da1_scores,
-    )
-    adaptation_audit = getattr(handle, "audit", None)
-    receipt: dict[str, Any] = {
-        "status": "PREDICTIONS_COMPLETE",
-        "states": ["DA0_REG0", "DA1_REG0"],
-        "protocol_schema": resolved["protocol_schema"],
-        "phase2_data_status": resolved["phase2_data_status"],
-        "capsule_id": resolved["capsule_id"],
-        "split_id": resolved["split_id"],
-        "receiver": resolved["receiver"],
-        "scenario": resolved["scenario"],
-        "operating_point": resolved["operating_point"],
-        "seed": int(resolved["seed"]),
-        "k_shot": int(resolved["k_shot"]),
-        "steps": 3,
-        "checkpoint_load_strict": bundle_audit["checkpoint_load_strict"],
-        "trainable_fraction": float(
-            _audit_value(adaptation_audit, "trainable_fraction", bundle_audit["trainable_fraction"])
-        ),
-        "backward_count": int(_audit_value(adaptation_audit, "gradient_updates", 3)),
-        "support_samples": int(support_batch.received_iq.size(0)),
-        "query_samples": int(query_iq.size(0)),
-        "query_opened_before_adaptation": False,
-        "query_opened": True,
-        "source_opened": False,
-        "query_truth_opened": False,
-        "query_role_opened": False,
-        "query_state_update_count": 0,
-        "decision_rule": _DECISION_RULE,
-        "states_same_row": True,
-        "query_ids": query_ids.tolist(),
-        "prediction_paths": {
-            "DA0_REG0": str(da0_path),
-            "DA1_REG0": str(da1_path),
-        },
-        "receipt_path": str(receipt_path),
-    }
-    receipt_path.write_text(
-        json.dumps(receipt, ensure_ascii=False, sort_keys=True, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    completed_stages: list[str] = []
+    try:
+        # All predictions are already complete in memory.  Each artifact is
+        # written to a sibling temporary file and atomically renamed; a
+        # failed write leaves the partial/temp artifact for diagnosis.
+        _write_prediction(
+            da0_path,
+            query_ids=query_ids,
+            predicted_class_ids=da0_predictions,
+            scores=da0_scores,
+        )
+        completed_stages.append("DA0_REG0")
+        _write_prediction(
+            da1_path,
+            query_ids=query_ids,
+            predicted_class_ids=da1_predictions,
+            scores=da1_scores,
+        )
+        completed_stages.append("DA1_REG0")
+        adaptation_audit = getattr(handle, "audit", None)
+        receipt: dict[str, Any] = {
+            "status": "PREDICTIONS_COMPLETE",
+            "states": ["DA0_REG0", "DA1_REG0"],
+            "protocol_schema": resolved["protocol_schema"],
+            "phase2_data_status": resolved["phase2_data_status"],
+            "capsule_id": resolved["capsule_id"],
+            "split_id": resolved["split_id"],
+            "receiver": resolved["receiver"],
+            "scenario": resolved["scenario"],
+            "operating_point": resolved["operating_point"],
+            "seed": int(resolved["seed"]),
+            "k_shot": int(resolved["k_shot"]),
+            "steps": 3,
+            "checkpoint_load_strict": bundle_audit["checkpoint_load_strict"],
+            "trainable_fraction": float(
+                _audit_value(
+                    adaptation_audit,
+                    "trainable_fraction",
+                    bundle_audit["trainable_fraction"],
+                )
+            ),
+            "backward_count": int(
+                _audit_value(adaptation_audit, "gradient_updates", 3)
+            ),
+            "support_samples": int(support_batch.received_iq.size(0)),
+            "query_samples": int(query_iq.size(0)),
+            "query_opened_before_adaptation": False,
+            "query_opened": True,
+            "source_opened": False,
+            "query_truth_opened": False,
+            "query_role_opened": False,
+            "query_state_update_count": 0,
+            "decision_rule": _DECISION_RULE,
+            "states_same_row": True,
+            "query_ids": query_ids.tolist(),
+            "prediction_paths": {
+                "DA0_REG0": str(da0_path),
+                "DA1_REG0": str(da1_path),
+            },
+            "receipt_path": str(receipt_path),
+        }
+        _write_receipt(receipt_path, receipt)
+        completed_stages.append("receipt")
+    except Exception as exc:
+        try:
+            _write_failure_receipt(destination, exc, completed_stages)
+        except Exception:
+            # Preserve the original artifact failure; a filesystem failure
+            # while recording diagnostics cannot be turned into completion.
+            pass
+        raise
     return receipt
 
 
