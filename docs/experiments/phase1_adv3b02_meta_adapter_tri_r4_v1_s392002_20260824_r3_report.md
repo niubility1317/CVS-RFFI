@@ -42,3 +42,11 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 - launcher PID为`2498514`，训练子PID为`2498587`；两者CWD均为预登记`r3/checkout`，cmdline分别绑定`r3`配置、output root、绝对checkpoint、ManySig和GPU0。
 - 启动前stdout日志不存在，启动后为6399字节；GPU0仅见训练子进程。15秒复核中CPU ticks从6740增至8240，子进程保持100%CPU，GPU0显存增至496MiB，符合数据初始化阶段的持续计算状态。
 - 当前最高状态：`RUNNING`。尚未形成P1完成artifact、候选矩阵或Phase2性能结果，不能声明正向收益。
+
+## 运行中非阻断效率修复
+
+- 2026-08-25 01:44只读复核时，P1训练子进程仍保持100%CPU和`R`状态，CPU ticks持续增长、错误扫描为空，但stdout仍为6399字节，P1仅有`config_snapshot.json`。证据表明它仍在全量source/clean索引清单阶段推进，而非僵死。
+- 根因是物理样本互斥检查通过数据集`__getitem__`逐条读取、裁剪并归一化IQ，但该检查实际只需要已经构建的WiSig索引元数据。
+- 本地后续代码改为优先从`WiSigCompactDataset.index`和`WiSigSubsetDataset.index`生成相同`physical_sample_id`；不具备索引的兼容数据集仍沿用原路径。新增RED→GREEN负测明确禁止清单扫描解码IQ。
+- Phase1入口32项、模型／训练器／Stage2适配47项、checkpoint／内循环／目标函数88项，共167项回归通过。
+- 该修复没有同步到正在运行的`r3`，也没有改变`r3`的checkout、进程或output root；`r3`仍严格归属于提交`2c092018888153e91434b1bf2f418d18b63f2597`。只有后续新的不可覆盖run才可消费此优化。

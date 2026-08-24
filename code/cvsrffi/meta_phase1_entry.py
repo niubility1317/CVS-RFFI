@@ -538,6 +538,24 @@ def _validate_frozen_wisig_args(args: Any, config: Mapping[str, Any]) -> None:
         )
 
 
+def _iter_dataset_physical_ids(dataset: Any):
+    """Yield physical IDs without decoding IQ when a WiSig index is available."""
+
+    sample_index = getattr(dataset, "index", None)
+    if sample_index is not None:
+        if len(sample_index) != len(dataset):
+            raise ValueError("WiSig dataset index length does not match dataset length")
+        from dataset_wisig import wisig_physical_sample_id
+
+        for item in sample_index:
+            yield str(wisig_physical_sample_id(item))
+        return
+
+    for index in range(len(dataset)):
+        _x, _y, metadata = _dataset_item(dataset, index)
+        yield str(metadata.get("physical_sample_id", ""))
+
+
 def _source_role_manifest(ds_w: Mapping[str, Any], config: Mapping[str, Any], args: Any) -> dict[str, Any]:
     """Build only the frozen source role split; no target split is opened."""
 
@@ -625,16 +643,12 @@ def _source_role_manifest(ds_w: Mapping[str, Any], config: Mapping[str, Any], ar
         raise ValueError("declared clean test dataset is empty")
     role_physical_ids: set[str] = set()
     for dataset in role_datasets.values():
-        for index in range(len(dataset)):
-            _x, _y, metadata = _dataset_item(dataset, index)
-            physical_id = str(metadata.get("physical_sample_id", ""))
+        for physical_id in _iter_dataset_physical_ids(dataset):
             if not physical_id:
                 raise ValueError("Phase1 role dataset is missing physical_sample_id")
             role_physical_ids.add(physical_id)
     clean_test_physical_ids: set[str] = set()
-    for index in range(len(clean_test_dataset)):
-        _x, _y, metadata = _dataset_item(clean_test_dataset, index)
-        physical_id = str(metadata.get("physical_sample_id", ""))
+    for physical_id in _iter_dataset_physical_ids(clean_test_dataset):
         if not physical_id:
             raise ValueError("declared clean test dataset is missing physical_sample_id")
         if physical_id in clean_test_physical_ids:

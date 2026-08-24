@@ -400,6 +400,74 @@ def test_source_manifest_builds_declared_clean_test_disjoint_from_all_selection_
     assert role_ids.isdisjoint(test_ids)
 
 
+def test_source_manifest_checks_physical_ids_without_decoding_iq(monkeypatch):
+    class FakeCompactDataset:
+        def __init__(self, ds_w, *, day_keep, rx_keep, **kwargs):
+            del ds_w, kwargs
+            self.index = [
+                types.SimpleNamespace(
+                    tx_i=sample % 3,
+                    rx_i=int(rx),
+                    day_i=int(day),
+                    eq_i=0,
+                    sig_i=sample,
+                )
+                for day in day_keep
+                for rx in rx_keep
+                for sample in range(5)
+            ]
+
+        def __len__(self):
+            return len(self.index)
+
+        def __getitem__(self, index):
+            raise AssertionError(f"IQ decoding is forbidden during manifest scan: {index}")
+
+    class FakeSubsetDataset:
+        def __init__(self, base, indices, split_source):
+            del split_source
+            self.base = base
+            self.selected = np.asarray(indices, dtype=np.int64)
+            self.index = [base.index[int(index)] for index in self.selected.tolist()]
+
+        def __len__(self):
+            return len(self.index)
+
+        def __getitem__(self, index):
+            raise AssertionError(f"IQ decoding is forbidden during manifest scan: {index}")
+
+    def physical_id(item):
+        return (
+            f"tx{item.tx_i}|rx{item.rx_i}|day{item.day_i}|"
+            f"eq{item.eq_i}|sig{item.sig_i}"
+        )
+
+    dataset_module = types.ModuleType("dataset_wisig")
+    dataset_module.WiSigCompactDataset = FakeCompactDataset
+    dataset_module.WiSigSubsetDataset = FakeSubsetDataset
+    dataset_module.wisig_physical_sample_id = physical_id
+    split_module = types.ModuleType("SSDG.train_ssdg")
+
+    def split_roles(base, **kwargs):
+        del kwargs
+        indices = list(range(len(base)))
+        return indices[0::4], indices[1::4], indices[2::4], indices[3::4]
+
+    split_module.split_tx_rx_day_1_7_2_roles = split_roles
+    monkeypatch.setitem(sys.modules, "dataset_wisig", dataset_module)
+    monkeypatch.setitem(sys.modules, "SSDG.train_ssdg", split_module)
+    config = validate_meta_phase1_config(valid_config())
+    args = _toy_args("unused.json", "unused", "base", "wisig")
+    args.wisig_test_days = "2,3"
+
+    manifest = _source_role_manifest(
+        {"data": object(), "rx_list": list(range(12))}, config, args
+    )
+
+    assert manifest["clean_test_physical_disjoint"] is True
+    assert manifest["clean_test_size"] > 0
+
+
 def test_final_scenario_evaluation_uses_declared_clean_test_not_v_select():
     dataset = _ViewDataset()
     result = _evaluate_final_checkpoint_scenarios(
