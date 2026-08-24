@@ -25,4 +25,5 @@
 - 设计报告核心路线已严格保留：元训练真实support更新、独立query outer优化、adapter-only内循环、模块级Meta-SGD和Phase2少步适配。
 - 为满足不超过1%的运行时参数预算，三个rank-8 adapter被优化为三个rank-4 adapter；这是有依据的结构收缩，不是静默偏离。
 - 设计报告中的二阶MAML、`z_dom`条件初始化、多专家、IQ输入adapter和新类support联合适配均明确延期，不属于V1缺失实现。
-- 当前尚无代码、训练或性能证据，所有实现与实验状态保持`pending`。
+- 截至Task3，`meta_adapter.py`、CVSincNet三站点hook、参数白名单及默认兼容路径已有代码、单测和邻近回归证据；META-05为`implemented`，META-06与META-11为`partial`。
+- Task4/6/9涉及的checkpoint迁移、inner loop与固定步数、Phase2 runner及真实checkpoint smoke、训练和性能证据仍为`pending`；当前不声明实验完成或性能结果。
