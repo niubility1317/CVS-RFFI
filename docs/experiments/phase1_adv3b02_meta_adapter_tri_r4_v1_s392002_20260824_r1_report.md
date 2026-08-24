@@ -108,3 +108,12 @@ Task13将以当前`LOCAL_VERIFIED`代码为基础，写入最小N607预登记字
 - 技术停止规则：仅当协议越权、错误checkout/output root、输出覆盖、无法产生规定artifact、launcher-wide故障，或至少两个候选出现相同确定性pre-artifact异常时停止该run；不得因低准确率停止。
 - 当前没有启动PID、没有`RUNNING`状态，也没有性能结果。
 
+## Task13 N607落地与环境阻塞记录
+
+- 核对时间：2026-08-25 00:37（Asia/Hong_Kong）。
+- 当前最高状态：`LANDED（NOT_STARTED_WRONG_ENVIRONMENT / NO_PERFORMANCE_RESULT）`。
+- release归档已经落地，远端checkout存在；本地与远端归档SHA256均为`6a3cddf7d75535fd740fd55bf76258d7f53d64c86f336da7fb50e2678e301979`，一次传输校验匹配。
+- 远端预登记解释器`/home/szu2070436088/.conda/envs/ssr-gpu/bin/python`不存在，因此远端编译入口在加载解释器前失败，项目代码没有执行，正式实验没有启动。
+- 只读回读确认：output root不存在、stdout日志不存在、该launcher进程为空、GPU计算进程列表为空。
+- N607现有可用环境：`CVS-RFFI`为Python3.10.19、PyTorch2.1.0+cu121、NumPy2.2.5、CUDA可用；`SDG-SEI`为Python3.8.20、PyTorch1.11.0+cu113、NumPy1.24.4、CUDA可用。
+- 继续条件：需要明确授权本run改用现有`CVS-RFFI`环境，或明确授权在N607创建／克隆名为`ssr-gpu`的持久环境。获得授权前不执行远端编译、启动或环境变更。
