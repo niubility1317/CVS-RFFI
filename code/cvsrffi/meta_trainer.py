@@ -135,59 +135,8 @@ class MetaEpisodeBatch:
     def __post_init__(self) -> None:
         if not isinstance(self.episode, MetaEpisode):
             raise TypeError("episode must be a Task2 MetaEpisode")
-        _validate_meta_episode_structure(self.episode)
-        for name in ("support_x", "query_x", "frozen_prototypes"):
-            value = getattr(self, name)
-            if not torch.is_tensor(value) or not value.is_floating_point():
-                raise TypeError(f"{name} must be a floating-point tensor")
-            if not bool(torch.isfinite(value).all()):
-                raise ValueError(f"{name} must contain only finite values")
-        if self.support_x.ndim < 1 or self.query_x.ndim < 1:
-            raise ValueError("support_x and query_x must have a batch dimension")
-        if self.support_x.size(0) != len(self.episode.support):
-            raise ValueError("support_x length must match episode.support")
-        query_rows = self.episode.query_adapt + self.episode.query_guard
-        if self.query_x.size(0) != len(query_rows):
-            raise ValueError("query_x length must match episode query rows")
-        for name, value, expected in (
-            ("support_y", self.support_y, self.support_x.size(0)),
-            ("query_y", self.query_y, self.query_x.size(0)),
-        ):
-            if not torch.is_tensor(value) or value.ndim != 1 or value.numel() != expected:
-                raise ValueError(f"{name} must be a one-dimensional label tensor of length {expected}")
-            if value.dtype not in (
-                torch.uint8,
-                torch.int8,
-                torch.int16,
-                torch.int32,
-                torch.int64,
-            ):
-                raise ValueError(f"{name} must use an integer dtype")
-        for name, value in (("adapt_mask", self.adapt_mask), ("guard_mask", self.guard_mask)):
-            if not torch.is_tensor(value) or value.ndim != 1 or value.numel() != self.query_x.size(0):
-                raise ValueError(f"{name} must match the query batch length")
-            if value.dtype is not torch.bool:
-                raise ValueError(f"{name} must use boolean dtype")
-        if bool((self.adapt_mask & self.guard_mask).any()):
-            raise ValueError("adapt_mask and guard_mask must not overlap")
-        if (
-            not torch.is_tensor(self.frozen_prototypes)
-            or self.frozen_prototypes.ndim != 2
-            or not self.frozen_prototypes.is_floating_point()
-        ):
-            raise ValueError("frozen_prototypes must be a floating tensor with shape [classes, dimension]")
-        if not bool(torch.isfinite(self.frozen_prototypes).all()):
-            raise ValueError("frozen_prototypes must contain only finite values")
+        _validate_episode_batch_integrity(self)
         object.__setattr__(self, "frozen_prototypes", self.frozen_prototypes.detach())
-
-        for index, row in enumerate(query_rows):
-            if bool(self.adapt_mask[index]) and int(row.tx_i) not in self.episode.adapt_class_ids:
-                raise ValueError("adapt_mask routes a query row outside adapt_class_ids")
-            if bool(self.guard_mask[index]) and int(row.tx_i) not in self.episode.guard_class_ids:
-                raise ValueError("guard_mask routes a query row outside guard_class_ids")
-        support_labels = self.support_y.detach().cpu().tolist()
-        if any(int(label) not in self.episode.adapt_class_ids for label in support_labels):
-            raise ValueError("support labels must belong to adapt_class_ids")
 
 
 @dataclass(frozen=True)
@@ -573,6 +522,94 @@ def _validate_meta_episode_structure(episode: MetaEpisode) -> None:
         raise ValueError(f"MetaEpisode {name} physical_sample_id overlap: {sorted(ids)!r}")
 
 
+def _validate_episode_batch_integrity(batch: MetaEpisodeBatch) -> None:
+    """Revalidate a carrier after construction and before every public consumer."""
+
+    if not isinstance(batch, MetaEpisodeBatch):
+        raise TypeError("MetaEpisodeBatch integrity requires a MetaEpisodeBatch")
+    if not isinstance(batch.episode, MetaEpisode):
+        raise ValueError("MetaEpisodeBatch integrity error: episode must be a Task2 MetaEpisode")
+    _validate_meta_episode_structure(batch.episode)
+    for name in ("support_x", "query_x", "frozen_prototypes"):
+        value = getattr(batch, name)
+        if not torch.is_tensor(value) or not value.is_floating_point():
+            if name == "frozen_prototypes":
+                raise ValueError(
+                    "MetaEpisodeBatch integrity error: frozen_prototypes must be a floating tensor with shape [classes, dimension]"
+                )
+            raise TypeError(f"MetaEpisodeBatch integrity error: {name} must be a floating-point tensor")
+        if not bool(torch.isfinite(value).all()):
+            raise ValueError(f"MetaEpisodeBatch integrity error: {name} must contain only finite values")
+    if batch.support_x.ndim < 1 or batch.query_x.ndim < 1:
+        raise ValueError("MetaEpisodeBatch integrity error: support_x and query_x must have a batch dimension")
+    support_count = len(batch.episode.support)
+    query_rows = batch.episode.query_adapt + batch.episode.query_guard
+    query_count = len(query_rows)
+    if batch.support_x.size(0) != support_count:
+        raise ValueError(
+            f"MetaEpisodeBatch integrity error: support_x length must match episode.support ({support_count})"
+        )
+    if batch.query_x.size(0) != query_count:
+        raise ValueError(
+            f"MetaEpisodeBatch integrity error: query_x length must match episode query rows ({query_count})"
+        )
+    for name, value, expected in (
+        ("support_y", batch.support_y, support_count),
+        ("query_y", batch.query_y, query_count),
+    ):
+        if not torch.is_tensor(value) or value.ndim != 1 or value.numel() != expected:
+            raise ValueError(
+                f"MetaEpisodeBatch integrity error: {name} must be a one-dimensional label tensor of length {expected}"
+            )
+        if value.dtype not in (
+            torch.uint8,
+            torch.int8,
+            torch.int16,
+            torch.int32,
+            torch.int64,
+        ):
+            raise ValueError(f"MetaEpisodeBatch integrity error: {name} must use an integer dtype")
+    for name, value in (("adapt_mask", batch.adapt_mask), ("guard_mask", batch.guard_mask)):
+        if not torch.is_tensor(value) or value.ndim != 1 or value.numel() != query_count:
+            raise ValueError(
+                f"MetaEpisodeBatch integrity error: {name} must match the query batch length ({query_count})"
+            )
+        if value.dtype is not torch.bool:
+            raise ValueError(f"MetaEpisodeBatch integrity error: {name} must use boolean dtype")
+    if bool((batch.adapt_mask & batch.guard_mask).any()):
+        raise ValueError("MetaEpisodeBatch integrity error: adapt_mask and guard_mask must not overlap")
+    expected_adapt = torch.zeros_like(batch.adapt_mask)
+    expected_adapt[: len(batch.episode.query_adapt)] = True
+    expected_guard = torch.zeros_like(batch.guard_mask)
+    expected_guard[len(batch.episode.query_adapt) :] = True
+    if not torch.equal(batch.adapt_mask, expected_adapt):
+        raise ValueError(
+            "MetaEpisodeBatch integrity error: adapt_mask count/order must match query_adapt refs"
+        )
+    if not torch.equal(batch.guard_mask, expected_guard):
+        raise ValueError(
+            "MetaEpisodeBatch integrity error: guard_mask count/order must match query_guard refs"
+        )
+    if (
+        not torch.is_tensor(batch.frozen_prototypes)
+        or batch.frozen_prototypes.ndim != 2
+        or not batch.frozen_prototypes.is_floating_point()
+    ):
+        raise ValueError(
+            "MetaEpisodeBatch integrity error: frozen_prototypes must be a floating tensor with shape [classes, dimension]"
+        )
+    if not bool(torch.isfinite(batch.frozen_prototypes).all()):
+        raise ValueError("MetaEpisodeBatch integrity error: frozen_prototypes must contain only finite values")
+    for index, row in enumerate(query_rows):
+        if bool(batch.adapt_mask[index]) and int(row.tx_i) not in batch.episode.adapt_class_ids:
+            raise ValueError("MetaEpisodeBatch integrity error: adapt_mask routes a query row outside adapt_class_ids")
+        if bool(batch.guard_mask[index]) and int(row.tx_i) not in batch.episode.guard_class_ids:
+            raise ValueError("MetaEpisodeBatch integrity error: guard_mask routes a query row outside guard_class_ids")
+    support_labels = batch.support_y.detach().cpu().tolist()
+    if any(int(label) not in batch.episode.adapt_class_ids for label in support_labels):
+        raise ValueError("MetaEpisodeBatch integrity error: support labels must belong to adapt_class_ids")
+
+
 def _validate_source_receiver_ids(batch: MetaEpisodeBatch, source_receiver_ids: tuple[int, ...]) -> None:
     allowlist = set(source_receiver_ids)
     for row in _episode_rows(batch.episode):
@@ -591,7 +628,7 @@ def _validate_episode_roles(
     allowed: frozenset[str],
     source_receiver_ids: tuple[int, ...],
 ) -> None:
-    _validate_meta_episode_structure(batch.episode)
+    _validate_episode_batch_integrity(batch)
     _validate_source_receiver_ids(batch, source_receiver_ids)
     marker = _forbidden_metadata(_episode_rows(batch.episode), path="episode")
     if marker:
@@ -765,6 +802,7 @@ def run_meta_train_step(
     for batch in episodes:
         if not isinstance(batch, MetaEpisodeBatch):
             raise TypeError("run_meta_train_step accepts MetaEpisodeBatch values only")
+        _validate_episode_batch_integrity(batch)
         _validate_episode_roles(batch, _SOURCE_ROLES, config.source_receiver_ids)
     optimizer_names = _validate_optimizer_scope(model, optimizer)
     snapshot = _snapshot_state(model)
@@ -1000,6 +1038,7 @@ def evaluate_adaptation_curve(
     if not episodes:
         raise ValueError("source adaptation curve requires at least one episode")
     for batch in episodes:
+        _validate_episode_batch_integrity(batch)
         _validate_source_eval_batch(batch, config.source_receiver_ids)
 
     snapshot = _snapshot_state(model)

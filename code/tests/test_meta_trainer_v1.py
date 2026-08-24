@@ -308,6 +308,32 @@ def test_meta_episode_batch_rejects_physical_id_overlap_and_train_revalidates():
         run_meta_train_step(model, [bypass] * 4, optimizer, _config())
 
 
+@pytest.mark.parametrize(
+    ("field", "replacement"),
+    (
+        ("support_x", torch.tensor([1.0, 0.0, 0.5])),
+        ("support_y", torch.tensor([[0, 1]], dtype=torch.long)),
+        ("query_x", torch.tensor([[0.8, 0.1, 0.2], [0.2, 0.9, -0.1]])),
+        ("query_y", torch.tensor([0, 1], dtype=torch.long)),
+        ("adapt_mask", torch.tensor([[True, True, False]])),
+        ("guard_mask", torch.tensor([True, False])),
+    ),
+)
+def test_train_entry_revalidates_mutated_meta_episode_batch_before_forward(field, replacement):
+    batch = _batch()
+    object.__setattr__(batch, field, replacement)
+    model = _model()
+    optimizer = build_phase1b_optimizer(model, _config())
+    forward_calls = []
+    hook = model.register_forward_pre_hook(lambda *_args: forward_calls.append(True))
+    try:
+        with pytest.raises(ValueError, match="MetaEpisodeBatch integrity"):
+            run_meta_train_step(model, [batch] * 4, optimizer, _config())
+    finally:
+        hook.remove()
+    assert forward_calls == []
+
+
 def test_source_receiver_allowlist_is_explicit_and_rejects_unknown_ids():
     with pytest.raises((TypeError, ValueError), match="source_receiver_ids"):
         MetaTrainerConfig()
