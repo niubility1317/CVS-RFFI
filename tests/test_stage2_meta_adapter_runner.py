@@ -149,6 +149,50 @@ def _rewrite_support_ids(paths: dict[str, Path], ids: list[str] | None) -> None:
     np.savez(paths["support_path"], **payload)
 
 
+def test_numpy2_torch21_bridge_covers_inputs_and_prediction_outputs(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import cvsrffi.stage2_meta_adapter_runner as sut
+
+    def incompatible_from_numpy(_value):
+        raise TypeError("expected np.ndarray (got numpy.ndarray)")
+
+    def incompatible_tensor_numpy(_value):
+        raise TypeError("Numpy is not available")
+
+    monkeypatch.setattr(torch, "from_numpy", incompatible_from_numpy)
+    monkeypatch.setattr(torch.Tensor, "numpy", incompatible_tensor_numpy)
+
+    iq = sut._received_iq_tensor(
+        np.ones((2, 2, 4), dtype=np.float32), label="support"
+    )
+    ids = sut._integer_tensor(np.asarray([10, 20], dtype=np.int64), label="ids")
+    prototypes, prototype_ids = sut._prototype_tensors(
+        {
+            "prototypes": np.asarray([[1.0, 0.0], [0.0, 1.0]], dtype=np.float32),
+            "class_ids": np.asarray([10, 20], dtype=np.int64),
+        }
+    )
+    assert tuple(iq.shape) == (2, 2, 4)
+    assert ids.tolist() == [10, 20]
+    assert prototypes.tolist() == [[1.0, 0.0], [0.0, 1.0]]
+    assert prototype_ids.tolist() == [10, 20]
+
+    output = tmp_path / "predictions.npz"
+    sut._write_prediction(
+        output,
+        query_ids=np.asarray(["query-0", "query-1"]),
+        predicted_class_ids=torch.tensor([10, 20], dtype=torch.long),
+        scores=torch.tensor([[0.8, 0.2], [0.1, 0.9]], dtype=torch.float32),
+    )
+    with np.load(output, allow_pickle=False) as archive:
+        assert archive["predicted_class_ids"].tolist() == [10, 20]
+        np.testing.assert_allclose(
+            archive["scores"],
+            np.asarray([[0.8, 0.2], [0.1, 0.9]], dtype=np.float32),
+        )
+
+
 def test_runner_adapts_before_query_is_opened_and_emits_two_states(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):

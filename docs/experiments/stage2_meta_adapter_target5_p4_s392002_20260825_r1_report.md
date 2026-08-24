@@ -1,7 +1,7 @@
 # CVS_META_ADAPTER_TRI_R4_V1 P4 Target5最小预登记报告
 
 - run ID：`stage2_meta_adapter_target5_p4_s392002_20260825_r1`
-- 状态：`LOCAL_VERIFIED`
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 实现提交：`8d07f752e5093766f31edab7fdc97159c60d70f1`
 - Phase1闭合提交：`26ad71643b35d5fbcab5f98308bb11ea24d19c65`
@@ -43,3 +43,11 @@
 ## 科学停止与晋级
 
 prediction完整后才由独立scorer连接truth。按15个同row score聚合`DA1_REG0-DA0_REG0`：旧类均值至少+1.0pp且旧类floor至少+0.5pp才晋级Target25；否则记录`SCIENTIFIC_FAILURE_NO_PROMOTION`并推进下一少层候选。
+
+## 实际闭合
+
+- Target工厂成功生成15个truth-free row，`factory_receipt.json`状态为`TARGET_INPUTS_COMPLETE`，并确认`query_truth_opened=false`、`query_role_opened=false`、`source_opened=false`。
+- P4真实checkpoint无query smoke在读取support IQ后的NumPy→Torch转换处失败：N607现有NumPy2.2.5与Torch2.1.0组合中，`torch.from_numpy`报`TypeError: expected np.ndarray (got numpy.ndarray)`。
+- 失败发生在query打开和prediction产生之前；smoke output root与prediction output root均不存在，GPU无残留计算进程，15-row矩阵从未启动。因此本run没有性能结果，也不存在query泄漏或输出覆盖。
+- 本地RED测试以相同错误指纹稳定复现；GREEN实现改用`torch.frombuffer`处理IQ、整数标签和冻结原型，并用有界Python值桥接prediction输出，避免同一ABI在后续写盘处再次失败。
+- 直接相关69项Stage2工厂／runner／matrix／handoff／scorer／row export回归与199项Meta-Adapter Phase1／Phase2邻近回归通过。r1保持技术失败封存，修复后使用新不可覆盖run继续，不复用失败smoke或prediction root。

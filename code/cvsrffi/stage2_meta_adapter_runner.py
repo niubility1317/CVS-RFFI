@@ -165,7 +165,25 @@ def _received_iq_tensor(value: np.ndarray, *, label: str) -> Tensor:
         raise MetaAdapterStage2RunnerError(
             f"{label} received_iq must be finite nonempty [N,2,L]"
         )
-    return torch.from_numpy(np.ascontiguousarray(array, dtype=np.float32)).clone()
+    return _tensor_from_numpy_compatible(array, dtype=torch.float32)
+
+
+def _tensor_from_numpy_compatible(value: np.ndarray, *, dtype: torch.dtype) -> Tensor:
+    """Bridge NumPy 2.x arrays into PyTorch 2.1 without its legacy C-API."""
+
+    if dtype == torch.float32:
+        array = np.ascontiguousarray(value, dtype=np.float32)
+    elif dtype == torch.long:
+        array = np.ascontiguousarray(value, dtype=np.int64)
+    else:
+        raise MetaAdapterStage2RunnerError("unsupported tensor bridge dtype")
+    return torch.frombuffer(array, dtype=dtype).reshape(array.shape).clone()
+
+
+def _numpy_from_tensor_compatible(value: Tensor, *, dtype: np.dtype) -> np.ndarray:
+    """Serialize a CPU tensor through Python values when Tensor.numpy is unavailable."""
+
+    return np.asarray(value.detach().cpu().tolist(), dtype=dtype)
 
 
 def _integer_tensor(value: np.ndarray, *, label: str) -> Tensor:
@@ -178,7 +196,7 @@ def _integer_tensor(value: np.ndarray, *, label: str) -> Tensor:
         raise MetaAdapterStage2RunnerError(
             f"{label} must be a nonempty integer vector"
         )
-    return torch.from_numpy(np.ascontiguousarray(array, dtype=np.int64)).clone()
+    return _tensor_from_numpy_compatible(array, dtype=torch.long)
 
 
 def _prototype_tensors(
@@ -203,9 +221,7 @@ def _prototype_tensors(
         )
     if torch.unique(class_ids).numel() != class_ids.numel():
         raise MetaAdapterStage2RunnerError("prototype class_ids must be unique")
-    prototypes = torch.from_numpy(
-        np.ascontiguousarray(array, dtype=np.float32)
-    ).clone()
+    prototypes = _tensor_from_numpy_compatible(array, dtype=torch.float32)
     prototypes.requires_grad_(False)
     if bool((torch.linalg.vector_norm(prototypes, dim=1) <= 0).any()):
         raise MetaAdapterStage2RunnerError(
@@ -627,11 +643,12 @@ def _write_prediction(
         np.savez(
             handle,
             query_ids=query_ids,
-            predicted_class_ids=predicted_class_ids.detach()
-            .cpu()
-            .numpy()
-            .astype(np.int64),
-            scores=scores.detach().cpu().numpy().astype(np.float32),
+            predicted_class_ids=_numpy_from_tensor_compatible(
+                predicted_class_ids, dtype=np.dtype(np.int64)
+            ),
+            scores=_numpy_from_tensor_compatible(
+                scores, dtype=np.dtype(np.float32)
+            ),
         )
     if path.exists() or path.is_symlink():
         raise FileExistsError(f"prediction artifact appeared during write: {path}")
