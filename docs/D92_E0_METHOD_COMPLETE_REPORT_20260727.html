@@ -3,998 +3,839 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="D92 E0方法原理、机制、输入输出、计算资源和论文复现方法对比的可视化技术报告。">
-  <title>D92 E0完整技术报告｜可视化阅读版</title>
+  <meta name="description" content="D92 E0 identity160 plus FFT96 256维注册方法的可视化技术报告">
+  <title>D92 E0｜256维可视化技术报告</title>
   <style>
     :root {
-      --ink: #18202b;
-      --muted: #586577;
-      --paper: #f6f8fc;
-      --panel: #ffffff;
-      --line: #d6deea;
-      --accent: #0b5ea8;
-      --accent-soft: #e8f2fc;
-      --green: #116b52;
-      --green-soft: #e8f6f0;
-      --orange: #a24a08;
-      --orange-soft: #fff3e6;
-      --red: #ad3030;
-      --red-soft: #fff0f0;
-      --violet: #6046a5;
-      --violet-soft: #f0edfb;
-      --mono: "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
-      --sans: "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif;
+      --ink:#17233a;
+      --muted:#5e6d85;
+      --line:#dbe3ef;
+      --paper:#ffffff;
+      --surface:#f5f8fc;
+      --navy:#163c72;
+      --blue:#2d72d9;
+      --cyan:#29a9c7;
+      --mint:#41b88f;
+      --amber:#e9a93d;
+      --coral:#e76c63;
+      --violet:#8364d6;
+      --shadow:0 12px 30px rgba(26,55,96,.10);
     }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --ink: #e6edf7;
-        --muted: #aab7c8;
-        --paper: #111923;
-        --panel: #182330;
-        --line: #344455;
-        --accent: #75b8ef;
-        --accent-soft: #173653;
-        --green: #7fd6b9;
-        --green-soft: #173b34;
-        --orange: #ffc27d;
-        --orange-soft: #4a3020;
-        --red: #ff9f9f;
-        --red-soft: #4a2529;
-        --violet: #c8b9ff;
-        --violet-soft: #332d51;
-      }
-    }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
     body {
-      margin: 0;
-      color: var(--ink);
-      background: var(--paper);
-      font-family: var(--sans);
-      font-size: 16px;
-      line-height: 1.76;
+      margin:0;
+      color:var(--ink);
+      background:linear-gradient(180deg,#f8fbff 0,#ffffff 460px);
+      font:16px/1.75 "Microsoft YaHei","PingFang SC","Noto Sans CJK SC",Arial,sans-serif;
     }
-    a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
-    a:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
-    code, .code { font-family: var(--mono); font-size: .9em; }
-    .skip-link { position: absolute; left: 12px; top: -60px; z-index: 10; padding: 7px 12px; background: var(--panel); }
-    .skip-link:focus { top: 12px; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 28px 26px 70px; }
+    a { color:var(--blue); text-decoration:none; }
+    .wrap { width:min(1180px,calc(100% - 36px)); margin:auto; }
     .hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1.6fr) minmax(260px, .8fr);
-      gap: 24px;
-      padding: 32px;
-      background: linear-gradient(135deg, var(--panel), var(--accent-soft));
-      border: 1px solid var(--line);
-      border-radius: 18px;
+      padding:64px 0 36px;
+      color:#fff;
+      background:
+        radial-gradient(circle at 14% 18%,rgba(63,185,255,.34),transparent 25%),
+        radial-gradient(circle at 85% 14%,rgba(116,90,213,.38),transparent 28%),
+        linear-gradient(130deg,#0d274d 0%,#153f77 55%,#1a2c66 100%);
+      overflow:hidden;
     }
-    .eyebrow { margin: 0 0 8px; color: var(--accent); font-size: .9rem; font-weight: 700; letter-spacing: .05em; }
-    h1, h2, h3, h4 { line-height: 1.28; margin: 0; color: var(--ink); }
-    h1 { font-size: clamp(2rem, 4vw, 3.25rem); letter-spacing: -.03em; }
-    h2 { margin-top: 54px; padding-top: 14px; border-top: 2px solid var(--line); font-size: clamp(1.48rem, 2.5vw, 2rem); }
-    h3 { margin-top: 30px; font-size: 1.25rem; }
-    h4 { margin-top: 18px; font-size: 1.04rem; }
-    p { margin: 12px 0; }
-    .lede { max-width: 820px; font-size: 1.08rem; }
-    .date { color: var(--muted); }
-    .status-box { align-self: start; padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
-    .status-box strong { display: block; margin-bottom: 8px; }
-    .badge { display: inline-block; margin: 3px 5px 3px 0; padding: 3px 8px; border-radius: 999px; font-size: .82rem; font-weight: 700; line-height: 1.35; }
-    .badge.info { color: var(--accent); background: var(--accent-soft); }
-    .badge.ok { color: var(--green); background: var(--green-soft); }
-    .badge.warn { color: var(--orange); background: var(--orange-soft); }
-    .badge.stop { color: var(--red); background: var(--red-soft); }
-    .topnav { margin: 18px 0 28px; padding: 12px 0; border-bottom: 1px solid var(--line); }
-    .topnav ul { display: flex; flex-wrap: wrap; gap: 6px 15px; margin: 0; padding: 0; list-style: none; }
-    .topnav a { font-size: .92rem; }
-    .section-intro { max-width: 930px; color: var(--muted); }
-    .callout { margin: 18px 0; padding: 16px 18px; border-left: 4px solid var(--accent); background: var(--accent-soft); }
-    .callout.warn { border-left-color: var(--orange); background: var(--orange-soft); }
-    .callout.danger { border-left-color: var(--red); background: var(--red-soft); }
-    .callout.good { border-left-color: var(--green); background: var(--green-soft); }
-    .callout h3 { margin-top: 0; }
-    .grid { display: grid; gap: 16px; }
-    .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .card { padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
-    .card h3 { margin-top: 0; }
-    .kpi { font-size: 1.72rem; font-weight: 800; line-height: 1.15; }
-    .minor { color: var(--muted); font-size: .91rem; }
-    .flow-wrap { margin: 22px 0; overflow-x: auto; padding-bottom: 6px; }
-    .flow { min-width: 910px; width: 100%; }
-    .legend { display: flex; flex-wrap: wrap; gap: 12px; margin: 8px 0 0; color: var(--muted); font-size: .88rem; }
-    .legend span::before { content: ""; display: inline-block; width: 11px; height: 11px; margin-right: 5px; border-radius: 2px; vertical-align: -1px; background: currentColor; }
-    .formula { margin: 18px 0 10px; padding: 14px 16px; overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); text-align: center; }
-    .formula .MJX-TEX { font-size: 1.03em; }
-    .formula-note { margin: 0 0 18px; padding: 12px 14px; border-left: 3px solid var(--violet); color: var(--ink); background: var(--violet-soft); font-size: .94rem; }
-    .formula-note strong { color: var(--violet); }
-    .plain-math { font-family: var(--mono); text-align: left; white-space: pre-wrap; }
-    .mathjax-ready .plain-math { display: none; }
-    .table-wrap { margin: 16px 0 22px; overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
-    table { width: 100%; border-collapse: collapse; font-size: .94rem; }
-    caption { padding: 12px 14px; text-align: left; color: var(--muted); font-weight: 700; }
-    th, td { padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
-    th { color: var(--ink); background: color-mix(in srgb, var(--accent-soft) 55%, var(--panel)); text-align: left; }
-    tr:last-child td { border-bottom: 0; }
-    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
-    ul, ol { margin: 10px 0; padding-left: 1.45em; }
-    li + li { margin-top: 5px; }
-    .stage { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line); }
-    .stage:last-child { border-bottom: 0; }
-    .stage-no { display: grid; place-items: center; width: 30px; height: 30px; color: var(--panel); background: var(--accent); border-radius: 50%; font-weight: 800; }
-    .terms { columns: 2 280px; column-gap: 24px; }
-    .term { break-inside: avoid; margin: 0 0 12px; padding: 12px; border-left: 3px solid var(--line); background: var(--panel); }
-    .term code { color: var(--accent); font-weight: 700; }
-    details { margin: 14px 0; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
-    summary { padding: 12px 14px; cursor: pointer; font-weight: 700; }
-    details > div { padding: 0 14px 14px; }
-    .svg-panel { margin: 18px 0; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
-    .svg-panel figcaption { margin: 4px 4px 0; color: var(--muted); font-size: .9rem; }
-    .bar-label { fill: var(--ink); font-size: 13px; font-family: var(--sans); }
-    .bar-value { fill: var(--ink); font-size: 12px; font-family: var(--mono); }
-    .svg-note { fill: var(--muted); font-size: 12px; font-family: var(--sans); }
-    .axis { stroke: var(--line); stroke-width: 1; }
-    .footnote { color: var(--muted); font-size: .9rem; }
-    .footer { margin-top: 64px; padding-top: 18px; border-top: 2px solid var(--line); color: var(--muted); font-size: .9rem; }
-    @media (max-width: 800px) {
-      .page { padding: 16px 14px 44px; }
-      .hero, .grid.two, .grid.three { grid-template-columns: 1fr; }
-      .hero { padding: 22px; }
-      h2 { margin-top: 42px; }
-      .terms { columns: 1; }
-      table { font-size: .87rem; }
-      th, td { padding: 8px 9px; }
+    .eyebrow { margin:0; color:#a9ddff; font-size:.82rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+    h1 { margin:10px 0 12px; font-size:clamp(2rem,5vw,3.9rem); line-height:1.1; letter-spacing:-.04em; }
+    .lead { width:min(850px,100%); margin:0; color:#e5efff; font-size:1.08rem; }
+    .badges { display:flex; flex-wrap:wrap; gap:9px; margin-top:22px; }
+    .badge { padding:5px 11px; border:1px solid rgba(255,255,255,.22); border-radius:999px; background:rgba(255,255,255,.10); font-size:.84rem; }
+    .topnav {
+      position:sticky; top:0; z-index:10;
+      background:rgba(255,255,255,.93); backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--line);
+    }
+    .topnav .wrap { display:flex; gap:20px; align-items:center; overflow:auto; padding:10px 0; white-space:nowrap; }
+    .topnav strong { color:var(--navy); font-size:.9rem; }
+    .topnav a { color:var(--muted); font-size:.88rem; }
+    section { padding:54px 0 6px; }
+    h2 { margin:0 0 16px; font-size:clamp(1.55rem,3vw,2.35rem); line-height:1.25; letter-spacing:-.025em; }
+    h3 { margin:28px 0 10px; font-size:1.25rem; line-height:1.4; }
+    h4 { margin:0 0 8px; font-size:1rem; }
+    p { margin:0 0 15px; }
+    .muted { color:var(--muted); }
+    .grid { display:grid; gap:18px; }
+    .two { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .three { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .six { grid-template-columns:repeat(6,minmax(0,1fr)); }
+    .card {
+      padding:20px; border:1px solid var(--line); border-radius:17px;
+      background:var(--paper); box-shadow:var(--shadow);
+    }
+    .card p:last-child { margin-bottom:0; }
+    .number { color:var(--blue); font-size:2rem; line-height:1; font-weight:850; }
+    .module-card { min-height:160px; }
+    .module-card:nth-child(1) .number { color:var(--blue); }
+    .module-card:nth-child(2) .number { color:var(--cyan); }
+    .module-card:nth-child(3) .number { color:var(--mint); }
+    .module-card:nth-child(4) .number { color:var(--amber); }
+    .module-card:nth-child(5) .number { color:var(--violet); }
+    .module-card:nth-child(6) .number { color:var(--coral); }
+    .eli5 {
+      margin:20px 0; padding:18px 20px 18px 64px; position:relative;
+      border:1px solid #b9e7de; border-radius:15px; background:#effbf8;
+    }
+    .eli5::before {
+      content:"像这样想"; position:absolute; left:16px; top:19px; width:36px; height:36px;
+      display:grid; place-items:center; border-radius:50%; background:var(--mint); color:#fff;
+      font-size:10px; font-weight:800; line-height:1.1; text-align:center;
+    }
+    .warning {
+      margin:20px 0; padding:16px 18px; border-left:4px solid var(--amber);
+      background:#fff9ea; color:#664911;
+    }
+    .formula {
+      margin:20px 0 10px; padding:17px 20px; overflow:auto;
+      border-radius:14px; background:#f2f6fb; border:1px solid #dce6f2;
+      text-align:center; font-size:1.05rem;
+    }
+    .formula-note {
+      margin:0 0 22px; padding:11px 14px; border-left:3px solid var(--blue);
+      background:#f8fbff; color:#42536d; font-size:.94rem;
+    }
+    .viz {
+      margin:24px 0 30px; padding:16px; border:1px solid var(--line);
+      border-radius:20px; background:#fff; box-shadow:var(--shadow);
+    }
+    .viz svg { width:100%; height:auto; display:block; }
+    .viz figcaption { margin:10px 4px 0; color:var(--muted); font-size:.9rem; }
+    table { width:100%; border-collapse:collapse; margin:16px 0 24px; font-size:.93rem; }
+    th,td { padding:11px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { color:#264263; background:#f4f7fb; font-weight:800; }
+    tr:last-child td { border-bottom:0; }
+    .table-wrap { overflow:auto; border:1px solid var(--line); border-radius:14px; }
+    .table-wrap table { margin:0; min-width:680px; }
+    .kpi { color:var(--navy); font-size:1.85rem; font-weight:850; line-height:1.1; }
+    .kpi-label { color:var(--muted); font-size:.88rem; }
+    .legend { display:flex; flex-wrap:wrap; gap:16px; margin:9px 0 0; color:var(--muted); font-size:.88rem; }
+    .dot { display:inline-block; width:10px; height:10px; margin-right:5px; border-radius:50%; }
+    details { margin:14px 0; border:1px solid var(--line); border-radius:12px; background:#fff; }
+    summary { padding:12px 15px; cursor:pointer; font-weight:800; }
+    details > div { padding:0 15px 15px; }
+    .footer { margin-top:64px; padding:34px 0 50px; color:#d6e4fb; background:#112b52; }
+    .footer p { margin:0; }
+    @media (max-width:900px) {
+      .six { grid-template-columns:repeat(3,minmax(0,1fr)); }
+      .three { grid-template-columns:1fr; }
+    }
+    @media (max-width:650px) {
+      .two,.six { grid-template-columns:1fr; }
+      body { font-size:15px; }
+      .hero { padding-top:44px; }
+      .card { padding:16px; }
+      section { padding-top:42px; }
     }
   </style>
   <script>
     window.MathJax = {
-      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
-      svg: { fontCache: 'global' },
-      startup: {
-        ready: function () {
-          MathJax.startup.defaultReady();
-          document.documentElement.classList.add('mathjax-ready');
-        }
-      }
+      tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+      svg: { fontCache: 'global' }
     };
   </script>
-  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-  <a class="skip-link" href="#main">跳到正文</a>
-  <main id="main" class="page">
-    <header class="hero">
-      <div>
-        <p class="eyebrow">CVS Stage2-C｜可视化阅读版</p>
-        <h1>D92 E0完整技术报告</h1>
-        <p class="lede">这是一种“注册时集中计算、预测时只做轻量线性打分”的support-only少样本类增量RFFI方法。它不重训冻结主干；它把合法support编译成一份覆盖旧类和新类的不可变分类状态。</p>
-        <p class="date">底稿：<code>D92_METHOD_COMPLETE_REPORT_20260727.md</code>（v9）｜本HTML重构：2026-08-24</p>
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">P2-A1 · support-only registration · visual reading edition</p>
+      <h1>D92 E0<br>256维注册方法</h1>
+      <p class="lead">用160维身份特征和96维频谱特征，建立一个“注册时认真整理、预测时快速回答”的少样本分类状态。这里先看图理解流程，再展开公式。</p>
+      <div class="badges">
+        <span class="badge">identity160＋FFT96</span>
+        <span class="badge">256维联合特征</span>
+        <span class="badge">六个模块</span>
+        <span class="badge">query不更新状态</span>
+        <span class="badge">development screening</span>
       </div>
-      <aside class="status-box" aria-label="证据状态">
-        <strong>当前证据边界</strong>
-        <span class="badge ok">SCREENING_COMPLETE</span>
-        <span class="badge warn">NOT_FRESH_CONFIRMED</span>
-        <span class="badge stop">NOT_PROMOTABLE</span>
-        <p class="minor">已闭合75个identity、225个场景单位的screening artifact；尚不能据此主张部署可用性、飞行级资源指标或最终论文性能结论。</p>
-      </aside>
-    </header>
+    </div>
+  </header>
 
-    <nav class="topnav" aria-label="报告导航">
-      <ul>
-        <li><a href="#one-minute">一分钟理解</a></li>
-        <li><a href="#protocol">输入与边界</a></li>
-        <li><a href="#bundle">Phase1 bundle</a></li>
-        <li><a href="#modules">六个模块</a></li>
-        <li><a href="#registration">注册与query</a></li>
-        <li><a href="#resources">资源与星上</a></li>
-        <li><a href="#evidence">实验与消融</a></li>
-        <li><a href="#comparison">方法对比</a></li>
-        <li><a href="#limits">局限与参考</a></li>
-      </ul>
-    </nav>
+  <nav class="topnav">
+    <div class="wrap">
+      <strong>D92 E0</strong>
+      <a href="#overview">总览</a>
+      <a href="#input">输入输出</a>
+      <a href="#m1">模块一</a>
+      <a href="#m2">模块二</a>
+      <a href="#m34">模块三、四</a>
+      <a href="#m56">模块五、六</a>
+      <a href="#resource">资源</a>
+      <a href="#evidence">证据</a>
+      <a href="#compare">对比</a>
+    </div>
+  </nav>
 
-    <section id="one-minute">
-      <h2>0.先用一分钟理解D92 E0</h2>
-      <p class="section-intro">先不看公式：把每个类别想成特征空间中的一团点。普通原型只记住“这团点的中心在哪里”；D92 E0还要估计“哪些方向不稳定、旧类任务和新类任务应怎样公平共享一把尺子”，然后把这些统计量编译成一个很小的分类头。</p>
-      <div class="grid three">
-        <article class="card">
-          <h3>它解决什么</h3>
-          <p>目标接收机和LEO弱信道会让同一发射机的特征偏移；新类增加又会挤压旧类。D92 E0在不读取source样本、不使用query反馈的前提下处理这两个问题。</p>
-        </article>
-        <article class="card">
-          <h3>它在注册时做什么</h3>
-          <p>读取每类K条标注support，计算联合特征、稳健类中心、旧/新任务均衡协方差、两种几何的可靠性融合，并量化成一个统一仿射头。</p>
-        </article>
-        <article class="card">
-          <h3>它在query时做什么</h3>
-          <p>只对当前一条IQ提取288维特征，再对全部已注册类做一次线性打分和<code>argmax</code>。query不会更新任何状态。</p>
-        </article>
+  <main class="wrap">
+    <section id="overview">
+      <p class="eyebrow" style="color:#2d72d9">先看全局</p>
+      <h2>它到底在做什么？</h2>
+      <p>注册时，D92 E0把旧类和新类的support整理成一个统一的、可冻结的全类分类器。之后每条query只走一次特征提取和全类打分，不再重新学习。</p>
+
+      <figure class="viz">
+        <svg viewBox="0 0 1160 315" role="img" aria-label="D92 E0从IQ输入经六个模块输出预测状态的流程图">
+          <defs>
+            <linearGradient id="gHero" x1="0" x2="1">
+              <stop offset="0" stop-color="#2d72d9"/>
+              <stop offset="1" stop-color="#29a9c7"/>
+            </linearGradient>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#7890ae"/></marker>
+          </defs>
+          <rect x="20" y="42" width="150" height="202" rx="16" fill="#eef6ff" stroke="#94bce9"/>
+          <text x="95" y="89" text-anchor="middle" fill="#163c72" font-size="18" font-weight="800">固定received IQ</text>
+          <path d="M55 126 q38 -36 77 0 v40 q-39 36 -77 0z" fill="none" stroke="#2d72d9" stroke-width="4"/>
+          <path d="M55 151 q38 36 77 0" fill="none" stroke="#29a9c7" stroke-width="4"/>
+          <text x="95" y="206" text-anchor="middle" fill="#5e6d85" font-size="13">support与query</text>
+          <line x1="178" y1="143" x2="226" y2="143" stroke="#7890ae" stroke-width="3" marker-end="url(#arrow)"/>
+          <g font-family="Microsoft YaHei,Arial">
+            <g transform="translate(238,38)">
+              <rect width="128" height="210" rx="16" fill="#f1f7ff" stroke="#83afe6"/>
+              <circle cx="26" cy="28" r="15" fill="#2d72d9"/><text x="26" y="33" text-anchor="middle" fill="#fff" font-size="14" font-weight="800">1</text>
+              <text x="64" y="33" text-anchor="middle" fill="#163c72" font-size="16" font-weight="800">特征映射</text>
+              <rect x="18" y="68" width="92" height="26" rx="7" fill="#2d72d9"/><text x="64" y="87" text-anchor="middle" fill="#fff" font-size="12">identity160</text>
+              <rect x="18" y="104" width="55" height="26" rx="7" fill="#29a9c7"/><text x="45" y="123" text-anchor="middle" fill="#fff" font-size="12">FFT96</text>
+              <text x="64" y="164" text-anchor="middle" fill="#5e6d85" font-size="13">得到256维特征</text>
+              <text x="64" y="186" text-anchor="middle" fill="#5e6d85" font-size="13">注册与query都用</text>
+            </g>
+            <line x1="373" y1="143" x2="418" y2="143" stroke="#7890ae" stroke-width="3" marker-end="url(#arrow)"/>
+            <g transform="translate(430,38)">
+              <rect width="128" height="210" rx="16" fill="#effbf9" stroke="#8fd5c4"/>
+              <circle cx="26" cy="28" r="15" fill="#29a9c7"/><text x="26" y="33" text-anchor="middle" fill="#fff" font-size="14" font-weight="800">2</text>
+              <text x="68" y="33" text-anchor="middle" fill="#163c72" font-size="16" font-weight="800">稳健中心</text>
+              <path d="M26 92 l22 -18 24 21 24 -39" fill="none" stroke="#29a9c7" stroke-width="4"/>
+              <circle cx="48" cy="74" r="5" fill="#e76c63"/><circle cx="72" cy="95" r="5" fill="#e76c63"/><circle cx="96" cy="56" r="5" fill="#41b88f"/>
+              <text x="64" y="164" text-anchor="middle" fill="#5e6d85" font-size="13">降低异常support</text>
+              <text x="64" y="186" text-anchor="middle" fill="#5e6d85" font-size="13">对中心的影响</text>
+            </g>
+            <line x1="565" y1="143" x2="610" y2="143" stroke="#7890ae" stroke-width="3" marker-end="url(#arrow)"/>
+            <g transform="translate(622,38)">
+              <rect width="128" height="210" rx="16" fill="#f5f8ff" stroke="#a7bde9"/>
+              <circle cx="26" cy="28" r="15" fill="#41b88f"/><text x="26" y="33" text-anchor="middle" fill="#fff" font-size="14" font-weight="800">3–4</text>
+              <text x="73" y="33" text-anchor="middle" fill="#163c72" font-size="16" font-weight="800">共享几何</text>
+              <ellipse cx="64" cy="96" rx="42" ry="24" fill="none" stroke="#41b88f" stroke-width="4"/>
+              <path d="M22 96h84 M64 61v70" stroke="#a6cdbd" stroke-width="2"/>
+              <text x="64" y="164" text-anchor="middle" fill="#5e6d85" font-size="13">估计类云形状</text>
+              <text x="64" y="186" text-anchor="middle" fill="#5e6d85" font-size="13">平衡旧类与新类</text>
+            </g>
+            <line x1="757" y1="143" x2="802" y2="143" stroke="#7890ae" stroke-width="3" marker-end="url(#arrow)"/>
+            <g transform="translate(814,38)">
+              <rect width="128" height="210" rx="16" fill="#faf6ff" stroke="#c3afe6"/>
+              <circle cx="26" cy="28" r="15" fill="#8364d6"/><text x="26" y="33" text-anchor="middle" fill="#fff" font-size="14" font-weight="800">5</text>
+              <text x="69" y="33" text-anchor="middle" fill="#163c72" font-size="16" font-weight="800">双几何融合</text>
+              <rect x="24" y="76" width="80" height="18" rx="4" fill="#8364d6"/><rect x="24" y="108" width="50" height="18" rx="4" fill="#b89fe7"/>
+              <text x="64" y="164" text-anchor="middle" fill="#5e6d85" font-size="13">用support留一</text>
+              <text x="64" y="186" text-anchor="middle" fill="#5e6d85" font-size="13">决定每类融合比例</text>
+            </g>
+            <line x1="949" y1="143" x2="994" y2="143" stroke="#7890ae" stroke-width="3" marker-end="url(#arrow)"/>
+            <g transform="translate(1006,38)">
+              <rect width="128" height="210" rx="16" fill="#fff7f5" stroke="#f0b2ac"/>
+              <circle cx="26" cy="28" r="15" fill="#e76c63"/><text x="26" y="33" text-anchor="middle" fill="#fff" font-size="14" font-weight="800">6</text>
+              <text x="71" y="33" text-anchor="middle" fill="#163c72" font-size="16" font-weight="800">量化封存</text>
+              <g transform="translate(34,72)" fill="#e76c63"><rect width="12" height="12"/><rect x="18" width="12" height="12"/><rect x="36" width="12" height="12"/><rect x="54" width="12" height="12"/><rect x="18" y="18" width="12" height="12"/><rect x="54" y="18" width="12" height="12"/></g>
+              <text x="64" y="164" text-anchor="middle" fill="#5e6d85" font-size="13">冻结全类判别行</text>
+              <text x="64" y="186" text-anchor="middle" fill="#5e6d85" font-size="13">query快速回答</text>
+            </g>
+          </g>
+          <text x="580" y="290" text-anchor="middle" fill="#5e6d85" font-size="14">模块二至模块六只在注册期运行；query阶段只经过模块一和冻结分类头。</text>
+        </svg>
+        <figcaption>图1｜整条方法链。颜色相同的模块在后文中对应同一种直观解释和公式区域。</figcaption>
+      </figure>
+
+      <div class="grid six">
+        <article class="card module-card"><div class="number">1</div><h4>看信号</h4><p>把IQ变成身份块和频谱块。</p></article>
+        <article class="card module-card"><div class="number">2</div><h4>挑稳中心</h4><p>让异常support少拉偏类别中心。</p></article>
+        <article class="card module-card"><div class="number">3</div><h4>看云团</h4><p>估计每类特征如何一起变化。</p></article>
+        <article class="card module-card"><div class="number">4</div><h4>保公平</h4><p>旧类任务和新类任务各占一半。</p></article>
+        <article class="card module-card"><div class="number">5</div><h4>作选择</h4><p>让support自己检验哪种几何更可靠。</p></article>
+        <article class="card module-card"><div class="number">6</div><h4>装进盒子</h4><p>压缩成固定、可部署的预测状态。</p></article>
       </div>
-      <div class="callout good">
-        <strong>一句话定位：</strong>D92 E0不是“在旧D92上加一个小修补”，而是一条完整的冻结主干＋support状态构造＋统一预测头的方法链。它的优化目标是让低频的新类注册成本换取大量后续query的轻量、固定且无query泄漏的预测。
-      </div>
+
+      <div class="eli5"><strong>一句话理解：</strong>把新类别登记想成给图书馆编目录。注册期要认真读完每本新书、决定它该放在哪里；query期只要查已经编好的目录，不再重写整套目录。</div>
     </section>
 
-    <section id="protocol">
-      <h2>1.问题、输入、输出与不可越过的边界</h2>
-      <p>接收IQ同时包含发射机硬件指纹、传播/LEO弱信道、接收机前端和噪声的共同作用。D92 E0不尝试恢复clean IQ或真实信道，而是在固定接收观测上建立稳健的增量判别状态。</p>
-
-      <div class="formula">
-        \[
-          \mathbf{x}=\mathcal{R}_{d}\!\left(\mathcal{H}_{d}*\mathcal{T}_{y}(\mathbf{s})\right)+\mathbf{n}.
-        \]
-        <div class="plain-math">x = R_d(H_d * T_y(s)) + n</div>
-      </div>
-      <div class="formula-note"><strong>符号说明：</strong>\(\mathbf{x}\)是Phase2可读取的固定接收IQ；\(y\)是发射机类别；\(d\)是接收机/信道域；\(\mathcal T_y\)表示发射机硬件响应；\(\mathcal H_d\)表示传播与LEO弱信道；\(\mathcal R_d\)表示接收机前端；\(\mathbf n\)是加性噪声；\(*\)是卷积或等价的链路作用记号。</div>
-
+    <section id="input">
+      <p class="eyebrow" style="color:#2d72d9">边界先说清楚</p>
+      <h2>输入、输出与禁止事项</h2>
       <div class="grid two">
         <article class="card">
-          <h3>允许作为输入</h3>
+          <h3>注册期输入</h3>
           <ul>
-            <li>冻结Phase1 checkpoint和只读deployment bundle；</li>
-            <li>每个旧类和新类各自K条、物理独立、带标签的target support；</li>
-            <li>一条一条独立决策的固定接收query IQ。</li>
+            <li>冻结身份编码器与Phase1封存bundle。</li>
+            <li>当前目标域、带合法标签的旧类和新类support。</li>
+            <li>固定received IQ与冻结配置。</li>
           </ul>
         </article>
         <article class="card">
-          <h3>明确禁止</h3>
+          <h3>注册期输出</h3>
           <ul>
-            <li>Phase2读取clean/source样本或样本级source派生物；</li>
-            <li>用query真值、old/new角色、批次类别数或配额更新状态；</li>
-            <li>query之间共享图、全局重分配或回看未来query。</li>
+            <li>全体注册类的量化仿射判别行。</li>
+            <li>有序类别表、尺度、截距和数值审计字段。</li>
+            <li>一个不可变的预测状态。</li>
           </ul>
         </article>
       </div>
-
-      <h3>1.1类别、support与query</h3>
+      <div class="warning"><strong>不会做的事：</strong>不读取source样本；不把地面聚合中心当成target support；不读取query真值或角色；不利用整批query数量重新分配预测。</div>
       <div class="formula">
         \[
-          \mathcal{Y}=\mathcal{Y}_{\mathrm{o}}\cup\mathcal{Y}_{\mathrm{n}},\qquad
-          C=C_{\mathrm{o}}+C_{\mathrm{n}},\qquad
-          \mathcal{S}_{c}=\{(\mathbf{x}_{c,k},c)\}_{k=1}^{K}.
+        \widehat y(\mathbf x)=\arg\max_{c\in\mathcal Y}s_c\!\left(\Phi_\theta(\mathbf x)\right).
         \]
-        <div class="plain-math">Y = Y_old ∪ Y_new; C = C_old + C_new; S_c = {(x_c,k, c)} for k=1…K</div>
       </div>
-      <div class="formula-note"><strong>符号说明：</strong>\(\mathcal{Y}_{\mathrm{o}}\)和\(\mathcal{Y}_{\mathrm{n}}\)分别是旧类、新类标签集合；\(C_{\mathrm{o}}=6\)是当前固定旧类数；\(C_{\mathrm{n}}\in\{5,10,20\}\)是本次批量注册的新类数；\(C\)是最终竞争的总类数；\(\mathcal S_c\)是类别\(c\)的support集合；\(k\)是类内shot索引；\(K\)是每类support数。旧/新只用于注册时分组，query推理时不会读取其真实角色。</div>
+      <div class="formula-note"><strong>符号说明：</strong>\(\mathbf x\)是一条query received IQ；\(\Phi_\theta\)是冻结的256维特征映射；\(\mathcal Y\)是全部已注册类；\(s_c\)是类别\(c\)的已冻结分数；\(\widehat y\)是唯一预测。每条query独立执行这个式子。</div>
     </section>
 
-    <section id="bundle">
-      <h2>2.Phase1 deployment bundle：不是“旧类support”，而是只读聚合知识</h2>
-      <p class="section-intro">D92 E0当前正式路径使用v2组件<code>int8_domain_class_center_lowrank_residual_radius_v2</code>。它只在模块二中提供类无关扰动先验；模块三的旧类协方差样本仍是目标域旧类support，不是地面压缩原型。</p>
+    <section id="m1">
+      <p class="eyebrow" style="color:#2d72d9">模块一</p>
+      <h2>先把一条IQ整理成两块信息</h2>
+      <p>身份块回答“这条信号像哪种硬件身份”；频谱块保留频率形状。两块来自同一条固定IQ，拼接为一个256维向量。</p>
 
-      <figure class="svg-panel">
-        <svg viewBox="0 0 1120 295" role="img" aria-labelledby="bundle-title bundle-desc" width="100%">
-          <title id="bundle-title">Phase1 v2 bundle的组成和使用边界</title>
-          <desc id="bundle-desc">bundle保存INT8核心中心、低秩残差基、残差系数、P90半径及索引。它们重构地面聚合中心和半径，继而只服务模块二的扰动基。目标support独立进入模块三。</desc>
-          <defs>
-            <marker id="arrow-b" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="currentColor"/></marker>
-          </defs>
-          <g font-family="Microsoft YaHei UI, Microsoft YaHei, sans-serif" fill="currentColor">
-            <rect x="20" y="52" width="230" height="190" rx="12" fill="var(--violet-soft)" stroke="var(--line)"/>
-            <text x="40" y="83" font-size="18" font-weight="700">Phase1 v2只读bundle</text>
-            <text x="40" y="114" font-size="14">• core_q, core_scale</text>
-            <text x="40" y="140" font-size="14">• residual_basis_q, scale</text>
-            <text x="40" y="166" font-size="14">• residual_coeff_q, scale</text>
-            <text x="40" y="192" font-size="14">• radius_q, radius_scale</text>
-            <text x="40" y="218" font-size="13" fill="var(--muted)">INT8主量＋FP16尺度</text>
-            <line x1="258" y1="147" x2="370" y2="147" stroke="var(--accent)" stroke-width="3" marker-end="url(#arrow-b)"/>
-            <rect x="380" y="70" width="266" height="150" rx="12" fill="var(--accent-soft)" stroke="var(--line)"/>
-            <text x="400" y="103" font-size="18" font-weight="700">临时重构（注册期）</text>
-            <text x="400" y="137" font-size="14">每域×旧类中心 \(\hat g_{d,c}\in\mathbb R^{160}\)</text>
-            <text x="400" y="165" font-size="14">每域×旧类P90半径 \(\hat R_{d,c}\)</text>
-            <text x="400" y="194" font-size="13" fill="var(--muted)">不导出或持久化FP32中心库</text>
-            <line x1="654" y1="147" x2="758" y2="147" stroke="var(--accent)" stroke-width="3" marker-end="url(#arrow-b)"/>
-            <rect x="768" y="70" width="326" height="150" rx="12" fill="var(--green-soft)" stroke="var(--line)"/>
-            <text x="788" y="103" font-size="18" font-weight="700">模块二：类无关扰动先验</text>
-            <text x="788" y="137" font-size="14">\(\mathbf G,\sigma_q^2\rightarrow\mathbf U,\boldsymbol\rho\)</text>
-            <text x="788" y="165" font-size="14">只影响support稳健中心的估计</text>
-            <text x="788" y="194" font-size="13" fill="var(--muted)">不是模块三的协方差样本行</text>
-            <path d="M931 225 C931 264, 610 264, 610 246" fill="none" stroke="var(--red)" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrow-b)"/>
-            <text x="670" y="283" font-size="13" fill="var(--red)">不能把bundle当作旧类target support</text>
-          </g>
+      <figure class="viz">
+        <svg viewBox="0 0 1160 300" role="img" aria-label="160维身份特征和96维频谱特征拼接为256维联合特征">
+          <defs><marker id="arrowM1" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#7890ae"/></marker></defs>
+          <text x="42" y="42" fill="#163c72" font-size="22" font-weight="800">同一条固定IQ</text>
+          <path d="M40 78 q72 -48 144 0 v58 q-72 48 -144 0z" fill="#eef6ff" stroke="#2d72d9" stroke-width="3"/>
+          <path d="M40 108 q72 48 144 0" fill="none" stroke="#29a9c7" stroke-width="3"/>
+          <line x1="205" y1="106" x2="304" y2="106" stroke="#7890ae" stroke-width="3" marker-end="url(#arrowM1)"/>
+          <line x1="205" y1="184" x2="304" y2="184" stroke="#7890ae" stroke-width="3" marker-end="url(#arrowM1)"/>
+          <rect x="322" y="62" width="300" height="84" rx="14" fill="#eef6ff" stroke="#83afe6"/>
+          <text x="472" y="96" text-anchor="middle" fill="#163c72" font-size="20" font-weight="800">冻结身份编码器</text>
+          <text x="472" y="123" text-anchor="middle" fill="#5e6d85" font-size="15">输出identity160</text>
+          <rect x="322" y="160" width="300" height="54" rx="14" fill="#effbf9" stroke="#8fd5c4"/>
+          <text x="472" y="194" text-anchor="middle" fill="#163c72" font-size="20" font-weight="800">固定FFT计算 → FFT96</text>
+          <line x1="640" y1="104" x2="735" y2="140" stroke="#7890ae" stroke-width="3" marker-end="url(#arrowM1)"/>
+          <line x1="640" y1="187" x2="735" y2="160" stroke="#7890ae" stroke-width="3" marker-end="url(#arrowM1)"/>
+          <rect x="754" y="76" width="330" height="118" rx="17" fill="#f5f8ff" stroke="#b6c9e8"/>
+          <text x="919" y="108" text-anchor="middle" fill="#163c72" font-size="20" font-weight="800">拼接、固定权重、归一化</text>
+          <rect x="785" y="132" width="180" height="24" rx="5" fill="#2d72d9"/>
+          <rect x="965" y="132" width="88" height="24" rx="5" fill="#29a9c7"/>
+          <text x="875" y="150" text-anchor="middle" fill="#fff" font-size="13">160维身份块</text>
+          <text x="1009" y="150" text-anchor="middle" fill="#fff" font-size="13">96维频谱块</text>
+          <text x="919" y="223" text-anchor="middle" fill="#5e6d85" font-size="16">256维联合特征 z</text>
+          <text x="42" y="270" fill="#5e6d85" font-size="14">尺寸代表向量维数，不代表计算量或信息量按相同比例分配。</text>
         </svg>
-        <figcaption>图2-1：Phase1聚合知识与Phase2目标support的边界。红色虚线表示禁止的错误理解。</figcaption>
+        <figcaption>图2｜模块一的数据流。两条路径共享同一物理IQ，因此不会把一次观测误算成两条support。</figcaption>
       </figure>
 
-      <h3>2.1v2中心与半径如何重构</h3>
       <div class="formula">
         \[
-          \hat{\mathbf g}_{d,c}=\hat{\mathbf g}_{d_0,c}+\sum_{\ell=1}^{3}\hat a_{d,c,\ell}\hat{\mathbf b}_{c,\ell},
-          \qquad
-          \hat{\mathbf g}_{d_0,c}=s^{\mathrm{core}}_c\mathbf q^{\mathrm{core}}_c,
-          \qquad
-          \hat R_{d,c}=s^{\mathrm{rad}}_c q^{\mathrm{rad}}_{d,c}.
+        \mathbf f^{\mathrm{id}}=E_\theta(\mathbf x^{\mathrm{recv}})\in\mathbb R^{160},
+        \qquad
+        \mathbf f^{\mathrm{fft}}\in\mathbb R^{96}.
         \]
-        <div class="plain-math">ĝ_d,c = ĝ_d0,c + Σ(l=1..3) â_d,c,l b̂_c,l; ĝ_d0,c = s_core_c q_core_c; R̂_d,c = s_rad_c q_rad_d,c</div>
       </div>
-      <div class="formula-note"><strong>符号说明：</strong>\(d\)是Phase1封存域索引；\(c\)是旧类索引；\(d_0\)是参考域；\(\hat{\mathbf g}_{d,c}\)是重构出的160维域×类聚合中心；\(\mathbf q^{\mathrm{core}}_c\)是INT8核心码；\(s^{\mathrm{core}}_c\)是其尺度；\(\hat a_{d,c,\ell}\)是第\(\ell\)个低秩残差系数；\(\hat{\mathbf b}_{c,\ell}\)是对应160维残差基；\(\ell=1,2,3\)是固定秩3；\(\hat R_{d,c}\)是解码后的P90半径。帽子表示“由封存INT8/FP16数据重构”，不是当前target support均值。</div>
-
-      <details>
-        <summary>历史v1直接量化原型路径为何被移入附录？</summary>
-        <div>
-          <p>历史v1曾直接保存每个域×类160维中心的INT8码及尺度，可用尺度平方/12近似量化误差。当前D92 E0正式v2路径不再以这一数组为运行时输入；它采用低秩残差中心和P90半径重构。因此当前\(\sigma_q^2\)应由v2重构RMSE平方得到，而不是误写成旧v1的尺度平方平均。</p>
-        </div>
-      </details>
+      <div class="formula-note"><strong>符号说明：</strong>\(\mathbf x^{\mathrm{recv}}\)是固定received IQ；\(E_\theta\)是参数冻结的身份编码器；\(\mathbf f^{\mathrm{id}}\)是160维身份块；\(\mathbf f^{\mathrm{fft}}\)是96维频谱块。</div>
+      <div class="formula">
+        \[
+        \mathcal N_\varepsilon(\mathbf v)=
+        \frac{\mathbf v}{\max(\|\mathbf v\|_2,\varepsilon)},
+        \qquad
+        \mathbf z=\mathcal N_\varepsilon\!\left(
+        \begin{bmatrix}
+        \mathcal N_\varepsilon(\mathbf f^{\mathrm{id}})\\
+        4\mathcal N_\varepsilon(\mathbf f^{\mathrm{fft}})
+        \end{bmatrix}\right)\in\mathbb R^{256}.
+        \]
+      </div>
+      <div class="formula-note"><strong>符号说明：</strong>\(\mathcal N_\varepsilon\)是带保护的\(L_2\)归一化；\(\|\mathbf v\|_2\)是向量长度；\(\varepsilon=10^{-8}\)防止除零；常数4是冻结的频谱块整体权重；\(\mathbf z\)是最终256维特征。两块都先归一化，拼接后再归一化。</div>
+      <div class="eli5"><strong>为什么有两次归一化？</strong>先让两块各自站到同一条起跑线，再按固定规则给频谱块一个整体权重，最后把整个向量长度拉回1。这样大小不会偷偷影响方向比较。</div>
     </section>
 
-    <section id="modules">
-      <h2>3.六个模块：从IQ到不可变预测状态</h2>
-      <p class="section-intro">图中的每一块都是运行链的一部分。模块一处理每条IQ；模块二、三先按类别统计；模块四、五对所有已注册类联合编译；模块六把结果压缩封存。</p>
+    <section id="m2">
+      <p class="eyebrow" style="color:#29a9c7">模块二</p>
+      <h2>从地面经验中拿一只“方向罗盘”</h2>
+      <p>模块二不把地面聚合中心拿来替代target support。它只把这些跨接收机变化浓缩成“哪些方向更容易发生域漂移”的罗盘，用来判断某条support是否不适合强力拉动类中心。</p>
 
-      <figure class="svg-panel">
-        <svg class="flow" viewBox="0 0 1220 390" role="img" aria-labelledby="flow-title flow-desc">
-          <title id="flow-title">D92 E0端到端六模块流程</title>
-          <desc id="flow-desc">Phase1 bundle和support进入注册阶段。六个模块依次生成最终量化状态。query只访问模块一和最终状态。</desc>
+      <figure class="viz">
+        <svg viewBox="0 0 1160 405" role="img" aria-label="Phase1封存聚合中心派生扰动基并用于target support稳健中心的示意图">
           <defs>
-            <marker id="arrow-f" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="currentColor"/></marker>
+            <marker id="arrowM2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#7890ae"/></marker>
+            <linearGradient id="gridG" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#eef6ff"/><stop offset="1" stop-color="#ecfbf8"/></linearGradient>
           </defs>
-          <g font-family="Microsoft YaHei UI, Microsoft YaHei, sans-serif" fill="currentColor">
-            <text x="28" y="26" font-size="15" fill="var(--muted)">注册期：只读取bundle与标注support；不读取query</text>
-            <rect x="26" y="45" width="158" height="72" rx="10" fill="var(--violet-soft)" stroke="var(--line)"/>
-            <text x="47" y="75" font-size="17" font-weight="700">Phase1 bundle</text>
-            <text x="47" y="99" font-size="13">v2聚合中心＋半径</text>
-            <rect x="26" y="157" width="158" height="72" rx="10" fill="var(--accent-soft)" stroke="var(--line)"/>
-            <text x="51" y="187" font-size="17" font-weight="700">K-shot support</text>
-            <text x="51" y="211" font-size="13">每类固定接收IQ</text>
-            <line x1="191" y1="193" x2="246" y2="193" stroke="var(--accent)" stroke-width="3" marker-end="url(#arrow-f)"/>
-            <line x1="184" y1="81" x2="373" y2="81" stroke="var(--violet)" stroke-width="3" marker-end="url(#arrow-f)"/>
-            <rect x="255" y="157" width="148" height="72" rx="10" fill="var(--accent-soft)" stroke="var(--line)"/>
-            <text x="277" y="185" font-size="16" font-weight="700">模块一</text>
-            <text x="271" y="209" font-size="13">288维联合特征</text>
-            <line x1="410" y1="193" x2="455" y2="193" stroke="var(--accent)" stroke-width="3" marker-end="url(#arrow-f)"/>
-            <rect x="464" y="157" width="148" height="72" rx="10" fill="var(--green-soft)" stroke="var(--line)"/>
-            <text x="486" y="185" font-size="16" font-weight="700">模块二</text>
-            <text x="478" y="209" font-size="13">谱先验＋稳健中心</text>
-            <line x1="619" y1="193" x2="664" y2="193" stroke="var(--accent)" stroke-width="3" marker-end="url(#arrow-f)"/>
-            <rect x="673" y="157" width="148" height="72" rx="10" fill="var(--orange-soft)" stroke="var(--line)"/>
-            <text x="695" y="185" font-size="16" font-weight="700">模块三</text>
-            <text x="683" y="209" font-size="13">旧/新均衡协方差</text>
-            <line x1="828" y1="193" x2="873" y2="193" stroke="var(--accent)" stroke-width="3" marker-end="url(#arrow-f)"/>
-            <rect x="882" y="157" width="148" height="72" rx="10" fill="var(--violet-soft)" stroke="var(--line)"/>
-            <text x="904" y="185" font-size="16" font-weight="700">模块四/五</text>
-            <text x="892" y="209" font-size="13">LDA＋双几何融合</text>
-            <line x1="1037" y1="193" x2="1082" y2="193" stroke="var(--accent)" stroke-width="3" marker-end="url(#arrow-f)"/>
-            <rect x="1091" y="157" width="105" height="72" rx="10" fill="var(--green-soft)" stroke="var(--line)"/>
-            <text x="1107" y="185" font-size="16" font-weight="700">模块六</text>
-            <text x="1104" y="209" font-size="13">量化封存</text>
-            <path d="M1144 236 L1144 287 L360 287 L360 333" fill="none" stroke="var(--green)" stroke-width="3" marker-end="url(#arrow-f)"/>
-            <rect x="258" y="333" width="208" height="42" rx="9" fill="var(--green-soft)" stroke="var(--line)"/>
-            <text x="283" y="360" font-size="15" font-weight="700">不可变预测状态S_E0</text>
-            <line x1="472" y1="354" x2="632" y2="354" stroke="var(--green)" stroke-width="3" marker-end="url(#arrow-f)"/>
-            <rect x="641" y="323" width="200" height="61" rx="10" fill="var(--accent-soft)" stroke="var(--line)"/>
-            <text x="669" y="350" font-size="16" font-weight="700">单条query IQ</text>
-            <text x="657" y="371" font-size="12">模块一＋仿射打分＋argmax</text>
-            <line x1="847" y1="354" x2="1003" y2="354" stroke="var(--accent)" stroke-width="3" marker-end="url(#arrow-f)"/>
-            <rect x="1012" y="333" width="176" height="42" rx="9" fill="var(--orange-soft)" stroke="var(--line)"/>
-            <text x="1030" y="360" font-size="15" font-weight="700">全注册类唯一预测</text>
+          <text x="42" y="38" fill="#163c72" font-size="21" font-weight="800">Phase1封存的聚合知识</text>
+          <rect x="40" y="58" width="258" height="178" rx="17" fill="url(#gridG)" stroke="#91bfdc"/>
+          <g transform="translate(68,84)">
+            <text x="0" y="-9" fill="#5e6d85" font-size="13">域×类中心摘要</text>
+            <g>
+              <rect x="0" y="0" width="42" height="28" rx="4" fill="#2d72d9"/><rect x="48" y="0" width="42" height="28" rx="4" fill="#4d8be2"/><rect x="96" y="0" width="42" height="28" rx="4" fill="#78a9ed"/><rect x="144" y="0" width="42" height="28" rx="4" fill="#a8c8f4"/>
+              <rect x="0" y="36" width="42" height="28" rx="4" fill="#29a9c7"/><rect x="48" y="36" width="42" height="28" rx="4" fill="#5bc1d7"/><rect x="96" y="36" width="42" height="28" rx="4" fill="#88d0df"/><rect x="144" y="36" width="42" height="28" rx="4" fill="#b6e1e8"/>
+              <rect x="0" y="72" width="42" height="28" rx="4" fill="#41b88f"/><rect x="48" y="72" width="42" height="28" rx="4" fill="#70c9aa"/><rect x="96" y="72" width="42" height="28" rx="4" fill="#9fdbc4"/><rect x="144" y="72" width="42" height="28" rx="4" fill="#cceddf"/>
+            </g>
+            <text x="95" y="126" text-anchor="middle" fill="#5e6d85" font-size="13">压缩码、尺度、P90半径、重构RMSE</text>
           </g>
+          <line x1="312" y1="145" x2="397" y2="145" stroke="#7890ae" stroke-width="3" marker-end="url(#arrowM2)"/>
+          <g transform="translate(416,54)">
+            <rect width="300" height="188" rx="17" fill="#f5f8ff" stroke="#b8cbe8"/>
+            <text x="150" y="30" text-anchor="middle" fill="#163c72" font-size="19" font-weight="800">聚合残差协方差 G</text>
+            <g transform="translate(75,56)">
+              <rect width="22" height="22" fill="#2d72d9"/><rect x="26" width="22" height="22" fill="#76a9ed"/><rect x="52" width="22" height="22" fill="#9bc0f2"/><rect x="78" width="22" height="22" fill="#d3e3f9"/>
+              <rect y="26" width="22" height="22" fill="#64bcd2"/><rect x="26" y="26" width="22" height="22" fill="#2d72d9"/><rect x="52" y="26" width="22" height="22" fill="#6aa2e8"/><rect x="78" y="26" width="22" height="22" fill="#b7d3f6"/>
+              <rect y="52" width="22" height="22" fill="#93d5e1"/><rect x="26" y="52" width="22" height="22" fill="#6aa2e8"/><rect x="52" y="52" width="22" height="22" fill="#2d72d9"/><rect x="78" y="52" width="22" height="22" fill="#83b5ef"/>
+              <rect y="78" width="22" height="22" fill="#d8eef0"/><rect x="26" y="78" width="22" height="22" fill="#b7d3f6"/><rect x="52" y="78" width="22" height="22" fill="#83b5ef"/><rect x="78" y="78" width="22" height="22" fill="#2d72d9"/>
+            </g>
+            <text x="205" y="85" fill="#5e6d85" font-size="14">先减掉每类自己的位置</text>
+            <text x="205" y="110" fill="#5e6d85" font-size="14">再汇总共同漂移形状</text>
+            <text x="205" y="154" fill="#2d72d9" font-size="14" font-weight="800">对称化、去噪、特征分解</text>
+          </g>
+          <line x1="731" y1="145" x2="818" y2="145" stroke="#7890ae" stroke-width="3" marker-end="url(#arrowM2)"/>
+          <g transform="translate(837,54)">
+            <rect width="283" height="188" rx="17" fill="#effbf8" stroke="#91d4c2"/>
+            <text x="142" y="30" text-anchor="middle" fill="#163c72" font-size="19" font-weight="800">扰动基 U与权重ρ</text>
+            <line x1="68" y1="132" x2="68" y2="62" stroke="#41b88f" stroke-width="4" marker-end="url(#arrowM2)"/>
+            <line x1="68" y1="132" x2="151" y2="95" stroke="#29a9c7" stroke-width="4" marker-end="url(#arrowM2)"/>
+            <line x1="68" y1="132" x2="124" y2="159" stroke="#2d72d9" stroke-width="4" marker-end="url(#arrowM2)"/>
+            <text x="79" y="61" fill="#41b88f" font-size="13">u₁</text><text x="154" y="91" fill="#29a9c7" font-size="13">u₂</text><text x="127" y="178" fill="#2d72d9" font-size="13">u₃</text>
+            <text x="178" y="88" fill="#5e6d85" font-size="13">方向强度由ρ给出</text>
+            <text x="178" y="112" fill="#5e6d85" font-size="13">不是类别原型</text>
+            <text x="178" y="136" fill="#5e6d85" font-size="13">不是地面样本</text>
+          </g>
+          <line x1="155" y1="267" x2="155" y2="329" stroke="#7890ae" stroke-width="3" marker-end="url(#arrowM2)"/>
+          <line x1="978" y1="267" x2="978" y2="329" stroke="#7890ae" stroke-width="3" marker-end="url(#arrowM2)"/>
+          <rect x="40" y="336" width="1080" height="48" rx="14" fill="#f8fbff" stroke="#c9d9ed"/>
+          <text x="580" y="366" text-anchor="middle" fill="#163c72" font-size="17" font-weight="800">当前类别support的残差投影到U：偏移越像常见域扰动，Cauchy权重越小；所有support仍被保留。</text>
         </svg>
-        <figcaption>图3-1：D92 E0的数据流。绿色路径是已封存的预测状态；query处没有回箭头，因此query不能影响注册状态。</figcaption>
+        <figcaption>图3｜模块二只把Phase1知识当作“方向罗盘”。它不会把地面聚合中心混入当前target support的类内统计。</figcaption>
       </figure>
 
-      <article id="module1">
-        <h3>模块一：固定接收IQ→288维联合特征</h3>
-        <p>同一条接收IQ被并行描述成三块，再拼接与归一化。身份块是冻结编码器输出；FFT96保留频谱形状；RF32记录低成本的时域/相位/统计描述。辅助块先单独归一化，再乘固定权重4，最后与身份块共同归一化。</p>
-        <figure class="svg-panel">
-          <svg viewBox="0 0 1080 170" role="img" aria-labelledby="feat-title feat-desc" width="100%">
-            <title id="feat-title">288维联合特征组成</title>
-            <desc id="feat-desc">160维身份块、96维FFT块和32维RF块按比例堆叠，其中FFT和RF先拼为128维辅助块。</desc>
-            <g font-family="Microsoft YaHei UI, Microsoft YaHei, sans-serif" fill="currentColor">
-              <text x="24" y="27" font-size="16" font-weight="700">同一条固定接收IQ</text>
-              <line x1="190" y1="23" x2="300" y2="23" stroke="var(--accent)" stroke-width="3"/>
-              <text x="314" y="28" font-size="14" fill="var(--muted)">冻结编码器、FFT和RF统计并行计算</text>
-              <rect x="24" y="60" width="535" height="54" rx="8" fill="var(--accent-soft)"/>
-              <rect x="559" y="60" width="321" height="54" fill="var(--violet-soft)"/>
-              <rect x="880" y="60" width="107" height="54" rx="8" fill="var(--orange-soft)"/>
-              <text x="211" y="92" font-size="17" font-weight="700">identity160</text>
-              <text x="678" y="92" font-size="17" font-weight="700">FFT96</text>
-              <text x="904" y="92" font-size="17" font-weight="700">RF32</text>
-              <path d="M559 129 L559 145 L987 145 L987 129" fill="none" stroke="var(--violet)" stroke-width="2"/>
-              <text x="692" y="166" font-size="13" fill="var(--violet)">先拼为128维辅助块并归一化</text>
-            </g>
-          </svg>
-          <figcaption>图3-2：160＋96＋32=288。尺寸代表维数比例，不代表信息量或计算量比例。</figcaption>
-        </figure>
-        <div class="formula">
-          \[
-            \mathcal N_\varepsilon(\mathbf v)=\frac{\mathbf v}{\max(\lVert\mathbf v\rVert_2,\varepsilon)},\quad
-            \mathbf f^{\mathrm{aux}}=\mathcal N_\varepsilon\!\left([\mathbf f^{\mathrm{fft}};\mathbf f^{\mathrm{rf}}]\right),\quad
-            \mathbf z=\mathcal N_\varepsilon\!\left([\mathcal N_\varepsilon(\mathbf f^{\mathrm{id}});4\mathbf f^{\mathrm{aux}}]\right)\in\mathbb R^{288}.
-          \]
-          <div class="plain-math">Nε(v)=v/max(||v||₂,ε); f_aux=Nε([f_fft;f_rf]); z=Nε([Nε(f_id);4f_aux])∈R^288</div>
-        </div>
-        <div class="formula-note"><strong>符号说明：</strong>\(\mathcal N_\varepsilon\)是带保护值\(\varepsilon=10^{-8}\)的L2归一化；\(\lVert\mathbf v\rVert_2=\sqrt{\sum_i v_i^2}\)是向量长度；\(\mathbf f^{\mathrm{id}}\in\mathbb R^{160}\)是冻结编码器身份特征；\(\mathbf f^{\mathrm{fft}}\in\mathbb R^{96}\)是频谱特征；\(\mathbf f^{\mathrm{rf}}\in\mathbb R^{32}\)是RF统计特征；\([a;b]\)表示纵向拼接；\(\mathbf f^{\mathrm{aux}}\in\mathbb R^{128}\)是辅助特征；常数4是锁定的几何权重；\(\mathbf z\)是最终288维特征。</div>
-        <div class="callout"><strong>为什么拼接前后都归一化？</strong>前一次使128维辅助块内部的FFT96/RF32共同受控；乘4后，辅助块的整体长度约为身份块的4倍；最后一次把288维总长度拉回1。若两块初始范数均为1，拼接后范数为\(\sqrt{1^2+4^2}=\sqrt{17}\)，所以最终身份块与辅助块的总能量比例固定为1:16，而不是“每一维都乘4”。</div>
-      </article>
+      <div class="eli5"><strong>把它想成罗盘：</strong>地面阶段告诉我们“风通常从哪些方向吹来”。某条support如果正好被风吹偏得很厉害，就少让它决定班级中心；但它仍然留在班里，不会被扔掉。</div>
 
-      <article id="module2">
-        <h3>模块二：从封存聚合知识构造扰动基，再稳健化support中心</h3>
-        <p>这一步包含两个不同来源的统计层次：地面聚合知识只负责提供“哪些160维方向在不同域中容易扰动”的类无关先验；当前target support只负责计算本类中心和本类Cauchy权重。两者不可混淆。</p>
-        <h4>3.2.1从v2重构中心派生\(\mathbf G\)与\(\sigma_q^2\)</h4>
-        <div class="formula">
-          \[
-            \bar{\mathbf g}^{(0)}_c=\frac1D\sum_{d=1}^{D}\hat{\mathbf g}_{d,c},\qquad
-            \nu_{d,c}=\left\lVert\hat{\mathbf g}_{d,c}-\bar{\mathbf g}^{(0)}_c\right\rVert_2^2,
-          \]
-          \[
-            \gamma_{d,c}=\frac{\nu_{d,c}}{\nu_{d,c}+2\hat R_{d,c}},\qquad
-            \beta_{d,c}=\frac{\gamma_{d,c}}{\sum_{d'=1}^{D}\gamma_{d',c}},\qquad
-            \bar{\mathbf g}_c=\sum_{d=1}^{D}\beta_{d,c}\hat{\mathbf g}_{d,c}.
-          \]
-          <div class="plain-math">ḡ⁽⁰⁾_c=(1/D)Σ_d ĝ_d,c; ν_d,c=||ĝ_d,c−ḡ⁽⁰⁾_c||²; γ_d,c=ν_d,c/(ν_d,c+2R̂_d,c); β_d,c=γ_d,c/Σ_d′γ_d′,c; ḡ_c=Σ_d β_d,c ĝ_d,c</div>
-        </div>
-        <div class="formula-note"><strong>符号说明：</strong>\(D\)是封存域数；\(\hat{\mathbf g}_{d,c}\)是v2重构出的某域某旧类160维中心；\(\bar{\mathbf g}^{(0)}_c\)是未加权跨域中心；\(\nu_{d,c}\)是该域中心相对未加权中心的平方距离；\(\hat R_{d,c}\)是该域×类P90半径；\(\gamma_{d,c}\)是未归一化可靠性；\(\beta_{d,c}\)是归一化可靠性，满足\(\sum_d\beta_{d,c}=1\)；\(\bar{\mathbf g}_c\)是可靠性加权的跨域中心。半径较大时，相同偏移的可信度较低。</div>
-        <div class="formula">
-          \[
-            \mathbf e^g_{d,c}=\hat{\mathbf g}_{d,c}-\bar{\mathbf g}_c,\qquad
-            \mathbf G=\frac1{C_{\mathrm{o}}}\sum_{c=1}^{C_{\mathrm{o}}}\sum_{d=1}^{D}\beta_{d,c}\,\mathbf e^g_{d,c}(\mathbf e^g_{d,c})^{\mathsf T}.
-          \]
-          <div class="plain-math">eᵍ_d,c=ĝ_d,c−ḡ_c; G=(1/C_old)Σ_cΣ_d β_d,c eᵍ_d,c(eᵍ_d,c)ᵀ</div>
-        </div>
-        <div class="formula-note"><strong>符号说明：</strong>\(\mathbf e^g_{d,c}\in\mathbb R^{160}\)是地面聚合中心的跨域残差；它与后文support残差\(\mathbf e_{c,k}\)不是同一个对象；\(C_{\mathrm{o}}=6\)是旧类数；\(\mathbf G\in\mathbb R^{160\times160}\)是类无关的跨域扰动二阶矩。每个外积\(\mathbf e^g(\mathbf e^g)^{\mathsf T}\)记录一条残差在160个坐标上如何共同变化；不是对一条160维向量的“内部样本”求协方差。</div>
-        <div class="formula">
-          \[
-            \varepsilon_{\mathrm{rec}}=\sqrt{\operatorname{mean}\!\left((\mathbf g_{\mathrm{dense}}-\hat{\mathbf g})^2\right)},
-            \qquad
-            \sigma_q^2=\varepsilon_{\mathrm{rec}}^2,
-            \qquad
-            \mathbf G_+=\frac{\mathbf G+\mathbf G^{\mathsf T}}2-\sigma_q^2\mathbf I_{160}.
-          \]
-          <div class="plain-math">ε_rec=sqrt(mean((g_dense−ĝ)²)); σ_q²=ε_rec²; G₊=(G+Gᵀ)/2−σ_q²I_160</div>
-        </div>
-        <div class="formula-note"><strong>符号说明：</strong>\(\mathbf g_{\mathrm{dense}}\)是Phase1离线构建时可比较的原始聚合中心；\(\hat{\mathbf g}\)是v2重构中心；\(\varepsilon_{\mathrm{rec}}\)是两者逐坐标重构RMSE；\(\sigma_q^2\)是其平方，作为各向同性的有效重构噪声底；\(\mathbf I_{160}\)是160维单位矩阵；\((\mathbf G+\mathbf G^{\mathsf T})/2\)先数值对称化。注意：\(\sigma_q^2\)不是只指INT8舍入误差，也吸收低秩截断、量化和解码造成的可观测重构误差；它是可获得信息下的标量近似，不是完整误差协方差。</div>
-        <div class="formula">
-          \[
-            \mathbf G_+=\mathbf U\operatorname{diag}(\lambda_1,\ldots,\lambda_r)\mathbf U^{\mathsf T},\qquad
-            \rho_j=\frac{\lambda_j}{\sum_{a=1}^{r}\lambda_a}.
-          \]
-          <div class="plain-math">G₊=U diag(λ₁,…,λᵣ) Uᵀ; ρⱼ=λⱼ/Σ_aλ_a</div>
-        </div>
-        <div class="formula-note"><strong>符号说明：</strong>\(\lambda_j>0\)是去噪后保留的第\(j\)个正特征值；\(\mathbf U=[\mathbf u_1,\ldots,\mathbf u_r]\in\mathbb R^{160\times r}\)的列是单位扰动方向；\(r\)是由有效秩确定并受正特征数限制的保留维数；\(\rho_j\)是归一化谱权重，\(\sum_j\rho_j=1\)。扰动基不是某个具体发射机的原型，也不是“真实物理信道方向”的直接测量；它只是封存地面聚合统计中最显著的跨域变化方向。</div>
-
-        <figure class="svg-panel">
-          <svg viewBox="0 0 920 310" role="img" aria-labelledby="basis-title basis-desc" width="100%">
-            <title id="basis-title">扰动协方差和特征向量的二维示意</title>
-            <desc id="basis-desc">两个维度上的点云沿斜对角方向扩展，最长特征向量代表更强的协同扰动方向。</desc>
-            <g font-family="Microsoft YaHei UI, Microsoft YaHei, sans-serif" fill="currentColor">
-              <line x1="98" y1="250" x2="487" y2="250" class="axis"/>
-              <line x1="220" y1="278" x2="220" y2="35" class="axis"/>
-              <text x="464" y="274" class="svg-note">特征维i</text><text x="128" y="50" class="svg-note">特征维j</text>
-              <ellipse cx="290" cy="160" rx="152" ry="51" transform="rotate(-35 290 160)" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
-              <circle cx="245" cy="201" r="6" fill="var(--accent)"/><circle cx="272" cy="183" r="6" fill="var(--accent)"/><circle cx="300" cy="164" r="6" fill="var(--accent)"/><circle cx="327" cy="144" r="6" fill="var(--accent)"/><circle cx="350" cy="126" r="6" fill="var(--accent)"/>
-              <line x1="290" y1="160" x2="405" y2="82" stroke="var(--green)" stroke-width="5"/>
-              <polygon points="405,82 389,84 398,96" fill="var(--green)"/>
-              <text x="407" y="76" font-size="15" fill="var(--green)" font-weight="700">u₁：大特征值方向</text>
-              <line x1="290" y1="160" x2="250" y2="100" stroke="var(--orange)" stroke-width="4"/>
-              <polygon points="250,100 249,116 262,108" fill="var(--orange)"/>
-              <text x="170" y="99" font-size="15" fill="var(--orange)" font-weight="700">u₂：较小方向</text>
-              <rect x="550" y="55" width="330" height="198" rx="12" fill="var(--panel)" stroke="var(--line)"/>
-              <text x="574" y="89" font-size="17" font-weight="700">二维玩具例子（只为解释）</text>
-              <text x="574" y="119" font-size="14">G = [[1.5,1.0],[1.0,1.5]]</text>
-              <text x="574" y="148" font-size="14">σ²q = 0.01</text>
-              <text x="574" y="177" font-size="14">G₊ = [[1.49,1.0],[1.0,1.49]]</text>
-              <text x="574" y="207" font-size="14">λ₁=2.49, λ₂=0.49</text>
-              <text x="574" y="233" font-size="13" fill="var(--muted)">主方向接近(1,1)/√2，表示两维</text>
-              <text x="574" y="250" font-size="13" fill="var(--muted)">一起偏离的模式更显著。</text>
-            </g>
-          </svg>
-          <figcaption>图3-3：协方差不是“每个元素自己带方向”，而是许多样本的跨维偏离模式汇总后形成的椭圆形状。示例数值不代表正式数据。</figcaption>
-        </figure>
-
-        <h4>3.2.2target support如何使用扰动基得到稳健中心</h4>
-        <div class="formula">
-          \[
-            \bar{\mathbf z}^{\mathrm{id}}_c=\frac1K\sum_{k=1}^{K}\mathbf z^{\mathrm{id}}_{c,k},\qquad
-            \mathbf e_{c,k}=\mathbf z^{\mathrm{id}}_{c,k}-\bar{\mathbf z}^{\mathrm{id}}_c,
-          \]
-          \[
-            h_{c,k}=\mathbf U^{\mathsf T}\mathbf e_{c,k},\qquad
-            E_{c,k}=\sum_{j=1}^{r}\rho_j h_{c,k,j}^2,\qquad
-            \omega_{c,k}=\frac{[1+E_{c,k}/\tau_c]^{-1}}{\sum_{a=1}^{K}[1+E_{c,a}/\tau_c]^{-1}},\quad \tau_c=\frac1K\sum_{k=1}^{K}E_{c,k}.
-          \]
-          <div class="plain-math">z̄_id_c=(1/K)Σ_k z_id_c,k; e_c,k=z_id_c,k−z̄_id_c; h_c,k=Uᵀe_c,k; E_c,k=Σ_jρ_jh²_c,k,j; ω_c,k=[1+E_c,k/τ_c]⁻¹ / Σ_a[1+E_c,a/τ_c]⁻¹</div>
-        </div>
-        <div class="formula-note"><strong>符号说明：</strong>\(\mathbf z^{\mathrm{id}}_{c,k}\)是本类第\(k\)条target support的160维身份块；\(\bar{\mathbf z}^{\mathrm{id}}_c\)是普通类中心；\(\mathbf e_{c,k}\)是target support相对本类中心的残差；\(h_{c,k,j}\)是它投影到第\(j\)个地面扰动方向后的坐标；\(E_{c,k}\)是按谱权重加权的扰动能量；\(\tau_c\)是本类平均能量尺度；\(\omega_{c,k}\)是归一化Cauchy型权重，能量大则权重小。\(\beta_{d,c}\)用于地面聚合中心可靠性，\(\omega_{c,k}\)用于target support稳健中心，二者不能混用。</div>
-        <div class="formula">
-          \[
-            \mathbf m_c^{\mathrm{rob}}=\sum_{k=1}^{K}\omega_{c,k}\mathbf z^{\mathrm{id}}_{c,k},\qquad
-            \boldsymbol\delta_c=\mathbf m_c^{\mathrm{rob}}-\bar{\mathbf z}^{\mathrm{id}}_c,qquad
-            \widetilde{\mathbf z}_{c,k}=\mathbf z_{c,k}+[\boldsymbol\delta_c;\mathbf0_{96};\mathbf0_{32}].
-          \]
-          <div class="plain-math">m_rob_c=Σ_kω_c,kz_id_c,k; δ_c=m_rob_c−z̄_id_c; z̃_c,k=z_c,k+[δ_c;0_96;0_32]</div>
-        </div>
-        <div class="formula-note"><strong>符号说明：</strong>\(\mathbf m_c^{\mathrm{rob}}\)是稳健身份中心；\(\boldsymbol\delta_c\in\mathbb R^{160}\)是相对普通中心的统一平移；\(\widetilde{\mathbf z}_{c,k}\in\mathbb R^{288}\)是模块二输出；\(\mathbf0_{96}\)、\(\mathbf0_{32}\)说明FFT96和RF32不被平移。同一类别的所有support加同一\(\boldsymbol\delta_c\)，因此类内残差不会凭此平移改变。若\(K\le2\)，D92 E0回退为恒等映射，不从极少样本制造伪稳健性。</div>
-      </article>
-
-      <article id="module3">
-        <h3>模块三：旧/新任务均衡的自动收缩协方差</h3>
-        <p>这是最容易被误解的部分。它不是对“一条288维向量内部”求协方差，而是把同一类别的K条support看成K次观测，比较各特征列如何一起偏离自己的类内均值。</p>
-        <figure class="svg-panel">
-          <svg viewBox="0 0 1120 298" role="img" aria-labelledby="cov-title cov-desc" width="100%">
-            <title id="cov-title">模块三中随机向量、support矩阵和协方差的关系</title>
-            <desc id="cov-desc">一个随机特征向量代表总体上的抽样变量。K条观测support构成K行288列的矩阵，列均值和列间协方差从该矩阵估计。</desc>
-            <g font-family="Microsoft YaHei UI, Microsoft YaHei, sans-serif" fill="currentColor">
-              <rect x="22" y="45" width="245" height="195" rx="12" fill="var(--violet-soft)" stroke="var(--line)"/>
-              <text x="43" y="79" font-size="18" font-weight="700">总体层面的随机向量</text>
-              <text x="43" y="113" font-size="16">X⁽ᶜ⁾=(X₁⁽ᶜ⁾,…,X₂₈₈⁽ᶜ⁾)ᵀ</text>
-              <text x="43" y="144" font-size="13" fill="var(--muted)">不是已观测的一条样本</text>
-              <text x="43" y="172" font-size="14">μ_c,i=E[X_i⁽ᶜ⁾]</text>
-              <text x="43" y="200" font-size="13" fill="var(--muted)">是第i列的总体均值</text>
-              <line x1="275" y1="141" x2="382" y2="141" stroke="var(--accent)" stroke-width="3" marker-end="url(#arrow-f)"/>
-              <text x="289" y="123" font-size="12" fill="var(--muted)">K次合法抽样</text>
-              <rect x="392" y="45" width="315" height="195" rx="12" fill="var(--accent-soft)" stroke="var(--line)"/>
-              <text x="415" y="79" font-size="18" font-weight="700">本类support矩阵Z̃_c</text>
-              <text x="415" y="106" font-size="13">K行＝K条物理独立support</text>
-              <g stroke="var(--line)" fill="none">
-                <rect x="425" y="124" width="235" height="83"/>
-                <line x1="425" y1="152" x2="660" y2="152"/><line x1="425" y1="180" x2="660" y2="180"/>
-                <line x1="475" y1="124" x2="475" y2="207"/><line x1="550" y1="124" x2="550" y2="207"/><line x1="612" y1="124" x2="612" y2="207"/>
-              </g>
-              <text x="433" y="143" font-size="12">z̃_c,1,1</text><text x="486" y="143" font-size="12">…</text><text x="557" y="143" font-size="12">z̃_c,1,i</text><text x="620" y="143" font-size="12">…</text>
-              <text x="433" y="171" font-size="12">z̃_c,2,1</text><text x="486" y="171" font-size="12">…</text><text x="557" y="171" font-size="12">z̃_c,2,i</text><text x="620" y="171" font-size="12">…</text>
-              <text x="433" y="199" font-size="12">⋮</text><text x="557" y="199" font-size="12">⋮</text>
-              <line x1="715" y1="141" x2="822" y2="141" stroke="var(--accent)" stroke-width="3" marker-end="url(#arrow-f)"/>
-              <rect x="832" y="45" width="264" height="195" rx="12" fill="var(--green-soft)" stroke="var(--line)"/>
-              <text x="853" y="79" font-size="18" font-weight="700">按列估计统计量</text>
-              <text x="853" y="112" font-size="14">μ̂_c,i=(1/K)Σ_k z̃_c,k,i</text>
-              <text x="853" y="145" font-size="14">Σ̂_c,ij=(1/K)Σ_k</text>
-              <text x="853" y="169" font-size="14">(z̃_c,k,i−μ̂_c,i)(z̃_c,k,j−μ̂_c,j)</text>
-              <text x="853" y="204" font-size="13" fill="var(--muted)">列i与列j在K行上的共同偏离</text>
-            </g>
-          </svg>
-          <figcaption>图3-4：观测向量的第i个元素不是\(\mu_{c,i}\)。\(\mu_{c,i}\)由同类别所有support在第i列上的平均得到；只有K=1时二者才数值碰巧相同，而此时协方差路径不会启用。</figcaption>
-        </figure>
-        <div class="formula">
-          \[
-            \mathbf X^{(c)}=(X^{(c)}_1,\ldots,X^{(c)}_{288})^{\mathsf T},\qquad
-            \mu_{c,i}=\mathbb E[X^{(c)}_i],
-          \]
-          \[
-            \Sigma_{c,ij}=\operatorname{Cov}(X^{(c)}_i,X^{(c)}_j)
-            =\mathbb E\!\left[(X^{(c)}_i-\mu_{c,i})(X^{(c)}_j-\mu_{c,j})\right].
-          \]
-          <div class="plain-math">X⁽ᶜ⁾=(X₁⁽ᶜ⁾,…,X₂₈₈⁽ᶜ⁾)ᵀ; μ_c,i=E[X_i⁽ᶜ⁾]; Σ_c,ij=E[(X_i⁽ᶜ⁾−μ_c,i)(X_j⁽ᶜ⁾−μ_c,j)]</div>
-        </div>
-        <div class="formula-note"><strong>符号说明：</strong>\(\mathbf X^{(c)}\)是“从类别\(c\)抽到一条特征”的随机向量；\(X^{(c)}_i\)是它第\(i\)维随机变量；\(\mu_{c,i}\)是该维总体均值；\(\Sigma_{c,ij}\)是类别\(c\)的协方差第\(i,j\)项。它是总体定义，实际算法只凭有限K条support估计。这里有类别下标\(c\)，避免把“所有类别混在一起的随机向量”误读为D92 E0的实际输入。</div>
-        <div class="formula">
-          \[
-            \widehat\mu_{c,i}=\frac1K\sum_{k=1}^{K}\widetilde z_{c,k,i},\qquad
-            \widehat\Sigma_{c,ij}=\frac1K\sum_{k=1}^{K}(\widetilde z_{c,k,i}-\widehat\mu_{c,i})(\widetilde z_{c,k,j}-\widehat\mu_{c,j}).
-          \]
-          <div class="plain-math">μ̂_c,i=(1/K)Σ_k z̃_c,k,i; Σ̂_c,ij=(1/K)Σ_k(z̃_c,k,i−μ̂_c,i)(z̃_c,k,j−μ̂_c,j)</div>
-        </div>
-        <div class="formula-note"><strong>符号说明：</strong>\(\widetilde z_{c,k,i}\)是模块二输出的第\(k\)条support、第\(i\)维元素；\(\widehat\mu_{c,i}\)是样本均值；\(\widehat\Sigma_{c,ij}\)是经验协方差。比如三条support在第i维是[1,2,6]、在第j维是[4,5,9]，则\(\widehat\mu_{c,i}=3\)、\(\widehat\mu_{c,j}=6\)，而\(\widehat\Sigma_{c,ij}=[(-2)(-2)+(-1)(-1)+3\times3]/3=14/3\)。3和6来自三条support的列平均，不是某条向量“自己固有的均值”。</div>
-
-        <div class="callout">
-          <strong>旧类、新类究竟使用什么特征？</strong>旧类使用目标域旧类K-shot support经过模块一、模块二后的\(\widetilde{\mathbf z}_{c,k}\)；新类也是同样的target support路径。Phase1 bundle不作为模块三样本行，query也不进入均值、协方差、收缩强度或任务权重。
-        </div>
-        <div class="formula">
-          \[
-            \widehat{\boldsymbol\Sigma}^{(u)}_c=(1-\alpha_c)\mathbf S^{(u)}_c+\alpha_c\zeta_c\mathbf I_p,
-            \qquad
-            \zeta_c=\frac{\operatorname{tr}(\mathbf S^{(u)}_c)}{p},\qquad p=288.
-          \]
-          <div class="plain-math">Σ̂⁽ᵘ⁾_c=(1−α_c)S⁽ᵘ⁾_c+α_cζ_cI_p; ζ_c=tr(S⁽ᵘ⁾_c)/p; p=288</div>
-        </div>
-        <div class="formula-note"><strong>符号说明：</strong>\(\mathbf S^{(u)}_c\)是类别\(c\)在逐维标准化空间的经验协方差；\(\alpha_c\in[0,1]\)由Ledoit–Wolf自动确定；\(\zeta_c\mathbf I_p\)是球形目标；\(\operatorname{tr}\)是矩阵迹，即对角元素之和；\(\zeta_c\)是平均方差；\(\mathbf I_p\)只有对角线为1，故球形目标的非对角元素为0。它不是说真实特征独立，而是说小K时不完全相信经验的跨维相关性。</div>
-        <div class="formula">
-          \[
-            \boldsymbol\Sigma_{\mathrm{o}}=\frac1{C_{\mathrm{o}}}\sum_{c\in\mathcal Y_{\mathrm{o}}}\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c,
-            \qquad
-            \boldsymbol\Sigma_{\mathrm{n}}=\frac1{C_{\mathrm{n}}}\sum_{c\in\mathcal Y_{\mathrm{n}}}\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c,
-            \qquad
-            \boldsymbol\Sigma_{\mathrm{bal}}=\tfrac12\boldsymbol\Sigma_{\mathrm{o}}+\tfrac12\boldsymbol\Sigma_{\mathrm{n}}.
-          \]
-          <div class="plain-math">Σ_old=(1/C_old)Σ_c∈Y_oldΣ̂^LW_c; Σ_new=(1/C_new)Σ_c∈Y_newΣ̂^LW_c; Σ_bal=.5Σ_old+.5Σ_new</div>
-        </div>
-        <div class="formula-note"><strong>符号说明：</strong>\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)是每类自己的收缩协方差；\(\boldsymbol\Sigma_{\mathrm{o}}\)在6个旧类内等权平均；\(\boldsymbol\Sigma_{\mathrm{n}}\)在本批新类内等权平均；\(\boldsymbol\Sigma_{\mathrm{bal}}\)再对两个任务固定各给50%总权重。这样new20不会因类别数多而把旧任务权重从50%压到\(6/26\)。</div>
-        <div class="grid two">
-          <article class="card"><h4>full几何</h4><p>保留identity160、FFT96、RF32之间的跨块协方差。表达力更强，但少样本时可能把偶然跨块相关当成规律。</p></article>
-          <article class="card"><h4>block3几何</h4><p>只保留三个块各自的对角块，跨块元素设为0。这个0是“本分支不使用”跨块相关，不是证明真实数据独立。</p></article>
-        </div>
-      </article>
-
-      <article id="module4">
-        <h3>模块四：把共享几何编译成等先验LDA仿射头</h3>
-        <p>模块三给出“如何衡量不同方向的距离”，模块四把它变成每个类别一条可直接打分的线性规则。注册时求解；query时不重新求逆。</p>
-        <div class="formula">
-          \[
-            p(\mathbf z\mid y=c)=\mathcal N(\boldsymbol\mu_c,\boldsymbol\Sigma),\qquad
-            \pi_c=\frac1C,
-          \]
-          \[
-            s_c(\mathbf q)=\mathbf q^{\mathsf T}\boldsymbol\Sigma^{-1}\boldsymbol\mu_c-	frac12\boldsymbol\mu_c^{\mathsf T}\boldsymbol\Sigma^{-1}\boldsymbol\mu_c+\log\pi_c
-            =\mathbf q^{\mathsf T}\mathbf w_c+b_c.
-          \]
-          <div class="plain-math">p(z|y=c)=N(μ_c,Σ); π_c=1/C; s_c(q)=qᵀΣ⁻¹μ_c−½μ_cᵀΣ⁻¹μ_c+logπ_c=qᵀw_c+b_c</div>
-        </div>
-        <div class="formula-note"><strong>符号说明：</strong>\(\mathcal N(\boldsymbol\mu_c,\boldsymbol\Sigma)\)是均值为\(\boldsymbol\mu_c\)、所有类共享协方差\(\boldsymbol\Sigma\)的高斯模型；\(\pi_c=1/C\)表示等先验；\(\mathbf q\in\mathbb R^{288}\)是单条query特征；\(s_c(\mathbf q)\)是类\(c\)分数；\(\mathbf w_c=\boldsymbol\Sigma^{-1}\boldsymbol\mu_c\)和\(b_c\)是注册后固定的仿射行。高方差方向在\(\boldsymbol\Sigma^{-1}\)中权重较低。实现直接解线性系统，不显式形成逆矩阵。</div>
-        <div class="formula">
-          \[
-            \boldsymbol\Sigma\mathbf W^{\mathsf T}=\mathbf M^{\mathsf T},
-            \qquad
-            \mathbf M=\begin{bmatrix}\boldsymbol\mu_1^{\mathsf T}\\ \vdots\\ \boldsymbol\mu_C^{\mathsf T}\end{bmatrix},
-            \qquad
-            \widehat y=\operatorname*{arg\,max}_{c\in\mathcal Y}s_c(\mathbf q).
-          \]
-          <div class="plain-math">ΣWᵀ=Mᵀ; M=[μ₁ᵀ;⋮;μ_Cᵀ]; ŷ=argmax_c∈Y s_c(q)</div>
-        </div>
-        <div class="formula-note"><strong>符号说明：</strong>\(\mathbf M\in\mathbb R^{C\times288}\)按行堆叠全部类均值；\(\mathbf W\in\mathbb R^{C\times288}\)是全部类的权重行；一次多右端求解同时得到所有类的\(\mathbf w_c\)。\(\operatorname*{arg\,max}\)只在当前样本的全部已注册类中选择最高分，不先判断old/new。</div>
-      </article>
-
-      <article id="module5">
-        <h3>模块五：full/block3双几何的support内可靠性融合</h3>
-        <p>full和block3没有一个可对所有类别永远最优。D92 E0让本批support轮流作为held样本，分别测量两个分支在“没见过的本类support”上的交叉熵；然后为每一个类别融合两条仿射行。</p>
-        <div class="formula">
-          \[
-            \mathcal H_t=\{(c,t):c\in\mathcal Y\},\qquad t=1,\ldots,K,
-          \]
-          \[
-            \eta_{c,h}=\frac{\exp(-K\ell^{\mathrm{LOO}}_{c,h})}{\sum_{h'\in\{\mathrm{full},\mathrm{blk}\}}\exp(-K\ell^{\mathrm{LOO}}_{c,h'})},
-            \qquad h\in\{\mathrm{full},\mathrm{blk}\}.
-          \]
-          <div class="plain-math">H_t={(c,t):c∈Y}, t=1…K; η_c,h=exp(−Kℓ^LOO_c,h)/Σ_h′exp(−Kℓ^LOO_c,h′)</div>
-        </div>
-        <div class="formula-note"><strong>符号说明：</strong>第\(t\)折\(\mathcal H_t\)从每个类各留出第\(t\)条support；\(\ell^{\mathrm{LOO}}_{c,h}\)是分支\(h\)对类别\(c\)的平均留一交叉熵；\(\eta_{c,h}\)是类别\(c\)对该分支的可靠性权重，两个分支权重相加为1。LOO只使用support，不会使用真实query。</div>
-        <div class="formula">
-          \[
-            \mathbf w^{(0)}_c=\eta_{c,\mathrm{full}}\frac{\mathbf w^{(\mathrm{full})}_c}{r_{\mathrm{full}}}+\eta_{c,\mathrm{blk}}\frac{\mathbf w^{(\mathrm{blk})}_c}{r_{\mathrm{blk}}},
-            \qquad
-            b^{(0)}_c=\eta_{c,\mathrm{full}}\frac{b^{(\mathrm{full})}_c}{r_{\mathrm{full}}}+\eta_{c,\mathrm{blk}}\frac{b^{(\mathrm{blk})}_c}{r_{\mathrm{blk}}}.
-          \]
-          <div class="plain-math">w⁽⁰⁾_c=η_c,fullw⁽full⁾_c/r_full+η_c,blkw⁽blk⁾_c/r_blk; b⁽⁰⁾_c=η_c,fullb⁽full⁾_c/r_full+η_c,blkb⁽blk⁾_c/r_blk</div>
-        </div>
-        <div class="formula-note"><strong>符号说明：</strong>\(r_{\mathrm{full}}\)、\(r_{\mathrm{blk}}\)是用support logit的RMS计算的分支尺度，避免某分支因分数数值幅度大而获胜；\(\mathbf w_c^{(\mathrm{full})}\)、\(\mathbf w_c^{(\mathrm{blk})}\)与\(b_c^{(\mathrm{full})}\)、\(b_c^{(\mathrm{blk})}\)来自两条LDA头；\((\mathbf w_c^{(0)},b_c^{(0)})\)是融合后的浮点参考行。权重按类别不同，但query到来时仍对所有类别行同时打分。</div>
-      </article>
-
-      <article id="module6">
-        <h3>模块六：双层残差INT8量化与不可变状态封存</h3>
-        <p>量化这里的主要目的是真实减少常驻状态大小，而不是宣称现有NumPy实现已经在INT8内核上加速。当前运行时仍会解码到FP32再做点积。</p>
-        <div class="formula">
-          \[
-            q^{(1)}_{c,j}=\operatorname{clip}\!\left(\operatorname{round}\!\left(\frac{w_{c,j}}{s^{(1)}_{c,g(j)}}\right),-127,127\right),\qquad
-            e_{c,j}=w_{c,j}-s^{(1)}_{c,g(j)}q^{(1)}_{c,j},
-          \]
-          \[
-            q^{(2)}_{c,j}=\operatorname{clip}\!\left(\operatorname{round}\!\left(\frac{e_{c,j}}{s^{(2)}_{c,g(j)}}\right),-127,127\right),\qquad
-            \widehat w_{c,j}=s^{(1)}_{c,g(j)}q^{(1)}_{c,j}+s^{(2)}_{c,g(j)}q^{(2)}_{c,j}.
-          \]
-          <div class="plain-math">q¹=clip(round(w/s¹),−127,127); e=w−s¹q¹; q²=clip(round(e/s²),−127,127); ŵ=s¹q¹+s²q²</div>
-        </div>
-        <div class="formula-note"><strong>符号说明：</strong>\(w_{c,j}\)是量化前类别\(c\)第\(j\)维浮点权重；\(g(j)\)返回该维所在特征块；\(s^{(1)}\)、\(s^{(2)}\)是两层FP16块尺度；\(q^{(1)}\)、\(q^{(2)}\)是两组INT8码；\(e_{c,j}\)是第一层残差；\(\widehat w_{c,j}\)是正式状态解码的近似权重。两层INT8不是INT16：它是两段独立INT8近似相加，用于减少单层量化误差。</div>
-        <div class="formula">
-          \[
-            \mathcal S_{\mathrm{E0}}=(\mathcal C,\mathbf Q^{(1)},\mathbf Q^{(2)},\mathbf S^{(1)},\mathbf S^{(2)},\widehat{\mathbf b},\mathbf m_{\mathrm{o}},\mathcal A).
-          \]
-          <div class="plain-math">S_E0=(classes,Q¹,Q²,scales¹,scales²,b̂,m_old,audit)</div>
-        </div>
-        <div class="formula-note"><strong>符号说明：</strong>\(\mathcal C\)是有序类别handle表；\(\mathbf Q^{(1)}\)、\(\mathbf Q^{(2)}\)是两层INT8系数；\(\mathbf S^{(1)}\)、\(\mathbf S^{(2)}\)是对应FP16尺度；\(\widehat{\mathbf b}\)是FP16截距；\(\mathbf m_{\mathrm o}\)是旧类适配使用的FP32对角metric；\(\mathcal A\)是配置绑定、数值闭合和量化审计。正式状态不保存历史support IQ、query、query真值、query角色或可供预测使用的FP32权重sidecar。</div>
-      </article>
-    </section>
-
-    <section id="registration">
-      <h2>4.注册是逐类统计、整批编译；query始终独立预测</h2>
-      <div class="grid two">
-        <article class="card">
-          <h3>批内“逐类”</h3>
-          <p>每个类别独立计算其K条support的普通中心、Cauchy权重、稳健中心、类内残差和单类Ledoit–Wolf协方差。实现可用循环或向量化，数学边界都不允许把不同类别的support混成一个类中心。</p>
-        </article>
-        <article class="card">
-          <h3>状态级“整批”</h3>
-          <p>随后所有旧类与全部新类共同形成\(\boldsymbol\Sigma_{\mathrm{bal}}\)、全类LDA行、LOO可靠性和最终量化状态。增加一个新类会改变共享几何，因此不能只向旧头机械追加一行。</p>
-        </article>
-      </div>
       <div class="formula">
         \[
-          C=C_{\mathrm o}+N,\qquad
-          \boldsymbol\Sigma^{(N)}_{\mathrm n}=\frac1N\sum_{n=1}^{N}\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_n,
-          \qquad
-          \boldsymbol\Sigma^{(N)}_{\mathrm{bal}}=\tfrac12\boldsymbol\Sigma_{\mathrm o}+\tfrac12\boldsymbol\Sigma^{(N)}_{\mathrm n}.
+        \mathbf G=
+        \frac{1}{C_{\mathrm o}}
+        \sum_{c=1}^{C_{\mathrm o}}\sum_{d=1}^{D_{\mathrm g}}
+        \beta_{d,c}\,
+        \mathbf e^{\mathrm g}_{d,c}
+        \left(\mathbf e^{\mathrm g}_{d,c}\right)^{\mathsf T}.
         \]
-        <div class="plain-math">C=C_old+N; Σ_new^(N)=(1/N)Σ_nΣ̂^LW_n; Σ_bal^(N)=.5Σ_old+.5Σ_new^(N)</div>
       </div>
-      <div class="formula-note"><strong>符号说明：</strong>\(N\)是本批新类数；\(C\)是全部注册类数；\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_n\)是新类\(n\)自己的收缩协方差；\(\boldsymbol\Sigma^{(N)}_{\mathrm n}\)是新任务内部等权平均；\(\boldsymbol\Sigma^{(N)}_{\mathrm{bal}}\)使旧任务和新任务总权重各为0.5。现行冻结实现只验证\(C\in\{6,11,16,26\}\)，没有正式new1流式模式。</div>
+      <div class="formula-note"><strong>符号说明：</strong>\(C_{\mathrm o}\)是Phase1旧类数；\(D_{\mathrm g}\)是封存地面域数；\(\mathbf e^{\mathrm g}_{d,c}\)是域\(d\)、类别\(c\)相对本类中心的160维聚合残差；\(\beta_{d,c}\)是同一类别内归一化的可靠性权重；\(\mathbf G\)是160维聚合扰动协方差。</div>
 
-      <div class="grid two">
-        <article class="card">
-          <h3>K≤2时为什么回退</h3>
-          <p>K=1无法形成类内协方差，K=2也不足以稳定支持自动收缩、LOO和可靠性融合。D92 E0精确回退到保守状态，而不把训练内分数或query伪装为验证证据。</p>
-        </article>
-        <article class="card">
-          <h3>单条query输出</h3>
-          <p>query依次经过模块一、读取\(\mathcal S_{\mathrm{E0}}\)、解码必要权重、对C类一次打分，输出唯一预测和全类分数。每条query独立，不改变下一条query的状态。</p>
-        </article>
-      </div>
       <div class="formula">
         \[
-          s_c^{\mathrm q}(\mathbf q)=\mathbf q^{\mathsf T}\widehat{\mathbf w}_c+\widehat b_c,qquad
-          \widehat y=\arg\max_{c\in\mathcal C}s_c^{\mathrm q}(\mathbf q).
+        \epsilon_{\mathrm{rec}}=
+        \sqrt{\frac{1}{D_{\mathrm g}C_{\mathrm o}\cdot160}
+        \sum_{d,c,i}\left(g^{\mathrm{dense}}_{d,c,i}-\widehat g_{d,c,i}\right)^2},
+        \qquad
+        \sigma_{\mathrm q}^2=\epsilon_{\mathrm{rec}}^2.
         \]
-        <div class="plain-math">s_q_c(q)=qᵀŵ_c+b̂_c; ŷ=argmax_c∈C s_q_c(q)</div>
       </div>
-      <div class="formula-note"><strong>符号说明：</strong>\(\mathbf q\in\mathbb R^{288}\)是当前query的联合特征；\(\widehat{\mathbf w}_c\)、\(\widehat b_c\)是量化状态解码出的第\(c\)类行；\(s_c^{\mathrm q}\)是分数；\(\widehat y\)是唯一预测；\(\mathcal C\)是全体已注册类。此式没有query真值、角色或跨query量。</div>
+      <div class="formula-note"><strong>符号说明：</strong>\(g^{\mathrm{dense}}_{d,c,i}\)是离线压缩前的聚合中心坐标；\(\widehat g_{d,c,i}\)是解码后同一坐标；\(\epsilon_{\mathrm{rec}}\)是重构RMSE；\(\sigma_{\mathrm q}^2\)是每坐标平均重构误差能量。注册期读取的是已封存的RMSE摘要，不回读完整地面数据。</div>
 
-      <details>
-        <summary>状态构造的可读伪代码</summary>
-        <div>
-          <ol>
-            <li>对每条合法support IQ计算288维联合特征。</li>
-            <li>由Phase1 v2组件临时重构地面聚合中心和P90半径，派生\(\mathbf G\)、\(\sigma_q^2\)、\(\mathbf U\)、\(\boldsymbol\rho\)。</li>
-            <li>对每个类别，计算扰动能量、Cauchy权重和稳健identity中心；K≤2回退。</li>
-            <li>对旧类和新类分别做每类Ledoit–Wolf协方差并在任务内等权平均，固定合成为\(\boldsymbol\Sigma_{\mathrm{bal}}\)。</li>
-            <li>各自构造full和block3分支，编译等先验LDA头。</li>
-            <li>K&gt;2时用按shot秩LOO得到每个类别对两分支的可靠性并融合。</li>
-            <li>将融合头量化为双层INT8＋FP16尺度/截距，连同类别表、metric和审计字段封存。</li>
-          </ol>
-        </div>
-      </details>
+      <div class="formula">
+        \[
+        \mathbf G_+=\frac{\mathbf G+\mathbf G^{\mathsf T}}2-\sigma_{\mathrm q}^2\mathbf I_{160},
+        \qquad
+        \mathbf G_+\mathbf u_j=\lambda_j\mathbf u_j,
+        \qquad
+        \rho_j=\frac{\lambda_j}{\sum_{\ell=1}^{r}\lambda_\ell}.
+        \]
+      </div>
+      <div class="formula-note"><strong>符号说明：</strong>\(\mathbf G^{\mathsf T}\)是转置；\(\mathbf I_{160}\)是160维单位矩阵；\(\mathbf G_+\)是去噪后的对称矩阵；\(\lambda_j\)和\(\mathbf u_j\)分别是第\(j\)个特征值和单位特征向量；\(\rho_j\)是保留方向的归一化强度；\(\ell\)是求和索引。</div>
+
+      <div class="formula">
+        \[
+        E_{c,k}=\sum_{j=1}^{r}\rho_jh_{c,k,j}^{\,2},
+        \qquad
+        \omega_{c,k}=
+        \frac{(1+E_{c,k}/\tau_c)^{-1}}
+        {\sum_{k'=1}^{K}(1+E_{c,k'}/\tau_c)^{-1}}.
+        \]
+      </div>
+      <div class="formula-note"><strong>符号说明：</strong>\(h_{c,k,j}\)是第\(k\)条类别\(c\) support在第\(j\)条扰动方向上的投影；\(E_{c,k}\)是扰动能量；\(\tau_c=K^{-1}\sum_kE_{c,k}\)是类内平均能量；\(\omega_{c,k}\)是Cauchy权重；\(k'\)是分母的support索引。能量大，权重小，但不会删除样本。</div>
     </section>
 
-    <section id="resources">
-      <h2>5.计算、存储与星上部署：要把注册和预测分开看</h2>
-      <p class="section-intro">“轻量”不是一个单一数字。D92 E0在注册期包含稠密协方差、矩阵分解和K折交叉拟合；在长期query期只保留很小的统一分类头。以下MAC是算法级派生审计量，不是目标星载硬件实测时延、功耗或能量。</p>
+    <section id="m34">
+      <p class="eyebrow" style="color:#41b88f">模块三、四</p>
+      <h2>不只记住中心，还要看一团点怎样展开</h2>
+      <p>类别中心只能回答“这类大约在哪里”。协方差回答“这类点云朝哪些方向拉长、哪些维度一起变化”。少样本下，经验协方差很不稳定，所以先自动收缩，再平衡旧类与新类任务。</p>
+
+      <figure class="viz">
+        <svg viewBox="0 0 1160 355" role="img" aria-label="球形收缩协方差和旧新任务平衡的可视化图">
+          <defs><marker id="arrowM34" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#7890ae"/></marker></defs>
+          <text x="46" y="36" fill="#163c72" font-size="21" font-weight="800">每一类先看自己的support云团</text>
+          <g transform="translate(40,57)">
+            <rect width="350" height="230" rx="17" fill="#f7fcfa" stroke="#a9d8c7"/>
+            <path d="M45 188H316M94 205V34" stroke="#bedacb" stroke-width="2"/>
+            <g fill="#2d72d9" opacity=".75">
+              <circle cx="153" cy="123" r="6"/><circle cx="177" cy="107" r="6"/><circle cx="201" cy="141" r="6"/><circle cx="222" cy="83" r="6"/><circle cx="125" cy="160" r="6"/><circle cx="243" cy="127" r="6"/>
+            </g>
+            <ellipse cx="183" cy="125" rx="96" ry="48" transform="rotate(-22 183 125)" fill="none" stroke="#2d72d9" stroke-width="4"/>
+            <text x="175" y="219" text-anchor="middle" fill="#5e6d85" font-size="14">少量support的经验云团</text>
+          </g>
+          <line x1="403" y1="172" x2="488" y2="172" stroke="#7890ae" stroke-width="3" marker-end="url(#arrowM34)"/>
+          <g transform="translate(504,57)">
+            <rect width="286" height="230" rx="17" fill="#f7fcfa" stroke="#a9d8c7"/>
+            <circle cx="143" cy="118" r="71" fill="none" stroke="#41b88f" stroke-width="5"/>
+            <circle cx="143" cy="118" r="5" fill="#41b88f"/>
+            <text x="143" y="216" text-anchor="middle" fill="#5e6d85" font-size="14">球形目标：所有方向先同等对待</text>
+            <text x="143" y="42" text-anchor="middle" fill="#163c72" font-size="17" font-weight="800">自动收缩，避免不可逆</text>
+          </g>
+          <line x1="803" y1="172" x2="888" y2="172" stroke="#7890ae" stroke-width="3" marker-end="url(#arrowM34)"/>
+          <g transform="translate(904,57)">
+            <rect width="216" height="230" rx="17" fill="#f5f8ff" stroke="#b6c9e8"/>
+            <text x="108" y="36" text-anchor="middle" fill="#163c72" font-size="17" font-weight="800">任务均衡</text>
+            <rect x="31" y="72" width="154" height="40" rx="8" fill="#2d72d9"/><text x="108" y="98" text-anchor="middle" fill="#fff" font-size="15">旧类任务 50%</text>
+            <rect x="31" y="130" width="154" height="40" rx="8" fill="#41b88f"/><text x="108" y="156" text-anchor="middle" fill="#fff" font-size="15">新类任务 50%</text>
+            <text x="108" y="208" text-anchor="middle" fill="#5e6d85" font-size="13">类别数不同，任务总权重不变</text>
+          </g>
+          <text x="580" y="333" text-anchor="middle" fill="#5e6d85" font-size="14">左侧是从support估计到的形状；中间是保守的球形收缩目标；右侧保证旧类任务不会因新类更多而被挤掉。</text>
+        </svg>
+        <figcaption>图4｜模块三用球形目标稳定少样本协方差；模块四在此基础上让旧类任务和新类任务各占一半。</figcaption>
+      </figure>
+
+      <div class="eli5"><strong>球形目标是什么？</strong>当你只有几张照片，不能可靠知道一个物体所有方向有多长，就先把它当作一个圆球。照片变多时，再让真实的拉长方向逐渐回来。这不是说真实云团一定是球，而是少样本时更安全的默认形状。</div>
+
+      <div class="formula">
+        \[
+        \widehat\mu_{c,i}=\frac1K\sum_{k=1}^{K}\widetilde z_{c,k,i},
+        \qquad
+        \Sigma_{ij}=\operatorname{Cov}(Z_i,Z_j)=
+        \mathbb E[(Z_i-\mu_i)(Z_j-\mu_j)].
+        \]
+      </div>
+      <div class="formula-note"><strong>符号说明：</strong>\(Z_i,Z_j\)是随机联合特征的第\(i,j\)个坐标；\(\mu_i,\mu_j\)是这些坐标在类别抽样分布上的均值；\(\widetilde z_{c,k,i}\)是第\(k\)条类别\(c\) support的第\(i\)个坐标；\(\widehat\mu_{c,i}\)是K条support的均值估计。均值不是某一条向量的单个元素。</div>
+
+      <div class="formula">
+        \[
+        \mathbf T_c=\zeta_c\mathbf I_{256},
+        \qquad
+        \zeta_c=\frac{\operatorname{tr}(\mathbf S_c^{(u)})}{256},
+        \qquad
+        \widehat{\boldsymbol\Sigma}^{(u)}_c=
+        (1-\alpha_c)\mathbf S_c^{(u)}+\alpha_c\mathbf T_c.
+        \]
+      </div>
+      <div class="formula-note"><strong>符号说明：</strong>\(\mathbf S_c^{(u)}\)是类别\(c\)在标准化空间的经验协方差；\(\operatorname{tr}\)是对角线元素之和；\(\zeta_c\)是平均方差；\(\mathbf I_{256}\)是256维单位矩阵；\(\mathbf T_c\)是球形目标；\(\alpha_c\in[0,1]\)是Ledoit–Wolf自动决定的收缩强度。</div>
+
+      <div class="formula">
+        \[
+        \boldsymbol\Sigma_{\mathrm o}=
+        \frac1{C_{\mathrm o}}\sum_{c\in\mathcal Y_{\mathrm o}}
+        \widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c,
+        \qquad
+        \boldsymbol\Sigma_{\mathrm n}=
+        \frac1{C_{\mathrm n}}\sum_{c\in\mathcal Y_{\mathrm n}}
+        \widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c,
+        \qquad
+        \boldsymbol\Sigma_{\mathrm{bal}}=
+        \tfrac12\boldsymbol\Sigma_{\mathrm o}+\tfrac12\boldsymbol\Sigma_{\mathrm n}.
+        \]
+      </div>
+      <div class="formula-note"><strong>符号说明：</strong>\(\mathcal Y_{\mathrm o},\mathcal Y_{\mathrm n}\)分别是旧类、新类集合；\(C_{\mathrm o},C_{\mathrm n}\)是各自类别数；\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)是单类自动收缩协方差；\(\boldsymbol\Sigma_{\mathrm{bal}}\)是共享协方差。两个\(\tfrac12\)固定旧、新任务总权重相等。</div>
+    </section>
+
+    <section id="m56">
+      <p class="eyebrow" style="color:#8364d6">模块五、六</p>
+      <h2>让support自己决定几何，再把结果装进可部署状态</h2>
+      <p>full几何使用两个块的全部相关关系；block几何只使用各块内部关系。模块五不提前宣布谁更好，而是让support轮流被留出，看看两种几何谁更能认回它。模块六把融合后的行量化成稳定状态。</p>
+
+      <figure class="viz">
+        <svg viewBox="0 0 1160 400" role="img" aria-label="full和block几何通过support内留一验证融合，并量化为不可变状态的示意图">
+          <defs><marker id="arrowM56" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#7890ae"/></marker></defs>
+          <text x="42" y="38" fill="#163c72" font-size="21" font-weight="800">每一折：每个类别各留出一条support</text>
+          <g transform="translate(40,58)">
+            <rect width="222" height="245" rx="17" fill="#f5f8ff" stroke="#b9cbe7"/>
+            <text x="111" y="31" text-anchor="middle" fill="#163c72" font-size="17" font-weight="800">K折轮流留一</text>
+            <g transform="translate(45,62)">
+              <circle cx="0" cy="0" r="9" fill="#2d72d9"/><circle cx="32" cy="0" r="9" fill="#2d72d9"/><circle cx="64" cy="0" r="9" fill="#e76c63"/><circle cx="96" cy="0" r="9" fill="#2d72d9"/>
+              <circle cx="0" cy="42" r="9" fill="#41b88f"/><circle cx="32" cy="42" r="9" fill="#41b88f"/><circle cx="64" cy="42" r="9" fill="#e76c63"/><circle cx="96" cy="42" r="9" fill="#41b88f"/>
+              <circle cx="0" cy="84" r="9" fill="#8364d6"/><circle cx="32" cy="84" r="9" fill="#8364d6"/><circle cx="64" cy="84" r="9" fill="#e76c63"/><circle cx="96" cy="84" r="9" fill="#8364d6"/>
+            </g>
+            <text x="111" y="196" text-anchor="middle" fill="#e76c63" font-size="14" font-weight="800">红点：本折真正没见过</text>
+            <text x="111" y="219" text-anchor="middle" fill="#5e6d85" font-size="13">其他点重新拟合模型</text>
+          </g>
+          <line x1="278" y1="182" x2="351" y2="182" stroke="#7890ae" stroke-width="3" marker-end="url(#arrowM56)"/>
+          <g transform="translate(368,57)">
+            <rect width="260" height="246" rx="17" fill="#faf6ff" stroke="#c7b5e7"/>
+            <text x="130" y="30" text-anchor="middle" fill="#163c72" font-size="17" font-weight="800">两种候选几何</text>
+            <text x="72" y="64" text-anchor="middle" fill="#8364d6" font-size="15" font-weight="800">full</text>
+            <g transform="translate(35,78)">
+              <rect width="24" height="24" fill="#8364d6"/><rect x="28" width="24" height="24" fill="#b49ae2"/><rect x="56" width="24" height="24" fill="#d8caf1"/>
+              <rect y="28" width="24" height="24" fill="#b49ae2"/><rect x="28" y="28" width="24" height="24" fill="#8364d6"/><rect x="56" y="28" width="24" height="24" fill="#b49ae2"/>
+              <rect y="56" width="24" height="24" fill="#d8caf1"/><rect x="28" y="56" width="24" height="24" fill="#b49ae2"/><rect x="56" y="56" width="24" height="24" fill="#8364d6"/>
+            </g>
+            <text x="190" y="64" text-anchor="middle" fill="#7b62bd" font-size="15" font-weight="800">block</text>
+            <g transform="translate(151,78)">
+              <rect width="24" height="24" fill="#8364d6"/><rect x="28" width="24" height="24" fill="#b49ae2"/><rect x="56" width="24" height="24" fill="#f0ebf9"/>
+              <rect y="28" width="24" height="24" fill="#b49ae2"/><rect x="28" y="28" width="24" height="24" fill="#8364d6"/><rect x="56" y="28" width="24" height="24" fill="#f0ebf9"/>
+              <rect y="56" width="24" height="24" fill="#f0ebf9"/><rect x="28" y="56" width="24" height="24" fill="#f0ebf9"/><rect x="56" y="56" width="24" height="24" fill="#8364d6"/>
+            </g>
+            <text x="130" y="190" text-anchor="middle" fill="#5e6d85" font-size="13">full保留跨块关系</text>
+            <text x="130" y="213" text-anchor="middle" fill="#5e6d85" font-size="13">block采取更保守结构</text>
+          </g>
+          <line x1="645" y1="182" x2="718" y2="182" stroke="#7890ae" stroke-width="3" marker-end="url(#arrowM56)"/>
+          <g transform="translate(735,57)">
+            <rect width="190" height="246" rx="17" fill="#f8fbff" stroke="#c6d7ed"/>
+            <text x="95" y="31" text-anchor="middle" fill="#163c72" font-size="17" font-weight="800">按类别融合</text>
+            <rect x="38" y="74" width="114" height="19" rx="6" fill="#8364d6"/>
+            <rect x="38" y="103" width="66" height="19" rx="6" fill="#d5c5ef"/>
+            <text x="95" y="148" text-anchor="middle" fill="#5e6d85" font-size="13">类A更信任full</text>
+            <rect x="38" y="174" width="54" height="19" rx="6" fill="#8364d6"/>
+            <rect x="38" y="203" width="121" height="19" rx="6" fill="#d5c5ef"/>
+            <text x="95" y="238" text-anchor="middle" fill="#5e6d85" font-size="13">类B更信任block</text>
+          </g>
+          <line x1="942" y1="182" x2="1007" y2="182" stroke="#7890ae" stroke-width="3" marker-end="url(#arrowM56)"/>
+          <g transform="translate(1023,57)">
+            <rect width="97" height="246" rx="17" fill="#fff7f5" stroke="#efb5af"/>
+            <text x="49" y="31" text-anchor="middle" fill="#163c72" font-size="15" font-weight="800">量化</text>
+            <g transform="translate(25,64)" fill="#e76c63"><rect width="12" height="12"/><rect x="17" width="12" height="12"/><rect x="34" width="12" height="12"/><rect y="17" width="12" height="12"/><rect x="34" y="17" width="12" height="12"/><rect x="17" y="34" width="12" height="12"/></g>
+            <text x="49" y="142" text-anchor="middle" fill="#5e6d85" font-size="12">INT8行</text>
+            <text x="49" y="165" text-anchor="middle" fill="#5e6d85" font-size="12">尺度</text>
+            <text x="49" y="188" text-anchor="middle" fill="#5e6d85" font-size="12">截距</text>
+            <text x="49" y="222" text-anchor="middle" fill="#e76c63" font-size="12" font-weight="800">冻结状态</text>
+          </g>
+          <text x="580" y="355" text-anchor="middle" fill="#5e6d85" font-size="14">留一只发生在注册期；query不会参与“挑哪种几何”的过程。</text>
+        </svg>
+        <figcaption>图5｜模块五以真正留出的support来估计每一类别的几何可靠性；模块六再把融合行压缩并封存。</figcaption>
+      </figure>
+
+      <div class="eli5"><strong>为什么要留一？</strong>不能让学生自己出题、自己答题再说自己很会。每次把一条support暂时藏起来，用其余support建模型，再看看能不能认回这条被藏起的样本。</div>
+
+      <div class="formula">
+        \[
+        \boldsymbol\Sigma_{\mathrm{full}}=\boldsymbol\Sigma_{\mathrm{bal}},
+        \qquad
+        \boldsymbol\Sigma_{\mathrm{blk}}=
+        \begin{bmatrix}
+        \boldsymbol\Sigma_{\mathrm{id}}&\mathbf0_{160\times96}\\
+        \mathbf0_{96\times160}&\boldsymbol\Sigma_{\mathrm{fft}}
+        \end{bmatrix}.
+        \]
+      </div>
+      <div class="formula-note"><strong>符号说明：</strong>\(\boldsymbol\Sigma_{\mathrm{full}}\)保留完整协方差；\(\boldsymbol\Sigma_{\mathrm{bal}}\)是模块四的任务均衡协方差；\(\boldsymbol\Sigma_{\mathrm{id}}\)与\(\boldsymbol\Sigma_{\mathrm{fft}}\)分别是160维身份块和96维频谱块的子矩阵；零矩阵表示block分支不使用跨块相关性。</div>
+
+      <div class="formula">
+        \[
+        \ell_{c,h}^{\mathrm{LOO}}=
+        -\frac1K\sum_{t=1}^{K}
+        \log\frac{\exp(s_{c,t,c}^{(h)}/r_h)}
+        {\sum_{j=1}^{C}\exp(s_{c,t,j}^{(h)}/r_h)},
+        \qquad
+        \eta_{c,h}=
+        \frac{\exp(-K\ell_{c,h}^{\mathrm{LOO}})}
+        {\sum_{h'}\exp(-K\ell_{c,h'}^{\mathrm{LOO}})}.
+        \]
+      </div>
+      <div class="formula-note"><strong>符号说明：</strong>\(c\)是类别索引；\(h\)表示full或block；\(t\)表示第\(t\)折留一；\(s_{c,t,j}^{(h)}\)是held样本对候选类别\(j\)的logit；\(r_h\)是分支分数尺度；\(\ell_{c,h}^{\mathrm{LOO}}\)是平均留一交叉熵；\(\eta_{c,h}\)是该类别给该分支的可靠性权重；\(h'\)在分母遍历两个分支。</div>
+
+      <div class="formula">
+        \[
+        q_{c,j}^{(1)}=
+        \operatorname{clip}\!\left(
+        \operatorname{round}\!\left(\frac{w_{c,j}}{s_{c,g(j)}^{(1)}}\right),-127,127\right),
+        \qquad
+        \widehat w_{c,j}=
+        s_{c,g(j)}^{(1)}q_{c,j}^{(1)}
+        +s_{c,g(j)}^{(2)}q_{c,j}^{(2)}.
+        \]
+      </div>
+      <div class="formula-note"><strong>符号说明：</strong>\(w_{c,j}\)是类别\(c\)第\(j\)维浮点权重；\(g(j)\)返回量化组；\(s^{(1)},s^{(2)}\)是两层正尺度；\(q^{(1)},q^{(2)}\)是两层INT8码；\(\operatorname{round}\)表示舍入；\(\operatorname{clip}\)限制整数范围；\(\widehat w_{c,j}\)是最终解码权重。量化压缩存储，不自动证明整数运算更快。</div>
+    </section>
+
+    <section id="resource">
+      <p class="eyebrow" style="color:#e9a93d">资源与部署</p>
+      <h2>把注册期的重活，与query期的轻活分开看</h2>
+      <p>D92 E0不是“每一步都轻”。它把矩阵计算、留一重建和量化编译集中在注册期；注册完成后，query只需做固定特征和全类仿射打分。</p>
+
+      <figure class="viz">
+        <svg viewBox="0 0 1160 385" role="img" aria-label="D92 E0注册期和query期资源分层示意图">
+          <text x="42" y="38" fill="#163c72" font-size="22" font-weight="800">资源不是一个数字，而是两段完全不同的旅程</text>
+          <g transform="translate(42,68)">
+            <rect width="665" height="250" rx="18" fill="#fff9ea" stroke="#e8c878"/>
+            <text x="25" y="34" fill="#6b4a0e" font-size="19" font-weight="800">注册期：低频、较重</text>
+            <rect x="27" y="67" width="118" height="130" rx="12" fill="#e9a93d"/><text x="86" y="109" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">support</text><text x="86" y="132" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">特征</text>
+            <rect x="160" y="67" width="142" height="130" rx="12" fill="#d98e24"/><text x="231" y="109" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">协方差</text><text x="231" y="132" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">与LDA</text>
+            <rect x="317" y="67" width="152" height="130" rx="12" fill="#c9791c"/><text x="393" y="109" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">K折留一</text><text x="393" y="132" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">重建</text>
+            <rect x="484" y="67" width="150" height="130" rx="12" fill="#b86519"/><text x="559" y="109" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">量化</text><text x="559" y="132" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">封存</text>
+            <text x="27" y="229" fill="#6b4a0e" font-size="14">一次完整registration time：均值235699.082ms；这不是query头延时。</text>
+          </g>
+          <g transform="translate(740,68)">
+            <rect width="378" height="250" rx="18" fill="#eff7ff" stroke="#9fc5ec"/>
+            <text x="24" y="34" fill="#163c72" font-size="19" font-weight="800">query期：高频、轻量头</text>
+            <rect x="28" y="75" width="112" height="104" rx="12" fill="#2d72d9"/><text x="84" y="117" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">特征</text><text x="84" y="140" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">映射</text>
+            <path d="M151 127H198" stroke="#7890ae" stroke-width="3"/><path d="M198 127l-10-7v14z" fill="#7890ae"/>
+            <rect x="210" y="75" width="140" height="104" rx="12" fill="#29a9c7"/><text x="280" y="117" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">全类仿射</text><text x="280" y="140" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">打分</text>
+            <text x="28" y="220" fill="#163c72" font-size="14">query head MAC：均值6624；只计分类头。</text>
+          </g>
+          <text x="580" y="365" text-anchor="middle" fill="#5e6d85" font-size="14">要讨论“更轻”，必须说明是在比较注册、常驻状态，还是每条query的分类头。</text>
+        </svg>
+        <figcaption>图6｜注册期和query期采用不同计算预算。把两段相加为一个“速度”会误导部署判断。</figcaption>
+      </figure>
+
       <div class="grid three">
-        <article class="card"><div class="kpi">288</div><div>联合特征维数</div><div class="minor">160 identity＋96 FFT＋32 RF</div></article>
-        <article class="card"><div class="kpi">44</div><div>K10闭式分量拟合</div><div class="minor">\(N_{\mathrm{fit}}=4(K+1)\)</div></article>
-        <article class="card"><div class="kpi">7,488</div><div>new20分类头MAC/query</div><div class="minor">只包含\(C\times p\)线性头</div></article>
+        <article class="card"><div class="kpi">235699ms</div><div class="kpi-label">完整注册时间均值</div><p class="muted">含完整注册链，不是head微基准。</p></article>
+        <article class="card"><div class="kpi">14722B</div><div class="kpi-label">压缩状态字节均值</div><p class="muted">资源审计中的state bytes。</p></article>
+        <article class="card"><div class="kpi">6624MAC</div><div class="kpi-label">query head均值</div><p class="muted">不含主干、FFT96、I/O与解码。</p></article>
       </div>
 
       <div class="formula">
         \[
-          \mathcal M_{\mathrm{LDA}}(n,c)=np^2+p^3+cp^2,qquad
-          N_{\mathrm{fit}}=4(K+1),qquad
-          \mathcal M_{\mathrm{head}}=Cp.
+        \mathcal M_{\mathrm{head}}\approx Cp,\qquad p=256,
+        \qquad
+        \mathcal M_{\mathrm{qKNN}}\approx CKd.
         \]
-        <div class="plain-math">M_LDA(n,c)=np²+p³+cp²; N_fit=4(K+1); M_head=Cp</div>
       </div>
-      <div class="formula-note"><strong>符号说明：</strong>\(\mathcal M_{\mathrm{LDA}}\)是一次收缩LDA的保守MAC等价模型；\(n\)是support行数；\(c\)是该次拟合类别数；\(p=288\)；\(p^3\)代表稠密分解/求解量级；\(N_{\mathrm{fit}}\)是完整注册的分量拟合数；\(\mathcal M_{\mathrm{head}}\)是解码后单query线性头乘加数。它们比较规模，不等于scikit-learn逐指令计数或星上测量。</div>
+      <div class="formula-note"><strong>符号说明：</strong>\(\mathcal M_{\mathrm{head}}\)是D92 E0仿射头的MAC量级；\(C\)是注册类别数；\(p=256\)是联合特征维数；\(\mathcal M_{\mathrm{qKNN}}\)是qKNN距离计算量级；\(K\)是每类support数；\(d\)是qKNN使用的距离维数。qKNN的query工作量会随\(K\)增长，D92 E0则把主要复杂度转移到注册期。</div>
 
-      <figure class="svg-panel">
-        <svg viewBox="0 0 1120 330" role="img" aria-labelledby="resource-title resource-desc" width="100%">
-          <title id="resource-title">D92 E0注册期和query期资源对比</title>
-          <desc id="resource-desc">左边为注册期1.375到1.670GMAC的派生审计上界，右边为11、16、26类query分类头3,168、4,608、7,488MAC。二者量级不同不可直接相除为时延。</desc>
-          <g font-family="Microsoft YaHei UI, Microsoft YaHei, sans-serif" fill="currentColor">
-            <text x="35" y="35" font-size="19" font-weight="700">注册期：低频、较重</text>
-            <text x="610" y="35" font-size="19" font-weight="700">query分类头：高频、很轻</text>
-            <line x1="35" y1="262" x2="525" y2="262" class="axis"/><line x1="610" y1="262" x2="1090" y2="262" class="axis"/>
-            <rect x="100" y="95" width="92" height="167" fill="var(--orange)" opacity=".82"/><text x="99" y="286" class="bar-label">C=11</text><text x="105" y="83" class="bar-value">1.375G</text>
-            <rect x="265" y="83" width="92" height="179" fill="var(--orange)" opacity=".82"/><text x="264" y="286" class="bar-label">C=16</text><text x="270" y="71" class="bar-value">1.471G</text>
-            <rect x="430" y="60" width="92" height="202" fill="var(--orange)" opacity=".82"/><text x="429" y="286" class="bar-label">C=26</text><text x="435" y="48" class="bar-value">1.670G</text>
-            <text x="35" y="313" class="svg-note">单位：GMAC等价上界；K=10；不含目标硬件时延</text>
-            <rect x="676" y="192" width="92" height="70" fill="var(--accent)" opacity=".82"/><text x="675" y="286" class="bar-label">C=11</text><text x="681" y="180" class="bar-value">3,168</text>
-            <rect x="840" y="160" width="92" height="102" fill="var(--accent)" opacity=".82"/><text x="839" y="286" class="bar-label">C=16</text><text x="845" y="148" class="bar-value">4,608</text>
-            <rect x="1002" y="97" width="88" height="165" fill="var(--accent)" opacity=".82"/><text x="1001" y="286" class="bar-label">C=26</text><text x="1000" y="85" class="bar-value">7,488</text>
-            <text x="610" y="313" class="svg-note">单位：MAC/query；只含仿射头，不含主干、FFT96、RF32</text>
-          </g>
-        </svg>
-        <figcaption>图5-1：注册期与query头的量纲虽都可写为MAC，但一个是每批support的构造开销，另一个是每条query的线性头开销，不能混为“单次预测成本”。</figcaption>
-      </figure>
-
-      <h3>5.1MAC是什么单位？</h3>
-      <div class="formula">
-        \[
-          a\leftarrow a+xw,\qquad 1\ \mathrm{MMAC}=10^6\ \mathrm{MAC},\qquad 1\ \mathrm{GMAC}=10^9\ \mathrm{MAC},\qquad 1\ \mathrm{MAC}\approx2\ \mathrm{FLOP}.
-        \]
-        <div class="plain-math">a←a+xw; 1MMAC=10⁶MAC; 1GMAC=10⁹MAC; 1MAC≈2FLOP</div>
-      </div>
-      <div class="formula-note"><strong>符号说明：</strong>MAC是multiply–accumulate（乘并累加）：把\(xw\)乘积累加到\(a\)。MMAC和GMAC是十进制运算次数单位，不是内存容量单位。按“乘法1FLOP、加法1FLOP”惯例，1MAC约等于2FLOP；这不是指令数、时钟周期、时间、功率或能量。FP64、FP32、FP16和INT8在同一硬件上的吞吐、缓存行为和能耗都不同。</div>
-
-      <div class="table-wrap">
-        <table>
-          <caption>资源状态（当前研究实现与算法潜力必须分开）</caption>
-          <thead><tr><th>阶段</th><th>计算压力</th><th>已知状态大小</th><th>可以得出的结论</th></tr></thead>
-          <tbody>
-            <tr><td>Phase1训练</td><td>高，离线</td><td>不计入Stage2实时开销</td><td>主干训练不在星上注册路径。</td></tr>
-            <tr><td>support特征提取</td><td>冻结主干＋FFT96＋RF32</td><td>取决于主干激活</td><td>当前服务器记录提示主干通常比FFT/RF更值得优先优化。</td></tr>
-            <tr><td>K10状态构造</td><td>约1.375–1.670GMAC等价上界</td><td>至少数MiB工作区，峰值待实测</td><td>无反向传播整网，但绝非零成本原型更新。</td></tr>
-            <tr><td>量化部署头</td><td>每条query仅\(Cp\)</td><td>new5/10/20为7.46/10.34/16.11KiB核心数组</td><td>适合长期高频打分。</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="formula">
-        \[
-          B_{\mathrm{affine,int8}}=2Cp+14C,\qquad B_{\mathrm{core,int8}}=4p+2Cp+14C.
-        \]
-        <div class="plain-math">B_affine,int8=2Cp+14C; B_core,int8=4p+2Cp+14C</div>
-      </div>
-      <div class="formula-note"><strong>符号说明：</strong>\(B_{\mathrm{affine,int8}}\)是两套INT8系数、两套三块FP16尺度和FP16截距的字节数；\(2Cp\)来自两套每元素1B的INT8码；\(14C\)来自每类12B的六个FP16块尺度加2B截距；\(B_{\mathrm{core,int8}}\)再加入长度\(p\)的FP32旧类metric。new20时量化仿射行约15.0KiB，相对FP32仿射头约30.1KiB减少48.96%。这是存储压缩，不等于当前实现已获得INT8乘加加速。</div>
-
-      <h3>5.2与其他路线只谈计算量的比较</h3>
-      <div class="table-wrap">
-        <table>
-          <caption>同一“生命周期”层次的算法级比较；不是跨论文硬件毫秒排名</caption>
-          <thead><tr><th>方法</th><th>新类注册/更新</th><th>query分类阶段</th><th>计算判断</th></tr></thead>
-          <tbody>
-            <tr><td>D92 E0</td><td>K10为44次分量拟合，协方差/LOO较重</td><td>\(Cp\)，C=26为7,488MAC</td><td>注册重；query头轻且不随K增长。</td></tr>
-            <tr><td>ProtoNet CDA</td><td>类均值，约\(\mathcal O(CKd)\)</td><td>\(\mathcal O(Cd)\)</td><td>注册明显轻于D92 E0；表达更简单。</td></tr>
-            <tr><td>单qKNN</td><td>保存support，几乎无训练</td><td>暴力约\(\mathcal O(CKd)\)</td><td>注册轻；K10下query随K线性变重。</td></tr>
-            <tr><td>adapter qKNN</td><td>保存support＋有限adapter梯度步</td><td>adapter前向＋近邻检索</td><td>居于单qKNN和D92 E0之间，取决于更新步数。</td></tr>
-            <tr><td>MRIOR/DADDA/CSIL/MoPC-HR</td><td>多轮前向/反向、网络或critic状态</td><td>神经网络前向</td><td>结构上通常比D92 E0闭式头构造复杂，但没有同硬件同主干计数，不能宣布严格倍率。</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="callout warn"><strong>星上结论：</strong>算法架构层面有条件适合：低频、异步注册，随后高频query；研究实现层面尚不具备直接上星条件：当前依赖Python/NumPy/PyTorch/scikit-learn、FP64稠密工作区，尚无目标CPU/DSP/FPGA/NPU上的WCET、峰值RAM、能耗、定点一致性、掉电恢复和辐射容错证据。</div>
+      <div class="warning"><strong>部署结论：</strong>若只在星上运行冻结编码器、FFT96和量化头，结构上可部署；若要求在极低资源节点实时完成完整新类注册，当前协方差和留一重建仍偏重。INT8状态压缩不等于已证明INT8端到端加速。</div>
     </section>
 
     <section id="evidence">
-      <h2>6.实验结果与六模块消融：已完成screening，不是最终确认</h2>
-      <div class="grid three">
-        <article class="card"><div class="kpi">58.79%</div><div>DA1_REG1旧类准确率</div><div class="minor">225场景单位均值</div></article>
-        <article class="card"><div class="kpi">53.43%</div><div>DA1_REG1新类准确率</div><div class="minor">已注册新类</div></article>
-        <article class="card"><div class="kpi">55.27%</div><div>旧/新调和均值H</div><div class="minor">全量screen统计</div></article>
-      </div>
-      <p>完整参考<code>P2-FULL</code>的同row消融表采用225个场景单位。另一个汇总口径给出D92 E0总体screen结果，二者因逻辑臂/物理执行别名和汇总范围不同出现小数位差异；下图和下表均明确标注来源，不能任意拼接成“最佳单项组合”。</p>
-      <div class="table-wrap">
-        <table>
-          <caption>全量screen的DA1_REG1总体结果（均值±标准差/中位数）</caption>
-          <thead><tr><th>旧类准确率</th><th>新类准确率</th><th>H</th><th>遗忘F</th><th>最低旧类</th><th>最低新类</th></tr></thead>
-          <tbody><tr><td class="num">0.5879±0.1705/0.6083</td><td class="num">0.5343±0.2173/0.5650</td><td class="num">0.5527±0.1940/0.5824</td><td class="num">0.1615±0.0710/0.1500</td><td class="num">0.2733±0.1967/0.2500</td><td class="num">0.2193±0.2209/0.1500</td></tr></tbody>
-        </table>
-      </div>
-      <div class="callout danger"><strong>解释限制：</strong>当前是5个target receiver、5个K/新类切片、3个development seed、3个LEO弱场景和1个冻结new-class draw组成的screening。尚缺5个fresh seed×至少3个new-class draw确认；因此不可晋级为部署声明或论文主张。</div>
+      <p class="eyebrow" style="color:#e76c63">已有证据</p>
+      <h2>当前256维配置的结果，和它还不能说明什么</h2>
+      <p>P2-A1固定identity160＋FFT96和完整B–F注册链，在75个logical identity row、225个场景单元的development screening中完成预测与评分闭合。下面的数值是当前配置本身的结果，不借用其他特征配置的指标。</p>
 
-      <figure class="svg-panel">
-        <svg viewBox="0 0 1120 530" role="img" aria-labelledby="abl-title abl-desc" width="100%">
-          <title id="abl-title">模块消融的H均值比较</title>
-          <desc id="abl-desc">横向柱状图显示完整参考和A到F功能组部分消融臂的H均值。A0显著降低；B0几乎相同；其余差异较小或属于功能组对照。</desc>
-          <g font-family="Microsoft YaHei UI, Microsoft YaHei, sans-serif" fill="currentColor">
-            <text x="35" y="34" font-size="18" font-weight="700">同一225场景单位的H_old_new均值</text>
-            <text x="35" y="56" class="svg-note">横轴0–0.60；完整参考相对消融的因果强度以表中配对bootstrap边界为准。</text>
-            <line x1="270" y1="84" x2="270" y2="496" class="axis"/><line x1="270" y1="496" x2="1065" y2="496" class="axis"/>
-            <g class="svg-note"><text x="266" y="518">0.0</text><text x="396" y="518">0.1</text><text x="528" y="518">0.2</text><text x="660" y="518">0.3</text><text x="792" y="518">0.4</text><text x="924" y="518">0.5</text><text x="1052" y="518">0.6</text></g>
-            <g stroke="var(--line)" stroke-width="1"><line x1="402" y1="84" x2="402" y2="496"/><line x1="534" y1="84" x2="534" y2="496"/><line x1="666" y1="84" x2="666" y2="496"/><line x1="798" y1="84" x2="798" y2="496"/><line x1="930" y1="84" x2="930" y2="496"/><line x1="1062" y1="84" x2="1062" y2="496"/></g>
-            <text x="45" y="110" class="bar-label">完整参考P2-FULL</text><rect x="270" y="90" width="731" height="25" fill="var(--accent)"/><text x="1012" y="110" class="bar-value">0.5542</text>
-            <text x="45" y="156" class="bar-label">A0：移除FFT96/RF32</text><rect x="270" y="136" width="325" height="25" fill="var(--red)" opacity=".85"/><text x="607" y="156" class="bar-value">0.2460</text>
-            <text x="45" y="202" class="bar-label">B0：普通中心</text><rect x="270" y="182" width="731" height="25" fill="var(--green)" opacity=".8"/><text x="1012" y="202" class="bar-value">0.5541</text>
-            <text x="45" y="248" class="bar-label">C3：全类等权协方差</text><rect x="270" y="228" width="727" height="25" fill="var(--orange)" opacity=".82"/><text x="1008" y="248" class="bar-value">0.5515</text>
-            <text x="45" y="294" class="bar-label">D0：full-only</text><rect x="270" y="274" width="734" height="25" fill="var(--violet)" opacity=".82"/><text x="1015" y="294" class="bar-value">0.5557</text>
-            <text x="45" y="340" class="bar-label">D1：block3-only</text><rect x="270" y="320" width="721" height="25" fill="var(--violet)" opacity=".65"/><text x="1002" y="340" class="bar-value">0.5464</text>
-            <text x="45" y="386" class="bar-label">D2：固定0.5/0.5融合</text><rect x="270" y="366" width="727" height="25" fill="var(--violet)" opacity=".48"/><text x="1008" y="386" class="bar-value">0.5509</text>
-            <text x="45" y="432" class="bar-label">E0：关闭Fisher residual</text><rect x="270" y="412" width="729" height="25" fill="var(--orange)" opacity=".68"/><text x="1010" y="432" class="bar-value">0.5527</text>
-            <text x="45" y="478" class="bar-label">F0：FP32状态</text><rect x="270" y="458" width="731" height="25" fill="var(--green)" opacity=".6"/><text x="1012" y="478" class="bar-value">0.5541</text>
+      <figure class="viz">
+        <svg viewBox="0 0 1160 410" role="img" aria-label="P2-A1旧类新类准确率调和均值和最低准确率的可视化">
+          <text x="42" y="38" fill="#163c72" font-size="22" font-weight="800">平均表现与尾部表现要一起看</text>
+          <text x="42" y="68" fill="#5e6d85" font-size="14">条形长度表示均值，圆点表示中位数。横轴范围为0到1。</text>
+          <g transform="translate(295,92)">
+            <line x1="0" y1="0" x2="730" y2="0" stroke="#dbe3ef"/><line x1="0" y1="56" x2="730" y2="56" stroke="#dbe3ef"/><line x1="0" y1="112" x2="730" y2="112" stroke="#dbe3ef"/><line x1="0" y1="168" x2="730" y2="168" stroke="#dbe3ef"/><line x1="0" y1="224" x2="730" y2="224" stroke="#dbe3ef"/><line x1="0" y1="280" x2="730" y2="280" stroke="#dbe3ef"/>
+            <g fill="#5e6d85" font-size="12"><text x="-8" y="305">0</text><text x="174" y="305">0.25</text><text x="357" y="305">0.50</text><text x="539" y="305">0.75</text><text x="719" y="305">1.00</text></g>
+            <g fill="#eef3fa"><rect x="0" y="15" width="730" height="27" rx="6"/><rect x="0" y="71" width="730" height="27" rx="6"/><rect x="0" y="127" width="730" height="27" rx="6"/><rect x="0" y="183" width="730" height="27" rx="6"/><rect x="0" y="239" width="730" height="27" rx="6"/></g>
+            <rect x="0" y="15" width="434" height="27" rx="6" fill="#2d72d9"/><circle cx="450" cy="28.5" r="7" fill="#173c72"/>
+            <rect x="0" y="71" width="400" height="27" rx="6" fill="#29a9c7"/><circle cx="425" cy="84.5" r="7" fill="#16748b"/>
+            <rect x="0" y="127" width="412" height="27" rx="6" fill="#41b88f"/><circle cx="425" cy="140.5" r="7" fill="#23765b"/>
+            <rect x="0" y="183" width="201" height="27" rx="6" fill="#e9a93d"/><circle cx="183" cy="196.5" r="7" fill="#805508"/>
+            <rect x="0" y="239" width="162" height="27" rx="6" fill="#e76c63"/><circle cx="110" cy="252.5" r="7" fill="#9a332d"/>
+            <g fill="#163c72" font-size="14" font-weight="800">
+              <text x="746" y="34">0.5946</text><text x="746" y="90">0.5486</text><text x="746" y="146">0.5650</text><text x="746" y="202">0.2753</text><text x="746" y="258">0.2222</text>
+            </g>
           </g>
+          <g fill="#163c72" font-size="15" font-weight="800">
+            <text x="42" y="126">注册后旧类准确率</text>
+            <text x="42" y="182">注册后新类准确率</text>
+            <text x="42" y="238">旧/新调和均值H</text>
+            <text x="42" y="294">最低旧类准确率</text>
+            <text x="42" y="350">最低新类准确率</text>
+          </g>
+          <rect x="916" y="112" width="199" height="90" rx="14" fill="#fff7f5" stroke="#efb5af"/>
+          <text x="1016" y="145" text-anchor="middle" fill="#9a332d" font-size="16" font-weight="800">遗忘F＝0.1548</text>
+          <text x="1016" y="171" text-anchor="middle" fill="#6e5351" font-size="13">注册前旧类准确率</text>
+          <text x="1016" y="190" text-anchor="middle" fill="#6e5351" font-size="13">0.7494 → 0.5946</text>
+          <text x="580" y="392" text-anchor="middle" fill="#5e6d85" font-size="14">中位数圆点与均值条形不相同，反映不同row之间存在明显离散性。</text>
         </svg>
-        <figcaption>图6-1：功能组消融的H均值。A0的联合特征移除是当前最强、最清晰的差异；D组不是严格单因素Fisher因果实验；F组主要验证数值格式而不是判别能力。</figcaption>
+        <figcaption>图7｜P2-A1 development screening的主要指标。不能只看均值H，还要查看最低旧类和最低新类。</figcaption>
       </figure>
 
       <div class="table-wrap">
         <table>
-          <caption>完整参考相对消融臂的同row配对效应（P2-FULL−消融臂）</caption>
-          <thead><tr><th>组</th><th>比较</th><th class="num">ΔH及95%CI</th><th>可作出的有限结论</th></tr></thead>
+          <thead><tr><th>指标</th><th>均值±总体标准差/中位数</th><th>读法</th></tr></thead>
           <tbody>
-            <tr><td>A</td><td>FULL−A0</td><td class="num">+0.3081[0.2803,0.3261]</td><td>联合FFT/RF辅助特征是当前最强贡献。</td></tr>
-            <tr><td>B</td><td>FULL−B0</td><td class="num">+0.00003[−0.0003,0.0004]</td><td>本screen中地面谱/稳健中心没有可分辨的平均收益；不等于所有任务无效。</td></tr>
-            <tr><td>C</td><td>FULL−C3</td><td class="num">+0.0027[0.0017,0.0034]</td><td>小幅改善旧类/H，伴随很小的新类代价。</td></tr>
-            <tr><td>D</td><td>FULL−D0</td><td class="num">−0.0015[−0.0028,−0.0002]</td><td>full-only略高；D组有多项耦合改变，不能声称某单项必然有害。</td></tr>
-            <tr><td>D</td><td>FULL−D1</td><td class="num">+0.0078[0.0061,0.0094]</td><td>完整参考优于block-only，但D1也改变其他安全路径。</td></tr>
-            <tr><td>E</td><td>FULL−E0</td><td class="num">+0.0014[0.0004,0.0025]</td><td>小幅旧类保护，非主导性能来源。</td></tr>
-            <tr><td>F</td><td>FULL−F0/F1/F2</td><td class="num">约0</td><td>量化格式在本screen中未显示可分辨预测损失；尚非INT8硬件加速证据。</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="callout good"><strong>FFT96与RF32补充实验：</strong>在同一physical received-IQ、receiver、K/新类切片、seed、场景与truth-last评分下，identity160＋FFT96相对identity160＋RF32的H提高0.265428（26.54pp）。这支持“FFT96应优先保留，RF32-only不能替代当前路径”；但它不识别RF32在完整288维模型中的条件边际贡献。</div>
-    </section>
-
-    <section id="comparison">
-      <h2>7.与域适应、类增量和qKNN路线的对比</h2>
-      <p class="section-intro">比较必须先对齐任务。Stage2-B闭集域适应方法没有已注册新类，不能与D92 E0的Stage2-C注册后\(H_{\mathrm{old\_new}}\)直接排名。类增量论文方法通常允许base/source训练或历史统计，其数据权限和模型生命周期也不同。</p>
-      <div class="table-wrap">
-        <table>
-          <caption>任务机制对比</caption>
-          <thead><tr><th>方法</th><th>主要任务</th><th>是否注册新类</th><th>更新机制</th><th>与D92 E0的可比边界</th></tr></thead>
-          <tbody>
-            <tr><td>D92 E0</td><td>Stage2-C跨接收机少样本类增量RFFI</td><td>是</td><td>support闭式状态构造＋量化统一头</td><td>本报告的基准方法。</td></tr>
-            <tr><td>MRIOR-SDA</td><td>闭集域适应</td><td>否</td><td>域对齐、伪标签/适配</td><td>只能在Stage2-B旧类闭集语境描述性比较。</td></tr>
-            <tr><td>DADDA-SDA</td><td>闭集域适应</td><td>否</td><td>多尺度特征、MMD/LMMD、反向更新</td><td>同上；原始方法数据生命周期更重。</td></tr>
-            <tr><td>ProtoNet CDA</td><td>few-shot域适应</td><td>当前对比未注册</td><td>support编码后按类均值</td><td>注册与query的轻量参考，任务不等价。</td></tr>
-            <tr><td>CSIL</td><td>类增量/WDI</td><td>是</td><td>通道扩展、KD、EWC增量训练</td><td>通常允许完整base/source流程，不等同source-free Stage2。</td></tr>
-            <tr><td>MoPC-HR</td><td>非exemplar类增量</td><td>是</td><td>prototype correction、增强、梯度训练</td><td>更新链有模型训练，不能与闭式注册直接混排。</td></tr>
-            <tr><td>Orthogonal Incremental SEI</td><td>FSCIL</td><td>是</td><td>预留正交方向＋权重校准</td><td>依赖base阶段的未来类别空间设计。</td></tr>
-            <tr><td>qKNN</td><td>项目轻量类增量参照</td><td>是</td><td>保存support近邻＋prototype/可选adapter</td><td>同manifest、同new数、同评分器时才可严格paired。</td></tr>
+            <tr><td>\(A_{\mathrm o}^{DA1\_REG0}\)</td><td>0.749444±0.132670/0.766667</td><td>注册前旧类准确率</td></tr>
+            <tr><td>\(A_{\mathrm o}^{DA1\_REG1}\)</td><td>0.594630±0.168673/0.616667</td><td>注册后旧类准确率</td></tr>
+            <tr><td>\(A_{\mathrm n}^{DA1\_REG1}\)</td><td>0.548556±0.205489/0.582500</td><td>注册后新类准确率</td></tr>
+            <tr><td>\(H_{\mathrm{old,new}}\)</td><td>0.565038±0.186408/0.581880</td><td>旧类、新类调和均值</td></tr>
+            <tr><td>\(F\)</td><td>0.154815±0.071628/0.150000</td><td>注册前后旧类准确率差</td></tr>
+            <tr><td>最低旧类、最低新类</td><td>0.275333±0.195512/0.250000；0.222222±0.220695/0.150000</td><td>全体实际注册类的尾部下界</td></tr>
           </tbody>
         </table>
       </div>
 
-      <h3>7.1D92 E0与qKNN的关系</h3>
-      <p>D92 E0<strong>不使用qKNN作为自己的模块</strong>。qKNN在本项目中是一个合法的轻量类增量参照路线：它把support保留为局部记忆，在query时做邻居检索；D92 E0把support压缩成每类中心、共享协方差与最终仿射行，query不检索逐support邻居。</p>
       <div class="formula">
         \[
-          B_{\mathrm{qKNN}}=2CKd,\qquad \mathcal M_{\mathrm{qKNN}}\approx CKd,qquad
-          \frac{\mathcal M_{\mathrm{qKNN}}}{\mathcal M_{\mathrm{head}}}\approx\frac{K\times160}{288}=5.56\quad(K=10,d=160).
+        H_{\mathrm{old,new}}=
+        \frac{2A_{\mathrm o}^{DA1\_REG1}A_{\mathrm n}^{DA1\_REG1}}
+        {A_{\mathrm o}^{DA1\_REG1}+A_{\mathrm n}^{DA1\_REG1}},
+        \qquad
+        F=A_{\mathrm o}^{DA1\_REG0}-A_{\mathrm o}^{DA1\_REG1}.
         \]
-        <div class="plain-math">B_qKNN=2CKd; M_qKNN≈CKd; M_qKNN/M_head≈K×160/288=5.56 for K=10,d=160</div>
       </div>
-      <div class="formula-note"><strong>符号说明：</strong>\(B_{\mathrm{qKNN}}\)是FP16 support库存字节数；\(\mathcal M_{\mathrm{qKNN}}\)是暴力近邻点积近似MAC数；\(d=160\)是示例的identity维数；系数2表示FP16每坐标2B；\(C\)和\(K\)是类别数和每类support数。K10时，qKNN注册更简单，但query成本和状态大小随K线性增长；D92 E0注册更重，但分类头成本不随K增长。</div>
+      <div class="formula-note"><strong>符号说明：</strong>\(A_{\mathrm o}^{DA1\_REG0}\)是注册前旧类准确率；\(A_{\mathrm o}^{DA1\_REG1}\)是注册后旧类准确率；\(A_{\mathrm n}^{DA1\_REG1}\)是注册后新类准确率；\(H_{\mathrm{old,new}}\)是调和均值；\(F\)是旧类准确率下降量。</div>
+
+      <div class="grid six">
+        <article class="card module-card"><div class="number">1</div><h4>完整路径</h4><p>同配置screening已完成。</p></article>
+        <article class="card module-card"><div class="number">2</div><h4>稳健中心</h4><p>已启用；独立同配置消融待补。</p></article>
+        <article class="card module-card"><div class="number">3</div><h4>自动收缩</h4><p>已启用；独立同配置消融待补。</p></article>
+        <article class="card module-card"><div class="number">4</div><h4>任务均衡</h4><p>已启用；独立同配置消融待补。</p></article>
+        <article class="card module-card"><div class="number">5</div><h4>双几何</h4><p>已启用；独立同配置消融待补。</p></article>
+        <article class="card module-card"><div class="number">6</div><h4>量化</h4><p>有状态资源审计；无硬件加速证明。</p></article>
+      </div>
+      <div class="warning"><strong>证据边界：</strong>当前结果来自3个development seed与1个new-class draw。它支持当前screening判断，不替代fresh confirmation、同配置完整模块单因素消融或真实星上硬件测量。</div>
     </section>
 
-    <section id="limits">
-      <h2>8.结论、局限、术语速查与证据来源</h2>
-      <div class="grid two">
-        <article class="card">
-          <h3>可以成立的结论</h3>
-          <ul>
-            <li>D92 E0是一条完整的support-only状态构造与query预测方法链。</li>
-            <li>它对旧/新任务固定均衡协方差，避免新类数量直接压低旧任务总权重。</li>
-            <li>它注册期较重、长期线性头较轻，并包含真实的常驻状态量化压缩。</li>
-            <li>当前screen中联合特征贡献最清晰；FFT96应优先保留。</li>
-          </ul>
-        </article>
-        <article class="card">
-          <h3>不能成立的结论</h3>
-          <ul>
-            <li>不能称K1成功估计了288维协方差；K≤2按定义回退。</li>
-            <li>不能称模块二已经完成显式ground→LEO域对齐；它只使用类无关扰动先验稳健化中心。</li>
-            <li>不能把量化压缩写成现有实现已获得INT8硬件加速。</li>
-            <li>不能把screening结果升级成fresh confirmation、飞行软件或目标星载硬件性能声明。</li>
-          </ul>
-        </article>
-      </div>
+    <section id="compare">
+      <p class="eyebrow" style="color:#2d72d9">方法对比</p>
+      <h2>D92 E0和常见路线到底差在哪</h2>
+      <p>下图比较的是机制与资源形态，不是把不同数据权限、训练流程和评测条件下的数字强行排成一个总榜。</p>
 
-      <h3>8.1核心术语速查</h3>
-      <div class="terms">
-        <div class="term"><code>\(\mathbf z\)</code><br>一条IQ经模块一得到的288维联合特征。</div>
-        <div class="term"><code>\(\widetilde{\mathbf z}_{c,k}\)</code><br>模块二统一平移后的类别\(c\)第\(k\)条support特征。</div>
-        <div class="term"><code>\(\hat{\mathbf g}_{d,c}\)</code><br>从Phase1 v2 bundle临时重构的地面域×旧类160维聚合中心；不是target support。</div>
-        <div class="term"><code>\(\mathbf G\)</code><br>由地面重构中心跨域残差派生的类无关扰动二阶矩。</div>
-        <div class="term"><code>\(\sigma_q^2\)</code><br>v2重构RMSE平方得到的各向同性有效噪声底。</div>
-        <div class="term"><code>\(\mathbf U,\boldsymbol\rho\)</code><br>\(\mathbf G_+\)的正扰动方向和归一化谱权重。</div>
-        <div class="term"><code>\(\mu_{c,i}\)</code><br>类别\(c\)第i维特征的总体均值；在算法中由K条support的第i列平均估计。</div>
-        <div class="term"><code>\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)</code><br>类别\(c\)的Ledoit–Wolf收缩类内协方差。</div>
-        <div class="term"><code>\(\boldsymbol\Sigma_{\mathrm{bal}}\)</code><br>旧任务与新任务各占50%的共享协方差。</div>
-        <div class="term"><code>\(\eta_{c,h}\)</code><br>类别\(c\)对full/block3分支的support内LOO可靠性权重。</div>
-        <div class="term"><code>\(\mathcal S_{\mathrm{E0}}\)</code><br>量化后不可变预测状态；query唯一允许读取的D92 E0状态。</div>
-        <div class="term"><code>MAC</code><br>乘并累加次数；不是时间、功率、能耗或存储单位。</div>
-      </div>
+      <figure class="viz">
+        <svg viewBox="0 0 1160 350" role="img" aria-label="D92 E0与域适应、类增量和qKNN方法在更新时机和query计算上的对比">
+          <text x="42" y="38" fill="#163c72" font-size="22" font-weight="800">方法路线的关键差别：什么时候更新，query时做多少工作</text>
+          <line x1="250" y1="80" x2="250" y2="305" stroke="#b8c7dc" stroke-width="2"/>
+          <line x1="250" y1="305" x2="1115" y2="305" stroke="#b8c7dc" stroke-width="2"/>
+          <text x="45" y="108" fill="#5e6d85" font-size="14">注册或训练期</text>
+          <text x="45" y="174" fill="#5e6d85" font-size="14">更新量</text>
+          <text x="45" y="241" fill="#5e6d85" font-size="14">query期</text>
+          <text x="45" y="266" fill="#5e6d85" font-size="14">重复工作</text>
+          <g font-size="14" font-weight="800">
+            <text x="355" y="331" text-anchor="middle" fill="#2d72d9">D92 E0</text>
+            <text x="555" y="331" text-anchor="middle" fill="#8364d6">训练式域适应</text>
+            <text x="755" y="331" text-anchor="middle" fill="#e9a93d">类增量训练</text>
+            <text x="955" y="331" text-anchor="middle" fill="#29a9c7">qKNN</text>
+          </g>
+          <g>
+            <rect x="292" y="87" width="126" height="70" rx="12" fill="#2d72d9"/><text x="355" y="117" text-anchor="middle" fill="#fff" font-size="14" font-weight="800">闭式注册</text><text x="355" y="140" text-anchor="middle" fill="#eaf2ff" font-size="12">协方差、留一、量化</text>
+            <rect x="492" y="87" width="126" height="70" rx="12" fill="#8364d6"/><text x="555" y="117" text-anchor="middle" fill="#fff" font-size="14" font-weight="800">梯度优化</text><text x="555" y="140" text-anchor="middle" fill="#f2edff" font-size="12">对齐或适应表征</text>
+            <rect x="692" y="87" width="126" height="70" rx="12" fill="#e9a93d"/><text x="755" y="117" text-anchor="middle" fill="#fff" font-size="14" font-weight="800">增量训练</text><text x="755" y="140" text-anchor="middle" fill="#fff8e8" font-size="12">蒸馏、回放或扩头</text>
+            <rect x="892" y="87" width="126" height="70" rx="12" fill="#29a9c7"/><text x="955" y="117" text-anchor="middle" fill="#fff" font-size="14" font-weight="800">少注册构造</text><text x="955" y="140" text-anchor="middle" fill="#e6fbff" font-size="12">保留support供检索</text>
+          </g>
+          <g>
+            <rect x="292" y="205" width="126" height="63" rx="12" fill="#dceaff" stroke="#2d72d9"/><text x="355" y="232" text-anchor="middle" fill="#163c72" font-size="14" font-weight="800">固定仿射头</text><text x="355" y="253" text-anchor="middle" fill="#5e6d85" font-size="12">约Cp</text>
+            <rect x="492" y="205" width="126" height="63" rx="12" fill="#eee8fa" stroke="#8364d6"/><text x="555" y="232" text-anchor="middle" fill="#163c72" font-size="14" font-weight="800">冻结后前向</text><text x="555" y="253" text-anchor="middle" fill="#5e6d85" font-size="12">取决于主干</text>
+            <rect x="692" y="205" width="126" height="63" rx="12" fill="#fff1d5" stroke="#e9a93d"/><text x="755" y="232" text-anchor="middle" fill="#163c72" font-size="14" font-weight="800">冻结后前向</text><text x="755" y="253" text-anchor="middle" fill="#5e6d85" font-size="12">取决于新头</text>
+            <rect x="892" y="205" width="126" height="63" rx="12" fill="#dff6fa" stroke="#29a9c7"/><text x="955" y="232" text-anchor="middle" fill="#163c72" font-size="14" font-weight="800">逐support距离</text><text x="955" y="253" text-anchor="middle" fill="#5e6d85" font-size="12">约CKd</text>
+          </g>
+        </svg>
+        <figcaption>图8｜D92 E0把工作重心放在注册期；qKNN则把更多距离计算留给每条query。训练式域适应和类增量训练的主要更新成本通常在优化阶段。</figcaption>
+      </figure>
 
-      <h3>8.2本阅读版覆盖范围与可追溯来源</h3>
-      <p>本页重构了原技术报告的全部决策链：问题定义与协议、Phase1 v2 bundle、六个功能模块、注册/query、资源、screen/消融、域适应与类增量比较、qKNN关系、部署判断、局限与术语。为减少重复，原报告中反复出现的公式说明被合并为“公式后紧跟符号说明”的结构；历史v1路径仅保留为不应混用的附注。</p>
-      <details>
-        <summary>展开查看：原报告第1–29章与本HTML的重构对应</summary>
-        <div class="table-wrap">
-          <table>
-            <caption>章节映射。重构改变叙述顺序，不改变当前方法路径、实验边界或引用结论。</caption>
-            <thead><tr><th>原Markdown章节</th><th>本HTML位置</th><th>重构方式</th></tr></thead>
-            <tbody>
-              <tr><td>摘要、1–4：定义、问题、符号、完整流程、bundle</td><td>0–2节</td><td>先给一分钟概览、边界表和bundle结构图，再给严格公式。</td></tr>
-              <tr><td>5：288维联合特征</td><td>3节模块一</td><td>用160/96/32比例图解释两次归一化和权重4。</td></tr>
-              <tr><td>6：扰动谱与稳健中心</td><td>3节模块二</td><td>明确当前v2路径，给出G、噪声底、基和Cauchy中心的完整链。</td></tr>
-              <tr><td>7：自动收缩协方差</td><td>3节模块三</td><td>先区分随机向量、support矩阵和列均值，再解释Ledoit–Wolf与任务均衡。</td></tr>
-              <tr><td>8–10：LDA、双几何融合、量化封存</td><td>3节模块四至六</td><td>按“几何→分类→融合→部署状态”的因果顺序合并。</td></tr>
-              <tr><td>11–12：状态构造、批注册、query输出</td><td>4节</td><td>区分逐类局部统计与整批全局编译，并单列query不可更新边界。</td></tr>
-              <tr><td>13：计算、量化、MAC、星上分析</td><td>5节</td><td>注册与query并列展示，避免把一次注册成本摊到每条query。</td></tr>
-              <tr><td>14–19：协议、系统定位、接口、公式速查、过程补充</td><td>1、4、8节及各公式说明</td><td>分散到使用位置；术语表提供速查。</td></tr>
-              <tr><td>20–21：四状态、screen、模块消融</td><td>6节</td><td>保留四状态边界、总体数值、消融表和因果解释限制。</td></tr>
-              <tr><td>22–24：域适应、类增量、公平比较、资源对照</td><td>7节与5节</td><td>先对齐任务，再做生命周期和计算比较。</td></tr>
-              <tr><td>25–29：优势、局限、使用方式、结论、来源</td><td>8节</td><td>明确可以说与不能说的结论，并列出本地可追溯材料。</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </details>
       <div class="table-wrap">
         <table>
-          <caption>本地权威材料</caption>
-          <thead><tr><th>材料</th><th>本报告使用目的</th></tr></thead>
+          <thead><tr><th>路线</th><th>典型机制</th><th>与D92 E0的根本差异</th></tr></thead>
           <tbody>
-            <tr><td><code>docs/D92_METHOD_COMPLETE_REPORT_20260727.md</code></td><td>本文的完整文字底稿、正式公式、筛选结果和比较边界。</td></tr>
-            <tr><td><code>code/cvsrffi/stage2_ablation_factory.py</code></td><td>D92 E0正式配置与六模块执行链。</td></tr>
-            <tr><td><code>code/cvsrffi/phase1_center_lowrank_prototype_bundle.py</code></td><td>v2低秩残差聚合中心、半径与重构语义。</td></tr>
-            <tr><td><code>code/cvsrffi/stage2_d89_v2_radius_cauchy_center.py</code></td><td>从v2聚合知识派生扰动谱的当前路径。</td></tr>
-            <tr><td><code>code/cvsrffi/stage2_d81_ground_nuisance_cauchy_center.py</code></td><td>正扰动基、谱权重与support稳健中心实现。</td></tr>
-            <tr><td><code>docs/D92_E0_ALL_ABLATION_EXPERIMENTS_REPORT_20260819.md</code></td><td>消融汇总、分层和证据边界。</td></tr>
+            <tr><td>MRIOR-SDA</td><td>目标域适应、迭代优化或可靠样本机制</td><td>可比较旧类目标域性能；不等价于support-only闭式注册权限。</td></tr>
+            <tr><td>DADDA-SDA</td><td>域判别与对抗式表征对齐</td><td>通过梯度优化改变表征；D92 E0不做在线域对齐。</td></tr>
+            <tr><td>ProtoNet CDA</td><td>support原型与度量推理</td><td>D92 E0还估计收缩协方差、平衡任务并量化全类头。</td></tr>
+            <tr><td>CSIL、MoPC-HR、Orthogonal Incremental SEI</td><td>增量训练、蒸馏、回放、原型或表示约束</td><td>D92 E0不做新类别梯度训练，而是重编译判别状态。</td></tr>
+            <tr><td>qKNN</td><td>保留support，query时做近邻距离</td><td>D92 E0注册期较重，但query使用固定仿射行而非全部support距离。</td></tr>
           </tbody>
         </table>
       </div>
-      <div class="callout warn"><strong>阅读建议：</strong>先读图3-1、模块二和模块三，再读资源与消融。若需要逐行实现、完整函数接口、所有对比论文公式和更长的历史材料，请回到同目录Markdown底稿；两份文件应以同一证据边界解释，不应把HTML中的解释性示例当作额外实验结果。</div>
+
+      <div class="eli5"><strong>D92 E0有域适应效果吗？</strong>它像在登记新书时参考“这座图书馆的书通常会被潮气吹向哪边”，所以目录更稳；但它不会把整座图书馆重新装修。前者是注册期的域扰动感知，后者才是训练式域对齐。</div>
     </section>
 
-    <footer class="footer">
-      <p>报告名：D92 E0完整技术报告（可视化阅读版）｜方法名统一为D92 E0｜公式渲染使用MathJax；若离线打开时公式未渲染，公式下方保留等价的纯文本表达。</p>
-      <p>证据等级：<code>EVIDENCE_BOUND_TECHNICAL_REPORT</code>。本报告不替代目标硬件实测、fresh confirmation或独立论文复现实验。</p>
-    </footer>
+    <section>
+      <p class="eyebrow" style="color:#163c72">最后的判断</p>
+      <h2>适合怎样的场景</h2>
+      <div class="grid two">
+        <article class="card">
+          <h3>适合</h3>
+          <p>新类support到达后可以集中完成一次注册；query侧希望维持固定、低复杂度的全类判别；系统重视query不更新状态和可压缩常驻状态。</p>
+        </article>
+        <article class="card">
+          <h3>不应过度宣称</h3>
+          <p>当前不能据此宣称训练式域对齐、INT8端到端加速、实时极低资源注册、真实在轨验证或完整同配置模块因果消融已经完成。</p>
+        </article>
+      </div>
+      <details>
+        <summary>查看本报告的证据边界</summary>
+        <div>
+          <p>实验数值和资源审计来自仓库内已完成的P2-A1汇总。它覆盖75个logical identity row和225个场景单元，属于development screening。当前只有3个development seed和1个new-class draw；需要新的冻结矩阵才能形成fresh confirmation。</p>
+        </div>
+      </details>
+    </section>
   </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p><strong>D92 E0｜identity160＋FFT96｜256维可视化技术报告</strong></p>
+      <p>本文档只呈现当前256维配置的机制、资源与可追溯screening证据。公式旁均给出符号解释，图形用于帮助理解，不替代实验artifact。</p>
+    </div>
+  </footer>
 </body>
 </html>
