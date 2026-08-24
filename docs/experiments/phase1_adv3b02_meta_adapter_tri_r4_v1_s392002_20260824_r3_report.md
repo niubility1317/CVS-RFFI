@@ -105,4 +105,6 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 - 权威Stage2-B manifest：`.../artifacts/feature_k10_new10/stage2b/features.manifest.json`，SHA256=`3a1b81815b9898d44e63e6f923d59192a1f16c72741cf0aa7e90c01de878c919`；payload SHA256=`593b4d52c29569bb4d1872358e513817d3eda3a50fe27cea62acb9746dcecd68`。
 - manifest固定`phase2_data_status=VALIDATED_ONCE`、`capsule_id=d18-reuse-validated-once-rx20-1-seed713101-m7282101-k10-new10`、`split_id=p2_min_v1-rx20-1-m7282101-s7282201-q7282301-d7282401-k10-new10`、`stage_scope=stage2b`、`k_shot=10`；query truth/role、source sample/cache/label/replay访问均为false。
 - Stage2-A和Stage2-C cache是同一次固定builder的完整副产物，本目标不消费其特征或旧D92判决；Meta-Adapter正式run仍只从固定received-IQ package导出raw support/query IQ，在新meta checkpoint上做真实梯度更新。
+- 当前提交的target-row exporter已对真实`before/support_leo_clear_weak.npz`完成一次support-only no-query smoke：输入60行，K10输出6类×10行，物理ID60/60唯一且与IQ/标签对齐。
+- smoke输出NPZ精确只有`received_iq/support_labels/support_physical_ids`；audit确认`query_input_opened=false`、query行数0、`query_truth_opened=false`、`query_role_opened=false`。该检查未复制或打开query文件，也没有性能结果。
 - 结论：原Target5五切片中的`K10/new10`数据缺口已闭合；仍须等待r3 Phase1完成并通过source选择后，才能生成正式Target5配置和启动性能实验。
