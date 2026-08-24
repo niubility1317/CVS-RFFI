@@ -126,3 +126,10 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 - 后续复杂度负测进一步证明：旧采样器重复同seed两次会重建计划2次，同一class/spec会扫描1152次而非一次扫描的576次，RX holdout首次计划构建会迭代descriptor集合73次。修复后candidate plan和class/spec pool按冻结refs缓存，五类计划按domain等价键分组；完整计划数固定为36/144/360/54/108，重复seed仍生成完全相同episode。
 - clean与三类LEO弱场景评价原先会先把整个held-out split的单场景IQ堆叠为一个大张量，再由模型内部分128条推理；这会产生不必要的全split内存峰值。RED负测用129条样本禁止超过128条的任意`torch.stack`，旧实现稳定失败；GREEN后评价逐场景、固定128条流式物化IQ并累计总数、正确数和逐类结果。
 - 流式实现仍按相同physical ID和seed生成每个LEO view；小型真实四场景变换测试证明其完整输出与旧物化算法逐字段一致。Phase1真实入口35项、入口/episode采样器/trainer联合88项及当前Phase1/Phase2 Meta-Adapter 14文件宽回归265项通过，仅有既存AMP API弃用警告。该修复只供r3发生预登记技术失败后的新不可覆盖run使用；当前r3仍保持只读运行，不重启、不覆盖。
+
+## 2026-08-25 04:27只读运行复核
+
+- r3 launcher PID`2498514`和P1训练子PID`2498587`仍存在；子进程累计运行约3小时20分，保持`R`状态、100%CPU、RSS约3.67GiB，CPU时间与墙钟时间继续同步增长。
+- `/proc/2498587/io`仍显示已经完整读取ManySig pickle；run root仍只有`_configs/P1.json`和`P1/config_snapshot.json`，stdout仍为6399字节，异常指纹计数为0。
+- 旧release在artifact前同时包含逐样本IQ解码ref构建和重复candidate-plan扫描，能解释当前CPU长时间占用；但预登记没有时间停止线，进程仍持续计算，因此证据只支持`RUNNING`，不支持技术失败、终止、重启或重复启动。
+- r4本地release归档已按固定提交`70961b7a9e9f952cec6160036b6b09ea0db5e415`准备完成，SHA256=`0f54bf1c5ca587986de6c1789455c3aec867c6c2fd13fc64107288368d571a20`；尚未同步N607或启动。准备状态已提交并推送至`c8a3d7b60df590b1242e4726e7a36765a0bfa1ce`。
