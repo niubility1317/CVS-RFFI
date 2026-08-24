@@ -517,6 +517,86 @@ def test_final_scenario_evaluation_uses_declared_clean_test_not_v_select():
     assert result["evidence_origin"] == "declared_clean_test_source_iq"
 
 
+def test_final_scenario_evaluation_streams_without_full_split_stack(monkeypatch):
+    import cvsrffi.meta_phase1_entry as sut
+
+    class LargeViewDataset(_ViewDataset):
+        def __len__(self):
+            return 129
+
+    original_stack = sut.torch.stack
+
+    def bounded_stack(values, *args, **kwargs):
+        rows = tuple(values)
+        assert len(rows) <= 128, "final evaluation must not stack the full split"
+        return original_stack(rows, *args, **kwargs)
+
+    monkeypatch.setattr(sut.torch, "stack", bounded_stack)
+    monkeypatch.setattr(
+        sut,
+        "_materialize_ref_view",
+        lambda x, ref, *, view_seed: x,
+    )
+    result = sut._evaluate_final_checkpoint_scenarios(
+        _ToyIQMetaModel(4),
+        source_manifest={
+            "available": True,
+            "clean_test_dataset": LargeViewDataset(),
+            "clean_test_days": (2, 3),
+            "clean_test_physical_disjoint": True,
+        },
+        eval_batches=[_toy_batch("V_select")],
+        device=torch.device("cpu"),
+        seed=392002,
+    )
+
+    assert set(result["scenarios"]) == {
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak",
+    }
+    assert {row["count"] for row in result["scenarios"].values()} == {129}
+
+
+def test_streamed_final_scenario_metrics_match_materialized_reference():
+    import cvsrffi.meta_phase1_entry as sut
+
+    dataset = _ViewDataset()
+    model = _ToyIQMetaModel(4)
+    model.eval()
+    refs, _ = sut._build_refs(dataset, "declared_clean_test")
+    expected = {}
+    for view in sut._SOURCE_META_VIEWS:
+        rows = [ref for ref in refs if ref.view == view]
+        values = []
+        labels = []
+        for ref in rows:
+            x, y, _metadata = sut._dataset_item(dataset, ref.dataset_index)
+            values.append(sut._materialize_ref_view(x, ref, view_seed=392002))
+            labels.append(y)
+        expected[view] = sut._scenario_accuracy(
+            model,
+            torch.stack(values),
+            torch.tensor(labels, dtype=torch.long),
+        )
+
+    actual = sut._evaluate_final_checkpoint_scenarios(
+        model,
+        source_manifest={
+            "available": True,
+            "clean_test_dataset": dataset,
+            "clean_test_days": (2, 3),
+            "clean_test_physical_disjoint": True,
+        },
+        eval_batches=[_toy_batch("V_select")],
+        device=torch.device("cpu"),
+        seed=392002,
+    )
+
+    assert actual["scenarios"] == expected
+
+
 @pytest.mark.parametrize(
     "field",
     ("wisig_equalized", "wisig_out_len", "wisig_domain", "wisig_max_day123_per_combo"),

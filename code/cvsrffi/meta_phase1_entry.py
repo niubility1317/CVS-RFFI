@@ -1230,6 +1230,94 @@ def _scenario_accuracy(
     }
 
 
+def _stream_dataset_scenario_accuracy(
+    model: nn.Module,
+    dataset: Any,
+    *,
+    view: str,
+    seed: int,
+    batch_size: int = 128,
+) -> dict[str, Any]:
+    """Score one declared source scenario without materializing the full split."""
+
+    from cvsrffi.meta_episodes import MetaSampleRef
+
+    if view not in _SOURCE_META_VIEWS:
+        raise ValueError(f"unsupported declared clean test view: {view!r}")
+    if isinstance(batch_size, bool) or int(batch_size) <= 0:
+        raise ValueError("scenario evaluation batch_size must be positive")
+    model_device = next(model.parameters()).device
+    class_counts: dict[int, int] = {}
+    class_correct: dict[int, int] = {}
+    total_count = 0
+    total_correct = 0
+    xs: list[torch.Tensor] = []
+    ys: list[int] = []
+
+    def consume_batch() -> None:
+        nonlocal total_count, total_correct
+        if not xs:
+            return
+        values = torch.stack(xs).to(model_device)
+        labels = torch.tensor(ys, dtype=torch.long, device=model_device)
+        with torch.no_grad():
+            output = _model_forward(model, values, labels)
+            logits = output.get("logits", output.get("tx_logits"))
+            if not torch.is_tensor(logits) or logits.ndim != 2:
+                raise ValueError("final checkpoint evaluation requires fixed-head logits")
+            predictions = logits.argmax(dim=1).detach().cpu()
+        labels_cpu = labels.detach().cpu()
+        total_count += int(labels_cpu.numel())
+        total_correct += int((predictions == labels_cpu).sum().item())
+        for class_id in torch.unique(labels_cpu, sorted=True).tolist():
+            class_id = int(class_id)
+            mask = labels_cpu == class_id
+            class_counts[class_id] = class_counts.get(class_id, 0) + int(mask.sum().item())
+            class_correct[class_id] = class_correct.get(class_id, 0) + int(
+                (predictions[mask] == labels_cpu[mask]).sum().item()
+            )
+        xs.clear()
+        ys.clear()
+
+    for index in range(len(dataset)):
+        x, y, metadata = _dataset_item(dataset, index)
+        required = ("rx_i", "day_i", "eq_i", "capture_block_i", "physical_sample_id")
+        if any(key not in metadata for key in required):
+            raise ValueError(
+                "declared clean test metadata is missing a physical/domain field"
+            )
+        ref = MetaSampleRef(
+            dataset_index=int(index),
+            tx_i=int(y),
+            rx_i=int(metadata["rx_i"]),
+            day_i=int(metadata["day_i"]),
+            eq_i=int(metadata["eq_i"]),
+            capture_block_i=int(metadata["capture_block_i"]),
+            physical_sample_id=str(metadata["physical_sample_id"]),
+            role="declared_clean_test",
+            view=str(view),
+        )
+        xs.append(_materialize_ref_view(x, ref, view_seed=int(seed)))
+        ys.append(int(y))
+        if len(xs) >= int(batch_size):
+            consume_batch()
+    consume_batch()
+    if total_count <= 0:
+        raise ValueError(f"declared clean test has no rows for {view}")
+    return {
+        "accuracy": float(total_correct / total_count),
+        "count": int(total_count),
+        "per_class": [
+            {
+                "class_id": int(class_id),
+                "accuracy": float(class_correct[class_id] / class_counts[class_id]),
+                "count": int(class_counts[class_id]),
+            }
+            for class_id in sorted(class_counts)
+        ],
+    }
+
+
 def _evaluate_final_checkpoint_scenarios(
     model: nn.Module,
     *,
@@ -1248,24 +1336,12 @@ def _evaluate_final_checkpoint_scenarios(
             if source_manifest.get("clean_test_physical_disjoint") is not True:
                 raise ValueError("declared clean test lacks physical-disjoint evidence")
             dataset = source_manifest["clean_test_dataset"]
-            refs, _ = _build_refs(dataset, "declared_clean_test")
-            by_view = {
-                view: [ref for ref in refs if str(ref.view) == view]
-                for view in _SOURCE_META_VIEWS
-            }
             for view in _SOURCE_META_VIEWS:
-                xs = []
-                ys = []
-                for ref in by_view[view]:
-                    x, y, _meta = _dataset_item(dataset, int(ref.dataset_index))
-                    xs.append(_materialize_ref_view(x, ref, view_seed=int(seed)))
-                    ys.append(int(y))
-                if not xs:
-                    raise ValueError(f"declared clean test has no rows for {view}")
-                scenarios[view] = _scenario_accuracy(
+                scenarios[view] = _stream_dataset_scenario_accuracy(
                     model,
-                    torch.stack(xs),
-                    torch.tensor(ys, dtype=torch.long),
+                    dataset,
+                    view=view,
+                    seed=int(seed),
                 )
             evidence_origin = "declared_clean_test_source_iq"
             split = "declared_clean_test"
