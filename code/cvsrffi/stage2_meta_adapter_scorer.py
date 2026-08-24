@@ -470,7 +470,12 @@ def _load_truth(
         rows = payload["rows"]
         if not isinstance(rows, list) or not rows:
             raise MetaAdapterScoringError("truth rows must be a nonempty list")
-        if all(
+        is_scenario_sidecar = any(
+            isinstance(row, Mapping)
+            and ("scenario" in row or "evaluation_role" in row)
+            for row in rows
+        )
+        if not is_scenario_sidecar and all(
             isinstance(row, Mapping)
             and isinstance(row.get("true_class_index", row.get("true_class_id")), int)
             and not isinstance(
@@ -483,10 +488,6 @@ def _load_truth(
         if not isinstance(scenario, str) or not scenario:
             raise MetaAdapterScoringError(
                 "CVS truth sidecar requires the prediction receipt scenario"
-            )
-        if not class_handle_to_id:
-            raise MetaAdapterScoringError(
-                "CVS truth sidecar requires a frozen class binding"
             )
         scenario_rows = [
             row
@@ -512,6 +513,18 @@ def _load_truth(
             all_query_ids.add(query_id)
             if row.get("evaluation_role") != "target_old":
                 continue
+            true_class = row.get("true_class_index", row.get("true_class_id"))
+            if (
+                isinstance(true_class, int)
+                and not isinstance(true_class, bool)
+                and true_class >= 0
+            ):
+                old_mapping[query_id] = int(true_class)
+                continue
+            if not class_handle_to_id:
+                raise MetaAdapterScoringError(
+                    "CVS truth sidecar requires a frozen class binding"
+                )
             handle = row.get("true_class_handle")
             if not isinstance(handle, str) or handle not in class_handle_to_id:
                 raise MetaAdapterScoringError(

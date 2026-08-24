@@ -1,7 +1,7 @@
 # CVS_META_ADAPTER_TRI_R4_V1 P4 Target5 r2最小预登记报告
 
 - run ID：`stage2_meta_adapter_target5_p4_s392002_20260825_r2`
-- 状态：`LANDED`
+- 状态：`ARTIFACTS_COMPLETE`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 修复代码提交：`6b66fce0c1e3a4a9315e539999fbe62f0798881e`
 - 固定计划提交：`c489dc8df100ea6c7cd79ad135f9a0f07725d2d0`
@@ -49,3 +49,11 @@ prediction完整后才由独立scorer连接truth。15个同row score聚合`DA1_R
 - N607现有`CVS-RFFI`环境未安装pytest，未改动环境或安装包；运行时验证由真实checkpoint smoke承担。
 - P4真实checkpoint无query smoke通过：`status=REAL_META_CHECKPOINT_NO_QUERY_SMOKE_PASS`、`checkpoint_load_strict=true`、`backward_count=3`、`trainable_fraction=0.008192066640147174`、`query_opened=false`、`source_opened=false`、`query_state_update_count=0`，且`performance_result=null`。
 - 当前最高状态为`LANDED`；下一步立即启动唯一一次15-row truth-free prediction矩阵并执行PID／CWD／cmdline／GPU／日志增长健康检查。
+
+## Prediction闭合与scorer定点修复
+
+- 唯一一次15-row矩阵自然完成，矩阵receipt为`PREDICTIONS_COMPLETE`，15／15 row均生成非空`predictions_DA0_REG0.npz`、`predictions_DA1_REG0.npz`和`receipt.json`；矩阵级`truth_opened=false`、`source_opened=false`，完成后无活动进程或GPU残留。
+- 首次truth-last scorer在第一条new10 row拒绝连接并且未写出`score.json`。只读诊断确认当前场景prediction与truth各320个opaque ID，两个集合完全相等；truth侧文件共含三场景960行。
+- 根因是scorer把“含数值`true_class_index`的CVS多场景sidecar”误判为无场景简表，错误使用三场景全集做join。该问题只在独立评分阶段，不影响已经冻结的prediction、适配状态或query边界。
+- RED测试复现多场景数值truth误连接；GREEN实现先识别CVS场景sidecar，再按receipt场景完成全量opaque-ID join，并且仅对该场景的`target_old`计算REG0指标。scorer全测18项及Stage2工厂／runner／matrix／handoff／scorer／row export整组70项通过。
+- 当前最高状态为`ARTIFACTS_COMPLETE`；15-row prediction不重跑。发布独立scorer修复后，从尚未产生score的truth-last阶段继续。

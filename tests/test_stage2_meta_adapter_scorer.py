@@ -215,6 +215,70 @@ def test_scorer_joins_full_cvs_sidecar_but_scores_target_old_only(
     assert "q-new" not in score.da0.query_ids
 
 
+def test_scorer_filters_numeric_cvs_truth_to_receipt_scenario(
+    tmp_path: Path,
+) -> None:
+    query_ids = np.asarray(["q-old-10", "q-old-20", "q-new"])
+    da0_path = tmp_path / "predictions_DA0_REG0.npz"
+    da1_path = tmp_path / "predictions_DA1_REG0.npz"
+    truth_path = tmp_path / "truth_sidecar.json"
+    scores = np.asarray([[0.9, 0.1], [0.1, 0.9], [0.6, 0.4]], dtype=np.float32)
+    _write_prediction(
+        da0_path,
+        query_ids=query_ids,
+        predicted=np.asarray([10, 20, 10], dtype=np.int64),
+        scores=scores,
+    )
+    _write_prediction(
+        da1_path,
+        query_ids=query_ids,
+        predicted=np.asarray([10, 10, 10], dtype=np.int64),
+        scores=np.asarray([[0.9, 0.1], [0.8, 0.2], [0.6, 0.4]], dtype=np.float32),
+    )
+    _write_receipt(tmp_path)
+    truth_path.write_text(
+        json.dumps(
+            {
+                "schema": "cvs.phase2.query_truth_sidecar.v2",
+                "rows": [
+                    {
+                        "query_token": "q-old-10",
+                        "scenario": "leo_clear_weak",
+                        "evaluation_role": "target_old",
+                        "true_class_index": 10,
+                    },
+                    {
+                        "query_token": "q-old-20",
+                        "scenario": "leo_clear_weak",
+                        "evaluation_role": "target_old",
+                        "true_class_index": 20,
+                    },
+                    {
+                        "query_token": "q-new",
+                        "scenario": "leo_clear_weak",
+                        "evaluation_role": "target_new",
+                        "true_class_index": 30,
+                    },
+                    {
+                        "query_token": "other-old-10",
+                        "scenario": "leo_rain_weak",
+                        "evaluation_role": "target_old",
+                        "true_class_index": 10,
+                    },
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    score = scorer.score_meta_adapter_pair(da0_path, da1_path, truth_path)
+
+    assert score.da0.query_ids == ("q-old-10", "q-old-20")
+    assert score.da0.mean_old_acc == pytest.approx(1.0)
+    assert score.da1.mean_old_acc == pytest.approx(0.5)
+    assert "q-new" not in score.da0.query_ids
+
+
 def test_scorer_rejects_itemwise_row_id_drift_before_truth_open(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
