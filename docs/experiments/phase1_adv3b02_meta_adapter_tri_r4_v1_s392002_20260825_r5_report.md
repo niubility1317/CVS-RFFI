@@ -21,8 +21,9 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 - N607账户：普通`N607`用户`szu2070436088`
 - 环境：现有`CVS-RFFI`；Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`
 - GPU：0；启动前再次核对占用，且不得超过每GPU两个训练进程。
-- release归档本地路径：提交后按`E:\type10-7\release_archives\phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260825_r5_<commit8>.tar.gz`生成。
-- release归档远端路径：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260825_r5/<archive>`
+- release归档本地路径：`E:\type10-7\release_archives\phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260825_r5_a465e329.tar.gz`
+- release归档远端路径：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260825_r5/phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260825_r5_a465e329.tar.gz`
+- 本地release归档固定提交为`a465e3292a2c4c60069eb8d4dbffb685fcb2b709`，35491571字节、5007个条目，包含r5配置和报告；SHA256=`8becfa7e4a8e68aa3bae1c8668c81b2b8f6bb6af47617c0cc1b9349203e2c349`。
 - 远端CWD：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260825_r5/checkout`
 - 冻结checkpoint：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`
 - ManySig：`/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl`
@@ -35,4 +36,4 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 ## 当前边界
 
 - r3已封为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；r4未同步、未启动且不再使用。
-- r5尚未生成／同步release、未启动、没有性能结果。release SHA、远端编译、资源／路径preflight和启动健康检查完成前，状态不得提升为`RUNNING`。
+- r5本地release已生成但尚未同步、未启动、没有性能结果。远端SHA、远端编译、资源／路径preflight和启动健康检查完成前，状态不得提升为`RUNNING`。
