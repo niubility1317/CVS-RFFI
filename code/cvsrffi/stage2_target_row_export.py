@@ -299,6 +299,7 @@ def export_target_row(
         {
             "received_iq": support_iq,
             "support_labels": support_labels,
+            "support_physical_ids": np.asarray(selected_support_ids),
         },
     )
     if query_destination is not None:

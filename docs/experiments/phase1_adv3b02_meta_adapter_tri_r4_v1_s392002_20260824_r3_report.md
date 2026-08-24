@@ -50,3 +50,10 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 - 本地后续代码改为优先从`WiSigCompactDataset.index`和`WiSigSubsetDataset.index`生成相同`physical_sample_id`；不具备索引的兼容数据集仍沿用原路径。新增RED→GREEN负测明确禁止清单扫描解码IQ。
 - Phase1入口32项、模型／训练器／Stage2适配47项、checkpoint／内循环／目标函数88项，共167项回归通过。
 - 该修复没有同步到正在运行的`r3`，也没有改变`r3`的checkout、进程或output root；`r3`仍严格归属于提交`2c092018888153e91434b1bf2f418d18b63f2597`。只有后续新的不可覆盖run才可消费此优化。
+
+## Stage2正式输入接线修复
+
+- 等待r3期间只读核对Stage2现有入口，发现`stage2_target_row_export`虽然把选中的support token保存在审计JSON中，但输出NPZ只有IQ和标签；Meta-Adapter runner严格要求`received_iq/support_labels/support_physical_ids`三个字段，原接线会在正式Target5启动前合法失败。
+- RED测试稳定证明缺少`support_physical_ids`；GREEN后导出器把与IQ／标签相同rank-prefix选中的不可变token写为非object字符串向量，不改变K、support内容或query处理。
+- exporter、Meta-Adapter Stage2适配、模型和trainer联合56项通过；仅有既存AMP弃用提示。
+- 该修复只为Phase1完成后的新Stage2不可覆盖run准备，不修改或重启正在运行的r3。

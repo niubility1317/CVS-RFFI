@@ -55,13 +55,21 @@ def test_support_export_selects_rank_prefix_and_preserves_physical_ids(
 
     selected = np.asarray([0, 1, 2, 4], dtype=np.int64)
     with np.load(support_output, allow_pickle=False) as exported:
-        assert set(exported.files) == {"received_iq", "support_labels"}
+        assert set(exported.files) == {
+            "received_iq",
+            "support_labels",
+            "support_physical_ids",
+        }
         np.testing.assert_array_equal(
             exported["received_iq"], source["support_pool_leo_weak_iq"][selected]
         )
         np.testing.assert_array_equal(
             exported["support_labels"],
             source["support_pool_class_indices"][selected],
+        )
+        np.testing.assert_array_equal(
+            exported["support_physical_ids"],
+            source["support_pool_tokens"][selected],
         )
     assert audit == json.loads(audit_output.read_text(encoding="utf-8"))
     assert audit["support_input_rows"] == 6
