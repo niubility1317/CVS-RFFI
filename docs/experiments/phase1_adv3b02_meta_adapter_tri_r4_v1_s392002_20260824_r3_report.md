@@ -133,3 +133,10 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 - `/proc/2498587/io`仍显示已经完整读取ManySig pickle；run root仍只有`_configs/P1.json`和`P1/config_snapshot.json`，stdout仍为6399字节，异常指纹计数为0。
 - 旧release在artifact前同时包含逐样本IQ解码ref构建和重复candidate-plan扫描，能解释当前CPU长时间占用；但预登记没有时间停止线，进程仍持续计算，因此证据只支持`RUNNING`，不支持技术失败、终止、重启或重复启动。
 - r4本地release归档已按固定提交`70961b7a9e9f952cec6160036b6b09ea0db5e415`准备完成，SHA256=`0f54bf1c5ca587986de6c1789455c3aec867c6c2fd13fc64107288368d571a20`；尚未同步N607或启动。准备状态已提交并推送至`c8a3d7b60df590b1242e4726e7a36765a0bfa1ce`。
+
+## Target5五切片输入路径闭合
+
+- 从已完成的Phase2-C v5 binding registry中仅按row identity筛出receiver=`20-1`、method/support/query/draw seed=`7282101/7282201/7282301/7282401`的四个权威Stage2-B manifest：`K10/new5`、`K10/new20`、`K5/new20`和`K1/new20`；未打开scorer truth。
+- 四个既有manifest与新补建`K10/new10`manifest均为`cvs.full_ablation.phase2.feature_cache_manifest.v2`、`stage_scope=stage2b`、`phase2_data_status=VALIDATED_ONCE`，receiver、K、capsule和`p2_min_v1` split逐项匹配；query truth/role及source sample/cache/label/replay访问标志均为false。
+- 正式raw-IQ接线固定为：五个操作点的support均取v2 package中`before/predictor/support_<scenario>.npz`；query分别取`new5`、新建`new10`或`new20` package中的`query_<scenario>.npz`。`K5`和`K1`只由相同固定support按既有rank-prefix导出，不生成额外物理样本。
+- 当前只完成manifest和路径只读核对，没有导出正式15行、没有打开query truth/role、没有启动Phase2。Target5工厂仍须等待Phase1选中的真实`selected_meta_bundle.pt`与`frozen_prototypes.npz`，不得用占位checkpoint提前生成正式配置。
