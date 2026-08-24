@@ -21,15 +21,16 @@ from torch.nn import functional as F
 _LOGIT_KEYS = ("logits", "tx_logits")
 # ``feat_cls`` is the canonical CVSincNet identity embedding.  The remaining
 # names cover the real ADV3B02 dual-model aliases without changing semantics.
-_EMBEDDING_KEYS = (
-    "feat_cls",
-    "z_id",
+_EMBEDDING_DIRECT_KEYS = ("feat_cls", "z_id")
+_EMBEDDING_FALLBACK_KEYS = (
     "id_feat_cls",
-    "feat_joint",
     "id_feat_joint",
-    "base",
     "id_base",
+    "feat_joint",
+    "base",
 )
+_DUAL_ID_ALIAS_KEYS = ("id_feat_cls", "id_feat_joint", "id_base")
+_DUAL_ID_FEATURE_NAMES = frozenset({"feat_cls", "feat_joint", "feat_con", "base"})
 _FORBIDDEN_ADAPTER_KEY_PARTS = (
     "log_step_size",
     "cls_head",
@@ -46,6 +47,11 @@ _INNER_LEAF_NAMES = frozenset(
         "up.bias",
         "gate",
     }
+)
+_INNER_ADAPTER_PREFIXES = (
+    "meta_adapter_time.",
+    "meta_adapter_freq.",
+    "meta_adapter_fusion.",
 )
 
 
@@ -152,18 +158,66 @@ def _extract_outputs(outputs: Mapping[str, Any], *, role: str) -> tuple[Tensor, 
     if not isinstance(outputs, Mapping):
         raise TypeError(f"{role} must be a mapping returned by model(return_aux=True)")
 
-    def find_tensor(keys: tuple[str, ...], field: str) -> Tensor:
+    def collect_aliases(keys: tuple[str, ...], field: str) -> Tensor | None:
+        present: list[tuple[str, Tensor]] = []
         for key in keys:
-            if key in outputs:
-                value = outputs[key]
-                if not torch.is_tensor(value):
-                    raise ValueError(f"{role} {field} key {key!r} must be a tensor")
-                return value
-        joined = ", ".join(keys)
-        raise ValueError(f"{role} is missing fixed-head {field}; expected one of {joined}")
+            if key not in outputs:
+                continue
+            value = outputs[key]
+            if not torch.is_tensor(value):
+                raise ValueError(f"{role} {field} key {key!r} must be a tensor")
+            present.append((key, value))
+        if not present:
+            return None
+        first_key, first = present[0]
+        for key, value in present[1:]:
+            if value.shape != first.shape:
+                raise ValueError(
+                    f"{role} {field} aliases have conflicting shape: "
+                    f"{first_key}={tuple(first.shape)} vs {key}={tuple(value.shape)}"
+                )
+            if value.dtype != first.dtype or value.device != first.device:
+                raise ValueError(
+                    f"{role} {field} aliases have conflicting dtype/device: "
+                    f"{first_key} vs {key}"
+                )
+            if value is not first and not torch.equal(value, first):
+                raise ValueError(
+                    f"{role} has ambiguous {field} aliases: {first_key} and {key} disagree"
+                )
+        return first
 
-    logits = find_tensor(_LOGIT_KEYS, "logits")
-    embedding = find_tensor(_EMBEDDING_KEYS, "embedding")
+    logits = collect_aliases(_LOGIT_KEYS, "logits")
+    if logits is None:
+        joined = ", ".join(_LOGIT_KEYS)
+        raise ValueError(f"{role} is missing fixed-head logits; expected one of {joined}")
+
+    embedding_keys: list[str] = []
+    direct_keys = tuple(key for key in _EMBEDDING_DIRECT_KEYS if key in outputs)
+    if direct_keys:
+        embedding_keys.extend(direct_keys)
+        if "feat_cls" in outputs and "id_feat_cls" in outputs:
+            embedding_keys.append("id_feat_cls")
+        if "z_id" in outputs:
+            selected_key = outputs.get("z_id_key")
+            if selected_key is None:
+                embedding_keys.extend(
+                    key for key in _DUAL_ID_ALIAS_KEYS if key in outputs and key not in embedding_keys
+                )
+            else:
+                if not isinstance(selected_key, str) or selected_key not in _DUAL_ID_FEATURE_NAMES:
+                    raise ValueError("z_id_key must name a known identity embedding")
+                selected_alias = f"id_{selected_key}"
+                if selected_alias in outputs:
+                    embedding_keys.append(selected_alias)
+    else:
+        fallback_present = tuple(key for key in _EMBEDDING_FALLBACK_KEYS if key in outputs)
+        embedding_keys.extend(fallback_present)
+
+    embedding = collect_aliases(tuple(dict.fromkeys(embedding_keys)), "embedding")
+    if embedding is None:
+        joined = ", ".join(_EMBEDDING_DIRECT_KEYS + _EMBEDDING_FALLBACK_KEYS)
+        raise ValueError(f"{role} is missing embedding; expected one of {joined}")
     if logits.ndim != 2:
         raise ValueError(f"{role} logits must have shape [batch, classes]")
     if embedding.ndim != 2:
@@ -260,12 +314,17 @@ def _validate_adapter_mapping(
             if "log_step_size" in lowered:
                 raise ValueError("log_step_size is not an inner adapter parameter")
             raise ValueError(f"{name}[{key!r}] is not an allowed adapter-only parameter")
-        if lowered.endswith(".gate"):
-            leaf = "gate"
-        else:
-            leaf = ".".join(lowered.split(".")[-2:]) if "." in lowered else lowered
+        prefix = next(
+            (candidate for candidate in _INNER_ADAPTER_PREFIXES if key.startswith(candidate)),
+            None,
+        )
+        if prefix is None:
+            raise ValueError(
+                f"{name}[{key!r}] must belong to the V1 meta_adapter_time/freq/fusion sites"
+            )
+        leaf = key[len(prefix) :]
         if leaf not in _INNER_LEAF_NAMES:
-            raise ValueError(f"{name}[{key!r}] is not an adapter parameter")
+            raise ValueError(f"{name}[{key!r}] is not an allowed inner adapter parameter")
         if not value.is_floating_point():
             raise ValueError(f"{name}[{key!r}] must be floating-point")
         if value.device != reference.device or value.dtype != reference.dtype:

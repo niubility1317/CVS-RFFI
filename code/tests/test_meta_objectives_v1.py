@@ -438,6 +438,85 @@ def test_output_contract_supports_adv3b02_aliases_but_rejects_missing_keys():
         )
 
 
+def test_output_alias_conflicts_are_rejected_instead_of_taking_first_key():
+    logits = torch.randn(2, 3, requires_grad=True)
+    embedding = torch.randn(2, 4, requires_grad=True)
+    labels = torch.tensor([0, 1])
+    prototypes = torch.randn(3, 4)
+
+    with pytest.raises(ValueError, match="ambiguous logits"):
+        support_objective(
+            {"logits": logits, "tx_logits": logits + 0.1, "feat_cls": embedding},
+            labels,
+            prototypes,
+            {},
+            {},
+            MetaObjectiveConfig(),
+        )
+    with pytest.raises(ValueError, match="logits.*shape"):
+        support_objective(
+            {"logits": logits, "tx_logits": torch.randn(3, 3), "feat_cls": embedding},
+            labels,
+            prototypes,
+            {},
+            {},
+            MetaObjectiveConfig(),
+        )
+    with pytest.raises(ValueError, match="ambiguous embedding"):
+        support_objective(
+            {"logits": logits, "feat_cls": embedding, "z_id": embedding + 0.1},
+            labels,
+            prototypes,
+            {},
+            {},
+            MetaObjectiveConfig(),
+        )
+    with pytest.raises(ValueError, match="embedding.*shape"):
+        support_objective(
+            {"logits": logits, "feat_cls": embedding, "z_id": torch.randn(3, 4)},
+            labels,
+            prototypes,
+            {},
+            {},
+            MetaObjectiveConfig(),
+        )
+
+    same = support_objective(
+        {"logits": logits, "tx_logits": logits, "feat_cls": embedding, "z_id": embedding},
+        labels,
+        prototypes,
+        {},
+        {},
+        MetaObjectiveConfig(),
+    )
+    assert torch.isfinite(same.total)
+
+
+@pytest.mark.parametrize(
+    "key",
+    [
+        "encoder.down.weight",
+        "unrelated.gate",
+        "meta_adapter_fake.gate",
+        "meta_adapter_time.norm.weight",
+        "meta_adapter_time.log_step_size",
+    ],
+)
+def test_l2sp_rejects_non_v1_adapter_full_names(key):
+    outputs = _outputs(torch.randn(2, 2, requires_grad=True), torch.randn(2, 2, requires_grad=True))
+    labels = torch.tensor([0, 1])
+    prototypes = torch.eye(2)
+    with pytest.raises(ValueError, match="adapter|log_step_size"):
+        support_objective(
+            outputs,
+            labels,
+            prototypes,
+            {key: torch.zeros(2, 2)},
+            {key: torch.ones(2, 2)},
+            MetaObjectiveConfig(),
+        )
+
+
 @pytest.mark.parametrize(
     "kwargs",
     [
