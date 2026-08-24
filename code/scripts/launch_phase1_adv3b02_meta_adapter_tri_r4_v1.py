@@ -80,8 +80,20 @@ def _build_command(
         str(config["adapter"]["deployment_max_steps"]),
         "--meta_output_root",
         str(output_root),
+        "--seed",
+        str(config["seed"]),
+        "--wisig_equalized",
+        str(config["wisig_equalized"]),
+        "--wisig_out_len",
+        str(config["wisig_out_len"]),
+        "--wisig_domain",
+        str(config["wisig_domain"]),
+        "--wisig_max_day123_per_combo",
+        str(config["wisig_max_day123_per_combo"]),
         "--wisig_train_rxs",
         ",".join(str(item) for item in config["source_receiver_ids"]),
+        "--wisig_train_days",
+        ",".join(str(item) for item in config["source_days"]),
     ]
     if gpu.strip():
         command.extend(["--device", "cuda"])

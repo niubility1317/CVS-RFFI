@@ -11,13 +11,17 @@ from __future__ import annotations
 import argparse
 import csv
 from dataclasses import asdict
+import hashlib
 import json
 import math
 import os
 from pathlib import Path
+import random
 import traceback
+from types import SimpleNamespace
 from typing import Any, Mapping, MutableMapping, Sequence
 
+import numpy as np
 import torch
 from torch import nn
 
@@ -34,6 +38,12 @@ CANONICAL_SOURCE_ROLES = {
 CANONICAL_SOURCE_RECEIVER_IDS = (0, 1, 2, 3, 4, 5, 6)
 CANONICAL_SOURCE_SPLIT = "tx_rx_day_1_7_2"
 CANONICAL_SOURCE_DAYS = (0, 1)
+CANONICAL_WISIG_EQUALIZED = 1
+CANONICAL_WISIG_OUT_LEN = 256
+CANONICAL_WISIG_DOMAIN = "rx_day"
+CANONICAL_WISIG_MAX_DAY123_PER_COMBO = 0
+CANONICAL_SAT_FS_HZ = 25.0e6
+CANONICAL_SAT_FC_HZ = 2.462e9
 CANONICAL_ADAPTER = {
     "rank": 4,
     "sites": ("time", "freq", "fusion"),
@@ -156,6 +166,47 @@ def _validate_model_config(value: Any) -> dict[str, Any]:
     return raw
 
 
+def _validate_wisig_view_config(config: Mapping[str, Any]) -> dict[str, Any]:
+    """Validate the immutable WiSig view construction contract."""
+
+    equalized = config["wisig_equalized"]
+    if isinstance(equalized, bool):
+        raise ValueError("wisig_equalized must be frozen at 1")
+    if isinstance(equalized, str):
+        if equalized.strip() != "1":
+            raise ValueError("wisig_equalized must be frozen at 1")
+    elif not isinstance(equalized, int) or int(equalized) != CANONICAL_WISIG_EQUALIZED:
+        raise ValueError("wisig_equalized must be frozen at 1")
+    out_len = _require_int(
+        config["wisig_out_len"], field_name="wisig_out_len", minimum=1
+    )
+    if out_len != CANONICAL_WISIG_OUT_LEN:
+        raise ValueError(
+            f"wisig_out_len must be frozen at {CANONICAL_WISIG_OUT_LEN}; got {out_len}"
+        )
+    domain = _require_token(config["wisig_domain"], field_name="wisig_domain").lower()
+    if domain != CANONICAL_WISIG_DOMAIN:
+        raise ValueError(
+            f"wisig_domain must be frozen at {CANONICAL_WISIG_DOMAIN!r}; got {domain!r}"
+        )
+    max_per_combo = _require_int(
+        config["wisig_max_day123_per_combo"],
+        field_name="wisig_max_day123_per_combo",
+        minimum=0,
+    )
+    if max_per_combo != CANONICAL_WISIG_MAX_DAY123_PER_COMBO:
+        raise ValueError(
+            "wisig_max_day123_per_combo must be frozen at "
+            f"{CANONICAL_WISIG_MAX_DAY123_PER_COMBO}; got {max_per_combo}"
+        )
+    return {
+        "wisig_equalized": CANONICAL_WISIG_EQUALIZED,
+        "wisig_out_len": CANONICAL_WISIG_OUT_LEN,
+        "wisig_domain": CANONICAL_WISIG_DOMAIN,
+        "wisig_max_day123_per_combo": CANONICAL_WISIG_MAX_DAY123_PER_COMBO,
+    }
+
+
 def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
     """Validate and normalize the Task8 frozen source-only configuration."""
 
@@ -178,6 +229,10 @@ def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
         "source_receiver_ids",
         "source_split",
         "source_days",
+        "wisig_equalized",
+        "wisig_out_len",
+        "wisig_domain",
+        "wisig_max_day123_per_combo",
         "source_roles",
         "adapter",
         "episode_weights",
@@ -210,6 +265,7 @@ def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
     source_days = _check_exact_int_sequence(
         config["source_days"], CANONICAL_SOURCE_DAYS, field_name="source_days"
     )
+    wisig_view = _validate_wisig_view_config(config)
 
     source_roles = _check_exact_float_map(
         config["source_roles"],
@@ -289,6 +345,7 @@ def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
             "source_receiver_ids": list(source_receiver_ids),
             "source_split": source_split,
             "source_days": list(source_days),
+            **wisig_view,
             "source_roles": source_roles,
             "adapter": {
                 "rank": adapter["rank"],
@@ -372,6 +429,60 @@ def _parse_index_list(value: Any, *, field_name: str, default: Sequence[int]) ->
     return result
 
 
+def _seed_everything(seed: int) -> None:
+    seed = int(seed)
+    random.seed(seed)
+    np.random.seed(seed % (2**32))
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
+
+def _validate_frozen_wisig_args(args: Any, config: Mapping[str, Any]) -> None:
+    expected_equalized = int(config["wisig_equalized"])
+    requested_equalized = getattr(args, "wisig_equalized", expected_equalized)
+    try:
+        if isinstance(requested_equalized, str) and requested_equalized.strip().lower() == "both":
+            raise ValueError
+        requested_equalized = int(requested_equalized)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("wisig_equalized must match frozen config value 1") from exc
+    if requested_equalized != expected_equalized:
+        raise ValueError(
+            "wisig_equalized does not match frozen config: "
+            f"{requested_equalized!r} != {expected_equalized!r}"
+        )
+
+    requested_out_len = getattr(args, "wisig_out_len", CANONICAL_WISIG_OUT_LEN)
+    try:
+        requested_out_len = int(requested_out_len)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("wisig_out_len must match frozen config value 256") from exc
+    if requested_out_len != int(config["wisig_out_len"]):
+        raise ValueError(
+            "wisig_out_len does not match frozen config: "
+            f"{requested_out_len!r} != {config['wisig_out_len']!r}"
+        )
+
+    requested_domain = str(getattr(args, "wisig_domain", CANONICAL_WISIG_DOMAIN)).strip().lower()
+    if requested_domain != str(config["wisig_domain"]):
+        raise ValueError(
+            "wisig_domain does not match frozen config: "
+            f"{requested_domain!r} != {config['wisig_domain']!r}"
+        )
+
+    requested_max = getattr(args, "wisig_max_day123_per_combo", CANONICAL_WISIG_MAX_DAY123_PER_COMBO)
+    try:
+        requested_max = int(requested_max)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("wisig_max_day123_per_combo must match frozen config value 0") from exc
+    if requested_max != int(config["wisig_max_day123_per_combo"]):
+        raise ValueError(
+            "wisig_max_day123_per_combo does not match frozen config: "
+            f"{requested_max!r} != {config['wisig_max_day123_per_combo']!r}"
+        )
+
+
 def _source_role_manifest(ds_w: Mapping[str, Any], config: Mapping[str, Any], args: Any) -> dict[str, Any]:
     """Build only the frozen source role split; no target split is opened."""
 
@@ -401,9 +512,7 @@ def _source_role_manifest(ds_w: Mapping[str, Any], config: Mapping[str, Any], ar
     from dataset_wisig import WiSigCompactDataset, WiSigSubsetDataset
     from SSDG.train_ssdg import split_tx_rx_day_1_7_2_roles
 
-    equalized = getattr(args, "wisig_equalized", 1)
-    if isinstance(equalized, str) and equalized.lower() != "both":
-        equalized = int(equalized)
+    equalized = int(config["wisig_equalized"])
     configured_days = config["source_days"]
     train_days = _parse_index_list(
         configured_days if configured_days is not None else getattr(args, "wisig_train_days", None),
@@ -412,16 +521,16 @@ def _source_role_manifest(ds_w: Mapping[str, Any], config: Mapping[str, Any], ar
     )
     if not train_days:
         raise ValueError("Phase1 meta entry requires at least one source training day")
-    max_per_combo = int(getattr(args, "wisig_max_day123_per_combo", 0) or 0)
+    max_per_combo = int(config["wisig_max_day123_per_combo"])
     source_base = WiSigCompactDataset(
         ds_w,
-        out_len=int(getattr(args, "wisig_out_len", 256)),
+        out_len=int(config["wisig_out_len"]),
         crop_mode="center",
         normalize=True,
         equalized=equalized,
         day_keep=train_days,
         rx_keep=list(config["source_receiver_ids"]),
-        domain=str(getattr(args, "wisig_domain", "rx_day")),
+        domain=str(config["wisig_domain"]),
         max_samples_per_combo=None if max_per_combo <= 0 else max_per_combo,
         seed=int(config["seed"]),
         build_index=True,
@@ -740,6 +849,51 @@ def _build_refs(dataset: Any, role: str) -> tuple[tuple[Any, ...], Any]:
     return tuple(refs), dataset
 
 
+def _stable_view_seed(base_seed: int, physical_sample_id: str, view: str) -> int:
+    payload = f"{int(base_seed)}|{str(physical_sample_id)}|{str(view)}".encode("utf-8")
+    digest = hashlib.sha256(payload).digest()
+    return int.from_bytes(digest[:8], byteorder="little", signed=False) & 0x7FFF_FFFF_FFFF_FFFF
+
+
+def _materialize_ref_view(
+    x: torch.Tensor,
+    ref: Any,
+    *,
+    view_seed: int,
+) -> torch.Tensor:
+    view = str(ref.view)
+    if view == "clean":
+        return x.detach().float().clone()
+    if view not in _SOURCE_META_VIEWS[1:]:
+        raise ValueError(f"unsupported source meta view: {view!r}")
+    from cvsrffi.eval import apply_sat_channel_for_scenario
+
+    channel_args = SimpleNamespace(
+        sat_fs_hz=CANONICAL_SAT_FS_HZ,
+        sat_fc_hz=CANONICAL_SAT_FC_HZ,
+    )
+    generator = torch.Generator(device=x.device)
+    generator.manual_seed(_stable_view_seed(view_seed, str(ref.physical_sample_id), view))
+    transformed, _metadata = apply_sat_channel_for_scenario(
+        x.unsqueeze(0),
+        view,
+        channel_args,
+        gen=generator,
+        return_meta=True,
+    )
+    if not torch.is_tensor(transformed):
+        raise TypeError(f"LEO view {view!r} transform must return a tensor")
+    if transformed.shape != x.unsqueeze(0).shape:
+        raise ValueError(
+            f"LEO view {view!r} changed IQ shape: {tuple(transformed.shape)} "
+            f"!= {tuple(x.unsqueeze(0).shape)}"
+        )
+    transformed = transformed[0].detach().to(device=x.device, dtype=x.dtype)
+    if not transformed.is_floating_point() or not bool(torch.isfinite(transformed).all()):
+        raise ValueError(f"LEO view {view!r} must be finite floating IQ")
+    return transformed
+
+
 def _sample_episode(sampler: Any, *, seed: int) -> Any:
     last_error: Exception | None = None
     for offset in range(256):
@@ -757,18 +911,18 @@ def _episode_batch(
     model: nn.Module,
     num_classes: int,
     device: torch.device,
+    view_seed: int = 0,
 ) -> Any:
     from cvsrffi.meta_trainer import MetaEpisodeBatch
 
     refs = episode.support + episode.query_adapt + episode.query_guard
     tensors: dict[tuple[int, str], torch.Tensor] = {}
-    labels: dict[tuple[int, str], int] = {}
     for ref in refs:
         key = (int(ref.dataset_index), str(ref.view))
         if key not in tensors:
             x, y, _meta = _dataset_item(dataset, int(ref.dataset_index))
-            tensors[key] = x
-            labels[key] = int(y)
+            del y
+            tensors[key] = _materialize_ref_view(x, ref, view_seed=int(view_seed))
 
     def stack(rows: Sequence[Any]) -> tuple[torch.Tensor, torch.Tensor]:
         if not rows:
@@ -829,6 +983,7 @@ def _build_source_batches(
             model=model,
             num_classes=num_classes,
             device=device,
+            view_seed=int(config["seed"]),
         )
         for index in range(int(config["meta_batch_size"]))
     ]
@@ -857,6 +1012,7 @@ def _build_source_batches(
                     model=model,
                     num_classes=num_classes,
                     device=device,
+                    view_seed=int(config["seed"]),
                 )
             )
     return train_batches, eval_batches
@@ -907,6 +1063,16 @@ def _curve_payload(curve: Any) -> dict[str, Any]:
     }
 
 
+def _curve_for_role(curve: Any, role: str) -> Any:
+    from cvsrffi.meta_trainer import AdaptationCurve
+
+    expected = str(role)
+    rows = tuple(row for row in curve.rows if str(row.role) == expected)
+    if not rows:
+        raise ValueError(f"source curve has no rows for frozen role {expected!r}")
+    return AdaptationCurve(steps=tuple(curve.steps), rows=rows, source_only=bool(curve.source_only))
+
+
 def _candidate_from_curves(
     baseline: Any,
     final: Any,
@@ -916,8 +1082,16 @@ def _candidate_from_curves(
 ) -> Any:
     from cvsrffi.meta_trainer import SourceCheckpointCandidate, SourceHoldoutDelta
 
-    baseline_rows = {(int(row.episode_index), int(row.step)): row for row in baseline.rows}
-    final_rows = {(int(row.episode_index), int(row.step)): row for row in final.rows}
+    baseline_rows = {
+        (int(row.episode_index), int(row.step)): row
+        for row in baseline.rows
+        if str(row.role) == "V_select"
+    }
+    final_rows = {
+        (int(row.episode_index), int(row.step)): row
+        for row in final.rows
+        if str(row.role) == "V_select"
+    }
     holdouts: list[SourceHoldoutDelta] = []
     clean_deltas: list[float] = []
     guard_deltas: list[float] = []
@@ -939,14 +1113,14 @@ def _candidate_from_curves(
                 )
             )
     if not holdouts:
-        raise ValueError("source V_cal/V_select curves produced no finite step-3 holdouts")
+        raise ValueError("source V_select curve produced no finite step-3 holdouts")
     return SourceCheckpointCandidate(
         candidate_id=candidate_id,
         clean_delta_pp=float(sum(clean_deltas) / len(clean_deltas)) if clean_deltas else 0.0,
         guard_floor_delta_pp=min(guard_deltas) if guard_deltas else 0.0,
         worst_a3_delta_pp=min(item.delta_pp for item in holdouts),
         parameter_count=int(sum(parameter.numel() for parameter in model.parameters())),
-        latency_ms=float(sum(float(row.latency_ms) for row in final.rows) / max(1, len(final.rows))),
+        latency_ms=float(sum(float(row.latency_ms) for row in final_rows.values()) / max(1, len(final_rows))),
         source_holdouts=tuple(holdouts),
     )
 
@@ -983,6 +1157,8 @@ def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
         config = validate_meta_phase1_config(config_source)
     else:
         config = load_meta_phase1_config(config_source or DEFAULT_CONFIG_PATH)
+    _validate_frozen_wisig_args(args, config)
+    _seed_everything(int(config["seed"]))
 
     requested_rank = getattr(args, "meta_adapter_rank", None)
     if requested_rank not in (None, 0, int(config["adapter"]["rank"])):
@@ -1080,6 +1256,8 @@ def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
             phase1c_backbone_lr_ratio=float(config["phase1c_backbone_lr_ratio"]),
         )
         baseline_curve = evaluate_adaptation_curve(model, eval_batches, trainer_config)
+        baseline_v_cal_curve = _curve_for_role(baseline_curve, "V_cal")
+        baseline_v_select_curve = _curve_for_role(baseline_curve, "V_select")
         optimizer = build_phase1b_optimizer(model, trainer_config)
         logs_path = output_root / "logs.jsonl"
         metrics_path = output_root / "metrics.csv"
@@ -1101,9 +1279,11 @@ def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
                     record = {"train_step": int(train_step), **dict(episode_log)}
                     logs_handle.write(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n")
         final_curve = evaluate_adaptation_curve(model, eval_batches, trainer_config)
+        final_v_cal_curve = _curve_for_role(final_curve, "V_cal")
+        final_v_select_curve = _curve_for_role(final_curve, "V_select")
         candidate = _candidate_from_curves(
-            baseline_curve,
-            final_curve,
+            baseline_v_select_curve,
+            final_v_select_curve,
             candidate_id=f"{config['run_id']}:step{int(config['meta_train_steps'])}",
             model=model,
         )
@@ -1111,6 +1291,17 @@ def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
         curve_payload = {
             "baseline": _curve_payload(baseline_curve),
             "final": _curve_payload(final_curve),
+            "v_calibration": {
+                "baseline": _curve_payload(baseline_v_cal_curve),
+                "final": _curve_payload(final_v_cal_curve),
+                "selection_role": "diagnostic_only",
+            },
+            "v_select": {
+                "baseline": _curve_payload(baseline_v_select_curve),
+                "final": _curve_payload(final_v_select_curve),
+                "selection_role": "checkpoint_ranking",
+            },
+            "selection_source_split": "V_select",
             "selected_candidate": asdict(selected),
             "source_only": True,
         }

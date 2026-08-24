@@ -7,6 +7,10 @@
   "source_receiver_ids": [0, 1, 2, 3, 4, 5, 6],
   "source_split": "tx_rx_day_1_7_2",
   "source_days": [0, 1],
+  "wisig_equalized": 1,
+  "wisig_out_len": 256,
+  "wisig_domain": "rx_day",
+  "wisig_max_day123_per_combo": 0,
   "source_roles": {
     "L_s": 0.07,
     "U_s": 0.63,
