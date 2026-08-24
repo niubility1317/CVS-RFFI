@@ -1,7 +1,7 @@
 # CVS_META_ADAPTER_TRI_R4_V1 P4 Target5 r2最小预登记报告
 
 - run ID：`stage2_meta_adapter_target5_p4_s392002_20260825_r2`
-- 状态：`ARTIFACTS_COMPLETE`
+- 状态：`ANALYZED / SCIENTIFIC_FAILURE_NO_PROMOTION`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 修复代码提交：`6b66fce0c1e3a4a9315e539999fbe62f0798881e`
 - 固定计划提交：`c489dc8df100ea6c7cd79ad135f9a0f07725d2d0`
@@ -59,3 +59,19 @@ prediction完整后才由独立scorer连接truth。15个同row score聚合`DA1_R
 - 当前最高状态为`ARTIFACTS_COMPLETE`；15-row prediction不重跑。发布独立scorer修复后，从尚未产生score的truth-last阶段继续。
 - scorer修复归档：`E:\type10-7\release_archives\stage2_meta_adapter_target5_p4_s392002_20260825_r2_scorerfix1_cef0ee30.tar.gz`；固定提交`cef0ee30a998a3f2acfcf52c257edb0d19f1e575`，35502573字节，SHA256=`467aef9c963b3842f3e5ccf89258fa8c4d0d198dd85f66b4a5e8fb687d02fc78`。
 - scorer修复远端release root：`/home/szu2070436088/2510044040/CV-SincNet/releases/stage2_meta_adapter_target5_p4_s392002_20260825_r2_scorerfix1`。
+
+## Target5最终结果
+
+- scorer修复归档仅同步一次，远端SHA256与本地`467aef9c963b3842f3e5ccf89258fa8c4d0d198dd85f66b4a5e8fb687d02fc78`一致；scorer与聚合入口远端编译通过。
+- 15／15个`score.json`和矩阵级`target5_summary.json`均闭合，summary状态为`ANALYZED`，候选／bundle／receiver／seed／operating point／scenario笛卡尔积一致。
+- 三类场景在五个operating point上的旧类指标一致：
+
+|场景|DA0_REG0旧类均值|DA1_REG0旧类均值|DA0_REG0 floor|DA1_REG0 floor|均值变化|floor变化|
+|---|---:|---:|---:|---:|---:|---:|
+|`leo_clear_weak`|70.00%|70.00%|30.00%|30.00%|0.00pp|0.00pp|
+|`leo_low_elev_weak`|65.00%|65.00%|35.00%|35.00%|0.00pp|0.00pp|
+|`leo_rain_weak`|72.50%|72.50%|40.00%|40.00%|0.00pp|0.00pp|
+
+- 每个row都执行3次真实反向传播，适配后score矩阵发生非零变化，最大绝对变化范围为0.001350343～0.052605152；但15／15 row的最终类别决策均零变化，因此所有旧类均值和floor保持不变。
+- Target5聚合结果：`mean_delta_pp=0.0`、`floor_delta_pp=0.0`，未达到+1.0pp／+0.5pp门槛，结论为`SCIENTIFIC_FAILURE_NO_PROMOTION`。P4不进入Target25。
+- 科学解释：P4 Meta-SGD三步更新真实改变了表示相似度，但幅度不足以越过冻结原型余弦判决边界；下一候选改用Phase1已完成的P3固定LR bundle，在完全相同Target5输入与判决规则上检验更强、非Meta-SGD步长是否能形成决策级正收益。
