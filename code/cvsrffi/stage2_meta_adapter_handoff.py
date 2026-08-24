@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import json
 from pathlib import Path
+import re
 from types import MappingProxyType
 from typing import Any, Mapping
 
@@ -18,16 +19,16 @@ HANDOFF_SCHEMA = "cvs.stage2.meta_adapter.handoff.v1"
 _BINDING_KEYS = frozenset(
     {"state", "checkpoint_id", "bundle_id", "capsule_id", "split_id"}
 )
-_FORBIDDEN_BINDING_TERMS = (
-    "query",
-    "truth",
-    "role",
-    "optimizer",
-    "gradient",
-    "classifier",
-    "cls_head",
-    "new_class",
-    "newclass",
+_FORBIDDEN_BINDING_TOKENS = frozenset(
+    {
+        "query",
+        "truth",
+        "role",
+        "optimizer",
+        "gradient",
+        "classifier",
+        "newclass",
+    }
 )
 
 
@@ -40,7 +41,7 @@ class FrozenMetaAdapterHandoff:
     """Immutable adapter-only state; no query, truth or trainable head."""
 
     state: str
-    adapted_state: Mapping[str, Tensor]
+    _adapted_state: Mapping[str, Tensor]
     checkpoint_id: str | None
     bundle_id: str | None
     capsule_id: str
@@ -53,18 +54,18 @@ class FrozenMetaAdapterHandoff:
     def __post_init__(self) -> None:
         if self.state != "DA1_REG0":
             raise MetaAdapterHandoffError("handoff state must be DA1_REG0")
-        if not isinstance(self.adapted_state, Mapping) or not self.adapted_state:
+        if not isinstance(self._adapted_state, Mapping) or not self._adapted_state:
             raise MetaAdapterHandoffError("handoff adapted_state must be nonempty")
-        if any(not isinstance(name, str) for name in self.adapted_state):
+        if any(not isinstance(name, str) for name in self._adapted_state):
             raise MetaAdapterHandoffError("handoff adapter names must be strings")
-        if any(_contains_forbidden(name) for name in self.adapted_state):
+        if any(_contains_forbidden(name) for name in self._adapted_state):
             raise MetaAdapterHandoffError("handoff adapted_state contains forbidden head/query/truth state")
         frozen_state: dict[str, Tensor] = {}
-        for name, value in self.adapted_state.items():
+        for name, value in self._adapted_state.items():
             if not torch.is_tensor(value):
                 raise MetaAdapterHandoffError(f"handoff state {name!r} must be a tensor")
             frozen_state[name] = value.detach().cpu().clone()
-        object.__setattr__(self, "adapted_state", MappingProxyType(frozen_state))
+        object.__setattr__(self, "_adapted_state", MappingProxyType(frozen_state))
         if self.optimizer_state is not None or self.gradient_state is not None:
             raise MetaAdapterHandoffError("handoff cannot contain optimizer or gradient state")
         if self.new_class_support_consumed is not False:
@@ -86,7 +87,7 @@ class FrozenMetaAdapterHandoff:
                     "shape": list(value.shape),
                     "values": value.tolist(),
                 }
-                for name, value in self.adapted_state.items()
+                for name, value in self._adapted_state.items()
             },
         }
 
@@ -94,6 +95,14 @@ class FrozenMetaAdapterHandoff:
         """Alias used by generic artifact writers."""
 
         return self.to_payload()
+
+    @property
+    def adapted_state(self) -> Mapping[str, Tensor]:
+        """Return a deep snapshot so callers cannot mutate stored handoff state."""
+
+        return MappingProxyType(
+            {name: value.clone() for name, value in self._adapted_state.items()}
+        )
 
     @property
     def adapter_state(self) -> Mapping[str, Tensor]:
@@ -110,8 +119,15 @@ class FrozenMetaAdapterHandoff:
 
 
 def _contains_forbidden(name: str) -> bool:
-    lowered = name.lower()
-    return any(term in lowered for term in _FORBIDDEN_BINDING_TERMS)
+    path_segments = [part for part in re.split(r"[./\\]+", name.lower()) if part]
+    for segment in path_segments:
+        tokens = [part for part in re.split(r"[^a-z0-9]+", segment) if part]
+        if any(token in _FORBIDDEN_BINDING_TOKENS for token in tokens):
+            return True
+        token_pairs = zip(tokens, tokens[1:])
+        if any(pair in {("cls", "head"), ("new", "class")} for pair in token_pairs):
+            return True
+    return False
 
 
 def _binding_mapping(binding: Mapping[str, Any] | Any) -> dict[str, Any]:
@@ -177,7 +193,7 @@ def freeze_da1_reg0_handoff(
         parameter.requires_grad_(False)
     return FrozenMetaAdapterHandoff(
         state="DA1_REG0",
-        adapted_state=adapted_state,
+        _adapted_state=adapted_state,
         checkpoint_id=values.get("checkpoint_id"),
         bundle_id=values.get("bundle_id"),
         capsule_id=values["capsule_id"],

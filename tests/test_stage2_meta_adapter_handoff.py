@@ -70,3 +70,20 @@ def test_handoff_serialization_refuses_overwrite(tmp_path: Path) -> None:
     with pytest.raises(FileExistsError, match="already exists"):
         handoff.write_json(output)
     assert output.read_text(encoding="utf-8") == "keep"
+
+
+def test_public_handoff_tensor_view_is_a_deep_clone() -> None:
+    model = _ToyMetaModel()
+    handoff = freeze_da1_reg0_handoff(model, valid_binding())
+    name = next(iter(handoff.adapted_state))
+    before = handoff.adapted_state[name].clone()
+    handoff.adapted_state[name].add_(1.0)
+    assert torch.equal(handoff.adapted_state[name], before)
+
+
+def test_path_token_ban_does_not_reject_truthful_checkpoint_identifier() -> None:
+    model = _ToyMetaModel()
+    binding = valid_binding()
+    binding["checkpoint_id"] = "truthful_checkpoint_v1"
+    handoff = freeze_da1_reg0_handoff(model, binding)
+    assert handoff.checkpoint_id == "truthful_checkpoint_v1"

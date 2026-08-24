@@ -21,6 +21,7 @@ from cvsrffi.stage2_meta_adapter_scorer import (  # noqa: E402
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--scores", nargs="+", required=True, type=Path)
+    parser.add_argument("--target", required=True, choices=("Target5", "Target25"))
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args(argv)
     try:
@@ -30,7 +31,10 @@ def main(argv: list[str] | None = None) -> int:
             json.loads(path.read_text(encoding="utf-8-sig"))
             for path in args.scores
         ]
-        decision = summarize_meta_adapter_matrix(payloads)
+        decision = summarize_meta_adapter_matrix(
+            payloads,
+            expected_target=args.target,
+        )
         args.output.parent.mkdir(parents=True, exist_ok=True)
         with args.output.open("x", encoding="utf-8", newline="\n") as handle:
             json.dump(decision.to_dict(), handle, ensure_ascii=False, indent=2, sort_keys=True)

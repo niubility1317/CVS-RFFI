@@ -22,13 +22,23 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--da0", required=True, type=Path)
     parser.add_argument("--da1", required=True, type=Path)
+    parser.add_argument(
+        "--receipt",
+        type=Path,
+        help="Task10 receipt.json; defaults to the prediction directory",
+    )
     parser.add_argument("--truth", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args(argv)
     try:
         if args.output.exists() or args.output.is_symlink():
             raise FileExistsError(f"scoring output already exists: {args.output}")
-        score = score_meta_adapter_pair(args.da0, args.da1, args.truth)
+        score = score_meta_adapter_pair(
+            args.da0,
+            args.da1,
+            args.truth,
+            receipt_path=args.receipt,
+        )
         write_score_json(score, args.output)
     except (MetaAdapterScoringError, FileExistsError, OSError) as exc:
         parser.error(str(exc))
