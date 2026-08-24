@@ -29,6 +29,10 @@ from torch import nn
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG_PATH = PROJECT_ROOT / "configs" / "phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260824.json"
 META_PHASE1_SCHEMA = "cvs.phase1.meta_adapter.tri_r4.v1"
+REGISTERED_META_PHASE1_SCHEMAS = (
+    META_PHASE1_SCHEMA,
+    "cvs.phase1.meta_adapter.r4.v1",
+)
 CANONICAL_SOURCE_ROLES = {
     "L_s": 0.07,
     "U_s": 0.63,
@@ -52,6 +56,10 @@ CANONICAL_ADAPTER = {
     "deployment_max_steps": 5,
     "source_diagnostic_max_steps": 10,
 }
+REGISTERED_ADAPTER_SITE_PROFILES = (
+    CANONICAL_ADAPTER["sites"],
+    ("fusion",),
+)
 CANONICAL_EPISODE_WEIGHTS = {
     "Q_SAME_DOMAIN": 0.40,
     "Q_RX_HOLDOUT": 0.20,
@@ -274,8 +282,10 @@ def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
         raise ValueError(f"meta Phase1 config is missing required fields: {missing}")
 
     schema = _require_token(config["schema"], field_name="schema")
-    if schema != META_PHASE1_SCHEMA:
-        raise ValueError(f"schema must be {META_PHASE1_SCHEMA!r}; got {schema!r}")
+    if schema not in REGISTERED_META_PHASE1_SCHEMAS:
+        raise ValueError(
+            f"schema must match one of {REGISTERED_META_PHASE1_SCHEMAS!r}; got {schema!r}"
+        )
     run_id = _require_token(config["run_id"], field_name="run_id")
     seed = _require_int(config["seed"], field_name="seed", minimum=0)
     base_checkpoint = _require_token(config["base_checkpoint"], field_name="base_checkpoint")
@@ -326,11 +336,14 @@ def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
     }
     if adapter["rank"] != CANONICAL_ADAPTER["rank"]:
         raise ValueError("adapter.rank must be frozen at 4")
-    if adapter["sites"] != CANONICAL_ADAPTER["sites"]:
+    if adapter["sites"] not in REGISTERED_ADAPTER_SITE_PROFILES:
         raise ValueError(
-            "adapter.sites must be frozen at ['time', 'freq', 'fusion']; "
+            "adapter.sites must match one of the registered profiles "
+            f"{[list(profile) for profile in REGISTERED_ADAPTER_SITE_PROFILES]!r}; "
             f"got {list(adapter['sites'])!r}"
         )
+    if schema == META_PHASE1_SCHEMA and adapter["sites"] != CANONICAL_ADAPTER["sites"]:
+        raise ValueError("the legacy tri_r4 schema requires time,freq,fusion adapter sites")
     for key in ("inner_steps", "deployment_max_steps", "source_diagnostic_max_steps"):
         if adapter[key] != CANONICAL_ADAPTER[key]:
             raise ValueError(f"adapter.{key} must be frozen at {CANONICAL_ADAPTER[key]}")
@@ -800,7 +813,7 @@ def _build_meta_model(
     return model, model_args
 
 
-def _validate_rank4_three_site_model(model: nn.Module, config: Mapping[str, Any]) -> None:
+def _validate_rank4_adapter_model(model: nn.Module, config: Mapping[str, Any]) -> None:
     from cvsrffi.meta_adapter import ResidualMetaAdapter
 
     rank = int(config["adapter"]["rank"])
@@ -1617,7 +1630,7 @@ def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
         )
     requested_sites = getattr(args, "meta_adapter_sites", None)
     if requested_sites not in (None, "", ",".join(config["adapter"]["sites"])):
-        raise ValueError("meta_adapter_sites must match frozen time,freq,fusion sites")
+        raise ValueError("meta_adapter_sites must match config adapter.sites")
     requested_steps = getattr(args, "meta_inner_steps", None)
     if requested_steps not in (None, 0, int(config["adapter"]["inner_steps"])):
         raise ValueError("meta_inner_steps must match frozen inner_steps=3")
@@ -1681,7 +1694,7 @@ def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
         if not isinstance(model, nn.Module):
             raise TypeError("meta_model_factory must return torch.nn.Module")
         model = model.to(device)
-        _validate_rank4_three_site_model(model, config)
+        _validate_rank4_adapter_model(model, config)
         from cvsrffi.meta_checkpoint import load_legacy_base_for_meta, save_meta_bundle
         from cvsrffi.meta_trainer import (
             MetaTrainerConfig,

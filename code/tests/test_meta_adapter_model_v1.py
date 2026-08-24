@@ -78,6 +78,24 @@ def test_rank_four_tri_sites_create_exactly_three_adapters():
     assert all("meta_adapter" in key for key in model.state_dict() if "meta_adapter" in key)
 
 
+def test_rank_four_fusion_profile_creates_only_fusion_adapter_with_subpercent_budget():
+    model = _tiny_model(
+        model_variant="base",
+        meta_adapter_rank=4,
+        meta_adapter_sites="fusion",
+    )
+    sites = {
+        name
+        for name, module in model.named_modules()
+        if isinstance(module, ResidualMetaAdapter)
+    }
+    budget = adapter_parameter_budget(model)
+
+    assert sites == {"meta_adapter_fusion"}
+    assert len(list(iter_inner_adapter_parameters(model))) == 5
+    assert budget["inner_ratio"] <= 0.01
+
+
 def test_adapter_is_shape_preserving_and_near_identity_at_step_zero():
     torch.manual_seed(11)
     adapter = ResidualMetaAdapter(dim=8, rank=4)

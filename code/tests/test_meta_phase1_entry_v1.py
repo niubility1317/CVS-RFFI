@@ -312,6 +312,37 @@ def test_meta_adapter_cli_defaults_are_v1_locked():
     assert args.meta_inner_max_steps == 5
 
 
+def test_phase1_config_allows_fusion_only_small_layer_profile():
+    config = valid_config()
+    config["schema"] = "cvs.phase1.meta_adapter.r4.v1"
+    config["adapter"]["sites"] = ["fusion"]
+
+    validated = validate_meta_phase1_config(config)
+
+    assert validated["schema"] == "cvs.phase1.meta_adapter.r4.v1"
+    assert validated["adapter"]["sites"] == ["fusion"]
+
+
+def test_legacy_tri_schema_rejects_fusion_only_profile():
+    config = valid_config()
+    config["adapter"]["sites"] = ["fusion"]
+
+    with pytest.raises(ValueError, match="tri_r4 schema"):
+        validate_meta_phase1_config(config)
+
+
+@pytest.mark.parametrize(
+    "sites",
+    [[], ["time"], ["freq"], ["time", "fusion"], ["fusion", "time", "freq"]],
+)
+def test_phase1_config_rejects_unregistered_adapter_site_profiles(sites):
+    config = valid_config()
+    config["adapter"]["sites"] = sites
+
+    with pytest.raises(ValueError, match="registered profiles"):
+        validate_meta_phase1_config(config)
+
+
 def test_phase1_entry_rejects_noncanonical_source_ratios():
     config = valid_config()
     config["source_roles"]["L_s"] = 0.10
