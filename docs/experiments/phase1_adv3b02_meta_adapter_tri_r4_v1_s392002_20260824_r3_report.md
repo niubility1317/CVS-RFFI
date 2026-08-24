@@ -140,3 +140,9 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 - 四个既有manifest与新补建`K10/new10`manifest均为`cvs.full_ablation.phase2.feature_cache_manifest.v2`、`stage_scope=stage2b`、`phase2_data_status=VALIDATED_ONCE`，receiver、K、capsule和`p2_min_v1` split逐项匹配；query truth/role及source sample/cache/label/replay访问标志均为false。
 - 正式raw-IQ接线固定为：五个操作点的support均取v2 package中`before/predictor/support_<scenario>.npz`；query分别取`new5`、新建`new10`或`new20` package中的`query_<scenario>.npz`。`K5`和`K1`只由相同固定support按既有rank-prefix导出，不生成额外物理样本。
 - 当前只完成manifest和路径只读核对，没有导出正式15行、没有打开query truth/role、没有启动Phase2。Target5工厂仍须等待Phase1选中的真实`selected_meta_bundle.pt`与`frozen_prototypes.npz`，不得用占位checkpoint提前生成正式配置。
+
+## Target5 truth-last评分路径闭合
+
+- 仅以文件元数据核对`new5`、`new20`和新建`new10`的scoring manifest与truth sidecar路径均存在；未读取任何sidecar内容、query真值或query角色。
+- `K10/new5`使用new5 sidecar；`K10/new10`使用新建new10 sidecar；`K10/new20`、`K5/new20`和`K1/new20`共享同一固定new20 query/sidecar，但必须由各自K行的receipt绑定独立DA0_REG0/DA1_REG0 prediction，不能跨行复用分数。
+- 独立scorer仍固定先验证receipt和两份完整prediction，再首次打开对应truth sidecar，并使用冻结`analysis/d19_adv3b02_class_binding_20260717.json`把旧类handle映射到class index；prediction未完整时不得评分。
