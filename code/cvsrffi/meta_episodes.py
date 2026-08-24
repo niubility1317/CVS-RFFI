@@ -178,6 +178,15 @@ class HierarchicalMetaEpisodeSampler:
                 sorted(rows, key=lambda row: (int(row.dataset_index), str(row.view)))
             )
         self._class_ids = tuple(sorted(self._by_class))
+        self._descriptors = frozenset(self._descriptor_set(self.refs))
+        self._candidate_plan_cache: Dict[
+            EpisodeKind,
+            tuple[tuple[dict[str, Any], dict[str, Any]], ...],
+        ] = {}
+        self._pool_cache: Dict[
+            tuple[int, tuple[tuple[str, Any], ...]],
+            Dict[str, MetaSampleRef],
+        ] = {}
 
     @staticmethod
     def _is_leo(view: str) -> bool:
@@ -200,6 +209,10 @@ class HierarchicalMetaEpisodeSampler:
         return True
 
     def _pool(self, class_id: int, spec: Mapping[str, Any]) -> Dict[str, MetaSampleRef]:
+        cache_key = (int(class_id), tuple(sorted((str(key), value) for key, value in spec.items())))
+        cached = self._pool_cache.get(cache_key)
+        if cached is not None:
+            return cached
         unique: Dict[str, MetaSampleRef] = {}
         for row in self._by_class[int(class_id)]:
             if self._row_matches(row, spec):
@@ -207,6 +220,7 @@ class HierarchicalMetaEpisodeSampler:
                 previous = unique.get(physical_id)
                 if previous is None or int(row.dataset_index) < int(previous.dataset_index):
                     unique[physical_id] = row
+        self._pool_cache[cache_key] = unique
         return unique
 
     @staticmethod
@@ -226,7 +240,7 @@ class HierarchicalMetaEpisodeSampler:
         self,
         kind: EpisodeKind,
     ) -> list[tuple[dict[str, Any], dict[str, Any]]]:
-        descriptors = self._descriptor_set(self.refs)
+        descriptors = self._descriptors
         plans: set[tuple[tuple[tuple[str, Any], ...], tuple[tuple[str, Any], ...]]] = set()
 
         def add(support_spec: dict[str, Any], query_spec: dict[str, Any]) -> None:
@@ -241,9 +255,14 @@ class HierarchicalMetaEpisodeSampler:
                     {"rx_i": rx_i, "day_i": day_i, "eq_i": eq_i, "view": view},
                 )
         elif kind is EpisodeKind.RX_HOLDOUT:
-            for support in descriptors:
-                for query in descriptors:
-                    if support[1:] == query[1:] and support[0] != query[0]:
+            grouped = defaultdict(list)
+            for descriptor in descriptors:
+                grouped[descriptor[1:]].append(descriptor)
+            for rows in grouped.values():
+                for support in rows:
+                    for query in rows:
+                        if support[0] == query[0]:
+                            continue
                         add(
                             {
                                 "rx_i": support[0],
@@ -261,13 +280,14 @@ class HierarchicalMetaEpisodeSampler:
                             },
                         )
         elif kind is EpisodeKind.DAY_CHANNEL_HOLDOUT:
-            for support in descriptors:
-                for query in descriptors:
-                    same_receiver = support[0] == query[0]
-                    same_equalization = support[2] == query[2]
-                    same_view = support[4] == query[4]
-                    changed_day_or_block = (support[1], support[3]) != (query[1], query[3])
-                    if same_receiver and same_equalization and same_view and changed_day_or_block:
+            grouped = defaultdict(list)
+            for descriptor in descriptors:
+                grouped[(descriptor[0], descriptor[2], descriptor[4])].append(descriptor)
+            for rows in grouped.values():
+                for support in rows:
+                    for query in rows:
+                        if (support[1], support[3]) == (query[1], query[3]):
+                            continue
                         add(
                             {
                                 "rx_i": support[0],
@@ -285,14 +305,14 @@ class HierarchicalMetaEpisodeSampler:
                             },
                         )
         elif kind is EpisodeKind.CLEAN_TO_LEO:
-            for rx_i, day_i, eq_i, block_i, view in descriptors:
-                if view != "clean":
-                    continue
-                for leo_rx, leo_day, leo_eq, leo_block, leo_view in descriptors:
-                    if (
-                        (rx_i, day_i, eq_i, block_i) == (leo_rx, leo_day, leo_eq, leo_block)
-                        and self._is_leo(leo_view)
-                    ):
+            grouped = defaultdict(list)
+            for descriptor in descriptors:
+                grouped[descriptor[:4]].append(descriptor)
+            for rows in grouped.values():
+                clean_rows = [row for row in rows if row[4] == "clean"]
+                leo_rows = [row for row in rows if self._is_leo(row[4])]
+                for rx_i, day_i, eq_i, block_i, _view in clean_rows:
+                    for leo_rx, leo_day, leo_eq, leo_block, leo_view in leo_rows:
                         add(
                             {
                                 "rx_i": rx_i,
@@ -310,15 +330,15 @@ class HierarchicalMetaEpisodeSampler:
                             },
                         )
         elif kind is EpisodeKind.LEO_CROSS:
-            for support in descriptors:
-                if not self._is_leo(support[4]):
-                    continue
-                for query in descriptors:
-                    if (
-                        self._is_leo(query[4])
-                        and support[:4] == query[:4]
-                        and support[4] != query[4]
-                    ):
+            grouped = defaultdict(list)
+            for descriptor in descriptors:
+                if self._is_leo(descriptor[4]):
+                    grouped[descriptor[:4]].append(descriptor)
+            for rows in grouped.values():
+                for support in rows:
+                    for query in rows:
+                        if support[4] == query[4]:
+                            continue
                         add(
                             {
                                 "rx_i": support[0],
@@ -342,6 +362,16 @@ class HierarchicalMetaEpisodeSampler:
             (dict(support_key), dict(query_key))
             for support_key, query_key in sorted(plans, key=repr)
         ]
+
+    def _cached_candidate_plans(
+        self,
+        kind: EpisodeKind,
+    ) -> list[tuple[dict[str, Any], dict[str, Any]]]:
+        cached = self._candidate_plan_cache.get(kind)
+        if cached is None:
+            cached = tuple(self._candidate_plans(kind))
+            self._candidate_plan_cache[kind] = cached
+        return list(cached)
 
     def _plan_available(
         self,
@@ -450,7 +480,7 @@ class HierarchicalMetaEpisodeSampler:
         k_shot = int(rng.choice(self.config.k_choices))
         adapt_class_ids, guard_class_ids = self._sample_class_sets(rng)
 
-        plans = self._candidate_plans(kind)
+        plans = self._cached_candidate_plans(kind)
         rng.shuffle(plans)
         valid_plans = [
             plan

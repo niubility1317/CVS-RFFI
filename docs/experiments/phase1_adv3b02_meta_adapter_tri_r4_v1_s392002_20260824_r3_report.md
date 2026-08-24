@@ -123,4 +123,5 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 - 只读分析r3旧release后确认：此前`12410f2a`只让source/clean物理ID重叠检查避开IQ解码，但`_build_refs`仍会遍历L_s、V_cal和V_select的全部样本并调用dataset `__getitem__`，因此后备新run仍可能重复长时间pre-artifact准备。
 - 新RED负测用只允许读取`dataset.index`、禁止`__getitem__`的WiSig载体稳定复现失败；GREEN后`_build_refs`直接从索引读取`tx_i/rx_i/day_i/eq_i/sig_i`，并用项目既有函数生成完全相同的physical ID和capture block。
 - ref仍保留原dataset index、source角色及`clean/leo_clear_weak/leo_low_elev_weak/leo_rain_weak`四个view；实际IQ只在确定性episode被选中后由`_episode_batch`物化，不改变样本划分、K、训练参数、目标函数或评价。
-- Phase1真实入口33项、入口/episode采样器/trainer联合78项及当前Phase1/Phase2 Meta-Adapter 14文件宽回归255项通过，仅有既存AMP API弃用警告。该修复只供r3发生预登记技术失败后的新不可覆盖run使用；当前r3仍保持只读运行，不重启、不覆盖。
+- 后续复杂度负测进一步证明：旧采样器重复同seed两次会重建计划2次，同一class/spec会扫描1152次而非一次扫描的576次，RX holdout首次计划构建会迭代descriptor集合73次。修复后candidate plan和class/spec pool按冻结refs缓存，五类计划按domain等价键分组；完整计划数固定为36/144/360/54/108，重复seed仍生成完全相同episode。
+- Phase1真实入口33项、入口/episode采样器/trainer联合86项及当前Phase1/Phase2 Meta-Adapter 14文件宽回归263项通过，仅有既存AMP API弃用警告。该修复只供r3发生预登记技术失败后的新不可覆盖run使用；当前r3仍保持只读运行，不重启、不覆盖。

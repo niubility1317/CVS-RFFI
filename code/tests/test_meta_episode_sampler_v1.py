@@ -214,6 +214,94 @@ def test_same_seed_is_exactly_reproducible_and_different_seed_changes_episode():
     _assert_common_episode_invariants(other, allowed_roles=("L_s",))
 
 
+def test_repeated_sampling_reuses_frozen_candidate_plans(monkeypatch):
+    sampler = HierarchicalMetaEpisodeSampler(
+        _make_balanced_refs(),
+        _kind_config(EpisodeKind.SAME_DOMAIN, partial_coverage_probability=0.0),
+    )
+    original = sampler._candidate_plans
+    calls = 0
+
+    def counted(kind):
+        nonlocal calls
+        calls += 1
+        return original(kind)
+
+    monkeypatch.setattr(sampler, "_candidate_plans", counted)
+    first = sampler.sample(seed=101)
+    second = sampler.sample(seed=101)
+
+    assert first == second
+    assert calls == 1
+
+
+def test_repeated_pool_lookup_reuses_frozen_class_spec_index(monkeypatch):
+    sampler = HierarchicalMetaEpisodeSampler(
+        _make_balanced_refs(),
+        _kind_config(EpisodeKind.SAME_DOMAIN, partial_coverage_probability=0.0),
+    )
+    original = sampler._row_matches
+    calls = 0
+
+    def counted(row, spec):
+        nonlocal calls
+        calls += 1
+        return original(row, spec)
+
+    monkeypatch.setattr(sampler, "_row_matches", counted)
+    spec = {"rx_i": 0, "day_i": 0, "eq_i": 0, "view": "clean"}
+    first = sampler._pool(0, spec)
+    first_scan_calls = calls
+    second = sampler._pool(0, spec)
+
+    assert first == second
+    assert first_scan_calls == len(sampler._by_class[0])
+    assert calls == first_scan_calls
+
+
+def test_rx_holdout_plan_build_scans_descriptor_collection_once():
+    sampler = HierarchicalMetaEpisodeSampler(
+        _make_balanced_refs(),
+        _kind_config(EpisodeKind.RX_HOLDOUT, partial_coverage_probability=0.0),
+    )
+
+    class CountingDescriptors:
+        def __init__(self, values):
+            self.values = tuple(values)
+            self.iterations = 0
+
+        def __iter__(self):
+            self.iterations += 1
+            return iter(self.values)
+
+    descriptors = CountingDescriptors(sampler._descriptors)
+    sampler._descriptors = descriptors
+    plans = sampler._candidate_plans(EpisodeKind.RX_HOLDOUT)
+
+    assert len(plans) == 144
+    assert descriptors.iterations == 1
+
+
+@pytest.mark.parametrize(
+    ("kind", "expected_count"),
+    [
+        (EpisodeKind.SAME_DOMAIN, 36),
+        (EpisodeKind.RX_HOLDOUT, 144),
+        (EpisodeKind.DAY_CHANNEL_HOLDOUT, 360),
+        (EpisodeKind.CLEAN_TO_LEO, 54),
+        (EpisodeKind.LEO_CROSS, 108),
+    ],
+)
+def test_grouped_candidate_plan_counts_match_complete_domain_product(
+    kind, expected_count
+):
+    sampler = HierarchicalMetaEpisodeSampler(
+        _make_balanced_refs(),
+        _kind_config(kind, partial_coverage_probability=0.0),
+    )
+    assert len(sampler._candidate_plans(kind)) == expected_count
+
+
 def test_label_permutation_preserves_task_counts_and_class_coverage():
     refs = _make_balanced_refs()
     permuted = [replace(row, tx_i={0: 20, 1: 10, 2: 30, 3: 40}[row.tx_i]) for row in refs]
