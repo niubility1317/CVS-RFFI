@@ -1,7 +1,7 @@
 # CVS_META_ADAPTER_TRI_R4_V1 P3 Target5最小预登记报告
 
 - run ID：`stage2_meta_adapter_target5_p3_s392002_20260825_r1`
-- 状态：`LANDED`
+- 状态：`ANALYZED / SCIENTIFIC_FAILURE_NO_PROMOTION`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 生产代码提交：`cef0ee30a998a3f2acfcf52c257edb0d19f1e575`
 
@@ -42,3 +42,11 @@
 - 工厂生成15个truth-free row，receipt状态为`TARGET_INPUTS_COMPLETE`，并确认`query_truth_opened=false`、`query_role_opened=false`、`source_opened=false`。
 - P3真实checkpoint无query smoke通过：严格checkpoint加载、3次反向传播、训练参数占比0.8192%，`query_opened=false`、`source_opened=false`、`query_state_update_count=0`且无performance result。
 - 当前最高状态为`LANDED`；下一步立即运行唯一一次15-row P3 prediction矩阵。
+
+## Target5最终结果
+
+- 唯一一次15-row prediction矩阵自然完成，矩阵receipt为`PREDICTIONS_COMPLETE`，15／15 row闭合，`truth_opened=false`、`source_opened=false`；完成后无活动进程或GPU残留。
+- 独立scorer在prediction完整后连接truth；15个`score.json`和`target5_summary.json`均为`ANALYZED`，同一candidate、bundle、receiver、seed、operating point和场景笛卡尔积闭合。
+- 三类场景在五个operating point上的DA0_REG0→DA1_REG0结果分别为：`leo_clear_weak`旧类均值70.00%→70.00%、floor30.00%→30.00%；`leo_low_elev_weak`为65.00%→65.00%、35.00%→35.00%；`leo_rain_weak`为72.50%→72.50%、40.00%→40.00%。
+- 每row均执行3次真实反向传播，score最大绝对变化范围为0.001351655～0.054215699，但15／15 row最终类别均未变化。
+- 聚合`mean_delta_pp=0.0`、`floor_delta_pp=0.0`，未达到+1.0pp／+0.5pp门槛，结论为`SCIENTIFIC_FAILURE_NO_PROMOTION`。P3不进入Target25；下一候选为Phase1 P2 source监督adapter。
