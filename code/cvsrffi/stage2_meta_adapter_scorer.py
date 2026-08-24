@@ -17,6 +17,22 @@ SCORE_SCHEMA = "cvs.stage2.meta_adapter.score.v1"
 MATRIX_SCHEMA = "cvs.stage2.meta_adapter.matrix_decision.v1"
 REG0_STATES = ("DA0_REG0", "DA1_REG0")
 _PROMOTION_EPSILON_PP = 1.0e-9
+_MATRIX_SCENARIOS = (
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak",
+)
+_MATRIX_OPERATING_POINTS = {
+    "K10/new5": 10,
+    "K10/new10": 10,
+    "K10/new20": 10,
+    "K5/new20": 5,
+    "K1/new20": 1,
+}
+_TARGET_RECEIVERS = {
+    "Target5": ("20-1",),
+    "Target25": ("20-1", "3-19", "7-14", "7-7", "8-8"),
+}
 _ROW_FIELDS = (
     "candidate_id", "bundle_id", "protocol_schema", "phase2_data_status",
     "capsule_id", "split_id", "receiver", "scenario", "operating_point",
@@ -502,6 +518,52 @@ def _state_from_dict(payload: Mapping[str, Any], *, expected_state: str) -> Stat
     )
 
 
+def _validate_target_cartesian_product(
+    scores: list[PairedStage2BScore],
+    *,
+    expected_target: str,
+) -> None:
+    seeds = {int(item.row["seed"]) for item in scores}
+    if len(seeds) != 1:
+        raise MetaAdapterScoringError(
+            f"{expected_target} matrix must use a single seed"
+        )
+
+    expected = {
+        (receiver, operating_point, scenario)
+        for receiver in _TARGET_RECEIVERS[expected_target]
+        for operating_point in _MATRIX_OPERATING_POINTS
+        for scenario in _MATRIX_SCENARIOS
+    }
+    combinations = [
+        (
+            str(item.row["receiver"]),
+            str(item.row["operating_point"]),
+            str(item.row["scenario"]),
+        )
+        for item in scores
+    ]
+    actual = set(combinations)
+    missing = expected - actual
+    extra = actual - expected
+    duplicate_count = len(combinations) - len(actual)
+    if missing or extra or duplicate_count:
+        raise MetaAdapterScoringError(
+            f"{expected_target} Cartesian product mismatch: "
+            f"missing={len(missing)}, extra={len(extra)}, "
+            f"duplicate={duplicate_count}"
+        )
+
+    if any(
+        item.row["k_shot"]
+        != _MATRIX_OPERATING_POINTS[str(item.row["operating_point"])]
+        for item in scores
+    ):
+        raise MetaAdapterScoringError(
+            f"{expected_target} row k_shot disagrees with operating_point"
+        )
+
+
 def summarize_meta_adapter_matrix(scores: Iterable[PairedStage2BScore | Mapping[str, Any]], *, expected_target: str | None = None) -> MatrixDecision:
     raw_scores = list(scores)
     raw_candidate_values = [
@@ -530,9 +592,7 @@ def summarize_meta_adapter_matrix(scores: Iterable[PairedStage2BScore | Mapping[
     if expected_target not in {None, "Target5", "Target25"}:
         raise MetaAdapterScoringError("expected_target must be Target5 or Target25")
     if expected_target is not None:
-        expected_count = 5 if expected_target == "Target5" else 25
-        if len(parsed) != expected_count:
-            raise MetaAdapterScoringError(f"{expected_target} requires {expected_count} rows")
+        _validate_target_cartesian_product(parsed, expected_target=expected_target)
     if len({item.candidate_id for item in parsed}) != 1:
         raise MetaAdapterScoringError("matrix mixes candidate_id values")
     if len({item.bundle_id for item in parsed}) != 1:

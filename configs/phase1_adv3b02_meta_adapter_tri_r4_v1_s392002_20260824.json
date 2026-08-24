@@ -7,6 +7,7 @@
   "source_receiver_ids": [0, 1, 2, 3, 4, 5, 6],
   "source_split": "tx_rx_day_1_7_2",
   "source_days": [0, 1],
+  "clean_test_days": [2, 3],
   "wisig_equalized": 1,
   "wisig_out_len": 256,
   "wisig_domain": "rx_day",
@@ -38,6 +39,13 @@
   "meta_train_steps": 200,
   "meta_eval_episodes": 4,
   "meta_query_per_class": 2,
+  "candidate_plan": [
+    {"candidate_id": "P0", "training_mode": "frozen_base", "learn_step_sizes": false},
+    {"candidate_id": "P1", "training_mode": "random_adapter", "learn_step_sizes": false},
+    {"candidate_id": "P2", "training_mode": "supervised_adapter", "learn_step_sizes": false},
+    {"candidate_id": "P3", "training_mode": "fomaml_fixed_lr", "learn_step_sizes": false},
+    {"candidate_id": "P4", "training_mode": "fomaml_meta_sgd", "learn_step_sizes": true}
+  ],
   "model": {
     "builder": "dual",
     "num_classes": 6,

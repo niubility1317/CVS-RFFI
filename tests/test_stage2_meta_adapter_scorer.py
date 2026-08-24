@@ -349,3 +349,162 @@ def test_score_contains_bound_row_identity_and_matrix_rejects_mixed_json(
 def test_matrix_target_range_is_explicit() -> None:
     with pytest.raises(ValueError, match="Target5"):
         scorer.summarize_meta_adapter_matrix([], expected_target="Target5")
+
+
+MATRIX_SCENARIOS = (
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak",
+)
+MATRIX_OPERATING_POINTS = (
+    ("K10/new5", 10),
+    ("K10/new10", 10),
+    ("K10/new20", 10),
+    ("K5/new20", 5),
+    ("K1/new20", 1),
+)
+TARGET25_RECEIVERS = ("20-1", "3-19", "7-14", "7-7", "8-8")
+
+
+def _matrix_score_payload(
+    *,
+    receiver: str,
+    scenario: str,
+    operating_point: str,
+    k_shot: int,
+    seed: int = 713101,
+    split_suffix: str = "",
+) -> dict[str, object]:
+    state0 = scorer.StateScore(
+        state="DA0_REG0",
+        registration_state="REG0",
+        query_ids=("q-1", "q-2"),
+        mean_old_acc=0.50,
+        old_class_floor=0.40,
+        per_class_accuracy={"10": 0.5, "20": 0.5},
+        per_class_correct={"10": 1, "20": 1},
+        per_class_total={"10": 2, "20": 2},
+        micro_old_acc=0.50,
+    )
+    state1 = scorer.StateScore(
+        state="DA1_REG0",
+        registration_state="REG0",
+        query_ids=("q-1", "q-2"),
+        mean_old_acc=0.52,
+        old_class_floor=0.41,
+        per_class_accuracy={"10": 0.52, "20": 0.52},
+        per_class_correct={"10": 1, "20": 1},
+        per_class_total={"10": 2, "20": 2},
+        micro_old_acc=0.52,
+    )
+    row = {
+        "candidate_id": "tri-r4",
+        "bundle_id": "bundle-001",
+        "protocol_schema": "p2_min_v1",
+        "phase2_data_status": "VALIDATED_ONCE",
+        "capsule_id": "capsule-fixed",
+        "split_id": (
+            f"split-{receiver}-{scenario}-{operating_point}{split_suffix}"
+        ),
+        "receiver": receiver,
+        "scenario": scenario,
+        "operating_point": operating_point,
+        "seed": seed,
+        "k_shot": k_shot,
+    }
+    return scorer.PairedStage2BScore(
+        da0=state0,
+        da1=state1,
+        mean_delta_pp=2.0,
+        floor_delta_pp=1.0,
+        candidate_id="tri-r4",
+        bundle_id="bundle-001",
+        row_id=scorer._make_row_id(row),
+        row=row,
+        registered_class_ids=(10, 20),
+    ).to_dict()
+
+
+def _complete_matrix(receivers: tuple[str, ...]) -> list[dict[str, object]]:
+    return [
+        _matrix_score_payload(
+            receiver=receiver,
+            scenario=scenario,
+            operating_point=operating_point,
+            k_shot=k_shot,
+        )
+        for receiver in receivers
+        for operating_point, k_shot in MATRIX_OPERATING_POINTS
+        for scenario in MATRIX_SCENARIOS
+    ]
+
+
+def test_target5_requires_complete_fifteen_row_cartesian_product() -> None:
+    scores = _complete_matrix(("20-1",))
+
+    decision = scorer.summarize_meta_adapter_matrix(
+        scores,
+        expected_target="Target5",
+    )
+
+    assert decision.target == "Target5"
+    assert decision.row_count == 15
+    assert decision.verdict == "PROMOTE_TO_TARGET25"
+
+
+def test_target25_rejects_count_only_rows_without_required_cartesian_product() -> None:
+    scores = [
+        _matrix_score_payload(
+            receiver="20-1",
+            scenario="leo_clear_weak",
+            operating_point="K10/new5",
+            k_shot=10,
+            split_suffix=f"-{index}",
+        )
+        for index in range(25)
+    ]
+
+    with pytest.raises(ValueError, match="Cartesian|combination|duplicate"):
+        scorer.summarize_meta_adapter_matrix(scores, expected_target="Target25")
+
+
+def test_target25_accepts_complete_seventy_five_row_cartesian_product() -> None:
+    scores = _complete_matrix(TARGET25_RECEIVERS)
+
+    decision = scorer.summarize_meta_adapter_matrix(
+        scores,
+        expected_target="Target25",
+    )
+
+    assert decision.target == "Target25"
+    assert decision.row_count == 75
+
+
+def test_matrix_rejects_missing_extra_and_mixed_seed_combinations() -> None:
+    scores = _complete_matrix(("20-1",))
+    missing_and_extra = json.loads(json.dumps(scores))
+    missing_and_extra[-1]["row"]["scenario"] = "leo_extra_weak"
+    missing_and_extra[-1]["row_id"] = scorer._make_row_id(
+        missing_and_extra[-1]["row"]
+    )
+    with pytest.raises(ValueError, match="missing.*extra|extra.*missing"):
+        scorer.summarize_meta_adapter_matrix(
+            missing_and_extra,
+            expected_target="Target5",
+        )
+
+    mixed_seed = json.loads(json.dumps(scores))
+    mixed_seed[-1]["row"]["seed"] = 713102
+    mixed_seed[-1]["row_id"] = scorer._make_row_id(mixed_seed[-1]["row"])
+    with pytest.raises(ValueError, match="single seed"):
+        scorer.summarize_meta_adapter_matrix(mixed_seed, expected_target="Target5")
+
+
+def test_matrix_rejects_k_shot_that_disagrees_with_operating_point() -> None:
+    scores = _complete_matrix(("20-1",))
+    wrong_k = json.loads(json.dumps(scores))
+    wrong_k[0]["row"]["k_shot"] = 5
+    wrong_k[0]["row_id"] = scorer._make_row_id(wrong_k[0]["row"])
+
+    with pytest.raises(ValueError, match="k_shot.*operating_point"):
+        scorer.summarize_meta_adapter_matrix(wrong_k, expected_target="Target5")

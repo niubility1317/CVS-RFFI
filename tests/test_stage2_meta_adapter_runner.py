@@ -257,6 +257,32 @@ def test_runner_refuses_existing_output_root(tmp_path: Path):
         sut.run_meta_adapter_stage2_row(_row_config(paths), output, "cpu")
 
 
+def test_runner_rejects_external_prototypes_that_differ_from_strict_bundle_before_query(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    import cvsrffi.stage2_meta_adapter_runner as sut
+
+    paths = _write_row_inputs(tmp_path)
+    with np.load(paths["prototype_path"], allow_pickle=False) as archive:
+        class_ids = np.asarray(archive["class_ids"]).copy()
+        prototypes = np.asarray(archive["prototypes"]).copy()
+    prototypes[0, 0] += 0.25
+    np.savez(paths["prototype_path"], prototypes=prototypes, class_ids=class_ids)
+    events: list[str] = []
+    _install_fake_bundle_loader(monkeypatch, sut, events)
+    real_load = sut._load_npz
+
+    def traced(path, *args, **kwargs):
+        if Path(path) == paths["query_path"]:
+            events.append("open_query")
+        return real_load(path, *args, **kwargs)
+
+    monkeypatch.setattr(sut, "_load_npz", traced)
+    with pytest.raises(ValueError, match="bundle.*prototype|prototype.*bundle"):
+        sut.run_meta_adapter_stage2_row(_row_config(paths), tmp_path / "out-mismatch", "cpu")
+    assert "open_query" not in events
+
+
 @pytest.mark.parametrize("forbidden_key", ["source_path", "query_truth_path", "query_role"])
 def test_runner_rejects_source_or_query_truth_role_config(
     tmp_path: Path, forbidden_key: str

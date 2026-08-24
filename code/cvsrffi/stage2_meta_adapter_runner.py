@@ -207,6 +207,59 @@ def _prototype_tensors(
         np.ascontiguousarray(array, dtype=np.float32)
     ).clone()
     prototypes.requires_grad_(False)
+    if bool((torch.linalg.vector_norm(prototypes, dim=1) <= 0).any()):
+        raise MetaAdapterStage2RunnerError(
+            "prototype rows must be non-zero frozen class means"
+        )
+    return prototypes, class_ids
+
+
+def _bundle_prototype_tensors(audit: Any) -> tuple[Tensor, Tensor]:
+    raw_prototypes = _audit_value(audit, "prototypes", None)
+    raw_mapping = _audit_value(audit, "class_mapping", None)
+    if raw_prototypes is None or not isinstance(raw_mapping, Mapping) or not raw_mapping:
+        raise MetaAdapterStage2RunnerError(
+            "strict bundle audit must expose class_mapping and prototypes"
+        )
+    if torch.is_tensor(raw_prototypes):
+        try:
+            class_ids = torch.tensor(
+                sorted(int(key) for key in raw_mapping), dtype=torch.long
+            )
+        except (TypeError, ValueError) as exc:
+            raise MetaAdapterStage2RunnerError(
+                "strict bundle class_mapping keys must be integer class IDs"
+            ) from exc
+        prototypes = raw_prototypes.detach().cpu().to(dtype=torch.float32).clone()
+    elif isinstance(raw_prototypes, Mapping):
+        try:
+            class_ids_list = sorted(int(key) for key in raw_prototypes)
+            prototypes = torch.stack(
+                [torch.as_tensor(raw_prototypes[str(class_id)]) for class_id in class_ids_list]
+            ).detach().cpu().to(dtype=torch.float32)
+            class_ids = torch.tensor(class_ids_list, dtype=torch.long)
+        except (KeyError, TypeError, ValueError, RuntimeError) as exc:
+            raise MetaAdapterStage2RunnerError(
+                "strict bundle prototypes are not a valid class mapping"
+            ) from exc
+        if len(raw_mapping) != len(class_ids_list):
+            raise MetaAdapterStage2RunnerError(
+                "strict bundle class_mapping and prototypes must align"
+            )
+    else:
+        raise MetaAdapterStage2RunnerError(
+            "strict bundle prototypes must be a tensor or class mapping"
+        )
+    if prototypes.ndim != 2 or prototypes.size(0) != class_ids.numel():
+        raise MetaAdapterStage2RunnerError(
+            "strict bundle class_mapping and prototypes must align"
+        )
+    if not bool(torch.isfinite(prototypes).all()) or bool(
+        (torch.linalg.vector_norm(prototypes, dim=1) <= 0).any()
+    ):
+        raise MetaAdapterStage2RunnerError(
+            "strict bundle prototypes must be finite non-zero class means"
+        )
     return prototypes, class_ids
 
 
@@ -275,6 +328,8 @@ def _require_strict_audit(audit: Any) -> dict[str, Any]:
         "checkpoint_load_strict": True,
         "trainable_fraction": fraction,
         "base_checkpoint_id": _audit_value(audit, "base_checkpoint_id"),
+        "class_mapping": _audit_value(audit, "class_mapping"),
+        "prototypes": _audit_value(audit, "prototypes"),
     }
 
 
@@ -459,7 +514,15 @@ def _snapshot_frozen_model(model: nn.Module) -> nn.Module:
 
 def _load_support_and_prototypes(
     resolved: Mapping[str, Any],
+    bundle_audit: Any | None = None,
 ) -> tuple[ValidatedTargetSupportBatch, Tensor, Tensor]:
+
+    if bundle_audit is None:
+        _unused_model, raw_audit = load_meta_bundle_strict(
+            resolved["checkpoint_path"], torch.device("cpu")
+        )
+        del _unused_model
+        bundle_audit = _require_strict_audit(raw_audit)
 
     support_payload = _load_npz(
         resolved["support_path"], allowed=_SUPPORT_KEYS, label="support"
@@ -472,6 +535,13 @@ def _load_support_and_prototypes(
         resolved["prototype_path"], allowed=_PROTOTYPE_KEYS, label="prototype"
     )
     prototypes, class_ids = _prototype_tensors(prototype_payload)
+    bundle_prototypes, bundle_class_ids = _bundle_prototype_tensors(bundle_audit)
+    if not torch.equal(class_ids, bundle_class_ids) or not torch.equal(
+        prototypes, bundle_prototypes
+    ):
+        raise MetaAdapterStage2RunnerError(
+            "external class_mapping/prototypes must exactly match strict bundle prototypes"
+        )
     _validate_support(
         support_iq,
         support_labels,
@@ -502,7 +572,7 @@ def _load_bundle_and_support(
     """Compatibility wrapper for callers that need the combined inputs."""
 
     model, audit = _load_bundle(resolved, device=device)
-    support_batch, prototypes, class_ids = _load_support_and_prototypes(resolved)
+    support_batch, prototypes, class_ids = _load_support_and_prototypes(resolved, audit)
     return model, audit, support_batch, prototypes, class_ids
 
 
@@ -628,7 +698,7 @@ def run_meta_adapter_stage2_row(
     # support/prototype opening, formal adaptation, frozen DA1, then query.
     model, bundle_audit = _load_bundle(resolved, device=target_device)
     da0_model = _snapshot_frozen_model(model)
-    support_batch, prototypes, class_ids = _load_support_and_prototypes(resolved)
+    support_batch, prototypes, class_ids = _load_support_and_prototypes(resolved, bundle_audit)
     handle = _adapt(model, support_batch, prototypes, class_ids, resolved)
 
     # The query payload is intentionally opened once, at this point only.

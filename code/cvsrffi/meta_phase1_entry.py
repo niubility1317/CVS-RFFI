@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import argparse
 import csv
-from dataclasses import asdict
+from dataclasses import asdict, replace
 import hashlib
 import json
 import math
@@ -38,6 +38,7 @@ CANONICAL_SOURCE_ROLES = {
 CANONICAL_SOURCE_RECEIVER_IDS = (0, 1, 2, 3, 4, 5, 6)
 CANONICAL_SOURCE_SPLIT = "tx_rx_day_1_7_2"
 CANONICAL_SOURCE_DAYS = (0, 1)
+CANONICAL_CLEAN_TEST_DAYS = (2, 3)
 CANONICAL_WISIG_EQUALIZED = 1
 CANONICAL_WISIG_OUT_LEN = 256
 CANONICAL_WISIG_DOMAIN = "rx_day"
@@ -63,6 +64,13 @@ CANONICAL_EVALUATE_STEPS = (0, 1, 3, 5, 10)
 CANONICAL_DEFAULT_META_TRAIN_STEPS = 200
 CANONICAL_DEFAULT_META_EVAL_EPISODES = 4
 CANONICAL_DEFAULT_META_QUERY_PER_CLASS = 2
+CANONICAL_CANDIDATE_PLAN = (
+    ("P0", "frozen_base", False),
+    ("P1", "random_adapter", False),
+    ("P2", "supervised_adapter", False),
+    ("P3", "fomaml_fixed_lr", False),
+    ("P4", "fomaml_meta_sgd", True),
+)
 
 
 def _as_mapping(value: Any, *, field_name: str) -> Mapping[str, Any]:
@@ -229,6 +237,7 @@ def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
         "source_receiver_ids",
         "source_split",
         "source_days",
+        "clean_test_days",
         "wisig_equalized",
         "wisig_out_len",
         "wisig_domain",
@@ -243,6 +252,7 @@ def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
         "meta_train_steps",
         "meta_eval_episodes",
         "meta_query_per_class",
+        "candidate_plan",
         "model",
     }
     missing = sorted(required.difference(config))
@@ -265,6 +275,13 @@ def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
     source_days = _check_exact_int_sequence(
         config["source_days"], CANONICAL_SOURCE_DAYS, field_name="source_days"
     )
+    clean_test_days = _check_exact_int_sequence(
+        config["clean_test_days"],
+        CANONICAL_CLEAN_TEST_DAYS,
+        field_name="clean_test_days",
+    )
+    if set(source_days).intersection(clean_test_days):
+        raise ValueError("clean_test_days must be disjoint from source_days")
     wisig_view = _validate_wisig_view_config(config)
 
     source_roles = _check_exact_float_map(
@@ -332,6 +349,31 @@ def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
     meta_query_per_class = _require_int(
         config["meta_query_per_class"], field_name="meta_query_per_class", minimum=1
     )
+    raw_candidate_plan = config["candidate_plan"]
+    if not isinstance(raw_candidate_plan, (list, tuple)):
+        raise ValueError("candidate_plan must be the frozen P0-P4 sequence")
+    candidate_plan: list[dict[str, Any]] = []
+    for index, expected in enumerate(CANONICAL_CANDIDATE_PLAN):
+        if index >= len(raw_candidate_plan) or not isinstance(raw_candidate_plan[index], Mapping):
+            raise ValueError("candidate_plan must contain exactly P0,P1,P2,P3,P4")
+        row = dict(raw_candidate_plan[index])
+        if set(row) != {"candidate_id", "training_mode", "learn_step_sizes"}:
+            raise ValueError("candidate_plan rows must contain candidate_id,training_mode,learn_step_sizes")
+        actual = (
+            str(row["candidate_id"]),
+            str(row["training_mode"]),
+            row["learn_step_sizes"],
+        )
+        if actual != expected:
+            raise ValueError(
+                f"candidate_plan row {index} must be frozen at {expected!r}; got {actual!r}"
+            )
+        candidate_plan.append(dict(row))
+    if len(raw_candidate_plan) != len(CANONICAL_CANDIDATE_PLAN):
+        raise ValueError("candidate_plan must contain exactly P0,P1,P2,P3,P4")
+    active_candidate_id = str(config.get("active_candidate_id", "P4"))
+    if active_candidate_id not in {row[0] for row in CANONICAL_CANDIDATE_PLAN[1:]}:
+        raise ValueError("active_candidate_id must be one of P1,P2,P3,P4")
     model = _validate_model_config(config["model"])
 
     normalized: dict[str, Any] = dict(config)
@@ -345,6 +387,7 @@ def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
             "source_receiver_ids": list(source_receiver_ids),
             "source_split": source_split,
             "source_days": list(source_days),
+            "clean_test_days": list(clean_test_days),
             **wisig_view,
             "source_roles": source_roles,
             "adapter": {
@@ -362,6 +405,8 @@ def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
             "meta_train_steps": meta_train_steps,
             "meta_eval_episodes": meta_eval_episodes,
             "meta_query_per_class": meta_query_per_class,
+            "candidate_plan": candidate_plan,
+            "active_candidate_id": active_candidate_id,
             "model": model,
         }
     )
@@ -481,6 +526,16 @@ def _validate_frozen_wisig_args(args: Any, config: Mapping[str, Any]) -> None:
             "wisig_max_day123_per_combo does not match frozen config: "
             f"{requested_max!r} != {config['wisig_max_day123_per_combo']!r}"
         )
+    requested_test_days = _parse_index_list(
+        getattr(args, "wisig_test_days", config["clean_test_days"]),
+        field_name="wisig_test_days",
+        default=config["clean_test_days"],
+    )
+    if tuple(requested_test_days) != tuple(config["clean_test_days"]):
+        raise ValueError(
+            "wisig_test_days does not match frozen clean_test_days: "
+            f"{requested_test_days!r} != {config['clean_test_days']!r}"
+        )
 
 
 def _source_role_manifest(ds_w: Mapping[str, Any], config: Mapping[str, Any], args: Any) -> dict[str, Any]:
@@ -548,6 +603,49 @@ def _source_role_manifest(ds_w: Mapping[str, Any], config: Mapping[str, Any], ar
         "V_cal": WiSigSubsetDataset(source_base, v_cal_idx, split_source="meta_phase1_V_cal"),
         "V_select": WiSigSubsetDataset(source_base, v_select_idx, split_source="meta_phase1_V_select"),
     }
+    clean_test_days = _parse_index_list(
+        getattr(args, "wisig_test_days", config["clean_test_days"]),
+        field_name="wisig_test_days",
+        default=config["clean_test_days"],
+    )
+    clean_test_dataset = WiSigCompactDataset(
+        ds_w,
+        out_len=int(config["wisig_out_len"]),
+        crop_mode="center",
+        normalize=True,
+        equalized=equalized,
+        day_keep=clean_test_days,
+        rx_keep=list(config["source_receiver_ids"]),
+        domain=str(config["wisig_domain"]),
+        max_samples_per_combo=None if max_per_combo <= 0 else max_per_combo,
+        seed=int(config["seed"]),
+        build_index=True,
+    )
+    if len(clean_test_dataset) <= 0:
+        raise ValueError("declared clean test dataset is empty")
+    role_physical_ids: set[str] = set()
+    for dataset in role_datasets.values():
+        for index in range(len(dataset)):
+            _x, _y, metadata = _dataset_item(dataset, index)
+            physical_id = str(metadata.get("physical_sample_id", ""))
+            if not physical_id:
+                raise ValueError("Phase1 role dataset is missing physical_sample_id")
+            role_physical_ids.add(physical_id)
+    clean_test_physical_ids: set[str] = set()
+    for index in range(len(clean_test_dataset)):
+        _x, _y, metadata = _dataset_item(clean_test_dataset, index)
+        physical_id = str(metadata.get("physical_sample_id", ""))
+        if not physical_id:
+            raise ValueError("declared clean test dataset is missing physical_sample_id")
+        if physical_id in clean_test_physical_ids:
+            raise ValueError("declared clean test dataset contains duplicate physical_sample_id")
+        clean_test_physical_ids.add(physical_id)
+    overlap = role_physical_ids.intersection(clean_test_physical_ids)
+    if overlap:
+        raise ValueError(
+            "declared clean test physical IDs overlap Phase1 train/selection roles: "
+            f"count={len(overlap)}"
+        )
     return {
         "available": True,
         "source_only": True,
@@ -555,6 +653,10 @@ def _source_role_manifest(ds_w: Mapping[str, Any], config: Mapping[str, Any], ar
         "source_days": tuple(train_days),
         "role_sizes": {name: len(dataset) for name, dataset in role_datasets.items()},
         "role_datasets": role_datasets,
+        "clean_test_dataset": clean_test_dataset,
+        "clean_test_days": tuple(clean_test_days),
+        "clean_test_size": len(clean_test_dataset),
+        "clean_test_physical_disjoint": True,
         "supervised_training_role": "L_s",
         "unlabeled_role": "U_s",
         "validation_roles": ("V_cal", "V_select"),
@@ -894,11 +996,24 @@ def _materialize_ref_view(
     return transformed
 
 
-def _sample_episode(sampler: Any, *, seed: int) -> Any:
+def _sample_episode(
+    sampler: Any,
+    *,
+    seed: int,
+    require_clean_query: bool = False,
+) -> Any:
     last_error: Exception | None = None
     for offset in range(256):
         try:
-            return sampler.sample(int(seed) + offset)
+            episode = sampler.sample(int(seed) + offset)
+            if not episode.guard_class_ids or not episode.query_guard:
+                raise ValueError("frozen episode requires non-empty Y_guard")
+            if require_clean_query and not any(
+                str(row.view) == "clean"
+                for row in episode.query_adapt + episode.query_guard
+            ):
+                raise ValueError("frozen V_select episode requires clean query evidence")
+            return episode
         except (ValueError, RuntimeError) as exc:
             last_error = exc
     raise ValueError(f"cannot construct source meta episode after 256 seeds: {last_error}")
@@ -957,6 +1072,189 @@ def _episode_batch(
     )
 
 
+def _compute_frozen_class_prototypes(
+    model: nn.Module,
+    batches: Sequence[Any],
+    *,
+    class_count: int,
+) -> torch.Tensor:
+    """Compute one immutable source-only class mean per registered class."""
+
+    if isinstance(class_count, bool) or int(class_count) <= 0:
+        raise ValueError("class_count must be a positive integer")
+    if not batches:
+        raise ValueError("source prototype construction requires L_s batches")
+    sums: dict[int, torch.Tensor] = {}
+    counts = {class_id: 0 for class_id in range(int(class_count))}
+    training = model.training
+    model.eval()
+    try:
+        with torch.no_grad():
+            for batch in batches:
+                rows = batch.episode.support + batch.episode.query_adapt + batch.episode.query_guard
+                if {str(row.role) for row in rows} != {"L_s"}:
+                    raise ValueError("frozen prototypes may only read L_s source carriers")
+                for values, labels in (
+                    (batch.support_x, batch.support_y),
+                    (batch.query_x, batch.query_y),
+                ):
+                    embeddings = _embedding_from_output(
+                        _model_forward(model, values, labels)
+                    ).detach()
+                    for class_id in torch.unique(labels, sorted=True).tolist():
+                        class_id = int(class_id)
+                        if class_id not in counts:
+                            raise ValueError(
+                                f"source class {class_id} is outside registered class_mapping"
+                            )
+                        selected = embeddings[labels == class_id]
+                        value = selected.sum(dim=0).detach().cpu()
+                        sums[class_id] = value if class_id not in sums else sums[class_id] + value
+                        counts[class_id] += int(selected.size(0))
+    finally:
+        model.train(training)
+    missing = [class_id for class_id, count in counts.items() if count <= 0]
+    if missing:
+        raise ValueError(
+            f"source prototypes require samples for every registered class; missing={missing}"
+        )
+    prototypes = torch.stack(
+        [sums[class_id] / float(counts[class_id]) for class_id in range(int(class_count))]
+    )
+    if not prototypes.is_floating_point() or not bool(torch.isfinite(prototypes).all()):
+        raise ValueError("source prototypes must be finite floating class means")
+    zero_rows = torch.linalg.vector_norm(prototypes, dim=1) <= 0
+    if bool(zero_rows.any()):
+        raise ValueError(
+            "source prototypes must be non-zero for every registered class; "
+            f"zero_classes={torch.nonzero(zero_rows).flatten().tolist()}"
+        )
+    return prototypes.detach().clone()
+
+
+def _randomize_adapter_parameters(model: nn.Module, *, seed: int) -> None:
+    from cvsrffi.meta_adapter import iter_inner_adapter_parameters
+
+    generator = torch.Generator(device="cpu").manual_seed(int(seed))
+    with torch.no_grad():
+        for _name, parameter in iter_inner_adapter_parameters(model):
+            values = torch.randn(
+                parameter.shape, generator=generator, dtype=torch.float32
+            ).to(device=parameter.device, dtype=parameter.dtype)
+            parameter.copy_(values * 0.01)
+
+
+def _scenario_accuracy(
+    model: nn.Module,
+    values: torch.Tensor,
+    labels: torch.Tensor,
+) -> dict[str, Any]:
+    model_device = next(model.parameters()).device
+    predictions_parts = []
+    labels_cpu = labels.detach().cpu().to(dtype=torch.long)
+    with torch.no_grad():
+        for start in range(0, int(labels.numel()), 128):
+            stop = min(start + 128, int(labels.numel()))
+            batch_labels = labels[start:stop].to(model_device, dtype=torch.long)
+            output = _model_forward(
+                model, values[start:stop].to(model_device), batch_labels
+            )
+            logits = output.get("logits", output.get("tx_logits"))
+            if not torch.is_tensor(logits) or logits.ndim != 2:
+                raise ValueError("final checkpoint evaluation requires fixed-head logits")
+            predictions_parts.append(logits.argmax(dim=1).detach().cpu())
+    predictions = torch.cat(predictions_parts)
+    labels = labels_cpu
+    pairs = []
+    for class_id in torch.unique(labels, sorted=True).tolist():
+        mask = labels == int(class_id)
+        pairs.append(
+            {
+                "class_id": int(class_id),
+                "accuracy": float((predictions[mask] == labels[mask]).float().mean().item()),
+                "count": int(mask.sum().item()),
+            }
+        )
+    return {
+        "accuracy": float((predictions == labels).float().mean().item()),
+        "count": int(labels.numel()),
+        "per_class": pairs,
+    }
+
+
+def _evaluate_final_checkpoint_scenarios(
+    model: nn.Module,
+    *,
+    source_manifest: Mapping[str, Any],
+    eval_batches: Sequence[Any],
+    device: torch.device,
+    seed: int,
+) -> dict[str, Any]:
+    """Evaluate clean and each LEO weak family on the declared held-out test."""
+
+    scenarios: dict[str, Any] = {}
+    training = model.training
+    model.eval()
+    try:
+        if source_manifest.get("available"):
+            if source_manifest.get("clean_test_physical_disjoint") is not True:
+                raise ValueError("declared clean test lacks physical-disjoint evidence")
+            dataset = source_manifest["clean_test_dataset"]
+            refs, _ = _build_refs(dataset, "declared_clean_test")
+            by_view = {
+                view: [ref for ref in refs if str(ref.view) == view]
+                for view in _SOURCE_META_VIEWS
+            }
+            for view in _SOURCE_META_VIEWS:
+                xs = []
+                ys = []
+                for ref in by_view[view]:
+                    x, y, _meta = _dataset_item(dataset, int(ref.dataset_index))
+                    xs.append(_materialize_ref_view(x, ref, view_seed=int(seed)))
+                    ys.append(int(y))
+                if not xs:
+                    raise ValueError(f"declared clean test has no rows for {view}")
+                scenarios[view] = _scenario_accuracy(
+                    model,
+                    torch.stack(xs),
+                    torch.tensor(ys, dtype=torch.long),
+                )
+            evidence_origin = "declared_clean_test_source_iq"
+            split = "declared_clean_test"
+            test_days = list(source_manifest["clean_test_days"])
+            physical_disjoint = True
+            formal_test_evidence = True
+        else:
+            selected = [
+                batch
+                for batch in eval_batches
+                if {str(row.role) for row in batch.episode.support + batch.episode.query_adapt + batch.episode.query_guard}
+                == {"V_select"}
+            ]
+            if not selected:
+                raise ValueError("injected final evaluation lacks V_select source carriers")
+            values = torch.cat([batch.query_x for batch in selected], dim=0)
+            labels = torch.cat([batch.query_y for batch in selected], dim=0)
+            metric = _scenario_accuracy(model, values, labels)
+            scenarios = {view: dict(metric) for view in _SOURCE_META_VIEWS}
+            evidence_origin = "injected_source_fixture"
+            split = "fixture_not_declared_clean_test"
+            test_days = []
+            physical_disjoint = False
+            formal_test_evidence = False
+    finally:
+        model.train(training)
+    return {
+        "source_only": True,
+        "split": split,
+        "test_days": test_days,
+        "physical_disjoint_from_phase1_roles": physical_disjoint,
+        "formal_test_evidence": formal_test_evidence,
+        "evidence_origin": evidence_origin,
+        "scenarios": scenarios,
+    }
+
+
 def _build_source_batches(
     role_datasets: Mapping[str, Any],
     config: Mapping[str, Any],
@@ -1007,6 +1305,7 @@ def _build_source_batches(
                     _sample_episode(
                         sampler,
                         seed=int(config["seed"]) + 10000 + role_index * 1000 + index,
+                        require_clean_query=(role == "V_select" and index == 0),
                     ),
                     dataset,
                     model=model,
@@ -1102,8 +1401,17 @@ def _candidate_from_curves(
         if int(final_row.step) == 0:
             if final_row.clean_step0_accuracy is not None and base_row.clean_step0_accuracy is not None:
                 clean_deltas.append(100.0 * (float(final_row.clean_step0_accuracy) - float(base_row.clean_step0_accuracy)))
-            if final_row.floor_accuracy is not None and base_row.floor_accuracy is not None:
-                guard_deltas.append(100.0 * (float(final_row.floor_accuracy) - float(base_row.floor_accuracy)))
+            if (
+                final_row.guard_floor_accuracy is not None
+                and base_row.guard_floor_accuracy is not None
+            ):
+                guard_deltas.append(
+                    100.0
+                    * (
+                        float(final_row.guard_floor_accuracy)
+                        - float(base_row.guard_floor_accuracy)
+                    )
+                )
         if int(final_row.step) == 3 and final_row.mean_accuracy is not None and base_row.mean_accuracy is not None:
             holdouts.append(
                 SourceHoldoutDelta(
@@ -1114,10 +1422,14 @@ def _candidate_from_curves(
             )
     if not holdouts:
         raise ValueError("source V_select curve produced no finite step-3 holdouts")
+    if not clean_deltas or not guard_deltas:
+        raise ValueError(
+            "source V_select candidate requires explicit clean and Y_guard floor evidence"
+        )
     return SourceCheckpointCandidate(
         candidate_id=candidate_id,
-        clean_delta_pp=float(sum(clean_deltas) / len(clean_deltas)) if clean_deltas else 0.0,
-        guard_floor_delta_pp=min(guard_deltas) if guard_deltas else 0.0,
+        clean_delta_pp=float(sum(clean_deltas) / len(clean_deltas)),
+        guard_floor_delta_pp=min(guard_deltas),
         worst_a3_delta_pp=min(item.delta_pp for item in holdouts),
         parameter_count=int(sum(parameter.numel() for parameter in model.parameters())),
         latency_ms=float(sum(float(row.latency_ms) for row in final_rows.values()) / max(1, len(final_rows))),
@@ -1226,6 +1538,7 @@ def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
             build_phase1b_optimizer,
             evaluate_adaptation_curve,
             run_meta_train_step,
+            run_supervised_adapter_step,
             select_source_checkpoint,
         )
 
@@ -1249,16 +1562,49 @@ def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
             train_batches, eval_batches = _build_source_batches(
                 source_manifest["role_datasets"], config, model, device
             )
+        class_count = int(model_args.get("num_classes", len(ds_w.get("tx_list", [])) or 1))
+        frozen_prototypes = _compute_frozen_class_prototypes(
+            model, train_batches, class_count=class_count
+        ).to(device)
+        train_batches = [
+            replace(batch, frozen_prototypes=frozen_prototypes.clone())
+            for batch in train_batches
+        ]
+        eval_batches = [
+            replace(batch, frozen_prototypes=frozen_prototypes.clone())
+            for batch in eval_batches
+        ]
+        candidate_row = next(
+            row
+            for row in config["candidate_plan"]
+            if row["candidate_id"] == config["active_candidate_id"]
+        )
+        candidate_id = str(candidate_row["candidate_id"])
+        training_mode = str(candidate_row["training_mode"])
         trainer_config = MetaTrainerConfig(
             source_receiver_ids=tuple(config["source_receiver_ids"]),
             meta_batch_size=int(config["meta_batch_size"]),
             inner_steps=int(config["adapter"]["inner_steps"]),
             phase1c_backbone_lr_ratio=float(config["phase1c_backbone_lr_ratio"]),
+            learn_step_sizes=bool(candidate_row["learn_step_sizes"]),
         )
         baseline_curve = evaluate_adaptation_curve(model, eval_batches, trainer_config)
         baseline_v_cal_curve = _curve_for_role(baseline_curve, "V_cal")
         baseline_v_select_curve = _curve_for_role(baseline_curve, "V_select")
-        optimizer = build_phase1b_optimizer(model, trainer_config)
+        p0_evaluation = _evaluate_final_checkpoint_scenarios(
+            model,
+            source_manifest=source_manifest,
+            eval_batches=eval_batches,
+            device=device,
+            seed=int(config["seed"]),
+        )
+        _write_json_exclusive(output_root / "p0_control_evaluation.json", p0_evaluation)
+        if training_mode in {"random_adapter", "supervised_adapter"}:
+            _randomize_adapter_parameters(model, seed=int(config["seed"]) + 101)
+        optimizer = None
+        if training_mode in {"supervised_adapter", "fomaml_fixed_lr", "fomaml_meta_sgd"}:
+            optimizer = build_phase1b_optimizer(model, trainer_config)
+        outer_steps = 0 if training_mode == "random_adapter" else int(config["meta_train_steps"])
         logs_path = output_root / "logs.jsonl"
         metrics_path = output_root / "metrics.csv"
         with logs_path.open("x", encoding="utf-8", newline="\n") as logs_handle, metrics_path.open(
@@ -1266,8 +1612,15 @@ def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
         ) as metrics_handle:
             writer = csv.DictWriter(metrics_handle, fieldnames=("train_step", "outer_loss", "updated_parameter_count"))
             writer.writeheader()
-            for train_step in range(int(config["meta_train_steps"])):
-                result = run_meta_train_step(model, train_batches, optimizer, trainer_config)
+            for train_step in range(outer_steps):
+                if optimizer is None:
+                    raise RuntimeError("training candidate is missing its optimizer")
+                step_fn = (
+                    run_supervised_adapter_step
+                    if training_mode == "supervised_adapter"
+                    else run_meta_train_step
+                )
+                result = step_fn(model, train_batches, optimizer, trainer_config)
                 writer.writerow(
                     {
                         "train_step": int(train_step),
@@ -1281,13 +1634,21 @@ def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
         final_curve = evaluate_adaptation_curve(model, eval_batches, trainer_config)
         final_v_cal_curve = _curve_for_role(final_curve, "V_cal")
         final_v_select_curve = _curve_for_role(final_curve, "V_select")
-        candidate = _candidate_from_curves(
-            baseline_v_select_curve,
-            final_v_select_curve,
-            candidate_id=f"{config['run_id']}:step{int(config['meta_train_steps'])}",
-            model=model,
-        )
-        selected = select_source_checkpoint([candidate])
+        candidate = None
+        try:
+            candidate = _candidate_from_curves(
+                baseline_v_select_curve,
+                final_v_select_curve,
+                candidate_id=f"{config['run_id']}:{candidate_id}",
+                model=model,
+            )
+            selected = select_source_checkpoint([candidate])
+            scientific_verdict = "SOURCE_SELECTION_ELIGIBLE"
+            selected_payload: dict[str, Any] | None = asdict(selected)
+        except ValueError as selection_error:
+            selected_payload = None
+            scientific_verdict = "SCIENTIFIC_FAILURE_NO_PROMOTION"
+            selection_failure = str(selection_error)
         curve_payload = {
             "baseline": _curve_payload(baseline_curve),
             "final": _curve_payload(final_curve),
@@ -1302,19 +1663,35 @@ def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
                 "selection_role": "checkpoint_ranking",
             },
             "selection_source_split": "V_select",
-            "selected_candidate": asdict(selected),
+            "candidate_id": candidate_id,
+            "training_mode": training_mode,
+            "selected_candidate": selected_payload,
+            "scientific_verdict": scientific_verdict,
             "source_only": True,
         }
         _write_json_exclusive(output_root / "source_adaptation_curve.json", curve_payload)
+        final_evaluation = _evaluate_final_checkpoint_scenarios(
+            model,
+            source_manifest=source_manifest,
+            eval_batches=eval_batches,
+            device=device,
+            seed=int(config["seed"]),
+        )
+        _write_json_exclusive(
+            output_root / "final_checkpoint_evaluation.json", final_evaluation
+        )
         tx_list = list(ds_w.get("tx_list", []))
-        class_count = int(model_args.get("num_classes", len(tx_list) or 1))
         class_mapping = {
             str(index): str(tx_list[index] if index < len(tx_list) else index)
             for index in range(class_count)
         }
-        with torch.no_grad():
-            first_batch = train_batches[0]
-            prototype = torch.zeros_like(first_batch.frozen_prototypes).detach().cpu()
+        prototype = frozen_prototypes.detach().cpu().clone()
+        with (output_root / "frozen_prototypes.npz").open("xb") as handle:
+            np.savez(
+                handle,
+                prototypes=prototype.numpy().astype(np.float32),
+                class_ids=np.arange(class_count, dtype=np.int64),
+            )
         bundle_config = {
             "model_args": _bundle_model_args(model_args, config),
             "meta_adapter_config": {
@@ -1343,10 +1720,15 @@ def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
             "source_receiver_ids": list(config["source_receiver_ids"]),
             "source_split": config["source_split"],
             "source_days": list(config["source_days"]),
-            "task7_outer_steps": int(config["meta_train_steps"]),
+            "clean_test_days": list(config["clean_test_days"]),
+            "candidate_id": candidate_id,
+            "training_mode": training_mode,
+            "task7_outer_steps": outer_steps,
             "checkpoint_load": asdict(checkpoint_audit),
             "adapter_migration": adapter_migration,
-            "selected_candidate": asdict(selected),
+            "candidate_result": None if candidate is None else asdict(candidate),
+            "selected_candidate": selected_payload,
+            "scientific_verdict": scientific_verdict,
             "artifacts": {
                 name: str(output_root / name)
                 for name in (
@@ -1356,14 +1738,20 @@ def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
                     "source_adaptation_curve.json",
                     "run_summary.json",
                     "config_snapshot.json",
+                    "p0_control_evaluation.json",
+                    "final_checkpoint_evaluation.json",
+                    "frozen_prototypes.npz",
                 )
             },
         }
+        if scientific_verdict == "SCIENTIFIC_FAILURE_NO_PROMOTION":
+            summary["selection_failure"] = selection_failure
         _write_json_exclusive(output_root / "run_summary.json", summary)
         print(
             "[META-PHASE1] "
             f"run_id={config['run_id']} status=ARTIFACTS_COMPLETE "
-            f"outer_steps={config['meta_train_steps']} source_receiver_ids={config['source_receiver_ids']}",
+            f"candidate={candidate_id} mode={training_mode} outer_steps={outer_steps} "
+            f"source_receiver_ids={config['source_receiver_ids']}",
             flush=True,
         )
         return summary

@@ -94,6 +94,8 @@ def _build_command(
         ",".join(str(item) for item in config["source_receiver_ids"]),
         "--wisig_train_days",
         ",".join(str(item) for item in config["source_days"]),
+        "--wisig_test_days",
+        ",".join(str(item) for item in config["clean_test_days"]),
     ]
     if gpu.strip():
         command.extend(["--device", "cuda"])
@@ -126,15 +128,32 @@ def build_launch_plan(
         raise FileExistsError(f"immutable meta Phase1 output root already exists: {resolved_output}")
     selected_gpu = str(gpu if gpu is not None else os.environ.get("CUDA_VISIBLE_DEVICES", "")).strip()
     selected_python = str(python_executable or sys.executable)
-    command = _build_command(
-        config_path=config_path_abs,
-        config=config,
-        base_checkpoint=resolved_checkpoint,
-        wisig_pkl=resolved_wisig,
-        output_root=resolved_output,
-        python_executable=selected_python,
-        gpu=selected_gpu,
-    )
+    candidate_plans = []
+    for row in config["candidate_plan"]:
+        candidate_id = str(row["candidate_id"])
+        if candidate_id == "P0":
+            continue
+        candidate_output = resolved_output / candidate_id
+        candidate_config = resolved_output / "_configs" / f"{candidate_id}.json"
+        command = _build_command(
+            config_path=candidate_config,
+            config=config,
+            base_checkpoint=resolved_checkpoint,
+            wisig_pkl=resolved_wisig,
+            output_root=candidate_output,
+            python_executable=selected_python,
+            gpu=selected_gpu,
+        )
+        candidate_plans.append(
+            {
+                "candidate_id": candidate_id,
+                "training_mode": str(row["training_mode"]),
+                "learn_step_sizes": bool(row["learn_step_sizes"]),
+                "config_path": str(candidate_config),
+                "output_root": str(candidate_output),
+                "command": command,
+            }
+        )
     expected_artifacts = (
         "logs.jsonl",
         "metrics.csv",
@@ -142,6 +161,9 @@ def build_launch_plan(
         "run_summary.json",
         "config_snapshot.json",
         "source_adaptation_curve.json",
+        "p0_control_evaluation.json",
+        "final_checkpoint_evaluation.json",
+        "frozen_prototypes.npz",
     )
     return {
         "schema": config["schema"],
@@ -151,9 +173,11 @@ def build_launch_plan(
         "source_receiver_ids": list(config["source_receiver_ids"]),
         "gpu": selected_gpu or "cpu",
         "python": selected_python,
-        "command": command,
+        "command": candidate_plans[-1]["command"],
+        "candidate_plans": candidate_plans,
         "output_root": str(resolved_output),
         "expected_artifacts": list(expected_artifacts),
+        "matrix_artifact": str(resolved_output / "candidate_matrix_summary.json"),
         "config_path": str(config_path_abs),
     }
 
@@ -175,7 +199,12 @@ def _print_plan(plan: Mapping[str, Any]) -> None:
     print(f"source_receiver_ids={plan['source_receiver_ids']}")
     print(f"GPU={plan['gpu']}")
     print(f"output_root={plan['output_root']}")
-    print("command=" + subprocess.list2cmdline([str(item) for item in plan["command"]]))
+    for candidate in plan["candidate_plans"]:
+        print(
+            f"candidate={candidate['candidate_id']} mode={candidate['training_mode']} "
+            f"output={candidate['output_root']}"
+        )
+        print("command=" + subprocess.list2cmdline([str(item) for item in candidate["command"]]))
     print("expected_artifacts=" + json.dumps(plan["expected_artifacts"], ensure_ascii=False))
 
 
@@ -195,8 +224,52 @@ def main(argv: Sequence[str] | None = None) -> int:
     env = dict(os.environ)
     if args.gpu is not None:
         env["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
-    completed = subprocess.run(plan["command"], cwd=str(PROJECT_ROOT), env=env, check=False)
-    return int(completed.returncode)
+    root = Path(plan["output_root"])
+    (root / "_configs").mkdir(parents=True, exist_ok=False)
+    base_config = load_meta_phase1_config(plan["config_path"])
+    summaries = []
+    for candidate in plan["candidate_plans"]:
+        candidate_config = dict(base_config)
+        candidate_config["active_candidate_id"] = candidate["candidate_id"]
+        config_destination = Path(candidate["config_path"])
+        with config_destination.open("x", encoding="utf-8", newline="\n") as handle:
+            json.dump(candidate_config, handle, ensure_ascii=False, indent=2)
+            handle.write("\n")
+        completed = subprocess.run(candidate["command"], cwd=str(PROJECT_ROOT), env=env, check=False)
+        if int(completed.returncode) != 0:
+            return int(completed.returncode)
+        summary_path = Path(candidate["output_root"]) / "run_summary.json"
+        summaries.append(json.loads(summary_path.read_text(encoding="utf-8")))
+    eligible = [
+        item
+        for item in summaries
+        if item.get("scientific_verdict") == "SOURCE_SELECTION_ELIGIBLE"
+        and isinstance(item.get("candidate_result"), dict)
+    ]
+    eligible.sort(
+        key=lambda item: (
+            -float(item["candidate_result"]["worst_a3_delta_pp"]),
+            int(item["candidate_result"]["parameter_count"]),
+            float(item["candidate_result"]["latency_ms"]),
+            str(item["candidate_id"]),
+        )
+    )
+    matrix_summary = {
+        "status": "ARTIFACTS_COMPLETE",
+        "run_id": plan["run_id"],
+        "candidates": summaries,
+        "p0_control": "emitted inside every candidate source_adaptation_curve.json",
+        "selected_candidate_id": eligible[0]["candidate_id"] if eligible else None,
+        "scientific_verdict": (
+            "SOURCE_SELECTION_ELIGIBLE"
+            if eligible
+            else "SCIENTIFIC_FAILURE_NO_PROMOTION"
+        ),
+    }
+    with (root / "candidate_matrix_summary.json").open("x", encoding="utf-8", newline="\n") as handle:
+        json.dump(matrix_summary, handle, ensure_ascii=False, indent=2)
+        handle.write("\n")
+    return 0
 
 
 if __name__ == "__main__":

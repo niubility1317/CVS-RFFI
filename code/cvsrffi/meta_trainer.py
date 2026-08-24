@@ -13,6 +13,7 @@ from collections import OrderedDict
 from collections.abc import Iterable, Mapping, Sequence
 import copy
 from dataclasses import dataclass, field, fields, replace, is_dataclass
+import inspect
 import math
 import time
 from typing import Any
@@ -74,6 +75,7 @@ class MetaTrainerConfig:
     inner_steps: int = 3
     phase1c_backbone_lr_ratio: float = 0.05
     grad_clip_norm: float | None = 1.0
+    learn_step_sizes: bool = True
     objective_config: MetaObjectiveConfig = field(default_factory=MetaObjectiveConfig)
 
     def __post_init__(self) -> None:
@@ -103,6 +105,8 @@ class MetaTrainerConfig:
                 raise ValueError("grad_clip_norm must be finite and positive or None")
         if not isinstance(self.objective_config, MetaObjectiveConfig):
             raise TypeError("objective_config must be a MetaObjectiveConfig")
+        if not isinstance(self.learn_step_sizes, bool):
+            raise TypeError("learn_step_sizes must be boolean")
         object.__setattr__(self, "meta_batch_size", int(self.meta_batch_size))
         object.__setattr__(self, "inner_steps", int(self.inner_steps))
 
@@ -190,6 +194,7 @@ class AdaptationCurveRow:
     state_size_bytes: int
     latency_ms: float
     source_only: bool = True
+    guard_floor_accuracy: float | None = None
 
 
 @dataclass(frozen=True)
@@ -397,7 +402,10 @@ def build_phase1b_optimizer(
         raise TypeError("config with explicit source_receiver_ids is required")
     if not isinstance(config, MetaTrainerConfig):
         raise TypeError("config must be a MetaTrainerConfig")
-    return _make_optimizer(model, config, _adapter_outer_parameters(model), ())
+    selected = _adapter_outer_parameters(model)
+    if not config.learn_step_sizes:
+        selected = [item for item in selected if not item[0].endswith("log_step_size")]
+    return _make_optimizer(model, config, selected, ())
 
 
 def build_phase1c_optimizer(
@@ -491,6 +499,12 @@ def _validate_meta_episode_structure(episode: MetaEpisode) -> None:
         ("query_adapt", episode.query_adapt),
         ("query_guard", episode.query_guard),
     )
+    if not episode.support:
+        raise ValueError("MetaEpisode support must be non-empty")
+    if not episode.query_adapt:
+        raise ValueError("MetaEpisode query_adapt must be non-empty")
+    if not episode.query_guard or not episode.guard_class_ids:
+        raise ValueError("MetaEpisode Y_guard/query_guard must be non-empty")
     partition_ids: dict[str, set[str]] = {}
     for partition_name, rows in partitions:
         if not isinstance(rows, tuple):
@@ -690,6 +704,16 @@ def _extract_logits(outputs: Mapping[str, object]) -> Tensor:
     return logits
 
 
+def _model_forward_kwargs(model: nn.Module, labels: Tensor) -> dict[str, object]:
+    parameters = inspect.signature(model.forward).parameters
+    kwargs: dict[str, object] = {"return_aux": True}
+    if "y" in parameters:
+        kwargs["y"] = labels
+    elif "y_tx" in parameters:
+        kwargs["y_tx"] = labels
+    return kwargs
+
+
 def _cosine_or_none(
     left: Sequence[Tensor | None],
     right: Sequence[Tensor | None],
@@ -712,7 +736,11 @@ def _cosine_or_none(
     return float(value.detach().cpu().item()) if bool(torch.isfinite(value)) else None
 
 
-def _validate_optimizer_scope(model: nn.Module, optimizer: torch.optim.Optimizer) -> tuple[str, ...]:
+def _validate_optimizer_scope(
+    model: nn.Module,
+    optimizer: torch.optim.Optimizer,
+    config: MetaTrainerConfig,
+) -> tuple[str, ...]:
     names = optimizer_parameter_names(model, optimizer)
     if not names:
         raise ValueError("optimizer must contain parameters")
@@ -730,8 +758,12 @@ def _validate_optimizer_scope(model: nn.Module, optimizer: torch.optim.Optimizer
             "optimizer contains parameters outside Phase1-B/C whitelist: "
             f"{sorted(set(names) - allowed)!r}"
         )
-    if not inner_names.issubset(names) or not log_names.issubset(names):
-        raise ValueError("optimizer must include every adapter inner and log_step_size parameter")
+    if not inner_names.issubset(names):
+        raise ValueError("optimizer must include every adapter inner parameter")
+    if config.learn_step_sizes and not log_names.issubset(names):
+        raise ValueError("Meta-SGD optimizer must include every log_step_size parameter")
+    if not config.learn_step_sizes and set(names).intersection(log_names):
+        raise ValueError("fixed-LR optimizer must freeze every log_step_size parameter")
     return names
 
 
@@ -804,7 +836,7 @@ def run_meta_train_step(
             raise TypeError("run_meta_train_step accepts MetaEpisodeBatch values only")
         _validate_episode_batch_integrity(batch)
         _validate_episode_roles(batch, _SOURCE_ROLES, config.source_receiver_ids)
-    optimizer_names = _validate_optimizer_scope(model, optimizer)
+    optimizer_names = _validate_optimizer_scope(model, optimizer, config)
     snapshot = _snapshot_state(model)
     optimizer_snapshot = copy.deepcopy(optimizer.state_dict())
     optimizer.zero_grad(set_to_none=True)
@@ -921,6 +953,74 @@ def run_meta_train_step(
             parameter.grad = None
 
 
+def run_supervised_adapter_step(
+    model: nn.Module,
+    episodes: Sequence[MetaEpisodeBatch],
+    optimizer: torch.optim.Optimizer,
+    config: MetaTrainerConfig,
+) -> MetaTrainStepResult:
+    """Run one ordinary labeled-source adapter CE update for candidate P2."""
+
+    episodes = tuple(episodes)
+    if len(episodes) != config.meta_batch_size:
+        raise ValueError(
+            f"supervised meta batch must contain {config.meta_batch_size} episodes"
+        )
+    for batch in episodes:
+        _validate_episode_roles(batch, _SOURCE_ROLES, config.source_receiver_ids)
+    optimizer_names = _validate_optimizer_scope(model, optimizer, config)
+    snapshot = _snapshot_state(model)
+    optimizer_snapshot = copy.deepcopy(optimizer.state_dict())
+    optimizer.zero_grad(set_to_none=True)
+    try:
+        losses = []
+        for batch in episodes:
+            outputs = model(batch.support_x, **_model_forward_kwargs(model, batch.support_y))
+            logits = _extract_logits(outputs)
+            losses.append(
+                torch.nn.functional.cross_entropy(
+                    logits, batch.support_y.to(device=logits.device, dtype=torch.long)
+                )
+            )
+        total_loss = torch.stack(losses).mean()
+        if not bool(torch.isfinite(total_loss)) or not total_loss.requires_grad:
+            raise MetaTrainerError("supervised adapter loss must be a finite scalar")
+        total_loss.backward()
+        if config.grad_clip_norm is not None:
+            torch.nn.utils.clip_grad_norm_(
+                [parameter for parameter in model.parameters() if parameter.requires_grad],
+                float(config.grad_clip_norm),
+                error_if_nonfinite=True,
+            )
+        optimizer.step()
+        changed = _state_changed_names(model, snapshot)
+        if not changed.issubset(set(optimizer_names)):
+            raise MetaTrainerError(
+                "supervised adapter step changed state outside optimizer whitelist"
+            )
+        return MetaTrainStepResult(
+            loss=total_loss.detach(),
+            episode_logs=tuple(
+                {
+                    "episode_kind": batch.episode.kind.value,
+                    "k_shot": int(batch.episode.k_shot),
+                    "training_mode": "supervised_adapter",
+                }
+                for batch in episodes
+            ),
+            optimizer_parameter_names=tuple(optimizer_names),
+            updated_parameter_names=tuple(sorted(changed)),
+            parameter_audit={"non_optimizer_state_unchanged": True},
+        )
+    except Exception:
+        _restore_state(snapshot)
+        optimizer.load_state_dict(optimizer_snapshot)
+        raise
+    finally:
+        for parameter in model.parameters():
+            parameter.grad = None
+
+
 def _accuracy_rows(logits: Tensor, labels: Tensor, mask: Tensor) -> tuple[float | None, float | None, tuple[tuple[int, float], ...]]:
     selected = mask.to(device=logits.device) & torch.ones_like(mask, dtype=torch.bool, device=logits.device)
     if not bool(selected.any()):
@@ -971,6 +1071,9 @@ def _curve_row(
     mean_accuracy, floor_accuracy, per_class = _accuracy_rows(logits, batch.query_y, query_mask)
     adapt_accuracy, _, _ = _accuracy_rows(logits, batch.query_y, batch.adapt_mask)
     guard_accuracy, _, _ = _accuracy_rows(logits, batch.query_y, batch.guard_mask)
+    _, guard_floor_accuracy, _ = _accuracy_rows(
+        logits, batch.query_y, batch.guard_mask
+    )
     refs = batch.episode.query_adapt + batch.episode.query_guard
     receiver_ids = tuple(sorted({row.rx_i for row in refs}, key=str))
     day_ids = tuple(sorted({int(row.day_i) for row in refs}))
@@ -1015,6 +1118,7 @@ def _curve_row(
         parameter_ratio=float(adapter_parameter_budget(model)["inner_ratio"]),
         state_size_bytes=state_size,
         latency_ms=float(elapsed_ms),
+        guard_floor_accuracy=guard_floor_accuracy,
     )
 
 
@@ -1151,5 +1255,6 @@ __all__ = [
     "evaluate_adaptation_curve",
     "optimizer_parameter_names",
     "run_meta_train_step",
+    "run_supervised_adapter_step",
     "select_source_checkpoint",
 ]

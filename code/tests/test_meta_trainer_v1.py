@@ -506,3 +506,33 @@ def test_real_cvsincnet_phase1_parameter_groups_are_18_and_24_names():
         "fuse.0.weight",
         "fuse.0.bias",
     }
+
+
+def test_meta_episode_batch_requires_nonempty_y_guard_partition():
+    batch = _batch()
+    episode = replace(batch.episode, query_guard=(), guard_class_ids=frozenset())
+    with pytest.raises(ValueError, match="Y_guard|query_guard"):
+        MetaEpisodeBatch(
+            episode=episode,
+            support_x=batch.support_x,
+            support_y=batch.support_y,
+            query_x=batch.query_x[:2],
+            query_y=batch.query_y[:2],
+            adapt_mask=torch.tensor([True, True]),
+            guard_mask=torch.tensor([False, False]),
+            frozen_prototypes=batch.frozen_prototypes,
+        )
+
+
+def test_fomaml_fixed_lr_optimizer_freezes_meta_sgd_step_sizes():
+    model = _model()
+    config = replace(_config(), learn_step_sizes=False)
+    optimizer = build_phase1b_optimizer(model, config)
+    names = optimizer_parameter_names(model, optimizer)
+    assert names
+    assert all(not name.endswith("log_step_size") for name in names)
+    assert all(
+        not parameter.requires_grad
+        for name, parameter in model.named_parameters()
+        if name.endswith("log_step_size")
+    )
