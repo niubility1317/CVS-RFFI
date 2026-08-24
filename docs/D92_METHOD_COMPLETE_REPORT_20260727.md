@@ -284,9 +284,12 @@ $$
 
 |符号|维度|含义|
 |---|---:|---|
-|\(\mathbf{G}\)|\(160\times160\)|D92 E0从Phase1域×类INT8聚合中心派生的类无关地面扰动协方差|
-|\(\sigma_{\mathrm{q}}^2\)|标量|由有效FP16量化尺度派生的INT8量化噪声底|
-|\(\mathbf{G}_{+}\)|\(160\times160\)|去除量化噪声底后的对称扰动矩阵|
+|\(\widehat{\mathbf g}_{d,c}\)|160|从Phase1 v2压缩组件临时重构的地面域\(d\)、旧类\(c\)聚合中心；不是target support，也不持久保存为稠密bank|
+|\(\widehat R_{d,c}\)|标量|同一地面域×类单元的Phase1聚合P90余弦距离半径；它描述该聚合单元的离散程度，不是单样本半径|
+|\(\epsilon_{\mathrm{rec}}\)|标量|v2组件离线压缩审计记录的每坐标重构RMSE，包含低秩近似和INT8/FP16解码误差|
+|\(\mathbf{G}\)|\(160\times160\)|由\(\widehat{\mathbf g}_{d,c}\)及半径可靠性权重临时派生的类无关观测扰动协方差；不是bundle直接封存的数组|
+|\(\sigma_{\mathrm{q}}^2\)|标量|当前v2路径取\(\epsilon_{\mathrm{rec}}^2\)的各向同性压缩重构噪声底；符号沿用\(q\)，但不应理解为仅INT8舍入误差|
+|\(\mathbf{G}_{+}\)|\(160\times160\)|从观测协方差中扣除\(\sigma_{\mathrm q}^2\mathbf I_{160}\)后的对称扰动信号矩阵|
 |\(\lambda_j\)|标量|扰动矩阵第\(j\)个正特征值|
 |\(\mathbf{u}_j\)|160|对应的单位特征向量|
 |\(\mathbf{U}\)|\(160\times r\)|保留的扰动基|
@@ -307,6 +310,8 @@ $$
 |符号|维度|含义|
 |---|---:|---|
 |\(\boldsymbol{\mu}_c\)|288|稳健化后类别\(c\)的联合特征均值|
+|\(\mu_{c,i}\)|标量|总体层面类别\(c\)第\(i\)个特征坐标的均值\(\mathbb E[X_i^{(c)}]\)；实现中由该类K条support在第\(i\)列的样本平均估计，不是一条向量的第\(i\)个元素|
+|\(\mathbf X^{(c)}\)|288维随机向量|“类别\(c\)的潜在support特征分布”的数学记号；与按行堆叠的观测矩阵\(\widetilde{\mathbf Z}_c\)严格区分|
 |\(\mathbf{D}_c\)|\(288\times288\)|类别\(c\)逐维support标准差组成的对角矩阵|
 |\(\mathbf{u}_{c,k}\)|288|类别\(c\)第\(k\)个support的标准化残差|
 |\(\mathbf{S}_c\)|\(288\times288\)|类别\(c\)的经验协方差|
@@ -471,10 +476,10 @@ Phase1 deployment bundle是地面训练结束后、任何target数据到达前�
 |组成部分|当前实际内容|作用|Phase2是否可更新|
 |---|---|---|---|
 |冻结身份特征运行时|与Phase1 checkpoint绑定的TorchScript特征编码器及特征schema|把固定received IQ映射为160维身份特征|否|
-|INT8域×类聚合中心组件|每个有效地面域、每个Phase1旧类的一条160维INT8聚合中心及FP16尺度|派生类无关跨域扰动谱，辅助判断target support可靠性|否|
+|v2中心－低秩残差－半径组件|一个固定中心域的INT8类中心、每类秩3域残差基及系数、INT8聚合P90半径和FP16尺度|临时重构域×类聚合中心，派生类无关扰动谱，辅助判断target support可靠性|否|
 |完整性与权限元数据|checkpoint、源聚合artifact、类别表、域表、组件文件的SHA256及schema、allowlist、provenance和eligibility字段|防止组件错配、替换或夹带禁止成员|否|
 
-“逻辑bundle”不要求所有内容物理上位于同一个文件。当前代码路径从已封存的enrollment package加载冻结特征运行时，并通过独立的组件目录和manifest哈希加载INT8域×类中心。二者必须由checkpoint哈希、特征schema、类别注册表和完整性记录绑定，方法语义上共同构成一个不可变Phase1 deployment bundle。
+“逻辑bundle”不要求所有内容物理上位于同一个文件。当前正式代码路径从已封存的enrollment package加载冻结特征运行时，并通过独立组件目录和manifest加载`int8_domain_class_center_lowrank_residual_radius_v2`。该组件只暴露按需重构一个已注册地面域的聚合中心和P90半径；它不导出、也不持久缓存完整FP32域×类bank。运行时与组件由checkpoint哈希、特征schema、类别注册表和完整性记录绑定，方法语义上共同构成不可变Phase1 deployment bundle。
 
 #### 4.2.2 冻结身份特征运行时
 
@@ -500,9 +505,72 @@ $$
 
 冻结运行时承担“从IQ提取身份表征”的作用。它不携带target support统计量，不保存target新类知识，也不会因Stage2-B适应或Stage2-C注册而改变。
 
-#### 4.2.3 INT8域×类聚合中心组件
+#### 4.2.3 当前正式v2组件：中心、低秩残差与P90半径
 
-当前组件schema为
+先用一句直观的话概括：可以把Phase1地面知识想成“每个旧类在不同地面域留下的多张压缩地图”。v2组件不把所有地图原样带到Phase2，而是保存一张固定中心域地图、三条最主要的变化方向、各域沿这些方向的系数，以及每张地图本身的聚合离散程度。Stage2临时重构这些地图，只为找出**跨地面域共同的变化方向**；它不会把某张地面地图当成target旧类原型去给query打分。
+
+当前正式组件schema为
+
+```text
+int8_domain_class_center_lowrank_residual_radius_v2
+```
+
+设Phase1有\(D_{\mathrm g}\)个已注册地面域、\(C_{\mathrm o}\)个旧类，且固定低秩为\(R_0=3\)。组件的核心数组如下：
+
+|数组|数据类型与形状|用途|
+|---|---:|---|
+|`core_q`,`core_scale`|INT8\(C_{\mathrm o}\times160\)、FP16\(C_{\mathrm o}\)|固定中心域中每个旧类的160维聚合中心及其逐向量解码尺度|
+|`residual_basis_q`,`residual_basis_scale`|INT8\(C_{\mathrm o}\times R_0\times160\)、FP16\(C_{\mathrm o}\times R_0\)|每个旧类跨域残差的三条低秩方向及其尺度|
+|`residual_coeff_q`,`residual_coeff_scale`|INT8\((D_{\mathrm g}-1)\times C_{\mathrm o}\times R_0\)、FP16同形状|每个非中心域、每个旧类沿三条低秩方向的系数及其尺度|
+|`radius_q`,`radius_scale`|INT8\(D_{\mathrm g}\times C_{\mathrm o}\)、FP16\(C_{\mathrm o}\)|每个域×类聚合P90余弦距离半径及逐类尺度|
+|域/类注册表与`center_domain_handle`|字符串或标量|固定地说明哪一域是中心域，以及数组中域、类的顺序|
+
+**本表符号说明：**\(D_{\mathrm g}\)是封存地面域数量；\(C_{\mathrm o}\)是Phase1旧类数量；\(R_0=3\)是离线压缩锁定的残差秩，不是根据target support调出的超参数；160是身份特征维数。`P90半径`是Phase1聚合得到的“成员到对应域×类中心的第90百分位余弦距离”，不是单个地面样本的距离。
+
+令\(d_0\)为固定中心域，\(\ell\in\{1,2,3\}\)为v2低秩索引。Phase2对中心域和非中心域的临时重构分别为
+
+$$
+\widehat{\mathbf g}_{d_0,c}
+=
+s^{\mathrm{core}}_c\mathbf q^{\mathrm{core}}_c,
+$$
+
+$$
+\widehat{\mathbf g}_{d,c}
+=
+\widehat{\mathbf g}_{d_0,c}
++
+\sum_{\ell=1}^{3}
+\widehat a_{d,c,\ell}
+\widehat{\mathbf b}_{c,\ell},
+\qquad d\ne d_0,
+$$
+
+$$
+\widehat{\mathbf b}_{c,\ell}
+=
+s^{\mathrm{basis}}_{c,\ell}\mathbf q^{\mathrm{basis}}_{c,\ell},
+\qquad
+\widehat a_{d,c,\ell}
+=
+s^{\mathrm{coef}}_{d,c,\ell}q^{\mathrm{coef}}_{d,c,\ell}.
+$$
+
+**本式符号说明：**\(\widehat{\mathbf g}_{d,c}\in\mathbb R^{160}\)是临时反量化并重构的地面域\(d\)、旧类\(c\)聚合中心；帽号表示它是压缩组件的恢复值。\(\mathbf q^{\mathrm{core}}_c\)和\(\mathbf q^{\mathrm{basis}}_{c,\ell}\)是INT8码向量；\(q^{\mathrm{coef}}_{d,c,\ell}\)是INT8标量系数；所有\(s\)是匹配的FP16解码尺度。\(\widehat{\mathbf b}_{c,\ell}\)是第\(\ell\)条恢复后的残差方向；\(\widehat a_{d,c,\ell}\)是该域沿该方向的恢复系数。\(d_0\)是离线固定的中心域，不由target数据、query或类别角色决定。
+
+聚合半径的恢复为
+
+$$
+\widehat R_{d,c}
+=
+s^{\mathrm{rad}}_c q^{\mathrm{rad}}_{d,c}.
+$$
+
+**本式符号说明：**\(\widehat R_{d,c}\ge0\)是恢复后的Phase1聚合P90余弦距离半径；\(q^{\mathrm{rad}}_{d,c}\in\{0,\ldots,127\}\)是非负INT8半径码；\(s^{\mathrm{rad}}_c>0\)是逐类FP16半径尺度。这个量只用于给地面域×类聚合单元分配可靠性，不能恢复任何成员样本。
+
+##### 4.2.3-A 历史v1逐域×类中心输入格式（仅解释v2的离线压缩来源）
+
+v1离线输入组件的schema为
 
 ```text
 phase1_int8_domain_class_centroids_v1
@@ -545,7 +613,7 @@ $$
 
 这意味着Phase2不能知道哪些样本参与了中心，也不能从bundle恢复样本集合。
 
-#### 4.2.4 中心如何量化
+##### 4.2.3-A.1 历史v1中心如何量化
 
 每个域×类中心独立计算对称量化尺度：
 
@@ -606,9 +674,9 @@ $$
 
 **本式符号说明：**\(B_{\mathrm{main}}\)是三个主数组未考虑容器压缩时的字节数；\(D_{\mathrm g}\)是地面域数；\(C_{\mathrm o}\)是Phase1旧类数；160来自每个中心的160个INT8坐标；2是一个FP16尺度的字节数；1是一个UINT8掩码的字节数。该式不包含类别字符串、域注册表、feature schema、manifest和NPZ容器开销。由于主数组采用稠密布局，无效单元也占数组位置，掩码只说明该位置能否使用。
 
-#### 4.2.5 每个类别实际包含什么
+##### 4.2.3-A.2 历史v1每个类别包含什么
 
-当前D92 E0的每个Phase1旧类包含以下知识：
+在v1离线输入格式中，每个Phase1旧类包含以下知识：
 
 1. 一个稳定的`class_handle`，用于绑定类别顺序；
 2. 在每个有效地面域上的一条160维INT8聚合中心；
@@ -628,9 +696,9 @@ $$
 
 Stage2-C中的新类在Phase1从未出现，因此bundle中没有新类中心。新类知识只能由当前target receiver上的合法K-shot support注册。
 
-#### 4.2.6 D92 E0如何使用这些中心
+##### 4.2.3-A.3 历史v1直接统计式（不等于当前正式v2路径）
 
-D92 E0不把反量化地面中心直接作为旧类分类原型。它先对同一个旧类别在不同地面域上的中心做跨域中心化：
+历史v1组件可直接反量化得到域×类中心，并可用下式构造一个理论上的逐尺度均匀量化噪声模型。它解释v2压缩前的原始聚合布局；**当前正式D92 E0不以这一v1数组和\(\operatorname{mean}(s_{d,c}^2)/12\)作为运行时噪声底。当前正式计算见第6.1节。**v1路径同样不把反量化地面中心直接作为旧类query原型。
 
 $$
 \bar{\mathbf p}_c
@@ -662,7 +730,7 @@ C_{\mathrm o}(D_{\mathrm g}-1)
 \mathbf r_{d,c}\mathbf r_{d,c}^{\mathsf T}.
 $$
 
-**本式符号说明：**\(\mathbf G_{\mathrm{raw}}\in\mathbb R^{160\times160}\)是类无关跨域中心漂移协方差；\(C_{\mathrm o}\)是旧类数；\(D_{\mathrm g}\)是参与统计的完整地面域数；\(\mathbf r_{d,c}\mathbf r_{d,c}^{\mathsf T}\)是160维偏移向量的外积。当前实现要求参与计算的域提供完整类别网格，并至少有2个完整地面域。
+**本式符号说明：**本小节中的\(\mathbf G_{\mathrm{raw}}\in\mathbb R^{160\times160}\)是**历史v1布局**的类无关跨域中心漂移协方差；\(C_{\mathrm o}\)是旧类数；\(D_{\mathrm g}\)是参与统计的完整地面域数；\(\mathbf r_{d,c}\mathbf r_{d,c}^{\mathsf T}\)是160维偏移向量的外积。为避免公式过长，本小节省略`v1`上标；它不等于第6.1节当前正式v2状态构造中的\(\mathbf G\)。
 
 量化噪声底近似为
 
@@ -686,27 +754,27 @@ $$
 \sigma_{\mathrm q}^{2}\mathbf I_{160}.
 $$
 
-**本式符号说明：**\(\sigma_{\mathrm q}^{2}\)是由有效域×类量化尺度估计的平均均匀量化噪声方差；\(1/12\)来自均匀量化误差模型；\(\mathbf I_{160}\)是160维单位矩阵；\(\mathbf G\)是加入各向同性量化噪声底后的对称正定协方差输入。
+**本式符号说明：**本历史v1小节中的\(\sigma_{\mathrm q}^{2}\)是由有效域×类量化尺度估计的平均均匀量化噪声方差；\(1/12\)来自把一个宽度为\(s_{d,c}\)的舍入误差近似为均匀随机变量时的方差；\(\mathbf I_{160}\)是160维单位矩阵；\(\mathbf G\)是该历史模型中加入各向同性噪声底后的协方差输入。它不是第6.1节当前正式路径使用的\(\sigma_{\mathrm q}^2\)。
 
-因此，\(\mathbf G\)不是bundle中的独立数组。bundle实际封存的是\(\mathbf q_{d,c}\)、\(s_{d,c}\)、\(m_{d,c}\)及注册表；D92 E0在注册状态构造开始时从这些不可变内容派生\(\mathbf G\)和\(\sigma_{\mathrm q}^{2}\)。模块二随后移除量化噪声底并提取正谱扰动方向。
+历史v1中，\(\mathbf G\)不是bundle中的独立数组；它由\(\mathbf q_{d,c}\)、\(s_{d,c}\)、\(m_{d,c}\)及注册表派生。当前正式D92 E0则从v2组件临时重构\(\widehat{\mathbf g}_{d,c}\)、恢复\(\widehat R_{d,c}\)，并使用`reconstruction_rmse`导出\(\sigma_{\mathrm q}^2\)。第6.1节给出完整公式和数值展示。
 
-跨域中心化完成后，具体类别中心不进入D92 E0最终query打分。D92 E0只保留类无关的扰动方向和谱权重，用来判断当前target support的类内偏移是否沿着已知域扰动方向。由此，地面知识影响“support中心如何稳健估计”，不直接替代target旧类support，也不预置新类分类行。
+无论是历史v1还是当前v2，跨域中心化完成后，具体地面类别中心均不进入D92 E0最终query打分。模块二只保留类无关扰动方向和谱权重，用来判断当前target support的类内偏移是否沿着已知域扰动方向。地面知识影响“support中心如何稳健估计”，不直接替代target旧类support，也不预置新类分类行。
 
-#### 4.2.7 bundle的输入、输出与生命周期
+#### 4.2.4 bundle的输入、输出与生命周期
 
 |阶段|输入|输出|是否接触target|
 |---|---|---|---|
 |Phase1地面训练|source IQ、旧类标签、地面域标签|冻结checkpoint和特征运行时|否|
-|Phase1离线聚合|冻结编码器产生的旧类身份特征、域标签|域×类FP32聚合中心|否|
-|Phase1量化封存|FP32中心、有效掩码、类别表、域表|INT8中心、FP16尺度、manifest和哈希|否|
-|Stage2加载|冻结运行时、INT8组件、合法target support|身份特征、类无关扰动谱和注册状态|是，仅合法support|
+|Phase1离线聚合|冻结编码器产生的旧类身份特征、域标签|域×类FP32聚合中心和聚合P90余弦距离半径|否|
+|Phase1压缩封存|聚合中心、P90半径、类别表、域表|v2中心域＋秩3残差＋INT8/FP16尺度＋半径＋manifest|否|
+|Stage2加载|冻结运行时、v2组件、合法target support|临时重构地面聚合统计、类无关扰动谱和注册状态|是，仅合法support|
 |Query推理|冻结运行时、已冻结D92 E0仿射状态、单条query IQ|全部注册类分数和预测类别|是，但query不更新bundle或状态|
 
 bundle的生命周期原则是：
 
 1. 在任何target访问前构建并封存；
 2. 与Phase1 checkpoint和类别/域注册表绑定；
-3. Stage2只读，不允许更新中心、尺度、掩码或manifest；
+3. Stage2只读，不允许更新中心、低秩残差、半径、尺度、域/类注册表或manifest；
 4. bundle变化只改变`bundle_id`，不改变已经验证的固定received IQ；
 5. query及其真值永远不能用于选择、修正或重建bundle。
 
@@ -1519,9 +1587,267 @@ $$
 
 这一步体现“地面知识提供坐标系，target support提供当前位置”。旧类和新类都使用相同的\(\mathbf U\)、\(\boldsymbol\rho\)和Cauchy公式；地面聚合中心不会被当作旧类support，也不会与新类support计算距离。最终输出仍有\(CK\)行，每条输入support都有一条对应输出，标签和样本数均不改变。
 
-### 6.1 从封存聚合知识构造扰动基
+### 6.1 从当前v2封存聚合知识构造扰动基
 
-Phase1 bundle直接提供的是域×类INT8聚合中心\(\mathbf q_{d,c}\)、FP16尺度\(s_{d,c}\)、有效掩码\(m_{d,c}\)及类别和域注册表，不直接保存协方差矩阵。D92 E0按4.2.6节的过程反量化中心、删除类别中心并汇总跨域残差，由此在注册状态构造时派生160维聚合扰动协方差\(\mathbf G\)和量化噪声底\(\sigma_{\mathrm q}^{2}\)。随后计算
+#### 6.1.0 先用直观语言理解
+
+把160维身份特征想成一张有160个坐标轴的地图。Phase1看到了同一台发射机在多个地面接收机域中留下的“类别中心位置”。如果许多类别都沿某种坐标组合一起移动，这种组合更像接收机、信道或压缩误差造成的共同漂移，而不像某一发射机独有的身份差异。扰动基\(\mathbf U\)就是把这些“常见共同移动方向”压缩成若干条互相垂直的箭头。
+
+它不是：某个旧类的原型、某条地面样本、160个原始坐标的子集，或物理上已经命名的“CFO方向/噪声方向”。它是从地面**聚合中心的跨域变化**中统计出来的潜在线性方向。其唯一作用是给当前target support的类内偏移打一个“是否更像已知域扰动”的分数，进而稳健化target类中心；它不在query阶段查找地面中心。
+
+#### 6.1.1 临时重构地面聚合中心
+
+第4.2.3节给出了v2组件的按域重构公式。这里把临时恢复的域×类中心记作\(\widehat{\mathbf g}_{d,c}\in\mathbb R^{160}\)。在扰动谱构造期间，系统只对已注册的地面域和Phase1旧类临时形成这些聚合中心；构造结束后不把它们并入target support、也不把稠密FP32 bank写入最终预测状态。
+
+**本段符号说明：**\(d\in\{1,\ldots,D_{\mathrm g}\}\)是封存地面域索引；\(c\in\{1,\ldots,C_{\mathrm o}\}\)是Phase1旧类索引；\(D_{\mathrm g}\)是完整地面域数；\(C_{\mathrm o}\)是旧类数；帽号表示v2压缩组件的恢复值。这里的\(c\)仅用于从多类地面聚合中去除“类别位置”，不表示target query属于该旧类。
+
+#### 6.1.2 先衡量每个地面域×类单元的可靠性
+
+先对每个旧类计算不加权的跨域平均中心，以及每个域×类单元相对它的跨域漂移能量：
+
+$$
+\bar{\mathbf g}^{(0)}_c
+=
+\frac{1}{D_{\mathrm g}}
+\sum_{d=1}^{D_{\mathrm g}}
+\widehat{\mathbf g}_{d,c},
+\qquad
+\nu_{d,c}
+=
+\left\|
+\widehat{\mathbf g}_{d,c}
+-
+\bar{\mathbf g}^{(0)}_c
+\right\|_2^2.
+$$
+
+**本式符号说明：**\(\bar{\mathbf g}^{(0)}_c\in\mathbb R^{160}\)是旧类\(c\)在全部地面域上的普通平均聚合中心；上标\((0)\)表示“尚未按半径可靠性加权”。\(\nu_{d,c}\ge0\)是域\(d\)、旧类\(c\)的跨域漂移能量；\(\|\cdot\|_2\)是欧氏二范数，平方后等于160个坐标偏差平方之和。\(\widehat{\mathbf g}_{d,c}-\bar{\mathbf g}^{(0)}_c\)不是target support残差，而是两个Phase1地面聚合中心之间的差。
+
+恢复的P90半径\(\widehat R_{d,c}\)被换算为弦长方差代理\(2\widehat R_{d,c}\)，再定义可靠性和同类归一化权重：
+
+$$
+\gamma_{d,c}
+=
+\frac{\nu_{d,c}}
+{\nu_{d,c}+2\widehat R_{d,c}},
+\qquad
+\beta_{d,c}
+=
+\frac{\gamma_{d,c}}
+{\sum_{d'=1}^{D_{\mathrm g}}\gamma_{d',c}}.
+$$
+
+**本式符号说明：**\(\gamma_{d,c}\in[0,1)\)是未归一化的地面单元可靠性；分子\(\nu_{d,c}\)表示该单元在跨域上提供的可见漂移信号，分母额外加上\(2\widehat R_{d,c}\)以惩罚自身聚合分散较大的单元。\(\beta_{d,c}\)是类\(c\)内部的归一化地面权重；\(d'\)只是分母中的地面域求和索引；对每个固定类别\(c\)，有\(\sum_d\beta_{d,c}=1\)。\(\beta_{d,c}\)与后文target support的Cauchy权重\(\omega_{c,k}\)不是同一个量：前者只用于构造地面扰动谱，后者只用于稳健估计target类中心。
+
+由这些权重得到可靠性加权的地面类中心和地面残差：
+
+$$
+\bar{\mathbf g}_c
+=
+\sum_{d=1}^{D_{\mathrm g}}
+\beta_{d,c}\widehat{\mathbf g}_{d,c},
+\qquad
+\mathbf e^{\mathrm g}_{d,c}
+=
+\widehat{\mathbf g}_{d,c}
+-
+\bar{\mathbf g}_c.
+$$
+
+**本式符号说明：**\(\bar{\mathbf g}_c\in\mathbb R^{160}\)是可靠性加权后的地面旧类\(c\)中心；\(\mathbf e^{\mathrm g}_{d,c}\in\mathbb R^{160}\)是该地面域×类单元相对本类加权中心的残差；上标\(\mathrm g\)表示ground，防止与第6.2节target support残差\(\mathbf e_{c,k}\)混淆。由\(\sum_d\beta_{d,c}=1\)可知\(\sum_d\beta_{d,c}\mathbf e^{\mathrm g}_{d,c}=\mathbf0\)，即每个类别的身份位置已被删除。
+
+#### 6.1.3 派生160维聚合扰动协方差\(\mathbf G\)
+
+当前正式路径使用下式把所有旧类的可靠性加权跨域残差汇总为一个类无关的观测协方差：
+
+$$
+\mathbf G
+=
+\frac{1}{C_{\mathrm o}}
+\sum_{c=1}^{C_{\mathrm o}}
+\sum_{d=1}^{D_{\mathrm g}}
+\beta_{d,c}
+\mathbf e^{\mathrm g}_{d,c}
+\left(\mathbf e^{\mathrm g}_{d,c}\right)^{\mathsf T}
+\in\mathbb R^{160\times160}.
+$$
+
+**本式符号说明：**\(\mathbf G\)是当前D92 E0在注册期临时派生的160维观测扰动协方差；\(C_{\mathrm o}\)位于分母，使每个旧类对\(\mathbf G\)等权贡献，而不是让拥有更多可靠地面域或更大漂移的某类独占统计量。\(\mathbf e^{\mathrm g}_{d,c}(\mathbf e^{\mathrm g}_{d,c})^{\mathsf T}\)是一个\(160\times160\)外积矩阵，其第\(i,j\)项是同一域×类单元在第\(i\)、第\(j\)个身份坐标上的中心化偏移乘积。\(\beta_{d,c}\)使同一类别内的域权重和为1。该式的输出只描述“跨域共同漂移的形状”；它没有任何target support或query输入。
+
+从矩阵角度看，\(G_{ii}\)衡量第\(i\)个身份坐标在跨域中心漂移中的强度，\(G_{ij}\;(i\ne j)\)衡量两个坐标是否倾向同向或反向一起漂移。\(\mathbf G\)并不保存“哪个旧类在哪里”，因为每个类别在构造外积前都减去了自己的\(\bar{\mathbf g}_c\)。
+
+#### 6.1.4 当前\(\sigma_{\mathrm q}^2\)到底如何计算
+
+v2组件在Phase1离线压缩时，把完整域×类聚合中心近似为“中心域中心＋秩3残差”。组件审计记录的重构RMSE为
+
+$$
+\epsilon_{\mathrm{rec}}
+=
+\sqrt{
+\frac{1}{D_{\mathrm g}C_{\mathrm o}\cdot160}
+\sum_{d=1}^{D_{\mathrm g}}
+\sum_{c=1}^{C_{\mathrm o}}
+\sum_{i=1}^{160}
+\left(
+g^{\mathrm{dense}}_{d,c,i}
+-
+\widehat g_{d,c,i}
+\right)^2
+},
+\qquad
+\sigma_{\mathrm q}^2
+=
+\epsilon_{\mathrm{rec}}^2.
+$$
+
+**本式符号说明：**\(g^{\mathrm{dense}}_{d,c,i}\)是Phase1离线压缩前完整聚合中心在域\(d\)、类别\(c\)、第\(i\)个身份坐标的值；\(\widehat g_{d,c,i}\)是v2恢复值的同一坐标；\(\epsilon_{\mathrm{rec}}\)是对全部\(D_{\mathrm g}C_{\mathrm o}\cdot160\)个坐标误差求均方根得到的标量；\(\sigma_{\mathrm q}^2\)是其平方，即每坐标平均重构误差能量。\(g^{\mathrm{dense}}_{d,c,i}\)只在Phase1离线压缩审计时可见；Stage2只读取已封存的`reconstruction_rmse`标量，绝不回读地面样本或完整FP32中心。
+
+这里的下标\(q\)是沿用旧报告的符号，不应狭义理解为“只有INT8四舍五入产生的噪声”。当前\(\epsilon_{\mathrm{rec}}\)同时包含固定秩3近似、INT8量化和FP16尺度解码造成的总体重构误差。由于Phase2不保存完整误差协方差，方法采用各向同性近似：把每个坐标都视为带有同样的平均误差能量\(\sigma_{\mathrm q}^2\)。这是一项明示的建模近似，不是对真实压缩误差协方差的精确测量。
+
+#### 6.1.5 去噪、特征分解与“扰动基”
+
+在各向同性近似下，观测协方差可概念性地写成“真实跨域扰动＋压缩重构噪声”。实现据此从\(\mathbf G\)中扣除噪声底：
+
+$$
+\mathbf G_{+}
+=
+\frac{\mathbf G+\mathbf G^{\mathsf T}}{2}
+-
+\sigma_{\mathrm q}^2\mathbf I_{160}.
+$$
+
+**本式符号说明：**\(\mathbf G^{\mathsf T}\)是\(\mathbf G\)的转置；\((\mathbf G+\mathbf G^{\mathsf T})/2\)消除浮点累积可能产生的微小非对称性；\(\mathbf I_{160}\)是160维单位矩阵；\(\sigma_{\mathrm q}^2\mathbf I_{160}\)表示“每个坐标都扣除同样的平均重构误差能量”；\(\mathbf G_+\)是用于找主扰动方向的信号矩阵。扣除后出现很小或负的特征值并不表示“负方差”；它通常表示该方向的观测能量没有超过噪声底，代码会把这类方向排除。
+
+随后对\(\mathbf G_+\)做对称特征分解：
+
+$$
+\mathbf G_+\mathbf u_j
+=
+\lambda_j\mathbf u_j,
+\qquad
+\left\|\mathbf u_j\right\|_2=1,
+\qquad
+\mathbf u_i^{\mathsf T}\mathbf u_j=0\;(i\ne j).
+$$
+
+**本式符号说明：**\(\lambda_j\)是第\(j\)个特征值，表示沿方向\(\mathbf u_j\)的去噪跨域漂移强度；\(\mathbf u_j\in\mathbb R^{160}\)是对应单位特征向量；\(\|\mathbf u_j\|_2=1\)表示它的长度标准化为1；\(\mathbf u_i^{\mathsf T}\mathbf u_j=0\)表示不同保留方向正交。\(\mathbf u_j\)不是第\(j\)个原始特征维，而是160个原始维的线性组合；整体乘以\(-1\)仍是同一方向，所以它的正负号没有独立物理含义。
+
+设\(\mathcal J_+=\{j:\lambda_j>\tau_{\mathrm{eig}}\}\)，其中数值阈值为
+
+$$
+\tau_{\mathrm{eig}}
+=
+\max_j\left|\lambda_j\right|
+\cdot160\cdot\epsilon_{\mathrm{mach}}.
+$$
+
+**本式符号说明：**\(\mathcal J_+\)是超过数值容差的正谱索引集合；\(\tau_{\mathrm{eig}}\)是与当前特征值规模相适配的浮点阈值；\(\epsilon_{\mathrm{mach}}\)是FP64机器精度；\(\max_j|\lambda_j|\)是全部特征值绝对值的最大值。该阈值只排除数值舍入级别的“假正值”，不是target数据上的秩搜索或调参。
+
+正谱的有效秩和实际保留秩为
+
+$$
+r_{\mathrm{eff}}
+=
+\frac{
+\left(\sum_{j\in\mathcal J_+}\lambda_j\right)^2
+}{
+\sum_{j\in\mathcal J_+}\lambda_j^2
+},
+\qquad
+r
+=
+\min\left(
+\left\lceil r_{\mathrm{eff}}\right\rceil,
+\left|\mathcal J_+\right|
+\right).
+$$
+
+**本式符号说明：**\(r_{\mathrm{eff}}\)是participation-ratio有效秩；如果绝大多数能量集中在一条方向上，它接近1；如果能量均匀铺在多条方向上，它接近这些方向的数量。\(\lceil\cdot\rceil\)是向上取整；\(|\mathcal J_+|\)是数值上正的方向数；最小值保证实际保留秩\(r\)不会超过可用的正谱方向数。实现不扫描候选\(r\)，而是按这一固定规则一次确定。
+
+按特征值从大到小选择\(r\)条方向并拼成
+
+$$
+\mathbf U
+=
+\begin{bmatrix}
+\mathbf u_1&\cdots&\mathbf u_r
+\end{bmatrix}
+\in\mathbb R^{160\times r},
+\qquad
+\rho_j
+=
+\frac{\lambda_j}{\sum_{\ell=1}^{r}\lambda_\ell}.
+$$
+
+**本式符号说明：**\(\mathbf U\)是扰动基矩阵，列向量为保留的单位扰动方向；\(r\)是上一式得到的保留秩；\(\rho_j\in(0,1)\)是第\(j\)条保留方向的归一化谱权重；\(\ell\)只是分母求和索引。\(\sum_{j=1}^r\rho_j=1\)。后续对target support计算\(\mathbf U^{\mathsf T}\mathbf e_{c,k}\)时，\(\mathbf U\)提供坐标系，\(\rho_j\)说明哪个坐标方向更常见、更应被计入扰动能量。
+
+#### 6.1.6 两维玩具计算：把160维计算缩小到纸上可算
+
+下面的例子只用2维展示矩阵运算；真实D92 E0完全相同地作用在160维身份空间。设有\(D_{\mathrm g}=4\)个地面域和\(C_{\mathrm o}=2\)个旧类，且所有\(\widehat R_{d,c}=0.25\)。类别A的重构中心为
+
+$$
+(1,0),\;(-1,0),\;(0,1),\;(0,-1),
+$$
+
+类别B的重构中心为
+
+$$
+(2,1),\;(-2,-1),\;(1,2),\;(-1,-2).
+$$
+
+**本例符号说明：**每个有序对是一个2维\(\widehat{\mathbf g}_{d,c}\)；四个有序对分别对应四个地面域；A、B是两个不同旧类。现实中每个有序对会替换为160个坐标。本例中两类普通中心均为\((0,0)\)。类别A的\(\nu_{d,A}=1\)，类别B的\(\nu_{d,B}=5\)。由于每个类内四个域的\(\nu\)和半径相同，\(\gamma_{d,c}\)在同类中相等，故\(\beta_{d,c}=1/4\)。
+
+于是两类各自的加权残差协方差为
+
+$$
+\mathbf G_A
+=
+\begin{bmatrix}
+0.5&0\\
+0&0.5
+\end{bmatrix},
+\qquad
+\mathbf G_B
+=
+\begin{bmatrix}
+2.5&2\\
+2&2.5
+\end{bmatrix}.
+$$
+
+**本式符号说明：**\(\mathbf G_A\)和\(\mathbf G_B\)分别是A、B类在四个地面域上的\(\sum_d\beta_{d,c}\mathbf e^{\mathrm g}_{d,c}(\mathbf e^{\mathrm g}_{d,c})^{\mathsf T}\)。A类的横、纵方向变化对称，所以非对角项为0；B类的两个坐标常常一起取正或一起取负，所以非对角项为正2。这个正项表示“两个坐标在跨域漂移中同向变化”，不表示某一条样本属于B类。
+
+两类等权汇总后
+
+$$
+\mathbf G
+=
+\frac{\mathbf G_A+\mathbf G_B}{2}
+=
+\begin{bmatrix}
+1.5&1\\
+1&1.5
+\end{bmatrix}.
+$$
+
+**本式符号说明：**分母2是本例的旧类数\(C_{\mathrm o}=2\)；\(\mathbf G\)的非对角项1来自两类贡献的净结果。它是聚合统计量，不能反推任一类别或任一地面样本的原始位置。
+
+若离线组件审计给出\(\epsilon_{\mathrm{rec}}=0.1\)，则\(\sigma_{\mathrm q}^2=0.01\)，从而
+
+$$
+\mathbf G_+
+=
+\begin{bmatrix}
+1.49&1\\
+1&1.49
+\end{bmatrix}.
+$$
+
+**本式符号说明：**0.01是\(0.1^2\)；本例的\(\mathbf I_2\)替代真实实现的\(\mathbf I_{160}\)。该矩阵的两条单位特征向量可取为\(\mathbf u_1=(1,1)^{\mathsf T}/\sqrt2\)和\(\mathbf u_2=(1,-1)^{\mathsf T}/\sqrt2\)，对应特征值\(\lambda_1=2.49\)、\(\lambda_2=0.49\)。因此第一条扰动基方向表示“两维一起增减”，第二条表示“一维增大而另一维减小”。这正是扰动基的含义：它提取的是共同变化方式，而不是挑出两条具体样本。
+
+#### 6.1-A 历史v1直接组件的谱构造对照（非当前正式路径）
+
+这一小节仅保留历史v1直接组件的谱构造，便于追溯旧报告中\(\operatorname{mean}(s_{d,c}^2)/12\)的来源。它不是当前正式v2状态构造：当前实现不直接读取\(\mathbf q_{d,c},s_{d,c},m_{d,c}\)，也不从有效量化尺度计算\(\sigma_{\mathrm q}^2\)。当前正式流程已在第6.1.1至6.1.5节完整给出。若在本小节继续使用\(\mathbf G\)、\(\mathbf G_+\)或\(\sigma_{\mathrm q}^2\)，均应理解为历史v1符号。
 
 $$
 \mathbf{G}_{+}
@@ -1530,7 +1856,7 @@ $$
 -\sigma_{\mathrm{q}}^2\mathbf{I}_{160}.
 $$
 
-**本式符号说明：**\(\mathbf G\in\mathbb R^{160\times160}\)是D92 E0从Phase1域×类INT8聚合中心派生的身份特征扰动协方差，而不是bundle中直接封存的数组；\(\mathbf G^{\mathsf T}\)是其转置；\((\mathbf G+\mathbf G^{\mathsf T})/2\)将数值上可能略不对称的矩阵对称化；\(\sigma_{\mathrm q}^{2}\)是从有效量化尺度派生的平均量化噪声方差；\(\mathbf I_{160}\)是160维单位矩阵；\(\mathbf G_+\)是去除各向同性量化噪声底后的对称扰动矩阵。
+**本式符号说明：**这里的\(\mathbf G\in\mathbb R^{160\times160}\)是历史v1域×类INT8聚合中心派生的协方差，而不是当前v2组件的运行时输入；\(\mathbf G^{\mathsf T}\)是其转置；\((\mathbf G+\mathbf G^{\mathsf T})/2\)执行数值对称化；\(\sigma_{\mathrm q}^{2}\)在本小节特指历史v1的有效量化尺度噪声近似；\(\mathbf I_{160}\)是160维单位矩阵；\(\mathbf G_+\)是对应历史v1模型的去噪矩阵。当前v2的\(\sigma_{\mathrm q}^2=\epsilon_{\mathrm{rec}}^2\)，见第6.1.4节。
 
 对\(\mathbf{G}_{+}\)做特征分解：
 
@@ -1766,48 +2092,70 @@ $$
 
 ### 7.0本模块在做什么
 
-类中心只能回答“每个类别大致在哪里”，不能回答“类别云团朝哪些方向展开”。协方差矩阵描述的正是云团的形状。设随机特征向量为\(\mathbf Z\in\mathbb R^{288}\)，第\(i\)维和第\(j\)维的协方差定义为
+类中心只能回答“每个类别大致在哪里”，不能回答“该类别的样本云团沿哪些方向一起伸缩”。协方差矩阵描述的正是后者。这里必须先区分三个对象：
+
+1.\(\widetilde{\mathbf z}_{c,k}\in\mathbb R^{288}\)是一条**已经观测到的**第\(k\)条support特征；
+2.\(\mathbf X^{(c)}\in\mathbb R^{288}\)是“从类别\(c\)的目标域support总体随机抽到一条特征”这一**随机向量**；
+3.\(\mu_{c,i}\)是随机变量\(X_i^{(c)}\)的总体均值。它不是某一条向量中第\(i\)个已观测元素；它在程序里由该类全部\(K\)条support的第\(i\)列平均值估计。
+
+对类别\(c\)，第\(i\)维和第\(j\)维的总体协方差定义为
 
 $$
-\Sigma_{ij}
+\Sigma_{c,ij}
 :=
-\operatorname{Cov}(Z_i,Z_j)
+\operatorname{Cov}\left(X_i^{(c)},X_j^{(c)}\right)
 =
 \mathbb E
 \left[
-\left(Z_i-\mu_i\right)
-\left(Z_j-\mu_j\right)
+\left(X_i^{(c)}-\mu_{c,i}\right)
+\left(X_j^{(c)}-\mu_{c,j}\right)
 \right].
 $$
 
-**本式符号说明：**\(\boldsymbol\Sigma\in\mathbb R^{288\times288}\)是协方差矩阵；\(\Sigma_{ij}\)是其第\(i\)行、第\(j\)列元素；\(Z_i,Z_j\)是随机特征向量的第\(i\)、第\(j\)维；\(\mu_i=\mathbb E[Z_i]\)和\(\mu_j=\mathbb E[Z_j]\)是两维各自的均值；\(Z_i-\mu_i\)和\(Z_j-\mu_j\)是相对各自均值的偏离；\(\mathbb E[\cdot]\)表示对样本总体取平均；\(i,j\in\{1,\ldots,288\}\)是特征维索引。
+**本式符号说明：**\(c\)是类别索引；\(\mathbf X^{(c)}\)是类别\(c\)的一条288维随机特征向量；\(X_i^{(c)}\)、\(X_j^{(c)}\)是它第\(i\)、第\(j\)维的随机变量；\(\mu_{c,i}=\mathbb E[X_i^{(c)}]\)、\(\mu_{c,j}=\mathbb E[X_j^{(c)}]\)分别是两维在“同类、同目标域、满足协议的无限次可能support抽样”上的总体均值；\(\Sigma_{c,ij}\)是类别\(c\)的协方差矩阵第\(i,j\)项；\(\mathbb E[\cdot]\)表示总体期望；\(i,j\in\{1,\ldots,288\}\)是特征维索引。这个定义只解释总体对象，实际注册时并不知道总体分布，只能用\(K\)条合法support估计它。
 
-符号解释来自偏离量乘积\((Z_i-\mu_i)(Z_j-\mu_j)\)，而不是来自两个原始特征值本身：
+实际计算把类别\(c\)的support按行排成\(\widetilde{\mathbf Z}_c\in\mathbb R^{K\times288}\)。于是第\(i\)维的样本均值与第\(i,j\)项经验协方差为
 
-|第\(i\)维相对\(\mu_i\)的位置|第\(j\)维相对\(\mu_j\)的位置|偏离量乘积|对\(\Sigma_{ij}\)的贡献|
+$$
+\widehat\mu_{c,i}
+=
+\frac{1}{K}\sum_{k=1}^{K}\widetilde z_{c,k,i},
+\qquad
+\widehat\Sigma_{c,ij}
+=
+\frac{1}{K}\sum_{k=1}^{K}
+\left(\widetilde z_{c,k,i}-\widehat\mu_{c,i}\right)
+\left(\widetilde z_{c,k,j}-\widehat\mu_{c,j}\right).
+$$
+
+**本式符号说明：**\(\widetilde z_{c,k,i}\)是第\(k\)条观测support向量\(\widetilde{\mathbf z}_{c,k}\)的第\(i\)个元素；\(K\)是类别\(c\)的support数；\(\widehat\mu_{c,i}\)是\(K\)个第\(i\)维元素的样本平均，帽子\(\widehat{\ }\)表示“估计值”；\(\widehat\Sigma_{c,ij}\)是由同一\(K\)行support估计出的协方差。若\(K=1\)，\(\widehat\mu_{c,i}\)数值上恰好等于那条support的第\(i\)个元素，但这只是“一项平均”的退化情形，绝不意味着单条288维向量已经提供了288维协方差；D92 E0在\(K\leq2\)时回退，不启用该协方差路径。
+
+因此，协方差符号的正负来自每条support相对**本类该维均值**的偏离量乘积，而不是来自两个原始特征值本身：
+
+|第\(i\)维相对\(\mu_{c,i}\)的位置|第\(j\)维相对\(\mu_{c,j}\)的位置|偏离量乘积|对\(\Sigma_{c,ij}\)的贡献|
 |---|---|---:|---|
 |高于均值|高于均值|正|正贡献|
 |低于均值|低于均值|正|正贡献|
 |高于均值|低于均值|负|负贡献|
 |低于均值|高于均值|负|负贡献|
 
-如果同号偏离产生的正乘积在样本平均中占优势，则\(\Sigma_{ij}>0\)；如果异号偏离产生的负乘积占优势，则\(\Sigma_{ij}<0\)。因此，更准确的表述是
+如果同号偏离产生的正乘积在样本平均中占优势，则\(\Sigma_{c,ij}>0\)；如果异号偏离产生的负乘积占优势，则\(\Sigma_{c,ij}<0\)。因此，更准确的表述是
 
 $$
 \begin{aligned}
-\Sigma_{ij}>0
+\Sigma_{c,ij}>0
 &\quad\Longrightarrow\quad
 \text{两维相对各自均值倾向同号偏离},\\
-\Sigma_{ij}<0
+\Sigma_{c,ij}<0
 &\quad\Longrightarrow\quad
 \text{两维相对各自均值倾向异号偏离},\\
-\Sigma_{ij}\approx0
+\Sigma_{c,ij}\approx0
 &\quad\Longrightarrow\quad
 \text{当前统计中没有明显的线性协变}.
 \end{aligned}
 $$
 
-**本式符号说明：**上述正负号解释只针对\(i\ne j\)的非对角协方差；“同号偏离”指两维同时高于各自均值或同时低于各自均值；“异号偏离”指一维高于自身均值、另一维低于自身均值；近似号\(\approx\)表示有限样本估计接近0，而不是数学上严格等于0。对角元素\(\Sigma_{ii}=\operatorname{Var}(Z_i)\)是第\(i\)维方差，理论上满足\(\Sigma_{ii}\geq0\)。
+**本式符号说明：**上述正负号解释只针对同一个类别\(c\)内且\(i\ne j\)的非对角协方差；“同号偏离”指两维同时高于各自均值或同时低于各自均值；“异号偏离”指一维高于自身均值、另一维低于自身均值；近似号\(\approx\)表示有限样本估计接近0，而不是数学上严格等于0。对角元素\(\Sigma_{c,ii}=\operatorname{Var}(X_i^{(c)})\)是类别\(c\)第\(i\)维方差，理论上满足\(\Sigma_{c,ii}\geq0\)。
 
 例如，两维的中心化观测分别为
 
@@ -1830,22 +2178,22 @@ $$
 
 **本式符号说明：**\(\odot\)表示逐元素乘法；结果中的四项全部为正，平均值也为正，因此该例的样本协方差为正。如果把\(\mathbf d_j\)整体改为\([{-3},\ {-1},\ 2,\ 1]\)，四个乘积全部为负，样本协方差相应为负。
 
-这里的“同向”不是时间序列意义上的“两个原始数值同步上升”，更不表示一维导致另一维变化。它只表示在当前样本总体中，两维相对各自均值的偏离具有正线性协变。协方差接近0也不等于统计独立：正负乘积可能恰好抵消，两个变量还可能存在协方差无法描述的非线性关系。例如对关于0对称的\(Z_i\)，令\(Z_j=Z_i^2\)，两者显然存在确定关系，但\(\operatorname{Cov}(Z_i,Z_i^2)\)仍可能为0。
+这里的“同向”不是时间序列意义上的“两个原始数值同步上升”，更不表示一维导致另一维变化。它只表示类别\(c\)的当前样本总体中，两维相对各自均值的偏离具有正线性协变。协方差接近0也不等于统计独立：正负乘积可能恰好抵消，两个变量还可能存在协方差无法描述的非线性关系。例如对关于0对称的\(X_i^{(c)}\)，令\(X_j^{(c)}=(X_i^{(c)})^2\)，两者显然存在确定关系，但\(\operatorname{Cov}(X_i^{(c)},(X_i^{(c)})^2)\)仍可能为0。
 
 协方差的绝对大小还受单位和尺度影响。比较不同特征对的线性关联强弱时，应使用无量纲相关系数
 
 $$
-\rho_{ij}
+\rho_{c,ij}
 :=
-\frac{\Sigma_{ij}}
-{\sqrt{\Sigma_{ii}\Sigma_{jj}}},
+\frac{\Sigma_{c,ij}}
+{\sqrt{\Sigma_{c,ii}\Sigma_{c,jj}}},
 \qquad
--1\leq\rho_{ij}\leq1,
+-1\leq\rho_{c,ij}\leq1,
 \qquad
-\Sigma_{ii}>0,\ \Sigma_{jj}>0.
+\Sigma_{c,ii}>0,\ \Sigma_{c,jj}>0.
 $$
 
-**本式符号说明：**\(\rho_{ij}\)是第\(i\)、第\(j\)维的Pearson相关系数；\(\Sigma_{ij}\)是两维协方差；\(\Sigma_{ii}\)和\(\Sigma_{jj}\)是两维方差；平方根分母等于两维标准差之积。只有两维方差均大于0时该式才有定义；此时相关系数保留协方差的正负方向，同时消除特征单位和尺度的影响。
+**本式符号说明：**\(\rho_{c,ij}\)是类别\(c\)中第\(i\)、第\(j\)维的Pearson相关系数；\(\Sigma_{c,ij}\)是两维协方差；\(\Sigma_{c,ii}\)和\(\Sigma_{c,jj}\)是两维方差；平方根分母等于两维标准差之积。只有两维方差均大于0时该式才有定义；此时相关系数保留协方差的正负方向，同时消除特征单位和尺度的影响。
 
 在D92 E0中还必须区分原始经验协方差与最终共享协方差：
 
@@ -1857,7 +2205,7 @@ $$
 
 #### 7.0.1不是对一条288维向量“内部求协方差”
 
-“随机特征向量”\(\mathbf Z\)是总体层面的数学对象；一条实际support特征只是它的一次观测。模块三不能只凭一条288维向量得到可靠的\(288\times288\)协方差，而是把同一类别的\(K\)条support作为\(K\)次观测。对类别\(c\)，模块一和模块二的计算链为
+“随机特征向量”\(\mathbf X^{(c)}\)是类别\(c\)总体层面的数学对象；一条实际support特征只是它的一次观测。模块三不能只凭一条288维向量得到可靠的\(288\times288\)协方差，而是把同一类别的\(K\)条support作为\(K\)次观测。对类别\(c\)，模块一和模块二的计算链为
 
 $$
 \mathbf{x}^{\mathrm{recv}}_{c,k}
@@ -3075,8 +3423,8 @@ $$
   单一量化仿射状态Θ_D92_E0=(Q1,Q2,scales,b,metric,classes,audit)
 
 1. 对每个support IQ计算288维联合特征z。
-2. 从B_P1读取类无关扰动协方差和量化噪声底。
-3. 构造正扰动谱U及谱权重ρ。
+2. 从B_P1的v2封存组件临时重构各地面域×旧类的160维聚合中心与P90半径；由这些聚合量派生\(\mathbf G\)、\(\sigma_{\mathrm q}^2\)、正扰动基\(\mathbf U\)及谱权重\(\boldsymbol\rho\)。
+3. 只把\(\mathbf U\)和\(\boldsymbol\rho\)作为模块二的类无关先验；不把地面聚合中心当作模块三的旧类support样本行。
 4. 对每个类别：
    4.1 计算普通身份中心；
    4.2 计算每个support的扰动谱能量；
