@@ -33,3 +33,12 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 - 技术停止规则：仅在协议越权、错误checkout/output root、输出覆盖、无法产生规定artifact、launcher-wide故障，或至少两个候选出现相同确定性pre-artifact异常时停止；不得因低准确率停止。
 
 `r1/r2`均已封为技术失败且不再使用。`r3`在归档SHA核对、远端编译和启动健康检查完成前不声明`RUNNING`，当前没有性能结果。
+
+## N607发布与启动状态
+
+- 发布时间：2026-08-25 01:06（Asia/Hong_Kong）。
+- release归档本地与远端SHA256均为`c73699c902981ced9d3131b74dab52f366c8b926378dbcad4648ed432a7ac433`，比较一致；远端checkout已加载本次修复代码和`r3`配置。
+- checkout内六个预登记生产入口已生成Python3.10编译产物；实际launcher和训练入口随后成功加载，未再出现`r1/r2`的路径传播异常。
+- launcher PID为`2498514`，训练子PID为`2498587`；两者CWD均为预登记`r3/checkout`，cmdline分别绑定`r3`配置、output root、绝对checkpoint、ManySig和GPU0。
+- 启动前stdout日志不存在，启动后为6399字节；GPU0仅见训练子进程。15秒复核中CPU ticks从6740增至8240，子进程保持100%CPU，GPU0显存增至496MiB，符合数据初始化阶段的持续计算状态。
+- 当前最高状态：`RUNNING`。尚未形成P1完成artifact、候选矩阵或Phase2性能结果，不能声明正向收益。
