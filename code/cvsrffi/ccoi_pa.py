@@ -7,6 +7,7 @@ frozen PA feature maps, and it never stores sample-level source representations.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 from typing import Dict, Optional, Tuple
 
 import torch
@@ -400,6 +401,34 @@ def _masked_mean(loss: Tensor, mask: Tensor) -> Tensor:
     return (loss * mask_f).sum() / denom
 
 
+def codebook_balance_regularizer(
+    code_prob: Tensor,
+    min_effective_fraction: float = 0.75,
+    max_mean_probability: float = 0.10,
+) -> Tuple[Tensor, Dict[str, Tensor]]:
+    """Penalize only insufficient soft coverage or excessive code concentration."""
+
+    if code_prob.ndim < 2 or code_prob.size(-1) < 2:
+        raise ValueError("code_prob must end with at least two code probabilities")
+    if not 0.0 < float(min_effective_fraction) <= 1.0:
+        raise ValueError("min_effective_fraction must be in (0, 1]")
+    if not 0.0 < float(max_mean_probability) <= 1.0:
+        raise ValueError("max_mean_probability must be in (0, 1]")
+    mean_code = code_prob.reshape(-1, code_prob.size(-1)).mean(dim=0).clamp_min(1e-8)
+    mean_code = mean_code / mean_code.sum().clamp_min(1e-8)
+    entropy = -(mean_code * mean_code.log()).sum()
+    effective_codes = entropy.exp()
+    minimum = math.log(float(code_prob.size(-1)) * float(min_effective_fraction))
+    coverage_hinge = F.relu(entropy.new_tensor(minimum) - entropy).square()
+    max_probability = mean_code.max()
+    concentration_hinge = F.relu(max_probability - float(max_mean_probability)).square()
+    return coverage_hinge + concentration_hinge, {
+        "effective_codes": effective_codes,
+        "max_mean_code_probability": max_probability,
+        "mean_code_entropy": entropy,
+    }
+
+
 def challenge_pretrain_losses(
     encoder: PAChallengeEncoder,
     clean: Tensor,
@@ -452,6 +481,7 @@ def challenge_pretrain_losses(
     mean_code = satellite_out.code_prob.mean(dim=(0, 1)).clamp_min(1e-8)
     uniform = 1.0 / float(encoder.codebook_size)
     loss_code_utilization = (mean_code * (mean_code / uniform).log()).sum()
+    loss_code_balance, code_balance_stats = codebook_balance_regularizer(satellite_out.code_prob)
     loss_code_confidence = -(
         satellite_out.code_prob.clamp_min(1e-8) * satellite_out.code_prob.clamp_min(1e-8).log()
     ).sum(dim=-1).mean()
@@ -470,7 +500,7 @@ def challenge_pretrain_losses(
         + loss_temporal
         + 0.10 * loss_variance
         + 0.25 * loss_code_consistency
-        + 0.05 * loss_code_utilization
+        + 0.20 * loss_code_balance
         + 0.005 * loss_code_confidence
         + 0.10 * loss_tx
         + 0.10 * loss_rx
@@ -483,6 +513,9 @@ def challenge_pretrain_losses(
         "variance": loss_variance,
         "code_consistency": loss_code_consistency,
         "code_utilization": loss_code_utilization,
+        "code_balance": loss_code_balance,
+        "effective_codes": code_balance_stats["effective_codes"],
+        "max_mean_code_probability": code_balance_stats["max_mean_code_probability"],
         "code_confidence": loss_code_confidence,
         "tx_adversarial": loss_tx,
         "rx_adversarial": loss_rx,
@@ -498,6 +531,7 @@ __all__ = [
     "OperatorPool",
     "PAConditionalResponseHead",
     "PAChallengeEncoder",
+    "codebook_balance_regularizer",
     "challenge_pretrain_losses",
     "fixed_content_statistics",
     "make_dual_iq_views",

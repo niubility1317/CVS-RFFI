@@ -5,6 +5,8 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 LAUNCHER = PROJECT_ROOT / "code" / "scripts" / "launch_phase1_ccoi_pa_v1_20260824.sh"
 CONFIG = PROJECT_ROOT / "docs" / "experiments" / "PHASE1_CCOI_PA_V1_CONFIG_20260824.json"
+V2_LAUNCHER = PROJECT_ROOT / "code" / "scripts" / "launch_phase1_ccoi_pa_v2_20260825.sh"
+V2_CONFIG = PROJECT_ROOT / "docs" / "experiments" / "PHASE1_CCOI_PA_V2_CONFIG_20260825.json"
 
 
 def test_launcher_is_smoke_first_source_only_and_four_scenario_complete():
@@ -39,4 +41,27 @@ def test_config_freezes_one_seed_roles_and_same_capacity_rows():
     assert config["scenarios"] == ["clean", "leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"]
     assert config["rows"] == ["C0", "C1", "C2", "C3", "C4"]
     assert config["same_capacity_rows"] == ["C1", "C2", "C3", "C4"]
+    assert config["target_or_query_training_access"] is False
+
+
+def test_v2_launcher_is_smoke_first_and_uses_an_immutable_v2_run():
+    text = V2_LAUNCHER.read_text(encoding="utf-8")
+
+    assert text.index("REAL CHECKPOINT NO-QUERY SMOKE") < text.index("FULL MATRIX")
+    assert "PHASE1_CCOI_PA_V2_S20260824_20260825A" in text
+    assert "C0,C1,C2,C3,C4" in text
+    assert "--seed 20260824" in text
+    assert "--target" not in text and "--query" not in text
+    assert "score_phase1_ccoi_pa.py" in text
+
+
+def test_v2_config_freezes_repair_and_source_only_calibration():
+    config = json.loads(V2_CONFIG.read_text(encoding="utf-8"))
+
+    assert config["design"] == "CCOI-PA-V2"
+    assert config["seed"] == 20260824
+    assert config["fusion"]["formula"] == "(1-alpha)*base+alpha*scale*operator"
+    assert config["fusion"]["calibration_scope"] == "V_cal_source_only"
+    assert config["challenge"]["min_effective_fraction"] == 0.75
+    assert config["challenge"]["max_mean_probability"] == 0.1
     assert config["target_or_query_training_access"] is False

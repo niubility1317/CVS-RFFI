@@ -14,9 +14,13 @@ if str(CODE_ROOT) not in sys.path:
 
 from train_phase1_ccoi_pa import (  # noqa: E402
     FrozenCore90CCOI,
+    _meta_value,
     build_matrix_specs,
+    calibrated_fusion_scale,
+    fuse_logits,
     freeze_base_model,
     paired_challenge_batch,
+    select_fusion_alpha,
     validate_output_root,
     validate_source_roles,
 )
@@ -40,6 +44,13 @@ class _TinyBase(nn.Module):
             "dom_logits": logits,
             "aux_id": {"pa_token_map": x[:, :1]},
         }
+
+
+class _FixedSidecar(nn.Module):
+    def forward(self, x, pa_map, **kwargs):
+        del pa_map, kwargs
+        correction = torch.stack((2.0 * torch.ones(x.size(0)), -torch.ones(x.size(0))), dim=1)
+        return {"logit_correction": correction.to(x)}
 
 
 def test_runner_requires_current_source_role_ratios():
@@ -75,6 +86,41 @@ def test_c0_and_zero_fusion_reproduce_frozen_base_logits():
 
     torch.testing.assert_close(out["tx_logits"], base(x)["tx_logits"])
     assert all(not parameter.requires_grad for parameter in base.parameters())
+
+
+def test_v2_fusion_is_scale_aligned_convex_and_alpha_zero_is_exact():
+    base_logits = torch.tensor([[6.0, -2.0], [1.0, 3.0]])
+    operator_logits = torch.tensor([[1.0, -1.0], [-2.0, 2.0]])
+
+    scale = calibrated_fusion_scale(base_logits, operator_logits)
+    fused = fuse_logits(base_logits, operator_logits, alpha=0.25, scale=scale)
+
+    torch.testing.assert_close(fuse_logits(base_logits, operator_logits, alpha=0.0, scale=scale), base_logits)
+    torch.testing.assert_close(fused, 0.75 * base_logits + 0.25 * scale * operator_logits)
+    assert 0.25 <= scale <= 20.0
+
+
+def test_fusion_calibration_ties_fall_back_to_the_smaller_alpha():
+    grid = {"0.00": 80.0, "0.05": 81.0, "0.10": 81.0, "0.20": 79.0}
+
+    assert select_fusion_alpha(grid) == 0.05
+
+
+def test_wrapper_uses_v2_convex_fusion():
+    base = freeze_base_model(_TinyBase())
+    model = FrozenCore90CCOI(base, _FixedSidecar(), row="C1", fusion_alpha=0.25, fusion_scale=2.0)
+    x = torch.ones(2, 2, 64)
+
+    out = model(x, return_aux=True)
+
+    expected = 0.75 * out["base_tx_logits"] + 0.25 * 2.0 * out["ccoi"]["logit_correction"]
+    torch.testing.assert_close(out["tx_logits"], expected)
+
+
+def test_nested_wisig_metadata_returns_raw_receiver_id():
+    extra = (torch.tensor([0, 1]), {"rx_i": torch.tensor([7, 11])})
+
+    assert _meta_value(extra, "rx_i", 1, -1) == 11
 
 
 def test_output_root_is_immutable(tmp_path):

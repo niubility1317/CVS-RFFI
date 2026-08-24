@@ -53,3 +53,27 @@ def test_scorer_rejects_truth_leakage_in_prediction_stream(tmp_path):
 
     with pytest.raises(ValueError, match="truth-blind"):
         score_streams(prediction, truth)
+
+
+def test_scorer_rejects_missing_receiver_identity_for_main_loader(tmp_path):
+    prediction = tmp_path / "prediction.jsonl"
+    truth = tmp_path / "truth.jsonl"
+    pred_rows = []
+    truth_rows = []
+    for scenario in ("clean", "leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"):
+        sample_id = f"{scenario}:0"
+        pred_rows.append(
+            {
+                "sample_id": sample_id,
+                "scenario": scenario,
+                "loader": "test_unseen_day_seen_rx",
+                "receiver": -1,
+                "predicted_class": 0,
+            }
+        )
+        truth_rows.append({"sample_id": sample_id, "true_class": 0})
+    _write(prediction, pred_rows)
+    _write(truth, truth_rows)
+
+    with pytest.raises(ValueError, match="receiver identity"):
+        score_streams(prediction, truth)

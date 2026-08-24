@@ -79,6 +79,14 @@ def score_streams(prediction_path: Path, truth_path: Path) -> Dict[str, Any]:
     for scenario, rows in sorted(by_scenario.items()):
         main = [row for row in rows if str(row["loader"]) in MAIN_LOADERS]
         selected = main or rows
+        if main:
+            invalid_receivers = [
+                row.get("receiver")
+                for row in main
+                if str(row.get("receiver", "")).strip().lower() in {"", "-1", "none", "unknown"}
+            ]
+            if invalid_receivers:
+                raise ValueError(f"receiver identity is missing or invalid for {scenario} main predictions")
         receiver_groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
         for row in selected:
             receiver_groups[str(row.get("receiver", "unknown"))].append(row)
@@ -95,7 +103,7 @@ def score_streams(prediction_path: Path, truth_path: Path) -> Dict[str, Any]:
         if name in scenario_metrics
     ]
     return {
-        "schema": "cvs.phase1.ccoi_pa_score.v1",
+        "schema": "cvs.phase1.ccoi_pa_score.v2",
         "status": "ANALYZED" if len(leo_values) == 3 and "clean" in scenario_metrics else "PARTIAL",
         "prediction_count": len(joined),
         "scenario": scenario_metrics,

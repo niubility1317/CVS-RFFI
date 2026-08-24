@@ -1,4 +1,4 @@
-"""Source-only Phase1 C0--C4 runner for CCOI-PA-V1.
+"""Source-only Phase1 C0--C4 runner for CCOI-PA-V2.
 
 The Core90 checkpoint is reconstructed exactly and remains frozen. The runner
 writes prediction and truth streams separately; scoring is performed by the
@@ -53,7 +53,7 @@ class MatrixSpec:
 
 
 def build_matrix_specs() -> Dict[str, MatrixSpec]:
-    profile = "ccoi_pa_v1_capacity_q32_code48_r64_theta64"
+    profile = "ccoi_pa_v2_capacity_q32_code48_r64_theta64"
     return {
         "C0": MatrixSpec("C0", False, False, False, False, False, "frozen_core90"),
         "C1": MatrixSpec("C1", True, False, False, False, False, profile),
@@ -112,6 +112,44 @@ def paired_challenge_batch(
     )
 
 
+def calibrated_fusion_scale(
+    base_logits: Tensor,
+    operator_logits: Tensor,
+    minimum: float = 0.25,
+    maximum: float = 20.0,
+) -> float:
+    """Match centered operator-logit RMS to the frozen base on source V_cal."""
+
+    if base_logits.shape != operator_logits.shape or base_logits.ndim != 2:
+        raise ValueError("base_logits and operator_logits must share [N,C] geometry")
+    base_centered = base_logits.float() - base_logits.float().mean(dim=1, keepdim=True)
+    operator_centered = operator_logits.float() - operator_logits.float().mean(dim=1, keepdim=True)
+    base_rms = base_centered.square().mean().sqrt()
+    operator_rms = operator_centered.square().mean().sqrt()
+    if not torch.isfinite(base_rms) or not torch.isfinite(operator_rms):
+        raise FloatingPointError("non-finite logits during source fusion calibration")
+    scale = base_rms / operator_rms.clamp_min(1e-8)
+    return float(scale.clamp(min=float(minimum), max=float(maximum)).item())
+
+
+def fuse_logits(base_logits: Tensor, operator_logits: Tensor, *, alpha: float, scale: float) -> Tensor:
+    if base_logits.shape != operator_logits.shape:
+        raise ValueError("base and operator logits must have identical shapes")
+    alpha = float(alpha)
+    if not 0.0 <= alpha <= 1.0:
+        raise ValueError("fusion alpha must be in [0,1]")
+    if alpha == 0.0:
+        return base_logits
+    return (1.0 - alpha) * base_logits + alpha * float(scale) * operator_logits
+
+
+def select_fusion_alpha(results: Mapping[str, float]) -> float:
+    if not results:
+        raise ValueError("fusion calibration grid must not be empty")
+    best = min(results, key=lambda key: (-float(results[key]), float(key)))
+    return float(best)
+
+
 class FrozenCore90CCOI(nn.Module):
     """Evaluation-compatible wrapper around frozen Core90 plus one sidecar row."""
 
@@ -122,12 +160,14 @@ class FrozenCore90CCOI(nn.Module):
         *,
         row: str,
         fusion_alpha: float,
+        fusion_scale: float = 1.0,
     ) -> None:
         super().__init__()
         self.base = freeze_base_model(base)
         self.sidecar = sidecar
         self.row = str(row)
         self.fusion_alpha = float(fusion_alpha)
+        self.fusion_scale = float(fusion_scale)
         self.spec = build_matrix_specs()[self.row]
 
     def forward(
@@ -194,7 +234,12 @@ class FrozenCore90CCOI(nn.Module):
                 holdout_support_pa_map=None if support_pa_map is None else support_pa_map.detach(),
                 holdout_target_pa_map=None if target_pa_map is None else target_pa_map.detach(),
             )
-            final_logits = final_logits + self.fusion_alpha * side_out["logit_correction"]
+            final_logits = fuse_logits(
+                final_logits,
+                side_out["logit_correction"],
+                alpha=self.fusion_alpha,
+                scale=self.fusion_scale,
+            )
         if not return_aux:
             return final_logits
         merged = dict(base_out)
@@ -203,6 +248,7 @@ class FrozenCore90CCOI(nn.Module):
         merged["ccoi"] = side_out
         merged["ccoi_row"] = self.row
         merged["fusion_alpha"] = self.fusion_alpha
+        merged["fusion_scale"] = self.fusion_scale
         return merged
 
 
@@ -336,6 +382,19 @@ def _source_accuracy(model, loader, ssdg, data_ctx, device, max_batches: int) ->
     return 100.0 * correct / max(1, total)
 
 
+def _source_operator_accuracy(model, loader, ssdg, data_ctx, device, max_batches: int) -> float:
+    model.eval()
+    correct = total = 0
+    with torch.no_grad():
+        for _, batch in _limited(loader, max_batches):
+            x, y, domain, _ = _move_batch(ssdg, batch, device, data_ctx["domain_label_map"])
+            out = model(x, return_aux=True, domain_labels=domain)
+            logits = out["ccoi"]["logit_correction"]
+            correct += int((logits.argmax(dim=1) == y).sum().item())
+            total += int(y.numel())
+    return 100.0 * correct / max(1, total)
+
+
 def _train_sidecar(
     model: FrozenCore90CCOI,
     data_ctx,
@@ -366,7 +425,7 @@ def _train_sidecar(
             paired_x, paired_y, paired_domain = paired_challenge_batch(x, satellite, y, domain)
             out = model(paired_x, y_tx=None, return_aux=True, domain_labels=paired_domain)
             ccoi = out["ccoi"]
-            classification = F.cross_entropy(out["tx_logits"], paired_y)
+            classification = F.cross_entropy(ccoi["logit_correction"], paired_y)
             q_summary = ccoi["q"].mean(dim=1)
             masks = (
                 challenge_pair_masks(
@@ -405,7 +464,7 @@ def _train_sidecar(
             steps += 1
         if steps == 0:
             raise RuntimeError(f"sidecar row {model.row} produced zero batches")
-        select_accuracy = _source_accuracy(
+        select_accuracy = _source_operator_accuracy(
             model,
             data_ctx["val_loader"],
             ssdg,
@@ -418,6 +477,7 @@ def _train_sidecar(
                 "epoch": epoch,
                 "steps": steps,
                 "v_select_accuracy": select_accuracy,
+                "v_select_operator_accuracy": select_accuracy,
                 **{key: value / steps for key, value in sums.items()},
             }
         )
@@ -432,12 +492,9 @@ def _train_sidecar(
 
 def _calibrate_alpha(model, data_ctx, ssdg, args, device: torch.device) -> dict[str, Any]:
     if model.sidecar is None:
-        return {"selected_alpha": 0.0, "grid": {"0.0": _source_accuracy(model, data_ctx["source_calibration_loader"], ssdg, data_ctx, device, int(args.max_eval_batches))}}
-    original = model.fusion_alpha
-    results = {}
-    for alpha in (0.0, 0.05, 0.10, 0.15, 0.20):
-        model.fusion_alpha = alpha
-        results[f"{alpha:.2f}"] = _source_accuracy(
+        model.fusion_alpha = 0.0
+        model.fusion_scale = 1.0
+        accuracy = _source_accuracy(
             model,
             data_ctx["source_calibration_loader"],
             ssdg,
@@ -445,9 +502,36 @@ def _calibrate_alpha(model, data_ctx, ssdg, args, device: torch.device) -> dict[
             device,
             int(args.max_eval_batches),
         )
-    best = max(results, key=lambda key: (results[key], -abs(float(key) - original)))
-    model.fusion_alpha = float(best)
-    return {"selected_alpha": model.fusion_alpha, "grid": results}
+        return {"selected_alpha": 0.0, "selected_scale": 1.0, "grid": {"0.00": accuracy}}
+    model.eval()
+    base_rows = []
+    operator_rows = []
+    label_rows = []
+    with torch.no_grad():
+        for _, batch in _limited(data_ctx["source_calibration_loader"], int(args.max_eval_batches)):
+            x, y, domain, _ = _move_batch(ssdg, batch, device, data_ctx["domain_label_map"])
+            out = model(x, return_aux=True, domain_labels=domain)
+            base_rows.append(out["base_tx_logits"].detach())
+            operator_rows.append(out["ccoi"]["logit_correction"].detach())
+            label_rows.append(y.detach())
+    if not base_rows:
+        raise RuntimeError("source V_cal produced zero batches for fusion calibration")
+    base_logits = torch.cat(base_rows, dim=0)
+    operator_logits = torch.cat(operator_rows, dim=0)
+    labels = torch.cat(label_rows, dim=0)
+    model.fusion_scale = calibrated_fusion_scale(base_logits, operator_logits)
+    results = {}
+    for alpha in (0.0, 0.05, 0.10, 0.20, 0.35, 0.50):
+        logits = fuse_logits(base_logits, operator_logits, alpha=alpha, scale=model.fusion_scale)
+        results[f"{alpha:.2f}"] = 100.0 * float((logits.argmax(dim=1) == labels).float().mean().item())
+    model.fusion_alpha = select_fusion_alpha(results)
+    return {
+        "selected_alpha": model.fusion_alpha,
+        "selected_scale": model.fusion_scale,
+        "grid": results,
+        "calibration_scope": "source_V_cal_only",
+        "tie_break": "smaller_alpha",
+    }
 
 
 def _meta_value(extra: Any, key: str, index: int, default: Any = None) -> Any:
@@ -458,6 +542,12 @@ def _meta_value(extra: Any, key: str, index: int, default: Any = None) -> Any:
         if isinstance(value, (list, tuple)):
             return value[index]
         return value
+    if isinstance(extra, (list, tuple)):
+        missing = object()
+        for item in extra:
+            value = _meta_value(item, key, index, missing)
+            if value is not missing:
+                return value
     return default
 
 
@@ -467,6 +557,8 @@ def _source_challenge_audit(model, data_ctx, ssdg, args, device) -> dict[str, An
     model.eval()
     relation_rows = []
     code_counts = torch.zeros(48, dtype=torch.long)
+    soft_code_mass = torch.zeros(48, dtype=torch.float64)
+    soft_code_count = 0
     control_error = {"real": [0.0, 0.0], "shuffle": [0.0, 0.0], "random": [0.0, 0.0], "constant": [0.0, 0.0]}
     coverage_correct = {1.0: 0, 0.75: 0, 0.50: 0, 0.25: 0}
     coverage_total = 0
@@ -482,6 +574,8 @@ def _source_challenge_audit(model, data_ctx, ssdg, args, device) -> dict[str, An
             )
             bins = ccoi["code_prob"].mean(dim=1).argmax(dim=1).detach().cpu()
             code_counts += torch.bincount(bins, minlength=48)
+            soft_code_mass += ccoi["code_prob"].detach().double().sum(dim=(0, 1)).cpu()
+            soft_code_count += int(ccoi["code_prob"].size(0) * ccoi["code_prob"].size(1))
             target = ccoi["heldout_target"]
             q_holdout = ccoi["q_holdout"]
             controls = {
@@ -509,7 +603,12 @@ def _source_challenge_audit(model, data_ctx, ssdg, args, device) -> dict[str, An
                 indices = attention.topk(keep, dim=1).indices
                 mask = torch.zeros_like(attention, dtype=torch.bool).scatter_(1, indices, True)
                 pooled = model.sidecar.operator_pool(ccoi["response"], ccoi["condition_q"], mask)
-                logits = out["base_tx_logits"] + model.fusion_alpha * model.sidecar.classifier(pooled.theta)
+                logits = fuse_logits(
+                    out["base_tx_logits"],
+                    model.sidecar.classifier(pooled.theta),
+                    alpha=model.fusion_alpha,
+                    scale=model.fusion_scale,
+                )
                 coverage_correct[fraction] += int((logits.argmax(dim=1) == y).sum().item())
             coverage_total += int(y.numel())
     relation = {}
@@ -519,6 +618,9 @@ def _source_challenge_audit(model, data_ctx, ssdg, args, device) -> dict[str, An
         weighted = sum(float(row[name]) * int(row[count_key]) for row in relation_rows if int(row[count_key]) > 0)
         relation[name] = weighted / total_count if total_count else float("nan")
         relation[count_key] = total_count
+    mean_code = soft_code_mass / max(1, soft_code_count)
+    mean_code = mean_code / mean_code.sum().clamp_min(1e-12)
+    mean_code_entropy = float(-(mean_code * mean_code.clamp_min(1e-12).log()).sum().item())
     return {
         "status": "COMPLETE" if coverage_total else "EMPTY",
         "truth_scope": "source_V_select_only",
@@ -534,6 +636,9 @@ def _source_challenge_audit(model, data_ctx, ssdg, args, device) -> dict[str, An
         "challenge_code_histogram": code_counts.tolist(),
         "challenge_code_observed": int((code_counts > 0).sum().item()),
         "challenge_code_unobserved": int((code_counts == 0).sum().item()),
+        "challenge_code_soft_effective": float(math.exp(mean_code_entropy)),
+        "challenge_code_soft_max_probability": float(mean_code.max().item()),
+        "challenge_code_soft_entropy": mean_code_entropy,
         "challenge_ood_interpretation": "read_only_sparse_or_unobserved_code_diagnostic_not_semantic_content_OOD",
     }
 
@@ -565,7 +670,13 @@ def _write_predictions(
                     predicted = logits.argmax(dim=1)
                     for sample_index in range(int(x.size(0))):
                         sample_id = f"{scenario}:{loader_name}:{batch_index}:{sample_index}"
-                        receiver = _meta_value(extra, "rx_i", sample_index, int(domain[sample_index].item()))
+                        receiver = _meta_value(extra, "rx_i", sample_index, None)
+                        try:
+                            receiver = int(receiver)
+                        except (TypeError, ValueError) as exc:
+                            raise ValueError(f"missing raw receiver identity for {sample_id}") from exc
+                        if receiver < 0:
+                            raise ValueError(f"invalid raw receiver identity for {sample_id}: {receiver}")
                         pred_record = {
                             "sample_id": sample_id,
                             "row": model.row,
@@ -625,7 +736,7 @@ def _infer_base_dimensions(base, data_ctx, ssdg, device):
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Phase1 CCOI-PA-V1 frozen-Core90 matrix")
+    parser = argparse.ArgumentParser(description="Phase1 CCOI-PA-V2 frozen-Core90 matrix")
     parser.add_argument("--output_dir", required=True)
     parser.add_argument("--checkpoint", required=True)
     parser.add_argument("--wisig_pkl", required=True)
@@ -738,16 +849,23 @@ def run(args: argparse.Namespace) -> int:
             ).to(device)
             sidecar.load_state_dict(template_state, strict=True)
             sidecar.freeze_challenge_encoder()
-        model = FrozenCore90CCOI(base, sidecar, row=row, fusion_alpha=float(args.fusion_alpha)).to(device)
+        model = FrozenCore90CCOI(
+            base,
+            sidecar,
+            row=row,
+            fusion_alpha=float(args.fusion_alpha),
+            fusion_scale=1.0,
+        ).to(device)
         train_history = _train_sidecar(model, data_ctx, ssdg, data_args, args, device)
         calibration = _calibrate_alpha(model, data_ctx, ssdg, args, device)
         if sidecar is not None:
             torch.save(
                 {
-                    "schema": "cvs.phase1.ccoi_pa_sidecar.v1",
+                    "schema": "cvs.phase1.ccoi_pa_sidecar.v2",
                     "row": row,
                     "base_checkpoint": str(checkpoint_path),
                     "fusion_alpha": model.fusion_alpha,
+                    "fusion_scale": model.fusion_scale,
                     "state_dict": sidecar.state_dict(),
                     "sample_level_source_state_included": False,
                 },
@@ -761,6 +879,7 @@ def run(args: argparse.Namespace) -> int:
         manifest["rows"][row] = {
             "spec": asdict(spec),
             "fusion_alpha": model.fusion_alpha,
+            "fusion_scale": model.fusion_scale,
             "prediction_path": prediction_info["prediction_path"],
             "truth_path": prediction_info["truth_path"],
             "prediction_count": prediction_info["prediction_count"],

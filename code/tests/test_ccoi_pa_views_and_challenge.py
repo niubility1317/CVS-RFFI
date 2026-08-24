@@ -11,6 +11,7 @@ if str(CODE_ROOT) not in sys.path:
 
 from cvsrffi.ccoi_pa import (  # noqa: E402
     PAChallengeEncoder,
+    codebook_balance_regularizer,
     challenge_pretrain_losses,
     fixed_content_statistics,
     make_dual_iq_views,
@@ -54,3 +55,18 @@ def test_challenge_pretraining_reaches_encoder_but_not_fixed_targets():
     assert encoder.code_head.weight.grad is not None
     assert torch.count_nonzero(encoder.code_head.weight.grad)
     assert "code_consistency" in losses and "code_utilization" in losses
+
+
+def test_codebook_balance_regularizer_targets_collapse_without_forcing_exact_uniformity():
+    collapsed = torch.zeros(4, 13, 48)
+    collapsed[..., 0] = 1.0
+    broad = torch.zeros(4, 13, 48)
+    broad[..., :36] = 1.0 / 36.0
+
+    collapsed_loss, collapsed_stats = codebook_balance_regularizer(collapsed)
+    broad_loss, broad_stats = codebook_balance_regularizer(broad)
+
+    assert collapsed_loss > broad_loss
+    assert collapsed_stats["effective_codes"] < 2.0
+    assert broad_stats["effective_codes"] >= 35.9
+    assert broad_loss.item() == 0.0
