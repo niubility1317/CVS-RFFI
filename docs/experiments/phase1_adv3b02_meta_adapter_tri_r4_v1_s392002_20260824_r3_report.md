@@ -107,5 +107,13 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 - Stage2-A和Stage2-C cache是同一次固定builder的完整副产物，本目标不消费其特征或旧D92判决；Meta-Adapter正式run仍只从固定received-IQ package导出raw support/query IQ，在新meta checkpoint上做真实梯度更新。
 - 当前提交的target-row exporter已对真实`before/support_leo_clear_weak.npz`完成一次support-only no-query smoke：输入60行，K10输出6类×10行，物理ID60/60唯一且与IQ/标签对齐。
 - smoke输出NPZ精确只有`received_iq/support_labels/support_physical_ids`；audit确认`query_input_opened=false`、query行数0、`query_truth_opened=false`、`query_role_opened=false`。该检查未复制或打开query文件，也没有性能结果。
-- 最新分支随后执行覆盖Phase1 meta episode/inner loop/trainer/checkpoint/真实入口和Phase2 adaptation/handoff/runner/matrix/scorer/exporter的宽回归，共254项全部通过；仅有既存AMP API弃用警告。
+- 最新分支随后执行覆盖Phase1 meta episode/inner loop/trainer/checkpoint/真实入口和Phase2 adaptation/handoff/target factory/runner/matrix/scorer/exporter的宽回归，共259项全部通过；仅有既存AMP API弃用警告。
 - 结论：原Target5五切片中的`K10/new10`数据缺口已闭合；仍须等待r3 Phase1完成并通过source选择后，才能生成正式Target5配置和启动性能实验。
+
+## Target5输入工厂
+
+- 新增`stage2_meta_adapter_target_factory.py`及CLI，把5个Target5或25个Target25的权威Stage2-B manifest与固定raw-IQ package转换为15/75行runner配置。
+- 工厂在创建输出root前核对完整receiver×operating-point集合、K映射、三个LEO_WEAK场景、`VALIDATED_ONCE`、非空capsule、`p2_min_v1` split，以及manifest中的query truth/role和source sample/cache/label/replay访问均为false。
+- 每个row只调用已验证exporter，输出support的`received_iq/support_labels/support_physical_ids`和query的`received_iq/query_ids`；plan和CLI均没有truth/scorer输入字段。
+- RED阶段4项测试以模块缺失稳定失败；GREEN后factory/exporter/matrix/runner聚焦46项通过，加入完整Meta-Adapter宽回归后259项通过，生产入口`py_compile`与`git diff --check`均通过；新增负测拒绝把K10/new20 manifest冒充K10/new10。
+- 工厂需要最终选中的`selected_meta_bundle.pt`和`frozen_prototypes.npz`路径，因此本轮只闭合实现和测试；正式15行配置仍必须等待r3 source选择结果，不能用占位checkpoint提前发布。
