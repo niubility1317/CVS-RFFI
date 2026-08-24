@@ -502,6 +502,48 @@ def test_launcher_plan_has_unique_immutable_candidate_outputs(tmp_path):
     assert all(Path(item["output_root"]).parent == tmp_path / "matrix" for item in candidates)
 
 
+def test_launcher_explicit_input_overrides_release_relative_paths(tmp_path, capsys):
+    config = valid_config()
+    config["base_checkpoint"] = "runs/base/best.pth"
+    config["wisig_pkl"] = "Dataset_WigSig/ManySig.pkl"
+    config_path = tmp_path / "release" / "configs" / "meta.json"
+    config_path.parent.mkdir(parents=True)
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+    external_checkpoint = tmp_path / "project-root" / "runs" / "base" / "best.pth"
+    external_wisig = tmp_path / "project-root" / "Dataset_WigSig" / "ManySig.pkl"
+    external_checkpoint.parent.mkdir(parents=True)
+    external_wisig.parent.mkdir(parents=True)
+    external_checkpoint.write_bytes(b"checkpoint")
+    external_wisig.write_bytes(b"wisig")
+
+    launcher_path = Path(__file__).resolve().parents[1] / "scripts" / "launch_phase1_adv3b02_meta_adapter_tri_r4_v1.py"
+    spec = importlib.util.spec_from_file_location("meta_phase1_launcher_overrides", launcher_path)
+    launcher = importlib.util.module_from_spec(spec)
+    assert spec is not None and spec.loader is not None
+    spec.loader.exec_module(launcher)
+    output_root = tmp_path / "matrix"
+    assert launcher.main(
+        [
+            "--config",
+            str(config_path),
+            "--output-root",
+            str(output_root),
+            "--base-checkpoint",
+            str(external_checkpoint),
+            "--wisig-pkl",
+            str(external_wisig),
+            "--dry-run",
+        ]
+    ) == 0
+
+    captured = capsys.readouterr().out
+    assert f"base_checkpoint={external_checkpoint.resolve()}" in captured
+    assert f"wisig_pkl={external_wisig.resolve()}" in captured
+    assert captured.count(str(external_checkpoint.resolve())) == 5
+    assert captured.count(str(external_wisig.resolve())) == 5
+    assert not output_root.exists()
+
+
 def test_launcher_runs_all_candidates_and_selects_across_matrix_after_scientific_failure(
     tmp_path, monkeypatch
 ):

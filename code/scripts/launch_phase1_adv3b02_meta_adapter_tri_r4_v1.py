@@ -108,6 +108,8 @@ def build_launch_plan(
     config_path: str | os.PathLike[str],
     *,
     output_root: str | os.PathLike[str] | None = None,
+    base_checkpoint: str | os.PathLike[str] | None = None,
+    wisig_pkl: str | os.PathLike[str] | None = None,
     python_executable: str | None = None,
     gpu: str | None = None,
 ) -> dict[str, Any]:
@@ -115,8 +117,16 @@ def build_launch_plan(
 
     config_path_abs = _resolve_path(config_path, base=PROJECT_ROOT).resolve()
     config = load_meta_phase1_config(config_path_abs)
-    resolved_checkpoint = _resolve_config_asset(str(config["base_checkpoint"]), config_path=config_path_abs)
-    resolved_wisig = _resolve_config_asset(str(config["wisig_pkl"]), config_path=config_path_abs)
+    resolved_checkpoint = (
+        _resolve_path(base_checkpoint, base=PROJECT_ROOT).resolve()
+        if base_checkpoint is not None and str(base_checkpoint).strip()
+        else _resolve_config_asset(str(config["base_checkpoint"]), config_path=config_path_abs)
+    )
+    resolved_wisig = (
+        _resolve_path(wisig_pkl, base=PROJECT_ROOT).resolve()
+        if wisig_pkl is not None and str(wisig_pkl).strip()
+        else _resolve_config_asset(str(config["wisig_pkl"]), config_path=config_path_abs)
+    )
     _require_readable_file(resolved_checkpoint, field_name="base_checkpoint")
     _require_readable_file(resolved_wisig, field_name="wisig_pkl")
     resolved_output = (
@@ -186,6 +196,8 @@ def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=str, default=str(DEFAULT_CONFIG_PATH))
     parser.add_argument("--output-root", type=str, default="")
+    parser.add_argument("--base-checkpoint", type=str, default="")
+    parser.add_argument("--wisig-pkl", type=str, default="")
     parser.add_argument("--python", dest="python_executable", type=str, default="")
     parser.add_argument("--gpu", type=str, default=None)
     parser.add_argument("--dry-run", action="store_true", help="Print the plan without creating a process or run root")
@@ -213,6 +225,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     plan = build_launch_plan(
         args.config,
         output_root=args.output_root or None,
+        base_checkpoint=args.base_checkpoint or None,
+        wisig_pkl=args.wisig_pkl or None,
         python_executable=args.python_executable or None,
         gpu=args.gpu,
     )
