@@ -75,7 +75,7 @@ prediction流中的receiver字段统一为-1。因此当前metrics.json内自动
 | C3 | 81.238 | 58.617 | 55.783 | 56.092 |
 | C4 | 81.250 | 58.683 | 55.750 | 56.079 |
 
-这些诊断同样没有显示超过0.30个百分点的稳定下界增益，但不能替代修正后的正式receiver-cell scorer输出。下一候选之前应单独修复接收机元数据导出/评分映射；本run保持不可变，不覆盖、不重跑。
+这些诊断同样没有显示超过0.30个百分点的稳定下界增益，但不能替代修正后的正式receiver-cell scorer输出。下一候选之前应单独修复接收机元数据导出/评分映射；本run保持不可变。若需要补齐正式floor，应在新的不可覆盖repair输出中复用冻结base checkpoint和现有sidecar重新导出带`rx_i`的prediction并评分，不重复训练。
 
 ### 最终判定
 
@@ -83,4 +83,4 @@ prediction流中的receiver字段统一为-1。因此当前metrics.json内自动
 - prediction/truth及主场景数据闭合：VERIFIED。
 - receiver元数据与自动receiver floor：FAILED。
 - CCOI-PA-V1科学晋级：FAILED/NO_PROMOTION。
-- 总体交付状态：run已ANALYZED，但接收机下界子指标不可用；保留全部产物，修正评分元数据后只做现有prediction的重新评分，不因该问题重复训练。
+- 总体交付状态：run已ANALYZED，但接收机下界子指标不可用；保留全部产物，后续只需重新导出预测元数据并评分，不因该问题重复训练。
