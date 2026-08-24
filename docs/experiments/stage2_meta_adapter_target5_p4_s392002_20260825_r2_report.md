@@ -1,0 +1,41 @@
+# CVS_META_ADAPTER_TRI_R4_V1 P4 Target5 r2最小预登记报告
+
+- run ID：`stage2_meta_adapter_target5_p4_s392002_20260825_r2`
+- 状态：`LOCAL_VERIFIED`
+- 分支：`codex/meta-adapter-tri-r4-v1-20260824`
+- 修复代码提交：`6b66fce0c1e3a4a9315e539999fbe62f0798881e`
+- 固定计划提交：`c489dc8df100ea6c7cd79ad135f9a0f07725d2d0`
+
+## 恢复边界
+
+- r1的Target工厂已完整生成15个truth-free row，但真实checkpoint无query smoke在NumPy2.2.5／Torch2.1.0 ABI桥接处失败；r1已封为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，prediction矩阵从未启动。
+- r2只修复Stage2的NumPy／Torch输入输出桥接，不改变P4 bundle、冻结原型、receiver、operating point、seed、场景、support／query物理样本、capsule、split、3步适配或判决规则。
+- 复用r1已完成的工厂输出`/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/meta_adapter_target5_p4_s392002_20260825_r1/matrix_config.json`。数据仍为同一`p2_min_v1`、`VALIDATED_ONCE`切片，不因代码桥接或run ID变化重验。
+
+## 候选与矩阵
+
+- 候选：P4 FOMAML+Meta-SGD；单seed：`392002`；Target5 receiver：`20-1`。
+- operating point：`K10/new5`、`K10/new10`、`K10/new20`、`K5/new20`、`K1/new20`；每点三类LEO weak，共15个row。
+- Phase2仅读取固定received IQ、合法target support标签、P4 bundle和冻结原型；不读取source／clean样本、source cache、query真值或query角色。query不得更新任何状态。
+- 原编码器内可训练参数8670／1058341，占比0.8192%；正式更新3步；无D92式协方差、LDA或新增／持久分类头。
+
+## 本地验证与定点复审
+
+- RED测试同时屏蔽`torch.from_numpy`和`Tensor.numpy`，旧路径在IQ转换处稳定复现N607错误。
+- GREEN实现使用`torch.frombuffer`转换IQ、整数标签和冻结原型；prediction写盘通过Python值生成当前NumPy数组，避免后续同一ABI故障。
+- 69项Stage2工厂／runner／matrix／handoff／scorer／row export回归通过；199项Meta-Adapter Phase1／Phase2邻近回归通过；相关文件编译通过。
+- 修复后的唯一一次定点复审未发现P0/P1：桥接函数不接收source、clean、query truth／role，不改变适配顺序、参数选择、步数、冻结状态或判决规则；prediction写盘仍在DA0／DA1推理完成后发生。
+
+## N607执行预登记
+
+- 账户：普通`N607`用户`szu2070436088`；环境：现有`CVS-RFFI`；GPU：0。
+- 新release CWD：`/home/szu2070436088/2510044040/CV-SincNet/releases/stage2_meta_adapter_target5_p4_s392002_20260825_r2/checkout`
+- smoke output root：`/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_meta_adapter_target5_p4_s392002_20260825_r2_smoke`
+- prediction output root：`/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_meta_adapter_target5_p4_s392002_20260825_r2`
+- stdout日志：`/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_meta_adapter_target5_p4_s392002_20260825_r2.out`
+- expected artifacts：`smoke_receipt.json`；每row的`predictions_DA0_REG0.npz`、`predictions_DA1_REG0.npz`和`receipt.json`；truth-last `score.json`；矩阵级`target5_summary.json`。
+- 技术停止规则：仅在协议越权、query或source泄漏、错误checkout／row／split、输出覆盖、prediction不完整、scorer连接错误、launcher-wide故障，或至少两个row出现同一确定性pre-prediction异常时停止；不得因低性能停止。
+
+## 科学晋级规则
+
+prediction完整后才由独立scorer连接truth。15个同row score聚合`DA1_REG0-DA0_REG0`：旧类均值至少+1.0pp且旧类floor至少+0.5pp才晋级Target25；否则记录`SCIENTIFIC_FAILURE_NO_PROMOTION`并推进下一少层候选。
