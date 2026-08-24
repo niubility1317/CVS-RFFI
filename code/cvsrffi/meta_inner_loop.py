@@ -40,11 +40,50 @@ class MetaInnerLoopError(RuntimeError):
     """Raised when a functional adapter update cannot be proven valid."""
 
 
+class _ReadOnlyOrderedDict(OrderedDict):
+    """Ordered mapping exposed by ``FastAdapterState`` without mutators."""
+
+    _ERROR = "FastAdapterState.parameters is read-only"
+
+    def __init__(self, *args, **kwargs):
+        OrderedDict.__init__(self)
+        source = OrderedDict(*args, **kwargs)
+        for key, value in source.items():
+            OrderedDict.__setitem__(self, key, value)
+
+    def __setitem__(self, key, value):
+        raise TypeError(self._ERROR)
+
+    def __delitem__(self, key):
+        raise TypeError(self._ERROR)
+
+    def clear(self):
+        raise TypeError(self._ERROR)
+
+    def pop(self, key, default=None):
+        raise TypeError(self._ERROR)
+
+    def popitem(self, last=True):
+        raise TypeError(self._ERROR)
+
+    def setdefault(self, key, default=None):
+        raise TypeError(self._ERROR)
+
+    def update(self, *args, **kwargs):
+        raise TypeError(self._ERROR)
+
+    def move_to_end(self, key, last=True):
+        raise TypeError(self._ERROR)
+
+    def __ior__(self, other):
+        raise TypeError(self._ERROR)
+
+
 @dataclass(frozen=True)
 class FastAdapterState:
     """Ordered fast adapter tensors and detached support-loss history."""
 
-    parameters: OrderedDict[str, Tensor]
+    parameters: Mapping[str, Tensor]
     steps: int
     support_losses: tuple[float, ...]
 
@@ -70,8 +109,6 @@ class FastAdapterState:
                 raise TypeError(f"FastAdapterState.parameters[{name!r}] must be a tensor")
             if not value.is_floating_point():
                 raise ValueError(f"FastAdapterState.parameters[{name!r}] must be floating-point")
-            if not _is_finite(value):
-                raise ValueError(f"FastAdapterState.parameters[{name!r}] must be finite")
             normalized[name] = value
 
         losses = []
@@ -83,7 +120,7 @@ class FastAdapterState:
                 raise ValueError("FastAdapterState.support_losses must be finite")
             losses.append(loss)
 
-        object.__setattr__(self, "parameters", normalized)
+        object.__setattr__(self, "parameters", _ReadOnlyOrderedDict(normalized))
         object.__setattr__(self, "support_losses", tuple(losses))
 
 
@@ -163,6 +200,18 @@ def _validate_fast_parameters(
     return normalized
 
 
+def _clone_inner_parameters(model: nn.Module) -> OrderedDict[str, Tensor]:
+    """Clone adapter leaves while retaining the autograd path to initialization."""
+
+    fast = OrderedDict()
+    for name, parameter in iter_inner_adapter_parameters(model):
+        # ``clone`` is intentionally not detached: outer query gradients must
+        # flow through the clone back to the model's initialization parameter,
+        # while the clone's storage remains independent from that parameter.
+        fast[name] = parameter.clone()
+    return fast
+
+
 def _snapshot_module_state(model: nn.Module):
     modules = tuple(model.modules())
     parameters = tuple(
@@ -190,9 +239,9 @@ def _restore_module_state(snapshot) -> None:
         module.training = was_training
 
 
-def functional_forward(
+def _functional_forward_from_mapping(
     model: nn.Module,
-    fast_state: FastAdapterState | Mapping[str, Tensor],
+    fast_values: Mapping[str, Tensor],
     x: Tensor,
     y: Tensor | None = None,
 ) -> Mapping[str, object]:
@@ -205,8 +254,7 @@ def functional_forward(
     if y is not None and not torch.is_tensor(y):
         raise TypeError("y must be a tensor or None")
 
-    values = fast_state.parameters if isinstance(fast_state, FastAdapterState) else fast_state
-    fast = _validate_fast_parameters(model, values)
+    fast = _validate_fast_parameters(model, fast_values)
     kwargs = _forward_kwargs(model, y)
     snapshot = _snapshot_module_state(model)
 
@@ -233,6 +281,19 @@ def functional_forward(
         return output
     finally:
         _restore_module_state(snapshot)
+
+
+def functional_forward(
+    model: nn.Module,
+    fast_state: FastAdapterState,
+    x: Tensor,
+    y: Tensor | None = None,
+) -> Mapping[str, object]:
+    """Run the actual model with a validated, immutable fast-state carrier."""
+
+    if not isinstance(fast_state, FastAdapterState):
+        raise TypeError("functional_forward fast_state must be a FastAdapterState")
+    return _functional_forward_from_mapping(model, fast_state.parameters, x, y)
 
 
 def _validate_support_loss(loss: object) -> Tensor:
@@ -269,7 +330,7 @@ def first_order_adapt(
     if not callable(support_loss_fn):
         raise TypeError("support_loss_fn must be callable")
 
-    fast = OrderedDict(iter_inner_adapter_parameters(model))
+    fast = _clone_inner_parameters(model)
     if not fast:
         raise MetaInnerLoopError("model has no Task3 inner adapter parameters")
     step_sizes = dict(adapter_step_size_by_parameter(model))
@@ -278,9 +339,9 @@ def first_order_adapt(
 
     history: list[float] = []
     for step_index in range(steps):
-        outputs = functional_forward(model, fast, x, y)
+        outputs = _functional_forward_from_mapping(model, fast, x, y)
         try:
-            loss = support_loss_fn(outputs, y, fast)
+            loss = support_loss_fn(outputs, y, _ReadOnlyOrderedDict(fast))
         except MetaInnerLoopError:
             raise
         loss = _validate_support_loss(loss)

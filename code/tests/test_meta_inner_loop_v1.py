@@ -78,6 +78,27 @@ class _ToyAdapterModel(nn.Module):
         return {"logits": logits, "feat_cls": z}
 
 
+class _BatchNormAdapterModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.meta_adapter_time = ResidualMetaAdapter(dim=4, rank=2)
+        self.meta_adapter_freq = ResidualMetaAdapter(dim=4, rank=2)
+        self.meta_adapter_fusion = ResidualMetaAdapter(dim=4, rank=2)
+        self.batch_norm = nn.BatchNorm1d(4)
+        self.head = nn.Linear(4, 3)
+        self.fail = False
+
+    def forward(self, x, y=None, return_aux=False):
+        z = self.meta_adapter_time(x)
+        z = self.batch_norm(z)
+        z = self.meta_adapter_freq(z)
+        z = self.meta_adapter_fusion(z)
+        if self.fail:
+            raise RuntimeError("intentional forward failure")
+        logits = self.head(z)
+        return {"logits": logits, "feat_cls": z}
+
+
 def _toy_loss(outputs, labels, _fast):
     return F.cross_entropy(outputs["logits"], labels)
 
@@ -176,7 +197,90 @@ def test_zero_steps_returns_initial_functional_state_without_calling_support_los
     assert fast.steps == 0
     assert fast.support_losses == ()
     assert tuple(fast.parameters) == tuple(expected)
-    assert all(fast.parameters[name] is expected[name] for name in expected)
+    for name, parameter in expected.items():
+        assert fast.parameters[name] is not parameter
+        assert fast.parameters[name].data_ptr() != parameter.data_ptr()
+        assert torch.equal(fast.parameters[name], parameter)
+
+
+def test_zero_step_fast_storage_isolated_and_outer_gradient_reaches_initialization():
+    torch.manual_seed(17)
+    model = _ToyAdapterModel()
+    model.eval()
+    x, y = _toy_inputs(18)
+    fast = first_order_adapt(model, x, y, _toy_loss, steps=0)
+    before = OrderedDict(
+        (name, parameter.detach().clone())
+        for name, parameter in iter_inner_adapter_parameters(model)
+    )
+    for name, parameter in iter_inner_adapter_parameters(model):
+        assert fast.parameters[name].data_ptr() != parameter.data_ptr()
+        assert torch.equal(fast.parameters[name], before[name])
+
+    with torch.no_grad():
+        fast.parameters["meta_adapter_time.up.weight"].add_(0.25)
+    assert torch.equal(model.meta_adapter_time.up.weight.detach(), before["meta_adapter_time.up.weight"])
+
+    output = functional_forward(model, fast, x, y)
+    output["logits"].square().mean().backward()
+    gradient = model.meta_adapter_time.up.weight.grad
+    assert gradient is not None
+    assert torch.isfinite(gradient).all()
+    assert bool(gradient.abs().sum() > 0)
+
+
+def test_fast_state_parameter_mapping_is_read_only_but_tensors_are_independent():
+    model = _ToyAdapterModel()
+    x, y = _toy_inputs()
+    fast = first_order_adapt(model, x, y, _toy_loss, steps=0)
+    key = next(iter(fast.parameters))
+    with pytest.raises(TypeError, match="read-only"):
+        fast.parameters[key] = fast.parameters[key]
+    with pytest.raises(TypeError, match="read-only"):
+        del fast.parameters[key]
+    with pytest.raises(TypeError, match="read-only"):
+        fast.parameters.update({key: fast.parameters[key]})
+
+
+def test_support_loss_receives_read_only_fast_mapping():
+    model = _ToyAdapterModel()
+    x, y = _toy_inputs()
+    observed = []
+
+    def support_loss(outputs, labels, fast):
+        key = next(iter(fast))
+        with pytest.raises(TypeError, match="read-only"):
+            fast[key] = fast[key]
+        observed.append(tuple(fast))
+        return _toy_loss(outputs, labels, fast)
+
+    first_order_adapt(model, x, y, support_loss, steps=1)
+    assert observed
+
+
+def test_public_functional_forward_accepts_only_fast_adapter_state():
+    model = _ToyAdapterModel()
+    x, y = _toy_inputs()
+    mapping = OrderedDict(iter_inner_adapter_parameters(model))
+    with pytest.raises(TypeError, match="FastAdapterState"):
+        functional_forward(model, mapping, x, y)
+
+
+def test_batchnorm_buffers_and_training_state_survive_normal_and_failed_forward():
+    model = _BatchNormAdapterModel()
+    model.train()
+    x, y = _toy_inputs(23)
+    fast = first_order_adapt(model, x, y, _toy_loss, steps=0)
+
+    snapshot = _state_snapshot(model)
+    output = functional_forward(model, fast, x, y)
+    assert output["logits"].shape == (x.size(0), 3)
+    _assert_snapshot_equal(model, snapshot)
+
+    model.fail = True
+    with pytest.raises(RuntimeError, match="intentional forward failure"):
+        functional_forward(model, fast, x, y)
+    _assert_snapshot_equal(model, snapshot)
 
 
 @pytest.mark.parametrize("steps", [-1, 11])
@@ -242,18 +346,18 @@ def test_functional_forward_rejects_extra_missing_and_forged_keys():
     extra = OrderedDict(valid)
     extra["meta_adapter_fake.up.weight"] = torch.zeros(1)
     with pytest.raises(MetaInnerLoopError, match="key"):
-        functional_forward(model, extra, x, y)
+        functional_forward(model, FastAdapterState(extra, 0, ()), x, y)
 
     missing = OrderedDict(valid)
     missing.popitem()
     with pytest.raises(MetaInnerLoopError, match="key"):
-        functional_forward(model, missing, x, y)
+        functional_forward(model, FastAdapterState(missing, 0, ()), x, y)
 
     forged = OrderedDict(valid)
     forged.pop(next(iter(forged)))
     forged["meta_adapter_time.log_step_size"] = torch.tensor(0.0)
     with pytest.raises(MetaInnerLoopError, match="key"):
-        functional_forward(model, forged, x, y)
+        functional_forward(model, FastAdapterState(forged, 0, ()), x, y)
 
 
 @pytest.mark.parametrize("bad_value", ["shape", "dtype", "device"])
@@ -271,7 +375,7 @@ def test_functional_forward_rejects_fast_tensor_contract(bad_value):
         replacement = value.detach().to(device="meta")
     valid[key] = replacement
     with pytest.raises(MetaInnerLoopError, match="must match"):
-        functional_forward(model, valid, x, y)
+        functional_forward(model, FastAdapterState(valid, 0, ()), x, y)
 
 
 def test_functional_forward_preserves_state_and_training_mode():
