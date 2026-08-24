@@ -96,3 +96,13 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 - new10严格取同一draw seed的new20排列前10类：`1-16,18-8,2-16,14-11,11-19,4-10,2-5,19-8,19-9,20-12`；禁止手工改序或从new20改名复制。
 - package完成后，以既有before包和新new10包生成一个K10 Stage2-B manifest；仅使用空闲GPU进行固定feature/manifest构建。任何已有output、builder异常、协议字段不匹配或产物不完整都立即停止本次补建，不影响r3和其他任务。
 - 该补建只产生Target5输入，不读取性能，不启动Meta-Adapter Target5，也不代表Phase1已通过source选择。
+
+## K10/new10补建结果
+
+- 2026-08-25 03:02～03:04完成固定母缓存到new10 package及单个K10 feature/manifest构建；物理GPU1只用于该固定feature构建，结束后显存回到1MiB。r3的GPU0进程、release、日志和output root均未改变。
+- new10 predictor package root SHA256=`d6faa799aefc6b739afb23d66e225ac328eb960e4ec3fe84361c38c70b09dade`，seal SHA256=`07e67f8f50dfaba724d305c29c23b5e95751f1d9365e885bef615f08b13f6338`；注册类16、support pool160、query320，三个场景文件均完整。
+- `offline_build_audit.json`状态为`PASS`，确认正式Phase1 class binding被使用、support/query物理ID同场景互斥、跨场景物理ID互斥、单物理样本单LEO观测合规、clean sample access=false。
+- 权威Stage2-B manifest：`.../artifacts/feature_k10_new10/stage2b/features.manifest.json`，SHA256=`3a1b81815b9898d44e63e6f923d59192a1f16c72741cf0aa7e90c01de878c919`；payload SHA256=`593b4d52c29569bb4d1872358e513817d3eda3a50fe27cea62acb9746dcecd68`。
+- manifest固定`phase2_data_status=VALIDATED_ONCE`、`capsule_id=d18-reuse-validated-once-rx20-1-seed713101-m7282101-k10-new10`、`split_id=p2_min_v1-rx20-1-m7282101-s7282201-q7282301-d7282401-k10-new10`、`stage_scope=stage2b`、`k_shot=10`；query truth/role、source sample/cache/label/replay访问均为false。
+- Stage2-A和Stage2-C cache是同一次固定builder的完整副产物，本目标不消费其特征或旧D92判决；Meta-Adapter正式run仍只从固定received-IQ package导出raw support/query IQ，在新meta checkpoint上做真实梯度更新。
+- 结论：原Target5五切片中的`K10/new10`数据缺口已闭合；仍须等待r3 Phase1完成并通过source选择后，才能生成正式Target5配置和启动性能实验。
