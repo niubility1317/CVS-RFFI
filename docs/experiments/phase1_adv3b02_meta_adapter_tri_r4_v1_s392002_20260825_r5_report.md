@@ -1,7 +1,7 @@
 # CVS_META_ADAPTER_TRI_R4_V1 r5最小预登记报告
 
 - run ID：`phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260825_r5`
-- 状态：`LANDED / NOT_LAUNCHED`
+- 状态：`RUNNING`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 固定代码与配置提交：`8d07f752e5093766f31edab7fdc97159c60d70f1`
 
@@ -44,3 +44,11 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 - release归档仅同步一次；远端SHA256=`8becfa7e4a8e68aa3bae1c8668c81b2b8f6bb6af47617c0cc1b9349203e2c349`，与本地一致。
 - 远端checkout中的7个相关生产入口编译通过；真实绝对checkpoint、ManySig、r5配置和output root的launcher dry-run通过，且dry-run前后均未创建run root。
 - 当前最高状态为`LANDED`；下一步仅剩启动前资源复核、一次不可覆盖launch及PID／CWD／cmdline／GPU／日志增长健康检查。
+
+## N607启动健康检查
+
+- 2026-08-25 05:38（Asia/Hong_Kong）完成唯一一次不可覆盖启动；launcher PID=`2650209`，P1训练子PID=`2650534`。
+- launcher和训练子进程的CWD均为预登记r5 checkout；cmdline分别精确绑定r5配置、run root、冻结checkpoint、ManySig、P1配置和GPU0。
+- stdout从不存在增长到576字节，P1已写入`_configs/P1.json`和`P1/config_snapshot.json`；异常扫描计数为0。
+- GPU0只出现P1子进程，初始显存594MiB；15秒复核时子进程保持`R`状态，累计CPU时间38秒并持续推进。
+- 当前最高状态提升为`RUNNING`。该证据只证明发布和启动健康，不代表P1完成、source选择通过或存在目标域正向收益。
