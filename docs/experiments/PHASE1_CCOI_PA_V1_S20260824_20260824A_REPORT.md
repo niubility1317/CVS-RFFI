@@ -2,7 +2,7 @@
 
 ## 预登记
 
-- 状态：`LOCAL_VERIFIED/PRELAUNCH`；没有性能结果。
+- 状态：`RUNNING/SMOKE`；没有性能结果。
 - 候选：`CCOI-PA-V1`，单seed最小矩阵`C0/C1/C2/C3/C4`。
 - 科学对照：冻结`ADV3B02_CORE90_SOFT_E200`；C1–C4同容量、同初始化、同split、同seed、同训练和评估预算。
 - Git实现提交：`f7f2ab4a8431091d1674439fb99f2e414010ae6e`，分支`codex/phase1-ccoi-pa-v1-20260824`，远端OID已独立核对一致。
@@ -23,8 +23,8 @@
 - N607预检：直连普通账户、项目根、checkpoint、ManySig数据和Python环境均`VERIFIED`；目标run与smoke根均不存在。
 - release归档：`E:\type10-7\release_archives\phase1_ccoi_pa_v1_3ed07d9b.tar.gz`→`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ccoi_pa_v1_3ed07d9b.tar.gz`；本地/远端SHA256均为`15b33bc9ce88ca8ab0bd2bff8bfe23e9bf7a33f570bdea60d9e6a2e977fb13fd`。
 - release目录：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ccoi_pa_v1_3ed07d9b`；远端5个Python文件编译通过且`.pyc`已读回，launcher远端`bash -n`通过。
-- 启动后PID/CWD/cmdline/GPU/log增长：`PENDING_LAUNCH`。
+- 启动后绑定：launcher PID`2315866`，CWD为release目录；子进程PID`2315868`执行C2真实checkpoint smoke；GPU5显存约654MiB；supervisor日志已增长并显示协议与smoke阶段。状态仅为`RUNNING`。
 
 ## 结果
 
-尚未启动。科学增益与C0–C4排序均为`UNKNOWN`。
+实验正在smoke阶段。尚无完整prediction或score，科学增益与C0–C4排序均为`UNKNOWN`。
