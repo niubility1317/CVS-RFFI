@@ -1,0 +1,17 @@
+{
+  "schema": "cvs.stage2b.apsta_p1_target5_matrix.v1",
+  "run_id": "adv3b02_stage2b_apsta_p1_t5_s713101_20260824_v1",
+  "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
+  "candidate_id": "APSTA_P1_TIME_FUSION_ROBUST",
+  "checkpoints": [0, 10, 30, 100, 300],
+  "learning_rate": 0.0002,
+  "anchor_strength": 3.0,
+  "head_ce_weight": 0.25,
+  "loo_mean_weight": 1.0,
+  "tail_weight": 0.5,
+  "tail_temperature": 0.5,
+  "topology_weight": 0.25,
+  "l2sp_weight": 0.001,
+  "margin_epsilon": 0.0,
+  "row_source_config": "stage2b_capta_p0_target5_s713101_20260824.json"
+}
