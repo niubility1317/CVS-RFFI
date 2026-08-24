@@ -177,9 +177,7 @@ def _validate_binding(model: nn.Module, prototypes: torch.Tensor) -> float:
 def _target_scores(
     features: torch.Tensor, prototypes: np.ndarray, scale: float
 ) -> torch.Tensor:
-    target = torch.as_tensor(
-        np.asarray(prototypes).copy(), dtype=torch.float32, device=features.device
-    )
+    target = _float_tensor(np.asarray(prototypes).copy()).to(features.device)
     return float(scale) * F.linear(
         F.normalize(features.float(), dim=1, eps=1.0e-4),
         F.normalize(target, dim=1, eps=1.0e-4),
@@ -217,7 +215,7 @@ def _support_gate(
             rank=config.rank,
             prior_strength=config.prior_strength,
         )
-        feature = torch.as_tensor(features[row_index : row_index + 1])
+        feature = _float_tensor(features[row_index : row_index + 1])
         loo_target[row_index] = _target_scores(
             feature, state.target_prototypes, scale
         ).squeeze(0).numpy()
@@ -344,7 +342,7 @@ def predict_query_read_only(
         raise CaptaRuntimeError("checkpoint model has no parameters") from exc
     _validate_binding(
         model,
-        torch.as_tensor(state.prototype_state.source_prototypes.copy()),
+        _float_tensor(state.prototype_state.source_prototypes.copy()),
     )
     source_rows: list[torch.Tensor] = []
     target_rows: list[torch.Tensor] = []

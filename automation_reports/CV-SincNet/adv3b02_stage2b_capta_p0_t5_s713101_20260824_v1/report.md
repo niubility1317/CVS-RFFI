@@ -3,7 +3,7 @@
 ## 结论状态
 
 - run ID：`adv3b02_stage2b_capta_p0_t5_s713101_20260824_v1`
-- 当前状态：`LOCAL_VERIFIED`；尚未发布N607正式矩阵，尚无性能结论
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 设计定位：根据《面向CVS Phase2星上部署的轻型快速／多步域适应设计》实现CAPTA-P0协议安全近似。A3的rank-4域基由合法target support类残差估计，不声称复现设计中的地面跨域`U,V`
 - 冻结checkpoint：`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`
 - 协议：`p2_min_v1`、`VALIDATED_ONCE`，同row核对`capsule_id/split_id`
@@ -66,4 +66,4 @@ python code/scripts/run_stage2_capta_target5_matrix.py --config configs/stage2b_
 
 ## 结果
 
-当前无正式N607 prediction或评分结果。不得把本地smoke或工程闭合表述为正向收益。
+N607 launcher PID=`2144002`在首个A1 prediction、任何prediction artifact产生前自然退出。根因是N607的NumPy`2.2.5`与PyTorch`2.1.0+cu121`不能用`torch.as_tensor`桥接独立NumPy`float32`数组，报错`Could not infer dtype of numpy.float32`。结果根只保留2条事件和失败日志，无prediction、无score、无性能结果；未删除或覆盖。修复采用项目既有显式值复制模式，并以全新不可覆盖run ID`adv3b02_stage2b_capta_p0_t5_s713101_20260824_v2`重试。

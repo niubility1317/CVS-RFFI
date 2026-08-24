@@ -181,6 +181,40 @@ def test_query_prediction_is_state_read_only_and_order_independent() -> None:
     assert forward.query_batch_state_updated is False
 
 
+def test_numpy2_torch21_path_uses_explicit_value_copy(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    model = _ToyDualModel()
+    support_iq, support_labels = _support()
+    prototypes = model.id_backbone.cls_head.head.weight.detach().clone()
+
+    def reject_numpy_identity_bridge(*args: object, **kwargs: object) -> object:
+        raise AssertionError("torch.as_tensor NumPy bridge is unavailable")
+
+    monkeypatch.setattr(torch, "as_tensor", reject_numpy_identity_bridge)
+    state = adapt_on_target_support(
+        model,
+        support_iq.numpy().copy(),
+        support_labels,
+        prototypes.numpy().copy(),
+        ("old-a", "old-b"),
+        context=_context(),
+        config=CaptaConfig(
+            candidate_id=A3_R4_SUPPORT_SHIFT,
+            rank=2,
+            prior_strength=2.0,
+        ),
+    )
+    prediction = predict_query_read_only(
+        model,
+        support_iq[:2].numpy().copy(),
+        state,
+        context=_context(),
+    )
+
+    assert len(prediction.predicted_class_ids) == 2
+
+
 @pytest.mark.parametrize(
     ("field", "value"),
     [
