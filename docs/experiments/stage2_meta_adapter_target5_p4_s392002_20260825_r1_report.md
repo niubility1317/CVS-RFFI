@@ -5,6 +5,7 @@
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 实现提交：`8d07f752e5093766f31edab7fdc97159c60d70f1`
 - Phase1闭合提交：`26ad71643b35d5fbcab5f98308bb11ea24d19c65`
+- 固定本次计划与预登记提交：`c489dc8df100ea6c7cd79ad135f9a0f07725d2d0`
 
 ## 候选与矩阵
 
