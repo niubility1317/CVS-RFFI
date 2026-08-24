@@ -78,3 +78,11 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 - 只读核对晚块实验复制的25份`VALIDATED_ONCE`manifest后确认，该资产属于另一套`K1/K2/K5/K10/new5/new20`矩阵，每个receiver只有`K10/new5`、`K10/new20`、`K5/new20`、`K2/new20`和`K1/new20`，没有`K10/new10`。
 - N607的既有`stage2_inputs`与run目录定向文件名搜索均未找到权威`K10/new10`manifest；现有package根也只包含`before/new5/new20`。因此当前不得把`K10/new20`句柄改名或伪装为`K10/new10`。
 - Phase1 source选择通过后，Target5启动前必须从固定received-IQ资产按一次性builder边界补齐真实`K10/new10`切片并取得其`p2_min_v1/VALIDATED_ONCE/capsule_id/split_id`；这属于缺失数据row补建，不改变Meta-Adapter方法，也不触发其他已验证切片重验。
+
+## Target5 truth-blind矩阵执行器
+
+- 现有正式入口只能执行单个row，无法直接闭合15行Target5；因此新增`stage2_meta_adapter_matrix.py`和CLI，仅顺序调用既有单row runner，不接受、打开或传递truth。
+- RED阶段5项测试以模块缺失稳定失败；GREEN后联合runner、scorer和target-row exporter共58项通过，两个生产入口`py_compile`与`git diff --check`均通过。
+- 执行器在创建输出root前验证完整Target5/Target25笛卡尔积、固定operating point与K的对应关系、单一candidate/bundle/seed、row ID安全性和单row配置allowlist；`K2/new20`不能替代`K10/new10`。
+- 任一row技术失败时只停止后续派发，写入矩阵失败状态并保留所有已完成或失败诊断产物；不删除、不覆盖、不自动重跑。prediction完整后仍由独立scorer在执行器之外truth-last评分。
+- 这项结果只证明执行链闭合，不是性能证据；r3仍为`RUNNING`，Target5尚未启动。
