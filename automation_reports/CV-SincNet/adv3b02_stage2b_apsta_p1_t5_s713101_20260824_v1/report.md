@@ -40,8 +40,8 @@
 - N607 Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`
 - N607 CWD：`/home/szu2070436088/2510044040/CV-SincNet`
 - 不可覆盖输出根：`/home/szu2070436088/2510044040/CV-SincNet/runs/adv3b02_stage2b_apsta_p1_t5_s713101_20260824_v1`
-- GPU：`GPU0`，启动前执行资源/路径preflight并登记占用
-- 正式命令：`run_stage2_apsta_target5_matrix.py --config <release>/configs/stage2b_apsta_p1_target5_s713101_20260824.json --release-root <release> --output-root <run-root>/results --device cuda:0`
+- GPU：`GPU5`；启动前GPU0–4各有1个训练进程，GPU5–7空闲，选择GPU5避免叠加现有任务
+- 正式命令：`run_stage2_apsta_target5_matrix.py --config <release>/configs/stage2b_apsta_p1_target5_s713101_20260824.json --release-root <release> --output-root <run-root>/results --device cuda:5`
 - 预期artifact：release归档、真实checkpoint无query smoke、15份prediction、15份paired score、matrix summary、APSTA aggregate和日志
 
 ## 结果
