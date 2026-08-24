@@ -28,14 +28,25 @@ from cvsrffi import stage2_meta_adapter_runner as _runner
 # loader without introducing a second checkpoint-loading path.
 load_meta_bundle_strict = _runner.load_meta_bundle_strict
 
+_SMOKE_STATUS_BY_KIND = {
+    "base_init": "REAL_BASE_CHECKPOINT_ADAPTER_INIT_NO_QUERY_SMOKE_PASS",
+    "meta_bundle": "REAL_META_CHECKPOINT_NO_QUERY_SMOKE_PASS",
+}
+
 
 def run_meta_adapter_no_query_smoke(
     config: Mapping[str, Any],
     output_dir: str | Path,
     device: str | torch.device,
+    *,
+    smoke_kind: str = "meta_bundle",
 ) -> Mapping[str, Any]:
     """Run one no-query smoke and write only a compact receipt."""
 
+    try:
+        smoke_status = _SMOKE_STATUS_BY_KIND[smoke_kind]
+    except KeyError as exc:
+        raise ValueError(f"unsupported smoke_kind: {smoke_kind!r}") from exc
     resolved = _runner._validate_config(config, require_query=False)
     destination = Path(output_dir)
     if destination.exists() or destination.is_symlink():
@@ -82,7 +93,7 @@ def run_meta_adapter_no_query_smoke(
     completed_stages: list[str] = []
     try:
         receipt: dict[str, Any] = {
-            "status": "REAL_META_CHECKPOINT_NO_QUERY_SMOKE_PASS",
+            "status": smoke_status,
             "protocol_schema": resolved["protocol_schema"],
             "phase2_data_status": resolved["phase2_data_status"],
             "capsule_id": resolved["capsule_id"],
@@ -125,9 +136,16 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--config", required=True, type=Path)
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--device", default="cpu")
+    parser.add_argument(
+        "--smoke-kind",
+        choices=tuple(_SMOKE_STATUS_BY_KIND),
+        default="meta_bundle",
+    )
     args = parser.parse_args(argv)
     config = json.loads(args.config.read_text(encoding="utf-8"))
-    result = run_meta_adapter_no_query_smoke(config, args.output_dir, args.device)
+    result = run_meta_adapter_no_query_smoke(
+        config, args.output_dir, args.device, smoke_kind=args.smoke_kind
+    )
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
     return 0
 

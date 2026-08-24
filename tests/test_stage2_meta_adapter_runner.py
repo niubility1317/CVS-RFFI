@@ -457,6 +457,67 @@ def test_no_query_smoke_has_no_query_path_and_three_updates(
     assert not (tmp_path / "smoke" / "query.npz").exists()
 
 
+def test_no_query_smoke_base_init_reports_distinct_status_without_query(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    smoke_path = PROJECT_ROOT / "code" / "scripts" / "smoke_stage2_meta_adapter_no_query.py"
+    spec = importlib.util.spec_from_file_location(
+        "task12_smoke_stage2_meta_adapter_base_init", smoke_path
+    )
+    assert spec is not None and spec.loader is not None
+    smoke = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = smoke
+    spec.loader.exec_module(smoke)
+    paths = _write_row_inputs(tmp_path)
+    events: list[str] = []
+    import cvsrffi.stage2_meta_adapter_runner as runner
+
+    _install_fake_bundle_loader(monkeypatch, runner, events)
+    monkeypatch.setattr(smoke, "load_meta_bundle_strict", runner.load_meta_bundle_strict)
+    result = smoke.run_meta_adapter_no_query_smoke(
+        {
+            "candidate_id": "CVS_META_ADAPTER_TRI_R4_V1",
+            "bundle_id": "ADV3B02_CORE90_SOFT_E200_META_TRI_R4_V1",
+            "protocol_schema": "p2_min_v1",
+            "phase2_data_status": "VALIDATED_ONCE",
+            "capsule_id": "capsule-fixed-received-iq",
+            "split_id": "split-support-query-disjoint",
+            "checkpoint_path": str(paths["checkpoint_path"]),
+            "support_path": str(paths["support_path"]),
+            "prototype_path": str(paths["prototype_path"]),
+            "receiver": "20-1",
+            "scenario": "leo_clear_weak",
+            "operating_point": "K2/new2",
+            "seed": 392002,
+            "k_shot": 2,
+            "steps": 3,
+        },
+        tmp_path / "base-init-smoke",
+        "cpu",
+        smoke_kind="base_init",
+    )
+    assert result["status"] == "REAL_BASE_CHECKPOINT_ADAPTER_INIT_NO_QUERY_SMOKE_PASS"
+    assert result["query_opened"] is False
+    assert result["query_state_update_count"] == 0
+    assert not (tmp_path / "base-init-smoke" / "query.npz").exists()
+
+
+def test_no_query_smoke_rejects_unknown_smoke_kind_before_io(tmp_path: Path):
+    smoke_path = PROJECT_ROOT / "code" / "scripts" / "smoke_stage2_meta_adapter_no_query.py"
+    spec = importlib.util.spec_from_file_location(
+        "task12_smoke_stage2_meta_adapter_invalid_kind", smoke_path
+    )
+    assert spec is not None and spec.loader is not None
+    smoke = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = smoke
+    spec.loader.exec_module(smoke)
+    with pytest.raises(ValueError, match="smoke_kind"):
+        smoke.run_meta_adapter_no_query_smoke(
+            {}, tmp_path / "invalid-smoke", "cpu", smoke_kind="unexpected"
+        )
+    assert not (tmp_path / "invalid-smoke").exists()
+
+
 def test_task9_public_interfaces_remain_fixed_for_runner():
     assert "steps" not in MetaAdapterPhase2Config.__dataclass_fields__
     assert "steps" not in __import__(
