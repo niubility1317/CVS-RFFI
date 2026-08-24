@@ -1,7 +1,7 @@
 # CVS_META_ADAPTER_TRI_R4_V1 P3 Target5最小预登记报告
 
 - run ID：`stage2_meta_adapter_target5_p3_s392002_20260825_r1`
-- 状态：`LOCAL_VERIFIED`
+- 状态：`LANDED`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 生产代码提交：`cef0ee30a998a3f2acfcf52c257edb0d19f1e575`
 
@@ -34,3 +34,11 @@
 - 当前生产代码已通过70项Stage2直接回归及199项Meta-Adapter Phase1／Phase2邻近回归；P4真实运行已验证相同runner的严格checkpoint加载、3步梯度更新、query冻结和truth-last评分闭合。
 - P3仍先执行真实checkpoint无query smoke；技术停止仅限协议越权、错误row／split、输出覆盖、prediction不完整、scorer连接错误或确定性执行故障，不因性能停止。
 - 15-row prediction完整后才连接truth。`DA1_REG0-DA0_REG0`旧类均值至少+1.0pp且floor至少+0.5pp才晋级Target25，否则记录`SCIENTIFIC_FAILURE_NO_PROMOTION`并继续下一候选。
+
+## N607发布与smoke证据
+
+- 启动前核对P3 plan、工厂root、smoke root、prediction root和stdout均不存在，P3 bundle与冻结原型非空，GPU0～GPU7无计算进程。
+- P3 plan单文件同步后本地／远端SHA256均为`51d93ff5300fbdeb55724d28488ff20a2288826c155657ad063ebb6050b2da98`。
+- 工厂生成15个truth-free row，receipt状态为`TARGET_INPUTS_COMPLETE`，并确认`query_truth_opened=false`、`query_role_opened=false`、`source_opened=false`。
+- P3真实checkpoint无query smoke通过：严格checkpoint加载、3次反向传播、训练参数占比0.8192%，`query_opened=false`、`source_opened=false`、`query_state_update_count=0`且无performance result。
+- 当前最高状态为`LANDED`；下一步立即运行唯一一次15-row P3 prediction矩阵。
