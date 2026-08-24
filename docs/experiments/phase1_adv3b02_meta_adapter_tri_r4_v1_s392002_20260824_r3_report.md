@@ -107,4 +107,5 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 - Stage2-A和Stage2-C cache是同一次固定builder的完整副产物，本目标不消费其特征或旧D92判决；Meta-Adapter正式run仍只从固定received-IQ package导出raw support/query IQ，在新meta checkpoint上做真实梯度更新。
 - 当前提交的target-row exporter已对真实`before/support_leo_clear_weak.npz`完成一次support-only no-query smoke：输入60行，K10输出6类×10行，物理ID60/60唯一且与IQ/标签对齐。
 - smoke输出NPZ精确只有`received_iq/support_labels/support_physical_ids`；audit确认`query_input_opened=false`、query行数0、`query_truth_opened=false`、`query_role_opened=false`。该检查未复制或打开query文件，也没有性能结果。
+- 最新分支随后执行覆盖Phase1 meta episode/inner loop/trainer/checkpoint/真实入口和Phase2 adaptation/handoff/runner/matrix/scorer/exporter的宽回归，共254项全部通过；仅有既存AMP API弃用警告。
 - 结论：原Target5五切片中的`K10/new10`数据缺口已闭合；仍须等待r3 Phase1完成并通过source选择后，才能生成正式Target5配置和启动性能实验。
