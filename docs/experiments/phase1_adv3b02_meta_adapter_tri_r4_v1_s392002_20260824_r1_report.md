@@ -133,3 +133,11 @@ Task13将以当前`LOCAL_VERIFIED`代码为基础，写入最小N607预登记字
 - launcher、配置、冻结checkpoint、ManySig输入和`CVS-RFFI`解释器均存在；output root与stdout日志均不存在，该launcher进程为空。
 - 使用授权后的`CVS-RFFI`解释器，对`code/train.py`、Phase1入口／trainer、Phase2 runner／scorer及launcher执行一次远端`py_compile`，结果为`REMOTE_COMPILE_PASS`。
 - 当前状态：`LANDED/READY_TO_LAUNCH`；下一步按有效启动命令启动同一run ID，并执行一次启动健康核对。
+
+## Task13 r1启动技术失败
+
+- 启动时间：2026-08-25 00:50（Asia/Hong_Kong）；launcher PID为`2490354`。
+- 一次启动健康核对发现主PID已退出、日志未增长、output root未创建、GPU计算进程为空。
+- 确定性异常：配置中的相对checkpoint路径被release checkout解析为`checkout/runs/.../best_joint_safe_ssdg.pth`，而真实冻结checkpoint位于N607项目根目录；训练代码、数据加载和GPU计算均未开始。
+- 最终状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。保留原日志，不覆盖、不删除、不使用同一run ID重启。
+- 根因修复采用launcher显式只读输入覆盖，RED→GREEN及98项聚焦／邻近测试通过；修复提交为`c7e5e3b384b4d0522df39a841e539e39af1d2dc2`，转入新的不可覆盖`r2` run。
