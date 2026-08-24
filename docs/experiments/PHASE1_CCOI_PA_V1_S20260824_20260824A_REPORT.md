@@ -17,10 +17,13 @@
 - 输入数据：`/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl`。
 - 输出：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_ccoi_pa_v1_20260824/PHASE1_CCOI_PA_V1_S20260824_20260824A`；smoke使用独立不可覆盖后缀根。
 - 日志：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_ccoi_pa_v1_20260824/PHASE1_CCOI_PA_V1_S20260824_20260824A.out`。
-- GPU：由N607资源preflight后选择；不超过每GPU两个训练进程。
+- GPU：5。预检时GPU0–4各有1个既有训练进程，GPU5–7无训练进程；本run只在GPU5启动1个训练进程，不触碰既有任务。
 - 技术停止规则：仅在协议/数据越权、错误checkout/seed/split、输出已存在、真实checkpoint严格加载失败、非有限loss、prediction闭合失败、独立scorer连接失败或同一确定性预prediction异常重复时停止；不得因中间性能低而停止。
 - 预期artifact：`protocol_and_smoke.json`、挑战预训练历史、每row sidecar、`prediction.jsonl`、后置`truth.jsonl`、`metrics.json`、challenge audit、matrix manifest和完整日志。
-- release归档本地到远端映射、SHA、远端编译、PID/CWD/cmdline/GPU/log增长：`PENDING_N607_PREFLIGHT`。
+- N607预检：直连普通账户、项目根、checkpoint、ManySig数据和Python环境均`VERIFIED`；目标run与smoke根均不存在。
+- release归档：`E:\type10-7\release_archives\phase1_ccoi_pa_v1_3ed07d9b.tar.gz`→`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ccoi_pa_v1_3ed07d9b.tar.gz`；本地/远端SHA256均为`15b33bc9ce88ca8ab0bd2bff8bfe23e9bf7a33f570bdea60d9e6a2e977fb13fd`。
+- release目录：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ccoi_pa_v1_3ed07d9b`；远端5个Python文件编译通过且`.pyc`已读回，launcher远端`bash -n`通过。
+- 启动后PID/CWD/cmdline/GPU/log增长：`PENDING_LAUNCH`。
 
 ## 结果
 
