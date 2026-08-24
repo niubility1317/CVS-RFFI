@@ -57,3 +57,5 @@ prediction完整后才由独立scorer连接truth。15个同row score聚合`DA1_R
 - 根因是scorer把“含数值`true_class_index`的CVS多场景sidecar”误判为无场景简表，错误使用三场景全集做join。该问题只在独立评分阶段，不影响已经冻结的prediction、适配状态或query边界。
 - RED测试复现多场景数值truth误连接；GREEN实现先识别CVS场景sidecar，再按receipt场景完成全量opaque-ID join，并且仅对该场景的`target_old`计算REG0指标。scorer全测18项及Stage2工厂／runner／matrix／handoff／scorer／row export整组70项通过。
 - 当前最高状态为`ARTIFACTS_COMPLETE`；15-row prediction不重跑。发布独立scorer修复后，从尚未产生score的truth-last阶段继续。
+- scorer修复归档：`E:\type10-7\release_archives\stage2_meta_adapter_target5_p4_s392002_20260825_r2_scorerfix1_cef0ee30.tar.gz`；固定提交`cef0ee30a998a3f2acfcf52c257edb0d19f1e575`，35502573字节，SHA256=`467aef9c963b3842f3e5ccf89258fa8c4d0d198dd85f66b4a5e8fb687d02fc78`。
+- scorer修复远端release root：`/home/szu2070436088/2510044040/CV-SincNet/releases/stage2_meta_adapter_target5_p4_s392002_20260825_r2_scorerfix1`。
