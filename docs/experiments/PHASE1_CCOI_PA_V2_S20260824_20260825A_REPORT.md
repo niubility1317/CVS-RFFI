@@ -28,5 +28,6 @@
 
 ## 运行更新
 
-待N607发布、smoke和正式矩阵后追加。
-
++- 2026-08-25 01:07：release归档已同步；远端SHA256读回为`976bfe2919f4632e5b5b277b915ec418c7754866c9d2a058859439429eab5628`，与本地一致，传输状态`VERIFIED`。
+- release目录已新建且未覆盖旧目录；三个V2生产Python文件远端编译通过，三个对应`.pyc`均完成独立读回；launcher远端`bash -n`通过。
+- 启动前资源再次确认：无`train_phase1_ccoi_pa.py`进程、无NVIDIA compute app，目标run和smoke根均不存在。
