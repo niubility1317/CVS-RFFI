@@ -30,6 +30,8 @@
 
 - 账户：普通`N607`用户`szu2070436088`；环境：现有`CVS-RFFI`；GPU：0。
 - 新release CWD：`/home/szu2070436088/2510044040/CV-SincNet/releases/stage2_meta_adapter_target5_p4_s392002_20260825_r2/checkout`
+- release归档：`E:\type10-7\release_archives\stage2_meta_adapter_target5_p4_s392002_20260825_r2_d81564fd.tar.gz`；固定提交`d81564fdac933f051704f9f33d8315566507df1b`，35500199字节、5010个条目，SHA256=`890927e0815b1893f5fee933c58729d6bbdc403f7272555854c2a8e48cfb044e`。
+- 远端归档：`/home/szu2070436088/2510044040/CV-SincNet/releases/stage2_meta_adapter_target5_p4_s392002_20260825_r2/stage2_meta_adapter_target5_p4_s392002_20260825_r2_d81564fd.tar.gz`
 - smoke output root：`/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_meta_adapter_target5_p4_s392002_20260825_r2_smoke`
 - prediction output root：`/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_meta_adapter_target5_p4_s392002_20260825_r2`
 - stdout日志：`/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_meta_adapter_target5_p4_s392002_20260825_r2.out`
