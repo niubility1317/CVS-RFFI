@@ -125,3 +125,11 @@ Task13将以当前`LOCAL_VERIFIED`代码为基础，写入最小N607预登记字
 - 有效Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
 - 有效启动命令：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/scripts/launch_phase1_adv3b02_meta_adapter_tri_r4_v1.py --config configs/phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260824.json --output-root /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_meta_adapter_tri_r4_v1_s392002_20260824_r1 --python /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python --gpu 0`。
 - 授权解除环境阻塞；状态保持`LANDED/NOT_LAUNCHED`，直到远端编译通过并完成正式启动健康核对。
+
+## Task13远端编译与启动前核对
+
+- 核对时间：2026-08-25 00:49～00:50（Asia/Hong_Kong）。
+- 直接N607 preflight通过；GPU0利用率0%、显存1/24576MiB，GPU计算进程为空，`/home`剩余7.3TiB。
+- launcher、配置、冻结checkpoint、ManySig输入和`CVS-RFFI`解释器均存在；output root与stdout日志均不存在，该launcher进程为空。
+- 使用授权后的`CVS-RFFI`解释器，对`code/train.py`、Phase1入口／trainer、Phase2 runner／scorer及launcher执行一次远端`py_compile`，结果为`REMOTE_COMPILE_PASS`。
+- 当前状态：`LANDED/READY_TO_LAUNCH`；下一步按有效启动命令启动同一run ID，并执行一次启动健康核对。
