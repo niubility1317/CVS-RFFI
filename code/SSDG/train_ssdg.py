@@ -61,6 +61,7 @@ try:
     from concat_sat_channel_aug import ConcatSatChannelAugment
     from cvsrffi.tensors import build_domain_label_map
     from cvsrffi.balanced_tx_rx_sampler import BalancedTxDomainBatchSampler
+    from cvsrffi.bounded_domain_confusion import bounded_domain_objectives
     from cvsrffi.muse_ssdg import (
         MUSEClassificationPrototypeBank,
         MUSEConfig,
@@ -76,6 +77,8 @@ try:
         build_rc4_calibration,
         calibrate_sat_anchor_thresholds,
         rc4_identity_losses,
+        rc4_active_identity_components,
+        rc4_identity_tail_scales,
         rc4_tail_transition_scale,
         route_fasttrust_rc4,
         route_sat_anchor_trusted,
@@ -177,6 +180,7 @@ except ModuleNotFoundError:
     calibrate_sat_anchor_thresholds = route_sat_anchor_trusted = None
     sat_anchor_clean_kl = trusted_satellite_cross_entropy = None
     build_rc4_calibration = rc4_identity_losses = rc4_tail_transition_scale = route_fasttrust_rc4 = None
+    bounded_domain_objectives = rc4_active_identity_components = rc4_identity_tail_scales = None
     js_head_disagreement = muse_schedule_for_epoch = route_fasttrust = route_muse_reliability = None
     select_satellite_student_mask = stable_sample_keys = None
     weighted_soft_cross_entropy = None
@@ -435,24 +439,52 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--rc4_enable_partial_set", type=str2bool, default=True)
     parser.add_argument("--rc4_enable_partial_conditional", type=str2bool, default=True)
     parser.add_argument("--rc4_enable_negative", type=str2bool, default=True)
+    parser.add_argument("--rc4_decouple_partial_negative_aps", type=str2bool, default=False)
+    parser.add_argument(
+        "--rc4_partial_threshold_scope",
+        type=str,
+        default="predicted_class",
+        choices=["global", "predicted_class"],
+    )
+    parser.add_argument("--rc4_hard_effective_budget", type=float, default=0.0)
     parser.add_argument("--rc4_partial_effective_budget", type=float, default=0.10)
     parser.add_argument("--rc4_negative_effective_budget", type=float, default=0.10)
     parser.add_argument("--rc4_total_identity_effective_budget", type=float, default=0.0)
     parser.add_argument("--rc4_use_calibrated_partial_threshold", type=str2bool, default=False)
     parser.add_argument("--rc4_class_receiver_cap", type=str2bool, default=True)
+    parser.add_argument("--rc4_class_receiver_effective_budget", type=float, default=0.0)
     parser.add_argument("--rc4_satellite_hard_only", type=str2bool, default=False)
     parser.add_argument("--rc4_identity_start_epoch", type=int, default=11)
     parser.add_argument("--rc4_consolidation_start_epoch", type=int, default=181)
     parser.add_argument("--rc4_calibration_update_epochs", type=str, default="1,41,91,161")
     parser.add_argument("--rc4_lambda_hard", type=float, default=0.60)
     parser.add_argument("--rc4_lambda_partial", type=float, default=0.40)
+    parser.add_argument("--rc4_lambda_partial_set", type=float, default=-1.0)
+    parser.add_argument("--rc4_lambda_partial_conditional", type=float, default=-1.0)
     parser.add_argument("--rc4_lambda_negative", type=float, default=0.20)
     parser.add_argument("--rc4_lambda_domain", type=float, default=0.16)
+    parser.add_argument("--rc4_lambda_zdom", type=float, default=-1.0)
+    parser.add_argument("--rc4_lambda_discriminator", type=float, default=-1.0)
+    parser.add_argument("--rc4_lambda_confusion", type=float, default=-1.0)
+    parser.add_argument("--rc4_lambda_feature_anchor", type=float, default=0.0)
     parser.add_argument("--rc4_lambda_self", type=float, default=0.10)
     parser.add_argument("--rc4_lambda_satellite", type=float, default=0.10)
     parser.add_argument("--rc4_tail_transition_start_epoch", type=int, default=91)
     parser.add_argument("--rc4_tail_transition_epochs", type=int, default=20)
     parser.add_argument("--rc4_tail_transition_floor", type=float, default=0.25)
+    parser.add_argument("--rc4_identity_tail_hard_final", type=float, default=0.60)
+    parser.add_argument("--rc4_identity_tail_partial_set_final", type=float, default=0.20)
+    parser.add_argument("--rc4_identity_tail_partial_conditional_final", type=float, default=0.0)
+    parser.add_argument("--rc4_gradient_telemetry_epochs", type=str, default="1,41,91,161,181,200")
+    parser.add_argument("--rc4_recovery_checkpoint_interval", type=int, default=0)
+    parser.add_argument(
+        "--identity_domain_objective_mode",
+        type=str,
+        default="grl_ce",
+        choices=["grl_ce", "bounded_confusion"],
+    )
+    parser.add_argument("--identity_domain_discriminator_scale", type=float, default=0.50)
+    parser.add_argument("--identity_domain_confusion_scale", type=float, default=0.50)
     parser.add_argument("--rc4_nonfinite_guard_min_count", type=int, default=8)
     parser.add_argument("--rc4_nonfinite_guard_fraction", type=float, default=0.05)
     parser.add_argument("--teacher_ckpt", type=str, default="", help="Optional frozen teacher checkpoint for ADV3B02 distillation.")
@@ -5572,6 +5604,20 @@ def _fasttrust_zero_step_abort_required(streak: int) -> bool:
     return int(streak) >= 2
 
 
+def _rc4_gradient_norm(loss, features) -> float:
+    if not torch.is_tensor(loss) or not torch.is_tensor(features) or not loss.requires_grad:
+        return 0.0
+    gradient = torch.autograd.grad(
+        loss,
+        features,
+        retain_graph=True,
+        allow_unused=True,
+    )[0]
+    if gradient is None:
+        return 0.0
+    return float(torch.linalg.vector_norm(gradient.detach().float()).item())
+
+
 def _fasttrust_lr_scales(epoch: int) -> Tuple[float, float]:
     """Return global and backbone-tail LR multipliers for E1-E200."""
 
@@ -5819,13 +5865,16 @@ def _calibrate_rc4_vcal(
     """Fit one stage-frozen RC4 package from source-only ``V_cal``."""
 
     anchor_logits, ema_1_logits, ema_2_logits = [], [], []
-    labels, domains, z_norms = [], [], []
+    labels, domains, receivers, z_norms = [], [], [], []
     anchor_model.eval()
     ema_model.eval()
     with torch.no_grad():
         for batch in calibration_loader:
             x_cal, y_cal, extra_cal = move_batch(batch, device)
             d_cal = domain_from_extra(extra_cal, domain_label_map, device)
+            receiver_cal = _metadata_label_tensor(
+                extra_cal, "rx_i", device, int(x_cal.shape[0])
+            )
             weak_2 = _strong_augment(x_cal, max(1e-5, float(args.strong_noise_std) * 0.25))
             combined = torch.cat([x_cal, weak_2], dim=0)
             combined_domains = torch.cat([d_cal, d_cal], dim=0)
@@ -5848,17 +5897,21 @@ def _calibrate_rc4_vcal(
             ema_2_logits.append(ema_2["tx_logits"].float())
             labels.append(y_cal.long())
             domains.append(d_cal.long())
+            receivers.append(receiver_cal.long())
             z_norms.append(ema_1["z_id"].float().norm(dim=-1))
     if not labels:
         raise RuntimeError("RC4_VCAL_EMPTY")
     return build_rc4_calibration(
         torch.cat(anchor_logits), torch.cat(ema_1_logits), torch.cat(ema_2_logits),
         torch.cat(labels), torch.cat(domains), torch.cat(z_norms),
+        receivers=torch.cat(receivers),
         num_classes=int(num_classes), num_domains=int(num_domains), folds=5,
         hard_precision_target=0.98, partial_coverage_target=0.95,
         partial_precision_target=0.98, partial_min_coverage=0.01,
         partial_candidate_max_classes=int(args.muse_candidate_max_classes),
         negative_false_exclusion_target=0.01,
+        decouple_partial_negative_aps=bool(args.rc4_decouple_partial_negative_aps),
+        partial_threshold_scope=str(args.rc4_partial_threshold_scope),
     )
 
 
@@ -5982,7 +6035,17 @@ def _compute_sat_anchor_unlabeled_losses(
     }
 
 
-def _compute_rc4_unlabeled_losses(*, route, ema_outputs, student_views, domains, muse_state, epoch: int):
+def _compute_rc4_unlabeled_losses(
+    *,
+    route,
+    ema_outputs,
+    anchor_outputs,
+    student_views,
+    domains,
+    model,
+    muse_state,
+    epoch: int,
+):
     """Compute RC4 H/P/N identity plus all-U domain/self objectives."""
 
     args = muse_state["args"]
@@ -6009,19 +6072,51 @@ def _compute_rc4_unlabeled_losses(*, route, ema_outputs, student_views, domains,
         enable_partial_conditional=bool(args.rc4_enable_partial_conditional),
         enable_negative_set=bool(args.rc4_enable_negative),
     )
+    active_identity = rc4_active_identity_components(
+        identity,
+        enable_partial_set=bool(args.rc4_enable_partial_set),
+        enable_partial_conditional=bool(args.rc4_enable_partial_conditional),
+        enable_negative=bool(args.rc4_enable_negative),
+    )
     valid_domain = (domains >= 0) & (domains < int(muse_state["heads"].num_domains))
     zero = logits.sum() * 0.0
     loss_domain = (
         F.cross_entropy(strong["dom_logits"][valid_domain].float(), domains[valid_domain])
         if bool(valid_domain.any()) and "dom_logits" in strong else zero
     )
-    loss_adv = (
-        F.cross_entropy(strong["adv_dom_logits"][valid_domain].float(), domains[valid_domain])
-        if bool(valid_domain.any()) and "adv_dom_logits" in strong else zero
-    )
+    loss_discriminator = zero
+    loss_confusion = zero
+    if bool(valid_domain.any()) and getattr(model, "adv_head", None) is not None:
+        if str(args.identity_domain_objective_mode) == "bounded_confusion":
+            bounded_u = bounded_domain_objectives(
+                model.adv_head,
+                strong["z_id"][valid_domain],
+                domains[valid_domain],
+            )
+            loss_discriminator = bounded_u["discriminator"]
+            loss_confusion = bounded_u["confusion"]
+            loss_adv = (
+                float(args.rc4_lambda_discriminator if args.rc4_lambda_discriminator >= 0.0 else args.rc4_lambda_domain)
+                * loss_discriminator
+                + float(args.rc4_lambda_confusion if args.rc4_lambda_confusion >= 0.0 else args.rc4_lambda_domain)
+                * loss_confusion
+            )
+        else:
+            loss_adv = (
+                F.cross_entropy(strong["adv_dom_logits"][valid_domain].float(), domains[valid_domain])
+                if "adv_dom_logits" in strong else zero
+            )
+    else:
+        loss_adv = zero
     loss_self = muse_state["heads"].self_supervised_loss(
         ema_outputs["z_id"].detach(), strong["z_id"]
     )
+    loss_feature_anchor = zero
+    if float(args.rc4_lambda_feature_anchor) > 0.0 and anchor_outputs is not None:
+        loss_feature_anchor = F.mse_loss(
+            F.normalize(strong["z_id"].float(), dim=-1),
+            F.normalize(anchor_outputs["z_id"].detach().float(), dim=-1),
+        )
     full_satellite_logits = torch.zeros_like(logits)
     if satellite is not None and indices.numel() > 0:
         full_satellite_logits = full_satellite_logits.index_copy(0, indices, satellite["tx_logits"])
@@ -6033,8 +6128,13 @@ def _compute_rc4_unlabeled_losses(*, route, ema_outputs, student_views, domains,
         if bool(args.rc4_satellite_hard_only) and float(args.rc4_lambda_satellite) > 0.0
         else zero
     )
-    identity_scale = (
-        0.4 if int(epoch) >= int(args.rc4_consolidation_start_epoch) else 1.0
+    hard_scale, partial_set_scale, partial_conditional_scale = rc4_identity_tail_scales(
+        int(epoch),
+        start_epoch=int(args.rc4_consolidation_start_epoch),
+        end_epoch=200,
+        hard_final=float(args.rc4_identity_tail_hard_final),
+        partial_set_final=float(args.rc4_identity_tail_partial_set_final),
+        partial_conditional_final=float(args.rc4_identity_tail_partial_conditional_final),
     )
     tail_scale = rc4_tail_transition_scale(
         int(epoch),
@@ -6042,21 +6142,42 @@ def _compute_rc4_unlabeled_losses(*, route, ema_outputs, student_views, domains,
         ramp_epochs=int(args.rc4_tail_transition_epochs),
         floor=float(args.rc4_tail_transition_floor),
     )
+    partial_set_weight = float(
+        args.rc4_lambda_partial_set
+        if args.rc4_lambda_partial_set >= 0.0
+        else args.rc4_lambda_partial
+    )
+    partial_conditional_weight = float(
+        args.rc4_lambda_partial_conditional
+        if args.rc4_lambda_partial_conditional >= 0.0
+        else args.rc4_lambda_partial
+    )
+    zdom_weight = float(
+        args.rc4_lambda_zdom if args.rc4_lambda_zdom >= 0.0 else args.rc4_lambda_domain
+    )
+    adv_weighted = (
+        loss_adv
+        if str(args.identity_domain_objective_mode) == "bounded_confusion"
+        else float(args.rc4_lambda_domain) * loss_adv
+    )
     total = (
-        identity_scale * (
-            float(args.rc4_lambda_hard) * identity["hard"]
-            + float(args.rc4_lambda_partial) * identity["partial"]
-            + float(args.rc4_lambda_negative) * identity["negative"]
-        )
-        + tail_scale * float(args.rc4_lambda_domain) * (loss_domain + loss_adv)
+        hard_scale * float(args.rc4_lambda_hard) * active_identity["hard"]
+        + partial_set_scale * partial_set_weight * active_identity["partial_set"]
+        + partial_conditional_scale * partial_conditional_weight * active_identity["partial_conditional"]
+        + float(args.rc4_lambda_negative) * active_identity["negative"]
+        + tail_scale * (zdom_weight * loss_domain + adv_weighted)
         + float(args.rc4_lambda_self) * loss_self
         + float(args.rc4_lambda_satellite) * loss_satellite
+        + float(args.rc4_lambda_feature_anchor) * loss_feature_anchor
     )
     route_compat = MUSERoute(high=hard, mid=partial | negative, low=~(hard | partial | negative))
     return {
         "total": total, "identity": identity["total"], "hard": identity["hard"],
         "soft": identity["partial"], "candidate": identity["negative"],
         "domain": loss_domain, "adv": loss_adv, "self": loss_self,
+        "domain_discriminator": loss_discriminator,
+        "domain_confusion": loss_confusion,
+        "feature_anchor": loss_feature_anchor,
         "nuisance": zero, "satellite": loss_satellite, "clean_anchor": zero,
         "cross_receiver": zero, "route": route_compat, "fasttrust_route": None,
         "sat_anchor_route": None, "rc4_route": route, "reliability": route.risk,
@@ -6074,6 +6195,19 @@ def _compute_rc4_unlabeled_losses(*, route, ema_outputs, student_views, domains,
         "rc4_partial_conditional": identity["partial_conditional"],
         "rc4_negative_set": identity["negative_set"],
         "rc4_tail_scale": logits.new_tensor(tail_scale),
+        "rc4_hard_tail_scale": logits.new_tensor(hard_scale),
+        "rc4_partial_set_tail_scale": logits.new_tensor(partial_set_scale),
+        "rc4_partial_conditional_tail_scale": logits.new_tensor(partial_conditional_scale),
+        "rc4_gradient_losses": {
+            "hard": hard_scale * float(args.rc4_lambda_hard) * active_identity["hard"],
+            "partial_set": partial_set_scale * partial_set_weight * active_identity["partial_set"],
+            "partial_conditional": (
+                partial_conditional_scale
+                * partial_conditional_weight
+                * active_identity["partial_conditional"]
+            ),
+            "adv": tail_scale * adv_weighted,
+        },
         "rc4_components_finite": torch.stack([
             identity["hard"].detach().float(),
             identity["partial_set"].detach().float(),
@@ -7043,6 +7177,9 @@ def train(args) -> int:
         out_dir / "final_ssdg.pth",
         out_dir / "latest_ssdg.pth",
         out_dir / "tail_reference_ssdg.pth",
+        out_dir / "latest_finite_ssdg.pth",
+        out_dir / "recovery_e90_ssdg.pth",
+        out_dir / "first_rc4_anomaly.pt",
     ]
     stale_identity_paths = [path for path in stale_identity_paths if path.exists()]
     if stale_identity_paths:
@@ -7159,6 +7296,8 @@ def train(args) -> int:
             num_classes=int(getattr(model, "num_classes", args.num_classes)),
             epsilon=float(args.sat_anchor_calibration_epsilon),
         )
+    rc4_anomaly_path = out_dir / "first_rc4_anomaly.pt"
+    rc4_anomaly_written = False
     optimizer_parameters = (
         _fasttrust_optimizer_groups(model, muse_state)
         if _fasttrust_lr_enabled(args)
@@ -7547,6 +7686,16 @@ def train(args) -> int:
             balanced_train_sampler.set_epoch(epoch)
         epoch_logs = []
         rc4_nonfinite_batches = 0
+        rc4_gradient_metrics = {
+            "rc4/g_L": float("nan"),
+            "rc4/g_H": float("nan"),
+            "rc4/g_Pset": float("nan"),
+            "rc4/g_Pcond": float("nan"),
+            "rc4/g_adv": float("nan"),
+            "rc4/g_identity_to_labeled": float("nan"),
+            "rc4/g_adv_to_labeled": float("nan"),
+            "rc4/gradient_telemetry_active": 0.0,
+        }
         legacy_unlabeled_active = _legacy_unlabeled_active(
             args,
             muse_state=muse_state,
@@ -7625,7 +7774,11 @@ def train(args) -> int:
                 out_l = model(
                     x_l_main,
                     y_tx=y_l,
-                    grl_lambda=1.0,
+                    grl_lambda=(
+                        0.0
+                        if str(args.identity_domain_objective_mode) == "bounded_confusion"
+                        else 1.0
+                    ),
                     return_aux=True,
                     domain_labels=d_l,
                     update_crra_support=bool(getattr(args, "use_crra", False)),
@@ -7640,7 +7793,12 @@ def train(args) -> int:
                 domain_stats = {"valid": (d_l >= 0) if d_l is not None else None}
                 domain_gates = {
                     "dom": d_l is not None and "dom_logits" in out_l and cur_w["dom"] > 0.0,
-                    "adv": d_l is not None and "adv_dom_logits" in out_l and cur_w["adv"] > 0.0,
+                    "adv": (
+                        d_l is not None
+                        and "adv_dom_logits" in out_l
+                        and cur_w["adv"] > 0.0
+                        and str(args.identity_domain_objective_mode) == "grl_ce"
+                    ),
                     "cons": d_l is not None and cur_w["cons"] > 0.0,
                     "group_ce": d_l is not None and cur_w["group_ce"] > 0.0,
                 }
@@ -7660,6 +7818,29 @@ def train(args) -> int:
                 loss_tx_l = core_losses["loss_cls"]
                 loss_dom_l = core_losses["loss_dom"]
                 loss_adv_l = core_losses["loss_adv"]
+                loss_adv_discriminator_l = loss_adv_l * 0.0
+                loss_adv_confusion_l = loss_adv_l * 0.0
+                if (
+                    str(args.identity_domain_objective_mode) == "bounded_confusion"
+                    and d_l is not None
+                    and cur_w["adv"] > 0.0
+                    and getattr(model, "adv_head", None) is not None
+                ):
+                    valid_l_domain = (d_l >= 0) & (d_l < int(data_ctx["num_domains"]))
+                    if bool(valid_l_domain.any()):
+                        bounded_l = bounded_domain_objectives(
+                            model.adv_head,
+                            out_l["z_id"][valid_l_domain],
+                            d_l[valid_l_domain],
+                        )
+                        loss_adv_discriminator_l = bounded_l["discriminator"]
+                        loss_adv_confusion_l = bounded_l["confusion"]
+                        loss_adv_l = (
+                            float(args.identity_domain_discriminator_scale)
+                            * loss_adv_discriminator_l
+                            + float(args.identity_domain_confusion_scale)
+                            * loss_adv_confusion_l
+                        )
                 loss_cons_l = core_losses["loss_cons"]
                 loss_orth_l = core_losses["loss_orth"] if cur_w["orth"] > 0.0 else out_l["tx_logits"].sum() * 0.0
                 loss_group_ce_l = core_losses["loss_group_ce"]
@@ -8771,6 +8952,7 @@ def train(args) -> int:
                                 z_norm=out_w["z_id"].float().norm(dim=-1),
                                 calibration=calibration,
                                 hard_max_fraction=float(args.sat_anchor_hard_max_fraction),
+                                hard_effective_budget=float(args.rc4_hard_effective_budget),
                                 candidate_max_classes=int(args.muse_candidate_max_classes),
                                 partial_effective_budget=float(args.rc4_partial_effective_budget),
                                 negative_effective_budget=float(args.rc4_negative_effective_budget),
@@ -8784,6 +8966,9 @@ def train(args) -> int:
                                 enable_partial=bool(args.rc4_enable_partial),
                                 enable_negative=bool(args.rc4_enable_negative),
                                 class_receiver_cap=bool(args.rc4_class_receiver_cap),
+                                class_receiver_effective_budget=float(
+                                    args.rc4_class_receiver_effective_budget
+                                ),
                                 use_calibrated_risk=bool(args.rc4_use_correctness_calibration),
                             )
                             sat_anchor_route = argparse.Namespace(
@@ -8933,7 +9118,9 @@ def train(args) -> int:
                         if bool(muse_state.get("fasttrust_rc4", False)):
                             muse_losses = _compute_rc4_unlabeled_losses(
                                 route=rc4_route, ema_outputs=out_w,
+                                anchor_outputs=out_anchor,
                                 student_views=student_views, domains=d_u,
+                                model=model,
                                 muse_state=muse_state, epoch=int(epoch),
                             )
                         else:
@@ -9705,6 +9892,43 @@ def train(args) -> int:
                 scaled_closed_loss = float(tail_closed_scale) * loss_closed
                 scaled_open_loss = float(dg_health_open_scale) * loss_open
                 loss = scaled_closed_loss + scaled_open_loss
+            telemetry_epochs = {
+                int(value)
+                for value in str(getattr(args, "rc4_gradient_telemetry_epochs", "")).split(",")
+                if str(value).strip()
+            }
+            if (
+                muse_state is not None
+                and bool(muse_state.get("fasttrust_rc4", False))
+                and int(batch_idx) == 0
+                and int(epoch) in telemetry_epochs
+            ):
+                gradient_losses = muse_losses.get("rc4_gradient_losses", {})
+                g_l = _rc4_gradient_norm(loss_tx_l, out_l["z_id"])
+                g_h = _rc4_gradient_norm(gradient_losses.get("hard"), out_s["z_id"])
+                g_pset = _rc4_gradient_norm(
+                    gradient_losses.get("partial_set"), out_s["z_id"]
+                )
+                g_pcond = _rc4_gradient_norm(
+                    gradient_losses.get("partial_conditional"), out_s["z_id"]
+                )
+                g_adv_u = _rc4_gradient_norm(gradient_losses.get("adv"), out_s["z_id"])
+                g_adv_l = _rc4_gradient_norm(
+                    float(cur_w["adv"]) * loss_adv_l,
+                    out_l["z_id"],
+                )
+                g_identity = math.sqrt(g_h * g_h + g_pset * g_pset + g_pcond * g_pcond)
+                g_adv = math.sqrt(g_adv_l * g_adv_l + g_adv_u * g_adv_u)
+                rc4_gradient_metrics = {
+                    "rc4/g_L": g_l,
+                    "rc4/g_H": g_h,
+                    "rc4/g_Pset": g_pset,
+                    "rc4/g_Pcond": g_pcond,
+                    "rc4/g_adv": g_adv,
+                    "rc4/g_identity_to_labeled": g_identity / max(g_l, 1e-12),
+                    "rc4/g_adv_to_labeled": g_adv / max(g_l, 1e-12),
+                    "rc4/gradient_telemetry_active": 1.0,
+                }
             loss_is_finite = bool(torch.isfinite(loss.detach()).item())
             skipped_nonfinite_loss = 0
             skipped_nonfinite_grad = 0
@@ -9841,6 +10065,43 @@ def train(args) -> int:
                 grad_backbone = float("nan")
                 grad_aux = float("nan")
                 grad_domain = float("nan")
+            if (
+                muse_state is not None
+                and bool(muse_state.get("fasttrust_rc4", False))
+                and not rc4_anomaly_written
+                and (skipped_nonfinite_loss or skipped_nonfinite_grad)
+            ):
+                save_payload(
+                    rc4_anomaly_path,
+                    {
+                        "schema": "cvs.phase1.fasttrust_qb3_first_anomaly.v1",
+                        "run_id": str(getattr(args, "run_id", "")),
+                        "candidate_id": str(getattr(args, "candidate_id", "")),
+                        "epoch": int(epoch),
+                        "batch_index": int(batch_idx),
+                        "loss_finite": bool(loss_is_finite),
+                        "skipped_nonfinite_loss": int(skipped_nonfinite_loss),
+                        "skipped_nonfinite_grad": int(skipped_nonfinite_grad),
+                        "loss": float(loss.detach().float().item()),
+                        "grad_before_clip": float(grad_norm_before_clip),
+                        "grad_total": float(grad_total),
+                        "optimizer_lrs": [float(group["lr"]) for group in optimizer.param_groups],
+                        "model": model.state_dict(),
+                        "ema_model": ema_model.state_dict() if ema_model is not None else None,
+                        "optimizer": optimizer.state_dict(),
+                        "scaler": scaler.state_dict(),
+                        "rng_state": _capture_training_rng_state(sat_gen),
+                        "args": vars(args),
+                        "rc4_calibration": muse_state.get("rc4_calibration"),
+                        "rc4_route_counts": {
+                            "hard": int(rc4_route.hard.sum().item()) if rc4_route is not None else 0,
+                            "partial": int(rc4_route.partial.sum().item()) if rc4_route is not None else 0,
+                            "negative": int(rc4_route.negative.sum().item()) if rc4_route is not None else 0,
+                            "representation": int(rc4_route.representation.sum().item()) if rc4_route is not None else 0,
+                        },
+                    },
+                )
+                rc4_anomaly_written = True
             if proto_bank is not None and optimizer_step_applied:
                 proto_bank.update(out_l["z_id"].detach(), y_l.detach(), d_l.detach() if d_l is not None else None)
                 if proto_bank.class_count is not None:
@@ -9963,6 +10224,8 @@ def train(args) -> int:
                     "train/loss_muse_local_labeled": loss_muse_local_l.detach(),
                     "train/loss_domain_labeled": loss_dom_l.detach(),
                     "train/loss_adv_labeled": loss_adv_l.detach(),
+                    "train/loss_adv_discriminator_labeled": loss_adv_discriminator_l.detach(),
+                    "train/loss_adv_confusion_labeled": loss_adv_confusion_l.detach(),
                     "train/loss_cons_labeled": loss_cons_l.detach(),
                     "train/loss_orth_labeled": loss_orth_l.detach(),
                     "train/loss_group_ce_labeled": loss_group_ce_l.detach(),
@@ -10316,9 +10579,16 @@ def train(args) -> int:
                     "rc4/partial_set_loss": muse_losses.get("rc4_partial_set", 0.0) if muse_state is not None else 0.0,
                     "rc4/partial_conditional_loss": muse_losses.get("rc4_partial_conditional", 0.0) if muse_state is not None else 0.0,
                     "rc4/negative_set_loss": muse_losses.get("rc4_negative_set", 0.0) if muse_state is not None else 0.0,
+                    "rc4/domain_discriminator_loss": muse_losses.get("domain_discriminator", 0.0) if muse_state is not None else 0.0,
+                    "rc4/domain_confusion_loss": muse_losses.get("domain_confusion", 0.0) if muse_state is not None else 0.0,
+                    "rc4/feature_anchor_loss": muse_losses.get("feature_anchor", 0.0) if muse_state is not None else 0.0,
                     "rc4/tail_scale": muse_losses.get("rc4_tail_scale", 1.0) if muse_state is not None else 1.0,
+                    "rc4/hard_tail_scale": muse_losses.get("rc4_hard_tail_scale", 1.0) if muse_state is not None else 1.0,
+                    "rc4/partial_set_tail_scale": muse_losses.get("rc4_partial_set_tail_scale", 1.0) if muse_state is not None else 1.0,
+                    "rc4/partial_conditional_tail_scale": muse_losses.get("rc4_partial_conditional_tail_scale", 1.0) if muse_state is not None else 1.0,
                     "rc4/components_finite": muse_losses.get("rc4_components_finite", 1.0) if muse_state is not None else 1.0,
                     "rc4/candidate_size_mean": rc4_route.candidate_mask.sum(dim=-1).float().mean().detach() if rc4_route is not None else 0.0,
+                    **rc4_gradient_metrics,
                     "sat_anchor/trusted_count": (
                         sat_anchor_route.trusted.sum().detach()
                         if muse_state is not None
@@ -11232,6 +11502,40 @@ def train(args) -> int:
             "phase1_v2_final_blocked": bool(phase1_v2_final_blocked),
             "reason": str(guard_state.get("reason", "")),
         }
+        recovery_interval = int(getattr(args, "rc4_recovery_checkpoint_interval", 0))
+        recovery_saved = False
+        if (
+            muse_state is not None
+            and bool(muse_state.get("fasttrust_rc4", False))
+            and recovery_interval > 0
+            and int(epoch) % recovery_interval == 0
+        ):
+            recovery_loss_keys = (
+                "train/loss",
+                "train/loss_labeled",
+                "train/loss_closed_group",
+                "train/loss_open_group",
+                "train/loss_adv_labeled",
+                "rc4/partial_set_loss",
+                "rc4/partial_conditional_loss",
+                "rc4/domain_discriminator_loss",
+                "rc4/domain_confusion_loss",
+            )
+            finite_losses = all(
+                key not in train_logs or math.isfinite(float(train_logs[key]))
+                for key in recovery_loss_keys
+            )
+            if finite_losses and float(train_logs.get("train/optimizer_step_applied", 0.0)) > 0.0:
+                recovery_payload = dict(payload)
+                recovery_payload["checkpoint_role"] = "recovery_latest_finite_not_for_selection"
+                save_payload(out_dir / "latest_finite_ssdg.pth", recovery_payload)
+                if int(epoch) == 90:
+                    e90_payload = dict(recovery_payload)
+                    e90_payload["checkpoint_role"] = "recovery_e90_not_for_selection"
+                    save_payload(out_dir / "recovery_e90_ssdg.pth", e90_payload)
+                recovery_saved = True
+        train_logs["rc4/recovery_checkpoint_saved"] = 1.0 if recovery_saved else 0.0
+        train_logs["rc4/first_anomaly_packet_written"] = 1.0 if rc4_anomaly_written else 0.0
         safe_checkpoint_saved = False
         is_best = False
         best_metric_name = str(args.best_metric)

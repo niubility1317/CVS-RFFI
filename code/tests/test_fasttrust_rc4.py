@@ -4,8 +4,11 @@ import pytest
 import torch
 
 from cvsrffi.muse_ssdg import (
+    _rc4_risk_threshold,
     apply_rc4_quality_budget,
     build_rc4_calibration,
+    rc4_identity_tail_scales,
+    rc4_active_identity_components,
     rc4_identity_losses,
     rc4_tail_transition_scale,
     route_fasttrust_rc4,
@@ -384,3 +387,140 @@ def test_rc4_tail_transition_restarts_all_u_weight_without_changing_core90_sched
     assert rc4_tail_transition_scale(91, start_epoch=91, ramp_epochs=20, floor=0.25) == 0.25
     assert rc4_tail_transition_scale(101, start_epoch=91, ramp_epochs=20, floor=0.25) == pytest.approx(0.625)
     assert rc4_tail_transition_scale(111, start_epoch=91, ramp_epochs=20, floor=0.25) == 1.0
+
+
+def test_qb3_partial_aps_is_decoupled_from_negative_exclusion_target():
+    anchor, ema1, ema2, labels, domains, z_norm = _calibration_fixture()
+    receivers = torch.tensor([0, 1, 0, 1, 0, 1, 0, 1, 0, 1])
+    package = build_rc4_calibration(
+        anchor,
+        ema1,
+        ema2,
+        labels,
+        domains,
+        z_norm,
+        receivers=receivers,
+        num_classes=3,
+        num_domains=2,
+        folds=2,
+        min_stratum_samples=2,
+        partial_coverage_target=0.80,
+        negative_false_exclusion_target=0.01,
+        decouple_partial_negative_aps=True,
+        partial_threshold_scope="global",
+    )
+
+    expected = torch.tensor(package.aps_partial_global)
+    assert package.partial_threshold_scope == "global"
+    assert package.aps_partial_global <= package.aps_negative_global
+    assert package.partial_feature_mean.shape == (12,)
+    assert package.partial_safety_weight.shape == (1 + 12 + 3 + 2,)
+    assert torch.isfinite(expected)
+
+
+def test_qb3_route_uses_global_partial_aps_and_separate_h_p_weight_budgets():
+    anchor, ema1, ema2, labels, domains, z_norm = _calibration_fixture()
+    package = build_rc4_calibration(
+        anchor,
+        ema1,
+        ema2,
+        labels,
+        domains,
+        z_norm,
+        receivers=domains,
+        num_classes=3,
+        num_domains=2,
+        folds=2,
+        min_stratum_samples=2,
+        hard_precision_target=0.70,
+        partial_coverage_target=0.80,
+        partial_precision_target=0.70,
+        negative_false_exclusion_target=0.01,
+        decouple_partial_negative_aps=True,
+        partial_threshold_scope="global",
+    )
+    route = route_fasttrust_rc4(
+        anchor,
+        ema1,
+        ema2,
+        domains=domains,
+        receivers=domains,
+        z_norm=z_norm,
+        calibration=package,
+        hard_max_fraction=1.0,
+        hard_effective_budget=0.05,
+        partial_effective_budget=0.10,
+        class_receiver_effective_budget=0.05,
+        partial_min_risk=0.0,
+        enable_hard=True,
+        enable_partial=True,
+        enable_negative=False,
+        class_receiver_cap=True,
+    )
+
+    assert torch.allclose(
+        route.aps_threshold,
+        torch.full_like(route.aps_threshold, package.aps_partial_global),
+    )
+    assert route.weights[route.hard].sum().item() <= 0.5 + 1e-6
+    assert route.weights[route.partial].sum().item() <= 1.0 + 1e-6
+
+
+def test_qb3_tail_scales_retire_partial_conditional_before_final_epoch():
+    assert rc4_identity_tail_scales(180, start_epoch=181, end_epoch=200) == (1.0, 1.0, 1.0)
+    h, p_set, p_cond = rc4_identity_tail_scales(200, start_epoch=181, end_epoch=200)
+    assert h == pytest.approx(0.60)
+    assert p_set == pytest.approx(0.20)
+    assert p_cond == pytest.approx(0.0)
+
+
+def test_qb3_risk_threshold_requires_every_source_receiver_to_be_safe():
+    scores = torch.tensor([0.99, 0.98, 0.97, 0.96])
+    eligible = torch.ones(4, dtype=torch.bool)
+    receivers = torch.tensor([0, 0, 1, 1])
+    unsafe = torch.tensor([1.0, 1.0, 0.0, 1.0])
+    safe = torch.ones(4)
+
+    assert not _rc4_risk_threshold(
+        scores,
+        unsafe,
+        eligible,
+        receivers,
+        precision_target=0.90,
+        min_coverage=0.25,
+    )[-1]
+    threshold, precision, coverage, worst, ready = _rc4_risk_threshold(
+        scores,
+        safe,
+        eligible,
+        receivers,
+        precision_target=0.90,
+        min_coverage=0.25,
+    )
+    assert ready
+    assert threshold == pytest.approx(0.96)
+    assert precision == pytest.approx(1.0)
+    assert coverage == pytest.approx(1.0)
+    assert worst == pytest.approx(1.0)
+
+
+def test_qb3_partial_component_switches_zero_disabled_training_objectives():
+    reference = torch.tensor(2.0, requires_grad=True)
+    active = rc4_active_identity_components(
+        {
+            "hard": reference * 1.0,
+            "partial_set": reference * 2.0,
+            "partial_conditional": reference * 3.0,
+            "negative": reference * 4.0,
+        },
+        enable_partial_set=True,
+        enable_partial_conditional=False,
+        enable_negative=False,
+    )
+    total = active["hard"] + active["partial_set"] + active["partial_conditional"] + active["negative"]
+    total.backward()
+
+    assert active["partial_set"].item() == pytest.approx(4.0)
+    assert active["partial_conditional"].item() == pytest.approx(0.0)
+    assert active["negative"].item() == pytest.approx(0.0)
+    assert reference.grad.item() == pytest.approx(3.0)

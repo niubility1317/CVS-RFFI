@@ -1,0 +1,77 @@
+{
+  "schema": "cvs.phase1.fasttrust_qb3_bc_hps_e200_matrix.v1",
+  "run_id": "phase1_adv3b02_fasttrust_qb3_bc_hps_e200_s392002_20260824_r1",
+  "seed": 392002,
+  "epochs": 200,
+  "unlabeled_batch_size": 256,
+  "identity_domain_objective_mode": "bounded_confusion",
+  "identity_domain_discriminator_scale": 0.5,
+  "identity_domain_confusion_scale": 0.5,
+  "rc4_lambda_zdom": 0.16,
+  "rc4_lambda_discriminator": 0.08,
+  "rc4_lambda_confusion": 0.08,
+  "hard_effective_budget": 0.05,
+  "partial_effective_budget": 0.10,
+  "class_receiver_effective_budget": 0.01,
+  "rc4_lambda_hard": 0.60,
+  "rc4_lambda_partial_set": 0.40,
+  "rc4_lambda_partial_conditional": 0.02,
+  "decouple_partial_negative_aps": true,
+  "partial_threshold_scope": "global",
+  "eval_batch_size": 1024,
+  "source_val_heavy_eval": {
+    "start_epoch": 1,
+    "interval": 10,
+    "final_window": 20,
+    "final_interval": 1
+  },
+  "source_roles": {"L_s": 0.07, "U_s": 0.63, "V_cal": 0.15, "V_select": 0.15},
+  "base_checkpoint": "runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
+  "rows": [
+    {
+      "gpu": 0,
+      "candidate": "E200_C0_BC_NO_U_ID",
+      "hard": false,
+      "partial": false,
+      "partial_set": false,
+      "partial_conditional": false,
+      "feature_anchor": 0.0
+    },
+    {
+      "gpu": 1,
+      "candidate": "E200_C1_BC_H",
+      "hard": true,
+      "partial": false,
+      "partial_set": false,
+      "partial_conditional": false,
+      "feature_anchor": 0.0
+    },
+    {
+      "gpu": 2,
+      "candidate": "E200_C2_BC_H_PSET",
+      "hard": true,
+      "partial": true,
+      "partial_set": true,
+      "partial_conditional": false,
+      "feature_anchor": 0.0
+    },
+    {
+      "gpu": 3,
+      "candidate": "E200_C3_BC_H_PSET_PCOND",
+      "hard": true,
+      "partial": true,
+      "partial_set": true,
+      "partial_conditional": true,
+      "feature_anchor": 0.0
+    },
+    {
+      "gpu": 4,
+      "candidate": "E200_C4_BC_U_FEATURE_ANCHOR",
+      "hard": false,
+      "partial": false,
+      "partial_set": false,
+      "partial_conditional": false,
+      "feature_anchor": 0.04
+    }
+  ]
+}

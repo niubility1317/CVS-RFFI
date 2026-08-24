@@ -63,6 +63,31 @@ def rc4_tail_transition_scale(
     return float(floor + (1.0 - floor) * progress)
 
 
+def rc4_identity_tail_scales(
+    epoch: int,
+    *,
+    start_epoch: int = 181,
+    end_epoch: int = 200,
+    hard_final: float = 0.60,
+    partial_set_final: float = 0.20,
+    partial_conditional_final: float = 0.0,
+) -> tuple[float, float, float]:
+    """Linearly retire H/P identity terms during final consolidation."""
+
+    if not isinstance(epoch, int) or isinstance(epoch, bool) or epoch < 1:
+        raise ValueError("RC4 identity tail epoch must be a positive integer")
+    if int(end_epoch) < int(start_epoch):
+        raise ValueError("RC4 identity tail end must not precede its start")
+    finals = (float(hard_final), float(partial_set_final), float(partial_conditional_final))
+    if any(not math.isfinite(value) or value < 0.0 or value > 1.0 for value in finals):
+        raise ValueError("RC4 identity tail final scales must be finite in [0,1]")
+    if epoch < int(start_epoch):
+        return 1.0, 1.0, 1.0
+    span = max(1, int(end_epoch) - int(start_epoch))
+    progress = min(1.0, max(0.0, (int(epoch) - int(start_epoch)) / float(span)))
+    return tuple(1.0 + (value - 1.0) * progress for value in finals)
+
+
 def select_adv3b02_u_satellite_scenario(epoch: int, batch_index: int, seed: int) -> str:
     """Select one scheduled scenario deterministically without reading TX truth."""
 
@@ -269,21 +294,28 @@ class RC4Calibration:
     temperature: float
     feature_mean: torch.Tensor
     feature_scale: torch.Tensor
+    partial_feature_mean: torch.Tensor
+    partial_feature_scale: torch.Tensor
     correctness_weight: torch.Tensor
     partial_safety_weight: torch.Tensor
     exclusion_safety_weight: torch.Tensor
     aps_global: float
+    aps_partial_global: float
+    aps_negative_global: float
     aps_by_class: torch.Tensor
     aps_by_domain: torch.Tensor
+    partial_threshold_scope: str
     hard_risk_threshold: float
     partial_safety_threshold: float
     hard_ready: bool
     partial_ready: bool
     negative_ready: bool
     hard_precision: float
+    hard_worst_receiver_precision: float
     hard_coverage: float
     partial_coverage: float
     partial_precision: float
+    partial_worst_receiver_precision: float
     partial_selected_coverage: float
     partial_mean_size: float
     negative_false_exclusion: float
@@ -303,6 +335,7 @@ class RC4Route:
     p_correct: torch.Tensor
     p_set_safe: torch.Tensor
     p_exclusion_safe: torch.Tensor
+    aps_threshold: torch.Tensor
     partial_threshold: torch.Tensor
     candidate_mask: torch.Tensor
     excluded_mask: torch.Tensor
@@ -741,6 +774,106 @@ def _rc4_features(
     )
 
 
+def _rc4_partial_features(
+    base_features: torch.Tensor,
+    anchor_p: torch.Tensor,
+    ema_1_p: torch.Tensor,
+    ema_2_p: torch.Tensor,
+    fused: torch.Tensor,
+    candidate: torch.Tensor,
+    thresholds: torch.Tensor,
+) -> torch.Tensor:
+    """Add truth-free candidate-set geometry for P safety calibration."""
+
+    candidate_float = candidate.to(fused.dtype)
+    size = candidate_float.sum(dim=-1)
+    normalized_size = size / float(max(1, int(fused.shape[1])))
+    mass = (fused * candidate_float).sum(dim=-1)
+    inside_min = fused.masked_fill(~candidate, float("inf")).min(dim=-1).values
+    outside_max = fused.masked_fill(candidate, float("-inf")).max(dim=-1).values
+    outside_max = torch.where(torch.isfinite(outside_max), outside_max, torch.zeros_like(outside_max))
+    boundary = torch.nan_to_num(inside_min - outside_max, nan=0.0, posinf=1.0, neginf=-1.0)
+    restricted = fused * candidate_float
+    restricted = restricted / restricted.sum(dim=-1, keepdim=True).clamp_min(_PROBABILITY_EPS)
+    set_entropy = -(restricted * restricted.clamp_min(_PROBABILITY_EPS).log()).sum(dim=-1)
+    set_entropy = set_entropy / torch.log(size.clamp_min(2.0))
+    set_entropy = torch.where(size.gt(1), set_entropy, torch.zeros_like(set_entropy))
+    view_masks = [
+        _rc4_aps_mask(probability, thresholds) for probability in (anchor_p, ema_1_p, ema_2_p)
+    ]
+    set_consistency = torch.stack(
+        [(view_mask == candidate).float().mean(dim=-1) for view_mask in view_masks], dim=0
+    ).mean(dim=0)
+    extra = torch.stack(
+        [normalized_size, mass, boundary, set_entropy, set_consistency], dim=-1
+    )
+    return torch.cat([base_features, extra.to(base_features.dtype)], dim=-1)
+
+
+def _rc4_worst_group_precision(
+    selected: torch.Tensor,
+    target: torch.Tensor,
+    groups: torch.Tensor,
+) -> float:
+    values = []
+    for group in torch.unique(groups, sorted=True):
+        mask = selected & groups.eq(group)
+        if not bool(mask.any()):
+            return 0.0
+        values.append(float(target[mask].float().mean().item()))
+    return min(values) if values else 0.0
+
+
+def _rc4_risk_threshold(
+    scores: torch.Tensor,
+    target: torch.Tensor,
+    eligible: torch.Tensor,
+    groups: torch.Tensor,
+    *,
+    precision_target: float,
+    min_coverage: float,
+) -> tuple[float, float, float, float, bool]:
+    """Select the widest threshold satisfying global and worst-group risk."""
+
+    ids = eligible.nonzero(as_tuple=False).reshape(-1)
+    if ids.numel() == 0:
+        return 1.0, 0.0, 0.0, 0.0, False
+    ids = ids[torch.argsort(scores[ids], descending=True, stable=True)]
+    ordered_target = target[ids].float()
+    counts = torch.arange(
+        1, int(ids.numel()) + 1, device=scores.device, dtype=ordered_target.dtype
+    )
+    precision = ordered_target.cumsum(0) / counts
+    coverage = counts / float(scores.numel())
+    required_groups = torch.unique(groups[ids], sorted=True)
+    group_precisions = []
+    group_seen = []
+    for group in required_groups:
+        indicator = groups[ids].eq(group).to(ordered_target.dtype)
+        cumulative_count = indicator.cumsum(0)
+        cumulative_correct = (ordered_target * indicator).cumsum(0)
+        group_precisions.append(cumulative_correct / cumulative_count.clamp_min(1.0))
+        group_seen.append(cumulative_count.gt(0))
+    worst = torch.stack(group_precisions, dim=0).min(dim=0).values
+    all_seen = torch.stack(group_seen, dim=0).all(dim=0)
+    valid = (
+        precision.ge(float(precision_target))
+        & coverage.ge(float(min_coverage))
+        & worst.ge(float(precision_target))
+        & all_seen
+    )
+    if not bool(valid.any()):
+        return 1.0, 0.0, 0.0, 0.0, False
+    end = int(valid.nonzero(as_tuple=False)[-1].item())
+    return (
+        float(scores[ids[end]].item()),
+        float(precision[end].item()),
+        float(coverage[end].item()),
+        float(worst[end].item()),
+        True,
+    )
+
+
 def _rc4_design_matrix(
     features: torch.Tensor,
     predicted: torch.Tensor,
@@ -828,6 +961,7 @@ def build_rc4_calibration(
     domains: torch.Tensor,
     z_norm: torch.Tensor,
     *,
+    receivers: torch.Tensor | None = None,
     num_classes: int,
     num_domains: int,
     folds: int = 5,
@@ -840,14 +974,23 @@ def build_rc4_calibration(
     partial_min_coverage: float = 0.01,
     partial_candidate_max_classes: int = 3,
     negative_false_exclusion_target: float = 0.01,
+    decouple_partial_negative_aps: bool = False,
+    partial_threshold_scope: str = "predicted_class",
 ) -> RC4Calibration:
     """Fit temperature, cross-fitted correctness risk, and APS thresholds on ``V_cal``."""
 
     labels = torch.as_tensor(labels, device=anchor_logits.device).long().reshape(-1)
     domains = torch.as_tensor(domains, device=anchor_logits.device).long().reshape(-1)
+    receivers = (
+        domains.clone()
+        if receivers is None
+        else torch.as_tensor(receivers, device=anchor_logits.device).long().reshape(-1)
+    )
     rows = int(labels.numel())
-    if rows == 0 or domains.numel() != rows:
+    if rows == 0 or domains.numel() != rows or receivers.numel() != rows:
         raise ValueError("RC4 V_cal labels/domains must be non-empty and aligned")
+    if str(partial_threshold_scope) not in {"global", "predicted_class"}:
+        raise ValueError("partial_threshold_scope must be global or predicted_class")
     if bool((domains < 0).any()) or bool((domains >= int(num_domains)).any()):
         raise ValueError("RC4 V_cal domains are outside the declared source-domain range")
     mean_logits = (anchor_logits.float() + ema_logits_1.float() + ema_logits_2.float()) / 3.0
@@ -890,24 +1033,16 @@ def build_rc4_calibration(
         oof_risk = _rc4_calibrated_probability(design, beta_fold)
     final_weight = _fit_rc4_logistic(design, correct, float(l2))
 
-    order = torch.argsort(oof_risk, descending=True, stable=True)
-    ordered_correct = correct[order]
-    precision = ordered_correct.cumsum(0) / torch.arange(
-        1, rows + 1, device=correct.device, dtype=correct.dtype
+    hard_threshold, hard_precision, hard_coverage, hard_worst_receiver_precision, hard_ready = (
+        _rc4_risk_threshold(
+            oof_risk,
+            correct,
+            torch.ones(rows, dtype=torch.bool, device=correct.device),
+            receivers,
+            precision_target=float(hard_precision_target),
+            min_coverage=float(hard_min_coverage),
+        )
     )
-    coverage = torch.arange(1, rows + 1, device=correct.device, dtype=correct.dtype) / float(rows)
-    valid_hard = (precision >= float(hard_precision_target)) & (coverage >= float(hard_min_coverage))
-    if bool(valid_hard.any()):
-        hard_end = int(valid_hard.nonzero(as_tuple=False)[-1].item())
-        hard_threshold = float(oof_risk[order[hard_end]].item())
-        hard_precision = float(precision[hard_end].item())
-        hard_coverage = float(coverage[hard_end].item())
-        hard_ready = True
-    else:
-        hard_threshold = 1.0
-        hard_precision = 0.0
-        hard_coverage = 0.0
-        hard_ready = False
 
     sorted_probability, sorted_index = fused.sort(dim=-1, descending=True)
     cumulative = sorted_probability.cumsum(dim=-1)
@@ -916,27 +1051,47 @@ def build_rc4_calibration(
     inverse_rank.scatter_(1, sorted_index, rank)
     true_rank = inverse_rank.gather(1, labels.reshape(-1, 1)).squeeze(1)
     true_score = cumulative.gather(1, true_rank.reshape(-1, 1)).squeeze(1)
-    aps_target = max(
-        float(partial_coverage_target),
-        1.0 - float(negative_false_exclusion_target),
+    aps_partial_target = (
+        float(partial_coverage_target)
+        if bool(decouple_partial_negative_aps)
+        else max(float(partial_coverage_target), 1.0 - float(negative_false_exclusion_target))
     )
-    aps_global = _rc4_quantile(true_score, aps_target)
+    aps_negative_target = 1.0 - float(negative_false_exclusion_target)
+    aps_global = _rc4_quantile(true_score, aps_partial_target)
+    aps_negative_global = _rc4_quantile(true_score, aps_negative_target)
     aps_class = fused.new_full((int(num_classes),), float("nan"))
     aps_domain = fused.new_full((int(num_domains),), float("nan"))
     for class_id in range(int(num_classes)):
         selected = labels.eq(class_id)
         if int(selected.sum().item()) >= int(min_stratum_samples):
-            aps_class[class_id] = _rc4_quantile(true_score[selected], aps_target)
+            aps_class[class_id] = _rc4_quantile(true_score[selected], aps_partial_target)
     for domain_id in range(int(num_domains)):
         selected = domains.eq(domain_id)
         if int(selected.sum().item()) >= int(min_stratum_samples):
-            aps_domain[domain_id] = _rc4_quantile(true_score[selected], aps_target)
-    row_threshold = aps_class[predicted]
-    row_threshold = torch.where(torch.isfinite(row_threshold), row_threshold, aps_domain[domains])
-    row_threshold = torch.where(
-        torch.isfinite(row_threshold), row_threshold, fused.new_full((rows,), aps_global)
-    )
+            aps_domain[domain_id] = _rc4_quantile(true_score[selected], aps_partial_target)
+    if str(partial_threshold_scope) == "global":
+        row_threshold = fused.new_full((rows,), aps_global)
+    else:
+        row_threshold = aps_class[predicted]
+        row_threshold = torch.where(torch.isfinite(row_threshold), row_threshold, aps_domain[domains])
+        row_threshold = torch.where(
+            torch.isfinite(row_threshold), row_threshold, fused.new_full((rows,), aps_global)
+        )
     candidate = _rc4_aps_mask(fused, row_threshold)
+    partial_features = _rc4_partial_features(
+        features, anchor_p, ema_1_p, ema_2_p, fused, candidate, row_threshold
+    )
+    partial_feature_mean = partial_features.mean(dim=0)
+    partial_feature_scale = partial_features.std(dim=0, unbiased=False).clamp_min(1e-3)
+    partial_design = _rc4_design_matrix(
+        partial_features,
+        predicted,
+        domains,
+        feature_mean=partial_feature_mean,
+        feature_scale=partial_feature_scale,
+        num_classes=int(num_classes),
+        num_domains=int(num_domains),
+    )
     contains_truth = candidate.gather(1, labels.reshape(-1, 1)).squeeze(1)
     containment_target = contains_truth.float()
     oof_partial_safety = torch.empty(rows, device=design.device, dtype=design.dtype)
@@ -948,81 +1103,66 @@ def build_rc4_calibration(
             held = (domains.reshape(-1, 1) == held_domains.reshape(1, -1)).any(dim=1)
             train = ~held
             beta_fold = _fit_rc4_logistic(
-                design[train], containment_target[train], float(l2)
-            ).to(design.device)
+                partial_design[train], containment_target[train], float(l2)
+            ).to(partial_design.device)
             oof_partial_safety[held] = _rc4_calibrated_probability(
-                design[held], beta_fold
+                partial_design[held], beta_fold
             )
     else:
-        beta_fold = _fit_rc4_logistic(design, containment_target, float(l2)).to(
-            design.device
+        beta_fold = _fit_rc4_logistic(partial_design, containment_target, float(l2)).to(
+            partial_design.device
         )
-        oof_partial_safety = _rc4_calibrated_probability(design, beta_fold)
-    partial_safety_weight = _fit_rc4_logistic(design, containment_target, float(l2))
-    exclusion_safety_weight = _fit_rc4_logistic(design, containment_target, float(l2))
+        oof_partial_safety = _rc4_calibrated_probability(partial_design, beta_fold)
+    partial_safety_weight = _fit_rc4_logistic(partial_design, containment_target, float(l2))
+    exclusion_safety_weight = _fit_rc4_logistic(partial_design, containment_target, float(l2))
     partial_coverage = float(contains_truth.float().mean().item())
     candidate_size = candidate.sum(dim=1)
     partial_mean_size = float(candidate_size.float().mean().item())
     partial_eligible = candidate_size.ge(2) & candidate_size.le(
         int(partial_candidate_max_classes)
     )
-    eligible_order = torch.argsort(
-        oof_partial_safety[partial_eligible], descending=True, stable=True
+    (
+        partial_threshold,
+        partial_precision,
+        partial_selected_coverage,
+        partial_worst_receiver_precision,
+        partial_ready,
+    ) = _rc4_risk_threshold(
+        oof_partial_safety,
+        containment_target,
+        partial_eligible,
+        receivers,
+        precision_target=float(partial_precision_target),
+        min_coverage=float(partial_min_coverage),
     )
-    eligible_ids = partial_eligible.nonzero(as_tuple=False).reshape(-1)[eligible_order]
-    if eligible_ids.numel() > 0:
-        ordered_safe = containment_target[eligible_ids]
-        partial_precision_curve = ordered_safe.cumsum(0) / torch.arange(
-            1,
-            eligible_ids.numel() + 1,
-            device=ordered_safe.device,
-            dtype=ordered_safe.dtype,
-        )
-        partial_coverage_curve = torch.arange(
-            1,
-            eligible_ids.numel() + 1,
-            device=ordered_safe.device,
-            dtype=ordered_safe.dtype,
-        ) / float(rows)
-        valid_partial = (
-            partial_precision_curve.ge(float(partial_precision_target))
-            & partial_coverage_curve.ge(float(partial_min_coverage))
-        )
-    else:
-        partial_precision_curve = fused.new_empty(0)
-        partial_coverage_curve = fused.new_empty(0)
-        valid_partial = torch.zeros(0, dtype=torch.bool, device=fused.device)
-    if bool(valid_partial.any()):
-        partial_end = int(valid_partial.nonzero(as_tuple=False)[-1].item())
-        partial_threshold = float(oof_partial_safety[eligible_ids[partial_end]].item())
-        partial_precision = float(partial_precision_curve[partial_end].item())
-        partial_selected_coverage = float(partial_coverage_curve[partial_end].item())
-        partial_ready = partial_mean_size <= 2.5
-    else:
-        partial_threshold = 1.0
-        partial_precision = 0.0
-        partial_selected_coverage = 0.0
-        partial_ready = False
+    partial_ready = bool(partial_ready and partial_mean_size <= 2.5)
     false_exclusion = 1.0 - partial_coverage
     return RC4Calibration(
         temperature=temperature,
         feature_mean=feature_mean.detach().cpu(),
         feature_scale=feature_scale.detach().cpu(),
+        partial_feature_mean=partial_feature_mean.detach().cpu(),
+        partial_feature_scale=partial_feature_scale.detach().cpu(),
         correctness_weight=final_weight.detach().cpu(),
         partial_safety_weight=partial_safety_weight.detach().cpu(),
         exclusion_safety_weight=exclusion_safety_weight.detach().cpu(),
         aps_global=float(aps_global),
+        aps_partial_global=float(aps_global),
+        aps_negative_global=float(aps_negative_global),
         aps_by_class=aps_class.detach().cpu(),
         aps_by_domain=aps_domain.detach().cpu(),
+        partial_threshold_scope=str(partial_threshold_scope),
         hard_risk_threshold=hard_threshold,
         partial_safety_threshold=partial_threshold,
         hard_ready=bool(hard_ready),
         partial_ready=bool(partial_ready),
         negative_ready=bool(false_exclusion <= float(negative_false_exclusion_target)),
         hard_precision=hard_precision,
+        hard_worst_receiver_precision=hard_worst_receiver_precision,
         hard_coverage=hard_coverage,
         partial_coverage=partial_coverage,
         partial_precision=partial_precision,
+        partial_worst_receiver_precision=partial_worst_receiver_precision,
         partial_selected_coverage=partial_selected_coverage,
         partial_mean_size=partial_mean_size,
         negative_false_exclusion=float(false_exclusion),
@@ -1089,6 +1229,7 @@ def route_fasttrust_rc4(
     z_norm: torch.Tensor,
     calibration: RC4Calibration,
     hard_max_fraction: float = 0.25,
+    hard_effective_budget: float = 0.0,
     candidate_max_classes: int = 3,
     partial_min_risk: float = 0.50,
     partial_effective_budget: float = 0.10,
@@ -1099,6 +1240,7 @@ def route_fasttrust_rc4(
     enable_partial: bool = True,
     enable_negative: bool = True,
     class_receiver_cap: bool = True,
+    class_receiver_effective_budget: float = 0.0,
     use_calibrated_risk: bool = True,
 ) -> RC4Route:
     """Apply stage-frozen source risk rules to U rows without reading TX truth."""
@@ -1129,24 +1271,41 @@ def route_fasttrust_rc4(
         if bool(use_calibrated_risk)
         else fused.max(dim=-1).values
     )
+    risk = p_correct
+    if str(getattr(calibration, "partial_threshold_scope", "predicted_class")) == "global":
+        threshold = fused.new_full(
+            (rows,), float(getattr(calibration, "aps_partial_global", calibration.aps_global))
+        )
+    else:
+        threshold = calibration.aps_by_class.to(fused.device, fused.dtype)[predicted]
+        domain_threshold = calibration.aps_by_domain.to(fused.device, fused.dtype)[domains]
+        threshold = torch.where(torch.isfinite(threshold), threshold, domain_threshold)
+        threshold = torch.where(
+            torch.isfinite(threshold), threshold, fused.new_full((rows,), calibration.aps_global)
+        )
+    candidate = _rc4_aps_mask(fused, threshold)
+    partial_features = _rc4_partial_features(
+        features, anchor_p, ema_1_p, ema_2_p, fused, candidate, threshold
+    )
+    partial_design = _rc4_design_matrix(
+        partial_features,
+        predicted,
+        domains,
+        feature_mean=calibration.partial_feature_mean.to(fused.device, fused.dtype),
+        feature_scale=calibration.partial_feature_scale.to(fused.device, fused.dtype),
+        num_classes=calibration.num_classes,
+        num_domains=calibration.num_domains,
+    )
     p_set_safe = (
-        _rc4_calibrated_probability(design, calibration.partial_safety_weight)
+        _rc4_calibrated_probability(partial_design, calibration.partial_safety_weight)
         if bool(use_calibrated_risk)
         else fused.max(dim=-1).values
     )
     p_exclusion_safe = (
-        _rc4_calibrated_probability(design, calibration.exclusion_safety_weight)
+        _rc4_calibrated_probability(partial_design, calibration.exclusion_safety_weight)
         if bool(use_calibrated_risk)
         else p_set_safe
     )
-    risk = p_correct
-    threshold = calibration.aps_by_class.to(fused.device, fused.dtype)[predicted]
-    domain_threshold = calibration.aps_by_domain.to(fused.device, fused.dtype)[domains]
-    threshold = torch.where(torch.isfinite(threshold), threshold, domain_threshold)
-    threshold = torch.where(
-        torch.isfinite(threshold), threshold, fused.new_full((rows,), calibration.aps_global)
-    )
-    candidate = _rc4_aps_mask(fused, threshold)
     set_size = candidate.sum(dim=-1)
     predictions = torch.stack(
         [anchor_p.argmax(dim=-1), ema_1_p.argmax(dim=-1), ema_2_p.argmax(dim=-1)], dim=0
@@ -1249,6 +1408,19 @@ def route_fasttrust_rc4(
     weights = (risk_weight * agree_weight * set_weight * balance).clamp(0.0, 4.0)
     weights = torch.where(routed, weights, torch.zeros_like(weights))
 
+    cell_budget = float(class_receiver_effective_budget)
+    if cell_budget > 0.0:
+        if not math.isfinite(cell_budget) or cell_budget > 1.0:
+            raise ValueError("RC4 class-receiver effective budget must be in [0,1]")
+        cell_ids = predicted * (int(receivers.max().item()) + 1) + receivers
+        cell_cap = float(rows) * cell_budget
+        for state in (hard, partial, negative):
+            for cell_id in torch.unique(cell_ids[state], sorted=True):
+                cell_mask = state & cell_ids.eq(cell_id)
+                mass = weights[cell_mask].sum()
+                if float(mass.item()) > cell_cap:
+                    weights[cell_mask] = weights[cell_mask] * (cell_cap / mass.clamp_min(1e-12))
+
     def apply_effective_budget(mask: torch.Tensor, budget_fraction: float) -> torch.Tensor:
         budget_fraction = float(budget_fraction)
         if not math.isfinite(budget_fraction) or not 0.0 <= budget_fraction <= 1.0:
@@ -1286,8 +1458,10 @@ def route_fasttrust_rc4(
         negative = torch.zeros_like(negative)
         cap_mask = cap_mask & hard
     else:
+        kept_hard = apply_effective_budget(hard, hard_effective_budget) if float(hard_effective_budget) > 0.0 else hard
         kept_partial = apply_effective_budget(partial, partial_effective_budget)
         kept_negative = apply_effective_budget(negative, negative_effective_budget)
+        hard = kept_hard
         partial = kept_partial
         negative = kept_negative
     routed = hard | partial | negative
@@ -1300,6 +1474,7 @@ def route_fasttrust_rc4(
         p_correct=p_correct,
         p_set_safe=p_set_safe,
         p_exclusion_safe=p_exclusion_safe,
+        aps_threshold=threshold,
         partial_threshold=fused.new_tensor(partial_threshold),
         candidate_mask=candidate,
         excluded_mask=~candidate,
@@ -1403,6 +1578,29 @@ def rc4_identity_losses(
         "negative_set": negative_set,
         "negative": negative_loss,
         "total": hard_loss + partial_loss + negative_loss,
+    }
+
+
+def rc4_active_identity_components(
+    losses: Mapping[str, torch.Tensor],
+    *,
+    enable_partial_set: bool,
+    enable_partial_conditional: bool,
+    enable_negative: bool,
+) -> dict[str, torch.Tensor]:
+    """Expose only identity components enabled for the current matrix row."""
+
+    required = ("hard", "partial_set", "partial_conditional", "negative")
+    if any(key not in losses or not torch.is_tensor(losses[key]) for key in required):
+        raise ValueError("RC4 identity loss mapping is incomplete")
+    zero = losses["hard"] * 0.0
+    return {
+        "hard": losses["hard"],
+        "partial_set": losses["partial_set"] if bool(enable_partial_set) else zero,
+        "partial_conditional": (
+            losses["partial_conditional"] if bool(enable_partial_conditional) else zero
+        ),
+        "negative": losses["negative"] if bool(enable_negative) else zero,
     }
 
 
