@@ -28,6 +28,11 @@ def main(argv: list[str] | None = None) -> int:
         help="Task10 receipt.json; defaults to the prediction directory",
     )
     parser.add_argument("--truth", required=True, type=Path)
+    parser.add_argument(
+        "--class-binding",
+        type=Path,
+        help="Frozen ADV3B02 class-handle to class-index binding for CVS truth sidecars",
+    )
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args(argv)
     try:
@@ -38,6 +43,7 @@ def main(argv: list[str] | None = None) -> int:
             args.da1,
             args.truth,
             receipt_path=args.receipt,
+            class_binding_path=args.class_binding,
         )
         write_score_json(score, args.output)
     except (MetaAdapterScoringError, FileExistsError, OSError) as exc:

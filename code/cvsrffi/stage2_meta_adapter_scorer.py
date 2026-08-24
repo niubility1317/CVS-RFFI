@@ -45,6 +45,12 @@ class MetaAdapterScoringError(ValueError):
 
 
 @dataclass(frozen=True)
+class _TruthSelection:
+    all_query_ids: frozenset[str]
+    old_class_by_query_id: Mapping[str, int]
+
+
+@dataclass(frozen=True)
 class StateScore:
     state: str
     registration_state: str
@@ -383,7 +389,53 @@ def _truth_rows_to_mapping(rows: Any) -> dict[str, int]:
     return result
 
 
-def _load_truth(truth_path: str | Path) -> dict[str, int]:
+def _load_class_binding(path: str | Path) -> dict[str, int]:
+    binding_path = Path(path)
+    try:
+        payload = json.loads(binding_path.read_text(encoding="utf-8-sig"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise MetaAdapterScoringError(
+            f"class binding cannot be loaded: {binding_path}"
+        ) from exc
+    if (
+        not isinstance(payload, Mapping)
+        or payload.get("schema") != "cvs.phase2.d20_adv3b02_class_binding.v2"
+        or not isinstance(payload.get("entries"), list)
+        or not payload["entries"]
+    ):
+        raise MetaAdapterScoringError("class binding schema mismatch")
+    result: dict[str, int] = {}
+    seen_indices: set[int] = set()
+    for position, row in enumerate(payload["entries"]):
+        if not isinstance(row, Mapping):
+            raise MetaAdapterScoringError(
+                f"class binding entry {position} must be a mapping"
+            )
+        handle = row.get("registered_class_handle")
+        class_index = row.get("class_index")
+        if (
+            not isinstance(handle, str)
+            or not handle
+            or handle in result
+            or isinstance(class_index, bool)
+            or not isinstance(class_index, int)
+            or class_index < 0
+            or class_index in seen_indices
+        ):
+            raise MetaAdapterScoringError(
+                f"class binding entry {position} is invalid or duplicated"
+            )
+        result[handle] = int(class_index)
+        seen_indices.add(int(class_index))
+    return result
+
+
+def _load_truth(
+    truth_path: str | Path,
+    *,
+    scenario: str | None = None,
+    class_handle_to_id: Mapping[str, int] | None = None,
+) -> _TruthSelection:
     path = Path(truth_path)
     if not path.is_file():
         raise MetaAdapterScoringError(f"truth sidecar is missing: {path}")
@@ -403,10 +455,11 @@ def _load_truth(truth_path: str | Path) -> dict[str, int]:
             raise MetaAdapterScoringError("truth query_ids must be an opaque string vector")
         if true_ids.ndim != 1 or true_ids.shape[0] != query_ids.shape[0] or not np.issubdtype(true_ids.dtype, np.integer):
             raise MetaAdapterScoringError("truth true_class_ids must align with query_ids")
-        return _truth_rows_to_mapping([
+        mapping = _truth_rows_to_mapping([
             {"query_token": str(query_id), "true_class_index": int(true_id)}
             for query_id, true_id in zip(query_ids.astype(str).tolist(), true_ids.tolist())
         ])
+        return _TruthSelection(frozenset(mapping), mapping)
     try:
         payload = json.loads(path.read_text(encoding="utf-8-sig"))
     except (OSError, UnicodeError, json.JSONDecodeError) as exc:
@@ -414,19 +467,84 @@ def _load_truth(truth_path: str | Path) -> dict[str, int]:
     if not isinstance(payload, Mapping):
         raise MetaAdapterScoringError("truth sidecar must be a mapping")
     if "rows" in payload:
-        return _truth_rows_to_mapping(payload["rows"])
+        rows = payload["rows"]
+        if not isinstance(rows, list) or not rows:
+            raise MetaAdapterScoringError("truth rows must be a nonempty list")
+        if all(
+            isinstance(row, Mapping)
+            and isinstance(row.get("true_class_index", row.get("true_class_id")), int)
+            and not isinstance(
+                row.get("true_class_index", row.get("true_class_id")), bool
+            )
+            for row in rows
+        ):
+            mapping = _truth_rows_to_mapping(rows)
+            return _TruthSelection(frozenset(mapping), mapping)
+        if not isinstance(scenario, str) or not scenario:
+            raise MetaAdapterScoringError(
+                "CVS truth sidecar requires the prediction receipt scenario"
+            )
+        if not class_handle_to_id:
+            raise MetaAdapterScoringError(
+                "CVS truth sidecar requires a frozen class binding"
+            )
+        scenario_rows = [
+            row
+            for row in rows
+            if isinstance(row, Mapping) and row.get("scenario") == scenario
+        ]
+        if not scenario_rows:
+            raise MetaAdapterScoringError(
+                "truth sidecar has no rows for the prediction scenario"
+            )
+        all_query_ids: set[str] = set()
+        old_mapping: dict[str, int] = {}
+        for position, row in enumerate(scenario_rows):
+            query_id = row.get("query_token", row.get("query_id"))
+            if (
+                not isinstance(query_id, str)
+                or not query_id
+                or query_id in all_query_ids
+            ):
+                raise MetaAdapterScoringError(
+                    f"truth scenario row {position} has an invalid or duplicate opaque ID"
+                )
+            all_query_ids.add(query_id)
+            if row.get("evaluation_role") != "target_old":
+                continue
+            handle = row.get("true_class_handle")
+            if not isinstance(handle, str) or handle not in class_handle_to_id:
+                raise MetaAdapterScoringError(
+                    f"truth target_old row {position} is outside the frozen class binding"
+                )
+            old_mapping[query_id] = int(class_handle_to_id[handle])
+        if not old_mapping:
+            raise MetaAdapterScoringError(
+                "truth sidecar has no target_old rows for REG0 scoring"
+            )
+        return _TruthSelection(frozenset(all_query_ids), old_mapping)
     if isinstance(payload.get("query_ids"), list) and isinstance(payload.get("true_class_ids"), list):
         if len(payload["query_ids"]) != len(payload["true_class_ids"]):
             raise MetaAdapterScoringError("truth query_ids/true_class_ids lengths do not align")
-        return _truth_rows_to_mapping([
+        mapping = _truth_rows_to_mapping([
             {"query_token": query_id, "true_class_index": true_id}
             for query_id, true_id in zip(payload["query_ids"], payload["true_class_ids"])
         ])
+        return _TruthSelection(frozenset(mapping), mapping)
     raise MetaAdapterScoringError("truth sidecar lacks rows")
 
 
-def _load_truth_json(truth_path: str | Path) -> dict[str, int]:
-    return _load_truth(truth_path)
+def _load_truth_json(
+    truth_path: str | Path,
+    *,
+    scenario: str | None = None,
+    class_handle_to_id: Mapping[str, int] | None = None,
+) -> _TruthSelection:
+    return _load_truth(
+        truth_path,
+        scenario=scenario,
+        class_handle_to_id=class_handle_to_id,
+    )
 
 
 def _metrics(state: str, query_ids: np.ndarray, true_ids: np.ndarray, predicted: np.ndarray) -> StateScore:
@@ -450,7 +568,14 @@ def _metrics(state: str, query_ids: np.ndarray, true_ids: np.ndarray, predicted:
     )
 
 
-def score_meta_adapter_pair(da0_path: str | Path, da1_path: str | Path, truth_path: str | Path, *, receipt_path: str | Path | None = None) -> PairedStage2BScore:
+def score_meta_adapter_pair(
+    da0_path: str | Path,
+    da1_path: str | Path,
+    truth_path: str | Path,
+    *,
+    receipt_path: str | Path | None = None,
+    class_binding_path: str | Path | None = None,
+) -> PairedStage2BScore:
     """Score one pair only after receipt and both predictions close."""
     da0, da1 = Path(da0_path), Path(da1_path)
     if da0.parent.resolve() != da1.parent.resolve():
@@ -461,16 +586,42 @@ def score_meta_adapter_pair(da0_path: str | Path, da1_path: str | Path, truth_pa
     da1_ids, da1_pred, _ = _load_and_validate_prediction(da1, registered)
     if not np.array_equal(da0_ids, da1_ids):
         raise MetaAdapterScoringError("DA0/DA1 prediction artifacts must use the same ordered query IDs")
+    class_binding = (
+        _load_class_binding(class_binding_path)
+        if class_binding_path is not None
+        else None
+    )
+    if class_binding is not None and set(class_binding.values()) != set(registered):
+        raise MetaAdapterScoringError(
+            "class binding indices do not match the registered class set"
+        )
     # This is intentionally the first access to truth_path.
-    truth_by_id = _load_truth_json(truth_path)
+    truth = _load_truth_json(
+        truth_path,
+        scenario=str(row["scenario"]),
+        class_handle_to_id=class_binding,
+    )
     prediction_ids = tuple(str(value) for value in da0_ids.tolist())
-    if set(truth_by_id) != set(prediction_ids):
+    if truth.all_query_ids != frozenset(prediction_ids):
         raise MetaAdapterScoringError("exact opaque-ID join failed between prediction and truth")
-    truth_labels = np.asarray([truth_by_id[item] for item in prediction_ids], dtype=np.int64)
+    old_positions = [
+        index
+        for index, query_id in enumerate(prediction_ids)
+        if query_id in truth.old_class_by_query_id
+    ]
+    old_query_ids = da0_ids[np.asarray(old_positions, dtype=np.int64)]
+    truth_labels = np.asarray(
+        [truth.old_class_by_query_id[prediction_ids[index]] for index in old_positions],
+        dtype=np.int64,
+    )
     if not np.isin(truth_labels, np.asarray(registered, dtype=np.int64)).all():
         raise MetaAdapterScoringError("truth contains an ID outside the registered class set")
-    da0_score = _metrics("DA0_REG0", da0_ids, truth_labels, da0_pred)
-    da1_score = _metrics("DA1_REG0", da1_ids, truth_labels, da1_pred)
+    da0_score = _metrics(
+        "DA0_REG0", old_query_ids, truth_labels, da0_pred[old_positions]
+    )
+    da1_score = _metrics(
+        "DA1_REG0", old_query_ids, truth_labels, da1_pred[old_positions]
+    )
     return PairedStage2BScore(
         da0=da0_score, da1=da1_score,
         mean_delta_pp=float((da1_score.mean_old_acc - da0_score.mean_old_acc) * 100.0),

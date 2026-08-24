@@ -57,3 +57,10 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 - RED测试稳定证明缺少`support_physical_ids`；GREEN后导出器把与IQ／标签相同rank-prefix选中的不可变token写为非object字符串向量，不改变K、support内容或query处理。
 - exporter、Meta-Adapter Stage2适配、模型和trainer联合56项通过；仅有既存AMP弃用提示。
 - 该修复只为Phase1完成后的新Stage2不可覆盖run准备，不修改或重启正在运行的r3。
+
+## Stage2真实truth sidecar评分兼容
+
+- 只读核对既有独立scorer代码和冻结类绑定后确认：正式`truth_sidecar.json`使用`true_class_handle`，同一场景含全部520个query token；REG0旧类指标只定义于其中`evaluation_role=target_old`的120条。原Meta-Adapter scorer只接受整数`true_class_index`并会把全部token都当旧类，无法合法评分真实sidecar。
+- 修复后的scorer先验证receipt及DA0_REG0／DA1_REG0两份完整prediction，再验证冻结`d19`类绑定的class index集合与bundle注册类一致，最后才打开truth。它按receipt场景精确连接全部opaque token，只把`target_old`通过冻结handle→class index映射送入旧类均值和floor；target new token只参与完整性连接，REG0新类指标仍为`N/A`。
+- 简化整数truth保持向后兼容；真实sidecar RED→GREEN及scorer／runner／exporter联合52项通过。
+- 独立scorer根已定位为既有`.../before/scorer/truth_sidecar.json`，当前只核对路径名和文件大小，尚未为本方法打开truth内容。

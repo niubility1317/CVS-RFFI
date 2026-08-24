@@ -121,6 +121,100 @@ def test_scorer_requires_identical_query_ids_and_reports_reg0_na(tmp_path: Path)
     assert score.floor_delta_pp == pytest.approx(-50.0)
 
 
+def test_scorer_joins_full_cvs_sidecar_but_scores_target_old_only(
+    tmp_path: Path,
+) -> None:
+    query_ids = np.asarray(["q-1", "q-2", "q-3", "q-4", "q-new"])
+    da0_path = tmp_path / "predictions_DA0_REG0.npz"
+    da1_path = tmp_path / "predictions_DA1_REG0.npz"
+    truth_path = tmp_path / "truth_sidecar.json"
+    binding_path = tmp_path / "class_binding.json"
+    scores = np.asarray(
+        [[0.9, 0.1], [0.8, 0.2], [0.1, 0.9], [0.2, 0.8], [0.6, 0.4]],
+        dtype=np.float32,
+    )
+    _write_prediction(
+        da0_path,
+        query_ids=query_ids,
+        predicted=np.asarray([10, 10, 20, 20, 10], dtype=np.int64),
+        scores=scores,
+    )
+    _write_prediction(
+        da1_path,
+        query_ids=query_ids,
+        predicted=np.asarray([10, 20, 20, 20, 10], dtype=np.int64),
+        scores=np.asarray(
+            [[0.9, 0.1], [0.1, 0.9], [0.1, 0.9], [0.1, 0.9], [0.6, 0.4]],
+            dtype=np.float32,
+        ),
+    )
+    _write_receipt(tmp_path)
+    truth_path.write_text(
+        json.dumps(
+            {
+                "schema": "cvs.phase2.query_truth_sidecar.v2",
+                "rows": [
+                    {
+                        "query_token": "q-3",
+                        "scenario": "leo_clear_weak",
+                        "evaluation_role": "target_old",
+                        "true_class_handle": "class-20",
+                    },
+                    {
+                        "query_token": "q-new",
+                        "scenario": "leo_clear_weak",
+                        "evaluation_role": "target_new",
+                        "true_class_handle": "unregistered-class",
+                    },
+                    {
+                        "query_token": "q-1",
+                        "scenario": "leo_clear_weak",
+                        "evaluation_role": "target_old",
+                        "true_class_handle": "class-10",
+                    },
+                    {
+                        "query_token": "q-4",
+                        "scenario": "leo_clear_weak",
+                        "evaluation_role": "target_old",
+                        "true_class_handle": "class-20",
+                    },
+                    {
+                        "query_token": "q-2",
+                        "scenario": "leo_clear_weak",
+                        "evaluation_role": "target_old",
+                        "true_class_handle": "class-10",
+                    },
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    binding_path.write_text(
+        json.dumps(
+            {
+                "schema": "cvs.phase2.d20_adv3b02_class_binding.v2",
+                "entries": [
+                    {"class_index": 10, "registered_class_handle": "class-10"},
+                    {"class_index": 20, "registered_class_handle": "class-20"},
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    score = scorer.score_meta_adapter_pair(
+        da0_path,
+        da1_path,
+        truth_path,
+        class_binding_path=binding_path,
+    )
+
+    assert score.da0.query_ids == ("q-1", "q-2", "q-3", "q-4")
+    assert score.da0.mean_old_acc == pytest.approx(1.0)
+    assert score.da1.mean_old_acc == pytest.approx(0.75)
+    assert "q-new" not in score.da0.query_ids
+
+
 def test_scorer_rejects_itemwise_row_id_drift_before_truth_open(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
