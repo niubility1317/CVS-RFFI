@@ -86,3 +86,13 @@ P0为冻结base控制；P1为随机adapter；P2为source监督adapter；P3为FOM
 - 执行器在创建输出root前验证完整Target5/Target25笛卡尔积、固定operating point与K的对应关系、单一candidate/bundle/seed、row ID安全性和单row配置allowlist；`K2/new20`不能替代`K10/new10`。
 - 任一row技术失败时只停止后续派发，写入矩阵失败状态并保留所有已完成或失败诊断产物；不删除、不覆盖、不自动重跑。prediction完整后仍由独立scorer在执行器之外truth-last评分。
 - 这项结果只证明执行链闭合，不是性能证据；r3仍为`RUNNING`，Target5尚未启动。
+
+## K10/new10缺失输入补建预登记
+
+- 任务范围：只为receiver=`20-1`、seed=`713101`、method/support/query/draw seed=`7282101/7282201/7282301/7282401`补建一个`K10/new10`输入；不重建received-IQ，不改动既有new5/new20、K1/K5切片，也不触发其他`VALIDATED_ONCE`数据重验。
+- 固定母缓存：`/home/szu2070436088/2510044040/CV-SincNet/runs/d18_formal_k10_new5_rx20_1_seed713101_20260717_085303/cache_matrix/rx_20_1/seed_713101/cache_set.json`。
+- 固定builder release：`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_full_ablation_phase2c_t1_20260730_v2_0903163e`；该release已成功闭合相同receiver/seed的before、new5和new20封包。
+- 新不可覆盖root：`/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/adv3b02_meta_adapter_target5_new10_s713101_20260825_v1_ce07a101`。
+- new10严格取同一draw seed的new20排列前10类：`1-16,18-8,2-16,14-11,11-19,4-10,2-5,19-8,19-9,20-12`；禁止手工改序或从new20改名复制。
+- package完成后，以既有before包和新new10包生成一个K10 Stage2-B manifest；仅使用空闲GPU进行固定feature/manifest构建。任何已有output、builder异常、协议字段不匹配或产物不完整都立即停止本次补建，不影响r3和其他任务。
+- 该补建只产生Target5输入，不读取性能，不启动Meta-Adapter Target5，也不代表Phase1已通过source选择。
