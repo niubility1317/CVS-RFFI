@@ -1,7 +1,7 @@
 # Time-only Rank-8 Meta-Adapter P4 Target5最小预登记报告
 
 - run ID：`stage2_meta_adapter_target5_time_r8_p4_s392002_20260825_r1`
-- 状态：`LOCAL_VERIFIED`
+- 状态：`LANDED`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 代码／配置冻结提交：`480e447f3fda3fe5b89067335092bf47c14a1ce0`；GitHub远端分支OID已独立回读一致。
 - Phase1：`phase1_adv3b02_meta_adapter_time_r8_p4_s392002_20260825_r1`，状态`ARTIFACTS_COMPLETE / SOURCE_SELECTION_ELIGIBLE`。
@@ -41,3 +41,9 @@
 - 本候选实现阶段已通过262项Meta-Adapter Phase1／Phase2邻近回归和9个生产入口编译；Stage2 factory／runner／scorer代码没有变化，沿用本次会话已通过的69项聚焦回归和11个生产入口编译证据。
 - time-only rank8候选唯一一次独立P0/P1审查结论为P0无、P1无；Stage2复用已验证factory／runner／scorer，不增加重复审查。
 - 15个truth-free prediction row全部闭合后，才由独立scorer连接truth。聚合`DA1_REG0-DA0_REG0`旧类均值至少+1.0pp且floor至少+0.5pp才进入Target25；否则记录`SCIENTIFIC_FAILURE_NO_PROMOTION`并继续下一少层候选。
+
+## N607 release验证
+
+- release归档固定当前Git HEAD=`ea966672e6986751d144cdd96c559b13ad438be4`；本地路径为`E:\type10-7\release_archives\stage2_meta_adapter_target5_time_r8_p4_s392002_20260825_r1_release.tar.gz`。
+- 唯一release归档本地／远端一次SHA256均为`30d420f9bcd9aa040d0b8ecad5850686036864476a0c4968a42966f3ff18f8fe`；远端release已解压到预登记checkout，14个相关生产入口编译通过。
+- 发布前独立确认release、工厂、smoke、prediction和stdout目标均不存在；Phase1正式bundle和冻结原型均非空，无同名持久进程；GPU0～7均无计算负载。
