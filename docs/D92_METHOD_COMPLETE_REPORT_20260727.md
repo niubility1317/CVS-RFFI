@@ -211,7 +211,7 @@ $$
 |域×类中心的压缩码与尺度|恢复近似聚合中心\(\widehat{\mathbf g}_{d,c}\)|计算跨域残差|
 |低秩残差与中心项|提高聚合中心恢复精度|构成\(\widehat{\mathbf g}_{d,c}\)|
 |P90半径|每个域×类聚合单元的分散度摘要|为跨域单元分配可靠性|
-|重构RMSE|离线压缩对完整聚合中心的平均误差摘要|定义量化噪声底|
+|重构RMSE|离线压缩对完整聚合中心的平均误差摘要|定义有效重构误差基线\(\sigma_{\mathrm q}^2\)|
 
 这里的聚合中心不是Phase2可访问的source样本，也不是模块三中用来估计类内协方差的support行。它们在构造扰动基后不进入query预测状态。
 
@@ -264,41 +264,236 @@ $$
 
 **符号说明：**\(C_{\mathrm o}\)是Phase1旧类数量；\((\mathbf e^{\mathrm g}_{d,c})^{\mathsf T}\)是转置；\(\mathbf e^{\mathrm g}_{d,c}(\mathbf e^{\mathrm g}_{d,c})^{\mathsf T}\)是\(160\times160\)外积矩阵；\(\mathbf G\)是聚合跨域扰动协方差。每个旧类先去除自己的中心，再按类等权汇总，因此\(\mathbf G\)描述的是共同漂移的形状，而不是某个类别的位置。
 
-\(\mathbf G\)的非对角元素解释为
+#### 5.3.1\(160\times160\)的行、列与旧类／域数量分别代表什么
+
+\(\mathbf G\)的大小由身份编码器的输出维度决定，而不是由旧类数或地面域数决定。这里的160个坐标就是160维身份块的160个潜在坐标；它们没有一一对应的“第\(i\)个旧类”或“第\(i\)个地面域”含义。
+
+|对象|它表示什么|与旧类／域数量的关系|
+|---|---|---|
+|\(\mathbf e^{\mathrm g}_{d,c}\in\mathbb R^{160}\)|旧类\(c\)在地面域\(d\)中的一个160维跨域偏移向量|每个\((d,c)\)组合产生一条向量|
+|\(\mathbf G\)的第\(i\)行、第\(j\)列|身份特征坐标\(i\)与坐标\(j\)的共同漂移统计|不对应一个类别，也不对应一个域|
+|\(D_{\mathrm g}\)|参与封存统计的地面域数|决定每个旧类有多少条残差向量|
+|\(C_{\mathrm o}\)|Phase1旧类数|决定汇总多少个旧类，并通过\(1/C_{\mathrm o}\)让每个旧类总权重相同|
+
+因此，若\(D_{\mathrm g}=4\)、\(C_{\mathrm o}=10\)，模块二会汇总\(4\times10=40\)条160维残差向量；最终\(\mathbf G\)仍是\(160\times160\)，而不是\(40\times40\)。域和类别是“产生统计观测的索引”，160个身份坐标才是矩阵行、列所处的空间。
+
+逐元素展开后，
 
 $$
-G_{ij}>0\Rightarrow i,j\text{维在跨域漂移中倾向同向变化},
+G_{ij}
+=
+\frac{1}{C_{\mathrm o}}
+\sum_{c=1}^{C_{\mathrm o}}
+\sum_{d=1}^{D_{\mathrm g}}
+\beta_{d,c}\,
+e^{\mathrm g}_{d,c,i}\,
+e^{\mathrm g}_{d,c,j}.
+$$
+
+**符号说明：**\(G_{ij}\)是\(\mathbf G\)第\(i\)行、第\(j\)列的元素；\(e^{\mathrm g}_{d,c,i}\)与\(e^{\mathrm g}_{d,c,j}\)分别是同一条残差向量\(\mathbf e^{\mathrm g}_{d,c}\)在第\(i\)、第\(j\)个身份坐标上的值；\(d\)遍历地面域，\(c\)遍历旧类；\(\beta_{d,c}\)是该域×类单元的类内可靠性权重；\(C_{\mathrm o}^{-1}\)使不同旧类在汇总时等权。每个旧类的权重和为\(\sum_d\beta_{d,c}/C_{\mathrm o}=1/C_{\mathrm o}\)，所以域数较多的旧类不会仅因可用域更多而占据更大总权重。
+
+单条残差的外积在非对角位置满足
+
+$$
+\left[
+\mathbf e^{\mathrm g}_{d,c}
+\left(\mathbf e^{\mathrm g}_{d,c}\right)^{\mathsf T}
+\right]_{ij}
+=
+e^{\mathrm g}_{d,c,i}e^{\mathrm g}_{d,c,j}.
+$$
+
+**符号说明：**方括号下标\([\,\cdot\,]_{ij}\)表示取矩阵的第\(i\)行、第\(j\)列；右侧两个因子来自同一个域\(d\)、旧类\(c\)的残差。如果两个坐标在该残差中同为正或同为负，乘积为正；一正一负，乘积为负；其中一个接近0，乘积接近0。对全部\((d,c)\)残差做加权平均后，得到的是“整体上两坐标是否共同变化”的统计量。
+
+#### 5.3.2非对角元素不是“某一类的方向”
+
+严格说，\(\mathbf G\)的非对角元素不描述某个旧类在某个具体方向上的漂移。一个旧类\(c\)在一个地面域\(d\)的实际偏移方向是向量\(\mathbf e^{\mathrm g}_{d,c}\)本身；\(G_{ij}\)已经把所有旧类和域汇总，索引中不再保留哪个\(c\)或\(d\)贡献了该值。它只说明：在这些中心化偏移的总体中，身份坐标\(i\)与\(j\)是否倾向一起增减。
+
+如果要为某个旧类单独构造协方差，形式会是
+
+$$
+\mathbf G^{\mathrm{class}}_c
+=
+\sum_{d=1}^{D_{\mathrm g}}
+\beta_{d,c}
+\mathbf e^{\mathrm g}_{d,c}
+\left(\mathbf e^{\mathrm g}_{d,c}\right)^{\mathsf T}.
+$$
+
+**符号说明：**\(\mathbf G^{\mathrm{class}}_c\)是仅由旧类\(c\)的各地面域残差构成的类条件协方差；其余符号与前文一致。这个式子只用于区分概念，D92 E0不为每个类别保存或分解这样的矩阵；它有意构造的是类无关的共同扰动基，以避免把某个旧类的位置或形状直接带入新类决策。
+
+真正的“全局漂移方向”要在后续对\(\mathbf G_+\)作特征分解后，由特征向量\(\mathbf u_j\)给出；\(G_{ij}\)只是决定这些方向的一个矩阵元素，而不是方向向量本身。新类target support也不参与\(\mathbf G\)的构造：它们只在得到冻结的\(\mathbf U\)之后被投影到该公共方向坐标系中。换言之，旧类和地面域只用于离线归纳“常见怎样漂移”，新类support只用于在线判断“当前样本沿这些常见方向漂移了多少”。
+
+一个二维玩具例子可以直观看出这个区别。设两个旧类\(A,B\)，每类各有两个等权地面域，且类内中心化残差分别为
+
+$$
+\begin{aligned}
+\mathbf e_{1,A}&=(1,1)^{\mathsf T},&
+\mathbf e_{2,A}&=(-1,-1)^{\mathsf T},\\
+\mathbf e_{1,B}&=(2,2)^{\mathsf T},&
+\mathbf e_{2,B}&=(-2,-2)^{\mathsf T}.
+\end{aligned}
+$$
+
+**符号说明：**\(A,B\)只是两个示例旧类；下标1、2表示两个示例地面域；每个\(\mathbf e_{d,c}\in\mathbb R^2\)是为了便于展示而把真实160维问题缩到二维后的残差向量；\((\cdot)^{\mathsf T}\)表示列向量转置。这里两个坐标在每一条残差中始终同号，所以它们具有同向共同漂移。
+
+每类的加权外积平均与两类等权汇总为
+
+$$
+\mathbf G^{\mathrm{class}}_A
+=
+\begin{bmatrix}1&1\\1&1\end{bmatrix},
 \qquad
-G_{ij}<0\Rightarrow i,j\text{维倾向反向变化}.
+\mathbf G^{\mathrm{class}}_B
+=
+\begin{bmatrix}4&4\\4&4\end{bmatrix},
+\qquad
+\mathbf G
+=
+\frac{\mathbf G^{\mathrm{class}}_A+\mathbf G^{\mathrm{class}}_B}{2}
+=
+\begin{bmatrix}2.5&2.5\\2.5&2.5\end{bmatrix}.
 $$
 
-**符号说明：**\(G_{ij}\)是\(\mathbf G\)的第\(i\)行第\(j\)列元素；\(i\ne j\)时它是两个不同身份坐标的协方差；正、负号描述中心化偏移的线性共同变化方向。对角项\(G_{ii}\)是第\(i\)维跨域漂移的方差，理论上非负。这个解释来自协方差的定义，不意味着任何单条IQ同时属于两个维度。
+**符号说明：**\(\mathbf G^{\mathrm{class}}_A\)和\(\mathbf G^{\mathrm{class}}_B\)分别是示例类\(A,B\)的类条件协方差；最后的\(\mathbf G\)是二者等权的共同协方差；矩阵的右上和左下元素\(2.5\)就是非对角统计量。它说明两个坐标在所有示例残差中共同增减，并不说明“类\(A\)的方向等于2.5”或“类\(B\)的方向等于2.5”。
 
-### 5.4量化噪声底为什么是重构RMSE平方
-
-离线压缩审计定义重构误差为
+这个矩阵的主方向是
 
 $$
-\epsilon_{\mathrm{rec}}=
+\mathbf u_1
+=
+\frac{1}{\sqrt2}
+\begin{bmatrix}1\\1\end{bmatrix},
+\qquad
+\lambda_1=5.
+$$
+
+**符号说明：**\(\mathbf u_1\)是该二维示例中单位长度的第一主方向；\(\lambda_1\)是对应特征值；\(\sqrt2\)用于把向量归一化为单位长度。由\(\mathbf u_1\)才可说主漂移沿“两个坐标同向变化”的方向；若非对角项主要为负，主方向会更接近\((1,-1)^{\mathsf T}/\sqrt2\)。
+
+因此，对不同身份坐标\(i\ne j\)，非对角元素的正确解释是
+
+$$
+\begin{aligned}
+G_{ij}>0&\Rightarrow i,j\text{维在跨域残差中倾向同向变化},\\
+G_{ij}<0&\Rightarrow i,j\text{维在跨域残差中倾向反向变化},\\
+G_{ij}\approx0&\Rightarrow \text{当前聚合统计中未显示明显的线性共同变化}.
+\end{aligned}
+$$
+
+**符号说明：**\(i,j\in\{1,\ldots,160\}\)是身份特征坐标索引，且这里限定\(i\ne j\)；\(G_{ij}\)是对应的非对角协方差。正、负和接近0只描述线性共同变化，不能推出因果关系，也不能证明两个坐标彼此独立。对角项\(G_{ii}\)是第\(i\)维跨域残差的加权方差，理论上非负；这个解释来自协方差定义，不意味着一条IQ“同时属于两个维度”。
+
+### 5.4\(\sigma_{\mathrm q}^2\)是什么：有效各向同性重构误差基线
+
+Phase1 bundle为了压缩保存域×类聚合中心，会使解码中心与压缩前中心存在重构误差。先把该误差记为
+
+$$
+\delta_{d,c,i}
+=
+\widehat g_{d,c,i}
+-g^{\mathrm{dense}}_{d,c,i}.
+$$
+
+**符号说明：**\(\delta_{d,c,i}\)是域\(d\)、旧类\(c\)、身份坐标\(i\)上的重构误差；\(g^{\mathrm{dense}}_{d,c,i}\)是离线压缩前完整聚合中心的同一坐标；\(\widehat g_{d,c,i}\)是从封存码、尺度和低秩项恢复后的坐标。这里的误差只来自Phase1聚合知识的压缩与恢复，Phase2运行时不读取\(g^{\mathrm{dense}}_{d,c,i}\)。
+
+离线压缩审计把所有这些误差的均方根记为\(\epsilon_{\mathrm{rec}}\)，并定义
+
+$$
+\epsilon_{\mathrm{rec}}
+=
 \sqrt{
 \frac{1}{D_{\mathrm g}C_{\mathrm o}\cdot160}
 \sum_{d=1}^{D_{\mathrm g}}
 \sum_{c=1}^{C_{\mathrm o}}
 \sum_{i=1}^{160}
-\left(g^{\mathrm{dense}}_{d,c,i}
--\widehat g_{d,c,i}\right)^2
+\delta_{d,c,i}^{\,2}
 },
 \qquad
-\sigma_{\mathrm q}^2=\epsilon_{\mathrm{rec}}^2.
+\sigma_{\mathrm q}^2
+=
+\epsilon_{\mathrm{rec}}^2
+=
+\frac{1}{D_{\mathrm g}C_{\mathrm o}\cdot160}
+\sum_{d=1}^{D_{\mathrm g}}
+\sum_{c=1}^{C_{\mathrm o}}
+\sum_{i=1}^{160}
+\delta_{d,c,i}^{\,2}.
 $$
 
-**符号说明：**\(g^{\mathrm{dense}}_{d,c,i}\)是Phase1离线压缩前完整聚合中心的第\(i\)个坐标；\(\widehat g_{d,c,i}\)是解码后相同坐标；\(\epsilon_{\mathrm{rec}}\)是全部域、类别、坐标误差的均方根；\(\sigma_{\mathrm q}^2\)是该误差的平方。Phase2不读取\(g^{\mathrm{dense}}\)；它只读取封存的\(\epsilon_{\mathrm{rec}}\)标量。
+**符号说明：**\(\epsilon_{\mathrm{rec}}\)是所有域、旧类与160个身份坐标上的RMSE；\(\epsilon_{\mathrm{rec}}^2\)就是每坐标的平均平方重构误差，即MSE；\(\sigma_{\mathrm q}^2\)采用这个MSE作为标量基线；\(D_{\mathrm g}\)、\(C_{\mathrm o}\)、\(d\)、\(c\)、\(i\)的含义与5.3相同。平方后单位从“特征坐标”变为“特征坐标的平方”，与协方差矩阵元素的单位一致，所以它可以作为协方差能量的比较基准。
 
-因此，\(\sigma_{\mathrm q}^2\)不是只表示一个整数舍入误差。它是低秩近似、整数码和尺度解码共同造成的每坐标平均重构误差能量的各向同性近似。
+对任意一个随机重构误差坐标\(\delta\)，MSE可分解为
 
-### 5.5去噪特征分解与扰动基
+$$
+\mathbb E\!\left[\delta^2\right]
+=
+\operatorname{Var}(\delta)
++\left(\mathbb E[\delta]\right)^2.
+$$
 
-先数值对称化并扣除噪声底：
+**符号说明：**\(\delta\)是从全部审计坐标中抽象出的一个随机重构误差；\(\mathbb E[\delta^2]\)是其MSE；\(\operatorname{Var}(\delta)\)是围绕自身均值的误差方差；\(\mathbb E[\delta]\)是误差偏置。只有误差均值接近0时，\(\sigma_{\mathrm q}^2\)才可近似解释为误差方差；存在系统偏置时，它同时包含偏置平方。因此，“噪声”在这里是工程上的简称，不是已经严格验证的随机噪声模型。
+
+这里“噪声底”不是接收IQ观测模型中的物理噪声\(n\)，不是LEO信道扰动，不是target support的类内方差，也不是当前特征分解时的浮点舍入噪声。它只表示：即使真实的域×类聚合中心不含任何额外跨域漂移，经过bundle压缩、整数码恢复、尺度解码和低秩近似后，坐标上仍可能出现多少平均平方差异。因此，更严格的名称是“有效各向同性重构误差基线”；变量名中的\(\mathrm q\)保留历史记号，但它不应被误读为纯粹的整数舍入误差。
+
+把向量形式的重构误差写为\(\boldsymbol\delta_{d,c}\)，可用下面的近似模型说明为何该标量会被扣除：
+
+$$
+\widehat{\mathbf g}_{d,c}
+=
+\mathbf g^{\mathrm{dense}}_{d,c}
++\boldsymbol\delta_{d,c},
+\qquad
+\mathbb E\!\left[\boldsymbol\delta_{d,c}\right]\approx\mathbf0,
+\qquad
+\operatorname{Cov}\!\left(\boldsymbol\delta_{d,c}\right)
+\approx
+\sigma_{\mathrm q}^2\mathbf I_{160}.
+$$
+
+**符号说明：**\(\mathbf g^{\mathrm{dense}}_{d,c}\in\mathbb R^{160}\)是压缩前完整聚合中心；\(\boldsymbol\delta_{d,c}\in\mathbb R^{160}\)是其恢复误差向量；\(\mathbb E[\cdot]\)表示在bundle压缩审计单元上的平均；\(\operatorname{Cov}(\cdot)\)是该误差向量的协方差；\(\mathbf0\)是160维零向量；\(\mathbf I_{160}\)是160维单位矩阵。这个近似假设误差近似零均值、各坐标误差能量相近且没有明显的跨坐标相关性；它是解释性模型，不是由一条RMSE标量自动保证的事实。
+
+若忽略中心化和权重带来的缩放、交叉项，在上述近似下可写成
+
+$$
+\mathbf G
+\approx
+\mathbf G^{\mathrm{dense}}
++\sigma_{\mathrm q}^2\mathbf I_{160}.
+$$
+
+**符号说明：**\(\mathbf G^{\mathrm{dense}}\)表示使用压缩前完整聚合中心、按5.3相同流程构造的理想共同扰动协方差；\(\mathbf G\)是使用恢复中心构造的实际矩阵；\(\sigma_{\mathrm q}^2\mathbf I_{160}\)表示每个身份坐标上相同的有效重构误差能量。该式说明扣除标量基线的目的：避免把压缩本身产生的弱对角能量误认为真实跨域扰动方向。
+
+不过，\(\sigma_{\mathrm q}^2\mathbf I_{160}\)不是严格的无偏校正。因为5.3先在每个旧类内作加权中心化，令
+
+$$
+\mathbf q_{d,c}
+=
+\boldsymbol\delta_{d,c}
+-\sum_{d'=1}^{D_{\mathrm g}}
+\beta_{d',c}\boldsymbol\delta_{d',c}.
+$$
+
+**符号说明：**\(\mathbf q_{d,c}\)是重构误差相对同一旧类加权平均误差的中心化残差；\(d'\)是求和用的地面域索引；其余符号与前文一致。它才是进入\(\mathbf e^{\mathrm g}_{d,c}\)时实际残留的误差部分。
+
+在不同域误差独立、零均值且各向同性的理想条件下，对单一旧类有
+
+$$
+\mathbb E\!\left[
+\sum_{d=1}^{D_{\mathrm g}}
+\beta_{d,c}\,
+\mathbf q_{d,c}\mathbf q_{d,c}^{\mathsf T}
+\right]
+=
+\left(
+1-\sum_{d=1}^{D_{\mathrm g}}\beta_{d,c}^{\,2}
+\right)
+\sigma_{\mathrm q}^2\mathbf I_{160}.
+$$
+
+**符号说明：**左侧是旧类\(c\)中心化后由重构误差贡献的加权协方差期望；\(\mathbf q_{d,c}^{\mathsf T}\)是转置；\(\beta_{d,c}\)是类内权重；\(\sum_d\beta_{d,c}^2\)是权重平方和。由于\(0\le1-\sum_d\beta_{d,c}^2<1\)，严格的中心化误差能量一般小于直接使用的\(\sigma_{\mathrm q}^2\)。因此，报告中的\(\sigma_{\mathrm q}^2\mathbf I_{160}\)应理解为一个简化的标量代理，而不是精确求出的误差协方差；若压缩误差存在偏置或跨坐标相关性，它还可能影响非对角项，而标量单位阵无法将其消除。
+
+### 5.5误差基线扣除、特征分解与扰动基
+
+方法按冻结规则先数值对称化，再扣除这个有效重构误差基线：
 
 $$
 \mathbf G_+
@@ -307,7 +502,7 @@ $$
 -\sigma_{\mathrm q}^2\mathbf I_{160}.
 $$
 
-**符号说明：**\(\mathbf G^{\mathsf T}\)是\(\mathbf G\)的转置；\(\mathbf I_{160}\)是160维单位矩阵；\((\mathbf G+\mathbf G^{\mathsf T})/2\)消除浮点累积引入的微小不对称；\(\sigma_{\mathrm q}^2\mathbf I_{160}\)从每个方向减去相同的平均重构噪声底；\(\mathbf G_+\)是用于寻找主扰动方向的去噪矩阵。
+**符号说明：**\(\mathbf G^{\mathsf T}\)是\(\mathbf G\)的转置；\(\mathbf I_{160}\)是160维单位矩阵；\((\mathbf G+\mathbf G^{\mathsf T})/2\)消除浮点累积引入的微小不对称；\(\sigma_{\mathrm q}^2\mathbf I_{160}\)从每个方向扣除相同的有效重构误差基线；\(\mathbf G_+\)是用于寻找主扰动方向的近似校正矩阵。该操作不是对target support逐样本“去噪”，也不保证精确恢复压缩前协方差；它只抑制未超过压缩误差基线的弱谱方向。扣除后出现负特征值表示该方向的观测能量未超过这一近似基线，不表示物理上存在负方差。
 
 特征分解为
 
