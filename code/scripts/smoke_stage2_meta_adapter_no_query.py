@@ -71,10 +71,10 @@ def run_meta_adapter_no_query_smoke(
     # perform the formal support update.  Query is absent from this route.
     _runner._snapshot_frozen_model(model)
     support_batch, prototypes, class_ids = _runner._load_support_and_prototypes(
-        resolved
+        resolved, bundle_audit
     )
     handle = _runner._adapt(
-        model, support_batch, prototypes, class_ids, resolved
+        model, support_batch, prototypes, class_ids, resolved, bundle_audit
     )
     audit = getattr(handle, "audit", None)
     backward_count = int(_runner._audit_value(audit, "gradient_updates", -1))
@@ -111,6 +111,20 @@ def run_meta_adapter_no_query_smoke(
             "trainable_fraction": float(
                 _runner._audit_value(
                     audit, "trainable_fraction", bundle_audit["trainable_fraction"]
+                )
+            ),
+            "adaptation_objective": str(
+                _runner._audit_value(
+                    audit,
+                    "adaptation_objective",
+                    bundle_audit["adaptation_objective"],
+                )
+            ),
+            "support_logit_scale": float(
+                _runner._audit_value(
+                    audit,
+                    "support_logit_scale",
+                    bundle_audit["support_logit_scale"],
                 )
             ),
             "query_state_update_count": 0,

@@ -244,6 +244,34 @@ def test_time_only_rank8_bundle_saves_and_strictly_reloads(tmp_path):
     assert audit.trainable_fraction <= 0.01
 
 
+def test_prototype_aligned_bundle_roundtrips_adaptation_objective(tmp_path):
+    path = tmp_path / "prototype_aligned_meta_bundle.pth"
+    model_args = _model_args()
+    model_args["meta_adapter_rank"] = 8
+    model_args["meta_adapter_sites"] = "time"
+    model = build_model(**model_args)
+    config = _config()
+    config["model_args"] = model_args
+    config["meta_adapter_config"].update(
+        {
+            "rank": 8,
+            "sites": ["time"],
+            "adaptation_objective": "frozen_prototype_cosine_ce_v1",
+            "support_logit_scale": 16.0,
+        }
+    )
+
+    save_meta_bundle(path, model, config, _selection())
+    payload = torch.load(path, map_location="cpu", weights_only=False)
+    loaded, audit = load_meta_bundle_strict(path, "cpu")
+
+    assert payload["meta_adapter_config"]["adaptation_objective"] == "frozen_prototype_cosine_ce_v1"
+    assert payload["meta_adapter_config"]["support_logit_scale"] == 16.0
+    assert audit.adaptation_objective == "frozen_prototype_cosine_ce_v1"
+    assert audit.support_logit_scale == 16.0
+    assert all(name.startswith("meta_adapter_time.") for name, _ in iter_inner_adapter_parameters(loaded))
+
+
 def test_time_fusion_rank4_bundle_saves_and_strictly_reloads(tmp_path):
     path = tmp_path / "time_fusion_rank4_meta_bundle.pth"
     model_args = _model_args()

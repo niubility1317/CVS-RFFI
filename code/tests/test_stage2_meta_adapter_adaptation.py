@@ -172,6 +172,41 @@ def test_phase2_updates_only_adapter_and_exactly_three_real_support_steps():
     assert all(not parameter.requires_grad for parameter in model.parameters())
 
 
+def test_formal_phase2_applies_bundle_selected_prototype_logit_scale():
+    model_default = _ToyPhase2Model()
+    model_scaled = _ToyPhase2Model()
+    model_scaled.load_state_dict(model_default.state_dict())
+    support_iq, support_labels, prototypes, class_ids = _inputs()
+    carrier = _carrier(support_iq, support_labels)
+
+    default_handle = adapt_meta_adapter_on_support(
+        model_default,
+        carrier,
+        prototypes,
+        class_ids,
+        _config(),
+    )
+    scaled_handle = adapt_meta_adapter_on_support(
+        model_scaled,
+        carrier,
+        prototypes,
+        class_ids,
+        MetaAdapterPhase2Config(
+            expected_capsule_id="capsule-test-01",
+            expected_split_id="split-test-01",
+            adaptation_objective="frozen_prototype_cosine_ce_v1",
+            support_logit_scale=16.0,
+        ),
+    )
+
+    assert scaled_handle.audit.adaptation_objective == "frozen_prototype_cosine_ce_v1"
+    assert scaled_handle.audit.support_logit_scale == 16.0
+    assert any(
+        not torch.equal(default_handle.fast_state.parameters[name], value)
+        for name, value in scaled_handle.fast_state.parameters.items()
+    )
+
+
 def test_diagnostic_api_is_explicit_bounded_and_not_query_eligible():
     model = _ToyPhase2Model()
     support_iq, support_labels, prototypes, class_ids = _inputs()

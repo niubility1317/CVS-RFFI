@@ -84,6 +84,38 @@ def valid_config():
     }
 
 
+def test_phase1_config_accepts_deployment_aligned_prototype_objective():
+    config = valid_config()
+    config["schema"] = "cvs.phase1.meta_adapter.r4.v1"
+    config["adapter"] = {
+        **config["adapter"],
+        "rank": 8,
+        "sites": ["time"],
+        "adaptation_objective": "frozen_prototype_cosine_ce_v1",
+        "support_logit_scale": 16.0,
+    }
+
+    validated = validate_meta_phase1_config(config)
+
+    assert validated["adapter"]["adaptation_objective"] == "frozen_prototype_cosine_ce_v1"
+    assert validated["adapter"]["support_logit_scale"] == 16.0
+
+
+def test_phase1_config_rejects_nonpositive_prototype_logit_scale():
+    config = valid_config()
+    config["schema"] = "cvs.phase1.meta_adapter.r4.v1"
+    config["adapter"] = {
+        **config["adapter"],
+        "rank": 8,
+        "sites": ["time"],
+        "adaptation_objective": "frozen_prototype_cosine_ce_v1",
+        "support_logit_scale": 0.0,
+    }
+
+    with pytest.raises(ValueError, match="support_logit_scale"):
+        validate_meta_phase1_config(config)
+
+
 class _ToyLegacyModel(nn.Module):
     def __init__(self, class_count=3):
         super().__init__()

@@ -35,8 +35,11 @@ from .meta_inner_loop import (
     functional_forward,
 )
 from .meta_objectives import (
+    ADAPTATION_OBJECTIVES,
+    LEGACY_FIXED_HEAD_OBJECTIVE,
     LossBreakdown,
     MetaObjectiveConfig,
+    adaptation_logits,
     outer_objective,
     support_objective,
 )
@@ -76,6 +79,8 @@ class MetaTrainerConfig:
     phase1c_backbone_lr_ratio: float = 0.05
     grad_clip_norm: float | None = 1.0
     learn_step_sizes: bool = True
+    adaptation_objective: str = LEGACY_FIXED_HEAD_OBJECTIVE
+    support_logit_scale: float = 1.0
     objective_config: MetaObjectiveConfig = field(default_factory=MetaObjectiveConfig)
 
     def __post_init__(self) -> None:
@@ -107,6 +112,14 @@ class MetaTrainerConfig:
             raise TypeError("objective_config must be a MetaObjectiveConfig")
         if not isinstance(self.learn_step_sizes, bool):
             raise TypeError("learn_step_sizes must be boolean")
+        objective = str(self.adaptation_objective)
+        if objective not in ADAPTATION_OBJECTIVES:
+            raise ValueError("adaptation_objective is not registered")
+        scale = float(self.support_logit_scale)
+        if not math.isfinite(scale) or scale <= 0.0 or scale > 64.0:
+            raise ValueError("support_logit_scale must be finite in (0, 64]")
+        object.__setattr__(self, "adaptation_objective", objective)
+        object.__setattr__(self, "support_logit_scale", scale)
         object.__setattr__(self, "meta_batch_size", int(self.meta_batch_size))
         object.__setattr__(self, "inner_steps", int(self.inner_steps))
 
@@ -676,6 +689,8 @@ def _support_loss_fn_for_model(
             initial,
             current,
             config.objective_config,
+            adaptation_objective=config.adaptation_objective,
+            support_logit_scale=config.support_logit_scale,
         ).total
 
     return loss_fn
@@ -863,6 +878,8 @@ def run_meta_train_step(
                 batch.guard_mask,
                 batch.frozen_prototypes,
                 config.objective_config,
+                adaptation_objective=config.adaptation_objective,
+                support_logit_scale=config.support_logit_scale,
             )
             if not torch.is_tensor(losses.total) or losses.total.ndim != 0 or not bool(torch.isfinite(losses.total)):
                 raise MetaTrainerError("outer loss must be a finite scalar")
@@ -880,6 +897,8 @@ def run_meta_train_step(
                 OrderedDict((name, parameter) for name, parameter in iter_inner_adapter_parameters(model)),
                 initial_state.parameters,
                 config.objective_config,
+                adaptation_objective=config.adaptation_objective,
+                support_logit_scale=config.support_logit_scale,
             )
             try:
                 support_grads = torch.autograd.grad(
@@ -1169,7 +1188,13 @@ def evaluate_adaptation_curve(
                     )
                 with torch.no_grad():
                     outputs = functional_forward(model, fast_state, batch.query_x, batch.query_y)
-                    logits = _extract_logits(outputs)
+                    logits = adaptation_logits(
+                        outputs,
+                        batch.frozen_prototypes,
+                        adaptation_objective=config.adaptation_objective,
+                        support_logit_scale=config.support_logit_scale,
+                        role="source adaptation curve outputs",
+                    )
                     query_mask = batch.adapt_mask | batch.guard_mask
                     clean_mask = torch.tensor(
                         [str(row.view) == "clean" for row in batch.episode.query_adapt + batch.episode.query_guard],

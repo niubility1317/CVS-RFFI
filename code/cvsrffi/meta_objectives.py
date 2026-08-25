@@ -19,6 +19,11 @@ from torch.nn import functional as F
 
 
 _LOGIT_KEYS = ("logits", "tx_logits")
+LEGACY_FIXED_HEAD_OBJECTIVE = "legacy_fixed_head_ce_v1"
+FROZEN_PROTOTYPE_COSINE_OBJECTIVE = "frozen_prototype_cosine_ce_v1"
+ADAPTATION_OBJECTIVES = frozenset(
+    {LEGACY_FIXED_HEAD_OBJECTIVE, FROZEN_PROTOTYPE_COSINE_OBJECTIVE}
+)
 # ``feat_cls`` is the canonical single-model identity embedding and ``z_id``
 # is the canonical dual-model embedding.  ``feat_joint``/``base`` are distinct
 # auxiliary representations, not unconditional aliases for either canonical.
@@ -371,6 +376,38 @@ def _mean_cross_entropy(logits: Tensor, labels: Tensor, mask: Tensor) -> Tensor:
     return _zero(logits) if rows.numel() == 0 else rows.mean()
 
 
+def adaptation_logits(
+    outputs: Mapping[str, Any],
+    frozen_prototypes: Tensor,
+    *,
+    adaptation_objective: str = LEGACY_FIXED_HEAD_OBJECTIVE,
+    support_logit_scale: float = 1.0,
+    role: str = "adaptation outputs",
+) -> Tensor:
+    """Return the frozen decision-space logits used by Phase1/Phase2 adaptation."""
+
+    objective = str(adaptation_objective)
+    if objective not in ADAPTATION_OBJECTIVES:
+        raise ValueError(f"unsupported adaptation_objective: {objective!r}")
+    scale = float(support_logit_scale)
+    if not math.isfinite(scale) or scale <= 0.0 or scale > 64.0:
+        raise ValueError("support_logit_scale must be finite in (0, 64]")
+    fixed_logits, embedding = _extract_outputs(outputs, role=role)
+    prototypes = _validate_prototypes(
+        frozen_prototypes,
+        class_count=fixed_logits.size(1),
+        embedding_dim=embedding.size(1),
+        device=embedding.device,
+        dtype=embedding.dtype,
+    )
+    if objective == LEGACY_FIXED_HEAD_OBJECTIVE:
+        return fixed_logits
+    return scale * (
+        F.normalize(embedding, dim=1, eps=1.0e-8)
+        @ F.normalize(prototypes, dim=1, eps=1.0e-8).transpose(0, 1)
+    )
+
+
 def _floor_loss(logits: Tensor, labels: Tensor, mask: Tensor, tau: float) -> Tensor:
     row_ce = _row_cross_entropy(logits, labels, mask)
     if row_ce.numel() == 0:
@@ -450,20 +487,30 @@ def support_objective(
     initial_adapter: Mapping[str, Tensor],
     current_adapter: Mapping[str, Tensor],
     config: MetaObjectiveConfig,
+    *,
+    adaptation_objective: str = LEGACY_FIXED_HEAD_OBJECTIVE,
+    support_logit_scale: float = 1.0,
 ) -> LossBreakdown:
-    """Compute the fixed-head support inner-loop objective."""
+    """Compute the selected support inner-loop objective."""
 
     config = _require_config(config)
-    logits, embedding = _extract_outputs(outputs, role="support outputs")
+    fixed_logits, embedding = _extract_outputs(outputs, role="support outputs")
+    logits = adaptation_logits(
+        outputs,
+        frozen_prototypes,
+        adaptation_objective=adaptation_objective,
+        support_logit_scale=support_logit_scale,
+        role="support outputs",
+    )
     labels = _validate_labels(
         labels,
         batch_size=logits.size(0),
-        class_count=logits.size(1),
+        class_count=fixed_logits.size(1),
         device=logits.device,
     )
     prototypes = _validate_prototypes(
         frozen_prototypes,
-        class_count=logits.size(1),
+        class_count=fixed_logits.size(1),
         embedding_dim=embedding.size(1),
         device=embedding.device,
         dtype=embedding.dtype,
@@ -496,12 +543,31 @@ def outer_objective(
     guard_mask: Tensor,
     frozen_prototypes: Tensor,
     config: MetaObjectiveConfig,
+    *,
+    adaptation_objective: str = LEGACY_FIXED_HEAD_OBJECTIVE,
+    support_logit_scale: float = 1.0,
 ) -> LossBreakdown:
     """Compute the independent-query outer objective after adapter updates."""
 
     config = _require_config(config)
-    pre_logits, pre_embedding = _extract_outputs(pre_outputs, role="pre outputs")
-    post_logits, post_embedding = _extract_outputs(post_outputs, role="post outputs")
+    pre_fixed_logits, pre_embedding = _extract_outputs(pre_outputs, role="pre outputs")
+    post_fixed_logits, post_embedding = _extract_outputs(post_outputs, role="post outputs")
+    pre_logits = adaptation_logits(
+        pre_outputs,
+        frozen_prototypes,
+        adaptation_objective=adaptation_objective,
+        support_logit_scale=support_logit_scale,
+        role="pre outputs",
+    )
+    post_logits = adaptation_logits(
+        post_outputs,
+        frozen_prototypes,
+        adaptation_objective=adaptation_objective,
+        support_logit_scale=support_logit_scale,
+        role="post outputs",
+    )
+    if pre_fixed_logits.shape != post_fixed_logits.shape:
+        raise ValueError("pre and post fixed-head logits shapes must match")
     if pre_logits.shape != post_logits.shape:
         raise ValueError("pre and post logits shapes must match")
     if pre_embedding.shape != post_embedding.shape:
@@ -575,8 +641,12 @@ def outer_objective(
 
 
 __all__ = [
+    "ADAPTATION_OBJECTIVES",
+    "FROZEN_PROTOTYPE_COSINE_OBJECTIVE",
+    "LEGACY_FIXED_HEAD_OBJECTIVE",
     "LossBreakdown",
     "MetaObjectiveConfig",
+    "adaptation_logits",
     "outer_objective",
     "support_objective",
 ]

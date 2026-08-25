@@ -184,6 +184,62 @@ def _candidate(
     )
 
 
+def test_prototype_aligned_curve_is_independent_of_frozen_classification_head():
+    model_a = _model()
+    model_b = copy.deepcopy(model_a)
+    with torch.no_grad():
+        model_b.cls_head.weight.fill_(100.0)
+        model_b.cls_head.bias.copy_(torch.tensor([100.0, -100.0, 50.0]))
+    batch = _batch(role="V_select")
+    config = _config(
+        adaptation_objective="frozen_prototype_cosine_ce_v1",
+        support_logit_scale=16.0,
+    )
+
+    curve_a = evaluate_adaptation_curve(model_a, [batch], config)
+    curve_b = evaluate_adaptation_curve(model_b, [batch], config)
+
+    assert [(row.step, row.mean_accuracy, row.floor_accuracy) for row in curve_a.rows] == [
+        (row.step, row.mean_accuracy, row.floor_accuracy) for row in curve_b.rows
+    ]
+
+
+def test_prototype_aligned_meta_update_is_independent_of_frozen_classification_head():
+    model_a = _model().eval()
+    model_b = copy.deepcopy(model_a)
+    with torch.no_grad():
+        model_b.cls_head.weight.fill_(100.0)
+        model_b.cls_head.bias.copy_(torch.tensor([100.0, -100.0, 50.0]))
+    config = _config(
+        adaptation_objective="frozen_prototype_cosine_ce_v1",
+        support_logit_scale=16.0,
+    )
+    optimizer_a = build_phase1b_optimizer(model_a, config)
+    optimizer_b = build_phase1b_optimizer(model_b, config)
+    batches = [_batch() for _ in range(4)]
+
+    torch.manual_seed(91)
+    result_a = run_meta_train_step(model_a, batches, optimizer_a, config)
+    torch.manual_seed(91)
+    result_b = run_meta_train_step(model_b, batches, optimizer_b, config)
+
+    assert torch.equal(result_a.loss, result_b.loss)
+    state_a = dict(model_a.named_parameters())
+    state_b = dict(model_b.named_parameters())
+    assert all(
+        torch.equal(state_a[name], state_b[name])
+        for name in result_a.optimizer_parameter_names
+    )
+
+
+def test_prototype_aligned_config_rejects_invalid_logit_scale():
+    with pytest.raises(ValueError, match="support_logit_scale"):
+        _config(
+            adaptation_objective="frozen_prototype_cosine_ce_v1",
+            support_logit_scale=0.0,
+        )
+
+
 def test_phase1b_optimizer_contains_exact_adapter_and_log_step_size_parameters():
     model = _model()
     optimizer = build_phase1b_optimizer(model, _config())

@@ -176,7 +176,18 @@ _MODEL_BUILDER_HINTS = frozenset(
     }
 )
 _META_ADAPTER_CONFIG_KEYS = frozenset(
-    {"rank", "sites", "phase2_steps", "meta_adapter_rank", "meta_adapter_sites"}
+    {
+        "rank",
+        "sites",
+        "phase2_steps",
+        "meta_adapter_rank",
+        "meta_adapter_sites",
+        "adaptation_objective",
+        "support_logit_scale",
+    }
+)
+_ADAPTATION_OBJECTIVES = frozenset(
+    {"legacy_fixed_head_ce_v1", "frozen_prototype_cosine_ce_v1"}
 )
 _SELECTION_KEYS = frozenset({"source_split", "criterion", "seed"})
 _SOURCE_SPLITS = frozenset({"V_cal", "V_select", "source_meta_validation", "L_s"})
@@ -224,6 +235,8 @@ class MetaBundleAudit:
     class_mapping: Any = field(default=None)
     prototypes: Any = field(default=None)
     selection: Any = field(default=None)
+    adaptation_objective: str = "legacy_fixed_head_ce_v1"
+    support_logit_scale: float = 1.0
 
 
 def _as_mapping(value: Any, *, field_name: str) -> Mapping[str, Any]:
@@ -424,6 +437,31 @@ def _validate_meta_adapter_config(value: Any) -> dict[str, Any]:
         _require_int(config["phase2_steps"], field_name="meta_adapter_config.phase2_steps", minimum=1)
         if int(config["phase2_steps"]) > 5:
             raise ValueError("meta_adapter_config.phase2_steps must be <= 5")
+    alignment_keys = {
+        key
+        for key in ("adaptation_objective", "support_logit_scale")
+        if key in config
+    }
+    if alignment_keys and alignment_keys != {
+        "adaptation_objective",
+        "support_logit_scale",
+    }:
+        raise ValueError(
+            "meta_adapter_config adaptation_objective and support_logit_scale must appear together"
+        )
+    if alignment_keys:
+        objective = config["adaptation_objective"]
+        if not isinstance(objective, str) or objective not in _ADAPTATION_OBJECTIVES:
+            raise ValueError("meta_adapter_config.adaptation_objective is not registered")
+        scale = _require_float(
+            config["support_logit_scale"],
+            field_name="meta_adapter_config.support_logit_scale",
+            positive=True,
+        )
+        if scale > 64.0:
+            raise ValueError("meta_adapter_config.support_logit_scale must be <= 64")
+        config["adaptation_objective"] = objective
+        config["support_logit_scale"] = scale
     return config
 
 
@@ -969,6 +1007,14 @@ def load_meta_bundle_strict(
         class_mapping=_freeze_for_audit(validated["class_mapping"]),
         prototypes=_freeze_for_audit(validated["prototypes"]),
         selection=_freeze_for_audit(validated["selection"]),
+        adaptation_objective=str(
+            meta_adapter_config.get(
+                "adaptation_objective", "legacy_fixed_head_ce_v1"
+            )
+        ),
+        support_logit_scale=float(
+            meta_adapter_config.get("support_logit_scale", 1.0)
+        ),
     )
     return model, audit
 

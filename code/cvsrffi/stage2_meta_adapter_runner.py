@@ -340,12 +340,27 @@ def _require_strict_audit(audit: Any) -> dict[str, Any]:
         raise MetaAdapterStage2RunnerError(
             "meta bundle trainable parameter fraction exceeds 1%"
         )
+    bundle_objective = str(
+        _audit_value(audit, "adaptation_objective", "legacy_fixed_head_ce_v1")
+    )
+    phase2_objective = "frozen_prototype_cosine_ce_v1"
+    support_logit_scale = float(
+        _audit_value(audit, "support_logit_scale", 1.0)
+        if bundle_objective == phase2_objective
+        else 1.0
+    )
+    if not np.isfinite(support_logit_scale) or not 0.0 < support_logit_scale <= 64.0:
+        raise MetaAdapterStage2RunnerError(
+            "meta bundle support_logit_scale must be finite in (0, 64]"
+        )
     return {
         "checkpoint_load_strict": True,
         "trainable_fraction": fraction,
         "base_checkpoint_id": _audit_value(audit, "base_checkpoint_id"),
         "class_mapping": _audit_value(audit, "class_mapping"),
         "prototypes": _audit_value(audit, "prototypes"),
+        "adaptation_objective": phase2_objective,
+        "support_logit_scale": support_logit_scale,
     }
 
 
@@ -598,6 +613,7 @@ def _adapt(
     prototypes: Tensor,
     class_ids: Tensor,
     resolved: Mapping[str, Any],
+    bundle_audit: Mapping[str, Any],
 ) -> Any:
     prototype_before = prototypes.detach().clone()
     handle = adapt_meta_adapter_on_support(
@@ -608,6 +624,8 @@ def _adapt(
         MetaAdapterPhase2Config(
             expected_capsule_id=str(resolved["capsule_id"]),
             expected_split_id=str(resolved["split_id"]),
+            adaptation_objective=str(bundle_audit["adaptation_objective"]),
+            support_logit_scale=float(bundle_audit["support_logit_scale"]),
         ),
     )
     if model.training or any(parameter.requires_grad for parameter in model.parameters()):
@@ -716,7 +734,14 @@ def run_meta_adapter_stage2_row(
     model, bundle_audit = _load_bundle(resolved, device=target_device)
     da0_model = _snapshot_frozen_model(model)
     support_batch, prototypes, class_ids = _load_support_and_prototypes(resolved, bundle_audit)
-    handle = _adapt(model, support_batch, prototypes, class_ids, resolved)
+    handle = _adapt(
+        model,
+        support_batch,
+        prototypes,
+        class_ids,
+        resolved,
+        bundle_audit,
+    )
 
     # The query payload is intentionally opened once, at this point only.
     query_payload = _load_npz(
@@ -833,6 +858,20 @@ def run_meta_adapter_stage2_row(
             "query_role_opened": False,
             "query_state_update_count": 0,
             "decision_rule": _DECISION_RULE,
+            "adaptation_objective": str(
+                _audit_value(
+                    adaptation_audit,
+                    "adaptation_objective",
+                    bundle_audit["adaptation_objective"],
+                )
+            ),
+            "support_logit_scale": float(
+                _audit_value(
+                    adaptation_audit,
+                    "support_logit_scale",
+                    bundle_audit["support_logit_scale"],
+                )
+            ),
             "states_same_row": True,
             "query_ids": query_ids.tolist(),
             "prediction_paths": {

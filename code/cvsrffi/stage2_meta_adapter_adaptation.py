@@ -33,6 +33,7 @@ _FORMAL_PHASE2_STEPS = 3
 _MAX_PHASE2_STEPS = 5
 _HARD_PHASE2_STEP_LIMIT = 40
 _PROTOTYPE_EPS = 1.0e-8
+_PROTOTYPE_ADAPTATION_OBJECTIVE = "frozen_prototype_cosine_ce_v1"
 _INTEGER_DTYPES = (
     torch.uint8,
     torch.int8,
@@ -172,6 +173,8 @@ class MetaAdapterPhase2Config:
     expected_capsule_id: str
     expected_split_id: str
     hard_step_limit: int = _HARD_PHASE2_STEP_LIMIT
+    adaptation_objective: str = _PROTOTYPE_ADAPTATION_OBJECTIVE
+    support_logit_scale: float = 1.0
 
     def __post_init__(self) -> None:
         for name in ("expected_capsule_id", "expected_split_id"):
@@ -182,6 +185,12 @@ class MetaAdapterPhase2Config:
             raise ValueError("hard_step_limit must be an integer in [3, 40]")
         if self.hard_step_limit < _FORMAL_PHASE2_STEPS or self.hard_step_limit > _HARD_PHASE2_STEP_LIMIT:
             raise ValueError("hard_step_limit must be in [3, 40]")
+        if self.adaptation_objective != _PROTOTYPE_ADAPTATION_OBJECTIVE:
+            raise ValueError("formal Phase2 adaptation_objective must use frozen prototypes")
+        scale = float(self.support_logit_scale)
+        if not math.isfinite(scale) or scale <= 0.0 or scale > 64.0:
+            raise ValueError("support_logit_scale must be finite in (0, 64]")
+        object.__setattr__(self, "support_logit_scale", scale)
 
 
 @dataclass(frozen=True)
@@ -192,6 +201,8 @@ class MetaAdapterPhase2DiagnosticConfig:
     expected_capsule_id: str
     expected_split_id: str
     hard_step_limit: int = _HARD_PHASE2_STEP_LIMIT
+    adaptation_objective: str = _PROTOTYPE_ADAPTATION_OBJECTIVE
+    support_logit_scale: float = 1.0
 
     def __post_init__(self) -> None:
         if isinstance(self.steps, bool) or not isinstance(self.steps, int):
@@ -206,6 +217,12 @@ class MetaAdapterPhase2DiagnosticConfig:
             raise ValueError("hard_step_limit must be an integer in [1, 40]")
         if self.hard_step_limit < max(1, self.steps) or self.hard_step_limit > _HARD_PHASE2_STEP_LIMIT:
             raise ValueError("hard_step_limit must contain diagnostic steps and be <= 40")
+        if self.adaptation_objective != _PROTOTYPE_ADAPTATION_OBJECTIVE:
+            raise ValueError("diagnostic adaptation_objective must use frozen prototypes")
+        scale = float(self.support_logit_scale)
+        if not math.isfinite(scale) or scale <= 0.0 or scale > 64.0:
+            raise ValueError("support_logit_scale must be finite in (0, 64]")
+        object.__setattr__(self, "support_logit_scale", scale)
 
 
 # Short alias for callers that prefer the unambiguous diagnostic name.
@@ -232,6 +249,8 @@ class MetaAdapterAdaptAudit:
     split_id: str
     model_eval: bool
     log_step_size_names: tuple[str, ...]
+    adaptation_objective: str
+    support_logit_scale: float
 
     @property
     def support_loss_history(self) -> tuple[float, ...]:
@@ -457,6 +476,8 @@ def _adapt_impl(
     expected_split_id: str,
     hard_step_limit: int,
     diagnostic: bool,
+    adaptation_objective: str,
+    support_logit_scale: float,
 ) -> AdaptedMetaAdapterState:
     if not isinstance(model, nn.Module):
         raise TypeError("model must be a torch.nn.Module")
@@ -464,6 +485,11 @@ def _adapt_impl(
         raise TypeError("support_batch must be a ValidatedTargetSupportBatch")
     if steps < 0 or steps > _MAX_PHASE2_STEPS or steps > hard_step_limit:
         raise ValueError("Phase2 adaptation steps must be in [0, 5] and within hard_step_limit")
+    if adaptation_objective != _PROTOTYPE_ADAPTATION_OBJECTIVE:
+        raise ValueError("Phase2 adaptation_objective must use frozen prototypes")
+    scale = float(support_logit_scale)
+    if not math.isfinite(scale) or scale <= 0.0 or scale > 64.0:
+        raise ValueError("support_logit_scale must be finite in (0, 64]")
     context_values = _validate_config_context(
         support_batch.context,
         expected_capsule_id=expected_capsule_id,
@@ -516,7 +542,7 @@ def _adapt_impl(
         nonlocal support_loss_evaluations
         support_loss_evaluations += 1
         embedding = _extract_embedding(outputs, batch_size=support_x.size(0))
-        logits = _cosine_logits(embedding, prototypes)
+        logits = scale * _cosine_logits(embedding, prototypes)
         loss = F.cross_entropy(logits, mapped_labels)
         # Task6 requires every fast leaf to be present in the gradient call.
         # An unused dual domain branch is touched by an exact zero and remains
@@ -588,6 +614,8 @@ def _adapt_impl(
         split_id=context_values["split_id"],
         model_eval=not model.training,
         log_step_size_names=step_names,
+        adaptation_objective=adaptation_objective,
+        support_logit_scale=scale,
     )
     frozen_fast_state = FastAdapterState(
         OrderedDict(
@@ -626,6 +654,8 @@ def adapt_meta_adapter_on_support(
         expected_split_id=config.expected_split_id,
         hard_step_limit=config.hard_step_limit,
         diagnostic=False,
+        adaptation_objective=config.adaptation_objective,
+        support_logit_scale=config.support_logit_scale,
     )
 
 
@@ -650,6 +680,8 @@ def adapt_meta_adapter_diagnostic_on_support(
         expected_split_id=config.expected_split_id,
         hard_step_limit=config.hard_step_limit,
         diagnostic=True,
+        adaptation_objective=config.adaptation_objective,
+        support_logit_scale=config.support_logit_scale,
     )
 
 

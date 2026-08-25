@@ -56,6 +56,13 @@ CANONICAL_ADAPTER = {
     "deployment_max_steps": 5,
     "source_diagnostic_max_steps": 10,
 }
+REGISTERED_ADAPTATION_OBJECTIVES = (
+    "legacy_fixed_head_ce_v1",
+    "frozen_prototype_cosine_ce_v1",
+)
+OPTIONAL_ADAPTATION_KEYS = frozenset(
+    {"adaptation_objective", "support_logit_scale"}
+)
 REGISTERED_ADAPTER_SITE_PROFILES = (
     CANONICAL_ADAPTER["sites"],
     ("time", "fusion"),
@@ -324,9 +331,12 @@ def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
         field_name="source_roles",
     )
     adapter_raw = _as_mapping(config["adapter"], field_name="adapter")
-    if set(adapter_raw) != set(CANONICAL_ADAPTER):
+    adapter_keys = set(adapter_raw)
+    base_adapter_keys = set(CANONICAL_ADAPTER)
+    if adapter_keys not in (base_adapter_keys, base_adapter_keys | OPTIONAL_ADAPTATION_KEYS):
         raise ValueError(
-            f"adapter keys must be exactly {tuple(CANONICAL_ADAPTER)!r}; "
+            "adapter keys must be the legacy set or add exactly "
+            "adaptation_objective,support_logit_scale; "
             f"got {tuple(adapter_raw)!r}"
         )
     adapter = {
@@ -364,6 +374,21 @@ def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
     for key in ("inner_steps", "deployment_max_steps", "source_diagnostic_max_steps"):
         if adapter[key] != CANONICAL_ADAPTER[key]:
             raise ValueError(f"adapter.{key} must be frozen at {CANONICAL_ADAPTER[key]}")
+    if OPTIONAL_ADAPTATION_KEYS.issubset(adapter_keys):
+        objective = _require_token(
+            adapter_raw["adaptation_objective"],
+            field_name="adapter.adaptation_objective",
+        )
+        if objective not in REGISTERED_ADAPTATION_OBJECTIVES:
+            raise ValueError("adapter.adaptation_objective is not registered")
+        scale = _finite_number(
+            adapter_raw["support_logit_scale"],
+            field_name="adapter.support_logit_scale",
+        )
+        if scale <= 0.0 or scale > 64.0:
+            raise ValueError("adapter.support_logit_scale must be in (0, 64]")
+        adapter["adaptation_objective"] = objective
+        adapter["support_logit_scale"] = scale
 
     episode_weights = _check_exact_float_map(
         config["episode_weights"],
@@ -440,6 +465,14 @@ def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
                 "inner_steps": adapter["inner_steps"],
                 "deployment_max_steps": adapter["deployment_max_steps"],
                 "source_diagnostic_max_steps": adapter["source_diagnostic_max_steps"],
+                **(
+                    {
+                        "adaptation_objective": adapter["adaptation_objective"],
+                        "support_logit_scale": adapter["support_logit_scale"],
+                    }
+                    if "adaptation_objective" in adapter
+                    else {}
+                ),
             },
             "episode_weights": episode_weights,
             "k_choices": list(k_choices),
@@ -1809,6 +1842,14 @@ def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
             inner_steps=int(config["adapter"]["inner_steps"]),
             phase1c_backbone_lr_ratio=float(config["phase1c_backbone_lr_ratio"]),
             learn_step_sizes=bool(candidate_row["learn_step_sizes"]),
+            adaptation_objective=str(
+                config["adapter"].get(
+                    "adaptation_objective", "legacy_fixed_head_ce_v1"
+                )
+            ),
+            support_logit_scale=float(
+                config["adapter"].get("support_logit_scale", 1.0)
+            ),
         )
         baseline_curve = evaluate_adaptation_curve(model, eval_batches, trainer_config)
         baseline_v_cal_curve = _curve_for_role(baseline_curve, "V_cal")
@@ -1920,13 +1961,25 @@ def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
                 prototypes=prototype_array,
                 class_ids=np.arange(class_count, dtype=np.int64),
             )
+        meta_adapter_config = {
+            "rank": int(config["adapter"]["rank"]),
+            "sites": list(config["adapter"]["sites"]),
+            "phase2_steps": int(config["adapter"]["deployment_max_steps"]),
+        }
+        if "adaptation_objective" in config["adapter"]:
+            meta_adapter_config.update(
+                {
+                    "adaptation_objective": str(
+                        config["adapter"]["adaptation_objective"]
+                    ),
+                    "support_logit_scale": float(
+                        config["adapter"]["support_logit_scale"]
+                    ),
+                }
+            )
         bundle_config = {
             "model_args": _bundle_model_args(model_args, config),
-            "meta_adapter_config": {
-                "rank": int(config["adapter"]["rank"]),
-                "sites": list(config["adapter"]["sites"]),
-                "phase2_steps": int(config["adapter"]["deployment_max_steps"]),
-            },
+            "meta_adapter_config": meta_adapter_config,
             "base_checkpoint": {
                 "id": f"{config['run_id']}:legacy_adv3b02",
                 "role": "legacy_adv3b02",
