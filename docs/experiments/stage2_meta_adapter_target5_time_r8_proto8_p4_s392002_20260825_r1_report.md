@@ -1,7 +1,7 @@
 # Time-only Rank-8 Prototype-Aligned Scale-8 Meta-Adapter P4 Target5最小预登记报告
 
 - run ID：`stage2_meta_adapter_target5_time_r8_proto8_p4_s392002_20260825_r1`
-- 状态：`LOCAL_VERIFIED`
+- 状态：`LANDED`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 代码／配置冻结提交：`5043a79d871ed1d84a570c3f3d701bbb8ca3d5c8`；首次push后独立回读远端OID一致。
 - Phase1：`phase1_adv3b02_meta_adapter_time_r8_proto8_p4_s392002_20260825_r1`，状态`ARTIFACTS_COMPLETE / SOURCE_SELECTION_ELIGIBLE`。
@@ -36,3 +36,10 @@
 
 - scale8候选唯一审查P0无、P1无；Stage2无代码变化，不重复审查。
 - 15行prediction闭合后才连接truth。聚合`DA1_REG0-DA0_REG0`旧类均值至少+1.0pp且floor至少+0.5pp才进入Target25，否则科学失败且不晋级。
+
+## Release、工厂与smoke
+
+- 最终release提交：`a3ae8edc2e4cb8e57ca2014ce3377ba33ea2dc8a`；远端OID独立回读一致。归档本地／远端唯一一次SHA256均为`c143c8dda5fc955d67420b840c63ed1e3b54b377195a3843845bac5e4e51a664`，16个相关入口远端编译通过。
+- 发布前确认6个专属目标和同名Python进程不存在，正式bundle／原型非空，GPU0空闲。
+- 工厂一次完成15／15行，状态`TARGET_INPUTS_COMPLETE`，`query_truth_opened=false`、`query_role_opened=false`、`source_opened=false`。无query配置由首row精确删除`query_path`且本地断言其余字段不变。
+- 真实smoke一次通过：3次反向传播，`frozen_prototype_cosine_ce_v1`／8.0，`trainable_fraction=0.005172846819097263`，`query_opened=false`、`source_opened=false`、`query_state_update_count=0`。
