@@ -1,7 +1,7 @@
 # Time-only Rank-8 Class-Floor Scale-8 Meta-Adapter P4 Target5最小预登记报告
 
 - run ID：`stage2_meta_adapter_target5_time_r8_floor8_p4_s392002_20260825_r1`
-- 状态：`LANDED / SMOKE_PASS / PREDICTION_NOT_LAUNCHED`
+- 状态：`LANDED / SMOKE_PASS / READY_TO_LAUNCH`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 代码／配置冻结提交：`8b551e6275dbe5e022a884395d75887c16f2eaa6`；push后独立回读远端OID一致。
 - Phase1：`phase1_adv3b02_meta_adapter_time_r8_floor8_p4_s392002_20260825_r1`，状态`ARTIFACTS_COMPLETE / SOURCE_SELECTION_ELIGIBLE`。
@@ -55,3 +55,10 @@
 - 2026-08-25，用户明确要求停止继续实验，改为全面总结已完成任务并发布报告。
 - 本run未启动prediction矩阵，prediction output和truth-last score均未产生；不得把工厂或smoke结果表述为Target5性能结果。
 - 不启动Target25，不创建下一候选，不重跑已闭合的10个Target5矩阵。若未来恢复，本run只能从尚未执行的唯一一次truth-free prediction继续，不能覆盖既有工厂与smoke证据。
+
+## 会话恢复与prediction启动授权
+
+- 恢复时间：2026-08-25 15:27（Asia/Hong_Kong）。用户要求从最新状态继续原目标；此前停止决定仅对当时会话生效，本run恢复到预登记的唯一一次truth-free prediction。
+- N607独立回读确认release checkout、`factory_receipt.json`、15-row `matrix_config.json`和`smoke_receipt.json`均存在；prediction输出、stdout和同名进程均不存在，GPU计算进程为空。
+- 本次恢复不修改15个row、bundle、support/query输入、seed、receiver、场景、K、更新步数或冻结判决规则；不重跑工厂、smoke或已闭合的10个Target5矩阵。
+- 当前状态：`LANDED / SMOKE_PASS / READY_TO_LAUNCH`。下一步只执行预登记prediction命令；prediction闭合后才由独立scorer连接truth。
