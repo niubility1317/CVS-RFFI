@@ -3,7 +3,7 @@
 ## 0.当前结论与状态
 
 - Run ID：`PHASE1_CCOI_PA_V2_CAUSAL_AUDIT_S20260824_20260825A`
-- 当前状态：`LOCAL_VERIFIED`
+- 当前状态：`LANDED`
 - 候选：冻结CCOI-PA-V2 C4的source-only因果审计，不重复C0–C4训练
 - 实现提交：`6134e9c5fe11b3cbd01ea906eaab2fe1ed64f2a3`
 - 协议：Phase1，固定`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`
@@ -213,7 +213,15 @@ launcher第一步是真实checkpoint+C4 sidecar的无query smoke；通过后在�
 - 同run ID进程不存在；
 - 选择GPU1，不干预GPU0既有任务。
 
+2026-08-25完成一次性release发布：
+
+- release内容提交：`d0ce0677a6e951db76b7bdd298636abf72720ba1`；
+- 本地归档：`E:\type10-7\local_artifacts\releases\phase1_ccoi_pa_v2_causal_audit_20260825_6134e9c5.tar.gz`；
+- 远端归档：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ccoi_pa_v2_causal_audit_20260825_6134e9c5.tar.gz`；
+- 本地/远端唯一归档SHA256均为`420cbb60fcb237ddfffab24c48966c9997f13675eed4908055f257fb14893dd7`，状态`VERIFIED`；
+- 解压目录：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ccoi_pa_v2_causal_audit_20260825_6134e9c5`；
+- N607真实`bash -n`和三个生产Python模块编译均通过，状态`REMOTE_COMPILE_PASS`。
+
 ## 9.实验结果
 
 尚未启动。发布、真实smoke、运行健康、完整artifact和最终科学判定将在本节追加，不提前宣称。
-
