@@ -118,3 +118,16 @@ gate只读部署时可得的margin、entropy、JS divergence、top1分歧、RMS�
 ## 11.最终结果与问题
 
 本节等待真实实验闭合后追加。当前没有性能结果。最终报告必须逐项记录阶段A/B状态、逐fold/seed/scene结果、覆盖、CI、q/M0/码本/LOTO诊断、gate rescue/harm、日志健康性、暴露问题和下一路线。
+
+## 12.N607发布记录
+
+- 只读直连preflight：`VERIFIED`；服务器时间2026-08-25 17:16:45 CST，项目根可见；8张RTX 3090在检查时均为0%利用率、1MiB显存；
+- 相关训练进程：未发现；预登记GPU 0可用；
+- checkpoint、WiSig和旧C4 sidecar：目标文件存在；
+- 新run、smoke和两份日志路径：均确认不存在；
+- release归档：`E:\type10-7\local_artifacts\PHASE1_CCOI_PA_M21_THETA_TRANSFER_AUDIT_S20260824_20260825C_7d2a9d41.tar.gz`；
+- 远端归档：`/home/szu2070436088/2510044040/CV-SincNet/releases/PHASE1_CCOI_PA_M21_THETA_TRANSFER_AUDIT_S20260824_20260825C_7d2a9d41.tar.gz`；
+- release目录：`/home/szu2070436088/2510044040/CV-SincNet/releases/PHASE1_CCOI_PA_M21_THETA_TRANSFER_AUDIT_S20260824_20260825C_7d2a9d41`；
+- 唯一归档SHA256：`fa8d914960611534ddfdd2c994aede16db3ae76639ef77303a554e33c3d3afad`，本地/远端一致；
+- 远端编译：`REMOTE_COMPILE_PASS`；
+- 发布状态：`LANDED`，尚未启动，尚无性能结果。
