@@ -3,7 +3,7 @@
 ## 0.当前结论与状态
 
 - Run ID：`PHASE1_CCOI_PA_V2_CAUSAL_AUDIT_S20260824_20260825A`
-- 当前状态：`LANDED`
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 候选：冻结CCOI-PA-V2 C4的source-only因果审计，不重复C0–C4训练
 - 实现提交：`6134e9c5fe11b3cbd01ea906eaab2fe1ed64f2a3`
 - 协议：Phase1，固定`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`
@@ -224,4 +224,17 @@ launcher第一步是真实checkpoint+C4 sidecar的无query smoke；通过后在�
 
 ## 9.实验结果
 
-尚未启动。发布、真实smoke、运行健康、完整artifact和最终科学判定将在本节追加，不提前宣称。
+### 9.1启动与失败事实
+
+- 2026-08-25 11:42 CST唯一owner启动，PID=`2833193`，CWD与release目录一致，GPU1映射正确，smoke日志开始增长。
+- launcher尚处于真实checkpoint+C4 sidecar无query smoke，未进入正式审计。
+- 确定性异常：C4 state_dict包含`challenge_encoder.tx_probe/rx_probe`权重，而审计runner初版按无辅助probe结构构造sidecar；`strict=True`回载报告unexpected keys。
+- owner及其子进程随后自然退出；未执行人工kill，未影响GPU0既有任务。
+- 保留路径：`PHASE1_CCOI_PA_V2_CAUSAL_AUDIT_S20260824_20260825A_REAL_CKPT_NO_QUERY_SMOKE`目录、smoke日志和supervisor日志。
+- 未产生`protocol_and_smoke.json`或任何正式审计artifact，因此本run没有性能结果、没有数据健康结论，也不能应用科学停止规则。
+
+### 9.2问题归因与处理
+
+失败层是“审计runner对真实C4模块结构的重建”，不是checkpoint损坏、数据异常、GPU异常或协议越界。A保持原样并永久禁止重复启动或覆盖。
+
+定点修复从真实state_dict推断q维度、码本大小、隐藏宽度、TX/RX辅助probe、response维度和operator维度，然后用`strict=True`完整回载；任何类别或域维度不一致仍直接失败。新增真实辅助头state回载回归测试，先红后绿；相关回归`55 passed`，生产编译与新的7-artifact synthetic smoke通过。修复后只允许全新run ID继续。

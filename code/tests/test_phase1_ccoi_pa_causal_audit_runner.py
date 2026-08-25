@@ -12,6 +12,7 @@ if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
 from audit_phase1_ccoi_pa_v2 import (  # noqa: E402
+    build_sidecar_from_state,
     build_arg_parser,
     evaluate_stop_rules,
     fit_knn_probe,
@@ -21,6 +22,7 @@ from audit_phase1_ccoi_pa_v2 import (  # noqa: E402
     validate_sidecar_payload,
     run,
 )
+from cvsrffi.ccoi_pa import CCOIPASidecar, PAChallengeEncoder  # noqa: E402
 
 
 def _args(tmp_path, output_name="new"):
@@ -66,6 +68,26 @@ def test_runner_requires_c4_v2_sidecar():
                 "sample_level_source_state_included": True,
             }
         )
+
+
+def test_real_c4_state_with_auxiliary_probes_loads_strictly():
+    trained = CCOIPASidecar(
+        pa_channels=12,
+        num_classes=6,
+        challenge_encoder=PAChallengeEncoder(num_tx=6, num_rx=4),
+    )
+
+    restored = build_sidecar_from_state(
+        pa_channels=12,
+        num_classes=6,
+        num_domains=4,
+        state_dict=trained.state_dict(),
+        device=torch.device("cpu"),
+    )
+
+    assert restored.challenge_encoder.tx_probe.out_features == 6
+    assert restored.challenge_encoder.rx_probe.out_features == 4
+    assert set(restored.state_dict()) == set(trained.state_dict())
 
 
 def test_runner_refuses_existing_output(tmp_path):

@@ -20,7 +20,7 @@ from cvsrffi.ccoi_causal_audit import (
     pair_relation_sweep,
     token_code_audit,
 )
-from cvsrffi.ccoi_pa import CCOIPASidecar
+from cvsrffi.ccoi_pa import CCOIPASidecar, PAChallengeEncoder
 from cvsrffi.checkpoint_loading import build_exact_ssdg_model_from_checkpoint
 from cvsrffi.leakage_probe import frozen_ridge_linear_probe
 from train_phase1_ccoi_pa import (
@@ -536,6 +536,61 @@ def validate_sidecar_payload(payload: Mapping[str, Any]) -> None:
         raise ValueError("causal audit rejects sidecars containing sample-level source state")
 
 
+def build_sidecar_from_state(
+    *,
+    pa_channels: int,
+    num_classes: int,
+    num_domains: int,
+    state_dict: Mapping[str, Tensor],
+    device: torch.device,
+) -> CCOIPASidecar:
+    """Reconstruct the exact saved C4 structure before a strict state load."""
+
+    def _shape(key: str) -> tuple[int, ...]:
+        value = state_dict.get(key)
+        if not isinstance(value, Tensor):
+            raise ValueError(f"C4 sidecar state is missing tensor {key}")
+        return tuple(int(size) for size in value.shape)
+
+    q_head_shape = _shape("challenge_encoder.q_head.weight")
+    code_head_shape = _shape("challenge_encoder.code_head.weight")
+    pa_proj_shape = _shape("response_head.pa_proj.weight")
+    operator_value_shape = _shape("operator_pool.value.weight")
+    if len(q_head_shape) != 2 or len(code_head_shape) != 2:
+        raise ValueError("C4 challenge encoder weights have invalid geometry")
+    q_dim, hidden_dim = q_head_shape
+    codebook_size, code_q_dim = code_head_shape
+    if code_q_dim != q_dim:
+        raise ValueError("C4 code head and q head dimensions disagree")
+
+    tx_weight = state_dict.get("challenge_encoder.tx_probe.weight")
+    rx_weight = state_dict.get("challenge_encoder.rx_probe.weight")
+    num_tx = int(tx_weight.shape[0]) if isinstance(tx_weight, Tensor) else 0
+    num_rx = int(rx_weight.shape[0]) if isinstance(rx_weight, Tensor) else 0
+    if num_tx not in (0, int(num_classes)):
+        raise ValueError(f"C4 TX probe classes {num_tx} != expected {num_classes}")
+    if num_rx not in (0, int(num_domains)):
+        raise ValueError(f"C4 RX probe classes {num_rx} != expected {num_domains}")
+
+    challenge_encoder = PAChallengeEncoder(
+        q_dim=q_dim,
+        codebook_size=codebook_size,
+        hidden_dim=hidden_dim,
+        num_tx=num_tx,
+        num_rx=num_rx,
+    )
+    sidecar = CCOIPASidecar(
+        pa_channels=int(pa_channels),
+        num_classes=int(num_classes),
+        challenge_encoder=challenge_encoder,
+        q_dim=q_dim,
+        response_dim=int(pa_proj_shape[0]),
+        operator_dim=int(operator_value_shape[0]),
+    ).to(device)
+    sidecar.load_state_dict(state_dict, strict=True)
+    return sidecar
+
+
 def evaluate_stop_rules(metrics: Mapping[str, Any]) -> dict[str, Any]:
     required = (
         "q_tx_normalized_gain",
@@ -938,8 +993,13 @@ def _real_run(args: argparse.Namespace, output: Path) -> int:
     )
     base = freeze_base_model(base)
     pa_channels, num_classes, base_smoke = _infer_base_dimensions(base, data_ctx, ssdg, device)
-    sidecar = CCOIPASidecar(pa_channels=pa_channels, num_classes=num_classes).to(device)
-    sidecar.load_state_dict(sidecar_payload["state_dict"], strict=True)
+    sidecar = build_sidecar_from_state(
+        pa_channels=pa_channels,
+        num_classes=num_classes,
+        num_domains=int(data_ctx["num_domains"]),
+        state_dict=sidecar_payload["state_dict"],
+        device=device,
+    )
     sidecar.freeze_challenge_encoder()
     for parameter in sidecar.parameters():
         parameter.requires_grad = False
