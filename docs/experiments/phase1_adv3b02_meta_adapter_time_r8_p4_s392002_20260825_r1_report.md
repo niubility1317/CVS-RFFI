@@ -1,7 +1,7 @@
 # Time-only Rank-8 Meta-Adapter P4 Phase1最小预登记报告
 
 - run ID：`phase1_adv3b02_meta_adapter_time_r8_p4_s392002_20260825_r1`
-- 状态：`LOCAL_VERIFIED`
+- 状态：`LANDED / READY_TO_LAUNCH`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 代码／配置冻结提交：`227889e09e2affce2af18bce15e39c86c7436b98`；GitHub远端分支OID已独立回读一致。
 - 冻结基线：`ADV3B02_CORE90_SOFT_E200`checkpoint。
@@ -46,3 +46,10 @@
 ## 后续门槛
 
 Phase1只有在source-only选择规则允许且9个artifact完整时进入同row单seed Target5。Target5仍以`DA1_REG0-DA0_REG0`旧类均值至少+1.0pp且floor至少+0.5pp作为Target25门槛；失败则记录科学失败并继续下一少层候选。
+
+## Release与真实checkpoint smoke
+
+- release提交：`f4ab5e6684a2f5fea6a6a3336bc580e3de0ce1fb`；GitHub远端分支OID独立回读一致。
+- 唯一release归档映射：本地`E:\type10-7\release_archives\phase1_adv3b02_meta_adapter_time_r8_p4_s392002_20260825_r1_release.tar.gz`→远端`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_meta_adapter_time_r8_p4_s392002_20260825_r1_release.tar.gz`。本地／远端一次SHA256均为`682464a53f21d1435733617fd1ae4d9d81950d602ff776945972a60545920b43`。
+- 新release、run root和正式stdout日志在落地前均不存在；未发现同run进程，GPU0～7均无计算进程。release已在独立checkout解包，9个生产入口远端编译通过。
+- 真实`ADV3B02_CORE90_SOFT_E200`checkpoint无query smoke通过：严格bundle保存／回读成功；只发现id／dom两个time adapter模块、10个可训练张量、5458／1055125=0.517285%；rank=8、正式3步；`query_read=false`、`target_read=false`，无fusion、freq、分类头、LDA或协方差参数。
