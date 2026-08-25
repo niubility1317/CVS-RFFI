@@ -49,3 +49,12 @@ Phase1只读取receiver0～6、day0～1的source角色样本训练和选择；�
 - smoke实际保存4,279,186字节bundle并由严格加载器回载，回载后的全部可训练参数仍只属于fusion adapter；r1的最终封装失败路径已在真实环境闭合。
 
 当前最高状态为`LANDED`。尚未证明训练启动、五类任务实际日志分布、四场景评价完成或目标域正向收益。
+
+## N607启动健康检查
+
+- 2026-08-25 08:42（Asia/Hong_Kong）完成唯一一次不可覆盖启动，训练PID=`2742996`；启动通道正常返回0。
+- 独立回读确认PID唯一，CWD为r2 checkout，cmdline逐项绑定r2 config、run root、冻结checkpoint、ManySig、`--meta_adapter_sites fusion`和GPU0。
+- run root初始只含`config_snapshot.json`；stdout为576字节，包含启动时间、`Device: cuda`和三类LEO评价声明，未出现异常指纹。
+- 33秒复核时进程状态`Rl`、累计CPU时间33秒、CPU占用101%、GPU0显存488MiB；其他GPU无计算进程。
+
+当前最高状态为`RUNNING`。这只证明唯一r2启动健康，尚未证明20个episode池的真实分布、完整artifact或目标域收益。
