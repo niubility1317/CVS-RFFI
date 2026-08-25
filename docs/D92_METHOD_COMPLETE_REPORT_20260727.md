@@ -703,6 +703,20 @@ $$
 
 ## 7.模块四：旧/新任务均衡与等先验LDA
 
+### 7.0模块四在整条流程中的位置
+
+模块三已经分别从每一个类别的当前目标域support中得到两样东西：类别中心\(\boldsymbol\mu_c\)回答“这个类大致在哪里”，类内收缩协方差\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)回答“该类样本云在各个方向上怎样展开”。模块四不再逐类单独做一个分类器，而是把所有旧类与新类的局部形状汇总为一套共享的判别几何，再据此为每个类别写出一条可直接打分的仿射行。
+
+|项目|内容|
+|---|---|
+|输入|所有注册类别经模块二稳健化后的target support、每类的\(\boldsymbol\mu_c\)和\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)、旧/新类别归属|
+|输出|旧/新任务均衡的共享协方差、full和block两组LDA仿射行|
+|不做的事|不把Phase1地面聚合中心当作当前旧类support；不更新编码器；不读取query、不使用query标签或query角色|
+
+这里的“旧类”和“新类”都使用当前目标域中合法提供的support。旧类的地面聚合知识只在模块二中提供类无关的扰动方向；它不直接充当模块四的旧类原型或协方差样本。因此，模块四回答的是“在当前注册批的目标域support上，怎样让旧任务与新任务共同竞争”，而不是“怎样把地面原型直接搬到目标域”。
+
+**适用范围。**旧/新任务各占50%的构造只在已经登记新类的REG1状态成立。若\(\mathcal Y_{\mathrm n}=\varnothing\)，就没有可定义的\(\boldsymbol\Sigma_{\mathrm n}\)，不应把一个虚构的零矩阵代入下式。注册前的REG0是无新类的单独评测状态；本报告不把它误写成已经执行了本模块的旧/新均衡。
+
 ### 7.1为什么要先按任务汇总
 
 新类数量增加时，如果把所有类别直接平均，新类任务将因类别数更多而拥有更大总权重。D92 E0先分别计算旧、新任务的类内协方差均值：
@@ -723,6 +737,20 @@ $$
 
 **符号说明：**\(C_{\mathrm o}=|\mathcal Y_{\mathrm o}|\)是旧类数；\(C_{\mathrm n}=|\mathcal Y_{\mathrm n}|\)是新类数；\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)是单类收缩协方差；\(\boldsymbol\Sigma_{\mathrm o}\)和\(\boldsymbol\Sigma_{\mathrm n}\)是两个任务内部的类别等权平均。
 
+为看清“先按任务汇总”的必要性，设想一个未采用的方法：直接对全部类别做等权平均。它等价于
+
+$$
+\boldsymbol\Sigma_{\mathrm{all}}
+=
+\frac{C_{\mathrm o}}{C_{\mathrm o}+C_{\mathrm n}}\boldsymbol\Sigma_{\mathrm o}
+\mathbin{+}
+\frac{C_{\mathrm n}}{C_{\mathrm o}+C_{\mathrm n}}\boldsymbol\Sigma_{\mathrm n}.
+$$
+
+**符号说明：**\(\boldsymbol\Sigma_{\mathrm{all}}\)表示这个仅用于对照说明、并未被D92 E0采用的“全部类别直接平均”结果；\(C_{\mathrm o}/(C_{\mathrm o}+C_{\mathrm n})\)和\(C_{\mathrm n}/(C_{\mathrm o}+C_{\mathrm n})\)分别是旧、新任务由类别数量自动决定的总权重；其余符号与上一式相同。
+
+例如，若有6个旧类和20个新类，直接平均会让旧任务总权重为\(6/26\approx23.1\%\)，新任务总权重为\(20/26\approx76.9\%\)。这不是某组实验结果，只是一个计数例子：新类数较多时，即使每个类别都被“公平地”平均，整个新任务仍会压过旧任务。
+
 共享协方差固定为
 
 $$
@@ -733,6 +761,8 @@ $$
 $$
 
 **符号说明：**\(\boldsymbol\Sigma_{\mathrm{bal}}\)是旧、新任务总权重各为50%的共享协方差；两个\(1/2\)是方法定义，不由query准确率拟合。它不表示每个类别有相同权重：每个旧类权重为\(0.5/C_{\mathrm o}\)，每个新类权重为\(0.5/C_{\mathrm n}\)。
+
+仍以6个旧类、20个新类为例，D92 E0使每个旧类贡献\(0.5/6\)，每个新类贡献\(0.5/20\)。因此，它不是让“旧类和新类每一类的权重相同”，而是先让两个任务的总发言权相同，再在各自任务内部平分。这正是名称中“旧/新任务均衡”的含义。
 
 ### 7.2两种几何
 
@@ -745,6 +775,8 @@ $$
 $$
 
 **符号说明：**\(\boldsymbol\Sigma_{\mathrm{full}}\)是full几何的协方差；它包括身份块内部、频谱块内部以及两个块之间的全部协方差元素。
+
+把256维联合特征按前160维身份块和后96维频谱块分开看，full分支保留三类关系：160维身份块内部的共同变化、96维频谱块内部的共同变化、以及身份坐标与频谱坐标在同一批support上是否一起偏离。后一类共有\(160\times96=15\,360\)个不同的跨块坐标对；由于协方差矩阵对称，它们在完整矩阵中对应上下两个镜像的非对角块。full分支并不假设这些关系都可靠，而是允许收缩后的数据统计决定它们的大小。
 
 block分支只保留两块内部关系：
 
@@ -759,6 +791,8 @@ $$
 
 **符号说明：**\(\boldsymbol\Sigma_{\mathrm{id}}\in\mathbb R^{160\times160}\)是身份块的协方差子矩阵；\(\boldsymbol\Sigma_{\mathrm{fft}}\in\mathbb R^{96\times96}\)是频谱块的协方差子矩阵；两个零矩阵表示block分支不使用跨块相关性。置零不是在宣称真实数据独立，而是在少样本下采用更保守的判别结构。
 
+换成直观语言，full允许分类器利用“身份块第\(i\)维偏高时，频谱块第\(j\)维也常偏高或偏低”这一线索；block故意忽略这类线索，只相信两个块各自内部的规律。少样本时，跨块关系的估计最容易随几条support而波动，所以block以较少的自由度换取较保守的几何。两个分支使用同一套冻结编码器和同一批support，不是重新训练出的两个网络。
+
 两种协方差都须满足
 
 $$
@@ -767,9 +801,37 @@ $$
 
 **符号说明：**\(\lambda_{\min}(\boldsymbol\Sigma)\)是当前协方差矩阵的最小特征值；\(\boldsymbol\Sigma\)可代表full或block分支；严格为正表示正定，可以稳定地求解线性系统。若数值检查失败，状态构造失败闭合，不以伪逆静默改变方法。
 
+正定性可以理解为：无论沿256维空间的哪一个非零方向观察，模型都给该方向一个正的变化尺度；不会出现“这个方向完全没有代价”或数值上反向的尺度。后续LDA需要求解形如\(\boldsymbol\Sigma_h\mathbf v=\boldsymbol\mu_c\)的线性方程。若协方差奇异或近似奇异，解会极不稳定，少量support噪声就可能被放大。模块三的收缩先降低这种风险；这里的最小特征值检查再保证最终没有悄悄改变算法来绕过问题。
+
 ### 7.3等先验LDA仿射行
 
-在等先验高斯模型下，类别\(c\)的分数可写为
+在写出类别分数前，先看LDA实际比较的量。对query特征\(\mathbf q\)，类别\(c\)在分支\(h\)下的平方Mahalanobis距离为
+
+$$
+d_{c,h}^{2}(\mathbf q)
+=
+(\mathbf q-\boldsymbol\mu_c)^{\mathsf T}
+\boldsymbol\Sigma_h^{-1}
+(\mathbf q-\boldsymbol\mu_c).
+$$
+
+**符号说明：**\(d_{c,h}^{2}(\mathbf q)\)是query到类别\(c\)中心的平方Mahalanobis距离；\(\mathbf q\in\mathbb R^{256}\)是当前query特征；\(\boldsymbol\mu_c\in\mathbb R^{256}\)是类别中心；\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支；\(\boldsymbol\Sigma_h\in\mathbb R^{256\times256}\)是该分支的共享协方差；上标\(\mathsf T\)表示转置。与普通欧氏距离不同，\(\boldsymbol\Sigma_h^{-1}\)会降低类内本来就容易波动方向的影响，并放大稳定方向上的偏离。
+
+等先验高斯模型以较小距离为好。将距离展开后，有
+
+$$
+-\frac{1}{2}d_{c,h}^{2}(\mathbf q)
+=
+\mathbf q^{\mathsf T}\boldsymbol\Sigma_h^{-1}\boldsymbol\mu_c
+\mathbin{-}
+\frac{1}{2}\boldsymbol\mu_c^{\mathsf T}\boldsymbol\Sigma_h^{-1}\boldsymbol\mu_c
+\mathbin{-}
+\frac{1}{2}\mathbf q^{\mathsf T}\boldsymbol\Sigma_h^{-1}\mathbf q.
+$$
+
+**符号说明：**左侧是负的一半平方距离，因而距离越小值越大；右侧前两项随候选类别\(c\)变化；最后一项只依赖当前query和分支\(h\)，对同一个query的所有候选类别都相同。等先验表示各类别的先验概率\(\pi_c\)相同，因此由\(\log\pi_c\)带来的项也对所有类别相同。取最大类别分数时，这些共同项可以省略，便得到下面的仿射行。
+
+在等先验高斯模型下，类别\(c\)的可比较分数为
 
 $$
 s_c^{(h)}(\mathbf q)
@@ -793,11 +855,39 @@ $$
 
 **符号说明：**\(\mathbf q\in\mathbb R^{256}\)是当前query特征；\(\boldsymbol\Sigma_h\)是分支\(h\)的共享协方差；\(\mathbf w_c^{(h)}\in\mathbb R^{256}\)是类别\(c\)的判别方向；\(b_c^{(h)}\)是截距；\(\boldsymbol\mu_c\)是类别中心；上标\(\mathsf T\)表示转置。实现使用线性方程求解，不显式形成逆矩阵。
 
+这里“一套共享协方差”是LDA的关键：每个类别各有中心\(\boldsymbol\mu_c\)，但同一分支中的所有类别共享\(\boldsymbol\Sigma_h\)。模块三的\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)只用于汇总出\(\boldsymbol\Sigma_{\mathrm{bal}}\)，不会在query时为每个候选类别分别求一个逆矩阵。若每类都保留独立协方差并逐类计算，便是更自由但在少样本下更难稳定的QDA式判别；D92 E0在这里选择共享几何的LDA。
+
+单条query的未量化预测规则是
+
+$$
+\widehat y(\mathbf q)
+=
+\underset{c\in\mathcal Y}{\operatorname{arg\,max}}\;
+s_c^{(h)}(\mathbf q).
+$$
+
+**符号说明：**\(\widehat y(\mathbf q)\)是对query的预测类别；\(\operatorname{arg\,max}\)返回使分数最大的类别索引；\(\mathcal Y\)是全部已注册类别集合；\(s_c^{(h)}(\mathbf q)\)是上式得到的类别分数。在模块五完成融合、模块六完成编译后，实际预测使用融合后的冻结行；此处的\(\mathbf q\)始终表示特征向量，不是后续量化中的整数码。
+
 ## 8.模块五：support内留一的双几何融合
+
+### 8.0模块五在整条流程中的位置
+
+模块四给出两种“看待同一批support”的几何：full相信跨块关系，block只相信块内关系。模块五不提前认定哪一种永远更好，而是只用注册support做一次内部的、类别级的验证，再把两种仿射行合成一条最终行。
+
+|项目|内容|
+|---|---|
+|输入|同一批注册support、full与block共享协方差、两个分支的LDA行|
+|中间证据|每个类别的support内留一预测损失|
+|输出|每类两个分支的权重\(\eta_{c,\mathrm{full}},\eta_{c,\mathrm{blk}}\)，以及一条融合后的仿射行|
+|严格边界|held support在本折不能参与拟合；query从不参加折分、尺度估计、权重计算或回退选择|
+
+因此，模块五不是再训练两个网络，也不是让query在两条路径中试出更高分的一条。它只是对已构造的两套协方差结构进行support内的交叉验证，并把得到的固定结果交给模块六编译。
 
 ### 8.1为什么不把full或block固定为唯一答案
 
 full分支能利用跨块相关，表达力较强；block分支只使用块内关系，估计方差较低。少样本下，这两种偏好会随类别而变化。D92 E0不使用query来选择分支，而是让support轮流作为未参与本折拟合的held样本。
+
+例如，当每类有\(K=5\)条support时，共形成5折：第1折暂时拿走每类第1条support，用其余4条重新构造模块二至模块四的状态；第2折拿走每类第2条，依此类推。每一条support恰好有一次作为“没有参与本折拟合的测试样本”，也有4次作为其他折的拟合材料。这个过程只是在注册时发生，不会把任何query混入验证。
 
 第\(t\)折held集合为
 
@@ -814,6 +904,17 @@ $$
 **符号说明：**\(\mathcal S\)是全部注册support集合；\(\mathcal H_t\)从每个类别各取第\(t\)条support；\(\mathcal S_{-t}\)是删除该折held后的拟合集；\(\setminus\)表示集合差；每折保留每类\(K-1\)条support。每一折重新计算与support有关的稳健中心、协方差和LDA行，避免held样本通过统计量间接泄漏。
 
 ### 8.2类别级留一交叉熵
+
+先把第\(t\)折held样本在分支\(h\)下对候选类别\(j\)的归一化概率写为
+
+$$
+p_{c,t,j}^{(h)}
+=
+\frac{\exp\!\left(s_{c,t,j}^{(h)}/r_h\right)}
+{\sum_{j'=1}^{C}\exp\!\left(s_{c,t,j'}^{(h)}/r_h\right)}.
+$$
+
+**符号说明：**\(p_{c,t,j}^{(h)}\in(0,1)\)是held的真实类别为\(c\)的样本被分支\(h\)分配给候选类别\(j\)的softmax概率；\(s_{c,t,j}^{(h)}\)是该样本对类别\(j\)的LDA分数；\(r_h>0\)是分支\(h\)的正尺度；\(\exp(\cdot)\)是指数函数；\(j'\)仅是分母求和时的类别索引；\(C=|\mathcal Y|\)是注册类别总数。对固定的\(c,t,h\)，所有\(j\)的概率之和为1。
 
 对类别\(c\)、分支\(h\)，留一损失为
 
@@ -833,6 +934,16 @@ $$
 
 **符号说明：**\(\ell_{c,h}^{\mathrm{LOO}}\)是类别\(c\)在分支\(h\)的平均留一交叉熵；\(s_{c,t,j}^{(h)}\)是第\(t\)折held的类别\(c\)样本对候选类别\(j\)的logit；\(r_h>0\)是该分支从support logits估计的RMS尺度；\(C\)是注册类别数；分子是真实类别的指数分数，分母是全部候选类的指数分数和。损失越小，说明该几何在未见的本类support上更可信。
 
+RMS是“均方根”的缩写。对\(M\)个数\(a_1,\ldots,a_M\)，其一般定义为
+
+$$
+\operatorname{RMS}(a_1,\ldots,a_M)
+=
+\sqrt{\frac{1}{M}\sum_{m=1}^{M}a_m^2}.
+$$
+
+**符号说明：**\(a_m\)是第\(m\)个待汇总数；\(M\)是汇总数目；\(m\)是求和索引；\(\operatorname{RMS}(\cdot)\)先平方以消除正负号，再取平均和平方根，因此结果非负。这里的\(r_h\)是当前注册批的support logits按冻结实现得到的正RMS尺度，用来使full与block的logit绝对大小可比较。上面的通用定义解释“RMS”这一计算；它不额外规定某个未在冻结实现中声明的logit子集，也不允许使用query logit估计尺度。
+
 分支权重为
 
 $$
@@ -844,6 +955,8 @@ $$
 $$
 
 **符号说明：**\(\eta_{c,h}\)是类别\(c\)对分支\(h\)的可靠性权重；\(h'\)是分母中的分支索引；\(-K\ell_{c,h}^{\mathrm{LOO}}\)对应K个held样本的总对数证据。对固定类别\(c\)，有\(\eta_{c,\mathrm{full}}+\eta_{c,\mathrm{blk}}=1\)。
+
+作为纯教学例子，若\(K=5\)、某个类别的\(\ell_{c,\mathrm{full}}^{\mathrm{LOO}}=0.3\)、\(\ell_{c,\mathrm{blk}}^{\mathrm{LOO}}=0.5\)，则\(\eta_{c,\mathrm{full}}\approx0.731\)、\(\eta_{c,\mathrm{blk}}\approx0.269\)。这不是实验指标；它只说明损失较小的full会获得更大但并非唯一的权重。若两个损失相同，两个权重都为0.5。相比“只选一个分支”的硬选择，软权重不会因两者差异很小而突然丢弃另一条几何线索。
 
 ### 8.3融合成一条最终仿射行
 
@@ -865,9 +978,26 @@ b_c^{(0)}
 \frac{b_c^{(\mathrm{blk})}}{r_{\mathrm{blk}}}.
 $$
 
-**符号说明：**\(\mathbf w_c^{(0)}\)和\(b_c^{(0)}\)是量化前的基础融合行；\(\mathbf w_c^{(\mathrm{full})},b_c^{(\mathrm{full})}\)与\(\mathbf w_c^{(\mathrm{blk})},b_c^{(\mathrm{blk})}\)是两个分支输出；\(r_{\mathrm{full}},r_{\mathrm{blk}}\)先消除分支logit绝对尺度差异；\(\eta_{c,h}\)再逐类加权。权重只由当前row的support留一结果产生，不读取outer held或query。
+**符号说明：**\(\mathbf w_c^{(0)}\)和\(b_c^{(0)}\)是量化前的基础融合行；\(\mathbf w_c^{(\mathrm{full})},b_c^{(\mathrm{full})}\)与\(\mathbf w_c^{(\mathrm{blk})},b_c^{(\mathrm{blk})}\)是两个分支输出；\(r_{\mathrm{full}},r_{\mathrm{blk}}\)先消除分支logit绝对尺度差异；\(\eta_{c,h}\)再逐类加权。权重只由当前注册批的support内留一结果产生，不读取注册流程之外的评价保留集或query。
 
-当\(K\le2\)时，留一链不满足稳定构造条件，方法使用冻结回退，不把训练内分数伪装成留一证据。
+融合后，单条query只需使用每个类别的一条最终行：
+
+$$
+s_c^{(0)}(\mathbf q)
+=
+\mathbf q^{\mathsf T}\mathbf w_c^{(0)}
+\mathbin{+}
+b_c^{(0)},
+\qquad
+\widehat y(\mathbf q)
+=
+\underset{c\in\mathcal Y}{\operatorname{arg\,max}}\;
+s_c^{(0)}(\mathbf q).
+$$
+
+**符号说明：**\(s_c^{(0)}(\mathbf q)\)是量化前的融合分数；\(\mathbf w_c^{(0)}\)和\(b_c^{(0)}\)来自上一式；\(\widehat y(\mathbf q)\)是预测类别；其余符号沿用前文。融合结果仍是一条仿射行，所以query阶段不需要重新做K折、重算协方差或把同一query送进两个完整分支。严格说，两个已缩放LDA行的加权和未必等价于某一个单独协方差模型推导出的纯LDA行；本模块保留的是“可部署的仿射打分形式”，而不是声称融合后仍对应唯一的高斯协方差。
+
+当\(K=1\)时，留一会使每类没有剩余support；当\(K=2\)时，每折每类只剩1条support，无法可靠重建中心和协方差。因此\(K\le2\)时，留一链不满足稳定构造条件，方法使用冻结回退，不把训练内分数伪装成留一证据。对\(K\ge3\)，注册期开销会包含\(K\)折乘以两种几何的重建；该开销只在新类或注册批到达时发生。状态冻结后，query只执行前向特征与最终全类仿射打分，不更新任何统计量。
 
 ## 9.模块六：量化编译与不可变预测状态
 
