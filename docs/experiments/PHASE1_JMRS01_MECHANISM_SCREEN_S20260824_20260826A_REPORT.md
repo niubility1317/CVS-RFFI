@@ -60,7 +60,7 @@ launcher第一步是真实checkpoint无query smoke，PASS后立即继续正式S0
 
 - 修改前相关历史测试：通过。
 - TDD RED：机制模块、runner与scorer、launcher依次因实现缺失而失败，证明测试能够拦截缺失行为。
-- TDD GREEN：JMRS01聚焦测试23项通过；覆盖D2拒绝、RC边界、DSQ零陷、PI低幅度、LORO隔离、prediction/truth闭合、fold-local probe/geometry、四场景和launcher调用顺序。
+- TDD GREEN：JMRS01聚焦测试28项通过；覆盖D2拒绝、RC边界、DSQ零陷、PI低幅度、6个可训练分支逐一反传、LORO隔离、prediction/truth闭合、fold-local probe/geometry、四场景和launcher调用顺序。
 - 既有CCOI/PA回归：93项通过。
 - Python语法：`jmrs01.py`、runner、scorer通过。
 - dry-run：矩阵严格为`M0,R1,R2,D1,P1,P2,S1`，四场景完整，`target_or_query_access=false`。
@@ -73,6 +73,7 @@ launcher第一步是真实checkpoint无query smoke，PASS后立即继续正式S0
 - 远端落地：完成；全新release目录，未覆盖原项目代码。
 - 远端编译：3个Python文件`py_compile`通过；launcher`bash -n`通过。
 - 启动健康检查：CWD为新release；cmdline绑定唯一run/checkpoint/WiSig/7行/200 epoch；日志进入四视图缓存并已生成`M0/held_receiver=0`记录；无Traceback/OOM/NaN证据。
+- 早期进度：`R1/held_receiver=0`已完成，累计17472条记录；训练、内层选择、V_cal安全诊断和held四场景记录链已走通。
 
 ## 已落地实现
 

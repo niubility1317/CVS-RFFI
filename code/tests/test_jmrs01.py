@@ -87,9 +87,10 @@ def test_sham_features_are_reproducible_for_same_seed() -> None:
     torch.testing.assert_close(a, b)
 
 
-def test_unified_loss_is_finite_and_backpropagates() -> None:
+@pytest.mark.parametrize("row", ["R1", "R2", "D1", "P1", "P2", "S1"])
+def test_unified_loss_is_finite_and_backpropagates(row: str) -> None:
     cfg = JMRS01Config(z_dim=64, num_classes=6)
-    model = build_mechanism("D1", cfg)
+    model = build_mechanism(row, cfg)
     clean = model(iq=_tone_batch(), z_id=torch.randn(4, 64))
     satellite = model(iq=_tone_batch() * 0.8, z_id=torch.randn(4, 64))
     labels = torch.tensor([0, 0, 1, 1])
