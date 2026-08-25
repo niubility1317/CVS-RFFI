@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-`LOCAL_VERIFIED`
+`LANDED`
 
 这是JMRS01首个source-only单机制筛选实验。旧PA-M2.1实验及其产物保持只读，不重复、不覆盖。
 
@@ -36,6 +36,8 @@
 - 远端日志：`logs/phase1_jmrs01_20260826/PHASE1_JMRS01_MECHANISM_SCREEN_S20260824_20260826A.out`
 - release目录：`/home/szu2070436088/2510044040/CV-SincNet/releases/PHASE1_JMRS01_MECHANISM_SCREEN_S20260824_20260826A_d17cf6fb`
 - release归档：本地`E:\type10-7\releases\PHASE1_JMRS01_MECHANISM_SCREEN_S20260824_20260826A_d17cf6fb.tar.gz`映射到远端项目`releases/`；仅做一次本地/远端SHA-256比较。
+- release归档Git状态：`6be9748aae6e5ac109b3cc1ac9d1ee3f1112f3d2`，其中实验代码固定于`d17cf6fb8128b47f505fbd80e2fabfb7c8421284`，后续commit仅更新预注册报告。
+- 唯一归档SHA-256：`d14d88067b11eb98d50623592c66f2483674f9ecda1a8bf1a5c7efae68221eaa`；本地与远端一致。
 - GPU：0。2026-08-26预检时8张RTX3090均为0%利用率、显存1MiB；不干预无关进程。
 
 ## 精确发布命令
@@ -68,6 +70,8 @@ launcher第一步是真实checkpoint无query smoke，PASS后立即继续正式S0
 - `ruff`：环境未安装，记为`NONBLOCKING`；未新增依赖。
 - 真实checkpoint无query smoke：待执行。
 - 正式实验：未启动。
+- 远端落地：完成；全新release目录，未覆盖原项目代码。
+- 远端编译：3个Python文件`py_compile`通过；launcher`bash -n`通过。
 
 ## 已落地实现
 
