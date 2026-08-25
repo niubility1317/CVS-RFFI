@@ -5,6 +5,9 @@ import pytest
 from cvsrffi.somph_predictor_bundle import FORMAL_LEO_WEAK_SCENARIOS
 from cvsrffi.stage2_m29_d92 import IDENTITY_ONLY
 from cvsrffi.stage2_m29_row_executor import execute_m29_row
+from cvsrffi.stage2_m29_row_executor import _resolved_protocol_schema
+from cvsrffi.stage2_ablation_feature_cache import FEATURE_CACHE_MANIFEST_SCHEMA, FEATURE_CACHE_SCHEMA
+from cvsrffi.phase2_runtime_contract import PHASE2_FULL_CONTRACT
 
 
 def test_row_executor_rejects_non_p2_min_v1_before_output(tmp_path) -> None:
@@ -32,3 +35,15 @@ def test_row_executor_rejects_non_p2_min_v1_before_output(tmp_path) -> None:
             base_cache_bytes=0,
         )
     assert not output.exists()
+
+
+def test_exact_legacy_feature_cache_v2_contract_resolves_to_p2_min_v1() -> None:
+    manifest = {
+        "schema": FEATURE_CACHE_MANIFEST_SCHEMA,
+        "feature_cache_schema": FEATURE_CACHE_SCHEMA,
+        **PHASE2_FULL_CONTRACT,
+    }
+    assert _resolved_protocol_schema(manifest) == "p2_min_v1"
+    changed = dict(manifest)
+    changed["phase2_source_sample_access"] = True
+    assert _resolved_protocol_schema(changed) == ""

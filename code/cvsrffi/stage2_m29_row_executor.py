@@ -11,12 +11,17 @@ from typing import Any, Mapping
 import numpy as np
 
 from cvsrffi.somph_predictor_bundle import FORMAL_LEO_WEAK_SCENARIOS
-from cvsrffi.stage2_ablation_feature_cache import load_feature_cache
+from cvsrffi.stage2_ablation_feature_cache import (
+    FEATURE_CACHE_MANIFEST_SCHEMA,
+    FEATURE_CACHE_SCHEMA,
+    load_feature_cache,
+)
 from cvsrffi.stage2_ablation_truth_scorer import (
     BEHAVIOR_RECEIPT_SCHEMA,
     QUANTIZATION_RECEIPT_SCHEMA,
     RESOURCE_RECEIPT_SCHEMA,
 )
+from cvsrffi.phase2_runtime_contract import PHASE2_FULL_CONTRACT
 from cvsrffi.stage2_m24_row_executor import _exclusive_json, _exclusive_npz
 from cvsrffi.stage2_m29_d92 import IDENTITY_ONLY, M29_ARMS, arm_block_dims, fit_m29_d92
 from cvsrffi.stage2_m29_tasr import Phase1TASRBundle, load_phase1_tasr_bundle
@@ -44,6 +49,18 @@ def _blocks(features: Any) -> tuple[np.ndarray, np.ndarray]:
     return rows[:, :160], rows[:, 160:256]
 
 
+def _resolved_protocol_schema(manifest: Mapping[str, Any]) -> str:
+    explicit = manifest.get("protocol_schema")
+    if explicit is not None:
+        return "p2_min_v1" if explicit == "p2_min_v1" else ""
+    legacy_exact = (
+        manifest.get("schema") == FEATURE_CACHE_MANIFEST_SCHEMA
+        and manifest.get("feature_cache_schema") == FEATURE_CACHE_SCHEMA
+        and all(manifest.get(key) == value for key, value in PHASE2_FULL_CONTRACT.items())
+    )
+    return "p2_min_v1" if legacy_exact else ""
+
+
 def execute_m29_row(
     *,
     arm: str,
@@ -64,7 +81,7 @@ def execute_m29_row(
     if (
         str(manifest["receiver"]) != str(receiver)
         or int(manifest["method_seed"]) != int(seed)
-        or manifest.get("protocol_schema") != "p2_min_v1"
+        or _resolved_protocol_schema(manifest) != "p2_min_v1"
         or manifest["phase2_data_status"] != "VALIDATED_ONCE"
         or set(base_cache["scenario_payloads"]) != set(FORMAL_LEO_WEAK_SCENARIOS)
         or len(old_classes) != 6
@@ -158,7 +175,16 @@ def execute_m29_row(
         row_tokens = np.asarray(payload["query_tokens"]).astype(str)
         tokens.append(row_tokens)
         scenarios.append(np.repeat(str(scenario), len(row_tokens)))
-        audits[scenario] = {"before": dict(before.audit), "after": dict(after.audit)}
+        audits[scenario] = {
+            "before": dict(before.audit),
+            "after": dict(after.audit),
+            "protocol_schema": "p2_min_v1",
+            "protocol_schema_source": (
+                "explicit_manifest"
+                if manifest.get("protocol_schema") == "p2_min_v1"
+                else "feature_cache_v2_exact_contract"
+            ),
+        }
         resources.extend((before.resource, after.resource))
         quantization.extend((before.audit["compiler"]["quantization"], after.audit["compiler"]["quantization"]))
     maximum_error = max(float(item["max_logit_abs_error"]) for item in quantization)

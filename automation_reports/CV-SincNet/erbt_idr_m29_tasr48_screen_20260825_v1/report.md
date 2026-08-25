@@ -56,7 +56,7 @@ TASR48相对评分后最好的冻结FFT96权重满足以下全部条件才允许
 - supplemental feature root：`/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/erbt_idr_m24_d1_refit_full125_20260820_v1_supplement_features/artifacts/features`
 - scoring root：`/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/cvs_full_ablation_phase2c_sidecar_t1_20260730_v3_47212437/artifacts/sidecars`
 - supplemental scoring root：`/home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m24_d1_refit_full125_20260820_v3/scoring_root_repaired_v3`
-- release root：`/home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m29_tasr48_screen_20260825_v1`
+- release root：`/home/szu2070436088/2510044040/CV-SincNet/releases/erbt_idr_m29_tasr48_screen_20260825_v1_r2`
 - run root：`/home/szu2070436088/2510044040/CV-SincNet/runs/erbt_idr_m29_tasr48_screen_20260825_v1`
 - log root：`/home/szu2070436088/2510044040/CV-SincNet/logs/erbt_idr_m29_tasr48_screen_20260825_v1`
 - Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`
@@ -127,3 +127,10 @@ PYTHONPATH=. /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u scripts/scor
 - Python编译检查：新增7个模块/脚本通过；
 - 独立P0/P1审查：首轮发现3个P1、无P0；一次定点复审关闭2项并指出特征值仍为伪int8量化，现已改为单个共享尺度+真实变化int8向量，并由10项M29聚焦测试和NPZ成员读回闭合；按一次复审上限不再新增审查轮；
 - 真实checkpoint无query smoke：待release后完成。
+
+## 七、首次release预启动修正
+
+- 首次release HEAD：`210c08f682d549f3c602065662df258576b9795c`；归档本地/远端SHA-256均为`8ceb49731c9bb6152538b87deb8248170d32abf435a4d96366b7b3f52b39e265`；远端编译通过；未启动prediction。
+- 真实缓存读回发现历史`VALIDATED_ONCE` feature-cache v2没有独立`protocol_schema`字段，但其固定manifest schema、feature-cache schema和`PHASE2_FULL_CONTRACT`逐项表达当前`p2_min_v1`合同。
+- 修正为唯一兼容解析：显式`p2_min_v1`直接接受；字段缺失时只接受精确v2 schema且完整合同逐项相等，并记录`protocol_schema_source=feature_cache_v2_exact_contract`；任何字段漂移继续fail-closed。
+- 该修正不更改数据字节、capsule、split、support/query划分或方法参数，不触发数据重验；首次release标记`RELEASE_NOT_LAUNCHED`，后续使用不可覆盖`_r2` release root。
