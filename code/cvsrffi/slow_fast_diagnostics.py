@@ -115,7 +115,7 @@ def build_shadow_response_surface(
         [row["q90_feature_move"] for row in nonbaseline],
         [row["query_gain_pp"] for row in nonbaseline],
     )
-    p0_stop = support_query is not None and support_query <= 0.0
+    p0_stop = support_query is not None and support_query < 0.2
     return {
         "schema": "cvs.slow_fast.response_surface.v1",
         "state_count": len(state_names),
@@ -124,7 +124,7 @@ def build_shadow_response_surface(
         "spearman_support_query": support_query,
         "spearman_move_query": move_query,
         "p0_stop_signal": bool(p0_stop),
-        "p0_stop_reason": "NONPOSITIVE_SUPPORT_QUERY_RANK_ASSOCIATION" if p0_stop else None,
+        "p0_stop_reason": "WEAK_SUPPORT_QUERY_RANK_ASSOCIATION_LT_0P2" if p0_stop else None,
         "truth_last_selection_reused_for_adaptation": False,
     }
 
