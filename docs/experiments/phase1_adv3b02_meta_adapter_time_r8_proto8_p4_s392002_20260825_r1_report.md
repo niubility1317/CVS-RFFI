@@ -1,7 +1,7 @@
 # Time-only Rank-8 Prototype-Aligned Scale-8 Meta-Adapter P4 Phase1最小预登记报告
 
 - run ID：`phase1_adv3b02_meta_adapter_time_r8_proto8_p4_s392002_20260825_r1`
-- 状态：`RUNNING`
+- 状态：`ARTIFACTS_COMPLETE / SOURCE_SELECTION_ELIGIBLE`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 代码／配置冻结提交：`2a7435bef0fc1292d31fe3ac3082bada76caeefd`；首次push后独立回读远端分支OID一致。
 - 冻结基线：`ADV3B02_CORE90_SOFT_E200`checkpoint。
@@ -51,3 +51,18 @@ Phase1仅在source-only选择规则允许且9个artifact完整时进入同row单
 - N607只读核对确认release、output root、stdout和同名Python进程原先均不存在；冻结checkpoint与WiSig数据存在，GPU0空闲。
 - 真实`ADV3B02_CORE90_SOFT_E200`checkpoint无query smoke通过：只存在`id/dom_backbone.meta_adapter_time`，可训练参数5458／1055125=0.517285%，正式3步；bundle严格回读`frozen_prototype_cosine_ce_v1`／8.0，`query_read=false`、`target_read=false`。
 - 2026-08-25 13:29:58 HKT由唯一owner按冻结命令启动，主PID=`2888480`；启动检查确认PPID=1、CWD／cmdline／run root均与预登记一致，GPU0 UUID=`GPU-56adac86-77cd-36c9-8770-dbf002650461`，进程显存488MiB，stdout已产生启动记录。
+
+## Phase1完成与独立回读
+
+- 进程于2026-08-25 13:50:38 HKT自然完成，stdout状态为`ARTIFACTS_COMPLETE`；无Traceback、OOM、NaN或Inf。9／9项预期artifact均非空，已下载到`E:\type10-7\local_artifacts\meta_adapter_recovery\phase1_time_r8_proto8_p4_r1_complete_20260825`独立回读。
+- 训练闭合为200／200个outer step、800／800个episode，每步4个episode，全部3步更新，所有loss有限。正式bundle严格回读scale8、5458／1055125=0.517285%，无head／cls／LDA／cov。
+- `V_select`两个holdout的A0→A3分别为100%→100%和100%→83.3333%，worst delta=-16.6667pp；runner按冻结规则给出`SOURCE_SELECTION_ELIGIBLE`，仅允许进入Target5。
+
+| 场景 | P0均值 | final均值 | 均值变化 | P0 floor | final floor | floor变化 |
+|---|---:|---:|---:|---:|---:|---:|
+| clean | 92.0464% | 92.2167% | +0.1702pp | 87.8286% | 88.4000% | +0.5714pp |
+| leo_clear_weak | 79.2167% | 78.9524% | -0.2643pp | 52.2500% | 54.2000% | +1.9500pp |
+| leo_low_elev_weak | 75.1821% | 74.7857% | -0.3964pp | 45.2786% | 46.9071% | +1.6286pp |
+| leo_rain_weak | 74.9262% | 74.6071% | -0.3190pp | 43.8571% | 45.3571% | +1.5000pp |
+
+Phase1结论：scale8比scale16进一步提高source四场景floor，但LEO均值仍下降；其目标域作用必须由Target5的`DA1_REG0-DA0_REG0`直接判定。
