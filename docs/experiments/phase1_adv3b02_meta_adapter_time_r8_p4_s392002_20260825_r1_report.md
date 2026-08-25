@@ -1,7 +1,7 @@
 # Time-only Rank-8 Meta-Adapter P4 Phase1最小预登记报告
 
 - run ID：`phase1_adv3b02_meta_adapter_time_r8_p4_s392002_20260825_r1`
-- 状态：`LANDED / READY_TO_LAUNCH`
+- 状态：`RUNNING`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 代码／配置冻结提交：`227889e09e2affce2af18bce15e39c86c7436b98`；GitHub远端分支OID已独立回读一致。
 - 冻结基线：`ADV3B02_CORE90_SOFT_E200`checkpoint。
@@ -53,3 +53,9 @@ Phase1只有在source-only选择规则允许且9个artifact完整时进入同row
 - 唯一release归档映射：本地`E:\type10-7\release_archives\phase1_adv3b02_meta_adapter_time_r8_p4_s392002_20260825_r1_release.tar.gz`→远端`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_meta_adapter_time_r8_p4_s392002_20260825_r1_release.tar.gz`。本地／远端一次SHA256均为`682464a53f21d1435733617fd1ae4d9d81950d602ff776945972a60545920b43`。
 - 新release、run root和正式stdout日志在落地前均不存在；未发现同run进程，GPU0～7均无计算进程。release已在独立checkout解包，9个生产入口远端编译通过。
 - 真实`ADV3B02_CORE90_SOFT_E200`checkpoint无query smoke通过：严格bundle保存／回读成功；只发现id／dom两个time adapter模块、10个可训练张量、5458／1055125=0.517285%；rank=8、正式3步；`query_read=false`、`target_read=false`，无fusion、freq、分类头、LDA或协方差参数。
+
+## 启动与一次健康检查
+
+- 2026-08-25 11:34:33（N607）唯一启动成功，主PID为`2829308`；PID的CWD、完整cmdline、独立run root和GPU0映射均与预登记一致，未覆盖既有路径。
+- ManySig初始化期间进程保持100% CPU并累计读取约2.39GB，先生成`config_snapshot.json`；没有把该阶段误报为训练进展。
+- 11:45:56首次确认`logs.jsonl`真实增长至111个episode记录、outer step 27；记录均为正式`inner_steps=3`且loss有限。stdout无Traceback、RuntimeError、ValueError或CUDA OOM，故状态提升为`RUNNING`。
