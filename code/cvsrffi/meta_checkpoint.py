@@ -46,11 +46,13 @@ _META_ADAPTER_SITES = ("time", "freq", "fusion")
 _REGISTERED_META_ADAPTER_SITE_PROFILES = (
     _META_ADAPTER_SITES,
     ("time", "fusion"),
+    ("time",),
     ("fusion",),
 )
 _REGISTERED_META_ADAPTER_RANK_SITE_PROFILES = (
     (4, _META_ADAPTER_SITES),
     (4, ("time", "fusion")),
+    (8, ("time",)),
     (4, ("fusion",)),
     (8, ("fusion",)),
 )

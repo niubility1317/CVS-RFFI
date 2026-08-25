@@ -350,6 +350,27 @@ def test_phase1_config_allows_registered_time_fusion_rank4_profile():
     assert validated["adapter"]["sites"] == ["time", "fusion"]
 
 
+def test_phase1_config_allows_registered_time_only_rank8_profile():
+    config = valid_config()
+    config["schema"] = "cvs.phase1.meta_adapter.r4.v1"
+    config["adapter"]["sites"] = ["time"]
+    config["adapter"]["rank"] = 8
+
+    validated = validate_meta_phase1_config(config)
+
+    assert validated["adapter"]["rank"] == 8
+    assert validated["adapter"]["sites"] == ["time"]
+
+
+def test_phase1_config_rejects_time_only_rank4_profile():
+    config = valid_config()
+    config["schema"] = "cvs.phase1.meta_adapter.r4.v1"
+    config["adapter"]["sites"] = ["time"]
+
+    with pytest.raises(ValueError, match="registered rank/site profile"):
+        validate_meta_phase1_config(config)
+
+
 def test_phase1_config_rejects_rank8_outside_fusion_only_profile():
     config = valid_config()
     config["schema"] = "cvs.phase1.meta_adapter.r4.v1"
@@ -379,7 +400,7 @@ def test_legacy_tri_schema_rejects_fusion_only_profile():
 
 @pytest.mark.parametrize(
     "sites",
-    [[], ["time"], ["freq"], ["freq", "fusion"], ["fusion", "time", "freq"]],
+    [[], ["freq"], ["freq", "fusion"], ["fusion", "time", "freq"]],
 )
 def test_phase1_config_rejects_unregistered_adapter_site_profiles(sites):
     config = valid_config()

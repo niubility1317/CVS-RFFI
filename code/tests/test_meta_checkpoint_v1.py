@@ -221,6 +221,29 @@ def test_fusion_only_rank8_bundle_saves_and_strictly_reloads(tmp_path):
     assert audit.trainable_fraction <= 0.01
 
 
+def test_time_only_rank8_bundle_saves_and_strictly_reloads(tmp_path):
+    path = tmp_path / "time_only_rank8_meta_bundle.pth"
+    model_args = _model_args()
+    model_args["meta_adapter_rank"] = 8
+    model_args["meta_adapter_sites"] = "time"
+    model = build_model(**model_args)
+    config = _config()
+    config["model_args"] = model_args
+    config["meta_adapter_config"]["rank"] = 8
+    config["meta_adapter_config"]["sites"] = ["time"]
+
+    save_meta_bundle(path, model, config, _selection())
+    loaded, audit = load_meta_bundle_strict(path, "cpu")
+
+    expected = tuple(sorted(name for name, _ in iter_inner_adapter_parameters(loaded)))
+    assert expected
+    assert all(name.startswith("meta_adapter_time.") for name in expected)
+    assert not any("meta_adapter_freq" in name for name in loaded.state_dict())
+    assert not any("meta_adapter_fusion" in name for name in loaded.state_dict())
+    assert audit.trainable_names == expected
+    assert audit.trainable_fraction <= 0.01
+
+
 def test_time_fusion_rank4_bundle_saves_and_strictly_reloads(tmp_path):
     path = tmp_path / "time_fusion_rank4_meta_bundle.pth"
     model_args = _model_args()
@@ -272,9 +295,23 @@ def test_bundle_rejects_time_fusion_rank8_profile(tmp_path):
         )
 
 
+def test_bundle_rejects_time_only_rank4_profile(tmp_path):
+    config = _config()
+    config["model_args"]["meta_adapter_sites"] = "time"
+    config["meta_adapter_config"]["sites"] = ["time"]
+
+    with pytest.raises(ValueError, match="registered rank/site profile"):
+        save_meta_bundle(
+            tmp_path / "time_only_rank4.pth",
+            build_model(**config["model_args"]),
+            config,
+            _selection(),
+        )
+
+
 @pytest.mark.parametrize(
     "sites",
-    [["time"], ["freq"], ["freq", "fusion"]],
+    [["freq"], ["freq", "fusion"]],
 )
 def test_bundle_rejects_unregistered_authorized_site_subsets(tmp_path, sites):
     config = _config()
@@ -599,3 +636,36 @@ def test_strict_loader_dispatches_real_dual_time_fusion_rank4_under_budget(tmp_p
     assert any("meta_adapter_time" in name for name in audit.trainable_names)
     assert any("meta_adapter_fusion" in name for name in audit.trainable_names)
     assert not any("meta_adapter_freq" in name for name in audit.trainable_names)
+
+
+def test_strict_loader_dispatches_real_dual_time_only_rank8_under_budget(tmp_path):
+    model_args = {
+        "num_classes": 3,
+        "num_domains": 2,
+        "model_size": "M",
+        "dataset": "wisig",
+        "input_len": 64,
+        "sample_rate_hz": 25e6,
+        "model_variant": "base",
+        "id_feature_key": "feat_joint",
+        "dom_feature_key": "feat_imp",
+        "meta_adapter_rank": 8,
+        "meta_adapter_sites": "time",
+    }
+    model = build_dual_model(**model_args)
+    config = _config()
+    config["model_args"] = model_args
+    config["meta_adapter_config"]["rank"] = 8
+    config["meta_adapter_config"]["sites"] = ["time"]
+    path = tmp_path / "dual_time_only_rank8_meta_bundle.pth"
+
+    save_meta_bundle(path, model, config, _selection())
+    loaded, audit = load_meta_bundle_strict(path, "cpu")
+
+    assert set(loaded.state_dict()) == set(model.state_dict())
+    assert audit.checkpoint_load_strict is True
+    assert audit.trainable_fraction <= 0.01
+    assert audit.trainable_names
+    assert all("meta_adapter_time" in name for name in audit.trainable_names)
+    assert not any("meta_adapter_freq" in name for name in audit.trainable_names)
+    assert not any("meta_adapter_fusion" in name for name in audit.trainable_names)
