@@ -1,7 +1,7 @@
 # CVS Cached Slow-Fast Domain Adapter诊断实验报告
 
 - run ID：`cvs_cached_slow_fast_diag9_s392002_20260825_r1`
-- 当前状态：`LOCAL_VERIFIED / PRELAUNCH`
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 实现与9行矩阵配置提交：`f41f515fa86bb265a4594e9d8b506dd247ce10da`；push后远端OID独立回读一致。
 - 冻结基线：`ADV3B02_CORE90_SOFT_E200`
@@ -62,3 +62,9 @@ diag9 prediction：
 - smoke预期`SMOKE_PASS`、`query_input_capability=false`、`query_opened=false`。
 - diag9预期9行各自的`DA0_REG0/DA1_REG0`prediction与receipt，以及`matrix_receipt.json`。
 - prediction全部闭合后才由独立scorer连接truth。候选只有同时满足聚合mean至少+1.0pp、floor至少+0.5pp且任一旧类退化不超过5pp，才建议进入Target25；否则记录`SCIENTIFIC_FAILURE_NO_PROMOTION`。
+
+## r1技术停止
+
+- Phase1.5启动返回主PID`2992116`，随后进程退出。保留日志和部分输出，不覆盖、不删除、不续写。
+- 确定性错误：地面cache和慢基已在`cuda:0`，但FAST候选的`gamma/beta`初始化仍在CPU，首次FAST objective触发device mismatch。COMMON bundle可能已生成，但三候选artifact不完整。
+- r1没有prediction、没有truth连接、没有性能结果。定点修复后只允许使用新run ID `cvs_cached_slow_fast_diag9_s392002_20260825_r2`。

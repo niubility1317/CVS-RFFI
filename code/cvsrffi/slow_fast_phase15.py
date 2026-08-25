@@ -215,10 +215,10 @@ def train_slow_fast_basis(
     basis = fit_common_shift_basis(cache, frozen, rank=8)
     u = torch.nn.Parameter(-0.05 * basis.clone())
     v = torch.nn.Parameter(basis.clone())
-    gamma = torch.nn.Parameter(torch.zeros(8))
-    beta = torch.nn.Parameter(torch.zeros(8))
+    gamma = torch.nn.Parameter(torch.zeros(8, device=features.device))
+    beta = torch.nn.Parameter(torch.zeros(8, device=features.device))
     direction_gate = (
-        torch.nn.Parameter(torch.zeros(8))
+        torch.nn.Parameter(torch.zeros(8, device=features.device))
         if candidate is SlowFastCandidate.FAST_LOWRANK_R8
         else None
     )

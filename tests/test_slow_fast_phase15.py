@@ -115,5 +115,9 @@ def test_phase15_training_reduces_frozen_prototype_loss_without_changing_prototy
     assert audit["episode_k_counts"]["1"] == 80
     assert audit["stage1_final_loss"] <= audit["initial_loss"]
     assert torch.isfinite(torch.tensor(audit["final_loss"]))
+    assert state.gamma.device == cache.features.device
+    assert state.beta.device == cache.features.device
+    if candidate is SlowFastCandidate.FAST_LOWRANK_R8:
+        assert state.direction_gate.device == cache.features.device
     assert final.item() < initial.item()
     assert torch.equal(prototypes, prototype_before)
