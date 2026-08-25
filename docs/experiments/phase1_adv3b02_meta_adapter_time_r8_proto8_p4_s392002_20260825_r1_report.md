@@ -1,7 +1,7 @@
 # Time-only Rank-8 Prototype-Aligned Scale-8 Meta-Adapter P4 Phase1最小预登记报告
 
 - run ID：`phase1_adv3b02_meta_adapter_time_r8_proto8_p4_s392002_20260825_r1`
-- 状态：`LOCAL_VERIFIED`
+- 状态：`LANDED`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 代码／配置冻结提交：`2a7435bef0fc1292d31fe3ac3082bada76caeefd`；首次push后独立回读远端分支OID一致。
 - 冻结基线：`ADV3B02_CORE90_SOFT_E200`checkpoint。
@@ -44,3 +44,9 @@
 ## 后续门槛
 
 Phase1仅在source-only选择规则允许且9个artifact完整时进入同row单seed Target5。Target5仍以`DA1_REG0-DA0_REG0`旧类均值至少+1.0pp且floor至少+0.5pp作为Target25门槛；失败则记录科学失败并继续下一少层候选。
+
+## Release与真实checkpoint smoke
+
+- 最终release提交：`c399fc047af05f07ae577c637d0ecda800f4902a`；远端分支OID独立回读一致。release归档本地／远端唯一一次SHA256均为`92cb1ffd757aceddc4cb68f8083d8791d519367859798e0dfb49e63f65097af6`，run专属checkout内8个相关入口远端编译通过。
+- N607只读核对确认release、output root、stdout和同名Python进程原先均不存在；冻结checkpoint与WiSig数据存在，GPU0空闲。
+- 真实`ADV3B02_CORE90_SOFT_E200`checkpoint无query smoke通过：只存在`id/dom_backbone.meta_adapter_time`，可训练参数5458／1055125=0.517285%，正式3步；bundle严格回读`frozen_prototype_cosine_ce_v1`／8.0，`query_read=false`、`target_read=false`。
