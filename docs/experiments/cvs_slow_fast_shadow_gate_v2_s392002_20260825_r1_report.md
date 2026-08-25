@@ -1,7 +1,7 @@
 # CVS Slow-Fast影子门控V2实验报告
 
 - run ID：`cvs_slow_fast_shadow_gate_v2_s392002_20260825_r1`
-- 当前状态：`LOCAL_VERIFIED`
+- 当前状态：`ANALYZED / SCIENTIFIC_SIGNAL_NO_PROMOTION`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 代码与配置提交：`d26bc3428d61e5ad4d18261c368278b15bfbbb66`；GitHub远端OID已独立回读一致。
 - 冻结基线：`ADV3B02_CORE90_SOFT_E200`
@@ -43,3 +43,34 @@
 - truth-last评分后，正式`DA1_GATE_CF_REG0`或预注册固定影子若旧类均值至少`+1.0pp`、floor至少`+0.5pp`且任一旧类下降不超过`5pp`，才进入Target25确认。
 - 若存在非零query上界但support gate选不到，下一步只优化gate／步数／步长；若所有非零状态都无上界，才触发P1慢基重训；P1仍失败才考虑P2中间层Adapter。
 
+## N607发布与执行闭合
+
+- release归档本地／远端唯一一次SHA256均为`7ddb130241c035ebc78d3a0d6480d485a971f115f17bce32f6f18def2b27f689`；远端编译为`REMOTE_COMPILE_PASS`。
+- 真实checkpoint无query smoke为`SMOKE_PASS`：60个target support物理样本，`query_input_capability=false`、`query_truth_opened=false`、`query_role_opened=false`、`source_opened=false`。
+- prediction启动PID为`3078859`。首次启动后检查时进程已自然结束，但更高等级artifact证据已闭合：9／9行、522份prediction、9份row receipt和matrix receipt齐全；`truth_opened=false`、`source_opened=false`。
+- scorer命令：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/scripts/score_stage2_slow_fast_matrix.py --matrix-config configs/stage2_slow_fast_shadow_diag9_s392002_20260825.json --prediction-root /home/szu2070436088/2510044040/CV-SincNet/runs/cvs_slow_fast_shadow_gate_v2_s392002_20260825_r1 --truth-map configs/stage2_slow_fast_truth_map_s392002_20260825.json`。
+- truth-last评分生成9份score和`diag9_score_summary.json`；`status=ANALYZED`、`truth_opened_after_predictions_complete=true`、`truth_last_selection_reused_for_adaptation=false`。
+
+## 实验结果
+
+三候选的`DA0_REG0`跨三场景聚合旧类均值均为66.67%，floor为38.33%。新cross-fit门控和legacy门控在9行都选择lambda=0，因此门控状态与基线相同，均未晋级。
+
+|候选|代表性最轻非零状态|聚合均值变化|聚合floor变化|最差旧类变化|结论|
+|---|---|---:|---:|---:|---|
+|`COMMON_SHIFT_R4`|`DA1_L0125_REG0`|-1.67pp|0.00pp|-6.67pp|无上界|
+|`FAST_FILM_R8`|`DA1_J01_A050_L0125_REG0`|-0.28pp|0.00pp|-3.33pp|局部信号、聚合失败|
+|`FAST_LOWRANK_R8`|`DA1_J01_A050_L0125_REG0`|-0.56pp|0.00pp|-5.00pp|局部信号、聚合失败|
+
+|候选|`leo_clear_weak`均值变化／决策变化数|`leo_low_elev_weak`均值变化／决策变化数|`leo_rain_weak`均值变化／决策变化数|
+|---|---:|---:|---:|
+|`COMMON_SHIFT_R4`|-1.67pp／7|-0.83pp／8|-2.50pp／10|
+|`FAST_FILM_R8`|+0.83pp／4|-0.83pp／3|-0.83pp／3|
+|`FAST_LOWRANK_R8`|+0.83pp／3|-0.83pp／2|-1.67pp／4|
+
+## 门控诊断与结论
+
+- 影子状态证明三类Adapter都会实际改变query判决，排除了“代码路径未生效”。`COMMON_SHIFT_R4`随lambda增大持续退化，不再作为优先方向。
+- 两个FAST候选在`leo_clear_weak`出现`+0.83pp`局部收益，但没有达到预注册`+1.0pp`门槛，且在另外两个场景反向；不存在跨三场景稳定的非零query上界。
+- FAST在lambda=0.125时的support cross-fit风险增益为0.123～0.200，但最大特征移动为0.151～0.277，超过固定trust radius=0.15。每行完成6次cross-fit拟合和21次尝试梯度更新，提交更新为0；当前门控主要被trust约束卡住，不是连续风险没有改善。
+- 最合理的下一步仍属于P0：在不查看query的前提下，用source receiver-held-out episode预标定相对trust尺度或加入更小lambda，并用新的冻结seed／receiver验证。不能根据本轮truth直接挑选lambda重跑同一query。
+- 因为已有局部FAST信号且失败机制指向trust校准，暂不触发P1慢基／paired operator重训，更不进入P2中间层Adapter。最终结论为`SCIENTIFIC_SIGNAL_NO_PROMOTION`，不进入Target25。

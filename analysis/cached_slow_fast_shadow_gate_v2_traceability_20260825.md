@@ -16,7 +16,7 @@
 |V2-10|§5.4|拆分尝试与提交更新量、fold拟合次数|selection/receipt|verified|回退仍记录attempted与crossfit_fit_count|
 |V2-11|§5.5|trust_radius强制显式传入并记录|selection/runner|verified|函数签名、数值校验与receipt测试通过|
 |V2-12|§10、§17A2-A3|比较J={1,3,5,10}与步长倍率={0.5,1,2,4}|runner/config/scorer|verified|shadow_diag9.v2矩阵校验和runner测试通过|
-|V2-13|§13|核验checkpoint、160维特征、class mapping与原型预测一致性|smoke/report|pending|真实checkpoint无query数值核验|
+|V2-13|§13|核验checkpoint、160维特征、class mapping与原型预测一致性|smoke/report|verified|N607真实checkpoint无query smoke通过，bundle与外部class／prototype逐值一致|
 |V2-14|§13|保存逐文件／代码／feature SHA并作为发布条件|无|rejected|`REJECTED_EXTRA_GATE`：Git提交和一次release SHA已固定实现；改用直接数值核验|
 |V2-15|§6、§7|receiver rank4与LEO rank4慢基、paired reduced-rank operator|phase15/bundle|deferred|仅当P0证明非零状态无query上界后进入P1|
 |V2-16|§8|球面切空间与robust公共残差|phase15/selection|deferred|P1条件项|
@@ -25,6 +25,6 @@
 |V2-19|§12|clean identity loss及新的pair/floor/trust权重|phase15|deferred|P1条件项|
 |V2-20|§14|区分经验几何中心与决策原型|cache/bundle|deferred|P1条件项|
 |V2-21|§15、§17C|前移time／freq／fusion Adapter|新中间层实现|deferred|P1仍无有效上界后才进入P2|
-|V2-22|§17、§19|按P0→P1→P2条件顺序发布实验并形成详细报告|report|pending|N607 prediction、独立scorer和结论|
+|V2-22|§17、§19|按P0→P1→P2条件顺序发布实验并形成详细报告|report|verified|9行522份prediction与truth-last评分闭合；P1／P2未满足触发条件|
 
-当前统计：pending=2，verified=12，deferred=7，rejected=1，blocked=0。唯一一次独立P0/P1审查结论为`NO_FINDINGS`；V2-13等待N607真实checkpoint smoke，V2-22等待prediction与truth-last评分闭合。
+当前统计：pending=0，verified=14，deferred=7，rejected=1，blocked=0。唯一一次独立P0/P1审查结论为`NO_FINDINGS`。P0发现FAST候选仅在`leo_clear_weak`存在局部`+0.83pp`信号，三场景聚合仍为负；下一步留在P0做support-only trust校准，暂不触发P1／P2。
