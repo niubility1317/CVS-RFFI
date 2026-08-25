@@ -47,3 +47,9 @@
 - release归档固定当前Git HEAD=`ea966672e6986751d144cdd96c559b13ad438be4`；本地路径为`E:\type10-7\release_archives\stage2_meta_adapter_target5_time_r8_p4_s392002_20260825_r1_release.tar.gz`。
 - 唯一release归档本地／远端一次SHA256均为`30d420f9bcd9aa040d0b8ecad5850686036864476a0c4968a42966f3ff18f8fe`；远端release已解压到预登记checkout，14个相关生产入口编译通过。
 - 发布前独立确认release、工厂、smoke、prediction和stdout目标均不存在；Phase1正式bundle和冻结原型均非空，无同名持久进程；GPU0～7均无计算负载。
+
+## Target工厂与真实checkpoint smoke
+
+- Target工厂一次完成15／15个truth-free row，receipt为`TARGET_INPUTS_COMPLETE`；`query_truth_opened=false`、`query_role_opened=false`、`source_opened=false`。
+- smoke专用配置在本地从首row配置精确删除`query_path`，并通过与首row其余字段完全相等以及无query／source／clean／truth／role键的断言后同步。
+- 真实Phase1 time-only rank8 bundle无query smoke一次通过：`REAL_META_CHECKPOINT_NO_QUERY_SMOKE_PASS`、严格checkpoint回读、3次真实反向传播、`trainable_fraction=0.005172846819097263`、`query_opened=false`、`source_opened=false`、`query_state_update_count=0`、`performance_result=null`。
