@@ -1,7 +1,7 @@
 # Time+Fusion Rank-4 Meta-Adapter P4 Phase1最小预登记报告
 
 - run ID：`phase1_adv3b02_meta_adapter_time_fusion_r4_p4_s392002_20260825_r1`
-- 状态：`LOCAL_VERIFIED`
+- 状态：`LANDED / READY_TO_LAUNCH`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 代码／配置冻结提交：`971001b5b72a59adf59d7339fa6036a04d4fc539`；GitHub远端分支OID已独立回读一致。
 - 冻结基线：`ADV3B02_CORE90_SOFT_E200`checkpoint。
@@ -43,6 +43,13 @@
 
 - expected artifacts：正式bundle、冻结原型、`logs.jsonl`、`metrics.csv`、训练曲线、P0／final四场景评价、`run_summary.json`和config snapshot。
 - 技术停止规则：只在协议越权、错误checkout／数据split、输出覆盖、launcher-wide故障、无训练进展或重复确定性异常时停止；不得因中间性能低停止。
+
+## Release与真实checkpoint smoke
+
+- release提交：`4b8d7a77b2a93e6ac1bff2834f18dd66f2eab689`；GitHub远端分支OID独立回读一致。
+- 唯一release归档映射：本地`E:\type10-7\release_archives\phase1_adv3b02_meta_adapter_time_fusion_r4_p4_s392002_20260825_r1_release.tar.gz`→远端`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_meta_adapter_time_fusion_r4_p4_s392002_20260825_r1_release.tar.gz`。本地／远端一次SHA256均为`33b43785255d582e8c49ae654ad27bc50c2d8ab943af284d0a451431ec8b73a7`。
+- 新release、run root和正式stdout日志在落地前均不存在；未发现同run进程，GPU0～7均无计算进程。release已在独立checkout解包，9个生产入口远端编译通过。第一次编译命令误写不存在的`model_dual_cvs_v2.py`，只产生路径错误；核对仓库后改为真实`model_dual_cvsincnet.py`并通过，未启动训练或创建run root。
+- 真实`ADV3B02_CORE90_SOFT_E200`checkpoint无query smoke通过：严格bundle保存／回读成功；只发现time／fusion四个adapter模块、20个可训练张量、5780／1055449=0.547634%；rank=4、正式3步；`query_read=false`、`target_read=false`，无freq、分类头、LDA或协方差参数。
 
 ## 后续门槛
 
