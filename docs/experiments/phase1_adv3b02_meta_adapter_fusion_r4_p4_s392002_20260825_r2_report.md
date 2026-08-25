@@ -1,7 +1,7 @@
 # CVS_META_ADAPTER_FUSION_R4_P4_V1 r2最小预登记报告
 
 - run ID：`phase1_adv3b02_meta_adapter_fusion_r4_p4_s392002_20260825_r2`
-- 当前状态：`LOCAL_VERIFIED`
+- 当前状态：`ANALYZED`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 固定代码与配置提交：`391795c19096de643dfb626bc2ac95ec7f4fd141`
 
@@ -58,3 +58,26 @@ Phase1只读取receiver0～6、day0～1的source角色样本训练和选择；�
 - 33秒复核时进程状态`Rl`、累计CPU时间33秒、CPU占用101%、GPU0显存488MiB；其他GPU无计算进程。
 
 当前最高状态为`RUNNING`。这只证明唯一r2启动健康，尚未证明20个episode池的真实分布、完整artifact或目标域收益。
+
+## Phase1完整闭合
+
+- PID=`2742996`自然退出，未执行kill、restart或覆盖；完成后GPU0～GPU7无计算进程，stdout无traceback、OOM、Killed、NaN或Inf。
+- 9个规定artifact全部非空：正式bundle4,279,186字节、`run_summary.json`3,367字节、`final_checkpoint_evaluation.json`3,432字节、冻结原型4,412字节；summary状态`ARTIFACTS_COMPLETE`，source判决`SOURCE_SELECTION_ELIGIBLE`。
+- 完整解析200行metrics和800条episode日志：step精确覆盖0～199，每步4条，全部loss有限；五类任务计数严格为320／160／120／120／80，K=1/2/5/10计数为280／200／160／160，全部正式3步。
+- config无target字段，训练只使用receiver0～6、day0～1的source角色；clean和三类LEO评价各包含84,000条、每类14,000条，且与Phase1角色物理样本不相交。
+- 正式bundle在本地严格回载：无missing/unexpected key；可训练参数2,890/1,052,557，占0.2746%，10个参数名全部属于双分支fusion adapter，无分类头；真实前向输出形状为1×6。
+
+## Phase1结果与解释
+
+下表比较最终checkpoint与同run P0控制，变化单位为百分点。
+
+|场景|P0均值|最终均值|均值变化|P0 floor|最终floor|floor变化|
+|---|---:|---:|---:|---:|---:|---:|
+|clean|92.0071%|92.0631%|+0.0560|87.8571%|88.3357%|+0.4786|
+|`leo_clear_weak`|79.1833%|79.1381%|-0.0452|52.3286%|54.4214%|+2.0929|
+|`leo_low_elev_weak`|75.1298%|74.9917%|-0.1381|45.3714%|46.7857%|+1.4143|
+|`leo_rain_weak`|74.9024%|74.7131%|-0.1893|43.9071%|45.3357%|+1.4286|
+
+多域episode训练带来了稳定的最差类改善，且避免了三层P4明显的floor退化；代价是LEO总体均值小幅下降。source-held-out两条曲线在step0与step3保持1.0000和0.8333，适配变化均为0，因此Phase1只证明checkpoint可进入Target5，不证明目标域适配已有正向收益。
+
+当前状态为`ANALYZED`。下一步使用该正式bundle在既有`p2_min_v1`、`VALIDATED_ONCE`同row上运行单seed Target5；仅当`DA1_REG0-DA0_REG0`旧类均值≥+1.0pp且floor≥+0.5pp时进入Target25。
