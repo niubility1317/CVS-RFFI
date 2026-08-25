@@ -1,7 +1,7 @@
 # Time-only Rank-8 Class-Floor Scale-8 Meta-Adapter P4 Phase1最小预登记报告
 
 - run ID：`phase1_adv3b02_meta_adapter_time_r8_floor8_p4_s392002_20260825_r1`
-- 状态：`LANDED`
+- 状态：`RUNNING`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 代码／配置冻结提交：`a2f2461620f518b23d6a7506fd7a493c08928854`；push后独立回读远端OID一致。
 - 冻结基线：`ADV3B02_CORE90_SOFT_E200`checkpoint。
@@ -50,3 +50,4 @@ Phase1仅在source-only选择规则允许且9个artifact完整时进入同row单
 - release提交：`1eb9e0bcd6f9c867c6a6c7161d59e2cd30e4f844`；远端分支OID独立回读一致。归档本地／远端唯一一次SHA256均为`057f76d0864db761453b0f38eee9292ce7530fcff0b3eda45207be4b70b461ad`；run专属checkout内11个生产入口远端编译通过，配置回读为目标run ID、`frozen_prototype_class_floor_ce_v1`和scale8。
 - 发布前只读核对确认release／run／stdout／smoke目标原先不存在，无同名训练进程；冻结checkpoint、WiSig、既有VALIDATED_ONCE support和冻结原型存在，GPU0空闲。
 - 以真实已训练scale8 meta bundle仅替换objective元数据作为pre-Phase1运行时探针；严格bundle回读5458／1055125=0.517285%，随后在既有合法Target5首row support上完成3次真实反向传播。receipt为`REAL_META_CHECKPOINT_NO_QUERY_SMOKE_PASS`，`frozen_prototype_class_floor_ce_v1`／8.0，`query_opened=false`、`source_opened=false`、`query_state_update_count=0`，不产生性能结论。
+- 2026-08-25 14:22:41 HKT由唯一owner按冻结命令启动，主PID=`2913629`；一次启动检查确认PPID=1、CWD／cmdline／run root均与预登记一致，GPU0 UUID=`GPU-56adac86-77cd-36c9-8770-dbf002650461`、显存486MiB，stdout已增长并进入训练初始化。
