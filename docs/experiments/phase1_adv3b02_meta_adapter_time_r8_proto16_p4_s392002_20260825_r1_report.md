@@ -3,6 +3,7 @@
 - run ID：`phase1_adv3b02_meta_adapter_time_r8_proto16_p4_s392002_20260825_r1`
 - 状态：`LOCAL_VERIFIED`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
+- 冻结代码／配置提交：`6eefefa29c3dca85944d0a8e0deae0fcc351ea62`；首次push后独立回读远端分支OID一致。
 - 冻结基线：`ADV3B02_CORE90_SOFT_E200`checkpoint。
 - 科学锚点：time+fusion rank4与time-only rank8在Target5均只改变余弦分数而无决策变化；fusion rank8产生6个决策变化但low-elev净负。
 
