@@ -1,7 +1,7 @@
 # Time-only Rank-8 Prototype-Aligned Meta-Adapter P4 Phase1最小预登记报告
 
 - run ID：`phase1_adv3b02_meta_adapter_time_r8_proto16_p4_s392002_20260825_r1`
-- 状态：`LANDED`
+- 状态：`RUNNING`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 冻结代码／配置提交：`6eefefa29c3dca85944d0a8e0deae0fcc351ea62`；首次push后独立回读远端分支OID一致。
 - 冻结基线：`ADV3B02_CORE90_SOFT_E200`checkpoint。
@@ -50,6 +50,7 @@
 - N607只读核对确认release、output root、stdout和同名进程原先均不存在；冻结checkpoint与WiSig数据路径存在；GPU0预检为空闲。
 - run专属checkout解压后8个相关入口远端编译通过。
 - 真实`ADV3B02_CORE90_SOFT_E200`checkpoint无query smoke通过：只存在`id/dom_backbone.meta_adapter_time`，可训练参数5458／1055125=0.517285%，正式3步；bundle严格回读`frozen_prototype_cosine_ce_v1`／16.0，`query_read=false`、`target_read=false`。
+- 2026-08-25 12:47:46 HKT由唯一owner按冻结命令启动，主PID=`2866002`；一次启动检查确认PPID=1、CWD／cmdline／run root均与预登记一致，GPU0 UUID=`GPU-56adac86-77cd-36c9-8770-dbf002650461`，进程显存488MiB，stdout已产生启动记录。
 
 ## 后续门槛
 
