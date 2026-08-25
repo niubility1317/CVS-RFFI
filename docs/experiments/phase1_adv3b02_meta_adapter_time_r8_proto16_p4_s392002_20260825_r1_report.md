@@ -1,7 +1,7 @@
 # Time-only Rank-8 Prototype-Aligned Meta-Adapter P4 Phase1最小预登记报告
 
 - run ID：`phase1_adv3b02_meta_adapter_time_r8_proto16_p4_s392002_20260825_r1`
-- 状态：`LOCAL_VERIFIED`
+- 状态：`LANDED`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 冻结代码／配置提交：`6eefefa29c3dca85944d0a8e0deae0fcc351ea62`；首次push后独立回读远端分支OID一致。
 - 冻结基线：`ADV3B02_CORE90_SOFT_E200`checkpoint。
@@ -42,6 +42,14 @@
 
 - expected artifacts：正式bundle、冻结原型、`logs.jsonl`、`metrics.csv`、训练曲线、P0／final四场景评价、`run_summary.json`和config snapshot。
 - 技术停止规则：只在协议越权、错误checkout／数据split、输出覆盖、launcher-wide故障、无训练进展或重复确定性异常时停止；不得因中间性能低停止。
+
+## Release与真实checkpoint smoke
+
+- 最终release提交：`9f7c2fad9eda66bad8aa0b43c4f4f60dd5ffc0e2`；独立回读远端分支OID一致。
+- release归档：`E:\type10-7\release_archives\phase1_adv3b02_meta_adapter_time_r8_proto16_p4_s392002_20260825_r1_release.tar.gz`→`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_meta_adapter_time_r8_proto16_p4_s392002_20260825_r1_release.tar.gz`；唯一一次本地／远端SHA256均为`a5c3927da8f0ca693d7ffaebae0329b41ac72bcf760bcd54d72ce8f533ac1b82`。
+- N607只读核对确认release、output root、stdout和同名进程原先均不存在；冻结checkpoint与WiSig数据路径存在；GPU0预检为空闲。
+- run专属checkout解压后8个相关入口远端编译通过。
+- 真实`ADV3B02_CORE90_SOFT_E200`checkpoint无query smoke通过：只存在`id/dom_backbone.meta_adapter_time`，可训练参数5458／1055125=0.517285%，正式3步；bundle严格回读`frozen_prototype_cosine_ce_v1`／16.0，`query_read=false`、`target_read=false`。
 
 ## 后续门槛
 
