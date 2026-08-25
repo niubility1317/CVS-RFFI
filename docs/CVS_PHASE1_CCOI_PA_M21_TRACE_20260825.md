@@ -7,28 +7,28 @@
 |M21-01|§1、§3|候选命名和theta迁移声明边界|设计、runner、报告|pending|manifest/report检查|不得称正确challenge系统辨识|
 |M21-02|§2.1|`V_audit_retro`仅称权重独立|设计、报告|pending|报告复核|非研究历史完全未见|
 |M21-03|§2.2|同容量C1′/C4′控制|runner、factor artifact|pending|参数量/step/init测试|同初始化模板|
-|M21-04|§2.3|覆盖4个holdout fold|核心模块、runner|pending|fold覆盖测试|macro及逐fold|
-|M21-05|§2.4|support只来自独立bank|核心模块|pending|role来源测试|审计目标不得充当support|
-|M21-06|§2.4、§7|关系选择不读取q|核心模块|pending|API及候选不变性测试|metadata后确定性seed|
+|M21-04|§2.3|覆盖4个holdout fold|核心模块、runner|verified|4-fold/raw-mask测试|runner接入待M21-39闭合|
+|M21-05|§2.4|support只来自独立bank|核心模块|verified|role来源测试|审计目标不得充当support|
+|M21-06|§2.4、§7|关系选择不读取q|核心模块|verified|无q接口及候选测试|metadata后确定性seed|
 |M21-07|§4.1|保持0.07/0.63/0.15/0.15|runner|pending|协议负测|只细分V_select|
-|M21-08|§4.1|V_select按65/35或覆盖不足时70/30|核心模块、manifest|pending|split测试|比例在性能前冻结|
-|M21-09|§4.2|TX×RX×day×eq×block分组|核心模块|pending|block不跨role测试|B从10/20/25元数据选择|
-|M21-10|§4.2|guard block不进入role|核心模块|pending|guard测试|降低邻近重复|
-|M21-11|§4.3|exact/near duplicate聚合审计|核心模块、artifact|pending|字段与阈值测试|不发布样本级摘要|
-|M21-12|§4.3|sig_i不得解释为跨RX同步ID|核心模块、报告|pending|语义字段复核|F7保持UNAVAILABLE|
-|M21-13|§5|sidecar V3完整architecture_config|核心模块、artifact|pending|round-trip测试|含无参数语义|
-|M21-14|§5.2|V3严格加载和contract核对|核心模块|pending|mismatch负测|strict state load|
-|M21-15|§5.2|V2仅显式迁移challenge encoder|核心模块|pending|legacy模式负测|不能直接输出V2|
+|M21-08|§4.1|V_select按65/35或覆盖不足时70/30|核心模块、manifest|verified|split复现测试|manifest接入待M21-39闭合|
+|M21-09|§4.2|TX×RX×day×eq×block分组|核心模块|verified|block不跨role测试|B从10/20/25元数据选择|
+|M21-10|§4.2|guard block不进入role|核心模块|verified|相邻role隔离测试|降低邻近重复|
+|M21-11|§4.3|exact/near duplicate聚合审计|核心模块、artifact|verified|聚合字段测试|不返回样本级摘要|
+|M21-12|§4.3|sig_i不得解释为跨RX同步ID|核心模块、报告|verified|语义字段与F7测试|F7保持UNAVAILABLE|
+|M21-13|§5|sidecar V3完整architecture_config|核心模块、artifact|verified|round-trip测试|含无参数语义|
+|M21-14|§5.2|V3严格加载和contract核对|核心模块|verified|token/stride/contract负测|strict state load|
+|M21-15|§5.2|V2仅显式迁移challenge encoder|核心模块|verified|legacy模式负测|不能直接输出V2|
 |M21-16|§6|冻结Core90和旧challenge encoder|runner|pending|requires_grad/state检查|response/operator重新初始化|
 |M21-17|§6.1|C1′/C4′只在L_s训练|runner|pending|role receipt|U_s不增加监督|
 |M21-18|§6.1/6.2|只用V_select_fit选epoch|runner|pending|选择访问测试|audit不参与选模|
-|M21-19|§7|F0–F9完整矩阵|核心模块、runner|pending|逐row测试|F7明确UNAVAILABLE|
-|M21-20|§7.1|F3严格same TX/cross RX/same day|核心模块|pending|无fallback测试|无候选则invalid|
-|M21-21|§7.2|F5严格different TX/same RX/day|核心模块|pending|关系测试|禁止循环shuffle|
-|M21-22|§7.3|F6固定连续PA统计|核心模块|pending|特征有限性测试|不得读取q|
-|M21-23|§8.1|common-anchor与all-valid并报|核心模块、artifact|pending|mask测试|核心集合F2∩F3∩F5|
-|M21-24|§8.2|F3四项通过条件|判定模块|pending|边界值测试|5%、5%、10%、80%|
-|M21-25|§8.3|C4′对C1′至少3%且CI>0|判定模块|pending|三分支verdict测试|A_PASS/PARTIAL/FAIL|
+|M21-19|§7|F0–F9完整矩阵|核心模块、runner|verified|逐row/head训练测试|runner接入待M21-39闭合|
+|M21-20|§7.1|F3严格same TX/cross RX/same day|核心模块|verified|无fallback测试|无候选则invalid|
+|M21-21|§7.2|F5严格different TX/same RX/day|核心模块|verified|关系测试|禁止循环shuffle|
+|M21-22|§7.3|F6固定连续PA统计|核心模块|implemented|非q选择与距离测试|完整物理特征提取待runner|
+|M21-23|§8.1|common-anchor与all-valid并报|核心模块、artifact|verified|mask/macro测试|核心集合F2∩F3∩F5|
+|M21-24|§8.2|F3四项通过条件|判定模块|verified|边界值测试|5%、5%、10%、80%|
+|M21-25|§8.3|C4′对C1′至少3%且CI>0|判定模块|verified|三分支verdict测试|A_PASS/PARTIAL/FAIL|
 |M21-26|§9|3个head seed、3个mapping seed、2个sat seed|runner、artifact|pending|seed闭合测试|主sidecar seed 1个|
 |M21-27|§10.1|q条件、shuffle、DeepSets、ordered probe|核心模块、runner|pending|probe schema测试|固定条件子集|
 |M21-28|§10.2|M0精确检索指标|核心模块、artifact|pending|手算rank测试|候选池同TX/RX/day/fold|
@@ -49,9 +49,9 @@
 
 ## 当前计数
 
-- `pending`：40项
-- `implemented`：0项
-- `verified`：0项
+- `pending`：24项
+- `implemented`：1项
+- `verified`：15项
 - `deferred`：1项
 - `rejected`：1项
 - `blocked`：0项
