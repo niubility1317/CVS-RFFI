@@ -3,6 +3,7 @@
 - run ID：`phase1_adv3b02_meta_adapter_time_r8_proto8_p4_s392002_20260825_r1`
 - 状态：`LOCAL_VERIFIED`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
+- 代码／配置冻结提交：`2a7435bef0fc1292d31fe3ac3082bada76caeefd`；首次push后独立回读远端分支OID一致。
 - 冻结基线：`ADV3B02_CORE90_SOFT_E200`checkpoint。
 - 科学锚点：scale16在Target5产生52个决策变化和聚合均值+0.1111pp，但clear weak floor下降5pp；旧scale1则0个决策变化。
 
