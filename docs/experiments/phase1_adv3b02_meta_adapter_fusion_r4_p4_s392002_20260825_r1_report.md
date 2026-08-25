@@ -42,6 +42,12 @@ Phase1只读取receiver0～6、day0～1的source角色样本训练和选择；�
 
 技术停止只允许协议越权、错误checkout/output root、输出覆盖、无法产生规定artifact、确定性重复异常或进程归属不清；不得因中间性能低而停止，也不得干预无关进程。
 
-## 当前证据边界
+## N607发布与真实checkpoint smoke
 
-当前只证明本地实现、预算和测试通过，尚未证明N607 release落地、真实checkpoint smoke、训练启动、Phase1完成或目标域正向收益。后续证据按`LANDED→RUNNING→ARTIFACTS_COMPLETE→ANALYZED`追加。
+- 启动前只读核对确认release目录、run root和stdout日志均不存在，run ID无匹配进程；GPU0～GPU7利用率均为0且无计算进程。冻结checkpoint为8,582,116字节，ManySig为2,359,341,461字节。
+- release归档固定源提交为`a0a2db9f7bbe2c1f19850698cdde65581434ab59`，35,503,098字节、5,018个条目。唯一一次本地/远端SHA256均为`c6883a79156da8cfac6344751750271f52ab1d8bc2d1c4f1230ea67cc036351c`。
+- 远端checkout内7个相关生产入口编译通过。
+- 第一次外部smoke在真实checkpoint加载、站点和预算断言均通过后，因smoke脚本误把dual返回键写成`logits`而报`KeyError`；未创建run root、未读取target/query，也未修改release代码。只把非生产smoke断言改为真实接口`tx_logits`后再次运行。
+- 第二次真实checkpoint smoke输出`REAL_FUSION_CHECKPOINT_NO_QUERY_SMOKE_PASS`：迁移路径为`rank0_legacy_shell`，站点仅为两个fusion adapter，内循环参数2,890/1,052,557，占0.2746%，正式3步，`query_read=false`、`target_read=false`，前向logits形状合法。
+
+当前最高状态为`LANDED`。尚未证明训练启动、Phase1完成或目标域正向收益；后续证据按`RUNNING→ARTIFACTS_COMPLETE→ANALYZED`追加。
