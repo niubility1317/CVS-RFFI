@@ -4,7 +4,7 @@
 - 状态：`LOCAL_VERIFIED`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - Phase1结果提交：`fb20a11ea379f5320220ed963891c2d2f672ebd4`
-- 本次计划提交：待本地验证后填写
+- 本次计划提交：`7bc9dd59a6d6e1e76e44f4e9b4cb6dd938f6d9b4`
 
 ## 候选与同row矩阵
 
@@ -25,6 +25,8 @@
 ## 本地与发布预登记
 
 - 本次配置：`configs/stage2_meta_adapter_target5_fusion_r4_p4_s392002_20260825_r1.json`；只改bundle ID、checkpoint和prototype路径，所有Target5数据行保持不变。
+- 精确计划对比通过：5个entries与原P4 Target5逐项相等，变更键严格为`bundle_id`、`checkpoint_path`、`prototype_path`。
+- 69项Stage2工厂／runner／matrix／handoff／scorer／适配回归通过；9个相关生产入口本地编译通过。
 - 测试环境：`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe`；工作目录：本分支worktree根目录。
 - 独立P0/P1审查已在同一fusion-only候选实现阶段完成，并对唯一P1做过定点复审；按每候选最多一次审查规则不再增加重复审查门。
 - N607账户：普通用户`szu2070436088`；环境：现有`CVS-RFFI`；GPU：0。
