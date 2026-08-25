@@ -1,7 +1,7 @@
 # Time-only Rank-8 Class-Floor Scale-8 Meta-Adapter P4 Phase1最小预登记报告
 
 - run ID：`phase1_adv3b02_meta_adapter_time_r8_floor8_p4_s392002_20260825_r1`
-- 状态：`LOCAL_VERIFIED`
+- 状态：`LANDED`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 代码／配置冻结提交：`a2f2461620f518b23d6a7506fd7a493c08928854`；push后独立回读远端OID一致。
 - 冻结基线：`ADV3B02_CORE90_SOFT_E200`checkpoint。
@@ -44,3 +44,9 @@
 ## 后续门槛
 
 Phase1仅在source-only选择规则允许且9个artifact完整时进入同row单seed Target5。Target5仍以`DA1_REG0-DA0_REG0`旧类均值至少+1.0pp且floor至少+0.5pp作为Target25门槛；失败则记录科学失败并继续下一少层候选。
+
+## Release与真实checkpoint无query smoke
+
+- release提交：`1eb9e0bcd6f9c867c6a6c7161d59e2cd30e4f844`；远端分支OID独立回读一致。归档本地／远端唯一一次SHA256均为`057f76d0864db761453b0f38eee9292ce7530fcff0b3eda45207be4b70b461ad`；run专属checkout内11个生产入口远端编译通过，配置回读为目标run ID、`frozen_prototype_class_floor_ce_v1`和scale8。
+- 发布前只读核对确认release／run／stdout／smoke目标原先不存在，无同名训练进程；冻结checkpoint、WiSig、既有VALIDATED_ONCE support和冻结原型存在，GPU0空闲。
+- 以真实已训练scale8 meta bundle仅替换objective元数据作为pre-Phase1运行时探针；严格bundle回读5458／1055125=0.517285%，随后在既有合法Target5首row support上完成3次真实反向传播。receipt为`REAL_META_CHECKPOINT_NO_QUERY_SMOKE_PASS`，`frozen_prototype_class_floor_ce_v1`／8.0，`query_opened=false`、`source_opened=false`、`query_state_update_count=0`，不产生性能结论。
