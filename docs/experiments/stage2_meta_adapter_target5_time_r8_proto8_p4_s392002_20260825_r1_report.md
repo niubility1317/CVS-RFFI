@@ -3,6 +3,7 @@
 - run ID：`stage2_meta_adapter_target5_time_r8_proto8_p4_s392002_20260825_r1`
 - 状态：`LOCAL_VERIFIED`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
+- 代码／配置冻结提交：`5043a79d871ed1d84a570c3f3d701bbb8ca3d5c8`；首次push后独立回读远端OID一致。
 - Phase1：`phase1_adv3b02_meta_adapter_time_r8_proto8_p4_s392002_20260825_r1`，状态`ARTIFACTS_COMPLETE / SOURCE_SELECTION_ELIGIBLE`。
 - 冻结基线：`ADV3B02_CORE90_SOFT_E200`。
 
