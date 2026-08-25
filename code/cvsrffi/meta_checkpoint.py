@@ -187,7 +187,11 @@ _META_ADAPTER_CONFIG_KEYS = frozenset(
     }
 )
 _ADAPTATION_OBJECTIVES = frozenset(
-    {"legacy_fixed_head_ce_v1", "frozen_prototype_cosine_ce_v1"}
+    {
+        "legacy_fixed_head_ce_v1",
+        "frozen_prototype_cosine_ce_v1",
+        "frozen_prototype_class_floor_ce_v1",
+    }
 )
 _SELECTION_KEYS = frozenset({"source_split", "criterion", "seed"})
 _SOURCE_SPLITS = frozenset({"V_cal", "V_select", "source_meta_validation", "L_s"})

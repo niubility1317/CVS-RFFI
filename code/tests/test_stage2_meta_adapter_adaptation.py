@@ -207,6 +207,27 @@ def test_formal_phase2_applies_bundle_selected_prototype_logit_scale():
     )
 
 
+def test_formal_phase2_executes_class_floor_support_objective():
+    model = _ToyPhase2Model()
+    support_iq, support_labels, prototypes, class_ids = _inputs()
+    handle = adapt_meta_adapter_on_support(
+        model,
+        _carrier(support_iq, support_labels),
+        prototypes,
+        class_ids,
+        MetaAdapterPhase2Config(
+            expected_capsule_id="capsule-test-01",
+            expected_split_id="split-test-01",
+            adaptation_objective="frozen_prototype_class_floor_ce_v1",
+            support_logit_scale=8.0,
+        ),
+    )
+
+    assert handle.audit.adaptation_objective == "frozen_prototype_class_floor_ce_v1"
+    assert handle.audit.support_logit_scale == 8.0
+    assert handle.audit.gradient_updates == 3
+
+
 def test_diagnostic_api_is_explicit_bounded_and_not_query_eligible():
     model = _ToyPhase2Model()
     support_iq, support_labels, prototypes, class_ids = _inputs()

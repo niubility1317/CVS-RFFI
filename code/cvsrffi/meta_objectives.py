@@ -21,9 +21,15 @@ from torch.nn import functional as F
 _LOGIT_KEYS = ("logits", "tx_logits")
 LEGACY_FIXED_HEAD_OBJECTIVE = "legacy_fixed_head_ce_v1"
 FROZEN_PROTOTYPE_COSINE_OBJECTIVE = "frozen_prototype_cosine_ce_v1"
+FROZEN_PROTOTYPE_CLASS_FLOOR_OBJECTIVE = "frozen_prototype_class_floor_ce_v1"
 ADAPTATION_OBJECTIVES = frozenset(
-    {LEGACY_FIXED_HEAD_OBJECTIVE, FROZEN_PROTOTYPE_COSINE_OBJECTIVE}
+    {
+        LEGACY_FIXED_HEAD_OBJECTIVE,
+        FROZEN_PROTOTYPE_COSINE_OBJECTIVE,
+        FROZEN_PROTOTYPE_CLASS_FLOOR_OBJECTIVE,
+    }
 )
+_SUPPORT_CLASS_FLOOR_TAU = 0.2
 # ``feat_cls`` is the canonical single-model identity embedding and ``z_id``
 # is the canonical dual-model embedding.  ``feat_joint``/``base`` are distinct
 # auxiliary representations, not unconditional aliases for either canonical.
@@ -408,6 +414,48 @@ def adaptation_logits(
     )
 
 
+def support_adaptation_loss(
+    logits: Tensor,
+    labels: Tensor,
+    *,
+    adaptation_objective: str,
+) -> Tensor:
+    """Return the registered support-only loss without changing its mean scale.
+
+    The class-floor route averages ordinary CE with a normalized smooth maximum
+    over per-class CE.  Subtracting ``tau * log(class_count)`` makes it exactly
+    equal to ordinary CE when every support class has the same loss, while an
+    unequal weak class receives more gradient weight.  No query statistic or
+    persistent classifier state is consumed.
+    """
+
+    objective = str(adaptation_objective)
+    if objective not in ADAPTATION_OBJECTIVES:
+        raise ValueError(f"unsupported adaptation_objective: {objective!r}")
+    if not torch.is_tensor(logits) or logits.ndim != 2 or logits.size(0) <= 0:
+        raise ValueError("support logits must have shape [nonempty batch, classes]")
+    if not logits.is_floating_point() or not bool(torch.isfinite(logits).all()):
+        raise ValueError("support logits must be finite and floating-point")
+    labels = _validate_labels(
+        labels,
+        batch_size=logits.size(0),
+        class_count=logits.size(1),
+        device=logits.device,
+    )
+    row_ce = F.cross_entropy(logits, labels, reduction="none")
+    mean_ce = row_ce.mean()
+    if objective != FROZEN_PROTOTYPE_CLASS_FLOOR_OBJECTIVE:
+        return mean_ce
+    classes = torch.unique(labels, sorted=True)
+    class_losses = torch.stack([row_ce[labels == cls].mean() for cls in classes])
+    tau = float(_SUPPORT_CLASS_FLOOR_TAU)
+    smooth_floor = tau * (
+        torch.logsumexp(class_losses / tau, dim=0)
+        - math.log(int(classes.numel()))
+    )
+    return 0.5 * (mean_ce + smooth_floor)
+
+
 def _floor_loss(logits: Tensor, labels: Tensor, mask: Tensor, tau: float) -> Tensor:
     row_ce = _row_cross_entropy(logits, labels, mask)
     if row_ce.numel() == 0:
@@ -515,8 +563,11 @@ def support_objective(
         device=embedding.device,
         dtype=embedding.dtype,
     )
-    all_rows = torch.ones(logits.size(0), dtype=torch.bool, device=logits.device)
-    adapt = _mean_cross_entropy(logits, labels, all_rows)
+    adapt = support_adaptation_loss(
+        logits,
+        labels,
+        adaptation_objective=adaptation_objective,
+    )
     prototype = _prototype_loss(embedding, labels, prototypes, config.eps)
     l2sp = _l2sp_loss(initial_adapter, current_adapter, reference=logits)
     zero = _zero(logits)
@@ -642,11 +693,13 @@ def outer_objective(
 
 __all__ = [
     "ADAPTATION_OBJECTIVES",
+    "FROZEN_PROTOTYPE_CLASS_FLOOR_OBJECTIVE",
     "FROZEN_PROTOTYPE_COSINE_OBJECTIVE",
     "LEGACY_FIXED_HEAD_OBJECTIVE",
     "LossBreakdown",
     "MetaObjectiveConfig",
     "adaptation_logits",
     "outer_objective",
+    "support_adaptation_loss",
     "support_objective",
 ]

@@ -15,9 +15,11 @@ if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
 from cvsrffi.meta_objectives import (  # noqa: E402
+    FROZEN_PROTOTYPE_CLASS_FLOOR_OBJECTIVE,
     LossBreakdown,
     MetaObjectiveConfig,
     outer_objective,
+    support_adaptation_loss,
     support_objective,
 )
 from cvsrffi.meta_adapter import iter_inner_adapter_parameters  # noqa: E402
@@ -372,6 +374,37 @@ def test_support_uses_fixed_head_prototype_anchor_and_adapter_l2sp_only():
     assert all(value.grad is None for value in initial.values())
     for key, value in initial.items():
         torch.testing.assert_close(value, initial_snapshot[key])
+
+
+def test_class_floor_support_loss_is_scale_matched_and_emphasizes_weak_class():
+    labels = torch.tensor([0, 0, 1, 1], dtype=torch.long)
+    equal_logits = torch.tensor(
+        [[2.0, 0.0], [2.0, 0.0], [0.0, 2.0], [0.0, 2.0]],
+        requires_grad=True,
+    )
+    baseline_equal = F.cross_entropy(equal_logits, labels)
+    robust_equal = support_adaptation_loss(
+        equal_logits,
+        labels,
+        adaptation_objective=FROZEN_PROTOTYPE_CLASS_FLOOR_OBJECTIVE,
+    )
+    torch.testing.assert_close(robust_equal, baseline_equal)
+
+    unequal_logits = torch.tensor(
+        [[4.0, 0.0], [4.0, 0.0], [1.0, 0.0], [1.0, 0.0]],
+        requires_grad=True,
+    )
+    baseline = F.cross_entropy(unequal_logits, labels)
+    robust = support_adaptation_loss(
+        unequal_logits,
+        labels,
+        adaptation_objective=FROZEN_PROTOTYPE_CLASS_FLOOR_OBJECTIVE,
+    )
+    assert robust > baseline
+    robust.backward()
+    easy_grad = unequal_logits.grad[:2].abs().sum()
+    weak_grad = unequal_logits.grad[2:].abs().sum()
+    assert weak_grad > easy_grad
 
 
 def test_support_rejects_adapter_key_mismatch_and_non_adapter_state():

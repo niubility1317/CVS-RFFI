@@ -24,6 +24,11 @@ from torch.nn import functional as F
 
 from .meta_adapter import adapter_parameter_budget, iter_inner_adapter_parameters
 from .meta_inner_loop import FastAdapterState, first_order_adapt
+from .meta_objectives import (
+    FROZEN_PROTOTYPE_CLASS_FLOOR_OBJECTIVE,
+    FROZEN_PROTOTYPE_COSINE_OBJECTIVE,
+    support_adaptation_loss,
+)
 
 
 _PHASE2_CONTEXT_ALLOWLIST = frozenset(
@@ -33,7 +38,13 @@ _FORMAL_PHASE2_STEPS = 3
 _MAX_PHASE2_STEPS = 5
 _HARD_PHASE2_STEP_LIMIT = 40
 _PROTOTYPE_EPS = 1.0e-8
-_PROTOTYPE_ADAPTATION_OBJECTIVE = "frozen_prototype_cosine_ce_v1"
+_PROTOTYPE_ADAPTATION_OBJECTIVE = FROZEN_PROTOTYPE_COSINE_OBJECTIVE
+_PROTOTYPE_ADAPTATION_OBJECTIVES = frozenset(
+    {
+        FROZEN_PROTOTYPE_COSINE_OBJECTIVE,
+        FROZEN_PROTOTYPE_CLASS_FLOOR_OBJECTIVE,
+    }
+)
 _INTEGER_DTYPES = (
     torch.uint8,
     torch.int8,
@@ -185,7 +196,7 @@ class MetaAdapterPhase2Config:
             raise ValueError("hard_step_limit must be an integer in [3, 40]")
         if self.hard_step_limit < _FORMAL_PHASE2_STEPS or self.hard_step_limit > _HARD_PHASE2_STEP_LIMIT:
             raise ValueError("hard_step_limit must be in [3, 40]")
-        if self.adaptation_objective != _PROTOTYPE_ADAPTATION_OBJECTIVE:
+        if self.adaptation_objective not in _PROTOTYPE_ADAPTATION_OBJECTIVES:
             raise ValueError("formal Phase2 adaptation_objective must use frozen prototypes")
         scale = float(self.support_logit_scale)
         if not math.isfinite(scale) or scale <= 0.0 or scale > 64.0:
@@ -217,7 +228,7 @@ class MetaAdapterPhase2DiagnosticConfig:
             raise ValueError("hard_step_limit must be an integer in [1, 40]")
         if self.hard_step_limit < max(1, self.steps) or self.hard_step_limit > _HARD_PHASE2_STEP_LIMIT:
             raise ValueError("hard_step_limit must contain diagnostic steps and be <= 40")
-        if self.adaptation_objective != _PROTOTYPE_ADAPTATION_OBJECTIVE:
+        if self.adaptation_objective not in _PROTOTYPE_ADAPTATION_OBJECTIVES:
             raise ValueError("diagnostic adaptation_objective must use frozen prototypes")
         scale = float(self.support_logit_scale)
         if not math.isfinite(scale) or scale <= 0.0 or scale > 64.0:
@@ -485,7 +496,7 @@ def _adapt_impl(
         raise TypeError("support_batch must be a ValidatedTargetSupportBatch")
     if steps < 0 or steps > _MAX_PHASE2_STEPS or steps > hard_step_limit:
         raise ValueError("Phase2 adaptation steps must be in [0, 5] and within hard_step_limit")
-    if adaptation_objective != _PROTOTYPE_ADAPTATION_OBJECTIVE:
+    if adaptation_objective not in _PROTOTYPE_ADAPTATION_OBJECTIVES:
         raise ValueError("Phase2 adaptation_objective must use frozen prototypes")
     scale = float(support_logit_scale)
     if not math.isfinite(scale) or scale <= 0.0 or scale > 64.0:
@@ -543,7 +554,11 @@ def _adapt_impl(
         support_loss_evaluations += 1
         embedding = _extract_embedding(outputs, batch_size=support_x.size(0))
         logits = scale * _cosine_logits(embedding, prototypes)
-        loss = F.cross_entropy(logits, mapped_labels)
+        loss = support_adaptation_loss(
+            logits,
+            mapped_labels,
+            adaptation_objective=adaptation_objective,
+        )
         # Task6 requires every fast leaf to be present in the gradient call.
         # An unused dual domain branch is touched by an exact zero and remains
         # bitwise unchanged instead of being silently dropped.

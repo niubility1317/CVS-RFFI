@@ -59,6 +59,7 @@ CANONICAL_ADAPTER = {
 REGISTERED_ADAPTATION_OBJECTIVES = (
     "legacy_fixed_head_ce_v1",
     "frozen_prototype_cosine_ce_v1",
+    "frozen_prototype_class_floor_ce_v1",
 )
 OPTIONAL_ADAPTATION_KEYS = frozenset(
     {"adaptation_objective", "support_logit_scale"}

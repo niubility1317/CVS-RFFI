@@ -101,6 +101,23 @@ def test_phase1_config_accepts_deployment_aligned_prototype_objective():
     assert validated["adapter"]["support_logit_scale"] == 16.0
 
 
+def test_phase1_config_accepts_class_floor_prototype_objective():
+    config = valid_config()
+    config["schema"] = "cvs.phase1.meta_adapter.r4.v1"
+    config["adapter"] = {
+        **config["adapter"],
+        "rank": 8,
+        "sites": ["time"],
+        "adaptation_objective": "frozen_prototype_class_floor_ce_v1",
+        "support_logit_scale": 8.0,
+    }
+
+    validated = validate_meta_phase1_config(config)
+
+    assert validated["adapter"]["adaptation_objective"] == "frozen_prototype_class_floor_ce_v1"
+    assert validated["adapter"]["support_logit_scale"] == 8.0
+
+
 def test_phase1_config_rejects_nonpositive_prototype_logit_scale():
     config = valid_config()
     config["schema"] = "cvs.phase1.meta_adapter.r4.v1"

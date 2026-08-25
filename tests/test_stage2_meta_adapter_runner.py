@@ -136,6 +136,18 @@ def _install_fake_bundle_loader(monkeypatch: pytest.MonkeyPatch, sut, events: li
     return model
 
 
+def test_runner_preserves_strict_bundle_class_floor_objective():
+    import cvsrffi.stage2_meta_adapter_runner as sut
+
+    audit = _audit()
+    audit.adaptation_objective = "frozen_prototype_class_floor_ce_v1"
+    audit.support_logit_scale = 8.0
+    resolved = sut._require_strict_audit(audit)
+
+    assert resolved["adaptation_objective"] == "frozen_prototype_class_floor_ce_v1"
+    assert resolved["support_logit_scale"] == 8.0
+
+
 def _rewrite_support_ids(paths: dict[str, Path], ids: list[str] | None) -> None:
     with np.load(paths["support_path"], allow_pickle=False) as archive:
         received_iq = np.asarray(archive["received_iq"]).copy()

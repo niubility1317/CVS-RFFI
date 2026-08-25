@@ -343,10 +343,20 @@ def _require_strict_audit(audit: Any) -> dict[str, Any]:
     bundle_objective = str(
         _audit_value(audit, "adaptation_objective", "legacy_fixed_head_ce_v1")
     )
-    phase2_objective = "frozen_prototype_cosine_ce_v1"
+    prototype_objectives = frozenset(
+        {
+            "frozen_prototype_cosine_ce_v1",
+            "frozen_prototype_class_floor_ce_v1",
+        }
+    )
+    phase2_objective = (
+        bundle_objective
+        if bundle_objective in prototype_objectives
+        else "frozen_prototype_cosine_ce_v1"
+    )
     support_logit_scale = float(
         _audit_value(audit, "support_logit_scale", 1.0)
-        if bundle_objective == phase2_objective
+        if bundle_objective in prototype_objectives
         else 1.0
     )
     if not np.isfinite(support_logit_scale) or not 0.0 < support_logit_scale <= 64.0:
