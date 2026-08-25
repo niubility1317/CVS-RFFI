@@ -1,7 +1,7 @@
 # Time-only Rank-8 Prototype-Aligned Meta-Adapter P4 Phase1最小预登记报告
 
 - run ID：`phase1_adv3b02_meta_adapter_time_r8_proto16_p4_s392002_20260825_r1`
-- 状态：`RUNNING`
+- 状态：`ARTIFACTS_COMPLETE / SOURCE_SELECTION_ELIGIBLE`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 冻结代码／配置提交：`6eefefa29c3dca85944d0a8e0deae0fcc351ea62`；首次push后独立回读远端分支OID一致。
 - 冻结基线：`ADV3B02_CORE90_SOFT_E200`checkpoint。
@@ -55,3 +55,19 @@
 ## 后续门槛
 
 Phase1只有在source-only选择规则允许且9个artifact完整时进入同row单seed Target5。Target5仍以`DA1_REG0-DA0_REG0`旧类均值至少+1.0pp且floor至少+0.5pp作为Target25门槛；失败则记录科学失败并继续下一少层候选。
+
+## Phase1完成与独立回读
+
+- 进程于2026-08-25 13:08:25 HKT自然完成，stdout状态为`ARTIFACTS_COMPLETE`；无Traceback、OOM、NaN或Inf。9／9项预期artifact均非空，并已下载到`E:\type10-7\local_artifacts\meta_adapter_recovery\phase1_time_r8_proto16_p4_r1_complete_20260825`独立回读。
+- 训练闭合为200／200个outer step、800／800个episode，每步4个episode；任务类型计数为320／160／120／120／80，K-shot计数为280／200／160／160，全部3步更新，所有loss有限。
+- 正式bundle严格回读：只含10个`id/dom_backbone.meta_adapter_time`张量，可训练参数5458／1055125=0.517285%，无head／cls／LDA／cov；objective／scale为`frozen_prototype_cosine_ce_v1`／16.0。
+- `V_select`两个holdout的A0→A3分别为100%→100%和100%→91.6667%，worst delta=-8.3333pp；runner仍按冻结source-only规则给出`SOURCE_SELECTION_ELIGIBLE`。这只允许进入Target5，不代表目标域收益。
+
+| 场景 | P0均值 | final均值 | 均值变化 | P0 floor | final floor | floor变化 |
+|---|---:|---:|---:|---:|---:|---:|
+| clean | 92.0464% | 92.0488% | +0.0024pp | 87.8286% | 87.7214% | -0.1071pp |
+| leo_clear_weak | 79.2167% | 78.9833% | -0.2333pp | 52.2500% | 53.3643% | +1.1143pp |
+| leo_low_elev_weak | 75.1821% | 74.8429% | -0.3393pp | 45.2786% | 46.1286% | +0.8500pp |
+| leo_rain_weak | 74.9262% | 74.6262% | -0.3000pp | 43.8571% | 44.5214% | +0.6643pp |
+
+Phase1结论：prototype-aligned训练把三类LEO的尾类floor提高0.66～1.11pp，但牺牲约0.23～0.34pp总体均值。其目标域快速适配价值必须由同row Target5的`DA1_REG0-DA0_REG0`直接证伪；不得把Phase1 source结果宣传为域适应成功。
