@@ -13,9 +13,33 @@
 
 V2完成了三项由V1真实日志直接定位的修复：恢复原始`meta.rx_i`的receiver导出；把未标定的加性旁路改为源域尺度对齐的凸融合；增加有界soft码本覆盖约束。实现、35项聚焦测试、真实checkpoint无query smoke、C0–C4五行训练、四场景prediction/truth和独立评分均完整闭合。
 
-实验没有建立可晋级的分类收益。C2–C4相对同容量C1的最佳LEO均值提升只有`0.0095`个百分点，最佳LEO receiver-floor均值提升只有`0.0361`个百分点，均远低于预登记的`0.30`个百分点。冻结C0的LEO均值`76.4047%`仍高于所有侧路row。C4的holdout预测相对C1明显改善，但真实q相对shuffle只改善`2.815%`；与此同时，soft effective codes为`35.216/48`，hard argmax却只占用`4/48`个码，最大单码占`70.52%`。证据表明：V2解决了receiver和融合接口问题，却没有解决离散挑战状态塌缩，也没有证明挑战条件为身份判决提供了足够独立的信息。
+实验没有建立可晋级的分类收益。C2–C4相对同容量C1的最佳LEO均值提升只有`0.0095`个百分点，最佳LEO receiver-floor均值提升只有`0.0361`个百分点，均远低于预登记的`0.30`个百分点。冻结C0的LEO均值`76.4047%`仍高于所有侧路row。C4内部真实q相对shuffle只改善`2.815%`；现有hard统计则是packet dominant code，只占用`4/48`个码，不能据此证明token级码本塌缩。证据表明：V2解决了receiver和融合接口问题，但尚未证明q是跨TX共享挑战、θ是跨记录稳定TX算子，也没有证明sidecar拥有超出Core90的互补纠错信息。
 
 因此，本实验应被保留为机制定位清楚的负结果。它否定“只要修复receiver或放大条件头，分类收益就会出现”，但保留“受控PA响应预测具有一定可学习性”这一较弱结论。当前实现是原始研究路线的PA单机制最小近似，不是完整条件系统辨识器。
+
+### 0.1针对提交`26ac49e0`深度复盘后的逐项修订
+
+复盘指出的核心因果缺口成立，但其中部分表述超出了现有证据。报告按“已证明事实—竞争解释—后续实验”重新分层，避免把诊断症状写成根因。
+
+| 复盘事项 | 修订判定 | 本报告处置 |
+|---|---|---|
+| sidecar没有分类增量 | 已证明 | 维持`SCIENTIFIC_FAILURE_NO_PROMOTION` |
+| `0.01`个百分点属于真实正收益 | 不成立 | 改为统计上不可解释的小波动，下一审计增加配对分组bootstrap |
+| receiver-floor差等于信息不可恢复 | 证据不足 | 只能证明receiver×channel异质性强，尚不能区分可校正偏移与信息损失 |
+| `0.70`阈值有效筛选挑战 | 不成立 | 同TX跨receiver匹配率为`99.904%`，当前阈值对正关系近似无筛选 |
+| `d3_count=0`直接证明q泄漏 | 证据不足 | q泄漏和无shuffle逐batch几何都可能产生该结果，必须做完整`V_select`全局审计 |
+| 训练负样本和anchor已闭合 | 不成立 | 旧历史只保存正对和rectangle；实现提交`6134e9c5`为未来run补充`negative_pairs/anchor_count/anchor_fraction`，不追溯伪造旧数据 |
+| hard码本塌缩是分类主因 | 不成立 | hard code不进入下游，且soft为token概率质量、hard为packet dominant，两者不是同一统计变量 |
+| C4相对C1的92.5%NMSE改善证明算子学习 | 不成立 | C1预测器没有holdout监督；公平证据只保留C4内部real相对shuffle的`2.815%` |
+| `1-NMSE`是标准`R²` | 不成立 | 全文改称“归一化能量拟合分数” |
+| q等于理想baseband challenge | 不成立 | 改称`received-waveform excitation proxy`，仍可能携带TX、receiver、day和位置 |
+| q预训练目标数学矛盾 | 表述过强 | 改称域不变与卫星统计重建之间的目标张力 |
+| q token与PA token已物理对齐 | 不成立 | `adaptive_avg_pool1d`只对齐token数量，不保证原始窗口和感受野一致 |
+| exact clean–satellite已约束operator | 不成立 | 当前精确配对只约束q一致性，没有直接约束response/operator一致性 |
+| DiD是挑战条件化DiD | 不成立 | 当前是packet-level TX×receiver DiD，没有按挑战区域分层 |
+| sidecar与Core90冗余 | 结构事实，统计量待测 | 两者读取同一`pa_token_map`；下一审计计算base/operator四格表和oracle ceiling |
+| 48码物理上错误 | 尚未证明 | 48是未经物理辨识验证的超参数；先做token占用、位置、转移和clean–satellite一致性，不强制均匀 |
+| 立即加入OT、Soft-DTW或解冻Core90 | 证据不支持 | 延期，先执行冻结V2因果审计 |
 
 ## 1.研究问题与科学边界
 
@@ -35,7 +59,7 @@ r_t=F_{\mathrm{PA}}(h_t^{\mathrm{PA}},q_t),
 \hat\theta_{\mathrm{PA}}=A\{q_t,r_t,w_t\}_{t=1}^{T}.
 \]
 
-`q_t`描述局部激励，`h_t^{PA}`来自冻结Core90的PA时序图，`r_t`是条件响应，`\hat\theta_PA`是集合聚合后的算子证据。同挑战用于公平比较，多样挑战用于可辨识；二者不能互相替代。
+`q_t`在本实现中只是从接收后IQ估计的`received-waveform excitation proxy`，不是已恢复的理想基带挑战。`h_t^{PA}`来自冻结Core90的PA时序图，`r_t`是条件响应，`\hat\theta_PA`是集合聚合后的候选算子证据。同挑战用于公平比较，多样挑战用于可辨识；二者不能互相替代。
 
 ### 1.2本实验能够回答什么
 
@@ -99,9 +123,9 @@ WiSig批次移动后形成`extra=(domain_tensor,meta_mapping)`，V1只在`extra`
 
 V1实际融合为`base+alpha×operator`。新初始化算子logit的幅度小于冻结基线，`alpha≤0.2`进一步压缩其作用；所以“C2≈C1”既可能表示条件信息无效，也可能表示旁路没有真正进入判决。V2让operator classifier直接用自身logit训练，并在`V_cal`上标定两路去中心RMS比例，再做凸融合。
 
-### 3.3soft均衡不能代表hard占用
+### 3.3soft均衡不能代表packet dominant占用
 
-V1的48码已有明显集中。V2增加soft有效码数和最大均值概率约束，假设这能改善挑战覆盖。最终实验推翻了该具体假设：soft分布达到设定范围时，hard argmax反而从V1的33/48个码下降到4/48个码。这成为V2最主要的新问题。
+V1的48码已有明显集中。V2增加soft有效码数和最大均值概率约束，假设这能改善挑战覆盖。旧审计中的soft统计汇总所有token概率质量，hard统计却先对每包token概率求均值再取单个dominant code，因此`35.216/48`与`4/48`不是同一随机变量的soft/hard版本。该结果证明packet dominant高度集中，但不能证明token级码本塌缩，更不能将其直接写成分类零收益的根因。
 
 ## 4.方法设计
 
@@ -244,7 +268,7 @@ s=\operatorname{clip}\left(\frac{RMS(\ell_{base})}{RMS(\ell_{op})},0.25,20\right
 - 精确命令：`cd /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ccoi_pa_v2_8a959d00 && ROOT=$PWD CHECKPOINT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth WISIG_PKL=/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl RUN_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_ccoi_pa_v2_20260825 LOG_ROOT=/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_ccoi_pa_v2_20260825 RUN_ID=PHASE1_CCOI_PA_V2_S20260824_20260825A GPU=0 bash code/scripts/launch_phase1_ccoi_pa_v2_20260825.sh`。
 - 预期artifact：`protocol_and_smoke.json`、挑战预训练历史、每row校准、sidecar、challenge audit、`prediction.jsonl`、后置`truth.jsonl`、`metrics.json`、matrix manifest和完整日志。
 - 直接技术停止规则：仅在协议/query泄漏、错误checkout/CWD/run-root/GPU、输出碰撞、无法启动、prediction无法闭合，或至少两个row出现相同确定性预prediction异常时停止；不因低准确率停止。只处理该run绑定的进程树并保留全部局部artifact。
-- 科学门槛：C2或更高row相对C1的LEO均值和receiver-floor分别至少提升0.30个百分点；clean下降不超过0.50个百分点；C4 holdout NMSE相对C1下降至少5%且R²大于0。未过线记负结果，不中止健康运行。
+- 科学门槛：C2或更高row相对C1的LEO均值和receiver-floor分别至少提升0.30个百分点；clean下降不超过0.50个百分点；C4 holdout NMSE相对C1下降至少5%且归一化能量拟合分数`1-NMSE`大于0。未过线记负结果，不中止健康运行。
 - 新run授权：本报告仅授权唯一run ID `PHASE1_CCOI_PA_V2_S20260824_20260825A`；不得重复启动或覆盖旧run。
 
 ## 运行更新
@@ -281,8 +305,8 @@ s=\operatorname{clip}\left(\frac{RMS(\ell_{base})}{RMS(\ell_{op})},0.25,20\right
 ## 机制诊断
 
 - q预训练10个epoch完整结束；总损失由`0.4697`降至`0.3113`，masked/temporal/variance损失分别降至约`0.00566/0.00553/0.00876`，未出现数值异常。
-- V2软码本约束表面达标：soft effective codes为`35.216/48`，最大soft均值概率为`0.0994`。但硬argmax只使用`4/48`个码，计数为`30/11/8886/3673`，最大单码占`70.52%`。这说明当前正则只摊平了软概率，没有解决离散挑战码塌缩；该诊断比仅看soft统计更可信。
-- C4真实holdout NMSE为`0.12593`，相对C1的`1.67857`下降`92.50%`，且按`R²=1-NMSE`得到`0.87407`，通过预登记的机制拟合门槛。但C4真实配对相对自身shuffle对照仅改善`2.815%`（shuffle NMSE=`0.12957`），表明可辨认的样本特异性条件信息仍然偏弱。
+- V2 soft effective codes为`35.216/48`，最大soft均值概率为`0.0994`；packet dominant code只出现`4/48`个，计数为`30/11/8886/3673`，最大单码占`70.52%`。这只能证明包级dominant统计集中。token-level hard occupancy、每位置占用、每包code数和转移矩阵尚未计算，所以旧报告关于“离散挑战码塌缩”的因果表述撤回。
+- C4真实holdout NMSE为`0.12593`，归一化能量拟合分数`1-NMSE=0.87407`。C4相对C1下降`92.50%`主要比较了受holdout监督预测器与未受该监督的预测器，不能作为设备算子证据。公平的C4内部对照中，真实配对相对shuffle只改善`2.815%`（shuffle NMSE=`0.12957`）。
 - C1–C4的`V_cal`自动选择均为`alpha=0.1`，融合尺度约`1.416–1.502`；尺度修复使sidecar不再因量纲失配而数值失活，但最终分类增益仍只有约`0.01`个百分点，因此“融合失活”不是唯一瓶颈。
 
 ### 机制指标明细
@@ -296,7 +320,7 @@ s=\operatorname{clip}\left(\frac{RMS(\ell_{base})}{RMS(\ell_{op})},0.25,20\right
 
 C4的random和constant对照NMSE分别为`0.20387`和`0.18108`，说明预测器并非完全忽略条件输入；但shuffle只破坏样本—q对应关系而保持q分布，真实q仅领先2.815%，仍不足以证明稳定的样本级挑战辨识。
 
-C4的条件距离为`d1=1.2934,d1_count=213,196`、`d2=2.2932,d2_count=204`、`d3=N/A,d3_count=0`。`d1<d2`支持“匹配q能把同TX跨域样本分得更近”，但缺少异TX同domain且挑战匹配的`d3`，所以原文要求的`d1<d2<d3`否证关系没有完整闭合。
+C4的条件距离为`d1=1.2934,d1_count=213,196`、`d2=2.2932,d2_count=204`、`d3=N/A,d3_count=0`。同TX跨receiver关系中`0.70`阈值的匹配比例为`213196/(213196+204)=99.904%`，说明阈值近似无筛选。`d3_count=0`既可能来自q的TX泄漏，也可能来自无shuffle的逐batch组成；因此旧结果不能支持`d1<d2<d3`，也不能单独判定泄漏根因。
 
 C4按attention保留100%、75%、50%、25%token时，source `V_select`准确率分别为`98.4048%/98.3968%/98.3889%/98.3968%`。降低coverage没有带来增益，说明当前attention既没有发现强少数证据，也没有通过只选容易token虚增准确率；它更接近近似均匀聚合。
 
@@ -314,13 +338,13 @@ receiver-floor修复后可以确认，瓶颈集中在低抬升和雨衰弱场景
 
 ## 暴露的问题
 
-### 问题1：hard挑战码发生更严重塌缩
+### 问题1：旧hard审计口径不能证明token码本塌缩
 
-V2优化的是批次平均soft概率的熵和最大值，网络可以让每个样本都输出较平坦概率，从而得到35.216个soft有效码；但argmax仍由少数logit的微小优势控制，最终4个hard码承担全部12,600个`V_select`样本，其中单码8,886个。soft覆盖和hard可用状态由此完全脱钩。后续不能再把soft effective codes当作挑战覆盖成功证据。
+V2优化的是批次平均soft概率的熵和最大值。旧hard histogram则对每个包的13个token概率先求均值再取argmax，最终4个packet dominant code承担全部12,600个`V_select`样本，其中单码8,886个。后续既不能把soft effective codes当作挑战覆盖成功证据，也不能把packet dominant集中写成token级collapse；两类统计必须在同一token随机变量上重新计算。
 
 ### 问题2：可学习响应不等于可判别身份增量
 
-C4的NMSE和`R²`表明模型可以根据support算子和q预测局部PA图，但这项能力没有转化为LEO分类或receiver-floor提升。可能原因包括：预测目标主要包含所有设备共有的包络结构；预测器利用了q的分布信息而不是TX特异的响应差；operator classifier没有从该响应中提取超出Core90的类别证据。
+C4的NMSE和归一化能量拟合分数表明模型可以根据support表示和q预测局部PA图，但这项能力没有转化为LEO分类或receiver-floor提升。预测目标可能主要包含所有设备共有的包络结构；预测器也可能主要利用q的分布信息。只有q-only、θ-only、正确/打乱/其他TX/同TX跨receiver/跨day的同容量分解才能判断θ是否包含设备稳定增量。
 
 ### 问题3：真实q的样本对应关系贡献过弱
 
@@ -342,13 +366,13 @@ M1真实语义挑战匹配、冻结q独立TX/RX/day probe、严格跨挑战OOD�
 
 - 工程判定：`VERIFIED`。V2真实checkpoint smoke、receiver修复、源域尺度校准、四场景prediction/truth和独立评分均完整闭合。
 - 科学判定：`SCIENTIFIC_FAILURE_NO_PROMOTION`。虽然clean约束和C4 holdout拟合门槛通过，但C2/C3/C4对C1的LEO均值与receiver-floor增益均远低于`+0.30`个百分点，不晋级多seed或完整确认。
-- 否定的解释：不能再把失败归因于receiver缺失或单纯融合尺度过小；两项已修复且真实验证。当前数据更支持“条件码离散塌缩、条件信息对分类决策增量极弱”。
-- 下一候选必须直接约束锐化后的近硬分配并报告hard occupancy，例如对低温softmax分布施加有效码数/最大占用约束，同时保持有界目标，且先做单seed关键row最小可证伪实验。不得直接扩大当前V2矩阵或把软码本统计当作条件系统辨识成功证据。
+- 否定的解释：不能再把失败归因于receiver缺失或单纯融合尺度过小；两项已修复且真实验证。当前数据只证明条件信息对分类决策增量极弱，尚未定位为hard code、q泄漏、公共PA目标或sidecar冗余中的单一根因。
+- 下一步不是锐化48码或重新训练分类矩阵，而是复用冻结Core90与C4完成`q泄漏→全局pair geometry→H0–H6/残差HR→base/operator互补性`因果审计。只有θ相对q-only、shuffle和其他TX均取得至少5%误差改善、分组置信区间不跨零，且source synthetic LEO oracle gain达到`0.30`个百分点，才设计残差V3。
 
-具体下一步应保持Core90、split和评估器冻结，只改挑战编码层：用低温softmax或straight-through近硬分配计算覆盖hinge，同时把`hard observed codes`、top share和每码最小占用作为训练期诊断；先完成q-only source audit，确认hard占用改善且独立TX/RX probe不过线，再运行C1/C2/C4关键row。若真实q仍不显著优于shuffle，PA-M2路线应停止，不进入Soft-DTW、OT或多机制扩展。
+对应实现提交为`6134e9c5fe11b3cbd01ea906eaab2fe1ed64f2a3`。它不修改旧V2权重、不重复C0–C4，只增加source-only冻结审计runner、token/packet双口径统计、完整`V_select`全局pair扫描、分组bootstrap、H0–H6与cross-fit残差HR小头、互补性四格表及不可覆盖launcher。若任一预登记停止条件失败，PA-M2路线停止，不进入Soft-DTW、OT、低秩解冻或多机制扩展。
 
 ## 最终结论
 
 本轮工作完整实现并验证了一个与现有Phase1有机结合的最小PA条件算子侧路：它复用冻结Core90的PA时序响应和强基线，用source-only挑战编码、条件FiLM、集合聚合、DiD、holdout预测和晚期校准构成可关闭的实验链。receiver和融合接口已被真实实验修复，全部数据、prediction、truth、场景和评分artifact正常。
 
-科学上，当前实现没有超过冻结基线，也没有达到相对同容量控制的LEO和floor门槛。最可信的新发现不是“条件系统辨识有效”，而是“soft挑战分布可以看似均衡，同时hard挑战状态严重塌缩；局部PA响应可预测，也不必然形成TX身份增量”。这为下一轮提供了明确且更窄的可证伪问题，并阻止路线在缺少基础证据时盲目增加OT、多机制或生成器复杂度。
+科学上，当前实现没有超过冻结基线，也没有达到相对同容量控制的LEO和floor门槛。最可信的结论是：局部PA图可预测不等于获得TX特异算子，当前sidecar也没有证明能纠正Core90错误。packet dominant code集中只是症状；q是否泄漏、θ是否跨记录稳定、PA目标是否主要由q-only公共映射解释，以及sidecar的oracle ceiling仍需冻结因果审计回答。
