@@ -27,6 +27,8 @@
 - prediction输出：`/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_cached_slow_fast_diag9_s392002_20260825_r2`
 - 日志：`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_cached_slow_fast_phase15_s392002_20260825_r2.out`和`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_cached_slow_fast_diag9_s392002_20260825_r2.out`
 - GPU1；2026-08-25只读复核确认r2全部目标路径不存在，GPU1空闲。GPU0有不属于本run的PID`2991016`，本run不触碰。
+- release归档本地`E:\type10-7\local_artifacts\cvs_cached_slow_fast_diag9_s392002_20260825_r2_release.zip`→远端`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_cached_slow_fast_diag9_s392002_20260825_r2/release.zip`；唯一一次本地/远端SHA256均为`7cca6c6b8ab42a42ef0ecfab05a0b66f227e891c524a570906bc4dfa0f6e715b`。
+- 远端编译通过；独立回读确认GPU device修复行、Python3.10字节码和r2 bundle路径配置均存在。release状态：`VERIFIED`。
 
 ## 精确命令
 
