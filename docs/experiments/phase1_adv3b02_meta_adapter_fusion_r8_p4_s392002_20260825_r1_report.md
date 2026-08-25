@@ -4,7 +4,7 @@
 - 状态：`LOCAL_VERIFIED`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 基线：冻结`ADV3B02_CORE90_SOFT_E200`checkpoint。
-- 本次计划提交：待本地验证和独立审查后填写。
+- 本次计划提交：`5670ebfd1726b3582e38cd78102003a0a460af00`。
 
 ## 候选与唯一机制变量
 
