@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-`LANDED`
+`RUNNING`
 
 这是JMRS01首个source-only单机制筛选实验。旧PA-M2.1实验及其产物保持只读，不重复、不覆盖。
 
@@ -68,10 +68,11 @@ launcher第一步是真实checkpoint无query smoke，PASS后立即继续正式S0
 - 一次P0/P1审查发现并修复：不同LORO fold的embedding坐标不能混合训练receiver probe；身份几何也必须在fold内计算后汇总。定点测试通过。
 - 本地Git Bash路由：`FAILED`。请求的Git Bash被替换为`/bin/bash`和`/mnt/e/...`，按Windows执行规则停止；不把WSL结果当作Git Bash证据。release落到N607后执行一次远端shell编译。
 - `ruff`：环境未安装，记为`NONBLOCKING`；未新增依赖。
-- 真实checkpoint无query smoke：待执行。
-- 正式实验：未启动。
+- 真实checkpoint无query smoke：通过；`target_or_query_access=false`，7个正式row均完成有限值/参数预算检查。
+- 正式实验：已启动且只有一个owner；launcher PID`3196948`，Python PID`3197723`，GPU0约678MiB。
 - 远端落地：完成；全新release目录，未覆盖原项目代码。
 - 远端编译：3个Python文件`py_compile`通过；launcher`bash -n`通过。
+- 启动健康检查：CWD为新release；cmdline绑定唯一run/checkpoint/WiSig/7行/200 epoch；日志进入四视图缓存并已生成`M0/held_receiver=0`记录；无Traceback/OOM/NaN证据。
 
 ## 已落地实现
 
