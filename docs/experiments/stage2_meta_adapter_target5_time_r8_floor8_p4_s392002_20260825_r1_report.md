@@ -1,7 +1,7 @@
 # Time-only Rank-8 Class-Floor Scale-8 Meta-Adapter P4 Target5最小预登记报告
 
 - run ID：`stage2_meta_adapter_target5_time_r8_floor8_p4_s392002_20260825_r1`
-- 状态：`LOCAL_VERIFIED`
+- 状态：`LANDED`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 代码／配置冻结提交：`8b551e6275dbe5e022a884395d75887c16f2eaa6`；push后独立回读远端OID一致。
 - Phase1：`phase1_adv3b02_meta_adapter_time_r8_floor8_p4_s392002_20260825_r1`，状态`ARTIFACTS_COMPLETE / SOURCE_SELECTION_ELIGIBLE`。
@@ -42,3 +42,10 @@
 ## 晋级门槛
 
 15行prediction闭合后才连接truth。聚合`DA1_REG0-DA0_REG0`旧类均值至少+1.0pp且floor至少+0.5pp才进入Target25，否则记为科学失败并继续下一少层候选。
+
+## Release、工厂与smoke
+
+- release提交：`092cdba5648d3d9aa5b1e76d49ac62e099d918aa`；远端OID独立回读一致。归档本地／远端唯一一次SHA256均为`cbf1b07780539199b0b26b3a369d8de7c68e70085c2ff25b97e46a1ec6b529fe`，16个相关入口远端编译通过。
+- 发布前确认release、工厂、smoke、prediction、stdout和同名Python进程均不存在，正式bundle／原型非空，GPU0空闲。
+- truth-free工厂一次完成15／15行，状态`TARGET_INPUTS_COMPLETE`，`query_truth_opened=false`、`query_role_opened=false`、`source_opened=false`。无query配置由首row精确删除`query_path`且本地断言其余字段不变。
+- 本次正式Phase1 bundle真实smoke一次通过：3次反向传播，`frozen_prototype_class_floor_ce_v1`／8.0，`trainable_fraction=0.005172846819097263`，`query_opened=false`、`source_opened=false`、`query_state_update_count=0`。
