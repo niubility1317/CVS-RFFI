@@ -1,7 +1,7 @@
 # Fusion-only Rank-8 Meta-Adapter P4 Target5最小预登记报告
 
 - run ID：`stage2_meta_adapter_target5_fusion_r8_p4_s392002_20260825_r1`
-- 状态：`LANDED`
+- 状态：`ANALYZED / SCIENTIFIC_FAILURE_NO_PROMOTION`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - Phase1结果提交：`c75fa6f35eafd1df735da73854843611bd8b8b2b`
 - 冻结基线：`ADV3B02_CORE90_SOFT_E200`。
@@ -49,4 +49,20 @@
 - Target工厂一次完成15／15个truth-free row，receipt为`TARGET_INPUTS_COMPLETE`，`query_truth_opened=false`、`query_role_opened=false`、`source_opened=false`。
 - smoke专用配置在本地从首row配置只删除`query_path`，确认不含任何query／source／clean键后同步；未改变正式15-row矩阵。
 - 冻结rank-8正式bundle的真实checkpoint无query smoke一次通过：`REAL_META_CHECKPOINT_NO_QUERY_SMOKE_PASS`、`checkpoint_load_strict=true`、`backward_count=3`、`trainable_fraction=0.005172846819097263`、`query_opened=false`、`source_opened=false`、`query_state_update_count=0`、`performance_result=null`。
-- 当前最高状态为`LANDED`；尚未产生任何正式query prediction或性能结果。
+- smoke完成时最高状态为`LANDED`；随后只运行了一次正式15-row truth-blind prediction矩阵。
+
+## Target5最终结果
+
+- 正式prediction矩阵约9秒自然完成，未使用后台常驻进程、未重启。矩阵receipt为`PREDICTIONS_COMPLETE`；15／15行均有非空`predictions_DA0_REG0.npz`、`predictions_DA1_REG0.npz`和`receipt.json`，矩阵级`truth_opened=false`、`source_opened=false`。
+- 15／15行均严格加载正式bundle，先完成3次support反向传播后才打开query；`query_opened_before_adaptation=false`、`query_role_opened=false`、`query_truth_opened=false`、`query_state_update_count=0`、`source_opened=false`，可训练比例均为0.517285%。
+- prediction全部闭合后才连接三份既有同row truth sidecar；15个`score.json`和`target5_summary.json`均非空，无scorer错误。
+
+|场景|DA0_REG0旧类均值|DA1_REG0旧类均值|DA0_REG0 floor|DA1_REG0 floor|均值变化|floor变化|决策变化数|
+|---|---:|---:|---:|---:|---:|---:|---:|
+|`leo_clear_weak`|67.50%|67.50%|35.00%|35.00%|0.00pp|0.00pp|1|
+|`leo_low_elev_weak`|61.67%|60.83%|35.00%|35.00%|-0.83pp|0.00pp|5|
+|`leo_rain_weak`|64.17%|64.17%|45.00%|45.00%|0.00pp|0.00pp|0|
+
+- 15行中6行各有1个query类别决策变化；适配前后最大绝对余弦分数变化范围为0.000752628～0.054594249。rank-8已经能够越过部分判决边界，但5个low-elev变化产生净负收益，clear的1个变化净效应为0。
+- 聚合结果为`mean_delta_pp=-0.2777777778`、`floor_delta_pp=0.0`，未达到+1.0pp／+0.5pp门槛，最终结论为`SCIENTIFIC_FAILURE_NO_PROMOTION`；严格不进入Target25。
+- 科学解释：从rank-4到rank-8，容量增加使分数扰动和决策变化显著增大，但更新方向没有对齐目标域旧类判决边界，尤其在low-elev场景出现一致负迁移。因此“fusion容量不足”不能单独解释旧候选的零收益；下一候选不应继续无约束放大同一方向，而应在仍低于1%的少层预算内改变可适配表征位置或约束更新方向。
