@@ -26,6 +26,8 @@
 - smoke：`/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_cached_slow_fast_diag9_s392002_20260825_r3_smoke.json`
 - prediction：`/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_cached_slow_fast_diag9_s392002_20260825_r3`
 - 日志：`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_cached_slow_fast_phase15_s392002_20260825_r3.out`和`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_cached_slow_fast_diag9_s392002_20260825_r3.out`
+- release归档本地/远端唯一一次SHA256均为`1d908e09aa1a1ed5d90f9346d21b8a466f43def2826e5552e6aefd92a8083d39`；远端编译通过。
+- N607 GPU1定点device smoke：`cache=cuda:0 clean_index=cuda:0 leo_index=cuda:0 status=PASS`。重复失败恢复`READBACK`闭合，允许r3启动。
 
 ## 命令
 
