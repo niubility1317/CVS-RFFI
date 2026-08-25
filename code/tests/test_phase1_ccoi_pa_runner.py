@@ -15,6 +15,7 @@ if str(CODE_ROOT) not in sys.path:
 from train_phase1_ccoi_pa import (  # noqa: E402
     FrozenCore90CCOI,
     _meta_value,
+    accumulate_pair_audit,
     build_matrix_specs,
     calibrated_fusion_scale,
     fuse_logits,
@@ -24,6 +25,7 @@ from train_phase1_ccoi_pa import (  # noqa: E402
     validate_output_root,
     validate_source_roles,
 )
+from cvsrffi.ccoi_losses import CCOILossOutput  # noqa: E402
 from cvsrffi.ccoi_pa import CCOIPASidecar  # noqa: E402
 
 
@@ -143,6 +145,25 @@ def test_sidecar_training_batch_contains_clean_and_source_satellite_views():
     torch.testing.assert_close(paired_x[3:], satellite)
     torch.testing.assert_close(paired_y, torch.cat((y, y)))
     torch.testing.assert_close(paired_domain, torch.cat((domain, domain)))
+
+
+def test_pair_audit_records_negative_and_anchor_coverage():
+    pair = CCOILossOutput(
+        loss=torch.tensor(0.0),
+        positive_count=3,
+        negative_count=5,
+        anchor_count=4,
+    )
+    sums = {}
+
+    accumulate_pair_audit(sums, pair, batch_size=8)
+
+    assert sums == {
+        "positive_pairs": 3.0,
+        "negative_pairs": 5.0,
+        "anchor_count": 4.0,
+        "anchor_fraction": 0.5,
+    }
 
 
 def test_c4_holdout_uses_separate_frozen_base_forwards():

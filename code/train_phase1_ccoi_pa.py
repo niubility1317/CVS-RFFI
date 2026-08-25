@@ -395,6 +395,22 @@ def _source_operator_accuracy(model, loader, ssdg, data_ctx, device, max_batches
     return 100.0 * correct / max(1, total)
 
 
+def accumulate_pair_audit(sums: Dict[str, float], pair, batch_size: int) -> None:
+    """Record the pair geometry actually consumed by one training step."""
+
+    batch_size = int(batch_size)
+    if batch_size <= 0:
+        raise ValueError("batch_size must be positive")
+    values = {
+        "positive_pairs": float(pair.positive_count),
+        "negative_pairs": float(pair.negative_count),
+        "anchor_count": float(pair.anchor_count),
+        "anchor_fraction": float(pair.anchor_count) / float(batch_size),
+    }
+    for key, value in values.items():
+        sums[key] = sums.get(key, 0.0) + value
+
+
 def _train_sidecar(
     model: FrozenCore90CCOI,
     data_ctx,
@@ -459,7 +475,7 @@ def _train_sidecar(
             }
             for key, value in values.items():
                 sums[key] = sums.get(key, 0.0) + float(value.detach().item())
-            sums["positive_pairs"] = sums.get("positive_pairs", 0.0) + pair.positive_count
+            accumulate_pair_audit(sums, pair, batch_size=int(paired_y.numel()))
             sums["rectangles"] = sums.get("rectangles", 0.0) + rectangle_count
             steps += 1
         if steps == 0:
