@@ -51,3 +51,12 @@ Phase1只读取receiver0～6、day0～1的source角色样本训练和选择；�
 - 第二次真实checkpoint smoke输出`REAL_FUSION_CHECKPOINT_NO_QUERY_SMOKE_PASS`：迁移路径为`rank0_legacy_shell`，站点仅为两个fusion adapter，内循环参数2,890/1,052,557，占0.2746%，正式3步，`query_read=false`、`target_read=false`，前向logits形状合法。
 
 当前最高状态为`LANDED`。尚未证明训练启动、Phase1完成或目标域正向收益；后续证据按`RUNNING→ARTIFACTS_COMPLETE→ANALYZED`追加。
+
+## N607启动健康检查
+
+- 2026-08-25 08:04（Asia/Hong_Kong）完成唯一一次不可覆盖启动，训练PID=`2724363`。
+- 启动脚本在打印PID后因本地管道附带的末尾CR使远端bash返回非零；没有据此重复启动。独立回读确认PID存在且唯一，CWD为预登记checkout，cmdline逐项绑定冻结config、run root、checkpoint、ManySig、GPU0和`--meta_adapter_sites fusion`。
+- run root已创建且初始只含`config_snapshot.json`；stdout为576字节，包含启动时间、`Device: cuda`及三类LEO评价声明，未出现异常指纹。
+- 56秒复核时进程状态为`Rl`，累计CPU时间56秒、CPU占用100%，GPU0显存594MiB；其余GPU无计算进程。日志暂未继续增长，结合持续CPU进展判定处于ManySig/源角色准备阶段，不构成非进展。
+
+当前最高状态为`RUNNING`。这只证明唯一run启动健康，不代表训练或四场景评价完成，更不代表目标域正向收益。
