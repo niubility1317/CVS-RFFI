@@ -28,12 +28,25 @@
 
 - 分支：`codex/phase1-jmrs01-20260826`
 - 设计起点：`2d833538d077e8bebdf8adaa70887732c7985565`
+- 实验代码commit：`d17cf6fb8128b47f505fbd80e2fabfb7c8421284`
 - 本地工作树：`E:\type10-7\github_publish\CVS-RFFI-repo\.worktrees\ccoi-pa-v1`
 - 本地正式报告：`E:\type10-7\automation_reports\CV-SincNet\PHASE1_JMRS01_MECHANISM_SCREEN_S20260824_20260826A\report.md`
 - 远端项目根：`/home/szu2070436088/2510044040/CV-SincNet`
 - 远端输出根：`runs/phase1_jmrs01_20260826/PHASE1_JMRS01_MECHANISM_SCREEN_S20260824_20260826A`
 - 远端日志：`logs/phase1_jmrs01_20260826/PHASE1_JMRS01_MECHANISM_SCREEN_S20260824_20260826A.out`
-- GPU：N607预检后选择，不超过每GPU两个训练进程。
+- release目录：`/home/szu2070436088/2510044040/CV-SincNet/releases/PHASE1_JMRS01_MECHANISM_SCREEN_S20260824_20260826A_d17cf6fb`
+- release归档：本地`E:\type10-7\releases\PHASE1_JMRS01_MECHANISM_SCREEN_S20260824_20260826A_d17cf6fb.tar.gz`映射到远端项目`releases/`；仅做一次本地/远端SHA-256比较。
+- GPU：0。2026-08-26预检时8张RTX3090均为0%利用率、显存1MiB；不干预无关进程。
+
+## 精确发布命令
+
+远端CWD固定为上述release目录，使用原项目的只读checkpoint/WiSig路径和全新run/log根：
+
+```bash
+env ROOT=<release目录> CHECKPOINT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth WISIG_PKL=/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl RUN_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_jmrs01_20260826 LOG_ROOT=/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_jmrs01_20260826 GPU=0 RUN_ID=PHASE1_JMRS01_MECHANISM_SCREEN_S20260824_20260826A bash code/scripts/launch_phase1_jmrs01_20260826.sh
+```
+
+launcher第一步是真实checkpoint无query smoke，PASS后立即继续正式S0；之后独立scorer连接truth。预期owner、smoke、正式和score日志均位于JMRS01专属日志根。
 
 ## 输入与预期artifact
 
