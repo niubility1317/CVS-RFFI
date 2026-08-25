@@ -32,6 +32,8 @@
 - prediction输出：`/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_cached_slow_fast_diag9_s392002_20260825_r1`
 - 日志：`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_cached_slow_fast_phase15_s392002_20260825_r1.out`和`/home/szu2070436088/2510044040/CV-SincNet/logs/cvs_cached_slow_fast_diag9_s392002_20260825_r1.out`
 - 输入文件只读回读：ManySig=2359341461字节，ADV3B02=8582116字节，冻结原型=4412字节；三场景support各140488字节、query各742926字节。
+- release归档：本地`E:\type10-7\local_artifacts\cvs_cached_slow_fast_diag9_s392002_20260825_r1_release.zip`→远端`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_cached_slow_fast_diag9_s392002_20260825_r1/release.zip`；唯一一次本地/远端SHA256比较均为`29336fda0ae055c7785fbf3eb64999371f4c5d84b45635267c75b3081f2a36a6`。
+- release checkout远端编译通过；独立回读确认核心源码、对应Python3.10字节码和diag9配置均存在。发布状态：`VERIFIED`。
 
 ## 精确命令
 
