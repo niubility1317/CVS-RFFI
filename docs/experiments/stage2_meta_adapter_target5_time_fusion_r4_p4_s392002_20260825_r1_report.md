@@ -1,7 +1,7 @@
 # Time+Fusion Rank-4 Meta-Adapter P4 Target5最小预登记报告
 
 - run ID：`stage2_meta_adapter_target5_time_fusion_r4_p4_s392002_20260825_r1`
-- 状态：`LANDED / SMOKE_PASS`
+- 状态：`ANALYZED / SCIENTIFIC_FAILURE_NO_PROMOTION`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 代码／配置冻结提交：`4ad94a9be05e360f4753a479553932c320b1e235`；GitHub远端分支OID已独立回读一致。
 - Phase1：`phase1_adv3b02_meta_adapter_time_fusion_r4_p4_s392002_20260825_r1`，状态`ARTIFACTS_COMPLETE / SOURCE_SELECTION_ELIGIBLE`。
@@ -49,3 +49,18 @@
 - 发布前确认release、工厂、smoke、prediction和stdout目标均不存在；Phase1 bundle／冻结原型非空，无同名持久进程，GPU0～7无计算进程。
 - Target工厂一次完成15／15个truth-free row，receipt为`TARGET_INPUTS_COMPLETE`，`query_truth_opened=false`、`query_role_opened=false`、`source_opened=false`。
 - smoke专用配置在本地从首row配置精确删除`query_path`，且不含query／source／clean键；真实bundle无query smoke一次通过：`REAL_META_CHECKPOINT_NO_QUERY_SMOKE_PASS`、严格checkpoint回读、3次反向传播、`trainable_fraction=0.005476342296027567`、`query_opened=false`、`source_opened=false`、`query_state_update_count=0`、`performance_result=null`。
+
+## Target5最终结果
+
+- 唯一正式prediction矩阵约10秒完成；外层包装命令末尾因PowerShell转义破坏远端退出码变量而返回非零，但矩阵消费者证据独立回读为`PREDICTIONS_COMPLETE`，故没有重复启动。15／15行均有非空`DA0_REG0`、`DA1_REG0`prediction和receipt，矩阵级`truth_opened=false`、`source_opened=false`。
+- 15／15行均严格加载正式bundle，先完成3次support反向传播后才打开query；`query_opened_before_adaptation=false`、`query_role_opened=false`、`query_truth_opened=false`、`query_state_update_count=0`、`source_opened=false`，可训练比例均为0.547634%。
+- prediction完整后才连接三个既有同row truth sidecar；15个`score.json`和`target5_summary.json`均非空，无scorer错误。
+
+|场景|DA0_REG0旧类均值|DA1_REG0旧类均值|DA0_REG0 floor|DA1_REG0 floor|均值变化|floor变化|决策变化数|
+|---|---:|---:|---:|---:|---:|---:|---:|
+|`leo_clear_weak`|63.33%|63.33%|40.00%|40.00%|0.00pp|0.00pp|0|
+|`leo_low_elev_weak`|60.83%|60.83%|30.00%|30.00%|0.00pp|0.00pp|0|
+|`leo_rain_weak`|63.33%|63.33%|40.00%|40.00%|0.00pp|0.00pp|0|
+
+- 适配前后每行最大绝对余弦分数变化范围为0.003379732～0.030114323，但15行均没有类别决策变化。聚合`mean_delta_pp=0.0`、`floor_delta_pp=0.0`，未达到+1.0pp／+0.5pp门槛，结论为`SCIENTIFIC_FAILURE_NO_PROMOTION`，严格不进入Target25。
+- 科学解释：Phase1三类LEO weak的floor增益没有转化为同row目标域决策收益；rank4 time+fusion能改变分数，但更新幅度／方向不足以跨越旧类判决边界。结合fusion rank8在low-elev产生负迁移，下一候选应隔离time方向并提高其容量，而不是继续放大fusion或恢复已失败的tri-site组合。
