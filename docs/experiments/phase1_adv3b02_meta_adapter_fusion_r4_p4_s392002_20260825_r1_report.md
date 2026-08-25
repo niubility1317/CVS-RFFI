@@ -1,7 +1,7 @@
 # CVS_META_ADAPTER_FUSION_R4_P4_V1最小预登记报告
 
 - run ID：`phase1_adv3b02_meta_adapter_fusion_r4_p4_s392002_20260825_r1`
-- 当前状态：`LOCAL_VERIFIED`
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 固定代码与配置提交：`d2d06a25a17d488bd5d9ab9410264dab47764897`
 
@@ -60,3 +60,13 @@ Phase1只读取receiver0～6、day0～1的source角色样本训练和选择；�
 - 56秒复核时进程状态为`Rl`，累计CPU时间56秒、CPU占用100%，GPU0显存594MiB；其余GPU无计算进程。日志暂未继续增长，结合持续CPU进展判定处于ManySig/源角色准备阶段，不构成非进展。
 
 当前最高状态为`RUNNING`。这只证明唯一run启动健康，不代表训练或四场景评价完成，更不代表目标域正向收益。
+
+## r1完整失败诊断
+
+- PID自然退出，未执行kill、restart或覆盖操作；完成后GPU0～GPU7均无计算进程。
+- 完整解析`logs.jsonl`全部800条episode记录和`metrics.csv`全部200行：train step精确覆盖0～199，每步4条episode，全部loss为有限值；无OOM、Killed、NaN或Inf。200步训练、source曲线、P0控制和最终clean／三类LEO评价均已完成。
+- 唯一traceback发生在最终`save_meta_bundle`：`meta_checkpoint.py`仍把rank4写死为必须含time、freq和fusion，拒绝合法的`meta_adapter_sites=fusion`。因此`selected_meta_bundle.pt`缺失，r1不能进入Phase2，也不能作为正式性能结果。
+- 日志同时确认一个科学实现偏差：800条训练episode全部为`Q_SAME_DOMAIN`且K=5。原因是入口只在训练前采样4个固定batch并在200步中重复使用，配置声明的接收机holdout、日期／信道holdout、clean→LEO和LEO cross任务没有真正进入训练。
+- r1的source曲线给出`SOURCE_SELECTION_ELIGIBLE`，但20条baseline和20条final曲线的适配变化均为0。最终checkpoint相对P0的场景变化如下，只作为未封装run的诊断证据：clean均值-0.0869pp／floor+0.3000pp，`leo_clear_weak`均值-0.0643pp／floor+0.4000pp，`leo_low_elev_weak`均值-0.1167pp／floor+0.4429pp，`leo_rain_weak`均值-0.0548pp／floor+0.6000pp。
+
+r1最终状态封为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。下一run只修复两个已证实问题：bundle校验仅放行已登记的三站点和fusion-only profile；Phase1使用20个确定性episode池，按8／4／3／3／2精确覆盖五类query任务，并每步轮换4个batch。不得复用或覆盖r1输出。

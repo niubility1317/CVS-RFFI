@@ -11,11 +11,15 @@ from torch import nn
 
 from cvsrffi.meta_phase1_entry import (
     _build_refs,
+    _build_source_batches,
     _candidate_from_curves,
     _compute_frozen_class_prototypes,
     _evaluate_final_checkpoint_scenarios,
     _episode_batch,
+    _sample_episode,
     _source_role_manifest,
+    _training_batches_for_step,
+    _training_kind_schedule,
     parse_args_for_test,
     run_meta_phase1,
     validate_meta_phase1_config,
@@ -355,6 +359,120 @@ def test_phase1_config_requires_explicit_source_receiver_ids():
     del config["source_receiver_ids"]
     with pytest.raises(ValueError, match="source_receiver_ids"):
         validate_meta_phase1_config(config)
+
+
+def test_training_kind_schedule_preserves_all_declared_query_domains_and_weights():
+    config = validate_meta_phase1_config(valid_config())
+
+    schedule = _training_kind_schedule(config["episode_weights"], seed=config["seed"])
+
+    counts = {kind: schedule.count(kind) for kind in EpisodeKind}
+    assert len(schedule) == 20
+    assert counts == {
+        EpisodeKind.SAME_DOMAIN: 8,
+        EpisodeKind.RX_HOLDOUT: 4,
+        EpisodeKind.DAY_CHANNEL_HOLDOUT: 3,
+        EpisodeKind.CLEAN_TO_LEO: 3,
+        EpisodeKind.LEO_CROSS: 2,
+    }
+
+
+def test_training_batch_rotation_consumes_entire_weighted_pool_before_reuse():
+    pool = list(range(20))
+
+    first_cycle = [
+        item
+        for step in range(5)
+        for item in _training_batches_for_step(pool, train_step=step, meta_batch_size=4)
+    ]
+
+    assert sorted(first_cycle) == pool
+    assert _training_batches_for_step(pool, train_step=5, meta_batch_size=4) == pool[:4]
+
+
+def test_sample_episode_can_require_a_specific_cross_domain_kind():
+    desired = types.SimpleNamespace(
+        kind=EpisodeKind.LEO_CROSS,
+        guard_class_ids=frozenset({5}),
+        query_guard=(object(),),
+        query_adapt=(),
+    )
+    wrong = types.SimpleNamespace(
+        kind=EpisodeKind.SAME_DOMAIN,
+        guard_class_ids=frozenset({5}),
+        query_guard=(object(),),
+        query_adapt=(),
+    )
+
+    class FakeSampler:
+        def __init__(self):
+            self.seeds = []
+
+        def sample(self, seed):
+            self.seeds.append(seed)
+            return desired if len(self.seeds) == 3 else wrong
+
+    sampler = FakeSampler()
+    episode = _sample_episode(
+        sampler,
+        seed=100,
+        required_kind=EpisodeKind.LEO_CROSS,
+    )
+
+    assert episode is desired
+    assert sampler.seeds == [100, 101, 102]
+
+
+def test_real_source_batch_builder_materializes_weighted_cross_domain_pool(monkeypatch):
+    import cvsrffi.meta_episodes as episode_module
+    import cvsrffi.meta_phase1_entry as entry_module
+
+    kinds = tuple(EpisodeKind)
+
+    class FakeSampler:
+        def __init__(self, refs, config):
+            del refs, config
+
+        def sample(self, seed):
+            row = types.SimpleNamespace(view="clean", role="L_s")
+            return types.SimpleNamespace(
+                kind=kinds[int(seed) % len(kinds)],
+                guard_class_ids=frozenset({5}),
+                query_guard=(row,),
+                query_adapt=(row,),
+                support=(row,),
+            )
+
+    monkeypatch.setattr(episode_module, "HierarchicalMetaEpisodeSampler", FakeSampler)
+    monkeypatch.setattr(
+        entry_module,
+        "_build_refs",
+        lambda dataset, role: ([types.SimpleNamespace(role=role)], dataset),
+    )
+    monkeypatch.setattr(
+        entry_module,
+        "_episode_batch",
+        lambda episode, dataset, **kwargs: episode,
+    )
+    config = validate_meta_phase1_config(valid_config())
+
+    train_pool, eval_batches = _build_source_batches(
+        {"L_s": object(), "V_cal": object(), "V_select": object()},
+        config,
+        _ToyMetaModel(3),
+        torch.device("cpu"),
+    )
+
+    counts = {kind: sum(batch.kind == kind for batch in train_pool) for kind in kinds}
+    assert len(train_pool) == 20
+    assert counts == {
+        EpisodeKind.SAME_DOMAIN: 8,
+        EpisodeKind.RX_HOLDOUT: 4,
+        EpisodeKind.DAY_CHANNEL_HOLDOUT: 3,
+        EpisodeKind.CLEAN_TO_LEO: 3,
+        EpisodeKind.LEO_CROSS: 2,
+    }
+    assert len(eval_batches) == config["meta_eval_episodes"]
 
 
 def test_source_manifest_builds_declared_clean_test_disjoint_from_all_selection_roles(

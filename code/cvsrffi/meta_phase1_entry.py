@@ -68,6 +68,7 @@ CANONICAL_EPISODE_WEIGHTS = {
     "Q_LEO_CROSS": 0.10,
 }
 CANONICAL_K_CHOICES = (1, 2, 5, 10)
+CANONICAL_TRAIN_EPISODE_POOL_SIZE = 20
 CANONICAL_EVALUATE_STEPS = (0, 1, 3, 5, 10)
 CANONICAL_DEFAULT_META_TRAIN_STEPS = 200
 CANONICAL_DEFAULT_META_EVAL_EPISODES = 4
@@ -1076,11 +1077,16 @@ def _sample_episode(
     *,
     seed: int,
     require_clean_query: bool = False,
+    required_kind: Any | None = None,
 ) -> Any:
     last_error: Exception | None = None
     for offset in range(256):
         try:
             episode = sampler.sample(int(seed) + offset)
+            if required_kind is not None and episode.kind != required_kind:
+                raise ValueError(
+                    f"frozen episode requires kind={required_kind}; got {episode.kind}"
+                )
             if not episode.guard_class_ids or not episode.query_guard:
                 raise ValueError("frozen episode requires non-empty Y_guard")
             if require_clean_query and not any(
@@ -1092,6 +1098,37 @@ def _sample_episode(
         except (ValueError, RuntimeError) as exc:
             last_error = exc
     raise ValueError(f"cannot construct source meta episode after 256 seeds: {last_error}")
+
+
+def _training_kind_schedule(
+    episode_weights: Mapping[str, float], *, seed: int
+) -> tuple[Any, ...]:
+    from cvsrffi.meta_episodes import EpisodeKind
+
+    schedule: list[Any] = []
+    for kind in EpisodeKind:
+        weight = float(episode_weights.get(kind.value, 0.0))
+        exact_count = weight * CANONICAL_TRAIN_EPISODE_POOL_SIZE
+        count = int(round(exact_count))
+        if abs(exact_count - count) > 1.0e-9:
+            raise ValueError(
+                "episode_weights must map exactly onto the frozen 20-episode pool"
+            )
+        schedule.extend([kind] * count)
+    if len(schedule) != CANONICAL_TRAIN_EPISODE_POOL_SIZE:
+        raise ValueError("episode_weights must fill the frozen 20-episode pool")
+    random.Random(int(seed) + 424242).shuffle(schedule)
+    return tuple(schedule)
+
+
+def _training_batches_for_step(
+    pool: Sequence[Any], *, train_step: int, meta_batch_size: int
+) -> list[Any]:
+    batch_size = int(meta_batch_size)
+    if batch_size < 1 or len(pool) < batch_size:
+        raise ValueError("training episode pool must cover one complete meta batch")
+    start = (int(train_step) * batch_size) % len(pool)
+    return [pool[(start + offset) % len(pool)] for offset in range(batch_size)]
 
 
 def _episode_batch(
@@ -1427,14 +1464,20 @@ def _build_source_batches(
     num_classes = int(config["model"].get("num_classes", len(getattr(train_dataset, "tx_list", []) or [])) or 1)
     train_batches = [
         _episode_batch(
-            _sample_episode(train_sampler, seed=int(config["seed"]) + index),
+            _sample_episode(
+                train_sampler,
+                seed=int(config["seed"]) + index * 1000,
+                required_kind=kind,
+            ),
             train_dataset,
             model=model,
             num_classes=num_classes,
             device=device,
             view_seed=int(config["seed"]),
         )
-        for index in range(int(config["meta_batch_size"]))
+        for index, kind in enumerate(
+            _training_kind_schedule(weights, seed=int(config["seed"]))
+        )
     ]
 
     eval_config = MetaEpisodeSamplerConfig(
@@ -1783,7 +1826,12 @@ def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
                     if training_mode == "supervised_adapter"
                     else run_meta_train_step
                 )
-                result = step_fn(model, train_batches, optimizer, trainer_config)
+                step_batches = _training_batches_for_step(
+                    train_batches,
+                    train_step=train_step,
+                    meta_batch_size=int(config["meta_batch_size"]),
+                )
+                result = step_fn(model, step_batches, optimizer, trainer_config)
                 writer.writerow(
                     {
                         "train_step": int(train_step),

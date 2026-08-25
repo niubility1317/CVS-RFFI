@@ -43,6 +43,10 @@ _META_CONFIG_KEYS = {
 _STATE_CONTAINER_KEYS = ("model", "model_state_dict", "state_dict")
 _FORBIDDEN_TRAINABLE_FRAGMENTS = ("cls_head", "classifier", "lda", "cov")
 _META_ADAPTER_SITES = ("time", "freq", "fusion")
+_REGISTERED_META_ADAPTER_SITE_PROFILES = (
+    _META_ADAPTER_SITES,
+    ("fusion",),
+)
 _LEGACY_ADAPTER_PREFIXES = tuple(
     f"meta_adapter_{site}." for site in _META_ADAPTER_SITES
 )
@@ -287,6 +291,15 @@ def _validate_sites(
     return tuple(site for site in _META_ADAPTER_SITES if site in raw)
 
 
+def _validate_registered_site_profile(value: Any, *, field_name: str) -> tuple[str, ...]:
+    sites = _validate_sites(value, field_name=field_name, require_all=False)
+    if sites not in _REGISTERED_META_ADAPTER_SITE_PROFILES:
+        raise ValueError(
+            f"{field_name} must match a registered adapter site profile"
+        )
+    return sites
+
+
 def _validate_model_args(value: Any) -> dict[str, Any]:
     args = _exact_mapping(
         value,
@@ -351,7 +364,7 @@ def _validate_model_args(value: Any) -> dict[str, Any]:
         _validate_sites(
             args["meta_adapter_sites"],
             field_name="model_args.meta_adapter_sites",
-            require_all=adapter_rank == 4,
+            require_all=False,
             allow_empty=adapter_rank == 0,
         )
 
@@ -384,10 +397,9 @@ def _validate_meta_adapter_config(value: Any) -> dict[str, Any]:
     rank = _require_int(config[rank_key], field_name=f"meta_adapter_config.{rank_key}", minimum=1)
     if rank != 4:
         raise ValueError("meta_adapter_config.rank must be the fixed V1 rank 4")
-    _validate_sites(
+    _validate_registered_site_profile(
         config[site_key],
         field_name=f"meta_adapter_config.{site_key}",
-        require_all=True,
     )
     if "phase2_steps" in config:
         _require_int(config["phase2_steps"], field_name="meta_adapter_config.phase2_steps", minimum=1)
@@ -500,12 +512,11 @@ def _validate_bundle_metadata(
         model_sites = _validate_sites(
             model_args["meta_adapter_sites"],
             field_name="model_args.meta_adapter_sites",
-            require_all=True,
+            require_all=False,
         )
-        config_sites = _validate_sites(
+        config_sites = _validate_registered_site_profile(
             meta_adapter_config[site_key],
             field_name=f"meta_adapter_config.{site_key}",
-            require_all=True,
         )
         if model_sites != config_sites:
             raise ValueError("model_args and meta_adapter_config adapter sites mismatch")
