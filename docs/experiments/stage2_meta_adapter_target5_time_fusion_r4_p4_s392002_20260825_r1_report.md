@@ -3,6 +3,7 @@
 - run ID：`stage2_meta_adapter_target5_time_fusion_r4_p4_s392002_20260825_r1`
 - 状态：`LOCAL_VERIFIED`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
+- 代码／配置冻结提交：`4ad94a9be05e360f4753a479553932c320b1e235`；GitHub远端分支OID已独立回读一致。
 - Phase1：`phase1_adv3b02_meta_adapter_time_fusion_r4_p4_s392002_20260825_r1`，状态`ARTIFACTS_COMPLETE / SOURCE_SELECTION_ELIGIBLE`。
 - 冻结基线：`ADV3B02_CORE90_SOFT_E200`。
 
