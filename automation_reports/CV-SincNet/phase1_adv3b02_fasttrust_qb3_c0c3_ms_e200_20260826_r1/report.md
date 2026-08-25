@@ -3,7 +3,7 @@
 ## 当前状态
 
 - run_id：`phase1_adv3b02_fasttrust_qb3_c0c3_ms_e200_20260826_r1`
-- 状态：`FORMAL_MATRIX_LOCAL_VERIFIED / PROFILE_R2_RUNNING`
+- 状态：`FORMAL_RUNNING / PROFILE_R2_RUNNING`
 - 科学边界：Phase1 source-only；固定`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`；target结果不反馈阈值、候选或重训。
 - 目标：冻结上一轮C0/C3训练数学定义，以两个新增seed补足三seed证据；同时修复可观测性，并用不改变优化轨迹的工程A/B选择恢复checkpoint间隔。
 
@@ -81,3 +81,13 @@
 - 预期artifact：每行200条结构化epoch记录、`final_ssdg.pth`、恢复checkpoint、Clean和三种LEO weak的独立metrics/log；四行prediction完整后才由独立scorer连接truth并作同row三seed分析。
 - 技术停止：仅协议/query越权、错误stage/seed/split/checkpoint、输出覆盖、错误checkout、同一确定性异常至少两行、无prediction闭合或run归属不清。低性能不停止。
 - 本地验证：新增正式matrix测试先RED后GREEN；与profile、速度测试联合18项通过；包含新增matrix测试的完整相邻回归165项通过。
+
+## 正式矩阵发布与启动证据
+
+- 冻结提交：`99da6a0f95afa11b99e738edfb93ad87121f2f0f`；GitHub远端`work/cvs-active`独立OID读回一致。
+- release归档：`E:\type10-7\release_artifacts\phase1_fasttrust_qb3_99da6a0f.tar.gz`→`/home/szu2070436088/2510044040/CV-SincNet/releases/incoming/phase1_fasttrust_qb3_99da6a0f.tar.gz`；按规则只比较一次本地/远端SHA，双方均为`b028bcfc1145d46fec2edbe42915a1de22e0750c3d9f2add8fc91c328c5d3752`。
+- 不可变release根：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_fasttrust_qb3_99da6a0f`；远端Python编译、两个Bash语法检查和正式四行`--dry-run`通过。
+- 启动时间：N607本地时间2026-08-26 00:54；主PID3207460，launcher子PID3207462；四个主训练Python分别为PID3207506、3207513、3207515、3207518，并绑定GPU0–3、正式run root和不可变release。
+- 启动读回：四份`train.log`均增长到约7KB，已完成源域划分、真实checkpoint和telemetry初始化；fatal fingerprint扫描未见Traceback、OOM、Killed、RuntimeError或阶段边界错误。
+- 资源读回：GPU0因独立JMRS任务与本run合计两个训练进程；GPU1–3各一本run训练进程，均未超过每GPU两个训练进程。GPU4–7继续运行NONBLOCKING速度profile。
+- 当前证据等级：`RUNNING`。正式四行未到`ARTIFACTS_COMPLETE`，尚无Clean/三LEO完整结果，也没有三seed晋级结论。
