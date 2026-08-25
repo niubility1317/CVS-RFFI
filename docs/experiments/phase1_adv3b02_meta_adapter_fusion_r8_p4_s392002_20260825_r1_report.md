@@ -1,7 +1,7 @@
 # Fusion-only Rank-8 Meta-Adapter P4 Phase1最小预登记报告
 
 - run ID：`phase1_adv3b02_meta_adapter_fusion_r8_p4_s392002_20260825_r1`
-- 状态：`LOCAL_VERIFIED`
+- 状态：`RUNNING`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 基线：冻结`ADV3B02_CORE90_SOFT_E200`checkpoint。
 - 本次计划提交：`5670ebfd1726b3582e38cd78102003a0a460af00`。
@@ -51,4 +51,12 @@ Phase1闭合后，仅在source-only选择规则允许时进入完全相同的Tar
 - 启动前独立确认release、output root和stdout目标原先均不存在，同名进程不存在；GPU0～GPU7均无计算进程。
 - 冻结真实`ADV3B02_CORE90_SOFT_E200`checkpoint smoke通过：`REAL_FUSION_R8_CHECKPOINT_BUNDLE_NO_QUERY_SMOKE_PASS`；迁移路径为`rank0_legacy_shell`，真实双分支fusion inner参数5458／1055125，占0.517285%，rank=8、正式3步、`query_read=false`、`target_read=false`。
 - smoke把临时bundle严格保存并回读，`bundle_trainable_fraction=0.005172846819097263`，bundle大小4289426字节；没有加载Phase2数据或产生性能结果。
-- 当前最高状态：`LANDED`。下一步按冻结命令启动唯一一次Phase1训练，并立即核对PID、CWD、cmdline、GPU和日志增长。
+- smoke完成时状态为`LANDED`，随后按冻结命令只启动了一次Phase1训练。
+
+## 启动健康证据
+
+- 唯一启动于N607时间2026-08-25 09:44:29；shell owner PID=`2775067`，训练子进程PID=`2775068`，没有重复启动。
+- CWD严格为release checkout；训练cmdline逐项绑定rank-8 config、`--meta_adapter_rank 8 --meta_adapter_sites fusion`、冻结checkpoint、ManySig、独立output root、seed392002和GPU0。
+- GPU0回读训练PID`2775068`、显存488MiB；stdout从0增长至965字节并进入WiSig初始化，未出现异常、OOM、Killed、NaN或Inf。
+- 首次启动SSH因后台shell继承连接未自动退出；只关闭了该已知本地SSH客户端。独立回读确认远端shell与训练子进程继续运行，未重启、未终止任何远端进程。
+- 当前最高状态：`RUNNING`。后续只做短连接只读监控；不得因中间性能停止。
