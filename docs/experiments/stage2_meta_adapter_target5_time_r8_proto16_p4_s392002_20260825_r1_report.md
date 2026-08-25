@@ -1,7 +1,7 @@
 # Time-only Rank-8 Prototype-Aligned Meta-Adapter P4 Target5最小预登记报告
 
 - run ID：`stage2_meta_adapter_target5_time_r8_proto16_p4_s392002_20260825_r1`
-- 状态：`LANDED`
+- 状态：`ANALYZED / SCIENTIFIC_FAILURE_NO_PROMOTION`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 代码／配置冻结提交：`b9e289d17490bc6b5892334ddcfc3ceee104f89a`；首次push后独立回读远端分支OID一致。
 - Phase1：`phase1_adv3b02_meta_adapter_time_r8_proto16_p4_s392002_20260825_r1`，状态`ARTIFACTS_COMPLETE / SOURCE_SELECTION_ELIGIBLE`。
@@ -47,3 +47,17 @@
 - Target工厂一次完成15／15个truth-free row，状态`TARGET_INPUTS_COMPLETE`；`query_truth_opened=false`、`query_role_opened=false`、`source_opened=false`。
 - 首次smoke在读取配置前因工厂未自动生成`smoke_config_no_query.json`而`FileNotFoundError`，未加载模型、未访问query、未产生性能结果。随后仅从首row配置精确删除`query_path`，本地断言其余字段完全不变且无query／truth／role／source／clean键后同步。
 - 修复输入后真实smoke通过：`REAL_META_CHECKPOINT_NO_QUERY_SMOKE_PASS`，严格checkpoint回读，3次真实反向传播，`adaptation_objective=frozen_prototype_cosine_ce_v1`、`support_logit_scale=16.0`、`trainable_fraction=0.005172846819097263`、`query_opened=false`、`source_opened=false`、`query_state_update_count=0`、`performance_result=null`。
+
+## Target5最终结果
+
+- 唯一正式prediction矩阵快速自然完成15／15行；矩阵级状态为`PREDICTIONS_COMPLETE`，`truth_opened=false`、`source_opened=false`。每行均严格加载正式bundle，执行3次support反向传播后才打开query；`query_opened_before_adaptation=false`、`query_role_opened=false`、`query_truth_opened=false`、`query_state_update_count=0`，objective／scale均为`frozen_prototype_cosine_ce_v1`／16.0。
+- prediction闭合后才连接三个既有同row truth sidecar。15个`score.json`和`target5_summary.json`均非空，完整证据已下载到`E:\type10-7\local_artifacts\meta_adapter_recovery\target5_time_r8_proto16_p4_r1_complete_20260825`独立复算。
+
+| 场景 | DA0_REG0旧类均值 | DA1_REG0旧类均值 | DA0_REG0 floor | DA1_REG0 floor | 均值变化 | floor变化 |
+|---|---:|---:|---:|---:|---:|---:|
+| `leo_clear_weak` | 63.3333% | 63.6667% | 35.0000% | 30.0000% | +0.3333pp | -5.0000pp |
+| `leo_low_elev_weak` | 65.0000% | 65.0000% | 45.0000% | 45.0000% | 0.0000pp | 0.0000pp |
+| `leo_rain_weak` | 65.0000% | 65.0000% | 45.0000% | 45.0000% | 0.0000pp | 0.0000pp |
+
+- 15行合计52个类别决策变化；每行最大绝对余弦分数变化范围为0.0161863～0.6821303。聚合`mean_delta_pp=+0.1111111`、`floor_delta_pp=-5.0`，未达到+1.0pp／+0.5pp双门槛，结论为`SCIENTIFIC_FAILURE_NO_PROMOTION`，严格不进入Target25。
+- 科学解释：相较旧scale1候选的0个决策变化，prototype对齐与scale16确实把support梯度放大到能够改变判决，但clear weak尾类出现过冲。下一候选保持同一time-only rank8和3步预算，只把训练／部署一致的scale降至8，检验能否保留有益决策变化同时消除floor崩塌。
