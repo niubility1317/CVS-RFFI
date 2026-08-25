@@ -38,4 +38,14 @@ Phase1只读取receiver0～6、day0～1的source角色样本训练和选择；�
 
 预期artifact：`logs.jsonl`、`metrics.csv`、`selected_meta_bundle.pt`、`run_summary.json`、`config_snapshot.json`、`source_adaptation_curve.json`、`p0_control_evaluation.json`、`final_checkpoint_evaluation.json`和`frozen_prototypes.npz`。
 
-技术停止只允许协议越权、错误checkout/output root、输出覆盖、无法产生规定artifact、确定性重复异常或进程归属不清；不得因中间性能低而停止。当前尚未证明N607落地、真实checkpoint smoke、训练完成或目标域正向收益。
+技术停止只允许协议越权、错误checkout/output root、输出覆盖、无法产生规定artifact、确定性重复异常或进程归属不清；不得因中间性能低而停止。
+
+## N607发布与真实checkpoint smoke
+
+- 发布前确认r2 release目录、run root和stdout均不存在，run ID无匹配进程；GPU0～GPU7无计算进程。r1保持原地封存且无活动进程。
+- release归档固定源提交为`87be81f5623b0f141d6c2b232c273b8a855e0d1c`，35,502,057字节、5,020个条目；唯一一次本地/远端SHA256均为`555401ae9c67c52e15ef17f124cac19a59161e6f7ef4077e3c4ae83e2de65136`。
+- 远端checkout内7个相关生产入口编译通过。
+- 真实冻结checkpoint smoke输出`REAL_FUSION_R2_CHECKPOINT_BUNDLE_NO_QUERY_SMOKE_PASS`：迁移路径`rank0_legacy_shell`，只有两个fusion adapter，内循环参数2,890/1,052,557，占0.2746%，正式3步，`query_read=false`、`target_read=false`。
+- smoke实际保存4,279,186字节bundle并由严格加载器回载，回载后的全部可训练参数仍只属于fusion adapter；r1的最终封装失败路径已在真实环境闭合。
+
+当前最高状态为`LANDED`。尚未证明训练启动、五类任务实际日志分布、四场景评价完成或目标域正向收益。
