@@ -9,7 +9,7 @@ RUN_ID="${RUN_ID:-phase1_adv3b02_muse_ssdg_20260819}"
 RUNS_ROOT="${RUNS_ROOT:-${ROOT}/runs/${RUN_ID}}"
 WISIG_PKL="${WISIG_PKL:-${ROOT}/Dataset_WigSig/ManySig.pkl}"
 GPU="${GPU:-0}"
-SEED=392002
+SEED="${SEED:-392002}"
 ABLATION="${ABLATION:-NONE}"
 INIT_MODE="${INIT_MODE:-scratch}"
 BASE_CKPT="${BASE_CKPT:-${ROOT}/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth}"
@@ -636,8 +636,8 @@ write_config() {
   local candidate_id="$2"
   local capabilities="$3"
   local candidate_root="$4"
-  printf '{\n  "run_id": "%s",\n  "candidate": "%s",\n  "muse_level": "%s",\n  "ablation": "%s",\n  "init_mode": "%s",\n  "base_checkpoint": "%s",\n  "base_candidate": "ADV3B02_CORE90_SOFT_E200",\n  "capabilities": "%s",\n  "seed": %d,\n  "epochs": 200,\n  "labeled_batch_size": 128,\n  "unlabeled_batch_size": %d,\n  "ratios": {"L_s": 0.07, "U_s": 0.63, "V_cal": 0.15, "V_select": 0.15},\n  "checkpoint_selection": "final_only",\n  "final_evaluation": ["clean", "leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"]\n}\n' \
-    "${RUN_ID}" "${candidate_id}" "${level}" "${ABLATION}" "${INIT_MODE}" "${BASE_CKPT}" "${capabilities}" "${SEED}" "${MUSE_UNLABELED_BATCH_SIZE}" > "${candidate_root}/config.json"
+  printf '{\n  "run_id": "%s",\n  "candidate": "%s",\n  "muse_level": "%s",\n  "ablation": "%s",\n  "init_mode": "%s",\n  "base_checkpoint": "%s",\n  "base_candidate": "ADV3B02_CORE90_SOFT_E200",\n  "capabilities": "%s",\n  "seed": %d,\n  "epochs": %d,\n  "labeled_batch_size": 128,\n  "unlabeled_batch_size": %d,\n  "ratios": {"L_s": 0.07, "U_s": 0.63, "V_cal": 0.15, "V_select": 0.15},\n  "checkpoint_selection": "final_only",\n  "final_evaluation": ["clean", "leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"]\n}\n' \
+    "${RUN_ID}" "${candidate_id}" "${level}" "${ABLATION}" "${INIT_MODE}" "${BASE_CKPT}" "${capabilities}" "${SEED}" "${TOTAL_EPOCHS}" "${MUSE_UNLABELED_BATCH_SIZE}" > "${candidate_root}/config.json"
 }
 
 run_candidate() {
@@ -657,7 +657,7 @@ run_candidate() {
   build_train_command "${level}" "${candidate_root}" "${candidate_id}"
   build_eval_command "${candidate_root}"
 
-  echo "[MUSE-CANDIDATE] candidate=${candidate_id} capabilities=${capabilities} muse_level=${level} ablation=${ABLATION} init=${INIT_MODE} u_batch=${MUSE_UNLABELED_BATCH_SIZE} output=${candidate_root} seed=${SEED} epochs=200"
+  echo "[MUSE-CANDIDATE] candidate=${candidate_id} capabilities=${capabilities} muse_level=${level} ablation=${ABLATION} init=${INIT_MODE} u_batch=${MUSE_UNLABELED_BATCH_SIZE} output=${candidate_root} seed=${SEED} epochs=${TOTAL_EPOCHS}"
   printf '[MUSE-TRAIN-CMD] '; printf '%q ' "${TRAIN_CMD[@]}"; printf '\n'
   printf '[MUSE-EVAL-CMD] scenarios=clean,leo_clear_weak,leo_low_elev_weak,leo_rain_weak log=%s ' "${candidate_root}/eval_joint.log"
   printf '%q ' "${EVAL_CMD[@]}"

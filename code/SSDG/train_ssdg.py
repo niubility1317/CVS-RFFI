@@ -3484,6 +3484,26 @@ def _grads_are_finite(model) -> bool:
     return True
 
 
+def _first_nonfinite_gradient(model) -> Dict[str, Any] | None:
+    if torch is None:
+        return None
+    for name, param in model.named_parameters():
+        if param.grad is None:
+            continue
+        gradient = param.grad.detach()
+        finite = torch.isfinite(gradient)
+        if bool(finite.all().item()):
+            continue
+        return {
+            "parameter_name": str(name),
+            "nonfinite_elements": int((~finite).sum().item()),
+            "nan_elements": int(torch.isnan(gradient).sum().item()),
+            "posinf_elements": int(torch.isposinf(gradient).sum().item()),
+            "neginf_elements": int(torch.isneginf(gradient).sum().item()),
+        }
+    return None
+
+
 def _direct_metric_kwargs(args) -> Dict[str, Any]:
     return {
         "virtual_count": int(args.direct_metric_virtual_count),
@@ -5661,6 +5681,44 @@ def _fasttrust_epoch_resource_metrics(
     }
 
 
+def _fasttrust_epoch_stage_timing_metrics(
+    *,
+    train_batches_s: float,
+    base_validation_s: float,
+    heavy_source_validation_s: float,
+    checkpoint_io_s: float,
+    epoch_elapsed_s: float,
+) -> Dict[str, float]:
+    accounted = (
+        float(train_batches_s)
+        + float(base_validation_s)
+        + float(heavy_source_validation_s)
+        + float(checkpoint_io_s)
+    )
+    return {
+        "muse/time_train_batches_s": float(train_batches_s),
+        "muse/time_base_validation_s": float(base_validation_s),
+        "muse/time_heavy_source_validation_s": float(heavy_source_validation_s),
+        "muse/time_checkpoint_io_s": float(checkpoint_io_s),
+        "muse/time_other_s": max(0.0, float(epoch_elapsed_s) - accounted),
+    }
+
+
+def _rc4_should_collect_gradient_telemetry(
+    muse_state: Mapping[str, Any] | None,
+    *,
+    batch_idx: int,
+    epoch: int,
+    telemetry_epochs: set[int],
+) -> bool:
+    return bool(
+        muse_state is not None
+        and muse_state.get("fasttrust_rc4", False)
+        and int(batch_idx) == 1
+        and int(epoch) in telemetry_epochs
+    )
+
+
 def _detach_log_mapping(values: Mapping[str, Any]) -> Dict[str, Any]:
     """Detach every tensor before an epoch log retains the batch snapshot."""
 
@@ -7623,6 +7681,10 @@ def train(args) -> int:
             direct_metric_reference_bank.maybe_promote(epoch)
 
         t0 = time.time()
+        train_batches_seconds = 0.0
+        base_validation_seconds = 0.0
+        heavy_source_validation_seconds = 0.0
+        checkpoint_io_seconds = 0.0
         if _fasttrust_lr_enabled(args) and device.type == "cuda":
             torch.cuda.reset_peak_memory_stats(device)
         if _fasttrust_lr_enabled(args):
@@ -9897,11 +9959,11 @@ def train(args) -> int:
                 for value in str(getattr(args, "rc4_gradient_telemetry_epochs", "")).split(",")
                 if str(value).strip()
             }
-            if (
-                muse_state is not None
-                and bool(muse_state.get("fasttrust_rc4", False))
-                and int(batch_idx) == 0
-                and int(epoch) in telemetry_epochs
+            if _rc4_should_collect_gradient_telemetry(
+                muse_state,
+                batch_idx=batch_idx,
+                epoch=epoch,
+                telemetry_epochs=telemetry_epochs,
             ):
                 gradient_losses = muse_losses.get("rc4_gradient_losses", {})
                 g_l = _rc4_gradient_norm(loss_tx_l, out_l["z_id"])
@@ -9933,6 +9995,7 @@ def train(args) -> int:
             skipped_nonfinite_loss = 0
             skipped_nonfinite_grad = 0
             optimizer_step_applied = False
+            first_nonfinite_gradient = None
             os_grad_info = {
                 "active": 0.0,
                 "conflict": 0.0,
@@ -10028,8 +10091,17 @@ def train(args) -> int:
                 else:
                     scaler.scale(loss).backward()
                 scaler.unscale_(optimizer)
+                first_nonfinite_gradient = _first_nonfinite_gradient(model)
+                if first_nonfinite_gradient is None and muse_state is not None:
+                    first_nonfinite_gradient = _first_nonfinite_gradient(muse_state["heads"])
+                    if first_nonfinite_gradient is not None:
+                        first_nonfinite_gradient = dict(first_nonfinite_gradient)
+                        first_nonfinite_gradient["parameter_name"] = (
+                            "muse_heads." + str(first_nonfinite_gradient["parameter_name"])
+                        )
                 grad_norm_before_clip = _grad_norm(model)
-                if float(getattr(args, "max_grad_norm", 0.0)) > 0.0:
+                grads_finite = first_nonfinite_gradient is None
+                if grads_finite and float(getattr(args, "max_grad_norm", 0.0)) > 0.0:
                     torch.nn.utils.clip_grad_norm_(
                         _optimizer_parameters(model, muse_state),
                         max_norm=float(args.max_grad_norm),
@@ -10039,10 +10111,6 @@ def train(args) -> int:
                 grad_backbone = _grad_norm(model, lambda name: "backbone" in name)
                 grad_aux = _grad_norm(model, lambda name: "aux" in name)
                 grad_domain = _grad_norm(model, lambda name: "dom" in name or "domain" in name)
-                grads_finite = _grads_are_finite(model) and (
-                    muse_state is None
-                    or _grads_are_finite(muse_state["heads"])
-                )
                 if grads_finite:
                     scaler.step(optimizer)
                     optimizer_step_applied = True
@@ -10085,6 +10153,17 @@ def train(args) -> int:
                         "loss": float(loss.detach().float().item()),
                         "grad_before_clip": float(grad_norm_before_clip),
                         "grad_total": float(grad_total),
+                        "first_nonfinite_gradient": first_nonfinite_gradient,
+                        "loss_components": {
+                            "labeled_tx": loss_tx_l.detach().float().cpu(),
+                            "labeled_domain": loss_dom_l.detach().float().cpu(),
+                            "labeled_identity_domain": loss_adv_l.detach().float().cpu(),
+                            "rc4_hard": muse_losses.get("hard", 0.0),
+                            "rc4_partial_set": muse_losses.get("partial_set", 0.0),
+                            "rc4_partial_conditional": muse_losses.get("partial_conditional", 0.0),
+                            "rc4_domain_discriminator": muse_losses.get("domain_discriminator", 0.0),
+                            "rc4_domain_confusion": muse_losses.get("domain_confusion", 0.0),
+                        },
                         "optimizer_lrs": [float(group["lr"]) for group in optimizer.param_groups],
                         "model": model.state_dict(),
                         "ema_model": ema_model.state_dict() if ema_model is not None else None,
@@ -11077,7 +11156,10 @@ def train(args) -> int:
                         f"fraction={rc4_nonfinite_batches / float(max(1, batch_idx)):.6f}"
                     )
 
+        train_batches_seconds = time.time() - t0
+        base_validation_started = time.time()
         val_stats = evaluate_loader(model, data_ctx["val_loader"], device, data_ctx["domain_label_map"], max_batches=int(args.eval_max_batches))
+        base_validation_seconds = time.time() - base_validation_started
         current_source_val = float(val_stats.get("tx_acc", float("nan")))
         if math.isfinite(current_source_val):
             dg_health_best_val = max(float(dg_health_best_val), current_source_val)
@@ -11107,8 +11189,10 @@ def train(args) -> int:
                 dg_health_early_stop_requested = True
         source_val_heavy_eval_ran = _should_run_source_val_heavy_eval(epoch, total_epochs, args)
         if source_val_heavy_eval_ran:
+            heavy_source_validation_started = time.time()
             source_val_tail_geometry = _evaluate_source_val_tail_geometry(model, data_ctx, device, args)
             source_val_sat_stats = _evaluate_source_val_sat_if_enabled(model, data_ctx, device, args)
+            heavy_source_validation_seconds = time.time() - heavy_source_validation_started
             last_source_val_tail_geometry = deepcopy(source_val_tail_geometry)
             last_source_val_sat_stats = deepcopy(source_val_sat_stats)
             last_source_val_heavy_eval_epoch = int(epoch)
@@ -11526,6 +11610,7 @@ def train(args) -> int:
                 for key in recovery_loss_keys
             )
             if finite_losses and float(train_logs.get("train/optimizer_step_applied", 0.0)) > 0.0:
+                checkpoint_io_started = time.time()
                 recovery_payload = dict(payload)
                 recovery_payload["checkpoint_role"] = "recovery_latest_finite_not_for_selection"
                 save_payload(out_dir / "latest_finite_ssdg.pth", recovery_payload)
@@ -11533,6 +11618,7 @@ def train(args) -> int:
                     e90_payload = dict(recovery_payload)
                     e90_payload["checkpoint_role"] = "recovery_e90_not_for_selection"
                     save_payload(out_dir / "recovery_e90_ssdg.pth", e90_payload)
+                checkpoint_io_seconds += time.time() - checkpoint_io_started
                 recovery_saved = True
         train_logs["rc4/recovery_checkpoint_saved"] = 1.0 if recovery_saved else 0.0
         train_logs["rc4/first_anomaly_packet_written"] = 1.0 if rc4_anomaly_written else 0.0
@@ -11576,6 +11662,15 @@ def train(args) -> int:
                     steps=len(epoch_logs),
                     elapsed_s=elapsed,
                     peak_memory_bytes=peak_memory_bytes,
+                )
+            )
+            train_logs.update(
+                _fasttrust_epoch_stage_timing_metrics(
+                    train_batches_s=train_batches_seconds,
+                    base_validation_s=base_validation_seconds,
+                    heavy_source_validation_s=heavy_source_validation_seconds,
+                    checkpoint_io_s=checkpoint_io_seconds,
+                    epoch_elapsed_s=elapsed,
                 )
             )
         telemetry_rows.append(

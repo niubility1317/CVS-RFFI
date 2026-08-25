@@ -1,3 +1,4 @@
+import inspect
 from types import SimpleNamespace
 
 import torch
@@ -61,6 +62,75 @@ def test_fasttrust_epoch_resource_metrics_report_realized_throughput_and_peak_me
         "muse/u_samples_per_s": 512.0,
         "muse/u_forward_samples_per_s": 1024.0,
         "muse/peak_cuda_memory_mb": 3072.0,
+    }
+
+
+def test_qb3_gradient_telemetry_uses_first_real_batch_from_one_based_loader():
+    muse_state = {"fasttrust_rc4": True}
+    telemetry_epochs = {1, 41, 91}
+
+    assert train_ssdg._rc4_should_collect_gradient_telemetry(
+        muse_state,
+        batch_idx=1,
+        epoch=41,
+        telemetry_epochs=telemetry_epochs,
+    )
+    assert not train_ssdg._rc4_should_collect_gradient_telemetry(
+        muse_state,
+        batch_idx=2,
+        epoch=41,
+        telemetry_epochs=telemetry_epochs,
+    )
+    assert not train_ssdg._rc4_should_collect_gradient_telemetry(
+        muse_state,
+        batch_idx=1,
+        epoch=40,
+        telemetry_epochs=telemetry_epochs,
+    )
+
+
+def test_qb3_first_nonfinite_gradient_names_parameter_and_counts_bad_elements():
+    model = nn.Linear(2, 1, bias=False)
+    model.weight.grad = torch.tensor([[float("nan"), float("inf")]])
+
+    detail = train_ssdg._first_nonfinite_gradient(model)
+
+    assert detail == {
+        "parameter_name": "weight",
+        "nonfinite_elements": 2,
+        "nan_elements": 1,
+        "posinf_elements": 1,
+        "neginf_elements": 0,
+    }
+
+
+def test_qb3_nonfinite_gradient_is_captured_before_gradient_clipping():
+    source = inspect.getsource(train_ssdg.train)
+    unscale_at = source.index("scaler.unscale_(optimizer)")
+    inspect_at = source.index(
+        "first_nonfinite_gradient = _first_nonfinite_gradient(model)",
+        unscale_at,
+    )
+    clip_at = source.index("torch.nn.utils.clip_grad_norm_", inspect_at)
+
+    assert unscale_at < inspect_at < clip_at
+
+
+def test_fasttrust_epoch_stage_timing_reports_accounted_and_other_seconds():
+    metrics = train_ssdg._fasttrust_epoch_stage_timing_metrics(
+        train_batches_s=10.0,
+        base_validation_s=2.0,
+        heavy_source_validation_s=3.0,
+        checkpoint_io_s=4.0,
+        epoch_elapsed_s=20.0,
+    )
+
+    assert metrics == {
+        "muse/time_train_batches_s": 10.0,
+        "muse/time_base_validation_s": 2.0,
+        "muse/time_heavy_source_validation_s": 3.0,
+        "muse/time_checkpoint_io_s": 4.0,
+        "muse/time_other_s": 1.0,
     }
 
 
