@@ -82,3 +82,11 @@ TASR48相对评分后最优FFT96对照必须同时满足：`Delta H>=0.002`、`N
 - 根因是行为receipt兼容字段的固定值笔误：M29使用全空间D92，合法旧合同表示应为`{full:1,block3:0}`。这不影响已冻结预测值、量化结果、资源值或数据协议。
 - 定点修复同时覆盖两条路径：新prediction写合法权重；scorer只对已闭合M29旧receipt的唯一已知`1/1`指纹映射为`1/0`，已合法`1/0`原样保留，其他权重fail-closed。原prediction和空`scores`现场不修改，新评分使用不可覆盖`scores_v2`。
 - 红→绿回归已覆盖新receipt与旧receipt评分适配；完整相关回归41项通过。下一release使用不可覆盖`erbt_idr_m29_tasr48_screen_20260825_v2_r4`，不重跑prediction。
+
+## 七、r4评分兼容层补充
+
+- r4 release HEAD：`002e788ced666d895ff0bf613c8384f5cea14feb`；归档本地/远端SHA-256均为`ab113ef46706043b3c7d6a9451b737c3d09ccb36eeae68fd5d1b9463435a72aa`；远端编译通过。
+- r4 scorer成功通过行为receipt校验并写出前4个row的8个分数文件，随后在首个TASR48 row因`resource scope declaration drift`停止；`scores_v2`现场保留。
+- 对照确认TASR48原resource把两个auxiliary计费标志都设为true，表示Phase1 bundle状态与TASR48 query计算已纳入候选资源；FFT/identity为false。旧scorer只接受false，但原数值资源字段已经包含对应成本。
+- 完整修复现统一为M29兼容投影层：原resource真值不改并留给最终资源分析；只向旧scorer投影两个false scope标志；仅接受两个标志均为布尔且彼此相等，其他组合fail-closed。
+- 兼容层红→绿回归与完整相关回归42项通过。新评分使用不可覆盖r5 release和`scores_v3`，继续复用已闭合30份prediction。

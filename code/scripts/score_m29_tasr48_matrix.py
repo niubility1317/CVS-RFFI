@@ -55,6 +55,25 @@ def _m29_scorer_behavior(receipt: dict[str, Any]) -> dict[str, Any]:
     return normalized
 
 
+def _m29_scorer_receipts(
+    quantization: dict[str, Any], resource: dict[str, Any]
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    state_scope = resource.get("auxiliary_state_cost_in_candidate_resource")
+    latency_scope = resource.get("auxiliary_prediction_cost_in_candidate_latency")
+    if (
+        not isinstance(state_scope, bool)
+        or not isinstance(latency_scope, bool)
+        or state_scope != latency_scope
+    ):
+        raise ValueError("M2.9 auxiliary resource scope drift")
+    legacy_quantization, legacy_resource = _legacy_scorer_receipts(
+        quantization, resource
+    )
+    legacy_resource["auxiliary_state_cost_in_candidate_resource"] = False
+    legacy_resource["auxiliary_prediction_cost_in_candidate_latency"] = False
+    return legacy_quantization, legacy_resource
+
+
 def main() -> int:
     args = _parser().parse_args()
     matrix = json.loads(Path(args.matrix_index).read_text(encoding="utf-8-sig"))
@@ -72,7 +91,9 @@ def main() -> int:
         receipt = json.loads(Path(entry["receipt_path"]).read_text(encoding="utf-8-sig"))
         scoring_manifest = shared._scoring_manifest(tuple(roots), entry)
         prediction = receipt["prediction"]
-        quantization, resource = _legacy_scorer_receipts(receipt["quantization"], receipt["resource"])
+        quantization, resource = _m29_scorer_receipts(
+            receipt["quantization"], receipt["resource"]
+        )
         identity = {
             "logical_row_key": entry["row_id"],
             "ablation_id": entry["arm"],
