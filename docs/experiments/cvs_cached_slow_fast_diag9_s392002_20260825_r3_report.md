@@ -1,7 +1,7 @@
 # CVS Cached Slow-Fast Domain Adapter诊断实验r3报告
 
 - run ID：`cvs_cached_slow_fast_diag9_s392002_20260825_r3`
-- 状态：`LOCAL_VERIFIED / PRELAUNCH`
+- 状态：`ANALYZED / SCIENTIFIC_FAILURE_NO_PROMOTION`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 代码/config提交：`40fc52441cd5ad3fc0c92883d0ef034ad974647f`；push后远端OID独立回读一致。
 - 冻结基线：`ADV3B02_CORE90_SOFT_E200`
@@ -47,3 +47,23 @@ CUDA_VISIBLE_DEVICES=1 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/
 
 - 仅因协议/query越权、错误输入/checkout、输出覆盖、进程归属不清、无法启动、prediction不完整或重复确定性pre-prediction异常停止；不得因低性能停止。
 - prediction闭合后才连接truth。mean≥+1.0pp、floor≥+0.5pp且任一旧类退化不超过5pp才进入Target25，否则记`SCIENTIFIC_FAILURE_NO_PROMOTION`。
+
+## 执行闭合
+
+- Phase1.5自然完成并输出23520行、160维`ground_feature_cache.pt`、三个候选bundle和`phase15_summary.json`；部署bundle不含cache。`FAST_FILM_R8`的初始／最终meta loss为0.893802／0.791858，学习到`rho=0.049344`、快步长0.028649；`FAST_LOWRANK_R8`为0.899265／0.791428，学习到`rho=0.063310`、快步长0.026910。
+- 真实checkpoint无query smoke通过：`status=SMOKE_PASS`、`query_input_capability=false`、`query_opened=false`、`query_truth_opened=false`、`source_opened=false`，支持物理样本数60。
+- prediction唯一一次启动后核对到Python PID=`3004891`、正确release CWD／cmdline、GPU1占用612MiB和row artifact增长；随后自然完成9／9行。矩阵receipt为`PREDICTIONS_COMPLETE`、`truth_opened=false`、`source_opened=false`，每行均有两份prediction和receipt。
+- 三个候选在三个场景的支持集LOO门控均选择`lambda=0`并回退`DA0_REG0`，说明支持证据未接受快更新。该门控不替代正式评分。
+- 首次scorer连接误用了另一new-count的truth sidecar，精确opaque-ID join在写出任何`score.json`前拒绝；prediction未改变。修正为new10实际query来源的sidecar后，9／9个`score.json`和`diag9_score_summary.json`完整，`truth_opened_after_predictions_complete=true`。
+
+## 诊断结果
+
+|场景|DA0_REG0旧类均值|DA1_REG0旧类均值|DA0_REG0 floor|DA1_REG0 floor|均值变化|floor变化|
+|---|---:|---:|---:|---:|---:|---:|
+|`leo_clear_weak`|68.33%|68.33%|30.00%|30.00%|0.00pp|0.00pp|
+|`leo_low_elev_weak`|63.33%|63.33%|35.00%|35.00%|0.00pp|0.00pp|
+|`leo_rain_weak`|68.33%|68.33%|45.00%|45.00%|0.00pp|0.00pp|
+
+- 三候选跨三场景聚合基线均为旧类均值66.67%、floor38.33%；`mean_delta_pp=0.0`、`floor_delta_pp=0.0`、最差旧类变化0.0pp，9／9行决策变化均为0。
+- `COMMON_SHIFT_R4`、`FAST_FILM_R8`和`FAST_LOWRANK_R8`均为`SCIENTIFIC_FAILURE_NO_PROMOTION`，不进入Target25。
+- 科学解释：Phase1.5训练loss下降证明慢／快参数能够被优化，但当前目标支持集上的LOO证据一致拒绝所有非零插值。安全门控成功避免了退化，同时也使查询判决保持冻结基线。下一轮若继续，不应扩大矩阵或增加query参与，而应优先改进support-only选择信号或源端episodic任务与目标接收机偏移的匹配方式。

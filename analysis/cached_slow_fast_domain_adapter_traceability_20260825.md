@@ -14,9 +14,9 @@
 |SF-08|项目K-shot边界|K=1不制造第二shot，固定DA0回退|`slow_fast_selection.py`|verified|K1零更新测试|
 |SF-09|项目Phase2权限|只读取合法support、冻结bundle/原型；query只读且逐样本|`stage2_slow_fast_runner.py`|verified|allowlist、query逐条和状态计数测试|
 |SF-10|四状态规范|同row输出`DA0_REG0/DA1_REG0`，REG0新类指标N/A|runner/既有truth-last scorer|verified|prediction schema和现有scorer兼容测试|
-|SF-11|附件§12|固定三个候选×三个scene的9-row诊断矩阵|config/matrix|implemented|笛卡尔积、同输入与不可覆盖测试；真实路径待N607只读回读后冻结|
-|SF-12|晋级门槛|mean≥+1.0pp、floor≥+0.5pp、单类退化≤5pp|scorer/report|pending|边界值测试|
-|SF-13|不合理项修正|实际特征维度由原型宽度决定，不硬编码256|bundle/adapter|implemented|合成宽度和错误宽度负测通过；160维真实smoke待发布后闭合|
+|SF-11|附件§12|固定三个候选×三个scene的9-row诊断矩阵|config/matrix|verified|N607真实9／9行prediction闭合，三场景与输入约束一致|
+|SF-12|晋级门槛|mean≥+1.0pp、floor≥+0.5pp、单类退化≤5pp|scorer/report|verified|9行truth-last评分完成，三候选均未晋级|
+|SF-13|不合理项修正|实际特征维度由原型宽度决定，不硬编码256|bundle/adapter|verified|160维真实缓存、三bundle和checkpoint无query smoke闭合|
 |SF-14|排除项|不实现hypernetwork、类条件Adapter、新类support域更新或D92式头|全实现|verified|Phase2配置和bundle严格字段白名单|
 
-当前统计：verified=11，implemented=2，pending=1，deferred=0，rejected=0，blocked=0。24项本方法聚焦测试和18项邻近truth-last scorer回归通过，共42项；唯一未闭合科学问题是Phase1.5域方向能否在固定target query上形成决策级改善，该问题只由9-row truth-last实验回答。
+当前统计：verified=14，implemented=0，pending=0，deferred=0，rejected=0，blocked=0。设备回归补充后本方法及邻近truth-last scorer共43项通过；N607的Phase1.5、真实checkpoint无query smoke、9-row prediction与truth-last评分全部闭合。三候选均被support-only门控回退到DA0，决策级改善为0，结论为`SCIENTIFIC_FAILURE_NO_PROMOTION`。
