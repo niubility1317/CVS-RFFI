@@ -1,12 +1,12 @@
 # ERBT-IDR M2.9 TASR48 Phase2实验v2预登记
 
 - run ID：`erbt_idr_m29_tasr48_screen_20260825_v2`
-- 当前状态：`LOCAL_FIX_PENDING_VERIFICATION`
+- 当前状态：`LOCAL_VERIFIED`
 - protocol：`p2_min_v1`，只复用原`VALIDATED_ONCE`数据及匹配的`capsule_id/split_id`
 - 方法与矩阵：完全复用v1冻结的TASR48实现、5个arm、2个receiver、3个K/new条件和seed `7282101`；不改变任何科学参数
 - 新run原因：v1在prediction写出前因确定性`KeyError: 'quantization'`技术失败，0个合法prediction，必须保留现场并使用不可覆盖新输出
 - 代码分支：`codex/m29-tasr48-20260825`
-- 修复commit：待本次定点修复提交绑定
+- 修复commit：`c80f0f577ce3fd53928c7ef16724cb15ac384eff`
 
 ## 一、定点修复
 
