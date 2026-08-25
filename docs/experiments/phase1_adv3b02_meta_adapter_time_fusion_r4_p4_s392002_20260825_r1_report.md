@@ -3,6 +3,7 @@
 - run ID：`phase1_adv3b02_meta_adapter_time_fusion_r4_p4_s392002_20260825_r1`
 - 状态：`LOCAL_VERIFIED`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
+- 代码／配置冻结提交：`971001b5b72a59adf59d7339fa6036a04d4fc539`；GitHub远端分支OID已独立回读一致。
 - 冻结基线：`ADV3B02_CORE90_SOFT_E200`checkpoint。
 - 科学锚点：fusion-only rank-4 Target5为0.0pp／0.0pp；fusion-only rank-8 Target5为-0.2778pp／0.0pp，且6个决策变化中5个在low-elev产生负迁移。
 
