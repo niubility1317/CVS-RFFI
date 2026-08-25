@@ -1,7 +1,7 @@
 # Time-only Rank-8 Prototype-Aligned Scale-8 Meta-Adapter P4 Target5最小预登记报告
 
 - run ID：`stage2_meta_adapter_target5_time_r8_proto8_p4_s392002_20260825_r1`
-- 状态：`LANDED`
+- 状态：`ANALYZED / SCIENTIFIC_FAILURE_NO_PROMOTION`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 代码／配置冻结提交：`5043a79d871ed1d84a570c3f3d701bbb8ca3d5c8`；首次push后独立回读远端OID一致。
 - Phase1：`phase1_adv3b02_meta_adapter_time_r8_proto8_p4_s392002_20260825_r1`，状态`ARTIFACTS_COMPLETE / SOURCE_SELECTION_ELIGIBLE`。
@@ -43,3 +43,22 @@
 - 发布前确认6个专属目标和同名Python进程不存在，正式bundle／原型非空，GPU0空闲。
 - 工厂一次完成15／15行，状态`TARGET_INPUTS_COMPLETE`，`query_truth_opened=false`、`query_role_opened=false`、`source_opened=false`。无query配置由首row精确删除`query_path`且本地断言其余字段不变。
 - 真实smoke一次通过：3次反向传播，`frozen_prototype_cosine_ce_v1`／8.0，`trainable_fraction=0.005172846819097263`，`query_opened=false`、`source_opened=false`、`query_state_update_count=0`。
+
+## 正式运行与truth-last评分
+
+- 正式prediction自然完成15／15行，15份`DA0_REG0`、15份`DA1_REG0`、15份row receipt和矩阵receipt齐全；目标run无残留训练进程，日志未检出Traceback、RuntimeError、CUDA OOM或协议违规。
+- prediction阶段`truth_opened=false`、`source_opened=false`；每行均为3次真实反向传播，query在适配前未打开、适配后状态更新计数为0。15行prediction完整后，独立scorer才连接truth；15份`score.json`均验证same-row ID一致，REG0新类指标保持N/A。
+- 完整证据回读至`E:\type10-7\local_artifacts\meta_adapter_recovery\target5_time_r8_proto8_p4_r1_complete_20260825`，共65个文件；独立分析脚本逐行复算并通过全部协议、预算和artifact断言。
+
+| 场景 | DA0_REG0旧类均值 | DA1_REG0旧类均值 | 均值变化 | DA0_REG0 floor | DA1_REG0 floor | floor变化 |
+|---|---:|---:|---:|---:|---:|---:|
+| `leo_clear_weak` | 63.3333% | 63.5000% | +0.1667pp | 35.0000% | 35.0000% | 0pp |
+| `leo_low_elev_weak` | 64.1667% | 63.5000% | -0.6667pp | 40.0000% | 40.0000% | 0pp |
+| `leo_rain_weak` | 64.1667% | 64.1667% | 0pp | 45.0000% | 45.0000% | 0pp |
+| 三场景聚合 | — | — | **-0.1667pp** | — | — | **0pp** |
+
+## 结论与下一步
+
+- scale8在15行中造成16个query判决变化，各row最大分数位移范围为0.002172～0.198973，证明少层梯度适配真实作用于判决，并非零更新。
+- 但聚合旧类均值变化`-0.1667pp`、floor变化`0pp`，未达到预注册的`+1.0pp/+0.5pp`晋级门槛。结论为`SCIENTIFIC_FAILURE_NO_PROMOTION`，不启动Target25。
+- 与scale1零判决变化、scale16有52次判决变化但clear floor下降5pp合看，单纯缩放冻结原型CE只能调节更新幅度，不能稳定控制跨场景方向。下一候选应增加只依赖support的有界更新机制，而不是继续扩大固定scale。
