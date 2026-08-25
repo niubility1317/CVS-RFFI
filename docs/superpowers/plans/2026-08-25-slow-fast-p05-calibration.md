@@ -31,7 +31,7 @@
 - Produces: `SupportTrustPolicy`、`support_state_diagnostics(...)`、扩展后的`select_support_only_state(...)`。
 - Consumes: `features/labels/prototypes/physical_ids`、冻结policy和row seed。
 
-- [ ] **Step 1: 写唯一fold与physical ID互斥失败测试**
+- [x] **Step 1: 写唯一fold与physical ID互斥失败测试**
 
 ```python
 def test_crossfit_removes_duplicate_partitions_and_keeps_physical_ids_disjoint():
@@ -41,19 +41,19 @@ def test_crossfit_removes_duplicate_partitions_and_keeps_physical_ids_disjoint()
     assert all(train_ids.isdisjoint(valid_ids) for train_ids, valid_ids in split_ids(splits))
 ```
 
-- [ ] **Step 2: 运行RED**
+- [x] **Step 2: 运行RED**
 
 Run: `python -m pytest tests/test_slow_fast_selection.py -q`
 Expected: FAIL，现有API不接收`physical_ids`且重复partition未去除。
 
-- [ ] **Step 3: 最小实现唯一重复分层2-fold**
+- [x] **Step 3: 最小实现唯一重复分层2-fold**
 
 ```python
 def _stratified_crossfit_splits(labels, *, k_shot, seed, repeats, physical_ids=None):
     # 每个repeat生成互补两折；canonical key去除相同/互补重复；直接检查ID集合互斥。
 ```
 
-- [ ] **Step 4: 写分位数、相对trust和support归一化强度RED测试**
+- [x] **Step 4: 写分位数、相对trust和support归一化强度RED测试**
 
 ```python
 def test_support_normalized_strength_hits_q90_target_without_exceeding_hard_cap():
@@ -64,11 +64,11 @@ def test_support_normalized_strength_hits_q90_target_without_exceeding_hard_cap(
     assert diagnostics["q90_feature_move"] <= 0.10 + 1e-6
 ```
 
-- [ ] **Step 5: 运行RED并实现support统计**
+- [x] **Step 5: 运行RED并实现support统计**
 
 实现字段：`q50/q90/max_feature_move`、`q90_relative_move`、逐fold`risk_gain`、`positive_fold_count`、`fold_gain_std`、`fold_gain_lcb90`、`effective_lambda`。
 
-- [ ] **Step 6: 修复审计语义和计算量字段**
+- [x] **Step 6: 修复审计语义和计算量字段**
 
 ```python
 audit.update({
@@ -80,7 +80,7 @@ audit.update({
 })
 ```
 
-- [ ] **Step 7: GREEN与回归**
+- [x] **Step 7: GREEN与回归**
 
 Run: `python -m pytest tests/test_slow_fast_selection.py -q`
 Expected: PASS。
@@ -96,7 +96,7 @@ Expected: PASS。
 - Produces: `_score_shadow_row`中的`flip_diagnostics`、`score_diagnostics`、`new_class_intrusion`。
 - Consumes: 已校验的ordered query IDs、predicted IDs、raw cosine scores和truth sidecar。
 
-- [ ] **Step 1: 写旧类flip和新类变化RED测试**
+- [x] **Step 1: 写旧类flip和新类变化RED测试**
 
 ```python
 assert state_diag == {
@@ -108,11 +108,11 @@ assert state_diag == {
 }
 ```
 
-- [ ] **Step 2: 运行RED并最小实现truth分组计数**
+- [x] **Step 2: 运行RED并最小实现truth分组计数**
 
 必须先验证全部prediction路径、score形状和ordered IDs，再首次读取truth。
 
-- [ ] **Step 3: 写raw-cosine手算RED测试**
+- [x] **Step 3: 写raw-cosine手算RED测试**
 
 ```python
 assert diag["mean_true_class_cosine_delta"] == pytest.approx(0.05)
@@ -121,7 +121,7 @@ assert diag["mean_score_vector_l2_change"] == pytest.approx(0.1)
 assert diag["new_class_intrusion_delta"] == pytest.approx(0.03)
 ```
 
-- [ ] **Step 4: 实现score诊断并GREEN**
+- [x] **Step 4: 实现score诊断并GREEN**
 
 Run: `python -m pytest tests/test_slow_fast_scorer.py tests/test_stage2_slow_fast_runner.py -q`
 Expected: PASS。
@@ -137,7 +137,7 @@ Expected: PASS。
 - Produces: `build_shadow_response_surface(row_scores, support_receipts)`。
 - Returns: scene/state rows、Spearman、move-gain rows和P0停止信号。
 
-- [ ] **Step 1: 写手算Spearman和完整状态轴RED测试**
+- [x] **Step 1: 写手算Spearman和完整状态轴RED测试**
 
 ```python
 summary = build_shadow_response_surface(scores, receipts)
@@ -146,11 +146,11 @@ assert summary["state_count"] == 4
 assert summary["p0_stop_signal"] is True
 ```
 
-- [ ] **Step 2: 运行RED并实现无第三方依赖的rank/Spearman**
+- [x] **Step 2: 运行RED并实现无第三方依赖的rank/Spearman**
 
 平分rank取平均名次；状态按`shadow_state_specs`连接，不读取query选择新状态。
 
-- [ ] **Step 3: GREEN**
+- [x] **Step 3: GREEN**
 
 Run: `python -m pytest tests/test_slow_fast_diagnostics.py -q`
 Expected: PASS。
@@ -167,7 +167,9 @@ Expected: PASS。
 - Produces: `build_receiver_heldout_episodes(cache, ...)`、`calibrate_p05_gate(...)`和`cvs.slow_fast.p05.calibration.v1`JSON。
 - Consumes: `GroundFeatureCache`、FILM bundle、frozen prototypes。
 
-- [ ] **Step 1: 写episode物理ID互斥、K=10和receiver-held-out RED测试**
+实现优化：冻结校准保持为独立、严格JSON，不回写或复制Phase1.5 bundle。该JSON只在地面侧读取；发布前仅把最终纯deployment参数抄入预登记row config。Phase2 runner明确拒绝`calibration_path`，避免运行时接触任何source receiver或episode统计。
+
+- [x] **Step 1: 写episode物理ID互斥、K=10和receiver-held-out RED测试**
 
 ```python
 episodes = build_receiver_heldout_episodes(cache, k_shot=10, seed=17)
@@ -176,11 +178,11 @@ assert all(torch.bincount(ep.support_labels).tolist() == [10] * classes for ep i
 assert all(ep.heldout_receiver not in ep.fit_receivers for ep in episodes)
 ```
 
-- [ ] **Step 2: 实现episode builder并GREEN**
+- [x] **Step 2: 实现episode builder并GREEN**
 
 若cache无法为每类提供K=10与独立query，该receiver episode明确跳过并记录原因，不降低K。
 
-- [ ] **Step 3: 写冻结唯一FILM配置RED测试**
+- [x] **Step 3: 写冻结唯一FILM配置RED测试**
 
 ```python
 calibration = calibrate_p05_gate(episodes, candidates)
@@ -189,16 +191,16 @@ assert calibration["target_query_used"] is False
 assert set(calibration) == CALIBRATION_SCHEMA_KEYS
 ```
 
-- [ ] **Step 4: 实现小型可审计校准**
+- [x] **Step 4: 实现小型可审计校准**
 
 使用source held-out query标记candidate是否改善，比较预注册规则，按worst-receiver mean、floor、侵入风险和计算量冻结一个配置；不保存样本级source派生物。
 
-- [ ] **Step 5: CLI负测与GREEN**
+- [x] **Step 5: CLI负测与GREEN**
 
 Run: `python -m pytest tests/test_slow_fast_calibration.py -q`
 Expected: PASS。
 
-### Task 5: Phase2 runner消费冻结校准与审计schema
+### Task 5: Phase2 runner消费冻结deployment参数与审计schema
 
 **Files:**
 - Modify: `code/cvsrffi/stage2_slow_fast_runner.py`
@@ -208,10 +210,12 @@ Expected: PASS。
 - Create: `configs/stage2_slow_fast_p05_template_s392003_20260825.json`
 
 **Interfaces:**
-- Consumes: `calibration_path`和`crossfit_seed`。
+- Consumes: row config中的纯`p05_*`deployment参数和`crossfit_seed`；禁止`calibration_path`。
 - Produces: 仅`DA0_REG0/DA1_REG0`的正式P0.5receipt。
 
-- [ ] **Step 1: 写seed传播、schema和query只读RED测试**
+实现优化：正式P0.5先走单row runner，不为早期可证伪实验扩建9-row matrix；`stage2_slow_fast_matrix.py`继续只承担既有V2诊断矩阵。独立新capsule确认存在后再生成可运行config，不提交可能误启动的占位配置。
+
+- [x] **Step 1: 写seed传播、schema和query只读RED测试**
 
 ```python
 assert receipt["crossfit_seed"] == 392003
@@ -222,15 +226,15 @@ assert receipt["prediction_schema"] == "raw_cosine.v1"
 assert receipt["query_state_update_count"] == 0
 ```
 
-- [ ] **Step 2: 实现严格config allowlist与冻结calibration加载**
+- [x] **Step 2: 实现严格config allowlist与冻结calibration加载**
 
-禁止source path、truth path和旧V2 shadow网格进入正式P0.5 config。
+禁止source path、source校准path、truth path和旧V2 shadow网格进入正式P0.5 config。
 
-- [ ] **Step 3: 实现计算量拆分**
+- [x] **Step 3: 实现计算量拆分**
 
 旧V2诊断fixture必须得到`21+183+76=280`；正式部署receipt只报告P0.5实际消费量。
 
-- [ ] **Step 4: GREEN与协议负测**
+- [x] **Step 4: GREEN与协议负测**
 
 Run: `python -m pytest tests/test_stage2_slow_fast_runner.py tests/test_stage2_slow_fast_matrix.py -q`
 Expected: PASS。
@@ -245,7 +249,7 @@ Expected: PASS。
 **Interfaces:**
 - Produces: source校准artifact、capsule可用性结论、可选的一次独立target结果。
 
-- [ ] **Step 1: 本地全量聚焦验证**
+- [x] **Step 1: 本地全量聚焦验证**
 
 Run: `python -m pytest tests/test_slow_fast_*.py tests/test_stage2_slow_fast_*.py -q`
 Expected: 0 failures。

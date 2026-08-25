@@ -90,9 +90,11 @@ def test_shadow_diag9_accepts_preregistered_diagnostic_grid() -> None:
             shadow_step_multipliers=[0.5, 1.0, 2.0, 4.0],
             shadow_lambdas=[0.125, 0.25, 0.5, 0.75, 1.0],
             crossfit_repeats=3,
+            crossfit_seed=392002,
         )
 
     rows = subject._validate_matrix(payload)
 
     assert len(rows) == 9
     assert rows[0]["config"]["crossfit_repeats"] == 3
+    assert rows[0]["config"]["crossfit_seed"] == 392002

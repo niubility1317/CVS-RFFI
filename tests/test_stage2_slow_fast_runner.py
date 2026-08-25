@@ -102,6 +102,50 @@ def _shadow_config(paths: dict[str, Path]) -> dict[str, object]:
         "shadow_step_multipliers": [1.0],
         "shadow_lambdas": [0.25, 0.5],
         "crossfit_repeats": 1,
+        "crossfit_seed": 392002,
+    }
+
+
+def _p05_config(paths: dict[str, Path], tmp_path: Path) -> dict[str, object]:
+    state = SlowFastAdapterState(
+        candidate=SlowFastCandidate.FAST_FILM_R8,
+        slow_u=torch.eye(2, 8),
+        slow_v=torch.flip(torch.eye(2, 8), dims=(1,)),
+        rho=0.1,
+        gamma=torch.zeros(8),
+        beta=torch.zeros(8),
+    )
+    bundle = tmp_path / "film_bundle.pt"
+    save_slow_fast_bundle(
+        bundle,
+        state,
+        {
+            "base_checkpoint_id": "ADV3B02_CORE90_SOFT_E200",
+            "class_ids": torch.tensor([10, 20]),
+            "prototypes": torch.eye(2),
+            "support_logit_scale": 8.0,
+            "fast_step_size": 0.02,
+            "trust_radius": 0.2,
+        },
+    )
+    policy = {
+        "q90_move": 0.1,
+        "hard_move": 0.2,
+        "q90_relative_move": 1.2,
+        "minimum_positive_folds": 1,
+        "lcb_z": 1.2815515655446004,
+        "require_fold_lcb": True,
+    }
+    return {
+        **_config(paths),
+        "candidate_id": "FAST_FILM_R8",
+        "bundle_id": "slow-fast-film-r8-p05",
+        "bundle_path": str(bundle),
+        "crossfit_seed": 392003,
+        "p05_policy": policy,
+        "p05_lambda_grid": [0.0, 0.5, 1.0],
+        "p05_crossfit_repeats": 1,
+        "p05_step_size": 0.02,
     }
 
 
@@ -113,6 +157,35 @@ def test_runner_rejects_source_fields_before_creating_output(tmp_path: Path) -> 
     with pytest.raises(ValueError, match="allowlist"):
         subject.run_slow_fast_stage2_row(config, tmp_path / "out", device="cpu")
     assert not (tmp_path / "out").exists()
+
+
+def test_p05_runner_rejects_source_calibration_path_before_opening_inputs(tmp_path: Path) -> None:
+    paths = _inputs(tmp_path)
+    config = _p05_config(paths, tmp_path)
+    config["calibration_path"] = "forbidden-source-calibration.json"
+
+    with pytest.raises(ValueError, match="allowlist"):
+        subject.run_slow_fast_stage2_row(config, tmp_path / "out-p05", device="cpu")
+    assert not (tmp_path / "out-p05").exists()
+
+
+def test_fast_shadow_computation_accounting_closes_280_updates() -> None:
+    accounting = subject._computation_accounting(
+        candidate_id="FAST_FILM_R8",
+        selection={"deployment_candidate_updates": 3, "crossfit_updates": 18},
+        legacy_selection={"attempted_gradient_updates": 183},
+        shadow_steps=(1, 3, 5, 10),
+        shadow_step_multipliers=(0.5, 1.0, 2.0, 4.0),
+    )
+
+    assert accounting == {
+        "deployment_candidate_updates": 3,
+        "crossfit_updates": 18,
+        "total_deployment_updates": 21,
+        "legacy_diagnostic_updates": 183,
+        "shadow_grid_updates": 76,
+        "total_diagnostic_updates": 280,
+    }
 
 
 def test_runner_closes_both_states_without_truth_or_query_updates(
@@ -140,6 +213,32 @@ def test_runner_closes_both_states_without_truth_or_query_updates(
         with np.load(tmp_path / "out" / name, allow_pickle=False) as artifact:
             assert set(artifact.files) == {"query_ids", "predicted_class_ids", "scores"}
             assert artifact["query_ids"].tolist() == ["q0", "q1"]
+
+
+def test_p05_runner_consumes_only_frozen_parameters_and_propagates_explicit_seed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    paths = _inputs(tmp_path)
+    monkeypatch.setattr(subject, "_load_frozen_checkpoint", lambda *args, **kwargs: _FrozenBase())
+    monkeypatch.setattr(subject, "_extract_features", lambda _model, rows: rows[:, :, 0].float())
+
+    receipt = subject.run_slow_fast_stage2_row(
+        _p05_config(paths, tmp_path), tmp_path / "p05", device="cpu"
+    )
+
+    assert receipt["states"] == ["DA0_REG0", "DA1_REG0"]
+    assert receipt["crossfit_seed"] == 392003
+    assert receipt["decision_rule"] == "frozen_prototype_cosine_slow_fast_v2"
+    assert receipt["adapter_schema"] == "cvs.cached_slow_fast.v2"
+    assert receipt["selection_schema"] == "cvs.slow_fast.p05.selection.v1"
+    assert receipt["prediction_schema"] == "raw_cosine.v1"
+    assert receipt["query_state_update_count"] == 0
+    assert receipt["query_truth_opened"] is False
+    assert receipt["source_opened"] is False
+    assert receipt["computation_accounting"]["total_deployment_updates"] == (
+        receipt["computation_accounting"]["deployment_candidate_updates"]
+        + receipt["computation_accounting"]["crossfit_updates"]
+    )
 
 
 def test_existing_truth_last_scorer_accepts_slow_fast_receipt(
@@ -201,6 +300,11 @@ def test_shadow_runner_outputs_preregistered_states_without_reextracting_query(
     }
     assert set(receipt["states"]) == expected
     assert set(receipt["prediction_paths"]) == expected
+    assert set(receipt["shadow_support_diagnostics"]) == expected
+    assert all(
+        item["diagnostic_role"] == "full_support_diagnostic_only"
+        for item in receipt["shadow_support_diagnostics"].values()
+    )
     assert receipt["support_selection"]["crossfit_fit_count"] == 2
     assert "attempted_gradient_updates" in receipt["support_selection"]
 

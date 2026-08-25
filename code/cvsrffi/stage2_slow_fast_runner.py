@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -13,6 +14,8 @@ from torch.nn import functional as F
 from .slow_fast_adapter import SlowFastAdapterState, apply_slow_fast
 from .slow_fast_bundle import load_slow_fast_bundle_strict
 from .slow_fast_selection import (
+    SupportTrustPolicy,
+    evaluate_frozen_support_state,
     fit_support_candidate_states,
     select_support_only_state,
     select_support_only_state_legacy,
@@ -53,7 +56,16 @@ _CONFIG_KEYS = frozenset(
     }
 )
 _SHADOW_KEYS = frozenset(
-    {"shadow_steps", "shadow_step_multipliers", "shadow_lambdas", "crossfit_repeats"}
+    {"shadow_steps", "shadow_step_multipliers", "shadow_lambdas", "crossfit_repeats", "crossfit_seed"}
+)
+_P05_KEYS = frozenset(
+    {
+        "crossfit_seed",
+        "p05_policy",
+        "p05_lambda_grid",
+        "p05_crossfit_repeats",
+        "p05_step_size",
+    }
 )
 _SUPPORT_KEYS = frozenset(
     {"received_iq", "support_labels", "support_physical_ids"}
@@ -66,11 +78,16 @@ def _validate_config(config: Mapping[str, Any]) -> dict[str, Any]:
     if not isinstance(config, Mapping) or any(not isinstance(key, str) for key in config):
         raise ValueError("config must be a string-keyed mapping")
     actual = frozenset(config)
-    if actual not in (_CONFIG_KEYS, _CONFIG_KEYS | _SHADOW_KEYS):
+    allowed_shapes = (
+        _CONFIG_KEYS,
+        _CONFIG_KEYS | _SHADOW_KEYS,
+        _CONFIG_KEYS | _P05_KEYS,
+    )
+    if actual not in allowed_shapes:
         raise ValueError(
             "config allowlist mismatch: "
             f"missing={sorted(_CONFIG_KEYS - actual)} "
-            f"extra={sorted(actual - (_CONFIG_KEYS | _SHADOW_KEYS))}"
+            f"extra={sorted(actual - (_CONFIG_KEYS | _SHADOW_KEYS | _P05_KEYS))}"
         )
     validated = dict(config)
     if validated["protocol_schema"] != "p2_min_v1":
@@ -111,6 +128,39 @@ def _validate_config(config: Mapping[str, Any]) -> dict[str, Any]:
         validated["shadow_step_multipliers"] = multipliers
         validated["shadow_lambdas"] = lambdas
         validated["crossfit_repeats"] = repeats
+        validated["crossfit_seed"] = int(validated["crossfit_seed"])
+    if actual == _CONFIG_KEYS | _P05_KEYS:
+        if validated["candidate_id"] != "FAST_FILM_R8":
+            raise ValueError("formal P0.5 config requires FAST_FILM_R8")
+        validated["crossfit_seed"] = int(validated["crossfit_seed"])
+        policy = validated["p05_policy"]
+        policy_keys = {
+            "q90_move",
+            "hard_move",
+            "q90_relative_move",
+            "minimum_positive_folds",
+            "lcb_z",
+            "require_fold_lcb",
+        }
+        if not isinstance(policy, Mapping) or set(policy) != policy_keys:
+            raise ValueError("p05_policy allowlist mismatch")
+        validated["p05_policy"] = {
+            "q90_move": float(policy["q90_move"]),
+            "hard_move": float(policy["hard_move"]),
+            "q90_relative_move": float(policy["q90_relative_move"]),
+            "minimum_positive_folds": int(policy["minimum_positive_folds"]),
+            "lcb_z": float(policy["lcb_z"]),
+            "require_fold_lcb": policy["require_fold_lcb"],
+        }
+        SupportTrustPolicy(**validated["p05_policy"])
+        grid = tuple(float(value) for value in validated["p05_lambda_grid"])
+        if not grid or tuple(sorted(set(grid))) != grid or grid[0] != 0.0 or grid[-1] > 1.0:
+            raise ValueError("p05_lambda_grid must be sorted, unique and include zero")
+        validated["p05_lambda_grid"] = grid
+        validated["p05_crossfit_repeats"] = int(validated["p05_crossfit_repeats"])
+        validated["p05_step_size"] = float(validated["p05_step_size"])
+        if validated["p05_crossfit_repeats"] < 1 or validated["p05_step_size"] <= 0.0:
+            raise ValueError("P0.5 repeat and step-size settings must be positive")
     return validated
 
 
@@ -141,6 +191,30 @@ def _predict(features: Tensor, prototypes: Tensor, class_ids: Tensor) -> tuple[T
     return predictions, scores
 
 
+def _computation_accounting(
+    *,
+    candidate_id: str,
+    selection: Mapping[str, Any],
+    legacy_selection: Mapping[str, Any] | None,
+    shadow_steps: tuple[int, ...] = (),
+    shadow_step_multipliers: tuple[float, ...] = (),
+) -> dict[str, int]:
+    deployment = int(selection.get("deployment_candidate_updates", 0))
+    crossfit = int(selection.get("crossfit_updates", 0))
+    is_fast = candidate_id in {"FAST_FILM_R8", "FAST_LOWRANK_R8"}
+    legacy = int(legacy_selection.get("attempted_gradient_updates", 0)) if is_fast and legacy_selection else 0
+    grid = len(shadow_step_multipliers) * sum(int(value) for value in shadow_steps) if is_fast else 0
+    total_deployment = deployment + crossfit
+    return {
+        "deployment_candidate_updates": deployment,
+        "crossfit_updates": crossfit,
+        "total_deployment_updates": total_deployment,
+        "legacy_diagnostic_updates": legacy,
+        "shadow_grid_updates": grid,
+        "total_diagnostic_updates": total_deployment + legacy + grid,
+    }
+
+
 def run_slow_fast_stage2_row(
     config: Mapping[str, Any],
     output_dir: str | Path,
@@ -153,6 +227,8 @@ def run_slow_fast_stage2_row(
     state, audit = load_slow_fast_bundle_strict(cfg["bundle_path"])
     if state.candidate.value != cfg["candidate_id"]:
         raise ValueError("candidate_id does not match the frozen bundle")
+    p05_mode = all(key in cfg for key in _P05_KEYS)
+    calibration_policy = SupportTrustPolicy(**cfg["p05_policy"]) if p05_mode else None
 
     prototype_payload = _load_npz(
         cfg["prototype_path"], allowed=_PROTOTYPE_KEYS, label="prototype"
@@ -190,7 +266,22 @@ def run_slow_fast_stage2_row(
     support_features = _extract_features(model, support_iq)
     logit_scale = float(audit["support_logit_scale"])
     trust_radius = float(audit["trust_radius"])
+    if calibration_policy is not None and calibration_policy.hard_move > trust_radius + 1.0e-8:
+        raise ValueError("p05_policy hard_move exceeds the frozen bundle trust radius")
     shadow_mode = all(key in cfg for key in _SHADOW_KEYS)
+    selection_steps = cfg["steps"]
+    selection_step_size = float(cfg["p05_step_size"]) if p05_mode else float(audit["fast_step_size"])
+    selection_grid = (
+        tuple(cfg["p05_lambda_grid"])
+        if p05_mode
+        else ((0.0, *cfg["shadow_lambdas"]) if shadow_mode else (0.0, 0.125, 0.25, 0.5, 0.75, 1.0))
+    )
+    selection_repeats = (
+        int(cfg["p05_crossfit_repeats"])
+        if p05_mode
+        else (cfg["crossfit_repeats"] if shadow_mode else 3)
+    )
+    selection_seed = int(cfg["crossfit_seed"]) if (p05_mode or shadow_mode) else int(cfg["seed"])
     selected_state, selection = select_support_only_state(
         support_features,
         label_rows,
@@ -198,11 +289,14 @@ def run_slow_fast_stage2_row(
         state,
         k_shot=cfg["k_shot"],
         logit_scale=logit_scale,
-        steps=cfg["steps"],
-        step_size=float(audit["fast_step_size"]),
+        steps=selection_steps,
+        step_size=selection_step_size,
         trust_radius=trust_radius,
-        lambda_grid=(0.0, *cfg["shadow_lambdas"]) if shadow_mode else (0.0, 0.125, 0.25, 0.5, 0.75, 1.0),
-        repeats=cfg["crossfit_repeats"] if shadow_mode else 3,
+        lambda_grid=selection_grid,
+        crossfit_seed=selection_seed,
+        repeats=selection_repeats,
+        physical_ids=support_ids,
+        trust_policy=calibration_policy,
     )
 
     named_adapter_states: dict[str, SlowFastAdapterState] = {}
@@ -270,6 +364,29 @@ def run_slow_fast_stage2_row(
     else:
         named_adapter_states["DA1_REG0"] = selected_state
 
+    computation_accounting = _computation_accounting(
+        candidate_id=cfg["candidate_id"],
+        selection=selection,
+        legacy_selection=legacy_selection,
+        shadow_steps=tuple(cfg["shadow_steps"]) if shadow_mode else (),
+        shadow_step_multipliers=tuple(cfg["shadow_step_multipliers"]) if shadow_mode else (),
+    )
+
+    support_diagnostic_states = {
+        "DA0_REG0": replace(state, rho=0.0),
+        **named_adapter_states,
+    }
+    shadow_support_diagnostics = {
+        name: evaluate_frozen_support_state(
+            support_features,
+            label_rows,
+            prototypes,
+            adapter_state,
+            logit_scale=logit_scale,
+        )
+        for name, adapter_state in support_diagnostic_states.items()
+    }
+
     # Query is opened only after the support-only state is final and immutable.
     query_payload = _load_npz(cfg["query_path"], allowed=_QUERY_KEYS, label="query")
     query_iq = _received_iq_tensor(query_payload["received_iq"], label="query")
@@ -320,13 +437,19 @@ def run_slow_fast_stage2_row(
         "score_type": "raw_cosine",
         "trust_radius": trust_radius,
         "registered_class_ids": [int(value) for value in class_ids.tolist()],
-        "decision_rule": "frozen_prototype_cosine_slow_fast_v1",
+        "decision_rule": "frozen_prototype_cosine_slow_fast_v2" if p05_mode else "frozen_prototype_cosine_slow_fast_v1",
+        "adapter_schema": str(audit["schema"]),
+        "selection_schema": "cvs.slow_fast.p05.selection.v1" if p05_mode else "cvs.slow_fast.selection.v2",
+        "prediction_schema": "raw_cosine.v1",
+        "crossfit_seed": selection_seed,
         "selected_lambda": float(selection["selected_lambda"]),
         "selection_reason": str(selection["reason"]),
         "support_gradient_updates": int(selection["gradient_updates"]),
         "support_selection": selection,
         "legacy_selection": legacy_selection,
         "shadow_state_specs": shadow_state_specs,
+        "shadow_support_diagnostics": shadow_support_diagnostics,
+        "computation_accounting": computation_accounting,
         "query_state_update_count": 0,
         "query_truth_opened": False,
         "query_role_opened": False,

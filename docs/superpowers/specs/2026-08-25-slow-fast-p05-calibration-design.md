@@ -53,7 +53,7 @@ lambda_eff=c_t*lambda_nominal
 3. margin-normalized相对trust；
 4. support-normalized强度加fold LCB。
 
-校准输出一个小型JSON bundle，只包含冻结阈值、线性/单调gate参数、FILM步数、步长倍率、名义强度和source-held-out验证摘要，不包含source样本、特征或样本级派生物。Phase2 bundle loader只读取这些聚合参数。
+地面校准输出一个仅供Phase1.5分析与预登记使用的JSON，其中包含冻结阈值、gate参数和source-held-out聚合验证摘要，不包含source样本、特征或样本级派生物。正式Phase2不得打开该JSON；发布前只把最终冻结的纯deployment数值/布尔参数抄入预登记row config。Phase2 runner严格拒绝`calibration_path`和任何source统计字段。
 
 ## 5.交叉验证公平性与审计语义
 
@@ -102,4 +102,3 @@ DA0_REG0 vs DA1_REG0
 ## 8.实现边界与验证
 
 新增模块分别负责support统计、source校准和诊断汇总；现有runner只负责Phase2 target support适配和query只读prediction。所有行为变更按TDD先写失败测试。发布遵循项目八项最小流程，只计算一次release归档传输SHA，进行一次独立P0/P1正确性审查。
-
