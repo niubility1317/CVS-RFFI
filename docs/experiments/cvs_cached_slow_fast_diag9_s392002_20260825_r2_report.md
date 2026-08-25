@@ -1,7 +1,7 @@
 # CVS Cached Slow-Fast Domain Adapter诊断实验r2报告
 
 - run ID：`cvs_cached_slow_fast_diag9_s392002_20260825_r2`
-- 当前状态：`LOCAL_VERIFIED / PRELAUNCH`
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 代码/config提交：`097773c513d184aeea23e9330ee1863bb1fdd673`；自动push后远端OID独立回读一致。
 - 冻结基线：`ADV3B02_CORE90_SOFT_E200`
@@ -49,3 +49,9 @@ CUDA_VISIBLE_DEVICES=1 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/
 - 仅在协议/query越权、错误checkpoint/capsule/split/receiver/K/scene、错误checkout、输出覆盖、进程归属不明、无法启动、prediction不完整或同一确定性pre-prediction异常至少出现两次时停止。不得因低性能停止。
 - 预期Phase1.5 cache、三个bundle、summary；无query smoke receipt；9行两状态prediction/receipt和matrix receipt；prediction闭合后才生成truth-last score。
 - 候选只有聚合mean≥+1.0pp、floor≥+0.5pp且任一旧类退化不超过5pp才进入Target25，否则记`SCIENTIFIC_FAILURE_NO_PROMOTION`。
+
+## r2技术停止
+
+- Phase1.5启动返回主PID`2996710`，随后进程退出。日志和部分输出原地保留，不覆盖、不删除。
+- 第二次匹配指纹仍是device mismatch，但具体边界为clean/LEO pair索引由`_pair_indices`隐式建在CPU，而cache/adapter位于GPU。r2无smoke、无prediction、无truth、无性能结果。
+- 按重复失败恢复流程停止同层重试，系统枚举Phase1.5全部张量构造点。唯一未绑定cache设备的索引构造已改为显式继承`cache.features.device`；新增“默认设备与cache设备不同”的回归测试先RED后GREEN，相关回归43项通过。新run只能使用r3。

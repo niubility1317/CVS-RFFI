@@ -11,6 +11,7 @@ from cvsrffi.slow_fast_objectives import (
     trust_region_loss,
 )
 from cvsrffi.slow_fast_phase15 import (
+    _pair_indices,
     fit_common_shift_basis,
     train_slow_fast_basis,
 )
@@ -84,6 +85,18 @@ def test_floor_and_interval_trust_objectives_have_hand_checked_boundaries() -> N
     outside = base + 0.5
     assert trust_region_loss(inside, base, max_relative_move=0.2).item() == 0.0
     assert trust_region_loss(outside, base, max_relative_move=0.2).item() > 0.0
+
+
+def test_pair_indices_follow_cache_device_not_process_default_device() -> None:
+    cache, _prototypes = _cache()
+    original = torch.get_default_device()
+    torch.set_default_device("meta")
+    try:
+        clean_indices, leo_indices = _pair_indices(cache)
+    finally:
+        torch.set_default_device(original)
+    assert clean_indices.device == cache.features.device
+    assert leo_indices.device == cache.features.device
 
 
 @pytest.mark.parametrize(

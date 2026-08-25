@@ -90,7 +90,11 @@ def _pair_indices(cache: GroundFeatureCache) -> tuple[Tensor, Tensor]:
             if name != "clean":
                 clean_indices.append(clean)
                 leo_indices.append(index)
-    return torch.tensor(clean_indices, dtype=torch.long), torch.tensor(leo_indices, dtype=torch.long)
+    device = cache.features.device
+    return (
+        torch.tensor(clean_indices, dtype=torch.long, device=device),
+        torch.tensor(leo_indices, dtype=torch.long, device=device),
+    )
 
 
 def _apply_trainable(
