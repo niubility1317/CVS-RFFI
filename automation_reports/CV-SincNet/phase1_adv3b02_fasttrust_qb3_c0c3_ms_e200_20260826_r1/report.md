@@ -3,7 +3,7 @@
 ## 当前状态
 
 - run_id：`phase1_adv3b02_fasttrust_qb3_c0c3_ms_e200_20260826_r1`
-- 状态：`LOCAL_VERIFIED_PROFILE_R2_PREREGISTERED`
+- 状态：`PROFILE_R2_RUNNING`
 - 科学边界：Phase1 source-only；固定`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`；target结果不反馈阈值、候选或重训。
 - 目标：冻结上一轮C0/C3训练数学定义，以两个新增seed补足三seed证据；同时修复可观测性，并用不改变优化轨迹的工程A/B选择恢复checkpoint间隔。
 
@@ -57,3 +57,13 @@
 - 失败发生在第一个训练batch之前；四行状态均为`TRAIN_FAILED`，无性能结果，分类为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
 - r1主dispatcher已退出，GPU读回的活跃Python进程属于另一个`phase1_jmrs01_20260826`任务，不属于本run；未终止或修改任何进程。r1目录和日志完整保留，不覆盖、不删除、不原地重启。
 - 修复仅新增合法的profile阶段配置和新run_id r2，不改变正式C0/C3的E200科学矩阵。r2发布前重新执行本地测试、Git提交、release归档、N607编译和干跑。
+
+## Profile r2发布与启动证据
+
+- 冻结代码提交：`20c2311933b123804518a3d07dc30bbe9cdd9ea0`；GitHub远端`work/cvs-active`独立OID读回一致。
+- release归档：`E:\type10-7\release_artifacts\phase1_fasttrust_qb3_20c23119.tar.gz`→`/home/szu2070436088/2510044040/CV-SincNet/releases/incoming/phase1_fasttrust_qb3_20c23119.tar.gz`；按规则只比较一次本地/远端SHA，双方均为`f82e0110e7b42e9cb8ae3bef06842a1aadbb797c0fe43db371bedfee0cd24b8a`。
+- 不可变release根：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_fasttrust_qb3_20c23119`；远端Python编译、两个Bash语法检查及四行完整`--dry-run`通过。
+- 启动时间：N607本地时间2026-08-26 00:48；主PID3201670，launcher子PID3201672；四个训练Python分别绑定GPU4–7，cmdline均指向r2 run root和不可变release。
+- 日志增长：主dispatcher日志已写入`QB3-MATRIX-RUN`，四份候选`train.log`均增长到约7KB并通过数据划分、真实checkpoint、阶段配置和telemetry初始化，跨过r1失败点。
+- 资源边界：GPU0已有独立`phase1_jmrs01_20260826`进程；本run不使用GPU0且未对其进行任何操作。GPU4–7启动时各一行训练，不超过每GPU两个训练进程。
+- 当前证据等级：`RUNNING`。这只证明合法启动与日志增长，不是速度结论或科学性能结果。
