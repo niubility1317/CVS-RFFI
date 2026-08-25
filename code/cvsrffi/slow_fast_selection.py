@@ -173,14 +173,30 @@ def _movement_statistics(
 ) -> dict[str, float]:
     adapted = F.normalize(adapted_features, dim=1)
     baseline = F.normalize(baseline_features, dim=1)
+    minimum_correct_margin_ratio = 0.5
     moves = torch.linalg.vector_norm(adapted - baseline, dim=1)
     scores = baseline @ prototypes.T
+    adapted_scores = adapted @ prototypes.T
     true_scores = scores.gather(1, labels[:, None]).squeeze(1)
+    adapted_true_scores = adapted_scores.gather(1, labels[:, None]).squeeze(1)
     competitors = scores.clone()
     competitors.scatter_(1, labels[:, None], float("-inf"))
+    adapted_competitors = adapted_scores.clone()
+    adapted_competitors.scatter_(1, labels[:, None], float("-inf"))
+    baseline_margins = true_scores - competitors.max(dim=1).values
+    adapted_margins = adapted_true_scores - adapted_competitors.max(dim=1).values
+    baseline_correct = baseline_margins > 0.0
+    correct_margin_violations = baseline_correct & (
+        adapted_margins + 1.0e-8
+        < minimum_correct_margin_ratio * baseline_margins
+    )
+    baseline_wrong = ~baseline_correct
+    error_margin_nonimprovements = baseline_wrong & (
+        adapted_margins <= baseline_margins + 1.0e-8
+    )
     competitor_indices = competitors.argmax(dim=1)
     normals = prototypes.index_select(0, labels) - prototypes.index_select(0, competitor_indices)
-    boundary_distance = (true_scores - competitors.max(dim=1).values).abs()
+    boundary_distance = baseline_margins.abs()
     boundary_distance = boundary_distance / torch.linalg.vector_norm(normals, dim=1).clamp_min(1.0e-8)
     relative_moves = moves / boundary_distance.clamp_min(1.0e-8)
     return {
@@ -188,6 +204,13 @@ def _movement_statistics(
         "q90_feature_move": float(torch.quantile(moves, 0.90)),
         "max_feature_move": float(moves.max()),
         "q90_relative_move": float(torch.quantile(relative_moves, 0.90)),
+        "minimum_correct_margin_ratio": minimum_correct_margin_ratio,
+        "correct_margin_violation_count": int(correct_margin_violations.sum()),
+        "error_margin_nonimprovement_count": int(error_margin_nonimprovements.sum()),
+        "directional_margin_pass": bool(
+            not bool(correct_margin_violations.any())
+            and not bool(error_margin_nonimprovements.any())
+        ),
     }
 
 
@@ -200,18 +223,36 @@ def _fold_gain_statistics(fold_risk_gains: Sequence[float], *, lcb_z: float) -> 
             "fold_gain_mean": 0.0,
             "fold_gain_std": 0.0,
             "fold_gain_lcb90": float("-inf"),
+            "repeat_risk_gains": [],
+            "positive_repeat_count": 0,
+            "repeat_gain_mean": 0.0,
+            "repeat_gain_std": 0.0,
+            "repeat_gain_lcb90": float("-inf"),
         }
     if not bool(torch.isfinite(gains).all()):
         raise ValueError("fold risk gains must be finite")
     mean = float(gains.mean())
     std = float(gains.std(unbiased=gains.numel() > 1))
     lcb = mean - float(lcb_z) * std / math.sqrt(int(gains.numel()))
+    if int(gains.numel()) % 2 != 0:
+        raise ValueError("fold risk gains must contain complementary direction pairs")
+    repeat_gains = gains.reshape(-1, 2).mean(dim=1)
+    repeat_mean = float(repeat_gains.mean())
+    repeat_std = float(repeat_gains.std(unbiased=repeat_gains.numel() > 1))
+    repeat_lcb = repeat_mean - float(lcb_z) * repeat_std / math.sqrt(
+        int(repeat_gains.numel())
+    )
     return {
         "fold_risk_gains": [float(value) for value in gains.tolist()],
         "positive_fold_count": int((gains > 0.0).sum()),
         "fold_gain_mean": mean,
         "fold_gain_std": std,
         "fold_gain_lcb90": float(lcb),
+        "repeat_risk_gains": [float(value) for value in repeat_gains.tolist()],
+        "positive_repeat_count": int((repeat_gains > 0.0).sum()),
+        "repeat_gain_mean": repeat_mean,
+        "repeat_gain_std": repeat_std,
+        "repeat_gain_lcb90": float(repeat_lcb),
     }
 
 
@@ -248,14 +289,19 @@ def support_state_diagnostics(
     )
     movement = _movement_statistics(adapted, baseline, labels, prototypes)
     fold_stats = _fold_gain_statistics(fold_risk_gains, lcb_z=policy.lcb_z)
+    required_positive_repeats = min(
+        len(fold_stats["repeat_risk_gains"]),
+        int(math.ceil(int(policy.minimum_positive_folds) / 2.0)),
+    )
     trust_pass = (
         movement["q90_feature_move"] <= float(policy.q90_move) + 1.0e-8
         and movement["max_feature_move"] <= float(policy.hard_move) + 1.0e-8
         and movement["q90_relative_move"] <= float(policy.q90_relative_move) + 1.0e-8
+        and movement["directional_margin_pass"]
     )
     stability_pass = (
-        fold_stats["positive_fold_count"] >= int(policy.minimum_positive_folds)
-        and (not policy.require_fold_lcb or fold_stats["fold_gain_lcb90"] > 0.0)
+        fold_stats["positive_repeat_count"] >= required_positive_repeats
+        and (not policy.require_fold_lcb or fold_stats["repeat_gain_lcb90"] > 0.0)
     )
     return {
         "nominal_lambda": nominal,
@@ -264,6 +310,7 @@ def support_state_diagnostics(
         "full_strength_q90_feature_move": float(full_q90),
         **movement,
         **fold_stats,
+        "required_positive_repeats": required_positive_repeats,
         "trust_pass": bool(trust_pass),
         "fold_stability_pass": bool(stability_pass),
     }
@@ -364,7 +411,7 @@ def _crossfit_features(
     labels: Tensor,
     prototypes: Tensor,
     initial_state: SlowFastAdapterState,
-    strengths: Mapping[float, float] | Iterable[float],
+    strengths: Iterable[float],
     *,
     k_shot: int,
     steps: int,
@@ -373,15 +420,20 @@ def _crossfit_features(
     seed: int,
     repeats: int,
     physical_ids: Sequence[Any] | None = None,
-) -> tuple[dict[float, Tensor], Tensor, int, tuple[tuple[dict[float, Tensor], Tensor], ...]]:
-    strength_map = (
-        {float(key): float(value) for key, value in strengths.items()}
-        if isinstance(strengths, Mapping)
-        else {float(value): float(value) for value in strengths}
-    )
+    trust_policy: SupportTrustPolicy | None = None,
+) -> tuple[
+    dict[float, Tensor],
+    Tensor,
+    int,
+    tuple[tuple[dict[float, Tensor], Tensor, float], ...],
+    tuple[float, ...],
+]:
+    nominal_strengths = tuple(float(value) for value in strengths)
+    strength_map = {value: value for value in nominal_strengths}
     collected = {nominal: [] for nominal in strength_map}
     validation_labels: list[Tensor] = []
-    fold_records: list[tuple[dict[float, Tensor], Tensor]] = []
+    fold_records: list[tuple[dict[float, Tensor], Tensor, float]] = []
+    fold_normalizers: list[float] = []
     splits = _stratified_crossfit_splits(
         labels,
         k_shot=k_shot,
@@ -390,22 +442,37 @@ def _crossfit_features(
         physical_ids=physical_ids,
     )
     for train, validation in splits:
-        fitted = _fit(features.index_select(0, train), labels.index_select(0, train), prototypes, initial_state, steps=steps, step_size=step_size, logit_scale=logit_scale)
+        train_features = features.index_select(0, train)
+        train_labels = labels.index_select(0, train)
+        fitted = _fit(train_features, train_labels, prototypes, initial_state, steps=steps, step_size=step_size, logit_scale=logit_scale)
+        normalizer = 1.0
+        if trust_policy is not None:
+            normalizer = support_state_diagnostics(
+                train_features,
+                train_labels,
+                prototypes,
+                fitted,
+                nominal_lambda=1.0,
+                policy=trust_policy,
+            )["support_strength_normalizer"]
+        fold_normalizers.append(float(normalizer))
         rows = features.index_select(0, validation)
         fold_features: dict[float, Tensor] = {}
-        for nominal, effective in strength_map.items():
+        for nominal in strength_map:
+            effective = float(nominal) * float(normalizer)
             candidate = _disabled(initial_state) if effective == 0.0 else _scaled(fitted, effective)
             adapted = F.normalize(rows, dim=1) if effective == 0.0 else apply_slow_fast(rows, candidate)
             collected[nominal].append(adapted)
             fold_features[nominal] = adapted
         fold_labels = labels.index_select(0, validation)
         validation_labels.append(fold_labels)
-        fold_records.append((fold_features, fold_labels))
+        fold_records.append((fold_features, fold_labels, float(normalizer)))
     return (
         {key: torch.cat(value, dim=0) for key, value in collected.items()},
         torch.cat(validation_labels, dim=0),
         len(splits),
         tuple(fold_records),
+        tuple(fold_normalizers),
     )
 
 
@@ -468,7 +535,7 @@ def select_support_only_state(features: Tensor, labels: Tensor, prototypes: Tens
         baseline = _trace_metrics(baseline_features, baseline_features, labels, prototypes, logit_scale=scale)
         risk = baseline["macro_ce"] + 0.3 * baseline["class_cvar_ce"]
         trace = [{"lambda": 0.0, **baseline, "risk": risk, "risk_gain": 0.0, "eligible": True, "rejection_reasons": [], "per_class_ce_delta": [0.0 for _ in baseline["per_class_ce"]]}]
-        return baseline_state, {"selected_lambda": 0.0, "reason": "K1_NO_INDEPENDENT_LOO_FALLBACK_DA0", "selection_protocol": "repeated_stratified_2fold", "gradient_updates": 0, "attempted_gradient_updates": 0, "committed_gradient_updates": 0, "crossfit_fit_count": 0, "loo_fit_count": 0, "crossfit_updates": 0, "deployment_candidate_updates": 0, "support_logit_scale": scale, "trust_radius": radius, "lambda_trace": trace, **{f"baseline_{key}": value for key, value in baseline.items() if key != "per_class_ce"}, **{f"selected_{key}": value for key, value in baseline.items() if key != "per_class_ce"}}
+        return baseline_state, {"selected_lambda": 0.0, "reason": "K1_NO_INDEPENDENT_LOO_FALLBACK_DA0", "selection_protocol": "repeated_stratified_2fold", "gradient_updates": 0, "attempted_gradient_updates": 0, "committed_gradient_updates": 0, "crossfit_fit_count": 0, "loo_fit_count": 0, "crossfit_updates": 0, "full_support_fit_updates": 0, "total_selection_updates": 0, "query_inference_updates": 0, "deployment_candidate_updates": 0, "support_logit_scale": scale, "trust_radius": radius, "lambda_trace": trace, **{f"baseline_{key}": value for key, value in baseline.items() if key != "per_class_ce"}, **{f"selected_{key}": value for key, value in baseline.items() if key != "per_class_ce"}}
     full_fitted = _fit(
         features,
         labels,
@@ -491,12 +558,12 @@ def select_support_only_state(features: Tensor, labels: Tensor, prototypes: Tens
     effective_strengths = {
         strength: float(strength) * float(strength_normalizer) for strength in strengths
     }
-    crossfit, crossfit_labels, fit_count, fold_records = _crossfit_features(
+    crossfit, crossfit_labels, fit_count, fold_records, fold_normalizers = _crossfit_features(
         features,
         labels,
         prototypes,
         initial_state,
-        effective_strengths,
+        strengths,
         k_shot=k_shot,
         steps=steps,
         step_size=step_size,
@@ -504,6 +571,7 @@ def select_support_only_state(features: Tensor, labels: Tensor, prototypes: Tens
         seed=crossfit_seed,
         repeats=repeats,
         physical_ids=physical_ids,
+        trust_policy=trust_policy,
     )
     baseline = _trace_metrics(crossfit[0.0], crossfit[0.0], crossfit_labels, prototypes, logit_scale=scale)
     baseline_risk = baseline["macro_ce"] + 0.3 * baseline["class_cvar_ce"]
@@ -515,7 +583,7 @@ def select_support_only_state(features: Tensor, labels: Tensor, prototypes: Tens
         )
         risk = metrics["macro_ce"] + 0.3 * metrics["class_cvar_ce"] + 0.1 * metrics["mean_feature_move"]
         fold_risk_gains: list[float] = []
-        for fold_features, fold_labels in fold_records:
+        for fold_features, fold_labels, _fold_normalizer in fold_records:
             fold_baseline = _trace_metrics(
                 fold_features[0.0],
                 fold_features[0.0],
@@ -541,6 +609,12 @@ def select_support_only_state(features: Tensor, labels: Tensor, prototypes: Tens
             fold_risk_gains,
             lcb_z=trust_policy.lcb_z if trust_policy is not None else 1.2815515655446004,
         )
+        required_positive_repeats = min(
+            len(fold_stats["repeat_risk_gains"]),
+            int(math.ceil(int(trust_policy.minimum_positive_folds) / 2.0))
+            if trust_policy is not None
+            else 0,
+        )
         reasons: list[str] = []
         if strength > 0.0:
             if metrics["macro_accuracy"] < baseline["macro_accuracy"] - float(macro_tolerance): reasons.append("MACRO_TOLERANCE")
@@ -551,10 +625,11 @@ def select_support_only_state(features: Tensor, labels: Tensor, prototypes: Tens
                 if movement["q90_feature_move"] > float(trust_policy.q90_move) + 1.0e-8: reasons.append("Q90_MOVE")
                 if movement["max_feature_move"] > float(trust_policy.hard_move) + 1.0e-8: reasons.append("HARD_MOVE")
                 if movement["q90_relative_move"] > float(trust_policy.q90_relative_move) + 1.0e-8: reasons.append("RELATIVE_MOVE")
-                if fold_stats["positive_fold_count"] < int(trust_policy.minimum_positive_folds): reasons.append("POSITIVE_FOLD_COUNT")
-                if trust_policy.require_fold_lcb and fold_stats["fold_gain_lcb90"] <= 0.0: reasons.append("FOLD_GAIN_LCB90")
+                if not movement["directional_margin_pass"]: reasons.append("DIRECTIONAL_MARGIN")
+                if fold_stats["positive_repeat_count"] < required_positive_repeats: reasons.append("POSITIVE_REPEAT_COUNT")
+                if trust_policy.require_fold_lcb and fold_stats["repeat_gain_lcb90"] <= 0.0: reasons.append("REPEAT_GAIN_LCB90")
             if baseline_risk - risk < float(minimum_risk_gain): reasons.append("INSUFFICIENT_RISK_GAIN")
-        trace.append({"lambda": strength, "effective_lambda": effective_strengths[strength], **metrics, **movement, **fold_stats, "risk": float(risk), "risk_gain": float(baseline_risk - risk), "eligible": strength == 0.0 or not reasons, "rejection_reasons": reasons, "per_class_ce_delta": [float(candidate - base) for candidate, base in zip(metrics["per_class_ce"], baseline["per_class_ce"])]})
+        trace.append({"lambda": strength, "effective_lambda": effective_strengths[strength], **metrics, **movement, **fold_stats, "required_positive_repeats": required_positive_repeats, "risk": float(risk), "risk_gain": float(baseline_risk - risk), "eligible": strength == 0.0 or not reasons, "rejection_reasons": reasons, "per_class_ce_delta": [float(candidate - base) for candidate, base in zip(metrics["per_class_ce"], baseline["per_class_ce"])]})
     selected_strength = choose_crossfit_lambda(trace)
     selected_effective_strength = effective_strengths[selected_strength]
     selected = baseline_state if selected_effective_strength == 0.0 else _scaled(
@@ -565,7 +640,7 @@ def select_support_only_state(features: Tensor, labels: Tensor, prototypes: Tens
     attempted = (fit_count + 1) * int(steps) if initial_state.candidate is not SlowFastCandidate.COMMON_SHIFT_R4 else 0
     crossfit_updates = fit_count * int(steps) if initial_state.candidate is not SlowFastCandidate.COMMON_SHIFT_R4 else 0
     deployment_updates = int(steps) if initial_state.candidate is not SlowFastCandidate.COMMON_SHIFT_R4 else 0
-    return selected, {"selected_lambda": selected_strength, "selected_effective_lambda": selected_effective_strength, "support_strength_normalizer": float(strength_normalizer), "reason": "SUPPORT_CROSSFIT_CONTINUOUS_RISK_PASS" if selected_strength > 0.0 else "SUPPORT_CROSSFIT_FALLBACK_DA0", "selection_protocol": "repeated_stratified_2fold", "gradient_updates": committed, "attempted_gradient_updates": attempted, "committed_gradient_updates": committed, "crossfit_fit_count": fit_count, "loo_fit_count": 0, "crossfit_updates": crossfit_updates, "deployment_candidate_updates": deployment_updates, "support_logit_scale": scale, "trust_radius": radius, "lambda_trace": trace, **{f"baseline_{key}": value for key, value in baseline.items() if key != "per_class_ce"}, **{f"selected_{key}": value for key, value in selected_trace.items() if key not in {"lambda", "per_class_ce", "per_class_ce_delta", "eligible", "rejection_reasons"}}, "max_per_class_loss_increase": max(selected_trace["per_class_ce_delta"])}
+    return selected, {"selected_lambda": selected_strength, "selected_effective_lambda": selected_effective_strength, "support_strength_normalizer": float(strength_normalizer), "crossfit_normalizer_scope": "fold_train_only", "crossfit_fold_strength_normalizers": list(fold_normalizers), "reason": "SUPPORT_CROSSFIT_CONTINUOUS_RISK_PASS" if selected_strength > 0.0 else "SUPPORT_CROSSFIT_FALLBACK_DA0", "selection_protocol": "repeated_stratified_2fold", "gradient_updates": committed, "attempted_gradient_updates": attempted, "committed_gradient_updates": committed, "crossfit_fit_count": fit_count, "loo_fit_count": 0, "crossfit_updates": crossfit_updates, "full_support_fit_updates": deployment_updates, "total_selection_updates": crossfit_updates + deployment_updates, "query_inference_updates": 0, "deployment_candidate_updates": deployment_updates, "support_logit_scale": scale, "trust_radius": radius, "lambda_trace": trace, **{f"baseline_{key}": value for key, value in baseline.items() if key != "per_class_ce"}, **{f"selected_{key}": value for key, value in selected_trace.items() if key not in {"lambda", "per_class_ce", "per_class_ce_delta", "eligible", "rejection_reasons"}}, "max_per_class_loss_increase": max(selected_trace["per_class_ce_delta"])}
 
 
 __all__ = ["SupportTrustPolicy", "choose_crossfit_lambda", "evaluate_frozen_support_state", "fit_support_candidate_states", "select_support_only_state", "select_support_only_state_legacy", "support_state_diagnostics"]

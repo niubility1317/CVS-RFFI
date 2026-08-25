@@ -172,7 +172,14 @@ def test_p05_runner_rejects_source_calibration_path_before_opening_inputs(tmp_pa
 def test_fast_shadow_computation_accounting_closes_280_updates() -> None:
     accounting = subject._computation_accounting(
         candidate_id="FAST_FILM_R8",
-        selection={"deployment_candidate_updates": 3, "crossfit_updates": 18},
+        selection={
+            "deployment_candidate_updates": 3,
+            "full_support_fit_updates": 3,
+            "committed_gradient_updates": 3,
+            "crossfit_updates": 18,
+            "total_selection_updates": 21,
+            "query_inference_updates": 0,
+        },
         legacy_selection={"attempted_gradient_updates": 183},
         shadow_steps=(1, 3, 5, 10),
         shadow_step_multipliers=(0.5, 1.0, 2.0, 4.0),
@@ -181,6 +188,10 @@ def test_fast_shadow_computation_accounting_closes_280_updates() -> None:
     assert accounting == {
         "deployment_candidate_updates": 3,
         "crossfit_updates": 18,
+        "full_support_fit_updates": 3,
+        "committed_updates": 3,
+        "total_selection_updates": 21,
+        "query_inference_updates": 0,
         "total_deployment_updates": 21,
         "legacy_diagnostic_updates": 183,
         "shadow_grid_updates": 76,

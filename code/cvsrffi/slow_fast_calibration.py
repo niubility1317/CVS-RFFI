@@ -342,6 +342,36 @@ def calibrate_p05_gate(
                 "episode_summaries": evaluations,
             }
         )
+    reference = candidates[0].to_dict()
+    always_da0 = {
+        **reference,
+        "name": "P05_ALWAYS_DA0",
+        "lambda_grid": [0.0],
+    }
+    config_summaries.append(
+        {
+            "config": always_da0,
+            "worst_receiver_mean_delta_pp": 0.0,
+            "worst_episode_floor_delta_pp": 0.0,
+            "max_confidence_intrusion_proxy": 0.0,
+            "mean_crossfit_fit_count": 0.0,
+            "mean_gradient_updates": 0.0,
+            "episode_summaries": [
+                {
+                    "heldout_receiver": str(episode.heldout_receiver),
+                    "scene": episode.scene,
+                    "mean_delta_pp": 0.0,
+                    "floor_delta_pp": 0.0,
+                    "confidence_intrusion_proxy": 0.0,
+                    "selected_lambda": 0.0,
+                    "selected_effective_lambda": 0.0,
+                    "crossfit_fit_count": 0,
+                    "gradient_updates": 0,
+                }
+                for episode in episode_rows
+            ],
+        }
+    )
     selected_summary = max(
         config_summaries,
         key=lambda item: (
@@ -359,7 +389,11 @@ def calibrate_p05_gate(
     selected_config = selected_summary["config"]
     return {
         "schema": CALIBRATION_SCHEMA,
-        "status": "CALIBRATED_SOURCE_ONLY",
+        "status": (
+            "CALIBRATED_TO_ABSTAIN"
+            if selected_config["name"] == "P05_ALWAYS_DA0"
+            else "CALIBRATED_SOURCE_ONLY"
+        ),
         "candidate_id": SlowFastCandidate.FAST_FILM_R8.value,
         "source_role": "L_s",
         "calibration_protocol": "source_receiver_heldout_support_query_v1",
@@ -406,7 +440,10 @@ def load_calibration_strict(
         raise ValueError(f"calibration JSON cannot be loaded: {source}") from error
     if not isinstance(payload, Mapping) or set(payload) != set(CALIBRATION_SCHEMA_KEYS):
         raise ValueError("calibration JSON schema fields mismatch")
-    if payload.get("schema") != CALIBRATION_SCHEMA or payload.get("status") != "CALIBRATED_SOURCE_ONLY":
+    if payload.get("schema") != CALIBRATION_SCHEMA or payload.get("status") not in {
+        "CALIBRATED_SOURCE_ONLY",
+        "CALIBRATED_TO_ABSTAIN",
+    }:
         raise ValueError("calibration JSON schema/status mismatch")
     if payload.get("candidate_id") != SlowFastCandidate.FAST_FILM_R8.value:
         raise ValueError("calibration must freeze FAST_FILM_R8")

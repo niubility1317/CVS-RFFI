@@ -201,13 +201,21 @@ def _computation_accounting(
 ) -> dict[str, int]:
     deployment = int(selection.get("deployment_candidate_updates", 0))
     crossfit = int(selection.get("crossfit_updates", 0))
+    full_support = int(selection.get("full_support_fit_updates", deployment))
+    committed = int(selection.get("committed_gradient_updates", 0))
+    total_selection = int(selection.get("total_selection_updates", crossfit + full_support))
+    query_inference = int(selection.get("query_inference_updates", 0))
     is_fast = candidate_id in {"FAST_FILM_R8", "FAST_LOWRANK_R8"}
     legacy = int(legacy_selection.get("attempted_gradient_updates", 0)) if is_fast and legacy_selection else 0
     grid = len(shadow_step_multipliers) * sum(int(value) for value in shadow_steps) if is_fast else 0
-    total_deployment = deployment + crossfit
+    total_deployment = total_selection
     return {
         "deployment_candidate_updates": deployment,
         "crossfit_updates": crossfit,
+        "full_support_fit_updates": full_support,
+        "committed_updates": committed,
+        "total_selection_updates": total_selection,
+        "query_inference_updates": query_inference,
         "total_deployment_updates": total_deployment,
         "legacy_diagnostic_updates": legacy,
         "shadow_grid_updates": grid,

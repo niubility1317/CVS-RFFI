@@ -7,6 +7,7 @@ import torch
 from cvsrffi.slow_fast_adapter import SlowFastAdapterState, SlowFastCandidate
 from cvsrffi.slow_fast_selection import (
     SupportTrustPolicy,
+    _movement_statistics,
     _stratified_crossfit_splits,
     choose_crossfit_lambda,
     evaluate_frozen_support_state,
@@ -232,6 +233,11 @@ def test_policy_selector_records_nominal_effective_geometry_and_unique_fold_gain
     assert audit["selection_protocol"] == "repeated_stratified_2fold"
     assert audit["selected_effective_lambda"] <= audit["selected_lambda"]
     assert selected.rho == pytest.approx(audit["selected_effective_lambda"])
+    assert audit["crossfit_normalizer_scope"] == "fold_train_only"
+    assert len(audit["crossfit_fold_strength_normalizers"]) == audit["crossfit_fit_count"]
+    assert all(
+        0.0 < value <= 1.0 for value in audit["crossfit_fold_strength_normalizers"]
+    )
     for row in audit["lambda_trace"]:
         assert row["effective_lambda"] <= row["lambda"]
         assert len(row["fold_risk_gains"]) == audit["crossfit_fit_count"]
@@ -243,6 +249,52 @@ def test_policy_selector_records_nominal_effective_geometry_and_unique_fold_gain
             "fold_gain_std",
             "fold_gain_lcb90",
         } <= set(row)
+
+
+def test_repeat_stability_averages_complementary_fold_directions_before_gating() -> None:
+    prototypes = torch.eye(2)
+    features = torch.tensor([[1.0, 0.0], [0.98, 0.02], [0.0, 1.0], [0.02, 0.98]])
+    labels = torch.tensor([0, 0, 1, 1])
+    fitted = replace(
+        _common_state(), common_coeff=torch.tensor([0.8, 0.0, 0.0, 0.0])
+    )
+    policy = SupportTrustPolicy(
+        q90_move=0.10,
+        hard_move=0.30,
+        q90_relative_move=10.0,
+        minimum_positive_folds=5,
+        require_fold_lcb=False,
+    )
+
+    diagnostics = support_state_diagnostics(
+        features,
+        labels,
+        prototypes,
+        fitted,
+        nominal_lambda=0.5,
+        policy=policy,
+        fold_risk_gains=(0.1, -1.0, 0.1, 0.1, 0.1, 0.1),
+    )
+
+    assert diagnostics["positive_fold_count"] == 5
+    assert diagnostics["repeat_risk_gains"] == pytest.approx([-0.45, 0.1, 0.1])
+    assert diagnostics["positive_repeat_count"] == 2
+    assert diagnostics["required_positive_repeats"] == 3
+    assert diagnostics["fold_stability_pass"] is False
+
+
+def test_directional_margin_trust_protects_correct_rows_and_repairs_wrong_rows() -> None:
+    prototypes = torch.eye(2)
+    labels = torch.tensor([0, 1])
+    baseline = torch.tensor([[1.0, 0.0], [0.8, 0.6]])
+    adapted = torch.tensor([[0.8, 0.6], [0.9, 0.4358899]])
+
+    diagnostics = _movement_statistics(adapted, baseline, labels, prototypes)
+
+    assert diagnostics["correct_margin_violation_count"] == 1
+    assert diagnostics["error_margin_nonimprovement_count"] == 1
+    assert diagnostics["minimum_correct_margin_ratio"] == pytest.approx(0.5)
+    assert diagnostics["directional_margin_pass"] is False
 
 
 def test_frozen_support_state_diagnostic_is_explicitly_in_sample_and_support_only() -> None:

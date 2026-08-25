@@ -122,9 +122,53 @@ def test_source_only_calibration_freezes_one_film_policy_without_sample_rows() -
     assert calibration["candidate_id"] == "FAST_FILM_R8"
     assert calibration["target_support_used"] is False
     assert calibration["target_query_used"] is False
-    assert calibration["selected_config"]["name"] in {"wide", "narrow"}
+    assert calibration["selected_config"]["name"] in {
+        "P05_ALWAYS_DA0",
+        "wide",
+        "narrow",
+    }
     assert "features" not in str(calibration)
     assert "physical_sample_ids" not in str(calibration)
+
+
+def test_calibration_abstains_when_every_adaptive_policy_is_no_better_than_da0() -> None:
+    cache, prototypes = _cache(samples_per_class=4)
+    episodes = build_receiver_heldout_episodes(
+        cache, k_shot=2, seed=29, scenes=("leo_clear_weak",)
+    )
+    strict = CalibrationCandidate(
+        name="strict",
+        policy=SupportTrustPolicy(
+            q90_move=1.0e-8,
+            hard_move=2.0e-8,
+            q90_relative_move=1.0e-8,
+            minimum_positive_folds=2,
+        ),
+        lambda_grid=(0.0, 0.5, 1.0),
+        repeats=1,
+        steps=1,
+        step_size=0.01,
+    )
+
+    calibration = calibrate_p05_gate(
+        episodes,
+        (strict,),
+        prototypes=prototypes,
+        initial_state=_film_state(),
+        logit_scale=8.0,
+        seed=29,
+    )
+
+    assert calibration["status"] == "CALIBRATED_TO_ABSTAIN"
+    assert calibration["selected_config"]["name"] == "P05_ALWAYS_DA0"
+    assert calibration["deployment_fields"]["lambda_grid"] == [0.0]
+    baseline = next(
+        row for row in calibration["config_summaries"]
+        if row["config"]["name"] == "P05_ALWAYS_DA0"
+    )
+    assert baseline["worst_receiver_mean_delta_pp"] == 0.0
+    assert baseline["worst_episode_floor_delta_pp"] == 0.0
+    assert baseline["max_confidence_intrusion_proxy"] == 0.0
 
 
 def test_calibration_json_is_non_overwriting(tmp_path: Path) -> None:
