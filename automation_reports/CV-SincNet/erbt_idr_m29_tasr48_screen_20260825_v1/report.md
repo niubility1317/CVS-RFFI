@@ -5,7 +5,7 @@
 - protocol：`p2_min_v1`，只复用`VALIDATED_ONCE`且匹配原`capsule_id/split_id`
 - 设计来源：用户提供的FFT96替代设计报告
 - 代码分支：`codex/m29-tasr48-20260825`
-- Git commit：发布前回填
+- 实现与冻结配置Git commit：`6127d67ee3aa14cec2691083e0eb8fda036a39bb`
 
 ## 一、落实结论
 
