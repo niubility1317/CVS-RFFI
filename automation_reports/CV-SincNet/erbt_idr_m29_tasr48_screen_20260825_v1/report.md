@@ -135,3 +135,13 @@ PYTHONPATH=. /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u scripts/scor
 - 修正为唯一兼容解析：显式`p2_min_v1`直接接受；字段缺失时只接受精确v2 schema且完整合同逐项相等，并记录`protocol_schema_source=feature_cache_v2_exact_contract`；任何字段漂移继续fail-closed。
 - 该修正不更改数据字节、capsule、split、support/query划分或方法参数，不触发数据重验；首次release标记`RELEASE_NOT_LAUNCHED`，后续使用不可覆盖`_r2` release root。
 - 协议兼容修复commit：`40a6f9532f222140d5a8ca23258a91e1d7bc47d1`。
+
+## 八、v1远端执行结果
+
+- release HEAD：`37ff5ec17a172172110acbd57daf5b459f582a64`；r2归档本地/远端SHA-256均为`b7354e6eef4c163fa038a377e4e6e99cc2ac0812d173ab2dc4a440bb2103e713`；远端编译通过。
+- Phase1聚合束真实构建完成：6类、7个receiver、42个receiver×class单元、rank8、持久状态992字节，`query_rows_used=0`，component ID为`02db2fd67f567f66c298ec98b161159b202495d7a8b6f943acba094d4f4ae04f`。
+- 真实checkpoint无query smoke通过：仅打开实际support成员，输出11类、208维、`protocol_schema=p2_min_v1`、`query_rows_used=0`。
+- prediction主进程PID为`2998745`，CWD、cmdline、run root、CPU worker和日志路径均与预登记一致；未触碰无关GPU任务。
+- 30个row均在创建不可覆盖行目录后、写prediction前触发同一确定性异常：`KeyError: 'quantization'`。根因是M29行执行器把`compile_m24_head`直接返回的量化审计字典误当成仍含一层`quantization`的包装字典。
+- 最终状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。30个行目录、0个prediction receipt、0个合法prediction；truth未打开、scorer未启动，不形成任何性能或科学结论。
+- v1现场完整保留，不覆盖、不删除、不复用输出根。定点修复后只允许用全新run ID `erbt_idr_m29_tasr48_screen_20260825_v2`继续同一冻结方法和矩阵。

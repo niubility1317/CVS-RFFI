@@ -186,7 +186,7 @@ def execute_m29_row(
             ),
         }
         resources.extend((before.resource, after.resource))
-        quantization.extend((before.audit["compiler"]["quantization"], after.audit["compiler"]["quantization"]))
+        quantization.extend((before.audit["compiler"], after.audit["compiler"]))
     maximum_error = max(float(item["max_logit_abs_error"]) for item in quantization)
     quantization_receipt = {
         "schema": QUANTIZATION_RECEIPT_SCHEMA,

@@ -73,6 +73,44 @@ def _run_one(task: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _execute_fail_fast(
+    tasks: list[Any],
+    *,
+    worker: Any,
+    max_workers: int,
+    executor_factory: Any = concurrent.futures.ProcessPoolExecutor,
+    on_complete: Any = None,
+) -> list[Any]:
+    executor = executor_factory(max_workers=max_workers)
+    task_iterator = iter(tasks)
+    pending: set[concurrent.futures.Future[Any]] = set()
+    completed: list[Any] = []
+    try:
+        for _ in range(max_workers):
+            task = next(task_iterator, None)
+            if task is not None:
+                pending.add(executor.submit(worker, task))
+        while pending:
+            done, pending = concurrent.futures.wait(
+                pending, return_when=concurrent.futures.FIRST_COMPLETED
+            )
+            for future in done:
+                row = future.result()
+                completed.append(row)
+                if on_complete is not None:
+                    on_complete(row, len(completed))
+                task = next(task_iterator, None)
+                if task is not None:
+                    pending.add(executor.submit(worker, task))
+    except BaseException:
+        for future in pending:
+            future.cancel()
+        executor.shutdown(wait=True, cancel_futures=True)
+        raise
+    executor.shutdown(wait=True)
+    return completed
+
+
 def main() -> int:
     args = _parser().parse_args()
     if not 1 <= args.max_workers <= 2:
@@ -106,13 +144,15 @@ def main() -> int:
                     })
     if len(tasks) != 30:
         raise ValueError("M2.9 screen must contain exactly 30 rows")
-    completed = []
-    with concurrent.futures.ProcessPoolExecutor(max_workers=args.max_workers) as executor:
-        futures = [executor.submit(_run_one, task) for task in tasks]
-        for future in concurrent.futures.as_completed(futures):
-            row = future.result()
-            completed.append(row)
-            print(json.dumps({"completed": row["row_id"], "count": len(completed)}, sort_keys=True), flush=True)
+    def report_completion(row: dict[str, Any], count: int) -> None:
+        print(json.dumps({"completed": row["row_id"], "count": count}, sort_keys=True), flush=True)
+
+    completed = _execute_fail_fast(
+        tasks,
+        worker=_run_one,
+        max_workers=args.max_workers,
+        on_complete=report_completion,
+    )
     completed.sort(key=lambda row: row["row_id"])
     matrix = {
         "schema": MATRIX_SCHEMA,

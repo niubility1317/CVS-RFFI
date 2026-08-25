@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import numpy as np
 import pytest
 
 from cvsrffi.somph_predictor_bundle import FORMAL_LEO_WEAK_SCENARIOS
@@ -47,3 +48,51 @@ def test_exact_legacy_feature_cache_v2_contract_resolves_to_p2_min_v1() -> None:
     changed = dict(manifest)
     changed["phase2_source_sample_access"] = True
     assert _resolved_protocol_schema(changed) == ""
+
+
+def test_row_executor_consumes_direct_compiler_quantization_audit(tmp_path) -> None:
+    rng = np.random.default_rng(2902)
+    old_classes = tuple(f"old{i}" for i in range(6))
+    new_classes = tuple(f"new{i}" for i in range(5))
+
+    def features(rows: int) -> np.ndarray:
+        identity = rng.normal(size=(rows, 160))
+        identity /= np.linalg.norm(identity, axis=1, keepdims=True)
+        return np.concatenate((identity, rng.normal(size=(rows, 96))), axis=1).astype(np.float32)
+
+    scenario_payload = {
+        "old_support_features": features(6),
+        "old_support_labels": np.asarray(old_classes),
+        "new_support_features": features(5),
+        "new_support_labels": np.asarray(new_classes),
+        "query_features": features(4),
+        "query_tokens": np.asarray([f"q{i}" for i in range(4)]),
+    }
+    cache = {
+        "manifest": {
+            "receiver": "3-19",
+            "method_seed": 7282101,
+            "protocol_schema": "p2_min_v1",
+            "phase2_data_status": "VALIDATED_ONCE",
+            "k_shot": 1,
+            "package_root_sha256": "a" * 64,
+            "package_seal_sha256": "b" * 64,
+        },
+        "old_classes": old_classes,
+        "new_classes": new_classes,
+        "scenario_payloads": {
+            name: scenario_payload for name in FORMAL_LEO_WEAK_SCENARIOS
+        },
+    }
+    receipt = execute_m29_row(
+        arm=IDENTITY_ONLY,
+        row_id="compiler-quantization",
+        receiver="3-19",
+        base_cache=cache,
+        output_root=tmp_path / "row",
+        seed=7282101,
+        bundle=None,
+        base_cache_bytes=123,
+    )
+    assert receipt["status"] == "PREDICTIONS_COMPLETE_TRUTH_UNOPENED"
+    assert receipt["quantization"]["max_logit_abs_error"] >= 0.0
