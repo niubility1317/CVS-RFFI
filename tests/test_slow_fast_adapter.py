@@ -24,6 +24,51 @@ def test_common_shift_subtracts_hand_computed_domain_offset() -> None:
     assert torch.allclose(actual, expected)
 
 
+def test_common_shift_rho_is_the_only_runtime_strength() -> None:
+    features = torch.tensor([[2.0, 2.0]])
+    basis = torch.tensor([[1.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]])
+    coefficient = torch.tensor([1.0, 0.0, 0.0, 0.0])
+
+    half = apply_slow_fast(
+        features,
+        SlowFastAdapterState(
+            candidate=SlowFastCandidate.COMMON_SHIFT_R4,
+            slow_u=basis,
+            common_coeff=coefficient,
+            rho=0.5,
+        ),
+    )
+    expected = torch.tensor([[1.5, 2.0]])
+    expected = expected / torch.linalg.vector_norm(expected, dim=1, keepdim=True)
+    assert torch.allclose(half, expected)
+
+
+def test_lowrank_direction_gate_is_signed_and_zero_centered() -> None:
+    features = torch.eye(8)[:1]
+    common = dict(
+        candidate=SlowFastCandidate.FAST_LOWRANK_R8,
+        slow_u=torch.eye(8),
+        slow_v=torch.zeros(8, 8),
+        rho=0.5,
+        gamma=torch.zeros(8),
+        beta=torch.ones(8),
+    )
+
+    zero = apply_slow_fast(
+        features, SlowFastAdapterState(**common, direction_gate=torch.zeros(8))
+    )
+    positive = apply_slow_fast(
+        features, SlowFastAdapterState(**common, direction_gate=torch.ones(8))
+    )
+    negative = apply_slow_fast(
+        features, SlowFastAdapterState(**common, direction_gate=-torch.ones(8))
+    )
+
+    assert torch.allclose(zero, features)
+    assert positive[0, 1] > 0.0
+    assert negative[0, 1] < 0.0
+
+
 @pytest.mark.parametrize(
     ("candidate", "expected_fast_parameters"),
     [

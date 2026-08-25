@@ -14,7 +14,8 @@ from torch import Tensor
 from .slow_fast_adapter import SlowFastAdapterState, SlowFastCandidate
 
 
-SLOW_FAST_BUNDLE_SCHEMA = "cvs.cached_slow_fast.v1"
+LEGACY_SLOW_FAST_BUNDLE_SCHEMA = "cvs.cached_slow_fast.v1"
+SLOW_FAST_BUNDLE_SCHEMA = "cvs.cached_slow_fast.v2"
 _METADATA_KEYS = frozenset(
     {
         "base_checkpoint_id",
@@ -138,16 +139,27 @@ def load_slow_fast_bundle_strict(
             "slow-fast bundle field mismatch: "
             f"missing={sorted(_PAYLOAD_KEYS - actual)} extra={sorted(actual - _PAYLOAD_KEYS)}"
         )
-    if payload["schema"] != SLOW_FAST_BUNDLE_SCHEMA:
+    source_schema = payload["schema"]
+    if source_schema not in (LEGACY_SLOW_FAST_BUNDLE_SCHEMA, SLOW_FAST_BUNDLE_SCHEMA):
         raise ValueError("slow-fast bundle schema mismatch")
+    candidate = SlowFastCandidate(payload["candidate"])
+    direction_gate = payload["direction_gate"]
+    if (
+        source_schema == LEGACY_SLOW_FAST_BUNDLE_SCHEMA
+        and candidate is SlowFastCandidate.FAST_LOWRANK_R8
+    ):
+        legacy_activation = torch.sigmoid(direction_gate.float()).clamp(
+            min=-1.0 + 1.0e-6, max=1.0 - 1.0e-6
+        )
+        direction_gate = torch.atanh(legacy_activation)
     state = SlowFastAdapterState(
-        candidate=SlowFastCandidate(payload["candidate"]),
+        candidate=candidate,
         slow_u=payload["slow_u"],
         slow_v=payload["slow_v"],
         rho=float(payload["rho"]),
         gamma=payload["gamma"],
         beta=payload["beta"],
-        direction_gate=payload["direction_gate"],
+        direction_gate=direction_gate,
         common_coeff=payload["common_coeff"],
     )
     audit = _metadata(
@@ -155,6 +167,8 @@ def load_slow_fast_bundle_strict(
         feature_dim=state.feature_dim,
     )
     audit["schema"] = SLOW_FAST_BUNDLE_SCHEMA
+    audit["source_schema"] = source_schema
+    audit["direction_gate_semantics"] = "signed_tanh_zero_centered"
     audit["candidate"] = state.candidate.value
     audit["feature_dim"] = state.feature_dim
     audit["rank"] = state.rank
@@ -163,6 +177,7 @@ def load_slow_fast_bundle_strict(
 
 
 __all__ = [
+    "LEGACY_SLOW_FAST_BUNDLE_SCHEMA",
     "SLOW_FAST_BUNDLE_SCHEMA",
     "load_slow_fast_bundle_strict",
     "save_slow_fast_bundle",

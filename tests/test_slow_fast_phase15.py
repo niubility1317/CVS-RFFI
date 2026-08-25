@@ -7,6 +7,7 @@ from cvsrffi.slow_fast_adapter import SlowFastCandidate, apply_slow_fast
 from cvsrffi.slow_fast_cache import GroundFeatureCache
 from cvsrffi.slow_fast_objectives import (
     frozen_prototype_ce,
+    prototype_logits,
     smooth_class_floor_loss,
     trust_region_loss,
 )
@@ -87,6 +88,15 @@ def test_floor_and_interval_trust_objectives_have_hand_checked_boundaries() -> N
     assert trust_region_loss(outside, base, max_relative_move=0.2).item() > 0.0
 
 
+def test_prototype_logits_uses_the_explicit_nondefault_scale() -> None:
+    features = torch.eye(2)
+    prototypes = torch.eye(2)
+
+    logits = prototype_logits(features, prototypes, logit_scale=3.5)
+
+    assert torch.equal(logits, torch.tensor([[3.5, 0.0], [0.0, 3.5]]))
+
+
 def test_pair_indices_follow_cache_device_not_process_default_device() -> None:
     cache, _prototypes = _cache()
     original = torch.get_default_device()
@@ -117,12 +127,14 @@ def test_phase15_training_reduces_frozen_prototype_loss_without_changing_prototy
         steps=80,
         learning_rate=0.03,
         seed=17,
+        support_logit_scale=3.5,
     )
     final = frozen_prototype_ce(
         apply_slow_fast(cache.features, state), cache.labels, prototypes, scale=8.0
     )
 
     assert audit["steps"] == 80
+    assert audit["support_logit_scale"] == 3.5
     assert audit["meta_steps"] == 80
     assert sum(audit["episode_k_counts"].values()) == 80
     assert audit["episode_k_counts"]["1"] == 80

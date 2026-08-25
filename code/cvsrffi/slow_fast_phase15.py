@@ -111,7 +111,7 @@ def _apply_trainable(
     normalized = F.layer_norm(features, (features.shape[1],))
     latent = (1.0 + gamma) * (normalized @ v) + beta
     if candidate is SlowFastCandidate.FAST_LOWRANK_R8:
-        latent = torch.sigmoid(direction_gate) * latent
+        latent = torch.tanh(direction_gate) * latent
     residual_strength = torch.as_tensor(rho, device=features.device, dtype=features.dtype)
     return F.normalize(
         features + residual_strength * (latent @ u.transpose(0, 1)),
@@ -181,6 +181,7 @@ def train_slow_fast_basis(
     meta_steps: int | None = None,
     inner_steps: int = 3,
     fast_step_size: float = 0.02,
+    support_logit_scale: float = 8.0,
     query_per_class: int = 5,
 ) -> tuple[SlowFastAdapterState, dict[str, Any]]:
     candidate = SlowFastCandidate(candidate)
@@ -197,6 +198,9 @@ def train_slow_fast_basis(
             roles=cache.roles,
         )
         prototypes = prototypes.to(target_device)
+    resolved_logit_scale = float(support_logit_scale)
+    if not math.isfinite(resolved_logit_scale) or resolved_logit_scale <= 0.0:
+        raise ValueError("support_logit_scale must be finite and positive")
     if candidate is SlowFastCandidate.COMMON_SHIFT_R4:
         basis = fit_common_shift_basis(cache, prototypes, rank=4)
         state = SlowFastAdapterState(
@@ -204,7 +208,12 @@ def train_slow_fast_basis(
             slow_u=basis,
             common_coeff=torch.zeros(4),
         )
-        return state, {"steps": 0, "initial_loss": math.nan, "final_loss": math.nan}
+        return state, {
+            "steps": 0,
+            "support_logit_scale": resolved_logit_scale,
+            "initial_loss": math.nan,
+            "final_loss": math.nan,
+        }
     if int(steps) < 1:
         raise ValueError("steps must be positive for learned slow-fast candidates")
     resolved_meta_steps = int(steps if meta_steps is None else meta_steps)
@@ -253,7 +262,9 @@ def train_slow_fast_basis(
             direction_gate=direction_gate,
             rho=current_rho,
         )
-        per_sample = frozen_prototype_losses(adapted, labels, frozen, scale=8.0)
+        per_sample = frozen_prototype_losses(
+            adapted, labels, frozen, scale=resolved_logit_scale
+        )
         floor = smooth_class_floor_loss(per_sample, labels, temperature=0.1)
         trust = trust_region_loss(adapted, features, max_relative_move=trust_radius)
         if clean_indices.numel():
@@ -309,7 +320,7 @@ def train_slow_fast_basis(
                 adapted_support,
                 labels.index_select(0, support_indices),
                 frozen,
-                scale=8.0,
+                scale=resolved_logit_scale,
             ).mean()
             fast_values = [fast_gamma, fast_beta]
             if fast_gate is not None:
@@ -336,7 +347,7 @@ def train_slow_fast_basis(
             rho=rho_max * torch.sigmoid(raw_rho),
         )
         query_losses = frozen_prototype_losses(
-            adapted_query, query_labels, frozen, scale=8.0
+            adapted_query, query_labels, frozen, scale=resolved_logit_scale
         )
         outer_loss = (
             query_losses.mean()
@@ -374,6 +385,7 @@ def train_slow_fast_basis(
         "feature_dim": cache.feature_dim,
         "rank": state.rank,
         "fast_parameter_count": state.fast_parameter_count,
+        "support_logit_scale": resolved_logit_scale,
     }
 
 

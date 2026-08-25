@@ -79,3 +79,20 @@ def test_diag9_rejects_candidate_specific_query_drift(tmp_path: Path) -> None:
     payload["rows"][1]["config"]["query_path"] = "different-query.npz"
     with pytest.raises(ValueError, match="share support/query"):
         subject.run_slow_fast_matrix(payload, tmp_path / "out", "cpu")
+
+
+def test_shadow_diag9_accepts_preregistered_diagnostic_grid() -> None:
+    payload = _matrix()
+    payload["schema"] = "cvs.stage2.slow_fast.shadow_diag9.v2"
+    for row in payload["rows"]:
+        row["config"].update(
+            shadow_steps=[1, 3, 5, 10],
+            shadow_step_multipliers=[0.5, 1.0, 2.0, 4.0],
+            shadow_lambdas=[0.125, 0.25, 0.5, 0.75, 1.0],
+            crossfit_repeats=3,
+        )
+
+    rows = subject._validate_matrix(payload)
+
+    assert len(rows) == 9
+    assert rows[0]["config"]["crossfit_repeats"] == 3

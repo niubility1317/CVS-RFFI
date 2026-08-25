@@ -48,6 +48,8 @@ def test_bundle_roundtrip_contains_aggregate_state_but_no_source_rows(
     assert audit["class_ids"].tolist() == list(range(6))
     assert audit["prototypes"].shape == (6, 160)
     payload = torch.load(path, map_location="cpu", weights_only=True)
+    assert payload["schema"] == "cvs.cached_slow_fast.v2"
+    assert audit["direction_gate_semantics"] == "signed_tanh_zero_centered"
     assert not {
         "source_cache",
         "source_features",
@@ -63,3 +65,27 @@ def test_bundle_rejects_source_cache_metadata_before_writing(tmp_path: Path) -> 
     with pytest.raises(ValueError, match="metadata allowlist"):
         save_slow_fast_bundle(tmp_path / "forbidden.pt", _state(), metadata)
     assert not (tmp_path / "forbidden.pt").exists()
+
+
+def test_legacy_sigmoid_gate_is_converted_without_changing_its_initial_effect(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "legacy.pt"
+    legacy = SlowFastAdapterState(
+        candidate=SlowFastCandidate.FAST_LOWRANK_R8,
+        slow_u=torch.randn(160, 8),
+        slow_v=torch.randn(160, 8),
+        rho=0.1,
+        gamma=torch.zeros(8),
+        beta=torch.zeros(8),
+        direction_gate=torch.zeros(8),
+    )
+    save_slow_fast_bundle(path, legacy, _metadata())
+    payload = torch.load(path, map_location="cpu", weights_only=True)
+    payload["schema"] = "cvs.cached_slow_fast.v1"
+    torch.save(payload, path)
+
+    converted, audit = load_slow_fast_bundle_strict(path)
+
+    assert audit["source_schema"] == "cvs.cached_slow_fast.v1"
+    assert torch.allclose(torch.tanh(converted.direction_gate), torch.full((8,), 0.5))

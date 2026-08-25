@@ -193,6 +193,7 @@ def fit_and_save_slow_fast_bundles(
             device=device,
             meta_steps=meta_steps,
             fast_step_size=float(fast_step_size),
+            support_logit_scale=float(support_logit_scale),
         )
         bundle_path = root / f"{candidate.value}.pt"
         metadata = {

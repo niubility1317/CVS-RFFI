@@ -83,6 +83,7 @@ def run_slow_fast_no_query_smoke(
         prototypes,
         state,
         k_shot=int(config["k_shot"]),
+        logit_scale=float(audit["support_logit_scale"]),
         steps=3,
         step_size=float(audit["fast_step_size"]),
         trust_radius=float(audit["trust_radius"]),

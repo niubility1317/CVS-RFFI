@@ -10,7 +10,10 @@ from .stage2_meta_adapter_matrix import _write_json_exclusive
 from .stage2_slow_fast_runner import _validate_config, run_slow_fast_stage2_row
 
 
-_SCHEMA = "cvs.stage2.slow_fast.diag9.v1"
+_SCHEMAS = {
+    "cvs.stage2.slow_fast.diag9.v1",
+    "cvs.stage2.slow_fast.shadow_diag9.v2",
+}
 _CANDIDATES = ("COMMON_SHIFT_R4", "FAST_FILM_R8", "FAST_LOWRANK_R8")
 _SCENARIOS = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
 _TOP_KEYS = frozenset({"schema", "rows"})
@@ -31,8 +34,8 @@ def _validate_matrix(payload: Mapping[str, Any]) -> list[dict[str, Any]]:
     if not isinstance(payload, Mapping):
         raise ValueError("diagnostic matrix must be a mapping")
     _exact(payload, _TOP_KEYS, "diagnostic matrix")
-    if payload["schema"] != _SCHEMA:
-        raise ValueError(f"diagnostic matrix schema must be {_SCHEMA}")
+    if payload["schema"] not in _SCHEMAS:
+        raise ValueError(f"diagnostic matrix schema must be one of {sorted(_SCHEMAS)}")
     raw_rows = payload["rows"]
     if not isinstance(raw_rows, Sequence) or isinstance(raw_rows, (str, bytes)):
         raise ValueError("diagnostic rows must be a sequence")

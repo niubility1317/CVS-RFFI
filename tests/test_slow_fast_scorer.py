@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import pytest
 
-from cvsrffi.slow_fast_scorer import summarize_candidate_scores
+from cvsrffi.slow_fast_scorer import (
+    summarize_candidate_scores,
+    summarize_shadow_candidate_scores,
+)
 from cvsrffi.stage2_meta_adapter_scorer import PairedStage2BScore, StateScore
 
 
@@ -48,3 +51,30 @@ def test_candidate_summary_uses_aggregate_class_counts_and_promotion_limits() ->
     assert summary["floor_delta_pp"] == pytest.approx(2.0)
     assert summary["max_class_drop_pp"] == pytest.approx(2.0)
     assert summary["verdict"] == "PROMOTE_TO_TARGET25"
+
+
+def test_shadow_summary_keeps_each_state_and_selects_best_only_after_truth() -> None:
+    rows = []
+    for scenario, da0, fixed, gate in (
+        ("leo_clear_weak", (70, 60), (74, 62), (69, 61)),
+        ("leo_low_elev_weak", (60, 50), (64, 52), (59, 51)),
+        ("leo_rain_weak", (50, 40), (54, 42), (49, 41)),
+    ):
+        rows.append(
+            {
+                "candidate_id": "COMMON_SHIFT_R4",
+                "scenario": scenario,
+                "states": {
+                    "DA0_REG0": _state("DA0_REG0", da0).to_dict(),
+                    "DA1_L0250_REG0": _state("DA1_L0250_REG0", fixed).to_dict(),
+                    "DA1_GATE_CF_REG0": _state("DA1_GATE_CF_REG0", gate).to_dict(),
+                },
+            }
+        )
+
+    summary = summarize_shadow_candidate_scores(rows)
+
+    assert summary["best_truth_last_shadow_state"] == "DA1_L0250_REG0"
+    assert summary["states"]["DA1_L0250_REG0"]["mean_delta_pp"] == pytest.approx(3.0)
+    assert summary["states"]["DA1_GATE_CF_REG0"]["verdict"] == "SCIENTIFIC_FAILURE_NO_PROMOTION"
+    assert summary["truth_last_selection_reused_for_adaptation"] is False

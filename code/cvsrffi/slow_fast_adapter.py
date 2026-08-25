@@ -132,7 +132,7 @@ def apply_slow_fast(features: Tensor, state: SlowFastAdapterState) -> Tensor:
     u = state.slow_u.to(device=z.device, dtype=z.dtype)
     if state.candidate is SlowFastCandidate.COMMON_SHIFT_R4:
         coeff = state.common_coeff.to(device=z.device, dtype=z.dtype)
-        corrected = z - (coeff @ u.transpose(0, 1)).unsqueeze(0)
+        corrected = z - float(state.rho) * (coeff @ u.transpose(0, 1)).unsqueeze(0)
         return F.normalize(corrected, dim=1, eps=1.0e-8)
 
     v = state.slow_v.to(device=z.device, dtype=z.dtype)
@@ -142,7 +142,7 @@ def apply_slow_fast(features: Tensor, state: SlowFastAdapterState) -> Tensor:
     hidden = normalized @ v
     latent = (1.0 + gamma) * hidden + beta
     if state.candidate is SlowFastCandidate.FAST_LOWRANK_R8:
-        gate = torch.sigmoid(
+        gate = torch.tanh(
             state.direction_gate.to(device=z.device, dtype=z.dtype)
         )
         latent = gate * latent
