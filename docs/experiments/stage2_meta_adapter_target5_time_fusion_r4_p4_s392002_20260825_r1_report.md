@@ -1,7 +1,7 @@
 # Time+Fusion Rank-4 Meta-Adapter P4 Target5最小预登记报告
 
 - run ID：`stage2_meta_adapter_target5_time_fusion_r4_p4_s392002_20260825_r1`
-- 状态：`LOCAL_VERIFIED`
+- 状态：`LANDED / SMOKE_PASS`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 代码／配置冻结提交：`4ad94a9be05e360f4753a479553932c320b1e235`；GitHub远端分支OID已独立回读一致。
 - Phase1：`phase1_adv3b02_meta_adapter_time_fusion_r4_p4_s392002_20260825_r1`，状态`ARTIFACTS_COMPLETE / SOURCE_SELECTION_ELIGIBLE`。
@@ -41,3 +41,11 @@
 - 69项Stage2真实适配／工厂／runner／matrix／handoff／scorer聚焦回归通过，11个生产入口编译通过。测试环境为`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe`，CWD为本分支worktree根目录。
 - time+fusion候选唯一一次独立P0/P1审查结论为P0无、P1无；Stage2复用已验证factory／runner／scorer，不增加重复审查。
 - 15个truth-free prediction row全部闭合后，才由独立scorer连接truth。聚合`DA1_REG0-DA0_REG0`旧类均值至少+1.0pp且floor至少+0.5pp才进入Target25；否则记录`SCIENTIFIC_FAILURE_NO_PROMOTION`并继续下一少层候选。
+
+## N607发布、工厂与真实checkpoint smoke
+
+- release固定提交：`3979e975e3ac3317f10f2fa7f481037f8046e330`；归档：`E:\type10-7\release_archives\stage2_meta_adapter_target5_time_fusion_r4_p4_s392002_20260825_r1_release.tar.gz`。
+- 唯一release归档本地／远端一次SHA256均为`3a238aeabf155155eb165a7fe6bc63c240b433e0c1fa1e1b755ae179b8caef02`；11个Stage2生产入口在远端`CVS-RFFI`环境编译通过。
+- 发布前确认release、工厂、smoke、prediction和stdout目标均不存在；Phase1 bundle／冻结原型非空，无同名持久进程，GPU0～7无计算进程。
+- Target工厂一次完成15／15个truth-free row，receipt为`TARGET_INPUTS_COMPLETE`，`query_truth_opened=false`、`query_role_opened=false`、`source_opened=false`。
+- smoke专用配置在本地从首row配置精确删除`query_path`，且不含query／source／clean键；真实bundle无query smoke一次通过：`REAL_META_CHECKPOINT_NO_QUERY_SMOKE_PASS`、严格checkpoint回读、3次反向传播、`trainable_fraction=0.005476342296027567`、`query_opened=false`、`source_opened=false`、`query_state_update_count=0`、`performance_result=null`。
