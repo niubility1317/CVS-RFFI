@@ -60,6 +60,11 @@ REGISTERED_ADAPTER_SITE_PROFILES = (
     CANONICAL_ADAPTER["sites"],
     ("fusion",),
 )
+REGISTERED_ADAPTER_RANK_SITE_PROFILES = (
+    (4, CANONICAL_ADAPTER["sites"]),
+    (4, ("fusion",)),
+    (8, ("fusion",)),
+)
 CANONICAL_EPISODE_WEIGHTS = {
     "Q_SAME_DOMAIN": 0.40,
     "Q_RX_HOLDOUT": 0.20,
@@ -335,16 +340,23 @@ def validate_meta_phase1_config(config: Mapping[str, Any]) -> dict[str, Any]:
             minimum=1,
         ),
     }
-    if adapter["rank"] != CANONICAL_ADAPTER["rank"]:
-        raise ValueError("adapter.rank must be frozen at 4")
     if adapter["sites"] not in REGISTERED_ADAPTER_SITE_PROFILES:
         raise ValueError(
             "adapter.sites must match one of the registered profiles "
             f"{[list(profile) for profile in REGISTERED_ADAPTER_SITE_PROFILES]!r}; "
             f"got {list(adapter['sites'])!r}"
         )
-    if schema == META_PHASE1_SCHEMA and adapter["sites"] != CANONICAL_ADAPTER["sites"]:
-        raise ValueError("the legacy tri_r4 schema requires time,freq,fusion adapter sites")
+    if (adapter["rank"], adapter["sites"]) not in REGISTERED_ADAPTER_RANK_SITE_PROFILES:
+        raise ValueError(
+            "adapter must match a registered rank/site profile; "
+            f"got rank={adapter['rank']} sites={list(adapter['sites'])!r}"
+        )
+    if schema == META_PHASE1_SCHEMA and (
+        adapter["rank"], adapter["sites"]
+    ) != (CANONICAL_ADAPTER["rank"], CANONICAL_ADAPTER["sites"]):
+        raise ValueError(
+            "the legacy tri_r4 schema requires rank-4 time,freq,fusion adapter sites"
+        )
     for key in ("inner_steps", "deployment_max_steps", "source_diagnostic_max_steps"):
         if adapter[key] != CANONICAL_ADAPTER[key]:
             raise ValueError(f"adapter.{key} must be frozen at {CANONICAL_ADAPTER[key]}")
@@ -814,7 +826,7 @@ def _build_meta_model(
     return model, model_args
 
 
-def _validate_rank4_adapter_model(model: nn.Module, config: Mapping[str, Any]) -> None:
+def _validate_adapter_model_profile(model: nn.Module, config: Mapping[str, Any]) -> None:
     from cvsrffi.meta_adapter import ResidualMetaAdapter
 
     rank = int(config["adapter"]["rank"])
@@ -848,11 +860,11 @@ def _load_legacy_checkpoint_into_meta_model(
 
     Task4's loader intentionally allows only top-level ``meta_adapter_*``
     missing keys.  The dual backbone registers the same adapters below
-    ``id_backbone`` and ``dom_backbone``, so a rank-4 dual target otherwise
+    ``id_backbone`` and ``dom_backbone``, so an adapter-enabled dual target otherwise
     looks like a legacy checkpoint with missing non-adapter keys.  Build a
     rank-0 shell through the same repository builder, let Task4 validate and
     load the legacy checkpoint there, then copy only shape-compatible base
-    tensors into the already validated rank-4 target.  Injected test models
+    tensors into the already validated adapter target.  Injected test models
     stay on the direct Task4 path and cannot silently opt into this bridge.
     """
 
@@ -899,7 +911,7 @@ def _load_legacy_checkpoint_into_meta_model(
     )
     if incompatible_shapes:
         raise ValueError(
-            "rank-0 legacy shell has base tensors incompatible with rank-4 target: "
+            "rank-0 legacy shell has base tensors incompatible with adapter target: "
             f"keys={list(incompatible_shapes)}"
         ) from direct_error
 
@@ -922,7 +934,7 @@ def _load_legacy_checkpoint_into_meta_model(
     )
     if unexpected or missing_non_adapter:
         raise ValueError(
-            "rank-0 legacy shell migration did not cover the rank-4 base: "
+            "rank-0 legacy shell migration did not cover the adapter base: "
             f"missing={list(missing_non_adapter)} unexpected={list(unexpected)}"
         ) from direct_error
     return legacy_audit, "rank0_legacy_shell"
@@ -1737,7 +1749,7 @@ def run_meta_phase1(args: Any, ds_w: Mapping[str, Any]) -> dict[str, Any]:
         if not isinstance(model, nn.Module):
             raise TypeError("meta_model_factory must return torch.nn.Module")
         model = model.to(device)
-        _validate_rank4_adapter_model(model, config)
+        _validate_adapter_model_profile(model, config)
         from cvsrffi.meta_checkpoint import load_legacy_base_for_meta, save_meta_bundle
         from cvsrffi.meta_trainer import (
             MetaTrainerConfig,

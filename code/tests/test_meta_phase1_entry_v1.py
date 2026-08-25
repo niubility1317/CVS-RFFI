@@ -327,6 +327,27 @@ def test_phase1_config_allows_fusion_only_small_layer_profile():
     assert validated["adapter"]["sites"] == ["fusion"]
 
 
+def test_phase1_config_allows_registered_fusion_only_rank8_profile():
+    config = valid_config()
+    config["schema"] = "cvs.phase1.meta_adapter.r4.v1"
+    config["adapter"]["sites"] = ["fusion"]
+    config["adapter"]["rank"] = 8
+
+    validated = validate_meta_phase1_config(config)
+
+    assert validated["adapter"]["rank"] == 8
+    assert validated["adapter"]["sites"] == ["fusion"]
+
+
+def test_phase1_config_rejects_rank8_outside_fusion_only_profile():
+    config = valid_config()
+    config["schema"] = "cvs.phase1.meta_adapter.r4.v1"
+    config["adapter"]["rank"] = 8
+
+    with pytest.raises(ValueError, match="registered rank/site profile"):
+        validate_meta_phase1_config(config)
+
+
 def test_legacy_tri_schema_rejects_fusion_only_profile():
     config = valid_config()
     config["adapter"]["sites"] = ["fusion"]

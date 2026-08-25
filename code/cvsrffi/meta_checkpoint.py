@@ -47,6 +47,11 @@ _REGISTERED_META_ADAPTER_SITE_PROFILES = (
     _META_ADAPTER_SITES,
     ("fusion",),
 )
+_REGISTERED_META_ADAPTER_RANK_SITE_PROFILES = (
+    (4, _META_ADAPTER_SITES),
+    (4, ("fusion",)),
+    (8, ("fusion",)),
+)
 _LEGACY_ADAPTER_PREFIXES = tuple(
     f"meta_adapter_{site}." for site in _META_ADAPTER_SITES
 )
@@ -359,14 +364,22 @@ def _validate_model_args(value: Any) -> dict[str, Any]:
         if "meta_adapter_rank" not in args:
             raise ValueError("model_args.meta_adapter_sites requires meta_adapter_rank")
         adapter_rank = int(args["meta_adapter_rank"])
-        if adapter_rank not in {0, 4}:
-            raise ValueError("model_args.meta_adapter_rank must be 0 or the fixed V1 rank 4")
-        _validate_sites(
-            args["meta_adapter_sites"],
-            field_name="model_args.meta_adapter_sites",
-            require_all=False,
-            allow_empty=adapter_rank == 0,
-        )
+        if adapter_rank == 0:
+            _validate_sites(
+                args["meta_adapter_sites"],
+                field_name="model_args.meta_adapter_sites",
+                require_all=False,
+                allow_empty=True,
+            )
+        else:
+            adapter_sites = _validate_registered_site_profile(
+                args["meta_adapter_sites"],
+                field_name="model_args.meta_adapter_sites",
+            )
+            if (adapter_rank, adapter_sites) not in _REGISTERED_META_ADAPTER_RANK_SITE_PROFILES:
+                raise ValueError(
+                    "model_args must match a registered rank/site profile"
+                )
 
     dual_hint = any(
         str(args.get(key, "")).lower() in {"dual", "build_dual_model", "model_dual_cvsincnet.build_dual_model"}
@@ -395,12 +408,14 @@ def _validate_meta_adapter_config(value: Any) -> dict[str, Any]:
     rank_key = next(iter(rank_keys))
     site_key = next(iter(site_keys))
     rank = _require_int(config[rank_key], field_name=f"meta_adapter_config.{rank_key}", minimum=1)
-    if rank != 4:
-        raise ValueError("meta_adapter_config.rank must be the fixed V1 rank 4")
-    _validate_registered_site_profile(
+    sites = _validate_registered_site_profile(
         config[site_key],
         field_name=f"meta_adapter_config.{site_key}",
     )
+    if (rank, sites) not in _REGISTERED_META_ADAPTER_RANK_SITE_PROFILES:
+        raise ValueError(
+            "meta_adapter_config must match a registered rank/site profile"
+        )
     if "phase2_steps" in config:
         _require_int(config["phase2_steps"], field_name="meta_adapter_config.phase2_steps", minimum=1)
         if int(config["phase2_steps"]) > 5:
