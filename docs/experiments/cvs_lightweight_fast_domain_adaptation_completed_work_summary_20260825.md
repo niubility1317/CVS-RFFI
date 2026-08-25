@@ -1,8 +1,8 @@
 # CVS轻型快速目标域适应已完成工作深度总结
 
-日期：2026-08-25  
-基线：`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`  
-协议：`p2_min_v1`、`VALIDATED_ONCE`  
+日期：2026-08-25
+基线：`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`
+协议：`p2_min_v1`、`VALIDATED_ONCE`
 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 
 ## 一、结论先行
