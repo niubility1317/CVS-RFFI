@@ -3,7 +3,7 @@
 ## 0.状态与证据边界
 
 - Run ID：`PHASE1_CCOI_PA_V2_CAUSAL_AUDIT_S20260824_20260825B`
-- 当前状态：`LANDED`
+- 当前状态：`RUNNING`
 - 修复提交：`83d4453bdd4e54927ffc86e32a2cd5d12f976f6b`
 - 候选：冻结Core90和既有C4 sidecar的source-only因果审计
 - 协议：`L_s`拟合、`V_select`审计，target/query访问为0，不重复C0–C4
@@ -156,4 +156,13 @@ launcher先运行真实checkpoint无query smoke，通过后立即继续正式审
 
 ## 7.实验结果
 
-已发布但尚未启动。后续只追加真实smoke、健康状态、七个artifact结果、停止规则逐项判定、暴露问题和下一路线。
+### 7.1真实smoke与启动健康
+
+- 2026-08-25 11:49 CST唯一owner启动，PID=`2837736`；CWD为登记release目录。
+- 真实Core90+C4 sidecar无query smoke通过，证明A暴露的辅助probe严格回载问题已闭合。
+- smoke产物：`protocol_and_smoke.json`，10,746字节。
+- launcher自动进入完整source-only审计，子进程PID=`2838161`，命令、run-root、GPU1和日志路径均与预登记一致。
+- GPU1已被审计进程绑定；GPU0既有任务未受干预。
+- 主日志已创建。当前状态只证明健康启动，七个正式artifact和科学结果尚未闭合。
+
+后续追加完整日志、七个artifact结果、停止规则逐项判定、暴露问题和下一路线。
