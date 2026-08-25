@@ -96,3 +96,7 @@ def test_row_executor_consumes_direct_compiler_quantization_audit(tmp_path) -> N
     )
     assert receipt["status"] == "PREDICTIONS_COMPLETE_TRUTH_UNOPENED"
     assert receipt["quantization"]["max_logit_abs_error"] >= 0.0
+    assert receipt["behavior"]["full_block_weights"] == {
+        "full": 1.0,
+        "block3": 0.0,
+    }

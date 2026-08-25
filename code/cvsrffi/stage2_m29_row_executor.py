@@ -199,7 +199,7 @@ def execute_m29_row(
     behavior = {
         "schema": BEHAVIOR_RECEIPT_SCHEMA,
         "fallback_counts": {"whole_candidate_to_f1": 0},
-        "full_block_weights": {"full": 1.0, "block3": 1.0},
+        "full_block_weights": {"full": 1.0, "block3": 0.0},
         "fisher_gate_accept_counts": {"attempted": 0, "accepted": 0},
         "atomic_rollback_counts": {"attempted": 0, "rolled_back": 0},
         "failure_closure_count": 0,

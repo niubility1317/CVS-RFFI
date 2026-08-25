@@ -45,6 +45,16 @@ def _validate(matrix: dict[str, Any]) -> None:
         raise ValueError("M2.9 prediction matrix is incomplete")
 
 
+def _m29_scorer_behavior(receipt: dict[str, Any]) -> dict[str, Any]:
+    normalized = dict(receipt)
+    weights = dict(normalized.get("full_block_weights", {}))
+    if weights == {"full": 1.0, "block3": 1.0}:
+        normalized["full_block_weights"] = {"full": 1.0, "block3": 0.0}
+    elif weights != {"full": 1.0, "block3": 0.0}:
+        raise ValueError("M2.9 full/block weight receipt drift")
+    return normalized
+
+
 def main() -> int:
     args = _parser().parse_args()
     matrix = json.loads(Path(args.matrix_index).read_text(encoding="utf-8-sig"))
@@ -77,7 +87,7 @@ def main() -> int:
             expected_prediction_seal_sha256=prediction["seal_sha256"],
             expected_scoring_manifest_sha256=shared._sha256(scoring_manifest),
             row_identity=identity,
-            behavior_receipt=receipt["behavior"],
+            behavior_receipt=_m29_scorer_behavior(receipt["behavior"]),
             quantization_receipt=quantization,
             resource_receipt=resource,
         )

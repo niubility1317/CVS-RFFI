@@ -72,3 +72,13 @@ TASR48相对评分后最优FFT96对照必须同时满足：`Delta H>=0.002`、`N
 - M29及M2.4/M2.5/M2.8相关完整回归共40项通过；
 - 6个M29模块/脚本Python编译通过；
 - 本次修复不改变数据、方法、矩阵和评分合同。
+
+## 六、v2 prediction与首次scorer结果
+
+- r3 release HEAD：`29fb336d061f65d8f15335053e068140e6a842cd`；归档本地/远端SHA-256均为`16f44de512b4001f2d5a2ccbffd873186cea1e5210947513ebf64363c24df694`；远端编译通过。
+- prediction主PID `3012439`及2个CPU worker的CWD、cmdline、父子关系和日志增长均通过启动后检查。
+- prediction最终闭合：30个`predictions.cvspred`、30个`row_execution_receipt.json`和`matrix_index.json`齐全；独立读回为`row_count=30`、30个receipt均为`PREDICTIONS_COMPLETE_TRUTH_UNOPENED`、`fit_query_rows_used=0`、`query_truth_opened=false`。
+- 首次truth-last scorer仅创建空`scores`根，0个分数文件，随后因M29行为receipt中的`full_block_weights={full:1,block3:1}`不满足旧评分合同“和为1”而停止；prediction已经先完整闭合，scorer结果没有反馈预测器。
+- 根因是行为receipt兼容字段的固定值笔误：M29使用全空间D92，合法旧合同表示应为`{full:1,block3:0}`。这不影响已冻结预测值、量化结果、资源值或数据协议。
+- 定点修复同时覆盖两条路径：新prediction写合法权重；scorer只对已闭合M29旧receipt的唯一已知`1/1`指纹映射为`1/0`，已合法`1/0`原样保留，其他权重fail-closed。原prediction和空`scores`现场不修改，新评分使用不可覆盖`scores_v2`。
+- 红→绿回归已覆盖新receipt与旧receipt评分适配；完整相关回归41项通过。下一release使用不可覆盖`erbt_idr_m29_tasr48_screen_20260825_v2_r4`，不重跑prediction。
