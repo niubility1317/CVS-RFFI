@@ -41,12 +41,14 @@
 |SFR-03|§3.7|互补2-fold先按repeat聚合，再做稳定性判断|selection/tests|verified|5/6正fold但仅2/3正repeat fixture|稳定性门控使用repeat gain与repeat LCB|
 |SFR-04|§3.8|加入有方向margin保护：正确样本保留margin，错误样本要求margin改善|selection/tests|verified|正确/错误各一条手算fixture|固定正确margin保留比例0.5；错误样本要求严格改善|
 |SFR-05|§3.4|拆分cross-fit、full-support、committed和total selection updates|selection/runner/report|verified|`18+3=21`及总诊断280测试|query inference更新数固定为0|
-|SFR-06|§3.1、§3.2|嵌套receiver留出：外层慢基完全未见、内层策略选择|Phase1.5/calibration|deferred|P0可靠性修复后单独实现|需要为每个外层receiver重训轻型慢基，不能与本次门控修复混为一个因果变更|
+|SFR-06|§3.1、§3.2|嵌套receiver留出：外层慢基完全未见、内层策略选择|Phase1.5/calibration|pending|P0.6 abstain已触发|需要为每个外层receiver重训轻型慢基，不能与本次门控修复混为一个因果变更|
 |SFR-07|§3.9|source class-heldout pseudo-new侵入校准|calibration/scorer|deferred|后续独立地面候选|需要冻结新类侵入阈值，当前代理不得冒充真新类侵入|
-|SFR-08|§5—§7|实现receiver rank4+LEO rank4因子化慢基|Phase1.5|deferred|由P0 abstain结果触发|先验证P0可靠性修复，随后作为P1主候选|
+|SFR-08|§5—§7|实现receiver rank4+LEO rank4因子化慢基|Phase1.5|pending|P0.6输出`CALIBRATED_TO_ABSTAIN`|已成为下一主候选，星上快参数预算8|
 |SFR-09|§13|新增逐文件checkpoint/prototype/code SHA|无|rejected|`REJECTED_EXTRA_GATE`|项目规则禁止额外成员SHA；Git提交和一次release归档SHA已固定代码|
 |SFR-10|§17A|复用旧rx20-1 query搜索非零上界|无|rejected|协议与用户约束|旧truth不得反馈调参或冒充独立确认；等待新合法capsule|
 
 本轮实施边界：先完成SFR-01至SFR-05并重新执行source-only最小校准。若`ALWAYS_DA0`胜出，正式结论为`CALIBRATED_TO_ABSTAIN`，这构成进入SFR-06/SFR-08的科学触发条件，但不授权复用旧目标query。
 
 本轮验证：36项Slow-Fast聚焦回归通过，三个修改模块语法编译通过，`git diff --check`通过。唯一独立P0/P1定点审查结论为`NO_P0_P1`；审查只覆盖SFR-01至SFR-05，未增加白名单外gate。
+
+N607 P0.6结果：28个source episode全部闭合，最终`CALIBRATED_TO_ABSTAIN/P05_ALWAYS_DA0`。四个非零门控均在12/28个episode提交，平均mean变化约+0.05pp，但worst receiver mean和worst episode floor均为0，且最大置信侵入代理为0.00027455；DA0以零侵入和零选择计算胜出。该结果验证SFR-01至SFR-05并将SFR-06、SFR-08从deferred转为pending，但不构成Phase2目标性能证据。
