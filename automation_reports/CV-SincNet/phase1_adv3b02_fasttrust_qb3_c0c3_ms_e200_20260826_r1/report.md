@@ -3,7 +3,7 @@
 ## 当前状态
 
 - run_id：`phase1_adv3b02_fasttrust_qb3_c0c3_ms_e200_20260826_r1`
-- 状态：`LOCAL_VERIFIED_PROFILE_PREREGISTERED`
+- 状态：`LOCAL_VERIFIED_PROFILE_R2_PREREGISTERED`
 - 科学边界：Phase1 source-only；固定`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`；target结果不反馈阈值、候选或重训。
 - 目标：冻结上一轮C0/C3训练数学定义，以两个新增seed补足三seed证据；同时修复可观测性，并用不改变优化轨迹的工程A/B选择恢复checkpoint间隔。
 
@@ -39,14 +39,21 @@
 
 ## 速度剖析矩阵预登记
 
-- profile run_id：`phase1_adv3b02_fasttrust_qb3_speed_profile_s392002_20260826_r1`。
-- 候选：同一冻结C3、同一seed392002、同一2epoch前缀、同一U batch256；仅做`eval_batch_size∈{512,1024}`×`recovery_checkpoint_interval∈{1,5}`的2×2工程A/B。
-- GPU：四行依次使用GPU0、GPU1、GPU2、GPU3；每GPU slot limit为1，且不超过每GPU两个训练进程的上限。
+- profile run_id：`phase1_adv3b02_fasttrust_qb3_speed_profile_s392002_20260826_r2`。
+- 候选：同一冻结C3、同一seed392002、同一21epoch前缀、同一U batch256；仅做`eval_batch_size∈{512,1024}`×`recovery_checkpoint_interval∈{1,5}`的2×2工程A/B。阶段边界为17/18/19/20/21，前16epoch与正式E200的阶段定义完全一致，之后每个阶段至少进入一次；profile不用于性能判断。
+- GPU：四行依次使用GPU4、GPU5、GPU6、GPU7；每GPU slot limit为1，且不超过每GPU两个训练进程的上限。
 - 本地环境/CWD：`ssr-gpu`，`E:\type10-7\github_publish\CVS-RFFI-repo`。
 - N607环境/CWD：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，不可变release根目录。
 - 输入：WiSig `ManySig.pkl`和冻结`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`；只使用Phase1源域角色。
-- 输出：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fasttrust_qb3_speed_profile_s392002_20260826_r1`；各行日志位于其候选目录与`dispatcher_logs/`。
+- 输出：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fasttrust_qb3_speed_profile_s392002_20260826_r2`；各行日志位于其候选目录与`dispatcher_logs/`。
 - 精确启动命令：`MATRIX=<release>/configs/phase1_adv3b02_fasttrust_qb3_speed_profile_s392002_20260826.json bash <release>/code/scripts/launch_phase1_adv3b02_fasttrust_qb3_matrix_20260826.sh`。
 - 预期artifact：四行`metrics_epoch.jsonl`、`train.log`、分段耗时字段、checkpoint和源域最终评测。该profile只判断工程速度，不产生性能晋级结论。
 - profile选择规则：优先选择训练数学不变且完整artifact闭合的组合；若墙钟差小于3%，保留恢复更密集的间隔1；若eval batch1024没有至少3%验证耗时收益，则正式矩阵采用512以降低显存。
 - 技术停止：协议/query越权、错误seed或checkpoint、输出覆盖、错误checkout、两行重复确定性异常、无artifact闭合或run归属不清；不得因短跑准确率停止。
+
+## Profile r1系统技术失败与处置
+
+- r1使用2epoch但错误保留正式E200阶段边界17/41/69/161/181，四行均在训练状态初始化时以同一`ValueError: MUSE schedule boundaries must be strictly increasing`失败。
+- 失败发生在第一个训练batch之前；四行状态均为`TRAIN_FAILED`，无性能结果，分类为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+- r1主dispatcher已退出，GPU读回的活跃Python进程属于另一个`phase1_jmrs01_20260826`任务，不属于本run；未终止或修改任何进程。r1目录和日志完整保留，不覆盖、不删除、不原地重启。
+- 修复仅新增合法的profile阶段配置和新run_id r2，不改变正式C0/C3的E200科学矩阵。r2发布前重新执行本地测试、Git提交、release归档、N607编译和干跑。

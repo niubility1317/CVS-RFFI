@@ -15,6 +15,16 @@ DRY_RUN=0
 
 RUN_ID="${RUN_ID:-$("${CONTROL_PYTHON}" -c 'import json,sys; from pathlib import Path; print(json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))["run_id"])' "${MATRIX}")}"
 RUNS_ROOT="${RUNS_ROOT:-${ROOT}/runs/${RUN_ID}}"
+SCHEDULE_ROW="$("${CONTROL_PYTHON}" -c '
+import json, sys
+from pathlib import Path
+d=json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+s=d["muse_schedule"]
+values=[int(s[k]) for k in ("s2a_start","s2b_start","s3a_start","s3b_start","s3c_start")]
+assert 1 < values[0] < values[1] < values[2] < values[3] < values[4] <= int(d["epochs"])
+print("\t".join(map(str, values)))
+' "${MATRIX}")"
+IFS=$'\t' read -r MUSE_S2A_START MUSE_S2B_START MUSE_S3A_START MUSE_S3B_START MUSE_S3C_START <<<"${SCHEDULE_ROW}"
 
 mapfile -t ROWS < <("${CONTROL_PYTHON}" -c '
 import json, sys
@@ -61,8 +71,10 @@ run_row() {
   env ROOT="${ROOT}" CODE_ROOT="${CODE_ROOT}" PYTHON="${PYTHON}" CONTROL_PYTHON="${CONTROL_PYTHON}" \
     RUN_ID="${RUN_ID}" RUNS_ROOT="${RUNS_ROOT}" GPU="${gpu}" SEED="${seed}" INIT_MODE=adv3b02_core90 \
     TOTAL_EPOCHS="${epochs}" LABEL_EPOCHS=130 PSEUDO_EPOCHS=70 \
-    MUSE_S2A_START=17 MUSE_S2B_START=41 MUSE_S3A_START=69 MUSE_S3B_START=161 MUSE_S3C_START=181 \
-    RC4_IDENTITY_START=11 RC4_CONSOLIDATION_START=181 RC4_CALIBRATION_EPOCHS=1,41,91,161 \
+    MUSE_S2A_START="${MUSE_S2A_START}" MUSE_S2B_START="${MUSE_S2B_START}" \
+    MUSE_S3A_START="${MUSE_S3A_START}" MUSE_S3B_START="${MUSE_S3B_START}" \
+    MUSE_S3C_START="${MUSE_S3C_START}" RC4_IDENTITY_START=11 \
+    RC4_CONSOLIDATION_START="${MUSE_S3C_START}" RC4_CALIBRATION_EPOCHS=1,41,91,161 \
     RC4_TAIL_TRANSITION_START=91 RC4_TAIL_TRANSITION_EPOCHS=20 RC4_TAIL_TRANSITION_FLOOR=0.25 \
     BASE_CKPT="${ROOT}/${checkpoint}" CANDIDATE_ID_OVERRIDE="${candidate}" ABLATION=NONE \
     MUSE_UNLABELED_BATCH_SIZE=256 FASTTRUST_RC4=true SAT_ANCHOR_SSL=false \

@@ -1,8 +1,15 @@
 {
   "schema": "cvs.phase1.fasttrust_qb3_matrix.v2",
-  "run_id": "phase1_adv3b02_fasttrust_qb3_speed_profile_s392002_20260826_r1",
-  "epochs": 2,
+  "run_id": "phase1_adv3b02_fasttrust_qb3_speed_profile_s392002_20260826_r2",
+  "epochs": 21,
   "unlabeled_batch_size": 256,
+  "muse_schedule": {
+    "s2a_start": 17,
+    "s2b_start": 18,
+    "s3a_start": 19,
+    "s3b_start": 20,
+    "s3c_start": 21
+  },
   "identity_domain_objective_mode": "bounded_confusion",
   "identity_domain_discriminator_scale": 0.5,
   "identity_domain_confusion_scale": 0.5,
@@ -27,7 +34,7 @@
   "base_checkpoint": "runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
   "rows": [
     {
-      "gpu": 0,
+      "gpu": 4,
       "seed": 392002,
       "candidate": "PROFILE_C3_CK1_E512",
       "eval_batch_size": 512,
@@ -40,7 +47,7 @@
       "feature_anchor": 0.0
     },
     {
-      "gpu": 1,
+      "gpu": 5,
       "seed": 392002,
       "candidate": "PROFILE_C3_CK5_E512",
       "eval_batch_size": 512,
@@ -53,7 +60,7 @@
       "feature_anchor": 0.0
     },
     {
-      "gpu": 2,
+      "gpu": 6,
       "seed": 392002,
       "candidate": "PROFILE_C3_CK1_E1024",
       "eval_batch_size": 1024,
@@ -66,7 +73,7 @@
       "feature_anchor": 0.0
     },
     {
-      "gpu": 3,
+      "gpu": 7,
       "seed": 392002,
       "candidate": "PROFILE_C3_CK5_E1024",
       "eval_batch_size": 1024,
