@@ -131,3 +131,15 @@ gate只读部署时可得的margin、entropy、JS divergence、top1分歧、RMS�
 - 唯一归档SHA256：`fa8d914960611534ddfdd2c994aede16db3ae76639ef77303a554e33c3d3afad`，本地/远端一致；
 - 远端编译：`REMOTE_COMPILE_PASS`；
 - 发布状态：`LANDED`，尚未启动，尚无性能结果。
+
+## 13.启动健康检查
+
+- 启动时间：2026-08-25 17:19 CST；
+- launch owner PID：`2990576`；正式runner PID：`2991016`；
+- CWD：`/home/szu2070436088/2510044040/CV-SincNet/releases/PHASE1_CCOI_PA_M21_THETA_TRANSFER_AUDIT_S20260824_20260825C_7d2a9d41`；
+- cmdline、run root、release和GPU 0绑定：一致；
+- 真实checkpoint无query smoke：`PASS`；随后由同一launcher进入正式矩阵；
+- 初始GPU占用：runner独占GPU 0，约266MiB，随后增长到约712MiB；
+- 日志与artifact：smoke日志增长并闭合；正式run已生成`split_manifest.json`和`duplicate_audit.json`；
+- Traceback/OOM/Killed/NaN/Inf：初始扫描未发现；
+- 当前状态：`RUNNING`；这不是性能结果。
