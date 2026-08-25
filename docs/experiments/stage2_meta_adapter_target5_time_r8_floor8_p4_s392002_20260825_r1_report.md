@@ -1,7 +1,7 @@
 # Time-only Rank-8 Class-Floor Scale-8 Meta-Adapter P4 Target5最小预登记报告
 
 - run ID：`stage2_meta_adapter_target5_time_r8_floor8_p4_s392002_20260825_r1`
-- 状态：`LANDED`
+- 状态：`LANDED / SMOKE_PASS / PREDICTION_NOT_LAUNCHED`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 代码／配置冻结提交：`8b551e6275dbe5e022a884395d75887c16f2eaa6`；push后独立回读远端OID一致。
 - Phase1：`phase1_adv3b02_meta_adapter_time_r8_floor8_p4_s392002_20260825_r1`，状态`ARTIFACTS_COMPLETE / SOURCE_SELECTION_ELIGIBLE`。
@@ -49,3 +49,9 @@
 - 发布前确认release、工厂、smoke、prediction、stdout和同名Python进程均不存在，正式bundle／原型非空，GPU0空闲。
 - truth-free工厂一次完成15／15行，状态`TARGET_INPUTS_COMPLETE`，`query_truth_opened=false`、`query_role_opened=false`、`source_opened=false`。无query配置由首row精确删除`query_path`且本地断言其余字段不变。
 - 本次正式Phase1 bundle真实smoke一次通过：3次反向传播，`frozen_prototype_class_floor_ce_v1`／8.0，`trainable_fraction=0.005172846819097263`，`query_opened=false`、`source_opened=false`、`query_state_update_count=0`。
+
+## 用户停止决定
+
+- 2026-08-25，用户明确要求停止继续实验，改为全面总结已完成任务并发布报告。
+- 本run未启动prediction矩阵，prediction output和truth-last score均未产生；不得把工厂或smoke结果表述为Target5性能结果。
+- 不启动Target25，不创建下一候选，不重跑已闭合的10个Target5矩阵。若未来恢复，本run只能从尚未执行的唯一一次truth-free prediction继续，不能覆盖既有工厂与smoke证据。
