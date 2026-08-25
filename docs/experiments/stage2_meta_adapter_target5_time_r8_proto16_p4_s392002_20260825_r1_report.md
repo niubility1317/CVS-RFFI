@@ -1,7 +1,7 @@
 # Time-only Rank-8 Prototype-Aligned Meta-Adapter P4 Target5最小预登记报告
 
 - run ID：`stage2_meta_adapter_target5_time_r8_proto16_p4_s392002_20260825_r1`
-- 状态：`LOCAL_VERIFIED`
+- 状态：`LANDED`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 代码／配置冻结提交：`b9e289d17490bc6b5892334ddcfc3ceee104f89a`；首次push后独立回读远端分支OID一致。
 - Phase1：`phase1_adv3b02_meta_adapter_time_r8_proto16_p4_s392002_20260825_r1`，状态`ARTIFACTS_COMPLETE / SOURCE_SELECTION_ELIGIBLE`。
@@ -39,3 +39,11 @@
 
 - prototype-aligned候选唯一一次独立P0/P1审查结论为P0无、P1无；Stage2仅复用已验证factory／runner／scorer，不进行重复审查。
 - 15个truth-free prediction row全部闭合后，才由独立scorer连接truth。聚合`DA1_REG0-DA0_REG0`旧类均值至少+1.0pp且floor至少+0.5pp才进入Target25；否则记录`SCIENTIFIC_FAILURE_NO_PROMOTION`并继续下一少层候选。
+
+## N607 release、工厂与真实checkpoint smoke
+
+- 最终release提交：`dd743fe532f001582ae37bb38dd3df2a5a637813`；远端分支OID独立回读一致。release归档本地／远端唯一一次SHA256均为`feedb93c0ff13a78436814b004e68c9b0267541b75d43ab3235591bce30a16fc`，run专属checkout内16个相关入口远端编译通过。
+- 发布前独立确认release、工厂、smoke、prediction和stdout目标均不存在，同名Python进程不存在；正式Phase1 bundle和冻结原型非空，GPU0空闲。
+- Target工厂一次完成15／15个truth-free row，状态`TARGET_INPUTS_COMPLETE`；`query_truth_opened=false`、`query_role_opened=false`、`source_opened=false`。
+- 首次smoke在读取配置前因工厂未自动生成`smoke_config_no_query.json`而`FileNotFoundError`，未加载模型、未访问query、未产生性能结果。随后仅从首row配置精确删除`query_path`，本地断言其余字段完全不变且无query／truth／role／source／clean键后同步。
+- 修复输入后真实smoke通过：`REAL_META_CHECKPOINT_NO_QUERY_SMOKE_PASS`，严格checkpoint回读，3次真实反向传播，`adaptation_objective=frozen_prototype_cosine_ce_v1`、`support_logit_scale=16.0`、`trainable_fraction=0.005172846819097263`、`query_opened=false`、`source_opened=false`、`query_state_update_count=0`、`performance_result=null`。
