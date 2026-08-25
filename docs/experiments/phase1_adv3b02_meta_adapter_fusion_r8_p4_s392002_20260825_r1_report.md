@@ -1,7 +1,7 @@
 # Fusion-only Rank-8 Meta-Adapter P4 Phase1最小预登记报告
 
 - run ID：`phase1_adv3b02_meta_adapter_fusion_r8_p4_s392002_20260825_r1`
-- 状态：`RUNNING`
+- 状态：`ANALYZED`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 基线：冻结`ADV3B02_CORE90_SOFT_E200`checkpoint。
 - 本次计划提交：`5670ebfd1726b3582e38cd78102003a0a460af00`。
@@ -59,4 +59,26 @@ Phase1闭合后，仅在source-only选择规则允许时进入完全相同的Tar
 - CWD严格为release checkout；训练cmdline逐项绑定rank-8 config、`--meta_adapter_rank 8 --meta_adapter_sites fusion`、冻结checkpoint、ManySig、独立output root、seed392002和GPU0。
 - GPU0回读训练PID`2775068`、显存488MiB；stdout从0增长至965字节并进入WiSig初始化，未出现异常、OOM、Killed、NaN或Inf。
 - 首次启动SSH因后台shell继承连接未自动退出；只关闭了该已知本地SSH客户端。独立回读确认远端shell与训练子进程继续运行，未重启、未终止任何远端进程。
-- 当前最高状态：`RUNNING`。后续只做短连接只读监控；不得因中间性能停止。
+- 启动健康检查时最高状态为`RUNNING`；随后任务自然完成，未执行kill、restart或覆盖。
+
+## Phase1完成与本地闭合
+
+- N607时间2026-08-25 10:04:29自然完成；训练PID和父shell均退出，GPU0不再有该run计算进程。stdout明确记录`status=ARTIFACTS_COMPLETE`，无Traceback、OOM、Killed、NaN或Inf。
+- 9个规定artifact全部非空：正式bundle4289426字节、训练日志174681字节、训练指标5044字节、训练曲线130836字节、最终评价3343字节、P0评价3405字节、冻结原型4412字节、summary3367字节、config snapshot2362字节。
+- 本地证据目录：`E:\type10-7\local_artifacts\meta_adapter_recovery\phase1_fusion_r8_r1_complete_20260825`。严格bundle回读成功，只含`id_backbone.meta_adapter_fusion`和`dom_backbone.meta_adapter_fusion`的10个张量；无分类头；实际预算5458／1055125，占0.517285%。
+- `metrics.csv`完整覆盖step0～199；`logs.jsonl`为800个episode、每步4个、正式`inner_steps=3`。任务分布严格为`Q_SAME_DOMAIN=320`、`Q_RX_HOLDOUT=160`、`Q_DAY_CHANNEL_HOLDOUT=120`、`Q_CLEAN_TO_LEO=120`、`Q_LEO_CROSS=80`；K分布严格为K1=280、K2=200、K5=160、K10=160。outer loss和三类episode loss全部有限。
+- `run_summary.json`给出`SOURCE_SELECTION_ELIGIBLE`；config不含target字段，Phase1保持source-only。
+
+## Clean与三类LEO weak结果
+
+|场景|P0均值|Final均值|均值变化|P0 floor|Final floor|floor变化|
+|---|---:|---:|---:|---:|---:|---:|
+|clean|92.0131%|91.7512%|-0.2619pp|87.9143%|86.3929%|-1.5214pp|
+|leo_clear_weak|79.1738%|78.5655%|-0.6083pp|52.2643%|55.6500%|+3.3857pp|
+|leo_low_elev_weak|75.1393%|74.4512%|-0.6881pp|45.3143%|48.2000%|+2.8857pp|
+|leo_rain_weak|74.9202%|74.3619%|-0.5583pp|43.9214%|46.8643%|+2.9429pp|
+
+## 结论与下一步
+
+- rank-8 fusion在Phase1呈现明确的“提高LEO旧类floor、牺牲平均准确率”权衡：三类LEO floor均提高约2.89～3.39pp，但三类LEO均值均下降约0.56～0.69pp，clean均值和floor也下降。该结果不能表述为目标域正向收益。
+- 工程、协议、资源和source-only选择均闭合，满足进入原预登记同row单seed Target5最小可证伪矩阵的条件。Target5仍必须truth-blind运行后由独立scorer连接truth；只有`DA1_REG0-DA0_REG0`旧类均值至少+1.0pp且floor至少+0.5pp才进入Target25，否则记录科学失败并继续下一个少层候选。
