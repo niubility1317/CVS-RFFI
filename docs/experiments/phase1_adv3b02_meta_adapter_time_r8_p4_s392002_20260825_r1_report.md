@@ -1,7 +1,7 @@
 # Time-only Rank-8 Meta-Adapter P4 Phase1最小预登记报告
 
 - run ID：`phase1_adv3b02_meta_adapter_time_r8_p4_s392002_20260825_r1`
-- 状态：`RUNNING`
+- 状态：`ARTIFACTS_COMPLETE / SOURCE_SELECTION_ELIGIBLE`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 代码／配置冻结提交：`227889e09e2affce2af18bce15e39c86c7436b98`；GitHub远端分支OID已独立回读一致。
 - 冻结基线：`ADV3B02_CORE90_SOFT_E200`checkpoint。
@@ -59,3 +59,19 @@ Phase1只有在source-only选择规则允许且9个artifact完整时进入同row
 - 2026-08-25 11:34:33（N607）唯一启动成功，主PID为`2829308`；PID的CWD、完整cmdline、独立run root和GPU0映射均与预登记一致，未覆盖既有路径。
 - ManySig初始化期间进程保持100% CPU并累计读取约2.39GB，先生成`config_snapshot.json`；没有把该阶段误报为训练进展。
 - 11:45:56首次确认`logs.jsonl`真实增长至111个episode记录、outer step 27；记录均为正式`inner_steps=3`且loss有限。stdout无Traceback、RuntimeError、ValueError或CUDA OOM，故状态提升为`RUNNING`。
+
+## Phase1最终证据
+
+- 进程于2026-08-25 11:55:49自然完成，stdout状态为`ARTIFACTS_COMPLETE`，无Traceback、OOM、NaN或Inf；9／9项预期artifact均非空并已下载到`E:\type10-7\local_artifacts\meta_adapter_recovery\phase1_time_r8_r1_complete_20260825`独立回读。
+- 训练精确覆盖outer step 0～199和800个episode，每步4个；任务分布为`Q_SAME_DOMAIN=320`、`Q_RX_HOLDOUT=160`、`Q_DAY_CHANNEL_HOLDOUT=120`、`Q_CLEAN_TO_LEO=120`、`Q_LEO_CROSS=80`；K分布为K1=280、K2=200、K5=160、K10=160。所有episode均为3步，全部loss有限。
+- 正式bundle严格回读通过：5458／1055125=0.517285%，10个可训练张量只属于id／dom双分支的time adapter；无fusion、freq、分类头、LDA或协方差参数。
+- source-only选择结论为`SOURCE_SELECTION_ELIGIBLE`：两个`V_select` holdout的A0→A3分别为1.0000→1.0000和0.8333→0.8333，最差A3变化为0.0pp；配置和run summary均无target键，`source_only=true`。
+
+|场景|P0均值|最终均值|均值变化|P0 floor|最终floor|floor变化|
+|---|---:|---:|---:|---:|---:|---:|
+|clean|92.0464%|92.3619%|+0.3155pp|87.8286%|87.8786%|+0.0500pp|
+|`leo_clear_weak`|79.2167%|79.1750%|-0.0417pp|52.2500%|52.0071%|-0.2429pp|
+|`leo_low_elev_weak`|75.1821%|75.0845%|-0.0976pp|45.2786%|44.9429%|-0.3357pp|
+|`leo_rain_weak`|74.9262%|74.7952%|-0.1310pp|43.8571%|43.3500%|-0.5071pp|
+
+- 解释边界：time-only rank8在source clean上小幅正收益，但三类LEO weak均值和floor轻微下降；source选择规则仍允许进入Target5。这些source-side变化不等于目标域适配收益，必须由同rowtruth-last `DA1_REG0-DA0_REG0`裁决。
