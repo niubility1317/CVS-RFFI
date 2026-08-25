@@ -43,3 +43,12 @@
 - 技术停止规则：只在协议越权、错误checkout／数据split、输出覆盖、launcher-wide故障、无训练进展或重复确定性异常时停止；不得因中间性能低停止。
 
 Phase1闭合后，仅在source-only选择规则允许时进入完全相同的Target5最小矩阵；仍以`DA1_REG0-DA0_REG0`旧类均值至少+1.0pp且floor至少+0.5pp作为Target25门槛。
+
+## N607发布与smoke证据
+
+- release固定提交：`89ef0d2d899af067c6db24a6d9aceec66aaab2f6`；归档：`E:\type10-7\release_archives\phase1_adv3b02_meta_adapter_fusion_r8_p4_s392002_20260825_r1_release.tar.gz`。
+- 本地与远端归档SHA256均为`a68d04cbf5d7371bf124dd02f90706ecb59e4716b87ec4a66784ef201300684b`；7个相关生产入口远端编译通过。
+- 启动前独立确认release、output root和stdout目标原先均不存在，同名进程不存在；GPU0～GPU7均无计算进程。
+- 冻结真实`ADV3B02_CORE90_SOFT_E200`checkpoint smoke通过：`REAL_FUSION_R8_CHECKPOINT_BUNDLE_NO_QUERY_SMOKE_PASS`；迁移路径为`rank0_legacy_shell`，真实双分支fusion inner参数5458／1055125，占0.517285%，rank=8、正式3步、`query_read=false`、`target_read=false`。
+- smoke把临时bundle严格保存并回读，`bundle_trainable_fraction=0.005172846819097263`，bundle大小4289426字节；没有加载Phase2数据或产生性能结果。
+- 当前最高状态：`LANDED`。下一步按冻结命令启动唯一一次Phase1训练，并立即核对PID、CWD、cmdline、GPU和日志增长。
