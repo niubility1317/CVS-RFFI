@@ -1,7 +1,7 @@
 # Time-only Rank-8 Meta-Adapter P4 Target5最小预登记报告
 
 - run ID：`stage2_meta_adapter_target5_time_r8_p4_s392002_20260825_r1`
-- 状态：`LANDED`
+- 状态：`ANALYZED / SCIENTIFIC_FAILURE_NO_PROMOTION`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
 - 代码／配置冻结提交：`480e447f3fda3fe5b89067335092bf47c14a1ce0`；GitHub远端分支OID已独立回读一致。
 - Phase1：`phase1_adv3b02_meta_adapter_time_r8_p4_s392002_20260825_r1`，状态`ARTIFACTS_COMPLETE / SOURCE_SELECTION_ELIGIBLE`。
@@ -53,3 +53,17 @@
 - Target工厂一次完成15／15个truth-free row，receipt为`TARGET_INPUTS_COMPLETE`；`query_truth_opened=false`、`query_role_opened=false`、`source_opened=false`。
 - smoke专用配置在本地从首row配置精确删除`query_path`，并通过与首row其余字段完全相等以及无query／source／clean／truth／role键的断言后同步。
 - 真实Phase1 time-only rank8 bundle无query smoke一次通过：`REAL_META_CHECKPOINT_NO_QUERY_SMOKE_PASS`、严格checkpoint回读、3次真实反向传播、`trainable_fraction=0.005172846819097263`、`query_opened=false`、`source_opened=false`、`query_state_update_count=0`、`performance_result=null`。
+
+## Target5最终结果
+
+- 唯一正式prediction矩阵正常退出并一次完成15／15行；矩阵级状态为`PREDICTIONS_COMPLETE`，`truth_opened=false`、`source_opened=false`。15行均严格加载正式bundle，先完成3次support反向传播后才打开query；`query_opened_before_adaptation=false`、`query_role_opened=false`、`query_truth_opened=false`、`query_state_update_count=0`，可训练比例均为0.517285%。
+- prediction完整后才连接三个既有同row truth sidecar；15个`score.json`和`target5_summary.json`均非空并已下载到`E:\type10-7\local_artifacts\meta_adapter_recovery\target5_time_r8_p4_r1_complete_20260825`独立复算。
+
+|场景|DA0_REG0旧类均值|DA1_REG0旧类均值|DA0_REG0 floor|DA1_REG0 floor|均值变化|floor变化|决策变化数|
+|---|---:|---:|---:|---:|---:|---:|---:|
+|`leo_clear_weak`|63.33%|63.33%|35.00%|35.00%|0.00pp|0.00pp|0|
+|`leo_low_elev_weak`|63.33%|63.33%|35.00%|35.00%|0.00pp|0.00pp|0|
+|`leo_rain_weak`|66.67%|66.67%|45.00%|45.00%|0.00pp|0.00pp|0|
+
+- 适配前后每行最大绝对余弦分数变化范围为0.000167698～0.015051037，但15行均无类别决策变化。聚合`mean_delta_pp=0.0`、`floor_delta_pp=0.0`，未达到+1.0pp／+0.5pp门槛，结论为`SCIENTIFIC_FAILURE_NO_PROMOTION`，严格不进入Target25。
+- 科学解释：增加time adapter容量仍只能改变分数，无法让support梯度跨越旧类决策边界；结合time+fusion rank4同样零决策变化、fusion rank8出现负迁移，下一候选不再机械扩大rank或叠加位置，而应约束support更新方向／尺度，使少层梯度真正朝目标支持集的判别改善方向移动。
