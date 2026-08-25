@@ -3,7 +3,7 @@
 ## 0.状态与证据边界
 
 - Run ID：`PHASE1_CCOI_PA_V2_CAUSAL_AUDIT_S20260824_20260825B`
-- 当前状态：`LOCAL_VERIFIED`
+- 当前状态：`LANDED`
 - 修复提交：`83d4453bdd4e54927ffc86e32a2cd5d12f976f6b`
 - 候选：冻结Core90和既有C4 sidecar的source-only因果审计
 - 协议：`L_s`拟合、`V_select`审计，target/query访问为0，不重复C0–C4
@@ -143,9 +143,17 @@ launcher先运行真实checkpoint无query smoke，通过后立即继续正式审
 - A已退出且不会重启；
 - 不干预GPU0既有训练进程。
 
+一次性release已经落地：
+
+- release内容提交：`137eedd490f347d8907041d74a64ccb78b04a004`；
+- 本地归档：`E:\type10-7\local_artifacts\releases\phase1_ccoi_pa_v2_causal_audit_20260825_83d4453b.tar.gz`；
+- 远端归档：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_ccoi_pa_v2_causal_audit_20260825_83d4453b.tar.gz`；
+- 本地/远端唯一归档SHA256均为`bfc10680972b91dd9a07912fd01ec0f5b2cea76ea787cdc1142f9e7f5c3c240a`，状态`VERIFIED`；
+- N607真实Bash语法检查和三个生产Python模块编译通过；
+- 解压时间戳比N607时钟快约5秒的提示属于主机时钟微小偏差，解压和后续检查均成功。
+
 技术停止仅限协议越界、错误输入/结构、输出碰撞、真实smoke失败、确定性异常、无日志增长或七个artifact不能闭合。低性能只影响科学判定。
 
 ## 7.实验结果
 
-尚未发布和启动。后续只追加真实release、smoke、健康状态、七个artifact结果、停止规则逐项判定、暴露问题和下一路线。
-
+已发布但尚未启动。后续只追加真实smoke、健康状态、七个artifact结果、停止规则逐项判定、暴露问题和下一路线。
