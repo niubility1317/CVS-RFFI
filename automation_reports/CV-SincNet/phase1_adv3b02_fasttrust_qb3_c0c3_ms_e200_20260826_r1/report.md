@@ -3,7 +3,7 @@
 ## 当前状态
 
 - run_id：`phase1_adv3b02_fasttrust_qb3_c0c3_ms_e200_20260826_r1`
-- 状态：`PROFILE_R2_RUNNING`
+- 状态：`FORMAL_MATRIX_LOCAL_VERIFIED / PROFILE_R2_RUNNING`
 - 科学边界：Phase1 source-only；固定`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`；target结果不反馈阈值、候选或重训。
 - 目标：冻结上一轮C0/C3训练数学定义，以两个新增seed补足三seed证据；同时修复可观测性，并用不改变优化轨迹的工程A/B选择恢复checkpoint间隔。
 
@@ -67,3 +67,17 @@
 - 日志增长：主dispatcher日志已写入`QB3-MATRIX-RUN`，四份候选`train.log`均增长到约7KB并通过数据划分、真实checkpoint、阶段配置和telemetry初始化，跨过r1失败点。
 - 资源边界：GPU0已有独立`phase1_jmrs01_20260826`进程；本run不使用GPU0且未对其进行任何操作。GPU4–7启动时各一行训练，不超过每GPU两个训练进程。
 - 当前证据等级：`RUNNING`。这只证明合法启动与日志增长，不是速度结论或科学性能结果。
+
+## 正式多seed矩阵冻结
+
+- `REJECTED_EXTRA_GATE`：速度profile是NONBLOCKING工程测量，不得延迟正式科学矩阵发布；其结果不回写本run参数。
+- matrix：`configs/phase1_adv3b02_fasttrust_qb3_c0c3_ms_e200_20260826.json`；run_id与本报告一致。
+- 四行：seed713101的C0/C3、seed713102的C0/C3。C0关闭H/P-set/P-cond，C3开启H/P-set/P-cond；其余QB3预算、bounded confusion、source角色、Core90增强和E200阶段定义与seed392002冻结行一致。
+- GPU映射：`MS_S713101_C0_BC_NO_U_ID`→GPU0，`MS_S713101_C3_BC_H_PSET_PCOND`→GPU1，`MS_S713102_C0_BC_NO_U_ID`→GPU2，`MS_S713102_C3_BC_H_PSET_PCOND`→GPU3。
+- 工程配置：`eval_batch_size=512`、`recovery_checkpoint_interval=1`。前者依据上一轮1024没有可见提速但显存约翻倍的真实证据，后者保留最密恢复；两者不改变loss、数据或候选定义。
+- 环境/CWD：N607 Python为`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`，CWD为本次不可变release根；输入为WiSig `ManySig.pkl`及冻结Core90 checkpoint。
+- 输出：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fasttrust_qb3_c0c3_ms_e200_20260826_r1`，不可覆盖；日志位于每个候选目录与`dispatcher_logs/`。
+- 精确命令：`MATRIX=<release>/configs/phase1_adv3b02_fasttrust_qb3_c0c3_ms_e200_20260826.json bash <release>/code/scripts/launch_phase1_adv3b02_fasttrust_qb3_matrix_20260826.sh`。
+- 预期artifact：每行200条结构化epoch记录、`final_ssdg.pth`、恢复checkpoint、Clean和三种LEO weak的独立metrics/log；四行prediction完整后才由独立scorer连接truth并作同row三seed分析。
+- 技术停止：仅协议/query越权、错误stage/seed/split/checkpoint、输出覆盖、错误checkout、同一确定性异常至少两行、无prediction闭合或run归属不清。低性能不停止。
+- 本地验证：新增正式matrix测试先RED后GREEN；与profile、速度测试联合18项通过；包含新增matrix测试的完整相邻回归165项通过。
