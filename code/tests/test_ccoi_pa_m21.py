@@ -13,19 +13,28 @@ if str(CODE_ROOT) not in sys.path:
 
 from cvsrffi.ccoi_pa import CCOIPASidecar, PAChallengeEncoder  # noqa: E402
 from cvsrffi.ccoi_pa_m21 import (  # noqa: E402
+    GATE_FEATURE_ALLOWLIST,
     FactorRow,
     SidecarArchitectureConfig,
     build_fold_records,
+    build_gate_feature_matrix,
     build_relation_indices,
     build_sidecar_v3_payload,
+    bounded_residual_fusion,
     common_anchor_mask,
     compose_factor_rows,
+    conditional_q_probe,
     duplicate_audit,
     load_sidecar_v3,
     migrate_v2_challenge_encoder,
     evaluate_stage_a,
+    evaluate_stage_b,
+    fit_truth_blind_gate,
     fold_macro_nmse,
+    m0_exact_pair_retrieval,
     run_factor_matrix,
+    run_loto_residual,
+    predict_truth_blind_gate,
     split_v_select_retro,
 )
 
@@ -573,3 +582,306 @@ def test_factor_matrix_trains_equal_capacity_heads_and_detects_f3_signal():
     assert result.payload["summary"]["head_seed_direction_count"] == 3
     assert set(result.squared_errors) == {3, 5, 7}
     assert "per_sample_errors" not in result.payload
+
+
+def test_m0_retrieval_uses_same_tx_rx_day_fold_pool_and_recovers_exact_pairs():
+    base_index = torch.tensor([10, 11, 12, 13, 10, 11, 12, 13])
+    fold_id = torch.tensor([0, 0, 0, 0, 1, 1, 1, 1])
+    q = torch.tensor(
+        [
+            [[1.0, 0.0]],
+            [[0.9, 0.1]],
+            [[0.0, 1.0]],
+            [[-1.0, 0.0]],
+            [[0.8, 0.2]],
+            [[0.7, 0.3]],
+            [[0.2, 0.8]],
+            [[-0.8, 0.2]],
+        ]
+    )
+    clean = FactorRow(
+        inputs=torch.empty(8, 0),
+        target=torch.empty(8, 0),
+        valid=torch.ones(8, dtype=torch.bool),
+        common_anchor=torch.ones(8, dtype=torch.bool),
+        base_index=base_index,
+        fold_id=fold_id,
+    )
+    satellite = replace(clean)
+    metadata = {
+        "tx": torch.tensor([0, 0, 0, 1]),
+        "receiver": torch.tensor([0, 0, 1, 0]),
+        "day": torch.tensor([0, 0, 0, 0]),
+        "eq": torch.ones(4, dtype=torch.long),
+        "sig_i": torch.arange(4),
+        "base_index": torch.tensor([10, 11, 12, 13]),
+    }
+
+    result = m0_exact_pair_retrieval(
+        clean_q=q,
+        satellite_q=q.clone(),
+        clean_theta=torch.arange(16).reshape(8, 2).float(),
+        satellite_theta=torch.arange(16).reshape(8, 2).float(),
+        base_index=clean.base_index,
+        fold_id=clean.fold_id,
+        sample_metadata=metadata,
+    )
+
+    assert result["recall_at_1"] == pytest.approx(1.0)
+    assert result["recall_at_5"] == pytest.approx(1.0)
+    assert result["median_rank"] == pytest.approx(1.0)
+    assert result["mrr"] == pytest.approx(1.0)
+    assert result["candidate_pool_policy"] == "same_tx_same_rx_same_day_same_fold"
+    assert result["sample_level_state_persisted"] is False
+
+
+def test_loto_residual_excludes_held_out_tx_from_both_common_and_residual_training():
+    generator = torch.Generator().manual_seed(73)
+    tx = torch.arange(6).repeat_interleave(8)
+    count = tx.numel()
+    common_inputs = torch.randn(count, 3, generator=generator)
+    operator_inputs = torch.cat((tx.float().unsqueeze(1), common_inputs), dim=1)
+    target = torch.stack((0.2 * common_inputs[:, 0] + tx.float(), common_inputs[:, 1]), dim=1)
+    receiver = torch.arange(count).remainder(4)
+    day = torch.arange(count).remainder(2)
+    fold_id = torch.arange(count).remainder(4)
+
+    result = run_loto_residual(
+        common_inputs=common_inputs,
+        operator_inputs=operator_inputs,
+        target=target,
+        tx=tx,
+        receiver=receiver,
+        day=day,
+        fold_id=fold_id,
+        seed=19,
+        steps=100,
+        hidden_dim=12,
+        device=torch.device("cpu"),
+    )
+
+    assert len(result["folds"]) == 6
+    for fold in result["folds"]:
+        assert fold["held_out_tx"] not in fold["common_train_txs"]
+        assert fold["held_out_tx"] not in fold["residual_train_txs"]
+    assert result["non_finite_count"] == 0
+    assert set(result["residual_probe_scope"]) == {"tx", "receiver", "day"}
+    assert set(result["residual_distance_scope"]) == {
+        "between_tx_mean",
+        "same_tx_cross_receiver_mean",
+        "between_tx_pair_count",
+        "same_tx_cross_receiver_pair_count",
+    }
+    assert result["residual_distance_scope"]["between_tx_pair_count"] > 0
+    assert result["residual_distance_scope"]["same_tx_cross_receiver_pair_count"] > 0
+
+
+def test_q_probe_separates_ordered_sequence_leakage_from_permutation_invariant_content():
+    generator = torch.Generator().manual_seed(91)
+    train_y = torch.arange(160).remainder(2)
+    eval_y = torch.arange(80).remainder(2)
+
+    def make_q(labels):
+        first = torch.where(labels.eq(0), 1.0, -1.0)
+        second = -first
+        q = torch.stack((first, second), dim=1).unsqueeze(-1)
+        return q + 0.02 * torch.randn(q.shape, generator=generator)
+
+    result = conditional_q_probe(
+        train_q=make_q(train_y),
+        eval_q=make_q(eval_y),
+        train_labels={"tx": train_y, "receiver": torch.zeros_like(train_y), "day": torch.zeros_like(train_y)},
+        eval_labels={"tx": eval_y, "receiver": torch.zeros_like(eval_y), "day": torch.zeros_like(eval_y)},
+        seed=13,
+        steps=160,
+        hidden_dim=12,
+        device=torch.device("cpu"),
+    )
+
+    assert result["ordered_sequence"]["tx_balanced_accuracy"] > 0.95
+    assert result["ordered_minus_shuffled_tx_accuracy"] > 0.30
+    assert result["permutation_invariant"]["tx_balanced_accuracy"] < 0.70
+    assert set(result["conditional"]) == {
+        "tx_within_fixed_receiver_day",
+        "receiver_within_fixed_tx_day",
+        "day_within_fixed_tx_receiver",
+    }
+    assert result["sample_level_state_persisted"] is False
+
+
+def _gate_features(count=6):
+    return {
+        name: torch.linspace(0.1, 0.9, count)
+        for name in sorted(GATE_FEATURE_ALLOWLIST)
+    }
+
+
+def test_gate_feature_matrix_rejects_truth_receiver_and_day_fields():
+    features = _gate_features()
+    features["true_tx"] = torch.arange(6)
+    with pytest.raises(ValueError, match="forbidden gate features"):
+        build_gate_feature_matrix(features)
+
+    features = _gate_features()
+    features["receiver"] = torch.arange(6)
+    with pytest.raises(ValueError, match="forbidden gate features"):
+        build_gate_feature_matrix(features)
+
+
+def test_zero_gate_is_bit_exact_core90_and_full_gate_is_norm_bounded():
+    base = torch.tensor([[4.0, 1.0, -2.0], [0.0, 2.0, 1.0]])
+    operator = torch.tensor([[-20.0, 30.0, 4.0], [10.0, -10.0, 9.0]])
+
+    unchanged = bounded_residual_fusion(
+        base,
+        operator,
+        gate=torch.zeros(2),
+        eta=0.20,
+        scale=1.0,
+        clip_norm=0.5,
+    )
+    accepted = bounded_residual_fusion(
+        base,
+        operator,
+        gate=torch.ones(2),
+        eta=0.20,
+        scale=1.0,
+        clip_norm=0.5,
+    )
+
+    torch.testing.assert_close(unchanged, base, rtol=0, atol=0)
+    assert torch.all((accepted - base).norm(dim=1) <= 0.20 * 0.5 + 1e-7)
+
+
+def test_stage_b_not_run_without_a_pass_and_passes_only_all_safety_thresholds():
+    blocked = evaluate_stage_b({}, stage_a_status="A_PARTIAL")
+    assert blocked.status == "NOT_RUN_A_GATE"
+
+    passed = evaluate_stage_b(
+        {
+            "leo_mean_gain_pp": 0.25,
+            "leo_gain_ci_low_pp": 0.03,
+            "clean_gain_pp": -0.05,
+            "worst_receiver_gain_pp": -0.02,
+            "selected_weighted_utility": 3.0,
+            "gate_coverage": 0.08,
+            "gate_coverage_min": 0.05,
+            "positive_receiver_cv_count": 5,
+            "receiver_cv_count": 7,
+        },
+        stage_a_status="A_PASS",
+    )
+    assert passed.status == "B_PASS"
+    assert passed.next_route == "DESIGN_CONTINUOUS_CHALLENGE_V3"
+
+    failed = evaluate_stage_b(
+        {
+            "leo_mean_gain_pp": 0.25,
+            "leo_gain_ci_low_pp": 0.03,
+            "clean_gain_pp": -0.11,
+            "worst_receiver_gain_pp": -0.02,
+            "selected_weighted_utility": 3.0,
+            "gate_coverage": 0.08,
+            "gate_coverage_min": 0.05,
+            "positive_receiver_cv_count": 5,
+            "receiver_cv_count": 7,
+        },
+        stage_a_status="A_PASS",
+    )
+    assert failed.status == "B_FAIL"
+    assert "CLEAN_DROP_GT_0_10PP" in failed.reasons
+
+
+def test_factor_matrix_closes_as_scientific_unavailable_when_common_anchor_is_empty():
+    generator = torch.Generator().manual_seed(97)
+    count = 16
+    rows = {}
+    for index in range(10):
+        rows[f"F{index}"] = FactorRow(
+            inputs=torch.randn(count, 4, generator=generator),
+            target=torch.randn(count, 2, generator=generator),
+            valid=torch.zeros(count, dtype=torch.bool) if index == 7 else torch.ones(count, dtype=torch.bool),
+            common_anchor=torch.zeros(count, dtype=torch.bool),
+            base_index=torch.arange(count),
+            fold_id=torch.arange(count).remainder(4),
+        )
+
+    result = run_factor_matrix(
+        rows,
+        rows,
+        eval_groups=torch.stack((torch.arange(count).remainder(2), torch.arange(count).remainder(4)), dim=1),
+        head_seeds=(1, 2, 3),
+        steps=3,
+        batch_size=8,
+        hidden_dim=4,
+        bootstrap_resamples=5,
+        device=torch.device("cpu"),
+    )
+
+    assert result.payload["summary"]["common_anchor_status"] == "UNAVAILABLE_EMPTY"
+    assert result.payload["summary"]["f3_vs_f0_relative_gain"] == -1.0
+
+
+def test_truth_blind_gate_group_cv_is_atomic_and_freezes_one_candidate():
+    count = 24
+    features = _gate_features(count)
+    signal = torch.tensor(([0.0] * 12) + ([1.0] * 12))
+    features["base_margin"] = signal
+    groups = [(index // 3, 0, 0, 0) for index in range(count)]
+    receivers = torch.tensor([index % 3 for index in range(count)])
+    outcomes = {
+        (0.05, 0.5): {
+            "rescue": signal.bool(),
+            "harm": (~signal.bool()),
+        },
+        (0.20, 0.5): {
+            "rescue": signal.bool(),
+            "harm": torch.zeros(count, dtype=torch.bool),
+        },
+    }
+
+    fitted = fit_truth_blind_gate(
+        features,
+        outcomes=outcomes,
+        groups=groups,
+        receivers=receivers,
+        tau_candidates=(-0.2, 0.0, 0.2),
+        lambda_h_candidates=(1.5, 2.0),
+        folds=4,
+        steps=50,
+        seed=7,
+    )
+
+    assert fitted.eta == 0.20
+    assert fitted.clip_norm == 0.5
+    assert fitted.lambda_h > 1.0
+    assert fitted.group_overlap_count == 0
+    assert fitted.oof_sample_count == count
+    assert fitted.feature_names == tuple(sorted(GATE_FEATURE_ALLOWLIST))
+    assert fitted.audit_labels_consumed is False
+
+
+def test_truth_blind_gate_prediction_is_deployment_only_and_bounded():
+    count = 18
+    features = _gate_features(count)
+    rescue = torch.arange(count) >= 9
+    fitted = fit_truth_blind_gate(
+        features,
+        outcomes={(0.10, 1.0): {"rescue": rescue, "harm": ~rescue}},
+        groups=[(index // 3, 0, 0, 0) for index in range(count)],
+        receivers=torch.tensor([index % 3 for index in range(count)]),
+        tau_candidates=(0.0,),
+        lambda_h_candidates=(2.0,),
+        folds=3,
+        steps=30,
+        seed=11,
+    )
+
+    gate = predict_truth_blind_gate(fitted, features)
+    assert gate.shape == (count,)
+    assert bool(((gate == 0.0) | (gate == 1.0)).all())
+
+    contaminated = dict(features)
+    contaminated["day"] = torch.zeros(count)
+    with pytest.raises(ValueError, match="forbidden gate features"):
+        predict_truth_blind_gate(fitted, contaminated)

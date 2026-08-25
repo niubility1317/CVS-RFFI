@@ -22,6 +22,25 @@ from .ccoi_causal_audit import group_paired_bootstrap
 
 SIDECAR_V2_SCHEMA = "cvs.phase1.ccoi_pa_sidecar.v2"
 SIDECAR_V3_SCHEMA = "cvs.phase1.ccoi_pa_sidecar.v3"
+GATE_FEATURE_ALLOWLIST = frozenset(
+    {
+        "base_margin",
+        "base_entropy",
+        "operator_margin",
+        "operator_entropy",
+        "js_divergence",
+        "top1_disagreement",
+        "rms",
+        "papr",
+        "pa_condition_number",
+        "spectral_null_ratio",
+        "clipping_ratio",
+        "snr_proxy",
+        "residual_cfo",
+        "phase_instability",
+        "challenge_coverage",
+    }
+)
 
 
 @dataclass(frozen=True)
@@ -76,6 +95,35 @@ class StageAVerdict:
     next_route: str
     reasons: tuple[str, ...]
     stage_b_allowed: bool
+
+
+@dataclass(frozen=True)
+class StageBVerdict:
+    status: str
+    next_route: str
+    reasons: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class TruthBlindGateFit:
+    feature_names: tuple[str, ...]
+    eta: float
+    clip_norm: float
+    tau: float
+    lambda_h: float
+    rescue_mean: Tensor
+    rescue_scale: Tensor
+    rescue_weight: Tensor
+    harm_mean: Tensor
+    harm_scale: Tensor
+    harm_weight: Tensor
+    oof_sample_count: int
+    oof_coverage: float
+    oof_weighted_utility: float
+    group_overlap_count: int
+    positive_receiver_cv_count: int
+    receiver_cv_count: int
+    audit_labels_consumed: bool
 
 
 @dataclass(frozen=True)
@@ -526,7 +574,11 @@ def run_factor_matrix(
             seed_errors[name] = error
             all_metrics = fold_macro_nmse(error, energy, eval_row.fold_id, eval_valid)
             common_valid = eval_valid & eval_row.common_anchor.detach().bool().cpu()
-            common_metrics = fold_macro_nmse(error, energy, eval_row.fold_id, common_valid)
+            common_metrics = (
+                fold_macro_nmse(error, energy, eval_row.fold_id, common_valid)
+                if bool(common_valid.any())
+                else {"status": "UNAVAILABLE_EMPTY", "valid_count": 0}
+            )
             seed_rows[name] = {
                 "status": "COMPLETE",
                 "all_valid": all_metrics,
@@ -543,14 +595,23 @@ def run_factor_matrix(
                 & eval_rows[candidate].valid.detach().bool().cpu()
                 & eval_rows["F3"].common_anchor.detach().bool().cpu()
             )
-            comparison = group_paired_bootstrap(
-                seed_errors[reference][valid],
-                seed_errors[candidate][valid],
-                groups[valid],
-                resamples=int(bootstrap_resamples),
-                seed=seed + row_order[candidate] * 31,
-            )
-            comparison["status"] = "COMPLETE"
+            if bool(valid.any()):
+                comparison = group_paired_bootstrap(
+                    seed_errors[reference][valid],
+                    seed_errors[candidate][valid],
+                    groups[valid],
+                    resamples=int(bootstrap_resamples),
+                    seed=seed + row_order[candidate] * 31,
+                )
+                comparison["status"] = "COMPLETE"
+            else:
+                comparison = {
+                    "status": "UNAVAILABLE_EMPTY_COMMON_ANCHOR",
+                    "sample_count": 0,
+                    "relative_gain": -1.0,
+                    "ci95_low": -1.0,
+                    "ci95_high": -1.0,
+                }
             comparisons[label] = comparison
         squared_errors[seed] = seed_errors
         comparison_rows[seed] = comparisons
@@ -566,10 +627,15 @@ def run_factor_matrix(
         if not complete:
             row_summary[name] = {"status": "UNAVAILABLE"}
             continue
+        common_complete = [
+            item for item in complete if item["common_anchor"].get("status") != "UNAVAILABLE_EMPTY"
+        ]
         row_summary[name] = {
-            "status": "COMPLETE",
-            "macro_nmse_mean": float(
-                sum(item["common_anchor"]["macro_nmse"] for item in complete) / len(complete)
+            "status": "COMPLETE" if common_complete else "UNAVAILABLE_EMPTY_COMMON_ANCHOR",
+            "macro_nmse_mean": (
+                float(sum(item["common_anchor"]["macro_nmse"] for item in common_complete) / len(common_complete))
+                if common_complete
+                else None
             ),
             "head_seed_count": len(complete),
         }
@@ -585,6 +651,9 @@ def run_factor_matrix(
             -sum(row["relative_gain"] for row in f32) / len(f32)
         ),
         "f3_common_nmse": row_summary["F3"]["macro_nmse_mean"],
+        "common_anchor_status": (
+            "COMPLETE" if row_summary["F3"]["macro_nmse_mean"] is not None else "UNAVAILABLE_EMPTY"
+        ),
         "head_seed_direction_count": int(
             sum(
                 row30["relative_gain"] > 0.0 and row35["relative_gain"] > 0.0
@@ -604,6 +673,736 @@ def run_factor_matrix(
         "sample_level_state_persisted": False,
     }
     return FactorMatrixResult(payload=payload, squared_errors=squared_errors, valid_masks=valid_masks)
+
+
+def m0_exact_pair_retrieval(
+    *,
+    clean_q: Tensor,
+    satellite_q: Tensor,
+    clean_theta: Tensor,
+    satellite_theta: Tensor,
+    base_index: Tensor,
+    fold_id: Tensor,
+    sample_metadata: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Evaluate exact clean/satellite retrieval inside nuisance-matched pools."""
+
+    clean = F.normalize(torch.as_tensor(clean_q).detach().float().cpu().reshape(len(base_index), -1), dim=1)
+    satellite = F.normalize(
+        torch.as_tensor(satellite_q).detach().float().cpu().reshape(len(base_index), -1), dim=1
+    )
+    clean_theta = torch.as_tensor(clean_theta).detach().float().cpu()
+    satellite_theta = torch.as_tensor(satellite_theta).detach().float().cpu()
+    base_index = torch.as_tensor(base_index).detach().view(-1).long().cpu()
+    fold_id = torch.as_tensor(fold_id).detach().view(-1).long().cpu()
+    if not (
+        clean.size(0)
+        == satellite.size(0)
+        == clean_theta.size(0)
+        == satellite_theta.size(0)
+        == base_index.numel()
+        == fold_id.numel()
+    ):
+        raise ValueError("M0 inputs must align")
+    metadata = _metadata_columns(sample_metadata)
+    sample_by_base = {value: index for index, value in enumerate(metadata["base_index"])}
+    ranks: list[int] = []
+    reciprocal: list[float] = []
+    pair_wins: list[float] = []
+    theta_distances: list[float] = []
+    margins: list[float] = []
+    for row in range(base_index.numel()):
+        sample = sample_by_base.get(int(base_index[row]))
+        if sample is None:
+            raise ValueError("M0 base_index is absent from sample metadata")
+        candidates = []
+        for candidate in range(base_index.numel()):
+            candidate_sample = sample_by_base.get(int(base_index[candidate]))
+            if candidate_sample is None or int(fold_id[candidate]) != int(fold_id[row]):
+                continue
+            if all(
+                metadata[name][candidate_sample] == metadata[name][sample]
+                for name in ("tx", "receiver", "day")
+            ):
+                candidates.append(candidate)
+        exact = [candidate for candidate in candidates if int(base_index[candidate]) == int(base_index[row])]
+        if len(exact) != 1:
+            raise ValueError("M0 candidate pool must contain exactly one exact physical pair")
+        similarities = satellite[candidates] @ clean[row]
+        ordered = sorted(
+            range(len(candidates)),
+            key=lambda position: (-float(similarities[position]), int(base_index[candidates[position]])),
+        )
+        exact_position = candidates.index(exact[0])
+        rank = ordered.index(exact_position) + 1
+        ranks.append(rank)
+        reciprocal.append(1.0 / rank)
+        exact_similarity = float(similarities[exact_position].item())
+        other = [float(similarities[position].item()) for position in range(len(candidates)) if position != exact_position]
+        pair_wins.extend(1.0 if exact_similarity > value else (0.5 if exact_similarity == value else 0.0) for value in other)
+        if other:
+            margins.append(exact_similarity - max(other))
+        theta_distances.append(
+            float((clean_theta[row] - satellite_theta[exact[0]]).square().sum().sqrt().item())
+        )
+    rank_tensor = torch.tensor(ranks, dtype=torch.float32)
+    return {
+        "status": "COMPLETE",
+        "candidate_pool_policy": "same_tx_same_rx_same_day_same_fold",
+        "sample_count": len(ranks),
+        "recall_at_1": float((rank_tensor <= 1).float().mean().item()),
+        "recall_at_5": float((rank_tensor <= 5).float().mean().item()),
+        "median_rank": float(rank_tensor.median().item()),
+        "mrr": float(sum(reciprocal) / len(reciprocal)),
+        "exact_pair_distance_auc": float(sum(pair_wins) / len(pair_wins)) if pair_wins else 1.0,
+        "clean_satellite_theta_distance_mean": float(sum(theta_distances) / len(theta_distances)),
+        "exact_pair_margin_mean": float(sum(margins) / len(margins)) if margins else 0.0,
+        "sample_level_state_persisted": False,
+    }
+
+
+def _fit_regression_head(
+    inputs: Tensor,
+    target: Tensor,
+    train_mask: Tensor,
+    predict_mask: Tensor,
+    *,
+    seed: int,
+    steps: int,
+    hidden_dim: int,
+    device: torch.device,
+) -> Tensor:
+    indices = torch.nonzero(train_mask, as_tuple=False).flatten()
+    if indices.numel() < 2:
+        raise ValueError("regression fold requires at least two training rows")
+    torch.manual_seed(int(seed))
+    head = _FactorHead(inputs.size(1), int(hidden_dim), target.size(1)).to(device)
+    optimizer = torch.optim.AdamW(head.parameters(), lr=3e-3, weight_decay=1e-4)
+    generator = torch.Generator().manual_seed(int(seed) + 7001)
+    for _ in range(max(1, int(steps))):
+        selected = indices[
+            torch.randint(indices.numel(), (min(64, int(indices.numel())),), generator=generator)
+        ]
+        output = head(inputs[selected].to(device))
+        loss = F.mse_loss(output, target[selected].to(device))
+        optimizer.zero_grad(set_to_none=True)
+        loss.backward()
+        optimizer.step()
+    head.eval()
+    with torch.no_grad():
+        return head(inputs[predict_mask].to(device)).cpu()
+
+
+def _centroid_probe_accuracy(features: Tensor, labels: Tensor) -> float:
+    labels = labels.view(-1).long().cpu()
+    features = F.normalize(features.float().cpu(), dim=1)
+    unique = torch.unique(labels)
+    centroids = torch.stack([features[labels.eq(label)].mean(dim=0) for label in unique])
+    prediction = unique[(features @ F.normalize(centroids, dim=1).T).argmax(dim=1)]
+    return float((prediction == labels).float().mean().item())
+
+
+def _residual_centroid_distances(features: Tensor, tx: Tensor, receiver: Tensor) -> dict[str, Any]:
+    features = torch.as_tensor(features).detach().float().cpu()
+    tx = torch.as_tensor(tx).detach().view(-1).long().cpu()
+    receiver = torch.as_tensor(receiver).detach().view(-1).long().cpu()
+    tx_centroids = {
+        int(label): features[tx.eq(label)].mean(dim=0)
+        for label in torch.unique(tx)
+    }
+    between = [
+        float((tx_centroids[left] - tx_centroids[right]).norm().item())
+        for position, left in enumerate(sorted(tx_centroids))
+        for right in sorted(tx_centroids)[position + 1 :]
+    ]
+    cell_centroids = {
+        (int(tx_value), int(rx_value)): features[tx.eq(tx_value) & receiver.eq(rx_value)].mean(dim=0)
+        for tx_value in torch.unique(tx)
+        for rx_value in torch.unique(receiver[tx.eq(tx_value)])
+    }
+    same_cross_rx = []
+    for tx_value in sorted(set(key[0] for key in cell_centroids)):
+        receivers = sorted(key[1] for key in cell_centroids if key[0] == tx_value)
+        same_cross_rx.extend(
+            float((cell_centroids[(tx_value, left)] - cell_centroids[(tx_value, right)]).norm().item())
+            for position, left in enumerate(receivers)
+            for right in receivers[position + 1 :]
+        )
+    return {
+        "between_tx_mean": float(sum(between) / len(between)) if between else None,
+        "same_tx_cross_receiver_mean": float(sum(same_cross_rx) / len(same_cross_rx)) if same_cross_rx else None,
+        "between_tx_pair_count": len(between),
+        "same_tx_cross_receiver_pair_count": len(same_cross_rx),
+    }
+
+
+def run_loto_residual(
+    *,
+    common_inputs: Tensor,
+    operator_inputs: Tensor,
+    target: Tensor,
+    tx: Tensor,
+    receiver: Tensor,
+    day: Tensor,
+    fold_id: Tensor,
+    seed: int,
+    steps: int,
+    hidden_dim: int,
+    device: torch.device,
+) -> dict[str, Any]:
+    """Cross-fit common and residual predictors with whole transmitters held out."""
+
+    common_inputs = torch.as_tensor(common_inputs).detach().float().cpu()
+    operator_inputs = torch.as_tensor(operator_inputs).detach().float().cpu()
+    target = torch.as_tensor(target).detach().float().cpu()
+    tx = torch.as_tensor(tx).detach().view(-1).long().cpu()
+    receiver = torch.as_tensor(receiver).detach().view(-1).long().cpu()
+    day = torch.as_tensor(day).detach().view(-1).long().cpu()
+    fold_id = torch.as_tensor(fold_id).detach().view(-1).long().cpu()
+    count = target.size(0)
+    if any(value.size(0) != count for value in (common_inputs, operator_inputs, tx, receiver, day, fold_id)):
+        raise ValueError("LOTO inputs must align")
+    unique_tx = torch.unique(tx).tolist()
+    if len(unique_tx) < 2:
+        raise ValueError("LOTO requires at least two transmitters")
+    common_prediction = torch.empty_like(target)
+    folds: list[dict[str, Any]] = []
+    for position, held_out in enumerate(unique_tx):
+        train_mask = tx.ne(int(held_out))
+        predict_mask = tx.eq(int(held_out))
+        common_prediction[predict_mask] = _fit_regression_head(
+            common_inputs,
+            target,
+            train_mask,
+            predict_mask,
+            seed=int(seed) + 100 * position,
+            steps=steps,
+            hidden_dim=hidden_dim,
+            device=device,
+        )
+        train_txs = sorted(int(value) for value in torch.unique(tx[train_mask]).tolist())
+        folds.append(
+            {
+                "held_out_tx": int(held_out),
+                "common_train_txs": train_txs,
+                "residual_train_txs": train_txs,
+                "eval_count": int(predict_mask.sum().item()),
+            }
+        )
+    residual_target = target - common_prediction
+    residual_prediction = torch.empty_like(target)
+    for position, held_out in enumerate(unique_tx):
+        train_mask = tx.ne(int(held_out))
+        predict_mask = tx.eq(int(held_out))
+        residual_prediction[predict_mask] = _fit_regression_head(
+            operator_inputs,
+            residual_target,
+            train_mask,
+            predict_mask,
+            seed=int(seed) + 1000 + 100 * position,
+            steps=steps,
+            hidden_dim=hidden_dim,
+            device=device,
+        )
+    final_prediction = common_prediction + residual_prediction
+    squared_error = (final_prediction - target).square().sum(dim=1)
+    energy = target.square().sum(dim=1)
+    metrics = fold_macro_nmse(squared_error, energy, fold_id, torch.ones(count, dtype=torch.bool))
+    return {
+        "status": "COMPLETE",
+        "cross_fit_policy": "leave_one_tx_out_for_common_and_residual_heads",
+        "folds": folds,
+        "metrics": metrics,
+        "residual_probe_scope": {
+            "tx": _centroid_probe_accuracy(residual_target, tx),
+            "receiver": _centroid_probe_accuracy(residual_target, receiver),
+            "day": _centroid_probe_accuracy(residual_target, day),
+        },
+        "residual_distance_scope": _residual_centroid_distances(
+            residual_target, tx, receiver
+        ),
+        "non_finite_count": int((~torch.isfinite(final_prediction)).sum().item()),
+        "sample_level_state_persisted": False,
+    }
+
+
+def _balanced_accuracy(prediction: Tensor, truth: Tensor) -> float:
+    truth = truth.view(-1).long().cpu()
+    prediction = prediction.view(-1).long().cpu()
+    recalls = [
+        float((prediction[truth.eq(label)] == label).float().mean().item())
+        for label in torch.unique(truth)
+    ]
+    return float(sum(recalls) / len(recalls))
+
+
+def _classification_probe(
+    train_x: Tensor,
+    train_y: Tensor,
+    eval_x: Tensor,
+    eval_y: Tensor,
+    *,
+    seed: int,
+    steps: int,
+    hidden_dim: int,
+    device: torch.device,
+) -> float | None:
+    train_y = train_y.view(-1).long().cpu()
+    eval_y = eval_y.view(-1).long().cpu()
+    classes = torch.unique(train_y)
+    if classes.numel() < 2 or not set(torch.unique(eval_y).tolist()).issubset(set(classes.tolist())):
+        return None
+    class_to_local = {int(value): index for index, value in enumerate(classes.tolist())}
+    local_train = torch.tensor([class_to_local[int(value)] for value in train_y.tolist()])
+    torch.manual_seed(int(seed))
+    head = nn.Sequential(
+        nn.Linear(train_x.size(1), int(hidden_dim)),
+        nn.GELU(),
+        nn.Linear(int(hidden_dim), len(classes)),
+    ).to(device)
+    optimizer = torch.optim.AdamW(head.parameters(), lr=5e-3, weight_decay=1e-4)
+    generator = torch.Generator().manual_seed(int(seed) + 1701)
+    for _ in range(max(1, int(steps))):
+        selected = torch.randint(train_x.size(0), (min(64, train_x.size(0)),), generator=generator)
+        logits = head(train_x[selected].to(device))
+        loss = F.cross_entropy(logits, local_train[selected].to(device))
+        optimizer.zero_grad(set_to_none=True)
+        loss.backward()
+        optimizer.step()
+    head.eval()
+    with torch.no_grad():
+        local_prediction = head(eval_x.to(device)).argmax(dim=1).cpu()
+    prediction = classes[local_prediction]
+    return _balanced_accuracy(prediction, eval_y)
+
+
+def conditional_q_probe(
+    *,
+    train_q: Tensor,
+    eval_q: Tensor,
+    train_labels: Mapping[str, Tensor],
+    eval_labels: Mapping[str, Tensor],
+    seed: int,
+    steps: int,
+    hidden_dim: int,
+    device: torch.device,
+) -> dict[str, Any]:
+    """Probe ordered, token-shuffled and permutation-invariant q leakage."""
+
+    train_q = torch.as_tensor(train_q).detach().float().cpu()
+    eval_q = torch.as_tensor(eval_q).detach().float().cpu()
+    if train_q.ndim != 3 or eval_q.ndim != 3 or train_q.shape[1:] != eval_q.shape[1:]:
+        raise ValueError("q probes require aligned [N,T,Q] tensors")
+    labels = ("tx", "receiver", "day")
+    for name in labels:
+        if name not in train_labels or name not in eval_labels:
+            raise ValueError(f"q probe labels are missing {name}")
+    ordered_train = train_q.flatten(1)
+    ordered_eval = eval_q.flatten(1)
+    generator = torch.Generator().manual_seed(int(seed) + 41)
+
+    def shuffled(value: Tensor) -> Tensor:
+        rows = []
+        for row in value:
+            rows.append(row[torch.randperm(row.size(0), generator=generator)])
+        return torch.stack(rows).flatten(1)
+
+    shuffled_train = shuffled(train_q)
+    shuffled_eval = shuffled(eval_q)
+
+    def invariant(value: Tensor) -> Tensor:
+        return torch.cat(
+            (value.mean(dim=1), value.std(dim=1, unbiased=False), value.amax(dim=1), value.amin(dim=1)),
+            dim=1,
+        )
+
+    representations = {
+        "ordered_sequence": (ordered_train, ordered_eval),
+        "token_shuffled_sequence": (shuffled_train, shuffled_eval),
+        "permutation_invariant": (invariant(train_q), invariant(eval_q)),
+    }
+    result: dict[str, Any] = {}
+    for representation, (train_x, eval_x) in representations.items():
+        metrics: dict[str, Any] = {}
+        for offset, name in enumerate(labels):
+            accuracy = _classification_probe(
+                train_x,
+                torch.as_tensor(train_labels[name]),
+                eval_x,
+                torch.as_tensor(eval_labels[name]),
+                seed=int(seed) + offset * 101,
+                steps=steps,
+                hidden_dim=hidden_dim,
+                device=device,
+            )
+            metrics[f"{name}_balanced_accuracy"] = accuracy
+        result[representation] = metrics
+    ordered_tx = result["ordered_sequence"]["tx_balanced_accuracy"]
+    shuffled_tx = result["token_shuffled_sequence"]["tx_balanced_accuracy"]
+    result["ordered_minus_shuffled_tx_accuracy"] = (
+        float(ordered_tx - shuffled_tx) if ordered_tx is not None and shuffled_tx is not None else None
+    )
+    conditional_specs = {
+        "tx_within_fixed_receiver_day": ("tx", ("receiver", "day")),
+        "receiver_within_fixed_tx_day": ("receiver", ("tx", "day")),
+        "day_within_fixed_tx_receiver": ("day", ("tx", "receiver")),
+    }
+    conditional: dict[str, Any] = {}
+    for output_name, (target_name, fixed_names) in conditional_specs.items():
+        train_fixed = torch.stack([torch.as_tensor(train_labels[name]).view(-1) for name in fixed_names], dim=1)
+        eval_fixed = torch.stack([torch.as_tensor(eval_labels[name]).view(-1) for name in fixed_names], dim=1)
+        scores = []
+        for group in torch.unique(eval_fixed, dim=0):
+            train_mask = (train_fixed == group).all(dim=1)
+            eval_mask = (eval_fixed == group).all(dim=1)
+            if int(train_mask.sum()) < 2 or int(eval_mask.sum()) < 1:
+                continue
+            score = _classification_probe(
+                ordered_train[train_mask],
+                torch.as_tensor(train_labels[target_name])[train_mask],
+                ordered_eval[eval_mask],
+                torch.as_tensor(eval_labels[target_name])[eval_mask],
+                seed=int(seed) + len(scores) * 211,
+                steps=steps,
+                hidden_dim=hidden_dim,
+                device=device,
+            )
+            if score is not None:
+                scores.append(score)
+        conditional[output_name] = {
+            "balanced_accuracy_macro": float(sum(scores) / len(scores)) if scores else None,
+            "valid_group_count": len(scores),
+        }
+    result["conditional"] = conditional
+    result["sample_level_state_persisted"] = False
+    return result
+
+
+def build_gate_feature_matrix(features: Mapping[str, Tensor]) -> tuple[Tensor, tuple[str, ...]]:
+    """Create a gate matrix from the explicit deployment-time feature allowlist."""
+
+    observed = set(features)
+    forbidden = sorted(observed.difference(GATE_FEATURE_ALLOWLIST))
+    if forbidden:
+        raise ValueError(f"forbidden gate features: {forbidden}")
+    missing = sorted(GATE_FEATURE_ALLOWLIST.difference(observed))
+    if missing:
+        raise ValueError(f"missing gate features: {missing}")
+    names = tuple(sorted(GATE_FEATURE_ALLOWLIST))
+    columns = [torch.as_tensor(features[name]).detach().float().cpu().view(-1) for name in names]
+    counts = {column.numel() for column in columns}
+    if len(counts) != 1 or not counts or next(iter(counts)) == 0:
+        raise ValueError("gate feature columns must have equal non-zero length")
+    matrix = torch.stack(columns, dim=1)
+    if not bool(torch.isfinite(matrix).all()):
+        raise ValueError("gate features contain non-finite values")
+    return matrix, names
+
+
+def _gate_polynomial_features(matrix: Tensor) -> Tensor:
+    value = torch.as_tensor(matrix).detach().float().cpu()
+    if value.ndim != 2:
+        raise ValueError("gate matrix must be two-dimensional")
+    return torch.cat((value, value.square()), dim=1)
+
+
+def _fit_binary_logistic(
+    matrix: Tensor,
+    labels: Tensor,
+    *,
+    steps: int,
+    seed: int,
+) -> tuple[Tensor, Tensor, Tensor]:
+    x = _gate_polynomial_features(matrix)
+    y = torch.as_tensor(labels).detach().float().cpu().view(-1)
+    if x.size(0) != y.numel() or x.size(0) == 0:
+        raise ValueError("gate labels must match a non-empty feature matrix")
+    mean = x.mean(dim=0)
+    scale = x.std(dim=0, unbiased=False).clamp_min(1e-6)
+    normalized = (x - mean) / scale
+    generator_state = torch.random.get_rng_state()
+    torch.manual_seed(int(seed))
+    try:
+        model = nn.Linear(normalized.size(1), 1)
+        optimizer = torch.optim.Adam(model.parameters(), lr=0.03, weight_decay=1e-3)
+        positive = float(y.sum().item())
+        negative = float(y.numel() - positive)
+        positive_weight = max(negative / max(positive, 1.0), 1e-3)
+        for _ in range(max(1, int(steps))):
+            logits = model(normalized).view(-1)
+            loss = F.binary_cross_entropy_with_logits(
+                logits,
+                y,
+                pos_weight=logits.new_tensor(positive_weight),
+            )
+            optimizer.zero_grad(set_to_none=True)
+            loss.backward()
+            optimizer.step()
+        weight = torch.cat((model.weight.detach().view(-1), model.bias.detach().view(1)))
+    finally:
+        torch.random.set_rng_state(generator_state)
+    return mean, scale, weight
+
+
+def _predict_binary_logistic(matrix: Tensor, mean: Tensor, scale: Tensor, weight: Tensor) -> Tensor:
+    x = _gate_polynomial_features(matrix)
+    normalized = (x - mean) / scale
+    return torch.sigmoid(normalized @ weight[:-1] + weight[-1])
+
+
+def _gate_group_folds(groups: Sequence[Any], folds: int) -> tuple[Tensor, int]:
+    if int(folds) < 2:
+        raise ValueError("gate group CV requires at least two folds")
+    stable_groups = [repr(group) for group in groups]
+    if not stable_groups:
+        raise ValueError("gate groups cannot be empty")
+    unique = sorted(
+        set(stable_groups),
+        key=lambda value: hashlib.sha256(value.encode("utf-8")).hexdigest(),
+    )
+    if len(unique) < int(folds):
+        raise ValueError("gate group count is smaller than fold count")
+    fold_by_group = {group: index % int(folds) for index, group in enumerate(unique)}
+    assignments = torch.tensor([fold_by_group[group] for group in stable_groups], dtype=torch.long)
+    overlap = 0
+    for fold in range(int(folds)):
+        train_groups = {stable_groups[index] for index in torch.nonzero(assignments != fold).view(-1).tolist()}
+        eval_groups = {stable_groups[index] for index in torch.nonzero(assignments == fold).view(-1).tolist()}
+        overlap += len(train_groups.intersection(eval_groups))
+    return assignments, overlap
+
+
+def _cross_fitted_gate_probabilities(
+    matrix: Tensor,
+    rescue: Tensor,
+    harm: Tensor,
+    assignments: Tensor,
+    *,
+    steps: int,
+    seed: int,
+) -> tuple[Tensor, Tensor]:
+    rescue_probability = torch.zeros(matrix.size(0), dtype=torch.float32)
+    harm_probability = torch.zeros_like(rescue_probability)
+    for fold in sorted(set(assignments.tolist())):
+        train = assignments != int(fold)
+        evaluate = assignments == int(fold)
+        r_mean, r_scale, r_weight = _fit_binary_logistic(
+            matrix[train], rescue[train], steps=steps, seed=int(seed) + 37 * int(fold)
+        )
+        h_mean, h_scale, h_weight = _fit_binary_logistic(
+            matrix[train], harm[train], steps=steps, seed=int(seed) + 37 * int(fold) + 17
+        )
+        rescue_probability[evaluate] = _predict_binary_logistic(
+            matrix[evaluate], r_mean, r_scale, r_weight
+        )
+        harm_probability[evaluate] = _predict_binary_logistic(
+            matrix[evaluate], h_mean, h_scale, h_weight
+        )
+    return rescue_probability, harm_probability
+
+
+def fit_truth_blind_gate(
+    features: Mapping[str, Tensor],
+    *,
+    outcomes: Mapping[tuple[float, float], Mapping[str, Tensor]],
+    groups: Sequence[Any],
+    receivers: Tensor,
+    tau_candidates: Sequence[float] = (-0.10, 0.0, 0.05, 0.10),
+    lambda_h_candidates: Sequence[float] = (1.5, 2.0, 3.0),
+    folds: int = 5,
+    steps: int = 200,
+    seed: int = 0,
+) -> TruthBlindGateFit:
+    """Fit and freeze a low-capacity rescue/harm gate using V_cal labels only."""
+
+    matrix, names = build_gate_feature_matrix(features)
+    count = matrix.size(0)
+    if len(groups) != count:
+        raise ValueError("gate group count must match feature rows")
+    receiver = torch.as_tensor(receivers).detach().long().cpu().view(-1)
+    if receiver.numel() != count:
+        raise ValueError("receiver count must match feature rows")
+    assignments, overlap = _gate_group_folds(groups, int(folds))
+    if not outcomes:
+        raise ValueError("gate calibration requires at least one frozen fusion candidate")
+
+    candidate_cache: dict[tuple[float, float], tuple[Tensor, Tensor, Tensor, Tensor]] = {}
+    best: tuple[tuple[float, float, float, float], tuple[float, ...]] | None = None
+    for candidate, labels in sorted(outcomes.items()):
+        eta, clip_norm = (float(candidate[0]), float(candidate[1]))
+        if eta not in {0.05, 0.10, 0.20} or clip_norm <= 0.0:
+            raise ValueError("invalid frozen fusion candidate")
+        if set(labels) != {"rescue", "harm"}:
+            raise ValueError("each fusion candidate requires rescue and harm labels")
+        rescue = torch.as_tensor(labels["rescue"]).detach().bool().cpu().view(-1)
+        harm = torch.as_tensor(labels["harm"]).detach().bool().cpu().view(-1)
+        if rescue.numel() != count or harm.numel() != count or bool((rescue & harm).any()):
+            raise ValueError("rescue/harm labels must be disjoint and match V_cal rows")
+        p_rescue, p_harm = _cross_fitted_gate_probabilities(
+            matrix,
+            rescue,
+            harm,
+            assignments,
+            steps=steps,
+            seed=int(seed) + int(round(eta * 1000.0)) + int(round(clip_norm * 100.0)),
+        )
+        candidate_cache[(eta, clip_norm)] = (rescue, harm, p_rescue, p_harm)
+        for lambda_h in lambda_h_candidates:
+            if float(lambda_h) <= 1.0:
+                raise ValueError("lambda_h candidates must be greater than one")
+            for tau in tau_candidates:
+                selected = (p_rescue - float(lambda_h) * p_harm) > float(tau)
+                weighted = rescue.float() - float(lambda_h) * harm.float()
+                utility = float((selected.float() * weighted).sum().item())
+                coverage = float(selected.float().mean().item())
+                ranking = (utility, coverage, eta, -float(lambda_h), -abs(float(tau)))
+                if best is None or ranking > best[1]:
+                    best = ((eta, clip_norm, float(tau), float(lambda_h)), ranking)
+    assert best is not None
+    eta, clip_norm, tau, lambda_h = best[0]
+    rescue, harm, p_rescue, p_harm = candidate_cache[(eta, clip_norm)]
+    selected = (p_rescue - lambda_h * p_harm) > tau
+    weighted = rescue.float() - lambda_h * harm.float()
+
+    receiver_utilities: list[float] = []
+    for rx in sorted(set(receiver.tolist())):
+        train = receiver != int(rx)
+        evaluate = receiver == int(rx)
+        if not bool(train.any()) or not bool(evaluate.any()):
+            continue
+        r_mean, r_scale, r_weight = _fit_binary_logistic(
+            matrix[train], rescue[train], steps=steps, seed=int(seed) + 1009 + int(rx)
+        )
+        h_mean, h_scale, h_weight = _fit_binary_logistic(
+            matrix[train], harm[train], steps=steps, seed=int(seed) + 2003 + int(rx)
+        )
+        rx_selected = (
+            _predict_binary_logistic(matrix[evaluate], r_mean, r_scale, r_weight)
+            - lambda_h * _predict_binary_logistic(matrix[evaluate], h_mean, h_scale, h_weight)
+        ) > tau
+        receiver_utilities.append(float((rx_selected.float() * weighted[evaluate]).sum().item()))
+
+    r_mean, r_scale, r_weight = _fit_binary_logistic(
+        matrix, rescue, steps=steps, seed=int(seed) + 3001
+    )
+    h_mean, h_scale, h_weight = _fit_binary_logistic(
+        matrix, harm, steps=steps, seed=int(seed) + 4001
+    )
+    return TruthBlindGateFit(
+        feature_names=names,
+        eta=eta,
+        clip_norm=clip_norm,
+        tau=tau,
+        lambda_h=lambda_h,
+        rescue_mean=r_mean,
+        rescue_scale=r_scale,
+        rescue_weight=r_weight,
+        harm_mean=h_mean,
+        harm_scale=h_scale,
+        harm_weight=h_weight,
+        oof_sample_count=count,
+        oof_coverage=float(selected.float().mean().item()),
+        oof_weighted_utility=float((selected.float() * weighted).sum().item()),
+        group_overlap_count=int(overlap),
+        positive_receiver_cv_count=sum(value > 0.0 for value in receiver_utilities),
+        receiver_cv_count=len(receiver_utilities),
+        audit_labels_consumed=False,
+    )
+
+
+def predict_truth_blind_gate(fitted: TruthBlindGateFit, features: Mapping[str, Tensor]) -> Tensor:
+    """Apply the frozen V_cal gate without labels or role metadata."""
+
+    matrix, names = build_gate_feature_matrix(features)
+    if names != fitted.feature_names:
+        raise ValueError("gate feature order does not match the frozen model")
+    p_rescue = _predict_binary_logistic(
+        matrix, fitted.rescue_mean, fitted.rescue_scale, fitted.rescue_weight
+    )
+    p_harm = _predict_binary_logistic(
+        matrix, fitted.harm_mean, fitted.harm_scale, fitted.harm_weight
+    )
+    return ((p_rescue - fitted.lambda_h * p_harm) > fitted.tau).float()
+
+
+def bounded_residual_fusion(
+    base_logits: Tensor,
+    operator_logits: Tensor,
+    *,
+    gate: Tensor,
+    eta: float,
+    scale: float,
+    clip_norm: float,
+) -> Tensor:
+    """Apply a gate-weighted residual correction with a per-sample L2 cap."""
+
+    base = torch.as_tensor(base_logits)
+    operator = torch.as_tensor(operator_logits).to(device=base.device, dtype=base.dtype)
+    if base.ndim != 2 or operator.shape != base.shape:
+        raise ValueError("base and operator logits must share [N,C] geometry")
+    if float(eta) not in {0.05, 0.10, 0.20}:
+        raise ValueError("eta must be one of 0.05, 0.10, 0.20")
+    if float(clip_norm) <= 0.0 or float(scale) <= 0.0:
+        raise ValueError("scale and clip_norm must be positive")
+    gate = torch.as_tensor(gate, device=base.device, dtype=base.dtype).view(-1)
+    if gate.numel() != base.size(0) or bool(((gate < 0.0) | (gate > 1.0)).any()):
+        raise ValueError("gate must contain one value in [0,1] per sample")
+    raw = float(scale) * operator - base
+    norm = raw.norm(dim=1, keepdim=True).clamp_min(1e-12)
+    clipped = raw * torch.clamp(raw.new_tensor(float(clip_norm)) / norm, max=1.0)
+    return base + gate.unsqueeze(1) * float(eta) * clipped
+
+
+def evaluate_stage_b(metrics: Mapping[str, Any], *, stage_a_status: str) -> StageBVerdict:
+    """Apply the preregistered safety criteria or emit a clean A-gated skip."""
+
+    if str(stage_a_status) != "A_PASS":
+        return StageBVerdict(
+            status="NOT_RUN_A_GATE",
+            next_route="STAGE_B_NOT_AUTHORIZED_BY_STAGE_A",
+            reasons=(f"STAGE_A_STATUS_{stage_a_status}",),
+        )
+    required = {
+        "leo_mean_gain_pp",
+        "leo_gain_ci_low_pp",
+        "clean_gain_pp",
+        "worst_receiver_gain_pp",
+        "selected_weighted_utility",
+        "gate_coverage",
+        "gate_coverage_min",
+        "positive_receiver_cv_count",
+        "receiver_cv_count",
+    }
+    missing = sorted(required.difference(metrics))
+    if missing:
+        raise ValueError(f"stage B metrics missing: {missing}")
+    reasons: list[str] = []
+    if float(metrics["leo_mean_gain_pp"]) < 0.20:
+        reasons.append("LEO_MEAN_GAIN_LT_0_20PP")
+    if float(metrics["leo_gain_ci_low_pp"]) <= 0.0:
+        reasons.append("LEO_GAIN_CI_CROSSES_ZERO")
+    if float(metrics["clean_gain_pp"]) < -0.10:
+        reasons.append("CLEAN_DROP_GT_0_10PP")
+    if float(metrics["worst_receiver_gain_pp"]) < -0.05:
+        reasons.append("WORST_RECEIVER_DROP_GT_0_05PP")
+    if float(metrics["selected_weighted_utility"]) <= 0.0:
+        reasons.append("SELECTED_WEIGHTED_UTILITY_NOT_POSITIVE")
+    if float(metrics["gate_coverage"]) < float(metrics["gate_coverage_min"]):
+        reasons.append("GATE_COVERAGE_BELOW_PREREGISTERED_MINIMUM")
+    receiver_count = int(metrics["receiver_cv_count"])
+    if receiver_count <= 0 or int(metrics["positive_receiver_cv_count"]) <= receiver_count // 2:
+        reasons.append("LEAVE_ONE_RECEIVER_CV_MAJORITY_NOT_POSITIVE")
+    if reasons:
+        return StageBVerdict(
+            status="B_FAIL",
+            next_route="KEEP_PA_MECHANISM_OUT_OF_PHASE1_CLASSIFICATION_LOGITS",
+            reasons=tuple(reasons),
+        )
+    return StageBVerdict(
+        status="B_PASS",
+        next_route="DESIGN_CONTINUOUS_CHALLENGE_V3",
+        reasons=(),
+    )
 
 
 def _metadata_columns(metadata: Mapping[str, Any]) -> dict[str, list[int]]:
@@ -1039,22 +1838,33 @@ __all__ = [
     "FactorRow",
     "FactorMatrixResult",
     "FoldRecords",
+    "GATE_FEATURE_ALLOWLIST",
     "RelationMapping",
     "RetroSplit",
     "SIDECAR_V2_SCHEMA",
     "SIDECAR_V3_SCHEMA",
     "SidecarArchitectureConfig",
     "StageAVerdict",
+    "StageBVerdict",
+    "TruthBlindGateFit",
+    "bounded_residual_fusion",
     "build_fold_records",
+    "build_gate_feature_matrix",
     "build_relation_indices",
     "build_sidecar_v3_payload",
     "common_anchor_mask",
     "compose_factor_rows",
+    "conditional_q_probe",
     "duplicate_audit",
     "evaluate_stage_a",
+    "evaluate_stage_b",
+    "fit_truth_blind_gate",
     "fold_macro_nmse",
     "load_sidecar_v3",
+    "m0_exact_pair_retrieval",
     "migrate_v2_challenge_encoder",
+    "predict_truth_blind_gate",
     "run_factor_matrix",
+    "run_loto_residual",
     "split_v_select_retro",
 ]
