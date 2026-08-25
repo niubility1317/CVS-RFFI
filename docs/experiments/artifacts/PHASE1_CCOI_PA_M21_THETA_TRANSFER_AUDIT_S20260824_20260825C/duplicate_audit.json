@@ -1,0 +1,31 @@
+{
+  "status": "COMPLETE",
+  "sample_level_state_persisted": false,
+  "sig_i_semantics": "within_tx_rx_day_eq_temporal_index_only_not_cross_receiver_event_id",
+  "block_size": 10,
+  "role_counts": {
+    "V_select_fit": 8001,
+    "V_audit_retro": 4176,
+    "guard": 423
+  },
+  "base_index_overlap_count": 0,
+  "exact_duplicate_pair_count": 0,
+  "near_similarity_pair_count": 8001,
+  "near_similarity_gt_0_999_rate": 0.15360580384731293,
+  "near_similarity_gt_0_995_rate": 0.5545556545257568,
+  "nearest_similarity_quantiles": {
+    "q50": 0.9959375262260437,
+    "q90": 0.9992626905441284,
+    "q95": 0.9994965195655823,
+    "q99": 0.9997397661209106,
+    "max": 0.9998641610145569
+  },
+  "nearest_sig_gap_quantiles": {
+    "q50": 157.0,
+    "q90": 238.0,
+    "q95": 256.0,
+    "q99": 280.0,
+    "max": 298.0
+  },
+  "guard_block_effective": true
+}

@@ -1,0 +1,13 @@
+{
+  "status": "COMPLETE",
+  "candidate_pool_policy": "same_tx_same_rx_same_day_same_fold",
+  "sample_count": 16704,
+  "recall_at_1": 0.1725933849811554,
+  "recall_at_5": 0.3697916567325592,
+  "median_rank": 10.0,
+  "mrr": 0.28222891646686316,
+  "exact_pair_distance_auc": 0.7170255358625067,
+  "clean_satellite_theta_distance_mean": 4.526603622027491,
+  "exact_pair_margin_mean": -0.0011023882441079935,
+  "sample_level_state_persisted": false
+}

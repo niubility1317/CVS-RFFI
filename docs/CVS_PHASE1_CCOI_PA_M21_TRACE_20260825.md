@@ -7,11 +7,11 @@
 |M21-01|§1、§3|候选命名和theta迁移声明边界|设计、runner、报告|verified|manifest/report检查|不得称正确challenge系统辨识|
 |M21-02|§2.1|`V_audit_retro`仅称权重独立|设计、报告|verified|报告复核|非研究历史完全未见|
 |M21-03|§2.2|同容量C1′/C4′控制|runner、factor artifact|verified|参数量/step/init测试|同初始化模板|
-|M21-04|§2.3|覆盖4个holdout fold|核心模块、runner|verified|4-fold/raw-mask测试|runner接入待M21-39闭合|
+|M21-04|§2.3|覆盖4个holdout fold|核心模块、runner|verified|4-fold/raw-mask测试+正式factor artifact|正式run四fold全部闭合|
 |M21-05|§2.4|support只来自独立bank|核心模块|verified|role来源测试|审计目标不得充当support|
 |M21-06|§2.4、§7|关系选择不读取q|核心模块|verified|无q接口及候选测试|metadata后确定性seed|
 |M21-07|§4.1|保持0.07/0.63/0.15/0.15|runner|verified|协议负测|只细分V_select|
-|M21-08|§4.1|V_select按65/35或覆盖不足时70/30|核心模块、manifest|verified|split复现测试|manifest接入待M21-39闭合|
+|M21-08|§4.1|V_select按65/35或覆盖不足时70/30|核心模块、manifest|verified|split复现测试+正式split manifest|实际8001/4176/423|
 |M21-09|§4.2|TX×RX×day×eq×block分组|核心模块|verified|block不跨role测试|B从10/20/25元数据选择|
 |M21-10|§4.2|guard block不进入role|核心模块|verified|相邻role隔离测试|降低邻近重复|
 |M21-11|§4.3|exact/near duplicate聚合审计|核心模块、artifact|verified|聚合字段测试|不返回样本级摘要|
@@ -22,7 +22,7 @@
 |M21-16|§6|冻结Core90和旧challenge encoder|runner|verified|requires_grad/state检查|response/operator重新初始化|
 |M21-17|§6.1|C1′/C4′只在L_s训练|runner|verified|role receipt|U_s不增加监督|
 |M21-18|§6.1/6.2|只用V_select_fit选epoch|runner|verified|选择访问测试|audit不参与选模|
-|M21-19|§7|F0–F9完整矩阵|核心模块、runner|verified|逐row/head训练测试|runner接入待M21-39闭合|
+|M21-19|§7|F0–F9完整矩阵|核心模块、runner|verified|逐row/head训练测试+正式factor artifact|F7按预登记保持UNAVAILABLE|
 |M21-20|§7.1|F3严格same TX/cross RX/same day|核心模块|verified|无fallback测试|无候选则invalid|
 |M21-21|§7.2|F5严格different TX/same RX/day|核心模块|verified|关系测试|禁止循环shuffle|
 |M21-22|§7.3|F6固定连续PA统计|核心模块、runner|verified|非q选择与距离测试|runner已接入8项固定物理统计|
@@ -43,17 +43,17 @@
 |M21-37|§13|两阶段分层结论|decision manifest、报告|verified|verdict测试|精确route命名|
 |M21-38|§14|TDD逐项先红后绿|测试记录|verified|93项相关pytest通过|每个新增行为先观察失败再实现|
 |M21-39|§15|14个聚合artifact|runner、报告|verified|artifact闭合测试|gate未运行也有状态文件|
-|M21-40|§16|新不可覆盖run和最小发布治理|launcher、报告|implemented|smoke/输出冲突测试|等待N607最小发布验证；旧A/B全程只读|
+|M21-40|§16|新不可覆盖run和最小发布治理|launcher、报告|verified|N607归档SHA、远端编译、真实checkpoint smoke、正式artifact闭合|旧A/B全程只读；C自然闭合ANALYZED|
 |M21-41|复审治理|逐文件SHA、环境锁不作gate|报告|rejected|`REJECTED_EXTRA_GATE`记录|仅一次release归档SHA|
 |M21-42|后续边界|Soft-DTW/OT/码本均衡/多机制/Core90解冻|报告|deferred|范围复核|不进入M2.1|
 
 ## 当前计数
 
 - `pending`：0项
-- `implemented`：1项
-- `verified`：39项
+- `implemented`：0项
+- `verified`：40项
 - `deferred`：1项
 - `rejected`：1项
 - `blocked`：0项
 
-当前最高风险：真实数据上F2∩F3∩F5共同anchor覆盖是否充足，以及F3在不读取q、不使用审计集自身support的前提下能否优于F0和F5。覆盖或性能不足将形成`A_FAIL`科学结论，不视为技术失败。
+最终结论：F2∩F3∩F5共同anchor覆盖为100%，F3相对F0和F5均有正增量，但C4′相对F2的跨receiver退化为12.79%—14.71%，超过预登记10%上限。阶段A为`A_FAIL`，阶段B按计划`NOT_RUN_A_GATE`，当前PA theta迁移路线停止；这不是系统技术失败。

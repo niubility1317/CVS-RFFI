@@ -1,0 +1,60 @@
+{
+  "status": "ANALYZED",
+  "schema": "cvs.phase1.ccoi_pa_m21_audit.v1",
+  "stage_a_verdict": {
+    "status": "A_FAIL",
+    "next_route": "STOP_CURRENT_PA_THETA_TRANSFER",
+    "reasons": [
+      "F3_CROSS_RX_DEGRADATION_GT_10PCT"
+    ],
+    "stage_b_allowed": false
+  },
+  "stage_b_verdict": {
+    "status": "NOT_RUN_A_GATE",
+    "next_route": "STAGE_B_NOT_AUTHORIZED_BY_STAGE_A",
+    "reasons": [
+      "STAGE_A_STATUS_A_FAIL"
+    ]
+  },
+  "conditioning_comparison": {
+    "status": "COMPLETE",
+    "c4_vs_c1_f3_relative_gain": 0.2059480904088378,
+    "c4_vs_c1_f3_ci_low": 0.18195123211874706
+  },
+  "coverage": {
+    "f3": 1.0,
+    "each_tx_two_cross_receiver_relations": true,
+    "major_cell_minimum_pass": true,
+    "major_cell_minimum": 10
+  },
+  "sensitivity": {
+    "head_seed_direction_count": 3,
+    "candidate_seed_direction_count": 3,
+    "satellite_seed_conclusion_reversal": false,
+    "satellite_seed_count": 2
+  },
+  "next_route": "STOP_CURRENT_PA_THETA_TRANSFER",
+  "artifact_count": 14,
+  "aggregate_artifacts": [
+    "split_manifest.json",
+    "sidecar_architecture_c1p.json",
+    "sidecar_architecture_c4p.json",
+    "sidecar_training_summary.json",
+    "duplicate_audit.json",
+    "q_conditional_probe.json",
+    "m0_exact_pair_retrieval.json",
+    "factor_matrix_c1p.json",
+    "factor_matrix_c4p.json",
+    "loto_residual_audit.json",
+    "gate_calibration_summary.json",
+    "gate_audit_summary.json",
+    "decision_manifest.json",
+    "final_report.md"
+  ],
+  "technical_model_artifacts": [
+    "models/c1p_sidecar_v3.pth",
+    "models/c4p_sidecar_v3.pth"
+  ],
+  "target_or_query_access": false,
+  "sample_level_state_persisted": false
+}
