@@ -134,3 +134,4 @@ PYTHONPATH=. /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u scripts/scor
 - 真实缓存读回发现历史`VALIDATED_ONCE` feature-cache v2没有独立`protocol_schema`字段，但其固定manifest schema、feature-cache schema和`PHASE2_FULL_CONTRACT`逐项表达当前`p2_min_v1`合同。
 - 修正为唯一兼容解析：显式`p2_min_v1`直接接受；字段缺失时只接受精确v2 schema且完整合同逐项相等，并记录`protocol_schema_source=feature_cache_v2_exact_contract`；任何字段漂移继续fail-closed。
 - 该修正不更改数据字节、capsule、split、support/query划分或方法参数，不触发数据重验；首次release标记`RELEASE_NOT_LAUNCHED`，后续使用不可覆盖`_r2` release root。
+- 协议兼容修复commit：`40a6f9532f222140d5a8ca23258a91e1d7bc47d1`。
