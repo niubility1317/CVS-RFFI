@@ -58,10 +58,12 @@ CANONICAL_ADAPTER = {
 }
 REGISTERED_ADAPTER_SITE_PROFILES = (
     CANONICAL_ADAPTER["sites"],
+    ("time", "fusion"),
     ("fusion",),
 )
 REGISTERED_ADAPTER_RANK_SITE_PROFILES = (
     (4, CANONICAL_ADAPTER["sites"]),
+    (4, ("time", "fusion")),
     (4, ("fusion",)),
     (8, ("fusion",)),
 )

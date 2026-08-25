@@ -45,10 +45,12 @@ _FORBIDDEN_TRAINABLE_FRAGMENTS = ("cls_head", "classifier", "lda", "cov")
 _META_ADAPTER_SITES = ("time", "freq", "fusion")
 _REGISTERED_META_ADAPTER_SITE_PROFILES = (
     _META_ADAPTER_SITES,
+    ("time", "fusion"),
     ("fusion",),
 )
 _REGISTERED_META_ADAPTER_RANK_SITE_PROFILES = (
     (4, _META_ADAPTER_SITES),
+    (4, ("time", "fusion")),
     (4, ("fusion",)),
     (8, ("fusion",)),
 )
