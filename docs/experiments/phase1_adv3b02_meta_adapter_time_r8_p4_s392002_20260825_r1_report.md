@@ -3,6 +3,7 @@
 - run ID：`phase1_adv3b02_meta_adapter_time_r8_p4_s392002_20260825_r1`
 - 状态：`LOCAL_VERIFIED`
 - 分支：`codex/meta-adapter-tri-r4-v1-20260824`
+- 代码／配置冻结提交：`227889e09e2affce2af18bce15e39c86c7436b98`；GitHub远端分支OID已独立回读一致。
 - 冻结基线：`ADV3B02_CORE90_SOFT_E200`checkpoint。
 - 科学锚点：fusion rank8已产生6个Target5决策变化但在low-elev净负；time+fusion rank4产生最大0.0301分数变化但0个决策变化。二者均未晋级。
 
