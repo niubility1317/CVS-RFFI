@@ -1,6 +1,6 @@
 {
   "schema": "cvs.phase1.fasttrust_qb3_matrix.v2",
-  "run_id": "phase1_adv3b02_fasttrust_qb3_anchor_cache_speed_e6_20260826_r3",
+  "run_id": "phase1_adv3b02_fasttrust_qb3_anchor_cache_speed_e6_20260826_r4",
   "epochs": 6,
   "unlabeled_batch_size": 256,
   "training_schedule": "LEO_WEAK",
@@ -40,7 +40,7 @@
   "base_checkpoint": "runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
   "rows": [
     {
-      "gpu": 6,
+      "gpu": 7,
       "seed": 392002,
       "variant": "SPEED_LIVE_ANCHOR",
       "candidate": "SPEED_S392002_C2_LIVE_ANCHOR",
@@ -55,7 +55,7 @@
       "cache_anchor_logits": false
     },
     {
-      "gpu": 7,
+      "gpu": 6,
       "seed": 392002,
       "variant": "SPEED_CACHED_ANCHOR",
       "candidate": "SPEED_S392002_C2_CACHED_ANCHOR",

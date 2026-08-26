@@ -94,3 +94,6 @@
 - `r2`两行均完成E6及Clean+三类LEO弱场景终评。epoch2–6训练batch均值由live的66.102秒降至cached的62.258秒，下降5.815%；U吞吐由720.05升至756.76样本/秒，提高5.098%。计入5.882秒缓存构建后，E6训练阶段净耗时下降3.997%，按稳定epoch外推E200约节省762.9秒（12.7分钟）。
 - 但`r2`不能晋级：缓存实现把AMP anchor logits强制提升为FP32，而live路径保持FP16，导致路由与训练轨迹不等价。完整逐epoch比对发现3,577个非时间有限数值中383个不同；epoch4验证正确数相差78。终评也出现差异：live/cached的Clean为87.2217%/87.3383%，LEO均值为68.4306%/67.9483%，receiver×LEO floor为49.5583%/49.4167%。因此`r2`结论限定为`SPEED_FEASIBLE / SEMANTIC_EQUIVALENCE_FAILED / NO_PROMOTION`。
 - 已将dense cache改为保留真实anchor输出dtype，不再`.float()`；新TDD覆盖FP16 cache与lookup dtype。修复验证改用全新run ID`phase1_adv3b02_fasttrust_qb3_anchor_cache_speed_e6_20260826_r3`，仍只比较cache开关。
+- `r3`使用修复后的FP16 cache完成E6及四场景终评。epoch2–6训练batch均值由66.309秒降至64.349秒，下降2.956%；U吞吐由717.32升至737.91样本/秒，提高2.870%。计入6.061秒构建后，E6训练阶段净下降2.374%；按稳定epoch外推E200节省386.0秒（6.4分钟）。
+- `r3`仍存在跨进程非确定性：live/cached的Clean为86.7983%/85.8950%，LEO均值为69.4128%/68.9906%；同时相同live配置在`r2`与`r3`间Clean自身波动0.4233个百分点。因此E6准确率差异不归因为cache，不作为方法晋级或退级证据；cache只按数学路径、dtype和速度证据判断。
+- 为消除GPU6/7固定速度差，新增`r4`交叉位置复验：live移至GPU7，cached移至GPU6，其余配置不变。最终速度结论以`r3+r4`交叉均值为准。
