@@ -20,7 +20,7 @@
 ## 版本与命令
 
 - 本地Git工作树：`E:\type10-7\github_publish\CVS-RFFI-repo\.worktrees\meta-adapter-tri-r4-v1-20260824`
-- N607 release目标：`/home/szu2070436088/2510044040/CV-SincNet/releases/stage2_sf_tapft_v1_rx20_1_targetinner_s392002_20260826_r1`
+- N607 release目标：`/home/szu2070436088/2510044040/CV-SincNet/releases/stage2_sf_tapft_v1_rx20_1_targetinner_s392002_20260826_r1_fix1`
 - N607 CWD：上述release目录。
 - smoke命令：`CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 code/scripts/run_target_only_progressive_adapt.py --config configs/stage2_sf_tapft_v1_rx20_1_clear_smoke_s392002_20260826.json --output-dir /home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_tapft_v1_rx20_1_targetinner_s392002_20260826_r1_smoke --device cuda:0`
 - 性能筛选命令：`CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 code/scripts/run_target_only_progressive_nested.py --config configs/stage2_sf_tapft_v1_report_default_s392002_20260826.json --output-dir /home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_tapft_v1_rx20_1_targetinner_s392002_20260826_r1 --device cuda:0 --folds 4`
@@ -45,3 +45,4 @@
 - 首次真实checkpoint smoke在模型更新前停止：既有已验证support NPZ仅含`received_iq/support_labels`，runner错误要求内嵌`support_physical_ids`，因此报`target support NPZ allowlist mismatch`；smoke/run输出均未创建，无性能结果。
 - 定点修复提交为`9f8bf87bc590ad7c53240e6ae052c79562e8755e`：对于匹配`p2_min_v1/VALIDATED_ONCE/capsule_id/split_id`的既有两字段support，runner生成仅用于inner-fold行隔离的稳定opaque row ID，并在receipt中记录`physical_id_origin=validated_support_row_index`；不把它声明为新数据验证或真实物理ID证据。
 - 修复后19项SF-TAPFT聚焦测试通过；等待新release落地并重新执行同一run ID的首次有效smoke。原失败发生在输出创建和参数更新前，因此不会覆盖或混合artifact。
+- 原release目录保持不变作为失败证据；修复版使用新的`..._fix1`release目录，不覆盖旧release。
