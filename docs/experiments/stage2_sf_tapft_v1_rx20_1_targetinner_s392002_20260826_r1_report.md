@@ -49,3 +49,6 @@
 - `fix1` smoke在support tensor构造时因N607的PyTorch2.1/NumPy桥接异常停止：`torch.from_numpy`拒绝实际`numpy.ndarray`；仍未创建smoke/run输出。
 - `fix2`提交`1aad719c2f513fc8b9d85f1fe0586d4184fc2df7`保留正常`from_numpy`快路径，仅在`TypeError`时对小型support数组使用列表构造tensor；故障注入聚焦测试通过。新的`..._fix2`release不覆盖前两版。
 - `fix2`随后进入适配器，但N607 PyTorch2.1缺少`torch.amp.GradScaler`，仍在首步更新前停止且未创建输出。`fix3`提交`1023d70b37bccc7f5144e018b9045aad68ebd013`在新API存在时使用新入口，否则回退`torch.cuda.amp.GradScaler`；20项聚焦测试通过。
+- `fix3`真实checkpoint smoke为`SMOKE_PASS`：60条support、3步更新、15个参数张量更新，BN running statistics未变，source/query/truth/role均未打开；严格消费者回读为`cvs.sf_tapft.v1/3 steps/6 classes`。
+- 性能筛选已启动：wrapper PID`3660022`，Python PID`3660023`，PPID/CWD/cmdline/run-root均匹配预登记；GPU0连续两次利用率22%、显存约688MiB，未影响GPU4/5既有任务。
+- 当前状态：`RUNNING`。runner只在结束时输出最终JSON，启动检查时日志仍为0字节，不能声明“日志增长通过”；`selection.json`尚未出现，不得声明性能或artifact完成。后续只读检查进程、GPU、最终日志和`selection.json`，不重复启动。
