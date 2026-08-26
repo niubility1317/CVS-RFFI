@@ -7,15 +7,15 @@
 |ID|来源章节|要求|目标文件|状态|验证|备注|
 |---|---|---|---|---|---|---|
 |V2-01|授权边界|允许修改原型、模型、head、Adapter和tensor|设计、配置、runner|verified|用户当前对话明确授权|仅限本路线模型能力|
-|V2-02|正确性边界|source/query/truth隔离和`p2_min_v1`绑定不变|adapt、runner、prediction测试|pending|协议负测|不得随模型权限放宽|
-|V2-02A|Phase1 bundle绑定|正式bundle固定checkpoint lineage、ordered class registry和int8 component；target样本来自已验证capsule|runner、bundle、测试|pending|lineage/class/capsule错配负测|Phase1 bundle没有raw或单样本成员|
-|V2-03|R0 averaging|只保存/平均许可trainable delta与target head|`target_only_progressive_adapt.py`、测试|pending|非许可state逐tensor相等|禁止完整floating state averaging|
-|V2-04|R0 final refit|OOF选择后从原checkpoint对60条support重拟合|adapt、runner、测试|pending|bundle `support_count=60`|不得返回fold0|
-|V2-05|R0指标|阶段级BA、macro-F1、floor、NLL、recall、margin、flip和移动量|adapt、runner、receipt|pending|手算fixture|A/B/C分别记录|
-|V2-06|R0 group|真实group优先；缺失时明确row-stratified|runner、receipt|pending|group/row两条测试|不伪造物理group|
-|V2-07|R0 bundle|新增clean single v2 schema并严格回读|runner、测试|pending|schema和state回读|旧v1保持只读|
-|V2-08|R0 query接口|实现只读prediction接口，不在R0运行真实query|prediction模块、测试|pending|拒绝truth/role输入|实际query推迟到R3|
-|V2-09|R0本地验证|聚焦负测、回归、真实checkpoint no-query smoke|测试、报告|pending|测试输出与smoke artifact|未通过不得运行R1|
+|V2-02|正确性边界|source/query/truth隔离和`p2_min_v1`绑定不变|adapt、runner、prediction测试|verified|55项聚焦回归通过；prediction签名无truth/role输入|真实query未打开|
+|V2-02A|Phase1 bundle绑定|正式bundle固定checkpoint lineage、ordered class registry和int8 component；target样本来自已验证capsule|`sf_tapft_phase1_binding.py`、runner、严格loader、测试|implemented_artifact_blocked|lineage/class/capsule/count错配负测通过|N607无CORE90同谱系正式deployment bundle；旧int8 manifest明确非正式|
+|V2-03|R0 averaging|只保存/平均许可trainable delta与target head|`target_only_progressive_adapt.py`、测试|verified|anchor＋float64 mean(delta) fixture；非许可state逐tensor相等|禁止完整floating state averaging|
+|V2-04|R0 final refit|OOF选择后从原checkpoint对60条support重拟合|adapt、runner、测试|verified|fresh checkpoint、完整support、`fixed_final_step`测试通过|不得返回fold0|
+|V2-05|R0指标|阶段级BA、macro-F1、floor、NLL、recall、margin、flip和移动量|adapt、runner、receipt|verified|含缺类记0的手算fixture通过|A/B/C分别记录|
+|V2-06|R0 group|真实group优先；缺失时明确row-stratified|runner、receipt|verified|group/row两条路径测试通过|不伪造物理group|
+|V2-07|R0 bundle|新增clean single v2 schema并严格回读|runner、测试|verified|V2严格回读与外部可信target binding篡改负测通过|V1精确allowlist保持不变|
+|V2-08|R0 query接口|实现只读prediction接口，不在R0运行真实query|`sf_tapft_prediction.py`、测试|verified|真实模型/head＋合成IQ接口通过；single=batch、重排等价、state不变|实际query推迟到R3|
+|V2-09|R0本地验证|聚焦负测、回归、真实checkpoint no-query smoke|测试、报告|blocked_before_remote_smoke|本地55项通过；N607 preflight通过；同谱系正式bundle缺失|不得用异谱系bundle或旧非正式int8组件替代|
 |V2-10|R1 P0|head only贡献|配置、OOF runner|deferred|同split指标|等待R0分析|
 |V2-11|R1 P1|P0+time norm贡献|配置、OOF runner|deferred|同split指标|不得跳过P0|
 |V2-12|R1 P2|P1+time Adapter贡献|配置、OOF runner|deferred|同split指标|不得跳过P1|
@@ -34,9 +34,10 @@
 
 ## 当前状态
 
-- 已验证：1项。
-- 待实现：9项，均属于R0。
+- 已验证：8项（含授权边界）。
+- 已实现但真实工件阻塞：1项（V2-02A）。
+- 远端smoke阻塞：1项（V2-09）。
 - 延后：15项，按R1→R2→R3→S0→S1–S5顺序解锁。
 - 拒绝：0项。
-- 阻塞：0项。
-- 最高风险：R0必须同时保证全support最终模型、非许可state精确不变和旧v1只读兼容；任何一个缺失都会使性能归因再次失真。
+- 阻塞：CORE90同谱系正式Phase1 deployment bundle缺失；不得以checkpoint SHA为`1eb6d07b…307d7`的其他Phase1 bundle替代SHA为`2699eedc…d59c98`的CORE90。
+- 当前最高交付状态：`LOCAL_VERIFIED / NO_N607_SMOKE / NO_PERFORMANCE_RESULT`。R1及真实query仍保持延后。
