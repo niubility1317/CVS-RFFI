@@ -22,6 +22,24 @@ from cvsrffi.sf_tapft_phase1_binding import _PHASE1_BUNDLE_KEYS
 
 
 CORE90 = "ADV3B02_CORE90_SOFT_E200"
+CORE90_SHA = "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98"
+CURRENT_BINDING_SHA = "a90931dd0266cbd42b1163a61d015d5bfe955d2ab287733d8674b9da92d722d0"
+LEGACY_BINDING_SHA = "76735ae6d9b2d7e58f683635ca2644e00fbd27a515246aab9d47488c1ab5111f"
+LEGACY_COMPONENT_ROOT = "098badd1e82c05c1029cb02c024fe7d3c433488e8ab22e5c6e2ba0516b8d0055"
+LEGACY_COMPONENT_NPZ_SHA = "1ac2424fee2ef804d83d7c8faca8d27c7c0267c0d9d7c8b97af0cf053bfb4ea6"
+REAL_TXS = ("14-10", "14-7", "20-15", "20-19", "6-15", "8-20")
+REAL_HANDLES = (
+    "cls_75aa6d506081240f50cf3b79a0bd91714fa0084a635a472ca63194e57ec1dca2",
+    "cls_8b02d99905a8fe579368ac8e37eff51c505aaa89a646eba8892d5d800aa08416",
+    "cls_1f33441efa14970113b27483344b7df852a9041984b38d34ce570fafbab6689c",
+    "cls_f8dfc2edcccc5344f8e2535a959f13b53a1cddfd6fb22aed6e714de382b58d24",
+    "cls_a53ca1280d8fca58e3f4d6d1e9ddabfdab6027a941ee8c3f8c01d9d8ec945725",
+    "cls_33bbd16556c6e6305d1b7162f5ea71393afba910a922f9abca5999d5921a2d9d",
+)
+REAL_D85_COMPONENT = Path(
+    r"E:\type10-7\code\snapshots\d81wt\automation_reports\CV-SincNet"
+    r"\d85_ground_radius_v2_20260720\artifacts\component"
+)
 
 
 def _sha256(path: Path) -> str:
@@ -40,10 +58,10 @@ def _d19_binding(checkpoint_sha: str) -> dict[str, object]:
         "entries": [
             {
                 "class_index": index,
-                "phase1_tx": f"tx-{index}",
-                "registered_class_handle": f"cls-{index}",
+                "phase1_tx": tx,
+                "registered_class_handle": handle,
             }
-            for index in range(6)
+            for index, (tx, handle) in enumerate(zip(REAL_TXS, REAL_HANDLES))
         ],
         "evidence": {},
     }
@@ -92,6 +110,30 @@ def _prepare_fixture(
 
     monkeypatch.setattr(
         builder,
+        "_load_checkpoint",
+        lambda path: torch.load(path, map_location="cpu", weights_only=False),
+    )
+
+    def fake_regular_sha(path: Path, *, context: str) -> str:
+        if context == "CORE90 checkpoint":
+            return CORE90_SHA
+        return _sha256(Path(path))
+
+    monkeypatch.setattr(builder, "_sha256_regular", fake_regular_sha)
+    manifest["checkpoint_sha256"] = CORE90_SHA
+    binding_payload["checkpoint_sha256"] = CORE90_SHA
+    _write_json(binding_path, binding_payload)
+    monkeypatch.setattr(
+        builder,
+        "_rebind_legacy_d85_component",
+        lambda *_args, **_kwargs: {
+            "manifest": dict(manifest),
+            "component_dir": str(component_dir),
+        },
+    )
+
+    monkeypatch.setattr(
+        builder,
         "validate_center_lowrank_component",
         lambda *_args, **_kwargs: dict(manifest),
     )
@@ -99,7 +141,7 @@ def _prepare_fixture(
         builder,
         "load_center_lowrank_component",
         lambda *_args, **_kwargs: SimpleNamespace(
-            class_registry=handles, manifest=dict(manifest)
+            class_registry=REAL_TXS, manifest=dict(manifest)
         ),
     )
 
@@ -133,7 +175,7 @@ def _prepare_fixture(
         return {
             "outer_content_root_sha256": "6" * 64,
             "detached_seal_sha256": _sha256(Path(kwargs["detached_seal_path"])),
-            "checkpoint_lineage_sha256": checkpoint_sha,
+            "checkpoint_lineage_sha256": CORE90_SHA,
             "runtime_sha256": json.loads(
                 Path(kwargs["parity_receipt_path"]).read_text()
             )["runtime_sha256"],
@@ -207,7 +249,7 @@ def test_prepare_builds_core90_bundle_from_aggregate_only_inputs(
         parity_rows=8,
     )
     assert result["status"] == "AWAITING_EXTERNAL_SIGNATURE"
-    assert result["checkpoint_lineage_sha256"] == _sha256(checkpoint)
+    assert result["checkpoint_lineage_sha256"] == CORE90_SHA
     assert result["candidate_id"] == CORE90
     assert set((tmp_path / "output").iterdir()) == {
         tmp_path / "output" / "work",
@@ -220,16 +262,104 @@ def test_prepare_builds_core90_bundle_from_aggregate_only_inputs(
 def test_prepare_rejects_alternate_checkpoint_before_runtime(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    checkpoint, component_dir, binding_path, _manifest = _prepare_fixture(
-        tmp_path, monkeypatch
-    )
+    checkpoint = tmp_path / "alternate.pth"
     torch.save({"candidate_id": "P1-FULL", "args": {"input_len": 256}}, checkpoint)
     with pytest.raises(builder.Core90BundleError, match="CORE90"):
-        builder.prepare(
-            checkpoint=checkpoint,
-            component_dir=component_dir,
-            class_binding_source=binding_path,
-            output_root=tmp_path / "output",
+        builder._load_checkpoint(checkpoint)
+
+
+def test_checkpoint_candidate_name_cannot_replace_real_core90_sha(tmp_path: Path) -> None:
+    checkpoint = tmp_path / "same-name-wrong-bytes.pth"
+    torch.save({"candidate_id": CORE90, "args": {"input_len": 256}}, checkpoint)
+    assert _sha256(checkpoint) != CORE90_SHA
+    with pytest.raises(builder.Core90BundleError, match="immutable CORE90 checkpoint SHA"):
+        builder._load_checkpoint(checkpoint)
+
+
+@pytest.mark.parametrize("field", ["phase1_tx", "registered_class_handle"])
+def test_d19_binding_rejects_any_real_tx_or_handle_drift(
+    tmp_path: Path, field: str
+) -> None:
+    payload = _d19_binding(CORE90_SHA)
+    entries = payload["entries"]
+    assert isinstance(entries, list)
+    entries[2][field] = "drifted"
+    path = tmp_path / "binding.json"
+    _write_json(path, payload)
+    with pytest.raises(builder.Core90BundleError, match="fixed CORE90 TX/handle mapping"):
+        builder._load_d19_class_binding(path, checkpoint_sha256=CORE90_SHA)
+
+
+def test_real_d85_component_rebind_preserves_npz_and_only_changes_derived_manifest(
+    tmp_path: Path,
+) -> None:
+    assert REAL_D85_COMPONENT.is_dir()
+    source_manifest_path = REAL_D85_COMPONENT / "manifest.json"
+    source_npz_path = (
+        REAL_D85_COMPONENT
+        / "int8_domain_class_center_lowrank_residual_radius_v2.npz"
+    )
+    source_manifest_bytes = source_manifest_path.read_bytes()
+    source_npz_bytes = source_npz_path.read_bytes()
+    assert _sha256(source_npz_path) == LEGACY_COMPONENT_NPZ_SHA
+    rebound = tmp_path / "rebound_component"
+
+    result = builder._rebind_legacy_d85_component(
+        REAL_D85_COMPONENT,
+        rebound,
+        current_class_handles=REAL_HANDLES,
+    )
+
+    assert source_manifest_path.read_bytes() == source_manifest_bytes
+    assert source_npz_path.read_bytes() == source_npz_bytes
+    rebound_npz = rebound / source_npz_path.name
+    assert rebound_npz.read_bytes() == source_npz_bytes
+    assert _sha256(rebound_npz) == LEGACY_COMPONENT_NPZ_SHA
+    before = json.loads(source_manifest_bytes)
+    after = json.loads((rebound / "manifest.json").read_text(encoding="utf-8"))
+    changed = {key for key in before if before[key] != after[key]}
+    assert changed == {
+        "class_handle_binding_sha256",
+        "pre_sign_content_root_sha256",
+    }
+    assert before["class_handle_binding_sha256"] == LEGACY_BINDING_SHA
+    assert before["pre_sign_content_root_sha256"] == LEGACY_COMPONENT_ROOT
+    assert after["class_handle_binding_sha256"] == CURRENT_BINDING_SHA
+    assert result["component_npz_sha256"] == LEGACY_COMPONENT_NPZ_SHA
+    assert result["class_registry"] == list(REAL_TXS)
+    assert result["current_class_handles"] == list(REAL_HANDLES)
+
+
+def test_rebind_rejects_different_otherwise_valid_v2_component(tmp_path: Path) -> None:
+    from cvsrffi.phase1_center_lowrank_prototype_bundle import (
+        _pre_sign_content_root,
+    )
+
+    source = tmp_path / "other-component"
+    source.mkdir()
+    for name in (
+        "int8_domain_class_center_lowrank_residual_radius_v2.npz",
+        "manifest.json",
+        "manifest.sha256",
+    ):
+        (source / name).write_bytes((REAL_D85_COMPONENT / name).read_bytes())
+    manifest_path = source / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["generation_config_sha256"] = "f" * 64
+    manifest["pre_sign_content_root_sha256"] = _pre_sign_content_root(
+        manifest, LEGACY_COMPONENT_NPZ_SHA
+    )
+    manifest_path.write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    (source / "manifest.sha256").write_text(
+        f"{_sha256(manifest_path)}  manifest.json\n", encoding="ascii"
+    )
+    with pytest.raises(builder.Core90BundleError, match="known D85"):
+        builder._rebind_legacy_d85_component(
+            source,
+            tmp_path / "rebound",
+            current_class_handles=REAL_HANDLES,
         )
 
 
