@@ -148,18 +148,28 @@ def _require_sha256(value: Any, *, field: str) -> str:
 def _load_checkpoint(path: Path) -> Mapping[str, Any]:
     if path.is_symlink() or not path.is_file():
         raise Core90BundleError("CORE90 checkpoint must be a regular file")
+    if _sha256_regular(path, context="CORE90 checkpoint") != CORE90_CHECKPOINT_SHA256:
+        raise Core90BundleError("immutable CORE90 checkpoint SHA mismatch")
     try:
         checkpoint = torch.load(path, map_location="cpu", weights_only=False)
     except TypeError:
         checkpoint = torch.load(path, map_location="cpu")
     if not isinstance(checkpoint, Mapping):
         raise Core90BundleError("CORE90 checkpoint root must be a mapping")
-    if checkpoint.get("candidate_id") != CORE90_CANDIDATE_ID:
+    top_candidate = checkpoint.get("candidate_id")
+    args = checkpoint.get("args")
+    args_candidate = args.get("candidate_id") if isinstance(args, Mapping) else None
+    if (
+        top_candidate is not None
+        and args_candidate is not None
+        and top_candidate != args_candidate
+    ):
+        raise Core90BundleError("checkpoint candidate identity conflict")
+    candidate = top_candidate if top_candidate is not None else args_candidate
+    if candidate != CORE90_CANDIDATE_ID:
         raise Core90BundleError(
             f"checkpoint candidate must be exactly {CORE90_CANDIDATE_ID}"
         )
-    if _sha256_regular(path, context="CORE90 checkpoint") != CORE90_CHECKPOINT_SHA256:
-        raise Core90BundleError("immutable CORE90 checkpoint SHA mismatch")
     return checkpoint
 
 

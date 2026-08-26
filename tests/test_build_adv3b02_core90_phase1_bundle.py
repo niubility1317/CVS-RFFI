@@ -277,6 +277,62 @@ def test_checkpoint_candidate_name_cannot_replace_real_core90_sha(tmp_path: Path
         builder._load_checkpoint(checkpoint)
 
 
+def test_checkpoint_accepts_real_training_layout_candidate_in_args(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    checkpoint = tmp_path / "real-layout.pth"
+    torch.save(
+        {
+            "candidate_id": None,
+            "args": {"candidate_id": CORE90, "input_len": 256},
+            "baseline_args": {},
+            "model": {},
+        },
+        checkpoint,
+    )
+    monkeypatch.setattr(
+        builder,
+        "_sha256_regular",
+        lambda *_args, **_kwargs: CORE90_SHA,
+    )
+
+    loaded = builder._load_checkpoint(checkpoint)
+
+    assert loaded["args"]["candidate_id"] == CORE90
+
+
+@pytest.mark.parametrize(
+    "top_candidate,args_candidate",
+    [
+        (CORE90, "P1-FULL"),
+        ("P1-FULL", CORE90),
+        (None, "P1-FULL"),
+        (None, None),
+    ],
+)
+def test_checkpoint_rejects_conflicting_wrong_or_missing_candidate_identity(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    top_candidate: str | None,
+    args_candidate: str | None,
+) -> None:
+    checkpoint = tmp_path / "bad-identity.pth"
+    payload: dict[str, object] = {"args": {"input_len": 256}}
+    if top_candidate is not None:
+        payload["candidate_id"] = top_candidate
+    if args_candidate is not None:
+        payload["args"]["candidate_id"] = args_candidate  # type: ignore[index]
+    torch.save(payload, checkpoint)
+    monkeypatch.setattr(
+        builder,
+        "_sha256_regular",
+        lambda *_args, **_kwargs: CORE90_SHA,
+    )
+
+    with pytest.raises(builder.Core90BundleError, match="candidate|conflict"):
+        builder._load_checkpoint(checkpoint)
+
+
 @pytest.mark.parametrize("field", ["phase1_tx", "registered_class_handle"])
 def test_d19_binding_rejects_any_real_tx_or_handle_drift(
     tmp_path: Path, field: str
