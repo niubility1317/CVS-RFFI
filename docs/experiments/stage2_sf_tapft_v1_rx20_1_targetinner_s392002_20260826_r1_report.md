@@ -52,3 +52,47 @@
 - `fix3`真实checkpoint smoke为`SMOKE_PASS`：60条support、3步更新、15个参数张量更新，BN running statistics未变，source/query/truth/role均未打开；严格消费者回读为`cvs.sf_tapft.v1/3 steps/6 classes`。
 - 性能筛选已启动：wrapper PID`3660022`，Python PID`3660023`，PPID/CWD/cmdline/run-root均匹配预登记；GPU0连续两次利用率22%、显存约688MiB，未影响GPU4/5既有任务。
 - 当前状态：`RUNNING`。runner只在结束时输出最终JSON，启动检查时日志仍为0字节，不能声明“日志增长通过”；`selection.json`尚未出现，不得声明性能或artifact完成。后续只读检查进程、GPU、最终日志和`selection.json`，不重复启动。
+
+## 2026-08-26 17:10全面运行中分析
+
+### 完成状态
+
+- Python PID`3660023`仍存活，状态在`Rl/Sl`之间，累计运行约1小时12分；CWD、cmdline和run-root继续匹配`fix3`release。
+- GPU0利用率连续观测为18%–23%，显存692–702MiB。进程累计CPU时间约2天，瞬时CPU约4077%，即约40核并行占用。
+- 完整stdout日志已经逐字节读取：文件大小0字节，最后修改时间仍为启动时刻。runner在结束前不输出step/fold事件，因此没有可解析的loss曲线、fold完成标记或当前step。
+- 性能run目录仍不存在；runner只在全部4-fold结束并完成最终选择后创建目录。`selection.json`、性能bundle和fold指标均未生成。
+- 最高交付状态保持`RUNNING`，不是`ARTIFACTS_COMPLETE`或`ANALYZED`。
+
+### 已验证的输入与smoke数据
+
+- support形状为`[60,2,256]`，6类各10条，类别计数严格为`[10,10,10,10,10,10]`。
+- 既有support NPZ没有真实group或内嵌physical ID；runner在匹配既有`VALIDATED_ONCE`数据句柄后生成稳定opaque row ID，仅用于inner-fold行互斥，`physical_id_origin=validated_support_row_index`。
+- smoke bundle大小4,289,502字节，分类头形状`[6,160]`，类别ID为`[0,1,2,3,4,5]`。
+- 3步smoke support loss依次为`1.41589725→1.39902306→1.39283490`，总下降`0.02306235`，相对下降`1.6288%`。这只证明优化路径能降低support目标，不是OOF或query性能。
+- smoke中A/B/C阶段均执行1步，共更新15个参数张量；BN running statistics未更新，source loader/sample/cache、target eval和query均未打开。
+
+### 4-fold精确切分
+
+|fold|inner train行数|inner validation行数|train每类计数|validation每类计数|
+|---:|---:|---:|---|---|
+|0|44|16|7/7/7/7/8/8|3/3/3/3/2/2|
+|1|46|14|8/8/7/8/8/7|2/2/3/2/2/3|
+|2|46|14|8/8/8/8/7/7|2/2/2/2/3/3|
+|3|44|16|7/7/8/7/7/8|3/3/2/3/3/2|
+
+四个validation fold合计覆盖60条support且每类总计10条；没有真实group时采用seed`392002`固定的label-stratified fallback。该证据说明类别层面分层成立，但不能替代采集段/session级group证据。
+
+### 参数与计算预算
+
+- 适配后模型参数1,054,963个，诊断分类头960个，总参数1,055,923个。
+- A阶段每fold 500步：训练1,584个参数，占总参数`0.1500%`。
+- B阶段每fold 1,500步：训练6,882个参数，占`0.6518%`。
+- C阶段每fold 2,500步：训练16,386个参数，占`1.5518%`。
+- 4-fold总优化步数18,000步，其中A/B/C分别2,000/6,000/10,000步。
+- 按full-batch统计，累计训练行呈现810,000次，逐步inner-validation行呈现270,000次，总前向行规模约1,080,000次。
+
+### 性能数据边界与瓶颈判断
+
+当前没有frozen/adapted balanced accuracy、NLL、margin、fold variance、non-degrading fold fraction或`adapted/zero_adapt`判定。任何数值推断都将违反当前证据边界。
+
+资源证据显示CPU约40核满载而GPU利用率仅约20%、显存不足1GiB。结合冻结代码每一步都执行inner-validation，并在checkpoint排序中计算模型到源checkpoint的距离且把参数拉回CPU，本轮主要瓶颈很可能是逐步验证、GPU同步和CPU参数距离计算，而非显存容量或GPU计算能力。由于runner不记录step/fold进度，不能从这些数据可靠换算完成百分比或ETA。本轮保持只读监控，不因运行慢或未知中途指标停止进程。
