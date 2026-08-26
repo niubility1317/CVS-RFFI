@@ -111,8 +111,9 @@ def _load_target_support(path: str | Path) -> TargetOnlyAdaptationDataset:
     try:
         with np.load(source, allow_pickle=False) as archive:
             keys = set(archive.files)
-            required = {"received_iq", "support_labels", "support_physical_ids"}
-            if not required.issubset(keys) or keys.difference(required | {"support_groups"}):
+            required = {"received_iq", "support_labels"}
+            allowed = required | {"support_physical_ids", "support_groups"}
+            if not required.issubset(keys) or keys.difference(allowed):
                 raise ValueError("target support NPZ allowlist mismatch")
             iq_array = np.asarray(archive["received_iq"])
             labels_array = np.asarray(archive["support_labels"])
@@ -122,11 +123,18 @@ def _load_target_support(path: str | Path) -> TargetOnlyAdaptationDataset:
                 raise ValueError("received_iq must be finite numeric target train rows")
             if labels_array.ndim != 1 or labels_array.size != iq_array.shape[0] or not np.issubdtype(labels_array.dtype, np.integer):
                 raise ValueError("support_labels must be a row-aligned integer vector")
-            physical_ids = _string_rows(
-                archive["support_physical_ids"],
-                label="support_physical_ids",
-                expected=int(iq_array.shape[0]),
-            )
+            if "support_physical_ids" in keys:
+                physical_ids = _string_rows(
+                    archive["support_physical_ids"],
+                    label="support_physical_ids",
+                    expected=int(iq_array.shape[0]),
+                )
+                physical_id_origin = "provided"
+            else:
+                physical_ids = tuple(
+                    f"validated-support-row-{index:06d}" for index in range(int(iq_array.shape[0]))
+                )
+                physical_id_origin = "validated_support_row_index"
             groups = (
                 _string_rows(
                     archive["support_groups"],
@@ -145,6 +153,7 @@ def _load_target_support(path: str | Path) -> TargetOnlyAdaptationDataset:
         labels=torch.from_numpy(np.ascontiguousarray(labels_array, dtype=np.int64)),
         physical_ids=physical_ids,
         groups=groups,
+        physical_id_origin=physical_id_origin,
     )
 
 
@@ -236,6 +245,7 @@ def run_sf_tapft_no_query(
         "split_id": resolved["split_id"],
         "total_steps": result.audit.total_steps,
         "support_physical_sample_count": len(support.physical_ids),
+        "support_physical_id_origin": support.physical_id_origin,
         "updated_parameter_count": len(result.audit.updated_parameter_names),
         "bn_running_stats_updated": result.audit.bn_running_stats_updated,
         "source_opened": False,
@@ -310,6 +320,7 @@ def run_sf_tapft_grouped_selection(
         "capsule_id": resolved["capsule_id"],
         "split_id": resolved["split_id"],
         "selected": selection.selected,
+        "support_physical_id_origin": support.physical_id_origin,
         "folds": int(folds),
         "frozen_metrics": asdict(selection.frozen_metrics),
         "adapted_metrics": asdict(selection.adapted_metrics),

@@ -39,10 +39,13 @@ class TargetOnlyAdaptationDataset:
     physical_ids: tuple[str, ...]
     groups: tuple[str, ...] | None = None
     role: str = "target_train"
+    physical_id_origin: str = "provided"
 
     def __post_init__(self) -> None:
         if self.role != "target_train":
             raise ValueError("SF-TAPFT dataset role must be target_train")
+        if self.physical_id_origin not in {"provided", "validated_support_row_index"}:
+            raise ValueError("unsupported physical_id_origin")
         if not torch.is_tensor(self.received_iq) or self.received_iq.ndim < 2:
             raise ValueError("received_iq must be a tensor with a non-empty batch")
         if self.received_iq.size(0) <= 0 or not self.received_iq.is_floating_point():
@@ -906,6 +909,7 @@ def _subset_target_train(
         labels=dataset.labels[index],
         physical_ids=tuple(dataset.physical_ids[item] for item in indices),
         groups=(tuple(dataset.groups[item] for item in indices) if dataset.groups else None),
+        physical_id_origin=dataset.physical_id_origin,
     )
 
 

@@ -124,6 +124,43 @@ def test_runner_rejects_formal_permission_and_unknown_config_fields(tmp_path: Pa
         )
 
 
+def test_runner_accepts_validated_support_without_embedded_physical_ids(tmp_path: Path) -> None:
+    support = tmp_path / "support-minimal.npz"
+    np.savez(
+        support,
+        received_iq=np.asarray(
+            [[2.0, 0.0, 0.2, 0.0], [1.7, 0.1, 0.0, 0.2], [0.0, 2.0, 0.0, 0.2], [0.1, 1.8, 0.2, 0.0]],
+            dtype=np.float32,
+        ),
+        support_labels=np.asarray([0, 0, 1, 1], dtype=np.int64),
+    )
+    config = {
+        "candidate_id": "minimal-support",
+        "method": "sf_tapft_v1",
+        "permission": "DIAGNOSTIC_NON_FORMAL",
+        "protocol_schema": "p2_min_v1",
+        "phase2_data_status": "VALIDATED_ONCE",
+        "capsule_id": "capsule-test",
+        "split_id": "split-test",
+        "checkpoint_path": str(tmp_path / "checkpoint.pth"),
+        "support_path": str(support),
+        "sf_tapft": {
+            "phase_steps": [1, 1, 1],
+            "warmup_ratio": 0.0,
+            "checkpoint_average_top_k": 1,
+            "adapter_rank": 2,
+        },
+    }
+    receipt = run_sf_tapft_no_query(
+        config,
+        tmp_path / "output-minimal",
+        device="cpu",
+        checkpoint_loader=lambda _path, *, device: copy.deepcopy(_ToyModel()).to(device),
+    )
+    assert receipt["status"] == "SMOKE_PASS"
+    assert receipt["support_physical_id_origin"] == "validated_support_row_index"
+
+
 @pytest.mark.parametrize(
     ("field", "value", "message"),
     [
