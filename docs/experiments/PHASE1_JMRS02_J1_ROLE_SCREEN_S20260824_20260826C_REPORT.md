@@ -49,6 +49,12 @@ RZ0/RZ1/RX1/D1P需同时满足三LEO final mean gain>0、clean drop≤0.30pp、�
 
 截至当前已完整生成6份训练历史：rx0的RZ0/RZ1/RX1/D1P/P0和rx1/RZ0，均包含6个inner fold与40个outer epoch。RZ0、RZ1、D1P的outer loss分别由1.9486→0.7276、1.8943→0.7307、1.9625→0.7054；P0 nuisance loss由0.01231→0.00585，均无非有限梯度清洗。C已跨过B在rx0/RX1 inner-LORO的原失败点并保存rx0全部5个模块模型，当前进入rx1。
 
-但RX1暴露出更深的结构性问题：40/40个outer epoch均记录75816个非有限梯度元素，累计3032640个；loss为1.9345→1.9729，没有形成下降趋势。其6个inner held receiver的rescue/harm均为0，说明canonicalizer实质保持identity；V_cal所谓50% gate coverage仅带来0.00231个百分点表观变化，不能解释为RX1有效。当前梯度清洗避免了进程崩溃，却没有恢复可学习的Core90→IQ梯度。
+但RX1暴露出确定的数值问题：40/40个outer epoch均记录75816个非有限梯度元素，累计3032640个；loss为1.9345→1.9729，没有形成下降趋势。其6个inner held receiver的rescue/harm均为0，说明canonicalizer实质保持identity；V_cal所谓50% gate coverage仅带来0.00231个百分点表观变化，不能解释为RX1有效。当前梯度清洗避免了进程崩溃，却没有恢复可学习校正。
 
-按预注册规则不因低性能停止C，继续完成其他row和fold；但RX1已提前标记为`STRUCTURAL_GRADIENT_FAILURE / NO_SCIENTIFIC_PROMOTION`。C完成后不得再用同一路径进行第4次重发，后续若继续RC-X必须改变可微接口或采用不依赖冻结Core90输入梯度的两阶段/黑盒校正目标，并作为新设计重新论证。
+按预注册规则不因低性能停止C，继续完成其他row和fold；但RX1已提前标记为`NUMERICAL_GRADIENT_FAILURE / NO_SCIENTIFIC_PROMOTION`。
+
+## 八、根因更正（C运行中只读诊断，不修改C）
+
+后续TDD在完全不经过Core90的本地最小图中复现了同一非有限梯度：RX1把零初始化的幅度/相位曲线写成`sqrt(mean(x^2))`，该函数在`x=0`处导数未定义。单步共有1944个estimator参数梯度非有限；C每epoch约39步，`1944×39=75816`，与日志逐epoch计数精确相等。因此“Core90输入梯度奇异”不是现有证据能支持的首要归因，已更正为RX1自身零点范数错误。C是不可变旧release，继续只读运行；不修改、不重启、不覆盖，其RX1结果仍无科学效力。
+
+修复采用`sqrt(mean(x^2)+eps)-sqrt(eps)`，在零点保持数值为0且梯度有限；新run必须先通过真实checkpoint反向smoke，才能判断Core90链路是否还存在独立问题。新run不再清洗NaN/Inf梯度，发现任一非有限元素直接技术失败。
