@@ -305,6 +305,69 @@ PHASE2_T1_ARMS = (
 )
 
 
+# Approved current-method ablation screen.  This intentionally lives beside,
+# rather than inside, the historical full T1 matrix: every arm starts from the
+# current identity160+FFT96 method state and the FP32 F0 comparison is absent.
+PHASE2_E0_256_ABLATION_ARMS = (
+    ArmSpec(
+        "P2-256-FULL",
+        "stage2c",
+        "S_SCREENING",
+        "reference",
+        "current_256d_reference",
+        executor_status="LOCAL_IMPLEMENTED",
+    ),
+    ArmSpec(
+        "P2-256-A0",
+        "stage2c",
+        "S_SCREENING",
+        "joint_feature",
+        "P2-256-FULL",
+        executor_status="LOCAL_IMPLEMENTED",
+    ),
+    ArmSpec(
+        "P2-256-B0",
+        "stage2c",
+        "S_SCREENING",
+        "robust_center",
+        "P2-256-FULL",
+        executor_status="LOCAL_IMPLEMENTED",
+    ),
+    ArmSpec(
+        "P2-256-S0",
+        "stage2c",
+        "S_SCREENING",
+        "auto_shrinkage",
+        "P2-256-FULL",
+        executor_status="LOCAL_IMPLEMENTED",
+    ),
+    ArmSpec(
+        "P2-256-C3",
+        "stage2c",
+        "S_SCREENING",
+        "task_covariance",
+        "P2-256-FULL",
+        executor_status="LOCAL_IMPLEMENTED",
+    ),
+    ArmSpec(
+        "P2-256-D0",
+        "stage2c",
+        "S_SCREENING",
+        "dual_geometry",
+        "P2-256-FULL",
+        executor_status="LOCAL_IMPLEMENTED",
+    ),
+    ArmSpec(
+        "P2-256-D2",
+        "stage2c",
+        "S_SCREENING",
+        "crossfit_fusion",
+        "P2-256-FULL",
+        executor_status="LOCAL_IMPLEMENTED",
+    ),
+)
+
+
 def _unique_positive(values: Iterable[int], *, name: str) -> tuple[int, ...]:
     result = tuple(int(value) for value in values)
     if not result or any(value <= 0 for value in result):
@@ -549,6 +612,91 @@ def build_phase2_rows(
         row["row_key"] = (
             f"{row['ablation_id']}__rx_{row['receiver_id'].replace('-', '_')}"
             f"__k_{row['k_shot']}__new_{row['new_class_count']}"
+            f"__support_{row['support_seed']}__query_{row['query_seed']}"
+            f"__draw_{row['new_class_draw_seed']}"
+        )
+    validate_plan_rows(rows)
+    return rows
+
+
+def build_phase2_e0_256_screen_rows(
+    *,
+    arms: Sequence[ArmSpec],
+    seed_bundle: SeedBundle,
+    class_draw_seed: int,
+    receiver_id: str,
+    k_shot: int,
+    new_class_count: int,
+    git_commit: str,
+) -> list[dict[str, Any]]:
+    """Build only the approved seven-arm current-256D same-row screen."""
+
+    expected_ids = tuple(
+        arm.ablation_id for arm in PHASE2_E0_256_ABLATION_ARMS
+    )
+    actual_ids = tuple(arm.ablation_id for arm in arms)
+    if actual_ids != expected_ids:
+        raise FullAblationSpecError(
+            "current-256D screen must contain its exact seven approved arms"
+        )
+    if "P2-256-F0" in actual_ids or any("F0" in value for value in actual_ids):
+        raise FullAblationSpecError(
+            "current-256D screen must not include an FP32 F0 arm"
+        )
+    if str(receiver_id) != "3-19":
+        raise FullAblationSpecError(
+            "current-256D screen is fixed to receiver 3-19"
+        )
+    if (int(k_shot), int(new_class_count)) != (10, 5):
+        raise FullAblationSpecError(
+            "current-256D screen is fixed to K10/new5"
+        )
+    seed_bundle.validate(require_fresh_stage2=True)
+    draw = int(class_draw_seed)
+    if draw <= 0 or draw in OBSERVED_STAGE2_SEEDS:
+        raise FullAblationSpecError("current-256D draw seed is not fresh")
+    seed_values = tuple(int(value) for value in asdict(seed_bundle).values())
+    if draw in seed_values:
+        raise FullAblationSpecError(
+            "current-256D draw seed must differ from all row seeds"
+        )
+    concrete_commit = _require_git_commit(git_commit)
+    rows: list[dict[str, Any]] = []
+    for arm in arms:
+        rows.append(
+            {
+                "design_id": DESIGN_ID,
+                "design_schema": DESIGN_SCHEMA,
+                "phase": "stage2c",
+                "stage": "screening",
+                "ablation_id": arm.ablation_id,
+                "evidence_level": arm.evidence_level,
+                "mechanism_family": arm.mechanism_family,
+                "comparison_target": arm.comparison_target,
+                "physical_config_id": (
+                    arm.physical_config_id or arm.ablation_id
+                ),
+                "git_commit": concrete_commit,
+                "protocol_schema": PROTOCOL_SCHEMA,
+                "receiver_id": "3-19",
+                "k_shot": 10,
+                "old_class_count": OLD_CLASS_COUNT,
+                "new_class_count": 5,
+                "scenarios": list(LEO_SCENARIOS),
+                **asdict(seed_bundle),
+                "method_seed": int(seed_bundle.method_seed),
+                "phase1_bundle_training_seed": None,
+                "new_class_draw_seed": draw,
+                "data_binding_status": "UNBOUND_FAIL_CLOSED",
+                "executor_status": arm.executor_status,
+                "formal_launch_authority": False,
+            }
+        )
+    slots = assign_worker_slots(len(rows))
+    for row, slot in zip(rows, slots):
+        row["worker"] = asdict(slot)
+        row["row_key"] = (
+            f"{row['ablation_id']}__rx_3_19__k_10__new_5"
             f"__support_{row['support_seed']}__query_{row['query_seed']}"
             f"__draw_{row['new_class_draw_seed']}"
         )
@@ -813,6 +961,7 @@ __all__ = [
     "OBSERVED_STAGE2_SEEDS",
     "PHASE1_T1_ARMS",
     "PHASE2_T1_ARMS",
+    "PHASE2_E0_256_ABLATION_ARMS",
     "PHASE2_STATE_T1_ARMS",
     "PROTOCOL_SCHEMA",
     "REQUIRED_RUN_ARTIFACT_FIELDS",
@@ -825,6 +974,7 @@ __all__ = [
     "build_phase1_t1_rows",
     "build_phase1_label_rows",
     "build_phase2_rows",
+    "build_phase2_e0_256_screen_rows",
     "build_phase2_state_rows",
     "bind_stage2_row",
     "stage2_physical_execution_key",

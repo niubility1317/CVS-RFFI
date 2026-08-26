@@ -40,6 +40,11 @@ def _args(
         wisig_pkl_sha256="b" * 64,
         python_environment_id="CVS-RFFI",
         seed_registry=str(REGISTRY),
+        receiver_id="3-19",
+        k_shot=10,
+        new_class_count=5,
+        method_seed=7282101,
+        new_class_draw_seed=7282401,
     )
 
 
@@ -117,3 +122,23 @@ def test_registry_hash_is_cross_platform_line_ending_stable() -> None:
     lf = b'{"schema":"example"}\n'
     crlf = b'{"schema":"example"}\r\n'
     assert _canonical_text_sha256(lf) == _canonical_text_sha256(crlf)
+
+
+def test_current_256d_plan_is_one_hard_same_row_screen_without_f0() -> None:
+    plan = build_plan(
+        _args(
+            phase="phase2",
+            phase2_matrix="e0_256_screen",
+            arms="t1",
+        )
+    )
+    assert plan["phase2_matrix"] == "e0_256_screen"
+    assert plan["stage"] == "screening"
+    assert plan["logical_row_count"] == 7
+    assert plan["registered_stage2_method_seeds"] == [7282101]
+    assert {row["receiver_id"] for row in plan["rows"]} == {"3-19"}
+    assert {(row["k_shot"], row["new_class_count"]) for row in plan["rows"]} == {
+        (10, 5)
+    }
+    assert {row["new_class_draw_seed"] for row in plan["rows"]} == {7282401}
+    assert all("F0" not in row["ablation_id"] for row in plan["rows"])

@@ -73,6 +73,25 @@ _FFT_ONLY_FEATURE_PROFILE = "identity160_fft96_beta4_blocknorm_globalnorm"
 _RF_ONLY_FEATURE_PROFILE = "identity160_rf32_beta4_blocknorm_globalnorm"
 
 
+# The current 256-D screen owns a distinct logical identity.  Its numerical
+# controls intentionally reuse only the corresponding already-reviewed
+# support-only component behaviour; audit records retain the new logical ID.
+_E0_256_BEHAVIOR_IDS = {
+    "P2-256-FULL": "P2-FULL",
+    "P2-256-A0": "P2-A0",
+    "P2-256-B0": "P2-B0",
+    "P2-256-C3": "P2-C3",
+    "P2-256-D0": "P2-D0",
+    "P2-256-D2": "P2-D2",
+}
+
+
+def _behavior_ablation_id(ablation_id: str) -> str:
+    """Return the component path selected by a frozen logical arm."""
+
+    return _E0_256_BEHAVIOR_IDS.get(ablation_id, ablation_id)
+
+
 def _project_feature_profile(
     rows: np.ndarray,
     feature_profile: str,
@@ -445,6 +464,18 @@ def _component_builder(
             )
         )
 
+    if ablation_id == "P2-256-S0":
+        return (
+            d92.build_d92_fit(
+                d42,
+                ground_basis,
+                ground_weights,
+                ground_audit,
+                covariance_mode="empirical_fixed_ridge",
+                allow_fp32_centering_argmax_drift=True,
+            )[0],
+            "d92_d81_d46_d62_empirical_fixed_ridge",
+        )
     if ablation_id == "P2-B0":
         return (
             d92.build_d92_fit(
@@ -643,6 +674,7 @@ def fit_stage2_ablation(
     """Fit one frozen arm from deployment state and legal support only."""
 
     spec = get_stage2_arm(ablation_id)
+    behavior_id = _behavior_ablation_id(ablation_id)
     if module2_mode not in {"baseline", "td_htrc_m21", "td_htrc_m22"}:
         raise Stage2AblationExecutionError("unknown module2 mode")
     if module2_mode in {"td_htrc_m21", "td_htrc_m22"} and spec.stage != "stage2c":
@@ -758,31 +790,31 @@ def fit_stage2_ablation(
     adapter_gate = np.empty(0, dtype=np.float32)
     started = time.perf_counter()
 
-    if ablation_id in {"P2-S2B-PROTO", "P2-BASE-COSINE"}:
+    if behavior_id in {"P2-S2B-PROTO", "P2-BASE-COSINE"}:
         coefficient, intercept, audit = _affine_cosine(
             transformed, targets, len(classes)
         )
         score_kind = "cosine_affine"
-    elif ablation_id == "P2-BASE-EUCLIDEAN":
+    elif behavior_id == "P2-BASE-EUCLIDEAN":
         coefficient, intercept, audit = _affine_euclidean(
             transformed, targets, len(classes)
         )
-    elif ablation_id == "P2-BASE-QKNN":
+    elif behavior_id == "P2-BASE-QKNN":
         coefficient = np.empty((0, d42.FEATURE_DIM), dtype=np.float32)
         intercept = np.empty(0, dtype=np.float32)
         support_bank = transformed.astype(np.float32)
         support_targets = targets.astype(np.int64)
         score_kind = "qknn"
         audit = {"numerical_method": "single_qknn_top1_cosine"}
-    elif ablation_id == "P2-BASE-DIAG-LDA":
+    elif behavior_id == "P2-BASE-DIAG-LDA":
         coefficient, intercept, audit = _affine_diagonal_lda(
             transformed, targets, len(classes)
         )
-    elif ablation_id == "P2-BASE-POOLED-LW-LDA":
+    elif behavior_id == "P2-BASE-POOLED-LW-LDA":
         coefficient, intercept, audit = _affine_pooled_lw(
             transformed, targets, len(classes), k_shot
         )
-    elif ablation_id == "P2-BASE-ADAPTER-HEAD":
+    elif behavior_id == "P2-BASE-ADAPTER-HEAD":
         labels = (
             np.concatenate(
                 [
@@ -824,7 +856,7 @@ def fit_stage2_ablation(
             ),
         }
     else:
-        needs_ground = ablation_id not in {
+        needs_ground = behavior_id not in {
             "P2-BASE-FULL-BLOCK-LDA",
             "P2-BASE-ADAPTER-HEAD",
             "P2-B0",
@@ -837,7 +869,7 @@ def fit_stage2_ablation(
             basis = np.empty((160, 0), dtype=np.float64)
             weights = np.empty(0, dtype=np.float64)
             basis_audit = {}
-        if ablation_id == "P2-BASE-FULL-BLOCK-LDA":
+        if behavior_id == "P2-BASE-FULL-BLOCK-LDA":
             from scripts import probe_d46_classwise_loo_reliability_fusion as d46
 
             fit = d46.build_classwise_loo_reliability_fit(
@@ -857,7 +889,7 @@ def fit_stage2_ablation(
             )[0]
             method = "stage2b_d81_diag_metric_off"
         else:
-            physical_id = "P2-FULL" if ablation_id == "P2-F3" else ablation_id
+            physical_id = "P2-FULL" if behavior_id == "P2-F3" else behavior_id
             fit, method = _component_builder(
                 physical_id,
                 ground_basis=basis,
@@ -890,6 +922,13 @@ def fit_stage2_ablation(
             "P2-D1",
             "P2-D2",
             "P2-E0",
+            "P2-256-FULL",
+            "P2-256-A0",
+            "P2-256-B0",
+            "P2-256-S0",
+            "P2-256-C3",
+            "P2-256-D0",
+            "P2-256-D2",
         }
         else ablation_id
         if ablation_id in quantization.SUPPORTED_ARMS
@@ -932,6 +971,7 @@ def fit_stage2_ablation(
     merged_audit.update(
         {
             "ablation_id": ablation_id,
+            "behavioral_ablation_id": behavior_id,
             "stage": spec.stage,
             "support_only": True,
             "query_rows_used": 0,

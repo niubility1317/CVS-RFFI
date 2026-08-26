@@ -16,6 +16,8 @@ import numpy as np
 
 OLD_CLASS_COUNT = 6
 TASK_WEIGHT = 0.5
+FIXED_EMPIRICAL_RIDGE = 1e-6
+_COVARIANCE_MODES = {"auto", "empirical_fixed_ridge"}
 
 
 class D92RegistrationBalancedCovarianceError(RuntimeError):
@@ -28,7 +30,12 @@ def _group_covariance(
     labels: np.ndarray,
     class_indices: np.ndarray,
     center_uncertainty: np.ndarray | None = None,
+    covariance_mode: str = "auto",
 ) -> np.ndarray:
+    if covariance_mode not in _COVARIANCE_MODES:
+        raise D92RegistrationBalancedCovarianceError(
+            "unknown D92 covariance mode"
+        )
     mask = np.isin(labels, class_indices)
     group_rows = rows[mask]
     group_labels_raw = labels[mask]
@@ -37,21 +44,34 @@ def _group_covariance(
         [local[int(value)] for value in group_labels_raw], dtype=np.int64
     )
     count = len(class_indices)
-    estimator = d42.LinearDiscriminantAnalysis(
-        solver="lsqr",
-        shrinkage="auto",
-        priors=np.full(count, 1.0 / count, dtype=np.float64),
-        store_covariance=True,
-    )
-    estimator.fit(group_rows, group_labels)
-    if not np.array_equal(
-        np.asarray(estimator.classes_, dtype=np.int64),
-        np.arange(count, dtype=np.int64),
-    ):
-        raise D92RegistrationBalancedCovarianceError(
-            "D92 group-local sklearn class order drift"
+    if covariance_mode == "auto":
+        estimator = d42.LinearDiscriminantAnalysis(
+            solver="lsqr",
+            shrinkage="auto",
+            priors=np.full(count, 1.0 / count, dtype=np.float64),
+            store_covariance=True,
         )
-    covariance = np.asarray(estimator.covariance_, dtype=np.float64)
+        estimator.fit(group_rows, group_labels)
+        if not np.array_equal(
+            np.asarray(estimator.classes_, dtype=np.int64),
+            np.arange(count, dtype=np.int64),
+        ):
+            raise D92RegistrationBalancedCovarianceError(
+                "D92 group-local sklearn class order drift"
+            )
+        covariance = np.asarray(estimator.covariance_, dtype=np.float64)
+    else:
+        group_means = np.stack(
+            [
+                group_rows[group_labels == index].mean(axis=0)
+                for index in range(count)
+            ]
+        )
+        residuals = group_rows - group_means[group_labels]
+        covariance = residuals.T @ residuals / float(len(group_rows))
+        covariance += FIXED_EMPIRICAL_RIDGE * np.eye(
+            covariance.shape[0], dtype=np.float64
+        )
     covariance = 0.5 * (covariance + covariance.T)
     if center_uncertainty is not None:
         uncertainty = np.asarray(center_uncertainty, dtype=np.float64)
@@ -81,11 +101,16 @@ def build_registration_balanced_equal_lda(
         [np.ndarray, np.ndarray, int, int], np.ndarray
     ]
     | None = None,
+    covariance_mode: str = "auto",
 ) -> Callable[..., tuple[np.ndarray, np.ndarray, dict[str, Any]]]:
     """Build the fixed D92 full or block-diagonal component fit."""
 
     if arm not in {"full", "block3_centered"}:
         raise D92RegistrationBalancedCovarianceError("D92 covariance arm drift")
+    if covariance_mode not in _COVARIANCE_MODES:
+        raise D92RegistrationBalancedCovarianceError(
+            "unknown D92 covariance mode"
+        )
     dimension = int(d42.FEATURE_DIM)
     blocks = tuple(d42.BLOCK_SLICES)
 
@@ -148,6 +173,12 @@ def build_registration_balanced_equal_lda(
                     "d92_registration_state_support_only": True,
                     "d92_center_uncertainty_enabled": False,
                     "d92_center_uncertainty_trace": 0.0,
+                    "d92_covariance_mode": covariance_mode,
+                    "d92_fixed_ridge": (
+                        FIXED_EMPIRICAL_RIDGE
+                        if covariance_mode == "empirical_fixed_ridge"
+                        else 0.0
+                    ),
                 }
             )
             return coefficient, intercept, audit
@@ -166,10 +197,20 @@ def build_registration_balanced_equal_lda(
         old_indices = np.arange(OLD_CLASS_COUNT, dtype=np.int64)
         new_indices = np.arange(OLD_CLASS_COUNT, classes, dtype=np.int64)
         old_covariance = _group_covariance(
-            d42, rows, labels, old_indices, center_uncertainty
+            d42,
+            rows,
+            labels,
+            old_indices,
+            center_uncertainty,
+            covariance_mode,
         )
         new_covariance = _group_covariance(
-            d42, rows, labels, new_indices, center_uncertainty
+            d42,
+            rows,
+            labels,
+            new_indices,
+            center_uncertainty,
+            covariance_mode,
         )
         covariance = TASK_WEIGHT * old_covariance + TASK_WEIGHT * new_covariance
         if arm == "block3_centered":
@@ -196,10 +237,25 @@ def build_registration_balanced_equal_lda(
                 "D92 covariance equation residual became non-finite"
             )
         audit: dict[str, Any] = {
-            "solver": "lsqr_equivalent_explicit_solve",
-            "shrinkage": "auto_per_registration_task_then_fixed_equal_average",
+            "solver": (
+                "lsqr_equivalent_explicit_solve"
+                if covariance_mode == "auto"
+                else "explicit_empirical_fixed_ridge_solve"
+            ),
+            "shrinkage": (
+                "auto_per_registration_task_then_fixed_equal_average"
+                if covariance_mode == "auto"
+                else (
+                    "empirical_per_registration_task_plus_fixed_ridge_1e-6_"
+                    "then_fixed_equal_average"
+                )
+            ),
             "prior_policy": "equal_1_over_registered_class_count",
-            "covariance_policy": "sklearn_lsqr_auto_shrinkage_equal_prior",
+            "covariance_policy": (
+                "sklearn_lsqr_auto_shrinkage_equal_prior"
+                if covariance_mode == "auto"
+                else "empirical_fixed_ridge_equal_prior"
+            ),
             "unit_covariance_fallback": False,
             "support_rows": int(len(rows)),
             "class_count": classes,
@@ -212,6 +268,12 @@ def build_registration_balanced_equal_lda(
             "d92_old_covariance_weight": TASK_WEIGHT,
             "d92_new_covariance_weight": TASK_WEIGHT,
             "d92_weight_source": "fixed_equal_stage2b_stage2c_task_priority",
+            "d92_covariance_mode": covariance_mode,
+            "d92_fixed_ridge": (
+                FIXED_EMPIRICAL_RIDGE
+                if covariance_mode == "empirical_fixed_ridge"
+                else 0.0
+            ),
             "d92_formula": "Sigma_shared=0.5*Sigma_old_auto+0.5*Sigma_new_auto",
             "d92_weight_scan_count": 0,
             "d92_hyperparameter_scan_count": 0,

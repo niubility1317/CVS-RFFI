@@ -94,3 +94,28 @@ def test_formula_is_equivariant_within_registration_groups():
     coefficient2, intercept2, _ = fit(rows, inverse[labels], 16, 5)
     np.testing.assert_allclose(coefficient2[inverse], coefficient, rtol=0.0, atol=2e-4)
     np.testing.assert_allclose(intercept2[inverse], intercept, rtol=0.0, atol=2e-4)
+
+
+def test_empirical_fixed_ridge_is_a_distinct_active_registration_control():
+    """S0 removes data-driven Ledoit-Wolf shrinkage but remains invertible."""
+
+    rows, labels = _support(11, 3, seed=293)
+    fit = build_registration_balanced_equal_lda(
+        d42,
+        d42._fit_equal_prior_lda,
+        arm="full",
+        covariance_mode="empirical_fixed_ridge",
+    )
+    coefficient, intercept, audit = fit(rows, labels, 11, 3)
+    assert coefficient.shape == (11, d42.FEATURE_DIM)
+    assert intercept.shape == (11,)
+    assert np.isfinite(coefficient).all()
+    assert np.isfinite(intercept).all()
+    assert audit["d92_registration_balanced_active"] is True
+    assert audit["d92_covariance_mode"] == "empirical_fixed_ridge"
+    assert audit["shrinkage"] == (
+        "empirical_per_registration_task_plus_fixed_ridge_1e-6_"
+        "then_fixed_equal_average"
+    )
+    assert audit["d92_fixed_ridge"] == 1e-6
+    assert audit["d92_balanced_eigenvalue_min"] > 0.0

@@ -52,6 +52,7 @@ def build_d92_fit(
         [np.ndarray, np.ndarray, int, int], np.ndarray
     ]
     | None = None,
+    covariance_mode: str = "auto",
 ) -> tuple[Callable[..., Any], list[dict[str, Any]], list[dict[str, Any]]]:
     aliases = (d62.d43, d62.d61.d43, d62.d61.d46.d43, d62.d61.d46.d45.d43)
     if any(alias is not d43 for alias in aliases):
@@ -86,6 +87,7 @@ def build_d92_fit(
         original_fit,
         arm="full",
         center_uncertainty_provider=center_uncertainty_provider,
+        covariance_mode=covariance_mode,
     )
 
     def collect(component_fit: Callable[..., Any], arm: str) -> Callable[..., Any]:
@@ -138,6 +140,7 @@ def build_d92_fit(
             baseline_block,
             arm="block3_centered",
             center_uncertainty_provider=center_uncertainty_provider,
+            covariance_mode=covariance_mode,
         )
         component = collect(d92_block, arm)
         return (

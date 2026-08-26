@@ -16,6 +16,7 @@ from typing import Any
 from cvsrffi.full_ablation_spec import (
     DESIGN_ID,
     PHASE1_T1_ARMS,
+    PHASE2_E0_256_ABLATION_ARMS,
     PHASE2_STATE_T1_ARMS,
     PHASE2_T1_ARMS,
     ArmSpec,
@@ -23,6 +24,7 @@ from cvsrffi.full_ablation_spec import (
     SeedBundle,
     build_phase1_label_rows,
     build_phase1_t1_rows,
+    build_phase2_e0_256_screen_rows,
     build_phase2_rows,
     build_phase2_state_rows,
     validate_stage2_registry_disjointness,
@@ -184,8 +186,12 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         phase2_matrix = str(
             getattr(args, "phase2_matrix", "stage2c")
         ).strip()
-        if phase2_matrix not in {"stage2c", "states"}:
+        if phase2_matrix not in {"stage2c", "states", "e0_256_screen"}:
             raise FullAblationSpecError("unknown Phase2 matrix")
+        if phase2_matrix == "e0_256_screen" and args.stage != "screening":
+            raise FullAblationSpecError(
+                "current-256D screen is a screening-only matrix"
+            )
         registry_stage = (
             "confirmation" if phase2_matrix == "states" else args.stage
         )
@@ -198,6 +204,45 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
                 seed_bundles=bundles,
                 git_commit=args.git_commit,
             )
+        elif phase2_matrix == "e0_256_screen":
+            selected = _select_arms(
+                args.arms,
+                PHASE2_E0_256_ABLATION_ARMS,
+            )
+            method_seed = int(getattr(args, "method_seed", 7282101))
+            selected_bundles = [
+                bundle
+                for bundle in bundles
+                if int(bundle.method_seed) == method_seed
+            ]
+            if len(selected_bundles) != 1:
+                raise FullAblationSpecError(
+                    "current-256D screen requires one registered method seed"
+                )
+            draw_seed = int(
+                getattr(args, "new_class_draw_seed", 7282401)
+            )
+            registered_draws = [
+                int(value)
+                for value in stage_registry["new_class_draw_seeds"]
+            ]
+            if draw_seed not in registered_draws:
+                raise FullAblationSpecError(
+                    "current-256D screen draw seed is not in the registry"
+                )
+            bundles = selected_bundles
+            rows = build_phase2_e0_256_screen_rows(
+                arms=selected,
+                seed_bundle=bundles[0],
+                class_draw_seed=draw_seed,
+                receiver_id=str(getattr(args, "receiver_id", "3-19")),
+                k_shot=int(getattr(args, "k_shot", 10)),
+                new_class_count=int(
+                    getattr(args, "new_class_count", 5)
+                ),
+                git_commit=args.git_commit,
+            )
+            stage = "screening"
         else:
             stage = args.stage
             rows = build_phase2_rows(
@@ -284,17 +329,20 @@ def _parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--phase2-matrix",
-        choices=("stage2c", "states"),
+        choices=("stage2c", "states", "e0_256_screen"),
         default="stage2c",
         help=(
-            "Phase2 only: Stage2-C registration rows or independent "
-            "Stage2-A/B state tables."
+            "Phase2 only: Stage2-C registration rows, independent Stage2-A/B "
+            "state tables, or the approved current-256D same-row screen."
         ),
     )
     parser.add_argument(
         "--arms",
         default="t1",
-        help="Phase2 only: t1 or comma-separated registered arm IDs.",
+        help=(
+            "Phase2 only: t1 or comma-separated registered arm IDs. "
+            "For e0_256_screen, t1 means its exact approved seven arms."
+        ),
     )
     parser.add_argument("--git-commit", required=True)
     parser.add_argument(
@@ -309,6 +357,35 @@ def _parser() -> argparse.ArgumentParser:
         "--python-environment-id",
         default="CVS-RFFI",
         help="Verified remote Conda environment basename.",
+    )
+    parser.add_argument(
+        "--receiver-id",
+        default="3-19",
+        help="Current-256D screen only; fixed to the preregistered receiver.",
+    )
+    parser.add_argument(
+        "--k-shot",
+        type=int,
+        default=10,
+        help="Current-256D screen only; fixed to the preregistered K-shot.",
+    )
+    parser.add_argument(
+        "--new-class-count",
+        type=int,
+        default=5,
+        help="Current-256D screen only; fixed to the preregistered new count.",
+    )
+    parser.add_argument(
+        "--method-seed",
+        type=int,
+        default=7282101,
+        help="Current-256D screen only; one registered screening bundle.",
+    )
+    parser.add_argument(
+        "--new-class-draw-seed",
+        type=int,
+        default=7282401,
+        help="Current-256D screen only; one registered class draw.",
     )
     parser.add_argument(
         "--seed-registry",

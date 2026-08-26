@@ -5,7 +5,10 @@ import inspect
 import numpy as np
 import pytest
 
-from cvsrffi.stage2_ablation_factory import STAGE2_T1_ARMS
+from cvsrffi.stage2_ablation_factory import (
+    STAGE2_E0_256_ABLATION_ARMS,
+    STAGE2_T1_ARMS,
+)
 from cvsrffi.stage2_ablation_executors import (
     _fit_with_fp32_centering_audit,
     _project_feature_profile,
@@ -283,6 +286,35 @@ def test_full_k2_uses_exact_low_k_fallback_and_all_class_argmax() -> None:
     )
     assert state.score(query).shape == (2, 11)
     assert state.predict(query).shape == (2,)
+
+
+def test_current_256d_s0_reaches_active_fixed_ridge_registration_fit() -> None:
+    fixture = _fixture(5)
+    state = fit_stage2_ablation(
+        ablation_id="P2-256-S0",
+        seed=820001,
+        device="cpu",
+        **fixture,
+    )
+    assert state.ablation_id == "P2-256-S0"
+    assert state.feature_profile == "identity160_fft96_beta4_blocknorm_globalnorm"
+    assert state.audit["d92_registration_balanced_active"] is True
+    assert state.audit["d92_covariance_mode"] == "empirical_fixed_ridge"
+    assert state.compiled_affine_state is not None
+    assert state.compiled_affine_state.arm_id == "P2-F3"
+
+
+def test_current_256d_catalogue_is_numerically_reachable_without_f0() -> None:
+    fixture = _fixture(2)
+    for spec in STAGE2_E0_256_ABLATION_ARMS:
+        state = fit_stage2_ablation(
+            ablation_id=spec.ablation_id,
+            seed=820001,
+            device="cpu",
+            **fixture,
+        )
+        assert state.ablation_id == spec.ablation_id
+        assert state.score(fixture["new_support_features"][:2]).shape == (2, 11)
 
 
 def test_td_htrc_m21_is_reachable_as_an_explicit_opt_in_mode() -> None:

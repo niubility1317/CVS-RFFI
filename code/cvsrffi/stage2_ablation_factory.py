@@ -128,6 +128,74 @@ STAGE2_MAIN_ARMS: tuple[Stage2ArmSpec, ...] = (
 STAGE2_T1_ARMS: tuple[Stage2ArmSpec, ...] = (*STAGE2_STATE_ARMS, *STAGE2_MAIN_ARMS)
 
 
+# This is intentionally a separate current-method screen rather than a change
+# to the historical T1 catalogue.  Every arm starts from identity160+FFT96;
+# it never includes the FP32 F0 quantization comparison.
+STAGE2_E0_256_ABLATION_ARMS: tuple[Stage2ArmSpec, ...] = (
+    _spec(
+        "P2-256-FULL",
+        stage="stage2c",
+        table="e0_256_module_screen",
+        factor="reference",
+        diff=None,
+        reference_id="P2-256-FULL",
+    ),
+    _spec(
+        "P2-256-A0",
+        stage="stage2c",
+        table="e0_256_module_screen",
+        factor="joint_feature",
+        diff="feature_profile",
+        reference_id="P2-256-FULL",
+    ),
+    _spec(
+        "P2-256-B0",
+        stage="stage2c",
+        table="e0_256_module_screen",
+        factor="robust_center",
+        diff="center_profile",
+        reference_id="P2-256-FULL",
+    ),
+    _spec(
+        "P2-256-S0",
+        stage="stage2c",
+        table="e0_256_module_screen",
+        factor="auto_shrinkage",
+        diff="covariance_profile",
+        reference_id="P2-256-FULL",
+    ),
+    _spec(
+        "P2-256-C3",
+        stage="stage2c",
+        table="e0_256_module_screen",
+        factor="task_covariance",
+        diff="covariance_profile",
+        reference_id="P2-256-FULL",
+    ),
+    _spec(
+        "P2-256-D0",
+        stage="stage2c",
+        table="e0_256_module_screen",
+        factor="dual_geometry",
+        diff="geometry_profile",
+        reference_id="P2-256-FULL",
+    ),
+    _spec(
+        "P2-256-D2",
+        stage="stage2c",
+        table="e0_256_module_screen",
+        factor="crossfit_fusion",
+        diff="geometry_profile",
+        reference_id="P2-256-FULL",
+    ),
+)
+
+STAGE2_ALL_ARMS: tuple[Stage2ArmSpec, ...] = (
+    *STAGE2_T1_ARMS,
+    *STAGE2_E0_256_ABLATION_ARMS,
+)
+
+
 _OVERRIDES: dict[str, dict[str, Any]] = {
     "P2-FULL": {},
     "P2-S2A": {"state_profile": "stage2a_zero_label_frozen_bundle"},
@@ -155,10 +223,38 @@ _OVERRIDES: dict[str, dict[str, Any]] = {
     "P2-F2": {"quantization_profile": "f2_single_int8_fp16_scale"},
     # P2-F3 is a logical manuscript arm and a physical alias of P2-FULL.
     "P2-F3": {},
+    # The current 256-D screen preserves the compiled F3 deployment state for
+    # every arm.  It deliberately has no P2-256-F0 arm.
+    "P2-256-FULL": {
+        "feature_profile": "identity160_fft96_beta4_blocknorm_globalnorm",
+    },
+    "P2-256-A0": {"feature_profile": "identity160_only"},
+    "P2-256-B0": {
+        "feature_profile": "identity160_fft96_beta4_blocknorm_globalnorm",
+        "center_profile": "support_plain_mean_no_ground_spectrum",
+    },
+    "P2-256-S0": {
+        "feature_profile": "identity160_fft96_beta4_blocknorm_globalnorm",
+        "covariance_profile": (
+            "d92_old_new_task_balanced_empirical_fixed_ridge"
+        ),
+    },
+    "P2-256-C3": {
+        "feature_profile": "identity160_fft96_beta4_blocknorm_globalnorm",
+        "covariance_profile": "d81_all_classes_equal_ledoit_wolf",
+    },
+    "P2-256-D0": {
+        "feature_profile": "identity160_fft96_beta4_blocknorm_globalnorm",
+        "geometry_profile": "full_only",
+    },
+    "P2-256-D2": {
+        "feature_profile": "identity160_fft96_beta4_blocknorm_globalnorm",
+        "geometry_profile": "full_block_fixed_half",
+    },
 }
 
 _SPECS_BY_ID: dict[str, Stage2ArmSpec] = {
-    spec.ablation_id: spec for spec in STAGE2_T1_ARMS
+    spec.ablation_id: spec for spec in STAGE2_ALL_ARMS
 }
 
 
@@ -273,7 +369,7 @@ def build_stage2_method(ablation_id: str) -> Stage2AblationMethod:
 def validate_stage2_catalog() -> None:
     """Validate counts, aliases, and the one-factor resolved-diff contract."""
 
-    ids = [spec.ablation_id for spec in STAGE2_T1_ARMS]
+    ids = [spec.ablation_id for spec in STAGE2_ALL_ARMS]
     if len(ids) != len(set(ids)):
         raise Stage2AblationConfigError("Stage2 catalog contains duplicate IDs")
     if len(STAGE2_STATE_ARMS) != 4:
@@ -282,14 +378,20 @@ def validate_stage2_catalog() -> None:
         raise Stage2AblationConfigError("Stage2 main catalog must contain 21 logical arms")
     if len(STAGE2_BASELINE_ARMS) != 7:
         raise Stage2AblationConfigError("Stage2 baseline catalog must contain 7 arms")
+    if len(STAGE2_E0_256_ABLATION_ARMS) != 7:
+        raise Stage2AblationConfigError(
+            "Stage2 current-256D catalog must contain 7 logical arms"
+        )
     if set(ids) != set(_OVERRIDES):
         raise Stage2AblationConfigError("Stage2 specs and overrides do not cover the same IDs")
 
-    for spec in STAGE2_T1_ARMS:
+    for spec in STAGE2_ALL_ARMS:
         diff_keys = tuple(stage2_config_diff(spec.ablation_id))
-        if spec.ablation_id == "P2-FULL":
+        if spec.ablation_id == spec.reference_id:
             if diff_keys or spec.declared_diff:
-                raise Stage2AblationConfigError("P2-FULL must be the zero-diff reference")
+                raise Stage2AblationConfigError(
+                    f"{spec.ablation_id} must be the zero-diff reference"
+                )
             continue
         if spec.alias_of is not None:
             if diff_keys or spec.declared_diff:
@@ -320,7 +422,9 @@ validate_stage2_catalog()
 __all__ = [
     "PROTOCOL_SCHEMA",
     "STAGE2_ABLATION_SCHEMA",
+    "STAGE2_ALL_ARMS",
     "STAGE2_BASELINE_ARMS",
+    "STAGE2_E0_256_ABLATION_ARMS",
     "STAGE2_MAIN_ARMS",
     "STAGE2_STATE_ARMS",
     "STAGE2_T1_ARMS",
