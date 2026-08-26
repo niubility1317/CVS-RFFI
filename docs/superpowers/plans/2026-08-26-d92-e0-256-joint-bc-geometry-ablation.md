@@ -88,9 +88,9 @@ $$
 - 修改：`analysis/d92_e0_256_joint_ablation_bc_geometry_20260826.md`
 - 新建：`automation_reports/CV-SincNet/d92_e0_256_joint_ablation_bc_geometry_20260826/report.md`
 
-- [ ] 运行聚焦协议负测、12臂计划构造测试、真实checkpoint无query smoke和一次独立P0/P1正确性审查。
-- [ ] 生成不可覆盖的12row预登记计划；记录提交、命令、环境、输入/输出、GPU、技术停止规则和预期工件。
-- [ ] 只stage本计划、代码、测试和正式报告；提交、推送并核对远端OID。
+- [x] 运行聚焦协议负测、12臂计划构造测试、真实checkpoint无query smoke和一次独立P0/P1正确性审查。
+- [x] 生成不可覆盖的12row预登记计划；记录提交、命令、环境、输入/输出、GPU、技术停止规则和预期工件。
+- [x] 只stage本计划、代码、测试和正式报告；提交、推送并核对远端OID。
 
 ### Task6：N607发布与闭合
 
@@ -99,7 +99,14 @@ $$
 - 更新：`analysis/d92_e0_256_joint_ablation_bc_geometry_20260826.md`
 - 更新：`docs/D92_METHOD_COMPLETE_REPORT_20260727.md`
 
-- [ ] 在N607完成一次资源/路径preflight、release归档单次本地/远端SHA比较和远端编译。
-- [ ] 启动12臂run并验证PID、CWD、命令行、GPU映射和日志增长；不干预非本run任务。
-- [ ] 每行预测闭合后，独立scorer连接truth并生成同row结果。
-- [ ] 计算全部条件主效应与`I_BC(G)`，报告结果为单seed筛选证据；提交、推送并核对远端OID。
+- [x] 在N607完成一次资源/路径preflight、release归档单次本地/远端SHA比较和远端编译。
+- [x] 启动12臂run并验证PID、CWD、命令行、GPU映射和日志增长；不干预非本run任务。
+- [x] 每行预测闭合后，独立scorer连接truth并生成同row结果。
+- [x] 计算全部条件主效应与`I_BC(G)`，报告结果为单seed筛选证据；提交、推送并核对远端OID。
+
+## 实际闭合
+
+- 实际N607运行：`d92_e0_256_joint_ablation_bc_geometry_20260826`；发布提交：`05048a24652087b7e9b83f694b74bae01b109063`；联合实现提交：`8d4c97f0357e9b866d22a9fa800b2b424371a63e`。
+- 12个逻辑row对应12个独立物理执行，全部预测和独立truth-last评分为`PASS`；失败row=0、alias row=0。
+- 本地回收的`same_row_summary.json`已由汇总器校验，主结果、条件效应和证据边界写入`analysis/d92_e0_256_joint_ablation_bc_geometry_20260826.md`、Markdown技术报告及HTML技术报告。
+- 结果报告发布提交：`b39436b6894379dfbe294a1f00cacaeb08865396`；该12臂矩阵仍是单seed、单接收机筛选，而非fresh confirmation。
