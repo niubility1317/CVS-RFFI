@@ -693,6 +693,87 @@ $$
 
 **符号说明：**\(\mathbf D_c\in\mathbb R^{256\times256}\)的对角元素是各维support标准差；\(\mathbf D_c^{-1}\)执行逐维标准化；\(\mathbf u_{c,k}\)是标准化残差；\(\mathbf S_c^{(u)}\)是标准化空间的经验协方差；外积\(\mathbf u_{c,k}\mathbf u_{c,k}^{\mathsf T}\)记录同一条support在任意两维上的共同偏离。
 
+### 6.2.1新类的类内协方差如何由support计算
+
+设\(\mathcal Y_{\mathrm n}\)是本次注册的新类集合，取其中任一新类\(c\in\mathcal Y_{\mathrm n}\)。模块一先给出该类的\(K\)条联合support\(\mathbf z_{c,1},\ldots,\mathbf z_{c,K}\)。模块二不是把某个旧类的中心移到新类上，而是仅由新类\(c\)自己的support计算一个类内共同平移：
+
+$$
+\bar{\mathbf z}_c
+=
+\frac{1}{K}\sum_{k=1}^{K}\mathbf z_{c,k},
+\qquad
+\boldsymbol\delta_c
+=
+\mathbf m_c^{\mathrm{rob}}-\bar{\mathbf z}_c,
+\qquad
+\widetilde{\mathbf z}_{c,k}
+=
+\mathbf z_{c,k}+\boldsymbol\delta_c.
+$$
+
+**符号说明：**\(\bar{\mathbf z}_c\in\mathbb R^{256}\)是新类\(c\)在模块二前的普通support均值；\(\mathbf m_c^{\mathrm{rob}}\in\mathbb R^{256}\)是同一新类根据自身support、冻结扰动基\(\mathbf U\)和谱权重\(\boldsymbol\rho\)得到的稳健中心；\(\boldsymbol\delta_c\in\mathbb R^{256}\)是对该类全部support相同的平移量；\(\widetilde{\mathbf z}_{c,k}\)是平移后的第\(k\)条support。上式中不存在旧类中心\(\mathbf m_o^{\mathrm{rob}}\)：冻结地面知识只提供所有类别共用的扰动方向和权重，不提供可写入新类统计量的旧类中心。
+
+平移后的新类均值就是该新类自己的稳健中心：
+
+$$
+\boldsymbol\mu_c
+=
+\frac{1}{K}\sum_{k=1}^{K}\widetilde{\mathbf z}_{c,k}
+=
+\bar{\mathbf z}_c+\boldsymbol\delta_c
+=
+\mathbf m_c^{\mathrm{rob}}.
+$$
+
+**符号说明：**\(\boldsymbol\mu_c\)是模块三使用的新类中心；等号成立是因为同一\(\boldsymbol\delta_c\)被加到该类的全部\(K\)条support。它说明模块二会改变新类云团的位置，而不是改变其内部样本之间的相对差异。
+
+因此第\(k\)条新类support的类内残差为
+
+$$
+\mathbf r_{c,k}
+=
+\widetilde{\mathbf z}_{c,k}-\boldsymbol\mu_c
+=
+\bigl(\mathbf z_{c,k}+\boldsymbol\delta_c\bigr)
+-
+\bigl(\bar{\mathbf z}_c+\boldsymbol\delta_c\bigr)
+=
+\mathbf z_{c,k}-\bar{\mathbf z}_c.
+$$
+
+**符号说明：**\(\mathbf r_{c,k}\in\mathbb R^{256}\)是用于估计类内散布的残差；第二个等号显式展示了\(\boldsymbol\delta_c\)相消。故模块二的类共同平移不改变新类的类内协方差：无论以模块二前还是模块二后的support计算，类内残差及其外积都相同。更不能由此产生对旧类稳健中心的依赖。
+
+将残差逐维标准化后，类别\(c\)的经验类内协方差为
+
+$$
+\mathbf S_c^{(u)}
+=
+\frac{1}{K}
+\sum_{k=1}^{K}
+\bigl(\mathbf D_c^{-1}\mathbf r_{c,k}\bigr)
+\bigl(\mathbf D_c^{-1}\mathbf r_{c,k}\bigr)^{\mathsf T}.
+$$
+
+**符号说明：**\(\mathbf D_c\)是由新类\(c\)的类内support标准差构成的对角矩阵；\(\mathbf S_c^{(u)}\)只由该类的\(K\)条support残差构成。它不访问旧类support、旧类稳健中心、query特征、query真值或query角色。第6.3节随后把\(\mathbf S_c^{(u)}\)收缩为\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)。
+
+**实现口径。**上述\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)保留了“一个新类的云团如何展开”的局部解释。在当前D92 E0注册实现的自动收缩路径中，模块四实际使用的是新任务内等先验的类内残差池：
+
+$$
+\mathbf S_{\mathrm n}
+=
+\frac{1}{C_{\mathrm n}}
+\sum_{c\in\mathcal Y_{\mathrm n}}
+\frac{1}{K}
+\sum_{k=1}^{K}
+\mathbf r_{c,k}\mathbf r_{c,k}^{\mathsf T},
+\qquad
+\boldsymbol\Sigma_{\mathrm n}
+=
+\operatorname{LW}_{\mathrm n}\!\left(\mathbf S_{\mathrm n}\right).
+$$
+
+**符号说明：**\(C_{\mathrm n}=|\mathcal Y_{\mathrm n}|\)是本次新类数；\(\mathbf S_{\mathrm n}\)是每个新类同样先贡献\(K\)条类内残差后得到的任务级经验协方差；\(\operatorname{LW}_{\mathrm n}(\cdot)\)表示在新任务残差池上执行的等先验Ledoit–Wolf自动收缩。因收缩强度由输入统计量自动估计，通常有\(\operatorname{LW}_{\mathrm n}(C_{\mathrm n}^{-1}\sum_c\mathbf S_c)\ne C_{\mathrm n}^{-1}\sum_c\operatorname{LW}_c(\mathbf S_c)\)。两种写法的共同事实是：新类协方差来自新类自己的类内残差，而非任何旧类稳健中心。
+
 ### 6.3球形目标与Ledoit–Wolf自动收缩
 
 经验协方差在\(K\ll256\)时最多只有\(K-1\)个独立中心化方向，直接求逆会奇异。D92 E0用球形目标
@@ -759,35 +840,37 @@ $$
 
 ### 7.1为什么要先按任务汇总
 
-新类数量增加时，如果把所有类别直接平均，新类任务将因类别数更多而拥有更大总权重。D92 E0先分别计算旧、新任务的类内协方差均值：
+新类数量增加时，如果把所有类别直接汇入同一个残差池，新类任务会因类别数更多而拥有更大总权重。D92 E0先在旧、新任务内分别等权汇总各类别的类内残差，再对两个任务分别做自动收缩：
 
 $$
-\boldsymbol\Sigma_{\mathrm o}
+\mathbf S_{g}
 =
-\frac{1}{C_{\mathrm o}}
-\sum_{c\in\mathcal Y_{\mathrm o}}
-\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c,
+\frac{1}{C_g}
+\sum_{c\in\mathcal Y_g}
+\frac{1}{K}
+\sum_{k=1}^{K}
+\mathbf r_{c,k}\mathbf r_{c,k}^{\mathsf T},
 \qquad
-\boldsymbol\Sigma_{\mathrm n}
+\boldsymbol\Sigma_g
 =
-\frac{1}{C_{\mathrm n}}
-\sum_{c\in\mathcal Y_{\mathrm n}}
-\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c.
+\operatorname{LW}_{g}\!\left(\mathbf S_g\right),
+\qquad
+g\in\{\mathrm o,\mathrm n\}.
 $$
 
-**符号说明：**\(C_{\mathrm o}=|\mathcal Y_{\mathrm o}|\)是旧类数；\(C_{\mathrm n}=|\mathcal Y_{\mathrm n}|\)是新类数；\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)是单类收缩协方差；\(\boldsymbol\Sigma_{\mathrm o}\)和\(\boldsymbol\Sigma_{\mathrm n}\)是两个任务内部的类别等权平均。
+**符号说明：**\(g\)表示旧任务\(\mathrm o\)或新任务\(\mathrm n\)；\(\mathcal Y_g\)是任务\(g\)的类别集合；\(C_g=|\mathcal Y_g|\)是其中的类别数；\(\mathbf r_{c,k}\)是类别\(c\)第\(k\)条support相对本类均值的残差；\(\mathbf S_g\)是任务\(g\)的等类权经验协方差；\(\operatorname{LW}_g(\cdot)\)表示对任务\(g\)的全部类内残差执行等先验Ledoit–Wolf自动收缩；\(\boldsymbol\Sigma_{\mathrm o}\)和\(\boldsymbol\Sigma_{\mathrm n}\)是收缩后的两个任务协方差。由于每类都有同样的\(K\)条support，\(\mathbf S_g\)使同一任务内每个类别贡献相同的总残差权重。
 
 为看清“先按任务汇总”的必要性，设想一个未采用的方法：直接对全部类别做等权平均。它等价于
 
 $$
-\boldsymbol\Sigma_{\mathrm{all}}
+\mathbf S_{\mathrm{all}}
 =
-\frac{C_{\mathrm o}}{C_{\mathrm o}+C_{\mathrm n}}\boldsymbol\Sigma_{\mathrm o}
+\frac{C_{\mathrm o}}{C_{\mathrm o}+C_{\mathrm n}}\mathbf S_{\mathrm o}
 \mathbin{+}
-\frac{C_{\mathrm n}}{C_{\mathrm o}+C_{\mathrm n}}\boldsymbol\Sigma_{\mathrm n}.
+\frac{C_{\mathrm n}}{C_{\mathrm o}+C_{\mathrm n}}\mathbf S_{\mathrm n}.
 $$
 
-**符号说明：**\(\boldsymbol\Sigma_{\mathrm{all}}\)表示这个仅用于对照说明、并未被D92 E0采用的“全部类别直接平均”结果；\(C_{\mathrm o}/(C_{\mathrm o}+C_{\mathrm n})\)和\(C_{\mathrm n}/(C_{\mathrm o}+C_{\mathrm n})\)分别是旧、新任务由类别数量自动决定的总权重；其余符号与上一式相同。
+**符号说明：**\(\mathbf S_{\mathrm{all}}\)表示仅用于解释权重、并未被D92 E0采用的“全部类别直接汇总”经验残差协方差；\(C_{\mathrm o}/(C_{\mathrm o}+C_{\mathrm n})\)和\(C_{\mathrm n}/(C_{\mathrm o}+C_{\mathrm n})\)分别是旧、新任务由类别数量自动决定的总权重；其余符号与上一式相同。这里特意在自动收缩之前比较\(\mathbf S\)，避免把不同任务上自动估计的收缩强度错误地当作可线性相加的常数。
 
 例如，若有6个旧类和20个新类，直接平均会让旧任务总权重为\(6/26\approx23.1\%\)，新任务总权重为\(20/26\approx76.9\%\)。这不是某组实验结果，只是一个计数例子：新类数较多时，即使每个类别都被“公平地”平均，整个新任务仍会压过旧任务。
 
