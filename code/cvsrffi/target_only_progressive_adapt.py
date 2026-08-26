@@ -661,6 +661,13 @@ def _group_base_lrs(config: SFTAPFTConfig, phase: str) -> dict[str, float]:
     }
 
 
+def _make_grad_scaler(device: torch.device, *, enabled: bool):
+    scaler_type = getattr(torch.amp, "GradScaler", None)
+    if scaler_type is not None:
+        return scaler_type(device.type, enabled=enabled)
+    return torch.cuda.amp.GradScaler(enabled=enabled)
+
+
 def fit_sf_tapft(
     checkpoint_model: nn.Module,
     target_train: TargetOnlyAdaptationDataset,
@@ -743,7 +750,7 @@ def fit_sf_tapft(
         raise ValueError(f"SF-TAPFT trainability group is empty: {missing}")
     optimizer = torch.optim.AdamW(groups, weight_decay=float(config.weight_decay))
     use_amp = bool(config.mixed_precision and device.type == "cuda")
-    scaler = torch.amp.GradScaler(device.type, enabled=use_amp)
+    scaler = _make_grad_scaler(device, enabled=use_amp)
     l2sp_names = sorted(norm_names | last_names)
     l2sp = L2SPRegularizer.from_named_parameters((name, named[name]) for name in l2sp_names)
     initial_state = {name: value.detach().clone() for name, value in student.state_dict().items()}

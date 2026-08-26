@@ -276,6 +276,25 @@ def test_fit_sf_tapft_is_reproducible_updates_allowed_scope_and_freezes_result()
     assert torch.equal(first.head.weight, second.head.weight)
 
 
+def test_fit_supports_torch21_cuda_amp_scaler_namespace(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delattr(torch.amp, "GradScaler")
+    result = fit_sf_tapft(
+        _ToyModel(),
+        _dataset(),
+        SFTAPFTConfig(
+            phase_steps=(1, 1, 1),
+            warmup_ratio=0.0,
+            checkpoint_average_top_k=1,
+            adapter_rank=2,
+            mixed_precision=False,
+            seed=41,
+        ),
+    )
+    assert result.audit.total_steps == 3
+
+
 def test_top_checkpoint_average_requires_and_uses_disjoint_inner_validation() -> None:
     dataset = _dataset()
     train_indices = torch.tensor([0, 1, 3, 4])
