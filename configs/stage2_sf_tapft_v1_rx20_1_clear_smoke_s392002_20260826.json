@@ -1,0 +1,19 @@
+{
+  "candidate_id": "SF_TAPFT_V1_RX20_1_CLEAR_SMOKE",
+  "method": "sf_tapft_v1",
+  "permission": "DIAGNOSTIC_NON_FORMAL",
+  "protocol_schema": "p2_min_v1",
+  "phase2_data_status": "VALIDATED_ONCE",
+  "capsule_id": "d18-enrollment-before-rx20-1-seed713101-k10-smoke-reuse",
+  "split_id": "stage2b-rx20-1-seed713101-before-support-prefix",
+  "checkpoint_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
+  "support_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2b_sclba_a_t5t25_s713101_20260824_v1/input/support_rx20_1_k10_clear_smoke.npz",
+  "sf_tapft": {
+    "adapter_rank": 16,
+    "phase_steps": [1, 1, 1],
+    "warmup_ratio": 0.0,
+    "mixed_precision": true,
+    "checkpoint_average_top_k": 1,
+    "seed": 392002
+  }
+}
