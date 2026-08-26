@@ -387,3 +387,33 @@ After local commit and report preparation, use the project N607 preflight. Relea
 - [ ] **Step 5: Stop at the R0 evidence boundary**
 
 Verify the smoke artifact reports`nonpermitted_changed_count=0`、`support_count=60`、`fold0_as_final=false`and no source/query/truth access. Do not launch R1 in the same step. R1 begins only after R0 performance artifacts are complete and analyzed.
+
+### Task 7A: Materialize the missing CORE90 Phase1 deployment bundle
+
+This task is inserted before Task7 step4 because the N607 read-only inventory found no formal deployment bundle whose checkpoint lineage matches`ADV3B02_CORE90_SOFT_E200`. It is a narrow Phase1 packaging task, not a Phase2 data-validation rerun and not an extra experiment gate.
+
+**Files:**
+- Create: `code/scripts/build_adv3b02_core90_phase1_bundle.py`
+- Create: `tests/test_build_adv3b02_core90_phase1_bundle.py`
+
+**Interfaces:**
+- Consumes: the immutable CORE90 checkpoint, the already generated pre-target center/low-rank/radius aggregate component, the ordered six-class binding and synthetic parity probes.
+- Produces: one unsigned package/signing request and, after the existing offline signing step, one strict formal deployment-binding mapping accepted by`load_formal_adv3b02_deployment_bundle()`.
+
+- [ ] **Step 1: Write failing packaging tests**
+
+Require exact checkpoint lineage, contiguous ordered six-class registry, component/class binding equality, output exclusivity and a finalize mapping containing exactly the loader inputs consumed by`sf_tapft_phase1_binding.py`. Prove rejection of an alternate checkpoint, reordered class handles, nonformal component schema and reused output root.
+
+- [ ] **Step 2: Implement aggregate-only prepare/finalize**
+
+The prepare command may read only the checkpoint, existing immutable aggregate component and class binding. It must not accept a dataset path, source loader, raw/source sample, sample-level feature, target support, query or truth. Runtime parity uses synthetic tensors only. Reuse the existing deployment-bundle builder and numeric policy; do not fork the bundle schema.
+
+The finalize command must independently invoke the formal loader before writing the deployment-binding mapping. The existing local offline`sign`subcommand remains the only private-key consumer; the private key is never uploaded to N607 and is never written into a report or bundle.
+
+- [ ] **Step 3: Verify, commit and release**
+
+Run the new focused tests plus existing formal-bundle and SF-TAPFT binding tests, compile the new script, commit and push. Then include the script in the single Task7 release archive, run one remote compile and one real CORE90 aggregate-only prepare. Retrieve only the signing request, sign locally, upload only the signature envelope, finalize remotely and read back the formal loader result.
+
+- [ ] **Step 4: Resume Task7 no-query smoke**
+
+Write the actual deployment mapping into the frozen R0 config, commit/push it, publish the immutable release and run the real 60-support no-query smoke. Do not open query/truth or start R1.
