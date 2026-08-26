@@ -51,3 +51,10 @@
 ## 预期交付与结论边界
 
 每个逻辑臂应有一个独立预测闭合物和一个独立评分闭合物。只有7个row均完成prediction closure并由独立scorer连接truth后，才在同一行报告旧类准确率、已见新类准确率、`H`、`F`、`min-old`和`min-new`，并将结果写入各模块对应位置。该单seed困难切片仅用于筛选性消融解释，不替代多seed或完整矩阵确认。
+
+## 启动健康证据
+
+- 当前状态为`RUNNING`。N607主runner PID=`3677457`，其CWD和命令行均与冻结release和封存计划一致。
+- 新run/log根、`runner_start.json`、7个物理row日志及launch记录均已出现，没有覆盖`v1`。
+- 首次GPU读取确认6个预测子进程已在GPU0–GPU3运行。GPU0已有外部PID=`3660023`，故第7个row按每GPU最多2个进程规则等待；GPU4、GPU5的外部训练未受影响。
+- 这些仅是启动健康证据，不能替代prediction closure、独立评分或模块效果结论。
