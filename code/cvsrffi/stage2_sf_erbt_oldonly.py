@@ -288,12 +288,7 @@ def _extract_identity160(model: torch.nn.Module, rows: np.ndarray, device: torch
     from cvsrffi.target_only_progressive_adapt import _extract_joint_embedding, _forward_aux
 
     contiguous = np.ascontiguousarray(rows, dtype=np.float32)
-    values = (
-        torch.frombuffer(contiguous, dtype=torch.float32)
-        .reshape(contiguous.shape)
-        .clone()
-        .to(device)
-    )
+    values = torch.tensor(contiguous.tolist(), dtype=torch.float32, device=device)
     with torch.inference_mode():
         embeddings = _extract_joint_embedding(_forward_aux(model, values), len(contiguous))
     result = embeddings.detach().cpu().numpy().astype(np.float32, copy=False)
@@ -377,9 +372,11 @@ def run_old_only_prediction(
     support_identity = _extract_identity160(model, support_iq, target_device)
     query_identity = _extract_identity160(model, query_iq, target_device)
     with torch.inference_mode():
-        query_tensor = torch.frombuffer(
-            np.ascontiguousarray(query_identity), dtype=torch.float32
-        ).reshape(query_identity.shape).clone().to(target_device)
+        query_tensor = torch.tensor(
+            np.ascontiguousarray(query_identity).tolist(),
+            dtype=torch.float32,
+            device=target_device,
+        )
         head_columns = torch.argmax(head(query_tensor), dim=1).cpu().numpy().astype(np.int64)
         sf_head_predictions = np.asarray(head.class_ids, dtype=np.int64)[head_columns]
     support_fft = make_fft96(support_iq)

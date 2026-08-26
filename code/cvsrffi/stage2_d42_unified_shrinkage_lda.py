@@ -136,7 +136,7 @@ def _tensor_from_numpy(
         rows = np.ascontiguousarray(value, dtype=np.int64)
     else:
         raise D42UnifiedShrinkageLDAError("D42 unsupported tensor bridge dtype")
-    return torch.frombuffer(rows, dtype=dtype).reshape(rows.shape).clone().to(device)
+    return torch.tensor(rows.tolist(), dtype=dtype, device=device)
 
 
 def _fit_old_only_b3_metric(

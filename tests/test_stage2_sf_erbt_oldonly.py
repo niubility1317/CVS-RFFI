@@ -170,7 +170,7 @@ def _tiny_bundle_loader(path, *, device):
     }
 
 
-def test_prediction_is_truth_blind_and_emits_two_reg0_arms(tmp_path):
+def test_prediction_is_truth_blind_and_emits_two_reg0_arms(tmp_path, monkeypatch):
     support_iq = np.zeros((60, 2, 256), dtype=np.float32)
     query_iq = np.zeros((12, 2, 256), dtype=np.float32)
     labels = np.repeat(np.arange(6), 10)
@@ -209,6 +209,11 @@ def test_prediction_is_truth_blind_and_emits_two_reg0_arms(tmp_path):
         encoding="utf-8",
     )
 
+    monkeypatch.setattr(
+        torch,
+        "frombuffer",
+        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("NumPy buffer bridge used")),
+    )
     receipt = run_old_only_prediction(
         bundle_path=tmp_path / "bundle.pt",
         support_path=tmp_path / "support.npz",
