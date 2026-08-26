@@ -47,4 +47,13 @@ RZ0/RZ1/RX1/D1P需同时满足：三LEO final mean gain>0、clean drop≤0.30pp�
 - J1 Python生产文件`py_compile`通过；J1与JMRS01/J0回归此前43项通过。
 - A已确认为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；B是全新不可覆盖run。
 
-当前状态：`LOCAL_VERIFIED / NOT_LANDED / NO_B_EXPERIMENT_LAUNCHED`。
+## 六、发布与启动实证
+
+- release Git状态：`02d3c408a98731477879995b4b58fc8e8959e6df`；实际代码修复固定于其父提交`df472089c20567cdee1a76b13e1d45f377021f9e`。
+- 完整Git归档：本地`E:\type10-7\release_archives\PHASE1_JMRS02_J1_ROLE_SCREEN_S20260824_20260826B_FULL_02d3c408.zip`→远端`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_jmrs02_j1_20260826/PHASE1_JMRS02_J1_ROLE_SCREEN_S20260824_20260826B_FULL_02d3c408.zip`。
+- release SHA-256：`a24aa07e64b8e50db51b9c0ff219ed0a289830362dc863824b1c25bf5df95ae6`，本地/远端一致；远端解压CWD为`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_jmrs02_j1_20260826/02d3c408a98731477879995b4b58fc8e8959e6df`。
+- N607原生`py_compile`与`bash -n`通过；启动前B的formal/smoke输出根均不存在，GPU0空闲，没有既有J1 runner。
+- B仅启动一次：launcher PID`3552879`，父调度shell PID`3552878`；首次检查CWD、cmdline、run ID和release路径一致。
+- 真实checkpoint无query smoke通过；正式日志随后进入`fold=rx0,row=RZ0,inner-LORO`。GPU0约848MiB、19%利用率，日志正常增长，无Traceback/OOM/NaN。
+
+当前状态：`RUNNING / REAL_CHECKPOINT_NO_QUERY_SMOKE_PASS / NO_PERFORMANCE_RESULT_YET`。
