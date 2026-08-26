@@ -41,6 +41,13 @@
 - N607GPU在启动前根据只读preflight分配；不得影响现有外部任务。
 - 只在数据绑定或query边界错误、错误checkout、输出根已存在、同一确定性预预测异常在至少两个物理行复现、prediction closure缺失或独立scorer连接错误时停止。指标高低不触发停止。
 
+## 发布与启动证据
+
+- release代码提交为`20bc5eb99ed57f99d4beaa7856d25ba1a3af78c6`。
+- release包本地/远端SHA256一致：`4b5b04c6a342c1e4fcb78faf6f79fbbec8763c9096cba07268a9ab1cd7dac700`。N607在`/home/szu2070436088/2510044040/CV-SincNet/releases/d92_e0_256_module_ablation_hard11_20260826_v2_20bc5eb9`检出该提交，远端编译通过。
+- 封存计划位于`/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/d92_e0_256_module_ablation_hard11_20260826_v2_20bc5eb9/sealed_plan.json`，包含7个物理执行和7个逻辑row，无`F0`；不写输出dry-run通过。
+- 正式runner使用同release中的row predictor和独立scorer。7个物理row排入GPU0–GPU3的7个slot；GPU0已有一个外部任务，runner受每GPU最多2个进程限制而动态等待，不干预外部任务。GPU4、GPU5外部训练不参与本run。
+
 ## 预期交付与结论边界
 
 每个逻辑臂应有一个独立预测闭合物和一个独立评分闭合物。只有7个row均完成prediction closure并由独立scorer连接truth后，才在同一行报告旧类准确率、已见新类准确率、`H`、`F`、`min-old`和`min-new`，并将结果写入各模块对应位置。该单seed困难切片仅用于筛选性消融解释，不替代多seed或完整矩阵确认。
