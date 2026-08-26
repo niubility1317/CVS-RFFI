@@ -8,6 +8,20 @@
 
 本授权仅适用于当前对话和本路线，不永久修改`项目.md`。报告和artifact必须明确标记该任务级方法权限，避免把本次放宽误写成全项目默认规则。
 
+### 1.1 Phase1 bundle与目标样本的固定关系
+
+用户要求后续统一使用Phase1 bundle中的样本绑定，避免checkpoint、类别顺序和样本集合对不齐。当前合规ADV3B02 deployment bundle刻意不包含raw IQ、source dataset locator或单样本feature；它只提供联合验证的runtime、checkpoint lineage、ordered class registry和不可变int8多样本聚合知识。因此R0不得把不存在的Phase1源样本复制到Phase2，也不得建立新的源样本例外。
+
+本路线采用双绑定实现用户目标：
+
+- 模型侧从正式Phase1 bundle读取并固定`outer_content_root_sha256`、`checkpoint_lineage_sha256`、`runtime_sha256`、`class_handle_binding_sha256`、ordered class registry和int8 component身份；
+- 训练checkpoint文件的SHA256必须等于Phase1 bundle中的`checkpoint_lineage_sha256`；
+- support标签只能解释为ordered class registry的索引，不能由目录名、临时排序或support文件自行重映射；
+- 样本侧继续使用`p2_min_v1/VALIDATED_ONCE`绑定的target-support capsule，固定`capsule_id/split_id/physical IDs`；
+- bundle身份、checkpoint lineage、class registry和support capsule四者共同写入R0 bundle与receipt，任何一项不一致都在训练前失败。
+
+这里的“使用Phase1 bundle中的样本”落实为使用Phase1 bundle固定的模型与类别语义，并让合法target样本显式绑定该语义；不是读取Phase1源域原始样本。
+
 ## 2.总体架构
 
 研发路线由两个参考模型和一条顺序瘦身链构成：
@@ -27,6 +41,7 @@ R0保持当前模型能力不变：持久目标head、rank-16 time Adapter、全
 R0必须完成：
 
 - checkpoint选择不再平均完整`state_dict`；只允许保存或平均明确许可的trainable delta和target head；
+- 训练前严格加载并绑定正式Phase1 deployment bundle，核对checkpoint lineage和ordered class registry；
 - 非许可参数与所有buffer从基础checkpoint逐tensor原样恢复，最终用`torch.equal`验证；
 - OOF选择与最终拟合分离；4-fold只产生统一stage/step选择和OOF指标；
 - 选择通过后，从原始checkpoint对全部60条support重新训练一次，最终bundle不得来自`fitted_folds[0]`；

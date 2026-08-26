@@ -8,6 +8,7 @@
 |---|---|---|---|---|---|---|
 |V2-01|授权边界|允许修改原型、模型、head、Adapter和tensor|设计、配置、runner|verified|用户当前对话明确授权|仅限本路线模型能力|
 |V2-02|正确性边界|source/query/truth隔离和`p2_min_v1`绑定不变|adapt、runner、prediction测试|pending|协议负测|不得随模型权限放宽|
+|V2-02A|Phase1 bundle绑定|正式bundle固定checkpoint lineage、ordered class registry和int8 component；target样本来自已验证capsule|runner、bundle、测试|pending|lineage/class/capsule错配负测|Phase1 bundle没有raw或单样本成员|
 |V2-03|R0 averaging|只保存/平均许可trainable delta与target head|`target_only_progressive_adapt.py`、测试|pending|非许可state逐tensor相等|禁止完整floating state averaging|
 |V2-04|R0 final refit|OOF选择后从原checkpoint对60条support重拟合|adapt、runner、测试|pending|bundle `support_count=60`|不得返回fold0|
 |V2-05|R0指标|阶段级BA、macro-F1、floor、NLL、recall、margin、flip和移动量|adapt、runner、receipt|pending|手算fixture|A/B/C分别记录|
@@ -34,7 +35,7 @@
 ## 当前状态
 
 - 已验证：1项。
-- 待实现：8项，均属于R0。
+- 待实现：9项，均属于R0。
 - 延后：15项，按R1→R2→R3→S0→S1–S5顺序解锁。
 - 拒绝：0项。
 - 阻塞：0项。
