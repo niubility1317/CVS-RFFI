@@ -15,16 +15,16 @@
 |FSFA-09|§8|用同physical sample clean/LEO配对残差学习LEO rank4慢基，并先去receiver子空间|新解析适配器、测试|verified|paired合成cache测试|只用source地面cache|
 |FSFA-10|§9|输出分场景主角度与共享basis解释率|新诊断、测试|verified|三场景角度/解释率fixture|仅诊断，不自动扩展rank|
 |FSFA-11|§10|实现8维闭式域码及可微support→query解析元目标|新解析适配器、测试|verified|闭式恢复和2步meta fixture|元目标含CE、floor、margin和pseudo-new惩罚|
-|FSFA-12|§11|outer receiver完全排除；inner receiver选择ridge和门控|新nested evaluator、测试|implemented|代码路径和outer排除测试|多ridge真正inner LORO待N607正式7-receiver运行闭合|
+|FSFA-12|§11|outer receiver完全排除；inner receiver选择ridge和门控|新nested evaluator、测试|verified|7-receiver×3-ridge真实N607 inner LORO|三个ridge在全部outer receiver上source gain同为0，确定性回退0.03|
 |FSFA-13|§12|域码只使用旧类support，按类求解后几何中位数聚合|新解析适配器、测试|verified|外部class ID和非法新类负测|新类support不得参与域码|
 |FSFA-14|§15|先判断shift，再检查basis coverage、类别域码一致性和margin安全|新解析适配器、测试|verified|零shift/coverage/disagreement/safety路径测试|失败明确回退DA0|
 |FSFA-15|§16|记录8维域码、闭式求解、0次query更新和部署存储/计算量|runner/evaluator/report|verified|int8 bundle和Phase2 runner测试|无optimizer state、query更新为0|
 |FSFA-16|§17|新类注册前冻结旧类support求得的域码|Phase2接口、测试|deferred|等待合法REG1候选|本轮只验证DA0_REG0/DA1_REG0|
-|FSFA-17|§18|source主检A0/B3/B5；独立目标仅DA0_REG0/DA1_REG0|CLI/report|implemented|CLI、预登记和本地编译|待N607 source truth-last闭合；无新capsule不得声称目标收益|
+|FSFA-17|§18|source主检A0/B3/B5；独立目标仅DA0_REG0/DA1_REG0|CLI/report|verified|r3共280个prediction且独立truth-last评分闭合|source选择A0；无新capsule，目标性能保持UNKNOWN|
 |FSFA-18|§13|z-dom域码先验|无|deferred|B5通过后再评估|需先做TX身份泄漏probe|
 |FSFA-19|§14|CFO/SNR/PSD物理先验|无|deferred|B5通过后再评估|不得删除TX指纹成分|
 |FSFA-20|§20|最终embedding失败后前移至time/frequency/fusion Adapter|无|deferred|由预注册P1停止条件触发|不是首轮发布gate|
 |FSFA-21|§18第二层|把完整280 episode和全部增强作为首次发布前强制gate|无|rejected|`REJECTED_EXTRA_GATE`|首轮可运行280个廉价feature episode，但不是发布门|
 |FSFA-22|报告引用|直接采信CVPR2026/arXiv等外部论断作为CVS性能证据|无|rejected|证据边界审查|只作为结构启发，不作为本项目实验结论|
 
-当前统计：verified=14，implemented=2，deferred=4，rejected=2，pending=0，blocked=0。唯一独立P0/P1审查发现pseudo-new生成阶段按outer query truth筛样本；已改为生成全query侵入分数、scorer连truth后筛选，并经原问题定点复审确认`FIXED`。当前最高风险项是FSFA-12/17：真正多ridge inner LORO和280个source episode尚待N607正式运行闭合。
+当前统计：verified=16，implemented=0，deferred=4，rejected=2，pending=0，blocked=0。唯一独立P0/P1审查发现pseudo-new生成阶段按outer query truth筛样本；已改为生成全query侵入分数、scorer连truth后筛选，并经原问题定点复审确认`FIXED`。r3已完成7个outer receiver、4个场景、10个draw共280个episode及独立truth-last评分。当前最高科学风险转为FSFA-20：最终embedding解析适配已被source结果证伪，下一轮应前移到time/frequency/fusion中间层；独立目标capsule仍缺失，因此目标性能结论保持UNKNOWN而非blocked。
