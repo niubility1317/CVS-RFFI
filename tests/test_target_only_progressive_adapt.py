@@ -42,6 +42,28 @@ class _ToyHeadCarrier(nn.Module):
             self.head.weight.copy_(weight)
 
 
+class _ToyCapacityBlock(nn.Module):
+    def __init__(self, dim: int) -> None:
+        super().__init__()
+        self.dw = nn.Linear(dim, dim, bias=False)
+        self.pw = nn.Linear(dim, dim, bias=False)
+        self.norm = nn.LayerNorm(dim)
+
+
+class _ToyCapacityModel(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.emb_dim = 4
+        self.meta_adapter_time = nn.Identity()
+        self.time_fuse = nn.Sequential(nn.Linear(4, 4, bias=False), nn.LayerNorm(4))
+        self.t1 = _ToyCapacityBlock(4)
+        self.t2 = _ToyCapacityBlock(4)
+        self.t3 = _ToyCapacityBlock(4)
+        self.fuse = nn.Sequential(nn.Linear(4, 4, bias=False), nn.ReLU())
+        self.cls_head = _ToyHeadCarrier(torch.eye(4)[:2])
+        self.cls_head.id_proj = nn.Linear(4, 4, bias=False)
+
+
 class _ToyModel(nn.Module):
     def __init__(self) -> None:
         super().__init__()
@@ -188,6 +210,52 @@ def test_progressive_policy_never_unfreezes_frequency_branch() -> None:
     phase_c = policy.apply(model, "C")
     assert any(name.startswith("t3.conv.") for name in phase_c)
     assert not any(name.startswith("freq_branch.") for name in phase_c)
+
+
+def test_capacity_profiles_expose_exact_nested_p0_to_p4_parameter_sets() -> None:
+    model = _ToyCapacityModel()
+    ensure_time_adapter(model, rank=2)
+
+    p0 = set(ProgressiveTrainabilityPolicy("p0_head_only").parameter_names(model, "C"))
+    p1 = set(ProgressiveTrainabilityPolicy("p1_head_norm").parameter_names(model, "C"))
+    p2 = set(ProgressiveTrainabilityPolicy("p2_time_adapter").parameter_names(model, "C"))
+    p3 = set(ProgressiveTrainabilityPolicy("p3_full_t3").parameter_names(model, "C"))
+    p4 = set(ProgressiveTrainabilityPolicy("p4_time_fusion").parameter_names(model, "C"))
+
+    assert p0 == set()
+    assert p0 < p1 < p2 < p3 < p4
+    assert "t2.pw.weight" not in p3
+    assert {
+        "t2.pw.weight",
+        "time_fuse.0.weight",
+        "fuse.0.weight",
+        "cls_head.id_proj.weight",
+    }.issubset(p4)
+
+
+def test_head_only_profile_runs_without_requiring_model_parameter_groups() -> None:
+    model = _ToyModel()
+    before = copy.deepcopy(model.state_dict())
+    result = fit_sf_tapft(
+        model,
+        _dataset(),
+        SFTAPFTConfig(
+            trainability_profile="p0_head_only",
+            phase_steps=(2, 0, 0),
+            checkpoint_average_top_k=1,
+            adapter_rank=2,
+            mixed_precision=False,
+        ),
+    )
+    assert result.audit.total_steps == 2
+    assert all(not names for names in result.audit.trainable_names_by_phase.values())
+    assert result.audit.nonpermitted_changed_names == ()
+    assert all(torch.equal(result.model.state_dict()[name], value) for name, value in before.items())
+
+
+def test_config_rejects_unknown_trainability_profile() -> None:
+    with pytest.raises(ValueError, match="trainability_profile"):
+        SFTAPFTConfig(trainability_profile="p9_not_real")
 
 
 def test_grouped_selector_keeps_groups_disjoint_and_uses_hierarchical_ties() -> None:

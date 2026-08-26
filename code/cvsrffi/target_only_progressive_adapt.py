@@ -26,6 +26,13 @@ from .meta_adapter import ResidualMetaAdapter
 
 
 _INTEGER_DTYPES = (torch.uint8, torch.int8, torch.int16, torch.int32, torch.int64)
+_TRAINABILITY_PROFILES = (
+    "p0_head_only",
+    "p1_head_norm",
+    "p2_time_adapter",
+    "p3_full_t3",
+    "p4_time_fusion",
+)
 _PHASES = ("A", "B", "C")
 _EPS = 1.0e-8
 
@@ -84,6 +91,7 @@ class SFTAPFTConfig:
     """The report's first executable SF-TAPFT configuration."""
 
     adapter_rank: int = 16
+    trainability_profile: str = "p3_full_t3"
     classifier_source_target_interpolation: float = 0.5
     prototype_scale: float = 8.0
     label_smoothing: float = 0.05
@@ -100,6 +108,7 @@ class SFTAPFTConfig:
     lr_head_late: float = 1.0e-4
     lr_adapter_late: float = 1.0e-4
     lr_last_block: float = 3.0e-5
+    lr_fusion: float = 1.0e-5
     weight_decay: float = 1.0e-4
     warmup_ratio: float = 0.05
     gradient_clip_norm: float = 1.0
@@ -108,6 +117,10 @@ class SFTAPFTConfig:
     seed: int = 392002
 
     def __post_init__(self) -> None:
+        if self.trainability_profile not in _TRAINABILITY_PROFILES:
+            raise ValueError(
+                f"trainability_profile must be one of {_TRAINABILITY_PROFILES}"
+            )
         if isinstance(self.adapter_rank, bool) or int(self.adapter_rank) <= 0:
             raise ValueError("adapter_rank must be a positive integer")
         if len(self.phase_steps) != 3 or any(
@@ -136,6 +149,7 @@ class SFTAPFTConfig:
             "lr_head_late",
             "lr_adapter_late",
             "lr_last_block",
+            "lr_fusion",
         )
         for name in positive:
             value = float(getattr(self, name))
@@ -330,10 +344,14 @@ def ensure_time_adapter(model: nn.Module, rank: int = 16) -> ResidualMetaAdapter
 
 
 class ProgressiveTrainabilityPolicy:
-    """A/B/C allowlist for norm, time adapter, and final time block."""
+    """Nested P0-P4 allowlist applied across the A/B/C schedule."""
 
-    @staticmethod
-    def parameter_names(model: nn.Module, phase: str) -> tuple[str, ...]:
+    def __init__(self, profile: str = "p3_full_t3") -> None:
+        if profile not in _TRAINABILITY_PROFILES:
+            raise ValueError(f"trainability_profile must be one of {_TRAINABILITY_PROFILES}")
+        self.profile = profile
+
+    def parameter_names(self, model: nn.Module, phase: str) -> tuple[str, ...]:
         if phase not in _PHASES:
             raise ValueError("phase must be A, B or C")
         _, prefix = _identity_backbone(model)
@@ -345,17 +363,40 @@ class ProgressiveTrainabilityPolicy:
         )
         adapter_prefix = f"{prefix}meta_adapter_time."
         last_prefix = f"{prefix}t3."
+        p4_prefixes = (
+            f"{prefix}t2.pw.",
+            f"{prefix}time_fuse.0.",
+            f"{prefix}fuse.",
+            f"{prefix}cls_head.id_proj.",
+        )
+        profile_index = _TRAINABILITY_PROFILES.index(self.profile)
         names = []
         for name, _ in model.named_parameters():
             norm = any(name.startswith(candidate) for candidate in norm_prefixes)
             adapter = name.startswith(adapter_prefix)
             last_block = name.startswith(last_prefix)
-            if norm or (phase in {"B", "C"} and adapter) or (phase == "C" and last_block):
+            p4_extra = any(name.startswith(candidate) for candidate in p4_prefixes)
+            if (
+                (profile_index >= 1 and norm)
+                or (profile_index >= 2 and phase in {"B", "C"} and adapter)
+                or (profile_index >= 3 and phase == "C" and last_block)
+                or (profile_index >= 4 and phase == "C" and p4_extra)
+            ):
                 names.append(name)
-        if not any(name.startswith(f"{prefix}t3.norm.") for name in names):
+        if profile_index >= 1 and not any(
+            name.startswith(f"{prefix}t3.norm.") for name in names
+        ):
             raise ValueError("model must expose t3.norm affine parameters")
-        if phase in {"B", "C"} and not any(name.startswith(adapter_prefix) for name in names):
+        if (
+            profile_index >= 2
+            and phase in {"B", "C"}
+            and not any(name.startswith(adapter_prefix) for name in names)
+        ):
             raise ValueError("model must expose the SF-TAPFT time adapter")
+        if profile_index >= 4 and phase == "C" and not any(
+            name.startswith(f"{prefix}t2.pw.") for name in names
+        ):
+            raise ValueError("P4 model must expose t2.pw parameters")
         return tuple(sorted(set(names)))
 
     def apply(self, model: nn.Module, phase: str) -> tuple[str, ...]:
@@ -736,14 +777,27 @@ def _phase_for_step(step: int, phase_steps: tuple[int, int, int]) -> str:
 
 def _group_base_lrs(config: SFTAPFTConfig, phase: str) -> dict[str, float]:
     if phase == "A":
-        return {"head": config.lr_head_initial, "norm": config.lr_norm, "adapter": 0.0, "last": 0.0}
+        return {
+            "head": config.lr_head_initial,
+            "norm": config.lr_norm,
+            "adapter": 0.0,
+            "last": 0.0,
+            "fusion": 0.0,
+        }
     if phase == "B":
-        return {"head": config.lr_head_middle, "norm": config.lr_norm, "adapter": config.lr_adapter, "last": 0.0}
+        return {
+            "head": config.lr_head_middle,
+            "norm": config.lr_norm,
+            "adapter": config.lr_adapter,
+            "last": 0.0,
+            "fusion": 0.0,
+        }
     return {
         "head": config.lr_head_late,
         "norm": config.lr_norm,
         "adapter": config.lr_adapter_late,
         "last": config.lr_last_block,
+        "fusion": config.lr_fusion,
     }
 
 
@@ -824,13 +878,24 @@ def fit_sf_tapft(
     local_labels = _local_labels(target_labels, head.class_ids, device)
     class_weights = _class_balanced_weights(local_labels, len(head.class_ids)).to(dtype=dtype)
 
-    policy = ProgressiveTrainabilityPolicy()
+    policy = ProgressiveTrainabilityPolicy(config.trainability_profile)
     phase_names = {phase: policy.parameter_names(student, phase) for phase in _PHASES}
     norm_names = set(phase_names["A"])
     _, identity_prefix = _identity_backbone(student)
     adapter_prefix = f"{identity_prefix}meta_adapter_time."
     adapter_names = {name for name in phase_names["B"] if name.startswith(adapter_prefix)}
-    last_names = set(phase_names["C"]) - norm_names - adapter_names
+    fusion_prefixes = (
+        f"{identity_prefix}t2.pw.",
+        f"{identity_prefix}time_fuse.0.",
+        f"{identity_prefix}fuse.",
+        f"{identity_prefix}cls_head.id_proj.",
+    )
+    fusion_names = {
+        name
+        for name in phase_names["C"]
+        if any(name.startswith(prefix) for prefix in fusion_prefixes)
+    }
+    last_names = set(phase_names["C"]) - norm_names - adapter_names - fusion_names
     named = dict(student.named_parameters())
     initial_model_state = {
         name: value.detach().clone() for name, value in student.state_dict().items()
@@ -859,15 +924,18 @@ def fit_sf_tapft(
         {"name": "norm", "params": [named[name] for name in sorted(norm_names)], "lr": config.lr_norm},
         {"name": "adapter", "params": [named[name] for name in sorted(adapter_names)], "lr": config.lr_adapter},
         {"name": "last", "params": [named[name] for name in sorted(last_names)], "lr": config.lr_last_block},
+        {"name": "fusion", "params": [named[name] for name in sorted(fusion_names)], "lr": config.lr_fusion},
     ]
-    if any(not group["params"] for group in groups):
-        missing = [str(group["name"]) for group in groups if not group["params"]]
-        raise ValueError(f"SF-TAPFT trainability group is empty: {missing}")
+    groups = [group for group in groups if group["params"]]
     optimizer = torch.optim.AdamW(groups, weight_decay=float(config.weight_decay))
     use_amp = bool(config.mixed_precision and device.type == "cuda")
     scaler = _make_grad_scaler(device, enabled=use_amp)
-    l2sp_names = sorted(norm_names | last_names)
-    l2sp = L2SPRegularizer.from_named_parameters((name, named[name]) for name in l2sp_names)
+    l2sp_names = sorted(norm_names | last_names | fusion_names)
+    l2sp = (
+        L2SPRegularizer.from_named_parameters((name, named[name]) for name in l2sp_names)
+        if l2sp_names
+        else None
+    )
     bn_before = {
         name: value.detach().clone() for name, value in initial_model_state.items()
         if name.endswith("running_mean") or name.endswith("running_var") or name.endswith("num_batches_tracked")
@@ -911,7 +979,9 @@ def fit_sf_tapft(
                 scale=config.prototype_scale,
             )
             proto = F.cross_entropy(proto_logits, local_labels, weight=class_weights)
-            anchor = l2sp(student.named_parameters())
+            anchor = (
+                l2sp(student.named_parameters()) if l2sp is not None else logits.new_zeros(())
+            )
             kd = logits.new_zeros(())
             if config.selective_kd_weight > 0.0:
                 with torch.no_grad():
@@ -1009,7 +1079,7 @@ def fit_sf_tapft(
         **{f"head.{name}": value for name, value in initial_head_state.items()},
     }
     permitted_snapshot_names = {
-        *(f"model.{name}" for name in norm_names | adapter_names | last_names),
+        *(f"model.{name}" for name in norm_names | adapter_names | last_names | fusion_names),
         *(f"head.{name}" for name in initial_head_state),
     }
     checkpoint_average_top_k = (
