@@ -115,6 +115,16 @@ _STATE_CHANGE_AUDIT_KEYS = frozenset(
         "training_sample_count",
     }
 )
+_TARGET_BINDING_KEYS = frozenset(
+    {
+        "protocol_schema",
+        "phase2_data_status",
+        "capsule_id",
+        "split_id",
+        "support_count",
+        "per_class_counts",
+    }
+)
 
 
 CheckpointLoader = Callable[..., nn.Module]
@@ -358,9 +368,8 @@ def _bundle_payload(
     *,
     resolved: Mapping[str, Any],
     method_config: SFTAPFTConfig,
-    binding: SFTAPFTPhase1Binding | None = None,
 ) -> dict[str, Any]:
-    payload = {
+    return {
         "schema": SF_TAPFT_BUNDLE_SCHEMA,
         "method": result.audit.method,
         "permission": result.audit.permission,
@@ -375,9 +384,6 @@ def _bundle_payload(
         "class_ids": list(result.head.class_ids),
         "audit": _audit_payload(result.audit),
     }
-    if binding is not None:
-        payload["phase1_binding"] = _binding_payload(binding)
-    return payload
 
 
 def _write_json(path: Path, payload: Mapping[str, Any]) -> None:
@@ -414,7 +420,6 @@ def run_sf_tapft_no_query(
         result,
         resolved=resolved,
         method_config=method_config,
-        binding=binding,
     )
     destination.mkdir(parents=True, exist_ok=False)
     bundle_path = destination / "sf_tapft_bundle.pt"
@@ -594,12 +599,52 @@ def _strict_phase1_binding_payload(value: Any) -> dict[str, Any]:
     return payload
 
 
+def _strict_target_binding_payload(value: Any, *, trusted: bool) -> dict[str, Any]:
+    label = "trusted target binding" if trusted else "target binding"
+    if not isinstance(value, Mapping) or set(value) != set(_TARGET_BINDING_KEYS):
+        raise ValueError(f"SF-TAPFT clean-single {label} allowlist mismatch")
+    payload = dict(value)
+    if (
+        payload["protocol_schema"] != "p2_min_v1"
+        or payload["phase2_data_status"] != "VALIDATED_ONCE"
+        or not isinstance(payload["capsule_id"], str)
+        or not payload["capsule_id"].strip()
+        or not isinstance(payload["split_id"], str)
+        or not payload["split_id"].strip()
+        or isinstance(payload["support_count"], bool)
+        or not isinstance(payload["support_count"], int)
+        or payload["support_count"] <= 0
+    ):
+        raise ValueError(f"SF-TAPFT clean-single {label} is invalid")
+    rows = payload["per_class_counts"]
+    if (
+        not isinstance(rows, list)
+        or not rows
+        or any(
+            not isinstance(row, Mapping)
+            or set(row) != {"class_id", "count"}
+            or isinstance(row["class_id"], bool)
+            or not isinstance(row["class_id"], int)
+            or row["class_id"] < 0
+            or isinstance(row["count"], bool)
+            or not isinstance(row["count"], int)
+            or row["count"] < 0
+            for row in rows
+        )
+        or [row["class_id"] for row in rows]
+        != sorted({row["class_id"] for row in rows})
+        or sum(row["count"] for row in rows) != payload["support_count"]
+    ):
+        raise ValueError(f"SF-TAPFT clean-single {label} class counts are invalid")
+    payload["per_class_counts"] = [dict(row) for row in rows]
+    return payload
+
+
 def load_sf_tapft_clean_single_bundle_strict(
     path: str | Path,
     *,
     device: str | torch.device,
-    expected_capsule_id: str | None = None,
-    expected_split_id: str | None = None,
+    expected_target_binding: Mapping[str, Any],
     checkpoint_loader: CheckpointLoader | None = None,
     phase1_binding_loader: Phase1BindingLoader | None = None,
 ) -> tuple[nn.Module, TargetPrototypeHead, dict[str, Any]]:
@@ -629,8 +674,6 @@ def load_sf_tapft_clean_single_bundle_strict(
         or not payload["capsule_id"].strip()
         or not isinstance(payload["split_id"], str)
         or not payload["split_id"].strip()
-        or (expected_capsule_id is not None and payload["capsule_id"] != expected_capsule_id)
-        or (expected_split_id is not None and payload["split_id"] != expected_split_id)
     ):
         raise ValueError("SF-TAPFT clean-single target data binding mismatch")
     if payload["fold0_as_final"] is not False or payload["query_input_capability"] is not False:
@@ -699,6 +742,22 @@ def load_sf_tapft_clean_single_bundle_strict(
         or sum(row["count"] for row in count_rows) != support_count
     ):
         raise ValueError("SF-TAPFT clean-single support binding mismatch")
+    trusted_target_binding = _strict_target_binding_payload(
+        expected_target_binding, trusted=True
+    )
+    actual_target_binding = _strict_target_binding_payload(
+        {
+            "protocol_schema": payload["protocol_schema"],
+            "phase2_data_status": payload["phase2_data_status"],
+            "capsule_id": payload["capsule_id"],
+            "split_id": payload["split_id"],
+            "support_count": support_count,
+            "per_class_counts": count_rows,
+        },
+        trusted=False,
+    )
+    if actual_target_binding != trusted_target_binding:
+        raise ValueError("SF-TAPFT clean-single trusted target binding mismatch")
 
     state_audit = payload["state_change_audit"]
     if not isinstance(state_audit, Mapping) or set(state_audit) != set(
@@ -783,7 +842,7 @@ def load_sf_tapft_bundle_strict(
     except (OSError, RuntimeError, ValueError, TypeError) as exc:
         raise ValueError(f"cannot safely load SF-TAPFT bundle: {source}") from exc
     payload_keys = set(payload) if isinstance(payload, Mapping) else set()
-    if payload_keys != set(_BUNDLE_KEYS) and payload_keys != set(_BUNDLE_KEYS) | {"phase1_binding"}:
+    if payload_keys != set(_BUNDLE_KEYS):
         raise ValueError("SF-TAPFT bundle top-level allowlist mismatch")
     if payload["schema"] != SF_TAPFT_BUNDLE_SCHEMA:
         raise ValueError("SF-TAPFT bundle schema mismatch")
