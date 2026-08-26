@@ -263,3 +263,63 @@ def test_disabled_nuisance_branch_does_not_add_a_forward():
 
     assert model.calls == 1
     assert outputs["nuisance"] is None
+
+
+def test_anchor_logit_cache_is_opt_in_and_uses_dense_base_index_lookup():
+    defaults = train_ssdg.build_arg_parser().parse_args(["--output_dir", "out"])
+    enabled = train_ssdg.build_arg_parser().parse_args(
+        ["--output_dir", "out", "--rc4_cache_anchor_logits", "true"]
+    )
+    assert defaults.rc4_cache_anchor_logits is False
+    assert enabled.rc4_cache_anchor_logits is True
+
+    cache = train_ssdg._dense_anchor_logit_cache(
+        torch.tensor([7, 2, 5]),
+        torch.tensor([[0.7, 0.3], [0.2, 0.8], [0.5, 0.5]]),
+        device=torch.device("cpu"),
+    )
+    metadata = {"base_index": torch.tensor([5, 7, 2])}
+
+    actual = train_ssdg._lookup_anchor_logits(
+        cache, metadata, expected_count=3, device=torch.device("cpu")
+    )
+
+    torch.testing.assert_close(
+        actual,
+        torch.tensor([[0.5, 0.5], [0.7, 0.3], [0.2, 0.8]]),
+    )
+
+
+def test_anchor_logit_cache_fails_closed_for_missing_sample_id():
+    cache = train_ssdg._dense_anchor_logit_cache(
+        torch.tensor([1]), torch.tensor([[1.0, 0.0]]), device=torch.device("cpu")
+    )
+
+    try:
+        train_ssdg._lookup_anchor_logits(
+            cache,
+            {"base_index": torch.tensor([2])},
+            expected_count=1,
+            device=torch.device("cpu"),
+        )
+    except ValueError as exc:
+        assert "missing base_index" in str(exc)
+    else:
+        raise AssertionError("cache lookup must reject an uncached sample")
+
+
+def test_anchor_cache_precomputation_restores_training_rng_state():
+    source = inspect.getsource(train_ssdg.train)
+    capture_at = source.index("pre_cache_rng = _capture_training_rng_state()")
+    build_at = source.index("_build_rc4_anchor_logit_cache(", capture_at)
+    restore_at = source.index("_restore_training_rng_state(pre_cache_rng)", build_at)
+
+    assert capture_at < build_at < restore_at
+
+
+def test_anchor_cache_uses_the_same_amp_context_as_live_anchor_forward():
+    builder = inspect.getsource(train_ssdg._build_rc4_anchor_logit_cache)
+    training = inspect.getsource(train_ssdg.train)
+
+    assert "with autocast(enabled=bool(amp_enabled))" in builder
+    assert "amp_enabled=bool(args.amp and device.type == \"cuda\")" in training

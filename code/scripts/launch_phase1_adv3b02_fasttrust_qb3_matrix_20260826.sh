@@ -47,7 +47,8 @@ for r in rows:
   str(r["gpu"]),str(r["seed"]),r["candidate"],str(d["epochs"]),
   str(r["eval_batch_size"]),str(r["recovery_checkpoint_interval"]),
   *[str(bool(r[k])).lower() for k in ("hard","partial","partial_set","partial_conditional")],
-  str(r["feature_anchor"]),str(d["rc4_lambda_hard"]),
+  str(r["feature_anchor"]),str(bool(r.get("cache_anchor_logits", d.get("cache_anchor_logits", False)))).lower(),
+  str(d["rc4_lambda_hard"]),
   str(d["hard_effective_budget"]),str(d["partial_effective_budget"]),
   str(d["class_receiver_effective_budget"]),str(d["rc4_lambda_zdom"]),
   str(d["rc4_lambda_discriminator"]),str(d["rc4_lambda_confusion"]),
@@ -61,10 +62,11 @@ for r in rows:
 run_row() {
   local gpu="$1" seed="$2" candidate="$3" epochs="$4" eval_batch="$5" recovery_interval="$6"
   local hard="$7" partial="$8" partial_set="$9" partial_conditional="${10}" feature_anchor="${11}"
-  local hard_lambda="${12}" hard_budget="${13}" partial_budget="${14}" cell_budget="${15}" zdom="${16}"
-  local discriminator="${17}" confusion="${18}" pset_lambda="${19}" pcond_lambda="${20}"
-  local labeled_discriminator="${21}" labeled_confusion="${22}" heavy_start="${23}"
-  local heavy_interval="${24}" heavy_window="${25}" heavy_final_interval="${26}" checkpoint="${27}"
+  local cache_anchor_logits="${12}" hard_lambda="${13}" hard_budget="${14}" partial_budget="${15}"
+  local cell_budget="${16}" zdom="${17}" discriminator="${18}" confusion="${19}"
+  local pset_lambda="${20}" pcond_lambda="${21}" labeled_discriminator="${22}"
+  local labeled_confusion="${23}" heavy_start="${24}" heavy_interval="${25}"
+  local heavy_window="${26}" heavy_final_interval="${27}" checkpoint="${28}"
   checkpoint="${checkpoint%$'\r'}"
   local extra=()
   [[ "${DRY_RUN}" == 1 ]] && extra+=(--dry-run)
@@ -78,7 +80,7 @@ run_row() {
     RC4_TAIL_TRANSITION_START=91 RC4_TAIL_TRANSITION_EPOCHS=20 RC4_TAIL_TRANSITION_FLOOR=0.25 \
     BASE_CKPT="${ROOT}/${checkpoint}" CANDIDATE_ID_OVERRIDE="${candidate}" ABLATION=NONE \
     MUSE_UNLABELED_BATCH_SIZE=256 FASTTRUST_RC4=true SAT_ANCHOR_SSL=false \
-    RC4_USE_ANCHOR=true RC4_USE_CALIBRATION=true RC4_ENABLE_HARD="${hard}" \
+    RC4_USE_ANCHOR=true RC4_CACHE_ANCHOR_LOGITS="${cache_anchor_logits}" RC4_USE_CALIBRATION=true RC4_ENABLE_HARD="${hard}" \
     RC4_ENABLE_PARTIAL="${partial}" RC4_ENABLE_PARTIAL_SET="${partial_set}" \
     RC4_ENABLE_PARTIAL_CONDITIONAL="${partial_conditional}" RC4_ENABLE_NEGATIVE=false \
     RC4_DECOUPLE_PARTIAL_NEGATIVE_APS=true RC4_PARTIAL_THRESHOLD_SCOPE=global \
@@ -120,9 +122,9 @@ wait_for_gpu_slot() {
 echo "[QB3-MATRIX-RUN] run_id=${RUN_ID} rows=${#ROWS[@]} dry_run=${DRY_RUN} U=256"
 if [[ "${DRY_RUN}" == 1 ]]; then
   for row in "${ROWS[@]}"; do
-    IFS=$'\t' read -r gpu seed candidate epochs eval_batch recovery_interval hard partial partial_set partial_conditional feature_anchor hard_lambda hard_budget partial_budget cell_budget zdom discriminator confusion pset_lambda pcond_lambda labeled_discriminator labeled_confusion heavy_start heavy_interval heavy_window heavy_final_interval checkpoint <<<"${row}"
-    echo "[QB3-MATRIX-ROW] gpu=${gpu} seed=${seed} candidate=${candidate} epochs=${epochs} eval_batch=${eval_batch} recovery=${recovery_interval}"
-    run_row "$gpu" "$seed" "$candidate" "$epochs" "$eval_batch" "$recovery_interval" "$hard" "$partial" "$partial_set" "$partial_conditional" "$feature_anchor" "$hard_lambda" "$hard_budget" "$partial_budget" "$cell_budget" "$zdom" "$discriminator" "$confusion" "$pset_lambda" "$pcond_lambda" "$labeled_discriminator" "$labeled_confusion" "$heavy_start" "$heavy_interval" "$heavy_window" "$heavy_final_interval" "$checkpoint"
+    IFS=$'\t' read -r gpu seed candidate epochs eval_batch recovery_interval hard partial partial_set partial_conditional feature_anchor cache_anchor_logits hard_lambda hard_budget partial_budget cell_budget zdom discriminator confusion pset_lambda pcond_lambda labeled_discriminator labeled_confusion heavy_start heavy_interval heavy_window heavy_final_interval checkpoint <<<"${row}"
+    echo "[QB3-MATRIX-ROW] gpu=${gpu} seed=${seed} candidate=${candidate} epochs=${epochs} eval_batch=${eval_batch} recovery=${recovery_interval} cache_anchor=${cache_anchor_logits}"
+    run_row "$gpu" "$seed" "$candidate" "$epochs" "$eval_batch" "$recovery_interval" "$hard" "$partial" "$partial_set" "$partial_conditional" "$feature_anchor" "$cache_anchor_logits" "$hard_lambda" "$hard_budget" "$partial_budget" "$cell_budget" "$zdom" "$discriminator" "$confusion" "$pset_lambda" "$pcond_lambda" "$labeled_discriminator" "$labeled_confusion" "$heavy_start" "$heavy_interval" "$heavy_window" "$heavy_final_interval" "$checkpoint"
   done
   exit 0
 fi
@@ -130,8 +132,8 @@ fi
 mkdir -p "${RUNS_ROOT}/dispatcher_logs"
 pids=(); names=()
 for row in "${ROWS[@]}"; do
-  IFS=$'\t' read -r gpu seed candidate epochs eval_batch recovery_interval hard partial partial_set partial_conditional feature_anchor hard_lambda hard_budget partial_budget cell_budget zdom discriminator confusion pset_lambda pcond_lambda labeled_discriminator labeled_confusion heavy_start heavy_interval heavy_window heavy_final_interval checkpoint <<<"${row}"
-  (wait_for_gpu_slot "$gpu" && run_row "$gpu" "$seed" "$candidate" "$epochs" "$eval_batch" "$recovery_interval" "$hard" "$partial" "$partial_set" "$partial_conditional" "$feature_anchor" "$hard_lambda" "$hard_budget" "$partial_budget" "$cell_budget" "$zdom" "$discriminator" "$confusion" "$pset_lambda" "$pcond_lambda" "$labeled_discriminator" "$labeled_confusion" "$heavy_start" "$heavy_interval" "$heavy_window" "$heavy_final_interval" "$checkpoint") >"${RUNS_ROOT}/dispatcher_logs/${candidate}.log" 2>&1 &
+  IFS=$'\t' read -r gpu seed candidate epochs eval_batch recovery_interval hard partial partial_set partial_conditional feature_anchor cache_anchor_logits hard_lambda hard_budget partial_budget cell_budget zdom discriminator confusion pset_lambda pcond_lambda labeled_discriminator labeled_confusion heavy_start heavy_interval heavy_window heavy_final_interval checkpoint <<<"${row}"
+  (wait_for_gpu_slot "$gpu" && run_row "$gpu" "$seed" "$candidate" "$epochs" "$eval_batch" "$recovery_interval" "$hard" "$partial" "$partial_set" "$partial_conditional" "$feature_anchor" "$cache_anchor_logits" "$hard_lambda" "$hard_budget" "$partial_budget" "$cell_budget" "$zdom" "$discriminator" "$confusion" "$pset_lambda" "$pcond_lambda" "$labeled_discriminator" "$labeled_confusion" "$heavy_start" "$heavy_interval" "$heavy_window" "$heavy_final_interval" "$checkpoint") >"${RUNS_ROOT}/dispatcher_logs/${candidate}.log" 2>&1 &
   pids+=("$!"); names+=("${candidate}")
 done
 failed=0

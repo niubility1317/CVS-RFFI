@@ -20,7 +20,7 @@
 | `QB3-P0-QUALITY` | `V_select-as-U`生成truth-blind逐样本artifact，独立连接truth评分 | 独立三进程审计与评分文件 | `COMPLETED` |
 | `QB3-P0-GRAD` | 对实际H/P损失与共享参数求导，报告范数比与余弦 | `code/SSDG/train_ssdg.py`及聚焦测试 | `IMPLEMENTED_RUNNING` |
 | `QB3-P1-C2MS` | 仅新增seed713101、seed713102的C2 E200 | 新matrix与launcher | `RUNNING` |
-| `QB3-SPEED` | 缓存冻结anchor clean logits并向量化路由预算 | 训练路径与速度A/B | `IN_PROGRESS` |
+| `QB3-SPEED` | 缓存冻结anchor clean logits并向量化路由预算 | 训练路径与速度A/B | `ANCHOR_CACHE_LOCAL_VERIFIED` |
 | `QB3-SINC` | `torch.sinc`+FP32滤波器合成，独立匹配验证 | `code/model.py`及数值测试 | `REAL_CKPT_SMOKE_PASS` |
 | `QB3-RG` | P-set/P-cond独立预算与rank风险门控 | source-only候选 | `PENDING_P0_EVIDENCE` |
 
@@ -80,3 +80,12 @@
 - Sinc独立提交为`eb0db1dd5085ef6a5f0e67e996525905d22cd4b8`；release归档SHA256为`d502bff4d6096a08a464c0c92df340f8070a4dcb42b263729546b19983e34086`，远端传输与编译通过。
 - N607训练环境没有pytest模块，远端pytest入口记为`FAILED`且未安装任何包；改用同release原生Python在GPU7验证FP16输出、初始scale=`65,536`、loss=`0.0004073`及两组Sinc参数梯度全部有限。
 - 同release进一步加载真实历史C2 checkpoint，对truth-hidden V_select执行完整前向并生成`12,600`条记录，`truth_access=false`。因此当前证据为`REAL_CKPT_SMOKE_PASS`；尚未进行同seed C0/C3短程匹配训练，不宣称性能等价。
+
+## 冻结anchor缓存速度优化
+
+- 新增显式开关`rc4_cache_anchor_logits`，默认关闭；仅在`fasttrust_rc4=true`、`rc4_use_anchor=true`且`rc4_lambda_feature_anchor=0`时允许启用，避免只缓存logits却误服务需要anchor feature的损失。
+- 训练前只遍历U_s的确定性clean view，以稳定`base_index`建立GPU驻留FP32 dense logits表；不读取TX真值，不接触target/query，缺失、重复、越界ID均fail-closed。
+- 缓存预计算前后完整保存并恢复Python、NumPy、CPU与CUDA RNG状态，不改变正式训练随机序列；缓存只存在于训练进程内，不写入checkpoint、release结果或deployment bundle。
+- live与cached anchor前向使用完全相同的AMP开关。独立审查首轮发现两者AMP上下文不一致的P1，修复后定点复审结论`CLOSED`。
+- 本地缓存、RNG、launcher和既有QB3相邻回归共`30 passed`，Python编译通过；预登记E6同seed配对矩阵只改变`cache_anchor_logits=false/true`，GPU6/7、seed392002、U256、eval512和逐epoch恢复点完全一致。
+- E6的主要速度判据为epoch2–6的`muse/time_train_batches_s`与`muse/u_samples_per_s`配对差异；另报告一次性`[RC4-ANCHOR-CACHE] build_s`并给出6epoch及E200摊销，避免只看epoch内速度而忽略缓存构建成本。

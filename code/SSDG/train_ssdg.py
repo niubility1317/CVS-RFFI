@@ -433,6 +433,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--sat_anchor_adapter_rank", type=int, default=8)
     parser.add_argument("--fasttrust_rc4", type=str2bool, default=False)
     parser.add_argument("--rc4_use_anchor", type=str2bool, default=True)
+    parser.add_argument("--rc4_cache_anchor_logits", type=str2bool, default=False)
     parser.add_argument("--rc4_use_correctness_calibration", type=str2bool, default=True)
     parser.add_argument("--rc4_enable_hard", type=str2bool, default=True)
     parser.add_argument("--rc4_enable_partial", type=str2bool, default=True)
@@ -5381,6 +5382,96 @@ def _move_muse_unlabeled_batch(batch, device):
     return x_u, (domain_u, metadata_u)
 
 
+def _dense_anchor_logit_cache(base_indices, logits, *, device):
+    """Build a GPU-resident, base-index keyed cache without sample truth."""
+
+    indices = torch.as_tensor(base_indices, device=device, dtype=torch.long).reshape(-1)
+    values = torch.as_tensor(logits, device=device, dtype=torch.float32)
+    if values.dim() != 2 or values.size(0) != indices.numel() or indices.numel() == 0:
+        raise ValueError("anchor cache indices/logits must be non-empty and row-aligned")
+    if bool(indices.lt(0).any()):
+        raise ValueError("anchor cache base_index must be non-negative")
+    if int(torch.unique(indices).numel()) != int(indices.numel()):
+        raise ValueError("anchor cache base_index values must be unique")
+    dense = torch.zeros(
+        int(indices.max().item()) + 1,
+        int(values.size(1)),
+        device=device,
+        dtype=torch.float32,
+    )
+    valid = torch.zeros(int(dense.size(0)), device=device, dtype=torch.bool)
+    dense.index_copy_(0, indices, values)
+    valid[indices] = True
+    return {"logits": dense, "valid": valid, "rows": int(indices.numel())}
+
+
+def _lookup_anchor_logits(cache, metadata, *, expected_count: int, device):
+    if isinstance(metadata, Mapping):
+        raw_indices = metadata.get("base_index")
+        indices = (
+            torch.as_tensor(raw_indices, device=device, dtype=torch.long).reshape(-1)
+            if raw_indices is not None
+            else None
+        )
+    else:
+        indices = _metadata_label_tensor(metadata, "base_index", device, expected_count)
+    if indices is None or indices.numel() != int(expected_count):
+        raise ValueError("anchor cache lookup requires one base_index per U row")
+    valid = cache["valid"]
+    if bool(indices.lt(0).any()) or bool(indices.ge(valid.numel()).any()):
+        raise ValueError("anchor cache missing base_index")
+    if not bool(valid.index_select(0, indices).all()):
+        raise ValueError("anchor cache missing base_index")
+    return cache["logits"].index_select(0, indices)
+
+
+def _build_rc4_anchor_logit_cache(
+    anchor_model,
+    dataset,
+    *,
+    batch_size: int,
+    num_workers: int,
+    prefetch_factor: int,
+    domain_label_map,
+    device,
+    amp_enabled: bool,
+):
+    loader = make_loader(
+        dataset,
+        int(batch_size),
+        False,
+        int(num_workers),
+        device,
+        False,
+        int(prefetch_factor),
+    )
+    all_indices, all_logits = [], []
+    anchor_model.eval()
+    with torch.no_grad():
+        for batch in loader:
+            x_u, extra_u = _move_muse_unlabeled_batch(batch, device)
+            count = int(x_u.size(0))
+            domains = domain_from_extra(extra_u, domain_label_map, device)
+            indices = _metadata_label_tensor(extra_u, "base_index", device, count)
+            if domains is None or indices is None or bool(domains.lt(0).any()):
+                raise ValueError("anchor cache requires mapped domains and stable base_index")
+            with autocast(enabled=bool(amp_enabled)):
+                output = anchor_model(
+                    x_u,
+                    y_tx=None,
+                    grl_lambda=0.0,
+                    return_aux=True,
+                    domain_labels=domains,
+                )
+            all_indices.append(indices.detach())
+            all_logits.append(output["tx_logits"].detach().float())
+    if not all_indices:
+        raise ValueError("anchor cache dataset is empty")
+    return _dense_anchor_logit_cache(
+        torch.cat(all_indices), torch.cat(all_logits), device=device
+    )
+
+
 def _muse_epoch_pairs(
     labeled_loader,
     unlabeled_loader,
@@ -7401,6 +7492,41 @@ def train(args) -> int:
         teacher_model.eval()
         for param in teacher_model.parameters():
             param.requires_grad = False
+    if bool(getattr(args, "rc4_cache_anchor_logits", False)):
+        if not (
+            muse_state is not None
+            and bool(muse_state.get("fasttrust_rc4", False))
+            and bool(args.rc4_use_anchor)
+            and teacher_model is not None
+        ):
+            raise ValueError(
+                "--rc4_cache_anchor_logits requires FastTrust RC4 with a frozen anchor"
+            )
+        if float(args.rc4_lambda_feature_anchor) > 0.0:
+            raise ValueError(
+                "anchor-logit cache cannot serve a nonzero feature-anchor loss"
+            )
+        cache_started = time.time()
+        pre_cache_rng = _capture_training_rng_state()
+        try:
+            muse_state["anchor_logit_cache"] = _build_rc4_anchor_logit_cache(
+                teacher_model,
+                data_ctx["unlabeled_loader"].dataset,
+                batch_size=_resolve_unlabeled_batch_size(args),
+                num_workers=int(args.num_workers),
+                prefetch_factor=int(args.prefetch_factor),
+                domain_label_map=data_ctx["domain_label_map"],
+                device=device,
+                amp_enabled=bool(args.amp and device.type == "cuda"),
+            )
+        finally:
+            _restore_training_rng_state(pre_cache_rng)
+        print(
+            "[RC4-ANCHOR-CACHE] "
+            f"rows={muse_state['anchor_logit_cache']['rows']} "
+            f"build_s={time.time() - cache_started:.3f} "
+            "storage=train_only truth_access=0"
+        )
     if _sat_anchor_requested(args):
         muse_state["sat_anchor_thresholds"] = _calibrate_sat_anchor_vcal(
             teacher_model,
@@ -9032,13 +9158,27 @@ def train(args) -> int:
                         if bool(muse_state.get("sat_anchor_ssl", False)):
                             if teacher_model is None:
                                 raise RuntimeError("SAT_ANCHOR_FROZEN_TEACHER_MISSING")
-                            out_anchor = teacher_model(
-                                x_u,
-                                y_tx=None,
-                                grl_lambda=0.0,
-                                return_aux=True,
-                                domain_labels=d_u,
-                            )
+                            anchor_cache = muse_state.get("anchor_logit_cache")
+                            if (
+                                bool(muse_state.get("fasttrust_rc4", False))
+                                and anchor_cache is not None
+                            ):
+                                out_anchor = {
+                                    "tx_logits": _lookup_anchor_logits(
+                                        anchor_cache,
+                                        extra_u,
+                                        expected_count=unlabeled_count,
+                                        device=device,
+                                    )
+                                }
+                            else:
+                                out_anchor = teacher_model(
+                                    x_u,
+                                    y_tx=None,
+                                    grl_lambda=0.0,
+                                    return_aux=True,
+                                    domain_labels=d_u,
+                                )
                         if ema_model is None:
                             model.train()
                     x_s = (
