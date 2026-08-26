@@ -1,4 +1,4 @@
-# PHASE1_JMRS01_MECHANISM_SCREEN_S20260824_20260826A完整实验报告
+# PHASE1_JMRS01_MECHANISM_SCREEN_S20260824_20260826A完整实验报告（协议纠偏版）
 
 ## 一、结论先行
 
@@ -8,11 +8,23 @@
 
 本实验完成了“机制筛选”，没有完成“联合机制提升”。结果否定的是当前实现形式与训练目标，不是否定接收机校正、无符号谱结构或相位创新作为研究方向本身。
 
+本次复核进一步纠正了结果的声明边界：JMRS01是“冻结Core90上的新增机制分支source-receiver LORO代理审计”，不是完整模型端到端LORO，也不是target receiver域泛化实验。M0的三LEO均值89.9233%来自`source V_select`、seen day0—1和source receiver0—6，只能作为机制筛选基线，不能写成ADV3B02的target DG、strict UDU或target-old三LEO成绩。该纠偏不改变任何prediction、评分数据或`STOP_JMRS01_S0_NO_POOL`结论。
+
 ## 二、研究问题与证据边界
 
-本轮从PA单机制深挖转向接收机校正、无符号多尺度谱商、相位创新三个候选族，回答三个窄问题：候选是否在严格source-only、7折receiver LORO下携带跨接收机TX信息；是否降低receiver泄漏并保留Core90的TX margin；是否对Core90错误形成可被可靠门控的互补信息。
+本轮从PA单机制深挖转向接收机校正、无符号多尺度谱商、相位创新三个候选族，回答三个窄问题：候选是否在source-only、7折新增分支receiver LORO下携带跨source receiver的TX信息；是否降低receiver泄漏并保留Core90的TX margin；是否对Core90错误形成可被可靠门控的互补信息。
 
 数据为WiSig/ManySig地面代理数据；LEO弱信道是物理启发压力代理，不是真实在轨数据。本实验是Phase1 source-only机制审计，不是Phase2 K-shot适配、Phase3多节点协同或真实卫星验证。target receiver、target day、query、truth反馈均未参与训练、选模、校准或gate，真实checkpoint smoke记录`target_or_query_access=false`。
+
+### 2.1LORO究竟约束了什么
+
+每一折都从新增机制分支的训练、`V_select`、`V_cal`、probe和几何统计中排除一个source receiver，再在该receiver的`V_select`样本上审计分支输出。这个隔离对R1、R2、D1、P1、P2和S1成立。
+
+冻结Core90不满足端到端LORO：其历史checkpoint已经使用source receiver0—6和seen day0—1训练。held receiver只对新增分支未见，对M0及其`z_id/base_logits`并非未见。因此，本报告后续出现的“LORO”均指“新增机制分支LORO”，不得外推为backbone LORO或目标接收机DG。
+
+### 2.2三LEO均值的定义
+
+每个row/scenario使用同一组12600个source `V_select`物理样本；每个物理样本分别形成clean、`leo_clear_weak`、`leo_low_elev_weak`和`leo_rain_weak`视图。三LEO均值是三个弱信道场景Accuracy的简单算术平均，不是独立scorer定义的第四个场景，也不是三个互斥目标域数据集的总体Accuracy。Phase1允许这种配对压力测试，但它不能替代Phase2的单物理样本单LEO观测协议。
 
 ## 三、设计及逐项落地
 
@@ -26,7 +38,7 @@
 |一阶+二阶相位创新|在P1基础上增加二阶创新|P2|已落地|
 |同容量伪机制|确定性sham，参数量与D1同为6438|S1|已落地|
 |线性/对数差分谱比值|未知发射符号且无合法同符号跨时刻配对，CLI显式拒绝|D2|已删除|
-|source receiver LORO|held receiver从train、V_select、V_cal完全排除；fold内训练、选模、校准、probe和几何统计|全部|已落地|
+|新增机制分支source receiver LORO|held receiver从新增分支train、V_select、V_cal完全排除；fold内训练、选模、校准、probe和几何统计；冻结Core90不属于端到端LORO|R1/R2/D1/P1/P2/S1|已落地，声明边界已纠正|
 |四场景闭合|每个held audit输出clean和三个`leo_*_weak`场景|全部|已落地|
 |truth-blind评分|prediction先闭合，truth后写入，再由独立scorer连接|全部|已落地|
 |后续联合|少于2个机制通过时禁止启动|S1/S2联合|未启动|
@@ -52,6 +64,37 @@
 - scorer artifact：8/8
 
 M0没有训练，因此7个M0 history的`training_complete=false`和0 epoch表示冻结基线，不是失败。其余42个row/fold均为`training_complete=true`。
+
+### 4.1实际数据切片
+
+|维度|JMRS01实际值|是否进入本轮评分|
+|---|---|---|
+|TX|6个Phase1已知TX|是|
+|source day|day0=`2021_03_01`、day1=`2021_03_08`|是|
+|unseen day|day2=`2021_03_15`、day3=`2021_03_22`|否|
+|source receiver|receiver0—6，共7个|是|
+|target receiver|receiver7—11，共5个|否|
+|评估角色|source `V_select`|是|
+|正式named test|`test_unseen_day_seen_rx`、`test_seen_day_unseen_rx`、`test_unseen_day_unseen_rx`|否|
+
+`target_or_query_access=false`证明本轮没有target/query泄漏，但它不证明本轮已经完成target测试。这里必须区分“没有使用目标域”和“在目标域上泛化良好”：前者成立，后者没有被JMRS01测量。
+
+### 4.2与ADV3B02 Core90正式协议的同异
+
+|项目|JMRS01|ADV3B02 Core90历史正式评估|判断|
+|---|---|---|---|
+|数据资产|ManySig|ManySig|同源|
+|冻结checkpoint|`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`|同一checkpoint lineage|相同|
+|输入长度|256|256|相同|
+|LEO场景族|三个`leo_*_weak`|三个`leo_*_weak`|名称和生成代码族相同|
+|source角色比例|0.07/0.63/0.15/0.15|历史配置labeled=0.10、unlabeled=0.70、source val=0.20|不同|
+|seed|20260826；satellite seed=20260824|checkpoint seed=392002；历史sat seed=2027；后续target-old重建使用713130/713912|不同|
+|评估样本|source `V_select`，每场景12600个|正式named test或target-old池|不同|
+|receiver|source receiver0—6|seen receiver0—6与unseen receiver7—11分场景报告|不同|
+|day|seen day0—1|包含unseen day2—3|不同|
+|聚合|7个held-source-receiver折|overall、strict UDU、receiver floor及目标接收机分场景指标|不同|
+
+因此，JMRS01与ADV3B02共享数据资产、Core90 checkpoint、输入规格和LEO弱信道实现，但不共享正式测试样本、receiver/day切片、随机实现和指标语义。两者的绝对Accuracy不能按同row公平比较。
 
 ## 五、运行健康与完整日志诊断
 
@@ -83,9 +126,9 @@ M0没有训练，因此7个M0 history的`training_complete=false`和0 epoch表�
 
 R1从首epoch起接近最终V_select，后续主要降低loss而没有选模增益。R2、D1、P1、P2和S1在source内层持续拟合，但没有转化为held-receiver能力。首个可定位分化是“V_select持续上升而LORO仍远低于Core90”，即泛化目标与训练目标错配；42条曲线均有限且总体下降，不是优化器爆炸或数据异常。
 
-## 六、完整LORO结果
+## 六、完整新增分支LORO代理结果
 
-数值为macro accuracy/macro F1/receiver floor，单位为%。
+数值为source `V_select`、seen-day、held-source-receiver切片上的macro accuracy/macro F1/receiver floor，单位为%。M0没有新增分支，其行只作为同一切片上的冻结Core90参照。
 
 |row|场景|Accuracy|Macro-F1|Floor|
 |---|---|---:|---:|---:|
@@ -118,9 +161,9 @@ R1从首epoch起接近最终V_select，后续主要降低loss而没有选模增�
 |S1|leo_low_elev_weak|38.0952|38.0173|20.7778|
 |S1|leo_rain_weak|36.7778|36.9165|22.1667|
 
-### 6.1相对Core90
+### 6.1相对同切片Core90
 
-|row|clean|三LEO平均|clean差值|LEO平均差值|最低floor|
+|row|clean|三LEO诊断均值|clean差值|LEO诊断均值差值|最低floor|
 |---|---:|---:|---:|---:|---:|
 |M0|98.3889|89.9233|0.0000|0.0000|76.5556|
 |R1|98.2222|89.4259|-0.1667|-0.4974|74.0000|
@@ -131,6 +174,12 @@ R1从首epoch起接近最终V_select，后续主要降低loss而没有选模增�
 |S1|49.3016|38.1720|-49.0873|-51.7513|20.7778|
 
 R1是唯一接近M0的独立预测器，但三个LEO场景全部下降，最低floor下降2.56pp。D1相对自身clean的LEO退化较小，但绝对Accuracy只有52.68%—55.57%，不能把“相对稳”写成“识别有效”。
+
+### 6.2为什么M0三LEO诊断均值较高
+
+M0的三场景Accuracy为92.4921%、88.9206%和88.3571%，算术平均为89.9233%。高值来自较容易的审计切片，而不是新增机制带来的提升：Core90历史训练已经见过receiver0—6和day0—1；本轮又从source `V_select`取样，仅施加LEO弱信道压力。其最低receiver floor仍只有76.5556%，说明89.9233%的平均值掩盖了明显的receiver差异。
+
+作为历史边界参照，ADV3B02 Core90正式闭集DG曾报告overall=89.18%、strict UDU=84.89%、receiver floor=75.55%、satellite strict floor=68.77%。后续严格target-old直接测试的三个LEO Accuracy为76.13%、70.83%和73.75%，均值73.57%。这些结果使用不同目标切片，不能与89.9233%做候选优劣检验；它们只证明“source诊断均值”不能被命名为target DG成绩。
 
 ## 七、几何、receiver泄漏与互补性
 
@@ -235,8 +284,8 @@ M0在三个LEO场景的最低floor均来自receiver3，R1进一步下降。后�
 
 ## 十一、逐机制结论
 
-- **M0**：唯一可用基线，clean 98.39%，三LEO平均89.92%，最低floor 76.56%。
-- **R1**：clean仅下降0.17pp、三LEO平均下降0.50pp；但泄漏恶化43.18%、margin仅62.20%、全覆盖utility为负，不入池。
+- **M0**：同一source诊断切片上的唯一可用基线，clean 98.39%，三LEO诊断均值89.92%，最低floor 76.56%；不是target DG结果。
+- **R1**：clean仅下降0.17pp、三LEO诊断均值下降0.50pp；但泄漏恶化43.18%、margin仅62.20%、全覆盖utility为负，不入池。
 - **R2**：source内层拟合充分，held clean下降39.34pp，泄漏恶化76.76%，失败。
 - **D1**：oracle gain最高为2.50pp，但独立识别坍缩、泄漏恶化64.72%，仅可作离线诊断，不进入联合。
 - **P1**：相对sham CI为负、0/7 receiver不劣化、margin仅19.99%，停止当前实现。
@@ -246,7 +295,9 @@ M0在三个LEO场景的最低floor均来自receiver3，R1进一步下降。后�
 
 ## 十二、下一步路线
 
-当前不发布新实验，也不启动联合。若后续重新进入该方向，应先提出新的单机制最小可证伪候选：
+当前不发布新实验，也不启动联合。已有候选在更容易的source机制筛选中已失败，直接消耗目标域确认预算不能挽救候选，也不能改变入池判定。若后续重新进入该方向，应按两级证据设计推进：
+
+### 12.1G0：新增机制分支source筛选
 
 1. 将安全回退与候选有效拆成两个指标，要求非零alpha覆盖上具有正utility；
 2. 把fold内局部receiver不可预测性纳入选模；
@@ -254,9 +305,33 @@ M0在三个LEO场景的最低floor均来自receiver3，R1进一步下降。后�
 4. 保持D2禁用，除非未来数据提供已知符号和合法同符号配对；
 5. 仍从单seed小矩阵开始，达到预登记门槛后才扩展。
 
+### 12.2G1：冻结候选的正式DG确认
+
+只有新候选通过G0后，才能把source receiver0—6、day0—1上的训练和选择全部冻结，再一次性评估与Core90相同的三个named test：
+
+1. `test_unseen_day_seen_rx`：day2—3、receiver0—6；
+2. `test_seen_day_unseen_rx`：day0—1、receiver7—11；
+3. `test_unseen_day_unseen_rx`：day2—3、receiver7—11，即strict UDU。
+
+G1必须在候选与M0之间复用同一物理样本ID、LEO scenario、satellite seed、预处理和评分公式，分别报告clean及三个LEO场景的Accuracy、Macro-F1和receiver floor。三LEO算术均值只能作为附加摘要，不能替代场景级结果。候选必须同时满足目标接收机均值提升、strict UDU不下降和receiver floor不下降，才有资格讨论域泛化收益。
+
 这不是立即启动授权。正式决策为`STOP_JMRS01_S0_NO_POOL`。
 
-## 十三、证据位置
+## 十三、优化修改追踪
+
+|ID|修正要求|落地位置|状态|验证|
+|---|---|---|---|---|
+|C01|纠正“域泛化实验”命名|第一、二、六、十一节|verified|与实际`source V_select`取数路径一致|
+|C02|区分新增分支LORO与Core90 lineage|2.1节、设计落地表|verified|held receiver仅从新增分支角色排除|
+|C03|列明receiver/day/role实际切片|4.1节|verified|与`protocol_and_smoke.json`一致|
+|C04|逐项比较JMRS01与ADV3B02协议|4.2节|verified|与历史resolved config及named test定义一致|
+|C05|保留全部实验数据并纠正89.9233%语义|第六至十一节|verified|原8个scorer JSON数值未改写|
+|C06|给出后续正式DG验证设计|第十二节|verified|G0/G1证据层级、切片和门槛均明确|
+|C07|重复运行当前JMRS01|无|rejected|原run已`ANALYZED`，重复运行不会修复声明边界|
+
+追踪统计：verified=6、deferred=0、rejected=1、blocked=0。本次是对已完成实验的严格证据纠偏，不是新方法实现；代码、prediction、truth和scorer artifact均未修改。
+
+## 十四、证据位置
 
 - 根报告：`E:\type10-7\automation_reports\CV-SincNet\PHASE1_JMRS01_MECHANISM_SCREEN_S20260824_20260826A\report.md`
 - Git镜像：`docs/experiments/PHASE1_JMRS01_MECHANISM_SCREEN_S20260824_20260826A_REPORT.md`
@@ -265,6 +340,6 @@ M0在三个LEO场景的最低floor均来自receiver3，R1进一步下降。后�
 - N607日志：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_jmrs01_20260826`
 - scorer JSON：identity stability、receiver probe、LORO metrics、clean-satellite consistency、complementarity、observability、cost、decision，共8项
 
-## 十四、最终状态
+## 十五、最终状态
 
 `ANALYZED / STOP_JMRS01_S0_NO_POOL / NO_JOINT_LAUNCH`
