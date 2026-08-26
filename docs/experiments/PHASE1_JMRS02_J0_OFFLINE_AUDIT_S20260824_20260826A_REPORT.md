@@ -8,8 +8,9 @@
 
 - run ID：`PHASE1_JMRS02_J0_OFFLINE_AUDIT_S20260824_20260826A`
 - 本地代码分支：`codex/phase1-jmrs02-j0-20260826`
+- 实验代码commit：`ad2e756b803849315a77785e7d8a7b86462c92f6`
 - 本地验证环境：`ssr-gpu`
-- N607运行解释器：待preflight核对
+- N607运行解释器：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；服务器无`ssr-gpu`，沿用原JMRS01已验证环境，不安装新环境
 - N607 CWD：`/home/szu2070436088/2510044040/CV-SincNet`
 - 输入prediction：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_jmrs01_20260826/PHASE1_JMRS01_MECHANISM_SCREEN_S20260824_20260826A/predictions.jsonl`
 - 输入truth：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_jmrs01_20260826/PHASE1_JMRS01_MECHANISM_SCREEN_S20260824_20260826A/truth.jsonl`
@@ -17,6 +18,12 @@
 - GPU：不使用
 - bootstrap：按`receiver×day×scenario`分组，2000次，seed=20260826
 - 系统技术停止：输入闭合失败、缺少预登记row/scenario、输出根已存在、非有限结果或无法产生全部J0 JSON时保留现场并标记`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
+
+精确运行命令：
+
+```text
+/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/score_phase1_jmrs02_j0.py --predictions /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_jmrs01_20260826/PHASE1_JMRS01_MECHANISM_SCREEN_S20260824_20260826A/predictions.jsonl --truth /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_jmrs01_20260826/PHASE1_JMRS01_MECHANISM_SCREEN_S20260824_20260826A/truth.jsonl --output_dir /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_jmrs02_j0_20260826/PHASE1_JMRS02_J0_OFFLINE_AUDIT_S20260824_20260826A --bootstrap_resamples 2000 --seed 20260826
+```
 
 ## 三、预登记组合与晋级规则
 
@@ -43,4 +50,6 @@
 
 聚焦测试：JMRS02-J0 6项通过；JMRS01 scorer回归3项通过。`py_compile`通过。一次P0/P1审查发现bootstrap逐样本展开会造成约5亿次索引操作，已定点改为`receiver×day×scenario`组计数预聚合并通过RED→GREEN复测。
 
-`LOCAL_VERIFIED / COMMIT_PENDING / NO_EXPERIMENT_LAUNCHED`
+N607 preflight：prediction/truth各428064行，大小约460MB/29MB；输出根不存在；可用内存493GiB，`/home`可用7.3TiB；没有既有JMRS02 scorer进程。J0为CPU离线审计，不占用GPU。
+
+`LOCAL_VERIFIED / RELEASE_COMMIT_PENDING / NO_EXPERIMENT_LAUNCHED`
