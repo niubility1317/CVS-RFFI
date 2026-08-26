@@ -6,7 +6,7 @@
 - 候选：`A0`、`B3(receiver rank4+LEO rank4闭式域码)`、`B5(B3+解析support→query元训练)`
 - 矩阵：7个source outer receiver×4个场景×10个独立K10 support draw，共280个feature-level episode；每类query固定10个物理样本。
 - 数据边界：仅使用`L_s`地面缓存训练和source nested评价；outer receiver从慢基拟合和inner ridge选择中完全排除。Phase2 smoke只读取既有`p2_min_v1/VALIDATED_ONCE`旧类support，不具备query输入能力，不产生目标性能结论。
-- Git提交：待本地验证和独立P0/P1审查后写入，未写入前不得启动。
+- Git提交：`aa772dc138e903561398ae6d87835fd009156d1f`（实现与冻结配置）。
 - 环境/CWD：N607`/home/szu2070436088/2510044040/CV-SincNet`；Python`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
 - 输入cache：`/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_cached_slow_fast_phase15_s392002_20260825_r3/ground_feature_cache.pt`
 - 输入原型/FILM bundle：`/home/szu2070436088/2510044040/CV-SincNet/runs/cvs_cached_slow_fast_phase15_s392002_20260825_r3/FAST_FILM_R8.pt`
