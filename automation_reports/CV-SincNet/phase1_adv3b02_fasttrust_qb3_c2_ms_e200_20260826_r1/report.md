@@ -21,7 +21,7 @@
 | `QB3-P0-GRAD` | 对实际H/P损失与共享参数求导，报告范数比与余弦 | `code/SSDG/train_ssdg.py`及聚焦测试 | `IMPLEMENTED_RUNNING` |
 | `QB3-P1-C2MS` | 仅新增seed713101、seed713102的C2 E200 | 新matrix与launcher | `RUNNING` |
 | `QB3-SPEED` | 缓存冻结anchor clean logits并向量化路由预算 | 训练路径与速度A/B | `IN_PROGRESS` |
-| `QB3-SINC` | `torch.sinc`+FP32滤波器合成，独立匹配验证 | `code/model.py`及数值测试 | `PENDING_SEPARATE_COMMIT` |
+| `QB3-SINC` | `torch.sinc`+FP32滤波器合成，独立匹配验证 | `code/model.py`及数值测试 | `LOCAL_VERIFIED` |
 | `QB3-RG` | P-set/P-cond独立预算与rank风险门控 | source-only候选 | `PENDING_P0_EVIDENCE` |
 
 ## 口径冲突处理
@@ -69,3 +69,11 @@
 - 2026-08-26 13:42 CST启动前GPU4、GPU5均为空闲，run root与launcher日志路径均不存在；GPU0另有独立任务，未触碰。
 - detached launcher PID=`3556728`，CWD和cmdline均绑定上述release与run ID；训练PID=`3556760`映射GPU4/seed713101，PID=`3556764`映射GPU5/seed713102。
 - 两行均已写入epoch1，训练日志从`6,911`字节增长到`12,431`字节，metrics文件已落盘；GPU4/GPU5显存约`3.7/3.6GB`，无`Traceback/CUDA error/RuntimeError/Exception`指纹。当前最高可证状态为`RUNNING`，尚无最终性能结论。
+
+## Sinc数值修复
+
+- 原实现用`sin`差除以`πt`再覆盖中心点；本地FP16定点测试复现`low_hz_`梯度NaN，验证了报告中的技术风险，而不只是静态推断。
+- 新实现使用解析等价的`2f₂·sinc(2f₂t)-2f₁·sinc(2f₁t)`，滤波器参数、时间轴、窗函数、滤波器合成和卷积全部在autocast外以FP32执行，输出再恢复输入dtype。
+- 第一轮没有改变`abs+clamp`参数化，没有启用`torch.compile`，因此改动只隔离数值稳定性变量。
+- FP16、BF16、FP32、极端low/high frequency、forward有限、参数梯度有限、初始scale=`65,536`的CUDA GradScaler以及连续1,000优化步全部通过；与旧FP32滤波器匹配。Sinc及相邻模型测试共`28 passed`。
+- 独立P0/P1审查结论为`READY`，未发现会导致真实smoke跑错、AMP/dtype语义错误或改变滤波器数学定义的问题。该修复尚未进入当前运行中的C2 release，将通过独立release做短smoke和同seed匹配验证。

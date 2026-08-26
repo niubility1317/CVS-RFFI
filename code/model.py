@@ -238,38 +238,43 @@ class SincConv1d(nn.Module):
         self._filter_cache = None
 
     def _filters(self, device: torch.device, dtype: torch.dtype) -> torch.Tensor:
+        # Sinc synthesis stays in FP32 even when the surrounding model uses AMP.
+        # ``torch.sinc`` evaluates the removable singularity at t=0 without
+        # constructing the unstable 0/0 branch in the autograd graph.
+        compute_dtype = torch.float32
         use_cache = (not self.training) and (not torch.is_grad_enabled())
         cache_key = (
             device.type,
             device.index,
-            dtype,
+            compute_dtype,
             int(getattr(self.low_hz_, "_version", 0)),
             int(getattr(self.band_hz_, "_version", 0)),
         )
         if use_cache and self._filter_cache_key == cache_key and self._filter_cache is not None:
             return self._filter_cache
 
-        t = self.t_.to(device=device, dtype=dtype)
-        window = self.window_.to(device=device, dtype=dtype)
+        t = self.t_.to(device=device, dtype=compute_dtype)
+        window = self.window_.to(device=device, dtype=compute_dtype)
 
         nyq = self.sample_rate / 2.0
-        low = self.min_low_hz + torch.abs(self.low_hz_)
-        band = self.min_band_hz + torch.abs(self.band_hz_)
+        low = self.min_low_hz + torch.abs(
+            self.low_hz_.to(device=device, dtype=compute_dtype)
+        )
+        band = self.min_band_hz + torch.abs(
+            self.band_hz_.to(device=device, dtype=compute_dtype)
+        )
 
         low = torch.clamp(low, min=self.min_low_hz, max=nyq - self.min_band_hz - 1.0)
         min_high = low + self.min_band_hz
         max_high = torch.full_like(low, nyq - 1.0)
         high = torch.clamp(low + band, min=min_high, max=max_high)
 
-        f1 = low.to(device=device, dtype=dtype)
-        f2 = high.to(device=device, dtype=dtype)
+        f1 = low.to(device=device, dtype=compute_dtype)
+        f2 = high.to(device=device, dtype=compute_dtype)
 
-        num = torch.sin(2.0 * math.pi * f2 * t) - torch.sin(2.0 * math.pi * f1 * t)
-        den = math.pi * t
-        bp = _safe_div(num, den, eps=1e-12)
-
-        center = self.kernel_size // 2
-        bp[:, center] = (2.0 * (f2 - f1)).squeeze(1)
+        bp = 2.0 * f2 * torch.sinc(2.0 * f2 * t) - 2.0 * f1 * torch.sinc(
+            2.0 * f1 * t
+        )
         bp = bp * window
         bp = bp / (bp.abs().amax(dim=1, keepdim=True) + 1e-8)
         filters = bp.view(self.out_channels, 1, self.kernel_size)
@@ -279,15 +284,29 @@ class SincConv1d(nn.Module):
         return filters
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        filters = self._filters(device=x.device, dtype=x.dtype)
-        return F.conv1d(x, filters, stride=1, padding=self.kernel_size // 2, bias=None)
+        output_dtype = x.dtype
+        with torch.autocast(device_type=x.device.type, enabled=False):
+            filters = self._filters(device=x.device, dtype=torch.float32)
+            output = F.conv1d(
+                x.float(), filters, stride=1, padding=self.kernel_size // 2, bias=None
+            )
+        return output.to(dtype=output_dtype)
 
     def forward_iq_pair(self, x: torch.Tensor) -> torch.Tensor:
         if x.dim() != 3 or int(x.size(1)) != 2:
             raise ValueError("forward_iq_pair expects IQ input shaped [B, 2, L]")
         B = int(x.size(0))
-        filters = self._filters(device=x.device, dtype=x.dtype)
-        y = F.conv1d(x.reshape(B * 2, 1, x.size(-1)), filters, stride=1, padding=self.kernel_size // 2, bias=None)
+        output_dtype = x.dtype
+        with torch.autocast(device_type=x.device.type, enabled=False):
+            filters = self._filters(device=x.device, dtype=torch.float32)
+            y = F.conv1d(
+                x.float().reshape(B * 2, 1, x.size(-1)),
+                filters,
+                stride=1,
+                padding=self.kernel_size // 2,
+                bias=None,
+            )
+        y = y.to(dtype=output_dtype)
         return y.reshape(B, 2, self.out_channels, y.size(-1)).reshape(B, 2 * self.out_channels, y.size(-1))
 
 
