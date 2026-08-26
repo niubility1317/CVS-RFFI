@@ -506,6 +506,7 @@ def test_stage_metrics_match_hand_derived_classwise_values_and_flip_directions()
         adapted_logits,
         frozen_logits,
         labels,
+        registered_class_indices=(0, 1),
         permitted_parameter_distance=1.25,
     )
 
@@ -518,6 +519,32 @@ def test_stage_metrics_match_hand_derived_classwise_values_and_flip_directions()
     assert metrics.positive_flips == 1
     assert metrics.negative_flips == 1
     assert metrics.permitted_parameter_distance == pytest.approx(1.25)
+
+
+def test_stage_metrics_include_registered_class_absent_from_validation_with_zero_recall_and_margin() -> None:
+    labels = torch.tensor([0, 0, 1, 1])
+    adapted_logits = torch.tensor(
+        [[2.0, 0.0, 0.0], [0.0, 0.0, 1.0], [0.0, 2.0, 0.0], [0.0, 0.0, 1.0]]
+    )
+    frozen_logits = torch.tensor(
+        [[2.0, 0.0, 0.0], [0.0, 0.0, 1.0], [0.0, 2.0, 0.0], [0.0, 0.0, 1.0]]
+    )
+
+    # Deriving the universe from validation labels would drop registered class
+    # 2, omit its two false positives and overstate BA, floor and macro-F1.
+    metrics = tapft._stage_validation_metrics(
+        adapted_logits,
+        frozen_logits,
+        labels,
+        registered_class_indices=(0, 1, 2),
+        permitted_parameter_distance=0.0,
+    )
+
+    assert metrics.per_class_recall == pytest.approx((0.5, 0.5, 0.0))
+    assert metrics.per_class_margin == pytest.approx((0.5, 0.5, 0.0))
+    assert metrics.balanced_accuracy == pytest.approx(1.0 / 3.0)
+    assert metrics.class_floor == 0.0
+    assert metrics.macro_f1 == pytest.approx(4.0 / 9.0)
 
 
 def test_stage_metric_order_prefers_class_floor_before_lower_nll() -> None:

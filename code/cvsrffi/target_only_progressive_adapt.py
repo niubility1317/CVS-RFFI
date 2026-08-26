@@ -941,6 +941,7 @@ def fit_sf_tapft(
                     validation_logits,
                     frozen_validation_logits,
                     validation_labels,
+                    registered_class_indices=range(len(head.class_ids)),
                     permitted_parameter_distance=_permitted_parameter_distance(
                         initial_model_state, student, phase_names["C"]
                     ),
@@ -1099,6 +1100,7 @@ def _stage_validation_metrics(
     frozen_logits: Tensor,
     labels: Tensor,
     *,
+    registered_class_indices: Sequence[int],
     permitted_parameter_distance: float,
 ) -> StageValidationMetrics:
     if (
@@ -1113,9 +1115,18 @@ def _stage_validation_metrics(
     distance = float(permitted_parameter_distance)
     if not math.isfinite(distance) or distance < 0.0:
         raise ValueError("permitted_parameter_distance must be finite and non-negative")
+    class_indices = tuple(int(value) for value in registered_class_indices)
+    if (
+        not class_indices
+        or len(set(class_indices)) != len(class_indices)
+        or min(class_indices) < 0
+        or max(class_indices) >= adapted_logits.size(1)
+    ):
+        raise ValueError("registered_class_indices must uniquely identify valid logit columns")
+    if not set(labels.detach().cpu().tolist()).issubset(class_indices):
+        raise ValueError("validation labels must belong to the registered class universe")
     predictions = adapted_logits.argmax(dim=1)
     frozen_predictions = frozen_logits.argmax(dim=1)
-    class_indices = torch.unique(labels, sorted=True)
     recalls: list[float] = []
     f1_values: list[float] = []
     margins: list[float] = []
@@ -1129,10 +1140,11 @@ def _stage_validation_metrics(
         true_positive = (true_mask & predicted_mask).sum().float()
         false_positive = ((~true_mask) & predicted_mask).sum().float()
         false_negative = (true_mask & (~predicted_mask)).sum().float()
-        recalls.append(float(true_positive / true_mask.sum()))
+        true_count = int(true_mask.sum())
+        recalls.append(float(true_positive / true_count) if true_count else 0.0)
         denominator = 2.0 * true_positive + false_positive + false_negative
         f1_values.append(float((2.0 * true_positive / denominator) if denominator > 0 else 0.0))
-        margins.append(float(row_margins[true_mask].mean()))
+        margins.append(float(row_margins[true_mask].mean()) if true_count else 0.0)
     adapted_correct = predictions == labels
     frozen_correct = frozen_predictions == labels
     return StageValidationMetrics(

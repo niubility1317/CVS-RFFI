@@ -39,3 +39,11 @@
 - 反向可追溯审查：7项verified，0项deferred，0项rejected，0项blocked；属于Task3严格设计同构，不是近似实现。
 - 最高风险项是阶段遥测额外增加每个optimizer step的inner-validation指标与许可参数距离计算成本；这是简报明确要求的R0选择遥测，未改变科学输入边界或最终模型选择规则。
 - 没有触碰`conversation_index/`、Tasks1–2所有权外文件、N607、query、source或远端状态。
+
+## 审查修复证据：注册类缺失于validation fold
+
+- 审查发现：原`_stage_validation_metrics()`以`torch.unique(labels)`定义类全集，合法fold缺少某个已注册类时会删除该类的recall、margin和macro-F1项，从而高估BA、class floor和macro-F1并可能改变阶段best step及统一schedule。
+- RED：加入`test_stage_metrics_include_registered_class_absent_from_validation_with_zero_recall_and_margin`三类fixture；validation只含类0/1且两行预测进入缺失类2。修复前聚焦命令结果为`19 passed,2 failed`，两项均因生产接口尚不接受`registered_class_indices`而按预期失败。
+- 修复：`_stage_validation_metrics()`强制接收精确`registered_class_indices`；fit路径传入`range(len(head.class_ids))`。对无true validation row的已注册类，`per_class_recall=0.0`、`per_class_margin=0.0`；该类预测仍进入其FP和macro-F1分母，因此任何注册类缺失时`class_floor=0.0`。
+- GREEN：同一聚焦命令结果为`21 passed`，退出码0；三类fixture得到`per_class_recall=(0.5,0.5,0.0)`、`per_class_margin=(0.5,0.5,0.0)`、`BA=1/3`、`floor=0.0`、`macro-F1=4/9`。
+- 变更严格限定为指标类全集输入、缺类约定和对应测试；阶段排序、snapshot top-k、loss、optimizer、参数scope、exact-state恢复及统一lower-median规则未改。
