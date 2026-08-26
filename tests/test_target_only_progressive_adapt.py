@@ -15,6 +15,7 @@ from cvsrffi.target_only_progressive_adapt import (
     SFTAPFTConfig,
     TargetOnlyAdaptationDataset,
     TargetPrototypeHead,
+    TrainableDeltaAverager,
     ensure_time_adapter,
     fit_sf_tapft,
     leave_one_out_prototype_logits,
@@ -77,6 +78,19 @@ class _ToyDualModel(nn.Module):
         if return_aux:
             return {"z_id": aux["feat_joint"], "tx_logits": aux["logits"]}
         return aux["logits"]
+
+
+class _ToySincBufferDriftModel(_ToyModel):
+    """Models an eval-time floating Sinc state that must never be averaged."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.register_buffer("sinc_reference", torch.full((4096,), 16_777_216.0))
+
+    def forward(self, x: torch.Tensor, y=None, return_aux: bool = False):
+        with torch.no_grad():
+            self.sinc_reference.add_(2.0)
+        return super().forward(x, y=y, return_aux=return_aux)
 
 
 def _dataset() -> TargetOnlyAdaptationDataset:
@@ -245,6 +259,54 @@ def test_checkpoint_averager_uses_top_scores_and_rejects_incompatible_states() -
         )
 
 
+def test_trainable_delta_averager_restores_frozen_large_float_and_averages_permitted_delta() -> None:
+    anchor = {
+        "trainable": torch.tensor([1.0, 3.0]),
+        "sinc_reference": torch.full((4096,), 16_777_216.0),
+    }
+    states = [
+        (
+            {
+                "trainable": torch.tensor([3.0, 7.0]),
+                "sinc_reference": torch.full((4096,), 16_777_218.0),
+            },
+            0.9,
+        ),
+        (
+            {
+                "trainable": torch.tensor([5.0, 9.0]),
+                "sinc_reference": torch.full((4096,), 16_777_220.0),
+            },
+            0.8,
+        ),
+        (
+            {
+                "trainable": torch.tensor([9.0, 17.0]),
+                "sinc_reference": torch.full((4096,), 16_777_222.0),
+            },
+            0.2,
+        ),
+    ]
+
+    averaged = TrainableDeltaAverager(top_k=2).average(
+        states,
+        anchor_state=anchor,
+        permitted_names={"trainable"},
+    )
+
+    assert torch.equal(averaged["trainable"], torch.tensor([4.0, 8.0]))
+    assert torch.equal(averaged["sinc_reference"], anchor["sinc_reference"])
+
+
+def test_trainable_delta_averager_rejects_changed_nonfloating_permitted_state() -> None:
+    with pytest.raises(ValueError, match="non-floating permitted"):
+        TrainableDeltaAverager(top_k=1).average(
+            [({"step": torch.tensor(2, dtype=torch.int64)}, 1.0)],
+            anchor_state={"step": torch.tensor(1, dtype=torch.int64)},
+            permitted_names={"step"},
+        )
+
+
 def test_fit_sf_tapft_is_reproducible_updates_allowed_scope_and_freezes_result() -> None:
     base = _ToyModel()
     before = copy.deepcopy(base.state_dict())
@@ -334,6 +396,50 @@ def test_top_checkpoint_average_requires_and_uses_disjoint_inner_validation() ->
             config,
             checkpoint_validation=inner_train,
         )
+
+
+def test_top_checkpoint_average_restores_nonpermitted_sinc_buffer_to_post_adapter_anchor() -> None:
+    dataset = _dataset()
+    train_indices = torch.tensor([0, 1, 3, 4])
+    validation_indices = torch.tensor([2, 5])
+    inner_train = TargetOnlyAdaptationDataset(
+        received_iq=dataset.received_iq[train_indices],
+        labels=dataset.labels[train_indices],
+        physical_ids=tuple(dataset.physical_ids[index] for index in train_indices.tolist()),
+        groups=None,
+    )
+    inner_validation = TargetOnlyAdaptationDataset(
+        received_iq=dataset.received_iq[validation_indices],
+        labels=dataset.labels[validation_indices],
+        physical_ids=tuple(dataset.physical_ids[index] for index in validation_indices.tolist()),
+        groups=None,
+    )
+    result = fit_sf_tapft(
+        _ToySincBufferDriftModel(),
+        inner_train,
+        SFTAPFTConfig(
+            phase_steps=(1, 1, 1),
+            warmup_ratio=0.0,
+            checkpoint_average_top_k=3,
+            adapter_rank=2,
+            mixed_precision=False,
+            seed=43,
+        ),
+        checkpoint_validation=inner_validation,
+    )
+
+    # The first target-only forward builds target prototypes, then the adapter
+    # anchor is captured. Subsequent checkpoint snapshots must not alter this
+    # non-permitted Sinc-like floating buffer through averaging.
+    assert torch.equal(result.model.sinc_reference, torch.full((4096,), 16_777_218.0))
+    assert result.audit.nonpermitted_changed_names == ()
+    permitted_model_names = set(result.audit.trainable_names_by_phase["C"])
+    changed_model_names = {
+        name.removeprefix("model.")
+        for name in result.audit.permitted_changed_names
+        if name.startswith("model.")
+    }
+    assert changed_model_names.issubset(permitted_model_names)
 
 
 def test_fit_sf_tapft_binds_dual_identity_backbone_without_updating_domain_backbone() -> None:

@@ -484,6 +484,53 @@ class CheckpointAverager:
         return averaged
 
 
+class TrainableDeltaAverager:
+    """Average only permitted trainable deltas against an immutable anchor."""
+
+    def __init__(self, top_k: int = 3):
+        if isinstance(top_k, bool) or int(top_k) <= 0:
+            raise ValueError("top_k must be a positive integer")
+        self.top_k = int(top_k)
+
+    def average(
+        self,
+        states: Sequence[tuple[Mapping[str, Tensor], float | tuple[float, ...]]],
+        *,
+        anchor_state: Mapping[str, Tensor],
+        permitted_names: Iterable[str],
+    ) -> dict[str, Tensor]:
+        if not states:
+            raise ValueError("at least one checkpoint state is required")
+        selected = sorted(states, key=lambda item: item[1], reverse=True)[: self.top_k]
+        keys = tuple(anchor_state.keys())
+        if any(tuple(state.keys()) != keys for state, _ in selected):
+            raise ValueError("checkpoint state keys must match the anchor state")
+        permitted = frozenset(str(name) for name in permitted_names)
+        unknown = permitted.difference(keys)
+        if unknown:
+            raise ValueError(f"permitted names are absent from anchor state: {sorted(unknown)}")
+        averaged: dict[str, Tensor] = {}
+        for key in keys:
+            anchor = anchor_state[key]
+            tensors = [state[key] for state, _ in selected]
+            if any(
+                value.shape != anchor.shape or value.dtype != anchor.dtype for value in tensors
+            ):
+                raise ValueError(f"checkpoint tensor mismatch for {key!r}")
+            if key not in permitted:
+                averaged[key] = anchor.detach().clone()
+                continue
+            if not anchor.is_floating_point():
+                if any(not torch.equal(value, anchor) for value in tensors):
+                    raise ValueError(f"non-floating permitted checkpoint tensor changed for {key!r}")
+                averaged[key] = anchor.detach().clone()
+                continue
+            anchor64 = anchor.detach().to(dtype=torch.float64)
+            deltas = [value.detach().to(dtype=torch.float64) - anchor64 for value in tensors]
+            averaged[key] = (anchor64 + torch.stack(deltas).mean(dim=0)).to(dtype=anchor.dtype)
+        return averaged
+
+
 @dataclass(frozen=True)
 class SFTAPFTAudit:
     method: str
@@ -492,6 +539,8 @@ class SFTAPFTAudit:
     phase_steps: tuple[int, int, int]
     trainable_names_by_phase: Mapping[str, tuple[str, ...]]
     updated_parameter_names: tuple[str, ...]
+    permitted_changed_names: tuple[str, ...]
+    nonpermitted_changed_names: tuple[str, ...]
     support_losses: tuple[float, ...]
     source_loader_opened: bool
     source_samples_opened: bool
@@ -739,6 +788,10 @@ def fit_sf_tapft(
     adapter_names = {name for name in phase_names["B"] if name.startswith(adapter_prefix)}
     last_names = set(phase_names["C"]) - norm_names - adapter_names
     named = dict(student.named_parameters())
+    initial_model_state = {
+        name: value.detach().clone() for name, value in student.state_dict().items()
+    }
+    initial_head_state = {name: value.detach().clone() for name, value in head.state_dict().items()}
     groups = [
         {"name": "head", "params": list(head.parameters()), "lr": config.lr_head_initial},
         {"name": "norm", "params": [named[name] for name in sorted(norm_names)], "lr": config.lr_norm},
@@ -753,10 +806,8 @@ def fit_sf_tapft(
     scaler = _make_grad_scaler(device, enabled=use_amp)
     l2sp_names = sorted(norm_names | last_names)
     l2sp = L2SPRegularizer.from_named_parameters((name, named[name]) for name in l2sp_names)
-    initial_state = {name: value.detach().clone() for name, value in student.state_dict().items()}
     bn_before = {
-        name: value.detach().clone()
-        for name, value in student.state_dict().items()
+        name: value.detach().clone() for name, value in initial_model_state.items()
         if name.endswith("running_mean") or name.endswith("running_var") or name.endswith("num_batches_tracked")
     }
     total_steps = sum(config.phase_steps)
@@ -864,7 +915,19 @@ def fit_sf_tapft(
             snapshots.sort(key=lambda item: item[1], reverse=True)
             del snapshots[int(config.checkpoint_average_top_k) :]
 
-    averaged = CheckpointAverager(config.checkpoint_average_top_k).average(snapshots)
+    anchor_state = {
+        **{f"model.{name}": value for name, value in initial_model_state.items()},
+        **{f"head.{name}": value for name, value in initial_head_state.items()},
+    }
+    permitted_snapshot_names = {
+        *(f"model.{name}" for name in norm_names | adapter_names | last_names),
+        *(f"head.{name}" for name in initial_head_state),
+    }
+    averaged = TrainableDeltaAverager(config.checkpoint_average_top_k).average(
+        snapshots,
+        anchor_state=anchor_state,
+        permitted_names=permitted_snapshot_names,
+    )
     student.load_state_dict(
         {name.removeprefix("model."): value for name, value in averaged.items() if name.startswith("model.")}
     )
@@ -877,12 +940,32 @@ def fit_sf_tapft(
         parameter.requires_grad_(False)
     for parameter in head.parameters():
         parameter.requires_grad_(False)
-    updated = tuple(
+    final_state = {
+        **{f"model.{name}": value for name, value in student.state_dict().items()},
+        **{f"head.{name}": value for name, value in head.state_dict().items()},
+    }
+    permitted_changed = tuple(
         sorted(
             name
-            for name, value in student.state_dict().items()
-            if name not in initial_state or not torch.equal(value, initial_state[name])
+            for name, value in final_state.items()
+            if name in permitted_snapshot_names and not torch.equal(value, anchor_state[name])
         )
+    )
+    nonpermitted_changed = tuple(
+        sorted(
+            name
+            for name, value in final_state.items()
+            if name not in permitted_snapshot_names and not torch.equal(value, anchor_state[name])
+        )
+    )
+    if nonpermitted_changed:
+        raise RuntimeError(
+            f"SF-TAPFT checkpoint averaging changed non-permitted state: {nonpermitted_changed}"
+        )
+    updated = tuple(
+        name.removeprefix("model.")
+        for name in permitted_changed
+        if name.startswith("model.")
     )
     bn_after = student.state_dict()
     bn_updated = any(not torch.equal(value, bn_after[name]) for name, value in bn_before.items())
@@ -893,6 +976,8 @@ def fit_sf_tapft(
         phase_steps=config.phase_steps,
         trainable_names_by_phase=MappingProxyType(phase_names),
         updated_parameter_names=updated,
+        permitted_changed_names=permitted_changed,
+        nonpermitted_changed_names=nonpermitted_changed,
         support_losses=tuple(losses),
         source_loader_opened=False,
         source_samples_opened=False,
@@ -1092,6 +1177,7 @@ __all__ = [
     "SFTAPFTSelectionResult",
     "TargetOnlyAdaptationDataset",
     "TargetPrototypeHead",
+    "TrainableDeltaAverager",
     "ensure_time_adapter",
     "fit_sf_tapft",
     "leave_one_out_prototype_logits",
