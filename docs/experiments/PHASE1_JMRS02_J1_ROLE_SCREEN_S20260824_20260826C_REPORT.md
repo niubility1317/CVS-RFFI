@@ -58,3 +58,11 @@ RZ0/RZ1/RX1/D1P需同时满足三LEO final mean gain>0、clean drop≤0.30pp、�
 后续TDD在完全不经过Core90的本地最小图中复现了同一非有限梯度：RX1把零初始化的幅度/相位曲线写成`sqrt(mean(x^2))`，该函数在`x=0`处导数未定义。单步共有1944个estimator参数梯度非有限；C每epoch约39步，`1944×39=75816`，与日志逐epoch计数精确相等。因此“Core90输入梯度奇异”不是现有证据能支持的首要归因，已更正为RX1自身零点范数错误。C是不可变旧release，继续只读运行；不修改、不重启、不覆盖，其RX1结果仍无科学效力。
 
 修复采用`sqrt(mean(x^2)+eps)-sqrt(eps)`，在零点保持数值为0且梯度有限；新run必须先通过真实checkpoint反向smoke，才能判断Core90链路是否还存在独立问题。新run不再清洗NaN/Inf梯度，发现任一非有限元素直接技术失败。
+
+## 九、最终结果与结论
+
+C完成302400条prediction/truth闭合和4个独立评分JSON。B0三LEO均值89.9233%；RZ0、RZ1、RX1、D1P的三LEO增益分别为-0.2275pp、-0.2619pp、0和-0.3307pp，均未晋级。P0 proxy MAE为0.0524383，较零基线0.0532285仅改善0.0007903，约1.48%，只允许nuisance proxy结论。
+
+35份outer history均为40 epoch；RX1七fold合计清洗21228480个非有限梯度元素，结果作废，其他row非有限计数为0。最终不允许`BEST_RECEIVER+D1P`或任何joint。这里的LEO准确率是source RX0–RX6 held-receiver合成弱场景结果，不是RX7–RX11 target-DG，也不等同ADV3B02 target协议。
+
+最终状态：`ANALYZED / NO_JOINT_PROMOTION / NOT_TARGET_DG`。
