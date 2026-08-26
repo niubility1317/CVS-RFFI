@@ -16,11 +16,11 @@
 |V2-07|R0 bundle|新增clean single v2 schema并严格回读|runner、测试|verified|V2严格回读与外部可信target binding篡改负测通过|V1精确allowlist保持不变|
 |V2-08|R0 query接口|实现只读prediction接口，不在R0运行真实query|`sf_tapft_prediction.py`、测试|verified|真实模型/head＋合成IQ接口通过；single=batch、重排等价、state不变|实际query推迟到R3|
 |V2-09|R0本地验证|聚焦负测、回归、真实checkpoint no-query smoke|测试、报告|verified|本地聚焦测试、真实checkpoint 3步smoke、4折OOF+全support refit smoke通过|正式R0当前在N607运行|
-|V2-10|R1 P0|head only贡献|配置、OOF runner|deferred|同split指标|等待R0分析|
-|V2-11|R1 P1|P0+time norm贡献|配置、OOF runner|deferred|同split指标|不得跳过P0|
-|V2-12|R1 P2|P1+time Adapter贡献|配置、OOF runner|deferred|同split指标|不得跳过P1|
-|V2-13|R1 P3|P2+完整`t3`贡献|配置、OOF runner|deferred|同split指标|不得跳过P2|
-|V2-14|R1 P4|P3+`t2.pw/time_fuse/identity fusion`|adapt、配置、测试|deferred|同split指标|不得同时开频域|
+|V2-10|R1 P0|head only贡献|配置、OOF runner|implemented|M01已启动，同split指标待artifact|用户解除顺序启动限制|
+|V2-11|R1 P1|P0+time norm贡献|配置、OOF runner|implemented|M02已启动，同split指标待artifact|用户解除顺序启动限制|
+|V2-12|R1 P2|P1+time Adapter贡献|配置、OOF runner|implemented|M03/M09已启动，同split指标待artifact|R32/R16并行|
+|V2-13|R1 P3|P2+完整`t3`贡献|配置、OOF runner|implemented|M04/M06–M08/M10–M13已启动|容量、KD、rho、阶段长度矩阵|
+|V2-14|R1 P4|P3+`t2.pw/time_fuse/identity fusion`|adapt、配置、测试|implemented|M05/M14/M15已启动；P4真实checkpoint smoke通过|frequency/domain分支保持冻结|
 |V2-15|R2 teacher|保存4-fold logit ensemble|ensemble bundle、loader、测试|deferred|logit均值fixture|等待R1结构选择|
 |V2-16|R2 strong single|保存全support单模型|single bundle、loader、测试|deferred|全60条refit|不参数平均fold模型|
 |V2-17|R3 prediction|DA0/teacher/single统一truth-blind prediction|prediction runner|deferred|prediction完整性|首次真实query|
@@ -61,7 +61,7 @@ R2/R3、S0数学等价、S3 LoRA和S5 head形式仍需要本波artifact或新实
 - 已验证：10项（含正式bundle与真实checkpoint smoke）。
 - 已实现但真实工件阻塞：0项。
 - 远端smoke阻塞：0项。
-- 延后：15项，按R1→R2→R3→S0→S1–S5顺序解锁。
+- 延后：10项；R1与S2/S4第一波候选已按用户授权并行，R2/R3及其余瘦身项等待artifact或新实现。
 - 拒绝：0项。
 - 阻塞：无数据或bundle阻塞；R2/R3等组合步骤等待本波训练artifact。
-- 当前最高交付状态：R0为`RUNNING`；第一波15候选为`PREREGISTERED_PENDING_IMPLEMENTATION`；真实query仍未打开。
+- 当前最高交付状态：R0与第一波15候选均为`RUNNING`；8张GPU各有2个训练进程；真实query仍未打开。
