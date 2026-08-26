@@ -10,16 +10,16 @@
 - 终评：Clean、`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`分别保存。
 - 预期artifact：每行200条epoch记录、`final_ssdg.pth`、四场景独立指标与日志；`V_select-as-U`truth-blind artifact及独立truth-last评分结果。
 - 技术停止：协议/query越权、错误seed/split/checkpoint、输出覆盖、错误checkout、同一确定性异常至少两行、prediction无法闭合或进程归属不清。低性能不停止。
-- 当前状态：设计追踪与本地实现中。
-- 精确启动命令：`bash /home/szu2070436088/2510044040/CV-SincNet/releases/<release>/code/scripts/launch_phase1_adv3b02_fasttrust_qb3_c2_ms_e200_20260826.sh`
+- 当前状态：`RUNNING`。
+- 精确启动命令：`env ROOT=/home/szu2070436088/2510044040/CV-SincNet CODE_ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_fasttrust_qb3_c2_ms_e200_a185bb7f bash /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_fasttrust_qb3_c2_ms_e200_a185bb7f/code/scripts/launch_phase1_adv3b02_fasttrust_qb3_c2_ms_e200_20260826.sh`
 
 ## 需求追踪
 
 | ID | 报告要求 | 实现面 | 验证状态 |
 |---|---|---|---|
-| `QB3-P0-QUALITY` | `V_select-as-U`生成truth-blind逐样本artifact，独立连接truth评分 | 待实现脚本与测试 | `IN_PROGRESS` |
-| `QB3-P0-GRAD` | 对实际H/P损失与共享参数求导，报告范数比与余弦 | `code/SSDG/train_ssdg.py`及聚焦测试 | `IN_PROGRESS` |
-| `QB3-P1-C2MS` | 仅新增seed713101、seed713102的C2 E200 | 新matrix与launcher | `IN_PROGRESS` |
+| `QB3-P0-QUALITY` | `V_select-as-U`生成truth-blind逐样本artifact，独立连接truth评分 | 独立三进程审计与评分文件 | `COMPLETED` |
+| `QB3-P0-GRAD` | 对实际H/P损失与共享参数求导，报告范数比与余弦 | `code/SSDG/train_ssdg.py`及聚焦测试 | `IMPLEMENTED_RUNNING` |
+| `QB3-P1-C2MS` | 仅新增seed713101、seed713102的C2 E200 | 新matrix与launcher | `RUNNING` |
 | `QB3-SPEED` | 缓存冻结anchor clean logits并向量化路由预算 | 训练路径与速度A/B | `IN_PROGRESS` |
 | `QB3-SINC` | `torch.sinc`+FP32滤波器合成，独立匹配验证 | `code/model.py`及数值测试 | `PENDING_SEPARATE_COMMIT` |
 | `QB3-RG` | P-set/P-cond独立预算与rank风险门控 | source-only候选 | `PENDING_P0_EVIDENCE` |
@@ -50,3 +50,22 @@
 - 审计脚本现复用训练主路径的`domain_from_extra`映射并对未注册域fail-closed；增加`{3:0,4:1}`紧凑映射回归，聚焦回归仍为`57 passed`，后续使用全新release/output root验证。
 - 第四次真实生成已成功产出`12,600`条truth-blind记录，生成进程明确报告`truth_access=false`。随后独立truth导出进程因有标签batch仍采用`[domain,metadata]`包装而在字段读取时报错，未生成truth sidecar，评分未开始。
 - 统一字段读取器现同时支持truth-hidden字典和训练期batch包装，并增加两种形态的回归；聚焦回归为`57 passed`，将以新release继续独立truth导出和评分。
+
+## 伪标签质量实测
+
+- 固定checkpoint：历史C2`E200_C2_BC_H_PSET/final_ssdg.pth`；审计release为提交`a185bb7fd28ef36703e1a721399e050b09ba0425`。
+- 三个独立进程依次完成truth-blind生成、truth sidecar导出和连接评分；artifact与truth均为`12,600`条，ID集合严格相等。
+- 路由计数：H=`2,886`，P=`1,133`，R=`8,581`；H覆盖率`22.9048%`，H精度`99.7574%`，H-AURC=`0.0001604`。
+- P-set覆盖率`99.0291%`，平均集合大小`2.098`，P95集合大小`3`，set-safe样本内top-1排序准确率`96.1676%`。
+- receiver最弱H精度`99.0244%`，receiver/day最弱H精度`97.6744%`；receiver最弱P-set覆盖`98.3471%`，receiver/day最弱P-set覆盖`97.5309%`。
+- class×receiver最弱H精度为`93.1034%`（class1/receiver0），最弱P-set覆盖为`50.0%`（class2/receiver5）。这表明总体质量很高，但小样本交叉单元仍是后续RG风险门控应重点处理的长尾区域。
+- 完整分组结果见`c2_existing_checkpoint_quality_score.json`。
+
+## 发布与启动证据
+
+- Git实现提交：`a185bb7fd28ef36703e1a721399e050b09ba0425`；本地与`origin/work/cvs-active`OID一致。
+- release归档：本地`E:\type10-7\release_artifacts\phase1_fasttrust_qb3_c2_ms_e200_a185bb7f.tar.gz`映射到远端`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_fasttrust_qb3_c2_ms_e200_a185bb7f.tar.gz`，唯一传输SHA256为`7984b2b2f2def2d4cc8e884fa47912521727061204823a478ce8d21a7e15f503`，远端校验通过。
+- 远端三个Python实现文件编译通过，专用launcher与矩阵launcher的`bash -n`通过；behavioral dry-run只产生GPU4/seed713101与GPU5/seed713102两行，均为C2 E200、U256、eval512、逐epoch恢复checkpoint和Clean+三类LEO弱场景终评。
+- 2026-08-26 13:42 CST启动前GPU4、GPU5均为空闲，run root与launcher日志路径均不存在；GPU0另有独立任务，未触碰。
+- detached launcher PID=`3556728`，CWD和cmdline均绑定上述release与run ID；训练PID=`3556760`映射GPU4/seed713101，PID=`3556764`映射GPU5/seed713102。
+- 两行均已写入epoch1，训练日志从`6,911`字节增长到`12,431`字节，metrics文件已落盘；GPU4/GPU5显存约`3.7/3.6GB`，无`Traceback/CUDA error/RuntimeError/Exception`指纹。当前最高可证状态为`RUNNING`，尚无最终性能结论。
