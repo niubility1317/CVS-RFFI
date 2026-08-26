@@ -48,3 +48,5 @@
 - 新增metadata字典直读回归测试，receiver改为从已解包metadata构造只含观测域信息的张量；相邻聚焦回归为`57 passed`，待再次提交并用全新release/output root复验。
 - 第三次复验进入RC4路由后出现CUDA gather越界。定位为dataset edge返回的raw domain ID未按checkpoint的`domain_label_map`映射为紧凑域索引；训练主路径本来执行该映射，问题仅在新增审计脚本。
 - 审计脚本现复用训练主路径的`domain_from_extra`映射并对未注册域fail-closed；增加`{3:0,4:1}`紧凑映射回归，聚焦回归仍为`57 passed`，后续使用全新release/output root验证。
+- 第四次真实生成已成功产出`12,600`条truth-blind记录，生成进程明确报告`truth_access=false`。随后独立truth导出进程因有标签batch仍采用`[domain,metadata]`包装而在字段读取时报错，未生成truth sidecar，评分未开始。
+- 统一字段读取器现同时支持truth-hidden字典和训练期batch包装，并增加两种形态的回归；聚焦回归为`57 passed`，将以新release继续独立truth导出和评分。

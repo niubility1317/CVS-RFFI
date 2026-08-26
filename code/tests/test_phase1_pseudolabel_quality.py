@@ -110,3 +110,8 @@ def test_generator_cli_cannot_accept_truth_and_truth_export_is_a_separate_comman
         batch, torch.device("cpu"), domain_label_map={3: 0, 4: 1}
     )
     assert compact_domains.tolist() == [0, 1]
+    wrapped_metadata = [
+        torch.tensor([3, 4]),
+        {"base_index": torch.tensor([10, 11])},
+    ]
+    assert module._values(wrapped_metadata, "base_index", 2) == [10, 11]

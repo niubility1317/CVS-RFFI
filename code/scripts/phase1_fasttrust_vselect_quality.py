@@ -91,7 +91,10 @@ def _route_names(route):
 
 
 def _values(extra, key, count):
-    value = extra.get(key)
+    metadata = extra if hasattr(extra, "get") else train_ssdg._meta_from_extra(extra)
+    if metadata is None:
+        raise ValueError("batch metadata is required for V_select quality audit")
+    value = metadata.get(key)
     if torch.is_tensor(value):
         result = value.detach().cpu().reshape(-1).tolist()
     elif isinstance(value, (list, tuple)):
