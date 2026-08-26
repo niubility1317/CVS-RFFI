@@ -44,3 +44,11 @@ RZ0/RZ1/RX1/D1P需同时满足三LEO final mean gain>0、clean drop≤0.30pp、�
 - 真实checkpoint无query smoke通过；日志进入`fold=rx0,row=RZ0,inner-LORO`。GPU0约848MiB、16%利用率，日志增长正常，无Traceback/OOM/NaN。
 
 当前状态：`RUNNING / REAL_CHECKPOINT_NO_QUERY_SMOKE_PASS / NO_PERFORMANCE_RESULT_YET`。
+
+## 七、运行中完整历史诊断（截至rx1/RZ0完成）
+
+截至当前已完整生成6份训练历史：rx0的RZ0/RZ1/RX1/D1P/P0和rx1/RZ0，均包含6个inner fold与40个outer epoch。RZ0、RZ1、D1P的outer loss分别由1.9486→0.7276、1.8943→0.7307、1.9625→0.7054；P0 nuisance loss由0.01231→0.00585，均无非有限梯度清洗。C已跨过B在rx0/RX1 inner-LORO的原失败点并保存rx0全部5个模块模型，当前进入rx1。
+
+但RX1暴露出更深的结构性问题：40/40个outer epoch均记录75816个非有限梯度元素，累计3032640个；loss为1.9345→1.9729，没有形成下降趋势。其6个inner held receiver的rescue/harm均为0，说明canonicalizer实质保持identity；V_cal所谓50% gate coverage仅带来0.00231个百分点表观变化，不能解释为RX1有效。当前梯度清洗避免了进程崩溃，却没有恢复可学习的Core90→IQ梯度。
+
+按预注册规则不因低性能停止C，继续完成其他row和fold；但RX1已提前标记为`STRUCTURAL_GRADIENT_FAILURE / NO_SCIENTIFIC_PROMOTION`。C完成后不得再用同一路径进行第4次重发，后续若继续RC-X必须改变可微接口或采用不依赖冻结Core90输入梯度的两阶段/黑盒校正目标，并作为新设计重新论证。
