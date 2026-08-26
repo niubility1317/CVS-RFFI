@@ -466,6 +466,74 @@ def _component_builder(
             )
         )
 
+    if ablation_id.startswith("P2-256-J-"):
+        profiles = resolve_stage2_config(ablation_id)
+        center_profile = str(profiles["center_profile"])
+        covariance_profile = str(profiles["covariance_profile"])
+        geometry_profile = str(profiles["geometry_profile"])
+        apply_ground_center = (
+            center_profile != "support_plain_mean_no_ground_spectrum"
+        )
+        use_equal_covariance = (
+            covariance_profile == "d81_all_classes_equal_ledoit_wolf"
+        )
+        if geometry_profile not in {
+            "d46_full_block_classwise_support_loo",
+            "full_only",
+            "full_block_fixed_half",
+        }:
+            raise Stage2AblationExecutionError(
+                "unsupported current-256D joint geometry profile"
+            )
+
+        original_d62_builder = d92.d62.build_d62_fit
+        try:
+            if geometry_profile == "full_only":
+                d92.d62.build_d62_fit = lambda module, **_kwargs: (
+                    module._fit_equal_prior_lda,
+                    [],
+                )
+            elif geometry_profile == "full_block_fixed_half":
+                d92.d62.build_d62_fit = lambda module, **_kwargs: (
+                    d44.build_full_block_rms_fit(
+                        module,
+                        allow_fp32_centering_argmax_drift=True,
+                    ),
+                    [],
+                )
+
+            if use_equal_covariance:
+                fit = d81.build_d81_fit(
+                    runtime,
+                    ground_basis,
+                    ground_weights,
+                    ground_audit,
+                    apply_ground_center=apply_ground_center,
+                    allow_fp32_centering_argmax_drift=True,
+                )[0]
+                method = (
+                    "d81_all_classes_equal_covariance"
+                    if apply_ground_center
+                    else "d81_all_classes_equal_covariance_without_ground_center"
+                )
+            else:
+                fit = d92.build_d92_fit(
+                    runtime,
+                    ground_basis,
+                    ground_weights,
+                    ground_audit,
+                    apply_ground_center=apply_ground_center,
+                    allow_fp32_centering_argmax_drift=True,
+                )[0]
+                method = (
+                    "d92_registration_balanced_covariance"
+                    if apply_ground_center
+                    else "d92_registration_balanced_covariance_without_ground_center"
+                )
+        finally:
+            d92.d62.build_d62_fit = original_d62_builder
+        return fit, method
+
     if ablation_id == "P2-256-S0":
         return (
             d92.build_d92_fit(
@@ -761,9 +829,8 @@ def fit_stage2_ablation(
             old_k,
         )
 
-    resolved_feature_profile = str(
-        resolve_stage2_config(ablation_id)["feature_profile"]
-    )
+    resolved_config = resolve_stage2_config(ablation_id)
+    resolved_feature_profile = str(resolved_config["feature_profile"])
     feature_profile = (
         "full288"
         if resolved_feature_profile == _FULL_FEATURE_PROFILE
@@ -867,11 +934,15 @@ def fit_stage2_ablation(
             ),
         }
     else:
-        needs_ground = behavior_id not in {
-            "P2-BASE-FULL-BLOCK-LDA",
-            "P2-BASE-ADAPTER-HEAD",
-            "P2-B0",
-        }
+        needs_ground = (
+            str(resolved_config["center_profile"])
+            != "support_plain_mean_no_ground_spectrum"
+            and behavior_id
+            not in {
+                "P2-BASE-FULL-BLOCK-LDA",
+                "P2-BASE-ADAPTER-HEAD",
+            }
+        )
         if needs_ground:
             basis, weights, basis_audit = _ground_inputs(
                 ground_basis, ground_spectral_weights, ground_audit
@@ -941,10 +1012,75 @@ def fit_stage2_ablation(
             "P2-256-C3",
             "P2-256-D0",
             "P2-256-D2",
+            "P2-256-J-B0-C3",
+            "P2-256-J-B0-D0",
+            "P2-256-J-B0-D2",
+            "P2-256-J-C3-D0",
+            "P2-256-J-C3-D2",
+            "P2-256-J-B0-C3-D0",
+            "P2-256-J-B0-C3-D2",
         }
         else ablation_id
         if ablation_id in quantization.SUPPORTED_ARMS
         else None
+    )
+    affine_common_bias_shift = 0.0
+    affine_common_bias_normalized = False
+    affine_common_bias_support_argmax_preserved = True
+    if quantization_arm in {quantization.F1, quantization.F2, quantization.F3}:
+        fp16_limit = float(np.finfo(np.float16).max)
+        if float(np.max(np.abs(intercept))) > fp16_limit:
+            # Affine class decisions are invariant to one scalar added to every
+            # class logit.  Center only that shared scalar before FP16 bias
+            # storage; no FP32 sidecar or query-time correction is retained.
+            lower = float(np.min(intercept))
+            upper = float(np.max(intercept))
+            affine_common_bias_shift = 0.5 * (lower + upper)
+            normalized_intercept = np.asarray(
+                intercept - np.float32(affine_common_bias_shift),
+                dtype=np.float32,
+            )
+            if (
+                not np.isfinite(normalized_intercept).all()
+                or float(np.max(np.abs(normalized_intercept))) > fp16_limit
+            ):
+                raise Stage2AblationExecutionError(
+                    "an affine common-bias shift cannot make FP16 bias storage finite"
+                )
+            raw_support_prediction = np.argmax(
+                transformed @ coefficient.T + intercept[None, :], axis=1
+            )
+            normalized_support_prediction = np.argmax(
+                transformed @ coefficient.T
+                + normalized_intercept[None, :],
+                axis=1,
+            )
+            affine_common_bias_support_argmax_preserved = bool(
+                np.array_equal(
+                    raw_support_prediction, normalized_support_prediction
+                )
+            )
+            if not affine_common_bias_support_argmax_preserved:
+                raise Stage2AblationExecutionError(
+                    "common-bias normalization changed a support argmax"
+                )
+            intercept = normalized_intercept
+            affine_common_bias_normalized = True
+            if np.asarray(audit.get("d81_actual_intercept_fp32")).shape == (
+                len(intercept),
+            ):
+                audit["d81_actual_intercept_fp32"] = intercept.tolist()
+    audit["affine_common_bias_normalized_for_fp16"] = (
+        affine_common_bias_normalized
+    )
+    audit["affine_common_bias_shift"] = float(affine_common_bias_shift)
+    audit["affine_common_bias_normalization_support_argmax_preserved"] = (
+        affine_common_bias_support_argmax_preserved
+    )
+    audit["affine_common_bias_normalization_semantics"] = (
+        "subtract_class_independent_logit_constant_before_fp16_storage"
+        if affine_common_bias_normalized
+        else "not_needed"
     )
     compiled_affine_state = None
     stored_coefficient = np.asarray(coefficient, dtype=np.float32)
@@ -1009,6 +1145,12 @@ def fit_stage2_ablation(
             ),
         }
     )
+    if spec.table == "e0_256_joint_screen":
+        merged_audit["joint_profiles"] = {
+            "center_profile": str(resolved_config["center_profile"]),
+            "covariance_profile": str(resolved_config["covariance_profile"]),
+            "geometry_profile": str(resolved_config["geometry_profile"]),
+        }
     resource = {
         **metric_resource,
         "fit_seconds": float(fit_seconds),

@@ -7,6 +7,7 @@ import pytest
 
 from cvsrffi.stage2_ablation_factory import (
     STAGE2_E0_256_ABLATION_ARMS,
+    STAGE2_E0_256_INTERACTION_ARMS,
     STAGE2_T1_ARMS,
 )
 from cvsrffi.stage2_ablation_executors import (
@@ -340,6 +341,75 @@ def test_current_256d_catalogue_is_numerically_reachable_without_f0() -> None:
         )
         assert state.ablation_id == spec.ablation_id
         assert state.score(fixture["new_support_features"][:2]).shape == (2, 11)
+
+
+@pytest.mark.parametrize(
+    ("ablation_id", "expected_geometry", "expects_bias_normalization"),
+    (
+        ("P2-256-J-B0-C3-D0", "full_only", True),
+        ("P2-256-J-B0-C3-D2", "full_block_fixed_half", False),
+    ),
+)
+def test_current_256d_joint_endpoints_compose_support_only_profiles(
+    ablation_id: str,
+    expected_geometry: str,
+    expects_bias_normalization: bool,
+) -> None:
+    """The compatible three-factor endpoints must execute, not merely exist in a plan."""
+
+    fixture = _fixture(5)
+    state = fit_stage2_ablation(
+        ablation_id=ablation_id,
+        seed=820001,
+        device="cpu",
+        **fixture,
+    )
+
+    compiled = state.compiled_affine_state
+    assert compiled is not None
+    assert compiled.arm_id == "P2-F3"
+    assert compiled.feature_dim == 256
+    assert compiled.block_offsets == (0, 160, 256)
+    assert state.score(fixture["new_support_features"][:2]).shape == (2, 11)
+    assert state.audit["query_rows_used"] == 0
+    assert state.resource["query_rows_used_for_fit"] == 0
+    assert state.audit["d81_probe_arm"] == "ground_nuisance_cauchy_center"
+    assert state.audit["d81_ground_int8_component_used"] is False
+    assert bool(state.audit["affine_common_bias_normalized_for_fp16"]) is (
+        expects_bias_normalization
+    )
+    assert state.audit[
+        "affine_common_bias_normalization_support_argmax_preserved"
+    ] is True
+    assert state.audit["joint_profiles"] == {
+        "center_profile": "support_plain_mean_no_ground_spectrum",
+        "covariance_profile": "d81_all_classes_equal_ledoit_wolf",
+        "geometry_profile": expected_geometry,
+    }
+
+
+@pytest.mark.parametrize(
+    "ablation_id",
+    tuple(spec.ablation_id for spec in STAGE2_E0_256_INTERACTION_ARMS),
+)
+def test_every_current_256d_joint_arm_reaches_one_f3_support_only_state(
+    ablation_id: str,
+) -> None:
+    fixture = _fixture(2)
+    state = fit_stage2_ablation(
+        ablation_id=ablation_id,
+        seed=820001,
+        device="cpu",
+        **fixture,
+    )
+
+    compiled = state.compiled_affine_state
+    assert compiled is not None
+    assert compiled.arm_id == "P2-F3"
+    assert compiled.feature_dim == 256
+    assert state.audit["query_rows_used"] == 0
+    assert state.resource["query_rows_used_for_fit"] == 0
+    assert state.score(fixture["new_support_features"][:2]).shape == (2, 11)
 
 
 def test_td_htrc_m21_is_reachable_as_an_explicit_opt_in_mode() -> None:

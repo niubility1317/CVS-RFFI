@@ -368,6 +368,109 @@ PHASE2_E0_256_ABLATION_ARMS = (
 )
 
 
+# D0 and D2 select mutually exclusive geometry paths.  The joint screen
+# therefore crosses B0 and C3 with geometry={FULL,D0,D2}; it does not create a
+# non-executable D0+D2 row.
+PHASE2_E0_256_JOINT_ABLATION_ARMS = (
+    ArmSpec(
+        "P2-256-FULL",
+        "stage2c",
+        "S_SCREENING",
+        "reference",
+        "current_256d_reference",
+        executor_status="LOCAL_IMPLEMENTED",
+    ),
+    ArmSpec(
+        "P2-256-B0",
+        "stage2c",
+        "S_SCREENING",
+        "robust_center",
+        "P2-256-FULL",
+        executor_status="LOCAL_IMPLEMENTED",
+    ),
+    ArmSpec(
+        "P2-256-C3",
+        "stage2c",
+        "S_SCREENING",
+        "task_covariance",
+        "P2-256-FULL",
+        executor_status="LOCAL_IMPLEMENTED",
+    ),
+    ArmSpec(
+        "P2-256-J-B0-C3",
+        "stage2c",
+        "S_SCREENING",
+        "joint_center_task_covariance",
+        "P2-256-FULL",
+        executor_status="LOCAL_IMPLEMENTED",
+    ),
+    ArmSpec(
+        "P2-256-D0",
+        "stage2c",
+        "S_SCREENING",
+        "dual_geometry",
+        "P2-256-FULL",
+        executor_status="LOCAL_IMPLEMENTED",
+    ),
+    ArmSpec(
+        "P2-256-J-B0-D0",
+        "stage2c",
+        "S_SCREENING",
+        "joint_center_full_geometry",
+        "P2-256-FULL",
+        executor_status="LOCAL_IMPLEMENTED",
+    ),
+    ArmSpec(
+        "P2-256-J-C3-D0",
+        "stage2c",
+        "S_SCREENING",
+        "joint_task_covariance_full_geometry",
+        "P2-256-FULL",
+        executor_status="LOCAL_IMPLEMENTED",
+    ),
+    ArmSpec(
+        "P2-256-J-B0-C3-D0",
+        "stage2c",
+        "S_SCREENING",
+        "joint_center_task_covariance_full_geometry",
+        "P2-256-FULL",
+        executor_status="LOCAL_IMPLEMENTED",
+    ),
+    ArmSpec(
+        "P2-256-D2",
+        "stage2c",
+        "S_SCREENING",
+        "crossfit_fusion",
+        "P2-256-FULL",
+        executor_status="LOCAL_IMPLEMENTED",
+    ),
+    ArmSpec(
+        "P2-256-J-B0-D2",
+        "stage2c",
+        "S_SCREENING",
+        "joint_center_fixed_half_geometry",
+        "P2-256-FULL",
+        executor_status="LOCAL_IMPLEMENTED",
+    ),
+    ArmSpec(
+        "P2-256-J-C3-D2",
+        "stage2c",
+        "S_SCREENING",
+        "joint_task_covariance_fixed_half_geometry",
+        "P2-256-FULL",
+        executor_status="LOCAL_IMPLEMENTED",
+    ),
+    ArmSpec(
+        "P2-256-J-B0-C3-D2",
+        "stage2c",
+        "S_SCREENING",
+        "joint_center_task_covariance_fixed_half_geometry",
+        "P2-256-FULL",
+        executor_status="LOCAL_IMPLEMENTED",
+    ),
+)
+
+
 def _unique_positive(values: Iterable[int], *, name: str) -> tuple[int, ...]:
     result = tuple(int(value) for value in values)
     if not result or any(value <= 0 for value in result):
@@ -628,37 +731,37 @@ def build_phase2_e0_256_screen_rows(
     k_shot: int,
     new_class_count: int,
     git_commit: str,
+    expected_arms: Sequence[ArmSpec] = PHASE2_E0_256_ABLATION_ARMS,
+    screen_name: str = "current-256D screen",
 ) -> list[dict[str, Any]]:
-    """Build only the approved seven-arm current-256D same-row screen."""
+    """Build one exact hard current-256D same-row screening surface."""
 
-    expected_ids = tuple(
-        arm.ablation_id for arm in PHASE2_E0_256_ABLATION_ARMS
-    )
+    expected_ids = tuple(arm.ablation_id for arm in expected_arms)
     actual_ids = tuple(arm.ablation_id for arm in arms)
     if actual_ids != expected_ids:
         raise FullAblationSpecError(
-            "current-256D screen must contain its exact seven approved arms"
+            f"{screen_name} must contain its exact approved arms"
         )
     if "P2-256-F0" in actual_ids or any("F0" in value for value in actual_ids):
         raise FullAblationSpecError(
-            "current-256D screen must not include an FP32 F0 arm"
+            f"{screen_name} must not include an FP32 F0 arm"
         )
     if str(receiver_id) != "3-19":
         raise FullAblationSpecError(
-            "current-256D screen is fixed to receiver 3-19"
+            f"{screen_name} is fixed to receiver 3-19"
         )
     if (int(k_shot), int(new_class_count)) != (10, 5):
         raise FullAblationSpecError(
-            "current-256D screen is fixed to K10/new5"
+            f"{screen_name} is fixed to K10/new5"
         )
     seed_bundle.validate(require_fresh_stage2=True)
     draw = int(class_draw_seed)
     if draw <= 0 or draw in OBSERVED_STAGE2_SEEDS:
-        raise FullAblationSpecError("current-256D draw seed is not fresh")
+        raise FullAblationSpecError(f"{screen_name} draw seed is not fresh")
     seed_values = tuple(int(value) for value in asdict(seed_bundle).values())
     if draw in seed_values:
         raise FullAblationSpecError(
-            "current-256D draw seed must differ from all row seeds"
+            f"{screen_name} draw seed must differ from all row seeds"
         )
     concrete_commit = _require_git_commit(git_commit)
     rows: list[dict[str, Any]] = []
@@ -702,6 +805,31 @@ def build_phase2_e0_256_screen_rows(
         )
     validate_plan_rows(rows)
     return rows
+
+
+def build_phase2_e0_256_joint_screen_rows(
+    *,
+    arms: Sequence[ArmSpec],
+    seed_bundle: SeedBundle,
+    class_draw_seed: int,
+    receiver_id: str,
+    k_shot: int,
+    new_class_count: int,
+    git_commit: str,
+) -> list[dict[str, Any]]:
+    """Build the fixed twelve-arm B0×C3×geometry interaction screen."""
+
+    return build_phase2_e0_256_screen_rows(
+        arms=arms,
+        seed_bundle=seed_bundle,
+        class_draw_seed=class_draw_seed,
+        receiver_id=receiver_id,
+        k_shot=k_shot,
+        new_class_count=new_class_count,
+        git_commit=git_commit,
+        expected_arms=PHASE2_E0_256_JOINT_ABLATION_ARMS,
+        screen_name="current-256D joint screen",
+    )
 
 
 def build_phase2_state_rows(
@@ -962,6 +1090,7 @@ __all__ = [
     "PHASE1_T1_ARMS",
     "PHASE2_T1_ARMS",
     "PHASE2_E0_256_ABLATION_ARMS",
+    "PHASE2_E0_256_JOINT_ABLATION_ARMS",
     "PHASE2_STATE_T1_ARMS",
     "PROTOCOL_SCHEMA",
     "REQUIRED_RUN_ARTIFACT_FIELDS",
@@ -975,6 +1104,7 @@ __all__ = [
     "build_phase1_label_rows",
     "build_phase2_rows",
     "build_phase2_e0_256_screen_rows",
+    "build_phase2_e0_256_joint_screen_rows",
     "build_phase2_state_rows",
     "bind_stage2_row",
     "stage2_physical_execution_key",

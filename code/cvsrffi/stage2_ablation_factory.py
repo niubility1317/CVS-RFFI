@@ -66,7 +66,7 @@ def _spec(
     stage: str,
     table: str,
     factor: str,
-    diff: str | None,
+    diff: str | tuple[str, ...] | None,
     reference_id: str = "P2-FULL",
     alias_of: str | None = None,
 ) -> Stage2ArmSpec:
@@ -77,7 +77,13 @@ def _spec(
         grade="M",
         factor=factor,
         reference_id=reference_id,
-        declared_diff=() if diff is None else (diff,),
+        declared_diff=(
+            ()
+            if diff is None
+            else (diff,)
+            if isinstance(diff, str)
+            else tuple(str(key) for key in diff)
+        ),
         alias_of=alias_of,
     )
 
@@ -190,9 +196,74 @@ STAGE2_E0_256_ABLATION_ARMS: tuple[Stage2ArmSpec, ...] = (
     ),
 )
 
+
+# The joint screen is not a literal four-boolean factorial: D0 and D2 are
+# mutually exclusive geometry control paths.  It therefore crosses the two
+# binary B0/C3 controls with geometry={FULL,D0,D2}, adding only the seven
+# non-redundant multi-factor configurations to the five existing controls.
+STAGE2_E0_256_INTERACTION_ARMS: tuple[Stage2ArmSpec, ...] = (
+    _spec(
+        "P2-256-J-B0-C3",
+        stage="stage2c",
+        table="e0_256_joint_screen",
+        factor="joint_center_task_covariance",
+        diff=("center_profile", "covariance_profile"),
+        reference_id="P2-256-FULL",
+    ),
+    _spec(
+        "P2-256-J-B0-D0",
+        stage="stage2c",
+        table="e0_256_joint_screen",
+        factor="joint_center_full_geometry",
+        diff=("center_profile", "geometry_profile"),
+        reference_id="P2-256-FULL",
+    ),
+    _spec(
+        "P2-256-J-B0-D2",
+        stage="stage2c",
+        table="e0_256_joint_screen",
+        factor="joint_center_fixed_half_geometry",
+        diff=("center_profile", "geometry_profile"),
+        reference_id="P2-256-FULL",
+    ),
+    _spec(
+        "P2-256-J-C3-D0",
+        stage="stage2c",
+        table="e0_256_joint_screen",
+        factor="joint_task_covariance_full_geometry",
+        diff=("covariance_profile", "geometry_profile"),
+        reference_id="P2-256-FULL",
+    ),
+    _spec(
+        "P2-256-J-C3-D2",
+        stage="stage2c",
+        table="e0_256_joint_screen",
+        factor="joint_task_covariance_fixed_half_geometry",
+        diff=("covariance_profile", "geometry_profile"),
+        reference_id="P2-256-FULL",
+    ),
+    _spec(
+        "P2-256-J-B0-C3-D0",
+        stage="stage2c",
+        table="e0_256_joint_screen",
+        factor="joint_center_task_covariance_full_geometry",
+        diff=("center_profile", "covariance_profile", "geometry_profile"),
+        reference_id="P2-256-FULL",
+    ),
+    _spec(
+        "P2-256-J-B0-C3-D2",
+        stage="stage2c",
+        table="e0_256_joint_screen",
+        factor="joint_center_task_covariance_fixed_half_geometry",
+        diff=("center_profile", "covariance_profile", "geometry_profile"),
+        reference_id="P2-256-FULL",
+    ),
+)
+
 STAGE2_ALL_ARMS: tuple[Stage2ArmSpec, ...] = (
     *STAGE2_T1_ARMS,
     *STAGE2_E0_256_ABLATION_ARMS,
+    *STAGE2_E0_256_INTERACTION_ARMS,
 )
 
 
@@ -249,6 +320,43 @@ _OVERRIDES: dict[str, dict[str, Any]] = {
     },
     "P2-256-D2": {
         "feature_profile": "identity160_fft96_beta4_blocknorm_globalnorm",
+        "geometry_profile": "full_block_fixed_half",
+    },
+    "P2-256-J-B0-C3": {
+        "feature_profile": "identity160_fft96_beta4_blocknorm_globalnorm",
+        "center_profile": "support_plain_mean_no_ground_spectrum",
+        "covariance_profile": "d81_all_classes_equal_ledoit_wolf",
+    },
+    "P2-256-J-B0-D0": {
+        "feature_profile": "identity160_fft96_beta4_blocknorm_globalnorm",
+        "center_profile": "support_plain_mean_no_ground_spectrum",
+        "geometry_profile": "full_only",
+    },
+    "P2-256-J-B0-D2": {
+        "feature_profile": "identity160_fft96_beta4_blocknorm_globalnorm",
+        "center_profile": "support_plain_mean_no_ground_spectrum",
+        "geometry_profile": "full_block_fixed_half",
+    },
+    "P2-256-J-C3-D0": {
+        "feature_profile": "identity160_fft96_beta4_blocknorm_globalnorm",
+        "covariance_profile": "d81_all_classes_equal_ledoit_wolf",
+        "geometry_profile": "full_only",
+    },
+    "P2-256-J-C3-D2": {
+        "feature_profile": "identity160_fft96_beta4_blocknorm_globalnorm",
+        "covariance_profile": "d81_all_classes_equal_ledoit_wolf",
+        "geometry_profile": "full_block_fixed_half",
+    },
+    "P2-256-J-B0-C3-D0": {
+        "feature_profile": "identity160_fft96_beta4_blocknorm_globalnorm",
+        "center_profile": "support_plain_mean_no_ground_spectrum",
+        "covariance_profile": "d81_all_classes_equal_ledoit_wolf",
+        "geometry_profile": "full_only",
+    },
+    "P2-256-J-B0-C3-D2": {
+        "feature_profile": "identity160_fft96_beta4_blocknorm_globalnorm",
+        "center_profile": "support_plain_mean_no_ground_spectrum",
+        "covariance_profile": "d81_all_classes_equal_ledoit_wolf",
         "geometry_profile": "full_block_fixed_half",
     },
 }
@@ -382,6 +490,10 @@ def validate_stage2_catalog() -> None:
         raise Stage2AblationConfigError(
             "Stage2 current-256D catalog must contain 7 logical arms"
         )
+    if len(STAGE2_E0_256_INTERACTION_ARMS) != 7:
+        raise Stage2AblationConfigError(
+            "Stage2 current-256D joint catalog must contain 7 added arms"
+        )
     if set(ids) != set(_OVERRIDES):
         raise Stage2AblationConfigError("Stage2 specs and overrides do not cover the same IDs")
 
@@ -405,10 +517,19 @@ def validate_stage2_catalog() -> None:
                     f"{spec.ablation_id} alias hash differs from {spec.alias_of}"
                 )
             continue
-        if diff_keys != spec.declared_diff or len(diff_keys) != 1:
+        if diff_keys != spec.declared_diff:
             raise Stage2AblationConfigError(
                 f"{spec.ablation_id} resolved diff {diff_keys!r} does not match "
-                f"declared single diff {spec.declared_diff!r}"
+                f"declared diff {spec.declared_diff!r}"
+            )
+        if spec.table == "e0_256_joint_screen":
+            if len(diff_keys) not in {2, 3}:
+                raise Stage2AblationConfigError(
+                    f"{spec.ablation_id} must declare 2 or 3 joint diffs"
+                )
+        elif len(diff_keys) != 1:
+            raise Stage2AblationConfigError(
+                f"{spec.ablation_id} must declare exactly one diff"
             )
 
     fit_parameters = inspect.signature(Stage2AblationMethod.fit).parameters
@@ -425,6 +546,7 @@ __all__ = [
     "STAGE2_ALL_ARMS",
     "STAGE2_BASELINE_ARMS",
     "STAGE2_E0_256_ABLATION_ARMS",
+    "STAGE2_E0_256_INTERACTION_ARMS",
     "STAGE2_MAIN_ARMS",
     "STAGE2_STATE_ARMS",
     "STAGE2_T1_ARMS",

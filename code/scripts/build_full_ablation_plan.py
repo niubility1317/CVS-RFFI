@@ -17,6 +17,7 @@ from cvsrffi.full_ablation_spec import (
     DESIGN_ID,
     PHASE1_T1_ARMS,
     PHASE2_E0_256_ABLATION_ARMS,
+    PHASE2_E0_256_JOINT_ABLATION_ARMS,
     PHASE2_STATE_T1_ARMS,
     PHASE2_T1_ARMS,
     ArmSpec,
@@ -24,6 +25,7 @@ from cvsrffi.full_ablation_spec import (
     SeedBundle,
     build_phase1_label_rows,
     build_phase1_t1_rows,
+    build_phase2_e0_256_joint_screen_rows,
     build_phase2_e0_256_screen_rows,
     build_phase2_rows,
     build_phase2_state_rows,
@@ -186,11 +188,19 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
         phase2_matrix = str(
             getattr(args, "phase2_matrix", "stage2c")
         ).strip()
-        if phase2_matrix not in {"stage2c", "states", "e0_256_screen"}:
+        if phase2_matrix not in {
+            "stage2c",
+            "states",
+            "e0_256_screen",
+            "e0_256_joint_screen",
+        }:
             raise FullAblationSpecError("unknown Phase2 matrix")
-        if phase2_matrix == "e0_256_screen" and args.stage != "screening":
+        if phase2_matrix in {
+            "e0_256_screen",
+            "e0_256_joint_screen",
+        } and args.stage != "screening":
             raise FullAblationSpecError(
-                "current-256D screen is a screening-only matrix"
+                "current-256D screens are screening-only matrices"
             )
         registry_stage = (
             "confirmation" if phase2_matrix == "states" else args.stage
@@ -204,10 +214,15 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
                 seed_bundles=bundles,
                 git_commit=args.git_commit,
             )
-        elif phase2_matrix == "e0_256_screen":
+        elif phase2_matrix in {"e0_256_screen", "e0_256_joint_screen"}:
+            joint_screen = phase2_matrix == "e0_256_joint_screen"
             selected = _select_arms(
                 args.arms,
-                PHASE2_E0_256_ABLATION_ARMS,
+                (
+                    PHASE2_E0_256_JOINT_ABLATION_ARMS
+                    if joint_screen
+                    else PHASE2_E0_256_ABLATION_ARMS
+                ),
             )
             method_seed = int(getattr(args, "method_seed", 7282101))
             selected_bundles = [
@@ -231,7 +246,12 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
                     "current-256D screen draw seed is not in the registry"
                 )
             bundles = selected_bundles
-            rows = build_phase2_e0_256_screen_rows(
+            row_builder = (
+                build_phase2_e0_256_joint_screen_rows
+                if joint_screen
+                else build_phase2_e0_256_screen_rows
+            )
+            rows = row_builder(
                 arms=selected,
                 seed_bundle=bundles[0],
                 class_draw_seed=draw_seed,
@@ -329,11 +349,17 @@ def _parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--phase2-matrix",
-        choices=("stage2c", "states", "e0_256_screen"),
+        choices=(
+            "stage2c",
+            "states",
+            "e0_256_screen",
+            "e0_256_joint_screen",
+        ),
         default="stage2c",
         help=(
             "Phase2 only: Stage2-C registration rows, independent Stage2-A/B "
-            "state tables, or the approved current-256D same-row screen."
+            "state tables, the approved current-256D same-row screen, or its "
+            "B0×C3×geometry interaction screen."
         ),
     )
     parser.add_argument(
@@ -341,7 +367,8 @@ def _parser() -> argparse.ArgumentParser:
         default="t1",
         help=(
             "Phase2 only: t1 or comma-separated registered arm IDs. "
-            "For e0_256_screen, t1 means its exact approved seven arms."
+            "For e0_256_screen and e0_256_joint_screen, t1 means the exact "
+            "approved arm surface."
         ),
     )
     parser.add_argument("--git-commit", required=True)

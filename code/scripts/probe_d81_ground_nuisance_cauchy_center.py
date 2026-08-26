@@ -198,8 +198,9 @@ def build_d81_fit(
     ground_audit: dict[str, Any],
     *,
     allow_fp32_centering_argmax_drift: bool = False,
+    apply_ground_center: bool = True,
 ) -> tuple[Callable[..., Any], list[dict[str, Any]], list[dict[str, Any]]]:
-    """Inject center translation before all D62 full/block OOF closures."""
+    """Optionally inject center translation before D62 full/block OOF closures."""
 
     aliases = (
         d62.d43,
@@ -217,25 +218,29 @@ def build_d81_fit(
         else {}
     )
     transform_records: list[dict[str, Any]] = []
-    basis_audit = {
-        "basis_sha256": ground_audit["d81_basis_sha256"],
-        "spectral_weight_sha256": ground_audit[
-            "d81_spectral_weight_sha256"
-        ],
-        "participation_ratio_effective_rank": ground_audit[
-            "d81_participation_ratio_effective_rank"
-        ],
-        "retained_rank": ground_audit["d81_retained_rank"],
-        "rank_policy": ground_audit["d81_rank_policy"],
-    }
-    full_fit = core.build_robust_center_component_fit(
-        original_fit,
-        basis,
-        spectral_weights,
-        basis_audit,
-        "full",
-        transform_records,
-    )
+    if apply_ground_center:
+        basis_audit = {
+            "basis_sha256": ground_audit["d81_basis_sha256"],
+            "spectral_weight_sha256": ground_audit[
+                "d81_spectral_weight_sha256"
+            ],
+            "participation_ratio_effective_rank": ground_audit[
+                "d81_participation_ratio_effective_rank"
+            ],
+            "retained_rank": ground_audit["d81_retained_rank"],
+            "rank_policy": ground_audit["d81_rank_policy"],
+        }
+        full_fit = core.build_robust_center_component_fit(
+            original_fit,
+            basis,
+            spectral_weights,
+            basis_audit,
+            "full",
+            transform_records,
+        )
+    else:
+        basis_audit = {}
+        full_fit = original_fit
 
     def structured_builder(
         d42_arg: Any,
@@ -250,6 +255,8 @@ def build_d81_fit(
             arm,
             **centering_kwargs,
         )
+        if not apply_ground_center:
+            return base
         return core.build_robust_center_component_fit(
             base,
             basis,
@@ -269,6 +276,44 @@ def build_d81_fit(
         d42._fit_equal_prior_lda = original_fit
         d43.build_structured_fit = original_builder
 
+    center_audit = (
+        {
+            "d81_ground_int8_component_used": True,
+            "d81_ground_component_input_count": int(
+                ground_audit["ground_component_input_count"]
+            ),
+            "d81_ground_component_update_access": False,
+            "d81_ground_statistic_semantics": ground_audit[
+                "ground_statistic_semantics"
+            ],
+            "d81_ground_bundle_contains_sample_radius": False,
+            "d81_ground_bundle_contains_sample_count": False,
+            "d81_ground_effective_rank": ground_audit[
+                "d81_participation_ratio_effective_rank"
+            ],
+            "d81_ground_retained_rank": int(
+                ground_audit["d81_retained_rank"]
+            ),
+            "d81_ground_rank_policy": ground_audit["d81_rank_policy"],
+            "d81_all_full_block_outer_held_fits_transformed": True,
+            "d81_target_covariance_preserved_by_class_translation": True,
+        }
+        if apply_ground_center
+        else {
+            "d81_ground_int8_component_used": False,
+            "d81_ground_component_input_count": 0,
+            "d81_ground_component_update_access": False,
+            "d81_ground_statistic_semantics": "not_used",
+            "d81_ground_bundle_contains_sample_radius": False,
+            "d81_ground_bundle_contains_sample_count": False,
+            "d81_ground_effective_rank": 0.0,
+            "d81_ground_retained_rank": 0,
+            "d81_ground_rank_policy": "not_used",
+            "d81_all_full_block_outer_held_fits_transformed": False,
+            "d81_target_covariance_preserved_by_class_translation": False,
+        }
+    )
+
     def fit(
         rows: np.ndarray,
         labels: np.ndarray,
@@ -284,25 +329,7 @@ def build_d81_fit(
                 "d81_probe_arm": ARM,
                 "d81_structure": STRUCTURE,
                 "d81_formula": FORMULA,
-                "d81_ground_int8_component_used": True,
-                "d81_ground_component_input_count": int(
-                    ground_audit["ground_component_input_count"]
-                ),
-                "d81_ground_component_update_access": False,
-                "d81_ground_statistic_semantics": ground_audit[
-                    "ground_statistic_semantics"
-                ],
-                "d81_ground_bundle_contains_sample_radius": False,
-                "d81_ground_bundle_contains_sample_count": False,
-                "d81_ground_effective_rank": ground_audit[
-                    "d81_participation_ratio_effective_rank"
-                ],
-                "d81_ground_retained_rank": int(
-                    ground_audit["d81_retained_rank"]
-                ),
-                "d81_ground_rank_policy": ground_audit["d81_rank_policy"],
-                "d81_all_full_block_outer_held_fits_transformed": True,
-                "d81_target_covariance_preserved_by_class_translation": True,
+                **center_audit,
                 "d81_query_metric_source": "target_support_only_d62",
                 "d81_old_new_role_specific_branch": False,
                 "d81_class_id_specific_formula": False,
