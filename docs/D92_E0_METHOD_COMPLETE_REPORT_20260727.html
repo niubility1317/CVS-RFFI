@@ -450,7 +450,7 @@
     <section id="m34">
       <p class="eyebrow" style="color:#41b88f">模块三、四</p>
       <h2>不只记住中心，还要看一团点怎样展开</h2>
-      <p>类别中心只能回答“这类大约在哪里”。协方差回答“这类点云朝哪些方向拉长、哪些维度一起变化”。少样本下，经验协方差很不稳定，所以先自动收缩，再平衡旧类与新类任务。</p>
+      <p>类别中心只能回答“这类大约在哪里”。协方差回答“这类点云朝哪些方向拉长、哪些维度一起变化”。实际顺序是：每个类别只用自己的support计算自动收缩协方差；旧类和新类再各自做类别等权平均；最后才让两个任务各占50%。</p>
 
       <figure class="viz">
         <svg viewBox="0 0 1160 355" role="img" aria-label="球形收缩协方差和旧新任务平衡的可视化图">
@@ -490,13 +490,19 @@
 
       <div class="formula">
         \[
-        \widehat\mu_{c,i}=\frac1K\sum_{k=1}^{K}\widetilde z_{c,k,i},
+        \boldsymbol\Delta_c=
+        \begin{bmatrix}\boldsymbol\delta_c\\\mathbf0_{96}\end{bmatrix},
         \qquad
-        \Sigma_{ij}=\operatorname{Cov}(Z_i,Z_j)=
-        \mathbb E[(Z_i-\mu_i)(Z_j-\mu_j)].
+        \boldsymbol\mu_c=
+        \begin{bmatrix}\mathbf m_c^{\mathrm{rob}}\\\bar{\mathbf z}^{\mathrm{fft}}_c\end{bmatrix},
+        \qquad
+        \mathbf r_{c,k}=
+        (\mathbf z_{c,k}+\boldsymbol\Delta_c)
+        -(\bar{\mathbf z}_c+\boldsymbol\Delta_c)
+        =\mathbf z_{c,k}-\bar{\mathbf z}_c.
         \]
       </div>
-      <div class="formula-note"><strong>符号说明：</strong>\(Z_i,Z_j\)是随机联合特征的第\(i,j\)个坐标；\(\mu_i,\mu_j\)是这些坐标在类别抽样分布上的均值；\(\widetilde z_{c,k,i}\)是第\(k\)条类别\(c\) support的第\(i\)个坐标；\(\widehat\mu_{c,i}\)是K条support的均值估计。均值不是某一条向量的单个元素。</div>
+      <div class="formula-note"><strong>符号说明：</strong>\(\boldsymbol\delta_c\)是模块二算出的160维身份块平移；\(\boldsymbol\Delta_c\)把它补成256维，后96维固定为0；\(\mathbf m_c^{\mathrm{rob}}\)只占\(\boldsymbol\mu_c\)的前160维，后96维是当前类频谱块均值；\(\mathbf r_{c,k}\)是第\(k\)条support相对本类中心的残差。相同平移在两边相消，所以新类协方差不使用旧类稳健中心。</div>
 
       <div class="formula">
         \[
@@ -505,10 +511,10 @@
         \zeta_c=\frac{\operatorname{tr}(\mathbf S_c^{(u)})}{256},
         \qquad
         \widehat{\boldsymbol\Sigma}^{(u)}_c=
-        (1-\alpha_c)\mathbf S_c^{(u)}+\alpha_c\mathbf T_c.
+        (1-\lambda_c)\mathbf S_c^{(u)}+\lambda_c\mathbf T_c.
         \]
       </div>
-      <div class="formula-note"><strong>符号说明：</strong>\(\mathbf S_c^{(u)}\)是类别\(c\)在标准化空间的经验协方差；\(\operatorname{tr}\)是对角线元素之和；\(\zeta_c\)是平均方差；\(\mathbf I_{256}\)是256维单位矩阵；\(\mathbf T_c\)是球形目标；\(\alpha_c\in[0,1]\)是Ledoit–Wolf自动决定的收缩强度。</div>
+      <div class="formula-note"><strong>符号说明：</strong>\(\mathbf S_c^{(u)}\)是类别\(c\)自己的标准化support残差协方差；\(\operatorname{tr}\)是对角线元素之和；\(\zeta_c\)是平均方差；\(\mathbf I_{256}\)是256维单位矩阵；\(\mathbf T_c\)是球形目标；\(\lambda_c\in[0,1]\)由该类support的抽样波动自动计算，不由query、旧类中心或人工网格搜索给出。</div>
 
       <div class="formula">
         \[
@@ -611,28 +617,35 @@
         \[
         \ell_{c,h}^{\mathrm{LOO}}=
         -\frac1K\sum_{t=1}^{K}
-        \log\frac{\exp(s_{c,t,c}^{(h)}/r_h)}
-        {\sum_{j=1}^{C}\exp(s_{c,t,j}^{(h)}/r_h)},
+        \log\frac{\exp(s_{c,t,c}^{(h)}/r_{t,h})}
+        {\sum_{j=1}^{C}\exp(s_{c,t,j}^{(h)}/r_{t,h})},
         \qquad
         \eta_{c,h}=
         \frac{\exp(-K\ell_{c,h}^{\mathrm{LOO}})}
         {\sum_{h'}\exp(-K\ell_{c,h'}^{\mathrm{LOO}})}.
         \]
       </div>
-      <div class="formula-note"><strong>符号说明：</strong>\(c\)是类别索引；\(h\)表示full或block；\(t\)表示第\(t\)折留一；\(s_{c,t,j}^{(h)}\)是held样本对候选类别\(j\)的logit；\(r_h\)是分支分数尺度；\(\ell_{c,h}^{\mathrm{LOO}}\)是平均留一交叉熵；\(\eta_{c,h}\)是该类别给该分支的可靠性权重；\(h'\)在分母遍历两个分支。</div>
+      <div class="formula-note"><strong>符号说明：</strong>\(c\)是类别索引；\(h\)表示full或block；\(t\)表示第\(t\)折留一；\(s_{c,t,j}^{(h)}\)是第\(t\)折重新拟合后，held样本对候选类别\(j\)的logit；\(r_{t,h}\)只由该折训练support的“每行减类别均值”RMS计算；\(\ell_{c,h}^{\mathrm{LOO}}\)是平均留一交叉熵；\(\eta_{c,h}\)是该类别给该分支的可靠性权重；\(h'\)在分母遍历两个分支。最终融合另用全体support计算\(r_h^{\mathrm{final}}\)，不与折内尺度混用。</div>
 
       <div class="formula">
         \[
+        s_{c,g}^{(1)}=
+        \begin{cases}
+        \operatorname{float16}\!\left(\max_{j\in B_g}|w_{c,j}^{(0)}|/127\right),&
+        \max_{j\in B_g}|w_{c,j}^{(0)}|>0,\\
+        1,&\text{整组为0},
+        \end{cases}
+        \qquad
         q_{c,j}^{(1)}=
         \operatorname{clip}\!\left(
-        \operatorname{round}\!\left(\frac{w_{c,j}}{s_{c,g(j)}^{(1)}}\right),-127,127\right),
+        \operatorname{round}\!\left(\frac{w_{c,j}^{(0)}}{s_{c,g(j)}^{(1)}}\right),-127,127\right),
         \qquad
         \widehat w_{c,j}=
         s_{c,g(j)}^{(1)}q_{c,j}^{(1)}
         +s_{c,g(j)}^{(2)}q_{c,j}^{(2)}.
         \]
       </div>
-      <div class="formula-note"><strong>符号说明：</strong>\(w_{c,j}\)是类别\(c\)第\(j\)维浮点权重；\(g(j)\)返回量化组；\(s^{(1)},s^{(2)}\)是两层正尺度；\(q^{(1)},q^{(2)}\)是两层INT8码；\(\operatorname{round}\)表示舍入；\(\operatorname{clip}\)限制整数范围；\(\widehat w_{c,j}\)是最终解码权重。量化压缩存储，不自动证明整数运算更快。</div>
+      <div class="formula-note"><strong>符号说明：</strong>\(B_g\)是冻结的第\(g\)个坐标组；第一层尺度来自该组权重绝对值的最大值；\(w_{c,j}^{(0)}\)是模块五输出的浮点权重；\(g(j)\)返回量化组；\(s^{(1)},s^{(2)}\)是两层按“类别×组”保存的FP16正尺度；\(q^{(1)},q^{(2)}\)是两层INT8码；\(\operatorname{round}\)表示舍入；\(\operatorname{clip}\)限制整数范围；\(\widehat w_{c,j}\)是临时解码出的FP32权重。量化压缩存储，不自动证明整数运算更快。</div>
     </section>
 
     <section id="resource">

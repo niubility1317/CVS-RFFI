@@ -1,6 +1,6 @@
 # D92 E0完整技术报告：identity160＋FFT96的256维注册方法
 
-版本：2026-08-24
+版本：2026-08-26
 
 报告对象：D92 E0的P2-A1冻结配置
 
@@ -11,7 +11,7 @@
 
 ## 摘要
 
-D92 E0把一条固定received IQ映射为256维联合特征：其中160维来自冻结身份编码器，96维来自确定性频谱描述。注册阶段只读取Phase1封存bundle、当前目标域带标签support和冻结配置；不读取source样本，不用query真值、query角色或整批query类别数量更新状态。方法先从封存的域×类聚合知识中提取“常见跨域漂移方向”，再用该方向集合降低异常support对类中心的影响；随后为旧类任务和新类任务分别估计收缩协方差，以固定50%∶50%的任务权重形成共享判别几何；它同时保留完整协方差与两块对角协方差，并以support内留一结果逐类融合；最后把全部类别的判别行编译为双层INT8系数、尺度和截距，得到可冻结的单一预测状态。
+D92 E0把一条固定received IQ映射为256维联合特征：其中160维来自冻结身份编码器，96维来自确定性频谱描述。注册阶段只读取Phase1封存bundle、当前目标域带标签support和冻结配置；不读取source样本，不用query真值、query角色或整批query类别数量更新状态。方法先从封存的域×类聚合知识中提取“常见跨域漂移方向”，再用该方向集合降低异常support对类中心的影响；随后每个旧类、新类各自仅用本类support计算自动收缩协方差，再在旧、新任务内等先验平均，并以固定50%∶50%的任务权重形成共享判别几何；它同时保留完整协方差与两块对角协方差，并以support内留一结果逐类融合；最后把全部类别的判别行编译为双层INT8系数、尺度和截距，得到可冻结的单一预测状态。
 
 这是一种完整的support-only注册方法，不是训练期域适应算法的补丁，也不是逐query近邻检索器。它确实利用Phase1的跨域知识给support中心估计提供方向先验，但不会对目标域编码器做梯度更新、对抗对齐或分布匹配。因此，它的作用应表述为“注册期的域扰动感知稳健化”，不能表述为已经启动了训练式域对齐。
 
@@ -82,7 +82,7 @@ $$
   ↓
 模块二：Phase1扰动基→稳健类别中心
   ↓
-模块三：每类自动收缩协方差
+模块三：类内残差→逐类自动收缩→旧/新任务汇总
   ↓
 模块四：旧/新任务均衡→等先验LDA行
   ↓
@@ -108,12 +108,33 @@ $$
 |\(\mathbf U\)|\(160\times r\)|Phase1聚合知识派生的扰动基|
 |\(\boldsymbol\rho\)|\(r\)维|扰动方向的归一化谱权重|
 |\(\boldsymbol\mu_c\)|256维|类别\(c\)的稳健化support均值|
-|\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)|\(256\times256\)|类别\(c\)的自动收缩协方差|
-|\(\boldsymbol\Sigma_{\mathrm o},\boldsymbol\Sigma_{\mathrm n}\)|\(256\times256\)|旧类任务、新类任务协方差|
+|\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)|\(256\times256\)|注册期仅由类别\(c\)的support计算的自动收缩协方差；随后只作为任务均值的输入，不作为逐类query判别头|
+|\(\boldsymbol\Sigma_{\mathrm o},\boldsymbol\Sigma_{\mathrm n}\)|\(256\times256\)|旧任务、新任务内各类别\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)的等先验平均|
 |\(\boldsymbol\Sigma_{\mathrm{bal}}\)|\(256\times256\)|固定任务均衡协方差|
 |\(\mathbf w_c,b_c\)|256维、标量|类别\(c\)的仿射判别行与截距|
 |\(\eta_{c,h}\)|\([0,1]\)|类别\(c\)对几何分支\(h\)的可靠性权重|
 |\(\mathbf Q^{(1)},\mathbf Q^{(2)}\)|INT8矩阵|两层量化判别系数|
+
+### 3.1先用四个问题读公式
+
+这份报告的公式很多，但每一个量都可以先问四个问题：它的**输入从哪里来**、**怎样算**、**形状是多少**、**什么时候停止变化**。下面的约定贯穿全文：
+
+|看到的对象|把它理解成什么|典型例子|它从哪里来|
+|---|---|---|---|
+|一条带下标\(k\)的向量|一条具体support或query经过某一步后的结果|\(\mathbf z_{c,k}\)|固定received IQ经模块一得到|
+|带下标\(c\)的向量|一个类别的统计量|\(\boldsymbol\mu_c\)|同类\(K\)条support按公式平均得到|
+|矩阵|多条向量之间或多个坐标之间的关系摘要|\(\boldsymbol\Sigma_g\)|由某一任务内各类别support的类内散布汇总得到|
+|带帽\(\widehat{\phantom x}\)的量|近似恢复值或量化后的近似值|\(\widehat{\mathbf g}_{d,c}\)、\(\widehat{\mathbf w}_c\)|由封存码解码，或由INT8码与尺度解码|
+
+所有参数还可按产生时机分为三类：
+
+|类别|本报告中的量|是否由当前query计算或更新|
+|---|---|---|
+|冻结常量或封存知识|\(\varepsilon=10^{-8}\)、块权重4、\(\mathbf U\)、\(\boldsymbol\rho\)、50%∶50%任务权重|否|
+|注册期数据统计量|\(\boldsymbol\mu_c\)、\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)、\(\boldsymbol\Sigma_g\)、\(\mathbf w_c\)、\(r_{t,h}\)、\(r_h^{\mathrm{final}}\)、\(\eta_{c,h}\)|只由当前注册support计算一次|
+|预测期读取量|INT8码、尺度、截距、类别表|只读；每条query独立使用，不回写状态|
+
+如果一个式子看起来只出现了一条向量，也不要把它误解成“在一条向量内部做统计”。例如协方差、均值和RMS都必须跨多条support或多类分数计算；下标\(k\)、\(c\)、\(d\)分别告诉我们“哪一条样本”“哪个类别”“哪个封存地面域”在参与求和。
 
 ## 4.模块一：从一条IQ得到256维联合特征
 
@@ -146,6 +167,47 @@ $$
 $$
 
 **符号说明：**\(\mathbf f^{\mathrm{fft}}\)是96维频谱描述；它由同一条\(\mathbf x^{\mathrm{recv}}\)确定性计算得到；该计算不重新生成信道观测、不访问clean IQ，也不增加shot数。
+
+#### 4.1.1把一条IQ变成一条联合特征：中间量逐步展开
+
+为避免把“FFT96”误读成额外采样，记冻结的96维频谱描述器为\(\Psi_{96}\)。模块一对同一条IQ只做下面三步：
+
+$$
+\mathbf f^{\mathrm{id}}
+=
+E_\theta(\mathbf x^{\mathrm{recv}}),
+\qquad
+\mathbf f^{\mathrm{fft}}
+=
+\Psi_{96}(\mathbf x^{\mathrm{recv}}),
+$$
+
+$$
+\mathbf u^{\mathrm{id}}
+=
+\mathcal N_\varepsilon(\mathbf f^{\mathrm{id}}),
+\qquad
+\mathbf u^{\mathrm{fft}}
+=
+\mathcal N_\varepsilon(\mathbf f^{\mathrm{fft}}),
+$$
+
+$$
+\mathbf v
+=
+\begin{bmatrix}
+\mathbf u^{\mathrm{id}}\\
+4\mathbf u^{\mathrm{fft}}
+\end{bmatrix},
+\qquad
+\mathbf z
+=
+\mathcal N_\varepsilon(\mathbf v).
+$$
+
+**符号说明：**\(\Psi_{96}\)是冻结配置中的确定性频谱描述器；它的输出只有96个数，不会产生第二条IQ或第二个shot。\(\mathbf u^{\mathrm{id}}\in\mathbb R^{160}\)和\(\mathbf u^{\mathrm{fft}}\in\mathbb R^{96}\)是各自完成一次归一化后的块；\(\mathbf v\in\mathbb R^{256}\)是尚未整体归一化的拼接向量；\(\mathbf z\in\mathbb R^{256}\)是最终输出。常数4不是由某条IQ、某个类别或query算出来的参数，而是方法冻结前确定的块级几何权重；注册和预测时都不重新搜索或学习它。
+
+这三步可用一句话记忆：**同一条IQ先得到两份不同角度的描述，再让两份描述在同一个256维坐标系里按固定比例合并。**后续模块看到的只是\(\mathbf z\)，不会再回头改变\(E_\theta\)、\(\Psi_{96}\)或4。
 
 ### 4.2带保护的\(L_2\)归一化
 
@@ -222,6 +284,16 @@ $$
 |Phase1 bundle|类无关扰动方向和方向权重|当前target类别中心、query分数、可训练源数据|
 |当前target support|普通中心、残差、Cauchy权重、稳健中心|对Phase1 bundle的更新|
 
+按计算顺序看，模块二只有两段职责，不应混为“用地面原型分类”：
+
+|段落|输入|计算|输出|
+|---|---|---|---|
+|离线封存知识读取|INT8码、FP16尺度、低秩基／系数、P90半径|恢复域×类聚合中心，构造\(\mathbf G\)，扣除重构误差基线并作特征分解|冻结的\(\mathbf U,\boldsymbol\rho\)|
+|当前类别注册|该类别自己的\(K\)条身份块support和\(\mathbf U,\boldsymbol\rho\)|投影→扰动能量→Cauchy权重→加权中心|160维\(\mathbf m_c^{\mathrm{rob}}\)及平移\(\boldsymbol\delta_c\)|
+|联合特征输出|每条256维\(\mathbf z_{c,k}\)和\(\boldsymbol\delta_c\)|在前160维加平移、后96维加零|256维\(\widetilde{\mathbf z}_{c,k}\)|
+
+第一段只给出“常见漂移方向”，第二段只由当前类别support决定“本类中心放在哪里”。所以即使类别\(c\)是新类，它也可以使用同一套\(\mathbf U,\boldsymbol\rho\)，但不会继承任何旧类的聚合中心坐标。
+
 ### 5.2Phase1 bundle的构成
 
 当前报告对应的封存知识组件为int8_domain_class_center_lowrank_residual_radius_v2。它在Phase1离线阶段将域×类的160维聚合中心压缩保存；注册期只读取以下聚合层信息：
@@ -234,6 +306,75 @@ $$
 |重构RMSE|离线压缩对完整聚合中心的平均误差摘要|定义有效重构误差基线\(\sigma_{\mathrm q}^2\)|
 
 这里的聚合中心不是Phase2可访问的source样本，也不是模块三中用来估计类内协方差的support行。它们在构造扰动基后不进入query预测状态。
+
+#### 5.2.1封存码、尺度和低秩项怎样还原\(\widehat{\mathbf g}_{d,c}\)
+
+“压缩中心”不是一个不可解释的黑盒。Phase1先选定一个中心域\(d_0\)，以它的每类160维聚合中心作为core；其余域相对core的残差，对每个类别作固定秩\(r_0=3\)的低秩分解。所有浮点向量再按各自最后一维的最大绝对值做对称INT8量化。对任意需要保存的向量\(\mathbf v\)，其量化规则是
+
+$$
+s(\mathbf v)
+=
+\operatorname{float16}\!\left(
+\frac{\max_i|v_i|}{127}
+\right),
+\qquad
+q_i(\mathbf v)
+=
+\operatorname{rint}\!\left(
+\operatorname{clip}\!\left(
+\frac{v_i}{s(\mathbf v)},-127,127
+\right)
+\right),
+\qquad
+\widehat v_i=s(\mathbf v)q_i(\mathbf v).
+$$
+
+**符号说明：**\(v_i\)是待压缩向量的第\(i\)个浮点元素；\(s(\mathbf v)\)是与这条向量一起保存的FP16正尺度；\(q_i(\mathbf v)\in\{-127,\ldots,127\}\)是INT8码；\(\operatorname{rint}\)按冻结实现取最近整数；\(\operatorname{clip}\)防止码超出可表示范围；\(\widehat v_i\)是由码和尺度解出的近似元素。若整条向量全为0，冻结实现保存单位尺度和全零码，避免除零。这个量化在Phase1离线发生；Phase2只读\(q\)和\(s\)，不重新估计它们。
+
+对中心域\(d_0\)，第\(c\)类第\(i\)个坐标的恢复式为
+
+$$
+\widehat g_{d_0,c,i}
+=
+s^{\mathrm{core}}_c q^{\mathrm{core}}_{c,i}.
+$$
+
+对任何非中心域\(d\ne d_0\)，先解出该类第\(\ell\)条低秩基向量和该域的系数：
+
+$$
+\widehat b_{c,\ell,i}
+=
+s^{\mathrm{basis}}_{c,\ell}q^{\mathrm{basis}}_{c,\ell,i},
+\qquad
+\widehat a_{d,c,\ell}
+=
+s^{\mathrm{coef}}_{d,c,\ell}q^{\mathrm{coef}}_{d,c,\ell},
+\qquad
+\ell=1,\ldots,r_0,
+$$
+
+再把三条低秩方向加回core：
+
+$$
+\widehat g_{d,c,i}
+=
+\widehat g_{d_0,c,i}
+\mathbin{+}
+\sum_{\ell=1}^{r_0}
+\widehat a_{d,c,\ell}\widehat b_{c,\ell,i}.
+$$
+
+**符号说明：**\(q^{\mathrm{core}}\)和\(s^{\mathrm{core}}\)是中心域每类core的INT8码和FP16尺度；\(q^{\mathrm{basis}}\)、\(s^{\mathrm{basis}}\)存储每类的3条160维残差方向；\(q^{\mathrm{coef}}\)、\(s^{\mathrm{coef}}\)存储每个非中心域在这3条方向上的系数。\(\widehat b_{c,\ell,i}\)是第\(\ell\)条恢复基在第\(i\)个身份坐标上的值；\(\widehat a_{d,c,\ell}\)是无量纲系数；相乘后回到特征坐标单位。于是\(\widehat{\mathbf g}_{d,c}\in\mathbb R^{160}\)仍是一条**域×类聚合中心**，绝不是可恢复的单条source IQ或Phase2旧类support。
+
+P90半径也按同样的“码×尺度”方式恢复：
+
+$$
+\widehat R_{d,c}
+=
+s^{R}_c q^{R}_{d,c}.
+$$
+
+**符号说明：**\(q^{R}_{d,c}\)是非负半径整数码；\(s^R_c\)是同一类别在全部封存域共用的FP16半径尺度；\(\widehat R_{d,c}\ge0\)是恢复的P90余弦距离摘要。它只在模块二中调节域×类聚合残差的可靠性，不会被当成当前目标域support的样本数、协方差或类别中心。
 
 ### 5.3聚合扰动协方差\(\mathbf G\)
 
@@ -624,15 +765,17 @@ $$
 
 当\(K\le2\)或\(\tau_c\)退化时，模块二回退为\(\widetilde{\mathbf z}_{c,k}=\mathbf z_{c,k}\)。这是避免极少样本制造不可信稳健性的明确边界。
 
-## 6.模块三：每类自动收缩协方差
+## 6.模块三：类内残差、逐类自动收缩与任务协方差
 
 ### 6.0针对问题、为何有效与理论依据
 
-**针对问题。**每类只有\(K\)条support，却要估计256维联合特征的协方差。经验协方差的秩最多为\(K-1\)；在少样本场景中它通常不可逆、非对角元素波动很大。若直接把它交给LDA，后续求解会把偶然的类内波动当成可靠方向，甚至出现数值奇异。
+**针对问题。**每个类别只有\(K\)条support，却要描述256个坐标“在同一类别内部怎样一起波动”。对一个类别直接求经验协方差时，其秩最多为\(K-1\)；当\(K\ll256\)时，矩阵通常病态或不可逆。若把这种偶然的、稀疏样本产生的相关性直接交给LDA，后续线性求解会过度放大噪声。
 
-**为什么有效。**模块三先逐维标准化，再把经验协方差向球形目标收缩。标准化让不同坐标先处在可比较的尺度上；收缩减少不稳定的非对角估计，并给所有方向保留保守的正方差。恢复原尺度后，类别仍可在原始联合特征坐标中拥有不同的轴向扩张程度，但不会完全依赖只有几条support估出的复杂相关结构。
+**本模块的实际计算链。**先对每个类别单独取其\(K\)条当前目标域support，计算该类自己的中心、残差、逐维标准化和Ledoit–Wolf自动收缩协方差\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)。随后才在旧任务与新任务内分别对这些**已经收缩过的类别协方差**等先验平均，得到\(\boldsymbol\Sigma_{\mathrm o}\)和\(\boldsymbol\Sigma_{\mathrm n}\)。因此，本模块既不是“对单条256维向量内部求协方差”，也不是“先混合所有旧/新support再做一次收缩”。
 
-**理论原理。**Ledoit–Wolf收缩把经验协方差和结构化目标做凸组合，在高维、小样本时以可控偏差换取更小的估计方差和更好的条件数。这里的球形目标不是“所有真实特征都独立”的物理宣称，而是缺少足够观测时的保守正则化基准。它解释为什么收缩能改善可逆性，不等于已经由本项目的独立消融证明了模块三的净性能增益。
+**为什么有效。**逐维标准化先消除不同坐标的数值单位差异；自动收缩再把不可靠的经验相关性向保守目标拉回。这样，每个类别仍保留由自己的support决定的轴向散布，而共享LDA几何只吸收旧/新任务内的平均类内形状，不需要为每个候选类在query期求逆。
+
+**理论原理。**Ledoit–Wolf收缩把经验协方差和结构化目标做凸组合，在高维、小样本时以可控偏差换取更小的估计方差和更好的条件数。球形目标不是“所有真实特征都独立”的物理宣称，而是观测不足时的保守数值基准。它解释为何收缩可改善可逆性；模块三的净性能增益仍须由同配置消融证实。
 
 **相关文献与边界。**Ledoit和Wolf【R6】直接讨论高维样本协方差可能病态或不可逆，并给出向单位阵收缩的理论基础。D92 E0采用的是类内、标准化空间中的自动收缩与后续恢复尺度；它与R6的通用估计问题直接相关，但并非把金融或其他领域的原始数据设定移植到RFFI。
 
@@ -676,12 +819,12 @@ $$
 
 **符号说明：**\(\boldsymbol\mu_c\)是类别\(c\)的联合特征中心；\(\widetilde{\mathbf z}_{c,k}\)是模块二输出；\(K\)是类内样本数；\(\mathbb R^{256}\)表示均值有256个坐标。
 
-令\(\mathbf D_c\)为逐维标准差构成的对角矩阵，则
+令\(\mathbf D_c^{\mathrm{safe}}\)为逐维安全尺度构成的对角矩阵，则
 
 $$
 \mathbf u_{c,k}
 =
-\mathbf D_c^{-1}
+\left(\mathbf D_c^{\mathrm{safe}}\right)^{-1}
 \left(\widetilde{\mathbf z}_{c,k}-\boldsymbol\mu_c\right),
 \qquad
 \mathbf S_c^{(u)}
@@ -691,138 +834,292 @@ $$
 \mathbf u_{c,k}\mathbf u_{c,k}^{\mathsf T}.
 $$
 
-**符号说明：**\(\mathbf D_c\in\mathbb R^{256\times256}\)的对角元素是各维support标准差；\(\mathbf D_c^{-1}\)执行逐维标准化；\(\mathbf u_{c,k}\)是标准化残差；\(\mathbf S_c^{(u)}\)是标准化空间的经验协方差；外积\(\mathbf u_{c,k}\mathbf u_{c,k}^{\mathsf T}\)记录同一条support在任意两维上的共同偏离。
+**符号说明：**\(\mathbf D_c^{\mathrm{safe}}\in\mathbb R^{256\times256}\)的对角元素是类别\(c\)各维support标准差经零尺度保护后的值；实现对近常量坐标使用安全尺度，避免除零。其逆执行逐维标准化；\(\mathbf u_{c,k}\)是标准化残差；\(\mathbf S_c^{(u)}\)是标准化空间的经验协方差；外积\(\mathbf u_{c,k}\mathbf u_{c,k}^{\mathsf T}\)记录同一条support在任意两维上的共同偏离。下面6.2.1把每个输入量和这一安全尺度怎样从support得到完整展开。
 
-### 6.2.1新类的类内协方差如何由support计算
+### 6.2.1新类的类内协方差：先列清输入和派生顺序
 
-设\(\mathcal Y_{\mathrm n}\)是本次注册的新类集合，取其中任一新类\(c\in\mathcal Y_{\mathrm n}\)。模块一先给出该类的\(K\)条联合support\(\mathbf z_{c,1},\ldots,\mathbf z_{c,K}\)。模块二不是把某个旧类的中心移到新类上，而是仅由新类\(c\)自己的support计算一个类内共同平移：
+取本次注册的新类集合\(\mathcal Y_{\mathrm n}\)中的任一类别\(c\)。它的类内协方差不是由一条向量“内部”算出，而是由该类\(K\)条合法support彼此相对本类中心的偏离算出。下表先回答每个量从哪里来；后面的公式再按同一顺序实际计算。
+
+|量|从哪里来|如何得到|是否使用旧类稳健中心|
+|---|---|---|---|
+|\(K\)|当前Stage2-C注册row|类别\(c\)的合法support条数；每条对应独立物理样本|否|
+|\(\mathbf z_{c,k}\in\mathbb R^{256}\)|模块一|第\(k\)条固定received IQ经冻结编码器和FFT分支得到的联合特征，写作\([\mathbf z^{\mathrm{id}}_{c,k};\mathbf z^{\mathrm{fft}}_{c,k}]\)，维度为\(160+96\)|否|
+|\(\mathbf U\in\mathbb R^{160\times r}\)、\(\boldsymbol\rho\in\mathbb R^r\)|Phase1 bundle|由封存聚合扰动协方差\(\mathbf G_+\)的正特征方向和对应正特征值归一化得到，见5.5|否；它们是所有类别共用的方向规则，不是旧类中心|
+|\(\mathbf m_c^{\mathrm{rob}}\in\mathbb R^{160}\)|模块二|仅以类别\(c\)的\(K\)条身份块support和\(\mathbf U,\boldsymbol\rho\)做Cauchy加权平均|否|
+|\(\boldsymbol\delta_c\in\mathbb R^{160}\)|模块二|\(\mathbf m_c^{\mathrm{rob}}\)减去类别\(c\)的普通身份均值|否|
+|\(\boldsymbol\mu_c\in\mathbb R^{256}\)|模块三输入中心|稳健化后的\(K\)条联合support的均值|否|
+|\(\mathbf r_{c,k}\in\mathbb R^{256}\)|模块三|第\(k\)条稳健化support减去\(\boldsymbol\mu_c\)|否|
+
+表中的“否”有严格含义：旧类support和旧类稳健中心\(\mathbf m_o^{\mathrm{rob}}\)都不进入新类\(c\)的\(\mathbf m_c^{\mathrm{rob}}\)、\(\boldsymbol\mu_c\)或\(\mathbf r_{c,k}\)。旧任务只会在模块四以独立的\(\boldsymbol\Sigma_{\mathrm o}\)项参与最终的50%∶50%共享协方差。旧类本身也完全按同一组公式、只用各自的当前target support计算\(\mathbf m_o^{\mathrm{rob}}\)、\(\boldsymbol\mu_o\)、\(\mathbf r_{o,k}\)和\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_o\)；“旧/新”改变的是任务归属和后续平均位置，不改变类内计算规则。
+
+#### 第一步：只用新类自己的support计算160维稳健中心
+
+先在身份块中计算普通均值、相对均值的残差和扰动基投影：
 
 $$
-\bar{\mathbf z}_c
+\bar{\mathbf z}^{\mathrm{id}}_c
 =
-\frac{1}{K}\sum_{k=1}^{K}\mathbf z_{c,k},
+\frac{1}{K}\sum_{k=1}^{K}\mathbf z^{\mathrm{id}}_{c,k},
+\qquad
+\mathbf e_{c,k}
+=
+\mathbf z^{\mathrm{id}}_{c,k}-\bar{\mathbf z}^{\mathrm{id}}_c,
+\qquad
+\mathbf h_{c,k}
+=
+\mathbf U^{\mathsf T}\mathbf e_{c,k}.
+$$
+
+**符号说明：**\(\mathbf z^{\mathrm{id}}_{c,k}\in\mathbb R^{160}\)是\(\mathbf z_{c,k}\)的前160维身份块；\(\bar{\mathbf z}^{\mathrm{id}}_c\in\mathbb R^{160}\)是该新类的普通身份均值；\(\mathbf e_{c,k}\in\mathbb R^{160}\)是第\(k\)条新类support相对本类均值的身份残差；\(\mathbf h_{c,k}\in\mathbb R^r\)是该残差在冻结扰动基中的坐标。\(\mathbf U^{\mathsf T}\)只做投影，不把任何旧类坐标复制到新类。
+
+对每条support，按冻结谱权重计算扰动能量、Cauchy未归一化权重和归一化权重：
+
+$$
+E_{c,k}
+=
+\sum_{j=1}^{r}\rho_jh_{c,k,j}^{2},
+\qquad
+\tau_c
+=
+\frac{1}{K}\sum_{k=1}^{K}E_{c,k},
+\qquad
+a_{c,k}
+=
+\left(1+E_{c,k}/\tau_c\right)^{-1},
+\qquad
+\omega_{c,k}
+=
+\frac{a_{c,k}}{\sum_{k'=1}^{K}a_{c,k'}}.
+$$
+
+**符号说明：**\(h_{c,k,j}\)是\(\mathbf h_{c,k}\)的第\(j\)个坐标；\(\rho_j\)是第\(j\)条扰动方向的固定归一化谱权重；\(E_{c,k}\ge0\)是第\(k\)条新类support沿冻结扰动方向的加权能量；\(\tau_c\)是该新类\(K\)条support能量的平均值；\(a_{c,k}\)是尚未归一化的Cauchy因子；\(\omega_{c,k}\in(0,1)\)是最终权重，且\(\sum_k\omega_{c,k}=1\)。能量大的样本权重更小，但不被删除。
+
+最后得到稳健身份中心和身份块平移量：
+
+$$
+\mathbf m_c^{\mathrm{rob}}
+=
+\sum_{k=1}^{K}\omega_{c,k}\mathbf z^{\mathrm{id}}_{c,k},
 \qquad
 \boldsymbol\delta_c
 =
-\mathbf m_c^{\mathrm{rob}}-\bar{\mathbf z}_c,
+\mathbf m_c^{\mathrm{rob}}-\bar{\mathbf z}^{\mathrm{id}}_c.
+$$
+
+**符号说明：**\(\mathbf m_c^{\mathrm{rob}}\)是160维身份块的加权平均，不是256维联合中心；\(\boldsymbol\delta_c\)同样只有160维。若\(K\le2\)或\(\tau_c\)退化，模块二按冻结回退规则令\(\boldsymbol\delta_c=\mathbf0_{160}\)，避免由极少样本构造不可信权重。
+
+#### 第二步：把160维中心平移嵌入完整256维特征
+
+模块二只产生160维的\(\boldsymbol\delta_c\)，不能把它直接与256维向量相加。正确做法是把它补成一个256维平移量：
+
+$$
+\bar{\mathbf z}^{\mathrm{fft}}_c
+=
+\frac{1}{K}\sum_{k=1}^{K}\mathbf z^{\mathrm{fft}}_{c,k},
 \qquad
+\bar{\mathbf z}_c
+=
+\begin{bmatrix}
+\bar{\mathbf z}^{\mathrm{id}}_c\\
+\bar{\mathbf z}^{\mathrm{fft}}_c
+\end{bmatrix},
+\qquad
+\boldsymbol\Delta_c
+=
+\begin{bmatrix}
+\boldsymbol\delta_c\\
+\mathbf0_{96}
+\end{bmatrix}.
+$$
+
+$$
 \widetilde{\mathbf z}_{c,k}
 =
-\mathbf z_{c,k}+\boldsymbol\delta_c.
-$$
-
-**符号说明：**\(\bar{\mathbf z}_c\in\mathbb R^{256}\)是新类\(c\)在模块二前的普通support均值；\(\mathbf m_c^{\mathrm{rob}}\in\mathbb R^{256}\)是同一新类根据自身support、冻结扰动基\(\mathbf U\)和谱权重\(\boldsymbol\rho\)得到的稳健中心；\(\boldsymbol\delta_c\in\mathbb R^{256}\)是对该类全部support相同的平移量；\(\widetilde{\mathbf z}_{c,k}\)是平移后的第\(k\)条support。上式中不存在旧类中心\(\mathbf m_o^{\mathrm{rob}}\)：冻结地面知识只提供所有类别共用的扰动方向和权重，不提供可写入新类统计量的旧类中心。
-
-平移后的新类均值就是该新类自己的稳健中心：
-
-$$
+\mathbf z_{c,k}+\boldsymbol\Delta_c,
+\qquad
 \boldsymbol\mu_c
 =
 \frac{1}{K}\sum_{k=1}^{K}\widetilde{\mathbf z}_{c,k}
 =
-\bar{\mathbf z}_c+\boldsymbol\delta_c
-=
-\mathbf m_c^{\mathrm{rob}}.
+\begin{bmatrix}
+\mathbf m_c^{\mathrm{rob}}\\
+\bar{\mathbf z}^{\mathrm{fft}}_c
+\end{bmatrix}
+\in\mathbb R^{256}.
 $$
 
-**符号说明：**\(\boldsymbol\mu_c\)是模块三使用的新类中心；等号成立是因为同一\(\boldsymbol\delta_c\)被加到该类的全部\(K\)条support。它说明模块二会改变新类云团的位置，而不是改变其内部样本之间的相对差异。
+**符号说明：**\(\mathbf z^{\mathrm{fft}}_{c,k}\in\mathbb R^{96}\)是第\(k\)条support的频谱块；\(\bar{\mathbf z}^{\mathrm{fft}}_c\in\mathbb R^{96}\)是它在同类\(K\)条support上的普通均值；\(\bar{\mathbf z}_c\in\mathbb R^{256}\)是模块二前的完整联合均值；\(\boldsymbol\Delta_c\in\mathbb R^{256}\)把160维身份块平移和96维零平移拼接起来；\(\widetilde{\mathbf z}_{c,k}\)是平移后的完整support；\(\boldsymbol\mu_c\)是模块三实际使用的256维类别中心。只有\(\boldsymbol\mu_c\)的前160维等于\(\mathbf m_c^{\mathrm{rob}}\)；后96维仍是原始频谱块均值。因此，原先把256维\(\boldsymbol\mu_c\)直接写成160维\(\mathbf m_c^{\mathrm{rob}}\)是不正确的。
 
-因此第\(k\)条新类support的类内残差为
+#### 第三步：类内残差为何不受该平移影响
+
+第\(k\)条新类support相对本类中心的残差为
 
 $$
 \mathbf r_{c,k}
 =
 \widetilde{\mathbf z}_{c,k}-\boldsymbol\mu_c
 =
-\bigl(\mathbf z_{c,k}+\boldsymbol\delta_c\bigr)
+\bigl(\mathbf z_{c,k}+\boldsymbol\Delta_c\bigr)
 -
-\bigl(\bar{\mathbf z}_c+\boldsymbol\delta_c\bigr)
+\bigl(\bar{\mathbf z}_c+\boldsymbol\Delta_c\bigr)
 =
 \mathbf z_{c,k}-\bar{\mathbf z}_c.
 $$
 
-**符号说明：**\(\mathbf r_{c,k}\in\mathbb R^{256}\)是用于估计类内散布的残差；第二个等号显式展示了\(\boldsymbol\delta_c\)相消。故模块二的类共同平移不改变新类的类内协方差：无论以模块二前还是模块二后的support计算，类内残差及其外积都相同。更不能由此产生对旧类稳健中心的依赖。
+**符号说明：**\(\mathbf r_{c,k}\in\mathbb R^{256}\)是用于估计类内散布的残差；两个\(\boldsymbol\Delta_c\)完全相消，因为同一类别的全部\(K\)条support都加了同一个平移。这个等式说明模块二改变的是“类别云团整体在哪里”，不改变“同一云团中样本彼此相差多少”。它也直接回答了边界问题：旧类稳健中心\(\mathbf m_o^{\mathrm{rob}}\)不参与新类\(c\)的\(\mathbf r_{c,k}\)，更不参与其类内协方差。
 
-将残差逐维标准化后，类别\(c\)的经验类内协方差为
+一个一维教学例子可帮助检查这个相消关系。若某个身份坐标的三条原始值为\([1,3,8]\)，普通均值为4，稳健中心为3，则\(\delta=-1\)。平移后为\([0,2,7]\)，新均值为3；相对新均值的残差为\([-3,-1,4]\)，恰好等于原始值相对普通均值\(4\)的残差。256维情形只是在每个坐标同时做这一件事；后96个频谱坐标的平移始终为0。
+
+#### 第四步：只用该类残差计算自动收缩协方差
+
+令\(p=256\)。先由类别\(c\)自己的残差计算每一维的样本标准差和安全尺度：
 
 $$
+d_{c,i}
+=
+\sqrt{\frac{1}{K}\sum_{k=1}^{K}r_{c,k,i}^{\,2}},
+\qquad
+d^{\mathrm{safe}}_{c,i}
+=
+\begin{cases}
+d_{c,i},&d_{c,i}>0,\\
+1,&d_{c,i}=0,
+\end{cases}
+\qquad
+\mathbf D_c^{\mathrm{safe}}
+=
+\operatorname{diag}\!\left(
+d^{\mathrm{safe}}_{c,1},\ldots,d^{\mathrm{safe}}_{c,p}
+\right).
+$$
+
+**符号说明：**\(r_{c,k,i}\)是\(\mathbf r_{c,k}\)的第\(i\)维；\(d_{c,i}\)是类别\(c\)在该维的标准差；\(d^{\mathrm{safe}}_{c,i}\)是避免常量坐标除零的实现尺度；\(\operatorname{diag}(\cdot)\)把括号中的数放到对角线上；\(\mathbf D_c^{\mathrm{safe}}\in\mathbb R^{256\times256}\)。冻结实现使用与这一含义一致的安全标准化：近常量坐标不会被零除。这里的1只是零方差坐标的安全分母，不是为该坐标人为制造方差。
+
+接着标准化并形成经验协方差：
+
+$$
+\mathbf u_{c,k}
+=
+\left(\mathbf D_c^{\mathrm{safe}}\right)^{-1}\mathbf r_{c,k},
+\qquad
 \mathbf S_c^{(u)}
 =
+\frac{1}{K}\sum_{k=1}^{K}
+\mathbf u_{c,k}\mathbf u_{c,k}^{\mathsf T}.
+$$
+
+**符号说明：**\(\mathbf u_{c,k}\in\mathbb R^{256}\)是无量纲的标准化残差；\(\mathbf S_c^{(u)}\in\mathbb R^{256\times256}\)是该类在标准化空间的经验协方差；外积的第\((i,j)\)项为\(u_{c,k,i}u_{c,k,j}\)，跨\(K\)条support平均后才成为坐标\(i,j\)的共同变化估计。到此为止，计算只读取类别\(c\)自己的support；不读取旧类support、旧类稳健中心、query特征、query真值或query角色。
+
+Ledoit–Wolf自动收缩的目标和结果为
+
+$$
+\zeta_c
+=
+\frac{\operatorname{tr}\!\left(\mathbf S_c^{(u)}\right)}{p},
+\qquad
+\mathbf T_c
+=
+\zeta_c\mathbf I_p,
+\qquad
+\widehat{\mathbf S}_c^{(u)}
+=
+(1-\lambda_c)\mathbf S_c^{(u)}
+\mathbin{+}
+\lambda_c\mathbf T_c.
+$$
+
+**符号说明：**\(\operatorname{tr}(\cdot)\)是矩阵迹，即对角元素之和；\(\zeta_c\)是标准化空间的平均方差；\(\mathbf I_p\)是\(p\times p\)单位矩阵；\(\mathbf T_c\)是球形目标；\(\lambda_c\in[0,1]\)是由该类support自动计算的收缩强度；\(\widehat{\mathbf S}_c^{(u)}\)是收缩后的标准化协方差。球形目标让每个方向使用相同的平均方差、令非对角相关为0；它是观测不足时的保守参照，不是新建的类原型或额外support。
+
+为说明“自动”并非人工挑一个经验常数，令\(\mathbf X_c\in\mathbb R^{K\times p}\)的第\(k\)行为\(\mathbf u_{c,k}^{\mathsf T}\)。冻结实现调用的自动Ledoit–Wolf计算等价于先得到
+
+$$
+A_{\mathrm{LW},c}
+=
+\frac{1}{p}
+\left\|
+\mathbf S_c^{(u)}-\zeta_c\mathbf I_p
+\right\|_{\mathrm F}^{2},
+$$
+
+$$
+B_{\mathrm{raw},c}
+=
+\frac{1}{pK}
+\left[
 \frac{1}{K}
-\sum_{k=1}^{K}
-\bigl(\mathbf D_c^{-1}\mathbf r_{c,k}\bigr)
-\bigl(\mathbf D_c^{-1}\mathbf r_{c,k}\bigr)^{\mathsf T}.
-$$
-
-**符号说明：**\(\mathbf D_c\)是由新类\(c\)的类内support标准差构成的对角矩阵；\(\mathbf S_c^{(u)}\)只由该类的\(K\)条support残差构成。它不访问旧类support、旧类稳健中心、query特征、query真值或query角色。第6.3节随后把\(\mathbf S_c^{(u)}\)收缩为\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)。
-
-**实现口径。**上述\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)保留了“一个新类的云团如何展开”的局部解释。在当前D92 E0注册实现的自动收缩路径中，模块四实际使用的是新任务内等先验的类内残差池：
-
-$$
-\mathbf S_{\mathrm n}
-=
-\frac{1}{C_{\mathrm n}}
-\sum_{c\in\mathcal Y_{\mathrm n}}
-\frac{1}{K}
-\sum_{k=1}^{K}
-\mathbf r_{c,k}\mathbf r_{c,k}^{\mathsf T},
+\sum_{k=1}^{K}\sum_{i=1}^{p}\sum_{j=1}^{p}
+u_{c,k,i}^{2}u_{c,k,j}^{2}
+-
+\left\|\mathbf S_c^{(u)}\right\|_{\mathrm F}^{2}
+\right],
 \qquad
-\boldsymbol\Sigma_{\mathrm n}
+B_{\mathrm{LW},c}
 =
-\operatorname{LW}_{\mathrm n}\!\left(\mathbf S_{\mathrm n}\right).
+\min\!\left(B_{\mathrm{raw},c},A_{\mathrm{LW},c}\right),
 $$
 
-**符号说明：**\(C_{\mathrm n}=|\mathcal Y_{\mathrm n}|\)是本次新类数；\(\mathbf S_{\mathrm n}\)是每个新类同样先贡献\(K\)条类内残差后得到的任务级经验协方差；\(\operatorname{LW}_{\mathrm n}(\cdot)\)表示在新任务残差池上执行的等先验Ledoit–Wolf自动收缩。因收缩强度由输入统计量自动估计，通常有\(\operatorname{LW}_{\mathrm n}(C_{\mathrm n}^{-1}\sum_c\mathbf S_c)\ne C_{\mathrm n}^{-1}\sum_c\operatorname{LW}_c(\mathbf S_c)\)。两种写法的共同事实是：新类协方差来自新类自己的类内残差，而非任何旧类稳健中心。
-
-### 6.3球形目标与Ledoit–Wolf自动收缩
-
-经验协方差在\(K\ll256\)时最多只有\(K-1\)个独立中心化方向，直接求逆会奇异。D92 E0用球形目标
-
 $$
-\mathbf T_c=\zeta_c\mathbf I_{256},
-\qquad
-\zeta_c=
-\frac{\operatorname{tr}(\mathbf S_c^{(u)})}{256}.
-$$
-
-**符号说明：**\(\mathbf T_c\)是类别\(c\)的球形收缩目标；\(\mathbf I_{256}\)是256维单位矩阵；\(\operatorname{tr}(\cdot)\)是矩阵迹，即对角元素之和；\(\zeta_c\)是经验协方差的平均对角方差。该目标在标准化空间中让每个方向具有相同方差、让非对角项为0；它不是类别原型，也不是额外生成的support。
-
-自动收缩估计为
-
-$$
-\widehat{\boldsymbol\Sigma}^{(u)}_c
+\lambda_c
 =
-(1-\alpha_c)\mathbf S_c^{(u)}
-+\alpha_c\mathbf T_c,
-\qquad
-\alpha_c\in[0,1].
+\begin{cases}
+0,&A_{\mathrm{LW},c}=0,\\
+B_{\mathrm{LW},c}/A_{\mathrm{LW},c},&A_{\mathrm{LW},c}>0.
+\end{cases}
 $$
 
-**符号说明：**\(\widehat{\boldsymbol\Sigma}^{(u)}_c\)是标准化空间的收缩协方差；\(\alpha_c\)是Ledoit–Wolf从当前类别support自动确定的收缩强度；\(\alpha_c=0\)表示仅用经验协方差；\(\alpha_c=1\)表示完全使用球形目标。
+**符号说明：**\(\|\cdot\|_{\mathrm F}\)是Frobenius范数，即矩阵所有元素平方和再开方；\(A_{\mathrm{LW},c}\)量化经验协方差偏离球形目标的程度；\(B_{\mathrm{raw},c}\)估计经验协方差本身的抽样波动；\(\min\)使收缩强度不超过1。没有交叉验证、query或旧类中心参与\(\lambda_c\)的选择；它只由当前类别\(c\)的\(K\)条标准化support残差确定。
 
-恢复原始联合特征尺度：
+最后恢复256维联合特征原始尺度：
 
 $$
 \widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c
 =
-\mathbf D_c
-\widehat{\boldsymbol\Sigma}^{(u)}_c
-\mathbf D_c.
+\mathbf D_c^{\mathrm{safe}}
+\widehat{\mathbf S}_c^{(u)}
+\mathbf D_c^{\mathrm{safe}}.
 $$
 
-**符号说明：**\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\in\mathbb R^{256\times256}\)是类别\(c\)的最终收缩协方差；左右两侧的\(\mathbf D_c\)把标准化空间的尺度恢复到联合特征坐标。球形只严格指标准化空间；恢复尺度后，保守目标一般表现为轴对齐椭球。
+**符号说明：**\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\in\mathbb R^{256\times256}\)是类别\(c\)的最终自动收缩协方差；左右两侧的\(\mathbf D_c^{\mathrm{safe}}\)把标准化空间的数值尺度还原到模块一输出的联合特征坐标。它是注册期的中间统计量：保留“类别\(c\)的support云团如何展开”的解释，但query期不会为每个类别单独保存、求逆或打分。
+
+#### 第五步：逐类结果怎样进入旧/新任务
+
+对旧任务或新任务\(g\in\{\mathrm o,\mathrm n\}\)，模块三只在同一任务内部对逐类结果做等先验平均：
+
+$$
+\boldsymbol\Sigma_g
+=
+\frac{1}{C_g}
+\sum_{c\in\mathcal Y_g}
+\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c,
+\qquad
+C_g=|\mathcal Y_g|.
+$$
+
+**符号说明：**\(\mathcal Y_g\)是任务\(g\)的类别集合；\(C_g\)是其中类别数；\(\boldsymbol\Sigma_g\in\mathbb R^{256\times256}\)是任务级协方差。每个类别先各自完成标准化与自动收缩，再以相同总权重\(1/C_g\)参与平均。由于Ledoit–Wolf是非线性数据自适应操作，实际顺序是\(\frac1{C_g}\sum_c\operatorname{LW}(\mathbf S_c^{(u)})\)，而不是对平均后的残差矩阵只做一次\(\operatorname{LW}\)。模块四再把\(\boldsymbol\Sigma_{\mathrm o}\)和\(\boldsymbol\Sigma_{\mathrm n}\)各取50%组合为共享LDA几何。
 
 ## 7.模块四：旧/新任务均衡与等先验LDA
 
 ### 7.0模块四在整条流程中的位置
 
-模块三已经分别从每一个类别的当前目标域support中得到两样东西：类别中心\(\boldsymbol\mu_c\)回答“这个类大致在哪里”，类内收缩协方差\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)回答“该类样本云在各个方向上怎样展开”。模块四不再逐类单独做一个分类器，而是把所有旧类与新类的局部形状汇总为一套共享的判别几何，再据此为每个类别写出一条可直接打分的仿射行。
+模块三先从每一个类别的当前目标域support得到类别中心\(\boldsymbol\mu_c\)和逐类自动收缩协方差\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)，再分别在旧任务、新任务内等先验平均，得到\(\boldsymbol\Sigma_{\mathrm o}\)与\(\boldsymbol\Sigma_{\mathrm n}\)。类别中心回答“这个类大致在哪里”，任务级协方差回答“同一任务内的类别云团通常沿哪些方向展开”。模块四据此构造一套共享的判别几何，并为每个类别写出一条可直接打分的仿射行。
 
 |项目|内容|
 |---|---|
-|输入|所有注册类别经模块二稳健化后的target support、每类的\(\boldsymbol\mu_c\)和\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)、旧/新类别归属|
+|输入|所有注册类别经模块二稳健化后的target support、每类的\(\boldsymbol\mu_c\)、\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)和旧/新类别归属|
 |输出|旧/新任务均衡的共享协方差、full和block两组LDA仿射行|
 |不做的事|不把Phase1地面聚合中心当作当前旧类support；不更新编码器；不读取query、不使用query标签或query角色|
+
+把模块四压缩成一句计算流程，就是：
+
+|顺序|输入|计算|输出|
+|---|---|---|---|
+|1|各类\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)|在旧任务、新任务内分别按\(1/C_g\)平均|\(\boldsymbol\Sigma_{\mathrm o},\boldsymbol\Sigma_{\mathrm n}\)|
+|2|\(\boldsymbol\Sigma_{\mathrm o},\boldsymbol\Sigma_{\mathrm n}\)|各取50%相加|\(\boldsymbol\Sigma_{\mathrm{bal}}\)|
+|3|\(\boldsymbol\Sigma_{\mathrm{bal}}\)|保留全部块或置零跨块元素|\(\boldsymbol\Sigma_{\mathrm{full}},\boldsymbol\Sigma_{\mathrm{blk}}\)|
+|4|每类中心\(\boldsymbol\mu_c\)和共享协方差\(\boldsymbol\Sigma_h\)|求解\(\boldsymbol\Sigma_h\mathbf v=\boldsymbol\mu_c\)，再算截距|每类仿射行\(\mathbf w_c^{(h)},b_c^{(h)}\)|
+|5|全部类别的仿射行|减去类共同仿射项|供模块五使用的固定规范行|
+
+表中第4步的“求解”与显式计算\(\boldsymbol\Sigma_h^{-1}\boldsymbol\mu_c\)在数学上等价，但数值实现直接解线性方程，避免额外构造矩阵逆。
 
 这里的“旧类”和“新类”都使用当前目标域中合法提供的support。旧类的地面聚合知识只在模块二中提供类无关的扰动方向；它不直接充当模块四的旧类原型或协方差样本。因此，模块四回答的是“在当前注册批的目标域support上，怎样让旧任务与新任务共同竞争”，而不是“怎样把地面原型直接搬到目标域”。
 
@@ -840,37 +1137,44 @@ $$
 
 ### 7.1为什么要先按任务汇总
 
-新类数量增加时，如果把所有类别直接汇入同一个残差池，新类任务会因类别数更多而拥有更大总权重。D92 E0先在旧、新任务内分别等权汇总各类别的类内残差，再对两个任务分别做自动收缩：
+新类数量增加时，如果把所有类别直接平均，新任务会因类别数更多而拥有更大总权重。D92 E0先让每个类别完成自己的自动收缩，再在旧、新任务内分别等权平均这些结果：
 
 $$
-\mathbf S_{g}
+\boldsymbol\Sigma_g
 =
 \frac{1}{C_g}
 \sum_{c\in\mathcal Y_g}
-\frac{1}{K}
-\sum_{k=1}^{K}
-\mathbf r_{c,k}\mathbf r_{c,k}^{\mathsf T},
-\qquad
-\boldsymbol\Sigma_g
-=
-\operatorname{LW}_{g}\!\left(\mathbf S_g\right),
+\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c,
 \qquad
 g\in\{\mathrm o,\mathrm n\}.
 $$
 
-**符号说明：**\(g\)表示旧任务\(\mathrm o\)或新任务\(\mathrm n\)；\(\mathcal Y_g\)是任务\(g\)的类别集合；\(C_g=|\mathcal Y_g|\)是其中的类别数；\(\mathbf r_{c,k}\)是类别\(c\)第\(k\)条support相对本类均值的残差；\(\mathbf S_g\)是任务\(g\)的等类权经验协方差；\(\operatorname{LW}_g(\cdot)\)表示对任务\(g\)的全部类内残差执行等先验Ledoit–Wolf自动收缩；\(\boldsymbol\Sigma_{\mathrm o}\)和\(\boldsymbol\Sigma_{\mathrm n}\)是收缩后的两个任务协方差。由于每类都有同样的\(K\)条support，\(\mathbf S_g\)使同一任务内每个类别贡献相同的总残差权重。
+**符号说明：**\(g\)表示旧任务\(\mathrm o\)或新任务\(\mathrm n\)；\(\mathcal Y_g\)是任务\(g\)的类别集合；\(C_g=|\mathcal Y_g|\)是其中的类别数；\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)是类别\(c\)仅由本类support算出的256维自动收缩协方差；\(\boldsymbol\Sigma_{\mathrm o}\)和\(\boldsymbol\Sigma_{\mathrm n}\)是两个任务的协方差。每个类别在任务内部的总权重都为\(1/C_g\)，不因它的support数值更大、类标识不同或query表现不同而改变。
+
+这一步的顺序不能颠倒。Ledoit–Wolf的收缩强度\(\lambda_c\)由每个类别自身的样本散布自动决定，因此通常有
+
+$$
+\frac{1}{C_g}\sum_{c\in\mathcal Y_g}
+\operatorname{LW}\!\left(\mathbf S_c^{(u)}\right)
+\ne
+\operatorname{LW}\!\left(
+\frac{1}{C_g}\sum_{c\in\mathcal Y_g}\mathbf S_c^{(u)}
+\right).
+$$
+
+**符号说明：**左侧是D92 E0的实际顺序：每类先自动收缩、再平均；右侧是未采用的“先混合、后收缩”顺序。\(\operatorname{LW}(\cdot)\)简写6.2.1中的标准化、自动收缩和恢复尺度全过程；\(\ne\)表示两种方法一般不会得到相同结果，因为各类的\(\lambda_c\)不同。
 
 为看清“先按任务汇总”的必要性，设想一个未采用的方法：直接对全部类别做等权平均。它等价于
 
 $$
-\mathbf S_{\mathrm{all}}
+\boldsymbol\Sigma_{\mathrm{all}}
 =
-\frac{C_{\mathrm o}}{C_{\mathrm o}+C_{\mathrm n}}\mathbf S_{\mathrm o}
+\frac{C_{\mathrm o}}{C_{\mathrm o}+C_{\mathrm n}}\boldsymbol\Sigma_{\mathrm o}
 \mathbin{+}
-\frac{C_{\mathrm n}}{C_{\mathrm o}+C_{\mathrm n}}\mathbf S_{\mathrm n}.
+\frac{C_{\mathrm n}}{C_{\mathrm o}+C_{\mathrm n}}\boldsymbol\Sigma_{\mathrm n}.
 $$
 
-**符号说明：**\(\mathbf S_{\mathrm{all}}\)表示仅用于解释权重、并未被D92 E0采用的“全部类别直接汇总”经验残差协方差；\(C_{\mathrm o}/(C_{\mathrm o}+C_{\mathrm n})\)和\(C_{\mathrm n}/(C_{\mathrm o}+C_{\mathrm n})\)分别是旧、新任务由类别数量自动决定的总权重；其余符号与上一式相同。这里特意在自动收缩之前比较\(\mathbf S\)，避免把不同任务上自动估计的收缩强度错误地当作可线性相加的常数。
+**符号说明：**\(\boldsymbol\Sigma_{\mathrm{all}}\)表示仅用于解释权重、并未被D92 E0采用的“全部类别直接平均”任务协方差；\(C_{\mathrm o}/(C_{\mathrm o}+C_{\mathrm n})\)和\(C_{\mathrm n}/(C_{\mathrm o}+C_{\mathrm n})\)分别是旧、新任务由类别数量自动决定的总权重；其余符号与上一式相同。这里比较的是已经逐类收缩后的任务均值，不会把不同类别自动估计出的收缩强度误当成一个可以先合并的常数。
 
 例如，若有6个旧类和20个新类，直接平均会让旧任务总权重为\(6/26\approx23.1\%\)，新任务总权重为\(20/26\approx76.9\%\)。这不是某组实验结果，只是一个计数例子：新类数较多时，即使每个类别都被“公平地”平均，整个新任务仍会压过旧任务。
 
@@ -978,7 +1282,31 @@ $$
 
 **符号说明：**\(\mathbf q\in\mathbb R^{256}\)是当前query特征；\(\boldsymbol\Sigma_h\)是分支\(h\)的共享协方差；\(\mathbf w_c^{(h)}\in\mathbb R^{256}\)是类别\(c\)的判别方向；\(b_c^{(h)}\)是截距；\(\boldsymbol\mu_c\)是类别中心；上标\(\mathsf T\)表示转置。实现使用线性方程求解，不显式形成逆矩阵。
 
-这里“一套共享协方差”是LDA的关键：每个类别各有中心\(\boldsymbol\mu_c\)，但同一分支中的所有类别共享\(\boldsymbol\Sigma_h\)。模块三的\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)只用于汇总出\(\boldsymbol\Sigma_{\mathrm{bal}}\)，不会在query时为每个候选类别分别求一个逆矩阵。若每类都保留独立协方差并逐类计算，便是更自由但在少样本下更难稳定的QDA式判别；D92 E0在这里选择共享几何的LDA。
+实现会把同一分支内的类别共同仿射项去掉，再交给模块五和模块六：
+
+$$
+\bar{\mathbf w}^{(h)}
+=
+\frac{1}{C}\sum_{c\in\mathcal Y}\mathbf w_c^{(h)},
+\qquad
+\bar b^{(h)}
+=
+\frac{1}{C}\sum_{c\in\mathcal Y}b_c^{(h)},
+$$
+
+$$
+\widetilde{\mathbf w}_c^{(h)}
+=
+\mathbf w_c^{(h)}-\bar{\mathbf w}^{(h)},
+\qquad
+\widetilde b_c^{(h)}
+=
+b_c^{(h)}-\bar b^{(h)}.
+$$
+
+**符号说明：**\(C=|\mathcal Y|\)是当前全部注册类别数；\(\bar{\mathbf w}^{(h)}\)和\(\bar b^{(h)}\)分别是同一分支所有类别行的平均系数和平均截距；波浪号表示去除了这个类共同项的行。对任何类别\(c\)，有\(\mathbf q^{\mathsf T}\widetilde{\mathbf w}_c^{(h)}+\widetilde b_c^{(h)}=s_c^{(h)}(\mathbf q)-[\mathbf q^{\mathsf T}\bar{\mathbf w}^{(h)}+\bar b^{(h)}]\)。方括号中的量对当前query的所有候选类相同，故不会改变\(\operatorname{arg\,max}\)。这样做是固定分数“零点”的规范化，避免后续RMS和融合受任意类共同偏移影响；不是又训练了一次分类器。下文为简洁起见，模块五中的\(\mathbf w_c^{(h)},b_c^{(h)}\)均指这里得到的去共同项版本。
+
+这里“一套共享协方差”是LDA的关键：每个类别各有中心\(\boldsymbol\mu_c\)，但同一分支中的所有类别共享\(\boldsymbol\Sigma_h\)。模块三先把逐类收缩协方差按旧/新任务汇总为\(\boldsymbol\Sigma_{\mathrm{bal}}\)，不会在query时为每个候选类别分别求一个逆矩阵。若每类都保留独立协方差并逐类计算，便是更自由但在少样本下更难稳定的QDA式判别；D92 E0在这里选择共享几何的LDA。
 
 单条query的未量化预测规则是
 
@@ -1038,16 +1366,38 @@ $$
 
 ### 8.2类别级留一交叉熵
 
+本模块中有两类RMS尺度，不能混为一个\(r_h\)：
+
+1.在第\(t\)个留一折内，用该折的训练support\(\mathcal S_{-t}\)和该折重新拟合出的行，计算\(r_{t,h}\)，只用于评价该折held样本；
+2.在全部support的最终拟合完成后，用最终分支行计算\(r_h^{\mathrm{final}}\)，只用于把两个最终分支行放到可比较的尺度后融合。
+
+先看第\(t\)折。令\(\mathbf a_{n}^{(t,h)}\in\mathbb R^C\)是该折训练集\(\mathcal S_{-t}\)中第\(n\)条support对全部\(C\)个类别的去共同项分数行，\(\bar a_{n}^{(t,h)}=C^{-1}\sum_{j=1}^{C}a_{n,j}^{(t,h)}\)。该折尺度为
+
+$$
+r_{t,h}
+=
+\sqrt{
+\frac{1}{C(K-1)}
+\sum_{n\in\mathcal S_{-t}}
+\sum_{j=1}^{C}
+\left(
+a_{n,j}^{(t,h)}-\bar a_{n}^{(t,h)}
+\right)^2
+}.
+$$
+
+**符号说明：**\(t\in\{1,\ldots,K\}\)是留一折索引；\(h\in\{\mathrm{full},\mathrm{blk}\}\)是几何分支；\(\mathcal S_{-t}\)每类保留\(K-1\)条support，故共有\(C(K-1)\)条行；\(a_{n,j}^{(t,h)}\)是第\(t\)折拟合的分支\(h\)对训练行\(n\)给类别\(j\)的仿射分数；\(\bar a_{n}^{(t,h)}\)是这一行横跨类别的均值；\(r_{t,h}>0\)是该折的类共同项已去除后的分数RMS。它只从本折训练support得到，held样本和query都不参与。
+
 先把第\(t\)折held样本在分支\(h\)下对候选类别\(j\)的归一化概率写为
 
 $$
 p_{c,t,j}^{(h)}
 =
-\frac{\exp\!\left(s_{c,t,j}^{(h)}/r_h\right)}
-{\sum_{j'=1}^{C}\exp\!\left(s_{c,t,j'}^{(h)}/r_h\right)}.
+\frac{\exp\!\left(s_{c,t,j}^{(h)}/r_{t,h}\right)}
+{\sum_{j'=1}^{C}\exp\!\left(s_{c,t,j'}^{(h)}/r_{t,h}\right)}.
 $$
 
-**符号说明：**\(p_{c,t,j}^{(h)}\in(0,1)\)是held的真实类别为\(c\)的样本被分支\(h\)分配给候选类别\(j\)的softmax概率；\(s_{c,t,j}^{(h)}\)是该样本对类别\(j\)的LDA分数；\(r_h>0\)是分支\(h\)的正尺度；\(\exp(\cdot)\)是指数函数；\(j'\)仅是分母求和时的类别索引；\(C=|\mathcal Y|\)是注册类别总数。对固定的\(c,t,h\)，所有\(j\)的概率之和为1。
+**符号说明：**\(p_{c,t,j}^{(h)}\in(0,1)\)是held的真实类别为\(c\)的样本被分支\(h\)分配给候选类别\(j\)的softmax概率；\(s_{c,t,j}^{(h)}\)是该折重新拟合的行对该held样本给类别\(j\)的LDA分数；\(r_{t,h}>0\)是上一式的折内RMS尺度；\(\exp(\cdot)\)是指数函数；\(j'\)仅是分母求和时的类别索引；\(C=|\mathcal Y|\)是注册类别总数。对固定的\(c,t,h\)，所有\(j\)的概率之和为1。
 
 对类别\(c\)、分支\(h\)，留一损失为
 
@@ -1058,24 +1408,36 @@ $$
 \sum_{t=1}^{K}
 \log
 \frac{
-\exp\!\left(s_{c,t,c}^{(h)}/r_h\right)
+\exp\!\left(s_{c,t,c}^{(h)}/r_{t,h}\right)
 }{
 \sum_{j=1}^{C}
-\exp\!\left(s_{c,t,j}^{(h)}/r_h\right)
+\exp\!\left(s_{c,t,j}^{(h)}/r_{t,h}\right)
 }.
 $$
 
-**符号说明：**\(\ell_{c,h}^{\mathrm{LOO}}\)是类别\(c\)在分支\(h\)的平均留一交叉熵；\(s_{c,t,j}^{(h)}\)是第\(t\)折held的类别\(c\)样本对候选类别\(j\)的logit；\(r_h>0\)是该分支从support logits估计的RMS尺度；\(C\)是注册类别数；分子是真实类别的指数分数，分母是全部候选类的指数分数和。损失越小，说明该几何在未见的本类support上更可信。
+**符号说明：**\(\ell_{c,h}^{\mathrm{LOO}}\)是类别\(c\)在分支\(h\)的平均留一交叉熵；\(s_{c,t,j}^{(h)}\)是第\(t\)折held的类别\(c\)样本对候选类别\(j\)的logit；\(r_{t,h}>0\)是该折训练support估计的RMS尺度；\(C\)是注册类别数；分子是真实类别的指数分数，分母是全部候选类的指数分数和。损失越小，说明该几何在未见的本类support上更可信。
 
-RMS是“均方根”的缩写。对\(M\)个数\(a_1,\ldots,a_M\)，其一般定义为
+RMS是“均方根”的缩写：先把正负分数平方、再平均、最后开方。最终融合时使用的不是上面的任意\(r_{t,h}\)，而是用全体\(CK\)条support和最终分支行重新计算的尺度。令
 
 $$
-\operatorname{RMS}(a_1,\ldots,a_M)
+a_{n,j}^{(h)}
 =
-\sqrt{\frac{1}{M}\sum_{m=1}^{M}a_m^2}.
+\mathbf z_n^{\mathsf T}\mathbf w_j^{(h)}+b_j^{(h)},
+\qquad
+\bar a_n^{(h)}
+=
+\frac1C\sum_{j=1}^{C}a_{n,j}^{(h)},
+\qquad
+r_h^{\mathrm{final}}
+=
+\sqrt{
+\frac{1}{CK}
+\sum_{n=1}^{CK}\sum_{j=1}^{C}
+\left(a_{n,j}^{(h)}-\bar a_n^{(h)}\right)^2
+}.
 $$
 
-**符号说明：**\(a_m\)是第\(m\)个待汇总数；\(M\)是汇总数目；\(m\)是求和索引；\(\operatorname{RMS}(\cdot)\)先平方以消除正负号，再取平均和平方根，因此结果非负。这里的\(r_h\)是当前注册批的support logits按冻结实现得到的正RMS尺度，用来使full与block的logit绝对大小可比较。上面的通用定义解释“RMS”这一计算；它不额外规定某个未在冻结实现中声明的logit子集，也不允许使用query logit估计尺度。
+**符号说明：**\(n\)此处枚举全部\(CK\)条注册support，而不是query；\(\mathbf z_n\)是其中一条联合特征；\(a_{n,j}^{(h)}\)是最终分支\(h\)对该support的类别\(j\)分数；\(\bar a_n^{(h)}\)去掉该support对所有类别共同具有的分数偏移；\(r_h^{\mathrm{final}}>0\)是最终融合使用的RMS尺度。它与折内\(r_{t,h}\)的计算形式相同，但输入集合和拟合行不同：前者用于留一评价，后者用于最终两条仿射行的比例对齐。两者都不使用query logit。
 
 分支权重为
 
@@ -1094,24 +1456,48 @@ $$
 ### 8.3融合成一条最终仿射行
 
 $$
-\mathbf w_c^{(0)}
+\mathbf w_c^{\mathrm{fuse}}
 =
 \eta_{c,\mathrm{full}}
-\frac{\mathbf w_c^{(\mathrm{full})}}{r_{\mathrm{full}}}
+\frac{\mathbf w_c^{(\mathrm{full})}}{r_{\mathrm{full}}^{\mathrm{final}}}
 +
 \eta_{c,\mathrm{blk}}
-\frac{\mathbf w_c^{(\mathrm{blk})}}{r_{\mathrm{blk}}},
+\frac{\mathbf w_c^{(\mathrm{blk})}}{r_{\mathrm{blk}}^{\mathrm{final}}},
+\qquad
+b_c^{\mathrm{fuse}}
+=
+\eta_{c,\mathrm{full}}
+\frac{b_c^{(\mathrm{full})}}{r_{\mathrm{full}}^{\mathrm{final}}}
++
+\eta_{c,\mathrm{blk}}
+\frac{b_c^{(\mathrm{blk})}}{r_{\mathrm{blk}}^{\mathrm{final}}}.
+$$
+
+**符号说明：**\(\mathbf w_c^{\mathrm{fuse}}\)和\(b_c^{\mathrm{fuse}}\)是去共同项前的量化前融合行；\(\mathbf w_c^{(\mathrm{full})},b_c^{(\mathrm{full})}\)与\(\mathbf w_c^{(\mathrm{blk})},b_c^{(\mathrm{blk})}\)是最终重拟合后的两个分支输出；\(r_{\mathrm{full}}^{\mathrm{final}},r_{\mathrm{blk}}^{\mathrm{final}}\)先消除两个最终分支logit的绝对尺度差异；\(\eta_{c,h}\)再逐类加权。权重只由当前注册批的support内留一结果产生，不读取注册流程之外的评价保留集或query。
+
+融合后再次去掉所有类别共同拥有的仿射项，得到实际送入量化编译器的行：
+
+$$
+\bar{\mathbf w}^{\mathrm{fuse}}
+=
+\frac1C\sum_{c\in\mathcal Y}\mathbf w_c^{\mathrm{fuse}},
+\qquad
+\bar b^{\mathrm{fuse}}
+=
+\frac1C\sum_{c\in\mathcal Y}b_c^{\mathrm{fuse}},
+$$
+
+$$
+\mathbf w_c^{(0)}
+=
+\mathbf w_c^{\mathrm{fuse}}-\bar{\mathbf w}^{\mathrm{fuse}},
 \qquad
 b_c^{(0)}
 =
-\eta_{c,\mathrm{full}}
-\frac{b_c^{(\mathrm{full})}}{r_{\mathrm{full}}}
-+
-\eta_{c,\mathrm{blk}}
-\frac{b_c^{(\mathrm{blk})}}{r_{\mathrm{blk}}}.
+b_c^{\mathrm{fuse}}-\bar b^{\mathrm{fuse}}.
 $$
 
-**符号说明：**\(\mathbf w_c^{(0)}\)和\(b_c^{(0)}\)是量化前的基础融合行；\(\mathbf w_c^{(\mathrm{full})},b_c^{(\mathrm{full})}\)与\(\mathbf w_c^{(\mathrm{blk})},b_c^{(\mathrm{blk})}\)是两个分支输出；\(r_{\mathrm{full}},r_{\mathrm{blk}}\)先消除分支logit绝对尺度差异；\(\eta_{c,h}\)再逐类加权。权重只由当前注册批的support内留一结果产生，不读取注册流程之外的评价保留集或query。
+**符号说明：**\(\bar{\mathbf w}^{\mathrm{fuse}}\)和\(\bar b^{\mathrm{fuse}}\)是所有融合行的均值；\(\mathbf w_c^{(0)},b_c^{(0)}\)是去共同项后的最终浮点行。减去同一个\(\mathbf q^{\mathsf T}\bar{\mathbf w}^{\mathrm{fuse}}+\bar b^{\mathrm{fuse}}\)不会改变任何类别之间的相对分数或\(\operatorname{arg\,max}\)，但让量化前状态和前述RMS使用同一固定规范。
 
 融合后，单条query只需使用每个类别的一条最终行：
 
@@ -1130,7 +1516,7 @@ $$
 
 **符号说明：**\(s_c^{(0)}(\mathbf q)\)是量化前的融合分数；\(\mathbf w_c^{(0)}\)和\(b_c^{(0)}\)来自上一式；\(\widehat y(\mathbf q)\)是预测类别；其余符号沿用前文。融合结果仍是一条仿射行，所以query阶段不需要重新做K折、重算协方差或把同一query送进两个完整分支。严格说，两个已缩放LDA行的加权和未必等价于某一个单独协方差模型推导出的纯LDA行；本模块保留的是“可部署的仿射打分形式”，而不是声称融合后仍对应唯一的高斯协方差。
 
-当\(K=1\)时，留一会使每类没有剩余support；当\(K=2\)时，每折每类只剩1条support，无法可靠重建中心和协方差。因此\(K\le2\)时，留一链不满足稳定构造条件，方法使用冻结回退，不把训练内分数伪装成留一证据。对\(K\ge3\)，注册期开销会包含\(K\)折乘以两种几何的重建；该开销只在新类或注册批到达时发生。状态冻结后，query只执行前向特征与最终全类仿射打分，不更新任何统计量。
+当\(K=1\)时，留一会使每类没有剩余support；冻结实现不运行LOO，直接令\(\eta_{c,\mathrm{full}}=\eta_{c,\mathrm{blk}}=0.5\)。当\(K=2\)时，实现仍执行两折：每折每类保留1条训练support，并在当前锁定的单位协方差闭合条件下检查full与block的逐类留一交叉熵相同，因而验证权重为0.5和0.5。对\(K\ge3\)，才由上面的类别级留一损失产生一般的非对称软权重。无论哪一种\(K\)，这些工作都只在注册期发生；状态冻结后，query只执行前向特征与最终全类仿射打分，不更新任何统计量。
 
 ## 9.模块六：量化编译与不可变预测状态
 
@@ -1144,9 +1530,35 @@ $$
 
 **相关文献与边界。**Jacob等【R12】系统讨论INT8量化与整数推理的数值映射及部署收益。D92 E0只借鉴“低比特、带尺度的部署状态”这一原则；它采用注册后判别行的双层残差量化，不是R12中的量化感知训练流程。当前报告的实验证据确认状态压缩，不把它外推为已经在目标星载芯片上获得整数kernel时延或功耗收益。
 
+|顺序|读取或计算什么|得到什么|prediction期是否重做|
+|---|---|---|---|
+|1|模块五输出的\(\mathbf w_c^{(0)},b_c^{(0)}\)|每类、每个冻结坐标组的最大绝对值与第一层尺度|否|
+|2|第一层解码近似|每个系数的第一层残差与第二层尺度|否|
+|3|两层INT8码、两层FP16尺度、FP16截距|只读的\(\mathcal S_{\mathrm{E0}}\)|否|
+|4|一条query的256维\(\mathbf q\)|临时解码\(\widehat{\mathbf w}_c\)，并对全类求仿射分数|是，但不改写状态|
+
+这张表中的“临时解码”很重要：当前实现把INT8码和FP16尺度解回FP32权重后再做点积。因此，本模块已验证的是**状态存储压缩**；不能仅凭INT8码就宣称已经获得INT8矩阵乘内核的推理加速。
+
 ### 9.1两层残差INT8量化
 
-对类别\(c\)第\(j\)个浮点权重\(w_{c,j}\)，第一层量化为
+量化对象不是support，也不是协方差，而是模块五最后得到的每个类别的一条256维浮点仿射系数\(\mathbf w_c^{(0)}\)和一个截距\(b_c^{(0)}\)。先按冻结的坐标分组\(B_1,\ldots,B_G\)处理；\(g(j)\)表示坐标\(j\)属于哪一组。分组在注册前由配置固定，不能由某个query选择或修改。对类别\(c\)、组\(g\)，第一层尺度由该组最大绝对系数直接计算：
+
+$$
+a_{c,g}^{(1)}
+=
+\max_{j\in B_g}|w_{c,j}^{(0)}|,
+\qquad
+s_{c,g}^{(1)}
+=
+\begin{cases}
+\operatorname{float16}\!\left(a_{c,g}^{(1)}/127\right),&a_{c,g}^{(1)}>0,\\
+1,&a_{c,g}^{(1)}=0.
+\end{cases}
+$$
+
+**符号说明：**\(B_g\)是第\(g\)个冻结坐标组；\(G\)是组数；\(a_{c,g}^{(1)}\ge0\)是类别\(c\)在该组的最大绝对浮点系数；\(s_{c,g}^{(1)}\)是以FP16保存的第一层尺度；\(\operatorname{float16}\)表示按FP16格式存储这个尺度。若整个组全为0，代码保存尺度1和全0整数码；这只避免除零，不会把零权重变成非零权重。
+
+对类别\(c\)第\(j\)个浮点权重\(w_{c,j}^{(0)}\)，第一层量化为
 
 $$
 q_{c,j}^{(1)}
@@ -1155,7 +1567,7 @@ q_{c,j}^{(1)}
 \left(
 \operatorname{round}
 \left(
-\frac{w_{c,j}}{s_{c,g(j)}^{(1)}}
+\frac{w_{c,j}^{(0)}}{s_{c,g(j)}^{(1)}}
 \right),
 -127,127
 \right),
@@ -1165,13 +1577,30 @@ q_{c,j}^{(1)}
 s_{c,g(j)}^{(1)}q_{c,j}^{(1)}.
 $$
 
-**符号说明：**\(q_{c,j}^{(1)}\)是第一层INT8码；\(w_{c,j}\)是原始浮点权重；\(g(j)\)返回第\(j\)维所属量化组；\(s_{c,g(j)}^{(1)}>0\)是该组的第一层尺度；\(\operatorname{round}\)表示四舍五入；\(\operatorname{clip}\)把整数限制在对称INT8范围；\(\widehat w_{c,j}^{(1)}\)是第一层解码近似。
+**符号说明：**\(q_{c,j}^{(1)}\)是第一层INT8码；\(w_{c,j}^{(0)}\)是模块五输出的原始浮点权重；\(g(j)\)返回第\(j\)维所属量化组；\(s_{c,g(j)}^{(1)}>0\)是该组的第一层尺度；\(\operatorname{round}\)表示取最近整数；\(\operatorname{clip}\)把整数限制在对称INT8范围；\(\widehat w_{c,j}^{(1)}\)是第一层解码近似。因为尺度来自同一组的最大绝对值，未发生FP16下溢时该组最大幅度大致映射到整数码127。
 
-量化残差和第二层为
+第一层没有表达完的数值是残差。第二层对这个残差重复同一种“组内最大绝对值→FP16尺度→INT8码”的计算：
 
 $$
-e_{c,j}=w_{c,j}-\widehat w_{c,j}^{(1)},
+e_{c,j}
+=
+w_{c,j}^{(0)}-\widehat w_{c,j}^{(1)},
 \qquad
+a_{c,g}^{(2)}
+=
+\max_{j\in B_g}|e_{c,j}|,
+\qquad
+s_{c,g}^{(2)}
+=
+\begin{cases}
+\operatorname{float16}\!\left(a_{c,g}^{(2)}/127\right),&a_{c,g}^{(2)}>0,\\
+1,&a_{c,g}^{(2)}=0.
+\end{cases}
+$$
+
+量化残差和第二层解码为
+
+$$
 q_{c,j}^{(2)}
 =
 \operatorname{clip}
@@ -1191,6 +1620,14 @@ $$
 
 **符号说明：**\(e_{c,j}\)是第一层未表达的残差；\(q_{c,j}^{(2)}\)是第二层INT8码；\(s_{c,g(j)}^{(2)}\)是第二层尺度；\(\widehat w_{c,j}\)是最终解码权重。双层结构是两组INT8近似相加，不是把单个元素改写为INT16。
 
+截距不做两层INT8残差编码，而是直接保存为
+
+$$
+\widehat b_c=\operatorname{float16}\!\left(b_c^{(0)}\right).
+$$
+
+**符号说明：**\(b_c^{(0)}\)是模块五输出的最终浮点截距；\(\widehat b_c\)是冻结状态中的FP16截距。系数与截距采用不同精度，是因为当前编译器的状态格式规定系数按组INT8编码、截距单独按FP16保存。
+
 ### 9.2状态内容与query计算
 
 冻结状态抽象为
@@ -1205,12 +1642,11 @@ $$
 \mathbf S^{(1)},
 \mathbf S^{(2)},
 \widehat{\mathbf b},
-\mathbf m_{\mathrm o},
 \mathcal A
 \right).
 $$
 
-**符号说明：**\(\mathcal C\)是有序类别表；\(\mathbf Q^{(1)},\mathbf Q^{(2)}\)是两层INT8系数矩阵；\(\mathbf S^{(1)},\mathbf S^{(2)}\)是尺度；\(\widehat{\mathbf b}\)是FP16截距；\(\mathbf m_{\mathrm o}\)是旧类适配使用的冻结对角metric；\(\mathcal A\)是配置、绑定与数值审计字段。状态不保存历史support IQ、query样本、query真值或可更新的query统计量。
+**符号说明：**\(\mathcal C\)是有序类别表；\(\mathbf Q^{(1)},\mathbf Q^{(2)}\)是两层INT8系数矩阵；\(\mathbf S^{(1)},\mathbf S^{(2)}\)是按“类别×坐标组”保存的FP16尺度表；\(\widehat{\mathbf b}\)是FP16截距；\(\mathcal A\)是特征维度、块边界、状态版本和数值审计等只读元数据。这个状态不包含旧类对角metric、历史support IQ、协方差矩阵、query样本、query真值或可更新的query统计量。
 
 query分数为
 
@@ -1229,8 +1665,8 @@ $$
 两种说法都正确，但对应不同层次：
 
 1.每条support先独立提取特征；可串行也可批量前向。
-2.模块二和模块三按类别分别计算中心、权重和类内协方差。
-3.模块四开始把本批全部旧类和新类一起汇总；共享协方差、LDA、留一融合和量化状态都重新编译。
+2.模块二按类别分别计算中心和权重；模块三按类别形成类内残差。
+3.模块三先为本批每个旧类和新类各自得到\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)，模块四再分别按旧/新任务等权平均；共享协方差、全部类别LDA行、留一融合和量化状态都重新编译。
 
 设本次一起注册\(N\)个新类，则
 
@@ -1239,8 +1675,8 @@ C=C_{\mathrm o}+N,
 \qquad
 \boldsymbol\Sigma_{\mathrm n}^{(N)}
 =
-\frac1N\sum_{n=1}^{N}
-\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_n,
+\frac1N\sum_{c\in\mathcal Y_{\mathrm n}}
+\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c,
 \qquad
 \boldsymbol\Sigma_{\mathrm{bal}}^{(N)}
 =
@@ -1248,9 +1684,9 @@ C=C_{\mathrm o}+N,
 +\frac12\boldsymbol\Sigma_{\mathrm n}^{(N)}.
 $$
 
-**符号说明：**\(N\)是本次批量登记的新类数量；\(C_{\mathrm o}\)是旧类数；\(C\)是总注册类数；\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_n\)是第\(n\)个新类的类内协方差；\(\boldsymbol\Sigma_{\mathrm n}^{(N)}\)是本批新类的任务协方差；\(\boldsymbol\Sigma_{\mathrm{bal}}^{(N)}\)是注册后共享几何。
+**符号说明：**\(N=|\mathcal Y_{\mathrm n}|\)是本次批量登记的新类数量；\(C_{\mathrm o}\)是旧类数；\(C\)是总注册类数；\(\widehat{\boldsymbol\Sigma}^{\mathrm{LW}}_c\)是新类\(c\)只由自己的support计算的自动收缩协方差；\(\boldsymbol\Sigma_{\mathrm n}^{(N)}\)是本批新类的等先验任务协方差；\(\boldsymbol\Sigma_{\mathrm{bal}}^{(N)}\)是注册后共享几何。求和的索引是\(c\)，所以被平均的是新类集合中的每一个类别，而不是“第\(n\)条support”。
 
-这意味着增加新类并非只增加一条新类别行。它还会改变共享协方差，进而改变旧类和新类全部判别行。一次一个新类连续到达时，每次都可按同一算法重新注册；但这不是低成本的局部追加。一次同时登记多个新类时，局部统计量数量随\(N\)增加，而一次共享协方差求解、全类LDA和留一重建则作用于更大的总类集合。
+这意味着增加新类并非只增加一条新类别行。它先增加\(N\)份独立的“类内统计工作”，再改变新任务平均协方差，最终改变旧类和新类的全部判别行。一次一个新类连续到达时，系统会为每一次新到类重复一次共享协方差、全类LDA、LOO和量化编译；一次同时登记\(N\)个新类时，这\(N\)份局部统计仍都要做，但共享几何与全类编译只做一次。因此批量注册不会把每个新类的类内统计变成免费，却避免了\(N\)次重复的全局重编译。
 
 ## 11.计算量、存储与星上适用性
 
