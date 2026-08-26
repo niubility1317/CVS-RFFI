@@ -214,6 +214,11 @@ def test_prediction_is_truth_blind_and_emits_two_reg0_arms(tmp_path, monkeypatch
         "frombuffer",
         lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("NumPy buffer bridge used")),
     )
+    monkeypatch.setattr(
+        torch.Tensor,
+        "numpy",
+        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("Torch NumPy bridge used")),
+    )
     receipt = run_old_only_prediction(
         bundle_path=tmp_path / "bundle.pt",
         support_path=tmp_path / "support.npz",

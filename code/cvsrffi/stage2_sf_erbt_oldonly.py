@@ -291,7 +291,7 @@ def _extract_identity160(model: torch.nn.Module, rows: np.ndarray, device: torch
     values = torch.tensor(contiguous.tolist(), dtype=torch.float32, device=device)
     with torch.inference_mode():
         embeddings = _extract_joint_embedding(_forward_aux(model, values), len(contiguous))
-    result = embeddings.detach().cpu().numpy().astype(np.float32, copy=False)
+    result = np.asarray(embeddings.detach().cpu().tolist(), dtype=np.float32)
     if result.shape != (len(contiguous), 160) or not np.isfinite(result).all():
         raise OldOnlyERBTError("SF identity160 output geometry drift")
     return result
@@ -377,7 +377,9 @@ def run_old_only_prediction(
             dtype=torch.float32,
             device=target_device,
         )
-        head_columns = torch.argmax(head(query_tensor), dim=1).cpu().numpy().astype(np.int64)
+        head_columns = np.asarray(
+            torch.argmax(head(query_tensor), dim=1).cpu().tolist(), dtype=np.int64
+        )
         sf_head_predictions = np.asarray(head.class_ids, dtype=np.int64)[head_columns]
     support_fft = make_fft96(support_iq)
     query_fft = make_fft96(query_iq)
