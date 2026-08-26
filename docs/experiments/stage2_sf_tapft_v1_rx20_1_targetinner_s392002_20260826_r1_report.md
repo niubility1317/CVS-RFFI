@@ -5,7 +5,7 @@
 - run ID：`stage2_sf_tapft_v1_rx20_1_targetinner_s392002_20260826_r1`
 - 候选：`SF_TAPFT_V1_REPORT_DEFAULT`
 - 权限：`DIAGNOSTIC_NON_FORMAL`
-- Git commit：`1aad719c2f513fc8b9d85f1fe0586d4184fc2df7`
+- Git commit：`1023d70b37bccc7f5144e018b9045aad68ebd013`
 - 数据绑定：`protocol_schema=p2_min_v1`、`phase2_data_status=VALIDATED_ONCE`、`capsule_id=d18-enrollment-before-rx20-1-seed713101-k10-smoke-reuse`、`split_id=stage2b-rx20-1-seed713101-before-support-prefix`
 
 ## 可证伪矩阵与停止规则
@@ -20,7 +20,7 @@
 ## 版本与命令
 
 - 本地Git工作树：`E:\type10-7\github_publish\CVS-RFFI-repo\.worktrees\meta-adapter-tri-r4-v1-20260824`
-- N607 release目标：`/home/szu2070436088/2510044040/CV-SincNet/releases/stage2_sf_tapft_v1_rx20_1_targetinner_s392002_20260826_r1_fix2`
+- N607 release目标：`/home/szu2070436088/2510044040/CV-SincNet/releases/stage2_sf_tapft_v1_rx20_1_targetinner_s392002_20260826_r1_fix3`
 - N607 CWD：上述release目录。
 - smoke命令：`CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 code/scripts/run_target_only_progressive_adapt.py --config configs/stage2_sf_tapft_v1_rx20_1_clear_smoke_s392002_20260826.json --output-dir /home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_tapft_v1_rx20_1_targetinner_s392002_20260826_r1_smoke --device cuda:0`
 - 性能筛选命令：`CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -X utf8 code/scripts/run_target_only_progressive_nested.py --config configs/stage2_sf_tapft_v1_report_default_s392002_20260826.json --output-dir /home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_tapft_v1_rx20_1_targetinner_s392002_20260826_r1 --device cuda:0 --folds 4`
@@ -48,3 +48,4 @@
 - 原release目录保持不变作为失败证据；修复版使用新的`..._fix1`release目录，不覆盖旧release。
 - `fix1` smoke在support tensor构造时因N607的PyTorch2.1/NumPy桥接异常停止：`torch.from_numpy`拒绝实际`numpy.ndarray`；仍未创建smoke/run输出。
 - `fix2`提交`1aad719c2f513fc8b9d85f1fe0586d4184fc2df7`保留正常`from_numpy`快路径，仅在`TypeError`时对小型support数组使用列表构造tensor；故障注入聚焦测试通过。新的`..._fix2`release不覆盖前两版。
+- `fix2`随后进入适配器，但N607 PyTorch2.1缺少`torch.amp.GradScaler`，仍在首步更新前停止且未创建输出。`fix3`提交`1023d70b37bccc7f5144e018b9045aad68ebd013`在新API存在时使用新入口，否则回退`torch.cuda.amp.GradScaler`；20项聚焦测试通过。
