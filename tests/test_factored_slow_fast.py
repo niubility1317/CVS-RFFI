@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 import pytest
 import torch
 from torch.nn import functional as F
@@ -144,6 +146,29 @@ def test_full_support_guard_blocks_correct_to_wrong_and_reports_soft_tails() -> 
     assert "CORRECT_TO_WRONG" in audit["rejection_reasons"]
     assert "correct_margin_ratio_q10" in audit
     assert "worst_class_margin_cvar20" in audit
+
+
+def test_support_safety_audit_serializes_undefined_subgroup_metrics_as_null() -> None:
+    prototypes = torch.eye(2)
+    all_correct = F.normalize(
+        torch.tensor([[1.0, 0.1], [0.1, 1.0], [0.8, 0.2], [0.2, 0.8]]), dim=1
+    )
+    audit = support_safety_diagnostics(
+        all_correct,
+        all_correct,
+        torch.tensor([0, 1, 0, 1]),
+        prototypes,
+        coverage=0.8,
+        disagreement=0.1,
+        min_coverage=0.2,
+        max_disagreement=1.0,
+        min_correct_margin_q10=0.5,
+        min_wrong_margin_median=0.0,
+        min_class_margin_cvar=-0.1,
+    )
+
+    assert audit["wrong_margin_delta_median"] is None
+    json.dumps(audit, allow_nan=False)
 
 
 def test_scene_basis_diagnostics_report_angles_and_explained_ratio() -> None:

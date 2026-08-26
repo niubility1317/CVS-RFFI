@@ -27,4 +27,6 @@
 
 ## 结果
 
-待完整Git快照发布、truth-last评分和独立readback后填写。
+状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+
+完整Git快照的本地/远端SHA一致，远端编译、入口导入、B3 int8 bundle构建和真实checkpoint无query smoke均通过。正式evaluator的PID/CWD/cmdline/run-root绑定正确，日志从422B增长至2273B后，在严格JSON持久化阶段发现安全审计用`+inf`表示“无错误support子组，指标不适用”；`allow_nan=False`拒绝该值。输出文件仅为不完整partial prediction，未评分、未产生性能结果。根因修复为持久化`null`且门控语义不变；r2原样保留，同矩阵转入全新r3。

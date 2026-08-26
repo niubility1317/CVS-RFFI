@@ -359,8 +359,8 @@ def support_safety_diagnostics(
         reasons.append("CLASS_CODE_DISAGREEMENT")
     return {
         "correct_to_wrong_flips": flips,
-        "correct_margin_ratio_q10": ratio_q10,
-        "wrong_margin_delta_median": wrong_delta_median,
+        "correct_margin_ratio_q10": ratio_q10 if ratios.numel() else None,
+        "wrong_margin_delta_median": wrong_delta_median if wrong.any() else None,
         "worst_class_margin_cvar20": worst_cvar,
         "support_utility": support_utility,
         "coverage": float(coverage),
