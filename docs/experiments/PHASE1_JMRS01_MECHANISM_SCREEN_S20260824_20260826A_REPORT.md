@@ -71,7 +71,7 @@ M0没有训练，因此7个M0 history的`training_complete=false`和0 epoch表�
 |---|---|---|
 |TX|6个Phase1已知TX|是|
 |source day|day0=`2021_03_01`、day1=`2021_03_08`|是|
-|unseen day|day2=`2021_03_15`、day3=`2021_03_22`|否|
+|unseen day|day2=`2021_03_15`、day3=`2021_03_23`|否|
 |source receiver|receiver0—6，共7个|是|
 |target receiver|receiver7—11，共5个|否|
 |评估角色|source `V_select`|是|
