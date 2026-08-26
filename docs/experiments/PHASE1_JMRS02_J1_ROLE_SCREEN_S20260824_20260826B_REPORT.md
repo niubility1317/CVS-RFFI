@@ -56,4 +56,10 @@ RZ0/RZ1/RX1/D1P需同时满足：三LEO final mean gain>0、clean drop≤0.30pp�
 - B仅启动一次：launcher PID`3552879`，父调度shell PID`3552878`；首次检查CWD、cmdline、run ID和release路径一致。
 - 真实checkpoint无query smoke通过；正式日志随后进入`fold=rx0,row=RZ0,inner-LORO`。GPU0约848MiB、19%利用率，日志正常增长，无Traceback/OOM/NaN。
 
-当前状态：`RUNNING / REAL_CHECKPOINT_NO_QUERY_SMOKE_PASS / NO_PERFORMANCE_RESULT_YET`。
+## 七、B运行结果
+
+B通过真实checkpoint smoke并完成`rx0/RZ0`、`rx0/RZ1`的inner-LORO与outer模型保存，但在`rx0/RX1` inner-LORO训练中自然退出。异常为冻结Core90对校正IQ前向返回非有限`tx_logits/z_id`；launcher/runner已自然结束，GPU0释放，scorer未启动，prediction/truth尚未闭合。已生成的2个模型、2份训练历史、manifest、smoke产物和2280字节日志全部保留。
+
+根因边界：RX1前向在初始化smoke时有限且类别决策100%一致，但通过冻结Core90反传时可出现非有限输入梯度；原训练顺序先执行`clip_grad_norm_`，非有限梯度会污染RX1估计器参数，下一前向遂变为非有限。定点修复是在norm clipping前仅把非有限梯度元素置0、逐epoch记录数量，并把RX1学习率降为其他行的0.1倍；不改变其他row、数据、矩阵、gate和评价门槛。
+
+当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。B不得重复启动；仅允许全新C run验证定点修复。

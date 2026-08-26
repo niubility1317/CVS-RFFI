@@ -4,7 +4,7 @@ import pytest
 
 import torch
 
-from audit_phase1_jmrs02_j1 import smoke_bypass_audit, validate_j1_args
+from audit_phase1_jmrs02_j1 import sanitize_nonfinite_gradients, smoke_bypass_audit, validate_j1_args
 
 
 def _args(**overrides):
@@ -40,3 +40,14 @@ def test_rx1_smoke_uses_decision_parity_while_residual_rows_keep_logit_parity():
     assert rx1["prediction_agreement"] == 1.0
     assert rx1["max_abs_logit_delta"] > 0.0
     assert rz1["epoch0_bypass_pass"] is False
+
+
+def test_nonfinite_canonicalizer_gradients_are_sanitized_before_clipping():
+    model = torch.nn.Linear(2, 1)
+    model.weight.grad = torch.tensor([[float("nan"), float("inf")]])
+    model.bias.grad = torch.tensor([2.0])
+    count = sanitize_nonfinite_gradients(model)
+    assert count == 2
+    assert torch.isfinite(model.weight.grad).all()
+    assert model.weight.grad.abs().max() == 0.0
+    assert model.bias.grad.item() == 2.0

@@ -61,6 +61,25 @@ def smoke_bypass_audit(row: str, candidate_logits: Tensor, base_logits: Tensor) 
     }
 
 
+def sanitize_nonfinite_gradients(model: nn.Module) -> int:
+    """Zero only non-finite gradient elements before norm clipping.
+
+    Frozen Core90 can have finite logits but singular input derivatives.  RX1
+    must not let those derivatives poison its identity-initialized estimator.
+    The returned count is persisted in training history for auditability.
+    """
+    count = 0
+    for parameter in model.parameters():
+        gradient = parameter.grad
+        if gradient is None:
+            continue
+        invalid = ~torch.isfinite(gradient)
+        count += int(invalid.sum().item())
+        if bool(invalid.any()):
+            gradient.masked_fill_(invalid, 0.0)
+    return count
+
+
 def _phase_proxy(clean_iq: Tensor, changed_iq: Tensor) -> Tensor:
     def stats(iq: Tensor) -> tuple[Tensor, Tensor, Tensor, Tensor]:
         x = torch.complex(iq[:, 0], iq[:, 1])
@@ -135,7 +154,8 @@ def _train_model(
 ) -> list[dict[str, float]]:
     indices = _mask_indices(train_mask)
     generator = torch.Generator().manual_seed(int(seed))
-    optimizer = torch.optim.AdamW(model.parameters(), lr=float(args.learning_rate), weight_decay=1e-4)
+    effective_lr = float(args.learning_rate) * (0.10 if row == "RX1" else 1.0)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=effective_lr, weight_decay=1e-4)
     history: list[dict[str, float]] = []
     satellites = REQUIRED_SCENARIOS[1:]
     for epoch in range(1, int(epochs) + 1):
@@ -143,6 +163,7 @@ def _train_model(
         order = indices[torch.randperm(indices.numel(), generator=generator)]
         total = ce_total = preserve_total = gate_total = nuisance_total = 0.0
         steps = 0
+        sanitized_gradient_elements = 0
         for start in range(0, int(order.numel()), int(args.batch_size)):
             chosen = order[start : start + int(args.batch_size)]
             scenario = satellites[(epoch + steps - 1) % len(satellites)]
@@ -199,6 +220,7 @@ def _train_model(
                 raise FloatingPointError(f"non-finite J1 loss row={row} epoch={epoch} step={steps + 1}")
             optimizer.zero_grad(set_to_none=True)
             loss.backward()
+            sanitized_gradient_elements += sanitize_nonfinite_gradients(model)
             torch.nn.utils.clip_grad_norm_(model.parameters(), 5.0)
             optimizer.step()
             total += float(loss.detach().item())
@@ -211,6 +233,8 @@ def _train_model(
             "epoch": float(epoch), "loss": total / steps, "ce": ce_total / steps,
             "preserve": preserve_total / steps, "gate": gate_total / steps,
             "nuisance": nuisance_total / steps,
+            "learning_rate": effective_lr,
+            "sanitized_gradient_elements": float(sanitized_gradient_elements),
         })
     return history
 
