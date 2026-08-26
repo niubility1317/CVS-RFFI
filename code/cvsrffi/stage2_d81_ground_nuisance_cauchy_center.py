@@ -167,7 +167,10 @@ def translate_to_robust_centers(
     before_residual = x - before_means[y]
     after_residual = transformed - after_means[y]
     residual_error = float(np.max(np.abs(before_residual - after_residual)))
-    fft_rf_error = float(np.max(np.abs(transformed[:, Z_DIM:] - x[:, Z_DIM:])))
+    auxiliary = transformed[:, Z_DIM:] - x[:, Z_DIM:]
+    fft_rf_error = (
+        float(np.max(np.abs(auxiliary))) if auxiliary.shape[1] else 0.0
+    )
     if (
         not np.isfinite(transformed).all()
         or residual_error > 2.0e-12

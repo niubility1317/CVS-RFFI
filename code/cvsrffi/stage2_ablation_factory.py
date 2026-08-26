@@ -228,7 +228,7 @@ _OVERRIDES: dict[str, dict[str, Any]] = {
     "P2-256-FULL": {
         "feature_profile": "identity160_fft96_beta4_blocknorm_globalnorm",
     },
-    "P2-256-A0": {"feature_profile": "identity160_only"},
+    "P2-256-A0": {"feature_profile": "identity160_only_compact"},
     "P2-256-B0": {
         "feature_profile": "identity160_fft96_beta4_blocknorm_globalnorm",
         "center_profile": "support_plain_mean_no_ground_spectrum",

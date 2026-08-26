@@ -291,3 +291,14 @@ def test_stage2c_f2_publishes_complete_receipts_without_fp32_sidecar(
         match="output root",
     ):
         _run(tmp_path, ablation_id="P2-F2")
+
+
+def test_current_256d_row_resource_uses_the_compiled_head_dimension(
+    tmp_path: Path,
+) -> None:
+    """The published MAC count must use the 256D state, not a legacy 288D constant."""
+
+    receipt = _run(tmp_path, ablation_id="P2-256-FULL")
+    resource = receipt["resource"]
+    assert resource["query_head_mac"] == 11 * 256
+    assert resource["batch1_head_resource"]["query_head_mac"] == 11 * 256

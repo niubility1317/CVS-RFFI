@@ -18,6 +18,7 @@ import torch
 from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
 from cvsrffi import stage2_ablation_quantization as quantization
 from cvsrffi.stage2_ablation_factory import get_stage2_arm, resolve_stage2_config
+from cvsrffi.stage2_d42_compact_runtime import d42_runtime_for_feature_dim
 
 
 class Stage2AblationExecutionError(RuntimeError):
@@ -96,12 +97,14 @@ def _project_feature_profile(
     rows: np.ndarray,
     feature_profile: str,
 ) -> np.ndarray:
-    """Apply one locked D92 feature profile to final 288-D rows."""
+    """Apply one locked D92 feature profile to its active coordinate space."""
 
     values = _rows(rows, name="feature profile input")
     profile = str(feature_profile)
     if profile in {"full288", _FULL_FEATURE_PROFILE}:
         return values
+    if profile == "identity160_only_compact":
+        return _normalize(values[:, :160])
     if profile == "identity160_only":
         projected = np.zeros_like(values)
         projected[:, :160] = _normalize(values[:, :160])
@@ -115,10 +118,7 @@ def _project_feature_profile(
     auxiliary = values[:, 160:] * (np.sqrt(17.0) / 4.0)
     if profile == _FFT_ONLY_FEATURE_PROFILE:
         active = _normalize(auxiliary[:, :96])
-        selected = np.concatenate(
-            [active, np.zeros((len(values), 32), dtype=np.float32)],
-            axis=1,
-        )
+        return _normalize(np.concatenate([primary, 4.0 * active], axis=1))
     else:
         active = _normalize(auxiliary[:, 96:])
         selected = np.concatenate(
@@ -357,13 +357,14 @@ def _metric(
     old_targets: np.ndarray,
     old_count: int,
     *,
+    runtime: Any,
     enabled: bool,
     seed: int,
     device: Any,
 ) -> tuple[np.ndarray, tuple[dict[str, Any], ...], dict[str, Any]]:
     if not enabled:
         return (
-            np.zeros(d42.FEATURE_DIM, dtype=np.float32),
+            np.zeros(runtime.FEATURE_DIM, dtype=np.float32),
             (),
             {
                 "metric_enabled": False,
@@ -372,7 +373,7 @@ def _metric(
                 "peak_cuda_memory_bytes": 0,
             },
         )
-    log_diag, trace, resource = d42._fit_old_only_b3_metric(
+    log_diag, trace, resource = runtime._fit_old_only_b3_metric(
         old_rows,
         old_targets,
         old_count,
@@ -388,6 +389,7 @@ def _metric(
 def _component_builder(
     ablation_id: str,
     *,
+    runtime: Any,
     ground_basis: np.ndarray,
     ground_weights: np.ndarray,
     ground_audit: dict[str, Any],
@@ -427,7 +429,7 @@ def _component_builder(
                 )
             if module2_mode == "td_htrc_m21":
                 fit, _, _ = d92.build_td_htrc_fit(
-                    d42,
+                    runtime,
                     ground_basis,
                     ground_weights,
                     ground_audit,
@@ -438,7 +440,7 @@ def _component_builder(
                 )
             else:
                 fit, _, _ = d92.build_td_htrc_m22_fit(
-                    d42,
+                    runtime,
                     ground_basis,
                     ground_weights,
                     ground_audit,
@@ -467,7 +469,7 @@ def _component_builder(
     if ablation_id == "P2-256-S0":
         return (
             d92.build_d92_fit(
-                d42,
+                runtime,
                 ground_basis,
                 ground_weights,
                 ground_audit,
@@ -479,7 +481,7 @@ def _component_builder(
     if ablation_id == "P2-B0":
         return (
             d92.build_d92_fit(
-                d42,
+                runtime,
                 np.empty((160, 0), dtype=np.float64),
                 np.empty(0, dtype=np.float64),
                 {},
@@ -491,7 +493,7 @@ def _component_builder(
     if ablation_id == "P2-C3":
         return (
             d81.build_d81_fit(
-                d42,
+                runtime,
                 ground_basis,
                 ground_weights,
                 ground_audit,
@@ -533,7 +535,7 @@ def _component_builder(
                 [],
             )
         fit = d92.build_d92_fit(
-            d42,
+            runtime,
             ground_basis,
             ground_weights,
             ground_audit,
@@ -573,6 +575,7 @@ class Stage2AblationFittedState:
     classes: tuple[str, ...]
     old_class_count: int
     feature_profile: str
+    active_feature_dim: int
     score_kind: str
     log_diag_fp32: np.ndarray
     coefficient_fp32: np.ndarray
@@ -590,7 +593,12 @@ class Stage2AblationFittedState:
     def _prepared(self, features: Any) -> np.ndarray:
         values = _rows(features, name="query")
         prepared = _project_feature_profile(values, self.feature_profile)
-        prepared = d42._transform(prepared, self.log_diag_fp32)
+        if prepared.shape[1] != self.active_feature_dim:
+            raise Stage2AblationExecutionError(
+                "query active feature dimension drift"
+            )
+        runtime = d42_runtime_for_feature_dim(self.active_feature_dim)
+        prepared = runtime._transform(prepared, self.log_diag_fp32)
         if self.score_kind == "adapter_cosine_affine":
             from cvsrffi import (
                 stage2_trainable_lowrank_support_adapter as adapter,
@@ -693,6 +701,7 @@ def fit_stage2_ablation(
             classes=old_registry,
             old_class_count=len(old_registry),
             feature_profile="full288",
+            active_feature_dim=d42.FEATURE_DIM,
             score_kind="cosine_affine",
             log_diag_fp32=np.zeros(d42.FEATURE_DIM, dtype=np.float32),
             coefficient_fp32=coefficient,
@@ -762,6 +771,7 @@ def fit_stage2_ablation(
     )
     model_rows = _project_feature_profile(rows, feature_profile)
     model_old_rows = _project_feature_profile(old_rows, feature_profile)
+    runtime = d42_runtime_for_feature_dim(int(model_rows.shape[1]))
     metric_enabled = ablation_id not in {
         "P2-S2B-PROTO",
         "P2-S2B-DIAGOFF",
@@ -777,16 +787,17 @@ def fit_stage2_ablation(
         model_old_rows,
         old_targets,
         len(old_registry),
+        runtime=runtime,
         enabled=metric_enabled,
         seed=seed,
         device=device,
     )
-    transformed = d42._transform(model_rows, log_diag)
+    transformed = runtime._transform(model_rows, log_diag)
     score_kind = "affine"
-    support_bank = np.empty((0, d42.FEATURE_DIM), dtype=np.float32)
+    support_bank = np.empty((0, runtime.FEATURE_DIM), dtype=np.float32)
     support_targets = np.empty(0, dtype=np.int64)
-    adapter_u = np.empty((d42.FEATURE_DIM, 0), dtype=np.float32)
-    adapter_v = np.empty((d42.FEATURE_DIM, 0), dtype=np.float32)
+    adapter_u = np.empty((0, 0), dtype=np.float32)
+    adapter_v = np.empty((0, 0), dtype=np.float32)
     adapter_gate = np.empty(0, dtype=np.float32)
     started = time.perf_counter()
 
@@ -892,6 +903,7 @@ def fit_stage2_ablation(
             physical_id = "P2-FULL" if behavior_id == "P2-F3" else behavior_id
             fit, method = _component_builder(
                 physical_id,
+                runtime=runtime,
                 ground_basis=basis,
                 ground_weights=weights,
                 ground_audit=basis_audit,
@@ -946,9 +958,12 @@ def fit_stage2_ablation(
             stored_coefficient,
             stored_intercept,
             arm_id=quantization_arm,
+            block_sizes=tuple(
+                block.stop - block.start for block in runtime.BLOCK_SLICES
+            ),
         )
         stored_coefficient = np.empty(
-            (0, d42.FEATURE_DIM), dtype=np.float32
+            (0, runtime.FEATURE_DIM), dtype=np.float32
         )
         stored_intercept = np.empty(0, dtype=np.float32)
         score_kind = "compiled_affine"
@@ -988,6 +1003,10 @@ def fit_stage2_ablation(
             ),
             "module2_mode": module2_mode,
             "feature_profile": feature_profile,
+            "active_feature_dim": int(runtime.FEATURE_DIM),
+            "active_block_dims": tuple(
+                int(value) for value in runtime.BLOCK_DIMS
+            ),
         }
     )
     resource = {
@@ -1036,6 +1055,7 @@ def fit_stage2_ablation(
         classes=classes,
         old_class_count=len(old_registry),
         feature_profile=feature_profile,
+        active_feature_dim=int(runtime.FEATURE_DIM),
         score_kind=score_kind,
         log_diag_fp32=np.asarray(log_diag, dtype=np.float32),
         coefficient_fp32=stored_coefficient,

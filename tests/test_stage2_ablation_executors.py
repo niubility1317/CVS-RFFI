@@ -72,18 +72,13 @@ def _full_registered_feature_rows(row_count: int = 4) -> np.ndarray:
     return normalize(np.concatenate([primary, 4.0 * auxiliary], axis=1))
 
 
-def test_feature_profile_projection_reconstructs_fft_only_and_rf_only_geometry() -> None:
+def test_feature_profile_projection_reconstructs_compact_fft_and_legacy_rf_geometry() -> None:
     full = _full_registered_feature_rows()
     primary = full[:, :160] * np.sqrt(17.0)
     auxiliary = full[:, 160:] * (np.sqrt(17.0) / 4.0)
 
-    expected_fft_auxiliary = np.concatenate(
-        [
-            auxiliary[:, :96]
-            / np.linalg.norm(auxiliary[:, :96], axis=1, keepdims=True),
-            np.zeros((len(full), 32), dtype=np.float32),
-        ],
-        axis=1,
+    expected_fft_auxiliary = auxiliary[:, :96] / np.linalg.norm(
+        auxiliary[:, :96], axis=1, keepdims=True
     )
     expected_fft = np.concatenate(
         [
@@ -117,6 +112,7 @@ def test_feature_profile_projection_reconstructs_fft_only_and_rf_only_geometry()
         rtol=2e-6,
         atol=2e-6,
     )
+    assert expected_fft.shape == (len(full), 256)
     np.testing.assert_allclose(
         _project_feature_profile(full, "identity160_rf32_beta4_blocknorm_globalnorm"),
         expected_rf,
@@ -302,6 +298,35 @@ def test_current_256d_s0_reaches_active_fixed_ridge_registration_fit() -> None:
     assert state.audit["d92_covariance_mode"] == "empirical_fixed_ridge"
     assert state.compiled_affine_state is not None
     assert state.compiled_affine_state.arm_id == "P2-F3"
+    assert state.compiled_affine_state.feature_dim == 256
+    assert state.compiled_affine_state.block_offsets == (0, 160, 256)
+
+
+@pytest.mark.parametrize(
+    ("ablation_id", "expected_feature_dim", "expected_block_offsets"),
+    (
+        ("P2-256-FULL", 256, (0, 160, 256)),
+        ("P2-256-A0", 160, (0, 160)),
+    ),
+)
+def test_current_256d_arms_compile_only_their_active_feature_coordinates(
+    ablation_id: str,
+    expected_feature_dim: int,
+    expected_block_offsets: tuple[int, ...],
+) -> None:
+    """Catch zero-padding that silently turns the approved 256D path into 288D."""
+
+    fixture = _fixture(2)
+    state = fit_stage2_ablation(
+        ablation_id=ablation_id,
+        seed=820001,
+        device="cpu",
+        **fixture,
+    )
+    compiled = state.compiled_affine_state
+    assert compiled is not None
+    assert compiled.feature_dim == expected_feature_dim
+    assert compiled.block_offsets == expected_block_offsets
 
 
 def test_current_256d_catalogue_is_numerically_reachable_without_f0() -> None:

@@ -303,11 +303,12 @@ def _resource_receipt(
     row_orchestration_seconds: float,
 ) -> dict[str, Any]:
     candidate = candidate_states[-1]
+    feature_dim = int(candidate.active_feature_dim)
     batch1_resource = (
         dict(
             quantization.resource_report(
                 candidate.compiled_affine_state,
-                query_feature=np.zeros((1, 288), dtype=np.float32),
+                query_feature=np.zeros((1, feature_dim), dtype=np.float32),
                 latency_repeats=5,
                 latency_warmup=1,
             )
@@ -316,7 +317,6 @@ def _resource_receipt(
         else None
     )
     registered_count = len(candidate.classes)
-    feature_dim = 288
     return {
         "schema": RESOURCE_RECEIPT_SCHEMA,
         "feature_cache_bytes": int(feature_cache_bytes),
@@ -622,7 +622,7 @@ def execute_feature_row(
             )
             if (
                 coefficient.shape
-                != (len(after_state.classes), query.shape[1])
+                != (len(after_state.classes), after_state.active_feature_dim)
                 or intercept.shape != (len(after_state.classes),)
             ):
                 raise Stage2AblationRowExecutionError(
