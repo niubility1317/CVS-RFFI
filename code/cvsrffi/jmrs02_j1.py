@@ -78,6 +78,11 @@ def _zero_linear(layer: nn.Linear) -> None:
         nn.init.zeros_(layer.bias)
 
 
+def _safe_zero_rms(values: Tensor, eps: float = 1e-12) -> Tensor:
+    """RMS that is exactly zero and has a finite derivative at zero."""
+    return torch.sqrt(values.square().mean(1) + eps) - math.sqrt(eps)
+
+
 def _dct_basis(terms: int, length: int = 256) -> Tensor:
     n = torch.arange(length, dtype=torch.float32) + 0.5
     k = torch.arange(terms, dtype=torch.float32).unsqueeze(1)
@@ -164,9 +169,10 @@ class IQConditionedRCZ(_ResidualBase):
 
 
 class IdentityInitRCX(nn.Module):
-    def __init__(self, cfg: J1Config) -> None:
+    def __init__(self, cfg: J1Config, *, conditioning_enabled: bool = True) -> None:
         super().__init__()
         self.cfg = cfg
+        self.conditioning_enabled = bool(conditioning_enabled)
         self.register_buffer("basis", _dct_basis(cfg.smooth_basis), persistent=True)
         self.estimator = nn.Sequential(nn.Linear(35, 32), nn.GELU(), nn.Linear(32, 2 * cfg.smooth_basis))
         _zero_linear(self.estimator[-1])
@@ -176,7 +182,8 @@ class IdentityInitRCX(nn.Module):
     def forward(self, *, iq: Tensor, z_id: Tensor, base_logits: Tensor, domain: Tensor) -> J1Output:
         del domain
         condition = receiver_condition(iq)
-        coeff = torch.tanh(self.estimator(condition))
+        estimator_condition = condition if self.conditioning_enabled else torch.zeros_like(condition)
+        coeff = torch.tanh(self.estimator(estimator_condition))
         amp_coeff, phase_coeff = coeff.chunk(2, dim=1)
         amplitude_curve = 0.30 * (amp_coeff @ self.basis)
         phase_curve = 0.40 * (phase_coeff @ self.basis)
@@ -196,8 +203,8 @@ class IdentityInitRCX(nn.Module):
         gate_features = torch.stack(
             (
                 observable.float().mean(1),
-                amplitude_curve.square().mean(1).sqrt(),
-                phase_curve.square().mean(1).sqrt(),
+                _safe_zero_rms(amplitude_curve),
+                _safe_zero_rms(phase_curve),
                 condition[:, -3],
                 condition[:, -2],
                 condition[:, -1],
@@ -213,8 +220,8 @@ class IdentityInitRCX(nn.Module):
             diagnostics={
                 "fftshifted": torch.ones(iq.size(0), device=iq.device, dtype=torch.bool),
                 "valid_bin_fraction": observable.float().mean(1),
-                "correction_norm": amplitude_curve.square().mean(1).sqrt() + phase_curve.square().mean(1).sqrt(),
-                "role": "identity_initialized_waveform_canonicalizer",
+                "correction_norm": _safe_zero_rms(amplitude_curve) + _safe_zero_rms(phase_curve),
+                "role": "iq_conditioned_waveform_canonicalizer" if self.conditioning_enabled else "same_capacity_global_waveform_control",
             },
         )
 

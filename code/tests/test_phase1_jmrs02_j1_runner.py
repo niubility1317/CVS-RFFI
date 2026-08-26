@@ -4,7 +4,12 @@ import pytest
 
 import torch
 
-from audit_phase1_jmrs02_j1 import sanitize_nonfinite_gradients, smoke_bypass_audit, validate_j1_args
+from audit_phase1_jmrs02_j1 import (
+    _row_seed_offset,
+    sanitize_nonfinite_gradients,
+    smoke_bypass_audit,
+    validate_j1_args,
+)
 
 
 def _args(**overrides):
@@ -15,6 +20,7 @@ def _args(**overrides):
         cal_role="V_cal",
         audit_role="V_select",
         rows="B0,RZ0,RZ1,RX1,D1P,P0",
+        focused_rx2=False,
     )
     values.update(overrides)
     return Namespace(**values)
@@ -29,6 +35,15 @@ def test_target_access_and_joint_rows_are_rejected():
         validate_j1_args(_args(target_or_query_access=True))
     with pytest.raises(ValueError):
         validate_j1_args(_args(rows="B0,RDP"))
+
+
+def test_focused_rx2_requires_base_same_capacity_control_and_repair_row():
+    assert validate_j1_args(_args(rows="B0,RX0,RX2", focused_rx2=True)) == (
+        "B0", "RX0", "RX2"
+    )
+    with pytest.raises(ValueError, match="focused"):
+        validate_j1_args(_args(rows="B0,RX2", focused_rx2=True))
+    assert _row_seed_offset("RX0") != _row_seed_offset("RX2")
 
 
 def test_rx1_smoke_uses_decision_parity_while_residual_rows_keep_logit_parity():

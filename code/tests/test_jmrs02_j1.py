@@ -59,6 +59,21 @@ def test_rx1_is_identity_initialized_fftshifted_and_power_normalized():
     assert torch.allclose(raw_power, corrected_power, atol=1e-6, rtol=1e-5)
 
 
+def test_rx1_zero_initialized_correction_penalty_has_finite_gradients():
+    cfg = J1Config(z_dim=24, num_classes=6)
+    iq, z_id, base_logits, domain = _inputs()
+    model = build_j1_module("RX1", cfg)
+    output = model(iq=iq, z_id=z_id, base_logits=base_logits, domain=domain)
+    loss = output.diagnostics["correction_norm"].square().mean()
+    loss.backward()
+    estimator_gradients = [
+        parameter.grad for name, parameter in model.named_parameters()
+        if name.startswith("estimator.") and parameter.grad is not None
+    ]
+    assert estimator_gradients
+    assert all(torch.isfinite(gradient).all() for gradient in estimator_gradients)
+
+
 def test_d1p_uses_cepstral_residual_without_spectral_ratio_or_roll():
     cfg = J1Config(z_dim=24, num_classes=6)
     iq, z_id, base_logits, domain = _inputs()

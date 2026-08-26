@@ -26,6 +26,12 @@ from audit_phase1_jmrs01 import (
 )
 from cvsrffi.checkpoint_loading import build_exact_ssdg_model_from_checkpoint
 from cvsrffi.jmrs02_j1 import J1Config, J1Output, J1_ROWS, build_j1_module, validate_j1_rows
+from cvsrffi.jmrs02_rx2 import (
+    RX2_ROWS,
+    build_rx2_module,
+    real_core_backward_probe,
+    require_finite_gradients,
+)
 from train_phase1_ccoi_pa import (
     _limited,
     _move_batch,
@@ -43,9 +49,20 @@ def validate_j1_args(args: argparse.Namespace) -> tuple[str, ...]:
     if roles != ("L_s", "V_select", "V_cal", "V_select"):
         raise ValueError("JMRS02 J1 requires L_s/V_select/V_cal/V_select source roles")
     rows = tuple(x.strip().upper() for x in str(args.rows).split(",") if x.strip())
-    if validate_j1_rows(rows) != J1_ROWS:
+    if bool(getattr(args, "focused_rx2", False)):
+        if rows != RX2_ROWS:
+            raise ValueError(f"focused JMRS02 RX2 matrix must be exactly {RX2_ROWS}")
+    elif validate_j1_rows(rows) != J1_ROWS:
         raise ValueError(f"formal JMRS02 J1 matrix must be exactly {J1_ROWS}")
     return rows
+
+
+def _build_module(row: str, cfg: J1Config) -> nn.Module:
+    return build_rx2_module(row, cfg) if row in ("RX0", "RX2") else build_j1_module(row, cfg)
+
+
+def _row_seed_offset(row: str) -> int:
+    return J1_ROWS.index(row) if row in J1_ROWS else len(J1_ROWS) + RX2_ROWS.index(row)
 
 
 def smoke_bypass_audit(row: str, candidate_logits: Tensor, base_logits: Tensor) -> dict[str, Any]:
@@ -53,11 +70,11 @@ def smoke_bypass_audit(row: str, candidate_logits: Tensor, base_logits: Tensor) 
     agreement = float(candidate_logits.argmax(1).eq(base_logits.argmax(1)).float().mean().item())
     numeric_parity = bool(torch.allclose(candidate_logits, base_logits, atol=1e-5, rtol=1e-5))
     return {
-        "epoch0_bypass_pass": bool(agreement == 1.0) if row == "RX1" else numeric_parity,
+        "epoch0_bypass_pass": bool(agreement == 1.0) if row in ("RX0", "RX1", "RX2") else numeric_parity,
         "prediction_agreement": agreement,
         "numeric_logit_parity": numeric_parity,
         "max_abs_logit_delta": max_delta,
-        "criterion": "decision_parity" if row == "RX1" else "numeric_logit_parity",
+        "criterion": "decision_parity" if row in ("RX0", "RX1", "RX2") else "numeric_logit_parity",
     }
 
 
@@ -111,7 +128,7 @@ def _forward_candidate(
     base: nn.Module,
 ) -> J1Output:
     output = model(iq=iq, z_id=z_id, base_logits=base_logits, domain=domain)
-    if row == "RX1":
+    if row in ("RX0", "RX1", "RX2"):
         corrected_logits, corrected_z = _base_forward(base, output.corrected_iq, domain)
         output.final_logits = corrected_logits
         output.residual_logits = corrected_logits - base_logits
@@ -154,7 +171,7 @@ def _train_model(
 ) -> list[dict[str, float]]:
     indices = _mask_indices(train_mask)
     generator = torch.Generator().manual_seed(int(seed))
-    effective_lr = float(args.learning_rate) * (0.10 if row == "RX1" else 1.0)
+    effective_lr = float(args.learning_rate) * (0.10 if row in ("RX0", "RX1", "RX2") else 1.0)
     optimizer = torch.optim.AdamW(model.parameters(), lr=effective_lr, weight_decay=1e-4)
     history: list[dict[str, float]] = []
     satellites = REQUIRED_SCENARIOS[1:]
@@ -220,7 +237,11 @@ def _train_model(
                 raise FloatingPointError(f"non-finite J1 loss row={row} epoch={epoch} step={steps + 1}")
             optimizer.zero_grad(set_to_none=True)
             loss.backward()
-            sanitized_gradient_elements += sanitize_nonfinite_gradients(model)
+            if row in ("RX0", "RX2"):
+                health = require_finite_gradients(model)
+                sanitized_gradient_elements += int(health["nonfinite_elements"])
+            else:
+                sanitized_gradient_elements += sanitize_nonfinite_gradients(model)
             torch.nn.utils.clip_grad_norm_(model.parameters(), 5.0)
             optimizer.step()
             total += float(loss.detach().item())
@@ -295,7 +316,7 @@ def _inner_loro_audit(row: str, cfg: J1Config, train_cache, select_cache, outer_
         return []
     results = []
     for index, inner_held in enumerate(r for r in source_receivers if r != outer_held):
-        model = build_j1_module(row, cfg).to(device)
+        model = _build_module(row, cfg).to(device)
         mask = train_cache.receiver.ne(outer_held) & train_cache.receiver.ne(inner_held)
         _train_model(row, model, train_cache, mask, base=base, device=device, args=args, epochs=int(args.inner_epochs), seed=int(args.seed) + outer_held * 1000 + inner_held * 17)
         audit_mask = select_cache.receiver.eq(inner_held)
@@ -382,6 +403,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--cal_role", default="V_cal", choices=("V_cal",))
     parser.add_argument("--audit_role", default="V_select", choices=("V_select",))
     parser.add_argument("--target_or_query_access", action="store_true", default=False)
+    parser.add_argument("--focused_rx2", action="store_true", default=False)
     parser.add_argument("--smoke_only", action="store_true")
     parser.add_argument("--dry_run", action="store_true")
     return parser
@@ -407,18 +429,22 @@ def run(args: argparse.Namespace) -> int:
     base, checkpoint_audit = build_exact_ssdg_model_from_checkpoint(checkpoint, input_len=int(data_ctx["input_len"]), device=device, ssdg_module=ssdg)
     base = freeze_base_model(base)
     _, smoke_batch = next(iter(_limited(data_ctx["train_loader"], 1)))
-    smoke_iq, _, smoke_domain, _ = _move_batch(ssdg, smoke_batch, device, data_ctx["domain_label_map"])
+    smoke_iq, smoke_tx, smoke_domain, _ = _move_batch(ssdg, smoke_batch, device, data_ctx["domain_label_map"])
     smoke_base, smoke_z = _base_forward(base, smoke_iq, smoke_domain)
     cfg = J1Config(z_dim=int(smoke_z.size(1)), num_classes=int(smoke_base.size(1)), seed=int(args.seed))
     smoke = {}
     for row in rows[1:]:
-        model = build_j1_module(row, cfg).to(device)
+        model = _build_module(row, cfg).to(device)
         out = _forward_candidate(row, model, iq=smoke_iq, z_id=smoke_z, base_logits=smoke_base, domain=smoke_domain, base=base)
         smoke[row] = {
             "finite": bool(torch.isfinite(out.final_logits).all()),
             "parameter_count": sum(p.numel() for p in model.parameters() if p.requires_grad),
             **smoke_bypass_audit(row, out.final_logits, smoke_base),
         }
+        if row in ("RX0", "RX2"):
+            smoke[row]["real_core_backward"] = real_core_backward_probe(
+                model, out.final_logits, smoke_tx, out.diagnostics["correction_norm"]
+            )
     if not all(x["finite"] and x["epoch0_bypass_pass"] and x["parameter_count"] <= 50_000 for x in smoke.values()):
         raise RuntimeError("JMRS02 J1 real-checkpoint smoke failed")
     _write_json(output / "protocol_and_smoke.json", {"status": "REAL_CHECKPOINT_NO_QUERY_SMOKE_PASS", "rows": rows, "scenarios": REQUIRED_SCENARIOS, "checkpoint_audit": checkpoint_audit, "source_roles": data_ctx["split_info"], "smoke": smoke, "target_or_query_access": False, "spectral_ratio_removed": True})
@@ -449,9 +475,9 @@ def run(args: argparse.Namespace) -> int:
                 inner = []
             else:
                 print(f"[JMRS02-J1] fold={fold} row={row} inner-LORO", flush=True)
-                inner = _inner_loro_audit(row, cfg, train_cache, select_cache, held_receiver, source_receivers, base=base, device=device, args=args)
-                model = build_j1_module(row, cfg).to(device)
-                history = _train_model(row, model, train_cache, partition.train, base=base, device=device, args=args, epochs=int(args.outer_epochs), seed=int(args.seed) + held_receiver * 101 + J1_ROWS.index(row))
+                inner = [] if bool(args.focused_rx2) else _inner_loro_audit(row, cfg, train_cache, select_cache, held_receiver, source_receivers, base=base, device=device, args=args)
+                model = _build_module(row, cfg).to(device)
+                history = _train_model(row, model, train_cache, partition.train, base=base, device=device, args=args, epochs=int(args.outer_epochs), seed=int(args.seed) + held_receiver * 101 + _row_seed_offset(row))
                 gate = _calibrate_gate(row, model, cal_cache, partition.cal, base=base, device=device, batch_size=int(args.eval_batch_size))
                 torch.save({"row": row, "held_receiver": held_receiver, "config": asdict(cfg), "state_dict": {k: v.detach().cpu() for k, v in model.state_dict().items()}, "gate": gate}, output / "models" / f"{fold}_{row}.pt")
                 _write_json(output / "training_history" / f"{fold}_{row}.json", {"inner_loro": inner, "outer_history": history})
