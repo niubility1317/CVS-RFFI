@@ -103,6 +103,12 @@ def _values(extra, key, count):
     return result
 
 
+def _metadata_tensor(metadata, key: str, count: int, device):
+    """Read an already-unpacked truth-hidden metadata field as a label tensor."""
+
+    return torch.as_tensor(_values(metadata, key, count), device=device, dtype=torch.long)
+
+
 def _truth_hidden_inputs(batch, device):
     x_value, domain_payload = train_ssdg._move_muse_unlabeled_batch(batch, device)
     domains, metadata = domain_payload
@@ -143,7 +149,7 @@ def generate(args) -> int:
         for batch in audit_loader:
             x_select, domains, extra = _truth_hidden_inputs(batch, device)
             count = int(x_select.shape[0])
-            receivers = train_ssdg._metadata_label_tensor(extra, "rx_i", device, count)
+            receivers = _metadata_tensor(extra, "rx_i", count, device)
             weak_2 = train_ssdg._strong_augment(
                 x_select, max(1e-5, float(work_args.strong_noise_std) * 0.25)
             )
