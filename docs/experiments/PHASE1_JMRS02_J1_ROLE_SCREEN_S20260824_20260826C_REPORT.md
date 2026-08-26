@@ -34,4 +34,13 @@ RZ0/RZ1/RX1/D1P需同时满足三LEO final mean gain>0、clean drop≤0.30pp、�
 
 梯度定点测试先RED后GREEN；J1专项15项通过，`py_compile`通过。B状态为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，不会重复启动。
 
-当前状态：`LOCAL_VERIFIED / NOT_LANDED / NO_C_EXPERIMENT_LAUNCHED`。
+## 六、发布与启动
+
+- release Git状态：`bd6b56269bdeca9919012fea6981dc9d112cb958`；实际修复代码commit为`8f098f46c14a589bfd08fcbb6a4dfbeca7906bff`。
+- 完整Git归档：`PHASE1_JMRS02_J1_ROLE_SCREEN_S20260824_20260826C_FULL_bd6b5626.zip`；SHA-256=`438758bd5e330682e7b65324927fcabcb6589a39bc65233fb539c38b0b56681f`，本地与N607一致。
+- 远端release CWD：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_jmrs02_j1_20260826/bd6b56269bdeca9919012fea6981dc9d112cb958`；N607原生`py_compile`和`bash -n`通过。
+- 启动前C的formal/smoke输出根均不存在，没有既有J1 runner，GPU0空闲。
+- C仅启动一次：launcher PID`3574201`，父调度shell PID`3574200`；首次核对CWD/cmdline/run ID/release路径一致。
+- 真实checkpoint无query smoke通过；日志进入`fold=rx0,row=RZ0,inner-LORO`。GPU0约848MiB、16%利用率，日志增长正常，无Traceback/OOM/NaN。
+
+当前状态：`RUNNING / REAL_CHECKPOINT_NO_QUERY_SMOKE_PASS / NO_PERFORMANCE_RESULT_YET`。
