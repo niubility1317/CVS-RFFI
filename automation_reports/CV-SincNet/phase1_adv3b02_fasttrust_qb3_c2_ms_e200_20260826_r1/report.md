@@ -100,3 +100,83 @@
 - `r4`已完成训练、Clean及`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`终评，无Traceback、RuntimeError或OOM。GPU角色交换后，epoch2–6训练batch下降8.831%，U吞吐提高8.875%；计入6.530秒构建后，E6训练阶段净耗时由435.603秒降至405.684秒。
 - `r3+r4`交叉均值为：稳定epoch训练batch由69.153秒降至64.994秒，下降6.014%（1.0640×）；U吞吐由690.49升至730.24样本/秒，提高5.756%；计入平均6.296秒构建后，E6净耗时下降4.708%。按E200稳定epoch线性外推约节省825.5秒，即13.76分钟。完整数值见`anchor_cache_speed_cross_results.json`。
 - 速度优化结论：缓存机制通过实现、TDD、独立P0/P1复审、两个GPU位置交叉E6及四场景artifact闭合，允许作为后续正式release的训练速度优化；开关仍默认关闭，当前已运行的正式C2不热补丁。E6准确率波动不用于cache性能归因，也不替代E200方法验证。
+
+## 正式C2训练、artifact与分析闭合
+
+2026-08-27 00:08 CST完成最终只读核验。两个训练PID均已正常退出，GPU4、GPU5已释放；dispatcher和两行日志均未出现Traceback、RuntimeError、CUDA OOM、Killed或确定性错误指纹。本节严格区分三个状态：
+
+- 训练完成：`VERIFIED`。seed713101、seed713102均具有连续E1–E200的200条JSONL记录和200条CSV记录，训练完成receipt为true，final checkpoint epoch均为200。
+- artifact完整：`VERIFIED`。两行均具有`final_ssdg.pth`、Clean、`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`独立JSON与日志，以及15个receiver×LEO单元的联合指标。每个场景评测60000条样本、5个未见receiver、每个receiver12000条；严格加载开启，missing/unexpected/shape mismatch均为0，未使用fallback。
+- 分析完成：`VERIFIED`。已下载并逐行解析两行全部结构化epoch记录，全文扫描训练、四场景和联合评测日志及dispatcher日志；C0/C3沿用此前同样全文解析的同row摘要，不用tail或样本替代最终分析。
+
+两行final checkpoint大小均为15758996字节；seed713101、seed713102墙钟分别为9.738小时和9.631小时，峰值显存均约3.205GiB。本run最高交付状态为`ANALYZED`，但交付闭合不自动等于科学晋级。
+
+## 正式C2逐seed结果
+
+| seed | Clean | Clean receiver floor | leo_clear_weak | leo_low_elev_weak | leo_rain_weak | LEO均值 | 场景floor | receiver×LEO floor |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 392002 | 84.8867 | 70.5583 | 75.6667 | 73.0567 | 72.4333 | 73.7189 | 72.4333 | 57.0750 |
+| 713101 | 85.5433 | 74.4917 | 75.5267 | 72.9883 | 73.0333 | 73.8494 | 72.9883 | 58.5583 |
+| 713102 | 84.1333 | 70.2917 | 74.7617 | 72.7067 | 72.4667 | 73.3117 | 72.4667 | 57.4417 |
+| 三seed均值±样本标准差 | 84.8544±0.7056 | — | — | — | — | 73.6267±0.2805 | 72.6294±0.3113 | 57.6917±0.7726 |
+
+这里没有拼接不同seed或不同候选的单项最大值；每一行都对应同一个seed、同一个候选和同一个final checkpoint。
+
+## C0↔C2↔C3同row因果拆分
+
+C0关闭U身份损失，C2增加H+P-set，C3在C2上增加P-conditional。因此在冻结的同seed比较中，`C2-C0`解释H+P-set联合贡献，`C3-C2`解释P-conditional增量，`C3-C0`只解释二者合计；不能把C2-C0全部写成P-set单独贡献，因为H也同时开启。
+
+| seed | 候选 | Clean | LEO均值 | 场景floor | receiver×LEO floor |
+|---:|---|---:|---:|---:|---:|
+| 392002 | C0 | 84.4000 | 73.5589 | 72.2083 | 57.2417 |
+| 392002 | C2 | 84.8867 | 73.7189 | 72.4333 | 57.0750 |
+| 392002 | C3 | 85.2017 | 73.8667 | 72.5450 | 57.6167 |
+| 713101 | C0 | 84.7050 | 73.6006 | 72.7333 | 58.4000 |
+| 713101 | C2 | 85.5433 | 73.8494 | 72.9883 | 58.5583 |
+| 713101 | C3 | 85.7067 | 73.8411 | 72.9267 | 58.2750 |
+| 713102 | C0 | 84.0067 | 73.1267 | 72.2100 | 57.7833 |
+| 713102 | C2 | 84.1333 | 73.3117 | 72.4667 | 57.4417 |
+| 713102 | C3 | 84.6383 | 73.5389 | 72.6717 | 58.0250 |
+
+三seed配对平均贡献如下：
+
+| 因果增量 | Clean | LEO均值 | 场景floor | receiver×LEO floor | 一致性 |
+|---|---:|---:|---:|---:|---|
+| H+P-set：C2-C0 | +0.4839pp | +0.1980pp | +0.2456pp | -0.1167pp | 前三项3/3为正；receiver×LEO仅1/3为正 |
+| P-conditional：C3-C2 | +0.3278pp | +0.1222pp | +0.0850pp | +0.2806pp | seed713101的后三项为负；其余2seed为正 |
+| 合计：C3-C0 | +0.8117pp | +0.3202pp | +0.3306pp | +0.1639pp | Clean和LEO均值3/3为正；receiver×LEO为2/3为正 |
+
+三seed候选均值为：C0的LEO均值/场景floor/receiver×LEO floor=`73.4287/72.3839/57.8083`，C2=`73.6267/72.6294/57.6917`，C3=`73.7489/72.7144/57.9722`。所以C2稳定提高平均LEO和场景floor，但没有保住最坏receiver×LEO单元；P-conditional在均值上补回局部floor，却不是逐seed稳定修复。
+
+## 伪标签质量与真实梯度利用结论
+
+独立truth-last质量审计已经证明：H覆盖22.9048%、精度99.7574%，最弱receiver/day H精度97.6744%；P-set覆盖99.0291%，平均集合大小2.098，set-safe条件排序准确率96.1676%。因此当前主要问题不是总体伪标签精度不足，而是交叉长尾和单位伪标签的有效梯度利用不足。class×receiver最弱P-set覆盖只有50.0%，与C2的receiver×LEO floor没有稳定改善相互一致。
+
+修复后的真实共享参数遥测在两行的E1/E41/E91/E161/E181/E200均触发。E41以后H与P-set梯度不再错误记录为0，证明计算图绑定已修复；但`g_identity/g_L`多处只有约`1e-8`至`2.5e-5`，H/P-set相对labeled梯度余弦在正负之间波动，没有形成稳定同向信息。结论是“高质量伪标签已经进入实际梯度图，但利用强度偏弱且方向不稳定”，不能声称当前预算已充分转化为表征收益。
+
+当前release仍复现旧Sinc首batch异常：两个seed均在E1 batch1首先出现`id_backbone.sinc.low_hz_`的24个NaN梯度，loss本身有限；两行估计分别跳过36和38个非有限梯度batch，约占0.0870%和0.0918%。该异常不是C2特有，训练和终评仍完整闭合；已经完成的`torch.sinc`+FP32滤波器合成修复将在下一release使用，不对本run热补丁或重写结果。
+
+## 训练速度最终结论
+
+当前C2正式行没有启用后续anchor cache，因此9.63–9.74小时墙钟不能用于宣称缓存后的E200实测加速。独立r3+r4交叉E6已给出稳定epoch训练batch下降6.014%、U吞吐提高5.756%、计入构建后E6净下降4.708%，线性外推E200节省约13.76分钟；这一结论只证明工程速度优化可进入下一正式release，不替代下一候选的E200速度读回。
+
+下一release同时启用已验证的FP16语义保持anchor cache和Sinc数值修复；两者分别解决重复anchor前向和共享前端NaN，不改变伪标签科学变量。正式结果仍需报告真实E200墙钟，不能只复述短跑外推。
+
+## 晋级判定与下一候选
+
+- 实验交付：`ANALYZED`。
+- C2科学信号：`MULTI_SEED_POSITIVE_MEAN_AND_SCENARIO_SIGNAL`。
+- C2默认方法晋级：`NO_PROMOTION_TO_DEFAULT`。
+- C3/P-conditional晋级：`NO_PROMOTION`。
+
+不晋级的直接原因不是低总体质量，而是C2的receiver×LEO floor相对C0在2/3seed下降、三seed均值下降0.1167pp；P-conditional虽然平均补回0.2806pp，但seed713101反向，不能当作稳定floor修复。同时，class×receiver P-set覆盖最弱单元只有50%，真实身份梯度强度仍极小且方向波动。
+
+下一候选冻结为`C2-RG1`：保留H+P-set、继续关闭P-conditional，不扩大H/P预算和唯一伪标签数量；只根据source-only质量审计加入receiver×class小样本风险门控，使证据不足的P样本退回R，并对实际共享参数做轻量梯度归一化/上限约束，目标是提高单位U身份信息而不是增加覆盖。工程侧启用FP16 anchor cache和Sinc FP32修复。首轮仍采用单seed同row C0↔C2-RG1最小矩阵；晋级门要求LEO均值与场景floor不低于当前C2，同时receiver×LEO floor相对同seed C0不下降。不得使用target结果调receiver、class或阈值参数。
+
+## 可复算交付物
+
+- 完整分析脚本：`analyze_c2_results.py`。
+- 机器可读终局摘要：`c2_final_analysis_summary.json`。
+- 伪标签质量摘要：`c2_existing_checkpoint_quality_score.json`。
+- anchor cache交叉速度摘要：`anchor_cache_speed_cross_results.json`。
+- C2两个正式行的完整本地artifact副本保存在非Git分析输入目录`detailed_analysis_inputs/`；Git只发布本次报告、分析脚本和机器可读结果，不推送checkpoint或大体积训练日志。
