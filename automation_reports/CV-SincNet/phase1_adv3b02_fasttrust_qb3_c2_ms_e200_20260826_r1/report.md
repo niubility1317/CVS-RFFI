@@ -89,3 +89,5 @@
 - live与cached anchor前向使用完全相同的AMP开关。独立审查首轮发现两者AMP上下文不一致的P1，修复后定点复审结论`CLOSED`。
 - 本地缓存、RNG、launcher和既有QB3相邻回归共`30 passed`，Python编译通过；预登记E6同seed配对矩阵只改变`cache_anchor_logits=false/true`，GPU6/7、seed392002、U256、eval512和逐epoch恢复点完全一致。
 - E6的主要速度判据为epoch2–6的`muse/time_train_batches_s`与`muse/u_samples_per_s`配对差异；另报告一次性`[RC4-ANCHOR-CACHE] build_s`并给出6epoch及E200摊销，避免只看epoch内速度而忽略缓存构建成本。
+- 首次速度launcher尝试`phase1_adv3b02_fasttrust_qb3_anchor_cache_speed_e6_20260826_r1`在训练进程创建前即退出：专用launcher默认把`CODE_ROOT`指向项目根，而归档只解压到独立release。该尝试没有run root、checkpoint或训练PID，仅保留启动失败日志，状态为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+- 修复后专用launcher默认从自身路径解析release根；为保持run ID和输出不可覆盖，真实速度验证改用新ID`phase1_adv3b02_fasttrust_qb3_anchor_cache_speed_e6_20260826_r2`，矩阵科学变量不变。

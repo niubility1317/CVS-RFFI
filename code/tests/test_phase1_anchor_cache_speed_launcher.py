@@ -32,4 +32,6 @@ def test_anchor_cache_speed_launcher_and_matrix_runner_propagate_the_flag():
     runner = MATRIX_LAUNCHER.read_text(encoding="utf-8")
 
     assert "phase1_adv3b02_fasttrust_qb3_anchor_cache_speed_e6_20260826.json" in launcher
+    assert 'SCRIPT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"' in launcher
+    assert 'CODE_ROOT="${CODE_ROOT:-${SCRIPT_ROOT}}"' in launcher
     assert 'RC4_CACHE_ANCHOR_LOGITS="${cache_anchor_logits}"' in runner
