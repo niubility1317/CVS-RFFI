@@ -94,3 +94,13 @@ def test_generator_cli_cannot_accept_truth_and_truth_export_is_a_separate_comman
 
     assert not hasattr(generate_args, "truth_out")
     assert truth_args.func is module.extract_truth
+
+    batch = (
+        torch.ones(2, 2, 8),
+        torch.tensor([3, 4]),
+        {"rx_i": torch.tensor([0, 1]), "base_index": torch.tensor([10, 11])},
+    )
+    x_value, domains, metadata = module._truth_hidden_inputs(batch, torch.device("cpu"))
+    assert tuple(x_value.shape) == (2, 2, 8)
+    assert domains.tolist() == [3, 4]
+    assert "rx_i" in metadata

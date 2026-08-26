@@ -38,3 +38,9 @@
 - 独立P0/P1审查首轮发现同进程truth接触和launcher默认矩阵两项问题；定点修复后复审结论为`READY`，未增加白名单外gate。
 - 本机Git Bash探针为`MSYSTEM=`，不满足`MINGW64`，本地`.sh`通道记为`FAILED`；远端发布后执行`bash -n`和behavioral dry-run。
 - Windows原生`ssr-gpu`验证：聚焦测试`58 passed`；三个Python实现文件通过`py_compile`；`git diff --check`无空白错误。
+
+## 真实checkpoint smoke修复
+
+- 首次远端`V_select-as-U generate`在进入模型前触发`KeyError:0`。根因是无标签dataset edge已返回独立domain张量，生成器却再次把去除TX字段后的metadata传给`domain_from_extra`。
+- 失败进程没有生成artifact，失败输出目录不复用；新增无标签batch解包回归测试后，生成器直接使用dataset edge返回的domain张量。
+- 修复后的聚焦测试为`4 passed`，脚本通过`py_compile`；等待新Git提交与新release执行真实checkpoint复验。

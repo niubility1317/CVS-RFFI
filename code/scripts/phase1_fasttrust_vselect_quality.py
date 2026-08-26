@@ -103,6 +103,14 @@ def _values(extra, key, count):
     return result
 
 
+def _truth_hidden_inputs(batch, device):
+    x_value, domain_payload = train_ssdg._move_muse_unlabeled_batch(batch, device)
+    domains, metadata = domain_payload
+    if not torch.is_tensor(domains):
+        domains = torch.as_tensor(domains, device=device)
+    return x_value, domains.to(device=device, dtype=torch.long), metadata
+
+
 def generate(args) -> int:
     checkpoint_path = Path(args.checkpoint).resolve()
     artifact_path = Path(args.artifact_out).resolve()
@@ -133,10 +141,8 @@ def generate(args) -> int:
     )
     with torch.no_grad():
         for batch in audit_loader:
-            x_select, domain_payload = train_ssdg._move_muse_unlabeled_batch(batch, device)
-            _, extra = domain_payload
+            x_select, domains, extra = _truth_hidden_inputs(batch, device)
             count = int(x_select.shape[0])
-            domains = train_ssdg.domain_from_extra(extra, data_ctx["domain_label_map"], device)
             receivers = train_ssdg._metadata_label_tensor(extra, "rx_i", device, count)
             weak_2 = train_ssdg._strong_augment(
                 x_select, max(1e-5, float(work_args.strong_noise_std) * 0.25)
