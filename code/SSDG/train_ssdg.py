@@ -5386,7 +5386,7 @@ def _dense_anchor_logit_cache(base_indices, logits, *, device):
     """Build a GPU-resident, base-index keyed cache without sample truth."""
 
     indices = torch.as_tensor(base_indices, device=device, dtype=torch.long).reshape(-1)
-    values = torch.as_tensor(logits, device=device, dtype=torch.float32)
+    values = torch.as_tensor(logits, device=device)
     if values.dim() != 2 or values.size(0) != indices.numel() or indices.numel() == 0:
         raise ValueError("anchor cache indices/logits must be non-empty and row-aligned")
     if bool(indices.lt(0).any()):
@@ -5397,7 +5397,7 @@ def _dense_anchor_logit_cache(base_indices, logits, *, device):
         int(indices.max().item()) + 1,
         int(values.size(1)),
         device=device,
-        dtype=torch.float32,
+        dtype=values.dtype,
     )
     valid = torch.zeros(int(dense.size(0)), device=device, dtype=torch.bool)
     dense.index_copy_(0, indices, values)
@@ -5464,7 +5464,7 @@ def _build_rc4_anchor_logit_cache(
                     domain_labels=domains,
                 )
             all_indices.append(indices.detach())
-            all_logits.append(output["tx_logits"].detach().float())
+            all_logits.append(output["tx_logits"].detach())
     if not all_indices:
         raise ValueError("anchor cache dataset is empty")
     return _dense_anchor_logit_cache(

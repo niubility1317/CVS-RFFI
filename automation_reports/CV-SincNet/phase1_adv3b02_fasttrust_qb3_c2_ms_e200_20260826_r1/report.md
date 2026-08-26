@@ -84,10 +84,13 @@
 ## 冻结anchor缓存速度优化
 
 - 新增显式开关`rc4_cache_anchor_logits`，默认关闭；仅在`fasttrust_rc4=true`、`rc4_use_anchor=true`且`rc4_lambda_feature_anchor=0`时允许启用，避免只缓存logits却误服务需要anchor feature的损失。
-- 训练前只遍历U_s的确定性clean view，以稳定`base_index`建立GPU驻留FP32 dense logits表；不读取TX真值，不接触target/query，缺失、重复、越界ID均fail-closed。
+- 训练前只遍历U_s的确定性clean view，以稳定`base_index`建立保持anchor实际AMP dtype的GPU驻留dense logits表；不读取TX真值，不接触target/query，缺失、重复、越界ID均fail-closed。
 - 缓存预计算前后完整保存并恢复Python、NumPy、CPU与CUDA RNG状态，不改变正式训练随机序列；缓存只存在于训练进程内，不写入checkpoint、release结果或deployment bundle。
 - live与cached anchor前向使用完全相同的AMP开关。独立审查首轮发现两者AMP上下文不一致的P1，修复后定点复审结论`CLOSED`。
 - 本地缓存、RNG、launcher和既有QB3相邻回归共`30 passed`，Python编译通过；预登记E6同seed配对矩阵只改变`cache_anchor_logits=false/true`，GPU6/7、seed392002、U256、eval512和逐epoch恢复点完全一致。
 - E6的主要速度判据为epoch2–6的`muse/time_train_batches_s`与`muse/u_samples_per_s`配对差异；另报告一次性`[RC4-ANCHOR-CACHE] build_s`并给出6epoch及E200摊销，避免只看epoch内速度而忽略缓存构建成本。
 - 首次速度launcher尝试`phase1_adv3b02_fasttrust_qb3_anchor_cache_speed_e6_20260826_r1`在训练进程创建前即退出：专用launcher默认把`CODE_ROOT`指向项目根，而归档只解压到独立release。该尝试没有run root、checkpoint或训练PID，仅保留启动失败日志，状态为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
 - 修复后专用launcher默认从自身路径解析release根；为保持run ID和输出不可覆盖，真实速度验证改用新ID`phase1_adv3b02_fasttrust_qb3_anchor_cache_speed_e6_20260826_r2`，矩阵科学变量不变。
+- `r2`两行均完成E6及Clean+三类LEO弱场景终评。epoch2–6训练batch均值由live的66.102秒降至cached的62.258秒，下降5.815%；U吞吐由720.05升至756.76样本/秒，提高5.098%。计入5.882秒缓存构建后，E6训练阶段净耗时下降3.997%，按稳定epoch外推E200约节省762.9秒（12.7分钟）。
+- 但`r2`不能晋级：缓存实现把AMP anchor logits强制提升为FP32，而live路径保持FP16，导致路由与训练轨迹不等价。完整逐epoch比对发现3,577个非时间有限数值中383个不同；epoch4验证正确数相差78。终评也出现差异：live/cached的Clean为87.2217%/87.3383%，LEO均值为68.4306%/67.9483%，receiver×LEO floor为49.5583%/49.4167%。因此`r2`结论限定为`SPEED_FEASIBLE / SEMANTIC_EQUIVALENCE_FAILED / NO_PROMOTION`。
+- 已将dense cache改为保留真实anchor输出dtype，不再`.float()`；新TDD覆盖FP16 cache与lookup dtype。修复验证改用全新run ID`phase1_adv3b02_fasttrust_qb3_anchor_cache_speed_e6_20260826_r3`，仍只比较cache开关。

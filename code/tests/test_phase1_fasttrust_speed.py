@@ -308,6 +308,24 @@ def test_anchor_logit_cache_fails_closed_for_missing_sample_id():
         raise AssertionError("cache lookup must reject an uncached sample")
 
 
+def test_anchor_logit_cache_preserves_live_amp_dtype():
+    logits = torch.tensor([[0.7, 0.3], [0.2, 0.8]], dtype=torch.float16)
+    cache = train_ssdg._dense_anchor_logit_cache(
+        torch.tensor([3, 1]), logits, device=torch.device("cpu")
+    )
+
+    actual = train_ssdg._lookup_anchor_logits(
+        cache,
+        {"base_index": torch.tensor([1, 3])},
+        expected_count=2,
+        device=torch.device("cpu"),
+    )
+
+    assert cache["logits"].dtype == torch.float16
+    assert actual.dtype == torch.float16
+    torch.testing.assert_close(actual, logits.flip(0))
+
+
 def test_anchor_cache_precomputation_restores_training_rng_state():
     source = inspect.getsource(train_ssdg.train)
     capture_at = source.index("pre_cache_rng = _capture_training_rng_state()")
