@@ -5,7 +5,7 @@
 - run ID：`stage2_sf_tapft_v1_rx20_1_targetinner_s392002_20260826_r1`
 - 候选：`SF_TAPFT_V1_REPORT_DEFAULT`
 - 权限：`DIAGNOSTIC_NON_FORMAL`
-- Git commit：`bd58c27d962393fcd1e7efb6a518ccc59b9de5ee`
+- Git commit：`9f8bf87bc590ad7c53240e6ae052c79562e8755e`
 - 数据绑定：`protocol_schema=p2_min_v1`、`phase2_data_status=VALIDATED_ONCE`、`capsule_id=d18-enrollment-before-rx20-1-seed713101-k10-smoke-reuse`、`split_id=stage2b-rx20-1-seed713101-before-support-prefix`
 
 ## 可证伪矩阵与停止规则
@@ -39,3 +39,9 @@
 ## 声明边界
 
 该实验只产生target-inner OOF筛选证据，不读取query，不产生正式Phase2 prediction，也不连接truth。`RUNNING`、smoke通过或OOF选择均不得表述为正式最终性能；只有后续独立query prediction和truth-last scorer闭合后才可声明query性能。
+
+## 启动记录
+
+- 首次真实checkpoint smoke在模型更新前停止：既有已验证support NPZ仅含`received_iq/support_labels`，runner错误要求内嵌`support_physical_ids`，因此报`target support NPZ allowlist mismatch`；smoke/run输出均未创建，无性能结果。
+- 定点修复提交为`9f8bf87bc590ad7c53240e6ae052c79562e8755e`：对于匹配`p2_min_v1/VALIDATED_ONCE/capsule_id/split_id`的既有两字段support，runner生成仅用于inner-fold行隔离的稳定opaque row ID，并在receipt中记录`physical_id_origin=validated_support_row_index`；不把它声明为新数据验证或真实物理ID证据。
+- 修复后19项SF-TAPFT聚焦测试通过；等待新release落地并重新执行同一run ID的首次有效smoke。原失败发生在输出创建和参数更新前，因此不会覆盖或混合artifact。
