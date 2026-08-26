@@ -8,10 +8,10 @@ import hashlib
 import json
 import os
 from pathlib import Path
-import shutil
 import sys
 from typing import Any, Mapping, Sequence
 
+import numpy as np
 import torch
 
 
@@ -32,13 +32,13 @@ from cvsrffi.phase1_adv3b02_deployment_bundle import (  # noqa: E402
     sha256_file,
 )
 from cvsrffi.phase1_center_lowrank_prototype_bundle import (  # noqa: E402
-    MANIFEST_NAME as COMPONENT_MANIFEST_NAME,
-    MANIFEST_SHA_NAME as COMPONENT_MANIFEST_SHA_NAME,
     NPZ_NAME as COMPONENT_NPZ_NAME,
     PENDING_OUTER_JOINT_SEAL,
     SCHEMA as COMPONENT_SCHEMA,
-    _pre_sign_content_root,
+    _numeric_resource_audit,
+    _registry_sha256,
     load_center_lowrank_component,
+    save_center_lowrank_component,
     validate_center_lowrank_component,
 )
 from scripts.build_full_ablation_phase1_deployment_bundle import (  # noqa: E402
@@ -253,35 +253,39 @@ def _rebind_legacy_d85_component(
     if tuple(legacy_component.class_registry) != CORE90_PHASE1_TXS:
         raise Core90BundleError("known D85 legacy class registry drift")
 
-    target.mkdir(parents=True)
+    with np.load(source_npz, allow_pickle=False) as archive:
+        legacy_payload = {
+            name: np.array(archive[name], copy=True) for name in archive.files
+        }
+    legacy_registry = np.asarray(legacy_payload.get("class_registry"))
+    if tuple(legacy_registry.tolist()) != CORE90_PHASE1_TXS:
+        raise Core90BundleError("known D85 legacy NPZ class registry drift")
+    rebound_payload = dict(legacy_payload)
+    rebound_payload["class_registry"] = np.asarray(handles, dtype=np.str_)
+
+    base_manifest = {
+        key: value
+        for key, value in legacy_manifest.items()
+        if key
+        not in {
+            "component_npz_sha256",
+            "serialized_component_bytes",
+            "pre_sign_content_root_sha256",
+        }
+    }
+    base_manifest["class_handle_binding_sha256"] = CURRENT_CLASS_BINDING_SHA256
+    domains = tuple(str(value) for value in rebound_payload["domain_registry"].tolist())
+    center = str(np.asarray(rebound_payload["center_domain_handle"]).item())
+    base_manifest["registry_sha256"] = _registry_sha256(domains, handles, center)
+    rebound_resource_audit = dict(legacy_manifest["resource_audit"])
+    rebound_resource_audit.update(_numeric_resource_audit(rebound_payload))
+    base_manifest["resource_audit"] = rebound_resource_audit
+    try:
+        saved = save_center_lowrank_component(target, rebound_payload, base_manifest)
+    except (OSError, TypeError, ValueError) as exc:
+        raise Core90BundleError("failed to canonically save rebound D85 component") from exc
     target_npz = target / COMPONENT_NPZ_NAME
-    shutil.copyfile(source_npz, target_npz)
-    if sha256_file(target_npz) != LEGACY_D85_COMPONENT_NPZ_SHA256:
-        raise Core90BundleError("rebound D85 component changed NPZ bytes")
-    rebound_manifest = dict(legacy_manifest)
-    rebound_manifest["class_handle_binding_sha256"] = (
-        CURRENT_CLASS_BINDING_SHA256
-    )
-    rebound_manifest["pre_sign_content_root_sha256"] = _pre_sign_content_root(
-        rebound_manifest, LEGACY_D85_COMPONENT_NPZ_SHA256
-    )
-    manifest_path = target / COMPONENT_MANIFEST_NAME
-    manifest_path.write_text(
-        json.dumps(
-            rebound_manifest,
-            indent=2,
-            ensure_ascii=False,
-            sort_keys=True,
-        )
-        + "\n",
-        encoding="utf-8",
-    )
-    manifest_sha = sha256_file(manifest_path)
-    (target / COMPONENT_MANIFEST_SHA_NAME).write_text(
-        f"{manifest_sha}  {COMPONENT_MANIFEST_NAME}\n",
-        encoding="ascii",
-    )
-    rebound_root = str(rebound_manifest["pre_sign_content_root_sha256"])
+    rebound_root = str(saved["pre_sign_content_root_sha256"])
     try:
         current_manifest = validate_center_lowrank_component(
             target,
@@ -298,15 +302,48 @@ def _rebind_legacy_d85_component(
         )
     except (OSError, TypeError, ValueError) as exc:
         raise Core90BundleError("rebound D85 current strict loader failed") from exc
-    if tuple(current_component.class_registry) != CORE90_PHASE1_TXS:
+    if tuple(current_component.class_registry) != CORE90_CLASS_HANDLES:
         raise Core90BundleError("rebound D85 class registry drift")
+    with np.load(target_npz, allow_pickle=False) as archive:
+        current_payload = {
+            name: np.array(archive[name], copy=True) for name in archive.files
+        }
+    if set(current_payload) != set(legacy_payload):
+        raise Core90BundleError("rebound D85 NPZ member set drift")
+    for name, legacy_array in legacy_payload.items():
+        current_array = current_payload[name]
+        if name == "class_registry":
+            if tuple(current_array.tolist()) != CORE90_CLASS_HANDLES:
+                raise Core90BundleError("rebound D85 class registry rewrite failed")
+            continue
+        if (
+            current_array.dtype != legacy_array.dtype
+            or current_array.shape != legacy_array.shape
+            or current_array.tobytes() != legacy_array.tobytes()
+        ):
+            raise Core90BundleError(f"rebound D85 NPZ member drift: {name}")
+    allowed_manifest_changes = {
+        "class_handle_binding_sha256",
+        "component_npz_sha256",
+        "pre_sign_content_root_sha256",
+        "registry_sha256",
+        "resource_audit",
+        "serialized_component_bytes",
+    }
+    actual_manifest_changes = {
+        key
+        for key in legacy_manifest
+        if legacy_manifest[key] != current_manifest[key]
+    }
+    if actual_manifest_changes != allowed_manifest_changes:
+        raise Core90BundleError("rebound D85 manifest changed non-derived fields")
     if sha256_file(source_npz) != LEGACY_D85_COMPONENT_NPZ_SHA256:
         raise Core90BundleError("source D85 component changed during rebind")
     return {
         "manifest": dict(current_manifest),
         "component_dir": str(target),
-        "component_npz_sha256": LEGACY_D85_COMPONENT_NPZ_SHA256,
-        "class_registry": list(CORE90_PHASE1_TXS),
+        "component_npz_sha256": str(saved["component_npz_sha256"]),
+        "class_registry": list(CORE90_CLASS_HANDLES),
         "current_class_handles": list(handles),
     }
 
@@ -392,7 +429,7 @@ def prepare(
         component_path,
         checkpoint_sha256=checkpoint_sha,
         class_binding_sha256=binding_sha,
-        class_handles=CORE90_PHASE1_TXS,
+        class_handles=CORE90_CLASS_HANDLES,
     )
     resolved_input_len = _input_len(checkpoint_payload, int(input_len))
 

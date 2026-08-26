@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 
+import numpy as np
 import pytest
 import torch
 
@@ -141,7 +142,7 @@ def _prepare_fixture(
         builder,
         "load_center_lowrank_component",
         lambda *_args, **_kwargs: SimpleNamespace(
-            class_registry=REAL_TXS, manifest=dict(manifest)
+            class_registry=REAL_HANDLES, manifest=dict(manifest)
         ),
     )
 
@@ -290,7 +291,7 @@ def test_d19_binding_rejects_any_real_tx_or_handle_drift(
         builder._load_d19_class_binding(path, checkpoint_sha256=CORE90_SHA)
 
 
-def test_real_d85_component_rebind_preserves_npz_and_only_changes_derived_manifest(
+def test_real_d85_component_rebind_changes_only_class_registry_and_derived_manifest(
     tmp_path: Path,
 ) -> None:
     assert REAL_D85_COMPONENT.is_dir()
@@ -313,21 +314,87 @@ def test_real_d85_component_rebind_preserves_npz_and_only_changes_derived_manife
     assert source_manifest_path.read_bytes() == source_manifest_bytes
     assert source_npz_path.read_bytes() == source_npz_bytes
     rebound_npz = rebound / source_npz_path.name
-    assert rebound_npz.read_bytes() == source_npz_bytes
-    assert _sha256(rebound_npz) == LEGACY_COMPONENT_NPZ_SHA
+    assert rebound_npz.read_bytes() != source_npz_bytes
+    assert _sha256(rebound_npz) != LEGACY_COMPONENT_NPZ_SHA
+    with np.load(source_npz_path, allow_pickle=False) as archive:
+        source_arrays = {name: np.array(archive[name], copy=True) for name in archive.files}
+    with np.load(rebound_npz, allow_pickle=False) as archive:
+        rebound_arrays = {name: np.array(archive[name], copy=True) for name in archive.files}
+    assert set(rebound_arrays) == set(source_arrays)
+    for name in source_arrays.keys() - {"class_registry"}:
+        assert rebound_arrays[name].dtype == source_arrays[name].dtype
+        assert rebound_arrays[name].shape == source_arrays[name].shape
+        assert rebound_arrays[name].tobytes() == source_arrays[name].tobytes()
+    assert tuple(source_arrays["class_registry"].tolist()) == REAL_TXS
+    assert tuple(rebound_arrays["class_registry"].tolist()) == REAL_HANDLES
     before = json.loads(source_manifest_bytes)
     after = json.loads((rebound / "manifest.json").read_text(encoding="utf-8"))
     changed = {key for key in before if before[key] != after[key]}
     assert changed == {
         "class_handle_binding_sha256",
+        "component_npz_sha256",
         "pre_sign_content_root_sha256",
+        "registry_sha256",
+        "resource_audit",
+        "serialized_component_bytes",
+    }
+    resource_changed = {
+        key
+        for key in before["resource_audit"]
+        if before["resource_audit"][key] != after["resource_audit"][key]
+    }
+    assert resource_changed == {
+        "logical_deployment_state_bytes",
+        "registry_schema_bytes",
+        "serialized_component_bytes",
     }
     assert before["class_handle_binding_sha256"] == LEGACY_BINDING_SHA
     assert before["pre_sign_content_root_sha256"] == LEGACY_COMPONENT_ROOT
     assert after["class_handle_binding_sha256"] == CURRENT_BINDING_SHA
-    assert result["component_npz_sha256"] == LEGACY_COMPONENT_NPZ_SHA
-    assert result["class_registry"] == list(REAL_TXS)
+    assert result["component_npz_sha256"] == _sha256(rebound_npz)
+    assert result["class_registry"] == list(REAL_HANDLES)
     assert result["current_class_handles"] == list(REAL_HANDLES)
+
+
+def test_rebound_real_d85_component_satisfies_outer_loader_registry_contract(
+    tmp_path: Path,
+) -> None:
+    from cvsrffi.phase1_adv3b02_deployment_bundle import (
+        _validate_component_from_opened,
+    )
+
+    rebound = tmp_path / "rebound_component"
+    result = builder._rebind_legacy_d85_component(
+        REAL_D85_COMPONENT,
+        rebound,
+        current_class_handles=REAL_HANDLES,
+    )
+    manifest_raw = (rebound / "manifest.json").read_bytes()
+    manifest = json.loads(manifest_raw)
+    npz_path = rebound / "int8_domain_class_center_lowrank_residual_radius_v2.npz"
+    with np.load(npz_path, allow_pickle=False) as archive:
+        arrays = {name: np.array(archive[name], copy=True) for name in archive.files}
+    bindings = {
+        "checkpoint_lineage_sha256": manifest["checkpoint_sha256"],
+        "class_handle_binding_sha256": manifest["class_handle_binding_sha256"],
+        "component_pre_sign_content_root_sha256": manifest[
+            "pre_sign_content_root_sha256"
+        ],
+        "generation_config_sha256": manifest["generation_config_sha256"],
+        "generation_code_sha256": manifest["generation_code_sha256"],
+    }
+
+    component = _validate_component_from_opened(
+        manifest=manifest,
+        manifest_raw=manifest_raw,
+        sha_raw=(rebound / "manifest.sha256").read_bytes(),
+        npz_sha256=_sha256(npz_path),
+        arrays=arrays,
+        bindings=bindings,
+    )
+
+    assert list(component.class_registry) == list(REAL_HANDLES)
+    assert result["class_registry"] == list(component.class_registry)
 
 
 def test_rebind_rejects_different_otherwise_valid_v2_component(tmp_path: Path) -> None:
