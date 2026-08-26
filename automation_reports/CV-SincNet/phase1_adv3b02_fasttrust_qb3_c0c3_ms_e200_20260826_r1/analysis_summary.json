@@ -1,0 +1,875 @@
+{
+  "schema": "phase1_fasttrust_qb3_detailed_analysis_v1",
+  "evidence_boundary": "full local copies of every JSONL, CSV, train log and evaluation log listed in each completed row directory",
+  "rows": [
+    {
+      "family": "profile",
+      "candidate": "PROFILE_C3_CK1_E1024",
+      "seed": 392002,
+      "epochs": 21,
+      "epoch_sequence_complete": true,
+      "status": "ARTIFACTS_COMPLETE",
+      "checkpoint_epoch": 21,
+      "clean_acc": 86.25333333333333,
+      "clean_receiver_floor": 76.075,
+      "leo": {
+        "leo_clear_weak": 66.18,
+        "leo_low_elev_weak": 63.443333333333335,
+        "leo_rain_weak": 63.486666666666665
+      },
+      "leo_mean": 64.37,
+      "leo_scenario_floor": 63.443333333333335,
+      "leo_receiver_scenario_floor": 46.958333333333336,
+      "strict_reconstruction": true,
+      "wall_time_seconds": 2153.127736568451,
+      "peak_cuda_memory_allocated_gib": 5.834308624267578,
+      "timing_seconds": {
+        "train_batches_s": 2087.8104860782623,
+        "base_validation_s": 16.830748081207275,
+        "heavy_source_validation_s": 20.333105087280273,
+        "checkpoint_io_s": 1.7973289489746094,
+        "other_s": 12.158708095550537,
+        "epoch_total_s": 2138.930376291275
+      },
+      "u_samples_per_s_mean": 558.776075115714,
+      "u_forward_samples_per_s_mean": 558.776075115714,
+      "inferred_train_batches_per_epoch": 207,
+      "estimated_nonfinite_grad_skips": 10,
+      "estimated_nonfinite_loss_skips": 0,
+      "nonfinite_grad_skip_rate_pct": 0.23004370830457788,
+      "telemetry_epochs": [
+        1
+      ],
+      "anomaly_packet_written": true,
+      "anomaly_packet_first_reported_epoch": 1,
+      "fatal_fingerprint_counts": {
+        "traceback": 0,
+        "cuda out of memory": 0,
+        "runtimeerror": 0,
+        "killed": 0
+      },
+      "full_log_chars_scanned": 129307,
+      "last_epoch": {
+        "train_loss": 2.2257823702217876,
+        "train_tx_acc": 91.62892512077295,
+        "val_tx_acc": 98.52380952380952,
+        "train_rc4_hard_effective_coverage": 0.0002580523954317478,
+        "train_rc4_partial_effective_coverage": 0.09992617555862464,
+        "train_rc4_effective_weighted_coverage": 0.10018422807328367,
+        "train_rc4_g_H": null,
+        "train_rc4_g_Pset": null,
+        "train_rc4_g_Pcond": null,
+        "train_rc4_g_identity_to_labeled": null
+      }
+    },
+    {
+      "family": "profile",
+      "candidate": "PROFILE_C3_CK1_E512",
+      "seed": 392002,
+      "epochs": 21,
+      "epoch_sequence_complete": true,
+      "status": "ARTIFACTS_COMPLETE",
+      "checkpoint_epoch": 21,
+      "clean_acc": 86.73166666666667,
+      "clean_receiver_floor": 77.00833333333334,
+      "leo": {
+        "leo_clear_weak": 69.835,
+        "leo_low_elev_weak": 66.605,
+        "leo_rain_weak": 65.77666666666667
+      },
+      "leo_mean": 67.40555555555555,
+      "leo_scenario_floor": 65.77666666666667,
+      "leo_receiver_scenario_floor": 48.108333333333334,
+      "strict_reconstruction": true,
+      "wall_time_seconds": 2153.325611114502,
+      "peak_cuda_memory_allocated_gib": 2.958892345428467,
+      "timing_seconds": {
+        "train_batches_s": 2083.772985935211,
+        "base_validation_s": 18.783300399780273,
+        "heavy_source_validation_s": 20.934486865997314,
+        "checkpoint_io_s": 2.0422189235687256,
+        "other_s": 12.247573137283325,
+        "epoch_total_s": 2137.780565261841
+      },
+      "u_samples_per_s_mean": 557.1896852734777,
+      "u_forward_samples_per_s_mean": 557.1896852734777,
+      "inferred_train_batches_per_epoch": 207,
+      "estimated_nonfinite_grad_skips": 9,
+      "estimated_nonfinite_loss_skips": 0,
+      "nonfinite_grad_skip_rate_pct": 0.2070393374741201,
+      "telemetry_epochs": [
+        1
+      ],
+      "anomaly_packet_written": true,
+      "anomaly_packet_first_reported_epoch": 1,
+      "fatal_fingerprint_counts": {
+        "traceback": 0,
+        "cuda out of memory": 0,
+        "runtimeerror": 0,
+        "killed": 0
+      },
+      "full_log_chars_scanned": 129250,
+      "last_epoch": {
+        "train_loss": 2.2365960354966243,
+        "train_tx_acc": 91.53079710144928,
+        "val_tx_acc": 98.58730158730158,
+        "train_rc4_hard_effective_coverage": 0.0,
+        "train_rc4_partial_effective_coverage": 0.09993885961419718,
+        "train_rc4_effective_weighted_coverage": 0.09993885972217662,
+        "train_rc4_g_H": null,
+        "train_rc4_g_Pset": null,
+        "train_rc4_g_Pcond": null,
+        "train_rc4_g_identity_to_labeled": null
+      }
+    },
+    {
+      "family": "profile",
+      "candidate": "PROFILE_C3_CK5_E1024",
+      "seed": 392002,
+      "epochs": 21,
+      "epoch_sequence_complete": true,
+      "status": "ARTIFACTS_COMPLETE",
+      "checkpoint_epoch": 21,
+      "clean_acc": 86.26,
+      "clean_receiver_floor": 76.175,
+      "leo": {
+        "leo_clear_weak": 69.8,
+        "leo_low_elev_weak": 66.52666666666667,
+        "leo_rain_weak": 66.0
+      },
+      "leo_mean": 67.44222222222221,
+      "leo_scenario_floor": 66.0,
+      "leo_receiver_scenario_floor": 47.34166666666667,
+      "strict_reconstruction": true,
+      "wall_time_seconds": 2119.517538547516,
+      "peak_cuda_memory_allocated_gib": 5.835529327392578,
+      "timing_seconds": {
+        "train_batches_s": 2056.1770458221436,
+        "base_validation_s": 17.435840129852295,
+        "heavy_source_validation_s": 18.933263540267944,
+        "checkpoint_io_s": 0.3580944538116455,
+        "other_s": 12.088918447494507,
+        "epoch_total_s": 2104.99316239357
+      },
+      "u_samples_per_s_mean": 562.7689651789361,
+      "u_forward_samples_per_s_mean": 562.7689651789361,
+      "inferred_train_batches_per_epoch": 207,
+      "estimated_nonfinite_grad_skips": 16,
+      "estimated_nonfinite_loss_skips": 0,
+      "nonfinite_grad_skip_rate_pct": 0.36806993328732457,
+      "telemetry_epochs": [
+        1
+      ],
+      "anomaly_packet_written": true,
+      "anomaly_packet_first_reported_epoch": 1,
+      "fatal_fingerprint_counts": {
+        "traceback": 0,
+        "cuda out of memory": 0,
+        "runtimeerror": 0,
+        "killed": 0
+      },
+      "full_log_chars_scanned": 129305,
+      "last_epoch": {
+        "train_loss": 2.2044468594058126,
+        "train_tx_acc": 91.87047101449275,
+        "val_tx_acc": 98.54761904761905,
+        "train_rc4_hard_effective_coverage": 0.000847717994545105,
+        "train_rc4_partial_effective_coverage": 0.09997286111260383,
+        "train_rc4_effective_weighted_coverage": 0.10082057910264978,
+        "train_rc4_g_H": null,
+        "train_rc4_g_Pset": null,
+        "train_rc4_g_Pcond": null,
+        "train_rc4_g_identity_to_labeled": null
+      }
+    },
+    {
+      "family": "profile",
+      "candidate": "PROFILE_C3_CK5_E512",
+      "seed": 392002,
+      "epochs": 21,
+      "epoch_sequence_complete": true,
+      "status": "ARTIFACTS_COMPLETE",
+      "checkpoint_epoch": 21,
+      "clean_acc": 86.57166666666667,
+      "clean_receiver_floor": 77.75,
+      "leo": {
+        "leo_clear_weak": 70.48666666666666,
+        "leo_low_elev_weak": 67.28333333333333,
+        "leo_rain_weak": 66.125
+      },
+      "leo_mean": 67.96499999999999,
+      "leo_scenario_floor": 66.125,
+      "leo_receiver_scenario_floor": 49.65833333333333,
+      "strict_reconstruction": true,
+      "wall_time_seconds": 2156.7240557670593,
+      "peak_cuda_memory_allocated_gib": 2.957061290740967,
+      "timing_seconds": {
+        "train_batches_s": 2089.671249628067,
+        "base_validation_s": 18.90022563934326,
+        "heavy_source_validation_s": 20.59517192840576,
+        "checkpoint_io_s": 0.2890450954437256,
+        "other_s": 11.879178047180176,
+        "epoch_total_s": 2141.33487033844
+      },
+      "u_samples_per_s_mean": 555.3883279013369,
+      "u_forward_samples_per_s_mean": 555.3883279013369,
+      "inferred_train_batches_per_epoch": 207,
+      "estimated_nonfinite_grad_skips": 8,
+      "estimated_nonfinite_loss_skips": 0,
+      "nonfinite_grad_skip_rate_pct": 0.18403496664366228,
+      "telemetry_epochs": [
+        1
+      ],
+      "anomaly_packet_written": true,
+      "anomaly_packet_first_reported_epoch": 1,
+      "fatal_fingerprint_counts": {
+        "traceback": 0,
+        "cuda out of memory": 0,
+        "runtimeerror": 0,
+        "killed": 0
+      },
+      "full_log_chars_scanned": 129249,
+      "last_epoch": {
+        "train_loss": 2.276176103071314,
+        "train_tx_acc": 91.53079710144928,
+        "val_tx_acc": 98.27777777777777,
+        "train_rc4_hard_effective_coverage": 0.0,
+        "train_rc4_partial_effective_coverage": 0.09995589614058463,
+        "train_rc4_effective_weighted_coverage": 0.09995589614058463,
+        "train_rc4_g_H": null,
+        "train_rc4_g_Pset": null,
+        "train_rc4_g_Pcond": null,
+        "train_rc4_g_identity_to_labeled": null
+      }
+    },
+    {
+      "family": "formal",
+      "candidate": "MS_S713101_C0_BC_NO_U_ID",
+      "seed": 713101,
+      "epochs": 200,
+      "epoch_sequence_complete": true,
+      "status": "ARTIFACTS_COMPLETE",
+      "checkpoint_epoch": 200,
+      "clean_acc": 84.705,
+      "clean_receiver_floor": 70.86666666666666,
+      "leo": {
+        "leo_clear_weak": 75.29,
+        "leo_low_elev_weak": 72.77833333333334,
+        "leo_rain_weak": 72.73333333333333
+      },
+      "leo_mean": 73.60055555555556,
+      "leo_scenario_floor": 72.73333333333333,
+      "leo_receiver_scenario_floor": 58.4,
+      "strict_reconstruction": true,
+      "wall_time_seconds": 38277.48505425453,
+      "peak_cuda_memory_allocated_gib": 3.199068069458008,
+      "timing_seconds": {
+        "train_batches_s": 37715.9436647892,
+        "base_validation_s": 169.4862449169159,
+        "heavy_source_validation_s": 250.6356806755066,
+        "checkpoint_io_s": 14.651998519897461,
+        "other_s": 95.88930010795593,
+        "epoch_total_s": 38246.606889009476
+      },
+      "u_samples_per_s_mean": 292.2678663787248,
+      "u_forward_samples_per_s_mean": 292.2678663787248,
+      "inferred_train_batches_per_epoch": 207,
+      "estimated_nonfinite_grad_skips": 39,
+      "estimated_nonfinite_loss_skips": 0,
+      "nonfinite_grad_skip_rate_pct": 0.09420289855072464,
+      "telemetry_epochs": [
+        1,
+        41,
+        91,
+        161,
+        181,
+        200
+      ],
+      "anomaly_packet_written": true,
+      "anomaly_packet_first_reported_epoch": 1,
+      "fatal_fingerprint_counts": {
+        "traceback": 0,
+        "cuda out of memory": 0,
+        "runtimeerror": 0,
+        "killed": 0
+      },
+      "full_log_chars_scanned": 1160602,
+      "last_epoch": {
+        "train_loss": 2.911045430938979,
+        "train_tx_acc": 96.58816425120773,
+        "val_tx_acc": 98.68253968253968,
+        "train_rc4_hard_effective_coverage": 0.0,
+        "train_rc4_partial_effective_coverage": 0.0,
+        "train_rc4_effective_weighted_coverage": 0.0,
+        "train_rc4_g_H": 0.0,
+        "train_rc4_g_Pset": 0.0,
+        "train_rc4_g_Pcond": 0.0,
+        "train_rc4_g_identity_to_labeled": 0.0
+      }
+    },
+    {
+      "family": "formal",
+      "candidate": "MS_S713101_C3_BC_H_PSET_PCOND",
+      "seed": 713101,
+      "epochs": 200,
+      "epoch_sequence_complete": true,
+      "status": "ARTIFACTS_COMPLETE",
+      "checkpoint_epoch": 200,
+      "clean_acc": 85.70666666666666,
+      "clean_receiver_floor": 75.69166666666666,
+      "leo": {
+        "leo_clear_weak": 75.515,
+        "leo_low_elev_weak": 73.08166666666666,
+        "leo_rain_weak": 72.92666666666666
+      },
+      "leo_mean": 73.8411111111111,
+      "leo_scenario_floor": 72.92666666666666,
+      "leo_receiver_scenario_floor": 58.275,
+      "strict_reconstruction": true,
+      "wall_time_seconds": 35893.39416337013,
+      "peak_cuda_memory_allocated_gib": 3.202561855316162,
+      "timing_seconds": {
+        "train_batches_s": 35328.97908258438,
+        "base_validation_s": 171.14091181755066,
+        "heavy_source_validation_s": 239.66648697853088,
+        "checkpoint_io_s": 15.68452525138855,
+        "other_s": 104.60933446884155,
+        "epoch_total_s": 35860.08034110069
+      },
+      "u_samples_per_s_mean": 310.20334892617853,
+      "u_forward_samples_per_s_mean": 310.20334892617853,
+      "inferred_train_batches_per_epoch": 207,
+      "estimated_nonfinite_grad_skips": 39,
+      "estimated_nonfinite_loss_skips": 0,
+      "nonfinite_grad_skip_rate_pct": 0.09420289855072464,
+      "telemetry_epochs": [
+        1,
+        41,
+        91,
+        161,
+        181,
+        200
+      ],
+      "anomaly_packet_written": true,
+      "anomaly_packet_first_reported_epoch": 1,
+      "fatal_fingerprint_counts": {
+        "traceback": 0,
+        "cuda out of memory": 0,
+        "runtimeerror": 0,
+        "killed": 0
+      },
+      "full_log_chars_scanned": 1163410,
+      "last_epoch": {
+        "train_loss": 2.924005790897038,
+        "train_tx_acc": 96.50890700483092,
+        "val_tx_acc": 98.66666666666667,
+        "train_rc4_hard_effective_coverage": 0.04485022151563767,
+        "train_rc4_partial_effective_coverage": 0.09994336674754746,
+        "train_rc4_effective_weighted_coverage": 0.14479358868610456,
+        "train_rc4_g_H": 0.0,
+        "train_rc4_g_Pset": 0.0,
+        "train_rc4_g_Pcond": 0.0,
+        "train_rc4_g_identity_to_labeled": 0.0
+      }
+    },
+    {
+      "family": "formal",
+      "candidate": "MS_S713102_C0_BC_NO_U_ID",
+      "seed": 713102,
+      "epochs": 200,
+      "epoch_sequence_complete": true,
+      "status": "ARTIFACTS_COMPLETE",
+      "checkpoint_epoch": 200,
+      "clean_acc": 84.00666666666666,
+      "clean_receiver_floor": 70.30833333333334,
+      "leo": {
+        "leo_clear_weak": 74.54333333333334,
+        "leo_low_elev_weak": 72.62666666666667,
+        "leo_rain_weak": 72.21
+      },
+      "leo_mean": 73.12666666666667,
+      "leo_scenario_floor": 72.21,
+      "leo_receiver_scenario_floor": 57.78333333333333,
+      "strict_reconstruction": true,
+      "wall_time_seconds": 33912.40647530556,
+      "peak_cuda_memory_allocated_gib": 3.201387405395508,
+      "timing_seconds": {
+        "train_batches_s": 33362.41031908989,
+        "base_validation_s": 165.97201371192932,
+        "heavy_source_validation_s": 237.39380025863647,
+        "checkpoint_io_s": 15.238371849060059,
+        "other_s": 98.8322274684906,
+        "epoch_total_s": 33879.846732378006
+      },
+      "u_samples_per_s_mean": 328.4259561794551,
+      "u_forward_samples_per_s_mean": 328.4259561794551,
+      "inferred_train_batches_per_epoch": 207,
+      "estimated_nonfinite_grad_skips": 35,
+      "estimated_nonfinite_loss_skips": 0,
+      "nonfinite_grad_skip_rate_pct": 0.08454106280193237,
+      "telemetry_epochs": [
+        1,
+        41,
+        91,
+        161,
+        181,
+        200
+      ],
+      "anomaly_packet_written": true,
+      "anomaly_packet_first_reported_epoch": 1,
+      "fatal_fingerprint_counts": {
+        "traceback": 0,
+        "cuda out of memory": 0,
+        "runtimeerror": 0,
+        "killed": 0
+      },
+      "full_log_chars_scanned": 1160589,
+      "last_epoch": {
+        "train_loss": 2.604289065236631,
+        "train_tx_acc": 97.2259963768116,
+        "val_tx_acc": 98.61111111111111,
+        "train_rc4_hard_effective_coverage": 0.0,
+        "train_rc4_partial_effective_coverage": 0.0,
+        "train_rc4_effective_weighted_coverage": 0.0,
+        "train_rc4_g_H": 0.0,
+        "train_rc4_g_Pset": 0.0,
+        "train_rc4_g_Pcond": 0.0,
+        "train_rc4_g_identity_to_labeled": 0.0
+      }
+    },
+    {
+      "family": "formal",
+      "candidate": "MS_S713102_C3_BC_H_PSET_PCOND",
+      "seed": 713102,
+      "epochs": 200,
+      "epoch_sequence_complete": true,
+      "status": "ARTIFACTS_COMPLETE",
+      "checkpoint_epoch": 200,
+      "clean_acc": 84.63833333333334,
+      "clean_receiver_floor": 72.675,
+      "leo": {
+        "leo_clear_weak": 74.92333333333333,
+        "leo_low_elev_weak": 73.02166666666666,
+        "leo_rain_weak": 72.67166666666667
+      },
+      "leo_mean": 73.53888888888889,
+      "leo_scenario_floor": 72.67166666666667,
+      "leo_receiver_scenario_floor": 58.025,
+      "strict_reconstruction": true,
+      "wall_time_seconds": 36060.1589744091,
+      "peak_cuda_memory_allocated_gib": 3.205369472503662,
+      "timing_seconds": {
+        "train_batches_s": 35499.67820954323,
+        "base_validation_s": 168.7580463886261,
+        "heavy_source_validation_s": 241.70029735565186,
+        "checkpoint_io_s": 15.33973741531372,
+        "other_s": 102.42598605155945,
+        "epoch_total_s": 36027.90227675438
+      },
+      "u_samples_per_s_mean": 308.77907745235245,
+      "u_forward_samples_per_s_mean": 308.77907745235245,
+      "inferred_train_batches_per_epoch": 207,
+      "estimated_nonfinite_grad_skips": 38,
+      "estimated_nonfinite_loss_skips": 0,
+      "nonfinite_grad_skip_rate_pct": 0.09178743961352658,
+      "telemetry_epochs": [
+        1,
+        41,
+        91,
+        161,
+        181,
+        200
+      ],
+      "anomaly_packet_written": true,
+      "anomaly_packet_first_reported_epoch": 1,
+      "fatal_fingerprint_counts": {
+        "traceback": 0,
+        "cuda out of memory": 0,
+        "runtimeerror": 0,
+        "killed": 0
+      },
+      "full_log_chars_scanned": 1163429,
+      "last_epoch": {
+        "train_loss": 2.602867823867982,
+        "train_tx_acc": 97.25996376811594,
+        "val_tx_acc": 98.61904761904762,
+        "train_rc4_hard_effective_coverage": 0.023331787138007546,
+        "train_rc4_partial_effective_coverage": 0.07352682478401971,
+        "train_rc4_effective_weighted_coverage": 0.09685861204125455,
+        "train_rc4_g_H": 0.0,
+        "train_rc4_g_Pset": 0.0,
+        "train_rc4_g_Pcond": 0.0,
+        "train_rc4_g_identity_to_labeled": 0.0
+      }
+    },
+    {
+      "family": "historical_seed392002",
+      "candidate": "E200_C0_BC_NO_U_ID",
+      "seed": 392002,
+      "epochs": 200,
+      "epoch_sequence_complete": true,
+      "status": "ARTIFACTS_COMPLETE",
+      "checkpoint_epoch": 200,
+      "clean_acc": 84.4,
+      "clean_receiver_floor": 71.075,
+      "leo": {
+        "leo_clear_weak": 75.48833333333333,
+        "leo_low_elev_weak": 72.98,
+        "leo_rain_weak": 72.20833333333333
+      },
+      "leo_mean": 73.55888888888889,
+      "leo_scenario_floor": 72.20833333333333,
+      "leo_receiver_scenario_floor": 57.24166666666667,
+      "strict_reconstruction": true,
+      "wall_time_seconds": 32826.737753629684,
+      "peak_cuda_memory_allocated_gib": 6.081196308135986,
+      "timing_seconds": {
+        "train_batches_s": 0.0,
+        "base_validation_s": 0.0,
+        "heavy_source_validation_s": 0.0,
+        "checkpoint_io_s": 0.0,
+        "other_s": 0.0,
+        "epoch_total_s": 32795.70934677124
+      },
+      "u_samples_per_s_mean": 345.4060887793408,
+      "u_forward_samples_per_s_mean": 345.4060887793408,
+      "inferred_train_batches_per_epoch": 207,
+      "estimated_nonfinite_grad_skips": 36,
+      "estimated_nonfinite_loss_skips": 0,
+      "nonfinite_grad_skip_rate_pct": 0.08695652173913043,
+      "telemetry_epochs": [],
+      "anomaly_packet_written": true,
+      "anomaly_packet_first_reported_epoch": 1,
+      "fatal_fingerprint_counts": {
+        "traceback": 0,
+        "cuda out of memory": 0,
+        "runtimeerror": 0,
+        "killed": 0
+      },
+      "full_log_chars_scanned": 1161000,
+      "last_epoch": {
+        "train_loss": 2.720315376341631,
+        "train_tx_acc": 96.875,
+        "val_tx_acc": 98.65873015873017,
+        "train_rc4_hard_effective_coverage": 0.0,
+        "train_rc4_partial_effective_coverage": 0.0,
+        "train_rc4_effective_weighted_coverage": 0.0,
+        "train_rc4_g_H": null,
+        "train_rc4_g_Pset": null,
+        "train_rc4_g_Pcond": null,
+        "train_rc4_g_identity_to_labeled": null
+      }
+    },
+    {
+      "family": "historical_seed392002",
+      "candidate": "E200_C1_BC_H",
+      "seed": 392002,
+      "epochs": 200,
+      "epoch_sequence_complete": true,
+      "status": "ARTIFACTS_COMPLETE",
+      "checkpoint_epoch": 200,
+      "clean_acc": 84.64166666666667,
+      "clean_receiver_floor": 70.54166666666667,
+      "leo": {
+        "leo_clear_weak": 75.36666666666666,
+        "leo_low_elev_weak": 72.78666666666666,
+        "leo_rain_weak": 72.145
+      },
+      "leo_mean": 73.43277777777777,
+      "leo_scenario_floor": 72.145,
+      "leo_receiver_scenario_floor": 57.43333333333333,
+      "strict_reconstruction": true,
+      "wall_time_seconds": 32732.446960926056,
+      "peak_cuda_memory_allocated_gib": 6.0819292068481445,
+      "timing_seconds": {
+        "train_batches_s": 0.0,
+        "base_validation_s": 0.0,
+        "heavy_source_validation_s": 0.0,
+        "checkpoint_io_s": 0.0,
+        "other_s": 0.0,
+        "epoch_total_s": 32701.648432016373
+      },
+      "u_samples_per_s_mean": 346.68542016606983,
+      "u_forward_samples_per_s_mean": 346.68542016606983,
+      "inferred_train_batches_per_epoch": 207,
+      "estimated_nonfinite_grad_skips": 36,
+      "estimated_nonfinite_loss_skips": 0,
+      "nonfinite_grad_skip_rate_pct": 0.08695652173913043,
+      "telemetry_epochs": [],
+      "anomaly_packet_written": true,
+      "anomaly_packet_first_reported_epoch": 1,
+      "fatal_fingerprint_counts": {
+        "traceback": 0,
+        "cuda out of memory": 0,
+        "runtimeerror": 0,
+        "killed": 0
+      },
+      "full_log_chars_scanned": 1158879,
+      "last_epoch": {
+        "train_loss": 2.7319802486378215,
+        "train_tx_acc": 96.87877415458937,
+        "val_tx_acc": 98.65873015873017,
+        "train_rc4_hard_effective_coverage": 0.034561323681351355,
+        "train_rc4_partial_effective_coverage": 0.0,
+        "train_rc4_effective_weighted_coverage": 0.034561323789330786,
+        "train_rc4_g_H": null,
+        "train_rc4_g_Pset": null,
+        "train_rc4_g_Pcond": null,
+        "train_rc4_g_identity_to_labeled": null
+      }
+    },
+    {
+      "family": "historical_seed392002",
+      "candidate": "E200_C2_BC_H_PSET",
+      "seed": 392002,
+      "epochs": 200,
+      "epoch_sequence_complete": true,
+      "status": "ARTIFACTS_COMPLETE",
+      "checkpoint_epoch": 200,
+      "clean_acc": 84.88666666666667,
+      "clean_receiver_floor": 70.55833333333334,
+      "leo": {
+        "leo_clear_weak": 75.66666666666667,
+        "leo_low_elev_weak": 73.05666666666667,
+        "leo_rain_weak": 72.43333333333334
+      },
+      "leo_mean": 73.7188888888889,
+      "leo_scenario_floor": 72.43333333333334,
+      "leo_receiver_scenario_floor": 57.075,
+      "strict_reconstruction": true,
+      "wall_time_seconds": 33409.87884569168,
+      "peak_cuda_memory_allocated_gib": 6.076028347015381,
+      "timing_seconds": {
+        "train_batches_s": 0.0,
+        "base_validation_s": 0.0,
+        "heavy_source_validation_s": 0.0,
+        "checkpoint_io_s": 0.0,
+        "other_s": 0.0,
+        "epoch_total_s": 33379.083139419556
+      },
+      "u_samples_per_s_mean": 338.5859799773753,
+      "u_forward_samples_per_s_mean": 338.5859799773753,
+      "inferred_train_batches_per_epoch": 207,
+      "estimated_nonfinite_grad_skips": 35,
+      "estimated_nonfinite_loss_skips": 0,
+      "nonfinite_grad_skip_rate_pct": 0.08454106280193237,
+      "telemetry_epochs": [],
+      "anomaly_packet_written": true,
+      "anomaly_packet_first_reported_epoch": 1,
+      "fatal_fingerprint_counts": {
+        "traceback": 0,
+        "cuda out of memory": 0,
+        "runtimeerror": 0,
+        "killed": 0
+      },
+      "full_log_chars_scanned": 1161346,
+      "last_epoch": {
+        "train_loss": 2.7144710896671684,
+        "train_tx_acc": 96.86367753623189,
+        "val_tx_acc": 98.65079365079364,
+        "train_rc4_hard_effective_coverage": 0.03244753708783987,
+        "train_rc4_partial_effective_coverage": 0.09614142437200039,
+        "train_rc4_effective_weighted_coverage": 0.1285889613383634,
+        "train_rc4_g_H": null,
+        "train_rc4_g_Pset": null,
+        "train_rc4_g_Pcond": null,
+        "train_rc4_g_identity_to_labeled": null
+      }
+    },
+    {
+      "family": "historical_seed392002",
+      "candidate": "E200_C3_BC_H_PSET_PCOND",
+      "seed": 392002,
+      "epochs": 200,
+      "epoch_sequence_complete": true,
+      "status": "ARTIFACTS_COMPLETE",
+      "checkpoint_epoch": 200,
+      "clean_acc": 85.20166666666667,
+      "clean_receiver_floor": 71.2,
+      "leo": {
+        "leo_clear_weak": 75.85166666666667,
+        "leo_low_elev_weak": 73.20333333333333,
+        "leo_rain_weak": 72.545
+      },
+      "leo_mean": 73.86666666666667,
+      "leo_scenario_floor": 72.545,
+      "leo_receiver_scenario_floor": 57.61666666666667,
+      "strict_reconstruction": true,
+      "wall_time_seconds": 32757.545159101486,
+      "peak_cuda_memory_allocated_gib": 6.079563140869141,
+      "timing_seconds": {
+        "train_batches_s": 0.0,
+        "base_validation_s": 0.0,
+        "heavy_source_validation_s": 0.0,
+        "checkpoint_io_s": 0.0,
+        "other_s": 0.0,
+        "epoch_total_s": 32726.668454647064
+      },
+      "u_samples_per_s_mean": 345.24619411643914,
+      "u_forward_samples_per_s_mean": 345.24619411643914,
+      "inferred_train_batches_per_epoch": 207,
+      "estimated_nonfinite_grad_skips": 40,
+      "estimated_nonfinite_loss_skips": 0,
+      "nonfinite_grad_skip_rate_pct": 0.0966183574879227,
+      "telemetry_epochs": [],
+      "anomaly_packet_written": true,
+      "anomaly_packet_first_reported_epoch": 1,
+      "fatal_fingerprint_counts": {
+        "traceback": 0,
+        "cuda out of memory": 0,
+        "runtimeerror": 0,
+        "killed": 0
+      },
+      "full_log_chars_scanned": 1163836,
+      "last_epoch": {
+        "train_loss": 2.730432771254277,
+        "train_tx_acc": 96.93916062801932,
+        "val_tx_acc": 98.67460317460318,
+        "train_rc4_hard_effective_coverage": 0.048672595983686076,
+        "train_rc4_partial_effective_coverage": 0.08011115900272332,
+        "train_rc4_effective_weighted_coverage": 0.1287837546084814,
+        "train_rc4_g_H": null,
+        "train_rc4_g_Pset": null,
+        "train_rc4_g_Pcond": null,
+        "train_rc4_g_identity_to_labeled": null
+      }
+    },
+    {
+      "family": "historical_seed392002",
+      "candidate": "E200_C4_BC_U_FEATURE_ANCHOR",
+      "seed": 392002,
+      "epochs": 200,
+      "epoch_sequence_complete": true,
+      "status": "ARTIFACTS_COMPLETE",
+      "checkpoint_epoch": 200,
+      "clean_acc": 84.315,
+      "clean_receiver_floor": 69.96666666666667,
+      "leo": {
+        "leo_clear_weak": 75.39666666666666,
+        "leo_low_elev_weak": 72.905,
+        "leo_rain_weak": 72.14833333333333
+      },
+      "leo_mean": 73.48333333333333,
+      "leo_scenario_floor": 72.14833333333333,
+      "leo_receiver_scenario_floor": 57.916666666666664,
+      "strict_reconstruction": true,
+      "wall_time_seconds": 32519.805148601532,
+      "peak_cuda_memory_allocated_gib": 6.112494945526123,
+      "timing_seconds": {
+        "train_batches_s": 0.0,
+        "base_validation_s": 0.0,
+        "heavy_source_validation_s": 0.0,
+        "checkpoint_io_s": 0.0,
+        "other_s": 0.0,
+        "epoch_total_s": 32489.11146378517
+      },
+      "u_samples_per_s_mean": 349.0150651443348,
+      "u_forward_samples_per_s_mean": 349.0150651443348,
+      "inferred_train_batches_per_epoch": 207,
+      "estimated_nonfinite_grad_skips": 38,
+      "estimated_nonfinite_loss_skips": 0,
+      "nonfinite_grad_skip_rate_pct": 0.09178743961352658,
+      "telemetry_epochs": [],
+      "anomaly_packet_written": true,
+      "anomaly_packet_first_reported_epoch": 1,
+      "fatal_fingerprint_counts": {
+        "traceback": 0,
+        "cuda out of memory": 0,
+        "runtimeerror": 0,
+        "killed": 0
+      },
+      "full_log_chars_scanned": 1164735,
+      "last_epoch": {
+        "train_loss": 2.715230732148396,
+        "train_tx_acc": 96.91274154589372,
+        "val_tx_acc": 98.66666666666667,
+        "train_rc4_hard_effective_coverage": 0.0,
+        "train_rc4_partial_effective_coverage": 0.0,
+        "train_rc4_effective_weighted_coverage": 0.0,
+        "train_rc4_g_H": null,
+        "train_rc4_g_Pset": null,
+        "train_rc4_g_Pcond": null,
+        "train_rc4_g_identity_to_labeled": null
+      }
+    }
+  ],
+  "paired_differences": [
+    {
+      "seed": 392002,
+      "clean_delta_pp": 0.8016666666666623,
+      "leo_mean_delta_pp": 0.3077777777777868,
+      "leo_scenario_floor_delta_pp": 0.3366666666666731,
+      "leo_receiver_scenario_floor_delta_pp": 0.375
+    },
+    {
+      "seed": 713101,
+      "clean_delta_pp": 1.0016666666666652,
+      "leo_mean_delta_pp": 0.2405555555555452,
+      "leo_scenario_floor_delta_pp": 0.19333333333332803,
+      "leo_receiver_scenario_floor_delta_pp": -0.125
+    },
+    {
+      "seed": 713102,
+      "clean_delta_pp": 0.6316666666666748,
+      "leo_mean_delta_pp": 0.41222222222222626,
+      "leo_scenario_floor_delta_pp": 0.4616666666666731,
+      "leo_receiver_scenario_floor_delta_pp": 0.24166666666666714
+    }
+  ],
+  "three_seed_aggregate": {
+    "C0": {
+      "clean_acc": {
+        "mean": 84.37055555555555,
+        "sample_std": 0.35009654753024116
+      },
+      "leo_mean": {
+        "mean": 73.4287037037037,
+        "sample_std": 0.2624000887659205
+      },
+      "leo_scenario_floor": {
+        "mean": 72.38388888888888,
+        "sample_std": 0.30262891345550824
+      },
+      "leo_receiver_scenario_floor": {
+        "mean": 57.80833333333334,
+        "sample_std": 0.579571201646335
+      }
+    },
+    "C3": {
+      "clean_acc": {
+        "mean": 85.18222222222222,
+        "sample_std": 0.5344320280377943
+      },
+      "leo_mean": {
+        "mean": 73.74888888888889,
+        "sample_std": 0.18231366269409977
+      },
+      "leo_scenario_floor": {
+        "mean": 72.71444444444444,
+        "sample_std": 0.1943960257176406
+      },
+      "leo_receiver_scenario_floor": {
+        "mean": 57.97222222222222,
+        "sample_std": 0.33232486337139167
+      }
+    },
+    "paired_delta": {
+      "clean_delta_pp": {
+        "mean": 0.8116666666666674,
+        "sample_std": 0.18520259177451673
+      },
+      "leo_mean_delta_pp": {
+        "mean": 0.32018518518518607,
+        "sample_std": 0.08650328855044898
+      },
+      "leo_scenario_floor_delta_pp": {
+        "mean": 0.3305555555555581,
+        "sample_std": 0.1342710084258896
+      },
+      "leo_receiver_scenario_floor_delta_pp": {
+        "mean": 0.16388888888888906,
+        "sample_std": 0.25891511550513435
+      }
+    }
+  }
+}
