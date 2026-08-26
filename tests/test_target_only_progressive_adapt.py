@@ -607,3 +607,190 @@ def test_zero_step_phases_emit_no_rows_and_select_zero_lengths() -> None:
     # A or C eligible for the unified refit schedule.
     assert all(tuple(stage.phase for stage in row.stage_validation_rows) == ("B",) for row in selection.fold_rows)
     assert selection.selected_phase_steps == (0, 1, 0)
+
+
+def test_fit_rejects_unknown_checkpoint_selection_mode() -> None:
+    with pytest.raises(ValueError, match="checkpoint_selection_mode"):
+        fit_sf_tapft(
+            _ToyModel(),
+            _dataset(),
+            SFTAPFTConfig(
+                phase_steps=(1, 1, 1),
+                warmup_ratio=0.0,
+                checkpoint_average_top_k=1,
+                adapter_rank=2,
+                seed=47,
+            ),
+            checkpoint_selection_mode="earliest",
+        )
+    with pytest.raises(ValueError, match="checkpoint_selection_mode"):
+        fit_sf_tapft(
+            _ToyModel(),
+            _dataset(),
+            SFTAPFTConfig(
+                phase_steps=(1, 1, 1),
+                warmup_ratio=0.0,
+                checkpoint_average_top_k=1,
+                adapter_rank=2,
+                seed=47,
+            ),
+            checkpoint_selection_mode=[],
+        )
+
+
+def test_final_step_checkpoint_ignores_an_earlier_better_train_score(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # Removing the explicit final-step branch would let step 1 win this
+    # deliberately descending score fixture and return the wrong state.
+    monkeypatch.setattr(
+        tapft,
+        "_target_train_snapshot_score",
+        lambda _loss, step: 2.0 if step == 1 else 1.0,
+        raising=False,
+    )
+    config = SFTAPFTConfig(
+        phase_steps=(2, 0, 0),
+        warmup_ratio=0.0,
+        checkpoint_average_top_k=1,
+        adapter_rank=2,
+        mixed_precision=False,
+        seed=53,
+    )
+
+    best = fit_sf_tapft(
+        _ToyModel(),
+        _dataset(),
+        config,
+        checkpoint_selection_mode="best",
+    )
+    final = fit_sf_tapft(
+        _ToyModel(),
+        _dataset(),
+        config,
+        checkpoint_selection_mode="final_step",
+    )
+
+    assert best.audit.selected_checkpoint_steps == (1,)
+    assert final.audit.selected_checkpoint_steps == (2,)
+    assert final.audit.checkpoint_selection_role == "fixed_final_step"
+    assert any(
+        not torch.equal(value, final.model.state_dict()[name])
+        for name, value in best.model.state_dict().items()
+    ) or not torch.equal(best.head.weight, final.head.weight)
+
+
+def test_opt_in_grouped_selection_refits_adapted_candidate_on_all_support_rows(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fold_results = []
+    real_validation_logits = tapft._adapted_validation_logits
+
+    def record_fold_result(result, dataset):
+        fold_results.append(result)
+        return real_validation_logits(result, dataset)
+
+    monkeypatch.setattr(tapft, "_adapted_validation_logits", record_fold_result)
+    monkeypatch.setattr(
+        tapft.GroupedTargetCVSelector,
+        "choose",
+        staticmethod(lambda *, frozen, adapted: "adapted"),
+    )
+    dataset = _dataset()
+    selection = select_sf_tapft_by_grouped_cv(
+        _ToyModel(),
+        dataset,
+        SFTAPFTConfig(
+            phase_steps=(1, 1, 1),
+            warmup_ratio=0.0,
+            checkpoint_average_top_k=1,
+            adapter_rank=2,
+            mixed_precision=False,
+            seed=59,
+        ),
+        folds=3,
+        full_support_refit=True,
+    )
+
+    assert len(fold_results) == 3
+    assert selection.full_support_result is not None
+    assert selection.adapted_result is selection.full_support_result
+    assert selection.final_training_sample_count == len(dataset.physical_ids)
+    assert selection.fold0_as_final is False
+    assert selection.full_support_result.audit.training_sample_count == len(dataset.physical_ids)
+    assert selection.full_support_result.audit.phase_steps == selection.selected_phase_steps
+    assert selection.full_support_result.audit.checkpoint_selection_role == "fixed_final_step"
+    assert selection.full_support_result.audit.selected_checkpoint_steps == (
+        sum(selection.selected_phase_steps),
+    )
+    assert all(
+        result.audit.training_sample_count < len(dataset.physical_ids)
+        for result in fold_results
+    )
+    assert all(selection.full_support_result is not result for result in fold_results)
+
+
+def test_opt_in_zero_adapt_does_not_refit_full_support(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        tapft.GroupedTargetCVSelector,
+        "choose",
+        staticmethod(lambda *, frozen, adapted: "zero_adapt"),
+    )
+    selection = select_sf_tapft_by_grouped_cv(
+        _ToyModel(),
+        _dataset(),
+        SFTAPFTConfig(
+            phase_steps=(1, 1, 1),
+            warmup_ratio=0.0,
+            checkpoint_average_top_k=1,
+            adapter_rank=2,
+            mixed_precision=False,
+            seed=61,
+        ),
+        folds=3,
+        full_support_refit=True,
+    )
+
+    assert selection.selected == "zero_adapt"
+    assert selection.adapted_result is None
+    assert selection.full_support_result is None
+    assert selection.final_training_sample_count == 0
+    assert selection.fold0_as_final is False
+
+
+def test_non_opt_in_grouped_selection_preserves_fold0_candidate(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fold_results = []
+    real_validation_logits = tapft._adapted_validation_logits
+
+    def record_fold_result(result, dataset):
+        fold_results.append(result)
+        return real_validation_logits(result, dataset)
+
+    monkeypatch.setattr(tapft, "_adapted_validation_logits", record_fold_result)
+    monkeypatch.setattr(
+        tapft.GroupedTargetCVSelector,
+        "choose",
+        staticmethod(lambda *, frozen, adapted: "adapted"),
+    )
+    selection = select_sf_tapft_by_grouped_cv(
+        _ToyModel(),
+        _dataset(),
+        SFTAPFTConfig(
+            phase_steps=(1, 1, 1),
+            warmup_ratio=0.0,
+            checkpoint_average_top_k=1,
+            adapter_rank=2,
+            mixed_precision=False,
+            seed=67,
+        ),
+        folds=3,
+    )
+
+    assert len(fold_results) == 3
+    assert selection.adapted_result is fold_results[0]
+    assert selection.full_support_result is None
+    assert selection.fold0_as_final is True

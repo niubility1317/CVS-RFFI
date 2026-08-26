@@ -14,7 +14,7 @@ import inspect
 import math
 import random
 from collections.abc import Iterable, Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from types import MappingProxyType
 from typing import Any
 
@@ -571,6 +571,8 @@ class SFTAPFTAudit:
     query_opened: bool
     bn_running_stats_updated: bool
     checkpoint_selection_role: str
+    selected_checkpoint_steps: tuple[int, ...]
+    training_sample_count: int
     stage_validation_rows: tuple[StageValidationRow, ...]
 
 
@@ -605,6 +607,9 @@ class SFTAPFTSelectionResult:
     fold_rows: tuple[SFTAPFTFoldRow, ...]
     selected_phase_steps: tuple[int, int, int]
     adapted_result: SFTAPFTResult | None
+    full_support_result: SFTAPFTResult | None = None
+    final_training_sample_count: int = 0
+    fold0_as_final: bool = False
 
 
 def _forward_aux(model: nn.Module, values: Tensor) -> Mapping[str, Any]:
@@ -714,6 +719,13 @@ def _learning_rate_factor(step: int, total_steps: int, warmup_ratio: float) -> f
     return 0.5 * (1.0 + math.cos(math.pi * progress))
 
 
+def _target_train_snapshot_score(loss_value: float, step: int) -> float:
+    """Score a target-train checkpoint without changing the fit contract."""
+
+    del step
+    return -float(loss_value)
+
+
 def _phase_for_step(step: int, phase_steps: tuple[int, int, int]) -> str:
     if step < phase_steps[0]:
         return "A"
@@ -748,6 +760,7 @@ def fit_sf_tapft(
     config: SFTAPFTConfig | None = None,
     *,
     checkpoint_validation: TargetOnlyAdaptationDataset | None = None,
+    checkpoint_selection_mode: str = "best",
 ) -> SFTAPFTResult:
     """Fit report-parity SF-TAPFT using target train only.
 
@@ -760,6 +773,8 @@ def fit_sf_tapft(
         raise TypeError("checkpoint_model must be a torch module")
     if not isinstance(target_train, TargetOnlyAdaptationDataset):
         raise TypeError("target_train must be TargetOnlyAdaptationDataset")
+    if checkpoint_selection_mode not in ("best", "final_step"):
+        raise ValueError("checkpoint_selection_mode must be 'best' or 'final_step'")
     if checkpoint_validation is not None:
         if not isinstance(checkpoint_validation, TargetOnlyAdaptationDataset):
             raise TypeError("checkpoint_validation must be TargetOnlyAdaptationDataset")
@@ -768,7 +783,11 @@ def fit_sf_tapft(
     config = config or SFTAPFTConfig()
     if not isinstance(config, SFTAPFTConfig):
         raise TypeError("config must be SFTAPFTConfig")
-    if config.checkpoint_average_top_k > 1 and checkpoint_validation is None:
+    if (
+        checkpoint_selection_mode == "best"
+        and config.checkpoint_average_top_k > 1
+        and checkpoint_validation is None
+    ):
         raise ValueError("checkpoint_average_top_k > 1 requires target inner validation")
     torch.manual_seed(int(config.seed))
     if torch.cuda.is_available():
@@ -855,7 +874,9 @@ def fit_sf_tapft(
     }
     total_steps = sum(config.phase_steps)
     losses: list[float] = []
-    snapshots: list[tuple[dict[str, Tensor], float | tuple[float, ...]]] = []
+    snapshots: list[
+        tuple[dict[str, Tensor], float | tuple[float, ...], int]
+    ] = []
     stage_best: dict[str, tuple[int, int, StageValidationMetrics]] = {}
     stage_end: dict[str, StageValidationMetrics] = {}
     current_phase = ""
@@ -927,7 +948,9 @@ def fit_sf_tapft(
         loss_value = float(loss.detach())
         losses.append(loss_value)
         if checkpoint_validation is None:
-            score: float | tuple[float, ...] = -loss_value
+            score: float | tuple[float, ...] = _target_train_snapshot_score(
+                loss_value, step + 1
+            )
         else:
             assert validation_x is not None
             assert validation_labels is not None
@@ -963,18 +986,23 @@ def fit_sf_tapft(
             ):
                 stage_best[phase] = (step_in_phase, step + 1, stage_metrics)
             stage_end[phase] = stage_metrics
-        qualifies = (
-            len(snapshots) < int(config.checkpoint_average_top_k)
-            or score > min(item[1] for item in snapshots)
-        )
+        qualifies = checkpoint_selection_mode == "final_step" and step + 1 == total_steps
+        if checkpoint_selection_mode == "best":
+            qualifies = (
+                len(snapshots) < int(config.checkpoint_average_top_k)
+                or score > min(item[1] for item in snapshots)
+            )
         if qualifies:
             combined = {
                 **{f"model.{name}": value.detach().clone() for name, value in student.state_dict().items()},
                 **{f"head.{name}": value.detach().clone() for name, value in head.state_dict().items()},
             }
-            snapshots.append((combined, score))
-            snapshots.sort(key=lambda item: item[1], reverse=True)
-            del snapshots[int(config.checkpoint_average_top_k) :]
+            if checkpoint_selection_mode == "final_step":
+                snapshots = [(combined, score, step + 1)]
+            else:
+                snapshots.append((combined, score, step + 1))
+                snapshots.sort(key=lambda item: item[1], reverse=True)
+                del snapshots[int(config.checkpoint_average_top_k) :]
 
     anchor_state = {
         **{f"model.{name}": value for name, value in initial_model_state.items()},
@@ -984,8 +1012,11 @@ def fit_sf_tapft(
         *(f"model.{name}" for name in norm_names | adapter_names | last_names),
         *(f"head.{name}" for name in initial_head_state),
     }
-    averaged = TrainableDeltaAverager(config.checkpoint_average_top_k).average(
-        snapshots,
+    checkpoint_average_top_k = (
+        1 if checkpoint_selection_mode == "final_step" else config.checkpoint_average_top_k
+    )
+    averaged = TrainableDeltaAverager(checkpoint_average_top_k).average(
+        [(state, score) for state, score, _ in snapshots],
         anchor_state=anchor_state,
         permitted_names=permitted_snapshot_names,
     )
@@ -1058,8 +1089,16 @@ def fit_sf_tapft(
         query_opened=False,
         bn_running_stats_updated=bn_updated,
         checkpoint_selection_role=(
-            "target_inner_validation" if checkpoint_validation is not None else "target_train_loss_single"
+            "fixed_final_step"
+            if checkpoint_selection_mode == "final_step"
+            else (
+                "target_inner_validation"
+                if checkpoint_validation is not None
+                else "target_train_loss_single"
+            )
         ),
+        selected_checkpoint_steps=tuple(step for _, _, step in snapshots),
+        training_sample_count=len(target_train.physical_ids),
         stage_validation_rows=stage_validation_rows,
     )
     return SFTAPFTResult(model=student, head=head, audit=audit)
@@ -1270,10 +1309,13 @@ def select_sf_tapft_by_grouped_cv(
     config: SFTAPFTConfig | None = None,
     *,
     folds: int = 4,
+    full_support_refit: bool = False,
 ) -> SFTAPFTSelectionResult:
     """Use target-train grouped OOF evidence for one domain-level fallback."""
 
     config = config or SFTAPFTConfig()
+    if not isinstance(full_support_refit, bool):
+        raise ValueError("full_support_refit must be a boolean")
     selector = GroupedTargetCVSelector(folds=folds, seed=config.seed)
     splits = selector.split(labels=target_train.labels, groups=target_train.groups)
     rows = []
@@ -1336,10 +1378,30 @@ def select_sf_tapft_by_grouped_cv(
         else 0
         for phase in _PHASES
     )
-    # The deployment candidate is fixed to the first seeded fold. Its temporal
-    # checkpoint average was selected only on that fold's disjoint target-inner
-    # validation rows; OOF evidence from all folds decides adapted vs fallback.
-    adapted_result = fitted_folds[0] if selected == "adapted" else None
+    full_support_result = None
+    final_training_sample_count = 0
+    fold0_as_final = False
+    adapted_result = None
+    if selected == "adapted":
+        if full_support_refit:
+            refit_config = replace(
+                config,
+                phase_steps=selected_phase_steps,
+                checkpoint_average_top_k=1,
+            )
+            full_support_result = fit_sf_tapft(
+                copy.deepcopy(checkpoint_model),
+                target_train,
+                refit_config,
+                checkpoint_selection_mode="final_step",
+            )
+            adapted_result = full_support_result
+            final_training_sample_count = len(target_train.physical_ids)
+        else:
+            # Preserve the V1 return behavior until the R0 runner opts in.
+            adapted_result = fitted_folds[0]
+            final_training_sample_count = adapted_result.audit.training_sample_count
+            fold0_as_final = True
     return SFTAPFTSelectionResult(
         selected=selected,
         frozen_metrics=frozen_metrics,
@@ -1347,6 +1409,9 @@ def select_sf_tapft_by_grouped_cv(
         fold_rows=fold_rows,
         selected_phase_steps=selected_phase_steps,
         adapted_result=adapted_result,
+        full_support_result=full_support_result,
+        final_training_sample_count=final_training_sample_count,
+        fold0_as_final=fold0_as_final,
     )
 
 
