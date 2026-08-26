@@ -181,7 +181,7 @@ git commit -m "fix: preserve frozen SF-TAPFT state exactly"
 
 - [ ] **Step 1: Write failing metric and schedule tests**
 
-Create hand-derived logits for two classes and assert balanced accuracy、macro-F1、class floor、NLL、per-class recall、per-class margin and positive/negative flips. Add a deterministic schedule test where fold best steps are A=`[400,450,500,500]`、B=`[1000,1200,1100,1300]`、C=`[300,400,500,500]`; assert the lower median schedule is `(475,1150,450)`.
+Create hand-derived logits for two classes and assert balanced accuracy、macro-F1、class floor、NLL、per-class recall、per-class margin and positive/negative flips. Add a deterministic schedule test where fold best steps are A=`[400,450,500,500]`、B=`[1000,1200,1100,1300]`、C=`[300,400,500,500]`; assert the conservative lower-median schedule is `(450,1100,400)`.
 
 - [ ] **Step 2: Run focused tests and verify RED**
 
@@ -262,7 +262,7 @@ Run the adaptation test file. Expected: failure because V1 returns`fitted_folds[
 
 - [ ] **Step 3: Implement all-support refit**
 
-After OOF chooses`adapted`, create a new config using`selected_phase_steps`, copy the original checkpoint model, and call`fit_sf_tapft()` on the complete dataset with`checkpoint_average_top_k=1`. The final refit uses the fixed schedule and no inner-validation model selection. Preserve all OOF fold models only in selection memory; do not parameter-average them.
+Add an explicit`checkpoint_selection_mode="final_step"`option to`fit_sf_tapft()`. After OOF chooses`adapted`, create a new config using`selected_phase_steps`, copy the original checkpoint model, and call`fit_sf_tapft()`on the complete dataset with`checkpoint_average_top_k=1`and final-step selection. The full-support result must be the state after the last scheduled optimizer step, not an earlier minimum target-train-loss snapshot. Preserve all OOF fold models only in selection memory; do not parameter-average them.
 
 - [ ] **Step 4: Run focused tests and verify GREEN**
 
