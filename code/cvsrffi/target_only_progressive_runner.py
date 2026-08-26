@@ -26,6 +26,7 @@ from .sf_tapft_phase1_binding import (
 
 
 SF_TAPFT_BUNDLE_SCHEMA = "cvs.sf_tapft.v1"
+SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA = "cvs.sf_tapft.clean_single.v2"
 _V1_TOP_LEVEL_KEYS = frozenset(
     {
         "candidate_id",
@@ -58,9 +59,66 @@ _BUNDLE_KEYS = frozenset(
         "audit",
     }
 )
+_CLEAN_SINGLE_BUNDLE_KEYS = frozenset(
+    {
+        "schema",
+        "method",
+        "permission",
+        "model_role",
+        "protocol_schema",
+        "phase2_data_status",
+        "capsule_id",
+        "split_id",
+        "base_checkpoint_path",
+        "phase1_bundle",
+        "phase1_binding",
+        "config",
+        "selected_phase_steps",
+        "support_count",
+        "per_class_counts",
+        "fold0_as_final",
+        "query_input_capability",
+        "class_ids",
+        "model_state",
+        "head_state",
+        "state_change_audit",
+    }
+)
+_PHASE1_BINDING_KEYS = frozenset(
+    {
+        "outer_content_root_sha256",
+        "checkpoint_lineage_sha256",
+        "runtime_sha256",
+        "class_handle_binding_sha256",
+        "class_handles",
+        "component_pre_sign_content_root_sha256",
+    }
+)
+_STATE_CHANGE_AUDIT_KEYS = frozenset(
+    {
+        "method",
+        "permission",
+        "total_steps",
+        "phase_steps",
+        "trainable_names_by_phase",
+        "updated_parameter_names",
+        "permitted_changed_names",
+        "nonpermitted_changed_names",
+        "source_loader_opened",
+        "source_samples_opened",
+        "source_cache_opened",
+        "target_eval_opened",
+        "query_opened",
+        "bn_running_stats_updated",
+        "checkpoint_selection_role",
+        "selected_checkpoint_steps",
+        "training_sample_count",
+    }
+)
 
 
 CheckpointLoader = Callable[..., nn.Module]
+Phase1BindingLoader = Callable[..., SFTAPFTPhase1Binding]
 
 
 def _portable_tensor(array: np.ndarray, *, dtype: torch.dtype) -> torch.Tensor:
@@ -212,6 +270,80 @@ def _binding_payload(binding: SFTAPFTPhase1Binding) -> dict[str, Any]:
     }
 
 
+def _state_change_audit_payload(audit: Any) -> dict[str, Any]:
+    return {
+        "method": audit.method,
+        "permission": audit.permission,
+        "total_steps": int(audit.total_steps),
+        "phase_steps": list(audit.phase_steps),
+        "trainable_names_by_phase": {
+            key: list(value) for key, value in audit.trainable_names_by_phase.items()
+        },
+        "updated_parameter_names": list(audit.updated_parameter_names),
+        "permitted_changed_names": list(audit.permitted_changed_names),
+        "nonpermitted_changed_names": list(audit.nonpermitted_changed_names),
+        "source_loader_opened": bool(audit.source_loader_opened),
+        "source_samples_opened": bool(audit.source_samples_opened),
+        "source_cache_opened": bool(audit.source_cache_opened),
+        "target_eval_opened": bool(audit.target_eval_opened),
+        "query_opened": bool(audit.query_opened),
+        "bn_running_stats_updated": bool(audit.bn_running_stats_updated),
+        "checkpoint_selection_role": str(audit.checkpoint_selection_role),
+        "selected_checkpoint_steps": list(audit.selected_checkpoint_steps),
+        "training_sample_count": int(audit.training_sample_count),
+    }
+
+
+def _per_class_counts(
+    support: TargetOnlyAdaptationDataset, class_ids: tuple[int, ...]
+) -> list[dict[str, int]]:
+    return [
+        {
+            "class_id": int(class_id),
+            "count": int((support.labels == int(class_id)).sum().item()),
+        }
+        for class_id in class_ids
+    ]
+
+
+def _clean_single_bundle_payload(
+    result: Any,
+    *,
+    resolved: Mapping[str, Any],
+    method_config: SFTAPFTConfig,
+    binding: SFTAPFTPhase1Binding,
+    support: TargetOnlyAdaptationDataset,
+    selected_phase_steps: tuple[int, int, int],
+    fold0_as_final: bool,
+) -> dict[str, Any]:
+    final_config = asdict(method_config)
+    final_config["phase_steps"] = tuple(int(value) for value in selected_phase_steps)
+    class_ids = tuple(int(value) for value in result.head.class_ids)
+    return {
+        "schema": SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA,
+        "method": result.audit.method,
+        "permission": result.audit.permission,
+        "model_role": "clean_single_full_support_refit",
+        "protocol_schema": resolved["protocol_schema"],
+        "phase2_data_status": resolved["phase2_data_status"],
+        "capsule_id": resolved["capsule_id"],
+        "split_id": resolved["split_id"],
+        "base_checkpoint_path": str(resolved["checkpoint_path"]),
+        "phase1_bundle": dict(resolved["phase1_bundle"]),
+        "phase1_binding": _binding_payload(binding),
+        "config": final_config,
+        "selected_phase_steps": list(selected_phase_steps),
+        "support_count": len(support.physical_ids),
+        "per_class_counts": _per_class_counts(support, class_ids),
+        "fold0_as_final": bool(fold0_as_final),
+        "query_input_capability": False,
+        "class_ids": list(class_ids),
+        "model_state": _cpu_state(result.model),
+        "head_state": _cpu_state(result.head),
+        "state_change_audit": _state_change_audit_payload(result.audit),
+    }
+
+
 def _validate_support_labels_for_binding(
     support: TargetOnlyAdaptationDataset, binding: SFTAPFTPhase1Binding
 ) -> None:
@@ -345,17 +477,29 @@ def run_sf_tapft_grouped_selection(
         support,
         method_config,
         folds=int(folds),
+        full_support_refit=binding is not None,
     )
     destination.mkdir(parents=True, exist_ok=False)
     bundle_path = None
     if selection.adapted_result is not None:
-        bundle_path = destination / "sf_tapft_bundle.pt"
-        payload = _bundle_payload(
-            selection.adapted_result,
-            resolved=resolved,
-            method_config=method_config,
-            binding=binding,
-        )
+        if binding is not None:
+            bundle_path = destination / "sf_tapft_clean_single_bundle.pt"
+            payload = _clean_single_bundle_payload(
+                selection.adapted_result,
+                resolved=resolved,
+                method_config=method_config,
+                binding=binding,
+                support=support,
+                selected_phase_steps=selection.selected_phase_steps,
+                fold0_as_final=selection.fold0_as_final,
+            )
+        else:
+            bundle_path = destination / "sf_tapft_bundle.pt"
+            payload = _bundle_payload(
+                selection.adapted_result,
+                resolved=resolved,
+                method_config=method_config,
+            )
         with bundle_path.open("xb") as handle:
             torch.save(payload, handle)
     rows = [
@@ -389,6 +533,32 @@ def run_sf_tapft_grouped_selection(
         "frozen_metrics": asdict(selection.frozen_metrics),
         "adapted_metrics": asdict(selection.adapted_metrics),
         "fold_rows": rows,
+        "oof_selection": {
+            "selected": selection.selected,
+            "folds": int(folds),
+            "frozen_metrics": asdict(selection.frozen_metrics),
+            "adapted_metrics": asdict(selection.adapted_metrics),
+            "selected_phase_steps": list(selection.selected_phase_steps),
+            "fold_rows": rows,
+        },
+        "final_full_support_refit": (
+            {
+                "model_role": "clean_single_full_support_refit",
+                "support_count": selection.final_training_sample_count,
+                "per_class_counts": _per_class_counts(
+                    support,
+                    tuple(int(value) for value in selection.adapted_result.head.class_ids),
+                ),
+                "selected_phase_steps": list(selection.selected_phase_steps),
+                "fold0_as_final": selection.fold0_as_final,
+                "checkpoint_selection_role": (
+                    selection.adapted_result.audit.checkpoint_selection_role
+                ),
+                "bundle_path": str(bundle_path),
+            }
+            if binding is not None and selection.full_support_result is not None
+            else None
+        ),
         "bundle_path": str(bundle_path) if bundle_path is not None else None,
         "source_opened": False,
         "target_eval_opened": False,
@@ -401,6 +571,200 @@ def run_sf_tapft_grouped_selection(
         receipt["phase1_binding"] = _binding_payload(binding)
     _write_json(destination / "selection.json", receipt)
     return receipt
+
+
+def _strict_phase1_binding_payload(value: Any) -> dict[str, Any]:
+    if not isinstance(value, Mapping) or set(value) != set(_PHASE1_BINDING_KEYS):
+        raise ValueError("SF-TAPFT clean-single Phase1 binding allowlist mismatch")
+    payload = dict(value)
+    scalar_names = _PHASE1_BINDING_KEYS.difference({"class_handles"})
+    if any(
+        not isinstance(payload[name], str) or not payload[name].strip()
+        for name in scalar_names
+    ):
+        raise ValueError("SF-TAPFT clean-single Phase1 binding is invalid")
+    handles = payload["class_handles"]
+    if (
+        not isinstance(handles, list)
+        or not handles
+        or any(not isinstance(item, str) or not item.strip() for item in handles)
+        or len(handles) != len(set(handles))
+    ):
+        raise ValueError("SF-TAPFT clean-single ordered Phase1 class registry is invalid")
+    return payload
+
+
+def load_sf_tapft_clean_single_bundle_strict(
+    path: str | Path,
+    *,
+    device: str | torch.device,
+    expected_capsule_id: str | None = None,
+    expected_split_id: str | None = None,
+    checkpoint_loader: CheckpointLoader | None = None,
+    phase1_binding_loader: Phase1BindingLoader | None = None,
+) -> tuple[nn.Module, TargetPrototypeHead, dict[str, Any]]:
+    """Strictly load a full-support R0 model bound to Phase1 and target data."""
+
+    source = Path(path)
+    if source.is_symlink() or not source.is_file():
+        raise ValueError(f"SF-TAPFT clean-single bundle is not a regular file: {source}")
+    try:
+        payload = torch.load(source, map_location="cpu", weights_only=True)
+    except (OSError, RuntimeError, ValueError, TypeError) as exc:
+        raise ValueError(f"cannot safely load SF-TAPFT clean-single bundle: {source}") from exc
+    if not isinstance(payload, Mapping) or set(payload) != set(_CLEAN_SINGLE_BUNDLE_KEYS):
+        raise ValueError("SF-TAPFT clean-single bundle top-level allowlist mismatch")
+    if payload["schema"] != SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA:
+        raise ValueError("SF-TAPFT clean-single bundle schema mismatch")
+    if (
+        payload["method"] != "sf_tapft_v1"
+        or payload["permission"] != "DIAGNOSTIC_NON_FORMAL"
+        or payload["model_role"] != "clean_single_full_support_refit"
+    ):
+        raise ValueError("SF-TAPFT clean-single method, permission or model role mismatch")
+    if (
+        payload["protocol_schema"] != "p2_min_v1"
+        or payload["phase2_data_status"] != "VALIDATED_ONCE"
+        or not isinstance(payload["capsule_id"], str)
+        or not payload["capsule_id"].strip()
+        or not isinstance(payload["split_id"], str)
+        or not payload["split_id"].strip()
+        or (expected_capsule_id is not None and payload["capsule_id"] != expected_capsule_id)
+        or (expected_split_id is not None and payload["split_id"] != expected_split_id)
+    ):
+        raise ValueError("SF-TAPFT clean-single target data binding mismatch")
+    if payload["fold0_as_final"] is not False or payload["query_input_capability"] is not False:
+        raise ValueError("SF-TAPFT clean-single final identity or query boundary mismatch")
+    if not isinstance(payload["base_checkpoint_path"], str) or not payload[
+        "base_checkpoint_path"
+    ].strip():
+        raise ValueError("SF-TAPFT clean-single base checkpoint path is invalid")
+    if not isinstance(payload["phase1_bundle"], Mapping):
+        raise ValueError("SF-TAPFT clean-single Phase1 bundle mapping is invalid")
+    embedded_binding = _strict_phase1_binding_payload(payload["phase1_binding"])
+    binding_loader = phase1_binding_loader or load_sf_tapft_phase1_binding
+    expected_binding = binding_loader(
+        {"phase1_bundle": dict(payload["phase1_bundle"])},
+        payload["base_checkpoint_path"],
+    )
+    if embedded_binding != _binding_payload(expected_binding):
+        raise ValueError("SF-TAPFT clean-single Phase1 binding mismatch")
+
+    raw_config = payload["config"]
+    config_keys = {field.name for field in fields(SFTAPFTConfig)}
+    if not isinstance(raw_config, Mapping) or set(raw_config) != config_keys:
+        raise ValueError("SF-TAPFT clean-single config allowlist mismatch")
+    normalized_config = dict(raw_config)
+    normalized_config["phase_steps"] = tuple(normalized_config["phase_steps"])
+    try:
+        config = SFTAPFTConfig(**normalized_config)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("SF-TAPFT clean-single config is invalid") from exc
+    selected_phase_steps = payload["selected_phase_steps"]
+    if (
+        not isinstance(selected_phase_steps, list)
+        or tuple(selected_phase_steps) != config.phase_steps
+    ):
+        raise ValueError("SF-TAPFT clean-single selected phase steps mismatch")
+
+    class_ids_value = payload["class_ids"]
+    if (
+        not isinstance(class_ids_value, list)
+        or not class_ids_value
+        or any(isinstance(value, bool) or not isinstance(value, int) for value in class_ids_value)
+    ):
+        raise ValueError("SF-TAPFT clean-single class IDs are invalid")
+    class_ids = tuple(class_ids_value)
+    if tuple(sorted(set(class_ids))) != class_ids or any(
+        value < 0 or value >= len(expected_binding.class_handles) for value in class_ids
+    ):
+        raise ValueError("SF-TAPFT clean-single class IDs do not match Phase1 registry")
+    support_count = payload["support_count"]
+    count_rows = payload["per_class_counts"]
+    if (
+        isinstance(support_count, bool)
+        or not isinstance(support_count, int)
+        or support_count <= 0
+        or not isinstance(count_rows, list)
+        or len(count_rows) != len(class_ids)
+        or any(
+            not isinstance(row, Mapping)
+            or set(row) != {"class_id", "count"}
+            or row["class_id"] != class_id
+            or isinstance(row["count"], bool)
+            or not isinstance(row["count"], int)
+            or row["count"] < 0
+            for row, class_id in zip(count_rows, class_ids)
+        )
+        or sum(row["count"] for row in count_rows) != support_count
+    ):
+        raise ValueError("SF-TAPFT clean-single support binding mismatch")
+
+    state_audit = payload["state_change_audit"]
+    if not isinstance(state_audit, Mapping) or set(state_audit) != set(
+        _STATE_CHANGE_AUDIT_KEYS
+    ):
+        raise ValueError("SF-TAPFT clean-single state-change audit allowlist mismatch")
+    if (
+        state_audit["method"] != "sf_tapft_v1"
+        or state_audit["permission"] != "DIAGNOSTIC_NON_FORMAL"
+        or state_audit["checkpoint_selection_role"] != "fixed_final_step"
+        or state_audit["training_sample_count"] != support_count
+        or tuple(state_audit["phase_steps"]) != tuple(selected_phase_steps)
+        or tuple(state_audit["selected_checkpoint_steps"]) != (sum(selected_phase_steps),)
+        or state_audit["nonpermitted_changed_names"] != []
+        or state_audit["source_loader_opened"] is not False
+        or state_audit["source_samples_opened"] is not False
+        or state_audit["source_cache_opened"] is not False
+        or state_audit["target_eval_opened"] is not False
+        or state_audit["query_opened"] is not False
+    ):
+        raise ValueError("SF-TAPFT clean-single state-change audit mismatch")
+
+    loader = checkpoint_loader or _default_checkpoint_loader
+    model = loader(payload["base_checkpoint_path"], device=device)
+    ensure_time_adapter(model, rank=config.adapter_rank)
+    try:
+        incompatible = model.load_state_dict(payload["model_state"], strict=True)
+    except RuntimeError as exc:
+        raise ValueError("SF-TAPFT clean-single adapted model state mismatch") from exc
+    if incompatible.missing_keys or incompatible.unexpected_keys:
+        raise ValueError("SF-TAPFT clean-single adapted model state is not strict")
+    head_state = payload["head_state"]
+    if not isinstance(head_state, Mapping) or set(head_state) != {"weight"}:
+        raise ValueError("SF-TAPFT clean-single head state allowlist mismatch")
+    head = TargetPrototypeHead(
+        head_state["weight"],
+        class_ids,
+        scale=config.prototype_scale,
+    )
+    try:
+        head.load_state_dict(head_state, strict=True)
+    except RuntimeError as exc:
+        raise ValueError("SF-TAPFT clean-single head state mismatch") from exc
+    model.to(torch.device(device)).eval()
+    head.to(torch.device(device)).eval()
+    for parameter in model.parameters():
+        parameter.requires_grad_(False)
+    for parameter in head.parameters():
+        parameter.requires_grad_(False)
+    audit = {
+        "schema": SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA,
+        "method": payload["method"],
+        "permission": payload["permission"],
+        "model_role": payload["model_role"],
+        "base_checkpoint_path": payload["base_checkpoint_path"],
+        "capsule_id": payload["capsule_id"],
+        "split_id": payload["split_id"],
+        "selected_phase_steps": tuple(selected_phase_steps),
+        "support_count": support_count,
+        "per_class_counts": tuple(
+            (int(row["class_id"]), int(row["count"])) for row in count_rows
+        ),
+        "fold0_as_final": False,
+        "query_input_capability": False,
+    }
+    return model, head, audit
 
 
 def load_sf_tapft_bundle_strict(
@@ -473,7 +837,9 @@ def load_sf_tapft_bundle_strict(
 
 __all__ = [
     "SF_TAPFT_BUNDLE_SCHEMA",
+    "SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA",
     "load_sf_tapft_bundle_strict",
+    "load_sf_tapft_clean_single_bundle_strict",
     "run_sf_tapft_grouped_selection",
     "run_sf_tapft_no_query",
 ]

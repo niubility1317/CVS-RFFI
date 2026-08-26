@@ -11,10 +11,14 @@ import torch
 import cvsrffi.target_only_progressive_runner as runner_module
 
 from cvsrffi.target_only_progressive_runner import (
+    SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA,
     load_sf_tapft_bundle_strict,
+    load_sf_tapft_clean_single_bundle_strict,
+    run_sf_tapft_grouped_selection,
     run_sf_tapft_no_query,
 )
 from cvsrffi.sf_tapft_phase1_binding import SFTAPFTPhase1Binding
+from cvsrffi.target_only_progressive_adapt import GroupedTargetCVSelector
 from test_target_only_progressive_adapt import _ToyModel
 
 
@@ -143,6 +147,219 @@ def test_r0_runner_copies_phase1_binding_into_receipt_and_bundle(
     assert receipt["phase1_binding"]["class_handle_binding_sha256"] == "6" * 64
     payload = torch.load(output / "sf_tapft_bundle.pt", map_location="cpu", weights_only=True)
     assert payload["phase1_binding"] == receipt["phase1_binding"]
+
+
+def test_r0_grouped_selection_writes_strict_full_support_clean_single_bundle(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    support = tmp_path / "support.npz"
+    _write_support(support)
+    checkpoint = tmp_path / "checkpoint.pth"
+    checkpoint.write_bytes(b"loader-owned fixture")
+    binding = _phase1_binding(handles=("tx0", "tx1"))
+    monkeypatch.setattr(
+        runner_module,
+        "load_sf_tapft_phase1_binding",
+        lambda *_args, **_kwargs: binding,
+    )
+    monkeypatch.setattr(
+        GroupedTargetCVSelector,
+        "choose",
+        staticmethod(lambda *, frozen, adapted: "adapted"),
+    )
+    output = tmp_path / "selection-output"
+
+    receipt = run_sf_tapft_grouped_selection(
+        _r0_config(checkpoint, support),
+        output,
+        device="cpu",
+        folds=2,
+        checkpoint_loader=lambda _path, *, device: copy.deepcopy(_ToyModel()).to(device),
+    )
+
+    bundle_path = output / "sf_tapft_clean_single_bundle.pt"
+    payload = torch.load(bundle_path, map_location="cpu", weights_only=True)
+    assert set(payload) == {
+        "schema",
+        "method",
+        "permission",
+        "model_role",
+        "protocol_schema",
+        "phase2_data_status",
+        "capsule_id",
+        "split_id",
+        "base_checkpoint_path",
+        "phase1_bundle",
+        "phase1_binding",
+        "config",
+        "selected_phase_steps",
+        "support_count",
+        "per_class_counts",
+        "fold0_as_final",
+        "query_input_capability",
+        "class_ids",
+        "model_state",
+        "head_state",
+        "state_change_audit",
+    }
+    assert payload["schema"] == SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA
+    assert payload["model_role"] == "clean_single_full_support_refit"
+    assert payload["selected_phase_steps"] == [1, 1, 1]
+    assert payload["support_count"] == 4
+    assert payload["per_class_counts"] == [
+        {"class_id": 0, "count": 2},
+        {"class_id": 1, "count": 2},
+    ]
+    assert payload["fold0_as_final"] is False
+    assert payload["state_change_audit"]["training_sample_count"] == 4
+    assert payload["state_change_audit"]["checkpoint_selection_role"] == "fixed_final_step"
+    assert payload["state_change_audit"]["nonpermitted_changed_names"] == []
+    assert receipt["oof_selection"]["selected"] == "adapted"
+    assert receipt["final_full_support_refit"] == {
+        "model_role": "clean_single_full_support_refit",
+        "support_count": 4,
+        "per_class_counts": [
+            {"class_id": 0, "count": 2},
+            {"class_id": 1, "count": 2},
+        ],
+        "selected_phase_steps": [1, 1, 1],
+        "fold0_as_final": False,
+        "checkpoint_selection_role": "fixed_final_step",
+        "bundle_path": str(bundle_path),
+    }
+    persisted_receipt = json.loads((output / "selection.json").read_text(encoding="utf-8"))
+    assert persisted_receipt["oof_selection"] == receipt["oof_selection"]
+    assert persisted_receipt["final_full_support_refit"] == receipt["final_full_support_refit"]
+
+    model, head, audit = load_sf_tapft_clean_single_bundle_strict(
+        bundle_path,
+        device="cpu",
+        expected_capsule_id="capsule-test",
+        expected_split_id="split-test",
+        checkpoint_loader=lambda _path, *, device: copy.deepcopy(_ToyModel()).to(device),
+        phase1_binding_loader=lambda *_args, **_kwargs: binding,
+    )
+    assert audit["schema"] == SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA
+    assert audit["model_role"] == "clean_single_full_support_refit"
+    assert audit["support_count"] == 4
+    assert audit["fold0_as_final"] is False
+    assert head.class_ids == (0, 1)
+    assert all(not parameter.requires_grad for parameter in model.parameters())
+    assert all(not parameter.requires_grad for parameter in head.parameters())
+
+    with pytest.raises(FileExistsError):
+        run_sf_tapft_grouped_selection(
+            _r0_config(checkpoint, support),
+            output,
+            device="cpu",
+            folds=2,
+            checkpoint_loader=lambda _path, *, device: copy.deepcopy(_ToyModel()).to(device),
+        )
+
+
+@pytest.mark.parametrize(
+    ("family", "mutate", "message"),
+    [
+        (
+            "phase1_outer_root",
+            lambda payload: payload["phase1_binding"].__setitem__("outer_content_root_sha256", "d" * 64),
+            "Phase1 binding mismatch",
+        ),
+        (
+            "phase1_checkpoint_lineage",
+            lambda payload: payload["phase1_binding"].__setitem__("checkpoint_lineage_sha256", "d" * 64),
+            "Phase1 binding mismatch",
+        ),
+        (
+            "phase1_runtime",
+            lambda payload: payload["phase1_binding"].__setitem__("runtime_sha256", "d" * 64),
+            "Phase1 binding mismatch",
+        ),
+        (
+            "phase1_ordered_classes",
+            lambda payload: payload["phase1_binding"].__setitem__("class_handles", ["tx1", "tx0"]),
+            "Phase1 binding mismatch",
+        ),
+        (
+            "phase1_class_binding",
+            lambda payload: payload["phase1_binding"].__setitem__("class_handle_binding_sha256", "d" * 64),
+            "Phase1 binding mismatch",
+        ),
+        (
+            "phase1_aggregate_component",
+            lambda payload: payload["phase1_binding"].__setitem__(
+                "component_pre_sign_content_root_sha256", "d" * 64
+            ),
+            "Phase1 binding mismatch",
+        ),
+        (
+            "target_protocol",
+            lambda payload: payload.__setitem__("protocol_schema", "p2_other"),
+            "target data binding mismatch",
+        ),
+        (
+            "target_status",
+            lambda payload: payload.__setitem__("phase2_data_status", "UNVALIDATED"),
+            "target data binding mismatch",
+        ),
+        (
+            "target_capsule",
+            lambda payload: payload.__setitem__("capsule_id", "other-capsule"),
+            "target data binding mismatch",
+        ),
+        (
+            "target_split",
+            lambda payload: payload.__setitem__("split_id", "other-split"),
+            "target data binding mismatch",
+        ),
+    ],
+)
+def test_clean_single_loader_rejects_each_binding_family_mutation(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    family: str,
+    mutate,
+    message: str,
+) -> None:
+    support = tmp_path / "support.npz"
+    _write_support(support)
+    checkpoint = tmp_path / "checkpoint.pth"
+    checkpoint.write_bytes(b"loader-owned fixture")
+    binding = _phase1_binding(handles=("tx0", "tx1"))
+    monkeypatch.setattr(
+        runner_module,
+        "load_sf_tapft_phase1_binding",
+        lambda *_args, **_kwargs: binding,
+    )
+    monkeypatch.setattr(
+        GroupedTargetCVSelector,
+        "choose",
+        staticmethod(lambda *, frozen, adapted: "adapted"),
+    )
+    output = tmp_path / "selection-output"
+    run_sf_tapft_grouped_selection(
+        _r0_config(checkpoint, support),
+        output,
+        device="cpu",
+        folds=2,
+        checkpoint_loader=lambda _path, *, device: copy.deepcopy(_ToyModel()).to(device),
+    )
+    payload = torch.load(
+        output / "sf_tapft_clean_single_bundle.pt", map_location="cpu", weights_only=True
+    )
+    mutate(payload)
+    mutated = tmp_path / f"mutated-{family}.pt"
+    torch.save(payload, mutated)
+
+    with pytest.raises(ValueError, match=message):
+        load_sf_tapft_clean_single_bundle_strict(
+            mutated,
+            device="cpu",
+            expected_capsule_id="capsule-test",
+            expected_split_id="split-test",
+            checkpoint_loader=lambda _path, *, device: copy.deepcopy(_ToyModel()).to(device),
+            phase1_binding_loader=lambda *_args, **_kwargs: binding,
+        )
 
 
 def test_no_query_runner_writes_nonformal_bundle_and_consumer_can_reload(tmp_path: Path) -> None:
