@@ -142,7 +142,7 @@
 <body>
   <header class="hero">
     <div class="wrap">
-      <p class="eyebrow">P2-A1 · support-only registration · visual reading edition</p>
+      <p class="eyebrow">P2-256 · support-only registration · visual reading edition</p>
       <h1>D92 E0<br>256维注册方法</h1>
       <p class="lead">用160维身份特征和96维频谱特征，建立一个“注册时认真整理、预测时快速回答”的少样本分类状态。这里先看图理解流程，再展开公式。</p>
       <div class="badges">
@@ -150,7 +150,7 @@
         <span class="badge">256维联合特征</span>
         <span class="badge">六个模块</span>
         <span class="badge">query不更新状态</span>
-        <span class="badge">development screening</span>
+        <span class="badge">12臂联合screening已闭合</span>
       </div>
     </div>
   </header>
@@ -165,6 +165,7 @@
       <a href="#m34">模块三、四</a>
       <a href="#m56">模块五、六</a>
       <a href="#resource">资源</a>
+      <a href="#joint-ablation">联合消融</a>
       <a href="#evidence">证据</a>
       <a href="#compare">对比</a>
     </div>
@@ -663,7 +664,7 @@
             <rect x="160" y="67" width="142" height="130" rx="12" fill="#d98e24"/><text x="231" y="109" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">协方差</text><text x="231" y="132" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">与LDA</text>
             <rect x="317" y="67" width="152" height="130" rx="12" fill="#c9791c"/><text x="393" y="109" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">K折留一</text><text x="393" y="132" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">重建</text>
             <rect x="484" y="67" width="150" height="130" rx="12" fill="#b86519"/><text x="559" y="109" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">量化</text><text x="559" y="132" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">封存</text>
-            <text x="27" y="229" fill="#6b4a0e" font-size="14">一次完整registration time：均值235699.082ms；这不是query头延时。</text>
+            <text x="27" y="229" fill="#6b4a0e" font-size="14">本轮12臂注册回执为2.684–409.921s；并发编排下不用于性能排序。</text>
           </g>
           <g transform="translate(740,68)">
             <rect width="378" height="250" rx="18" fill="#eff7ff" stroke="#9fc5ec"/>
@@ -671,7 +672,7 @@
             <rect x="28" y="75" width="112" height="104" rx="12" fill="#2d72d9"/><text x="84" y="117" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">特征</text><text x="84" y="140" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">映射</text>
             <path d="M151 127H198" stroke="#7890ae" stroke-width="3"/><path d="M198 127l-10-7v14z" fill="#7890ae"/>
             <rect x="210" y="75" width="140" height="104" rx="12" fill="#29a9c7"/><text x="280" y="117" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">全类仿射</text><text x="280" y="140" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">打分</text>
-            <text x="28" y="220" fill="#163c72" font-size="14">query head MAC：均值6624；只计分类头。</text>
+            <text x="28" y="220" fill="#163c72" font-size="14">query head MAC：11×256＝2816；只计分类头。</text>
           </g>
           <text x="580" y="365" text-anchor="middle" fill="#5e6d85" font-size="14">要讨论“更轻”，必须说明是在比较注册、常驻状态，还是每条query的分类头。</text>
         </svg>
@@ -679,9 +680,9 @@
       </figure>
 
       <div class="grid three">
-        <article class="card"><div class="kpi">235699ms</div><div class="kpi-label">完整注册时间均值</div><p class="muted">含完整注册链，不是head微基准。</p></article>
-        <article class="card"><div class="kpi">14722B</div><div class="kpi-label">压缩状态字节均值</div><p class="muted">资源审计中的state bytes。</p></article>
-        <article class="card"><div class="kpi">6624MAC</div><div class="kpi-label">query head均值</div><p class="muted">不含主干、FFT96、I/O与解码。</p></article>
+        <article class="card"><div class="kpi">2.684–409.921s</div><div class="kpi-label">12臂注册回执范围</div><p class="muted">受并发编排影响；不能按此给模块做速度排名。</p></article>
+        <article class="card"><div class="kpi">17216B</div><div class="kpi-label">部署状态</div><p class="muted">12个联合臂保持相同常驻状态大小。</p></article>
+        <article class="card"><div class="kpi">2816MAC</div><div class="kpi-label">query分类头</div><p class="muted">11类×256维；不含主干、FFT96、I/O与解码。</p></article>
       </div>
 
       <div class="formula">
@@ -693,13 +694,95 @@
       </div>
       <div class="formula-note"><strong>符号说明：</strong>\(\mathcal M_{\mathrm{head}}\)是D92 E0仿射头的MAC量级；\(C\)是注册类别数；\(p=256\)是联合特征维数；\(\mathcal M_{\mathrm{qKNN}}\)是qKNN距离计算量级；\(K\)是每类support数；\(d\)是qKNN使用的距离维数。qKNN的query工作量会随\(K\)增长，D92 E0则把主要复杂度转移到注册期。</div>
 
-      <div class="warning"><strong>部署结论：</strong>若只在星上运行冻结编码器、FFT96和量化头，结构上可部署；若要求在极低资源节点实时完成完整新类注册，当前协方差和留一重建仍偏重。INT8状态压缩不等于已证明INT8端到端加速。</div>
+      <div class="warning"><strong>部署结论：</strong>若只在星上运行冻结编码器、FFT96和量化头，结构上可部署；若要求在极低资源节点实时完成完整新类注册，当前协方差和留一重建仍偏重。12臂均为F3封存状态，`integer_kernel_used=false`；INT8状态压缩不等于已证明INT8端到端加速。</div>
+    </section>
+
+    <section id="joint-ablation">
+      <p class="eyebrow" style="color:#e76c63">当前联合消融</p>
+      <h2>12个合法组合臂：效果取决于几何路径</h2>
+      <p>本轮固定接收机3-19、K10/new5、256维联合特征、S0、F3、Phase1bundle及三个LEO弱场景，只交叉B0、C3和几何因素G。D0与D2是同一几何模块的互斥控制路径，因此是2×2×3＝12臂，而不是16臂。12/12预测和独立truth-last评分均闭合；每一row均保证预测提交后才打开truth，且评分器输出不反馈给预测器。</p>
+
+      <div class="grid three">
+        <article class="card"><div class="kpi">12 / 12</div><div class="kpi-label">独立物理执行与评分闭合</div><p class="muted">0失败row、0别名row。</p></article>
+        <article class="card"><div class="kpi">64.503%</div><div class="kpi-label">B0＋C3＋D0端点H</div><p class="muted">相对FULL为−0.677pp。</p></article>
+        <article class="card"><div class="kpi">−0.387pp</div><div class="kpi-label">FULL几何下B0/C3的H交互</div><p class="muted">单因素差值不能直接相加。</p></article>
+      </div>
+
+      <figure class="viz">
+        <svg viewBox="0 0 1160 400" role="img" aria-label="B0、C3与三种几何路径的12臂联合消融H矩阵">
+          <text x="42" y="38" fill="#163c72" font-size="22" font-weight="800">每个格子是一条完整注册路径的三个场景等权H</text>
+          <text x="42" y="64" fill="#5e6d85" font-size="14">深蓝：FULL基线；绿色：H高于FULL；珊瑚色：H低于FULL。B0/C3表示控制替换，不表示模块开启。</text>
+          <g transform="translate(42,94)">
+            <g>
+              <rect x="0" y="0" width="330" height="244" rx="18" fill="#f5f8fc" stroke="#cbd8eb"/>
+              <text x="165" y="31" text-anchor="middle" fill="#163c72" font-size="19" font-weight="800">G＝FULL</text>
+              <text x="108" y="57" text-anchor="middle" fill="#5e6d85" font-size="12">B＝FULL</text><text x="248" y="57" text-anchor="middle" fill="#5e6d85" font-size="12">B＝B0</text>
+              <text x="12" y="105" fill="#5e6d85" font-size="12">C＝FULL</text><text x="12" y="188" fill="#5e6d85" font-size="12">C＝C3</text>
+              <rect x="58" y="70" width="116" height="58" rx="10" fill="#163c72"/><text x="116" y="95" text-anchor="middle" fill="#fff" font-size="17" font-weight="800">65.180%</text><text x="116" y="114" text-anchor="middle" fill="#dbeaff" font-size="12">ΔH 0.000</text>
+              <rect x="198" y="70" width="116" height="58" rx="10" fill="#d9f3e9" stroke="#41b88f"/><text x="256" y="95" text-anchor="middle" fill="#1f6f55" font-size="17" font-weight="800">65.785%</text><text x="256" y="114" text-anchor="middle" fill="#35745f" font-size="12">＋0.606pp</text>
+              <rect x="58" y="153" width="116" height="58" rx="10" fill="#e2f5ee" stroke="#41b88f"/><text x="116" y="178" text-anchor="middle" fill="#1f6f55" font-size="17" font-weight="800">65.417%</text><text x="116" y="197" text-anchor="middle" fill="#35745f" font-size="12">＋0.238pp</text>
+              <rect x="198" y="153" width="116" height="58" rx="10" fill="#ddf4eb" stroke="#41b88f"/><text x="256" y="178" text-anchor="middle" fill="#1f6f55" font-size="17" font-weight="800">65.636%</text><text x="256" y="197" text-anchor="middle" fill="#35745f" font-size="12">＋0.457pp</text>
+            </g>
+            <g transform="translate(372,0)">
+              <rect x="0" y="0" width="330" height="244" rx="18" fill="#fdf8f7" stroke="#efc7c2"/>
+              <text x="165" y="31" text-anchor="middle" fill="#9a332d" font-size="19" font-weight="800">G＝D0</text>
+              <text x="108" y="57" text-anchor="middle" fill="#5e6d85" font-size="12">B＝FULL</text><text x="248" y="57" text-anchor="middle" fill="#5e6d85" font-size="12">B＝B0</text>
+              <text x="12" y="105" fill="#5e6d85" font-size="12">C＝FULL</text><text x="12" y="188" fill="#5e6d85" font-size="12">C＝C3</text>
+              <rect x="58" y="70" width="116" height="58" rx="10" fill="#fbefed" stroke="#e9a93d"/><text x="116" y="95" text-anchor="middle" fill="#805508" font-size="17" font-weight="800">65.218%</text><text x="116" y="114" text-anchor="middle" fill="#805508" font-size="12">＋0.038pp</text>
+              <rect x="198" y="70" width="116" height="58" rx="10" fill="#fbe3df" stroke="#e76c63"/><text x="256" y="95" text-anchor="middle" fill="#9a332d" font-size="17" font-weight="800">64.808%</text><text x="256" y="114" text-anchor="middle" fill="#9a332d" font-size="12">−0.372pp</text>
+              <rect x="58" y="153" width="116" height="58" rx="10" fill="#fbe8e5" stroke="#e76c63"/><text x="116" y="178" text-anchor="middle" fill="#9a332d" font-size="17" font-weight="800">64.993%</text><text x="116" y="197" text-anchor="middle" fill="#9a332d" font-size="12">−0.186pp</text>
+              <rect x="198" y="153" width="116" height="58" rx="10" fill="#f7d8d3" stroke="#e76c63"/><text x="256" y="178" text-anchor="middle" fill="#9a332d" font-size="17" font-weight="800">64.503%</text><text x="256" y="197" text-anchor="middle" fill="#9a332d" font-size="12">−0.677pp</text>
+            </g>
+            <g transform="translate(744,0)">
+              <rect x="0" y="0" width="330" height="244" rx="18" fill="#f5f8fc" stroke="#cbd8eb"/>
+              <text x="165" y="31" text-anchor="middle" fill="#8364d6" font-size="19" font-weight="800">G＝D2</text>
+              <text x="108" y="57" text-anchor="middle" fill="#5e6d85" font-size="12">B＝FULL</text><text x="248" y="57" text-anchor="middle" fill="#5e6d85" font-size="12">B＝B0</text>
+              <text x="12" y="105" fill="#5e6d85" font-size="12">C＝FULL</text><text x="12" y="188" fill="#5e6d85" font-size="12">C＝C3</text>
+              <rect x="58" y="70" width="116" height="58" rx="10" fill="#efeafa" stroke="#8364d6"/><text x="116" y="95" text-anchor="middle" fill="#5d4598" font-size="17" font-weight="800">65.471%</text><text x="116" y="114" text-anchor="middle" fill="#5d4598" font-size="12">＋0.291pp</text>
+              <rect x="198" y="70" width="116" height="58" rx="10" fill="#efeafa" stroke="#8364d6"/><text x="256" y="95" text-anchor="middle" fill="#5d4598" font-size="17" font-weight="800">65.471%</text><text x="256" y="114" text-anchor="middle" fill="#5d4598" font-size="12">＋0.291pp</text>
+              <rect x="58" y="153" width="116" height="58" rx="10" fill="#efeafa" stroke="#8364d6"/><text x="116" y="178" text-anchor="middle" fill="#5d4598" font-size="17" font-weight="800">65.471%</text><text x="116" y="197" text-anchor="middle" fill="#5d4598" font-size="12">＋0.291pp</text>
+              <rect x="198" y="153" width="116" height="58" rx="10" fill="#efeafa" stroke="#8364d6"/><text x="256" y="178" text-anchor="middle" fill="#5d4598" font-size="17" font-weight="800">65.471%</text><text x="256" y="197" text-anchor="middle" fill="#5d4598" font-size="12">＋0.291pp</text>
+            </g>
+          </g>
+          <text x="580" y="370" text-anchor="middle" fill="#5e6d85" font-size="14">D2下四个B/C组合的离散评分相同，但有效配置哈希不同：这表示本切片未检出差异，不等于内部状态相同。</text>
+        </svg>
+        <figcaption>图7｜B0、C3和几何因素的完整条件矩阵。比较时应固定其余两个因素，而不能把单因素差值线性相加。</figcaption>
+      </figure>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>G</th><th>B</th><th>C</th><th>逻辑臂</th><th>B-old</th><th>A-old</th><th>New</th><th>H</th><th>F</th><th>ΔH对FULL</th></tr></thead>
+          <tbody>
+            <tr><td>FULL</td><td>FULL</td><td>FULL</td><td>P2-256-FULL</td><td>73.056%</td><td>68.333%</td><td>62.333%</td><td>65.180%</td><td>4.722pp</td><td>+0.000pp</td></tr>
+            <tr><td>FULL</td><td>B0</td><td>FULL</td><td>P2-256-B0</td><td>73.056%</td><td>68.056%</td><td>63.667%</td><td>65.785%</td><td>5.000pp</td><td>+0.606pp</td></tr>
+            <tr><td>FULL</td><td>FULL</td><td>C3</td><td>P2-256-C3</td><td>73.056%</td><td>68.056%</td><td>63.000%</td><td>65.417%</td><td>5.000pp</td><td>+0.238pp</td></tr>
+            <tr><td>FULL</td><td>B0</td><td>C3</td><td>P2-256-J-B0-C3</td><td>73.056%</td><td>67.778%</td><td>63.667%</td><td>65.636%</td><td>5.278pp</td><td>+0.457pp</td></tr>
+            <tr><td>D0</td><td>FULL</td><td>FULL</td><td>P2-256-D0</td><td>73.056%</td><td>67.222%</td><td>63.333%</td><td>65.218%</td><td>5.833pp</td><td>+0.038pp</td></tr>
+            <tr><td>D0</td><td>B0</td><td>FULL</td><td>P2-256-J-B0-D0</td><td>73.056%</td><td>67.500%</td><td>62.333%</td><td>64.808%</td><td>5.556pp</td><td>−0.372pp</td></tr>
+            <tr><td>D0</td><td>FULL</td><td>C3</td><td>P2-256-J-C3-D0</td><td>73.056%</td><td>67.500%</td><td>62.667%</td><td>64.993%</td><td>5.556pp</td><td>−0.186pp</td></tr>
+            <tr><td>D0</td><td>B0</td><td>C3</td><td>P2-256-J-B0-C3-D0</td><td>73.056%</td><td>67.222%</td><td>62.000%</td><td>64.503%</td><td>5.833pp</td><td>−0.677pp</td></tr>
+            <tr><td>D2</td><td>FULL</td><td>FULL</td><td>P2-256-D2</td><td>73.056%</td><td>67.778%</td><td>63.333%</td><td>65.471%</td><td>5.278pp</td><td>+0.291pp</td></tr>
+            <tr><td>D2</td><td>B0</td><td>FULL</td><td>P2-256-J-B0-D2</td><td>73.056%</td><td>67.778%</td><td>63.333%</td><td>65.471%</td><td>5.278pp</td><td>+0.291pp</td></tr>
+            <tr><td>D2</td><td>FULL</td><td>C3</td><td>P2-256-J-C3-D2</td><td>73.056%</td><td>67.778%</td><td>63.333%</td><td>65.471%</td><td>5.278pp</td><td>+0.291pp</td></tr>
+            <tr><td>D2</td><td>B0</td><td>C3</td><td>P2-256-J-B0-C3-D2</td><td>73.056%</td><td>67.778%</td><td>63.333%</td><td>65.471%</td><td>5.278pp</td><td>+0.291pp</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="formula">
+        \[
+        I_{BC}^{(m)}(g)=m(B0,C3,g)-m(B0,\mathrm{FULL},g)-m(\mathrm{FULL},C3,g)+m(\mathrm{FULL},\mathrm{FULL},g).
+        \]
+      </div>
+      <div class="formula-note"><strong>符号说明：</strong>\(m(B,C,g)\)是固定B、C和几何档\(g\)后的三个场景等权指标；B0、C3是控制替换；\(g\in\{\mathrm{FULL},D0,D2\}\)；\(I_{BC}^{(m)}(g)\)是二阶交互。FULL、D0、D2下的H交互分别为−0.387pp、−0.080pp、+0.000pp。负值表示两个控制替换同时发生的变化，比将两个单独替换的变化线性相加更差。</div>
+
+      <div class="warning"><strong>本轮解释：</strong>B0、C3和几何的效果是条件性的。B0+C3+D0相对FULL的H为−0.677pp；B0+C3+D2的H虽高0.291pp，却伴随A-old低0.556pp和F高0.556pp。它是单seed筛选证据，不是多seed、全接收机、实星硬件或全局最优结论。</div>
     </section>
 
     <section id="evidence">
-      <p class="eyebrow" style="color:#e76c63">已有证据</p>
-      <h2>当前256维配置的结果，和它还不能说明什么</h2>
-      <p>P2-A1固定identity160＋FFT96和完整B–F注册链，在75个logical identity row、225个场景单元的development screening中完成预测与评分闭合。下面的数值是当前配置本身的结果，不借用其他特征配置的指标。</p>
+      <p class="eyebrow" style="color:#e76c63">历史开发证据</p>
+      <h2>早期P2-A1汇总：保留作机制阅读，不与当前12臂混合</h2>
+      <p>P2-A1固定identity160＋FFT96和完整B–F注册链，在75个logical identity row、225个场景单元的development screening中完成预测与评分闭合。它是较早的开发汇总，下面的数值仅保留为历史机制说明；当前B0/C3/D0/D2的正式联合结果以上一节12臂truth-last闭合为准，二者不得混合平均或互相替代。</p>
 
       <figure class="viz">
         <svg viewBox="0 0 1160 410" role="img" aria-label="P2-A1旧类新类准确率调和均值和最低准确率的可视化">
@@ -731,7 +814,7 @@
           <text x="1016" y="190" text-anchor="middle" fill="#6e5351" font-size="13">0.7494 → 0.5946</text>
           <text x="580" y="392" text-anchor="middle" fill="#5e6d85" font-size="14">中位数圆点与均值条形不相同，反映不同row之间存在明显离散性。</text>
         </svg>
-        <figcaption>图7｜P2-A1 development screening的主要指标。不能只看均值H，还要查看最低旧类和最低新类。</figcaption>
+        <figcaption>图8（历史）｜P2-A1 development screening的主要指标。不能只看均值H，还要查看最低旧类和最低新类。</figcaption>
       </figure>
 
       <div class="table-wrap">
@@ -760,14 +843,14 @@
       <div class="formula-note"><strong>符号说明：</strong>\(A_{\mathrm o}^{DA1\_REG0}\)是注册前旧类准确率；\(A_{\mathrm o}^{DA1\_REG1}\)是注册后旧类准确率；\(A_{\mathrm n}^{DA1\_REG1}\)是注册后新类准确率；\(H_{\mathrm{old,new}}\)是调和均值；\(F\)是旧类准确率下降量。</div>
 
       <div class="grid six">
-        <article class="card module-card"><div class="number">1</div><h4>完整路径</h4><p>同配置screening已完成。</p></article>
-        <article class="card module-card"><div class="number">2</div><h4>稳健中心</h4><p>已启用；独立同配置消融待补。</p></article>
-        <article class="card module-card"><div class="number">3</div><h4>自动收缩</h4><p>已启用；独立同配置消融待补。</p></article>
-        <article class="card module-card"><div class="number">4</div><h4>任务均衡</h4><p>已启用；独立同配置消融待补。</p></article>
-        <article class="card module-card"><div class="number">5</div><h4>双几何</h4><p>已启用；独立同配置消融待补。</p></article>
+        <article class="card module-card"><div class="number">1</div><h4>完整路径</h4><p>历史P2-A1记录；当前256维结果以上节为准。</p></article>
+        <article class="card module-card"><div class="number">2</div><h4>稳健中心</h4><p>B0已纳入当前12臂联合消融。</p></article>
+        <article class="card module-card"><div class="number">3</div><h4>自动收缩</h4><p>S0单因素证据见Markdown主报告。</p></article>
+        <article class="card module-card"><div class="number">4</div><h4>任务均衡</h4><p>C3已纳入当前12臂联合消融。</p></article>
+        <article class="card module-card"><div class="number">5</div><h4>双几何</h4><p>D0/D2已纳入当前12臂联合消融。</p></article>
         <article class="card module-card"><div class="number">6</div><h4>量化</h4><p>有状态资源审计；无硬件加速证明。</p></article>
       </div>
-      <div class="warning"><strong>证据边界：</strong>当前结果来自3个development seed与1个new-class draw。它支持当前screening判断，不替代fresh confirmation、同配置完整模块单因素消融或真实星上硬件测量。</div>
+      <div class="warning"><strong>证据边界：</strong>历史P2-A1不用于替代当前12臂结果。当前联合矩阵来自1个接收机、1个种子束和3个LEO弱场景；它支持条件效应筛选，不替代多seed、更多接收机/新类规模确认或真实星上硬件测量。</div>
     </section>
 
     <section id="compare">
@@ -803,7 +886,7 @@
             <rect x="892" y="205" width="126" height="63" rx="12" fill="#dff6fa" stroke="#29a9c7"/><text x="955" y="232" text-anchor="middle" fill="#163c72" font-size="14" font-weight="800">逐support距离</text><text x="955" y="253" text-anchor="middle" fill="#5e6d85" font-size="12">约CKd</text>
           </g>
         </svg>
-        <figcaption>图8｜D92 E0把工作重心放在注册期；qKNN则把更多距离计算留给每条query。训练式域适应和类增量训练的主要更新成本通常在优化阶段。</figcaption>
+        <figcaption>图9｜D92 E0把工作重心放在注册期；qKNN则把更多距离计算留给每条query。训练式域适应和类增量训练的主要更新成本通常在优化阶段。</figcaption>
       </figure>
 
       <div class="table-wrap">
@@ -832,13 +915,13 @@
         </article>
         <article class="card">
           <h3>不应过度宣称</h3>
-          <p>当前不能据此宣称训练式域对齐、INT8端到端加速、实时极低资源注册、真实在轨验证或完整同配置模块因果消融已经完成。</p>
+          <p>当前不能据此宣称训练式域对齐、INT8端到端加速、实时极低资源注册或真实在轨验证。B0/C3/几何的12臂条件消融已完成，但仍不是多seed或全接收机确认。</p>
         </article>
       </div>
       <details>
         <summary>查看本报告的证据边界</summary>
         <div>
-          <p>实验数值和资源审计来自仓库内已完成的P2-A1汇总。它覆盖75个logical identity row和225个场景单元，属于development screening。当前只有3个development seed和1个new-class draw；需要新的冻结矩阵才能形成fresh confirmation。</p>
+          <p>当前正式联合数值来自`d92_e0_256_joint_ablation_bc_geometry_20260826`：12个逻辑row、12个独立物理执行、0失败、0别名，每臂在三个LEO弱场景独立truth-last评分。它是一个接收机、一个种子束的screening；需要新的冻结seed和接收机矩阵才能形成fresh confirmation。P2-A1图表仅保留为历史开发参考。</p>
         </div>
       </details>
     </section>
@@ -847,7 +930,7 @@
   <footer class="footer">
     <div class="wrap">
       <p><strong>D92 E0｜identity160＋FFT96｜256维可视化技术报告</strong></p>
-      <p>本文档只呈现当前256维配置的机制、资源与可追溯screening证据。公式旁均给出符号解释，图形用于帮助理解，不替代实验artifact。</p>
+      <p>本文档呈现当前256维配置的机制、资源与可追溯screening证据；12臂联合消融与历史P2-A1汇总已明确分开。公式旁均给出符号解释，图形用于帮助理解，不替代实验artifact。</p>
     </div>
   </footer>
 </body>
