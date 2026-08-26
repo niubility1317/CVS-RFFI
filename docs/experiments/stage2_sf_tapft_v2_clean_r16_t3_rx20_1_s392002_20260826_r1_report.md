@@ -2,7 +2,7 @@
 
 ## 当前结论
 
-数据与模型输入已经准备完成，真实checkpoint无query smoke和4折OOF+全support重训smoke均通过。当前最高状态为`LOCAL_VERIFIED / LANDED / SMOKE_PASS`，下一步立即启动完整R0性能验证；尚无完整性能结果，不进入R1。
+数据与模型输入已经准备完成，真实checkpoint无query smoke和4折OOF+全support重训smoke均通过。正式进程在进入Python前因解释器绝对路径错误退出，状态为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。output未创建、GPU未占用、数据未读取；失败log和PID记录保留，不复用本run ID。
 
 ## 预登记运行合同
 
