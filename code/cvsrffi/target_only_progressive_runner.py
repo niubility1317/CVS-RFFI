@@ -408,6 +408,8 @@ def load_sf_tapft_bundle_strict(
         "base_checkpoint_path": payload["base_checkpoint_path"],
         "total_steps": int(payload["audit"]["total_steps"]),
         "checkpoint_selection_role": payload["audit"]["checkpoint_selection_role"],
+        "capsule_id": payload["capsule_id"],
+        "split_id": payload["split_id"],
         "query_input_capability": False,
     }
     return model, head, audit

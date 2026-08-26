@@ -88,6 +88,8 @@ def test_no_query_runner_writes_nonformal_bundle_and_consumer_can_reload(tmp_pat
     assert audit["schema"] == "cvs.sf_tapft.v1"
     assert audit["permission"] == "DIAGNOSTIC_NON_FORMAL"
     assert audit["checkpoint_selection_role"] == "target_train_loss_single"
+    assert audit["capsule_id"] == "capsule-test"
+    assert audit["split_id"] == "split-test"
     assert head.class_ids == (0, 1)
     assert all(not parameter.requires_grad for parameter in model.parameters())
     assert all(not parameter.requires_grad for parameter in head.parameters())
