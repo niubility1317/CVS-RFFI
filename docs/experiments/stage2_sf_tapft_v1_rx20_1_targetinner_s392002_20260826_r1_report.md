@@ -96,3 +96,71 @@
 当前没有frozen/adapted balanced accuracy、NLL、margin、fold variance、non-degrading fold fraction或`adapted/zero_adapt`判定。任何数值推断都将违反当前证据边界。
 
 资源证据显示CPU约40核满载而GPU利用率仅约20%、显存不足1GiB。结合冻结代码每一步都执行inner-validation，并在checkpoint排序中计算模型到源checkpoint的距离且把参数拉回CPU，本轮主要瓶颈很可能是逐步验证、GPU同步和CPU参数距离计算，而非显存容量或GPU计算能力。由于runner不记录step/fold进度，不能从这些数据可靠换算完成百分比或ETA。本轮保持只读监控，不因运行慢或未知中途指标停止进程。
+
+## 2026-08-26最终完成与深度分析
+
+### 最终状态
+
+- 计算状态：`SELECTION_COMPLETE`；进程已退出，GPU0无该run残留计算进程。
+- 交付状态：`ANALYZED`。完整stdout日志、`selection.json`和`sf_tapft_bundle.pt`均已读取，bundle已由严格消费者重新加载。
+- 科学判定：`DIAGNOSTIC_POSITIVE_BUT_INVALID_FOR_PROMOTION`。target-inner数值筛选为强阳性并选择`adapted`，但发现冻结参数被checkpoint averaging数值改写；同时该方法本身使用持久可训练分类头并被代码标记为`DIAGNOSTIC_NON_FORMAL`。因此不得把本轮结果表述为正式Phase2性能，也不得直接进入query晋级。
+- 时间：日志创建于2026-08-26 15:58:23，最终产物写入于17:10:22，墙钟时间约1小时11分59秒。
+- 产物：完整日志10,344字节，`selection.json`12,736字节，bundle 4,336,478字节。
+
+### 聚合性能
+
+|指标|DA0_REG0 frozen|DA1_REG0 adapted|差值/变化|
+|---|---:|---:|---:|
+|target-inner OOF balanced accuracy|60.4167%|89.5833%|+29.1667个百分点，relative +48.2759%|
+|NLL|4.746183|0.410615|-4.335568，下降91.3485%|
+|true-class margin|5.402681|2.795414|-2.607266，下降48.2588%|
+|balanced accuracy fold variance|0.00940394|0.00245949|下降73.8461%|
+|balanced accuracy fold标准差|9.6974个百分点|4.9593个百分点|-4.7381个百分点|
+|non-degrading fold fraction|N/A|100%|4/4个fold准确率不下降|
+|checkpoint source distance|0|0.0290253|仅为代码定义的state-distance，不是精度指标|
+
+选择规则逐项核对：多数fold不下降为4/4，满足；平均NLL改善，满足；平均balanced accuracy改善，满足；平均margin改善，不满足。规则要求“NLL改善且accuracy或margin至少一项改善”，因此代码选择`adapted`与预登记规则一致。margin在4个fold中仅1个改善，说明适配主要修复错误分类和概率校准，而没有普遍扩大真实类对最强竞争类的平均间隔。
+
+### 逐fold完整结果
+
+|fold|train/validation|frozen BA|adapted BA|BA增益|frozen NLL|adapted NLL|NLL下降|frozen margin|adapted margin|margin变化|source distance|
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|0|44/16|61.1111%|94.4445%|+33.3333pp|4.905730|0.230126|4.675604|4.834957|2.758255|-2.076701|0.0285520|
+|1|46/14|69.4445%|86.1111%|+16.6667pp|4.504064|0.410973|4.093091|7.725545|2.888400|-4.837145|0.0294290|
+|2|46/14|44.4444%|83.3333%|+38.8889pp|6.015609|0.795072|5.220537|2.092148|2.576888|+0.484741|0.0297441|
+|3|44/16|66.6667%|94.4445%|+27.7778pp|3.559328|0.206288|3.353040|6.958073|2.958114|-3.999959|0.0283762|
+
+4个validation fold大小为16/14/14/16，总计60行且每行恰好进入一次validation；每fold的train/validation opaque row ID均不相交。由于原已验证NPZ没有真实physical/session group，切分证据只能证明行级互斥和类别分层，不能证明采集段或session级互斥。
+
+### 优化轨迹与资源效率
+
+最终bundle保存的是被选fold0模型，其审计中包含4,500个support-loss点：
+
+|阶段|步区间|起点loss|终点loss|相对下降|阶段内上升步数|
+|---|---:|---:|---:|---:|---:|
+|A|0–499|1.625207|0.456088|71.9366%|0|
+|B|500–1999|0.455782|0.244023|46.4606%|111|
+|C|2000–4499|0.244029|0.243382|0.2651%|1,203|
+
+全程最低loss为0.243380，出现在step 4468；最后100步均值0.243385、标准差0.00000344、范围0.00001168，最后500步仅下降0.00001448。C阶段后半段已经高度平台化，2,500步预算的边际收益极低。4-fold共18,000优化步，墙钟约4,319秒，对应约4.17 optimizer step/s；按先前估算的约1,080,000次train/validation行前向呈现计，约250行/s。运行中GPU0抽样利用率18%–23%、显存692–702MiB，而CPU约40核占用，支持“逐step验证、CPU state-distance与同步开销主导”的瓶颈判断。
+
+### bundle独立回读与冻结边界异常
+
+严格消费者在N607上成功重建并加载bundle：`schema=cvs.sf_tapft.v1`、6类、head形状`[6,160]`、模型参数1,054,963、head参数960；加载后所有参数均为只读，`query_input_capability=false`。bundle绑定`p2_min_v1/VALIDATED_ONCE`，source/query/truth/role/target_eval均未打开。
+
+但对bundle与原ADV3B02 CORE90 checkpoint进行逐tensor比较后，发现冻结边界不成立：
+
+- A/B/C可训练参数名并集只有16个tensor，最终其中13个发生精确变化。
+- bundle审计共报告180个变化tensor，其中167个不在可训练并集内；分布为`dom_backbone`91个、`id_backbone`58个、`dom_enhancer`10个、`adv_head`4个、`dom_head`4个。
+- 185个非许可floating tensor中有167个发生变化；非许可部分最大绝对偏移为0.5，平方L2和为0.627503。最大项包括两个backbone的`sinc.low_hz_`各0.5、`sinc.band_hz_`各0.25。
+- 许可部分最大绝对偏移0.0415013，平方L2和0.192286。
+
+代码路径表明根因是checkpoint averaging把top-k snapshot中的全部`model.state_dict()`一起求均值，而不是只平均可训练tensor并原样复制冻结tensor。即使三个冻结snapshot理论值相同，浮点求和再除法也会造成舍入变化；在Sinc频率参数上偏移达到0.5。逐fold adapted指标是在该平均后模型上计算，因此29.1667个百分点增益不能严格归因于预登记的小子集梯度更新。
+
+### 最终bundle与OOF指标的对应边界
+
+OOF聚合指标来自4个分别拟合的fold模型，但代码在选择`adapted`后直接把`fitted_folds[0]`作为最终bundle；它只用44行训练、16行validation完成选择，没有在全部60行support上按冻结规则重新拟合。因此当前bundle不是“4-fold平均模型”，也不是“全support最终模型”，其实际query行为不能由89.5833%的OOF均值直接代表。
+
+### 结论与后续决策
+
+本轮已经完成计算和诊断分析，证明SF-TAPFT机制在target-inner行级OOF上具有显著潜力：4/4 fold准确率与NLL同时改善，平均准确率提升29.1667个百分点，波动性下降73.8461%。但是三个边界阻止晋级：持久可训练head不符合当前正式Phase2冻结原型边界；checkpoint averaging改写167个非许可tensor；最终bundle仅代表fold0而非全部support。修复时应原样保留冻结tensor、只平均许可更新tensor，并明确全support最终拟合策略；随后使用新run ID重跑同一最小target-inner矩阵。只有修复后仍满足选择门槛，才可产生query prediction并由独立truth-last scorer闭合正式性能。
