@@ -532,6 +532,28 @@ class TrainableDeltaAverager:
 
 
 @dataclass(frozen=True)
+class StageValidationMetrics:
+    balanced_accuracy: float
+    macro_f1: float
+    class_floor: float
+    nll: float
+    per_class_recall: tuple[float, ...]
+    per_class_margin: tuple[float, ...]
+    positive_flips: int
+    negative_flips: int
+    permitted_parameter_distance: float
+
+
+@dataclass(frozen=True)
+class StageValidationRow:
+    phase: str
+    best_step_in_phase: int
+    best_global_step: int
+    best_metrics: StageValidationMetrics
+    end_metrics: StageValidationMetrics
+
+
+@dataclass(frozen=True)
 class SFTAPFTAudit:
     method: str
     permission: str
@@ -549,6 +571,7 @@ class SFTAPFTAudit:
     query_opened: bool
     bn_running_stats_updated: bool
     checkpoint_selection_role: str
+    stage_validation_rows: tuple[StageValidationRow, ...]
 
 
 @dataclass(frozen=True)
@@ -570,6 +593,7 @@ class SFTAPFTFoldRow:
     frozen_margin: float
     adapted_margin: float
     source_distance: float
+    stage_validation_rows: tuple[StageValidationRow, ...] = ()
     query_opened: bool = False
 
 
@@ -579,6 +603,7 @@ class SFTAPFTSelectionResult:
     frozen_metrics: FoldMetrics
     adapted_metrics: FoldMetrics
     fold_rows: tuple[SFTAPFTFoldRow, ...]
+    selected_phase_steps: tuple[int, int, int]
     adapted_result: SFTAPFTResult | None
 
 
@@ -792,6 +817,24 @@ def fit_sf_tapft(
         name: value.detach().clone() for name, value in student.state_dict().items()
     }
     initial_head_state = {name: value.detach().clone() for name, value in head.state_dict().items()}
+    validation_x: Tensor | None = None
+    validation_labels: Tensor | None = None
+    frozen_validation_logits: Tensor | None = None
+    if checkpoint_validation is not None:
+        validation_x = checkpoint_validation.received_iq.to(device=device, dtype=dtype)
+        validation_labels = _local_labels(checkpoint_validation.labels, head.class_ids, device)
+        cpu_rng_state = torch.random.get_rng_state()
+        cuda_rng_state = torch.cuda.get_rng_state(device) if device.type == "cuda" else None
+        with torch.no_grad():
+            frozen_validation_embeddings = _extract_joint_embedding(
+                _forward_aux(student, validation_x), len(checkpoint_validation.physical_ids)
+            )
+            frozen_validation_logits = head(frozen_validation_embeddings).detach().clone()
+        student.load_state_dict(initial_model_state)
+        head.load_state_dict(initial_head_state)
+        torch.random.set_rng_state(cpu_rng_state)
+        if cuda_rng_state is not None:
+            torch.cuda.set_rng_state(cuda_rng_state, device)
     groups = [
         {"name": "head", "params": list(head.parameters()), "lr": config.lr_head_initial},
         {"name": "norm", "params": [named[name] for name in sorted(norm_names)], "lr": config.lr_norm},
@@ -813,6 +856,8 @@ def fit_sf_tapft(
     total_steps = sum(config.phase_steps)
     losses: list[float] = []
     snapshots: list[tuple[dict[str, Tensor], float | tuple[float, ...]]] = []
+    stage_best: dict[str, tuple[int, int, StageValidationMetrics]] = {}
+    stage_end: dict[str, StageValidationMetrics] = {}
     current_phase = ""
 
     for step in range(total_steps):
@@ -884,14 +929,21 @@ def fit_sf_tapft(
         if checkpoint_validation is None:
             score: float | tuple[float, ...] = -loss_value
         else:
+            assert validation_x is not None
+            assert validation_labels is not None
+            assert frozen_validation_logits is not None
             with torch.no_grad():
-                validation_x = checkpoint_validation.received_iq.to(device=device, dtype=dtype)
                 validation_embeddings = _extract_joint_embedding(
                     _forward_aux(student, validation_x), len(checkpoint_validation.physical_ids)
                 )
                 validation_logits = head(validation_embeddings)
-                validation_labels = _local_labels(
-                    checkpoint_validation.labels, head.class_ids, device
+                stage_metrics = _stage_validation_metrics(
+                    validation_logits,
+                    frozen_validation_logits,
+                    validation_labels,
+                    permitted_parameter_distance=_permitted_parameter_distance(
+                        initial_model_state, student, phase_names["C"]
+                    ),
                 )
                 validation_accuracy, validation_nll, validation_margin = _classification_metrics(
                     validation_logits, validation_labels
@@ -902,6 +954,14 @@ def fit_sf_tapft(
                     validation_margin,
                     -_checkpoint_distance(teacher, student),
                 )
+            phase_offset = sum(config.phase_steps[: _PHASES.index(phase)])
+            step_in_phase = step - phase_offset + 1
+            current_best = stage_best.get(phase)
+            if current_best is None or _stage_metric_order_key(stage_metrics) > _stage_metric_order_key(
+                current_best[2]
+            ):
+                stage_best[phase] = (step_in_phase, step + 1, stage_metrics)
+            stage_end[phase] = stage_metrics
         qualifies = (
             len(snapshots) < int(config.checkpoint_average_top_k)
             or score > min(item[1] for item in snapshots)
@@ -969,6 +1029,17 @@ def fit_sf_tapft(
     )
     bn_after = student.state_dict()
     bn_updated = any(not torch.equal(value, bn_after[name]) for name, value in bn_before.items())
+    stage_validation_rows = tuple(
+        StageValidationRow(
+            phase=phase,
+            best_step_in_phase=stage_best[phase][0],
+            best_global_step=stage_best[phase][1],
+            best_metrics=stage_best[phase][2],
+            end_metrics=stage_end[phase],
+        )
+        for phase in _PHASES
+        if phase in stage_best
+    )
     audit = SFTAPFTAudit(
         method="sf_tapft_v1",
         permission="DIAGNOSTIC_NON_FORMAL",
@@ -988,6 +1059,7 @@ def fit_sf_tapft(
         checkpoint_selection_role=(
             "target_inner_validation" if checkpoint_validation is not None else "target_train_loss_single"
         ),
+        stage_validation_rows=stage_validation_rows,
     )
     return SFTAPFTResult(model=student, head=head, audit=audit)
 
@@ -1020,6 +1092,93 @@ def _classification_metrics(logits: Tensor, labels: Tensor) -> tuple[float, floa
     masked.scatter_(1, labels[:, None], float("-inf"))
     margin = float((true_logits - masked.max(dim=1).values).mean())
     return balanced, nll, margin
+
+
+def _stage_validation_metrics(
+    adapted_logits: Tensor,
+    frozen_logits: Tensor,
+    labels: Tensor,
+    *,
+    permitted_parameter_distance: float,
+) -> StageValidationMetrics:
+    if (
+        adapted_logits.ndim != 2
+        or adapted_logits.size(1) < 2
+        or frozen_logits.shape != adapted_logits.shape
+        or labels.ndim != 1
+        or labels.numel() != adapted_logits.size(0)
+        or labels.numel() == 0
+    ):
+        raise ValueError("stage metric logits and labels must be non-empty and row aligned")
+    distance = float(permitted_parameter_distance)
+    if not math.isfinite(distance) or distance < 0.0:
+        raise ValueError("permitted_parameter_distance must be finite and non-negative")
+    predictions = adapted_logits.argmax(dim=1)
+    frozen_predictions = frozen_logits.argmax(dim=1)
+    class_indices = torch.unique(labels, sorted=True)
+    recalls: list[float] = []
+    f1_values: list[float] = []
+    margins: list[float] = []
+    true_logits = adapted_logits.gather(1, labels[:, None]).squeeze(1)
+    other_logits = adapted_logits.clone()
+    other_logits.scatter_(1, labels[:, None], float("-inf"))
+    row_margins = true_logits - other_logits.max(dim=1).values
+    for class_index in class_indices:
+        true_mask = labels == class_index
+        predicted_mask = predictions == class_index
+        true_positive = (true_mask & predicted_mask).sum().float()
+        false_positive = ((~true_mask) & predicted_mask).sum().float()
+        false_negative = (true_mask & (~predicted_mask)).sum().float()
+        recalls.append(float(true_positive / true_mask.sum()))
+        denominator = 2.0 * true_positive + false_positive + false_negative
+        f1_values.append(float((2.0 * true_positive / denominator) if denominator > 0 else 0.0))
+        margins.append(float(row_margins[true_mask].mean()))
+    adapted_correct = predictions == labels
+    frozen_correct = frozen_predictions == labels
+    return StageValidationMetrics(
+        balanced_accuracy=float(sum(recalls) / len(recalls)),
+        macro_f1=float(sum(f1_values) / len(f1_values)),
+        class_floor=float(min(recalls)),
+        nll=float(F.cross_entropy(adapted_logits, labels)),
+        per_class_recall=tuple(recalls),
+        per_class_margin=tuple(margins),
+        positive_flips=int(((~frozen_correct) & adapted_correct).sum()),
+        negative_flips=int((frozen_correct & (~adapted_correct)).sum()),
+        permitted_parameter_distance=distance,
+    )
+
+
+def _stage_metric_order_key(metrics: StageValidationMetrics) -> tuple[float, ...]:
+    mean_margin = sum(metrics.per_class_margin) / len(metrics.per_class_margin)
+    return (
+        metrics.balanced_accuracy,
+        metrics.class_floor,
+        -metrics.nll,
+        metrics.macro_f1,
+        mean_margin,
+        -metrics.permitted_parameter_distance,
+    )
+
+
+def _permitted_parameter_distance(
+    reference_state: Mapping[str, Tensor],
+    adapted: nn.Module,
+    permitted_names: Iterable[str],
+) -> float:
+    current = dict(adapted.named_parameters())
+    values = []
+    for name in sorted(set(permitted_names)):
+        if name not in current or name not in reference_state:
+            raise ValueError(f"permitted parameter is absent from distance state: {name!r}")
+        values.append((current[name].detach() - reference_state[name]).pow(2).mean())
+    return float(torch.stack(values).sum()) if values else 0.0
+
+
+def _lower_median(values: Sequence[int]) -> int:
+    ordered = sorted(int(value) for value in values)
+    if not ordered:
+        raise ValueError("lower median requires at least one value")
+    return ordered[(len(ordered) - 1) // 2]
 
 
 def _checkpoint_distance(reference: nn.Module, adapted: nn.Module) -> float:
@@ -1145,12 +1304,26 @@ def select_sf_tapft_by_grouped_cv(
                 frozen_margin=frozen_margin,
                 adapted_margin=adapted_margin,
                 source_distance=_checkpoint_distance(checkpoint_model, fitted.model),
+                stage_validation_rows=fitted.audit.stage_validation_rows,
             )
         )
     fold_rows = tuple(rows)
     frozen_metrics = _aggregate_fold_metrics(fold_rows, adapted=False)
     adapted_metrics = _aggregate_fold_metrics(fold_rows, adapted=True)
     selected = selector.choose(frozen=frozen_metrics, adapted=adapted_metrics)
+    selected_phase_steps = tuple(
+        _lower_median(
+            [
+                stage.best_step_in_phase
+                for row in fold_rows
+                for stage in row.stage_validation_rows
+                if stage.phase == phase
+            ]
+        )
+        if any(stage.phase == phase for row in fold_rows for stage in row.stage_validation_rows)
+        else 0
+        for phase in _PHASES
+    )
     # The deployment candidate is fixed to the first seeded fold. Its temporal
     # checkpoint average was selected only on that fold's disjoint target-inner
     # validation rows; OOF evidence from all folds decides adapted vs fallback.
@@ -1160,6 +1333,7 @@ def select_sf_tapft_by_grouped_cv(
         frozen_metrics=frozen_metrics,
         adapted_metrics=adapted_metrics,
         fold_rows=fold_rows,
+        selected_phase_steps=selected_phase_steps,
         adapted_result=adapted_result,
     )
 
@@ -1175,6 +1349,8 @@ __all__ = [
     "SFTAPFTResult",
     "SFTAPFTFoldRow",
     "SFTAPFTSelectionResult",
+    "StageValidationMetrics",
+    "StageValidationRow",
     "TargetOnlyAdaptationDataset",
     "TargetPrototypeHead",
     "TrainableDeltaAverager",

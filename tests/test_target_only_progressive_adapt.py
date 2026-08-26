@@ -6,6 +6,7 @@ import pytest
 import torch
 from torch import nn
 
+import cvsrffi.target_only_progressive_adapt as tapft
 from cvsrffi.target_only_progressive_adapt import (
     CheckpointAverager,
     FoldMetrics,
@@ -480,7 +481,102 @@ def test_grouped_cv_selection_uses_only_target_train_folds_and_returns_oof_metri
     assert selection.adapted_metrics.source_distance >= 0.0
     assert all(row.train_groups.isdisjoint(row.validation_groups) for row in selection.fold_rows)
     assert all(row.query_opened is False for row in selection.fold_rows)
+    # Removing per-stage collection would hide which fold-best phase lengths
+    # produced the one conservative schedule.
+    assert all(tuple(stage.phase for stage in row.stage_validation_rows) == ("A", "B", "C") for row in selection.fold_rows)
+    assert selection.selected_phase_steps == (1, 1, 1)
     if selection.selected == "adapted":
         assert selection.adapted_result is not None
     else:
         assert selection.adapted_result is None
+
+
+def test_stage_metrics_match_hand_derived_classwise_values_and_flip_directions() -> None:
+    labels = torch.tensor([0, 0, 1, 1])
+    frozen_logits = torch.tensor(
+        [[2.0, 0.0], [-0.5, 0.5], [0.1, 0.6], [-0.2, 0.8]]
+    )
+    adapted_logits = torch.tensor(
+        [[2.0, 0.0], [0.5, -0.5], [0.7, 0.2], [-0.2, 0.8]]
+    )
+
+    # Swapping per-class and per-row reductions, or reversing either flip
+    # direction, changes at least one of these independently derived literals.
+    metrics = tapft._stage_validation_metrics(
+        adapted_logits,
+        frozen_logits,
+        labels,
+        permitted_parameter_distance=1.25,
+    )
+
+    assert metrics.balanced_accuracy == pytest.approx(0.75)
+    assert metrics.macro_f1 == pytest.approx(0.7333333333333334)
+    assert metrics.class_floor == pytest.approx(0.5)
+    assert metrics.nll == pytest.approx(0.4318820834159851)
+    assert metrics.per_class_recall == pytest.approx((1.0, 0.5))
+    assert metrics.per_class_margin == pytest.approx((1.5, 0.25))
+    assert metrics.positive_flips == 1
+    assert metrics.negative_flips == 1
+    assert metrics.permitted_parameter_distance == pytest.approx(1.25)
+
+
+def test_stage_metric_order_prefers_class_floor_before_lower_nll() -> None:
+    higher_floor = tapft.StageValidationMetrics(
+        balanced_accuracy=0.75,
+        macro_f1=0.60,
+        class_floor=0.50,
+        nll=1.50,
+        per_class_recall=(1.0, 0.5),
+        per_class_margin=(0.1, 0.1),
+        positive_flips=0,
+        negative_flips=0,
+        permitted_parameter_distance=2.0,
+    )
+    lower_nll = tapft.StageValidationMetrics(
+        balanced_accuracy=0.75,
+        macro_f1=0.90,
+        class_floor=0.25,
+        nll=0.10,
+        per_class_recall=(1.0, 0.25),
+        per_class_margin=(2.0, 2.0),
+        positive_flips=0,
+        negative_flips=0,
+        permitted_parameter_distance=0.1,
+    )
+
+    # Moving -NLL before floor would select the lower-floor checkpoint.
+    assert max((higher_floor, lower_nll), key=tapft._stage_metric_order_key) is higher_floor
+
+
+def test_lower_median_uses_conservative_even_fold_value() -> None:
+    # Using the ordinary even-count median would yield non-observed phase lengths.
+    fold_phase_lengths = (
+        [400, 450, 500, 500],
+        [1000, 1200, 1100, 1300],
+        [300, 400, 500, 500],
+    )
+    assert tuple(tapft._lower_median(values) for values in fold_phase_lengths) == (
+        450,
+        1100,
+        400,
+    )
+
+
+def test_zero_step_phases_emit_no_rows_and_select_zero_lengths() -> None:
+    selection = select_sf_tapft_by_grouped_cv(
+        _ToyModel(),
+        _dataset(),
+        SFTAPFTConfig(
+            phase_steps=(0, 1, 0),
+            warmup_ratio=0.0,
+            checkpoint_average_top_k=1,
+            adapter_rank=2,
+            seed=31,
+        ),
+        folds=3,
+    )
+
+    # Synthesizing metrics for configured zero-step phases would falsely make
+    # A or C eligible for the unified refit schedule.
+    assert all(tuple(stage.phase for stage in row.stage_validation_rows) == ("B",) for row in selection.fold_rows)
+    assert selection.selected_phase_steps == (0, 1, 0)
