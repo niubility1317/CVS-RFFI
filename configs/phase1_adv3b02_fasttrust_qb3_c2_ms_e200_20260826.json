@@ -1,0 +1,71 @@
+{
+  "schema": "cvs.phase1.fasttrust_qb3_matrix.v2",
+  "run_id": "phase1_adv3b02_fasttrust_qb3_c2_ms_e200_20260826_r1",
+  "epochs": 200,
+  "unlabeled_batch_size": 256,
+  "training_schedule": "LEO_WEAK",
+  "muse_schedule": {
+    "s2a_start": 17,
+    "s2b_start": 41,
+    "s3a_start": 69,
+    "s3b_start": 161,
+    "s3c_start": 181
+  },
+  "identity_domain_objective_mode": "bounded_confusion",
+  "identity_domain_discriminator_scale": 0.5,
+  "identity_domain_confusion_scale": 0.5,
+  "rc4_lambda_zdom": 0.16,
+  "rc4_lambda_discriminator": 0.08,
+  "rc4_lambda_confusion": 0.08,
+  "hard_effective_budget": 0.05,
+  "partial_effective_budget": 0.10,
+  "class_receiver_effective_budget": 0.01,
+  "rc4_lambda_hard": 0.60,
+  "rc4_lambda_partial_set": 0.40,
+  "rc4_lambda_partial_conditional": 0.02,
+  "decouple_partial_negative_aps": true,
+  "partial_threshold_scope": "global",
+  "source_val_heavy_eval": {
+    "start_epoch": 1,
+    "interval": 10,
+    "final_window": 20,
+    "final_interval": 1
+  },
+  "source_roles": {
+    "L_s": 0.07,
+    "U_s": 0.63,
+    "V_cal": 0.15,
+    "V_select": 0.15
+  },
+  "base_checkpoint": "runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
+  "rows": [
+    {
+      "gpu": 4,
+      "seed": 713101,
+      "variant": "C2",
+      "candidate": "MS_S713101_C2_BC_H_PSET",
+      "eval_batch_size": 512,
+      "recovery_checkpoint_interval": 1,
+      "hard": true,
+      "partial": true,
+      "partial_set": true,
+      "partial_conditional": false,
+      "negative": false,
+      "feature_anchor": 0.0
+    },
+    {
+      "gpu": 5,
+      "seed": 713102,
+      "variant": "C2",
+      "candidate": "MS_S713102_C2_BC_H_PSET",
+      "eval_batch_size": 512,
+      "recovery_checkpoint_interval": 1,
+      "hard": true,
+      "partial": true,
+      "partial_set": true,
+      "partial_conditional": false,
+      "negative": false,
+      "feature_anchor": 0.0
+    }
+  ]
+}

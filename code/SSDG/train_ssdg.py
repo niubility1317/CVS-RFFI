@@ -5624,18 +5624,74 @@ def _fasttrust_zero_step_abort_required(streak: int) -> bool:
     return int(streak) >= 2
 
 
-def _rc4_gradient_norm(loss, features) -> float:
-    if not torch.is_tensor(loss) or not torch.is_tensor(features) or not loss.requires_grad:
-        return 0.0
-    gradient = torch.autograd.grad(
+def _rc4_gradient_vector(loss, parameters) -> Optional[torch.Tensor]:
+    parameters = tuple(parameter for parameter in parameters if parameter.requires_grad)
+    if not torch.is_tensor(loss) or not loss.requires_grad or not parameters:
+        return None
+    gradients = torch.autograd.grad(
         loss,
-        features,
+        parameters,
         retain_graph=True,
         allow_unused=True,
-    )[0]
-    if gradient is None:
-        return 0.0
-    return float(torch.linalg.vector_norm(gradient.detach().float()).item())
+    )
+    if all(gradient is None for gradient in gradients):
+        return None
+    flattened = []
+    for parameter, gradient in zip(parameters, gradients):
+        flattened.append(
+            torch.zeros_like(parameter, memory_format=torch.preserve_format).reshape(-1)
+            if gradient is None
+            else gradient.reshape(-1)
+        )
+    return torch.cat(flattened).detach().float()
+
+
+def _rc4_gradient_relationships(losses, parameters) -> Dict[str, Dict[str, float]]:
+    parameters = tuple(parameters)
+    vectors = {
+        str(name): _rc4_gradient_vector(loss, parameters)
+        for name, loss in losses.items()
+    }
+    norms = {
+        name: (
+            float(torch.linalg.vector_norm(vector).item())
+            if vector is not None
+            else float("nan")
+        )
+        for name, vector in vectors.items()
+    }
+    labeled = vectors.get("labeled")
+    cosines = {}
+    for name, vector in vectors.items():
+        if name == "labeled":
+            continue
+        if labeled is None or vector is None:
+            cosines[name] = float("nan")
+            continue
+        denominator = torch.linalg.vector_norm(labeled) * torch.linalg.vector_norm(vector)
+        cosines[name] = (
+            float(torch.dot(labeled, vector).div(denominator).item())
+            if float(denominator.item()) > 0.0
+            else float("nan")
+        )
+    return {"norms": norms, "cosines_to_labeled": cosines}
+
+
+def _rc4_gradient_probe_parameters(model) -> Tuple[torch.nn.Parameter, ...]:
+    prefixes = (
+        "id_backbone.cls_head.",
+        "id_backbone.con_proj.",
+        "id_backbone.fuse.",
+        "id_backbone.t3.",
+    )
+    selected = tuple(
+        parameter
+        for name, parameter in model.named_parameters()
+        if parameter.requires_grad and name.startswith(prefixes)
+    )
+    if selected:
+        return selected
+    return tuple(parameter for parameter in model.parameters() if parameter.requires_grad)
 
 
 def _fasttrust_lr_scales(epoch: int) -> Tuple[float, float]:
@@ -7756,6 +7812,9 @@ def train(args) -> int:
             "rc4/g_adv": float("nan"),
             "rc4/g_identity_to_labeled": float("nan"),
             "rc4/g_adv_to_labeled": float("nan"),
+            "rc4/cos_H_to_labeled": float("nan"),
+            "rc4/cos_Pset_to_labeled": float("nan"),
+            "rc4/cos_Pcond_to_labeled": float("nan"),
             "rc4/gradient_telemetry_active": 0.0,
         }
         legacy_unlabeled_active = _legacy_unlabeled_active(
@@ -9966,29 +10025,49 @@ def train(args) -> int:
                 telemetry_epochs=telemetry_epochs,
             ):
                 gradient_losses = muse_losses.get("rc4_gradient_losses", {})
-                g_l = _rc4_gradient_norm(loss_tx_l, out_l["z_id"])
-                g_h = _rc4_gradient_norm(gradient_losses.get("hard"), out_s["z_id"])
-                g_pset = _rc4_gradient_norm(
-                    gradient_losses.get("partial_set"), out_s["z_id"]
+                probe_parameters = _rc4_gradient_probe_parameters(model)
+                relationships = _rc4_gradient_relationships(
+                    {
+                        "labeled": loss_tx_l,
+                        "hard": gradient_losses.get("hard"),
+                        "partial_set": gradient_losses.get("partial_set"),
+                        "partial_conditional": gradient_losses.get("partial_conditional"),
+                        "adv_u": gradient_losses.get("adv"),
+                        "adv_l": float(cur_w["adv"]) * loss_adv_l,
+                    },
+                    probe_parameters,
                 )
-                g_pcond = _rc4_gradient_norm(
-                    gradient_losses.get("partial_conditional"), out_s["z_id"]
-                )
-                g_adv_u = _rc4_gradient_norm(gradient_losses.get("adv"), out_s["z_id"])
-                g_adv_l = _rc4_gradient_norm(
-                    float(cur_w["adv"]) * loss_adv_l,
-                    out_l["z_id"],
-                )
-                g_identity = math.sqrt(g_h * g_h + g_pset * g_pset + g_pcond * g_pcond)
-                g_adv = math.sqrt(g_adv_l * g_adv_l + g_adv_u * g_adv_u)
+                gradient_norms = relationships["norms"]
+                gradient_cosines = relationships["cosines_to_labeled"]
+                g_l = gradient_norms.get("labeled", float("nan"))
+                g_h = gradient_norms.get("hard", float("nan"))
+                g_pset = gradient_norms.get("partial_set", float("nan"))
+                g_pcond = gradient_norms.get("partial_conditional", float("nan"))
+                g_adv_u = gradient_norms.get("adv_u", float("nan"))
+                g_adv_l = gradient_norms.get("adv_l", float("nan"))
+                identity_terms = [value for value in (g_h, g_pset, g_pcond) if math.isfinite(value)]
+                adv_terms = [value for value in (g_adv_l, g_adv_u) if math.isfinite(value)]
+                g_identity = math.sqrt(sum(value * value for value in identity_terms)) if identity_terms else float("nan")
+                g_adv = math.sqrt(sum(value * value for value in adv_terms)) if adv_terms else float("nan")
                 rc4_gradient_metrics = {
                     "rc4/g_L": g_l,
                     "rc4/g_H": g_h,
                     "rc4/g_Pset": g_pset,
                     "rc4/g_Pcond": g_pcond,
                     "rc4/g_adv": g_adv,
-                    "rc4/g_identity_to_labeled": g_identity / max(g_l, 1e-12),
-                    "rc4/g_adv_to_labeled": g_adv / max(g_l, 1e-12),
+                    "rc4/g_identity_to_labeled": (
+                        g_identity / max(g_l, 1e-12)
+                        if math.isfinite(g_identity) and math.isfinite(g_l)
+                        else float("nan")
+                    ),
+                    "rc4/g_adv_to_labeled": (
+                        g_adv / max(g_l, 1e-12)
+                        if math.isfinite(g_adv) and math.isfinite(g_l)
+                        else float("nan")
+                    ),
+                    "rc4/cos_H_to_labeled": gradient_cosines.get("hard", float("nan")),
+                    "rc4/cos_Pset_to_labeled": gradient_cosines.get("partial_set", float("nan")),
+                    "rc4/cos_Pcond_to_labeled": gradient_cosines.get("partial_conditional", float("nan")),
                     "rc4/gradient_telemetry_active": 1.0,
                 }
             loss_is_finite = bool(torch.isfinite(loss.detach()).item())

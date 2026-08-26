@@ -1,4 +1,5 @@
 import inspect
+import math
 from types import SimpleNamespace
 
 import torch
@@ -87,6 +88,38 @@ def test_qb3_gradient_telemetry_uses_first_real_batch_from_one_based_loader():
         epoch=40,
         telemetry_epochs=telemetry_epochs,
     )
+
+
+def test_qb3_gradient_telemetry_uses_actual_shared_parameter_graph_and_cosine():
+    shared = nn.Linear(2, 2, bias=False)
+    x = torch.tensor([[1.0, 2.0]])
+    logits = shared(x)
+    labeled = logits[0, 0]
+    aligned = 2.0 * logits[0, 0]
+    opposed = -logits[0, 0]
+
+    metrics = train_ssdg._rc4_gradient_relationships(
+        {"labeled": labeled, "hard": aligned, "partial_set": opposed},
+        tuple(shared.parameters()),
+    )
+
+    assert metrics["norms"]["labeled"] > 0.0
+    assert metrics["norms"]["hard"] == 2.0 * metrics["norms"]["labeled"]
+    assert metrics["cosines_to_labeled"]["hard"] == 1.0
+    assert metrics["cosines_to_labeled"]["partial_set"] == -1.0
+
+
+def test_qb3_gradient_telemetry_marks_disconnected_loss_as_unavailable_not_zero():
+    shared = nn.Linear(2, 1, bias=False)
+    disconnected = torch.tensor(3.0, requires_grad=True)
+
+    metrics = train_ssdg._rc4_gradient_relationships(
+        {"labeled": shared(torch.ones(1, 2)).sum(), "hard": disconnected},
+        tuple(shared.parameters()),
+    )
+
+    assert math.isnan(metrics["norms"]["hard"])
+    assert math.isnan(metrics["cosines_to_labeled"]["hard"])
 
 
 def test_qb3_first_nonfinite_gradient_names_parameter_and_counts_bad_elements():
