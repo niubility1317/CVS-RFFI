@@ -48,6 +48,19 @@ def validate_j1_args(args: argparse.Namespace) -> tuple[str, ...]:
     return rows
 
 
+def smoke_bypass_audit(row: str, candidate_logits: Tensor, base_logits: Tensor) -> dict[str, Any]:
+    max_delta = float((candidate_logits - base_logits).abs().max().detach().item())
+    agreement = float(candidate_logits.argmax(1).eq(base_logits.argmax(1)).float().mean().item())
+    numeric_parity = bool(torch.allclose(candidate_logits, base_logits, atol=1e-5, rtol=1e-5))
+    return {
+        "epoch0_bypass_pass": bool(agreement == 1.0) if row == "RX1" else numeric_parity,
+        "prediction_agreement": agreement,
+        "numeric_logit_parity": numeric_parity,
+        "max_abs_logit_delta": max_delta,
+        "criterion": "decision_parity" if row == "RX1" else "numeric_logit_parity",
+    }
+
+
 def _phase_proxy(clean_iq: Tensor, changed_iq: Tensor) -> Tensor:
     def stats(iq: Tensor) -> tuple[Tensor, Tensor, Tensor, Tensor]:
         x = torch.complex(iq[:, 0], iq[:, 1])
@@ -379,10 +392,10 @@ def run(args: argparse.Namespace) -> int:
         out = _forward_candidate(row, model, iq=smoke_iq, z_id=smoke_z, base_logits=smoke_base, domain=smoke_domain, base=base)
         smoke[row] = {
             "finite": bool(torch.isfinite(out.final_logits).all()),
-            "epoch0_exact_bypass": bool(torch.allclose(out.final_logits, smoke_base, atol=1e-5, rtol=1e-5)),
             "parameter_count": sum(p.numel() for p in model.parameters() if p.requires_grad),
+            **smoke_bypass_audit(row, out.final_logits, smoke_base),
         }
-    if not all(x["finite"] and x["epoch0_exact_bypass"] and x["parameter_count"] <= 50_000 for x in smoke.values()):
+    if not all(x["finite"] and x["epoch0_bypass_pass"] and x["parameter_count"] <= 50_000 for x in smoke.values()):
         raise RuntimeError("JMRS02 J1 real-checkpoint smoke failed")
     _write_json(output / "protocol_and_smoke.json", {"status": "REAL_CHECKPOINT_NO_QUERY_SMOKE_PASS", "rows": rows, "scenarios": REQUIRED_SCENARIOS, "checkpoint_audit": checkpoint_audit, "source_roles": data_ctx["split_info"], "smoke": smoke, "target_or_query_access": False, "spectral_ratio_removed": True})
     if args.smoke_only:

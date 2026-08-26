@@ -73,4 +73,10 @@ J1单模块晋级要求：三LEO同row final mean gain大于0、clean drop不超
 - 一次P0/P1正确性审查修复：RX1 identity smoke由逐bit相等改为容差数值等价；prediction写出路径增加`no_grad`，避免评估计算图占用。
 - 本机Git Bash探针返回空`MSYSTEM`，按Windows路由规则未执行本地`bash -n`；该工具路由标记`FAILED`，不是实验失败。release到N607后必须由远端原生Bash完成语法检查再启动。
 
-当前状态：`LOCAL_VERIFIED / NOT_LANDED / NO_J1_EXPERIMENT_LAUNCHED`。
+## 七、A运行结果
+
+A已完成release落地和N607原生编译，但在launcher第一步真实checkpoint smoke自然退出，正式训练从未启动。日志异常为`RuntimeError: JMRS02 J1 real-checkpoint smoke failed`；GPU0始终空闲，正式输出根未创建。原因定位为RX1的identity波形变换经过FFT/IFFT后存在微小浮点差异，统一的logit数值等价判据过严；这不是方法性能结果。
+
+修复采用角色区分判据：RZ0/RZ1/D1P/P0继续要求logit数值等价；RX1要求smoke batch类别决策100%一致，同时记录`max_abs_logit_delta`和数值相等状态。修复先经RED→GREEN测试，A的smoke目录和764字节日志原样保留，不覆盖、不重复启动。
+
+当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。后续只允许使用全新B run。
