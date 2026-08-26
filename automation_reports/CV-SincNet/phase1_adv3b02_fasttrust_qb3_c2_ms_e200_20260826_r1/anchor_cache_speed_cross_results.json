@@ -1,0 +1,53 @@
+{
+  "schema": "cvs.phase1.anchor_cache_speed_cross.v1",
+  "status": "ANALYZED",
+  "implementation_commit": "69c66e06f47e0c51622313cfaadeec59638489b5",
+  "crosscheck_commit": "bcb16e90856af405fa21d8125f0cd0d2650d7646",
+  "release_sha256": "d82a1cad3f5312f6d70bbbfa27801e7352ebc74383192574817d6a60b17f96c1",
+  "rows": [
+    {
+      "run_id": "phase1_adv3b02_fasttrust_qb3_anchor_cache_speed_e6_20260826_r3",
+      "live_gpu": 6,
+      "cached_gpu": 7,
+      "cache_build_s": 6.061,
+      "epoch2_6_live_train_s": 66.30938405990601,
+      "epoch2_6_cached_train_s": 64.34923009872436,
+      "epoch2_6_train_time_reduction_pct": 2.9560732450942098,
+      "epoch2_6_live_u_samples_per_s": 717.3215434525097,
+      "epoch2_6_cached_u_samples_per_s": 737.9100246287361,
+      "e6_live_train_s": 403.3541040420532,
+      "e6_cached_train_plus_build_s": 393.7767473564148
+    },
+    {
+      "run_id": "phase1_adv3b02_fasttrust_qb3_anchor_cache_speed_e6_20260826_r4",
+      "live_gpu": 7,
+      "cached_gpu": 6,
+      "cache_build_s": 6.53,
+      "epoch2_6_live_train_s": 71.99604301452636,
+      "epoch2_6_cached_train_s": 65.63828687667846,
+      "epoch2_6_train_time_reduction_pct": 8.830702177014258,
+      "epoch2_6_live_u_samples_per_s": 663.6650527734441,
+      "epoch2_6_cached_u_samples_per_s": 722.5656846923584,
+      "e6_live_train_s": 435.60261607170105,
+      "e6_cached_train_plus_build_s": 405.6843161869049
+    }
+  ],
+  "cross_gpu_position_mean": {
+    "epoch2_6_live_train_s": 69.15271353721619,
+    "epoch2_6_cached_train_s": 64.99375848770141,
+    "train_time_reduction_pct": 6.014160308078919,
+    "speedup_x": 1.0639900683740542,
+    "live_u_samples_per_s": 690.4932981129768,
+    "cached_u_samples_per_s": 730.2378546605473,
+    "u_samples_per_s_gain_pct": 5.755965576521436,
+    "cache_build_s": 6.2955,
+    "e6_live_train_s": 419.47836005687714,
+    "e6_cached_train_plus_build_s": 399.7305317716598,
+    "e6_net_reduction_pct": 4.7077108536754375,
+    "e200_projected_saving_s": 825.4955099029539,
+    "e200_projected_saving_min": 13.758258498382566
+  },
+  "scope": "training_speed_only",
+  "performance_claim": "NONE_E6_NONDETERMINISTIC",
+  "promotion": "PROMOTE_CACHE_FOR_SPEED_WITH_DEFAULT_OFF_UNTIL_NEXT_FORMAL_RELEASE"
+}
