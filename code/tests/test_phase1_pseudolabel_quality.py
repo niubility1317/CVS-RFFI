@@ -105,3 +105,8 @@ def test_generator_cli_cannot_accept_truth_and_truth_export_is_a_separate_comman
     assert domains.tolist() == [3, 4]
     assert "rx_i" in metadata
     assert module._metadata_tensor(metadata, "rx_i", 2, torch.device("cpu")).tolist() == [0, 1]
+
+    _, compact_domains, _ = module._truth_hidden_inputs(
+        batch, torch.device("cpu"), domain_label_map={3: 0, 4: 1}
+    )
+    assert compact_domains.tolist() == [0, 1]

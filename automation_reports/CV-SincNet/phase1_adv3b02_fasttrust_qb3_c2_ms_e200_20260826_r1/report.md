@@ -46,3 +46,5 @@
 - 修复后的聚焦测试为`4 passed`，脚本通过`py_compile`；等待新Git提交与新release执行真实checkpoint复验。
 - 新release复验继续推进后在receiver读取处触发`KeyError:1`：truth-hidden batch已被解包为metadata字典，但生成器仍调用只接受训练期原始batch包装的解析器。该次同样发生在推理前且没有生成artifact。
 - 新增metadata字典直读回归测试，receiver改为从已解包metadata构造只含观测域信息的张量；相邻聚焦回归为`57 passed`，待再次提交并用全新release/output root复验。
+- 第三次复验进入RC4路由后出现CUDA gather越界。定位为dataset edge返回的raw domain ID未按checkpoint的`domain_label_map`映射为紧凑域索引；训练主路径本来执行该映射，问题仅在新增审计脚本。
+- 审计脚本现复用训练主路径的`domain_from_extra`映射并对未注册域fail-closed；增加`{3:0,4:1}`紧凑映射回归，聚焦回归仍为`57 passed`，后续使用全新release/output root验证。

@@ -109,12 +109,20 @@ def _metadata_tensor(metadata, key: str, count: int, device):
     return torch.as_tensor(_values(metadata, key, count), device=device, dtype=torch.long)
 
 
-def _truth_hidden_inputs(batch, device):
+def _truth_hidden_inputs(batch, device, domain_label_map=None):
     x_value, domain_payload = train_ssdg._move_muse_unlabeled_batch(batch, device)
     domains, metadata = domain_payload
-    if not torch.is_tensor(domains):
-        domains = torch.as_tensor(domains, device=device)
-    return x_value, domains.to(device=device, dtype=torch.long), metadata
+    if domain_label_map is None:
+        if not torch.is_tensor(domains):
+            domains = torch.as_tensor(domains, device=device)
+        compact_domains = domains.to(device=device, dtype=torch.long)
+    else:
+        compact_domains = train_ssdg.domain_from_extra(
+            domain_payload, domain_label_map, device
+        )
+        if compact_domains is None or bool(compact_domains.lt(0).any()):
+            raise ValueError("V_select contains a domain outside the checkpoint domain map")
+    return x_value, compact_domains, metadata
 
 
 def generate(args) -> int:
@@ -147,7 +155,9 @@ def generate(args) -> int:
     )
     with torch.no_grad():
         for batch in audit_loader:
-            x_select, domains, extra = _truth_hidden_inputs(batch, device)
+            x_select, domains, extra = _truth_hidden_inputs(
+                batch, device, data_ctx["domain_label_map"]
+            )
             count = int(x_select.shape[0])
             receivers = _metadata_tensor(extra, "rx_i", count, device)
             weak_2 = train_ssdg._strong_augment(
