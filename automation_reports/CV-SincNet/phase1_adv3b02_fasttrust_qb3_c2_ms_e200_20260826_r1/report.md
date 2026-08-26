@@ -21,7 +21,7 @@
 | `QB3-P0-GRAD` | 对实际H/P损失与共享参数求导，报告范数比与余弦 | `code/SSDG/train_ssdg.py`及聚焦测试 | `IMPLEMENTED_RUNNING` |
 | `QB3-P1-C2MS` | 仅新增seed713101、seed713102的C2 E200 | 新matrix与launcher | `RUNNING` |
 | `QB3-SPEED` | 缓存冻结anchor clean logits并向量化路由预算 | 训练路径与速度A/B | `IN_PROGRESS` |
-| `QB3-SINC` | `torch.sinc`+FP32滤波器合成，独立匹配验证 | `code/model.py`及数值测试 | `LOCAL_VERIFIED` |
+| `QB3-SINC` | `torch.sinc`+FP32滤波器合成，独立匹配验证 | `code/model.py`及数值测试 | `REAL_CKPT_SMOKE_PASS` |
 | `QB3-RG` | P-set/P-cond独立预算与rank风险门控 | source-only候选 | `PENDING_P0_EVIDENCE` |
 
 ## 口径冲突处理
@@ -77,3 +77,6 @@
 - 第一轮没有改变`abs+clamp`参数化，没有启用`torch.compile`，因此改动只隔离数值稳定性变量。
 - FP16、BF16、FP32、极端low/high frequency、forward有限、参数梯度有限、初始scale=`65,536`的CUDA GradScaler以及连续1,000优化步全部通过；与旧FP32滤波器匹配。Sinc及相邻模型测试共`28 passed`。
 - 独立P0/P1审查结论为`READY`，未发现会导致真实smoke跑错、AMP/dtype语义错误或改变滤波器数学定义的问题。该修复尚未进入当前运行中的C2 release，将通过独立release做短smoke和同seed匹配验证。
+- Sinc独立提交为`eb0db1dd5085ef6a5f0e67e996525905d22cd4b8`；release归档SHA256为`d502bff4d6096a08a464c0c92df340f8070a4dcb42b263729546b19983e34086`，远端传输与编译通过。
+- N607训练环境没有pytest模块，远端pytest入口记为`FAILED`且未安装任何包；改用同release原生Python在GPU7验证FP16输出、初始scale=`65,536`、loss=`0.0004073`及两组Sinc参数梯度全部有限。
+- 同release进一步加载真实历史C2 checkpoint，对truth-hidden V_select执行完整前向并生成`12,600`条记录，`truth_access=false`。因此当前证据为`REAL_CKPT_SMOKE_PASS`；尚未进行同seed C0/C3短程匹配训练，不宣称性能等价。
