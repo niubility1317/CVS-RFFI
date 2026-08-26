@@ -19,10 +19,14 @@ from .target_only_progressive_adapt import (
     fit_sf_tapft,
     select_sf_tapft_by_grouped_cv,
 )
+from .sf_tapft_phase1_binding import (
+    SFTAPFTPhase1Binding,
+    load_sf_tapft_phase1_binding,
+)
 
 
 SF_TAPFT_BUNDLE_SCHEMA = "cvs.sf_tapft.v1"
-_TOP_LEVEL_KEYS = frozenset(
+_V1_TOP_LEVEL_KEYS = frozenset(
     {
         "candidate_id",
         "method",
@@ -36,6 +40,7 @@ _TOP_LEVEL_KEYS = frozenset(
         "sf_tapft",
     }
 )
+_R0_TOP_LEVEL_KEYS = _V1_TOP_LEVEL_KEYS | {"phase1_bundle"}
 _BUNDLE_KEYS = frozenset(
     {
         "schema",
@@ -76,7 +81,10 @@ def _default_checkpoint_loader(path: str | Path, *, device: str | torch.device) 
 
 
 def _parse_config(config: Mapping[str, Any]) -> tuple[dict[str, Any], SFTAPFTConfig]:
-    if not isinstance(config, Mapping) or set(config) != set(_TOP_LEVEL_KEYS):
+    if not isinstance(config, Mapping) or frozenset(config) not in {
+        _V1_TOP_LEVEL_KEYS,
+        _R0_TOP_LEVEL_KEYS,
+    }:
         raise ValueError("SF-TAPFT runner top-level allowlist mismatch")
     values = dict(config)
     if values["method"] != "sf_tapft_v1":
@@ -193,10 +201,34 @@ def _audit_payload(audit: Any) -> dict[str, Any]:
     }
 
 
-def _bundle_payload(
-    result: Any, *, resolved: Mapping[str, Any], method_config: SFTAPFTConfig
-) -> dict[str, Any]:
+def _binding_payload(binding: SFTAPFTPhase1Binding) -> dict[str, Any]:
     return {
+        "outer_content_root_sha256": binding.outer_content_root_sha256,
+        "checkpoint_lineage_sha256": binding.checkpoint_lineage_sha256,
+        "runtime_sha256": binding.runtime_sha256,
+        "class_handle_binding_sha256": binding.class_handle_binding_sha256,
+        "class_handles": list(binding.class_handles),
+        "component_pre_sign_content_root_sha256": binding.component_pre_sign_content_root_sha256,
+    }
+
+
+def _validate_support_labels_for_binding(
+    support: TargetOnlyAdaptationDataset, binding: SFTAPFTPhase1Binding
+) -> None:
+    class_count = len(binding.class_handles)
+    labels = support.labels
+    if class_count <= 0 or int(torch.min(labels).item()) < 0 or int(torch.max(labels).item()) >= class_count:
+        raise ValueError("support labels must be indices into the ordered Phase1 class registry")
+
+
+def _bundle_payload(
+    result: Any,
+    *,
+    resolved: Mapping[str, Any],
+    method_config: SFTAPFTConfig,
+    binding: SFTAPFTPhase1Binding | None = None,
+) -> dict[str, Any]:
+    payload = {
         "schema": SF_TAPFT_BUNDLE_SCHEMA,
         "method": result.audit.method,
         "permission": result.audit.permission,
@@ -211,6 +243,9 @@ def _bundle_payload(
         "class_ids": list(result.head.class_ids),
         "audit": _audit_payload(result.audit),
     }
+    if binding is not None:
+        payload["phase1_binding"] = _binding_payload(binding)
+    return payload
 
 
 def _write_json(path: Path, payload: Mapping[str, Any]) -> None:
@@ -233,13 +268,21 @@ def run_sf_tapft_no_query(
     if destination.exists() or destination.is_symlink():
         raise FileExistsError(f"SF-TAPFT output directory already exists: {destination}")
     loader = checkpoint_loader or _default_checkpoint_loader
+    binding = (
+        load_sf_tapft_phase1_binding(resolved, resolved["checkpoint_path"])
+        if "phase1_bundle" in resolved
+        else None
+    )
     model = loader(resolved["checkpoint_path"], device=device)
     support = _load_target_support(resolved["support_path"])
+    if binding is not None:
+        _validate_support_labels_for_binding(support, binding)
     result = fit_sf_tapft(model, support, method_config)
     payload = _bundle_payload(
         result,
         resolved=resolved,
         method_config=method_config,
+        binding=binding,
     )
     destination.mkdir(parents=True, exist_ok=False)
     bundle_path = destination / "sf_tapft_bundle.pt"
@@ -267,6 +310,8 @@ def run_sf_tapft_no_query(
         "query_role_opened": False,
         "bundle_path": str(bundle_path),
     }
+    if binding is not None:
+        receipt["phase1_binding"] = _binding_payload(binding)
     _write_json(destination / "smoke.json", receipt)
     return receipt
 
@@ -286,8 +331,15 @@ def run_sf_tapft_grouped_selection(
     if destination.exists() or destination.is_symlink():
         raise FileExistsError(f"SF-TAPFT output directory already exists: {destination}")
     loader = checkpoint_loader or _default_checkpoint_loader
+    binding = (
+        load_sf_tapft_phase1_binding(resolved, resolved["checkpoint_path"])
+        if "phase1_bundle" in resolved
+        else None
+    )
     model = loader(resolved["checkpoint_path"], device=device)
     support = _load_target_support(resolved["support_path"])
+    if binding is not None:
+        _validate_support_labels_for_binding(support, binding)
     selection = select_sf_tapft_by_grouped_cv(
         model,
         support,
@@ -302,6 +354,7 @@ def run_sf_tapft_grouped_selection(
             selection.adapted_result,
             resolved=resolved,
             method_config=method_config,
+            binding=binding,
         )
         with bundle_path.open("xb") as handle:
             torch.save(payload, handle)
@@ -344,6 +397,8 @@ def run_sf_tapft_grouped_selection(
         "query_truth_opened": False,
         "query_role_opened": False,
     }
+    if binding is not None:
+        receipt["phase1_binding"] = _binding_payload(binding)
     _write_json(destination / "selection.json", receipt)
     return receipt
 
@@ -363,7 +418,8 @@ def load_sf_tapft_bundle_strict(
         payload = torch.load(source, map_location="cpu", weights_only=True)
     except (OSError, RuntimeError, ValueError, TypeError) as exc:
         raise ValueError(f"cannot safely load SF-TAPFT bundle: {source}") from exc
-    if not isinstance(payload, Mapping) or set(payload) != set(_BUNDLE_KEYS):
+    payload_keys = set(payload) if isinstance(payload, Mapping) else set()
+    if payload_keys != set(_BUNDLE_KEYS) and payload_keys != set(_BUNDLE_KEYS) | {"phase1_binding"}:
         raise ValueError("SF-TAPFT bundle top-level allowlist mismatch")
     if payload["schema"] != SF_TAPFT_BUNDLE_SCHEMA:
         raise ValueError("SF-TAPFT bundle schema mismatch")

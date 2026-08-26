@@ -14,6 +14,7 @@ from cvsrffi.target_only_progressive_runner import (
     load_sf_tapft_bundle_strict,
     run_sf_tapft_no_query,
 )
+from cvsrffi.sf_tapft_phase1_binding import SFTAPFTPhase1Binding
 from test_target_only_progressive_adapt import _ToyModel
 
 
@@ -33,6 +34,115 @@ def _write_support(path: Path) -> None:
         support_physical_ids=np.asarray(["p0", "p1", "p2", "p3"]),
         support_groups=np.asarray(["g0", "g1", "g0", "g1"]),
     )
+
+
+def _phase1_bundle_config() -> dict[str, str]:
+    return {
+        "package_root": "formal-package",
+        "detached_seal_path": "detached-seal.json",
+        "expected_detached_seal_sha256": "1" * 64,
+        "signature_envelope_path": "signature-envelope.json",
+        "expected_signature_envelope_sha256": "2" * 64,
+        "expected_checkpoint_lineage_sha256": "3" * 64,
+        "expected_runtime_sha256": "4" * 64,
+        "expected_component_pre_sign_content_root_sha256": "5" * 64,
+        "expected_class_handle_binding_sha256": "6" * 64,
+        "expected_parity_receipt_sha256": "7" * 64,
+        "expected_generation_lock_sha256": "8" * 64,
+        "expected_method_lock_sha256": "9" * 64,
+        "expected_generation_config_sha256": "a" * 64,
+        "expected_generation_code_sha256": "b" * 64,
+        "expected_outer_content_root_sha256": "c" * 64,
+    }
+
+
+def _phase1_binding(*, handles: tuple[str, ...]) -> SFTAPFTPhase1Binding:
+    return SFTAPFTPhase1Binding(
+        outer_content_root_sha256="c" * 64,
+        checkpoint_lineage_sha256="3" * 64,
+        runtime_sha256="4" * 64,
+        class_handle_binding_sha256="6" * 64,
+        class_handles=handles,
+        component_pre_sign_content_root_sha256="5" * 64,
+    )
+
+
+def _r0_config(checkpoint: Path, support: Path) -> dict[str, object]:
+    return {
+        "candidate_id": "SF_TAPFT_R0_SMOKE",
+        "method": "sf_tapft_v1",
+        "permission": "DIAGNOSTIC_NON_FORMAL",
+        "protocol_schema": "p2_min_v1",
+        "phase2_data_status": "VALIDATED_ONCE",
+        "capsule_id": "capsule-test",
+        "split_id": "split-test",
+        "checkpoint_path": str(checkpoint),
+        "support_path": str(support),
+        "phase1_bundle": _phase1_bundle_config(),
+        "sf_tapft": {
+            "phase_steps": [1, 1, 1],
+            "warmup_ratio": 0.0,
+            "checkpoint_average_top_k": 1,
+            "adapter_rank": 2,
+            "seed": 23,
+        },
+    }
+
+
+def test_r0_runner_rejects_out_of_range_support_label_before_fit(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    support = tmp_path / "support.npz"
+    _write_support(support)
+    checkpoint = tmp_path / "checkpoint.pth"
+    checkpoint.write_bytes(b"loader-owned fixture")
+    monkeypatch.setattr(
+        runner_module,
+        "load_sf_tapft_phase1_binding",
+        lambda *_args, **_kwargs: _phase1_binding(handles=("tx0",)),
+    )
+    monkeypatch.setattr(
+        runner_module,
+        "fit_sf_tapft",
+        lambda *_args, **_kwargs: pytest.fail("fit_sf_tapft must not run before label validation"),
+    )
+
+    with pytest.raises(ValueError, match="ordered Phase1 class registry"):
+        run_sf_tapft_no_query(
+            _r0_config(checkpoint, support),
+            tmp_path / "output",
+            device="cpu",
+            checkpoint_loader=lambda _path, *, device: copy.deepcopy(_ToyModel()).to(device),
+        )
+
+
+def test_r0_runner_copies_phase1_binding_into_receipt_and_bundle(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    support = tmp_path / "support.npz"
+    _write_support(support)
+    checkpoint = tmp_path / "checkpoint.pth"
+    checkpoint.write_bytes(b"loader-owned fixture")
+    binding = _phase1_binding(handles=("tx0", "tx1"))
+    monkeypatch.setattr(
+        runner_module,
+        "load_sf_tapft_phase1_binding",
+        lambda *_args, **_kwargs: binding,
+    )
+    output = tmp_path / "output"
+    receipt = run_sf_tapft_no_query(
+        _r0_config(checkpoint, support),
+        output,
+        device="cpu",
+        checkpoint_loader=lambda _path, *, device: copy.deepcopy(_ToyModel()).to(device),
+    )
+
+    assert receipt["phase1_binding"]["outer_content_root_sha256"] == "c" * 64
+    assert receipt["phase1_binding"]["checkpoint_lineage_sha256"] == "3" * 64
+    assert receipt["phase1_binding"]["runtime_sha256"] == "4" * 64
+    assert receipt["phase1_binding"]["class_handle_binding_sha256"] == "6" * 64
+    payload = torch.load(output / "sf_tapft_bundle.pt", map_location="cpu", weights_only=True)
+    assert payload["phase1_binding"] == receipt["phase1_binding"]
 
 
 def test_no_query_runner_writes_nonformal_bundle_and_consumer_can_reload(tmp_path: Path) -> None:
