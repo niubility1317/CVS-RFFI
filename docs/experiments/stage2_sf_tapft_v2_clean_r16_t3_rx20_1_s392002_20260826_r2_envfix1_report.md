@@ -2,7 +2,7 @@
 
 ## 当前结论
 
-前一run在进入Python前因解释器路径错误退出且未读取数据。本run使用已现场验证的`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`重新启动；模型、数据、方法、seed和阶段预算均不变。
+前一run在进入Python前因解释器路径错误退出且未读取数据。本run使用已现场验证的`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`重新启动；模型、数据、方法、seed和阶段预算均不变。当前状态为`RUNNING`。
 
 ## 预登记运行合同
 
@@ -21,3 +21,10 @@
 |log|`/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_sf_tapft_v2_clean_r16_t3_rx20_1_s392002_20260826_r2_envfix1.out`|
 |预期artifact|`sf_tapft_clean_single_bundle.pt`、`selection.json`、4折OOF指标和全support refit证据|
 |停止规则|数据/query越权、错误绑定或split、输出覆盖、确定性执行故障、无法产生合法bundle；不得因中途性能低而停止|
+
+## 启动回读
+
+- 主PID：`3947153`，父PID为1。
+- CWD：release的`checkout`目录；cmdline中的配置、output、设备和4折参数与预登记一致。
+- GPU0已绑定该PID，启动期显存约678MiB。
+- 进程持续运行且有高CPU活动，无异常输出。当前runner只在完整选择结束后打印最终JSON，因此启动期log为0字节；不据此误判失败，也不重复启动。
