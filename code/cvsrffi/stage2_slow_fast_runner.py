@@ -67,6 +67,7 @@ _P05_KEYS = frozenset(
         "p05_step_size",
     }
 )
+_DA0_ONLY_KEYS = frozenset({"adaptation_mode"})
 _SUPPORT_KEYS = frozenset(
     {"received_iq", "support_labels", "support_physical_ids"}
 )
@@ -82,6 +83,7 @@ def _validate_config(config: Mapping[str, Any]) -> dict[str, Any]:
         _CONFIG_KEYS,
         _CONFIG_KEYS | _SHADOW_KEYS,
         _CONFIG_KEYS | _P05_KEYS,
+        _CONFIG_KEYS | _DA0_ONLY_KEYS,
     )
     if actual not in allowed_shapes:
         raise ValueError(
@@ -105,6 +107,10 @@ def _validate_config(config: Mapping[str, Any]) -> dict[str, Any]:
     validated["seed"] = int(validated["seed"])
     validated["k_shot"] = int(validated["k_shot"])
     validated["steps"] = int(validated["steps"])
+    if actual == _CONFIG_KEYS | _DA0_ONLY_KEYS:
+        if validated["adaptation_mode"] != "DA0_ONLY":
+            raise ValueError("adaptation_mode must be DA0_ONLY")
+        validated["adaptation_mode"] = "DA0_ONLY"
     if actual == _CONFIG_KEYS | _SHADOW_KEYS:
         steps = tuple(int(value) for value in validated["shadow_steps"])
         multipliers = tuple(float(value) for value in validated["shadow_step_multipliers"])
@@ -232,6 +238,7 @@ def run_slow_fast_stage2_row(
     """Produce DA0_REG0 and DA1_REG0 predictions without opening query truth."""
 
     cfg = _validate_config(config)
+    da0_only_mode = cfg.get("adaptation_mode") == "DA0_ONLY"
     state, audit = load_slow_fast_bundle_strict(cfg["bundle_path"])
     if state.candidate.value != cfg["candidate_id"]:
         raise ValueError("candidate_id does not match the frozen bundle")
@@ -256,121 +263,155 @@ def run_slow_fast_stage2_row(
     if any(parameter.requires_grad for parameter in model.parameters()):
         raise ValueError("base checkpoint must remain fully frozen")
 
-    support_payload = _load_npz(
-        cfg["support_path"], allowed=_SUPPORT_KEYS, label="support"
-    )
-    support_iq = _received_iq_tensor(
-        support_payload["received_iq"], label="support"
-    )
-    support_labels = _integer_tensor(
-        support_payload["support_labels"], label="support_labels"
-    )
-    if support_labels.numel() != support_iq.shape[0]:
-        raise ValueError("support labels and IQ rows must align")
-    support_ids = _support_physical_ids(
-        support_payload["support_physical_ids"], expected_rows=int(support_iq.shape[0])
-    )
-    label_rows = _row_labels(support_labels, class_ids)
-    support_features = _extract_features(model, support_iq)
     logit_scale = float(audit["support_logit_scale"])
     trust_radius = float(audit["trust_radius"])
-    if calibration_policy is not None and calibration_policy.hard_move > trust_radius + 1.0e-8:
-        raise ValueError("p05_policy hard_move exceeds the frozen bundle trust radius")
-    shadow_mode = all(key in cfg for key in _SHADOW_KEYS)
-    selection_steps = cfg["steps"]
-    selection_step_size = float(cfg["p05_step_size"]) if p05_mode else float(audit["fast_step_size"])
-    selection_grid = (
-        tuple(cfg["p05_lambda_grid"])
-        if p05_mode
-        else ((0.0, *cfg["shadow_lambdas"]) if shadow_mode else (0.0, 0.125, 0.25, 0.5, 0.75, 1.0))
-    )
-    selection_repeats = (
-        int(cfg["p05_crossfit_repeats"])
-        if p05_mode
-        else (cfg["crossfit_repeats"] if shadow_mode else 3)
-    )
-    selection_seed = int(cfg["crossfit_seed"]) if (p05_mode or shadow_mode) else int(cfg["seed"])
-    selected_state, selection = select_support_only_state(
-        support_features,
-        label_rows,
-        prototypes,
-        state,
-        k_shot=cfg["k_shot"],
-        logit_scale=logit_scale,
-        steps=selection_steps,
-        step_size=selection_step_size,
-        trust_radius=trust_radius,
-        lambda_grid=selection_grid,
-        crossfit_seed=selection_seed,
-        repeats=selection_repeats,
-        physical_ids=support_ids,
-        trust_policy=calibration_policy,
-    )
-
     named_adapter_states: dict[str, SlowFastAdapterState] = {}
     legacy_selection: dict[str, Any] | None = None
     shadow_state_specs: dict[str, dict[str, float | int | str]] = {}
-    if shadow_mode:
-        legacy_state, legacy_selection = select_support_only_state_legacy(
+    shadow_support_diagnostics: dict[str, Any] = {}
+    shadow_mode = False
+    support_sample_count = 0
+    if da0_only_mode:
+        selection_seed = int(cfg["seed"])
+        selection = {
+            "adaptation_mode": "DA0_ONLY",
+            "selected_lambda": 0.0,
+            "reason": "DA0_ONLY",
+            "gradient_updates": 0,
+            "deployment_candidate_updates": 0,
+            "crossfit_updates": 0,
+            "full_support_fit_updates": 0,
+            "committed_gradient_updates": 0,
+            "total_selection_updates": 0,
+            "query_inference_updates": 0,
+        }
+    else:
+        support_payload = _load_npz(
+            cfg["support_path"], allowed=_SUPPORT_KEYS, label="support"
+        )
+        support_iq = _received_iq_tensor(
+            support_payload["received_iq"], label="support"
+        )
+        support_labels = _integer_tensor(
+            support_payload["support_labels"], label="support_labels"
+        )
+        if support_labels.numel() != support_iq.shape[0]:
+            raise ValueError("support labels and IQ rows must align")
+        support_ids = _support_physical_ids(
+            support_payload["support_physical_ids"], expected_rows=int(support_iq.shape[0])
+        )
+        support_sample_count = len(support_ids)
+        label_rows = _row_labels(support_labels, class_ids)
+        support_features = _extract_features(model, support_iq)
+        if calibration_policy is not None and calibration_policy.hard_move > trust_radius + 1.0e-8:
+            raise ValueError("p05_policy hard_move exceeds the frozen bundle trust radius")
+        shadow_mode = all(key in cfg for key in _SHADOW_KEYS)
+        selection_steps = cfg["steps"]
+        selection_step_size = float(cfg["p05_step_size"]) if p05_mode else float(audit["fast_step_size"])
+        selection_grid = (
+            tuple(cfg["p05_lambda_grid"])
+            if p05_mode
+            else ((0.0, *cfg["shadow_lambdas"]) if shadow_mode else (0.0, 0.125, 0.25, 0.5, 0.75, 1.0))
+        )
+        selection_repeats = (
+            int(cfg["p05_crossfit_repeats"])
+            if p05_mode
+            else (cfg["crossfit_repeats"] if shadow_mode else 3)
+        )
+        selection_seed = int(cfg["crossfit_seed"]) if (p05_mode or shadow_mode) else int(cfg["seed"])
+        selected_state, selection = select_support_only_state(
             support_features,
             label_rows,
             prototypes,
             state,
             k_shot=cfg["k_shot"],
             logit_scale=logit_scale,
+            steps=selection_steps,
+            step_size=selection_step_size,
             trust_radius=trust_radius,
-            steps=cfg["steps"],
-            step_size=float(audit["fast_step_size"]),
+            lambda_grid=selection_grid,
+            crossfit_seed=selection_seed,
+            repeats=selection_repeats,
+            physical_ids=support_ids,
+            trust_policy=calibration_policy,
         )
-        if state.candidate.value == "COMMON_SHIFT_R4":
-            fixed = fit_support_candidate_states(
+
+        if shadow_mode:
+            legacy_state, legacy_selection = select_support_only_state_legacy(
                 support_features,
                 label_rows,
                 prototypes,
                 state,
+                k_shot=cfg["k_shot"],
+                logit_scale=logit_scale,
+                trust_radius=trust_radius,
                 steps=cfg["steps"],
                 step_size=float(audit["fast_step_size"]),
-                logit_scale=logit_scale,
-                lambda_grid=cfg["shadow_lambdas"],
             )
-            for strength, fixed_state in fixed.items():
-                name = f"DA1_L{int(round(strength * 1000)):04d}_REG0"
-                named_adapter_states[name] = fixed_state
-                shadow_state_specs[name] = {
-                    "selection": "fixed_support_only",
-                    "steps": cfg["steps"],
-                    "step_multiplier": 1.0,
-                    "lambda": strength,
-                }
-        else:
-            for steps in cfg["shadow_steps"]:
-                for multiplier in cfg["shadow_step_multipliers"]:
-                    fixed = fit_support_candidate_states(
-                        support_features,
-                        label_rows,
-                        prototypes,
-                        state,
-                        steps=steps,
-                        step_size=float(audit["fast_step_size"]) * multiplier,
-                        logit_scale=logit_scale,
-                        lambda_grid=cfg["shadow_lambdas"],
-                    )
-                    for strength, fixed_state in fixed.items():
-                        name = (
-                            f"DA1_J{steps:02d}_A{int(round(multiplier * 100)):03d}_"
-                            f"L{int(round(strength * 1000)):04d}_REG0"
+            if state.candidate.value == "COMMON_SHIFT_R4":
+                fixed = fit_support_candidate_states(
+                    support_features,
+                    label_rows,
+                    prototypes,
+                    state,
+                    steps=cfg["steps"],
+                    step_size=float(audit["fast_step_size"]),
+                    logit_scale=logit_scale,
+                    lambda_grid=cfg["shadow_lambdas"],
+                )
+                for strength, fixed_state in fixed.items():
+                    name = f"DA1_L{int(round(strength * 1000)):04d}_REG0"
+                    named_adapter_states[name] = fixed_state
+                    shadow_state_specs[name] = {
+                        "selection": "fixed_support_only",
+                        "steps": cfg["steps"],
+                        "step_multiplier": 1.0,
+                        "lambda": strength,
+                    }
+            else:
+                for steps in cfg["shadow_steps"]:
+                    for multiplier in cfg["shadow_step_multipliers"]:
+                        fixed = fit_support_candidate_states(
+                            support_features,
+                            label_rows,
+                            prototypes,
+                            state,
+                            steps=steps,
+                            step_size=float(audit["fast_step_size"]) * multiplier,
+                            logit_scale=logit_scale,
+                            lambda_grid=cfg["shadow_lambdas"],
                         )
-                        named_adapter_states[name] = fixed_state
-                        shadow_state_specs[name] = {
-                            "selection": "fixed_support_only",
-                            "steps": steps,
-                            "step_multiplier": multiplier,
-                            "lambda": strength,
-                        }
-        named_adapter_states["DA1_GATE_LEGACY_REG0"] = legacy_state
-        named_adapter_states["DA1_GATE_CF_REG0"] = selected_state
-    else:
-        named_adapter_states["DA1_REG0"] = selected_state
+                        for strength, fixed_state in fixed.items():
+                            name = (
+                                f"DA1_J{steps:02d}_A{int(round(multiplier * 100)):03d}_"
+                                f"L{int(round(strength * 1000)):04d}_REG0"
+                            )
+                            named_adapter_states[name] = fixed_state
+                            shadow_state_specs[name] = {
+                                "selection": "fixed_support_only",
+                                "steps": steps,
+                                "step_multiplier": multiplier,
+                                "lambda": strength,
+                            }
+            named_adapter_states["DA1_GATE_LEGACY_REG0"] = legacy_state
+            named_adapter_states["DA1_GATE_CF_REG0"] = selected_state
+        else:
+            named_adapter_states["DA1_REG0"] = selected_state
+
+        support_diagnostic_states = {
+            "DA0_REG0": replace(state, rho=0.0),
+            **named_adapter_states,
+        }
+        shadow_support_diagnostics = {
+            name: evaluate_frozen_support_state(
+                support_features,
+                label_rows,
+                prototypes,
+                adapter_state,
+                logit_scale=logit_scale,
+            )
+            for name, adapter_state in support_diagnostic_states.items()
+        }
 
     computation_accounting = _computation_accounting(
         candidate_id=cfg["candidate_id"],
@@ -379,21 +420,6 @@ def run_slow_fast_stage2_row(
         shadow_steps=tuple(cfg["shadow_steps"]) if shadow_mode else (),
         shadow_step_multipliers=tuple(cfg["shadow_step_multipliers"]) if shadow_mode else (),
     )
-
-    support_diagnostic_states = {
-        "DA0_REG0": replace(state, rho=0.0),
-        **named_adapter_states,
-    }
-    shadow_support_diagnostics = {
-        name: evaluate_frozen_support_state(
-            support_features,
-            label_rows,
-            prototypes,
-            adapter_state,
-            logit_scale=logit_scale,
-        )
-        for name, adapter_state in support_diagnostic_states.items()
-    }
 
     # Query is opened only after the support-only state is final and immutable.
     query_payload = _load_npz(cfg["query_path"], allowed=_QUERY_KEYS, label="query")
@@ -408,9 +434,12 @@ def run_slow_fast_stage2_row(
     named_predictions: dict[str, tuple[Tensor, Tensor]] = {
         "DA0_REG0": _predict(query_features, prototypes, class_ids)
     }
-    for name, adapter_state in named_adapter_states.items():
-        adapted = apply_slow_fast(query_features, adapter_state)
-        named_predictions[name] = _predict(adapted, prototypes, class_ids)
+    if da0_only_mode:
+        named_predictions["DA1_REG0"] = named_predictions["DA0_REG0"]
+    else:
+        for name, adapter_state in named_adapter_states.items():
+            adapted = apply_slow_fast(query_features, adapter_state)
+            named_predictions[name] = _predict(adapted, prototypes, class_ids)
 
     destination = Path(output_dir)
     if destination.exists() or destination.is_symlink():
@@ -425,6 +454,8 @@ def run_slow_fast_stage2_row(
     receipt_path = destination / "receipt.json"
     receipt = {
         "status": "PREDICTIONS_COMPLETE",
+        "adaptation_mode": "DA0_ONLY" if da0_only_mode else "SUPPORT_ONLY",
+        "support_adapter_opened": not da0_only_mode,
         "states": list(named_predictions),
         "candidate_id": cfg["candidate_id"],
         "bundle_id": cfg["bundle_id"],
@@ -439,7 +470,7 @@ def run_slow_fast_stage2_row(
         "seed": cfg["seed"],
         "k_shot": cfg["k_shot"],
         "steps": cfg["steps"],
-        "support_physical_sample_count": len(support_ids),
+        "support_physical_sample_count": support_sample_count,
         "query_count": int(query_iq.shape[0]),
         "support_logit_scale": logit_scale,
         "score_type": "raw_cosine",

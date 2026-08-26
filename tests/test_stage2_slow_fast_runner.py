@@ -226,6 +226,58 @@ def test_runner_closes_both_states_without_truth_or_query_updates(
             assert artifact["query_ids"].tolist() == ["q0", "q1"]
 
 
+def test_da0_only_skips_support_adaptation_and_copies_da0_prediction(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    paths = _inputs(tmp_path)
+    config = {**_config(paths), "adaptation_mode": "DA0_ONLY"}
+    monkeypatch.setattr(subject, "_load_frozen_checkpoint", lambda *args, **kwargs: _FrozenBase())
+    extract_calls: list[int] = []
+
+    def extract(_model, rows):
+        extract_calls.append(int(rows.shape[0]))
+        return rows[:, :, 0].float()
+
+    monkeypatch.setattr(subject, "_extract_features", extract)
+    loaded_labels: list[str] = []
+    real_load_npz = subject._load_npz
+
+    def load_npz(path, *, allowed, label):
+        loaded_labels.append(label)
+        if label == "support":
+            raise AssertionError("DA0_ONLY must not open support data")
+        return real_load_npz(path, allowed=allowed, label=label)
+
+    monkeypatch.setattr(subject, "_load_npz", load_npz)
+
+    def fail_selection(*args, **kwargs):
+        raise AssertionError("DA0_ONLY must not call support selection")
+
+    monkeypatch.setattr(subject, "select_support_only_state", fail_selection)
+    monkeypatch.setattr(subject, "select_support_only_state_legacy", fail_selection)
+    monkeypatch.setattr(subject, "fit_support_candidate_states", fail_selection)
+    monkeypatch.setattr(subject, "apply_slow_fast", fail_selection)
+
+    receipt = subject.run_slow_fast_stage2_row(
+        config, tmp_path / "da0-only", device="cpu"
+    )
+
+    assert loaded_labels == ["prototype", "query"]
+    assert extract_calls == [1, 1]
+    assert receipt["adaptation_mode"] == "DA0_ONLY"
+    assert receipt["support_adapter_opened"] is False
+    assert set(receipt["computation_accounting"].values()) == {0}
+    assert receipt["query_truth_opened"] is False
+    assert receipt["query_role_opened"] is False
+    assert receipt["query_state_update_count"] == 0
+    with np.load(tmp_path / "da0-only" / "predictions_DA0_REG0.npz", allow_pickle=False) as da0:
+        da0_pred = da0["predicted_class_ids"].copy()
+        da0_scores = da0["scores"].copy()
+    with np.load(tmp_path / "da0-only" / "predictions_DA1_REG0.npz", allow_pickle=False) as da1:
+        np.testing.assert_array_equal(da0_pred, da1["predicted_class_ids"])
+        np.testing.assert_array_equal(da0_scores, da1["scores"])
+
+
 def test_p05_runner_consumes_only_frozen_parameters_and_propagates_explicit_seed(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
