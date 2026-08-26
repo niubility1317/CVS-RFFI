@@ -58,6 +58,17 @@ _BUNDLE_KEYS = frozenset(
 CheckpointLoader = Callable[..., nn.Module]
 
 
+def _portable_tensor(array: np.ndarray, *, dtype: torch.dtype) -> torch.Tensor:
+    contiguous = np.ascontiguousarray(array)
+    try:
+        return torch.from_numpy(contiguous).to(dtype=dtype)
+    except TypeError:
+        # N607's deployed torch 2.1 / NumPy combination can reject a genuine
+        # numpy.ndarray at the C bridge. Support is intentionally small, so a
+        # list conversion is a bounded compatibility fallback.
+        return torch.tensor(contiguous.tolist(), dtype=dtype)
+
+
 def _default_checkpoint_loader(path: str | Path, *, device: str | torch.device) -> nn.Module:
     from .stage2_structured_late_block_runner import _load_frozen_checkpoint
 
@@ -149,8 +160,8 @@ def _load_target_support(path: str | Path) -> TargetOnlyAdaptationDataset:
             raise
         raise ValueError(f"cannot load target support NPZ: {source}") from exc
     return TargetOnlyAdaptationDataset(
-        received_iq=torch.from_numpy(np.ascontiguousarray(iq_array, dtype=np.float32)),
-        labels=torch.from_numpy(np.ascontiguousarray(labels_array, dtype=np.int64)),
+        received_iq=_portable_tensor(iq_array.astype(np.float32, copy=False), dtype=torch.float32),
+        labels=_portable_tensor(labels_array.astype(np.int64, copy=False), dtype=torch.long),
         physical_ids=physical_ids,
         groups=groups,
         physical_id_origin=physical_id_origin,

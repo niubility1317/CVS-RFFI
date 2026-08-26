@@ -8,6 +8,8 @@ import numpy as np
 import pytest
 import torch
 
+import cvsrffi.target_only_progressive_runner as runner_module
+
 from cvsrffi.target_only_progressive_runner import (
     load_sf_tapft_bundle_strict,
     run_sf_tapft_no_query,
@@ -124,7 +126,9 @@ def test_runner_rejects_formal_permission_and_unknown_config_fields(tmp_path: Pa
         )
 
 
-def test_runner_accepts_validated_support_without_embedded_physical_ids(tmp_path: Path) -> None:
+def test_runner_accepts_validated_support_without_embedded_physical_ids(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     support = tmp_path / "support-minimal.npz"
     np.savez(
         support,
@@ -151,6 +155,11 @@ def test_runner_accepts_validated_support_without_embedded_physical_ids(tmp_path
             "adapter_rank": 2,
         },
     }
+    monkeypatch.setattr(
+        runner_module.torch,
+        "from_numpy",
+        lambda _array: (_ for _ in ()).throw(TypeError("simulated NumPy bridge mismatch")),
+    )
     receipt = run_sf_tapft_no_query(
         config,
         tmp_path / "output-minimal",
