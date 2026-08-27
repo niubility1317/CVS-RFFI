@@ -11,7 +11,7 @@
 3. `completed`：冻结F1–F3与S16-A/B首发矩阵；F0复用历史S15，F4/Q1/Q3按前置证据保持deferred。
 4. `completed`：聚焦测试、编译/CLI回读、一次独立P0/P1审查及定点复核；真实checkpoint no-query smoke作为远端launcher第一步。
 5. `completed`：提交并推送，建立最小预登记，执行N607 preflight、发布、远端编译、真实checkpoint smoke和启动回读。
-6. `in_progress`：F1/F2/F3已闭合并完成部分分析；保持Q2A/Q2B监控至artifact闭合后更新全矩阵结论。
+6. `completed`：5/5行selection、clean-single bundle、GNU time与support OOF分析闭合；Q2A/Q2B通过门槛，F1–F3淘汰。
 
 ## 错误记录
 

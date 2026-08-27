@@ -13,3 +13,5 @@
 - 2026-08-27：N607 preflight确认8卡空闲；release归档SHA本地/远端一致，远端编译和真实checkpoint无query smoke通过。
 - 2026-08-27：5行已发布；launch末尾CR错误经只读PID/CWD/cmdline/GPU对账确认主体已完整landed，未重复启动。
 - 2026-08-27：F1/F2/F3在40–50秒内闭合，但BA、最低fold BA和NLL均未过门；Q2A/Q2B继续运行。
+- 2026-08-27：Q2A/Q2B分别在16:16.49和15:15.60闭合，stderr为0、exit 0、strict bundle审计通过；两行均通过support OOF门槛。
+- 2026-08-27：全矩阵结论为Q2A参数最小合格、Q2B校准最优，但既有S02仍是参数/BA Pareto点；下一步维持S02新独立query闭合。

@@ -3,7 +3,7 @@
 ## 当前结论与状态
 
 - run ID：`stage2_sf_tapft_s15plus5_rx20_1_s392002_20260827_r1`。
-- 当前状态：`RUNNING/PARTIAL_ARTIFACTS`；F1/F2/F3已闭合，Q2A/Q2B仍在运行，尚未把部分结果等同于全矩阵科学完成。
+- 当前状态：`ANALYZED_SUPPORT_OOF`；5/5行selection与clean-single bundle闭合，未读取独立query或query truth。
 - 实现提交：`2eb30bdaa8ebdc4eff0bfbc10f395b9d1568bd4a`。
 - 协议：`p2_min_v1`、`VALIDATED_ONCE`、K=10×6=60条support；适配、选择和bundle构建不读取query、query truth、clean/source样本。
 - Phase1基础：ADV3B02 CORE90 checkpoint及其既有Phase1 bundle。
@@ -98,3 +98,44 @@ F4暂缓：必须先取得严格绑定的长M02 cross-fitted teacher logits，�
 - F3的OOF pooled温度拟合NLL从0.512131降至0.512044，但按fold等权聚合NLL为0.529651；两者加权口径不同，不应拼接。F3的60步head缓存使最终full-support仅执行40次backbone训练forward。
 - F1–F3训练期snapshot均为6,336B，可训练/实际变化元素均为1,584；clean-single bundle仍约4.29MB，因为部署delta-only FP16属于尚未完成的独立瘦身项。
 - 相对历史F0/S15的39分17.91秒，F1、F2、F3墙钟分别缩短约97.92%、97.87%、98.30%，但三者均未满足科学门槛，不能晋级。
+## 全矩阵闭合与最终support OOF结论（2026-08-27 18:53 CST）
+
+Q2A/Q2B均已生成`selection.json`、strict clean-single bundle和GNU time，stderr为0B、exit status=0、GPU进程已退出。两个bundle均完成本地`torch.load(weights_only=True)`审计：schema、60条support、Norm规则、选中步数、query/source/target_eval关闭和`nonpermitted_changed_names=[]`全部一致。
+
+### Q2长程结构结果
+
+|row|结构|BA|最低fold BA|最低类别召回|NLL|ECE|full-support步数|可训练/变化元素|backbone训练forward|snapshot|wall-clock|最大RSS|bundle|采样显存|门槛|
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+|Q2A|t3 weight+bias+t2 weight|87.5000%|77.7778%|50.0000%|0.440073|0.184047|503|1248/1248|503|4,992B|16:16.49|1,820,864KiB|4,291,806B|≥668MiB|PASS|
+|Q2B|t3 weight+bias+t2/t1/time_fuse weight|87.5000%|77.7778%|50.0000%|0.420259|0.175369|231|1368/1368|231|5,472B|15:15.60|1,823,176KiB|4,292,254B|≥670MiB|PASS|
+
+“采样显存”来自启动后一次GPU采样，不是连续采样峰值；NVIDIA accounting未返回历史max，因此不能把该值声称为完整运行峰值。
+
+相对S00：
+
+- Q2A：BA+1.3889pp、最低fold BA持平、NLL+0.003358，可训练元素减少336（21.21%）。
+- Q2B：BA+1.3889pp、最低fold BA持平、NLL-0.016456，可训练元素减少216（13.64%）。
+- Q2A/Q2B墙钟相对S00的3:46:23分别缩短约92.81%和93.26%。该收益来自向量化LOO、取消每步全模型CPU距离、许可参数距离和紧凑snapshot共同作用，不能归因于单一优化。
+- 两行都满足BA≥85.6111%、最低fold BA≥77.7778%、NLL≤0.466715。按“满足门槛的最小候选”规则，当前矩阵选择Q2A；按NLL/ECE和更少选中步数，Q2B是校准优先工作点。
+
+### per-class NLL诊断
+
+下表是4折内各类别NLL均值再做fold等权平均，类别顺序0–5；它不是样本数加权的pooled NLL。
+
+|row|c0|c1|c2|c3|c4|c5|
+|---|---:|---:|---:|---:|---:|---:|
+|F1|0.609635|0.477730|0.043834|1.066165|0.206824|0.765887|
+|F2|0.620776|0.487975|0.059191|1.040366|0.215461|0.731525|
+|F3|0.947466|0.438040|0.042919|0.725999|0.184108|0.737495|
+|Q2A|0.450965|0.510991|0.043757|0.800885|0.086046|0.675757|
+|Q2B|0.545463|0.337898|0.042400|0.771942|0.095293|0.637930|
+
+短程失败主要集中在c0、c3、c5；Q2B显著修复c1/c3/c5，但c0略差于Q2A。c2在全部候选都非常低，说明总体NLL并非由所有类别均匀贡献。
+
+### 全路线决策
+
+1. F1–F3均淘汰。不到1分钟的墙钟是有效工程结果，但当前稀疏选择工作点无法维持BA、最低fold BA和NLL，不能建立S15-FAST默认档。
+2. Q2A/Q2B均通过support OOF门槛。Q2A是本轮最小合格结构，Q2B是本轮NLL/ECE最优结构。
+3. 与既有S02比较，S02仍是参数/BA Pareto点：1152元素、BA=89.5833%、最低fold BA=77.7778%、NLL=0.424413。Q2A被S02在参数、BA和NLL上支配；Q2B仅在NLL上优于S02约0.004154，但多216元素且BA低2.0833pp。
+4. 因此不改变既定优先级：下一科学动作仍是S02的新独立query闭合。Q2B保留为校准优先备选，不因support OOF结果直接提升为默认。
+5. 本run从实现、发布到5/5 support selection和clean-single bundle已达到`ANALYZED_SUPPORT_OOF`；没有读取query或query truth，不能宣称独立query或最终部署晋级完成。

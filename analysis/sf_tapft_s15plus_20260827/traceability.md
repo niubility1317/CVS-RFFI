@@ -18,8 +18,8 @@
 |S15P-14|十二|S02冻结前缀缓存|模型、测试|deferred|logit差<1e-5|Q1通过后实现|
 |S15P-15|十四|delta-only FP16 bundle及严格loader|bundle、runner、测试|pending|重建logit差<1e-5|先FP16 delta-only|
 |S15P-16|九|类别可靠性head anchor|adapt、配置|deferred|单独变量实验|不与首轮混合|
-|S15P-17|十五|保留M02-HP与S15-FAST档位|配置、报告|pending|配置严格回读|部署命名|
-|S15P-18|十八|报告研究/部署时间、forward、validation、bytes、RAM/VRAM、延迟|runner、报告|partial|artifact字段完整|代码已输出forward/validation/snapshot/参数元素；wall/RSS/VRAM由发布wrapper采集|
+|S15P-17|十五|保留M02-HP与S15-FAST档位|配置、报告|evaluated_no_promotion|配置严格回读|F1–F3快速档性能未过门，不提升默认|
+|S15P-18|十八|报告研究/部署时间、forward、validation、bytes、RAM/VRAM、延迟|runner、报告|support_closed|artifact字段完整|wall/RSS/启动采样显存已闭合；独立query推理延迟尚未测|
 |S15P-19|十九P2|跨seed/scene/receiver/K确认|后续矩阵|deferred|独立确认|不阻塞首轮|
 
 ## 首轮实验冻结原则
