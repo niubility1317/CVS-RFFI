@@ -33,10 +33,10 @@ def _integer_tuple(payload: Mapping[str, object], key: str) -> tuple[int, ...]:
     value = payload.get(key)
     if isinstance(value, (str, bytes)) or not isinstance(value, Sequence):
         raise ValueError(f"{key} must be a sequence")
-    try:
-        return tuple(int(item) for item in value)
-    except (TypeError, ValueError):
-        raise ValueError(f"{key} must contain integers") from None
+    items = tuple(value)
+    if any(type(item) is not int for item in items):
+        raise ValueError(f"{key} must contain exact integers")
+    return items
 
 
 def _has_duplicates(values: Sequence[str]) -> bool:
@@ -118,10 +118,10 @@ class CanonicalProfile:
         k_values = _integer_tuple(payload, "k_values")
         if k_values != K_VALUES:
             raise ValueError(f"k_values must be {K_VALUES!r}")
-        try:
-            k_max = int(payload.get("k_max"))
-        except (TypeError, ValueError):
-            raise ValueError("k_max must be 20") from None
+        k_max_value = payload.get("k_max")
+        if type(k_max_value) is not int:
+            raise ValueError("k_max must contain exact integers")
+        k_max = k_max_value
         if k_max != 20:
             raise ValueError("k_max must be 20")
 
@@ -220,7 +220,7 @@ def rank_new_classes(
     non_single_day_receivers = target_set.difference(profile.receiver_tiers["single_day"])
 
     valid_rows: dict[str, list[tuple[str, str, str]]] = defaultdict(list)
-    relevant_receiver_days: dict[str, set[tuple[str, str]]] = defaultdict(set)
+    required_receiver_days: set[tuple[str, str]] = set()
     for sample_id, tx_id, rx_id, day_id in connection.execute(
         """
         SELECT physical_sample_id, tx_id, rx_id, day_id
@@ -231,9 +231,11 @@ def rank_new_classes(
         tx_label = str(tx_id)
         rx_label = str(rx_id)
         day_label = str(day_id)
-        if tx_label not in candidate_set or rx_label not in target_set:
+        if rx_label not in target_set:
             continue
-        relevant_receiver_days[tx_label].add((rx_label, day_label))
+        required_receiver_days.add((rx_label, day_label))
+        if tx_label not in candidate_set:
+            continue
         scene = scenario_by_sample.get(str(sample_id))
         if scene in FORMAL_LEO_WEAK_SCENARIOS:
             valid_rows[tx_label].append((rx_label, day_label, scene))
@@ -258,7 +260,7 @@ def rank_new_classes(
         cell_counts = Counter(rows)
         required_cells = (
             (rx_id, day_id, scene)
-            for rx_id, day_id in sorted(relevant_receiver_days[tx_id])
+            for rx_id, day_id in sorted(required_receiver_days)
             for scene in FORMAL_LEO_WEAK_SCENARIOS
         )
         min_receiver_day_scene_count = min(

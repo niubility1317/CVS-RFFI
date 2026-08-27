@@ -297,6 +297,63 @@ def test_new_class_ranking_uses_tx_lexical_tie_break():
     assert ranked[20][:2] == ("tx-a", "tx-b")
 
 
+def test_new_class_ranking_counts_missing_cells_in_fixed_target_universe_as_zero():
+    split = _split_module()
+    payload = _profile_payload(simple_ids=True)
+    payload["new_tx_candidates"][:2] = ["tx-narrow", "tx-broad"]
+    profile = split.CanonicalProfile.from_mapping(payload)
+    connection = _connection()
+    scenario_by_sample = {}
+    for scenario in FORMAL_SCENARIOS:
+        for index in range(2):
+            _add_record(
+                connection,
+                scenario_by_sample,
+                sample_id=f"tx-narrow-rx-a-{scenario}-{index}",
+                tx_id="tx-narrow",
+                rx_id="rx-a",
+                day_id="day-1",
+                scenario=scenario,
+            )
+        for rx_id in ("rx-a", "rx-b"):
+            _add_record(
+                connection,
+                scenario_by_sample,
+                sample_id=f"tx-broad-{rx_id}-{scenario}",
+                tx_id="tx-broad",
+                rx_id=rx_id,
+                day_id="day-1",
+                scenario=scenario,
+            )
+
+    ranked = split.rank_new_classes(connection, profile, scenario_by_sample)
+
+    assert ranked[20].index("tx-broad") < ranked[20].index("tx-narrow")
+
+
+@pytest.mark.parametrize(
+    ("field", "invalid_value"),
+    [
+        ("new_class_sizes", [5, 10, 20.5]),
+        ("new_class_sizes", [5, "10", 20]),
+        ("new_class_sizes", [False, 10, 20]),
+        ("k_values", [1, 5, 10, 20.0]),
+        ("k_values", [1, "5", 10, 20]),
+        ("k_values", [True, 5, 10, 20]),
+        ("k_max", 20.0),
+        ("k_max", "20"),
+        ("k_max", True),
+    ],
+)
+def test_profile_rejects_non_exact_integer_json_values(field, invalid_value):
+    split = _split_module()
+    payload = _profile_payload()
+    payload[field] = invalid_value
+
+    with pytest.raises(ValueError, match="exact integers"):
+        split.CanonicalProfile.from_mapping(payload)
+
+
 def test_ineligible_and_missing_or_unknown_scene_records_do_not_count():
     split = _split_module()
     payload = _profile_payload(simple_ids=True)
