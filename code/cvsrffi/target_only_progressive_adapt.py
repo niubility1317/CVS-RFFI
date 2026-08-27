@@ -145,6 +145,9 @@ class SFTAPFTConfig:
     class_adaptive_rho_max: float = 0.75
     class_adaptive_rho_temperature: float = 0.10
     head_anchor_weight: float = 0.0
+    hard_pair_weight: float = 0.0
+    hard_pair_margin: float = 0.2
+    prefix_cache_dtype: str = "off"
     gradient_clip_norm: float = 1.0
     checkpoint_average_top_k: int = 3
     mixed_precision: bool = True
@@ -258,6 +261,8 @@ class SFTAPFTConfig:
             "weight_decay",
             "trainable_delta_ema_decay",
             "head_anchor_weight",
+            "hard_pair_weight",
+            "hard_pair_margin",
         )
         for name in nonnegative:
             value = float(getattr(self, name))
@@ -271,6 +276,8 @@ class SFTAPFTConfig:
             raise ValueError("oof_temperature_calibration must be a boolean")
         if not isinstance(self.use_class_adaptive_rho, bool):
             raise ValueError("use_class_adaptive_rho must be a boolean")
+        if self.prefix_cache_dtype not in {"off", "float32", "float16"}:
+            raise ValueError("prefix_cache_dtype must be off, float32 or float16")
         if not 0.0 <= float(self.trainable_delta_ema_decay) < 1.0:
             raise ValueError("trainable_delta_ema_decay must be in [0, 1)")
         if not 0.0 <= float(self.class_adaptive_rho_min) <= float(self.class_adaptive_rho_max) <= 1.0:
@@ -883,6 +890,11 @@ class SFTAPFTAudit:
     trainable_delta_ema_decay: float
     class_adaptive_rho: tuple[float, ...]
     class_reliability: tuple[float, ...]
+    prefix_cache_dtype: str
+    prefix_cache_build_forward_steps: int
+    cached_suffix_forward_steps: int
+    hard_pair_weight: float
+    hard_pair_margin: float
 
 
 @dataclass(frozen=True)
@@ -944,6 +956,180 @@ def _forward_aux(model: nn.Module, values: Tensor) -> Mapping[str, Any]:
     if not isinstance(outputs, Mapping):
         raise ValueError("SF-TAPFT model must return an auxiliary mapping")
     return outputs
+
+
+@dataclass(frozen=True)
+class H6PrefixCache:
+    """Frozen inputs needed to replay only the trainable H6 suffix."""
+
+    pre_t3_norm: Tensor
+    frozen_fuse_tail: Tensor
+    cls_head_kwargs: Mapping[str, Tensor]
+    storage_dtype: torch.dtype
+    batch_size: int
+
+
+def _capture_h6_prefix_cache(
+    model: nn.Module,
+    values: Tensor,
+    *,
+    storage_dtype: torch.dtype,
+) -> tuple[H6PrefixCache, Mapping[str, Any]]:
+    if storage_dtype not in {torch.float16, torch.float32}:
+        raise ValueError("H6 prefix cache storage dtype must be float16 or float32")
+    backbone, _ = _identity_backbone(model)
+    required = (
+        "t3",
+        "t_pool",
+        "t_proj",
+        "meta_adapter_time",
+        "fuse",
+        "meta_adapter_fusion",
+        "cls_head",
+        "emb_dim",
+    )
+    if any(not hasattr(backbone, name) for name in required):
+        raise ValueError("model does not expose the H6 cached-suffix interface")
+    t3 = getattr(backbone, "t3")
+    if not all(hasattr(t3, name) for name in ("norm", "act", "pool", "drop")):
+        raise ValueError("model t3 does not expose the H6 cached-suffix interface")
+
+    captured: dict[str, Any] = {}
+
+    def capture_norm(_module: nn.Module, args: tuple[Any, ...]) -> None:
+        if not args or not torch.is_tensor(args[0]):
+            raise ValueError("t3.norm did not receive a tensor")
+        captured["pre_t3_norm"] = args[0].detach().to(dtype=storage_dtype).clone()
+
+    def capture_fuse(_module: nn.Module, args: tuple[Any, ...]) -> None:
+        if not args or not torch.is_tensor(args[0]):
+            raise ValueError("identity fuse did not receive a tensor")
+        captured["fuse_input"] = args[0].detach().to(dtype=storage_dtype).clone()
+
+    def capture_head(
+        _module: nn.Module,
+        args: tuple[Any, ...],
+        kwargs: Mapping[str, Any],
+    ) -> None:
+        del args
+        names = ("dac_local", "pa_local", "dac_delta", "pa_delta")
+        if any(not torch.is_tensor(kwargs.get(name)) for name in names):
+            raise ValueError("identity head did not expose frozen auxiliary tensors")
+        captured["cls_head_kwargs"] = {
+            name: kwargs[name].detach().to(dtype=storage_dtype).clone() for name in names
+        }
+
+    handles = [
+        t3.norm.register_forward_pre_hook(capture_norm),
+        backbone.fuse.register_forward_pre_hook(capture_fuse),
+        backbone.cls_head.register_forward_pre_hook(capture_head, with_kwargs=True),
+    ]
+    try:
+        with torch.no_grad():
+            outputs = _forward_aux(model, values)
+    finally:
+        for handle in handles:
+            handle.remove()
+    required_captures = {"pre_t3_norm", "fuse_input", "cls_head_kwargs"}
+    if set(captured) != required_captures:
+        raise ValueError("model forward did not close the H6 prefix cache")
+    fuse_input = captured["fuse_input"]
+    emb_dim = int(backbone.emb_dim)
+    if fuse_input.ndim != 2 or emb_dim <= 0 or fuse_input.size(1) < emb_dim:
+        raise ValueError("identity fuse input is incompatible with H6 prefix caching")
+    cache = H6PrefixCache(
+        pre_t3_norm=captured["pre_t3_norm"],
+        frozen_fuse_tail=fuse_input[:, emb_dim:].clone(),
+        cls_head_kwargs=MappingProxyType(captured["cls_head_kwargs"]),
+        storage_dtype=storage_dtype,
+        batch_size=int(values.size(0)),
+    )
+    return cache, outputs
+
+
+def build_h6_prefix_cache(
+    model: nn.Module,
+    values: Tensor,
+    *,
+    storage_dtype: torch.dtype = torch.float32,
+) -> H6PrefixCache:
+    """Run the frozen graph once and retain only the H6 suffix inputs."""
+
+    cache, _ = _capture_h6_prefix_cache(model, values, storage_dtype=storage_dtype)
+    return cache
+
+
+def forward_h6_prefix_cache(model: nn.Module, cache: H6PrefixCache) -> Tensor:
+    """Replay t3.norm and the frozen identity suffix with gradients intact."""
+
+    if not isinstance(cache, H6PrefixCache):
+        raise TypeError("cache must be H6PrefixCache")
+    backbone, _ = _identity_backbone(model)
+    t3 = backbone.t3
+    reference = next(t3.norm.parameters())
+
+    def materialize(value: Tensor) -> Tensor:
+        return value.to(device=reference.device, dtype=reference.dtype)
+
+    t = t3.norm(materialize(cache.pre_t3_norm))
+    t = t3.act(t)
+    t = t3.pool(t)
+    t = t3.drop(t)
+    t_emb = backbone.meta_adapter_time(backbone.t_proj(backbone.t_pool(t).squeeze(-1)))
+    tail = materialize(cache.frozen_fuse_tail)
+    base_input = torch.cat([t_emb, tail], dim=1) if tail.size(1) else t_emb
+    base = backbone.meta_adapter_fusion(backbone.fuse(base_input))
+    kwargs = {name: materialize(value) for name, value in cache.cls_head_kwargs.items()}
+    output = backbone.cls_head(base, labels=None, return_emb=True, **kwargs)
+    if isinstance(output, Mapping):
+        embedding = output.get("feat_joint")
+    elif isinstance(output, (tuple, list)) and output:
+        embedding = output[-1]
+    else:
+        embedding = None
+    if not torch.is_tensor(embedding) or embedding.ndim != 2:
+        raise ValueError("identity head cached suffix did not expose feat_joint")
+    if int(embedding.size(0)) != cache.batch_size:
+        raise ValueError("H6 cached suffix batch size drifted")
+    return embedding
+
+
+def support_hard_pair_loss(
+    logits: Tensor,
+    labels: Tensor,
+    *,
+    class_count: int,
+    margin: float,
+) -> Tensor:
+    """Class-permutation-invariant hardest-pair hinge derived from support only."""
+
+    if (
+        logits.ndim != 2
+        or labels.ndim != 1
+        or logits.size(0) != labels.numel()
+        or int(class_count) != int(logits.size(1))
+        or int(class_count) < 2
+    ):
+        raise ValueError("hard-pair logits, labels and class_count are incompatible")
+    if not math.isfinite(float(margin)) or float(margin) < 0.0:
+        raise ValueError("hard-pair margin must be finite and non-negative")
+    rows = []
+    for class_index in range(int(class_count)):
+        mask = labels == class_index
+        if not bool(mask.any()):
+            raise ValueError("hard-pair loss requires every registered class in support")
+        class_logits = logits[mask]
+        competing_mean = class_logits.mean(dim=0).clone()
+        competing_mean[class_index] = -torch.inf
+        hardest = int(competing_mean.argmax().item())
+        rows.append(
+            F.relu(
+                float(margin)
+                + class_logits[:, hardest]
+                - class_logits[:, class_index]
+            ).mean()
+        )
+    return torch.stack(rows).mean()
 
 
 def _extract_joint_embedding(outputs: Mapping[str, Any], batch_size: int) -> Tensor:
@@ -1206,8 +1392,36 @@ def fit_sf_tapft(
     target_x = target_train.received_iq.to(device=device, dtype=dtype)
     target_labels = target_train.labels.to(device=device, dtype=torch.long)
 
+    prefix_cache: H6PrefixCache | None = None
+    prefix_cache_build_forward_steps = 0
+    if config.prefix_cache_dtype != "off":
+        normalized_rules = (
+            config.norm_rules
+            if config.norm_rules
+            else tuple(
+                (scope, config.norm_affine) for scope in _NORM_SCOPES[config.norm_scope]
+            )
+        )
+        if (
+            config.trainability_profile != "p1_head_norm"
+            or normalized_rules != (("t3", "weight_bias"),)
+        ):
+            raise ValueError(
+                "H6 prefix caching requires p1_head_norm with only t3 weight_bias"
+            )
+        storage_dtype = (
+            torch.float16 if config.prefix_cache_dtype == "float16" else torch.float32
+        )
+        prefix_cache, initial_outputs = _capture_h6_prefix_cache(
+            student,
+            target_x,
+            storage_dtype=storage_dtype,
+        )
+        prefix_cache_build_forward_steps = 1
+    else:
+        with torch.no_grad():
+            initial_outputs = _forward_aux(student, target_x)
     with torch.no_grad():
-        initial_outputs = _forward_aux(student, target_x)
         initial_embeddings = _extract_joint_embedding(
             initial_outputs, int(target_x.size(0))
         )
@@ -1349,6 +1563,7 @@ def fit_sf_tapft(
     )
     cached_head_embeddings: Tensor | None = None
     cached_head_forward_steps = 0
+    cached_suffix_forward_steps = 0
 
     for step in range(total_steps):
         phase = _phase_for_step(step, config.phase_steps)
@@ -1361,8 +1576,12 @@ def fit_sf_tapft(
                     parameter.requires_grad_(False)
                 if polishing and cached_head_embeddings is None:
                     with torch.no_grad():
-                        cached_head_embeddings = _extract_joint_embedding(
-                            _forward_aux(student, target_x), int(target_x.size(0))
+                        cached_head_embeddings = (
+                            forward_h6_prefix_cache(student, prefix_cache)
+                            if prefix_cache is not None
+                            else _extract_joint_embedding(
+                                _forward_aux(student, target_x), int(target_x.size(0))
+                            )
                         ).detach()
                     cached_head_forward_steps += 1
             else:
@@ -1389,8 +1608,12 @@ def fit_sf_tapft(
                     else initial_embeddings.detach()
                 )
             else:
-                outputs = _forward_aux(student, target_x)
-                embeddings = _extract_joint_embedding(outputs, int(target_x.size(0)))
+                if prefix_cache is not None:
+                    embeddings = forward_h6_prefix_cache(student, prefix_cache)
+                    cached_suffix_forward_steps += 1
+                else:
+                    outputs = _forward_aux(student, target_x)
+                    embeddings = _extract_joint_embedding(outputs, int(target_x.size(0)))
             logits = head(embeddings)
             ce = F.cross_entropy(
                 logits,
@@ -1406,6 +1629,16 @@ def fit_sf_tapft(
                 scale=config.prototype_scale,
             )
             proto = F.cross_entropy(proto_logits, local_labels, weight=class_weights)
+            hard_pair = (
+                support_hard_pair_loss(
+                    logits,
+                    local_labels,
+                    class_count=len(head.class_ids),
+                    margin=config.hard_pair_margin,
+                )
+                if config.hard_pair_weight > 0.0
+                else logits.new_zeros(())
+            )
             anchor = (
                 l2sp(student.named_parameters()) if l2sp is not None else logits.new_zeros(())
             )
@@ -1440,6 +1673,7 @@ def fit_sf_tapft(
                 + float(config.lambda_l2sp) * anchor
                 + float(config.selective_kd_weight) * kd
                 + float(config.head_anchor_weight) * head_anchor
+                + float(config.hard_pair_weight) * hard_pair
             )
         if not bool(torch.isfinite(loss)):
             raise RuntimeError("SF-TAPFT loss became non-finite")
@@ -1640,7 +1874,11 @@ def fit_sf_tapft(
         stage_validation_rows=stage_validation_rows,
         head_prefit_steps=config.head_prefit_steps,
         backbone_optimizer_steps=total_steps - config.head_prefit_steps - config.head_polish_steps,
-        backbone_train_forward_steps=total_steps - config.head_prefit_steps - config.head_polish_steps,
+        backbone_train_forward_steps=(
+            0
+            if prefix_cache is not None
+            else total_steps - config.head_prefit_steps - config.head_polish_steps
+        ),
         validation_forward_steps=tuple(validation_forward_steps),
         snapshot_tensor_bytes=sum(
             int(value.numel() * value.element_size()) for value in compact_anchor_state.values()
@@ -1659,6 +1897,11 @@ def fit_sf_tapft(
         class_reliability=tuple(
             float(value) for value in reliability_values.detach().cpu()
         ),
+        prefix_cache_dtype=config.prefix_cache_dtype,
+        prefix_cache_build_forward_steps=prefix_cache_build_forward_steps,
+        cached_suffix_forward_steps=cached_suffix_forward_steps,
+        hard_pair_weight=float(config.hard_pair_weight),
+        hard_pair_margin=float(config.hard_pair_margin),
     )
     return SFTAPFTResult(model=student, head=head, audit=audit)
 

@@ -1,0 +1,214 @@
+from __future__ import annotations
+
+import copy
+
+import pytest
+import torch
+from torch import nn
+
+from cvsrffi.target_only_progressive_adapt import (
+    SFTAPFTConfig,
+    TargetOnlyAdaptationDataset,
+    TargetPrototypeHead,
+    build_h6_prefix_cache,
+    fit_sf_tapft,
+    forward_h6_prefix_cache,
+    support_hard_pair_loss,
+)
+
+
+class _T3(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.dw = nn.Conv1d(4, 4, 3, padding=1, groups=4, bias=False)
+        self.pw = nn.Conv1d(4, 4, 1, bias=False)
+        self.norm = nn.GroupNorm(2, 4)
+        self.act = nn.ReLU()
+        self.pool = nn.Identity()
+        self.drop = nn.Identity()
+
+    def forward(self, value: torch.Tensor) -> torch.Tensor:
+        return self.drop(self.pool(self.act(self.norm(self.pw(self.dw(value))))))
+
+
+class _SourceHead(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.head = nn.Linear(4, 3, bias=False)
+
+    def forward(
+        self,
+        base: torch.Tensor,
+        *,
+        dac_local: torch.Tensor,
+        pa_local: torch.Tensor,
+        labels=None,
+        return_emb: bool = False,
+        dac_delta: torch.Tensor,
+        pa_delta: torch.Tensor,
+    ):
+        del labels
+        feat_joint = base + 0.03 * dac_local + 0.02 * pa_local + dac_delta + pa_delta
+        logits = self.head(feat_joint)
+        zero = torch.zeros_like(feat_joint)
+        if not return_emb:
+            return logits, zero[:, 0]
+        return logits, zero, zero, zero, zero, zero, zero, feat_joint
+
+
+class _CacheableBackbone(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.emb_dim = 4
+        self.meta_adapter_time = nn.Identity()
+        self.t3 = _T3()
+        self.t_pool = nn.AdaptiveAvgPool1d(1)
+        self.t_proj = nn.Linear(4, 4)
+        self.fuse = nn.Linear(8, 4)
+        self.meta_adapter_fusion = nn.Identity()
+        self.cls_head = _SourceHead()
+        self.frozen_other = nn.Linear(4, 4)
+        self.frozen_aux = nn.Linear(4, 4)
+
+    def forward(self, x: torch.Tensor, y=None, return_aux: bool = False):
+        del y
+        t = self.t3(x)
+        t_emb = self.meta_adapter_time(self.t_proj(self.t_pool(t).squeeze(-1)))
+        pooled = x.mean(dim=-1)
+        other = self.frozen_other(pooled)
+        base = self.meta_adapter_fusion(self.fuse(torch.cat([t_emb, other], dim=1)))
+        aux = self.frozen_aux(pooled)
+        output = self.cls_head(
+            base,
+            dac_local=aux,
+            pa_local=0.5 * aux,
+            labels=None,
+            return_emb=True,
+            dac_delta=0.01 * aux,
+            pa_delta=0.02 * aux,
+        )
+        if return_aux:
+            return {"feat_joint": output[-1], "logits": output[0]}
+        return output[0]
+
+
+def _dataset() -> TargetOnlyAdaptationDataset:
+    torch.manual_seed(13)
+    rows = torch.randn(6, 4, 5)
+    rows[:2, 0] += 2.0
+    rows[2:4, 1] += 2.0
+    rows[4:, 2] += 2.0
+    return TargetOnlyAdaptationDataset(
+        received_iq=rows,
+        labels=torch.tensor([0, 0, 1, 1, 2, 2]),
+        physical_ids=tuple(f"p{index}" for index in range(6)),
+        groups=tuple(f"g{index}" for index in range(6)),
+    )
+
+
+def test_support_hard_pair_loss_is_class_permutation_invariant() -> None:
+    logits = torch.tensor(
+        [
+            [2.0, 1.7, -0.5],
+            [1.6, 1.8, -0.2],
+            [1.4, 2.1, 0.3],
+            [1.7, 2.2, 0.1],
+            [-0.2, 0.9, 1.8],
+            [0.0, 1.1, 2.0],
+        ],
+        requires_grad=True,
+    )
+    labels = torch.tensor([0, 0, 1, 1, 2, 2])
+    original = support_hard_pair_loss(logits, labels, class_count=3, margin=0.2)
+    permutation = torch.tensor([2, 0, 1])
+    inverse = torch.empty_like(permutation)
+    inverse[permutation] = torch.arange(3)
+    permuted = support_hard_pair_loss(
+        logits[:, permutation],
+        inverse[labels],
+        class_count=3,
+        margin=0.2,
+    )
+    assert original.item() > 0.0
+    assert torch.allclose(original, permuted, atol=1.0e-7, rtol=0.0)
+
+
+def test_support_hard_pair_loss_rejects_missing_support_class() -> None:
+    with pytest.raises(ValueError, match="every registered class"):
+        support_hard_pair_loss(
+            torch.randn(4, 3),
+            torch.tensor([0, 0, 1, 1]),
+            class_count=3,
+            margin=0.2,
+        )
+
+
+def test_h6_prefix_cache_matches_full_logits_and_norm_gradients() -> None:
+    torch.manual_seed(7)
+    full_model = _CacheableBackbone().eval()
+    cached_model = copy.deepcopy(full_model).eval()
+    values = _dataset().received_iq
+    head = TargetPrototypeHead(torch.randn(3, 4), (0, 1, 2), scale=8.0)
+    cached_head = copy.deepcopy(head)
+
+    full_embedding = full_model(values, return_aux=True)["feat_joint"]
+    full_logits = head(full_embedding)
+    full_logits.square().mean().backward()
+    full_grad = {
+        name: parameter.grad.detach().clone()
+        for name, parameter in full_model.named_parameters()
+        if name in {"t3.norm.weight", "t3.norm.bias"}
+    }
+
+    cache = build_h6_prefix_cache(cached_model, values, storage_dtype=torch.float32)
+    cached_embedding = forward_h6_prefix_cache(cached_model, cache)
+    cached_logits = cached_head(cached_embedding)
+    cached_logits.square().mean().backward()
+    cached_grad = {
+        name: parameter.grad.detach().clone()
+        for name, parameter in cached_model.named_parameters()
+        if name in {"t3.norm.weight", "t3.norm.bias"}
+    }
+
+    assert torch.max(torch.abs(full_logits - cached_logits)).item() < 1.0e-5
+    assert set(full_grad) == set(cached_grad)
+    assert max(
+        torch.max(torch.abs(full_grad[name] - cached_grad[name])).item()
+        for name in full_grad
+    ) < 1.0e-5
+    assert torch.equal(full_logits.argmax(dim=1), cached_logits.argmax(dim=1))
+
+
+def test_fit_h6_prefix_cache_removes_backbone_training_forwards() -> None:
+    torch.manual_seed(17)
+    result = fit_sf_tapft(
+        _CacheableBackbone(),
+        _dataset(),
+        SFTAPFTConfig(
+            adapter_rank=2,
+            trainability_profile="p1_head_norm",
+            norm_rules=(("t3", "weight_bias"),),
+            phase_steps=(2, 1, 1),
+            scheduler_reference_steps=4,
+            fast_tail_start_step=2,
+            fast_tail_steps=1,
+            head_polish_steps=1,
+            prefix_cache_dtype="float32",
+            mixed_precision=False,
+            checkpoint_average_top_k=1,
+        ),
+        checkpoint_selection_mode="final_step",
+    )
+    assert result.audit.backbone_train_forward_steps == 0
+    assert result.audit.prefix_cache_build_forward_steps == 1
+    assert result.audit.cached_suffix_forward_steps == 3
+    assert result.audit.head_polish_steps == 1
+
+
+def test_hard_pair_config_is_strictly_validated() -> None:
+    with pytest.raises(ValueError, match="hard_pair_weight"):
+        SFTAPFTConfig(hard_pair_weight=-0.01)
+    with pytest.raises(ValueError, match="hard_pair_margin"):
+        SFTAPFTConfig(hard_pair_margin=-0.01)
+    with pytest.raises(ValueError, match="prefix_cache_dtype"):
+        SFTAPFTConfig(prefix_cache_dtype="bf16")

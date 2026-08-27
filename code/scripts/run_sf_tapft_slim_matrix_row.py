@@ -14,6 +14,7 @@ if str(CODE_ROOT) not in sys.path:
 
 from cvsrffi.sf_tapft_slim_matrix import build_row_config  # noqa: E402
 from cvsrffi.target_only_progressive_runner import (  # noqa: E402
+    run_sf_tapft_deploy_no_query,
     run_sf_tapft_grouped_selection,
 )
 
@@ -25,15 +26,23 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--folds", default=4, type=int)
+    parser.add_argument("--mode", choices=("grouped", "deploy"), default="grouped")
     args = parser.parse_args(argv)
     matrix = json.loads(args.matrix.read_text(encoding="utf-8-sig"))
     config, gpu = build_row_config(matrix, args.row_id)
-    receipt = run_sf_tapft_grouped_selection(
-        config,
-        args.output_dir,
-        device=args.device,
-        folds=args.folds,
-    )
+    if args.mode == "deploy":
+        receipt = run_sf_tapft_deploy_no_query(
+            config,
+            args.output_dir,
+            device=args.device,
+        )
+    else:
+        receipt = run_sf_tapft_grouped_selection(
+            config,
+            args.output_dir,
+            device=args.device,
+            folds=args.folds,
+        )
     receipt = {**receipt, "matrix_row_id": args.row_id, "assigned_gpu": gpu}
     print(json.dumps(receipt, ensure_ascii=False, sort_keys=True))
     return 0

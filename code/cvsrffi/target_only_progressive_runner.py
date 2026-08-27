@@ -218,6 +218,9 @@ def _normalize_sf_tapft_bundle_config(raw: Any) -> dict[str, Any]:
         "class_adaptive_rho_max": 0.75,
         "class_adaptive_rho_temperature": 0.10,
         "head_anchor_weight": 0.0,
+        "hard_pair_weight": 0.0,
+        "hard_pair_margin": 0.2,
+        "prefix_cache_dtype": "off",
     }
     missing = config_keys.difference(supplied)
     if missing.difference(defaults):
@@ -323,6 +326,13 @@ def _audit_payload(audit: Any) -> dict[str, Any]:
         "snapshot_tensor_bytes": int(audit.snapshot_tensor_bytes),
         "trainable_parameter_elements": int(audit.trainable_parameter_elements),
         "actual_changed_elements": int(audit.actual_changed_elements),
+        "prefix_cache_dtype": str(audit.prefix_cache_dtype),
+        "prefix_cache_build_forward_steps": int(
+            audit.prefix_cache_build_forward_steps
+        ),
+        "cached_suffix_forward_steps": int(audit.cached_suffix_forward_steps),
+        "hard_pair_weight": float(audit.hard_pair_weight),
+        "hard_pair_margin": float(audit.hard_pair_margin),
     }
 
 
@@ -548,6 +558,112 @@ def run_sf_tapft_no_query(
     return receipt
 
 
+def run_sf_tapft_deploy_no_query(
+    config: Mapping[str, Any],
+    output_dir: str | Path,
+    *,
+    device: str | torch.device,
+    checkpoint_loader: CheckpointLoader | None = None,
+) -> dict[str, Any]:
+    """Fit one frozen deployment policy on full support without research CV."""
+
+    resolved, method_config = _parse_config(config)
+    if "phase1_bundle" not in resolved:
+        raise ValueError("deployment-only SF-TAPFT requires the Phase1 bundle binding")
+    if method_config.validation_steps:
+        raise ValueError("deployment-only SF-TAPFT must not run research validation")
+    destination = Path(output_dir)
+    if destination.exists() or destination.is_symlink():
+        raise FileExistsError(f"SF-TAPFT output directory already exists: {destination}")
+    loader = checkpoint_loader or _default_checkpoint_loader
+    binding = load_sf_tapft_phase1_binding(resolved, resolved["checkpoint_path"])
+    model = loader(resolved["checkpoint_path"], device=device)
+    support = _load_target_support(resolved["support_path"])
+    _validate_support_labels_for_binding(support, binding)
+    result = fit_sf_tapft(
+        model,
+        support,
+        method_config,
+        checkpoint_selection_mode="final_step",
+    )
+    result.head.scale /= float(method_config.inference_temperature)
+    selected_phase_steps = tuple(int(value) for value in method_config.phase_steps)
+
+    destination.mkdir(parents=True, exist_ok=False)
+    bundle_path = destination / "sf_tapft_clean_single_bundle.pt"
+    bundle_payload = _clean_single_bundle_payload(
+        result,
+        resolved=resolved,
+        method_config=method_config,
+        binding=binding,
+        support=support,
+        selected_phase_steps=selected_phase_steps,
+        fold0_as_final=False,
+    )
+    with bundle_path.open("xb") as handle:
+        torch.save(bundle_payload, handle)
+    delta_path = destination / "sf_tapft_delta_bundle.pt"
+    delta_payload = _delta_bundle_payload(
+        result,
+        base_model=model,
+        resolved=resolved,
+        method_config=method_config,
+        support=support,
+    )
+    with delta_path.open("xb") as handle:
+        torch.save(delta_payload, handle)
+
+    receipt = {
+        "status": "DEPLOY_ADAPT_COMPLETE",
+        "candidate_id": resolved["candidate_id"],
+        "method": result.audit.method,
+        "permission": result.audit.permission,
+        "protocol_schema": resolved["protocol_schema"],
+        "phase2_data_status": resolved["phase2_data_status"],
+        "capsule_id": resolved["capsule_id"],
+        "split_id": resolved["split_id"],
+        "research_selection_executed": False,
+        "folds": 0,
+        "selected_phase_steps": list(selected_phase_steps),
+        "support_physical_sample_count": len(support.physical_ids),
+        "support_physical_id_origin": support.physical_id_origin,
+        "per_class_counts": _per_class_counts(
+            support, tuple(int(value) for value in result.head.class_ids)
+        ),
+        "checkpoint_selection_role": result.audit.checkpoint_selection_role,
+        "bundle_path": str(bundle_path),
+        "delta_bundle_path": str(delta_path),
+        "delta_bundle_bytes": delta_path.stat().st_size,
+        "phase1_binding": _binding_payload(binding),
+        "source_opened": False,
+        "target_eval_opened": False,
+        "query_input_capability": False,
+        "query_opened": False,
+        "query_truth_opened": False,
+        "query_role_opened": False,
+        "resource_audit": {
+            "head_prefit_steps": result.audit.head_prefit_steps,
+            "backbone_optimizer_steps": result.audit.backbone_optimizer_steps,
+            "backbone_train_forward_steps": result.audit.backbone_train_forward_steps,
+            "validation_forward_steps": list(result.audit.validation_forward_steps),
+            "snapshot_tensor_bytes": result.audit.snapshot_tensor_bytes,
+            "trainable_parameter_elements": result.audit.trainable_parameter_elements,
+            "actual_changed_elements": result.audit.actual_changed_elements,
+            "head_polish_steps": result.audit.head_polish_steps,
+            "cached_head_forward_steps": result.audit.cached_head_forward_steps,
+            "prefix_cache_dtype": result.audit.prefix_cache_dtype,
+            "prefix_cache_build_forward_steps": (
+                result.audit.prefix_cache_build_forward_steps
+            ),
+            "cached_suffix_forward_steps": result.audit.cached_suffix_forward_steps,
+            "hard_pair_weight": result.audit.hard_pair_weight,
+            "hard_pair_margin": result.audit.hard_pair_margin,
+        },
+    }
+    _write_json(destination / "selection.json", receipt)
+    return receipt
+
+
 def run_sf_tapft_grouped_selection(
     config: Mapping[str, Any],
     output_dir: str | Path,
@@ -731,6 +847,17 @@ def run_sf_tapft_grouped_selection(
                 "class_reliability": list(
                     selection.adapted_result.audit.class_reliability
                 ),
+                "prefix_cache_dtype": (
+                    selection.adapted_result.audit.prefix_cache_dtype
+                ),
+                "prefix_cache_build_forward_steps": (
+                    selection.adapted_result.audit.prefix_cache_build_forward_steps
+                ),
+                "cached_suffix_forward_steps": (
+                    selection.adapted_result.audit.cached_suffix_forward_steps
+                ),
+                "hard_pair_weight": selection.adapted_result.audit.hard_pair_weight,
+                "hard_pair_margin": selection.adapted_result.audit.hard_pair_margin,
             }
             if selection.adapted_result is not None
             else None

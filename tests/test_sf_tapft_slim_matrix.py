@@ -92,3 +92,37 @@ def test_s15plus_release_matrix_resolves_all_report_candidates() -> None:
             assert parsed.phase_steps == (300, 0, 0)
             assert parsed.scheduler_reference_steps == 300
             assert parsed.validation_steps[-1] == 300
+
+
+def test_h6_deploy_hardpair_matrix_is_fixed_full_support_only() -> None:
+    source = (
+        Path(__file__).resolve().parents[1]
+        / "configs"
+        / "stage2_sf_tapft_h6_deploy_hardpair_s392002_20260828.json"
+    )
+    matrix = validate_slim_matrix(json.loads(source.read_text(encoding="utf-8")))
+    assert [row["row_id"] for row in matrix["rows"]] == [
+        "R0A",
+        "R0B32",
+        "R0B16",
+        "R1",
+        "R2A",
+        "R2B",
+    ]
+    parsed = {}
+    for row_id in ("R0A", "R0B32", "R0B16", "R1", "R2A", "R2B"):
+        config, _ = build_row_config(matrix, row_id)
+        normalized = dict(config["sf_tapft"])
+        normalized["phase_steps"] = tuple(normalized["phase_steps"])
+        normalized["validation_steps"] = tuple(normalized["validation_steps"])
+        normalized["norm_rules"] = tuple(tuple(rule) for rule in normalized["norm_rules"])
+        parsed[row_id] = SFTAPFTConfig(**normalized)
+        assert parsed[row_id].validation_steps == ()
+        assert parsed[row_id].checkpoint_average_top_k == 1
+    assert parsed["R0A"].phase_steps == (300, 150, 70)
+    assert parsed["R0B32"].prefix_cache_dtype == "float32"
+    assert parsed["R0B16"].prefix_cache_dtype == "float16"
+    assert parsed["R1"].phase_steps == (327, 0, 0)
+    assert parsed["R1"].norm_rules == ()
+    assert parsed["R2A"].hard_pair_weight == pytest.approx(0.03)
+    assert parsed["R2B"].hard_pair_weight == pytest.approx(0.05)

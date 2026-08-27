@@ -14,6 +14,7 @@ from cvsrffi.target_only_progressive_runner import (
     SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA,
     load_sf_tapft_bundle_strict,
     load_sf_tapft_clean_single_bundle_strict,
+    run_sf_tapft_deploy_no_query,
     run_sf_tapft_grouped_selection,
     run_sf_tapft_no_query,
 )
@@ -333,6 +334,66 @@ def test_r0_grouped_selection_writes_strict_full_support_clean_single_bundle(
             checkpoint_loader=lambda _path, *, device: copy.deepcopy(_ToyModel()).to(device),
         )
 
+
+def test_deploy_runner_fits_full_support_once_without_grouped_cv(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    support = tmp_path / "support.npz"
+    _write_support(support)
+    checkpoint = tmp_path / "checkpoint.pth"
+    checkpoint.write_bytes(b"loader-owned fixture")
+    binding = _phase1_binding(handles=("tx0", "tx1"))
+    monkeypatch.setattr(
+        runner_module,
+        "load_sf_tapft_phase1_binding",
+        lambda *_args, **_kwargs: binding,
+    )
+    monkeypatch.setattr(
+        GroupedTargetCVSelector,
+        "split",
+        lambda *_args, **_kwargs: pytest.fail("deployment runner must not construct folds"),
+    )
+    config = _r0_config(checkpoint, support)
+    config["candidate_id"] = "H6_DEPLOY_TEST"
+    config["sf_tapft"].update(
+        {
+            "trainability_profile": "p1_head_norm",
+            "norm_rules": [["t3", "weight_bias"]],
+            "phase_steps": [2, 0, 0],
+            "inference_temperature": 1.7,
+            "hard_pair_weight": 0.03,
+            "hard_pair_margin": 0.2,
+        }
+    )
+    output = tmp_path / "deploy-output"
+
+    receipt = run_sf_tapft_deploy_no_query(
+        config,
+        output,
+        device="cpu",
+        checkpoint_loader=lambda _path, *, device: copy.deepcopy(_ToyModel()).to(device),
+    )
+
+    assert receipt["status"] == "DEPLOY_ADAPT_COMPLETE"
+    assert receipt["research_selection_executed"] is False
+    assert receipt["folds"] == 0
+    assert receipt["support_physical_sample_count"] == 4
+    assert receipt["query_input_capability"] is False
+    assert receipt["query_opened"] is False
+    assert receipt["resource_audit"]["hard_pair_weight"] == pytest.approx(0.03)
+    assert receipt["resource_audit"]["prefix_cache_build_forward_steps"] == 0
+    assert receipt["delta_bundle_bytes"] < 10_000
+    payload = torch.load(
+        output / "sf_tapft_clean_single_bundle.pt",
+        map_location="cpu",
+        weights_only=True,
+    )
+    assert payload["selected_phase_steps"] == [2, 0, 0]
+    assert payload["fold0_as_final"] is False
+    assert payload["config"]["validation_steps"] == ()
+    assert payload["config"]["inference_temperature"] == pytest.approx(1.7)
+    persisted = json.loads((output / "selection.json").read_text(encoding="utf-8"))
+    assert persisted == receipt
 
 def test_clean_single_loader_accepts_pre_slimming_config_defaults(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
