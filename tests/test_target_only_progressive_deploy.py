@@ -8,10 +8,15 @@ from torch import nn
 
 from cvsrffi.target_only_progressive_adapt import (
     SFTAPFTConfig,
+    H6SuffixTrainer,
     TargetOnlyAdaptationDataset,
     TargetPrototypeHead,
+    audit_h6_support_safety,
     build_h6_prefix_cache,
+    encode_h6_prefix,
     fit_sf_tapft,
+    fit_sf_tapft_inplace,
+    forward_h6_suffix,
     forward_h6_prefix_cache,
     support_hard_pair_loss,
 )
@@ -179,6 +184,35 @@ def test_h6_prefix_cache_matches_full_logits_and_norm_gradients() -> None:
     assert torch.equal(full_logits.argmax(dim=1), cached_logits.argmax(dim=1))
 
 
+def test_h6_stable_suffix_api_reports_exact_cache_bytes_and_support_safety() -> None:
+    torch.manual_seed(31)
+    model = _CacheableBackbone().eval()
+    values = _dataset().received_iq
+    labels = _dataset().labels
+    head = TargetPrototypeHead(torch.randn(3, 4), (0, 1, 2), scale=8.0)
+
+    cache = encode_h6_prefix(model, values, storage_dtype=torch.float32)
+    trainer = H6SuffixTrainer(model=model, head=head, cache=cache)
+    embedding = forward_h6_suffix(model, cache)
+    assert torch.allclose(trainer.embedding(), embedding, atol=0.0, rtol=0.0)
+    expected_bytes = sum(
+        tensor.numel() * tensor.element_size()
+        for tensor in (
+            cache.pre_t3_norm,
+            cache.frozen_fuse_tail,
+            *cache.cls_head_kwargs.values(),
+        )
+    )
+    assert cache.tensor_bytes == expected_bytes
+    assert trainer.cache_tensor_bytes == expected_bytes
+
+    safety = audit_h6_support_safety(model, head, cache, values, labels)
+    assert safety.passed is True
+    assert safety.prediction_mismatches == 0
+    assert safety.per_class_recall_mismatches == 0
+    assert safety.max_abs_logit_delta < 1.0e-5
+
+
 def test_fit_h6_prefix_cache_removes_backbone_training_forwards() -> None:
     torch.manual_seed(17)
     result = fit_sf_tapft(
@@ -203,6 +237,55 @@ def test_fit_h6_prefix_cache_removes_backbone_training_forwards() -> None:
     assert result.audit.prefix_cache_build_forward_steps == 1
     assert result.audit.cached_suffix_forward_steps == 3
     assert result.audit.head_polish_steps == 1
+
+
+def _short_h6_config() -> SFTAPFTConfig:
+    return SFTAPFTConfig(
+        adapter_rank=2,
+        trainability_profile="p1_head_norm",
+        norm_rules=(("t3", "weight_bias"),),
+        phase_steps=(2, 1, 1),
+        scheduler_reference_steps=4,
+        fast_tail_start_step=2,
+        fast_tail_steps=1,
+        head_polish_steps=1,
+        prefix_cache_dtype="float32",
+        mixed_precision=False,
+        checkpoint_average_top_k=1,
+    )
+
+
+def test_fit_h6_inplace_reuses_owned_model_and_keeps_minimal_anchors() -> None:
+    torch.manual_seed(23)
+    model = _CacheableBackbone()
+    frozen_before = model.t3.dw.weight.detach().clone()
+
+    result = fit_sf_tapft_inplace(
+        model,
+        _dataset(),
+        _short_h6_config(),
+        checkpoint_selection_mode="final_step",
+    )
+
+    assert result.model is model
+    assert set(result.base_parameter_anchors) == {
+        "model.t3.norm.bias",
+        "model.t3.norm.weight",
+        "head.weight",
+    }
+    assert torch.equal(model.t3.dw.weight, frozen_before)
+    assert result.audit.nonpermitted_changed_names == ()
+
+
+def test_fit_h6_default_still_copies_checkpoint_model() -> None:
+    model = _CacheableBackbone()
+    result = fit_sf_tapft(
+        model,
+        _dataset(),
+        _short_h6_config(),
+        checkpoint_selection_mode="final_step",
+    )
+    assert result.model is not model
 
 
 def test_hard_pair_config_is_strictly_validated() -> None:

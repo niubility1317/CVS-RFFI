@@ -1,4 +1,4 @@
-"""Truth-blind query closure for existing SF-TAPFT clean-single bundles."""
+"""Truth-blind query closure for SF-TAPFT full-state or compact-delta bundles."""
 
 from __future__ import annotations
 
@@ -22,10 +22,12 @@ from .target_only_progressive_adapt import (
     ensure_time_adapter,
 )
 from .target_only_progressive_runner import (
+    SF_TAPFT_DELTA_BUNDLE_SCHEMA,
     _default_checkpoint_loader,
     _load_target_support,
     _normalize_sf_tapft_bundle_config,
     load_sf_tapft_clean_single_bundle_strict,
+    load_sf_tapft_delta_bundle_strict,
 )
 
 
@@ -232,20 +234,36 @@ def load_clean_single_pair_strict(
     device: str | torch.device,
     expected_target_binding: Mapping[str, Any],
 ):
-    """Reconstruct candidate-specific DA0 and strictly load the persisted DA1."""
+    """Reconstruct candidate-specific DA0 and strictly load full or delta DA1."""
 
     target_device = torch.device(device)
-    da1_model, da1_head, bundle_audit = load_sf_tapft_clean_single_bundle_strict(
-        bundle_path,
-        device=target_device,
-        expected_target_binding=expected_target_binding,
-    )
     try:
         payload = torch.load(Path(bundle_path), map_location="cpu", weights_only=True)
-        normalized = _normalize_sf_tapft_bundle_config(payload["config"])
-        normalized["validation_steps"] = ()
-        config = SFTAPFTConfig(**normalized)
-        base_checkpoint_path = str(payload["base_checkpoint_path"])
+        if payload.get("schema") == SF_TAPFT_DELTA_BUNDLE_SCHEMA:
+            da1_model, da1_head, bundle_audit = load_sf_tapft_delta_bundle_strict(
+                bundle_path,
+                device=target_device,
+                expected_target_binding=expected_target_binding,
+            )
+            base_checkpoint_path = str(bundle_audit["base_checkpoint_path"])
+            adapter_rank = int(bundle_audit["adapter_rank"])
+            interpolation = float(
+                bundle_audit["da0_classifier_source_target_interpolation"]
+            )
+            prototype_scale = float(bundle_audit["da0_prototype_scale"])
+        else:
+            da1_model, da1_head, bundle_audit = load_sf_tapft_clean_single_bundle_strict(
+                bundle_path,
+                device=target_device,
+                expected_target_binding=expected_target_binding,
+            )
+            normalized = _normalize_sf_tapft_bundle_config(payload["config"])
+            normalized["validation_steps"] = ()
+            config = SFTAPFTConfig(**normalized)
+            base_checkpoint_path = str(payload["base_checkpoint_path"])
+            adapter_rank = int(config.adapter_rank)
+            interpolation = float(config.classifier_source_target_interpolation)
+            prototype_scale = float(config.prototype_scale)
     except QueryClosureError:
         raise
     except (OSError, RuntimeError, ValueError, TypeError, KeyError) as exc:
@@ -257,7 +275,7 @@ def load_clean_single_pair_strict(
     da0_model = _default_checkpoint_loader(base_checkpoint_path, device=target_device)
     da0_model.eval()
     source_weights = _source_classifier_weight(da0_model).detach()
-    ensure_time_adapter(da0_model, rank=config.adapter_rank)
+    ensure_time_adapter(da0_model, rank=adapter_rank)
     dtype = next(
         parameter.dtype
         for parameter in da0_model.parameters()
@@ -275,8 +293,8 @@ def load_clean_single_pair_strict(
         target_prototypes=prototypes,
         source_class_ids=tuple(range(6)),
         target_class_ids=tuple(range(6)),
-        rho=config.classifier_source_target_interpolation,
-        scale=config.prototype_scale,
+        rho=interpolation,
+        scale=prototype_scale,
     ).to(device=target_device, dtype=dtype)
     da0_model.eval()
     da0_head.eval()

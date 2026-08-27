@@ -395,6 +395,57 @@ def test_deploy_runner_fits_full_support_once_without_grouped_cv(
     persisted = json.loads((output / "selection.json").read_text(encoding="utf-8"))
     assert persisted == receipt
 
+
+def test_deploy_runner_inplace_can_emit_delta_only(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    support = tmp_path / "support.npz"
+    _write_support(support)
+    checkpoint = tmp_path / "checkpoint.pth"
+    checkpoint.write_bytes(b"loader-owned fixture")
+    binding = _phase1_binding(handles=("tx0", "tx1"))
+    monkeypatch.setattr(
+        runner_module,
+        "load_sf_tapft_phase1_binding",
+        lambda *_args, **_kwargs: binding,
+    )
+    config = _r0_config(checkpoint, support)
+    config["candidate_id"] = "H6_INPLACE_DELTA_ONLY_TEST"
+    config["sf_tapft"].update(
+        {
+            "trainability_profile": "p1_head_norm",
+            "norm_rules": [["t3", "weight_bias"]],
+            "phase_steps": [2, 0, 0],
+        }
+    )
+    output = tmp_path / "inplace-output"
+
+    receipt = run_sf_tapft_deploy_no_query(
+        config,
+        output,
+        device="cpu",
+        checkpoint_loader=lambda _path, *, device: copy.deepcopy(_ToyModel()).to(device),
+        deployment_inplace=True,
+        emit_clean_single_bundle=False,
+    )
+
+    assert receipt["deployment_inplace"] is True
+    assert receipt["bundle_path"] is None
+    assert not (output / "sf_tapft_clean_single_bundle.pt").exists()
+    delta_path = output / "sf_tapft_delta_bundle.pt"
+    payload = torch.load(delta_path, map_location="cpu", weights_only=True)
+    assert payload["model_deltas"]
+    assert any(torch.count_nonzero(value).item() for value in payload["model_deltas"].values())
+    model, head, audit = runner_module.load_sf_tapft_delta_bundle_strict(
+        delta_path,
+        device="cpu",
+        expected_target_binding=_expected_target_binding(),
+        checkpoint_loader=lambda _path, *, device: copy.deepcopy(_ToyModel()).to(device),
+    )
+    assert audit["support_count"] == 4
+    assert head.class_ids == (0, 1)
+    assert all(not parameter.requires_grad for parameter in model.parameters())
+
 def test_clean_single_loader_accepts_pre_slimming_config_defaults(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

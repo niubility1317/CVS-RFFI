@@ -27,6 +27,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--folds", default=4, type=int)
     parser.add_argument("--mode", choices=("grouped", "deploy"), default="grouped")
+    parser.add_argument("--deployment-inplace", action="store_true")
+    parser.add_argument("--delta-only", action="store_true")
     args = parser.parse_args(argv)
     matrix = json.loads(args.matrix.read_text(encoding="utf-8-sig"))
     config, gpu = build_row_config(matrix, args.row_id)
@@ -35,6 +37,8 @@ def main(argv: list[str] | None = None) -> int:
             config,
             args.output_dir,
             device=args.device,
+            deployment_inplace=bool(args.deployment_inplace),
+            emit_clean_single_bundle=not bool(args.delta_only),
         )
     else:
         receipt = run_sf_tapft_grouped_selection(

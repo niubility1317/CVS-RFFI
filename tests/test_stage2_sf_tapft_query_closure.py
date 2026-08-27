@@ -339,6 +339,72 @@ def test_pair_loader_accepts_historical_research_validation_schedule(
     assert audit["class_ids"] == list(range(6))
 
 
+def test_pair_loader_routes_delta_v2_without_clean_single_bundle(
+    tmp_path, monkeypatch
+):
+    bundle = tmp_path / "delta.pt"
+    torch.save({"schema": query_module.SF_TAPFT_DELTA_BUNDLE_SCHEMA}, bundle)
+    labels = torch.repeat_interleave(torch.arange(6), 10)
+    support = SimpleNamespace(
+        physical_ids=tuple(f"p{index}" for index in range(60)),
+        class_ids=tuple(range(6)),
+        received_iq=torch.zeros(60, 2, 256),
+        labels=labels,
+    )
+    weight = torch.eye(6, 160)
+    delta_head = TargetPrototypeHead(weight, tuple(range(6)), scale=4.0)
+    monkeypatch.setattr(query_module, "_load_target_support", lambda _path: support)
+    monkeypatch.setattr(
+        query_module,
+        "load_sf_tapft_clean_single_bundle_strict",
+        lambda *_args, **_kwargs: pytest.fail("delta v2 must not open clean-single loader"),
+    )
+    monkeypatch.setattr(
+        query_module,
+        "load_sf_tapft_delta_bundle_strict",
+        lambda *_args, **_kwargs: (
+            _ParamModel(),
+            delta_head,
+            {
+                "schema": query_module.SF_TAPFT_DELTA_BUNDLE_SCHEMA,
+                "base_checkpoint_path": str(tmp_path / "base.pth"),
+                "adapter_rank": 16,
+                "da0_classifier_source_target_interpolation": 0.5,
+                "da0_prototype_scale": 8.0,
+                "capsule_id": "adapt",
+                "split_id": "adapt-split",
+            },
+        ),
+    )
+    monkeypatch.setattr(
+        query_module, "_default_checkpoint_loader", lambda *_args, **_kwargs: _ParamModel()
+    )
+    monkeypatch.setattr(query_module, "_source_classifier_weight", lambda _model: weight)
+    monkeypatch.setattr(query_module, "ensure_time_adapter", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(
+        query_module,
+        "_forward_aux",
+        lambda _model, rows: {"z_id": torch.zeros(len(rows), 160)},
+    )
+    monkeypatch.setattr(
+        query_module,
+        "_extract_joint_embedding",
+        lambda outputs, _rows: outputs["z_id"],
+    )
+    monkeypatch.setattr(query_module, "_target_prototypes", lambda *_args: weight)
+
+    _, da0_head, _, da1_head, audit = load_clean_single_pair_strict(
+        bundle,
+        tmp_path / "support.npz",
+        device="cpu",
+        expected_target_binding={"capsule_id": "adapt", "split_id": "adapt-split"},
+    )
+
+    assert da0_head.class_ids == tuple(range(6))
+    assert da1_head is delta_head
+    assert audit["class_ids"] == list(range(6))
+
+
 def test_prediction_rejects_truth_member_before_bundle_load(tmp_path):
     _case(tmp_path)
     with np.load(tmp_path / "query.npz", allow_pickle=False) as source:

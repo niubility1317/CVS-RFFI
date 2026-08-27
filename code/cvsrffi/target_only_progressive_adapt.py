@@ -895,6 +895,13 @@ class SFTAPFTAudit:
     cached_suffix_forward_steps: int
     hard_pair_weight: float
     hard_pair_margin: float
+    prefix_cache_tensor_bytes: int
+    support_safety_checked: bool
+    support_safety_passed: bool
+    support_safety_prediction_mismatches: int
+    support_safety_per_class_recall_mismatches: int
+    support_safety_max_abs_logit_delta: float
+    support_safety_fallback_to_float32: bool
 
 
 @dataclass(frozen=True)
@@ -902,6 +909,7 @@ class SFTAPFTResult:
     model: nn.Module
     head: TargetPrototypeHead
     audit: SFTAPFTAudit
+    base_parameter_anchors: Mapping[str, Tensor]
 
 
 @dataclass(frozen=True)
@@ -967,6 +975,44 @@ class H6PrefixCache:
     cls_head_kwargs: Mapping[str, Tensor]
     storage_dtype: torch.dtype
     batch_size: int
+
+    @property
+    def tensor_bytes(self) -> int:
+        tensors = (
+            self.pre_t3_norm,
+            self.frozen_fuse_tail,
+            *self.cls_head_kwargs.values(),
+        )
+        return sum(int(value.numel() * value.element_size()) for value in tensors)
+
+
+@dataclass(frozen=True)
+class H6SupportSafetyAudit:
+    passed: bool
+    prediction_mismatches: int
+    per_class_recall_mismatches: int
+    positive_margin_regressions: int
+    max_abs_logit_delta: float
+    minimum_full_path_margin: float
+
+
+@dataclass(frozen=True)
+class H6SuffixTrainer:
+    """Reference-only deployment view over one model, one head and one cache."""
+
+    model: nn.Module
+    head: TargetPrototypeHead
+    cache: H6PrefixCache
+
+    @property
+    def cache_tensor_bytes(self) -> int:
+        return self.cache.tensor_bytes
+
+    def embedding(self) -> Tensor:
+        return forward_h6_suffix(self.model, self.cache)
+
+    def logits(self) -> Tensor:
+        return self.head(self.embedding())
 
 
 def _capture_h6_prefix_cache(
@@ -1059,6 +1105,17 @@ def build_h6_prefix_cache(
     return cache
 
 
+def encode_h6_prefix(
+    model: nn.Module,
+    values: Tensor,
+    *,
+    storage_dtype: torch.dtype = torch.float32,
+) -> H6PrefixCache:
+    """Stable deployment API for encoding the frozen H6 prefix."""
+
+    return build_h6_prefix_cache(model, values, storage_dtype=storage_dtype)
+
+
 def forward_h6_prefix_cache(model: nn.Module, cache: H6PrefixCache) -> Tensor:
     """Replay t3.norm and the frozen identity suffix with gradients intact."""
 
@@ -1092,6 +1149,75 @@ def forward_h6_prefix_cache(model: nn.Module, cache: H6PrefixCache) -> Tensor:
     if int(embedding.size(0)) != cache.batch_size:
         raise ValueError("H6 cached suffix batch size drifted")
     return embedding
+
+
+def forward_h6_suffix(model: nn.Module, cache: H6PrefixCache) -> Tensor:
+    """Stable deployment API for replaying the trainable H6 suffix."""
+
+    return forward_h6_prefix_cache(model, cache)
+
+
+def audit_h6_support_safety(
+    model: nn.Module,
+    head: TargetPrototypeHead,
+    cache: H6PrefixCache,
+    support_values: Tensor,
+    support_labels: Tensor,
+) -> H6SupportSafetyAudit:
+    """Compare cached suffix inference with one FP32 full-path support forward."""
+
+    model.eval()
+    head.eval()
+    with torch.no_grad():
+        full_embedding = _extract_joint_embedding(
+            _forward_aux(model, support_values), int(support_values.size(0))
+        )
+        head_dtype = head.weight.dtype
+        full_logits = head(full_embedding.to(dtype=head_dtype)).float()
+        cached_logits = head(forward_h6_suffix(model, cache)).float()
+    if full_logits.shape != cached_logits.shape:
+        raise ValueError("H6 support safety logits shape mismatch")
+    labels = _local_labels(support_labels, head.class_ids, full_logits.device)
+    finite = bool(torch.isfinite(full_logits).all() and torch.isfinite(cached_logits).all())
+    full_prediction = full_logits.argmax(dim=1)
+    cached_prediction = cached_logits.argmax(dim=1)
+    prediction_mismatches = int((full_prediction != cached_prediction).sum().item())
+    recall_mismatches = 0
+    for class_index in range(len(head.class_ids)):
+        mask = labels == class_index
+        if not bool(mask.any()):
+            raise ValueError("H6 support safety requires every registered class")
+        full_correct = int((full_prediction[mask] == class_index).sum().item())
+        cached_correct = int((cached_prediction[mask] == class_index).sum().item())
+        recall_mismatches += int(full_correct != cached_correct)
+    true_logits = full_logits.gather(1, labels[:, None]).squeeze(1)
+    other_logits = full_logits.masked_fill(
+        F.one_hot(labels, num_classes=full_logits.size(1)).bool(), float("-inf")
+    ).max(dim=1).values
+    full_margin = true_logits - other_logits
+    cached_true = cached_logits.gather(1, labels[:, None]).squeeze(1)
+    cached_other = cached_logits.masked_fill(
+        F.one_hot(labels, num_classes=cached_logits.size(1)).bool(), float("-inf")
+    ).max(dim=1).values
+    cached_margin = cached_true - cached_other
+    positive_margin_regressions = int(
+        ((full_margin >= 0.0) & (cached_margin < 0.0)).sum().item()
+    )
+    max_abs_logit_delta = float(torch.max(torch.abs(full_logits - cached_logits)).item())
+    passed = bool(
+        finite
+        and prediction_mismatches == 0
+        and recall_mismatches == 0
+        and positive_margin_regressions == 0
+    )
+    return H6SupportSafetyAudit(
+        passed=passed,
+        prediction_mismatches=prediction_mismatches,
+        per_class_recall_mismatches=recall_mismatches,
+        positive_margin_regressions=positive_margin_regressions,
+        max_abs_logit_delta=max_abs_logit_delta,
+        minimum_full_path_margin=float(full_margin.min().item()),
+    )
 
 
 def support_hard_pair_loss(
@@ -1344,6 +1470,75 @@ def fit_sf_tapft(
     checkpoint_validation: TargetOnlyAdaptationDataset | None = None,
     checkpoint_selection_mode: str = "best",
 ) -> SFTAPFTResult:
+    """Fit SF-TAPFT while preserving the caller-owned checkpoint model."""
+
+    return _fit_sf_tapft(
+        checkpoint_model,
+        target_train,
+        config,
+        checkpoint_validation=checkpoint_validation,
+        checkpoint_selection_mode=checkpoint_selection_mode,
+        copy_checkpoint_model=True,
+    )
+
+
+def fit_sf_tapft_inplace(
+    checkpoint_model: nn.Module,
+    target_train: TargetOnlyAdaptationDataset,
+    config: SFTAPFTConfig | None = None,
+    *,
+    checkpoint_validation: TargetOnlyAdaptationDataset | None = None,
+    checkpoint_selection_mode: str = "final_step",
+) -> SFTAPFTResult:
+    """Fit the deployment path on a model instance exclusively owned by the caller."""
+
+    effective_config = config or SFTAPFTConfig()
+    result = _fit_sf_tapft(
+        checkpoint_model,
+        target_train,
+        effective_config,
+        checkpoint_validation=checkpoint_validation,
+        checkpoint_selection_mode=checkpoint_selection_mode,
+        copy_checkpoint_model=False,
+    )
+    if (
+        effective_config.prefix_cache_dtype == "float16"
+        and not result.audit.support_safety_passed
+    ):
+        named = dict(checkpoint_model.named_parameters())
+        with torch.no_grad():
+            for anchor_name, anchor in result.base_parameter_anchors.items():
+                if not anchor_name.startswith("model."):
+                    continue
+                name = anchor_name.removeprefix("model.")
+                named[name].copy_(anchor.to(device=named[name].device, dtype=named[name].dtype))
+        fallback = _fit_sf_tapft(
+            checkpoint_model,
+            target_train,
+            replace(effective_config, prefix_cache_dtype="float32"),
+            checkpoint_validation=checkpoint_validation,
+            checkpoint_selection_mode=checkpoint_selection_mode,
+            copy_checkpoint_model=False,
+        )
+        return replace(
+            fallback,
+            audit=replace(
+                fallback.audit,
+                support_safety_fallback_to_float32=True,
+            ),
+        )
+    return result
+
+
+def _fit_sf_tapft(
+    checkpoint_model: nn.Module,
+    target_train: TargetOnlyAdaptationDataset,
+    config: SFTAPFTConfig | None = None,
+    *,
+    checkpoint_validation: TargetOnlyAdaptationDataset | None = None,
+    checkpoint_selection_mode: str = "best",
+    copy_checkpoint_model: bool,
+) -> SFTAPFTResult:
     """Fit report-parity SF-TAPFT using target train only.
 
     The signature deliberately has no source/eval/query argument. The returned
@@ -1371,6 +1566,13 @@ def fit_sf_tapft(
         and checkpoint_validation is None
     ):
         raise ValueError("checkpoint_average_top_k > 1 requires target inner validation")
+    if not copy_checkpoint_model:
+        if checkpoint_validation is not None or checkpoint_selection_mode != "final_step":
+            raise ValueError(
+                "in-place SF-TAPFT requires final_step selection without validation"
+            )
+        if config.selective_kd_weight > 0.0:
+            raise ValueError("in-place SF-TAPFT does not retain a full teacher model")
     torch.manual_seed(int(config.seed))
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(int(config.seed))
@@ -1378,12 +1580,12 @@ def fit_sf_tapft(
     teacher = (
         copy.deepcopy(checkpoint_model) if config.selective_kd_weight > 0.0 else None
     )
-    student = copy.deepcopy(checkpoint_model)
+    student = copy.deepcopy(checkpoint_model) if copy_checkpoint_model else checkpoint_model
     if teacher is not None:
         teacher.eval()
         for parameter in teacher.parameters():
             parameter.requires_grad_(False)
-    source_weights = _source_classifier_weight(checkpoint_model)
+    source_weights = _source_classifier_weight(checkpoint_model).detach().clone()
     source_class_ids = tuple(range(int(source_weights.size(0))))
     ensure_time_adapter(student, rank=config.adapter_rank)
     student.eval()
@@ -1482,9 +1684,14 @@ def fit_sf_tapft(
     }
     last_names = set(phase_names["C"]) - norm_names - adapter_names - fusion_names
     named = dict(student.named_parameters())
-    initial_model_state = {
-        name: value.detach().clone() for name, value in student.state_dict().items()
-    }
+    initial_model_state = (
+        {name: value.detach().clone() for name, value in student.state_dict().items()}
+        if copy_checkpoint_model
+        else {
+            name: named[name].detach().clone()
+            for name in sorted(norm_names | adapter_names | last_names | fusion_names)
+        }
+    )
     initial_head_state = {name: value.detach().clone() for name, value in head.state_dict().items()}
     initial_head_weight = head.weight.detach().clone()
     head_anchor_reliability = head.weight.new_zeros(len(head.class_ids))
@@ -1517,6 +1724,20 @@ def fit_sf_tapft(
     ]
     groups = [group for group in groups if group["params"]]
     optimizer = torch.optim.AdamW(groups, weight_decay=float(config.weight_decay))
+    optimizer_parameter_ids = {
+        id(parameter)
+        for group in optimizer.param_groups
+        for parameter in group["params"]
+    }
+    permitted_optimizer_ids = {
+        *(
+            id(named[name])
+            for name in (norm_names | adapter_names | last_names | fusion_names)
+        ),
+        *(id(parameter) for parameter in head.parameters()),
+    }
+    if optimizer_parameter_ids != permitted_optimizer_ids:
+        raise RuntimeError("SF-TAPFT optimizer can reach a non-permitted parameter")
     use_amp = bool(config.mixed_precision and device.type == "cuda")
     scaler = _make_grad_scaler(device, enabled=use_amp)
     l2sp_names = sorted(norm_names | last_names | fusion_names)
@@ -1526,7 +1747,7 @@ def fit_sf_tapft(
         else None
     )
     bn_before = {
-        name: value.detach().clone() for name, value in initial_model_state.items()
+        name: value.detach().clone() for name, value in student.state_dict().items()
         if name.endswith("running_mean") or name.endswith("running_var") or name.endswith("num_batches_tracked")
     }
     total_steps = sum(config.phase_steps)
@@ -1790,11 +2011,16 @@ def fit_sf_tapft(
         for name, value in averaged.items()
         if name.startswith("model.")
     }
-    restored_model_state = {
-        name: value.detach().clone() for name, value in initial_model_state.items()
-    }
-    restored_model_state.update(averaged_model)
-    student.load_state_dict(restored_model_state)
+    if copy_checkpoint_model:
+        restored_model_state = {
+            name: value.detach().clone() for name, value in initial_model_state.items()
+        }
+        restored_model_state.update(averaged_model)
+        student.load_state_dict(restored_model_state)
+    else:
+        with torch.no_grad():
+            for name, value in averaged_model.items():
+                named[name].copy_(value)
     head.load_state_dict(
         {name.removeprefix("head."): value for name, value in averaged.items() if name.startswith("head.")}
     )
@@ -1805,7 +2031,14 @@ def fit_sf_tapft(
     for parameter in head.parameters():
         parameter.requires_grad_(False)
     final_state = {
-        **{f"model.{name}": value for name, value in student.state_dict().items()},
+        **{
+            f"model.{name}": dict(student.state_dict())[name]
+            for name in (
+                student.state_dict().keys()
+                if copy_checkpoint_model
+                else sorted(permitted_model_names)
+            )
+        },
         **{f"head.{name}": value for name, value in head.state_dict().items()},
     }
     permitted_changed = tuple(
@@ -1843,6 +2076,11 @@ def fit_sf_tapft(
         )
         for phase in _PHASES
         if phase in stage_best
+    )
+    support_safety = (
+        audit_h6_support_safety(student, head, prefix_cache, target_x, target_labels)
+        if prefix_cache is not None
+        else None
     )
     audit = SFTAPFTAudit(
         method="sf_tapft_v1",
@@ -1902,8 +2140,37 @@ def fit_sf_tapft(
         cached_suffix_forward_steps=cached_suffix_forward_steps,
         hard_pair_weight=float(config.hard_pair_weight),
         hard_pair_margin=float(config.hard_pair_margin),
+        prefix_cache_tensor_bytes=(
+            prefix_cache.tensor_bytes if prefix_cache is not None else 0
+        ),
+        support_safety_checked=support_safety is not None,
+        support_safety_passed=(
+            support_safety.passed if support_safety is not None else True
+        ),
+        support_safety_prediction_mismatches=(
+            support_safety.prediction_mismatches if support_safety is not None else 0
+        ),
+        support_safety_per_class_recall_mismatches=(
+            support_safety.per_class_recall_mismatches
+            if support_safety is not None
+            else 0
+        ),
+        support_safety_max_abs_logit_delta=(
+            support_safety.max_abs_logit_delta if support_safety is not None else 0.0
+        ),
+        support_safety_fallback_to_float32=False,
     )
-    return SFTAPFTResult(model=student, head=head, audit=audit)
+    return SFTAPFTResult(
+        model=student,
+        head=head,
+        audit=audit,
+        base_parameter_anchors=MappingProxyType(
+            {
+                name: value.detach().cpu().clone()
+                for name, value in compact_anchor_state.items()
+            }
+        ),
+    )
 
 
 def _subset_target_train(

@@ -17,6 +17,7 @@ from .target_only_progressive_adapt import (
     TargetPrototypeHead,
     ensure_time_adapter,
     fit_sf_tapft,
+    fit_sf_tapft_inplace,
     select_sf_tapft_by_grouped_cv,
 )
 from .sf_tapft_phase1_binding import (
@@ -27,7 +28,8 @@ from .sf_tapft_phase1_binding import (
 
 SF_TAPFT_BUNDLE_SCHEMA = "cvs.sf_tapft.v1"
 SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA = "cvs.sf_tapft.clean_single.v2"
-SF_TAPFT_DELTA_BUNDLE_SCHEMA = "cvs.sf_tapft.delta.v1"
+SF_TAPFT_DELTA_BUNDLE_SCHEMA = "cvs.sf_tapft.delta.v2"
+_SF_TAPFT_DELTA_BUNDLE_SCHEMA_V1 = "cvs.sf_tapft.delta.v1"
 _V1_TOP_LEVEL_KEYS = frozenset(
     {
         "candidate_id",
@@ -429,19 +431,23 @@ def _clean_single_bundle_payload(
 def _delta_bundle_payload(
     result: Any,
     *,
-    base_model: nn.Module,
     resolved: Mapping[str, Any],
     method_config: SFTAPFTConfig,
     support: TargetOnlyAdaptationDataset,
 ) -> dict[str, Any]:
-    base = dict(base_model.named_parameters())
     adapted = dict(result.model.named_parameters())
     updated = tuple(str(name) for name in result.audit.updated_parameter_names)
     deltas: dict[str, torch.Tensor] = {}
     for name in updated:
-        if name not in base or name not in adapted or base[name].shape != adapted[name].shape:
+        anchor_name = f"model.{name}"
+        anchor = result.base_parameter_anchors.get(anchor_name)
+        if (
+            not torch.is_tensor(anchor)
+            or name not in adapted
+            or anchor.shape != adapted[name].shape
+        ):
             raise ValueError(f"delta bundle parameter does not align with base checkpoint: {name!r}")
-        deltas[name] = (adapted[name].detach().cpu() - base[name].detach().cpu()).to(torch.float16)
+        deltas[name] = (adapted[name].detach().cpu() - anchor).to(torch.float16)
     return {
         "schema": SF_TAPFT_DELTA_BUNDLE_SCHEMA,
         "protocol_schema": resolved["protocol_schema"],
@@ -456,6 +462,10 @@ def _delta_bundle_payload(
         "model_deltas": deltas,
         "updated_parameter_names": list(updated),
         "support_count": len(support.physical_ids),
+        "da0_classifier_source_target_interpolation": float(
+            method_config.classifier_source_target_interpolation
+        ),
+        "da0_prototype_scale": float(method_config.prototype_scale),
     }
 
 
@@ -564,6 +574,8 @@ def run_sf_tapft_deploy_no_query(
     *,
     device: str | torch.device,
     checkpoint_loader: CheckpointLoader | None = None,
+    deployment_inplace: bool = False,
+    emit_clean_single_bundle: bool = True,
 ) -> dict[str, Any]:
     """Fit one frozen deployment policy on full support without research CV."""
 
@@ -578,9 +590,14 @@ def run_sf_tapft_deploy_no_query(
     loader = checkpoint_loader or _default_checkpoint_loader
     binding = load_sf_tapft_phase1_binding(resolved, resolved["checkpoint_path"])
     model = loader(resolved["checkpoint_path"], device=device)
+    resident_model_tensor_bytes = sum(
+        int(value.numel() * value.element_size())
+        for value in (*model.parameters(), *model.buffers())
+    )
     support = _load_target_support(resolved["support_path"])
     _validate_support_labels_for_binding(support, binding)
-    result = fit_sf_tapft(
+    fit = fit_sf_tapft_inplace if deployment_inplace else fit_sf_tapft
+    result = fit(
         model,
         support,
         method_config,
@@ -590,22 +607,23 @@ def run_sf_tapft_deploy_no_query(
     selected_phase_steps = tuple(int(value) for value in method_config.phase_steps)
 
     destination.mkdir(parents=True, exist_ok=False)
-    bundle_path = destination / "sf_tapft_clean_single_bundle.pt"
-    bundle_payload = _clean_single_bundle_payload(
-        result,
-        resolved=resolved,
-        method_config=method_config,
-        binding=binding,
-        support=support,
-        selected_phase_steps=selected_phase_steps,
-        fold0_as_final=False,
-    )
-    with bundle_path.open("xb") as handle:
-        torch.save(bundle_payload, handle)
+    bundle_path: Path | None = None
+    if emit_clean_single_bundle:
+        bundle_path = destination / "sf_tapft_clean_single_bundle.pt"
+        bundle_payload = _clean_single_bundle_payload(
+            result,
+            resolved=resolved,
+            method_config=method_config,
+            binding=binding,
+            support=support,
+            selected_phase_steps=selected_phase_steps,
+            fold0_as_final=False,
+        )
+        with bundle_path.open("xb") as handle:
+            torch.save(bundle_payload, handle)
     delta_path = destination / "sf_tapft_delta_bundle.pt"
     delta_payload = _delta_bundle_payload(
         result,
-        base_model=model,
         resolved=resolved,
         method_config=method_config,
         support=support,
@@ -631,9 +649,11 @@ def run_sf_tapft_deploy_no_query(
             support, tuple(int(value) for value in result.head.class_ids)
         ),
         "checkpoint_selection_role": result.audit.checkpoint_selection_role,
-        "bundle_path": str(bundle_path),
+        "bundle_path": str(bundle_path) if bundle_path is not None else None,
         "delta_bundle_path": str(delta_path),
         "delta_bundle_bytes": delta_path.stat().st_size,
+        "deployment_inplace": bool(deployment_inplace),
+        "emit_clean_single_bundle": bool(emit_clean_single_bundle),
         "phase1_binding": _binding_payload(binding),
         "source_opened": False,
         "target_eval_opened": False,
@@ -642,6 +662,7 @@ def run_sf_tapft_deploy_no_query(
         "query_truth_opened": False,
         "query_role_opened": False,
         "resource_audit": {
+            "resident_model_tensor_bytes": resident_model_tensor_bytes,
             "head_prefit_steps": result.audit.head_prefit_steps,
             "backbone_optimizer_steps": result.audit.backbone_optimizer_steps,
             "backbone_train_forward_steps": result.audit.backbone_train_forward_steps,
@@ -656,6 +677,21 @@ def run_sf_tapft_deploy_no_query(
                 result.audit.prefix_cache_build_forward_steps
             ),
             "cached_suffix_forward_steps": result.audit.cached_suffix_forward_steps,
+            "prefix_cache_tensor_bytes": result.audit.prefix_cache_tensor_bytes,
+            "support_safety_checked": result.audit.support_safety_checked,
+            "support_safety_passed": result.audit.support_safety_passed,
+            "support_safety_prediction_mismatches": (
+                result.audit.support_safety_prediction_mismatches
+            ),
+            "support_safety_per_class_recall_mismatches": (
+                result.audit.support_safety_per_class_recall_mismatches
+            ),
+            "support_safety_max_abs_logit_delta": (
+                result.audit.support_safety_max_abs_logit_delta
+            ),
+            "support_safety_fallback_to_float32": (
+                result.audit.support_safety_fallback_to_float32
+            ),
             "hard_pair_weight": result.audit.hard_pair_weight,
             "hard_pair_margin": result.audit.hard_pair_margin,
         },
@@ -725,7 +761,6 @@ def run_sf_tapft_grouped_selection(
         ).issubset(base_parameter_names):
             delta_payload = _delta_bundle_payload(
                 selection.adapted_result,
-                base_model=model,
                 resolved=resolved,
                 method_config=method_config,
                 support=support,
@@ -944,14 +979,27 @@ def load_sf_tapft_delta_bundle_strict(
     if source.is_symlink() or not source.is_file():
         raise ValueError(f"SF-TAPFT delta bundle is not a regular file: {source}")
     payload = torch.load(source, map_location="cpu", weights_only=True)
-    keys = {
+    v1_keys = {
         "schema", "protocol_schema", "phase2_data_status", "capsule_id", "split_id",
         "base_checkpoint_path", "adapter_rank", "class_ids", "head_weight", "head_scale",
         "model_deltas", "updated_parameter_names", "support_count",
     }
-    if not isinstance(payload, Mapping) or set(payload) != keys:
+    v2_keys = v1_keys | {
+        "da0_classifier_source_target_interpolation",
+        "da0_prototype_scale",
+    }
+    if not isinstance(payload, Mapping):
         raise ValueError("SF-TAPFT delta bundle top-level allowlist mismatch")
-    if payload["schema"] != SF_TAPFT_DELTA_BUNDLE_SCHEMA:
+    schema = payload.get("schema")
+    expected_keys = (
+        v2_keys if schema == SF_TAPFT_DELTA_BUNDLE_SCHEMA else v1_keys
+    )
+    if set(payload) != expected_keys:
+        raise ValueError("SF-TAPFT delta bundle top-level allowlist mismatch")
+    if schema not in {
+        SF_TAPFT_DELTA_BUNDLE_SCHEMA,
+        _SF_TAPFT_DELTA_BUNDLE_SCHEMA_V1,
+    }:
         raise ValueError("SF-TAPFT delta bundle schema mismatch")
     comparisons = {
         "protocol_schema": payload["protocol_schema"],
@@ -993,10 +1041,18 @@ def load_sf_tapft_delta_bundle_strict(
     for parameter in head.parameters():
         parameter.requires_grad_(False)
     return model, head, {
-        "schema": SF_TAPFT_DELTA_BUNDLE_SCHEMA,
+        "schema": str(schema),
         "support_count": int(payload["support_count"]),
         "updated_parameter_names": updated,
         "bundle_bytes": int(source.stat().st_size),
+        "base_checkpoint_path": str(payload["base_checkpoint_path"]),
+        "adapter_rank": int(payload["adapter_rank"]),
+        "da0_classifier_source_target_interpolation": float(
+            payload.get("da0_classifier_source_target_interpolation", 0.5)
+        ),
+        "da0_prototype_scale": float(payload.get("da0_prototype_scale", 8.0)),
+        "capsule_id": str(payload["capsule_id"]),
+        "split_id": str(payload["split_id"]),
     }
 
 
