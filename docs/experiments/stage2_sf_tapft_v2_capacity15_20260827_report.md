@@ -2,7 +2,7 @@
 
 ## 结论
 
-第一波矩阵的15个独立support-only候选已全部启动，配合GPU0上的R0占满8张RTX 3090的16个训练槽。候选复用同一CORE90正式bundle、receiver`20-1`、旧类6类、K=10、60条support、capsule、split和seed；query与truth保持关闭。当前最高状态为`RUNNING`，尚无正式性能结论。
+第一波矩阵的15个独立support-only候选及GPU0上的R0已全部完成，16/16均生成`selection.json`和可加载bundle。候选复用同一CORE90正式bundle、receiver`20-1`、旧类6类、K=10、60条support、capsule、split和seed；query与truth始终关闭。当前最高状态为`ARTIFACTS_COMPLETE / SUPPORT_INNER_ANALYZED`；独立query性能仍为`UNKNOWN`，不得据此晋级最终方法。
 
 ## 实现与验证
 
@@ -30,3 +30,10 @@
 |7|M14 P4_R16|M15 P4_R8|
 
 每个run的完整预登记字段位于`E:\type10-7\automation_reports\CV-SincNet\<run-id>\report.md`。
+
+## 完成回读
+
+- 16/16个run均为`SELECTION_COMPLETE`，16/16选择`adapted`。
+- 最佳support-inner候选为M08`P3-R16-rho1.0`：OOF平衡准确率`90.9722%`，相对冻结模型`+30.5556pp`，NLL`0.365321`。
+- 16份完整log与对应selection逐字段相等；16个bundle均可加载；无非许可参数变化、query/source访问或BN运行统计更新。
+- 全面方法、逐候选、逐折与瘦身分析见`stage2_sf_tapft_v2_capacity16_comprehensive_report_20260827.md`。

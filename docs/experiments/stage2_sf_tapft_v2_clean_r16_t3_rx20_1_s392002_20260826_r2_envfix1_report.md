@@ -28,3 +28,12 @@
 - CWD：release的`checkout`目录；cmdline中的配置、output、设备和4折参数与预登记一致。
 - GPU0已绑定该PID，启动期显存约678MiB。
 - 进程持续运行且有高CPU活动，无异常输出。当前runner只在完整选择结束后打印最终JSON，因此启动期log为0字节；不据此误判失败，也不重复启动。
+
+## 完成与结果
+
+- 最终状态：`ARTIFACTS_COMPLETE / SUPPORT_INNER_ANALYZED`。
+- `selection=adapted`；冻结OOF平衡准确率`60.4167%`，适配后`89.5833%`，提升`29.1667pp`。
+- 冻结NLL`4.746183`，适配NLL`0.410612`；4折非退化比例`1.0`。
+- 选择出的A/B/C refit步数为`203/197/225`；最终模型使用全部60条support重新训练，`fold0_as_final=false`。
+- `selection.json`和`sf_tapft_clean_single_bundle.pt`均完整；source/query/truth未打开，非许可参数变化为0。
+- 本结果仅为support-inner诊断，独立query性能仍为`UNKNOWN`。全面比较见`stage2_sf_tapft_v2_capacity16_comprehensive_report_20260827.md`。
