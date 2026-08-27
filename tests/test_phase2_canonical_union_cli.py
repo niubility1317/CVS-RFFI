@@ -266,17 +266,52 @@ def test_split_builder_cli_writes_exact_tree_deterministically_without_leakage(
             assert payload["counts"]["query_count"] == sum(
                 row["role"] == "query" for row in payload["rows"]
             )
-            assert set(payload["rows"][0]) == {
-                "physical_sample_id",
-                "source_asset",
-                "source_record_index",
+            support_rows = [
+                row for row in payload["rows"] if row["role"] == "support"
+            ]
+            query_rows = [row for row in payload["rows"] if row["role"] == "query"]
+            assert support_rows
+            assert query_rows
+            assert all(
+                set(row)
+                == {
+                    "physical_sample_id",
+                    "source_asset",
+                    "source_record_index",
+                    "tx_id",
+                    "rx_id",
+                    "day_id",
+                    "scene",
+                    "role",
+                    "rank",
+                }
+                for row in support_rows
+            )
+            assert all(
+                set(row)
+                == {
+                    "physical_sample_id",
+                    "source_asset",
+                    "source_record_index",
+                    "rx_id",
+                    "day_id",
+                    "scene",
+                    "role",
+                    "rank",
+                }
+                for row in query_rows
+            )
+            query_truth_aliases = {
                 "tx_id",
-                "rx_id",
-                "day_id",
-                "scene",
-                "role",
-                "rank",
+                "true_tx_id",
+                "tx_label",
+                "class_id",
+                "class_label",
+                "label",
+                "truth",
+                "query_truth",
             }
+            assert all(not query_truth_aliases.intersection(row) for row in query_rows)
             serialized = manifest_path.read_text(encoding="utf-8").lower()
             for forbidden in (
                 "iq_secret_digest",

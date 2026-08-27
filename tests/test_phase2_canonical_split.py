@@ -811,3 +811,87 @@ def test_split_rejects_undeclared_k_policy_and_drifted_class_selection(
             scene_assignments=context["assignments"],
             class_selection=drifted,
         )
+
+
+@pytest.fixture
+def query_truth_serialization_fixture():
+    split = _split_module()
+    sentinel = "QUERY_TRUTH_SENTINEL_7F3A9C"
+    manifest = split.SplitManifest(
+        protocol_schema="p2_min_v1",
+        profile_id="serialization-test",
+        query_policy="MAXQ_ALL_UNIQUE",
+        k=1,
+        registered_tx_ids=("authorized-support-label", sentinel),
+        eligible_receivers=("rx-a",),
+        rows=(
+            split.SplitRow(
+                physical_sample_id="support-id",
+                source_asset="ManyTx",
+                source_record_index=10,
+                tx_id="authorized-support-label",
+                rx_id="rx-a",
+                day_id="day-0",
+                scene=FORMAL_SCENARIOS[0],
+                role="support",
+                rank=0,
+            ),
+            split.SplitRow(
+                physical_sample_id="opaque-query-id",
+                source_asset="ManyTx",
+                source_record_index=11,
+                tx_id=sentinel,
+                rx_id="rx-a",
+                day_id="day-0",
+                scene=FORMAL_SCENARIOS[0],
+                role="query",
+                rank=1,
+            ),
+        ),
+        capsule_id="capsule-id",
+        split_id="split-id",
+    )
+    return manifest, sentinel
+
+
+def test_manifest_serialization_keeps_authorized_support_tx_id(
+    query_truth_serialization_fixture,
+):
+    manifest, _ = query_truth_serialization_fixture
+    support_row = next(
+        row for row in manifest.to_mapping()["rows"] if row["role"] == "support"
+    )
+
+    assert support_row["tx_id"] == "authorized-support-label"
+    assert set(support_row) == {
+        "physical_sample_id",
+        "source_asset",
+        "source_record_index",
+        "tx_id",
+        "rx_id",
+        "day_id",
+        "scene",
+        "role",
+        "rank",
+    }
+
+
+def test_manifest_serialization_omits_query_truth_and_unique_sentinel(
+    query_truth_serialization_fixture,
+):
+    manifest, sentinel = query_truth_serialization_fixture
+    query_row = next(
+        row for row in manifest.to_mapping()["rows"] if row["role"] == "query"
+    )
+
+    assert set(query_row) == {
+        "physical_sample_id",
+        "source_asset",
+        "source_record_index",
+        "rx_id",
+        "day_id",
+        "scene",
+        "role",
+        "rank",
+    }
+    assert sentinel not in json.dumps(query_row, sort_keys=True)

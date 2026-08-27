@@ -74,7 +74,7 @@ class SplitManifest:
                 "physical_sample_id": row.physical_sample_id,
                 "source_asset": row.source_asset,
                 "source_record_index": row.source_record_index,
-                "tx_id": row.tx_id,
+                **({"tx_id": row.tx_id} if row.role == "support" else {}),
                 "rx_id": row.rx_id,
                 "day_id": row.day_id,
                 "scene": row.scene,
