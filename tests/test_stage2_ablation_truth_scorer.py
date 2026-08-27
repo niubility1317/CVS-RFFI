@@ -144,6 +144,7 @@ def _truth_and_manifest(*, stage: str = "stage2c"):
                     "transmitter_label": "old-1",
                     "evaluation_role": "target_old",
                     "receiver_label": "20-1",
+                    "day_label": "day-1",
                 },
                 {
                     "scenario": scenario,
@@ -153,6 +154,7 @@ def _truth_and_manifest(*, stage: str = "stage2c"):
                     "transmitter_label": "old-2",
                     "evaluation_role": "target_old",
                     "receiver_label": "20-1",
+                    "day_label": "day-1",
                 },
                 {
                     "scenario": scenario,
@@ -166,6 +168,7 @@ def _truth_and_manifest(*, stage: str = "stage2c"):
                     "transmitter_label": "new-1",
                     "evaluation_role": "target_new",
                     "receiver_label": "20-1",
+                    "day_label": "day-1",
                 },
                 {
                     "scenario": scenario,
@@ -179,6 +182,7 @@ def _truth_and_manifest(*, stage: str = "stage2c"):
                     "transmitter_label": "new-2",
                     "evaluation_role": "target_new",
                     "receiver_label": "20-1",
+                    "day_label": "day-1",
                 },
             ]
         )

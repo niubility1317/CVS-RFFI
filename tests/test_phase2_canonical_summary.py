@@ -3,6 +3,9 @@ from __future__ import annotations
 import csv
 import json
 import math
+import os
+import subprocess
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -24,6 +27,21 @@ SCENARIOS = (
 )
 HANDLES = (f"cls_{index:064x}" for index in range(1, 3))
 HANDLE_0, HANDLE_1 = tuple(HANDLES)
+
+
+def _run_direct_cli(*args: str) -> subprocess.CompletedProcess[str]:
+    repository_root = Path(__file__).resolve().parents[1]
+    script = repository_root / "code" / "scripts" / "summarize_phase2_canonical_union.py"
+    environment = os.environ.copy()
+    environment.pop("PYTHONPATH", None)
+    return subprocess.run(
+        [sys.executable, str(script), *args],
+        cwd=repository_root,
+        env=environment,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
 
 
 def _imbalanced_rows() -> list[dict[str, object]]:
@@ -289,6 +307,46 @@ def test_cli_aggregates_formal_json_list_and_jsonl_with_exact_csv_schema(
         "accuracy",
     ]
     assert len(csv_rows) == summary["observed_cell_count"]
+
+
+def test_direct_cli_help_starts_without_repository_pythonpath() -> None:
+    result = _run_direct_cli("--help")
+
+    assert result.returncode == 0, result.stderr
+    assert "--input" in result.stdout
+    assert "--out-root" in result.stdout
+
+
+def test_direct_cli_summarizes_json_and_jsonl_without_repository_pythonpath(
+    tmp_path: Path,
+) -> None:
+    rows = _imbalanced_rows()
+    json_path = tmp_path / "rows.json"
+    json_path.write_text(json.dumps(rows[:5]), encoding="utf-8")
+    jsonl_path = tmp_path / "rows.jsonl"
+    jsonl_path.write_text(
+        "\n".join(json.dumps(row) for row in rows[5:]) + "\n",
+        encoding="utf-8",
+    )
+    out_root = tmp_path / "direct-summary"
+
+    result = _run_direct_cli(
+        "--input",
+        str(json_path),
+        "--input",
+        str(jsonl_path),
+        "--out-root",
+        str(out_root),
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert {path.name for path in out_root.iterdir()} == {
+        "summary.json",
+        "cell_metrics.csv",
+    }
+    summary = json.loads((out_root / "summary.json").read_text(encoding="utf-8"))
+    assert summary["sample_count"] == 10
+    assert summary["correct_count"] == 8
 
 
 def test_cli_rejects_existing_root_and_invalid_input_without_creating_root(

@@ -11,11 +11,16 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import Any, Sequence
 
-from cvsrffi.phase2_canonical_summary import (
+
+CODE_ROOT = Path(__file__).resolve().parents[1]
+if str(CODE_ROOT) not in sys.path:
+    sys.path.insert(0, str(CODE_ROOT))
+
+from cvsrffi.phase2_canonical_summary import (  # noqa: E402
     CanonicalSummaryError,
     summarize_scored_rows,
 )
-from cvsrffi.stage2_metric_scorer import FORMAL_PREDICTIONS_SCHEMA
+from cvsrffi.stage2_metric_scorer import FORMAL_PREDICTIONS_SCHEMA  # noqa: E402
 
 
 CSV_COLUMNS = (
