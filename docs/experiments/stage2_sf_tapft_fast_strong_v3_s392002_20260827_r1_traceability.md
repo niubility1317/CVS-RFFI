@@ -21,7 +21,7 @@
 |FSV3-15|约1500变化元素、分钟级、推理不增算|verified_with_limit|H6 1152元素、研究墙钟69.29s；GPU峰值未连续捕获|
 |FSV3-16|真实最大Q180 DA0_REG0/DA1_REG0对比|verified|support冻结H6后才预测；Q60+Q120零重叠，180条truth-last闭合|
 |FSV3-17|排除rho=1、Adapter、完整t3、P4、KD0.1、ref300、head-first|verified|均未进入正式矩阵|
-|FSV3-18|完整记录实现、全矩阵、逐类结果、资源、失败并发布|verified|正式报告已更新，待本次Git提交/远端OID回读|
+|FSV3-18|完整记录实现、全矩阵、逐类结果、资源、失败并发布|verified|正式报告已更新并推送至GitHub治理分支|
 
 ## 设计偏差与解释
 
