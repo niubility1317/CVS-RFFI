@@ -6,9 +6,9 @@ from paper_reproduction.gaskin_tweak_2023.calibration import (
     calibrate_domains,
     closed_set_predict_grouped,
 )
-from paper_reproduction.gaskin_tweak_2023.evaluation import open_set_trial_metrics
+from paper_reproduction.gaskin_tweak_2023.evaluation import balanced_open_set_trials, closed_set_accuracy, open_set_trial_metrics
 from paper_reproduction.gaskin_tweak_2023.model import TweakEncoder
-from paper_reproduction.gaskin_tweak_2023.training import shared_triplet_loss
+from paper_reproduction.gaskin_tweak_2023.training import fit_tweak, shared_triplet_loss
 
 
 def test_shared_encoder_triplet_backpropagates_through_all_three_inputs():
@@ -55,3 +55,33 @@ def test_open_set_metrics_use_minimum_centroid_distance_and_paper_admit_rule():
     assert metrics["tpr"] == pytest.approx(1.0)
     assert metrics["fpr"] == pytest.approx(0.0)
     assert metrics["accepted_known_accuracy"] == pytest.approx(1.0)
+
+
+def test_tweak_fit_searches_configured_learning_rates_and_preserves_best_checkpoint():
+    batch = (torch.randn(4, 2, 128), torch.tensor([0, 0, 1, 1]))
+    result = fit_tweak(TweakEncoder(), [batch], [batch], max_epochs=1)
+    assert result.best_epoch == 1
+    assert result.learning_rate in {0.01, 0.001, 0.0001, 0.00001, 0.000001}
+    assert result.best_state_dict
+    assert result.method_metadata["unpublished_defaults"]["learning_rate_grid"]
+
+
+def test_five_open_set_trials_choose_balanced_known_and_unknown_device_sets_reproducibly():
+    examples = {label: torch.tensor([[float(label)]]) for label in range(12)}
+    first = balanced_open_set_trials(examples, known_device_count=5, unknown_device_count=5, trials=5, seed=9)
+    second = balanced_open_set_trials(examples, known_device_count=5, unknown_device_count=5, trials=5, seed=9)
+    assert len(first) == 5
+    assert [(row.known_labels.tolist(), row.unknown_labels.tolist()) for row in first] == [
+        (row.known_labels.tolist(), row.unknown_labels.tolist()) for row in second
+    ]
+    assert all(row.known_points.shape[0] == row.unknown_points.shape[0] == 5 for row in first)
+
+
+def test_closed_set_accuracy_applies_the_paper_decision_rule_to_grouped_embeddings():
+    state = calibrate_domains(
+        torch.tensor([[0.0], [2.0], [10.0], [12.0]]),
+        torch.tensor([0, 0, 1, 1]),
+        ["rx", "rx", "rx", "rx"],
+        samples_per_class=2,
+    ).by_domain["rx"]
+    assert closed_set_accuracy(torch.tensor([[0.0], [2.0], [10.0], [12.0]]), torch.tensor([0, 1]), state, group_size=2) == pytest.approx(1.0)

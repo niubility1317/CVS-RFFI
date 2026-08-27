@@ -20,9 +20,9 @@ def feature_separation_loss(
     tx_labels: torch.Tensor,
     rx_labels: torch.Tensor,
     *,
-    lambda_similarity: float,
-    lambda_tx_entropy: float,
-    lambda_rx_entropy: float,
+    lambda_similarity: float = 1.0,
+    lambda_tx_entropy: float = 1.0,
+    lambda_rx_entropy: float = 1.0,
 ) -> tuple[torch.Tensor, dict[str, torch.Tensor]]:
     tx_ce = F.cross_entropy(outputs["tx_logits"], tx_labels)
     rx_ce = F.cross_entropy(outputs["rx_logits"], rx_labels)

@@ -8,19 +8,14 @@ from .representation import build_fusion_representation
 
 
 class ChannelAttention(nn.Module):
-    def __init__(self, channels: int, reduction: int = 16) -> None:
+    """The single shared 512-dimensional attention in the Figure-6 interpretation."""
+
+    def __init__(self, features: int = 512) -> None:
         super().__init__()
-        hidden = max(channels // reduction, 1)
-        self.pool = nn.AdaptiveAvgPool2d(1)
-        self.gate = nn.Sequential(
-            nn.Conv2d(channels, hidden, 1),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(hidden, channels, 1),
-            nn.Sigmoid(),
-        )
+        self.gate = nn.Sequential(nn.Linear(features, features), nn.Sigmoid())
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return x * self.gate(self.pool(x))
+        return x * self.gate(x)
 
 
 class ResidualBlock(nn.Module):
@@ -30,7 +25,6 @@ class ResidualBlock(nn.Module):
         self.bn1 = nn.BatchNorm2d(out_channels)
         self.conv2 = nn.Conv2d(out_channels, out_channels, 3, padding=1, bias=False)
         self.bn2 = nn.BatchNorm2d(out_channels)
-        self.attention = ChannelAttention(out_channels)
         self.skip = (
             nn.Identity()
             if in_channels == out_channels and stride == 1
@@ -40,47 +34,40 @@ class ResidualBlock(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         residual = self.skip(x)
         x = F.leaky_relu(self.bn1(self.conv1(x)), inplace=True)
-        x = self.attention(self.bn2(self.conv2(x)))
+        x = self.bn2(self.conv2(x))
         return F.leaky_relu(x + residual, inplace=True)
 
 
 class AttentionResNet18(nn.Module):
-    """Figure-6-style attention ResNet18 encoder yielding a 512-D shared feature."""
+    """Figure-6-first, five-stage residual encoder with one shared attention point."""
+
+    stage_channels = (16, 32, 64, 128, 256)
+    residual_stage_count = 5
 
     def __init__(self) -> None:
         super().__init__()
-        self.stem = nn.Sequential(
-            nn.Conv2d(1, 16, 3, padding=1, bias=False),
-            nn.BatchNorm2d(16),
-            nn.LeakyReLU(inplace=True),
-        )
-        self.layer1 = self._layer(16, 16, stride=1)
-        self.layer2 = self._layer(16, 32, stride=2)
-        self.layer3 = self._layer(32, 64, stride=2)
-        self.layer4 = self._layer(64, 128, stride=2)
-        self.layer5 = self._layer(128, 256, stride=2)
+        self.stem = nn.Sequential(nn.Conv2d(1, 16, 3, padding=1, bias=False), nn.BatchNorm2d(16), nn.LeakyReLU(inplace=True))
+        self.layer1 = ResidualBlock(16, 16)
+        self.layer2 = ResidualBlock(16, 32, stride=2)
+        self.layer3 = ResidualBlock(32, 64, stride=2)
+        self.layer4 = ResidualBlock(64, 128, stride=2)
+        self.layer5 = ResidualBlock(128, 256, stride=2)
         self.pool = nn.AdaptiveAvgPool2d(1)
         self.project = nn.Linear(256, 512)
-        self.feature_attention = nn.Sequential(nn.Linear(512, 512), nn.Sigmoid())
-
-    @staticmethod
-    def _layer(in_channels: int, out_channels: int, stride: int) -> nn.Sequential:
-        return nn.Sequential(ResidualBlock(in_channels, out_channels, stride), ResidualBlock(out_channels, out_channels))
+        self.feature_attention = ChannelAttention(512)
 
     def forward(self, fusion: torch.Tensor) -> torch.Tensor:
-        x = fusion.unsqueeze(1)
-        x = self.stem(x)
+        x = self.stem(fusion.unsqueeze(1))
         x = self.layer1(x)
         x = self.layer2(x)
         x = self.layer3(x)
         x = self.layer4(x)
         x = self.layer5(x)
-        x = self.project(self.pool(x).flatten(1))
-        return x * self.feature_attention(x)
+        return self.feature_attention(self.project(self.pool(x).flatten(1)))
 
 
 class FeatureSeparationNet(nn.Module):
-    """Shared encoder plus the paper's transmitter and receiver branches."""
+    """Shared Figure-6 encoder plus transmitter and receiver feature branches."""
 
     def __init__(self, *, num_tx: int, num_rx: int) -> None:
         super().__init__()
@@ -95,8 +82,7 @@ class FeatureSeparationNet(nn.Module):
             raise ValueError("input must have shape [batch, 2 or 3, 256]")
         fusion = build_fusion_representation(iq_or_fusion) if iq_or_fusion.shape[1] == 2 else iq_or_fusion
         shared = self.encoder(fusion)
-        tx_features = self.tx_branch(shared)
-        rx_features = self.rx_branch(shared)
+        tx_features, rx_features = self.tx_branch(shared), self.rx_branch(shared)
         return {
             "shared": shared,
             "tx_features": tx_features,

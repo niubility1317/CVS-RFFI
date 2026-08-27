@@ -10,7 +10,11 @@ from .model import FeatureSeparationNet
 
 
 def tx_finetune_parameters(model: FeatureSeparationNet) -> Iterable[nn.Parameter]:
-    """Implementation choice: tune shared encoder plus TX path; RX path stays frozen."""
+    """Tune the default shared encoder plus TX path while fully freezing RX state."""
+    for module in (model.rx_branch, model.rx_classifier):
+        module.eval()
+        for parameter in module.parameters():
+            parameter.requires_grad_(False)
     return list(model.encoder.parameters()) + list(model.tx_branch.parameters()) + list(model.tx_classifier.parameters())
 
 
@@ -22,6 +26,8 @@ def fine_tune_tx_step(
 ) -> dict[str, float]:
     """One supervised target-receiver fine-tuning step requiring no RX labels."""
     model.train()
+    model.rx_branch.eval()
+    model.rx_classifier.eval()
     optimizer.zero_grad(set_to_none=True)
     tx_ce = F.cross_entropy(model(iq)["tx_logits"], tx_labels)
     tx_ce.backward()
