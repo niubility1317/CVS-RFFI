@@ -71,6 +71,8 @@ def _npz(
     *,
     scenario: str,
     query: bool,
+    query_count: int = 1,
+    query_manifest_policy: str | None = None,
     extra: bool = False,
     reuse_first_scenario_token: bool = False,
     declared_support_k: int = 1,
@@ -81,7 +83,7 @@ def _npz(
         if actual_support_per_class is None
         else actual_support_per_class
     )
-    count = 1 if query else support_count
+    count = query_count if query else support_count
     iq = np.zeros((count, 2, 8), dtype=np.float32)
     scenario_index = FORMAL_LEO_WEAK_SCENARIOS.index(scenario)
     token_digit = (
@@ -90,26 +92,38 @@ def _npz(
         else scenario_index + 1
     )
     if query:
+        query_manifest = {
+            "schema": QUERY_SCHEMA,
+            "scenario": scenario,
+            "query_truth_included": False,
+            "query_role_included": False,
+            "query_true_batch_class_count_included": False,
+            "query_class_quota_included": False,
+            "query_ordering_hint_included": False,
+            "token_scheme": "hmac_sha256_opaque_v1",
+        }
+        if query_manifest_policy is not None:
+            query_manifest["query_policy"] = query_manifest_policy
         payload = {
             "query_leo_weak_iq": iq,
-            "query_tokens": np.asarray(["qid_" + str(token_digit) * 64]),
-            "query_overlay_tokens": np.asarray(["oid_" + "2" * 64]),
-            "query_satellite_seeds": np.asarray([11], dtype=np.int64),
-            "query_post_channel_iq_sha256": np.asarray([iq_row_sha256(iq[0])]),
+            "query_tokens": np.asarray(
+                [
+                    "qid_" + f"{token_digit * 10000 + index:064x}"
+                    for index in range(count)
+                ]
+            ),
+            "query_overlay_tokens": np.asarray(
+                [
+                    "oid_" + f"{token_digit * 20000 + index:064x}"
+                    for index in range(count)
+                ]
+            ),
+            "query_satellite_seeds": np.full(count, 11, dtype=np.int64),
+            "query_post_channel_iq_sha256": np.asarray(
+                [iq_row_sha256(row) for row in iq]
+            ),
             "manifest_json": np.asarray(
-                json.dumps(
-                    {
-                        "schema": QUERY_SCHEMA,
-                        "scenario": scenario,
-                        "query_truth_included": False,
-                        "query_role_included": False,
-                        "query_true_batch_class_count_included": False,
-                        "query_class_quota_included": False,
-                        "query_ordering_hint_included": False,
-                        "token_scheme": "hmac_sha256_opaque_v1",
-                    },
-                    sort_keys=True,
-                )
+                json.dumps(query_manifest, sort_keys=True)
             ),
         }
         if extra:
@@ -169,6 +183,9 @@ def _package(
     reuse_last_scenario_tokens: bool = False,
     support_k: int = 1,
     actual_support_per_class: int | None = None,
+    query_counts: tuple[int, int, int] = (1, 1, 1),
+    query_policy: str | None = None,
+    query_manifest_policy: str | None = None,
 ):
     root = tmp_path / "predictor"
     root.mkdir()
@@ -189,7 +206,7 @@ def _package(
                 schema=f"test.{role}.v1",
             )
         )
-    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+    for scenario_index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS):
         support = root / f"support_{scenario}.npz"
         query = root / f"query_{scenario}.npz"
         reuse_token = (
@@ -208,6 +225,10 @@ def _package(
             query,
             scenario=scenario,
             query=True,
+            query_count=query_counts[scenario_index],
+            query_manifest_policy=(
+                query_manifest_policy if scenario_index == 0 else None
+            ),
             extra=extra_query_member and scenario == FORMAL_LEO_WEAK_SCENARIOS[0],
             reuse_first_scenario_token=reuse_token,
         )
@@ -251,6 +272,8 @@ def _package(
         "candidate_lock_sha256": "9" * 64,
         **PHASE2_FULL_CONTRACT,
     }
+    if query_policy is not None:
+        metadata["query_policy"] = query_policy
     seal = tmp_path / "predictor.seal.json"
     write_predictor_package_manifest_and_seal(
         root,
@@ -273,12 +296,70 @@ def test_preflight_verifies_every_member_before_iq_materialization(tmp_path: Pat
 
 def test_predictor_package_accepts_opaque_unlabeled_query(tmp_path: Path) -> None:
     root, seal, digest = _package(tmp_path)
-    _support, query, _manifest, audit = load_verified_stage2_predictor_bundle(
+    _support, query, manifest, audit = load_verified_stage2_predictor_bundle(
         root, detached_seal_path=seal, expected_seal_sha256=digest
     )
     assert query[FORMAL_LEO_WEAK_SCENARIOS[0]]["query_tokens"][0].startswith("qid_")
+    assert "query_policy" not in manifest
+    assert audit["query_count"] == 1
+    assert "query_count_by_scenario" not in audit
     assert audit["sample_level_post_channel_iq_sha256_status"] == "PASS"
     assert audit["cross_scenario_physical_sample_token_disjointness"] == "PASS"
+
+
+def test_manifest_all_loader_materializes_variable_query_counts(tmp_path: Path) -> None:
+    root, seal, digest = _package(
+        tmp_path,
+        query_counts=(17, 16, 15),
+        query_policy="manifest_all",
+    )
+    _support, query, manifest, audit = load_verified_stage2_predictor_bundle(
+        root,
+        detached_seal_path=seal,
+        expected_seal_sha256=digest,
+    )
+    expected_counts = dict(zip(FORMAL_LEO_WEAK_SCENARIOS, (17, 16, 15)))
+    assert manifest["query_policy"] == "manifest_all"
+    assert {
+        scenario: len(arrays["query_tokens"])
+        for scenario, arrays in query.items()
+    } == expected_counts
+    assert audit["query_count_by_scenario"] == expected_counts
+    assert "query_count" not in audit
+
+
+def test_legacy_loader_still_rejects_variable_query_counts(tmp_path: Path) -> None:
+    root, seal, digest = _package(tmp_path, query_counts=(17, 16, 15))
+    with pytest.raises(
+        PredictorPackageError,
+        match="support/query count drifts across LEO_weak scenarios",
+    ):
+        load_verified_stage2_predictor_bundle(
+            root,
+            detached_seal_path=seal,
+            expected_seal_sha256=digest,
+        )
+
+
+def test_manifest_all_rejects_unknown_package_query_policy(tmp_path: Path) -> None:
+    with pytest.raises(PredictorPackageError, match="query.policy"):
+        _package(tmp_path, query_policy="balance_to_max")
+
+
+def test_manifest_all_rejects_policy_declaration_inside_query_artifact(
+    tmp_path: Path,
+) -> None:
+    root, seal, digest = _package(
+        tmp_path,
+        query_policy="manifest_all",
+        query_manifest_policy="manifest_all",
+    )
+    with pytest.raises(PredictorPackageError, match="embedded manifest drift"):
+        load_verified_stage2_predictor_bundle(
+            root,
+            detached_seal_path=seal,
+            expected_seal_sha256=digest,
+        )
 
 
 @pytest.mark.parametrize("support_k", [1, 5, 10, 20])

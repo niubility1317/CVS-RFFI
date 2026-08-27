@@ -8,6 +8,7 @@ from types import SimpleNamespace
 
 import numpy as np
 import pytest
+import torch
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,6 +17,7 @@ if str(SCRIPT_ROOT) not in sys.path:
     sys.path.insert(0, str(SCRIPT_ROOT))
 
 import build_cvs_stage2_predictor_bundle as builder  # noqa: E402
+import cvsrffi.stage2_predictor_entry as predictor_entry  # noqa: E402
 from cvsrffi.stage2_ablation_feature_builder import (  # noqa: E402
     _registered_handles,
 )
@@ -1256,6 +1258,124 @@ def test_manifest_all_includes_every_query_and_preserves_truth_boundary(
         for right in range(left + 1, len(scenario_token_sets))
     )
     assert set(all_query_tokens) == set(truth_tokens)
+
+
+def test_manifest_all_package_is_consumed_by_formal_entry_without_rebalancing(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    arrays = _canonical_manifest_all_arrays()
+    _patch_manifest_all_cache(monkeypatch, arrays)
+    args = _manifest_all_args(tmp_path, "manifest-all-formal-entry")
+    result = builder.build(args, token_secret=b"e" * 32)
+    expected_counts = dict(
+        zip(builder.FORMAL_LEO_WEAK_SCENARIOS, (17, 16, 15))
+    )
+    manifest = json.loads(
+        (args.predictor_out_root / "package_manifest.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    members = {
+        str(item["artifact_role"]): item for item in manifest["members"]
+    }
+    descriptor = predictor_entry._request_descriptor
+    tta_policy = {"base_views": 1, "max_views": 5}
+    request = {
+        "request_id": "manifest-all-entry",
+        "row_id": "manifest-all-entry-row",
+        "stage": manifest["stage"],
+        "receiver": manifest["receiver"],
+        "candidate_lock_sha256": manifest["candidate_lock_sha256"],
+        "package_root_sha256": manifest["package_root_sha256"],
+        "registered_class_count": manifest["registered_class_count"],
+        "registered_classes": manifest["registered_classes"],
+        "satellite_seed": manifest["seed"],
+        "k_shot": 2,
+        "scenarios": list(builder.FORMAL_LEO_WEAK_SCENARIOS),
+        "checkpoint_artifact": descriptor(members["checkpoint"]),
+        "adapter_artifact": descriptor(members["adapter"]),
+        "head_artifact": descriptor(members["head"]),
+        "support_artifacts": [
+            descriptor(members[f"support:{scenario}"])
+            for scenario in builder.FORMAL_LEO_WEAK_SCENARIOS
+        ],
+        "query_artifacts": [
+            descriptor(members[f"query:{scenario}"])
+            for scenario in builder.FORMAL_LEO_WEAK_SCENARIOS
+        ],
+        "phase2_runtime_isolation_evidence": {
+            "sealed_inference_package_sha256": result[
+                "predictor_package_seal_sha256"
+            ]
+        },
+        "tta_policy": tta_policy,
+        "tta_policy_sha256": "1" * 64,
+        "runtime_code_sha256": "2" * 64,
+    }
+    adapter_config = {
+        "trainable_parameters": 0,
+        "adapt_epochs": 0,
+        "persistent_state_bytes": 0,
+    }
+
+    monkeypatch.setattr(
+        predictor_entry,
+        "validate_predictor_request",
+        lambda _request: None,
+    )
+
+    def load_json(_root, item):
+        if item["artifact_role"] == "tta_policy":
+            return tta_policy
+        if item["artifact_role"] == "adapter":
+            return adapter_config
+        return {}
+
+    monkeypatch.setattr(predictor_entry, "load_json_artifact_same_fd", load_json)
+    monkeypatch.setattr(
+        predictor_entry,
+        "load_torchscript_backbone_same_fd",
+        lambda *_args, **_kwargs: object(),
+    )
+
+    def predict(_model, _support, query, **_kwargs):
+        count = len(query["query_tokens"])
+        predictions = {
+            name: np.zeros(count, dtype=np.int64)
+            for name in (
+                "candidate_after",
+                "candidate_before",
+                "identity_after",
+                "identity_before",
+                "direct",
+            )
+        }
+        predictions["shared_view_counts"] = np.ones(count, dtype=np.int64)
+        return predictions, {
+            "candidate_query_latency_ms": float(count),
+            "support_enrollment_backbone_forwards": 0,
+            "fft_descriptor_count": 0,
+        }
+
+    monkeypatch.setattr(predictor_entry, "predict_all_streams", predict)
+
+    payload, metadata, audit = predictor_entry.prepare_role_blind_prediction(
+        request,
+        predictor_package_root=args.predictor_out_root,
+        detached_seal_path=Path(result["predictor_package_seal"]),
+        expected_seal_sha256=result["predictor_package_seal_sha256"],
+        device=torch.device("cpu"),
+    )
+
+    assert manifest["query_policy"] == "manifest_all"
+    assert metadata["prediction_row_count"] == sum(expected_counts.values())
+    assert {
+        scenario: int(np.count_nonzero(payload["scenarios"] == scenario))
+        for scenario in builder.FORMAL_LEO_WEAK_SCENARIOS
+    } == expected_counts
+    assert audit["materialization"]["query_count_by_scenario"] == expected_counts
+    assert "query_count" not in audit["materialization"]
 
 
 @pytest.mark.parametrize(

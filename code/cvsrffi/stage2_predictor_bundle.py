@@ -72,6 +72,7 @@ MANIFEST_REQUIRED_KEYS = {
     "package_root_sha256",
     *PHASE2_FULL_CONTRACT.keys(),
 }
+MANIFEST_OPTIONAL_KEYS = {"query_policy"}
 SEAL_REQUIRED_KEYS = {
     "schema",
     "manifest_relative_path",
@@ -476,10 +477,13 @@ def write_predictor_package_manifest_and_seal(
             raise PredictorPackageError(f"member descriptor drift: {item['relative_path']}")
     root_digest = package_root_sha256(checked_members)
     payload = {**dict(manifest_metadata), "members": checked_members, "package_root_sha256": root_digest}
-    if set(payload) != MANIFEST_REQUIRED_KEYS:
+    manifest_keys = set(payload)
+    missing_keys = MANIFEST_REQUIRED_KEYS - manifest_keys
+    unexpected_keys = manifest_keys - MANIFEST_REQUIRED_KEYS - MANIFEST_OPTIONAL_KEYS
+    if missing_keys or unexpected_keys:
         raise PredictorPackageError(
-            f"package manifest schema mismatch: missing={sorted(MANIFEST_REQUIRED_KEYS-set(payload))}, "
-            f"unexpected={sorted(set(payload)-MANIFEST_REQUIRED_KEYS)}"
+            f"package manifest schema mismatch: missing={sorted(missing_keys)}, "
+            f"unexpected={sorted(unexpected_keys)}"
         )
     _validate_manifest(payload)
     by_role = {item["artifact_role"]: item for item in checked_members}
@@ -519,8 +523,13 @@ def write_predictor_package_manifest_and_seal(
 
 
 def _validate_manifest(payload: dict[str, Any]) -> list[dict[str, Any]]:
-    if set(payload) != MANIFEST_REQUIRED_KEYS:
+    manifest_keys = set(payload)
+    if MANIFEST_REQUIRED_KEYS - manifest_keys or (
+        manifest_keys - MANIFEST_REQUIRED_KEYS - MANIFEST_OPTIONAL_KEYS
+    ):
         raise PredictorPackageError("predictor package manifest exact schema mismatch")
+    if "query_policy" in payload and payload["query_policy"] != "manifest_all":
+        raise PredictorPackageError("predictor package query policy invalid")
     expected = {
         "schema": PREDICTOR_PACKAGE_MANIFEST_SCHEMA,
         "artifact_stage": PREDICTOR_INPUT_STAGE,
@@ -781,6 +790,8 @@ def load_verified_stage2_predictor_bundle(
     observed_tokens: set[str] = set()
     reference_support_count: int | None = None
     reference_query_count: int | None = None
+    query_count_by_scenario: dict[str, int] = {}
+    allows_variable_query_counts = manifest.get("query_policy") == "manifest_all"
     root = Path(package_root)
     for value in scenarios:
         support, support_manifest = _materialize_npz(root, by_role[f"support:{value}"])
@@ -795,6 +806,7 @@ def load_verified_stage2_predictor_bundle(
         _validate_query_arrays(query, query_manifest, scenario=value)
         support_tokens = np.asarray(support["support_pool_tokens"]).astype(str).tolist()
         query_tokens = np.asarray(query["query_tokens"]).astype(str).tolist()
+        query_count_by_scenario[value] = len(query_tokens)
         if set(support_tokens) & set(query_tokens):
             raise PredictorPackageError("support/query opaque token overlap")
         scenario_tokens = set(support_tokens) | set(query_tokens)
@@ -808,7 +820,10 @@ def load_verified_stage2_predictor_bundle(
             reference_query_count = len(query_tokens)
         elif (
             len(support_tokens) != reference_support_count
-            or len(query_tokens) != reference_query_count
+            or (
+                not allows_variable_query_counts
+                and len(query_tokens) != reference_query_count
+            )
         ):
             raise PredictorPackageError(
                 "support/query count drifts across LEO_weak scenarios"
@@ -820,7 +835,6 @@ def load_verified_stage2_predictor_bundle(
         "iq_payload_materialized": True,
         "materialized_scenarios": list(scenarios),
         "support_pool_count": int(reference_support_count or 0),
-        "query_count": int(reference_query_count or 0),
         "sample_level_post_channel_iq_sha256_status": "PASS",
         "cross_scenario_physical_sample_token_disjointness": (
             "PASS"
@@ -828,4 +842,8 @@ def load_verified_stage2_predictor_bundle(
             else "NOT_CHECKED_SINGLE_SCENARIO"
         ),
     }
+    if allows_variable_query_counts:
+        audit["query_count_by_scenario"] = query_count_by_scenario
+    else:
+        audit["query_count"] = int(reference_query_count or 0)
     return support_by_scenario, query_by_scenario, manifest, {**audit, "seal": seal}

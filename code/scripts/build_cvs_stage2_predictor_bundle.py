@@ -1233,6 +1233,8 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
         "candidate_lock_sha256": candidate_lock_sha256,
         **PHASE2_FULL_CONTRACT,
     }
+    if query_policy == "manifest_all":
+        metadata["query_policy"] = "manifest_all"
     _manifest_path, _seal_path, package_manifest, _seal = (
         write_predictor_package_manifest_and_seal(
             predictor_root,
