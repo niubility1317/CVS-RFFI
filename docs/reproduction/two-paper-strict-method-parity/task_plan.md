@@ -7,8 +7,8 @@
 ## 阶段
 
 - [x] 现状审计：三路独立审计完成，见`docs/audits/2026-08-27-paper-reproduction-traceability.md`。
-- [x] 严格方法设计：已形成`docs/superpowers/specs/2026-08-27-two-paper-strict-method-parity-design.md`，等待用户审阅。
-- [ ] 实施计划：规格审阅通过后，写入逐测试、逐文件的实现计划。
+- [x] 严格方法设计：用户确认采用论文一致＋未公开默认值路线。
+- [ ] 实施计划：写入逐测试、逐文件的实现计划。
 - [ ] Tweak严格pipeline：测试先行实现训练、校准、聚合与评测。
 - [ ] Hu严格pipeline：测试先行实现结构、增强、训练、微调与评测。
 - [ ] 反向审计、提交与远端核验。
@@ -17,7 +17,7 @@
 
 - 保持paper reproduction和CVS extension分离。
 - 不启动训练、不访问或下载数据集、不连接N607。
-- 未公开方法细节必须用`AUTHOR_REQUIRED`锁定，不能填入猜测值。
+- 未公开方法细节必须使用写明理由的`UNPUBLISHED_DEFAULT`，不能归因于作者设定。
 
 ## 已知错误
 
