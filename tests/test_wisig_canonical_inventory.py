@@ -1,6 +1,7 @@
 import hashlib
 import json
 import pickle
+import sqlite3
 from pathlib import Path
 
 import numpy as np
@@ -8,6 +9,7 @@ import pytest
 
 from cvsrffi.wisig_canonical_inventory import (
     RawRecordRef,
+    build_inventory,
     canonical_coordinate,
     canonical_physical_id,
     iter_wisig_records,
@@ -136,3 +138,74 @@ def test_reader_resolves_labels_and_traverses_deterministically(tmp_path: Path):
     assert {row.eq_id for row in first} == {"1"}
     with pytest.raises((AttributeError, TypeError)):
         first[0].eq_id = "changed"
+
+
+def test_inventory_merges_overlapping_assets_with_summary_counts(tmp_path: Path):
+    many_tx = _write_payload(
+        tmp_path / "ManyTx.pkl", _payload(values=(1.0, 2.0, 3.0), num_tx=1, num_rx=1, num_days=1)
+    )
+    many_rx = _write_payload(
+        tmp_path / "ManyRx.pkl", _payload(values=(1.0, 2.0), num_tx=1, num_rx=1, num_days=1)
+    )
+
+    summary = build_inventory(
+        {"ManyTx": many_tx, "ManyRx": many_rx}, tmp_path / "canonical.sqlite", equalized=1
+    )
+
+    assert summary.source_record_count == 5
+    assert summary.canonical_record_count == 3
+    assert summary.eligible_record_count == 3
+    assert summary.merged_duplicate_count == 2
+    assert summary.conflict_count == 0
+
+
+def test_inventory_marks_different_digest_at_same_coordinate_ineligible(tmp_path: Path):
+    first = _write_payload(
+        tmp_path / "ManyTx.pkl", _payload(values=(1.0,), num_tx=1, num_rx=1, num_days=1)
+    )
+    conflicting = _write_payload(
+        tmp_path / "ManyRx.pkl", _payload(values=(9.5,), num_tx=1, num_rx=1, num_days=1)
+    )
+
+    summary = build_inventory(
+        {"ManyTx": first, "ManyRx": conflicting}, tmp_path / "canonical.sqlite", equalized=1
+    )
+
+    assert summary.source_record_count == 2
+    assert summary.canonical_record_count == 1
+    assert summary.eligible_record_count == 0
+    assert summary.merged_duplicate_count == 1
+    assert summary.conflict_count == 1
+
+
+def test_inventory_uses_asset_priority_only_for_preferred_reference(tmp_path: Path):
+    asset_paths = {}
+    for asset_name in ("ManyTx", "ManyRx", "SingleDay", "ManySig"):
+        asset_paths[asset_name] = _write_payload(
+            tmp_path / f"{asset_name}.pkl",
+            _payload(values=(1.0,), num_tx=1, num_rx=1, num_days=1),
+        )
+    sqlite_path = tmp_path / "canonical.sqlite"
+
+    summary = build_inventory(asset_paths, sqlite_path, equalized=1)
+    with sqlite3.connect(sqlite_path) as connection:
+        preferred_asset, preferred_source_record_index = connection.execute(
+            "SELECT preferred_asset, preferred_source_record_index FROM canonical_records"
+        ).fetchone()
+
+    assert summary.source_record_count == 4
+    assert summary.canonical_record_count == 1
+    assert summary.merged_duplicate_count == 3
+    assert preferred_asset == "ManySig"
+    assert preferred_source_record_index == 0
+
+
+def test_inventory_rejects_existing_sqlite_output(tmp_path: Path):
+    asset = _write_payload(
+        tmp_path / "ManyTx.pkl", _payload(values=(1.0,), num_tx=1, num_rx=1, num_days=1)
+    )
+    sqlite_path = tmp_path / "canonical.sqlite"
+    sqlite_path.write_text("already exists", encoding="utf-8")
+
+    with pytest.raises(FileExistsError):
+        build_inventory({"ManyTx": asset}, sqlite_path, equalized=1)

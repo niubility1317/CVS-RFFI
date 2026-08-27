@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import pickle
+import sqlite3
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterator, Mapping
@@ -33,6 +34,22 @@ class RawRecordRef:
     eq_id: str
     sig_id: str
     iq_sha256: str
+
+
+@dataclass(frozen=True)
+class InventorySummary:
+    source_record_count: int
+    canonical_record_count: int
+    eligible_record_count: int
+    merged_duplicate_count: int
+    conflict_count: int
+
+
+_ASSET_PRIORITY = {"ManySig": 0, "SingleDay": 1, "ManyRx": 2, "ManyTx": 3}
+
+
+def _asset_preference_key(asset_name: str, source_record_index: int) -> tuple[int, str, int]:
+    return (_ASSET_PRIORITY.get(asset_name, len(_ASSET_PRIORITY)), asset_name, source_record_index)
 
 
 def canonical_coordinate(
@@ -168,3 +185,142 @@ def iter_wisig_records(
                         iq_sha256=iq_sha256,
                     )
                     source_record_index += 1
+
+
+def build_inventory(
+    asset_paths: Mapping[str, str | Path],
+    sqlite_path: str | Path,
+    equalized: Any = 1,
+) -> InventorySummary:
+    """Build a non-overwriting canonical WiSig inventory from named PKL assets."""
+
+    output_path = Path(sqlite_path)
+    if output_path.exists():
+        raise FileExistsError(f"SQLite output already exists: {output_path}")
+
+    connection: sqlite3.Connection | None = None
+    try:
+        connection = sqlite3.connect(output_path)
+        connection.execute("BEGIN")
+        connection.executescript(
+            """
+            CREATE TABLE canonical_records (
+              physical_sample_id TEXT PRIMARY KEY,
+              tx_id TEXT NOT NULL,
+              rx_id TEXT NOT NULL,
+              day_id TEXT NOT NULL,
+              eq_id TEXT NOT NULL,
+              sig_id TEXT NOT NULL,
+              iq_sha256 TEXT NOT NULL,
+              preferred_asset TEXT NOT NULL,
+              preferred_source_record_index INTEGER NOT NULL,
+              eligible INTEGER NOT NULL CHECK (eligible IN (0,1))
+            );
+            CREATE TABLE record_sources (
+              physical_sample_id TEXT NOT NULL,
+              asset_name TEXT NOT NULL,
+              dataset_path TEXT NOT NULL,
+              source_record_index INTEGER NOT NULL,
+              iq_sha256 TEXT NOT NULL,
+              PRIMARY KEY (physical_sample_id, asset_name, source_record_index)
+            );
+            CREATE TABLE identity_conflicts (
+              physical_sample_id TEXT NOT NULL,
+              first_iq_sha256 TEXT NOT NULL,
+              conflicting_iq_sha256 TEXT NOT NULL,
+              asset_name TEXT NOT NULL
+            );
+            """
+        )
+        for asset_name, dataset_path in sorted(asset_paths.items(), key=lambda item: str(item[0])):
+            asset_name_text = str(asset_name)
+            for record in iter_wisig_records(dataset_path, asset_name_text, equalized=equalized):
+                connection.execute(
+                    """
+                    INSERT INTO record_sources (
+                      physical_sample_id, asset_name, dataset_path, source_record_index, iq_sha256
+                    ) VALUES (?, ?, ?, ?, ?)
+                    """,
+                    (
+                        record.physical_sample_id,
+                        record.asset_name,
+                        record.dataset_path,
+                        record.source_record_index,
+                        record.iq_sha256,
+                    ),
+                )
+                existing = connection.execute(
+                    """
+                    SELECT iq_sha256, preferred_asset, preferred_source_record_index
+                    FROM canonical_records WHERE physical_sample_id = ?
+                    """,
+                    (record.physical_sample_id,),
+                ).fetchone()
+                if existing is None:
+                    connection.execute(
+                        """
+                        INSERT INTO canonical_records (
+                          physical_sample_id, tx_id, rx_id, day_id, eq_id, sig_id, iq_sha256,
+                          preferred_asset, preferred_source_record_index, eligible
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+                        """,
+                        (
+                            record.physical_sample_id,
+                            record.tx_id,
+                            record.rx_id,
+                            record.day_id,
+                            record.eq_id,
+                            record.sig_id,
+                            record.iq_sha256,
+                            record.asset_name,
+                            record.source_record_index,
+                        ),
+                    )
+                elif existing[0] != record.iq_sha256:
+                    connection.execute(
+                        """
+                        INSERT INTO identity_conflicts (
+                          physical_sample_id, first_iq_sha256, conflicting_iq_sha256, asset_name
+                        ) VALUES (?, ?, ?, ?)
+                        """,
+                        (record.physical_sample_id, existing[0], record.iq_sha256, record.asset_name),
+                    )
+                    connection.execute(
+                        "UPDATE canonical_records SET eligible = 0 WHERE physical_sample_id = ?",
+                        (record.physical_sample_id,),
+                    )
+                elif _asset_preference_key(record.asset_name, record.source_record_index) < _asset_preference_key(
+                    existing[1], existing[2]
+                ):
+                    connection.execute(
+                        """
+                        UPDATE canonical_records
+                        SET preferred_asset = ?, preferred_source_record_index = ?
+                        WHERE physical_sample_id = ?
+                        """,
+                        (record.asset_name, record.source_record_index, record.physical_sample_id),
+                    )
+
+        source_record_count = connection.execute("SELECT COUNT(*) FROM record_sources").fetchone()[0]
+        canonical_record_count = connection.execute("SELECT COUNT(*) FROM canonical_records").fetchone()[0]
+        eligible_record_count = connection.execute(
+            "SELECT COUNT(*) FROM canonical_records WHERE eligible = 1"
+        ).fetchone()[0]
+        conflict_count = connection.execute("SELECT COUNT(*) FROM identity_conflicts").fetchone()[0]
+        connection.commit()
+        return InventorySummary(
+            source_record_count=source_record_count,
+            canonical_record_count=canonical_record_count,
+            eligible_record_count=eligible_record_count,
+            merged_duplicate_count=source_record_count - canonical_record_count,
+            conflict_count=conflict_count,
+        )
+    except Exception:
+        if connection is not None:
+            connection.rollback()
+        if output_path.exists():
+            output_path.unlink()
+        raise
+    finally:
+        if connection is not None:
+            connection.close()
