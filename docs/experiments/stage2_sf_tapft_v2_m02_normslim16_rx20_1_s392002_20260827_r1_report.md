@@ -76,3 +76,12 @@
 - S15权限：`query_opened/query_truth_opened/query_role_opened/source_opened/target_eval_opened`全部为`false`，`nonpermitted_changed_names=[]`，support_count=60。
 - 4500步结构行会对4个OOF fold分别完整执行4500步，再进行一次选中步数的全support refit；不存在训练早停。因此本轮预计还需约8–9小时。该估计不构成结果或停止条件。
 - S15必须等待同run S00锚点后才能判定非劣，目前保持`PENDING_ANCHOR`。
+
+### 用户定向优先级裁剪
+
+- 2026-08-27 14:32 CST，用户明确要求停止不必要实验、加速重要训练。停止前只读回查确认S14/S15已完整闭合，其余14行均属于本run、冻结checkout和各自row/output root。
+- 保留关键集合：S00锚点、S02`t3-only`、S05`fuse-only`、S08`t3+fuse`、S10全部norm weight-only、S11全部norm bias-only，以及已完成的S14/S15。
+- 定点停止：S01、S03、S04、S06、S07、S09、S12、S13；状态统一为`USER_DIRECTED_PRUNED/NO_PERFORMANCE_RESULT`，不得从partial状态推断性能，也不自动恢复或补跑。
+- 仅向上述8行对应的child PID和wrapper PID发送`TERM`；独立读回确认16个目标PID均已退出，S00/S02/S05/S08/S10/S11仍按原PID运行。
+- 裁剪后活跃训练由14行降至6行：GPU0/1/2/4各1行，GPU5保留weight/bias两项正交实验；GPU3/6/7释放。所有selection、bundle、日志、运行时和partial输出均保留，未删除或覆盖任何artifact。
+- 最终闭合条件随用户优先级调整为关键集合8/8，而非原始16/16；原预登记指标门槛和S00同run锚点不变。
