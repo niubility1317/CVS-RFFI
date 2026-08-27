@@ -1,19 +1,19 @@
 # SF-TAPFT H6 P0原位适配与轻量部署设计追踪
 
-来源：用户提供的《SF-TAPFT从研究型4-fold选择流程转为full-support星上适配后的继续优化报告》，2026-08-28。用户已确认后续按推荐顺序执行。当前状态：`LOCAL_VERIFIED/N607_PENDING`。
+来源：用户提供的《SF-TAPFT从研究型4-fold选择流程转为full-support星上适配后的继续优化报告》，2026-08-28。用户已确认后续按推荐顺序执行。当前状态：`ANALYZED/P0C_PROMOTED`。
 
 |ID|设计要求|状态|落地与证据计划|
 |---|---|---|---|
 |P0-01|部署训练不再无条件深拷贝完整checkpoint模型|local_verified|`fit_sf_tapft_inplace`复用调用方独占模型；默认研究入口仍复制|
 |P0-02|只保留许可参数训练前锚点，不复制完整初始`state_dict`|local_verified|许可参数CPU锚点、优化器可达性检查和冻结buffer等值检查通过|
 |P0-03|把缓存后缀收敛为清晰、稳定、可测试的部署接口|local_verified|`encode_h6_prefix`、`forward_h6_suffix`和引用型`H6SuffixTrainer`已实现|
-|P0-04|输出checkpoint绑定的紧凑delta，避免把完整适配模型当作部署状态|local_verified|delta v2从许可锚点计算；严格loader及query closure支持delta-only；历史v1继续兼容|
-|P0-05|报告常驻推理内存、适配额外峰值、cache字节和delta字节|local_verified_measurement_pending|无新增依赖的Windows RSS采样、CUDA峰值、预热3次/正式10次汇总已实现；真实N607数值待测|
-|P0-06|扩展缓存等价与原位训练回归测试|local_verified|相关5文件共99项测试通过；真实checkpoint parity待N607 smoke|
-|P0-07|FP16训练结束后执行一次FP32 full-path support安全复核|local_verified|有限性、argmax、margin和逐类recall已检查；失败自动恢复许可锚点并FP32重训|
-|P0-08|原位模式不得改变H6的目标函数、训练日程和许可参数集合|local_verified_remote_parity_pending|矩阵仅改变所有权/cache精度/输出形态；同row真实prediction待闭合|
+|P0-04|输出checkpoint绑定的紧凑delta，避免把完整适配模型当作部署状态|verified|4628B delta v2完成严格加载和Q180真实prediction；完整bundle缩小99.8922%|
+|P0-05|报告常驻推理内存、适配额外峰值、cache字节和delta字节|verified|每行3次预热+10次正式N607测量；P0C wall-1.85%、RSS-0.83%、CUDA allocated-6.85%|
+|P0-06|扩展缓存等价与原位训练回归测试|verified|本地99项测试通过；真实checkpoint support安全和Q180 parity闭合|
+|P0-07|FP16训练结束后执行一次FP32 full-path support安全复核|verified|P0A/P0B均0条prediction和0个逐类recall不一致，未触发fallback|
+|P0-08|原位模式不得改变H6的目标函数、训练日程和许可参数集合|verified|P0A/P0B/P0C Q180均150/180且逐类完全一致；P0C晋级|
 |P0-09|不得新增逐成员hash、签名或额外发布门|rejected_extra_gate|依照`Exclusive Minimal Experiment Workflow`，使用Git提交、单一release归档SHA和既有状态审计|
-|P1-01|在新的未暴露合法capsule上比较D0–D4|deferred_after_p0|D0 H6、D1 Q2A、D2 Q2B、D3 R1-T、D4 head-only class-CVaR；P0闭合后另行预登记|
+|P1-01|在新的未暴露合法capsule上比较D0–D4|next_stage_authorized|P0C已晋级；下一步预登记D0 H6、D1 Q2A、D2 Q2B、D3 R1-T、D4 head-only class-CVaR|
 |P1-02|不继续当前HardPair、Adapter、完整`t3`、frequency或EMA路线|frozen|从后续最小矩阵排除，不补跑已证伪路线|
 |P2-01|固定晋级结构后扩展receiver、三scene、K=10/5/2和多seed|deferred_after_p1|只对P1晋级候选执行，不作为P0/P1前置门|
 
