@@ -1,55 +1,214 @@
-# SF-TAPFT Fast-Strong V3实验报告
+# SF-TAPFT Fast-Strong V3全面实验报告
 
-## 预登记
+## 1.结论先行
 
-- 状态：`LOCAL_VERIFIED`。
-- run ID：`stage2_sf_tapft_fast_strong_v3_s392002_20260827_r1`。
-- Git提交：`5ec7f1fac38ef674e613f2e07a49d7338715f3a8`。
-- 科学边界：`p2_min_v1`、`VALIDATED_ONCE`，复用capsule=`d18-enrollment-before-rx20-1-seed713101-k10-smoke-reuse`和split=`stage2b-rx20-1-seed713101-before-support-prefix`；旧6类，每类K=10，共60条独立物理support；不注册新类。
-- 本地环境/CWD：Conda`ssr-gpu`；`E:\type10-7\github_publish\CVS-RFFI-repo\.worktrees\meta-adapter-tri-r4-v1-20260824`。
-- N607环境/CWD：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；`/home/szu2070436088/2510044040/CV-SincNet`。
-- 矩阵：`configs/stage2_sf_tapft_fast_strong_v3_s392002_20260827.json`。
-- 输入checkpoint：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`。
-- 输入support：`/home/szu2070436088/2510044040/CV-SincNet/runs/stage2b_sclba_a_t5t25_s713101_20260824_v1/input/support_rx20_1_k10_clear_smoke.npz`。
-- 输出根：`/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_tapft_fast_strong_v3_s392002_20260827_r1`，每行使用不可覆盖子目录。
-- 日志根：`/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_sf_tapft_fast_strong_v3_s392002_20260827_r1`。
-- GPU分配：GPU0运行H0/H1，GPU1运行H2/H3，GPU2运行H4/H5，GPU3运行H6；任何GPU均不超过两个本run训练任务，实际启动前以资源盘点为准。
-- 启动命令模板：`/usr/bin/time -v <python> code/scripts/run_sf_tapft_slim_matrix_row.py --matrix <matrix> --row-id <H0-H6> --output-dir <run-root>/<row>/output --device cuda:<gpu> --folds 4`。
-- 直接技术停止规则：仅在协议/query泄漏、错误checkout或输入、输出碰撞、无prediction闭合、launcher级故障，或至少两行出现相同确定性pre-prediction异常时，定点停止本run所属进程树。低性能不停止。
-- 预期artifact：每行`selection.json`、`sf_tapft_clean_single_bundle.pt`、`sf_tapft_delta_bundle.pt`、stdout/stderr、GNU time和GPU采样；prediction闭合后再由独立scorer连接truth。
+本轮已完成设计落地、H0–H6七行support-only矩阵、真实checkpoint无query smoke、N607发布、最大Q180 truth-last验证和同row统计分析。run ID为`stage2_sf_tapft_fast_strong_v3_s392002_20260827_r1`，最终状态为`ANALYZED`。
 
-## 因果矩阵
+- H6是support侧赢家：`head+t3.norm(weight+bias)`、300步S15轨迹、150步低学习率尾段、70步缓存head-only精修。4-fold OOF BA=86.1111%，最低fold BA=77.7778%，温度后NLL=0.456572；可训练/实际变化元素均为1152，FP16 delta bundle为4500B。
+- H6在最大真实Q180上有明确正向域适应作用：BA从72.2222%提高到83.3333%（+11.1111pp），class floor从10.0000%提高到56.6667%（+46.6667pp），NLL从0.870038降到0.501858，ECE-10从0.130062降到0.074772。24条错转对、4条对转错，双侧精确McNemar检验`p=0.000180`。
+- H6没有超过M02历史上界。相对M02锚点BA=86.67%、floor=60%、NLL=0.5094，H6的BA低3.3333pp、floor低3.3333pp，仅NLL改善0.007542。结论为`POSITIVE_DA_BUT_NO_PROMOTION_OVER_M02`。
+- 相对同一Q180上的F2，H6的BA低0.5556pp、floor高3.3334pp、NLL低0.008938、ECE高0.004863。H6更均衡，但没有全面支配F2。
 
-|行|相对上一行的唯一主要变化|总优化步|训练主干forward上限|
-|---|---|---:|---:|
-|H0|S15轨迹，300步/ref4500|300|300|
-|H1|追加150步局部余弦尾段|450|450|
-|H2|将尾段由150扩至300步|600|600|
-|H3|H1后追加70步缓存head-only精修|520|450|
-|H4|H3加入许可delta EMA，beta=0.99|520|450|
-|H5|H4加入class-adaptive rho与可靠性head anchor|520|450|
-|H6|S02的t3-only Norm结构叠加H3流程|520|450|
+## 2.协议与最大Query口径
 
-所有行均保持balanced CE、label smoothing=0.05、LOO-proto权重0.5、L2-SP=1e-4、scale=8、KD=0和support OOF温度拟合。OOF温度不改变类别argmax；欠拟合行仍必须同时通过BA与floor，不能仅凭NLL晋级。
+- `protocol_schema=p2_min_v1`，`phase2_data_status=VALIDATED_ONCE`。
+- capsule=`d18-enrollment-before-rx20-1-seed713101-k10-smoke-reuse`，split=`stage2b-rx20-1-seed713101-before-support-prefix`。
+- ADV3B02 CORE90 checkpoint；receiver=`20-1`，scene=`leo_clear_weak`。
+- 旧6类，不注册新类；报告状态为`DA0_REG0`和`DA1_REG0`。
+- support为旧6类每类K=10，共60条独立物理样本，不进入query。
+- Q60为support pool的每类rank10–19；Q120为独立query分区每类20条。两组opaque query ID交集为0，合并后每类30条、共180条，是固定K10后现有固定received-IQ的最大query。
+- prediction阶段不读取query truth、role或真实类别计数；DA0/DA1两组prediction的ID、预测、6类score和有限性闭合后，scorer才连接truth。
+- 每条query独立在6个注册类间决策，不使用quota、全局重排或query反馈。
 
-## 预登记判断规则
+## 3.设计落地
 
-- support OOF门槛：BA≥86.17%、最低类别召回≥60%、NLL≤0.5394。
-- 相对历史强工作点的实质提升：BA>86.67%，或NLL<0.5094且floor不降低。
-- 资源目标：变化元素约≤1500、无Adapter/完整block、delta bundle<10KB、Query每条仍单独判别且推理计算不增加。
-- support完成后选择满足门槛的最小候选；所有H0–H6仍保留同row结果，不删除负结果。
+所有候选保留`balanced CE+0.5 LOO-proto+1e-4 L2-SP`，以及`prototype_scale=8`、`label_smoothing=0.05`、`weight_decay=1e-4`、`gradient_clip_norm=1`。主线固定`rho=0.5`；禁用time Adapter、frequency/domain更新、完整t3 block和source-teacher KD。
 
-## 最大真实Query闭合预登记
+新增能力：
 
-训练、OOF选择、full-support refit和温度拟合全部冻结后，才打开既有两组真实query预测输入：原Q60与独立Q120。两组物理ID零重叠，合并为Q180，每类30条。预测阶段不读取query truth、角色或类别计数；两组prediction均完整后，独立scorer最后连接truth。报告采用`DA0_REG0`与`DA1_REG0`，逐类给出30条分母下的准确率、总体BA、class floor、NLL、ECE、正确数变化和成对翻转。`REG0`不定义新类准确率，记为`N/A`。
+1. 阶段A复用S15：300步、`scheduler_reference_steps=4500`、warmup=0.05。
+2. 阶段B追加150/300步局部余弦低LR尾段，head从2e-4降到2e-5，norm从3e-5降到3e-6。
+3. 阶段C在适配后缓存60×160 embedding，冻结backbone/norm，只精修960元素目标head。
+4. H4/H5维护许可delta EMA，`beta=0.99`。
+5. H5实现`R_c=||sum(z_i)||/K`、`M_c=mean(l_c-max(l_j))`、`q_c=R_c sigmoid(M_c/tau)`、`rho_c=0.25+0.5(1-q_c)`，并加入`lambda_h=0.01`可靠性head anchor。
+6. full-support refit按OOF选中的三段长度重跑，不使用fold0模型。
+7. support-only OOF温度保持argmax不变，只校准概率；BA不足的候选不会因NLL改善晋级。
+8. 输出clean-single bundle和严格FP16 delta-only bundle；保留向量化LOO、稀疏validation、KD=0不复制teacher、许可delta snapshot和anchor重建。
 
-## 本地验证
+主要实现为`target_only_progressive_adapt.py`、`target_only_progressive_runner.py`、`sf_tapft_slim_matrix.py`、`run_sf_tapft_slim_matrix_row.py`和Fast-Strong矩阵JSON。
 
-- Fast-Strong矩阵7/7行成功解析为`SFTAPFTConfig`。
-- 聚焦测试：81项通过；唯一警告为旧Torch AMP命名空间的弃用提示，不影响运行。
-- 独立P0/P1审查曾发现函数插入位置错误；定点修复后复审PASS，selection与runner闭合恢复。
-- Git远端核对：`origin/codex/meta-adapter-tri-r4-v1-20260824`OID等于本地`5ec7f1fac38ef674e613f2e07a49d7338715f3a8`。
+## 4.H0–H6完整support结果
 
-## 发布与结果
+下表是60条support的4-fold OOF，不是Q180。最低fold BA与最低类别召回是不同指标。
 
-待N607预检、release同步、真实启动与Q180闭合后追加。
+|行|结构/变化|选中三段步数|OOF BA|最低fold BA|类别floor|温度后NLL|ECE|T|
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+|H0|S15 300/ref4500|250/0/0|81.9445%|69.4445%|0.0000%|0.539595|0.189948|1.131827|
+|H1|H0+150步tail|250/100/0|84.0278%|69.4445%|0.0000%|0.534545|0.160248|1.075714|
+|H2|H0+300步tail|250/100/0|84.0278%|69.4445%|0.0000%|0.534626|0.160073|1.078242|
+|H3|H1+70步cached head polish|250/100/20|84.0278%|69.4445%|0.0000%|0.534680|0.160261|1.076440|
+|H4|H3+delta EMA 0.99|250/100/20|81.9445%|69.4445%|0.0000%|0.595563|0.192048|1.236672|
+|H5|H4+自适应rho+anchor|200/50/20|81.9445%|69.4445%|0.0000%|0.598477|0.182921|1.306737|
+|H6|t3.norm(w+b)+H3流程|300/150/70|86.1111%|77.7778%|50.0000%|0.456572|0.155264|0.944306|
+
+|行|fold0 BA|fold1 BA|fold2 BA|fold3 BA|fold方差|
+|---|---:|---:|---:|---:|---:|
+|H0|94.4445%|69.4445%|69.4445%|94.4445%|0.015625|
+|H1|94.4445%|77.7778%|69.4445%|94.4445%|0.011719|
+|H2|94.4445%|77.7778%|69.4445%|94.4445%|0.011719|
+|H3|94.4445%|77.7778%|69.4445%|94.4445%|0.011719|
+|H4|94.4445%|69.4445%|69.4445%|94.4445%|0.015625|
+|H5|94.4445%|69.4445%|69.4445%|94.4445%|0.015625|
+|H6|94.4445%|77.7778%|77.7778%|94.4445%|0.006944|
+
+同row判断：
+
+- H1相对H0提高BA 2.0833pp、NLL降低0.005051，但仍有一个fold为69.4445%，类别floor为0。
+- H2虽预设300步tail，选择仍回到H1相同的250/100/0，额外步数无收益。
+- H3只选中20步cached polish，BA与H1相同，NLL轻微恶化0.000135。
+- H4的EMA使BA回退2.0833pp、NLL恶化0.060883；H5进一步恶化NLL。
+- H5的`rho_c`为0.3945/0.7500/0.2726/0.7500/0.2688/0.3513；类1/3达到最大目标移动，但没有改善OOF泛化。
+- H6同时提高BA、fold floor、类别floor并降低NLL，证明主要收益来自更窄的`t3.norm(weight+bias)`，不是更多all-time-norm更新。
+
+## 5.资源结果
+
+GNU time覆盖4-fold OOF、选择和一次full-support refit；不是单次部署refit的独立计时。资源审计中的forward对应最终full-support refit路径。
+
+|行|可训练/变化元素|backbone train forward|cached head forward调用|delta bundle|研究墙钟|最大RSS|
+|---|---:|---:|---:|---:|---:|---:|
+|H0|1584/1584|250|0|6716B|59.36s|1,835,796KiB|
+|H1|1584/1584|350|0|6716B|73.40s|1,827,532KiB|
+|H2|1584/1584|350|0|6716B|106.25s|1,827,856KiB|
+|H3|1584/1584|350|1|6716B|78.74s|1,826,260KiB|
+|H4|1584/1584|350|1|6716B|97.46s|1,831,800KiB|
+|H5|1584/1584|250|1|6716B|93.72s|1,830,164KiB|
+|H6|1152/1152|450|1|4500B|69.29s|1,810,632KiB|
+
+H6相对H0少432个变化元素（-27.27%），delta少2216B（-33.00%）。缓存head精修只需一次embedding缓存forward，随后70步不再运行backbone。训练中GPU快照为650–690MiB/进程，但不是连续峰值，故GPU显存峰值为`UNKNOWN/NOT_CAPTURED`。
+
+Q60/Q120 prediction墙钟分别为5.64秒/7.16秒，最大RSS为1,170,216KiB/1,181,888KiB；query GPU峰值同样未捕获。
+
+## 6.最大Q180总体结果
+
+|指标|`DA0_REG0`|`DA1_REG0`|H6效应|
+|---|---:|---:|---:|
+|正确数|130/180|150/180|+20|
+|准确率/BA|72.2222%|83.3333%|+11.1111pp|
+|Wilson 95%CI|65.2667%–78.2491%|77.2048%–88.0688%|—|
+|最低类别准确率|10.0000%|56.6667%|+46.6667pp|
+|NLL|0.870038|0.501858|-0.368181|
+|ECE-10|0.130062|0.074772|-0.055290|
+
+6类完全平衡，因此总体准确率等于BA。NLL越低表示真实类别概率质量越好；ECE-10越低表示置信度与经验正确率越一致。
+
+## 7.各类别准确率
+
+|类别|`DA0_REG0`|`DA1_REG0`|变化|DA0正确|DA1正确|
+|---:|---:|---:|---:|---:|---:|
+|0|60.0000%|80.0000%|+20.0000pp|18/30|24/30|
+|1|100.0000%|93.3333%|-6.6667pp|30/30|28/30|
+|2|86.6667%|90.0000%|+3.3333pp|26/30|27/30|
+|3|10.0000%|56.6667%|+46.6667pp|3/30|17/30|
+|4|96.6667%|90.0000%|-6.6667pp|29/30|27/30|
+|5|80.0000%|90.0000%|+10.0000pp|24/30|27/30|
+
+主要收益来自类3和类0，代价在类1和类4。类3仍是floor，剩余13个错误中11个被判为类1，类3/类1边界仍是主要瓶颈。
+
+## 8.混淆矩阵
+
+`DA0_REG0`（行真值、列预测）：
+
+|true\pred|0|1|2|3|4|5|
+|---:|---:|---:|---:|---:|---:|---:|
+|0|18|11|0|1|0|0|
+|1|0|30|0|0|0|0|
+|2|0|0|26|0|3|1|
+|3|3|23|0|3|1|0|
+|4|0|1|0|0|29|0|
+|5|0|2|1|0|3|24|
+
+`DA1_REG0`：
+
+|true\pred|0|1|2|3|4|5|
+|---:|---:|---:|---:|---:|---:|---:|
+|0|24|6|0|0|0|0|
+|1|0|28|0|2|0|0|
+|2|0|0|27|0|2|1|
+|3|1|11|0|17|1|0|
+|4|0|1|0|2|27|0|
+|5|1|0|0|0|2|27|
+
+类0→1由11降到6，类3→1由23降到11；新增代价主要是类1→3和类4→3各2条。
+
+## 9.逐类NLL
+
+|类别|DA0 NLL|DA1 NLL|变化|
+|---:|---:|---:|---:|
+|0|1.738265|0.446971|-1.291294|
+|1|0.329098|0.222657|-0.106441|
+|2|0.696159|0.388521|-0.307638|
+|3|1.309860|1.224138|-0.085722|
+|4|0.133540|0.312557|+0.179016|
+|5|1.013308|0.416302|-0.597006|
+
+类4是唯一NLL恶化类别。类1准确率下降但NLL下降，说明损失集中在少量边界样本。类3准确率大幅提高但NLL只下降0.085722，剩余错误仍较自信。
+
+## 10.两个分区与配对证据
+
+|分区|DA0 BA|DA1 BA|BA变化|floor变化|NLL变化|
+|---|---:|---:|---:|---:|---:|
+|Q60 rank10–19|71.6667%|86.6667%|+15.0000pp|+60.0000pp|-0.475530|
+|Q120独立query|72.5000%|81.6667%|+9.1667pp|+40.0000pp|-0.314506|
+|Q180最大并集|72.2222%|83.3333%|+11.1111pp|+46.6667pp|-0.368181|
+
+两个零重叠分区的BA、floor和NLL均同向改善，但Q60的适应后BA比Q120高5pp，不能只报告小分区。
+
+|配对状态|数量|
+|---|---:|
+|错→对|24|
+|对→错|4|
+|都对|126|
+|都错|26|
+
+净增加20条正确，McNemar双侧精确`p=0.000180`。这只支持当前固定Q180，不消除单receiver、单scene、单seed和采集相关性的限制。
+
+## 11.与F2/M02比较
+
+|工作点|Query口径|BA|floor|NLL|ECE-10|
+|---|---|---:|---:|---:|---:|
+|F2+OOF温度|同一Q180|83.8889%|53.3333%|0.510796|0.069909|
+|H6 Fast-Strong V3|同一Q180|83.3333%|56.6667%|0.501858|0.074772|
+|M02历史锚|历史独立query|86.67%|60.00%|0.5094|未统一报告|
+
+H6相对F2逐类为类0 -10pp、类1 -3.3333pp、类2 0、类3 +3.3334pp、类4 +6.6667pp、类5 0。M02不是同一Q180逐样本预测，只作为预登记锚，不能做McNemar。H6通过NLL要求，但未通过BA≥86.17%和floor≥60%，不晋级。
+
+## 12.完整日志、失败和异常
+
+已完整解析7份selection、7份stdout和7份stderr，不是只看日志尾部。正式行stdout均为完整JSON，和selection中的candidate/metrics一致；GNU time均`Exit status: 0`，未发现Traceback、OOM、Killed、NaN或Inf。
+
+保留的技术异常：
+
+1. 无query smoke前三次分别暴露缺少`meta_adapter`、N607旧model不含`meta_adapter_time`、缺少`crra.py`。同步已提交最小依赖后，第4次smoke通过；墙钟6.55秒，最大RSS 1,877,680KiB，`query_opened=false`。
+2. 首轮矩阵shell结合顺序导致只有H0落地，H1–H6在错误CWD处因日志路径不存在而未启动、未产生输出。核对H0 PID/CWD/cmdline后只补发H1–H6；七行均只有一个正式输出。
+3. Q180 prediction首轮在Python打开文件前因远端缺少query闭合器脚本退出，query输出根未创建。同步已提交脚本及两个依赖后，以新日志名运行并闭合。
+4. Query prediction只有Torch TypedStorage弃用警告，不影响输出。
+
+失败日志均保留，没有覆盖或伪装成性能结果。
+
+## 13.验证、版本和交付
+
+- 本地聚焦验证：81项测试通过；Fast-Strong矩阵7/7解析通过。
+- 独立P0/P1审查发现并修复一次函数插入位置P1；定点复审PASS。
+- 实现提交：`5ec7f1fac38ef674e613f2e07a49d7338715f3a8`。
+- 预登记提交：`a5babfcffd278804c7fefc5a743e730e2545830f`。
+- release：`release_a5babfcf.tar.gz`，本地/远端SHA256均为`404a3aebede9f2186d019d58258858340edbf1dd3ebcffa569ae08190bd1730b`。
+- 远端输出：`/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_tapft_fast_strong_v3_s392002_20260827_r1`。
+- 远端日志：`/home/szu2070436088/2510044040/CV-SincNet/logs/stage2_sf_tapft_fast_strong_v3_s392002_20260827_r1`。
+
+## 14.最终判断和下一步
+
+**H6是本矩阵最优轻量结构，但Q180未超过M02性能上界。**
+
+保留H6为`FAST_BALANCED_WORKING_POINT`，不提升为默认checkpoint。150步tail只有有限收益；300步tail、cached head polish、EMA和当前`rho_c`/anchor均没有独立增益，不继续做全排列。
+
+下一步应针对类3/类1局部边界做support-only、类置换不变的保护，同时避免类0/类1回退。新候选必须使用新的receiver/scene/seed确认，不能用已揭示Q180重新调步数、温度、rho或anchor。
