@@ -73,4 +73,3 @@ support OOF相对S00同run锚点：
 - 理想NLL<0.50且优先≤0.4667。
 
 F4暂缓：必须先取得严格绑定的长M02 cross-fitted teacher logits，不能用普通source teacher冒充OOFKD。Q1必须使用新的独立query；Q3仅在Q1通过后启动。
-
