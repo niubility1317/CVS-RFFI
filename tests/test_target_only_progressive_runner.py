@@ -279,6 +279,52 @@ def test_r0_grouped_selection_writes_strict_full_support_clean_single_bundle(
         )
 
 
+def test_clean_single_loader_accepts_pre_slimming_config_defaults(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    support = tmp_path / "support.npz"
+    _write_support(support)
+    checkpoint = tmp_path / "checkpoint.pth"
+    checkpoint.write_bytes(b"loader-owned fixture")
+    binding = _phase1_binding(handles=("tx0", "tx1"))
+    monkeypatch.setattr(
+        runner_module,
+        "load_sf_tapft_phase1_binding",
+        lambda *_args, **_kwargs: binding,
+    )
+    monkeypatch.setattr(
+        GroupedTargetCVSelector,
+        "choose",
+        staticmethod(lambda *, frozen, adapted: "adapted"),
+    )
+    output = tmp_path / "selection-output"
+    run_sf_tapft_grouped_selection(
+        _r0_config(checkpoint, support),
+        output,
+        device="cpu",
+        folds=2,
+        checkpoint_loader=lambda _path, *, device: copy.deepcopy(_ToyModel()).to(device),
+    )
+    payload = torch.load(
+        output / "sf_tapft_clean_single_bundle.pt", map_location="cpu", weights_only=True
+    )
+    for field in ("norm_scope", "norm_affine", "scheduler_reference_steps"):
+        payload["config"].pop(field)
+    legacy = tmp_path / "pre-slimming.pt"
+    torch.save(payload, legacy)
+
+    model, head, audit = load_sf_tapft_clean_single_bundle_strict(
+        legacy,
+        device="cpu",
+        expected_target_binding=_expected_target_binding(),
+        checkpoint_loader=lambda _path, *, device: copy.deepcopy(_ToyModel()).to(device),
+        phase1_binding_loader=lambda *_args, **_kwargs: binding,
+    )
+    assert audit["support_count"] == 4
+    assert all(not parameter.requires_grad for parameter in model.parameters())
+    assert all(not parameter.requires_grad for parameter in head.parameters())
+
+
 @pytest.mark.parametrize(
     ("family", "mutate", "message"),
     [

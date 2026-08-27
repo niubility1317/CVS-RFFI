@@ -25,12 +25,16 @@
 |V2-16|R2 strong single|保存全support单模型|single bundle、loader、测试|deferred|全60条refit|不参数平均fold模型|
 |V2-17|R3 prediction|DA0/teacher/single统一truth-blind prediction|prediction runner|deferred|prediction完整性|首次真实query|
 |V2-18|R3 scorer|独立truth-last同row评分|scorer、报告|deferred|truth侧读回|不得反哺模型选择|
-|V2-19|S0等价瘦身|向量化、稀疏验证、delta-only等|adapt、runner、bundle|deferred|`max_abs_logit_delta<1e-5`|等待R3性能上界|
-|V2-20|S1单模型|取消4模型部署|部署配置|deferred|teacher/single差值|teacher保留研发参照|
-|V2-21|S2阶段删除|删除或条件化C|配置、OOF|deferred|BA/floor/NLL门槛|一次只改阶段|
-|V2-22|S3 t3增量|dw→pw LoRA→组合|模型、配置|deferred|BA/floor/NLL门槛|不得跳级|
-|V2-23|S4 rank压缩|R32→R16→R8→R4|配置|deferred|逐级非劣|不得同时删除t3|
+|V2-19|S0等价瘦身|向量化、稀疏验证、delta-only等|adapt、runner、bundle|deferred|`max_abs_logit_delta<1e-5`|不与本轮结构变量混合，后续单独做等价证明|
+|V2-20|S1单模型|取消4模型部署|部署配置|verified|现有16个bundle均为全60条support refit单模型；独立query已闭合|teacher只保留研发概念，不进入部署矩阵|
+|V2-21|S2阶段删除|删除或条件化C|配置、OOF|verified|M02为`4500/0/0`且独立query三指标最优|M02无B/C阶段，阶段删除已经完成|
+|V2-22|S3 t3增量|dw→pw LoRA→组合|模型、配置|rejected|M02未更新完整`t3`，无需用LoRA替换不存在的更新|避免为未晋级P3增加结构|
+|V2-23|S4 rank压缩|R32→R16→R8→R4|配置|rejected|M02不训练Adapter，实际rank开销为0|无需继续压缩未启用Adapter|
 |V2-24|S5 head压缩|完整head到更轻决策头|模型、配置|deferred|严格非劣|最后执行|
+|V2-25|M02 norm范围瘦身|在完整target head不变时逐项缩减`t1/t2/t3/time_fuse` norm集合|adapt、runner、16行配置|implemented|8种范围的精确trainable-name测试通过；真实性能待N607 OOF|本轮主结构轴|
+|V2-26|M02 norm仿射瘦身|分别仅训练norm weight或bias，并对晚期norm重复|adapt、runner、16行配置|implemented|weight/bias精确后缀测试通过；真实性能待N607 OOF|不压缩target head|
+|V2-27|M02步数瘦身|固定4500步学习率时钟，仅截断至600/300步|adapt、runner、16行配置|implemented|固定时钟改变更新但不延长训练的RED/GREEN测试通过；真实性能待N607 OOF|避免总步数改变A阶段调度|
+|V2-28|本轮query边界|16行只用support-inner OOF，不重复读取已用于选M02的rank10–19 truth|runner、报告|verified|矩阵只有checkpoint/support输入；79项聚焦回归通过|仅通过门槛的最小候选进入新的独立holdout里程碑|
 
 ## 并行容量矩阵
 
@@ -61,7 +65,8 @@ R2/R3、S0数学等价、S3 LoRA和S5 head形式仍需要本波artifact或新实
 - 已验证：10项（含正式bundle与真实checkpoint smoke）。
 - 已实现但真实工件阻塞：0项。
 - 远端smoke阻塞：0项。
-- 延后：10项；R1与S2/S4第一波候选已按用户授权并行，R2/R3及其余瘦身项等待artifact或新实现。
-- 拒绝：0项。
-- 阻塞：无数据或bundle阻塞；R2/R3等组合步骤等待本波训练artifact。
-- 当前最高交付状态：R0与第一波15候选均为`RUNNING`；8张GPU各有2个训练进程；真实query仍未打开。
+- 独立query里程碑已完成：M02的`DA1_REG0`BA=`86.67%`、floor=`60%`、NLL=`0.5094`，为现有16个bundle三指标共同最优。
+- 本轮实现状态：V2-25至V2-27已本地实现、等待N607 OOF；V2-28已验证。矩阵固定为M02复现、head-only、8种norm范围、4种weight/bias范围和2种固定时钟截断预算，共16行。
+- 聚焦验证：79项通过，两个Python模块和一个CLI入口编译通过，16行配置均可由严格runner解析；P0/P1定点审查发现旧M02bundle兼容问题，修复后旧配置只允许三个新增字段采用默认值缺省，未知字段仍拒绝。
+- 拒绝：V2-22、V2-23共2项；原因是晋级锚点M02不训练完整`t3`或Adapter，相关压缩对象已经不存在。
+- 当前最高交付状态：上一轮独立query为`ANALYZED`；本轮瘦身矩阵尚为设计确认后的`pending`，不得提前写作已发布或已运行。

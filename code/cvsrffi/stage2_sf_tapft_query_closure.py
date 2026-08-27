@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from dataclasses import fields
 import hashlib
 import json
 import math
@@ -25,6 +24,7 @@ from .target_only_progressive_adapt import (
 from .target_only_progressive_runner import (
     _default_checkpoint_loader,
     _load_target_support,
+    _normalize_sf_tapft_bundle_config,
     load_sf_tapft_clean_single_bundle_strict,
 )
 
@@ -104,12 +104,7 @@ def load_clean_single_pair_strict(
     )
     try:
         payload = torch.load(Path(bundle_path), map_location="cpu", weights_only=True)
-        raw_config = payload["config"]
-        allowed = {field.name for field in fields(SFTAPFTConfig)}
-        if not isinstance(raw_config, Mapping) or set(raw_config) != allowed:
-            raise QueryClosureError("clean-single config allowlist mismatch")
-        normalized = dict(raw_config)
-        normalized["phase_steps"] = tuple(normalized["phase_steps"])
+        normalized = _normalize_sf_tapft_bundle_config(payload["config"])
         config = SFTAPFTConfig(**normalized)
         base_checkpoint_path = str(payload["base_checkpoint_path"])
     except QueryClosureError:

@@ -33,6 +33,18 @@ _TRAINABILITY_PROFILES = (
     "p3_full_t3",
     "p4_time_fusion",
 )
+_NORM_SCOPES = {
+    "all": ("time_fuse", "t1", "t2", "t3"),
+    "t3": ("t3",),
+    "t2_t3": ("t2", "t3"),
+    "backbone_no_fuse": ("t1", "t2", "t3"),
+    "fuse": ("time_fuse",),
+    "t1": ("t1",),
+    "t2": ("t2",),
+    "t3_fuse": ("time_fuse", "t3"),
+    "t2_t3_fuse": ("time_fuse", "t2", "t3"),
+}
+_NORM_AFFINES = ("weight_bias", "weight", "bias")
 _PHASES = ("A", "B", "C")
 _EPS = 1.0e-8
 
@@ -92,6 +104,8 @@ class SFTAPFTConfig:
 
     adapter_rank: int = 16
     trainability_profile: str = "p3_full_t3"
+    norm_scope: str = "all"
+    norm_affine: str = "weight_bias"
     classifier_source_target_interpolation: float = 0.5
     prototype_scale: float = 8.0
     label_smoothing: float = 0.05
@@ -101,6 +115,7 @@ class SFTAPFTConfig:
     selective_kd_temperature: float = 2.0
     selective_kd_gamma: float = 2.0
     phase_steps: tuple[int, int, int] = (500, 1500, 2500)
+    scheduler_reference_steps: int = 0
     lr_head_initial: float = 1.0e-3
     lr_norm: float = 1.0e-4
     lr_head_middle: float = 3.0e-4
@@ -121,6 +136,10 @@ class SFTAPFTConfig:
             raise ValueError(
                 f"trainability_profile must be one of {_TRAINABILITY_PROFILES}"
             )
+        if self.norm_scope not in _NORM_SCOPES:
+            raise ValueError(f"norm_scope must be one of {tuple(_NORM_SCOPES)}")
+        if self.norm_affine not in _NORM_AFFINES:
+            raise ValueError(f"norm_affine must be one of {_NORM_AFFINES}")
         if isinstance(self.adapter_rank, bool) or int(self.adapter_rank) <= 0:
             raise ValueError("adapter_rank must be a positive integer")
         if len(self.phase_steps) != 3 or any(
@@ -129,6 +148,18 @@ class SFTAPFTConfig:
             raise ValueError("phase_steps must contain three non-negative integers")
         if sum(int(value) for value in self.phase_steps) <= 0:
             raise ValueError("phase_steps must contain at least one optimizer step")
+        total_steps = sum(int(value) for value in self.phase_steps)
+        if (
+            isinstance(self.scheduler_reference_steps, bool)
+            or int(self.scheduler_reference_steps) < 0
+            or (
+                int(self.scheduler_reference_steps) > 0
+                and int(self.scheduler_reference_steps) < total_steps
+            )
+        ):
+            raise ValueError(
+                "scheduler_reference_steps must be zero or at least the training step count"
+            )
         bounded = {
             "classifier_source_target_interpolation": (0.0, 1.0),
             "label_smoothing": (0.0, 1.0),
@@ -171,6 +202,9 @@ class SFTAPFTConfig:
         if not isinstance(self.mixed_precision, bool):
             raise ValueError("mixed_precision must be a boolean")
         object.__setattr__(self, "phase_steps", tuple(int(value) for value in self.phase_steps))
+        object.__setattr__(
+            self, "scheduler_reference_steps", int(self.scheduler_reference_steps)
+        )
 
 
 class TargetPrototypeHead(nn.Module):
@@ -346,20 +380,35 @@ def ensure_time_adapter(model: nn.Module, rank: int = 16) -> ResidualMetaAdapter
 class ProgressiveTrainabilityPolicy:
     """Nested P0-P4 allowlist applied across the A/B/C schedule."""
 
-    def __init__(self, profile: str = "p3_full_t3") -> None:
+    def __init__(
+        self,
+        profile: str = "p3_full_t3",
+        *,
+        norm_scope: str = "all",
+        norm_affine: str = "weight_bias",
+    ) -> None:
         if profile not in _TRAINABILITY_PROFILES:
             raise ValueError(f"trainability_profile must be one of {_TRAINABILITY_PROFILES}")
+        if norm_scope not in _NORM_SCOPES:
+            raise ValueError(f"norm_scope must be one of {tuple(_NORM_SCOPES)}")
+        if norm_affine not in _NORM_AFFINES:
+            raise ValueError(f"norm_affine must be one of {_NORM_AFFINES}")
         self.profile = profile
+        self.norm_scope = norm_scope
+        self.norm_affine = norm_affine
 
     def parameter_names(self, model: nn.Module, phase: str) -> tuple[str, ...]:
         if phase not in _PHASES:
             raise ValueError("phase must be A, B or C")
         _, prefix = _identity_backbone(model)
-        norm_prefixes = (
-            f"{prefix}time_fuse.1.",
-            f"{prefix}t1.norm.",
-            f"{prefix}t2.norm.",
-            f"{prefix}t3.norm.",
+        norm_prefix_by_scope = {
+            "time_fuse": f"{prefix}time_fuse.1.",
+            "t1": f"{prefix}t1.norm.",
+            "t2": f"{prefix}t2.norm.",
+            "t3": f"{prefix}t3.norm.",
+        }
+        norm_prefixes = tuple(
+            norm_prefix_by_scope[name] for name in _NORM_SCOPES[self.norm_scope]
         )
         adapter_prefix = f"{prefix}meta_adapter_time."
         last_prefix = f"{prefix}t3."
@@ -373,6 +422,8 @@ class ProgressiveTrainabilityPolicy:
         names = []
         for name, _ in model.named_parameters():
             norm = any(name.startswith(candidate) for candidate in norm_prefixes)
+            if norm and self.norm_affine != "weight_bias":
+                norm = name.endswith(f".{self.norm_affine}")
             adapter = name.startswith(adapter_prefix)
             last_block = name.startswith(last_prefix)
             p4_extra = any(name.startswith(candidate) for candidate in p4_prefixes)
@@ -384,9 +435,10 @@ class ProgressiveTrainabilityPolicy:
             ):
                 names.append(name)
         if profile_index >= 1 and not any(
-            name.startswith(f"{prefix}t3.norm.") for name in names
+            any(name.startswith(candidate) for candidate in norm_prefixes)
+            for name in names
         ):
-            raise ValueError("model must expose t3.norm affine parameters")
+            raise ValueError("model must expose the requested norm affine parameters")
         if (
             profile_index >= 2
             and phase in {"B", "C"}
@@ -878,7 +930,11 @@ def fit_sf_tapft(
     local_labels = _local_labels(target_labels, head.class_ids, device)
     class_weights = _class_balanced_weights(local_labels, len(head.class_ids)).to(dtype=dtype)
 
-    policy = ProgressiveTrainabilityPolicy(config.trainability_profile)
+    policy = ProgressiveTrainabilityPolicy(
+        config.trainability_profile,
+        norm_scope=config.norm_scope,
+        norm_affine=config.norm_affine,
+    )
     phase_names = {phase: policy.parameter_names(student, phase) for phase in _PHASES}
     norm_names = set(phase_names["A"])
     _, identity_prefix = _identity_backbone(student)
@@ -941,6 +997,7 @@ def fit_sf_tapft(
         if name.endswith("running_mean") or name.endswith("running_var") or name.endswith("num_batches_tracked")
     }
     total_steps = sum(config.phase_steps)
+    scheduler_steps = int(config.scheduler_reference_steps) or total_steps
     losses: list[float] = []
     snapshots: list[
         tuple[dict[str, Tensor], float | tuple[float, ...], int]
@@ -956,7 +1013,7 @@ def fit_sf_tapft(
             for parameter in head.parameters():
                 parameter.requires_grad_(True)
             current_phase = phase
-        lr_factor = _learning_rate_factor(step, total_steps, config.warmup_ratio)
+        lr_factor = _learning_rate_factor(step, scheduler_steps, config.warmup_ratio)
         base_lrs = _group_base_lrs(config, phase)
         for group in optimizer.param_groups:
             group["lr"] = float(base_lrs[str(group["name"])]) * lr_factor

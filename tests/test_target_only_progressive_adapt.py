@@ -233,6 +233,104 @@ def test_capacity_profiles_expose_exact_nested_p0_to_p4_parameter_sets() -> None
     }.issubset(p4)
 
 
+@pytest.mark.parametrize(
+    ("scope", "expected"),
+    [
+        ("t3", {"t3.norm.weight", "t3.norm.bias"}),
+        (
+            "t2_t3",
+            {"t2.norm.weight", "t2.norm.bias", "t3.norm.weight", "t3.norm.bias"},
+        ),
+        (
+            "backbone_no_fuse",
+            {
+                "t1.norm.weight",
+                "t1.norm.bias",
+                "t2.norm.weight",
+                "t2.norm.bias",
+                "t3.norm.weight",
+                "t3.norm.bias",
+            },
+        ),
+        ("fuse", {"time_fuse.1.weight", "time_fuse.1.bias"}),
+        ("t1", {"t1.norm.weight", "t1.norm.bias"}),
+        ("t2", {"t2.norm.weight", "t2.norm.bias"}),
+        (
+            "t3_fuse",
+            {
+                "t3.norm.weight",
+                "t3.norm.bias",
+                "time_fuse.1.weight",
+                "time_fuse.1.bias",
+            },
+        ),
+        (
+            "t2_t3_fuse",
+            {
+                "t2.norm.weight",
+                "t2.norm.bias",
+                "t3.norm.weight",
+                "t3.norm.bias",
+                "time_fuse.1.weight",
+                "time_fuse.1.bias",
+            },
+        ),
+    ],
+)
+def test_p1_norm_scope_selects_only_the_requested_affine_parameters(
+    scope: str, expected: set[str]
+) -> None:
+    model = _ToyCapacityModel()
+    policy = ProgressiveTrainabilityPolicy("p1_head_norm", norm_scope=scope)
+    assert set(policy.parameter_names(model, "A")) == expected
+
+
+@pytest.mark.parametrize(
+    ("affine", "suffix"),
+    [("weight", ".weight"), ("bias", ".bias")],
+)
+def test_p1_norm_affine_can_train_only_weight_or_bias(affine: str, suffix: str) -> None:
+    model = _ToyCapacityModel()
+    names = ProgressiveTrainabilityPolicy(
+        "p1_head_norm", norm_scope="t3_fuse", norm_affine=affine
+    ).parameter_names(model, "A")
+    assert set(names) == {f"t3.norm{suffix}", f"time_fuse.1{suffix}"}
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [("norm_scope", "unknown"), ("norm_affine", "running_stats")],
+)
+def test_config_rejects_unknown_norm_slimming_controls(field: str, value: str) -> None:
+    with pytest.raises(ValueError, match=field):
+        SFTAPFTConfig(**{field: value})
+
+
+def test_scheduler_reference_steps_changes_updates_without_extending_training() -> None:
+    common = dict(
+        trainability_profile="p0_head_only",
+        phase_steps=(2, 0, 0),
+        checkpoint_average_top_k=1,
+        adapter_rank=2,
+        warmup_ratio=0.5,
+        mixed_precision=False,
+        seed=17,
+    )
+    default = fit_sf_tapft(_ToyModel(), _dataset(), SFTAPFTConfig(**common))
+    fixed_clock = fit_sf_tapft(
+        _ToyModel(),
+        _dataset(),
+        SFTAPFTConfig(**common, scheduler_reference_steps=10),
+    )
+    assert default.audit.total_steps == fixed_clock.audit.total_steps == 2
+    assert not torch.allclose(default.head.weight, fixed_clock.head.weight)
+
+
+def test_scheduler_reference_steps_cannot_be_shorter_than_training() -> None:
+    with pytest.raises(ValueError, match="scheduler_reference_steps"):
+        SFTAPFTConfig(phase_steps=(10, 0, 0), scheduler_reference_steps=9)
+
+
 def test_head_only_profile_runs_without_requiring_model_parameter_groups() -> None:
     model = _ToyModel()
     before = copy.deepcopy(model.state_dict())

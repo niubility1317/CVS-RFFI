@@ -181,6 +181,30 @@ def _parse_config(config: Mapping[str, Any]) -> tuple[dict[str, Any], SFTAPFTCon
     return values, SFTAPFTConfig(**normalized)
 
 
+def _normalize_sf_tapft_bundle_config(raw: Any) -> dict[str, Any]:
+    """Accept only the exact current config or the pre-slimming default subset."""
+
+    if not isinstance(raw, Mapping):
+        raise ValueError("SF-TAPFT bundle config must be a mapping")
+    config_keys = {field.name for field in fields(SFTAPFTConfig)}
+    supplied = set(raw)
+    if supplied.difference(config_keys):
+        raise ValueError("SF-TAPFT bundle config allowlist mismatch")
+    defaults = {
+        "norm_scope": "all",
+        "norm_affine": "weight_bias",
+        "scheduler_reference_steps": 0,
+    }
+    missing = config_keys.difference(supplied)
+    if missing.difference(defaults):
+        raise ValueError("SF-TAPFT bundle config allowlist mismatch")
+    normalized = dict(raw)
+    for name in missing:
+        normalized[name] = defaults[name]
+    normalized["phase_steps"] = tuple(normalized["phase_steps"])
+    return normalized
+
+
 def _string_rows(value: np.ndarray, *, label: str, expected: int) -> tuple[str, ...]:
     array = np.asarray(value)
     if array.ndim != 1 or int(array.size) != int(expected):
@@ -693,12 +717,10 @@ def load_sf_tapft_clean_single_bundle_strict(
     if embedded_binding != _binding_payload(expected_binding):
         raise ValueError("SF-TAPFT clean-single Phase1 binding mismatch")
 
-    raw_config = payload["config"]
-    config_keys = {field.name for field in fields(SFTAPFTConfig)}
-    if not isinstance(raw_config, Mapping) or set(raw_config) != config_keys:
-        raise ValueError("SF-TAPFT clean-single config allowlist mismatch")
-    normalized_config = dict(raw_config)
-    normalized_config["phase_steps"] = tuple(normalized_config["phase_steps"])
+    try:
+        normalized_config = _normalize_sf_tapft_bundle_config(payload["config"])
+    except ValueError as exc:
+        raise ValueError("SF-TAPFT clean-single config allowlist mismatch") from exc
     try:
         config = SFTAPFTConfig(**normalized_config)
     except (TypeError, ValueError) as exc:
