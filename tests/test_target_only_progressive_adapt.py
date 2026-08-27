@@ -19,6 +19,7 @@ from cvsrffi.target_only_progressive_adapt import (
     TrainableDeltaAverager,
     ensure_time_adapter,
     fit_sf_tapft,
+    fit_positive_temperature,
     leave_one_out_prototype_logits,
     select_sf_tapft_by_grouped_cv,
 )
@@ -189,6 +190,55 @@ def test_leave_one_out_prototype_excludes_current_sample_and_uses_k1_fallback() 
     assert torch.allclose(logits[2], torch.tensor([-2 ** -0.5, 1.0]), atol=1e-6)
 
 
+def test_vectorized_leave_one_out_matches_reference_and_preserves_gradients() -> None:
+    torch.manual_seed(5)
+    embeddings = torch.randn(9, 5, requires_grad=True)
+    labels = torch.tensor([0, 0, 0, 1, 1, 1, 2, 2, 2])
+    fallback = torch.randn(3, 5)
+
+    actual = leave_one_out_prototype_logits(
+        embeddings,
+        labels,
+        class_count=3,
+        fallback_weights=fallback,
+        scale=8.0,
+    )
+    reference_rows = []
+    for row in range(len(labels)):
+        prototypes = []
+        for class_id in range(3):
+            mask = labels == class_id
+            if int(labels[row]) == class_id:
+                mask = mask.clone()
+                mask[row] = False
+            members = embeddings[mask]
+            prototype = members.mean(0) if len(members) else fallback[class_id]
+            prototypes.append(torch.nn.functional.normalize(prototype, dim=0))
+        reference_rows.append(
+            8.0
+            * torch.nn.functional.normalize(embeddings[row], dim=0)
+            @ torch.stack(prototypes).T
+        )
+    reference = torch.stack(reference_rows)
+    assert torch.allclose(actual, reference, atol=1e-6)
+    actual.sum().backward()
+    assert embeddings.grad is not None
+    assert bool(torch.isfinite(embeddings.grad).all())
+
+
+def test_positive_oof_temperature_preserves_argmax_and_reduces_nll() -> None:
+    logits = torch.tensor(
+        [[8.0, -1.0], [7.0, 0.0], [5.0, 4.0], [4.0, 5.0], [0.0, 7.0], [-1.0, 8.0]]
+    )
+    labels = torch.tensor([0, 0, 1, 0, 1, 1])
+    result = fit_positive_temperature(logits, labels)
+    calibrated = logits / result.temperature
+    assert result.temperature > 0.0
+    assert result.nll_after <= result.nll_before
+    assert torch.equal(calibrated.argmax(1), logits.argmax(1))
+    assert result.argmax_preserved is True
+
+
 def test_l2sp_is_zero_at_snapshot_and_positive_after_drift() -> None:
     layer = nn.Linear(3, 2)
     regularizer = L2SPRegularizer.from_named_parameters(layer.named_parameters())
@@ -298,6 +348,31 @@ def test_p1_norm_affine_can_train_only_weight_or_bias(affine: str, suffix: str) 
 
 
 @pytest.mark.parametrize(
+    ("rules", "expected"),
+    [
+        (
+            (("t3", "weight_bias"), ("t2", "weight")),
+            {"t3.norm.weight", "t3.norm.bias", "t2.norm.weight"},
+        ),
+        (
+            (("t3", "weight_bias"), ("t2", "weight"), ("t1", "weight"), ("time_fuse", "weight")),
+            {
+                "t3.norm.weight",
+                "t3.norm.bias",
+                "t2.norm.weight",
+                "t1.norm.weight",
+                "time_fuse.1.weight",
+            },
+        ),
+    ],
+)
+def test_mixed_norm_rules_express_s16_candidates(rules, expected) -> None:
+    model = _ToyCapacityModel()
+    policy = ProgressiveTrainabilityPolicy("p1_head_norm", norm_rules=rules)
+    assert set(policy.parameter_names(model, "A")) == expected
+
+
+@pytest.mark.parametrize(
     ("field", "value"),
     [("norm_scope", "unknown"), ("norm_affine", "running_stats")],
 )
@@ -329,6 +404,38 @@ def test_scheduler_reference_steps_changes_updates_without_extending_training() 
 def test_scheduler_reference_steps_cannot_be_shorter_than_training() -> None:
     with pytest.raises(ValueError, match="scheduler_reference_steps"):
         SFTAPFTConfig(phase_steps=(10, 0, 0), scheduler_reference_steps=9)
+
+
+def test_s15_cal_uses_30_step_warmup_and_decays_by_step_300() -> None:
+    assert tapft._learning_rate_factor(0, 300, 0.10) == pytest.approx(1.0 / 30.0)
+    assert tapft._learning_rate_factor(29, 300, 0.10) == pytest.approx(1.0)
+    assert tapft._learning_rate_factor(299, 300, 0.10) < 1.0e-4
+
+
+def test_sparse_validation_and_head_prefit_are_audited() -> None:
+    dataset = _dataset()
+    train = tapft._subset_target_train(dataset, (0, 1, 3, 4))
+    validation = tapft._subset_target_train(dataset, (2, 5))
+    result = fit_sf_tapft(
+        _ToyModel(),
+        train,
+        SFTAPFTConfig(
+            trainability_profile="p1_head_norm",
+            norm_scope="t3",
+            phase_steps=(3, 0, 0),
+            head_prefit_steps=2,
+            validation_steps=(1, 3),
+            checkpoint_average_top_k=1,
+            adapter_rank=2,
+            warmup_ratio=0.0,
+            mixed_precision=False,
+        ),
+        checkpoint_validation=validation,
+    )
+    assert result.audit.head_prefit_steps == 2
+    assert result.audit.backbone_optimizer_steps == 1
+    assert result.audit.backbone_train_forward_steps == 1
+    assert result.audit.validation_forward_steps == (1, 3)
 
 
 def test_head_only_profile_runs_without_requiring_model_parameter_groups() -> None:
@@ -924,6 +1031,71 @@ def test_opt_in_zero_adapt_does_not_refit_full_support(
     assert selection.full_support_result is None
     assert selection.final_training_sample_count == 0
     assert selection.fold0_as_final is False
+
+
+def test_oof_temperature_is_fitted_before_full_support_refit(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        tapft.GroupedTargetCVSelector,
+        "choose",
+        staticmethod(lambda *, frozen, adapted: "adapted"),
+    )
+    selection = select_sf_tapft_by_grouped_cv(
+        _ToyModel(),
+        _dataset(),
+        SFTAPFTConfig(
+            trainability_profile="p1_head_norm",
+            norm_scope="t3",
+            phase_steps=(1, 0, 0),
+            checkpoint_average_top_k=1,
+            adapter_rank=2,
+            warmup_ratio=0.0,
+            oof_temperature_calibration=True,
+            mixed_precision=False,
+        ),
+        folds=3,
+        full_support_refit=True,
+    )
+    assert selection.temperature_calibration is not None
+    assert selection.temperature_calibration.argmax_preserved is True
+    assert selection.temperature_calibration.nll_after <= selection.temperature_calibration.nll_before
+    assert selection.full_support_result is not None
+    assert selection.full_support_result.head.scale == pytest.approx(
+        8.0 / selection.temperature_calibration.temperature
+    )
+
+
+def test_full_support_refit_clamps_head_prefit_and_drops_cv_validation_schedule(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        tapft.GroupedTargetCVSelector,
+        "choose",
+        staticmethod(lambda *, frozen, adapted: "adapted"),
+    )
+    monkeypatch.setattr(tapft, "_lower_median", lambda _values: 1)
+    selection = select_sf_tapft_by_grouped_cv(
+        _ToyModel(),
+        _dataset(),
+        SFTAPFTConfig(
+            trainability_profile="p1_head_norm",
+            norm_scope="t3",
+            phase_steps=(3, 0, 0),
+            head_prefit_steps=2,
+            validation_steps=(1, 3),
+            checkpoint_average_top_k=1,
+            adapter_rank=2,
+            warmup_ratio=0.0,
+            mixed_precision=False,
+        ),
+        folds=3,
+        full_support_refit=True,
+    )
+    assert selection.selected_phase_steps == (1, 0, 0)
+    assert selection.full_support_result is not None
+    assert selection.full_support_result.audit.total_steps == 1
+    assert selection.full_support_result.audit.head_prefit_steps == 1
 
 
 def test_non_opt_in_grouped_selection_preserves_fold0_candidate(

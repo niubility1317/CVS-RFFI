@@ -106,8 +106,10 @@ class SFTAPFTConfig:
     trainability_profile: str = "p3_full_t3"
     norm_scope: str = "all"
     norm_affine: str = "weight_bias"
+    norm_rules: tuple[tuple[str, str], ...] = ()
     classifier_source_target_interpolation: float = 0.5
     prototype_scale: float = 8.0
+    inference_temperature: float = 1.0
     label_smoothing: float = 0.05
     lambda_proto: float = 0.5
     lambda_l2sp: float = 1.0e-4
@@ -126,6 +128,9 @@ class SFTAPFTConfig:
     lr_fusion: float = 1.0e-5
     weight_decay: float = 1.0e-4
     warmup_ratio: float = 0.05
+    head_prefit_steps: int = 0
+    validation_steps: tuple[int, ...] = ()
+    oof_temperature_calibration: bool = False
     gradient_clip_norm: float = 1.0
     checkpoint_average_top_k: int = 3
     mixed_precision: bool = True
@@ -140,6 +145,14 @@ class SFTAPFTConfig:
             raise ValueError(f"norm_scope must be one of {tuple(_NORM_SCOPES)}")
         if self.norm_affine not in _NORM_AFFINES:
             raise ValueError(f"norm_affine must be one of {_NORM_AFFINES}")
+        normalized_rules = tuple((str(scope), str(affine)) for scope, affine in self.norm_rules)
+        for scope, affine in normalized_rules:
+            if scope not in {name for values in _NORM_SCOPES.values() for name in values}:
+                raise ValueError(f"norm_rules contains unknown norm scope: {scope!r}")
+            if affine not in _NORM_AFFINES:
+                raise ValueError(f"norm_rules contains unknown norm affine: {affine!r}")
+        if len({scope for scope, _ in normalized_rules}) != len(normalized_rules):
+            raise ValueError("norm_rules must not repeat a norm scope")
         if isinstance(self.adapter_rank, bool) or int(self.adapter_rank) <= 0:
             raise ValueError("adapter_rank must be a positive integer")
         if len(self.phase_steps) != 3 or any(
@@ -149,6 +162,24 @@ class SFTAPFTConfig:
         if sum(int(value) for value in self.phase_steps) <= 0:
             raise ValueError("phase_steps must contain at least one optimizer step")
         total_steps = sum(int(value) for value in self.phase_steps)
+        if (
+            isinstance(self.head_prefit_steps, bool)
+            or int(self.head_prefit_steps) < 0
+            or int(self.head_prefit_steps) > total_steps
+        ):
+            raise ValueError("head_prefit_steps must be in [0, total_steps]")
+        validation_steps = tuple(int(value) for value in self.validation_steps)
+        if any(isinstance(value, bool) for value in self.validation_steps):
+            raise ValueError("validation_steps must contain integer optimizer steps")
+        if validation_steps and (
+            tuple(sorted(set(validation_steps))) != validation_steps
+            or validation_steps[0] < 1
+            or validation_steps[-1] > total_steps
+            or validation_steps[-1] != total_steps
+        ):
+            raise ValueError(
+                "validation_steps must be sorted, unique, in range, and include the final step"
+            )
         if (
             isinstance(self.scheduler_reference_steps, bool)
             or int(self.scheduler_reference_steps) < 0
@@ -171,6 +202,7 @@ class SFTAPFTConfig:
                 raise ValueError(f"{name} must be finite in [{lower}, {upper}]")
         positive = (
             "prototype_scale",
+            "inference_temperature",
             "selective_kd_temperature",
             "gradient_clip_norm",
             "lr_head_initial",
@@ -201,10 +233,63 @@ class SFTAPFTConfig:
             raise ValueError("checkpoint_average_top_k must be a positive integer")
         if not isinstance(self.mixed_precision, bool):
             raise ValueError("mixed_precision must be a boolean")
+        if not isinstance(self.oof_temperature_calibration, bool):
+            raise ValueError("oof_temperature_calibration must be a boolean")
         object.__setattr__(self, "phase_steps", tuple(int(value) for value in self.phase_steps))
+        object.__setattr__(self, "norm_rules", normalized_rules)
+        object.__setattr__(self, "head_prefit_steps", int(self.head_prefit_steps))
+        object.__setattr__(self, "validation_steps", validation_steps)
         object.__setattr__(
             self, "scheduler_reference_steps", int(self.scheduler_reference_steps)
         )
+
+
+@dataclass(frozen=True)
+class TemperatureCalibration:
+    temperature: float
+    nll_before: float
+    nll_after: float
+    argmax_preserved: bool
+
+
+def fit_positive_temperature(logits: Tensor, labels: Tensor) -> TemperatureCalibration:
+    """Fit one positive temperature on OOF logits without changing class order."""
+
+    if logits.ndim != 2 or labels.ndim != 1 or logits.size(0) != labels.numel():
+        raise ValueError("temperature logits and labels must be row aligned")
+    if logits.numel() == 0 or not bool(torch.isfinite(logits).all()):
+        raise ValueError("temperature logits must be non-empty and finite")
+    if labels.numel() and (int(labels.min()) < 0 or int(labels.max()) >= logits.size(1)):
+        raise ValueError("temperature labels must index logit columns")
+    work_logits = logits.detach().to(device="cpu", dtype=torch.float64)
+    work_labels = labels.detach().to(device="cpu", dtype=torch.long)
+    log_temperature = torch.zeros((), dtype=torch.float64, requires_grad=True)
+    optimizer = torch.optim.LBFGS(
+        [log_temperature], lr=0.25, max_iter=80, tolerance_grad=1.0e-10, line_search_fn="strong_wolfe"
+    )
+
+    def closure() -> Tensor:
+        optimizer.zero_grad()
+        temperature = log_temperature.clamp(-6.0, 6.0).exp()
+        loss = F.cross_entropy(work_logits / temperature, work_labels)
+        loss.backward()
+        return loss
+
+    before = float(F.cross_entropy(work_logits, work_labels))
+    optimizer.step(closure)
+    temperature = float(log_temperature.detach().clamp(-6.0, 6.0).exp())
+    calibrated = work_logits / temperature
+    after = float(F.cross_entropy(calibrated, work_labels))
+    if after > before:
+        temperature = 1.0
+        calibrated = work_logits
+        after = before
+    return TemperatureCalibration(
+        temperature=temperature,
+        nll_before=before,
+        nll_after=after,
+        argmax_preserved=bool(torch.equal(work_logits.argmax(1), calibrated.argmax(1))),
+    )
 
 
 class TargetPrototypeHead(nn.Module):
@@ -291,19 +376,20 @@ def leave_one_out_prototype_logits(
         raise ValueError("labels must be local classifier row indices")
     normalized_embeddings = F.normalize(embeddings, dim=1, eps=_EPS)
     fallback = F.normalize(fallback_weights.detach(), dim=1, eps=_EPS)
-    rows: list[Tensor] = []
-    indices = torch.arange(embeddings.size(0), device=embeddings.device)
-    for sample_index in range(embeddings.size(0)):
-        prototypes: list[Tensor] = []
-        for class_index in range(int(class_count)):
-            mask = labels == class_index
-            if int(labels[sample_index]) == class_index:
-                mask = mask & (indices != sample_index)
-            members = embeddings[mask]
-            prototype = members.mean(dim=0) if members.size(0) else fallback[class_index]
-            prototypes.append(F.normalize(prototype, dim=0, eps=_EPS))
-        rows.append(normalized_embeddings[sample_index] @ torch.stack(prototypes).transpose(0, 1))
-    return float(scale) * torch.stack(rows)
+    class_sums = embeddings.new_zeros((int(class_count), embeddings.size(1)))
+    class_sums.index_add_(0, labels, embeddings)
+    counts = torch.bincount(labels, minlength=int(class_count)).to(
+        device=embeddings.device, dtype=embeddings.dtype
+    )
+    loo_sums = class_sums.unsqueeze(0).expand(embeddings.size(0), -1, -1).clone()
+    row_indices = torch.arange(embeddings.size(0), device=embeddings.device)
+    loo_sums[row_indices, labels] -= embeddings
+    loo_counts = counts.unsqueeze(0).expand(embeddings.size(0), -1).clone()
+    loo_counts[row_indices, labels] -= 1.0
+    means = loo_sums / loo_counts.clamp_min(1.0).unsqueeze(-1)
+    means = torch.where((loo_counts > 0).unsqueeze(-1), means, fallback.unsqueeze(0))
+    prototypes = F.normalize(means, dim=2, eps=_EPS)
+    return float(scale) * torch.einsum("nd,ncd->nc", normalized_embeddings, prototypes)
 
 
 class L2SPRegularizer:
@@ -386,6 +472,7 @@ class ProgressiveTrainabilityPolicy:
         *,
         norm_scope: str = "all",
         norm_affine: str = "weight_bias",
+        norm_rules: Sequence[tuple[str, str]] = (),
     ) -> None:
         if profile not in _TRAINABILITY_PROFILES:
             raise ValueError(f"trainability_profile must be one of {_TRAINABILITY_PROFILES}")
@@ -396,6 +483,14 @@ class ProgressiveTrainabilityPolicy:
         self.profile = profile
         self.norm_scope = norm_scope
         self.norm_affine = norm_affine
+        self.norm_rules = tuple((str(scope), str(affine)) for scope, affine in norm_rules)
+        valid_rule_scopes = {name for values in _NORM_SCOPES.values() for name in values}
+        if any(scope not in valid_rule_scopes for scope, _ in self.norm_rules):
+            raise ValueError("norm_rules contains an unknown norm scope")
+        if any(affine not in _NORM_AFFINES for _, affine in self.norm_rules):
+            raise ValueError("norm_rules contains an unknown norm affine")
+        if len({scope for scope, _ in self.norm_rules}) != len(self.norm_rules):
+            raise ValueError("norm_rules must not repeat a norm scope")
 
     def parameter_names(self, model: nn.Module, phase: str) -> tuple[str, ...]:
         if phase not in _PHASES:
@@ -407,9 +502,15 @@ class ProgressiveTrainabilityPolicy:
             "t2": f"{prefix}t2.norm.",
             "t3": f"{prefix}t3.norm.",
         }
-        norm_prefixes = tuple(
-            norm_prefix_by_scope[name] for name in _NORM_SCOPES[self.norm_scope]
+        norm_rule_by_prefix = (
+            {norm_prefix_by_scope[scope]: affine for scope, affine in self.norm_rules}
+            if self.norm_rules
+            else {
+                norm_prefix_by_scope[name]: self.norm_affine
+                for name in _NORM_SCOPES[self.norm_scope]
+            }
         )
+        norm_prefixes = tuple(norm_rule_by_prefix)
         adapter_prefix = f"{prefix}meta_adapter_time."
         last_prefix = f"{prefix}t3."
         p4_prefixes = (
@@ -421,9 +522,12 @@ class ProgressiveTrainabilityPolicy:
         profile_index = _TRAINABILITY_PROFILES.index(self.profile)
         names = []
         for name, _ in model.named_parameters():
-            norm = any(name.startswith(candidate) for candidate in norm_prefixes)
-            if norm and self.norm_affine != "weight_bias":
-                norm = name.endswith(f".{self.norm_affine}")
+            matched_norm_prefix = next(
+                (candidate for candidate in norm_prefixes if name.startswith(candidate)), None
+            )
+            norm = matched_norm_prefix is not None
+            if norm and norm_rule_by_prefix[matched_norm_prefix] != "weight_bias":
+                norm = name.endswith(f".{norm_rule_by_prefix[matched_norm_prefix]}")
             adapter = name.startswith(adapter_prefix)
             last_block = name.startswith(last_prefix)
             p4_extra = any(name.startswith(candidate) for candidate in p4_prefixes)
@@ -467,6 +571,8 @@ class FoldMetrics:
     fold_variance: float
     source_distance: float
     non_degrading_fold_fraction: float
+    class_floor: float = 0.0
+    ece: float = 0.0
 
     def __post_init__(self) -> None:
         for name in (
@@ -476,6 +582,8 @@ class FoldMetrics:
             "fold_variance",
             "source_distance",
             "non_degrading_fold_fraction",
+            "class_floor",
+            "ece",
         ):
             if not math.isfinite(float(getattr(self, name))):
                 raise ValueError(f"{name} must be finite")
@@ -667,6 +775,13 @@ class SFTAPFTAudit:
     selected_checkpoint_steps: tuple[int, ...]
     training_sample_count: int
     stage_validation_rows: tuple[StageValidationRow, ...]
+    head_prefit_steps: int
+    backbone_optimizer_steps: int
+    backbone_train_forward_steps: int
+    validation_forward_steps: tuple[int, ...]
+    snapshot_tensor_bytes: int
+    trainable_parameter_elements: int
+    actual_changed_elements: int
 
 
 @dataclass(frozen=True)
@@ -690,6 +805,12 @@ class SFTAPFTFoldRow:
     source_distance: float
     stage_validation_rows: tuple[StageValidationRow, ...] = ()
     query_opened: bool = False
+    frozen_class_floor: float = 0.0
+    adapted_class_floor: float = 0.0
+    frozen_ece: float = 0.0
+    adapted_ece: float = 0.0
+    frozen_per_class_nll: tuple[float, ...] = ()
+    adapted_per_class_nll: tuple[float, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -703,6 +824,7 @@ class SFTAPFTSelectionResult:
     full_support_result: SFTAPFTResult | None = None
     final_training_sample_count: int = 0
     fold0_as_final: bool = False
+    temperature_calibration: TemperatureCalibration | None = None
 
 
 def _forward_aux(model: nn.Module, values: Tensor) -> Mapping[str, Any]:
@@ -899,12 +1021,15 @@ def fit_sf_tapft(
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(int(config.seed))
 
-    teacher = copy.deepcopy(checkpoint_model)
+    teacher = (
+        copy.deepcopy(checkpoint_model) if config.selective_kd_weight > 0.0 else None
+    )
     student = copy.deepcopy(checkpoint_model)
-    teacher.eval()
-    for parameter in teacher.parameters():
-        parameter.requires_grad_(False)
-    source_weights = _source_classifier_weight(teacher)
+    if teacher is not None:
+        teacher.eval()
+        for parameter in teacher.parameters():
+            parameter.requires_grad_(False)
+    source_weights = _source_classifier_weight(checkpoint_model)
     source_class_ids = tuple(range(int(source_weights.size(0))))
     ensure_time_adapter(student, rank=config.adapter_rank)
     student.eval()
@@ -934,6 +1059,7 @@ def fit_sf_tapft(
         config.trainability_profile,
         norm_scope=config.norm_scope,
         norm_affine=config.norm_affine,
+        norm_rules=config.norm_rules,
     )
     phase_names = {phase: policy.parameter_names(student, phase) for phase in _PHASES}
     norm_names = set(phase_names["A"])
@@ -998,6 +1124,7 @@ def fit_sf_tapft(
     }
     total_steps = sum(config.phase_steps)
     scheduler_steps = int(config.scheduler_reference_steps) or total_steps
+    validation_step_set = set(config.validation_steps)
     losses: list[float] = []
     snapshots: list[
         tuple[dict[str, Tensor], float | tuple[float, ...], int]
@@ -1005,22 +1132,44 @@ def fit_sf_tapft(
     stage_best: dict[str, tuple[int, int, StageValidationMetrics]] = {}
     stage_end: dict[str, StageValidationMetrics] = {}
     current_phase = ""
+    validation_forward_steps: list[int] = []
+    permitted_model_names = norm_names | adapter_names | last_names | fusion_names
+    full_anchor_state = {
+        **{f"model.{name}": value for name, value in initial_model_state.items()},
+        **{f"head.{name}": value for name, value in initial_head_state.items()},
+    }
+    compact_anchor_state = {
+        **{
+            f"model.{name}": initial_model_state[name]
+            for name in sorted(permitted_model_names)
+        },
+        **{f"head.{name}": value for name, value in initial_head_state.items()},
+    }
 
     for step in range(total_steps):
         phase = _phase_for_step(step, config.phase_steps)
-        if phase != current_phase:
-            policy.apply(student, phase)
+        optimization_phase = "HEAD" if step < config.head_prefit_steps else phase
+        if optimization_phase != current_phase:
+            if optimization_phase == "HEAD":
+                student.eval()
+                for parameter in student.parameters():
+                    parameter.requires_grad_(False)
+            else:
+                policy.apply(student, phase)
             for parameter in head.parameters():
                 parameter.requires_grad_(True)
-            current_phase = phase
+            current_phase = optimization_phase
         lr_factor = _learning_rate_factor(step, scheduler_steps, config.warmup_ratio)
         base_lrs = _group_base_lrs(config, phase)
         for group in optimizer.param_groups:
             group["lr"] = float(base_lrs[str(group["name"])]) * lr_factor
         optimizer.zero_grad(set_to_none=True)
         with torch.autocast(device_type=device.type, dtype=torch.float16, enabled=use_amp):
-            outputs = _forward_aux(student, target_x)
-            embeddings = _extract_joint_embedding(outputs, int(target_x.size(0)))
+            if optimization_phase == "HEAD":
+                embeddings = initial_embeddings.detach()
+            else:
+                outputs = _forward_aux(student, target_x)
+                embeddings = _extract_joint_embedding(outputs, int(target_x.size(0)))
             logits = head(embeddings)
             ce = F.cross_entropy(
                 logits,
@@ -1041,6 +1190,7 @@ def fit_sf_tapft(
             )
             kd = logits.new_zeros(())
             if config.selective_kd_weight > 0.0:
+                assert teacher is not None
                 with torch.no_grad():
                     teacher_outputs = _forward_aux(teacher, target_x)
                     teacher_logits = teacher_outputs.get("tx_logits", teacher_outputs.get("logits"))
@@ -1074,11 +1224,17 @@ def fit_sf_tapft(
         scaler.update()
         loss_value = float(loss.detach())
         losses.append(loss_value)
+        evaluate_checkpoint = (
+            checkpoint_validation is None
+            or not validation_step_set
+            or step + 1 in validation_step_set
+        )
+        score: float | tuple[float, ...] | None = None
         if checkpoint_validation is None:
             score: float | tuple[float, ...] = _target_train_snapshot_score(
                 loss_value, step + 1
             )
-        else:
+        elif evaluate_checkpoint:
             assert validation_x is not None
             assert validation_labels is not None
             assert frozen_validation_logits is not None
@@ -1103,8 +1259,9 @@ def fit_sf_tapft(
                     validation_accuracy,
                     -validation_nll,
                     validation_margin,
-                    -_checkpoint_distance(teacher, student),
+                    -stage_metrics.permitted_parameter_distance,
                 )
+            validation_forward_steps.append(step + 1)
             phase_offset = sum(config.phase_steps[: _PHASES.index(phase)])
             step_in_phase = step - phase_offset + 1
             current_best = stage_best.get(phase)
@@ -1113,15 +1270,22 @@ def fit_sf_tapft(
             ):
                 stage_best[phase] = (step_in_phase, step + 1, stage_metrics)
             stage_end[phase] = stage_metrics
-        qualifies = checkpoint_selection_mode == "final_step" and step + 1 == total_steps
-        if checkpoint_selection_mode == "best":
+        qualifies = (
+            score is not None
+            and checkpoint_selection_mode == "final_step"
+            and step + 1 == total_steps
+        )
+        if checkpoint_selection_mode == "best" and score is not None:
             qualifies = (
                 len(snapshots) < int(config.checkpoint_average_top_k)
                 or score > min(item[1] for item in snapshots)
             )
         if qualifies:
             combined = {
-                **{f"model.{name}": value.detach().clone() for name, value in student.state_dict().items()},
+                **{
+                    f"model.{name}": dict(student.state_dict())[name].detach().clone()
+                    for name in sorted(permitted_model_names)
+                },
                 **{f"head.{name}": value.detach().clone() for name, value in head.state_dict().items()},
             }
             if checkpoint_selection_mode == "final_step":
@@ -1131,10 +1295,7 @@ def fit_sf_tapft(
                 snapshots.sort(key=lambda item: item[1], reverse=True)
                 del snapshots[int(config.checkpoint_average_top_k) :]
 
-    anchor_state = {
-        **{f"model.{name}": value for name, value in initial_model_state.items()},
-        **{f"head.{name}": value for name, value in initial_head_state.items()},
-    }
+    anchor_state = compact_anchor_state
     permitted_snapshot_names = {
         *(f"model.{name}" for name in norm_names | adapter_names | last_names | fusion_names),
         *(f"head.{name}" for name in initial_head_state),
@@ -1147,9 +1308,16 @@ def fit_sf_tapft(
         anchor_state=anchor_state,
         permitted_names=permitted_snapshot_names,
     )
-    student.load_state_dict(
-        {name.removeprefix("model."): value for name, value in averaged.items() if name.startswith("model.")}
-    )
+    averaged_model = {
+        name.removeprefix("model."): value
+        for name, value in averaged.items()
+        if name.startswith("model.")
+    }
+    restored_model_state = {
+        name: value.detach().clone() for name, value in initial_model_state.items()
+    }
+    restored_model_state.update(averaged_model)
+    student.load_state_dict(restored_model_state)
     head.load_state_dict(
         {name.removeprefix("head."): value for name, value in averaged.items() if name.startswith("head.")}
     )
@@ -1167,14 +1335,14 @@ def fit_sf_tapft(
         sorted(
             name
             for name, value in final_state.items()
-            if name in permitted_snapshot_names and not torch.equal(value, anchor_state[name])
+            if name in permitted_snapshot_names and not torch.equal(value, full_anchor_state[name])
         )
     )
     nonpermitted_changed = tuple(
         sorted(
             name
             for name, value in final_state.items()
-            if name not in permitted_snapshot_names and not torch.equal(value, anchor_state[name])
+            if name not in permitted_snapshot_names and not torch.equal(value, full_anchor_state[name])
         )
     )
     if nonpermitted_changed:
@@ -1227,6 +1395,20 @@ def fit_sf_tapft(
         selected_checkpoint_steps=tuple(step for _, _, step in snapshots),
         training_sample_count=len(target_train.physical_ids),
         stage_validation_rows=stage_validation_rows,
+        head_prefit_steps=config.head_prefit_steps,
+        backbone_optimizer_steps=total_steps - config.head_prefit_steps,
+        backbone_train_forward_steps=total_steps - config.head_prefit_steps,
+        validation_forward_steps=tuple(validation_forward_steps),
+        snapshot_tensor_bytes=sum(
+            int(value.numel() * value.element_size()) for value in compact_anchor_state.values()
+        ),
+        trainable_parameter_elements=(
+            sum(int(named[name].numel()) for name in permitted_model_names)
+            + sum(int(parameter.numel()) for parameter in head.parameters())
+        ),
+        actual_changed_elements=sum(
+            int(final_state[name].numel()) for name in permitted_changed
+        ),
     )
     return SFTAPFTResult(model=student, head=head, audit=audit)
 
@@ -1259,6 +1441,30 @@ def _classification_metrics(logits: Tensor, labels: Tensor) -> tuple[float, floa
     masked.scatter_(1, labels[:, None], float("-inf"))
     margin = float((true_logits - masked.max(dim=1).values).mean())
     return balanced, nll, margin
+
+
+def _calibration_metrics(
+    logits: Tensor, labels: Tensor, *, bins: int = 10
+) -> tuple[float, float, tuple[float, ...]]:
+    probabilities = logits.softmax(dim=1)
+    confidence, predictions = probabilities.max(dim=1)
+    correct = (predictions == labels).to(dtype=probabilities.dtype)
+    ece = probabilities.new_zeros(())
+    boundaries = torch.linspace(0.0, 1.0, bins + 1, device=logits.device)
+    for index in range(bins):
+        mask = (confidence > boundaries[index]) & (confidence <= boundaries[index + 1])
+        if bool(mask.any()):
+            ece = ece + mask.float().mean() * (
+                confidence[mask].mean() - correct[mask].mean()
+            ).abs()
+    recalls = []
+    per_class_nll = []
+    row_nll = F.cross_entropy(logits, labels, reduction="none")
+    for class_index in torch.unique(labels, sorted=True):
+        mask = labels == class_index
+        recalls.append(float((predictions[mask] == labels[mask]).float().mean()))
+        per_class_nll.append(float(row_nll[mask].mean()))
+    return float(min(recalls)), float(ece), tuple(per_class_nll)
 
 
 def _stage_validation_metrics(
@@ -1427,6 +1633,10 @@ def _aggregate_fold_metrics(
             float(sum(row.source_distance for row in rows) / len(rows)) if adapted else 0.0
         ),
         non_degrading_fold_fraction=float(non_degrading),
+        class_floor=float(
+            min(getattr(row, f"{prefix}_class_floor") for row in rows)
+        ),
+        ece=float(sum(getattr(row, f"{prefix}_ece") for row in rows) / len(rows)),
     )
 
 
@@ -1447,6 +1657,7 @@ def select_sf_tapft_by_grouped_cv(
     splits = selector.split(labels=target_train.labels, groups=target_train.groups)
     rows = []
     fitted_folds = []
+    adapted_oof: list[tuple[Tensor, Tensor]] = []
     for fold, (train_indices, validation_indices) in enumerate(splits):
         inner_train = _subset_target_train(target_train, train_indices)
         inner_validation = _subset_target_train(target_train, validation_indices)
@@ -1463,10 +1674,19 @@ def select_sf_tapft_by_grouped_cv(
         adapted_logits, adapted_labels = _adapted_validation_logits(
             fitted, inner_validation
         )
+        adapted_oof.append(
+            (adapted_logits.detach().cpu(), adapted_labels.detach().cpu())
+        )
         frozen_accuracy, frozen_nll, frozen_margin = _classification_metrics(
             frozen_logits, frozen_labels
         )
         adapted_accuracy, adapted_nll, adapted_margin = _classification_metrics(
+            adapted_logits, adapted_labels
+        )
+        frozen_floor, frozen_ece, frozen_per_class_nll = _calibration_metrics(
+            frozen_logits, frozen_labels
+        )
+        adapted_floor, adapted_ece, adapted_per_class_nll = _calibration_metrics(
             adapted_logits, adapted_labels
         )
         train_groups = frozenset(inner_train.groups or inner_train.physical_ids)
@@ -1486,8 +1706,41 @@ def select_sf_tapft_by_grouped_cv(
                 adapted_margin=adapted_margin,
                 source_distance=_checkpoint_distance(checkpoint_model, fitted.model),
                 stage_validation_rows=fitted.audit.stage_validation_rows,
+                frozen_class_floor=frozen_floor,
+                adapted_class_floor=adapted_floor,
+                frozen_ece=frozen_ece,
+                adapted_ece=adapted_ece,
+                frozen_per_class_nll=frozen_per_class_nll,
+                adapted_per_class_nll=adapted_per_class_nll,
             )
         )
+    temperature_calibration = None
+    if config.oof_temperature_calibration:
+        temperature_calibration = fit_positive_temperature(
+            torch.cat([logits for logits, _ in adapted_oof]),
+            torch.cat([labels for _, labels in adapted_oof]),
+        )
+        rows = [
+            replace(
+                row,
+                adapted_nll=_classification_metrics(
+                    logits / temperature_calibration.temperature, labels
+                )[1],
+                adapted_margin=_classification_metrics(
+                    logits / temperature_calibration.temperature, labels
+                )[2],
+                adapted_class_floor=_calibration_metrics(
+                    logits / temperature_calibration.temperature, labels
+                )[0],
+                adapted_ece=_calibration_metrics(
+                    logits / temperature_calibration.temperature, labels
+                )[1],
+                adapted_per_class_nll=_calibration_metrics(
+                    logits / temperature_calibration.temperature, labels
+                )[2],
+            )
+            for row, (logits, labels) in zip(rows, adapted_oof)
+        ]
     fold_rows = tuple(rows)
     frozen_metrics = _aggregate_fold_metrics(fold_rows, adapted=False)
     adapted_metrics = _aggregate_fold_metrics(fold_rows, adapted=True)
@@ -1514,6 +1767,10 @@ def select_sf_tapft_by_grouped_cv(
             refit_config = replace(
                 config,
                 phase_steps=selected_phase_steps,
+                head_prefit_steps=min(
+                    config.head_prefit_steps, sum(selected_phase_steps)
+                ),
+                validation_steps=(),
                 checkpoint_average_top_k=1,
             )
             full_support_result = fit_sf_tapft(
@@ -1522,11 +1779,15 @@ def select_sf_tapft_by_grouped_cv(
                 refit_config,
                 checkpoint_selection_mode="final_step",
             )
+            if temperature_calibration is not None:
+                full_support_result.head.scale /= temperature_calibration.temperature
             adapted_result = full_support_result
             final_training_sample_count = len(target_train.physical_ids)
         else:
             # Preserve the V1 return behavior until the R0 runner opts in.
             adapted_result = fitted_folds[0]
+            if temperature_calibration is not None:
+                adapted_result.head.scale /= temperature_calibration.temperature
             final_training_sample_count = adapted_result.audit.training_sample_count
             fold0_as_final = True
     return SFTAPFTSelectionResult(
@@ -1539,6 +1800,7 @@ def select_sf_tapft_by_grouped_cv(
         full_support_result=full_support_result,
         final_training_sample_count=final_training_sample_count,
         fold0_as_final=fold0_as_final,
+        temperature_calibration=temperature_calibration,
     )
 
 
@@ -1555,11 +1817,13 @@ __all__ = [
     "SFTAPFTSelectionResult",
     "StageValidationMetrics",
     "StageValidationRow",
+    "TemperatureCalibration",
     "TargetOnlyAdaptationDataset",
     "TargetPrototypeHead",
     "TrainableDeltaAverager",
     "ensure_time_adapter",
     "fit_sf_tapft",
+    "fit_positive_temperature",
     "leave_one_out_prototype_logits",
     "select_sf_tapft_by_grouped_cv",
 ]

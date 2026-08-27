@@ -178,6 +178,10 @@ def _parse_config(config: Mapping[str, Any]) -> tuple[dict[str, Any], SFTAPFTCon
     normalized = dict(raw)
     if "phase_steps" in normalized:
         normalized["phase_steps"] = tuple(normalized["phase_steps"])
+    if "norm_rules" in normalized:
+        normalized["norm_rules"] = tuple(tuple(row) for row in normalized["norm_rules"])
+    if "validation_steps" in normalized:
+        normalized["validation_steps"] = tuple(normalized["validation_steps"])
     return values, SFTAPFTConfig(**normalized)
 
 
@@ -193,7 +197,12 @@ def _normalize_sf_tapft_bundle_config(raw: Any) -> dict[str, Any]:
     defaults = {
         "norm_scope": "all",
         "norm_affine": "weight_bias",
+        "norm_rules": (),
         "scheduler_reference_steps": 0,
+        "head_prefit_steps": 0,
+        "validation_steps": (),
+        "oof_temperature_calibration": False,
+        "inference_temperature": 1.0,
     }
     missing = config_keys.difference(supplied)
     if missing.difference(defaults):
@@ -202,6 +211,8 @@ def _normalize_sf_tapft_bundle_config(raw: Any) -> dict[str, Any]:
     for name in missing:
         normalized[name] = defaults[name]
     normalized["phase_steps"] = tuple(normalized["phase_steps"])
+    normalized["norm_rules"] = tuple(tuple(row) for row in normalized["norm_rules"])
+    normalized["validation_steps"] = tuple(normalized["validation_steps"])
     return normalized
 
 
@@ -290,6 +301,13 @@ def _audit_payload(audit: Any) -> dict[str, Any]:
         "query_opened": bool(audit.query_opened),
         "bn_running_stats_updated": bool(audit.bn_running_stats_updated),
         "checkpoint_selection_role": str(audit.checkpoint_selection_role),
+        "head_prefit_steps": int(audit.head_prefit_steps),
+        "backbone_optimizer_steps": int(audit.backbone_optimizer_steps),
+        "backbone_train_forward_steps": int(audit.backbone_train_forward_steps),
+        "validation_forward_steps": list(audit.validation_forward_steps),
+        "snapshot_tensor_bytes": int(audit.snapshot_tensor_bytes),
+        "trainable_parameter_elements": int(audit.trainable_parameter_elements),
+        "actual_changed_elements": int(audit.actual_changed_elements),
     }
 
 
@@ -352,6 +370,10 @@ def _clean_single_bundle_payload(
 ) -> dict[str, Any]:
     final_config = asdict(method_config)
     final_config["phase_steps"] = tuple(int(value) for value in selected_phase_steps)
+    final_config["head_prefit_steps"] = int(result.audit.head_prefit_steps)
+    final_config["inference_temperature"] = float(
+        method_config.prototype_scale / result.head.scale
+    )
     class_ids = tuple(int(value) for value in result.head.class_ids)
     return {
         "schema": SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA,
@@ -543,6 +565,12 @@ def run_sf_tapft_grouped_selection(
             "frozen_margin": row.frozen_margin,
             "adapted_margin": row.adapted_margin,
             "source_distance": row.source_distance,
+            "frozen_class_floor": row.frozen_class_floor,
+            "adapted_class_floor": row.adapted_class_floor,
+            "frozen_ece": row.frozen_ece,
+            "adapted_ece": row.adapted_ece,
+            "frozen_per_class_nll": list(row.frozen_per_class_nll),
+            "adapted_per_class_nll": list(row.adapted_per_class_nll),
             "query_opened": False,
         }
         for row in selection.fold_rows
@@ -561,12 +589,22 @@ def run_sf_tapft_grouped_selection(
         "folds": int(folds),
         "frozen_metrics": asdict(selection.frozen_metrics),
         "adapted_metrics": asdict(selection.adapted_metrics),
+        "temperature_calibration": (
+            asdict(selection.temperature_calibration)
+            if selection.temperature_calibration is not None
+            else None
+        ),
         "fold_rows": rows,
         "oof_selection": {
             "selected": selection.selected,
             "folds": int(folds),
             "frozen_metrics": asdict(selection.frozen_metrics),
             "adapted_metrics": asdict(selection.adapted_metrics),
+            "temperature_calibration": (
+                asdict(selection.temperature_calibration)
+                if selection.temperature_calibration is not None
+                else None
+            ),
             "selected_phase_steps": list(selection.selected_phase_steps),
             "fold_rows": rows,
         },
@@ -595,6 +633,25 @@ def run_sf_tapft_grouped_selection(
         "query_opened": False,
         "query_truth_opened": False,
         "query_role_opened": False,
+        "resource_audit": (
+            {
+                "head_prefit_steps": selection.adapted_result.audit.head_prefit_steps,
+                "backbone_optimizer_steps": selection.adapted_result.audit.backbone_optimizer_steps,
+                "backbone_train_forward_steps": (
+                    selection.adapted_result.audit.backbone_train_forward_steps
+                ),
+                "validation_forward_steps": list(
+                    selection.adapted_result.audit.validation_forward_steps
+                ),
+                "snapshot_tensor_bytes": selection.adapted_result.audit.snapshot_tensor_bytes,
+                "trainable_parameter_elements": (
+                    selection.adapted_result.audit.trainable_parameter_elements
+                ),
+                "actual_changed_elements": selection.adapted_result.audit.actual_changed_elements,
+            }
+            if selection.adapted_result is not None
+            else None
+        ),
     }
     if binding is not None:
         receipt["phase1_binding"] = _binding_payload(binding)
@@ -817,7 +874,7 @@ def load_sf_tapft_clean_single_bundle_strict(
     head = TargetPrototypeHead(
         head_state["weight"],
         class_ids,
-        scale=config.prototype_scale,
+        scale=config.prototype_scale / config.inference_temperature,
     )
     try:
         head.load_state_dict(head_state, strict=True)

@@ -192,8 +192,10 @@ def test_r0_grouped_selection_writes_strict_full_support_clean_single_bundle(
     )
     output = tmp_path / "selection-output"
 
+    config = _r0_config(checkpoint, support)
+    config["sf_tapft"]["oof_temperature_calibration"] = True
     receipt = run_sf_tapft_grouped_selection(
-        _r0_config(checkpoint, support),
+        config,
         output,
         device="cpu",
         folds=2,
@@ -237,6 +239,9 @@ def test_r0_grouped_selection_writes_strict_full_support_clean_single_bundle(
     assert payload["state_change_audit"]["training_sample_count"] == 4
     assert payload["state_change_audit"]["checkpoint_selection_role"] == "fixed_final_step"
     assert payload["state_change_audit"]["nonpermitted_changed_names"] == []
+    assert payload["config"]["inference_temperature"] == pytest.approx(
+        receipt["temperature_calibration"]["temperature"]
+    )
     assert receipt["oof_selection"]["selected"] == "adapted"
     assert receipt["final_full_support_refit"] == {
         "model_role": "clean_single_full_support_refit",
@@ -266,6 +271,10 @@ def test_r0_grouped_selection_writes_strict_full_support_clean_single_bundle(
     assert audit["support_count"] == 4
     assert audit["fold0_as_final"] is False
     assert head.class_ids == (0, 1)
+    assert head.scale == pytest.approx(
+        payload["config"]["prototype_scale"]
+        / payload["config"]["inference_temperature"]
+    )
     assert all(not parameter.requires_grad for parameter in model.parameters())
     assert all(not parameter.requires_grad for parameter in head.parameters())
 
