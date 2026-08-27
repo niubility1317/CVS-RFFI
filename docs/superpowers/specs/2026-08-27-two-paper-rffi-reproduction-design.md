@@ -2,7 +2,7 @@
 
 ## 目标
 
-在`E:\type10-7\paper_reproduction`创建并维护两个相互隔离的论文复现目录，同时在本Git仓库的`paper_reproduction`保存完全相同的版本化实现。每个目录必须包含用户提供的论文PDF、论文忠实代码、单元测试、可复现配置、运行说明与结果边界说明。
+在`E:\type10-7\paper_reproduction`创建并维护两个相互隔离的论文复现目录，同时在本Git仓库的`paper_reproduction`保存完全相同的版本化实现。每个本地用户目录必须包含用户提供的论文PDF、论文忠实代码、单元测试、可复现配置、运行说明与结果边界说明。
 
 本文档的“论文复现”仅表示实现论文规定的方法并在可得数据上运行。只有数据集、receiver/day划分、训练设置和指标同时匹配时，才能比较论文数值；WiSig替代数据上的Tweak结果必须标记为`METHOD_REPRODUCTION_ON_SURROGATE_DATA`，不得写为Gaskin等人的原始数值复现。
 
@@ -15,7 +15,7 @@ E:\type10-7\paper_reproduction\gaskin_tweak_2023\
 E:\type10-7\paper_reproduction\hu_feature_separation_2024\
 ```
 
-两者分别镜像到Git仓库的`paper_reproduction/gaskin_tweak_2023/`和`paper_reproduction/hu_feature_separation_2024/`。每个目录固定包含`paper.pdf`、`src/`、`tests/`、`configs/`和`README.md`。根目录副本面向阅读和直接使用；Git仓库副本是唯一的版本控制与发布承载面。已有`feature_separation_crossrx`和`cvs_aligned`保持不动，它们是既有实现/项目扩展，不能替代新的paper-faithful实现。
+两者分别镜像到Git仓库的`paper_reproduction/gaskin_tweak_2023/`和`paper_reproduction/hu_feature_separation_2024/`。本地用户目录固定包含`paper.pdf`、方法实现模块、`tests/`、`configs/`和`README.md`；Git目录保存相同的代码、测试、配置和`PAPER_SOURCE.md`，但不推送论文PDF。根目录副本面向阅读和直接使用；Git仓库副本是唯一的代码版本控制与发布承载面。已有`feature_separation_crossrx`和`cvs_aligned`保持不动，它们是既有实现/项目扩展，不能替代新的paper-faithful实现。
 
 ## Gaskin等，2023：Tweak
 

@@ -1,0 +1,18 @@
+{
+  "reproduction_status": "METHOD_REPRODUCTION_ON_SURROGATE_DATA",
+  "dataset": "WiSig",
+  "input_shape": [2, 128],
+  "embedding_dim": 12,
+  "triplet_margin": 0.1,
+  "optimizer": "SGD",
+  "momentum": 0.9,
+  "batch_size": 64,
+  "epochs": 100,
+  "learning_rate": {
+    "value": null,
+    "status": "implementation_choice_search_required"
+  },
+  "calibration_fraction_of_source_training": 0.1,
+  "decision_inputs_m": 10,
+  "open_set_trials": 5
+}

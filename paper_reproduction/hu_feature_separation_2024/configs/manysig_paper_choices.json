@@ -1,0 +1,27 @@
+{
+  "dataset": "WiSig ManySig",
+  "input_shape": [3, 256],
+  "num_transmitters": 6,
+  "training_samples_per_transmitter": 30,
+  "optimizer": "Adam",
+  "learning_rate": 0.005,
+  "batch_size": 256,
+  "fine_tuning_samples_per_transmitter": 25,
+  "augmentation": {
+    "noise_snr_db": [15, 30],
+    "multipath_count": [1, 5],
+    "multipath_delay_ns": [5, 10],
+    "multipath_attenuation": [0.5, 1.0],
+    "multipath_phase_rad": [0.0, 6.283185307179586],
+    "doppler_hz": [-15, 15]
+  },
+  "implementation_choice": {
+    "lambda_similarity": null,
+    "lambda_tx_entropy": null,
+    "lambda_rx_entropy": null,
+    "epochs": null,
+    "seed": null,
+    "welch_window": "hann_single_256_point_segment",
+    "fine_tune_trainable_modules": ["encoder", "tx_branch", "tx_classifier"]
+  }
+}
