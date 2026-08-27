@@ -1,0 +1,138 @@
+import hashlib
+import json
+import pickle
+from pathlib import Path
+
+import numpy as np
+import pytest
+
+from cvsrffi.wisig_canonical_inventory import (
+    RawRecordRef,
+    canonical_coordinate,
+    canonical_physical_id,
+    iter_wisig_records,
+)
+
+
+REQUIRED_KEYS = (
+    "data",
+    "tx_list",
+    "rx_list",
+    "capture_date_list",
+    "equalized_list",
+)
+
+
+def _payload(*, values=(1.0, 2.0), num_tx=2, num_rx=2, num_days=2):
+    data = []
+    for tx_i in range(num_tx):
+        tx_rows = []
+        for rx_i in range(num_rx):
+            day_rows = []
+            for day_i in range(num_days):
+                base = float((tx_i + 1) * 100 + (rx_i + 1) * 10 + day_i)
+                eq0 = np.stack(
+                    [np.full((4, 2), base + value, dtype=np.float32) for value in values]
+                )
+                eq1 = np.stack(
+                    [np.full((4, 2), base + 1000.0 + value, dtype=np.float32) for value in values]
+                )
+                day_rows.append([eq0, eq1])
+            tx_rows.append(day_rows)
+        data.append(tx_rows)
+    return {
+        "data": data,
+        "tx_list": ["tx-A", "tx-B"][:num_tx],
+        "rx_list": ["rx-X", "rx-Y"][:num_rx],
+        "capture_date_list": ["day-0", "day-1"][:num_days],
+        "equalized_list": [0, 1],
+    }
+
+
+def _write_payload(path: Path, payload: dict) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("wb") as handle:
+        pickle.dump(payload, handle)
+    return path
+
+
+@pytest.fixture
+def fake_wisig_pkl(tmp_path: Path) -> Path:
+    return _write_payload(tmp_path / "ManyTx.pkl", _payload(num_tx=1, num_rx=1, num_days=1))
+
+
+def test_canonical_identity_is_path_independent(tmp_path: Path):
+    first_path = _write_payload(tmp_path / "first" / "ManyTx.pkl", _payload(num_tx=1, num_rx=1, num_days=1))
+    second_path = _write_payload(tmp_path / "second" / "renamed.pkl", _payload(num_tx=1, num_rx=1, num_days=1))
+
+    first = list(iter_wisig_records(first_path, "first-asset", equalized=1))
+    second = list(iter_wisig_records(second_path, "renamed-asset", equalized=1))
+
+    assert [row.physical_sample_id for row in first] == [row.physical_sample_id for row in second]
+    assert first[0].dataset_path != second[0].dataset_path
+    assert first[0].asset_name != second[0].asset_name
+    assert canonical_coordinate("tx0", "rx0", "day0", "1", "7") == (
+        "tx0",
+        "rx0",
+        "day0",
+        "1",
+        "7",
+    )
+    expected = hashlib.sha256(
+        json.dumps(("tx0", "rx0", "day0", "1", "7"), separators=(",", ":"), ensure_ascii=True).encode(
+            "ascii"
+        )
+    ).hexdigest()
+    assert canonical_physical_id("tx0", "rx0", "day0", "1", "7") == expected
+
+
+def test_reader_filters_equalized_one_and_hashes_non_empty_iq(fake_wisig_pkl: Path):
+    rows = list(iter_wisig_records(fake_wisig_pkl, "ManyTx", equalized=1))
+
+    assert rows
+    assert all(isinstance(row, RawRecordRef) for row in rows)
+    assert {row.eq_id for row in rows} == {"1"}
+    assert all(row.iq_sha256 for row in rows)
+    assert all(len(row.iq_sha256) == 64 for row in rows)
+    expected = hashlib.sha256(
+        np.ascontiguousarray(np.full((4, 2), 1111.0, dtype=np.float32)).tobytes(order="C")
+    ).hexdigest()
+    assert rows[0].iq_sha256 == expected
+
+
+@pytest.mark.parametrize("missing_key", REQUIRED_KEYS)
+def test_reader_rejects_missing_required_key(fake_wisig_pkl: Path, missing_key: str):
+    payload = _payload(num_tx=1, num_rx=1, num_days=1)
+    del payload[missing_key]
+    path = _write_payload(fake_wisig_pkl.parent / f"missing-{missing_key}.pkl", payload)
+
+    with pytest.raises(KeyError, match=missing_key):
+        list(iter_wisig_records(path, "ManyTx", equalized=1))
+
+
+def test_reader_rejects_absent_equalization_label(fake_wisig_pkl: Path):
+    with pytest.raises(ValueError, match="equalized"):
+        list(iter_wisig_records(fake_wisig_pkl, "ManyTx", equalized=7))
+
+
+def test_reader_resolves_labels_and_traverses_deterministically(tmp_path: Path):
+    path = _write_payload(tmp_path / "ManyTx.pkl", _payload())
+
+    first = list(iter_wisig_records(path, "ManyTx", equalized=1))
+    second = list(iter_wisig_records(path, "ManyTx", equalized=1))
+
+    assert len(first) == 16
+    assert first == second
+    assert [row.source_record_index for row in first] == list(range(16))
+    assert [(row.tx_id, row.rx_id, row.day_id, row.eq_id, row.sig_id) for row in first[:4]] == [
+        ("tx-A", "rx-X", "day-0", "1", "0"),
+        ("tx-A", "rx-X", "day-0", "1", "1"),
+        ("tx-A", "rx-X", "day-1", "1", "0"),
+        ("tx-A", "rx-X", "day-1", "1", "1"),
+    ]
+    assert {row.tx_id for row in first} == {"tx-A", "tx-B"}
+    assert {row.rx_id for row in first} == {"rx-X", "rx-Y"}
+    assert {row.day_id for row in first} == {"day-0", "day-1"}
+    assert {row.eq_id for row in first} == {"1"}
+    with pytest.raises((AttributeError, TypeError)):
+        first[0].eq_id = "changed"
