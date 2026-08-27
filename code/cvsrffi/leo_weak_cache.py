@@ -29,6 +29,7 @@ PHASE2_PHYSICAL_SAMPLE_ROOT_ID_POLICY = (
 PHASE2_SINGLE_OBSERVATION_CACHE_SCOPES = {
     "stage2_target_old",
     "stage2_registered",
+    "stage2_canonical_registered",
 }
 
 _REQUIRED_ARRAY_KEYS = (
@@ -64,6 +65,11 @@ _FORBIDDEN_EXACT_MEMBERS = {
     "fft_rf_features",
 }
 _OPTIONAL_OFFLINE_SPLIT_MEMBERS = ("split_partition", "split_rank")
+_OPTIONAL_CANONICAL_SPLIT_MEMBERS = (
+    "canonical_physical_sample_ids",
+    "split_roles",
+    "split_ranks",
+)
 
 
 def canonical_json_sha256(value: Any) -> str:
@@ -131,6 +137,12 @@ def physical_sample_id_from_values(
 
 
 def physical_sample_id(arrays: Mapping[str, np.ndarray], index: int) -> str:
+    canonical = arrays.get("canonical_physical_sample_ids")
+    if canonical is not None:
+        value = str(np.asarray(canonical)[index])
+        if not value:
+            raise ValueError("canonical physical sample ID must be nonempty")
+        return value
     return physical_sample_id_from_values(
         dataset_sha256=str(arrays["source_dataset_sha256"][index]),
         source_record_index=int(arrays["source_record_indices"][index]),
@@ -324,6 +336,17 @@ def load_verified_leo_weak_cache(
             )
         for key in optional_present:
             arrays[key] = np.asarray(archive[key])
+        canonical_present = [
+            key for key in _OPTIONAL_CANONICAL_SPLIT_MEMBERS if key in members
+        ]
+        if canonical_present and len(canonical_present) != len(
+            _OPTIONAL_CANONICAL_SPLIT_MEMBERS
+        ):
+            raise ValueError(
+                "LEO cache canonical split members must be present as an exact trio"
+            )
+        for key in canonical_present:
+            arrays[key] = np.asarray(archive[key])
 
     iq = np.asarray(arrays["leo_weak_iq"], dtype=np.float32)
     if iq.ndim != 3 or iq.shape[1] != 2:
@@ -332,9 +355,14 @@ def load_verified_leo_weak_cache(
     if row_count <= 0:
         raise ValueError("LEO cache contains no rows")
     for key, value in arrays.items():
-        if int(np.asarray(value).shape[0]) != row_count:
+        array = np.asarray(value)
+        if array.ndim == 0 and key in _OPTIONAL_CANONICAL_SPLIT_MEMBERS:
+            raise ValueError(
+                "LEO cache canonical split members must be one-dimensional"
+            )
+        if int(array.shape[0]) != row_count:
             raise ValueError(f"LEO cache row count drift for {key}")
-        if np.asarray(value).dtype == object:
+        if array.dtype == object:
             raise ValueError(f"LEO cache object arrays are forbidden: {key}")
     if "split_partition" in arrays:
         partitions = np.asarray(arrays["split_partition"]).astype(str)
@@ -345,6 +373,34 @@ def load_verified_leo_weak_cache(
             "offline_split_partition_policy"
         ) != "legacy_seeded_nested_exact":
             raise ValueError("offline split rank/policy drift")
+    canonical_split_present = "canonical_physical_sample_ids" in arrays
+    if canonical_split_present:
+        canonical_ids_raw = np.asarray(arrays["canonical_physical_sample_ids"])
+        split_roles_raw = np.asarray(arrays["split_roles"])
+        split_ranks_raw = np.asarray(arrays["split_ranks"])
+        if any(
+            value.ndim != 1
+            for value in (canonical_ids_raw, split_roles_raw, split_ranks_raw)
+        ):
+            raise ValueError("LEO cache canonical split members must be one-dimensional")
+        if canonical_ids_raw.dtype.kind not in {"U", "S"}:
+            raise ValueError("canonical physical sample IDs must be strings")
+        canonical_ids = canonical_ids_raw.astype(str)
+        if any(not value for value in canonical_ids.tolist()):
+            raise ValueError("canonical physical sample IDs must be nonempty strings")
+        if len(set(canonical_ids.tolist())) != row_count:
+            raise ValueError(
+                "canonical physical sample IDs must be unique within a scenario cache"
+            )
+        if split_roles_raw.dtype.kind not in {"U", "S"}:
+            raise ValueError("canonical split roles must be strings")
+        split_roles = split_roles_raw.astype(str)
+        if not set(split_roles.tolist()).issubset({"support", "query"}):
+            raise ValueError("canonical split roles must be support or query")
+        if split_ranks_raw.dtype.kind not in {"i", "u"} or np.any(
+            split_ranks_raw < 0
+        ):
+            raise ValueError("canonical split ranks must be nonnegative exact integers")
     roles = np.asarray(arrays["dataset_role"]).astype(str)
     observed_roles = set(roles.tolist())
     if not observed_roles or not observed_roles.issubset(allowed):
@@ -463,6 +519,7 @@ def load_verified_leo_weak_cache(
             if "overlay_role_policy" in manifest
             else "legacy_missing_manifest_field_verified_from_rows"
         ),
+        "canonical_split_members_verified": canonical_split_present,
     }
     return arrays, dict(manifest), audit
 

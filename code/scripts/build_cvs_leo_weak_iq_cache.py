@@ -14,6 +14,8 @@ import hashlib
 import itertools
 import json
 import os
+import pickle
+import sqlite3
 import sys
 from pathlib import Path
 from typing import Any, Mapping, Sequence
@@ -48,7 +50,17 @@ from cvsrffi.leo_weak_cache import (  # noqa: E402
     post_channel_iq_sha256,
     sha256_file,
 )
+from cvsrffi.phase2_canonical_split import (  # noqa: E402
+    K_VALUES as CANONICAL_K_VALUES,
+    PROTOCOL_SCHEMA as CANONICAL_PROTOCOL_SCHEMA,
+    QUERY_POLICIES as CANONICAL_QUERY_POLICIES,
+    SPLIT_MANIFEST_SCHEMA as CANONICAL_SPLIT_MANIFEST_SCHEMA,
+)
 from cvsrffi.tensors import make_torch_generator  # noqa: E402
+from cvsrffi.wisig_canonical_inventory import (  # noqa: E402
+    canonical_physical_id,
+)
+from dataset_wisig import WiSigCompactDataset  # noqa: E402
 from export_spaceborne_features import (  # noqa: E402
     _build_wisig_dataset,
     _meta_to_list,
@@ -58,6 +70,9 @@ from training_controls import sat_channel_config_for_scenario  # noqa: E402
 
 BUILD_SPEC_SCHEMA = "cvs_leo_weak_iq_cache_build_spec_v2"
 LEGACY_BUILD_SPEC_SCHEMA = "cvs_leo_weak_iq_cache_build_spec_v1"
+CANONICAL_BUILD_SPEC_SCHEMA = "cvs_leo_weak_iq_cache_build_spec_v3"
+CANONICAL_CACHE_SCOPE = "stage2_canonical_registered"
+CANONICAL_OLD_TX_COUNT = 6
 PER_SCENARIO_SAMPLES_PER_TX = 40
 SCENARIO_PARTITION_POLICY = "disjoint_preoverlay_tx_day_stratified_v1"
 REFERENCE_EXCLUSION_POLICY = (
@@ -68,6 +83,7 @@ SCOPE_ROLES = {
     "source_validation": {"source"},
     "stage2_target_old": {"target_old"},
     "stage2_registered": {"target_old", "target_new"},
+    CANONICAL_CACHE_SCOPE: {"target_old", "target_new"},
     "external_comparison_registered": {"target_old", "target_new"},
 }
 
@@ -90,10 +106,15 @@ def validate_build_spec(spec: Mapping[str, Any]) -> dict[str, Any]:
     scope = str(spec.get("cache_scope", ""))
     if scope not in SCOPE_ROLES:
         raise ValueError(f"unsupported cache_scope={scope!r}")
+    canonical_scope = scope == CANONICAL_CACHE_SCOPE
     expected_schema = (
-        BUILD_SPEC_SCHEMA
-        if scope in {"stage2_target_old", "stage2_registered"}
-        else LEGACY_BUILD_SPEC_SCHEMA
+        CANONICAL_BUILD_SPEC_SCHEMA
+        if canonical_scope
+        else (
+            BUILD_SPEC_SCHEMA
+            if scope in {"stage2_target_old", "stage2_registered"}
+            else LEGACY_BUILD_SPEC_SCHEMA
+        )
     )
     if spec.get("schema") != expected_schema:
         raise ValueError(f"build spec schema must be {expected_schema}")
@@ -126,7 +147,11 @@ def validate_build_spec(spec: Mapping[str, Any]) -> dict[str, Any]:
         "phase2_query_post_reception_view_fit_access": False,
         "physical_sample_scenario_assignment_policy": SCENARIO_PARTITION_POLICY,
     }
-    if scope in {"stage2_target_old", "stage2_registered"}:
+    if scope in {
+        "stage2_target_old",
+        "stage2_registered",
+        CANONICAL_CACHE_SCOPE,
+    }:
         failed = [
             key
             for key, expected in single_observation_contract.items()
@@ -136,38 +161,51 @@ def validate_build_spec(spec: Mapping[str, Any]) -> dict[str, Any]:
             raise ValueError(f"build spec single-observation contract drift: {failed}")
     if spec.get("star_ground_channel_impl") != "simplified_leo_residual":
         raise ValueError("build spec requires simplified_leo_residual")
-    role_specs = list(spec.get("role_specs", []))
-    if not role_specs or any(not isinstance(item, Mapping) for item in role_specs):
-        raise ValueError("build spec role_specs must be a nonempty object list")
-    roles = [str(item.get("role", "")) for item in role_specs]
-    if len(set(roles)) != len(roles) or set(roles) != SCOPE_ROLES[scope]:
-        raise ValueError(
-            f"cache_scope={scope} requires exact roles={sorted(SCOPE_ROLES[scope])}"
-        )
-    for item in role_specs:
-        for key in ("role", "pkl", "tx_ids", "rxs"):
-            if not str(item.get(key, "")).strip():
-                raise ValueError(f"role spec is missing {key}")
-        apply_overlay = item.get("apply_leo_overlay", True)
-        if not isinstance(apply_overlay, bool):
-            raise ValueError("role apply_leo_overlay must be boolean")
-        if scope in {"stage2_target_old", "stage2_registered"}:
-            if str(item.get("days", "")) != "0,1,2":
-                raise ValueError(
-                    "single-observation formal cache requires independent day pool "
-                    "0,1,2"
-                )
-            if int(item.get("max_samples_per_tx", 0)) != (
-                PER_SCENARIO_SAMPLES_PER_TX * len(FORMAL_LEO_WEAK_SCENARIOS)
-            ):
-                raise ValueError(
-                    "single-observation formal cache requires 120 physical samples "
-                    "per TX before scenario partition"
-                )
-    overlay_by_role = {
-        str(item["role"]): bool(item.get("apply_leo_overlay", True))
-        for item in role_specs
-    }
+    if canonical_scope:
+        if spec.get("protocol_schema") != CANONICAL_PROTOCOL_SCHEMA:
+            raise ValueError(
+                f"canonical build spec protocol_schema must be {CANONICAL_PROTOCOL_SCHEMA}"
+            )
+        if "role_specs" in spec:
+            raise ValueError("canonical build spec forbids role_specs")
+        for key in ("canonical_inventory", "split_manifest"):
+            if not str(spec.get(key, "")).strip():
+                raise ValueError(f"canonical build spec requires nonempty {key}")
+        role_specs: list[Mapping[str, Any]] = []
+        overlay_by_role = {"target_old": True, "target_new": True}
+    else:
+        role_specs = list(spec.get("role_specs", []))
+        if not role_specs or any(not isinstance(item, Mapping) for item in role_specs):
+            raise ValueError("build spec role_specs must be a nonempty object list")
+        roles = [str(item.get("role", "")) for item in role_specs]
+        if len(set(roles)) != len(roles) or set(roles) != SCOPE_ROLES[scope]:
+            raise ValueError(
+                f"cache_scope={scope} requires exact roles={sorted(SCOPE_ROLES[scope])}"
+            )
+        for item in role_specs:
+            for key in ("role", "pkl", "tx_ids", "rxs"):
+                if not str(item.get(key, "")).strip():
+                    raise ValueError(f"role spec is missing {key}")
+            apply_overlay = item.get("apply_leo_overlay", True)
+            if not isinstance(apply_overlay, bool):
+                raise ValueError("role apply_leo_overlay must be boolean")
+            if scope in {"stage2_target_old", "stage2_registered"}:
+                if str(item.get("days", "")) != "0,1,2":
+                    raise ValueError(
+                        "single-observation formal cache requires independent day pool "
+                        "0,1,2"
+                    )
+                if int(item.get("max_samples_per_tx", 0)) != (
+                    PER_SCENARIO_SAMPLES_PER_TX * len(FORMAL_LEO_WEAK_SCENARIOS)
+                ):
+                    raise ValueError(
+                        "single-observation formal cache requires 120 physical samples "
+                        "per TX before scenario partition"
+                    )
+        overlay_by_role = {
+            str(item["role"]): bool(item.get("apply_leo_overlay", True))
+            for item in role_specs
+        }
     if scope == "external_comparison_registered":
         if overlay_by_role != {"target_old": False, "target_new": True}:
             raise ValueError(
@@ -182,6 +220,10 @@ def validate_build_spec(spec: Mapping[str, Any]) -> dict[str, Any]:
         raise ValueError("satellite_seed_by_scenario must use the formal ordered tuple")
     if tuple(outputs) != FORMAL_LEO_WEAK_SCENARIOS:
         raise ValueError("out_npz_by_scenario must use the formal ordered tuple")
+    if canonical_scope and any(
+        not str(outputs[name]).strip() for name in FORMAL_LEO_WEAK_SCENARIOS
+    ):
+        raise ValueError("canonical build spec output paths must be nonempty")
     if any(int(seeds[name]) < 0 for name in FORMAL_LEO_WEAK_SCENARIOS):
         raise ValueError("satellite seeds must be nonnegative")
     if not str(spec.get("out_manifest", "")).strip():
@@ -794,11 +836,722 @@ def _build_one_scenario(
     return audit
 
 
+def _exact_nonnegative_integer(value: Any, name: str) -> int:
+    if type(value) is not int or value < 0:
+        raise ValueError(f"{name} must be a nonnegative exact integer")
+    return value
+
+
+def _nonempty_text(value: Any, name: str) -> str:
+    if not isinstance(value, str) or not value:
+        raise ValueError(f"{name} must be a nonempty string")
+    return value
+
+
+def _canonical_label(value: Any) -> str:
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    if isinstance(value, np.bytes_):
+        return bytes(value).decode("utf-8", errors="replace")
+    if isinstance(value, np.generic):
+        value = value.item()
+    return str(value)
+
+
+def _read_json_object(path: Path, name: str) -> dict[str, Any]:
+    if not path.is_file():
+        raise FileNotFoundError(f"{name} is missing: {path}")
+    payload = json.loads(path.read_text(encoding="utf-8-sig"))
+    if not isinstance(payload, dict):
+        raise TypeError(f"{name} must contain a JSON object")
+    return payload
+
+
+def _open_canonical_inventory_read_only(path: Path) -> sqlite3.Connection:
+    if not path.is_file():
+        raise FileNotFoundError(f"canonical inventory is missing: {path}")
+    connection = sqlite3.connect(f"{path.resolve().as_uri()}?mode=ro", uri=True)
+    connection.execute("PRAGMA query_only = ON")
+    return connection
+
+
+def _sequence_of_nonempty_strings(value: Any, name: str) -> tuple[str, ...]:
+    if isinstance(value, (str, bytes)) or not isinstance(value, Sequence):
+        raise ValueError(f"{name} must be a sequence")
+    result = tuple(_nonempty_text(item, f"{name} member") for item in value)
+    if not result or len(result) != len(set(result)):
+        raise ValueError(f"{name} must be nonempty and unique")
+    return result
+
+
+def _validate_canonical_split_manifest(
+    split_path: Path,
+    connection: sqlite3.Connection,
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    payload = _read_json_object(split_path, "canonical split manifest")
+    if payload.get("schema") != CANONICAL_SPLIT_MANIFEST_SCHEMA:
+        raise ValueError(
+            f"canonical split schema must be {CANONICAL_SPLIT_MANIFEST_SCHEMA}"
+        )
+    if payload.get("protocol_schema") != CANONICAL_PROTOCOL_SCHEMA:
+        raise ValueError(
+            f"canonical split protocol_schema must be {CANONICAL_PROTOCOL_SCHEMA}"
+        )
+    query_policy = _nonempty_text(payload.get("query_policy"), "query_policy")
+    if query_policy not in CANONICAL_QUERY_POLICIES:
+        raise ValueError("canonical split declares an unsupported query_policy")
+    k = _exact_nonnegative_integer(payload.get("k"), "canonical split K")
+    if k not in CANONICAL_K_VALUES:
+        raise ValueError(f"canonical split K must be one of {CANONICAL_K_VALUES}")
+    registered_tx_ids = _sequence_of_nonempty_strings(
+        payload.get("registered_tx_ids"), "registered_tx_ids"
+    )
+    if len(registered_tx_ids) <= CANONICAL_OLD_TX_COUNT:
+        raise ValueError(
+            "canonical split must contain six old TX IDs followed by new TX IDs"
+        )
+    eligible_receivers = _sequence_of_nonempty_strings(
+        payload.get("eligible_receivers"), "eligible_receivers"
+    )
+    registered_set = set(registered_tx_ids)
+    eligible_receiver_set = set(eligible_receivers)
+    old_tx_set = set(registered_tx_ids[:CANONICAL_OLD_TX_COUNT])
+
+    raw_rows = payload.get("rows")
+    if not isinstance(raw_rows, list) or not raw_rows:
+        raise ValueError("canonical split rows must be a nonempty list")
+    seen_roles: dict[str, str] = {}
+    support_ids: set[str] = set()
+    query_ids: set[str] = set()
+    rows: list[dict[str, Any]] = []
+    scenario_dataset_roles: dict[str, set[str]] = {
+        scenario: set() for scenario in FORMAL_LEO_WEAK_SCENARIOS
+    }
+    for row_index, raw_row in enumerate(raw_rows):
+        if not isinstance(raw_row, Mapping):
+            raise ValueError(f"canonical split row {row_index} must be an object")
+        physical_id = _nonempty_text(
+            raw_row.get("physical_sample_id"),
+            f"canonical split row {row_index} physical_sample_id",
+        )
+        role = _nonempty_text(raw_row.get("role"), f"row {row_index} role")
+        if role not in {"support", "query"}:
+            raise ValueError("canonical split role must be support or query")
+        previous_role = seen_roles.get(physical_id)
+        if previous_role is not None:
+            if previous_role != role:
+                raise ValueError(
+                    "canonical split support/query overlap for duplicate physical sample ID"
+                )
+            raise ValueError("canonical split contains a duplicate physical sample ID")
+        seen_roles[physical_id] = role
+        (support_ids if role == "support" else query_ids).add(physical_id)
+        rank = _exact_nonnegative_integer(
+            raw_row.get("rank"), f"canonical split row {row_index} rank"
+        )
+        scene = _nonempty_text(raw_row.get("scene"), f"row {row_index} scene")
+        if scene not in FORMAL_LEO_WEAK_SCENARIOS:
+            raise ValueError("canonical split row uses an unsupported LEO scene")
+        source_asset = _nonempty_text(
+            raw_row.get("source_asset"), f"row {row_index} source_asset"
+        )
+        source_index = _exact_nonnegative_integer(
+            raw_row.get("source_record_index"),
+            f"canonical split row {row_index} source_record_index",
+        )
+        rx_id = _nonempty_text(raw_row.get("rx_id"), f"row {row_index} rx_id")
+        day_id = _nonempty_text(raw_row.get("day_id"), f"row {row_index} day_id")
+
+        canonical_row = connection.execute(
+            """
+            SELECT tx_id, rx_id, day_id, eq_id, sig_id, iq_sha256,
+                   preferred_asset, preferred_source_record_index, eligible
+            FROM canonical_records
+            WHERE physical_sample_id = ?
+            """,
+            (physical_id,),
+        ).fetchone()
+        if canonical_row is None:
+            raise ValueError(
+                f"canonical split physical sample ID is absent from inventory: {physical_id}"
+            )
+        (
+            tx_id,
+            inventory_rx,
+            inventory_day,
+            eq_id,
+            sig_id,
+            iq_sha256,
+            preferred_asset,
+            preferred_source_index,
+            eligible,
+        ) = canonical_row
+        tx_id = str(tx_id)
+        inventory_rx = str(inventory_rx)
+        inventory_day = str(inventory_day)
+        eq_id = str(eq_id)
+        sig_id = str(sig_id)
+        iq_sha256 = str(iq_sha256)
+        if int(eligible) != 1:
+            raise ValueError("canonical split references an ineligible inventory row")
+        expected_physical_id = canonical_physical_id(
+            tx_id, inventory_rx, inventory_day, eq_id, sig_id
+        )
+        if expected_physical_id != physical_id:
+            raise ValueError(
+                "canonical inventory coordinate does not match physical sample ID"
+            )
+        if tx_id not in registered_set:
+            raise ValueError("canonical split contains an unregistered TX")
+        if rx_id != inventory_rx or day_id != inventory_day:
+            raise ValueError("canonical split row identity disagrees with inventory")
+        if rx_id not in eligible_receiver_set:
+            raise ValueError("canonical split row uses an undeclared receiver")
+        if source_asset != str(preferred_asset) or source_index != int(
+            preferred_source_index
+        ):
+            raise ValueError(
+                "canonical split preferred materialization reference disagrees with inventory"
+            )
+        if role == "support":
+            if _nonempty_text(raw_row.get("tx_id"), "support tx_id") != tx_id:
+                raise ValueError("canonical support TX label disagrees with inventory")
+        elif "tx_id" in raw_row:
+            raise ValueError("canonical query rows must omit tx_id")
+
+        source_row = connection.execute(
+            """
+            SELECT dataset_path, iq_sha256
+            FROM record_sources
+            WHERE physical_sample_id = ? AND asset_name = ? AND source_record_index = ?
+            """,
+            (physical_id, source_asset, source_index),
+        ).fetchone()
+        if source_row is None:
+            raise ValueError(
+                "canonical preferred materialization reference is absent from record_sources"
+            )
+        dataset_path, source_iq_sha256 = source_row
+        if str(source_iq_sha256) != iq_sha256:
+            raise ValueError(
+                "canonical inventory digest disagrees with preferred record source digest"
+            )
+        dataset_role = "target_old" if tx_id in old_tx_set else "target_new"
+        scenario_dataset_roles[scene].add(dataset_role)
+        rows.append(
+            {
+                "physical_sample_id": physical_id,
+                "source_asset": source_asset,
+                "source_record_index": source_index,
+                "dataset_path": str(dataset_path),
+                "tx_id": tx_id,
+                "rx_id": inventory_rx,
+                "day_id": inventory_day,
+                "eq_id": eq_id,
+                "sig_id": sig_id,
+                "iq_sha256": iq_sha256,
+                "scene": scene,
+                "split_role": role,
+                "split_rank": rank,
+                "dataset_role": dataset_role,
+            }
+        )
+
+    if support_ids.intersection(query_ids):
+        raise ValueError("canonical split support/query physical IDs overlap")
+    required_dataset_roles = SCOPE_ROLES[CANONICAL_CACHE_SCOPE]
+    for scenario, observed_roles in scenario_dataset_roles.items():
+        if observed_roles != required_dataset_roles:
+            raise ValueError(
+                f"canonical split scene {scenario} must contain exact old/new role coverage"
+            )
+    counts = payload.get("counts")
+    if not isinstance(counts, Mapping):
+        raise ValueError("canonical split counts must be an object")
+    expected_counts = {
+        "registered_tx_count": len(registered_tx_ids),
+        "eligible_receiver_count": len(eligible_receivers),
+        "eligible_count": len(rows),
+        "support_count": len(support_ids),
+        "query_count": len(query_ids),
+        "row_count": len(rows),
+    }
+    for key, expected in expected_counts.items():
+        if _exact_nonnegative_integer(counts.get(key), f"counts.{key}") != expected:
+            raise ValueError(f"canonical split count inconsistency for {key}")
+    return payload, rows
+
+
+def _resolve_inventory_source_path(inventory_path: Path, raw_path: str) -> Path:
+    candidate = Path(str(raw_path))
+    return (
+        candidate.resolve()
+        if candidate.is_absolute()
+        else (inventory_path.parent / candidate).resolve()
+    )
+
+
+def _load_pickle_payload(path: Path) -> Mapping[str, Any]:
+    if not path.is_file():
+        raise FileNotFoundError(f"canonical source PKL is missing: {path}")
+    with path.open("rb") as handle:
+        payload = pickle.load(handle)
+    if not isinstance(payload, Mapping):
+        raise TypeError("canonical source PKL must contain a mapping")
+    required = {
+        "data",
+        "tx_list",
+        "rx_list",
+        "capture_date_list",
+        "equalized_list",
+    }
+    missing = sorted(required.difference(payload))
+    if missing:
+        raise KeyError(f"canonical source PKL is missing required fields: {missing}")
+    return payload
+
+
+def _prepare_canonical_sources(
+    rows: list[dict[str, Any]],
+    *,
+    inventory_path: Path,
+    spec: Mapping[str, Any],
+) -> dict[Path, dict[str, Any]]:
+    try:
+        equalized = int(str(spec.get("wisig_equalized", "1")))
+    except ValueError:
+        raise ValueError("canonical wisig_equalized must be one exact integer label") from None
+    sources: dict[Path, dict[str, Any]] = {}
+    for row in rows:
+        source_path = _resolve_inventory_source_path(
+            inventory_path, str(row["dataset_path"])
+        )
+        row["source_path"] = source_path
+        if source_path not in sources:
+            payload = _load_pickle_payload(source_path)
+            dataset = WiSigCompactDataset(
+                dict(payload),
+                out_len=int(spec.get("wisig_out_len", 256)),
+                equalized=equalized,
+                domain=str(spec.get("wisig_domain", "rx_day")),
+                max_samples_per_combo=None,
+                sample_strategy="front",
+                seed=int(spec.get("dataset_seed", 4070391)),
+                build_index=True,
+            )
+            sources[source_path] = {
+                "payload": payload,
+                "dataset": dataset,
+                "dataset_sha256": sha256_file(source_path),
+            }
+
+    for row in rows:
+        source = sources[row["source_path"]]
+        payload = source["payload"]
+        dataset: WiSigCompactDataset = source["dataset"]
+        source_index = int(row["source_record_index"])
+        if source_index >= len(dataset):
+            raise ValueError(
+                "canonical preferred source_record_index is outside Task 1 traversal"
+            )
+        item = dataset.index[source_index]
+        coordinate = (
+            _canonical_label(payload["tx_list"][item.tx_i]),
+            _canonical_label(payload["rx_list"][item.rx_i]),
+            _canonical_label(payload["capture_date_list"][item.day_i]),
+            _canonical_label(payload["equalized_list"][item.eq_i]),
+            str(item.sig_i),
+        )
+        expected_coordinate = (
+            row["tx_id"],
+            row["rx_id"],
+            row["day_id"],
+            row["eq_id"],
+            row["sig_id"],
+        )
+        if coordinate != expected_coordinate:
+            raise ValueError(
+                "canonical coordinate from preferred source disagrees with inventory"
+            )
+        if canonical_physical_id(*coordinate) != row["physical_sample_id"]:
+            raise ValueError(
+                "preferred source canonical physical sample ID does not match inventory"
+            )
+        raw_iq = payload["data"][item.tx_i][item.rx_i][item.day_i][item.eq_i][
+            item.sig_i
+        ]
+        raw_digest = hashlib.sha256(
+            np.ascontiguousarray(np.asarray(raw_iq, dtype=np.float32)).tobytes(
+                order="C"
+            )
+        ).hexdigest()
+        if raw_digest != row["iq_sha256"]:
+            raise ValueError(
+                "preferred source raw pre-overlay IQ digest does not match inventory"
+            )
+        row["dataset_sha256"] = source["dataset_sha256"]
+    return sources
+
+
+def _canonical_scenario_payload(
+    *,
+    scenario: str,
+    base_seed: int,
+    rows: list[dict[str, Any]],
+    sources: Mapping[Path, Mapping[str, Any]],
+    spec: Mapping[str, Any],
+    builder_sha256: str,
+    device: torch.device,
+) -> tuple[dict[str, np.ndarray], dict[str, Any]]:
+    if not rows:
+        raise ValueError(f"canonical split has no rows for {scenario}")
+    channel_config = dict(sat_channel_config_for_scenario(str(scenario)))
+    channel_config.update(
+        {
+            "fs_hz": float(spec.get("sat_fs_hz", 25e6)),
+            "fc_hz": float(spec.get("sat_fc_hz", 2.462e9)),
+            "star_ground_channel_impl": "simplified_leo_residual",
+        }
+    )
+    if str(channel_config.get("channel_model", "")) != "leo_residual":
+        raise ValueError("formal LEO_weak cache requires channel_model=leo_residual")
+    channel_hash = canonical_json_sha256(channel_config)
+    generator = make_torch_generator(device, int(base_seed))
+    buffers: dict[str, list[Any]] = {
+        "leo_weak_iq": [],
+        "raw_labels": [],
+        "domain_labels": [],
+        "tx_ids": [],
+        "rx_ids": [],
+        "day_ids": [],
+        "eq_ids": [],
+        "sig_ids": [],
+        "source_dataset_sha256": [],
+        "source_record_indices": [],
+        "dataset_role": [],
+        "channel_views": [],
+        "sat_scenarios": [],
+        "satellite_seeds": [],
+        "overlay_applied": [],
+        "sample_ids": [],
+        "post_channel_iq_sha256": [],
+        "overlay_ids": [],
+        "canonical_physical_sample_ids": [],
+        "split_roles": [],
+        "split_ranks": [],
+    }
+    channel_meta_keys: set[str] = set()
+    batch_size = int(spec.get("batch_size", 256))
+    for start in range(0, len(rows), batch_size):
+        batch_rows = rows[start : start + batch_size]
+        samples = [
+            sources[row["source_path"]]["dataset"][row["source_record_index"]]
+            for row in batch_rows
+        ]
+        x = torch.stack([sample[0] for sample in samples], dim=0).to(
+            device, non_blocking=True
+        )
+        leo, channel_meta = apply_sat_channel_for_scenario(
+            x,
+            str(scenario),
+            argparse.Namespace(
+                sat_fs_hz=float(spec.get("sat_fs_hz", 25e6)),
+                sat_fc_hz=float(spec.get("sat_fc_hz", 2.462e9)),
+            ),
+            gen=generator,
+            return_meta=True,
+        )
+        if not isinstance(channel_meta, Mapping):
+            raise RuntimeError("LEO overlay did not return channel metadata")
+        if str(channel_meta.get("channel_model", "")) != "leo_residual":
+            raise RuntimeError("LEO overlay metadata channel_model drift")
+        channel_meta_keys.update(str(key) for key in channel_meta)
+        leo_np = leo.detach().cpu().float().numpy().astype(np.float32)
+        if int(leo_np.shape[0]) != len(batch_rows):
+            raise RuntimeError("canonical overlay row count drift")
+        buffers["leo_weak_iq"].append(leo_np)
+        for local_index, (row, sample) in enumerate(zip(batch_rows, samples)):
+            sample_id = str(row["physical_sample_id"])
+            iq_hash = post_channel_iq_sha256(leo_np[local_index])
+            evidence_id = overlay_id(
+                sample_id=sample_id,
+                scenario=str(scenario),
+                satellite_seed=int(base_seed),
+                channel_config_sha256=channel_hash,
+                iq_sha256=iq_hash,
+            )
+            buffers["raw_labels"].append(int(sample[1]))
+            buffers["domain_labels"].append(int(sample[2]))
+            buffers["tx_ids"].append(str(row["tx_id"]))
+            buffers["rx_ids"].append(str(row["rx_id"]))
+            buffers["day_ids"].append(str(row["day_id"]))
+            buffers["eq_ids"].append(str(row["eq_id"]))
+            buffers["sig_ids"].append(str(row["sig_id"]))
+            buffers["source_dataset_sha256"].append(str(row["dataset_sha256"]))
+            buffers["source_record_indices"].append(int(row["source_record_index"]))
+            buffers["dataset_role"].append(str(row["dataset_role"]))
+            buffers["channel_views"].append("rx_base")
+            buffers["sat_scenarios"].append(str(scenario))
+            buffers["satellite_seeds"].append(int(base_seed))
+            buffers["overlay_applied"].append(True)
+            buffers["sample_ids"].append(sample_id)
+            buffers["post_channel_iq_sha256"].append(iq_hash)
+            buffers["overlay_ids"].append(evidence_id)
+            buffers["canonical_physical_sample_ids"].append(sample_id)
+            buffers["split_roles"].append(str(row["split_role"]))
+            buffers["split_ranks"].append(int(row["split_rank"]))
+
+    sample_ids = [str(value) for value in buffers["sample_ids"]]
+    output_roles = ["target_old", "target_new"]
+    manifest = {
+        "schema": LEO_WEAK_CACHE_SCHEMA,
+        "artifact_stage": LEO_WEAK_CACHE_STAGE,
+        "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
+        "clean_sample_access": False,
+        "clean_derived_signal_access": False,
+        "contains_post_channel_iq_only": True,
+        "contains_clean_rows": False,
+        "target_channel_view": "leo_weak_only",
+        "target_channel_scenarios": [str(scenario)],
+        "scenario": str(scenario),
+        "iq_array_key": "leo_weak_iq",
+        "raw_or_clean_iq_key_present": False,
+        "overlay_applied_before_phase2": True,
+        "overlay_role_policy": "all_roles",
+        "star_ground_channel_impl": "simplified_leo_residual",
+        "channel_model": "leo_residual",
+        "channel_config": _json_safe(channel_config),
+        "channel_config_sha256": channel_hash,
+        "builder_sha256": str(builder_sha256),
+        "build_spec_sha256": canonical_json_sha256(spec),
+        "output_roles": output_roles,
+        "role_satellite_seeds": {
+            role: int(base_seed) for role in output_roles
+        },
+        "role_inputs": [
+            {
+                "source_asset": asset,
+                "physical_sample_count": sum(
+                    str(row["source_asset"]) == asset for row in rows
+                ),
+            }
+            for asset in sorted({str(row["source_asset"]) for row in rows})
+        ],
+        "row_count": len(sample_ids),
+        "physical_sample_ids_sha256": ids_sha256(sample_ids),
+        "post_channel_iq_sha256_root": ids_sha256(
+            [str(value) for value in buffers["post_channel_iq_sha256"]]
+        ),
+        "overlay_ids_sha256": ids_sha256(
+            [str(value) for value in buffers["overlay_ids"]]
+        ),
+        "channel_meta_keys": sorted(channel_meta_keys),
+        "sample_overlay_provenance_fields": [
+            "sample_ids",
+            "source_dataset_sha256",
+            "source_record_indices",
+            "sat_scenarios",
+            "satellite_seeds",
+            "post_channel_iq_sha256",
+            "overlay_ids",
+        ],
+        **{
+            key: value
+            for key, value in _single_observation_manifest_contract().items()
+        },
+    }
+    payload = {
+        "leo_weak_iq": np.concatenate(buffers["leo_weak_iq"], axis=0).astype(
+            np.float32
+        ),
+        "raw_labels": np.asarray(buffers["raw_labels"], dtype=np.int64),
+        "domain_labels": np.asarray(buffers["domain_labels"], dtype=np.int64),
+        "tx_ids": np.asarray(buffers["tx_ids"]),
+        "rx_ids": np.asarray(buffers["rx_ids"]),
+        "day_ids": np.asarray(buffers["day_ids"]),
+        "eq_ids": np.asarray(buffers["eq_ids"]),
+        "sig_ids": np.asarray(buffers["sig_ids"]),
+        "source_dataset_sha256": np.asarray(buffers["source_dataset_sha256"]),
+        "source_record_indices": np.asarray(
+            buffers["source_record_indices"], dtype=np.int64
+        ),
+        "dataset_role": np.asarray(buffers["dataset_role"]),
+        "channel_views": np.asarray(buffers["channel_views"]),
+        "sat_scenarios": np.asarray(buffers["sat_scenarios"]),
+        "satellite_seeds": np.asarray(buffers["satellite_seeds"], dtype=np.int64),
+        "overlay_applied": np.asarray(buffers["overlay_applied"], dtype=bool),
+        "sample_ids": np.asarray(sample_ids),
+        "post_channel_iq_sha256": np.asarray(buffers["post_channel_iq_sha256"]),
+        "overlay_ids": np.asarray(buffers["overlay_ids"]),
+        "canonical_physical_sample_ids": np.asarray(
+            buffers["canonical_physical_sample_ids"]
+        ),
+        "split_roles": np.asarray(buffers["split_roles"]),
+        "split_ranks": np.asarray(buffers["split_ranks"], dtype=np.int64),
+        "manifest_json": np.asarray(
+            json.dumps(manifest, ensure_ascii=False, sort_keys=True)
+        ),
+    }
+    return payload, manifest
+
+
+def _single_observation_manifest_contract() -> dict[str, Any]:
+    return {
+        "phase2_physical_sample_observation_policy": (
+            "single_leo_weak_observation_per_physical_sample"
+        ),
+        "phase2_cross_scenario_physical_sample_reuse": False,
+        "phase2_additional_leo_channel_state_generation": False,
+        "phase2_post_reception_equalization_augmentation_transform_allowed": True,
+        "phase2_post_reception_view_from_fixed_received_iq_only": True,
+        "phase2_post_reception_view_counts_as_additional_physical_sample": False,
+        "phase2_physical_sample_root_id_policy": (
+            "immutable_preoverlay_lineage_token"
+        ),
+        "phase2_query_post_reception_view_fit_access": False,
+        "physical_sample_scenario_assignment_policy": SCENARIO_PARTITION_POLICY,
+    }
+
+
+def _build_canonical_cache_set(
+    path: Path,
+    spec: Mapping[str, Any],
+    *,
+    device: torch.device,
+) -> dict[str, Any]:
+    spec_dir = path.parent
+    inventory_path = _resolve(spec_dir, str(spec["canonical_inventory"]))
+    split_path = _resolve(spec_dir, str(spec["split_manifest"]))
+    out_manifest = _resolve(spec_dir, str(spec["out_manifest"]))
+    cache_paths = {
+        scenario: _resolve(
+            spec_dir, str(dict(spec["out_npz_by_scenario"])[scenario])
+        )
+        for scenario in FORMAL_LEO_WEAK_SCENARIOS
+    }
+    all_outputs = (out_manifest, *cache_paths.values())
+    if len({candidate.resolve() for candidate in all_outputs}) != len(all_outputs):
+        raise ValueError("canonical cache outputs must use distinct paths")
+    for candidate in all_outputs:
+        if candidate.exists():
+            raise FileExistsError(
+                f"refusing to overwrite canonical LEO cache output: {candidate}"
+            )
+
+    connection = _open_canonical_inventory_read_only(inventory_path)
+    try:
+        split_manifest, rows = _validate_canonical_split_manifest(
+            split_path, connection
+        )
+    finally:
+        connection.close()
+    sources = _prepare_canonical_sources(
+        rows, inventory_path=inventory_path, spec=spec
+    )
+
+    builder_hash = sha256_file(Path(__file__))
+    cache_audits: dict[str, Any] = {}
+    physical_roots: dict[str, str] = {}
+    physical_ids_by_scenario: dict[str, list[str]] = {}
+    for scenario in FORMAL_LEO_WEAK_SCENARIOS:
+        scenario_rows = [row for row in rows if row["scene"] == scenario]
+        payload, _manifest = _canonical_scenario_payload(
+            scenario=scenario,
+            base_seed=int(dict(spec["satellite_seed_by_scenario"])[scenario]),
+            rows=scenario_rows,
+            sources=sources,
+            spec=spec,
+            builder_sha256=builder_hash,
+            device=device,
+        )
+        out_path = cache_paths[scenario]
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        with out_path.open("xb") as handle:
+            np.savez(handle, **payload)
+        _arrays, _loaded_manifest, audit = load_verified_leo_weak_cache(
+            out_path,
+            expected_scenario=scenario,
+            allowed_roles=SCOPE_ROLES[CANONICAL_CACHE_SCOPE],
+        )
+        current_ids = [
+            str(value)
+            for value in np.asarray(
+                _arrays["canonical_physical_sample_ids"]
+            ).tolist()
+        ]
+        physical_ids_by_scenario[scenario] = current_ids
+        physical_roots[scenario] = str(audit["physical_sample_ids_sha256"])
+        cache_audits[scenario] = audit
+
+    assignment_root = canonical_json_sha256(physical_ids_by_scenario)
+    output_roles = ["target_old", "target_new"]
+    set_manifest = {
+        "schema": LEO_WEAK_CACHE_SET_SCHEMA,
+        "artifact_stage": LEO_WEAK_CACHE_STAGE,
+        "cache_set_id": str(spec.get("cache_set_id", path.stem)),
+        "cache_scope": CANONICAL_CACHE_SCOPE,
+        "protocol_schema": CANONICAL_PROTOCOL_SCHEMA,
+        "profile_id": str(split_manifest["profile_id"]),
+        "query_policy": str(split_manifest["query_policy"]),
+        "k": int(split_manifest["k"]),
+        "capsule_id": str(split_manifest["capsule_id"]),
+        "split_id": str(split_manifest["split_id"]),
+        "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
+        "clean_sample_access": False,
+        "clean_derived_signal_access": False,
+        "target_channel_view": "leo_weak_only",
+        "overlay_role_policy": "all_roles",
+        "target_channel_scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
+        "output_roles": output_roles,
+        "cache_npz_by_scenario": {
+            scenario: _relative_or_absolute(
+                cache_paths[scenario], out_manifest.parent
+            )
+            for scenario in FORMAL_LEO_WEAK_SCENARIOS
+        },
+        "cache_sha256_by_scenario": {
+            scenario: sha256_file(cache_paths[scenario])
+            for scenario in FORMAL_LEO_WEAK_SCENARIOS
+        },
+        "cache_audits": cache_audits,
+        "builder_sha256": builder_hash,
+        "build_spec_sha256": canonical_json_sha256(spec),
+        "build_spec_path_exposed_to_phase2": False,
+        **_single_observation_manifest_contract(),
+        "physical_sample_ids_sha256_by_scenario": physical_roots,
+        "physical_sample_scenario_assignment_sha256": assignment_root,
+    }
+    out_manifest.parent.mkdir(parents=True, exist_ok=True)
+    with out_manifest.open("x", encoding="utf-8", newline="\n") as handle:
+        json.dump(set_manifest, handle, ensure_ascii=False, indent=2)
+        handle.write("\n")
+    _verified_arrays, _verified_manifest, verified_audit = (
+        load_verified_leo_weak_cache_set(
+            out_manifest,
+            expected_scope=CANONICAL_CACHE_SCOPE,
+            allowed_roles=SCOPE_ROLES[CANONICAL_CACHE_SCOPE],
+        )
+    )
+    return {
+        "cache_set_manifest": str(out_manifest),
+        "cache_set_manifest_sha256": sha256_file(out_manifest),
+        "cache_scope": CANONICAL_CACHE_SCOPE,
+        "output_roles": output_roles,
+        "physical_sample_ids_sha256_by_scenario": physical_roots,
+        "physical_sample_scenario_assignment_sha256": assignment_root,
+        "cache_audits": cache_audits,
+        "canonical_cache_set_audit": verified_audit,
+        "physical_sample_exclusion_audit": None,
+    }
+
+
 def build_cache_set(spec_path: str | Path, *, device: torch.device) -> dict[str, Any]:
     path = Path(spec_path).resolve()
     spec = validate_build_spec(
         json.loads(path.read_text(encoding="utf-8-sig"))
     )
+    if str(spec["cache_scope"]) == CANONICAL_CACHE_SCOPE:
+        return _build_canonical_cache_set(path, spec, device=device)
     out_manifest = _resolve(path.parent, str(spec["out_manifest"]))
     if out_manifest.exists():
         raise FileExistsError(

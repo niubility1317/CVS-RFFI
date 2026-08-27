@@ -660,6 +660,53 @@ def test_external_comparison_cache_scope_accepts_target_roles_and_day0():
     )
 
 
+def test_stage2_registered_v2_build_spec_remains_accepted():
+    scenarios = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
+    spec = {
+        "schema": "cvs_leo_weak_iq_cache_build_spec_v2",
+        "cache_scope": "stage2_registered",
+        "phase2_sample_view_policy": "leo_weak_only_no_clean_access",
+        "clean_sample_access": False,
+        "clean_derived_signal_access": False,
+        "star_ground_channel_impl": "simplified_leo_residual",
+        "phase2_physical_sample_observation_policy": (
+            "single_leo_weak_observation_per_physical_sample"
+        ),
+        "phase2_cross_scenario_physical_sample_reuse": False,
+        "phase2_additional_leo_channel_state_generation": False,
+        "phase2_post_reception_equalization_augmentation_transform_allowed": True,
+        "phase2_post_reception_view_from_fixed_received_iq_only": True,
+        "phase2_post_reception_view_counts_as_additional_physical_sample": False,
+        "phase2_physical_sample_root_id_policy": "immutable_preoverlay_lineage_token",
+        "phase2_query_post_reception_view_fit_access": False,
+        "physical_sample_scenario_assignment_policy": (
+            "disjoint_preoverlay_tx_day_stratified_v1"
+        ),
+        "role_specs": [
+            {
+                "role": role,
+                "pkl": f"{role}.pkl",
+                "tx_ids": f"{role}-tx",
+                "rxs": "20-1",
+                "days": "0,1,2",
+                "max_samples_per_tx": 120,
+                "apply_leo_overlay": True,
+            }
+            for role in ("target_old", "target_new")
+        ],
+        "satellite_seed_by_scenario": {
+            scenario: index for index, scenario in enumerate(scenarios)
+        },
+        "out_npz_by_scenario": {
+            scenario: f"{scenario}.npz" for scenario in scenarios
+        },
+        "out_manifest": "cache_set.json",
+    }
+    checked = validate_build_spec(spec)
+    assert checked["schema"] == "cvs_leo_weak_iq_cache_build_spec_v2"
+    assert checked["cache_scope"] == "stage2_registered"
+
+
 def test_scale_cache_specs_cover_25_receiver_seed_cells(tmp_path):
     manifest = build_scale_cache_specs(
         argparse.Namespace(
