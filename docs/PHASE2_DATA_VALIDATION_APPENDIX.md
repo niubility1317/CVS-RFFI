@@ -33,3 +33,9 @@ Phase1 bundle使用独立的`bundle_id`和独立validator。该validator检查ch
 只有以下变化使句柄失效：接收IQ payload、物理ID、receiver/TX集合、scenario分配、K、support/query划分或协议schema发生变化。
 
 验证失败时返回具体失败项并只重建受影响的capsule/split；不得要求其他`VALIDATED_ONCE`数据随方法迭代重复追溯Phase1/source/clean历史。
+
+## Canonical union一次性边界
+
+Canonical inventory只在builder/validator阶段合并ManySig、ManyTx、ManyRx和SingleDay记录。跨asset坐标相同时，builder比较固定received IQ之前的IQ摘要：摘要一致的来源合并为同一`physical_sample_id`，摘要冲突的坐标标为不可用，不进入support或query。该检查是数据构建的一次性责任。
+
+运行时仍只消费`protocol_schema/capsule_id/split_id/phase2_data_status`。Canonical inventory不新增每方法hash、seal、receipt或重验证gate；候选、adapter、超参数、epoch、checkpoint、资源预算和报告变化均不触发数据重验。Task 8合成链只验证Tasks 1–7接口、协议负测和测试fixture的精确计数，不代表真实WiSig资产计数，也不创建`VALIDATED_ONCE`数据。

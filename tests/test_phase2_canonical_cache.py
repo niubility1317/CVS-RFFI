@@ -782,6 +782,40 @@ def test_canonical_build_rejects_support_query_overlap_before_outputs(
     _assert_no_outputs(tmp_path, fixture["spec"])
 
 
+def test_canonical_build_rejects_cross_scene_physical_id_reuse_before_outputs(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    fixture = _canonical_fixture(tmp_path)
+    split = copy.deepcopy(fixture["split"])
+    duplicate = dict(split["rows"][0])
+    duplicate["scene"] = next(
+        scenario
+        for scenario in FORMAL_LEO_WEAK_SCENARIOS
+        if scenario != duplicate["scene"]
+    )
+    split["rows"].append(duplicate)
+    split["counts"]["row_count"] += 1
+    split["counts"]["eligible_count"] += 1
+    split["counts"][f"{duplicate['role']}_count"] += 1
+    Path(fixture["split_path"]).write_text(
+        json.dumps(split),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(
+        cache_builder,
+        "apply_sat_channel_for_scenario",
+        _identity_overlay,
+    )
+
+    with pytest.raises(ValueError, match="duplicate physical sample ID"):
+        cache_builder.build_cache_set(
+            fixture["spec_path"],
+            device=torch.device("cpu"),
+        )
+    _assert_no_outputs(tmp_path, fixture["spec"])
+
+
 def test_canonical_build_rejects_preferred_reference_tamper_before_outputs(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
