@@ -139,3 +139,15 @@ Q2A/Q2B均已生成`selection.json`、strict clean-single bundle和GNU time，st
 3. 与既有S02比较，S02仍是参数/BA Pareto点：1152元素、BA=89.5833%、最低fold BA=77.7778%、NLL=0.424413。Q2A被S02在参数、BA和NLL上支配；Q2B仅在NLL上优于S02约0.004154，但多216元素且BA低2.0833pp。
 4. 因此不改变既定优先级：下一科学动作仍是S02的新独立query闭合。Q2B保留为校准优先备选，不因support OOF结果直接提升为默认。
 5. 本run从实现、发布到5/5 support selection和clean-single bundle已达到`ANALYZED_SUPPORT_OOF`；没有读取query或query truth，不能宣称独立query或最终部署晋级完成。
+
+## F2真实query后续闭合（2026-08-27）
+
+F2 strict bundle随后在独立run`stage2_sf_tapft_f2_oof_temp_query_rx20_1_s392002_20260827_r1`进入旧6类真实holdout评估。该holdout与历史M02同row，但truth已在16行闭合后揭示，因此证据等级为`REUSED_VALIDATED_HOLDOUT_NOT_NEW_PROSPECTIVE_QUERY`。
+
+- `DA0_REG0`：BA=71.6667%、floor=10%、NLL=0.936688。
+- `DA1_REG0`：BA=85.0000%、floor=60%、NLL=0.471599。
+- 域适应效应：BA+13.3333pp、floor+50pp、NLL-0.465089。
+- 相对M02：BA-1.6667pp（少1个类1正确query）、floor持平、NLL-0.037839。
+- OOF温度归因：同一DA1 logits去温度重构NLL=0.462502；加入`T=1.071440445141165`后NLL=0.471599，恶化0.009097且argmax不变。
+
+因此F2快速域适应本身有效，但未通过BA晋级门槛；当前OOF全局温度在真实query上方向反转，不能作为默认校准。完整证据见[独立F2 query报告](stage2_sf_tapft_f2_oof_temp_query_rx20_1_s392002_20260827_r1_report.md)。

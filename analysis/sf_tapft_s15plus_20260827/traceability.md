@@ -3,7 +3,7 @@
 |ID|来源章节|要求|目标文件|状态|验证|备注|
 |---|---|---|---|---|---|---|
 |S15P-01|四|300步专用cosine：reference=300、warmup=0.10|adapt、配置、测试|implemented|RED/GREEN+OOF|F1单变量|
-|S15P-02|五|cross-fitted OOF全局温度校准|adapt、bundle、prediction、测试|implemented|argmax不变、NLL非增|F2；温度进入严格bundle回读|
+|S15P-02|五|cross-fitted OOF全局温度校准|adapt、bundle、prediction、测试|query_evaluated_not_promoted|support OOF NLL小幅改善；复用真实holdout NLL反向+0.009097、argmax不变|F2；温度进入严格bundle回读，但不保留为默认query校准|
 |S15P-03|六|冻结embedding的head-only预训练，再联合head+norm|adapt、配置、测试|implemented|昂贵backward计数下降|F3；前60步复用冻结embedding|
 |S15P-04|十|使用长程M02 cross-fitted logits做OOFKD0.1|adapt、artifact、测试|deferred|每个样本teacher未见自身|缺严格绑定的长M02 OOF teacher logits，不以source teacher替代|
 |S15P-05|七、十六|S02进入新的独立query|query配置、报告|deferred|truth-last评分|必须使用未参与选择的新query|
