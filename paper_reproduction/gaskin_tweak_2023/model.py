@@ -34,4 +34,3 @@ class TweakEncoder(nn.Module):
         if iq.ndim != 3 or tuple(iq.shape[1:]) != (2, 128):
             raise ValueError("iq must have shape [batch, 2, 128]")
         return self.embedding(self.features(iq))
-

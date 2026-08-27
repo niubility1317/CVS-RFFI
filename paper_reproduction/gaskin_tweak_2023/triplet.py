@@ -26,4 +26,3 @@ def batch_hard_triplet_loss(embeddings: torch.Tensor, labels: torch.Tensor, marg
     positive_distance = F.pairwise_distance(embeddings[anchors], embeddings[positive], p=2)
     negative_distance = F.pairwise_distance(embeddings[anchors], embeddings[negative], p=2)
     return F.relu(positive_distance - negative_distance + margin).mean()
-

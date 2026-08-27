@@ -27,4 +27,3 @@ def fine_tune_tx_step(
     tx_ce.backward()
     optimizer.step()
     return {"tx_ce": float(tx_ce.detach())}
-

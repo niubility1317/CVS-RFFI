@@ -21,4 +21,3 @@ def welch_psd_256(iq: torch.Tensor) -> torch.Tensor:
 def build_fusion_representation(iq: torch.Tensor) -> torch.Tensor:
     """Concatenate untouched I/Q streams with their 256-bin PSD stream."""
     return torch.cat((iq, welch_psd_256(iq)), dim=1)
-

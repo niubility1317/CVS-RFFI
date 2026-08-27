@@ -53,4 +53,3 @@ def closed_set_predict(points: torch.Tensor, state: CalibrationState) -> torch.T
 def open_set_admit(points: torch.Tensor, state: CalibrationState) -> torch.Tensor:
     """Apply Algorithm 3: admit when at least one class radius contains a point."""
     return (_distances(points, state) <= state.radii.unsqueeze(0)).any(dim=1)
-

@@ -11,4 +11,3 @@ def average_trials(trials: Sequence[Mapping[str, float]]) -> dict[str, float]:
     if any(any(key not in trial for key in required) for trial in trials):
         raise ValueError("each trial must contain auroc, tpr, and fpr")
     return {key: sum(float(trial[key]) for trial in trials) / len(trials) for key in required}
-

@@ -39,4 +39,3 @@ def feature_separation_loss(
         "total": total.detach(),
     }
     return total, terms
-

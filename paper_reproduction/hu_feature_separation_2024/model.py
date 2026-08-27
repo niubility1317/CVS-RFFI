@@ -104,4 +104,3 @@ class FeatureSeparationNet(nn.Module):
             "tx_logits": self.tx_classifier(tx_features),
             "rx_logits": self.rx_classifier(rx_features),
         }
-
