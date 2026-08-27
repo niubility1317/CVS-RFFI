@@ -49,23 +49,24 @@ def _pair_loader(path, support_path, *, device, expected_target_binding):
     }
 
 
-def _case(tmp_path):
-    labels = np.repeat(np.arange(6), 10)
+def _case(tmp_path, *, query_per_class=10):
+    support_labels = np.repeat(np.arange(6), 10)
+    query_labels = np.repeat(np.arange(6), query_per_class)
     support_iq = np.zeros((60, 2, 256), dtype=np.float32)
-    query_iq = np.zeros((60, 2, 256), dtype=np.float32)
+    query_iq = np.zeros((6 * query_per_class, 2, 256), dtype=np.float32)
     for class_id in range(6):
-        support_iq[labels == class_id, 0, class_id] = 5.0
-        query_iq[labels == class_id, 0, class_id] = 5.0
+        support_iq[support_labels == class_id, 0, class_id] = 5.0
+        query_iq[query_labels == class_id, 0, class_id] = 5.0
     support_ids = np.asarray([f"s{index}" for index in range(60)])
-    query_ids = np.asarray([f"q{index}" for index in range(60)])
+    query_ids = np.asarray([f"q{index}" for index in range(len(query_iq))])
     np.savez(
         tmp_path / "support.npz",
         received_iq=support_iq,
-        support_labels=labels,
+        support_labels=support_labels,
         support_physical_ids=support_ids,
     )
     np.savez(tmp_path / "query.npz", received_iq=query_iq, query_ids=query_ids)
-    np.savez(tmp_path / "truth.npz", query_ids=query_ids, query_labels=labels)
+    np.savez(tmp_path / "truth.npz", query_ids=query_ids, query_labels=query_labels)
     handle = {
         "schema": "cvs.sf_erbt_oldonly_export.v1",
         "protocol_schema": "p2_min_v1",
@@ -77,14 +78,14 @@ def _case(tmp_path):
         "k_shot": 10,
         "class_count": 6,
         "support_rows": 60,
-        "query_rows": 60,
+        "query_rows": len(query_iq),
         "registration_state": "REG0",
         "query_truth_in_predictor": False,
         "support_query_physical_id_overlap": 0,
         "support_iq_sha256": hashlib.sha256(support_iq.tobytes(order="C")).hexdigest(),
     }
     (tmp_path / "handle.json").write_text(json.dumps(handle), encoding="utf-8")
-    return labels
+    return query_labels
 
 
 def test_prediction_emits_truth_free_da0_da1_artifacts(tmp_path):
@@ -108,6 +109,168 @@ def test_prediction_emits_truth_free_da0_da1_artifacts(tmp_path):
         with np.load(tmp_path / "prediction" / name, allow_pickle=False) as payload:
             assert set(payload.files) == {"query_ids", "predicted_class_ids", "scores"}
             assert payload["scores"].shape == (60, 6)
+
+
+def test_prediction_and_scorer_follow_validated_120_row_query_handle(tmp_path):
+    _case(tmp_path, query_per_class=20)
+
+    receipt = run_clean_query_prediction(
+        bundle_path=tmp_path / "bundle.pt",
+        support_path=tmp_path / "support.npz",
+        query_path=tmp_path / "query.npz",
+        data_handle_path=tmp_path / "handle.json",
+        output_root=tmp_path / "prediction",
+        device="cpu",
+        pair_loader=_pair_loader,
+    )
+    score = score_clean_query_prediction(
+        prediction_root=tmp_path / "prediction",
+        truth_path=tmp_path / "truth.npz",
+        data_handle_path=tmp_path / "handle.json",
+        output_path=tmp_path / "score.json",
+    )
+
+    assert receipt["query_rows"] == 120
+    assert score["query_rows"] == 120
+    assert score["DA1_REG0"]["per_class_total"] == {
+        str(class_id): 20 for class_id in range(6)
+    }
+
+
+def test_independent_query_export_uses_full_query_asset_without_truth(tmp_path):
+    support_labels = np.repeat(np.arange(6), 20)
+    support_ranks = np.tile(np.arange(20), 6)
+    support_iq = np.zeros((120, 2, 256), dtype=np.float32)
+    support_tokens = np.asarray([f"sid_{index}" for index in range(120)])
+    query_iq = np.ones((120, 2, 256), dtype=np.float32)
+    query_tokens = np.asarray([f"qid_{index}" for index in range(120)])
+    np.savez(
+        tmp_path / "support_pool.npz",
+        support_pool_leo_weak_iq=support_iq,
+        support_pool_class_indices=support_labels,
+        support_pool_rank_within_class=support_ranks,
+        support_pool_tokens=support_tokens,
+    )
+    np.savez(
+        tmp_path / "query_pool.npz",
+        query_leo_weak_iq=query_iq,
+        query_tokens=query_tokens,
+    )
+    manifest = {
+        "schema": "cvs.phase2.predictor_package_manifest.v2",
+        "receiver": "20-1",
+        "registered_class_count": 6,
+        "registered_classes": [
+            {"class_handle": f"cls_{class_id}", "class_index": class_id}
+            for class_id in range(6)
+        ],
+    }
+    (tmp_path / "package_manifest.json").write_text(
+        json.dumps(manifest), encoding="utf-8"
+    )
+    selected_support = support_iq[support_ranks < 10]
+
+    receipt = query_module.export_independent_query_inputs(
+        support_source_path=tmp_path / "support_pool.npz",
+        query_source_path=tmp_path / "query_pool.npz",
+        package_manifest_path=tmp_path / "package_manifest.json",
+        output_root=tmp_path / "export",
+        expected_support_iq_sha256=hashlib.sha256(
+            np.ascontiguousarray(selected_support).tobytes(order="C")
+        ).hexdigest(),
+        capsule_id="full-query-capsule",
+        split_id="full-query-split",
+        adaptation_capsule_id="adapt-capsule",
+        adaptation_split_id="adapt-split",
+    )
+
+    assert receipt["query_rows"] == 120
+    assert receipt["registered_class_handles"] == [
+        f"cls_{class_id}" for class_id in range(6)
+    ]
+    assert not (tmp_path / "export" / "truth.npz").exists()
+    with np.load(tmp_path / "export" / "query.npz", allow_pickle=False) as query:
+        assert query["received_iq"].shape == (120, 2, 256)
+        assert query["query_ids"].tolist() == query_tokens.tolist()
+
+
+def test_truth_sidecar_is_materialized_only_after_complete_predictions(tmp_path):
+    labels = _case(tmp_path, query_per_class=20)
+    handle = json.loads((tmp_path / "handle.json").read_text(encoding="utf-8"))
+    handle["registered_class_handles"] = [
+        f"cls_{class_id}" for class_id in range(6)
+    ]
+    (tmp_path / "handle.json").write_text(json.dumps(handle), encoding="utf-8")
+    run_clean_query_prediction(
+        bundle_path=tmp_path / "bundle.pt",
+        support_path=tmp_path / "support.npz",
+        query_path=tmp_path / "query.npz",
+        data_handle_path=tmp_path / "handle.json",
+        output_root=tmp_path / "prediction",
+        device="cpu",
+        pair_loader=_pair_loader,
+    )
+    with np.load(tmp_path / "query.npz", allow_pickle=False) as query:
+        query_ids = query["query_ids"].astype(str)
+    truth_sidecar = {
+        "schema": "cvs.phase2.query_truth_sidecar.v2",
+        "rows": [
+            {
+                "query_token": query_id,
+                "true_class_handle": f"cls_{int(label)}",
+                "transmitter_label": f"tx{int(label)}",
+                "evaluation_role": "target_old",
+            }
+            for query_id, label in zip(query_ids.tolist(), labels.tolist())
+        ],
+    }
+    (tmp_path / "truth_sidecar.json").write_text(
+        json.dumps(truth_sidecar), encoding="utf-8"
+    )
+
+    receipt = query_module.materialize_truth_after_predictions(
+        prediction_root=tmp_path / "prediction",
+        truth_sidecar_path=tmp_path / "truth_sidecar.json",
+        data_handle_path=tmp_path / "handle.json",
+        output_path=tmp_path / "truth_from_sidecar.npz",
+    )
+
+    assert receipt["query_rows"] == 120
+    assert receipt["truth_join_after_prediction_only"] is True
+    with np.load(tmp_path / "truth_from_sidecar.npz", allow_pickle=False) as truth:
+        assert truth["query_labels"].tolist() == labels.tolist()
+
+
+def test_truth_sidecar_rejects_incomplete_scores_before_join(tmp_path):
+    _case(tmp_path, query_per_class=20)
+    handle = json.loads((tmp_path / "handle.json").read_text(encoding="utf-8"))
+    handle["registered_class_handles"] = [
+        f"cls_{class_id}" for class_id in range(6)
+    ]
+    (tmp_path / "handle.json").write_text(json.dumps(handle), encoding="utf-8")
+    run_clean_query_prediction(
+        bundle_path=tmp_path / "bundle.pt",
+        support_path=tmp_path / "support.npz",
+        query_path=tmp_path / "query.npz",
+        data_handle_path=tmp_path / "handle.json",
+        output_root=tmp_path / "prediction",
+        device="cpu",
+        pair_loader=_pair_loader,
+    )
+    path = tmp_path / "prediction" / "da1_reg0.npz"
+    with np.load(path, allow_pickle=False) as payload:
+        corrupted = {name: payload[name] for name in payload.files}
+    corrupted["scores"] = corrupted["scores"][:-1]
+    path.unlink()
+    np.savez(path, **corrupted)
+
+    with pytest.raises(QueryClosureError, match="prediction geometry or score drift"):
+        query_module.materialize_truth_after_predictions(
+            prediction_root=tmp_path / "prediction",
+            truth_sidecar_path=tmp_path / "must_not_be_opened.json",
+            data_handle_path=tmp_path / "handle.json",
+            output_path=tmp_path / "truth_from_sidecar.npz",
+        )
 
 
 def test_pair_loader_accepts_historical_research_validation_schedule(
