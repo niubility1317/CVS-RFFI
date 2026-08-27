@@ -193,6 +193,7 @@ def test_r0_grouped_selection_writes_strict_full_support_clean_single_bundle(
     output = tmp_path / "selection-output"
 
     config = _r0_config(checkpoint, support)
+    config["sf_tapft"]["trainability_profile"] = "p1_head_norm"
     config["sf_tapft"]["oof_temperature_calibration"] = True
     config["sf_tapft"]["validation_steps"] = [1, 2, 3]
     receipt = run_sf_tapft_grouped_selection(
@@ -256,7 +257,14 @@ def test_r0_grouped_selection_writes_strict_full_support_clean_single_bundle(
         "fold0_as_final": False,
         "checkpoint_selection_role": "fixed_final_step",
         "bundle_path": str(bundle_path),
+        "delta_bundle_path": str(output / "sf_tapft_delta_bundle.pt"),
+        "delta_bundle_bytes": (output / "sf_tapft_delta_bundle.pt").stat().st_size,
     }
+    assert receipt["resource_audit"]["head_polish_steps"] == 0
+    assert receipt["resource_audit"]["cached_head_forward_steps"] == 0
+    assert receipt["resource_audit"]["trainable_delta_ema_decay"] == 0.0
+    assert receipt["resource_audit"]["class_adaptive_rho"] == [0.5, 0.5]
+    assert receipt["resource_audit"]["class_reliability"] == [0.0, 0.0]
     persisted_receipt = json.loads((output / "selection.json").read_text(encoding="utf-8"))
     assert persisted_receipt["oof_selection"] == receipt["oof_selection"]
     assert persisted_receipt["final_full_support_refit"] == receipt["final_full_support_refit"]
@@ -279,6 +287,24 @@ def test_r0_grouped_selection_writes_strict_full_support_clean_single_bundle(
     )
     assert all(not parameter.requires_grad for parameter in model.parameters())
     assert all(not parameter.requires_grad for parameter in head.parameters())
+
+    delta_path = output / "sf_tapft_delta_bundle.pt"
+    assert delta_path.stat().st_size < 10_000
+    delta_model, delta_head, delta_audit = runner_module.load_sf_tapft_delta_bundle_strict(
+        delta_path,
+        device="cpu",
+        expected_target_binding=_expected_target_binding(),
+        checkpoint_loader=lambda _path, *, device: copy.deepcopy(_ToyModel()).to(device),
+    )
+    assert delta_audit["support_count"] == 4
+    assert torch.allclose(delta_head.weight, head.weight, atol=1.0e-3, rtol=1.0e-3)
+    for name in delta_audit["updated_parameter_names"]:
+        assert torch.allclose(
+            dict(delta_model.named_parameters())[name],
+            dict(model.named_parameters())[name],
+            atol=1.0e-3,
+            rtol=1.0e-3,
+        )
 
     payload["config"]["phase_steps"] = (1, 0, 0)
     payload["config"]["validation_steps"] = (1, 2, 3)
@@ -337,7 +363,25 @@ def test_clean_single_loader_accepts_pre_slimming_config_defaults(
     payload = torch.load(
         output / "sf_tapft_clean_single_bundle.pt", map_location="cpu", weights_only=True
     )
-    for field in ("norm_scope", "norm_affine", "scheduler_reference_steps"):
+    for field in (
+        "norm_scope",
+        "norm_affine",
+        "scheduler_reference_steps",
+        "fast_tail_start_step",
+        "fast_tail_steps",
+        "fast_tail_lr_head_start",
+        "fast_tail_lr_head_end",
+        "fast_tail_lr_norm_start",
+        "fast_tail_lr_norm_end",
+        "head_polish_steps",
+        "head_polish_lr",
+        "trainable_delta_ema_decay",
+        "use_class_adaptive_rho",
+        "class_adaptive_rho_min",
+        "class_adaptive_rho_max",
+        "class_adaptive_rho_temperature",
+        "head_anchor_weight",
+    ):
         payload["config"].pop(field)
     legacy = tmp_path / "pre-slimming.pt"
     torch.save(payload, legacy)

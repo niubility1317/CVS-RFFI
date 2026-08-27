@@ -131,6 +131,20 @@ class SFTAPFTConfig:
     head_prefit_steps: int = 0
     validation_steps: tuple[int, ...] = ()
     oof_temperature_calibration: bool = False
+    fast_tail_start_step: int = 0
+    fast_tail_steps: int = 0
+    fast_tail_lr_head_start: float = 2.0e-4
+    fast_tail_lr_head_end: float = 2.0e-5
+    fast_tail_lr_norm_start: float = 3.0e-5
+    fast_tail_lr_norm_end: float = 3.0e-6
+    head_polish_steps: int = 0
+    head_polish_lr: float = 5.0e-5
+    trainable_delta_ema_decay: float = 0.0
+    use_class_adaptive_rho: bool = False
+    class_adaptive_rho_min: float = 0.25
+    class_adaptive_rho_max: float = 0.75
+    class_adaptive_rho_temperature: float = 0.10
+    head_anchor_weight: float = 0.0
     gradient_clip_norm: float = 1.0
     checkpoint_average_top_k: int = 3
     mixed_precision: bool = True
@@ -191,6 +205,18 @@ class SFTAPFTConfig:
             raise ValueError(
                 "scheduler_reference_steps must be zero or at least the training step count"
             )
+        integer_controls = {
+            "fast_tail_start_step": self.fast_tail_start_step,
+            "fast_tail_steps": self.fast_tail_steps,
+            "head_polish_steps": self.head_polish_steps,
+        }
+        for name, value in integer_controls.items():
+            if isinstance(value, bool) or int(value) < 0 or int(value) > total_steps:
+                raise ValueError(f"{name} must be an integer in [0, total_steps]")
+        if bool(self.fast_tail_steps) != bool(self.fast_tail_start_step):
+            raise ValueError("fast tail start and steps must either both be zero or both be positive")
+        if self.fast_tail_steps and self.fast_tail_start_step + self.fast_tail_steps > total_steps:
+            raise ValueError("fast tail schedule exceeds total_steps")
         bounded = {
             "classifier_source_target_interpolation": (0.0, 1.0),
             "label_smoothing": (0.0, 1.0),
@@ -213,6 +239,12 @@ class SFTAPFTConfig:
             "lr_adapter_late",
             "lr_last_block",
             "lr_fusion",
+            "fast_tail_lr_head_start",
+            "fast_tail_lr_head_end",
+            "fast_tail_lr_norm_start",
+            "fast_tail_lr_norm_end",
+            "head_polish_lr",
+            "class_adaptive_rho_temperature",
         )
         for name in positive:
             value = float(getattr(self, name))
@@ -224,6 +256,8 @@ class SFTAPFTConfig:
             "selective_kd_weight",
             "selective_kd_gamma",
             "weight_decay",
+            "trainable_delta_ema_decay",
+            "head_anchor_weight",
         )
         for name in nonnegative:
             value = float(getattr(self, name))
@@ -235,6 +269,12 @@ class SFTAPFTConfig:
             raise ValueError("mixed_precision must be a boolean")
         if not isinstance(self.oof_temperature_calibration, bool):
             raise ValueError("oof_temperature_calibration must be a boolean")
+        if not isinstance(self.use_class_adaptive_rho, bool):
+            raise ValueError("use_class_adaptive_rho must be a boolean")
+        if not 0.0 <= float(self.trainable_delta_ema_decay) < 1.0:
+            raise ValueError("trainable_delta_ema_decay must be in [0, 1)")
+        if not 0.0 <= float(self.class_adaptive_rho_min) <= float(self.class_adaptive_rho_max) <= 1.0:
+            raise ValueError("class adaptive rho bounds must satisfy 0 <= min <= max <= 1")
         object.__setattr__(self, "phase_steps", tuple(int(value) for value in self.phase_steps))
         object.__setattr__(self, "norm_rules", normalized_rules)
         object.__setattr__(self, "head_prefit_steps", int(self.head_prefit_steps))
@@ -242,6 +282,8 @@ class SFTAPFTConfig:
         object.__setattr__(
             self, "scheduler_reference_steps", int(self.scheduler_reference_steps)
         )
+        for name in integer_controls:
+            object.__setattr__(self, name, int(getattr(self, name)))
 
 
 @dataclass(frozen=True)
@@ -317,7 +359,7 @@ class TargetPrototypeHead(nn.Module):
         target_prototypes: Tensor,
         source_class_ids: Sequence[int],
         target_class_ids: Sequence[int],
-        rho: float,
+        rho: float | Tensor | Sequence[float],
         scale: float,
     ) -> "TargetPrototypeHead":
         if source_weights.ndim != 2 or target_prototypes.ndim != 2:
@@ -330,18 +372,24 @@ class TargetPrototypeHead(nn.Module):
             raise ValueError("source_class_ids must uniquely align with source_weights")
         if len(target_ids) != target_prototypes.size(0) or len(set(target_ids)) != len(target_ids):
             raise ValueError("target_class_ids must uniquely align with target_prototypes")
-        rho = float(rho)
-        if not math.isfinite(rho) or rho < 0.0 or rho > 1.0:
+        rho_values = torch.as_tensor(rho, dtype=target_prototypes.dtype, device=target_prototypes.device)
+        if rho_values.ndim == 0:
+            rho_values = rho_values.expand(len(target_ids))
+        if rho_values.shape != (len(target_ids),) or not bool(torch.isfinite(rho_values).all()):
+            raise ValueError("rho must be a finite scalar or target-class vector")
+        if bool(((rho_values < 0.0) | (rho_values > 1.0)).any()):
             raise ValueError("rho must be finite in [0, 1]")
         source = F.normalize(source_weights.detach(), dim=1, eps=_EPS)
         target = F.normalize(target_prototypes.detach(), dim=1, eps=_EPS)
         target_by_id = {class_id: target[index] for index, class_id in enumerate(target_ids)}
+        rho_by_id = {class_id: rho_values[index] for index, class_id in enumerate(target_ids)}
         rows: list[Tensor] = []
         output_ids: list[int] = []
         for index, class_id in enumerate(source_ids):
             row = source[index]
             if class_id in target_by_id:
-                row = (1.0 - rho) * row + rho * target_by_id[class_id]
+                class_rho = rho_by_id[class_id]
+                row = (1.0 - class_rho) * row + class_rho * target_by_id[class_id]
             rows.append(F.normalize(row, dim=0, eps=_EPS))
             output_ids.append(class_id)
         for class_id in target_ids:
@@ -685,6 +733,54 @@ class CheckpointAverager:
         return averaged
 
 
+class TrainableDeltaEMA:
+    """EMA only the explicitly permitted floating-point deltas from an anchor."""
+
+    def __init__(
+        self,
+        anchor_state: Mapping[str, Tensor],
+        *,
+        permitted_names: Iterable[str],
+        decay: float,
+    ) -> None:
+        decay = float(decay)
+        if not math.isfinite(decay) or not 0.0 <= decay < 1.0:
+            raise ValueError("decay must be finite in [0, 1)")
+        self._anchor = {name: value.detach().clone() for name, value in anchor_state.items()}
+        self._permitted = frozenset(str(name) for name in permitted_names)
+        if self._permitted.difference(self._anchor):
+            raise ValueError("permitted names must exist in anchor_state")
+        if any(not self._anchor[name].is_floating_point() for name in self._permitted):
+            raise ValueError("permitted EMA state must be floating point")
+        self._decay = decay
+        self._delta: dict[str, Tensor] | None = None
+
+    def update(self, state: Mapping[str, Tensor]) -> None:
+        if set(state) != set(self._anchor):
+            raise ValueError("EMA state keys must match anchor_state")
+        current = {
+            name: state[name].detach().to(dtype=torch.float64) - self._anchor[name].to(dtype=torch.float64)
+            for name in self._permitted
+        }
+        if self._delta is None:
+            self._delta = current
+        else:
+            self._delta = {
+                name: self._decay * self._delta[name] + (1.0 - self._decay) * current[name]
+                for name in self._permitted
+            }
+
+    def state(self) -> dict[str, Tensor]:
+        if self._delta is None:
+            raise ValueError("EMA requires at least one update")
+        result = {name: value.detach().clone() for name, value in self._anchor.items()}
+        for name in self._permitted:
+            result[name] = (
+                self._anchor[name].to(dtype=torch.float64) + self._delta[name]
+            ).to(dtype=self._anchor[name].dtype)
+        return result
+
+
 class TrainableDeltaAverager:
     """Average only permitted trainable deltas against an immutable anchor."""
 
@@ -782,6 +878,11 @@ class SFTAPFTAudit:
     snapshot_tensor_bytes: int
     trainable_parameter_elements: int
     actual_changed_elements: int
+    head_polish_steps: int
+    cached_head_forward_steps: int
+    trainable_delta_ema_decay: float
+    class_adaptive_rho: tuple[float, ...]
+    class_reliability: tuple[float, ...]
 
 
 @dataclass(frozen=True)
@@ -892,6 +993,52 @@ def _target_prototypes(embeddings: Tensor, labels: Tensor, class_ids: Sequence[i
     return torch.stack(rows)
 
 
+def class_adaptive_rho(
+    embeddings: Tensor,
+    source_logits: Tensor,
+    labels: Tensor,
+    *,
+    class_count: int,
+    rho_min: float,
+    rho_max: float,
+    temperature: float,
+) -> tuple[Tensor, Tensor]:
+    """Map support-only class compactness to bounded source/target mixing weights."""
+
+    if (
+        embeddings.ndim != 2
+        or source_logits.ndim != 2
+        or labels.ndim != 1
+        or embeddings.size(0) != labels.numel()
+        or source_logits.shape != (labels.numel(), int(class_count))
+    ):
+        raise ValueError("embeddings, source_logits and labels must be row aligned")
+    if int(class_count) < 2 or labels.numel() == 0:
+        raise ValueError("class_adaptive_rho requires at least two non-empty classes")
+    if int(labels.min()) < 0 or int(labels.max()) >= int(class_count):
+        raise ValueError("labels must index class_count")
+    if not 0.0 <= float(rho_min) <= float(rho_max) <= 1.0:
+        raise ValueError("rho bounds must satisfy 0 <= min <= max <= 1")
+    if not math.isfinite(float(temperature)) or float(temperature) <= 0.0:
+        raise ValueError("temperature must be finite and positive")
+    if any(not bool((labels == index).any()) for index in range(int(class_count))):
+        raise ValueError("every class must have support rows")
+    normalized = F.normalize(embeddings, dim=1, eps=_EPS)
+    concentration = torch.stack(
+        [normalized[labels == index].sum(0).norm() / float((labels == index).sum()) for index in range(int(class_count))]
+    )
+    true_logits = source_logits.gather(1, labels[:, None]).squeeze(1)
+    other_logits = source_logits.clone()
+    other_logits.scatter_(1, labels[:, None], float("-inf"))
+    margins = true_logits - other_logits.max(dim=1).values
+    class_margins = torch.stack(
+        [margins[labels == index].mean() for index in range(int(class_count))]
+    )
+    reliability = concentration * torch.sigmoid(class_margins / float(temperature))
+    rho = float(rho_min) + (float(rho_max) - float(rho_min)) * (1.0 - reliability)
+    return rho, reliability
+
+
 def _class_balanced_weights(labels: Tensor, class_count: int) -> Tensor:
     counts = torch.bincount(labels, minlength=class_count).to(dtype=torch.float32)
     weights = torch.zeros_like(counts)
@@ -975,6 +1122,27 @@ def _group_base_lrs(config: SFTAPFTConfig, phase: str) -> dict[str, float]:
     }
 
 
+def _fast_strong_group_lrs(
+    config: SFTAPFTConfig, step: int, phase: str
+) -> dict[str, float]:
+    """Return base LRs, replacing only the pre-registered local tail window."""
+
+    values = _group_base_lrs(config, phase)
+    start = int(config.fast_tail_start_step)
+    count = int(config.fast_tail_steps)
+    if not count or step < start or step >= start + count:
+        return values
+    progress = float(step - start) / float(max(1, count - 1))
+    cosine = 0.5 * (1.0 + math.cos(math.pi * progress))
+    values["head"] = float(config.fast_tail_lr_head_end) + (
+        float(config.fast_tail_lr_head_start) - float(config.fast_tail_lr_head_end)
+    ) * cosine
+    values["norm"] = float(config.fast_tail_lr_norm_end) + (
+        float(config.fast_tail_lr_norm_start) - float(config.fast_tail_lr_norm_end)
+    ) * cosine
+    return values
+
+
 def _make_grad_scaler(device: torch.device, *, enabled: bool):
     scaler_type = getattr(torch.amp, "GradScaler", None)
     if scaler_type is not None:
@@ -1039,17 +1207,38 @@ def fit_sf_tapft(
     target_labels = target_train.labels.to(device=device, dtype=torch.long)
 
     with torch.no_grad():
+        initial_outputs = _forward_aux(student, target_x)
         initial_embeddings = _extract_joint_embedding(
-            _forward_aux(student, target_x), int(target_x.size(0))
+            initial_outputs, int(target_x.size(0))
         )
         target_class_ids = target_train.class_ids
         prototypes = _target_prototypes(initial_embeddings, target_labels, target_class_ids)
+        frozen_source_logits = initial_outputs.get("tx_logits", initial_outputs.get("logits"))
+        if not torch.is_tensor(frozen_source_logits):
+            raise ValueError("frozen source model must expose logits for SF-TAPFT")
+        if max(target_class_ids) >= frozen_source_logits.size(1):
+            raise ValueError("target support class is absent from frozen source logits")
+        if config.use_class_adaptive_rho:
+            rho_values, reliability_values = class_adaptive_rho(
+                initial_embeddings,
+                frozen_source_logits[:, list(target_class_ids)],
+                _local_labels(target_labels, target_class_ids, device),
+                class_count=len(target_class_ids),
+                rho_min=config.class_adaptive_rho_min,
+                rho_max=config.class_adaptive_rho_max,
+                temperature=config.class_adaptive_rho_temperature,
+            )
+        else:
+            rho_values = initial_embeddings.new_full(
+                (len(target_class_ids),), config.classifier_source_target_interpolation
+            )
+            reliability_values = initial_embeddings.new_zeros(len(target_class_ids))
     head = TargetPrototypeHead.from_source_and_target(
         source_weights=source_weights.to(device=device, dtype=dtype),
         target_prototypes=prototypes,
         source_class_ids=source_class_ids,
         target_class_ids=target_class_ids,
-        rho=config.classifier_source_target_interpolation,
+        rho=rho_values,
         scale=config.prototype_scale,
     ).to(device=device, dtype=dtype)
     local_labels = _local_labels(target_labels, head.class_ids, device)
@@ -1083,6 +1272,10 @@ def fit_sf_tapft(
         name: value.detach().clone() for name, value in student.state_dict().items()
     }
     initial_head_state = {name: value.detach().clone() for name, value in head.state_dict().items()}
+    initial_head_weight = head.weight.detach().clone()
+    head_anchor_reliability = head.weight.new_zeros(len(head.class_ids))
+    for index, class_id in enumerate(target_class_ids):
+        head_anchor_reliability[head.class_ids.index(class_id)] = reliability_values[index]
     validation_x: Tensor | None = None
     validation_labels: Tensor | None = None
     frozen_validation_logits: Tensor | None = None
@@ -1145,28 +1338,56 @@ def fit_sf_tapft(
         },
         **{f"head.{name}": value for name, value in initial_head_state.items()},
     }
+    ema = (
+        TrainableDeltaEMA(
+            compact_anchor_state,
+            permitted_names=compact_anchor_state.keys(),
+            decay=config.trainable_delta_ema_decay,
+        )
+        if config.trainable_delta_ema_decay > 0.0
+        else None
+    )
+    cached_head_embeddings: Tensor | None = None
+    cached_head_forward_steps = 0
 
     for step in range(total_steps):
         phase = _phase_for_step(step, config.phase_steps)
-        optimization_phase = "HEAD" if step < config.head_prefit_steps else phase
+        polishing = config.head_polish_steps > 0 and step >= total_steps - config.head_polish_steps
+        optimization_phase = "HEAD" if step < config.head_prefit_steps or polishing else phase
         if optimization_phase != current_phase:
             if optimization_phase == "HEAD":
                 student.eval()
                 for parameter in student.parameters():
                     parameter.requires_grad_(False)
+                if polishing and cached_head_embeddings is None:
+                    with torch.no_grad():
+                        cached_head_embeddings = _extract_joint_embedding(
+                            _forward_aux(student, target_x), int(target_x.size(0))
+                        ).detach()
+                    cached_head_forward_steps += 1
             else:
                 policy.apply(student, phase)
             for parameter in head.parameters():
                 parameter.requires_grad_(True)
             current_phase = optimization_phase
         lr_factor = _learning_rate_factor(step, scheduler_steps, config.warmup_ratio)
-        base_lrs = _group_base_lrs(config, phase)
+        base_lrs = _fast_strong_group_lrs(config, step, phase)
+        if config.fast_tail_steps and config.fast_tail_start_step <= step < config.fast_tail_start_step + config.fast_tail_steps:
+            lr_factor = 1.0
+        if polishing:
+            base_lrs = {name: 0.0 for name in base_lrs}
+            base_lrs["head"] = config.head_polish_lr
+            lr_factor = 1.0
         for group in optimizer.param_groups:
             group["lr"] = float(base_lrs[str(group["name"])]) * lr_factor
         optimizer.zero_grad(set_to_none=True)
         with torch.autocast(device_type=device.type, dtype=torch.float16, enabled=use_amp):
             if optimization_phase == "HEAD":
-                embeddings = initial_embeddings.detach()
+                embeddings = (
+                    cached_head_embeddings
+                    if polishing and cached_head_embeddings is not None
+                    else initial_embeddings.detach()
+                )
             else:
                 outputs = _forward_aux(student, target_x)
                 embeddings = _extract_joint_embedding(outputs, int(target_x.size(0)))
@@ -1187,6 +1408,15 @@ def fit_sf_tapft(
             proto = F.cross_entropy(proto_logits, local_labels, weight=class_weights)
             anchor = (
                 l2sp(student.named_parameters()) if l2sp is not None else logits.new_zeros(())
+            )
+            head_anchor_rows = 1.0 - F.cosine_similarity(
+                head.weight, initial_head_weight, dim=1, eps=_EPS
+            )
+            head_anchor = (
+                (head_anchor_reliability * head_anchor_rows).sum()
+                / head_anchor_reliability.sum().clamp_min(_EPS)
+                if config.use_class_adaptive_rho
+                else head_anchor_rows.mean()
             )
             kd = logits.new_zeros(())
             if config.selective_kd_weight > 0.0:
@@ -1209,6 +1439,7 @@ def fit_sf_tapft(
                 + float(config.lambda_proto) * proto
                 + float(config.lambda_l2sp) * anchor
                 + float(config.selective_kd_weight) * kd
+                + float(config.head_anchor_weight) * head_anchor
             )
         if not bool(torch.isfinite(loss)):
             raise RuntimeError("SF-TAPFT loss became non-finite")
@@ -1222,6 +1453,16 @@ def fit_sf_tapft(
         torch.nn.utils.clip_grad_norm_(trainable, float(config.gradient_clip_norm))
         scaler.step(optimizer)
         scaler.update()
+        if ema is not None:
+            ema.update(
+                {
+                    **{
+                        f"model.{name}": dict(student.state_dict())[name]
+                        for name in sorted(permitted_model_names)
+                    },
+                    **{f"head.{name}": value for name, value in head.state_dict().items()},
+                }
+            )
         loss_value = float(loss.detach())
         losses.append(loss_value)
         evaluate_checkpoint = (
@@ -1288,6 +1529,8 @@ def fit_sf_tapft(
                 },
                 **{f"head.{name}": value.detach().clone() for name, value in head.state_dict().items()},
             }
+            if ema is not None:
+                combined = ema.state()
             if checkpoint_selection_mode == "final_step":
                 snapshots = [(combined, score, step + 1)]
             else:
@@ -1396,8 +1639,8 @@ def fit_sf_tapft(
         training_sample_count=len(target_train.physical_ids),
         stage_validation_rows=stage_validation_rows,
         head_prefit_steps=config.head_prefit_steps,
-        backbone_optimizer_steps=total_steps - config.head_prefit_steps,
-        backbone_train_forward_steps=total_steps - config.head_prefit_steps,
+        backbone_optimizer_steps=total_steps - config.head_prefit_steps - config.head_polish_steps,
+        backbone_train_forward_steps=total_steps - config.head_prefit_steps - config.head_polish_steps,
         validation_forward_steps=tuple(validation_forward_steps),
         snapshot_tensor_bytes=sum(
             int(value.numel() * value.element_size()) for value in compact_anchor_state.values()
@@ -1408,6 +1651,13 @@ def fit_sf_tapft(
         ),
         actual_changed_elements=sum(
             int(final_state[name].numel()) for name in permitted_changed
+        ),
+        head_polish_steps=config.head_polish_steps,
+        cached_head_forward_steps=cached_head_forward_steps,
+        trainable_delta_ema_decay=float(config.trainable_delta_ema_decay),
+        class_adaptive_rho=tuple(float(value) for value in rho_values.detach().cpu()),
+        class_reliability=tuple(
+            float(value) for value in reliability_values.detach().cpu()
         ),
     )
     return SFTAPFTResult(model=student, head=head, audit=audit)
@@ -1640,6 +1890,23 @@ def _aggregate_fold_metrics(
     )
 
 
+def _full_support_refit_config(
+    config: SFTAPFTConfig, selected_phase_steps: tuple[int, int, int]
+) -> SFTAPFTConfig:
+    selected = tuple(int(value) for value in selected_phase_steps)
+    tail_steps = selected[1] if config.fast_tail_steps else 0
+    return replace(
+        config,
+        phase_steps=selected,
+        head_prefit_steps=min(config.head_prefit_steps, sum(selected)),
+        fast_tail_start_step=selected[0] if tail_steps else 0,
+        fast_tail_steps=tail_steps,
+        head_polish_steps=min(config.head_polish_steps, selected[2]),
+        validation_steps=(),
+        checkpoint_average_top_k=1,
+    )
+
+
 def select_sf_tapft_by_grouped_cv(
     checkpoint_model: nn.Module,
     target_train: TargetOnlyAdaptationDataset,
@@ -1764,15 +2031,7 @@ def select_sf_tapft_by_grouped_cv(
     adapted_result = None
     if selected == "adapted":
         if full_support_refit:
-            refit_config = replace(
-                config,
-                phase_steps=selected_phase_steps,
-                head_prefit_steps=min(
-                    config.head_prefit_steps, sum(selected_phase_steps)
-                ),
-                validation_steps=(),
-                checkpoint_average_top_k=1,
-            )
+            refit_config = _full_support_refit_config(config, selected_phase_steps)
             full_support_result = fit_sf_tapft(
                 copy.deepcopy(checkpoint_model),
                 target_train,
@@ -1821,6 +2080,8 @@ __all__ = [
     "TargetOnlyAdaptationDataset",
     "TargetPrototypeHead",
     "TrainableDeltaAverager",
+    "TrainableDeltaEMA",
+    "class_adaptive_rho",
     "ensure_time_adapter",
     "fit_sf_tapft",
     "fit_positive_temperature",

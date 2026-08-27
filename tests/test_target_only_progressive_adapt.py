@@ -412,6 +412,54 @@ def test_s15_cal_uses_30_step_warmup_and_decays_by_step_300() -> None:
     assert tapft._learning_rate_factor(299, 300, 0.10) < 1.0e-4
 
 
+def test_fast_strong_tail_uses_its_own_cosine_endpoints() -> None:
+    config = SFTAPFTConfig(
+        trainability_profile="p1_head_norm",
+        phase_steps=(300, 150, 0),
+        scheduler_reference_steps=4500,
+        fast_tail_start_step=300,
+        fast_tail_steps=150,
+        fast_tail_lr_head_start=2.0e-4,
+        fast_tail_lr_head_end=2.0e-5,
+        fast_tail_lr_norm_start=3.0e-5,
+        fast_tail_lr_norm_end=3.0e-6,
+    )
+
+    start = tapft._fast_strong_group_lrs(config, 300, "B")
+    middle = tapft._fast_strong_group_lrs(config, 375, "B")
+    end = tapft._fast_strong_group_lrs(config, 449, "B")
+
+    assert start["head"] == pytest.approx(2.0e-4)
+    assert start["norm"] == pytest.approx(3.0e-5)
+    assert 2.0e-5 < middle["head"] < 2.0e-4
+    assert end["head"] == pytest.approx(2.0e-5)
+    assert end["norm"] == pytest.approx(3.0e-6)
+
+
+def test_class_adaptive_rho_is_bounded_and_permutation_equivariant() -> None:
+    embeddings = torch.tensor([[1.0, 0.0], [1.0, 0.0], [0.0, 1.0], [0.0, 1.0]])
+    labels = torch.tensor([0, 0, 1, 1])
+    source_logits = torch.tensor([[2.0, 0.0], [2.0, 0.0], [2.0, 0.0], [2.0, 0.0]])
+
+    original, reliability = tapft.class_adaptive_rho(
+        embeddings, source_logits, labels, class_count=2,
+        rho_min=0.25, rho_max=0.75, temperature=1.0,
+    )
+    permuted, permuted_reliability = tapft.class_adaptive_rho(
+        embeddings.flip(0), source_logits.flip(0), labels.flip(0), class_count=2,
+        rho_min=0.25, rho_max=0.75, temperature=1.0,
+    )
+
+    assert original.shape == (2,)
+    assert bool(((original >= 0.25) & (original <= 0.75)).all())
+    assert reliability[0] == pytest.approx(torch.sigmoid(torch.tensor(2.0)).item())
+    assert reliability[1] == pytest.approx(torch.sigmoid(torch.tensor(-2.0)).item())
+    assert original[0] == pytest.approx(0.25 + 0.5 * (1.0 - reliability[0].item()))
+    assert original[1] == pytest.approx(0.25 + 0.5 * (1.0 - reliability[1].item()))
+    assert torch.allclose(original, permuted)
+    assert torch.allclose(reliability, permuted_reliability)
+
+
 def test_sparse_validation_and_head_prefit_are_audited() -> None:
     dataset = _dataset()
     train = tapft._subset_target_train(dataset, (0, 1, 3, 4))
@@ -579,6 +627,84 @@ def test_trainable_delta_averager_rejects_changed_nonfloating_permitted_state() 
             anchor_state={"step": torch.tensor(1, dtype=torch.int64)},
             permitted_names={"step"},
         )
+
+
+def test_trainable_delta_ema_tracks_only_permitted_delta() -> None:
+    anchor = {"allowed": torch.tensor([10.0]), "frozen": torch.tensor([20.0])}
+    ema = tapft.TrainableDeltaEMA(anchor, permitted_names={"allowed"}, decay=0.5)
+    ema.update({"allowed": torch.tensor([12.0]), "frozen": torch.tensor([99.0])})
+    ema.update({"allowed": torch.tensor([14.0]), "frozen": torch.tensor([88.0])})
+
+    state = ema.state()
+
+    assert torch.equal(state["allowed"], torch.tensor([13.0]))
+    assert torch.equal(state["frozen"], torch.tensor([20.0]))
+
+
+def test_cached_head_polish_adds_no_backbone_training_forward() -> None:
+    result = fit_sf_tapft(
+        _ToyModel(),
+        _dataset(),
+        SFTAPFTConfig(
+            trainability_profile="p1_head_norm",
+            norm_scope="t3",
+            phase_steps=(2, 0, 2),
+            head_polish_steps=2,
+            head_polish_lr=5.0e-5,
+            checkpoint_average_top_k=1,
+            adapter_rank=2,
+            warmup_ratio=0.0,
+            mixed_precision=False,
+        ),
+    )
+
+    assert result.audit.head_polish_steps == 2
+    assert result.audit.backbone_optimizer_steps == 2
+    assert result.audit.backbone_train_forward_steps == 2
+    assert result.audit.cached_head_forward_steps == 1
+
+
+def test_full_support_refit_rebases_fast_tail_to_selected_stage_lengths(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        GroupedTargetCVSelector,
+        "choose",
+        staticmethod(lambda *, frozen, adapted: "adapted"),
+    )
+    selection = select_sf_tapft_by_grouped_cv(
+        _ToyModel(),
+        _dataset(),
+        SFTAPFTConfig(
+            trainability_profile="p1_head_norm",
+            norm_scope="t3",
+            phase_steps=(2, 2, 0),
+            fast_tail_start_step=2,
+            fast_tail_steps=2,
+            validation_steps=(1, 2, 3, 4),
+            checkpoint_average_top_k=1,
+            adapter_rank=2,
+            warmup_ratio=0.0,
+            mixed_precision=False,
+        ),
+        folds=2,
+        full_support_refit=True,
+    )
+
+    assert selection.full_support_result is not None
+    assert selection.full_support_result.audit.total_steps == sum(selection.selected_phase_steps)
+
+    rebased = tapft._full_support_refit_config(
+        SFTAPFTConfig(
+            phase_steps=(300, 150, 0),
+            scheduler_reference_steps=4500,
+            fast_tail_start_step=300,
+            fast_tail_steps=150,
+        ),
+        (203, 1, 0),
+    )
+    assert rebased.fast_tail_start_step == 203
+    assert rebased.fast_tail_steps == 1
 
 
 def test_fit_sf_tapft_is_reproducible_updates_allowed_scope_and_freezes_result() -> None:

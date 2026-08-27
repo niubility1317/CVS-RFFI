@@ -27,6 +27,7 @@ from .sf_tapft_phase1_binding import (
 
 SF_TAPFT_BUNDLE_SCHEMA = "cvs.sf_tapft.v1"
 SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA = "cvs.sf_tapft.clean_single.v2"
+SF_TAPFT_DELTA_BUNDLE_SCHEMA = "cvs.sf_tapft.delta.v1"
 _V1_TOP_LEVEL_KEYS = frozenset(
     {
         "candidate_id",
@@ -203,6 +204,20 @@ def _normalize_sf_tapft_bundle_config(raw: Any) -> dict[str, Any]:
         "validation_steps": (),
         "oof_temperature_calibration": False,
         "inference_temperature": 1.0,
+        "fast_tail_start_step": 0,
+        "fast_tail_steps": 0,
+        "fast_tail_lr_head_start": 2.0e-4,
+        "fast_tail_lr_head_end": 2.0e-5,
+        "fast_tail_lr_norm_start": 3.0e-5,
+        "fast_tail_lr_norm_end": 3.0e-6,
+        "head_polish_steps": 0,
+        "head_polish_lr": 5.0e-5,
+        "trainable_delta_ema_decay": 0.0,
+        "use_class_adaptive_rho": False,
+        "class_adaptive_rho_min": 0.25,
+        "class_adaptive_rho_max": 0.75,
+        "class_adaptive_rho_temperature": 0.10,
+        "head_anchor_weight": 0.0,
     }
     missing = config_keys.difference(supplied)
     if missing.difference(defaults):
@@ -401,6 +416,39 @@ def _clean_single_bundle_payload(
     }
 
 
+def _delta_bundle_payload(
+    result: Any,
+    *,
+    base_model: nn.Module,
+    resolved: Mapping[str, Any],
+    method_config: SFTAPFTConfig,
+    support: TargetOnlyAdaptationDataset,
+) -> dict[str, Any]:
+    base = dict(base_model.named_parameters())
+    adapted = dict(result.model.named_parameters())
+    updated = tuple(str(name) for name in result.audit.updated_parameter_names)
+    deltas: dict[str, torch.Tensor] = {}
+    for name in updated:
+        if name not in base or name not in adapted or base[name].shape != adapted[name].shape:
+            raise ValueError(f"delta bundle parameter does not align with base checkpoint: {name!r}")
+        deltas[name] = (adapted[name].detach().cpu() - base[name].detach().cpu()).to(torch.float16)
+    return {
+        "schema": SF_TAPFT_DELTA_BUNDLE_SCHEMA,
+        "protocol_schema": resolved["protocol_schema"],
+        "phase2_data_status": resolved["phase2_data_status"],
+        "capsule_id": resolved["capsule_id"],
+        "split_id": resolved["split_id"],
+        "base_checkpoint_path": str(resolved["checkpoint_path"]),
+        "adapter_rank": int(method_config.adapter_rank),
+        "class_ids": list(result.head.class_ids),
+        "head_weight": result.head.weight.detach().cpu().to(torch.float16),
+        "head_scale": float(result.head.scale),
+        "model_deltas": deltas,
+        "updated_parameter_names": list(updated),
+        "support_count": len(support.physical_ids),
+    }
+
+
 def _validate_support_labels_for_binding(
     support: TargetOnlyAdaptationDataset, binding: SFTAPFTPhase1Binding
 ) -> None:
@@ -533,6 +581,7 @@ def run_sf_tapft_grouped_selection(
     )
     destination.mkdir(parents=True, exist_ok=False)
     bundle_path = None
+    delta_bundle_path = None
     if selection.adapted_result is not None:
         if binding is not None:
             bundle_path = destination / "sf_tapft_clean_single_bundle.pt"
@@ -554,6 +603,20 @@ def run_sf_tapft_grouped_selection(
             )
         with bundle_path.open("xb") as handle:
             torch.save(payload, handle)
+        base_parameter_names = set(dict(model.named_parameters()))
+        if binding is not None and set(
+            selection.adapted_result.audit.updated_parameter_names
+        ).issubset(base_parameter_names):
+            delta_payload = _delta_bundle_payload(
+                selection.adapted_result,
+                base_model=model,
+                resolved=resolved,
+                method_config=method_config,
+                support=support,
+            )
+            delta_bundle_path = destination / "sf_tapft_delta_bundle.pt"
+            with delta_bundle_path.open("xb") as handle:
+                torch.save(delta_payload, handle)
     rows = [
         {
             "fold": row.fold,
@@ -623,6 +686,12 @@ def run_sf_tapft_grouped_selection(
                     selection.adapted_result.audit.checkpoint_selection_role
                 ),
                 "bundle_path": str(bundle_path),
+                "delta_bundle_path": (
+                    str(delta_bundle_path) if delta_bundle_path is not None else None
+                ),
+                "delta_bundle_bytes": (
+                    delta_bundle_path.stat().st_size if delta_bundle_path is not None else None
+                ),
             }
             if binding is not None and selection.full_support_result is not None
             else None
@@ -649,6 +718,19 @@ def run_sf_tapft_grouped_selection(
                     selection.adapted_result.audit.trainable_parameter_elements
                 ),
                 "actual_changed_elements": selection.adapted_result.audit.actual_changed_elements,
+                "head_polish_steps": selection.adapted_result.audit.head_polish_steps,
+                "cached_head_forward_steps": (
+                    selection.adapted_result.audit.cached_head_forward_steps
+                ),
+                "trainable_delta_ema_decay": (
+                    selection.adapted_result.audit.trainable_delta_ema_decay
+                ),
+                "class_adaptive_rho": list(
+                    selection.adapted_result.audit.class_adaptive_rho
+                ),
+                "class_reliability": list(
+                    selection.adapted_result.audit.class_reliability
+                ),
             }
             if selection.adapted_result is not None
             else None
@@ -720,6 +802,75 @@ def _strict_target_binding_payload(value: Any, *, trusted: bool) -> dict[str, An
         raise ValueError(f"SF-TAPFT clean-single {label} class counts are invalid")
     payload["per_class_counts"] = [dict(row) for row in rows]
     return payload
+
+
+def load_sf_tapft_delta_bundle_strict(
+    path: str | Path,
+    *,
+    device: str | torch.device,
+    expected_target_binding: Mapping[str, Any],
+    checkpoint_loader: CheckpointLoader | None = None,
+) -> tuple[nn.Module, TargetPrototypeHead, dict[str, Any]]:
+    """Reconstruct an inference-equivalent model from a compact FP16 delta."""
+
+    source = Path(path)
+    if source.is_symlink() or not source.is_file():
+        raise ValueError(f"SF-TAPFT delta bundle is not a regular file: {source}")
+    payload = torch.load(source, map_location="cpu", weights_only=True)
+    keys = {
+        "schema", "protocol_schema", "phase2_data_status", "capsule_id", "split_id",
+        "base_checkpoint_path", "adapter_rank", "class_ids", "head_weight", "head_scale",
+        "model_deltas", "updated_parameter_names", "support_count",
+    }
+    if not isinstance(payload, Mapping) or set(payload) != keys:
+        raise ValueError("SF-TAPFT delta bundle top-level allowlist mismatch")
+    if payload["schema"] != SF_TAPFT_DELTA_BUNDLE_SCHEMA:
+        raise ValueError("SF-TAPFT delta bundle schema mismatch")
+    comparisons = {
+        "protocol_schema": payload["protocol_schema"],
+        "phase2_data_status": payload["phase2_data_status"],
+        "capsule_id": payload["capsule_id"],
+        "split_id": payload["split_id"],
+        "support_count": payload["support_count"],
+    }
+    for name, actual in comparisons.items():
+        if name in expected_target_binding and actual != expected_target_binding[name]:
+            raise ValueError("SF-TAPFT delta target binding mismatch")
+    loader = checkpoint_loader or _default_checkpoint_loader
+    model = loader(payload["base_checkpoint_path"], device=device)
+    ensure_time_adapter(model, rank=int(payload["adapter_rank"]))
+    named = dict(model.named_parameters())
+    deltas = payload["model_deltas"]
+    updated = tuple(str(name) for name in payload["updated_parameter_names"])
+    if not isinstance(deltas, Mapping) or set(deltas) != set(updated):
+        raise ValueError("SF-TAPFT delta parameter allowlist mismatch")
+    with torch.no_grad():
+        for name in updated:
+            delta = deltas[name]
+            if name not in named or not torch.is_tensor(delta) or delta.shape != named[name].shape:
+                raise ValueError(f"SF-TAPFT delta parameter mismatch: {name!r}")
+            named[name].add_(delta.to(device=named[name].device, dtype=named[name].dtype))
+    head_weight = payload["head_weight"]
+    class_ids = tuple(int(value) for value in payload["class_ids"])
+    if not torch.is_tensor(head_weight) or head_weight.ndim != 2:
+        raise ValueError("SF-TAPFT delta head weight is invalid")
+    head = TargetPrototypeHead(
+        head_weight.to(device=device, dtype=next(model.parameters()).dtype),
+        class_ids,
+        scale=float(payload["head_scale"]),
+    )
+    model.eval()
+    head.eval()
+    for parameter in model.parameters():
+        parameter.requires_grad_(False)
+    for parameter in head.parameters():
+        parameter.requires_grad_(False)
+    return model, head, {
+        "schema": SF_TAPFT_DELTA_BUNDLE_SCHEMA,
+        "support_count": int(payload["support_count"]),
+        "updated_parameter_names": updated,
+        "bundle_bytes": int(source.stat().st_size),
+    }
 
 
 def load_sf_tapft_clean_single_bundle_strict(
@@ -978,8 +1129,10 @@ def load_sf_tapft_bundle_strict(
 __all__ = [
     "SF_TAPFT_BUNDLE_SCHEMA",
     "SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA",
+    "SF_TAPFT_DELTA_BUNDLE_SCHEMA",
     "load_sf_tapft_bundle_strict",
     "load_sf_tapft_clean_single_bundle_strict",
+    "load_sf_tapft_delta_bundle_strict",
     "run_sf_tapft_grouped_selection",
     "run_sf_tapft_no_query",
 ]
