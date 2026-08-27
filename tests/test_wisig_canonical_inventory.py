@@ -7,6 +7,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+import cvsrffi.wisig_canonical_inventory as canonical_inventory
 from cvsrffi.wisig_canonical_inventory import (
     RawRecordRef,
     build_inventory,
@@ -209,3 +210,77 @@ def test_inventory_rejects_existing_sqlite_output(tmp_path: Path):
 
     with pytest.raises(FileExistsError):
         build_inventory({"ManyTx": asset}, sqlite_path, equalized=1)
+
+
+def test_inventory_does_not_adopt_or_delete_concurrently_reserved_sqlite(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+):
+    asset = _write_payload(
+        tmp_path / "ManyTx.pkl", _payload(values=(1.0,), num_tx=1, num_rx=1, num_days=1)
+    )
+    sqlite_path = tmp_path / "canonical.sqlite"
+    sqlite_path.write_text("reserved by another caller", encoding="utf-8")
+    real_exists = Path.exists
+    stale_check_used = False
+
+    def stale_once(path: Path) -> bool:
+        nonlocal stale_check_used
+        if path == sqlite_path and not stale_check_used:
+            stale_check_used = True
+            return False
+        return real_exists(path)
+
+    monkeypatch.setattr(Path, "exists", stale_once)
+
+    with pytest.raises(FileExistsError):
+        build_inventory({"ManyTx": asset}, sqlite_path, equalized=1)
+
+    assert sqlite_path.read_text(encoding="utf-8") == "reserved by another caller"
+
+
+def test_inventory_closes_owned_connection_before_removing_incomplete_sqlite(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+):
+    asset = _write_payload(
+        tmp_path / "ManyTx.pkl", _payload(values=(1.0,), num_tx=1, num_rx=1, num_days=1)
+    )
+    sqlite_path = tmp_path / "canonical.sqlite"
+    events: list[str] = []
+    closed = False
+    real_connect = canonical_inventory.sqlite3.connect
+    real_unlink = Path.unlink
+
+    class ObservedConnection:
+        def __init__(self, connection: sqlite3.Connection):
+            self._connection = connection
+
+        def __getattr__(self, name: str):
+            return getattr(self._connection, name)
+
+        def close(self) -> None:
+            nonlocal closed
+            closed = True
+            events.append("close")
+            self._connection.close()
+
+    def observing_connect(*args, **kwargs):
+        return ObservedConnection(real_connect(*args, **kwargs))
+
+    def fail_iteration(*args, **kwargs):
+        raise RuntimeError("injected source read failure")
+        yield None
+
+    def unlink_after_close(path: Path, *args, **kwargs):
+        events.append("unlink")
+        assert closed
+        return real_unlink(path, *args, **kwargs)
+
+    monkeypatch.setattr(canonical_inventory.sqlite3, "connect", observing_connect)
+    monkeypatch.setattr(canonical_inventory, "iter_wisig_records", fail_iteration)
+    monkeypatch.setattr(Path, "unlink", unlink_after_close)
+
+    with pytest.raises(RuntimeError, match="injected source read failure"):
+        build_inventory({"ManyTx": asset}, sqlite_path, equalized=1)
+
+    assert events == ["close", "unlink"]
+    assert not sqlite_path.exists()

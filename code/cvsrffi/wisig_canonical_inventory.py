@@ -195,11 +195,13 @@ def build_inventory(
     """Build a non-overwriting canonical WiSig inventory from named PKL assets."""
 
     output_path = Path(sqlite_path)
-    if output_path.exists():
-        raise FileExistsError(f"SQLite output already exists: {output_path}")
-
     connection: sqlite3.Connection | None = None
+    reserved_file_identity: tuple[int, int] | None = None
     try:
+        with output_path.open("xb"):
+            pass
+        stat_result = output_path.stat()
+        reserved_file_identity = (stat_result.st_dev, stat_result.st_ino)
         connection = sqlite3.connect(output_path)
         connection.execute("BEGIN")
         connection.executescript(
@@ -317,9 +319,18 @@ def build_inventory(
         )
     except Exception:
         if connection is not None:
-            connection.rollback()
-        if output_path.exists():
-            output_path.unlink()
+            try:
+                connection.rollback()
+            finally:
+                connection.close()
+                connection = None
+        if reserved_file_identity is not None:
+            try:
+                stat_result = output_path.stat()
+            except OSError:
+                stat_result = None
+            if stat_result is not None and (stat_result.st_dev, stat_result.st_ino) == reserved_file_identity:
+                output_path.unlink()
         raise
     finally:
         if connection is not None:
