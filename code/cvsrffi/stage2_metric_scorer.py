@@ -375,6 +375,8 @@ def _validate_truth_rows(
     tx_to_handle: dict[str, str] = {}
     class_to_tx: dict[int, str] = {}
     handle_to_tx: dict[str, str] = {}
+    class_to_handle: dict[int, str] = {}
+    handle_to_class: dict[str, int] = {}
     for row in rows:
         if not isinstance(row, dict):
             raise Stage2ScoringError("truth sidecar row must be an object")
@@ -429,6 +431,17 @@ def _validate_truth_rows(
             raise Stage2ScoringError("scored truth class index must be a nonnegative integer")
         if not isinstance(true_handle, str) or CLASS_HANDLE_RE.fullmatch(true_handle) is None:
             raise Stage2ScoringError("scored truth class handle must be opaque")
+        day_label = row.get("day_label")
+        if not isinstance(day_label, str) or not day_label.strip():
+            raise Stage2ScoringError("scored truth day_label must be nonempty")
+        if true_handle in handle_to_class and handle_to_class[true_handle] != true_class:
+            raise Stage2ScoringError(
+                "true class handle maps to multiple class indices"
+            )
+        if true_class in class_to_handle and class_to_handle[true_class] != true_handle:
+            raise Stage2ScoringError(
+                "true class index maps to multiple opaque class handles"
+            )
         if tx in tx_to_class and tx_to_class[tx] != true_class:
             raise Stage2ScoringError("transmitter maps to multiple true class indices")
         if tx in tx_to_handle and tx_to_handle[tx] != true_handle:
@@ -441,6 +454,8 @@ def _validate_truth_rows(
         tx_to_handle[tx] = true_handle
         class_to_tx[true_class] = tx
         handle_to_tx[true_handle] = tx
+        class_to_handle[true_class] = true_handle
+        handle_to_class[true_handle] = true_class
     roles = {row["evaluation_role"] for row in rows}
     if require_scenario and seen_scenarios != set(
         FORMAL_LEO_WEAK_SCENARIOS
@@ -479,6 +494,7 @@ def score_prediction_arrays(
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Exact-join truth to five fixed streams and compute per-scenario rows."""
 
+    _validate_truth_rows(truth)
     if binding["stage"] != truth["stage"]:
         raise Stage2ScoringError("prediction/truth stage mismatch")
     if binding["receiver"] != truth["receiver"]:
@@ -499,6 +515,25 @@ def score_prediction_arrays(
             "direct",
         )
     }
+    handle_to_class_index: dict[str, int] = {}
+    class_index_to_handle: dict[int, str] = {}
+    for truth_row in truth["rows"]:
+        true_class = truth_row["true_class_index"]
+        true_handle = truth_row["true_class_handle"]
+        if true_class is None:
+            continue
+        if (
+            true_handle in handle_to_class_index
+            and handle_to_class_index[true_handle] != true_class
+        ) or (
+            true_class in class_index_to_handle
+            and class_index_to_handle[true_class] != true_handle
+        ):
+            raise Stage2ScoringError(
+                "inconsistent opaque class handle to class index mapping"
+            )
+        handle_to_class_index[true_handle] = true_class
+        class_index_to_handle[true_class] = true_handle
     shared_view_counts = np.asarray(arrays["shared_view_counts"], dtype=np.int64)
     formal_rows: list[dict[str, Any]] = []
     formal_predictions: list[dict[str, Any]] = []
@@ -648,6 +683,15 @@ def score_prediction_arrays(
         for position, truth_row in enumerate(ordered_truth):
             true_class = truth_row["true_class_index"]
             scored = true_class is not None
+            predicted_class: int | None = None
+            if scored:
+                candidate_after_handle = str(streams["candidate_after"][position])
+                try:
+                    predicted_class = handle_to_class_index[candidate_after_handle]
+                except KeyError as exc:
+                    raise Stage2ScoringError(
+                        "candidate_after class handle is absent from joined truth mapping"
+                    ) from exc
             result: dict[str, Any] = {
                 "row_id": binding["row_id"],
                 "stage": binding["stage"],
@@ -657,7 +701,9 @@ def score_prediction_arrays(
                 "evaluation_role": truth_row["evaluation_role"],
                 "transmitter_label": truth_row["transmitter_label"],
                 "true_class_index": true_class,
+                "predicted_class_index": predicted_class,
                 "true_class_handle": truth_row["true_class_handle"],
+                "day_label": truth_row.get("day_label"),
                 "candidate_lock_sha256": binding["candidate_lock_sha256"],
                 "shared_view_count": int(scenario_view_counts[position]),
             }
