@@ -1,0 +1,33 @@
+{
+  "schema": "cvs.sf_tapft.query_closure_matrix.v1",
+  "run_id": "stage2_sf_tapft_v2_existing16_queryclosure_rx20_1_s392002_20260827_r1",
+  "protocol_schema": "p2_min_v1",
+  "phase2_data_status": "VALIDATED_ONCE",
+  "receiver": "20-1",
+  "scenario": "leo_clear_weak",
+  "registration_state": "REG0",
+  "k_shot": 10,
+  "support_rows": 60,
+  "query_rows": 60,
+  "capsule_id": "sf-erbt-oldonly-rx20-1-s713101-clear-k10-holdout10-v1",
+  "split_id": "p2_min_v1-rx20-1-s713101-clear-old6-k10-rank0_9-holdout-rank10_19",
+  "remote_data_root": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/stage2_sf_d92e0_norf32_oldonly_rx20_1_s713101_20260826_r1",
+  "rows": [
+    {"row_id": "R0", "gpu": 0, "bundle_run": "stage2_sf_tapft_v2_clean_r16_t3_rx20_1_s392002_20260826_r2_envfix1"},
+    {"row_id": "M01", "gpu": 0, "bundle_run": "stage2_sf_tapft_v2_m01_p0_head_only_rx20_1_s392002_20260827_r1"},
+    {"row_id": "M02", "gpu": 1, "bundle_run": "stage2_sf_tapft_v2_m02_p1_head_norm_rx20_1_s392002_20260827_r1"},
+    {"row_id": "M03", "gpu": 1, "bundle_run": "stage2_sf_tapft_v2_m03_p2_r32_rx20_1_s392002_20260827_r1"},
+    {"row_id": "M04", "gpu": 2, "bundle_run": "stage2_sf_tapft_v2_m04_p3_r32_rx20_1_s392002_20260827_r1"},
+    {"row_id": "M05", "gpu": 2, "bundle_run": "stage2_sf_tapft_v2_m05_p4_r32_rx20_1_s392002_20260827_r1"},
+    {"row_id": "M06", "gpu": 3, "bundle_run": "stage2_sf_tapft_v2_m06_p3_r16_kd010_rx20_1_s392002_20260827_r1"},
+    {"row_id": "M07", "gpu": 3, "bundle_run": "stage2_sf_tapft_v2_m07_p3_r16_rho075_rx20_1_s392002_20260827_r1"},
+    {"row_id": "M08", "gpu": 4, "bundle_run": "stage2_sf_tapft_v2_m08_p3_r16_rho100_rx20_1_s392002_20260827_r1"},
+    {"row_id": "M09", "gpu": 4, "bundle_run": "stage2_sf_tapft_v2_m09_p2_r16_rx20_1_s392002_20260827_r1"},
+    {"row_id": "M10", "gpu": 5, "bundle_run": "stage2_sf_tapft_v2_m10_p3_r16_c300_rx20_1_s392002_20260827_r1"},
+    {"row_id": "M11", "gpu": 5, "bundle_run": "stage2_sf_tapft_v2_m11_p3_r16_c500_rx20_1_s392002_20260827_r1"},
+    {"row_id": "M12", "gpu": 6, "bundle_run": "stage2_sf_tapft_v2_m12_p3_r8_rx20_1_s392002_20260827_r1"},
+    {"row_id": "M13", "gpu": 6, "bundle_run": "stage2_sf_tapft_v2_m13_p3_r4_rx20_1_s392002_20260827_r1"},
+    {"row_id": "M14", "gpu": 7, "bundle_run": "stage2_sf_tapft_v2_m14_p4_r16_rx20_1_s392002_20260827_r1"},
+    {"row_id": "M15", "gpu": 7, "bundle_run": "stage2_sf_tapft_v2_m15_p4_r8_rx20_1_s392002_20260827_r1"}
+  ]
+}
