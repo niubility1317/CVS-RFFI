@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import pickle
 import sqlite3
 from dataclasses import dataclass
@@ -50,6 +51,87 @@ _ASSET_PRIORITY = {"ManySig": 0, "SingleDay": 1, "ManyRx": 2, "ManyTx": 3}
 
 def _asset_preference_key(asset_name: str, source_record_index: int) -> tuple[int, str, int]:
     return (_ASSET_PRIORITY.get(asset_name, len(_ASSET_PRIORITY)), asset_name, source_record_index)
+
+
+def _reserve_sqlite_output(output_path: Path) -> Any:
+    with output_path.open("xb"):
+        pass
+    return None
+
+
+def _open_windows_cleanup_fd(output_path: Path) -> int:
+    import ctypes
+    import msvcrt
+    from ctypes import wintypes
+
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    create_file = kernel32.CreateFileW
+    create_file.argtypes = [
+        wintypes.LPCWSTR,
+        wintypes.DWORD,
+        wintypes.DWORD,
+        ctypes.c_void_p,
+        wintypes.DWORD,
+        wintypes.DWORD,
+        wintypes.HANDLE,
+    ]
+    create_file.restype = wintypes.HANDLE
+    handle = create_file(
+        str(output_path),
+        0x00010000,
+        0x00000001 | 0x00000002,
+        None,
+        3,
+        0x00000080,
+        None,
+    )
+    if handle == ctypes.c_void_p(-1).value:
+        raise OSError(ctypes.get_last_error(), f"cannot bind cleanup handle to {output_path}")
+    return msvcrt.open_osfhandle(handle, os.O_BINARY)
+
+
+def _delete_reserved_output(
+    output_path: Path,
+    reserved_file_identity: tuple[int, int],
+) -> None:
+    try:
+        stat_result = output_path.stat()
+    except OSError:
+        return
+    if (stat_result.st_dev, stat_result.st_ino) != reserved_file_identity or os.name != "nt":
+        return
+
+    import ctypes
+    import msvcrt
+    from ctypes import wintypes
+
+    class FileDispositionInfo(ctypes.Structure):
+        _fields_ = [("delete_file", wintypes.BOOL)]
+
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    cleanup_fd = _open_windows_cleanup_fd(output_path)
+    try:
+        stat_result = os.fstat(cleanup_fd)
+        if (stat_result.st_dev, stat_result.st_ino) != reserved_file_identity:
+            return
+        set_information = kernel32.SetFileInformationByHandle
+        set_information.argtypes = [
+            wintypes.HANDLE,
+            wintypes.DWORD,
+            ctypes.c_void_p,
+            wintypes.DWORD,
+        ]
+        set_information.restype = wintypes.BOOL
+        disposition = FileDispositionInfo(1)
+        if not set_information(
+            wintypes.HANDLE(msvcrt.get_osfhandle(cleanup_fd)),
+            4,
+            ctypes.byref(disposition),
+            ctypes.sizeof(disposition),
+        ):
+            raise OSError(ctypes.get_last_error(), "cannot delete reserved SQLite output")
+    finally:
+        os.close(cleanup_fd)
 
 
 def canonical_coordinate(
@@ -198,8 +280,7 @@ def build_inventory(
     connection: sqlite3.Connection | None = None
     reserved_file_identity: tuple[int, int] | None = None
     try:
-        with output_path.open("xb"):
-            pass
+        _reserve_sqlite_output(output_path)
         stat_result = output_path.stat()
         reserved_file_identity = (stat_result.st_dev, stat_result.st_ino)
         connection = sqlite3.connect(output_path)
@@ -326,11 +407,9 @@ def build_inventory(
                 connection = None
         if reserved_file_identity is not None:
             try:
-                stat_result = output_path.stat()
+                _delete_reserved_output(output_path, reserved_file_identity)
             except OSError:
-                stat_result = None
-            if stat_result is not None and (stat_result.st_dev, stat_result.st_ino) == reserved_file_identity:
-                output_path.unlink()
+                pass
         raise
     finally:
         if connection is not None:

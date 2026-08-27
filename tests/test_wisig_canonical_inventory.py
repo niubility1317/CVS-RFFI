@@ -1,5 +1,6 @@
 import hashlib
 import json
+import os
 import pickle
 import sqlite3
 from pathlib import Path
@@ -248,7 +249,6 @@ def test_inventory_closes_owned_connection_before_removing_incomplete_sqlite(
     events: list[str] = []
     closed = False
     real_connect = canonical_inventory.sqlite3.connect
-    real_unlink = Path.unlink
 
     class ObservedConnection:
         def __init__(self, connection: sqlite3.Connection):
@@ -270,17 +270,48 @@ def test_inventory_closes_owned_connection_before_removing_incomplete_sqlite(
         raise RuntimeError("injected source read failure")
         yield None
 
-    def unlink_after_close(path: Path, *args, **kwargs):
-        events.append("unlink")
-        assert closed
-        return real_unlink(path, *args, **kwargs)
-
     monkeypatch.setattr(canonical_inventory.sqlite3, "connect", observing_connect)
     monkeypatch.setattr(canonical_inventory, "iter_wisig_records", fail_iteration)
-    monkeypatch.setattr(Path, "unlink", unlink_after_close)
 
     with pytest.raises(RuntimeError, match="injected source read failure"):
         build_inventory({"ManyTx": asset}, sqlite_path, equalized=1)
 
-    assert events == ["close", "unlink"]
-    assert not sqlite_path.exists()
+    assert events == ["close"]
+    if os.name == "nt":
+        assert not sqlite_path.exists()
+    else:
+        assert sqlite_path.exists()
+
+
+def test_inventory_preserves_replacement_after_cleanup_identity_check(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+):
+    asset = _write_payload(
+        tmp_path / "ManyTx.pkl", _payload(values=(1.0,), num_tx=1, num_rx=1, num_days=1)
+    )
+    sqlite_path = tmp_path / "canonical.sqlite"
+    real_stat = Path.stat
+    real_unlink = Path.unlink
+    sqlite_stat_calls = 0
+
+    def replace_after_cleanup_stat(path: Path, *args, **kwargs):
+        nonlocal sqlite_stat_calls
+        stat_result = real_stat(path, *args, **kwargs)
+        if path == sqlite_path:
+            sqlite_stat_calls += 1
+            if sqlite_stat_calls == 2:
+                real_unlink(path)
+                path.write_text("external replacement", encoding="utf-8")
+        return stat_result
+
+    def fail_iteration(*args, **kwargs):
+        raise RuntimeError("injected source read failure")
+        yield None
+
+    monkeypatch.setattr(Path, "stat", replace_after_cleanup_stat)
+    monkeypatch.setattr(canonical_inventory, "iter_wisig_records", fail_iteration)
+
+    with pytest.raises(RuntimeError, match="injected source read failure"):
+        build_inventory({"ManyTx": asset}, sqlite_path, equalized=1)
+
+    assert sqlite_path.read_text(encoding="utf-8") == "external replacement"
