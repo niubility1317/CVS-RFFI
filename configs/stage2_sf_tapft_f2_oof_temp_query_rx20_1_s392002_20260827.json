@@ -1,0 +1,25 @@
+{
+  "schema": "cvs.sf_tapft.query_closure_matrix.v1",
+  "run_id": "stage2_sf_tapft_f2_oof_temp_query_rx20_1_s392002_20260827_r1",
+  "protocol_schema": "p2_min_v1",
+  "phase2_data_status": "VALIDATED_ONCE",
+  "receiver": "20-1",
+  "scenario": "leo_clear_weak",
+  "registration_state": "REG0",
+  "k_shot": 10,
+  "support_rows": 60,
+  "query_rows": 60,
+  "query_evidence_scope": "REUSED_VALIDATED_HOLDOUT_NOT_NEW_PROSPECTIVE_QUERY",
+  "capsule_id": "sf-erbt-oldonly-rx20-1-s713101-clear-k10-holdout10-v1",
+  "split_id": "p2_min_v1-rx20-1-s713101-clear-old6-k10-rank0_9-holdout-rank10_19",
+  "remote_data_root": "/home/szu2070436088/2510044040/CV-SincNet/stage2_inputs/stage2_sf_d92e0_norf32_oldonly_rx20_1_s713101_20260826_r1",
+  "rows": [
+    {
+      "row_id": "F2",
+      "gpu": 0,
+      "bundle_run": "stage2_sf_tapft_s15plus5_rx20_1_s392002_20260827_r1",
+      "bundle_row": "F2",
+      "inference_temperature": 1.07144044514
+    }
+  ]
+}
