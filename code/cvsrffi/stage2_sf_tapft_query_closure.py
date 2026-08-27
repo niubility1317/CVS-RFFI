@@ -105,6 +105,7 @@ def load_clean_single_pair_strict(
     try:
         payload = torch.load(Path(bundle_path), map_location="cpu", weights_only=True)
         normalized = _normalize_sf_tapft_bundle_config(payload["config"])
+        normalized["validation_steps"] = ()
         config = SFTAPFTConfig(**normalized)
         base_checkpoint_path = str(payload["base_checkpoint_path"])
     except QueryClosureError:
