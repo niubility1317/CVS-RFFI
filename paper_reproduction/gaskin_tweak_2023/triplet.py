@@ -23,6 +23,6 @@ def batch_hard_triplet_loss(embeddings: torch.Tensor, labels: torch.Tensor, marg
     """Mean max(||A-P||-||A-N||+margin,0) after batch-hard mining."""
     positive, negative = hard_positive_negative_indices(embeddings, labels)
     anchors = torch.arange(embeddings.shape[0], device=embeddings.device)
-    positive_distance = F.pairwise_distance(embeddings[anchors], embeddings[positive], p=2)
-    negative_distance = F.pairwise_distance(embeddings[anchors], embeddings[negative], p=2)
+    positive_distance = torch.linalg.vector_norm(embeddings[anchors] - embeddings[positive], dim=1)
+    negative_distance = torch.linalg.vector_norm(embeddings[anchors] - embeddings[negative], dim=1)
     return F.relu(positive_distance - negative_distance + margin).mean()

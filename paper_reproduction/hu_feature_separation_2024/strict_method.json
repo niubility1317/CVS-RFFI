@@ -1,0 +1,36 @@
+{
+  "method": "hu_feature_separation_2024",
+  "parity_status": "PAPER_METHOD_PARITY_WITH_UNPUBLISHED_DEFAULTS",
+  "unpublished_defaults": {
+    "preprocess_and_welch": {
+      "value": {"synchronization": "optional_preamble_correlation", "equalization": "least_squares_complex_scalar", "normalization": "zero_mean_unit_rms", "window": "hann", "nperseg": 256, "noverlap": 128, "detrend": "constant", "sampling_rate": 1.0},
+      "status": "UNPUBLISHED_DEFAULT",
+      "rationale": "The paper names preprocessing and Welch PSD but omits their operational settings."
+    },
+    "architecture_interpretation": {
+      "value": "figure6_five_residual_stages_single_shared_attention",
+      "status": "UNPUBLISHED_DEFAULT",
+      "rationale": "Figure 6 and the ResNet18 prose do not uniquely specify block count and attention placement."
+    },
+    "loss_weights": {
+      "value": {"lambda_similarity": 1.0, "lambda_tx_entropy": 1.0, "lambda_rx_entropy": 1.0, "cross_entropy_reduction": "mean"},
+      "status": "UNPUBLISHED_DEFAULT",
+      "rationale": "The paper gives the loss form but does not report lambda values or reduction convention."
+    },
+    "augmentation_sampling": {
+      "value": {"distribution": "uniform", "apply_probability": 1.0, "order": ["multipath", "doppler", "noise"]},
+      "status": "UNPUBLISHED_DEFAULT",
+      "rationale": "The paper reports augmentation ranges but not the random law, application probability or composition order."
+    },
+    "training_control": {
+      "value": {"max_epochs": 200, "scheduler": "ReduceLROnPlateau(factor=0.1,patience=10)", "early_stopping_patience": 20},
+      "status": "UNPUBLISHED_DEFAULT",
+      "rationale": "The paper requests learning-rate adaptation and loss-stagnation stopping without numerical control settings."
+    },
+    "fine_tuning_scope": {
+      "value": ["encoder", "tx_branch", "tx_classifier"],
+      "status": "UNPUBLISHED_DEFAULT",
+      "rationale": "The paper states transmitter-label fine-tuning but does not disclose which modules or batch-normalization states remain trainable."
+    }
+  }
+}
