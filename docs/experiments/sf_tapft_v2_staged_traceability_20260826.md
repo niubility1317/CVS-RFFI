@@ -31,9 +31,9 @@
 |V2-22|S3 t3增量|dw→pw LoRA→组合|模型、配置|rejected|M02未更新完整`t3`，无需用LoRA替换不存在的更新|避免为未晋级P3增加结构|
 |V2-23|S4 rank压缩|R32→R16→R8→R4|配置|rejected|M02不训练Adapter，实际rank开销为0|无需继续压缩未启用Adapter|
 |V2-24|S5 head压缩|完整head到更轻决策头|模型、配置|deferred|严格非劣|最后执行|
-|V2-25|M02 norm范围瘦身|在完整target head不变时逐项缩减`t1/t2/t3/time_fuse` norm集合|adapt、runner、16行配置|implemented|8种范围的精确trainable-name测试通过；真实性能待N607 OOF|本轮主结构轴|
-|V2-26|M02 norm仿射瘦身|分别仅训练norm weight或bias，并对晚期norm重复|adapt、runner、16行配置|implemented|weight/bias精确后缀测试通过；真实性能待N607 OOF|不压缩target head|
-|V2-27|M02步数瘦身|固定4500步学习率时钟，仅截断至600/300步|adapt、runner、16行配置|implemented|固定时钟改变更新但不延长训练的RED/GREEN测试通过；真实性能待N607 OOF|避免总步数改变A阶段调度|
+|V2-25|M02 norm范围瘦身|在完整target head不变时逐项缩减`t1/t2/t3/time_fuse` norm集合|adapt、runner、16行配置|verified|关键OOF范围闭合：S02`t3-only`以1152元素、BA89.5833%、floor77.7778%、NLL0.424413成为最小非劣；S05 fuse-only三门槛失败，S08通过|其余组合按用户优先级定向裁剪，不补跑|
+|V2-26|M02 norm仿射瘦身|分别仅训练norm weight或bias，并对晚期norm重复|adapt、runner、16行配置|verified|S10 all-weight与S11 all-bias均通过；S12/S13晚期组合按用户要求裁剪|核心weight/bias因果轴已闭合，不压缩target head|
+|V2-27|M02步数瘦身|固定4500步学习率时钟，仅截断至600/300步|adapt、runner、16行配置|verified|S14/S15分别缩短66.78%/82.64%wall-clock，但NLL恶化0.071542/0.078121，均未通过+0.03门槛|准确率保持不等于校准非劣|
 |V2-28|本轮query边界|16行只用support-inner OOF，不重复读取已用于选M02的rank10–19 truth|runner、报告|verified|矩阵只有checkpoint/support输入；79项聚焦回归通过|仅通过门槛的最小候选进入新的独立holdout里程碑|
 
 ## 并行容量矩阵
@@ -62,11 +62,11 @@ R2/R3、S0数学等价、S3 LoRA和S5 head形式仍需要本波artifact或新实
 
 ## 当前状态
 
-- 已验证：10项（含正式bundle与真实checkpoint smoke）。
-- 已实现但真实工件阻塞：0项。
+- 已验证：16项；本轮V2-25至V2-27已由N607真实checkpoint、8行完整artifact和同rowOOF分析闭合。
+- 已实现但尚未完成实验闭合：5项。
 - 远端smoke阻塞：0项。
 - 独立query里程碑已完成：M02的`DA1_REG0`BA=`86.67%`、floor=`60%`、NLL=`0.5094`，为现有16个bundle三指标共同最优。
-- 本轮实现状态：V2-25至V2-27已本地实现、等待N607 OOF；V2-28已验证。矩阵固定为M02复现、head-only、8种norm范围、4种weight/bias范围和2种固定时钟截断预算，共16行。
+- 本轮实验状态：关键集合8/8已闭合并分析；S01/S03/S04/S06/S07/S09/S12/S13按用户要求标记`USER_DIRECTED_PRUNED/NO_PERFORMANCE_RESULT`。S02是唯一最小非劣support OOF候选，尚待新的独立query里程碑。
 - 聚焦验证：79项通过，两个Python模块和一个CLI入口编译通过，16行配置均可由严格runner解析；P0/P1定点审查发现旧M02bundle兼容问题，修复后旧配置只允许三个新增字段采用默认值缺省，未知字段仍拒绝。
 - 拒绝：V2-22、V2-23共2项；原因是晋级锚点M02不训练完整`t3`或Adapter，相关压缩对象已经不存在。
-- 当前最高交付状态：上一轮独立query为`ANALYZED`；本轮瘦身矩阵尚为设计确认后的`pending`，不得提前写作已发布或已运行。
+- 当前最高交付状态：本轮瘦身screen为`ANALYZED`；S02仅达到`SUPPORT_OOF_WINNER_PENDING_INDEPENDENT_QUERY`。实现与冻结配置严格对齐设计，实验覆盖因用户定向裁剪而属于关键子矩阵，不是原始16行全覆盖。

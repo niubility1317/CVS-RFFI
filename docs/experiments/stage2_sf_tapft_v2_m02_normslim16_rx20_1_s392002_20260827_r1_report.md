@@ -3,7 +3,7 @@
 ## 预登记
 
 - run ID：`stage2_sf_tapft_v2_m02_normslim16_rx20_1_s392002_20260827_r1`
-- 状态：`RUNNING`
+- 状态：`ANALYZED`
 - 固定提交：`9c9ae29a65cb019d6a6fd30c613ecc8b470f8cc8`
 - 目标：以独立query最优M02（完整target head+全部time norm）为锚，先缩减norm范围、norm affine和训练步数；本轮不压缩target head，不重新引入Adapter、完整`t3`或B/C阶段。
 - 数据：`p2_min_v1/VALIDATED_ONCE`；capsule=`d18-enrollment-before-rx20-1-seed713101-k10-smoke-reuse`；split=`stage2b-rx20-1-seed713101-before-support-prefix`；receiver=`20-1`；旧6类K=10，共60条support。
@@ -64,7 +64,7 @@
 
 ## 预期artifact
 
-每行必须生成`selection.json`、`sf_tapft_clean_single_bundle.pt`、完整stdout/stderr日志和`runtime_time.txt`；矩阵级生成launch receipt、GPU采样记录和完成汇总。只有16/16行artifact完成并解析后进入`ARTIFACTS_COMPLETE`，完成同row分析后进入`ANALYZED`。
+每行原计划生成`selection.json`、`sf_tapft_clean_single_bundle.pt`、完整stdout/stderr日志和`runtime_time.txt`；矩阵级生成launch receipt、GPU采样记录和完成汇总。用户定向裁剪后，终态集合改为8个关键行完整artifact加8个`USER_DIRECTED_PRUNED/NO_PERFORMANCE_RESULT`行；关键8/8解析并完成同row分析后进入`ANALYZED`。
 
 ## 完成结果
 
@@ -85,3 +85,50 @@
 - 仅向上述8行对应的child PID和wrapper PID发送`TERM`；独立读回确认16个目标PID均已退出，S00/S02/S05/S08/S10/S11仍按原PID运行。
 - 裁剪后活跃训练由14行降至6行：GPU0/1/2/4各1行，GPU5保留weight/bias两项正交实验；GPU3/6/7释放。所有selection、bundle、日志、运行时和partial输出均保留，未删除或覆盖任何artifact。
 - 最终闭合条件随用户优先级调整为关键集合8/8，而非原始16/16；原预登记指标门槛和S00同run锚点不变。
+
+### 最终artifact与协议闭合
+
+- 关键集合S00/S02/S05/S08/S10/S11/S14/S15均生成`selection.json`、`sf_tapft_clean_single_bundle.pt`、完整stdout和GNU time记录；8/8进程exit status均为0。
+- 完整读取8份stdout，共172,923B；每份为一条完整JSON记录。未发现Traceback、RuntimeError、OOM、Killed、NaN/Inf或协议违规标志。
+- 8行均保持`p2_min_v1/VALIDATED_ONCE`、同一capsule/split、support_count=60、每类10条；`query_opened/query_truth_opened/query_role_opened/source_opened/target_eval_opened`全部为`false`，`nonpermitted_changed_names=[]`。
+- 解析136,364条GPU进程采样。单行GPU显存峰值为676–690MiB；最大RSS为1,793,920–1,842,404KiB。bundle均可由`torch.load(weights_only=True)`完整读取。
+
+### support-inner OOF结果
+
+|row|候选|BA|相对S00|fold floor|NLL|相对S00|选中A步数|可训练/变化元素|门槛|
+|---|---|---:|---:|---:|---:|---:|---:|---:|---|
+|S00|完整M02锚点|86.1111%|0.0000pp|77.7778%|0.436715|0.000000|327|1584/1584|锚点|
+|S02|仅`t3.norm`|89.5833%|+3.4722pp|77.7778%|0.424413|-0.012302|412|1152/1152|PASS|
+|S05|仅`time_fuse.norm`|84.0278%|-2.0833pp|69.4445%|0.506162|+0.069446|244|1056/1056|FAIL：BA/floor/NLL|
+|S08|`t3+fuse.norm`|86.1111%|0.0000pp|77.7778%|0.452126|+0.015411|834|1248/1248|PASS|
+|S10|全部norm仅weight|86.1111%|0.0000pp|77.7778%|0.414765|-0.021950|1094|1272/1272|PASS|
+|S11|全部norm仅bias|87.5000%|+1.3889pp|77.7778%|0.446656|+0.009941|219|1272/1272|PASS|
+|S14|600步上限|86.1111%|0.0000pp|77.7778%|0.508258|+0.071542|203|1584/1584|FAIL：NLL|
+|S15|300步上限|86.1111%|0.0000pp|77.7778%|0.514836|+0.078121|203|1584/1584|FAIL：NLL|
+
+S02四折BA为100.0000%、77.7778%、86.1111%、94.4445%，相比S00的94.4445%、77.7778%、77.7778%、94.4445%，提升集中在fold0和fold2，最差fold没有下降。它不是由单折峰值拼接出的虚构最优，而是同一S02 row的聚合结果。
+
+### 资源结果
+
+|row|bundle|wall-clock|最大RSS|GPU峰值|
+|---|---:|---:|---:|---:|
+|S00|4,292,510B|3:46:23|1,823,160KiB|690MiB|
+|S02|4,291,358B|3:48:10|1,793,920KiB|676MiB|
+|S05|4,291,422B|3:44:24|1,819,132KiB|690MiB|
+|S08|4,291,806B|3:48:40|1,833,000KiB|690MiB|
+|S10|4,291,742B|4:00:26|1,827,708KiB|690MiB|
+|S11|4,291,742B|3:55:45|1,842,404KiB|690MiB|
+|S14|4,292,510B|1:15:13|1,817,812KiB|690MiB|
+|S15|4,292,510B|0:39:17.91|1,829,304KiB|690MiB|
+
+S02把可训练及实际变化元素从1584降至1152，减少432个，即27.27%；其bundle只减少1152B，因为当前clean-single bundle仍保存完整模型state，参数瘦身尚未转化为delta-only封装。S02的4500步OOF训练时间与S00基本相同（增加1分47秒），说明本轮参数裁剪降低了持久状态和优化器规模，却没有解决完整骨干前向、每步验证和GPU–CPU同步开销。
+
+S14和S15相对S00分别缩短66.78%和82.64%wall-clock，但NLL分别恶化0.071542和0.078121，超过允许的+0.03。短步数保住了离散准确率与floor，却没有保住概率校准，因此不能晋级。
+
+### 结论与下一步
+
+- 唯一最小非劣候选为S02：`target head+仅t3.norm`。它同时满足BA、floor和NLL门槛，并在所有通过行中具有最少变化元素1152。
+- 机制证据指向`t3.norm`是本目标域的主要有效校正位置。只保留融合norm的S05三项门槛全部失败；在`t3.norm`上追加fuse的S08没有带来BA收益，且NLL比S02高0.027713。
+- S10取得最低NLL，但多使用120个变化元素、选中步数为1094，且BA低于S02 3.4722pp，因此不覆盖S02的最小候选地位。S11以219步取得87.5000%BA，但参数仍多120个、NLL也高0.022242。
+- 本轮结论严格限于同一60条support的4折OOF筛选，未读取独立query。S02当前状态为`SUPPORT_OOF_WINNER_PENDING_INDEPENDENT_QUERY`，不能直接替代上一轮M02的独立query结论。
+- 下一科学动作应使用新的、未参与本轮筛选的独立query里程碑验证S02；工程加速则应另行验证稀疏checkpoint validation、冻结前缀embedding缓存和delta-only bundle，不与本轮结构结论混写。
