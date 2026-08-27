@@ -93,14 +93,18 @@ def _canonical_spec() -> dict[str, object]:
     }
 
 
-def _valid_cache_payload(*, canonical: bool) -> dict[str, np.ndarray]:
-    scenario = FORMAL_LEO_WEAK_SCENARIOS[0]
+def _valid_cache_payload(
+    *,
+    canonical: bool,
+    scenario: str = FORMAL_LEO_WEAK_SCENARIOS[0],
+    identity_offset: int = 0,
+) -> dict[str, np.ndarray]:
     iq = np.arange(2 * 2 * 8, dtype=np.float32).reshape(2, 2, 8)
     tx_ids = np.asarray([OLD_TX_IDS[0], NEW_TX_ID])
     rx_ids = np.asarray(["rx-A", "rx-A"])
     day_ids = np.asarray(["day-A", "day-D"])
     eq_ids = np.asarray(["1", "1"])
-    sig_ids = np.asarray(["0", "7"])
+    sig_ids = np.asarray([str(identity_offset), str(identity_offset + 7)])
     dataset_hashes = np.asarray(["a" * 64, "b" * 64])
     record_indices = np.asarray([0, 7], dtype=np.int64)
     dataset_roles = np.asarray(["target_old", "target_new"])
@@ -216,6 +220,50 @@ def _load_cache(path: Path):
     )
 
 
+def _write_cache_set_without_canonical_members(
+    tmp_path: Path, *, scope: str
+) -> Path:
+    cache_paths: dict[str, str] = {}
+    cache_hashes: dict[str, str] = {}
+    ids_by_scenario: dict[str, list[str]] = {}
+    for scenario_index, scenario in enumerate(FORMAL_LEO_WEAK_SCENARIOS):
+        cache_path = tmp_path / f"{scenario}.npz"
+        payload = _valid_cache_payload(
+            canonical=False,
+            scenario=scenario,
+            identity_offset=scenario_index * 10,
+        )
+        np.savez(cache_path, **payload)
+        cache_paths[scenario] = cache_path.name
+        cache_hashes[scenario] = sha256_file(cache_path)
+        ids_by_scenario[scenario] = np.asarray(payload["sample_ids"]).astype(str).tolist()
+    set_manifest = {
+        "schema": LEO_WEAK_CACHE_SET_SCHEMA,
+        "artifact_stage": LEO_WEAK_CACHE_STAGE,
+        "cache_set_id": "legacy-members-negative",
+        "cache_scope": scope,
+        "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
+        "clean_sample_access": False,
+        "clean_derived_signal_access": False,
+        "target_channel_view": "leo_weak_only",
+        "target_channel_scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
+        "output_roles": ["target_old", "target_new"],
+        "cache_npz_by_scenario": cache_paths,
+        "cache_sha256_by_scenario": cache_hashes,
+        **_single_observation_contract(),
+        "physical_sample_ids_sha256_by_scenario": {
+            scenario: ids_sha256(ids_by_scenario[scenario])
+            for scenario in FORMAL_LEO_WEAK_SCENARIOS
+        },
+        "physical_sample_scenario_assignment_sha256": canonical_json_sha256(
+            ids_by_scenario
+        ),
+    }
+    manifest_path = tmp_path / "cache-set.json"
+    manifest_path.write_text(json.dumps(set_manifest), encoding="utf-8")
+    return manifest_path
+
+
 def test_canonical_physical_id_takes_precedence_and_empty_rejects():
     assert physical_sample_id(
         {"canonical_physical_sample_ids": np.asarray(["canonical-id"])}, 0
@@ -247,6 +295,36 @@ def test_legacy_cache_without_canonical_members_remains_accepted(tmp_path: Path)
         _write_cache(tmp_path / "legacy.npz", canonical=False)
     )
     assert "canonical_physical_sample_ids" not in arrays
+
+
+def test_legacy_cache_set_scope_without_canonical_members_remains_accepted(
+    tmp_path: Path,
+):
+    arrays_by_scenario, _manifest, _audit = load_verified_leo_weak_cache_set(
+        _write_cache_set_without_canonical_members(
+            tmp_path, scope="stage2_registered"
+        ),
+        expected_scope="stage2_registered",
+        allowed_roles={"target_old", "target_new"},
+    )
+    assert all(
+        "canonical_physical_sample_ids" not in arrays
+        for arrays in arrays_by_scenario.values()
+    )
+
+
+def test_canonical_cache_set_scope_requires_canonical_members(tmp_path: Path):
+    manifest_path = _write_cache_set_without_canonical_members(
+        tmp_path, scope=CANONICAL_SCOPE
+    )
+    with pytest.raises(
+        ValueError, match="canonical cache-set requires canonical split members"
+    ):
+        load_verified_leo_weak_cache_set(
+            manifest_path,
+            expected_scope=CANONICAL_SCOPE,
+            allowed_roles={"target_old", "target_new"},
+        )
 
 
 def test_canonical_cache_members_round_trip(tmp_path: Path):
@@ -551,6 +629,42 @@ def _assert_no_outputs(tmp_path: Path, spec: dict[str, object]) -> None:
         assert not (tmp_path / str(raw_path)).exists()
 
 
+def _preferred_source_payload(
+    fixture: dict[str, object],
+) -> tuple[Path, dict[str, object], tuple[int, int, int, int, int]]:
+    split_row = dict(fixture["split"]["rows"][0])
+    connection = sqlite3.connect(fixture["inventory"])
+    try:
+        coordinate = connection.execute(
+            """
+            SELECT tx_id, rx_id, day_id, eq_id, sig_id
+            FROM canonical_records
+            WHERE physical_sample_id = ?
+            """,
+            (split_row["physical_sample_id"],),
+        ).fetchone()
+    finally:
+        connection.close()
+    assert coordinate is not None
+    source_path = Path(
+        {
+            "ManySig": fixture["many_sig"],
+            "ManyTx": fixture["many_tx"],
+        }[str(split_row["source_asset"])]
+    )
+    with source_path.open("rb") as handle:
+        payload = pickle.load(handle)
+    tx_id, rx_id, day_id, eq_id, sig_id = (str(value) for value in coordinate)
+    indices = (
+        [str(value) for value in payload["tx_list"]].index(tx_id),
+        [str(value) for value in payload["rx_list"]].index(rx_id),
+        [str(value) for value in payload["capture_date_list"]].index(day_id),
+        [str(value) for value in payload["equalized_list"]].index(eq_id),
+        int(sig_id),
+    )
+    return source_path, payload, indices
+
+
 def test_canonical_materialization_uses_preferred_sources_and_exact_split(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
@@ -681,34 +795,47 @@ def test_canonical_build_rejects_preferred_reference_tamper_before_outputs(
     _assert_no_outputs(tmp_path, fixture["spec"])
 
 
-@pytest.mark.parametrize("tamper", ("digest", "coordinate"))
-def test_canonical_build_rejects_inventory_identity_tamper_before_outputs(
+def test_canonical_build_rejects_preferred_source_iq_tamper_before_outputs(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
-    tamper: str,
 ):
     fixture = _canonical_fixture(tmp_path)
-    connection = sqlite3.connect(fixture["inventory"])
-    try:
-        physical_id = connection.execute(
-            "SELECT physical_sample_id FROM canonical_records ORDER BY physical_sample_id LIMIT 1"
-        ).fetchone()[0]
-        if tamper == "digest":
-            connection.execute(
-                "UPDATE canonical_records SET iq_sha256 = ? WHERE physical_sample_id = ?",
-                ("f" * 64, physical_id),
-            )
-        else:
-            connection.execute(
-                "UPDATE canonical_records SET sig_id = ? WHERE physical_sample_id = ?",
-                ("999999", physical_id),
-            )
-        connection.commit()
-    finally:
-        connection.close()
+    inventory_before = Path(fixture["inventory"]).read_bytes()
+    source_path, payload, indices = _preferred_source_payload(fixture)
+    tx_index, rx_index, day_index, eq_index, sig_index = indices
+    tampered_iq = np.asarray(
+        payload["data"][tx_index][rx_index][day_index][eq_index][sig_index]
+    ).copy()
+    tampered_iq.reshape(-1)[0] += np.float32(1.0)
+    payload["data"][tx_index][rx_index][day_index][eq_index][sig_index] = tampered_iq
+    _write_pickle(source_path, payload)
     monkeypatch.setattr(cache_builder, "apply_sat_channel_for_scenario", _identity_overlay)
-    with pytest.raises(ValueError, match="digest|canonical coordinate|physical sample ID"):
+    with pytest.raises(
+        ValueError,
+        match="preferred source raw pre-overlay IQ digest does not match inventory",
+    ):
         cache_builder.build_cache_set(fixture["spec_path"], device=torch.device("cpu"))
+    assert Path(fixture["inventory"]).read_bytes() == inventory_before
+    _assert_no_outputs(tmp_path, fixture["spec"])
+
+
+def test_canonical_build_rejects_preferred_source_coordinate_tamper_before_outputs(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    fixture = _canonical_fixture(tmp_path)
+    inventory_before = Path(fixture["inventory"]).read_bytes()
+    source_path, payload, indices = _preferred_source_payload(fixture)
+    tx_index = indices[0]
+    payload["tx_list"][tx_index] = f"{payload['tx_list'][tx_index]}-tampered"
+    _write_pickle(source_path, payload)
+    monkeypatch.setattr(cache_builder, "apply_sat_channel_for_scenario", _identity_overlay)
+    with pytest.raises(
+        ValueError,
+        match="canonical coordinate from preferred source disagrees with inventory",
+    ):
+        cache_builder.build_cache_set(fixture["spec_path"], device=torch.device("cpu"))
+    assert Path(fixture["inventory"]).read_bytes() == inventory_before
     _assert_no_outputs(tmp_path, fixture["spec"])
 
 

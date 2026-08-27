@@ -596,6 +596,13 @@ def load_verified_leo_weak_cache_set(
             expected_scenario=scenario,
             allowed_roles=allowed,
         )
+        if (
+            scope == "stage2_canonical_registered"
+            and audit.get("canonical_split_members_verified") is not True
+        ):
+            raise ValueError(
+                "canonical cache-set requires canonical split members in every scenario"
+            )
         current_ids = np.asarray(arrays["sample_ids"]).astype(str).tolist()
         current_roles = np.asarray(arrays["dataset_role"]).astype(str).tolist()
         ids_by_scenario[scenario] = current_ids
