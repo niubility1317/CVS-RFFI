@@ -1,12 +1,68 @@
-# H6部署化与HardPair实验报告
+# SF-TAPFT H6部署化与HardPair实验报告
 
-正式控制面报告：`E:\type10-7\automation_reports\CV-SincNet\stage2_sf_tapft_h6_deploy_hardpair_s392002_20260828_r1\report.md`。
+正式控制面报告：`E:\type10-7\automation_reports\CV-SincNet\stage2_sf_tapft_h6_deploy_hardpair_s392002_20260828_r1\report.md`。run ID为`stage2_sf_tapft_h6_deploy_hardpair_s392002_20260828_r1`，最终状态为`ANALYZED`。
 
-当前状态：`LOCAL_VERIFIED`。
+## 结论
 
-- 已实现固定full-support deployment-only入口、FP32/FP16冻结前缀缓存、严格delta和support-derived HardPair。
-- 聚焦回归88项通过；真实ADV3B02 checkpoint和60条support无query smoke通过。
-- FP32缓存对完整路径的最大logit差和许可norm梯度差均为0，prediction完全一致；FP16输出有限。
-- 独立P0/P1审查发现并修复真实CVS head需要`return_emb=True`的问题，定点复审PASS。
+- **R0B16 H6 Prefix-FP16晋级为当前最小部署工作点**：最大Q180 BA=83.3333%、floor=56.6667%、NLL=0.501571、ECE-10=0.074848，与完整H6的180条argmax逐条相同；support训练从19.89秒缩短至11.75秒（-40.92%），最大RSS从1,745,724KiB降至1,601,816KiB（-8.24%）。
+- R0B32的NLL最低，为0.500737，但相对R0B16只优0.000833，训练更慢、RSS更高，不是最小候选。
+- HardPair-0.03/0.05均未改变任何一条Q180预测；相对同缓存基线R0B32，NLL还分别恶化0.000109/0.000152，训练时间增加18.92%/30.85%，不晋级。
+- R1 M02回放的BA=85.5556%、floor=63.3333%最高，但NLL=0.564263超限，类4相对H6下降10pp；相对R0A净增4条正确的McNemar p=0.454498，不晋级。
 
-本镜像将在N607运行、truth-last评分和最终分析后补充完整数据。
+最终判定：`R0B16_PROMOTED_AS_MINIMAL_DEPLOYMENT_WORKPOINT`、`R1_CLASSIFICATION_UPPER_HINT_NOT_PROMOTED`、`HARDPAIR_REJECTED_NO_ARGMAX_GAIN`。
+
+## 协议与实现
+
+- ADV3B02 CORE90；`p2_min_v1/VALIDATED_ONCE`；receiver20-1、`leo_clear_weak`；旧6类K=10，共60条support；不注册新类。
+- 最大Q180由零重叠Q60和Q120组成，每类30条。12份prediction全部闭合且确认`query_truth_opened=false`后，独立scorer才连接truth。
+- 新增固定full-support deployment-only入口：`folds=0`、不做CV/研究validation、不根据query选择checkpoint。
+- H6前缀缓存只运行一次完整support forward，训练时重放`t3.norm→time后缀→fusion→identity head(return_emb=True)→目标head`。完整backbone训练forward由450降为0，代之以1次缓存构建和450次短suffix forward。
+- HardPair对每个support类别自动选择最大竞争类，使用`relu(0.2+logit_h-logit_true)`；只读support，类别置换不变，无类别硬编码。
+- 独立P0/P1审查发现并修复真实CVS head必须显式请求embedding的问题；88项聚焦测试、真实checkpoint无query smoke和定点复审通过。
+
+## Q180总体结果
+
+所有行的`DA0_REG0`完全一致：130/180正确，BA=72.2222%、floor=10%、NLL=0.870038、ECE-10=0.130062。
+
+|行|正确|BA|floor|NLL|ECE-10|BA变化|floor变化|
+|---|---:|---:|---:|---:|---:|---:|---:|
+|R0A|150/180|83.3333%|56.6667%|0.501851|0.074771|+11.1111pp|+46.6667pp|
+|R0B32|150/180|83.3333%|56.6667%|**0.500737**|**0.074761**|+11.1111pp|+46.6667pp|
+|R0B16|150/180|83.3333%|56.6667%|0.501571|0.074848|+11.1111pp|+46.6667pp|
+|R1|**154/180**|**85.5556%**|**63.3333%**|0.564263|0.062527|+13.3333pp|+53.3333pp|
+|R2A|150/180|83.3333%|56.6667%|0.500846|0.074892|+11.1111pp|+46.6667pp|
+|R2B|150/180|83.3333%|56.6667%|0.500889|0.075021|+11.1111pp|+46.6667pp|
+
+H6族相对DA0均为24条错转对、4条对转错，McNemar p=0.000180；R1为31条错转对、7条对转错，p=0.000116。
+
+## 各类别准确率
+
+|类别|DA0|R0B16|R1|
+|---:|---:|---:|---:|
+|0|60.0000%|80.0000%|96.6667%|
+|1|100.0000%|93.3333%|93.3333%|
+|2|86.6667%|90.0000%|90.0000%|
+|3|10.0000%|56.6667%|63.3333%|
+|4|96.6667%|90.0000%|80.0000%|
+|5|80.0000%|90.0000%|90.0000%|
+
+R0A、R0B32、R0B16、R2A、R2B逐类准确率全部相同，正确数均为24/28/27/17/27/27。R1提高类0和类3，但把风险转移到类4；类4 NLL从R0B16的0.313141增至0.670971。
+
+## 分区与资源
+
+|行|Q60 BA/floor/NLL|Q120 BA/floor/NLL|support墙钟|最大RSS|trainable/changed|delta|
+|---|---|---|---:|---:|---:|---:|
+|R0A|86.6667%/70%/0.461155|81.6667%/50%/0.522199|19.89s|1,745,724KiB|1152/1152|4500B|
+|R0B32|86.6667%/70%/0.460837|81.6667%/50%/0.520687|13.00s|1,616,700KiB|1152/1152|4500B|
+|R0B16|86.6667%/70%/0.460956|81.6667%/50%/0.521878|**11.75s**|**1,601,816KiB**|1152/1152|4500B|
+|R1|83.3333%/60%/0.548716|86.6667%/65%/0.572037|15.28s|1,776,852KiB|1584/1584|6716B|
+|R2A|86.6667%/70%/0.460968|81.6667%/50%/0.520786|15.46s|1,603,280KiB|1152/1152|4500B|
+|R2B|86.6667%/70%/0.460948|81.6667%/50%/0.520859|17.01s|1,636,004KiB|1152/1152|4500B|
+
+六行按每GPU两任务打包，墙钟包含同卡竞争。GPU显存峰值未连续捕获，报告为`UNKNOWN/NOT_CAPTURED`。独立CPU scorer每分区约1.52秒、RSS约436–438MiB，只负责prediction冻结后的truth连接和指标计算，不参与适配训练或星上推理。
+
+## 判定边界
+
+R0B16同时通过BA≥83.3333%、floor≥56.6667%、单类回退≤5pp、NLL≤0.521858、trainable≤1584、delta≤10KB及缓存计算门槛。当前证据仅覆盖receiver20-1、`leo_clear_weak`、单seed、K=10；不代表其他receiver、场景、K或多seed泛化完成。当前Q180是已揭示的复用holdout，后续不得用它继续调参。
+
+实现提交为`93fb107fd4da1970fb026afdeae8d441855c50b1`；release归档本地/远端SHA256均为`9dd09800601e1df370b86d3572393d78e9433eaa231f8bcffcf1792d7878da79`。
