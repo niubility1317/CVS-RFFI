@@ -333,6 +333,132 @@ def _select_support_query(
     )
 
 
+def _canonical_manifest_split_arrays(
+    arrays: Mapping[str, np.ndarray],
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    required = (
+        "canonical_physical_sample_ids",
+        "split_roles",
+        "split_ranks",
+    )
+    present = [field for field in required if field in arrays]
+    if len(present) != len(required):
+        raise ValueError(
+            "manifest_all requires the complete canonical split member trio"
+        )
+    canonical_raw = np.asarray(arrays["canonical_physical_sample_ids"])
+    roles_raw = np.asarray(arrays["split_roles"])
+    ranks_raw = np.asarray(arrays["split_ranks"])
+    if any(value.ndim != 1 for value in (canonical_raw, roles_raw, ranks_raw)):
+        raise ValueError("canonical split members must be one-dimensional")
+    row_count = len(np.asarray(arrays["sample_ids"]))
+    if any(len(value) != row_count for value in (canonical_raw, roles_raw, ranks_raw)):
+        raise ValueError("canonical split member lengths are inconsistent")
+    if canonical_raw.dtype.kind not in {"S", "U"}:
+        raise ValueError("canonical physical sample IDs must be strings")
+    canonical_ids = canonical_raw.astype(str)
+    if any(not value for value in canonical_ids.tolist()):
+        raise ValueError("canonical physical sample IDs must be nonempty")
+    if len(set(canonical_ids.tolist())) != row_count:
+        raise ValueError("canonical physical sample IDs must be unique")
+    if roles_raw.dtype.kind not in {"S", "U"}:
+        raise ValueError("canonical split roles must be strings")
+    split_roles = roles_raw.astype(str)
+    if not set(split_roles.tolist()).issubset({"support", "query"}):
+        raise ValueError("canonical split roles must be exactly support or query")
+    if ranks_raw.dtype.kind not in {"i", "u"} or np.any(ranks_raw < 0):
+        raise ValueError("canonical split ranks must be nonnegative exact integers")
+    return canonical_ids, split_roles, np.asarray(ranks_raw, dtype=np.int64)
+
+
+def _select_manifest_all_support_query(
+    arrays: dict[str, np.ndarray],
+    *,
+    receiver: str,
+    support_labels: list[tuple[str, str]],
+    support_pool_max_k: int,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, list[dict[str, Any]]]:
+    canonical_ids, split_roles, split_ranks = _canonical_manifest_split_arrays(
+        arrays
+    )
+    dataset_roles = np.asarray(arrays["dataset_role"]).astype(str)
+    tx_ids = np.asarray(arrays["tx_ids"]).astype(str)
+    rx_ids = np.asarray(arrays["rx_ids"]).astype(str)
+    registered_index = {
+        pair: class_index for class_index, pair in enumerate(support_labels)
+    }
+    selected_receiver_indices = np.flatnonzero(rx_ids == receiver).astype(np.int64)
+    if not len(selected_receiver_indices):
+        raise ValueError(f"canonical split has no rows for receiver={receiver}")
+    for index in selected_receiver_indices.tolist():
+        pair = (str(dataset_roles[index]), str(tx_ids[index]))
+        if pair not in registered_index:
+            split_role = str(split_roles[index])
+            raise ValueError(
+                f"canonical {split_role} truth is outside the registered class set"
+            )
+
+    support_indices: list[int] = []
+    support_class_indices: list[int] = []
+    support_ranks: list[int] = []
+    for class_index, (dataset_role, label) in enumerate(support_labels):
+        current = np.flatnonzero(
+            (rx_ids == receiver)
+            & (dataset_roles == dataset_role)
+            & (tx_ids == label)
+            & (split_roles == "support")
+        ).astype(np.int64)
+        if len(current) != support_pool_max_k:
+            raise ValueError(
+                "canonical support must contain exactly K rows for every "
+                f"receiver and registered class: receiver={receiver}, "
+                f"role={dataset_role}, tx={label}"
+            )
+        observed_ranks = [int(split_ranks[index]) for index in current.tolist()]
+        if sorted(observed_ranks) != list(range(support_pool_max_k)):
+            raise ValueError(
+                "canonical support ranks must be unique and gap-free in 0..K-1"
+            )
+        ordered = sorted(
+            current.tolist(),
+            key=lambda index: (
+                int(split_ranks[index]),
+                str(canonical_ids[index]),
+            ),
+        )
+        support_indices.extend(ordered)
+        support_class_indices.extend([class_index] * support_pool_max_k)
+        support_ranks.extend(int(split_ranks[index]) for index in ordered)
+
+    query_indices = np.flatnonzero(
+        (rx_ids == receiver) & (split_roles == "query")
+    ).astype(np.int64)
+    if not len(query_indices):
+        raise ValueError("canonical manifest_all split contains no query rows")
+    support_ids = {str(canonical_ids[index]) for index in support_indices}
+    query_ids = {str(canonical_ids[index]) for index in query_indices.tolist()}
+    if support_ids & query_ids:
+        raise ValueError("canonical support/query physical sample overlap")
+    query_records = [
+        {
+            "array_index": int(index),
+            "evaluation_role": str(dataset_roles[index]),
+            "transmitter_label": str(tx_ids[index]),
+            "registered_class_index": registered_index[
+                (str(dataset_roles[index]), str(tx_ids[index]))
+            ],
+        }
+        for index in query_indices.tolist()
+    ]
+    return (
+        np.asarray(support_indices, dtype=np.int64),
+        query_indices,
+        np.asarray(support_class_indices, dtype=np.int64),
+        np.asarray(support_ranks, dtype=np.int64),
+        query_records,
+    )
+
+
 def _assert_scenario_physical_independence(
     arrays_by_scenario: dict[str, dict[str, np.ndarray]],
 ) -> None:
@@ -717,10 +843,17 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
     declared_new_count = int(getattr(args, "new_class_count", 0))
     if declared_new_count != (len(new_labels) if stage == "stage2c" else 0):
         raise ValueError("new_class_count does not match the registered Stage2-C labels")
+    query_policy = str(getattr(args, "query_policy", "fixed_per_tx"))
+    if query_policy not in {"fixed_per_tx", "manifest_all"}:
+        raise ValueError("query_policy must be fixed_per_tx or manifest_all")
     support_pool_max_k = int(args.support_pool_max_k)
     query_per_tx = int(args.query_per_tx)
-    if support_pool_max_k < 1 or query_per_tx < 1:
-        raise ValueError("support_pool_max_k and query_per_tx must be positive")
+    if support_pool_max_k < 1:
+        raise ValueError("support_pool_max_k must be positive")
+    if query_policy == "fixed_per_tx" and query_per_tx < 1:
+        raise ValueError("fixed_per_tx query_per_tx must be positive")
+    if query_policy == "manifest_all" and query_per_tx != 0:
+        raise ValueError("manifest_all query_per_tx must be zero")
     support_seed = int(getattr(args, "support_seed", 0) or 0)
     query_seed = int(getattr(args, "query_seed", 0) or 0)
     new_class_draw_seed = int(
@@ -758,7 +891,11 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
     allowed_roles = {"target_old"}
     if stage == "stage2c" or reference_new_labels:
         allowed_roles.add("target_new")
-    expected_scope = str(getattr(args, "expected_cache_scope", "stage2_registered"))
+    expected_scope = (
+        "stage2_canonical_registered"
+        if query_policy == "manifest_all"
+        else str(getattr(args, "expected_cache_scope", "stage2_registered"))
+    )
     arrays_by_scenario, cache_manifest, cache_audit = load_verified_leo_weak_cache_set(
         Path(args.target_cache_set),
         expected_scope=expected_scope,
@@ -795,7 +932,8 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
             ("target_new", label) for label in reference_new_labels
         ]
     use_offline_split_partition = (
-        str(getattr(args, "offline_split_partition_policy", ""))
+        query_policy == "fixed_per_tx"
+        and str(getattr(args, "offline_split_partition_policy", ""))
         == "legacy_seeded_nested_exact"
     )
     selections: dict[str, dict[str, Any]] = {}
@@ -805,31 +943,51 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
     selected_opaque_tokens_by_scenario: dict[str, set[str]] = {}
     for scenario in FORMAL_LEO_WEAK_SCENARIOS:
         arrays = arrays_by_scenario[scenario]
-        support_idx, query_idx, support_y, support_rank, query_records = (
-            _select_support_query(
-                arrays,
-                receiver=str(args.receiver),
-                support_seed=support_seed,
-                query_seed=query_seed,
-                support_labels=support_labels,
-                reference_query_labels=reference_query_labels,
-                support_pool_max_k=support_pool_max_k,
-                query_per_tx=query_per_tx,
-                use_offline_split_partition=use_offline_split_partition,
+        if query_policy == "manifest_all":
+            support_idx, query_idx, support_y, support_rank, query_records = (
+                _select_manifest_all_support_query(
+                    arrays,
+                    receiver=str(args.receiver),
+                    support_labels=support_labels,
+                    support_pool_max_k=support_pool_max_k,
+                )
             )
-        )
-        sample_ids = np.asarray(arrays["sample_ids"]).astype(str)
+            physical_ids = np.asarray(
+                arrays["canonical_physical_sample_ids"]
+            ).astype(str)
+        else:
+            support_idx, query_idx, support_y, support_rank, query_records = (
+                _select_support_query(
+                    arrays,
+                    receiver=str(args.receiver),
+                    support_seed=support_seed,
+                    query_seed=query_seed,
+                    support_labels=support_labels,
+                    reference_query_labels=reference_query_labels,
+                    support_pool_max_k=support_pool_max_k,
+                    query_per_tx=query_per_tx,
+                    use_offline_split_partition=use_offline_split_partition,
+                )
+            )
+            physical_ids = np.asarray(arrays["sample_ids"]).astype(str)
         support_physical_ids = {
-            str(sample_ids[index]) for index in support_idx.tolist()
+            str(physical_ids[index]) for index in support_idx.tolist()
         }
-        query_physical_ids = {str(sample_ids[index]) for index in query_idx.tolist()}
+        query_physical_ids = {
+            str(physical_ids[index]) for index in query_idx.tolist()
+        }
         if support_physical_ids & query_physical_ids:
             raise ValueError(f"{scenario} support/query physical sample overlap")
         selected_physical_ids = support_physical_ids | query_physical_ids
         for prior_scenario, prior_ids in selected_physical_ids_by_scenario.items():
             if selected_physical_ids & prior_ids:
+                identity_kind = (
+                    "canonical physical sample"
+                    if query_policy == "manifest_all"
+                    else "selected physical sample"
+                )
                 raise ValueError(
-                    "selected physical sample reuse across LEO_weak scenarios: "
+                    f"{identity_kind} reuse across LEO_weak scenarios: "
                     f"{prior_scenario} vs {scenario}"
                 )
         selected_physical_ids_by_scenario[scenario] = selected_physical_ids
@@ -853,9 +1011,9 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
         if reference_support_structure is None:
             reference_support_structure = support_structure
             reference_query_structure = query_structure
-        elif (
-            support_structure != reference_support_structure
-            or query_structure != reference_query_structure
+        elif support_structure != reference_support_structure or (
+            query_policy == "fixed_per_tx"
+            and query_structure != reference_query_structure
         ):
             raise ValueError(
                 "registered class/rank structure drifts across LEO_weak scenarios"
@@ -870,7 +1028,7 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
                     scenario,
                     args.receiver,
                     support_seed,
-                    sample_ids[index],
+                    physical_ids[index],
                 )
                 for index in support_idx.tolist()
             ]
@@ -884,7 +1042,7 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
                     scenario,
                     args.receiver,
                     query_seed,
-                    sample_ids[index],
+                    physical_ids[index],
                 )
                 for index in query_idx.tolist()
             ]
@@ -1091,7 +1249,13 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
         selection = selections[scenario]
         query_records = selection["query_records"]
         query_tokens = selection["query_tokens"]
-        sample_ids = np.asarray(arrays["sample_ids"]).astype(str)
+        physical_ids = np.asarray(
+            arrays[
+                "canonical_physical_sample_ids"
+                if query_policy == "manifest_all"
+                else "sample_ids"
+            ]
+        ).astype(str)
         tx_ids = np.asarray(arrays["tx_ids"]).astype(str)
         rx_ids = np.asarray(arrays["rx_ids"]).astype(str)
         day_ids = np.asarray(arrays["day_ids"]).astype(str)
@@ -1114,7 +1278,7 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
                     "receiver_label": str(rx_ids[array_index]),
                     "day_label": str(day_ids[array_index]),
                     "signal_label": str(sig_ids[array_index]),
-                    "physical_sample_id": str(sample_ids[array_index]),
+                    "physical_sample_id": str(physical_ids[array_index]),
                 }
             )
     truth_path = scorer_root / "truth_sidecar.json"
@@ -1159,9 +1323,24 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
         },
     )
 
+    forbidden_predictor_values = [
+        "target_old",
+        "target_new",
+        *old_labels,
+        *new_labels,
+        *reference_new_labels,
+    ]
+    if query_policy == "manifest_all":
+        forbidden_predictor_values.extend(
+            physical_id
+            for scenario in FORMAL_LEO_WEAK_SCENARIOS
+            for physical_id in sorted(
+                selected_physical_ids_by_scenario[scenario]
+            )
+        )
     _reject_predictor_truth_leaks(
         predictor_root,
-        ["target_old", "target_new", *old_labels, *new_labels, *reference_new_labels],
+        forbidden_predictor_values,
     )
     for scenario in FORMAL_LEO_WEAK_SCENARIOS:
         load_verified_stage2_predictor_bundle(
@@ -1171,7 +1350,7 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
             scenario=scenario,
         )
     load_verified_scoring_sidecar(scoring_path)
-    return {
+    result = {
         "stage": stage,
         "predictor_package": str(predictor_root),
         "predictor_package_root_sha256": package_manifest["package_root_sha256"],
@@ -1190,6 +1369,17 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
         "query_seed": query_seed,
         "new_class_draw_seed": new_class_draw_seed,
     }
+    if query_policy == "manifest_all":
+        result.update(
+            {
+                "query_policy": "manifest_all",
+                "query_count_by_scenario": {
+                    scenario: len(selections[scenario]["query_idx"])
+                    for scenario in FORMAL_LEO_WEAK_SCENARIOS
+                },
+            }
+        )
+    return result
 
 
 def main() -> int:
@@ -1212,6 +1402,11 @@ def main() -> int:
     parser.add_argument("--new-class-count", type=int, default=0)
     parser.add_argument("--support-pool-max-k", type=int, required=True)
     parser.add_argument("--query-per-tx", type=int, required=True)
+    parser.add_argument(
+        "--query-policy",
+        choices=("fixed_per_tx", "manifest_all"),
+        default="fixed_per_tx",
+    )
     parser.add_argument("--offline-split-partition-policy", default="")
     parser.add_argument("--candidate-lock", type=Path, required=True)
     parser.add_argument("--checkpoint", type=Path, required=True)

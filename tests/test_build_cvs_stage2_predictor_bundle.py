@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import sys
+from collections import Counter
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -60,6 +61,92 @@ def _arrays():
     return result
 
 
+def _canonical_manifest_all_arrays():
+    labels = ["old-a", "old-b", "new-a", "new-b"]
+    role_by_label = {
+        "old-a": "target_old",
+        "old-b": "target_old",
+        "new-a": "target_new",
+        "new-b": "target_new",
+    }
+    query_count_by_class = (
+        (5, 4, 4, 4),
+        (4, 4, 4, 4),
+        (3, 4, 4, 4),
+    )
+    result = {}
+    for scenario_index, scenario in enumerate(builder.FORMAL_LEO_WEAK_SCENARIOS):
+        rows = []
+        for class_index, label in enumerate(labels):
+            role = role_by_label[label]
+            for rank in (1, 0):
+                rows.append(
+                    {
+                        "canonical_id": (
+                            f"canonical|{scenario}|20-1|{label}|support|{rank}"
+                        ),
+                        "dataset_role": role,
+                        "tx_id": label,
+                        "split_role": "support",
+                        "split_rank": rank,
+                        "value": scenario_index * 1000 + class_index * 100 + rank,
+                    }
+                )
+            for offset in range(query_count_by_class[scenario_index][class_index]):
+                rank = 2 + offset
+                rows.append(
+                    {
+                        "canonical_id": (
+                            f"canonical|{scenario}|20-1|{label}|query|{rank}"
+                        ),
+                        "dataset_role": role,
+                        "tx_id": label,
+                        "split_role": "query",
+                        "split_rank": rank,
+                        "value": (
+                            scenario_index * 1000 + class_index * 100 + rank
+                        ),
+                    }
+                )
+        rows.reverse()
+        count = len(rows)
+        iq = np.empty((count, 2, 8), dtype=np.float32)
+        for index, row in enumerate(rows):
+            iq[index].fill(float(row["value"]))
+        canonical_ids = [str(row["canonical_id"]) for row in rows]
+        result[scenario] = {
+            "leo_weak_iq": iq,
+            "tx_ids": np.asarray([str(row["tx_id"]) for row in rows]),
+            "dataset_role": np.asarray(
+                [str(row["dataset_role"]) for row in rows]
+            ),
+            "rx_ids": np.asarray(["20-1"] * count),
+            "day_ids": np.asarray([str(scenario_index + 1)] * count),
+            "sig_ids": np.asarray(
+                [f"sig-{scenario_index}-{index}" for index in range(count)]
+            ),
+            "sample_ids": np.asarray(canonical_ids),
+            "canonical_physical_sample_ids": np.asarray(canonical_ids),
+            "split_roles": np.asarray(
+                [str(row["split_role"]) for row in rows]
+            ),
+            "split_ranks": np.asarray(
+                [int(row["split_rank"]) for row in rows], dtype=np.int64
+            ),
+            "overlay_ids": np.asarray(
+                [f"overlay|{canonical_id}" for canonical_id in canonical_ids]
+            ),
+            "satellite_seeds": np.asarray(
+                [900 + scenario_index] * count, dtype=np.int64
+            ),
+        }
+    assert [
+        int(np.sum(result[scenario]["split_roles"] == "query"))
+        for scenario in builder.FORMAL_LEO_WEAK_SCENARIOS
+    ] == [17, 16, 15]
+    return result
+
+
 def _args(tmp_path: Path, suffix: str, *, stage: str):
     artifacts = tmp_path / f"artifacts-{suffix}"
     artifacts.mkdir()
@@ -110,6 +197,79 @@ def _args(tmp_path: Path, suffix: str, *, stage: str):
         head_artifact=files["head"],
         tta_policy_json=tta,
     )
+
+
+def _manifest_all_args(tmp_path: Path, suffix: str):
+    args = _args(tmp_path, suffix, stage="stage2c")
+    new_pool = args.new_class_pool_labels.split(",")
+    order = np.random.default_rng(args.new_class_draw_seed).permutation(
+        len(new_pool)
+    )
+    args.new_class_labels = ",".join(
+        new_pool[int(index)] for index in order
+    )
+    args.new_class_count = len(new_pool)
+    args.support_pool_max_k = 2
+    args.query_per_tx = 0
+    args.query_policy = "manifest_all"
+    return args
+
+
+def _patch_manifest_all_cache(monkeypatch, arrays):
+    calls = []
+
+    def load(_path, *, expected_scope, allowed_roles):
+        calls.append(
+            {
+                "expected_scope": expected_scope,
+                "allowed_roles": set(allowed_roles),
+            }
+        )
+        return (
+            arrays,
+            {
+                "schema": "fake-canonical-cache",
+                "cache_scope": "stage2_canonical_registered",
+            },
+            {"status": "PASS", "canonical_split_members_verified": True},
+        )
+
+    monkeypatch.setattr(builder, "load_verified_leo_weak_cache_set", load)
+    return calls
+
+
+def _cli_required_args() -> list[str]:
+    return [
+        "build_cvs_stage2_predictor_bundle.py",
+        "--target-cache-set",
+        "cache-set.json",
+        "--predictor-out-root",
+        "predictor",
+        "--scorer-out-root",
+        "scorer",
+        "--stage",
+        "stage2b",
+        "--receiver",
+        "20-1",
+        "--seed",
+        "1",
+        "--old-class-labels",
+        "old-a",
+        "--support-pool-max-k",
+        "1",
+        "--query-per-tx",
+        "1",
+        "--candidate-lock",
+        "candidate.json",
+        "--checkpoint",
+        "checkpoint.bin",
+        "--adapter",
+        "adapter.bin",
+        "--head-artifact",
+        "head.bin",
+        "--tta-policy-json",
+        "tta.json",
+    ]
 
 
 def _bind_formal_phase1_handles(
@@ -898,3 +1058,334 @@ def test_truth_leak_scan_rejects_text_bearing_surfaces(
 
     with pytest.raises(ValueError, match="forbidden truth/role token"):
         builder._reject_predictor_truth_leaks(root, ["old-a"])
+
+
+def test_cli_query_policy_defaults_to_fixed_per_tx(monkeypatch, capsys) -> None:
+    captured = {}
+
+    def fake_build(args):
+        captured["query_policy"] = args.query_policy
+        return {"status": "PASS"}
+
+    monkeypatch.setattr(builder, "build", fake_build)
+    monkeypatch.setattr(sys, "argv", _cli_required_args())
+    assert builder.main() == 0
+    assert captured == {"query_policy": "fixed_per_tx"}
+    assert json.loads(capsys.readouterr().out) == {"status": "PASS"}
+
+
+@pytest.mark.parametrize("query_policy", ["fixed_per_tx", "manifest_all"])
+def test_cli_accepts_both_query_policy_choices(
+    monkeypatch,
+    capsys,
+    query_policy: str,
+) -> None:
+    captured = {}
+
+    def fake_build(args):
+        captured["query_policy"] = args.query_policy
+        return {"status": "PASS"}
+
+    monkeypatch.setattr(builder, "build", fake_build)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [*_cli_required_args(), "--query-policy", query_policy],
+    )
+    assert builder.main() == 0
+    assert captured == {"query_policy": query_policy}
+    assert json.loads(capsys.readouterr().out) == {"status": "PASS"}
+
+
+def test_query_policy_enforces_mode_specific_query_per_tx(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    arrays = _canonical_manifest_all_arrays()
+    _patch_manifest_all_cache(monkeypatch, arrays)
+    manifest_all = _manifest_all_args(tmp_path, "manifest-positive-query")
+    manifest_all.query_per_tx = 1
+    with pytest.raises(ValueError, match="manifest_all.*query_per_tx.*zero"):
+        builder.build(manifest_all, token_secret=b"q" * 32)
+
+    fixed = _args(tmp_path, "fixed-zero-query", stage="stage2b")
+    fixed.query_policy = "fixed_per_tx"
+    fixed.query_per_tx = 0
+    with pytest.raises(ValueError, match="fixed_per_tx.*query_per_tx.*positive"):
+        builder.build(fixed, token_secret=b"q" * 32)
+
+
+def test_manifest_all_includes_every_query_and_preserves_truth_boundary(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    arrays = _canonical_manifest_all_arrays()
+    calls = _patch_manifest_all_cache(monkeypatch, arrays)
+    args = _manifest_all_args(tmp_path, "manifest-all")
+
+    result = builder.build(args, token_secret=b"m" * 32)
+
+    expected_counts = dict(
+        zip(builder.FORMAL_LEO_WEAK_SCENARIOS, (17, 16, 15))
+    )
+    assert calls == [
+        {
+            "expected_scope": "stage2_canonical_registered",
+            "allowed_roles": {"target_old", "target_new"},
+        }
+    ]
+    assert result["query_policy"] == "manifest_all"
+    assert result["query_count_by_scenario"] == expected_counts
+    assert result["support_pool_count"] == 8
+    assert not (args.predictor_out_root / "truth_sidecar.json").exists()
+
+    truth = json.loads(
+        (args.scorer_out_root / "truth_sidecar.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    truth_tokens = [str(row["query_token"]) for row in truth["rows"]]
+    assert len(truth_tokens) == 48
+    assert Counter(truth_tokens).most_common(1)[0][1] == 1
+
+    all_query_tokens = []
+    scenario_token_sets = []
+    for scenario_index, scenario in enumerate(
+        builder.FORMAL_LEO_WEAK_SCENARIOS
+    ):
+        source = arrays[scenario]
+        source_roles = np.asarray(source["split_roles"]).astype(str)
+        canonical_ids = np.asarray(
+            source["canonical_physical_sample_ids"]
+        ).astype(str)
+        expected_query_ids = set(canonical_ids[source_roles == "query"].tolist())
+        expected_support_ids = set(
+            canonical_ids[source_roles == "support"].tolist()
+        )
+        assert expected_support_ids.isdisjoint(expected_query_ids)
+        observed_truth_rows = [
+            row for row in truth["rows"] if row["scenario"] == scenario
+        ]
+        assert len(observed_truth_rows) == expected_counts[scenario]
+        assert {
+            str(row["physical_sample_id"]) for row in observed_truth_rows
+        } == expected_query_ids
+
+        with np.load(
+            args.predictor_out_root / f"query_{scenario}.npz",
+            allow_pickle=False,
+        ) as archive:
+            assert tuple(archive.files) == builder.QUERY_NPZ_MEMBERS
+            query_tokens = np.asarray(archive["query_tokens"]).astype(str).tolist()
+            assert len(query_tokens) == expected_counts[scenario]
+            query_manifest = json.loads(str(archive["manifest_json"]))
+            assert query_manifest == {
+                "schema": builder.QUERY_SCHEMA,
+                "scenario": scenario,
+                "query_truth_included": False,
+                "query_role_included": False,
+                "query_true_batch_class_count_included": False,
+                "query_class_quota_included": False,
+                "query_ordering_hint_included": False,
+                "token_scheme": "hmac_sha256_opaque_v1",
+            }
+            textual_values = []
+            for member in archive.files:
+                values = np.asarray(archive[member])
+                if values.dtype.kind in {"S", "U"}:
+                    textual_values.extend(
+                        str(value) for value in values.reshape(-1).tolist()
+                    )
+            predictor_text = "\n".join([*archive.files, *textual_values])
+            forbidden = [
+                "target_old",
+                "target_new",
+                "old-a",
+                "old-b",
+                "new-a",
+                "new-b",
+                *canonical_ids.tolist(),
+            ]
+            assert all(value not in predictor_text for value in forbidden)
+
+        with np.load(
+            args.predictor_out_root / f"support_{scenario}.npz",
+            allow_pickle=False,
+        ) as archive:
+            assert tuple(archive.files) == builder.SUPPORT_NPZ_MEMBERS
+            assert np.asarray(
+                archive["support_pool_class_indices"]
+            ).tolist() == [0, 0, 1, 1, 2, 2, 3, 3]
+            assert np.asarray(
+                archive["support_pool_rank_within_class"]
+            ).tolist() == [0, 1, 0, 1, 0, 1, 0, 1]
+            ordered_labels = [
+                "old-a",
+                "old-b",
+                *args.new_class_labels.split(","),
+            ]
+            source_class_index = {
+                label: index
+                for index, label in enumerate(
+                    ["old-a", "old-b", "new-a", "new-b"]
+                )
+            }
+            expected_iq_values = [
+                float(
+                    scenario_index * 1000
+                    + source_class_index[label] * 100
+                    + rank
+                )
+                for label in ordered_labels
+                for rank in range(2)
+            ]
+            assert np.asarray(
+                archive["support_pool_leo_weak_iq"]
+            )[:, 0, 0].tolist() == expected_iq_values
+            support_tokens = np.asarray(
+                archive["support_pool_tokens"]
+            ).astype(str).tolist()
+
+        assert set(query_tokens).isdisjoint(support_tokens)
+        scenario_token_sets.append(set(query_tokens) | set(support_tokens))
+        all_query_tokens.extend(query_tokens)
+
+    assert all(
+        scenario_token_sets[left].isdisjoint(scenario_token_sets[right])
+        for left in range(len(scenario_token_sets))
+        for right in range(left + 1, len(scenario_token_sets))
+    )
+    assert set(all_query_tokens) == set(truth_tokens)
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "missing-trio",
+        "partial-trio",
+        "inconsistent-length",
+        "invalid-role",
+        "noninteger-rank",
+        "negative-rank",
+        "duplicate-rank",
+        "rank-gap",
+        "duplicate-canonical-id",
+        "missing-support",
+        "unregistered-query-truth",
+    ],
+)
+def test_manifest_all_rejects_invalid_canonical_split_arrays(
+    tmp_path: Path,
+    monkeypatch,
+    mutation: str,
+) -> None:
+    arrays = _canonical_manifest_all_arrays()
+    scenario = builder.FORMAL_LEO_WEAK_SCENARIOS[0]
+    payload = arrays[scenario]
+    support_indices = np.flatnonzero(payload["split_roles"] == "support")
+    query_indices = np.flatnonzero(payload["split_roles"] == "query")
+    if mutation == "missing-trio":
+        for field in (
+            "canonical_physical_sample_ids",
+            "split_roles",
+            "split_ranks",
+        ):
+            payload.pop(field)
+    elif mutation == "partial-trio":
+        payload.pop("split_ranks")
+    elif mutation == "inconsistent-length":
+        payload["split_roles"] = payload["split_roles"][:-1]
+    elif mutation == "invalid-role":
+        payload["split_roles"][query_indices[0]] = "validation"
+    elif mutation == "noninteger-rank":
+        payload["split_ranks"] = payload["split_ranks"].astype(np.float64)
+    elif mutation == "negative-rank":
+        payload["split_ranks"][query_indices[0]] = -1
+    elif mutation == "duplicate-rank":
+        same_class = support_indices[
+            payload["tx_ids"][support_indices] == "old-a"
+        ]
+        payload["split_ranks"][same_class[0]] = 0
+        payload["split_ranks"][same_class[1]] = 0
+    elif mutation == "rank-gap":
+        same_class = support_indices[
+            payload["tx_ids"][support_indices] == "old-a"
+        ]
+        payload["split_ranks"][same_class[0]] = 0
+        payload["split_ranks"][same_class[1]] = 2
+    elif mutation == "duplicate-canonical-id":
+        payload["canonical_physical_sample_ids"][query_indices[0]] = payload[
+            "canonical_physical_sample_ids"
+        ][support_indices[0]]
+    elif mutation == "missing-support":
+        payload["split_roles"][support_indices[0]] = "query"
+    elif mutation == "unregistered-query-truth":
+        old_query_indices = query_indices[
+            payload["dataset_role"][query_indices] == "target_old"
+        ]
+        payload["tx_ids"][old_query_indices[0]] = "old-unregistered"
+    else:  # pragma: no cover - the parameter list is exhaustive.
+        raise AssertionError(mutation)
+
+    _patch_manifest_all_cache(monkeypatch, arrays)
+    args = _manifest_all_args(tmp_path, f"invalid-{mutation}")
+    with pytest.raises(ValueError, match="canonical|split|rank|support|registered"):
+        builder.build(args, token_secret=b"v" * 32)
+
+
+def test_manifest_all_rejects_cross_scene_canonical_id_reuse(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    arrays = _canonical_manifest_all_arrays()
+    first, second = builder.FORMAL_LEO_WEAK_SCENARIOS[:2]
+    first_query = int(np.flatnonzero(arrays[first]["split_roles"] == "query")[0])
+    second_query = int(np.flatnonzero(arrays[second]["split_roles"] == "query")[0])
+    arrays[second]["canonical_physical_sample_ids"][second_query] = arrays[first][
+        "canonical_physical_sample_ids"
+    ][first_query]
+    _patch_manifest_all_cache(monkeypatch, arrays)
+    args = _manifest_all_args(tmp_path, "cross-scene-canonical-reuse")
+    with pytest.raises(ValueError, match="canonical.*across.*scenario"):
+        builder.build(args, token_secret=b"x" * 32)
+
+
+def test_legacy_default_result_and_artifact_schema_remain_unchanged(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    _patch_cache(monkeypatch)
+    args = _args(tmp_path, "legacy-schema", stage="stage2c")
+    result = builder.build(args, token_secret=b"l" * 32)
+    assert set(result) == {
+        "stage",
+        "predictor_package",
+        "predictor_package_root_sha256",
+        "predictor_package_seal",
+        "predictor_package_seal_sha256",
+        "scoring_manifest",
+        "scoring_manifest_sha256",
+        "registered_class_count",
+        "support_pool_count",
+        "query_count",
+        "support_seed",
+        "query_seed",
+        "new_class_draw_seed",
+    }
+    manifest = json.loads(
+        (args.predictor_out_root / "package_manifest.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert "query_policy" not in manifest
+    for scenario in builder.FORMAL_LEO_WEAK_SCENARIOS:
+        with np.load(
+            args.predictor_out_root / f"query_{scenario}.npz",
+            allow_pickle=False,
+        ) as archive:
+            assert tuple(archive.files) == builder.QUERY_NPZ_MEMBERS
+        with np.load(
+            args.predictor_out_root / f"support_{scenario}.npz",
+            allow_pickle=False,
+        ) as archive:
+            assert tuple(archive.files) == builder.SUPPORT_NPZ_MEMBERS
