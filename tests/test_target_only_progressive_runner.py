@@ -194,6 +194,7 @@ def test_r0_grouped_selection_writes_strict_full_support_clean_single_bundle(
 
     config = _r0_config(checkpoint, support)
     config["sf_tapft"]["oof_temperature_calibration"] = True
+    config["sf_tapft"]["validation_steps"] = [1, 2, 3]
     receipt = run_sf_tapft_grouped_selection(
         config,
         output,
@@ -242,6 +243,7 @@ def test_r0_grouped_selection_writes_strict_full_support_clean_single_bundle(
     assert payload["config"]["inference_temperature"] == pytest.approx(
         receipt["temperature_calibration"]["temperature"]
     )
+    assert payload["config"]["validation_steps"] == ()
     assert receipt["oof_selection"]["selected"] == "adapted"
     assert receipt["final_full_support_refit"] == {
         "model_role": "clean_single_full_support_refit",
@@ -277,6 +279,24 @@ def test_r0_grouped_selection_writes_strict_full_support_clean_single_bundle(
     )
     assert all(not parameter.requires_grad for parameter in model.parameters())
     assert all(not parameter.requires_grad for parameter in head.parameters())
+
+    payload["config"]["phase_steps"] = (1, 0, 0)
+    payload["config"]["validation_steps"] = (1, 2, 3)
+    payload["selected_phase_steps"] = [1, 0, 0]
+    payload["state_change_audit"]["total_steps"] = 1
+    payload["state_change_audit"]["phase_steps"] = [1, 0, 0]
+    payload["state_change_audit"]["selected_checkpoint_steps"] = [1]
+    historical = tmp_path / "historical-clean-single-with-research-validation.pt"
+    torch.save(payload, historical)
+    _, historical_head, historical_audit = load_sf_tapft_clean_single_bundle_strict(
+        historical,
+        device="cpu",
+        expected_target_binding=_expected_target_binding(),
+        checkpoint_loader=lambda _path, *, device: copy.deepcopy(_ToyModel()).to(device),
+        phase1_binding_loader=lambda *_args, **_kwargs: binding,
+    )
+    assert historical_audit["selected_phase_steps"] == (1, 0, 0)
+    assert historical_head.scale == pytest.approx(head.scale)
 
     with pytest.raises(FileExistsError):
         run_sf_tapft_grouped_selection(

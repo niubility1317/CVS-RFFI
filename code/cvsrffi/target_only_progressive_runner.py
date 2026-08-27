@@ -371,6 +371,7 @@ def _clean_single_bundle_payload(
     final_config = asdict(method_config)
     final_config["phase_steps"] = tuple(int(value) for value in selected_phase_steps)
     final_config["head_prefit_steps"] = int(result.audit.head_prefit_steps)
+    final_config["validation_steps"] = ()
     final_config["inference_temperature"] = float(
         method_config.prototype_scale / result.head.scale
     )
@@ -778,6 +779,7 @@ def load_sf_tapft_clean_single_bundle_strict(
         normalized_config = _normalize_sf_tapft_bundle_config(payload["config"])
     except ValueError as exc:
         raise ValueError("SF-TAPFT clean-single config allowlist mismatch") from exc
+    normalized_config["validation_steps"] = ()
     try:
         config = SFTAPFTConfig(**normalized_config)
     except (TypeError, ValueError) as exc:
