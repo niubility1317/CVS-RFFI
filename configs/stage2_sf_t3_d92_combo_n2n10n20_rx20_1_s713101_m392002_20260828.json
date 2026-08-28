@@ -1,0 +1,47 @@
+{
+  "schema": "cvs.sf_t3_d92.combo_plan.v1",
+  "run_id": "stage2_sf_t3_d92_combo_n2n10n20_rx20_1_s713101_m392002_20260828_r1",
+  "protocol_schema": "p2_min_v1",
+  "phase2_data_status": "VALIDATED_ONCE",
+  "capsule_id": "cvs-full-ablation-phase2c-t1-rx20-1-method7282101-new20-nested-v1",
+  "base_checkpoint_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
+  "phase1_bundle": {
+    "package_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_core90_bundle_20260827_r1_techfix1/package"
+  },
+  "old_class_count": 6,
+  "k_shot": 10,
+  "d92_method_lock": "D92-E0-NORF32",
+  "rf32_used": false,
+  "new_class_counts": [2, 10, 20],
+  "candidates": [
+    "D0_T3_D92",
+    "S02_T3_D92",
+    "R3_DUALDELTA_T3_D92_INLOOP"
+  ],
+  "scenes": {
+    "leo_clear_weak": {
+      "gpu": 0,
+      "split_id": "stage2c-d3-rx20-1-s713101-k10-leo-clear-weak",
+      "old_support": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_d3_erbt_idr_new1to20_rx20_1_s713101_m392002_20260828_r1/input/leo_clear_weak/nested/old_support.npz",
+      "registered_support_pattern": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_d3_erbt_idr_new1to20_rx20_1_s713101_m392002_20260828_r1/input/leo_clear_weak/nested/new{new_count}/predictor/support_leo_clear_weak.npz",
+      "query_pattern": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_d3_erbt_idr_new1to20_rx20_1_s713101_m392002_20260828_r1/input/leo_clear_weak/nested/new{new_count}/predictor/query_leo_clear_weak.npz",
+      "data_handle_pattern": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_d3_erbt_idr_new1to20_rx20_1_s713101_m392002_20260828_r1/input/leo_clear_weak/nested/new{new_count}/data_handle.json"
+    },
+    "leo_low_elev_weak": {
+      "gpu": 1,
+      "split_id": "stage2c-d3-rx20-1-s713101-k10-leo-low-elev-weak",
+      "old_support": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_d3_erbt_idr_new1to20_rx20_1_s713101_m392002_20260828_r1/input/leo_low_elev_weak/nested/old_support.npz",
+      "registered_support_pattern": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_d3_erbt_idr_new1to20_rx20_1_s713101_m392002_20260828_r1/input/leo_low_elev_weak/nested/new{new_count}/predictor/support_leo_low_elev_weak.npz",
+      "query_pattern": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_d3_erbt_idr_new1to20_rx20_1_s713101_m392002_20260828_r1/input/leo_low_elev_weak/nested/new{new_count}/predictor/query_leo_low_elev_weak.npz",
+      "data_handle_pattern": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_d3_erbt_idr_new1to20_rx20_1_s713101_m392002_20260828_r1/input/leo_low_elev_weak/nested/new{new_count}/data_handle.json"
+    },
+    "leo_rain_weak": {
+      "gpu": 2,
+      "split_id": "stage2c-d3-rx20-1-s713101-k10-leo-rain-weak",
+      "old_support": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_d3_erbt_idr_new1to20_rx20_1_s713101_m392002_20260828_r1/input/leo_rain_weak/nested/old_support.npz",
+      "registered_support_pattern": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_d3_erbt_idr_new1to20_rx20_1_s713101_m392002_20260828_r1/input/leo_rain_weak/nested/new{new_count}/predictor/support_leo_rain_weak.npz",
+      "query_pattern": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_d3_erbt_idr_new1to20_rx20_1_s713101_m392002_20260828_r1/input/leo_rain_weak/nested/new{new_count}/predictor/query_leo_rain_weak.npz",
+      "data_handle_pattern": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_d3_erbt_idr_new1to20_rx20_1_s713101_m392002_20260828_r1/input/leo_rain_weak/nested/new{new_count}/data_handle.json"
+    }
+  }
+}
