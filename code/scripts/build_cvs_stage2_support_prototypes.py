@@ -27,10 +27,8 @@ import torch
 from cvsrffi.stage2_structured_late_block_adaptation import _identity_features
 from cvsrffi.stage2_structured_late_block_runner import (
     _SUPPORT_PAYLOAD_ALLOWLIST,
-    _integer_tensor,
     _load_frozen_checkpoint,
     _load_npz,
-    _received_iq_tensor,
 )
 from cvsrffi.stage2_target_prototype_bank import encode_support_prototypes
 
@@ -93,6 +91,60 @@ _SUPPORT_AUDIT_ALLOWLIST = frozenset(
 
 class SupportPrototypeBuildError(ValueError):
     """Raised when the frozen canonical no-query row drifts."""
+
+
+def _tensor_from_numpy_buffer(
+    value: np.ndarray,
+    *,
+    numpy_dtype: np.dtype[Any],
+    torch_dtype: torch.dtype,
+) -> torch.Tensor:
+    array = np.ascontiguousarray(value, dtype=numpy_dtype)
+    return torch.frombuffer(
+        bytearray(array.tobytes(order="C")),
+        dtype=torch_dtype,
+    ).clone().reshape(array.shape)
+
+
+def _float32_tensor_to_numpy_buffer(value: torch.Tensor) -> np.ndarray:
+    tensor = value.detach().to(device="cpu", dtype=torch.float32).contiguous()
+    raw = bytearray(tensor.view(torch.uint8).reshape(-1).tolist())
+    return np.frombuffer(raw, dtype=np.float32).copy().reshape(tuple(tensor.shape))
+
+
+def _received_iq_tensor(value: np.ndarray, *, label: str) -> torch.Tensor:
+    array = np.asarray(value)
+    if (
+        array.ndim != 3
+        or array.shape[0] < 1
+        or array.shape[1] != 2
+        or array.shape[2] < 1
+        or not np.issubdtype(array.dtype, np.number)
+        or not np.isfinite(array).all()
+    ):
+        raise SupportPrototypeBuildError(
+            f"{label} received_iq must be finite nonempty [N,2,L]"
+        )
+    return _tensor_from_numpy_buffer(
+        array,
+        numpy_dtype=np.dtype(np.float32),
+        torch_dtype=torch.float32,
+    )
+
+
+def _integer_tensor(value: np.ndarray, *, label: str) -> torch.Tensor:
+    array = np.asarray(value)
+    if (
+        array.ndim != 1
+        or array.shape[0] < 1
+        or not np.issubdtype(array.dtype, np.integer)
+    ):
+        raise SupportPrototypeBuildError(f"{label} must be a nonempty integer vector")
+    return _tensor_from_numpy_buffer(
+        array,
+        numpy_dtype=np.dtype(np.int64),
+        torch_dtype=torch.int64,
+    )
 
 
 def _validate_config(config: Mapping[str, Any]) -> dict[str, Any]:
@@ -311,7 +363,7 @@ def build_support_prototypes(
         class_handle_by_id[int(value)] for value in support_labels.tolist()
     ]
     bank = encode_support_prototypes(
-        features.detach().cpu().numpy(),
+        _float32_tensor_to_numpy_buffer(features),
         label_values,
         class_values,
         storage_format="fp32",

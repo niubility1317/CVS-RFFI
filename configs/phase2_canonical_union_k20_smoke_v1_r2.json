@@ -1,0 +1,14 @@
+{
+  "protocol_schema": "p2_min_v1",
+  "phase2_data_status": "VALIDATED_ONCE",
+  "capsule_id": "536fb610302e0298fe98b4708d2e6d51eb81aef676126c01d8de6ff1a67985f2",
+  "split_id": "260f7bc291e8dbfe53e68f58997414a7d89c8f15b55d59793de506fb434fac25",
+  "checkpoint_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
+  "support_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/P2_CANONICAL_UNION_SMOKE_V1_20260828_R2/input/support_only_leo_clear_weak_rx1-1_k20.npz",
+  "prototype_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/P2_CANONICAL_UNION_SMOKE_V1_20260828_R2/input/prototypes_leo_clear_weak_rx1-1_k20.npz",
+  "candidate": "freq_f3_proj",
+  "steps": 1,
+  "learning_rate": 0.0005,
+  "seed": 20260828,
+  "k_shot": 20
+}

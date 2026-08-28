@@ -7,12 +7,14 @@ from dataclasses import asdict
 import json
 from pathlib import Path
 import sys
+from typing import Any, Mapping
 
 
 CODE_ROOT = Path(__file__).resolve().parents[1]
 if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
+import numpy as np
 import torch
 
 from cvsrffi.stage2_structured_late_block_adaptation import (
@@ -22,11 +24,8 @@ from cvsrffi.stage2_structured_late_block_adaptation import (
 from cvsrffi.stage2_structured_late_block_runner import (
     _PROTOTYPE_PAYLOAD_ALLOWLIST,
     _SUPPORT_PAYLOAD_ALLOWLIST,
-    _integer_tensor,
     _load_frozen_checkpoint,
     _load_npz,
-    _prototype_tensors,
-    _received_iq_tensor,
     _validate_exact_keys,
 )
 
@@ -47,6 +46,83 @@ _CONFIG_ALLOWLIST = frozenset(
         "k_shot",
     }
 )
+
+
+def _tensor_from_numpy_buffer(
+    value: "np.ndarray",
+    *,
+    numpy_dtype: "np.dtype[Any]",
+    torch_dtype: torch.dtype,
+) -> torch.Tensor:
+    array = np.ascontiguousarray(value, dtype=numpy_dtype)
+    return torch.frombuffer(
+        bytearray(array.tobytes(order="C")),
+        dtype=torch_dtype,
+    ).clone().reshape(array.shape)
+
+
+def _received_iq_tensor(value: "np.ndarray", *, label: str) -> torch.Tensor:
+    array = np.asarray(value)
+    if (
+        array.ndim != 3
+        or array.shape[0] < 1
+        or array.shape[1] != 2
+        or array.shape[2] < 1
+        or not np.issubdtype(array.dtype, np.number)
+        or not np.isfinite(array).all()
+    ):
+        raise ValueError(f"{label} received_iq must be finite nonempty [N,2,L]")
+    return _tensor_from_numpy_buffer(
+        array,
+        numpy_dtype=np.dtype(np.float32),
+        torch_dtype=torch.float32,
+    )
+
+
+def _integer_tensor(value: "np.ndarray", *, label: str) -> torch.Tensor:
+    array = np.asarray(value)
+    if (
+        array.ndim != 1
+        or array.shape[0] < 1
+        or not np.issubdtype(array.dtype, np.integer)
+    ):
+        raise ValueError(f"{label} must be a nonempty integer vector")
+    return _tensor_from_numpy_buffer(
+        array,
+        numpy_dtype=np.dtype(np.int64),
+        torch_dtype=torch.int64,
+    )
+
+
+def _prototype_tensors(
+    payload: Mapping[str, "np.ndarray"],
+) -> tuple[torch.Tensor, torch.Tensor]:
+    _validate_exact_keys(
+        payload,
+        _PROTOTYPE_PAYLOAD_ALLOWLIST,
+        label="prototype",
+    )
+    array = np.asarray(payload["prototypes"])
+    if (
+        array.ndim != 2
+        or array.shape[0] < 1
+        or array.shape[1] < 1
+        or not np.issubdtype(array.dtype, np.number)
+        or not np.isfinite(array).all()
+    ):
+        raise ValueError("prototype array must be a finite nonempty 2D matrix")
+    class_ids = _integer_tensor(payload["class_ids"], label="prototype class_ids")
+    if class_ids.shape[0] != array.shape[0]:
+        raise ValueError("prototype matrix and class_ids must align")
+    if torch.unique(class_ids).numel() != class_ids.numel():
+        raise ValueError("prototype class_ids must be unique")
+    prototypes = _tensor_from_numpy_buffer(
+        array,
+        numpy_dtype=np.dtype(np.float32),
+        torch_dtype=torch.float32,
+    )
+    prototypes.requires_grad_(False)
+    return prototypes, class_ids
 
 
 def main() -> int:

@@ -9,6 +9,7 @@ import pytest
 import torch
 import torch.nn as nn
 
+from cvsrffi.stage2_structured_late_block_adaptation import StructuredLateBlockAudit
 from scripts import build_cvs_stage2_support_prototypes as subject
 from scripts import smoke_adv3b02_structured_lateblock_no_query as no_query_smoke
 
@@ -201,6 +202,94 @@ def test_same_seed_and_input_are_bitwise_deterministic(
         np.testing.assert_array_equal(first["prototypes"], second["prototypes"])
 
 
+def test_numpy2_pytorch21_bridge_uses_buffers_in_both_directions(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def reject_from_numpy(_value: object) -> torch.Tensor:
+        raise TypeError("expected np.ndarray (got numpy.ndarray)")
+
+    def reject_tensor_numpy(_value: torch.Tensor) -> np.ndarray:
+        raise TypeError("expected 0 arguments, got 1")
+
+    monkeypatch.setattr(torch, "from_numpy", reject_from_numpy)
+    monkeypatch.setattr(torch.Tensor, "numpy", reject_tensor_numpy)
+
+    audit, _support_path, output_path = _build(tmp_path, monkeypatch)
+
+    with np.load(output_path, allow_pickle=False) as artifact:
+        assert artifact["class_ids"].tolist() == CLASS_IDS
+        assert artifact["prototypes"].shape[0] == len(CLASS_IDS)
+    assert audit["support_rows"] == len(CLASS_IDS) * K_SHOT
+
+
+def test_no_query_smoke_uses_buffers_when_numpy_bridge_is_unavailable(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    support_path = tmp_path / "support_leo_clear_weak_rx1-1_k20.npz"
+    prototype_path = tmp_path / "prototypes_leo_clear_weak_rx1-1_k20.npz"
+    config_path = tmp_path / "smoke_r2.json"
+    output_path = tmp_path / "smoke.json"
+    _write_support(support_path)
+    np.savez(
+        prototype_path,
+        prototypes=np.ones((len(CLASS_IDS), 3), dtype=np.float32),
+        class_ids=np.asarray(CLASS_IDS, dtype=np.int64),
+    )
+    config_path.write_text(
+        json.dumps(_config(support_path, prototype_path), sort_keys=True),
+        encoding="utf-8",
+    )
+
+    def reject_from_numpy(_value: object) -> torch.Tensor:
+        raise TypeError("expected np.ndarray (got numpy.ndarray)")
+
+    monkeypatch.setattr(torch, "from_numpy", reject_from_numpy)
+    monkeypatch.setattr(
+        no_query_smoke,
+        "_load_frozen_checkpoint",
+        lambda _path, *, device: _ToyCheckpoint().to(device),
+    )
+    monkeypatch.setattr(
+        no_query_smoke,
+        "adapt_on_target_support_with_frozen_prototypes",
+        lambda *_args, **_kwargs: StructuredLateBlockAudit(
+            method_id="SCLBA_V1",
+            candidate="freq_f3_proj",
+            gradient_updates=1,
+            support_samples=len(CLASS_IDS) * K_SHOT,
+            support_class_count=len(CLASS_IDS),
+            trainable_parameters=0,
+            total_parameters=1,
+            trainable_fraction=0.0,
+            trainable_parameter_names=(),
+            structural_trainable_parameters=0,
+            classifier_parameters_changed=0,
+            prototypes_changed=False,
+            loss_trace=(),
+        ),
+    )
+    monkeypatch.setattr(
+        no_query_smoke.sys,
+        "argv",
+        [
+            "smoke_adv3b02_structured_lateblock_no_query.py",
+            "--config",
+            str(config_path),
+            "--device",
+            "cpu",
+            "--output-json",
+            str(output_path),
+        ],
+    )
+
+    assert no_query_smoke.main() == 0
+    receipt = json.loads(output_path.read_text(encoding="utf-8"))
+    assert receipt["status"] == "REAL_CHECKPOINT_NO_QUERY_SMOKE_PASS"
+    assert receipt["query_opened"] is False
+
+
 @pytest.mark.parametrize(
     "forbidden_member",
     ["query_iq", "query_truth", "query_role", "source_iq", "clean_iq"],
@@ -350,21 +439,33 @@ def test_config_and_cli_have_no_query_source_clean_or_truth_path(
 
 
 def test_committed_smoke_config_is_directly_consumable_by_bridge_and_no_query_smoke() -> None:
-    config_path = REPO_ROOT / "configs" / "phase2_canonical_union_k20_smoke_v1.json"
-    config = json.loads(config_path.read_text(encoding="utf-8-sig"))
+    for name, run_id in (
+        (
+            "phase2_canonical_union_k20_smoke_v1.json",
+            "P2_CANONICAL_UNION_SMOKE_V1_20260828",
+        ),
+        (
+            "phase2_canonical_union_k20_smoke_v1_r2.json",
+            "P2_CANONICAL_UNION_SMOKE_V1_20260828_R2",
+        ),
+    ):
+        config_path = REPO_ROOT / "configs" / name
+        config = json.loads(config_path.read_text(encoding="utf-8-sig"))
 
-    resolved = subject._validate_config(config)  # noqa: SLF001
-    subject._validate_row_binding(  # noqa: SLF001
-        resolved,
-        scene="leo_clear_weak",
-        receiver="1-1",
-    )
-    assert set(config) == subject._CONFIG_ALLOWLIST  # noqa: SLF001
-    assert set(config) == no_query_smoke._CONFIG_ALLOWLIST  # noqa: SLF001
-    assert not any("query" in key or "truth" in key for key in config)
-    assert config["support_path"].endswith(
-        "/input/support_only_leo_clear_weak_rx1-1_k20.npz"
-    )
-    assert config["prototype_path"].endswith(
-        "/input/prototypes_leo_clear_weak_rx1-1_k20.npz"
-    )
+        resolved = subject._validate_config(config)  # noqa: SLF001
+        subject._validate_row_binding(  # noqa: SLF001
+            resolved,
+            scene="leo_clear_weak",
+            receiver="1-1",
+        )
+        assert set(config) == subject._CONFIG_ALLOWLIST  # noqa: SLF001
+        assert set(config) == no_query_smoke._CONFIG_ALLOWLIST  # noqa: SLF001
+        assert not any("query" in key or "truth" in key for key in config)
+        assert f"/runs/{run_id}/input/" in config["support_path"]
+        assert config["support_path"].endswith(
+            "/support_only_leo_clear_weak_rx1-1_k20.npz"
+        )
+        assert f"/runs/{run_id}/input/" in config["prototype_path"]
+        assert config["prototype_path"].endswith(
+            "/prototypes_leo_clear_weak_rx1-1_k20.npz"
+        )
