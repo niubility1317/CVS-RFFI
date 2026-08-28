@@ -231,9 +231,11 @@ def test_r0_grouped_selection_writes_strict_full_support_clean_single_bundle(
         "class_ids",
         "model_state",
         "head_state",
+        "head_bias",
         "state_change_audit",
     }
     assert payload["schema"] == SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA
+    assert torch.equal(payload["head_bias"], torch.zeros(2))
     assert payload["model_role"] == "clean_single_full_support_refit"
     assert payload["selected_phase_steps"] == [1, 1, 1]
     assert payload["support_count"] == 4
@@ -273,6 +275,9 @@ def test_r0_grouped_selection_writes_strict_full_support_clean_single_bundle(
     assert persisted_receipt["oof_selection"] == receipt["oof_selection"]
     assert persisted_receipt["final_full_support_refit"] == receipt["final_full_support_refit"]
 
+    payload["head_bias"] = torch.tensor([0.25, -0.25])
+    torch.save(payload, bundle_path)
+
     model, head, audit = load_sf_tapft_clean_single_bundle_strict(
         bundle_path,
         device="cpu",
@@ -285,6 +290,7 @@ def test_r0_grouped_selection_writes_strict_full_support_clean_single_bundle(
     assert audit["support_count"] == 4
     assert audit["fold0_as_final"] is False
     assert head.class_ids == (0, 1)
+    assert torch.equal(head.bias, torch.tensor([0.25, -0.25]))
     assert head.scale == pytest.approx(
         payload["config"]["prototype_scale"]
         / payload["config"]["inference_temperature"]
@@ -642,6 +648,8 @@ def test_clean_single_loader_accepts_pre_slimming_config_defaults(
         "head_anchor_weight",
     ):
         payload["config"].pop(field)
+    payload["schema"] = "cvs.sf_tapft.clean_single.v2"
+    payload.pop("head_bias")
     legacy = tmp_path / "pre-slimming.pt"
     torch.save(payload, legacy)
 
@@ -655,6 +663,7 @@ def test_clean_single_loader_accepts_pre_slimming_config_defaults(
     assert audit["support_count"] == 4
     assert all(not parameter.requires_grad for parameter in model.parameters())
     assert all(not parameter.requires_grad for parameter in head.parameters())
+    assert torch.equal(head.bias, torch.zeros_like(head.bias))
 
 
 @pytest.mark.parametrize(

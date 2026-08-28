@@ -150,6 +150,14 @@ class SFTAPFTConfig:
     head_anchor_weight: float = 0.0
     hard_pair_weight: float = 0.0
     hard_pair_margin: float = 0.2
+    pace_expand_start_step: int = 0
+    pace_norm_rules: tuple[tuple[str, str], ...] = ()
+    pace_tail_weight: float = 0.0
+    pace_preserve_weight: float = 0.0
+    pace_preserve_temperature: float = 2.0
+    pace_bias_steps: int = 0
+    pace_bias_lr: float = 0.05
+    pace_bias_l2: float = 0.01
     prefix_cache_dtype: str = "off"
     cache_storage_dtype: str = ""
     suffix_compute_dtype: str = ""
@@ -219,6 +227,7 @@ class SFTAPFTConfig:
             "fast_tail_steps": self.fast_tail_steps,
             "head_polish_steps": self.head_polish_steps,
             "head_cvar_steps": self.head_cvar_steps,
+            "pace_expand_start_step": self.pace_expand_start_step,
         }
         for name, value in integer_controls.items():
             if isinstance(value, bool) or int(value) < 0 or int(value) > total_steps:
@@ -229,6 +238,20 @@ class SFTAPFTConfig:
             raise ValueError("fast tail schedule exceeds total_steps")
         if self.head_cvar_steps > self.head_polish_steps:
             raise ValueError("head_cvar_steps must not exceed head_polish_steps")
+        pace_rules = tuple((str(scope), str(affine)) for scope, affine in self.pace_norm_rules)
+        for scope, affine in pace_rules:
+            if scope not in {name for values in _NORM_SCOPES.values() for name in values}:
+                raise ValueError(f"pace_norm_rules contains unknown norm scope: {scope!r}")
+            if affine not in _NORM_AFFINES:
+                raise ValueError(f"pace_norm_rules contains unknown norm affine: {affine!r}")
+        if len({scope for scope, _ in pace_rules}) != len(pace_rules):
+            raise ValueError("pace_norm_rules must not repeat a norm scope")
+        if pace_rules and int(self.pace_expand_start_step) <= 0:
+            raise ValueError("pace_expand_start_step must be positive when pace_norm_rules are set")
+        if int(self.pace_bias_steps) > 0 and int(self.pace_expand_start_step) <= 0:
+            raise ValueError("pace_bias_steps require a positive pace_expand_start_step")
+        if isinstance(self.pace_bias_steps, bool) or int(self.pace_bias_steps) < 0:
+            raise ValueError("pace_bias_steps must be a non-negative integer")
         if isinstance(self.head_cvar_top_k, bool) or int(self.head_cvar_top_k) <= 0:
             raise ValueError("head_cvar_top_k must be a positive integer")
         bounded = {
@@ -259,6 +282,8 @@ class SFTAPFTConfig:
             "fast_tail_lr_norm_end",
             "head_polish_lr",
             "class_adaptive_rho_temperature",
+            "pace_preserve_temperature",
+            "pace_bias_lr",
         )
         for name in positive:
             value = float(getattr(self, name))
@@ -275,6 +300,9 @@ class SFTAPFTConfig:
             "hard_pair_weight",
             "hard_pair_margin",
             "head_cvar_weight",
+            "pace_tail_weight",
+            "pace_preserve_weight",
+            "pace_bias_l2",
         )
         for name in nonnegative:
             value = float(getattr(self, name))
@@ -314,6 +342,7 @@ class SFTAPFTConfig:
             raise ValueError("class adaptive rho bounds must satisfy 0 <= min <= max <= 1")
         object.__setattr__(self, "phase_steps", tuple(int(value) for value in self.phase_steps))
         object.__setattr__(self, "norm_rules", normalized_rules)
+        object.__setattr__(self, "pace_norm_rules", pace_rules)
         object.__setattr__(self, "head_prefit_steps", int(self.head_prefit_steps))
         object.__setattr__(self, "validation_steps", validation_steps)
         object.__setattr__(
@@ -322,6 +351,7 @@ class SFTAPFTConfig:
         for name in integer_controls:
             object.__setattr__(self, name, int(getattr(self, name)))
         object.__setattr__(self, "head_cvar_top_k", int(self.head_cvar_top_k))
+        object.__setattr__(self, "pace_bias_steps", int(self.pace_bias_steps))
 
 
 def class_cvar_from_class_losses(class_losses: Tensor, *, top_k: int) -> Tensor:
@@ -336,12 +366,108 @@ def class_cvar_from_class_losses(class_losses: Tensor, *, top_k: int) -> Tensor:
     return torch.topk(class_losses, k=int(top_k)).values.mean()
 
 
+def stable_support_weights(teacher_logits: Tensor, labels: Tensor) -> Tensor:
+    """Return detached D0 support stability weights without class-specific rules."""
+
+    if (
+        teacher_logits.ndim != 2
+        or labels.ndim != 1
+        or teacher_logits.size(0) != labels.numel()
+        or teacher_logits.size(1) < 2
+    ):
+        raise ValueError("teacher logits and labels must be row aligned")
+    if not bool(torch.isfinite(teacher_logits).all()):
+        raise ValueError("teacher logits must be finite")
+    labels = labels.to(device=teacher_logits.device, dtype=torch.long)
+    if labels.numel() and (int(labels.min()) < 0 or int(labels.max()) >= teacher_logits.size(1)):
+        raise ValueError("labels must index teacher logit columns")
+    detached = teacher_logits.detach().float()
+    probability = detached.softmax(dim=1).gather(1, labels[:, None]).squeeze(1)
+    true_logits = detached.gather(1, labels[:, None]).squeeze(1)
+    other_logits = detached.masked_fill(
+        F.one_hot(labels, num_classes=detached.size(1)).bool(), float("-inf")
+    ).max(dim=1).values
+    weights = probability * torch.sigmoid(true_logits - other_logits)
+    return (weights / weights.max().clamp_min(_EPS)).detach()
+
+
+def stable_preservation_kl(
+    student_logits: Tensor,
+    teacher_logits: Tensor,
+    stable_weights: Tensor,
+    *,
+    temperature: float,
+) -> Tensor:
+    """Weighted support-only KL from the frozen D0 teacher to the PACE student."""
+
+    if student_logits.shape != teacher_logits.shape or student_logits.ndim != 2:
+        raise ValueError("student and teacher logits must have the same matrix shape")
+    if stable_weights.shape != (student_logits.size(0),):
+        raise ValueError("stable_weights must align with support rows")
+    if not math.isfinite(float(temperature)) or float(temperature) <= 0.0:
+        raise ValueError("temperature must be finite and positive")
+    teacher_probability = (teacher_logits.detach() / float(temperature)).softmax(dim=1)
+    student_log_probability = (student_logits / float(temperature)).log_softmax(dim=1)
+    row_kl = F.kl_div(
+        student_log_probability, teacher_probability, reduction="none"
+    ).sum(dim=1)
+    weights = stable_weights.detach().to(device=row_kl.device, dtype=row_kl.dtype)
+    return float(temperature) ** 2 * (weights * row_kl).sum() / weights.sum().clamp_min(_EPS)
+
+
 @dataclass(frozen=True)
 class TemperatureCalibration:
     temperature: float
     nll_before: float
     nll_after: float
     argmax_preserved: bool
+
+
+@dataclass(frozen=True)
+class BiasCalibration:
+    bias: Tensor
+    nll_before: float
+    nll_after: float
+    steps: int
+
+
+def fit_zero_sum_class_bias(
+    logits: Tensor,
+    labels: Tensor,
+    *,
+    steps: int = 40,
+    lr: float = 0.05,
+    l2: float = 0.01,
+) -> BiasCalibration:
+    """Fit a cross-fitted class bias with an exact zero-sum parameterization."""
+
+    if logits.ndim != 2 or labels.ndim != 1 or logits.size(0) != labels.numel():
+        raise ValueError("bias calibration logits and labels must be row aligned")
+    if logits.numel() == 0 or not bool(torch.isfinite(logits).all()):
+        raise ValueError("bias calibration logits must be non-empty and finite")
+    if isinstance(steps, bool) or int(steps) <= 0:
+        raise ValueError("bias calibration steps must be positive")
+    if not math.isfinite(float(lr)) or float(lr) <= 0.0:
+        raise ValueError("bias calibration lr must be finite and positive")
+    if not math.isfinite(float(l2)) or float(l2) < 0.0:
+        raise ValueError("bias calibration l2 must be finite and non-negative")
+    work_logits = logits.detach().float()
+    work_labels = labels.detach().to(device=work_logits.device, dtype=torch.long)
+    raw = torch.zeros(work_logits.size(1), device=work_logits.device, requires_grad=True)
+    optimizer = torch.optim.Adam([raw], lr=float(lr))
+    before = float(F.cross_entropy(work_logits, work_labels))
+    for _ in range(int(steps)):
+        optimizer.zero_grad(set_to_none=True)
+        bias = raw - raw.mean()
+        loss = F.cross_entropy(work_logits + bias, work_labels) + float(l2) * bias.square().mean()
+        loss.backward()
+        optimizer.step()
+    bias = (raw.detach() - raw.detach().mean()).to(dtype=logits.dtype)
+    after = float(F.cross_entropy(work_logits + bias.float(), work_labels))
+    if after > before:
+        bias = torch.zeros_like(bias)
+        after = before
+    return BiasCalibration(bias=bias, nll_before=before, nll_after=after, steps=int(steps))
 
 
 def fit_positive_temperature(logits: Tensor, labels: Tensor) -> TemperatureCalibration:
@@ -387,7 +513,13 @@ def fit_positive_temperature(logits: Tensor, labels: Tensor) -> TemperatureCalib
 class TargetPrototypeHead(nn.Module):
     """Trainable normalized target classifier from the report."""
 
-    def __init__(self, weight: Tensor, class_ids: Sequence[int], scale: float = 8.0):
+    def __init__(
+        self,
+        weight: Tensor,
+        class_ids: Sequence[int],
+        scale: float = 8.0,
+        bias: Tensor | None = None,
+    ):
         super().__init__()
         if not torch.is_tensor(weight) or weight.ndim != 2 or weight.size(0) <= 0:
             raise ValueError("weight must have shape [classes, dimension]")
@@ -400,6 +532,14 @@ class TargetPrototypeHead(nn.Module):
         self.weight = nn.Parameter(F.normalize(weight.detach().clone(), dim=1, eps=_EPS))
         self.class_ids = ids
         self.scale = scale
+        bias_value = torch.zeros(len(ids), dtype=weight.dtype, device=weight.device)
+        if bias is not None:
+            if not torch.is_tensor(bias) or bias.shape != (len(ids),):
+                raise ValueError("bias must align with class_ids")
+            if not bool(torch.isfinite(bias).all()):
+                raise ValueError("bias must be finite")
+            bias_value = bias.detach().to(device=weight.device, dtype=weight.dtype).clone()
+        self.register_buffer("bias", bias_value, persistent=False)
 
     @classmethod
     def from_source_and_target(
@@ -453,7 +593,7 @@ class TargetPrototypeHead(nn.Module):
             raise ValueError("embeddings must align with target classifier dimension")
         return self.scale * F.normalize(embeddings, dim=1, eps=_EPS) @ F.normalize(
             self.weight, dim=1, eps=_EPS
-        ).transpose(0, 1)
+        ).transpose(0, 1) + self.bias
 
 
 def leave_one_out_prototype_logits(
@@ -949,6 +1089,11 @@ class SFTAPFTAudit:
     support_safety_per_class_recall_mismatches: int
     support_safety_max_abs_logit_delta: float
     support_safety_fallback_to_float32: bool
+    pace_expand_start_step: int = 0
+    pace_teacher_snapshot_count: int = 0
+    pace_expanded_optimizer_steps: int = 0
+    pace_tail_losses: tuple[float, ...] = ()
+    pace_preserve_losses: tuple[float, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -1063,6 +1208,163 @@ class H6SupportSafetyAudit:
     positive_margin_regressions: int
     max_abs_logit_delta: float
     minimum_full_path_margin: float
+
+
+@dataclass(frozen=True)
+class TimeNormPrefixCache:
+    """Frozen graph inputs for a suffix beginning at one time-path Norm."""
+
+    boundary: str
+    pre_norm: Tensor
+    frozen_fuse_tail: Tensor
+    cls_head_kwargs: Mapping[str, Tensor]
+    storage_dtype: torch.dtype
+    batch_size: int
+    source_tensor_bytes: int = 0
+
+    @property
+    def tensor_bytes(self) -> int:
+        return sum(
+            int(value.numel() * value.element_size())
+            for value in (self.pre_norm, self.frozen_fuse_tail, *self.cls_head_kwargs.values())
+        )
+
+    @property
+    def storage_tensor_bytes(self) -> int:
+        return self.source_tensor_bytes or self.tensor_bytes
+
+    def materialize_once(self, *, device: torch.device, dtype: torch.dtype) -> "TimeNormPrefixCache":
+        if dtype not in {torch.float16, torch.bfloat16, torch.float32}:
+            raise ValueError("time suffix compute cache dtype must be floating point")
+        return TimeNormPrefixCache(
+            boundary=self.boundary,
+            pre_norm=self.pre_norm.to(device=device, dtype=dtype),
+            frozen_fuse_tail=self.frozen_fuse_tail.to(device=device, dtype=dtype),
+            cls_head_kwargs=MappingProxyType(
+                {name: value.to(device=device, dtype=dtype) for name, value in self.cls_head_kwargs.items()}
+            ),
+            storage_dtype=dtype,
+            batch_size=self.batch_size,
+            source_tensor_bytes=self.storage_tensor_bytes,
+        )
+
+
+class CompactTimeNormSuffix(nn.Module):
+    """Independent time suffix selected by the earliest trainable Norm."""
+
+    _ORDER = ("time_fuse.1", "t1.norm", "t2.norm", "t3.norm")
+
+    def __init__(
+        self,
+        *,
+        time_fuse: nn.Module,
+        time_down: nn.Module,
+        t1: nn.Module,
+        t2: nn.Module,
+        t3: nn.Module,
+        t_pool: nn.Module,
+        t_proj: nn.Module,
+        meta_adapter_time: nn.Module,
+        fuse: nn.Module,
+        meta_adapter_fusion: nn.Module,
+        cls_head: nn.Module,
+        target_head: TargetPrototypeHead,
+        cache: TimeNormPrefixCache,
+        emb_dim: int,
+    ) -> None:
+        super().__init__()
+        self.time_fuse = time_fuse
+        self.time_down = time_down
+        self.t1 = t1
+        self.t2 = t2
+        self.t3 = t3
+        self.t_pool = t_pool
+        self.t_proj = t_proj
+        self.meta_adapter_time = meta_adapter_time
+        self.fuse = fuse
+        self.meta_adapter_fusion = meta_adapter_fusion
+        self.cls_head = cls_head
+        self.target_head = target_head
+        self.cache = cache
+        self.emb_dim = int(emb_dim)
+        for parameter in self.parameters():
+            parameter.requires_grad_(False)
+        start = self._ORDER.index(cache.boundary)
+        norm_modules = (self.time_fuse[1], self.t1.norm, self.t2.norm, self.t3.norm)
+        for module in norm_modules[start:]:
+            for parameter in module.parameters():
+                parameter.requires_grad_(True)
+        for parameter in self.target_head.parameters():
+            parameter.requires_grad_(True)
+
+    @classmethod
+    def from_model(
+        cls,
+        model: nn.Module,
+        head: TargetPrototypeHead,
+        cache: TimeNormPrefixCache,
+    ) -> "CompactTimeNormSuffix":
+        backbone, _ = _identity_backbone(model)
+        module_by_boundary = {
+            "time_fuse.1": backbone.time_fuse[1],
+            "t1.norm": backbone.t1.norm,
+            "t2.norm": backbone.t2.norm,
+            "t3.norm": backbone.t3.norm,
+        }
+        if cache.boundary not in module_by_boundary:
+            raise ValueError("unsupported time suffix cache boundary")
+        reference = next(module_by_boundary[cache.boundary].parameters())
+        compute_cache = cache.materialize_once(device=reference.device, dtype=reference.dtype)
+        return cls(
+            time_fuse=copy.deepcopy(backbone.time_fuse),
+            time_down=copy.deepcopy(backbone.time_down),
+            t1=copy.deepcopy(backbone.t1),
+            t2=copy.deepcopy(backbone.t2),
+            t3=copy.deepcopy(backbone.t3),
+            t_pool=copy.deepcopy(backbone.t_pool),
+            t_proj=copy.deepcopy(backbone.t_proj),
+            meta_adapter_time=copy.deepcopy(backbone.meta_adapter_time),
+            fuse=copy.deepcopy(backbone.fuse),
+            meta_adapter_fusion=copy.deepcopy(backbone.meta_adapter_fusion),
+            cls_head=copy.deepcopy(backbone.cls_head),
+            target_head=copy.deepcopy(head),
+            cache=compute_cache,
+            emb_dim=int(backbone.emb_dim),
+        )
+
+    def embedding(self) -> Tensor:
+        value = self.cache.pre_norm
+        boundary = self.cache.boundary
+        if boundary == "time_fuse.1":
+            value = self.time_fuse[1](value)
+            value = self.time_fuse[2](value)
+            value = self.time_down(value)
+            value = self.t1(value)
+            value = self.t2(value)
+            value = self.t3(value)
+        elif boundary == "t1.norm":
+            value = self.t1.drop(self.t1.pool(self.t1.act(self.t1.norm(value))))
+            value = self.t2(value)
+            value = self.t3(value)
+        elif boundary == "t2.norm":
+            value = self.t2.drop(self.t2.pool(self.t2.act(self.t2.norm(value))))
+            value = self.t3(value)
+        elif boundary == "t3.norm":
+            value = self.t3.drop(self.t3.pool(self.t3.act(self.t3.norm(value))))
+        else:
+            raise ValueError("unsupported time suffix cache boundary")
+        time_embedding = self.meta_adapter_time(self.t_proj(self.t_pool(value).squeeze(-1)))
+        tail = self.cache.frozen_fuse_tail
+        base_input = torch.cat([time_embedding, tail], dim=1) if tail.size(1) else time_embedding
+        base = self.meta_adapter_fusion(self.fuse(base_input))
+        output = self.cls_head(base, labels=None, return_emb=True, **dict(self.cache.cls_head_kwargs))
+        embedding = output.get("feat_joint") if isinstance(output, Mapping) else output[-1]
+        if not torch.is_tensor(embedding) or embedding.ndim != 2:
+            raise ValueError("compact time suffix did not expose feat_joint")
+        return embedding
+
+    def logits(self) -> Tensor:
+        return self.target_head(self.embedding())
 
 
 class CompactH6Suffix(nn.Module):
@@ -1272,6 +1574,101 @@ def _capture_h6_prefix_cache(
         batch_size=int(values.size(0)),
     )
     return cache, outputs
+
+
+def _capture_trainable_suffix_prefix(
+    model: nn.Module,
+    values: Tensor,
+    earliest_trainable_node: str,
+    *,
+    storage_dtype: torch.dtype = torch.float32,
+) -> tuple[TimeNormPrefixCache, Mapping[str, Any]]:
+    """Capture the frozen graph before the earliest trainable time-path Norm."""
+
+    if earliest_trainable_node not in CompactTimeNormSuffix._ORDER:
+        raise ValueError("earliest_trainable_node must name a supported time Norm")
+    if storage_dtype not in {torch.float16, torch.bfloat16, torch.float32}:
+        raise ValueError("time suffix cache storage dtype must be floating point")
+    backbone, _ = _identity_backbone(model)
+    required = (
+        "time_fuse", "time_down", "t1", "t2", "t3", "t_pool", "t_proj",
+        "meta_adapter_time", "fuse", "meta_adapter_fusion", "cls_head", "emb_dim",
+    )
+    if any(not hasattr(backbone, name) for name in required):
+        raise ValueError("model does not expose the generalized time suffix interface")
+    boundary_modules = {
+        "time_fuse.1": backbone.time_fuse[1],
+        "t1.norm": backbone.t1.norm,
+        "t2.norm": backbone.t2.norm,
+        "t3.norm": backbone.t3.norm,
+    }
+    captured: dict[str, Any] = {}
+
+    def capture_norm(_module: nn.Module, args: tuple[Any, ...]) -> None:
+        if not args or not torch.is_tensor(args[0]):
+            raise ValueError("time suffix boundary did not receive a tensor")
+        captured["pre_norm"] = args[0].detach().to(dtype=storage_dtype).clone()
+
+    def capture_fuse(_module: nn.Module, args: tuple[Any, ...]) -> None:
+        if not args or not torch.is_tensor(args[0]):
+            raise ValueError("identity fuse did not receive a tensor")
+        captured["fuse_input"] = args[0].detach().to(dtype=storage_dtype).clone()
+
+    def capture_head(
+        _module: nn.Module,
+        args: tuple[Any, ...],
+        kwargs: Mapping[str, Any],
+    ) -> None:
+        del args
+        names = ("dac_local", "pa_local", "dac_delta", "pa_delta")
+        if any(not torch.is_tensor(kwargs.get(name)) for name in names):
+            raise ValueError("identity head did not expose frozen auxiliary tensors")
+        captured["cls_head_kwargs"] = {
+            name: kwargs[name].detach().to(dtype=storage_dtype).clone() for name in names
+        }
+
+    handles = [
+        boundary_modules[earliest_trainable_node].register_forward_pre_hook(capture_norm),
+        backbone.fuse.register_forward_pre_hook(capture_fuse),
+        backbone.cls_head.register_forward_pre_hook(capture_head, with_kwargs=True),
+    ]
+    try:
+        with torch.no_grad():
+            outputs = _forward_aux(model, values)
+    finally:
+        for handle in handles:
+            handle.remove()
+    if set(captured) != {"pre_norm", "fuse_input", "cls_head_kwargs"}:
+        raise ValueError("model forward did not close the generalized time suffix cache")
+    fuse_input = captured["fuse_input"]
+    emb_dim = int(backbone.emb_dim)
+    if fuse_input.ndim != 2 or fuse_input.size(1) < emb_dim:
+        raise ValueError("identity fuse input is incompatible with time suffix caching")
+    cache = TimeNormPrefixCache(
+        boundary=earliest_trainable_node,
+        pre_norm=captured["pre_norm"],
+        frozen_fuse_tail=fuse_input[:, emb_dim:].clone(),
+        cls_head_kwargs=MappingProxyType(captured["cls_head_kwargs"]),
+        storage_dtype=storage_dtype,
+        batch_size=int(values.size(0)),
+    )
+    return cache, outputs
+
+
+def encode_trainable_suffix_prefix(
+    model: nn.Module,
+    values: Tensor,
+    earliest_trainable_node: str,
+    *,
+    storage_dtype: torch.dtype = torch.float32,
+) -> TimeNormPrefixCache:
+    cache, _ = _capture_trainable_suffix_prefix(
+        model,
+        values,
+        earliest_trainable_node,
+        storage_dtype=storage_dtype,
+    )
+    return cache
 
 
 def build_h6_prefix_cache(
@@ -1782,35 +2179,42 @@ def _fit_sf_tapft(
     target_x = target_train.received_iq.to(device=device, dtype=dtype)
     target_labels = target_train.labels.to(device=device, dtype=torch.long)
 
-    prefix_cache: H6PrefixCache | None = None
+    prefix_cache: H6PrefixCache | TimeNormPrefixCache | None = None
     prefix_cache_build_forward_steps = 0
     if config.cache_storage_dtype != "off":
         normalized_rules = (
-            config.norm_rules
-            if config.norm_rules
+            (config.pace_norm_rules or config.norm_rules)
+            if (config.pace_norm_rules or config.norm_rules)
             else tuple(
                 (scope, config.norm_affine) for scope in _NORM_SCOPES[config.norm_scope]
             )
         )
-        if (
-            config.trainability_profile != "p1_head_norm"
-            or normalized_rules != (("t3", "weight_bias"),)
-        ):
-            raise ValueError(
-                "H6 prefix caching requires p1_head_norm with only t3 weight_bias"
-            )
+        if config.trainability_profile != "p1_head_norm":
+            raise ValueError("time prefix caching requires p1_head_norm")
         storage_dtype = _cache_dtype_from_name(config.cache_storage_dtype)
-        prefix_cache, initial_outputs = _capture_h6_prefix_cache(
-            student,
-            target_x,
-            storage_dtype=storage_dtype,
-        )
+        if normalized_rules == (("t3", "weight_bias"),):
+            prefix_cache, initial_outputs = _capture_h6_prefix_cache(
+                student, target_x, storage_dtype=storage_dtype
+            )
+        else:
+            scope_order = ("time_fuse", "t1", "t2", "t3")
+            selected_scopes = {scope for scope, _ in normalized_rules}
+            earliest_scope = next(scope for scope in scope_order if scope in selected_scopes)
+            boundary = "time_fuse.1" if earliest_scope == "time_fuse" else f"{earliest_scope}.norm"
+            prefix_cache, initial_outputs = _capture_trainable_suffix_prefix(
+                student, target_x, boundary, storage_dtype=storage_dtype
+            )
         storage_device = (
             device
             if config.cache_device == "model"
             else torch.device(config.cache_device)
         )
-        if storage_device != prefix_cache.pre_t3_norm.device:
+        cache_tensor = (
+            prefix_cache.pre_t3_norm
+            if isinstance(prefix_cache, H6PrefixCache)
+            else prefix_cache.pre_norm
+        )
+        if storage_device != cache_tensor.device:
             prefix_cache = prefix_cache.materialize_once(
                 device=storage_device,
                 dtype=storage_dtype,
@@ -1864,10 +2268,30 @@ def _fit_sf_tapft(
         config.trainability_profile,
         norm_scope=config.norm_scope,
         norm_affine=config.norm_affine,
-        norm_rules=config.norm_rules,
+        norm_rules=(config.pace_norm_rules or config.norm_rules),
     )
-    phase_names = {phase: policy.parameter_names(student, phase) for phase in _PHASES}
-    norm_names = set(phase_names["A"])
+    expanded_phase_names = {
+        phase: policy.parameter_names(student, phase) for phase in _PHASES
+    }
+    phase_names = dict(expanded_phase_names)
+    base_phase_names = dict(expanded_phase_names)
+    if config.pace_norm_rules:
+        base_policy = ProgressiveTrainabilityPolicy(
+            config.trainability_profile,
+            norm_scope=config.norm_scope,
+            norm_affine=config.norm_affine,
+            norm_rules=config.norm_rules,
+        )
+        base_phase_names = {
+            phase: base_policy.parameter_names(student, phase) for phase in _PHASES
+        }
+        phase_names["A"] = base_phase_names["A"]
+    norm_names = {
+        name
+        for phase in _PHASES
+        for name in phase_names[phase]
+        if ".norm." in name or ".time_fuse.1." in name
+    }
     _, identity_prefix = _identity_backbone(student)
     adapter_prefix = f"{identity_prefix}meta_adapter_time."
     adapter_names = {name for name in phase_names["B"] if name.startswith(adapter_prefix)}
@@ -1915,18 +2339,21 @@ def _fit_sf_tapft(
         torch.random.set_rng_state(cpu_rng_state)
         if cuda_rng_state is not None:
             torch.cuda.set_rng_state(cuda_rng_state, device)
-    compact_suffix: CompactH6Suffix | None = None
+    compact_suffix: CompactH6Suffix | CompactTimeNormSuffix | None = None
     training_named = dict(named)
     if prefix_cache is not None and not copy_checkpoint_model:
-        compact_suffix = CompactH6Suffix.from_model(student, head, prefix_cache)
+        compact_suffix = (
+            CompactH6Suffix.from_model(student, head, prefix_cache)
+            if isinstance(prefix_cache, H6PrefixCache)
+            else CompactTimeNormSuffix.from_model(student, head, prefix_cache)
+        )
         head = compact_suffix.target_head
+        compact_named = dict(compact_suffix.named_parameters())
         for name in norm_names:
-            if name.endswith("t3.norm.weight"):
-                training_named[name] = compact_suffix.t3.norm.weight
-            elif name.endswith("t3.norm.bias"):
-                training_named[name] = compact_suffix.t3.norm.bias
-            else:
-                raise ValueError("CompactH6Suffix only supports t3.norm weight/bias")
+            compact_name = name.removeprefix(identity_prefix)
+            if compact_name not in compact_named:
+                raise ValueError(f"compact suffix does not expose permitted parameter: {name}")
+            training_named[name] = compact_named[compact_name]
     groups = [
         {"name": "head", "params": list(head.parameters()), "lr": config.lr_head_initial},
         {"name": "norm", "params": [training_named[name] for name in sorted(norm_names)], "lr": config.lr_norm},
@@ -1967,12 +2394,15 @@ def _fit_sf_tapft(
     validation_step_set = set(config.validation_steps)
     losses: list[float] = []
     head_cvar_losses: list[float] = []
+    pace_tail_losses: list[float] = []
+    pace_preserve_losses: list[float] = []
     snapshots: list[
         tuple[dict[str, Tensor], float | tuple[float, ...], int]
     ] = []
     stage_best: dict[str, tuple[int, int, StageValidationMetrics]] = {}
     stage_end: dict[str, StageValidationMetrics] = {}
     current_phase = ""
+    current_trainability_key: tuple[str, bool] | None = None
     validation_forward_steps: list[int] = []
     permitted_model_names = norm_names | adapter_names | last_names | fusion_names
     full_anchor_state = {
@@ -1998,12 +2428,43 @@ def _fit_sf_tapft(
     cached_head_embeddings: Tensor | None = None
     cached_head_forward_steps = 0
     cached_suffix_forward_steps = 0
+    pace_teacher_logits: Tensor | None = None
+    pace_stable_weights: Tensor | None = None
+    pace_expanded_optimizer_steps = 0
 
     for step in range(total_steps):
         phase = _phase_for_step(step, config.phase_steps)
-        polishing = config.head_polish_steps > 0 and step >= total_steps - config.head_polish_steps
+        pace_active = bool(
+            config.pace_expand_start_step and step >= config.pace_expand_start_step
+        )
+        if config.pace_expand_start_step:
+            polishing = bool(
+                config.head_polish_steps > 0
+                and config.pace_expand_start_step - config.head_polish_steps <= step
+                < config.pace_expand_start_step
+            )
+        else:
+            polishing = config.head_polish_steps > 0 and step >= total_steps - config.head_polish_steps
         optimization_phase = "HEAD" if step < config.head_prefit_steps or polishing else phase
-        if optimization_phase != current_phase:
+        if config.pace_expand_start_step and step == config.pace_expand_start_step:
+            with torch.no_grad():
+                teacher_embeddings = (
+                    compact_suffix.embedding()
+                    if compact_suffix is not None
+                    else (
+                        forward_h6_prefix_cache(student, prefix_cache)
+                        if isinstance(prefix_cache, H6PrefixCache)
+                        else _extract_joint_embedding(
+                            _forward_aux(student, target_x), int(target_x.size(0))
+                        )
+                    )
+                )
+                pace_teacher_logits = head(teacher_embeddings).detach()
+                pace_stable_weights = stable_support_weights(
+                    pace_teacher_logits, local_labels
+                )
+        trainability_key = (optimization_phase, pace_active)
+        if trainability_key != current_trainability_key:
             if optimization_phase == "HEAD":
                 student.eval()
                 for parameter in student.parameters():
@@ -2023,16 +2484,25 @@ def _fit_sf_tapft(
                         ).detach()
                     cached_head_forward_steps += 1
             else:
+                allowed_names = set(
+                    expanded_phase_names[phase]
+                    if pace_active
+                    else base_phase_names[phase]
+                )
                 if compact_suffix is None:
-                    policy.apply(student, phase)
+                    student.eval()
+                    for name, parameter in student.named_parameters():
+                        parameter.requires_grad_(name in allowed_names)
                 else:
                     for parameter in compact_suffix.parameters():
                         parameter.requires_grad_(False)
-                    for parameter in compact_suffix.t3.norm.parameters():
-                        parameter.requires_grad_(True)
+                    compact_named = dict(compact_suffix.named_parameters())
+                    for name in allowed_names:
+                        compact_named[name.removeprefix(identity_prefix)].requires_grad_(True)
             for parameter in head.parameters():
                 parameter.requires_grad_(True)
             current_phase = optimization_phase
+            current_trainability_key = trainability_key
         lr_factor = _learning_rate_factor(step, scheduler_steps, config.warmup_ratio)
         base_lrs = _fast_strong_group_lrs(config, step, phase)
         if config.fast_tail_steps and config.fast_tail_start_step <= step < config.fast_tail_start_step + config.fast_tail_steps:
@@ -2073,7 +2543,7 @@ def _fit_sf_tapft(
             cvar_active = (
                 config.head_cvar_steps > 0
                 and step >= total_steps - config.head_cvar_steps
-            )
+            ) or (pace_active and config.pace_tail_weight > 0.0)
             if cvar_active:
                 row_losses = F.cross_entropy(
                     logits,
@@ -2110,7 +2580,9 @@ def _fit_sf_tapft(
                 else logits.new_zeros(())
             )
             anchor = (
-                l2sp(student.named_parameters()) if l2sp is not None else logits.new_zeros(())
+                l2sp((name, training_named[name]) for name in l2sp_names)
+                if l2sp is not None
+                else logits.new_zeros(())
             )
             head_anchor_rows = 1.0 - F.cosine_similarity(
                 head.weight, initial_head_weight, dim=1, eps=_EPS
@@ -2137,6 +2609,16 @@ def _fit_sf_tapft(
                     temperature=config.selective_kd_temperature,
                     gamma=config.selective_kd_gamma,
                 )
+            preservation = logits.new_zeros(())
+            if pace_active and config.pace_preserve_weight > 0.0:
+                if pace_teacher_logits is None or pace_stable_weights is None:
+                    raise RuntimeError("PACE expansion started without a D0 teacher snapshot")
+                preservation = stable_preservation_kl(
+                    logits,
+                    pace_teacher_logits,
+                    pace_stable_weights,
+                    temperature=config.pace_preserve_temperature,
+                )
             loss = (
                 ce
                 + float(config.lambda_proto) * proto
@@ -2145,6 +2627,8 @@ def _fit_sf_tapft(
                 + float(config.head_anchor_weight) * head_anchor
                 + float(config.hard_pair_weight) * hard_pair
                 + float(config.head_cvar_weight) * cvar
+                + float(config.pace_tail_weight) * cvar
+                + float(config.pace_preserve_weight) * preservation
             )
         if not bool(torch.isfinite(loss)):
             raise RuntimeError("SF-TAPFT loss became non-finite")
@@ -2159,6 +2643,8 @@ def _fit_sf_tapft(
         torch.nn.utils.clip_grad_norm_(trainable, float(config.gradient_clip_norm))
         scaler.step(optimizer)
         scaler.update()
+        if pace_active:
+            pace_expanded_optimizer_steps += 1
         if ema is not None:
             ema.update(
                 {
@@ -2173,6 +2659,9 @@ def _fit_sf_tapft(
         losses.append(loss_value)
         if cvar_active:
             head_cvar_losses.append(float(cvar.detach()))
+        if pace_active:
+            pace_tail_losses.append(float(cvar.detach()))
+            pace_preserve_losses.append(float(preservation.detach()))
         evaluate_checkpoint = (
             checkpoint_validation is None
             or not validation_step_set
@@ -2332,7 +2821,7 @@ def _fit_sf_tapft(
     )
     support_safety = (
         audit_h6_support_safety(student, head, prefix_cache, target_x, target_labels)
-        if prefix_cache is not None
+        if isinstance(prefix_cache, H6PrefixCache)
         else None
     )
     audit = SFTAPFTAudit(
@@ -2416,6 +2905,11 @@ def _fit_sf_tapft(
             support_safety.max_abs_logit_delta if support_safety is not None else 0.0
         ),
         support_safety_fallback_to_float32=False,
+        pace_expand_start_step=int(config.pace_expand_start_step),
+        pace_teacher_snapshot_count=int(pace_teacher_logits is not None),
+        pace_expanded_optimizer_steps=pace_expanded_optimizer_steps,
+        pace_tail_losses=tuple(pace_tail_losses),
+        pace_preserve_losses=tuple(pace_preserve_losses),
     )
     return SFTAPFTResult(
         model=student,
@@ -2674,6 +3168,83 @@ def _full_support_refit_config(
     )
 
 
+@dataclass(frozen=True)
+class HeadBiasOOFCalibration:
+    calibration: BiasCalibration
+    folds: int
+    head_only_steps: int
+    embedding_forward_steps: int
+
+
+def fit_sf_tapft_support_oof_head_bias(
+    result: SFTAPFTResult,
+    target_train: TargetOnlyAdaptationDataset,
+    *,
+    folds: int = 4,
+    head_only_steps: int = 40,
+    lr: float = 0.05,
+    l2: float = 0.01,
+    seed: int = 392002,
+) -> HeadBiasOOFCalibration:
+    """Cross-fit only the head on one frozen final-support embedding matrix."""
+
+    if not isinstance(result, SFTAPFTResult):
+        raise TypeError("result must be SFTAPFTResult")
+    selector = GroupedTargetCVSelector(folds=int(folds), seed=int(seed))
+    splits = selector.split(labels=target_train.labels, groups=target_train.groups)
+    model = result.model
+    device = next(model.parameters()).device
+    dtype = next(parameter.dtype for parameter in model.parameters() if parameter.is_floating_point())
+    support_x = target_train.received_iq.to(device=device, dtype=dtype)
+    local_labels = _local_labels(target_train.labels, result.head.class_ids, device)
+    model.eval()
+    with torch.no_grad():
+        embeddings = _extract_joint_embedding(
+            _forward_aux(model, support_x), int(support_x.size(0))
+        ).detach()
+    oof_logits = torch.empty(
+        (embeddings.size(0), len(result.head.class_ids)),
+        device=device,
+        dtype=torch.float32,
+    )
+    for train_indices, validation_indices in splits:
+        train_index = torch.tensor(train_indices, device=device, dtype=torch.long)
+        validation_index = torch.tensor(validation_indices, device=device, dtype=torch.long)
+        fold_head = copy.deepcopy(result.head).to(device=device, dtype=dtype)
+        fold_head.bias.zero_()
+        for parameter in fold_head.parameters():
+            parameter.requires_grad_(True)
+        optimizer = torch.optim.AdamW(
+            fold_head.parameters(), lr=float(lr), weight_decay=float(l2)
+        )
+        for _ in range(int(head_only_steps)):
+            optimizer.zero_grad(set_to_none=True)
+            loss = F.cross_entropy(
+                fold_head(embeddings[train_index]), local_labels[train_index]
+            )
+            loss.backward()
+            optimizer.step()
+        with torch.no_grad():
+            oof_logits[validation_index] = fold_head(embeddings[validation_index]).float()
+    calibration = fit_zero_sum_class_bias(
+        oof_logits,
+        local_labels,
+        steps=int(head_only_steps),
+        lr=float(lr),
+        l2=float(l2),
+    )
+    with torch.no_grad():
+        result.head.bias.copy_(
+            calibration.bias.to(device=result.head.bias.device, dtype=result.head.bias.dtype)
+        )
+    return HeadBiasOOFCalibration(
+        calibration=calibration,
+        folds=int(folds),
+        head_only_steps=int(head_only_steps) * int(folds) + int(head_only_steps),
+        embedding_forward_steps=1,
+    )
+
+
 def fit_sf_tapft_support_oof_temperature(
     checkpoint_model: nn.Module,
     target_train: TargetOnlyAdaptationDataset,
@@ -2871,9 +3442,12 @@ def select_sf_tapft_by_grouped_cv(
 
 
 __all__ = [
+    "BiasCalibration",
     "CheckpointAverager",
+    "CompactTimeNormSuffix",
     "FoldMetrics",
     "GroupedTargetCVSelector",
+    "HeadBiasOOFCalibration",
     "L2SPRegularizer",
     "ProgressiveTrainabilityPolicy",
     "SFTAPFTAudit",
@@ -2886,13 +3460,19 @@ __all__ = [
     "TemperatureCalibration",
     "TargetOnlyAdaptationDataset",
     "TargetPrototypeHead",
+    "TimeNormPrefixCache",
     "TrainableDeltaAverager",
     "TrainableDeltaEMA",
     "class_adaptive_rho",
     "ensure_time_adapter",
+    "encode_trainable_suffix_prefix",
     "fit_sf_tapft",
     "fit_positive_temperature",
+    "fit_zero_sum_class_bias",
     "fit_sf_tapft_support_oof_temperature",
+    "fit_sf_tapft_support_oof_head_bias",
     "leave_one_out_prototype_logits",
+    "stable_preservation_kl",
+    "stable_support_weights",
     "select_sf_tapft_by_grouped_cv",
 ]

@@ -20,6 +20,7 @@ from .target_only_progressive_adapt import (
     ensure_time_adapter,
     fit_sf_tapft,
     fit_sf_tapft_inplace,
+    fit_sf_tapft_support_oof_head_bias,
     fit_sf_tapft_support_oof_temperature,
     select_sf_tapft_by_grouped_cv,
 )
@@ -30,8 +31,10 @@ from .sf_tapft_phase1_binding import (
 
 
 SF_TAPFT_BUNDLE_SCHEMA = "cvs.sf_tapft.v1"
-SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA = "cvs.sf_tapft.clean_single.v2"
-SF_TAPFT_DELTA_BUNDLE_SCHEMA = "cvs.sf_tapft.delta.v2"
+SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA = "cvs.sf_tapft.clean_single.v3"
+_SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA_V2 = "cvs.sf_tapft.clean_single.v2"
+SF_TAPFT_DELTA_BUNDLE_SCHEMA = "cvs.sf_tapft.delta.v3"
+_SF_TAPFT_DELTA_BUNDLE_SCHEMA_V2 = "cvs.sf_tapft.delta.v2"
 _SF_TAPFT_DELTA_BUNDLE_SCHEMA_V1 = "cvs.sf_tapft.delta.v1"
 
 
@@ -116,6 +119,7 @@ _CLEAN_SINGLE_BUNDLE_KEYS = frozenset(
         "state_change_audit",
     }
 )
+_CLEAN_SINGLE_BUNDLE_KEYS_V3 = _CLEAN_SINGLE_BUNDLE_KEYS | {"head_bias"}
 _PHASE1_BINDING_KEYS = frozenset(
     {
         "outer_content_root_sha256",
@@ -212,6 +216,10 @@ def _parse_config(config: Mapping[str, Any]) -> tuple[dict[str, Any], SFTAPFTCon
         normalized["phase_steps"] = tuple(normalized["phase_steps"])
     if "norm_rules" in normalized:
         normalized["norm_rules"] = tuple(tuple(row) for row in normalized["norm_rules"])
+    if "pace_norm_rules" in normalized:
+        normalized["pace_norm_rules"] = tuple(
+            tuple(row) for row in normalized["pace_norm_rules"]
+        )
     if "validation_steps" in normalized:
         normalized["validation_steps"] = tuple(normalized["validation_steps"])
     return values, SFTAPFTConfig(**normalized)
@@ -254,6 +262,14 @@ def _normalize_sf_tapft_bundle_config(raw: Any) -> dict[str, Any]:
         "head_anchor_weight": 0.0,
         "hard_pair_weight": 0.0,
         "hard_pair_margin": 0.2,
+        "pace_expand_start_step": 0,
+        "pace_norm_rules": (),
+        "pace_tail_weight": 0.0,
+        "pace_preserve_weight": 0.0,
+        "pace_preserve_temperature": 2.0,
+        "pace_bias_steps": 0,
+        "pace_bias_lr": 0.05,
+        "pace_bias_l2": 0.01,
         "prefix_cache_dtype": "off",
         "cache_storage_dtype": "",
         "suffix_compute_dtype": "",
@@ -267,6 +283,9 @@ def _normalize_sf_tapft_bundle_config(raw: Any) -> dict[str, Any]:
         normalized[name] = defaults[name]
     normalized["phase_steps"] = tuple(normalized["phase_steps"])
     normalized["norm_rules"] = tuple(tuple(row) for row in normalized["norm_rules"])
+    normalized["pace_norm_rules"] = tuple(
+        tuple(row) for row in normalized["pace_norm_rules"]
+    )
     normalized["validation_steps"] = tuple(normalized["validation_steps"])
     return normalized
 
@@ -463,6 +482,7 @@ def _clean_single_bundle_payload(
         "class_ids": list(class_ids),
         "model_state": _cpu_state(result.model),
         "head_state": _cpu_state(result.head),
+        "head_bias": result.head.bias.detach().cpu().clone(),
         "state_change_audit": _state_change_audit_payload(result.audit),
     }
 
@@ -497,6 +517,7 @@ def _delta_bundle_payload(
         "adapter_rank": int(method_config.adapter_rank),
         "class_ids": list(result.head.class_ids),
         "head_weight": result.head.weight.detach().cpu().to(torch.float16),
+        "head_bias": result.head.bias.detach().cpu().to(torch.float16),
         "head_scale": float(result.head.scale),
         "model_deltas": deltas,
         "updated_parameter_names": list(updated),
@@ -652,6 +673,17 @@ def run_sf_tapft_deploy_no_query(
         method_config,
         checkpoint_selection_mode="final_step",
     )
+    bias_calibration = None
+    if method_config.pace_bias_steps > 0:
+        bias_calibration = fit_sf_tapft_support_oof_head_bias(
+            result,
+            support,
+            folds=4,
+            head_only_steps=method_config.pace_bias_steps,
+            lr=method_config.pace_bias_lr,
+            l2=method_config.pace_bias_l2,
+            seed=method_config.seed,
+        )
     effective_temperature = float(method_config.inference_temperature)
     if temperature_calibration is not None:
         effective_temperature *= float(temperature_calibration.temperature)
@@ -699,6 +731,18 @@ def run_sf_tapft_deploy_no_query(
         "temperature_calibration": (
             asdict(temperature_calibration)
             if temperature_calibration is not None
+            else None
+        ),
+        "bias_calibration": (
+            {
+                "folds": bias_calibration.folds,
+                "head_only_steps": bias_calibration.head_only_steps,
+                "embedding_forward_steps": bias_calibration.embedding_forward_steps,
+                "bias": [float(value) for value in bias_calibration.calibration.bias.cpu()],
+                "nll_before": bias_calibration.calibration.nll_before,
+                "nll_after": bias_calibration.calibration.nll_after,
+            }
+            if bias_calibration is not None
             else None
         ),
         "selected_phase_steps": list(selected_phase_steps),
@@ -757,6 +801,17 @@ def run_sf_tapft_deploy_no_query(
             ),
             "hard_pair_weight": result.audit.hard_pair_weight,
             "hard_pair_margin": result.audit.hard_pair_margin,
+            "pace_expand_start_step": result.audit.pace_expand_start_step,
+            "pace_teacher_snapshot_count": result.audit.pace_teacher_snapshot_count,
+            "pace_expanded_optimizer_steps": result.audit.pace_expanded_optimizer_steps,
+            "pace_tail_losses": list(result.audit.pace_tail_losses),
+            "pace_preserve_losses": list(result.audit.pace_preserve_losses),
+            "head_only_oof_steps": (
+                bias_calibration.head_only_steps if bias_calibration is not None else 0
+            ),
+            "head_only_oof_embedding_forward_steps": (
+                bias_calibration.embedding_forward_steps if bias_calibration is not None else 0
+            ),
         },
     }
     _write_json(destination / "selection.json", receipt)
@@ -1050,16 +1105,18 @@ def load_sf_tapft_delta_bundle_strict(
         "da0_classifier_source_target_interpolation",
         "da0_prototype_scale",
     }
+    v3_keys = v2_keys | {"head_bias"}
     if not isinstance(payload, Mapping):
         raise ValueError("SF-TAPFT delta bundle top-level allowlist mismatch")
     schema = payload.get("schema")
-    expected_keys = (
-        v2_keys if schema == SF_TAPFT_DELTA_BUNDLE_SCHEMA else v1_keys
+    expected_keys = v3_keys if schema == SF_TAPFT_DELTA_BUNDLE_SCHEMA else (
+        v2_keys if schema == _SF_TAPFT_DELTA_BUNDLE_SCHEMA_V2 else v1_keys
     )
     if set(payload) != expected_keys:
         raise ValueError("SF-TAPFT delta bundle top-level allowlist mismatch")
     if schema not in {
         SF_TAPFT_DELTA_BUNDLE_SCHEMA,
+        _SF_TAPFT_DELTA_BUNDLE_SCHEMA_V2,
         _SF_TAPFT_DELTA_BUNDLE_SCHEMA_V1,
     }:
         raise ValueError("SF-TAPFT delta bundle schema mismatch")
@@ -1099,6 +1156,11 @@ def load_sf_tapft_delta_bundle_strict(
             head_weight.to(device=device, dtype=next(model.parameters()).dtype),
             class_ids,
             scale=float(payload["head_scale"]),
+            bias=(
+                payload["head_bias"].to(device=device, dtype=next(model.parameters()).dtype)
+                if "head_bias" in payload
+                else None
+            ),
         )
     except BaseException:
         with torch.no_grad():
@@ -1144,9 +1206,20 @@ def load_sf_tapft_clean_single_bundle_strict(
         payload = torch.load(source, map_location="cpu", weights_only=True)
     except (OSError, RuntimeError, ValueError, TypeError) as exc:
         raise ValueError(f"cannot safely load SF-TAPFT clean-single bundle: {source}") from exc
-    if not isinstance(payload, Mapping) or set(payload) != set(_CLEAN_SINGLE_BUNDLE_KEYS):
+    if not isinstance(payload, Mapping):
         raise ValueError("SF-TAPFT clean-single bundle top-level allowlist mismatch")
-    if payload["schema"] != SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA:
+    schema = payload.get("schema")
+    expected_keys = (
+        _CLEAN_SINGLE_BUNDLE_KEYS_V3
+        if schema == SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA
+        else _CLEAN_SINGLE_BUNDLE_KEYS
+    )
+    if set(payload) != set(expected_keys):
+        raise ValueError("SF-TAPFT clean-single bundle top-level allowlist mismatch")
+    if schema not in {
+        SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA,
+        _SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA_V2,
+    }:
         raise ValueError("SF-TAPFT clean-single bundle schema mismatch")
     if (
         payload["method"] != "sf_tapft_v1"
@@ -1282,6 +1355,7 @@ def load_sf_tapft_clean_single_bundle_strict(
         head_state["weight"],
         class_ids,
         scale=config.prototype_scale / config.inference_temperature,
+        bias=(payload["head_bias"] if "head_bias" in payload else None),
     )
     try:
         head.load_state_dict(head_state, strict=True)
@@ -1294,7 +1368,7 @@ def load_sf_tapft_clean_single_bundle_strict(
     for parameter in head.parameters():
         parameter.requires_grad_(False)
     audit = {
-        "schema": SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA,
+        "schema": schema,
         "method": payload["method"],
         "permission": payload["permission"],
         "model_role": payload["model_role"],
