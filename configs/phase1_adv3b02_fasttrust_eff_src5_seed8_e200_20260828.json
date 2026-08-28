@@ -1,0 +1,80 @@
+{
+  "schema": "cvs.phase1.fasttrust_eff_seedscan.v1",
+  "run_id": "phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1",
+  "epochs": 200,
+  "unlabeled_batch_size": 256,
+  "eval_batch_size": 512,
+  "training_schedule": "LEO_WEAK",
+  "source_profile": {
+    "profile_id": "SRC5_MAXP2",
+    "equalized": 1,
+    "train_days": [0, 1, 2, 3],
+    "test_days": [0, 1, 2, 3],
+    "allow_shared_days_if_receivers_disjoint": true,
+    "train_receivers": ["1-19", "18-2", "19-2", "2-19", "3-19"],
+    "train_receiver_indices": [1, 3, 4, 6, 8],
+    "test_receivers": ["1-1", "14-7", "2-1", "20-1", "7-14", "7-7", "8-8"],
+    "test_receiver_indices": [0, 2, 5, 7, 9, 10, 11]
+  },
+  "source_roles": {
+    "L_s": 0.07,
+    "U_s": 0.63,
+    "V_cal": 0.15,
+    "V_select": 0.15
+  },
+  "source_val_heavy_eval": {
+    "start_epoch": 1,
+    "interval": 10,
+    "final_window": 20,
+    "final_interval": 1
+  },
+  "fasttrust_eff": {
+    "hard_only_no_fill": true,
+    "hard_max_fraction": 0.25,
+    "class_balanced_cap": true,
+    "source_prior_gamma": 0.35,
+    "u_satellite_identity": true,
+    "u_satellite_lambda": 0.68,
+    "temporal_stability": false,
+    "prototype_evidence": false,
+    "u_prototype_update": false,
+    "cross_receiver_loss": false,
+    "nuisance_loss": false
+  },
+  "selection": {
+    "source_only": true,
+    "primary": "source_val_sat_hmean",
+    "definition": "harmonic_mean(clean_v_select,min_three_leo_v_select)",
+    "promotion_gate": {
+      "paired_leo_mean_delta_pp": ">0",
+      "paired_leo_floor_delta_pp": ">=0",
+      "paired_clean_delta_pp": ">=-0.5"
+    },
+    "tie_break": ["source_val_sat_hmean", "leo_mean", "leo_floor", "clean", "seed_ascending"]
+  },
+  "target_confirmation": {
+    "protocol_schema": "p2_min_v1",
+    "phase2_data_status": "VALIDATED_ONCE",
+    "capsule_id": "536fb610302e0298fe98b4708d2e6d51eb81aef676126c01d8de6ff1a67985f2",
+    "split_id": "260f7bc291e8dbfe53e68f58997414a7d89c8f15b55d59793de506fb434fac25",
+    "feedback_to_seed_selection": false
+  },
+  "rows": [
+    {"gpu": 0, "slot": 0, "seed": 713101, "variant": "CONTROL", "candidate": "S713101_ADV3B02_CONTROL", "muse_level": "M0", "init": "scratch"},
+    {"gpu": 0, "slot": 1, "seed": 713101, "variant": "FASTTRUST_EFF", "candidate": "S713101_ADV3B02_FASTTRUST_EFF", "muse_level": "M3", "init": "scratch"},
+    {"gpu": 1, "slot": 0, "seed": 713102, "variant": "CONTROL", "candidate": "S713102_ADV3B02_CONTROL", "muse_level": "M0", "init": "scratch"},
+    {"gpu": 1, "slot": 1, "seed": 713102, "variant": "FASTTRUST_EFF", "candidate": "S713102_ADV3B02_FASTTRUST_EFF", "muse_level": "M3", "init": "scratch"},
+    {"gpu": 2, "slot": 0, "seed": 713103, "variant": "CONTROL", "candidate": "S713103_ADV3B02_CONTROL", "muse_level": "M0", "init": "scratch"},
+    {"gpu": 2, "slot": 1, "seed": 713103, "variant": "FASTTRUST_EFF", "candidate": "S713103_ADV3B02_FASTTRUST_EFF", "muse_level": "M3", "init": "scratch"},
+    {"gpu": 3, "slot": 0, "seed": 713104, "variant": "CONTROL", "candidate": "S713104_ADV3B02_CONTROL", "muse_level": "M0", "init": "scratch"},
+    {"gpu": 3, "slot": 1, "seed": 713104, "variant": "FASTTRUST_EFF", "candidate": "S713104_ADV3B02_FASTTRUST_EFF", "muse_level": "M3", "init": "scratch"},
+    {"gpu": 4, "slot": 0, "seed": 713105, "variant": "CONTROL", "candidate": "S713105_ADV3B02_CONTROL", "muse_level": "M0", "init": "scratch"},
+    {"gpu": 4, "slot": 1, "seed": 713105, "variant": "FASTTRUST_EFF", "candidate": "S713105_ADV3B02_FASTTRUST_EFF", "muse_level": "M3", "init": "scratch"},
+    {"gpu": 5, "slot": 0, "seed": 713106, "variant": "CONTROL", "candidate": "S713106_ADV3B02_CONTROL", "muse_level": "M0", "init": "scratch"},
+    {"gpu": 5, "slot": 1, "seed": 713106, "variant": "FASTTRUST_EFF", "candidate": "S713106_ADV3B02_FASTTRUST_EFF", "muse_level": "M3", "init": "scratch"},
+    {"gpu": 6, "slot": 0, "seed": 713107, "variant": "CONTROL", "candidate": "S713107_ADV3B02_CONTROL", "muse_level": "M0", "init": "scratch"},
+    {"gpu": 6, "slot": 1, "seed": 713107, "variant": "FASTTRUST_EFF", "candidate": "S713107_ADV3B02_FASTTRUST_EFF", "muse_level": "M3", "init": "scratch"},
+    {"gpu": 7, "slot": 0, "seed": 713108, "variant": "CONTROL", "candidate": "S713108_ADV3B02_CONTROL", "muse_level": "M0", "init": "scratch"},
+    {"gpu": 7, "slot": 1, "seed": 713108, "variant": "FASTTRUST_EFF", "candidate": "S713108_ADV3B02_FASTTRUST_EFF", "muse_level": "M3", "init": "scratch"}
+  ]
+}

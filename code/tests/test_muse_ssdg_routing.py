@@ -273,3 +273,27 @@ def test_fasttrust_no_class_balanced_cap_keeps_global_reliability_order():
 
     assert balanced.hard.tolist() == [True, False, False, True]
     assert global_only.hard.tolist() == [True, True, False, False]
+
+
+def test_fasttrust_hard_only_no_fill_never_backfills_mid_or_low_reliability():
+    reliability = torch.tensor([0.99, 0.98, 0.79, 0.70, 0.40, 0.29, 0.20, 0.10])
+    stable = torch.ones(8, dtype=torch.bool)
+    predictions = torch.tensor([0, 1, 0, 1, 0, 1, 0, 1])
+    evidence = [torch.nn.functional.one_hot(predictions, num_classes=2).float()] * 3
+
+    route = route_fasttrust(
+        reliability,
+        stable,
+        evidence,
+        high_threshold=0.80,
+        low_threshold=0.30,
+        hard_max_fraction=0.50,
+        identity_max_fraction=1.00,
+        class_balanced_cap=True,
+        hard_only_no_fill=True,
+    )
+
+    assert route.hard.tolist() == [True, True, False, False, False, False, False, False]
+    assert not bool(route.soft.any())
+    assert not bool(route.candidate.any())
+    assert route.no_identity.tolist() == [False, False, True, True, True, True, True, True]

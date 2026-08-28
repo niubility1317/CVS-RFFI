@@ -383,6 +383,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--muse_hard_max_fraction", type=float, default=0.25)
     parser.add_argument("--muse_identity_max_fraction", type=float, default=0.50)
     parser.add_argument("--muse_class_balanced_cap", type=str2bool, default=True)
+    parser.add_argument("--muse_fasttrust_hard_only_no_fill", type=str2bool, default=False)
     parser.add_argument("--muse_require_temporal_stability", type=str2bool, default=True)
     parser.add_argument("--muse_candidate_mass", type=float, default=0.75)
     parser.add_argument("--muse_candidate_max_classes", type=int, default=3)
@@ -1110,6 +1111,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--amp", type=str2bool, default=True)
     parser.add_argument("--dry_run", action="store_true")
     add_common_data_args(parser)
+    parser.add_argument("--phase1_source_only_eval", type=str2bool, default=False)
+    parser.add_argument(
+        "--wisig_allow_shared_days_if_receivers_disjoint",
+        type=str2bool,
+        default=False,
+    )
     parser.add_argument(
         "--phase1_realized_rho_tolerance",
         type=float,
@@ -1961,12 +1968,29 @@ def _build_ssdg_wisig_data(args, device: torch.device):
     eq = "both" if str(args.wisig_equalized).lower() == "both" else int(args.wisig_equalized)
     day_list = list(ds_w.get("capture_date_list", []))
     rx_list = list(ds_w.get("rx_list", []))
+    source_only_eval = bool(getattr(args, "phase1_source_only_eval", False))
     train_days = _resolve_days(day_list, parse_csv_indices(args.wisig_train_days), list(range(min(3, len(day_list)))))
-    test_days = _resolve_days(day_list, parse_csv_indices(args.wisig_test_days), [len(day_list) - 1])
     train_rxs = _resolve_rxs(rx_list, parse_csv_indices(args.wisig_train_rxs), list(range(len(rx_list))))
-    test_rxs = _resolve_rxs(rx_list, parse_csv_indices(args.wisig_test_rxs), [])
-    train_days = [d for d in train_days if d not in test_days]
-    train_rxs = [r for r in train_rxs if r not in test_rxs]
+    test_days = [] if source_only_eval else _resolve_days(
+        day_list, parse_csv_indices(args.wisig_test_days), [len(day_list) - 1]
+    )
+    test_rxs = [] if source_only_eval else _resolve_rxs(
+        rx_list, parse_csv_indices(args.wisig_test_rxs), []
+    )
+    shared_days = sorted(set(train_days).intersection(test_days))
+    receiver_overlap = sorted(set(train_rxs).intersection(test_rxs))
+    allow_shared_days = bool(
+        getattr(args, "wisig_allow_shared_days_if_receivers_disjoint", False)
+    )
+    if allow_shared_days and shared_days:
+        if receiver_overlap:
+            raise ValueError(
+                "shared train/test days require disjoint receiver sets; "
+                f"overlap={receiver_overlap}"
+            )
+    else:
+        train_days = [d for d in train_days if d not in test_days]
+        train_rxs = [r for r in train_rxs if r not in test_rxs]
 
     source_base = WiSigCompactDataset(
         ds_w,
@@ -2018,22 +2042,50 @@ def _build_ssdg_wisig_data(args, device: torch.device):
     cal_ds = WiSigSubsetDataset(source_base, source_cal_idx, split_source="ssdg_source_v_cal")
     val_ds = WiSigSubsetDataset(source_base, val_idx, split_source="ssdg_source_v_select")
 
-    _, _, _, named_tests, named_meta, test_split_info = make_wisig_trainval_test_by_day_rx(
-        ds_w,
-        equalized=eq,
-        out_len=int(args.wisig_out_len),
-        domain=str(args.wisig_domain),
-        normalize=True,
-        crop_mode="center",
-        train_ratio=0.5,
-        guard_gap=int(args.wisig_guard_gap),
-        train_days=train_days,
-        test_days=test_days,
-        train_rxs=train_rxs,
-        test_rxs=test_rxs,
-        max_samples_per_combo_test=None if int(args.wisig_max_test_per_combo) <= 0 else int(args.wisig_max_test_per_combo),
-        seed=int(args.seed),
-    )
+    if source_only_eval:
+        named_tests = {"source_v_select": val_ds}
+        named_meta = {
+            "source_v_select": {
+                "days_idx": list(train_days),
+                "days_label": [day_list[index] for index in train_days],
+                "rxs_idx": list(train_rxs),
+                "rxs_label": [rx_list[index] for index in train_rxs],
+                "size": len(val_ds),
+                "phase1_role": "V_select",
+                "target_access": False,
+            }
+        }
+        test_split_info = {
+            "mode": "phase1_source_only_v_select",
+            "train_days_idx": list(train_days),
+            "train_days_label": [day_list[index] for index in train_days],
+            "test_days_idx": [],
+            "test_days_label": [],
+            "train_rxs_idx": list(train_rxs),
+            "train_rxs_label": [rx_list[index] for index in train_rxs],
+            "test_rxs_idx": [],
+            "test_rxs_label": [],
+            "target_access": False,
+            "named_test_sizes": {"source_v_select": len(val_ds)},
+        }
+    else:
+        _, _, _, named_tests, named_meta, test_split_info = make_wisig_trainval_test_by_day_rx(
+            ds_w,
+            equalized=eq,
+            out_len=int(args.wisig_out_len),
+            domain=str(args.wisig_domain),
+            normalize=True,
+            crop_mode="center",
+            train_ratio=0.5,
+            guard_gap=int(args.wisig_guard_gap),
+            train_days=train_days,
+            test_days=test_days,
+            train_rxs=train_rxs,
+            test_rxs=test_rxs,
+            allow_shared_days_if_receivers_disjoint=allow_shared_days,
+            max_samples_per_combo_test=None if int(args.wisig_max_test_per_combo) <= 0 else int(args.wisig_max_test_per_combo),
+            seed=int(args.seed),
+        )
     balanced_sampler = None
     if bool(getattr(args, "use_tx_rx_balanced_sampler", False)):
         if BalancedTxDomainBatchSampler is None or DataLoader is None:
@@ -2163,6 +2215,7 @@ def _build_ssdg_wisig_data(args, device: torch.device):
             "rho_label": float(len(labeled_ds)) / float(max(1, len(labeled_ds) + len(unlabeled_ds))),
             "balanced_sampler_active": bool(balanced_sampler is not None),
             "balanced_sampler_batch_size": int(balanced_sampler.batch_size) if balanced_sampler is not None else int(args.batch_size),
+            "target_access": not source_only_eval,
             "test": test_split_info,
             "named_test_meta": named_meta,
             "source_split_receipt": split_receipt,
@@ -6857,6 +6910,9 @@ def _compute_muse_unlabeled_losses(
             hard_max_fraction=float(args.muse_hard_max_fraction),
             identity_max_fraction=float(args.muse_identity_max_fraction),
             class_balanced_cap=bool(getattr(args, "muse_class_balanced_cap", True)),
+            hard_only_no_fill=bool(
+                getattr(args, "muse_fasttrust_hard_only_no_fill", False)
+            ),
         )
         route = MUSERoute(
             high=fasttrust_route.hard,

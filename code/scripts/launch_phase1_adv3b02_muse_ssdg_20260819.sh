@@ -16,6 +16,14 @@ BASE_CKPT="${BASE_CKPT:-${ROOT}/runs/phase1_adv3_mechanism32_queue_20260701/ADV3
 CANDIDATE_ID_OVERRIDE="${CANDIDATE_ID_OVERRIDE:-}"
 MUSE_UNLABELED_BATCH_SIZE="${MUSE_UNLABELED_BATCH_SIZE:-256}"
 EVAL_BATCH_SIZE="${EVAL_BATCH_SIZE:-256}"
+WISIG_TRAIN_DAYS="${WISIG_TRAIN_DAYS:-0,1}"
+WISIG_TEST_DAYS="${WISIG_TEST_DAYS:-2,3}"
+WISIG_TRAIN_RXS="${WISIG_TRAIN_RXS:-0,1,2,3,4,5,6}"
+WISIG_TEST_RXS="${WISIG_TEST_RXS:-7,8,9,10,11}"
+WISIG_ALLOW_SHARED_DAYS_IF_RECEIVERS_DISJOINT="${WISIG_ALLOW_SHARED_DAYS_IF_RECEIVERS_DISJOINT:-false}"
+PHASE1_SOURCE_ONLY_EVAL="${PHASE1_SOURCE_ONLY_EVAL:-false}"
+EVAL_ON="${EVAL_ON:-unseen_rx}"
+EVAL_GROUP_LOADER="${EVAL_GROUP_LOADER:-}"
 SOURCE_VAL_HEAVY_EVAL_START_EPOCH="${SOURCE_VAL_HEAVY_EVAL_START_EPOCH:-1}"
 SOURCE_VAL_HEAVY_EVAL_INTERVAL="${SOURCE_VAL_HEAVY_EVAL_INTERVAL:-1}"
 SOURCE_VAL_HEAVY_EVAL_FINAL_WINDOW="${SOURCE_VAL_HEAVY_EVAL_FINAL_WINDOW:-0}"
@@ -114,7 +122,7 @@ validate_only() {
 
 validate_ablation() {
   case "${ABLATION}" in
-    NONE|U_PROTO|NO_U_PROTO_UPDATE|NO_U_SATELLITE_ID|NO_PRIOR|NO_PROTO|NO_PROTO_EVIDENCE|NO_TEMPORAL|NO_SATELLITE|NO_CROSSRX|NO_NUISANCE|NUISANCE_DETACHED|NO_CLASS_CAP) ;;
+    NONE|U_PROTO|NO_U_PROTO_UPDATE|NO_U_SATELLITE_ID|NO_PRIOR|NO_PROTO|NO_PROTO_EVIDENCE|NO_TEMPORAL|NO_SATELLITE|NO_CROSSRX|NO_NUISANCE|NUISANCE_DETACHED|NO_CLASS_CAP|FASTTRUST_EFF) ;;
     *) echo "[MUSE-ERROR] unknown ablation: ${ABLATION}" >&2; return 2 ;;
   esac
   if [[ "${ABLATION}" == "U_PROTO" && "${ONLY_CANDIDATES}" != "M2" ]]; then
@@ -186,6 +194,29 @@ build_ablation_args() {
     NO_CLASS_CAP)
       ABLATION_ARGS+=(--muse_class_balanced_cap false)
       ;;
+    FASTTRUST_EFF)
+      ABLATION_ARGS+=(
+        --muse_fasttrust_hard_only_no_fill true
+        --muse_identity_max_fraction 0.25
+        --muse_class_balanced_cap true
+        --muse_prior_alignment_gamma 0.35
+        --muse_require_temporal_stability false
+        --muse_reliability_stability_weight 0
+        --muse_use_prototype_evidence false
+        --muse_fusion_global_weight 0.6666667
+        --muse_fusion_local_weight 0.3333333
+        --muse_fusion_prototype_weight 0
+        --muse_reliability_prototype_weight 0
+        --muse_unlabeled_prototype_weight 0
+        --muse_enable_u_prototype_update false
+        --muse_lambda_cross_receiver 0
+        --muse_lambda_nuisance 0
+        --muse_lambda_mid 0
+        --muse_lambda_low_entropy 0
+        --muse_enable_u_satellite_identity true
+        --muse_lambda_satellite 0.68
+      )
+      ;;
   esac
 }
 
@@ -207,6 +238,13 @@ build_train_command() {
     "CUDA_VISIBLE_DEVICES=${GPU}"
     "${PYTHON}" -u "${CODE_ROOT}/code/SSDG/train_ssdg.py"
     --wisig_pkl "${WISIG_PKL}"
+    --wisig_equalized 1
+    --wisig_train_days "${WISIG_TRAIN_DAYS}"
+    --wisig_test_days "${WISIG_TEST_DAYS}"
+    --wisig_train_rxs "${WISIG_TRAIN_RXS}"
+    --wisig_test_rxs "${WISIG_TEST_RXS}"
+    --wisig_allow_shared_days_if_receivers_disjoint "${WISIG_ALLOW_SHARED_DAYS_IF_RECEIVERS_DISJOINT}"
+    --phase1_source_only_eval "${PHASE1_SOURCE_ONLY_EVAL}"
     --split_mode tx_rx_day_1_7_2
     --labeled_ratio 0.07
     --unlabeled_ratio 0.63
@@ -489,7 +527,7 @@ build_eval_command() {
     "${PYTHON}" -u "${CODE_ROOT}/code/scripts/eval_ssdg_sat_per_rx.py"
     --ckpt "${candidate_root}/final_ssdg.pth"
     --output_json "${candidate_root}/metrics_joint.json"
-    --eval_on unseen_rx
+    --eval_on "${EVAL_ON}"
     --scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak
     --device cuda:0
     --max_batches -1
@@ -497,6 +535,9 @@ build_eval_command() {
     --sat_seed "${SEED}"
     --strict_reconstruction
   )
+  if [[ -n "${EVAL_GROUP_LOADER}" ]]; then
+    EVAL_CMD+=(--group_loader "${EVAL_GROUP_LOADER}")
+  fi
 }
 
 split_joint_metrics() {
@@ -638,8 +679,18 @@ write_config() {
   local candidate_id="$2"
   local capabilities="$3"
   local candidate_root="$4"
-  printf '{\n  "run_id": "%s",\n  "candidate": "%s",\n  "muse_level": "%s",\n  "ablation": "%s",\n  "init_mode": "%s",\n  "base_checkpoint": "%s",\n  "base_candidate": "ADV3B02_CORE90_SOFT_E200",\n  "capabilities": "%s",\n  "seed": %d,\n  "epochs": %d,\n  "labeled_batch_size": 128,\n  "unlabeled_batch_size": %d,\n  "ratios": {"L_s": 0.07, "U_s": 0.63, "V_cal": 0.15, "V_select": 0.15},\n  "checkpoint_selection": "final_only",\n  "final_evaluation": ["clean", "leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"]\n}\n' \
-    "${RUN_ID}" "${candidate_id}" "${level}" "${ABLATION}" "${INIT_MODE}" "${BASE_CKPT}" "${capabilities}" "${SEED}" "${TOTAL_EPOCHS}" "${MUSE_UNLABELED_BATCH_SIZE}" > "${candidate_root}/config.json"
+  local effective_base_ckpt=""
+  local effective_base_candidate=""
+  if [[ "${INIT_MODE}" == "adv3b02_core90" ]]; then
+    effective_base_ckpt="${BASE_CKPT}"
+    effective_base_candidate="ADV3B02_CORE90_SOFT_E200"
+  fi
+  printf '{\n  "run_id": "%s",\n  "candidate": "%s",\n  "muse_level": "%s",\n  "ablation": "%s",\n  "init_mode": "%s",\n  "base_checkpoint": "%s",\n  "base_candidate": "%s",\n  "capabilities": "%s",\n  "seed": %d,\n  "epochs": %d,\n  "labeled_batch_size": 128,\n  "unlabeled_batch_size": %d,\n  "phase1_source_only_eval": %s,\n  "wisig_train_days": "%s",\n  "wisig_train_receivers": "%s",\n  "wisig_test_days": "%s",\n  "wisig_test_receivers": "%s",\n  "eval_on": "%s",\n  "eval_group_loader": "%s",\n  "ratios": {"L_s": 0.07, "U_s": 0.63, "V_cal": 0.15, "V_select": 0.15},\n  "checkpoint_selection": "final_only",\n  "final_evaluation": ["clean", "leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"]\n}\n' \
+    "${RUN_ID}" "${candidate_id}" "${level}" "${ABLATION}" "${INIT_MODE}" \
+    "${effective_base_ckpt}" "${effective_base_candidate}" "${capabilities}" "${SEED}" \
+    "${TOTAL_EPOCHS}" "${MUSE_UNLABELED_BATCH_SIZE}" "${PHASE1_SOURCE_ONLY_EVAL}" \
+    "${WISIG_TRAIN_DAYS}" "${WISIG_TRAIN_RXS}" "${WISIG_TEST_DAYS}" "${WISIG_TEST_RXS}" \
+    "${EVAL_ON}" "${EVAL_GROUP_LOADER}" > "${candidate_root}/config.json"
 }
 
 run_candidate() {

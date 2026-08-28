@@ -598,6 +598,7 @@ def route_fasttrust(
     hard_max_fraction: float = 0.25,
     identity_max_fraction: float = 0.50,
     class_balanced_cap: bool = True,
+    hard_only_no_fill: bool = False,
 ) -> FastTrustRoute:
     """Route identity supervision with strict hard evidence and deterministic caps."""
 
@@ -673,19 +674,22 @@ def route_fasttrust(
             hard[selected_tensor] = True
             class_cap[selected_tensor] = True
 
-    remaining = max(0, identity_limit - int(hard.sum().item()))
     soft = torch.zeros_like(hard)
-    soft_pool = base.mid | (base.high & ~hard)
-    soft_selected = ranked_indices(soft_pool)[:remaining]
-    if soft_selected:
-        soft[torch.as_tensor(soft_selected, device=value.device, dtype=torch.long)] = True
-    remaining -= len(soft_selected)
     candidate = torch.zeros_like(hard)
-    candidate_selected = ranked_indices(base.low)[: max(0, remaining)]
-    if candidate_selected:
-        candidate[
-            torch.as_tensor(candidate_selected, device=value.device, dtype=torch.long)
-        ] = True
+    if not bool(hard_only_no_fill):
+        remaining = max(0, identity_limit - int(hard.sum().item()))
+        soft_pool = base.mid | (base.high & ~hard)
+        soft_selected = ranked_indices(soft_pool)[:remaining]
+        if soft_selected:
+            soft[
+                torch.as_tensor(soft_selected, device=value.device, dtype=torch.long)
+            ] = True
+        remaining -= len(soft_selected)
+        candidate_selected = ranked_indices(base.low)[: max(0, remaining)]
+        if candidate_selected:
+            candidate[
+                torch.as_tensor(candidate_selected, device=value.device, dtype=torch.long)
+            ] = True
     no_identity = ~(hard | soft | candidate)
     return FastTrustRoute(
         hard=hard,
