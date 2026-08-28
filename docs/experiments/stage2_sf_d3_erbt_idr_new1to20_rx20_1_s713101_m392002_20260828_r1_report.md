@@ -1,6 +1,6 @@
 # D3+ERBT-IDR嵌套新类矩阵实验报告
 
-- 状态：LOCAL_VERIFIED
+- 状态：STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT
 - run ID：`stage2_sf_d3_erbt_idr_new1to20_rx20_1_s713101_m392002_20260828_r1`
 - 科学声明：`DIAGNOSTIC_NON_FORMAL`；历史Stage2-C truth已用于旧研究，不用于正式晋级
 - Git commit：`9236f747f19efd0cbd9fb67e2b5250ca9b8276aa`
@@ -40,3 +40,6 @@ GPU预分配：D3三场景使用GPU0/1/2；预测阶段按实时preflight在GPU0
 - 独立P0/P1审查：初审APPROVE；定点检查发现support交错排序风险，已用`(class,rank)`稳定排序与打乱输入测试修复。
 - Git远端OID：`9236f747f19efd0cbd9fb67e2b5250ca9b8276aa`，与本地HEAD一致。
 
+## 运行结论
+
+clear真实checkpoint无query smoke在导入阶段失败，异常为`ModuleNotFoundError: cvsrffi.stage2_sf_erbt_oldonly`；未进入训练、未打开query、未产生performance result。根因是首个release归档遗漏既有依赖文件。r1所有数据构建audit和日志保留；计算矩阵迁移到全新run ID`stage2_sf_d3_erbt_idr_new1to20_rx20_1_s713101_m392002_20260828_r2_techfix1`，复用已验证数据切片，不覆盖r1。
