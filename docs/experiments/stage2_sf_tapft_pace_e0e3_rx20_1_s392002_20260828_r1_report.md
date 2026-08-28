@@ -10,7 +10,7 @@
 - adaptation capsule：`d18-enrollment-before-rx20-1-seed713102-k10-pace`；split：`stage2b-rx20-1-seed713102-before-support-prefix`。
 - query capsule：`sf-tapft-pace-rx20-1-s713102-clear-k10-independent20-v1`；split：`p2_min_v1-rx20-1-s713102-clear-old6-k10-independent20`。
 - checkpoint：`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`。
-- Git提交：待本轮实现提交后回填。
+- Git提交：`f83154f3b503cb012574be36db1bdf51dc65ba7b`（共享工作树中的并行ERBT任务提交时一并纳入本轮已暂存PACE文件；文件内容与51项本地验证一致）。
 - 环境/CWD：N607，`/home/szu2070436088/2510044040/CV-SincNet`；Python=`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
 - 本地配置：`configs/stage2_sf_tapft_pace_e0e3_rx20_1_s392002_20260828.json`。
 - 远端输入：`runs/stage2_sf_tapft_pace_e0e3_rx20_1_s392002_20260828_r1/inputs`；输出：同run根目录下`E0`–`E3`及`query/<row>`，均不可覆盖。
