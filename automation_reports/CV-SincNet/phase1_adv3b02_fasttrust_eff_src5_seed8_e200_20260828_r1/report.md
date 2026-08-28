@@ -3,7 +3,7 @@
 ## 最小预登记
 
 - Run ID：`phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1`
-- 当前状态：未启动；M0遥测P0已完成本地修复、107项回归、唯一一次定点复审、Git发布和N607单文件同步，待全新smoke r3闭合真实checkpoint无query链路。
+- 当前状态：`LOCAL_VERIFIED`；M0遥测P0修复闭合，真实checkpoint无query smoke r3为`ARTIFACTS_COMPLETE`且源域隔离/严格重建通过，待最终GPU/路径preflight后立即启动正式16行扫描。
 - 研究目的：在`SRC5_MAXP2`源域上比较同种子的ADV3B02从头训练对照与FastTrust有效子集，使用源域`V_select`冻结星地信道性能最好的FastTrust种子。
 - 数据协议：`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`；四个角色均仅来自源接收机，物理样本两两不交；目标接收机数据不参与训练、校准、选模、候选重排或选择性重跑。
 - 源域profile：`SRC5_MAXP2`；源接收机`1-19,18-2,19-2,2-19,3-19`，ManySig索引`1,3,4,6,8`；目标接收机`1-1,14-7,2-1,20-1,7-14,7-7,8-8`，ManySig索引`0,2,5,7,9,10,11`；源/目标接收机严格不相交。16行扫描只构建源接收机索引`1,3,4,6,8`的4日数据及源域`V_select`，不构建或访问目标接收机加载器；目标4日数据只属于冻结后的独立确认阶段。
@@ -35,6 +35,7 @@
 - 第二个smoke结果：首个训练batch后触发`UnboundLocalError: local variable 'rc4_route' referenced before assignment`，状态`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；run root和日志保留，无残留进程。根因是既有RC4遥测在M1–M3分支内才定义`rc4_route`，但M0日志字典无条件读取该局部变量。
 - 定点修复：只在每个batch入口设置`rc4_route=None`，不改变M1–M3/RC4后续覆盖赋值与数值路径；新增顺序回归测试。相关107项测试、Python编译和`git diff --check`通过；唯一一次定点复审结论为原P0已修复且该两文件修复无剩余P0/P1。
 - 修复后smoke Run ID：`phase1_adv3b02_control_src5_noquery_smoke_e1_20260828_r3`；沿用r2冻结的GPU0/seed713101/M0/scratch/E1源域配置，只更换为hotfix release和全新不可覆盖路径。
+- smoke r3结果：`final_ssdg.pth`为epoch1，状态`ARTIFACTS_COMPLETE`；checkpoint回读`target_access=false`、唯一named loader为`source_v_select`、source split receipt中的target days/receivers均为空；strict reconstruction无fallback、missing、unexpected或shape mismatch。clean为57.422%，`leo_clear_weak/leo_low_elev_weak/leo_rain_weak`分别为38.033%/37.128%/36.422%，每场景18,000条，15个receiver×LEO行完整；以上仅作链路smoke，不作性能结论。
 - smoke精确命令：
 
 ```bash
