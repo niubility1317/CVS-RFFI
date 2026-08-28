@@ -30,7 +30,7 @@ from cvsrffi.stage2_structured_late_block_runner import (
 )
 
 
-_CONFIG_ALLOWLIST = frozenset(
+_LEGACY_CONFIG_ALLOWLIST = frozenset(
     {
         "protocol_schema",
         "phase2_data_status",
@@ -45,6 +45,9 @@ _CONFIG_ALLOWLIST = frozenset(
         "seed",
         "k_shot",
     }
+)
+_CONFIG_ALLOWLIST = _LEGACY_CONFIG_ALLOWLIST | frozenset(
+    {"min_trainable_fraction", "max_trainable_fraction"}
 )
 
 
@@ -125,6 +128,16 @@ def _prototype_tensors(
     return prototypes, class_ids
 
 
+def _structured_config(config: Mapping[str, Any]) -> StructuredLateBlockConfig:
+    return StructuredLateBlockConfig(
+        candidate=str(config["candidate"]),
+        steps=int(config["steps"]),
+        learning_rate=float(config["learning_rate"]),
+        min_trainable_fraction=float(config.get("min_trainable_fraction", 0.05)),
+        max_trainable_fraction=float(config.get("max_trainable_fraction", 0.15)),
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=Path, required=True)
@@ -133,7 +146,10 @@ def main() -> int:
     args = parser.parse_args()
 
     config = json.loads(args.config.read_text(encoding="utf-8-sig"))
-    if not isinstance(config, dict) or frozenset(config) != _CONFIG_ALLOWLIST:
+    if not isinstance(config, dict) or frozenset(config) not in {
+        _LEGACY_CONFIG_ALLOWLIST,
+        _CONFIG_ALLOWLIST,
+    }:
         raise ValueError("smoke config allowlist mismatch")
     if config["protocol_schema"] != "p2_min_v1":
         raise ValueError("protocol_schema must be p2_min_v1")
@@ -197,11 +213,7 @@ def main() -> int:
             "capsule_id": config["capsule_id"],
             "split_id": config["split_id"],
         },
-        config=StructuredLateBlockConfig(
-            candidate=str(config["candidate"]),
-            steps=int(config["steps"]),
-            learning_rate=float(config["learning_rate"]),
-        ),
+        config=_structured_config(config),
     )
     if model.training or any(parameter.requires_grad for parameter in model.parameters()):
         raise RuntimeError("smoke did not return a fully frozen model")

@@ -249,6 +249,49 @@ def test_exhaustive_phase2_allowlist_and_resource_caps_fail_closed() -> None:
     assert not {"query_iq", "query_labels", "query_truth", "query_role"} & adapt_parameters
 
 
+def test_configurable_min_fraction_admits_r3_band_and_preserves_default() -> None:
+    subject = _subject()
+    default = subject.StructuredLateBlockConfig()
+    assert default.min_trainable_fraction == 0.05
+    assert default.max_trainable_fraction == 0.15
+
+    actual_fraction = 0.034342
+    r3 = subject.StructuredLateBlockConfig(
+        candidate="freq_f3_proj",
+        steps=1,
+        min_trainable_fraction=0.03,
+        max_trainable_fraction=0.15,
+    )
+    assert r3.min_trainable_fraction <= actual_fraction <= r3.max_trainable_fraction
+
+    with pytest.raises(subject.StructuredLateBlockError, match="fraction"):
+        subject._select_parameters(  # noqa: SLF001
+            _ToyADV3B02(reserve=1500),
+            default,
+        )
+
+    _selected, _total, admitted_fraction, _structural = subject._select_parameters(  # noqa: SLF001
+        _ToyADV3B02(reserve=1500),
+        r3,
+    )
+    assert r3.min_trainable_fraction <= admitted_fraction <= r3.max_trainable_fraction
+
+    with pytest.raises(subject.StructuredLateBlockError, match="fraction"):
+        subject._select_parameters(  # noqa: SLF001
+            _ToyADV3B02(reserve=1800),
+            r3,
+        )
+
+    for minimum, maximum in ((-0.01, 0.15), (0.16, 0.15), (0.03, 0.21)):
+        with pytest.raises(subject.StructuredLateBlockError, match="fraction"):
+            subject._validate_config(  # noqa: SLF001
+                subject.StructuredLateBlockConfig(
+                    min_trainable_fraction=minimum,
+                    max_trainable_fraction=maximum,
+                )
+            )
+
+
 def test_query_prediction_is_per_sample_and_state_read_only() -> None:
     subject = _subject()
     torch.manual_seed(13)

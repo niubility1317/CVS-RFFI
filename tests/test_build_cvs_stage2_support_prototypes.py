@@ -448,6 +448,10 @@ def test_committed_smoke_config_is_directly_consumable_by_bridge_and_no_query_sm
             "phase2_canonical_union_k20_smoke_v1_r2.json",
             "P2_CANONICAL_UNION_SMOKE_V1_20260828_R2",
         ),
+        (
+            "phase2_canonical_union_k20_smoke_v1_r3_support.json",
+            "P2_CANONICAL_UNION_SMOKE_V1_20260828_R3",
+        ),
     ):
         config_path = REPO_ROOT / "configs" / name
         config = json.loads(config_path.read_text(encoding="utf-8-sig"))
@@ -459,7 +463,7 @@ def test_committed_smoke_config_is_directly_consumable_by_bridge_and_no_query_sm
             receiver="1-1",
         )
         assert set(config) == subject._CONFIG_ALLOWLIST  # noqa: SLF001
-        assert set(config) == no_query_smoke._CONFIG_ALLOWLIST  # noqa: SLF001
+        assert set(config) == no_query_smoke._LEGACY_CONFIG_ALLOWLIST  # noqa: SLF001
         assert not any("query" in key or "truth" in key for key in config)
         assert f"/runs/{run_id}/input/" in config["support_path"]
         assert config["support_path"].endswith(
@@ -469,3 +473,17 @@ def test_committed_smoke_config_is_directly_consumable_by_bridge_and_no_query_sm
         assert config["prototype_path"].endswith(
             "/prototypes_leo_clear_weak_rx1-1_k20.npz"
         )
+
+    r3_path = (
+        REPO_ROOT / "configs" / "phase2_canonical_union_k20_smoke_v1_r3.json"
+    )
+    r3_config = json.loads(r3_path.read_text(encoding="utf-8-sig"))
+    assert set(r3_config) == no_query_smoke._CONFIG_ALLOWLIST  # noqa: SLF001
+    assert not any("query" in key or "truth" in key for key in r3_config)
+    structured = no_query_smoke._structured_config(r3_config)  # noqa: SLF001
+    assert structured.candidate == "freq_f3_proj"
+    assert structured.min_trainable_fraction == 0.03
+    assert structured.max_trainable_fraction == 0.15
+    assert structured.min_trainable_fraction <= 0.034342 <= structured.max_trainable_fraction
+    assert "P2_CANONICAL_UNION_SMOKE_V1_20260828_R3" in r3_config["support_path"]
+    assert "P2_CANONICAL_UNION_SMOKE_V1_20260828_R3" in r3_config["prototype_path"]

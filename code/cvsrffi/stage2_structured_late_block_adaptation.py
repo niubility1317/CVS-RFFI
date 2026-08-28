@@ -61,6 +61,7 @@ class StructuredLateBlockConfig:
     parameter_drift_weight: float = 1.0e-4
     gradient_clip: float = 1.0
     logit_scale: float = 8.0
+    min_trainable_fraction: float = TARGET_MIN_TRAINABLE_FRACTION
     max_trainable_fraction: float = TARGET_MAX_TRAINABLE_FRACTION
 
 
@@ -144,14 +145,18 @@ def _validate_config(config: StructuredLateBlockConfig) -> None:
         value = float(raw_value)
         if not math.isfinite(value) or value < 0.0:
             raise StructuredLateBlockError(f"{name} must be finite and nonnegative")
+    configured_min = float(config.min_trainable_fraction)
     configured_cap = float(config.max_trainable_fraction)
     if (
-        not math.isfinite(configured_cap)
-        or configured_cap < TARGET_MIN_TRAINABLE_FRACTION
+        not math.isfinite(configured_min)
+        or configured_min < 0.0
+        or not math.isfinite(configured_cap)
+        or configured_min > configured_cap
         or configured_cap > HARD_MAX_TRAINABLE_FRACTION
     ):
         raise StructuredLateBlockError(
-            "max_trainable_fraction must be within the 5%-20% fraction bounds"
+            "trainable fraction bounds must satisfy "
+            "0 <= min_trainable_fraction <= max_trainable_fraction <= 20%"
         )
 
 
@@ -289,13 +294,15 @@ def _select_parameters(
     trainable = int(sum(parameter.numel() for _, parameter in selected))
     fraction = float(trainable / total)
     if (
-        fraction < TARGET_MIN_TRAINABLE_FRACTION
+        fraction < float(config.min_trainable_fraction)
         or fraction > float(config.max_trainable_fraction)
         or fraction > HARD_MAX_TRAINABLE_FRACTION
     ):
         raise StructuredLateBlockError(
             "selected trainable fraction is outside the preregistered bounds: "
-            f"fraction={fraction:.6f}, target=5%-15%, hard_cap=20%"
+            f"fraction={fraction:.6f}, "
+            f"target={float(config.min_trainable_fraction):.0%}-"
+            f"{float(config.max_trainable_fraction):.0%}, hard_cap=20%"
         )
     structural = int(
         sum(
