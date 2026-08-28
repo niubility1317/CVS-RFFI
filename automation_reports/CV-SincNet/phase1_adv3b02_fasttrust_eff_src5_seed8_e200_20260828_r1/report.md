@@ -3,7 +3,7 @@
 ## 最小预登记
 
 - Run ID：`phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1`
-- 当前状态：未启动；代码与配置已发布到N607唯一release，远端编译和launcher dry-run通过，待真实checkpoint无query smoke。
+- 当前状态：未启动；首个E1 M3 smoke因E1无法容纳六段MUSE严格递增边界而在模型初始化前技术失败，失败artifact已保留；待用全新M0 E1 Run ID完成共享源域数据/checkpoint/四场景链路smoke。
 - 研究目的：在`SRC5_MAXP2`源域上比较同种子的ADV3B02从头训练对照与FastTrust有效子集，使用源域`V_select`冻结星地信道性能最好的FastTrust种子。
 - 数据协议：`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`；四个角色均仅来自源接收机，物理样本两两不交；目标接收机数据不参与训练、校准、选模、候选重排或选择性重跑。
 - 源域profile：`SRC5_MAXP2`；源接收机`1-19,18-2,19-2,2-19,3-19`，ManySig索引`1,3,4,6,8`；目标接收机`1-1,14-7,2-1,20-1,7-14,7-7,8-8`，ManySig索引`0,2,5,7,9,10,11`；源/目标接收机严格不相交。16行扫描只构建源接收机索引`1,3,4,6,8`的4日数据及源域`V_select`，不构建或访问目标接收机加载器；目标4日数据只属于冻结后的独立确认阶段。
@@ -29,11 +29,12 @@
 - release目录：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1_16736ec3`；远端Python编译与两个launcher的`bash -n`通过。
 - 行为dry-run：`SEEDSCAN-ROW=16`、`from_scratch=16`、`FastTrust-EFF=8`、目标接收机参数不存在、正式run root未创建。
 - N607只读预检：2026-08-28 20:54 CST，8张RTX3090均为0%利用率、1MiB显存占用，无计算进程；正式启动前再次核对并维持每卡最多两个训练进程。
-- smoke Run ID：`phase1_adv3b02_fasttrust_eff_src5_noquery_smoke_e1_20260828_r1`；GPU0、seed713101、M3+FastTrust-EFF、scratch、E1、仅源接收机4日和源域`V_select`，不构建目标加载器。
+- 首个smoke：`phase1_adv3b02_fasttrust_eff_src5_noquery_smoke_e1_20260828_r1`在模型/数据迭代前触发`MUSE schedule boundaries must be strictly increasing`，状态`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；该run root和日志完整保留，不覆盖、不作为性能结果。正式E200边界`1<17<41<69<161<181<201`合法，不受该E1 smoke配置错误影响。
+- 新smoke Run ID：`phase1_adv3b02_control_src5_noquery_smoke_e1_20260828_r2`；GPU0、seed713101、M0、scratch、E1，只验证两臂共享的源接收机4日数据、`V_select`隔离、真实checkpoint和clean+三种LEO严格重建评估链路；FastTrust-EFF专属路由已由聚焦单测、远端dry-run和正式E200命令覆盖。
 - smoke精确命令：
 
 ```bash
-nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet CODE_ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1_16736ec3 PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python CONTROL_PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python RUN_ID=phase1_adv3b02_fasttrust_eff_src5_noquery_smoke_e1_20260828_r1 RUNS_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fasttrust_eff_src5_noquery_smoke_e1_20260828_r1 GPU=0 SEED=713101 INIT_MODE=scratch CANDIDATE_ID_OVERRIDE=SMOKE_FASTTRUST_EFF_SRC5_E1 MUSE_UNLABELED_BATCH_SIZE=256 EVAL_BATCH_SIZE=512 SOURCE_VAL_HEAVY_EVAL_START_EPOCH=1 SOURCE_VAL_HEAVY_EVAL_INTERVAL=1 SOURCE_VAL_HEAVY_EVAL_FINAL_WINDOW=1 SOURCE_VAL_HEAVY_EVAL_FINAL_INTERVAL=1 TOTAL_EPOCHS=1 LABEL_EPOCHS=1 PSEUDO_EPOCHS=0 WISIG_TRAIN_DAYS=0,1,2,3 WISIG_TEST_DAYS= WISIG_TRAIN_RXS=1,3,4,6,8 WISIG_TEST_RXS= WISIG_ALLOW_SHARED_DAYS_IF_RECEIVERS_DISJOINT=false PHASE1_SOURCE_ONLY_EVAL=true EVAL_ON=source_v_select EVAL_GROUP_LOADER=source_v_select ABLATION=FASTTRUST_EFF bash /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1_16736ec3/code/scripts/launch_phase1_adv3b02_muse_ssdg_20260819.sh --only=M3 > /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_fasttrust_eff_src5_noquery_smoke_e1_20260828_r1/dispatcher.log 2>&1 < /dev/null &
+nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet CODE_ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1_16736ec3 PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python CONTROL_PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python RUN_ID=phase1_adv3b02_control_src5_noquery_smoke_e1_20260828_r2 RUNS_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_control_src5_noquery_smoke_e1_20260828_r2 GPU=0 SEED=713101 INIT_MODE=scratch CANDIDATE_ID_OVERRIDE=SMOKE_CONTROL_SRC5_E1 MUSE_UNLABELED_BATCH_SIZE=256 EVAL_BATCH_SIZE=512 SOURCE_VAL_HEAVY_EVAL_START_EPOCH=1 SOURCE_VAL_HEAVY_EVAL_INTERVAL=1 SOURCE_VAL_HEAVY_EVAL_FINAL_WINDOW=1 SOURCE_VAL_HEAVY_EVAL_FINAL_INTERVAL=1 TOTAL_EPOCHS=1 LABEL_EPOCHS=1 PSEUDO_EPOCHS=0 WISIG_TRAIN_DAYS=0,1,2,3 WISIG_TEST_DAYS= WISIG_TRAIN_RXS=1,3,4,6,8 WISIG_TEST_RXS= WISIG_ALLOW_SHARED_DAYS_IF_RECEIVERS_DISJOINT=false PHASE1_SOURCE_ONLY_EVAL=true EVAL_ON=source_v_select EVAL_GROUP_LOADER=source_v_select ABLATION=NONE bash /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1_16736ec3/code/scripts/launch_phase1_adv3b02_muse_ssdg_20260819.sh --only=M0 > /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_control_src5_noquery_smoke_e1_20260828_r2/dispatcher.log 2>&1 < /dev/null &
 ```
 
 - 正式精确命令：
