@@ -1,33 +1,153 @@
-# SF-TAPFT-RSE R0–R3实验报告
+# SF-TAPFT-RSE R0–R4实验报告
 
-## 最小预登记
+## 结论
+
+本轮已完成报告定义的R0–R3最小矩阵，并在R1通过预登记门槛后按条件发布R4。全部5行均完成support-only适配、不可覆盖bundle、最大独立Query120的truth-blind prediction和truth-last同row评分，最终状态为`ANALYZED`。
+
+在`rx_20_1/leo_clear_weak/seed713103/旧6类K=10`这一行上：
+
+- R3双delta聚合最强：`DA1_REG0`的BA为78.3333%、最低类别召回为60%、NLL为0.631502；相对共同`DA0_REG0`分别改善10.0000pp、15.0000pp和-0.491809。
+- R1强度选择次之：BA为76.6667%、floor为60%、NLL为0.642610；support-only选择为step250、alpha1.0。
+- R4=R1+双视图：BA、floor和逐类正确数与R1完全相同，仅NLL改善0.000747、ECE改善0.000384，但墙钟增加11.93%、prefix cache翻倍。因此R4没有形成有意义的准确率收益，不取代R1，更不取代R3。
+- R2单独双视图与R0的BA/floor相同，NLL反而高0.001644，说明当前固定0.05rad视图只提供很弱的正则作用。
+- R3相对共同DA0的配对翻转为17条由错变对、5条由对变错，exact McNemar `p=0.01690`。这是单query集合内的配对证据，不等价于跨receiver/seed/domain的稳定性证明。
+
+因此，本轮推荐把R3保留为单域性能候选，把R1保留为比R4更节省cache的稳健选择候选；R4不晋级。由于R4是查看R1同一query结果后按预登记条件触发，其结果属于条件探索证据，不能冒充独立确认集结论。
+
+## 最小预登记与数据协议
 
 - run ID：`stage2_sf_tapft_rse_r0r3_rx20_1_s392002_20260828_r1`。
-- 科学问题：在固定E0许可边界下，support-only强度选择、双视图一致性或双delta聚合能否降低K=10估计方差，并在新目标域上优于E0。
-- 数据协议：`p2_min_v1`、`VALIDATED_ONCE`；旧6类、每类10条独立物理support；support/query物理ID不相交；不注册新类。
-- 目标域：`rx_20_1`、seed713103、`leo_clear_weak`；最大独立Query为每类20条、共120条。
-- 矩阵：R0=E0；R1=两折×两次cross-fit选择step/alpha；R2=双视图与`lambda_view=0.05`；R3=两个每类8条子集delta均值+全support 30步低学习率收尾。
-- 条件行：R4=R1+R2，仅当R1或R2相对R0单独满足科学门槛时发布；否则不运行。
-- 固定E0边界：target head+`t3.norm(weight,bias)`；禁止早层Norm、类别bias、HardPair、Adapter、full t3、frequency/domain更新和EMA。
-- 选择网格：`step={250,350,450,520}`，`alpha={0,0.25,0.5,0.75,1}`；R1全程只读support及其固定视图。
-- 科学门槛：相对R0，BA不低于R0且至少一个候选提高；floor不下降；NLL不恶化超过0.02。低性能不触发技术停止。
-- 资源合同：可训练元素≤2048、delta≤16KB、cache≤4MB、CUDA allocated≤256MiB、reserved≤384MiB；warm-resident median≤60s。缺少逐模块MAC/功率传感器时明确记录`NOT_CAPTURED`。
-- 本地代码与配置：待实现后补记；本地环境`ssr-gpu`，工作目录为当前Git worktree。
-- N607输入：ADV3B02 CORE90 checkpoint、已验证Phase1 bundle、seed713103 predictor package；远端run root为`/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_tapft_rse_r0r3_rx20_1_s392002_20260828_r1`。
-- GPU：preflight后按每卡最多两个训练任务分配；不得触碰无关进程。
-- 停止规则：仅协议/query泄漏、错误输入或checkout、输出覆盖、无prediction闭合、launcher级故障或至少两行同一确定性预prediction异常。
-- 预期artifact：每行`selection.json`、clean-single bundle、delta bundle、GNU time、GPU采样、truth-blind predictions；全部prediction闭合后由独立scorer连接truth。
+- 科学问题：在固定E0许可边界下，support-only强度选择、双视图一致性或双delta聚合能否降低K=10估计方差并优于E0。
+- 协议：`p2_min_v1`、`VALIDATED_ONCE`；`capsule_id=d18-enrollment-before-rx20-1-seed713103-k10-rse`；`split_id=stage2b-rx20-1-seed713103-before-support-prefix`。
+- support：旧6类，每类10条独立物理样本，共60条；support IQ摘要为`701286e3b26ae381e36f6c1e9379871182c8b0e4f1fce143942af2073181b80c`。
+- query：seed713103、`leo_clear_weak`、每类20条，共120条；与support物理ID交集为0；不注册新类。
+- 四状态命名：本轮只定义`DA0_REG0`与`DA1_REG0`；新类指标为`N/A`，没有把未注册类记为0。
+- truth边界：适配阶段没有query能力。R0–R3全部prediction闭合后才物化truth；R4是看到R1评分后按预登记条件触发，R4预测进程仍不接收truth路径且receipt为`query_truth_opened=false`，其独立scorer只在R4 prediction闭合后运行。
+- 共同checkpoint：`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`及匹配Phase1 bundle。
+- 科学门槛：相对R0，BA不低于R0且至少一个候选提高，floor不下降，NLL不恶化超过0.02。R1满足门槛，因此条件R4合法触发。
 
-## 实现与本地验证
+## 优化落地
 
-- `target_only_progressive_adapt.py`新增RSE固定许可检查、双视图相位旋转与JS损失、单轨迹snapshot、support-only稳健风险、alpha插值、类别均衡子集和共同anchor delta平均。
-- R1每个fold只执行一条完整E0轨迹；验证集建立一次H6 prefix cache，21个状态仅运行suffix。full-support提交再次运行完整520步轨迹，并直接读取被选择step的同轨迹snapshot，避免截短fast-tail改变学习率轨迹。
-- R2把原始视图与0.05rad全局相位视图批量缓存；CE读取两视图，JS约束两视图，LOO-proto只读原始物理视图，不把同一物理样本的增强副本当成独立K-shot。
-- R3两个子模型共享由完整60条support构建的target-head锚点，各自使用每类8条的确定性平衡子集；只平均共同注册的`t3.norm`和head delta，随后在完整support上用`lr_norm=1e-5`、`lr_head=5e-5`收尾30步。
-- 新增资源审计：有效视图数、cache构建view-equivalent full forward、suffix forward/backward、head optimizer step；缺少逐模块MAC基线时FBE保持`NOT_CAPTURED`。
-- 本地执行`py_compile`和55项聚焦回归，全部通过；4行矩阵解析回读为`MATRIX_OK`。独立P0/P1初审发现并修复R1截短轨迹错配与R3 clean-single时序配置失效；仅针对原R3问题的定点复审为PASS。
-- 根目录`E:\type10-7`不是Git仓库；本报告镜像到本Git承载面，正式提交只包含本轮RSE文件。
+### R0：E0紧凑基线
 
-## 结果
+仅训练target head和`t3.norm(weight,bias)`，完整轨迹为300+150+70=520步。冻结前缀只计算一次，后续使用cache运行suffix；可训练元素1152。
 
-实验尚未发布。
+### R1：support-only强度选择
+
+- 对support执行2折×2次分层cross-fit。
+- 每个fold只训练一条完整520步轨迹，并保留step250/350/450/520快照，避免为每个step重复训练。
+- 对每个快照计算alpha0/0.25/0.5/0.75/1.0的插值状态。
+- 风险为`MacroCE+0.30×class-CVaR+0.10×view-JS+0.05×margin-regression`，只读held-out support。
+- 每个fold的validation只建立一次H6 prefix cache，候选只运行suffix。
+- 选择完成后在完整60条support上重跑同一完整轨迹，并提交所选step的同轨迹快照；最终仍是单一delta和单推理路径。
+
+R1选择step250、alpha1.0；所选平均风险为0.937012，同行alpha0平均风险为1.468326，下降36.18%。最终训练仍跑完520步再读取step250快照，这是保持调度轨迹一致性的设计，不是250步提前停止。
+
+### R2：双视图一致性
+
+- 原始IQ与一个0.05rad全局相位旋转视图分别建立prefix cache。
+- 训练损失固定加入`lambda_view=0.05`的JS一致性，不在query上搜索。
+- LOO-prototype只读取原始物理视图，不把增强副本计为新的K-shot；物理support仍为60条。
+- 0.05rad是设计报告未给出数值时本轮预登记的`UNPUBLISHED_DEFAULT`；方法结构严格落地，但该幅度不宣称论文或地面标定数值等价。
+
+### R3：双delta聚合
+
+- 从共同完整support target-head锚点出发，生成2个确定性类别均衡子集，每个子集每类8条、共48条。
+- 两个子模型只更新E0许可参数；只平均共同注册的head和`t3.norm`delta。
+- 平均delta后在完整60条support上以`lr_norm=1e-5`、`lr_head=5e-5`收尾30步。
+- 输出仍是单一delta；没有推理ensemble成本。
+
+### R4：R1+R2
+
+R4在R1通过后触发。每个cross-fit fold同时缓存原始视图和相位视图；每个step/alpha候选均在两视图上运行suffix，真实view-JS进入support-only选择风险。R4仍选择step250、alpha1.0；所选平均风险0.943778，同行alpha0为1.468615，下降35.73%。全部候选的view-JS均值仅0.002513、最大0.009145，解释了其分类边界与R1几乎不变。
+
+## 最大独立Query结果
+
+### 总体指标
+
+|行|方法|BA|最低类别召回|NLL|ECE|相对DA0 BA|相对DA0 floor|相对DA0 NLL|
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+|DA0|适配前共同基线|68.3333%|45.0000%|1.123311|0.238688|0|0|0|
+|R0|E0|75.0000%|55.0000%|0.649324|0.087487|+6.6667pp|+10.0000pp|-0.473987|
+|R1|强度选择|76.6667%|60.0000%|0.642610|0.073608|+8.3333pp|+15.0000pp|-0.480701|
+|R2|双视图|75.0000%|55.0000%|0.650968|0.080291|+6.6667pp|+10.0000pp|-0.472343|
+|R3|双delta聚合|78.3333%|60.0000%|0.631502|0.083568|+10.0000pp|+15.0000pp|-0.491809|
+|R4|强度选择+双视图|76.6667%|60.0000%|0.641863|0.073224|+8.3333pp|+15.0000pp|-0.481449|
+
+这里的floor是最低类别召回，不是最低fold BA。NLL越低越好，ECE越低表示置信度与实际正确率越一致。
+
+### 各类别准确率
+
+每类20条query，括号内为正确条数。
+
+|状态/行|类0|类1|类2|类3|类4|类5|
+|---|---:|---:|---:|---:|---:|---:|
+|DA0_REG0|55%(11)|50%(10)|75%(15)|45%(9)|90%(18)|95%(19)|
+|R0 DA1_REG0|85%(17)|55%(11)|75%(15)|55%(11)|80%(16)|100%(20)|
+|R1 DA1_REG0|75%(15)|60%(12)|75%(15)|65%(13)|85%(17)|100%(20)|
+|R2 DA1_REG0|80%(16)|55%(11)|75%(15)|55%(11)|85%(17)|100%(20)|
+|R3 DA1_REG0|85%(17)|60%(12)|75%(15)|65%(13)|85%(17)|100%(20)|
+|R4 DA1_REG0|75%(15)|60%(12)|75%(15)|65%(13)|85%(17)|100%(20)|
+
+R3与R1/R4的差距全部来自类0：R3多正确2条；其余5类正确数相同。类2在所有方法中均停留在75%，是下一轮不能靠本轮三种机制解决的稳定瓶颈。
+
+### 各类别NLL
+
+|状态/行|类0|类1|类2|类3|类4|类5|
+|---|---:|---:|---:|---:|---:|---:|
+|DA0_REG0|2.138134|1.216240|1.293395|1.654104|0.353296|0.084697|
+|R0 DA1_REG0|0.431812|1.053557|0.959776|0.848857|0.564772|0.037172|
+|R1 DA1_REG0|0.551391|0.896136|1.004850|0.832326|0.530530|0.040426|
+|R2 DA1_REG0|0.441409|1.063301|0.958818|0.833833|0.569894|0.038555|
+|R3 DA1_REG0|0.405746|1.017261|1.020448|0.811078|0.499670|0.034808|
+|R4 DA1_REG0|0.556511|0.895010|0.994282|0.833214|0.530274|0.041885|
+
+R3的总体NLL最低，主要来自类0、3、4、5；R4只在类1和类2的概率质量上相对R1有轻微变化，没有改变任何类别正确数。
+
+### 配对翻转
+
+|行|DA0错→DA1对|DA0对→DA1错|两者都对|两者都错|exact McNemar p|
+|---|---:|---:|---:|---:|---:|
+|R0|16|8|74|22|0.151590|
+|R1|15|5|77|23|0.041389|
+|R2|15|7|75|23|0.133801|
+|R3|17|5|77|21|0.016901|
+|R4|15|5|77|23|0.041389|
+
+这些p值未做多重比较修正，且5行共享同一query；它们只用于描述配对方向，不能单独支持跨域推广结论。
+
+## 资源与工程结果
+
+|行|墙钟|最大RSS|可训练/实际变化元素|prefix cache|delta|clean-single bundle|GPU证据|
+|---|---:|---:|---:|---:|---:|---:|---|
+|R0|10.01s|1,617,020KB|1152/1152|929,520B|5,544B|4,293,084B|dmon峰值648MiB|
+|R1|49.62s|1,679,224KB|1152/1152|929,520B|5,544B|4,293,084B|dmon峰值668MiB|
+|R2|15.27s|1,652,312KB|1152/1152|1,859,040B|5,544B|4,293,084B|dmon峰值626MiB|
+|R3|19.14s|1,618,484KB|1152/1152|929,520B|5,544B|4,293,084B|dmon峰值660MiB|
+|R4|55.54s|1,710,436KB|1152/1152|1,859,040B|5,544B|4,293,084B|运行中独立点采样660MiB；峰值`NOT_CAPTURED`|
+
+- 1152个元素由target head和`t3.norm(weight,bias)`构成；没有扩大许可边界。
+- 所有delta均小于16KB，prefix cache均小于4MB，单次墙钟均小于60秒。
+- R1有4条cross-fit轨迹和1条full-support轨迹；validation计数为4次full-prefix、84次suffix。
+- R4同样有4+1条轨迹，但训练和validation均为双视图；validation计数为8次full-prefix、164次suffix，因此比R1慢11.93%。
+- R3工作流为2条48-sample子集轨迹+30步full-support polish；最终audit中的30次suffix/backward只表示提交前polish，不能误读为整个R3只有30步。
+- `nvidia-smi dmon`的FB峰值不是PyTorch allocator的allocated/reserved峰值。R4启动后原dmon窗口没有覆盖完整生命周期，只保留了运行中660MiB点采样；因此CUDA峰值合同对R4不能宣称已验证。10次warm-resident P90也未运行，属于候选通过后的非首轮确认项。
+
+## 实现与验证证据
+
+- 初始实现提交：`6548fe83e108eb7c5473a8d5e002fc06631f1d4b`。
+- R4双视图选择与详细scorer提交：`250f11105ee93e53b5722f87bdf0b95670f9c1da`。
+- 两次提交均已push，且远端分支OID独立回读等于本地HEAD。
+- release v2：`release_250f1110.zip`，本地/远端SHA256均为`0e78c2f4098a52ff3182f27124c316302d4247c0257c167da98218a8fd671e90`；远端`CVS-RFFI`环境编译通过。
+- 本地`ssr-gpu`环境：`py_compile`通过，58项聚焦回归全部通过，R4矩阵解析为`R4_MATRIX_OK`。
+- 独立P0/P1审查：发现R4配置额外字段会触发严格allowlist，删除后定点复审PASS；没有遗留P0/P1。
+- 首次R4 prediction误传clean-single bundle，在严格状态审计处失败且未生成prediction目录；根因回溯确认R0–R3使用的是delta bundle。随后改用正确delta bundle完成prediction，没有重训、覆盖或读取truth。
+
+## 决策与下一步
+
+1. R3作为本轮单域性能候选：它同时给出最高BA、最低NLL和显著的正向配对翻转。
+2. R1作为较轻的稳健选择候选：相对R3更慢，但机制可解释，且比R4少一半cache；本轮不推荐R4。
+3. 不再搜索相位角或`lambda_view`，避免在同一query上继续调参。双视图如要保留，只能在新的receiver/seed/domain上按固定值独立确认。
+4. 下一次最小确认应把R3与R1放到新的目标域/seed；只有跨域方向一致后，才运行10次常驻延迟P90和完整CUDA allocator峰值测量。
+
+本报告不主张跨域最优、论文数值复现或生产默认晋级；当前最高可证实结论是：在这一条独立最大Query120上，R3优于E0、R1、R2和条件R4。
