@@ -1,6 +1,6 @@
 # D3+ERBT-IDR嵌套新类矩阵实验报告（r2技术修复）
 
-- 状态：LOCAL_VERIFIED
+- 状态：STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT
 - run ID：`stage2_sf_d3_erbt_idr_new1to20_rx20_1_s713101_m392002_20260828_r2_techfix1`
 - fresh run原因：r1 release归档遗漏既有模块`stage2_sf_erbt_oldonly.py`，导入阶段失败，无performance result
 - Git commit：`afdc007893eedeed99df2aaa581e1e5a0d368805`
@@ -23,3 +23,6 @@ D3三行分配GPU0/1/2；D3闭合后21个预测格按实时资源每GPU最多两
 
 只在协议/query泄漏、错误receiver/seed/K/scene/split、输出覆盖、错误checkout、进程归属不清、无prediction闭合、scorer连接错误或同一确定性预prediction异常至少出现两次时停止run-owned进程。低性能不得停止。
 
+## 运行结论
+
+clear smoke在导入阶段再次失败：共享N607项目树中的`target_only_progressive_runner.py`缺少`run_sf_tapft_deploy_no_query`。r2未训练、未打开query、无performance result。连续两次依赖缺失表明共享代码基线整体落后，故不再逐文件补漏；r3改用run私有完整Git代码闭包。
