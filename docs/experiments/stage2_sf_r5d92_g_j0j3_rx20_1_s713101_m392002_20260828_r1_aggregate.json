@@ -1,0 +1,61 @@
+{
+  "J0_DA0_REG1": {
+    "H_macro": 0.7961718708497164,
+    "new_acc_macro": 0.8133333333333334,
+    "old_acc_macro": 0.7805555555555556,
+    "registered_acc_macro": 0.7954545454545454,
+    "registered_nll_macro": 1.338652288101274
+  },
+  "four_state_decisions_total": 7920,
+  "methods": {
+    "J1_R0": {
+      "DA1_REG0_old_acc_macro": 0.875,
+      "DA1_REG1_H_macro": 0.7961718708497164,
+      "DA1_REG1_new_acc_macro": 0.8133333333333334,
+      "DA1_REG1_new_floor_min": 0.6,
+      "DA1_REG1_old_acc_macro": 0.7805555555555556,
+      "DA1_REG1_old_floor_min": 0.45,
+      "adapt_max_rss_kib_max": 1603144,
+      "adapt_wall_seconds_macro": 15.219999999999999,
+      "adapt_wall_seconds_max": 15.75,
+      "forgetting_macro": 0.09444444444444444,
+      "registered_acc_macro": 0.7954545454545454,
+      "registered_nll_macro": 1.3382274974046338
+    },
+    "J2_R3": {
+      "DA1_REG0_old_acc_macro": 0.8777777777777778,
+      "DA1_REG1_H_macro": 0.7961718708497164,
+      "DA1_REG1_new_acc_macro": 0.8133333333333334,
+      "DA1_REG1_new_floor_min": 0.6,
+      "DA1_REG1_old_acc_macro": 0.7805555555555556,
+      "DA1_REG1_old_floor_min": 0.45,
+      "adapt_max_rss_kib_max": 1619812,
+      "adapt_wall_seconds_macro": 25.12,
+      "adapt_wall_seconds_max": 26.0,
+      "forgetting_macro": 0.09722222222222221,
+      "registered_acc_macro": 0.7954545454545454,
+      "registered_nll_macro": 1.338683181162521
+    },
+    "J3_R5D92_G": {
+      "DA1_REG0_old_acc_macro": 0.8833333333333334,
+      "DA1_REG1_H_macro": 0.7961718708497164,
+      "DA1_REG1_new_acc_macro": 0.8133333333333334,
+      "DA1_REG1_new_floor_min": 0.6,
+      "DA1_REG1_old_acc_macro": 0.7805555555555556,
+      "DA1_REG1_old_floor_min": 0.45,
+      "adapt_max_rss_kib_max": 1846796,
+      "adapt_wall_seconds_macro": 104.84999999999998,
+      "adapt_wall_seconds_max": 108.6,
+      "forgetting_macro": 0.10277777777777779,
+      "registered_acc_macro": 0.7954545454545454,
+      "registered_nll_macro": 1.3384537105741199
+    }
+  },
+  "prediction_mismatches_total": {
+    "J1_R0": 8,
+    "J2_R3": 25,
+    "J3_R5D92_G": 24
+  },
+  "query_rows_per_state": 660,
+  "status": "ANALYZED"
+}

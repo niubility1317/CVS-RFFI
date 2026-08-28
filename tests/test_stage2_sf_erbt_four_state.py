@@ -74,6 +74,10 @@ def test_registration_pair_reuses_one_old_domain_metric() -> None:
     )
 
     assert audit["metric_fit_count"] == 1
+    covariance = audit["reg1_balanced_covariance_audit"]
+    assert len(covariance["block_traces"]) == 2
+    assert covariance["eigenvalue_min"] > 0.0
+    assert covariance["condition_number"] >= 1.0
     assert audit["metric_support_rows"] == 60
     assert np.array_equal(reg0.log_diag, reg1.log_diag)
     assert reg0.audit["registration_state"] == "REG0"

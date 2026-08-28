@@ -117,6 +117,7 @@ def fit_erbt_registration_pair(
 
     from cvsrffi import stage2_ablation_executors as executors
     from cvsrffi import stage2_d42_unified_shrinkage_lda as d42
+    from cvsrffi.stage2_d92_registration_balanced_covariance import _group_covariance
 
     old_registry = tuple(int(value) for value in old_class_ids)
     registered_registry = tuple(int(value) for value in registered_class_ids)
@@ -211,12 +212,47 @@ def fit_erbt_registration_pair(
             registered_registry,
             "REG1",
         )
+        registered_transformed = d42._transform(registered_features, log_diag)
+        old_covariance = _group_covariance(
+            d42,
+            registered_transformed,
+            registered_indices,
+            np.arange(6, dtype=np.int64),
+        )
+        new_covariance = _group_covariance(
+            d42,
+            registered_transformed,
+            registered_indices,
+            np.arange(6, len(registered_registry), dtype=np.int64),
+        )
+        balanced_covariance = 0.5 * (old_covariance + new_covariance)
+        balanced_covariance = 0.5 * (
+            balanced_covariance + balanced_covariance.T
+        )
+        eigenvalues = np.linalg.eigvalsh(balanced_covariance)
+        block_traces = [
+            float(np.trace(balanced_covariance[block, block]))
+            for block in d42.BLOCK_SLICES
+        ]
     return reg0, reg1, {
         "metric_fit_count": 1,
         "metric_support_rows": int(k_shot * 6),
         "metric_new_support_rows": 0,
         "metric_optimizer_steps": len(trace),
         "k_shot": k_shot,
+        "reg0_d92_audit": {
+            key: value for key, value in reg0.audit.items() if key.startswith("d92_")
+        },
+        "reg1_d92_audit": {
+            key: value for key, value in reg1.audit.items() if key.startswith("d92_")
+        },
+        "reg1_balanced_covariance_audit": {
+            "positive_definite": bool(float(np.min(eigenvalues)) > 0.0),
+            "eigenvalue_min": float(np.min(eigenvalues)),
+            "eigenvalue_max": float(np.max(eigenvalues)),
+            "condition_number": float(np.max(eigenvalues) / np.min(eigenvalues)),
+            "block_traces": block_traces,
+        },
     }
 
 

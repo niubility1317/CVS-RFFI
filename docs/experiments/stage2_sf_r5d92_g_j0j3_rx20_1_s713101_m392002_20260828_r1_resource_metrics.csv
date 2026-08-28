@@ -1,0 +1,10 @@
+scenario,method,adapt_wall_seconds,prediction_wall_seconds,adapt_max_rss_kib,prediction_max_rss_kib,trainable_elements,actual_changed_elements,prefix_cache_bytes,delta_bytes,final_audit_steps,trajectory_fit_count,d92_crossfit_fit_count,selected_candidate,fallback_used,selection_wall_seconds
+leo_clear_weak,J1_R0,15.75,42.01,1603144,1458464,1152,1152,929520,5608,520,1,0,,,
+leo_clear_weak,J2_R3,24.97,44.26,1614372,1457924,1152,1152,929520,5608,30,2,0,,,
+leo_clear_weak,J3_R5D92_G,102.22999999999999,41.54,1844000,1480156,1152,1152,929520,5608,30,5,15,S250_A100,False,95.66145803686231
+leo_low_elev_weak,J1_R0,15.45,43.23,1598128,1455868,1152,1152,929520,5608,520,1,0,,,
+leo_low_elev_weak,J2_R3,24.39,42.09,1619812,1463280,1152,1152,929520,5608,30,2,0,,,
+leo_low_elev_weak,J3_R5D92_G,108.6,43.42,1846796,1455348,1152,1152,929520,5608,30,5,15,S250_A100,False,101.6928149103187
+leo_rain_weak,J1_R0,14.46,42.02,1601756,1481104,1152,1152,929520,5608,520,1,0,,,
+leo_rain_weak,J2_R3,26.0,40.19,1614628,1472056,1152,1152,929520,5608,30,2,0,,,
+leo_rain_weak,J3_R5D92_G,103.72,43.06,1840160,1486956,1152,1152,929520,5608,30,5,15,S520_A100,False,96.82284397259355
