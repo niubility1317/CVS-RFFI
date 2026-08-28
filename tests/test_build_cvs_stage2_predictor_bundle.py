@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import sys
 from collections import Counter
+from itertools import groupby
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -1258,6 +1259,126 @@ def test_manifest_all_includes_every_query_and_preserves_truth_boundary(
         for right in range(left + 1, len(scenario_token_sets))
     )
     assert set(all_query_tokens) == set(truth_tokens)
+
+
+def test_manifest_all_query_seed_globally_shuffles_queries_without_support_drift(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    arrays = _canonical_manifest_all_arrays()
+    _patch_manifest_all_cache(monkeypatch, arrays)
+    first = _manifest_all_args(tmp_path, "manifest-shuffle-first")
+    repeat = _manifest_all_args(tmp_path, "manifest-shuffle-repeat")
+    changed = _manifest_all_args(tmp_path, "manifest-shuffle-changed")
+    repeat.query_seed = first.query_seed
+    changed.query_seed = first.query_seed + 1
+    token_secret = b"g" * 32
+
+    for args in (first, repeat, changed):
+        builder.build(args, token_secret=token_secret)
+
+    def truth_rows(args, scenario):
+        truth = json.loads(
+            (args.scorer_out_root / "truth_sidecar.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        return [row for row in truth["rows"] if row["scenario"] == scenario]
+
+    for scenario in builder.FORMAL_LEO_WEAK_SCENARIOS:
+        first_rows = truth_rows(first, scenario)
+        repeat_rows = truth_rows(repeat, scenario)
+        changed_rows = truth_rows(changed, scenario)
+        first_physical_ids = [
+            str(row["physical_sample_id"]) for row in first_rows
+        ]
+        repeat_physical_ids = [
+            str(row["physical_sample_id"]) for row in repeat_rows
+        ]
+        changed_physical_ids = [
+            str(row["physical_sample_id"]) for row in changed_rows
+        ]
+        first_truth_tokens = [str(row["query_token"]) for row in first_rows]
+        repeat_truth_tokens = [
+            str(row["query_token"]) for row in repeat_rows
+        ]
+
+        assert first_physical_ids == repeat_physical_ids
+        assert first_truth_tokens == repeat_truth_tokens
+        assert first_physical_ids != changed_physical_ids
+
+        for shuffled_rows in (first_rows, changed_rows):
+            transmitter_order = [
+                str(row["transmitter_label"]) for row in shuffled_rows
+            ]
+            longest_run = max(
+                len(list(run)) for _, run in groupby(transmitter_order)
+            )
+            assert longest_run < max(Counter(transmitter_order).values())
+
+        source = arrays[scenario]
+        canonical_ids = np.asarray(
+            source["canonical_physical_sample_ids"]
+        ).astype(str)
+        source_index_by_physical_id = {
+            physical_id: index
+            for index, physical_id in enumerate(canonical_ids.tolist())
+        }
+        query_snapshots = []
+        for args, rows in (
+            (first, first_rows),
+            (repeat, repeat_rows),
+            (changed, changed_rows),
+        ):
+            physical_ids = [str(row["physical_sample_id"]) for row in rows]
+            truth_tokens = [str(row["query_token"]) for row in rows]
+            expected_query_iq = np.asarray(
+                [
+                    source["leo_weak_iq"][
+                        source_index_by_physical_id[physical_id]
+                    ]
+                    for physical_id in physical_ids
+                ],
+                dtype=np.float32,
+            )
+            with np.load(
+                args.predictor_out_root / f"query_{scenario}.npz",
+                allow_pickle=False,
+            ) as archive:
+                snapshot = {
+                    member: np.asarray(archive[member]).copy()
+                    for member in builder.QUERY_NPZ_MEMBERS
+                }
+            predictor_tokens = snapshot["query_tokens"].astype(str).tolist()
+            assert predictor_tokens == truth_tokens
+            assert len(set(predictor_tokens)) == len(physical_ids)
+            assert np.array_equal(
+                snapshot["query_leo_weak_iq"],
+                expected_query_iq,
+            )
+            query_snapshots.append(snapshot)
+        for member in builder.QUERY_NPZ_MEMBERS:
+            assert np.array_equal(
+                query_snapshots[0][member], query_snapshots[1][member]
+            )
+
+        with np.load(
+            first.predictor_out_root / f"support_{scenario}.npz",
+            allow_pickle=False,
+        ) as first_support, np.load(
+            repeat.predictor_out_root / f"support_{scenario}.npz",
+            allow_pickle=False,
+        ) as repeat_support, np.load(
+            changed.predictor_out_root / f"support_{scenario}.npz",
+            allow_pickle=False,
+        ) as changed_support:
+            for member in builder.SUPPORT_NPZ_MEMBERS:
+                assert np.array_equal(
+                    first_support[member], repeat_support[member]
+                )
+                assert np.array_equal(
+                    first_support[member], changed_support[member]
+                )
 
 
 def test_manifest_all_package_is_consumed_by_formal_entry_without_rebalancing(

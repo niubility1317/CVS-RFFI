@@ -952,6 +952,22 @@ def build(args: argparse.Namespace, *, token_secret: bytes | None = None) -> dic
                     support_pool_max_k=support_pool_max_k,
                 )
             )
+            query_order_seed = int.from_bytes(
+                hashlib.sha256(
+                    (
+                        f"{query_seed}|{scenario}|"
+                        "manifest_all_global_query_order_v1"
+                    ).encode("utf-8")
+                ).digest()[:8],
+                "big",
+            )
+            query_order = np.random.default_rng(query_order_seed).permutation(
+                len(query_idx)
+            )
+            query_idx = query_idx[query_order]
+            query_records = [
+                query_records[int(position)] for position in query_order
+            ]
             physical_ids = np.asarray(
                 arrays["canonical_physical_sample_ids"]
             ).astype(str)
