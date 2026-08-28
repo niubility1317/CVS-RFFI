@@ -20,6 +20,14 @@ class _ToyBackbone(nn.Module):
         self.t3.norm = nn.LayerNorm(2)
 
 
+class _RealPathToyBackbone(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.id_backbone = nn.Module()
+        self.id_backbone.t3 = nn.Module()
+        self.id_backbone.t3.norm = nn.LayerNorm(2)
+
+
 def _full_delta_payload() -> dict:
     return {
         "schema": "cvs.sf_tapft.delta.v3",
@@ -119,3 +127,44 @@ def test_direct_writer_never_accepts_or_persists_a_target_head(tmp_path) -> None
     assert "head_weight" not in payload and "head_bias" not in payload
     assert payload["adapter_rank"] == 16
     assert receipt["temporary_target_head_persisted"] is False
+
+
+def test_real_checkpoint_id_backbone_t3_path_is_preserved_and_loaded(tmp_path) -> None:
+    target = tmp_path / "real_path_t3_only.pt"
+    write_t3_only_delta_bundle(
+        target,
+        model_deltas={
+            "model.id_backbone.t3.norm.weight": torch.tensor([0.25, -0.50]),
+            "model.id_backbone.t3.norm.bias": torch.tensor([0.10, -0.20]),
+        },
+        protocol_schema="p2_min_v1",
+        phase2_data_status="VALIDATED_ONCE",
+        capsule_id="capsule",
+        split_id="split",
+        base_checkpoint_path="/checkpoint.pth",
+        candidate_id="D0_T3_D92",
+        support_count=60,
+        d92_method_lock="D92-E0-NORF32",
+        adapter_rank=16,
+    )
+    payload = torch.load(target, map_location="cpu", weights_only=True)
+    assert tuple(payload["model_deltas"]) == (
+        "id_backbone.t3.norm.weight",
+        "id_backbone.t3.norm.bias",
+    )
+
+    model, _, audit = load_t3_only_delta_bundle_strict(
+        target,
+        device="cpu",
+        expected_target_binding={"capsule_id": "capsule", "split_id": "split"},
+        checkpoint_loader=lambda _path, *, device: _RealPathToyBackbone().to(device),
+        adapter_initializer=lambda model, *, rank: model,
+    )
+    torch.testing.assert_close(
+        model.id_backbone.t3.norm.weight,
+        torch.tensor([1.25, 0.50]),
+    )
+    assert audit["updated_parameter_names"] == (
+        "id_backbone.t3.norm.weight",
+        "id_backbone.t3.norm.bias",
+    )

@@ -37,6 +37,7 @@ from cvsrffi.stage2_sf_t3_d92_combinations import (  # noqa: E402
 from cvsrffi.stage2_sf_t3_d92_r3 import crossfit_d92_support_risk  # noqa: E402
 from cvsrffi.stage2_sf_t3_delta_bundle import (  # noqa: E402
     load_t3_only_delta_bundle_strict,
+    resolve_t3_parameter_names,
     write_t3_only_delta_bundle,
 )
 from cvsrffi.target_only_progressive_adapt import (  # noqa: E402
@@ -102,8 +103,17 @@ def _write_json(path: Path, payload: Mapping[str, Any]) -> None:
 
 def _t3_deltas(result: Any) -> dict[str, torch.Tensor]:
     named = dict(result.model.named_parameters())
+    anchor_names = tuple(
+        str(name) for name in result.base_parameter_anchors
+        if str(name).endswith(("t3.norm.weight", "t3.norm.bias"))
+        and "dom_backbone." not in str(name)
+    )
+    try:
+        resolved_names = resolve_t3_parameter_names(anchor_names)
+    except ValueError as exc:
+        raise RuntimeError("adapted result lacks one unambiguous identity t3 anchor pair") from exc
     output: dict[str, torch.Tensor] = {}
-    for short_name in ("t3.norm.weight", "t3.norm.bias"):
+    for short_name in resolved_names:
         anchor_name = f"model.{short_name}"
         anchor = result.base_parameter_anchors.get(anchor_name)
         if not torch.is_tensor(anchor) or short_name not in named:
@@ -114,9 +124,15 @@ def _t3_deltas(result: Any) -> dict[str, torch.Tensor]:
 
 def _zero_t3_deltas(model: torch.nn.Module) -> dict[str, torch.Tensor]:
     named = dict(model.named_parameters())
+    candidates = tuple(
+        name for name in named
+        if name.endswith(("t3.norm.weight", "t3.norm.bias"))
+        and "dom_backbone." not in name
+    )
+    resolved_names = resolve_t3_parameter_names(candidates)
     return {
         f"model.{name}": torch.zeros_like(named[name], device="cpu")
-        for name in ("t3.norm.weight", "t3.norm.bias")
+        for name in resolved_names
     }
 
 

@@ -16,7 +16,7 @@
 - support：旧类6类×K10；注册态追加`N_new×K10`。
 - query：只用于逐样本推理；不更新模型、D92、温度、选择或回滚状态。
 - D92：`D92-E0-NORF32`，等先验LDA，注册任务平衡共享协方差公式不变。
-- 持久域适应状态：仅`model.t3.norm.weight/bias`；target head、optimizer、support cache均不持久化。
+- 持久域适应状态：仅identity backbone的`t3.norm.weight/bias`；真实checkpoint路径为`model.id_backbone.t3.norm.weight/bias`，短路径只用于兼容测试模型；domain backbone、target head、optimizer、support cache均不持久化。
 - 标签对称：不允许类别ID专属权重、阈值或分支。
 
 ## 设计澄清

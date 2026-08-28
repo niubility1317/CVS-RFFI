@@ -12,6 +12,28 @@ from torch import nn
 SCHEMA = "cvs.sf_t3_norm.delta.v1"
 SOURCE_SCHEMA = "cvs.sf_tapft.delta.v3"
 T3_DELTA_PARAMETER_NAMES = ("t3.norm.weight", "t3.norm.bias")
+REAL_T3_DELTA_PARAMETER_NAMES = (
+    "id_backbone.t3.norm.weight",
+    "id_backbone.t3.norm.bias",
+)
+_ALLOWED_T3_PARAMETER_PAIRS = (
+    T3_DELTA_PARAMETER_NAMES,
+    REAL_T3_DELTA_PARAMETER_NAMES,
+)
+
+
+def resolve_t3_parameter_names(names: Any) -> tuple[str, str]:
+    """Resolve one complete identity-backbone t3.norm affine pair."""
+
+    normalized = tuple(
+        str(name)[len("model.") :] if str(name).startswith("model.") else str(name)
+        for name in names
+    )
+    normalized_set = set(normalized)
+    for allowed in _ALLOWED_T3_PARAMETER_PAIRS:
+        if normalized_set == set(allowed) and len(normalized) == len(allowed):
+            return allowed
+    raise ValueError("t3-only delta must contain exactly one permitted weight/bias pair")
 
 
 def _load_mapping(path: Path) -> Mapping[str, Any]:
@@ -56,12 +78,15 @@ def write_t3_only_delta_bundle(
         raise ValueError("t3-only delta adapter_rank must be positive")
     if not isinstance(model_deltas, Mapping):
         raise ValueError("t3-only model_deltas must be a mapping")
+    resolved_names = resolve_t3_parameter_names(model_deltas)
     normalized: dict[str, torch.Tensor] = {}
-    for short_name in T3_DELTA_PARAMETER_NAMES:
+    consumed: set[str] = set()
+    for short_name in resolved_names:
         canonical_name = f"model.{short_name}"
         candidates = [name for name in (short_name, canonical_name) if name in model_deltas]
         if len(candidates) != 1:
             raise ValueError(f"t3-only delta key drift: {canonical_name}")
+        consumed.add(candidates[0])
         value = model_deltas[candidates[0]]
         if (
             not torch.is_tensor(value)
@@ -71,10 +96,7 @@ def write_t3_only_delta_bundle(
         ):
             raise ValueError(f"invalid t3 delta tensor: {canonical_name}")
         normalized[short_name] = value.detach().cpu().to(torch.float16).clone()
-    if set(model_deltas) != {
-        next(name for name in (short, f"model.{short}") if name in model_deltas)
-        for short in T3_DELTA_PARAMETER_NAMES
-    }:
+    if set(model_deltas) != consumed:
         raise ValueError("t3-only delta contains a non-permitted parameter")
     output = {
         "schema": SCHEMA,
@@ -89,7 +111,7 @@ def write_t3_only_delta_bundle(
         "rf32_used": False,
         "support_count": int(support_count),
         "model_deltas": normalized,
-        "updated_parameter_names": list(T3_DELTA_PARAMETER_NAMES),
+        "updated_parameter_names": list(resolved_names),
         "temporary_target_head_persisted": False,
         "query_rows_used": 0,
     }
@@ -101,7 +123,7 @@ def write_t3_only_delta_bundle(
         "candidate_id": candidate_id,
         "bundle_path": str(destination),
         "bundle_bytes": int(destination.stat().st_size),
-        "updated_parameter_names": T3_DELTA_PARAMETER_NAMES,
+        "updated_parameter_names": resolved_names,
         "temporary_target_head_persisted": False,
         "d92_method_lock": d92_method_lock,
         "rf32_used": False,
@@ -131,12 +153,13 @@ def convert_sf_tapft_delta_bundle_to_t3_only(
         raise ValueError("candidate_id must be non-empty")
     deltas = payload.get("model_deltas")
     updated = tuple(str(value) for value in payload.get("updated_parameter_names", ()))
-    if not isinstance(deltas, Mapping) or set(deltas) != set(T3_DELTA_PARAMETER_NAMES):
+    if not isinstance(deltas, Mapping):
         raise ValueError("source delta must contain exactly t3.norm weight and bias")
-    if set(updated) != set(T3_DELTA_PARAMETER_NAMES):
+    resolved_names = resolve_t3_parameter_names(deltas)
+    if resolve_t3_parameter_names(updated) != resolved_names:
         raise ValueError("source updated parameter allowlist drift")
     copied: dict[str, torch.Tensor] = {}
-    for name in T3_DELTA_PARAMETER_NAMES:
+    for name in resolved_names:
         value = deltas[name]
         if (
             not torch.is_tensor(value)
@@ -210,12 +233,16 @@ def load_t3_only_delta_bundle_strict(
             raise ValueError("t3-only delta target binding mismatch")
     deltas = payload["model_deltas"]
     updated = tuple(str(value) for value in payload["updated_parameter_names"])
-    if (
-        not isinstance(deltas, Mapping)
-        or tuple(deltas) != T3_DELTA_PARAMETER_NAMES
-        or updated != T3_DELTA_PARAMETER_NAMES
-    ):
+    if not isinstance(deltas, Mapping):
         raise ValueError("t3-only delta parameter allowlist mismatch")
+    try:
+        resolved_names = resolve_t3_parameter_names(deltas)
+        if resolve_t3_parameter_names(updated) != resolved_names:
+            raise ValueError("updated parameter names differ from deltas")
+    except ValueError as exc:
+        raise ValueError("t3-only delta parameter allowlist mismatch") from exc
+    if tuple(deltas) != resolved_names or updated != resolved_names:
+        raise ValueError("t3-only delta parameter ordering mismatch")
     if checkpoint_loader is None:
         from cvsrffi.target_only_progressive_runner import _default_checkpoint_loader
 
@@ -227,12 +254,12 @@ def load_t3_only_delta_bundle_strict(
         adapter_initializer = ensure_time_adapter
     adapter_initializer(model, rank=int(payload["adapter_rank"]))
     named = dict(model.named_parameters())
-    for name in T3_DELTA_PARAMETER_NAMES:
+    for name in resolved_names:
         delta = deltas[name]
         if name not in named or not torch.is_tensor(delta) or delta.shape != named[name].shape:
             raise ValueError(f"t3-only delta parameter mismatch: {name}")
     with torch.no_grad():
-        for name in T3_DELTA_PARAMETER_NAMES:
+        for name in resolved_names:
             named[name].add_(deltas[name].to(device=named[name].device, dtype=named[name].dtype))
     model.eval()
     for parameter in model.parameters():
@@ -242,7 +269,7 @@ def load_t3_only_delta_bundle_strict(
         "candidate_id": str(payload["candidate_id"]),
         "support_count": int(payload["support_count"]),
         "adapter_rank": int(payload["adapter_rank"]),
-        "updated_parameter_names": T3_DELTA_PARAMETER_NAMES,
+        "updated_parameter_names": resolved_names,
         "bundle_bytes": int(source.stat().st_size),
         "d92_method_lock": "D92-E0-NORF32",
         "rf32_used": False,
@@ -255,8 +282,10 @@ def load_t3_only_delta_bundle_strict(
 
 __all__ = [
     "SCHEMA",
+    "REAL_T3_DELTA_PARAMETER_NAMES",
     "T3_DELTA_PARAMETER_NAMES",
     "convert_sf_tapft_delta_bundle_to_t3_only",
     "load_t3_only_delta_bundle_strict",
+    "resolve_t3_parameter_names",
     "write_t3_only_delta_bundle",
 ]
