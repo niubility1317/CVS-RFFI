@@ -12,6 +12,7 @@
 |CAUSAL-01|输出`DA0_REG0/DA1_REG0/DA0_REG1/DA1_REG1`|预测器与truth-last scorer|LOCAL_VERIFIED|
 |SCORE-01|报告DA、注册和difference-in-differences|`score_four_state_predictions`|LOCAL_VERIFIED|
 |PRO-01|support状态冻结后才由预测器打开query|`support_state_receipt.json`先写|LOCAL_VERIFIED|
-|REL-01|正式代码/config以Git提交固定并自动push|发布记录|PENDING|
+|REL-01|正式代码/config以Git提交固定并自动push|发布记录|VERIFIED|
+|RUN-01|21格四状态prediction与truth-last评分|r4完整code闭包|BLOCKED：D92不支持new1非对称注册几何|
 
 冻结实验：receiver=`20-1`、data seed=`713101`、method seed=`392002`、K=10、三种`leo_*_weak`场景、新类数`N={1,2,3,5,10,15,20}`。基础checkpoint为ADV3B02 CORE90；D3固定为327步、4-fold support-only OOF温度；ERBT-IDR固定为`M29-FFT96-A4/D92-E0-NORF32`。本轮因历史Stage2-C truth已在旧研究中使用，结论标记为`DIAGNOSTIC_NON_FORMAL`，不得直接晋级正式默认版本。
