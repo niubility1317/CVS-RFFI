@@ -3,7 +3,7 @@
 ## 最小预登记
 
 - Run ID：`phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1`
-- 当前状态：`LOCAL_VERIFIED`；M0遥测P0修复闭合，真实checkpoint无query smoke r3为`ARTIFACTS_COMPLETE`且源域隔离/严格重建通过，待最终GPU/路径preflight后立即启动正式16行扫描。
+- 当前状态：`RUNNING`；正式16行扫描已于2026-08-28 21:17:54 CST从hotfix release启动并完成一次PID/CWD/cmdline/GPU/log增长绑定检查。
 - 研究目的：在`SRC5_MAXP2`源域上比较同种子的ADV3B02从头训练对照与FastTrust有效子集，使用源域`V_select`冻结星地信道性能最好的FastTrust种子。
 - 数据协议：`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`；四个角色均仅来自源接收机，物理样本两两不交；目标接收机数据不参与训练、校准、选模、候选重排或选择性重跑。
 - 源域profile：`SRC5_MAXP2`；源接收机`1-19,18-2,19-2,2-19,3-19`，ManySig索引`1,3,4,6,8`；目标接收机`1-1,14-7,2-1,20-1,7-14,7-7,8-8`，ManySig索引`0,2,5,7,9,10,11`；源/目标接收机严格不相交。16行扫描只构建源接收机索引`1,3,4,6,8`的4日数据及源域`V_select`，不构建或访问目标接收机加载器；目标4日数据只属于冻结后的独立确认阶段。
@@ -14,7 +14,7 @@
 - 选种规则：只读取每行最终checkpoint的源域`V_select`。主分数为`source_val_sat_hmean=H(clean,min(leo_clear_weak,leo_low_elev_weak,leo_rain_weak))`。FastTrust种子只有在相对同种子对照满足`LEO mean`提升、`LEO floor`不下降且clean下降不超过0.5pp时才可进入一次性目标确认；多个通过种子按主分数、LEO mean、LEO floor、clean、种子升序依次打破并列。若无种子通过，则记录负screen，不声明FastTrust提升，也不使用目标域反向重排。
 - 目标确认数据：只在源域冻结最佳种子后核对`protocol_schema=p2_min_v1`、`phase2_data_status=VALIDATED_ONCE`、`capsule_id=536fb610302e0298fe98b4708d2e6d51eb81aef676126c01d8de6ff1a67985f2`、`split_id=260f7bc291e8dbfe53e68f58997414a7d89c8f15b55d59793de506fb434fac25`；预测先形成artifact，独立scorer随后连接truth。目标结果不反馈选种、调参、重训或重跑。
 - 本地环境/CWD：`ssr-gpu`；`E:\type10-7\github_publish\CVS-RFFI-repo\.worktrees\phase2-canonical-union-maxq`。
-- N607环境/CWD：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1_7ed99037_hotfix1`。
+- N607环境：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；进程实际CWD为`/home/szu2070436088`，所有代码、输入、输出和`PYTHONPATH`均以绝对路径绑定`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1_7ed99037_hotfix1`。
 - 输入：`/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl`。
 - 输出：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1`；禁止覆盖已有路径。
 - 日志：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1/dispatcher.log`、run root下`dispatcher_logs/<candidate>.log`和每行`train.log`。
@@ -45,8 +45,15 @@ nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet CODE_ROOT=/home/szu2070
 - 正式精确命令：
 
 ```bash
-nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet CODE_ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1_7ed99037_hotfix1 MATRIX=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1_7ed99037_hotfix1/configs/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828.json RUNS_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1 PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python CONTROL_PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python bash /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1_7ed99037_hotfix1/code/scripts/launch_phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828.sh > /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1/dispatcher.log 2>&1 < /dev/null &
+nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet CODE_ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1_7ed99037_hotfix1 MATRIX=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1_7ed99037_hotfix1/configs/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828.json RUN_ID=phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1 RUNS_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1 PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python CONTROL_PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python bash /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1_7ed99037_hotfix1/code/scripts/launch_phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828.sh > /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1/dispatcher.log 2>&1 < /dev/null &
 ```
+
+## 正式启动状态
+
+- launcher PID：`1066256`；run root：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1`。
+- 主训练进程：16个；GPU0–7均严格为2个进程，每卡同一个seed的`ADV3B02_CONTROL(M0)`与`ADV3B02_FASTTRUST_EFF(M3)`各1行。GPU/seed映射为`0/713101,1/713102,2/713103,3/713104,4/713105,5/713106,6/713107,7/713108`。
+- 启动后GPU0–7利用率为89%–98%，显存占用约3.6–3.85GiB/卡；16个candidate目录和16个dispatcher日志均已形成，训练日志增长，无`Traceback`、`UnboundLocalError`、OOM或FastTrust零step系统错误。
+- 当前只读监控；不因中间性能停止，不热补丁或重启健康进程。只有预登记系统技术失败才处理本run的精确进程树并保留partial artifact。
 
 ## 需求追溯
 
