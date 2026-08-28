@@ -8021,6 +8021,7 @@ def train(args) -> int:
             sat_anchor_sat_grad_norm = float("nan")
             sat_anchor_anchor_grad_norm = float("nan")
             sat_anchor_pair_sat_grad_cos = float("nan")
+            rc4_route = None
             x_l, y_l, extra_l = move_batch(labeled_batch, device)
             if muse_state is not None:
                 _assert_muse_open_geometry_role("L_s")

@@ -177,6 +177,20 @@ def test_worker_config_records_scratch_without_unused_checkpoint_and_source_prof
     assert '"wisig_test_receivers": "%s"' in worker
 
 
+def test_control_batch_initializes_optional_rc4_route_before_muse_branch():
+    source = (ROOT / "code/SSDG/train_ssdg.py").read_text(encoding="utf-8")
+    loop_start = source.index(
+        "        for batch_idx, (labeled_batch, muse_unlabeled_batch) "
+        "in enumerate(epoch_pairs, start=1):"
+    )
+    first_optional_muse_branch = source.index(
+        "            if muse_state is not None:", loop_start
+    )
+    route_default = source.index("            rc4_route = None", loop_start)
+
+    assert loop_start < route_default < first_optional_muse_branch
+
+
 def test_dry_run_expands_scratch_src5_pair_and_effective_fasttrust_only(tmp_path):
     env = os.environ.copy()
     env.update(
