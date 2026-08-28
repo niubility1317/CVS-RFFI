@@ -13,7 +13,7 @@
 |SCORE-01|报告DA、注册和difference-in-differences|`score_four_state_predictions`|LOCAL_VERIFIED|
 |PRO-01|support状态冻结后才由预测器打开query|`support_state_receipt.json`先写|LOCAL_VERIFIED|
 |REL-01|正式代码/config以Git提交固定并自动push|发布记录|VERIFIED|
-|RUN-01|21格四状态prediction与truth-last评分|r4完整code闭包|BLOCKED：D92不支持new1非对称注册几何|
-|FIX-01|D92-E0-NORF32须支持冻结矩阵的`N={1,2,3,5,10,15,20}`，不复制support、不改变K、不启用RF32|两个新增回归测试先复现同指纹失败，最小修复后聚焦回归27/27通过|LOCAL_VERIFIED|
+|RUN-01|21格四状态prediction与truth-last评分|r5完成21/21 prediction、21/21 score、23,520次四状态决策|ANALYZED|
+|FIX-01|D92-E0-NORF32须支持冻结矩阵的`N={1,2,3,5,10,15,20}`，不复制support、不改变K、不启用RF32|两个新增回归测试先复现同指纹失败，聚焦回归27/27；三个场景new1真实prediction均闭合|VERIFIED|
 
 冻结实验：receiver=`20-1`、data seed=`713101`、method seed=`392002`、K=10、三种`leo_*_weak`场景、新类数`N={1,2,3,5,10,15,20}`。基础checkpoint为ADV3B02 CORE90；D3固定为327步、4-fold support-only OOF温度；ERBT-IDR固定为`M29-FFT96-A4/D92-E0-NORF32`。本轮因历史Stage2-C truth已在旧研究中使用，结论标记为`DIAGNOSTIC_NON_FORMAL`，不得直接晋级正式默认版本。
