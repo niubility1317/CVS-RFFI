@@ -363,7 +363,7 @@ def test_committed_smoke_config_is_directly_consumable_by_bridge_and_no_query_sm
     assert set(config) == no_query_smoke._CONFIG_ALLOWLIST  # noqa: SLF001
     assert not any("query" in key or "truth" in key for key in config)
     assert config["support_path"].endswith(
-        "/input/support_leo_clear_weak_rx1-1_k20.npz"
+        "/input/support_only_leo_clear_weak_rx1-1_k20.npz"
     )
     assert config["prototype_path"].endswith(
         "/input/prototypes_leo_clear_weak_rx1-1_k20.npz"
