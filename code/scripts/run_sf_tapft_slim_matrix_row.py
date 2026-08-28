@@ -31,7 +31,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--delta-only", action="store_true")
     parser.add_argument(
         "--rse-mode",
-        choices=("fixed", "strength_selection", "delta_ensemble"),
+        choices=("fixed", "strength_selection", "delta_ensemble", "r5d92"),
         default="fixed",
     )
     parser.add_argument("--rse-options", default="{}")

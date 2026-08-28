@@ -140,13 +140,16 @@ def fit_erbt_registration_pair(
     registered_counts = np.bincount(
         registered_indices, minlength=len(registered_registry)
     )
-    if old_counts.tolist() != [10] * 6 or registered_counts.tolist() != [10] * len(
-        registered_registry
+    k_shot = int(old_counts[0]) if len(old_counts) else 0
+    if (
+        k_shot < 3
+        or old_counts.tolist() != [k_shot] * 6
+        or registered_counts.tolist() != [k_shot] * len(registered_registry)
     ):
-        raise OldOnlyERBTError("registration pair is locked to balanced K10")
+        raise OldOnlyERBTError("registration pair requires balanced K>=3 support")
     old_features = _features(old_identity160, old_fft96)
     registered_features = _features(registered_identity160, registered_fft96)
-    if len(old_features) != 60 or len(registered_features) != 10 * len(
+    if len(old_features) != k_shot * 6 or len(registered_features) != k_shot * len(
         registered_registry
     ):
         raise OldOnlyERBTError("registration pair support row drift")
@@ -179,7 +182,7 @@ def fit_erbt_registration_pair(
                 transformed,
                 targets,
                 len(registry),
-                10,
+                k_shot,
             )
             return OldOnlyERBTState(
                 class_ids=registry,
@@ -194,7 +197,7 @@ def fit_erbt_registration_pair(
                     "registration_state": registration_state,
                     "support_only": True,
                     "query_rows_used": 0,
-                    "metric_support_rows": 60,
+                    "metric_support_rows": int(k_shot * 6),
                     "metric_new_support_rows": 0,
                     "numerical_method": method,
                     "optimizer_steps": len(trace),
@@ -210,9 +213,10 @@ def fit_erbt_registration_pair(
         )
     return reg0, reg1, {
         "metric_fit_count": 1,
-        "metric_support_rows": 60,
+        "metric_support_rows": int(k_shot * 6),
         "metric_new_support_rows": 0,
         "metric_optimizer_steps": len(trace),
+        "k_shot": k_shot,
     }
 
 

@@ -30,6 +30,7 @@ from .sf_tapft_phase1_binding import (
     SFTAPFTPhase1Binding,
     load_sf_tapft_phase1_binding,
 )
+from .stage2_sf_r5d92 import run_r5d92_support_selection
 
 
 SF_TAPFT_BUNDLE_SCHEMA = "cvs.sf_tapft.v1"
@@ -765,6 +766,90 @@ def run_sf_tapft_deploy_no_query(
             "subset_indices": [list(row) for row in ensemble.subset_indices],
             "polish_steps": ensemble.polish_steps,
         }
+    elif rse_mode == "r5d92":
+        if deployment_inplace:
+            raise ValueError("R5D92 requires preserved checkpoint trajectories")
+        registered_path = rse_options.pop("registered_support_path", None)
+        if not registered_path:
+            raise ValueError("R5D92 requires registered_support_path")
+        registered = _load_target_support(registered_path)
+        old_counts = torch.bincount(support.labels.detach().cpu(), minlength=6)
+        registered_counts = torch.bincount(
+            registered.labels.detach().cpu(), minlength=11
+        )
+        if (
+            len(old_counts) != 6
+            or old_counts.tolist() != [10] * 6
+            or len(registered_counts) != 11
+            or registered_counts.tolist() != [10] * 11
+        ):
+            raise ValueError("R5D92 is locked to six old and five new K10 classes")
+        old_rows = {
+            physical_id: support.received_iq[index].detach().cpu()
+            for index, physical_id in enumerate(support.physical_ids)
+        }
+        registered_old_rows = {
+            physical_id: registered.received_iq[index].detach().cpu()
+            for index, physical_id in enumerate(registered.physical_ids)
+            if int(registered.labels[index]) < 6
+        }
+        if set(old_rows) != set(registered_old_rows) or any(
+            not torch.equal(old_rows[key], registered_old_rows[key]) for key in old_rows
+        ):
+            raise ValueError("R5D92 registered support does not reuse the frozen old support")
+        selection = run_r5d92_support_selection(
+            model,
+            support,
+            registered.received_iq.detach().cpu().numpy(),
+            registered.labels.detach().cpu().numpy(),
+            method_config,
+            steps=tuple(rse_options.pop("steps", (250, 350, 520))),
+            polish_steps=int(rse_options.pop("polish_steps", 30)),
+            seed=int(rse_options.pop("d92_seed", method_config.seed)),
+            device=device,
+            soft_budget_seconds=float(rse_options.pop("soft_budget_seconds", 240.0)),
+        )
+        if rse_options:
+            raise ValueError(f"unregistered R5D92 options: {sorted(rse_options)}")
+        result = selection.result
+        rse_receipt = {
+            "mode": "r5d92",
+            "trajectory_fit_count": selection.pool.trajectory_fit_count,
+            "candidate_count": len(selection.pool.candidates),
+            "top_candidate_ids": list(selection.pool.top_candidate_ids),
+            "cheap_risk": {
+                key: asdict(value.cheap_risk)
+                for key, value in selection.pool.candidates.items()
+            },
+            "crossfit_splits": [
+                {
+                    "fold": split.fold,
+                    "fit_indices": list(split.fit_indices),
+                    "heldout_indices": list(split.heldout_indices),
+                }
+                for split in selection.pool.splits
+            ],
+            "baseline_candidate_id": selection.baseline_candidate_id,
+            "d92_metrics": {
+                key: asdict(value) for key, value in selection.metrics.items()
+            },
+            "decision": {
+                "selected_candidate_id": selection.decision.selected_candidate_id,
+                "fallback_used": selection.decision.fallback_used,
+                "feasible_candidate_ids": list(
+                    selection.decision.feasible_candidate_ids
+                ),
+                "lcb_h": dict(selection.decision.lcb_h),
+                "rejections": {
+                    key: list(value)
+                    for key, value in selection.decision.rejections.items()
+                },
+            },
+            "d92_crossfit_fit_count": 5 * len(selection.metrics),
+            "final_d92_fit_reserved": 1,
+            "skipped_candidate_ids": list(selection.skipped_candidate_ids),
+            "selection_wall_seconds": selection.selection_wall_seconds,
+        }
     elif rse_mode == "fixed":
         if rse_options:
             raise ValueError("fixed SF-TAPFT does not accept RSE options")
@@ -781,7 +866,9 @@ def run_sf_tapft_deploy_no_query(
             "view_phase_radians": method_config.rse_view_phase_radians,
         }
     else:
-        raise ValueError("rse_mode must be fixed, strength_selection or delta_ensemble")
+        raise ValueError(
+            "rse_mode must be fixed, strength_selection, delta_ensemble or r5d92"
+        )
     bias_calibration = None
     if method_config.pace_bias_steps > 0:
         bias_calibration = fit_sf_tapft_support_oof_head_bias(

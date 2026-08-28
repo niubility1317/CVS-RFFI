@@ -1388,6 +1388,28 @@ class RSEDeltaEnsembleResult:
     common_anchor: Mapping[str, Tensor]
 
 
+@dataclass(frozen=True)
+class R5Candidate:
+    candidate_id: str
+    step: int
+    alpha: float
+    fold_results: tuple[SFTAPFTResult, ...]
+    averaged_result: SFTAPFTResult
+    cheap_risk: RobustSupportRisk
+
+
+@dataclass(frozen=True)
+class R5CandidatePool:
+    candidates: Mapping[str, R5Candidate]
+    top_candidate_ids: tuple[str, ...]
+    splits: tuple[Any, ...]
+    trajectory_fit_count: int
+    common_anchor: Mapping[str, Tensor]
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "candidates", MappingProxyType(dict(self.candidates)))
+
+
 def _forward_aux(model: nn.Module, values: Tensor) -> Mapping[str, Any]:
     try:
         parameters = inspect.signature(model.forward).parameters
@@ -3761,6 +3783,222 @@ def fit_sf_tapft_rse_delta_ensemble(
     )
 
 
+def fit_sf_tapft_r5_candidate_pool(
+    checkpoint_model: nn.Module,
+    target_train: TargetOnlyAdaptationDataset,
+    config: SFTAPFTConfig,
+    *,
+    steps: Sequence[int] = (250, 350, 520),
+    alphas: Sequence[float] = (0.75, 1.0),
+) -> R5CandidatePool:
+    """Fit five complementary E0 trajectories and screen six mean-delta candidates."""
+
+    from cvsrffi.stage2_sf_r5d92 import complementary_leave_pair_splits
+
+    snapshot_steps = tuple(int(value) for value in steps)
+    strengths = tuple(float(value) for value in alphas)
+    if (
+        tuple(sorted(set(snapshot_steps))) != snapshot_steps
+        or len(snapshot_steps) != 3
+        or snapshot_steps[-1] > sum(config.phase_steps)
+    ):
+        raise ValueError("R5D92 requires three sorted snapshot steps within the trajectory")
+    if strengths != (0.75, 1.0):
+        raise ValueError("R5D92 delta strengths are locked to 0.75 and 1.0")
+    splits = complementary_leave_pair_splits(target_train.labels.detach().cpu().numpy())
+    trajectory_config = replace(
+        config,
+        rse_snapshot_steps=snapshot_steps,
+        validation_steps=(),
+        checkpoint_average_top_k=1,
+    )
+    trajectories = tuple(
+        _fit_sf_tapft(
+            copy.deepcopy(checkpoint_model),
+            _subset_target_train(target_train, split.fit_indices),
+            trajectory_config,
+            checkpoint_selection_mode="final_step",
+            copy_checkpoint_model=True,
+            prototype_reference=None,
+        )
+        for split in splits
+    )
+    common_anchor = MappingProxyType(
+        {
+            name: value.detach().cpu().clone()
+            for name, value in trajectories[0].base_parameter_anchors.items()
+            if name.startswith("model.")
+        }
+    )
+    for result in trajectories[1:]:
+        result_model_anchor = {
+            name: value
+            for name, value in result.base_parameter_anchors.items()
+            if name.startswith("model.")
+        }
+        if set(result_model_anchor) != set(common_anchor) or any(
+            not torch.equal(
+                result_model_anchor[name].detach().cpu(),
+                common_anchor[name].detach().cpu(),
+            )
+            for name in common_anchor
+        ):
+            raise RuntimeError("R5D92 trajectories do not share one model anchor")
+    candidate_rows: dict[str, R5Candidate] = {}
+    for step in snapshot_steps:
+        fold_snapshots = tuple(
+            result.retained_trainable_snapshots[step] for result in trajectories
+        )
+        for alpha in strengths:
+            candidate_id = f"S{step:03d}_A{int(round(alpha * 100)):03d}"
+            fold_results = tuple(
+                _apply_trainable_state(
+                    result,
+                    interpolate_trainable_state(
+                        result.base_parameter_anchors, snapshot, alpha=alpha
+                    ),
+                )
+                for result, snapshot in zip(trajectories, fold_snapshots)
+            )
+            averaged_model_state = {
+                name: common_anchor[name]
+                + torch.stack(
+                    [
+                        fold_result.model.state_dict()[name.removeprefix("model.")]
+                        .detach()
+                        .cpu()
+                        - trajectory.base_parameter_anchors[name].detach().cpu()
+                        for trajectory, fold_result in zip(trajectories, fold_results)
+                    ]
+                ).mean(dim=0)
+                for name in common_anchor
+            }
+            averaged_result = _apply_trainable_state(
+                trajectories[0],
+                {
+                    **averaged_model_state,
+                    "head.weight": fold_results[0].head.weight.detach().cpu(),
+                },
+            )
+            averaged_result = replace(
+                averaged_result,
+                base_parameter_anchors=common_anchor,
+            )
+            fold_risks = []
+            for split, trajectory, fold_result in zip(splits, trajectories, fold_results):
+                heldout = _subset_target_train(target_train, split.heldout_indices)
+                frozen = _apply_trainable_state(
+                    trajectory, trajectory.base_parameter_anchors
+                )
+                frozen_logits, frozen_labels = _adapted_validation_logits(frozen, heldout)
+                adapted_logits, adapted_labels = _adapted_validation_logits(
+                    fold_result, heldout
+                )
+                if not torch.equal(
+                    frozen_labels.detach().cpu(), adapted_labels.detach().cpu()
+                ):
+                    raise RuntimeError("R5D92 held-out label order drift")
+                fold_risks.append(
+                    robust_support_risk(
+                        adapted_logits,
+                        adapted_labels,
+                        frozen_logits=frozen_logits,
+                    )
+                )
+            risk = RobustSupportRisk(
+                total=float(sum(row.total for row in fold_risks) / len(fold_risks)),
+                macro_ce=float(sum(row.macro_ce for row in fold_risks) / len(fold_risks)),
+                class_cvar=float(
+                    sum(row.class_cvar for row in fold_risks) / len(fold_risks)
+                ),
+                view_js=float(sum(row.view_js for row in fold_risks) / len(fold_risks)),
+                margin_regression=float(
+                    sum(row.margin_regression for row in fold_risks) / len(fold_risks)
+                ),
+            )
+            candidate_rows[candidate_id] = R5Candidate(
+                candidate_id=candidate_id,
+                step=step,
+                alpha=alpha,
+                fold_results=fold_results,
+                averaged_result=averaged_result,
+                cheap_risk=risk,
+            )
+    top_ids = tuple(
+        row.candidate_id
+        for row in sorted(
+            candidate_rows.values(),
+            key=lambda row: (row.cheap_risk.total, row.step, row.alpha),
+        )[:2]
+    )
+    return R5CandidatePool(
+        candidates=candidate_rows,
+        top_candidate_ids=top_ids,
+        splits=splits,
+        trajectory_fit_count=len(trajectories),
+        common_anchor=common_anchor,
+    )
+
+
+def polish_sf_tapft_r5_candidate(
+    checkpoint_model: nn.Module,
+    target_train: TargetOnlyAdaptationDataset,
+    config: SFTAPFTConfig,
+    candidate: SFTAPFTResult,
+    *,
+    polish_steps: int = 30,
+) -> SFTAPFTResult:
+    """Commit one mean-delta candidate with a short full-support E0 polish."""
+
+    if isinstance(polish_steps, bool) or int(polish_steps) <= 0:
+        raise ValueError("R5D92 polish_steps must be positive")
+    common_anchor = candidate.base_parameter_anchors
+    polish_config = replace(
+        config,
+        phase_steps=(0, int(polish_steps), 0),
+        scheduler_reference_steps=max(int(config.scheduler_reference_steps), int(polish_steps)),
+        lr_head_middle=min(float(config.lr_head_middle), 5.0e-5),
+        lr_norm=min(float(config.lr_norm), 1.0e-5),
+        fast_tail_start_step=0,
+        fast_tail_steps=0,
+        head_polish_steps=0,
+        validation_steps=(),
+        rse_snapshot_steps=(),
+        checkpoint_average_top_k=1,
+        warmup_ratio=0.0,
+    )
+    polished = _fit_sf_tapft(
+        copy.deepcopy(checkpoint_model),
+        target_train,
+        polish_config,
+        checkpoint_selection_mode="final_step",
+        copy_checkpoint_model=True,
+        prototype_reference=target_train,
+        initial_trainable_state={
+            name: value
+            for name, value in _trainable_state_from_result(candidate).items()
+            if name.startswith("model.")
+        },
+    )
+    polished_anchor = {
+        **{
+            name: value.detach().cpu().clone()
+            for name, value in common_anchor.items()
+            if name.startswith("model.")
+        },
+        **{
+            name: value.detach().cpu().clone()
+            for name, value in polished.base_parameter_anchors.items()
+            if name.startswith("head.")
+        },
+    }
+    polished = replace(
+        polished,
+        base_parameter_anchors=MappingProxyType(polished_anchor),
+    )
+    return _apply_trainable_state(polished, _trainable_state_from_result(polished))
+
+
 def _aggregate_fold_metrics(
     rows: Sequence[SFTAPFTFoldRow], *, adapted: bool
 ) -> FoldMetrics:
@@ -4096,6 +4334,8 @@ __all__ = [
     "SFTAPFTResult",
     "SFTAPFTFoldRow",
     "SFTAPFTSelectionResult",
+    "R5Candidate",
+    "R5CandidatePool",
     "StageValidationMetrics",
     "StageValidationRow",
     "TemperatureCalibration",
@@ -4108,6 +4348,8 @@ __all__ = [
     "ensure_time_adapter",
     "encode_trainable_suffix_prefix",
     "fit_sf_tapft",
+    "fit_sf_tapft_r5_candidate_pool",
+    "polish_sf_tapft_r5_candidate",
     "fit_positive_temperature",
     "fit_zero_sum_class_bias",
     "fit_sf_tapft_support_oof_temperature",

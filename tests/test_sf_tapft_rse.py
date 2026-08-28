@@ -13,6 +13,8 @@ from cvsrffi.target_only_progressive_adapt import (
     fit_sf_tapft_inplace,
     fit_sf_tapft_rse_strength_selection,
     fit_sf_tapft_rse_delta_ensemble,
+    fit_sf_tapft_r5_candidate_pool,
+    polish_sf_tapft_r5_candidate,
     interpolate_trainable_state,
     phase_rotate_iq,
     robust_support_risk,
@@ -286,6 +288,80 @@ def test_delta_ensemble_uses_common_anchor_and_returns_full_support_polish() -> 
         "t3.norm.weight",
     }
     assert ensemble.result.base_parameter_anchors.keys() == ensemble.common_anchor.keys()
+
+
+def test_r5_candidate_pool_builds_five_complementary_trajectories_and_six_candidates() -> None:
+    torch.manual_seed(165)
+    dataset = adapt_module.TargetOnlyAdaptationDataset(
+        received_iq=torch.randn(30, 4, 8),
+        labels=torch.tensor([class_id for class_id in range(3) for _ in range(10)]),
+        physical_ids=tuple(f"r5-p{index}" for index in range(30)),
+        groups=tuple(f"r5-g{index}" for index in range(30)),
+    )
+
+    pool = fit_sf_tapft_r5_candidate_pool(
+        _GeneralCacheableBackbone(),
+        dataset,
+        SFTAPFTConfig(
+            adapter_rank=2,
+            trainability_profile="p1_head_norm",
+            norm_rules=(("t3", "weight_bias"),),
+            phase_steps=(2, 1, 1),
+            scheduler_reference_steps=4,
+            cache_storage_dtype="float32",
+            suffix_compute_dtype="float32",
+            mixed_precision=False,
+            checkpoint_average_top_k=1,
+            seed=165,
+        ),
+        steps=(2, 3, 4),
+        alphas=(0.75, 1.0),
+    )
+
+    assert pool.trajectory_fit_count == 5
+    assert len(pool.splits) == 5
+    assert len(pool.candidates) == 6
+    assert len(pool.top_candidate_ids) == 2
+    assert set(pool.candidates) == {
+        "S002_A075",
+        "S002_A100",
+        "S003_A075",
+        "S003_A100",
+        "S004_A075",
+        "S004_A100",
+    }
+    for candidate in pool.candidates.values():
+        assert len(candidate.fold_results) == 5
+        assert all(result.audit.training_sample_count == 24 for result in candidate.fold_results)
+        assert candidate.averaged_result.audit.query_opened is False
+        assert candidate.cheap_risk.total >= 0.0
+
+    polished = polish_sf_tapft_r5_candidate(
+        _GeneralCacheableBackbone(),
+        dataset,
+        SFTAPFTConfig(
+            adapter_rank=2,
+            trainability_profile="p1_head_norm",
+            norm_rules=(("t3", "weight_bias"),),
+            phase_steps=(2, 1, 1),
+            scheduler_reference_steps=4,
+            cache_storage_dtype="float32",
+            suffix_compute_dtype="float32",
+            mixed_precision=False,
+            checkpoint_average_top_k=1,
+            seed=165,
+        ),
+        pool.candidates[pool.top_candidate_ids[0]].averaged_result,
+        polish_steps=1,
+    )
+    assert polished.audit.total_steps == 1
+    assert polished.audit.query_opened is False
+    assert set(pool.common_anchor) == {"model.t3.norm.bias", "model.t3.norm.weight"}
+    assert set(polished.base_parameter_anchors) == {
+        "head.weight",
+        "model.t3.norm.bias",
+        "model.t3.norm.weight",
+    }
 
 
 def test_strength_selection_scores_view_js_when_dual_view_is_enabled() -> None:

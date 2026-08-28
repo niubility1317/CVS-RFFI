@@ -233,6 +233,9 @@ def build_registration_balanced_equal_lda(
             "d92_old_covariance_trace": float(np.trace(old_covariance)),
             "d92_new_covariance_trace": float(np.trace(new_covariance)),
             "d92_balanced_covariance_trace": float(np.trace(covariance)),
+            "d92_covariance_block_traces": [
+                float(np.trace(covariance[block, block])) for block in blocks
+            ],
             "d92_balanced_eigenvalue_min": float(np.min(eigenvalues)),
             "d92_balanced_eigenvalue_max": float(np.max(eigenvalues)),
             "d92_covariance_equation_residual_max": equation_residual,
