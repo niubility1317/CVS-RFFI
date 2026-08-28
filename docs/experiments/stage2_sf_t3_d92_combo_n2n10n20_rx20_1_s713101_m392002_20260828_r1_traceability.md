@@ -22,3 +22,14 @@
 ## 设计澄清
 
 `D92-in-loop`定义为support-only外层选择环：训练fold拟合域适应候选和D92注册头，heldout support计算注册任务风险，用于选择R3的delta组合。它不是对NumPy/sklearn D92求梯度，也不改变D92-E0公式。
+
+## r2实证闭合
+
+|设计项|真实query结果|决定|
+|---|---|---|
+|D0/H6 Compact t3-only|九格平均旧类+0.1852pp、新类+0.0278pp、H值+0.1179pp；只有7个类别级变化|保留速度/回归基线，不晋级默认性能方法|
+|S02长程 t3-only|support OOF BA提升6.94–17.36pp，但query平均H值仅+0.0057pp，且两个新类row各下降0.25–0.50pp|停止同方法长程加步|
+|R3双delta＋D92-in-loop|6/9格选择alpha=0；九格注册后旧类、新类、H值及逐类别准确率全部不变|保留风险拒绝器经验，不保留性能候选|
+|D92注册旧类遗忘|无DA时low-elev new10/new20旧类分别下降20.83/20.00pp，rain new20下降15.00pp|t3-only DA未解决主瓶颈，下一机制需直接约束D92 embedding margin|
+
+最终状态为`ANALYZED / NO_PROMOTION_TO_DEFAULT`。27/27 prediction在连接truth前完整闭合；逐row、逐类别和资源数据由同run伴随CSV/JSON承载。
