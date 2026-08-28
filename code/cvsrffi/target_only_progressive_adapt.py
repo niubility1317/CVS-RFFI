@@ -14,7 +14,7 @@ import inspect
 import math
 import random
 from collections.abc import Iterable, Mapping, Sequence
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 from types import MappingProxyType
 from typing import Any
 
@@ -158,6 +158,9 @@ class SFTAPFTConfig:
     pace_bias_steps: int = 0
     pace_bias_lr: float = 0.05
     pace_bias_l2: float = 0.01
+    rse_view_weight: float = 0.0
+    rse_view_phase_radians: float = 0.0
+    rse_snapshot_steps: tuple[int, ...] = ()
     prefix_cache_dtype: str = "off"
     cache_storage_dtype: str = ""
     suffix_compute_dtype: str = ""
@@ -211,6 +214,16 @@ class SFTAPFTConfig:
             raise ValueError(
                 "validation_steps must be sorted, unique, in range, and include the final step"
             )
+        rse_snapshot_steps = tuple(int(value) for value in self.rse_snapshot_steps)
+        if any(isinstance(value, bool) for value in self.rse_snapshot_steps) or (
+            rse_snapshot_steps
+            and (
+                tuple(sorted(set(rse_snapshot_steps))) != rse_snapshot_steps
+                or rse_snapshot_steps[0] < 1
+                or rse_snapshot_steps[-1] > total_steps
+            )
+        ):
+            raise ValueError("rse_snapshot_steps must be sorted, unique, and in [1, total_steps]")
         if (
             isinstance(self.scheduler_reference_steps, bool)
             or int(self.scheduler_reference_steps) < 0
@@ -303,11 +316,28 @@ class SFTAPFTConfig:
             "pace_tail_weight",
             "pace_preserve_weight",
             "pace_bias_l2",
+            "rse_view_weight",
         )
         for name in nonnegative:
             value = float(getattr(self, name))
             if not math.isfinite(value) or value < 0.0:
                 raise ValueError(f"{name} must be finite and non-negative")
+        if not math.isfinite(float(self.rse_view_phase_radians)):
+            raise ValueError("rse_view_phase_radians must be finite")
+        if bool(self.rse_view_weight) != bool(self.rse_view_phase_radians):
+            raise ValueError("rse_view_weight and rse_view_phase_radians must be enabled together")
+        if (self.rse_snapshot_steps or self.rse_view_weight > 0.0) and normalized_rules != (
+            ("t3", "weight_bias"),
+        ):
+            raise ValueError("RSE requires exactly t3 norm weight_bias")
+        if (self.rse_snapshot_steps or self.rse_view_weight > 0.0) and (
+            self.trainability_profile != "p1_head_norm"
+            or self.pace_norm_rules
+            or self.pace_bias_steps
+            or self.hard_pair_weight > 0.0
+            or self.trainable_delta_ema_decay > 0.0
+        ):
+            raise ValueError("RSE requires the compact E0 permission boundary")
         if isinstance(self.checkpoint_average_top_k, bool) or int(self.checkpoint_average_top_k) <= 0:
             raise ValueError("checkpoint_average_top_k must be a positive integer")
         if not isinstance(self.mixed_precision, bool):
@@ -345,6 +375,7 @@ class SFTAPFTConfig:
         object.__setattr__(self, "pace_norm_rules", pace_rules)
         object.__setattr__(self, "head_prefit_steps", int(self.head_prefit_steps))
         object.__setattr__(self, "validation_steps", validation_steps)
+        object.__setattr__(self, "rse_snapshot_steps", rse_snapshot_steps)
         object.__setattr__(
             self, "scheduler_reference_steps", int(self.scheduler_reference_steps)
         )
@@ -364,6 +395,187 @@ def class_cvar_from_class_losses(class_losses: Tensor, *, top_k: int) -> Tensor:
     if not bool(torch.isfinite(class_losses).all()):
         raise ValueError("class losses must be finite")
     return torch.topk(class_losses, k=int(top_k)).values.mean()
+
+
+def phase_rotate_iq(values: Tensor, *, radians: float) -> Tensor:
+    """Apply one identity-preserving phase rotation to paired IQ channels."""
+
+    if values.ndim != 3 or values.size(1) < 2 or values.size(1) % 2:
+        raise ValueError("IQ phase rotation requires paired real/imag channels")
+    if not math.isfinite(float(radians)):
+        raise ValueError("phase rotation radians must be finite")
+    angle = values.new_tensor(float(radians))
+    cosine, sine = torch.cos(angle), torch.sin(angle)
+    paired = values.reshape(values.size(0), values.size(1) // 2, 2, values.size(2))
+    real, imag = paired[:, :, 0], paired[:, :, 1]
+    rotated = torch.stack(
+        (cosine * real - sine * imag, sine * real + cosine * imag), dim=2
+    )
+    return rotated.reshape_as(values)
+
+
+@dataclass(frozen=True)
+class RobustSupportRisk:
+    total: float
+    macro_ce: float
+    class_cvar: float
+    view_js: float
+    margin_regression: float
+
+
+def interpolate_trainable_state(
+    anchor: Mapping[str, Tensor], snapshot: Mapping[str, Tensor], *, alpha: float
+) -> Mapping[str, Tensor]:
+    """Interpolate one registered trainable snapshot from its common anchor."""
+
+    alpha = float(alpha)
+    if not math.isfinite(alpha) or not 0.0 <= alpha <= 1.0:
+        raise ValueError("alpha must be finite in [0, 1]")
+    if set(anchor) != set(snapshot):
+        raise ValueError("anchor and snapshot must have aligned keys")
+    output: dict[str, Tensor] = {}
+    for name in anchor:
+        left, right = anchor[name], snapshot[name]
+        if left.shape != right.shape:
+            raise ValueError(f"anchor and snapshot shape mismatch: {name}")
+        output[name] = left.detach().cpu() + alpha * (
+            right.detach().cpu() - left.detach().cpu()
+        )
+    return MappingProxyType(output)
+
+
+def average_trainable_states(
+    anchor: Mapping[str, Tensor], snapshots: Sequence[Mapping[str, Tensor]]
+) -> Mapping[str, Tensor]:
+    """Average aligned trainable deltas without touching unregistered state."""
+
+    if not snapshots:
+        raise ValueError("at least one trainable snapshot is required")
+    if any(set(snapshot) != set(anchor) for snapshot in snapshots):
+        raise ValueError("all trainable states must have aligned keys")
+    output: dict[str, Tensor] = {}
+    for name, base in anchor.items():
+        deltas = []
+        for snapshot in snapshots:
+            value = snapshot[name]
+            if value.shape != base.shape:
+                raise ValueError(f"trainable state shape mismatch: {name}")
+            deltas.append(value.detach().cpu() - base.detach().cpu())
+        output[name] = base.detach().cpu() + torch.stack(deltas).mean(dim=0)
+    return MappingProxyType(output)
+
+
+def balanced_rse_subsets(
+    labels: Tensor, *, per_class: int, count: int, seed: int
+) -> tuple[tuple[int, ...], ...]:
+    """Build deterministic class-balanced support subsamples for delta averaging."""
+
+    if labels.ndim != 1 or labels.numel() == 0:
+        raise ValueError("labels must be a non-empty vector")
+    if isinstance(per_class, bool) or int(per_class) <= 0:
+        raise ValueError("per_class must be positive")
+    if isinstance(count, bool) or int(count) <= 0:
+        raise ValueError("count must be positive")
+    generator = torch.Generator(device="cpu").manual_seed(int(seed))
+    class_ids = torch.unique(labels.detach().cpu(), sorted=True)
+    pools: dict[int, Tensor] = {}
+    for class_id_tensor in class_ids:
+        class_id = int(class_id_tensor)
+        indices = torch.nonzero(labels.detach().cpu() == class_id, as_tuple=False).flatten()
+        if indices.numel() < int(per_class):
+            raise ValueError("per_class exceeds the smallest class support count")
+        pools[class_id] = indices
+    rows = []
+    attempts = 0
+    while len(rows) < int(count) and attempts < int(count) * 32:
+        attempts += 1
+        selected = []
+        for class_id in sorted(pools):
+            pool = pools[class_id]
+            order = torch.randperm(pool.numel(), generator=generator)[: int(per_class)]
+            selected.extend(int(value) for value in pool[order].tolist())
+        candidate = tuple(sorted(selected))
+        if candidate not in rows:
+            rows.append(candidate)
+    if len(rows) != int(count):
+        raise ValueError("RSE subset sampling could not produce unique subsets")
+    return tuple(rows)
+
+
+def select_rse_strength(
+    fold_risks: Mapping[tuple[int, float], Sequence[float]],
+) -> tuple[int, float]:
+    """Select the lowest mean cross-fit risk with conservative deterministic ties."""
+
+    if not fold_risks:
+        raise ValueError("RSE strength selection requires candidate risks")
+    normalized: list[tuple[float, float, int, float]] = []
+    for (step, alpha), values in fold_risks.items():
+        if isinstance(step, bool) or int(step) <= 0:
+            raise ValueError("RSE candidate step must be positive")
+        alpha = float(alpha)
+        if not 0.0 <= alpha <= 1.0:
+            raise ValueError("RSE candidate alpha must be in [0, 1]")
+        risks = tuple(float(value) for value in values)
+        if not risks or any(not math.isfinite(value) for value in risks):
+            raise ValueError("RSE fold risks must be finite and non-empty")
+        normalized.append((sum(risks) / len(risks), alpha, int(step), alpha))
+    _, _, step, alpha = min(normalized)
+    return step, alpha
+
+
+def robust_support_risk(
+    logits: Tensor,
+    labels: Tensor,
+    *,
+    frozen_logits: Tensor,
+    second_view_logits: Tensor | None = None,
+    cvar_top_k: int = 2,
+) -> RobustSupportRisk:
+    """Compute the report-defined support-only RSE risk for one held-out fold."""
+
+    if logits.ndim != 2 or frozen_logits.shape != logits.shape:
+        raise ValueError("adapted and frozen logits must be aligned matrices")
+    if labels.ndim != 1 or labels.numel() != logits.size(0):
+        raise ValueError("labels must align with logits")
+    if second_view_logits is not None and second_view_logits.shape != logits.shape:
+        raise ValueError("second-view logits must align with original-view logits")
+    row_ce = F.cross_entropy(logits.float(), labels, reduction="none")
+    class_ids = tuple(int(value) for value in torch.unique(labels, sorted=True).tolist())
+    class_losses = torch.stack([row_ce[labels == class_id].mean() for class_id in class_ids])
+    macro_ce = class_losses.mean()
+    class_cvar = class_cvar_from_class_losses(
+        class_losses, top_k=min(int(cvar_top_k), len(class_ids))
+    )
+    true = labels[:, None]
+    frozen_true = frozen_logits.gather(1, true).squeeze(1)
+    adapted_true = logits.gather(1, true).squeeze(1)
+    frozen_other = frozen_logits.masked_fill(
+        F.one_hot(labels, num_classes=logits.size(1)).bool(), float("-inf")
+    ).max(dim=1).values
+    adapted_other = logits.masked_fill(
+        F.one_hot(labels, num_classes=logits.size(1)).bool(), float("-inf")
+    ).max(dim=1).values
+    margin_regression = F.relu(
+        (frozen_true - frozen_other) - (adapted_true - adapted_other)
+    ).mean()
+    view_js = logits.new_zeros((), dtype=torch.float32)
+    if second_view_logits is not None:
+        p = F.softmax(logits.float(), dim=1)
+        q = F.softmax(second_view_logits.float(), dim=1)
+        mixture = 0.5 * (p + q)
+        view_js = 0.5 * (
+            F.kl_div(mixture.log(), p, reduction="batchmean")
+            + F.kl_div(mixture.log(), q, reduction="batchmean")
+        )
+    total = macro_ce + 0.30 * class_cvar + 0.10 * view_js + 0.05 * margin_regression
+    return RobustSupportRisk(
+        total=float(total.detach()),
+        macro_ce=float(macro_ce.detach()),
+        class_cvar=float(class_cvar.detach()),
+        view_js=float(view_js.detach()),
+        margin_regression=float(margin_regression.detach()),
+    )
 
 
 def stable_support_weights(teacher_logits: Tensor, labels: Tensor) -> Tensor:
@@ -1094,6 +1306,10 @@ class SFTAPFTAudit:
     pace_expanded_optimizer_steps: int = 0
     pace_tail_losses: tuple[float, ...] = ()
     pace_preserve_losses: tuple[float, ...] = ()
+    effective_view_count: int = 1
+    view_consistency_losses: tuple[float, ...] = ()
+    suffix_backward_steps: int = 0
+    head_optimizer_steps: int = 0
 
 
 @dataclass(frozen=True)
@@ -1102,6 +1318,9 @@ class SFTAPFTResult:
     head: TargetPrototypeHead
     audit: SFTAPFTAudit
     base_parameter_anchors: Mapping[str, Tensor]
+    retained_trainable_snapshots: Mapping[int, Mapping[str, Tensor]] = field(
+        default_factory=lambda: MappingProxyType({})
+    )
 
 
 @dataclass(frozen=True)
@@ -1138,6 +1357,35 @@ class SFTAPFTSelectionResult:
     final_training_sample_count: int = 0
     fold0_as_final: bool = False
     temperature_calibration: TemperatureCalibration | None = None
+
+
+@dataclass(frozen=True)
+class RSEStrengthFoldRow:
+    repeat: int
+    fold: int
+    step: int
+    alpha: float
+    risk: RobustSupportRisk
+
+
+@dataclass(frozen=True)
+class RSEStrengthSelectionResult:
+    result: SFTAPFTResult
+    selected_step: int
+    selected_alpha: float
+    fold_rows: tuple[RSEStrengthFoldRow, ...]
+    crossfit_fit_count: int
+    crossfit_validation_forward_steps: int
+    crossfit_validation_suffix_forward_steps: int
+
+
+@dataclass(frozen=True)
+class RSEDeltaEnsembleResult:
+    result: SFTAPFTResult
+    subset_indices: tuple[tuple[int, ...], ...]
+    subset_fit_count: int
+    polish_steps: int
+    common_anchor: Mapping[str, Tensor]
 
 
 def _forward_aux(model: nn.Module, values: Tensor) -> Mapping[str, Any]:
@@ -2123,6 +2371,8 @@ def _fit_sf_tapft(
     checkpoint_validation: TargetOnlyAdaptationDataset | None = None,
     checkpoint_selection_mode: str = "best",
     copy_checkpoint_model: bool,
+    prototype_reference: TargetOnlyAdaptationDataset | None = None,
+    initial_trainable_state: Mapping[str, Tensor] | None = None,
 ) -> SFTAPFTResult:
     """Fit report-parity SF-TAPFT using target train only.
 
@@ -2135,6 +2385,10 @@ def _fit_sf_tapft(
         raise TypeError("checkpoint_model must be a torch module")
     if not isinstance(target_train, TargetOnlyAdaptationDataset):
         raise TypeError("target_train must be TargetOnlyAdaptationDataset")
+    if prototype_reference is not None and not isinstance(
+        prototype_reference, TargetOnlyAdaptationDataset
+    ):
+        raise TypeError("prototype_reference must be TargetOnlyAdaptationDataset")
     if checkpoint_selection_mode not in ("best", "final_step"):
         raise ValueError("checkpoint_selection_mode must be 'best' or 'final_step'")
     if checkpoint_validation is not None:
@@ -2178,6 +2432,18 @@ def _fit_sf_tapft(
     dtype = next(parameter.dtype for parameter in student.parameters() if parameter.is_floating_point())
     target_x = target_train.received_iq.to(device=device, dtype=dtype)
     target_labels = target_train.labels.to(device=device, dtype=torch.long)
+    physical_support_count = int(target_x.size(0))
+    effective_view_count = 1
+    if config.rse_view_weight > 0.0:
+        target_x = torch.cat(
+            (
+                target_x,
+                phase_rotate_iq(target_x, radians=config.rse_view_phase_radians),
+            ),
+            dim=0,
+        )
+        target_labels = torch.cat((target_labels, target_labels), dim=0)
+        effective_view_count = 2
 
     prefix_cache: H6PrefixCache | TimeNormPrefixCache | None = None
     prefix_cache_build_forward_steps = 0
@@ -2223,7 +2489,7 @@ def _fit_sf_tapft(
             device=device,
             dtype=_cache_dtype_from_name(config.suffix_compute_dtype),
         )
-        prefix_cache_build_forward_steps = 1
+        prefix_cache_build_forward_steps = effective_view_count
     else:
         with torch.no_grad():
             initial_outputs = _forward_aux(student, target_x)
@@ -2232,17 +2498,36 @@ def _fit_sf_tapft(
             initial_outputs, int(target_x.size(0))
         )
         target_class_ids = target_train.class_ids
-        prototypes = _target_prototypes(initial_embeddings, target_labels, target_class_ids)
+        prototype_embeddings = initial_embeddings[:physical_support_count]
+        prototype_labels = target_labels[:physical_support_count]
         frozen_source_logits = initial_outputs.get("tx_logits", initial_outputs.get("logits"))
         if not torch.is_tensor(frozen_source_logits):
             raise ValueError("frozen source model must expose logits for SF-TAPFT")
         if max(target_class_ids) >= frozen_source_logits.size(1):
             raise ValueError("target support class is absent from frozen source logits")
+        if prototype_reference is not None:
+            reference_x = prototype_reference.received_iq.to(device=device, dtype=dtype)
+            reference_labels = prototype_reference.labels.to(device=device, dtype=torch.long)
+            reference_outputs = _forward_aux(student, reference_x)
+            prototype_embeddings = _extract_joint_embedding(
+                reference_outputs, len(prototype_reference.physical_ids)
+            )
+            prototype_labels = reference_labels
+            frozen_source_logits = reference_outputs.get(
+                "tx_logits", reference_outputs.get("logits")
+            )
+            if not torch.is_tensor(frozen_source_logits):
+                raise ValueError("prototype reference must expose frozen source logits")
+        prototypes = _target_prototypes(
+            prototype_embeddings, prototype_labels, target_class_ids
+        )
         if config.use_class_adaptive_rho:
             rho_values, reliability_values = class_adaptive_rho(
-                initial_embeddings,
+                prototype_embeddings,
                 frozen_source_logits[:, list(target_class_ids)],
-                _local_labels(target_labels, target_class_ids, device),
+                _local_labels(
+                    prototype_labels, target_class_ids, device
+                ),
                 class_count=len(target_class_ids),
                 rho_min=config.class_adaptive_rho_min,
                 rho_max=config.class_adaptive_rho_max,
@@ -2261,6 +2546,23 @@ def _fit_sf_tapft(
         rho=rho_values,
         scale=config.prototype_scale,
     ).to(device=device, dtype=dtype)
+    if initial_trainable_state is not None:
+        student_named_initial = dict(student.named_parameters())
+        with torch.no_grad():
+            for name, value in initial_trainable_state.items():
+                if name.startswith("model."):
+                    parameter_name = name.removeprefix("model.")
+                    if parameter_name not in student_named_initial:
+                        raise ValueError(
+                            f"initial RSE state has unknown model parameter: {parameter_name}"
+                        )
+                    student_named_initial[parameter_name].copy_(
+                        value.to(student_named_initial[parameter_name])
+                    )
+                elif name == "head.weight":
+                    head.weight.copy_(value.to(head.weight))
+                else:
+                    raise ValueError(f"initial RSE state has unregistered key: {name}")
     local_labels = _local_labels(target_labels, head.class_ids, device)
     class_weights = _class_balanced_weights(local_labels, len(head.class_ids)).to(dtype=dtype)
 
@@ -2396,6 +2698,8 @@ def _fit_sf_tapft(
     head_cvar_losses: list[float] = []
     pace_tail_losses: list[float] = []
     pace_preserve_losses: list[float] = []
+    view_consistency_losses: list[float] = []
+    retained_trainable_snapshots: dict[int, Mapping[str, Tensor]] = {}
     snapshots: list[
         tuple[dict[str, Tensor], float | tuple[float, ...], int]
     ] = []
@@ -2561,14 +2865,24 @@ def _fit_sf_tapft(
                     class_losses,
                     top_k=config.head_cvar_top_k,
                 )
+            proto_embeddings = (
+                embeddings[:physical_support_count]
+                if effective_view_count == 2
+                else embeddings
+            )
+            proto_labels = (
+                local_labels[:physical_support_count]
+                if effective_view_count == 2
+                else local_labels
+            )
             proto_logits = leave_one_out_prototype_logits(
-                embeddings,
-                local_labels,
+                proto_embeddings,
+                proto_labels,
                 class_count=len(head.class_ids),
                 fallback_weights=head.weight,
                 scale=config.prototype_scale,
             )
-            proto = F.cross_entropy(proto_logits, local_labels, weight=class_weights)
+            proto = F.cross_entropy(proto_logits, proto_labels, weight=class_weights)
             hard_pair = (
                 support_hard_pair_loss(
                     logits,
@@ -2619,6 +2933,17 @@ def _fit_sf_tapft(
                     pace_stable_weights,
                     temperature=config.pace_preserve_temperature,
                 )
+            view_consistency = logits.new_zeros(())
+            if effective_view_count == 2:
+                original_logits = logits[:physical_support_count]
+                augmented_logits = logits[physical_support_count:]
+                original_prob = F.softmax(original_logits.float(), dim=1)
+                augmented_prob = F.softmax(augmented_logits.float(), dim=1)
+                mixture = 0.5 * (original_prob + augmented_prob)
+                view_consistency = 0.5 * (
+                    F.kl_div(mixture.log(), original_prob, reduction="batchmean")
+                    + F.kl_div(mixture.log(), augmented_prob, reduction="batchmean")
+                )
             loss = (
                 ce
                 + float(config.lambda_proto) * proto
@@ -2629,6 +2954,7 @@ def _fit_sf_tapft(
                 + float(config.head_cvar_weight) * cvar
                 + float(config.pace_tail_weight) * cvar
                 + float(config.pace_preserve_weight) * preservation
+                + float(config.rse_view_weight) * view_consistency
             )
         if not bool(torch.isfinite(loss)):
             raise RuntimeError("SF-TAPFT loss became non-finite")
@@ -2662,6 +2988,21 @@ def _fit_sf_tapft(
         if pace_active:
             pace_tail_losses.append(float(cvar.detach()))
             pace_preserve_losses.append(float(preservation.detach()))
+        if effective_view_count == 2:
+            view_consistency_losses.append(float(view_consistency.detach()))
+        if step + 1 in set(config.rse_snapshot_steps):
+            retained_trainable_snapshots[step + 1] = MappingProxyType(
+                {
+                    **{
+                        f"model.{name}": training_named[name].detach().cpu().clone()
+                        for name in sorted(permitted_model_names)
+                    },
+                    **{
+                        f"head.{name}": value.detach().cpu().clone()
+                        for name, value in head.state_dict().items()
+                    },
+                }
+            )
         evaluate_checkpoint = (
             checkpoint_validation is None
             or not validation_step_set
@@ -2910,6 +3251,12 @@ def _fit_sf_tapft(
         pace_expanded_optimizer_steps=pace_expanded_optimizer_steps,
         pace_tail_losses=tuple(pace_tail_losses),
         pace_preserve_losses=tuple(pace_preserve_losses),
+        effective_view_count=effective_view_count,
+        view_consistency_losses=tuple(view_consistency_losses),
+        suffix_backward_steps=(
+            total_steps - config.head_prefit_steps - config.head_polish_steps
+        ),
+        head_optimizer_steps=total_steps,
     )
     return SFTAPFTResult(
         model=student,
@@ -2921,6 +3268,7 @@ def _fit_sf_tapft(
                 for name, value in compact_anchor_state.items()
             }
         ),
+        retained_trainable_snapshots=MappingProxyType(retained_trainable_snapshots),
     )
 
 
@@ -3118,6 +3466,277 @@ def _adapted_validation_logits(
     logits = head(embeddings)
     labels = _local_labels(dataset.labels, head.class_ids, device)
     return logits, labels
+
+
+def _apply_trainable_state(result: SFTAPFTResult, state: Mapping[str, Tensor]) -> SFTAPFTResult:
+    model = copy.deepcopy(result.model)
+    head = copy.deepcopy(result.head)
+    model_named = dict(model.named_parameters())
+    with torch.no_grad():
+        for name, value in state.items():
+            if name.startswith("model."):
+                parameter_name = name.removeprefix("model.")
+                if parameter_name not in model_named:
+                    raise ValueError(f"RSE state has unknown model parameter: {parameter_name}")
+                model_named[parameter_name].copy_(value.to(model_named[parameter_name]))
+            elif name == "head.weight":
+                head.weight.copy_(value.to(head.weight))
+            else:
+                raise ValueError(f"RSE state has an unregistered key: {name}")
+    model.eval()
+    head.eval()
+    for parameter in (*model.parameters(), *head.parameters()):
+        parameter.requires_grad_(False)
+    changed = tuple(
+        sorted(
+            name
+            for name, value in state.items()
+            if not torch.equal(value.detach().cpu(), result.base_parameter_anchors[name].detach().cpu())
+        )
+    )
+    audit = replace(
+        result.audit,
+        updated_parameter_names=tuple(
+            name.removeprefix("model.") for name in changed if name.startswith("model.")
+        ),
+        permitted_changed_names=changed,
+        nonpermitted_changed_names=(),
+        actual_changed_elements=sum(int(state[name].numel()) for name in changed),
+    )
+    return replace(result, model=model, head=head, audit=audit)
+
+
+def fit_sf_tapft_rse_strength_selection(
+    checkpoint_model: nn.Module,
+    target_train: TargetOnlyAdaptationDataset,
+    config: SFTAPFTConfig,
+    *,
+    steps: Sequence[int] = (250, 350, 450, 520),
+    alphas: Sequence[float] = (0.0, 0.25, 0.5, 0.75, 1.0),
+    repeats: int = 2,
+    folds: int = 2,
+) -> RSEStrengthSelectionResult:
+    """Select E0 stopping point and delta strength using support-only repeated cross-fit."""
+
+    steps = tuple(int(value) for value in steps)
+    alphas = tuple(float(value) for value in alphas)
+    if tuple(sorted(set(steps))) != steps or not steps or steps[-1] > sum(config.phase_steps):
+        raise ValueError("RSE steps must be sorted, unique, and within the training trajectory")
+    if tuple(sorted(set(alphas))) != alphas or not alphas or alphas[0] != 0.0:
+        raise ValueError("RSE alphas must be sorted, unique, and start at zero")
+    fold_risks: dict[tuple[int, float], list[float]] = {
+        (step, alpha): [] for step in steps for alpha in alphas
+    }
+    rows: list[RSEStrengthFoldRow] = []
+    fit_count = 0
+    validation_forward_steps = 0
+    validation_suffix_forward_steps = 0
+    fold_config = replace(
+        config,
+        rse_snapshot_steps=steps,
+        validation_steps=(),
+        checkpoint_average_top_k=1,
+    )
+    for repeat_index in range(int(repeats)):
+        selector = GroupedTargetCVSelector(
+            folds=int(folds), seed=int(config.seed) + repeat_index
+        )
+        for fold_index, (train_indices, validation_indices) in enumerate(
+            selector.split(labels=target_train.labels, groups=target_train.groups)
+        ):
+            inner_train = _subset_target_train(target_train, train_indices)
+            inner_validation = _subset_target_train(target_train, validation_indices)
+            fitted = fit_sf_tapft(
+                copy.deepcopy(checkpoint_model),
+                inner_train,
+                fold_config,
+                checkpoint_selection_mode="final_step",
+            )
+            fit_count += 1
+            validation_device = next(fitted.model.parameters()).device
+            validation_dtype = next(
+                parameter.dtype
+                for parameter in fitted.model.parameters()
+                if parameter.is_floating_point()
+            )
+            validation_x = inner_validation.received_iq.to(
+                device=validation_device, dtype=validation_dtype
+            )
+            validation_cache, _ = _capture_h6_prefix_cache(
+                fitted.model, validation_x, storage_dtype=torch.float32
+            )
+            validation_forward_steps += 1
+            anchor_candidate = _apply_trainable_state(
+                fitted, fitted.base_parameter_anchors
+            )
+            with torch.no_grad():
+                anchor_logits = anchor_candidate.head(
+                    forward_h6_prefix_cache(anchor_candidate.model, validation_cache)
+                )
+            labels = _local_labels(
+                inner_validation.labels,
+                anchor_candidate.head.class_ids,
+                validation_device,
+            )
+            validation_suffix_forward_steps += 1
+            for step in steps:
+                snapshot = fitted.retained_trainable_snapshots[step]
+                for alpha in alphas:
+                    state = interpolate_trainable_state(
+                        fitted.base_parameter_anchors, snapshot, alpha=alpha
+                    )
+                    candidate = _apply_trainable_state(fitted, state)
+                    with torch.no_grad():
+                        logits = candidate.head(
+                            forward_h6_prefix_cache(candidate.model, validation_cache)
+                        )
+                    validation_suffix_forward_steps += 1
+                    risk = robust_support_risk(
+                        logits, labels, frozen_logits=anchor_logits
+                    )
+                    fold_risks[(step, alpha)].append(risk.total)
+                    rows.append(
+                        RSEStrengthFoldRow(
+                            repeat=repeat_index,
+                            fold=fold_index,
+                            step=step,
+                            alpha=alpha,
+                            risk=risk,
+                        )
+                    )
+    selected_step, selected_alpha = select_rse_strength(fold_risks)
+    final_config = replace(
+        config,
+        validation_steps=(),
+        rse_snapshot_steps=(selected_step,),
+        checkpoint_average_top_k=1,
+    )
+    final_fit = fit_sf_tapft(
+        copy.deepcopy(checkpoint_model),
+        target_train,
+        final_config,
+        checkpoint_selection_mode="final_step",
+    )
+    committed_state = interpolate_trainable_state(
+        final_fit.base_parameter_anchors,
+        final_fit.retained_trainable_snapshots[selected_step],
+        alpha=selected_alpha,
+    )
+    committed = _apply_trainable_state(final_fit, committed_state)
+    committed = replace(
+        committed,
+        audit=replace(
+            committed.audit,
+            selected_checkpoint_steps=(selected_step,),
+        ),
+    )
+    return RSEStrengthSelectionResult(
+        result=committed,
+        selected_step=selected_step,
+        selected_alpha=selected_alpha,
+        fold_rows=tuple(rows),
+        crossfit_fit_count=fit_count,
+        crossfit_validation_forward_steps=validation_forward_steps,
+        crossfit_validation_suffix_forward_steps=validation_suffix_forward_steps,
+    )
+
+
+def _trainable_state_from_result(result: SFTAPFTResult) -> Mapping[str, Tensor]:
+    model_named = dict(result.model.named_parameters())
+    return MappingProxyType(
+        {
+            name: (
+                model_named[name.removeprefix("model.")].detach().cpu().clone()
+                if name.startswith("model.")
+                else result.head.weight.detach().cpu().clone()
+            )
+            for name in result.base_parameter_anchors
+        }
+    )
+
+
+def fit_sf_tapft_rse_delta_ensemble(
+    checkpoint_model: nn.Module,
+    target_train: TargetOnlyAdaptationDataset,
+    config: SFTAPFTConfig,
+    *,
+    ensemble_count: int = 2,
+    per_class: int = 8,
+    polish_steps: int = 30,
+) -> RSEDeltaEnsembleResult:
+    """Average two aligned E0 support-subset deltas, then polish on full support."""
+
+    subset_indices = balanced_rse_subsets(
+        target_train.labels,
+        per_class=int(per_class),
+        count=int(ensemble_count),
+        seed=int(config.seed),
+    )
+    subset_results = []
+    for indices in subset_indices:
+        subset_results.append(
+            _fit_sf_tapft(
+                copy.deepcopy(checkpoint_model),
+                _subset_target_train(target_train, indices),
+                config,
+                checkpoint_selection_mode="final_step",
+                copy_checkpoint_model=True,
+                prototype_reference=target_train,
+            )
+        )
+    common_anchor = subset_results[0].base_parameter_anchors
+    for result in subset_results[1:]:
+        if set(result.base_parameter_anchors) != set(common_anchor) or any(
+            not torch.equal(
+                result.base_parameter_anchors[name].detach().cpu(),
+                common_anchor[name].detach().cpu(),
+            )
+            for name in common_anchor
+        ):
+            raise RuntimeError("RSE subset fits do not share one trainable anchor")
+    averaged_state = average_trainable_states(
+        common_anchor,
+        tuple(_trainable_state_from_result(result) for result in subset_results),
+    )
+    if isinstance(polish_steps, bool) or int(polish_steps) <= 0:
+        raise ValueError("RSE polish_steps must be positive")
+    polish_config = replace(
+        config,
+        phase_steps=(0, int(polish_steps), 0),
+        scheduler_reference_steps=max(int(config.scheduler_reference_steps), int(polish_steps)),
+        lr_head_middle=min(float(config.lr_head_middle), 5.0e-5),
+        lr_norm=min(float(config.lr_norm), 1.0e-5),
+        fast_tail_start_step=0,
+        fast_tail_steps=0,
+        head_polish_steps=0,
+        validation_steps=(),
+        rse_snapshot_steps=(),
+        checkpoint_average_top_k=1,
+        warmup_ratio=0.0,
+    )
+    polished = _fit_sf_tapft(
+        copy.deepcopy(checkpoint_model),
+        target_train,
+        polish_config,
+        checkpoint_selection_mode="final_step",
+        copy_checkpoint_model=True,
+        prototype_reference=target_train,
+        initial_trainable_state=averaged_state,
+    )
+    polished = replace(
+        polished,
+        base_parameter_anchors=MappingProxyType(
+            {name: value.detach().cpu().clone() for name, value in common_anchor.items()}
+        ),
+    )
+    polished = _apply_trainable_state(polished, _trainable_state_from_result(polished))
+    return RSEDeltaEnsembleResult(
+        result=polished,
+        subset_indices=subset_indices,
+        subset_fit_count=len(subset_results),
+        polish_steps=int(polish_steps),
+        common_anchor=common_anchor,
+    )
 
 
 def _aggregate_fold_metrics(

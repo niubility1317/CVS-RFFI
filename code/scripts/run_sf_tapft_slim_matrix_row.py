@@ -29,16 +29,27 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--mode", choices=("grouped", "deploy"), default="grouped")
     parser.add_argument("--deployment-inplace", action="store_true")
     parser.add_argument("--delta-only", action="store_true")
+    parser.add_argument(
+        "--rse-mode",
+        choices=("fixed", "strength_selection", "delta_ensemble"),
+        default="fixed",
+    )
+    parser.add_argument("--rse-options", default="{}")
     args = parser.parse_args(argv)
     matrix = json.loads(args.matrix.read_text(encoding="utf-8-sig"))
     config, gpu = build_row_config(matrix, args.row_id)
     if args.mode == "deploy":
+        rse_options = json.loads(args.rse_options)
+        if not isinstance(rse_options, dict):
+            raise ValueError("--rse-options must decode to a JSON object")
         receipt = run_sf_tapft_deploy_no_query(
             config,
             args.output_dir,
             device=args.device,
             deployment_inplace=bool(args.deployment_inplace),
             emit_clean_single_bundle=not bool(args.delta_only),
+            rse_mode=args.rse_mode,
+            rse_options=rse_options,
         )
     else:
         receipt = run_sf_tapft_grouped_selection(

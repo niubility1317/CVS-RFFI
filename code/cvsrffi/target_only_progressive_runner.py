@@ -20,6 +20,8 @@ from .target_only_progressive_adapt import (
     ensure_time_adapter,
     fit_sf_tapft,
     fit_sf_tapft_inplace,
+    fit_sf_tapft_rse_delta_ensemble,
+    fit_sf_tapft_rse_strength_selection,
     fit_sf_tapft_support_oof_head_bias,
     fit_sf_tapft_support_oof_temperature,
     select_sf_tapft_by_grouped_cv,
@@ -222,6 +224,8 @@ def _parse_config(config: Mapping[str, Any]) -> tuple[dict[str, Any], SFTAPFTCon
         )
     if "validation_steps" in normalized:
         normalized["validation_steps"] = tuple(normalized["validation_steps"])
+    if "rse_snapshot_steps" in normalized:
+        normalized["rse_snapshot_steps"] = tuple(normalized["rse_snapshot_steps"])
     return values, SFTAPFTConfig(**normalized)
 
 
@@ -270,6 +274,9 @@ def _normalize_sf_tapft_bundle_config(raw: Any) -> dict[str, Any]:
         "pace_bias_steps": 0,
         "pace_bias_lr": 0.05,
         "pace_bias_l2": 0.01,
+        "rse_view_weight": 0.0,
+        "rse_view_phase_radians": 0.0,
+        "rse_snapshot_steps": (),
         "prefix_cache_dtype": "off",
         "cache_storage_dtype": "",
         "suffix_compute_dtype": "",
@@ -287,6 +294,7 @@ def _normalize_sf_tapft_bundle_config(raw: Any) -> dict[str, Any]:
         tuple(row) for row in normalized["pace_norm_rules"]
     )
     normalized["validation_steps"] = tuple(normalized["validation_steps"])
+    normalized["rse_snapshot_steps"] = tuple(normalized["rse_snapshot_steps"])
     return normalized
 
 
@@ -453,10 +461,46 @@ def _clean_single_bundle_payload(
     selected_phase_steps: tuple[int, int, int],
     fold0_as_final: bool,
 ) -> dict[str, Any]:
-    final_config = asdict(method_config)
-    final_config["phase_steps"] = tuple(int(value) for value in selected_phase_steps)
-    final_config["head_prefit_steps"] = int(result.audit.head_prefit_steps)
-    final_config["validation_steps"] = ()
+    selected_phase_steps = tuple(int(value) for value in selected_phase_steps)
+    selected_total = sum(selected_phase_steps)
+    keep_fast_tail = bool(
+        method_config.fast_tail_steps
+        and method_config.fast_tail_start_step + method_config.fast_tail_steps
+        <= selected_total
+    )
+    keep_pace = bool(
+        method_config.pace_expand_start_step
+        and method_config.pace_expand_start_step <= selected_total
+    )
+    persisted_config = SFTAPFTConfig(
+        **{
+            **asdict(method_config),
+            "phase_steps": selected_phase_steps,
+            "head_prefit_steps": min(int(result.audit.head_prefit_steps), selected_total),
+            "validation_steps": (),
+            "fast_tail_start_step": (
+                int(method_config.fast_tail_start_step) if keep_fast_tail else 0
+            ),
+            "fast_tail_steps": int(method_config.fast_tail_steps) if keep_fast_tail else 0,
+            "head_polish_steps": min(
+                int(method_config.head_polish_steps), selected_phase_steps[2]
+            ),
+            "head_cvar_steps": min(
+                int(method_config.head_cvar_steps), selected_phase_steps[2]
+            ),
+            "pace_expand_start_step": (
+                int(method_config.pace_expand_start_step) if keep_pace else 0
+            ),
+            "pace_norm_rules": method_config.pace_norm_rules if keep_pace else (),
+            "pace_tail_weight": float(method_config.pace_tail_weight) if keep_pace else 0.0,
+            "pace_preserve_weight": (
+                float(method_config.pace_preserve_weight) if keep_pace else 0.0
+            ),
+            "pace_bias_steps": int(method_config.pace_bias_steps) if keep_pace else 0,
+            "rse_snapshot_steps": (),
+        }
+    )
+    final_config = asdict(persisted_config)
     final_config["inference_temperature"] = float(
         method_config.prototype_scale / result.head.scale
     )
@@ -636,6 +680,8 @@ def run_sf_tapft_deploy_no_query(
     checkpoint_loader: CheckpointLoader | None = None,
     deployment_inplace: bool = False,
     emit_clean_single_bundle: bool = True,
+    rse_mode: str = "fixed",
+    rse_options: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Fit one frozen deployment policy on full support without research CV."""
 
@@ -666,13 +712,76 @@ def run_sf_tapft_deploy_no_query(
         )
         if not temperature_calibration.argmax_preserved:
             raise RuntimeError("support OOF temperature changed argmax")
-    fit = fit_sf_tapft_inplace if deployment_inplace else fit_sf_tapft
-    result = fit(
-        model,
-        support,
-        method_config,
-        checkpoint_selection_mode="final_step",
-    )
+    rse_options = dict(rse_options or {})
+    rse_receipt: dict[str, Any] | None = None
+    if rse_mode == "strength_selection":
+        if deployment_inplace:
+            raise ValueError("RSE strength selection requires preserved checkpoint folds")
+        selection = fit_sf_tapft_rse_strength_selection(
+            model,
+            support,
+            method_config,
+            steps=tuple(rse_options.get("steps", (250, 350, 450, 520))),
+            alphas=tuple(rse_options.get("alphas", (0.0, 0.25, 0.5, 0.75, 1.0))),
+            repeats=int(rse_options.get("repeats", 2)),
+            folds=int(rse_options.get("folds", 2)),
+        )
+        result = selection.result
+        rse_receipt = {
+            "mode": rse_mode,
+            "selected_step": selection.selected_step,
+            "selected_alpha": selection.selected_alpha,
+            "crossfit_fit_count": selection.crossfit_fit_count,
+            "crossfit_validation_forward_steps": selection.crossfit_validation_forward_steps,
+            "crossfit_validation_suffix_forward_steps": (
+                selection.crossfit_validation_suffix_forward_steps
+            ),
+            "fold_rows": [
+                {
+                    "repeat": row.repeat,
+                    "fold": row.fold,
+                    "step": row.step,
+                    "alpha": row.alpha,
+                    "risk": asdict(row.risk),
+                }
+                for row in selection.fold_rows
+            ],
+        }
+    elif rse_mode == "delta_ensemble":
+        if deployment_inplace:
+            raise ValueError("RSE delta ensemble requires preserved checkpoint fits")
+        ensemble = fit_sf_tapft_rse_delta_ensemble(
+            model,
+            support,
+            method_config,
+            ensemble_count=int(rse_options.get("ensemble_count", 2)),
+            per_class=int(rse_options.get("per_class", 8)),
+            polish_steps=int(rse_options.get("polish_steps", 30)),
+        )
+        result = ensemble.result
+        rse_receipt = {
+            "mode": rse_mode,
+            "subset_fit_count": ensemble.subset_fit_count,
+            "subset_indices": [list(row) for row in ensemble.subset_indices],
+            "polish_steps": ensemble.polish_steps,
+        }
+    elif rse_mode == "fixed":
+        if rse_options:
+            raise ValueError("fixed SF-TAPFT does not accept RSE options")
+        fit = fit_sf_tapft_inplace if deployment_inplace else fit_sf_tapft
+        result = fit(
+            model,
+            support,
+            method_config,
+            checkpoint_selection_mode="final_step",
+        )
+        rse_receipt = {
+            "mode": "dual_view" if method_config.rse_view_weight > 0.0 else "fixed",
+            "view_weight": method_config.rse_view_weight,
+            "view_phase_radians": method_config.rse_view_phase_radians,
+        }
+    else:
+        raise ValueError("rse_mode must be fixed, strength_selection or delta_ensemble")
     bias_calibration = None
     if method_config.pace_bias_steps > 0:
         bias_calibration = fit_sf_tapft_support_oof_head_bias(
@@ -688,7 +797,7 @@ def run_sf_tapft_deploy_no_query(
     if temperature_calibration is not None:
         effective_temperature *= float(temperature_calibration.temperature)
     result.head.scale /= effective_temperature
-    selected_phase_steps = tuple(int(value) for value in method_config.phase_steps)
+    selected_phase_steps = tuple(int(value) for value in result.audit.phase_steps)
 
     destination.mkdir(parents=True, exist_ok=False)
     bundle_path: Path | None = None
@@ -745,6 +854,7 @@ def run_sf_tapft_deploy_no_query(
             if bias_calibration is not None
             else None
         ),
+        "rse": rse_receipt,
         "selected_phase_steps": list(selected_phase_steps),
         "support_physical_sample_count": len(support.physical_ids),
         "support_physical_id_origin": support.physical_id_origin,
@@ -806,6 +916,10 @@ def run_sf_tapft_deploy_no_query(
             "pace_expanded_optimizer_steps": result.audit.pace_expanded_optimizer_steps,
             "pace_tail_losses": list(result.audit.pace_tail_losses),
             "pace_preserve_losses": list(result.audit.pace_preserve_losses),
+            "effective_view_count": result.audit.effective_view_count,
+            "view_consistency_losses": list(result.audit.view_consistency_losses),
+            "suffix_backward_steps": result.audit.suffix_backward_steps,
+            "head_optimizer_steps": result.audit.head_optimizer_steps,
             "head_only_oof_steps": (
                 bias_calibration.head_only_steps if bias_calibration is not None else 0
             ),

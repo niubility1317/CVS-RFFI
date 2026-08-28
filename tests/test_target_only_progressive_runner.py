@@ -456,6 +456,62 @@ def test_deploy_runner_inplace_can_emit_delta_only(
     assert all(not parameter.requires_grad for parameter in model.parameters())
 
 
+def test_rse_delta_ensemble_default_clean_bundle_has_loadable_polish_config(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    support = tmp_path / "support.npz"
+    _write_support(support)
+    checkpoint = tmp_path / "checkpoint.pth"
+    checkpoint.write_bytes(b"loader-owned fixture")
+    binding = _phase1_binding(handles=("tx0", "tx1"))
+    monkeypatch.setattr(
+        runner_module,
+        "load_sf_tapft_phase1_binding",
+        lambda *_args, **_kwargs: binding,
+    )
+    config = _r0_config(checkpoint, support)
+    config["candidate_id"] = "RSE_DELTA_ENSEMBLE_TEST"
+    config["sf_tapft"].update(
+        {
+            "trainability_profile": "p1_head_norm",
+            "norm_rules": [["t3", "weight_bias"]],
+            "phase_steps": [2, 1, 1],
+            "scheduler_reference_steps": 4,
+            "fast_tail_start_step": 2,
+            "fast_tail_steps": 1,
+            "head_polish_steps": 1,
+        }
+    )
+    output = tmp_path / "rse-ensemble"
+
+    receipt = run_sf_tapft_deploy_no_query(
+        config,
+        output,
+        device="cpu",
+        checkpoint_loader=lambda _path, *, device: copy.deepcopy(_ToyModel()).to(device),
+        rse_mode="delta_ensemble",
+        rse_options={"ensemble_count": 2, "per_class": 1, "polish_steps": 1},
+    )
+    persisted = torch.load(
+        output / "sf_tapft_clean_single_bundle.pt",
+        map_location="cpu",
+        weights_only=True,
+    )
+
+    assert receipt["selected_phase_steps"] == [0, 1, 0]
+    assert persisted["config"]["fast_tail_steps"] == 0
+    assert persisted["config"]["head_polish_steps"] == 0
+    model, head, audit = load_sf_tapft_clean_single_bundle_strict(
+        output / "sf_tapft_clean_single_bundle.pt",
+        device="cpu",
+        expected_target_binding=_expected_target_binding(),
+        checkpoint_loader=lambda _path, *, device: copy.deepcopy(_ToyModel()).to(device),
+    )
+    assert audit["support_count"] == 4
+    assert head.class_ids == (0, 1)
+    assert all(not parameter.requires_grad for parameter in model.parameters())
+
+
 def test_deploy_runner_executes_support_oof_temperature_before_full_fit(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
