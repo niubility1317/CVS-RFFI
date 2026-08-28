@@ -454,7 +454,16 @@ def test_truth_last_score_reports_per_class_nll_and_da_delta(tmp_path):
     assert score["da_effect"]["balanced_accuracy_pp"] == 100.0
     assert score["DA1_REG0"]["class_floor"] == 1.0
     assert len(score["DA1_REG0"]["per_class_accuracy"]) == 6
+    assert len(score["DA1_REG0"]["per_class_nll"]) == 6
+    assert 0.0 <= score["DA1_REG0"]["ece"] <= 1.0
     assert score["DA1_REG0"]["nll"] < score["DA0_REG0"]["nll"]
+    assert score["paired_flips"] == {
+        "da0_wrong_da1_correct": 60,
+        "da0_correct_da1_wrong": 0,
+        "both_correct": 0,
+        "both_wrong": 0,
+        "mcnemar_exact_p": pytest.approx(2.0**-59),
+    }
 
 
 def test_scorer_rejects_missing_prediction_id(tmp_path):

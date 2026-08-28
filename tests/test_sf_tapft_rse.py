@@ -21,6 +21,16 @@ from cvsrffi.target_only_progressive_adapt import (
 from test_sf_tapft_pace import _GeneralCacheableBackbone, _dataset
 
 
+def _crossfit_dataset() -> adapt_module.TargetOnlyAdaptationDataset:
+    torch.manual_seed(101)
+    return adapt_module.TargetOnlyAdaptationDataset(
+        received_iq=torch.randn(12, 4, 8),
+        labels=torch.tensor([class_id for class_id in range(3) for _ in range(4)]),
+        physical_ids=tuple(f"crossfit-p{index}" for index in range(12)),
+        groups=tuple(f"crossfit-g{index}" for index in range(12)),
+    )
+
+
 def test_phase_rotation_preserves_amplitude_and_physical_sample_count() -> None:
     iq = torch.tensor([[[1.0, 0.0], [0.0, 1.0]], [[2.0, -1.0], [1.0, 2.0]]])
     rotated = phase_rotate_iq(iq, radians=0.05)
@@ -276,3 +286,33 @@ def test_delta_ensemble_uses_common_anchor_and_returns_full_support_polish() -> 
         "t3.norm.weight",
     }
     assert ensemble.result.base_parameter_anchors.keys() == ensemble.common_anchor.keys()
+
+
+def test_strength_selection_scores_view_js_when_dual_view_is_enabled() -> None:
+    torch.manual_seed(167)
+    selection = fit_sf_tapft_rse_strength_selection(
+        _GeneralCacheableBackbone(),
+        _crossfit_dataset(),
+        SFTAPFTConfig(
+            adapter_rank=2,
+            trainability_profile="p1_head_norm",
+            norm_rules=(("t3", "weight_bias"),),
+            phase_steps=(2, 1, 1),
+            scheduler_reference_steps=4,
+            rse_view_weight=0.05,
+            rse_view_phase_radians=0.05,
+            cache_storage_dtype="float32",
+            suffix_compute_dtype="float32",
+            mixed_precision=False,
+            checkpoint_average_top_k=1,
+            seed=167,
+        ),
+        steps=(2, 4),
+        alphas=(0.0, 1.0),
+        repeats=1,
+        folds=2,
+    )
+
+    assert any(row.risk.view_js > 0.0 for row in selection.fold_rows)
+    assert selection.crossfit_validation_forward_steps == 4
+    assert selection.crossfit_validation_suffix_forward_steps == 18

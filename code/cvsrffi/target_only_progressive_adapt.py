@@ -3566,6 +3566,16 @@ def fit_sf_tapft_rse_strength_selection(
                 fitted.model, validation_x, storage_dtype=torch.float32
             )
             validation_forward_steps += 1
+            augmented_validation_cache = None
+            if float(config.rse_view_weight) > 0.0:
+                augmented_validation_cache, _ = _capture_h6_prefix_cache(
+                    fitted.model,
+                    phase_rotate_iq(
+                        validation_x, radians=float(config.rse_view_phase_radians)
+                    ),
+                    storage_dtype=torch.float32,
+                )
+                validation_forward_steps += 1
             anchor_candidate = _apply_trainable_state(
                 fitted, fitted.base_parameter_anchors
             )
@@ -3591,8 +3601,20 @@ def fit_sf_tapft_rse_strength_selection(
                             forward_h6_prefix_cache(candidate.model, validation_cache)
                         )
                     validation_suffix_forward_steps += 1
+                    second_view_logits = None
+                    if augmented_validation_cache is not None:
+                        with torch.no_grad():
+                            second_view_logits = candidate.head(
+                                forward_h6_prefix_cache(
+                                    candidate.model, augmented_validation_cache
+                                )
+                            )
+                        validation_suffix_forward_steps += 1
                     risk = robust_support_risk(
-                        logits, labels, frozen_logits=anchor_logits
+                        logits,
+                        labels,
+                        frozen_logits=anchor_logits,
+                        second_view_logits=second_view_logits,
                     )
                     fold_risks[(step, alpha)].append(risk.total)
                     rows.append(

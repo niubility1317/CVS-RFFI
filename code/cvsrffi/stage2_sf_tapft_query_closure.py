@@ -530,10 +530,52 @@ def _softmax_nll(scores: np.ndarray, truth: np.ndarray) -> float:
     return float(np.mean(logsumexp - shifted[np.arange(len(truth)), truth]))
 
 
+def _probabilities_and_row_nll(
+    scores: np.ndarray, truth: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
+    shifted = scores.astype(np.float64) - np.max(scores, axis=1, keepdims=True)
+    exp_scores = np.exp(shifted)
+    probabilities = exp_scores / exp_scores.sum(axis=1, keepdims=True)
+    row_nll = -np.log(
+        probabilities[np.arange(len(truth)), truth].clip(min=np.finfo(np.float64).tiny)
+    )
+    return probabilities, row_nll
+
+
+def _expected_calibration_error(
+    probabilities: np.ndarray, predictions: np.ndarray, truth: np.ndarray, *, bins: int = 10
+) -> float:
+    confidence = probabilities.max(axis=1)
+    correct = predictions == truth
+    total = len(truth)
+    value = 0.0
+    for index in range(int(bins)):
+        lower = index / float(bins)
+        upper = (index + 1) / float(bins)
+        mask = (confidence >= lower) & (
+            confidence <= upper if index == bins - 1 else confidence < upper
+        )
+        count = int(mask.sum())
+        if count:
+            value += (count / total) * abs(float(correct[mask].mean()) - float(confidence[mask].mean()))
+    return float(value)
+
+
+def _mcnemar_exact_p(positive: int, negative: int) -> float:
+    discordant = int(positive) + int(negative)
+    if discordant == 0:
+        return 1.0
+    lower = min(int(positive), int(negative))
+    tail = sum(math.comb(discordant, value) for value in range(lower + 1)) / (2.0**discordant)
+    return float(min(1.0, 2.0 * tail))
+
+
 def _metrics(predictions: np.ndarray, scores: np.ndarray, truth: np.ndarray) -> dict[str, Any]:
     per_class: dict[str, float] = {}
     counts: dict[str, int] = {}
     correct: dict[str, int] = {}
+    per_class_nll: dict[str, float] = {}
+    probabilities, row_nll = _probabilities_and_row_nll(scores, truth)
     for class_id in range(6):
         mask = truth == class_id
         total = int(mask.sum())
@@ -543,13 +585,16 @@ def _metrics(predictions: np.ndarray, scores: np.ndarray, truth: np.ndarray) -> 
         per_class[str(class_id)] = hit / total
         counts[str(class_id)] = total
         correct[str(class_id)] = hit
+        per_class_nll[str(class_id)] = float(row_nll[mask].mean())
     values = list(per_class.values())
     return {
         "accuracy": float(np.mean(predictions == truth)),
         "balanced_accuracy": float(np.mean(values)),
         "class_floor": float(np.min(values)),
         "nll": _softmax_nll(scores, truth),
+        "ece": _expected_calibration_error(probabilities, predictions, truth),
         "per_class_accuracy": per_class,
+        "per_class_nll": per_class_nll,
         "per_class_correct": correct,
         "per_class_total": counts,
     }
@@ -618,6 +663,10 @@ def score_clean_query_prediction(
     }
     da0 = state_metrics["DA0_REG0"]
     da1 = state_metrics["DA1_REG0"]
+    da0_correct = normalized["DA0_REG0"][0] == truth
+    da1_correct = normalized["DA1_REG0"][0] == truth
+    positive_flips = int(np.sum(~da0_correct & da1_correct))
+    negative_flips = int(np.sum(da0_correct & ~da1_correct))
     result = {
         "schema": "cvs.sf_tapft.query_closure_score.v1",
         "status": "ANALYZED",
@@ -636,6 +685,14 @@ def score_clean_query_prediction(
             "balanced_accuracy_pp": 100.0 * (da1["balanced_accuracy"] - da0["balanced_accuracy"]),
             "class_floor_pp": 100.0 * (da1["class_floor"] - da0["class_floor"]),
             "nll_delta": da1["nll"] - da0["nll"],
+            "ece_delta": da1["ece"] - da0["ece"],
+        },
+        "paired_flips": {
+            "da0_wrong_da1_correct": positive_flips,
+            "da0_correct_da1_wrong": negative_flips,
+            "both_correct": int(np.sum(da0_correct & da1_correct)),
+            "both_wrong": int(np.sum(~da0_correct & ~da1_correct)),
+            "mcnemar_exact_p": _mcnemar_exact_p(positive_flips, negative_flips),
         },
         "new_class_metrics": "N/A",
     }

@@ -67,6 +67,7 @@
     {"row_id": "R0", "candidate_id": "E0_COMPACT", "gpu": 0, "overrides": {}},
     {"row_id": "R1", "candidate_id": "RSE_STRENGTH", "gpu": 1, "overrides": {}},
     {"row_id": "R2", "candidate_id": "RSE_DUAL_VIEW", "gpu": 2, "overrides": {"rse_view_weight": 0.05, "rse_view_phase_radians": 0.05}},
-    {"row_id": "R3", "candidate_id": "RSE_DELTA_ENSEMBLE", "gpu": 3, "overrides": {}}
+    {"row_id": "R3", "candidate_id": "RSE_DELTA_ENSEMBLE", "gpu": 3, "overrides": {}},
+    {"row_id": "R4", "candidate_id": "RSE_STRENGTH_DUAL_VIEW", "gpu": 4, "overrides": {"rse_view_weight": 0.05, "rse_view_phase_radians": 0.05}}
   ]
 }
