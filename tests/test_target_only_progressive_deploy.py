@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+from dataclasses import replace
 
 import pytest
 import torch
@@ -277,6 +278,48 @@ def test_fit_h6_inplace_reuses_owned_model_and_keeps_minimal_anchors() -> None:
     }
     assert torch.equal(model.t3.dw.weight, frozen_before)
     assert result.audit.nonpermitted_changed_names == ()
+
+
+def test_compact_h6_inplace_matches_reference_training_with_gradient_clipping() -> None:
+    torch.manual_seed(47)
+    checkpoint = _CacheableBackbone()
+    reference_input = copy.deepcopy(checkpoint)
+    compact_input = copy.deepcopy(checkpoint)
+    config = replace(_short_h6_config(), gradient_clip_norm=0.01)
+
+    torch.manual_seed(53)
+    reference = fit_sf_tapft(
+        reference_input,
+        _dataset(),
+        config,
+        checkpoint_selection_mode="final_step",
+    )
+    torch.manual_seed(53)
+    compact = fit_sf_tapft_inplace(
+        compact_input,
+        _dataset(),
+        config,
+        checkpoint_selection_mode="final_step",
+    )
+
+    assert torch.allclose(
+        reference.model.t3.norm.weight,
+        compact.model.t3.norm.weight,
+        atol=1.0e-7,
+        rtol=0.0,
+    )
+    assert torch.allclose(
+        reference.model.t3.norm.bias,
+        compact.model.t3.norm.bias,
+        atol=1.0e-7,
+        rtol=0.0,
+    )
+    assert torch.allclose(
+        reference.head.weight,
+        compact.head.weight,
+        atol=1.0e-7,
+        rtol=0.0,
+    )
 
 
 def test_fit_h6_default_still_copies_checkpoint_model() -> None:

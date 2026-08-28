@@ -2151,7 +2151,8 @@ def _fit_sf_tapft(
         scaler.scale(loss).backward()
         trainable = [
             parameter
-            for parameter in list(student.parameters()) + list(head.parameters())
+            for group in optimizer.param_groups
+            for parameter in group["params"]
             if parameter.requires_grad
         ]
         scaler.unscale_(optimizer)
