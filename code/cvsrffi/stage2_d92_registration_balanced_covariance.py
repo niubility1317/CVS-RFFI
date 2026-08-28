@@ -98,18 +98,12 @@ def build_registration_balanced_equal_lda(
         rows = np.asarray(transformed, dtype=np.float64)
         labels = np.asarray(targets, dtype=np.int64)
         classes, shots = int(class_count), int(k_shot)
-        valid_counts = {
-            OLD_CLASS_COUNT,
-            OLD_CLASS_COUNT + 5,
-            OLD_CLASS_COUNT + 10,
-            OLD_CLASS_COUNT + 20,
-        }
         if (
             rows.ndim != 2
             or rows.shape[1] != dimension
             or labels.shape != (len(rows),)
             or len(rows) != classes * shots
-            or classes not in valid_counts
+            or classes < OLD_CLASS_COUNT
             or shots < 1
             or not np.isfinite(rows).all()
             or not np.array_equal(np.unique(labels), np.arange(classes))
@@ -209,6 +203,11 @@ def build_registration_balanced_equal_lda(
             "d92_registration_balanced_active": True,
             "d92_old_class_count": OLD_CLASS_COUNT,
             "d92_new_class_count": classes - OLD_CLASS_COUNT,
+            "d92_single_new_class_covariance": (
+                "within_class_auto_shrinkage"
+                if classes == OLD_CLASS_COUNT + 1
+                else "not_applicable"
+            ),
             "d92_old_covariance_weight": TASK_WEIGHT,
             "d92_new_covariance_weight": TASK_WEIGHT,
             "d92_weight_source": "fixed_equal_stage2b_stage2c_task_priority",

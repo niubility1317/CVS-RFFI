@@ -81,6 +81,39 @@ def test_registration_pair_reuses_one_old_domain_metric() -> None:
     assert reg1.audit["d92_registration_balanced_active"] is True
 
 
+def test_registration_pair_supports_one_new_class_without_support_duplication() -> None:
+    rng = np.random.default_rng(92)
+    labels = np.repeat(np.arange(7, dtype=np.int64), 10)
+    identity = rng.normal(0.0, 0.02, (70, 160)).astype(np.float32)
+    fft = rng.normal(0.0, 0.02, (70, 96)).astype(np.float32)
+    for class_id in range(7):
+        mask = labels == class_id
+        identity[mask, class_id] += 4.0
+        fft[mask, class_id] += 2.0
+
+    reg0, reg1, audit = fit_erbt_registration_pair(
+        identity[:60],
+        fft[:60],
+        labels[:60],
+        identity,
+        fft,
+        labels,
+        old_class_ids=tuple(range(6)),
+        registered_class_ids=tuple(range(7)),
+        seed=713101,
+        device="cpu",
+    )
+
+    assert audit["metric_fit_count"] == 1
+    assert reg0.audit["support_rows"] == 60
+    assert reg1.audit["support_rows"] == 70
+    assert reg1.audit["k_shot"] == 10
+    assert reg1.audit["d92_new_class_count"] == 1
+    assert reg1.audit["d92_registration_balanced_active"] is True
+    assert reg1.audit["d92_single_new_class_covariance"] == "within_class_auto_shrinkage"
+    assert np.array_equal(reg1.predict(identity, fft), labels)
+
+
 class _TinyIdentityModel(torch.nn.Module):
     def forward(self, rows, return_aux=False):
         return {"z_id": rows.flatten(1)[:, :160]}

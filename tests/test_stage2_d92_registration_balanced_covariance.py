@@ -94,3 +94,20 @@ def test_formula_is_equivariant_within_registration_groups():
     coefficient2, intercept2, _ = fit(rows, inverse[labels], 16, 5)
     np.testing.assert_allclose(coefficient2[inverse], coefficient, rtol=0.0, atol=2e-4)
     np.testing.assert_allclose(intercept2[inverse], intercept, rtol=0.0, atol=2e-4)
+
+
+def test_locked_nested_registration_counts_keep_physical_k_shot_rows():
+    fit = build_registration_balanced_equal_lda(
+        d42, d42._fit_equal_prior_lda, arm="full"
+    )
+    for new_count in (1, 2, 3, 5, 10, 15, 20):
+        classes = 6 + new_count
+        rows, labels = _support(classes, 10, seed=900 + new_count)
+        coefficient, intercept, audit = fit(rows, labels, classes, 10)
+
+        assert coefficient.shape == (classes, 288)
+        assert intercept.shape == (classes,)
+        assert audit["support_rows"] == classes * 10
+        assert audit["k_shot"] == 10
+        assert audit["d92_new_class_count"] == new_count
+        assert audit["d92_registration_balanced_active"] is True
