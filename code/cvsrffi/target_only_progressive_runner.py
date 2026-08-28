@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import os
+import uuid
 from dataclasses import asdict, fields
 from pathlib import Path
 from typing import Any, Callable, Mapping
@@ -30,6 +32,32 @@ SF_TAPFT_BUNDLE_SCHEMA = "cvs.sf_tapft.v1"
 SF_TAPFT_CLEAN_SINGLE_BUNDLE_SCHEMA = "cvs.sf_tapft.clean_single.v2"
 SF_TAPFT_DELTA_BUNDLE_SCHEMA = "cvs.sf_tapft.delta.v2"
 _SF_TAPFT_DELTA_BUNDLE_SCHEMA_V1 = "cvs.sf_tapft.delta.v1"
+
+
+def write_sf_tapft_delta_atomic(
+    path: str | Path,
+    payload: Mapping[str, Any],
+    *,
+    serializer: Callable[[Mapping[str, Any], Path], None] | None = None,
+) -> Path:
+    """Write one immutable delta through a same-directory validated temporary file."""
+
+    destination = Path(path)
+    if destination.exists() or destination.is_symlink():
+        raise FileExistsError(f"SF-TAPFT delta already exists: {destination}")
+    temporary = destination.with_name(f".{destination.name}.{uuid.uuid4().hex}.tmp")
+    save = serializer or (lambda value, target: torch.save(value, target))
+    try:
+        save(payload, temporary)
+        readback = torch.load(temporary, map_location="cpu", weights_only=True)
+        if not isinstance(readback, Mapping) or readback.get("schema") != payload.get("schema"):
+            raise ValueError("SF-TAPFT atomic delta self-readback failed")
+        os.replace(temporary, destination)
+    except BaseException:
+        if temporary.exists() or temporary.is_symlink():
+            temporary.unlink()
+        raise
+    return destination
 _V1_TOP_LEVEL_KEYS = frozenset(
     {
         "candidate_id",
@@ -214,6 +242,9 @@ def _normalize_sf_tapft_bundle_config(raw: Any) -> dict[str, Any]:
         "fast_tail_lr_norm_end": 3.0e-6,
         "head_polish_steps": 0,
         "head_polish_lr": 5.0e-5,
+        "head_cvar_weight": 0.0,
+        "head_cvar_top_k": 2,
+        "head_cvar_steps": 0,
         "trainable_delta_ema_decay": 0.0,
         "use_class_adaptive_rho": False,
         "class_adaptive_rho_min": 0.25,
@@ -223,6 +254,9 @@ def _normalize_sf_tapft_bundle_config(raw: Any) -> dict[str, Any]:
         "hard_pair_weight": 0.0,
         "hard_pair_margin": 0.2,
         "prefix_cache_dtype": "off",
+        "cache_storage_dtype": "",
+        "suffix_compute_dtype": "",
+        "cache_device": "model",
     }
     missing = config_keys.difference(supplied)
     if missing.difference(defaults):
@@ -328,6 +362,10 @@ def _audit_payload(audit: Any) -> dict[str, Any]:
         "snapshot_tensor_bytes": int(audit.snapshot_tensor_bytes),
         "trainable_parameter_elements": int(audit.trainable_parameter_elements),
         "actual_changed_elements": int(audit.actual_changed_elements),
+        "head_cvar_steps": int(audit.head_cvar_steps),
+        "head_cvar_weight": float(audit.head_cvar_weight),
+        "head_cvar_top_k": int(audit.head_cvar_top_k),
+        "head_cvar_losses": list(audit.head_cvar_losses),
         "prefix_cache_dtype": str(audit.prefix_cache_dtype),
         "prefix_cache_build_forward_steps": int(
             audit.prefix_cache_build_forward_steps
@@ -628,8 +666,7 @@ def run_sf_tapft_deploy_no_query(
         method_config=method_config,
         support=support,
     )
-    with delta_path.open("xb") as handle:
-        torch.save(delta_payload, handle)
+    write_sf_tapft_delta_atomic(delta_path, delta_payload)
 
     receipt = {
         "status": "DEPLOY_ADAPT_COMPLETE",
@@ -766,8 +803,7 @@ def run_sf_tapft_grouped_selection(
                 support=support,
             )
             delta_bundle_path = destination / "sf_tapft_delta_bundle.pt"
-            with delta_bundle_path.open("xb") as handle:
-                torch.save(delta_payload, handle)
+            write_sf_tapft_delta_atomic(delta_bundle_path, delta_payload)
     rows = [
         {
             "fold": row.fold,
@@ -1019,21 +1055,30 @@ def load_sf_tapft_delta_bundle_strict(
     updated = tuple(str(name) for name in payload["updated_parameter_names"])
     if not isinstance(deltas, Mapping) or set(deltas) != set(updated):
         raise ValueError("SF-TAPFT delta parameter allowlist mismatch")
-    with torch.no_grad():
-        for name in updated:
-            delta = deltas[name]
-            if name not in named or not torch.is_tensor(delta) or delta.shape != named[name].shape:
-                raise ValueError(f"SF-TAPFT delta parameter mismatch: {name!r}")
-            named[name].add_(delta.to(device=named[name].device, dtype=named[name].dtype))
+    for name in updated:
+        delta = deltas[name]
+        if name not in named or not torch.is_tensor(delta) or delta.shape != named[name].shape:
+            raise ValueError(f"SF-TAPFT delta parameter mismatch: {name!r}")
     head_weight = payload["head_weight"]
     class_ids = tuple(int(value) for value in payload["class_ids"])
     if not torch.is_tensor(head_weight) or head_weight.ndim != 2:
         raise ValueError("SF-TAPFT delta head weight is invalid")
-    head = TargetPrototypeHead(
-        head_weight.to(device=device, dtype=next(model.parameters()).dtype),
-        class_ids,
-        scale=float(payload["head_scale"]),
-    )
+    anchors = {name: named[name].detach().clone() for name in updated}
+    try:
+        with torch.no_grad():
+            for name in updated:
+                delta = deltas[name]
+                named[name].add_(delta.to(device=named[name].device, dtype=named[name].dtype))
+        head = TargetPrototypeHead(
+            head_weight.to(device=device, dtype=next(model.parameters()).dtype),
+            class_ids,
+            scale=float(payload["head_scale"]),
+        )
+    except BaseException:
+        with torch.no_grad():
+            for name, anchor in anchors.items():
+                named[name].copy_(anchor)
+        raise
     model.eval()
     head.eval()
     for parameter in model.parameters():

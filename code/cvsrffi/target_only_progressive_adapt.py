@@ -139,6 +139,9 @@ class SFTAPFTConfig:
     fast_tail_lr_norm_end: float = 3.0e-6
     head_polish_steps: int = 0
     head_polish_lr: float = 5.0e-5
+    head_cvar_weight: float = 0.0
+    head_cvar_top_k: int = 2
+    head_cvar_steps: int = 0
     trainable_delta_ema_decay: float = 0.0
     use_class_adaptive_rho: bool = False
     class_adaptive_rho_min: float = 0.25
@@ -148,6 +151,9 @@ class SFTAPFTConfig:
     hard_pair_weight: float = 0.0
     hard_pair_margin: float = 0.2
     prefix_cache_dtype: str = "off"
+    cache_storage_dtype: str = ""
+    suffix_compute_dtype: str = ""
+    cache_device: str = "model"
     gradient_clip_norm: float = 1.0
     checkpoint_average_top_k: int = 3
     mixed_precision: bool = True
@@ -212,6 +218,7 @@ class SFTAPFTConfig:
             "fast_tail_start_step": self.fast_tail_start_step,
             "fast_tail_steps": self.fast_tail_steps,
             "head_polish_steps": self.head_polish_steps,
+            "head_cvar_steps": self.head_cvar_steps,
         }
         for name, value in integer_controls.items():
             if isinstance(value, bool) or int(value) < 0 or int(value) > total_steps:
@@ -220,6 +227,10 @@ class SFTAPFTConfig:
             raise ValueError("fast tail start and steps must either both be zero or both be positive")
         if self.fast_tail_steps and self.fast_tail_start_step + self.fast_tail_steps > total_steps:
             raise ValueError("fast tail schedule exceeds total_steps")
+        if self.head_cvar_steps > self.head_polish_steps:
+            raise ValueError("head_cvar_steps must not exceed head_polish_steps")
+        if isinstance(self.head_cvar_top_k, bool) or int(self.head_cvar_top_k) <= 0:
+            raise ValueError("head_cvar_top_k must be a positive integer")
         bounded = {
             "classifier_source_target_interpolation": (0.0, 1.0),
             "label_smoothing": (0.0, 1.0),
@@ -263,6 +274,7 @@ class SFTAPFTConfig:
             "head_anchor_weight",
             "hard_pair_weight",
             "hard_pair_margin",
+            "head_cvar_weight",
         )
         for name in nonnegative:
             value = float(getattr(self, name))
@@ -278,6 +290,24 @@ class SFTAPFTConfig:
             raise ValueError("use_class_adaptive_rho must be a boolean")
         if self.prefix_cache_dtype not in {"off", "float32", "float16"}:
             raise ValueError("prefix_cache_dtype must be off, float32 or float16")
+        cache_dtypes = {"off", "float16", "bfloat16", "float32"}
+        storage_dtype = self.cache_storage_dtype or self.prefix_cache_dtype
+        compute_dtype = self.suffix_compute_dtype or (
+            "off" if storage_dtype == "off" else "float32"
+        )
+        if storage_dtype not in cache_dtypes:
+            raise ValueError("cache_storage_dtype must be off, float16, bfloat16 or float32")
+        if compute_dtype not in {"off", "float32"}:
+            raise ValueError(
+                "suffix_compute_dtype currently supports only off or float32; "
+                "low-precision suffix compute requires a separate equivalence-qualified path"
+            )
+        if (storage_dtype == "off") != (compute_dtype == "off"):
+            raise ValueError("cache storage and suffix compute must either both be off or enabled")
+        if self.cache_device not in {"model", "cpu", "cuda"}:
+            raise ValueError("cache_device must be model, cpu or cuda")
+        object.__setattr__(self, "cache_storage_dtype", storage_dtype)
+        object.__setattr__(self, "suffix_compute_dtype", compute_dtype)
         if not 0.0 <= float(self.trainable_delta_ema_decay) < 1.0:
             raise ValueError("trainable_delta_ema_decay must be in [0, 1)")
         if not 0.0 <= float(self.class_adaptive_rho_min) <= float(self.class_adaptive_rho_max) <= 1.0:
@@ -291,6 +321,19 @@ class SFTAPFTConfig:
         )
         for name in integer_controls:
             object.__setattr__(self, name, int(getattr(self, name)))
+        object.__setattr__(self, "head_cvar_top_k", int(self.head_cvar_top_k))
+
+
+def class_cvar_from_class_losses(class_losses: Tensor, *, top_k: int) -> Tensor:
+    """Return the mean of the largest class-mean losses without class-ID branches."""
+
+    if class_losses.ndim != 1 or class_losses.numel() == 0:
+        raise ValueError("class losses must be a non-empty vector")
+    if isinstance(top_k, bool) or int(top_k) <= 0 or int(top_k) > class_losses.numel():
+        raise ValueError("top_k must be in [1, class_count]")
+    if not bool(torch.isfinite(class_losses).all()):
+        raise ValueError("class losses must be finite")
+    return torch.topk(class_losses, k=int(top_k)).values.mean()
 
 
 @dataclass(frozen=True)
@@ -887,6 +930,10 @@ class SFTAPFTAudit:
     actual_changed_elements: int
     head_polish_steps: int
     cached_head_forward_steps: int
+    head_cvar_steps: int
+    head_cvar_weight: float
+    head_cvar_top_k: int
+    head_cvar_losses: tuple[float, ...]
     trainable_delta_ema_decay: float
     class_adaptive_rho: tuple[float, ...]
     class_reliability: tuple[float, ...]
@@ -975,6 +1022,7 @@ class H6PrefixCache:
     cls_head_kwargs: Mapping[str, Tensor]
     storage_dtype: torch.dtype
     batch_size: int
+    source_tensor_bytes: int = 0
 
     @property
     def tensor_bytes(self) -> int:
@@ -985,6 +1033,27 @@ class H6PrefixCache:
         )
         return sum(int(value.numel() * value.element_size()) for value in tensors)
 
+    @property
+    def storage_tensor_bytes(self) -> int:
+        return self.source_tensor_bytes or self.tensor_bytes
+
+    def materialize_once(self, *, device: torch.device, dtype: torch.dtype) -> "H6PrefixCache":
+        if dtype not in {torch.float16, torch.bfloat16, torch.float32}:
+            raise ValueError("H6 compute cache dtype must be float16, bfloat16 or float32")
+        return H6PrefixCache(
+            pre_t3_norm=self.pre_t3_norm.to(device=device, dtype=dtype),
+            frozen_fuse_tail=self.frozen_fuse_tail.to(device=device, dtype=dtype),
+            cls_head_kwargs=MappingProxyType(
+                {
+                    name: value.to(device=device, dtype=dtype)
+                    for name, value in self.cls_head_kwargs.items()
+                }
+            ),
+            storage_dtype=dtype,
+            batch_size=self.batch_size,
+            source_tensor_bytes=self.storage_tensor_bytes,
+        )
+
 
 @dataclass(frozen=True)
 class H6SupportSafetyAudit:
@@ -994,6 +1063,107 @@ class H6SupportSafetyAudit:
     positive_margin_regressions: int
     max_abs_logit_delta: float
     minimum_full_path_margin: float
+
+
+class CompactH6Suffix(nn.Module):
+    """Independent H6 suffix that never retains the complete checkpoint model."""
+
+    def __init__(
+        self,
+        *,
+        t3: nn.Module,
+        t_pool: nn.Module,
+        t_proj: nn.Module,
+        meta_adapter_time: nn.Module,
+        fuse: nn.Module,
+        meta_adapter_fusion: nn.Module,
+        cls_head: nn.Module,
+        target_head: TargetPrototypeHead,
+        cache: H6PrefixCache,
+        emb_dim: int,
+    ) -> None:
+        super().__init__()
+        self.t3 = t3
+        self.t_pool = t_pool
+        self.t_proj = t_proj
+        self.meta_adapter_time = meta_adapter_time
+        self.fuse = fuse
+        self.meta_adapter_fusion = meta_adapter_fusion
+        self.cls_head = cls_head
+        self.target_head = target_head
+        self.cache = cache
+        self.emb_dim = int(emb_dim)
+        for parameter in self.parameters():
+            parameter.requires_grad_(False)
+        for parameter in self.t3.norm.parameters():
+            parameter.requires_grad_(True)
+        for parameter in self.target_head.parameters():
+            parameter.requires_grad_(True)
+
+    @classmethod
+    def from_model(
+        cls,
+        model: nn.Module,
+        head: TargetPrototypeHead,
+        cache: H6PrefixCache,
+    ) -> "CompactH6Suffix":
+        backbone, _ = _identity_backbone(model)
+        reference = next(backbone.t3.norm.parameters())
+        compute_cache = cache.materialize_once(
+            device=reference.device,
+            dtype=reference.dtype,
+        )
+        return cls(
+            t3=copy.deepcopy(backbone.t3),
+            t_pool=copy.deepcopy(backbone.t_pool),
+            t_proj=copy.deepcopy(backbone.t_proj),
+            meta_adapter_time=copy.deepcopy(backbone.meta_adapter_time),
+            fuse=copy.deepcopy(backbone.fuse),
+            meta_adapter_fusion=copy.deepcopy(backbone.meta_adapter_fusion),
+            cls_head=copy.deepcopy(backbone.cls_head),
+            target_head=copy.deepcopy(head),
+            cache=compute_cache,
+            emb_dim=int(backbone.emb_dim),
+        )
+
+    def embedding(self) -> Tensor:
+        t = self.t3.norm(self.cache.pre_t3_norm)
+        t = self.t3.act(t)
+        t = self.t3.pool(t)
+        t = self.t3.drop(t)
+        t_emb = self.meta_adapter_time(self.t_proj(self.t_pool(t).squeeze(-1)))
+        tail = self.cache.frozen_fuse_tail
+        base_input = torch.cat([t_emb, tail], dim=1) if tail.size(1) else t_emb
+        base = self.meta_adapter_fusion(self.fuse(base_input))
+        output = self.cls_head(
+            base,
+            labels=None,
+            return_emb=True,
+            **dict(self.cache.cls_head_kwargs),
+        )
+        if isinstance(output, Mapping):
+            embedding = output.get("feat_joint")
+        elif isinstance(output, (tuple, list)) and output:
+            embedding = output[-1]
+        else:
+            embedding = None
+        if not torch.is_tensor(embedding) or embedding.ndim != 2:
+            raise ValueError("compact H6 suffix did not expose feat_joint")
+        if int(embedding.size(0)) != self.cache.batch_size:
+            raise ValueError("compact H6 suffix batch size drifted")
+        return embedding
+
+    def logits(self) -> Tensor:
+        return self.target_head(self.embedding())
+
+    def export_permitted_state(self) -> Mapping[str, Tensor]:
+        return MappingProxyType(
+            {
+                "model.t3.norm.weight": self.t3.norm.weight.detach().clone(),
+                "model.t3.norm.bias": self.t3.norm.bias.detach().clone(),
+                "head.weight": self.target_head.weight.detach().clone(),
+            }
+        )
 
 
 @dataclass(frozen=True)
@@ -1015,14 +1185,25 @@ class H6SuffixTrainer:
         return self.head(self.embedding())
 
 
+def _cache_dtype_from_name(value: str) -> torch.dtype:
+    mapping = {
+        "float16": torch.float16,
+        "bfloat16": torch.bfloat16,
+        "float32": torch.float32,
+    }
+    try:
+        return mapping[value]
+    except KeyError as exc:
+        raise ValueError(f"unsupported H6 cache dtype: {value}") from exc
+
 def _capture_h6_prefix_cache(
     model: nn.Module,
     values: Tensor,
     *,
     storage_dtype: torch.dtype,
 ) -> tuple[H6PrefixCache, Mapping[str, Any]]:
-    if storage_dtype not in {torch.float16, torch.float32}:
-        raise ValueError("H6 prefix cache storage dtype must be float16 or float32")
+    if storage_dtype not in {torch.float16, torch.bfloat16, torch.float32}:
+        raise ValueError("H6 prefix cache storage dtype must be float16, bfloat16 or float32")
     backbone, _ = _identity_backbone(model)
     required = (
         "t3",
@@ -1126,7 +1307,9 @@ def forward_h6_prefix_cache(model: nn.Module, cache: H6PrefixCache) -> Tensor:
     reference = next(t3.norm.parameters())
 
     def materialize(value: Tensor) -> Tensor:
-        return value.to(device=reference.device, dtype=reference.dtype)
+        if value.device != reference.device or value.dtype != reference.dtype:
+            raise ValueError("H6 compute cache must be materialized before suffix replay")
+        return value
 
     t = t3.norm(materialize(cache.pre_t3_norm))
     t = t3.act(t)
@@ -1502,7 +1685,7 @@ def fit_sf_tapft_inplace(
         copy_checkpoint_model=False,
     )
     if (
-        effective_config.prefix_cache_dtype == "float16"
+        effective_config.cache_storage_dtype in {"float16", "bfloat16"}
         and not result.audit.support_safety_passed
     ):
         named = dict(checkpoint_model.named_parameters())
@@ -1515,7 +1698,12 @@ def fit_sf_tapft_inplace(
         fallback = _fit_sf_tapft(
             checkpoint_model,
             target_train,
-            replace(effective_config, prefix_cache_dtype="float32"),
+            replace(
+                effective_config,
+                prefix_cache_dtype="float32",
+                cache_storage_dtype="float32",
+                suffix_compute_dtype="float32",
+            ),
             checkpoint_validation=checkpoint_validation,
             checkpoint_selection_mode=checkpoint_selection_mode,
             copy_checkpoint_model=False,
@@ -1596,7 +1784,7 @@ def _fit_sf_tapft(
 
     prefix_cache: H6PrefixCache | None = None
     prefix_cache_build_forward_steps = 0
-    if config.prefix_cache_dtype != "off":
+    if config.cache_storage_dtype != "off":
         normalized_rules = (
             config.norm_rules
             if config.norm_rules
@@ -1611,13 +1799,25 @@ def _fit_sf_tapft(
             raise ValueError(
                 "H6 prefix caching requires p1_head_norm with only t3 weight_bias"
             )
-        storage_dtype = (
-            torch.float16 if config.prefix_cache_dtype == "float16" else torch.float32
-        )
+        storage_dtype = _cache_dtype_from_name(config.cache_storage_dtype)
         prefix_cache, initial_outputs = _capture_h6_prefix_cache(
             student,
             target_x,
             storage_dtype=storage_dtype,
+        )
+        storage_device = (
+            device
+            if config.cache_device == "model"
+            else torch.device(config.cache_device)
+        )
+        if storage_device != prefix_cache.pre_t3_norm.device:
+            prefix_cache = prefix_cache.materialize_once(
+                device=storage_device,
+                dtype=storage_dtype,
+            )
+        prefix_cache = prefix_cache.materialize_once(
+            device=device,
+            dtype=_cache_dtype_from_name(config.suffix_compute_dtype),
         )
         prefix_cache_build_forward_steps = 1
     else:
@@ -1715,12 +1915,24 @@ def _fit_sf_tapft(
         torch.random.set_rng_state(cpu_rng_state)
         if cuda_rng_state is not None:
             torch.cuda.set_rng_state(cuda_rng_state, device)
+    compact_suffix: CompactH6Suffix | None = None
+    training_named = dict(named)
+    if prefix_cache is not None and not copy_checkpoint_model:
+        compact_suffix = CompactH6Suffix.from_model(student, head, prefix_cache)
+        head = compact_suffix.target_head
+        for name in norm_names:
+            if name.endswith("t3.norm.weight"):
+                training_named[name] = compact_suffix.t3.norm.weight
+            elif name.endswith("t3.norm.bias"):
+                training_named[name] = compact_suffix.t3.norm.bias
+            else:
+                raise ValueError("CompactH6Suffix only supports t3.norm weight/bias")
     groups = [
         {"name": "head", "params": list(head.parameters()), "lr": config.lr_head_initial},
-        {"name": "norm", "params": [named[name] for name in sorted(norm_names)], "lr": config.lr_norm},
-        {"name": "adapter", "params": [named[name] for name in sorted(adapter_names)], "lr": config.lr_adapter},
-        {"name": "last", "params": [named[name] for name in sorted(last_names)], "lr": config.lr_last_block},
-        {"name": "fusion", "params": [named[name] for name in sorted(fusion_names)], "lr": config.lr_fusion},
+        {"name": "norm", "params": [training_named[name] for name in sorted(norm_names)], "lr": config.lr_norm},
+        {"name": "adapter", "params": [training_named[name] for name in sorted(adapter_names)], "lr": config.lr_adapter},
+        {"name": "last", "params": [training_named[name] for name in sorted(last_names)], "lr": config.lr_last_block},
+        {"name": "fusion", "params": [training_named[name] for name in sorted(fusion_names)], "lr": config.lr_fusion},
     ]
     groups = [group for group in groups if group["params"]]
     optimizer = torch.optim.AdamW(groups, weight_decay=float(config.weight_decay))
@@ -1731,7 +1943,7 @@ def _fit_sf_tapft(
     }
     permitted_optimizer_ids = {
         *(
-            id(named[name])
+            id(training_named[name])
             for name in (norm_names | adapter_names | last_names | fusion_names)
         ),
         *(id(parameter) for parameter in head.parameters()),
@@ -1742,7 +1954,7 @@ def _fit_sf_tapft(
     scaler = _make_grad_scaler(device, enabled=use_amp)
     l2sp_names = sorted(norm_names | last_names | fusion_names)
     l2sp = (
-        L2SPRegularizer.from_named_parameters((name, named[name]) for name in l2sp_names)
+        L2SPRegularizer.from_named_parameters((name, training_named[name]) for name in l2sp_names)
         if l2sp_names
         else None
     )
@@ -1754,6 +1966,7 @@ def _fit_sf_tapft(
     scheduler_steps = int(config.scheduler_reference_steps) or total_steps
     validation_step_set = set(config.validation_steps)
     losses: list[float] = []
+    head_cvar_losses: list[float] = []
     snapshots: list[
         tuple[dict[str, Tensor], float | tuple[float, ...], int]
     ] = []
@@ -1798,7 +2011,11 @@ def _fit_sf_tapft(
                 if polishing and cached_head_embeddings is None:
                     with torch.no_grad():
                         cached_head_embeddings = (
-                            forward_h6_prefix_cache(student, prefix_cache)
+                            (
+                                compact_suffix.embedding()
+                                if compact_suffix is not None
+                                else forward_h6_prefix_cache(student, prefix_cache)
+                            )
                             if prefix_cache is not None
                             else _extract_joint_embedding(
                                 _forward_aux(student, target_x), int(target_x.size(0))
@@ -1806,7 +2023,13 @@ def _fit_sf_tapft(
                         ).detach()
                     cached_head_forward_steps += 1
             else:
-                policy.apply(student, phase)
+                if compact_suffix is None:
+                    policy.apply(student, phase)
+                else:
+                    for parameter in compact_suffix.parameters():
+                        parameter.requires_grad_(False)
+                    for parameter in compact_suffix.t3.norm.parameters():
+                        parameter.requires_grad_(True)
             for parameter in head.parameters():
                 parameter.requires_grad_(True)
             current_phase = optimization_phase
@@ -1830,7 +2053,11 @@ def _fit_sf_tapft(
                 )
             else:
                 if prefix_cache is not None:
-                    embeddings = forward_h6_prefix_cache(student, prefix_cache)
+                    embeddings = (
+                        compact_suffix.embedding()
+                        if compact_suffix is not None
+                        else forward_h6_prefix_cache(student, prefix_cache)
+                    )
                     cached_suffix_forward_steps += 1
                 else:
                     outputs = _forward_aux(student, target_x)
@@ -1842,6 +2069,28 @@ def _fit_sf_tapft(
                 weight=class_weights,
                 label_smoothing=float(config.label_smoothing),
             )
+            cvar = logits.new_zeros(())
+            cvar_active = (
+                config.head_cvar_steps > 0
+                and step >= total_steps - config.head_cvar_steps
+            )
+            if cvar_active:
+                row_losses = F.cross_entropy(
+                    logits,
+                    local_labels,
+                    reduction="none",
+                    label_smoothing=float(config.label_smoothing),
+                )
+                class_losses = torch.stack(
+                    [
+                        row_losses[local_labels == class_index].mean()
+                        for class_index in range(len(head.class_ids))
+                    ]
+                )
+                cvar = class_cvar_from_class_losses(
+                    class_losses,
+                    top_k=config.head_cvar_top_k,
+                )
             proto_logits = leave_one_out_prototype_logits(
                 embeddings,
                 local_labels,
@@ -1895,6 +2144,7 @@ def _fit_sf_tapft(
                 + float(config.selective_kd_weight) * kd
                 + float(config.head_anchor_weight) * head_anchor
                 + float(config.hard_pair_weight) * hard_pair
+                + float(config.head_cvar_weight) * cvar
             )
         if not bool(torch.isfinite(loss)):
             raise RuntimeError("SF-TAPFT loss became non-finite")
@@ -1912,7 +2162,7 @@ def _fit_sf_tapft(
             ema.update(
                 {
                     **{
-                        f"model.{name}": dict(student.state_dict())[name]
+                        f"model.{name}": training_named[name]
                         for name in sorted(permitted_model_names)
                     },
                     **{f"head.{name}": value for name, value in head.state_dict().items()},
@@ -1920,6 +2170,8 @@ def _fit_sf_tapft(
             )
         loss_value = float(loss.detach())
         losses.append(loss_value)
+        if cvar_active:
+            head_cvar_losses.append(float(cvar.detach()))
         evaluate_checkpoint = (
             checkpoint_validation is None
             or not validation_step_set
@@ -1979,7 +2231,7 @@ def _fit_sf_tapft(
         if qualifies:
             combined = {
                 **{
-                    f"model.{name}": dict(student.state_dict())[name].detach().clone()
+                    f"model.{name}": training_named[name].detach().clone()
                     for name in sorted(permitted_model_names)
                 },
                 **{f"head.{name}": value.detach().clone() for name, value in head.state_dict().items()},
@@ -2122,7 +2374,7 @@ def _fit_sf_tapft(
             int(value.numel() * value.element_size()) for value in compact_anchor_state.values()
         ),
         trainable_parameter_elements=(
-            sum(int(named[name].numel()) for name in permitted_model_names)
+            sum(int(training_named[name].numel()) for name in permitted_model_names)
             + sum(int(parameter.numel()) for parameter in head.parameters())
         ),
         actual_changed_elements=sum(
@@ -2130,12 +2382,16 @@ def _fit_sf_tapft(
         ),
         head_polish_steps=config.head_polish_steps,
         cached_head_forward_steps=cached_head_forward_steps,
+        head_cvar_steps=config.head_cvar_steps,
+        head_cvar_weight=float(config.head_cvar_weight),
+        head_cvar_top_k=config.head_cvar_top_k,
+        head_cvar_losses=tuple(head_cvar_losses),
         trainable_delta_ema_decay=float(config.trainable_delta_ema_decay),
         class_adaptive_rho=tuple(float(value) for value in rho_values.detach().cpu()),
         class_reliability=tuple(
             float(value) for value in reliability_values.detach().cpu()
         ),
-        prefix_cache_dtype=config.prefix_cache_dtype,
+        prefix_cache_dtype=config.cache_storage_dtype,
         prefix_cache_build_forward_steps=prefix_cache_build_forward_steps,
         cached_suffix_forward_steps=cached_suffix_forward_steps,
         hard_pair_weight=float(config.hard_pair_weight),

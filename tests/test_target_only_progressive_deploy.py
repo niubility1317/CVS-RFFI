@@ -7,12 +7,14 @@ import torch
 from torch import nn
 
 from cvsrffi.target_only_progressive_adapt import (
+    CompactH6Suffix,
     SFTAPFTConfig,
     H6SuffixTrainer,
     TargetOnlyAdaptationDataset,
     TargetPrototypeHead,
     audit_h6_support_safety,
     build_h6_prefix_cache,
+    class_cvar_from_class_losses,
     encode_h6_prefix,
     fit_sf_tapft,
     fit_sf_tapft_inplace,
@@ -295,3 +297,146 @@ def test_hard_pair_config_is_strictly_validated() -> None:
         SFTAPFTConfig(hard_pair_margin=-0.01)
     with pytest.raises(ValueError, match="prefix_cache_dtype"):
         SFTAPFTConfig(prefix_cache_dtype="bf16")
+
+
+def test_legacy_prefix_cache_dtype_maps_to_storage_and_compute_dtypes() -> None:
+    config = SFTAPFTConfig(prefix_cache_dtype="float16")
+
+    assert config.cache_storage_dtype == "float16"
+    assert config.suffix_compute_dtype == "float32"
+    assert config.cache_device == "model"
+
+
+def test_explicit_cache_precision_controls_are_strictly_validated() -> None:
+    config = SFTAPFTConfig(
+        cache_storage_dtype="bfloat16",
+        suffix_compute_dtype="float32",
+        cache_device="cpu",
+    )
+    assert config.cache_storage_dtype == "bfloat16"
+    assert config.suffix_compute_dtype == "float32"
+    with pytest.raises(ValueError, match="equivalence-qualified"):
+        SFTAPFTConfig(
+            cache_storage_dtype="bfloat16",
+            suffix_compute_dtype="bfloat16",
+        )
+    with pytest.raises(ValueError, match="suffix_compute_dtype"):
+        SFTAPFTConfig(suffix_compute_dtype="int8")
+    with pytest.raises(ValueError, match="cache_device"):
+        SFTAPFTConfig(cache_device="disk")
+
+
+def test_prefix_cache_materializes_storage_to_compute_once() -> None:
+    model = _CacheableBackbone().eval()
+    cache = encode_h6_prefix(model, _dataset().received_iq, storage_dtype=torch.float16)
+
+    compute_cache = cache.materialize_once(device=torch.device("cpu"), dtype=torch.float32)
+    first_ptrs = tuple(
+        tensor.data_ptr()
+        for tensor in (
+            compute_cache.pre_t3_norm,
+            compute_cache.frozen_fuse_tail,
+            *compute_cache.cls_head_kwargs.values(),
+        )
+    )
+    forward_h6_suffix(model, compute_cache)
+    forward_h6_suffix(model, compute_cache)
+    second_ptrs = tuple(
+        tensor.data_ptr()
+        for tensor in (
+            compute_cache.pre_t3_norm,
+            compute_cache.frozen_fuse_tail,
+            *compute_cache.cls_head_kwargs.values(),
+        )
+    )
+
+    assert compute_cache.storage_dtype == torch.float32
+    assert first_ptrs == second_ptrs
+
+
+def test_compact_h6_suffix_has_no_full_model_reference_and_matches_gradients() -> None:
+    torch.manual_seed(41)
+    reference_model = _CacheableBackbone().eval()
+    compact_source = copy.deepcopy(reference_model).eval()
+    values = _dataset().received_iq
+    reference_head = TargetPrototypeHead(torch.randn(3, 4), (0, 1, 2), scale=8.0)
+    compact_head = copy.deepcopy(reference_head)
+    cache = encode_h6_prefix(compact_source, values, storage_dtype=torch.float32)
+
+    reference_logits = reference_head(forward_h6_suffix(reference_model, cache))
+    reference_logits.square().mean().backward()
+    compact = CompactH6Suffix.from_model(compact_source, compact_head, cache)
+    compact_logits = compact.logits()
+    compact_logits.square().mean().backward()
+
+    assert not hasattr(compact, "model")
+    assert torch.allclose(reference_logits, compact_logits, atol=1.0e-6, rtol=1.0e-6)
+    assert torch.allclose(
+        reference_model.t3.norm.weight.grad,
+        compact.t3.norm.weight.grad,
+        atol=1.0e-6,
+        rtol=1.0e-6,
+    )
+    assert torch.allclose(
+        reference_head.weight.grad,
+        compact.target_head.weight.grad,
+        atol=1.0e-6,
+        rtol=1.0e-6,
+    )
+    assert set(compact.export_permitted_state()) == {
+        "model.t3.norm.bias",
+        "model.t3.norm.weight",
+        "head.weight",
+    }
+
+
+def test_class_cvar_uses_top2_class_mean_losses() -> None:
+    losses = torch.tensor([0.1, 0.2, 0.9, 0.8, 0.3, 0.4])
+
+    value = class_cvar_from_class_losses(losses, top_k=2)
+
+    assert value.item() == pytest.approx(0.85)
+
+
+def test_head_cvar_config_is_strictly_validated() -> None:
+    assert SFTAPFTConfig(
+        head_cvar_weight=0.03,
+        head_cvar_top_k=2,
+        head_cvar_steps=30,
+        head_polish_steps=30,
+    ).head_cvar_steps == 30
+    with pytest.raises(ValueError, match="head_cvar_weight"):
+        SFTAPFTConfig(head_cvar_weight=-0.01)
+    with pytest.raises(ValueError, match="head_cvar_top_k"):
+        SFTAPFTConfig(head_cvar_top_k=0)
+    with pytest.raises(ValueError, match="head_cvar_steps"):
+        SFTAPFTConfig(head_cvar_steps=1, head_polish_steps=0)
+
+
+def test_fit_h6_runs_head_only_class_cvar_after_base_adaptation() -> None:
+    torch.manual_seed(43)
+    result = fit_sf_tapft_inplace(
+        _CacheableBackbone(),
+        _dataset(),
+        SFTAPFTConfig(
+            adapter_rank=2,
+            trainability_profile="p1_head_norm",
+            norm_rules=(("t3", "weight_bias"),),
+            phase_steps=(2, 1, 2),
+            scheduler_reference_steps=5,
+            head_polish_steps=2,
+            head_cvar_steps=1,
+            head_cvar_weight=0.03,
+            head_cvar_top_k=2,
+            prefix_cache_dtype="float32",
+            mixed_precision=False,
+            checkpoint_average_top_k=1,
+        ),
+        checkpoint_selection_mode="final_step",
+    )
+
+    assert result.audit.head_cvar_steps == 1
+    assert result.audit.head_cvar_weight == pytest.approx(0.03)
+    assert result.audit.head_cvar_top_k == 2
+    assert len(result.audit.head_cvar_losses) == 1
+    assert result.audit.head_cvar_losses[0] > 0.0

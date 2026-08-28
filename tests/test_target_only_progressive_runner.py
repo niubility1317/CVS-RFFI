@@ -446,6 +446,88 @@ def test_deploy_runner_inplace_can_emit_delta_only(
     assert head.class_ids == (0, 1)
     assert all(not parameter.requires_grad for parameter in model.parameters())
 
+
+def test_atomic_delta_write_preserves_existing_final_on_serializer_failure(
+    tmp_path: Path,
+) -> None:
+    destination = tmp_path / "delta.pt"
+    destination.write_bytes(b"existing-valid-delta")
+
+    def failing_serializer(_payload, temporary: Path) -> None:
+        temporary.write_bytes(b"partial")
+        raise RuntimeError("injected serializer failure")
+
+    with pytest.raises(FileExistsError):
+        runner_module.write_sf_tapft_delta_atomic(
+            destination,
+            {"schema": runner_module.SF_TAPFT_DELTA_BUNDLE_SCHEMA},
+            serializer=failing_serializer,
+        )
+
+    assert destination.read_bytes() == b"existing-valid-delta"
+    absent = tmp_path / "new-delta.pt"
+    with pytest.raises(RuntimeError, match="injected serializer failure"):
+        runner_module.write_sf_tapft_delta_atomic(
+            absent,
+            {"schema": runner_module.SF_TAPFT_DELTA_BUNDLE_SCHEMA},
+            serializer=failing_serializer,
+        )
+    assert not absent.exists()
+    assert list(tmp_path.glob(".*.tmp")) == []
+
+
+def test_delta_loader_rolls_back_when_a_later_parameter_is_invalid(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    support = tmp_path / "support.npz"
+    _write_support(support)
+    checkpoint = tmp_path / "checkpoint.pth"
+    checkpoint.write_bytes(b"loader-owned fixture")
+    binding = _phase1_binding(handles=("tx0", "tx1"))
+    monkeypatch.setattr(
+        runner_module,
+        "load_sf_tapft_phase1_binding",
+        lambda *_args, **_kwargs: binding,
+    )
+    config = _r0_config(checkpoint, support)
+    config["candidate_id"] = "DELTA_ROLLBACK_FIXTURE"
+    config["sf_tapft"].update(
+        {
+            "trainability_profile": "p1_head_norm",
+            "norm_rules": [["t3", "weight_bias"]],
+            "phase_steps": [2, 0, 0],
+        }
+    )
+    output = tmp_path / "rollback-source"
+    runner_module.run_sf_tapft_deploy_no_query(
+        config,
+        output,
+        device="cpu",
+        checkpoint_loader=lambda _path, *, device: copy.deepcopy(_ToyModel()).to(device),
+        deployment_inplace=True,
+        emit_clean_single_bundle=False,
+    )
+    payload = torch.load(
+        output / "sf_tapft_delta_bundle.pt", map_location="cpu", weights_only=True
+    )
+    names = list(payload["updated_parameter_names"])
+    assert len(names) >= 2
+    payload["model_deltas"][names[1]] = torch.zeros(1)
+    corrupted = tmp_path / "corrupted-delta.pt"
+    torch.save(payload, corrupted)
+    shared_model = _ToyModel()
+    before = dict(shared_model.named_parameters())[names[0]].detach().clone()
+
+    with pytest.raises(ValueError, match="delta parameter mismatch"):
+        runner_module.load_sf_tapft_delta_bundle_strict(
+            corrupted,
+            device="cpu",
+            expected_target_binding=_expected_target_binding(),
+            checkpoint_loader=lambda _path, *, device: shared_model.to(device),
+        )
+
+    assert torch.equal(dict(shared_model.named_parameters())[names[0]], before)
+
 def test_clean_single_loader_accepts_pre_slimming_config_defaults(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
