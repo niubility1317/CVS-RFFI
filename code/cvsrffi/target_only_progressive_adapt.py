@@ -2673,6 +2673,46 @@ def _full_support_refit_config(
     )
 
 
+def fit_sf_tapft_support_oof_temperature(
+    checkpoint_model: nn.Module,
+    target_train: TargetOnlyAdaptationDataset,
+    config: SFTAPFTConfig,
+    *,
+    folds: int = 4,
+) -> TemperatureCalibration:
+    """Fit one temperature from fixed-step support OOF logits without model selection."""
+
+    selector = GroupedTargetCVSelector(folds=int(folds), seed=config.seed)
+    splits = selector.split(labels=target_train.labels, groups=target_train.groups)
+    fold_config = replace(
+        config,
+        oof_temperature_calibration=False,
+        validation_steps=(),
+        checkpoint_average_top_k=1,
+    )
+    adapted_oof: list[tuple[Tensor, Tensor]] = []
+    for train_indices, validation_indices in splits:
+        inner_train = _subset_target_train(target_train, train_indices)
+        inner_validation = _subset_target_train(target_train, validation_indices)
+        fitted = fit_sf_tapft(
+            copy.deepcopy(checkpoint_model),
+            inner_train,
+            fold_config,
+            checkpoint_selection_mode="final_step",
+        )
+        logits, labels = _adapted_validation_logits(fitted, inner_validation)
+        adapted_oof.append(
+            (
+                (logits / float(config.inference_temperature)).detach().cpu(),
+                labels.detach().cpu(),
+            )
+        )
+    return fit_positive_temperature(
+        torch.cat([logits for logits, _ in adapted_oof]),
+        torch.cat([labels for _, labels in adapted_oof]),
+    )
+
+
 def select_sf_tapft_by_grouped_cv(
     checkpoint_model: nn.Module,
     target_train: TargetOnlyAdaptationDataset,
@@ -2851,6 +2891,7 @@ __all__ = [
     "ensure_time_adapter",
     "fit_sf_tapft",
     "fit_positive_temperature",
+    "fit_sf_tapft_support_oof_temperature",
     "leave_one_out_prototype_logits",
     "select_sf_tapft_by_grouped_cv",
 ]

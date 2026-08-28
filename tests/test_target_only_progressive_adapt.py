@@ -19,6 +19,7 @@ from cvsrffi.target_only_progressive_adapt import (
     TrainableDeltaAverager,
     ensure_time_adapter,
     fit_sf_tapft,
+    fit_sf_tapft_support_oof_temperature,
     fit_positive_temperature,
     leave_one_out_prototype_logits,
     select_sf_tapft_by_grouped_cv,
@@ -237,6 +238,24 @@ def test_positive_oof_temperature_preserves_argmax_and_reduces_nll() -> None:
     assert result.nll_after <= result.nll_before
     assert torch.equal(calibrated.argmax(1), logits.argmax(1))
     assert result.argmax_preserved is True
+
+
+def test_fixed_step_support_oof_temperature_uses_no_model_selection() -> None:
+    result = fit_sf_tapft_support_oof_temperature(
+        _ToyModel(),
+        _dataset(),
+        SFTAPFTConfig(
+            phase_steps=(1, 0, 0),
+            validation_steps=(),
+            checkpoint_average_top_k=1,
+            seed=392002,
+        ),
+        folds=3,
+    )
+
+    assert result.temperature > 0.0
+    assert result.argmax_preserved is True
+    assert result.nll_after <= result.nll_before
 
 
 def test_l2sp_is_zero_at_snapshot_and_positive_after_drift() -> None:

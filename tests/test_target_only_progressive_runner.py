@@ -19,7 +19,10 @@ from cvsrffi.target_only_progressive_runner import (
     run_sf_tapft_no_query,
 )
 from cvsrffi.sf_tapft_phase1_binding import SFTAPFTPhase1Binding
-from cvsrffi.target_only_progressive_adapt import GroupedTargetCVSelector
+from cvsrffi.target_only_progressive_adapt import (
+    GroupedTargetCVSelector,
+    TemperatureCalibration,
+)
 from test_target_only_progressive_adapt import _ToyModel
 
 
@@ -445,6 +448,68 @@ def test_deploy_runner_inplace_can_emit_delta_only(
     assert audit["support_count"] == 4
     assert head.class_ids == (0, 1)
     assert all(not parameter.requires_grad for parameter in model.parameters())
+
+
+def test_deploy_runner_executes_support_oof_temperature_before_full_fit(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    support = tmp_path / "support.npz"
+    _write_support(support)
+    checkpoint = tmp_path / "checkpoint.pth"
+    checkpoint.write_bytes(b"loader-owned fixture")
+    monkeypatch.setattr(
+        runner_module,
+        "load_sf_tapft_phase1_binding",
+        lambda *_args, **_kwargs: _phase1_binding(handles=("tx0", "tx1")),
+    )
+    calls: list[int] = []
+
+    def calibrate(_model, dataset, _config, *, folds):
+        calls.append(len(dataset.physical_ids))
+        assert folds == 4
+        return TemperatureCalibration(
+            temperature=2.0,
+            nll_before=0.7,
+            nll_after=0.5,
+            argmax_preserved=True,
+        )
+
+    monkeypatch.setattr(
+        runner_module,
+        "fit_sf_tapft_support_oof_temperature",
+        calibrate,
+    )
+    config = _r0_config(checkpoint, support)
+    config["candidate_id"] = "R1_T_DEPLOY_TEST"
+    config["sf_tapft"].update(
+        {
+            "phase_steps": [2, 0, 0],
+            "oof_temperature_calibration": True,
+            "inference_temperature": 1.0,
+        }
+    )
+    output = tmp_path / "r1-t-deploy"
+
+    receipt = run_sf_tapft_deploy_no_query(
+        config,
+        output,
+        device="cpu",
+        checkpoint_loader=lambda _path, *, device: copy.deepcopy(_ToyModel()).to(device),
+        deployment_inplace=True,
+        emit_clean_single_bundle=False,
+    )
+
+    assert calls == [4]
+    assert receipt["temperature_calibration"] == {
+        "temperature": 2.0,
+        "nll_before": 0.7,
+        "nll_after": 0.5,
+        "argmax_preserved": True,
+    }
+    payload = torch.load(
+        output / "sf_tapft_delta_bundle.pt", map_location="cpu", weights_only=True
+    )
+    assert payload["head_scale"] == pytest.approx(4.0)
 
 
 def test_atomic_delta_write_preserves_existing_final_on_serializer_failure(

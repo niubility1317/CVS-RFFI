@@ -20,6 +20,7 @@ from .target_only_progressive_adapt import (
     ensure_time_adapter,
     fit_sf_tapft,
     fit_sf_tapft_inplace,
+    fit_sf_tapft_support_oof_temperature,
     select_sf_tapft_by_grouped_cv,
 )
 from .sf_tapft_phase1_binding import (
@@ -634,6 +635,16 @@ def run_sf_tapft_deploy_no_query(
     )
     support = _load_target_support(resolved["support_path"])
     _validate_support_labels_for_binding(support, binding)
+    temperature_calibration = None
+    if method_config.oof_temperature_calibration:
+        temperature_calibration = fit_sf_tapft_support_oof_temperature(
+            model,
+            support,
+            method_config,
+            folds=4,
+        )
+        if not temperature_calibration.argmax_preserved:
+            raise RuntimeError("support OOF temperature changed argmax")
     fit = fit_sf_tapft_inplace if deployment_inplace else fit_sf_tapft
     result = fit(
         model,
@@ -641,7 +652,10 @@ def run_sf_tapft_deploy_no_query(
         method_config,
         checkpoint_selection_mode="final_step",
     )
-    result.head.scale /= float(method_config.inference_temperature)
+    effective_temperature = float(method_config.inference_temperature)
+    if temperature_calibration is not None:
+        effective_temperature *= float(temperature_calibration.temperature)
+    result.head.scale /= effective_temperature
     selected_phase_steps = tuple(int(value) for value in method_config.phase_steps)
 
     destination.mkdir(parents=True, exist_ok=False)
@@ -679,6 +693,14 @@ def run_sf_tapft_deploy_no_query(
         "split_id": resolved["split_id"],
         "research_selection_executed": False,
         "folds": 0,
+        "temperature_calibration_folds": (
+            4 if temperature_calibration is not None else 0
+        ),
+        "temperature_calibration": (
+            asdict(temperature_calibration)
+            if temperature_calibration is not None
+            else None
+        ),
         "selected_phase_steps": list(selected_phase_steps),
         "support_physical_sample_count": len(support.physical_ids),
         "support_physical_id_origin": support.physical_id_origin,
@@ -709,6 +731,10 @@ def run_sf_tapft_deploy_no_query(
             "actual_changed_elements": result.audit.actual_changed_elements,
             "head_polish_steps": result.audit.head_polish_steps,
             "cached_head_forward_steps": result.audit.cached_head_forward_steps,
+            "head_cvar_steps": result.audit.head_cvar_steps,
+            "head_cvar_weight": result.audit.head_cvar_weight,
+            "head_cvar_top_k": result.audit.head_cvar_top_k,
+            "head_cvar_losses": list(result.audit.head_cvar_losses),
             "prefix_cache_dtype": result.audit.prefix_cache_dtype,
             "prefix_cache_build_forward_steps": (
                 result.audit.prefix_cache_build_forward_steps
