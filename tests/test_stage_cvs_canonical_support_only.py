@@ -18,6 +18,7 @@ from cvsrffi.leo_weak_cache import (
     PHASE2_SAMPLE_VIEW_POLICY,
     canonical_json_sha256,
     ids_sha256,
+    load_verified_leo_weak_cache,
     load_verified_leo_weak_cache_set,
     overlay_id,
     post_channel_iq_sha256,
@@ -63,6 +64,42 @@ REGISTERED_TX_IDS = (
     "13-3",
     "4-11",
     "3-18",
+)
+PRODUCTION_CACHE_SET_KEYS = (
+    "schema",
+    "artifact_stage",
+    "cache_set_id",
+    "cache_scope",
+    "protocol_schema",
+    "profile_id",
+    "query_policy",
+    "k",
+    "capsule_id",
+    "split_id",
+    "phase2_sample_view_policy",
+    "clean_sample_access",
+    "clean_derived_signal_access",
+    "target_channel_view",
+    "overlay_role_policy",
+    "target_channel_scenarios",
+    "output_roles",
+    "cache_npz_by_scenario",
+    "cache_sha256_by_scenario",
+    "cache_audits",
+    "builder_sha256",
+    "build_spec_sha256",
+    "build_spec_path_exposed_to_phase2",
+    "phase2_physical_sample_observation_policy",
+    "phase2_cross_scenario_physical_sample_reuse",
+    "phase2_additional_leo_channel_state_generation",
+    "phase2_post_reception_equalization_augmentation_transform_allowed",
+    "phase2_post_reception_view_from_fixed_received_iq_only",
+    "phase2_post_reception_view_counts_as_additional_physical_sample",
+    "phase2_physical_sample_root_id_policy",
+    "phase2_query_post_reception_view_fit_access",
+    "physical_sample_scenario_assignment_policy",
+    "physical_sample_ids_sha256_by_scenario",
+    "physical_sample_scenario_assignment_sha256",
 )
 
 
@@ -235,6 +272,7 @@ def _write_verified_cache_set(
     tmp_path.mkdir(parents=True, exist_ok=True)
     cache_paths: dict[str, str] = {}
     cache_hashes: dict[str, str] = {}
+    cache_audits: dict[str, object] = {}
     ids_by_scenario: dict[str, list[str]] = {}
     for scenario in FORMAL_LEO_WEAK_SCENARIOS:
         path = tmp_path / f"cache_{scenario}.npz"
@@ -247,6 +285,15 @@ def _write_verified_cache_set(
         cache_paths[scenario] = path.name
         cache_hashes[scenario] = sha256_file(path)
         ids_by_scenario[scenario] = payload["sample_ids"].astype(str).tolist()
+        if not duplicate_support_id:
+            _arrays, _manifest, audit = load_verified_leo_weak_cache(
+                path,
+                expected_scenario=scenario,
+                allowed_roles={"target_old", "target_new"},
+            )
+            cache_audits[scenario] = audit
+        else:
+            cache_audits[scenario] = {}
     set_manifest = {
         "schema": LEO_WEAK_CACHE_SET_SCHEMA,
         "artifact_stage": LEO_WEAK_CACHE_STAGE,
@@ -258,15 +305,19 @@ def _write_verified_cache_set(
         "k": 20,
         "capsule_id": CAPSULE_ID,
         "split_id": SPLIT_ID,
-        "registered_tx_ids": list(REGISTERED_TX_IDS),
         "phase2_sample_view_policy": PHASE2_SAMPLE_VIEW_POLICY,
         "clean_sample_access": False,
         "clean_derived_signal_access": False,
         "target_channel_view": "leo_weak_only",
+        "overlay_role_policy": "all_roles",
         "target_channel_scenarios": list(FORMAL_LEO_WEAK_SCENARIOS),
         "output_roles": ["target_old", "target_new"],
         "cache_npz_by_scenario": cache_paths,
         "cache_sha256_by_scenario": cache_hashes,
+        "cache_audits": cache_audits,
+        "builder_sha256": "c" * 64,
+        "build_spec_sha256": "d" * 64,
+        "build_spec_path_exposed_to_phase2": False,
         **_single_observation_contract(),
         "physical_sample_ids_sha256_by_scenario": {
             scenario: ids_sha256(ids_by_scenario[scenario])
@@ -276,8 +327,13 @@ def _write_verified_cache_set(
             ids_by_scenario
         ),
     }
+    assert tuple(set_manifest) == PRODUCTION_CACHE_SET_KEYS
+    assert "registered_tx_ids" not in set_manifest
     manifest_path = tmp_path / "cache_set.json"
-    manifest_path.write_text(json.dumps(set_manifest), encoding="utf-8")
+    manifest_path.write_text(
+        json.dumps(set_manifest, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
     if not duplicate_support_id:
         load_verified_leo_weak_cache_set(
             manifest_path,
@@ -333,6 +389,9 @@ def test_verified_cache_to_export_to_prototype_bridge_closes_support_only_chain(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     cache_set = _write_verified_cache_set(tmp_path)
+    production_manifest = json.loads(cache_set.read_text(encoding="utf-8"))
+    assert tuple(production_manifest) == PRODUCTION_CACHE_SET_KEYS
+    assert "registered_tx_ids" not in production_manifest
     config = _config(tmp_path)
     support_pool = tmp_path / "support_pool_leo_clear_weak_rx1-1_k20.npz"
 
@@ -364,6 +423,7 @@ def test_verified_cache_to_export_to_prototype_bridge_closes_support_only_chain(
         assert support_manifest["schema"] == SUPPORT_SCHEMA
         assert support_manifest["capsule_id"] == CAPSULE_ID
         assert support_manifest["split_id"] == SPLIT_ID
+        assert support_manifest["registered_tx_ids"] == list(REGISTERED_TX_IDS)
 
     export_audit_path = tmp_path / "support_leo_clear_weak_rx1-1_k20.audit.json"
     export_audit = export_target_row(
@@ -398,10 +458,9 @@ def test_verified_cache_to_export_to_prototype_bridge_closes_support_only_chain(
         ("capsule_id", "f" * 64),
         ("split_id", "e" * 64),
         ("k", 19),
-        ("registered_tx_ids", list(reversed(REGISTERED_TX_IDS))),
     ],
 )
-def test_parent_protocol_handle_k_and_registered_order_drift_fail_closed(
+def test_parent_protocol_handle_and_k_drift_fail_closed(
     tmp_path: Path,
     field: str,
     value: object,

@@ -93,7 +93,6 @@ def _validate_parent_manifest(
         "k": EXPECTED_K_SHOT,
         "capsule_id": EXPECTED_CAPSULE_ID,
         "split_id": EXPECTED_SPLIT_ID,
-        "registered_tx_ids": list(EXPECTED_REGISTERED_TX_IDS),
     }
     failed = [field for field, value in expected.items() if manifest.get(field) != value]
     if failed:
