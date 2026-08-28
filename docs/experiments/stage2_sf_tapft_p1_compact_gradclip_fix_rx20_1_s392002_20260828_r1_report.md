@@ -36,5 +36,13 @@
 
 只在协议/query泄漏、错误数据行、输出碰撞、错误checkout、确定性异常、无prediction闭合、scorer连接错误或进程归属不清时停止；不得因低性能停止。D0/D4全部4份prediction闭合前不得读取truth。
 
-最终矩阵仍相对修复后D0判断：BA不下降、floor不下降、任一类别不低于D0-5pp、NLL不高于D0+0.02；可训练元素不超过1584、delta不超过10KB、适配墙钟不超过20秒。通过者仅记为`ENGINEERING_REPLAY_PASS`。
+## 5.r1技术停止
 
+- 最终状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE/NO_PERFORMANCE_RESULT`
+- D0真实checkpoint无query smoke在prediction与正式support适配前失败；错误为FP16 storage cache未按新契约一次性materialize到FP32 compute cache，`forward_h6_prefix_cache`正确拒绝dtype漂移
+- r1未启动D0/D4正式适配，未产生delta、prediction或性能结果；stderr与空stdout原样保留
+- 修复只更新smoke脚本的storage→compute一次性materialize，不改变D0/D4方法、config、support或query
+- r1禁止重启或覆盖；后续使用全新r2
+
+
+最终矩阵仍相对修复后D0判断：BA不下降、floor不下降、任一类别不低于D0-5pp、NLL不高于D0+0.02；可训练元素不超过1584、delta不超过10KB、适配墙钟不超过20秒。通过者仅记为`ENGINEERING_REPLAY_PASS`。

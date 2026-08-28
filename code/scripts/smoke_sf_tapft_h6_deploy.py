@@ -94,7 +94,15 @@ def main(argv: list[str] | None = None) -> int:
         parameter.grad = None
     for parameter in head.parameters():
         parameter.grad = None
-    cache16 = build_h6_prefix_cache(model, values, storage_dtype=torch.float16)
+    cache16_storage = build_h6_prefix_cache(
+        model,
+        values,
+        storage_dtype=torch.float16,
+    )
+    cache16 = cache16_storage.materialize_once(
+        device=values.device,
+        dtype=values.dtype,
+    )
     with torch.no_grad():
         cached16_logits = head(forward_h6_prefix_cache(model, cache16))
     fp16_finite = bool(torch.isfinite(cached16_logits).all())
