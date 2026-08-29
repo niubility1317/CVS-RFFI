@@ -27,6 +27,13 @@
 - 阶段A机制停止条件为预测必须发生变化、非仿射能量至少0.1、held-out pseudo-new的H/min-new/old-post稳定改善；否则属于科学不晋级而非技术失败。
 - SAGE-R只修复Stage A后当前old/new边界：用D92导出的旧新margin、熵、最近两个旧类/新类距离作为6维条件，以`sigmoid(gamma*(tau-|margin|))`抑制远离边界的样本，并同时输出identity/FFT联合残差。
 - 阶段B的旧类安全不是普通加权项，而是增广拉格朗日约束`old-post<=StageA old-post+epsilon`；`phi_D`冻结，乘子按`eta=max(0,eta+rho*violation)`在线更新。
+- 既有BiNOVA生命周期已具备四状态freeze-before-query骨架，但使用旧OAS代理、旧门槛和固定A3/B3选择；新生命周期必须改为正式D92、BiSAGE门槛和support-only的S2→S1→S0安全回退。
+- 历史Target125 runner已验证可按8 shard执行prediction closure和truth-last score；新Target125调度器应复用其不可覆盖根、shard覆盖、失败指纹和prediction-before-score结构，而不复用旧D92预测命令。
+- 历史每个outer已保存4类sealed package（before/after enrollment/apply）及独立`truth_sidecar`；BiSAGE需要从source manifest保留`packages`给预测侧数据加载，同时仅把`truth_sidecar`交给预测完成后的独立scorer。
+- 当前Target125绑定器只复制了`source_job_root`，尚未携带历史`packages/truth_sidecar/planned_shard_index`，无法直接驱动真实125调度；这属于运行前会跑错的P1实现缺口，需在生命周期runner前修正。
+- N607只读核对发现配置原指向的`d92_registration_balanced_125_retry2`manifest SHA确实为`b70045...`，但该原始manifest不含sealed package；真正完成D92 E0完整125的manifest为`d92_e0_full_only_target125_20260812_v1/matrix_manifest.json`，SHA256=`5910674066e8bbf93684fddd6af6fd2cef7e8f208d64e403ac7e58030a2a8cc5`。
+- E0完整125 manifest每个job包含4类package和truth sidecar。support NPZ含`support_leo_weak_iq[N,2,256]`、连续类索引、类内rank和物理token；query NPZ含无标签`query_leo_weak_iq`与token，故能在不读取truth的前提下实现BiSAGE真实特征提取与训练。
+- pilot`rx_3_19/713102/K10/new5`的注册support每场景110行、query每场景220行；三个场景物理包独立，满足完整375场景单元的逐场景预测入口。
 
 ## Technical Decisions
 | Decision | Rationale |
@@ -43,6 +50,8 @@
 | 最初只定位到后期3-seed D92 screening矩阵 | 通过对话索引和历史Target125报告定位到更早且真实闭合的5-seed E0_FULL_ONLY矩阵；正式方案改用该矩阵 |
 | Windows控制台默认GBK导致D92索引搜索输出失败 | 后续设置`PYTHONIOENCODING=utf-8`后重跑 |
 | `rg`含空格与管道符的正则再次被cmd拆分 | 改用单token标题检索并按上下文读取，后续不复用该写法 |
+| 检索历史builder时再次使用含管道的cmd正则 | 立即改用单函数名和指定行读取；记录为不可复用命令模式 |
+| 首次SSH远端`find`把整段命令包成单个引号参数 | 未重复该路由；改为SSH参数式短命令后成功 |
 
 ## Resources
 - `E:/codex/home/attachments/92f5217f-e9ef-40f1-b025-090993f9da67/pasted-text.txt`

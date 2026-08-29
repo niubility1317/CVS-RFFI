@@ -21,6 +21,9 @@
   - 以TDD实现SAGE-D：零初始化双残差、无类别ID前向、类均衡fit-only上下文、3组角色轮换、K5/K10 cross-fit、正式D92内层、坐标中位数梯度共识、协方差/拓扑/非仿射/移动约束和阶段A门槛。
   - 核定SAGE-R的6维边界条件、边界局部门控、identity/FFT联合残差及增广拉格朗日旧类风险约束。
   - 以TDD实现SAGE-R：D92边界6维条件、8维注册上下文、边界局部门控、identity/FFT联合残差、old/new侵入与连续遗忘、旧类拓扑、条件数惩罚和增广拉格朗日旧风险约束；Stage A参数保持冻结。
+  - 对照既有BiNOVA生命周期和历史D92 Target125 runner，确定新生命周期复用四状态/query只读骨架与8-shard闭环，但替换旧代理、固定候选和预测命令。
+  - 复核历史Target125 package布局，发现并记录当前新binder缺少`packages/truth_sidecar/shard`的P1调度缺口。
+  - 完成N607只读preflight，并核对真正的D92 E0完整125 manifest、pilot package文件布局及support/query NPZ键与形状；确认原始接收IQ可直接复用。
 - Files created/modified:
   - `task_plan.md`
   - `findings.md`
@@ -49,6 +52,9 @@
 | 2026-08-30 | `rg`多模式正则被cmd拆分 | 1 | 改为单token标题和上下文检索 |
 | 2026-08-30 | SAGE-D聚焦测试导入失败 | 1 | 预期TDD红灯：新阶段A模块尚未实现 |
 | 2026-08-30 | SAGE-R聚焦测试导入失败 | 1 | 预期TDD红灯：新阶段B模块尚未实现 |
+| 2026-08-30 | BiSAGE生命周期测试导入失败 | 1 | 预期TDD红灯：新生命周期模块尚未实现 |
+| 2026-08-30 | 历史builder多模式`rg`再次被cmd拆分 | 1 | 改为单函数名定位和`more`指定行读取 |
+| 2026-08-30 | SSH远端`find`被错误包为单个命令参数 | 1 | 改用SSH参数式短命令，成功定位E0完整125目录 |
 
 ## 5-Question Reboot Check
 | Question | Answer |

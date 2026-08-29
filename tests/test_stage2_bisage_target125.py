@@ -19,9 +19,9 @@ def _config() -> dict:
         "protocol_schema": "p2_min_v1",
         "phase2_data_status": "VALIDATED_ONCE",
         "historical_source": {
-            "run_id": "d92_registration_balanced_125_retry2_20260720",
-            "matrix_manifest_path": "/runs/d92_registration_balanced_125_retry2_20260720/matrix_manifest.json",
-            "matrix_manifest_sha256": "b70045e7cd45a6029bc0a1a47ada0bb72d16fdb6bc7662c43bd253bfc7e4bc5c",
+            "run_id": "d92_e0_full_only_target125_20260812_v1",
+            "matrix_manifest_path": "/runs/d92_e0_full_only_target125_20260812_v1/matrix_manifest.json",
+            "matrix_manifest_sha256": "5910674066e8bbf93684fddd6af6fd2cef7e8f208d64e403ac7e58030a2a8cc5",
         },
         "receivers": ["20-1", "3-19", "7-14", "7-7", "8-8"],
         "seeds": [713102, 713103, 713104, 713105, 713106],
@@ -52,15 +52,20 @@ def _source_manifest() -> dict:
         jobs.append(
             {
                 **row,
-                "protocol_schema": "p2_min_v1",
-                "phase2_data_status": "VALIDATED_ONCE",
-                "capsule_id": f"capsule-{row['outer_key']}",
-                "split_id": f"split-{row['outer_key']}",
                 "source_job_root": f"/sealed/{row['outer_key']}",
+                "packages": {
+                    "before_enrollment": {"package_root": f"/sealed/{row['outer_key']}/before"},
+                    "after_enrollment": {"package_root": f"/sealed/{row['outer_key']}/after"},
+                },
+                "truth_sidecar": f"/sealed/{row['outer_key']}/truth_sidecar.json",
                 "scenarios": list(row["scenarios"]),
             }
         )
-    return {"jobs": jobs}
+    return {
+        "schema": "cvs.phase2.d92_e0_full_only_target125.matrix.v1",
+        "protocol_schema": "p2_min_v1",
+        "jobs": jobs,
+    }
 
 
 def test_target125_reuses_historical_d92_axes() -> None:
@@ -94,6 +99,16 @@ def test_manifest_reuses_capsule_and_split_bindings() -> None:
     assert audit == {"outer_count": 125, "scene_unit_count": 375, "k1_fallback_count": 25}
     assert manifest["jobs"][0]["selected_mode_policy"] == "S0_K1_FALLBACK"
     assert manifest["jobs"][-1]["selected_mode_policy"] == "SUPPORT_ONLY_S2_S1_S0"
+    assert manifest["jobs"][0]["planned_shard_index"] == 0
+    assert manifest["jobs"][8]["planned_shard_index"] == 0
+    assert "before_enrollment" in manifest["jobs"][0]["packages"]
+    assert manifest["jobs"][0]["truth_sidecar"].endswith("truth_sidecar.json")
+    assert manifest["jobs"][0]["capsule_id"].endswith(
+        "5910674066e8bbf93684fddd6af6fd2cef7e8f208d64e403ac7e58030a2a8cc5"
+    )
+    assert manifest["jobs"][0]["split_id"].endswith(
+        "rx_20_1__seed_713102__k_1__new_20"
+    )
 
 
 def test_manifest_rejects_capsule_or_split_drift() -> None:

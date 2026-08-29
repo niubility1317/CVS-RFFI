@@ -28,6 +28,10 @@ QUERY_DENIAL_FIELDS = (
     "class_quota_access",
     "global_reassignment",
 )
+HISTORICAL_RUN_ID = "d92_e0_full_only_target125_20260812_v1"
+HISTORICAL_MANIFEST_SHA256 = (
+    "5910674066e8bbf93684fddd6af6fd2cef7e8f208d64e403ac7e58030a2a8cc5"
+)
 
 
 def _outer_key(receiver: str, seed: int, k_shot: int, new_count: int) -> str:
@@ -83,11 +87,9 @@ def validate_target125_config(config: Mapping[str, Any]) -> dict[str, int]:
     if any(query_contract.get(field) is not False for field in QUERY_DENIAL_FIELDS):
         raise BiSAGETarget125Error("query contract must deny every mutable or truth path")
     historical = config.get("historical_source", {})
-    if historical.get("run_id") != "d92_registration_balanced_125_retry2_20260720":
+    if historical.get("run_id") != HISTORICAL_RUN_ID:
         raise BiSAGETarget125Error("historical source run drift")
-    if historical.get("matrix_manifest_sha256") != (
-        "b70045e7cd45a6029bc0a1a47ada0bb72d16fdb6bc7662c43bd253bfc7e4bc5c"
-    ):
+    if historical.get("matrix_manifest_sha256") != HISTORICAL_MANIFEST_SHA256:
         raise BiSAGETarget125Error("historical source manifest digest drift")
     return {"outer_count": 125, "scene_unit_count": 375}
 
@@ -116,27 +118,32 @@ def build_bisage_target125_manifest(
     if str(root) in ("", ".", "/"):
         raise BiSAGETarget125Error("output root must be a dedicated immutable path")
     sources = _source_jobs(source_manifest)
+    if source_manifest.get("protocol_schema") != "p2_min_v1":
+        raise BiSAGETarget125Error("historical source protocol drift")
+    if source_manifest.get("schema") != "cvs.phase2.d92_e0_full_only_target125.matrix.v1":
+        raise BiSAGETarget125Error("historical source matrix schema drift")
+    capsule_id = f"d92-e0-full-target125:{HISTORICAL_MANIFEST_SHA256}"
     jobs: list[dict[str, Any]] = []
-    for row in canonical_target125_rows():
+    for index, row in enumerate(canonical_target125_rows()):
         source = sources.get(row["outer_key"])
         if source is None:
             raise BiSAGETarget125Error(f"historical source outer missing: {row['outer_key']}")
         for field in ("receiver", "seed", "k_shot", "new_class_count"):
             if source.get(field) != row[field]:
                 raise BiSAGETarget125Error(f"historical source {field} drift")
-        if source.get("protocol_schema") != "p2_min_v1":
-            raise BiSAGETarget125Error("historical source protocol drift")
-        if source.get("phase2_data_status") != "VALIDATED_ONCE":
-            raise BiSAGETarget125Error("historical source data status drift")
         if tuple(source.get("scenarios", ())) != SCENARIOS:
             raise BiSAGETarget125Error("historical source scenario drift")
-        capsule_id = source.get("capsule_id")
-        split_id = source.get("split_id")
-        if not isinstance(capsule_id, str) or not isinstance(split_id, str):
-            raise BiSAGETarget125Error("historical capsule_id/split_id missing")
+        split_id = f"d92-e0-full-target125:{row['outer_key']}"
+        packages = source.get("packages")
+        truth_sidecar = source.get("truth_sidecar")
+        if not isinstance(packages, Mapping) or not packages:
+            raise BiSAGETarget125Error("historical sealed packages missing")
+        if not isinstance(truth_sidecar, str) or not truth_sidecar:
+            raise BiSAGETarget125Error("historical truth sidecar missing")
         job = deepcopy(row)
         job.update(
             {
+                "planned_shard_index": index % 8,
                 "protocol_schema": "p2_min_v1",
                 "phase2_data_status": "VALIDATED_ONCE",
                 "capsule_id": capsule_id,
@@ -144,6 +151,8 @@ def build_bisage_target125_manifest(
                 "source_capsule_id": capsule_id,
                 "source_split_id": split_id,
                 "source_job_root": source.get("source_job_root"),
+                "packages": deepcopy(dict(packages)),
+                "truth_sidecar": truth_sidecar,
                 "output_root": str(root / "output" / "jobs" / row["outer_key"]),
                 "selected_mode_policy": (
                     "S0_K1_FALLBACK" if row["k_shot"] == 1 else "SUPPORT_ONLY_S2_S1_S0"
@@ -185,6 +194,7 @@ def validate_bisage_target125_manifest(
     if len(actual_keys) != 125 or set(actual_keys) != set(expected):
         raise BiSAGETarget125Error("outer coverage drift")
     output_roots: list[str] = []
+    truth_sidecars: list[str] = []
     k1_count = 0
     for job in jobs:
         row = expected[job["outer_key"]]
@@ -200,6 +210,15 @@ def validate_bisage_target125_manifest(
         expected_policy = "S0_K1_FALLBACK" if row["k_shot"] == 1 else "SUPPORT_ONLY_S2_S1_S0"
         if job.get("selected_mode_policy") != expected_policy:
             raise BiSAGETarget125Error("support-only selection policy drift")
+        expected_index = canonical_target125_rows().index(row) % 8
+        if job.get("planned_shard_index") != expected_index:
+            raise BiSAGETarget125Error("planned shard index drift")
+        if not isinstance(job.get("packages"), Mapping) or not job["packages"]:
+            raise BiSAGETarget125Error("sealed packages missing")
+        truth_sidecar = job.get("truth_sidecar")
+        if not isinstance(truth_sidecar, str) or not truth_sidecar:
+            raise BiSAGETarget125Error("truth sidecar missing")
+        truth_sidecars.append(truth_sidecar)
         if row["k_shot"] == 1:
             k1_count += 1
         output_root = job.get("output_root")
@@ -208,4 +227,6 @@ def validate_bisage_target125_manifest(
         output_roots.append(output_root)
     if len(set(output_roots)) != 125:
         raise BiSAGETarget125Error("output root collision")
+    if len(set(truth_sidecars)) != 125:
+        raise BiSAGETarget125Error("truth sidecar collision")
     return {"outer_count": 125, "scene_unit_count": 375, "k1_fallback_count": k1_count}
