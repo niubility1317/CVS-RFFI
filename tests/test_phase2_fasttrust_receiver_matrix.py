@@ -334,3 +334,17 @@ def test_prediction_first_gate_fully_validates_all_rows_before_truth(tmp_path: P
         )
     with pytest.raises(ValueError, match="prediction-first validation"):
         confirmation.assert_all_predictions_complete(matrix)
+
+
+def test_cuda_peak_reset_initializes_device_first(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Catch reset_peak_memory_stats being called before CUDA initialization."""
+
+    events: list[str] = []
+    monkeypatch.setattr(confirmation.torch.cuda, "init", lambda: events.append("init"))
+    monkeypatch.setattr(
+        confirmation.torch.cuda,
+        "reset_peak_memory_stats",
+        lambda _device: events.append("reset"),
+    )
+    confirmation.initialize_cuda_metrics("cuda:0")
+    assert events == ["init", "reset"]

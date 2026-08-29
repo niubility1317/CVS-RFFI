@@ -60,6 +60,15 @@ def _load_matrix(path: str | Path) -> list[dict[str, Any]]:
     return [dict(row) for row in rows]
 
 
+def initialize_cuda_metrics(device: str) -> None:
+    """Initialize the selected CUDA runtime before resetting peak counters."""
+
+    target = torch.device(device)
+    if target.type == "cuda":
+        torch.cuda.init()
+        torch.cuda.reset_peak_memory_stats(target)
+
+
 def stage_all(
     *, cache_set: str | Path, run_root: str | Path, checkpoint_path: str
 ) -> dict[str, Any]:
@@ -140,8 +149,7 @@ def predict_receiver(
     row_receipts = []
     for row in rows:
         started = time.perf_counter()
-        if torch.device(device).type == "cuda":
-            torch.cuda.reset_peak_memory_stats(torch.device(device))
+        initialize_cuda_metrics(device)
         prototype_config = {
             "protocol_schema": "p2_min_v1",
             "phase2_data_status": "VALIDATED_ONCE",
@@ -352,6 +360,7 @@ __all__ = [
     "NEW_CLASS_NAMES",
     "OLD_CLASS_NAMES",
     "assert_all_predictions_complete",
+    "initialize_cuda_metrics",
     "main",
     "predict_receiver",
     "score_all",
