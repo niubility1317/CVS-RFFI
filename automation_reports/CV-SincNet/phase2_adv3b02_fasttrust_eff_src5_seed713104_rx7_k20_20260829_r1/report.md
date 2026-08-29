@@ -22,15 +22,16 @@
 - 分支：`codex/phase1-fasttrust-eff-src5-20260828`
 - 本地验证：46项聚焦测试通过；Python编译通过；CLI入口通过；`git diff --check`通过。
 - 独立P0/P1审查：无P0；原2项P1已定点修复。冻结checkpoint与seed成对绑定；prediction临时写入后原子发布，全局评分门在truth前完整验证21行。
-- release归档：`E:\type10-7\local_artifacts\releases\phase2_adv3b02_fasttrust_eff_src5_seed713104_rx7_k20_20260829_r1\release.zip`
-- release SHA256：`1364fab5256756fbcddcdef628194329ccba61765421ab16b7ccd5b83debaa14`
-- 远端release：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase2_adv3b02_fasttrust_eff_src5_seed713104_rx7_k20_20260829_r1/release.zip`
-- 远端解压目录：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase2_adv3b02_fasttrust_eff_src5_seed713104_rx7_k20_20260829_r1/unpacked`
+- release归档：`E:\type10-7\local_artifacts\releases\phase2_adv3b02_fasttrust_eff_src5_seed713104_rx7_k20_20260829_r1\release_v2.zip`
+- release SHA256：`f9540c1045dc16afeac52ee2cb73543afaa3299384ce52c2237260028448e41a`
+- 远端release：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase2_adv3b02_fasttrust_eff_src5_seed713104_rx7_k20_20260829_r1/release_v2.zip`
+- 远端解压目录：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase2_adv3b02_fasttrust_eff_src5_seed713104_rx7_k20_20260829_r1/unpacked_v2`
+- 打包修复：首个`release.zip`缺少Python包入口，远端CLI导入失败；正式run尚未创建。`release_v2.zip`仅补齐完整`code/cvsrffi`包，远端SHA、编译和CLI入口均已通过。
 
 ## N607命令与路径
 
 - 账户：普通`N607`账户`szu2070436088`，禁止管理员账户。
-- 环境：`ssr-gpu`
+- 环境：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`
 - 代码CWD：远端release解压目录。
 - canonical输入：`/home/szu2070436088/2510044040/CV-SincNet/runs/P2_CANONICAL_UNION_SMOKE_V1_20260828/cache/cache_set.json`
 - 输出根：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase2_adv3b02_fasttrust_eff_src5_seed713104_rx7_k20_20260829_r1`
