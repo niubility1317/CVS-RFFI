@@ -48,4 +48,9 @@
 
 ## 正式结果
 
-待21行prediction-first闭合并由独立scorer连接truth后填写。
+- 最终状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
+- prediction：0/21；truth连接：0/21；没有性能结果。
+- attempt1：首次CUDA初始化前重置峰值显存，7行统一退出。
+- attempt2：N607 NumPy→Torch直接桥接ABI不兼容，7行统一退出；7个已生成prototype移动到`partial_failed_attempt2/`保留。
+- attempt3：模型推理完成后Torch→NumPy直接导出触发`np.savez`分派冲突，7行统一退出；只留下半写临时目录，无最终`predictions.npz`。
+- 处理：保留全部staging、日志和partial artifact；不打开truth，不在污染输出根上继续恢复。修复提交`012968d2cff58ab3b2ffaf19157030212341b9f1`后转入全新不可覆盖run`phase2_adv3b02_fasttrust_eff_src5_seed713104_rx7_k20_20260829_r2`。
