@@ -490,7 +490,7 @@ def _evaluate_loader_grouped(model, loader, device, *, group_key: str, args=None
                 mask = (groups == expected).all(dim=1)
                 correct = int((pred[mask] == y[mask]).sum().item())
                 total = int(mask.sum().item())
-                slot = stats.setdefault(int(group_id), {"tx_correct": 0, "tx_total": 0})
+                slot = stats.setdefault(group_id, {"tx_correct": 0, "tx_total": 0})
                 slot["tx_correct"] += correct
                 slot["tx_total"] += total
     return {

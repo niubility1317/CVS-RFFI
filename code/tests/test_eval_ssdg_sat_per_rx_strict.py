@@ -176,3 +176,34 @@ def test_group_identity_reports_receiver_and_day_labels():
         "day_idx": 3,
         "day_label": "2021_03_23",
     }
+
+
+def test_grouped_evaluation_accumulates_composite_receiver_day_keys():
+    class Model:
+        def eval(self):
+            return self
+
+        def __call__(self, x, **_kwargs):
+            return {"tx_logits": torch.stack([x[:, 0], x[:, 1]], dim=1)}
+
+    loader = [
+        (
+            torch.tensor([[2.0, 0.0], [0.0, 2.0], [0.0, 2.0]]),
+            torch.tensor([0, 1, 0]),
+            torch.zeros(3, dtype=torch.long),
+            {
+                "rx_i": torch.tensor([0, 0, 2]),
+                "day_i": torch.tensor([0, 0, 3]),
+            },
+        )
+    ]
+
+    result = evaluator._evaluate_loader_grouped(
+        Model(),
+        loader,
+        torch.device("cpu"),
+        group_key="rx_i,day_i",
+    )
+
+    assert result[(0, 0)] == {"tx_correct": 2, "tx_total": 2, "tx_acc": 100.0}
+    assert result[(2, 3)] == {"tx_correct": 0, "tx_total": 1, "tx_acc": 0.0}
