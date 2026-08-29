@@ -288,6 +288,25 @@ def test_numpy_inputs_use_buffer_bridge_not_torch_from_numpy(
     assert class_ids.tolist() == [0, 1]
 
 
+def test_prediction_tensors_export_through_numpy_buffer_bridge() -> None:
+    """Catch N607's torch.Tensor.numpy/np.savez array-function conflict."""
+
+    predicted = _SUT._tensor_to_numpy_buffer(  # noqa: SLF001
+        torch.tensor([2, 1], dtype=torch.int64),
+        torch_dtype=torch.int64,
+        numpy_dtype=np.dtype(np.int64),
+    )
+    scores = _SUT._tensor_to_numpy_buffer(  # noqa: SLF001
+        torch.tensor([[0.2, 0.8], [0.7, 0.3]], dtype=torch.float32),
+        torch_dtype=torch.float32,
+        numpy_dtype=np.dtype(np.float32),
+    )
+    assert type(predicted) is np.ndarray
+    assert type(scores) is np.ndarray
+    assert predicted.tolist() == [2, 1]
+    np.testing.assert_allclose(scores, [[0.2, 0.8], [0.7, 0.3]])
+
+
 def test_prediction_artifact_contains_no_truth_or_query_role(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,

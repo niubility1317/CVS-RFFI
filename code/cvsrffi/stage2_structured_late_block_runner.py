@@ -380,6 +380,17 @@ def _integer_tensor(value: np.ndarray, *, label: str) -> torch.Tensor:
     ).clone().reshape(contiguous.shape)
 
 
+def _tensor_to_numpy_buffer(
+    value: torch.Tensor,
+    *,
+    torch_dtype: torch.dtype,
+    numpy_dtype: np.dtype[Any],
+) -> np.ndarray:
+    tensor = value.detach().to(device="cpu", dtype=torch_dtype).contiguous()
+    raw = bytearray(tensor.view(torch.uint8).reshape(-1).tolist())
+    return np.frombuffer(raw, dtype=numpy_dtype).copy().reshape(tuple(tensor.shape))
+
+
 def _prototype_tensors(
     payload: Mapping[str, np.ndarray],
 ) -> tuple[torch.Tensor, torch.Tensor]:
@@ -590,8 +601,16 @@ def run_stage2_row(
         np.savez(
             handle,
             query_ids=query_ids,
-            predicted_class_ids=predictions.detach().cpu().numpy().astype(np.int64),
-            scores=scores.detach().cpu().numpy().astype(np.float32),
+            predicted_class_ids=_tensor_to_numpy_buffer(
+                predictions,
+                torch_dtype=torch.int64,
+                numpy_dtype=np.dtype(np.int64),
+            ),
+            scores=_tensor_to_numpy_buffer(
+                scores,
+                torch_dtype=torch.float32,
+                numpy_dtype=np.dtype(np.float32),
+            ),
         )
         handle.flush()
         os.fsync(handle.fileno())
