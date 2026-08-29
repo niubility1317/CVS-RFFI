@@ -260,6 +260,34 @@ def test_prediction_is_not_published_when_npz_write_fails(
     assert not (tmp_path / "output" / "predictions.npz").exists()
 
 
+def test_numpy_inputs_use_buffer_bridge_not_torch_from_numpy(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Catch the N607 NumPy ABI mismatch in IQ, labels, and prototypes."""
+
+    monkeypatch.setattr(
+        _SUT.torch,
+        "from_numpy",
+        lambda _value: pytest.fail("torch.from_numpy is incompatible on N607"),
+    )
+    iq = _SUT._received_iq_tensor(  # noqa: SLF001
+        np.ones((2, 2, 4), dtype=np.float32), label="support"
+    )
+    labels = _SUT._integer_tensor(  # noqa: SLF001
+        np.asarray([0, 1], dtype=np.int64), label="labels"
+    )
+    prototypes, class_ids = _SUT._prototype_tensors(  # noqa: SLF001
+        {
+            "prototypes": np.eye(2, dtype=np.float32),
+            "class_ids": np.asarray([0, 1], dtype=np.int64),
+        }
+    )
+    assert iq.shape == (2, 2, 4)
+    assert labels.tolist() == [0, 1]
+    assert prototypes.shape == (2, 2)
+    assert class_ids.tolist() == [0, 1]
+
+
 def test_prediction_artifact_contains_no_truth_or_query_role(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,

@@ -358,7 +358,10 @@ def _received_iq_tensor(value: np.ndarray, *, label: str) -> torch.Tensor:
         raise StructuredLateBlockRunnerError(
             f"{label} received_iq must be finite nonempty [N,2,L]"
         )
-    return torch.from_numpy(np.ascontiguousarray(array, dtype=np.float32)).clone()
+    contiguous = np.ascontiguousarray(array, dtype=np.float32)
+    return torch.frombuffer(
+        bytearray(contiguous.tobytes(order="C")), dtype=torch.float32
+    ).clone().reshape(contiguous.shape)
 
 
 def _integer_tensor(value: np.ndarray, *, label: str) -> torch.Tensor:
@@ -371,7 +374,10 @@ def _integer_tensor(value: np.ndarray, *, label: str) -> torch.Tensor:
         raise StructuredLateBlockRunnerError(
             f"{label} must be a nonempty integer vector"
         )
-    return torch.from_numpy(np.ascontiguousarray(array, dtype=np.int64)).clone()
+    contiguous = np.ascontiguousarray(array, dtype=np.int64)
+    return torch.frombuffer(
+        bytearray(contiguous.tobytes(order="C")), dtype=torch.int64
+    ).clone().reshape(contiguous.shape)
 
 
 def _prototype_tensors(
@@ -400,9 +406,10 @@ def _prototype_tensors(
         )
     if torch.unique(class_ids).numel() != class_ids.numel():
         raise StructuredLateBlockRunnerError("prototype class_ids must be unique")
-    prototypes = torch.from_numpy(
-        np.ascontiguousarray(array, dtype=np.float32)
-    ).clone()
+    contiguous = np.ascontiguousarray(array, dtype=np.float32)
+    prototypes = torch.frombuffer(
+        bytearray(contiguous.tobytes(order="C")), dtype=torch.float32
+    ).clone().reshape(contiguous.shape)
     prototypes.requires_grad_(False)
     return prototypes, class_ids
 
