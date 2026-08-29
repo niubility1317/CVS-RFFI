@@ -22,6 +22,9 @@
 - 当前BiNOVA实现约55KB，已具备基础可微D92、非线性DA/REG模块和四状态生命周期，但缺少报告要求的D92严格等价、类别角色梯度共识、协方差一致性、边界门控与增广拉格朗日旧风险约束。
 - 正式D92的`shrinkage="auto"`不是OAS：sklearn先按类用`StandardScaler`标准化，再对每类计算Ledoit-Wolf协方差并按类等先验平均；注册后再以固定0.5/0.5合并旧/新任务协方差。
 - sklearn Ledoit-Wolf使用总体协方差（除以N），收缩率由四阶矩`X**2`与Gram平方计算，最终为`(1-beta/delta)*cov+(beta/delta)*mu*I`；要逐logit等价必须在torch中复现该公式及每类缩放还原。
+- 优化报告后半部分将最终方法明确为BiSAGE-D92；阶段A前向严格禁止接收类别ID，标签只可用于fit上下文、角色轮换、损失和support cross-fit。
+- SAGE-D教师版的锁定机制为：3组4-base/2-pseudo-new覆盖全部6个旧类、每类8/2样本cross-fit、零初始化rank32时间/identity残差、非仿射比例区间、类条件协方差一致性及角色梯度坐标中位数共识。
+- 阶段A机制停止条件为预测必须发生变化、非仿射能量至少0.1、held-out pseudo-new的H/min-new/old-post稳定改善；否则属于科学不晋级而非技术失败。
 
 ## Technical Decisions
 | Decision | Rationale |
@@ -37,6 +40,7 @@
 |-------|------------|
 | 最初只定位到后期3-seed D92 screening矩阵 | 通过对话索引和历史Target125报告定位到更早且真实闭合的5-seed E0_FULL_ONLY矩阵；正式方案改用该矩阵 |
 | Windows控制台默认GBK导致D92索引搜索输出失败 | 后续设置`PYTHONIOENCODING=utf-8`后重跑 |
+| `rg`含空格与管道符的正则再次被cmd拆分 | 改用单token标题检索并按上下文读取，后续不复用该写法 |
 
 ## Resources
 - `E:/codex/home/attachments/92f5217f-e9ef-40f1-b025-090993f9da67/pasted-text.txt`
