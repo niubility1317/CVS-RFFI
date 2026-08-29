@@ -1,0 +1,28 @@
+{
+  "schema": "cvs.binova_d92.plan.v1",
+  "run_id": "binova_d92_stagea_minimal_rx20_1_s713101_20260829_r1",
+  "protocol_schema": "p2_min_v1",
+  "phase2_data_status": "VALIDATED_ONCE",
+  "capsule_id": "cvs-full-ablation-phase2c-t1-rx20-1-method7282101-new20-nested-v1",
+  "base_checkpoint_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth",
+  "old_class_count": 6,
+  "k_shot": 10,
+  "new_class_count": 2,
+  "seed": 713101,
+  "stage_a": {
+    "steps": 600,
+    "learning_rate": 0.001
+  },
+  "stage_b": {
+    "steps": 400,
+    "learning_rate": 0.0008
+  },
+  "scene": {
+    "scenario": "leo_clear_weak",
+    "split_id": "stage2c-d3-rx20-1-s713101-k10-leo-clear-weak",
+    "old_support": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_d3_erbt_idr_new1to20_rx20_1_s713101_m392002_20260828_r1/input/leo_clear_weak/nested/old_support.npz",
+    "registered_support": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_d3_erbt_idr_new1to20_rx20_1_s713101_m392002_20260828_r1/input/leo_clear_weak/nested/new2/predictor/support_leo_clear_weak.npz",
+    "query": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_d3_erbt_idr_new1to20_rx20_1_s713101_m392002_20260828_r1/input/leo_clear_weak/nested/new2/predictor/query_leo_clear_weak.npz",
+    "data_handle": "/home/szu2070436088/2510044040/CV-SincNet/runs/stage2_sf_d3_erbt_idr_new1to20_rx20_1_s713101_m392002_20260828_r1/input/leo_clear_weak/nested/new2/data_handle.json"
+  }
+}
