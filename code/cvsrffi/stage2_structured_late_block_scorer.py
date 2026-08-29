@@ -18,6 +18,7 @@ PREDICTION_SCHEMA = frozenset(
     {"query_ids", "predicted_class_ids", "scores"}
 )
 SCORE_SCHEMA = "cvs.stage2.structured_lateblock.score.v1"
+STAGE2C_SCORE_SCHEMA = "cvs.stage2.structured_lateblock.score.stage2c.v1"
 
 
 class StructuredLateBlockScoringError(ValueError):
@@ -250,9 +251,116 @@ def score_stage2b_predictions(
     return result
 
 
+def score_stage2c_predictions(
+    prediction_path: str | Path,
+    truth_path: str | Path,
+    *,
+    output_path: str | Path,
+    old_class_ids: list[int] | tuple[int, ...],
+    class_names: list[str] | tuple[str, ...],
+) -> dict[str, Any]:
+    """Score one frozen DA1_REG1 row after prediction closure."""
+
+    destination = Path(output_path)
+    if destination.exists():
+        raise StructuredLateBlockScoringError(
+            f"scoring output already exists: {destination}"
+        )
+    names = [str(value) for value in class_names]
+    if not names or any(not value for value in names) or len(set(names)) != len(names):
+        raise StructuredLateBlockScoringError(
+            "class registry names must be nonempty and unique"
+        )
+    old_ids = sorted({int(value) for value in old_class_ids})
+    registry_ids = set(range(len(names)))
+    if not old_ids or not set(old_ids) < registry_ids:
+        raise StructuredLateBlockScoringError(
+            "old class registry must be a nonempty strict subset"
+        )
+
+    # Exact prediction schema, shape, IDs, dtypes and finite values are closed
+    # before the scorer is permitted to open the truth sidecar.
+    query_ids, predicted_class_ids, scores = _load_and_validate_predictions(
+        prediction_path
+    )
+    if scores.shape[1] != len(names) or np.any(predicted_class_ids >= len(names)):
+        raise StructuredLateBlockScoringError(
+            "prediction class registry does not match scores/class_names"
+        )
+    prediction_row_count = int(query_ids.shape[0])
+
+    truth = _load_truth_json(truth_path)
+    truth_by_id = _validate_truth_rows(truth)
+    prediction_id_set = set(query_ids.tolist())
+    truth_id_set = set(truth_by_id)
+    if prediction_id_set != truth_id_set:
+        raise StructuredLateBlockScoringError(
+            "exact opaque-ID join failed: "
+            f"prediction_only={sorted(prediction_id_set - truth_id_set)}, "
+            f"truth_only={sorted(truth_id_set - prediction_id_set)}"
+        )
+    true_class_ids = np.asarray(
+        [truth_by_id[query_id] for query_id in query_ids.tolist()], dtype=np.int64
+    )
+    if np.any(true_class_ids >= len(names)):
+        raise StructuredLateBlockScoringError(
+            "truth class registry is outside class_names"
+        )
+
+    correct = predicted_class_ids == true_class_ids
+    old_mask = np.isin(true_class_ids, np.asarray(old_ids, dtype=np.int64))
+    new_mask = ~old_mask
+    if not old_mask.any() or not new_mask.any():
+        raise StructuredLateBlockScoringError(
+            "REG1 scoring requires both old-class and new-class query rows"
+        )
+    per_class_accuracy: dict[str, float] = {}
+    per_class_correct: dict[str, int] = {}
+    per_class_total: dict[str, int] = {}
+    for class_id, name in enumerate(names):
+        class_mask = true_class_ids == class_id
+        total = int(class_mask.sum())
+        if total < 1:
+            raise StructuredLateBlockScoringError(
+                f"truth has no query row for registered class {name}"
+            )
+        class_correct = int(correct[class_mask].sum())
+        per_class_total[name] = total
+        per_class_correct[name] = class_correct
+        per_class_accuracy[name] = float(class_correct / total)
+
+    result: dict[str, Any] = {
+        "schema": STAGE2C_SCORE_SCHEMA,
+        "status": "ANALYZED",
+        "state": "DA1_REG1",
+        "registration_state": "REG1",
+        "join_policy": "exact_opaque_query_id",
+        "prediction_rows_verified_before_truth_open": prediction_row_count,
+        "truth_rows_joined": int(true_class_ids.shape[0]),
+        "overall_accuracy": float(correct.mean()),
+        "old_class_accuracy": float(correct[old_mask].mean()),
+        "new_class_accuracy": float(correct[new_mask].mean()),
+        "macro_accuracy": float(np.mean(list(per_class_accuracy.values()))),
+        "floor_accuracy": float(min(per_class_accuracy.values())),
+        "per_class_accuracy": per_class_accuracy,
+        "per_class_correct": per_class_correct,
+        "per_class_total": per_class_total,
+        "old_class_ids": old_ids,
+        "class_names": names,
+        "scorer_output_must_not_feed_predictor": True,
+    }
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with destination.open("x", encoding="utf-8", newline="\n") as handle:
+        json.dump(result, handle, ensure_ascii=False, indent=2, sort_keys=True)
+        handle.write("\n")
+    return result
+
+
 __all__ = [
     "PREDICTION_SCHEMA",
     "SCORE_SCHEMA",
+    "STAGE2C_SCORE_SCHEMA",
     "StructuredLateBlockScoringError",
     "score_stage2b_predictions",
+    "score_stage2c_predictions",
 ]

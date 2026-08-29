@@ -30,6 +30,11 @@ from cvsrffi.stage2_structured_late_block_runner import (
     _load_frozen_checkpoint,
     _load_npz,
 )
+from cvsrffi.phase2_fasttrust_receiver_matrix import (
+    FORMAL_SCENARIOS,
+    FROZEN_CHECKPOINT_PATH,
+    TARGET_RECEIVERS,
+)
 from cvsrffi.stage2_target_prototype_bank import encode_support_prototypes
 
 
@@ -165,7 +170,6 @@ def _validate_config(config: Mapping[str, Any]) -> dict[str, Any]:
         "phase2_data_status": "VALIDATED_ONCE",
         "capsule_id": EXPECTED_CAPSULE_ID,
         "split_id": EXPECTED_SPLIT_ID,
-        "checkpoint_path": EXPECTED_CHECKPOINT,
         "k_shot": EXPECTED_K_SHOT,
     }
     for field, expected in expected_values.items():
@@ -174,9 +178,15 @@ def _validate_config(config: Mapping[str, Any]) -> dict[str, Any]:
             raise SupportPrototypeBuildError(
                 f"{field} mismatch: expected={expected!r}, observed={value!r}"
             )
-    for field in ("support_path", "prototype_path"):
+    for field in ("checkpoint_path", "support_path", "prototype_path"):
         if not str(resolved[field]).strip():
             raise SupportPrototypeBuildError(f"{field} must be nonempty")
+    seed = int(resolved["seed"])
+    expected_checkpoint = (
+        FROZEN_CHECKPOINT_PATH if seed == 713104 else EXPECTED_CHECKPOINT
+    )
+    if str(resolved["checkpoint_path"]) != expected_checkpoint:
+        raise SupportPrototypeBuildError("seed/checkpoint binding mismatch")
     if str(resolved["candidate"]) not in {"freq_f3_proj", "time_t3"}:
         raise SupportPrototypeBuildError("candidate is not supported by the smoke")
     if int(resolved["steps"]) < 1:
@@ -193,18 +203,16 @@ def _validate_row_binding(
     scene: str,
     receiver: str,
 ) -> None:
-    if str(scene) != EXPECTED_SCENE:
-        raise SupportPrototypeBuildError(
-            f"scene mismatch: expected={EXPECTED_SCENE}, observed={scene}"
-        )
-    if str(receiver) != EXPECTED_RECEIVER:
-        raise SupportPrototypeBuildError(
-            f"receiver mismatch: expected={EXPECTED_RECEIVER}, observed={receiver}"
-        )
-    receiver_marker = f"rx{EXPECTED_RECEIVER}"
+    resolved_scene = str(scene)
+    resolved_receiver = str(receiver)
+    if resolved_scene not in FORMAL_SCENARIOS:
+        raise SupportPrototypeBuildError(f"unsupported formal scene: {scene}")
+    if resolved_receiver not in TARGET_RECEIVERS:
+        raise SupportPrototypeBuildError(f"unsupported target receiver: {receiver}")
+    receiver_marker = f"rx{resolved_receiver}"
     for field in ("support_path", "prototype_path"):
         name = Path(str(config[field])).name
-        required_markers = (EXPECTED_SCENE, receiver_marker, "k20")
+        required_markers = (resolved_scene, receiver_marker, "k20")
         if any(marker not in name for marker in required_markers):
             raise SupportPrototypeBuildError(
                 f"{field} is not bound to the frozen scene/receiver/K row"
@@ -384,8 +392,8 @@ def build_support_prototypes(
         "phase2_data_status": "VALIDATED_ONCE",
         "capsule_id": EXPECTED_CAPSULE_ID,
         "split_id": EXPECTED_SPLIT_ID,
-        "scene": EXPECTED_SCENE,
-        "receiver": EXPECTED_RECEIVER,
+        "scene": str(scene),
+        "receiver": str(receiver),
         "k_shot": EXPECTED_K_SHOT,
         "support_rows": int(rows.shape[0]),
         "registered_class_ids": list(REGISTERED_CLASS_IDS),

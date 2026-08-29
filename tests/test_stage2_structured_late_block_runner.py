@@ -234,6 +234,32 @@ def test_runner_opens_query_only_after_support_adaptation_is_frozen(
     assert receipt["gradient_updates"] == 2
 
 
+def test_prediction_is_not_published_when_npz_write_fails(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Catch a half-written final prediction being mistaken for completion."""
+
+    paths = _write_row_inputs(tmp_path)
+    _install_fake_execution(monkeypatch, paths=paths)
+
+    def interrupted_save(target, **_payload):
+        if hasattr(target, "write"):
+            target.write(b"partial")
+        else:
+            Path(target).write_bytes(b"partial")
+        raise OSError("simulated interrupted write")
+
+    monkeypatch.setattr(_SUT.np, "savez", interrupted_save)
+    with pytest.raises(OSError, match="interrupted write"):
+        _SUT.run_stage2_row(
+            _row_config(paths),
+            output_dir=tmp_path / "output",
+            device="cpu",
+        )
+    assert not (tmp_path / "output" / "predictions.npz").exists()
+
+
 def test_prediction_artifact_contains_no_truth_or_query_role(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,

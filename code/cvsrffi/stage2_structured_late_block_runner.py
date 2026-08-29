@@ -10,6 +10,7 @@ model, and prediction artifacts contain no truth or role information.
 from __future__ import annotations
 
 from dataclasses import asdict, is_dataclass
+import os
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -45,6 +46,9 @@ _CONFIG_ALLOWLIST = frozenset(
         "learning_rate",
         "decision_rule",
     }
+)
+_BOUNDED_CONFIG_ALLOWLIST = _CONFIG_ALLOWLIST | frozenset(
+    {"min_trainable_fraction", "max_trainable_fraction"}
 )
 _CONTEXT_KEYS = (
     "protocol_schema",
@@ -84,11 +88,11 @@ def _validate_config(config: Mapping[str, Any]) -> dict[str, Any]:
             "runner config must be a string-keyed allowlist mapping"
         )
     actual = frozenset(config)
-    if actual != _CONFIG_ALLOWLIST:
+    if actual not in {_CONFIG_ALLOWLIST, _BOUNDED_CONFIG_ALLOWLIST}:
         raise StructuredLateBlockRunnerError(
             "runner config allowlist mismatch: "
             f"missing={sorted(_CONFIG_ALLOWLIST - actual)}, "
-            f"extra={sorted(actual - _CONFIG_ALLOWLIST)}"
+            f"extra={sorted(actual - _BOUNDED_CONFIG_ALLOWLIST)}"
         )
     resolved = dict(config)
     if str(resolved["protocol_schema"]) != "p2_min_v1":
@@ -125,6 +129,14 @@ def _validate_config(config: Mapping[str, Any]) -> dict[str, Any]:
         raise StructuredLateBlockRunnerError("learning_rate must be positive")
     if int(resolved["k_shot"]) < 1:
         raise StructuredLateBlockRunnerError("k_shot must be positive")
+    minimum = float(resolved.get("min_trainable_fraction", 0.05))
+    maximum = float(resolved.get("max_trainable_fraction", 0.15))
+    if not 0.0 < minimum <= maximum <= 1.0:
+        raise StructuredLateBlockRunnerError(
+            "trainable fraction bounds must satisfy 0 < min <= max <= 1"
+        )
+    resolved["min_trainable_fraction"] = minimum
+    resolved["max_trainable_fraction"] = maximum
     int(resolved["seed"])
     return resolved
 
@@ -490,6 +502,8 @@ def run_stage2_row(
         candidate=str(resolved["candidate"]),
         steps=int(resolved["steps"]),
         learning_rate=float(resolved["learning_rate"]),
+        min_trainable_fraction=float(resolved["min_trainable_fraction"]),
+        max_trainable_fraction=float(resolved["max_trainable_fraction"]),
     )
     context = {key: resolved[key] for key in _CONTEXT_KEYS}
     audit = adapt_on_target_support_with_frozen_prototypes(
@@ -564,12 +578,17 @@ def run_stage2_row(
 
     destination.mkdir(parents=True, exist_ok=False)
     prediction_path = destination / "predictions.npz"
-    np.savez(
-        prediction_path,
-        query_ids=query_ids,
-        predicted_class_ids=predictions.detach().cpu().numpy().astype(np.int64),
-        scores=scores.detach().cpu().numpy().astype(np.float32),
-    )
+    partial_path = destination / "predictions.npz.partial"
+    with partial_path.open("xb") as handle:
+        np.savez(
+            handle,
+            query_ids=query_ids,
+            predicted_class_ids=predictions.detach().cpu().numpy().astype(np.int64),
+            scores=scores.detach().cpu().numpy().astype(np.float32),
+        )
+        handle.flush()
+        os.fsync(handle.fileno())
+    partial_path.replace(prediction_path)
     audit_values = _audit_mapping(audit)
     return {
         "status": "PREDICTIONS_COMPLETE",
