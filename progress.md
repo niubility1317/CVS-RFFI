@@ -15,6 +15,8 @@
   - 映射历史Target125 builder/runner与当前BiNOVA模块的接口和缺口。
   - 保存详细实施计划`docs/superpowers/plans/2026-08-30-bisage-d92-target125.md`。
   - 完成历史Target125绑定器、正式配置和5项聚焦测试。
+  - 解析正式D92的sklearn`auto`收缩实现，确认现有可微OAS代理与正式Ledoit-Wolf类平衡协方差不等价。
+  - 以TDD实现float64可微正式D92，复现每类Ledoit-Wolf、类等权、旧/新任务0.5/0.5、Cholesky求解和类公共仿射中心化。
 - Files created/modified:
   - `task_plan.md`
   - `findings.md`
@@ -26,6 +28,8 @@
 | worktree隔离检查 | git dir/common dir/branch | linked worktree、功能分支 | 已确认 | PASS |
 | BiNOVA基线回归 | 5个既有测试文件 | 无失败 | 23项通过 | PASS |
 | BiSAGE Target125绑定 | `test_stage2_bisage_target125.py` | 125/375、历史轴、负测通过 | 5项通过 | PASS |
+| 正式D92公式定位 | sklearn LDA/Ledoit-Wolf源码 | 明确逐logit等价公式 | 已定位每类标准化、Ledoit-Wolf、任务0.5/0.5 | PASS |
+| BiSAGE正式D92 | 新测试+既有D92回归 | 数值等价、梯度、正定性、无回归 | 9项通过 | PASS |
 
 ## Error Log
 | Timestamp | Error | Attempt | Resolution |
@@ -35,6 +39,7 @@
 | 2026-08-30 | conversation index多词参数被拆分 | 1 | 使用单token检索 |
 | 2026-08-30 | conversation index输出GBK编码异常 | 1 | 后续设置`PYTHONIOENCODING=utf-8` |
 | 2026-08-30 | 计划占位符带空格扫描模式被cmd拆分 | 2 | 改用无空格关键字扫描 |
+| 2026-08-30 | BiSAGE D92聚焦测试导入失败 | 1 | 预期TDD红灯：新模块尚未实现，随后进入实现 |
 
 ## 5-Question Reboot Check
 | Question | Answer |

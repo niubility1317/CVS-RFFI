@@ -20,6 +20,8 @@
 - 历史矩阵manifest为`/home/szu2070436088/2510044040/CV-SincNet/runs/d92_registration_balanced_125_retry2_20260720/matrix_manifest.json`，报告记录SHA256=`b70045e7cd45a6029bc0a1a47ada0bb72d16fdb6bc7662c43bd253bfc7e4bc5c`。
 - 可复用历史Target125封装位于`E:/type10-7/code/snapshots/d92_125wt`；builder约26KB、runner约27KB，已具备125 Cartesian覆盖、source package身份校验、truth-free smoke、8-shard和共享技术停止逻辑。
 - 当前BiNOVA实现约55KB，已具备基础可微D92、非线性DA/REG模块和四状态生命周期，但缺少报告要求的D92严格等价、类别角色梯度共识、协方差一致性、边界门控与增广拉格朗日旧风险约束。
+- 正式D92的`shrinkage="auto"`不是OAS：sklearn先按类用`StandardScaler`标准化，再对每类计算Ledoit-Wolf协方差并按类等先验平均；注册后再以固定0.5/0.5合并旧/新任务协方差。
+- sklearn Ledoit-Wolf使用总体协方差（除以N），收缩率由四阶矩`X**2`与Gram平方计算，最终为`(1-beta/delta)*cov+(beta/delta)*mu*I`；要逐logit等价必须在torch中复现该公式及每类缩放还原。
 
 ## Technical Decisions
 | Decision | Rationale |
