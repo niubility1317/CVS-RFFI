@@ -352,6 +352,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--use_muse_ssdg", type=str2bool, default=False)
     parser.add_argument("--muse_level", type=str, default="M0", choices=["M0", "M1", "M2", "M3"])
     parser.add_argument("--muse_external_final_eval", type=str2bool, default=False)
+    parser.add_argument("--phase1_external_final_eval", type=str2bool, default=False)
     parser.add_argument(
         "--muse_epoch_basis",
         type=str,
@@ -3062,6 +3063,13 @@ def _load_phase1_checkpoint_strict(model, checkpoint: Mapping[str, Any], path: s
         raise ValueError(f"Phase1 checkpoint/model strict-load mismatch: {path}: {exc}") from exc
 
 
+def _external_final_eval_requested(args) -> bool:
+    return bool(getattr(args, "phase1_external_final_eval", False)) or (
+        bool(getattr(args, "use_muse_ssdg", False))
+        and bool(getattr(args, "muse_external_final_eval", False))
+    )
+
+
 def _run_final_heldout_evaluation(
     args,
     model,
@@ -3079,6 +3087,13 @@ def _run_final_heldout_evaluation(
             "selection_source": str(getattr(args, "checkpoint_selection", "")),
             "checkpoint": str(Path(checkpoint_path)),
             "claim": "PHASE1_TARGET_EVAL_DELEGATED_NO_INTERNAL_METRICS",
+        }
+    if bool(getattr(args, "phase1_external_final_eval", False)):
+        return {
+            "status": "DELEGATED_TO_EXTERNAL_PHASE1_EVAL",
+            "selection_source": str(getattr(args, "checkpoint_selection", "")),
+            "checkpoint": str(Path(checkpoint_path)),
+            "claim": "PHASE1_FINAL_EVAL_DELEGATED_NO_INTERNAL_METRICS",
         }
     return _evaluate_frozen_phase1_checkpoint(args, model, data_ctx, device, checkpoint_path)
 
@@ -3183,7 +3198,9 @@ def _resolve_phase1_terminal_status(
         return "NO_SAFE_CHECKPOINT"
     heldout_status = str(heldout_eval_status).upper()
     heldout_complete = heldout_status == "COMPLETE" or (
-        bool(external_final_eval) and heldout_status == "DELEGATED_TO_MUSE_LAUNCHER"
+        bool(external_final_eval)
+        and heldout_status
+        in {"DELEGATED_TO_MUSE_LAUNCHER", "DELEGATED_TO_EXTERNAL_PHASE1_EVAL"}
     )
     if not heldout_complete:
         return "HELDOUT_EVAL_INCOMPLETE"
@@ -12515,23 +12532,21 @@ def train(args) -> int:
     endpoint_export_ready = bool(
         export_status.get("status") == "COMPLETE" and export_status.get("endpoint_artifact_ready", False)
     )
-    muse_external_eval = bool(getattr(args, "use_muse_ssdg", False)) and bool(
-        getattr(args, "muse_external_final_eval", False)
-    )
+    external_final_eval = _external_final_eval_requested(args)
     terminal_status = _resolve_phase1_terminal_status(
         tail_stopped=bool(tail_early_stop_requested),
         export_failed=bool(exit_code),
         final_blocked=bool(phase1_v2_final_blocked),
         selected_checkpoint_exists=bool(selected_checkpoint_exists),
         heldout_eval_status=str(frozen_eval.get("status", "")),
-        external_final_eval=bool(getattr(args, "muse_external_final_eval", False)),
+        external_final_eval=bool(external_final_eval),
         p0_mechanisms_ready=bool(p0_mechanisms_ready),
         p1_mechanisms_ready=bool(p1_mechanisms_ready),
         endpoint_export_ready=bool(endpoint_export_ready),
-        mechanism_gates_required=not muse_external_eval,
+        mechanism_gates_required=not external_final_eval,
         endpoint_export_required=(
             bool(getattr(args, "endpoint_require_artifact_on_export", True))
-            and not muse_external_eval
+            and not external_final_eval
         ),
     )
     terminal_exit_code = int(exit_code)

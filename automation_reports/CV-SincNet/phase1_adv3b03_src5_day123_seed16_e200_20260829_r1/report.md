@@ -35,23 +35,27 @@
 
 - 本地环境：`ssr-gpu`。
 - 本地CWD：`E:\type10-7\github_publish\CVS-RFFI-repo\.worktrees\phase2-canonical-union-maxq`。
-- N607普通账户CWD：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b03_src5_day123_seed16_e200_20260829_r1_release1`。
+- N607普通账户CWD：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b03_src5_day123_seed16_e200_20260829_r1_release2`。
 - N607 Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
 - 运行根：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b03_src5_day123_seed16_e200_20260829_r1`。
 - 日志根：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b03_src5_day123_seed16_e200_20260829_r1`。
-- release归档本地路径：`E:\type10-7\release_archives\phase1_adv3b03_src5_day123_seed16_e200_20260829_r1_release1.zip`。
-- release归档远端路径：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b03_src5_day123_seed16_e200_20260829_r1_release1.zip`。
+- release归档本地路径：`E:\type10-7\release_archives\phase1_adv3b03_src5_day123_seed16_e200_20260829_r1_release2.zip`。
+- release归档远端路径：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b03_src5_day123_seed16_e200_20260829_r1_release2.zip`。
 
 正式命令：
 
 ```bash
-nohup /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b03_src5_day123_seed16_e200_20260829_r1_release1/code/scripts/launch_phase1_adv3b03_src5_day123_seed16_e200_20260829.py --root /home/szu2070436088/2510044040/CV-SincNet --code-root /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b03_src5_day123_seed16_e200_20260829_r1_release1 --python /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python --run-id phase1_adv3b03_src5_day123_seed16_e200_20260829_r1 --runs-root /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b03_src5_day123_seed16_e200_20260829_r1 --log-root /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b03_src5_day123_seed16_e200_20260829_r1 > /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b03_src5_day123_seed16_e200_20260829_r1.dispatcher.log 2>&1 < /dev/null &
+nohup /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b03_src5_day123_seed16_e200_20260829_r1_release2/code/scripts/launch_phase1_adv3b03_src5_day123_seed16_e200_20260829.py --root /home/szu2070436088/2510044040/CV-SincNet --code-root /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b03_src5_day123_seed16_e200_20260829_r1_release2 --python /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python --run-id phase1_adv3b03_src5_day123_seed16_e200_20260829_r1 --runs-root /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b03_src5_day123_seed16_e200_20260829_r1 --log-root /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b03_src5_day123_seed16_e200_20260829_r1 > /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b03_src5_day123_seed16_e200_20260829_r1.dispatcher.log 2>&1 < /dev/null &
 ```
 
 ## 验证与停止规则
 
 - 本地聚焦测试：当前`10 passed`，包含真实`train_ssdg`参数解析、严格四场景artifact拆分、不可覆盖和正式矩阵fail-closed检查；测试发现并修复`days_label`为列表时清洁场景去重键不可哈希的问题。独立审查P1指出正式入口可被参数缩减，现已定点修复为正式模式只接受固定Run ID、种子`713101–713116`和E200；显式`--smoke`只接受独立smoke Run ID、seed713101和E1。Python编译与`git diff --check`通过。
 - 原审查者定点复审：`RESOLVED`；无剩余P0/P1。
+- release1单归档SHA：本地与N607均为`e821a8a1d89e04db38864ee9ad3b1c103a513bc5c6bfbfeb9c9a001d43d3874c`，传输与远端编译`VERIFIED`。
+- 真实smoke r1：`phase1_adv3b03_src5_day123_smoke_e1_20260830_r1`在GPU0完成E1并写出`final_ssdg.pth`，随后训练器以`NON_PROMOTABLE_P0_DISABLED/exit=8`结束，启动器正确保存partial artifact并标记`TRAIN_FAILED`，外部四场景评估未运行，因此为`NO_PERFORMANCE_RESULT`。
+- 根因：共享训练器只允许MUSE声明“外部最终评估”，纯ADV3B03虽按`final_only`写出checkpoint，仍被Phase1-V2机制门阻断。定点修复新增通用`phase1_external_final_eval`，仅委托最终严格评估并跳过与本方法无关的promotion/endpoint门，不改变训练数据、模型、损失或参数。
+- 修复验证：新专用测试与MUSE兼容测试共`56 passed`；Phase1-V2终态测试`51 passed`，只有既有AMP弃用warning。smoke r1原路径完整保留；修复后使用全新release2和smoke r2，不覆盖、不续跑r1。
 - 正式发布前仅执行：聚焦协议负测、一次真实checkpoint无目标域E1 smoke、一次独立P0/P1审查、N607资源/路径preflight、单release归档本地/远端SHA比较和一次远端编译。
 - 只在错误stage/receiver/day/seed/场景、目标域或Phase2数据被访问、输出碰撞、错误checkout、命令不能启动、同一确定性异常至少两行复现、无最终checkpoint、严格重建失败或任一必要评估artifact缺失时停止该Run ID精确进程树并保留partial artifact。
 - 低性能、收敛慢或中间指标差不得停止、重启或热补丁。

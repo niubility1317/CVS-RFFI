@@ -67,6 +67,7 @@ def build_train_command(
         "--wisig_test_rxs", "",
         "--wisig_allow_shared_days_if_receivers_disjoint", "false",
         "--phase1_source_only_eval", "true",
+        "--phase1_external_final_eval", "true",
         "--split_mode", "tx_rx_day_1_7_2",
         "--labeled_ratio", "0.07",
         "--unlabeled_ratio", "0.63",

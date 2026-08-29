@@ -4,6 +4,7 @@ import importlib.util
 import json
 from pathlib import Path
 import sys
+from types import SimpleNamespace
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -61,6 +62,7 @@ def test_train_command_is_source_only_day123_and_never_mentions_phase2():
     assert _value_after(command, "--wisig_test_days") == ""
     assert _value_after(command, "--wisig_test_rxs") == ""
     assert _value_after(command, "--phase1_source_only_eval") == "true"
+    assert _value_after(command, "--phase1_external_final_eval") == "true"
     assert _value_after(command, "--phase1_source_role_protocol") == "l_s_u_s_v_cal_v_select"
     assert _value_after(command, "--labeled_ratio") == "0.07"
     assert _value_after(command, "--unlabeled_ratio") == "0.63"
@@ -176,8 +178,35 @@ def test_train_command_is_accepted_by_the_real_ssdg_parser():
     assert parsed.wisig_train_days == "1,2,3"
     assert parsed.wisig_train_rxs == "1,3,4,6,8"
     assert parsed.phase1_source_only_eval is True
+    assert parsed.phase1_external_final_eval is True
     assert parsed.concat_sat_ce_only is True
     assert parsed.proxy_unknown_unknown_margin == 0.10
+
+
+def test_non_muse_phase1_can_delegate_only_the_final_strict_evaluation():
+    train_path = REPO_ROOT / "code" / "SSDG" / "train_ssdg.py"
+    spec = importlib.util.spec_from_file_location("phase1_external_eval_train_ssdg", train_path)
+    assert spec is not None and spec.loader is not None
+    train_module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(train_module)
+    args = SimpleNamespace(
+        use_muse_ssdg=False,
+        muse_external_final_eval=False,
+        phase1_external_final_eval=True,
+        checkpoint_selection="final_only",
+    )
+
+    assert train_module._external_final_eval_requested(args) is True
+    result = train_module._run_final_heldout_evaluation(
+        args,
+        model=None,
+        data_ctx=None,
+        device=None,
+        checkpoint_path="/srv/run/final_ssdg.pth",
+    )
+
+    assert result["status"] == "DELEGATED_TO_EXTERNAL_PHASE1_EVAL"
+    assert result["checkpoint"] == str(Path("/srv/run/final_ssdg.pth"))
 
 
 def test_metric_split_requires_strict_reconstruction_and_writes_four_artifacts(tmp_path):
