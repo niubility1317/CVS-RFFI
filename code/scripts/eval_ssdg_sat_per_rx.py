@@ -26,7 +26,7 @@ from cvsrffi.eval import (
     make_loader,
 )
 from cvsrffi.tensors import make_torch_generator, unpack_batch
-from dataset_wisig import load_wisig_compact_pkl, make_wisig_trainval_test_by_day_rx
+from dataset_wisig import WiSigCompactDataset, load_wisig_compact_pkl, make_wisig_trainval_test_by_day_rx
 from model_dual_cvsincnet import build_dual_model
 from training_controls import parse_sat_scenarios
 
@@ -99,6 +99,65 @@ DATA_DEFAULTS: Dict[str, Any] = {
 
 def _parse_csv_indices(text: str):
     return train_mod.parse_csv_indices(text)
+
+
+def _explicit_target_requested(args: argparse.Namespace) -> bool:
+    days = str(getattr(args, "explicit_test_days", "") or "").strip()
+    receivers = str(getattr(args, "explicit_test_rxs", "") or "").strip()
+    if bool(days) != bool(receivers):
+        raise ValueError("--explicit_test_days and --explicit_test_rxs must be provided together")
+    return bool(days)
+
+
+def _build_explicit_target_loader(args: SimpleNamespace, overrides: argparse.Namespace, device: torch.device):
+    days = _parse_csv_indices(overrides.explicit_test_days)
+    receivers = _parse_csv_indices(overrides.explicit_test_rxs)
+    ds_w = load_wisig_compact_pkl(str(args.wisig_pkl))
+    day_labels = list(ds_w.get("capture_date_list", []))
+    receiver_labels = list(ds_w.get("rx_list", []))
+    if not days or any(index < 0 or index >= len(day_labels) for index in days):
+        raise ValueError(f"invalid explicit target days: {days}")
+    if not receivers or any(index < 0 or index >= len(receiver_labels) for index in receivers):
+        raise ValueError(f"invalid explicit target receivers: {receivers}")
+    source_receivers = set(_parse_csv_indices(str(getattr(args, "wisig_train_rxs", ""))))
+    overlap = sorted(source_receivers.intersection(receivers))
+    if overlap:
+        raise ValueError(f"explicit target receivers overlap source receivers: {overlap}")
+    equalized = "both" if str(args.wisig_equalized).lower() == "both" else int(args.wisig_equalized)
+    cap = int(getattr(args, "wisig_max_test_per_combo", 0) or 0)
+    target_ds = WiSigCompactDataset(
+        ds_w,
+        out_len=int(args.wisig_out_len),
+        crop_mode="center",
+        normalize=True,
+        equalized=equalized,
+        day_keep=days,
+        rx_keep=receivers,
+        domain=str(args.wisig_domain),
+        max_samples_per_combo=None if cap <= 0 else cap,
+        sample_strategy=str(getattr(args, "wisig_cap_strategy", "random")),
+        seed=int(args.seed),
+        build_index=True,
+    )
+    loader = make_loader(
+        target_ds,
+        int(overrides.eval_batch_size),
+        False,
+        int(overrides.num_workers),
+        device,
+        False,
+        int(overrides.prefetch_factor),
+    )
+    meta = {
+        "days_idx": list(days),
+        "days_label": [day_labels[index] for index in days],
+        "rxs_idx": list(receivers),
+        "rxs_label": [receiver_labels[index] for index in receivers],
+        "size": len(target_ds),
+        "target_access": True,
+        "state_updates": False,
+    }
+    return loader, meta
 
 
 def _bool(value: Any) -> bool:
@@ -377,9 +436,36 @@ def _group_value(extra: Any, group_key: str, device: torch.device) -> torch.Tens
     return value.to(device=device, non_blocking=True).long()
 
 
+def _group_values(extra: Any, group_key: str, device: torch.device) -> torch.Tensor:
+    keys = tuple(part.strip() for part in str(group_key).split(",") if part.strip())
+    if not keys:
+        raise ValueError("--group_key must contain at least one metadata key")
+    return torch.stack([_group_value(extra, key, device) for key in keys], dim=1)
+
+
+def _group_identity(group_id: Any, group_key: str, meta: Dict[str, Any]) -> Dict[str, Any]:
+    keys = tuple(part.strip() for part in str(group_key).split(",") if part.strip())
+    values = group_id if isinstance(group_id, tuple) else (int(group_id),)
+    if len(keys) != len(values):
+        raise ValueError(f"group identity mismatch: keys={keys} values={values}")
+    identity: Dict[str, Any] = {}
+    rx_labels = dict(zip(meta.get("rxs_idx", []), meta.get("rxs_label", [])))
+    day_labels = dict(zip(meta.get("days_idx", []), meta.get("days_label", [])))
+    for key, value in zip(keys, values):
+        if key == "rx_i":
+            identity["rx_idx"] = int(value)
+            identity["rx_label"] = rx_labels.get(int(value), "")
+        elif key == "day_i":
+            identity["day_idx"] = int(value)
+            identity["day_label"] = day_labels.get(int(value), "")
+        else:
+            identity[key] = int(value)
+    return identity
+
+
 def _evaluate_loader_grouped(model, loader, device, *, group_key: str, args=None, scenario: str | None = None, seed: int = 0):
     model.eval()
-    stats: Dict[int, Dict[str, int]] = {}
+    stats: Dict[Any, Dict[str, int]] = {}
     gen = make_torch_generator(device, int(seed)) if scenario is not None else None
     with torch.no_grad():
         for batch in loader:
@@ -392,13 +478,16 @@ def _evaluate_loader_grouped(model, loader, device, *, group_key: str, args=None
                 extra = unpacked_extra
             x = x.to(device, non_blocking=True)
             y = y.to(device, non_blocking=True)
-            groups = _group_value(extra, group_key, device)
+            groups = _group_values(extra, group_key, device)
             if scenario is not None:
                 x, _ = apply_sat_channel_for_scenario(x, scenario, args, gen=gen, return_meta=False)
             out = model(x, y_tx=None, grl_lambda=1.0, return_aux=True)
             pred = out["tx_logits"].argmax(dim=1)
-            for group_id in torch.unique(groups).detach().cpu().tolist():
-                mask = groups == int(group_id)
+            for group_values in torch.unique(groups, dim=0).detach().cpu().tolist():
+                group_tuple = tuple(int(value) for value in group_values)
+                group_id: Any = group_tuple[0] if len(group_tuple) == 1 else group_tuple
+                expected = torch.as_tensor(group_values, device=device, dtype=groups.dtype)
+                mask = (groups == expected).all(dim=1)
                 correct = int((pred[mask] == y[mask]).sum().item())
                 total = int(mask.sum().item())
                 slot = stats.setdefault(int(group_id), {"tx_correct": 0, "tx_total": 0})
@@ -430,6 +519,9 @@ def main() -> None:
     parser.add_argument("--max_batches", type=int, default=-1)
     parser.add_argument("--sat_seed", type=int, default=2027)
     parser.add_argument("--strict_reconstruction", action="store_true")
+    parser.add_argument("--explicit_test_days", default="")
+    parser.add_argument("--explicit_test_rxs", default="")
+    parser.add_argument("--explicit_group_name", default="explicit_target")
     args_cli = parser.parse_args()
 
     device = torch.device(args_cli.device if torch.cuda.is_available() or not str(args_cli.device).startswith("cuda") else "cpu")
@@ -449,7 +541,19 @@ def main() -> None:
         device,
         strict_reconstruction=bool(args_cli.strict_reconstruction),
     )
+    explicit_target = _explicit_target_requested(args_cli)
+    if explicit_target:
+        explicit_name = str(args_cli.explicit_group_name or "explicit_target").strip()
+        if not explicit_name or explicit_name in named_loaders:
+            raise ValueError(f"invalid or colliding --explicit_group_name={explicit_name!r}")
+        explicit_loader, explicit_meta = _build_explicit_target_loader(args, args_cli, device)
+        named_loaders[explicit_name] = explicit_loader
+        named_meta[explicit_name] = explicit_meta
+        split_info = dict(split_info)
+        split_info["explicit_target_eval"] = dict(explicit_meta)
     group_loader = str(args_cli.group_loader or "").strip()
+    if explicit_target and not group_loader:
+        group_loader = str(args_cli.explicit_group_name).strip()
     if not group_loader and str(args_cli.eval_on).strip().lower() in {"unseen_rx", "unseen_day_rx", "target_rx"}:
         group_loader = "test_unseen_day_unseen_rx"
     if group_loader:
@@ -473,7 +577,6 @@ def main() -> None:
         if max_batches > 0:
             raise ValueError("Grouped exact evaluation requires full loader; use --max_batches -1 or 0")
         meta = named_meta.get(group_loader, {})
-        rx_labels = dict(zip(meta.get("rxs_idx", []), meta.get("rxs_label", [])))
         clean_by_group = _evaluate_loader_grouped(model, named_loaders[group_loader], device, group_key=args_cli.group_key)
         try:
             loader_seed_index = MAIN_SAT_EVAL_ON_NAMES.index(group_loader)
@@ -494,11 +597,11 @@ def main() -> None:
                     continue
                 clean = clean_by_group[group_id]
                 sat = sat_by_group[group_id]
+                identity = _group_identity(group_id, args_cli.group_key, meta)
                 row = {
                     "name": f"{group_loader}:{args_cli.group_key}_{group_id}",
-                    "rx_idx": int(group_id),
-                    "rx_label": rx_labels.get(int(group_id), ""),
-                    "days_label": ",".join(str(v) for v in meta.get("days_label", [])),
+                    **identity,
+                    "days_label": identity.get("day_label", ",".join(str(v) for v in meta.get("days_label", []))),
                     "scenario": scenario,
                     "clean_acc": float(clean["tx_acc"]),
                     "clean_correct": int(clean["tx_correct"]),
@@ -510,7 +613,8 @@ def main() -> None:
                 }
                 rows.append(row)
                 print(
-                    f"[PER-RX-SAT] scenario={scenario} rx={row['rx_idx']} label={row['rx_label']} "
+                    f"[PER-RX-SAT] scenario={scenario} rx={row.get('rx_idx', '')} label={row.get('rx_label', '')} "
+                    f"day={row.get('day_idx', '')} day_label={row.get('day_label', '')} "
                     f"clean={row['clean_acc']:.2f}% sat={row['sat_acc']:.2f}% "
                     f"delta={row['delta_pp']:.2f}pp ({row['sat_correct']}/{row['sat_total']})",
                     flush=True,

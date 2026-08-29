@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 import torch
+from types import SimpleNamespace
 
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "eval_ssdg_sat_per_rx.py"
@@ -139,3 +140,39 @@ def test_strict_reconstruction_failure_exits_before_metrics_are_written(tmp_path
         evaluator.main()
 
     assert not output_json.exists()
+
+
+def test_multi_group_values_keep_receiver_and_day_identity():
+    extra = {
+        "rx_i": torch.tensor([7, 7, 9]),
+        "day_i": torch.tensor([0, 3, 0]),
+    }
+
+    values = evaluator._group_values(extra, "rx_i,day_i", torch.device("cpu"))
+
+    assert values.tolist() == [[7, 0], [7, 3], [9, 0]]
+
+
+def test_explicit_target_request_requires_days_and_receivers_together():
+    args = SimpleNamespace(explicit_test_days="0,1,2,3", explicit_test_rxs="")
+
+    with pytest.raises(ValueError, match="together"):
+        evaluator._explicit_target_requested(args)
+
+
+def test_group_identity_reports_receiver_and_day_labels():
+    meta = {
+        "rxs_idx": [0, 2],
+        "rxs_label": ["1-1", "14-7"],
+        "days_idx": [0, 3],
+        "days_label": ["2021_03_01", "2021_03_23"],
+    }
+
+    identity = evaluator._group_identity((2, 3), "rx_i,day_i", meta)
+
+    assert identity == {
+        "rx_idx": 2,
+        "rx_label": "14-7",
+        "day_idx": 3,
+        "day_label": "2021_03_23",
+    }
