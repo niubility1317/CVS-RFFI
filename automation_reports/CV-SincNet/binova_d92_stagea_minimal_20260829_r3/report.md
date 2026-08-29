@@ -7,4 +7,6 @@
 
 ## 运行结果
 
-待执行。
+- 阶段A A0/A2/A3/A4均完成；四行伪注册H均为91.667%，A3相对A2提升0，故门槛未通过，阶段B为`NOT_RUN_GATE_NOT_MET`。
+- A3非仿射残差90.28%，forgetting和旧类floor均未恶化。
+- 首份prediction因场景级split与权威new2 data handle的split不一致，被独立scorer拒绝；新增splitfix配置后用新目录重预测，不修改原prediction。
