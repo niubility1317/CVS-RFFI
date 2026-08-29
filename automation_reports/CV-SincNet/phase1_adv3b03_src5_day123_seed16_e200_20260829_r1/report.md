@@ -8,7 +8,8 @@
 - 类型：纯Phase1接收机域泛化训练；不读取Phase2 capsule、support、query、truth、prototype或split，不做目标域适配和新类注册。
 - 初始化：`from_scratch=true`，不复用历史ADV3B02 checkpoint。
 - Git承载面：`codex/phase1-fasttrust-eff-src5-20260828`
-- code/config commit：提交后回填。
+- code/config commit：`66a58fd520281ad19051d8abe0b9f0d8e8be014a`。
+- Git发布：自动push为`VERIFIED`；独立远端回读`origin/codex/phase1-fasttrust-eff-src5-20260828=66a58fd520281ad19051d8abe0b9f0d8e8be014a`，与本地HEAD一致。
 - 启动所有者：当前主Agent；不得重复启动同一Run ID。
 
 ## 数据与矩阵
