@@ -52,8 +52,9 @@ def _ledoit_wolf_standardized(rows: torch.Tensor) -> tuple[torch.Tensor, torch.T
     sample_count, dimension = rows.shape
     centered = rows - rows.mean(dim=0, keepdim=True)
     variance = centered.square().mean(dim=0)
-    scale = torch.sqrt(variance)
-    scale = torch.where(scale > 0.0, scale, torch.ones_like(scale))
+    scale = torch.sqrt(
+        torch.where(variance > 0.0, variance, torch.ones_like(variance))
+    )
     standardized = centered / scale
 
     # sklearn's LedoitWolf centers again after StandardScaler. Keeping this

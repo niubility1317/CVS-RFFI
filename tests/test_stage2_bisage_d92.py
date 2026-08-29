@@ -5,9 +5,21 @@ import torch
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 from cvsrffi.stage2_bisage_d92 import (
+    _ledoit_wolf_standardized,
     compare_exact_d92_logits,
     fit_bisage_d92,
 )
+
+
+def test_ledoit_wolf_zero_variance_column_has_finite_gradient() -> None:
+    rows = torch.tensor(
+        [[1.0, 0.0, 2.0], [1.0, 1.0, 0.0], [1.0, 2.0, 1.0], [1.0, 3.0, 4.0]],
+        dtype=torch.float64,
+        requires_grad=True,
+    )
+    covariance, shrinkage = _ledoit_wolf_standardized(rows)
+    (covariance.square().sum() + shrinkage).backward()
+    assert torch.isfinite(rows.grad).all()
 
 
 def _balanced_support() -> tuple[torch.Tensor, torch.Tensor]:
