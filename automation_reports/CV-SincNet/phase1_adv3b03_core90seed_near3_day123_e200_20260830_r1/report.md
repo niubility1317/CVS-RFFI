@@ -48,3 +48,14 @@ nohup /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088
 - 预期artifact：3个候选各自的`config.json`、`train.log`、`final_ssdg.pth`、`metrics_joint.json`、4份场景指标与日志、`status.txt=ARTIFACTS_COMPLETE`；日志根含`plan.json`和`final_status.json`。
 - 只在错误stage/receiver/day/seed/场景、目标域或Phase2被访问、输出碰撞、错误checkout、命令不能启动、同一确定性异常至少两行复现、无final checkpoint、严格重建失败或必要评估artifact缺失时，才绑定并停止该Run ID的精确进程树，同时保留partial artifact。
 - 低性能、收敛慢或中间指标差不得停止、重启或热补丁；不得触碰任何无关进程。
++
+## Release、smoke与正式启动
+
+- 单release归档SHA256：本地与N607均为`9b66b488f89f5fc23a5104ddaacff8e8f5822598f35695bdf19a6f9c6ab9874b`，传输`VERIFIED`；远端关键入口编译`PASS`。
+- N607预检：普通账户直连`PASS`；项目根可见；启动前8张GPU无计算进程；正式run/log路径不存在。
+- 真实smoke：`phase1_adv3b03_core90seed_near3_day123_smoke_e1_20260830_r1`，seed392001、E1、GPU0；final checkpoint为15,025,055字节，终态`ARTIFACTS_COMPLETE`。
+- smoke严格评估：clean=32.4519%、leo_clear_weak=28.8074%、leo_low_elev_weak=28.3037%、leo_rain_weak=28.3778%；4个artifact均为epoch1、strict load、无fallback、missing/unexpected/shape mismatch全为0。该数值仅验证闭合，不用于性能判断。
+- 正式dispatcher PID：`1893952`（外层启动shell PID=`1893951`）。
+- 直属主训练PID：`1893956/1893957/1893958`，分别严格绑定seed392001/GPU0、seed392002/GPU1、seed392003/GPU2。
+- 启动回读：3个候选均为`RUNNING`；GPU0/1/2各1个主训练进程，显存约3.6–3.8GiB；日志从17,723–23,265字节继续增长，三行均已到epoch3/200；未发现Traceback、CUDA OOM、TRAIN_FAILED、RuntimeError或AssertionError。
+- 当前状态：`RUNNING`。健康运行不得因中间性能停止、重启或热补丁。
