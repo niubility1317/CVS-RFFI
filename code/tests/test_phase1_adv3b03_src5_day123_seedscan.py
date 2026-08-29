@@ -20,6 +20,12 @@ CORE90_NEAR3_LAUNCHER = (
     / "scripts"
     / "launch_phase1_adv3b03_core90seed_near3_day123_e200_20260830.py"
 )
+CORE90_NEAR5_LAUNCHER = (
+    REPO_ROOT
+    / "code"
+    / "scripts"
+    / "launch_phase1_adv3b03_core90seed_near5_day123_e200_20260830.py"
+)
 
 
 def _load_launcher():
@@ -36,6 +42,75 @@ def _load_core90_near3_launcher():
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def _load_core90_near5_launcher():
+    spec = importlib.util.spec_from_file_location("phase1_adv3b03_core90_near5", CORE90_NEAR5_LAUNCHER)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_core90_near5_plan_fills_only_gpus_three_through_seven():
+    launcher = _load_core90_near5_launcher()
+
+    rows = launcher.build_plan()
+
+    assert launcher.CORE90_ORIGINAL_SEED == 392002
+    assert launcher.FORMAL_SEEDS == (392000, 392004, 391999, 392005, 391998)
+    assert launcher.FORMAL_GPUS == (3, 4, 5, 6, 7)
+    assert launcher.RUN_ID_DEFAULT == (
+        "phase1_adv3b03_core90seed_near5_day123_e200_20260830_r1"
+    )
+    assert [row.seed for row in rows] == list(launcher.FORMAL_SEEDS)
+    assert [row.gpu for row in rows] == list(launcher.FORMAL_GPUS)
+
+
+def test_core90_near5_formal_and_smoke_fail_closed(tmp_path, capsys):
+    launcher = _load_core90_near5_launcher()
+
+    formal_status = launcher.main(
+        [
+            "--root", str(tmp_path / "formal-root"),
+            "--code-root", str(REPO_ROOT),
+            "--python", sys.executable,
+            "--dry-run",
+        ]
+    )
+    formal = json.loads(capsys.readouterr().out)
+    assert formal_status == 0
+    assert [(row["seed"], row["gpu"]) for row in formal["rows"]] == list(
+        zip(launcher.FORMAL_SEEDS, launcher.FORMAL_GPUS)
+    )
+
+    rejected_status = launcher.main(
+        [
+            "--root", str(tmp_path / "rejected-root"),
+            "--code-root", str(REPO_ROOT),
+            "--python", sys.executable,
+            "--seeds", "392000",
+            "--dry-run",
+        ]
+    )
+    assert rejected_status == 2
+
+    smoke_status = launcher.main(
+        [
+            "--root", str(tmp_path / "smoke-root"),
+            "--code-root", str(REPO_ROOT),
+            "--python", sys.executable,
+            "--run-id", "phase1_adv3b03_core90seed_near5_day123_smoke_e1_20260830_r1",
+            "--seeds", "392000",
+            "--epochs", "1",
+            "--smoke",
+            "--dry-run",
+        ]
+    )
+    smoke = json.loads(capsys.readouterr().out)
+    assert smoke_status == 0
+    assert smoke["rows"][0]["seed"] == 392000
+    assert smoke["rows"][0]["gpu"] == 3
 
 
 def test_core90_near3_plan_freezes_original_seed_and_immediate_neighbors():
