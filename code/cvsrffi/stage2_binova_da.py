@@ -196,7 +196,7 @@ def fit_nova_da(
     identity, late, domain, physical, fft = _feature_tensors(support.features, target_device)
     labels = torch.as_tensor(support.labels.copy(), dtype=torch.long, device=target_device)
     train_mask_np, held_mask_np = support_crossfit_masks(support.labels, support.ranks)
-    train_mask = torch.as_tensor(train_mask_np, device=target_device)
+    train_mask = torch.as_tensor(train_mask_np, dtype=torch.bool, device=target_device)
     ranks = torch.as_tensor(support.ranks.copy(), dtype=torch.long, device=target_device)
     optimizer_fit_mask = train_mask & (ranks < 6)
     optimizer_score_mask = train_mask & (ranks >= 6)
@@ -318,8 +318,8 @@ def evaluate_nova_da_crossfit(
     adapted_identity = torch.as_tensor(
         apply_nova_da(state, support.features), dtype=torch.float32, device=target_device
     )
-    train = torch.as_tensor(train_np, device=target_device)
-    held = torch.as_tensor(held_np, device=target_device)
+    train = torch.as_tensor(train_np, dtype=torch.bool, device=target_device)
+    held = torch.as_tensor(held_np, dtype=torch.bool, device=target_device)
     rotations = build_pseudo_role_rotations(tuple(int(v) for v in np.unique(support.labels)))
     old_correct = new_correct = old_total = new_total = 0
     baseline_old_correct = 0

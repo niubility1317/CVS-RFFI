@@ -19,4 +19,6 @@
 
 ## 运行结果
 
-待N607执行后与根目录正式报告同步追加。
+- 最终状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+- r1在阶段A A2前因N607 PyTorch2.1无法推断`numpy.bool`的dtype而自然退出；未产生性能结果、未打开query/truth、未进入阶段B。
+- r1输出与日志保留；定点修复显式`torch.bool`后改用不可覆盖r2。

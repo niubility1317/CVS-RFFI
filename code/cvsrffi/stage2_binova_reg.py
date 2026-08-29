@@ -183,8 +183,8 @@ def fit_nova_reg(
     fft, _ = _tensors(support.features, target_device)
     labels = torch.as_tensor(support.labels.copy(), dtype=torch.long, device=target_device)
     train_np, held_np = support_crossfit_masks(support.labels, support.ranks)
-    train = torch.as_tensor(train_np, device=target_device)
-    held = torch.as_tensor(held_np, device=target_device)
+    train = torch.as_tensor(train_np, dtype=torch.bool, device=target_device)
+    held = torch.as_tensor(held_np, dtype=torch.bool, device=target_device)
     base_geometry = d92_geometry_features(base_identity, fft)
     conditioning = fit_differentiable_d92(
         base_geometry[train], labels[train], old_class_count=old_count,
