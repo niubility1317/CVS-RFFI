@@ -18,3 +18,7 @@
 - 本地验证：30项聚焦测试和`py_compile`通过；独立P0/P1审查的2个P1已定点修复。
 
 最终状态、同row四状态指标、异常、晋级决定和资源证据将在实验完成后追加。
+
+## 技术停止
+
+原run在真实checkpoint无query smoke中发现零方差维度的`SqrtBackward0`产生NaN梯度，状态为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。未打开query、未启动pilot。修复提交为`32998243133e6ec34af263bab2e84435e47b988b`，后续使用不可覆盖新run`bisage_d92_hist_e0_target125_20260830_v1_techfix1`。
