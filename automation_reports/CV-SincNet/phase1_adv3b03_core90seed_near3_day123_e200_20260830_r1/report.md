@@ -8,7 +8,7 @@
 - CORE90原训练seed证据：历史严格checkpoint配置`checkpoint_args.seed=392002`，候选为`ADV3B02_CORE90_SOFT_E200`。
 - 正式seed：`392001`、`392002`、`392003`。
 - Git分支：`codex/phase1-fasttrust-eff-src5-20260828`。
-- code/config commit：提交后补记。
+- code/config commit：`42df44e70f79e76072b4a98a568870c460cc35d6`；自动push及独立远端OID回读均为`VERIFIED`。
 
 ## 冻结配置
 
