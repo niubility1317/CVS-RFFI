@@ -267,8 +267,8 @@ def apply_nova_reg(
         conditions = (raw_conditions - state.condition_mean6) / state.condition_scale6
         identity, adapted_fft = state.module(base_identity, fft, conditions)
     return (
-        identity.detach().cpu().numpy().astype(np.float32, copy=False),
-        adapted_fft.detach().cpu().numpy().astype(np.float32, copy=False),
+        np.asarray(identity.detach().cpu().tolist(), dtype=np.float32),
+        np.asarray(adapted_fft.detach().cpu().tolist(), dtype=np.float32),
     )
 
 

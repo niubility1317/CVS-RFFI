@@ -295,7 +295,7 @@ def apply_nova_da(
     context = torch.as_tensor(context_np, dtype=torch.float32, device=device)
     with torch.inference_mode():
         result = module(identity, late, domain, physical, context)
-    return result.detach().cpu().numpy().astype(np.float32, copy=False)
+    return np.asarray(result.detach().cpu().tolist(), dtype=np.float32)
 
 
 def evaluate_nova_da_crossfit(

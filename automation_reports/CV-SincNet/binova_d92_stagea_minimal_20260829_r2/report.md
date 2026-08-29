@@ -8,4 +8,6 @@
 
 ## 运行结果
 
-待执行。
+- 最终状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+- A2/A3/A4训练已计算，但held评估前遇到Tensor→NumPy的`numpy.object_`兼容错误；未写artifact、未打开query/truth、未进入阶段B。
+- r2输出保留，显式dtype重建后改用不可覆盖r3。

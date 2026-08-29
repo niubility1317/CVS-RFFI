@@ -158,8 +158,8 @@ def _support_from_path(
     device: torch.device,
 ) -> BiNOVASupport:
     loaded = _load_target_support(path)
-    iq = loaded.received_iq.detach().cpu().numpy()
-    labels = loaded.labels.detach().cpu().numpy().astype(np.int64, copy=False)
+    iq = np.asarray(loaded.received_iq.detach().cpu().tolist(), dtype=np.float32)
+    labels = np.asarray(loaded.labels.detach().cpu().tolist(), dtype=np.int64)
     features = extract_binova_features(
         model, iq, physical_ids=loaded.physical_ids, device=device
     )
