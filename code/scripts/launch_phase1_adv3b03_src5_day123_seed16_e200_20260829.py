@@ -432,15 +432,22 @@ def main(argv: Sequence[str] | None = None) -> int:
         if args.run_id == RUN_ID_DEFAULT or "smoke" not in args.run_id.lower():
             print("[ADV3B03-ERROR] smoke mode requires a distinct smoke run ID", file=sys.stderr)
             return 2
-        if selected_seeds != [713101] or args.epochs != 1:
-            print("[ADV3B03-ERROR] smoke mode is fixed to seed713101 and E1", file=sys.stderr)
+        if selected_seeds != [FORMAL_SEEDS[0]] or args.epochs != 1:
+            print(
+                f"[ADV3B03-ERROR] smoke mode is fixed to seed{FORMAL_SEEDS[0]} and E1",
+                file=sys.stderr,
+            )
             return 2
     else:
         if args.run_id != RUN_ID_DEFAULT:
             print("[ADV3B03-ERROR] formal mode requires the frozen formal run ID", file=sys.stderr)
             return 2
         if tuple(selected_seeds) != FORMAL_SEEDS or args.epochs != 200:
-            print("[ADV3B03-ERROR] formal mode requires seeds713101-713116 and E200", file=sys.stderr)
+            print(
+                f"[ADV3B03-ERROR] formal mode requires seeds"
+                f"{','.join(str(seed) for seed in FORMAL_SEEDS)} and E200",
+                file=sys.stderr,
+            )
             return 2
     rows = build_plan(selected_seeds)
     if args.smoke:
