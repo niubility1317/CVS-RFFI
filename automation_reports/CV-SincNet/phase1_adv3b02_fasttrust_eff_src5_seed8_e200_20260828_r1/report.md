@@ -73,3 +73,26 @@ nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet CODE_ROOT=/home/szu2070
 - 独立审查：唯一一次P0/P1审查覆盖训练器、FastTrust路由、数据构建器、worker、seed-scan launcher、矩阵、测试和两份报告，结论为未发现P0/P1问题；未增加白名单外gate。
 - 本地Git Bash探针未获得`MSYSTEM=MINGW64`，因此未把WSL替代通道用于launcher验证；N607发布后执行远端`bash -n`、行为dry-run及真实checkpoint无query smoke。
 - 根目录报告位于非Git目录；Git镜像为`automation_reports/CV-SincNet/phase1_adv3b02_fasttrust_eff_src5_seed8_e200_20260828_r1/report.md`，提交时使用精确强制stage以越过仓库对`automation_reports/`的默认忽略规则。
+
+## 完整源域artifact分析与种子冻结
+
+- 2026-08-29 18:56CST短连接只读复核：16/16候选均为`ARTIFACTS_COMPLETE`，所有主训练进程已退出，GPU0–7均空闲；每行`phase1_terminal_status.json=COMPLETE`、exit code为0、`final_ssdg.pth`存在。
+- 完整性：逐行完整读取`train.log`、全部评估日志和dispatcher日志；每行`metrics_epoch.csv`与`metrics_epoch.jsonl`均恰为200行；clean及`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`四个最终评估文件齐全。四场景均由epoch200checkpoint严格重建：`strict_requested/checkpoint_load_strict=true`，无fallback、missing、unexpected或shape mismatch，且`target_access=false`。
+- 健康性：完整日志未见Traceback、CUDA OOM、UnboundLocalError、FASTTRUST_ZERO_STEP、RuntimeError或Killed。训练日志中关闭组件的`sat_cos=nan`、`p95=nandeg`和空测试`0/0`为诊断占位；逐单元扫描全部16份epoch CSV/JSONL与64份最终metrics JSON，未发现任何非有限数值。
+- 预登记`V_select`gate逐seed结果：
+
+|seed|FastTrust clean|FastTrust LEOmean|FastTrust LEOfloor|FastTrust hmean|相对同seed对照Δclean/ΔLEOmean/Δfloor(pp)|gate|
+|---|---:|---:|---:|---:|---:|---|
+|713101|98.5722|92.5741|91.2778|94.7849|+0.0444/+1.4741/+1.3611|PASS|
+|713102|98.4667|93.1852|92.3556|95.3133|+0.0389/+1.5111/+1.6611|PASS|
+|713103|98.5833|93.5130|92.9611|95.6897|+0.0389/+1.3500/+1.7000|PASS|
+|713104|98.5389|94.0926|93.4389|95.9211|+0.0667/+0.9407/+1.3056|PASS|
+|713105|98.6111|93.0648|92.2611|95.3305|-0.0167/+1.4519/+1.7500|PASS|
+|713106|98.5611|93.2685|92.5056|95.4374|+0.0111/+1.2981/+1.5333|PASS|
+|713107|98.4778|93.2667|92.1778|95.2237|+0.0333/+1.3093/+1.3444|PASS|
+|713108|98.4944|93.1241|92.6000|95.4563|+0.0111/+1.3093/+1.5944|PASS|
+
+- 结论：8/8种子同时满足LEOmean提升、LEOfloor不下降和clean下降不超过0.5pp。按预登记排序规则冻结`S713104_ADV3B02_FASTTRUST_EFF`，不使用目标域信息参与排序。
+- 冻结行的源域结果：clean`98.5389%`，`leo_clear_weak=95.3222%`，`leo_low_elev_weak=93.4389%`，`leo_rain_weak=93.5167%`，LEOmean`94.0926%`，LEOfloor`93.4389%`，主分数`95.9211%`。
+- 同seed对照为clean`98.4722%`，clear`94.6056%`，low-elev`92.1333%`，rain`92.7167%`，LEOmean`93.1519%`，LEOfloor`92.1333%`，主分数`95.1974%`；FastTrust-EFF同row增量依次为`+0.0667/+0.7167/+1.3056/+0.8000pp`，主分数`+0.7238pp`。
+- 本节仅是源域选种结论，尚未读取Phase2 query或truth。下一步仅对已冻结种子核对既有`p2_min_v1/VALIDATED_ONCE/capsule_id/split_id`，执行一次prediction-first目标确认，并由独立scorer随后连接truth；目标结果不反馈选种、调参、重训或重跑。
