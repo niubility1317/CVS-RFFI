@@ -25,6 +25,8 @@
 - 优化报告后半部分将最终方法明确为BiSAGE-D92；阶段A前向严格禁止接收类别ID，标签只可用于fit上下文、角色轮换、损失和support cross-fit。
 - SAGE-D教师版的锁定机制为：3组4-base/2-pseudo-new覆盖全部6个旧类、每类8/2样本cross-fit、零初始化rank32时间/identity残差、非仿射比例区间、类条件协方差一致性及角色梯度坐标中位数共识。
 - 阶段A机制停止条件为预测必须发生变化、非仿射能量至少0.1、held-out pseudo-new的H/min-new/old-post稳定改善；否则属于科学不晋级而非技术失败。
+- SAGE-R只修复Stage A后当前old/new边界：用D92导出的旧新margin、熵、最近两个旧类/新类距离作为6维条件，以`sigmoid(gamma*(tau-|margin|))`抑制远离边界的样本，并同时输出identity/FFT联合残差。
+- 阶段B的旧类安全不是普通加权项，而是增广拉格朗日约束`old-post<=StageA old-post+epsilon`；`phi_D`冻结，乘子按`eta=max(0,eta+rho*violation)`在线更新。
 
 ## Technical Decisions
 | Decision | Rationale |

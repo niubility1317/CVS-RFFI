@@ -19,6 +19,8 @@
   - 以TDD实现float64可微正式D92，复现每类Ledoit-Wolf、类等权、旧/新任务0.5/0.5、Cholesky求解和类公共仿射中心化。
   - 从优化报告后半部分核定SAGE-D最终边界，排除前半部分Q-BiNOVA旧草案对实现的覆盖。
   - 以TDD实现SAGE-D：零初始化双残差、无类别ID前向、类均衡fit-only上下文、3组角色轮换、K5/K10 cross-fit、正式D92内层、坐标中位数梯度共识、协方差/拓扑/非仿射/移动约束和阶段A门槛。
+  - 核定SAGE-R的6维边界条件、边界局部门控、identity/FFT联合残差及增广拉格朗日旧类风险约束。
+  - 以TDD实现SAGE-R：D92边界6维条件、8维注册上下文、边界局部门控、identity/FFT联合残差、old/new侵入与连续遗忘、旧类拓扑、条件数惩罚和增广拉格朗日旧风险约束；Stage A参数保持冻结。
 - Files created/modified:
   - `task_plan.md`
   - `findings.md`
@@ -33,6 +35,7 @@
 | 正式D92公式定位 | sklearn LDA/Ledoit-Wolf源码 | 明确逐logit等价公式 | 已定位每类标准化、Ledoit-Wolf、任务0.5/0.5 | PASS |
 | BiSAGE正式D92 | 新测试+既有D92回归 | 数值等价、梯度、正定性、无回归 | 9项通过 | PASS |
 | SAGE-D阶段A | 阶段A+特征+正式D92聚焦测试 | 行为、K1回退、K5更新、support-only门槛指标 | 17项通过 | PASS |
+| SAGE-R阶段B | 阶段B+既有注册回归 | 边界门、乘子、零初始化、K5训练、冻结阶段A | 8项通过 | PASS |
 
 ## Error Log
 | Timestamp | Error | Attempt | Resolution |
@@ -45,6 +48,7 @@
 | 2026-08-30 | BiSAGE D92聚焦测试导入失败 | 1 | 预期TDD红灯：新模块尚未实现，随后进入实现 |
 | 2026-08-30 | `rg`多模式正则被cmd拆分 | 1 | 改为单token标题和上下文检索 |
 | 2026-08-30 | SAGE-D聚焦测试导入失败 | 1 | 预期TDD红灯：新阶段A模块尚未实现 |
+| 2026-08-30 | SAGE-R聚焦测试导入失败 | 1 | 预期TDD红灯：新阶段B模块尚未实现 |
 
 ## 5-Question Reboot Check
 | Question | Answer |
