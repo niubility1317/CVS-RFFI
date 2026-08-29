@@ -10,7 +10,7 @@
 - 新增seed与GPU：`392000→GPU3`、`392004→GPU4`、`391999→GPU5`、`392005→GPU6`、`391998→GPU7`。
 - 已运行但不属于本Run ID的seed：`392001/392002/392003`位于GPU0/1/2，禁止触碰。
 - Git分支：`codex/phase1-fasttrust-eff-src5-20260828`。
-- code/config commit：提交后补记。
+- code/config commit：`8af305ed82af15df2e475b7fd94a4b2924d69c39`；自动push及独立远端OID回读均为`VERIFIED`。
 
 ## 冻结配置
 
