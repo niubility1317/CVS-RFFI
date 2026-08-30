@@ -1,0 +1,18 @@
+{
+  "schema": "cvs.phase1.wiser_rf.source_binding.v1",
+  "checkpoint_id": "ADV3B02_CORE90_SOFT_E200",
+  "checkpoint_sha256": "2699eedcafe8cec880828592d2d65ba3781a9948939da5cf5c82b47143d59c98",
+  "source_summary_sha256": "3c08c823d2e8a13c4233f0060ac67c332ecc8d6e8abec7352de975fead0267d7",
+  "feature_schema": "ADV3B02:z_id:unit_l2:160:v1",
+  "feature_dim": 160,
+  "class_registry": [
+    "14-10",
+    "14-7",
+    "20-15",
+    "20-19",
+    "6-15",
+    "8-20"
+  ],
+  "historical_component_schema": "phase1_int8_domain_class_centroids_v1",
+  "authorization": "PROJECT_PROTOCOL_2026-08-30_QUANTIZED_AGGREGATE_PHASE1_SUMMARY"
+}

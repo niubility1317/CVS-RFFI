@@ -1,6 +1,6 @@
 # CVS项目场景与数据协议
 
-版本：2026-08-24
+版本：2026-08-30
 协议模式：`p2_min_v1`
 
 ## 文件职责
@@ -55,11 +55,17 @@ c_i ∈ {leo_clear_weak,leo_low_elev_weak,leo_rain_weak}
 
 ### 允许输入与禁止输入
 
-Phase2运行时采用穷尽式白名单，只允许读取：`p2_min_v1`、`VALIDATED_ONCE`固定目标域LEO received IQ及匹配的`capsule_id/split_id`；当前row合法target support标签、必要注册类别表和无query真值/角色split；地面预先计算、随checkpoint上传并保持不可变的类原型及必要类别映射；冻结checkpoint和预登记算法配置。
+Phase2运行时采用穷尽式白名单，只允许读取：`p2_min_v1`、`VALIDATED_ONCE`固定目标域LEO received IQ及匹配的`capsule_id/split_id`；当前row合法target support标签、必要注册类别表和无query真值/角色split；地面预先计算、随checkpoint上传并保持不可变的类原型、必要类别映射，以及符合下述“量化聚合Phase1分布摘要”边界的可选摘要；冻结checkpoint和预登记算法配置。
 
-除此之外，不得读取、构造或恢复任何地面source/clean样本、源域数据加载器、source replay/cache、源域特征、样本级embedding、源域统计量、源域BatchNorm状态、伪源域样本、生成式源数据、可还原源样本的中间信息或其他外部source状态。不得读取query真值、query角色、真实query batch类别集合/数量或其他query反馈。
+除此之外，不得读取、构造或恢复任何地面source/clean样本、源域数据加载器、source replay/cache、未按本节联合冻结的源域特征或统计量、样本级embedding、源域BatchNorm状态、伪源域样本、生成式源数据、可还原源样本的中间信息或其他外部source状态。不得读取query真值、query角色、真实query batch类别集合/数量或其他query反馈。
 
-地面类原型只能作为不可训练的类别锚点和冻结判决依据；不得反向更新、在线重估、追加源域信息，或扩展为D92式协方差、LDA、持久分类头、样本级记忆或类条件源域统计。缺少合规原型时不得回读地面样本重建。
+地面类原型只能作为不可训练的类别锚点和冻结判决依据；不得反向更新、在线重估、追加源域信息，或由类原型在线扩展为D92式协方差、LDA、持久分类头、样本级记忆或类条件源域统计。符合下述边界的量化聚合摘要不是由Phase2扩展类原型得到的状态。缺少合规原型或摘要时不得回读地面样本重建。
+
+#### 量化聚合Phase1分布摘要
+
+经2026-08-30用户明确授权，`p2_min_v1`允许一个可选的量化聚合Phase1分布摘要随checkpoint联合冻结。允许成员穷尽为int8域×类聚合中心及有效槽mask，或其int8类中心、int8低秩域残差方向、int8域系数和int8类半径压缩形式，反量化所需FP16尺度，以及预登记时可选的不含BatchNorm运行状态的FP16全局逐特征location/scale。摘要必须由多个source物理样本或多个source接收域在Phase1地面阶段聚合产生，包含冻结的类别、域和特征schema映射。
+
+摘要不得包含source/clean IQ、样本级embedding、逐样本索引、source路径、源域BatchNorm状态、生成式源样本或可恢复单个物理样本的信息。Phase2只能按预登记公式将其用作不可训练的固定分布锚点、确定性虚拟特征点或normalization参考，不得持久化反量化源特征库，也不得用query更新、选择或校准摘要。该可选摘要不改变数据capsule事实，不触发`VALIDATED_ONCE`数据重验证；需要摘要的方法只核对其checkpoint、类别映射和特征schema绑定。
 
 ### query只测试
 
