@@ -234,8 +234,153 @@ except ModuleNotFoundError:
     format_named_test_lines = format_sat_test_lines = None
 
 
+_BICAD_XR_LEO_WEAK = (
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak",
+)
+_BICAD_XR_LEO_WEAK_CSV = ",".join(_BICAD_XR_LEO_WEAK)
+
+
+class BiCADXRProtocol:
+    """The closed, source-only protocol consumed by the BiCAD-XR entry."""
+
+    def __init__(self, *, phase1_method: str, candidate_id: str) -> None:
+        self.phase1_method = phase1_method
+        self.candidate_id = candidate_id
+        self.use_concat_sat_channel_aug = True
+        self.concat_sat_ce_only = True
+        self.concat_sat_ce_weight = 0.68
+        self.concat_sat_start_epoch = 80
+        self.sat_train_scenarios = _BICAD_XR_LEO_WEAK_CSV
+        self.lambda_sat_cls = 0.68
+        self.lambda_sat_cons = 0.0
+        self.target_access = False
+
+
+def _cli_option(token: str) -> Tuple[str, Optional[str]]:
+    if "=" in token:
+        name, value = token.split("=", 1)
+        return name, value
+    return token, None
+
+
+def _cli_option_values(argv: Sequence[str], option: str) -> List[str]:
+    values: List[str] = []
+    for index, token in enumerate(argv):
+        name, inline_value = _cli_option(str(token))
+        if name != option:
+            continue
+        if inline_value is not None:
+            values.append(inline_value)
+        elif index + 1 < len(argv) and not str(argv[index + 1]).startswith("-"):
+            values.append(str(argv[index + 1]))
+        else:
+            values.append("")
+    return values
+
+
+def _cli_phase1_method(argv: Sequence[str]) -> str:
+    values = _cli_option_values(argv, "--phase1_method")
+    return values[-1].strip().lower() if values else "legacy"
+
+
+def _reject_bicad_conflicts(argv: Sequence[str]) -> None:
+    if _cli_phase1_method(argv) != "bicad_xr":
+        return
+    for token in argv:
+        name, _ = _cli_option(str(token))
+        lowered = name.lower()
+        if lowered in {"--use_fasttrust", "--use_mixstyle"} or lowered.startswith("--fasttrust"):
+            raise ValueError(f"BiCAD-XR rejects incompatible legacy option: {name}")
+    for value in _cli_option_values(argv, "--muse_lr_schedule"):
+        if value.strip().lower() != "off":
+            raise ValueError("BiCAD-XR rejects incompatible FastTrust schedule")
+    for value in _cli_option_values(argv, "--sat_train_scenario"):
+        if value.strip().lower() != "":
+            raise ValueError(f"BiCAD-XR rejects incompatible satellite scenario: {value}")
+    for value in _cli_option_values(argv, "--sat_train_scenarios"):
+        normalized = ",".join(part.strip().lower() for part in value.split(",") if part.strip())
+        if normalized != _BICAD_XR_LEO_WEAK_CSV:
+            raise ValueError(f"BiCAD-XR rejects incompatible satellite scenario: {value}")
+
+
+def parse(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
+    """Parse the public Task7 entry without changing the legacy CLI parser."""
+
+    raw_argv = list(sys.argv[1:] if argv is None else argv)
+    _reject_bicad_conflicts(raw_argv)
+    parse_argv = list(raw_argv)
+    if not _cli_option_values(parse_argv, "--output_dir"):
+        parse_argv = ["--output_dir", "", *parse_argv]
+    args = build_arg_parser().parse_args(parse_argv)
+    setattr(args, "_task7_cli_args", tuple(str(item) for item in raw_argv))
+    if route_phase1_method(args) == "bicad_xr":
+        for name in tuple(vars(args)):
+            lowered = name.lower()
+            if any(token in lowered for token in ("target_rx", "phase2", "support", "query", "truth")):
+                delattr(args, name)
+    return args
+
+
+def route_phase1_method(args: argparse.Namespace) -> str:
+    method = str(getattr(args, "phase1_method", "legacy") or "legacy").strip().lower()
+    return "bicad_xr" if method == "bicad_xr" else "legacy"
+
+
+def resolve_bicad_protocol(args: argparse.Namespace) -> BiCADXRProtocol:
+    if route_phase1_method(args) != "bicad_xr":
+        return args  # type: ignore[return-value]
+    raw_argv = tuple(getattr(args, "_task7_cli_args", ()))
+    if raw_argv:
+        _reject_bicad_conflicts(raw_argv)
+    candidate_id = str(getattr(args, "candidate_id", "D5") or "D5").strip() or "D5"
+    return BiCADXRProtocol(
+        phase1_method="bicad_xr",
+        candidate_id=candidate_id,
+    )
+
+
+def parse_and_resolve(argv: Sequence[str]) -> BiCADXRProtocol:
+    raw_argv = tuple(str(item) for item in argv)
+    _reject_bicad_conflicts(raw_argv)
+    args = parse(raw_argv)
+    resolved = resolve_bicad_protocol(args)
+    if not isinstance(resolved, BiCADXRProtocol):
+        raise ValueError("BiCAD-XR entry requires --phase1_method bicad_xr")
+    return resolved
+
+
+def bicad_xr_runtime(protocol: BiCADXRProtocol) -> Dict[str, Any]:
+    if not isinstance(protocol, BiCADXRProtocol):
+        raise TypeError("bicad_xr_runtime expects a resolved BiCADXRProtocol")
+    scenarios = list(_BICAD_XR_LEO_WEAK)
+    return {
+        "runtime_version": 1,
+        "phase1_method": protocol.phase1_method,
+        "candidate_id": protocol.candidate_id,
+        "source_only": True,
+        "target_access": False,
+        "protocol": {
+            "use_concat_sat_channel_aug": protocol.use_concat_sat_channel_aug,
+            "concat_sat_ce_only": protocol.concat_sat_ce_only,
+            "concat_sat_ce_weight": protocol.concat_sat_ce_weight,
+            "lambda_sat_cls": protocol.lambda_sat_cls,
+            "lambda_sat_cons": protocol.lambda_sat_cons,
+            "concat_sat_start_epoch": protocol.concat_sat_start_epoch,
+            "sat_train_scenarios": scenarios,
+        },
+        "reconstruct": {
+            "phase1_method": protocol.phase1_method,
+            "candidate_id": protocol.candidate_id,
+            "protocol_version": "bicad_xr_v1",
+        },
+    }
+
+
 def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Train two-stage SSDG from a Stable-SAT baseline checkpoint.")
+    parser.add_argument("--phase1_method", type=str, default="legacy")
     parser.add_argument("--baseline_ckpt", type=str, default="", help="Optional checkpoint. Empty means train SSDG from scratch.")
     parser.add_argument("--from_scratch", type=str2bool, default=True)
     parser.add_argument("--split_mode", type=str, default="tx_rx_day_1_6_3", choices=["tx_rx_day_1_6_3", "tx_rx_day_1_7_2"])
@@ -7193,6 +7338,8 @@ def _compose_unlabeled_closed_loss(
 
 
 def train(args) -> int:
+    if route_phase1_method(args) == "bicad_xr":
+        return _train_bicad_xr(args)
     training_wall_started = time.time()
     muse_capabilities = _muse_level_capabilities(getattr(args, "muse_level", "M0"))
     muse_active = bool(getattr(args, "use_muse_ssdg", False)) and muse_capabilities["base"]
@@ -12756,8 +12903,206 @@ def train(args) -> int:
     return int(terminal_exit_code)
 
 
+def _bicad_xr_jsonable(value: Any) -> Any:
+    if torch is not None and isinstance(value, torch.Tensor):
+        detached = value.detach().cpu()
+        return detached.item() if detached.numel() == 1 else detached.tolist()
+    if isinstance(value, Mapping):
+        return {str(key): _bicad_xr_jsonable(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_bicad_xr_jsonable(item) for item in value]
+    if isinstance(value, (str, int, float, bool)) or value is None:
+        return value
+    return str(value)
+
+
+def _bicad_xr_metadata(extra, key: str, device, expected_count: int) -> torch.Tensor:
+    value = _metadata_label_tensor(extra, key, device, expected_count)
+    if value is None:
+        return torch.zeros(expected_count, dtype=torch.long, device=device)
+    return value.to(device=device, dtype=torch.long).reshape(expected_count)
+
+
+def _apply_bicad_xr_entry_protocol(args, protocol: BiCADXRProtocol) -> None:
+    args.phase1_method = "bicad_xr"
+    args.candidate_id = protocol.candidate_id
+    args.phase1_source_only_eval = True
+    args.use_concat_sat_channel_aug = True
+    args.concat_sat_ce_only = True
+    args.concat_sat_ce_weight = 0.68
+    args.concat_sat_start_epoch = 80
+    args.sat_train_scenarios = _BICAD_XR_LEO_WEAK_CSV
+    args.lambda_sat_cls = 0.68
+    args.lambda_sat_cons = 0.0
+    args.use_mixstyle = False
+    args.muse_lr_schedule = "off"
+    if hasattr(args, "use_fasttrust"):
+        args.use_fasttrust = False
+
+
+def _train_bicad_xr(args) -> int:
+    """Run the source-only BiCAD-XR main step without entering legacy SSDG."""
+
+    from dataclasses import replace as dataclass_replace
+
+    from cvsrffi.phase1_bicad_xr.config import candidate_config
+    from cvsrffi.phase1_bicad_xr.trainer import BiCADXRBatch, BiCADXRTrainer
+
+    protocol = resolve_bicad_protocol(args)
+    if not isinstance(protocol, BiCADXRProtocol):
+        raise ValueError("BiCAD-XR route requires --phase1_method bicad_xr")
+    _apply_bicad_xr_entry_protocol(args, protocol)
+
+    set_seed(int(getattr(args, "seed", 0)))
+    device = resolve_device(str(getattr(args, "device", "auto")))
+    data_ctx = _build_ssdg_wisig_data(args, device)
+    train_loader = data_ctx["train_loader"]
+    if train_loader is None:
+        raise RuntimeError("BiCAD-XR requires the labeled source train loader")
+
+    checkpoint = None
+    baseline_ckpt = str(getattr(args, "baseline_ckpt", "") or "").strip()
+    if baseline_ckpt and not bool(getattr(args, "from_scratch", True)):
+        checkpoint = load_checkpoint(baseline_ckpt, device)
+        model_args = merge_checkpoint_args(
+            checkpoint,
+            args,
+            input_len=int(data_ctx["input_len"]),
+            num_domains=int(data_ctx["num_domains"]),
+        )
+        _apply_model_cli_args(model_args, args)
+    else:
+        model_args = deepcopy(args)
+        model_args.input_len = int(data_ctx["input_len"])
+        model_args.num_domains = int(data_ctx["num_domains"])
+        model_args.num_classes = int(len(data_ctx["class_id_to_tx"]))
+    model_args.phase1_method = "bicad_xr"
+    model = build_baseline_model(model_args, device)
+    if checkpoint is not None:
+        model.load_state_dict(checkpoint["model"], strict=False)
+
+    config = dataclass_replace(
+        candidate_config(protocol.candidate_id),
+        phase1_method="bicad_xr",
+        use_fasttrust=False,
+        use_mixstyle=False,
+        lambda_sat_cls=0.68,
+        lambda_sat_cons=0.0,
+        concat_sat_ce_only=True,
+        concat_sat_start_epoch=80,
+        sat_train_scenarios=_BICAD_XR_LEO_WEAK,
+    )
+    trainer = BiCADXRTrainer(model, config).to(device)
+    optimizer = torch.optim.AdamW(
+        trainer.parameters(),
+        lr=float(getattr(args, "lr", 2e-4)),
+        weight_decay=float(getattr(args, "weight_decay", 1e-4)),
+    )
+
+    epochs = int(getattr(args, "epochs", 0))
+    if epochs <= 0:
+        epochs = 200
+    total_updates = int(config.optimizer_updates)
+    update = 0
+    epoch_rows: List[Dict[str, Any]] = []
+    last_audit: Mapping[str, Any] = {}
+    trainer.train()
+    for epoch in range(1, epochs + 1):
+        epoch_losses: List[float] = []
+        for labeled_batch in train_loader:
+            if update >= total_updates:
+                break
+            x_l, y_l, extra_l = move_batch(labeled_batch, device)
+            if y_l is None:
+                continue
+            tx = y_l.to(device=device, dtype=torch.long).reshape(-1)
+            count = int(tx.numel())
+            receiver = _bicad_xr_metadata(extra_l, "rx_i", device, count)
+            day = _bicad_xr_metadata(extra_l, "day_i", device, count)
+            channel = torch.zeros(count, dtype=torch.long, device=device)
+            batch = BiCADXRBatch(
+                x=x_l,
+                tx=tx,
+                receiver=receiver,
+                day=day,
+                channel=channel,
+                labeled_mask=torch.ones(count, dtype=torch.bool, device=device),
+                epoch=epoch,
+            )
+            optimizer.zero_grad(set_to_none=True)
+            step_output = trainer.compute_step(
+                batch,
+                update=update,
+                total_updates=total_updates,
+            )
+            step_output.total.backward()
+            max_grad_norm = float(getattr(args, "max_grad_norm", 0.0))
+            if max_grad_norm > 0.0:
+                torch.nn.utils.clip_grad_norm_(trainer.parameters(), max_grad_norm)
+            optimizer.step()
+            update += 1
+            epoch_losses.append(float(step_output.total.detach().cpu().item()))
+            last_audit = step_output.audit
+        if epoch_losses:
+            epoch_runtime = trainer.checkpoint_runtime(
+                update=update,
+                total_updates=total_updates,
+            )
+            epoch_runtime["target_access"] = False
+            epoch_rows.append(
+                {
+                    "epoch": epoch,
+                    "phase1_method": "bicad_xr",
+                    "candidate_id": protocol.candidate_id,
+                    "train_loss": float(sum(epoch_losses) / len(epoch_losses)),
+                    "optimizer_update": update,
+                    "target_access": False,
+                    "bicad_xr_runtime": _bicad_xr_jsonable(epoch_runtime),
+                    "bicad_xr_audit": _bicad_xr_jsonable(last_audit),
+                }
+            )
+        if update >= total_updates:
+            break
+    if update == 0:
+        raise RuntimeError("BiCAD-XR received no labeled source main step")
+
+    out_dir = Path(str(getattr(args, "output_dir", "") or "."))
+    out_dir.mkdir(parents=True, exist_ok=True)
+    metrics_csv = str(getattr(args, "metrics_csv", "") or "").strip()
+    metrics_jsonl = str(getattr(args, "metrics_jsonl", "") or "").strip()
+    _write_ssdg_epoch_telemetry(
+        Path(metrics_csv) if metrics_csv else out_dir / "metrics_epoch.csv",
+        Path(metrics_jsonl) if metrics_jsonl else out_dir / "metrics_epoch.jsonl",
+        epoch_rows,
+    )
+
+    runtime = trainer.checkpoint_runtime(update=update, total_updates=total_updates)
+    runtime["target_access"] = False
+    runtime["entry"] = bicad_xr_runtime(protocol)
+    runtime["strict_reconstruction"] = True
+    model_state = model.state_dict()
+    model.load_state_dict(model_state, strict=True)
+    checkpoint_payload = {
+        "schema": "ssdg_phase1_bicad_xr_v1",
+        "phase1_method": "bicad_xr",
+        "candidate_id": protocol.candidate_id,
+        "model": model_state,
+        "optimizer": optimizer.state_dict(),
+        "epoch": int(epoch_rows[-1]["epoch"]),
+        "optimizer_update": update,
+        "args": dict(vars(model_args)),
+        "bicad_xr_runtime": _bicad_xr_jsonable(runtime),
+    }
+    save_payload(out_dir / "bicad_xr_final.pth", checkpoint_payload)
+    return 0
+
+
 def main() -> int:
-    args = build_arg_parser().parse_args()
+    raw_argv = tuple(sys.argv[1:])
+    if _cli_phase1_method(raw_argv) == "bicad_xr":
+        args = parse(raw_argv)
+    else:
+        args = build_arg_parser().parse_args()
     return train(args)
 
 
