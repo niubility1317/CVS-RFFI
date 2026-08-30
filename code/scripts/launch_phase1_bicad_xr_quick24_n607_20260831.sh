@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-RUN_ID="phase1_adv3b02_bicad_xr_quick24_seed3_u5000_20260831_r1"
+RUN_ID="phase1_adv3b02_bicad_xr_quick24_seed3_u5000_20260831_r2"
 PROJECT_ROOT="/home/szu2070436088/2510044040/CV-SincNet"
-RELEASE_ROOT="${PROJECT_ROOT}/releases/phase1_bicad_xr_quick24_20260831_r1"
+RELEASE_ROOT="${PROJECT_ROOT}/releases/phase1_bicad_xr_quick24_20260831_r2"
 RUN_ROOT="${PROJECT_ROOT}/runs/${RUN_ID}"
 LOG_ROOT="${PROJECT_ROOT}/logs"
 DISPATCH_LOG="${LOG_ROOT}/${RUN_ID}.dispatcher.log"

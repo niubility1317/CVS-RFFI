@@ -185,7 +185,7 @@ V1只启用margin-tail，不启用receiver tangent和SWAD。
 ### 7.1自动测试
 
 - `python -m compileall`：通过；
-- `code/tests/phase1_bicad_xr`：240项全部通过；
+- `code/tests/phase1_bicad_xr`：241项全部通过；
 - 相邻`phase1_hcfdg`和ADV3B03回归：159项全部通过；
 - 警告：3条既有`torch.cuda.amp.autocast`弃用提醒，不影响本轮正确性。
 

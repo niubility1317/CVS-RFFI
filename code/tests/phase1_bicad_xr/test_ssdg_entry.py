@@ -146,6 +146,28 @@ def test_bicad_entry_forces_concat_leo_weak_contract() -> None:
     )
 
 
+def test_bicad_from_scratch_resolves_wisig_sample_rate_before_model_build() -> None:
+    args = parse(
+        [
+            "--phase1_method",
+            "bicad_xr",
+            "--candidate_id",
+            "D5",
+            "--from_scratch",
+            "true",
+        ]
+    )
+    args.input_len = 256
+    args.num_domains = 14
+    args.num_classes = 6
+
+    train_ssdg._apply_bicad_xr_model_defaults(args)
+    model = train_ssdg.build_baseline_model(args, torch.device("cpu"))
+
+    assert args.sample_rate_hz == pytest.approx(25e6)
+    assert isinstance(model, nn.Module)
+
+
 def test_bicad_route_is_explicit_and_legacy_route_stays_lazy() -> None:
     bicad_args = parse(["--phase1_method", "bicad_xr", "--candidate_id", "D5"])
     legacy_args = parse([])

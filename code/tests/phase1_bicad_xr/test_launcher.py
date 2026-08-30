@@ -220,6 +220,7 @@ def test_train_command_is_consumed_by_real_ssdg_parser_and_records_row_runtime(
     assert parsed.seed == row.seed
     assert parsed.wisig_train_rxs == ",".join(map(str, row.source_receivers))
     assert parsed.wisig_train_days == ",".join(map(str, row.train_days))
+    assert parsed.sample_rate_hz == pytest.approx(25e6)
     assert parsed.run_id == f"formal-run-{row.row_id}"
     assert Path(parsed.output_dir) == row_root
     assert parsed.batch_size == 96

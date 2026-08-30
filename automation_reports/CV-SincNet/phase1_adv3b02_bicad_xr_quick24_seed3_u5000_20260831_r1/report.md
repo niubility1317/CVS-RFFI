@@ -33,4 +33,14 @@
 
 ## 发布与运行记录
 
-待release SHA、远端编译/smoke、dispatcher PID、worker绑定和最终结果返回后追加。低性能属于科学结果，不属于技术失败。
+- release SHA256：本地与N607均为`b636c05583194f0c36061d908430167a6fe8087ff128e51a5c5c63989be8715b`。
+- 远端编译：通过。
+- 远端真实checkpoint无query smoke：`PASS`。
+- 启动前GPU状态：GPU0–7均无compute process，显存占用均为1MiB。
+- dispatcher PID：`2511985`。
+- 最终状态：24/24行均为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+- 失败阶段：模型构造前，尚未进入训练、评估或性能判断。
+- 确定性错误：from-scratch入口把解析器默认`sample_rate_hz=0`直接传入Sinc层，触发`ValueError: sample_rate too low or min_band_hz too large.`。
+- partial artifact：24个row目录、`train.log`、`TECHNICAL_FAILURE.json`、`final_status.json`和dispatcher日志全部保留；未删除、未覆盖。
+- 处理：不重启r1。代码入口补WiSig 25MHz默认值，正式命令同时显式传`--sample_rate_hz 25000000`，以新run ID `r2`重新发布。
+- 科学结论：无；该结果只证明r1存在系统技术启动错误。

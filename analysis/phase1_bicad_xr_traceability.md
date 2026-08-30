@@ -50,7 +50,7 @@
 
 ## 本地验证汇总
 
-- `phase1_bicad_xr`全套240项通过，仅3条既有AMP弃用警告。
+- `phase1_bicad_xr`全套241项通过，仅3条既有AMP弃用警告。
 - 相邻`phase1_hcfdg`与ADV3B03回归159项通过。
 - 真实`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`技术smoke：严格重建195个状态张量，`missing_keys=[]`、`unexpected_keys=[]`、`shape_mismatches=[]`；fresh BiCAD训练器完成一次optimizer step；clean和3个LEO_WEAK场景前向均为finite。
 - 24行干跑：候选`D0/D5/E1/ADV3B02-BiCAD-XDC-V1`，fold1/fold8，seed392001/392002/392003，5000 updates；GPU0–7各3行。
@@ -62,3 +62,4 @@
 2.历史ADV3B02 checkpoint不含`bicad_xr_runtime`；真实smoke只证明历史基座兼容fresh BiCAD训练与LEO_WEAK前向，不冒充完整BiCAD checkpoint恢复。
 3.N607正式矩阵完成前没有性能结论；每行必须以自身final checkpoint完成strict恢复、clean和三种LEO_WEAK评估，才允许写`ARTIFACTS_COMPLETE`。
 4.正式发布前必须再次盘点GPU2上的无关进程；本run在该卡的第三行应排队或等待容量释放，不能影响无关任务。
+5.r1启动发现from-scratch路径未解析`sample_rate_hz=0`，24行在模型构造前一致技术失败，无性能结果；r2已在入口补WiSig 25MHz默认值并在正式命令显式传值，且用真实模型构造回归复现验证。

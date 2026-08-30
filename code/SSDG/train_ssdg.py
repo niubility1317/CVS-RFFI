@@ -12976,6 +12976,17 @@ def _apply_bicad_xr_entry_protocol(args, protocol: BiCADXRProtocol) -> None:
         args.use_fasttrust = False
 
 
+def _apply_bicad_xr_model_defaults(model_args) -> None:
+    """Resolve model defaults that checkpoint merging normally supplies."""
+
+    if float(getattr(model_args, "sample_rate_hz", 0.0)) <= 0.0:
+        model_args.sample_rate_hz = (
+            25e6
+            if str(getattr(model_args, "dataset", "wisig")).lower() == "wisig"
+            else 5e6
+        )
+
+
 def _build_bicad_xr_concat_augmenter(args):
     if ConcatSatChannelAugment is None or apply_sat_channel_for_scenario is None:
         raise ImportError("BiCAD-XR requires ConcatSatChannelAugment and LEO weak channels")
@@ -13155,6 +13166,7 @@ def _train_bicad_xr(args) -> int:
         model_args.num_domains = int(data_ctx["num_domains"])
         model_args.num_classes = int(len(data_ctx["class_id_to_tx"]))
     model_args.phase1_method = "bicad_xr"
+    _apply_bicad_xr_model_defaults(model_args)
     model = build_baseline_model(model_args, device)
 
     config = dataclass_replace(

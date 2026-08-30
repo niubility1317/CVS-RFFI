@@ -344,6 +344,8 @@ def build_train_command(row: PlanRow, roots: LauncherRoots, *, run_id: str = RUN
         str(roots.wisig_pkl),
         "--wisig_equalized",
         "1",
+        "--sample_rate_hz",
+        "25000000",
         "--wisig_train_days",
         ",".join(map(str, row.train_days)),
         "--wisig_test_days",

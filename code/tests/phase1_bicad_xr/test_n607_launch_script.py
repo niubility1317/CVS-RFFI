@@ -13,7 +13,7 @@ SCRIPT = (
 def test_n607_launch_script_is_fixed_to_registered_quick24_matrix() -> None:
     source = SCRIPT.read_text(encoding="utf-8")
 
-    assert "phase1_adv3b02_bicad_xr_quick24_seed3_u5000_20260831_r1" in source
+    assert "phase1_adv3b02_bicad_xr_quick24_seed3_u5000_20260831_r2" in source
     assert "--stage quick" in source
     assert "--max-jobs-per-gpu 3" in source
     assert "--formal" in source
