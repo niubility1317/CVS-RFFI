@@ -77,3 +77,14 @@ v1没有`pilot_result.json`和合法prediction，因此不得启动scorer。
 ### v3首条闭环
 
 短训练run已完成3场景×`B0/A/B`共9组prediction，`pilot_result.json`为`ARTIFACTS_COMPLETE`且`truth_opened=false`；独立scorer随后首次连接truth并写出`ANALYZED`结果。A-B0的P1变化为`+10.00/-0.83/+2.50pp`，P2为`+10.00/+1.67/+2.50pp`，P3为`0.00/-3.33/+0.83pp`，P3 floor中位变化`-5.00pp`；B-B0的P1为`+7.50/-5.00/+0.83pp`，P2为`+8.33/-1.67/0.00pp`，P3为`+1.67/-0.83/+0.83pp`，P3 floor中位变化`0.00pp`。A、B均`passed=false`，`next_experiment_authorized=false`；这证明零模态修复恢复了合法prediction闭合，但短训练候选不晋级。
+
+### v3因果row闭环
+
+|候选|P1变化（clear/low-elev/rain）|P2变化（clear/low-elev/rain）|P3变化（clear/low-elev/rain）|P3 floor中位变化|几何比中位变化|结论|
+|---|---|---|---|---:|---:|---|
+|A，`lambda_sp=0`|`+5.00/-5.00/+7.50pp`|`+3.33/-4.17/+6.67pp`|`+1.67/-8.33/+0.83pp`|`0.00pp`|`+0.9717`|未通过，不晋级|
+|A，`lambda_sp=0.1`|`+8.33/-0.83/+1.67pp`|`+7.50/-2.50/+2.50pp`|`+3.33/-4.17/-0.83pp`|`-10.00pp`|`+0.3539`|未通过，不晋级|
+|A，`lambda_sp=2.0`|`+8.33/-2.50/+5.83pp`|`+7.50/-1.67/+5.00pp`|`+1.67/-7.50/-0.83pp`|`-10.00pp`|`+0.9177`|未通过，不晋级|
+|B，`lambda_vsw=1.0`|`+12.50/-3.33/+5.83pp`|`+13.33/-1.67/+3.33pp`|`+0.83/-2.50/-2.50pp`|`-5.00pp`|`+0.6260`|未通过，不晋级|
+
+4条run均先完成3场景×2臂共6组prediction并保持`truth_opened=false`，再由各自独立scorer连接truth；所有结果均为`ANALYZED`。零模态修复消除了原先P3技术中断，但4个候选都在low-elev或rain的P3旧类指标上回退，故均`next_experiment_authorized=false`。
