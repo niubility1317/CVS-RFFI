@@ -43,6 +43,38 @@ def test_wiser_pilot_cli_exposes_smoke_pilot_and_score_commands() -> None:
     assert "score-pilot" in result.stdout
 
 
+def test_cli_normalizes_bounded_arm_subset_with_required_baseline() -> None:
+    module = _script_module()
+    args = module.parser().parse_args(
+        [
+            "pilot",
+            "--manifest", "manifest.json",
+            "--checkpoint", "checkpoint.pth",
+            "--source-summary", "summary.npz",
+            "--source-binding", "binding.json",
+            "--output-root", "run",
+            "--device", "cpu",
+            "--arms", "B0", "A",
+        ]
+    )
+
+    assert module._normalize_arms(args.arms) == ("B0", "A")
+    with pytest.raises(ValueError, match="B0"):
+        module._normalize_arms(("B",))
+
+
+def test_pilot_rejects_invalid_arm_subset_before_claiming_output_root(
+    tmp_path: Path,
+) -> None:
+    module = _script_module()
+    output_root = tmp_path / "pilot"
+
+    with pytest.raises(ValueError, match="one candidate"):
+        module._pilot(Namespace(output_root=output_root, arms=("B0",)))
+
+    assert not output_root.exists()
+
+
 def test_pilot_rejects_missing_validated_once_binding() -> None:
     module = _script_module()
     manifest = {
@@ -215,11 +247,135 @@ def test_pilot_freezes_every_support_state_before_first_query(
         inversion_steps=1,
         inversion_samples_per_class=1,
         seed=713102,
+        arms=("B0", "A"),
     )
 
     result = module._pilot(args)
 
     first_query = events.index("query")
     assert all(not event.startswith("train:") for event in events[first_query:])
-    assert events[:first_query].count("freeze") == 15
+    assert events[:first_query].count("freeze") == 6
     assert result["status"] == "ARTIFACTS_COMPLETE"
+    assert result["scene_arm_unit_count"] == 6
+
+
+def test_score_pilot_honors_same_bounded_arm_subset(tmp_path: Path) -> None:
+    module = _script_module()
+    tokens = [f"q{index}" for index in range(6)]
+    truth_path = tmp_path / "truth.json"
+    truth_path.write_text(
+        json.dumps(
+            {
+                "receiver": "3-19",
+                "rows": [
+                    {"query_token": token, "true_class_index": index}
+                    for index, token in enumerate(tokens)
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    manifest_path = tmp_path / "manifest.json"
+    manifest_path.write_text(
+        json.dumps(
+            {
+                "protocol_schema": "p2_min_v1",
+                "jobs": [
+                    {
+                        "outer_key": "pilot",
+                        "protocol_schema": "p2_min_v1",
+                        "phase2_data_status": "VALIDATED_ONCE",
+                        "capsule_id": "capsule",
+                        "split_id": "split",
+                        "receiver": "3-19",
+                        "truth_sidecar": str(truth_path),
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    prediction_root = tmp_path / "predictions"
+    (prediction_root).mkdir(parents=True)
+    (prediction_root / "pilot_result.json").write_text(
+        json.dumps(
+            {
+                "schema": "cvs.phase2.wiser_rf.pilot.v1",
+                "status": "ARTIFACTS_COMPLETE",
+                "arms": ["B0", "A"],
+            }
+        ),
+        encoding="utf-8",
+    )
+    for scenario in module.SCENARIOS:
+        for arm in ("B0", "A"):
+            unit = prediction_root / scenario / arm / "prediction"
+            unit.mkdir(parents=True)
+            exact = np.arange(6, dtype=np.int64)
+            np.savez_compressed(
+                unit / "predictions.npz",
+                query_tokens=np.asarray(tokens),
+                p1_predictions=exact,
+                p2_predictions=exact,
+                p3_predictions=exact,
+                query_z_id=np.eye(6, dtype=np.float32),
+            )
+            (unit / "prediction_receipt.json").write_text(
+                json.dumps(
+                    {
+                        "status": "PREDICTIONS_COMPLETE",
+                        "arm": arm,
+                        "receiver": "3-19",
+                        "scenario": scenario,
+                        "query_rows": 6,
+                        "expected_query_tokens": tokens,
+                        "query_truth_opened": False,
+                        "query_role_opened": False,
+                        "support_state_frozen_before_query": True,
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+    result = module._score_pilot(
+        Namespace(
+            manifest=manifest_path,
+            pilot_outer_key="pilot",
+            prediction_root=prediction_root,
+            output_root=tmp_path / "scores",
+            arms=None,
+        )
+    )
+
+    assert result["scene_arm_unit_count"] == 6
+    assert set(result["formal_decisions"]) == {"A"}
+
+
+def test_score_pilot_rejects_arm_registry_mismatch_before_claiming_output_root(
+    tmp_path: Path,
+) -> None:
+    module = _script_module()
+    prediction_root = tmp_path / "predictions"
+    prediction_root.mkdir()
+    (prediction_root / "pilot_result.json").write_text(
+        json.dumps(
+            {
+                "schema": "cvs.phase2.wiser_rf.pilot.v1",
+                "status": "ARTIFACTS_COMPLETE",
+                "arms": ["B0", "A"],
+            }
+        ),
+        encoding="utf-8",
+    )
+    output_root = tmp_path / "scores"
+
+    with pytest.raises(ValueError, match="arm registry mismatch"):
+        module._score_pilot(
+            Namespace(
+                prediction_root=prediction_root,
+                output_root=output_root,
+                arms=("B0", "B"),
+            )
+        )
+
+    assert not output_root.exists()

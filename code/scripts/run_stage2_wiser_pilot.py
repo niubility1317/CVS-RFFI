@@ -108,6 +108,28 @@ def _pilot_job(manifest: Mapping[str, Any], outer_key: str) -> Mapping[str, Any]
     return row
 
 
+def _normalize_arms(values: tuple[str, ...] | list[str]) -> tuple[str, ...]:
+    selected = tuple(str(value).upper() for value in values)
+    if not selected or selected[0] != "B0" or "B0" not in selected:
+        raise ValueError("WISER bounded arm subset must start with B0")
+    if len(set(selected)) != len(selected) or any(value not in ARMS for value in selected):
+        raise ValueError("WISER bounded arm subset is invalid")
+    if len(selected) < 2:
+        raise ValueError("WISER bounded arm subset needs one candidate after B0")
+    return selected
+
+
+def _frozen_pilot_arms(
+    prediction_root: Path,
+    requested: tuple[str, ...] | list[str] | None,
+) -> tuple[str, ...]:
+    pilot_result = _load_json(prediction_root / "pilot_result.json")
+    frozen = _normalize_arms(pilot_result.get("arms", ()))
+    if requested is not None and _normalize_arms(requested) != frozen:
+        raise ValueError("WISER score-pilot arm registry mismatch")
+    return frozen
+
+
 def _package_root(job: Mapping[str, Any]) -> Path:
     packages = job.get("packages")
     if not isinstance(packages, Mapping):
@@ -231,6 +253,7 @@ def _smoke(args: argparse.Namespace) -> Mapping[str, Any]:
 
 
 def _pilot(args: argparse.Namespace) -> Mapping[str, Any]:
+    arms = _normalize_arms(getattr(args, "arms", ARMS))
     destination = _new_root(args.output_root)
     manifest = _load_json(args.manifest)
     job = _pilot_job(manifest, args.pilot_outer_key)
@@ -251,7 +274,7 @@ def _pilot(args: argparse.Namespace) -> Mapping[str, Any]:
         support = load_support_package(_support_path(job, scenario))
         support_iq = _tensor(support.iq, args.device)
         support_labels = _tensor(support.labels, args.device, labels=True)
-        for arm in ARMS:
+        for arm in arms:
             unit = destination / scenario / arm
             unit.mkdir(parents=True, exist_ok=False)
             model = frozen_checkpoint(args.checkpoint, args.device)
@@ -296,7 +319,7 @@ def _pilot(args: argparse.Namespace) -> Mapping[str, Any]:
         support_labels = _tensor(support.labels, args.device, labels=True)
         query = load_query_package(_query_path(job, scenario))
         query_iq = _tensor(query.iq, args.device)
-        for arm in ARMS:
+        for arm in arms:
             unit = destination / scenario / arm
             prediction_root = unit / "prediction"
             prediction_root.mkdir(parents=True, exist_ok=False)
@@ -348,6 +371,7 @@ def _pilot(args: argparse.Namespace) -> Mapping[str, Any]:
         "schema": "cvs.phase2.wiser_rf.pilot.v1",
         "status": "ARTIFACTS_COMPLETE",
         "pilot_outer_key": job["outer_key"],
+        "arms": list(arms),
         "scene_arm_unit_count": len(completed),
         "units": completed,
         "truth_opened": False,
@@ -358,13 +382,17 @@ def _pilot(args: argparse.Namespace) -> Mapping[str, Any]:
 
 
 def _score_pilot(args: argparse.Namespace) -> Mapping[str, Any]:
+    arms = _frozen_pilot_arms(
+        args.prediction_root,
+        getattr(args, "arms", None),
+    )
     destination = _new_root(args.output_root)
     manifest = _load_json(args.manifest)
     job = _pilot_job(manifest, args.pilot_outer_key)
     truth = Path(str(job["truth_sidecar"]))
     rows: list[Mapping[str, Any]] = []
     for scenario in SCENARIOS:
-        for arm in ARMS:
+        for arm in arms:
             source = args.prediction_root / scenario / arm / "prediction"
             score = score_wiser_predictions(
                 source / "predictions.npz",
@@ -375,10 +403,13 @@ def _score_pilot(args: argparse.Namespace) -> Mapping[str, Any]:
             _write_json_new(output, score)
             rows.append(score)
     decisions = {
-        arm: formal_promotion_decision(rows, arm=arm) for arm in ("A", "B")
+        arm: formal_promotion_decision(rows, arm=arm)
+        for arm in ("A", "B")
+        if arm in arms
     }
     best_formal_arm = next(
-        (arm for arm in ("B", "A") if decisions[arm]["passed"]), None
+        (arm for arm in ("B", "A") if arm in decisions and decisions[arm]["passed"]),
+        None,
     )
     result = {
         "schema": "cvs.phase2.wiser_rf.score_collection.v1",
@@ -430,10 +461,12 @@ def parser() -> argparse.ArgumentParser:
     smoke.add_argument("--scenario", choices=SCENARIOS, default=SCENARIOS[0])
     pilot = commands.add_parser("pilot")
     _add_training(pilot)
+    pilot.add_argument("--arms", nargs="+", choices=ARMS, default=ARMS)
     score = commands.add_parser("score-pilot")
     _add_common(score)
     score.add_argument("--prediction-root", type=Path, required=True)
     score.add_argument("--output-root", type=Path, required=True)
+    score.add_argument("--arms", nargs="+", choices=ARMS)
     return root
 
 
