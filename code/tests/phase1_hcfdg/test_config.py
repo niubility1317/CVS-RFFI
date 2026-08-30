@@ -22,6 +22,12 @@ def test_quick_screen_uses_frozen_three_seeds_and_36_rows():
 
 
 def test_candidate_activation_is_cumulative_and_report_ordered():
+    assert candidate_config("A0").representation_mode == "adv3b02_closed_set_dual_control"
+    assert candidate_config("A1").representation_mode == "single_parameter_matched"
+    assert {
+        candidate_config(f"A{i}").representation_mode
+        for i in range(2, 13)
+    } == {"hcfdg_single_backbone"}
     assert candidate_config("A4").use_lodo is True
     assert candidate_config("A4").use_csd is False
     assert candidate_config("A9").use_content_conditioning is True

@@ -25,6 +25,7 @@ V1_AMP_ENABLED = True
 class HCFDGConfig:
     candidate_id: str
     optimizer_updates: int
+    representation_mode: str
     use_dual_control: bool = False
     use_environment_encoder: bool = False
     use_rectangular_batch: bool = False
@@ -89,26 +90,31 @@ _CANDIDATE_CONFIGS: dict[str, HCFDGConfig] = {
     "A0": HCFDGConfig(
         candidate_id="A0",
         optimizer_updates=V1_OPTIMIZER_UPDATES,
+        representation_mode="adv3b02_closed_set_dual_control",
         use_dual_control=True,
     ),
     "A1": HCFDGConfig(
         candidate_id="A1",
         optimizer_updates=V1_OPTIMIZER_UPDATES,
+        representation_mode="single_parameter_matched",
     ),
     "A2": HCFDGConfig(
         candidate_id="A2",
         optimizer_updates=V1_OPTIMIZER_UPDATES,
+        representation_mode="hcfdg_single_backbone",
         use_environment_encoder=True,
     ),
     "A3": HCFDGConfig(
         candidate_id="A3",
         optimizer_updates=V1_OPTIMIZER_UPDATES,
+        representation_mode="hcfdg_single_backbone",
         use_environment_encoder=True,
         use_rectangular_batch=True,
     ),
     "A4": HCFDGConfig(
         candidate_id="A4",
         optimizer_updates=V1_OPTIMIZER_UPDATES,
+        representation_mode="hcfdg_single_backbone",
         use_environment_encoder=True,
         use_rectangular_batch=True,
         use_lodo=True,
@@ -116,6 +122,7 @@ _CANDIDATE_CONFIGS: dict[str, HCFDGConfig] = {
     "A5": HCFDGConfig(
         candidate_id="A5",
         optimizer_updates=V1_OPTIMIZER_UPDATES,
+        representation_mode="hcfdg_single_backbone",
         use_environment_encoder=True,
         use_rectangular_batch=True,
         use_lodo=True,
@@ -124,6 +131,7 @@ _CANDIDATE_CONFIGS: dict[str, HCFDGConfig] = {
     "A6": HCFDGConfig(
         candidate_id="A6",
         optimizer_updates=V2_OPTIMIZER_UPDATES,
+        representation_mode="hcfdg_single_backbone",
         use_environment_encoder=True,
         use_rectangular_batch=True,
         use_lodo=True,
@@ -133,6 +141,7 @@ _CANDIDATE_CONFIGS: dict[str, HCFDGConfig] = {
     "A7": HCFDGConfig(
         candidate_id="A7",
         optimizer_updates=V2_OPTIMIZER_UPDATES,
+        representation_mode="hcfdg_single_backbone",
         use_environment_encoder=True,
         use_rectangular_batch=True,
         use_lodo=True,
@@ -142,6 +151,7 @@ _CANDIDATE_CONFIGS: dict[str, HCFDGConfig] = {
     "A8": HCFDGConfig(
         candidate_id="A8",
         optimizer_updates=V2_OPTIMIZER_UPDATES,
+        representation_mode="hcfdg_single_backbone",
         use_environment_encoder=True,
         use_rectangular_batch=True,
         use_lodo=True,
@@ -152,6 +162,7 @@ _CANDIDATE_CONFIGS: dict[str, HCFDGConfig] = {
     "A9": HCFDGConfig(
         candidate_id="A9",
         optimizer_updates=V2_OPTIMIZER_UPDATES,
+        representation_mode="hcfdg_single_backbone",
         use_environment_encoder=True,
         use_rectangular_batch=True,
         use_lodo=True,
@@ -163,6 +174,7 @@ _CANDIDATE_CONFIGS: dict[str, HCFDGConfig] = {
     "A10": HCFDGConfig(
         candidate_id="A10",
         optimizer_updates=V2_OPTIMIZER_UPDATES,
+        representation_mode="hcfdg_single_backbone",
         use_environment_encoder=True,
         use_rectangular_batch=True,
         use_lodo=True,
@@ -175,6 +187,7 @@ _CANDIDATE_CONFIGS: dict[str, HCFDGConfig] = {
     "A11": HCFDGConfig(
         candidate_id="A11",
         optimizer_updates=V2_OPTIMIZER_UPDATES,
+        representation_mode="hcfdg_single_backbone",
         use_environment_encoder=True,
         use_rectangular_batch=True,
         use_lodo=True,
@@ -187,6 +200,7 @@ _CANDIDATE_CONFIGS: dict[str, HCFDGConfig] = {
     "A12": HCFDGConfig(
         candidate_id="A12",
         optimizer_updates=V2_OPTIMIZER_UPDATES,
+        representation_mode="hcfdg_single_backbone",
         use_environment_encoder=True,
         use_rectangular_batch=True,
         use_lodo=True,
