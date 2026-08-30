@@ -2,7 +2,7 @@
 
 ## 当前结论
 
-截至2026-08-31 00:11 CST，7条单因素因果诊断均已发布并进入`RUNNING`。它们与GPU0已有的完整ABC pilot构成8卡矩阵，每张物理GPU严格1个正式实验。当前只有运行与绑定证据，尚无性能结论；任何低性能都不会触发停止。
+截至2026-08-31 00:26 CST，8条run均已按预登记规则进入`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。失败原因不是低性能，而是共享manifest把query指向不存在的`before/enrollment_only/query_leo_*_weak.npz`；实际文件位于同row的`before/apply_only_staging/`。所有部分artifact已保留，未评分、无性能结论、未重启。
 
 ## 冻结版本与协议
 
@@ -16,17 +16,17 @@
 
 |物理GPU|run ID|同run矩阵|PID|状态|
 |---:|---|---|---:|---|
-|0|`wiser_rf_abc_hist_e0_pilot_20260830_v1`|`B0+A+B+C+ABC`|2401124|`RUNNING`|
-|1|`wiser_rf_cause_nol2sp_20260831_v1`|`B0+A(lambda_sp=0)`|2423555|`RUNNING`|
-|2|`wiser_rf_cause_noproto_20260831_v1`|`B0+A(lambda_proto=0)`|2423578|`RUNNING`|
-|3|`wiser_rf_cause_l2sp01_20260831_v1`|`B0+A(lambda_sp=0.1)`|2423554|`RUNNING`|
-|4|`wiser_rf_cause_l2sp20_20260831_v1`|`B0+A(lambda_sp=2.0)`|2423583|`RUNNING`|
-|5|`wiser_rf_cause_vsw01_20260831_v1`|`B0+B(lambda_vsw=0.1)`|2423564|`RUNNING`|
-|6|`wiser_rf_cause_vsw10_20260831_v1`|`B0+B(lambda_vsw=1.0)`|2423579|`RUNNING`|
-|7|`wiser_rf_cause_short_20260831_v1`|`B0+A+B(stage_steps=500/1000/1500)`|2423635|`RUNNING`|
+|0|`wiser_rf_abc_hist_e0_pilot_20260830_v1`|`B0+A+B+C+ABC`|2401124|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`|
+|1|`wiser_rf_cause_nol2sp_20260831_v1`|`B0+A(lambda_sp=0)`|2423555|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`|
+|2|`wiser_rf_cause_noproto_20260831_v1`|`B0+A(lambda_proto=0)`|2423578|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`|
+|3|`wiser_rf_cause_l2sp01_20260831_v1`|`B0+A(lambda_sp=0.1)`|2423554|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`|
+|4|`wiser_rf_cause_l2sp20_20260831_v1`|`B0+A(lambda_sp=2.0)`|2423583|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`|
+|5|`wiser_rf_cause_vsw01_20260831_v1`|`B0+B(lambda_vsw=0.1)`|2423564|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`|
+|6|`wiser_rf_cause_vsw10_20260831_v1`|`B0+B(lambda_vsw=1.0)`|2423579|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`|
+|7|`wiser_rf_cause_short_20260831_v1`|`B0+A+B(stage_steps=500/1000/1500)`|2423635|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`|
 
-启动后独立回读确认：7个新增PID的CWD均为提交`563bbb30`的release目录；cmdline分别绑定唯一run root；`nvidia-smi pmon`确认PID与物理GPU1–7逐一对应；目标目录开始增长且日志未出现`Traceback`、`RuntimeError`、`ValueError`或OOM指纹。GPU0原pilot保持健康且未被修改。
+启动后独立回读曾确认7个新增PID的CWD、cmdline、run root和物理GPU映射正确。短训练run最先到达首次query读取并确定性报错；随后5条run自然复现同一缺失路径，剩余GPU0、GPU5、GPU6的run在确认共享必现故障后按无prediction闭合规则精确`TERM`。最终回读为8张GPU均空闲，无残留WISER进程。
 
 ## 后续闭环
 
-每条pilot出现`pilot_result.json`后先核对冻结arm注册表及3个LEO场景prediction完整性，再写入不可覆盖`pilot_score`并独立truth-last评分。结果按同row的B0/候选和场景报告；A/B为正式候选，C/ABC仅为非正式模型反演诊断。全部分析完成后在本报告追加因果结论，不跨run按truth调参或重跑。
+本批次没有`pilot_result.json`和合法prediction，因此不得启动scorer。若继续，必须先在本地修复matrix manifest的query包选择，使用新Git提交、新release、新run ID和新输出根发布；现有run不得覆盖或重启。
