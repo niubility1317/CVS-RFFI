@@ -122,6 +122,8 @@ class BiCADXRBackwardPlan:
 class _StructuredEpisodeSelection:
     episode: StructuredEpisode
     batch_indices: Tensor
+    global_tx: Tensor
+    global_receiver: Tensor
 
 
 def _as_long_labels(value: Any, name: str, *, size: int, device: torch.device) -> Tensor | None:
@@ -288,8 +290,6 @@ class BiCADXRTrainer(nn.Module):
             config.xdc_samples_per_cell,
         ) != (6, 4, 2):
             raise ValueError("BiCAD-XR XDC requires a fixed 6x4x2 structured episode")
-        if config.sparse_xdc and (self.num_classes != 6 or self.num_receivers != 4):
-            raise ValueError("BiCAD-XR XDC requires six TX classes and four source receivers")
         if generator is None:
             generator = torch.Generator(device="cpu").manual_seed(0)
         if not isinstance(generator, torch.Generator):
@@ -537,46 +537,90 @@ class BiCADXRTrainer(nn.Module):
     ) -> _StructuredEpisodeSelection:
         if batch.tx is None:
             raise ValueError("structured XDC requires source TX labels")
-        physical_all = (
-            torch.arange(batch.tx.numel(), dtype=torch.long)
-            if batch.physical_indices is None
-            else torch.as_tensor(batch.physical_indices, dtype=torch.long).cpu()
-        )
         labeled_cpu = labeled_indices.detach().cpu()
-        labeled_physical = physical_all[labeled_cpu]
+        labeled_tx = batch.tx[labeled_indices].detach().cpu()
+        labeled_receiver = batch.receiver[labeled_indices].detach().cpu()
+        selected_tx = torch.unique(labeled_tx, sorted=True)[
+            : self.config.xdc_microepisode_tx
+        ]
+        selected_receiver = torch.unique(labeled_receiver, sorted=True)[
+            : self.config.xdc_microepisode_receivers
+        ]
+        tx_to_local = {
+            int(value): index for index, value in enumerate(selected_tx.tolist())
+        }
+        receiver_to_local = {
+            int(value): index
+            for index, value in enumerate(selected_receiver.tolist())
+        }
+        eligible = torch.tensor(
+            [
+                int(tx) in tx_to_local and int(receiver) in receiver_to_local
+                for tx, receiver in zip(labeled_tx.tolist(), labeled_receiver.tolist())
+            ],
+            dtype=torch.bool,
+        )
+        candidate_indices = labeled_cpu[eligible]
+        candidate_tx = labeled_tx[eligible]
+        candidate_receiver = labeled_receiver[eligible]
+        local_tx = torch.tensor(
+            [tx_to_local[int(value)] for value in candidate_tx.tolist()],
+            dtype=torch.long,
+        )
+        local_receiver = torch.tensor(
+            [receiver_to_local[int(value)] for value in candidate_receiver.tolist()],
+            dtype=torch.long,
+        )
         episode = build_structured_episode(
-            batch.tx[labeled_indices].detach().cpu(),
-            batch.receiver[labeled_indices].detach().cpu(),
-            batch.day[labeled_indices].detach().cpu(),
+            local_tx,
+            local_receiver,
+            batch.day[labeled_indices][eligible.to(device=labeled_indices.device)].detach().cpu(),
             self.config.xdc_samples_per_cell,
             generator=self._generator,
             num_classes=self.config.xdc_microepisode_tx,
             num_receivers=self.config.xdc_microepisode_receivers,
-            physical_indices=labeled_physical,
+            physical_indices=candidate_indices,
         )
         if not episode.indices:
+            empty = torch.empty(0, dtype=torch.long, device=batch.tx.device)
             return _StructuredEpisodeSelection(
                 episode=episode,
-                batch_indices=torch.empty(0, dtype=torch.long, device=batch.tx.device),
+                batch_indices=empty,
+                global_tx=empty,
+                global_receiver=empty,
             )
-        position = {int(value): index for index, value in enumerate(physical_all.tolist())}
-        try:
-            local = torch.tensor(
-                [position[int(value)] for value in episode.indices],
-                dtype=torch.long,
-                device=batch.tx.device,
-            )
-        except KeyError as exc:
-            raise ValueError("structured episode returned an unknown physical index") from exc
+        local = torch.tensor(
+            episode.indices,
+            dtype=torch.long,
+            device=batch.tx.device,
+        )
         if local.numel() and (
             int(local.min().item()) < 0 or int(local.max().item()) >= batch.tx.numel()
         ):
             raise ValueError("structured episode indices are outside the batch")
-        if not torch.equal(batch.tx[local].detach().cpu(), episode.tx):
+        global_tx = batch.tx[local]
+        global_receiver = batch.receiver[local]
+        remapped_tx = torch.tensor(
+            [tx_to_local[int(value)] for value in global_tx.detach().cpu().tolist()],
+            dtype=torch.long,
+        )
+        remapped_receiver = torch.tensor(
+            [
+                receiver_to_local[int(value)]
+                for value in global_receiver.detach().cpu().tolist()
+            ],
+            dtype=torch.long,
+        )
+        if not torch.equal(remapped_tx, episode.tx):
             raise ValueError("structured episode TX labels lost batch-index alignment")
-        if not torch.equal(batch.receiver[local].detach().cpu(), episode.receiver):
+        if not torch.equal(remapped_receiver, episode.receiver):
             raise ValueError("structured episode receiver labels lost batch-index alignment")
-        return _StructuredEpisodeSelection(episode=episode, batch_indices=local)
+        return _StructuredEpisodeSelection(
+            episode=episode,
+            batch_indices=local,
+            global_tx=global_tx,
+            global_receiver=global_receiver,
+        )
 
     def _pair_payload(self, batch: BiCADXRBatch, model_output: Mapping[str, Any]) -> dict[str, Tensor]:
         payload = batch.pair_payload()
@@ -1265,18 +1309,18 @@ class BiCADXRTrainer(nn.Module):
             if local.numel() == 0:
                 xdc_reason = "no_valid_structured_cells"
             else:
-                xdc_tx = xdc_selection.episode.tx.to(device=z_id.device)
-                xdc_receiver = xdc_selection.episode.receiver.to(device=z_id.device)
+                xdc_tx = xdc_selection.global_tx.to(device=z_id.device)
+                xdc_receiver = xdc_selection.global_receiver.to(device=z_id.device)
                 xdc_output = xdc_losses(
                     z_id[local],
                     xdc_tx,
                     xdc_receiver,
                     logits[local],
-                    num_classes=self.config.xdc_microepisode_tx,
+                    num_classes=self.num_classes,
                     temperature=self.config.xdc_temperature,
                     ridge=self.config.xdc_ridge,
                     min_support_accuracy=self.config.xdc_min_support_accuracy,
-                    num_receivers=self.config.xdc_microepisode_receivers,
+                    num_receivers=self.num_receivers,
                     kd_weight=1.0 if self.config.xdc_kd else 0.0,
                     physical_indices=xdc_selection.episode.indices,
                 )
@@ -1544,9 +1588,22 @@ class BiCADXRTrainer(nn.Module):
         episode_tx = (
             []
             if xdc_selection is None
-            else [int(value) for value in xdc_selection.episode.tx.tolist()]
+            else [int(value) for value in xdc_selection.global_tx.detach().cpu().tolist()]
         )
         episode_receiver = (
+            []
+            if xdc_selection is None
+            else [
+                int(value)
+                for value in xdc_selection.global_receiver.detach().cpu().tolist()
+            ]
+        )
+        episode_local_tx = (
+            []
+            if xdc_selection is None
+            else [int(value) for value in xdc_selection.episode.tx.tolist()]
+        )
+        episode_local_receiver = (
             []
             if xdc_selection is None
             else [int(value) for value in xdc_selection.episode.receiver.tolist()]
@@ -1578,6 +1635,8 @@ class BiCADXRTrainer(nn.Module):
             "xdc_episode_batch_indices": episode_indices,
             "xdc_episode_tx": episode_tx,
             "xdc_episode_receiver": episode_receiver,
+            "xdc_episode_local_tx": episode_local_tx,
+            "xdc_episode_local_receiver": episode_local_receiver,
             "xdc_tail_query_tx": episode_tx,
             "pair_called": pair_called,
             "pair_source": "concat_satellite" if pair_called else None,

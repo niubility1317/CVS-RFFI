@@ -127,6 +127,37 @@ def _structured_batch(
     )
 
 
+def _wide_global_label_batch() -> BiCADXRBatch:
+    global_tx = (3, 11, 27, 48, 63, 79)
+    global_receiver = (7, 19, 42, 88)
+    rows: list[tuple[int, int, int, int]] = []
+    for tx_index, tx in enumerate(global_tx):
+        for receiver_index, receiver in enumerate(global_receiver):
+            samples = 1 if (tx, receiver) == (79, 88) else 2
+            for sample in range(samples):
+                rows.append(
+                    (
+                        tx,
+                        receiver,
+                        (tx_index + receiver_index + sample) % 3,
+                        receiver_index,
+                    )
+                )
+    metadata = torch.tensor(rows, dtype=torch.long)
+    generator = torch.Generator().manual_seed(20260831)
+    order = torch.randperm(len(rows), generator=generator)
+    metadata = metadata[order]
+    return BiCADXRBatch(
+        x=torch.randn(len(rows), 8, generator=generator),
+        tx=metadata[:, 0],
+        receiver=metadata[:, 1],
+        day=metadata[:, 2],
+        channel=metadata[:, 3],
+        physical_indices=10_000 + torch.arange(len(rows)),
+        labeled_mask=torch.ones(len(rows), dtype=torch.bool),
+    )
+
+
 class _NoPublicClassifierModel(nn.Module):
     feature_dim = 8
     num_classes = 6
@@ -328,6 +359,34 @@ def test_sparse_shuffled_xdc_episode_preserves_batch_label_alignment() -> None:
     assert episode_tx == [int(batch.tx[index]) for index in indices]
     assert episode_receiver == [int(batch.receiver[index]) for index in indices]
     assert (5, 3) not in set(zip(episode_tx, episode_receiver))
+    assert output.audit["xdc_tail_query_tx"] == episode_tx
+
+
+def test_xdc_remaps_wide_global_labels_to_local_episode_and_back() -> None:
+    batch = _wide_global_label_batch()
+    trainer = BiCADXRTrainer(
+        _FeatureModel(num_classes=80),
+        candidate_config("E1"),
+        num_receivers=100,
+        num_days=3,
+        num_channels=4,
+    )
+
+    output = trainer.compute_step(batch, update=3504, total_updates=5000)
+
+    indices = output.audit["xdc_episode_batch_indices"]
+    episode_tx = output.audit["xdc_episode_tx"]
+    episode_receiver = output.audit["xdc_episode_receiver"]
+    assert output.logits.shape[1] == 80
+    assert output.audit["xdc_called"]
+    assert len(indices) == 46
+    assert max(indices) < len(batch.x)
+    assert episode_tx == [int(batch.tx[index]) for index in indices]
+    assert episode_receiver == [int(batch.receiver[index]) for index in indices]
+    assert 79 in episode_tx
+    assert (79, 88) not in set(zip(episode_tx, episode_receiver))
+    assert set(output.audit["xdc_episode_local_tx"]) == set(range(6))
+    assert set(output.audit["xdc_episode_local_receiver"]) == set(range(4))
     assert output.audit["xdc_tail_query_tx"] == episode_tx
 
 
