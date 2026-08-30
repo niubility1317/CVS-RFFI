@@ -2,7 +2,7 @@
 
 ## 预登记
 
-- 状态：`LOCAL_VERIFIED`，待N607 release与启动。
+- 状态：`RUNNING`。
 - run ID：`phase1_adv3b02_bicad_xr_quick24_seed3_u5000_20260831_r3`。
 - Git代码提交：`0284b80288418ba6eb342a42741bc66e9e6a08de`。
 - 新run理由：r2中D0为6/6闭合；D5的6行因多元素训练头张量序列化错误在最终评估闭合阶段技术失败；E1与BiCAD-XDC的12行因合法XDC矩阵NaN占位符不能写入严格JSON而技术失败。r2全部checkpoint、日志、metrics和failure marker保持不可变，不重启、不覆盖。
@@ -35,4 +35,17 @@
 - `git diff --check`：通过。
 - Git远端OID独立读回：`0284b80288418ba6eb342a42741bc66e9e6a08de`，与本地HEAD一致。
 - 本地release SHA256：`2bfc6b832dee578234c7a3845ecaad890fe59bcdcb9f0cf733f0531bea121408`；归档已重新打开并核对包含r3启动脚本及两个定点修复文件。
-- 独立P0/P1定点复审：进行中；仅其直接P0/P1结果可阻止release。
+- 独立P0/P1定点复审：`CLEAN`；38/38项聚焦测试通过，6个审查范围文件与代码提交`0284b80288418ba6eb342a42741bc66e9e6a08de`一致，无直接导致真实run崩溃、非法JSON、非有限train loss被掩盖、输出覆盖、target/Phase2越权或artifact无法闭合的问题。
+
+## 发布与启动记录
+
+- N607普通账户只读preflight：`PASS`；用户`szu2070436088`，项目根可见，启动前GPU0–7均无compute process。
+- 不可覆盖核查：r3的release根、run根、dispatcher日志、PID文件和远端归档均不存在；未触碰r2或无关任务。
+- release归档：本地与远端SHA256均为`2bfc6b832dee578234c7a3845ecaad890fe59bcdcb9f0cf733f0531bea121408`；只执行这一次归档SHA比较。
+- 远端编译：`PASS`；两个修复模块、矩阵launcher及r3启动脚本语法均通过。
+- 真实checkpoint无query smoke：`PASS`；使用r2的`D0-F1-S392002/bicad_xr_final.pth`，GPU0严格重建，missing/unexpected/shape mismatch均为空，optimizer step、有限loss/梯度及clean和三种`LEO_WEAK`前向全部通过；`target/Phase2/support/query/truth`访问均为`false`。
+- 启动时间：N607服务器时间2026-08-31；dispatcher PID`2583716`，PPID`1`，CWD严格绑定r3 release根，cmdline严格绑定r3 run/release、formal quick24矩阵和`--max-jobs-per-gpu 3`。
+- 直属主训练进程：24个；候选`D0/D5/E1/ADV3B02-BiCAD-XDC-V1`各6行，fold1/fold8各12行，seed392001/392002/392003各8行，24/24均绑定day1/2/3和5000 updates。
+- GPU装箱：GPU0–7各3个本run训练进程；启动后利用率97%–99%，显存约2818–3368MiB，未发现无关compute process。
+- 初始artifact：24个row目录、24个`train.log`已创建；`ARTIFACTS_COMPLETE=0`、`TECHNICAL_FAILURE=0`，未检出确定性异常指纹。训练健康运行，不因中间性能或日志缓冲停止。
+- 当前边界：保持source-only；24行闭合并仅按source证据冻结候选/seed之前，禁止目标接收机day1–4测试及任何Phase2/query/truth访问。
