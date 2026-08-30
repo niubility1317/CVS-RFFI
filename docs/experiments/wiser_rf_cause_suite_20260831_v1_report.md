@@ -2,7 +2,7 @@
 
 ## 当前结论
 
-截至2026-08-31 00:26 CST，8条run均已按预登记规则进入`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。失败原因不是低性能，而是共享manifest把query指向不存在的`before/enrollment_only/query_leo_*_weak.npz`；实际文件位于同row的`before/apply_only_staging/`。所有部分artifact已保留，未评分、无性能结论、未重启。
+v1的8条run均已按预登记规则进入`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。失败原因不是低性能，也不是manifest缺项：manifest同时提供`before_enrollment`和`before_apply`，但旧WISER解析器错误地让support与query都使用`before_enrollment`，因此无法找到只存在于`before_apply`的query。v1部分artifact已保留，未评分、无性能结论、未覆盖或重启。
 
 ## 冻结版本与协议
 
@@ -29,4 +29,12 @@
 
 ## 后续闭环
 
-本批次没有`pilot_result.json`和合法prediction，因此不得启动scorer。若继续，必须先在本地修复matrix manifest的query包选择，使用新Git提交、新release、新run ID和新输出根发布；现有run不得覆盖或重启。
+v1没有`pilot_result.json`和合法prediction，因此不得启动scorer。
+
+## v2定点修复重发
+
+- 修复提交：`b5fb479032c371d0df016c19e67b25aa3c94d600`；support固定解析`before_enrollment`，query固定解析`before_apply`。新增测试先在旧代码上准确失败，修复后29项聚焦测试通过；独立P0/P1审查结论`READY`。
+- 新release：`wiser_rf_queryfix_suite_20260831_v2_b5fb4790.tar.gz`；本地/远端SHA256均为`cd1e5778abab1cb2909d9667b957c3f71ff4a98c03d8ac541d99cd174b357807`；远端编译与真实ADV3B02无query smoke均通过，smoke记录`query_opened=false`。
+- 2026-08-31 00:43 CST已用8个全新`*_20260831_v2_queryfix1`run ID重发，GPU0–7各1条。用户授权的并发上限为每GPU最多3个训练实验，本批次每GPU只占1个，不为占满容量复制科学row。
+- v2 PID/GPU映射：GPU0=`2439930`完整ABC；GPU1=`2439927`无L2-SP；GPU2=`2439998`无LOO原型；GPU3=`2439999`弱L2-SP；GPU4=`2439997`强L2-SP；GPU5=`2440025`弱VSW；GPU6=`2440029`强VSW；GPU7=`2440008`短训练。独立回读确认CWD、cmdline、run root和物理GPU正确，目录增长且无异常指纹。
+- 当前状态：`RUNNING`。prediction完整后每个run分别由独立truth-last scorer绑定其`pilot_result.json`冻结arm集合，不跨run用truth调参或重跑。
