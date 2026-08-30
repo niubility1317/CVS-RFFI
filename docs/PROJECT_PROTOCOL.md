@@ -38,6 +38,10 @@ rho_label ≤ 0.1
 
 当前统一划分语义为相对source全池`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`：有TX标签训练集、无TX标签训练集、校准validation与选模validation。四个角色均不得包含`R_t`，物理样本ID两两不交；`V_select`只能用于源侧模型选择，`V_cal`只能用于源侧校准与导出，不得反向传播、更新EMA或更新其他持久状态。Phase1可使用source clean与卫星增强训练，但这不授予Phase2访问这些样本或派生状态的权限。
 
+### HCF-DG专用星地训练例外
+
+经用户于2026-08-30明确冻结，HCF-DG及其A0–A12 matched实验使用70%clean、30%`mixed_orbit`的batch内单视图替换，整个batch只执行一次共享身份主干前向。增强参数同时提供receiver/day/channel因子化中的channel标签。该例外只适用于显式`phase1_method=hcfdg`的独立入口，不改变ADV3B02、ADV3B03及其他Phase1方法。最终checkpoint仍须分别评估clean、`leo_clear_weak`、`leo_low_elev_weak`和`leo_rain_weak`；`mixed_orbit`聚合结果不能替代三个正式LEO弱场景。
+
 ## Phase2最小数据协议
 
 ### 单物理样本单LEO接收观测
