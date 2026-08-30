@@ -70,5 +70,6 @@ v1没有`pilot_result.json`和合法prediction，因此不得启动scorer。
 - 根因：可微D92的`F.normalize`允许单个模态为零并将其保持为零，但独立精确D92此前会直接拒绝任一零范数模态，导致适配后零identity行无法利用仍有效的FFT块完成P3。
 - 修复提交：`4e51e29b393cba723c2e79ed0d3314ed64d6369f`，已push且远端OID一致。单模态零范数现在安全置零；identity与FFT同时退化时，联合归一化仍确定性拒绝，避免无信息prediction。
 - TDD与验证：新增零identity/有效FFT回归测试先准确失败；修复后相关37项测试通过。唯一独立P0/P1审查结论`READY`。
-- release：`wiser_rf_zeromodal_suite_20260831_v3_4e51e29b.tar.gz`；本地SHA256=`9ac739632a48d91600b41ca1eb005c7e16b8a12a6f327695001dcefffb267521`，待一次远端SHA回读、远端编译和真实checkpoint无query smoke。
+- release：`wiser_rf_zeromodal_suite_20260831_v3_4e51e29b.tar.gz`；本地/远端SHA256均为`9ac739632a48d91600b41ca1eb005c7e16b8a12a6f327695001dcefffb267521`，远端编译和真实ADV3B02无query smoke均通过，smoke记录`query_opened=false`。
 - 新run只重跑没有合法结果的6条row：GPU2主`B0+A+B+C+ABC`、GPU1无L2-SP、GPU3弱L2-SP、GPU4强L2-SP、GPU6强VSW、GPU7短训练。已`ANALYZED`的去原型和弱VSW不重复跑；GPU0旧v2主pilot保持只读。每GPU最多3个训练实验，本批次每张目标卡只新增1条。
+- 2026-08-31 01:32 CST启动并完成首次绑定回读：GPU2主pilot PID=`2463277`，GPU1无L2-SP PID=`2463288`，GPU3弱L2-SP PID=`2463290`，GPU4强L2-SP PID=`2463276`，GPU6强VSW PID=`2463289`，GPU7短训练PID=`2463291`。6条均为`RUNNING`，CWD、cmdline、run root和物理GPU映射正确，每条初始artifact文件数为2；GPU0旧v2 PID=`2439930`继续只读运行。
