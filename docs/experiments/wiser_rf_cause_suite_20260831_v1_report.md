@@ -1,5 +1,7 @@
 # WISER-RF历史D92 E0因果诊断实验报告
 
+完整设计、协议、修复、验证、结果和追踪结论见`docs/experiments/wiser_rf_zero_modal_resolution_full_report_20260831.md`。
+
 ## 当前结论
 
 v1的8条run均已按预登记规则进入`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。失败原因不是低性能，也不是manifest缺项：manifest同时提供`before_enrollment`和`before_apply`，但旧WISER解析器错误地让support与query都使用`before_enrollment`，因此无法找到只存在于`before_apply`的query。v1部分artifact已保留，未评分、无性能结论、未覆盖或重启。
