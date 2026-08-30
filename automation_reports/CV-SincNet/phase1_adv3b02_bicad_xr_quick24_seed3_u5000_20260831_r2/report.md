@@ -49,3 +49,16 @@
 - 低频监控：Codex heartbeat `bicad-xr-quick24-r2`，每小时短连接只读检查；完成后执行全接收机day1–4严格零适配测试并发布报告。
 - 当前状态：`RUNNING`。
 - 低性能属于科学结果，不属于技术失败。
+
+
+## 2026-08-31终态与技术失败分析
+
+- 最终状态：部分闭合，不能标记为`ARTIFACTS_COMPLETE`或性能完成。
+- dispatcher PID`2518098`及24个worker均已退出；GPU0–7空闲，无本run残留进程。
+- D0：6/6行达到5000 updates，final checkpoint、严格重建以及clean和三种LEO_WEAK评估完整，行级`ARTIFACTS_COMPLETE.json`已保留。
+- D5：6/6行达到5000 updates并保存final checkpoint，但最终闭合器将多元素factorized-head张量调用`.item()`，统一报`RuntimeError: a Tensor with 3840 elements cannot be converted to Scalar`；6行均保存`TECHNICAL_FAILURE.json`，未覆盖或删除。
+- E1与`ADV3B02-BiCAD-XDC-V1`：12/12行达到5000 updates；`train_loss`有限，但`xdc_donor_query_matrix`包含合法未求值cell的`NaN`占位符，严格JSON遥测写入统一报`ValueError: Out of range float values are not JSON compliant`。这些行未写final checkpoint，均保存日志、CSV、JSONL partial artifact和`TECHNICAL_FAILURE.json`。
+- 科学结论边界：r2仅D0闭合，不能进行四候选比较、不能冻结候选或seed，也不能进入全接收机day1–4目标测试。
+- 根因修复提交：`0284b80288418ba6eb342a42741bc66e9e6a08de`。合法XDC矩阵占位符转为JSON`null`；真实非有限`train_loss`仍显式技术失败；多元素训练头张量转为嵌套列表。
+- 回归：BiCAD-XR245项通过，相邻HCF-DG/ADV3B03共159项通过，定点模块编译通过。
+- 后续：r2保持不可变；仅使用新release和新run ID`phase1_adv3b02_bicad_xr_quick24_seed3_u5000_20260831_r3`重新运行完整24行，保持相同候选、fold、seed、训练预算和每GPU 3任务。
