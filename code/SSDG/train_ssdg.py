@@ -240,6 +240,11 @@ _BICAD_XR_LEO_WEAK = (
     "leo_rain_weak",
 )
 _BICAD_XR_LEO_WEAK_CSV = ",".join(_BICAD_XR_LEO_WEAK)
+_BICAD_XR_SAT_VIEW_SCHEDULE = (
+    "1@0.30:leo_clear_weak;"
+    "41@0.60:leo_low_elev_weak,leo_rain_weak;"
+    "91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
+)
 
 
 class BiCADXRProtocol:
@@ -291,6 +296,10 @@ def _reject_bicad_conflicts(argv: Sequence[str]) -> None:
     for token in argv:
         name, _ = _cli_option(str(token))
         lowered = name.lower()
+        if lowered.startswith("--phase2_export_") or any(
+            marker in lowered for marker in ("target", "support", "query", "truth")
+        ):
+            raise ValueError(f"BiCAD-XR rejects deployment input option: {name}")
         if lowered in {"--use_fasttrust", "--use_mixstyle"} or lowered.startswith("--fasttrust"):
             raise ValueError(f"BiCAD-XR rejects incompatible legacy option: {name}")
     for value in _cli_option_values(argv, "--muse_lr_schedule"):
@@ -315,11 +324,6 @@ def parse(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         parse_argv = ["--output_dir", "", *parse_argv]
     args = build_arg_parser().parse_args(parse_argv)
     setattr(args, "_task7_cli_args", tuple(str(item) for item in raw_argv))
-    if route_phase1_method(args) == "bicad_xr":
-        for name in tuple(vars(args)):
-            lowered = name.lower()
-            if any(token in lowered for token in ("target_rx", "phase2", "support", "query", "truth")):
-                delattr(args, name)
     return args
 
 
@@ -12932,12 +12936,157 @@ def _apply_bicad_xr_entry_protocol(args, protocol: BiCADXRProtocol) -> None:
     args.concat_sat_ce_weight = 0.68
     args.concat_sat_start_epoch = 80
     args.sat_train_scenarios = _BICAD_XR_LEO_WEAK_CSV
+    args.sat_train_scenario_list = list(_BICAD_XR_LEO_WEAK)
+    args.sat_view_schedule = _BICAD_XR_SAT_VIEW_SCHEDULE
+    args.sat_training_mode = "concat_ce_only"
     args.lambda_sat_cls = 0.68
     args.lambda_sat_cons = 0.0
     args.use_mixstyle = False
     args.muse_lr_schedule = "off"
     if hasattr(args, "use_fasttrust"):
         args.use_fasttrust = False
+
+
+def _build_bicad_xr_concat_augmenter(args):
+    if ConcatSatChannelAugment is None or apply_sat_channel_for_scenario is None:
+        raise ImportError("BiCAD-XR requires ConcatSatChannelAugment and LEO weak channels")
+    return ConcatSatChannelAugment(
+        scenarios=list(_BICAD_XR_LEO_WEAK),
+        schedule=_BICAD_XR_SAT_VIEW_SCHEDULE,
+        p=1.0,
+        seed=int(getattr(args, "sat_view_seed", getattr(args, "seed", 0))),
+        apply_fn=apply_sat_channel_for_scenario,
+    )
+
+
+class _BiCADXRConcatForward(torch.nn.Module):
+    """Expose clean/satellite pair tensors from one concatenated model forward."""
+
+    def __init__(self, base_model: torch.nn.Module) -> None:
+        super().__init__()
+        self.base_model = base_model
+        self._clean_count: Optional[int] = None
+
+    def __getattr__(self, name: str):
+        try:
+            return super().__getattr__(name)
+        except AttributeError:
+            return getattr(super().__getattr__("base_model"), name)
+
+    def set_concat_clean_count(self, clean_count: Optional[int]) -> None:
+        self._clean_count = None if clean_count is None else int(clean_count)
+
+    def forward(self, *args, **kwargs):
+        output = self.base_model(*args, **kwargs)
+        clean_count = self._clean_count
+        self._clean_count = None
+        if clean_count is None:
+            return output
+        if not isinstance(output, Mapping):
+            raise ValueError("BiCAD-XR concat model must return a mapping")
+        logits = output.get("tx_logits", output.get("logits"))
+        z_id = output.get("z_id", output.get("identity_features"))
+        if not torch.is_tensor(logits) or not torch.is_tensor(z_id):
+            raise ValueError("BiCAD-XR concat forward requires tx_logits and z_id")
+        if logits.size(0) != 2 * clean_count or z_id.size(0) != 2 * clean_count:
+            raise ValueError("BiCAD-XR concat forward must contain clean then satellite rows")
+        resolved = dict(output)
+        resolved["concat_pair"] = {
+            "clean_z_id": z_id[:clean_count],
+            "satellite_z_id": z_id[clean_count:],
+            "clean_logits": logits[:clean_count],
+            "satellite_logits": logits[clean_count:],
+        }
+        return resolved
+
+
+def _bicad_xr_labeled_step(
+    trainer,
+    concat_sat_aug,
+    x,
+    tx,
+    receiver,
+    day,
+    *,
+    args,
+    epoch: int,
+    batch_idx: int,
+    update: int,
+    total_updates: int,
+):
+    from cvsrffi.phase1_bicad_xr.trainer import BiCADXRBatch
+
+    if int(epoch) < 80:
+        raise ValueError("BiCAD-XR concat step starts at epoch 80")
+    clean_count = int(tx.numel())
+    sat_view = concat_sat_aug.transform(
+        x,
+        args=args,
+        epoch=int(epoch),
+        batch_idx=int(batch_idx),
+    )
+    satellite_x = _safe_iq_tensor(sat_view.x)
+    concat_x = torch.cat((x, satellite_x), dim=0)
+    concat_tx = torch.cat((tx, tx), dim=0)
+    concat_receiver = torch.cat((receiver, receiver), dim=0)
+    concat_day = torch.cat((day, day), dim=0)
+    concat_channel = torch.cat(
+        (
+            torch.zeros(clean_count, dtype=torch.long, device=x.device),
+            torch.ones(clean_count, dtype=torch.long, device=x.device),
+        ),
+        dim=0,
+    )
+    labeled_mask = torch.zeros(2 * clean_count, dtype=torch.bool, device=x.device)
+    labeled_mask[:clean_count] = True
+    if not isinstance(trainer.model, _BiCADXRConcatForward):
+        raise ValueError("BiCAD-XR trainer requires the concat forward adapter")
+    trainer.model.set_concat_clean_count(clean_count)
+    batch = BiCADXRBatch(
+        x=concat_x,
+        tx=concat_tx,
+        receiver=concat_receiver,
+        day=concat_day,
+        channel=concat_channel,
+        labeled_mask=labeled_mask,
+        pair_tx=tx,
+        epoch=int(epoch),
+    )
+    output = trainer.compute_step(
+        batch,
+        update=int(update),
+        total_updates=int(total_updates),
+        epoch=int(epoch),
+    )
+    view = {
+        "applied": bool(sat_view.applied),
+        "scenario": str(sat_view.scenario),
+        "clean_batch_size": clean_count,
+        "total_batch_size": 2 * clean_count,
+        "satellite_x": satellite_x,
+    }
+    return output, view
+
+
+def _load_bicad_xr_checkpoint_strict(
+    checkpoint: Mapping[str, Any],
+    *,
+    model: torch.nn.Module,
+    trainer,
+) -> Dict[str, Any]:
+    if not isinstance(checkpoint, Mapping):
+        raise ValueError("BiCAD-XR checkpoint must be a mapping")
+    model_state = checkpoint.get("model")
+    runtime = checkpoint.get("bicad_xr_runtime")
+    if not isinstance(model_state, Mapping):
+        raise ValueError("BiCAD-XR checkpoint is missing model state")
+    if not isinstance(runtime, Mapping):
+        raise ValueError("BiCAD-XR checkpoint is missing bicad_xr_runtime")
+    model.load_state_dict(model_state, strict=True)
+    trainer.load_checkpoint_runtime(runtime, strict=True)
+    restored_runtime = deepcopy(dict(runtime))
+    restored_runtime["strict_reconstruction"] = True
+    return restored_runtime
 
 
 def _train_bicad_xr(args) -> int:
@@ -12978,8 +13127,6 @@ def _train_bicad_xr(args) -> int:
         model_args.num_classes = int(len(data_ctx["class_id_to_tx"]))
     model_args.phase1_method = "bicad_xr"
     model = build_baseline_model(model_args, device)
-    if checkpoint is not None:
-        model.load_state_dict(checkpoint["model"], strict=False)
 
     config = dataclass_replace(
         candidate_config(protocol.candidate_id),
@@ -12992,12 +13139,22 @@ def _train_bicad_xr(args) -> int:
         concat_sat_start_epoch=80,
         sat_train_scenarios=_BICAD_XR_LEO_WEAK,
     )
-    trainer = BiCADXRTrainer(model, config).to(device)
+    concat_model = _BiCADXRConcatForward(model)
+    trainer = BiCADXRTrainer(concat_model, config).to(device)
+    if checkpoint is not None:
+        _load_bicad_xr_checkpoint_strict(
+            checkpoint,
+            model=model,
+            trainer=trainer,
+        )
+    concat_sat_aug = _build_bicad_xr_concat_augmenter(args)
     optimizer = torch.optim.AdamW(
         trainer.parameters(),
         lr=float(getattr(args, "lr", 2e-4)),
         weight_decay=float(getattr(args, "weight_decay", 1e-4)),
     )
+    if checkpoint is not None and isinstance(checkpoint.get("optimizer"), Mapping):
+        optimizer.load_state_dict(checkpoint["optimizer"])
 
     epochs = int(getattr(args, "epochs", 0))
     if epochs <= 0:
@@ -13009,7 +13166,7 @@ def _train_bicad_xr(args) -> int:
     trainer.train()
     for epoch in range(1, epochs + 1):
         epoch_losses: List[float] = []
-        for labeled_batch in train_loader:
+        for batch_idx, labeled_batch in enumerate(train_loader, start=1):
             if update >= total_updates:
                 break
             x_l, y_l, extra_l = move_batch(labeled_batch, device)
@@ -13019,22 +13176,38 @@ def _train_bicad_xr(args) -> int:
             count = int(tx.numel())
             receiver = _bicad_xr_metadata(extra_l, "rx_i", device, count)
             day = _bicad_xr_metadata(extra_l, "day_i", device, count)
-            channel = torch.zeros(count, dtype=torch.long, device=device)
-            batch = BiCADXRBatch(
-                x=x_l,
-                tx=tx,
-                receiver=receiver,
-                day=day,
-                channel=channel,
-                labeled_mask=torch.ones(count, dtype=torch.bool, device=device),
-                epoch=epoch,
-            )
             optimizer.zero_grad(set_to_none=True)
-            step_output = trainer.compute_step(
-                batch,
-                update=update,
-                total_updates=total_updates,
-            )
+            if epoch >= 80:
+                step_output, _ = _bicad_xr_labeled_step(
+                    trainer,
+                    concat_sat_aug,
+                    x_l,
+                    tx,
+                    receiver,
+                    day,
+                    args=args,
+                    epoch=epoch,
+                    batch_idx=batch_idx,
+                    update=update + 1,
+                    total_updates=total_updates,
+                )
+            else:
+                channel = torch.zeros(count, dtype=torch.long, device=device)
+                batch = BiCADXRBatch(
+                    x=x_l,
+                    tx=tx,
+                    receiver=receiver,
+                    day=day,
+                    channel=channel,
+                    labeled_mask=torch.ones(count, dtype=torch.bool, device=device),
+                    epoch=epoch,
+                )
+                step_output = trainer.compute_step(
+                    batch,
+                    update=update + 1,
+                    total_updates=total_updates,
+                    epoch=epoch,
+                )
             step_output.total.backward()
             max_grad_norm = float(getattr(args, "max_grad_norm", 0.0))
             if max_grad_norm > 0.0:
@@ -13079,9 +13252,7 @@ def _train_bicad_xr(args) -> int:
     runtime = trainer.checkpoint_runtime(update=update, total_updates=total_updates)
     runtime["target_access"] = False
     runtime["entry"] = bicad_xr_runtime(protocol)
-    runtime["strict_reconstruction"] = True
     model_state = model.state_dict()
-    model.load_state_dict(model_state, strict=True)
     checkpoint_payload = {
         "schema": "ssdg_phase1_bicad_xr_v1",
         "phase1_method": "bicad_xr",
@@ -13091,8 +13262,18 @@ def _train_bicad_xr(args) -> int:
         "epoch": int(epoch_rows[-1]["epoch"]),
         "optimizer_update": update,
         "args": dict(vars(model_args)),
-        "bicad_xr_runtime": _bicad_xr_jsonable(runtime),
+        "bicad_xr_runtime": runtime,
     }
+    reconstructed_model = build_baseline_model(model_args, device)
+    reconstructed_trainer = BiCADXRTrainer(
+        _BiCADXRConcatForward(reconstructed_model),
+        config,
+    ).to(device)
+    checkpoint_payload["bicad_xr_runtime"] = _load_bicad_xr_checkpoint_strict(
+        checkpoint_payload,
+        model=reconstructed_model,
+        trainer=reconstructed_trainer,
+    )
     save_payload(out_dir / "bicad_xr_final.pth", checkpoint_payload)
     return 0
 

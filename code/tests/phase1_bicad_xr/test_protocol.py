@@ -45,3 +45,25 @@ def test_bicad_runtime_is_reconstructable_and_target_closed() -> None:
         "leo_low_elev_weak",
         "leo_rain_weak",
     ]
+
+
+@pytest.mark.parametrize(
+    "flag",
+    [
+        "--phase2_export_path=forbidden.pt",
+        "--phase2_export_checkpoint=forbidden.pt",
+        "--target_rx=rx99",
+        "--support_path=support.json",
+        "--query_manifest=query.json",
+        "--truth_path=truth.json",
+    ],
+)
+def test_bicad_argv_rejects_deployment_inputs_before_argparse(flag: str) -> None:
+    with pytest.raises(ValueError, match="BiCAD-XR"):
+        train_ssdg.parse(["--phase1_method", "bicad_xr", flag])
+
+
+def test_legacy_argv_keeps_existing_phase2_export_option() -> None:
+    args = train_ssdg.parse(["--phase2_export_path", "legacy.pt"])
+
+    assert args.phase2_export_path == "legacy.pt"
