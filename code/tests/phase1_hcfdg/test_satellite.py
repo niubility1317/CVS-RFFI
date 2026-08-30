@@ -2,6 +2,7 @@ from dataclasses import FrozenInstanceError
 
 import pytest
 import torch
+from sat_channel import SatSimConfig, apply_sat_gnd_channel_batch
 
 from cvsrffi.phase1_hcfdg.satellite import (
     ChannelFactors,
@@ -198,3 +199,23 @@ def test_channel_factor_and_single_view_schemas_are_frozen():
         factors.cfo = torch.ones(1)
     with pytest.raises(FrozenInstanceError):
         batch.iq = torch.ones(1, 2, 4)
+
+
+def test_real_satellite_metadata_exposes_all_hcfdg_physical_factors():
+    x = torch.randn(4, 2, 64)
+    cfg = SatSimConfig(
+        enable_multipath=True,
+        num_taps=(2, 3),
+        phase_noise_inc_std=(1e-4, 2e-4),
+    )
+
+    _, metadata, _ = apply_sat_gnd_channel_batch(
+        x,
+        cfg,
+        gen=torch.Generator().manual_seed(91),
+        return_meta=True,
+    )
+
+    assert metadata is not None
+    assert metadata["phase_noise_std"].shape == (4,)
+    assert metadata["num_taps"].shape == (4,)

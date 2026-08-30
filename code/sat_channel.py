@@ -300,6 +300,7 @@ def _apply_leo_residual_channel_batch(
             "fD_hz": fD.detach().cpu(),
             "cfo_hz": cfo.detach().cpu(),
             "residual_cfo_hz": cfo.detach().cpu(),
+            "phase_noise_std": pn_std.detach().cpu(),
             "snr_db": snr.detach().cpu(),
             "K_db": K_db.detach().cpu(),
             "num_taps": num_taps.detach().cpu(),
@@ -497,8 +498,15 @@ def apply_sat_gnd_channel_batch(
             "pl_db": pl_db.detach().cpu(),
             "fD_hz": fD.detach().cpu(),
             "cfo_hz": cfo.detach().cpu(),
+            "phase_noise_std": pn_std.detach().cpu(),
             "snr_db": snr.detach().cpu(),
             "K_db": K_db.detach().cpu(),
+            "num_taps": torch.full(
+                (B,),
+                int(L if cfg.enable_multipath else 1),
+                device=device,
+                dtype=torch.long,
+            ).detach().cpu(),
         }
 
     return y_iq, meta, state
