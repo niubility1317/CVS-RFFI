@@ -74,6 +74,18 @@ def test_bicad_training_features_do_not_enter_return_aux_false_fast_path() -> No
     assert not isinstance(fast, dict)
 
 
+def test_bicad_public_tx_classifier_reproduces_cosface_logits() -> None:
+    model = _build(bicad_xr=True).eval()
+    x = torch.randn(3, 2, 128)
+    labels = torch.tensor([0, 1, 2])
+
+    with torch.no_grad():
+        output = model(x, y_tx=labels, return_aux=True)
+        rebuilt = model.classify_identity_features(output["z_id"], labels=labels)
+
+    torch.testing.assert_close(rebuilt, output["tx_logits"])
+
+
 def test_post_stage_common_only_passes_bicad_switch_for_explicit_method() -> None:
     captured: list[dict[str, object]] = []
 

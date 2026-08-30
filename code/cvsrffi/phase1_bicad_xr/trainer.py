@@ -27,7 +27,7 @@ from .losses import (
     group_margin_cvar,
     paired_satellite_loss,
 )
-from .sampler import build_structured_episode
+from .sampler import StructuredEpisode, build_structured_episode
 from .tangent import (
     ReceiverTangentBank,
     factual_tangent,
@@ -57,7 +57,11 @@ class BiCADXRBatch:
     satellite_z_id: Tensor | None = None
     clean_logits: Tensor | None = None
     satellite_logits: Tensor | None = None
+    pair_tx: Tensor | None = None
     concat_pair: Mapping[str, Tensor] | None = None
+    epoch: int | None = None
+    source_loro_risk: Tensor | float | None = None
+    source_loro_window: bool | None = None
 
     def pair_payload(self) -> dict[str, Tensor]:
         payload: dict[str, Tensor] = {}
@@ -68,6 +72,7 @@ class BiCADXRBatch:
             "satellite_z_id": self.satellite_z_id,
             "clean_logits": self.clean_logits,
             "satellite_logits": self.satellite_logits,
+            "tx": self.pair_tx,
         }
         for key, value in direct.items():
             if value is not None:
@@ -84,6 +89,7 @@ class BiCADXRTrainOutput:
     features: Mapping[str, Tensor]
     audit: dict[str, Any]
     checkpoint_runtime: dict[str, Any]
+    backward_plan: "BiCADXRBackwardPlan"
 
     @property
     def loss(self) -> Tensor:
@@ -96,6 +102,26 @@ class BiCADXRTrainOutput:
     @property
     def model_output(self) -> Mapping[str, Tensor]:
         return self.features
+
+
+@dataclass(frozen=True)
+class BiCADXRBackwardPlan:
+    """Loss decomposition used by explicit pre-optimizer gradient controls."""
+
+    total: Tensor
+    domain_forward: Tensor
+    adversarial: Tensor
+    task_reference: Tensor
+    stage: BiCADXRStage
+    update: int
+    firewall_enabled: bool
+    projection_enabled: bool
+
+
+@dataclass(frozen=True)
+class _StructuredEpisodeSelection:
+    episode: StructuredEpisode
+    batch_indices: Tensor
 
 
 def _as_long_labels(value: Any, name: str, *, size: int, device: torch.device) -> Tensor | None:
@@ -256,6 +282,14 @@ class BiCADXRTrainer(nn.Module):
         self.num_channels = int(num_channels)
         if min(self.num_receivers, self.num_days, self.num_channels) < 1:
             raise ValueError("environment class counts must be positive")
+        if config.sparse_xdc and (
+            config.xdc_microepisode_tx,
+            config.xdc_microepisode_receivers,
+            config.xdc_samples_per_cell,
+        ) != (6, 4, 2):
+            raise ValueError("BiCAD-XR XDC requires a fixed 6x4x2 structured episode")
+        if config.sparse_xdc and (self.num_classes != 6 or self.num_receivers != 4):
+            raise ValueError("BiCAD-XR XDC requires six TX classes and four source receivers")
         if generator is None:
             generator = torch.Generator(device="cpu").manual_seed(0)
         if not isinstance(generator, torch.Generator):
@@ -270,7 +304,7 @@ class BiCADXRTrainer(nn.Module):
                 self.num_receivers,
                 self.num_days,
                 self.num_channels,
-            )
+            ).to(_module_device(model))
 
         self.tangent_bank: ReceiverTangentBank | None = None
         if config.receiver_tangent != "off":
@@ -285,6 +319,12 @@ class BiCADXRTrainer(nn.Module):
                 DetachedEMA(decay=config.margin_tail_ema) for _ in range(3)
             )  # type: ignore[assignment]
         self._swad_state: dict[str, Any] | None = None
+        self._backward_control_state: dict[str, Any] = {
+            "firewall_applications": 0,
+            "projection_applications": 0,
+            "projection_triggers": 0,
+            "last_update": None,
+        }
         self._last_update: int | None = None
         self._last_total_updates: int | None = None
 
@@ -335,7 +375,14 @@ class BiCADXRTrainer(nn.Module):
                 satellite_z_id=batch.get("satellite_z_id"),
                 clean_logits=batch.get("clean_logits"),
                 satellite_logits=batch.get("satellite_logits"),
+                pair_tx=batch.get(
+                    "pair_tx",
+                    batch.get("satellite_tx", batch.get("concat_pair_tx")),
+                ),
                 concat_pair=batch.get("concat_pair"),
+                epoch=batch.get("epoch"),
+                source_loro_risk=batch.get("source_loro_risk"),
+                source_loro_window=batch.get("source_loro_window"),
             )
         if isinstance(batch, Sequence) and not isinstance(batch, (str, bytes)):
             if len(batch) < 5:
@@ -379,12 +426,38 @@ class BiCADXRTrainer(nn.Module):
         for key in ("clean_z_id", "satellite_z_id", "clean_logits", "satellite_logits"):
             value = getattr(raw, key)
             pair_values[key] = None if value is None else torch.as_tensor(value, device=device)
+        pair_tx = raw.pair_tx
+        if pair_tx is not None:
+            pair_tx = torch.as_tensor(pair_tx, device=device)
+            if pair_tx.ndim != 1 or pair_tx.dtype == torch.bool or pair_tx.is_complex():
+                raise ValueError("pair_tx must be a one-dimensional integer label vector")
+            if pair_tx.is_floating_point():
+                converted_pair_tx = pair_tx.to(dtype=torch.long)
+                if not bool(torch.isfinite(pair_tx).all()) or not torch.equal(
+                    pair_tx, converted_pair_tx.to(dtype=pair_tx.dtype)
+                ):
+                    raise ValueError("pair_tx must contain finite integer labels")
+                pair_tx = converted_pair_tx
+            else:
+                pair_tx = pair_tx.to(dtype=torch.long)
+            if pair_tx.numel() and int(pair_tx.min().item()) < 0:
+                raise ValueError("pair_tx must contain non-negative labels")
         pair_mapping = None
         if raw.concat_pair is not None:
             pair_mapping = {
                 key: torch.as_tensor(value, device=device)
                 for key, value in raw.concat_pair.items()
             }
+        epoch = raw.epoch
+        if epoch is not None:
+            if not isinstance(epoch, int) or isinstance(epoch, bool) or epoch < 1:
+                raise ValueError("epoch must be a positive integer or None")
+        source_loro_risk = raw.source_loro_risk
+        if source_loro_risk is not None:
+            source_loro_risk = _scalar(source_loro_risk)
+        source_loro_window = raw.source_loro_window
+        if source_loro_window is not None and not isinstance(source_loro_window, bool):
+            raise ValueError("source_loro_window must be a bool or None")
         return BiCADXRBatch(
             x=x,
             tx=tx,
@@ -393,21 +466,28 @@ class BiCADXRTrainer(nn.Module):
             channel=channel,
             physical_indices=physical,
             labeled_mask=mask,
+            pair_tx=pair_tx,
             concat_pair=pair_mapping,
+            epoch=epoch,
+            source_loro_risk=source_loro_risk,
+            source_loro_window=source_loro_window,
             **pair_values,
         )
 
     def _forward(self, batch: BiCADXRBatch) -> Mapping[str, Any]:
+        model_tx = batch.tx
+        if batch.labeled_mask is not None and not bool(batch.labeled_mask.all()):
+            model_tx = None
         try:
             result = self.model(
                 batch.x,
-                y_tx=batch.tx,
+                y_tx=model_tx,
                 return_aux=True,
                 domain_labels=batch.receiver,
             )
         except TypeError as first_error:
             try:
-                result = self.model(batch.x, y_tx=batch.tx, return_aux=True)
+                result = self.model(batch.x, y_tx=model_tx, return_aux=True)
             except TypeError:
                 raise first_error
         if not isinstance(result, Mapping):
@@ -422,56 +502,81 @@ class BiCADXRTrainer(nn.Module):
                 return value
         raise ValueError(f"model output is missing one of: {', '.join(names)}")
 
-    def _tangent_logits(self, base_logits: Tensor, base_features: Tensor, features: Tensor) -> Tensor:
-        classifier = getattr(self.model, "tangent_classifier", None)
-        if callable(classifier):
-            return classifier(features)
-        classifier = getattr(self.model, "classifier", None)
-        if callable(classifier):
+    def _tangent_logits(self, features: Tensor, labels: Tensor) -> Tensor:
+        classifiers = (
+            getattr(self.model, "classify_identity_features", None),
+            getattr(self.model, "tangent_classifier", None),
+            getattr(self.model, "classifier", None),
+        )
+        for classifier in classifiers:
+            if not callable(classifier):
+                continue
             try:
-                result = classifier(features)
-                if torch.is_tensor(result) and result.shape == base_logits.shape:
-                    return result
-            except (RuntimeError, ValueError):
-                pass
-        delta = features - base_features
-        if delta.size(1) < self.num_classes:
-            delta = F.pad(delta, (0, self.num_classes - delta.size(1)))
-        return base_logits + delta[:, : self.num_classes]
+                result = classifier(features, labels=labels)
+            except TypeError:
+                try:
+                    result = classifier(features, labels)
+                except TypeError:
+                    result = classifier(features)
+            if (
+                torch.is_tensor(result)
+                and result.ndim == 2
+                and result.size(0) == features.size(0)
+                and result.size(1) == self.num_classes
+                and bool(torch.isfinite(result).all())
+            ):
+                return result
+        raise RuntimeError(
+            "public TX classifier is unavailable for tangent identity features"
+        )
 
-    def _structured_local_indices(self, batch: BiCADXRBatch, tx: Tensor) -> Tensor:
+    def _structured_episode(
+        self,
+        batch: BiCADXRBatch,
+        labeled_indices: Tensor,
+    ) -> _StructuredEpisodeSelection:
+        if batch.tx is None:
+            raise ValueError("structured XDC requires source TX labels")
+        physical_all = (
+            torch.arange(batch.tx.numel(), dtype=torch.long)
+            if batch.physical_indices is None
+            else torch.as_tensor(batch.physical_indices, dtype=torch.long).cpu()
+        )
+        labeled_cpu = labeled_indices.detach().cpu()
+        labeled_physical = physical_all[labeled_cpu]
         episode = build_structured_episode(
-            tx.detach().cpu(),
-            batch.receiver.detach().cpu(),
-            batch.day.detach().cpu(),
+            batch.tx[labeled_indices].detach().cpu(),
+            batch.receiver[labeled_indices].detach().cpu(),
+            batch.day[labeled_indices].detach().cpu(),
             self.config.xdc_samples_per_cell,
             generator=self._generator,
-            num_classes=self.num_classes,
-            num_receivers=self.num_receivers,
-            physical_indices=(
-                None
-                if batch.physical_indices is None
-                else torch.as_tensor(batch.physical_indices, dtype=torch.long).cpu()
-            ),
+            num_classes=self.config.xdc_microepisode_tx,
+            num_receivers=self.config.xdc_microepisode_receivers,
+            physical_indices=labeled_physical,
         )
         if not episode.indices:
-            return torch.empty(0, dtype=torch.long, device=tx.device)
-        if batch.physical_indices is None:
-            local = torch.as_tensor(episode.indices, dtype=torch.long, device=tx.device)
-        else:
-            physical = torch.as_tensor(batch.physical_indices, dtype=torch.long).cpu()
-            position = {int(value): index for index, value in enumerate(physical.tolist())}
-            try:
-                local = torch.tensor(
-                    [position[int(value)] for value in episode.indices],
-                    dtype=torch.long,
-                    device=tx.device,
-                )
-            except KeyError as exc:
-                raise ValueError("structured episode returned an unknown physical index") from exc
-        if local.numel() and (int(local.min().item()) < 0 or int(local.max().item()) >= tx.numel()):
+            return _StructuredEpisodeSelection(
+                episode=episode,
+                batch_indices=torch.empty(0, dtype=torch.long, device=batch.tx.device),
+            )
+        position = {int(value): index for index, value in enumerate(physical_all.tolist())}
+        try:
+            local = torch.tensor(
+                [position[int(value)] for value in episode.indices],
+                dtype=torch.long,
+                device=batch.tx.device,
+            )
+        except KeyError as exc:
+            raise ValueError("structured episode returned an unknown physical index") from exc
+        if local.numel() and (
+            int(local.min().item()) < 0 or int(local.max().item()) >= batch.tx.numel()
+        ):
             raise ValueError("structured episode indices are outside the batch")
-        return local
+        if not torch.equal(batch.tx[local].detach().cpu(), episode.tx):
+            raise ValueError("structured episode TX labels lost batch-index alignment")
+        if not torch.equal(batch.receiver[local].detach().cpu(), episode.receiver):
+            raise ValueError("structured episode receiver labels lost batch-index alignment")
+        return _StructuredEpisodeSelection(episode=episode, batch_indices=local)
 
     def _pair_payload(self, batch: BiCADXRBatch, model_output: Mapping[str, Any]) -> dict[str, Tensor]:
         payload = batch.pair_payload()
@@ -480,30 +585,43 @@ class BiCADXRTrainer(nn.Module):
             payload = {**dict(output_pair), **payload}
         return payload
 
-    def _update_swad(self, risk: Tensor) -> bool:
+    def _update_swad(self, risk: Tensor | float) -> bool:
         if self._swad_state is None:
             self._swad_state = {
                 "candidate_id": self.config.candidate_id,
                 "source_loro": True,
                 "updates": 0,
-                "best_risk": float("inf"),
+                "window_risks": [],
                 "average": {},
             }
-        resolved_risk = _scalar(risk.detach())
-        if resolved_risk <= float(self._swad_state["best_risk"]):
-            with torch.no_grad():
-                average = self._swad_state["average"]
-                count = int(self._swad_state["updates"])
-                for name, parameter in self.model.named_parameters():
-                    value = parameter.detach().clone()
-                    if name not in average:
-                        average[name] = value
-                    else:
-                        average[name] = (average[name] * count + value) / float(count + 1)
-            self._swad_state["best_risk"] = resolved_risk
-            self._swad_state["updates"] = int(self._swad_state["updates"]) + 1
-            return True
-        return False
+        resolved_risk = _scalar(risk)
+        with torch.no_grad():
+            average = self._swad_state["average"]
+            count = int(self._swad_state["updates"])
+            for name, parameter in self.named_optimizer_parameters():
+                value = parameter.detach().clone()
+                if name not in average:
+                    average[name] = value
+                else:
+                    average[name] = (average[name] * count + value) / float(count + 1)
+        self._swad_state["window_risks"].append(resolved_risk)
+        self._swad_state["updates"] = int(self._swad_state["updates"]) + 1
+        return True
+
+    @staticmethod
+    def _clone_tensor_state(state: Mapping[str, Tensor]) -> dict[str, Tensor]:
+        return {name: value.detach().cpu().clone() for name, value in state.items()}
+
+    def _serialized_swad_state(self) -> dict[str, Any] | None:
+        if self._swad_state is None:
+            return None
+        return {
+            "candidate_id": self._swad_state["candidate_id"],
+            "source_loro": True,
+            "updates": int(self._swad_state["updates"]),
+            "window_risks": list(self._swad_state["window_risks"]),
+            "average": self._clone_tensor_state(self._swad_state["average"]),
+        }
 
     def checkpoint_runtime(
         self,
@@ -520,8 +638,14 @@ class BiCADXRTrainer(nn.Module):
             stage = stage_for_update(update, total_updates)
         config_values = asdict(self.config)
         config_values["sat_train_scenarios"] = list(self.config.sat_train_scenarios)
+        factorized_state = (
+            None
+            if self.factorized_heads is None
+            else self._clone_tensor_state(self.factorized_heads.state_dict())
+        )
+        serialized_swad = self._serialized_swad_state()
         return {
-            "runtime_version": 1,
+            "runtime_version": 2,
             "phase1_method": "bicad_xr",
             "candidate_id": self.config.candidate_id,
             "stage": None if stage is None else stage.name,
@@ -555,13 +679,138 @@ class BiCADXRTrainer(nn.Module):
             "candidate_config": config_values,
             "swad": {
                 "enabled": bool(self.config.swad),
-                "active": self._swad_state is not None,
+                "active": serialized_swad is not None,
                 "source_loro": bool(self.config.swad),
-                "updates": 0 if self._swad_state is None else self._swad_state["updates"],
+                "updates": 0 if serialized_swad is None else serialized_swad["updates"],
+                "state": serialized_swad,
+            },
+            "training_state": {
+                "factorized_heads": factorized_state,
+                "backward_controls": {
+                    "firewall_scale": self.config.gradient_firewall_scale,
+                    "stage4_shared_stem_lr_scale": self.config.stage4_shared_stem_lr_scale,
+                    **dict(self._backward_control_state),
+                },
             },
         }
 
     runtime_dict = checkpoint_runtime
+
+    def load_checkpoint_runtime(
+        self,
+        runtime: Mapping[str, Any],
+        *,
+        strict: bool = True,
+    ) -> None:
+        """Restore Task6 training heads, controls and explicit SWAD state."""
+
+        if not isinstance(runtime, Mapping):
+            raise ValueError("checkpoint runtime must be a mapping")
+        expected = {
+            "runtime_version": 2,
+            "phase1_method": "bicad_xr",
+            "candidate_id": self.config.candidate_id,
+            "feature_dim": self.feature_dim,
+            "num_classes": self.num_classes,
+            "num_receivers": self.num_receivers,
+            "num_days": self.num_days,
+            "num_channels": self.num_channels,
+        }
+        if strict:
+            mismatches = [
+                name for name, value in expected.items() if runtime.get(name) != value
+            ]
+            if mismatches:
+                raise ValueError(
+                    "checkpoint runtime mismatch: " + ", ".join(sorted(mismatches))
+                )
+            runtime_config = runtime.get("candidate_config")
+            current_config = asdict(self.config)
+            current_config["sat_train_scenarios"] = list(self.config.sat_train_scenarios)
+            if runtime_config != current_config:
+                raise ValueError("checkpoint runtime candidate_config mismatch")
+
+        training_state = runtime.get("training_state", {})
+        if not isinstance(training_state, Mapping):
+            raise ValueError("checkpoint training_state must be a mapping")
+        head_state = training_state.get("factorized_heads")
+        if head_state is None:
+            if strict and self.factorized_heads is not None:
+                raise ValueError("checkpoint is missing factorized head state")
+        elif self.factorized_heads is None:
+            if strict:
+                raise ValueError("checkpoint contains unexpected factorized head state")
+        else:
+            self.factorized_heads.load_state_dict(head_state, strict=strict)
+
+        controls = training_state.get("backward_controls", {})
+        if not isinstance(controls, Mapping):
+            raise ValueError("checkpoint backward_controls must be a mapping")
+        if strict and float(controls.get("firewall_scale", -1.0)) != float(
+            self.config.gradient_firewall_scale
+        ):
+            raise ValueError("checkpoint firewall scale mismatch")
+        for key in self._backward_control_state:
+            if key in controls:
+                self._backward_control_state[key] = controls[key]
+
+        swad_payload = runtime.get("swad", {})
+        if not isinstance(swad_payload, Mapping):
+            raise ValueError("checkpoint swad state must be a mapping")
+        swad_state = swad_payload.get("state")
+        if swad_state is None:
+            self._swad_state = None
+        else:
+            if not (
+                self.config.swad and self.config.candidate_id.strip().upper() == "F3"
+            ):
+                if strict:
+                    raise ValueError("SWAD state is only valid for F3")
+                self._swad_state = None
+            else:
+                average = swad_state.get("average", {})
+                if not isinstance(average, Mapping):
+                    raise ValueError("SWAD average must be a mapping")
+                parameters = dict(self.named_optimizer_parameters())
+                if strict and set(average) != set(parameters):
+                    raise ValueError("SWAD average parameter set mismatch")
+                restored_average: dict[str, Tensor] = {}
+                for name, value in average.items():
+                    if name not in parameters:
+                        if strict:
+                            raise ValueError(f"unknown SWAD parameter: {name}")
+                        continue
+                    tensor = torch.as_tensor(
+                        value,
+                        device=parameters[name].device,
+                        dtype=parameters[name].dtype,
+                    )
+                    if tensor.shape != parameters[name].shape:
+                        raise ValueError(f"SWAD parameter shape mismatch: {name}")
+                    restored_average[name] = tensor.detach().clone()
+                self._swad_state = {
+                    "candidate_id": self.config.candidate_id,
+                    "source_loro": True,
+                    "updates": int(swad_state.get("updates", 0)),
+                    "window_risks": [
+                        float(value) for value in swad_state.get("window_risks", [])
+                    ],
+                    "average": restored_average,
+                }
+        self._last_update = runtime.get("optimizer_update")
+        self._last_total_updates = runtime.get("total_updates")
+
+    def named_optimizer_parameters(self) -> list[tuple[str, nn.Parameter]]:
+        """Return every trainable model and Task6-head parameter exactly once."""
+
+        return [
+            (name, parameter)
+            for name, parameter in self.named_parameters(remove_duplicate=True)
+            if parameter.requires_grad
+        ]
+
+    def optimizer_parameters(self) -> list[nn.Parameter]:
+        return [parameter for _, parameter in self.named_optimizer_parameters()]
 
     def shared_stem_parameters(self) -> list[Tensor]:
         """Return only explicitly shared Sinc/HF parameters for LR control."""
@@ -591,16 +840,167 @@ class BiCADXRTrainer(nn.Module):
             scale = self.config.stage4_shared_stem_lr_scale
         return scale_explicit_gradients(self.shared_stem_parameters(), scale)
 
+    @staticmethod
+    def _accumulate_gradients(
+        parameters: Sequence[nn.Parameter],
+        gradients: Sequence[Tensor | None],
+        *,
+        scales: Mapping[int, float] | None = None,
+    ) -> int:
+        applied = 0
+        with torch.no_grad():
+            for parameter, gradient in zip(parameters, gradients):
+                if gradient is None:
+                    continue
+                scale = 1.0 if scales is None else float(scales.get(id(parameter), 1.0))
+                value = gradient.detach() * scale
+                if parameter.grad is None:
+                    parameter.grad = value.clone()
+                else:
+                    parameter.grad.add_(value)
+                applied += 1
+        return applied
+
+    def apply_backward_controls(self, output: Any) -> dict[str, Any]:
+        """Backpropagate one step with firewall, projection and Stage4 LR control.
+
+        The caller must zero gradients first and invoke this method instead of
+        ``output.total.backward()`` whenever Task6 controls are enabled.  The
+        method does not perform an optimizer step.
+        """
+
+        plan = getattr(output, "backward_plan", None)
+        if not isinstance(plan, BiCADXRBackwardPlan):
+            raise ValueError("output must contain a BiCADXRBackwardPlan")
+        parameters = self.optimizer_parameters()
+        shared = self.shared_stem_parameters()
+        shared_ids = {id(parameter) for parameter in shared}
+        needs_decomposition = bool(plan.firewall_enabled or plan.projection_enabled)
+        base_loss = plan.total
+        if plan.firewall_enabled:
+            base_loss = base_loss - plan.domain_forward
+        if plan.projection_enabled:
+            base_loss = base_loss - plan.adversarial
+        base_loss.backward(retain_graph=needs_decomposition)
+
+        firewall_applied = False
+        if plan.firewall_enabled:
+            domain_gradients = torch.autograd.grad(
+                plan.domain_forward,
+                parameters,
+                retain_graph=plan.projection_enabled,
+                allow_unused=True,
+            )
+            scales = {
+                parameter_id: self.config.gradient_firewall_scale
+                for parameter_id in shared_ids
+            }
+            self._accumulate_gradients(parameters, domain_gradients, scales=scales)
+            firewall_applied = any(
+                gradient is not None and id(parameter) in shared_ids
+                for parameter, gradient in zip(parameters, domain_gradients)
+            )
+            if firewall_applied:
+                self._backward_control_state["firewall_applications"] += 1
+
+        projection_applied = False
+        projection_triggered = False
+        if plan.projection_enabled:
+            task_gradients = torch.autograd.grad(
+                plan.task_reference,
+                shared,
+                retain_graph=True,
+                allow_unused=True,
+            ) if shared else tuple()
+            adversarial_gradients = list(
+                torch.autograd.grad(
+                    plan.adversarial,
+                    parameters,
+                    retain_graph=False,
+                    allow_unused=True,
+                )
+            )
+            task_by_id = {
+                id(parameter): gradient
+                for parameter, gradient in zip(shared, task_gradients)
+            }
+            for index, (parameter, gradient) in enumerate(
+                zip(parameters, adversarial_gradients)
+            ):
+                reference = task_by_id.get(id(parameter))
+                if gradient is None or reference is None:
+                    continue
+                projected = project_conflicting_gradient(gradient, reference)
+                assert torch.is_tensor(projected)
+                projection_triggered = projection_triggered or not torch.equal(
+                    projected, gradient
+                )
+                adversarial_gradients[index] = projected
+                projection_applied = True
+            self._accumulate_gradients(parameters, adversarial_gradients)
+            if projection_applied:
+                self._backward_control_state["projection_applications"] += 1
+            if projection_triggered:
+                self._backward_control_state["projection_triggers"] += 1
+
+        stage4_scaled_count = 0
+        if plan.stage is BiCADXRStage.stage4:
+            stage4_scaled_count = scale_explicit_gradients(
+                shared, self.config.stage4_shared_stem_lr_scale
+            )
+        self._backward_control_state["last_update"] = int(plan.update)
+        result = {
+            "gradient_firewall_applied": firewall_applied,
+            "task_projection_applied": projection_applied,
+            "projection_triggered": projection_triggered,
+            "protected_parameter_count": len(shared),
+            "stage4_scaled_parameter_count": stage4_scaled_count,
+        }
+        audit = getattr(output, "audit", None)
+        if isinstance(audit, dict):
+            audit.update(result)
+            components = audit.get("components")
+            if isinstance(components, dict):
+                if "gradient_firewall" in components and firewall_applied:
+                    components["gradient_firewall"] = self._component(
+                        called=True,
+                        effective_count=len(shared),
+                    )
+                if "task_protected_gradient" in components and projection_applied:
+                    components["task_protected_gradient"] = self._component(
+                        called=True,
+                        effective_count=len(shared),
+                    )
+        return result
+
     def compute_step(
         self,
         batch: BiCADXRBatch | Mapping[str, Any] | Sequence[Any],
         update: int,
         total_updates: int,
+        *,
+        epoch: int | None = None,
+        source_loro_risk: Tensor | float | None = None,
+        source_loro_window: bool | None = None,
     ) -> BiCADXRTrainOutput:
         """Compute one source-only BiCAD-XR step without performing optimizer.step."""
 
         stage = stage_for_update(update, total_updates)
         prepared = self._prepare_batch(batch)
+        if epoch is None:
+            epoch = prepared.epoch
+        if epoch is not None and (
+            not isinstance(epoch, int) or isinstance(epoch, bool) or epoch < 1
+        ):
+            raise ValueError("epoch must be a positive integer or None")
+        if source_loro_risk is None:
+            source_loro_risk = prepared.source_loro_risk
+        if source_loro_risk is not None:
+            source_loro_risk = _scalar(source_loro_risk)
+        if source_loro_window is None:
+            source_loro_window = prepared.source_loro_window
+        if source_loro_window is not None and not isinstance(source_loro_window, bool):
+            raise ValueError("source_loro_window must be a bool or None")
         model_output = self._forward(prepared)
         logits = self._output_tensor(model_output, "tx_logits", "logits")
         z_id = _finite_feature(
@@ -631,12 +1031,25 @@ class BiCADXRTrainer(nn.Module):
         receiver_labeled = prepared.receiver[labeled_indices]
         day_labeled = prepared.day[labeled_indices]
         channel_labeled = prepared.channel[labeled_indices]
+        if (
+            prepared.labeled_mask is not None
+            and not bool(prepared.labeled_mask.all())
+            and tx_labeled is not None
+            and tx_labeled.numel() > 0
+        ):
+            conditioned_logits = self._tangent_logits(
+                z_id[labeled_indices], tx_labeled
+            )
+            logits = logits.clone()
+            logits[labeled_indices] = conditioned_logits
 
         zero = z_id.reshape(-1)[:1].sum() * 0.0
         total = zero
         components: dict[str, dict[str, Any]] = {}
         component_names = (
             "tx_ce",
+            "satellite_tx_ce",
+            "satellite_consistency",
             "domain_forward",
             "conditional_dann",
             "zdom_tx_adversary",
@@ -667,6 +1080,43 @@ class BiCADXRTrainer(nn.Module):
                 effective_count=int(tx_labeled.numel()),
             )
 
+        pair = self._pair_payload(prepared, model_output)
+        satellite_logits = pair.get("satellite_logits")
+        pair_tx = pair.get("tx", pair.get("pair_tx", pair.get("satellite_tx")))
+        if epoch is None:
+            components["satellite_tx_ce"] = self._component(skip_reason="missing_epoch")
+        elif epoch < self.config.concat_sat_start_epoch:
+            components["satellite_tx_ce"] = self._component(skip_reason="before_epoch80")
+        elif not torch.is_tensor(satellite_logits):
+            components["satellite_tx_ce"] = self._component(
+                skip_reason="concat_satellite_logits_unavailable"
+            )
+        elif pair_tx is None:
+            components["satellite_tx_ce"] = self._component(
+                skip_reason="concat_satellite_tx_unavailable"
+            )
+        else:
+            pair_tx = torch.as_tensor(pair_tx, device=satellite_logits.device, dtype=torch.long)
+            if (
+                satellite_logits.ndim != 2
+                or satellite_logits.size(1) != self.num_classes
+                or pair_tx.ndim != 1
+                or pair_tx.numel() != satellite_logits.size(0)
+            ):
+                raise ValueError("concat satellite logits and TX labels must align")
+            satellite_ce = F.cross_entropy(satellite_logits, pair_tx)
+            weighted_satellite_ce = self.config.lambda_sat_cls * satellite_ce
+            total = total + weighted_satellite_ce
+            components["satellite_tx_ce"] = self._component(
+                satellite_ce,
+                weighted_satellite_ce,
+                called=True,
+                effective_count=int(pair_tx.numel()),
+            )
+        components["satellite_consistency"] = self._component(
+            skip_reason="lambda_sat_cons_zero"
+        )
+
         peak_scale = 0.0 if stage is BiCADXRStage.stage0 else 1.0
         domain_scale = (
             self.config.stage4_domain_scale
@@ -674,6 +1124,7 @@ class BiCADXRTrainer(nn.Module):
             else peak_scale
         )
         factorized_output: dict[str, Tensor] = {}
+        domain_loss = zero
         conditional_loss = zero
         zdom_tx_loss = zero
         if self.factorized_heads is not None:
@@ -795,6 +1246,9 @@ class BiCADXRTrainer(nn.Module):
             components["conditional_xcov"] = self._component(skip_reason="candidate_disabled")
 
         xdc_output: XDCLossOutput | None = None
+        xdc_selection: _StructuredEpisodeSelection | None = None
+        xdc_tx: Tensor | None = None
+        xdc_receiver: Tensor | None = None
         xdc_called = False
         xdc_reason: str | None = None
         if not self.config.sparse_xdc:
@@ -806,26 +1260,25 @@ class BiCADXRTrainer(nn.Module):
         elif tx_labeled is None or tx_labeled.numel() == 0:
             xdc_reason = "missing_tx_labels" if tx_labeled is None else "no_labeled_rows"
         else:
-            local = self._structured_local_indices(prepared, tx)
+            xdc_selection = self._structured_episode(prepared, labeled_indices)
+            local = xdc_selection.batch_indices
             if local.numel() == 0:
                 xdc_reason = "no_valid_structured_cells"
             else:
+                xdc_tx = xdc_selection.episode.tx.to(device=z_id.device)
+                xdc_receiver = xdc_selection.episode.receiver.to(device=z_id.device)
                 xdc_output = xdc_losses(
                     z_id[local],
-                    tx[local],
-                    prepared.receiver[local],
+                    xdc_tx,
+                    xdc_receiver,
                     logits[local],
-                    num_classes=self.num_classes,
+                    num_classes=self.config.xdc_microepisode_tx,
                     temperature=self.config.xdc_temperature,
                     ridge=self.config.xdc_ridge,
                     min_support_accuracy=self.config.xdc_min_support_accuracy,
-                    num_receivers=self.num_receivers,
+                    num_receivers=self.config.xdc_microepisode_receivers,
                     kd_weight=1.0 if self.config.xdc_kd else 0.0,
-                    physical_indices=(
-                        None
-                        if prepared.physical_indices is None
-                        else torch.as_tensor(prepared.physical_indices)[local.cpu()]
-                    ),
+                    physical_indices=xdc_selection.episode.indices,
                 )
                 xdc_called = True
                 xdc_reason = xdc_output.skip_reason
@@ -860,14 +1313,17 @@ class BiCADXRTrainer(nn.Module):
         pair_called = False
         pair_reason: str | None = None
         pair_loss = zero
-        if not self.config.paired_satellite:
+        pair_enabled = bool(
+            self.config.paired_satellite
+            and self.config.candidate_id.strip().upper() == "E3"
+        )
+        if not pair_enabled:
             pair_reason = "candidate_disabled"
         elif stage.value in {"stage0", "stage1"}:
             pair_reason = "stage_before_stage2"
         elif update % self.config.pair_interval != 0:
             pair_reason = "interval"
         else:
-            pair = self._pair_payload(prepared, model_output)
             required = ("clean_z_id", "satellite_z_id")
             if not all(key in pair for key in required):
                 pair_reason = "concat_pair_unavailable"
@@ -917,9 +1373,7 @@ class BiCADXRTrainer(nn.Module):
                     receiver_labeled,
                     coefficients,
                 )
-                factual_logits = self._tangent_logits(
-                    logits[labeled_indices], z_id[labeled_indices], factual_features
-                )
+                factual_logits = self._tangent_logits(factual_features, tx_labeled)
                 attack_loss = F.softplus(
                     -classification_margin(factual_logits, tx_labeled)
                 ).mean()
@@ -934,9 +1388,7 @@ class BiCADXRTrainer(nn.Module):
                     receiver_labeled,
                     coefficients + direction,
                 )
-            tangent_logits = self._tangent_logits(
-                logits[labeled_indices], z_id[labeled_indices], tangent_features
-            )
+            tangent_logits = self._tangent_logits(tangent_features, tx_labeled)
             tangent_loss = F.cross_entropy(tangent_logits, tx_labeled)
             total = total + tangent_loss
             tangent_called = True
@@ -967,13 +1419,16 @@ class BiCADXRTrainer(nn.Module):
                 tail_fraction=self.config.margin_tail_cvar_fraction,
                 ema=self._tail_emas[0],
             )
-            if xdc_output is not None and xdc_output.skip_reason is None:
-                xdc_count = min(xdc_output.ensemble_logits.size(0), tx_labeled.size(0))
+            if (
+                xdc_output is not None
+                and xdc_output.skip_reason is None
+                and xdc_tx is not None
+                and xdc_receiver is not None
+            ):
+                xdc_groups = _combine_group_ids(xdc_tx, xdc_receiver)
                 xdc_risk = group_margin_cvar(
-                    classification_margin(
-                        xdc_output.ensemble_logits[:xdc_count], tx_labeled[:xdc_count]
-                    ),
-                    tx_groups[:xdc_count],
+                    classification_margin(xdc_output.ensemble_logits, xdc_tx),
+                    xdc_groups,
                     tail_fraction=self.config.margin_tail_cvar_fraction,
                     ema=self._tail_emas[1],
                 )
@@ -1006,6 +1461,7 @@ class BiCADXRTrainer(nn.Module):
         if not tail_called:
             components["margin_tail"] = self._component(skip_reason=tail_reason)
 
+        adversarial_loss = conditional_loss + zdom_tx_loss
         projection_called = False
         projection_triggered = False
         projection_reason: str | None = None
@@ -1018,31 +1474,10 @@ class BiCADXRTrainer(nn.Module):
         elif tx_loss is None:
             projection_reason = "missing_tx_labels"
         else:
-            adversarial_loss = conditional_loss + zdom_tx_loss
             if not adversarial_loss.requires_grad:
                 projection_reason = "no_adversarial_gradient"
             else:
-                reference_gradient = torch.autograd.grad(
-                    tx_loss,
-                    z_id,
-                    retain_graph=True,
-                    allow_unused=True,
-                )[0]
-                adversarial_gradient = torch.autograd.grad(
-                    adversarial_loss,
-                    z_id,
-                    retain_graph=True,
-                    allow_unused=True,
-                )[0]
-                if reference_gradient is None or adversarial_gradient is None:
-                    projection_reason = "gradient_unavailable"
-                else:
-                    projected = project_conflicting_gradient(
-                        adversarial_gradient,
-                        reference_gradient,
-                    )
-                    projection_called = True
-                    projection_triggered = not torch.equal(projected, adversarial_gradient)
+                projection_reason = "awaiting_backward_controls"
         components["task_protected_gradient"] = self._component(
             0.0,
             0.0,
@@ -1052,41 +1487,76 @@ class BiCADXRTrainer(nn.Module):
         )
 
         swad_updated = False
+        swad_candidate = bool(
+            self.config.swad and self.config.candidate_id.strip().upper() == "F3"
+        )
         if (
-            self.config.swad
-            and self.config.candidate_id.upper() == "F3"
+            swad_candidate
             and stage is BiCADXRStage.stage4
+            and source_loro_risk is not None
+            and source_loro_window is True
         ):
-            swad_updated = self._update_swad(tx_loss if "tx_loss" in locals() else total)
+            swad_updated = self._update_swad(source_loro_risk)
         swad_reason = None if swad_updated else (
             "candidate_disabled"
-            if not (self.config.swad and self.config.candidate_id.upper() == "F3")
+            if not swad_candidate
             else "stage_before_stage4"
             if stage is not BiCADXRStage.stage4
+            else "missing_source_loro_risk"
+            if source_loro_risk is None
             else "not_low_risk_window"
+        )
+        firewall_scheduled = bool(
+            self.config.gradient_firewall
+            and stage is not BiCADXRStage.stage0
+            and domain_loss.requires_grad
         )
         components["gradient_firewall"] = self._component(
             0.0,
             0.0,
-            called=bool(self.config.gradient_firewall and stage is not BiCADXRStage.stage0),
-            effective_count=len(self.shared_stem_parameters())
-            if self.config.gradient_firewall and stage is not BiCADXRStage.stage0
-            else 0,
+            called=False,
+            effective_count=0,
             skip_reason=(
-                None
-                if self.config.gradient_firewall and stage is not BiCADXRStage.stage0
+                "awaiting_backward_controls"
+                if firewall_scheduled
                 else "candidate_disabled"
                 if not self.config.gradient_firewall
                 else "stage0_disabled"
             ),
         )
 
+        backward_plan = BiCADXRBackwardPlan(
+            total=total,
+            domain_forward=domain_loss,
+            adversarial=adversarial_loss,
+            task_reference=zero if tx_loss is None else tx_loss,
+            stage=stage,
+            update=int(update),
+            firewall_enabled=firewall_scheduled,
+            projection_enabled=projection_reason == "awaiting_backward_controls",
+        )
         runtime = self.checkpoint_runtime(update, total_updates, stage=stage)
+        episode_indices = (
+            []
+            if xdc_selection is None
+            else [int(value) for value in xdc_selection.batch_indices.detach().cpu().tolist()]
+        )
+        episode_tx = (
+            []
+            if xdc_selection is None
+            else [int(value) for value in xdc_selection.episode.tx.tolist()]
+        )
+        episode_receiver = (
+            []
+            if xdc_selection is None
+            else [int(value) for value in xdc_selection.episode.receiver.tolist()]
+        )
         audit: dict[str, Any] = {
             "stage": stage.name,
             "update": int(update),
             "total_updates": int(total_updates),
             "candidate_id": self.config.candidate_id,
+            "epoch": epoch,
             "grl_identity": float(domain_scale if stage is not BiCADXRStage.stage0 else 0.0),
             "grl_tx": float(domain_scale if stage is not BiCADXRStage.stage0 else 0.0),
             "domain_dann_scale": float(domain_scale),
@@ -1105,6 +1575,10 @@ class BiCADXRTrainer(nn.Module):
             "xdc_donor_query_matrix": None
             if xdc_output is None
             else xdc_output.donor_query_matrix,
+            "xdc_episode_batch_indices": episode_indices,
+            "xdc_episode_tx": episode_tx,
+            "xdc_episode_receiver": episode_receiver,
+            "xdc_tail_query_tx": episode_tx,
             "pair_called": pair_called,
             "pair_source": "concat_satellite" if pair_called else None,
             "pair_skip_reason": pair_reason,
@@ -1118,6 +1592,8 @@ class BiCADXRTrainer(nn.Module):
             "projection_skip_reason": projection_reason,
             "swad_updated": swad_updated,
             "swad_skip_reason": swad_reason,
+            "source_loro_risk": source_loro_risk,
+            "source_loro_window": source_loro_window,
             "extra_forward_count": 0,
             "model_forward_count": 1,
             "components": components,
@@ -1144,11 +1620,13 @@ class BiCADXRTrainer(nn.Module):
             features=model_output,
             audit=audit,
             checkpoint_runtime=runtime,
+            backward_plan=backward_plan,
         )
 
 
 __all__ = [
     "BiCADXRBatch",
+    "BiCADXRBackwardPlan",
     "BiCADXRTrainOutput",
     "BiCADXRTrainer",
 ]

@@ -804,6 +804,47 @@ class DualCVSincNetDisentangle(nn.Module):
     def _pick_z_dom(self, aux: Dict[str, torch.Tensor]) -> torch.Tensor:
         return self._pick_from_keys(aux, self.dom_feature_key, ("feat_imp", "feat_pa", "feat_dac", "base", "feat_con", "feat_cls", "feat_joint"))
 
+    def classify_identity_features(
+        self,
+        features: torch.Tensor,
+        labels: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
+        """Classify an already-computed public identity feature.
+
+        BiCAD-XR tangent features must pass through the same real TX head as
+        ordinary identity features.  Only representations that are known to
+        be direct inputs to that head are accepted; unsupported feature keys,
+        parameter-matched representations and adapter-corrected logits fail
+        closed instead of fabricating a logit delta.
+        """
+
+        if not torch.is_tensor(features) or features.ndim != 2:
+            raise ValueError("identity features must have shape [batch,feature]")
+        if self.representation_mode != "dual":
+            raise RuntimeError(
+                "public TX classifier is unavailable for parameter-matched identity features"
+            )
+        if self.sat_anchor_identity_adapter is not None:
+            raise RuntimeError(
+                "public TX classifier is unavailable after the satellite identity adapter"
+            )
+
+        if self.arch_family == "cvsincnet":
+            if self.id_feature_key != "feat_joint":
+                raise RuntimeError(
+                    "public TX classifier requires id_feature_key=feat_joint"
+                )
+            classifier = getattr(getattr(self.id_backbone, "cls_head", None), "head", None)
+            if callable(classifier):
+                return classifier(features, labels=labels)
+        else:
+            classifier = getattr(self.id_backbone, "classifier", None)
+            if classifier is None:
+                classifier = getattr(getattr(self.id_backbone, "encoder", None), "classifier", None)
+            if callable(classifier):
+                return classifier(features)
+        raise RuntimeError("public TX classifier is unavailable for identity features")
+
     def forward(
         self,
         x: torch.Tensor,
