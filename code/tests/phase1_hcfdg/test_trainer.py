@@ -97,7 +97,11 @@ class _SingleViewBuilder:
 
 
 class _PhysicalSingleViewBuilder:
-    def __call__(self, x, augmentor, generator, p_sat=0.30):
+    def __init__(self):
+        self.received_satellite_mask = None
+
+    def __call__(self, x, augmentor, generator, p_sat=0.30, satellite_mask=None):
+        self.received_satellite_mask = satellite_mask
         return SimpleNamespace(
             iq=x,
             channel_labels=torch.ones(x.shape[0], dtype=torch.long),
@@ -208,6 +212,19 @@ def test_single_view_routes_five_physical_channel_factors_to_environment_input(t
     assert result.shape == batch.iq.shape
     assert batch.env_meta["q_phys"].shape == (4, 5)
     torch.testing.assert_close(batch.env_meta["q_phys"], batch.env_meta["channel_factors"])
+
+
+def test_single_view_uses_episode_planned_channel_mask(tmp_path):
+    trainer, _, _ = _make_trainer(tmp_path)
+    builder = _PhysicalSingleViewBuilder()
+    trainer.build_single_view_batch = builder
+    raw = _labeled_batch()
+    raw["satellite_mask_plan"] = torch.tensor([False, True, False, True])
+    batch = trainer._prepare_source_batch(raw, allow_tx=True)
+
+    trainer._single_view(batch)
+
+    assert torch.equal(builder.received_satellite_mask, raw["satellite_mask_plan"])
 
 
 def test_v1_runs_exactly_4000_optimizer_updates_and_one_backbone_call_per_update(tmp_path):

@@ -104,6 +104,24 @@ def test_single_view_batch_mask_and_outputs_are_reproducible_for_same_generator_
     assert torch.equal(first.channel_factors, second.channel_factors)
 
 
+def test_single_view_batch_honors_a_frozen_episode_channel_mask():
+    x = torch.arange(6 * 2 * 4, dtype=torch.float32).reshape(6, 2, 4)
+    planned = torch.tensor([False, True, False, True, False, False])
+
+    result = build_single_view_batch(
+        x,
+        _FakeAugmentor(),
+        torch.Generator(device="cpu").manual_seed(392002),
+        p_sat=0.30,
+        satellite_mask=planned,
+    )
+
+    assert torch.equal(result.satellite_mask, planned)
+    assert torch.equal(result.channel_labels, planned.long())
+    assert torch.equal(result.iq[~planned], x[~planned])
+    assert torch.equal(result.iq[planned], x[planned] + 1000.0)
+
+
 def test_empirical_satellite_fraction_tracks_point_three():
     x = torch.zeros(20, 2, 4)
     augmentor = _FakeAugmentor()

@@ -141,6 +141,23 @@ def test_episode_types_follow_the_frozen_probabilities():
     assert counts["channel"] / 4000 == pytest.approx(0.125, abs=0.02)
 
 
+def test_leave_out_masks_exclude_the_complete_selected_factor():
+    sampler = HCFDGEpisodeBatchSampler(_complete_metadata(), seed=392002)
+
+    for episode in islice(iter(sampler), 200):
+        factors = {
+            "receiver": np.asarray(episode.receiver_ids),
+            "day": np.asarray(episode.day_ids),
+            "channel": np.asarray(episode.channel_ids),
+        }[episode.episode_type]
+        query_factors = set(factors[episode.query_mask].tolist())
+        support_factors = set(factors[episode.support_mask].tolist())
+
+        assert len(query_factors) == 1
+        assert query_factors.isdisjoint(support_factors)
+        assert query_factors | support_factors == set(factors[episode.valid_tx_mask].tolist())
+
+
 def test_incomplete_cell_is_masked_without_borrowing_another_tx():
     metadata = _complete_metadata()
     incomplete_index = 12

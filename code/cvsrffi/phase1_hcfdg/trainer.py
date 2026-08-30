@@ -365,6 +365,11 @@ def _source_batch(batch: Any, *, allow_tx: bool, stage0: bool = False) -> _Sourc
     q_phys = None if stage0 else read("q_phys", ("q_phys", "physical_stats", "phys_stats"))
     if q_phys is not None:
         env_meta["q_phys"] = q_phys
+    satellite_mask_plan = None if stage0 else read(
+        "satellite_mask_plan", ("satellite_mask_plan",)
+    )
+    if satellite_mask_plan is not None:
+        env_meta["satellite_mask_plan"] = satellite_mask_plan
 
     if stage0:
         domain = query_domain = support_mask = query_mask = content_keys = groups = None
@@ -714,6 +719,7 @@ class HCFDGTrainer:
             self.satellite_augmentor,
             self._generator,
             p_sat=0.30,
+            satellite_mask=batch.env_meta.get("satellite_mask_plan"),
         )
         channel_labels = _mapping_value(result, ("channel_labels", "channel_label"))
         channel_factors = _mapping_value(result, ("channel_factors", "factors"))

@@ -282,10 +282,29 @@ class HCFDGEpisodeBatchSampler:
                 self._cells[(tx_id, domain_id)] = tuple(int(position) for position in positions.tolist())
 
         candidates = self._valid_domain_combinations()
-        best_score = max(candidate[2] for candidate in candidates)
-        self._candidate_rectangles = tuple(
-            candidate for candidate in candidates if candidate[2] == best_score
-        )
+        self._candidate_rectangles: dict[
+            str, tuple[tuple[tuple[int, ...], tuple[int, ...], tuple[int, int, int, int]], ...]
+        ] = {}
+        for episode_type, factor_position in zip(_EPISODE_TYPES, (0, 1, 2)):
+            eligible = [
+                candidate
+                for candidate in candidates
+                if len(
+                    {
+                        self._domain_metadata[domain_id][factor_position]
+                        for domain_id in candidate[0]
+                    }
+                )
+                >= 2
+            ]
+            if not eligible:
+                raise ValueError(
+                    f"metadata has no rectangular source pool for {episode_type} leave-out"
+                )
+            best_score = max(candidate[2] for candidate in eligible)
+            self._candidate_rectangles[episode_type] = tuple(
+                candidate for candidate in eligible if candidate[2] == best_score
+            )
 
     def __iter__(self) -> Iterator[EpisodeDescriptor]:
         generator = np.random.default_rng(self._epoch_seed())
@@ -402,10 +421,11 @@ class HCFDGEpisodeBatchSampler:
         return candidates
 
     def _choose_rectangle(
-        self, generator: np.random.Generator
+        self, generator: np.random.Generator, episode_type: str
     ) -> tuple[tuple[int, ...], tuple[int, ...]]:
-        candidate_position = int(generator.integers(0, len(self._candidate_rectangles)))
-        domains, selected_tx, _ = self._candidate_rectangles[candidate_position]
+        candidates = self._candidate_rectangles[episode_type]
+        candidate_position = int(generator.integers(0, len(candidates)))
+        domains, selected_tx, _ = candidates[candidate_position]
         return domains, selected_tx
 
     def _choose_query_domain(
@@ -486,7 +506,7 @@ class HCFDGEpisodeBatchSampler:
         episode_type = str(
             episode_generator.choice(_EPISODE_TYPES, p=_EPISODE_PROBABILITIES)
         )
-        domains, selected_tx = self._choose_rectangle(episode_generator)
+        domains, selected_tx = self._choose_rectangle(episode_generator, episode_type)
         query_domain = self._choose_query_domain(domains, episode_type, episode_generator)
 
         indices: list[int] = []
@@ -510,18 +530,27 @@ class HCFDGEpisodeBatchSampler:
                     domain_ids.append(int(domain_id))
                     sample_valid.append(bool(is_valid))
 
-        domain_array = np.asarray(domain_ids, dtype=np.int64)
         valid_array = np.asarray(sample_valid, dtype=bool)
+        factor_position = {"receiver": 0, "day": 1, "channel": 2}[episode_type]
+        query_factor = self._domain_metadata[query_domain][factor_position]
+        factor_array = np.asarray(
+            [self._domain_metadata[int(domain_id)][factor_position] for domain_id in domain_ids],
+            dtype=np.int64,
+        )
         eligible_tx = {
-            tx_id: sum(bool(self._cells[(tx_id, domain_id)]) for domain_id in domains if domain_id != query_domain)
+            tx_id: sum(
+                bool(self._cells[(tx_id, domain_id)])
+                for domain_id in domains
+                if self._domain_metadata[domain_id][factor_position] != query_factor
+            )
             >= 2
             for tx_id in selected_tx
         }
         valid_tx_mask = valid_array & np.asarray(
             [eligible_tx[int(tx_id)] for tx_id in tx_ids], dtype=bool
         )
-        query_mask = valid_tx_mask & (domain_array == query_domain)
-        support_mask = valid_tx_mask & (domain_array != query_domain)
+        query_mask = valid_tx_mask & (factor_array == query_factor)
+        support_mask = valid_tx_mask & (factor_array != query_factor)
 
         return EpisodeDescriptor(
             indices=tuple(indices),

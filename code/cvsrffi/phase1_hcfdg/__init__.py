@@ -22,6 +22,12 @@ from .config import (
     quick_screen_rows,
     residual_rows,
 )
+from .losses import compose_hcfdg_loss
+from .metrics import SameRowMetrics, rank_source_rows
+from .model import HCFDGModel, HCFDGOutput
+from .sampler import EpisodeDescriptor, HCFDGEpisodeBatchSampler
+from .satellite import ChannelFactors, SingleViewBatch, build_single_view_batch
+from .trainer import HCFDGTrainer, TrainState
 
 __all__ = [
     "HCFDG_BATCH_SIZE",
@@ -41,7 +47,19 @@ __all__ = [
     "V2_OPTIMIZER_UPDATES",
     "V2_STAGE_BUDGET",
     "candidate_config",
+    "ChannelFactors",
+    "compose_hcfdg_loss",
     "deep_screen_rows",
+    "EpisodeDescriptor",
+    "HCFDGEpisodeBatchSampler",
+    "HCFDGModel",
+    "HCFDGOutput",
+    "HCFDGTrainer",
     "quick_screen_rows",
+    "rank_source_rows",
     "residual_rows",
+    "SameRowMetrics",
+    "SingleViewBatch",
+    "TrainState",
+    "build_single_view_batch",
 ]
