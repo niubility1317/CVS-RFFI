@@ -53,6 +53,16 @@ def _unit(rows: Any) -> np.ndarray:
     return values / norms
 
 
+def _unit_or_zero(rows: Any) -> np.ndarray:
+    values = np.asarray(rows, dtype=np.float64)
+    if values.ndim != 2 or len(values) == 0 or not np.isfinite(values).all():
+        raise OldOnlyERBTError("features must be finite nonempty matrices")
+    norms = np.linalg.norm(values, axis=1, keepdims=True)
+    result = np.zeros_like(values)
+    np.divide(values, norms, out=result, where=norms > _EPS)
+    return result
+
+
 def make_fft96(received_iq: Any) -> np.ndarray:
     rows = np.asarray(received_iq, dtype=np.float32)
     if rows.ndim != 3 or rows.shape[1:] != (2, 256) or not np.isfinite(rows).all():
@@ -70,7 +80,9 @@ def _features(identity160: Any, fft96: Any) -> np.ndarray:
         raise OldOnlyERBTError("identity feature geometry drift")
     if fft.ndim != 2 or fft.shape != (len(identity), 96):
         raise OldOnlyERBTError("FFT feature geometry drift")
-    joined = np.concatenate([_unit(identity), 4.0 * _unit(fft)], axis=1)
+    joined = np.concatenate(
+        [_unit_or_zero(identity), 4.0 * _unit_or_zero(fft)], axis=1
+    )
     return np.asarray(_unit(joined), dtype=np.float32)
 
 

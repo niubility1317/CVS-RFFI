@@ -144,6 +144,54 @@ def test_old_only_erbt_fits_balanced_support_and_predicts_all_classes():
     assert state.audit["d92_registration_balanced_active"] is False
 
 
+def test_old_only_erbt_scores_zero_identity_row_from_valid_fft_block():
+    labels = np.repeat(np.arange(6), 10)
+    identity = np.zeros((60, 160), dtype=np.float32)
+    fft = np.zeros((60, 96), dtype=np.float32)
+    for class_id in range(6):
+        mask = labels == class_id
+        identity[mask, class_id] = 1.0
+        fft[mask, class_id] = 1.0
+    state = fit_old_only_erbt(
+        identity,
+        fft,
+        labels,
+        class_ids=tuple(range(6)),
+        seed=713101,
+    )
+
+    query_identity = np.zeros((1, 160), dtype=np.float32)
+    query_fft = np.zeros((1, 96), dtype=np.float32)
+    query_fft[0, 2] = 1.0
+    logits = state.score(query_identity, query_fft)
+
+    assert logits.shape == (1, 6)
+    assert np.isfinite(logits).all()
+
+
+def test_old_only_erbt_rejects_query_with_both_feature_blocks_degenerate():
+    labels = np.repeat(np.arange(6), 10)
+    identity = np.zeros((60, 160), dtype=np.float32)
+    fft = np.zeros((60, 96), dtype=np.float32)
+    for class_id in range(6):
+        mask = labels == class_id
+        identity[mask, class_id] = 1.0
+        fft[mask, class_id] = 1.0
+    state = fit_old_only_erbt(
+        identity,
+        fft,
+        labels,
+        class_ids=tuple(range(6)),
+        seed=713101,
+    )
+
+    with pytest.raises(OldOnlyERBTError, match="feature row is degenerate"):
+        state.score(
+            np.zeros((1, 160), dtype=np.float32),
+            np.zeros((1, 96), dtype=np.float32),
+        )
+
+
 def test_fft96_is_deterministic_and_has_locked_dimension():
     rows = np.ones((2, 2, 256), dtype=np.float32)
     first = make_fft96(rows)
