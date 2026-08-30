@@ -76,6 +76,7 @@ v1没有`pilot_result.json`和合法prediction，因此不得启动scorer。
 - 新run只重跑没有合法结果的6条row：GPU2主`B0+A+B+C+ABC`、GPU1无L2-SP、GPU3弱L2-SP、GPU4强L2-SP、GPU6强VSW、GPU7短训练。已`ANALYZED`的去原型和弱VSW不重复跑；GPU0旧v2主pilot保持只读。每GPU最多3个训练实验，本批次每张目标卡只新增1条。
 - 2026-08-31 01:32 CST启动并完成首次绑定回读：GPU2主pilot PID=`2463277`，GPU1无L2-SP PID=`2463288`，GPU3弱L2-SP PID=`2463290`，GPU4强L2-SP PID=`2463276`，GPU6强VSW PID=`2463289`，GPU7短训练PID=`2463291`。6条均为`RUNNING`，CWD、cmdline、run root和物理GPU映射正确，每条初始artifact文件数为2；GPU0旧v2 PID=`2439930`继续只读运行。
 - GPU0旧v2主pilot随后自然结束并复现同一单模态零范数异常；仅有2组partial prediction，无`pilot_result.json`，因此未连接truth或评分。GPU2 v3主pilot继续运行。
+- GPU2 v3主pilot最终完成15组prediction并由独立scorer评分。正式A和B均`passed=false`，C/ABC仅作为诊断且P3没有改善；`best_formal_arm=null`、`next_experiment_authorized=false`。
 
 ### v3首条闭环
 
@@ -91,3 +92,14 @@ v1没有`pilot_result.json`和合法prediction，因此不得启动scorer。
 |B，`lambda_vsw=1.0`|`+12.50/-3.33/+5.83pp`|`+13.33/-1.67/+3.33pp`|`+0.83/-2.50/-2.50pp`|`-5.00pp`|`+0.6260`|未通过，不晋级|
 
 4条run均先完成3场景×2臂共6组prediction并保持`truth_opened=false`，再由各自独立scorer连接truth；所有结果均为`ANALYZED`。零模态修复消除了原先P3技术中断，但4个候选都在low-elev或rain的P3旧类指标上回退，故均`next_experiment_authorized=false`。
+
+### v3主ABC最终结果
+
+|arm|P1变化（clear/low-elev/rain）|P2变化（clear/low-elev/rain）|P3变化（clear/low-elev/rain）|P3 floor中位变化|几何比中位变化|用途与结论|
+|---|---|---|---|---:|---:|---|
+|A|`+10.00/0.00/+6.67pp`|`+12.50/+4.17/+7.50pp`|`+1.67/-5.00/+0.83pp`|`-5.00pp`|`+0.6134`|正式；未通过|
+|B|`+14.17/-3.33/+5.00pp`|`+15.00/-0.83/+4.17pp`|`+3.33/-2.50/-0.83pp`|`0.00pp`|`+0.4331`|正式；未通过|
+|C|`+5.83/-5.83/+5.83pp`|`+6.67/-4.17/+5.83pp`|`-0.83/-4.17/+1.67pp`|`-5.00pp`|`+0.2999`|诊断；不参与晋级|
+|ABC|`+8.33/-1.67/+4.17pp`|`+9.17/0.00/+4.17pp`|`0.00/-5.83/0.00pp`|`-5.00pp`|`+0.6207`|诊断；不参与晋级|
+
+主pilot同样先完成15组prediction并确认`truth_opened=false`，再由独立scorer连接truth。至此v3的6条run全部为`ANALYZED`；全部10个正式A/B候选未通过，阶段B和完整Target125均不启动。

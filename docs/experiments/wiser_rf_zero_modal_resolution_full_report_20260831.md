@@ -2,7 +2,7 @@
 
 ## 报告状态
 
-本报告冻结截至2026-08-31 02:22 CST已经取得的代码、协议、N607运行和独立评分证据。技术问题已经解决：support/query包根路由正确，适配后单模态零范数不再导致P3异常退出，prediction可以在不读取truth的条件下完整落盘。科学问题尚未解决：已评分的8个正式A/B候选均未通过预注册表示门槛，完整Target125和WISER注册适应阶段没有获得启动授权。
+本报告冻结截至2026-08-31 03:05 CST已经取得的代码、协议、N607运行和独立评分证据。技术问题已经解决：support/query包根路由正确，适配后单模态零范数不再导致P3异常退出，prediction可以在不读取truth的条件下完整落盘。科学问题尚未解决：已评分的10个正式A/B候选均未通过预注册表示门槛，完整Target125和WISER注册适应阶段没有获得启动授权。
 
 这一区分决定了当前结论的边界：
 
@@ -180,12 +180,12 @@ release只进行了一次本地/远端归档SHA比对，没有增加成员哈希
 |---|---|---|---|
 |v1|首轮8卡A/B/C因果矩阵|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`|support/query包根错误，无性能结果|
 |v2|queryfix重发|2条`ANALYZED`，6条技术失败|首次取得去原型和弱VSW合法负结果；其余run暴露单模态零范数问题|
-|v3|zero-modal修复重发|5条`ANALYZED`，主ABC仍运行|技术闭环恢复，已评分正式候选全部未晋级|
+|v3|zero-modal修复重发|6条全部`ANALYZED`|技术闭环恢复，全部正式候选未晋级|
 
 截至本报告冻结时刻：
 
 - GPU0 v2主ABC PID`2439930`已自然结束并复现单模态零范数异常；仅有2组partial prediction，没有`pilot_result.json`，未评分；
-- GPU2 v3主ABC PID`2463277`仍运行，没有`pilot_result.json`；
+- GPU2 v3主ABC PID`2463277`已完成15组prediction和独立评分；
 - v3短训练、无L2-SP、弱L2-SP、强L2-SP和强VSW均已独立评分；
 - 去原型和弱VSW沿用已闭合v2结果，不因v3技术修复重复运行。
 
@@ -203,6 +203,8 @@ release只进行了一次本地/远端归档SHA比对，没有增加成员哈希
 |v3 A，`lambda_sp=0.1`|`+8.33/-0.83/+1.67pp`|`+7.50/-2.50/+2.50pp`|`+3.33/-4.17/-0.83pp`|`-10.00pp`|`+0.3539`|未通过|
 |v3 A，`lambda_sp=2.0`|`+8.33/-2.50/+5.83pp`|`+7.50/-1.67/+5.00pp`|`+1.67/-7.50/-0.83pp`|`-10.00pp`|`+0.9177`|未通过|
 |v3 B，`lambda_vsw=1.0`|`+12.50/-3.33/+5.83pp`|`+13.33/-1.67/+3.33pp`|`+0.83/-2.50/-2.50pp`|`-5.00pp`|`+0.6260`|未通过|
+|v3主pilot A|`+10.00/0.00/+6.67pp`|`+12.50/+4.17/+7.50pp`|`+1.67/-5.00/+0.83pp`|`-5.00pp`|`+0.6134`|未通过|
+|v3主pilot B|`+14.17/-3.33/+5.00pp`|`+15.00/-0.83/+4.17pp`|`+3.33/-2.50/-0.83pp`|`0.00pp`|`+0.4331`|未通过|
 
 所有run都先完成prediction并确认`truth_opened=false`，再由各自独立scorer连接truth；没有跨run使用truth调参或选择性重跑。
 
@@ -216,7 +218,7 @@ release只进行了一次本地/远端归档SHA比对，没有增加成员哈希
 
 ### 7.2 尚未解决的性能问题
 
-8个候选呈现同一结构：P1/P2和类间/类内几何比经常提高，P3却在low-elev场景显著回退，类别floor也经常下降。最强的例子是`lambda_sp=0`：几何比中位提升`+0.9717`，但low-elev P3下降`8.33pp`。强VSW使clear场景P1/P2分别提高`12.50pp`和`13.33pp`，P3在low-elev和rain分别下降`2.50pp`。
+10个正式候选呈现同一结构：P1/P2和类间/类内几何比经常提高，P3却在low-elev场景显著回退，类别floor也经常下降。最强的例子是`lambda_sp=0`：几何比中位提升`+0.9717`，但low-elev P3下降`8.33pp`。主pilot的A使三场景P2分别提高`12.50pp`、`4.17pp`和`7.50pp`，low-elev P3仍下降`5.00pp`。
 
 这说明当前目标函数主要改善了冻结源语义和全局类间结构，却没有稳定保护D92依赖的局部类条件协方差与类别尾部。继续扩大step、seed或完整Target125不能解决这一机制缺口。
 
@@ -244,17 +246,17 @@ release只进行了一次本地/远端归档SHA比对，没有增加成员哈希
 |R08|小型可量化源分布摘要|`wiser_source_summary.py`与`项目.md`5.3.2|`verified`|实际5,363字节int8域×类摘要|
 |R09|源协方差或global normalization统计|协议允许低秩残差/半径及可选global location/scale|`deferred`|当前真实artifact未携带协方差或global location/scale|
 |R10|类条件VSW|`classwise_sliced_wasserstein`|`verified`|弱/默认/强权重路径可达，性能未晋级|
-|R11|C与ABC模型反演约束|`wiser_model_inversion.py`|`implemented`|本地测试和真实ABC smoke通过；完整ABC评分待主pilot|
+|R11|C与ABC模型反演约束|`wiser_model_inversion.py`|`verified`|本地测试、真实ABC smoke和15单元主pilot评分完成|
 |R12|适配后重新冻结|`train_wiser_arm`finally路径|`verified`|query前检查model.eval且无可训练参数|
-|R13|P1/P2/P3表示probe和独立评分|WISER pilot/scorer|`verified`|5条v3和2条v2因果run已ANALYZED|
+|R13|P1/P2/P3表示probe和独立评分|WISER pilot/scorer|`verified`|6条v3和2条v2因果run已ANALYZED|
 |R14|单模态零范数安全处理|`stage2_sf_erbt_oldonly.py`|`verified`|回归测试、P0/P1审查和v3真实prediction闭环|
 |R15|A/B/C梯度冲突控制|尚无PCGrad/约束投影|`deferred`|当前固定加权和已暴露P3冲突，需新候选实现|
 |R16|WISER专用阶段B注册残差|`phi_R`自动接续|`deferred`|基础registered D92存在，但WISER Stage A门槛未通过|
 |R17|完整历史Target125|`125 outer/375 scene`|`blocked`|所有正式A/B候选`next_experiment_authorized=false`|
-|R18|当前A/B候选性能晋级|预注册表示门槛|`rejected`|8/8候选未通过|
-|R19|C/ABC完整主pilot结果|GPU2 v3|`pending`|截至02:22 CST仍运行，无`pilot_result.json`；GPU0 v2已技术失败|
+|R18|当前A/B候选性能晋级|预注册表示门槛|`rejected`|10/10候选未通过|
+|R19|C/ABC完整主pilot结果|GPU2 v3|`verified`|15组prediction和独立评分完成；C/ABC诊断P3未改善|
 
-追踪统计：`verified=12`、`implemented=1`、`deferred=3`、`rejected=1`、`blocked=1`、`pending=1`。
+追踪统计：`verified=14`、`implemented=0`、`deferred=3`、`rejected=1`、`blocked=1`、`pending=0`。
 
 ## 九、最终判断
 
