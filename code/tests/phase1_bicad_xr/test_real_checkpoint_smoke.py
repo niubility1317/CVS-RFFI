@@ -85,6 +85,8 @@ def test_real_checkpoint_smoke_runs_optimizer_and_four_registered_scenarios(tmp_
 
     assert result["status"] == "PASS"
     assert result["optimizer_step_complete"] is True
+    assert result["backward_controls_complete"] is True
+    assert isinstance(result["backward_controls"], dict)
     assert result["four_scenarios_complete"] is True
     assert set(result["evaluations"]) == set(smoke.SCENARIOS)
     assert all(row["finite"] for row in result["evaluations"].values())

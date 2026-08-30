@@ -167,12 +167,12 @@ def run_smoke(
         args=sat_args,
         epoch=80,
         batch_idx=1,
-        update=1,
+        update=501,
         total_updates=5000,
     )
     if not bool(torch.isfinite(step.total)):
         raise FloatingPointError("BiCAD-XR smoke loss is non-finite")
-    step.total.backward()
+    backward_audit = trainer.apply_backward_controls(step)
     finite_gradients = [
         bool(torch.isfinite(parameter.grad).all())
         for parameter in trainer.parameters()
@@ -224,6 +224,8 @@ def run_smoke(
         "fresh_bicad_runtime": True,
         "historical_checkpoint_has_bicad_runtime": bool(payload.get("bicad_xr_runtime")),
         "optimizer_step_complete": True,
+        "backward_controls_complete": True,
+        "backward_controls": backward_audit,
         "training_loss_finite": True,
         "concat_sat_ce_only": True,
         "concat_forward_batch_size": int(view["total_batch_size"]),

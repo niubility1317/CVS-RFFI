@@ -10,7 +10,7 @@ import torch
 from torch import nn
 
 from SSDG import train_ssdg
-from cvsrffi.phase1_bicad_xr.trainer import BiCADXRTrainer
+from cvsrffi.phase1_bicad_xr.trainer import BiCADXRBatch, BiCADXRTrainer
 
 
 class _CountingIQModel(nn.Module):
@@ -251,3 +251,64 @@ def test_bicad_checkpoint_runtime_is_strict_and_failure_is_unmarked() -> None:
         )
 
     assert "strict_reconstruction" not in checkpoint["bicad_xr_runtime"]
+
+
+def test_real_bicad_training_entry_applies_registered_backward_controls() -> None:
+    source = inspect.getsource(train_ssdg._train_bicad_xr)
+
+    assert "trainer.apply_backward_controls(step_output)" in source
+    assert "step_output.total.backward()" not in source
+
+
+@pytest.mark.parametrize(
+    ("source_receivers", "raw_receivers"),
+    [
+        ([3, 4, 6, 8], [3, 4, 6, 8]),
+        ([1, 3, 4, 6], [1, 3, 4, 6]),
+    ],
+)
+def test_formal_fold_raw_domain_indices_are_remapped_before_domain_ce(
+    source_receivers: list[int],
+    raw_receivers: list[int],
+) -> None:
+    receiver = train_ssdg._bicad_xr_local_domain_labels(
+        torch.tensor(raw_receivers, dtype=torch.long),
+        source_receivers,
+        name="receiver",
+    )
+    day = train_ssdg._bicad_xr_local_domain_labels(
+        torch.tensor([1, 2, 3, 1], dtype=torch.long),
+        [1, 2, 3],
+        name="day",
+    )
+
+    model = _CountingIQModel()
+    trainer = BiCADXRTrainer(
+        train_ssdg._BiCADXRConcatForward(model),
+        "D5",
+        num_receivers=4,
+        num_days=3,
+    )
+    batch = BiCADXRBatch(
+        x=torch.ones(4, 2, 64, dtype=torch.float32),
+        tx=torch.tensor([0, 1, 2, 0], dtype=torch.long),
+        receiver=receiver,
+        day=day,
+        channel=torch.zeros(4, dtype=torch.long),
+        labeled_mask=torch.ones(4, dtype=torch.bool),
+        epoch=1,
+    )
+    output = trainer.compute_step(batch, update=1, total_updates=5000, epoch=1)
+
+    assert receiver.tolist() == [0, 1, 2, 3]
+    assert day.tolist() == [0, 1, 2, 0]
+    assert torch.isfinite(output.total)
+
+
+def test_domain_remap_fails_closed_for_unregistered_source_index() -> None:
+    with pytest.raises(ValueError, match="outside the frozen source set"):
+        train_ssdg._bicad_xr_local_domain_labels(
+            torch.tensor([3, 9], dtype=torch.long),
+            [3, 4, 6, 8],
+            name="receiver",
+        )

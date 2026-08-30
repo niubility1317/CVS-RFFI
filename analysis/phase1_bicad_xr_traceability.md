@@ -4,52 +4,61 @@
 
 规格：`docs/superpowers/specs/2026-08-30-adv3b02-bicad-xr-design.md`
 
-状态：规格冻结阶段，训练代码尚未修改
+状态：`LOCAL_VERIFIED`。实现、协议负测、真实ADV3B02 checkpoint技术兼容smoke和24行矩阵干跑已完成；N607正式性能矩阵尚未完成，因此本文不包含性能结论。
 
-| ID | 来源章节 | 验收要求 | 目标文件 | 状态 | 验证 | 备注 |
-|---|---|---|---|---|---|---|
-| P01 | 总体结构 | 保留ADV3B02双骨干、共享Sinc/HF、RCN、CosFace和160维`z_id/z_dom` | `model_dual_cvsincnet.py` | verified | 现有`DualCVSincNetDisentangle`代码映射 | 不以HCF-DG单骨干替代 |
-| P02 | 协议冲突 | 使用`concat_sat_ce_only+LEO_WEAK`而非`mixed_orbit`单前向 | config、trainer、launcher、协议负测 | verified | 用户于2026-08-30明确确认 | E3 pair默认关闭 |
-| P03 | 4.1 | 把唯一`rx_day`域头拆为receiver/day/channel因素化头 | `heads.py`、`trainer.py` | pending | 聚焦头与路由测试 | channel含clean和三种LEO弱场景 |
-| P04 | 4.2 | 对`L_s`使用真实TX one-hot构造160×C CDAN条件映射 | `heads.py`、`losses.py` | pending | 形状、梯度、无标签负测 | 禁止预测标签替代真值 |
-| P05 | 4.4 | 普通batch尽量TX×receiver平衡 | `sampler.py` | pending | 覆盖率与缺cell测试 | 不复制或伪造样本 |
-| P06 | 5.1 | `z_dom`增加TX adversary并使用独立GRL | model、`heads.py`、trainer | pending | 梯度方向测试 | 仅`L_s`有TX监督 |
-| P07 | 5.2 | V1保持严格`z_id/z_dom`二分解 | config、checkpoint runtime | pending | 配置锁测试 | `z_e+z_int`明确deferred |
-| P08 | 6 | 普通正交替换为TX条件cross-cov | `losses.py` | pending | 独立/相关/小组数值测试 | `lambda_orth=0` |
-| P09 | 7.2 | 每receiver动态ridge donor分类器，稳定求解且停止梯度 | `xdc.py` | pending | 解、梯度、条件数测试 | 不显式求逆 |
-| P10 | 7.3 | donor质量加权并蒸馏到公共CosFace头 | `xdc.py`、trainer | pending | 权重、KL、stop-gradient测试 | 统一公式，无ID特例 |
-| P11 | 7.4 | XDC每4步执行一次且向量化 | config、trainer、`xdc.py` | pending | 调度与调用计数测试 | 禁止逐样本循环 |
-| P12 | 8.1 | E3实现小规模clean/satellite配对不变性 | `losses.py`、trainer | pending | pair采样、cosine、JS测试 | 复用concat输出，不新增全batch前向 |
-| P13 | 8.2 | 同packet跨receiver配对仅在可靠packet ID存在时启用 | config、sampler | deferred | 当前无可靠packet ID证据 | 不恢复26D内容键 |
-| P14 | 9.2 | 维护类条件receiver EMA中心并做top-K SVD | `tangent.py` | pending | source-only中心与SVD测试 | 默认K=4 |
-| P15 | 9.3 | F1 factual shift和F2最坏方向shift可区分 | `tangent.py`、trainer | pending | 扰动约束和margin测试 | Stage3后启用 |
-| P16 | 10 | 实现三层组EMA风险与0.6/0.3/0.1 CVaR margin-tail | `losses.py`、`metrics.py` | pending | 分组、CVaR、置换测试 | 不加权域损失 |
-| P17 | 11.1 | 监控并控制两类对抗梯度比 | `gradients.py`、metrics | pending | 范数与区间控制测试 | identity0.15–0.25，TX-adv0.05–0.10 |
-| P18 | 11.2 | shared-stem域正向梯度防火墙=0.05 | model、`gradients.py` | pending | 参数级梯度测试 | 域后半段不缩放 |
-| P19 | 11.3 | D6每4步执行局部任务保护投影 | `gradients.py`、trainer | pending | 冲突/非冲突梯度测试 | 只作用登记模块 |
-| P20 | 12 | 实现常驻、稀疏和后期三类总损失路由 | config、trainer | pending | 候选损失可达测试 | 非loss soup并非每步全开 |
-| P21 | 13.1 | 75%普通batch，batch_size96，TX/RX平衡 | config、sampler | pending | batch组成测试 | day近似平衡 |
-| P22 | 13.2 | 25%结构化`6×4×2`batch，缺cell mask | `sampler.py` | pending | 无placeholder负测 | 实际有效数可小于48 |
-| P23 | 13.3 | E3每4步抽8–12对 | config、trainer | pending | 调度和上限测试 | V1关闭 |
-| P24 | 14 | 实现Stage0–4进度调度与末段GRL/LR衰减 | config、trainer | pending | 边界测试 | Stage3前不冻结Sinc/首块 |
-| P25 | 15 | 默认关闭FastTrust、pseudo、CSD、HCF、26D LODO、HDRO、open loss、Fishr、MixUp/MixStyle | config、launcher | pending | 冲突开关负测 | 候选必须fail closed |
-| P26 | 16 | 实现D0–D6、E0–E4、F0–F3单因素候选矩阵 | config、launcher | pending | config diff测试 | E0/F0父候选写入runtime |
-| P27 | 16 | 实现`ADV3B02-BiCAD-XDC-V1`冻结别名 | config | pending | 精确开关测试 | D5+E1+tail |
-| P28 | 16 | 快筛支持fold1/fold8×seed392001/2/3×5000 updates | launcher | pending | plan dry-run | 当前不启动N607 |
-| P29 | 17.1 | 保存类条件receiver probe输入artifact | `metrics.py`、trainer | pending | artifact schema测试 | 在线域准确率不能替代 |
-| P30 | 17.2 | 保存`z_dom` TX probe输入与域分类证据 | `metrics.py`、trainer | pending | artifact schema测试 | 同时报告环境分类 |
-| P31 | 17.3 | 输出完整donor→query迁移矩阵 | `metrics.py`、`xdc.py` | pending | 矩阵维度与mask测试 | 不只报告均值 |
-| P32 | 17.4 | 输出pair干预的表示、预测和margin变化 | `metrics.py` | pending | E3 artifact测试 | E3以外写N/A |
-| P33 | 17.5 | 输出Q0.1 margin和最差组合组 | `metrics.py` | pending | 分位数与组最差测试 | 明确TX/RX/day/channel |
-| P34 | 最终评估 | strict checkpoint重建后分别评估clean和三种LEO弱场景 | launcher、评估入口 | pending | 真实checkpoint无query smoke | 缺任一场景不得闭合 |
-| P35 | 推理边界 | 训练辅助模块不进入部署推理图 | model、checkpoint runtime | pending | inference graph测试 | 最终只读`z_id→TX` |
-| P36 | 科学边界 | Phase1不访问目标receiver、Phase2、support、query或truth | trainer、launcher负测 | pending | 禁止参数与路径扫描 | 目标结果不得反馈研发 |
-| P37 | 资源 | 记录吞吐、显存、GPU-hours和额外前向比例 | `metrics.py` | pending | metrics schema测试 | 性能收益必须同时报告成本 |
-| P38 | F3 | 实现source-LORO低风险窗口SWAD | trainer、checkpoint | pending | 窗口与平均状态测试 | 只在F3启用 |
+| ID | 要求 | 实现证据 | 状态 | 验证证据与边界 |
+|---|---|---|---|---|
+| P01 | 保留ADV3B02双骨干、共享Sinc/HF、RCN、CosFace和160维`z_id/z_dom` | `model_dual_cvsincnet.py`、`trainer.py` | verified | `test_model_integration.py`；未替换成HCF-DG单骨干 |
+| P02 | 使用`concat_sat_ce_only+LEO_WEAK` | `config.py`、`train_ssdg.py`、launcher | verified | `test_protocol.py`、`test_ssdg_entry.py`；`lambda_sat_cls=0.68`、`lambda_sat_cons=0`、E80开始 |
+| P03 | receiver/day/channel因素化头 | `heads.py`、`trainer.py` | verified | `test_heads.py`、`test_trainer.py` |
+| P04 | 真实TX one-hot的条件CDAN | `heads.py`、`losses.py` | verified | `test_heads.py`、`test_losses.py`；无标签路径不使用预测标签替代 |
+| P05 | 普通batch尽量TX×receiver平衡 | `sampler.py` | verified | `test_sampler.py`；缺cell用mask，不复制样本 |
+| P06 | `z_dom`增加独立GRL的TX adversary | `heads.py`、`trainer.py` | verified | `test_heads.py`、`test_trainer.py`；仅`L_s`有TX监督 |
+| P07 | V1保持`z_id/z_dom`二分解 | `config.py`、checkpoint runtime | verified | `test_config.py`、`test_ssdg_entry.py`；`z_e+z_int`未实现且未伪报 |
+| P08 | TX条件cross-cov替代普通正交 | `losses.py` | verified | `test_losses.py`；`lambda_orth=0` |
+| P09 | 每receiver动态ridge donor分类器 | `xdc.py` | verified | `test_xdc.py`；稳定线性求解、停止梯度、不显式求逆 |
+| P10 | donor质量加权并蒸馏到公共CosFace头 | `xdc.py`、`trainer.py` | verified | `test_xdc.py`、`test_trainer.py` |
+| P11 | XDC每4步执行且向量化 | `config.py`、`trainer.py`、`xdc.py` | verified | `test_xdc.py`、`test_trainer.py`；`xdc_interval=4` |
+| P12 | E3小规模clean/satellite配对不变性 | `losses.py`、`trainer.py`、`train_ssdg.py` | verified | `test_ssdg_entry.py`；复用同一concat前向 |
+| P13 | 同packet跨receiver配对只在可靠packet ID存在时启用 | 未实现 | deferred | 当前没有可靠packet ID，不恢复26D内容键 |
+| P14 | 类条件receiver EMA中心与top-K SVD | `tangent.py`、`trainer.py` | verified | `test_tangent.py`；默认K=4 |
+| P15 | F1 factual shift和F2最坏方向shift | `tangent.py`、`trainer.py` | verified | `test_tangent.py`；Stage3后启用 |
+| P16 | 三层组EMA风险与0.6/0.3/0.1 CVaR margin-tail | `losses.py`、`metrics.py` | verified | `test_losses.py`、`test_metrics.py` |
+| P17 | 两类对抗梯度比监控 | `gradients.py`、`metrics.py` | module_verified | 控制器数值、EMA和artifact schema已测；首轮V1不启用自适应梯度重标定，避免改变冻结损失权重 |
+| P18 | shared-stem域正向梯度防火墙=0.05 | `gradients.py`、`trainer.py` | verified | `test_gradients.py`、`test_trainer.py`；仅共享Sinc/HF缩放 |
+| P19 | D6每4步局部任务保护投影 | `gradients.py`、`trainer.py` | verified | `test_gradients.py`、`test_trainer.py`；只作用登记模块 |
+| P20 | 常驻、稀疏、后期三类总损失路由 | `config.py`、`trainer.py` | verified | `test_config.py`、`test_trainer.py`；不是每步全开的loss soup |
+| P21 | 75%普通batch、batch_size96、TX/RX平衡 | `config.py`、`sampler.py` | verified | `test_sampler.py` |
+| P22 | 25%结构化`6×4×2`batch | `sampler.py`、`trainer.py` | verified | `test_sampler.py`、`test_trainer.py`；U_s隔离、无placeholder |
+| P23 | E3每4步抽8–12对 | `config.py`、`trainer.py` | verified | `test_trainer.py`；V1关闭pair |
+| P24 | Stage0–4调度与末段GRL/LR衰减 | `config.py`、`trainer.py` | verified | `test_config.py`、`test_trainer.py`；5000 updates边界已测 |
+| P25 | 默认关闭旧机制 | `config.py`、launcher | verified | `test_config.py`、`test_protocol.py`；FastTrust/pseudo/CSD/HCF/LODO/HDRO/open loss/Fishr/MixUp/MixStyle均fail closed |
+| P26 | D0–D6、E0–E4、F0–F3候选矩阵 | `config.py`、launcher | verified | `test_config.py`、`test_launcher.py` |
+| P27 | 冻结`ADV3B02-BiCAD-XDC-V1` | `config.py` | verified | `test_config.py`；D5+E1+margin-tail |
+| P28 | fold1/fold8×3 seeds×5000 updates快筛 | launcher | verified | 24行干跑；8张GPU每卡3行，无重复组合 |
+| P29 | 类条件receiver probe artifact | `metrics.py`、`trainer.py` | verified | `test_metrics.py` |
+| P30 | `z_dom` TX probe与环境分类证据 | `metrics.py`、`trainer.py` | verified | `test_metrics.py` |
+| P31 | 完整donor→query迁移矩阵 | `metrics.py`、`xdc.py` | verified | `test_metrics.py`、`test_xdc.py`；维度与mask已测 |
+| P32 | pair干预表示、预测和margin变化 | `metrics.py` | verified | `test_metrics.py`；E3以外显式N/A |
+| P33 | Q0.1 margin和最差组合组 | `metrics.py` | verified | `test_metrics.py`；TX/RX/day/channel明确 |
+| P34 | strict checkpoint重建后四场景评估 | launcher、`smoke_phase1_bicad_xr_real_checkpoint.py` | verified | 真实历史checkpoint技术smoke通过；正式BiCAD row仍须自身strict runtime与四场景artifact闭合 |
+| P35 | 训练辅助模块不进入部署推理图 | model、checkpoint runtime | verified | `test_model_integration.py`；`return_aux=False`保持`z_id→TX`快路径 |
+| P36 | Phase1不访问目标receiver、Phase2、support、query或truth | trainer、launcher、smoke | verified | `test_protocol.py`、`test_launcher.py`、真实smoke JSON；访问字段全为false |
+| P37 | 记录吞吐、显存、GPU-hours和额外前向比例 | `metrics.py` | verified | `test_metrics.py`；正式报告必须填写实测值 |
+| P38 | F3 source-LORO低风险窗口SWAD | `trainer.py`、checkpoint runtime | verified | `test_trainer.py`、`test_ssdg_entry.py`；只在F3启用 |
+| P39 | 非连续原始receiver/day编号在域头前映射为连续本地标签 | `train_ssdg.py` | verified | fold1的`3/4/6/8`、fold8的`1/3/4/6`和day1/2/3均经D5真实`compute_step`测试；越界编号fail closed；Task9定点复审`CLEAN` |
 
-## 当前遗漏风险
+## 本地验证汇总
 
-1.现有`train_ssdg.py`很大，若新机制直接散落其中，容易出现“CLI有开关但训练路径未调用”；规格要求用独立package和最小钩子避免该问题。
-2.现有双骨干已具备全局GRL和可选TX adversary，但没有receiver/day/channel类条件路由；不能把“已有头”误报为P03/P04/P06完成。
-3.`concat_sat_ce_only`本身禁止额外卫星一致性进入默认总损失；E3必须是显式候选，不能偷渡到V1。
-4.XDC缺cell、ridge奇异和donor低质量必须通过mask/跳过闭合，不能复制样本或数值清洗掩盖错误。
+- `phase1_bicad_xr`全套238项通过，仅3条既有AMP弃用警告。
+- 相邻`phase1_hcfdg`与ADV3B03回归159项通过。
+- 真实`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`技术smoke：严格重建195个状态张量，`missing_keys=[]`、`unexpected_keys=[]`、`shape_mismatches=[]`；fresh BiCAD训练器完成一次optimizer step；clean和3个LEO_WEAK场景前向均为finite。
+- 24行干跑：候选`D0/D5/E1/ADV3B02-BiCAD-XDC-V1`，fold1/fold8，seed392001/392002/392003，5000 updates；GPU0–7各3行。
+- 独立P0/P1审查发现并修复原始域编号越界风险；仅针对该原问题的定点复审结果为`CLEAN`。
+
+## 当前剩余边界
+
+1.P13继续`deferred`，不得为凑完整度伪造packet ID。
+2.历史ADV3B02 checkpoint不含`bicad_xr_runtime`；真实smoke只证明历史基座兼容fresh BiCAD训练与LEO_WEAK前向，不冒充完整BiCAD checkpoint恢复。
+3.N607正式矩阵完成前没有性能结论；每行必须以自身final checkpoint完成strict恢复、clean和三种LEO_WEAK评估，才允许写`ARTIFACTS_COMPLETE`。
+4.正式发布前必须再次盘点GPU2上的无关进程；本run在该卡的第三行应排队或等待容量释放，不能影响无关任务。

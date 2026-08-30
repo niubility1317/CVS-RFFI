@@ -2348,6 +2348,8 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         "num_domains": max(1, len(domain_label_map)),
         "input_len": int(args.wisig_out_len),
         "class_id_to_tx": [str(value) for value in list(getattr(source_base, "tx_list", []) or [])],
+        "source_receiver_indices": [int(value) for value in train_rxs],
+        "source_day_indices": [int(value) for value in train_days],
         "split_info": {
             "mode": str(args.split_mode),
             "labeled_size": len(labeled_ds),
@@ -12927,6 +12929,33 @@ def _bicad_xr_metadata(extra, key: str, device, expected_count: int) -> torch.Te
     return value.to(device=device, dtype=torch.long).reshape(expected_count)
 
 
+def _bicad_xr_local_domain_labels(
+    labels: torch.Tensor,
+    source_indices: Sequence[int],
+    *,
+    name: str,
+) -> torch.Tensor:
+    """Map raw WiSig domain indices to contiguous labels for local heads."""
+
+    resolved = [int(value) for value in source_indices]
+    if not resolved or len(set(resolved)) != len(resolved):
+        raise ValueError(f"BiCAD-XR {name} source indices must be unique and non-empty")
+    raw = labels.to(dtype=torch.long)
+    local = torch.full_like(raw, -1)
+    for local_index, source_index in enumerate(resolved):
+        local = torch.where(
+            raw == int(source_index),
+            torch.as_tensor(local_index, dtype=torch.long, device=raw.device),
+            local,
+        )
+    if bool((local < 0).any()):
+        unexpected = sorted(set(raw[local < 0].detach().cpu().tolist()))
+        raise ValueError(
+            f"BiCAD-XR {name} labels are outside the frozen source set: {unexpected}"
+        )
+    return local
+
+
 def _apply_bicad_xr_entry_protocol(args, protocol: BiCADXRProtocol) -> None:
     args.phase1_method = "bicad_xr"
     args.candidate_id = protocol.candidate_id
@@ -13140,7 +13169,14 @@ def _train_bicad_xr(args) -> int:
         sat_train_scenarios=_BICAD_XR_LEO_WEAK,
     )
     concat_model = _BiCADXRConcatForward(model)
-    trainer = BiCADXRTrainer(concat_model, config).to(device)
+    source_receiver_indices = list(data_ctx["source_receiver_indices"])
+    source_day_indices = list(data_ctx["source_day_indices"])
+    trainer = BiCADXRTrainer(
+        concat_model,
+        config,
+        num_receivers=len(source_receiver_indices),
+        num_days=len(source_day_indices),
+    ).to(device)
     if checkpoint is not None:
         _load_bicad_xr_checkpoint_strict(
             checkpoint,
@@ -13174,8 +13210,16 @@ def _train_bicad_xr(args) -> int:
                 continue
             tx = y_l.to(device=device, dtype=torch.long).reshape(-1)
             count = int(tx.numel())
-            receiver = _bicad_xr_metadata(extra_l, "rx_i", device, count)
-            day = _bicad_xr_metadata(extra_l, "day_i", device, count)
+            receiver = _bicad_xr_local_domain_labels(
+                _bicad_xr_metadata(extra_l, "rx_i", device, count),
+                source_receiver_indices,
+                name="receiver",
+            )
+            day = _bicad_xr_local_domain_labels(
+                _bicad_xr_metadata(extra_l, "day_i", device, count),
+                source_day_indices,
+                name="day",
+            )
             optimizer.zero_grad(set_to_none=True)
             if epoch >= 80:
                 step_output, _ = _bicad_xr_labeled_step(
@@ -13208,7 +13252,7 @@ def _train_bicad_xr(args) -> int:
                     total_updates=total_updates,
                     epoch=epoch,
                 )
-            step_output.total.backward()
+            trainer.apply_backward_controls(step_output)
             max_grad_norm = float(getattr(args, "max_grad_norm", 0.0))
             if max_grad_norm > 0.0:
                 torch.nn.utils.clip_grad_norm_(trainer.parameters(), max_grad_norm)

@@ -222,6 +222,12 @@ def test_train_command_is_consumed_by_real_ssdg_parser_and_records_row_runtime(
     assert parsed.wisig_train_days == ",".join(map(str, row.train_days))
     assert parsed.run_id == f"formal-run-{row.row_id}"
     assert Path(parsed.output_dir) == row_root
+    assert parsed.batch_size == 96
+    assert parsed.use_tx_rx_balanced_sampler is True
+    assert parsed.balanced_sampler_tx_per_batch == 6
+    assert parsed.balanced_sampler_domain_per_batch == 4
+    assert parsed.balanced_sampler_samples_per_cell == 4
+    assert parsed.balanced_sampler_replacement is False
     assert row_record == {
         "fold": row.fold,
         "optimizer_updates": 5000,
