@@ -73,3 +73,7 @@ v1没有`pilot_result.json`和合法prediction，因此不得启动scorer。
 - release：`wiser_rf_zeromodal_suite_20260831_v3_4e51e29b.tar.gz`；本地/远端SHA256均为`9ac739632a48d91600b41ca1eb005c7e16b8a12a6f327695001dcefffb267521`，远端编译和真实ADV3B02无query smoke均通过，smoke记录`query_opened=false`。
 - 新run只重跑没有合法结果的6条row：GPU2主`B0+A+B+C+ABC`、GPU1无L2-SP、GPU3弱L2-SP、GPU4强L2-SP、GPU6强VSW、GPU7短训练。已`ANALYZED`的去原型和弱VSW不重复跑；GPU0旧v2主pilot保持只读。每GPU最多3个训练实验，本批次每张目标卡只新增1条。
 - 2026-08-31 01:32 CST启动并完成首次绑定回读：GPU2主pilot PID=`2463277`，GPU1无L2-SP PID=`2463288`，GPU3弱L2-SP PID=`2463290`，GPU4强L2-SP PID=`2463276`，GPU6强VSW PID=`2463289`，GPU7短训练PID=`2463291`。6条均为`RUNNING`，CWD、cmdline、run root和物理GPU映射正确，每条初始artifact文件数为2；GPU0旧v2 PID=`2439930`继续只读运行。
+
+### v3首条闭环
+
+短训练run已完成3场景×`B0/A/B`共9组prediction，`pilot_result.json`为`ARTIFACTS_COMPLETE`且`truth_opened=false`；独立scorer随后首次连接truth并写出`ANALYZED`结果。A-B0的P1变化为`+10.00/-0.83/+2.50pp`，P2为`+10.00/+1.67/+2.50pp`，P3为`0.00/-3.33/+0.83pp`，P3 floor中位变化`-5.00pp`；B-B0的P1为`+7.50/-5.00/+0.83pp`，P2为`+8.33/-1.67/0.00pp`，P3为`+1.67/-0.83/+0.83pp`，P3 floor中位变化`0.00pp`。A、B均`passed=false`，`next_experiment_authorized=false`；这证明零模态修复恢复了合法prediction闭合，但短训练候选不晋级。
