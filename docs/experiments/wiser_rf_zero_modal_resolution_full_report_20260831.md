@@ -2,7 +2,7 @@
 
 ## 报告状态
 
-本报告冻结截至2026-08-31 02:04 CST已经取得的代码、协议、N607运行和独立评分证据。技术问题已经解决：support/query包根路由正确，适配后单模态零范数不再导致P3异常退出，prediction可以在不读取truth的条件下完整落盘。科学问题尚未解决：已评分的8个正式A/B候选均未通过预注册表示门槛，完整Target125和WISER注册适应阶段没有获得启动授权。
+本报告冻结截至2026-08-31 02:22 CST已经取得的代码、协议、N607运行和独立评分证据。技术问题已经解决：support/query包根路由正确，适配后单模态零范数不再导致P3异常退出，prediction可以在不读取truth的条件下完整落盘。科学问题尚未解决：已评分的8个正式A/B候选均未通过预注册表示门槛，完整Target125和WISER注册适应阶段没有获得启动授权。
 
 这一区分决定了当前结论的边界：
 
@@ -179,12 +179,12 @@ release只进行了一次本地/远端归档SHA比对，没有增加成员哈希
 |版本|目的|最高已证状态|结果|
 |---|---|---|---|
 |v1|首轮8卡A/B/C因果矩阵|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`|support/query包根错误，无性能结果|
-|v2|queryfix重发|2条`ANALYZED`，5条技术失败，主ABC仍运行|首次取得去原型和弱VSW合法负结果；暴露单模态零范数问题|
+|v2|queryfix重发|2条`ANALYZED`，6条技术失败|首次取得去原型和弱VSW合法负结果；其余run暴露单模态零范数问题|
 |v3|zero-modal修复重发|5条`ANALYZED`，主ABC仍运行|技术闭环恢复，已评分正式候选全部未晋级|
 
 截至本报告冻结时刻：
 
-- GPU0 v2主ABC PID`2439930`仍运行，没有`pilot_result.json`；
+- GPU0 v2主ABC PID`2439930`已自然结束并复现单模态零范数异常；仅有2组partial prediction，没有`pilot_result.json`，未评分；
 - GPU2 v3主ABC PID`2463277`仍运行，没有`pilot_result.json`；
 - v3短训练、无L2-SP、弱L2-SP、强L2-SP和强VSW均已独立评分；
 - 去原型和弱VSW沿用已闭合v2结果，不因v3技术修复重复运行。
@@ -252,7 +252,7 @@ release只进行了一次本地/远端归档SHA比对，没有增加成员哈希
 |R16|WISER专用阶段B注册残差|`phi_R`自动接续|`deferred`|基础registered D92存在，但WISER Stage A门槛未通过|
 |R17|完整历史Target125|`125 outer/375 scene`|`blocked`|所有正式A/B候选`next_experiment_authorized=false`|
 |R18|当前A/B候选性能晋级|预注册表示门槛|`rejected`|8/8候选未通过|
-|R19|C/ABC完整主pilot结果|GPU0 v2、GPU2 v3|`pending`|截至02:04 CST仍运行，无`pilot_result.json`|
+|R19|C/ABC完整主pilot结果|GPU2 v3|`pending`|截至02:22 CST仍运行，无`pilot_result.json`；GPU0 v2已技术失败|
 
 追踪统计：`verified=12`、`implemented=1`、`deferred=3`、`rejected=1`、`blocked=1`、`pending=1`。
 

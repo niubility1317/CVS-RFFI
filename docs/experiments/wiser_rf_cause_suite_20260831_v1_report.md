@@ -6,7 +6,7 @@
 
 v1的8条run均已按预登记规则进入`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。失败原因不是低性能，也不是manifest缺项：manifest同时提供`before_enrollment`和`before_apply`，但旧WISER解析器错误地让support与query都使用`before_enrollment`，因此无法找到只存在于`before_apply`的query。v1部分artifact已保留，未评分、无性能结论、未覆盖或重启。
 
-v2修复了query根解析后，已有2条因果run完成全部prediction和独立truth-last评分，但均未通过预注册门槛；另5条run在P3旧D92特征中出现同一`feature row is degenerate`确定性技术失败，主ABC pilot仍在GPU0运行。当前不授权扩展到完整Target125，也不为占满每GPU3条的容量上限复制实验。
+v2修复了query根解析后，2条因果run完成全部prediction和独立truth-last评分，但均未通过预注册门槛；其余6条run在P3旧D92特征中出现同一`feature row is degenerate`确定性技术失败。当前不授权扩展到完整Target125，也不为占满每GPU3条的容量上限复制实验。
 
 ## 冻结版本与协议
 
@@ -41,13 +41,13 @@ v1没有`pilot_result.json`和合法prediction，因此不得启动scorer。
 - 新release：`wiser_rf_queryfix_suite_20260831_v2_b5fb4790.tar.gz`；本地/远端SHA256均为`cd1e5778abab1cb2909d9667b957c3f71ff4a98c03d8ac541d99cd174b357807`；远端编译与真实ADV3B02无query smoke均通过，smoke记录`query_opened=false`。
 - 2026-08-31 00:43 CST已用8个全新`*_20260831_v2_queryfix1`run ID重发，GPU0–7各1条。用户授权的并发上限为每GPU最多3个训练实验，本批次每GPU只占1个，不为占满容量复制科学row。
 - v2 PID/GPU映射：GPU0=`2439930`完整ABC；GPU1=`2439927`无L2-SP；GPU2=`2439998`无LOO原型；GPU3=`2439999`弱L2-SP；GPU4=`2439997`强L2-SP；GPU5=`2440025`弱VSW；GPU6=`2440029`强VSW；GPU7=`2440008`短训练。独立回读确认CWD、cmdline、run root和物理GPU正确，目录增长且无异常指纹。
-- 当前状态：主ABC pilot仍为`RUNNING`；2条因果run为`ANALYZED`；5条为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。prediction完整后每个run分别由独立truth-last scorer绑定其`pilot_result.json`冻结arm集合，不跨run用truth调参或重跑。
+- 当前状态：2条因果run为`ANALYZED`；其余6条为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。只有prediction完整的run由独立truth-last scorer绑定其`pilot_result.json`冻结arm集合，不跨run用truth调参或重跑。
 
 ### v2运行状态
 
 |物理GPU|run ID|同run矩阵|PID|状态|
 |---:|---|---|---:|---|
-|0|`wiser_rf_abc_hist_e0_pilot_20260831_v2_queryfix1`|`B0+A+B+C+ABC`|2439930|`RUNNING`|
+|0|`wiser_rf_abc_hist_e0_pilot_20260831_v2_queryfix1`|`B0+A+B+C+ABC`|2439930|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`|
 |1|`wiser_rf_cause_nol2sp_20260831_v2_queryfix1`|`B0+A(lambda_sp=0)`|2439927|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`|
 |2|`wiser_rf_cause_noproto_20260831_v2_queryfix1`|`B0+A(lambda_proto=0)`|2439998|`ANALYZED`|
 |3|`wiser_rf_cause_l2sp01_20260831_v2_queryfix1`|`B0+A(lambda_sp=0.1)`|2439999|`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE`|
@@ -75,6 +75,7 @@ v1没有`pilot_result.json`和合法prediction，因此不得启动scorer。
 - release：`wiser_rf_zeromodal_suite_20260831_v3_4e51e29b.tar.gz`；本地/远端SHA256均为`9ac739632a48d91600b41ca1eb005c7e16b8a12a6f327695001dcefffb267521`，远端编译和真实ADV3B02无query smoke均通过，smoke记录`query_opened=false`。
 - 新run只重跑没有合法结果的6条row：GPU2主`B0+A+B+C+ABC`、GPU1无L2-SP、GPU3弱L2-SP、GPU4强L2-SP、GPU6强VSW、GPU7短训练。已`ANALYZED`的去原型和弱VSW不重复跑；GPU0旧v2主pilot保持只读。每GPU最多3个训练实验，本批次每张目标卡只新增1条。
 - 2026-08-31 01:32 CST启动并完成首次绑定回读：GPU2主pilot PID=`2463277`，GPU1无L2-SP PID=`2463288`，GPU3弱L2-SP PID=`2463290`，GPU4强L2-SP PID=`2463276`，GPU6强VSW PID=`2463289`，GPU7短训练PID=`2463291`。6条均为`RUNNING`，CWD、cmdline、run root和物理GPU映射正确，每条初始artifact文件数为2；GPU0旧v2 PID=`2439930`继续只读运行。
+- GPU0旧v2主pilot随后自然结束并复现同一单模态零范数异常；仅有2组partial prediction，无`pilot_result.json`，因此未连接truth或评分。GPU2 v3主pilot继续运行。
 
 ### v3首条闭环
 
