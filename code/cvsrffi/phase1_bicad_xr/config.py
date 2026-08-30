@@ -10,7 +10,6 @@ from __future__ import annotations
 from collections.abc import Mapping
 from dataclasses import dataclass, fields, replace
 from enum import Enum
-from math import isclose
 from typing import Any
 
 
@@ -71,6 +70,8 @@ _FORBIDDEN_LEGACY_FEATURES = (
     "use_generic_mixup",
     "use_mixstyle",
 )
+
+_SOURCE_SEARCH_OVERRIDE_FIELDS = frozenset({"lambda_cond_xcov"})
 
 
 @dataclass(frozen=True)
@@ -171,7 +172,9 @@ class BiCADXRConfig:
             raise ValueError("incompatible satellite loss weights")
         if self.concat_sat_start_epoch != 80:
             raise ValueError("incompatible satellite start epoch")
-        if tuple(self.sat_train_scenarios) != LEO_WEAK_SCENARIOS:
+        if not isinstance(self.sat_train_scenarios, tuple):
+            raise ValueError("sat_train_scenarios must be a tuple")
+        if self.sat_train_scenarios != LEO_WEAK_SCENARIOS:
             raise ValueError("incompatible satellite scenarios")
         if self.lambda_orth != 0.0:
             raise ValueError("incompatible orthogonal loss weight")
@@ -179,10 +182,10 @@ class BiCADXRConfig:
             raise ValueError("incompatible gradient firewall scale")
         if not 0.0 < self.margin_tail_cvar_fraction <= 1.0:
             raise ValueError("margin_tail_cvar_fraction must be in (0,1]")
-        if len(self.margin_tail_weights) != 3 or not isclose(
-            sum(self.margin_tail_weights), 1.0, rel_tol=0.0, abs_tol=1e-12
-        ):
-            raise ValueError("margin_tail_weights must contain three components summing to 1")
+        if not isinstance(self.margin_tail_weights, tuple):
+            raise ValueError("margin_tail_weights must be a tuple")
+        if self.margin_tail_weights != (0.6, 0.3, 0.1):
+            raise ValueError("margin_tail_weights must be exactly (0.6,0.3,0.1)")
 
 
 def _candidate_registry() -> dict[str, BiCADXRConfig]:
@@ -256,8 +259,6 @@ def candidate_config(
     unknown = sorted(set(override_values) - _CONFIG_FIELD_NAMES)
     if unknown:
         raise ValueError(f"unknown config override(s): {', '.join(unknown)}")
-    if "candidate_id" in override_values:
-        raise ValueError("candidate_id is frozen and cannot be overridden")
     incompatible = [
         name
         for name in _FORBIDDEN_LEGACY_FEATURES
@@ -266,6 +267,9 @@ def candidate_config(
     if incompatible:
         names = ", ".join(incompatible)
         raise ValueError(f"incompatible legacy features: {names}")
+    frozen = sorted(set(override_values) - _SOURCE_SEARCH_OVERRIDE_FIELDS)
+    if frozen:
+        raise ValueError(f"frozen config override(s): {', '.join(frozen)}")
     return replace(base, **override_values)
 
 

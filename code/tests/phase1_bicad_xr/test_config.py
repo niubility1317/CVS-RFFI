@@ -69,12 +69,89 @@ def test_forbidden_legacy_features_fail_closed(legacy_flag: str) -> None:
 
 def test_candidate_overrides_are_scoped_and_do_not_mutate_registry() -> None:
     base = candidate_config("D5")
-    tuned = candidate_config("D5", overrides={"batch_size": 128, "lambda_cond_xcov": 0.04})
+    tuned = candidate_config("D5", overrides={"lambda_cond_xcov": 0.04})
 
-    assert base.batch_size == 96
     assert base.lambda_cond_xcov == pytest.approx(0.02)
-    assert tuned.batch_size == 128
     assert tuned.lambda_cond_xcov == pytest.approx(0.04)
+
+
+@pytest.mark.parametrize(
+    ("field_name", "value"),
+    [
+        ("candidate_id", "D6"),
+        ("factorized_domains", False),
+        ("conditional_cdan", False),
+        ("zdom_tx_adversary", False),
+        ("conditional_xcov", False),
+        ("gradient_firewall", False),
+        ("task_protected_gradient", True),
+        ("sparse_xdc", True),
+        ("xdc_kd", True),
+        ("paired_satellite", True),
+        ("margin_tail", True),
+        ("receiver_tangent", "factual"),
+        ("swad", True),
+        ("phase1_method", "other"),
+        ("optimizer_updates", 6000),
+        ("batch_size", 128),
+        ("xdc_interval", 8),
+        ("pair_interval", 8),
+        ("lambda_sat_cls", 0.5),
+        ("lambda_sat_cons", 0.1),
+        ("lambda_orth", 0.01),
+        ("gradient_firewall_scale", 0.1),
+        ("concat_sat_ce_only", False),
+        ("concat_sat_start_epoch", 79),
+        (
+            "sat_train_scenarios",
+            ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"),
+        ),
+        ("xdc_ridge", 0.02),
+        ("xdc_temperature", 3.0),
+        ("xdc_min_support_accuracy", 0.30),
+        ("xdc_microepisode_tx", 8),
+        ("xdc_microepisode_receivers", 5),
+        ("xdc_samples_per_cell", 3),
+        ("margin_tail_cvar_fraction", 0.25),
+        ("margin_tail_weights", (0.6, 0.3, 0.1)),
+        ("margin_tail_ema", 0.8),
+        ("receiver_tangent_rank", 2),
+        ("receiver_tangent_start_progress", 0.60),
+        ("stage4_domain_scale", 0.5),
+        ("stage4_shared_stem_lr_scale", 0.2),
+    ],
+)
+def test_candidate_overrides_reject_every_field_outside_source_search_whitelist(
+    field_name: str, value: object
+) -> None:
+    with pytest.raises(ValueError, match="frozen"):
+        candidate_config("D5", overrides={field_name: value})
+
+
+def test_sat_train_scenarios_requires_an_exact_tuple() -> None:
+    with pytest.raises(ValueError, match="tuple"):
+        BiCADXRConfig(
+            candidate_id="CUSTOM",
+            sat_train_scenarios=[
+                "leo_clear_weak",
+                "leo_low_elev_weak",
+                "leo_rain_weak",
+            ],  # type: ignore[arg-type]
+        )
+
+
+def test_margin_tail_weights_require_an_exact_tuple() -> None:
+    with pytest.raises(ValueError, match="tuple"):
+        BiCADXRConfig(
+            candidate_id="CUSTOM",
+            margin_tail_weights=[0.6, 0.3, 0.1],  # type: ignore[arg-type]
+        )
+
+    with pytest.raises(ValueError, match="exactly"):
+        BiCADXRConfig(
+            candidate_id="CUSTOM",
+            margin_tail_weights=(0.5, 0.4, 0.1),
+        )
 
 
 @pytest.mark.parametrize(
@@ -138,6 +215,49 @@ def test_five_stage_boundaries(update: int, stage: str) -> None:
     assert isinstance(result, BiCADXRStage)
     assert result.name == stage
     assert result.value == stage
+
+
+@pytest.mark.parametrize(
+    ("total_updates", "expected"),
+    [
+        (
+            10,
+            (
+                "stage0",
+                "stage1",
+                "stage1",
+                "stage2",
+                "stage2",
+                "stage2",
+                "stage2",
+                "stage3",
+                "stage3",
+                "stage4",
+            ),
+        ),
+        (
+            7,
+            (
+                "stage1",
+                "stage1",
+                "stage2",
+                "stage2",
+                "stage3",
+                "stage3",
+                "stage4",
+            ),
+        ),
+    ],
+)
+def test_stage_boundaries_scale_with_non_5000_totals(
+    total_updates: int, expected: tuple[str, ...]
+) -> None:
+    actual = tuple(
+        stage_for_update(update, total_updates).name
+        for update in range(1, total_updates + 1)
+    )
+
+    assert actual == expected
 
 
 @pytest.mark.parametrize("update", [0, -1, 5001])
