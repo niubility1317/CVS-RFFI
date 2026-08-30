@@ -135,6 +135,25 @@ def test_tensor_falls_back_when_n607_numpy_bridge_rejects_array(
     assert torch.equal(value, torch.tensor([[1.0, 2.0]]))
 
 
+def test_wiser_uses_enrollment_support_and_apply_query_package_roots(
+    tmp_path: Path,
+) -> None:
+    module = _script_module()
+    job = {
+        "packages": {
+            "before_enrollment": {"package_root": str(tmp_path / "enrollment")},
+            "before_apply": {"package_root": str(tmp_path / "apply")},
+        }
+    }
+
+    assert module._support_path(job, "leo_clear_weak") == (
+        tmp_path / "enrollment" / "support_leo_clear_weak.npz"
+    )
+    assert module._query_path(job, "leo_clear_weak") == (
+        tmp_path / "apply" / "query_leo_clear_weak.npz"
+    )
+
+
 def test_pilot_freezes_every_support_state_before_first_query(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -154,7 +173,12 @@ def test_pilot_freezes_every_support_state_before_first_query(
                         "receiver": "3-19",
                         "seed": 713102,
                         "packages": {
-                            "before_enrollment": {"package_root": str(tmp_path / "sealed")}
+                            "before_enrollment": {
+                                "package_root": str(tmp_path / "enrollment")
+                            },
+                            "before_apply": {
+                                "package_root": str(tmp_path / "apply")
+                            },
                         },
                         "truth_sidecar": str(tmp_path / "truth.json"),
                     }

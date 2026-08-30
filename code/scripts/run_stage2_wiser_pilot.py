@@ -130,22 +130,22 @@ def _frozen_pilot_arms(
     return frozen
 
 
-def _package_root(job: Mapping[str, Any]) -> Path:
+def _package_root(job: Mapping[str, Any], package_name: str) -> Path:
     packages = job.get("packages")
     if not isinstance(packages, Mapping):
         raise ValueError("WISER package registry missing")
-    before = packages.get("before_enrollment")
-    if not isinstance(before, Mapping) or not before.get("package_root"):
-        raise ValueError("WISER before-enrollment package root missing")
-    return Path(str(before["package_root"]))
+    package = packages.get(package_name)
+    if not isinstance(package, Mapping) or not package.get("package_root"):
+        raise ValueError(f"WISER {package_name} package root missing")
+    return Path(str(package["package_root"]))
 
 
 def _support_path(job: Mapping[str, Any], scenario: str) -> Path:
-    return _package_root(job) / f"support_{scenario}.npz"
+    return _package_root(job, "before_enrollment") / f"support_{scenario}.npz"
 
 
 def _query_path(job: Mapping[str, Any], scenario: str) -> Path:
-    return _package_root(job) / f"query_{scenario}.npz"
+    return _package_root(job, "before_apply") / f"query_{scenario}.npz"
 
 
 def _training_config(args: argparse.Namespace) -> WISERTrainingConfig:
