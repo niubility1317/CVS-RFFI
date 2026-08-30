@@ -6,7 +6,9 @@ import threading
 import time
 from pathlib import Path
 
+import numpy as np
 import pytest
+import torch
 
 
 SCRIPT = Path(__file__).resolve().parents[2] / "scripts" / "launch_phase1_hcfdg_matrix_20260830.py"
@@ -73,6 +75,16 @@ def test_train_command_does_not_reject_a_legal_worktree_name_containing_phase2(t
     command = launcher.build_train_command(row, roots)
 
     assert "phase2-canonical-union-maxq" in " ".join(command)
+
+
+def test_numpy_boolean_masks_are_converted_with_explicit_torch_dtype():
+    launcher = _load_launcher()
+    values = np.asarray([True, False, True], dtype=np.bool_)
+
+    result = launcher._bool_tensor(values)
+
+    assert result.dtype == torch.bool
+    assert result.tolist() == [True, False, True]
 
 
 def test_output_root_is_immutable_and_unknown_stages_fail_closed(tmp_path):

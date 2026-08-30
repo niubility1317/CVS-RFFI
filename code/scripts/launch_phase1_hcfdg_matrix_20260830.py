@@ -363,6 +363,12 @@ def _parse_int_csv(value: str, *, name: str) -> tuple[int, ...]:
     return resolved
 
 
+def _bool_tensor(values: Iterable[Any]):
+    import torch
+
+    return torch.tensor([bool(value) for value in values], dtype=torch.bool)
+
+
 def _source_runtime_args(ssdg: Any, args: argparse.Namespace, representation_mode: str):
     smoke = bool(getattr(args, "smoke", False))
     cli = [
@@ -496,9 +502,9 @@ class _RectangularLoader:
                     "channel": torch.as_tensor(episode.channel_ids).long(),
                     "domain": torch.as_tensor(episode.domain_ids).long(),
                     "query_domain": int(episode.query_domain),
-                    "support_mask": torch.as_tensor(episode.support_mask).bool(),
-                    "query_mask": torch.as_tensor(episode.query_mask).bool(),
-                    "valid_tx_mask": torch.as_tensor(episode.valid_tx_mask).bool(),
+                    "support_mask": _bool_tensor(episode.support_mask),
+                    "query_mask": _bool_tensor(episode.query_mask),
+                    "valid_tx_mask": _bool_tensor(episode.valid_tx_mask),
                     "episode_type": episode.episode_type,
                 }
             )
