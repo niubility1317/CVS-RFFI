@@ -27,13 +27,26 @@ if __package__ in (None, ""):
 
 from cvsrffi.phase1_hcfdg.config import (
     MatrixRow,
+    SELECTION_SEEDS,
+    StageBudget,
+    V2_OPTIMIZER_UPDATES,
     deep_screen_rows,
     quick_screen_rows,
     residual_rows,
 )
 
 
-RUN_ID_DEFAULT = "phase1_hcfdg_a0a5_loro2_seed3_u4000_20260830_r1"
+RUN_ID_DEFAULT = "phase1_hcfdg_v2_source_loro_20260830_r1"
+HCFDG_SMOKE_STAGE_BUDGET = StageBudget(
+    stage0=1,
+    stage1=1,
+    stage2=1,
+    stage3=1,
+    stage4=0,
+    freeze_progress=0.50,
+    environment_update_interval=4,
+    environment_updates_per_interval=1,
+)
 SOURCE_RECEIVERS = (1, 3, 4, 6, 8)
 TRAIN_DAYS = (1, 2, 3)
 FINAL_SCENARIOS = (
@@ -91,11 +104,30 @@ def _rows_for_stage(
     raise ValueError(f"unknown stage: {stage}")
 
 
+def _validated_seeds(seeds: Sequence[int] | None) -> tuple[int, ...]:
+    if seeds is None:
+        return tuple(SELECTION_SEEDS)
+    if isinstance(seeds, (str, bytes)):
+        raise ValueError("seeds must contain integer IDs")
+    try:
+        resolved = tuple(seeds)
+    except TypeError as exc:
+        raise ValueError("seeds must contain integer IDs") from exc
+    if not resolved or len(resolved) != len(set(resolved)):
+        raise ValueError("seeds must be a non-empty unique list")
+    if any(isinstance(seed, bool) or not isinstance(seed, int) for seed in resolved):
+        raise ValueError("seeds must contain integer IDs")
+    if any(seed not in SELECTION_SEEDS for seed in resolved):
+        raise ValueError(f"seeds must be selected from {SELECTION_SEEDS}")
+    return tuple(resolved)
+
+
 def build_plan(
     *,
     stage: str = "quick",
     folds: Sequence[int] = (1, 8),
     gpus: Sequence[int] = tuple(range(8)),
+    seeds: Sequence[int] | None = None,
     v2_passed: bool = False,
     v2_parent_candidate_id: str = "A9",
 ) -> list[PlanRow]:
@@ -106,12 +138,16 @@ def build_plan(
         raise ValueError("gpus must be a non-empty unique sequence")
     if any(value < 0 for value in selected_gpus):
         raise ValueError("gpu IDs must be non-negative")
+    selected_seeds = _validated_seeds(seeds)
     base_rows = _rows_for_stage(
         stage,
         folds,
         v2_passed=v2_passed,
         v2_parent_candidate_id=v2_parent_candidate_id,
     )
+    base_rows = tuple(row for row in base_rows if int(row.seed) in selected_seeds)
+    if not base_rows:
+        raise ValueError("seed selection produced no matrix rows")
     rows: list[PlanRow] = []
     for index, row in enumerate(base_rows):
         heldout = int(row.heldout_receiver)
@@ -210,12 +246,14 @@ def _write_new_json(path: Path, payload: Any) -> Path:
 
 def write_plan_json(run_root: str | Path, rows: Sequence[PlanRow], *, run_id: str) -> Path:
     root = Path(run_root)
+    selected_seeds = list(dict.fromkeys(int(row.seed) for row in rows))
     return _write_new_json(
         root / "plan.json",
         {
             "run_id": str(run_id),
             "protocol": "phase1_source_only_hcfdg",
             "row_count": len(rows),
+            "seeds": selected_seeds,
             "rows": [_row_payload(row) for row in rows],
         },
     )
@@ -369,6 +407,121 @@ def _bool_tensor(values: Iterable[Any]):
     return torch.tensor([bool(value) for value in values], dtype=torch.bool)
 
 
+def _content_keys_from_iq(iq: Any):
+    """Build a small finite content key from the current IQ only.
+
+    The key removes per-sample absolute gain before extracting normalized
+    amplitude statistics, short-lag temporal autocorrelation, coarse spectral
+    mass, low-order differences, and local-energy changes.  Its dimension is
+    fixed and independent of the IQ capture length.
+    """
+
+    import torch
+    from torch.nn import functional as functional
+
+    values = torch.as_tensor(iq, dtype=torch.float32)
+    if values.ndim < 2:
+        raise ValueError("IQ content keys require a batch dimension and samples")
+    sample_count = int(values.shape[0])
+    if sample_count <= 0:
+        raise ValueError("IQ content keys require at least one sample")
+    if values.ndim == 2:
+        values = values.unsqueeze(1)
+    elif values.ndim == 3:
+        if values.shape[1] <= 4 and values.shape[2] > values.shape[1]:
+            pass
+        elif values.shape[2] <= 4 and values.shape[1] > values.shape[2]:
+            values = values.transpose(1, 2)
+        else:
+            values = values.reshape(sample_count, 1, -1)
+    else:
+        values = values.reshape(sample_count, 1, -1)
+    values = torch.nan_to_num(values, nan=0.0, posinf=0.0, neginf=0.0)
+    if values.shape[-1] <= 0:
+        raise ValueError("IQ content keys require non-empty samples")
+
+    if values.shape[1] >= 2:
+        amplitude = torch.sqrt(values[:, 0].square() + values[:, 1].square())
+    else:
+        amplitude = values[:, 0].abs()
+    gain = torch.sqrt(amplitude.square().mean(dim=1, keepdim=True)).clamp_min(1e-6)
+    normalized = amplitude / gain
+    mean = normalized.mean(dim=1)
+    std = normalized.std(dim=1, unbiased=False)
+    amplitude_stats = torch.stack(
+        (mean, std, normalized.amin(dim=1), normalized.amax(dim=1)), dim=1
+    )
+
+    centered = normalized - mean.unsqueeze(1)
+    variance = centered.square().mean(dim=1).clamp_min(1e-6)
+    autocorrelations = []
+    for lag in (1, 2, 4, 8):
+        if normalized.shape[1] > lag:
+            value = (centered[:, :-lag] * centered[:, lag:]).mean(dim=1) / variance
+        else:
+            value = torch.zeros_like(mean)
+        autocorrelations.append(value)
+    autocorrelation_stats = torch.stack(autocorrelations, dim=1)
+
+    spectrum = torch.fft.rfft(normalized, dim=1).abs().square()
+    spectrum = functional.adaptive_avg_pool1d(spectrum.unsqueeze(1), 8).squeeze(1)
+    spectrum = spectrum / spectrum.sum(dim=1, keepdim=True).clamp_min(1e-6)
+
+    def difference_stats(order: int):
+        difference = normalized
+        for _ in range(order):
+            difference = difference[:, 1:] - difference[:, :-1]
+        if difference.shape[1] == 0:
+            return torch.zeros(sample_count, 2, device=normalized.device, dtype=normalized.dtype)
+        return torch.stack(
+            (difference.abs().mean(dim=1), difference.std(dim=1, unbiased=False)),
+            dim=1,
+        )
+
+    difference_stats_value = torch.cat((difference_stats(1), difference_stats(2)), dim=1)
+
+    local_energy = functional.adaptive_avg_pool1d(
+        normalized.square().unsqueeze(1), 4
+    ).squeeze(1)
+    local_delta = local_energy[:, 1:] - local_energy[:, :-1]
+    local_energy_stats = torch.cat(
+        (
+            local_energy,
+            local_delta.abs().mean(dim=1, keepdim=True),
+            local_delta.std(dim=1, unbiased=False).unsqueeze(1),
+        ),
+        dim=1,
+    )
+    result = torch.cat(
+        (
+            amplitude_stats,
+            autocorrelation_stats,
+            spectrum,
+            difference_stats_value,
+            local_energy_stats,
+        ),
+        dim=1,
+    )
+    return torch.nan_to_num(result, nan=0.0, posinf=0.0, neginf=0.0)
+
+
+def _resolve_worker_config(candidate_id: str, *, smoke: bool):
+    from dataclasses import replace
+
+    from cvsrffi.phase1_hcfdg.config import candidate_config
+
+    key = str(candidate_id).strip().upper()
+    config = candidate_config(key)
+    if not smoke:
+        return config
+    if key not in {f"A{i}" for i in range(6, 13)}:
+        raise ValueError("HCF-DG V2 smoke requires an A6-A12 candidate")
+    return replace(
+        config,
+        optimizer_updates=HCFDG_SMOKE_STAGE_BUDGET.total_updates,
+    )
+
+
 def _source_runtime_args(ssdg: Any, args: argparse.Namespace, representation_mode: str):
     smoke = bool(getattr(args, "smoke", False))
     cli = [
@@ -508,8 +661,7 @@ class _RectangularLoader:
                     "episode_type": episode.episode_type,
                 }
             )
-            iq = torch.as_tensor(batch["iq"]).float().reshape(len(episode.indices), -1)
-            batch["content_keys"] = torch.stack((iq.mean(1), iq.std(1, unbiased=False)), dim=1)
+            batch["content_keys"] = _content_keys_from_iq(batch["iq"])
             yield batch
 
     def __len__(self) -> int:
@@ -682,18 +834,17 @@ def _build_heldout_loader(ssdg: Any, ssdg_args: Any, *, heldout_receiver: int, t
 
 def _worker_row(args: argparse.Namespace) -> int:
     import torch
-    from dataclasses import replace
 
-    from cvsrffi.phase1_hcfdg.config import candidate_config
     from cvsrffi.phase1_hcfdg.satellite import build_single_view_batch
     from cvsrffi.phase1_hcfdg.trainer import HCFDGTrainer
 
     candidate_id = str(args.candidate_id).strip().upper()
-    config = candidate_config(candidate_id)
+    config = _resolve_worker_config(candidate_id, smoke=bool(args.smoke))
     if bool(args.smoke):
-        if int(args.optimizer_updates) != 1:
-            raise ValueError("HCF-DG smoke requires exactly one optimizer update")
-        config = replace(config, optimizer_updates=1)
+        if int(args.optimizer_updates) not in (0, int(config.optimizer_updates)):
+            raise ValueError(
+                "HCF-DG smoke requires the dedicated stage0-stage3 budget"
+            )
     elif int(args.optimizer_updates) != int(config.optimizer_updates):
         raise ValueError("optimizer update count does not match the frozen candidate")
     source_receivers = _parse_int_csv(args.source_rxs, name="source_rxs")
@@ -788,10 +939,13 @@ def _worker_row(args: argparse.Namespace) -> int:
         },
         fold=int(args.heldout_rx),
         seed=int(args.seed),
+        stage_budget=HCFDG_SMOKE_STAGE_BUDGET if bool(args.smoke) else None,
     )
     state = trainer.train()
     if state.optimizer_updates != int(config.optimizer_updates):
         raise RuntimeError("training ended without the frozen optimizer update count")
+    if bool(args.smoke) and int(state.stage_updates.get("stage3", 0)) < 1:
+        raise RuntimeError("HCF-DG smoke did not reach stage3")
 
     checkpoint_path = row_root / "final_hcfdg.pt"
     payload = torch.load(checkpoint_path, map_location="cpu")
@@ -805,6 +959,8 @@ def _worker_row(args: argparse.Namespace) -> int:
         "heldout_receiver": int(args.heldout_rx),
         "train_days": list(train_days),
         "target_access": False,
+        "smoke": bool(args.smoke),
+        "stage_updates": dict(state.stage_updates),
     }
     payload["inference"] = (
         {
@@ -832,7 +988,7 @@ def _worker_row(args: argparse.Namespace) -> int:
         candidate_id=candidate_id,
         heldout_receiver=int(args.heldout_rx),
         seed=int(args.seed),
-        optimizer_updates=int(args.optimizer_updates),
+        optimizer_updates=int(config.optimizer_updates),
         gpu=int(args.gpu),
         source_receivers=source_receivers,
         train_days=train_days,
@@ -868,6 +1024,11 @@ def _worker_row(args: argparse.Namespace) -> int:
 
 
 def _dispatch_formal(args: argparse.Namespace) -> int:
+    if str(args.stage).strip().lower() == "deep":
+        if not str(args.run_id or "").strip():
+            raise ValueError("formal deep requires an explicit --run-id")
+        if int(args.optimizer_updates) not in (0, V2_OPTIMIZER_UPDATES):
+            raise ValueError("formal deep optimizer budget is fixed at 6300 updates")
     run_root = validate_output_root(args.run_root)
     wisig_pkl = Path(args.wisig_pkl).resolve()
     if not wisig_pkl.is_file():
@@ -876,13 +1037,20 @@ def _dispatch_formal(args: argparse.Namespace) -> int:
     python = Path(args.python).resolve() if args.python else Path(sys.executable).resolve()
     gpus = _parse_int_csv(args.gpus, name="gpus")
     folds = _parse_int_csv(args.folds, name="folds")
+    seeds = _parse_int_csv(args.seeds, name="seeds") if str(args.seeds).strip() else None
     rows = build_plan(
         stage=args.stage,
         folds=folds,
         gpus=gpus,
+        seeds=seeds,
         v2_passed=bool(args.v2_passed),
         v2_parent_candidate_id=str(args.v2_parent_candidate_id),
     )
+    if str(args.stage).strip().lower() == "deep":
+        if len(rows) <= 0 or any(row.optimizer_updates != V2_OPTIMIZER_UPDATES for row in rows):
+            raise ValueError("formal deep plan must use 6300 updates for every row")
+        if seeds is not None and any(row.seed not in seeds for row in rows):
+            raise ValueError("formal deep plan contains a seed outside --seeds")
     run_root.mkdir(parents=True, exist_ok=False)
     roots = LauncherRoots(
         code_root=code_root,
@@ -890,7 +1058,11 @@ def _dispatch_formal(args: argparse.Namespace) -> int:
         run_root=run_root,
         wisig_pkl=wisig_pkl,
     )
-    write_plan_json(run_root, rows, run_id=args.run_id)
+    write_plan_json(
+        run_root,
+        rows,
+        run_id=str(args.run_id or RUN_ID_DEFAULT),
+    )
     failure_lock = threading.Lock()
     failure_fingerprints: Counter[str] = Counter()
     systemic_stop = threading.Event()
@@ -939,9 +1111,10 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--worker-row", action="store_true")
     parser.add_argument("--formal", action="store_true")
-    parser.add_argument("--run-id", default=RUN_ID_DEFAULT)
+    parser.add_argument("--run-id", default=None)
     parser.add_argument("--stage", choices=("quick", "deep", "residual"), default="quick")
     parser.add_argument("--folds", default="1,8")
+    parser.add_argument("--seeds", default="")
     parser.add_argument("--gpus", default="0,1,2,3,4,5,6,7")
     parser.add_argument("--code-root", default="")
     parser.add_argument("--python", default="")
@@ -965,6 +1138,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = build_arg_parser().parse_args(argv)
     if args.formal and args.worker_row:
         raise ValueError("--formal and --worker-row are mutually exclusive")
+    if args.formal and args.smoke:
+        raise ValueError("--smoke is a worker-only entry point")
+    if args.worker_row and args.seeds:
+        raise ValueError("--seeds is a formal matrix selector; worker rows use --seed")
+    if args.smoke and not args.worker_row:
+        raise ValueError("--smoke requires --worker-row")
     if args.worker_row:
         return _worker_row(args)
     if args.formal:

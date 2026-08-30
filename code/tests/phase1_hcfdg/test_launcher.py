@@ -40,6 +40,69 @@ def test_quick_plan_is_exact_source_loro_matrix():
     assert all(row.train_days == (1, 2, 3) for row in rows)
 
 
+def test_deep_plan_selects_only_the_explicit_seed_and_keeps_v2_budget():
+    launcher = _load_launcher()
+    rows = launcher.build_plan(stage="deep", folds=(1, 8), gpus=(0, 1), seeds=(392002,))
+
+    assert len(rows) == 8
+    assert len({row.row_id for row in rows}) == 8
+    assert {row.candidate_id for row in rows} == {"A6", "A7", "A8", "A9"}
+    assert {row.heldout_receiver for row in rows} == {1, 8}
+    assert {row.seed for row in rows} == {392002}
+    assert all(row.optimizer_updates == 6300 for row in rows)
+    assert all(row.seed == 392002 for row in rows)
+    assert all(row.heldout_receiver not in row.source_receivers for row in rows)
+
+
+def test_plan_rejects_a_seed_outside_the_frozen_selection_set():
+    launcher = _load_launcher()
+
+    with pytest.raises(ValueError, match="seeds"):
+        launcher.build_plan(stage="deep", folds=(1, 8), seeds=(392004,))
+
+
+def test_default_run_id_does_not_reuse_the_a0_a5_matrix_name():
+    launcher = _load_launcher()
+
+    assert "a0a5" not in launcher.RUN_ID_DEFAULT.lower()
+
+
+def test_a9_content_keys_are_finite_scale_invariant_and_structure_aware():
+    launcher = _load_launcher()
+    generator = torch.Generator().manual_seed(7)
+    signal = torch.randn(64, generator=generator)
+    iq = torch.stack((signal, signal.roll(1)), dim=0).unsqueeze(0)
+    permutation = torch.randperm(64, generator=torch.Generator().manual_seed(9))
+    batch = torch.cat((iq, iq[:, :, permutation]), dim=0)
+
+    keys = launcher._content_keys_from_iq(batch)
+    scaled_keys = launcher._content_keys_from_iq(batch * 7.5)
+
+    assert keys.shape[0] == 2
+    assert keys.shape[1] >= 16
+    assert torch.isfinite(keys).all()
+    torch.testing.assert_close(keys, scaled_keys, rtol=1e-5, atol=1e-5)
+    assert not torch.allclose(keys[0], keys[1])
+
+
+def test_smoke_budget_reaches_stage3_without_changing_formal_v2_budget():
+    launcher = _load_launcher()
+    from cvsrffi.phase1_hcfdg.trainer import stage_for_update
+
+    budget = launcher.HCFDG_SMOKE_STAGE_BUDGET
+    stages = [stage_for_update(update, budget) for update in range(1, budget.total_updates + 1)]
+    smoke_config = launcher._resolve_worker_config("A9", smoke=True)
+    formal_config = launcher._resolve_worker_config("A9", smoke=False)
+
+    assert stages == ["stage0", "stage1", "stage2", "stage3"]
+    assert budget.total_updates < 6300
+    assert smoke_config.optimizer_updates == budget.total_updates
+    assert formal_config.optimizer_updates == 6300
+    assert smoke_config.counterfactual_mode != "off"
+    assert smoke_config.use_hdro is True
+    assert smoke_config.use_content_conditioning is True
+
+
 def test_train_command_binds_row_and_never_mentions_phase2_or_target(tmp_path):
     launcher = _load_launcher()
     row = launcher.build_plan(stage="quick", folds=(1, 8))[0]
@@ -259,6 +322,88 @@ def test_formal_dispatcher_writes_plan_and_terminal_status(tmp_path, monkeypatch
     assert json.loads((run_root / "plan.json").read_text(encoding="utf-8"))["row_count"] == 36
     final = json.loads((run_root / "final_status.json").read_text(encoding="utf-8"))
     assert set(final["statuses"].values()) == {"ARTIFACTS_COMPLETE"}
+
+
+def test_formal_deep_seed_selection_writes_an_eight_row_plan(tmp_path, monkeypatch):
+    launcher = _load_launcher()
+    source = tmp_path / "ManySig.pkl"
+    source.write_bytes(b"source")
+    run_root = tmp_path / "formal-deep-run"
+    observed = []
+
+    def fake_run_row(row, roots):
+        observed.append(row)
+        row_root = roots.run_root / row.row_id
+        row_root.mkdir(parents=True)
+        (row_root / "final_hcfdg.pt").write_bytes(b"checkpoint")
+        for scenario in launcher.FINAL_SCENARIOS:
+            payload = {
+                "scenario": scenario,
+                "checkpoint_load_strict": True,
+                "missing_keys": [],
+                "unexpected_keys": [],
+                "shape_mismatches": [],
+            }
+            (row_root / f"eval_{scenario}.json").write_text(json.dumps(payload), encoding="utf-8")
+            (row_root / f"eval_{scenario}.log").write_text("ok\n", encoding="utf-8")
+        return "ARTIFACTS_COMPLETE"
+
+    monkeypatch.setattr(launcher, "run_row", fake_run_row)
+    result = launcher.main(
+        [
+            "--formal",
+            "--run-id", "formal-deep-seed392002",
+            "--stage", "deep",
+            "--seeds", "392002",
+            "--folds", "1,8",
+            "--gpus", "0,1",
+            "--run-root", str(run_root),
+            "--wisig-pkl", str(source),
+        ]
+    )
+
+    plan = json.loads((run_root / "plan.json").read_text(encoding="utf-8"))
+    assert result == 0
+    assert len(observed) == 8
+    assert plan["row_count"] == 8
+    assert plan["seeds"] == [392002]
+    assert all(row["candidate_id"] in {"A6", "A7", "A8", "A9"} for row in plan["rows"])
+    assert all(row["seed"] == 392002 for row in plan["rows"])
+    assert all(row["optimizer_updates"] == 6300 for row in plan["rows"])
+
+
+def test_formal_deep_requires_explicit_run_id_and_rejects_short_budget(tmp_path, monkeypatch):
+    launcher = _load_launcher()
+    source = tmp_path / "ManySig.pkl"
+    source.write_bytes(b"source")
+
+    def fake_run_plan(rows, row_runner, *, max_active_per_gpu):
+        return {row.row_id: "ARTIFACTS_COMPLETE" for row in rows}
+
+    monkeypatch.setattr(launcher, "run_plan", fake_run_plan)
+    with pytest.raises(ValueError, match="run-id"):
+        launcher.main(
+            [
+                "--formal",
+                "--stage", "deep",
+                "--seeds", "392002",
+                "--run-root", str(tmp_path / "missing-run-id"),
+                "--wisig-pkl", str(source),
+            ]
+        )
+
+    with pytest.raises(ValueError, match="6300"):
+        launcher.main(
+            [
+                "--formal",
+                "--run-id", "formal-deep-short-budget",
+                "--stage", "deep",
+                "--seeds", "392002",
+                "--optimizer-updates", "1",
+                "--run-root", str(tmp_path / "short-budget"),
+                "--wisig-pkl", str(source),
+            ]
+        )
 
 
 def test_formal_dispatcher_refuses_existing_root_and_missing_source(tmp_path):

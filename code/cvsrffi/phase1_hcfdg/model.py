@@ -158,6 +158,23 @@ class HCFDGOutput:
 
 
 @dataclass
+class HCFDGCounterfactualOutput:
+    """Counterfactual tensors and provenance for the HCF-DG loss."""
+
+    cf_logits: Tensor
+    cf_z_id: Tensor
+    z_id: Tensor
+    cf_env_logits: Mapping[str, Tensor]
+    target_env: Mapping[str, Tensor]
+    cf_h: Tensor
+    target_h: Tensor
+    labels: Tensor
+    source_indices: Tensor
+    target_indices: Tensor
+    mode: str
+
+
+@dataclass
 class FactorizedEnvironmentOutput:
     """Environment features and auxiliary predictions produced by the encoder."""
 
@@ -929,6 +946,122 @@ class HCFDGModel(nn.Module):
 
         return self.common_head(self.identity_features(x))
 
+    @staticmethod
+    def _counterfactual_labels(value: Any, *, n: int, device: torch.device, name: str) -> Tensor:
+        labels = torch.as_tensor(value, device=device).reshape(-1)
+        if labels.numel() != n:
+            raise ValueError(f"{name} labels have {labels.numel()} rows, expected {n}")
+        return labels.long()
+
+    @staticmethod
+    def _counterfactual_pairs(
+        tx: Tensor,
+        receiver: Tensor,
+        day: Tensor,
+        channel: Tensor,
+        mode: str,
+    ) -> tuple[Tensor, Tensor]:
+        differences = {
+            "receiver_swap": receiver,
+            "day_swap": day,
+            "channel_swap": channel,
+        }
+        if mode not in (*differences, "joint_swap"):
+            raise ValueError(
+                "mode must be one of receiver_swap, day_swap, channel_swap, joint_swap"
+            )
+        source: list[int] = []
+        target: list[int] = []
+        for index in range(tx.numel()):
+            same_tx = tx == tx[index]
+            if mode == "joint_swap":
+                changed = (receiver != receiver[index]) | (day != day[index]) | (channel != channel[index])
+            else:
+                factor = differences[mode]
+                changed = factor != factor[index]
+            candidates = torch.nonzero(same_tx & changed, as_tuple=False).reshape(-1)
+            if candidates.numel():
+                source.append(index)
+                target.append(int(candidates[0]))
+        return (
+            torch.tensor(source, dtype=torch.long, device=tx.device),
+            torch.tensor(target, dtype=torch.long, device=tx.device),
+        )
+
+    def build_counterfactual_output(
+        self,
+        base_output: HCFDGOutput,
+        tx_labels: Any,
+        receiver_labels: Any,
+        day_labels: Any,
+        channel_labels: Any,
+        mode: str,
+    ) -> HCFDGCounterfactualOutput:
+        """Build one same-TX environment counterfactual from an existing output."""
+
+        fused_feature = base_output.fused_feature
+        if not isinstance(fused_feature, Tensor) or fused_feature.ndim != 2:
+            raise ValueError("base_output.fused_feature must be a rank-2 tensor")
+        if not isinstance(base_output.z_env, Tensor) or base_output.z_env.ndim != 2:
+            raise ValueError("base_output.z_env must be a rank-2 tensor")
+        if base_output.z_env.size(0) != fused_feature.size(0):
+            raise ValueError("base output feature batches must align")
+        n = fused_feature.size(0)
+        tx = self._counterfactual_labels(tx_labels, n=n, device=fused_feature.device, name="tx")
+        receiver = self._counterfactual_labels(
+            receiver_labels, n=n, device=fused_feature.device, name="receiver"
+        )
+        day = self._counterfactual_labels(day_labels, n=n, device=fused_feature.device, name="day")
+        channel = self._counterfactual_labels(
+            channel_labels, n=n, device=fused_feature.device, name="channel"
+        )
+        normalized_mode = str(mode).strip().lower()
+        source_indices, target_indices = self._counterfactual_pairs(
+            tx, receiver, day, channel, normalized_mode
+        )
+        if source_indices.numel() == 0:
+            raise ValueError(f"no valid counterfactual pairs for mode {normalized_mode}")
+
+        source_h = fused_feature[source_indices]
+        source_env = base_output.z_env[source_indices]
+        target_env_features = base_output.z_env[target_indices]
+        cf_h = self.counterfactual_transport(source_h, source_env, target_env_features)
+        cf_z_id = self._project_identity(cf_h)
+        cf_logits = F.linear(cf_z_id, self.common_head.W0, self.common_head.bias)
+
+        invalid = torch.full(
+            (source_indices.numel(),), -1, dtype=torch.long, device=cf_h.device
+        )
+        cf_environment = self.environment_encoder(
+            cf_h,
+            env_meta=None,
+            receiver_labels=invalid,
+            day_labels=invalid,
+            channel_labels=invalid,
+            grl_strength=0.0,
+        )
+        return HCFDGCounterfactualOutput(
+            cf_logits=cf_logits,
+            cf_z_id=cf_z_id,
+            z_id=base_output.z_id[source_indices],
+            cf_env_logits={
+                "receiver": cf_environment.receiver_logits,
+                "day": cf_environment.day_logits,
+                "channel": cf_environment.channel_logits,
+            },
+            target_env={
+                "receiver": receiver[target_indices],
+                "day": day[target_indices],
+                "channel": channel[target_indices],
+            },
+            cf_h=cf_h,
+            target_h=fused_feature[target_indices],
+            labels=tx[source_indices],
+            source_indices=source_indices,
+            target_indices=target_indices,
+            mode=normalized_mode,
+        )
+
 
 __all__ = [
     "CommonSpecificLowRankHead",
@@ -936,6 +1069,7 @@ __all__ = [
     "CounterfactualTransport",
     "FactorizedEnvironmentEncoder",
     "FactorizedEnvironmentOutput",
+    "HCFDGCounterfactualOutput",
     "HCFDGModel",
     "HCFDGOutput",
 ]

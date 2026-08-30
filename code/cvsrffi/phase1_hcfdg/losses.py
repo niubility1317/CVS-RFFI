@@ -1393,7 +1393,10 @@ def compose_hcfdg_loss(
         cf_source = counterfactual_output
         if cf_source is None:
             cf_source = output
-        cf_result = counterfactual_losses(output=cf_source, labels=labels, **cf_args)
+        cf_labels = _get_field(cf_source, "labels")
+        if cf_labels is None:
+            cf_labels = labels
+        cf_result = counterfactual_losses(output=cf_source, labels=cf_labels, **cf_args)
         cf_value = cf_result.total
         cf_info = cf_result.info
 

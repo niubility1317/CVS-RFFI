@@ -14,7 +14,7 @@
 |HCF-006|第五、八节|内容键及无近邻回退|`phase1_hcfdg/losses.py`、`metrics.py`|verified|匹配/回退测试|V2启用|
 |HCF-007|第六节|单融合层有界低秩反事实传输|`phase1_hcfdg/model.py`|verified|边界及梯度测试|V2启用|
 |HCF-008|第六节|CF-ID、CF-INV、CF-ENV和style loss|`phase1_hcfdg/losses.py`|verified|逐项数值测试|V2启用|
-|HCF-009|第六节|receiver→day→channel/联合swap课程|`phase1_hcfdg/config.py`、`trainer.py`|implemented|`code/tests/phase1_hcfdg/test_config.py`|Task1冻结A6/A7课程模式；trainer集成后再verified|
+|HCF-009|第六节|receiver→day→channel/联合swap课程|`phase1_hcfdg/config.py`、`trainer.py`|verified|`test_trainer.py`课程边界+真实A9 Stage3 smoke|A6固定receiver；A7–A9 Stage3依次receiver/day/channel，Stage4联合swap|
 |HCF-010|第七节|分层HDRO与父级收缩|`phase1_hcfdg/losses.py`|verified|组风险测试|关闭Group CE/FISHR/REx|
 |HCF-011|第九节|`6×4×4=96`矩形batch|`phase1_hcfdg/sampler.py`|verified|sampler测试+A4真实路径smoke|至少3个receiver|
 |HCF-012|第九节|0.65/0.225/0.125 episode比例|`phase1_hcfdg/sampler.py`|verified|长序列频率及完整因素留出测试|receiver/day/channel轮换，support不含query因素的其他组合域|
@@ -36,18 +36,18 @@
 |HCF-028|项目协议|Phase1 source-only角色和外部域隔离|launcher、trainer负测|verified|禁用字段及真实source-LORO smoke|与Phase2无关|
 |HCF-029|项目协议|final checkpoint clean+三LEO场景闭合|launcher、evaluator|verified|A0/A1/A2/A4/A5真实checkpoint smoke|每场景独立JSON+log|
 |HCF-030|第十九节|HCF-DG-V1完整实现|上述V1文件|verified|完整聚焦测试+多候选smoke|结构验证版|
-|HCF-031|第十九节|HCF-DG-V2完整实现|上述V2文件|pending|V2聚焦测试+smoke|正式主候选|
+|HCF-031|第十九节|HCF-DG-V2完整实现|上述V2文件|implemented|HCF-DG聚焦测试144项+本地A9四update真实checkpoint无query smoke|代码和四场景闭合入口已可达；反事实课程在身份前向前重采样same-TX异因子矩形；待N607 A6–A9正式矩阵后升级verified|
 |HCF-032|第十九节|HCF-DG-V3小残差实现|独立residual模块|pending|门控/bypass测试|只在V2通过后|
 |HCF-033|第二十节|按报告顺序推进，不堆叠未过机制|matrix policy|verified|配置及launcher门控测试|先发布A0–A5；A6–A12仍受前序source gate约束|
-|HCF-034|声明边界|只声明代理数据Phase1 DG|正式报告|pending|逆向审计|不得冒充Phase2/在轨/Phase3|
+|HCF-034|声明边界|只声明代理数据Phase1 DG|正式报告|verified|A0–A5正式报告及Git发布|不得冒充Phase2/在轨/Phase3|
 
 ## 当前计数
 
-- verified：27
+- verified：29
 - implemented：4
 - deferred：0
 - rejected：0
 - blocked：0
-- pending：3
+- pending：1
 
-当前未闭合项：`HCF-031`、`HCF-032`和`HCF-034`。其中V2和小残差按报告顺序受A0–A5 source gate约束；正式性能声明等待N607矩阵结果。HCF-DG专用入口已隔离单前向增强，旧ADV3B02/ADV3B03回归保持通过。
+当前未闭合项：`HCF-032`仍为pending；`HCF-023`和`HCF-031`已实现但等待N607 A6–A9正式矩阵artifact后升级verified；`HCF-024/HCF-025`等待其报告顺序阶段。HCF-DG专用入口已隔离单前向增强，旧ADV3B02/ADV3B03回归保持通过。

@@ -10,7 +10,9 @@ from cvsrffi.phase1_hcfdg.model import (
     CommonSpecificLowRankHead,
     CounterfactualTransport,
     HCFDGModel,
+    HCFDGCounterfactualOutput,
 )
+from cvsrffi.phase1_hcfdg.losses import compose_hcfdg_loss
 
 
 class _CountingIdentityBackbone(nn.Module):
@@ -48,7 +50,9 @@ def _make_model() -> tuple[HCFDGModel, _CountingIdentityBackbone, torch.Tensor, 
     tx_labels = torch.arange(96) % 6
     env_meta = {
         "receiver": torch.arange(96) % 4,
-        "day": torch.arange(96) % 3,
+        # Keep multiple days inside every same-TX group so day-swap tests
+        # exercise a real eligible pair instead of the fail-closed branch.
+        "day": (torch.arange(96) // 6) % 3,
         "channel": torch.arange(96) % 5,
     }
     return model, backbone, x, tx_labels, env_meta
@@ -335,6 +339,157 @@ def test_counterfactual_transport_accepts_explicit_delta_environment() -> None:
     expected = (1.0 + gamma) * torch.nn.functional.layer_norm(h, h.shape[1:]) + beta
 
     torch.testing.assert_close(result, expected)
+
+
+@pytest.mark.parametrize(
+    ("mode", "changed_factor"),
+    [
+        ("receiver_swap", "receiver"),
+        ("day_swap", "day"),
+        ("channel_swap", "channel"),
+        ("joint_swap", None),
+    ],
+)
+def test_model_builds_each_counterfactual_mode_from_one_base_output(
+    mode: str,
+    changed_factor: str | None,
+) -> None:
+    model, backbone, x, tx_labels, env_meta = _make_model()
+    base_output = model(x, tx_labels=tx_labels, env_meta=env_meta, training_aux=True)
+    receiver = env_meta["receiver"]
+    day = env_meta["day"]
+    channel = env_meta["channel"]
+
+    counterfactual = model.build_counterfactual_output(
+        base_output,
+        tx_labels=tx_labels,
+        receiver_labels=receiver,
+        day_labels=day,
+        channel_labels=channel,
+        mode=mode,
+    )
+
+    assert isinstance(counterfactual, HCFDGCounterfactualOutput)
+    assert counterfactual.mode == mode
+    assert counterfactual.source_indices.numel() > 0
+    assert backbone.forward_calls == 1
+    source = counterfactual.source_indices
+    target = counterfactual.target_indices
+    assert torch.equal(tx_labels[source], tx_labels[target])
+    differences = torch.stack(
+        [receiver[source] != receiver[target], day[source] != day[target], channel[source] != channel[target]],
+        dim=1,
+    )
+    if changed_factor is not None:
+        factor_index = {"receiver": 0, "day": 1, "channel": 2}[changed_factor]
+        assert torch.all(differences[:, factor_index])
+    else:
+        assert torch.all(differences.any(dim=1))
+
+    assert torch.equal(counterfactual.labels, tx_labels[source])
+    torch.testing.assert_close(counterfactual.z_id, base_output.z_id[source])
+    torch.testing.assert_close(counterfactual.target_h, base_output.fused_feature[target])
+    assert set(counterfactual.cf_env_logits) == {"receiver", "day", "channel"}
+    assert set(counterfactual.target_env) == {"receiver", "day", "channel"}
+    assert torch.equal(counterfactual.target_env["receiver"], receiver[target])
+    assert torch.equal(counterfactual.target_env["day"], day[target])
+    assert torch.equal(counterfactual.target_env["channel"], channel[target])
+    assert counterfactual.cf_logits.shape == (source.numel(), model.num_classes)
+    assert counterfactual.cf_z_id.shape == counterfactual.z_id.shape
+    assert counterfactual.cf_h.shape == counterfactual.target_h.shape
+    assert all(torch.isfinite(value).all() for value in counterfactual.cf_env_logits.values())
+
+
+def test_counterfactual_environment_prediction_does_not_use_target_labels_as_input() -> None:
+    model, _, x, tx_labels, env_meta = _make_model()
+    base_output = model(x, tx_labels=tx_labels, env_meta=env_meta, training_aux=True)
+    receiver = env_meta["receiver"]
+    day = env_meta["day"]
+    channel = env_meta["channel"]
+
+    original = model.build_counterfactual_output(
+        base_output,
+        tx_labels=tx_labels,
+        receiver_labels=receiver,
+        day_labels=day,
+        channel_labels=channel,
+        mode="receiver_swap",
+    )
+    changed_metadata = model.build_counterfactual_output(
+        base_output,
+        tx_labels=tx_labels,
+        receiver_labels=receiver,
+        day_labels=(day + 1) % 3,
+        channel_labels=(channel + 1) % 5,
+        mode="receiver_swap",
+    )
+
+    assert torch.equal(original.source_indices, changed_metadata.source_indices)
+    assert torch.equal(original.target_indices, changed_metadata.target_indices)
+    for factor in ("receiver", "day", "channel"):
+        torch.testing.assert_close(
+            original.cf_env_logits[factor], changed_metadata.cf_env_logits[factor]
+        )
+
+
+@pytest.mark.parametrize("mode", ["receiver_swap", "day_swap", "channel_swap", "joint_swap"])
+def test_counterfactual_model_fails_closed_without_a_valid_pair(mode: str) -> None:
+    model, _, x, tx_labels, env_meta = _make_model()
+    base_output = model(x, tx_labels=tx_labels, env_meta=env_meta, training_aux=True)
+    same_tx = torch.zeros_like(tx_labels)
+    same_receiver = torch.zeros_like(env_meta["receiver"])
+    same_day = torch.zeros_like(env_meta["day"])
+    same_channel = torch.zeros_like(env_meta["channel"])
+
+    with pytest.raises(ValueError, match="no valid counterfactual pairs"):
+        model.build_counterfactual_output(
+            base_output,
+            tx_labels=same_tx,
+            receiver_labels=same_receiver,
+            day_labels=same_day,
+            channel_labels=same_channel,
+            mode=mode,
+        )
+
+
+def test_counterfactual_output_composes_with_loss_and_has_finite_gradients() -> None:
+    model, _, x, tx_labels, env_meta = _make_model()
+    base_output = model(x, tx_labels=tx_labels, env_meta=env_meta, training_aux=True)
+    counterfactual = model.build_counterfactual_output(
+        base_output,
+        tx_labels=tx_labels,
+        receiver_labels=env_meta["receiver"],
+        day_labels=env_meta["day"],
+        channel_labels=env_meta["channel"],
+        mode="joint_swap",
+    )
+
+    result = compose_hcfdg_loss(
+        base_output,
+        labels=tx_labels,
+        domain=env_meta["receiver"],
+        receiver=env_meta["receiver"],
+        day=env_meta["day"],
+        channel=env_meta["channel"],
+        use_lodo=False,
+        use_counterfactual=True,
+        use_hdro=False,
+        use_csd=False,
+        use_fac=False,
+        counterfactual_output=counterfactual,
+    )
+
+    assert torch.isfinite(result.total)
+    result.total.backward()
+    assert x.grad is not None
+    assert torch.isfinite(x.grad).all()
+    gradients = [
+        parameter.grad
+        for parameter in model.parameters()
+        if parameter.requires_grad and parameter.grad is not None
+    ]
+    assert gradients
+    assert all(torch.isfinite(gradient).all() for gradient in gradients)
 
 
 def test_model_training_path_has_finite_gradients() -> None:

@@ -132,6 +132,90 @@ def stage_for_update(update: int, budget: StageBudget = V2_STAGE_BUDGET) -> str:
     raise AssertionError("unreachable stage boundary")
 
 
+def v2_stage_components(config: HCFDGConfig, stage: str) -> dict[str, bool]:
+    """Resolve the report-frozen V2 objective set for one training stage."""
+
+    stage_name = str(stage).strip().lower()
+    if stage_name == "v1":
+        return {
+            "lodo": bool(config.use_lodo),
+            "content_conditioning": bool(config.use_content_conditioning),
+            "counterfactual": str(config.counterfactual_mode).lower() not in {"", "off", "none"},
+            "hdro": bool(config.use_hdro),
+            "csd": bool(config.use_csd),
+            "fac": bool(config.use_environment_encoder),
+        }
+    if stage_name not in {"stage0", "stage1", "stage2", "stage3", "stage4"}:
+        raise ValueError(f"unknown HCF-DG stage: {stage}")
+    if stage_name == "stage0":
+        active = set()
+    elif stage_name == "stage1":
+        active = {"csd"}
+    elif stage_name == "stage2":
+        active = {"lodo", "content_conditioning", "csd", "fac"}
+    else:
+        active = {"lodo", "content_conditioning", "counterfactual", "hdro", "csd", "fac"}
+    return {
+        "lodo": "lodo" in active and bool(config.use_lodo),
+        "content_conditioning": (
+            "content_conditioning" in active and bool(config.use_content_conditioning)
+        ),
+        "counterfactual": (
+            "counterfactual" in active
+            and str(config.counterfactual_mode).strip().lower() not in {"", "off", "none"}
+        ),
+        "hdro": "hdro" in active and bool(config.use_hdro),
+        "csd": "csd" in active and bool(config.use_csd),
+        "fac": "fac" in active and bool(config.use_environment_encoder),
+    }
+
+
+def counterfactual_mode_for_update(
+    config: HCFDGConfig,
+    stage: str,
+    update: int,
+    budget: StageBudget = V2_STAGE_BUDGET,
+) -> str:
+    """Return the same-TX swap mode for the frozen A6-A9 curriculum."""
+
+    components = v2_stage_components(config, stage)
+    if not components["counterfactual"]:
+        return "off"
+    configured = str(config.counterfactual_mode).strip().lower()
+    if configured == "receiver_swap":
+        return "receiver_swap"
+    if configured != "receiver_day_channel_joint_curriculum":
+        raise ValueError(f"unknown counterfactual mode: {config.counterfactual_mode}")
+    stage_name = str(stage).strip().lower()
+    if stage_name == "stage4":
+        return "joint_swap"
+    if stage_name != "stage3":
+        return "off"
+    stage3_start = budget.stage0 + budget.stage1 + budget.stage2 + 1
+    position = int(update) - stage3_start
+    if position < 0 or position >= budget.stage3:
+        raise ValueError("stage3 update is outside the frozen stage3 interval")
+    segment = math.ceil(budget.stage3 / 3)
+    if position < segment:
+        return "receiver_swap"
+    if position < 2 * segment:
+        return "day_swap"
+    return "channel_swap"
+
+
+def grl_strength_for_stage(stage: str) -> float:
+    """Use the registered low-adversarial-weight V2 tail."""
+
+    stage_name = str(stage).strip().lower()
+    if stage_name in {"stage0", "stage1"}:
+        return 0.0
+    if stage_name in {"v1", "stage2", "stage3"}:
+        return 0.05
+    if stage_name == "stage4":
+        return 0.01
+    raise ValueError(f"unknown HCF-DG stage: {stage}")
+
+
 @dataclass
 class CheckpointPayload:
     """Serializable checkpoint contract for a frozen HCF-DG candidate."""
@@ -585,6 +669,7 @@ class HCFDGTrainer:
         self._unlabeled_cursor = _LoaderCursor(self.unlabeled_loader)
         self._stage0_toggle = 0
         self._last_model_forward_calls: int | None = None
+        self._last_counterfactual_output: Any = None
 
         self._backbone_params, self._new_head_params, self.parameter_group_names = self._split_parameters()
         self.optimizer = torch.optim.AdamW(
@@ -696,6 +781,77 @@ class HCFDGTrainer:
             raw = self._labeled_cursor.next()
         return raw, time.perf_counter() - started
 
+    @staticmethod
+    def _has_counterfactual_pair(batch: _SourceBatch, mode: str) -> bool:
+        key = str(mode).strip().lower()
+        required = {
+            "receiver_swap": (batch.receiver,),
+            "day_swap": (batch.day,),
+            "channel_swap": (batch.channel,),
+            "joint_swap": (batch.receiver, batch.day, batch.channel),
+        }
+        if key not in required:
+            raise ValueError(f"unknown counterfactual mode: {mode}")
+        if batch.tx is None or any(value is None for value in required[key]):
+            return False
+        tx = torch.as_tensor(batch.tx).reshape(-1)
+        receiver = None if batch.receiver is None else torch.as_tensor(batch.receiver, device=tx.device).reshape(-1)
+        day = None if batch.day is None else torch.as_tensor(batch.day, device=tx.device).reshape(-1)
+        channel = None if batch.channel is None else torch.as_tensor(batch.channel, device=tx.device).reshape(-1)
+        factor_sizes = [value.numel() for value in (receiver, day, channel) if value is not None]
+        if any(size != tx.numel() for size in factor_sizes):
+            return False
+        valid_value = batch.env_meta.get("valid_tx_mask")
+        valid = (
+            torch.ones_like(tx, dtype=torch.bool)
+            if valid_value is None
+            else torch.as_tensor(valid_value, device=tx.device).reshape(-1).bool()
+        )
+        if valid.numel() != tx.numel():
+            return False
+        for index in torch.nonzero(valid, as_tuple=False).reshape(-1).tolist():
+            same_tx = valid & tx.eq(tx[index])
+            if key == "receiver_swap":
+                assert receiver is not None
+                changed = receiver.ne(receiver[index])
+            elif key == "day_swap":
+                assert day is not None
+                changed = day.ne(day[index])
+            elif key == "channel_swap":
+                assert channel is not None
+                changed = channel.ne(channel[index])
+            elif key == "joint_swap":
+                assert receiver is not None and day is not None and channel is not None
+                changed = (
+                    receiver.ne(receiver[index])
+                    | day.ne(day[index])
+                    | channel.ne(channel[index])
+                )
+            if bool((same_tx & changed).any()):
+                return True
+        return False
+
+    def _next_main_batch(self, *, update: int, stage: str) -> tuple[_SourceBatch, float]:
+        """Resample source rectangles before identity forward for the frozen CF mode."""
+
+        total_wait = 0.0
+        mode = counterfactual_mode_for_update(
+            self.config,
+            stage,
+            update,
+            self.stage_budget,
+        )
+        for _ in range(64):
+            raw, wait = self._next_source_batch(stage0=False)
+            total_wait += wait
+            batch = self._prepare_source_batch(raw, allow_tx=True, stage0=False)
+            batch.iq = self._single_view(batch)
+            if mode == "off" or self._has_counterfactual_pair(batch, mode):
+                return batch, total_wait
+        raise ValueError(
+            f"no valid same-TX {mode} pair after 64 source-only rectangle resamples"
+        )
+
     def _prepare_source_batch(self, raw: Any, *, allow_tx: bool, stage0: bool = False) -> _SourceBatch:
         batch = _source_batch(raw, allow_tx=allow_tx, stage0=stage0)
         batch.iq = _move_value(batch.iq, self.device)
@@ -767,6 +923,7 @@ class HCFDGTrainer:
             day_labels=batch.day,
             channel_labels=batch.channel,
             training_aux=True,
+            grl_strength=grl_strength_for_stage(stage),
             update=update,
             stage=stage,
         )
@@ -775,6 +932,26 @@ class HCFDGTrainer:
             self._last_model_forward_calls = after - before
         else:
             self._last_model_forward_calls = 1
+        self._last_counterfactual_output = None
+        mode = counterfactual_mode_for_update(
+            self.config,
+            stage,
+            update,
+            self.stage_budget,
+        )
+        if mode != "off":
+            builder = getattr(self.model, "build_counterfactual_output", None)
+            if not callable(builder):
+                raise ValueError("counterfactual stage requires model.build_counterfactual_output")
+            self._last_counterfactual_output = _invoke_supported(
+                builder,
+                base_output=result,
+                tx_labels=batch.tx,
+                receiver_labels=batch.receiver,
+                day_labels=batch.day,
+                channel_labels=batch.channel,
+                mode=mode,
+            )
         return result
 
     def _loss_from_result(
@@ -810,6 +987,7 @@ class HCFDGTrainer:
                         and any(item is None for item in value)
                     )
                 }
+            components = v2_stage_components(self.config, stage)
             result_loss = _invoke_loss_function(
                 self.loss_fn,
                 result,
@@ -830,15 +1008,13 @@ class HCFDGTrainer:
                 query_mask=batch.query_mask,
                 groups=groups,
                 config=self.config,
-                use_lodo=getattr(self.config, "use_lodo", None),
-                use_content_conditioning=getattr(self.config, "use_content_conditioning", None),
-                use_counterfactual=(
-                    str(getattr(self.config, "counterfactual_mode", "off")).lower()
-                    not in {"", "off", "none"}
-                ),
-                use_hdro=getattr(self.config, "use_hdro", None),
-                use_csd=getattr(self.config, "use_csd", None),
-                use_fac=getattr(self.config, "use_environment_encoder", None),
+                use_lodo=components["lodo"],
+                use_content_conditioning=components["content_conditioning"],
+                use_counterfactual=components["counterfactual"],
+                use_hdro=components["hdro"],
+                use_csd=components["csd"],
+                use_fac=components["fac"],
+                counterfactual_output=self._last_counterfactual_output,
                 update=update,
                 stage=stage,
                 include_environment=include_environment,
@@ -926,7 +1102,7 @@ class HCFDGTrainer:
                     stage=stage,
                 )
                 return _as_loss(result)
-        return None
+        return self._stage0_loss(batch, update=update)
 
     def _zero_attached_loss(self, loss: Any) -> torch.Tensor:
         if loss is None:
@@ -1194,15 +1370,20 @@ class HCFDGTrainer:
             backbone_lr, margin = self._set_learning_rates_and_margin(update, total_updates)
             stage = stage_for_update(update, self.stage_budget) if is_v2 else "v1"
             is_stage0 = stage == "stage0"
-            raw, dataloader_wait = self._next_source_batch(stage0=is_stage0)
-            source_batch = self._prepare_source_batch(raw, allow_tx=not is_stage0, stage0=is_stage0)
+            if is_stage0:
+                raw, dataloader_wait = self._next_source_batch(stage0=True)
+                source_batch = self._prepare_source_batch(raw, allow_tx=False, stage0=True)
+            else:
+                source_batch, dataloader_wait = self._next_main_batch(
+                    update=update,
+                    stage=stage,
+                )
             samples = int(source_batch.iq.shape[0]) if torch.is_tensor(source_batch.iq) and source_batch.iq.ndim > 0 else 0
 
             forward_started = time.perf_counter()
             if is_stage0:
                 result_loss = self._stage0_loss(source_batch, update=update)
             else:
-                source_batch.iq = self._single_view(source_batch)
                 result = self._call_model(source_batch, update=update, stage=stage)
                 result_loss = self._loss_from_result(
                     result,
@@ -1217,7 +1398,7 @@ class HCFDGTrainer:
             if is_v2 and not is_stage0 and main_update % self.stage_budget.environment_update_interval == 0:
                 extra_raw, extra_wait = self._next_source_batch(stage0=True)
                 dataloader_wait += extra_wait
-                extra_batch = self._prepare_source_batch(extra_raw, allow_tx=False)
+                extra_batch = self._prepare_source_batch(extra_raw, allow_tx=False, stage0=True)
                 extra_loss = self._extra_environment_loss(extra_batch, update=update, stage=stage)
                 if extra_loss is not None:
                     result_loss = self._zero_attached_loss(result_loss) + self._zero_attached_loss(extra_loss)

@@ -354,3 +354,33 @@ def test_task4_output_composes_all_enabled_loss_families():
     assert torch.isfinite(common_logits.grad).all()
     assert torch.isfinite(specific_logits.grad).all()
     assert torch.isfinite(z_id.grad).all()
+
+
+def test_counterfactual_subset_uses_its_own_same_tx_labels() -> None:
+    base = SimpleNamespace(
+        common_logits=torch.randn(4, 2, requires_grad=True),
+        z_id=torch.randn(4, 3, requires_grad=True),
+    )
+    counterfactual = SimpleNamespace(
+        cf_logits=torch.randn(2, 2, requires_grad=True),
+        cf_z_id=torch.randn(2, 3, requires_grad=True),
+        z_id=torch.randn(2, 3, requires_grad=True),
+        cf_env_logits=torch.randn(2, 3, requires_grad=True),
+        target_env=torch.tensor([1, 2]),
+        cf_h=torch.randn(2, 4, requires_grad=True),
+        target_h=torch.randn(2, 4),
+        labels=torch.tensor([0, 1]),
+    )
+
+    result = compose_hcfdg_loss(
+        base,
+        labels=torch.tensor([0, 1, 0, 1]),
+        use_lodo=False,
+        use_counterfactual=True,
+        use_hdro=False,
+        use_csd=False,
+        use_fac=False,
+        counterfactual_output=counterfactual,
+    )
+
+    assert torch.isfinite(result.total)

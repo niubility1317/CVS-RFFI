@@ -12,8 +12,11 @@ from cvsrffi.phase1_hcfdg.config import candidate_config
 from cvsrffi.phase1_hcfdg.trainer import (
     CheckpointPayload,
     HCFDGTrainer,
+    counterfactual_mode_for_update,
     cosface_margin_at,
+    grl_strength_for_stage,
     learning_rate_at,
+    v2_stage_components,
 )
 
 
@@ -47,6 +50,8 @@ class _FakeModel(nn.Module):
         self.stage0_received_tx = False
         self.freeze_calls = 0
         self.margin_history = []
+        self.counterfactual_modes = []
+        self.grl_strengths = []
 
     def set_cosface_margin(self, value):
         self.margin_history.append(float(value))
@@ -70,6 +75,7 @@ class _FakeModel(nn.Module):
 
     def forward(self, x, *, tx_labels=None, env_meta=None, training_aux=False, **kwargs):
         self.forward_calls += 1
+        self.grl_strengths.append(float(kwargs.get("grl_strength", 0.05)))
         if x is None:
             x = torch.zeros(1, 1)
         x = x.float().reshape(x.shape[0], -1).mean(dim=1, keepdim=True)
@@ -83,6 +89,18 @@ class _FakeModel(nn.Module):
             labels = tx_labels.reshape(-1).long().remainder(2)
             loss = F.cross_entropy(logits, labels)
         return {"loss": loss, "common_logits": logits}
+
+    def build_counterfactual_output(
+        self,
+        base_output,
+        tx_labels,
+        receiver_labels,
+        day_labels,
+        channel_labels,
+        mode,
+    ):
+        self.counterfactual_modes.append(str(mode))
+        return SimpleNamespace(mode=str(mode), labels=tx_labels)
 
 
 class _SingleViewBuilder:
@@ -167,7 +185,8 @@ def _labeled_batch():
         "iq": torch.ones(4, 1),
         "tx": torch.tensor([0, 1, 0, 1]),
         "receiver": torch.tensor([1, 1, 3, 3]),
-        "day": torch.tensor([1, 2, 1, 2]),
+        "day": torch.tensor([1, 1, 2, 2]),
+        "channel": torch.tensor([0, 0, 1, 1]),
     }
 
 
@@ -267,13 +286,141 @@ def test_v2_stage_counts_total_6300_and_freezes_at_half(tmp_path):
     assert state.environment_updates == 700 + (5600 // 4)
 
 
+def test_v2_stage_components_follow_report_order() -> None:
+    config = candidate_config("A9")
+
+    assert v2_stage_components(config, "stage1") == {
+        "lodo": False,
+        "content_conditioning": False,
+        "counterfactual": False,
+        "hdro": False,
+        "csd": True,
+        "fac": False,
+    }
+    assert v2_stage_components(config, "stage2") == {
+        "lodo": True,
+        "content_conditioning": True,
+        "counterfactual": False,
+        "hdro": False,
+        "csd": True,
+        "fac": True,
+    }
+    assert v2_stage_components(config, "stage3") == {
+        "lodo": True,
+        "content_conditioning": True,
+        "counterfactual": True,
+        "hdro": True,
+        "csd": True,
+        "fac": True,
+    }
+    assert v2_stage_components(config, "stage4") == v2_stage_components(config, "stage3")
+
+
+def test_counterfactual_curriculum_and_low_grl_tail_are_frozen() -> None:
+    config = candidate_config("A9")
+
+    assert counterfactual_mode_for_update(config, "stage2", 4000) == "off"
+    assert counterfactual_mode_for_update(config, "stage3", 4001) == "receiver_swap"
+    assert counterfactual_mode_for_update(config, "stage3", 4568) == "day_swap"
+    assert counterfactual_mode_for_update(config, "stage3", 5135) == "channel_swap"
+    assert counterfactual_mode_for_update(config, "stage4", 5701) == "joint_swap"
+    assert counterfactual_mode_for_update(candidate_config("A6"), "stage3", 5000) == "receiver_swap"
+    assert grl_strength_for_stage("stage2") == pytest.approx(0.05)
+    assert grl_strength_for_stage("stage4") == pytest.approx(0.01)
+
+
+def test_stage3_builds_counterfactual_without_second_model_forward_and_passes_stage_gates(tmp_path):
+    trainer, model, _ = _make_trainer(tmp_path, candidate_config("A9"))
+    captured = {}
+
+    def loss_fn(output, **kwargs):
+        captured.update(kwargs)
+        return output["common_logits"].square().mean()
+
+    trainer.loss_fn = loss_fn
+    raw = _labeled_batch()
+    raw.update(
+        channel=torch.tensor([0, 1, 0, 1]),
+        domain=torch.tensor([0, 1, 0, 1]),
+        query_domain=1,
+        support_mask=torch.tensor([True, False, True, False]),
+        query_mask=torch.tensor([False, True, False, True]),
+        content_keys=torch.ones(4, 3),
+    )
+    batch = trainer._prepare_source_batch(raw, allow_tx=True)
+
+    output = trainer._call_model(batch, update=4001, stage="stage3")
+    loss = trainer._loss_from_result(output, batch, update=4001, stage="stage3", allow_tx=True)
+
+    assert torch.isfinite(loss)
+    assert model.forward_calls == 1
+    assert model.counterfactual_modes == ["receiver_swap"]
+    assert captured["counterfactual_output"].mode == "receiver_swap"
+    assert captured["use_lodo"] is True
+    assert captured["use_content_conditioning"] is True
+    assert captured["use_counterfactual"] is True
+    assert captured["use_hdro"] is True
+    assert captured["use_csd"] is True
+    assert captured["use_fac"] is True
+
+
+def test_day_curriculum_resamples_before_identity_forward_until_same_tx_pair_exists(tmp_path):
+    bad = _labeled_batch()
+    bad.update(
+        day=torch.tensor([1, 2, 1, 2]),
+        channel=torch.tensor([0, 0, 1, 1]),
+        domain=torch.tensor([0, 1, 0, 1]),
+        query_domain=1,
+        support_mask=torch.tensor([True, False, True, False]),
+        query_mask=torch.tensor([False, True, False, True]),
+        valid_tx_mask=torch.ones(4, dtype=torch.bool),
+        content_keys=torch.ones(4, 3),
+    )
+    good = dict(bad)
+    good["day"] = torch.tensor([1, 1, 2, 2])
+    model = _FakeModel()
+    builder = _SingleViewBuilder()
+    trainer = HCFDGTrainer(
+        model=model,
+        config=candidate_config("A9"),
+        labeled_loader=[bad, good],
+        unlabeled_loader=[_unlabeled_batch()],
+        build_single_view_batch=builder,
+        device="cpu",
+        output_dir=tmp_path,
+    )
+
+    batch, _ = trainer._next_main_batch(update=4568, stage="stage3")
+
+    assert torch.equal(batch.day.cpu(), good["day"])
+    assert builder.calls == 2
+    assert model.forward_calls == 0
+    trainer._call_model(batch, update=4568, stage="stage3")
+    assert model.forward_calls == 1
+    assert model.counterfactual_modes == ["day_swap"]
+
+
+def test_environment_auxiliary_loss_falls_back_to_real_stage0_objective(tmp_path):
+    trainer, model, _ = _make_trainer(tmp_path, candidate_config("A9"))
+    batch = trainer._prepare_source_batch(_unlabeled_batch(), allow_tx=False, stage0=True)
+
+    loss = trainer._extra_environment_loss(batch, update=704, stage="stage1")
+
+    assert torch.isfinite(loss)
+    assert loss.requires_grad
+    assert model.stage0_calls == 1
+    assert model.forward_calls == 0
+
+
 def test_stage0_never_opens_u_s_tx_or_forbidden_query_keys(tmp_path):
     trainer, model, _ = _make_trainer(tmp_path, candidate_config("A9"))
 
     state = trainer.train(candidate_config("A9"))
 
     assert state.stage_updates["stage0"] == 700
-    assert model.stage0_calls == 700
+    # 700 Stage0 calls plus one real environment-only objective every four
+    # Stage1-4 main updates (5600 / 4 = 1400).
+    assert model.stage0_calls == 2100
     assert model.stage0_received_tx is False
 
 
