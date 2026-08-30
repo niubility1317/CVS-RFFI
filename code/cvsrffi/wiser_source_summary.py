@@ -47,6 +47,15 @@ DENSE_DOMAIN_MEMBERS: Final = frozenset(
 )
 
 
+def _portable_tensor(value: np.ndarray) -> torch.Tensor:
+    contiguous = np.ascontiguousarray(value)
+    try:
+        return torch.from_numpy(contiguous)
+    except TypeError:
+        # N607 torch 2.1 can reject a genuine NumPy ndarray at the C bridge.
+        return torch.tensor(contiguous.tolist())
+
+
 def _scalar_string(value: np.ndarray, label: str) -> str:
     array = np.asarray(value)
     if array.shape != ():
@@ -142,7 +151,7 @@ def load_quantized_source_summary(path: str | Path) -> QuantizedSourceSummary:
             )
             if not np.isfinite(by_class).all():
                 raise ValueError("dense domain-class summary contains nonfinite values")
-            points = F.normalize(torch.from_numpy(np.array(by_class, copy=True)), dim=-1)
+            points = F.normalize(_portable_tensor(np.array(by_class, copy=True)), dim=-1)
             centers = F.normalize(points.mean(dim=1), dim=-1)
             empty = torch.empty(0, dtype=torch.float32)
             return QuantizedSourceSummary(
@@ -228,11 +237,11 @@ def load_quantized_source_summary(path: str | Path) -> QuantizedSourceSummary:
         feature_schema=feature_schema,
         class_registry=classes,
         centers=F.normalize(
-            torch.from_numpy(np.array(centers_np, copy=True)), dim=-1
+            _portable_tensor(np.array(centers_np, copy=True)), dim=-1
         ).requires_grad_(False),
-        basis=torch.from_numpy(np.array(basis_np, copy=True)).requires_grad_(False),
-        coefficients=torch.from_numpy(np.array(coeff_np, copy=True)).requires_grad_(False),
-        radii=torch.from_numpy(np.array(radii_np, copy=True)).requires_grad_(False),
+        basis=_portable_tensor(np.array(basis_np, copy=True)).requires_grad_(False),
+        coefficients=_portable_tensor(np.array(coeff_np, copy=True)).requires_grad_(False),
+        radii=_portable_tensor(np.array(radii_np, copy=True)).requires_grad_(False),
     )
 
 

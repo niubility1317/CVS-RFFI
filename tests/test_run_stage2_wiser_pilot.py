@@ -88,6 +88,21 @@ def test_phase1_binding_rejects_mismatched_summary(tmp_path: Path) -> None:
         module._validate_phase1_binding(checkpoint, summary, binding)
 
 
+def test_tensor_falls_back_when_n607_numpy_bridge_rejects_array(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _script_module()
+    monkeypatch.setattr(
+        module.torch,
+        "from_numpy",
+        lambda _value: (_ for _ in ()).throw(TypeError("N607 bridge")),
+    )
+
+    value = module._tensor(np.asarray([[1.0, 2.0]], np.float32), "cpu")
+
+    assert torch.equal(value, torch.tensor([[1.0, 2.0]]))
+
+
 def test_pilot_freezes_every_support_state_before_first_query(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

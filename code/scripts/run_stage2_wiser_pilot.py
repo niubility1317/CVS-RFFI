@@ -142,7 +142,11 @@ def _training_config(args: argparse.Namespace) -> WISERTrainingConfig:
 
 def _tensor(values: np.ndarray, device: str, *, labels: bool = False) -> torch.Tensor:
     dtype = torch.long if labels else torch.float32
-    return torch.as_tensor(values, dtype=dtype, device=torch.device(device))
+    contiguous = np.ascontiguousarray(values)
+    try:
+        return torch.from_numpy(contiguous).to(device=torch.device(device), dtype=dtype)
+    except TypeError:
+        return torch.tensor(contiguous.tolist(), dtype=dtype, device=torch.device(device))
 
 
 def _save_adapted_state_new(

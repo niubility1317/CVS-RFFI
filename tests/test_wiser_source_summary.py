@@ -7,6 +7,7 @@ import pytest
 import torch
 import torch.nn.functional as F
 
+import cvsrffi.wiser_source_summary as summary_module
 from cvsrffi.wiser_source_summary import (
     classwise_sliced_wasserstein,
     load_quantized_source_summary,
@@ -109,6 +110,22 @@ def test_dense_domain_class_summary_uses_each_valid_domain_as_source_point(
     assert summary.class_registry == ("c0", "c1")
     assert torch.allclose(torch.linalg.vector_norm(points, dim=-1), torch.ones(2, 3))
     assert torch.allclose(summary.centers, F.normalize(points.mean(dim=1), dim=1))
+
+
+def test_summary_loader_falls_back_when_n607_numpy_bridge_rejects_array(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        summary_module.torch,
+        "from_numpy",
+        lambda _value: (_ for _ in ()).throw(TypeError("N607 bridge")),
+    )
+
+    summary = load_quantized_source_summary(
+        _write_dense_domain_summary(tmp_path / "dense.npz")
+    )
+
+    assert summary.virtual_source_points().shape == (2, 3, 4)
 
 
 def test_classwise_vsw_is_differentiable_only_to_target_features(tmp_path: Path) -> None:
