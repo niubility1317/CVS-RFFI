@@ -92,3 +92,5 @@ run根在36行全部进入终态后写入`final_status.json`。训练完成不�
 - `plan.json`为12,887字节；首波创建16个row目录。
 - 首波16个直属worker与dispatcher绑定正确；GPU0–7各2个本run Python训练进程，没有超过每卡2行。
 - 启动30秒快照：GPU利用率69%–90%，显存约1,427–1,429MiB/卡；无`TECHNICAL_FAILURE.json`，dispatcher仍存活。首个update尚未写出metrics，下一次短连接复核增长。
+- 启动74秒复核：dispatcher及16个worker仍存活，GPU利用率61%–89%，无技术失败。trainer按设计在每行4000 updates结束时一次性写`metrics.csv/jsonl`，因此运行中dispatcher日志与metrics可保持空/缺失；以精确进程绑定、GPU计算、elapsed和row目录状态监控，不据此停止健康run。
+- 低频heartbeat监控ID：`hcf-dg-a0-a5`，每30分钟短连接只读检查；36行闭合后完整解析全部artifact并发布source-only A0–A5结论。
