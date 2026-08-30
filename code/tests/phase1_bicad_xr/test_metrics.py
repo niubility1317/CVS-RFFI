@@ -63,6 +63,11 @@ def _write_complete_base(row_root: Path, reconstruction: dict[str, list[str]] | 
             "runtime": _runtime(),
             "reconstruction": reconstruction
             or {"missing": [], "unexpected": [], "shape_mismatch": []},
+            "strict_reconstruction": True,
+            "trainer_runtime_strict": True,
+            "missing_keys": [],
+            "unexpected_keys": [],
+            "shape_mismatches": [],
         },
     )
     _write_json(row_root / "diagnostics.json", BiCADXRMetricStore().snapshot())
@@ -77,6 +82,10 @@ def _write_eval(row_root: Path, scene: str) -> None:
         {
             "scene": scene,
             "checkpoint": "final_checkpoint.pt",
+            "checkpoint_load_strict": True,
+            "missing_keys": [],
+            "unexpected_keys": [],
+            "shape_mismatches": [],
             "per_class_accuracy": {"0": 1.0, "1": 0.5},
             "floor_accuracy": 0.5,
             "accuracy": 0.75,
@@ -149,10 +158,91 @@ def test_reconstruction_failure_prevents_artifacts_complete(
     assert result["reconstruction"][failure_key] == ["identity_head.weight"]
 
 
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("strict_reconstruction", False),
+        ("missing_keys", ["identity_head.weight"]),
+        ("unexpected_keys", ["legacy_head.weight"]),
+        ("shape_mismatches", ["identity_head.weight"]),
+    ],
+)
+def test_closure_rejects_non_strict_checkpoint_artifact_fields(
+    tmp_path: Path, field: str, value: object
+) -> None:
+    _write_complete_base(tmp_path)
+    runtime_path = tmp_path / "checkpoint_runtime.json"
+    runtime_payload = json.loads(runtime_path.read_text(encoding="utf-8"))
+    runtime_payload[field] = value
+    _write_json(runtime_path, runtime_payload)
+    for scene in FORMAL_EVAL_SCENARIOS:
+        _write_eval(tmp_path, scene)
+
+    result = validate_artifact_closure(tmp_path)
+
+    assert result["complete"] is False
+    assert result["status"] != "ARTIFACTS_COMPLETE"
+
+
+@pytest.mark.parametrize(
+    "field",
+    [
+        "strict_reconstruction",
+        "trainer_runtime_strict",
+        "missing_keys",
+        "unexpected_keys",
+        "shape_mismatches",
+    ],
+)
+def test_closure_rejects_missing_checkpoint_strict_field(
+    tmp_path: Path, field: str
+) -> None:
+    _write_complete_base(tmp_path)
+    runtime_path = tmp_path / "checkpoint_runtime.json"
+    runtime_payload = json.loads(runtime_path.read_text(encoding="utf-8"))
+    del runtime_payload[field]
+    _write_json(runtime_path, runtime_payload)
+    for scene in FORMAL_EVAL_SCENARIOS:
+        _write_eval(tmp_path, scene)
+
+    result = validate_artifact_closure(tmp_path)
+
+    assert result["complete"] is False
+    assert result["status"] != "ARTIFACTS_COMPLETE"
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("checkpoint_load_strict", False),
+        ("missing_keys", ["identity_head.weight"]),
+        ("unexpected_keys", ["legacy_head.weight"]),
+        ("shape_mismatches", ["identity_head.weight"]),
+    ],
+)
+def test_closure_rejects_non_strict_evaluation_artifact_fields(
+    tmp_path: Path, field: str, value: object
+) -> None:
+    _write_complete_base(tmp_path)
+    for scene in FORMAL_EVAL_SCENARIOS:
+        _write_eval(tmp_path, scene)
+    eval_path = tmp_path / "evaluations" / "leo_rain_weak.json"
+    eval_payload = json.loads(eval_path.read_text(encoding="utf-8"))
+    eval_payload[field] = value
+    _write_json(eval_path, eval_payload)
+
+    result = validate_artifact_closure(tmp_path)
+
+    assert result["complete"] is False
+    assert result["status"] != "ARTIFACTS_COMPLETE"
+    assert "leo_rain_weak" in result["missing"]
+
+
 def test_final_checkpoint_is_strictly_loaded_then_evaluated_per_scene(tmp_path: Path) -> None:
     checkpoint_path = tmp_path / "final_checkpoint.pt"
     checkpoint_path.write_bytes(b"checkpoint")
     calls: list[str] = []
+    trainer_runtime_calls: list[object] = []
 
     class FakeModel:
         def load_state_dict(self, state: object, strict: bool = False) -> SimpleNamespace:
@@ -176,13 +266,35 @@ def test_final_checkpoint_is_strictly_loaded_then_evaluated_per_scene(tmp_path: 
         output_dir=tmp_path,
         checkpoint_loader=lambda _: {
             "model": {"weight": 1},
-            "bicad_xr_runtime": _runtime(),
+            "bicad_xr_runtime": {
+                key: value
+                for key, value in _runtime().items()
+                if key not in {"fold", "seed", "source_receivers", "train_days"}
+            },
+            "args": {
+                "row_key": json.dumps(
+                    {
+                        "row_id": "D5-F1-S392001",
+                        "fold": 1,
+                        "optimizer_updates": 5000,
+                    }
+                ),
+                "seed": 392001,
+                "wisig_train_rxs": "rx1,rx2",
+                "wisig_train_days": "1,2,3",
+                "run_id": "formal-D5-F1-S392001",
+                "output_dir": str(tmp_path),
+            },
         },
         model_builder=lambda _: FakeModel(),
+        trainer_runtime_restorer=lambda model, payload: trainer_runtime_calls.append(
+            (model, payload["bicad_xr_runtime"])
+        ),
         evaluator=evaluator,
     )
 
     assert calls == list(FORMAL_EVAL_SCENARIOS)
+    assert len(trainer_runtime_calls) == 1
     assert result["complete"] is True
     assert result["status"] == "ARTIFACTS_COMPLETE"
     assert result["reconstruction"] == {

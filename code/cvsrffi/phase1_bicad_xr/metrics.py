@@ -286,6 +286,11 @@ def _checkpoint_from_metadata(root: Path, metadata: Mapping[str, Any] | None) ->
 def _metric_payload_is_valid(payload: Mapping[str, Any], scenario: str) -> bool:
     if payload.get("scenario", payload.get("scene")) != scenario:
         return False
+    if payload.get("checkpoint_load_strict") is not True:
+        return False
+    for name in ("missing_keys", "unexpected_keys", "shape_mismatches"):
+        if name not in payload or not isinstance(payload[name], list) or payload[name]:
+            return False
     if not isinstance(payload.get("per_class_accuracy"), Mapping):
         return False
     for name in ("accuracy", "floor_accuracy"):
@@ -326,6 +331,16 @@ def validate_artifact_closure(row_root: str | Path) -> dict[str, Any]:
     reconstruction = _normalise_reconstruction(
         metadata.get("reconstruction") if metadata is not None else None
     )
+    if metadata is not None:
+        if metadata.get("strict_reconstruction") is not True:
+            missing.append("strict_reconstruction")
+        if metadata.get("trainer_runtime_strict") is not True:
+            missing.append("trainer_runtime_strict")
+        for name in ("missing_keys", "unexpected_keys", "shape_mismatches"):
+            if name not in metadata or not isinstance(metadata[name], list):
+                missing.append(name)
+            elif metadata[name]:
+                reconstruction = _normalise_reconstruction(metadata)
     if any(reconstruction.values()):
         return _failure_result(
             missing=missing,
@@ -448,6 +463,49 @@ def _default_checkpoint_loader(path: Path) -> Mapping[str, Any]:
     return loaded
 
 
+def _parsed_csv(value: Any) -> list[Any]:
+    output: list[Any] = []
+    for item in str(value or "").split(","):
+        token = item.strip()
+        if not token:
+            continue
+        try:
+            output.append(int(token))
+        except ValueError:
+            output.append(token)
+    return output
+
+
+def _runtime_with_recorded_args(payload: Mapping[str, Any]) -> Mapping[str, Any] | None:
+    raw_runtime = payload.get("bicad_xr_runtime", payload.get("runtime"))
+    if not isinstance(raw_runtime, Mapping):
+        return None
+    runtime = dict(raw_runtime)
+    args = payload.get("args")
+    if not isinstance(args, Mapping):
+        return runtime
+    row_record: Mapping[str, Any] = {}
+    raw_row_key = args.get("row_key")
+    if isinstance(raw_row_key, str) and raw_row_key.strip():
+        try:
+            loaded_row_record = json.loads(raw_row_key)
+        except json.JSONDecodeError:
+            loaded_row_record = None
+        if isinstance(loaded_row_record, Mapping):
+            row_record = loaded_row_record
+    for name in ("fold", "optimizer_updates"):
+        if name in row_record:
+            runtime[name] = row_record[name]
+    if "seed" in args:
+        runtime["seed"] = args["seed"]
+    runtime["source_receivers"] = _parsed_csv(args.get("wisig_train_rxs"))
+    runtime["train_days"] = _parsed_csv(args.get("wisig_train_days"))
+    runtime["run_id"] = args.get("run_id")
+    runtime["row_id"] = row_record.get("row_id")
+    runtime["output_dir"] = args.get("output_dir")
+    return runtime
+
+
 def evaluate_final_checkpoint(
     checkpoint_path: str | Path,
     *,
@@ -455,6 +513,7 @@ def evaluate_final_checkpoint(
     output_dir: str | Path | None = None,
     checkpoint_loader: Callable[[Path], Mapping[str, Any]] | None = None,
     model_builder: Callable[[Mapping[str, Any]], Any] | None = None,
+    trainer_runtime_restorer: Callable[[Any, Mapping[str, Any]], Any] | None = None,
     evaluator: Callable[[Any, str], Mapping[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Strictly reconstruct one checkpoint and independently evaluate four scenes.
@@ -481,7 +540,7 @@ def evaluate_final_checkpoint(
     if not isinstance(payload, Mapping):
         return _failure_result(reason="CHECKPOINT_LOAD_FAILED")
 
-    runtime = payload.get("bicad_xr_runtime", payload.get("runtime"))
+    runtime = _runtime_with_recorded_args(payload)
     runtime_check = validate_checkpoint_runtime(runtime, expected_runtime)
     if not runtime_check["valid"]:
         return {
@@ -508,6 +567,18 @@ def evaluate_final_checkpoint(
             ),
             "runtime": runtime_check,
         }
+    if trainer_runtime_restorer is None:
+        return _failure_result(reason="TRAINER_RUNTIME_RESTORER_REQUIRED")
+    try:
+        trainer_runtime_restorer(model, payload)
+    except Exception as exc:
+        return {
+            **_failure_result(
+                reconstruction=reconstruction,
+                reason=f"TRAINER_RUNTIME_RESTORE_FAILED: {exc}",
+            ),
+            "runtime": runtime_check,
+        }
 
     diagnostics = BiCADXRMetricStore().snapshot()
     _write_json_once(
@@ -517,6 +588,10 @@ def evaluate_final_checkpoint(
             "runtime": runtime,
             "reconstruction": reconstruction,
             "strict_reconstruction": True,
+            "trainer_runtime_strict": True,
+            "missing_keys": [],
+            "unexpected_keys": [],
+            "shape_mismatches": [],
         },
     )
     _write_json_once(root / "diagnostics.json", diagnostics)

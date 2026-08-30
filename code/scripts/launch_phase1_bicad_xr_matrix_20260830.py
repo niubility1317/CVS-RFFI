@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
+import importlib.util
 import json
 import os
 import subprocess
@@ -24,6 +25,10 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from cvsrffi.phase1_bicad_xr.config import candidate_config
+from cvsrffi.phase1_bicad_xr.metrics import (
+    evaluate_final_checkpoint,
+    validate_artifact_closure,
+)
 
 
 RUN_ID_DEFAULT = "phase1_bicad_xr_matrix_20260830_r1"
@@ -369,6 +374,17 @@ def build_train_command(row: PlanRow, roots: LauncherRoots, *, run_id: str = RUN
         str(_row_root(row, roots)),
         "--run_id",
         f"{run_id}-{row.row_id}",
+        "--row_key",
+        json.dumps(
+            {
+                "fold": row.fold,
+                "optimizer_updates": row.optimizer_updates,
+                "row_id": row.row_id,
+            },
+            ensure_ascii=True,
+            sort_keys=True,
+            separators=(",", ":"),
+        ),
         "--candidate_id",
         row.candidate_id,
         "--epochs",
@@ -414,6 +430,212 @@ def _write_json_once(path: Path, payload: Mapping[str, Any]) -> Path:
     with path.open("x", encoding="utf-8", newline="\n") as handle:
         handle.write(serialized)
     return path
+
+
+def _write_json_atomic_once(path: Path, payload: Mapping[str, Any]) -> Path:
+    """Publish a completion marker atomically without replacing an existing file."""
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    serialized = json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    temporary = path.with_name(
+        f".{path.name}.tmp-{os.getpid()}-{threading.get_ident()}"
+    )
+    with temporary.open("x", encoding="utf-8", newline="\n") as handle:
+        handle.write(serialized)
+        handle.flush()
+        os.fsync(handle.fileno())
+    try:
+        os.link(temporary, path)
+    except FileExistsError:
+        raise FileExistsError(f"refusing to overwrite artifact: {path}")
+    finally:
+        temporary.unlink(missing_ok=True)
+    return path
+
+
+def _load_ssdg_module(code_root: Path) -> Any:
+    path = Path(code_root) / "code" / "SSDG" / "train_ssdg.py"
+    code_path = str(Path(code_root) / "code")
+    ssdg_path = str(path.parent)
+    for value in (code_path, ssdg_path):
+        if value not in sys.path:
+            sys.path.insert(0, value)
+    spec = importlib.util.spec_from_file_location("bicad_xr_ssdg_runtime", path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"cannot load BiCAD-XR training runtime: {path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+class _FormalEvaluationContext:
+    """Lazily construct the source-LORO evaluator after training exits cleanly."""
+
+    def __init__(
+        self,
+        row: PlanRow,
+        roots: LauncherRoots,
+        command: Sequence[str],
+    ) -> None:
+        self.row = row
+        self.roots = roots
+        self.command = tuple(command)
+        self.ssdg: Any = None
+        self.ssdg_args: Any = None
+        self.device: Any = None
+        self.loader: Any = None
+        self.trainer: Any = None
+
+    def _ensure_runtime(self) -> None:
+        if self.ssdg is not None:
+            return
+        import torch
+
+        self.ssdg = _load_ssdg_module(Path(self.roots.code_root))
+        self.ssdg_args = self.ssdg.parse(list(self.command[3:]))
+        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        payload = self.ssdg.load_wisig_compact_pkl(self.ssdg_args.wisig_pkl)
+        day_list = list(payload.get("capture_date_list", []))
+        receiver_list = list(payload.get("rx_list", []))
+        heldout = tuple(set(SOURCE_RECEIVERS) - set(self.row.source_receivers))
+        if len(heldout) != 1:
+            raise ValueError("row must identify exactly one source-LORO heldout receiver")
+        days = self.ssdg._resolve_days(
+            day_list, list(self.row.train_days), list(self.row.train_days)
+        )
+        receivers = self.ssdg._resolve_rxs(
+            receiver_list, [heldout[0]], [heldout[0]]
+        )
+        dataset = self.ssdg.WiSigCompactDataset(
+            payload,
+            out_len=int(self.ssdg_args.wisig_out_len),
+            crop_mode="center",
+            normalize=True,
+            equalized=1,
+            day_keep=days,
+            rx_keep=receivers,
+            domain="rx_day",
+            seed=int(self.row.seed),
+            build_index=True,
+        )
+        self.loader = self.ssdg.make_loader(
+            dataset,
+            int(self.ssdg_args.eval_batch_size),
+            False,
+            int(self.ssdg_args.num_workers),
+            self.device,
+            False,
+            int(self.ssdg_args.prefetch_factor),
+        )
+
+    def build_model(self, payload: Mapping[str, Any]) -> Any:
+        from types import SimpleNamespace
+
+        self._ensure_runtime()
+        model_args = payload.get("args")
+        if not isinstance(model_args, Mapping):
+            raise ValueError("checkpoint is missing recorded training args")
+        model = self.ssdg.build_baseline_model(
+            SimpleNamespace(**dict(model_args)), self.device
+        )
+        model.eval()
+        return model
+
+    def restore_trainer_runtime(self, model: Any, payload: Mapping[str, Any]) -> None:
+        from dataclasses import replace as dataclass_replace
+
+        from cvsrffi.phase1_bicad_xr.trainer import BiCADXRTrainer
+
+        self._ensure_runtime()
+        runtime = payload.get("bicad_xr_runtime")
+        if not isinstance(runtime, Mapping):
+            raise ValueError("checkpoint is missing bicad_xr_runtime")
+        config = dataclass_replace(
+            candidate_config(self.row.candidate_id),
+            phase1_method="bicad_xr",
+            use_fasttrust=False,
+            use_mixstyle=False,
+            lambda_sat_cls=0.68,
+            lambda_sat_cons=0.0,
+            concat_sat_ce_only=True,
+            concat_sat_start_epoch=80,
+            sat_train_scenarios=(
+                "leo_clear_weak",
+                "leo_low_elev_weak",
+                "leo_rain_weak",
+            ),
+        )
+        self.trainer = BiCADXRTrainer(
+            self.ssdg._BiCADXRConcatForward(model), config
+        ).to(self.device)
+        self.trainer.load_checkpoint_runtime(runtime, strict=True)
+
+    def evaluate(self, model: Any, scenario: str) -> dict[str, Any]:
+        import torch
+
+        self._ensure_runtime()
+        scenario_index = (
+            "clean",
+            "leo_clear_weak",
+            "leo_low_elev_weak",
+            "leo_rain_weak",
+        ).index(scenario)
+        generator = torch.Generator(device=self.device).manual_seed(
+            int(self.row.seed) + scenario_index * 1_000_003
+        )
+        correct = 0
+        total = 0
+        class_correct: dict[int, int] = {}
+        class_total: dict[int, int] = {}
+        model.eval()
+        with torch.no_grad():
+            for raw in self.loader:
+                x = raw[0].to(self.device)
+                labels = raw[1].to(self.device).reshape(-1).long()
+                if scenario != "clean":
+                    received = self.ssdg.apply_sat_channel_for_scenario(
+                        x,
+                        scenario,
+                        self.ssdg_args,
+                        gen=generator,
+                        return_meta=False,
+                    )
+                    x = received[0] if isinstance(received, tuple) else received
+                output = model(x)
+                if isinstance(output, Mapping):
+                    logits = output.get("tx_logits", output.get("logits"))
+                else:
+                    logits = output
+                if not torch.is_tensor(logits) or logits.ndim != 2:
+                    raise ValueError(f"invalid TX logits for {scenario}")
+                prediction = logits.argmax(dim=1)
+                matches = prediction.eq(labels)
+                correct += int(matches.sum().item())
+                total += int(labels.numel())
+                for class_id in labels.unique().tolist():
+                    mask = labels == int(class_id)
+                    count = int(mask.sum().item())
+                    class_total[int(class_id)] = class_total.get(int(class_id), 0) + count
+                    class_correct[int(class_id)] = class_correct.get(int(class_id), 0) + int(
+                        matches[mask].sum().item()
+                    )
+        if total <= 0:
+            raise ValueError(f"empty final evaluation loader for {scenario}")
+        per_class = {
+            str(class_id): class_correct.get(class_id, 0) / count
+            for class_id, count in sorted(class_total.items())
+        }
+        return {
+            "accuracy": correct / total,
+            "correct": correct,
+            "total": total,
+            "per_class_accuracy": per_class,
+            "floor_accuracy": min(per_class.values()) if per_class else None,
+            "log": (
+                f"scenario={scenario} checkpoint=bicad_xr_final.pth "
+                f"correct={correct} total={total}\n"
+            ),
+        }
 
 
 def write_plan_json(run_root: str | Path, rows: Sequence[PlanRow], *, run_id: str) -> Path:
@@ -479,6 +701,33 @@ def run_plan(
     return statuses
 
 
+def _record_technical_failure(
+    row_root: Path,
+    *,
+    reason: str,
+    details: Mapping[str, Any] | None = None,
+) -> None:
+    path = row_root / "TECHNICAL_FAILURE.json"
+    if path.exists():
+        return
+    _write_json_once(
+        path,
+        {
+            "status": "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE",
+            "reason": str(reason),
+            "details": dict(details or {}),
+        },
+    )
+
+
+def _locate_final_checkpoint(row_root: Path) -> Path:
+    for name in ("bicad_xr_final.pth", "final_checkpoint.pt", "final_bicad_xr.pt"):
+        checkpoint = row_root / name
+        if checkpoint.is_file() and checkpoint.stat().st_size > 0:
+            return checkpoint
+    raise FileNotFoundError("row final checkpoint is missing or empty")
+
+
 def launch_row_process(row: PlanRow, roots: LauncherRoots, *, run_id: str) -> str:
     """Launch one row in its already-reserved directory and retain its log."""
 
@@ -499,11 +748,42 @@ def launch_row_process(row: PlanRow, roots: LauncherRoots, *, run_id: str) -> st
             env=env,
             check=False,
         )
-    return (
-        "ARTIFACTS_COMPLETE"
-        if completed.returncode == 0
-        else "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
-    )
+    if completed.returncode != 0:
+        _record_technical_failure(
+            row_root,
+            reason="TRAINING_SUBPROCESS_FAILED",
+            details={"returncode": int(completed.returncode)},
+        )
+        return "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
+
+    try:
+        checkpoint = _locate_final_checkpoint(row_root)
+        context = _FormalEvaluationContext(row, roots, command)
+        evaluation = evaluate_final_checkpoint(
+            checkpoint,
+            expected_runtime=_row_expectation(row),
+            output_dir=row_root,
+            model_builder=context.build_model,
+            trainer_runtime_restorer=context.restore_trainer_runtime,
+            evaluator=context.evaluate,
+        )
+        closure = validate_artifact_closure(row_root)
+        if not bool(evaluation.get("complete")) or not bool(closure.get("complete")):
+            _record_technical_failure(
+                row_root,
+                reason="FINAL_ARTIFACT_CLOSURE_INCOMPLETE",
+                details={"evaluation": evaluation, "closure": closure},
+            )
+            return "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
+        _write_json_atomic_once(row_root / "ARTIFACTS_COMPLETE.json", closure)
+        return "ARTIFACTS_COMPLETE"
+    except Exception as exc:
+        _record_technical_failure(
+            row_root,
+            reason="FINAL_ARTIFACT_EVALUATION_FAILED",
+            details={"exception_type": type(exc).__name__, "message": str(exc)},
+        )
+        return "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
 
 
 def _csv_ints(raw: str, *, name: str, minimum: int = 1) -> tuple[int, ...]:

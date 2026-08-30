@@ -4,8 +4,15 @@ import importlib.util
 import json
 from collections import Counter
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
+
+from cvsrffi.phase1_bicad_xr.metrics import (
+    FORMAL_EVAL_SCENARIOS,
+    BiCADXRMetricStore,
+    validate_artifact_closure,
+)
 
 
 SCRIPT_PATH = (
@@ -185,3 +192,171 @@ def test_launcher_cli_exposes_no_target_or_phase2_inputs() -> None:
 
     forbidden = ("target", "phase2", "support", "query", "truth")
     assert not any(any(token in name for token in forbidden) for name in destinations)
+
+
+def test_train_command_is_consumed_by_real_ssdg_parser_and_records_row_runtime(
+    tmp_path: Path,
+) -> None:
+    from SSDG import train_ssdg
+    from cvsrffi.phase1_bicad_xr.config import candidate_config
+
+    launcher = _load_launcher()
+    row = launcher.build_plan(stage="quick")[0]
+    row_root = tmp_path / row.row_id
+    row_root.mkdir()
+    roots = launcher.LauncherRoots(
+        SCRIPT_PATH.resolve().parents[2],
+        Path("python"),
+        tmp_path,
+        tmp_path / "ManySig.pkl",
+    )
+
+    command = launcher.build_train_command(row, roots, run_id="formal-run")
+    parsed = train_ssdg.parse(command[3:])
+    row_record = json.loads(parsed.row_key)
+
+    assert parsed.phase1_method == "bicad_xr"
+    assert parsed.candidate_id == row.candidate_id
+    assert parsed.seed == row.seed
+    assert parsed.wisig_train_rxs == ",".join(map(str, row.source_receivers))
+    assert parsed.wisig_train_days == ",".join(map(str, row.train_days))
+    assert parsed.run_id == f"formal-run-{row.row_id}"
+    assert Path(parsed.output_dir) == row_root
+    assert row_record == {
+        "fold": row.fold,
+        "optimizer_updates": 5000,
+        "row_id": row.row_id,
+    }
+    assert candidate_config(parsed.candidate_id).optimizer_updates == 5000
+
+
+def _write_strict_worker_artifacts(row_root: Path, row: object) -> None:
+    checkpoint = row_root / "bicad_xr_final.pth"
+    runtime = {
+        "phase1_method": "bicad_xr",
+        "candidate_id": row.candidate_id,
+        "fold": row.fold,
+        "seed": row.seed,
+        "optimizer_update": row.optimizer_updates,
+        "total_updates": row.optimizer_updates,
+        "source_receivers": list(row.source_receivers),
+        "train_days": list(row.train_days),
+        "source_only": True,
+        "target_access": False,
+        "phase2_access": False,
+        "support_access": False,
+        "query_access": False,
+        "truth_access": False,
+    }
+    (row_root / "checkpoint_runtime.json").write_text(
+        json.dumps(
+            {
+                "checkpoint_path": checkpoint.name,
+                "runtime": runtime,
+                "reconstruction": {
+                    "missing": [],
+                    "unexpected": [],
+                    "shape_mismatch": [],
+                },
+                "strict_reconstruction": True,
+                "trainer_runtime_strict": True,
+                "missing_keys": [],
+                "unexpected_keys": [],
+                "shape_mismatches": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+    (row_root / "diagnostics.json").write_text(
+        json.dumps(BiCADXRMetricStore().snapshot()), encoding="utf-8"
+    )
+    evaluations = row_root / "evaluations"
+    evaluations.mkdir()
+    for scenario in FORMAL_EVAL_SCENARIOS:
+        (evaluations / f"{scenario}.log").write_text("complete\n", encoding="utf-8")
+        (evaluations / f"{scenario}.json").write_text(
+            json.dumps(
+                {
+                    "scenario": scenario,
+                    "checkpoint": checkpoint.name,
+                    "checkpoint_load_strict": True,
+                    "missing_keys": [],
+                    "unexpected_keys": [],
+                    "shape_mismatches": [],
+                    "accuracy": 1.0,
+                    "floor_accuracy": 1.0,
+                    "per_class_accuracy": {"0": 1.0},
+                }
+            ),
+            encoding="utf-8",
+        )
+
+
+def test_worker_exit_zero_without_final_evaluations_is_not_complete(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    launcher = _load_launcher()
+    row = launcher.build_plan(stage="quick")[0]
+    row_root = tmp_path / row.row_id
+    row_root.mkdir()
+    (row_root / "bicad_xr_final.pth").write_bytes(b"checkpoint")
+    roots = launcher.LauncherRoots(
+        SCRIPT_PATH.resolve().parents[2], Path("python"), tmp_path, tmp_path / "ManySig.pkl"
+    )
+    monkeypatch.setattr(
+        launcher.subprocess,
+        "run",
+        lambda *args, **kwargs: SimpleNamespace(returncode=0),
+    )
+    monkeypatch.setattr(
+        launcher,
+        "evaluate_final_checkpoint",
+        lambda *args, **kwargs: {
+            "complete": False,
+            "status": "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE",
+            "missing": list(FORMAL_EVAL_SCENARIOS),
+        },
+        raising=False,
+    )
+
+    status = launcher.launch_row_process(row, roots, run_id="formal-run")
+
+    assert status == "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
+    assert not (row_root / "ARTIFACTS_COMPLETE.json").exists()
+    failure = json.loads((row_root / "TECHNICAL_FAILURE.json").read_text(encoding="utf-8"))
+    assert failure["status"] == "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
+
+
+def test_worker_marks_complete_only_after_strict_four_scene_closure(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    launcher = _load_launcher()
+    row = launcher.build_plan(stage="quick")[0]
+    row_root = tmp_path / row.row_id
+    row_root.mkdir()
+    (row_root / "bicad_xr_final.pth").write_bytes(b"checkpoint")
+    roots = launcher.LauncherRoots(
+        SCRIPT_PATH.resolve().parents[2], Path("python"), tmp_path, tmp_path / "ManySig.pkl"
+    )
+    monkeypatch.setattr(
+        launcher.subprocess,
+        "run",
+        lambda *args, **kwargs: SimpleNamespace(returncode=0),
+    )
+
+    def strict_evaluate(*args: object, **kwargs: object) -> dict[str, object]:
+        _write_strict_worker_artifacts(row_root, row)
+        return validate_artifact_closure(row_root)
+
+    monkeypatch.setattr(
+        launcher, "evaluate_final_checkpoint", strict_evaluate, raising=False
+    )
+
+    status = launcher.launch_row_process(row, roots, run_id="formal-run")
+
+    assert status == "ARTIFACTS_COMPLETE"
+    marker = json.loads(
+        (row_root / "ARTIFACTS_COMPLETE.json").read_text(encoding="utf-8")
+    )
+    assert marker["complete"] is True
+    assert set(marker["evaluations"]) == set(FORMAL_EVAL_SCENARIOS)
