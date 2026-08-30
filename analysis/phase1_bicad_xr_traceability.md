@@ -50,7 +50,7 @@
 
 ## 本地验证汇总
 
-- `phase1_bicad_xr`全套238项通过，仅3条既有AMP弃用警告。
+- `phase1_bicad_xr`全套240项通过，仅3条既有AMP弃用警告。
 - 相邻`phase1_hcfdg`与ADV3B03回归159项通过。
 - 真实`ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`技术smoke：严格重建195个状态张量，`missing_keys=[]`、`unexpected_keys=[]`、`shape_mismatches=[]`；fresh BiCAD训练器完成一次optimizer step；clean和3个LEO_WEAK场景前向均为finite。
 - 24行干跑：候选`D0/D5/E1/ADV3B02-BiCAD-XDC-V1`，fold1/fold8，seed392001/392002/392003，5000 updates；GPU0–7各3行。
