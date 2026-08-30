@@ -36,4 +36,14 @@
 
 ## 发布与运行记录
 
-待r2 release SHA、远端编译/smoke、dispatcher PID、worker绑定和最终结果返回后追加。低性能属于科学结果，不属于技术失败。
+- release SHA256：本地与N607均为`f8d7a98750944d8983f88113c9909e599e427d58e39f90466710d5c285dc7329`。
+- 远端编译：通过。
+- 远端真实checkpoint无query smoke：`PASS`。
+- 远端环境未安装pytest；未安装任何包。from-scratch模型构造修复由本地`ssr-gpu`真实双骨干构造测试覆盖。
+- 启动前GPU状态：GPU0–7均无compute process，显存占用均为1MiB；r2 run根不存在。
+- dispatcher PID：`2518098`，PPID1，CWD严格绑定r2 release根。
+- 启动后直属主训练进程：24个，全部命令绑定r2 release、r2 row根、正确candidate/fold/seed/day1/2/3、`sample_rate_hz=25000000`和source-only参数。
+- GPU0–7均开始计算，首次读回利用率为`68/19/32/7/70/30/87/2%`，显存为`1934/1346/1308/1414/1874/1702/2152/1220MiB`。
+- 24个`train.log`已创建；首次健康读回时仍为0字节，训练进程和GPU计算持续，不能据此停止。
+- 当前状态：`RUNNING`。
+- 低性能属于科学结果，不属于技术失败。
