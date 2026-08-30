@@ -42,7 +42,10 @@ class _FakeAugmentor:
 
 def _expected_mask(batch_size: int, seed: int, p_sat: float) -> torch.Tensor:
     generator = torch.Generator(device="cpu").manual_seed(seed)
-    return torch.rand(batch_size, generator=generator, device="cpu") < p_sat
+    count = int(batch_size * p_sat + 0.5)
+    mask = torch.zeros(batch_size, dtype=torch.bool)
+    mask[torch.randperm(batch_size, generator=generator)[:count]] = True
+    return mask
 
 
 def test_single_view_batch_keeps_one_position_per_sample_and_emits_factor_labels():
@@ -104,22 +107,16 @@ def test_single_view_batch_mask_and_outputs_are_reproducible_for_same_generator_
     assert torch.equal(first.channel_factors, second.channel_factors)
 
 
-def test_single_view_batch_honors_a_frozen_episode_channel_mask():
-    x = torch.arange(6 * 2 * 4, dtype=torch.float32).reshape(6, 2, 4)
-    planned = torch.tensor([False, True, False, True, False, False])
-
+def test_single_view_batch_uses_exact_nearest_integer_satellite_count():
+    x = torch.zeros(96, 2, 4)
     result = build_single_view_batch(
         x,
         _FakeAugmentor(),
         torch.Generator(device="cpu").manual_seed(392002),
         p_sat=0.30,
-        satellite_mask=planned,
     )
 
-    assert torch.equal(result.satellite_mask, planned)
-    assert torch.equal(result.channel_labels, planned.long())
-    assert torch.equal(result.iq[~planned], x[~planned])
-    assert torch.equal(result.iq[planned], x[planned] + 1000.0)
+    assert result.satellite_mask.sum().item() == 29
 
 
 def test_empirical_satellite_fraction_tracks_point_three():

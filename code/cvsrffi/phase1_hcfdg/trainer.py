@@ -365,11 +365,13 @@ def _source_batch(batch: Any, *, allow_tx: bool, stage0: bool = False) -> _Sourc
     q_phys = None if stage0 else read("q_phys", ("q_phys", "physical_stats", "phys_stats"))
     if q_phys is not None:
         env_meta["q_phys"] = q_phys
-    satellite_mask_plan = None if stage0 else read(
-        "satellite_mask_plan", ("satellite_mask_plan",)
-    )
-    if satellite_mask_plan is not None:
-        env_meta["satellite_mask_plan"] = satellite_mask_plan
+    if not stage0:
+        episode_type = read("episode_type", ("episode_type",))
+        valid_tx_mask = read("valid_tx_mask", ("valid_tx_mask",))
+        if episode_type is not None:
+            env_meta["episode_type"] = episode_type
+        if valid_tx_mask is not None:
+            env_meta["valid_tx_mask"] = valid_tx_mask
 
     if stage0:
         domain = query_domain = support_mask = query_mask = content_keys = groups = None
@@ -719,7 +721,6 @@ class HCFDGTrainer:
             self.satellite_augmentor,
             self._generator,
             p_sat=0.30,
-            satellite_mask=batch.env_meta.get("satellite_mask_plan"),
         )
         channel_labels = _mapping_value(result, ("channel_labels", "channel_label"))
         channel_factors = _mapping_value(result, ("channel_factors", "factors"))
@@ -727,6 +728,25 @@ class HCFDGTrainer:
         if channel_labels is not None:
             batch.channel = channel_labels
             batch.env_meta["channel"] = channel_labels
+            if batch.env_meta.get("episode_type") == "channel":
+                valid = batch.env_meta.get("valid_tx_mask")
+                valid = torch.ones_like(channel_labels, dtype=torch.bool) if valid is None else valid.bool()
+                query = valid & channel_labels.bool()
+                support = valid & ~channel_labels.bool()
+                if batch.tx is not None:
+                    eligible = torch.zeros_like(valid)
+                    for tx_id in torch.unique(batch.tx):
+                        tx_mask = valid & batch.tx.eq(tx_id)
+                        if bool((query & tx_mask).any()) and bool((support & tx_mask).any()):
+                            eligible |= tx_mask
+                    query &= eligible
+                    support &= eligible
+                if not bool(query.any()) or not bool(support.any()):
+                    raise ValueError("channel episode requires both clean and satellite support")
+                batch.domain = channel_labels
+                batch.query_domain = 1
+                batch.query_mask = query
+                batch.support_mask = support
         if channel_factors is not None:
             batch.env_meta["channel_factors"] = channel_factors
             batch.env_meta["q_phys"] = channel_factors

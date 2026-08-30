@@ -60,6 +60,21 @@ def test_train_command_binds_row_and_never_mentions_phase2_or_target(tmp_path):
     assert not any(token in joined for token in ("phase2", "target", "query", "truth"))
 
 
+def test_train_command_does_not_reject_a_legal_worktree_name_containing_phase2(tmp_path):
+    launcher = _load_launcher()
+    row = launcher.build_plan(stage="quick", folds=(1, 8))[0]
+    roots = launcher.LauncherRoots(
+        code_root=tmp_path / "phase2-canonical-union-maxq",
+        python=Path("python"),
+        run_root=tmp_path / "run",
+        wisig_pkl=tmp_path / "ManySig.pkl",
+    )
+
+    command = launcher.build_train_command(row, roots)
+
+    assert "phase2-canonical-union-maxq" in " ".join(command)
+
+
 def test_output_root_is_immutable_and_unknown_stages_fail_closed(tmp_path):
     launcher = _load_launcher()
     root = tmp_path / "fresh"

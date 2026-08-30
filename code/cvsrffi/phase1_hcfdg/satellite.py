@@ -220,15 +220,13 @@ def build_single_view_batch(
     augmentor: Callable[..., Any],
     generator: torch.Generator,
     p_sat: float = 0.30,
-    satellite_mask: torch.Tensor | None = None,
 ) -> SingleViewBatch:
     """Replace selected clean rows with one mixed-orbit view in place.
 
-    The Bernoulli mask is sampled on CPU so a CPU ``torch.Generator`` gives
-    reproducible row selection independently of the IQ tensor device.  A
-    rectangular episode may instead provide its frozen source-only channel
-    mask.  The selected rows are sent through the augmentor once; no
-    clean/satellite concatenation is created.
+    A fixed-size random subset is sampled on CPU so a CPU ``torch.Generator``
+    gives reproducible row selection independently of the IQ tensor device.
+    The selected rows are sent through the augmentor once; no clean/satellite
+    concatenation is created.
     """
 
     if not isinstance(x, torch.Tensor):
@@ -238,13 +236,11 @@ def build_single_view_batch(
     probability = _validate_probability(p_sat)
     batch_size = int(x.shape[0])
 
-    if satellite_mask is None:
-        satellite_mask = torch.rand(batch_size, generator=generator, device="cpu") < probability
-    else:
-        satellite_mask = torch.as_tensor(satellite_mask, device="cpu")
-        if satellite_mask.ndim != 1 or satellite_mask.shape[0] != batch_size:
-            raise ValueError("satellite_mask must have one entry per batch row")
-        satellite_mask = satellite_mask.bool()
+    satellite_count = int(math.floor(batch_size * probability + 0.5))
+    satellite_mask = torch.zeros(batch_size, dtype=torch.bool, device="cpu")
+    if satellite_count:
+        selected = torch.randperm(batch_size, generator=generator, device="cpu")[:satellite_count]
+        satellite_mask[selected] = True
     output = x.clone()
     channel_labels = satellite_mask.to(device=x.device, dtype=torch.long)
     channel_factors = torch.zeros(

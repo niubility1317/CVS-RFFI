@@ -170,9 +170,18 @@ def build_train_command(row: PlanRow, roots: LauncherRoots) -> list[str]:
         "--row-root",
         str(_row_root(row, roots)),
     ]
-    lowered = " ".join(command).lower()
-    forbidden = ("phase2", "target", "query", "truth")
-    if any(token in lowered for token in forbidden):
+    option_names = {token.lower() for token in command if token.startswith("--")}
+    forbidden_options = {
+        "--phase2",
+        "--phase2-path",
+        "--target",
+        "--target-rxs",
+        "--query",
+        "--query-path",
+        "--truth",
+        "--truth-path",
+    }
+    if option_names & forbidden_options:
         raise ValueError("Phase1 training command contains a forbidden data-role token")
     return command
 
@@ -489,7 +498,8 @@ class _RectangularLoader:
                     "query_domain": int(episode.query_domain),
                     "support_mask": torch.as_tensor(episode.support_mask).bool(),
                     "query_mask": torch.as_tensor(episode.query_mask).bool(),
-                    "satellite_mask_plan": torch.as_tensor(episode.channel_ids).bool(),
+                    "valid_tx_mask": torch.as_tensor(episode.valid_tx_mask).bool(),
+                    "episode_type": episode.episode_type,
                 }
             )
             iq = torch.as_tensor(batch["iq"]).float().reshape(len(episode.indices), -1)

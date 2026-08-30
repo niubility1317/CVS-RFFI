@@ -97,11 +97,7 @@ class _SingleViewBuilder:
 
 
 class _PhysicalSingleViewBuilder:
-    def __init__(self):
-        self.received_satellite_mask = None
-
-    def __call__(self, x, augmentor, generator, p_sat=0.30, satellite_mask=None):
-        self.received_satellite_mask = satellite_mask
+    def __call__(self, x, augmentor, generator, p_sat=0.30):
         return SimpleNamespace(
             iq=x,
             channel_labels=torch.ones(x.shape[0], dtype=torch.long),
@@ -214,17 +210,30 @@ def test_single_view_routes_five_physical_channel_factors_to_environment_input(t
     torch.testing.assert_close(batch.env_meta["q_phys"], batch.env_meta["channel_factors"])
 
 
-def test_single_view_uses_episode_planned_channel_mask(tmp_path):
+def test_channel_episode_masks_follow_actual_single_view_labels(tmp_path):
     trainer, _, _ = _make_trainer(tmp_path)
-    builder = _PhysicalSingleViewBuilder()
+    labels = torch.tensor([0, 1, 1, 0], dtype=torch.long)
+
+    def builder(x, augmentor, generator, p_sat=0.30):
+        return SimpleNamespace(
+            iq=x,
+            channel_labels=labels,
+            channel_factors=torch.zeros(x.shape[0], 5),
+            satellite_mask=labels.bool(),
+        )
+
     trainer.build_single_view_batch = builder
     raw = _labeled_batch()
-    raw["satellite_mask_plan"] = torch.tensor([False, True, False, True])
+    raw["episode_type"] = "channel"
+    raw["valid_tx_mask"] = torch.ones(4, dtype=torch.bool)
     batch = trainer._prepare_source_batch(raw, allow_tx=True)
 
     trainer._single_view(batch)
 
-    assert torch.equal(builder.received_satellite_mask, raw["satellite_mask_plan"])
+    assert torch.equal(batch.query_mask, labels.bool())
+    assert torch.equal(batch.support_mask, ~labels.bool())
+    assert torch.equal(batch.domain, labels)
+    assert batch.query_domain == 1
 
 
 def test_v1_runs_exactly_4000_optimizer_updates_and_one_backbone_call_per_update(tmp_path):
