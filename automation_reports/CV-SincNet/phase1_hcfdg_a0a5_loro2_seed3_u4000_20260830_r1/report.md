@@ -71,4 +71,3 @@ nohup /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088
 - `ARTIFACTS_COMPLETE.json`。
 
 run根在36行全部进入终态后写入`final_status.json`。训练完成不等于实验完成；缺少任一严格评估场景时不得标记`ARTIFACTS_COMPLETE`。
-
