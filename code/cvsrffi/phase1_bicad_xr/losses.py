@@ -308,30 +308,20 @@ def apply_margin_tail(
     tangent_risk: Tensor,
     *,
     weights: Sequence[float] = (0.6, 0.3, 0.1),
-    domain_loss: Tensor | None = None,
-    grl_loss: Tensor | None = None,
-    cross_cov_loss: Tensor | None = None,
 ) -> Tensor:
-    """Add weighted TX/XDC/tangent risks without scaling other loss terms."""
+    """Add only weighted TX/XDC/tangent classification risks."""
 
     for value, name in (
         (base_loss, "base_loss"),
         (tx_risk, "tx_risk"),
         (xdc_risk, "xdc_risk"),
         (tangent_risk, "tangent_risk"),
-        (domain_loss, "domain_loss"),
-        (grl_loss, "grl_loss"),
-        (cross_cov_loss, "cross_cov_loss"),
     ):
-        if value is not None:
-            if not torch.is_tensor(value) or not value.is_floating_point():
-                raise ValueError(f"{name} must be a floating-point tensor")
-            _validate_finite(value, name)
+        if not torch.is_tensor(value) or not value.is_floating_point():
+            raise ValueError(f"{name} must be a floating-point tensor")
+        _validate_finite(value, name)
     resolved_weights = _validate_three_weights(weights)
     total = base_loss
-    for value in (domain_loss, grl_loss, cross_cov_loss):
-        if value is not None:
-            total = total + value
     total = total + (
         resolved_weights[0] * tx_risk.mean()
         + resolved_weights[1] * xdc_risk.mean()

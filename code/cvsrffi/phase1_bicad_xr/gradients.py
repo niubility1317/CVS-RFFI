@@ -175,9 +175,14 @@ def scale_explicit_gradients(parameters: Sequence[Tensor], scale: float) -> int:
             continue
         _validate_gradient(parameter.grad, f"parameters[{index}].grad")
         gradients.append(parameter.grad)
+    originals = [gradient.detach().clone() for gradient in gradients]
     with torch.no_grad():
         for gradient in gradients:
             gradient.mul_(resolved_scale)
+        if any(not torch.isfinite(gradient).all() for gradient in gradients):
+            for gradient, original in zip(gradients, originals):
+                gradient.copy_(original)
+            raise ValueError("scaled gradients must contain only finite values")
     return len(gradients)
 
 
@@ -241,16 +246,30 @@ class GradientRatioController:
         raw_ratio = (
             self.target_ratio * reference_norm / controlled_norm
         ).detach()
+        if not torch.isfinite(raw_ratio).all():
+            raise ValueError("raw gradient ratio must be finite")
         if self._ema_ratio is None:
-            self._ema_ratio = raw_ratio.clone().detach()
+            next_ratio = raw_ratio.clone().detach()
         else:
             if self._ema_ratio.device != raw_ratio.device:
                 raise ValueError("gradient ratio device must remain constant")
-            self._ema_ratio = (
-                self.ema_decay * self._ema_ratio
-                + (1.0 - self.ema_decay) * raw_ratio
-            ).detach()
-        scale = float(self._ema_ratio.clamp(self.min_scale, self.max_scale).item())
+            previous_component = self.ema_decay * self._ema_ratio
+            current_component = (1.0 - self.ema_decay) * raw_ratio
+            if not (
+                torch.isfinite(previous_component).all()
+                and torch.isfinite(current_component).all()
+            ):
+                raise ValueError("gradient ratio EMA components must be finite")
+            next_ratio = (previous_component + current_component).detach()
+        if not torch.isfinite(next_ratio).all():
+            raise ValueError("gradient ratio EMA must be finite")
+        bounded = next_ratio.clamp(self.min_scale, self.max_scale)
+        if not torch.isfinite(bounded).all():
+            raise ValueError("bounded gradient ratio scale must be finite")
+        scale = float(bounded.item())
+        if not math.isfinite(scale):
+            raise ValueError("gradient ratio scale must be finite")
+        self._ema_ratio = next_ratio
         self._last_scale = scale
         return scale
 

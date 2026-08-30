@@ -60,3 +60,42 @@ def test_only_the_explicit_parameter_list_is_scaled() -> None:
 
     assert selected.grad is not None and selected.grad.item() == pytest.approx(1.0)
     assert untouched.grad is not None and untouched.grad.item() == pytest.approx(5.0)
+
+
+def test_explicit_gradient_scaling_fails_closed_and_rolls_back_post_mul_overflow() -> None:
+    parameter = torch.nn.Parameter(torch.tensor([1.0]))
+    original = torch.tensor([torch.finfo(torch.float32).max])
+    parameter.grad = original.clone()
+
+    with pytest.raises(ValueError, match="finite"):
+        scale_explicit_gradients([parameter], 2.0)
+
+    assert parameter.grad is not None
+    assert torch.equal(parameter.grad, original)
+    assert torch.isfinite(parameter.grad).all()
+
+
+def test_gradient_ratio_controller_rejects_nonfinite_raw_ratio_without_state_mutation() -> None:
+    controller = GradientRatioController(
+        target_ratio=1e308,
+        ema_decay=0.5,
+        min_scale=0.0,
+        max_scale=1e308,
+    )
+    first = controller.update(
+        torch.tensor([1.0], dtype=torch.float64),
+        torch.tensor([1.0], dtype=torch.float64),
+    )
+    before = controller.ema_ratio
+
+    with pytest.raises(ValueError, match="finite"):
+        controller.update(
+            torch.tensor([2.0], dtype=torch.float64),
+            torch.tensor([1.0], dtype=torch.float64),
+        )
+
+    assert first == pytest.approx(1e308)
+    assert before is not None
+    assert controller.ema_ratio is not None
+    assert torch.equal(controller.ema_ratio, before)
+    assert controller.last_scale == pytest.approx(1e308)

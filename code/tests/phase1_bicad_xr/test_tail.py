@@ -84,6 +84,29 @@ def test_detached_ema_updates_without_attaching_the_running_state_to_margin_grap
     assert second.grad is None
 
 
+def test_group_margin_cvar_ema_keeps_the_live_loss_gradient() -> None:
+    ema = DetachedEMA(decay=0.5)
+    margins = torch.tensor([-1.0, 1.0], requires_grad=True)
+
+    risk = group_margin_cvar(
+        margins,
+        torch.tensor([0, 0]),
+        tail_fraction=1.0,
+        ema=ema,
+    )
+    risk.backward()
+
+    expected = torch.tensor(
+        [
+            -torch.sigmoid(torch.tensor(1.0)).item() / 2.0,
+            -torch.sigmoid(torch.tensor(-1.0)).item() / 2.0,
+        ]
+    )
+    assert margins.grad is not None
+    assert torch.allclose(margins.grad, expected, atol=1e-7)
+    assert ema.value is not None and not ema.value.requires_grad
+
+
 def test_margin_tail_only_adds_the_three_allowed_risks() -> None:
     base = torch.tensor(10.0, requires_grad=True)
     tx = torch.tensor(1.0, requires_grad=True)
@@ -104,3 +127,19 @@ def test_margin_tail_only_adds_the_three_allowed_risks() -> None:
     assert tx.grad is not None and tx.grad.item() == pytest.approx(0.6)
     assert xdc.grad is not None and xdc.grad.item() == pytest.approx(0.3)
     assert tangent.grad is not None and tangent.grad.item() == pytest.approx(0.1)
+
+
+@pytest.mark.parametrize("forbidden", ["domain_loss", "grl_loss", "cross_cov_loss"])
+def test_margin_tail_api_rejects_forbidden_nonclassification_components(
+    forbidden: str,
+) -> None:
+    kwargs = {
+        "base_loss": torch.tensor(10.0),
+        "tx_risk": torch.tensor(1.0),
+        "xdc_risk": torch.tensor(2.0),
+        "tangent_risk": torch.tensor(3.0),
+        forbidden: torch.tensor(100.0),
+    }
+
+    with pytest.raises(TypeError, match="unexpected keyword"):
+        apply_margin_tail(**kwargs)
