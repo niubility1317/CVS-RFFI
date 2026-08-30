@@ -3,6 +3,7 @@ from __future__ import annotations
 import ast
 from copy import deepcopy
 import inspect
+import json
 from types import SimpleNamespace
 
 import pytest
@@ -166,6 +167,23 @@ def test_bicad_from_scratch_resolves_wisig_sample_rate_before_model_build() -> N
 
     assert args.sample_rate_hz == pytest.approx(25e6)
     assert isinstance(model, nn.Module)
+
+
+def test_bicad_audit_jsonable_replaces_nonfinite_tensor_placeholders() -> None:
+    payload = train_ssdg._bicad_xr_jsonable(
+        {"xdc_donor_query_matrix": torch.tensor([[float("nan"), 0.5]])}
+    )
+
+    encoded = json.dumps(payload, allow_nan=False)
+
+    assert json.loads(encoded) == {"xdc_donor_query_matrix": [[None, 0.5]]}
+
+
+def test_bicad_epoch_loss_rejects_nonfinite_training_values() -> None:
+    assert train_ssdg._bicad_xr_mean_epoch_loss([1.0, 2.0]) == pytest.approx(1.5)
+
+    with pytest.raises(FloatingPointError, match="non-finite BiCAD-XR train loss"):
+        train_ssdg._bicad_xr_mean_epoch_loss([1.0, float("nan")])
 
 
 def test_bicad_route_is_explicit_and_legacy_route_stays_lazy() -> None:

@@ -5,6 +5,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+import torch
 
 from cvsrffi.phase1_bicad_xr.metrics import (
     FORMAL_EVAL_SCENARIOS,
@@ -302,3 +303,43 @@ def test_final_checkpoint_is_strictly_loaded_then_evaluated_per_scene(tmp_path: 
         "unexpected": [],
         "shape_mismatch": [],
     }
+
+
+def test_final_checkpoint_serializes_multielement_training_head_state(
+    tmp_path: Path,
+) -> None:
+    checkpoint_path = tmp_path / "final_checkpoint.pt"
+    checkpoint_path.write_bytes(b"checkpoint")
+
+    class FakeModel:
+        def load_state_dict(self, state: object, strict: bool = False) -> SimpleNamespace:
+            assert strict is True
+            return SimpleNamespace(missing_keys=[], unexpected_keys=[])
+
+    runtime = _runtime(
+        training_state={
+            "factorized_heads": {
+                "dom_tx.weight": torch.arange(6, dtype=torch.float32).reshape(2, 3)
+            }
+        }
+    )
+    result = evaluate_final_checkpoint(
+        checkpoint_path,
+        expected_runtime=_expectation(),
+        output_dir=tmp_path,
+        checkpoint_loader=lambda _: {"model": {}, "bicad_xr_runtime": runtime},
+        model_builder=lambda _: FakeModel(),
+        trainer_runtime_restorer=lambda _model, _payload: None,
+        evaluator=lambda _model, scene: {
+            "accuracy": 1.0,
+            "per_class_accuracy": {"0": 1.0},
+            "floor_accuracy": 1.0,
+            "log": f"{scene} complete\n",
+        },
+    )
+
+    saved = json.loads((tmp_path / "checkpoint_runtime.json").read_text(encoding="utf-8"))
+    assert result["complete"] is True
+    assert saved["runtime"]["training_state"]["factorized_heads"][
+        "dom_tx.weight"
+    ] == [[0.0, 1.0, 2.0], [3.0, 4.0, 5.0]]

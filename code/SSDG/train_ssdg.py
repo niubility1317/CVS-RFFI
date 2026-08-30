@@ -12912,14 +12912,26 @@ def train(args) -> int:
 def _bicad_xr_jsonable(value: Any) -> Any:
     if torch is not None and isinstance(value, torch.Tensor):
         detached = value.detach().cpu()
-        return detached.item() if detached.numel() == 1 else detached.tolist()
+        resolved = detached.item() if detached.numel() == 1 else detached.tolist()
+        return _bicad_xr_jsonable(resolved)
     if isinstance(value, Mapping):
         return {str(key): _bicad_xr_jsonable(item) for key, item in value.items()}
     if isinstance(value, (list, tuple)):
         return [_bicad_xr_jsonable(item) for item in value]
-    if isinstance(value, (str, int, float, bool)) or value is None:
+    if isinstance(value, float):
+        return value if math.isfinite(value) else None
+    if isinstance(value, (str, int, bool)) or value is None:
         return value
     return str(value)
+
+
+def _bicad_xr_mean_epoch_loss(values: Sequence[float]) -> float:
+    if not values:
+        raise ValueError("BiCAD-XR epoch loss requires at least one training step")
+    mean_loss = float(sum(values) / len(values))
+    if not math.isfinite(mean_loss):
+        raise FloatingPointError("non-finite BiCAD-XR train loss")
+    return mean_loss
 
 
 def _bicad_xr_metadata(extra, key: str, device, expected_count: int) -> torch.Tensor:
@@ -13283,7 +13295,7 @@ def _train_bicad_xr(args) -> int:
                     "epoch": epoch,
                     "phase1_method": "bicad_xr",
                     "candidate_id": protocol.candidate_id,
-                    "train_loss": float(sum(epoch_losses) / len(epoch_losses)),
+                    "train_loss": _bicad_xr_mean_epoch_loss(epoch_losses),
                     "optimizer_update": update,
                     "target_access": False,
                     "bicad_xr_runtime": _bicad_xr_jsonable(epoch_runtime),

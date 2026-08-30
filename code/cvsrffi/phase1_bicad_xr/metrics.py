@@ -411,8 +411,9 @@ def _jsonable(value: Any) -> Any:
     if hasattr(value, "item"):
         try:
             return _jsonable(value.item())
-        except (AttributeError, TypeError, ValueError):
-            pass
+        except (AttributeError, TypeError, ValueError, RuntimeError):
+            if hasattr(value, "tolist"):
+                return _jsonable(value.tolist())
     return str(value)
 
 
