@@ -296,7 +296,7 @@ def _reject_bicad_conflicts(argv: Sequence[str]) -> None:
     for token in argv:
         name, _ = _cli_option(str(token))
         lowered = name.lower()
-        if lowered.startswith("--phase2_export_") or any(
+        if lowered == "--phase2_fuse_prototypes" or lowered.startswith("--phase2_export_") or any(
             marker in lowered for marker in ("target", "support", "query", "truth")
         ):
             raise ValueError(f"BiCAD-XR rejects deployment input option: {name}")

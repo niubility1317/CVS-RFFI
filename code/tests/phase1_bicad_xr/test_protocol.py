@@ -67,3 +67,16 @@ def test_legacy_argv_keeps_existing_phase2_export_option() -> None:
     args = train_ssdg.parse(["--phase2_export_path", "legacy.pt"])
 
     assert args.phase2_export_path == "legacy.pt"
+
+
+def test_bicad_argv_rejects_phase2_prototype_fusion() -> None:
+    with pytest.raises(ValueError, match="BiCAD-XR"):
+        train_ssdg.parse(
+            ["--phase1_method", "bicad_xr", "--phase2_fuse_prototypes", "true"]
+        )
+
+
+def test_legacy_argv_accepts_phase2_prototype_fusion() -> None:
+    args = train_ssdg.parse(["--phase2_fuse_prototypes", "true"])
+
+    assert args.phase2_fuse_prototypes is True
