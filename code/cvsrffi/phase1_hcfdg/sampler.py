@@ -281,6 +281,12 @@ class HCFDGEpisodeBatchSampler:
                 )
                 self._cells[(tx_id, domain_id)] = tuple(int(position) for position in positions.tolist())
 
+        candidates = self._valid_domain_combinations()
+        best_score = max(candidate[2] for candidate in candidates)
+        self._candidate_rectangles = tuple(
+            candidate for candidate in candidates if candidate[2] == best_score
+        )
+
     def __iter__(self) -> Iterator[EpisodeDescriptor]:
         generator = np.random.default_rng(self._epoch_seed())
         emitted = 0
@@ -298,7 +304,9 @@ class HCFDGEpisodeBatchSampler:
             resolved = int(epoch)
         except (TypeError, ValueError, OverflowError) as exc:
             raise ValueError("epoch must be a non-negative integer") from exc
-        self._epoch = max(0, resolved)
+        if resolved < 0:
+            raise ValueError("epoch must be a non-negative integer")
+        self._epoch = resolved
 
     def _epoch_seed(self) -> int:
         return self.seed + self._epoch * _EPOCH_STRIDE
@@ -396,11 +404,8 @@ class HCFDGEpisodeBatchSampler:
     def _choose_rectangle(
         self, generator: np.random.Generator
     ) -> tuple[tuple[int, ...], tuple[int, ...]]:
-        candidates = self._valid_domain_combinations()
-        best_score = max(candidate[2] for candidate in candidates)
-        candidates = [candidate for candidate in candidates if candidate[2] == best_score]
-        candidate_position = int(generator.integers(0, len(candidates)))
-        domains, selected_tx, _ = candidates[candidate_position]
+        candidate_position = int(generator.integers(0, len(self._candidate_rectangles)))
+        domains, selected_tx, _ = self._candidate_rectangles[candidate_position]
         return domains, selected_tx
 
     def _choose_query_domain(

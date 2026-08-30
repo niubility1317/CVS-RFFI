@@ -98,6 +98,38 @@ def test_sampler_replays_the_same_episode_after_resetting_epoch():
     assert first.indices != next_epoch.indices or first.episode_type != next_epoch.episode_type
 
 
+def test_candidate_rectangles_are_constructed_once_and_replay_stays_stable(monkeypatch):
+    construction_calls = 0
+    original = HCFDGEpisodeBatchSampler._valid_domain_combinations
+
+    def counted_construction(self):
+        nonlocal construction_calls
+        construction_calls += 1
+        return original(self)
+
+    monkeypatch.setattr(
+        HCFDGEpisodeBatchSampler,
+        "_valid_domain_combinations",
+        counted_construction,
+    )
+    sampler = HCFDGEpisodeBatchSampler(_complete_metadata(), seed=392002)
+
+    sampler.set_epoch(7)
+    first = list(islice(iter(sampler), 12))
+    sampler.set_epoch(7)
+    replay = list(islice(iter(sampler), 12))
+
+    assert first == replay
+    assert construction_calls == 1
+
+
+def test_set_epoch_rejects_negative_epoch():
+    sampler = HCFDGEpisodeBatchSampler(_complete_metadata(), seed=392002)
+
+    with pytest.raises(ValueError, match="non-negative integer"):
+        sampler.set_epoch(-1)
+
+
 def test_episode_types_follow_the_frozen_probabilities():
     sampler = HCFDGEpisodeBatchSampler(_complete_metadata(), seed=392002)
     episodes = list(islice(iter(sampler), 4000))
