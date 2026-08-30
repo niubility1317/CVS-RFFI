@@ -47,6 +47,16 @@ def _validate_features(value: Tensor, name: str) -> None:
         raise ValueError(f"{name} must use a floating-point dtype")
     if value.size(1) < 1:
         raise ValueError(f"{name} must have a non-empty feature dimension")
+    if not bool(torch.isfinite(value).all()):
+        raise ValueError(f"{name} must contain only finite values")
+
+
+def _connected_zero_from_finite(value: Tensor) -> Tensor:
+    """Return a finite zero connected to at most one validated input element."""
+
+    if not bool(torch.isfinite(value).all()):
+        raise ValueError("z_id must contain only finite values")
+    return value.reshape(-1)[:1].sum() * 0.0
 
 
 def _validate_scalar_float(value: Any, name: str, *, lower: float, strict: bool) -> float:
@@ -75,6 +85,8 @@ def _resolve_num_classes(tx: Tensor, requested: int | None) -> int:
 
 
 def _resolve_num_receivers(receiver: Tensor, requested: int | None) -> int:
+    if receiver.numel() and int(receiver.min().item()) < 0:
+        raise ValueError("receiver labels must be non-negative")
     if requested is None:
         return int(receiver.max().item()) + 1 if receiver.numel() else 0
     if isinstance(requested, bool) or not isinstance(requested, int) or requested < 0:
@@ -368,6 +380,8 @@ def _resolve_bank_and_inputs(
     receiver = _as_integer_labels(receiver, "receiver", device=z_id.device)
     if tx.numel() != z_id.size(0) or receiver.numel() != z_id.size(0):
         raise ValueError("z_id, tx, and receiver must have the same batch size")
+    if receiver.numel() and int(receiver.min().item()) < 0:
+        raise ValueError("receiver labels must be non-negative")
     resolved_classes = _resolve_num_classes(tx, num_classes)
     _validate_physical_indices(physical_indices, z_id.size(0))
     if bank is None:
@@ -603,7 +617,7 @@ def xdc_losses(
         evaluated_donors.update(donor_ids)
 
     if evaluated_samples == 0:
-        zero = z_id.sum() * 0.0 + public_logits.sum() * 0.0
+        zero = _connected_zero_from_finite(z_id)
         if not valid_ids or skipped_query_reasons:
             skip_reason = (
                 "no_valid_cross_receiver_donor"

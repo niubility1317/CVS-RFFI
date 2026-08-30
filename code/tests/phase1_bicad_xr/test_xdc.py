@@ -60,7 +60,7 @@ def test_low_coverage_donor_is_skipped():
 
 def test_nonfinite_condition_donor_is_skipped():
     bank = fit_receiver_donors(
-        torch.tensor([[1.0, 0.0], [0.0, float("nan")]]),
+        torch.full((2, 2), torch.finfo(torch.float32).max),
         torch.tensor([0, 1]),
         torch.tensor([0, 0]),
         num_classes=2,
@@ -69,6 +69,35 @@ def test_nonfinite_condition_donor_is_skipped():
 
     assert bank.valid_receivers.numel() == 0
     assert "condition" in bank.skip_reasons[0]
+
+
+@pytest.mark.parametrize("bad_value", [float("nan"), float("inf"), float("-inf")])
+def test_nonfinite_z_id_fails_closed_before_zero_path(bad_value):
+    z_id = torch.tensor(
+        [[bad_value, 0.0], [0.0, 1.0]],
+        requires_grad=True,
+    )
+    tx = torch.tensor([0, 1])
+    receiver = torch.zeros(2, dtype=torch.long)
+
+    with pytest.raises(ValueError, match="z_id.*finite"):
+        xdc_losses(
+            z_id,
+            tx,
+            receiver,
+            torch.zeros(2, 2),
+            num_classes=2,
+        )
+
+
+def test_fit_receiver_donors_rejects_nonfinite_z_id():
+    with pytest.raises(ValueError, match="z_id.*finite"):
+        fit_receiver_donors(
+            torch.tensor([[1.0, 0.0], [0.0, float("nan")]]),
+            torch.tensor([0, 1]),
+            torch.zeros(2, dtype=torch.long),
+            num_classes=2,
+        )
 
 
 def test_support_accuracy_filter_is_applied():
@@ -179,6 +208,66 @@ def test_no_valid_cross_receiver_donor_returns_connected_zero_and_reason():
     assert output.total.item() == pytest.approx(0.0)
     output.total.backward()
     assert z_id.grad is not None
+
+
+def test_no_donor_zero_stays_finite_when_full_sum_would_overflow():
+    largest = torch.finfo(torch.float32).max
+    z_id = torch.full((4, 2), largest, requires_grad=True)
+    tx = torch.tensor([0, 1, 0, 1])
+    receiver = torch.zeros(4, dtype=torch.long)
+    public_logits = torch.full((4, 2), largest)
+
+    output = xdc_losses(
+        z_id,
+        tx,
+        receiver,
+        public_logits,
+        num_classes=2,
+    )
+
+    assert output.skip_reason == "no_valid_cross_receiver_donor"
+    assert output.total.requires_grad
+    assert torch.isfinite(output.total)
+    assert output.total.item() == pytest.approx(0.0)
+    output.total.backward()
+    assert z_id.grad is not None
+    assert torch.isfinite(z_id.grad).all()
+
+
+def test_negative_receiver_ids_are_rejected_by_all_public_entrypoints():
+    z_id = torch.tensor([[1.0, 0.0], [0.0, 1.0]])
+    tx = torch.tensor([0, 1])
+    receiver = torch.tensor([-1, -1])
+    valid_bank = fit_receiver_donors(
+        z_id,
+        tx,
+        torch.zeros(2, dtype=torch.long),
+        num_classes=2,
+    )
+
+    with pytest.raises(ValueError, match="receiver.*non-negative"):
+        fit_receiver_donors(z_id, tx, receiver, num_classes=2)
+    with pytest.raises(ValueError, match="receiver.*non-negative"):
+        xdc_losses(z_id, tx, receiver, torch.zeros(2, 2), num_classes=2)
+    with pytest.raises(ValueError, match="receiver.*non-negative"):
+        donor_query_matrix(z_id, tx, receiver, num_classes=2)
+    with pytest.raises(ValueError, match="receiver.*non-negative"):
+        xdc_losses(
+            z_id,
+            tx,
+            receiver,
+            torch.zeros(2, 2),
+            num_classes=2,
+            bank=valid_bank,
+        )
+    with pytest.raises(ValueError, match="receiver.*non-negative"):
+        donor_query_matrix(
+            z_id,
+            tx,
+            receiver,
+            valid_bank,
+            num_classes=2,
+        )
 
 
 def test_donor_query_matrix_marks_only_evaluated_sparse_cells():
