@@ -308,9 +308,7 @@ def merge_checkpoint_args(ckpt: Mapping[str, Any], cli_args, *, input_len: int, 
 
 
 def build_baseline_model(model_args, device: torch.device) -> nn.Module:
-    return build_dual_model(
-        int(model_args.num_classes),
-        int(model_args.num_domains),
+    builder_kwargs = dict(
         model_size=str(getattr(model_args, "model_size", "M")),
         dataset=str(getattr(model_args, "dataset", "wisig")),
         input_len=int(getattr(model_args, "input_len", 256)),
@@ -356,6 +354,15 @@ def build_baseline_model(model_args, device: torch.device) -> nn.Module:
         representation_mode=str(
             getattr(model_args, "representation_mode", "dual")
         ),
+    )
+    # Keep the legacy constructor call byte-for-byte in spirit: only an
+    # explicit BiCAD-XR method opts into the new feature-export contract.
+    if str(getattr(model_args, "phase1_method", "")).strip().lower() == "bicad_xr":
+        builder_kwargs["bicad_xr"] = True
+    return build_dual_model(
+        int(model_args.num_classes),
+        int(model_args.num_domains),
+        **builder_kwargs,
     ).to(device)
 
 

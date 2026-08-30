@@ -1,0 +1,1154 @@
+"""Task6 integration of the BiCAD-XR training mechanisms.
+
+The dual backbone remains an inference-only feature producer.  This module
+owns the training heads, sparse mechanisms, stage routing and audit/runtime
+state so enabling BiCAD-XR cannot add parameters to the legacy model.
+"""
+
+from __future__ import annotations
+
+from collections.abc import Mapping, Sequence
+from dataclasses import asdict, dataclass
+import math
+from typing import Any
+
+import torch
+from torch import Tensor, nn
+from torch.nn import functional as F
+
+from .config import BiCADXRConfig, BiCADXRStage, candidate_config, stage_for_update
+from .gradients import project_conflicting_gradient, scale_explicit_gradients
+from .heads import FactorizedAdversarialHeads
+from .losses import (
+    DetachedEMA,
+    apply_margin_tail,
+    classification_margin,
+    conditional_cross_covariance,
+    group_margin_cvar,
+    paired_satellite_loss,
+)
+from .sampler import build_structured_episode
+from .tangent import (
+    ReceiverTangentBank,
+    factual_tangent,
+    one_step_tangent_worst_direction,
+)
+from .xdc import XDCLossOutput, xdc_losses
+
+
+@dataclass(frozen=True)
+class BiCADXRBatch:
+    """One source-only batch consumed by :class:`BiCADXRTrainer`.
+
+    ``x``, ``tx``, ``receiver``, ``day`` and ``channel`` are the ordinary
+    source rows.  The four optional pair fields are the already-computed
+    clean/satellite outputs of the existing concat augmenter; the trainer
+    never creates a second pair forward.
+    """
+
+    x: Tensor
+    tx: Tensor | None
+    receiver: Tensor
+    day: Tensor
+    channel: Tensor
+    physical_indices: Tensor | Sequence[int] | None = None
+    labeled_mask: Tensor | None = None
+    clean_z_id: Tensor | None = None
+    satellite_z_id: Tensor | None = None
+    clean_logits: Tensor | None = None
+    satellite_logits: Tensor | None = None
+    concat_pair: Mapping[str, Tensor] | None = None
+
+    def pair_payload(self) -> dict[str, Tensor]:
+        payload: dict[str, Tensor] = {}
+        if self.concat_pair is not None:
+            payload.update(dict(self.concat_pair))
+        direct = {
+            "clean_z_id": self.clean_z_id,
+            "satellite_z_id": self.satellite_z_id,
+            "clean_logits": self.clean_logits,
+            "satellite_logits": self.satellite_logits,
+        }
+        for key, value in direct.items():
+            if value is not None:
+                payload[key] = value
+        return payload
+
+
+@dataclass(frozen=True)
+class BiCADXRTrainOutput:
+    """Differentiable training output plus complete per-step audit state."""
+
+    total: Tensor
+    logits: Tensor
+    features: Mapping[str, Tensor]
+    audit: dict[str, Any]
+    checkpoint_runtime: dict[str, Any]
+
+    @property
+    def loss(self) -> Tensor:
+        return self.total
+
+    @property
+    def tx_logits(self) -> Tensor:
+        return self.logits
+
+    @property
+    def model_output(self) -> Mapping[str, Tensor]:
+        return self.features
+
+
+def _as_long_labels(value: Any, name: str, *, size: int, device: torch.device) -> Tensor | None:
+    if value is None:
+        return None
+    try:
+        labels = torch.as_tensor(value, device=device)
+    except (TypeError, ValueError, RuntimeError) as exc:
+        raise ValueError(f"{name} must contain integer labels") from exc
+    if labels.ndim != 1 or labels.numel() != size:
+        raise ValueError(f"{name} must match the batch")
+    if labels.dtype == torch.bool or labels.is_complex():
+        raise ValueError(f"{name} must contain integer labels")
+    if labels.is_floating_point():
+        if not bool(torch.isfinite(labels).all()):
+            raise ValueError(f"{name} must contain finite integer labels")
+        converted = labels.to(dtype=torch.long)
+        if not torch.equal(labels, converted.to(dtype=labels.dtype)):
+            raise ValueError(f"{name} must contain integer labels")
+        labels = converted
+    else:
+        labels = labels.to(dtype=torch.long)
+    if labels.numel() and int(labels.min().item()) < 0:
+        raise ValueError(f"{name} must contain non-negative labels")
+    return labels
+
+
+def _as_mask(value: Any, *, size: int, device: torch.device) -> Tensor | None:
+    if value is None:
+        return None
+    mask = torch.as_tensor(value, device=device)
+    if mask.ndim != 1 or mask.numel() != size or mask.dtype != torch.bool:
+        raise ValueError("labeled_mask must be a boolean vector matching the batch")
+    return mask
+
+
+def _finite_feature(value: Any, name: str, *, batch_size: int | None = None) -> Tensor:
+    if not torch.is_tensor(value) or value.ndim != 2:
+        raise ValueError(f"{name} must have shape [batch, feature]")
+    if not value.is_floating_point() or value.size(1) < 1:
+        raise ValueError(f"{name} must be a non-empty floating-point matrix")
+    if batch_size is not None and value.size(0) != batch_size:
+        raise ValueError(f"{name} must match the batch")
+    if not bool(torch.isfinite(value).all()):
+        raise ValueError(f"{name} must contain only finite values")
+    return value
+
+
+def _module_device(module: nn.Module) -> torch.device:
+    try:
+        return next(module.parameters()).device
+    except StopIteration:
+        return torch.device("cpu")
+
+
+def _infer_positive_int(value: Any) -> int | None:
+    if isinstance(value, bool):
+        return None
+    try:
+        resolved = int(value)
+    except (TypeError, ValueError, OverflowError):
+        return None
+    return resolved if resolved > 0 else None
+
+
+def _infer_feature_dim(model: nn.Module) -> int:
+    for owner in (model, getattr(model, "id_backbone", None)):
+        if owner is None:
+            continue
+        for name in ("emb_dim", "embed_dim", "feature_dim"):
+            value = _infer_positive_int(getattr(owner, name, None))
+            if value is not None:
+                return value
+        classifier = getattr(owner, "classifier", None)
+        value = _infer_positive_int(getattr(classifier, "in_features", None))
+        if value is not None:
+            return value
+        cls_head = getattr(owner, "cls_head", None)
+        head = getattr(cls_head, "head", None)
+        value = _infer_positive_int(getattr(head, "in_features", None))
+        if value is not None:
+            return value
+    raise ValueError("cannot infer BiCAD-XR feature dimension from model")
+
+
+def _infer_num_classes(model: nn.Module) -> int:
+    for owner in (model, getattr(model, "id_backbone", None)):
+        if owner is None:
+            continue
+        value = _infer_positive_int(getattr(owner, "num_classes", None))
+        if value is not None:
+            return value
+        for classifier_name in ("classifier", "cls_head", "head"):
+            classifier = getattr(owner, classifier_name, None)
+            value = _infer_positive_int(getattr(classifier, "out_features", None))
+            if value is not None:
+                return value
+            head = getattr(classifier, "head", None)
+            value = _infer_positive_int(getattr(head, "out_features", None))
+            if value is not None:
+                return value
+    raise ValueError("cannot infer BiCAD-XR class count from model")
+
+
+def _combine_group_ids(*labels: Tensor) -> Tensor:
+    if not labels:
+        raise ValueError("at least one group label is required")
+    result = labels[0].to(dtype=torch.long)
+    for label in labels[1:]:
+        label = label.to(dtype=torch.long)
+        extent = int(label.max().item()) + 1 if label.numel() else 1
+        result = result * max(1, extent) + label
+    return result
+
+
+def _scalar(value: Tensor | float | int) -> float:
+    if torch.is_tensor(value):
+        if value.numel() != 1:
+            raise ValueError("audit values must be scalar tensors")
+        resolved = float(value.detach().cpu().item())
+    else:
+        resolved = float(value)
+    if not math.isfinite(resolved):
+        raise ValueError("audit scalar must be finite")
+    return resolved
+
+
+class BiCADXRTrainer(nn.Module):
+    """Route the Task1–5 APIs through the frozen Stage0–4 schedule."""
+
+    def __init__(
+        self,
+        model: nn.Module,
+        config: BiCADXRConfig | str,
+        *,
+        num_receivers: int | None = None,
+        num_days: int = 3,
+        num_channels: int = 4,
+        generator: torch.Generator | None = None,
+    ) -> None:
+        super().__init__()
+        if not isinstance(model, nn.Module):
+            raise ValueError("model must be a torch.nn.Module")
+        if isinstance(config, str):
+            config = candidate_config(config)
+        if not isinstance(config, BiCADXRConfig):
+            raise ValueError("config must be a BiCADXRConfig or candidate ID")
+        self.model = model
+        self.config = config
+        self.feature_dim = _infer_feature_dim(model)
+        self.num_classes = _infer_num_classes(model)
+        self.num_receivers = (
+            int(num_receivers)
+            if num_receivers is not None
+            else int(config.xdc_microepisode_receivers)
+        )
+        self.num_days = int(num_days)
+        self.num_channels = int(num_channels)
+        if min(self.num_receivers, self.num_days, self.num_channels) < 1:
+            raise ValueError("environment class counts must be positive")
+        if generator is None:
+            generator = torch.Generator(device="cpu").manual_seed(0)
+        if not isinstance(generator, torch.Generator):
+            raise ValueError("generator must be a torch.Generator or None")
+        self._generator = generator
+
+        self.factorized_heads: FactorizedAdversarialHeads | None = None
+        if config.factorized_domains or config.conditional_cdan or config.zdom_tx_adversary:
+            self.factorized_heads = FactorizedAdversarialHeads(
+                self.feature_dim,
+                self.num_classes,
+                self.num_receivers,
+                self.num_days,
+                self.num_channels,
+            )
+
+        self.tangent_bank: ReceiverTangentBank | None = None
+        if config.receiver_tangent != "off":
+            self.tangent_bank = ReceiverTangentBank(
+                self.feature_dim,
+                rank=config.receiver_tangent_rank,
+                source_receivers=range(self.num_receivers),
+            )
+        self._tail_emas: tuple[DetachedEMA, DetachedEMA, DetachedEMA] | None = None
+        if config.margin_tail:
+            self._tail_emas = tuple(
+                DetachedEMA(decay=config.margin_tail_ema) for _ in range(3)
+            )  # type: ignore[assignment]
+        self._swad_state: dict[str, Any] | None = None
+        self._last_update: int | None = None
+        self._last_total_updates: int | None = None
+
+    @property
+    def swad_state(self) -> dict[str, Any] | None:
+        return self._swad_state
+
+    @staticmethod
+    def _component(
+        raw: Tensor | float = 0.0,
+        weighted: Tensor | float = 0.0,
+        *,
+        called: bool = False,
+        effective_count: int = 0,
+        skip_reason: str | None = None,
+    ) -> dict[str, Any]:
+        return {
+            "raw": _scalar(raw),
+            "weighted": _scalar(weighted),
+            "called": bool(called),
+            "effective_count": int(effective_count),
+            "skip_reason": skip_reason,
+        }
+
+    @staticmethod
+    def _coerce_batch(batch: BiCADXRBatch | Mapping[str, Any] | Sequence[Any]) -> BiCADXRBatch:
+        if isinstance(batch, BiCADXRBatch):
+            return batch
+        if isinstance(batch, Mapping):
+            x = batch.get("x", batch.get("inputs", batch.get("iq")))
+            tx = batch.get("tx", batch.get("y_tx", batch.get("labels")))
+            receiver = batch.get("receiver", batch.get("rx"))
+            day = batch.get("day", batch.get("day_id"))
+            channel = batch.get("channel", batch.get("channel_id"))
+            if x is None:
+                raise ValueError("batch mapping must contain x/inputs/iq")
+            size = int(torch.as_tensor(x).size(0))
+            zeros = torch.zeros(size, dtype=torch.long)
+            return BiCADXRBatch(
+                x=x,
+                tx=tx,
+                receiver=zeros if receiver is None else receiver,
+                day=zeros if day is None else day,
+                channel=zeros if channel is None else channel,
+                physical_indices=batch.get("physical_indices"),
+                labeled_mask=batch.get("labeled_mask"),
+                clean_z_id=batch.get("clean_z_id"),
+                satellite_z_id=batch.get("satellite_z_id"),
+                clean_logits=batch.get("clean_logits"),
+                satellite_logits=batch.get("satellite_logits"),
+                concat_pair=batch.get("concat_pair"),
+            )
+        if isinstance(batch, Sequence) and not isinstance(batch, (str, bytes)):
+            if len(batch) < 5:
+                raise ValueError("batch sequence must contain x, tx, receiver, day and channel")
+            return BiCADXRBatch(
+                x=batch[0],
+                tx=batch[1],
+                receiver=batch[2],
+                day=batch[3],
+                channel=batch[4],
+            )
+        raise ValueError("batch must be BiCADXRBatch, mapping or sequence")
+
+    def _prepare_batch(self, batch: BiCADXRBatch | Mapping[str, Any] | Sequence[Any]) -> BiCADXRBatch:
+        raw = self._coerce_batch(batch)
+        device = _module_device(self.model)
+        x = torch.as_tensor(raw.x, device=device)
+        if not x.is_floating_point():
+            x = x.float()
+        if x.ndim < 2 or x.size(0) < 1:
+            raise ValueError("batch x must have a non-empty batch dimension")
+        size = int(x.size(0))
+        tx = _as_long_labels(raw.tx, "tx", size=size, device=device)
+        receiver = _as_long_labels(raw.receiver, "receiver", size=size, device=device)
+        day = _as_long_labels(raw.day, "day", size=size, device=device)
+        channel = _as_long_labels(raw.channel, "channel", size=size, device=device)
+        assert receiver is not None and day is not None and channel is not None
+        mask = _as_mask(raw.labeled_mask, size=size, device=device)
+
+        physical = raw.physical_indices
+        if physical is not None:
+            physical = torch.as_tensor(physical, dtype=torch.long, device="cpu")
+            if physical.ndim != 1 or physical.numel() != size:
+                raise ValueError("physical_indices must match the batch")
+            if physical.numel() and int(physical.min().item()) < 0:
+                raise ValueError("physical_indices must be non-negative")
+            if torch.unique(physical).numel() != physical.numel():
+                raise ValueError("physical_indices must be unique")
+
+        pair_values: dict[str, Tensor | None] = {}
+        for key in ("clean_z_id", "satellite_z_id", "clean_logits", "satellite_logits"):
+            value = getattr(raw, key)
+            pair_values[key] = None if value is None else torch.as_tensor(value, device=device)
+        pair_mapping = None
+        if raw.concat_pair is not None:
+            pair_mapping = {
+                key: torch.as_tensor(value, device=device)
+                for key, value in raw.concat_pair.items()
+            }
+        return BiCADXRBatch(
+            x=x,
+            tx=tx,
+            receiver=receiver,
+            day=day,
+            channel=channel,
+            physical_indices=physical,
+            labeled_mask=mask,
+            concat_pair=pair_mapping,
+            **pair_values,
+        )
+
+    def _forward(self, batch: BiCADXRBatch) -> Mapping[str, Any]:
+        try:
+            result = self.model(
+                batch.x,
+                y_tx=batch.tx,
+                return_aux=True,
+                domain_labels=batch.receiver,
+            )
+        except TypeError as first_error:
+            try:
+                result = self.model(batch.x, y_tx=batch.tx, return_aux=True)
+            except TypeError:
+                raise first_error
+        if not isinstance(result, Mapping):
+            raise ValueError("BiCAD-XR model must return a mapping in return_aux=True mode")
+        return result
+
+    @staticmethod
+    def _output_tensor(output: Mapping[str, Any], *names: str) -> Tensor:
+        for name in names:
+            value = output.get(name)
+            if torch.is_tensor(value):
+                return value
+        raise ValueError(f"model output is missing one of: {', '.join(names)}")
+
+    def _tangent_logits(self, base_logits: Tensor, base_features: Tensor, features: Tensor) -> Tensor:
+        classifier = getattr(self.model, "tangent_classifier", None)
+        if callable(classifier):
+            return classifier(features)
+        classifier = getattr(self.model, "classifier", None)
+        if callable(classifier):
+            try:
+                result = classifier(features)
+                if torch.is_tensor(result) and result.shape == base_logits.shape:
+                    return result
+            except (RuntimeError, ValueError):
+                pass
+        delta = features - base_features
+        if delta.size(1) < self.num_classes:
+            delta = F.pad(delta, (0, self.num_classes - delta.size(1)))
+        return base_logits + delta[:, : self.num_classes]
+
+    def _structured_local_indices(self, batch: BiCADXRBatch, tx: Tensor) -> Tensor:
+        episode = build_structured_episode(
+            tx.detach().cpu(),
+            batch.receiver.detach().cpu(),
+            batch.day.detach().cpu(),
+            self.config.xdc_samples_per_cell,
+            generator=self._generator,
+            num_classes=self.num_classes,
+            num_receivers=self.num_receivers,
+            physical_indices=(
+                None
+                if batch.physical_indices is None
+                else torch.as_tensor(batch.physical_indices, dtype=torch.long).cpu()
+            ),
+        )
+        if not episode.indices:
+            return torch.empty(0, dtype=torch.long, device=tx.device)
+        if batch.physical_indices is None:
+            local = torch.as_tensor(episode.indices, dtype=torch.long, device=tx.device)
+        else:
+            physical = torch.as_tensor(batch.physical_indices, dtype=torch.long).cpu()
+            position = {int(value): index for index, value in enumerate(physical.tolist())}
+            try:
+                local = torch.tensor(
+                    [position[int(value)] for value in episode.indices],
+                    dtype=torch.long,
+                    device=tx.device,
+                )
+            except KeyError as exc:
+                raise ValueError("structured episode returned an unknown physical index") from exc
+        if local.numel() and (int(local.min().item()) < 0 or int(local.max().item()) >= tx.numel()):
+            raise ValueError("structured episode indices are outside the batch")
+        return local
+
+    def _pair_payload(self, batch: BiCADXRBatch, model_output: Mapping[str, Any]) -> dict[str, Tensor]:
+        payload = batch.pair_payload()
+        output_pair = model_output.get("concat_pair")
+        if isinstance(output_pair, Mapping):
+            payload = {**dict(output_pair), **payload}
+        return payload
+
+    def _update_swad(self, risk: Tensor) -> bool:
+        if self._swad_state is None:
+            self._swad_state = {
+                "candidate_id": self.config.candidate_id,
+                "source_loro": True,
+                "updates": 0,
+                "best_risk": float("inf"),
+                "average": {},
+            }
+        resolved_risk = _scalar(risk.detach())
+        if resolved_risk <= float(self._swad_state["best_risk"]):
+            with torch.no_grad():
+                average = self._swad_state["average"]
+                count = int(self._swad_state["updates"])
+                for name, parameter in self.model.named_parameters():
+                    value = parameter.detach().clone()
+                    if name not in average:
+                        average[name] = value
+                    else:
+                        average[name] = (average[name] * count + value) / float(count + 1)
+            self._swad_state["best_risk"] = resolved_risk
+            self._swad_state["updates"] = int(self._swad_state["updates"]) + 1
+            return True
+        return False
+
+    def checkpoint_runtime(
+        self,
+        update: int | None = None,
+        total_updates: int | None = None,
+        *,
+        stage: BiCADXRStage | None = None,
+    ) -> dict[str, Any]:
+        if update is None:
+            update = self._last_update
+        if total_updates is None:
+            total_updates = self._last_total_updates
+        if stage is None and update is not None and total_updates is not None:
+            stage = stage_for_update(update, total_updates)
+        config_values = asdict(self.config)
+        config_values["sat_train_scenarios"] = list(self.config.sat_train_scenarios)
+        return {
+            "runtime_version": 1,
+            "phase1_method": "bicad_xr",
+            "candidate_id": self.config.candidate_id,
+            "stage": None if stage is None else stage.name,
+            "optimizer_update": update,
+            "total_updates": total_updates,
+            "feature_dim": self.feature_dim,
+            "num_classes": self.num_classes,
+            "num_receivers": self.num_receivers,
+            "num_days": self.num_days,
+            "num_channels": self.num_channels,
+            "source_only": True,
+            "target_access": False,
+            "phase2_access": False,
+            "support_access": False,
+            "query_access": False,
+            "truth_access": False,
+            "return_aux_false_is_deploy_fast_path": True,
+            "protocol": {
+                "concat_sat_ce_only": self.config.concat_sat_ce_only,
+                "lambda_sat_cls": self.config.lambda_sat_cls,
+                "lambda_sat_cons": self.config.lambda_sat_cons,
+                "concat_sat_start_epoch": self.config.concat_sat_start_epoch,
+                "sat_train_scenarios": list(self.config.sat_train_scenarios),
+            },
+            "schedule": {
+                "xdc_interval": self.config.xdc_interval,
+                "pair_interval": self.config.pair_interval,
+                "stage4_domain_scale": self.config.stage4_domain_scale,
+                "stage4_shared_stem_lr_scale": self.config.stage4_shared_stem_lr_scale,
+            },
+            "candidate_config": config_values,
+            "swad": {
+                "enabled": bool(self.config.swad),
+                "active": self._swad_state is not None,
+                "source_loro": bool(self.config.swad),
+                "updates": 0 if self._swad_state is None else self._swad_state["updates"],
+            },
+        }
+
+    runtime_dict = checkpoint_runtime
+
+    def shared_stem_parameters(self) -> list[Tensor]:
+        """Return only explicitly shared Sinc/HF parameters for LR control."""
+
+        parameters: list[Tensor] = []
+        seen: set[int] = set()
+        for backbone in (
+            getattr(self.model, "id_backbone", None),
+            getattr(self.model, "dom_backbone", None),
+        ):
+            if backbone is None:
+                continue
+            for stem_name in ("sinc", "hf"):
+                stem = getattr(backbone, stem_name, None)
+                if stem is None:
+                    continue
+                for parameter in stem.parameters():
+                    if id(parameter) not in seen:
+                        seen.add(id(parameter))
+                        parameters.append(parameter)
+        return parameters
+
+    def scale_shared_stem_gradients(self, scale: float | None = None) -> int:
+        """Apply the configured Stage4 scale to an explicit stem parameter list."""
+
+        if scale is None:
+            scale = self.config.stage4_shared_stem_lr_scale
+        return scale_explicit_gradients(self.shared_stem_parameters(), scale)
+
+    def compute_step(
+        self,
+        batch: BiCADXRBatch | Mapping[str, Any] | Sequence[Any],
+        update: int,
+        total_updates: int,
+    ) -> BiCADXRTrainOutput:
+        """Compute one source-only BiCAD-XR step without performing optimizer.step."""
+
+        stage = stage_for_update(update, total_updates)
+        prepared = self._prepare_batch(batch)
+        model_output = self._forward(prepared)
+        logits = self._output_tensor(model_output, "tx_logits", "logits")
+        z_id = _finite_feature(
+            model_output.get("z_id", model_output.get("identity_features")),
+            "z_id",
+            batch_size=prepared.x.size(0),
+        )
+        z_dom = _finite_feature(
+            model_output.get("z_dom", model_output.get("domain_features")),
+            "z_dom",
+            batch_size=prepared.x.size(0),
+        )
+        if logits.ndim != 2 or logits.size(0) != prepared.x.size(0) or logits.size(1) != self.num_classes:
+            raise ValueError("tx logits must have shape [batch,num_classes]")
+        if not bool(torch.isfinite(logits).all()):
+            raise ValueError("tx logits must contain only finite values")
+
+        tx = prepared.tx
+        labeled_mask = prepared.labeled_mask
+        if labeled_mask is None and tx is not None:
+            labeled_mask = torch.ones(tx.size(0), dtype=torch.bool, device=tx.device)
+        labeled_indices = (
+            torch.nonzero(labeled_mask, as_tuple=False).squeeze(1)
+            if labeled_mask is not None
+            else torch.empty(0, dtype=torch.long, device=z_id.device)
+        )
+        tx_labeled = None if tx is None else tx[labeled_indices]
+        receiver_labeled = prepared.receiver[labeled_indices]
+        day_labeled = prepared.day[labeled_indices]
+        channel_labeled = prepared.channel[labeled_indices]
+
+        zero = z_id.reshape(-1)[:1].sum() * 0.0
+        total = zero
+        components: dict[str, dict[str, Any]] = {}
+        component_names = (
+            "tx_ce",
+            "domain_forward",
+            "conditional_dann",
+            "zdom_tx_adversary",
+            "conditional_xcov",
+            "xdc_cross_entropy",
+            "xdc_knowledge_distillation",
+            "paired_satellite",
+            "receiver_tangent",
+            "margin_tail",
+            "task_protected_gradient",
+            "gradient_firewall",
+        )
+        for name in component_names:
+            components[name] = self._component(skip_reason="not_evaluated")
+
+        tx_loss = None
+        if tx_labeled is None:
+            components["tx_ce"] = self._component(skip_reason="missing_tx_labels")
+        elif tx_labeled.numel() == 0:
+            components["tx_ce"] = self._component(skip_reason="no_labeled_rows")
+        else:
+            tx_loss = F.cross_entropy(logits[labeled_indices], tx_labeled)
+            total = total + tx_loss
+            components["tx_ce"] = self._component(
+                tx_loss,
+                tx_loss,
+                called=True,
+                effective_count=int(tx_labeled.numel()),
+            )
+
+        peak_scale = 0.0 if stage is BiCADXRStage.stage0 else 1.0
+        domain_scale = (
+            self.config.stage4_domain_scale
+            if stage is BiCADXRStage.stage4
+            else peak_scale
+        )
+        factorized_output: dict[str, Tensor] = {}
+        conditional_loss = zero
+        zdom_tx_loss = zero
+        if self.factorized_heads is not None:
+            need_conditional = bool(
+                self.config.conditional_cdan or self.config.zdom_tx_adversary
+            )
+            if need_conditional and tx_labeled is not None and tx_labeled.numel() > 0:
+                factorized_output = self.factorized_heads(
+                    z_id[labeled_indices],
+                    z_dom[labeled_indices],
+                    tx_labeled,
+                    grl_identity=domain_scale if self.config.conditional_cdan else 0.0,
+                    grl_tx=domain_scale if self.config.zdom_tx_adversary else 0.0,
+                )
+            if self.config.factorized_domains:
+                domain_terms: list[Tensor] = []
+                for key, labels in (
+                    ("dom_receiver", prepared.receiver),
+                    ("dom_day", prepared.day),
+                    ("dom_channel", prepared.channel),
+                ):
+                    prediction = getattr(self.factorized_heads, key)(z_dom)
+                    domain_terms.append(F.cross_entropy(prediction, labels))
+                if domain_terms:
+                    domain_loss = torch.stack(domain_terms).mean()
+                    total = total + domain_loss
+                    components["domain_forward"] = self._component(
+                        domain_loss,
+                        domain_loss,
+                        called=True,
+                        effective_count=int(prepared.x.size(0)),
+                    )
+            if self.config.conditional_cdan and factorized_output:
+                cond_terms = [
+                    F.cross_entropy(factorized_output[key], labels)
+                    for key, labels in (
+                        ("id_receiver", receiver_labeled),
+                        ("id_day", day_labeled),
+                        ("id_channel", channel_labeled),
+                    )
+                ]
+                conditional_loss = torch.stack(cond_terms).mean() * domain_scale
+                total = total + conditional_loss
+                components["conditional_dann"] = self._component(
+                    conditional_loss / max(domain_scale, 1e-12)
+                    if domain_scale > 0.0
+                    else zero,
+                    conditional_loss,
+                    called=True,
+                    effective_count=int(tx_labeled.numel()) if tx_labeled is not None else 0,
+                )
+            elif self.config.conditional_cdan:
+                components["conditional_dann"] = self._component(
+                    skip_reason="missing_tx_labels"
+                    if tx_labeled is None
+                    else "no_labeled_rows"
+                )
+            if self.config.zdom_tx_adversary and factorized_output:
+                zdom_tx_loss = F.cross_entropy(factorized_output["dom_tx"], tx_labeled) * domain_scale
+                total = total + zdom_tx_loss
+                components["zdom_tx_adversary"] = self._component(
+                    zdom_tx_loss / max(domain_scale, 1e-12)
+                    if domain_scale > 0.0
+                    else zero,
+                    zdom_tx_loss,
+                    called=True,
+                    effective_count=int(tx_labeled.numel()) if tx_labeled is not None else 0,
+                )
+            elif self.config.zdom_tx_adversary:
+                components["zdom_tx_adversary"] = self._component(
+                    skip_reason="missing_tx_labels"
+                    if tx_labeled is None
+                    else "no_labeled_rows"
+                )
+        else:
+            legacy_domain = model_output.get("dom_logits")
+            if torch.is_tensor(legacy_domain) and legacy_domain.ndim == 2:
+                domain_loss = F.cross_entropy(legacy_domain, prepared.receiver)
+                total = total + domain_loss
+                components["domain_forward"] = self._component(
+                    domain_loss,
+                    domain_loss,
+                    called=True,
+                    effective_count=int(prepared.x.size(0)),
+                )
+
+        if (
+            self.config.conditional_xcov
+            and stage is not BiCADXRStage.stage0
+            and tx_labeled is not None
+            and tx_labeled.numel() > 0
+        ):
+            xcov_loss = conditional_cross_covariance(
+                z_id[labeled_indices], z_dom[labeled_indices], tx_labeled
+            )
+            weighted_xcov = self.config.lambda_cond_xcov * xcov_loss
+            total = total + weighted_xcov
+            effective_groups = sum(
+                int((tx_labeled == class_id).sum().item()) >= 2
+                for class_id in torch.unique(tx_labeled)
+            )
+            components["conditional_xcov"] = self._component(
+                xcov_loss,
+                weighted_xcov,
+                called=True,
+                effective_count=effective_groups,
+            )
+        elif self.config.conditional_xcov:
+            components["conditional_xcov"] = self._component(
+                skip_reason=(
+                    "missing_tx_labels"
+                    if tx_labeled is None
+                    else "no_labeled_rows"
+                    if tx_labeled.numel() == 0
+                    else "stage0_disabled"
+                )
+            )
+        else:
+            components["conditional_xcov"] = self._component(skip_reason="candidate_disabled")
+
+        xdc_output: XDCLossOutput | None = None
+        xdc_called = False
+        xdc_reason: str | None = None
+        if not self.config.sparse_xdc:
+            xdc_reason = "candidate_disabled"
+        elif stage.value in {"stage0", "stage1"}:
+            xdc_reason = "stage_before_stage2"
+        elif update % self.config.xdc_interval != 0:
+            xdc_reason = "interval"
+        elif tx_labeled is None or tx_labeled.numel() == 0:
+            xdc_reason = "missing_tx_labels" if tx_labeled is None else "no_labeled_rows"
+        else:
+            local = self._structured_local_indices(prepared, tx)
+            if local.numel() == 0:
+                xdc_reason = "no_valid_structured_cells"
+            else:
+                xdc_output = xdc_losses(
+                    z_id[local],
+                    tx[local],
+                    prepared.receiver[local],
+                    logits[local],
+                    num_classes=self.num_classes,
+                    temperature=self.config.xdc_temperature,
+                    ridge=self.config.xdc_ridge,
+                    min_support_accuracy=self.config.xdc_min_support_accuracy,
+                    num_receivers=self.num_receivers,
+                    kd_weight=1.0 if self.config.xdc_kd else 0.0,
+                    physical_indices=(
+                        None
+                        if prepared.physical_indices is None
+                        else torch.as_tensor(prepared.physical_indices)[local.cpu()]
+                    ),
+                )
+                xdc_called = True
+                xdc_reason = xdc_output.skip_reason
+                total = total + xdc_output.total
+                donor_count = int(xdc_output.donor_bank.valid_receivers.numel())
+                components["xdc_cross_entropy"] = self._component(
+                    xdc_output.xdc_cross_entropy,
+                    xdc_output.xdc_cross_entropy,
+                    called=True,
+                    effective_count=donor_count,
+                    skip_reason=xdc_reason,
+                )
+                components["xdc_knowledge_distillation"] = self._component(
+                    xdc_output.knowledge_distillation,
+                    xdc_output.knowledge_distillation if self.config.xdc_kd else zero,
+                    called=bool(self.config.xdc_kd),
+                    effective_count=donor_count if self.config.xdc_kd else 0,
+                    skip_reason=(
+                        xdc_reason
+                        if xdc_reason is not None
+                        else "candidate_disabled"
+                        if not self.config.xdc_kd
+                        else None
+                    ),
+                )
+        if not xdc_called:
+            components["xdc_cross_entropy"] = self._component(skip_reason=xdc_reason)
+            components["xdc_knowledge_distillation"] = self._component(
+                skip_reason=xdc_reason if xdc_reason is not None else "not_called"
+            )
+
+        pair_called = False
+        pair_reason: str | None = None
+        pair_loss = zero
+        if not self.config.paired_satellite:
+            pair_reason = "candidate_disabled"
+        elif stage.value in {"stage0", "stage1"}:
+            pair_reason = "stage_before_stage2"
+        elif update % self.config.pair_interval != 0:
+            pair_reason = "interval"
+        else:
+            pair = self._pair_payload(prepared, model_output)
+            required = ("clean_z_id", "satellite_z_id")
+            if not all(key in pair for key in required):
+                pair_reason = "concat_pair_unavailable"
+            else:
+                pair_loss = paired_satellite_loss(
+                    pair["clean_z_id"],
+                    pair["satellite_z_id"],
+                    pair.get("clean_logits"),
+                    pair.get("satellite_logits"),
+                )
+                total = total + pair_loss
+                pair_called = True
+                components["paired_satellite"] = self._component(
+                    pair_loss,
+                    pair_loss,
+                    called=True,
+                    effective_count=int(pair["clean_z_id"].size(0)),
+                )
+        if not pair_called:
+            components["paired_satellite"] = self._component(skip_reason=pair_reason)
+
+        tangent_called = False
+        tangent_reason: str | None = None
+        tangent_loss = zero
+        tangent_logits: Tensor | None = None
+        if self.config.receiver_tangent == "off":
+            tangent_reason = "candidate_disabled"
+        elif stage.value in {"stage0", "stage1", "stage2"}:
+            tangent_reason = "stage_before_stage3"
+        elif tx_labeled is None or tx_labeled.numel() == 0:
+            tangent_reason = "missing_tx_labels" if tx_labeled is None else "no_labeled_rows"
+        else:
+            assert self.tangent_bank is not None
+            self.tangent_bank.update(z_id[labeled_indices], tx_labeled, receiver_labeled)
+            coefficients = self.tangent_bank.coefficients(z_id[labeled_indices], receiver_labeled)
+            if self.config.receiver_tangent == "factual":
+                tangent_features = factual_tangent(
+                    self.tangent_bank,
+                    z_id[labeled_indices],
+                    receiver_labeled,
+                    coefficients,
+                )
+            else:
+                factual_features = factual_tangent(
+                    self.tangent_bank,
+                    z_id[labeled_indices],
+                    receiver_labeled,
+                    coefficients,
+                )
+                factual_logits = self._tangent_logits(
+                    logits[labeled_indices], z_id[labeled_indices], factual_features
+                )
+                attack_loss = F.softplus(
+                    -classification_margin(factual_logits, tx_labeled)
+                ).mean()
+                direction = one_step_tangent_worst_direction(
+                    attack_loss,
+                    coefficients,
+                    radius=0.1,
+                )
+                tangent_features = factual_tangent(
+                    self.tangent_bank,
+                    z_id[labeled_indices],
+                    receiver_labeled,
+                    coefficients + direction,
+                )
+            tangent_logits = self._tangent_logits(
+                logits[labeled_indices], z_id[labeled_indices], tangent_features
+            )
+            tangent_loss = F.cross_entropy(tangent_logits, tx_labeled)
+            total = total + tangent_loss
+            tangent_called = True
+            components["receiver_tangent"] = self._component(
+                tangent_loss,
+                tangent_loss,
+                called=True,
+                effective_count=int(tx_labeled.numel()),
+            )
+        if not tangent_called:
+            components["receiver_tangent"] = self._component(skip_reason=tangent_reason)
+
+        tail_called = False
+        tail_reason: str | None = None
+        if not self.config.margin_tail:
+            tail_reason = "candidate_disabled"
+        elif stage.value in {"stage0", "stage1", "stage2"}:
+            tail_reason = "stage_before_stage3"
+        elif tx_labeled is None or tx_labeled.numel() == 0:
+            tail_reason = "missing_tx_labels" if tx_labeled is None else "no_labeled_rows"
+        else:
+            assert self._tail_emas is not None
+            tx_margins = classification_margin(logits[labeled_indices], tx_labeled)
+            tx_groups = _combine_group_ids(tx_labeled, receiver_labeled)
+            tx_risk = group_margin_cvar(
+                tx_margins,
+                tx_groups,
+                tail_fraction=self.config.margin_tail_cvar_fraction,
+                ema=self._tail_emas[0],
+            )
+            if xdc_output is not None and xdc_output.skip_reason is None:
+                xdc_count = min(xdc_output.ensemble_logits.size(0), tx_labeled.size(0))
+                xdc_risk = group_margin_cvar(
+                    classification_margin(
+                        xdc_output.ensemble_logits[:xdc_count], tx_labeled[:xdc_count]
+                    ),
+                    tx_groups[:xdc_count],
+                    tail_fraction=self.config.margin_tail_cvar_fraction,
+                    ema=self._tail_emas[1],
+                )
+            else:
+                xdc_risk = zero
+            if tangent_logits is not None:
+                tangent_risk = group_margin_cvar(
+                    classification_margin(tangent_logits, tx_labeled),
+                    tx_groups,
+                    tail_fraction=self.config.margin_tail_cvar_fraction,
+                    ema=self._tail_emas[2],
+                )
+            else:
+                tangent_risk = zero
+            tail_loss = apply_margin_tail(
+                zero,
+                tx_risk,
+                xdc_risk,
+                tangent_risk,
+                weights=self.config.margin_tail_weights,
+            )
+            total = total + tail_loss
+            tail_called = True
+            components["margin_tail"] = self._component(
+                tail_loss,
+                tail_loss,
+                called=True,
+                effective_count=int(torch.unique(tx_groups).numel()),
+            )
+        if not tail_called:
+            components["margin_tail"] = self._component(skip_reason=tail_reason)
+
+        projection_called = False
+        projection_triggered = False
+        projection_reason: str | None = None
+        if not self.config.task_protected_gradient:
+            projection_reason = "candidate_disabled"
+        elif stage is BiCADXRStage.stage0:
+            projection_reason = "stage0_disabled"
+        elif update % 4 != 0:
+            projection_reason = "interval"
+        elif tx_loss is None:
+            projection_reason = "missing_tx_labels"
+        else:
+            adversarial_loss = conditional_loss + zdom_tx_loss
+            if not adversarial_loss.requires_grad:
+                projection_reason = "no_adversarial_gradient"
+            else:
+                reference_gradient = torch.autograd.grad(
+                    tx_loss,
+                    z_id,
+                    retain_graph=True,
+                    allow_unused=True,
+                )[0]
+                adversarial_gradient = torch.autograd.grad(
+                    adversarial_loss,
+                    z_id,
+                    retain_graph=True,
+                    allow_unused=True,
+                )[0]
+                if reference_gradient is None or adversarial_gradient is None:
+                    projection_reason = "gradient_unavailable"
+                else:
+                    projected = project_conflicting_gradient(
+                        adversarial_gradient,
+                        reference_gradient,
+                    )
+                    projection_called = True
+                    projection_triggered = not torch.equal(projected, adversarial_gradient)
+        components["task_protected_gradient"] = self._component(
+            0.0,
+            0.0,
+            called=projection_called,
+            effective_count=int(z_id.numel()) if projection_called else 0,
+            skip_reason=projection_reason,
+        )
+
+        swad_updated = False
+        if (
+            self.config.swad
+            and self.config.candidate_id.upper() == "F3"
+            and stage is BiCADXRStage.stage4
+        ):
+            swad_updated = self._update_swad(tx_loss if "tx_loss" in locals() else total)
+        swad_reason = None if swad_updated else (
+            "candidate_disabled"
+            if not (self.config.swad and self.config.candidate_id.upper() == "F3")
+            else "stage_before_stage4"
+            if stage is not BiCADXRStage.stage4
+            else "not_low_risk_window"
+        )
+        components["gradient_firewall"] = self._component(
+            0.0,
+            0.0,
+            called=bool(self.config.gradient_firewall and stage is not BiCADXRStage.stage0),
+            effective_count=len(self.shared_stem_parameters())
+            if self.config.gradient_firewall and stage is not BiCADXRStage.stage0
+            else 0,
+            skip_reason=(
+                None
+                if self.config.gradient_firewall and stage is not BiCADXRStage.stage0
+                else "candidate_disabled"
+                if not self.config.gradient_firewall
+                else "stage0_disabled"
+            ),
+        )
+
+        runtime = self.checkpoint_runtime(update, total_updates, stage=stage)
+        audit: dict[str, Any] = {
+            "stage": stage.name,
+            "update": int(update),
+            "total_updates": int(total_updates),
+            "candidate_id": self.config.candidate_id,
+            "grl_identity": float(domain_scale if stage is not BiCADXRStage.stage0 else 0.0),
+            "grl_tx": float(domain_scale if stage is not BiCADXRStage.stage0 else 0.0),
+            "domain_dann_scale": float(domain_scale),
+            "domain_scale": float(domain_scale),
+            "shared_stem_lr_scale": float(
+                self.config.stage4_shared_stem_lr_scale
+                if stage is BiCADXRStage.stage4
+                else 1.0
+            ),
+            "xdc_called": xdc_called,
+            "xdc_kd_called": bool(xdc_called and self.config.xdc_kd),
+            "xdc_skip_reason": xdc_reason,
+            "xdc_effective_donors": 0
+            if xdc_output is None
+            else int(xdc_output.donor_bank.valid_receivers.numel()),
+            "xdc_donor_query_matrix": None
+            if xdc_output is None
+            else xdc_output.donor_query_matrix,
+            "pair_called": pair_called,
+            "pair_source": "concat_satellite" if pair_called else None,
+            "pair_skip_reason": pair_reason,
+            "tangent_called": tangent_called,
+            "tangent_mode": self.config.receiver_tangent,
+            "tangent_skip_reason": tangent_reason,
+            "tail_called": tail_called,
+            "tail_skip_reason": tail_reason,
+            "task_protected_gradient_called": projection_called,
+            "projection_triggered": projection_triggered,
+            "projection_skip_reason": projection_reason,
+            "swad_updated": swad_updated,
+            "swad_skip_reason": swad_reason,
+            "extra_forward_count": 0,
+            "model_forward_count": 1,
+            "components": components,
+            "checkpoint_runtime": runtime,
+        }
+        audit["raw_losses"] = {name: value["raw"] for name, value in components.items()}
+        audit["weighted_losses"] = {
+            name: value["weighted"] for name, value in components.items()
+        }
+        audit["component_calls"] = {name: value["called"] for name, value in components.items()}
+        audit["effective_counts"] = {
+            name: value["effective_count"] for name, value in components.items()
+        }
+        audit["skip_reasons"] = {
+            name: value["skip_reason"] for name, value in components.items()
+        }
+        if not torch.isfinite(total).all():
+            raise ValueError("BiCAD-XR total loss must remain finite")
+        self._last_update = int(update)
+        self._last_total_updates = int(total_updates)
+        return BiCADXRTrainOutput(
+            total=total,
+            logits=logits,
+            features=model_output,
+            audit=audit,
+            checkpoint_runtime=runtime,
+        )
+
+
+__all__ = [
+    "BiCADXRBatch",
+    "BiCADXRTrainOutput",
+    "BiCADXRTrainer",
+]

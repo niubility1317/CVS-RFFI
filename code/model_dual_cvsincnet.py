@@ -568,10 +568,14 @@ class DualCVSincNetDisentangle(nn.Module):
         crra_ramp_epochs: int = 30,
         sat_anchor_adapter: bool = False,
         sat_anchor_adapter_rank: int = 8,
+        bicad_xr: bool = False,
     ):
         super().__init__()
         self.num_classes = int(num_classes)
         self.num_domains = int(max(1, num_domains))
+        # BiCAD-XR training heads are owned by the external trainer.  Keep this
+        # as metadata only so the model parameter tree remains unchanged.
+        self.bicad_xr = bool(bicad_xr)
         self.arch_family = str(arch_family or "cvsincnet").lower().strip()
         self.representation_mode = str(representation_mode or "dual").lower().strip()
         if self.representation_mode not in {"dual", "single_parameter_matched"}:
@@ -843,7 +847,7 @@ class DualCVSincNetDisentangle(nn.Module):
             zero_domain_logits = tx_logits.new_zeros(
                 (int(tx_logits.size(0)), self.num_domains)
             )
-            return {
+            matched_out = {
                 "tx_logits": tx_logits,
                 "dom_logits": zero_domain_logits,
                 "adv_dom_logits": zero_domain_logits,
@@ -863,6 +867,15 @@ class DualCVSincNetDisentangle(nn.Module):
                 "aux_id": aux_id,
                 "aux_dom": {},
             }
+            if self.bicad_xr:
+                matched_out.update(
+                    {
+                        "shared_features": z_id,
+                        "identity_features": z_id,
+                        "domain_features": z_id,
+                    }
+                )
+            return matched_out
 
         if (
             (not return_aux)
@@ -995,6 +1008,17 @@ class DualCVSincNetDisentangle(nn.Module):
             v = out[g].get(k, None)
             if torch.is_tensor(v):
                 out[name] = v
+        if self.bicad_xr:
+            # Reuse the already computed branch features.  The training heads
+            # remain external to this model and are never reached by the
+            # return_aux=False fast path above.
+            out.update(
+                {
+                    "shared_features": z_id,
+                    "identity_features": z_id,
+                    "domain_features": z_dom,
+                }
+            )
         return out
 
 
@@ -1050,6 +1074,7 @@ def build_dual_model(
     crra_ramp_epochs: int = 30,
     sat_anchor_adapter: bool = False,
     sat_anchor_adapter_rank: int = 8,
+    bicad_xr: bool = False,
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -1103,4 +1128,5 @@ def build_dual_model(
         crra_ramp_epochs=crra_ramp_epochs,
         sat_anchor_adapter=sat_anchor_adapter,
         sat_anchor_adapter_rank=sat_anchor_adapter_rank,
+        bicad_xr=bicad_xr,
     )
