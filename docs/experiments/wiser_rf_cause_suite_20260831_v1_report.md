@@ -64,3 +64,11 @@ v1没有`pilot_result.json`和合法prediction，因此不得启动scorer。
 |B，`lambda_vsw=0.1`|`+7.50/-0.83/+6.67pp`|`+8.33/+0.83/+6.67pp`|`+0.83/-3.33/+0.83pp`|`-5.00pp`|`+0.7676`|未通过，不晋级|
 
 两条run均完成3场景×2臂共6组prediction后，才由独立scorer连接truth；`score_collection.json`均为`ANALYZED`且`truth_join_after_prediction_only=true`。两种设置都能改善P1/P2与表示几何，但P3旧类收益不足且类别下限下降，因此`passed=false`、`next_experiment_authorized=false`。其中弱VSW比去原型约束更接近P3正向一致性，但仍不能作为性能晋级结果。
+
+## v3零模态修复预登记
+
+- 根因：可微D92的`F.normalize`允许单个模态为零并将其保持为零，但独立精确D92此前会直接拒绝任一零范数模态，导致适配后零identity行无法利用仍有效的FFT块完成P3。
+- 修复提交：`4e51e29b393cba723c2e79ed0d3314ed64d6369f`，已push且远端OID一致。单模态零范数现在安全置零；identity与FFT同时退化时，联合归一化仍确定性拒绝，避免无信息prediction。
+- TDD与验证：新增零identity/有效FFT回归测试先准确失败；修复后相关37项测试通过。唯一独立P0/P1审查结论`READY`。
+- release：`wiser_rf_zeromodal_suite_20260831_v3_4e51e29b.tar.gz`；本地SHA256=`9ac739632a48d91600b41ca1eb005c7e16b8a12a6f327695001dcefffb267521`，待一次远端SHA回读、远端编译和真实checkpoint无query smoke。
+- 新run只重跑没有合法结果的6条row：GPU2主`B0+A+B+C+ABC`、GPU1无L2-SP、GPU3弱L2-SP、GPU4强L2-SP、GPU6强VSW、GPU7短训练。已`ANALYZED`的去原型和弱VSW不重复跑；GPU0旧v2主pilot保持只读。每GPU最多3个训练实验，本批次每张目标卡只新增1条。
