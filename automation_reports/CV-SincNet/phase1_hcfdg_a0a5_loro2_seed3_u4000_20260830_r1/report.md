@@ -83,3 +83,12 @@ nohup /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088
 - `ARTIFACTS_COMPLETE.json`。
 
 run根在36行全部进入终态后写入`final_status.json`。训练完成不等于实验完成；缺少任一严格评估场景时不得标记`ARTIFACTS_COMPLETE`。
++
+## 正式启动
+
+- 启动时间：N607约2026-08-30 15:05 CST。
+- 状态：`RUNNING`。
+- dispatcher PID：`2172360`；PPID1；CWD=`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_hcfdg_7bcc5f73`；cmdline精确绑定正式release、run ID、36行quick stage、fold1/8、GPU0–7和ManySig source路径。
+- `plan.json`为12,887字节；首波创建16个row目录。
+- 首波16个直属worker与dispatcher绑定正确；GPU0–7各2个本run Python训练进程，没有超过每卡2行。
+- 启动30秒快照：GPU利用率69%–90%，显存约1,427–1,429MiB/卡；无`TECHNICAL_FAILURE.json`，dispatcher仍存活。首个update尚未写出metrics，下一次短连接复核增长。
