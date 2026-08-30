@@ -143,6 +143,18 @@ def test_hcfdg_output_has_single_backbone_and_48d_environment() -> None:
     assert out.conditional_receiver_logits is not None
 
 
+def test_environment_encoder_consumes_all_five_satellite_physical_factors() -> None:
+    model, _, x, tx_labels, env_meta = _make_model()
+    factors = torch.randn(x.shape[0], 5)
+    env_meta = dict(env_meta, channel_factors=factors)
+
+    out = model(x, tx_labels=tx_labels, env_meta=env_meta, training_aux=True)
+
+    assert model.environment_encoder.q_phys_dim == 5
+    assert model.environment_encoder.shared[0].in_features == model.backbone_feature_dim + 5
+    assert torch.isfinite(out.z_env).all()
+
+
 def test_environment_branch_stops_backbone_gradient_but_identity_branch_keeps_it() -> None:
     model, _, x, tx_labels, env_meta = _make_model()
     out = model(x, tx_labels=tx_labels, env_meta=env_meta, training_aux=True)

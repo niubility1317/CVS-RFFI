@@ -96,6 +96,16 @@ class _SingleViewBuilder:
         return x
 
 
+class _PhysicalSingleViewBuilder:
+    def __call__(self, x, augmentor, generator, p_sat=0.30):
+        return SimpleNamespace(
+            iq=x,
+            channel_labels=torch.ones(x.shape[0], dtype=torch.long),
+            channel_factors=torch.arange(x.shape[0] * 5, dtype=x.dtype).reshape(x.shape[0], 5),
+            satellite_mask=torch.ones(x.shape[0], dtype=torch.bool),
+        )
+
+
 class _EnvironmentOnlyEncoder(nn.Module):
     input_dim = 3
 
@@ -186,6 +196,18 @@ def _make_trainer(tmp_path, config=None):
         seed=392001,
     )
     return trainer, model, builder
+
+
+def test_single_view_routes_five_physical_channel_factors_to_environment_input(tmp_path):
+    trainer, _, _ = _make_trainer(tmp_path)
+    trainer.build_single_view_batch = _PhysicalSingleViewBuilder()
+    batch = trainer._prepare_source_batch(_labeled_batch(), allow_tx=True)
+
+    result = trainer._single_view(batch)
+
+    assert result.shape == batch.iq.shape
+    assert batch.env_meta["q_phys"].shape == (4, 5)
+    torch.testing.assert_close(batch.env_meta["q_phys"], batch.env_meta["channel_factors"])
 
 
 def test_v1_runs_exactly_4000_optimizer_updates_and_one_backbone_call_per_update(tmp_path):

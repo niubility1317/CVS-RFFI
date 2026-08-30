@@ -23,7 +23,14 @@ _ENV_ALIASES: dict[str, tuple[str, ...]] = {
     "receiver": ("receiver", "receiver_id", "receiver_ids", "rx", "rx_id", "rx_ids"),
     "day": ("day", "day_id", "day_ids"),
     "channel": ("channel", "channel_id", "channel_ids"),
-    "q_phys": ("q_phys", "quality", "quality_score", "q"),
+    "q_phys": (
+        "q_phys",
+        "channel_factors",
+        "physical_channel_factors",
+        "quality",
+        "quality_score",
+        "q",
+    ),
 }
 _MAX_GRL_STRENGTH = 0.05
 
@@ -179,7 +186,7 @@ class FactorizedEnvironmentEncoder(nn.Module):
         num_receivers: int = 4,
         num_days: int = 3,
         num_channels: int = 5,
-        q_phys_dim: int = 1,
+        q_phys_dim: int = 5,
         hidden_dim: int = 96,
         *,
         feature_dim: int | None = None,
@@ -736,7 +743,7 @@ class HCFDGModel(nn.Module):
         *,
         identity_dim: int = 160,
         env_dim: int = 48,
-        q_phys_dim: int = 1,
+        q_phys_dim: int = 5,
         backbone_feature_dim: int | None = None,
         rank: int = 4,
         specific_dropout: float = 0.5,

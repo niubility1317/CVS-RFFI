@@ -723,6 +723,7 @@ class HCFDGTrainer:
             batch.env_meta["channel"] = channel_labels
         if channel_factors is not None:
             batch.env_meta["channel_factors"] = channel_factors
+            batch.env_meta["q_phys"] = channel_factors
         if satellite_mask is not None:
             batch.env_meta["satellite_mask"] = satellite_mask
         return _mapping_value(result, ("iq", "x", "inputs", "signal", "IQ")) if isinstance(result, Mapping) else getattr(result, "iq", result)
