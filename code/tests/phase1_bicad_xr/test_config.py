@@ -7,10 +7,122 @@ import pytest
 from cvsrffi.phase1_bicad_xr.config import (
     BiCADXRConfig,
     BiCADXRStage,
+    CANDIDATE_IDS,
     candidate_config,
     candidate_diff,
     stage_for_update,
 )
+
+
+P_CANDIDATE_IDS = ("P0", "P1", "P2", "P3", "P4")
+
+
+def test_pairbicad_p0_to_p4_are_registered_with_shared_frozen_config() -> None:
+    assert set(P_CANDIDATE_IDS).issubset(CANDIDATE_IDS)
+
+    for candidate_id in P_CANDIDATE_IDS:
+        cfg = candidate_config(candidate_id)
+
+        assert cfg.optimizer_updates == 4000
+        assert cfg.batch_size == 48
+        assert cfg.concat_sat_start_epoch == 1
+        assert cfg.satellite_supervision_mode == "ce_only_plus_pair_selfsup"
+        assert cfg.strict_pair_concat
+        assert cfg.pair_projector_dim == 128
+        assert cfg.factor_interaction_dim == 24
+        assert cfg.lambda_sat_cls_start == pytest.approx(0.5)
+        assert cfg.lambda_sat_cls_end == pytest.approx(1.0)
+
+
+def test_pairbicad_p0_enables_only_strict_pair_concat() -> None:
+    cfg = candidate_config("P0")
+
+    assert cfg.strict_pair_concat
+    assert not cfg.factorized_domains
+    assert not cfg.gradient_firewall
+    assert not cfg.conditional_cdan
+    assert not cfg.zdom_tx_adversary
+    assert not cfg.pair_identity
+    assert not cfg.pair_vicreg
+    assert not cfg.pair_delta
+    assert not cfg.dynamic_adversarial_dose
+
+
+@pytest.mark.parametrize(
+    ("left", "right", "changed"),
+    [
+        ("P0", "P1", {"factorized_domains", "gradient_firewall"}),
+        ("P1", "P2", {"conditional_cdan", "zdom_tx_adversary"}),
+        ("P2", "P3", {"pair_identity", "pair_vicreg"}),
+        ("P3", "P4", {"pair_delta", "dynamic_adversarial_dose"}),
+    ],
+)
+def test_pairbicad_adjacent_candidates_change_only_intended_fields(
+    left: str, right: str, changed: set[str]
+) -> None:
+    assert set(candidate_diff(left, right)) == changed
+
+
+@pytest.mark.parametrize("candidate_id", P_CANDIDATE_IDS)
+def test_pairbicad_candidates_keep_excluded_mechanisms_disabled(
+    candidate_id: str,
+) -> None:
+    cfg = candidate_config(candidate_id)
+
+    assert not cfg.conditional_xcov
+    assert not cfg.task_protected_gradient
+    assert not cfg.sparse_xdc
+    assert not cfg.xdc_kd
+    assert not cfg.paired_satellite
+    assert not cfg.margin_tail
+    assert cfg.receiver_tangent == "off"
+    assert not cfg.swad
+    assert not any(
+        getattr(cfg, legacy_flag)
+        for legacy_flag in (
+            "use_fasttrust",
+            "use_pseudo_label",
+            "use_csd",
+            "use_hcf_transport",
+            "use_content_lodo",
+            "use_hdro",
+            "use_proxy_unknown",
+            "use_soft_unknown_mixup",
+            "use_open_world_feature_loss",
+            "use_fishr",
+            "use_generic_mixup",
+            "use_mixstyle",
+        )
+    )
+
+
+def test_legacy_candidates_keep_original_schedule_and_satellite_contract() -> None:
+    for candidate_id in (
+        "D0",
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5",
+        "D6",
+        "E0",
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "F0",
+        "F1",
+        "F2",
+        "F3",
+        "ADV3B02-BiCAD-XDC-V1",
+    ):
+        cfg = candidate_config(candidate_id)
+
+        assert cfg.optimizer_updates == 5000
+        assert cfg.batch_size == 96
+        assert cfg.concat_sat_start_epoch == 80
+        assert cfg.lambda_sat_cls == pytest.approx(0.68)
+        assert cfg.lambda_sat_cons == pytest.approx(0.0)
 
 
 def test_v1_alias_is_d5_plus_sparse_xdc_and_tail_only() -> None:
@@ -102,6 +214,16 @@ def test_candidate_overrides_are_scoped_and_do_not_mutate_registry() -> None:
         ("gradient_firewall_scale", 0.1),
         ("concat_sat_ce_only", False),
         ("concat_sat_start_epoch", 79),
+        ("satellite_supervision_mode", "ce_only_plus_pair_selfsup"),
+        ("strict_pair_concat", True),
+        ("pair_identity", True),
+        ("pair_vicreg", True),
+        ("pair_delta", True),
+        ("dynamic_adversarial_dose", True),
+        ("pair_projector_dim", 64),
+        ("factor_interaction_dim", 12),
+        ("lambda_sat_cls_start", 0.5),
+        ("lambda_sat_cls_end", 1.0),
         (
             "sat_train_scenarios",
             ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"),
@@ -288,6 +410,11 @@ def test_config_is_frozen_and_contains_all_candidate_switches() -> None:
         "margin_tail",
         "receiver_tangent",
         "swad",
+        "strict_pair_concat",
+        "pair_identity",
+        "pair_vicreg",
+        "pair_delta",
+        "dynamic_adversarial_dose",
     }
     with pytest.raises((AttributeError, TypeError)):
         candidate_config("D0").batch_size = 128  # type: ignore[misc]

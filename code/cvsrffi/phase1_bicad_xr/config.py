@@ -54,6 +54,11 @@ _CANDIDATE_SWITCHES = (
     "margin_tail",
     "receiver_tangent",
     "swad",
+    "strict_pair_concat",
+    "pair_identity",
+    "pair_vicreg",
+    "pair_delta",
+    "dynamic_adversarial_dose",
 )
 
 _FORBIDDEN_LEGACY_FEATURES = (
@@ -93,6 +98,11 @@ class BiCADXRConfig:
     margin_tail: bool = False
     receiver_tangent: str = "off"
     swad: bool = False
+    strict_pair_concat: bool = False
+    pair_identity: bool = False
+    pair_vicreg: bool = False
+    pair_delta: bool = False
+    dynamic_adversarial_dose: bool = False
 
     # Legacy mechanisms are explicit so an accidental carry-over fails closed.
     use_fasttrust: bool = False
@@ -121,6 +131,11 @@ class BiCADXRConfig:
     gradient_firewall_scale: float = 0.05
     concat_sat_ce_only: bool = True
     concat_sat_start_epoch: int = 80
+    satellite_supervision_mode: str = "ce_only"
+    pair_projector_dim: int = 128
+    factor_interaction_dim: int = 24
+    lambda_sat_cls_start: float = 0.68
+    lambda_sat_cls_end: float = 0.68
     sat_train_scenarios: tuple[str, str, str] = LEO_WEAK_SCENARIOS
 
     # Fixed mechanism constants used by later modules.
@@ -170,8 +185,25 @@ class BiCADXRConfig:
             raise ValueError("incompatible satellite contract: concat_sat_ce_only must be true")
         if self.lambda_sat_cls != 0.68 or self.lambda_sat_cons != 0.0:
             raise ValueError("incompatible satellite loss weights")
-        if self.concat_sat_start_epoch != 80:
-            raise ValueError("incompatible satellite start epoch")
+        if self.satellite_supervision_mode not in {
+            "ce_only",
+            "ce_only_plus_pair_selfsup",
+        }:
+            raise ValueError("incompatible satellite supervision mode")
+        if self.satellite_supervision_mode == "ce_only":
+            if self.concat_sat_start_epoch != 80:
+                raise ValueError("incompatible satellite start epoch")
+            if self.lambda_sat_cls_start != 0.68 or self.lambda_sat_cls_end != 0.68:
+                raise ValueError("incompatible satellite classification schedule")
+        else:
+            if not self.strict_pair_concat or self.concat_sat_start_epoch != 1:
+                raise ValueError("incompatible strict pair satellite contract")
+            if self.lambda_sat_cls_start != 0.5 or self.lambda_sat_cls_end != 1.0:
+                raise ValueError("incompatible satellite classification schedule")
+        for field_name in ("pair_projector_dim", "factor_interaction_dim"):
+            value = getattr(self, field_name)
+            if not isinstance(value, int) or isinstance(value, bool) or value <= 0:
+                raise ValueError(f"{field_name} must be a positive integer")
         if not isinstance(self.sat_train_scenarios, tuple):
             raise ValueError("sat_train_scenarios must be a tuple")
         if self.sat_train_scenarios != LEO_WEAK_SCENARIOS:
@@ -189,7 +221,7 @@ class BiCADXRConfig:
 
 
 def _candidate_registry() -> dict[str, BiCADXRConfig]:
-    """Construct the frozen D0--F3 registry and the V1 compatibility alias."""
+    """Construct the frozen legacy and PairBiCAD candidate registry."""
 
     d0 = BiCADXRConfig(candidate_id="D0")
     d1 = replace(d0, candidate_id="D1", factorized_domains=True)
@@ -216,9 +248,68 @@ def _candidate_registry() -> dict[str, BiCADXRConfig]:
         sparse_xdc=True,
         margin_tail=True,
     )
+
+    p0 = replace(
+        d0,
+        candidate_id="P0",
+        optimizer_updates=4000,
+        batch_size=48,
+        concat_sat_start_epoch=1,
+        satellite_supervision_mode="ce_only_plus_pair_selfsup",
+        strict_pair_concat=True,
+        lambda_sat_cls_start=0.5,
+        lambda_sat_cls_end=1.0,
+    )
+    p1 = replace(
+        p0,
+        candidate_id="P1",
+        factorized_domains=True,
+        gradient_firewall=True,
+    )
+    p2 = replace(
+        p1,
+        candidate_id="P2",
+        conditional_cdan=True,
+        zdom_tx_adversary=True,
+    )
+    p3 = replace(
+        p2,
+        candidate_id="P3",
+        pair_identity=True,
+        pair_vicreg=True,
+    )
+    p4 = replace(
+        p3,
+        candidate_id="P4",
+        pair_delta=True,
+        dynamic_adversarial_dose=True,
+    )
     return {
         config.candidate_id.upper(): config
-        for config in (d0, d1, d2, d3, d4, d5, d6, e0, e1, e2, e3, e4, f0, f1, f2, f3, v1)
+        for config in (
+            d0,
+            d1,
+            d2,
+            d3,
+            d4,
+            d5,
+            d6,
+            e0,
+            e1,
+            e2,
+            e3,
+            e4,
+            f0,
+            f1,
+            f2,
+            f3,
+            v1,
+            p0,
+            p1,
+            p2,
+            p3,
+            p4,
+        )
     }
 
 
