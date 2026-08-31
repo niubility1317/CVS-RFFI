@@ -23,18 +23,18 @@
 |CV19|设计7|主线与TailGuard晋级分析|新analyzer|verified|合成artifact测试|同row比较|
 |CV20|设计9|四场景严格artifact闭合|`metrics.py`、launcher、analyzer|verified|closure与worker测试|真实评估后才ARTIFACTS_COMPLETE|
 |CV21|协议|Phase1 source-only fail closed|入口、launcher|verified|聚焦负测|Phase2/target/query/truth禁止|
-|CV22|验收|真实checkpoint无query smoke|smoke脚本|pending|本地fixture smoke4/4；待N607真实checkpoint|新鲜optimizer step、严格恢复、四场景|
-|CV23|发布|最小预登记与N607每GPU两个实验|报告、launcher|pending|preflight和启动回读|普通账户|
+|CV22|验收|真实checkpoint无query smoke|smoke脚本|verified|N607真实P1-F1-S392002 checkpoint PASS|新鲜optimizer step、严格恢复、四场景、无query|
+|CV23|发布|最小预登记与N607每GPU两个实验|报告、launcher|verified|release SHA、远端编译和启动回读|GPU0因无关任务冻结1槽，其他卡2槽|
 
 ## 当前计数
 
-- verified：21
+- verified：23
 - deferred：0（设计级延期项不进入本轮实现清单）
 - rejected：0
 - blocked：0
-- pending：2
+- pending：0
 
-最高风险项为CV23：N607正式release、资源映射、真实进程绑定和24行artifact闭合尚待服务器回读。
+实现与发布追踪项已闭合；正式24行当前为`RUNNING`，科学结果和artifact闭合需等待训练完成后另行分析。
 
 Ruling：新候选统一使用`CV2-`前缀，因为现有注册表已经冻结历史`D0-D3`；若复用短ID会静默改变既有实验语义。
 

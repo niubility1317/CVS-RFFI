@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-- 状态：LOCAL_VERIFIED。
+- 状态：RUNNING。
 - Run ID：phase1_pairbicad_cv2_screen24_seed392002_20260831_r1。
 - 目标：在新CORE90数据包对应的Phase1 source-only划分上比较Core、BiAdv、Pair和TailGuard；不访问Phase2或目标接收机数据。
 - 正式实现提交：`716fcf71ec51a4d89f9f9a1cf018fd41eba1c7a4`；包含preflight冻结的逐GPU容量入口。
@@ -55,6 +55,15 @@
 - run根：/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_pairbicad_cv2_screen24_seed392002_20260831_r1。
 - 输入：/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl。
 - 启动：使用code/scripts/launch_phase1_pairbicad_cv2_screen24_20260831.py，传入上述run ID、release根、run父目录、ssr-gpu Python和ManySig.pkl。
+
+## Release与启动回执
+
+- release归档Git提交：`40374efc960d902ff693b221e5a5efb48dc4d86f`，归档前已独立核对GitHub远端OID一致；训练实现提交为`716fcf71ec51a4d89f9f9a1cf018fd41eba1c7a4`。
+- release归档：`phase1_pairbicad_cv2_screen24_seed392002_20260831_r1_40374efc.tar.gz`；本地与N607端SHA256均为`2330e1766c27c8aab3e465bca7ef087119896d7ec81042e6a0e047f75d77bdb6`。
+- N607远端编译：PASS。
+- 真实checkpoint无query smoke：历史`P1-F1-S392002/bicad_xr_final.pth`，`status=PASS`、严格恢复、一次新optimizer step、Clean和3种LEO前向完整、`source_only=true`、`query_access=false`。
+- Dispatcher PID：3118975；普通账户；release、run根和命令绑定正确。
+- 首次启动回读：15个直属worker；GPU0为1个本run训练进程加1个无关Stage2进程，GPU1–7各2个本run训练进程；GPU利用率84%–92%；0个`ARTIFACTS_COMPLETE`、0个`TECHNICAL_FAILURE`、0条确定性致命错误。训练日志初始为0字节，但绑定GPU计算已持续，判定健康启动。
 
 ## 预期artifact与停止规则
 
