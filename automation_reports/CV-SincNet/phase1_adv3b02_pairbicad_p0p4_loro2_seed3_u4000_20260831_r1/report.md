@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-- 状态：`RUNNING`。
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
 - Run ID：`phase1_adv3b02_pairbicad_p0p4_loro2_seed3_u4000_20260831_r1`。
 - 方法范围：`P0/P1/P2/P3/P4`；P5–P9不属于本run。
 - source数据：`Dataset_WigSig/ManySig.pkl`；训练day1/day2/day3。
@@ -130,3 +130,14 @@
 - 第一波覆盖P0全6行、P1全6行和P2前4行；其余14行在dispatcher内排队，不会突破每GPU2个活跃训练进程。
 - `plan.json`已存在；16个`train.log`已建立。启动早期日志为0字节，但GPU计算、进程归属和cmdline均持续有效；该trainer在epoch/update汇总前不保证stdout增长，不能据此停止。
 - 启动回读未发现`TECHNICAL_FAILURE`或`ARTIFACTS_COMPLETE`marker；当前没有性能结论。
+
+## 终态回读（2026-08-31 14:28 CST）
+
+- dispatcher PID`2807256`及其worker已全部退出；GPU0–7均为0%利用率、1MiB显存，无本run训练进程残留。
+- 30/30行都完成了4000个optimizer updates，均保留`bicad_xr_final.pth`；每行`metrics_epoch.jsonl`均为13条记录，首条update315、末条update4000、末epoch13。
+- 对30个完整metrics文件逐行解析：JSON解析错误0，非有限值记录0；`target/Phase2/support/query/truth`访问为0。P0–P4、fold1/8、seed392001/392002/392003身份与计划一致。
+- 30/30行在训练后统一发生同一确定性闭合错误：`TRAINER_RUNTIME_RESTORE_FAILED: checkpoint runtime mismatch: num_channels`。
+- 因此30/30行为`TECHNICAL_FAILURE`，0/30行为`ARTIFACTS_COMPLETE`；每行缺少checkpoint runtime闭合以及clean、`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`正式评估artifact。
+- 这是预登记的系统技术失败，不是性能负结果。训练checkpoint与partial artifact全部保留，未停止或影响无关进程，也未访问Phase2/目标接收机。
+- 本run不能进行P0–P4 source-only排序、晋级或与ADV3B02性能比较；当前最高可证明交付状态为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+- 后续若要恢复正式结果，必须先在本地定点修复`num_channels`checkpoint runtime恢复契约并通过对应真实checkpoint no-query smoke，再以新的不可覆盖run ID发布；不得把本run的未闭合checkpoint直接标为正式性能结果。
