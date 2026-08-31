@@ -31,6 +31,7 @@ nohup "${PYTHON}" -u "${LAUNCHER}" \
   --folds 1,2,3,4,5 \
   --seeds 392001,392002,392003 \
   --optimizer-updates "${PAIRBICAD_FINAL_OPTIMIZER_UPDATES}" \
+  --gpu-ids 1,2,3,4,5,6,7,0 \
   --run-id "${RUN_ID}" \
   --output-root "${PROJECT_ROOT}/runs" \
   --code-root "${RELEASE_ROOT}" \
