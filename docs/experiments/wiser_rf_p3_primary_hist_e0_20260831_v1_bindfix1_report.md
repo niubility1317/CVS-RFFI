@@ -34,3 +34,9 @@ CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/
 - 预期artifact：smoke结果、21个support audit与prediction/receipt、pilot completion marker、独立detailed score、资源记录和`pilot_auto_result.json`。
 - pilot门槛保持不变：P3 BA三scene中位提升≥3pp、最差scene≥-0.5pp、P3 floor中位及low-elev floor不下降、P1/P2每scene≥-2pp、zero-id=0、条件数≤基线2倍、至少2/3scene净help为正；N1不得成为冠军。
 - 只有三个scene全部闭合且`full_target25_authorized=true`才发布历史Target25的25outer/75scene；否则记录科学未晋级。Target25通过才授权K10的`new5/new10/new20`扩展，Stage B仍不在本run自动执行范围内。
+
+## 真实smoke结果
+
+- 远端主PID=`2943916`；状态=`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。历史绑定修复已生效，smoke进入N6 P3反向传播后在`id_backbone.t3.dw.weight`检测到非有限梯度；`set -e`阻止pilot启动，未打开query、未产生prediction，run/log根永久保留。
+- 本地算子级回归证明根因位于精确D92的Ledoit-Wolf标准化：退化坐标先执行`sqrt(0)`再用`where`替换，前向同构但反向为NaN；零`delta`分支也先计算了不安全除法。修复改为开平方前屏蔽方差并预构造安全分母，不改变非退化前向公式。
+- 新增`zero_identity/zero_fft/ill_conditioned`三类反向回归均先失败后通过；10个P3/D92/pilot/scoring/Target25聚焦测试文件完整通过。修复须使用新提交、新release和新run ID，不热修改或覆盖本run。

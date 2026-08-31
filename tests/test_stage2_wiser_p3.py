@@ -103,6 +103,22 @@ def test_differentiable_old_d92_matches_exact_logits(case: str) -> None:
     assert torch.max(torch.abs(actual.double() - expected.double())).item() < 1.0e-4
 
 
+@pytest.mark.parametrize("case", ["zero_identity", "zero_fft", "ill_conditioned"])
+def test_differentiable_old_d92_has_finite_gradients_with_constant_coordinates(case: str) -> None:
+    """Constant support coordinates must be masked before variance square roots."""
+
+    fit_id, fit_fft, labels, eval_id, eval_fft = make_d92_case(case)
+    fit_id.requires_grad_()
+    fit_fft.requires_grad_()
+    eval_id.requires_grad_()
+    eval_fft.requires_grad_()
+    eval_labels = torch.arange(6, dtype=torch.long).repeat_interleave(2)
+    logits = differentiable_old_d92_logits(fit_id, fit_fft, labels, eval_id, eval_fft)
+    functional.cross_entropy(logits, eval_labels).backward()
+    for gradient in (fit_id.grad, fit_fft.grad, eval_id.grad, eval_fft.grad):
+        assert gradient is not None and torch.isfinite(gradient).all()
+
+
 def test_differentiable_d92_rejects_both_modalities_zero() -> None:
     """Catches accepting rows that the exact D92 feature geometry cannot score."""
 

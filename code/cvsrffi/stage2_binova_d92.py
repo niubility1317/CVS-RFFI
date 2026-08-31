@@ -257,8 +257,12 @@ def _d92_ledoit_wolf_covariance(rows: torch.Tensor) -> torch.Tensor:
     values = rows.to(dtype=torch.float64)
     count, dimension = values.shape
     centered = values - values.mean(dim=0, keepdim=True)
-    scale = centered.square().mean(dim=0).sqrt()
-    scale = torch.where(scale > torch.finfo(values.dtype).eps, scale, torch.ones_like(scale))
+    variance = centered.square().mean(dim=0)
+    epsilon = torch.finfo(values.dtype).eps
+    safe_variance = torch.where(
+        variance > epsilon * epsilon, variance, torch.ones_like(variance)
+    )
+    scale = safe_variance.sqrt()
     standardized = centered / scale
     empirical = standardized.T @ standardized / float(count)
     diagonal = standardized.square().sum(dim=0) / float(count)
@@ -270,7 +274,8 @@ def _d92_ledoit_wolf_covariance(rows: torch.Tensor) -> torch.Tensor:
     beta = (beta_raw / float(count) - delta_raw) / float(dimension * count)
     delta = (delta_raw - 2.0 * mean_variance * diagonal.sum() + dimension * mean_variance.square()) / float(dimension)
     beta = torch.minimum(beta, delta)
-    shrinkage = torch.where(delta == 0.0, torch.zeros_like(delta), beta / delta)
+    safe_delta = torch.where(delta != 0.0, delta, torch.ones_like(delta))
+    shrinkage = torch.where(delta == 0.0, torch.zeros_like(delta), beta / safe_delta)
     covariance = (1.0 - shrinkage) * empirical
     covariance = covariance + shrinkage * mean_variance * torch.eye(
         dimension, dtype=values.dtype, device=values.device
