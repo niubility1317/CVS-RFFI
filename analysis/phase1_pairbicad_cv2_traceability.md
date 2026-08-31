@@ -17,7 +17,7 @@
 |CV13|设计3.3|低权重pair identity hinge候选|`config.py`、trainer|pending|candidate diff测试|VICReg/delta保持关闭|
 |CV14|设计3.4|Margin-REx/CVaR|`tailguard.py`|pending|损失和有限性测试|只在结构化batch|
 |CV15|设计3.4|困难组采样上限30%|`tailguard.py`、sampler|pending|cap测试|不取代均衡样本|
-|CV16|设计6|冻结B0-B3/D0-D3/T0-T3配置|`config.py`|pending|registry和diff测试|不得动态读取冠军|
+|CV16|设计6|冻结`CV2-B0…CV2-T3`共12个唯一配置|`config.py`|pending|registry和diff测试|不得覆盖历史`D0-D3`或动态读取冠军|
 |CV17|设计6|24行fold1/fold8/seed392002矩阵|新launcher|pending|dry-run测试|每GPU两个槽位|
 |CV18|设计6|不可覆盖row root和队列调度|新launcher|pending|collision/GPU测试|16并发槽位|
 |CV19|设计7|主线与TailGuard晋级分析|新analyzer|pending|合成artifact测试|同row比较|
@@ -35,3 +35,5 @@
 - pending：23
 
 最高风险项为CV09—CV12：双向对抗的分步反向和局部梯度保护必须保持一次backbone前向，并且不能污染TX主梯度或shared stem。
+
+Ruling：新候选统一使用`CV2-`前缀，因为现有注册表已经冻结历史`D0-D3`；若复用短ID会静默改变既有实验语义。

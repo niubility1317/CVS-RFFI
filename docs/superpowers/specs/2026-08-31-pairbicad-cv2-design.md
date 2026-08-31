@@ -73,20 +73,20 @@
 
 第一轮发布24行、seed392002、fold1/fold8：
 
-- B0：同协议ADV3B02控制。
-- B1：PairBiCAD-P1固定U6500控制。
-- B2：B1+coverage convergence+ReduceLROnPlateau+无提前冻结。
-- B3：B2+SWAD。
-- D0：阶段0最佳的静态别名配置。
-- D1：D0+detached双时间尺度+labeled CDAN。
-- D2：D1+`z_dom` TX adversary+conditional cross-covariance。
-- D3：D2+动态GRL+局部任务梯度保护。
-- T0：阶段1最佳的静态别名配置。
-- T1：T0+低权重pair identity hinge。
-- T2：T0+Margin-REx/CVaR。
-- T3：T0+pair hinge+Margin-REx/CVaR。
+- `CV2-B0`：同协议ADV3B02控制。
+- `CV2-B1`：PairBiCAD-P1固定U6500控制。
+- `CV2-B2`：B1+coverage convergence+ReduceLROnPlateau+无提前冻结。
+- `CV2-B3`：B2+SWAD。
+- `CV2-D0`：阶段0基线的预冻结静态配置。
+- `CV2-D1`：D0+detached双时间尺度+labeled CDAN。
+- `CV2-D2`：D1+`z_dom` TX adversary+conditional cross-covariance。
+- `CV2-D3`：D2+动态GRL+局部任务梯度保护。
+- `CV2-T0`：阶段1基线的预冻结静态配置。
+- `CV2-T1`：T0+低权重pair identity hinge。
+- `CV2-T2`：T0+Margin-REx/CVaR。
+- `CV2-T3`：T0+pair hinge+Margin-REx/CVaR。
 
-为避免运行中根据结果改变后续行，24行发布前必须把B/D/T候选冻结为明确配置；`D0/T0`不是运行时读取冠军的动态别名。每张GPU最多两个本run训练进程，共8张GPU、16并发槽位，dispatcher按不可覆盖row root排队。
+为避免运行中根据结果改变后续行，24行发布前必须把CV2-B/D/T候选冻结为明确配置；`CV2-D0/CV2-T0`不是运行时读取冠军的动态别名。统一`CV2-`前缀避免覆盖现有BiCAD-XR历史`D0-D3`候选语义。每张GPU最多两个本run训练进程，共8张GPU、16并发槽位，dispatcher按不可覆盖row root排队。
 
 ## 7.晋级门槛
 

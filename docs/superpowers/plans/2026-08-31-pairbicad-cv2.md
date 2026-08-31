@@ -71,7 +71,7 @@
 - Create: `code/tests/phase1_bicad_xr/test_cv2_matrix_analysis.py`
 
 **Interfaces:**
-- Produces frozen candidate IDs `B0-B3,D0-D3,T0-T3`, source-only method-lock payloads, `S_DG` aggregation, same-row mainline/TailGuard gates, and complete four-scenario closure validation.
+- Produces frozen candidate IDs `CV2-B0…CV2-B3`、`CV2-D0…CV2-D3`和`CV2-T0…CV2-T3`, source-only method-lock payloads, `S_DG` aggregation, same-row mainline/TailGuard gates, and complete four-scenario closure validation without changing historical `D0-D3`.
 
 - [ ] Write failing registry tests proving candidate diffs are static and deferred mechanisms remain disabled.
 - [ ] Run config tests RED, implement candidate registry, and run GREEN.
