@@ -119,6 +119,15 @@ def test_p3_config_rejects_self_consistent_drift_from_task6_identity(
         module._load_p3_config(path)
 
 
+def test_p3_primary_identity_matches_historical_d92_e0_pilot_manifest() -> None:
+    module = _script_module()
+    config = module._default_p3_config_payload()
+    assert config["capsule_id"] == (
+        "d92-e0-full-target125:5910674066e8bbf93684fddd6af6fd2cef7e8f208d64e403ac7e58030a2a8cc5"
+    )
+    assert config["split_id"] == "d92-e0-full-target125:rx_3_19__seed_713102__k_10__new_5"
+
+
 def test_p3_unit_training_audit_is_bound_to_its_receipt(tmp_path: Path) -> None:
     module = _script_module()
     unit = tmp_path / "leo_clear_weak" / "N6"

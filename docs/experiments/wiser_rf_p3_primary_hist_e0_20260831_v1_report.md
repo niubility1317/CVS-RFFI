@@ -55,3 +55,9 @@ python code/scripts/run_stage2_wiser_target25.py analyze --manifest <target25-ro
 ## 本地证据边界
 
 本地完整聚焦套件覆盖11个测试文件，共165项通过，约284秒；`py_compile`覆盖P3、runner、pilot、scoring、Target25和两个CLI；`run_stage2_wiser_pilot.py --help`及`run_stage2_wiser_target25.py --help`均通过；`git diff --check`通过。这些证据只证明`LOCAL_VERIFIED`软件集成，不证明真实checkpoint smoke、N607资源、prediction闭合、truth-last评分或任何性能提升。
+
+## 首次真实smoke结果
+
+- 2026-08-31远端主PID=`2936794`。真实checkpoint无query smoke在pilot启动前按`set -e`退出，状态为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；未进入pilot、未打开query、未产生prediction，失败run/log根永久保留且不得覆盖。
+- 唯一异常为`ValueError: P3 config/manifest capsule_id binding drift`。只读核对历史manifest确认真实pilot绑定为`capsule_id=d92-e0-full-target125:5910674066e8bbf93684fddd6af6fd2cef7e8f208d64e403ac7e58030a2a8cc5`、`split_id=d92-e0-full-target125:rx_3_19__seed_713102__k_10__new_5`；原配置使用了未落地的人为命名值。
+- 修复采用新提交、新release和新run ID，不热修改、不重启本run。新增真实历史绑定回归测试先复现失败；修复后pilot与Target25相关30项测试及聚焦`py_compile`通过。
