@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-- 状态：`LANDED`。
+- 状态：`RUNNING`。
 - Run ID：`phase1_adv3b02_pairbicad_p0p4_loro2_seed3_u4000_20260831_r2`。
 - 失败前序run：`phase1_adv3b02_pairbicad_p0p4_loro2_seed3_u4000_20260831_r1`，保持只读，状态为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
 - 唯一修复：正式评估恢复器按冻结row和候选协议显式重建`num_receivers/num_days/num_channels`；训练方法、loss、数据、矩阵、seed、update预算和四场景评估不变。
@@ -70,3 +70,13 @@ PAIRBICAD_RELEASE_ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1
 - release归档本地→远端SHA256一致：`ec5ca68e90fb3753b63ca19ae49fd9528e3b0d825ec9e0578d8b371f112ac09c`。
 - 归档已解压到预登记release根；使用正式入口同一Python3.10.19解释器对launcher、trainer和SSDG入口执行远端`py_compile`，结果PASS。
 - 首次compile探测使用了错误的预登记解释器路径并以exit127结束，未执行代码、未创建run；报告已更正为shell入口实际使用的`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
+
+## N607正式启动回读
+
+- 启动时间：2026-08-31 15:11 CST后；dispatcher PID`2855983`，PPID=1。
+- dispatcher cmdline精确绑定release`phase1_pairbicad_p0p4_c25c6974`、r2 Run ID、P0–P4、fold1/8、3个seed、U4000和`--max-jobs-per-gpu 2`。
+- 第一波16个直属主训练进程均以正式解释器运行，CWD全部为新release根，输出分别绑定r2唯一row目录。
+- GPU0–7各恰好2个本run compute process；启动回读利用率86%–91%，显存约1.60–1.86GiB/卡。
+- 首波覆盖P0全部6行、P1全部6行和P2前4行；其余14行由dispatcher排队，不突破每GPU2个活跃训练进程。
+- run根已有30个预留row目录和`plan.json`；16个`train.log`已建立。启动早期日志为0字节，但PID/CWD/cmdline/GPU计算均健康；不得据此停止。
+- 启动回读为0个`ARTIFACTS_COMPLETE`、0个`TECHNICAL_FAILURE`；尚无性能结论。
