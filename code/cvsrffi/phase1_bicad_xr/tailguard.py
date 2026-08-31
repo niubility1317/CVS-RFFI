@@ -91,6 +91,25 @@ def _group_cvar(risk: Tensor, group_ids: Tensor, tail_fraction: float) -> Tensor
     return result
 
 
+def _weighted_tail_mean(
+    risks: Tensor, weights: Tensor, tail_fraction: float
+) -> Tensor:
+    """Return the worst tail mean while consuming group probability mass."""
+
+    order = torch.argsort(risks.detach(), descending=True)
+    ordered_risks = risks[order]
+    ordered_weights = weights.detach()[order]
+    cumulative = torch.cumsum(ordered_weights, dim=0)
+    previous = cumulative - ordered_weights
+    remaining = risks.new_tensor(float(tail_fraction)) - previous
+    take = torch.minimum(ordered_weights, remaining.clamp_min(0.0))
+    mass = take.sum().clamp_min(torch.finfo(risks.dtype).eps)
+    result = (ordered_risks * take).sum() / mass
+    if not torch.isfinite(result).all():
+        raise ValueError("weighted group CVaR must be finite")
+    return result
+
+
 def margin_group_risks(
     margins: Tensor,
     groups: Tensor | Sequence[Tensor] | None = None,
@@ -120,17 +139,38 @@ def margin_rex_cvar_loss(
     tail_fraction: float = 0.2,
     lambda_rex: float = 0.02,
     lambda_cvar: float = 0.05,
+    hard_fraction: float | None = None,
+    max_hard_fraction: float = 0.30,
 ) -> Tensor:
-    """Combine finite group-risk variance(REx) with group-tail CVaR."""
+    """Combine finite group-risk variance(REx) with group-tail CVaR.
+
+    When ``hard_fraction`` is provided, the highest-risk groups are assigned
+    by :func:`bounded_hard_group_weights`.  That same capped distribution is
+    used for both the REx variance and the CVaR tail mass, so the cap changes
+    the optimization objective rather than only its audit record.
+    """
 
     lambda_rex = _nonnegative(lambda_rex, "lambda_rex")
     lambda_cvar = _nonnegative(lambda_cvar, "lambda_cvar")
+    if hard_fraction is not None:
+        hard_fraction = _tail_fraction(hard_fraction, "hard_fraction")
+    max_hard_fraction = _tail_fraction(
+        max_hard_fraction, "max_hard_fraction"
+    )
     risks = margin_group_risks(
         margins, groups, tail_fraction=tail_fraction
     )
-    rex = risks.var(unbiased=False)
-    tail_count = max(1, math.ceil(tail_fraction * risks.numel()))
-    cvar = risks.topk(tail_count, largest=True, sorted=False).values.mean()
+    if hard_fraction is None:
+        weights = torch.full_like(risks, 1.0 / float(risks.numel()))
+    else:
+        weights = bounded_hard_group_weights(
+            risks,
+            hard_fraction=hard_fraction,
+            max_hard_fraction=max_hard_fraction,
+        ).detach()
+    weighted_mean = torch.sum(weights * risks)
+    rex = torch.sum(weights * (risks - weighted_mean).square())
+    cvar = _weighted_tail_mean(risks, weights, tail_fraction)
     loss = lambda_rex * rex + lambda_cvar * cvar
     if not torch.isfinite(loss).all():
         raise ValueError("Margin-REx/CVaR loss must be finite")

@@ -4,7 +4,9 @@ import pytest
 import torch
 
 from cvsrffi.phase1_bicad_xr.gradients import (
+    GradientRatioAudit,
     GradientRatioController,
+    measure_bounded_gradient_ratio,
     project_local_conflicting_gradients,
     project_conflicting_gradient,
     safe_svd,
@@ -49,6 +51,22 @@ def test_gradient_ratio_controller_uses_detached_ema_ratio_and_bounded_scale() -
     assert scale == pytest.approx(2.0)
     assert controller.ratio == pytest.approx(2.0)
     assert controller.ema_ratio is not None and not controller.ema_ratio.requires_grad
+
+
+def test_measure_bounded_gradient_ratio_caps_effective_pair_dose_and_reports_audit() -> None:
+    audit = measure_bounded_gradient_ratio(
+        reference_gradient=torch.tensor([3.0, 4.0]),
+        controlled_gradient=torch.tensor([30.0, 40.0]),
+        initial_weight=0.02,
+        max_ratio=0.05,
+    )
+
+    assert isinstance(audit, GradientRatioAudit)
+    assert audit.raw_ratio == pytest.approx(0.20)
+    assert audit.effective_ratio == pytest.approx(0.05)
+    assert audit.scale == pytest.approx(0.25)
+    assert audit.effective_weight == pytest.approx(0.005)
+    assert audit.effective_ratio <= 0.05 + 1e-8
 
 
 def test_only_the_explicit_parameter_list_is_scaled() -> None:

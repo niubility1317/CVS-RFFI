@@ -5,27 +5,21 @@ import json
 import threading
 from collections import Counter
 from pathlib import Path
-from types import SimpleNamespace
 
 import pytest
-
-from cvsrffi.phase1_bicad_xr.metrics import (
-    BiCADXRMetricStore,
-    FORMAL_EVAL_SCENARIOS,
-)
 
 
 SCRIPT_PATH = (
     Path(__file__).resolve().parents[2]
     / "scripts"
-    / "launch_phase1_pairbicad_cv2_screen24_20260831.py"
+    / "launch_phase1_pairbicad_cv2_screen24_20260901.py"
 )
 
 
 def _load_launcher():
     if not SCRIPT_PATH.is_file():
-        pytest.fail("CV2 launcher is not implemented yet")
-    spec = importlib.util.spec_from_file_location("phase1_pairbicad_cv2_screen24", SCRIPT_PATH)
+        pytest.fail("CV2 E200 repair launcher is not implemented yet")
+    spec = importlib.util.spec_from_file_location("phase1_pairbicad_cv2_e200", SCRIPT_PATH)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -61,9 +55,11 @@ def test_build_plan_is_exactly_the_frozen_24_row_matrix() -> None:
     assert all(row.seed == 392002 for row in rows)
     assert all(row.train_days == (1, 2, 3) for row in rows)
     assert all(row.source_only for row in rows)
+    assert all(row.epochs == 200 for row in rows)
+    assert all(row.termination_mode == "epochs" for row in rows)
 
 
-def test_plan_rows_carry_preparsed_frozen_configuration_without_aliases() -> None:
+def test_plan_rows_carry_preparsed_frozen_configuration_and_runtime_contracts() -> None:
     launcher = _load_launcher()
     rows = launcher.build_plan()
 
@@ -74,6 +70,24 @@ def test_plan_rows_carry_preparsed_frozen_configuration_without_aliases() -> Non
         assert row.method_lock["source_only"] is True
         assert row.configuration["candidate_id"] == row.candidate_id
         assert row.configuration["phase1_method"] == "bicad_xr"
+        assert row.configuration["epochs"] == 200
+        assert row.configuration["termination_mode"] == "epochs"
+        assert "optimizer_updates" not in row.configuration
+        assert row.method_lock["runtime_contracts"]["termination"] == {
+            "mode": "epochs",
+            "epochs": 200,
+        }
+
+    baseline_rows = [
+        row
+        for row in rows
+        if row.candidate_id in {"CV2-B3", "CV2-D0", "CV2-T0"}
+    ]
+    assert len(baseline_rows) == 6
+    assert all(
+        row.method_lock["configuration_role"] == "static_branch_baseline"
+        for row in baseline_rows
+    )
 
 
 def test_plan_declares_final_checkpoint_and_all_four_evaluation_artifacts() -> None:
@@ -90,15 +104,25 @@ def test_plan_declares_final_checkpoint_and_all_four_evaluation_artifacts() -> N
     assert all(row.expected_artifacts == expected for row in rows)
 
 
-def test_plan_uses_configuration_resolved_before_build_plan(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_plan_uses_configuration_resolved_before_build_plan(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     launcher = _load_launcher()
     expected = [
         (row.candidate_id, row.configuration, row.method_lock)
         for row in launcher.build_plan()
     ]
 
-    monkeypatch.setattr(launcher, "candidate_config", lambda *_args, **_kwargs: pytest.fail("runtime config resolution"))
-    monkeypatch.setattr(launcher, "method_lock_payload", lambda *_args, **_kwargs: pytest.fail("runtime lock resolution"))
+    monkeypatch.setattr(
+        launcher,
+        "candidate_config",
+        lambda *_args, **_kwargs: pytest.fail("runtime config resolution"),
+    )
+    monkeypatch.setattr(
+        launcher,
+        "method_lock_payload",
+        lambda *_args, **_kwargs: pytest.fail("runtime lock resolution"),
+    )
 
     actual = [
         (row.candidate_id, row.configuration, row.method_lock)
@@ -107,7 +131,7 @@ def test_plan_uses_configuration_resolved_before_build_plan(monkeypatch: pytest.
     assert actual == expected
 
 
-def test_build_train_command_is_source_only_and_static() -> None:
+def test_build_train_command_is_source_only_and_epoch_terminated() -> None:
     launcher = _load_launcher()
     row = launcher.build_plan()[0]
     roots = launcher.LauncherRoots(
@@ -128,10 +152,21 @@ def test_build_train_command_is_source_only_and_static() -> None:
     assert _option_value(command, "--wisig_test_days") == ""
     assert _option_value(command, "--wisig_test_rxs") == ""
     assert _option_value(command, "--phase1_source_only_eval") == "true"
-    assert _option_value(command, "--bicad_optimizer_updates") == str(row.optimizer_updates)
+    assert _option_value(command, "--epochs") == "200"
+    assert "--bicad_optimizer_updates" not in options
+    assert "--bicad_loro_eval_interval_updates" not in options
     assert _option_value(command, "--bicad_loro_receiver") == str(row.heldout_receiver)
-    assert _option_value(command, "--bicad_loro_eval_interval_updates") == "500"
     assert _option_value(command, "--device") == "cuda:0"
+    row_key = json.loads(_option_value(command, "--row_key"))
+    assert row_key == {
+        "candidate_id": row.candidate_id,
+        "epochs": 200,
+        "fold": row.fold,
+        "gpu_id": row.gpu_id,
+        "row_id": row.row_id,
+        "seed": row.seed,
+        "termination_mode": "epochs",
+    }
     assert "--candidate_alias" not in options
     assert not any(
         any(token in option.lower() for token in ("target", "phase2", "support", "query", "truth"))
@@ -186,7 +221,22 @@ def test_dry_run_emits_one_json_plan_without_creating_or_launching(
     assert payload["seed"] == 392002
     assert payload["max_active_per_gpu"] == 2
     assert len(payload["rows"]) == 24
+    assert all(row["epochs"] == 200 for row in payload["rows"])
+    assert all(row["termination_mode"] == "epochs" for row in payload["rows"])
+    assert all("optimizer_updates" not in row for row in payload["rows"])
     assert not list(tmp_path.iterdir())
+
+
+def test_plan_queued_rows_uses_rows_assigned_to_each_gpu_not_total_capacity() -> None:
+    launcher = _load_launcher()
+    rows = [row._replace(gpu_id=0) for row in launcher.build_plan()[:3]]
+
+    payload = launcher.build_plan_payload(
+        rows,
+        gpu_capacities={gpu: 2 for gpu in range(8)},
+    )
+
+    assert payload["queued_rows"] == 1
 
 
 def test_parser_has_no_matrix_or_forbidden_data_role_overrides() -> None:
@@ -200,97 +250,6 @@ def test_parser_has_no_matrix_or_forbidden_data_role_overrides() -> None:
         any(token in destination for token in ("target", "phase2", "support", "query", "truth"))
         for destination in destinations
     )
-
-
-def _write_dynamic_cv2_selection(
-    row_root: Path,
-    *,
-    stop_update: int = 2_000,
-    status: str = "SCIENTIFICALLY_CONVERGED",
-) -> None:
-    plan = {
-        "unlabeled_physical_count": 16_000,
-        "source_receiver_count": 4,
-        "unlabeled_per_four_updates": 120,
-        "u_cycle_updates": 534,
-        "eval_interval_updates": 500,
-        "min_activation_updates": 1_600,
-        "safety_updates": 6_400,
-    }
-    scientific = status == "SCIENTIFICALLY_CONVERGED"
-    selection = {
-        "planned_updates": 6_400,
-        "stop_update": stop_update,
-        "interval": 500,
-        "stopped_early": True,
-        "cv2_coverage_plan": plan,
-        "cv2_terminal": {
-            "status": status,
-            "scientifically_converged": scientific,
-            "artifacts_allowed": True,
-        },
-        "source_only": True,
-        "target_access": False,
-        "phase2_access": False,
-        "support_access": False,
-        "query_access": False,
-        "truth_access": False,
-    }
-    (row_root / "source_loro_selection.json").write_text(
-        json.dumps(selection),
-        encoding="utf-8",
-    )
-    curve = {
-        "update": stop_update,
-        "cv2_decision": {"status": status},
-        "source_only": True,
-        "target_access": False,
-        "phase2_access": False,
-        "support_access": False,
-        "query_access": False,
-        "truth_access": False,
-    }
-    (row_root / "source_loro_curve.jsonl").write_text(
-        json.dumps(curve) + "\n",
-        encoding="utf-8",
-    )
-
-
-def test_dynamic_cv2_runtime_expectation_binds_actual_terminal_update(
-    tmp_path: Path,
-) -> None:
-    launcher = _load_launcher()
-    row = next(
-        item
-        for item in launcher.build_plan()
-        if item.configuration["coverage_convergence"]
-    )
-    _write_dynamic_cv2_selection(tmp_path)
-
-    expectation = launcher._cv2_runtime_expectation(tmp_path, row)
-
-    assert expectation["optimizer_updates"] == 2_000
-    assert expectation["planned_optimizer_updates"] == 6_400
-
-
-def test_dynamic_cv2_runtime_expectation_rejects_inconsistent_coverage_plan(
-    tmp_path: Path,
-) -> None:
-    launcher = _load_launcher()
-    row = next(
-        item
-        for item in launcher.build_plan()
-        if item.configuration["coverage_convergence"]
-    )
-    _write_dynamic_cv2_selection(tmp_path)
-    selection_path = tmp_path / "source_loro_selection.json"
-    selection = json.loads(selection_path.read_text(encoding="utf-8"))
-    selection["cv2_coverage_plan"]["safety_updates"] = 6_000
-    selection["planned_updates"] = 6_000
-    selection_path.write_text(json.dumps(selection), encoding="utf-8")
-
-    with pytest.raises(ValueError, match="inconsistent"):
-        launcher._cv2_runtime_expectation(tmp_path, row)
 
 
 def test_run_layout_and_plan_are_non_overwriting(tmp_path: Path) -> None:
@@ -454,203 +413,3 @@ def test_real_mode_writes_static_plan_before_dispatch_without_child_launch(
         "run_id": "cv2-screen24-real-mode-test",
         "gpu_capacities": {gpu_id: 2 for gpu_id in range(8)},
     }
-
-
-def _write_cv2_runtime_artifacts(row_root: Path, row: object, checkpoint_name: str) -> None:
-    runtime = {
-        "phase1_method": "bicad_xr",
-        "candidate_id": row.candidate_id,
-        "fold": row.fold,
-        "seed": row.seed,
-        "optimizer_update": row.optimizer_updates,
-        "total_updates": row.optimizer_updates,
-        "source_receivers": list(row.source_receivers),
-        "train_days": list(row.train_days),
-        "source_only": True,
-        "target_access": False,
-        "phase2_access": False,
-        "support_access": False,
-        "query_access": False,
-        "truth_access": False,
-    }
-    (row_root / "checkpoint_runtime.json").write_text(
-        json.dumps(
-            {
-                "checkpoint_path": checkpoint_name,
-                "runtime": runtime,
-                "reconstruction": {
-                    "missing": [],
-                    "unexpected": [],
-                    "shape_mismatch": [],
-                },
-                "strict_reconstruction": True,
-                "trainer_runtime_strict": True,
-                "missing_keys": [],
-                "unexpected_keys": [],
-                "shape_mismatches": [],
-            }
-        ),
-        encoding="utf-8",
-    )
-    (row_root / "diagnostics.json").write_text(
-        json.dumps(BiCADXRMetricStore().snapshot()),
-        encoding="utf-8",
-    )
-
-
-def _install_fake_strict_evaluator(
-    monkeypatch: pytest.MonkeyPatch,
-    launcher: object,
-    row: object,
-    row_root: Path,
-    calls: list[str],
-    *,
-    bad_scene: str | None = None,
-    bad_field: str | None = None,
-) -> None:
-    class FakeContext:
-        def build_model(self, _payload: object) -> object:
-            return object()
-
-        def restore_trainer_runtime(self, _model: object, _payload: object) -> None:
-            return None
-
-        def evaluate(self, _model: object, scenario: str) -> dict[str, object]:
-            calls.append(scenario)
-            result: dict[str, object] = {
-                "accuracy": 0.75,
-                "floor_accuracy": 0.50,
-                "per_class_accuracy": {"0": 0.75, "1": 0.50},
-                "log": f"{scenario} complete\n",
-            }
-            if scenario == bad_scene and bad_field == "finite":
-                result["accuracy"] = float("nan")
-            if scenario == bad_scene and bad_field == "source_only":
-                result["target_access"] = True
-            return result
-
-    context = FakeContext()
-    monkeypatch.setattr(
-        launcher,
-        "_build_final_evaluation_context",
-        lambda *_args, **_kwargs: context,
-        raising=False,
-    )
-
-    def fake_strict_entrypoint(
-        checkpoint: Path,
-        *,
-        expected_runtime: object,
-        output_dir: Path,
-        model_builder: object,
-        trainer_runtime_restorer: object,
-        evaluator: object,
-    ) -> dict[str, object]:
-        assert checkpoint.name == "bicad_xr_final.pth"
-        assert expected_runtime["candidate_id"] == row.candidate_id
-        assert callable(model_builder)
-        assert callable(trainer_runtime_restorer)
-        assert callable(evaluator)
-        _write_cv2_runtime_artifacts(output_dir, row, checkpoint.name)
-        for scenario in FORMAL_EVAL_SCENARIOS:
-            metrics = evaluator(object(), scenario)
-            if not isinstance(metrics, dict):
-                raise TypeError("fake evaluator callback must return a mapping")
-            log_path = output_dir / "evaluations" / f"{scenario}.log"
-            log_path.parent.mkdir(parents=True, exist_ok=True)
-            log_path.write_text(str(metrics.get("log", "complete\n")), encoding="utf-8")
-        return {"complete": True, "status": "ARTIFACTS_COMPLETE"}
-
-    monkeypatch.setattr(
-        launcher,
-        "evaluate_final_checkpoint",
-        fake_strict_entrypoint,
-        raising=False,
-    )
-
-
-def test_worker_closes_four_source_only_evaluations_before_complete(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    launcher = _load_launcher()
-    row = launcher.build_plan()[0]
-    row_root = tmp_path / row.row_id
-    row_root.mkdir()
-    (row_root / "bicad_xr_final.pth").write_bytes(b"checkpoint")
-    roots = launcher.LauncherRoots(
-        SCRIPT_PATH.resolve().parents[2], Path("python"), tmp_path, tmp_path / "ManySig.pkl"
-    )
-    calls: list[str] = []
-    _install_fake_strict_evaluator(monkeypatch, launcher, row, row_root, calls)
-    monkeypatch.setattr(
-        launcher.subprocess,
-        "run",
-        lambda *args, **kwargs: SimpleNamespace(returncode=0),
-    )
-
-    status = launcher.run_training_worker(row, roots, run_id="cv2-run")
-
-    assert status == "ARTIFACTS_COMPLETE"
-    assert calls == list(FORMAL_EVAL_SCENARIOS)
-    assert (row_root / "ARTIFACTS_COMPLETE.json").is_file()
-    worker_status = json.loads(
-        (row_root / "worker_status.json").read_text(encoding="utf-8")
-    )
-    assert worker_status["status"] == "ARTIFACTS_COMPLETE"
-    for scenario in FORMAL_EVAL_SCENARIOS:
-        path = row_root / "evaluations" / f"{scenario}.json"
-        payload = json.loads(path.read_text(encoding="utf-8"))
-        assert payload["checkpoint"] == "bicad_xr_final.pth"
-        assert payload["source_only"] is True
-        assert all(payload[name] is False for name in (
-            "target_access",
-            "phase2_access",
-            "support_access",
-            "query_access",
-            "truth_access",
-        ))
-        assert payload["accuracy"] == pytest.approx(0.75)
-        assert not list(path.parent.glob("*.tmp-*"))
-
-
-@pytest.mark.parametrize("bad_field", ["finite", "source_only"])
-def test_worker_preserves_partial_artifacts_and_stops_on_eval_integrity_failure(
-    tmp_path: Path,
-    monkeypatch: pytest.MonkeyPatch,
-    bad_field: str,
-) -> None:
-    launcher = _load_launcher()
-    row = launcher.build_plan()[0]
-    row_root = tmp_path / row.row_id
-    row_root.mkdir()
-    (row_root / "bicad_xr_final.pth").write_bytes(b"checkpoint")
-    roots = launcher.LauncherRoots(
-        SCRIPT_PATH.resolve().parents[2], Path("python"), tmp_path, tmp_path / "ManySig.pkl"
-    )
-    calls: list[str] = []
-    _install_fake_strict_evaluator(
-        monkeypatch,
-        launcher,
-        row,
-        row_root,
-        calls,
-        bad_scene="leo_clear_weak",
-        bad_field=bad_field,
-    )
-    monkeypatch.setattr(
-        launcher.subprocess,
-        "run",
-        lambda *args, **kwargs: SimpleNamespace(returncode=0),
-    )
-
-    status = launcher.run_training_worker(row, roots, run_id="cv2-run")
-
-    assert status == "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
-    assert not (row_root / "ARTIFACTS_COMPLETE.json").exists()
-    worker_status = json.loads(
-        (row_root / "worker_status.json").read_text(encoding="utf-8")
-    )
-    assert worker_status["status"] == "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
-    assert (row_root / "TECHNICAL_FAILURE.json").is_file()
-    assert (row_root / "bicad_xr_final.pth").is_file()
-    assert calls[:2] == ["clean", "leo_clear_weak"]

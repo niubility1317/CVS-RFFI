@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+from dataclasses import replace
 
 import pytest
 import torch
@@ -148,7 +149,53 @@ def test_cv2_pair_identity_uses_epsilon005_and_candidate_weight(
 
     assert component["called"] is True
     assert component["raw"] == pytest.approx(math.sqrt(2.0) - 0.05)
-    assert component["weighted"] == pytest.approx(expected_weight * component["raw"])
+    assert component["weight"] == pytest.approx(expected_weight)
+    if candidate_id in {"CV2-T1", "CV2-T3"}:
+        assert component["raw_gradient_ratio"] >= 0.0
+        assert component["effective_gradient_ratio"] <= 0.05 + 1e-8
+        assert component["effective_weight"] <= expected_weight + 1e-12
+        assert component["weighted"] == pytest.approx(
+            component["effective_weight"] * component["raw"]
+        )
+    else:
+        assert component["weighted"] == pytest.approx(expected_weight * component["raw"])
+
+
+def test_cv2_pair_identity_caps_a_measured_high_gradient_ratio_on_training_path() -> None:
+    trainer, model = _trainer_for("CV2-T1")
+    batch = replace(_strict_pair_batch(), x=torch.cat(
+        (
+            torch.zeros(48, 8),
+            torch.zeros(48, 8),
+        ),
+        dim=0,
+    ))
+    batch.x[:, 0] = 1.0
+    batch = replace(
+        batch,
+        labeled_tx=torch.zeros_like(batch.labeled_tx),
+        pair_tx=torch.zeros_like(batch.pair_tx),
+    )
+    with torch.no_grad():
+        model.identity.weight.copy_(torch.eye(8))
+        model.identity.bias.zero_()
+        model.classifier.weight.zero_()
+        model.classifier.bias.zero_()
+        model.classifier.weight[0, 0] = 100.0
+        assert trainer.pair_projector is not None
+        trainer.pair_projector.weight.zero_()
+        trainer.pair_projector.bias.zero_()
+        trainer.pair_projector.weight[:8].copy_(torch.eye(8))
+
+    output = trainer.compute_step(batch, update=1, total_updates=5000, epoch=1)
+    component = output.audit["components"]["pair_identity_hinge"]
+
+    assert component["raw_gradient_ratio"] > 0.05
+    assert component["effective_gradient_ratio"] <= 0.05 + 1e-8
+    assert component["gradient_scale"] < 1.0
+    assert output.audit["pairbicad_runtime"]["gradient"]["pair_identity"]["scale"] == pytest.approx(
+        component["gradient_scale"]
+    )
 
 
 @pytest.mark.parametrize("candidate_id", ["CV2-T2", "CV2-T3"])
@@ -184,9 +231,39 @@ def test_cv2_tailguard_calls_margin_rex_cvar_with_frozen_values(
     assert calls[0]["lambda_rex"] == pytest.approx(0.02)
     assert calls[0]["lambda_cvar"] == pytest.approx(0.05)
     assert calls[0]["tail_fraction"] == pytest.approx(0.2)
+    assert calls[0]["hard_fraction"] == pytest.approx(0.2)
+    assert calls[0]["max_hard_fraction"] == pytest.approx(0.30)
     assert output.audit["hard_group_cap"] == pytest.approx(0.30)
     assert output.audit["margin_tail_mode"] == "margin_rex_cvar"
     assert output.audit["components"]["margin_tail"]["called"] is True
+    assert output.audit["components"]["margin_tail"]["hard_group_weight_mass"] <= 0.30 + 1e-7
+
+
+def test_cv2_d3_uses_feedback_driven_grl_doses_in_adversarial_losses() -> None:
+    trainer, _ = _trainer_for("CV2-D3")
+
+    output = trainer.compute_step(
+        _strict_pair_batch(), update=3504, total_updates=5000, epoch=1
+    )
+    dynamic = output.audit["dynamic_grl"]
+
+    assert dynamic["updated"] is True
+    assert set(dynamic["feedback"]) == {
+        "discriminator_accuracy",
+        "tx_margin",
+        "adversarial_gradient_ratio",
+        "conflict_signal",
+    }
+    assert dynamic["doses"]["identity"] == pytest.approx(output.audit["grl_identity"])
+    assert dynamic["doses"]["zdom"] == pytest.approx(output.audit["grl_tx"])
+    assert 0.05 <= output.audit["grl_identity"] <= 0.40
+    assert 0.03 <= output.audit["grl_tx"] <= 0.30
+    conditional = output.audit["components"]["conditional_dann"]
+    zdom = output.audit["components"]["zdom_tx_adversary"]
+    assert conditional["weighted"] == pytest.approx(
+        conditional["raw"] * output.audit["grl_identity"]
+    )
+    assert zdom["weighted"] == pytest.approx(zdom["raw"] * output.audit["grl_tx"])
 
 
 def test_historical_margin_tail_keeps_legacy_path() -> None:

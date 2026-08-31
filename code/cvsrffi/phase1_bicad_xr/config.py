@@ -8,8 +8,9 @@ dataclass rather than reinterpreting candidate names.
 from __future__ import annotations
 
 from collections.abc import Mapping
-from dataclasses import dataclass, fields, replace
+from dataclasses import asdict, dataclass, fields, replace
 from enum import Enum
+import math
 from typing import Any
 
 
@@ -18,6 +19,94 @@ LEO_WEAK_SCENARIOS: tuple[str, str, str] = (
     "leo_low_elev_weak",
     "leo_rain_weak",
 )
+
+CV2_EPOCHS = 200
+CV2_TERMINATION_MODE = "epochs"
+
+
+@dataclass(frozen=True)
+class NoEarlyFreezeContract:
+    """Explicit runtime contract for keeping trainable state unfrozen."""
+
+    enabled: bool = False
+    freeze_until_epoch: int = 0
+    audit: str = "disabled"
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.enabled, bool):
+            raise ValueError("no_early_freeze contract enabled must be bool")
+        if (
+            isinstance(self.freeze_until_epoch, bool)
+            or not isinstance(self.freeze_until_epoch, int)
+            or self.freeze_until_epoch < 0
+        ):
+            raise ValueError(
+                "no_early_freeze contract freeze_until_epoch must be a non-negative integer"
+            )
+        if not isinstance(self.audit, str) or not self.audit.strip():
+            raise ValueError("no_early_freeze contract audit must be a non-empty string")
+        if self.enabled:
+            if self.freeze_until_epoch != CV2_EPOCHS:
+                raise ValueError(
+                    "enabled no_early_freeze contract must cover all 200 epochs"
+                )
+            if self.audit != "requires_grad_per_epoch":
+                raise ValueError(
+                    "enabled no_early_freeze contract must require per-epoch audit"
+                )
+        elif self.freeze_until_epoch != 0 or self.audit != "disabled":
+            raise ValueError("disabled no_early_freeze contract must be explicit")
+
+
+@dataclass(frozen=True)
+class AdversarialTwoTimeScaleContract:
+    """Explicit runtime contract for the CV2 two-optimizer adversarial branch."""
+
+    enabled: bool = False
+    optimizer_mode: str = "disabled"
+    discriminator_lr_ratio: float = 1.0
+    phase_order: tuple[str, ...] = ()
+    one_backbone_forward: bool = True
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.enabled, bool):
+            raise ValueError("two-time-scale contract enabled must be bool")
+        if self.optimizer_mode not in {"disabled", "separate"}:
+            raise ValueError(
+                "two-time-scale contract optimizer_mode must be disabled or separate"
+            )
+        if (
+            isinstance(self.discriminator_lr_ratio, bool)
+            or not isinstance(self.discriminator_lr_ratio, (int, float))
+            or not math.isfinite(float(self.discriminator_lr_ratio))
+            or self.discriminator_lr_ratio <= 0.0
+        ):
+            raise ValueError(
+                "two-time-scale contract discriminator_lr_ratio must be finite and positive"
+            )
+        if not isinstance(self.phase_order, tuple):
+            raise ValueError("two-time-scale contract phase_order must be a tuple")
+        if not isinstance(self.one_backbone_forward, bool):
+            raise ValueError("two-time-scale contract one_backbone_forward must be bool")
+        if self.enabled:
+            if self.optimizer_mode != "separate":
+                raise ValueError("enabled two-time-scale contract requires separate optimizers")
+            if self.discriminator_lr_ratio != 1.5:
+                raise ValueError("enabled two-time-scale contract requires LR ratio 1.5")
+            if self.phase_order != ("discriminator", "encoder"):
+                raise ValueError(
+                    "enabled two-time-scale contract requires discriminator then encoder"
+                )
+            if self.one_backbone_forward is not True:
+                raise ValueError(
+                    "enabled two-time-scale contract requires one backbone forward"
+                )
+        elif (
+            self.optimizer_mode != "disabled"
+            or self.discriminator_lr_ratio != 1.0
+            or self.phase_order
+        ):
+            raise ValueError("disabled two-time-scale contract must be explicit")
 
 
 class BiCADXRStage(str, Enum):
@@ -99,6 +188,12 @@ CV2_CANDIDATE_IDS: tuple[str, ...] = (
 )
 CV2_CANDIDATES = CV2_CANDIDATE_IDS
 
+CV2_STATIC_BRANCH_BASELINES: tuple[str, ...] = (
+    "CV2-B3",
+    "CV2-D0",
+    "CV2-T0",
+)
+
 CV2_DEFERRED_FEATURES: tuple[str, ...] = (
     "vicreg",
     "pair_delta",
@@ -162,6 +257,10 @@ class BiCADXRConfig:
     no_early_freeze: bool = False
     detached_adversarial: bool = False
     adversarial_two_time_scale: bool = False
+    no_early_freeze_contract: NoEarlyFreezeContract = NoEarlyFreezeContract()
+    adversarial_two_time_scale_contract: AdversarialTwoTimeScaleContract = (
+        AdversarialTwoTimeScaleContract()
+    )
 
     # Legacy mechanisms are explicit so an accidental carry-over fails closed.
     use_fasttrust: bool = False
@@ -180,6 +279,8 @@ class BiCADXRConfig:
     # Frozen protocol, schedule and loss defaults.
     phase1_method: str = "bicad_xr"
     optimizer_updates: int = 5000
+    epochs: int = CV2_EPOCHS
+    termination_mode: str = "optimizer_updates"
     batch_size: int = 96
     xdc_interval: int = 4
     pair_interval: int = 4
@@ -254,10 +355,45 @@ class BiCADXRConfig:
             raise ValueError("no_early_freeze requires coverage_convergence")
         if self.adversarial_two_time_scale and not self.detached_adversarial:
             raise ValueError("adversarial_two_time_scale requires detached_adversarial")
+        if not isinstance(self.no_early_freeze_contract, NoEarlyFreezeContract):
+            raise ValueError("no_early_freeze_contract must be a NoEarlyFreezeContract")
+        if not isinstance(
+            self.adversarial_two_time_scale_contract,
+            AdversarialTwoTimeScaleContract,
+        ):
+            raise ValueError(
+                "adversarial_two_time_scale_contract must be an "
+                "AdversarialTwoTimeScaleContract"
+            )
         if self.phase1_method != "bicad_xr":
             raise ValueError("incompatible phase1_method for BiCAD-XR")
         if self.optimizer_updates <= 0:
             raise ValueError("optimizer_updates must be positive")
+        if isinstance(self.epochs, bool) or not isinstance(self.epochs, int):
+            raise ValueError("epochs must be a positive integer")
+        if self.epochs <= 0:
+            raise ValueError("epochs must be positive")
+        if self.termination_mode not in {"optimizer_updates", "epochs"}:
+            raise ValueError("termination_mode must be optimizer_updates or epochs")
+        is_cv2 = self.candidate_id.strip().upper().startswith("CV2-")
+        if is_cv2:
+            if self.epochs != CV2_EPOCHS:
+                raise ValueError("all CV2 candidates must use epochs=200")
+            if self.termination_mode != CV2_TERMINATION_MODE:
+                raise ValueError("all CV2 candidates must terminate by epochs")
+            if self.optimizer_updates == 6500:
+                raise ValueError("CV2 must not use the legacy 6500 update budget")
+            if self.no_early_freeze_contract.enabled is not self.no_early_freeze:
+                raise ValueError(
+                    "no_early_freeze and its runtime contract must agree"
+                )
+            if (
+                self.adversarial_two_time_scale_contract.enabled
+                is not self.adversarial_two_time_scale
+            ):
+                raise ValueError(
+                    "adversarial_two_time_scale and its runtime contract must agree"
+                )
         if self.batch_size <= 0:
             raise ValueError("batch_size must be positive")
         if self.xdc_interval <= 0 or self.pair_interval <= 0:
@@ -366,11 +502,19 @@ def _candidate_registry() -> dict[str, BiCADXRConfig]:
         dynamic_adversarial_dose=True,
     )
 
-    cv2_b0 = replace(d0, candidate_id="CV2-B0")
+    cv2_b0 = replace(
+        d0,
+        candidate_id="CV2-B0",
+        optimizer_updates=5000,
+        epochs=CV2_EPOCHS,
+        termination_mode=CV2_TERMINATION_MODE,
+    )
     cv2_b1 = replace(
         p1,
         candidate_id="CV2-B1",
-        optimizer_updates=6500,
+        optimizer_updates=5000,
+        epochs=CV2_EPOCHS,
+        termination_mode=CV2_TERMINATION_MODE,
     )
     cv2_b2 = replace(
         cv2_b1,
@@ -378,6 +522,11 @@ def _candidate_registry() -> dict[str, BiCADXRConfig]:
         coverage_convergence=True,
         reduce_lr_on_plateau=True,
         no_early_freeze=True,
+        no_early_freeze_contract=NoEarlyFreezeContract(
+            enabled=True,
+            freeze_until_epoch=CV2_EPOCHS,
+            audit="requires_grad_per_epoch",
+        ),
     )
     cv2_b3 = replace(cv2_b2, candidate_id="CV2-B3", swad=True)
 
@@ -391,6 +540,13 @@ def _candidate_registry() -> dict[str, BiCADXRConfig]:
         conditional_cdan=True,
         detached_adversarial=True,
         adversarial_two_time_scale=True,
+        adversarial_two_time_scale_contract=AdversarialTwoTimeScaleContract(
+            enabled=True,
+            optimizer_mode="separate",
+            discriminator_lr_ratio=1.5,
+            phase_order=("discriminator", "encoder"),
+            one_backbone_forward=True,
+        ),
     )
     cv2_d2 = replace(
         cv2_d1,
@@ -565,6 +721,11 @@ def candidate_diff(
         field.name: (getattr(left_config, field.name), getattr(right_config, field.name))
         for field in fields(BiCADXRConfig)
         if field.name != "candidate_id"
+        and field.name
+        not in {
+            "no_early_freeze_contract",
+            "adversarial_two_time_scale_contract",
+        }
         and getattr(left_config, field.name) != getattr(right_config, field.name)
     }
 
@@ -577,6 +738,36 @@ def _cv2_identity(candidate_id: str) -> tuple[str, int]:
     if family not in {"B", "D", "T"}:
         raise ValueError(f"not a CV2 candidate: {candidate_id}")
     return family, int(key[5])
+
+
+def cv2_runtime_contract_payload(value: str | BiCADXRConfig) -> dict[str, Any]:
+    """Return the explicit runtime contracts consumed by a CV2 entrypoint."""
+
+    config = _resolve_config(value)
+    _cv2_identity(config.candidate_id)
+    no_early_freeze = asdict(config.no_early_freeze_contract)
+    two_time_scale = asdict(config.adversarial_two_time_scale_contract)
+    two_time_scale["phase_order"] = list(
+        config.adversarial_two_time_scale_contract.phase_order
+    )
+    return {
+        "termination": {
+            "mode": config.termination_mode,
+            "epochs": config.epochs,
+        },
+        "no_early_freeze": no_early_freeze,
+        "adversarial_two_time_scale": two_time_scale,
+    }
+
+
+def cv2_configuration_payload(value: str | BiCADXRConfig) -> dict[str, Any]:
+    """Return a JSON-ready CV2 configuration without the legacy budget field."""
+
+    config = _resolve_config(value)
+    _cv2_identity(config.candidate_id)
+    payload = asdict(config)
+    payload.pop("optimizer_updates", None)
+    return payload
 
 
 def method_lock_payload(value: str | BiCADXRConfig) -> dict[str, Any]:
@@ -594,6 +785,8 @@ def method_lock_payload(value: str | BiCADXRConfig) -> dict[str, Any]:
     }
     if config.pair_vicreg or config.pair_delta or config.sparse_xdc:
         raise ValueError("deferred features are disabled for CV2")
+    configuration = asdict(config)
+    configuration.pop("optimizer_updates", None)
     return {
         "schema": "pairbicad_cv2_method_lock_v1",
         "candidate_id": config.candidate_id,
@@ -609,10 +802,13 @@ def method_lock_payload(value: str | BiCADXRConfig) -> dict[str, Any]:
         "query_access": False,
         "truth_access": False,
         "deferred_features": disabled,
-        "configuration": {
-            field.name: getattr(config, field.name)
-            for field in fields(BiCADXRConfig)
-        },
+        "configuration_role": (
+            "static_branch_baseline"
+            if config.candidate_id in CV2_STATIC_BRANCH_BASELINES
+            else "candidate"
+        ),
+        "runtime_contracts": cv2_runtime_contract_payload(config),
+        "configuration": configuration,
     }
 
 
@@ -637,18 +833,25 @@ def cv2_candidate_config(
 
 
 __all__ = [
+    "AdversarialTwoTimeScaleContract",
     "BiCADXRConfig",
     "BiCADXRStage",
     "CANDIDATE_IDS",
     "CV2_CANDIDATES",
     "CV2_CANDIDATE_IDS",
     "CV2_DEFERRED_FEATURES",
+    "CV2_EPOCHS",
+    "CV2_STATIC_BRANCH_BASELINES",
+    "CV2_TERMINATION_MODE",
     "DEFERRED_FEATURES",
     "LEO_WEAK_SCENARIOS",
+    "NoEarlyFreezeContract",
     "candidate_config",
     "candidate_diff",
+    "cv2_configuration_payload",
     "cv2_candidate_config",
     "cv2_method_lock",
+    "cv2_runtime_contract_payload",
     "candidate_method_lock",
     "method_lock_payload",
     "stage_for_update",

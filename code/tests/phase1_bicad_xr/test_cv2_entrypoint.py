@@ -8,17 +8,28 @@ import pytest
 import torch
 
 from SSDG.train_ssdg import (
+    _build_bicad_xr_concat_augmenter,
     _bicad_xr_cv2_build_optimizers,
+    _bicad_xr_cv2_batch_physical_ids,
     _bicad_xr_cv2_batch_counts,
+    _bicad_xr_cv2_coverage_snapshot,
+    _bicad_xr_cv2_coverage_warmup_complete,
     _bicad_xr_cv2_coverage_plan,
+    _bicad_xr_cv2_ema_update,
     _bicad_xr_cv2_margin_values,
     _bicad_xr_cv2_make_plateau_scheduler,
+    _bicad_xr_cv2_no_early_freeze_audit,
+    _bicad_xr_cv2_require_real_leo_view,
+    _bicad_xr_cv2_resolve_epochs,
+    _bicad_xr_cv2_select_validation_candidate,
     _bicad_xr_cv2_source_metrics,
     _bicad_xr_cv2_terminal_status,
+    _bicad_xr_cv2_validation_role_audit,
     _bicad_xr_cv2_vector_drift,
     _resolve_unlabeled_batch_size,
     _train_bicad_xr,
 )
+from cvsrffi.phase1_bicad_xr.convergence import CoverageLedger
 
 
 def test_cv2_coverage_plan_uses_half_u_cycle_with_500_update_floor() -> None:
@@ -192,6 +203,7 @@ def test_cv2_training_route_reaches_discriminator_then_encoder_steps() -> None:
     source = inspect.getsource(_train_bicad_xr)
 
     assert "_bicad_xr_cv2_build_optimizers" in source
+    assert "if config.adversarial_two_time_scale:" in source
     assert "discriminator_optimizer.step()" in source
     assert source.index("discriminator_optimizer.step()") < source.index(
         "optimizer.step()"
@@ -202,3 +214,154 @@ def test_cv2_batch_counts_switch_to_structured_every_four_updates() -> None:
     assert _bicad_xr_cv2_batch_counts(update=1, source_receiver_count=4) == (16, 32)
     assert _bicad_xr_cv2_batch_counts(update=4, source_receiver_count=4) == (24, 24)
     assert _bicad_xr_cv2_batch_counts(update=8, source_receiver_count=5) == (30, 18)
+
+
+def test_cv2_training_contract_forces_e200_and_disables_all_early_stops() -> None:
+    assert _bicad_xr_cv2_resolve_epochs(epochs=3) == 200
+
+    source = inspect.getsource(_train_bicad_xr)
+    assert "optimizer_update_stop" in source
+    assert "coverage_stop" in source
+    assert "wall_clock_stop" in source
+    assert "if update >= total_updates:" not in source
+    assert 'if source_loro_state["stopped_early"]:' not in source
+
+
+def test_strict_pair_schedule_reaches_all_real_leo_weak_scenarios_at_epoch_one() -> None:
+    augmenter = _build_bicad_xr_concat_augmenter(
+        SimpleNamespace(strict_pair_concat=True, seed=392002, sat_view_seed=392002)
+    )
+    _, stage = augmenter.stage_for_epoch(1)
+
+    assert stage.start_epoch == 1
+    assert stage.view_prob == pytest.approx(1.0)
+    assert set(stage.scenarios) == {
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak",
+    }
+
+
+@pytest.mark.parametrize(
+    "view",
+    [
+        {"applied": False, "scenario": "clean_duplicate"},
+        {"applied": True, "scenario": "clean_duplicate"},
+        {"applied": True, "scenario": "unknown"},
+    ],
+)
+def test_strict_pair_rejects_non_real_leo_second_views(view) -> None:
+    with pytest.raises(ValueError, match="real LEO_WEAK"):
+        _bicad_xr_cv2_require_real_leo_view(view)
+
+
+@pytest.mark.parametrize("scenario", ["leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"])
+def test_strict_pair_accepts_each_real_leo_second_view(scenario: str) -> None:
+    assert _bicad_xr_cv2_require_real_leo_view(
+        {"applied": True, "scenario": scenario}
+    ) == scenario
+
+
+def test_cv2_coverage_snapshot_uses_batch_physical_ids_and_fails_closed() -> None:
+    metadata = {
+        "tx_i": torch.tensor([0, 1, 0]),
+        "rx_i": torch.tensor([1, 1, 3]),
+        "day_i": torch.tensor([1, 1, 2]),
+        "eq_i": torch.tensor([0, 0, 0]),
+        "sig_i": torch.tensor([10, 11, 12]),
+    }
+    physical_ids = (
+        (0, 1, 1, 0, 10),
+        (1, 1, 1, 0, 11),
+        (0, 3, 2, 0, 12),
+    )
+    assert _bicad_xr_cv2_batch_physical_ids(metadata, expected_count=3, role="U") == physical_ids
+
+    ledger = CoverageLedger(
+        u_sample_ids=physical_ids,
+        l_groups=((0, 1, 1), (1, 1, 1)),
+    )
+    ledger.record_u(physical_ids[:2])
+    ledger.record_l(((0, 1, 1), (1, 1, 1)))
+    snapshot = _bicad_xr_cv2_coverage_snapshot(ledger)
+
+    assert snapshot["u_cumulative_visits"] == 2
+    assert snapshot["u_unique_samples"] == 2
+    assert snapshot["u_unique_coverage"] == pytest.approx(2.0 / 3.0)
+    assert snapshot["l_min_exposure"] == 1
+    assert len(snapshot["l_group_exposures"]) == 2
+
+    with pytest.raises(ValueError, match="physical sample ID"):
+        _bicad_xr_cv2_batch_physical_ids(
+            {"tx_i": torch.tensor([0]), "rx_i": torch.tensor([1])},
+            expected_count=1,
+            role="U",
+        )
+
+
+def test_cv2_coverage_warmup_precedes_plateau_scheduler() -> None:
+    ledger = CoverageLedger(
+        u_sample_ids=("u0", "u1"),
+        l_groups=((0, 1, 1),),
+    )
+    assert not _bicad_xr_cv2_coverage_warmup_complete(ledger)
+    ledger.record_u(("u0", "u1"))
+    assert not _bicad_xr_cv2_coverage_warmup_complete(ledger)
+    ledger.record_l(((0, 1, 1),))
+    assert _bicad_xr_cv2_coverage_warmup_complete(ledger)
+
+
+def test_cv2_validation_roles_are_physical_disjoint() -> None:
+    records = [
+        SimpleNamespace(tx_i=0, rx_i=4, day_i=1, eq_i=0, sig_i=index)
+        for index in range(4)
+    ]
+    cal_loader = SimpleNamespace(dataset=SimpleNamespace(index=records[:2]))
+    select_loader = SimpleNamespace(dataset=SimpleNamespace(index=records[2:]))
+
+    audit = _bicad_xr_cv2_validation_role_audit(cal_loader, select_loader)
+
+    assert audit["same_loader"] is False
+    assert audit["physical_id_overlap_count"] == 0
+    assert audit["v_cal_size"] == 2
+    assert audit["v_select_size"] == 2
+
+    with pytest.raises(ValueError, match="V_cal/V_select"):
+        _bicad_xr_cv2_validation_role_audit(cal_loader, cal_loader)
+
+
+def test_cv2_ema_candidate_and_one_shot_validation_selection() -> None:
+    first = _bicad_xr_cv2_ema_update(
+        None,
+        {"weight": torch.tensor([1.0]), "step": torch.tensor(1, dtype=torch.long)},
+        decay=0.5,
+    )
+    second = _bicad_xr_cv2_ema_update(
+        first,
+        {"weight": torch.tensor([3.0]), "step": torch.tensor(2, dtype=torch.long)},
+        decay=0.5,
+    )
+
+    assert second["weight"].item() == pytest.approx(2.0)
+    assert second["step"].item() == 2
+    selected, scores = _bicad_xr_cv2_select_validation_candidate(
+        {"final": 0.40, "ema": 0.55, "swad": 0.50}
+    )
+    assert selected == "ema"
+    assert scores == {"final": 0.40, "ema": 0.55, "swad": 0.50}
+
+
+def test_cv2_no_early_freeze_audit_is_observable_and_fails_closed() -> None:
+    parameter = torch.nn.Parameter(torch.tensor(1.0))
+    audit = _bicad_xr_cv2_no_early_freeze_audit(
+        [parameter], enabled=True, epoch=1
+    )
+    assert audit["enabled"] is True
+    assert audit["all_trainable"] is True
+    assert audit["frozen_parameter_count"] == 0
+
+    parameter.requires_grad = False
+    with pytest.raises(RuntimeError, match="no_early_freeze"):
+        _bicad_xr_cv2_no_early_freeze_audit(
+            [parameter], enabled=True, epoch=2
+        )

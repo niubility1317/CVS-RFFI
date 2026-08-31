@@ -16,9 +16,11 @@ import torch
 from torch import Tensor, nn
 from torch.nn import functional as F
 
+from .adversarial_game import DynamicGRLDoseController
 from .config import BiCADXRConfig, BiCADXRStage, candidate_config, stage_for_update
 from .gradients import (
     DEFAULT_LOCAL_PROJECTION_ALLOWLIST,
+    measure_bounded_gradient_ratio,
     project_conflicting_gradient,
     scale_explicit_gradients,
 )
@@ -33,7 +35,11 @@ from .losses import (
 )
 from .pair import pair_delta_objectives, pair_identity_hinge, vicreg_pair_loss
 from .sampler import StructuredEpisode, build_structured_episode
-from .tailguard import margin_rex_cvar_loss
+from .tailguard import (
+    bounded_hard_group_weights,
+    margin_group_risks,
+    margin_rex_cvar_loss,
+)
 from .tangent import (
     ReceiverTangentBank,
     factual_tangent,
@@ -83,6 +89,7 @@ _LEGACY_PAIR_IDENTITY_WEIGHT = 0.08
 _CV2_MARGIN_REX_LAMBDA = 0.02
 _CV2_MARGIN_CVAR_LAMBDA = 0.05
 _CV2_MARGIN_TAIL_FRACTION = 0.2
+_CV2_HARD_GROUP_FRACTION = 0.2
 _CV2_HARD_GROUP_CAP = 0.30
 _CV2_ADVERSARIAL_HEADS = frozenset(
     {"id_receiver", "id_day", "id_channel", "dom_tx"}
@@ -307,6 +314,33 @@ def _scalar(value: Tensor | float | int) -> float:
     return resolved
 
 
+def _finite_gradient_vector(
+    values: Sequence[Tensor | None],
+    name: str,
+    *,
+    parameters: Sequence[Tensor] | None = None,
+) -> Tensor | None:
+    if parameters is not None and len(values) != len(parameters):
+        raise ValueError(f"{name} must align with its parameter sequence")
+    finite: list[Tensor] = []
+    for index, value in enumerate(values):
+        if value is None:
+            if parameters is not None:
+                finite.append(torch.zeros_like(parameters[index]).reshape(-1))
+            continue
+        if not torch.is_tensor(value) or not value.is_floating_point():
+            raise ValueError(f"{name}[{index}] must be a floating-point tensor")
+        if not bool(torch.isfinite(value).all()):
+            raise ValueError(f"{name}[{index}] must contain only finite values")
+        finite.append(value.detach().reshape(-1))
+    if not finite:
+        return None
+    result = torch.cat(finite)
+    if not bool(torch.isfinite(result).all()):
+        raise ValueError(f"{name} must contain only finite values")
+    return result
+
+
 class BiCADXRTrainer(nn.Module):
     """Route the Task1–5 APIs through the frozen Stage0–4 schedule."""
 
@@ -398,6 +432,11 @@ class BiCADXRTrainer(nn.Module):
         self._last_update: int | None = None
         self._last_total_updates: int | None = None
         self._pairbicad_runtime_state: dict[str, Any] | None = None
+        self._dynamic_grl_controller: DynamicGRLDoseController | None = (
+            DynamicGRLDoseController()
+            if config.dynamic_adversarial_dose
+            else None
+        )
 
     @property
     def swad_state(self) -> dict[str, Any] | None:
@@ -457,6 +496,30 @@ class BiCADXRTrainer(nn.Module):
             F.kl_div(mean_log_prob, clean_prob, reduction="batchmean")
             + F.kl_div(mean_log_prob, satellite_prob, reduction="batchmean")
         )
+
+    @staticmethod
+    def _discriminator_accuracy(
+        factorized_output: Mapping[str, Tensor],
+        labeled_targets: Mapping[str, Tensor],
+    ) -> float | None:
+        accuracies: list[Tensor] = []
+        for name, labels in labeled_targets.items():
+            prediction = factorized_output.get(name)
+            if prediction is None or labels.numel() == 0:
+                continue
+            if prediction.ndim != 2 or prediction.size(0) != labels.numel():
+                raise ValueError("discriminator output and labels must align")
+            accuracies.append(
+                (prediction.detach().argmax(dim=1) == labels.detach())
+                .to(dtype=torch.float32)
+                .mean()
+            )
+        if not accuracies:
+            return None
+        result = float(torch.stack(accuracies).mean().item())
+        if not math.isfinite(result):
+            raise ValueError("discriminator accuracy must be finite")
+        return result
 
     @staticmethod
     def _coerce_batch(batch: BiCADXRBatch | Mapping[str, Any] | Sequence[Any]) -> BiCADXRBatch:
@@ -1482,6 +1545,31 @@ class BiCADXRTrainer(nn.Module):
             if stage is BiCADXRStage.stage4
             else peak_scale
         )
+        if self._dynamic_grl_controller is not None and stage is not BiCADXRStage.stage0:
+            dynamic_doses = self._dynamic_grl_controller.doses
+            grl_identity = dynamic_doses["identity"]
+            grl_zdom = dynamic_doses["zdom"]
+        else:
+            grl_identity = float(domain_scale)
+            grl_zdom = float(domain_scale)
+        dynamic_grl_audit: dict[str, Any] | None = None
+        if self._dynamic_grl_controller is not None:
+            dynamic_grl_audit = {
+                "enabled": True,
+                "updated": False,
+                "feedback": None,
+                "doses": {
+                    "identity": float(grl_identity),
+                    "zdom": float(grl_zdom),
+                },
+                "next_doses": self._dynamic_grl_controller.doses,
+                "identity_dose_bounds": self._dynamic_grl_controller.identity_dose_bounds,
+                "zdom_dose_bounds": self._dynamic_grl_controller.zdom_dose_bounds,
+                "conditional_ratio_bounds": self._dynamic_grl_controller.conditional_ratio_bounds,
+                "zdom_tx_ratio_bounds": self._dynamic_grl_controller.zdom_tx_ratio_bounds,
+                "conditional_target_ratio": self._dynamic_grl_controller.conditional_target_ratio,
+                "zdom_tx_target_ratio": self._dynamic_grl_controller.zdom_tx_target_ratio,
+            }
         factorized_output: dict[str, Tensor] = {}
         factorized_domain_features = z_dom
         factorized_values = None
@@ -1504,8 +1592,8 @@ class BiCADXRTrainer(nn.Module):
                     z_id[labeled_indices],
                     factorized_domain_features[labeled_indices],
                     tx_labeled,
-                    grl_identity=domain_scale if self.config.conditional_cdan else 0.0,
-                    grl_tx=domain_scale if self.config.zdom_tx_adversary else 0.0,
+                    grl_identity=grl_identity if self.config.conditional_cdan else 0.0,
+                    grl_tx=grl_zdom if self.config.zdom_tx_adversary else 0.0,
                 )
             if self.config.factorized_domains:
                 domain_terms: list[Tensor] = []
@@ -1549,11 +1637,11 @@ class BiCADXRTrainer(nn.Module):
                         ("id_channel", channel_labeled),
                     )
                 ]
-                conditional_loss = torch.stack(cond_terms).mean() * domain_scale
+                conditional_loss = torch.stack(cond_terms).mean() * grl_identity
                 total = total + conditional_loss
                 components["conditional_dann"] = self._component(
-                    conditional_loss / max(domain_scale, 1e-12)
-                    if domain_scale > 0.0
+                    conditional_loss / max(grl_identity, 1e-12)
+                    if grl_identity > 0.0
                     else zero,
                     conditional_loss,
                     called=True,
@@ -1566,11 +1654,11 @@ class BiCADXRTrainer(nn.Module):
                     else "no_labeled_rows"
                 )
             if self.config.zdom_tx_adversary and factorized_output:
-                zdom_tx_loss = F.cross_entropy(factorized_output["dom_tx"], tx_labeled) * domain_scale
+                zdom_tx_loss = F.cross_entropy(factorized_output["dom_tx"], tx_labeled) * grl_zdom
                 total = total + zdom_tx_loss
                 components["zdom_tx_adversary"] = self._component(
-                    zdom_tx_loss / max(domain_scale, 1e-12)
-                    if domain_scale > 0.0
+                    zdom_tx_loss / max(grl_zdom, 1e-12)
+                    if grl_zdom > 0.0
                     else zero,
                     zdom_tx_loss,
                     called=True,
@@ -1697,6 +1785,7 @@ class BiCADXRTrainer(nn.Module):
         pair_reason: str | None = None
         pair_loss = zero
         pair_adversarial_loss = zero
+        pair_identity_gradient_audit: dict[str, Any] | None = None
         pair_enabled = bool(
             self.config.paired_satellite
             and self.config.candidate_id.strip().upper() == "E3"
@@ -1736,7 +1825,53 @@ class BiCADXRTrainer(nn.Module):
                         projected_satellite_id,
                         epsilon=identity_epsilon,
                     )
-                    identity_weighted = identity_weight * identity_raw
+                    effective_identity_weight = identity_weight
+                    if candidate_key in _CV2_PAIR_IDENTITY_CANDIDATES:
+                        task_vector: Tensor | None = None
+                        pair_vector: Tensor | None = None
+                        parameters = self.optimizer_parameters()
+                        if tx_loss is not None and tx_loss.requires_grad:
+                            task_gradients = torch.autograd.grad(
+                                tx_loss,
+                                parameters,
+                                retain_graph=True,
+                                allow_unused=True,
+                            )
+                            task_vector = _finite_gradient_vector(
+                                task_gradients, "TX task gradients"
+                            )
+                        if identity_raw.requires_grad:
+                            pair_gradients = torch.autograd.grad(
+                                identity_raw,
+                                parameters,
+                                retain_graph=True,
+                                allow_unused=True,
+                            )
+                            pair_vector = _finite_gradient_vector(
+                                pair_gradients, "pair identity gradients"
+                            )
+                        if task_vector is None:
+                            task_vector = identity_raw.detach().new_zeros(1)
+                        if pair_vector is None:
+                            pair_vector = identity_raw.detach().new_zeros(1)
+                        gradient_audit = measure_bounded_gradient_ratio(
+                            task_vector,
+                            pair_vector,
+                            initial_weight=identity_weight,
+                            max_ratio=0.05,
+                        )
+                        effective_identity_weight = gradient_audit.effective_weight
+                        pair_identity_gradient_audit = asdict(gradient_audit)
+                        pair_identity_gradient_audit.update(
+                            {
+                                "raw_ratio": gradient_audit.raw_ratio,
+                                "effective_ratio": gradient_audit.effective_ratio,
+                                "raw_gradient_ratio": gradient_audit.raw_ratio,
+                                "effective_gradient_ratio": gradient_audit.effective_ratio,
+                                "gradient_scale": gradient_audit.scale,
+                            }
+                        )
+                    identity_weighted = effective_identity_weight * identity_raw
                     total = total + identity_weighted
                     components["pair_identity_hinge"] = self._component(
                         identity_raw,
@@ -1745,8 +1880,16 @@ class BiCADXRTrainer(nn.Module):
                         effective_count=pair_count,
                     )
                     components["pair_identity_hinge"].update(
-                        {"epsilon": identity_epsilon, "weight": identity_weight}
+                        {
+                            "epsilon": identity_epsilon,
+                            "weight": identity_weight,
+                            "effective_weight": effective_identity_weight,
+                        }
                     )
+                    if pair_identity_gradient_audit is not None:
+                        components["pair_identity_hinge"].update(
+                            pair_identity_gradient_audit
+                        )
                     pair_called = True
 
                 if self.config.pair_vicreg:
@@ -1975,6 +2118,9 @@ class BiCADXRTrainer(nn.Module):
         tail_reason: str | None = None
         tail_mode: str | None = None
         hard_group_cap: float | None = None
+        hard_group_weight_mass: float | None = None
+        hard_group_weights: list[float] | None = None
+        hard_group_indices: list[int] | None = None
         if not self.config.margin_tail:
             tail_reason = "candidate_disabled"
         elif stage.value in {"stage0", "stage1", "stage2"}:
@@ -1989,12 +2135,44 @@ class BiCADXRTrainer(nn.Module):
                 tx_groups = _combine_group_ids(
                     tx_labeled, receiver_labeled, channel_labeled
                 )
+                group_risks = margin_group_risks(
+                    tx_margins,
+                    tx_groups,
+                    tail_fraction=_CV2_MARGIN_TAIL_FRACTION,
+                )
+                hard_weights = bounded_hard_group_weights(
+                    group_risks,
+                    hard_fraction=_CV2_HARD_GROUP_FRACTION,
+                    max_hard_fraction=_CV2_HARD_GROUP_CAP,
+                )
+                hard_count = min(
+                    group_risks.numel(),
+                    max(1, math.ceil(_CV2_HARD_GROUP_FRACTION * group_risks.numel())),
+                )
+                hard_order = torch.argsort(
+                    group_risks.detach(), descending=True
+                )
+                hard_group_indices = [
+                    int(value)
+                    for value in hard_order[:hard_count].detach().cpu().tolist()
+                ]
+                hard_group_weight_mass = float(
+                    hard_weights[hard_order[:hard_count]].sum().detach().item()
+                )
+                if not math.isfinite(hard_group_weight_mass):
+                    raise ValueError("hard-group weight mass must be finite")
+                hard_group_weights = [
+                    float(value)
+                    for value in hard_weights.detach().cpu().tolist()
+                ]
                 tail_loss = margin_rex_cvar_loss(
                     tx_margins,
                     tx_groups,
                     tail_fraction=_CV2_MARGIN_TAIL_FRACTION,
                     lambda_rex=_CV2_MARGIN_REX_LAMBDA,
                     lambda_cvar=_CV2_MARGIN_CVAR_LAMBDA,
+                    hard_fraction=_CV2_HARD_GROUP_FRACTION,
+                    max_hard_fraction=_CV2_HARD_GROUP_CAP,
                 )
                 total = total + tail_loss
                 tail_called = True
@@ -2005,6 +2183,14 @@ class BiCADXRTrainer(nn.Module):
                     tail_loss,
                     called=True,
                     effective_count=int(torch.unique(tx_groups).numel()),
+                )
+                components["margin_tail"].update(
+                    {
+                        "hard_group_weights": hard_group_weights,
+                        "hard_group_indices": hard_group_indices,
+                        "hard_group_weight_mass": hard_group_weight_mass,
+                        "hard_group_cap": _CV2_HARD_GROUP_CAP,
+                    }
                 )
             else:
                 tx_groups = _combine_group_ids(tx_labeled, receiver_labeled)
@@ -2058,6 +2244,94 @@ class BiCADXRTrainer(nn.Module):
             components["margin_tail"] = self._component(skip_reason=tail_reason)
 
         adversarial_loss = conditional_loss + zdom_tx_loss + pair_adversarial_loss
+        if (
+            dynamic_grl_audit is not None
+            and stage is not BiCADXRStage.stage0
+            and tx_loss is not None
+            and tx_loss.requires_grad
+            and adversarial_loss.requires_grad
+            and factorized_output
+        ):
+            discriminator_accuracy = self._discriminator_accuracy(
+                factorized_output,
+                {
+                    **(
+                        {
+                            "id_receiver": receiver_labeled,
+                            "id_day": day_labeled,
+                            "id_channel": channel_labeled,
+                        }
+                        if self.config.conditional_cdan
+                        else {}
+                    ),
+                    **(
+                        {"dom_tx": tx_labeled}
+                        if self.config.zdom_tx_adversary and tx_labeled is not None
+                        else {}
+                    ),
+                },
+            )
+            encoder_parameters = tuple(self.adversarial_parameter_groups()["encoder"])
+            task_gradients = torch.autograd.grad(
+                tx_loss,
+                encoder_parameters,
+                retain_graph=True,
+                allow_unused=True,
+            )
+            adversarial_gradients = torch.autograd.grad(
+                adversarial_loss,
+                encoder_parameters,
+                retain_graph=True,
+                allow_unused=True,
+            )
+            task_vector = _finite_gradient_vector(
+                task_gradients,
+                "TX task gradients",
+                parameters=encoder_parameters,
+            )
+            adversarial_vector = _finite_gradient_vector(
+                adversarial_gradients,
+                "adversarial gradients",
+                parameters=encoder_parameters,
+            )
+            tx_margin_value = _scalar(
+                classification_margin(logits[labeled_indices], tx_labeled).mean()
+            )
+            if (
+                discriminator_accuracy is not None
+                and task_vector is not None
+                and adversarial_vector is not None
+            ):
+                task_norm = float(torch.linalg.vector_norm(task_vector).item())
+                adversarial_norm = float(
+                    torch.linalg.vector_norm(adversarial_vector).item()
+                )
+                denominator = max(task_norm, 1.0e-12)
+                adversarial_gradient_ratio = adversarial_norm / denominator
+                cosine = float(
+                    torch.sum(task_vector * adversarial_vector).item()
+                    / max(task_norm * max(adversarial_norm, 1.0e-12), 1.0e-12)
+                )
+                conflict_signal = max(0.0, min(1.0, -cosine))
+                if not (
+                    math.isfinite(adversarial_gradient_ratio)
+                    and math.isfinite(conflict_signal)
+                ):
+                    raise ValueError("dynamic GRL gradient feedback must be finite")
+                feedback = {
+                    "discriminator_accuracy": discriminator_accuracy,
+                    "tx_margin": tx_margin_value,
+                    "adversarial_gradient_ratio": adversarial_gradient_ratio,
+                    "conflict_signal": conflict_signal,
+                }
+                next_doses = self._dynamic_grl_controller.update(**feedback)
+                dynamic_grl_audit.update(
+                    {
+                        "updated": True,
+                        "feedback": feedback,
+                        "next_doses": next_doses,
+                    }
+                )
         projection_called = False
         projection_triggered = False
         projection_reason: str | None = None
@@ -2189,6 +2463,7 @@ class BiCADXRTrainer(nn.Module):
                     "checked": False,
                     "finite": None,
                     "rho_adv": self._pair_adversarial_dose(stage),
+                    "pair_identity": pair_identity_gradient_audit,
                 },
             }
             self._pairbicad_runtime_state = pair_runtime
@@ -2227,8 +2502,8 @@ class BiCADXRTrainer(nn.Module):
             "total_updates": int(total_updates),
             "candidate_id": self.config.candidate_id,
             "epoch": epoch,
-            "grl_identity": float(domain_scale if stage is not BiCADXRStage.stage0 else 0.0),
-            "grl_tx": float(domain_scale if stage is not BiCADXRStage.stage0 else 0.0),
+            "grl_identity": float(grl_identity if stage is not BiCADXRStage.stage0 else 0.0),
+            "grl_tx": float(grl_zdom if stage is not BiCADXRStage.stage0 else 0.0),
             "domain_dann_scale": float(domain_scale),
             "domain_scale": float(domain_scale),
             "shared_stem_lr_scale": float(
@@ -2273,11 +2548,21 @@ class BiCADXRTrainer(nn.Module):
             "components": components,
             "checkpoint_runtime": runtime,
         }
+        if dynamic_grl_audit is not None:
+            audit["dynamic_grl"] = dynamic_grl_audit
         if pair_runtime is not None:
             audit["pairbicad_runtime"] = pair_runtime
             pair_runtime["backbone_forward_count"] = 1
+        if pair_identity_gradient_audit is not None:
+            audit["pair_identity_gradient"] = pair_identity_gradient_audit
         if hard_group_cap is not None:
             audit["hard_group_cap"] = hard_group_cap
+        if hard_group_weight_mass is not None:
+            audit["hard_group_weight_mass"] = hard_group_weight_mass
+        if hard_group_weights is not None:
+            audit["hard_group_weights"] = hard_group_weights
+        if hard_group_indices is not None:
+            audit["hard_group_indices"] = hard_group_indices
         audit["raw_losses"] = {name: value["raw"] for name, value in components.items()}
         audit["weighted_losses"] = {
             name: value["weighted"] for name, value in components.items()

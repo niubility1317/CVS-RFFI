@@ -69,3 +69,13 @@
 ## 预期artifact与停止规则
 
 每行必须生成bicad_xr_final.pth、Clean和三种LEO评估JSON、严格重建信息、训练遥测、worker状态及ARTIFACTS_COMPLETE.json。只有数据越权、错误candidate/fold/receiver/day/seed、输出冲突、错误release/CWD、命令无法运行、确定性重复异常、进程归属不清或无法产生合法checkpoint/四场景artifact时，才可精确停止对应run进程树并保留partial artifact。不得因中间或最终性能低而停止、重启、热补丁或选择性重跑；不得影响无关进程。
+
+
+## 2026-09-01用户停止与替代
+
+- 最终状态：`STOPPED_BY_USER / HISTORICAL_PARTIAL_RESULT`，不是系统技术失败。
+- 停止原因：用户要求取消6500updates/coverage终止，全部候选改为完整200epochs，并修复反向审计发现的11项实现缺口后重新发布。
+- 停止前只读绑定：dispatcher PID3118975；9个直属worker；完整进程树全部匹配本run ID、release根和CWD。
+- 停止回执：精确终止163个当时仍存活的绑定进程，残留绑定PID为0；未影响无关进程。
+- artifact保留：16个`ARTIFACTS_COMPLETE`及其余partial artifact原地保留；`TECHNICAL_FAILURE=0`；远端写入`STOPPED_BY_USER.json`。
+- 原监控`pairbicad-cv2-screen24`已删除。旧run不得续训、覆盖、热补丁或与修复版结果混合。

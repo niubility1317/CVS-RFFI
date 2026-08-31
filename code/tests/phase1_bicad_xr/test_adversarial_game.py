@@ -6,6 +6,7 @@ from torch import nn
 
 from cvsrffi.phase1_bicad_xr.adversarial_game import (
     AdversarialGamePlan,
+    DynamicGRLDoseController,
     DualRatioController,
     build_adversarial_optimizers,
 )
@@ -25,6 +26,21 @@ def test_game_plan_reuses_one_forward_with_explicit_detached_and_encoder_phases(
     assert discriminator_features.requires_grad is False
     assert encoder_features is features
     assert encoder_features.requires_grad is True
+
+
+def test_freezing_discriminator_preserves_input_gradients_and_restores_flags() -> None:
+    plan = AdversarialGamePlan()
+    discriminator = nn.Linear(3, 2)
+    original_flags = [parameter.requires_grad for parameter in discriminator.parameters()]
+    features = torch.randn(4, 3, requires_grad=True)
+
+    with plan.freeze_discriminator(discriminator):
+        assert not any(parameter.requires_grad for parameter in discriminator.parameters())
+        discriminator(features).sum().backward()
+        assert features.grad is not None
+        assert torch.isfinite(features.grad).all()
+
+    assert [parameter.requires_grad for parameter in discriminator.parameters()] == original_flags
 
 
 def test_optimizer_builder_keeps_encoder_and_discriminator_parameter_groups_disjoint() -> None:
@@ -85,3 +101,29 @@ def test_game_plan_validates_the_two_adversarial_ratio_windows() -> None:
     assert plan.discriminator_lr_ratio == pytest.approx(1.5)
     assert plan.conditional_ratio_bounds == pytest.approx((0.10, 0.20))
     assert plan.zdom_tx_ratio_bounds == pytest.approx((0.03, 0.08))
+
+
+def test_dynamic_grl_doses_consume_all_feedback_and_remain_bounded() -> None:
+    controller = DynamicGRLDoseController(ema_decay=0.0)
+
+    permissive = controller.update(
+        discriminator_accuracy=0.95,
+        tx_margin=1.0,
+        adversarial_gradient_ratio=0.01,
+        conflict_signal=0.0,
+    )
+    fragile = controller.update(
+        discriminator_accuracy=0.50,
+        tx_margin=-1.0,
+        adversarial_gradient_ratio=0.50,
+        conflict_signal=1.0,
+    )
+
+    assert permissive["identity"] > fragile["identity"]
+    assert permissive["zdom"] > fragile["zdom"]
+    assert controller.identity_dose_bounds[0] <= fragile["identity"] <= controller.identity_dose_bounds[1]
+    assert controller.zdom_dose_bounds[0] <= fragile["zdom"] <= controller.zdom_dose_bounds[1]
+    assert controller.last_feedback is not None
+    assert controller.last_feedback["discriminator_accuracy"] == pytest.approx(0.50)
+    assert controller.conditional_ratio_bounds == pytest.approx((0.10, 0.20))
+    assert controller.zdom_tx_ratio_bounds == pytest.approx((0.03, 0.08))

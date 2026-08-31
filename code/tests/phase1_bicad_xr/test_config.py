@@ -508,3 +508,57 @@ def test_config_is_frozen_and_contains_all_candidate_switches() -> None:
     }
     with pytest.raises((AttributeError, TypeError)):
         candidate_config("D0").batch_size = 128  # type: ignore[misc]
+
+
+def test_cv2_e200_configs_use_epoch_termination_and_no_legacy_update_budget() -> None:
+    for candidate_id in CV2_IDS:
+        cfg = candidate_config(candidate_id)
+
+        assert getattr(cfg, "epochs", None) == 200
+        assert getattr(cfg, "termination_mode", None) == "epochs"
+        assert cfg.optimizer_updates != 6500
+
+
+def test_cv2_configs_expose_consumable_runtime_contracts() -> None:
+    for candidate_id in CV2_IDS:
+        cfg = candidate_config(candidate_id)
+        no_freeze = getattr(cfg, "no_early_freeze_contract", None)
+        two_time_scale = getattr(cfg, "adversarial_two_time_scale_contract", None)
+
+        assert no_freeze is not None
+        assert no_freeze.enabled is cfg.no_early_freeze
+        if cfg.no_early_freeze:
+            assert no_freeze.freeze_until_epoch == 200
+            assert no_freeze.audit == "requires_grad_per_epoch"
+        else:
+            assert no_freeze.freeze_until_epoch == 0
+            assert no_freeze.audit == "disabled"
+
+        assert two_time_scale is not None
+        assert two_time_scale.enabled is cfg.adversarial_two_time_scale
+        if cfg.adversarial_two_time_scale:
+            assert two_time_scale.optimizer_mode == "separate"
+            assert two_time_scale.discriminator_lr_ratio == pytest.approx(1.5)
+            assert two_time_scale.phase_order == ("discriminator", "encoder")
+            assert two_time_scale.one_backbone_forward is True
+        else:
+            assert two_time_scale.optimizer_mode == "disabled"
+            assert two_time_scale.discriminator_lr_ratio == pytest.approx(1.0)
+
+
+def test_cv2_method_lock_serializes_epoch_contract_without_update_budget() -> None:
+    lock = method_lock_payload(candidate_config("CV2-D1"))
+
+    assert lock["runtime_contracts"]["termination"] == {
+        "mode": "epochs",
+        "epochs": 200,
+    }
+    assert lock["runtime_contracts"]["no_early_freeze"]["freeze_until_epoch"] == 200
+    assert lock["runtime_contracts"]["adversarial_two_time_scale"] == {
+        "enabled": True,
+        "optimizer_mode": "separate",
+        "discriminator_lr_ratio": pytest.approx(1.5),
+        "phase_order": ["discriminator", "encoder"],
+        "one_backbone_forward": True,
+    }
+    assert "optimizer_updates" not in lock["configuration"]

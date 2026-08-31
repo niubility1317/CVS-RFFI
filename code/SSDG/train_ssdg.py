@@ -13,7 +13,7 @@ from copy import deepcopy
 from dataclasses import replace as dataclass_replace
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
 import numpy as np
 
@@ -254,6 +254,10 @@ _BICAD_XR_SAT_VIEW_SCHEDULE = (
     "1@0.30:leo_clear_weak;"
     "41@0.60:leo_low_elev_weak,leo_rain_weak;"
     "91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
+)
+_BICAD_XR_CV2_EPOCHS = 200
+_BICAD_XR_CV2_STRICT_PAIR_SAT_VIEW_SCHEDULE = (
+    "1@1.0:leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
 )
 
 
@@ -13042,6 +13046,423 @@ def _bicad_xr_cv2_batch_counts(
     return (labeled, 48 - labeled)
 
 
+def _bicad_xr_cv2_resolve_epochs(*, epochs: Any = 0) -> int:
+    """Return the immutable CV2 formal-training epoch count."""
+
+    if isinstance(epochs, bool):
+        raise ValueError("CV2 epochs must be an integer")
+    try:
+        requested = int(epochs)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError("CV2 epochs must be an integer") from exc
+    if requested < 0:
+        raise ValueError("CV2 epochs must be non-negative")
+    return _BICAD_XR_CV2_EPOCHS
+
+
+def _bicad_xr_cv2_training_contract(*, requested_epochs: Any = 0) -> Dict[str, Any]:
+    """Describe the fixed-E200 CV2 execution contract in telemetry-friendly form."""
+
+    requested = 0 if requested_epochs is None else int(requested_epochs)
+    return {
+        "requested_epochs": requested,
+        "epochs": _BICAD_XR_CV2_EPOCHS,
+        "final_epoch_required": _BICAD_XR_CV2_EPOCHS,
+        "optimizer_update_stop": False,
+        "coverage_stop": False,
+        "wall_clock_stop": False,
+        "convergence_stop_is_telemetry_only": True,
+    }
+
+
+def _bicad_xr_cv2_require_real_leo_view(view: Mapping[str, Any]) -> str:
+    """Reject a strict-pair view unless it is an applied LEO_WEAK transform."""
+
+    if not isinstance(view, Mapping):
+        raise ValueError("strict PairBiCAD requires a real LEO_WEAK satellite view")
+    scenario = str(view.get("scenario", "")).strip().lower()
+    if not bool(view.get("applied", False)) or scenario not in _BICAD_XR_LEO_WEAK:
+        raise ValueError(
+            "strict PairBiCAD requires a real LEO_WEAK satellite view; "
+            f"got scenario={scenario!r} applied={bool(view.get('applied', False))!r}"
+        )
+    return scenario
+
+
+def _bicad_xr_cv2_hashable_id(value: Any) -> Any:
+    """Convert a batch identity value into a stable hashable representation."""
+
+    if torch is not None and torch.is_tensor(value):
+        value = value.detach().cpu()
+        if value.numel() == 1:
+            value = value.item()
+        else:
+            value = value.tolist()
+    if isinstance(value, np.generic):
+        value = value.item()
+    if isinstance(value, (list, tuple)):
+        value = tuple(_bicad_xr_cv2_hashable_id(item) for item in value)
+    elif isinstance(value, Mapping):
+        value = tuple(
+            sorted(
+                (
+                    _bicad_xr_cv2_hashable_id(key),
+                    _bicad_xr_cv2_hashable_id(item),
+                )
+                for key, item in value.items()
+            )
+        )
+    try:
+        hash(value)
+    except TypeError as exc:
+        raise ValueError("CV2 physical sample ID must be hashable") from exc
+    return value
+
+
+def _bicad_xr_cv2_metadata_mapping(extra: Any) -> Mapping[str, Any] | None:
+    if isinstance(extra, Mapping):
+        return extra
+    return _meta_from_extra(extra)
+
+
+def _bicad_xr_cv2_batch_physical_ids(
+    extra: Any,
+    *,
+    expected_count: int,
+    role: str,
+) -> Tuple[Any, ...]:
+    """Read real physical IDs from one batch and fail closed when absent."""
+
+    count = int(expected_count)
+    if count <= 0:
+        raise ValueError("CV2 physical sample ID batch must be non-empty")
+    metadata = _bicad_xr_cv2_metadata_mapping(extra)
+    if metadata is None:
+        raise ValueError(
+            f"CV2 {role} batch is missing physical sample ID metadata"
+        )
+    explicit = metadata.get("physical_sample_id")
+    if explicit is not None:
+        values = _as_plain_list(explicit)
+        if len(values) != count:
+            raise ValueError(
+                f"CV2 {role} physical sample ID metadata must match the batch"
+            )
+        return tuple(_bicad_xr_cv2_hashable_id(value) for value in values)
+
+    fields = ("tx_i", "rx_i", "day_i", "eq_i", "sig_i")
+    columns: Dict[str, List[Any]] = {}
+    missing = [name for name in fields if name not in metadata]
+    if missing:
+        raise ValueError(
+            f"CV2 {role} batch is missing physical sample ID metadata: "
+            + ", ".join(missing)
+        )
+    for name in fields:
+        values = _as_plain_list(metadata.get(name))
+        if len(values) != count:
+            raise ValueError(
+                f"CV2 {role} physical sample ID field {name} must match the batch"
+            )
+        columns[name] = values
+    try:
+        return tuple(
+            tuple(int(columns[name][index]) for name in fields)
+            for index in range(count)
+        )
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError(
+            f"CV2 {role} physical sample ID metadata must be integer-valued"
+        ) from exc
+
+
+def _bicad_xr_cv2_dataset_index(dataset: Any) -> List[Any]:
+    """Resolve a frozen dataset index through label-free dataset wrappers."""
+
+    current = dataset
+    visited: set[int] = set()
+    while current is not None and id(current) not in visited:
+        visited.add(id(current))
+        index = getattr(current, "index", None)
+        if index is not None:
+            try:
+                values = list(index)
+            except TypeError as exc:
+                raise ValueError("CV2 dataset index is not iterable") from exc
+            if values:
+                return values
+        current = getattr(current, "base", None)
+    raise ValueError(
+        "CV2 coverage requires a frozen dataset index; "
+        "missing physical sample IDs are not fabricated"
+    )
+
+
+def _bicad_xr_cv2_record_physical_id(record: Any, *, index: int) -> Tuple[int, int, int, int, int]:
+    fields = ("tx_i", "rx_i", "day_i", "eq_i", "sig_i")
+    missing = [name for name in fields if not hasattr(record, name)]
+    if missing:
+        raise ValueError(
+            "CV2 frozen dataset index is missing physical sample ID fields: "
+            + ", ".join(missing)
+        )
+    try:
+        return tuple(int(getattr(record, name)) for name in fields)  # type: ignore[return-value]
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError(
+            f"CV2 frozen dataset index record {index} has invalid physical sample ID"
+        ) from exc
+
+
+def _bicad_xr_cv2_dataset_physical_ids(dataset: Any) -> Tuple[Tuple[int, int, int, int, int], ...]:
+    """Build unique physical IDs from the frozen dataset index, never from batch order."""
+
+    records = _bicad_xr_cv2_dataset_index(dataset)
+    values = tuple(
+        _bicad_xr_cv2_record_physical_id(record, index=index)
+        for index, record in enumerate(records)
+    )
+    if len(set(values)) != len(values):
+        raise ValueError("CV2 frozen dataset index contains duplicate physical sample IDs")
+    return values
+
+
+def _bicad_xr_cv2_dataset_l_groups(dataset: Any) -> Tuple[Tuple[int, int, int], ...]:
+    """Return the declared L_s TX x RX x day groups from a frozen dataset index."""
+
+    groups = {
+        (physical_id[0], physical_id[1], physical_id[2])
+        for physical_id in _bicad_xr_cv2_dataset_physical_ids(dataset)
+    }
+    if not groups:
+        raise ValueError("CV2 L_s dataset has no physical TX x RX x day groups")
+    return tuple(sorted(groups))
+
+
+def _bicad_xr_cv2_batch_l_groups(
+    extra: Any,
+    *,
+    expected_count: int,
+) -> Tuple[Tuple[int, int, int], ...]:
+    """Extract L_s exposure groups from the same physical batch metadata."""
+
+    physical_ids = _bicad_xr_cv2_batch_physical_ids(
+        extra,
+        expected_count=expected_count,
+        role="L",
+    )
+    groups: List[Tuple[int, int, int]] = []
+    for physical_id in physical_ids:
+        if not isinstance(physical_id, tuple) or len(physical_id) < 3:
+            raise ValueError(
+                "CV2 L batch physical IDs must expose TX x RX x day group fields"
+            )
+        try:
+            groups.append(tuple(int(value) for value in physical_id[:3]))
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise ValueError("CV2 L batch physical IDs have invalid group fields") from exc
+    return tuple(groups)
+
+
+def _bicad_xr_cv2_coverage_snapshot(ledger: Any) -> Dict[str, Any]:
+    """Serialize the real CoverageLedger state for per-epoch and final telemetry."""
+
+    u_ids = tuple(getattr(ledger, "_u_ids", ()))
+    u_seen = set(getattr(ledger, "_u_seen", ()))
+    if not u_ids:
+        raise ValueError("CV2 coverage snapshot requires declared physical sample IDs")
+    try:
+        u_coverage = float(ledger.u_coverage)
+        u_unique_coverage = float(ledger.u_unique_coverage)
+        l_coverage = float(ledger.l_coverage)
+        exposures = ledger.l_group_exposures
+    except AttributeError as exc:
+        raise ValueError("CV2 coverage snapshot requires a CoverageLedger") from exc
+    if not all(math.isfinite(value) for value in (u_coverage, u_unique_coverage, l_coverage)):
+        raise ValueError("CV2 coverage snapshot contains a non-finite value")
+    return {
+        "u_sample_count": len(u_ids),
+        "u_cumulative_visits": int(round(u_coverage * len(u_ids))),
+        "u_unique_samples": len(u_seen),
+        "u_coverage": u_coverage,
+        "u_unique_coverage": u_unique_coverage,
+        "l_min_exposure": int(round(l_coverage)),
+        "l_group_exposures": [
+            {
+                "group": _bicad_xr_jsonable(group),
+                "exposure": int(value),
+            }
+            for group, value in sorted(exposures.items(), key=lambda item: repr(item[0]))
+        ],
+    }
+
+
+def _bicad_xr_cv2_coverage_warmup_complete(
+    ledger: Any,
+    *,
+    u_cycles: float = 1.0,
+    l_min_exposure: int = 1,
+) -> bool:
+    """Return whether all declared U IDs and every L group completed warmup."""
+
+    threshold = float(u_cycles)
+    if not math.isfinite(threshold) or threshold <= 0.0:
+        raise ValueError("CV2 coverage warmup U cycles must be positive and finite")
+    return bool(
+        float(ledger.u_coverage) >= threshold
+        and float(ledger.u_unique_coverage) >= 1.0
+        and float(ledger.l_coverage) >= float(l_min_exposure)
+    )
+
+
+def _bicad_xr_cv2_deterministic_split_indices(
+    dataset: Any,
+    *,
+    seed: int,
+) -> Tuple[List[int], List[int]]:
+    """Partition a held-out receiver by physical ID into deterministic V_cal/V_select."""
+
+    physical_ids = _bicad_xr_cv2_dataset_physical_ids(dataset)
+    if len(physical_ids) < 2:
+        raise ValueError("CV2 held-out validation requires at least two physical samples")
+    order = sorted(
+        range(len(physical_ids)),
+        key=lambda index: hashlib.sha256(
+            repr((int(seed), physical_ids[index])).encode("utf-8")
+        ).hexdigest(),
+    )
+    cut = max(1, min(len(order) - 1, len(order) // 2))
+    return sorted(order[:cut]), sorted(order[cut:])
+
+
+def _bicad_xr_cv2_validation_role_audit(
+    v_cal_loader: Any,
+    v_select_loader: Any,
+) -> Dict[str, Any]:
+    """Verify that calibration and sparse-selection loaders are distinct physical roles."""
+
+    if v_cal_loader is None or v_select_loader is None:
+        raise ValueError("CV2 V_cal/V_select loaders are required")
+    same_loader = v_cal_loader is v_select_loader
+    cal_dataset = getattr(v_cal_loader, "dataset", None)
+    select_dataset = getattr(v_select_loader, "dataset", None)
+    if cal_dataset is None or select_dataset is None:
+        raise ValueError("CV2 V_cal/V_select loaders must expose frozen datasets")
+    same_dataset = cal_dataset is select_dataset
+    cal_ids = set(_bicad_xr_cv2_dataset_physical_ids(cal_dataset))
+    select_ids = set(_bicad_xr_cv2_dataset_physical_ids(select_dataset))
+    overlap = cal_ids & select_ids
+    if same_loader or same_dataset or overlap:
+        raise ValueError(
+            "CV2 V_cal/V_select roles must use disjoint physical samples"
+        )
+    return {
+        "same_loader": False,
+        "same_dataset": False,
+        "physical_id_overlap_count": len(overlap),
+        "v_cal_size": len(cal_ids),
+        "v_select_size": len(select_ids),
+        "v_cal_role": "scheduler_and_state",
+        "v_select_role": "final_candidate_selection_only",
+    }
+
+
+def _bicad_xr_cv2_vcal_eval_due(
+    update: int,
+    *,
+    planned_updates: int,
+    interval: int,
+) -> bool:
+    """Schedule V_cal telemetry without making update count a training stop."""
+
+    update = int(update)
+    planned_updates = int(planned_updates)
+    interval = int(interval)
+    return bool(
+        interval > 0
+        and update > 0
+        and update <= planned_updates
+        and (update == planned_updates or update % interval == 0)
+    )
+
+
+def _bicad_xr_cv2_ema_update(
+    previous: Mapping[str, torch.Tensor] | None,
+    current: Mapping[str, torch.Tensor],
+    *,
+    decay: float,
+) -> Dict[str, torch.Tensor]:
+    """Update an EMA weight candidate without creating a second forward path."""
+
+    decay_value = float(decay)
+    if not math.isfinite(decay_value) or not 0.0 <= decay_value < 1.0:
+        raise ValueError("CV2 EMA decay must be finite and in [0,1)")
+    if not isinstance(current, Mapping) or not current:
+        raise ValueError("CV2 EMA state must be a non-empty mapping")
+    if previous is not None and set(previous) != set(current):
+        raise ValueError("CV2 EMA state keys must remain unchanged")
+    result: Dict[str, torch.Tensor] = {}
+    for name, value in current.items():
+        if not isinstance(name, str) or not torch.is_tensor(value):
+            raise TypeError("CV2 EMA state must map string names to tensors")
+        current_value = value.detach().clone()
+        if previous is None:
+            result[name] = current_value
+            continue
+        previous_value = previous[name]
+        if previous_value.shape != current_value.shape or previous_value.dtype != current_value.dtype:
+            raise ValueError("CV2 EMA state tensor schema must remain unchanged")
+        if torch.is_floating_point(current_value) or torch.is_complex(current_value):
+            result[name] = (
+                previous_value.detach() * decay_value
+                + current_value * (1.0 - decay_value)
+            ).detach().clone()
+        else:
+            result[name] = current_value
+    return result
+
+
+def _bicad_xr_cv2_select_validation_candidate(
+    scores: Mapping[str, float],
+) -> Tuple[str, Dict[str, float]]:
+    """Select one final/EMA/SWAD candidate from one V_select scoring operation."""
+
+    if not isinstance(scores, Mapping) or not scores:
+        raise ValueError("CV2 V_select candidate scores must be non-empty")
+    normalized: Dict[str, float] = {}
+    for name, score in scores.items():
+        value = float(score)
+        if not str(name).strip() or not math.isfinite(value):
+            raise ValueError("CV2 V_select candidate scores must be finite")
+        normalized[str(name)] = value
+    selected = max(normalized, key=normalized.get)
+    return selected, normalized
+
+
+def _bicad_xr_cv2_no_early_freeze_audit(
+    parameters: Iterable[torch.nn.Parameter],
+    *,
+    enabled: bool,
+    epoch: int,
+) -> Dict[str, Any]:
+    """Observe the no-early-freeze constraint and fail closed on any frozen parameter."""
+
+    values = tuple(parameters)
+    frozen = [index for index, parameter in enumerate(values) if not parameter.requires_grad]
+    if enabled and frozen:
+        raise RuntimeError(
+            "CV2 no_early_freeze constraint violated at epoch "
+            f"{int(epoch)}: frozen_parameter_count={len(frozen)}"
+        )
+    return {
+        "enabled": bool(enabled),
+        "epoch": int(epoch),
+        "parameter_count": len(values),
+        "frozen_parameter_count": len(frozen),
+        "all_trainable": not frozen,
+    }
+
+
 def _bicad_xr_cv2_make_plateau_scheduler(optimizer):
     """Build the preregistered CV2 source-V_cal plateau scheduler."""
 
@@ -13146,6 +13567,7 @@ def _bicad_xr_cv2_build_optimizers(
     *,
     lr: float,
     weight_decay: float,
+    discriminator_lr_ratio: float = 1.5,
 ):
     """Build the frozen disjoint CV2 encoder/discriminator AdamW pair."""
 
@@ -13158,7 +13580,7 @@ def _bicad_xr_cv2_build_optimizers(
         groups["encoder"],
         groups["discriminator"],
         encoder_lr=float(lr),
-        discriminator_lr_ratio=1.5,
+        discriminator_lr_ratio=float(discriminator_lr_ratio),
         optimizer_cls=torch.optim.AdamW,
         optimizer_kwargs={"weight_decay": float(weight_decay)},
     )
@@ -13433,13 +13855,12 @@ def _resolve_bicad_xr_loro_receiver_index(
     )
 
 
-def _build_bicad_xr_source_loro_loader(
+def _build_bicad_xr_source_loro_dataset(
     args: Any,
     data_ctx: Mapping[str, Any],
-    device: torch.device,
     heldout_receiver: int,
 ):
-    """Build one read-only held-out source receiver loader from the loaded payload."""
+    """Build one read-only held-out source receiver dataset from the loaded payload."""
 
     payload = data_ctx.get("wisig_payload")
     if not isinstance(payload, Mapping):
@@ -13471,6 +13892,22 @@ def _build_bicad_xr_source_loro_loader(
     )
     if len(dataset) <= 0:
         raise ValueError("source-LORO held-out receiver/day loader is empty")
+    return dataset
+
+
+def _build_bicad_xr_source_loro_loader(
+    args: Any,
+    data_ctx: Mapping[str, Any],
+    device: torch.device,
+    heldout_receiver: int,
+):
+    """Build one read-only held-out source receiver loader from the loaded payload."""
+
+    dataset = _build_bicad_xr_source_loro_dataset(
+        args,
+        data_ctx,
+        int(heldout_receiver),
+    )
     return make_loader(
         dataset,
         int(args.eval_batch_size),
@@ -13480,6 +13917,64 @@ def _build_bicad_xr_source_loro_loader(
         False,
         int(args.prefetch_factor),
     )
+
+
+def _build_bicad_xr_source_loro_validation_loaders(
+    args: Any,
+    data_ctx: Mapping[str, Any],
+    device: torch.device,
+    heldout_receiver: int,
+    *,
+    split_seed: int,
+):
+    """Build deterministic, physically disjoint held-out V_cal/V_select loaders."""
+
+    dataset = _build_bicad_xr_source_loro_dataset(
+        args,
+        data_ctx,
+        int(heldout_receiver),
+    )
+    cal_indices, select_indices = _bicad_xr_cv2_deterministic_split_indices(
+        dataset,
+        seed=int(split_seed),
+    )
+    v_cal_dataset = WiSigSubsetDataset(
+        dataset,
+        cal_indices,
+        split_source="bicad_xr_source_loro_v_cal",
+    )
+    v_select_dataset = WiSigSubsetDataset(
+        dataset,
+        select_indices,
+        split_source="bicad_xr_source_loro_v_select",
+    )
+    v_cal_loader = make_loader(
+        v_cal_dataset,
+        int(args.eval_batch_size),
+        False,
+        int(args.num_workers),
+        device,
+        False,
+        int(args.prefetch_factor),
+    )
+    v_select_loader = make_loader(
+        v_select_dataset,
+        int(args.eval_batch_size),
+        False,
+        int(args.num_workers),
+        device,
+        False,
+        int(args.prefetch_factor),
+    )
+    audit = _bicad_xr_cv2_validation_role_audit(v_cal_loader, v_select_loader)
+    audit.update(
+        {
+            "heldout_receiver": int(heldout_receiver),
+            "partition_seed": int(split_seed),
+            "source_only": True,
+        }
+    )
+    return v_cal_loader, v_select_loader, audit
 
 
 def _evaluate_bicad_xr_source_loro(
@@ -13724,7 +14219,11 @@ def _apply_bicad_xr_entry_protocol(args, protocol: BiCADXRProtocol) -> None:
     args.concat_sat_start_epoch = protocol.concat_sat_start_epoch
     args.sat_train_scenarios = _BICAD_XR_LEO_WEAK_CSV
     args.sat_train_scenario_list = list(_BICAD_XR_LEO_WEAK)
-    args.sat_view_schedule = _BICAD_XR_SAT_VIEW_SCHEDULE
+    args.sat_view_schedule = (
+        _BICAD_XR_CV2_STRICT_PAIR_SAT_VIEW_SCHEDULE
+        if protocol.strict_pair_concat
+        else _BICAD_XR_SAT_VIEW_SCHEDULE
+    )
     args.sat_training_mode = protocol.satellite_supervision_mode
     args.lambda_sat_cls = 0.68
     args.lambda_sat_cons = 0.0
@@ -13757,9 +14256,14 @@ def _apply_bicad_xr_model_defaults(model_args) -> None:
 def _build_bicad_xr_concat_augmenter(args):
     if ConcatSatChannelAugment is None or apply_sat_channel_for_scenario is None:
         raise ImportError("BiCAD-XR requires ConcatSatChannelAugment and LEO weak channels")
+    strict_schedule = bool(getattr(args, "strict_pair_concat", False))
     return ConcatSatChannelAugment(
         scenarios=list(_BICAD_XR_LEO_WEAK),
-        schedule=_BICAD_XR_SAT_VIEW_SCHEDULE,
+        schedule=(
+            _BICAD_XR_CV2_STRICT_PAIR_SAT_VIEW_SCHEDULE
+            if strict_schedule
+            else _BICAD_XR_SAT_VIEW_SCHEDULE
+        ),
         p=1.0,
         seed=int(getattr(args, "sat_view_seed", getattr(args, "seed", 0))),
         apply_fn=apply_sat_channel_for_scenario,
@@ -13910,6 +14414,30 @@ def _bicad_xr_labeled_step(
             epoch=int(epoch),
             batch_idx=int(batch_idx),
         )
+        if not bool(sat_view.applied) or str(sat_view.scenario).strip().lower() not in _BICAD_XR_LEO_WEAK:
+            if ConcatSatChannelAugment is None or apply_sat_channel_for_scenario is None:
+                raise ValueError(
+                    "strict PairBiCAD requires a real LEO_WEAK satellite view"
+                )
+            strict_concat_aug = ConcatSatChannelAugment(
+                scenarios=list(_BICAD_XR_LEO_WEAK),
+                schedule=_BICAD_XR_CV2_STRICT_PAIR_SAT_VIEW_SCHEDULE,
+                p=1.0,
+                seed=int(getattr(args, "sat_view_seed", getattr(args, "seed", 0))),
+                apply_fn=apply_sat_channel_for_scenario,
+            )
+            sat_view = strict_concat_aug.transform(
+                physical_x,
+                args=args,
+                epoch=int(epoch),
+                batch_idx=int(batch_idx),
+            )
+        _bicad_xr_cv2_require_real_leo_view(
+            {
+                "applied": bool(sat_view.applied),
+                "scenario": str(sat_view.scenario),
+            }
+        )
         satellite_x = _safe_iq_tensor(sat_view.x)
         if satellite_x.size(0) != clean_count:
             raise ValueError("strict PairBiCAD satellite view must preserve physical batch size")
@@ -14039,6 +14567,7 @@ def _train_bicad_xr(args) -> int:
     from cvsrffi.phase1_bicad_xr.config import candidate_config
     from cvsrffi.phase1_bicad_xr.adversarial_game import DualRatioController
     from cvsrffi.phase1_bicad_xr.convergence import (
+        CoverageLedger,
         ConvergenceController,
         DGObservation,
     )
@@ -14048,6 +14577,17 @@ def _train_bicad_xr(args) -> int:
     protocol = resolve_bicad_protocol(args)
     if not isinstance(protocol, BiCADXRProtocol):
         raise ValueError("BiCAD-XR route requires --phase1_method bicad_xr")
+    is_cv2_candidate = protocol.candidate_id.strip().upper().startswith("CV2-")
+    cv2_training_contract = _bicad_xr_cv2_training_contract(
+        requested_epochs=getattr(args, "epochs", 0)
+    )
+    if is_cv2_candidate:
+        if cv2_training_contract["optimizer_update_stop"]:
+            raise RuntimeError("CV2 optimizer_update_stop must remain disabled")
+        if cv2_training_contract["coverage_stop"]:
+            raise RuntimeError("CV2 coverage_stop must remain disabled")
+        if cv2_training_contract["wall_clock_stop"]:
+            raise RuntimeError("CV2 wall_clock_stop must remain disabled")
     _apply_bicad_xr_entry_protocol(args, protocol)
 
     set_seed(int(getattr(args, "seed", 0)))
@@ -14188,32 +14728,60 @@ def _train_bicad_xr(args) -> int:
     candidate_optimizer_updates = int(config.optimizer_updates)
     cv2_coverage_plan: Dict[str, int] | None = None
     planned_updates = candidate_optimizer_updates
-    if config.coverage_convergence:
+    v_cal_loader = None
+    v_select_loader = None
+    validation_role_audit: Dict[str, Any] | None = None
+    if is_cv2_candidate:
         if unlabeled_loader is None or not hasattr(unlabeled_loader, "dataset"):
-            raise RuntimeError("CV2 coverage convergence requires source U_s dataset")
+            raise RuntimeError("CV2 coverage requires the source U_s dataset")
         cv2_coverage_plan = _bicad_xr_cv2_coverage_plan(
             unlabeled_physical_count=len(unlabeled_loader.dataset),
             source_receiver_count=len(source_receiver_indices),
         )
-        planned_updates = int(cv2_coverage_plan["safety_updates"])
-    loro_settings = _validate_bicad_xr_loro_args(
-        args,
-        source_receiver_indices=source_receiver_indices,
-        source_receiver_values=source_receiver_values,
-        planned_updates=(None if config.coverage_convergence else planned_updates),
-    )
-    if config.coverage_convergence:
-        if not loro_settings["enabled"]:
-            raise ValueError("CV2 coverage convergence requires source-LORO V_cal")
-        assert cv2_coverage_plan is not None
-        loro_settings["interval"] = int(
-            cv2_coverage_plan["eval_interval_updates"]
-        )
-        loro_settings["min_updates"] = int(
-            cv2_coverage_plan["eval_interval_updates"]
+        interval = int(getattr(args, "bicad_loro_eval_interval_updates", 500))
+        if interval <= 0:
+            interval = 500
+        if interval not in (250, 500):
+            raise ValueError("CV2 V_cal interval must be 250 or 500 updates")
+        heldout_receiver = int(getattr(args, "bicad_loro_receiver", -1))
+        if heldout_receiver not in _BICAD_XR_SOURCE_RECEIVER_UNIVERSE:
+            raise ValueError(
+                "CV2 held-out receiver must belong to the ManySig source universe [1,3,4,6,8]"
+            )
+        if heldout_receiver in {int(value) for value in source_receiver_indices}:
+            raise ValueError("CV2 held-out receiver must not overlap source receivers")
+        loro_settings = {
+            "enabled": True,
+            "optimizer_updates": _validate_bicad_xr_optimizer_updates(
+                getattr(args, "bicad_optimizer_updates", 0)
+            ),
+            "heldout_receiver": heldout_receiver,
+            "interval": interval,
+            "min_updates": 0,
+            "patience": max(1, int(getattr(args, "bicad_loro_patience", 5))),
+        }
+    else:
+        loro_settings = _validate_bicad_xr_loro_args(
+            args,
+            source_receiver_indices=source_receiver_indices,
+            source_receiver_values=source_receiver_values,
+            planned_updates=planned_updates,
         )
     source_loro_loader = None
-    if loro_settings["enabled"]:
+    if is_cv2_candidate:
+        (
+            v_cal_loader,
+            v_select_loader,
+            validation_role_audit,
+        ) = _build_bicad_xr_source_loro_validation_loaders(
+            args,
+            data_ctx,
+            device,
+            int(loro_settings["heldout_receiver"]),
+            split_seed=int(getattr(args, "seed", 0)),
+        )
+        source_loro_loader = v_cal_loader
+    elif loro_settings["enabled"]:
         source_loro_loader = _build_bicad_xr_source_loro_loader(
             args,
             data_ctx,
@@ -14237,15 +14805,33 @@ def _train_bicad_xr(args) -> int:
     concat_sat_aug = _build_bicad_xr_concat_augmenter(args)
     discriminator_optimizer = None
     adversarial_groups = None
-    if config.detached_adversarial:
+    if config.adversarial_two_time_scale:
+        two_time_scale_contract = config.adversarial_two_time_scale_contract
+        if (
+            not two_time_scale_contract.enabled
+            or two_time_scale_contract.optimizer_mode != "separate"
+            or two_time_scale_contract.phase_order != ("discriminator", "encoder")
+            or not two_time_scale_contract.one_backbone_forward
+        ):
+            raise RuntimeError(
+                "CV2 adversarial_two_time_scale runtime contract is incomplete"
+            )
         adversarial_groups = trainer.adversarial_parameter_groups()
         adversarial_optimizers = _bicad_xr_cv2_build_optimizers(
             trainer,
             lr=float(getattr(args, "lr", 2e-4)),
             weight_decay=float(getattr(args, "weight_decay", 1e-4)),
+            discriminator_lr_ratio=float(
+                two_time_scale_contract.discriminator_lr_ratio
+            ),
         )
         optimizer = adversarial_optimizers.encoder
         discriminator_optimizer = adversarial_optimizers.discriminator
+    elif config.detached_adversarial:
+        raise RuntimeError(
+            "CV2 detached adversarial training requires the explicit "
+            "adversarial_two_time_scale branch"
+        )
     else:
         optimizer = torch.optim.AdamW(
             trainer.parameters(),
@@ -14292,17 +14878,59 @@ def _train_bicad_xr(args) -> int:
     }
     cv2_gradient_ratios: Dict[str, float] = {}
     cv2_unlabeled_seen = 0
+    cv2_coverage_ledger = None
+    if is_cv2_candidate:
+        if unlabeled_loader is None or not hasattr(unlabeled_loader, "dataset"):
+            raise RuntimeError("CV2 CoverageLedger requires a source U_s dataset")
+        if not hasattr(train_loader, "dataset"):
+            raise RuntimeError("CV2 CoverageLedger requires a source L_s dataset")
+        u_physical_ids = _bicad_xr_cv2_dataset_physical_ids(unlabeled_loader.dataset)
+        l_groups = _bicad_xr_cv2_dataset_l_groups(train_loader.dataset)
+        cv2_coverage_ledger = CoverageLedger(
+            u_sample_ids=u_physical_ids,
+            l_groups=l_groups,
+        )
+    cv2_ema_state: Dict[str, torch.Tensor] | None = None
+    cv2_ema_decay = float(getattr(args, "bicad_ema_decay", 0.999))
+    if is_cv2_candidate and (
+        not math.isfinite(cv2_ema_decay) or not 0.0 <= cv2_ema_decay < 1.0
+    ):
+        raise ValueError("CV2 EMA decay must be finite and in [0,1)")
+    cv2_no_early_freeze_audit: Dict[str, Any] = {
+        "enabled": bool(is_cv2_candidate and config.no_early_freeze),
+        "checks": 0,
+        "violations": [],
+        "last": None,
+    }
+    cv2_scheduler_state: Dict[str, Any] = {
+        "coverage_warmup_complete": False,
+        "steps": 0,
+        "last_score": None,
+    }
 
     out_dir = Path(str(getattr(args, "output_dir", "") or "."))
     out_dir.mkdir(parents=True, exist_ok=True)
-    epochs = int(getattr(args, "epochs", 0))
-    if epochs <= 0:
-        epochs = 200
-    total_updates = planned_updates
+    if is_cv2_candidate:
+        epochs = _bicad_xr_cv2_resolve_epochs(epochs=getattr(args, "epochs", 0))
+        updates_per_epoch = max(
+            1,
+            len(train_loader),
+        )
+        total_updates = int(epochs * updates_per_epoch)
+        planned_updates = total_updates
+    else:
+        epochs = int(getattr(args, "epochs", 0))
+        if epochs <= 0:
+            epochs = 200
+        total_updates = planned_updates
     update = 0
     epoch_rows: List[Dict[str, Any]] = []
     last_audit: Mapping[str, Any] = {}
-    unlabeled_iter = iter(unlabeled_loader) if protocol.strict_pair_concat else None
+    unlabeled_iter = (
+        iter(unlabeled_loader)
+        if (protocol.strict_pair_concat or is_cv2_candidate)
+        else None
+    )
     structured_labeled_iter = (
         iter(structured_train_loader) if structured_train_loader is not None else None
     )
@@ -14318,17 +14946,35 @@ def _train_bicad_xr(args) -> int:
         "best_score": None,
         "bad_count": 0,
         "stopped_early": False,
+        "early_stop_disabled": bool(is_cv2_candidate),
         "evaluations": 0,
         "cv2_terminal": None,
     }
     if source_loro_enabled:
         (out_dir / "source_loro").mkdir(parents=True, exist_ok=True)
+
+    def _check_cv2_no_early_freeze(epoch_value: int) -> None:
+        if not cv2_no_early_freeze_audit["enabled"]:
+            return
+        try:
+            audit = _bicad_xr_cv2_no_early_freeze_audit(
+                trainer.parameters(),
+                enabled=True,
+                epoch=int(epoch_value),
+            )
+        except RuntimeError as exc:
+            cv2_no_early_freeze_audit["violations"].append(str(exc))
+            raise
+        cv2_no_early_freeze_audit["checks"] = int(
+            cv2_no_early_freeze_audit["checks"]
+        ) + 1
+        cv2_no_early_freeze_audit["last"] = audit
+
+    _check_cv2_no_early_freeze(0)
     trainer.train()
     for epoch in range(1, epochs + 1):
         epoch_losses: List[float] = []
         for batch_idx, labeled_batch in enumerate(train_loader, start=1):
-            if update >= total_updates:
-                break
             use_structured_batch = bool(
                 structured_labeled_iter is not None and (update + 1) % 4 == 0
             )
@@ -14363,6 +15009,13 @@ def _train_bicad_xr(args) -> int:
                 source_day_indices,
                 name="day",
             )
+            if cv2_coverage_ledger is not None:
+                cv2_coverage_ledger.record_l(
+                    _bicad_xr_cv2_batch_l_groups(
+                        extra_l,
+                        expected_count=count,
+                    )
+                )
             optimizer.zero_grad(set_to_none=True)
             if discriminator_optimizer is not None:
                 discriminator_optimizer.zero_grad(set_to_none=True)
@@ -14394,7 +15047,13 @@ def _train_bicad_xr(args) -> int:
                         raise RuntimeError("PairBiCAD requires a non-empty unlabeled loader") from exc
                 x_u, extra_u = _move_bicad_xr_unlabeled_batch(unlabeled_batch, device)
                 unlabeled_count = int(x_u.size(0))
-                if cv2_coverage_plan is not None:
+                if cv2_coverage_ledger is not None:
+                    u_batch_ids = _bicad_xr_cv2_batch_physical_ids(
+                        extra_u,
+                        expected_count=unlabeled_count,
+                        role="U",
+                    )
+                    cv2_coverage_ledger.record_u(u_batch_ids)
                     cv2_unlabeled_seen += unlabeled_count
                 receiver_u = _bicad_xr_local_domain_labels(
                     _bicad_xr_required_metadata(
@@ -14457,6 +15116,34 @@ def _train_bicad_xr(args) -> int:
                     total_updates=total_updates,
                     epoch=epoch,
                 )
+            if is_cv2_candidate and not protocol.strict_pair_concat:
+                if unlabeled_iter is None or unlabeled_loader is None:
+                    raise RuntimeError("CV2 CoverageLedger requires a source U_s iterator")
+                try:
+                    coverage_unlabeled_batch = next(unlabeled_iter)
+                except StopIteration:
+                    unlabeled_iter = iter(unlabeled_loader)
+                    try:
+                        coverage_unlabeled_batch = next(unlabeled_iter)
+                    except StopIteration as exc:
+                        raise RuntimeError(
+                            "CV2 CoverageLedger requires a non-empty source U_s loader"
+                        ) from exc
+                _, coverage_extra_u = _move_bicad_xr_unlabeled_batch(
+                    coverage_unlabeled_batch,
+                    device,
+                )
+                coverage_u_count = int(
+                    torch.as_tensor(coverage_unlabeled_batch[0]).size(0)
+                )
+                coverage_u_ids = _bicad_xr_cv2_batch_physical_ids(
+                    coverage_extra_u,
+                    expected_count=coverage_u_count,
+                    role="U",
+                )
+                assert cv2_coverage_ledger is not None
+                cv2_coverage_ledger.record_u(coverage_u_ids)
+                cv2_unlabeled_seen += coverage_u_count
             if step_view is not None:
                 step_output.audit["satellite_scenario"] = step_view["scenario"]
                 step_output.audit["satellite_view_applied"] = step_view["applied"]
@@ -14594,14 +15281,33 @@ def _train_bicad_xr(args) -> int:
                 discriminator_optimizer.step()
             optimizer.step()
             update += 1
+            if is_cv2_candidate:
+                cv2_ema_state = _bicad_xr_cv2_ema_update(
+                    cv2_ema_state,
+                    trainer.state_dict(),
+                    decay=cv2_ema_decay,
+                )
+                _check_cv2_no_early_freeze(epoch)
             epoch_losses.append(float(step_output.total.detach().cpu().item()))
             last_audit = step_output.audit
-            if source_loro_enabled and _bicad_xr_loro_eval_due(
-                update,
-                planned_updates=total_updates,
-                min_updates=int(loro_settings["min_updates"]),
-                interval=int(loro_settings["interval"]),
-            ):
+            cv2_v_cal_eval_due = bool(
+                is_cv2_candidate
+                and _bicad_xr_cv2_vcal_eval_due(
+                    update,
+                    planned_updates=total_updates,
+                    interval=int(loro_settings["interval"]),
+                )
+            )
+            legacy_loro_eval_due = bool(
+                (not is_cv2_candidate)
+                and _bicad_xr_loro_eval_due(
+                    update,
+                    planned_updates=total_updates,
+                    min_updates=int(loro_settings["min_updates"]),
+                    interval=int(loro_settings["interval"]),
+                )
+            )
+            if source_loro_enabled and (cv2_v_cal_eval_due or legacy_loro_eval_due):
                 scenario_results: Dict[str, Dict[str, Any]] = {}
                 for scenario_index, scenario in enumerate(_BICAD_XR_SOURCE_LORO_SCENARIOS):
                     scenario_results[scenario] = _evaluate_bicad_xr_source_loro(
@@ -14623,10 +15329,30 @@ def _train_bicad_xr(args) -> int:
                 )
                 cv2_metrics = _bicad_xr_cv2_source_metrics(scenario_results)
                 cv2_decision = None
+                coverage_snapshot = None
+                coverage_warmup_complete = False
+                if cv2_coverage_ledger is not None:
+                    coverage_snapshot = _bicad_xr_cv2_coverage_snapshot(
+                        cv2_coverage_ledger
+                    )
+                    coverage_warmup_complete = _bicad_xr_cv2_coverage_warmup_complete(
+                        cv2_coverage_ledger
+                    )
+                    cv2_scheduler_state["coverage_warmup_complete"] = bool(
+                        coverage_warmup_complete
+                    )
                 if cv2_scheduler is not None:
-                    cv2_scheduler.step(float(cv2_metrics["s_dg"]))
+                    if coverage_warmup_complete:
+                        cv2_scheduler.step(float(cv2_metrics["s_dg"]))
+                        cv2_scheduler_state["steps"] = int(
+                            cv2_scheduler_state["steps"]
+                        ) + 1
+                        cv2_scheduler_state["last_score"] = float(
+                            cv2_metrics["s_dg"]
+                        )
                 if cv2_convergence is not None:
                     assert cv2_coverage_plan is not None
+                    assert coverage_snapshot is not None
                     clean_mean_logits = torch.as_tensor(
                         scenario_results["clean"].get("mean_logits", []),
                         dtype=torch.float32,
@@ -14660,10 +15386,7 @@ def _train_bicad_xr(args) -> int:
                     cv2_decision = cv2_convergence.observe(
                         DGObservation(
                             updates=update,
-                            coverage_u=(
-                                float(cv2_unlabeled_seen)
-                                / float(cv2_coverage_plan["unlabeled_physical_count"])
-                            ),
+                            coverage_u=float(coverage_snapshot["u_coverage"]),
                             s_dg=float(cv2_metrics["s_dg"]),
                             learning_rate=float(optimizer.param_groups[0]["lr"]),
                             d_logit=(d_logit if math.isfinite(d_logit) else 1.0e9),
@@ -14675,13 +15398,10 @@ def _train_bicad_xr(args) -> int:
                     )
                     if cv2_decision.should_stop:
                         cv2_terminal = _bicad_xr_cv2_terminal_status(cv2_decision)
+                        cv2_terminal["stop_requested"] = True
+                        cv2_terminal["stop_action"] = "ignored_fixed_200_epochs"
                         source_loro_state["cv2_terminal"] = cv2_terminal
-                if (
-                    cv2_swad is not None
-                    and cv2_decision is not None
-                    and cv2_decision.plateau_slope is not None
-                    and abs(float(cv2_decision.plateau_slope)) < 0.0015
-                ):
+                if cv2_swad is not None and coverage_warmup_complete:
                     cv2_swad.consider(
                         trainer.state_dict(),
                         score=float(cv2_metrics["s_dg"]),
@@ -14702,10 +15422,9 @@ def _train_bicad_xr(args) -> int:
                     ),
                     patience=int(loro_settings["patience"]),
                 )
-                if protocol.candidate_id.strip().upper().startswith("CV2-"):
-                    source_loro_state["stopped_early"] = bool(
-                        cv2_decision is not None and cv2_decision.should_stop
-                    )
+                if is_cv2_candidate:
+                    source_loro_state["stopped_early"] = False
+                    source_loro_state["stop_action"] = "ignored_fixed_200_epochs"
                 source_loro_state["evaluations"] = int(
                     source_loro_state.get("evaluations", 0)
                 ) + 1
@@ -14749,11 +15468,16 @@ def _train_bicad_xr(args) -> int:
                         "best_update": source_loro_state["best_update"],
                         "best_score": source_loro_state["best_score"],
                         "bad_count": source_loro_state["bad_count"],
+                        "coverage": coverage_snapshot,
+                        "coverage_warmup_complete": coverage_warmup_complete,
+                        "scheduler_state": dict(cv2_scheduler_state),
                         "source_only": True,
                         **{flag: False for flag in _BICAD_XR_SOURCE_LORO_ACCESS_FLAGS},
                     },
                 )
-                if source_loro_state["stopped_early"]:
+                if (not is_cv2_candidate) and bool(
+                    source_loro_state["stopped_early"]
+                ):
                     break
         if epoch_losses:
             epoch_runtime = trainer.checkpoint_runtime(
@@ -14766,6 +15490,12 @@ def _train_bicad_xr(args) -> int:
                 planned_updates=total_updates,
                 candidate_optimizer_updates=candidate_optimizer_updates,
             )
+            if is_cv2_candidate:
+                epoch_runtime["cv2_training_contract"] = dict(cv2_training_contract)
+                epoch_runtime["coverage_ledger"] = _bicad_xr_cv2_coverage_snapshot(
+                    cv2_coverage_ledger
+                )
+                epoch_runtime["scheduler_state"] = dict(cv2_scheduler_state)
             epoch_rows.append(
                 {
                     "epoch": epoch,
@@ -14776,10 +15506,27 @@ def _train_bicad_xr(args) -> int:
                     "target_access": False,
                     "bicad_xr_runtime": _bicad_xr_jsonable(epoch_runtime),
                     "bicad_xr_audit": _bicad_xr_jsonable(last_audit),
+                    "cv2_coverage": (
+                        None
+                        if cv2_coverage_ledger is None
+                        else _bicad_xr_jsonable(
+                            _bicad_xr_cv2_coverage_snapshot(cv2_coverage_ledger)
+                        )
+                    ),
+                    "cv2_no_early_freeze_audit": _bicad_xr_jsonable(
+                        cv2_no_early_freeze_audit
+                    ),
                 }
             )
-        if source_loro_state["stopped_early"] or update >= total_updates:
+        if (not is_cv2_candidate) and bool(source_loro_state["stopped_early"]):
             break
+    if is_cv2_candidate:
+        if len(epoch_rows) != _BICAD_XR_CV2_EPOCHS or int(
+            epoch_rows[-1].get("epoch", -1)
+        ) != _BICAD_XR_CV2_EPOCHS:
+            raise RuntimeError(
+                "CV2 formal training must produce exactly 200 completed epochs"
+            )
     if update == 0:
         raise RuntimeError("BiCAD-XR received no labeled source main step")
 
@@ -14792,7 +15539,53 @@ def _train_bicad_xr(args) -> int:
     )
 
     cv2_selected_checkpoint = "final"
-    if cv2_swad is not None and cv2_swad.window_size > 0:
+    cv2_candidate_scores: Dict[str, float] = {}
+    cv2_candidate_evaluations: Dict[str, Any] = {}
+    if is_cv2_candidate:
+        if v_select_loader is None or validation_role_audit is None:
+            raise RuntimeError("CV2 requires a separate V_select loader")
+        validation_role_audit = _bicad_xr_cv2_validation_role_audit(
+            v_cal_loader,
+            v_select_loader,
+        )
+        final_state = {
+            name: value.detach().clone() for name, value in trainer.state_dict().items()
+        }
+        if cv2_ema_state is None:
+            raise RuntimeError("CV2 EMA candidate was not formed")
+        candidate_states: Dict[str, Mapping[str, torch.Tensor]] = {
+            "final": final_state,
+            "ema": cv2_ema_state,
+        }
+        if cv2_swad is not None and cv2_swad.window_size > 0:
+            candidate_states["swad"] = cv2_swad.averaged_state_dict()
+        for candidate_name, candidate_state in candidate_states.items():
+            trainer.load_state_dict(candidate_state, strict=True)
+            scenario_results: Dict[str, Dict[str, Any]] = {}
+            for scenario_index, scenario in enumerate(_BICAD_XR_SOURCE_LORO_SCENARIOS):
+                scenario_results[scenario] = _evaluate_bicad_xr_source_loro(
+                    trainer,
+                    v_select_loader,
+                    device,
+                    args,
+                    scenario=scenario,
+                    scenario_index=scenario_index,
+                )
+            candidate_metrics = _bicad_xr_cv2_source_metrics(scenario_results)
+            cv2_candidate_scores[candidate_name] = float(candidate_metrics["s_dg"])
+            cv2_candidate_evaluations[candidate_name] = {
+                "score": float(candidate_metrics["s_dg"]),
+                "metrics": candidate_metrics,
+                "scenarios": scenario_results,
+            }
+        cv2_selected_checkpoint, cv2_candidate_scores = (
+            _bicad_xr_cv2_select_validation_candidate(cv2_candidate_scores)
+        )
+        trainer.load_state_dict(
+            candidate_states[cv2_selected_checkpoint],
+            strict=True,
+        )
+    elif cv2_swad is not None and cv2_swad.window_size > 0:
         trainer.load_state_dict(cv2_swad.averaged_state_dict(), strict=True)
         cv2_selected_checkpoint = "swad"
 
@@ -14815,6 +15608,32 @@ def _train_bicad_xr(args) -> int:
         "terminal": cv2_terminal,
         "source_only": True,
     }
+    if is_cv2_candidate:
+        checkpoint_payload["cv2_training_contract"] = dict(cv2_training_contract)
+        checkpoint_payload["coverage_ledger"] = _bicad_xr_cv2_coverage_snapshot(
+            cv2_coverage_ledger
+        )
+        checkpoint_payload["cv2_scheduler_state"] = dict(cv2_scheduler_state)
+        checkpoint_payload["no_early_freeze_audit"] = _bicad_xr_jsonable(
+            cv2_no_early_freeze_audit
+        )
+        checkpoint_payload["validation_roles"] = _bicad_xr_jsonable(
+            validation_role_audit
+        )
+        checkpoint_payload["cv2_selection"].update(
+            {
+                "candidate_scores_v_select": _bicad_xr_jsonable(
+                    cv2_candidate_scores
+                ),
+                "candidate_evaluations_v_select": _bicad_xr_jsonable(
+                    cv2_candidate_evaluations
+                ),
+                "v_select_evaluated_once": True,
+                "v_select_feedback_to_training": False,
+                "ema_decay": cv2_ema_decay,
+                "final_epoch": _BICAD_XR_CV2_EPOCHS,
+            }
+        )
     reconstructed_model = build_baseline_model(model_args, device)
     reconstruction_config = dataclass_replace(
         config,
@@ -14850,6 +15669,24 @@ def _train_bicad_xr(args) -> int:
         )
         selection["cv2_coverage_plan"] = cv2_coverage_plan
         selection["cv2_terminal"] = cv2_terminal
+        if is_cv2_candidate:
+            selection["cv2_training_contract"] = dict(cv2_training_contract)
+            selection["coverage_ledger"] = _bicad_xr_cv2_coverage_snapshot(
+                cv2_coverage_ledger
+            )
+            selection["cv2_scheduler_state"] = dict(cv2_scheduler_state)
+            selection["no_early_freeze_audit"] = _bicad_xr_jsonable(
+                cv2_no_early_freeze_audit
+            )
+            selection["validation_roles"] = _bicad_xr_jsonable(
+                validation_role_audit
+            )
+            selection["candidate_scores_v_select"] = _bicad_xr_jsonable(
+                cv2_candidate_scores
+            )
+            selection["v_select_evaluated_once"] = True
+            selection["v_select_feedback_to_training"] = False
+            selection["final_epoch"] = _BICAD_XR_CV2_EPOCHS
         _write_bicad_xr_source_loro_selection(
             out_dir / "source_loro_selection.json",
             selection,

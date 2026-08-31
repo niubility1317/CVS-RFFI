@@ -22,6 +22,8 @@ from .gradients import GradientRatioController
 
 _DEFAULT_CONDITIONAL_BOUNDS = (0.10, 0.20)
 _DEFAULT_ZDOM_TX_BOUNDS = (0.03, 0.08)
+_DEFAULT_IDENTITY_DOSE_BOUNDS = (0.05, 0.40)
+_DEFAULT_ZDOM_DOSE_BOUNDS = (0.03, 0.30)
 _DEFAULT_PROJECTION_ALLOWLIST = (
     "identity_last_block",
     "fusion",
@@ -49,6 +51,13 @@ def _ratio_bounds(value: object, name: str) -> tuple[float, float]:
     if not lower < upper:
         raise ValueError(f"{name} must be strictly increasing")
     return lower, upper
+
+
+def _unit_interval(value: object, name: str) -> float:
+    resolved = _finite_positive(value, name, allow_zero=True)
+    if resolved > 1.0:
+        raise ValueError(f"{name} must lie in [0,1]")
+    return resolved
 
 
 def _feature_tensor(value: Tensor, name: str) -> Tensor:
@@ -359,9 +368,200 @@ class DualRatioController:
         return result
 
 
+class DynamicGRLDoseController:
+    """Generate independent bounded GRL doses from current training signals.
+
+    The controller is deliberately state-only: it consumes detached scalar
+    feedback and returns Python floats, so the dose policy cannot become part
+    of the encoder gradient graph.  ``conditional_ratio_bounds`` and
+    ``zdom_tx_ratio_bounds`` preserve the existing adversarial gradient-dose
+    targets while the returned GRL doses remain independently bounded.
+    """
+
+    def __init__(
+        self,
+        *,
+        initial_identity_dose: float = 0.20,
+        initial_zdom_dose: float = 0.20,
+        identity_dose_bounds: tuple[float, float] = _DEFAULT_IDENTITY_DOSE_BOUNDS,
+        zdom_dose_bounds: tuple[float, float] = _DEFAULT_ZDOM_DOSE_BOUNDS,
+        conditional_target_ratio: float = 0.15,
+        zdom_tx_target_ratio: float = 0.055,
+        conditional_ratio_bounds: tuple[float, float] = _DEFAULT_CONDITIONAL_BOUNDS,
+        zdom_tx_ratio_bounds: tuple[float, float] = _DEFAULT_ZDOM_TX_BOUNDS,
+        ema_decay: float = 0.5,
+    ) -> None:
+        self.identity_dose_bounds = _ratio_bounds(
+            identity_dose_bounds, "identity_dose_bounds"
+        )
+        self.zdom_dose_bounds = _ratio_bounds(
+            zdom_dose_bounds, "zdom_dose_bounds"
+        )
+        self.conditional_ratio_bounds = _ratio_bounds(
+            conditional_ratio_bounds, "conditional_ratio_bounds"
+        )
+        self.zdom_tx_ratio_bounds = _ratio_bounds(
+            zdom_tx_ratio_bounds, "zdom_tx_ratio_bounds"
+        )
+        self.conditional_target_ratio = _finite_positive(
+            conditional_target_ratio,
+            "conditional_target_ratio",
+            allow_zero=True,
+        )
+        self.zdom_tx_target_ratio = _finite_positive(
+            zdom_tx_target_ratio,
+            "zdom_tx_target_ratio",
+            allow_zero=True,
+        )
+        if not (
+            self.conditional_ratio_bounds[0]
+            <= self.conditional_target_ratio
+            <= self.conditional_ratio_bounds[1]
+        ):
+            raise ValueError("conditional_target_ratio must lie within its ratio bounds")
+        if not (
+            self.zdom_tx_ratio_bounds[0]
+            <= self.zdom_tx_target_ratio
+            <= self.zdom_tx_ratio_bounds[1]
+        ):
+            raise ValueError("zdom_tx_target_ratio must lie within its ratio bounds")
+        self.initial_identity_dose = _finite_positive(
+            initial_identity_dose,
+            "initial_identity_dose",
+            allow_zero=True,
+        )
+        self.initial_zdom_dose = _finite_positive(
+            initial_zdom_dose,
+            "initial_zdom_dose",
+            allow_zero=True,
+        )
+        if not self.identity_dose_bounds[0] <= self.initial_identity_dose <= self.identity_dose_bounds[1]:
+            raise ValueError("initial_identity_dose must lie within its dose bounds")
+        if not self.zdom_dose_bounds[0] <= self.initial_zdom_dose <= self.zdom_dose_bounds[1]:
+            raise ValueError("initial_zdom_dose must lie within its dose bounds")
+        self.ema_decay = _finite_positive(ema_decay, "ema_decay", allow_zero=True)
+        if self.ema_decay >= 1.0:
+            raise ValueError("ema_decay must be in [0,1)")
+        self._doses = {
+            "identity": self.initial_identity_dose,
+            "zdom": self.initial_zdom_dose,
+        }
+        self._feedback: dict[str, float] | None = None
+        self._last_update: dict[str, Any] | None = None
+
+    @property
+    def doses(self) -> dict[str, float]:
+        return dict(self._doses)
+
+    @property
+    def last_feedback(self) -> dict[str, float] | None:
+        return None if self._feedback is None else dict(self._feedback)
+
+    @property
+    def last_update(self) -> dict[str, Any] | None:
+        return None if self._last_update is None else dict(self._last_update)
+
+    @staticmethod
+    def _drive(value: float) -> float:
+        return max(-1.0, min(1.0, value))
+
+    def update(
+        self,
+        *,
+        discriminator_accuracy: float,
+        tx_margin: float,
+        adversarial_gradient_ratio: float,
+        conflict_signal: float,
+    ) -> dict[str, float]:
+        """Consume four detached feedback signals and return two GRL doses."""
+
+        raw_feedback = {
+            "discriminator_accuracy": _unit_interval(
+                discriminator_accuracy, "discriminator_accuracy"
+            ),
+            "tx_margin": _finite_positive(tx_margin, "tx_margin", allow_zero=True)
+            if float(tx_margin) >= 0.0
+            else -_finite_positive(-float(tx_margin), "tx_margin", allow_zero=True),
+            "adversarial_gradient_ratio": _finite_positive(
+                adversarial_gradient_ratio,
+                "adversarial_gradient_ratio",
+                allow_zero=True,
+            ),
+            "conflict_signal": _unit_interval(conflict_signal, "conflict_signal"),
+        }
+        if self._feedback is None:
+            feedback = dict(raw_feedback)
+        else:
+            feedback = {
+                name: self.ema_decay * self._feedback[name]
+                + (1.0 - self.ema_decay) * value
+                for name, value in raw_feedback.items()
+            }
+        if not all(math.isfinite(value) for value in feedback.values()):
+            raise ValueError("dynamic GRL feedback must remain finite")
+
+        accuracy_drive = self._drive(2.0 * feedback["discriminator_accuracy"] - 1.0)
+        margin_drive = self._drive(math.tanh(feedback["tx_margin"]))
+        identity_ratio_drive = self._drive(
+            1.0
+            - feedback["adversarial_gradient_ratio"]
+            / max(self.conditional_target_ratio, 1.0e-12)
+        )
+        zdom_ratio_drive = self._drive(
+            1.0
+            - feedback["adversarial_gradient_ratio"]
+            / max(self.zdom_tx_target_ratio, 1.0e-12)
+        )
+        conflict_drive = self._drive(1.0 - 2.0 * feedback["conflict_signal"])
+        identity_drive = self._drive(
+            0.30 * accuracy_drive
+            + 0.25 * margin_drive
+            + 0.25 * identity_ratio_drive
+            + 0.20 * conflict_drive
+        )
+        zdom_drive = self._drive(
+            0.40 * accuracy_drive
+            + 0.10 * margin_drive
+            + 0.30 * zdom_ratio_drive
+            + 0.20 * conflict_drive
+        )
+        identity = min(
+            self.identity_dose_bounds[1],
+            max(
+                self.identity_dose_bounds[0],
+                self.initial_identity_dose * (1.0 + 0.35 * identity_drive),
+            ),
+        )
+        zdom = min(
+            self.zdom_dose_bounds[1],
+            max(
+                self.zdom_dose_bounds[0],
+                self.initial_zdom_dose * (1.0 + 0.35 * zdom_drive),
+            ),
+        )
+        if not math.isfinite(identity) or not math.isfinite(zdom):
+            raise ValueError("dynamic GRL doses must remain finite")
+        self._feedback = {name: float(value) for name, value in feedback.items()}
+        self._doses = {"identity": float(identity), "zdom": float(zdom)}
+        self._last_update = {
+            "feedback": dict(self._feedback),
+            "doses": self.doses,
+            "drives": {
+                "identity": float(identity_drive),
+                "zdom": float(zdom_drive),
+            },
+        }
+        return self.doses
+
+
+DynamicGRLController = DynamicGRLDoseController
+
+
 __all__ = [
     "AdversarialGamePlan",
     "AdversarialOptimizers",
+    "DynamicGRLController",
+    "DynamicGRLDoseController",
     "DualRatioController",
     "build_adversarial_optimizers",
 ]

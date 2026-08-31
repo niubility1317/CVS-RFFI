@@ -47,3 +47,25 @@ Ruling：为允许24行并发且不读取运行中冠军，`CV2-D0`和`CV2-T0`�
 - 结构化loader审查发现旧32U硬编码会拒绝24U/18U；已允许冻结的18/24/32U入口，定点复审`RESOLVED`。
 - 动态终态审查发现真实stop update会被静态6500验收拒绝，且非整点安全上限缺少终评；已绑定selection/curve的真实停止步并强制计划末步评估，定点复审`RESOLVED`。
 - 最终本地验证：`code/tests/phase1_bicad_xr`共454项通过；仅3条既存PyTorch autocast弃用警告。
+
+## 2026-09-01 E200修复版重新开放
+
+旧追踪表中的`verified=23/pending=0`只表示旧冻结实现具备可运行入口，不能继续解释为设计报告的严格完整实现。针对实际训练路径反向检查后，旧run已按用户要求停止并保留artifact；修复版以[PairBiCAD-CV2-E200修复版冻结说明](../docs/superpowers/specs/2026-09-01-pairbicad-cv2-e200-repair.md)为当前验收口径。
+
+|ID|修复要求|当前状态|严格验收|
+|---|---|---|---|
+|E200-01|全部候选完整200epochs，无update/coverage/24小时正常提前终止|verified|固定E200循环、忽略科学停止请求、epoch200断言及launcher命令测试|
+|E200-02|strict Pair每个物理样本都是真实LEO，三种LEO从早期可达|verified|真实LEO fail-closed测试及epoch1三场景可达测试|
+|E200-03|CoverageLedger接入真实sample ID和L分组|verified|batch物理ID、dataset index、U唯一覆盖和L组暴露行为测试|
+|E200-04|coverage warmup后再Plateau|verified|warmup前不step、warmup后Plateau参数和状态测试|
+|E200-05|`no_early_freeze`成为运行约束|verified|逐训练步`requires_grad`审计和冻结参数fail-closed测试|
+|E200-06|`adversarial_two_time_scale`成为显式运行分支|verified|入口直接消费该开关及契约，独立optimizer与1.5倍LR测试|
+|E200-07|pair梯度比例不超过5%|verified|raw/effective ratio、scale和实际effective weight行为测试|
+|E200-08|困难组权重质量不超过30%|verified|T2/T3真实Margin-REx/CVaR使用bounded权重的行为测试|
+|E200-09|动态GRL消费四类反馈|verified|判别器准确率、TX margin、对抗梯度比、冲突信号及独立有界剂量测试|
+|E200-10|`V_cal/V_select`物理隔离及职责分离|verified|确定性物理ID分割、重叠fail-closed和角色审计测试|
+|E200-11|final/EMA/SWAD一次`V_select`选择|verified|EMA更新、候选集合和单次selection不可反馈测试|
+
+当前计数：verified=11，deferred=0，rejected=0，blocked=0，in_progress=0。这里的`verified`表示本地实现与行为测试已闭合；N607真实200epoch运行、每行机制遥测和四场景artifact仍须由新run给出运行时证据。
+
+独立P0/P1审查发现并修复一项P1：分离优化器入口原先仍由`detached_adversarial`间接触发，现已改为直接消费`adversarial_two_time_scale`及其运行契约；同时把新launcher默认run ID与本报告冻结ID对齐。定点RED测试先失败，修复后通过。最终本地回归为470项全部通过，仅3条既存PyTorch autocast弃用警告；所有改动模块通过`py_compile`和`git diff --check`。

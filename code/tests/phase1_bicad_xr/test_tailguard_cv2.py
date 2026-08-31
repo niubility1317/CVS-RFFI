@@ -45,6 +45,35 @@ def test_margin_rex_cvar_loss_is_finite_and_contains_group_variance_and_cvar() -
     assert torch.isfinite(margins.grad).all()
 
 
+def test_margin_rex_cvar_loss_uses_capped_hard_group_weights_instead_of_audit_only() -> None:
+    margins = torch.tensor([3.0, 1.0, -1.0, -3.0], requires_grad=True)
+    groups = torch.arange(4, dtype=torch.long)
+
+    uncapped_loss = margin_rex_cvar_loss(
+        margins, groups, tail_fraction=0.5, lambda_rex=0.02, lambda_cvar=0.05
+    )
+    capped_loss = margin_rex_cvar_loss(
+        margins,
+        groups,
+        tail_fraction=0.5,
+        lambda_rex=0.02,
+        lambda_cvar=0.05,
+        hard_fraction=0.25,
+        max_hard_fraction=0.30,
+    )
+    risks = margin_group_risks(margins.detach(), groups, tail_fraction=1.0)
+    weights = bounded_hard_group_weights(
+        risks, hard_fraction=0.25, max_hard_fraction=0.30
+    )
+
+    assert not torch.isclose(capped_loss, uncapped_loss)
+    assert weights.sum().item() == pytest.approx(1.0)
+    assert weights[torch.argmax(risks)].item() <= 0.30 + 1e-7
+    capped_loss.backward()
+    assert margins.grad is not None
+    assert torch.isfinite(margins.grad).all()
+
+
 def test_margin_group_risks_supports_class_receiver_view_group_keys() -> None:
     margins = torch.tensor([1.0, -1.0, 2.0, -2.0])
     groups = torch.tensor(

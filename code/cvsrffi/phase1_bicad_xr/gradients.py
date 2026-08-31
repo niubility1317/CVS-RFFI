@@ -5,6 +5,7 @@ from __future__ import annotations
 import math
 import operator
 from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
 
 import torch
 from torch import Tensor
@@ -241,6 +242,100 @@ def _gradient_norm(value: Tensor, name: str, eps: float) -> Tensor:
     return norm.clamp_min(eps).detach()
 
 
+def _flatten_gradient_values(
+    value: Tensor | Sequence[Tensor], name: str
+) -> Tensor:
+    if torch.is_tensor(value):
+        _validate_gradient(value, name)
+        return value.reshape(-1)
+    if isinstance(value, (str, bytes)) or not isinstance(value, Sequence):
+        raise ValueError(f"{name} must be a tensor or tensor sequence")
+    values = list(value)
+    if not values:
+        raise ValueError(f"{name} must be non-empty")
+    flattened = [
+        _flatten_gradient_values(item, f"{name}[{index}]")
+        for index, item in enumerate(values)
+    ]
+    device = flattened[0].device
+    if any(item.device != device for item in flattened):
+        raise ValueError(f"{name} tensors must use the same device")
+    return torch.cat(flattened)
+
+
+@dataclass(frozen=True)
+class GradientRatioAudit:
+    """Measured weighted-gradient ratio and the multiplier used to cap it."""
+
+    initial_weight: float
+    max_ratio: float
+    reference_norm: float
+    controlled_norm: float
+    raw_ratio: float
+    effective_ratio: float
+    scale: float
+    effective_weight: float
+
+
+def measure_bounded_gradient_ratio(
+    reference_gradient: Tensor | Sequence[Tensor],
+    controlled_gradient: Tensor | Sequence[Tensor],
+    *,
+    initial_weight: float,
+    max_ratio: float = 0.05,
+    eps: float = 1e-12,
+) -> GradientRatioAudit:
+    """Measure and cap a controlled loss relative to a task gradient.
+
+    ``scale`` is a multiplier on ``initial_weight``.  The raw ratio includes
+    that initial weight, while the effective ratio is the ratio represented
+    by the weight returned in ``effective_weight``.  All returned values are
+    detached Python floats so they are safe to persist in runtime audits.
+    """
+
+    try:
+        resolved_weight = float(initial_weight)
+        resolved_max_ratio = float(max_ratio)
+        resolved_eps = float(eps)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("gradient ratio parameters must be finite numbers") from exc
+    if not math.isfinite(resolved_weight) or resolved_weight < 0.0:
+        raise ValueError("initial_weight must be finite and non-negative")
+    if not math.isfinite(resolved_max_ratio) or resolved_max_ratio < 0.0:
+        raise ValueError("max_ratio must be finite and non-negative")
+    if not math.isfinite(resolved_eps) or resolved_eps <= 0.0:
+        raise ValueError("eps must be finite and positive")
+
+    reference = _flatten_gradient_values(reference_gradient, "reference_gradient")
+    controlled = _flatten_gradient_values(controlled_gradient, "controlled_gradient")
+    if reference.device != controlled.device:
+        raise ValueError("reference and controlled gradients must use the same device")
+    reference_norm = float(torch.linalg.vector_norm(reference).detach().item())
+    controlled_norm = float(torch.linalg.vector_norm(controlled).detach().item())
+    if not math.isfinite(reference_norm) or not math.isfinite(controlled_norm):
+        raise ValueError("gradient norms must be finite")
+    raw_ratio = resolved_weight * controlled_norm / max(reference_norm, resolved_eps)
+    if not math.isfinite(raw_ratio):
+        raise ValueError("raw gradient ratio must be finite")
+    scale = 1.0 if raw_ratio <= resolved_max_ratio else resolved_max_ratio / raw_ratio
+    if not math.isfinite(scale) or scale < 0.0 or scale > 1.0:
+        raise ValueError("gradient ratio scale must be finite and in [0,1]")
+    effective_ratio = raw_ratio * scale
+    effective_weight = resolved_weight * scale
+    if not math.isfinite(effective_ratio) or not math.isfinite(effective_weight):
+        raise ValueError("effective gradient ratio must be finite")
+    return GradientRatioAudit(
+        initial_weight=resolved_weight,
+        max_ratio=resolved_max_ratio,
+        reference_norm=reference_norm,
+        controlled_norm=controlled_norm,
+        raw_ratio=raw_ratio,
+        effective_ratio=effective_ratio,
+        scale=scale,
+        effective_weight=effective_weight,
+    )
+
+
 def scale_explicit_gradients(parameters: Sequence[Tensor], scale: float) -> int:
     """Scale gradients only for the explicitly supplied parameter sequence."""
 
@@ -382,7 +477,9 @@ scale_parameter_gradients = scale_explicit_gradients
 
 __all__ = [
     "DEFAULT_LOCAL_PROJECTION_ALLOWLIST",
+    "GradientRatioAudit",
     "GradientRatioController",
+    "measure_bounded_gradient_ratio",
     "project_local_conflicting_gradient",
     "project_local_conflicting_gradients",
     "project_task_protected_gradients",
