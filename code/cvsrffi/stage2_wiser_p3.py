@@ -212,11 +212,117 @@ def update_nonnegative_duals(
         return torch.clamp_min(duals + float(rate) * values, 0.0).detach()
 
 
+def _shared_domain_inputs(
+    target_features: torch.Tensor,
+    labels: torch.Tensor,
+    source_points: torch.Tensor,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    target = torch.as_tensor(target_features)
+    target_labels = torch.as_tensor(labels, dtype=torch.long, device=target.device).view(-1)
+    source = torch.as_tensor(source_points, device=target.device)
+    if target.ndim != 2 or target.shape[0] != target_labels.numel():
+        raise ValueError("target features/labels must align")
+    if source.ndim != 3 or source.shape[2] != target.shape[1]:
+        raise ValueError("source points must be [domain,class,feature]")
+    if source.shape[0] < 1 or source.shape[1] < 1:
+        raise ValueError("source points require at least one domain and class")
+    if not torch.isfinite(target).all() or not torch.isfinite(source).all():
+        raise ValueError("shared domain inputs must be finite")
+    class_count = int(source.shape[1])
+    if (
+        target_labels.numel() < class_count
+        or bool((target_labels < 0).any())
+        or bool((target_labels >= class_count).any())
+    ):
+        raise ValueError("target labels must index the registered source classes")
+    if any(not bool((target_labels == class_id).any()) for class_id in range(class_count)):
+        raise ValueError("target support is missing a registered class")
+    return target, target_labels, source
+
+
+def _class_centers(target: torch.Tensor, labels: torch.Tensor, class_count: int) -> torch.Tensor:
+    return torch.stack(
+        [target[labels == class_id].mean(dim=0) for class_id in range(class_count)], dim=0
+    )
+
+
+def infer_shared_domain_weights(
+    target_features: torch.Tensor,
+    labels: torch.Tensor,
+    source_points: torch.Tensor,
+    *,
+    steps: int = 80,
+    learning_rate: float = 0.1,
+    l2: float = 0.01,
+) -> torch.Tensor:
+    """Fit one detached domain simplex from frozen initial target support features."""
+
+    if int(steps) < 1 or learning_rate <= 0.0 or l2 < 0.0:
+        raise ValueError("shared-domain optimizer parameters must be positive")
+    target, target_labels, source = _shared_domain_inputs(
+        target_features, labels, source_points
+    )
+    frozen_target = functional.normalize(target.detach().float(), dim=-1)
+    frozen_source = functional.normalize(source.detach().float(), dim=-1)
+    class_count = int(frozen_source.shape[1])
+    target_centers = functional.normalize(
+        _class_centers(frozen_target, target_labels, class_count), dim=-1
+    ).detach()
+    logits = torch.zeros(
+        frozen_source.shape[0], device=frozen_target.device, dtype=torch.float32, requires_grad=True
+    )
+    optimizer = torch.optim.Adam((logits,), lr=float(learning_rate))
+    with torch.enable_grad():
+        for _ in range(int(steps)):
+            weights = torch.softmax(logits, dim=0)
+            source_centers = functional.normalize(
+                torch.einsum("d,dcf->cf", weights, frozen_source), dim=-1
+            )
+            objective = (target_centers - source_centers).square().mean()
+            objective = objective + float(l2) * weights.square().sum()
+            optimizer.zero_grad(set_to_none=True)
+            objective.backward()
+            optimizer.step()
+    return torch.softmax(logits.detach(), dim=0).detach()
+
+
+def shared_domain_manifold_loss(
+    target_features: torch.Tensor,
+    labels: torch.Tensor,
+    source_points: torch.Tensor,
+    weights: torch.Tensor,
+) -> torch.Tensor:
+    """Align current target class centers to a fixed shared source-domain mixture."""
+
+    target, target_labels, source = _shared_domain_inputs(
+        target_features, labels, source_points
+    )
+    frozen_weights = torch.as_tensor(weights, device=target.device).detach().float().view(-1)
+    if (
+        frozen_weights.shape != (source.shape[0],)
+        or not torch.isfinite(frozen_weights).all()
+        or bool((frozen_weights < 0).any())
+        or not torch.isclose(frozen_weights.sum(), torch.tensor(1.0, device=target.device))
+    ):
+        raise ValueError("shared domain weights must be one finite simplex")
+    current_centers = functional.normalize(
+        _class_centers(functional.normalize(target.float(), dim=-1), target_labels, int(source.shape[1])),
+        dim=-1,
+    )
+    frozen_source = functional.normalize(source.detach().float(), dim=-1)
+    source_centers = functional.normalize(
+        torch.einsum("d,dcf->cf", frozen_weights, frozen_source), dim=-1
+    )
+    return (current_centers - source_centers).square().mean()
+
+
 __all__ = [
     "CrossFitFold",
     "P3LossResult",
     "cross_fitted_p3_loss",
     "frozen_class_risk",
+    "infer_shared_domain_weights",
+    "shared_domain_manifold_loss",
     "stratified_crossfit_indices",
     "update_nonnegative_duals",
 ]

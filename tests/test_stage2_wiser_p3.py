@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pytest
 import torch
+import torch.nn.functional as functional
 
 from cvsrffi.stage2_binova_d92 import (
     BiNOVAD92Error,
@@ -11,6 +12,8 @@ from cvsrffi.stage2_binova_d92 import (
 from cvsrffi.stage2_wiser_p3 import (
     cross_fitted_p3_loss,
     frozen_class_risk,
+    infer_shared_domain_weights,
+    shared_domain_manifold_loss,
     stratified_crossfit_indices,
     update_nonnegative_duals,
 )
@@ -284,3 +287,58 @@ def test_dual_updates_are_detached_between_optimization_steps() -> None:
         fft.grad = None
     assert baseline.grad is None
     assert epsilon.grad is None
+
+
+def _shared_domain_manifold_case() -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Build six registered classes with one common domain simplex."""
+
+    base = torch.eye(6)
+    source_points = functional.normalize(
+        torch.stack((base, base + 0.2 * torch.roll(base, shifts=1, dims=1), base + 0.2)),
+        dim=-1,
+    )
+    labels = torch.arange(6, dtype=torch.long).repeat_interleave(2)
+    target_centers = functional.normalize(
+        0.65 * source_points[0] + 0.25 * source_points[1] + 0.10 * source_points[2],
+        dim=-1,
+    )
+    target_features = target_centers.repeat_interleave(2, dim=0)
+    return target_features, labels, source_points
+
+
+def test_shared_domain_weights_are_one_simplex_for_all_six_classes() -> None:
+    """Catches per-class domain weights instead of the one frozen shared simplex."""
+
+    target_features, labels, source_points = _shared_domain_manifold_case()
+
+    weights = infer_shared_domain_weights(
+        target_features, labels, source_points, steps=80, learning_rate=0.1, l2=0.01
+    )
+    loss = shared_domain_manifold_loss(target_features, labels, source_points, weights)
+
+    assert weights.shape == (source_points.shape[0],)
+    assert torch.all(weights >= 0)
+    assert torch.isclose(weights.sum(), torch.tensor(1.0), atol=1.0e-6)
+    assert weights.requires_grad is False
+    assert loss.ndim == 0 and torch.isfinite(loss)
+
+
+def test_shared_domain_manifold_loss_only_differentiates_current_target_features() -> None:
+    """Catches source anchors or the frozen simplex leaking into the training graph."""
+
+    target_features, labels, source_points = _shared_domain_manifold_case()
+    weights = infer_shared_domain_weights(target_features, labels, source_points)
+    current_target = target_features.clone().requires_grad_()
+    source_anchor = source_points.clone().requires_grad_()
+    frozen_weights = weights.clone().requires_grad_()
+
+    loss = shared_domain_manifold_loss(
+        current_target, labels, source_anchor, frozen_weights
+    )
+    loss.backward()
+
+    assert current_target.grad is not None
+    assert torch.isfinite(current_target.grad).all()
+    assert current_target.grad.abs().sum().item() > 0.0
+    assert source_anchor.grad is None
+    assert frozen_weights.grad is None

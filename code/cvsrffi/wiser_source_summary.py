@@ -93,6 +93,9 @@ class QuantizedSourceSummary:
     basis: torch.Tensor
     coefficients: torch.Tensor
     radii: torch.Tensor
+    domain_registry: tuple[str, ...] = ()
+    center_domain_handle: str | None = None
+    residual_domain_registry: tuple[str, ...] = ()
     direct_points: torch.Tensor | None = None
 
     def virtual_source_points(self) -> torch.Tensor:
@@ -113,6 +116,70 @@ class QuantizedSourceSummary:
         negative = F.normalize(centers[:, None, :] - offsets, dim=-1)
         points = torch.cat((centers[:, None, :], positive, negative), dim=1)
         return points.detach()
+
+    def domain_class_points(self) -> torch.Tensor:
+        """Return frozen, normalized source anchors in domain-registry order."""
+
+        class_count = len(self.class_registry)
+        if class_count < 1:
+            raise ValueError("source summary requires at least one class")
+        if self.direct_points is not None:
+            points = self.direct_points.detach().float()
+            if points.ndim != 3 or points.shape[0] != class_count:
+                raise ValueError("dense domain-class point geometry drift")
+            domain_count = int(points.shape[1])
+            self._validated_domain_registry(domain_count)
+            if not torch.isfinite(points).all():
+                raise ValueError("dense domain-class points contain nonfinite values")
+            return F.normalize(points, dim=-1).transpose(0, 1).detach()
+
+        centers = self.centers.detach().float()
+        basis = self.basis.detach().float()
+        coefficients = self.coefficients.detach().float()
+        if (
+            centers.ndim != 2
+            or centers.shape[0] != class_count
+            or basis.ndim != 3
+            or basis.shape[0] != class_count
+            or basis.shape[2] != centers.shape[1]
+            or coefficients.ndim != 3
+            or coefficients.shape[1:] != basis.shape[:2]
+        ):
+            raise ValueError("low-rank domain-class summary geometry drift")
+        domain_count = int(coefficients.shape[0]) + 1
+        domains = self._validated_domain_registry(domain_count)
+        center_domain = self.center_domain_handle or domains[0]
+        if center_domain not in domains:
+            raise ValueError("center domain is absent from the domain registry")
+        residual_domains = self.residual_domain_registry or tuple(
+            domain for domain in domains if domain != center_domain
+        )
+        if residual_domains != tuple(domain for domain in domains if domain != center_domain):
+            raise ValueError("residual domain registry/order drift")
+        residual = torch.einsum("dcr,crf->dcf", coefficients, basis)
+        by_domain = []
+        residual_index = 0
+        for domain in domains:
+            if domain == center_domain:
+                by_domain.append(centers)
+            else:
+                by_domain.append(centers + residual[residual_index])
+                residual_index += 1
+        points = torch.stack(by_domain, dim=0)
+        if residual_index != residual.shape[0] or not torch.isfinite(points).all():
+            raise ValueError("low-rank domain-class points contain nonfinite values")
+        return F.normalize(points, dim=-1).detach()
+
+    def _validated_domain_registry(self, domain_count: int) -> tuple[str, ...]:
+        if self.domain_registry:
+            if (
+                len(self.domain_registry) != domain_count
+                or any(not domain for domain in self.domain_registry)
+                or len(set(self.domain_registry)) != domain_count
+            ):
+                raise ValueError("domain registry/point geometry drift")
+            return self.domain_registry
+        return tuple(f"domain-{index}" for index in range(domain_count))
 
 
 def load_quantized_source_summary(path: str | Path) -> QuantizedSourceSummary:
@@ -141,18 +208,16 @@ def load_quantized_source_summary(path: str | Path) -> QuantizedSourceSummary:
                 or not np.isin(mask, (0, 1)).all()
             ):
                 raise ValueError("dense domain-class quantized summary geometry drift")
-            counts = mask.sum(axis=0)
-            if counts.min() < 1 or not np.all(counts == counts[0]):
-                raise ValueError("every class needs the same nonzero valid domain count")
+            common_domains = mask.astype(bool).all(axis=1)
+            if int(common_domains.sum()) < 1:
+                raise ValueError("dense domain-class summary has no common valid domain")
             dense = quantized.astype(np.float32) * scales.astype(np.float32)[..., None]
-            by_class = np.stack(
-                [dense[mask[:, class_index].astype(bool), class_index] for class_index in range(len(classes))],
-                axis=0,
-            )
-            if not np.isfinite(by_class).all():
+            by_domain = dense[common_domains]
+            if not np.isfinite(by_domain).all():
                 raise ValueError("dense domain-class summary contains nonfinite values")
-            points = F.normalize(_portable_tensor(np.array(by_class, copy=True)), dim=-1)
-            centers = F.normalize(points.mean(dim=1), dim=-1)
+            points = F.normalize(_portable_tensor(np.array(by_domain, copy=True)), dim=-1)
+            by_class = points.transpose(0, 1)
+            centers = F.normalize(by_class.mean(dim=1), dim=-1)
             empty = torch.empty(0, dtype=torch.float32)
             return QuantizedSourceSummary(
                 feature_schema=feature_schema,
@@ -161,7 +226,10 @@ def load_quantized_source_summary(path: str | Path) -> QuantizedSourceSummary:
                 basis=empty,
                 coefficients=empty,
                 radii=empty,
-                direct_points=points.detach(),
+                domain_registry=tuple(
+                    domain for domain, valid in zip(domains, common_domains) if bool(valid)
+                ),
+                direct_points=by_class.detach(),
             )
         if members != ALLOWED_MEMBERS:
             raise ValueError(
@@ -242,6 +310,9 @@ def load_quantized_source_summary(path: str | Path) -> QuantizedSourceSummary:
         basis=_portable_tensor(np.array(basis_np, copy=True)).requires_grad_(False),
         coefficients=_portable_tensor(np.array(coeff_np, copy=True)).requires_grad_(False),
         radii=_portable_tensor(np.array(radii_np, copy=True)).requires_grad_(False),
+        domain_registry=domains,
+        center_domain_handle=center_domain,
+        residual_domain_registry=residual_domains,
     )
 
 

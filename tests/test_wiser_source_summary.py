@@ -76,6 +76,30 @@ def _write_dense_domain_summary(path: Path) -> Path:
     return path
 
 
+def _write_dense_summary_with_class_specific_masks(path: Path) -> Path:
+    """Write masks whose equal-count valid columns have only two true overlaps."""
+
+    values = np.asarray(
+        [
+            [[127, 0, 0, 0], [0, 127, 0, 0]],
+            [[0, 127, 0, 0], [127, 0, 0, 0]],
+            [[0, 0, 127, 0], [0, 0, 0, 127]],
+            [[0, 0, 0, 127], [0, 0, 127, 0]],
+        ],
+        dtype=np.int8,
+    )
+    np.savez_compressed(
+        path,
+        domain_class_q=values,
+        domain_class_scale=np.full((4, 2), 1 / 127, np.float16),
+        domain_class_mask=np.asarray([[1, 1], [1, 0], [0, 1], [1, 1]], np.uint8),
+        domain_registry=np.asarray(["d0", "d1", "d2", "d3"], np.str_),
+        class_registry=np.asarray(["c0", "c1"], np.str_),
+        feature_schema=np.asarray("adv3b02_z_id160_fp32", np.str_),
+    )
+    return path
+
+
 def test_quantized_summary_builds_frozen_unit_virtual_points(tmp_path: Path) -> None:
     path = _write_summary(tmp_path / "summary.npz")
 
@@ -110,6 +134,52 @@ def test_dense_domain_class_summary_uses_each_valid_domain_as_source_point(
     assert summary.class_registry == ("c0", "c1")
     assert torch.allclose(torch.linalg.vector_norm(points, dim=-1), torch.ones(2, 3))
     assert torch.allclose(summary.centers, F.normalize(points.mean(dim=1), dim=1))
+
+
+def test_dense_summary_exposes_only_true_common_domain_class_points(tmp_path: Path) -> None:
+    """Catches aligning different class-specific mask columns by their positions."""
+
+    summary = load_quantized_source_summary(
+        _write_dense_summary_with_class_specific_masks(tmp_path / "dense-masked.npz")
+    )
+
+    points = summary.domain_class_points()
+
+    expected = F.normalize(
+        torch.tensor(
+            [
+                [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0]],
+                [[0.0, 0.0, 0.0, 1.0], [0.0, 0.0, 1.0, 0.0]],
+            ]
+        ),
+        dim=-1,
+    )
+    assert points.shape == (2, 2, 4)
+    assert summary.domain_registry == ("d0", "d3")
+    assert torch.allclose(points, expected)
+    assert points.requires_grad is False
+
+
+def test_low_rank_domain_class_points_restore_center_in_registry_order(
+    tmp_path: Path,
+) -> None:
+    """Catches treating the low-rank center as the first domain regardless of its ID."""
+
+    path = _write_summary(tmp_path / "summary.npz")
+    with np.load(path, allow_pickle=False) as archive:
+        members = {key: archive[key] for key in archive.files}
+    members["center_domain_handle"] = np.asarray("d1", dtype=np.str_)
+    members["residual_domain_registry"] = np.asarray(["d0", "d2"], dtype=np.str_)
+    np.savez_compressed(path, **members)
+
+    summary = load_quantized_source_summary(path)
+    points = summary.domain_class_points()
+
+    assert points.shape == (3, 2, 4)
+    assert summary.domain_registry == ("d0", "d1", "d2")
+    assert torch.allclose(points[1], summary.centers)
+    assert not torch.allclose(points[0], points[1])
+    assert not torch.allclose(points[2], points[1])
 
 
 def test_summary_loader_falls_back_when_n607_numpy_bridge_rejects_array(
