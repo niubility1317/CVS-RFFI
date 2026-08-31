@@ -287,6 +287,133 @@ def test_p3_score_validates_late_prediction_npz_before_any_truth_loader(
     assert truth_events == []
 
 
+def _score_p3_collection_with_paired_metrics(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    arms: tuple[str, ...],
+    metrics: dict[str, tuple[float, float, float]],
+    incomplete_candidate: str | None = None,
+) -> dict[str, object]:
+    """Drive the score collector with truth-score stand-ins and real P3 gates."""
+
+    module = _script_module()
+    tmp_path.mkdir(exist_ok=True)
+    config = module._default_p3_config_payload()
+    config_path = tmp_path / "config.json"
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+    job = {
+        "outer_key": config["pilot_outer_key"], "protocol_schema": "p2_min_v1",
+        "phase2_data_status": "VALIDATED_ONCE", "capsule_id": config["capsule_id"],
+        "split_id": config["split_id"], "receiver": config["receiver"], "seed": 713102,
+        "k_shot": 10, "new_class_count": 5, "truth_sidecar": str(tmp_path / "truth.json"),
+    }
+    manifest_path = tmp_path / "manifest.json"
+    manifest_path.write_text(json.dumps({"protocol_schema": "p2_min_v1", "jobs": [job]}), encoding="utf-8")
+    root = tmp_path / "predictions"
+    root.mkdir()
+    (root / "pilot_result.json").write_text(json.dumps({
+        "schema": "cvs.phase2.wiser_rf.p3_primary.pilot.v1", "status": "ARTIFACTS_COMPLETE", "arms": list(arms),
+    }), encoding="utf-8")
+    for scenario in module.SCENARIOS:
+        for arm in arms:
+            unit = root / scenario / arm
+            prediction = unit / "prediction"
+            prediction.mkdir(parents=True)
+            audit = {
+                "outer_arm": arm, "trainer_arm": None if arm == "N0" else "A" if arm == "N1" else arm,
+                "query_rows_used": 0, "support_state_frozen": True,
+            }
+            if arm not in {"N0", "N1"}:
+                audit.update({
+                    "baseline_joint_condition_number": 2.0,
+                    "final_joint_condition_number": 2.0,
+                    "final_zero_identity_count": 0,
+                })
+            (unit / "training_audit.json").write_text(json.dumps(audit), encoding="utf-8")
+            (prediction / "prediction_receipt.json").write_text(json.dumps({"training_audit": audit}), encoding="utf-8")
+
+    monkeypatch.setattr(module, "_p3_validate_prediction_registry", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(
+        module,
+        "score_wiser_predictions",
+        lambda prediction, *_args: {
+            "scenario": prediction.parents[2].name,
+            "arm": prediction.parents[1].name,
+        },
+    )
+
+    def paired(control: dict[str, str], candidate: dict[str, str]) -> dict[str, object]:
+        arm = candidate["arm"]
+        scenario = candidate["scenario"]
+        ba, floor, net = metrics[arm]
+        candidate_arm = arm
+        if incomplete_candidate == arm and scenario == module.SCENARIOS[-1]:
+            candidate_arm = "N6" if arm != "N6" else "N5"
+        return {
+            "schema": "cvs.phase2.wiser_rf.paired_query_delta.v1",
+            "control_arm": control["arm"], "candidate_arm": candidate_arm,
+            "outer_key": job["outer_key"], "capsule_id": job["capsule_id"],
+            "split_id": job["split_id"], "receiver": job["receiver"], "scenario": scenario,
+            "probes": {
+                "P1_SOURCE_HEAD": {"balanced_accuracy_delta_pp": -1.0},
+                "P2_SOURCE_PROTOTYPE": {"balanced_accuracy_delta_pp": -1.0},
+                "P3_OLD_D92": {
+                    "balanced_accuracy_delta_pp": ba,
+                    "floor_delta_pp": floor,
+                    "help_count": max(int(net), 0), "harm_count": max(-int(net), 0),
+                    "net_help_minus_harm": int(net),
+                },
+            },
+        }
+
+    monkeypatch.setattr(module, "compare_wiser_score_rows", paired)
+    result = module._p3_score_pilot(Namespace(
+        p3_config=config_path, manifest=manifest_path, pilot_outer_key=config["pilot_outer_key"],
+        prediction_root=root, output_root=tmp_path / "scores", arms=None,
+    ))
+    return dict(result)
+
+
+def test_p3_score_collection_authorizes_only_the_deterministic_passing_champion(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    result = _score_p3_collection_with_paired_metrics(
+        tmp_path / "multi", monkeypatch, arms=("N0", "N2", "N3"),
+        metrics={"N2": (4.0, 0.0, 2), "N3": (4.0, 0.0, 3)},
+    )
+
+    assert result["formal_p3_primary_decisions"]["N2"]["passed"] is True
+    assert result["formal_p3_primary_decisions"]["N3"]["passed"] is True
+    assert result["p3_primary_champion"] == "N3"
+    assert result["full_target25_authorized"] is True
+
+
+@pytest.mark.parametrize(
+    ("arms", "metrics", "incomplete_candidate"),
+    [
+        (("N0", "N2"), {"N2": (2.99, 0.0, 2)}, None),
+        (("N0", "N1"), {"N1": (4.0, 0.0, 2)}, None),
+        (("N0", "N2"), {"N2": (4.0, 0.0, 2)}, "N2"),
+    ],
+    ids=("no_passing_candidate", "n1_only", "incomplete_paired_evidence"),
+)
+def test_p3_score_collection_does_not_authorize_without_complete_eligible_pass(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    arms: tuple[str, ...],
+    metrics: dict[str, tuple[float, float, float]],
+    incomplete_candidate: str | None,
+) -> None:
+    result = _score_p3_collection_with_paired_metrics(
+        tmp_path, monkeypatch, arms=arms, metrics=metrics,
+        incomplete_candidate=incomplete_candidate,
+    )
+
+    assert result["p3_primary_champion"] is None
+    assert result["full_target25_authorized"] is False
+
+
 def test_cli_normalizes_bounded_arm_subset_with_required_baseline() -> None:
     module = _script_module()
     args = module.parser().parse_args(

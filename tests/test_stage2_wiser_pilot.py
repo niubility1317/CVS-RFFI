@@ -93,6 +93,47 @@ def test_p3_gate_requires_cross_scene_floor_flip_and_support_safety() -> None:
     assert formal_p3_primary_decision(unsafe_condition, arm="N6")["passed"] is False
 
 
+def test_p3_gate_accepts_every_inclusive_threshold_boundary() -> None:
+    rows = _paired_p3_rows(
+        p3_ba_delta_pp=(3.0, 3.0, -0.5),
+        p3_floor_delta_pp=(0.0, 0.0, 0.0),
+        net_help=(1, 1, -1),
+    )
+    for row in rows:
+        row["probes"]["P1_SOURCE_HEAD"]["balanced_accuracy_delta_pp"] = -2.0
+        row["probes"]["P2_SOURCE_PROTOTYPE"]["balanced_accuracy_delta_pp"] = -2.0
+        row["candidate_training_audit"] = {
+            "final_zero_identity_count": 0,
+            "baseline_joint_condition_number": 2.0,
+            "final_joint_condition_number": 4.0,
+        }
+
+    decision = formal_p3_primary_decision(rows, arm="N6")
+
+    assert decision["passed"] is True
+    assert decision["median_p3_ba_delta_pp"] == pytest.approx(3.0)
+    assert decision["worst_scene_p3_ba_delta_pp"] == pytest.approx(-0.5)
+    assert decision["median_p3_floor_delta_pp"] == pytest.approx(0.0)
+    assert decision["leo_low_elev_p3_floor_delta_pp"] == pytest.approx(0.0)
+    assert decision["condition_ratios"] == [pytest.approx(2.0)] * 3
+
+
+@pytest.mark.parametrize(
+    "audit",
+    [
+        {"final_zero_identity_count": 1, "baseline_joint_condition_number": 2.0, "final_joint_condition_number": 2.0},
+        {"final_zero_identity_count": 0, "baseline_joint_condition_number": 2.0, "final_joint_condition_number": 4.000001},
+    ],
+)
+def test_p3_gate_rejects_nonzero_identity_or_just_over_two_x_condition(
+    audit: dict[str, float]
+) -> None:
+    rows = _paired_p3_rows()
+    rows[0]["candidate_training_audit"] = audit
+
+    assert formal_p3_primary_decision(rows, arm="N6")["passed"] is False
+
+
 @pytest.mark.parametrize(
     ("field", "value"),
     [
