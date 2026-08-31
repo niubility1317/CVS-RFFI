@@ -7,13 +7,106 @@ import pytest
 
 from cvsrffi.stage2_wiser_pilot import (
     ARMS,
+    P3_ARMS,
     formal_promotion_decision,
+    formal_p3_primary_decision,
     load_query_package,
+    normalize_p3_arms,
 )
 
 
 def test_wiser_matrix_contains_baseline_and_all_abc_arms() -> None:
     assert ARMS == ("B0", "A", "B", "C", "ABC")
+
+
+def test_p3_pilot_registry_is_n0_through_n6_and_isolated_from_legacy() -> None:
+    assert P3_ARMS == ("N0", "N1", "N2", "N3", "N4", "N5", "N6")
+    assert normalize_p3_arms(("N4",)) == ("N0", "N4")
+    assert normalize_p3_arms(("N6", "N2")) == ("N0", "N6", "N2")
+    with pytest.raises(ValueError, match="mixed"):
+        normalize_p3_arms(("N1", "A"))
+    with pytest.raises(ValueError, match="duplicate"):
+        normalize_p3_arms(("N2", "N2"))
+
+
+def _paired_p3_rows(
+    *,
+    arm: str = "N6",
+    p3_ba_delta_pp: tuple[float, float, float] = (4.0, 3.0, 3.5),
+    p3_floor_delta_pp: tuple[float, float, float] = (0.0, 1.0, 0.0),
+    net_help: tuple[int, int, int] = (3, 2, -1),
+) -> list[dict[str, object]]:
+    rows: list[dict[str, object]] = []
+    for scenario, ba, floor, net in zip(
+        ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"),
+        p3_ba_delta_pp,
+        p3_floor_delta_pp,
+        net_help,
+    ):
+        rows.append(
+            {
+                "schema": "cvs.phase2.wiser_rf.paired_query_delta.v1",
+                "control_arm": "N0",
+                "candidate_arm": arm,
+                "outer_key": "rx_3_19__seed_713102__k_10__new_5",
+                "capsule_id": "capsule",
+                "split_id": "split",
+                "receiver": "rx_3_19",
+                "scenario": scenario,
+                "probes": {
+                    "P1_SOURCE_HEAD": {"balanced_accuracy_delta_pp": -1.0},
+                    "P2_SOURCE_PROTOTYPE": {"balanced_accuracy_delta_pp": -1.0},
+                    "P3_OLD_D92": {
+                        "balanced_accuracy_delta_pp": ba,
+                        "floor_delta_pp": floor,
+                        "help_count": max(net, 0),
+                        "harm_count": max(-net, 0),
+                        "net_help_minus_harm": net,
+                    },
+                },
+                "candidate_training_audit": {
+                    "final_zero_identity_count": 0,
+                    "baseline_joint_condition_number": 2.0,
+                    "final_joint_condition_number": 3.0,
+                },
+            }
+        )
+    return rows
+
+
+def test_p3_gate_requires_cross_scene_floor_flip_and_support_safety() -> None:
+    decision = formal_p3_primary_decision(_paired_p3_rows(), arm="N6")
+    assert decision["passed"] is True
+    assert decision["median_p3_ba_delta_pp"] == pytest.approx(3.5)
+
+    unsafe_floor = formal_p3_primary_decision(
+        _paired_p3_rows(p3_floor_delta_pp=(0.0, -1.0, 0.0)), arm="N6"
+    )
+    assert unsafe_floor["passed"] is False
+    unsafe_condition = _paired_p3_rows()
+    unsafe_condition[0]["candidate_training_audit"] = {
+        "final_zero_identity_count": 0,
+        "baseline_joint_condition_number": 2.0,
+        "final_joint_condition_number": 4.1,
+    }
+    assert formal_p3_primary_decision(unsafe_condition, arm="N6")["passed"] is False
+
+
+@pytest.mark.parametrize("mutation", ["missing", "duplicate", "nonfinite", "binding"])
+def test_p3_gate_fails_closed_for_incomplete_or_unbound_paired_evidence(mutation: str) -> None:
+    rows = _paired_p3_rows()
+    if mutation == "missing":
+        rows.pop()
+    elif mutation == "duplicate":
+        rows.append(dict(rows[0]))
+    elif mutation == "nonfinite":
+        rows[0]["probes"] = dict(rows[0]["probes"])
+        rows[0]["probes"]["P3_OLD_D92"] = dict(rows[0]["probes"]["P3_OLD_D92"])
+        rows[0]["probes"]["P3_OLD_D92"]["balanced_accuracy_delta_pp"] = float("nan")
+    else:
+        rows[0]["split_id"] = "wrong"
+    decision = formal_p3_primary_decision(rows, arm="N6")
+    assert decision["passed"] is False
 
 
 def test_query_package_rejects_label_or_truth_members(tmp_path: Path) -> None:

@@ -7,6 +7,7 @@ import argparse
 from dataclasses import asdict
 import hashlib
 import json
+import math
 from pathlib import Path
 import sys
 from typing import Any, Mapping
@@ -21,17 +22,26 @@ if str(CODE_ROOT) not in sys.path:
 from cvsrffi.stage2_bisage_runner import frozen_checkpoint  # noqa: E402
 from cvsrffi.stage2_wiser_pilot import (  # noqa: E402
     ARMS,
+    P3_ARMS,
     SCENARIOS,
+    formal_p3_primary_decision,
     formal_promotion_decision,
     load_query_package,
     load_support_package,
+    normalize_p3_arms,
+    select_p3_primary_champion,
 )
 from cvsrffi.stage2_wiser_runner import (  # noqa: E402
+    WISERP3TrainingConfig,
     WISERTrainingConfig,
     predict_wiser_representation_probes,
     train_wiser_arm,
+    train_wiser_p3_arm,
 )
-from cvsrffi.stage2_wiser_scoring import score_wiser_predictions  # noqa: E402
+from cvsrffi.stage2_wiser_scoring import (  # noqa: E402
+    compare_wiser_score_rows,
+    score_wiser_predictions,
+)
 from cvsrffi.wiser_source_summary import load_quantized_source_summary  # noqa: E402
 
 
@@ -160,6 +170,178 @@ def _training_config(args: argparse.Namespace) -> WISERTrainingConfig:
         inversion_samples_per_class=int(args.inversion_samples_per_class),
         seed=int(args.seed),
     )
+
+
+_P3_CONFIG_SCHEMA = "cvs.phase2.wiser_rf.p3_primary.config.v1"
+_P3_CONFIG_KEYS = frozenset(
+    {
+        "schema", "protocol_schema", "phase2_data_status", "pilot_outer_key",
+        "arms", "scenarios", "fold_count", "query_policy", "capsule_id", "split_id",
+        "receiver", "seed", "k_shot", "new_class_count", "checkpoint_id",
+        "source_binding", "n1_training", "p3_training",
+    }
+)
+
+
+def _default_p3_config_payload() -> dict[str, Any]:
+    """Return the complete frozen P3 configuration shape for strict validation."""
+
+    return {
+        "schema": _P3_CONFIG_SCHEMA,
+        "protocol_schema": "p2_min_v1",
+        "phase2_data_status": "VALIDATED_ONCE",
+        "pilot_outer_key": "rx_3_19__seed_713102__k_10__new_5",
+        "arms": list(P3_ARMS),
+        "scenarios": list(SCENARIOS),
+        "fold_count": 5,
+        "query_policy": "full_package_read_only_after_support_freeze",
+        "capsule_id": "p2-wiser-rf-rx_3_19-seed713102-k10-new5-v1",
+        "split_id": "p2_min_v1-rx_3_19-seed713102-k10-new5-wiser-rf-v1",
+        "receiver": "3-19",
+        "seed": 713102,
+        "k_shot": 10,
+        "new_class_count": 5,
+        "checkpoint_id": "ADV3B02_CORE90_SOFT_E200",
+        "source_binding": {
+            "schema": "cvs.phase1.wiser_rf.source_binding.v1",
+            "checkpoint_id": "ADV3B02_CORE90_SOFT_E200",
+            "feature_schema": "ADV3B02:z_id:unit_l2:160:v1",
+            "feature_dim": 160,
+            "class_registry": ["14-10", "14-7", "20-15", "20-19", "6-15", "8-20"],
+        },
+        "n1_training": asdict(WISERTrainingConfig(seed=713102)),
+        "p3_training": asdict(WISERP3TrainingConfig(seed=713102)),
+    }
+
+
+def _strict_int(value: Any, field: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise ValueError(f"P3 config {field} must be an integer")
+    return int(value)
+
+
+def _strict_float(value: Any, field: str) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f"P3 config {field} must be numeric")
+    result = float(value)
+    if not math.isfinite(result):
+        raise ValueError(f"P3 config {field} must be finite")
+    return result
+
+
+def _strict_training_mapping(
+    payload: Any, reference: Mapping[str, Any], *, label: str
+) -> dict[str, Any]:
+    if not isinstance(payload, Mapping):
+        raise ValueError(f"P3 config {label} must be an object")
+    keys = set(payload)
+    expected = set(reference)
+    if keys != expected:
+        missing = sorted(expected - keys)
+        unknown = sorted(keys - expected)
+        if unknown:
+            raise ValueError(f"P3 config {label} has unknown keys: {', '.join(unknown)}")
+        raise ValueError(f"P3 config {label} is missing keys: {', '.join(missing)}")
+    result: dict[str, Any] = {}
+    for key, default in reference.items():
+        value = payload[key]
+        if isinstance(default, tuple):
+            if not isinstance(value, list) or len(value) != len(default):
+                raise ValueError(f"P3 config {label}.{key} must be a fixed-length list")
+            converted = []
+            for index, item in enumerate(value):
+                if isinstance(default[index], int) and not isinstance(default[index], bool):
+                    converted.append(_strict_int(item, f"{label}.{key}"))
+                else:
+                    converted.append(_strict_float(item, f"{label}.{key}"))
+            result[key] = tuple(converted)
+        elif isinstance(default, int) and not isinstance(default, bool):
+            result[key] = _strict_int(value, f"{label}.{key}")
+        elif isinstance(default, float):
+            result[key] = _strict_float(value, f"{label}.{key}")
+        else:
+            raise ValueError(f"P3 config {label}.{key} has unsupported schema")
+    return result
+
+
+def _load_p3_config(path: Path) -> Mapping[str, Any]:
+    payload = _load_json(path)
+    keys = set(payload)
+    if keys != set(_P3_CONFIG_KEYS):
+        unknown = sorted(keys - _P3_CONFIG_KEYS)
+        if unknown:
+            raise ValueError(f"P3 config has unknown keys: {', '.join(unknown)}")
+        raise ValueError(f"P3 config is missing keys: {', '.join(sorted(_P3_CONFIG_KEYS - keys))}")
+    template = _default_p3_config_payload()
+    for field in ("schema", "protocol_schema", "phase2_data_status", "pilot_outer_key", "query_policy", "capsule_id", "split_id", "receiver", "checkpoint_id"):
+        if not isinstance(payload[field], str) or not payload[field]:
+            raise ValueError(f"P3 config {field} must be a nonempty string")
+    if payload["schema"] != _P3_CONFIG_SCHEMA:
+        raise ValueError("P3 config schema drift")
+    if payload["protocol_schema"] != "p2_min_v1" or payload["phase2_data_status"] != "VALIDATED_ONCE":
+        raise ValueError("P3 config protocol binding drift")
+    if payload["query_policy"] != "full_package_read_only_after_support_freeze":
+        raise ValueError("P3 config query policy drift")
+    if not isinstance(payload["arms"], list) or tuple(payload["arms"]) != P3_ARMS:
+        raise ValueError("P3 config arm registry drift")
+    if not isinstance(payload["scenarios"], list) or tuple(payload["scenarios"]) != SCENARIOS:
+        raise ValueError("P3 config scenario registry drift")
+    if _strict_int(payload["fold_count"], "fold_count") != 5:
+        raise ValueError("P3 config fold count drift")
+    for field, expected in (("seed", 713102), ("k_shot", 10), ("new_class_count", 5)):
+        if _strict_int(payload[field], field) != expected:
+            raise ValueError(f"P3 config {field} drift")
+    source_binding = payload["source_binding"]
+    if not isinstance(source_binding, Mapping) or set(source_binding) != set(template["source_binding"]):
+        raise ValueError("P3 config source binding schema drift")
+    if (
+        source_binding.get("schema") != "cvs.phase1.wiser_rf.source_binding.v1"
+        or source_binding.get("checkpoint_id") != payload["checkpoint_id"]
+        or source_binding.get("feature_schema") != "ADV3B02:z_id:unit_l2:160:v1"
+        or _strict_int(source_binding.get("feature_dim"), "source_binding.feature_dim") != 160
+        or not isinstance(source_binding.get("class_registry"), list)
+        or len(source_binding["class_registry"]) != 6
+        or len(set(map(str, source_binding["class_registry"]))) != 6
+    ):
+        raise ValueError("P3 config source binding drift")
+    n1 = _strict_training_mapping(payload["n1_training"], template["n1_training"], label="n1_training")
+    p3 = _strict_training_mapping(payload["p3_training"], template["p3_training"], label="p3_training")
+    if n1["seed"] != payload["seed"] or p3["seed"] != payload["seed"] or p3["fold_count"] != payload["fold_count"]:
+        raise ValueError("P3 config nested training binding drift")
+    return {**payload, "n1_training": n1, "p3_training": p3}
+
+
+def _validate_p3_job_binding(
+    config: Mapping[str, Any], job: Mapping[str, Any], binding: Mapping[str, Any]
+) -> None:
+    for config_field, job_field in (
+        ("pilot_outer_key", "outer_key"),
+        ("capsule_id", "capsule_id"),
+        ("split_id", "split_id"),
+        ("receiver", "receiver"),
+        ("seed", "seed"),
+        ("k_shot", "k_shot"),
+        ("new_class_count", "new_class_count"),
+    ):
+        if job_field not in job or config[config_field] != job[job_field]:
+            raise ValueError(f"P3 config/manifest {config_field} binding drift")
+    source = config["source_binding"]
+    if (
+        config["checkpoint_id"] != binding.get("checkpoint_id")
+        or source["checkpoint_id"] != binding.get("checkpoint_id")
+        or source["feature_schema"] != binding.get("feature_schema")
+        or source["feature_dim"] != binding.get("feature_dim")
+        or tuple(source["class_registry"]) != tuple(binding.get("class_registry", ()))
+    ):
+        raise ValueError("P3 config/Phase1 source binding drift")
+
+
+def _p3_n1_training_config(config: Mapping[str, Any]) -> WISERTrainingConfig:
+    return WISERTrainingConfig(**dict(config["n1_training"]))
+
+
+def _p3_training_config(config: Mapping[str, Any]) -> WISERP3TrainingConfig:
+    return WISERP3TrainingConfig(**dict(config["p3_training"]))
 
 
 def _tensor(values: np.ndarray, device: str, *, labels: bool = False) -> torch.Tensor:
@@ -426,6 +608,279 @@ def _score_pilot(args: argparse.Namespace) -> Mapping[str, Any]:
     return result
 
 
+def _p3_context(args: argparse.Namespace) -> tuple[Mapping[str, Any], Mapping[str, Any], Any, Mapping[str, Any]]:
+    """Validate all P3 bindings before a mutable output directory exists."""
+
+    config = _load_p3_config(args.p3_config)
+    manifest = _load_json(args.manifest)
+    job = _pilot_job(manifest, config["pilot_outer_key"])
+    if args.pilot_outer_key != config["pilot_outer_key"]:
+        raise ValueError("P3 CLI/config pilot outer binding drift")
+    binding = _validate_phase1_binding(args.checkpoint, args.source_summary, args.source_binding)
+    _validate_p3_job_binding(config, job, binding)
+    summary = load_quantized_source_summary(args.source_summary)
+    if (
+        tuple(summary.class_registry) != tuple(binding["class_registry"])
+        or summary.feature_schema != binding["feature_schema"]
+        or tuple(summary.centers.shape) != (6, int(binding["feature_dim"]))
+    ):
+        raise ValueError("P3 loaded source summary semantic binding drift")
+    return config, job, summary, binding
+
+
+def _p3_n0_audit(config: Mapping[str, Any]) -> Mapping[str, Any]:
+    return {
+        "outer_arm": "N0",
+        "trainer_arm": None,
+        "optimizer_steps": 0,
+        "query_rows_used": 0,
+        "stage_audits": [],
+        "support_state_frozen": True,
+        "config": {"p3_training": dict(config["p3_training"])},
+    }
+
+
+def _p3_train_one(
+    arm: str,
+    model: torch.nn.Module,
+    support: WISERSupportPackage,
+    *,
+    device: str,
+    summary: Any,
+    binding: Mapping[str, Any],
+    config: Mapping[str, Any],
+) -> Mapping[str, Any]:
+    if arm == "N0":
+        return _p3_n0_audit(config)
+    support_iq = _tensor(support.iq, device)
+    support_labels = _tensor(support.labels, device, labels=True)
+    if arm == "N1":
+        audit = asdict(
+            train_wiser_arm(
+                model, support_iq, support_labels, source_summary=summary,
+                arm="A", config=_p3_n1_training_config(config),
+            )
+        )
+        return {**audit, "outer_arm": "N1", "trainer_arm": "A", "support_state_frozen": True}
+    audit = asdict(
+        train_wiser_p3_arm(
+            model, support_iq, support_labels, support_tokens=support.tokens,
+            source_summary=summary,
+            expected_source_class_registry=tuple(binding["class_registry"]),
+            expected_source_feature_schema=str(binding["feature_schema"]),
+            arm=arm, config=_p3_training_config(config),
+        )
+    )
+    return {**audit, "outer_arm": arm, "trainer_arm": arm, "support_state_frozen": True}
+
+
+def _p3_smoke(args: argparse.Namespace) -> Mapping[str, Any]:
+    config, job, summary, binding = _p3_context(args)
+    arm = str(args.arm).upper()
+    if arm not in P3_ARMS:
+        raise ValueError("P3 smoke arm registry drift")
+    destination = _new_root(args.output_root)
+    support = load_support_package(_support_path(job, args.scenario))
+    model = frozen_checkpoint(args.checkpoint, args.device)
+    audit = _p3_train_one(
+        arm, model, support, device=args.device, summary=summary, binding=binding, config=config
+    )
+    result = {
+        "schema": "cvs.phase2.wiser_rf.p3_primary.no_query_smoke.v1",
+        "status": "PASS", "outer_key": job["outer_key"], "capsule_id": job["capsule_id"],
+        "split_id": job["split_id"], "receiver": job["receiver"], "scenario": args.scenario,
+        "arm": arm, "query_opened": False, "query_rows_used": 0,
+        "support_state_frozen_before_query": True, "training_audit": audit,
+    }
+    _write_json_new(destination / "smoke_result.json", result)
+    return result
+
+
+def _p3_pilot(args: argparse.Namespace) -> Mapping[str, Any]:
+    config, job, summary, binding = _p3_context(args)
+    arms = normalize_p3_arms(tuple(getattr(args, "arms", P3_ARMS)))
+    destination = _new_root(args.output_root)
+    support_cache: dict[str, WISERSupportPackage] = {}
+    support_units: list[dict[str, Any]] = []
+    # Persist every support-only state before loading any query package.
+    for scenario in SCENARIOS:
+        support = load_support_package(_support_path(job, scenario))
+        support_cache[scenario] = support
+        for arm in arms:
+            unit = destination / scenario / arm
+            unit.mkdir(parents=True, exist_ok=False)
+            model = frozen_checkpoint(args.checkpoint, args.device)
+            audit = _p3_train_one(
+                arm, model, support, device=args.device, summary=summary, binding=binding, config=config
+            )
+            if int(audit.get("query_rows_used", -1)) != 0:
+                raise ValueError("P3 support training used query rows")
+            _save_adapted_state_new(unit / "adapted_state.pt", model, audit)
+            _write_json_new(unit / "training_audit.json", audit)
+            support_units.append(
+                {"scenario": scenario, "arm": arm, "status": "SUPPORT_STATE_FROZEN", "query_opened": False}
+            )
+    support_audit = {
+        "schema": "cvs.phase2.wiser_rf.p3_primary.support_audit.v1",
+        "status": "SUPPORT_STATES_COMPLETE", "outer_key": job["outer_key"],
+        "capsule_id": job["capsule_id"], "split_id": job["split_id"],
+        "receiver": job["receiver"], "arms": list(arms), "scenarios": list(SCENARIOS),
+        "expected_scene_arm_unit_count": len(SCENARIOS) * len(arms),
+        "units": support_units, "query_opened": False,
+        "all_support_states_frozen": len(support_units) == len(SCENARIOS) * len(arms),
+    }
+    _write_json_new(destination / "support_audit.json", support_audit)
+    if not support_audit["all_support_states_frozen"]:
+        raise RuntimeError("P3 root support audit is incomplete")
+
+    completed: list[dict[str, Any]] = []
+    for scenario in SCENARIOS:
+        support = support_cache[scenario]
+        support_iq = _tensor(support.iq, args.device)
+        support_labels = _tensor(support.labels, args.device, labels=True)
+        query = load_query_package(_query_path(job, scenario))
+        query_iq = _tensor(query.iq, args.device)
+        for arm in arms:
+            unit = destination / scenario / arm
+            prediction_root = unit / "prediction"
+            prediction_root.mkdir(parents=True, exist_ok=False)
+            model = frozen_checkpoint(args.checkpoint, args.device)
+            _load_adapted_state(unit / "adapted_state.pt", model, args.device)
+            audit = _load_json(unit / "training_audit.json")
+            predictions = predict_wiser_representation_probes(
+                model, support_iq, support_labels, query_iq, query_tokens=query.tokens,
+                source_summary=summary, seed=int(job["seed"]),
+            )
+            np.savez_compressed(prediction_root / "predictions.npz", **predictions)
+            receipt = {
+                "schema": "cvs.phase2.wiser_rf.p3_primary.prediction_receipt.v1",
+                "status": "PREDICTIONS_COMPLETE", "outer_key": job["outer_key"],
+                "capsule_id": job["capsule_id"], "split_id": job["split_id"],
+                "receiver": job["receiver"], "scenario": scenario, "arm": arm,
+                "query_rows": len(query.tokens), "expected_query_tokens": list(query.tokens),
+                "support_audit_reference": "support_audit.json", "query_truth_opened": False,
+                "query_role_opened": False, "support_state_frozen_before_query": True,
+                "training_audit": audit,
+            }
+            _write_json_new(prediction_root / "prediction_receipt.json", receipt)
+            completed.append({"scenario": scenario, "arm": arm, "status": "PREDICTIONS_COMPLETE", "query_rows": len(query.tokens)})
+    result = {
+        "schema": "cvs.phase2.wiser_rf.p3_primary.pilot.v1", "status": "ARTIFACTS_COMPLETE",
+        "pilot_outer_key": job["outer_key"], "arms": list(arms), "scenarios": list(SCENARIOS),
+        "scene_arm_unit_count": len(completed), "units": completed,
+        "support_audit_reference": "support_audit.json", "truth_opened": False, "scoring_required": True,
+    }
+    _write_json_new(destination / "pilot_result.json", result)
+    return result
+
+
+def _p3_frozen_pilot_arms(prediction_root: Path, requested: Any) -> tuple[str, ...]:
+    pilot = _load_json(prediction_root / "pilot_result.json")
+    if pilot.get("schema") != "cvs.phase2.wiser_rf.p3_primary.pilot.v1" or pilot.get("status") != "ARTIFACTS_COMPLETE":
+        raise ValueError("P3 score-pilot root schema/status drift")
+    frozen = normalize_p3_arms(tuple(pilot.get("arms", ())))
+    if requested is not None and normalize_p3_arms(tuple(requested)) != frozen:
+        raise ValueError("P3 score-pilot arm registry mismatch")
+    return frozen
+
+
+def _p3_validate_prediction_registry(
+    prediction_root: Path, *, arms: tuple[str, ...], job: Mapping[str, Any]
+) -> None:
+    support_audit = _load_json(prediction_root / "support_audit.json")
+    if support_audit.get("schema") != "cvs.phase2.wiser_rf.p3_primary.support_audit.v1" or support_audit.get("all_support_states_frozen") is not True:
+        raise ValueError("P3 support audit is not complete")
+    if int(support_audit.get("expected_scene_arm_unit_count", -1)) != len(SCENARIOS) * len(arms):
+        raise ValueError("P3 support audit unit coverage drift")
+    for scenario in SCENARIOS:
+        for arm in arms:
+            source = prediction_root / scenario / arm / "prediction"
+            if not (source / "predictions.npz").is_file() or not (source / "prediction_receipt.json").is_file():
+                raise ValueError("P3 prediction registry is incomplete")
+            receipt = _load_json(source / "prediction_receipt.json")
+            if receipt.get("schema") != "cvs.phase2.wiser_rf.p3_primary.prediction_receipt.v1" or receipt.get("status") != "PREDICTIONS_COMPLETE":
+                raise ValueError("P3 prediction receipt schema/status drift")
+            for field, expected in (("outer_key", job["outer_key"]), ("capsule_id", job["capsule_id"]), ("split_id", job["split_id"]), ("receiver", job["receiver"]), ("scenario", scenario), ("arm", arm)):
+                if receipt.get(field) != expected:
+                    raise ValueError("P3 prediction receipt binding drift")
+            if receipt.get("query_truth_opened") is not False or receipt.get("query_role_opened") is not False or receipt.get("support_state_frozen_before_query") is not True or receipt.get("support_audit_reference") != "support_audit.json":
+                raise ValueError("P3 prediction receipt truth-last drift")
+            _p3_unit_training_audit(prediction_root / scenario / arm, receipt, arm=arm)
+
+
+def _p3_unit_training_audit(
+    unit: Path, receipt: Mapping[str, Any], *, arm: str
+) -> Mapping[str, Any]:
+    """Read the frozen unit audit and reject a receipt/audit identity mismatch."""
+
+    audit = _load_json(unit / "training_audit.json")
+    if receipt.get("training_audit") != audit:
+        raise ValueError("P3 receipt/training audit binding drift")
+    if audit.get("outer_arm") != arm or _strict_int(audit.get("query_rows_used"), "training_audit.query_rows_used") != 0:
+        raise ValueError("P3 unit training audit binding drift")
+    expected_trainer = None if arm == "N0" else "A" if arm == "N1" else arm
+    if audit.get("trainer_arm") != expected_trainer or audit.get("support_state_frozen") is not True:
+        raise ValueError("P3 unit training audit binding drift")
+    if arm in {"N2", "N3", "N4", "N5", "N6"}:
+        for field in (
+            "baseline_joint_condition_number",
+            "final_joint_condition_number",
+            "final_zero_identity_count",
+        ):
+            if field not in audit:
+                raise ValueError("P3 candidate training audit diagnostics are missing")
+        baseline = _strict_float(audit["baseline_joint_condition_number"], "training_audit.baseline_joint_condition_number")
+        final = _strict_float(audit["final_joint_condition_number"], "training_audit.final_joint_condition_number")
+        zero_count = _strict_int(audit["final_zero_identity_count"], "training_audit.final_zero_identity_count")
+        if baseline <= 0.0 or final < 0.0 or zero_count < 0:
+            raise ValueError("P3 candidate training audit diagnostics are invalid")
+    return audit
+
+
+def _p3_score_pilot(args: argparse.Namespace) -> Mapping[str, Any]:
+    config = _load_p3_config(args.p3_config)
+    manifest = _load_json(args.manifest)
+    job = _pilot_job(manifest, config["pilot_outer_key"])
+    if args.pilot_outer_key != config["pilot_outer_key"]:
+        raise ValueError("P3 CLI/config pilot outer binding drift")
+    _validate_p3_job_binding(config, job, config["source_binding"])
+    arms = _p3_frozen_pilot_arms(args.prediction_root, getattr(args, "arms", None))
+    _p3_validate_prediction_registry(args.prediction_root, arms=arms, job=job)
+    destination = _new_root(args.output_root)
+    truth = Path(str(job["truth_sidecar"]))
+    scores: dict[tuple[str, str], Mapping[str, Any]] = {}
+    for scenario in SCENARIOS:
+        for arm in arms:
+            source = args.prediction_root / scenario / arm / "prediction"
+            score = score_wiser_predictions(source / "predictions.npz", source / "prediction_receipt.json", truth)
+            _write_json_new(destination / scenario / arm / "score.json", score)
+            scores[(scenario, arm)] = score
+    paired: list[Mapping[str, Any]] = []
+    for scenario in SCENARIOS:
+        for arm in arms:
+            if arm == "N0":
+                continue
+            comparison = dict(compare_wiser_score_rows(scores[(scenario, "N0")], scores[(scenario, arm)]))
+            receipt = _load_json(args.prediction_root / scenario / arm / "prediction" / "prediction_receipt.json")
+            audit = _p3_unit_training_audit(args.prediction_root / scenario / arm, receipt, arm=arm)
+            comparison["candidate_training_audit"] = audit
+            baseline_receipt = _load_json(args.prediction_root / scenario / "N0" / "prediction" / "prediction_receipt.json")
+            comparison["baseline_training_audit"] = _p3_unit_training_audit(
+                args.prediction_root / scenario / "N0", baseline_receipt, arm="N0"
+            )
+            paired.append(comparison)
+    decisions = {arm: formal_p3_primary_decision(paired, arm=arm) for arm in arms if arm != "N0"}
+    champion = select_p3_primary_champion(decisions)
+    result = {
+        "schema": "cvs.phase2.wiser_rf.p3_primary.score_collection.v1", "status": "ANALYZED",
+        "scene_arm_unit_count": len(scores), "rows": list(scores.values()), "paired_rows": paired,
+        "formal_p3_primary_decisions": decisions, "p3_primary_champion": champion,
+        "full_target25_authorized": champion is not None, "truth_join_after_prediction_only": True,
+    }
+    _write_json_new(destination / "score_collection.json", result)
+    return result
+
+
 def _add_common(command: argparse.ArgumentParser) -> None:
     command.add_argument("--manifest", type=Path, required=True)
     command.add_argument(
@@ -451,6 +906,16 @@ def _add_training(command: argparse.ArgumentParser) -> None:
     command.add_argument("--seed", type=int, default=713102)
 
 
+def _add_p3_training(command: argparse.ArgumentParser) -> None:
+    _add_common(command)
+    command.add_argument("--p3-config", type=Path, required=True)
+    command.add_argument("--checkpoint", type=Path, required=True)
+    command.add_argument("--source-summary", type=Path, required=True)
+    command.add_argument("--source-binding", type=Path, required=True)
+    command.add_argument("--output-root", type=Path, required=True)
+    command.add_argument("--device", required=True)
+
+
 def parser() -> argparse.ArgumentParser:
     root = argparse.ArgumentParser(description=__doc__)
     commands = root.add_subparsers(dest="command", required=True)
@@ -467,6 +932,19 @@ def parser() -> argparse.ArgumentParser:
     score.add_argument("--prediction-root", type=Path, required=True)
     score.add_argument("--output-root", type=Path, required=True)
     score.add_argument("--arms", nargs="+", choices=ARMS)
+    p3_smoke = commands.add_parser("p3-smoke")
+    _add_p3_training(p3_smoke)
+    p3_smoke.add_argument("--arm", choices=P3_ARMS, default="N6")
+    p3_smoke.add_argument("--scenario", choices=SCENARIOS, default=SCENARIOS[0])
+    p3_pilot = commands.add_parser("p3-pilot")
+    _add_p3_training(p3_pilot)
+    p3_pilot.add_argument("--arms", nargs="+", choices=P3_ARMS, default=P3_ARMS)
+    p3_score = commands.add_parser("p3-score-pilot")
+    _add_common(p3_score)
+    p3_score.add_argument("--p3-config", type=Path, required=True)
+    p3_score.add_argument("--prediction-root", type=Path, required=True)
+    p3_score.add_argument("--output-root", type=Path, required=True)
+    p3_score.add_argument("--arms", nargs="+", choices=P3_ARMS)
     return root
 
 
@@ -476,6 +954,9 @@ def main() -> int:
         "smoke": _smoke,
         "pilot": _pilot,
         "score-pilot": _score_pilot,
+        "p3-smoke": _p3_smoke,
+        "p3-pilot": _p3_pilot,
+        "p3-score-pilot": _p3_score_pilot,
     }[args.command](args)
     print(json.dumps(dict(result), ensure_ascii=False, sort_keys=True))
     return 0

@@ -15,7 +15,7 @@ import pytest
 import torch
 
 from cvsrffi.stage2_wiser_pilot import WISERQueryPackage, WISERSupportPackage
-from cvsrffi.stage2_wiser_runner import WISERTrainingAudit
+from cvsrffi.stage2_wiser_runner import WISERP3TrainingAudit, WISERTrainingAudit
 
 
 def _script_module():
@@ -41,6 +41,149 @@ def test_wiser_pilot_cli_exposes_smoke_pilot_and_score_commands() -> None:
     assert "smoke" in result.stdout
     assert "pilot" in result.stdout
     assert "score-pilot" in result.stdout
+    assert "p3-smoke" in result.stdout
+    assert "p3-pilot" in result.stdout
+    assert "p3-score-pilot" in result.stdout
+
+
+def test_p3_cli_normalizes_n_series_subset_and_rejects_legacy_names() -> None:
+    module = _script_module()
+
+    assert module.normalize_p3_arms(("N6",)) == ("N0", "N6")
+    with pytest.raises(ValueError, match="mixed"):
+        module.normalize_p3_arms(("N1", "A"))
+
+
+def test_p3_config_is_strict_before_output_root_creation(tmp_path: Path) -> None:
+    module = _script_module()
+    config = module._default_p3_config_payload()
+    config["unexpected"] = True
+    path = tmp_path / "config.json"
+    path.write_text(json.dumps(config), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="unknown"):
+        module._load_p3_config(path)
+
+
+def test_p3_unit_training_audit_is_bound_to_its_receipt(tmp_path: Path) -> None:
+    module = _script_module()
+    unit = tmp_path / "leo_clear_weak" / "N6"
+    prediction = unit / "prediction"
+    prediction.mkdir(parents=True)
+    audit = {
+        "outer_arm": "N6", "trainer_arm": "N6", "query_rows_used": 0,
+        "support_state_frozen": True,
+        "baseline_joint_condition_number": 2.0,
+        "final_joint_condition_number": 3.0,
+        "final_zero_identity_count": 0,
+    }
+    (unit / "training_audit.json").write_text(json.dumps(audit), encoding="utf-8")
+    receipt = {
+        "schema": "cvs.phase2.wiser_rf.p3_primary.prediction_receipt.v1",
+        "training_audit": audit,
+    }
+
+    assert module._p3_unit_training_audit(unit, receipt, arm="N6") == audit
+    receipt["training_audit"] = {**audit, "outer_arm": "N5"}
+    with pytest.raises(ValueError, match="audit"):
+        module._p3_unit_training_audit(unit, receipt, arm="N6")
+
+
+def test_p3_config_binds_real_manifest_receiver_separately_from_outer_key() -> None:
+    module = _script_module()
+    config = module._default_p3_config_payload()
+    job = {
+        "outer_key": "rx_3_19__seed_713102__k_10__new_5",
+        "capsule_id": config["capsule_id"], "split_id": config["split_id"],
+        "receiver": "3-19", "seed": 713102, "k_shot": 10, "new_class_count": 5,
+    }
+    binding = {
+        "checkpoint_id": config["checkpoint_id"],
+        "feature_schema": config["source_binding"]["feature_schema"],
+        "feature_dim": 160,
+        "class_registry": config["source_binding"]["class_registry"],
+    }
+
+    module._validate_p3_job_binding(config, job, binding)
+
+
+def test_p3_pilot_freezes_all_three_by_seven_support_units_before_query(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    module = _script_module()
+    config = module._default_p3_config_payload()
+    config_path = tmp_path / "p3_config.json"
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+    manifest_path = tmp_path / "manifest.json"
+    manifest_path.write_text(
+        json.dumps(
+            {"protocol_schema": "p2_min_v1", "jobs": [{
+                "outer_key": config["pilot_outer_key"], "protocol_schema": "p2_min_v1",
+                "phase2_data_status": "VALIDATED_ONCE", "capsule_id": config["capsule_id"],
+                "split_id": config["split_id"], "receiver": "3-19", "seed": 713102,
+                "k_shot": 10, "new_class_count": 5, "truth_sidecar": str(tmp_path / "truth.json"),
+                "packages": {"before_enrollment": {"package_root": str(tmp_path / "support")}, "before_apply": {"package_root": str(tmp_path / "query")}},
+            }]}),
+        encoding="utf-8",
+    )
+    support = WISERSupportPackage(
+        iq=np.zeros((12, 2, 256), np.float32), labels=np.repeat(np.arange(6), 2),
+        tokens=tuple(f"s{index}" for index in range(12)),
+    )
+    query = WISERQueryPackage(
+        iq=np.zeros((6, 2, 256), np.float32), tokens=tuple(f"q{index}" for index in range(6)),
+    )
+    registry = tuple(config["source_binding"]["class_registry"])
+    calls: list[tuple[str, str]] = []
+
+    monkeypatch.setattr(module, "_validate_phase1_binding", lambda *_args: {
+        "checkpoint_id": config["checkpoint_id"], "class_registry": list(registry),
+        "feature_schema": config["source_binding"]["feature_schema"], "feature_dim": 160,
+    })
+    monkeypatch.setattr(module, "load_quantized_source_summary", lambda *_args: SimpleNamespace(
+        class_registry=registry, feature_schema=config["source_binding"]["feature_schema"], centers=torch.zeros((6, 160)),
+    ))
+    monkeypatch.setattr(module, "frozen_checkpoint", lambda *_args: torch.nn.Linear(1, 1))
+    monkeypatch.setattr(module, "load_support_package", lambda *_args: support)
+    def fake_query(_path):
+        assert (tmp_path / "run" / "support_audit.json").is_file()
+        calls.append(("query", "opened"))
+        return query
+    monkeypatch.setattr(module, "load_query_package", fake_query)
+    monkeypatch.setattr(module, "train_wiser_arm", lambda *_args, **kwargs: WISERTrainingAudit(
+        arm="A", optimizer_steps=1, query_rows_used=0, vsw_enabled=False,
+        model_inversion_enabled=False, stage_audits=(), config=asdict(kwargs["config"]),
+    ))
+    def fake_p3(*_args, **kwargs):
+        calls.append(("p3", kwargs["arm"]))
+        assert tuple(kwargs["expected_source_class_registry"]) == registry
+        assert kwargs["expected_source_feature_schema"] == config["source_binding"]["feature_schema"]
+        return WISERP3TrainingAudit(
+            arm=kwargs["arm"], optimizer_steps=1, query_rows_used=0, stage_audits=(),
+            reached_parameter_names=(), final_oof_p3_ba=0.5, final_oof_p3_floor=0.5,
+            baseline_joint_condition_number=2.0, final_joint_condition_number=2.0,
+            final_zero_identity_count=0, final_duals=(), config=asdict(kwargs["config"]),
+        )
+    monkeypatch.setattr(module, "train_wiser_p3_arm", fake_p3)
+    monkeypatch.setattr(module, "_save_adapted_state_new", lambda *_args: None)
+    monkeypatch.setattr(module, "_load_adapted_state", lambda *_args: None)
+    monkeypatch.setattr(module, "predict_wiser_representation_probes", lambda *_args, query_tokens, **_kwargs: {
+        "query_tokens": np.asarray(query_tokens), "p1_predictions": np.zeros(len(query_tokens), np.int64),
+        "p2_predictions": np.zeros(len(query_tokens), np.int64), "p3_predictions": np.zeros(len(query_tokens), np.int64),
+        "p1_logits": np.zeros((len(query_tokens), 6), np.float32), "p2_logits": np.zeros((len(query_tokens), 6), np.float32),
+        "p3_logits": np.zeros((len(query_tokens), 6), np.float32), "query_z_id": np.zeros((len(query_tokens), 160), np.float32),
+    })
+
+    result = module._p3_pilot(Namespace(
+        p3_config=config_path, manifest=manifest_path, pilot_outer_key=config["pilot_outer_key"],
+        checkpoint=tmp_path / "checkpoint.pth", source_summary=tmp_path / "summary.npz",
+        source_binding=tmp_path / "binding.json", output_root=tmp_path / "run", device="cpu", arms=module.P3_ARMS,
+    ))
+
+    assert result["schema"] == "cvs.phase2.wiser_rf.p3_primary.pilot.v1"
+    assert result["scene_arm_unit_count"] == 21
+    assert len([call for call in calls if call[0] == "p3"]) == 15
+    assert len([call for call in calls if call[0] == "query"]) == 3
 
 
 def test_cli_normalizes_bounded_arm_subset_with_required_baseline() -> None:
