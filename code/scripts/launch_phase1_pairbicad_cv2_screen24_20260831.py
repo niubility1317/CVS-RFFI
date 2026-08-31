@@ -9,10 +9,13 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
+import math
 import os
 import subprocess
 import sys
+import threading
 import time
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import asdict, dataclass
@@ -25,6 +28,11 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from cvsrffi.phase1_bicad_xr.config import candidate_config, method_lock_payload
+from cvsrffi.phase1_bicad_xr.metrics import (
+    evaluate_final_checkpoint,
+    validate_artifact_closure,
+    validate_checkpoint_runtime,
+)
 
 
 RUN_ID_DEFAULT = "phase1_pairbicad_cv2_screen24_seed392002_20260831_r1"
@@ -68,6 +76,15 @@ EXPECTED_ARTIFACTS: Mapping[str, str] = MappingProxyType(
 EXECUTION_ACCOUNT = "ordinary_n607"
 PLAN_SCHEMA = "pairbicad_cv2_screen24_plan_v1"
 WORKER_STATUS_SCHEMA = "pairbicad_cv2_screen24_worker_status_v1"
+ARTIFACTS_COMPLETE_STATUS = "ARTIFACTS_COMPLETE"
+TECHNICAL_FAILURE_STATUS = "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
+SOURCE_ONLY_ACCESS_FLAGS = (
+    "target_access",
+    "phase2_access",
+    "support_access",
+    "query_access",
+    "truth_access",
+)
 
 
 def _freeze(value: Any) -> Any:
@@ -272,6 +289,36 @@ def _write_json_once(path: Path, payload: Mapping[str, Any]) -> Path:
     return path
 
 
+def _write_json_atomic_once(path: Path, payload: Mapping[str, Any]) -> Path:
+    """Publish one JSON artifact atomically without replacing an existing file."""
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    serialized = (
+        json.dumps(
+            _thaw(payload),
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+            allow_nan=False,
+        )
+        + "\n"
+    )
+    temporary = path.with_name(
+        f".{path.name}.tmp-{os.getpid()}-{threading.get_ident()}"
+    )
+    with temporary.open("x", encoding="utf-8", newline="\n") as handle:
+        handle.write(serialized)
+        handle.flush()
+        os.fsync(handle.fileno())
+    try:
+        os.link(temporary, path)
+    except FileExistsError:
+        raise FileExistsError(f"refusing to overwrite artifact: {path}")
+    finally:
+        temporary.unlink(missing_ok=True)
+    return path
+
+
 def reserve_run_layout(
     output_root: str | Path,
     run_id: str,
@@ -416,6 +463,10 @@ def build_train_command(
         row.candidate_id,
         "--bicad_optimizer_updates",
         str(row.optimizer_updates),
+        "--bicad_loro_receiver",
+        str(row.heldout_receiver),
+        "--bicad_loro_eval_interval_updates",
+        "500",
         "--epochs",
         "200",
         "--from_scratch",
@@ -551,9 +602,9 @@ def dispatch_detached_workers(
             if returncode is None:
                 continue
             statuses[row_id] = (
-                "RUNNING"
+                ARTIFACTS_COMPLETE_STATUS
                 if int(returncode) == 0
-                else "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
+                else TECHNICAL_FAILURE_STATUS
             )
             completed.append(row_id)
         for row_id in completed:
@@ -572,6 +623,13 @@ def write_dispatch_status(
     expected_ids = {row.row_id for row in rows}
     if set(statuses) != expected_ids:
         raise ValueError("dispatcher status must contain every planned row exactly once")
+    invalid = {
+        row_id: status
+        for row_id, status in statuses.items()
+        if status not in {ARTIFACTS_COMPLETE_STATUS, TECHNICAL_FAILURE_STATUS}
+    }
+    if invalid:
+        raise ValueError(f"dispatcher status contains non-terminal values: {invalid}")
     return _write_json_once(
         Path(run_root) / "dispatcher_status.json",
         {
@@ -582,8 +640,301 @@ def write_dispatch_status(
     )
 
 
+_FORMAL_EVALUATOR_MODULE: Any | None = None
+
+
+def _load_formal_evaluator_module(code_root: Path) -> Any:
+    """Load the repository's existing formal source-only evaluator context."""
+
+    global _FORMAL_EVALUATOR_MODULE
+    if _FORMAL_EVALUATOR_MODULE is not None:
+        return _FORMAL_EVALUATOR_MODULE
+    path = Path(code_root) / "code" / "scripts" / "launch_phase1_bicad_xr_matrix_20260830.py"
+    if not path.is_file():
+        raise FileNotFoundError(f"formal BiCAD-XR evaluator is missing: {path}")
+    code_path = str(Path(code_root) / "code")
+    ssdg_path = str(Path(code_root) / "code" / "SSDG")
+    for value in (code_path, ssdg_path):
+        if value not in sys.path:
+            sys.path.insert(0, value)
+    spec = importlib.util.spec_from_file_location("pairbicad_cv2_formal_launcher", path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"cannot load formal BiCAD-XR evaluator: {path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    _FORMAL_EVALUATOR_MODULE = module
+    return module
+
+
+def _build_final_evaluation_context(
+    row: PlanRow,
+    roots: LauncherRoots,
+    command: Sequence[str],
+) -> Any:
+    formal_launcher = _load_formal_evaluator_module(Path(roots.code_root))
+    context_type = getattr(formal_launcher, "_FormalEvaluationContext", None)
+    if context_type is None:
+        raise RuntimeError("formal BiCAD-XR evaluation context is unavailable")
+    return context_type(row, roots, command)
+
+
+def _row_runtime_expectation(row: PlanRow) -> dict[str, Any]:
+    return {
+        "candidate_id": row.candidate_id,
+        "fold": row.fold,
+        "seed": row.seed,
+        "optimizer_updates": row.optimizer_updates,
+        "source_receivers": row.source_receivers,
+        "train_days": row.train_days,
+    }
+
+
+def _assert_finite_json(value: Any, *, label: str) -> None:
+    if value is None or isinstance(value, (str, bool)):
+        return
+    if isinstance(value, (int, float)):
+        try:
+            finite = math.isfinite(float(value))
+        except (OverflowError, TypeError, ValueError) as exc:
+            raise ValueError(f"{label} contains a non-finite number") from exc
+        if not finite:
+            raise ValueError(f"{label} contains a non-finite number")
+        return
+    if isinstance(value, Mapping):
+        for key, item in value.items():
+            _assert_finite_json(item, label=f"{label}.{key}")
+        return
+    if isinstance(value, (list, tuple)):
+        for index, item in enumerate(value):
+            _assert_finite_json(item, label=f"{label}[{index}]")
+        return
+    raise ValueError(f"{label} contains a non-JSON value: {type(value).__name__}")
+
+
+def _validate_source_only_flags(payload: Mapping[str, Any], *, label: str) -> None:
+    if payload.get("source_only") is not True:
+        raise ValueError(f"{label} must declare source_only=true")
+    for name in SOURCE_ONLY_ACCESS_FLAGS:
+        if payload.get(name) is not False:
+            raise ValueError(f"{label} {name} must be false")
+
+
+def _validate_evaluation_payload(
+    payload: Mapping[str, Any],
+    *,
+    scenario: str,
+    checkpoint_name: str,
+) -> None:
+    if not isinstance(payload, Mapping):
+        raise ValueError(f"evaluation payload for {scenario} must be a JSON object")
+    if payload.get("scenario") != scenario:
+        raise ValueError(f"evaluation scenario mismatch for {scenario}")
+    if payload.get("checkpoint") != checkpoint_name:
+        raise ValueError(f"evaluation checkpoint mismatch for {scenario}")
+    if payload.get("checkpoint_load_strict") is not True:
+        raise ValueError(f"evaluation checkpoint load is not strict for {scenario}")
+    for name in ("missing_keys", "unexpected_keys", "shape_mismatches"):
+        if payload.get(name) != []:
+            raise ValueError(f"evaluation {name} is not empty for {scenario}")
+    for name in ("accuracy", "floor_accuracy"):
+        value = payload.get(name)
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ValueError(f"evaluation {name} is not numeric for {scenario}")
+        if not math.isfinite(float(value)):
+            raise ValueError(f"evaluation {name} is not finite for {scenario}")
+    per_class = payload.get("per_class_accuracy")
+    if not isinstance(per_class, Mapping) or not per_class:
+        raise ValueError(f"evaluation per_class_accuracy is empty for {scenario}")
+    for class_id, value in per_class.items():
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ValueError(
+                f"evaluation per_class_accuracy[{class_id}] is not numeric for {scenario}"
+            )
+        if not math.isfinite(float(value)):
+            raise ValueError(
+                f"evaluation per_class_accuracy[{class_id}] is not finite for {scenario}"
+            )
+    _validate_source_only_flags(payload, label=f"evaluation[{scenario}]")
+    _assert_finite_json(payload, label=f"evaluation[{scenario}]")
+
+
+def _build_atomic_source_only_evaluator(
+    context: Any,
+    *,
+    row_root: Path,
+    checkpoint_name: str,
+) -> Callable[[Any, str], Mapping[str, Any]]:
+    """Wrap the formal callback with fail-closed metadata and atomic JSON output."""
+
+    def evaluate(model: Any, scenario: str) -> Mapping[str, Any]:
+        if scenario not in FORMAL_SCENARIOS:
+            raise ValueError(f"unsupported formal evaluation scenario: {scenario}")
+        metrics = context.evaluate(model, scenario)
+        if not isinstance(metrics, Mapping):
+            raise TypeError("formal evaluator callback must return a mapping")
+        callback_payload = dict(metrics)
+        if "source_only" in callback_payload or any(
+            name in callback_payload for name in SOURCE_ONLY_ACCESS_FLAGS
+        ):
+            _validate_source_only_flags(callback_payload, label=f"evaluator[{scenario}]")
+        callback_payload["source_only"] = True
+        callback_payload.update({name: False for name in SOURCE_ONLY_ACCESS_FLAGS})
+        result_payload = dict(callback_payload)
+        result_payload.pop("log", None)
+        result_payload.update(
+            {
+                "scenario": scenario,
+                "checkpoint": checkpoint_name,
+                "checkpoint_load_strict": True,
+                "missing_keys": [],
+                "unexpected_keys": [],
+                "shape_mismatches": [],
+            }
+        )
+        _validate_evaluation_payload(
+            result_payload,
+            scenario=scenario,
+            checkpoint_name=checkpoint_name,
+        )
+        _write_json_atomic_once(
+            row_root / "evaluations" / f"{scenario}.json",
+            result_payload,
+        )
+        return callback_payload
+
+    return evaluate
+
+
+def _load_json_mapping(path: Path, *, label: str) -> dict[str, Any]:
+    if not path.is_file() or path.stat().st_size <= 0:
+        raise FileNotFoundError(f"{label} is missing or empty: {path}")
+    try:
+        with path.open("r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError(f"{label} is not valid JSON") from exc
+    if not isinstance(payload, Mapping):
+        raise ValueError(f"{label} must be a JSON object")
+    return dict(payload)
+
+
+def _validate_worker_artifacts(
+    row: PlanRow,
+    row_root: Path,
+    checkpoint: Path,
+    evaluation: Mapping[str, Any],
+) -> dict[str, Any]:
+    if evaluation.get("complete") is not True:
+        raise ValueError("formal final evaluation did not report complete")
+    runtime_artifact = _load_json_mapping(
+        row_root / "checkpoint_runtime.json",
+        label="checkpoint_runtime.json",
+    )
+    if runtime_artifact.get("checkpoint_path") != checkpoint.name:
+        raise ValueError("checkpoint_runtime.json checkpoint identity mismatch")
+    runtime = runtime_artifact.get("runtime")
+    if not isinstance(runtime, Mapping):
+        raise ValueError("checkpoint_runtime.json runtime must be a JSON object")
+    _validate_source_only_flags(runtime, label="checkpoint runtime")
+    runtime_check = validate_checkpoint_runtime(
+        runtime,
+        _row_runtime_expectation(row),
+    )
+    if runtime_check.get("valid") is not True:
+        raise ValueError(f"checkpoint runtime mismatch: {runtime_check}")
+    if runtime_artifact.get("strict_reconstruction") is not True:
+        raise ValueError("checkpoint reconstruction was not strict")
+    if runtime_artifact.get("trainer_runtime_strict") is not True:
+        raise ValueError("trainer runtime restoration was not strict")
+    for name in ("missing_keys", "unexpected_keys", "shape_mismatches"):
+        if runtime_artifact.get(name) != []:
+            raise ValueError(f"checkpoint runtime {name} is not empty")
+
+    for scenario in FORMAL_SCENARIOS:
+        path = row_root / "evaluations" / f"{scenario}.json"
+        payload = _load_json_mapping(path, label=f"evaluations/{scenario}.json")
+        _validate_evaluation_payload(
+            payload,
+            scenario=scenario,
+            checkpoint_name=checkpoint.name,
+        )
+    closure = validate_artifact_closure(row_root)
+    if closure.get("complete") is not True:
+        raise ValueError(f"formal artifact closure is incomplete: {closure}")
+    if set(closure.get("evaluations", {})) != set(FORMAL_SCENARIOS):
+        raise ValueError("formal artifact closure is missing one or more scenarios")
+    return dict(closure)
+
+
+def _record_technical_failure(
+    row_root: Path,
+    *,
+    reason: str,
+    details: Mapping[str, Any] | None = None,
+) -> None:
+    path = row_root / "TECHNICAL_FAILURE.json"
+    if path.exists():
+        return
+    _write_json_once(
+        path,
+        {
+            "status": TECHNICAL_FAILURE_STATUS,
+            "reason": str(reason),
+            "details": dict(details or {}),
+        },
+    )
+
+
+def _write_worker_status(
+    row: PlanRow,
+    row_root: Path,
+    *,
+    status: str,
+    returncode: int | None = None,
+    details: Mapping[str, Any] | None = None,
+) -> None:
+    payload: dict[str, Any] = {
+        "schema": WORKER_STATUS_SCHEMA,
+        "row_id": row.row_id,
+        "status": status,
+        "expected_artifacts": dict(EXPECTED_ARTIFACTS),
+    }
+    if returncode is not None:
+        payload["returncode"] = int(returncode)
+    if details:
+        payload["details"] = dict(details)
+    _write_json_once(row_root / "worker_status.json", payload)
+
+
+def _stop_worker(
+    row: PlanRow,
+    row_root: Path,
+    *,
+    reason: str,
+    details: Mapping[str, Any] | None = None,
+    returncode: int | None = None,
+) -> str:
+    _record_technical_failure(row_root, reason=reason, details=details)
+    _write_worker_status(
+        row,
+        row_root,
+        status=TECHNICAL_FAILURE_STATUS,
+        returncode=returncode,
+        details=details,
+    )
+    return TECHNICAL_FAILURE_STATUS
+
+
+def _locate_final_checkpoint(row_root: Path) -> Path:
+    for name in ("bicad_xr_final.pth", "final_checkpoint.pt", "final_bicad_xr.pt"):
+        checkpoint = row_root / name
+        if checkpoint.is_file() and checkpoint.stat().st_size > 0:
+            return checkpoint
+    raise FileNotFoundError("row final checkpoint is missing or empty")
+
+
 def run_training_worker(row: PlanRow, roots: LauncherRoots, *, run_id: str) -> str:
-    """Execute one already-reserved row from a detached worker process."""
+    """Train one row, then close its strict source-only four-scenario artifacts."""
 
     _require_static_row(row)
     row_root = _row_root(row, roots)
@@ -594,32 +945,71 @@ def run_training_worker(row: PlanRow, roots: LauncherRoots, *, run_id: str) -> s
         raise FileExistsError(f"refusing to overwrite training log: {log_path}")
     env = dict(os.environ)
     env["CUDA_VISIBLE_DEVICES"] = str(row.gpu_id)
-    command = build_train_command(row, roots, run_id=run_id)
-    with log_path.open("x", encoding="utf-8", newline="\n") as handle:
-        completed = subprocess.run(
-            command,
-            stdin=subprocess.DEVNULL,
-            stdout=handle,
-            stderr=subprocess.STDOUT,
-            env=env,
-            check=False,
+    try:
+        command = build_train_command(row, roots, run_id=run_id)
+        with log_path.open("x", encoding="utf-8", newline="\n") as handle:
+            completed = subprocess.run(
+                command,
+                stdin=subprocess.DEVNULL,
+                stdout=handle,
+                stderr=subprocess.STDOUT,
+                env=env,
+                check=False,
+            )
+    except Exception as exc:
+        return _stop_worker(
+            row,
+            row_root,
+            reason="TRAINING_SUBPROCESS_EXCEPTION",
+            details={"exception_type": type(exc).__name__, "message": str(exc)},
         )
-    status = (
-        "RUNNING"
-        if int(completed.returncode) == 0
-        else "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
+    if int(completed.returncode) != 0:
+        return _stop_worker(
+            row,
+            row_root,
+            reason="TRAINING_SUBPROCESS_FAILED",
+            returncode=int(completed.returncode),
+        )
+
+    try:
+        checkpoint = _locate_final_checkpoint(row_root)
+        context = _build_final_evaluation_context(row, roots, command)
+        evaluator = _build_atomic_source_only_evaluator(
+            context,
+            row_root=row_root,
+            checkpoint_name=checkpoint.name,
+        )
+        evaluation = evaluate_final_checkpoint(
+            checkpoint,
+            expected_runtime=_row_runtime_expectation(row),
+            output_dir=row_root,
+            model_builder=context.build_model,
+            trainer_runtime_restorer=context.restore_trainer_runtime,
+            evaluator=evaluator,
+        )
+        closure = _validate_worker_artifacts(
+            row,
+            row_root,
+            checkpoint,
+            evaluation,
+        )
+    except Exception as exc:
+        return _stop_worker(
+            row,
+            row_root,
+            reason="FINAL_ARTIFACT_EVALUATION_FAILED",
+            details={"exception_type": type(exc).__name__, "message": str(exc)},
+            returncode=int(completed.returncode),
+        )
+
+    _write_json_atomic_once(row_root / "ARTIFACTS_COMPLETE.json", closure)
+    _write_worker_status(
+        row,
+        row_root,
+        status=ARTIFACTS_COMPLETE_STATUS,
+        returncode=int(completed.returncode),
     )
-    _write_json_once(
-        row_root / "worker_status.json",
-        {
-            "schema": WORKER_STATUS_SCHEMA,
-            "row_id": row.row_id,
-            "status": status,
-            "returncode": int(completed.returncode),
-            "expected_artifacts": dict(EXPECTED_ARTIFACTS),
-        },
-    )
-    return status
+    return ARTIFACTS_COMPLETE_STATUS
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -657,7 +1047,7 @@ def _worker_main(args: argparse.Namespace) -> int:
     code_root, _output_root, python_path, wisig_pkl = _resolve_paths(args)
     roots = LauncherRoots(code_root, python_path, Path(args.run_root), wisig_pkl)
     status = run_training_worker(row, roots, run_id=args.run_id)
-    return 0 if status == "RUNNING" else 2
+    return 0 if status == ARTIFACTS_COMPLETE_STATUS else 2
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -678,7 +1068,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     roots = LauncherRoots(code_root, python_path, run_root, wisig_pkl)
     statuses = dispatch_detached_workers(rows, roots, run_id=args.run_id)
     write_dispatch_status(run_root, rows, statuses)
-    return 0 if all(status == "RUNNING" for status in statuses.values()) else 2
+    return 0 if all(status == ARTIFACTS_COMPLETE_STATUS for status in statuses.values()) else 2
 
 
 if __name__ == "__main__":

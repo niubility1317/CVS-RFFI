@@ -5,8 +5,14 @@ import json
 import threading
 from collections import Counter
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
+
+from cvsrffi.phase1_bicad_xr.metrics import (
+    BiCADXRMetricStore,
+    FORMAL_EVAL_SCENARIOS,
+)
 
 
 SCRIPT_PATH = (
@@ -123,6 +129,8 @@ def test_build_train_command_is_source_only_and_static() -> None:
     assert _option_value(command, "--wisig_test_rxs") == ""
     assert _option_value(command, "--phase1_source_only_eval") == "true"
     assert _option_value(command, "--bicad_optimizer_updates") == str(row.optimizer_updates)
+    assert _option_value(command, "--bicad_loro_receiver") == str(row.heldout_receiver)
+    assert _option_value(command, "--bicad_loro_eval_interval_updates") == "500"
     assert _option_value(command, "--device") == "cuda:0"
     assert "--candidate_alias" not in options
     assert not any(
@@ -254,7 +262,7 @@ def test_dispatcher_queues_third_row_per_gpu_and_never_exceeds_two_active(
     )
 
     assert set(statuses) == {row.row_id for row in rows}
-    assert set(statuses.values()) == {"RUNNING"}
+    assert set(statuses.values()) == {"ARTIFACTS_COMPLETE"}
     assert max(peak.values()) <= 2
     assert all(value == 0 for value in active.values())
 
@@ -271,7 +279,7 @@ def test_real_mode_writes_static_plan_before_dispatch_without_child_launch(
         observed["run_root"] = roots.run_root
         observed["plan_exists"] = (roots.run_root / "plan.json").is_file()
         observed["run_id"] = run_id
-        return {row.row_id: "RUNNING" for row in rows}
+        return {row.row_id: "ARTIFACTS_COMPLETE" for row in rows}
 
     monkeypatch.setattr(launcher, "dispatch_detached_workers", fake_dispatch)
     exit_code = launcher.main(
@@ -290,3 +298,203 @@ def test_real_mode_writes_static_plan_before_dispatch_without_child_launch(
         "plan_exists": True,
         "run_id": "cv2-screen24-real-mode-test",
     }
+
+
+def _write_cv2_runtime_artifacts(row_root: Path, row: object, checkpoint_name: str) -> None:
+    runtime = {
+        "phase1_method": "bicad_xr",
+        "candidate_id": row.candidate_id,
+        "fold": row.fold,
+        "seed": row.seed,
+        "optimizer_update": row.optimizer_updates,
+        "total_updates": row.optimizer_updates,
+        "source_receivers": list(row.source_receivers),
+        "train_days": list(row.train_days),
+        "source_only": True,
+        "target_access": False,
+        "phase2_access": False,
+        "support_access": False,
+        "query_access": False,
+        "truth_access": False,
+    }
+    (row_root / "checkpoint_runtime.json").write_text(
+        json.dumps(
+            {
+                "checkpoint_path": checkpoint_name,
+                "runtime": runtime,
+                "reconstruction": {
+                    "missing": [],
+                    "unexpected": [],
+                    "shape_mismatch": [],
+                },
+                "strict_reconstruction": True,
+                "trainer_runtime_strict": True,
+                "missing_keys": [],
+                "unexpected_keys": [],
+                "shape_mismatches": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+    (row_root / "diagnostics.json").write_text(
+        json.dumps(BiCADXRMetricStore().snapshot()),
+        encoding="utf-8",
+    )
+
+
+def _install_fake_strict_evaluator(
+    monkeypatch: pytest.MonkeyPatch,
+    launcher: object,
+    row: object,
+    row_root: Path,
+    calls: list[str],
+    *,
+    bad_scene: str | None = None,
+    bad_field: str | None = None,
+) -> None:
+    class FakeContext:
+        def build_model(self, _payload: object) -> object:
+            return object()
+
+        def restore_trainer_runtime(self, _model: object, _payload: object) -> None:
+            return None
+
+        def evaluate(self, _model: object, scenario: str) -> dict[str, object]:
+            calls.append(scenario)
+            result: dict[str, object] = {
+                "accuracy": 0.75,
+                "floor_accuracy": 0.50,
+                "per_class_accuracy": {"0": 0.75, "1": 0.50},
+                "log": f"{scenario} complete\n",
+            }
+            if scenario == bad_scene and bad_field == "finite":
+                result["accuracy"] = float("nan")
+            if scenario == bad_scene and bad_field == "source_only":
+                result["target_access"] = True
+            return result
+
+    context = FakeContext()
+    monkeypatch.setattr(
+        launcher,
+        "_build_final_evaluation_context",
+        lambda *_args, **_kwargs: context,
+        raising=False,
+    )
+
+    def fake_strict_entrypoint(
+        checkpoint: Path,
+        *,
+        expected_runtime: object,
+        output_dir: Path,
+        model_builder: object,
+        trainer_runtime_restorer: object,
+        evaluator: object,
+    ) -> dict[str, object]:
+        assert checkpoint.name == "bicad_xr_final.pth"
+        assert expected_runtime["candidate_id"] == row.candidate_id
+        assert callable(model_builder)
+        assert callable(trainer_runtime_restorer)
+        assert callable(evaluator)
+        _write_cv2_runtime_artifacts(output_dir, row, checkpoint.name)
+        for scenario in FORMAL_EVAL_SCENARIOS:
+            metrics = evaluator(object(), scenario)
+            if not isinstance(metrics, dict):
+                raise TypeError("fake evaluator callback must return a mapping")
+            log_path = output_dir / "evaluations" / f"{scenario}.log"
+            log_path.parent.mkdir(parents=True, exist_ok=True)
+            log_path.write_text(str(metrics.get("log", "complete\n")), encoding="utf-8")
+        return {"complete": True, "status": "ARTIFACTS_COMPLETE"}
+
+    monkeypatch.setattr(
+        launcher,
+        "evaluate_final_checkpoint",
+        fake_strict_entrypoint,
+        raising=False,
+    )
+
+
+def test_worker_closes_four_source_only_evaluations_before_complete(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    launcher = _load_launcher()
+    row = launcher.build_plan()[0]
+    row_root = tmp_path / row.row_id
+    row_root.mkdir()
+    (row_root / "bicad_xr_final.pth").write_bytes(b"checkpoint")
+    roots = launcher.LauncherRoots(
+        SCRIPT_PATH.resolve().parents[2], Path("python"), tmp_path, tmp_path / "ManySig.pkl"
+    )
+    calls: list[str] = []
+    _install_fake_strict_evaluator(monkeypatch, launcher, row, row_root, calls)
+    monkeypatch.setattr(
+        launcher.subprocess,
+        "run",
+        lambda *args, **kwargs: SimpleNamespace(returncode=0),
+    )
+
+    status = launcher.run_training_worker(row, roots, run_id="cv2-run")
+
+    assert status == "ARTIFACTS_COMPLETE"
+    assert calls == list(FORMAL_EVAL_SCENARIOS)
+    assert (row_root / "ARTIFACTS_COMPLETE.json").is_file()
+    worker_status = json.loads(
+        (row_root / "worker_status.json").read_text(encoding="utf-8")
+    )
+    assert worker_status["status"] == "ARTIFACTS_COMPLETE"
+    for scenario in FORMAL_EVAL_SCENARIOS:
+        path = row_root / "evaluations" / f"{scenario}.json"
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        assert payload["checkpoint"] == "bicad_xr_final.pth"
+        assert payload["source_only"] is True
+        assert all(payload[name] is False for name in (
+            "target_access",
+            "phase2_access",
+            "support_access",
+            "query_access",
+            "truth_access",
+        ))
+        assert payload["accuracy"] == pytest.approx(0.75)
+        assert not list(path.parent.glob("*.tmp-*"))
+
+
+@pytest.mark.parametrize("bad_field", ["finite", "source_only"])
+def test_worker_preserves_partial_artifacts_and_stops_on_eval_integrity_failure(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    bad_field: str,
+) -> None:
+    launcher = _load_launcher()
+    row = launcher.build_plan()[0]
+    row_root = tmp_path / row.row_id
+    row_root.mkdir()
+    (row_root / "bicad_xr_final.pth").write_bytes(b"checkpoint")
+    roots = launcher.LauncherRoots(
+        SCRIPT_PATH.resolve().parents[2], Path("python"), tmp_path, tmp_path / "ManySig.pkl"
+    )
+    calls: list[str] = []
+    _install_fake_strict_evaluator(
+        monkeypatch,
+        launcher,
+        row,
+        row_root,
+        calls,
+        bad_scene="leo_clear_weak",
+        bad_field=bad_field,
+    )
+    monkeypatch.setattr(
+        launcher.subprocess,
+        "run",
+        lambda *args, **kwargs: SimpleNamespace(returncode=0),
+    )
+
+    status = launcher.run_training_worker(row, roots, run_id="cv2-run")
+
+    assert status == "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
+    assert not (row_root / "ARTIFACTS_COMPLETE.json").exists()
+    worker_status = json.loads(
+        (row_root / "worker_status.json").read_text(encoding="utf-8")
+    )
+    assert worker_status["status"] == "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
+    assert (row_root / "TECHNICAL_FAILURE.json").is_file()
+    assert (row_root / "bicad_xr_final.pth").is_file()
+    assert calls[:2] == ["clean", "leo_clear_weak"]
