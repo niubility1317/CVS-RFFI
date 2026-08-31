@@ -2,7 +2,7 @@
 
 ## 状态与目的
 
-- 当前状态：`LOCAL_VERIFIED`。
+- 当前状态：`RUNNING`。
 - Run ID：`phase1_adv3b02_pairbicad_final_p1_seed3_u6500_20260831_r1`。
 - 目的：对source-only收敛确认冻结的P1和U6500做fold1–5×3seed完整确认；不再选择候选或调整预算。
 
@@ -43,3 +43,12 @@ PAIRBICAD_FINAL_CANDIDATE=P1 PAIRBICAD_FINAL_OPTIMIZER_UPDATES=6500 bash code/sc
 每行必须保留完整JSONL/CSV训练遥测、`bicad_xr_final.pth`、`checkpoint_runtime.json`、`diagnostics.json`、clean和三种LEO评估JSON/log，以及`ARTIFACTS_COMPLETE.json`或`TECHNICAL_FAILURE.json`。Run级保留`plan.json`、`final_status.json`、dispatcher日志和PID文件。
 
 只有错误candidate/fold/receiver/day/seed/update、source-only越权、输出冲突、错误release/CWD、命令无法运行、无artifact闭合、同一确定性pre-prediction异常至少2行或进程归属不清时才允许精确停止并保留partial artifact。不得因中间或最终低性能停止、重启、热补丁或选择性重跑；不得影响无关进程。
+
+## N607发布与启动回读
+
+- Release归档：本地`E:\type10-7\release_archives\phase1_pairbicad_final_c1444033.tar.gz`，远端`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_pairbicad_final_c1444033.tar.gz`；一次本地/远端SHA256均为`33e488fb22ee2b0de71a150b3625b3c50a6fbbc326c6384a7fee37e276fe4e43`。
+- 远端release解包后，trainer、launcher和analyzer均通过一次远端编译检查。
+- Dispatcher PID：`2983876`；启动命令中的candidate、fold、seed、update、GPU顺序、run根和release根均与本报告冻结项一致。
+- 启动绑定回读：dispatcher直属主训练进程`15`个；`plan.json`共`15`行，其中P1=`15`、U6500=`15`、source-only=`15`。
+- GPU映射回读：GPU0=`1`行，GPU1–7各=`2`行。GPU0上的无关Stage2进程PID2958727仍在运行，未被干预；启动检查时GPU0–7利用率为`87%–93%`，符合持续计算状态。
+- 初始artifact计数：`ARTIFACTS_COMPLETE=0`、`TECHNICAL_FAILURE=0`。后续仅按预登记技术停止规则监控，不使用中间性能触发停止或重跑。
