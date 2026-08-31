@@ -18,7 +18,7 @@ from torch.nn import functional as F
 
 from .config import BiCADXRConfig, BiCADXRStage, candidate_config, stage_for_update
 from .gradients import project_conflicting_gradient, scale_explicit_gradients
-from .heads import FactorizedAdversarialHeads
+from .heads import FactorizedAdversarialHeads, FactorizedDomainProjector
 from .losses import (
     DetachedEMA,
     apply_margin_tail,
@@ -27,6 +27,7 @@ from .losses import (
     group_margin_cvar,
     paired_satellite_loss,
 )
+from .pair import pair_delta_objectives, pair_identity_hinge, vicreg_pair_loss
 from .sampler import StructuredEpisode, build_structured_episode
 from .tangent import (
     ReceiverTangentBank,
@@ -34,6 +35,41 @@ from .tangent import (
     one_step_tangent_worst_direction,
 )
 from .xdc import XDCLossOutput, xdc_losses
+
+
+_LEGACY_RUNTIME_CANDIDATES = frozenset(
+    {
+        "D0",
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5",
+        "D6",
+        "E0",
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "F0",
+        "F1",
+        "F2",
+        "F3",
+        "ADV3B02-BICAD-XDC-V1",
+    }
+)
+_PAIR_RUNTIME_DEFAULTS: dict[str, Any] = {
+    "strict_pair_concat": False,
+    "pair_identity": False,
+    "pair_vicreg": False,
+    "pair_delta": False,
+    "dynamic_adversarial_dose": False,
+    "satellite_supervision_mode": "ce_only",
+    "pair_projector_dim": 128,
+    "factor_interaction_dim": 24,
+    "lambda_sat_cls_start": 0.68,
+    "lambda_sat_cls_end": 0.68,
+}
 
 
 @dataclass(frozen=True)
@@ -62,6 +98,7 @@ class BiCADXRBatch:
     epoch: int | None = None
     source_loro_risk: Tensor | float | None = None
     source_loro_window: bool | None = None
+    labeled_tx: Tensor | None = None
 
     def pair_payload(self) -> dict[str, Tensor]:
         payload: dict[str, Tensor] = {}
@@ -306,6 +343,20 @@ class BiCADXRTrainer(nn.Module):
                 self.num_channels,
             ).to(_module_device(model))
 
+        self.factorized_projector: FactorizedDomainProjector | None = None
+        if config.strict_pair_concat and config.factorized_domains:
+            self.factorized_projector = FactorizedDomainProjector(
+                self.feature_dim,
+                self.feature_dim,
+                config.factor_interaction_dim,
+            ).to(_module_device(model))
+        self.pair_projector: nn.Linear | None = None
+        if config.strict_pair_concat and (config.pair_identity or config.pair_vicreg or config.pair_delta):
+            self.pair_projector = nn.Linear(
+                self.feature_dim,
+                config.pair_projector_dim,
+            ).to(_module_device(model))
+
         self.tangent_bank: ReceiverTangentBank | None = None
         if config.receiver_tangent != "off":
             self.tangent_bank = ReceiverTangentBank(
@@ -327,6 +378,7 @@ class BiCADXRTrainer(nn.Module):
         }
         self._last_update: int | None = None
         self._last_total_updates: int | None = None
+        self._pairbicad_runtime_state: dict[str, Any] | None = None
 
     @property
     def swad_state(self) -> dict[str, Any] | None:
@@ -349,6 +401,44 @@ class BiCADXRTrainer(nn.Module):
             "skip_reason": skip_reason,
         }
 
+    def _pair_satellite_weight(self, update: int, total_updates: int) -> float:
+        if not self.config.strict_pair_concat:
+            return float(self.config.lambda_sat_cls)
+        progress = (float(update) - 1.0) / max(1.0, float(total_updates) - 1.0)
+        progress = min(1.0, max(0.0, progress))
+        return float(
+            self.config.lambda_sat_cls_start
+            + progress
+            * (self.config.lambda_sat_cls_end - self.config.lambda_sat_cls_start)
+        )
+
+    def _pair_adversarial_dose(self, stage: BiCADXRStage) -> float:
+        if not self.config.dynamic_adversarial_dose:
+            return 0.0
+        return {
+            BiCADXRStage.stage0: 0.20,
+            BiCADXRStage.stage1: 0.20,
+            BiCADXRStage.stage2: 0.20,
+            BiCADXRStage.stage3: 0.22,
+            BiCADXRStage.stage4: 0.25,
+        }[stage]
+
+    @staticmethod
+    def _prediction_js(clean_logits: Tensor, satellite_logits: Tensor) -> Tensor:
+        if clean_logits.shape != satellite_logits.shape:
+            raise ValueError("clean and satellite prediction logits must have the same shape")
+        if clean_logits.ndim != 2 or clean_logits.size(0) < 1:
+            raise ValueError("pair prediction logits must be non-empty matrices")
+        clean_log_prob = F.log_softmax(clean_logits, dim=1)
+        satellite_log_prob = F.log_softmax(satellite_logits, dim=1)
+        clean_prob = clean_log_prob.exp()
+        satellite_prob = satellite_log_prob.exp()
+        mean_log_prob = (0.5 * (clean_prob + satellite_prob)).clamp_min(1e-8).log()
+        return 0.5 * (
+            F.kl_div(mean_log_prob, clean_prob, reduction="batchmean")
+            + F.kl_div(mean_log_prob, satellite_prob, reduction="batchmean")
+        )
+
     @staticmethod
     def _coerce_batch(batch: BiCADXRBatch | Mapping[str, Any] | Sequence[Any]) -> BiCADXRBatch:
         if isinstance(batch, BiCADXRBatch):
@@ -356,6 +446,7 @@ class BiCADXRTrainer(nn.Module):
         if isinstance(batch, Mapping):
             x = batch.get("x", batch.get("inputs", batch.get("iq")))
             tx = batch.get("tx", batch.get("y_tx", batch.get("labels")))
+            labeled_tx = batch.get("labeled_tx", batch.get("tx_labeled"))
             receiver = batch.get("receiver", batch.get("rx"))
             day = batch.get("day", batch.get("day_id"))
             channel = batch.get("channel", batch.get("channel_id"))
@@ -366,6 +457,7 @@ class BiCADXRTrainer(nn.Module):
             return BiCADXRBatch(
                 x=x,
                 tx=tx,
+                labeled_tx=labeled_tx,
                 receiver=zeros if receiver is None else receiver,
                 day=zeros if day is None else day,
                 channel=zeros if channel is None else channel,
@@ -411,6 +503,13 @@ class BiCADXRTrainer(nn.Module):
         channel = _as_long_labels(raw.channel, "channel", size=size, device=device)
         assert receiver is not None and day is not None and channel is not None
         mask = _as_mask(raw.labeled_mask, size=size, device=device)
+        labeled_size = size if mask is None else int(mask.sum().item())
+        labeled_tx = _as_long_labels(
+            raw.labeled_tx,
+            "labeled_tx",
+            size=labeled_size,
+            device=device,
+        )
 
         physical = raw.physical_indices
         if physical is not None:
@@ -461,6 +560,7 @@ class BiCADXRTrainer(nn.Module):
         return BiCADXRBatch(
             x=x,
             tx=tx,
+            labeled_tx=labeled_tx,
             receiver=receiver,
             day=day,
             channel=channel,
@@ -687,8 +787,18 @@ class BiCADXRTrainer(nn.Module):
             if self.factorized_heads is None
             else self._clone_tensor_state(self.factorized_heads.state_dict())
         )
+        factorized_projector_state = (
+            None
+            if self.factorized_projector is None
+            else self._clone_tensor_state(self.factorized_projector.state_dict())
+        )
+        pair_projector_state = (
+            None
+            if self.pair_projector is None
+            else self._clone_tensor_state(self.pair_projector.state_dict())
+        )
         serialized_swad = self._serialized_swad_state()
-        return {
+        runtime = {
             "runtime_version": 2,
             "phase1_method": "bicad_xr",
             "candidate_id": self.config.candidate_id,
@@ -730,6 +840,8 @@ class BiCADXRTrainer(nn.Module):
             },
             "training_state": {
                 "factorized_heads": factorized_state,
+                "factorized_projector": factorized_projector_state,
+                "pair_projector": pair_projector_state,
                 "backward_controls": {
                     "firewall_scale": self.config.gradient_firewall_scale,
                     "stage4_shared_stem_lr_scale": self.config.stage4_shared_stem_lr_scale,
@@ -737,6 +849,23 @@ class BiCADXRTrainer(nn.Module):
                 },
             },
         }
+        if self.config.strict_pair_concat:
+            runtime["pairbicad_runtime"] = (
+                self._pairbicad_runtime_state
+                if self._pairbicad_runtime_state is not None
+                else {
+                    "runtime_version": 1,
+                    "candidate_id": self.config.candidate_id,
+                    "active": True,
+                    "components": {},
+                    "effective_counts": {},
+                    "skip_reasons": {},
+                    "one_forward_count": 0,
+                    "finite": {"checked": False, "loss": None},
+                    "gradient": {"checked": False, "finite": None, "rho_adv": 0.0},
+                }
+            )
+        return runtime
 
     runtime_dict = checkpoint_runtime
 
@@ -771,8 +900,15 @@ class BiCADXRTrainer(nn.Module):
             runtime_config = runtime.get("candidate_config")
             current_config = asdict(self.config)
             current_config["sat_train_scenarios"] = list(self.config.sat_train_scenarios)
-            if runtime_config != current_config:
-                raise ValueError("checkpoint runtime candidate_config mismatch")
+            if not isinstance(runtime_config, Mapping):
+                raise ValueError("checkpoint runtime mismatch: candidate_config")
+            comparable_config = dict(runtime_config)
+            candidate_key = self.config.candidate_id.strip().upper()
+            if candidate_key in _LEGACY_RUNTIME_CANDIDATES:
+                for name, default in _PAIR_RUNTIME_DEFAULTS.items():
+                    comparable_config.setdefault(name, default)
+            if comparable_config != current_config:
+                raise ValueError("checkpoint runtime mismatch: candidate_config")
 
         training_state = runtime.get("training_state", {})
         if not isinstance(training_state, Mapping):
@@ -786,6 +922,26 @@ class BiCADXRTrainer(nn.Module):
                 raise ValueError("checkpoint contains unexpected factorized head state")
         else:
             self.factorized_heads.load_state_dict(head_state, strict=strict)
+
+        projector_state = training_state.get("factorized_projector")
+        if projector_state is None:
+            if strict and self.factorized_projector is not None:
+                raise ValueError("checkpoint is missing factorized projector state")
+        elif self.factorized_projector is None:
+            if strict:
+                raise ValueError("checkpoint contains unexpected factorized projector state")
+        else:
+            self.factorized_projector.load_state_dict(projector_state, strict=strict)
+
+        pair_projector_state = training_state.get("pair_projector")
+        if pair_projector_state is None:
+            if strict and self.pair_projector is not None:
+                raise ValueError("checkpoint is missing pair projector state")
+        elif self.pair_projector is None:
+            if strict:
+                raise ValueError("checkpoint contains unexpected pair projector state")
+        else:
+            self.pair_projector.load_state_dict(pair_projector_state, strict=strict)
 
         controls = training_state.get("backward_controls", {})
         if not isinstance(controls, Mapping):
@@ -843,6 +999,11 @@ class BiCADXRTrainer(nn.Module):
                 }
         self._last_update = runtime.get("optimizer_update")
         self._last_total_updates = runtime.get("total_updates")
+        pair_runtime = runtime.get("pairbicad_runtime")
+        if pair_runtime is not None:
+            if not isinstance(pair_runtime, Mapping):
+                raise ValueError("checkpoint pairbicad_runtime must be a mapping")
+            self._pairbicad_runtime_state = dict(pair_runtime)
 
     def named_optimizer_parameters(self) -> list[tuple[str, nn.Parameter]]:
         """Return every trainable model and Task6-head parameter exactly once."""
@@ -1003,6 +1164,21 @@ class BiCADXRTrainer(nn.Module):
         audit = getattr(output, "audit", None)
         if isinstance(audit, dict):
             audit.update(result)
+            pair_runtime = audit.get("pairbicad_runtime")
+            if isinstance(pair_runtime, dict):
+                gradient = pair_runtime.setdefault("gradient", {})
+                gradient.update(
+                    {
+                        "checked": True,
+                        "finite": all(
+                            parameter.grad is None
+                            or bool(torch.isfinite(parameter.grad).all())
+                            for parameter in parameters
+                        ),
+                        "firewall_applied": firewall_applied,
+                        "projection_applied": projection_applied,
+                    }
+                )
             components = audit.get("components")
             if isinstance(components, dict):
                 if "gradient_firewall" in components and firewall_applied:
@@ -1071,7 +1247,11 @@ class BiCADXRTrainer(nn.Module):
             if labeled_mask is not None
             else torch.empty(0, dtype=torch.long, device=z_id.device)
         )
-        tx_labeled = None if tx is None else tx[labeled_indices]
+        tx_labeled = (
+            prepared.labeled_tx
+            if prepared.labeled_tx is not None
+            else None if tx is None else tx[labeled_indices]
+        )
         receiver_labeled = prepared.receiver[labeled_indices]
         day_labeled = prepared.day[labeled_indices]
         channel_labeled = prepared.channel[labeled_indices]
@@ -1101,6 +1281,14 @@ class BiCADXRTrainer(nn.Module):
             "xdc_cross_entropy",
             "xdc_knowledge_distillation",
             "paired_satellite",
+            "pair_identity_hinge",
+            "pair_prediction_js",
+            "pair_vicreg",
+            "pair_delta_identity_adversary",
+            "pair_delta_channel_prediction",
+            "pair_delta_stability",
+            "pair_delta_channel_equivariance",
+            "pair_delta_norm_hinge",
             "receiver_tangent",
             "margin_tail",
             "task_protected_gradient",
@@ -1127,10 +1315,26 @@ class BiCADXRTrainer(nn.Module):
         pair = self._pair_payload(prepared, model_output)
         satellite_logits = pair.get("satellite_logits")
         pair_tx = pair.get("tx", pair.get("pair_tx", pair.get("satellite_tx")))
+        pair_labeled_mask: Tensor | None = None
+        if self.config.strict_pair_concat:
+            if prepared.labeled_mask is None:
+                raise ValueError("strict PairBiCAD concat requires labeled_mask")
+            if prepared.x.size(0) % 2 != 0:
+                raise ValueError("strict PairBiCAD concat batch must contain clean/satellite pairs")
+            physical_count = prepared.x.size(0) // 2
+            if prepared.labeled_mask.numel() != prepared.x.size(0):
+                raise ValueError("strict PairBiCAD labeled_mask must match network batch")
+            pair_labeled_mask = prepared.labeled_mask[:physical_count]
         if epoch is None:
             components["satellite_tx_ce"] = self._component(skip_reason="missing_epoch")
         elif epoch < self.config.concat_sat_start_epoch:
-            components["satellite_tx_ce"] = self._component(skip_reason="before_epoch80")
+            components["satellite_tx_ce"] = self._component(
+                skip_reason=(
+                    "before_pair_start"
+                    if self.config.strict_pair_concat
+                    else "before_epoch80"
+                )
+            )
         elif not torch.is_tensor(satellite_logits):
             components["satellite_tx_ce"] = self._component(
                 skip_reason="concat_satellite_logits_unavailable"
@@ -1141,15 +1345,28 @@ class BiCADXRTrainer(nn.Module):
             )
         else:
             pair_tx = torch.as_tensor(pair_tx, device=satellite_logits.device, dtype=torch.long)
-            if (
-                satellite_logits.ndim != 2
-                or satellite_logits.size(1) != self.num_classes
-                or pair_tx.ndim != 1
-                or pair_tx.numel() != satellite_logits.size(0)
-            ):
+            if satellite_logits.ndim != 2 or satellite_logits.size(1) != self.num_classes:
+                raise ValueError("concat satellite logits and TX labels must align")
+            if pair_tx.ndim != 1:
+                raise ValueError("concat satellite logits and TX labels must align")
+            if pair_labeled_mask is not None:
+                if pair_labeled_mask.numel() != satellite_logits.size(0):
+                    raise ValueError("strict PairBiCAD pair labels must match physical pairs")
+                labeled_pairs = int(pair_labeled_mask.sum().item())
+                if pair_tx.numel() == satellite_logits.size(0):
+                    pair_tx = pair_tx[pair_labeled_mask]
+                elif pair_tx.numel() != labeled_pairs:
+                    raise ValueError("concat satellite logits and TX labels must align")
+                satellite_logits = satellite_logits[pair_labeled_mask]
+            elif pair_tx.numel() != satellite_logits.size(0):
                 raise ValueError("concat satellite logits and TX labels must align")
             satellite_ce = F.cross_entropy(satellite_logits, pair_tx)
-            weighted_satellite_ce = self.config.lambda_sat_cls * satellite_ce
+            satellite_weight = (
+                self._pair_satellite_weight(update, total_updates)
+                if self.config.strict_pair_concat
+                else self.config.lambda_sat_cls
+            )
+            weighted_satellite_ce = satellite_weight * satellite_ce
             total = total + weighted_satellite_ce
             components["satellite_tx_ce"] = self._component(
                 satellite_ce,
@@ -1168,6 +1385,15 @@ class BiCADXRTrainer(nn.Module):
             else peak_scale
         )
         factorized_output: dict[str, Tensor] = {}
+        factorized_domain_features = z_dom
+        factorized_values = None
+        if self.factorized_projector is not None:
+            factorized_values = self.factorized_projector(z_dom)
+            factorized_domain_features = (
+                factorized_values.z_r
+                + factorized_values.z_d
+                + factorized_values.z_c
+            ) / 3.0
         domain_loss = zero
         conditional_loss = zero
         zdom_tx_loss = zero
@@ -1178,19 +1404,34 @@ class BiCADXRTrainer(nn.Module):
             if need_conditional and tx_labeled is not None and tx_labeled.numel() > 0:
                 factorized_output = self.factorized_heads(
                     z_id[labeled_indices],
-                    z_dom[labeled_indices],
+                    factorized_domain_features[labeled_indices],
                     tx_labeled,
                     grl_identity=domain_scale if self.config.conditional_cdan else 0.0,
                     grl_tx=domain_scale if self.config.zdom_tx_adversary else 0.0,
                 )
             if self.config.factorized_domains:
                 domain_terms: list[Tensor] = []
-                for key, labels in (
-                    ("dom_receiver", prepared.receiver),
-                    ("dom_day", prepared.day),
-                    ("dom_channel", prepared.channel),
-                ):
-                    prediction = getattr(self.factorized_heads, key)(z_dom)
+                domain_inputs = (
+                    (
+                        "dom_receiver",
+                        prepared.receiver,
+                        None if factorized_values is None else factorized_values.z_r,
+                    ),
+                    (
+                        "dom_day",
+                        prepared.day,
+                        None if factorized_values is None else factorized_values.z_d,
+                    ),
+                    (
+                        "dom_channel",
+                        prepared.channel,
+                        None if factorized_values is None else factorized_values.z_c,
+                    ),
+                )
+                for key, labels, factor in domain_inputs:
+                    prediction = getattr(self.factorized_heads, key)(
+                        z_dom if factor is None else factor
+                    )
                     domain_terms.append(F.cross_entropy(prediction, labels))
                 if domain_terms:
                     domain_loss = torch.stack(domain_terms).mean()
@@ -1357,11 +1598,156 @@ class BiCADXRTrainer(nn.Module):
         pair_called = False
         pair_reason: str | None = None
         pair_loss = zero
+        pair_adversarial_loss = zero
         pair_enabled = bool(
             self.config.paired_satellite
             and self.config.candidate_id.strip().upper() == "E3"
         )
-        if not pair_enabled:
+        if self.config.strict_pair_concat:
+            required = ("clean_z_id", "satellite_z_id")
+            if not all(key in pair for key in required):
+                pair_reason = "concat_pair_unavailable"
+            else:
+                clean_pair_id = _finite_feature(pair["clean_z_id"], "clean_z_id")
+                satellite_pair_id = _finite_feature(
+                    pair["satellite_z_id"], "satellite_z_id"
+                )
+                if clean_pair_id.shape != satellite_pair_id.shape:
+                    raise ValueError("clean and satellite pair identity features must align")
+                pair_count = int(clean_pair_id.size(0))
+                if pair_labeled_mask is None or pair_labeled_mask.numel() != pair_count:
+                    raise ValueError("strict PairBiCAD pair mask must match physical pairs")
+                unlabeled_pair_mask = ~pair_labeled_mask
+                if self.pair_projector is not None:
+                    projected_clean_id = self.pair_projector(clean_pair_id)
+                    projected_satellite_id = self.pair_projector(satellite_pair_id)
+                else:
+                    projected_clean_id = clean_pair_id
+                    projected_satellite_id = satellite_pair_id
+
+                if self.config.pair_identity or self.config.pair_vicreg:
+                    identity_raw = pair_identity_hinge(
+                        projected_clean_id,
+                        projected_satellite_id,
+                        epsilon=0.05,
+                    )
+                    identity_weighted = 0.08 * identity_raw
+                    total = total + identity_weighted
+                    components["pair_identity_hinge"] = self._component(
+                        identity_raw,
+                        identity_weighted,
+                        called=True,
+                        effective_count=pair_count,
+                    )
+                    pair_called = True
+
+                if self.config.pair_vicreg:
+                    vicreg = vicreg_pair_loss(
+                        projected_clean_id,
+                        projected_satellite_id,
+                        gamma=1.0,
+                    )
+                    vicreg_weighted = 0.03 * vicreg["total"]
+                    total = total + vicreg_weighted
+                    components["pair_vicreg"] = self._component(
+                        vicreg["total"],
+                        vicreg_weighted,
+                        called=True,
+                        effective_count=pair_count,
+                    )
+                    pair_called = True
+
+                if self.config.pair_identity or self.config.pair_vicreg:
+                    clean_pair_logits = pair.get("clean_logits")
+                    satellite_pair_logits = pair.get("satellite_logits")
+                    if (
+                        torch.is_tensor(clean_pair_logits)
+                        and torch.is_tensor(satellite_pair_logits)
+                        and clean_pair_logits.ndim == 2
+                        and satellite_pair_logits.ndim == 2
+                        and clean_pair_logits.shape == satellite_pair_logits.shape
+                        and clean_pair_logits.size(0) == pair_count
+                        and bool(unlabeled_pair_mask.any())
+                    ):
+                        prediction_js = self._prediction_js(
+                            clean_pair_logits[unlabeled_pair_mask],
+                            satellite_pair_logits[unlabeled_pair_mask],
+                        )
+                        prediction_weighted = 0.05 * prediction_js
+                        total = total + prediction_weighted
+                        components["pair_prediction_js"] = self._component(
+                            prediction_js,
+                            prediction_weighted,
+                            called=True,
+                            effective_count=int(unlabeled_pair_mask.sum().item()),
+                        )
+                    else:
+                        components["pair_prediction_js"] = self._component(
+                            skip_reason="unlabeled_pair_logits_unavailable"
+                        )
+
+                if self.config.pair_delta:
+                    clean_pair_dom = pair.get("clean_z_dom")
+                    satellite_pair_dom = pair.get("satellite_z_dom")
+                    if not (
+                        torch.is_tensor(clean_pair_dom)
+                        and torch.is_tensor(satellite_pair_dom)
+                    ):
+                        clean_pair_dom = z_dom[:pair_count]
+                        satellite_pair_dom = z_dom[pair_count : 2 * pair_count]
+                    clean_pair_dom = _finite_feature(
+                        clean_pair_dom, "clean_z_dom", batch_size=pair_count
+                    )
+                    satellite_pair_dom = _finite_feature(
+                        satellite_pair_dom, "satellite_z_dom", batch_size=pair_count
+                    )
+                    if factorized_values is not None:
+                        clean_pair_c = factorized_values.z_c[:pair_count]
+                        satellite_pair_c = factorized_values.z_c[
+                            pair_count : 2 * pair_count
+                        ]
+                    else:
+                        clean_pair_c = clean_pair_dom
+                        satellite_pair_c = satellite_pair_dom
+                    rho_adv = self._pair_adversarial_dose(stage)
+                    delta = pair_delta_objectives(
+                        projected_clean_id,
+                        projected_satellite_id,
+                        clean_pair_c,
+                        satellite_pair_c,
+                        torch.ones(pair_count, dtype=torch.long, device=z_id.device),
+                        epsilon=0.05,
+                        delta_radius=0.25,
+                        grl_scale=rho_adv,
+                        include_delta_norm_hinge=True,
+                    )
+                    delta_weights = {
+                        "identity_channel_adversary": 0.08,
+                        "channel_prediction": 0.15,
+                        "pair_stability": 0.05,
+                        "channel_equivariance": 0.05,
+                        "delta_norm_hinge": 0.05,
+                    }
+                    delta_names = {
+                        "identity_channel_adversary": "pair_delta_identity_adversary",
+                        "channel_prediction": "pair_delta_channel_prediction",
+                        "pair_stability": "pair_delta_stability",
+                        "channel_equivariance": "pair_delta_channel_equivariance",
+                        "delta_norm_hinge": "pair_delta_norm_hinge",
+                    }
+                    for key, raw_value in delta.items():
+                        weighted_value = delta_weights[key] * raw_value
+                        total = total + weighted_value
+                        components[delta_names[key]] = self._component(
+                            raw_value,
+                            weighted_value,
+                            called=True,
+                            effective_count=pair_count,
+                        )
+                        if key == "identity_channel_adversary":
+                            pair_adversarial_loss = weighted_value
+                    pair_called = True
+        elif not pair_enabled:
             pair_reason = "candidate_disabled"
         elif stage.value in {"stage0", "stage1"}:
             pair_reason = "stage_before_stage2"
@@ -1386,8 +1772,40 @@ class BiCADXRTrainer(nn.Module):
                     called=True,
                     effective_count=int(pair["clean_z_id"].size(0)),
                 )
-        if not pair_called:
+        if self.config.strict_pair_concat:
+            for name in (
+                "pair_identity_hinge",
+                "pair_prediction_js",
+                "pair_vicreg",
+                "pair_delta_identity_adversary",
+                "pair_delta_channel_prediction",
+                "pair_delta_stability",
+                "pair_delta_channel_equivariance",
+                "pair_delta_norm_hinge",
+            ):
+                if components[name]["skip_reason"] == "not_evaluated":
+                    components[name] = self._component(skip_reason="candidate_disabled")
+            if not pair_called and pair_reason is None:
+                components["paired_satellite"] = self._component(
+                    skip_reason="candidate_pair_contract"
+                )
+        if not pair_called and not self.config.strict_pair_concat:
             components["paired_satellite"] = self._component(skip_reason=pair_reason)
+        elif self.config.strict_pair_concat and pair_reason is not None:
+            for name in (
+                "pair_identity_hinge",
+                "pair_prediction_js",
+                "pair_vicreg",
+                "pair_delta_identity_adversary",
+                "pair_delta_channel_prediction",
+                "pair_delta_stability",
+                "pair_delta_channel_equivariance",
+                "pair_delta_norm_hinge",
+            ):
+                components[name] = self._component(skip_reason=pair_reason)
+            components["paired_satellite"] = self._component(
+                skip_reason="candidate_pair_contract"
+            )
 
         tangent_called = False
         tangent_reason: str | None = None
@@ -1505,7 +1923,7 @@ class BiCADXRTrainer(nn.Module):
         if not tail_called:
             components["margin_tail"] = self._component(skip_reason=tail_reason)
 
-        adversarial_loss = conditional_loss + zdom_tx_loss
+        adversarial_loss = conditional_loss + zdom_tx_loss + pair_adversarial_loss
         projection_called = False
         projection_triggered = False
         projection_reason: str | None = None
@@ -1580,6 +1998,65 @@ class BiCADXRTrainer(nn.Module):
             projection_enabled=projection_reason == "awaiting_backward_controls",
         )
         runtime = self.checkpoint_runtime(update, total_updates, stage=stage)
+        pair_runtime = None
+        if self.config.strict_pair_concat:
+            assert pair_labeled_mask is not None
+            physical_count = int(prepared.x.size(0) // 2)
+            pair_runtime = {
+                "runtime_version": 1,
+                "candidate_id": self.config.candidate_id,
+                "active": True,
+                "components": {
+                    name: dict(components[name])
+                    for name in (
+                        "satellite_tx_ce",
+                        "pair_identity_hinge",
+                        "pair_prediction_js",
+                        "pair_vicreg",
+                        "pair_delta_identity_adversary",
+                        "pair_delta_channel_prediction",
+                        "pair_delta_stability",
+                        "pair_delta_channel_equivariance",
+                        "pair_delta_norm_hinge",
+                    )
+                },
+                "effective_counts": {
+                    "physical": physical_count,
+                    "network": int(prepared.x.size(0)),
+                    "labeled": int(tx_labeled.numel()) if tx_labeled is not None else 0,
+                    "unlabeled": physical_count - int(pair_labeled_mask.sum().item()),
+                    "pair": physical_count,
+                },
+                "skip_reasons": {
+                    name: components[name]["skip_reason"]
+                    for name in (
+                        "satellite_tx_ce",
+                        "pair_identity_hinge",
+                        "pair_prediction_js",
+                        "pair_vicreg",
+                        "pair_delta_identity_adversary",
+                        "pair_delta_channel_prediction",
+                        "pair_delta_stability",
+                        "pair_delta_channel_equivariance",
+                        "pair_delta_norm_hinge",
+                    )
+                },
+                "one_forward_count": 1,
+                "model_forward_count": 1,
+                "extra_forward_count": 0,
+                "finite": {
+                    "inputs": bool(torch.isfinite(prepared.x).all()),
+                    "features": True,
+                    "loss": bool(torch.isfinite(total).all()),
+                },
+                "gradient": {
+                    "checked": False,
+                    "finite": None,
+                    "rho_adv": self._pair_adversarial_dose(stage),
+                },
+            }
+            self._pairbicad_runtime_state = pair_runtime
+            runtime["pairbicad_runtime"] = pair_runtime
         episode_indices = (
             []
             if xdc_selection is None
@@ -1658,6 +2135,8 @@ class BiCADXRTrainer(nn.Module):
             "components": components,
             "checkpoint_runtime": runtime,
         }
+        if pair_runtime is not None:
+            audit["pairbicad_runtime"] = pair_runtime
         audit["raw_losses"] = {name: value["raw"] for name, value in components.items()}
         audit["weighted_losses"] = {
             name: value["weighted"] for name, value in components.items()
@@ -1673,10 +2152,19 @@ class BiCADXRTrainer(nn.Module):
             raise ValueError("BiCAD-XR total loss must remain finite")
         self._last_update = int(update)
         self._last_total_updates = int(total_updates)
+        output_features: Mapping[str, Any] = model_output
+        if factorized_values is not None:
+            output_features = dict(model_output)
+            output_features["factor_outputs"] = {
+                "z_r": factorized_values.z_r,
+                "z_d": factorized_values.z_d,
+                "z_c": factorized_values.z_c,
+                "z_int": factorized_values.z_int,
+            }
         return BiCADXRTrainOutput(
             total=total,
             logits=logits,
-            features=model_output,
+            features=output_features,
             audit=audit,
             checkpoint_runtime=runtime,
             backward_plan=backward_plan,

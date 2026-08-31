@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+from copy import deepcopy
 from dataclasses import replace
+import json
 from types import SimpleNamespace
 
 import pytest
@@ -52,6 +54,23 @@ class _RecordingFeatureModel(_FeatureModel):
         **kwargs: object,
     ) -> dict[str, torch.Tensor]:
         self.received_tx = y_tx
+        return super().forward(x, y_tx=y_tx, **kwargs)
+
+
+class _CountingFeatureModel(_FeatureModel):
+    def __init__(self) -> None:
+        super().__init__()
+        self.forward_calls = 0
+        self.forward_batch_sizes: list[int] = []
+
+    def forward(
+        self,
+        x: torch.Tensor,
+        y_tx: torch.Tensor | None = None,
+        **kwargs: object,
+    ) -> dict[str, torch.Tensor]:
+        self.forward_calls += 1
+        self.forward_batch_sizes.append(int(x.size(0)))
         return super().forward(x, y_tx=y_tx, **kwargs)
 
 
@@ -214,6 +233,178 @@ def _trainer(candidate: str) -> BiCADXRTrainer:
         num_days=3,
         num_channels=4,
     )
+
+
+def _pairbicad_batch() -> BiCADXRBatch:
+    physical_count = 48
+    labeled_count = 16
+    clean_receiver = torch.arange(physical_count) % 4
+    clean_day = (torch.arange(physical_count) // 4) % 3
+    clean_channel = torch.zeros(physical_count, dtype=torch.long)
+    return BiCADXRBatch(
+        x=torch.randn(2 * physical_count, 8),
+        tx=None,
+        labeled_tx=torch.arange(labeled_count) % 6,
+        receiver=torch.cat((clean_receiver, clean_receiver), dim=0),
+        day=torch.cat((clean_day, clean_day), dim=0),
+        channel=torch.cat(
+            (clean_channel, torch.ones(physical_count, dtype=torch.long)), dim=0
+        ),
+        labeled_mask=torch.cat(
+            (
+                torch.ones(labeled_count, dtype=torch.bool),
+                torch.zeros(2 * physical_count - labeled_count, dtype=torch.bool),
+            ),
+            dim=0,
+        ),
+        pair_tx=torch.arange(labeled_count) % 6,
+        epoch=1,
+    )
+
+
+def _pairbicad_trainer(candidate: str):
+    from SSDG import train_ssdg
+
+    model = _CountingFeatureModel()
+    concat_model = train_ssdg._BiCADXRConcatForward(model)
+    concat_model.set_concat_clean_count(48)
+    return (
+        BiCADXRTrainer(
+            concat_model,
+            candidate_config(candidate),
+            num_receivers=4,
+            num_days=3,
+            num_channels=2,
+        ),
+        model,
+    )
+
+
+def test_pairbicad_p0_uses_16l32u_and_one_forward_with_scheduled_satellite_ce() -> None:
+    trainer, model = _pairbicad_trainer("P0")
+
+    output = trainer.compute_step(
+        _pairbicad_batch(), update=1, total_updates=4000, epoch=1
+    )
+
+    runtime = output.audit["pairbicad_runtime"]
+    assert model.forward_calls == 1
+    assert model.forward_batch_sizes == [96]
+    assert runtime["one_forward_count"] == 1
+    assert runtime["effective_counts"] == {
+        "physical": 48,
+        "network": 96,
+        "labeled": 16,
+        "unlabeled": 32,
+        "pair": 48,
+    }
+    satellite = output.audit["components"]["satellite_tx_ce"]
+    assert satellite["called"] is True
+    assert satellite["weighted"] == pytest.approx(0.5 * satellite["raw"])
+    assert not output.audit["components"]["pair_identity_hinge"]["called"]
+    assert not output.audit["components"]["pair_vicreg"]["called"]
+    assert not output.audit["components"]["pair_delta_identity_adversary"]["called"]
+
+
+def test_pairbicad_p3_uses_unlabeled_pair_self_supervision_without_u_tx() -> None:
+    trainer, model = _pairbicad_trainer("P3")
+
+    output = trainer.compute_step(
+        _pairbicad_batch(), update=1, total_updates=4000, epoch=1
+    )
+
+    assert model.forward_calls == 1
+    assert output.audit["components"]["tx_ce"]["effective_count"] == 16
+    assert output.audit["components"]["satellite_tx_ce"]["effective_count"] == 16
+    assert output.audit["components"]["pair_identity_hinge"]["called"]
+    assert output.audit["components"]["pair_prediction_js"]["called"]
+    assert output.audit["components"]["pair_vicreg"]["called"]
+    assert not output.audit["components"]["pair_delta_identity_adversary"]["called"]
+
+
+def test_pairbicad_p4_records_delta_objectives_and_dynamic_adversarial_dose() -> None:
+    trainer, _ = _pairbicad_trainer("P4")
+
+    output = trainer.compute_step(
+        _pairbicad_batch(), update=1, total_updates=4000, epoch=1
+    )
+
+    runtime = output.audit["pairbicad_runtime"]
+    assert runtime["gradient"]["rho_adv"] == pytest.approx(0.2)
+    for name in (
+        "pair_delta_identity_adversary",
+        "pair_delta_channel_prediction",
+        "pair_delta_stability",
+        "pair_delta_channel_equivariance",
+    ):
+        assert output.audit["components"][name]["called"]
+    assert output.audit["components"]["pair_prediction_js"]["called"]
+
+
+def test_legacy_runtime_defaults_known_pair_fields_but_keeps_strict_comparison() -> None:
+    source = _trainer("D5")
+    runtime = deepcopy(source.checkpoint_runtime(504, 5000))
+    pair_fields = (
+        "strict_pair_concat",
+        "pair_identity",
+        "pair_vicreg",
+        "pair_delta",
+        "dynamic_adversarial_dose",
+        "satellite_supervision_mode",
+        "pair_projector_dim",
+        "factor_interaction_dim",
+        "lambda_sat_cls_start",
+        "lambda_sat_cls_end",
+    )
+    for field in pair_fields:
+        runtime["candidate_config"].pop(field)
+
+    restored = _trainer("D5")
+    restored.load_checkpoint_runtime(runtime, strict=True)
+
+    mismatched = deepcopy(runtime)
+    mismatched["candidate_config"]["pair_identity"] = True
+    with pytest.raises(ValueError, match="runtime mismatch"):
+        _trainer("D5").load_checkpoint_runtime(mismatched, strict=True)
+
+    unknown = deepcopy(runtime)
+    unknown["candidate_config"]["unexpected_pair_field"] = 1
+    with pytest.raises(ValueError, match="runtime mismatch"):
+        _trainer("D5").load_checkpoint_runtime(unknown, strict=True)
+
+
+def test_pairbicad_checkpoint_restores_projectors_and_jsonable_runtime() -> None:
+    from SSDG import train_ssdg
+
+    source, _source_model = _pairbicad_trainer("P3")
+    output = source.compute_step(
+        _pairbicad_batch(), update=1, total_updates=4000, epoch=1
+    )
+    runtime = deepcopy(output.checkpoint_runtime)
+    assert runtime["training_state"]["factorized_projector"] is not None
+    assert runtime["training_state"]["pair_projector"] is not None
+    assert output.audit["pairbicad_runtime"]["finite"]["loss"] is True
+
+    target_model = _CountingFeatureModel()
+    target = train_ssdg._BiCADXRConcatForward(target_model)
+    target.set_concat_clean_count(48)
+    restored = BiCADXRTrainer(
+        target,
+        candidate_config("P3"),
+        num_receivers=4,
+        num_days=3,
+        num_channels=2,
+    )
+    restored.load_checkpoint_runtime(runtime, strict=True)
+
+    assert restored.factorized_projector is not None
+    assert restored.pair_projector is not None
+    for name, value in source.factorized_projector.state_dict().items():
+        torch.testing.assert_close(restored.factorized_projector.state_dict()[name], value)
+    for name, value in source.pair_projector.state_dict().items():
+        torch.testing.assert_close(restored.pair_projector.state_dict()[name], value)
+    encoded = json.dumps(train_ssdg._bicad_xr_jsonable(runtime), allow_nan=False)
+    assert "pairbicad_runtime" in encoded
 
 
 def test_stage0_has_no_grl_xdc_tail_or_tangent() -> None:

@@ -47,6 +47,13 @@ class _CountingIQModel(nn.Module):
         }
 
 
+class _ForbiddenTxBatch(list):
+    def __getitem__(self, index):
+        if index == 1:
+            raise AssertionError("PairBiCAD must not read U_s TX labels")
+        return super().__getitem__(index)
+
+
 def _sat_args() -> SimpleNamespace:
     return SimpleNamespace(
         seed=1,
@@ -79,6 +86,39 @@ def _run_real_concat_step(candidate_id: str, *, update: int):
         batch_idx=1,
         update=update,
         total_updates=5000,
+    )
+    return output, view, base_model, augmenter
+
+
+def _run_pair_concat_step(candidate_id: str, *, update: int):
+    args = _sat_args()
+    augmenter = train_ssdg._build_bicad_xr_concat_augmenter(args)
+    base_model = _CountingIQModel()
+    concat_model = train_ssdg._BiCADXRConcatForward(base_model)
+    trainer = BiCADXRTrainer(concat_model, candidate_id, num_receivers=4, num_days=3)
+    x_l = torch.ones(16, 2, 64, dtype=torch.float32)
+    x_u = torch.full((32, 2, 64), 2.0, dtype=torch.float32)
+    tx = torch.arange(16, dtype=torch.long) % 3
+    receiver_l = torch.arange(16, dtype=torch.long) % 4
+    day_l = torch.arange(16, dtype=torch.long) % 3
+    receiver_u = (torch.arange(32, dtype=torch.long) + 1) % 4
+    day_u = (torch.arange(32, dtype=torch.long) + 1) % 3
+
+    output, view = train_ssdg._bicad_xr_labeled_step(
+        trainer,
+        augmenter,
+        x_l,
+        tx,
+        receiver_l,
+        day_l,
+        x_u,
+        receiver_u,
+        day_u,
+        args=args,
+        epoch=1,
+        batch_idx=1,
+        update=update,
+        total_updates=4000,
     )
     return output, view, base_model, augmenter
 
@@ -145,6 +185,19 @@ def test_bicad_entry_forces_concat_leo_weak_contract() -> None:
     assert resolved.sat_train_scenarios == (
         "leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
     )
+
+
+def test_pairbicad_entry_preserves_registered_candidate_instead_of_legacy_e80() -> None:
+    args = parse(["--phase1_method", "bicad_xr", "--candidate_id", "P0"])
+
+    protocol = train_ssdg.resolve_bicad_protocol(args)
+    train_ssdg._apply_bicad_xr_entry_protocol(args, protocol)
+
+    assert protocol.strict_pair_concat is True
+    assert args.concat_sat_start_epoch == 1
+    assert args.sat_training_mode == "ce_only_plus_pair_selfsup"
+    assert args.lambda_sat_cls_start == pytest.approx(0.5)
+    assert args.lambda_sat_cls_end == pytest.approx(1.0)
 
 
 def test_bicad_from_scratch_resolves_wisig_sample_rate_before_model_build() -> None:
@@ -225,6 +278,62 @@ def test_bicad_real_leo_concat_uses_one_forward_and_runs_satellite_ce() -> None:
     assert component["called"] is True
     assert component["skip_reason"] is None
     assert component["weighted"] == pytest.approx(0.68 * component["raw"])
+
+
+def test_pairbicad_real_concat_uses_16l32u_one_forward_and_preserves_u_unlabeled() -> None:
+    output, view, model, _ = _run_pair_concat_step("P0", update=1)
+
+    assert model.forward_calls == 1
+    assert model.forward_batch_sizes == [96]
+    assert view["physical_batch_size"] == 48
+    assert view["labeled_count"] == 16
+    assert view["unlabeled_count"] == 32
+    assert view["network_batch_size"] == 96
+    assert output.audit["components"]["satellite_tx_ce"]["called"]
+
+
+def test_pairbicad_unlabeled_batch_never_reads_tx_slot() -> None:
+    batch = _ForbiddenTxBatch(
+        [
+            torch.ones(2, 2, 64),
+            object(),
+            torch.tensor([0, 1]),
+            {"rx_i": torch.tensor([2, 3]), "day_i": torch.tensor([0, 1])},
+        ]
+    )
+
+    x_u, extra_u = train_ssdg._move_bicad_xr_unlabeled_batch(batch, torch.device("cpu"))
+
+    assert x_u.shape[0] == 2
+    assert extra_u[0].tolist() == [0, 1]
+
+
+def test_pairbicad_entry_rejects_malformed_labeled_or_unlabeled_sizes_before_forward() -> None:
+    args = _sat_args()
+    augmenter = train_ssdg._build_bicad_xr_concat_augmenter(args)
+    model = _CountingIQModel()
+    trainer = BiCADXRTrainer(
+        train_ssdg._BiCADXRConcatForward(model), "P0", num_receivers=4, num_days=3
+    )
+
+    with pytest.raises(ValueError, match="16 labeled and 32 unlabeled"):
+        train_ssdg._bicad_xr_labeled_step(
+            trainer,
+            augmenter,
+            torch.ones(15, 2, 64),
+            torch.arange(15) % 3,
+            torch.arange(15) % 4,
+            torch.arange(15) % 3,
+            torch.ones(32, 2, 64),
+            torch.arange(32) % 4,
+            torch.arange(32) % 3,
+            args=args,
+            epoch=1,
+            batch_idx=1,
+            update=1,
+            total_updates=4000,
+        )
+    assert model.forward_calls == 0
 
 
 def test_bicad_e3_pair_reuses_the_same_concat_forward() -> None:

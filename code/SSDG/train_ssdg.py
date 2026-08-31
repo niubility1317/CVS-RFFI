@@ -251,15 +251,28 @@ class BiCADXRProtocol:
     """The closed, source-only protocol consumed by the BiCAD-XR entry."""
 
     def __init__(self, *, phase1_method: str, candidate_id: str) -> None:
+        from cvsrffi.phase1_bicad_xr.config import candidate_config
+
+        resolved_config = candidate_config(candidate_id)
         self.phase1_method = phase1_method
-        self.candidate_id = candidate_id
+        self.candidate_id = resolved_config.candidate_id
         self.use_concat_sat_channel_aug = True
         self.concat_sat_ce_only = True
-        self.concat_sat_ce_weight = 0.68
-        self.concat_sat_start_epoch = 80
+        self.concat_sat_ce_weight = float(resolved_config.lambda_sat_cls)
+        self.concat_sat_start_epoch = int(resolved_config.concat_sat_start_epoch)
         self.sat_train_scenarios = _BICAD_XR_LEO_WEAK_CSV
-        self.lambda_sat_cls = 0.68
-        self.lambda_sat_cons = 0.0
+        self.lambda_sat_cls = float(resolved_config.lambda_sat_cls)
+        self.lambda_sat_cons = float(resolved_config.lambda_sat_cons)
+        self.strict_pair_concat = bool(resolved_config.strict_pair_concat)
+        self.pair_identity = bool(resolved_config.pair_identity)
+        self.pair_vicreg = bool(resolved_config.pair_vicreg)
+        self.pair_delta = bool(resolved_config.pair_delta)
+        self.dynamic_adversarial_dose = bool(resolved_config.dynamic_adversarial_dose)
+        self.satellite_supervision_mode = resolved_config.satellite_supervision_mode
+        self.pair_projector_dim = int(resolved_config.pair_projector_dim)
+        self.factor_interaction_dim = int(resolved_config.factor_interaction_dim)
+        self.lambda_sat_cls_start = float(resolved_config.lambda_sat_cls_start)
+        self.lambda_sat_cls_end = float(resolved_config.lambda_sat_cls_end)
         self.target_access = False
 
 
@@ -373,6 +386,16 @@ def bicad_xr_runtime(protocol: BiCADXRProtocol) -> Dict[str, Any]:
             "lambda_sat_cons": protocol.lambda_sat_cons,
             "concat_sat_start_epoch": protocol.concat_sat_start_epoch,
             "sat_train_scenarios": scenarios,
+            "strict_pair_concat": protocol.strict_pair_concat,
+            "pair_identity": protocol.pair_identity,
+            "pair_vicreg": protocol.pair_vicreg,
+            "pair_delta": protocol.pair_delta,
+            "dynamic_adversarial_dose": protocol.dynamic_adversarial_dose,
+            "satellite_supervision_mode": protocol.satellite_supervision_mode,
+            "pair_projector_dim": protocol.pair_projector_dim,
+            "factor_interaction_dim": protocol.factor_interaction_dim,
+            "lambda_sat_cls_start": protocol.lambda_sat_cls_start,
+            "lambda_sat_cls_end": protocol.lambda_sat_cls_end,
         },
         "reconstruct": {
             "phase1_method": protocol.phase1_method,
@@ -1491,6 +1514,8 @@ def _partition_source_validation_roles(
 
 
 def _resolve_unlabeled_batch_size(args) -> int:
+    if bool(getattr(args, "strict_pair_concat", False)):
+        return 32
     if not bool(getattr(args, "use_muse_ssdg", False)):
         return int(args.batch_size)
     value = int(getattr(args, "muse_unlabeled_batch_size", 256))
@@ -1500,6 +1525,8 @@ def _resolve_unlabeled_batch_size(args) -> int:
 
 
 def _unlabeled_drop_last(args) -> bool:
+    if bool(getattr(args, "strict_pair_concat", False)):
+        return True
     return not bool(getattr(args, "use_muse_ssdg", False))
 
 
@@ -12941,6 +12968,36 @@ def _bicad_xr_metadata(extra, key: str, device, expected_count: int) -> torch.Te
     return value.to(device=device, dtype=torch.long).reshape(expected_count)
 
 
+def _bicad_xr_required_metadata(extra, key: str, device, expected_count: int) -> torch.Tensor:
+    value = _metadata_label_tensor(extra, key, device, expected_count)
+    if value is None:
+        raise ValueError(f"BiCAD-XR requires source-only {key} metadata for every row")
+    return value.to(device=device, dtype=torch.long).reshape(expected_count)
+
+
+def _move_bicad_xr_unlabeled_batch(batch, device):
+    """Move U_s IQ/domain/metadata without reading or materializing TX labels."""
+
+    if not isinstance(batch, (tuple, list)):
+        raise ValueError("BiCAD-XR U_s batch must be a tuple or list")
+    if len(batch) >= 4:
+        x_u = batch[0]
+        domain_u = batch[2]
+        metadata_u = batch[3]
+    elif len(batch) == 3:
+        x_u = batch[0]
+        domain_u = batch[1]
+        metadata_u = batch[2]
+    else:
+        raise ValueError("BiCAD-XR U_s batch must contain IQ, domain and metadata")
+    if not torch.is_tensor(x_u):
+        raise TypeError("BiCAD-XR U_s IQ batch must be a tensor")
+    x_u = _safe_iq_tensor(x_u.to(device, non_blocking=True))
+    if torch.is_tensor(domain_u):
+        domain_u = domain_u.to(device, non_blocking=True)
+    return x_u, (domain_u, metadata_u)
+
+
 def _bicad_xr_local_domain_labels(
     labels: torch.Tensor,
     source_indices: Sequence[int],
@@ -12974,14 +13031,23 @@ def _apply_bicad_xr_entry_protocol(args, protocol: BiCADXRProtocol) -> None:
     args.phase1_source_only_eval = True
     args.use_concat_sat_channel_aug = True
     args.concat_sat_ce_only = True
-    args.concat_sat_ce_weight = 0.68
-    args.concat_sat_start_epoch = 80
+    args.concat_sat_ce_weight = protocol.lambda_sat_cls_start
+    args.concat_sat_start_epoch = protocol.concat_sat_start_epoch
     args.sat_train_scenarios = _BICAD_XR_LEO_WEAK_CSV
     args.sat_train_scenario_list = list(_BICAD_XR_LEO_WEAK)
     args.sat_view_schedule = _BICAD_XR_SAT_VIEW_SCHEDULE
-    args.sat_training_mode = "concat_ce_only"
+    args.sat_training_mode = protocol.satellite_supervision_mode
     args.lambda_sat_cls = 0.68
     args.lambda_sat_cons = 0.0
+    args.strict_pair_concat = protocol.strict_pair_concat
+    args.pair_identity = protocol.pair_identity
+    args.pair_vicreg = protocol.pair_vicreg
+    args.pair_delta = protocol.pair_delta
+    args.dynamic_adversarial_dose = protocol.dynamic_adversarial_dose
+    args.pair_projector_dim = protocol.pair_projector_dim
+    args.factor_interaction_dim = protocol.factor_interaction_dim
+    args.lambda_sat_cls_start = protocol.lambda_sat_cls_start
+    args.lambda_sat_cls_end = protocol.lambda_sat_cls_end
     args.use_mixstyle = False
     args.muse_lr_schedule = "off"
     if hasattr(args, "use_fasttrust"):
@@ -13043,12 +13109,49 @@ class _BiCADXRConcatForward(torch.nn.Module):
         if logits.size(0) != 2 * clean_count or z_id.size(0) != 2 * clean_count:
             raise ValueError("BiCAD-XR concat forward must contain clean then satellite rows")
         resolved = dict(output)
-        resolved["concat_pair"] = {
-            "clean_z_id": z_id[:clean_count],
-            "satellite_z_id": z_id[clean_count:],
-            "clean_logits": logits[:clean_count],
-            "satellite_logits": logits[clean_count:],
-        }
+        existing_pair = output.get("concat_pair")
+        pair_payload: Dict[str, Any] = (
+            dict(existing_pair) if isinstance(existing_pair, Mapping) else {}
+        )
+        pair_payload.update(
+            {
+                "clean_z_id": z_id[:clean_count],
+                "satellite_z_id": z_id[clean_count:],
+                "clean_logits": logits[:clean_count],
+                "satellite_logits": logits[clean_count:],
+            }
+        )
+        z_dom = output.get("z_dom", output.get("domain_features"))
+        if torch.is_tensor(z_dom):
+            if z_dom.size(0) != 2 * clean_count:
+                raise ValueError("BiCAD-XR concat z_dom must contain clean then satellite rows")
+            pair_payload["clean_z_dom"] = z_dom[:clean_count]
+            pair_payload["satellite_z_dom"] = z_dom[clean_count:]
+        for name in ("z_r", "z_d", "z_c", "z_int"):
+            factor = output.get(name)
+            if torch.is_tensor(factor):
+                if factor.size(0) != 2 * clean_count:
+                    raise ValueError(f"BiCAD-XR concat {name} must contain clean then satellite rows")
+                pair_payload[f"clean_{name}"] = factor[:clean_count]
+                pair_payload[f"satellite_{name}"] = factor[clean_count:]
+        factor_outputs = output.get("factor_outputs", output.get("domain_factors"))
+        if factor_outputs is not None and not isinstance(factor_outputs, Mapping):
+            factor_outputs = {
+                name: getattr(factor_outputs, name)
+                for name in ("z_r", "z_d", "z_c", "z_int")
+                if torch.is_tensor(getattr(factor_outputs, name, None))
+            }
+        if isinstance(factor_outputs, Mapping):
+            for name, factor in factor_outputs.items():
+                if not torch.is_tensor(factor):
+                    continue
+                if factor.size(0) != 2 * clean_count:
+                    raise ValueError(
+                        f"BiCAD-XR concat factor {name} must contain clean then satellite rows"
+                    )
+                pair_payload[f"clean_{name}"] = factor[:clean_count]
+                pair_payload[f"satellite_{name}"] = factor[clean_count:]
+        resolved["concat_pair"] = pair_payload
         return resolved
 
 
@@ -13059,6 +13162,9 @@ def _bicad_xr_labeled_step(
     tx,
     receiver,
     day,
+    x_u=None,
+    receiver_u=None,
+    day_u=None,
     *,
     args,
     epoch: int,
@@ -13068,8 +13174,93 @@ def _bicad_xr_labeled_step(
 ):
     from cvsrffi.phase1_bicad_xr.trainer import BiCADXRBatch
 
+    is_pairbicad = bool(getattr(trainer.config, "strict_pair_concat", False))
+    if is_pairbicad:
+        tx = torch.as_tensor(tx, device=x.device, dtype=torch.long).reshape(-1)
+        receiver = torch.as_tensor(receiver, device=x.device, dtype=torch.long).reshape(-1)
+        day = torch.as_tensor(day, device=x.device, dtype=torch.long).reshape(-1)
+        if x_u is None or receiver_u is None or day_u is None:
+            raise ValueError("strict PairBiCAD requires both labeled and unlabeled source batches")
+        x = _safe_iq_tensor(x)
+        x_u = _safe_iq_tensor(torch.as_tensor(x_u, device=x.device))
+        receiver_u = torch.as_tensor(receiver_u, device=x.device, dtype=torch.long).reshape(-1)
+        day_u = torch.as_tensor(day_u, device=x.device, dtype=torch.long).reshape(-1)
+        if (
+            tx.numel() != 16
+            or x.size(0) != 16
+            or x_u.size(0) != 32
+            or receiver.numel() != 16
+            or day.numel() != 16
+            or receiver_u.numel() != 32
+            or day_u.numel() != 32
+        ):
+            raise ValueError(
+                "strict PairBiCAD requires exactly 16 labeled and 32 unlabeled physical samples"
+            )
+        if x.ndim < 2 or x_u.ndim != x.ndim or tuple(x.shape[1:]) != tuple(x_u.shape[1:]):
+            raise ValueError("strict PairBiCAD labeled and unlabeled IQ shapes must align")
+        physical_x = torch.cat((x, x_u), dim=0)
+        physical_receiver = torch.cat((receiver, receiver_u), dim=0)
+        physical_day = torch.cat((day, day_u), dim=0)
+        clean_count = int(physical_x.size(0))
+        sat_view = concat_sat_aug.transform(
+            physical_x,
+            args=args,
+            epoch=int(epoch),
+            batch_idx=int(batch_idx),
+        )
+        satellite_x = _safe_iq_tensor(sat_view.x)
+        if satellite_x.size(0) != clean_count:
+            raise ValueError("strict PairBiCAD satellite view must preserve physical batch size")
+        concat_x = torch.cat((physical_x, satellite_x), dim=0)
+        concat_receiver = torch.cat((physical_receiver, physical_receiver), dim=0)
+        concat_day = torch.cat((physical_day, physical_day), dim=0)
+        concat_channel = torch.cat(
+            (
+                torch.zeros(clean_count, dtype=torch.long, device=x.device),
+                torch.ones(clean_count, dtype=torch.long, device=x.device),
+            ),
+            dim=0,
+        )
+        labeled_mask = torch.zeros(2 * clean_count, dtype=torch.bool, device=x.device)
+        labeled_mask[: tx.numel()] = True
+        if not isinstance(trainer.model, _BiCADXRConcatForward):
+            raise ValueError("BiCAD-XR trainer requires the concat forward adapter")
+        trainer.model.set_concat_clean_count(clean_count)
+        batch = BiCADXRBatch(
+            x=concat_x,
+            tx=None,
+            labeled_tx=tx,
+            receiver=concat_receiver,
+            day=concat_day,
+            channel=concat_channel,
+            labeled_mask=labeled_mask,
+            pair_tx=tx,
+            epoch=int(epoch),
+        )
+        output = trainer.compute_step(
+            batch,
+            update=int(update),
+            total_updates=int(total_updates),
+            epoch=int(epoch),
+        )
+        view = {
+            "applied": bool(sat_view.applied),
+            "scenario": str(sat_view.scenario),
+            "clean_batch_size": clean_count,
+            "total_batch_size": 2 * clean_count,
+            "physical_batch_size": clean_count,
+            "labeled_count": int(tx.numel()),
+            "unlabeled_count": int(x_u.size(0)),
+            "network_batch_size": int(concat_x.size(0)),
+            "satellite_x": satellite_x,
+        }
+        return output, view
+
     if int(epoch) < 80:
         raise ValueError("BiCAD-XR concat step starts at epoch 80")
+    if x_u is not None or receiver_u is not None or day_u is not None:
+        raise ValueError("legacy BiCAD-XR concat step does not accept an unlabeled pair")
     clean_count = int(tx.numel())
     sat_view = concat_sat_aug.transform(
         x,
@@ -13156,10 +13347,40 @@ def _train_bicad_xr(args) -> int:
 
     set_seed(int(getattr(args, "seed", 0)))
     device = resolve_device(str(getattr(args, "device", "auto")))
-    data_ctx = _build_ssdg_wisig_data(args, device)
+    pair_data_overrides = None
+    if protocol.strict_pair_concat:
+        if int(getattr(args, "batch_size", 0)) != 48:
+            raise ValueError("PairBiCAD physical batch contract requires --batch_size 48")
+        pair_data_overrides = {
+            "batch_size": getattr(args, "batch_size", 48),
+            "use_tx_rx_balanced_sampler": getattr(
+                args, "use_tx_rx_balanced_sampler", False
+            ),
+            "use_muse_ssdg": getattr(args, "use_muse_ssdg", False),
+            "muse_level": getattr(args, "muse_level", "M0"),
+            "muse_unlabeled_batch_size": getattr(
+                args, "muse_unlabeled_batch_size", 256
+            ),
+        }
+        # The CLI batch is the frozen 48-physical contract.  The two source
+        # loaders are built at 16L and 32U, then one step reassembles 48.
+        args.batch_size = 16
+        args.use_tx_rx_balanced_sampler = False
+        args.use_muse_ssdg = True
+        args.muse_level = "M1"
+        args.muse_unlabeled_batch_size = 32
+    try:
+        data_ctx = _build_ssdg_wisig_data(args, device)
+    finally:
+        if pair_data_overrides is not None:
+            for name, value in pair_data_overrides.items():
+                setattr(args, name, value)
     train_loader = data_ctx["train_loader"]
     if train_loader is None:
         raise RuntimeError("BiCAD-XR requires the labeled source train loader")
+    unlabeled_loader = data_ctx.get("unlabeled_loader")
+    if protocol.strict_pair_concat and unlabeled_loader is None:
+        raise RuntimeError("PairBiCAD requires the unlabeled source train loader")
 
     checkpoint = None
     baseline_ckpt = str(getattr(args, "baseline_ckpt", "") or "").strip()
@@ -13181,17 +13402,27 @@ def _train_bicad_xr(args) -> int:
     _apply_bicad_xr_model_defaults(model_args)
     model = build_baseline_model(model_args, device)
 
-    config = dataclass_replace(
-        candidate_config(protocol.candidate_id),
-        phase1_method="bicad_xr",
-        use_fasttrust=False,
-        use_mixstyle=False,
-        lambda_sat_cls=0.68,
-        lambda_sat_cons=0.0,
-        concat_sat_ce_only=True,
-        concat_sat_start_epoch=80,
-        sat_train_scenarios=_BICAD_XR_LEO_WEAK,
-    )
+    base_config = candidate_config(protocol.candidate_id)
+    if protocol.strict_pair_concat:
+        config = dataclass_replace(
+            base_config,
+            phase1_method="bicad_xr",
+            use_fasttrust=False,
+            use_mixstyle=False,
+            sat_train_scenarios=_BICAD_XR_LEO_WEAK,
+        )
+    else:
+        config = dataclass_replace(
+            base_config,
+            phase1_method="bicad_xr",
+            use_fasttrust=False,
+            use_mixstyle=False,
+            lambda_sat_cls=0.68,
+            lambda_sat_cons=0.0,
+            concat_sat_ce_only=True,
+            concat_sat_start_epoch=80,
+            sat_train_scenarios=_BICAD_XR_LEO_WEAK,
+        )
     concat_model = _BiCADXRConcatForward(model)
     source_receiver_indices = list(data_ctx["source_receiver_indices"])
     source_day_indices = list(data_ctx["source_day_indices"])
@@ -13200,6 +13431,7 @@ def _train_bicad_xr(args) -> int:
         config,
         num_receivers=len(source_receiver_indices),
         num_days=len(source_day_indices),
+        num_channels=2 if protocol.strict_pair_concat else 4,
     ).to(device)
     if checkpoint is not None:
         _load_bicad_xr_checkpoint_strict(
@@ -13223,6 +13455,7 @@ def _train_bicad_xr(args) -> int:
     update = 0
     epoch_rows: List[Dict[str, Any]] = []
     last_audit: Mapping[str, Any] = {}
+    unlabeled_iter = iter(unlabeled_loader) if protocol.strict_pair_concat else None
     trainer.train()
     for epoch in range(1, epochs + 1):
         epoch_losses: List[float] = []
@@ -13231,22 +13464,76 @@ def _train_bicad_xr(args) -> int:
                 break
             x_l, y_l, extra_l = move_batch(labeled_batch, device)
             if y_l is None:
+                if protocol.strict_pair_concat:
+                    raise RuntimeError("PairBiCAD labeled source loader returned no TX labels")
                 continue
             tx = y_l.to(device=device, dtype=torch.long).reshape(-1)
             count = int(tx.numel())
             receiver = _bicad_xr_local_domain_labels(
-                _bicad_xr_metadata(extra_l, "rx_i", device, count),
+                (
+                    _bicad_xr_required_metadata
+                    if protocol.strict_pair_concat
+                    else _bicad_xr_metadata
+                )(extra_l, "rx_i", device, count),
                 source_receiver_indices,
                 name="receiver",
             )
             day = _bicad_xr_local_domain_labels(
-                _bicad_xr_metadata(extra_l, "day_i", device, count),
+                (
+                    _bicad_xr_required_metadata
+                    if protocol.strict_pair_concat
+                    else _bicad_xr_metadata
+                )(extra_l, "day_i", device, count),
                 source_day_indices,
                 name="day",
             )
             optimizer.zero_grad(set_to_none=True)
-            if epoch >= 80:
-                step_output, _ = _bicad_xr_labeled_step(
+            step_view = None
+            if protocol.strict_pair_concat:
+                if unlabeled_iter is None:
+                    raise RuntimeError("PairBiCAD unlabeled iterator was not initialized")
+                try:
+                    unlabeled_batch = next(unlabeled_iter)
+                except StopIteration:
+                    unlabeled_iter = iter(unlabeled_loader)
+                    try:
+                        unlabeled_batch = next(unlabeled_iter)
+                    except StopIteration as exc:
+                        raise RuntimeError("PairBiCAD requires a non-empty unlabeled loader") from exc
+                x_u, extra_u = _move_bicad_xr_unlabeled_batch(unlabeled_batch, device)
+                unlabeled_count = int(x_u.size(0))
+                receiver_u = _bicad_xr_local_domain_labels(
+                    _bicad_xr_required_metadata(
+                        extra_u, "rx_i", device, unlabeled_count
+                    ),
+                    source_receiver_indices,
+                    name="receiver_u",
+                )
+                day_u = _bicad_xr_local_domain_labels(
+                    _bicad_xr_required_metadata(
+                        extra_u, "day_i", device, unlabeled_count
+                    ),
+                    source_day_indices,
+                    name="day_u",
+                )
+                step_output, step_view = _bicad_xr_labeled_step(
+                    trainer,
+                    concat_sat_aug,
+                    x_l,
+                    tx,
+                    receiver,
+                    day,
+                    x_u,
+                    receiver_u,
+                    day_u,
+                    args=args,
+                    epoch=epoch,
+                    batch_idx=batch_idx,
+                    update=update + 1,
+                    total_updates=total_updates,
+                )
+            elif epoch >= 80:
+                step_output, step_view = _bicad_xr_labeled_step(
                     trainer,
                     concat_sat_aug,
                     x_l,
@@ -13276,6 +13563,13 @@ def _train_bicad_xr(args) -> int:
                     total_updates=total_updates,
                     epoch=epoch,
                 )
+            if step_view is not None:
+                step_output.audit["satellite_scenario"] = step_view["scenario"]
+                step_output.audit["satellite_view_applied"] = step_view["applied"]
+                pair_runtime = step_output.audit.get("pairbicad_runtime")
+                if isinstance(pair_runtime, dict):
+                    pair_runtime["scenario"] = step_view["scenario"]
+                    pair_runtime["satellite_view_applied"] = step_view["applied"]
             trainer.apply_backward_controls(step_output)
             max_grad_norm = float(getattr(args, "max_grad_norm", 0.0))
             if max_grad_norm > 0.0:
@@ -13336,6 +13630,9 @@ def _train_bicad_xr(args) -> int:
     reconstructed_trainer = BiCADXRTrainer(
         _BiCADXRConcatForward(reconstructed_model),
         config,
+        num_receivers=len(source_receiver_indices),
+        num_days=len(source_day_indices),
+        num_channels=2 if protocol.strict_pair_concat else 4,
     ).to(device)
     checkpoint_payload["bicad_xr_runtime"] = _load_bicad_xr_checkpoint_strict(
         checkpoint_payload,
