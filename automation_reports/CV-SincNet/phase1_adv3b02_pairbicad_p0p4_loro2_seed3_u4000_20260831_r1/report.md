@@ -141,3 +141,19 @@
 - 这是预登记的系统技术失败，不是性能负结果。训练checkpoint与partial artifact全部保留，未停止或影响无关进程，也未访问Phase2/目标接收机。
 - 本run不能进行P0–P4 source-only排序、晋级或与ADV3B02性能比较；当前最高可证明交付状态为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
 - 后续若要恢复正式结果，必须先在本地定点修复`num_channels`checkpoint runtime恢复契约并通过对应真实checkpoint no-query smoke，再以新的不可覆盖run ID发布；不得把本run的未闭合checkpoint直接标为正式性能结果。
+
+## r2定点修复追踪
+
+|ID|故障证据|修复要求|目标文件|状态|验证|备注|
+|---|---|---|---|---|---|---|
+|PB-FIX-01|30/30行统一报`checkpoint runtime mismatch: num_channels`|正式评估恢复器必须按冻结row与候选协议重建训练时的receiver/day/channel维度，保持严格校验|launcher、launcher test|verified|回归测试先RED后GREEN；298/298相关测试；真实U4000 checkpoint no-query smoke PASS|恢复维度4/3/2，不信任checkpoint自报维度，strict保持开启|
+|PB-FIX-02|旧run已有30个U4000 checkpoint但四场景未闭合|修复后使用新release和不可覆盖Run ID重新发布原30行矩阵|新r2报告、N607 release/run|pending|归档SHA、远端编译、启动回读|旧run保持只读且不冒充正式结果|
+
+### PB-FIX-01验证证据
+
+- 根因：训练端在`strict_pair_concat=true`时显式构建`num_receivers=4,num_days=3,num_channels=2`；旧正式评估恢复器只传入model/config，回退到trainer默认`4/3/4`，因此严格恢复报告`num_channels`不一致。
+- 回归测试`test_pairbicad_formal_restore_reconstructs_training_domain_dimensions`在旧代码上按预期失败，捕获到空维度参数；最小修复后通过，并证明恢复维度由冻结row与候选协议独立得到，而非从checkpoint自报值复制。
+- `code/tests/phase1_bicad_xr`完整相关测试298/298通过；launcher与metrics聚焦测试39/39通过；`py_compile`和新r2精确30行dry-run通过。
+- 真实checkpoint：失败run的`P4-F1-S392002/bicad_xr_final.pth`，SHA256本地/N607一致为`87d688ea075b79c521cc9f57508d5270ddb5a0badc09dc1476c8e6f05b89a9da`。
+- no-query smoke：严格model重建missing/unexpected均为0，trainer runtime严格恢复为4个receiver、3天、2个channel；clean及三种LEO弱场景各输出`[256,6]`有限logits；target/Phase2/support/query/truth访问全部为false。
+- 独立P0/P1定点审查未发现会导致新run跑错、越权、覆盖输出、误杀进程、不能启动或不能产生合法prediction的问题；建议保持严格校验并使用新Run ID。

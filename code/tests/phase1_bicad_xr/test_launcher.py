@@ -353,6 +353,62 @@ def test_pairbicad_reconstruction_preserves_candidate_protocol() -> None:
     assert config.lambda_sat_cls_end == pytest.approx(1.0)
 
 
+def test_pairbicad_formal_restore_reconstructs_training_domain_dimensions(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import cvsrffi.phase1_bicad_xr.trainer as trainer_module
+
+    launcher = _load_launcher()
+    row = next(
+        row
+        for row in launcher.build_plan(stage="pairbicad")
+        if row.candidate_id == "P4" and row.fold == 1 and row.seed == 392002
+    )
+    roots = launcher.LauncherRoots(
+        SCRIPT_PATH.resolve().parents[2],
+        Path("python"),
+        Path("/tmp/pairbicad-run"),
+        Path("/tmp/ManySig.pkl"),
+    )
+    context = launcher._FormalEvaluationContext(row, roots, ())
+    context.ssdg = SimpleNamespace(_BiCADXRConcatForward=lambda model: model)
+    context.device = "cpu"
+    captured: dict[str, object] = {}
+
+    class CapturingTrainer:
+        def __init__(self, model: object, config: object, **dimensions: object) -> None:
+            captured["model"] = model
+            captured["config"] = config
+            captured["dimensions"] = dimensions
+
+        def to(self, device: object) -> "CapturingTrainer":
+            captured["device"] = device
+            return self
+
+        def load_checkpoint_runtime(
+            self, runtime: object, *, strict: bool
+        ) -> None:
+            captured["runtime"] = runtime
+            captured["strict"] = strict
+
+    monkeypatch.setattr(trainer_module, "BiCADXRTrainer", CapturingTrainer)
+    runtime = {
+        "num_receivers": 99,
+        "num_days": 99,
+        "num_channels": 99,
+    }
+
+    context.restore_trainer_runtime(object(), {"bicad_xr_runtime": runtime})
+
+    assert captured["dimensions"] == {
+        "num_receivers": len(row.source_receivers),
+        "num_days": len(row.train_days),
+        "num_channels": 2,
+    }
+    assert captured["runtime"] is runtime
+    assert captured["strict"] is True
+
+
 def _write_strict_worker_artifacts(row_root: Path, row: object) -> None:
     checkpoint = row_root / "bicad_xr_final.pth"
     runtime = {

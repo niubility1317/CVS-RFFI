@@ -630,7 +630,11 @@ class _FormalEvaluationContext:
             raise ValueError("checkpoint is missing bicad_xr_runtime")
         config = reconstruction_config(self.row.candidate_id)
         self.trainer = BiCADXRTrainer(
-            self.ssdg._BiCADXRConcatForward(model), config
+            self.ssdg._BiCADXRConcatForward(model),
+            config,
+            num_receivers=len(self.row.source_receivers),
+            num_days=len(self.row.train_days),
+            num_channels=2 if config.strict_pair_concat else 4,
         ).to(self.device)
         self.trainer.load_checkpoint_runtime(runtime, strict=True)
 
