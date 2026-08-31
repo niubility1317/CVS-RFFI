@@ -216,6 +216,16 @@ def test_truth_last_detailed_score_rejects_prediction_argmax_mismatch(tmp_path: 
         score_wiser_predictions(predictions, receipt, truth)
 
 
+def test_truth_last_detailed_score_rejects_partial_logit_evidence(tmp_path: Path) -> None:
+    predictions, receipt, truth, _ = _write_detailed_inputs(tmp_path)
+    with np.load(predictions, allow_pickle=False) as source:
+        values = {name: source[name] for name in source.files if name != "p2_logits"}
+    np.savez_compressed(predictions, **values)
+
+    with pytest.raises(ValueError, match="logits are incomplete"):
+        score_wiser_predictions(predictions, receipt, truth)
+
+
 def test_truth_last_detailed_score_rejects_duplicate_truth_tokens(tmp_path: Path) -> None:
     predictions, receipt, truth, _ = _write_detailed_inputs(tmp_path)
     truth_payload = json.loads(truth.read_text(encoding="utf-8"))
@@ -235,6 +245,16 @@ def test_truth_last_detailed_score_rejects_missing_truth_class(tmp_path: Path) -
     truth.write_text(json.dumps(truth_payload), encoding="utf-8")
 
     with pytest.raises(ValueError, match="six-old-class coverage"):
+        score_wiser_predictions(predictions, receipt, truth)
+
+
+def test_truth_last_detailed_score_rejects_out_of_range_truth_index(tmp_path: Path) -> None:
+    predictions, receipt, truth, _ = _write_detailed_inputs(tmp_path)
+    truth_payload = json.loads(truth.read_text(encoding="utf-8"))
+    truth_payload["rows"][0]["true_class_index"] = 6
+    truth.write_text(json.dumps(truth_payload), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="truth index"):
         score_wiser_predictions(predictions, receipt, truth)
 
 
@@ -277,6 +297,48 @@ def test_paired_comparison_separates_neutral_flips_and_same_predictions(tmp_path
     assert result["prediction_flip_count"] == 1
 
 
+def test_paired_comparison_rejects_same_bogus_class_registry_on_both_rows(
+    tmp_path: Path,
+) -> None:
+    control = score_wiser_predictions(*_write_detailed_inputs(tmp_path / "control", arm="B0")[:3])
+    candidate = deepcopy(control)
+    candidate["arm"] = "N1"
+    control["class_registry"] = ["6", "7", "8", "9", "10", "11"]
+    candidate["class_registry"] = ["6", "7", "8", "9", "10", "11"]
+
+    with pytest.raises(ValueError, match="class registry"):
+        compare_wiser_score_rows(control, candidate)
+
+
+def test_paired_comparison_rejects_stored_hard_metrics_that_disagree_with_pairing(
+    tmp_path: Path,
+) -> None:
+    truth = np.repeat(np.arange(6), 2)
+    control_p3 = truth.copy()
+    candidate_p3 = truth.copy()
+    control_p3[0] = 1
+    control = score_wiser_predictions(
+        *_write_detailed_inputs(tmp_path / "control", arm="B0", p3=control_p3)[:3]
+    )
+    candidate = score_wiser_predictions(
+        *_write_detailed_inputs(tmp_path / "candidate", arm="N1", p3=candidate_p3)[:3]
+    )
+    candidate["probes"]["P3_OLD_D92"]["accuracy"] = control["probes"]["P3_OLD_D92"]["accuracy"]
+
+    with pytest.raises(ValueError, match="stored metric"):
+        compare_wiser_score_rows(control, candidate)
+
+
+def test_paired_comparison_rejects_corrupted_per_query_nll_evidence(tmp_path: Path) -> None:
+    control = score_wiser_predictions(*_write_detailed_inputs(tmp_path / "control", arm="B0")[:3])
+    candidate = deepcopy(control)
+    candidate["arm"] = "N1"
+    candidate["pairing_payload"]["nll_contributions"]["P3_OLD_D92"][0] += 1.0
+
+    with pytest.raises(ValueError, match="NLL evidence"):
+        compare_wiser_score_rows(control, candidate)
+
+
 @pytest.mark.parametrize(
     "field",
     [
@@ -310,7 +372,8 @@ def test_paired_comparison_rejects_binding_mismatch(tmp_path: Path, field: str) 
     else:
         candidate[field] = f"wrong-{field}"
 
-    with pytest.raises(ValueError, match="pairing binding"):
+    message = "class registry" if field == "class_registry" else "pairing binding"
+    with pytest.raises(ValueError, match=message):
         compare_wiser_score_rows(control, candidate)
 
 

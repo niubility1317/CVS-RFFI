@@ -69,9 +69,7 @@ def _probe_metrics(
         for class_id in range(6)
     }
     values = np.asarray(list(per_class.values()), dtype=np.float64)
-    maximum = logit_values.max(axis=1)
-    logsumexp = maximum + np.log(np.exp(logit_values - maximum[:, None]).sum(axis=1))
-    nll = float(np.mean(logsumexp - logit_values[np.arange(len(truth_values)), truth_values]))
+    nll = float(np.mean(_nll_contributions(logit_values, truth_values)))
     return {
         "balanced_accuracy": float(values.mean()),
         "floor": float(values.min()),
@@ -79,6 +77,14 @@ def _probe_metrics(
         "nll": nll,
         "per_class_accuracy": per_class,
     }
+
+
+def _nll_contributions(logits: np.ndarray, truth: np.ndarray) -> np.ndarray:
+    """Return float64 natural-log loss contributions from already-validated logits."""
+
+    maximum = logits.max(axis=1)
+    logsumexp = maximum + np.log(np.exp(logits - maximum[:, None]).sum(axis=1))
+    return logsumexp - logits[np.arange(len(truth)), truth]
 
 
 def _legacy_probe_metrics(prediction: np.ndarray, truth: np.ndarray) -> dict[str, Any]:
@@ -197,6 +203,7 @@ def score_wiser_predictions(
 
         probes: dict[str, dict[str, Any]] = {}
         pairing_predictions: dict[str, list[int]] = {}
+        pairing_nll_contributions: dict[str, list[float]] = {}
         for probe_name, member in _PROBE_MEMBERS.items():
             prediction = _validate_indices(
                 arrays[member], label=f"{probe_name} prediction", size=len(truth)
@@ -206,6 +213,10 @@ def score_wiser_predictions(
                     prediction, arrays[_PROBE_LOGIT_MEMBERS[probe_name]], truth
                 )
                 pairing_predictions[probe_name] = prediction.tolist()
+                pairing_nll_contributions[probe_name] = _nll_contributions(
+                    np.asarray(arrays[_PROBE_LOGIT_MEMBERS[probe_name]], dtype=np.float64),
+                    truth,
+                ).tolist()
             else:
                 probes[probe_name] = _legacy_probe_metrics(prediction, truth)
         geometry = _geometry(features, truth)
@@ -241,6 +252,7 @@ def score_wiser_predictions(
                     "truth": truth.tolist(),
                     "true_class_indices": truth.tolist(),
                     "predictions": pairing_predictions,
+                    "nll_contributions": pairing_nll_contributions,
                 },
             }
         )
@@ -249,7 +261,7 @@ def score_wiser_predictions(
 
 def _comparison_payload(
     row: Mapping[str, Any], *, side: str
-) -> tuple[list[str], np.ndarray, Mapping[str, Any]]:
+) -> tuple[list[str], np.ndarray, Mapping[str, Any], Mapping[str, Any]]:
     if row.get("schema") != "cvs.phase2.wiser_rf.truth_last_score.v2":
         raise ValueError(f"WISER {side} row lacks detailed pairing evidence")
     payload = row.get("pairing_payload")
@@ -259,11 +271,13 @@ def _comparison_payload(
     truth = payload.get("truth")
     true_class_indices = payload.get("true_class_indices")
     predictions = payload.get("predictions")
+    nll_contributions = payload.get("nll_contributions")
     if (
         not isinstance(tokens, list)
         or not isinstance(truth, list)
         or not isinstance(true_class_indices, list)
         or not isinstance(predictions, Mapping)
+        or not isinstance(nll_contributions, Mapping)
     ):
         raise ValueError(f"WISER {side} detailed pairing payload is malformed")
     if row.get("query_tokens") != tokens or len(tokens) != int(row.get("query_rows", -1)):
@@ -280,10 +294,16 @@ def _comparison_payload(
         raise ValueError("WISER pairing binding drift")
     if row.get("per_class_query_rows") != _class_counts(truth_values):
         raise ValueError("WISER pairing binding drift")
-    return tokens, truth_values, predictions
+    return tokens, truth_values, predictions, nll_contributions
 
 
-def _validated_probe_metrics(row: Mapping[str, Any], probe: str) -> Mapping[str, Any]:
+def _validated_probe_metrics(
+    row: Mapping[str, Any],
+    probe: str,
+    prediction: np.ndarray,
+    truth: np.ndarray,
+    nll_evidence: Any,
+) -> Mapping[str, Any]:
     metrics = row.get("probes", {}).get(probe) if isinstance(row.get("probes"), Mapping) else None
     if not isinstance(metrics, Mapping):
         raise ValueError("WISER probe registry drift")
@@ -297,7 +317,32 @@ def _validated_probe_metrics(row: Mapping[str, Any], probe: str) -> Mapping[str,
         raise ValueError("WISER class registry drift")
     if not all(np.isfinite(float(per_class[key])) for key in _CLASS_REGISTRY):
         raise ValueError("WISER detailed pairing metric evidence is nonfinite")
-    return metrics
+    recomputed = _legacy_probe_metrics(prediction, truth)
+    for metric_name in ("accuracy", "balanced_accuracy", "floor"):
+        if not np.isclose(
+            float(metrics[metric_name]),
+            float(recomputed[metric_name]),
+            rtol=0.0,
+            atol=1.0e-12,
+        ):
+            raise ValueError("WISER stored metric disagrees with pairing evidence")
+    for class_id in _CLASS_REGISTRY:
+        if not np.isclose(
+            float(per_class[class_id]),
+            float(recomputed["per_class_accuracy"][class_id]),
+            rtol=0.0,
+            atol=1.0e-12,
+        ):
+            raise ValueError("WISER stored metric disagrees with pairing evidence")
+    contributions = np.asarray(nll_evidence, dtype=np.float64)
+    if contributions.ndim != 1 or len(contributions) != len(truth) or not np.isfinite(contributions).all():
+        raise ValueError("WISER NLL evidence is malformed")
+    recomputed["nll"] = float(contributions.mean())
+    if not np.isclose(
+        float(metrics["nll"]), recomputed["nll"], rtol=0.0, atol=1.0e-12
+    ):
+        raise ValueError("WISER NLL evidence disagrees with stored metric")
+    return recomputed
 
 
 def compare_wiser_score_rows(control: Mapping[str, Any], candidate: Mapping[str, Any]) -> Mapping[str, Any]:
@@ -307,10 +352,17 @@ def compare_wiser_score_rows(control: Mapping[str, Any], candidate: Mapping[str,
         raise ValueError("WISER control arm must be B0 or N0")
     if str(control.get("arm")) == str(candidate.get("arm")):
         raise ValueError("WISER paired arms must be distinct")
-    control_tokens, control_truth, control_predictions = _comparison_payload(control, side="control")
-    candidate_tokens, candidate_truth, candidate_predictions = _comparison_payload(
+    control_tokens, control_truth, control_predictions, control_nll = _comparison_payload(
+        control, side="control"
+    )
+    candidate_tokens, candidate_truth, candidate_predictions, candidate_nll = _comparison_payload(
         candidate, side="candidate"
     )
+    if (
+        control.get("class_registry") != list(_CLASS_REGISTRY)
+        or candidate.get("class_registry") != list(_CLASS_REGISTRY)
+    ):
+        raise ValueError("WISER class registry drift")
     for field in (
         "outer_key",
         "capsule_id",
@@ -332,11 +384,11 @@ def compare_wiser_score_rows(control: Mapping[str, Any], candidate: Mapping[str,
         raise ValueError("WISER probe registry drift")
     if set(control_predictions) != set(_PROBE_MEMBERS) or set(candidate_predictions) != set(_PROBE_MEMBERS):
         raise ValueError("WISER probe registry drift")
+    if set(control_nll) != set(_PROBE_MEMBERS) or set(candidate_nll) != set(_PROBE_MEMBERS):
+        raise ValueError("WISER NLL evidence is malformed")
 
     comparisons: dict[str, dict[str, Any]] = {}
     for probe in _PROBE_MEMBERS:
-        control_metrics = _validated_probe_metrics(control, probe)
-        candidate_metrics = _validated_probe_metrics(candidate, probe)
         control_prediction = _validate_indices(
             np.asarray(control_predictions[probe]),
             label=f"{probe} control prediction",
@@ -346,6 +398,12 @@ def compare_wiser_score_rows(control: Mapping[str, Any], candidate: Mapping[str,
             np.asarray(candidate_predictions[probe]),
             label=f"{probe} candidate prediction",
             size=len(control_truth),
+        )
+        control_metrics = _validated_probe_metrics(
+            control, probe, control_prediction, control_truth, control_nll[probe]
+        )
+        candidate_metrics = _validated_probe_metrics(
+            candidate, probe, candidate_prediction, control_truth, candidate_nll[probe]
         )
         control_correct = control_prediction == control_truth
         candidate_correct = candidate_prediction == control_truth
