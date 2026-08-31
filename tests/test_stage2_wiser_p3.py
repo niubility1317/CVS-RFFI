@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import numpy as np
 import pytest
 import torch
 
@@ -84,13 +83,49 @@ def test_differentiable_d92_rejects_both_modalities_zero() -> None:
         )
 
 
-def test_cross_fit_logits_backpropagate_to_fit_and_held_out_identity() -> None:
-    """Catches a detached exact-score bridge that cannot train the P3 loss."""
+def test_cross_fit_logits_have_nonzero_identity_and_fft_gradients() -> None:
+    """Catches a D92 loss that bypasses either fit or held-out modality."""
 
     fit_id, fit_fft, labels, eval_id, eval_fft = make_d92_case("normal")
     fit_id.requires_grad_()
+    fit_fft.requires_grad_()
     eval_id.requires_grad_()
+    eval_fft.requires_grad_()
     logits = differentiable_old_d92_logits(fit_id, fit_fft, labels, eval_id, eval_fft)
     logits.square().mean().backward()
-    assert fit_id.grad is not None and torch.isfinite(fit_id.grad).all()
-    assert eval_id.grad is not None and torch.isfinite(eval_id.grad).all()
+    for gradient in (fit_id.grad, fit_fft.grad, eval_id.grad, eval_fft.grad):
+        assert gradient is not None and torch.isfinite(gradient).all()
+        assert gradient.abs().sum().item() > 0.0
+
+
+def test_cross_fit_logits_autograd_matches_selected_finite_differences() -> None:
+    """Catches a forward-exact bridge whose backward path is a different model."""
+
+    fit_id, fit_fft, labels, eval_id, eval_fft = make_d92_case("normal")
+    fit_id.requires_grad_()
+    fit_fft.requires_grad_()
+    eval_id.requires_grad_()
+    eval_fft.requires_grad_()
+    score = differentiable_old_d92_logits(fit_id, fit_fft, labels, eval_id, eval_fft)[0, 0]
+    score.backward()
+    epsilon = 1.0e-2
+
+    def finite_difference(argument_index: int, index: tuple[int, int]) -> float:
+        source = (fit_id, fit_fft, eval_id, eval_fft)[argument_index]
+        plus = source.detach().clone()
+        minus = source.detach().clone()
+        plus[index] += epsilon
+        minus[index] -= epsilon
+        arguments = [fit_id.detach(), fit_fft.detach(), labels, eval_id.detach(), eval_fft.detach()]
+        destination = (0, 1, 3, 4)[argument_index]
+        arguments[destination] = plus
+        upper = differentiable_old_d92_logits(*arguments)[0, 0]
+        arguments[destination] = minus
+        lower = differentiable_old_d92_logits(*arguments)[0, 0]
+        return float(((upper - lower) / (2.0 * epsilon)).detach())
+
+    gradients = (eval_id.grad, eval_fft.grad)
+    for argument_index, gradient in zip((2, 3), gradients):
+        assert float(gradient[0, 0]) == pytest.approx(
+            finite_difference(argument_index, (0, 0)), rel=0.05, abs=5.0e-3
+        )
