@@ -789,7 +789,7 @@ def analyze_matrix(
     expected_seeds: Sequence[int],
     expected_updates: int,
 ) -> dict[str, Any]:
-    """Validate and aggregate one complete 30-row PairBiCAD matrix."""
+    """Validate and aggregate one complete declared PairBiCAD matrix."""
 
     root = Path(run_root)
     if not root.is_dir():
@@ -799,11 +799,6 @@ def analyze_matrix(
     if expected_updates <= 0:
         raise MatrixAnalysisError("row=<run-root> field=expected_updates: must be positive")
     expected = _expected_rows(expected_candidates, expected_folds, expected_seeds)
-    if len(expected) != 30:
-        raise MatrixAnalysisError(
-            "row=<run-root> field=matrix_shape: expected exactly 30 rows from "
-            f"the candidate/fold/seed product, got {len(expected)}"
-        )
     expected_names = {row[3] for row in expected}
     try:
         actual_names = {path.name for path in root.iterdir() if path.is_dir()}

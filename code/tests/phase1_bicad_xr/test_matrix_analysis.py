@@ -225,6 +225,49 @@ def test_valid_30_row_run_writes_same_row_metrics_and_ranked_candidates(
     assert csv_rows[0]["row_id"] == "P0-F1-S392001"
 
 
+def test_valid_12_row_convergence_matrix_uses_declared_product_size(
+    tmp_path: Path,
+) -> None:
+    run_root = tmp_path / "run"
+    output_dir = tmp_path / "out"
+    candidates = ("P2", "P1")
+    for candidate in candidates:
+        for fold in FOLDS:
+            for seed in SEEDS:
+                _write_row(run_root, candidate, fold, seed)
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--run-root",
+            str(run_root),
+            "--expected-candidates",
+            ",".join(candidates),
+            "--expected-folds",
+            ",".join(map(str, FOLDS)),
+            "--expected-seeds",
+            ",".join(map(str, SEEDS)),
+            "--expected-updates",
+            str(UPDATES),
+            "--output-json",
+            str(output_dir / "analysis.json"),
+            "--output-csv",
+            str(output_dir / "analysis.csv"),
+        ],
+        cwd=WORKTREE,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, _combined_output(result)
+    payload = json.loads((output_dir / "analysis.json").read_text(encoding="utf-8"))
+    assert payload["row_count"] == 12
+    assert len(payload["rows"]) == 12
+    assert set(payload["ranking"]) == set(candidates)
+
+
 def test_csv_audit_field_larger_than_python_default_limit_is_fully_parsed(
     tmp_path: Path,
 ) -> None:
