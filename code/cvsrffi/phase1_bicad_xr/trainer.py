@@ -17,7 +17,11 @@ from torch import Tensor, nn
 from torch.nn import functional as F
 
 from .config import BiCADXRConfig, BiCADXRStage, candidate_config, stage_for_update
-from .gradients import project_conflicting_gradient, scale_explicit_gradients
+from .gradients import (
+    DEFAULT_LOCAL_PROJECTION_ALLOWLIST,
+    project_conflicting_gradient,
+    scale_explicit_gradients,
+)
 from .heads import FactorizedAdversarialHeads, FactorizedDomainProjector
 from .losses import (
     DetachedEMA,
@@ -29,6 +33,7 @@ from .losses import (
 )
 from .pair import pair_delta_objectives, pair_identity_hinge, vicreg_pair_loss
 from .sampler import StructuredEpisode, build_structured_episode
+from .tailguard import margin_rex_cvar_loss
 from .tangent import (
     ReceiverTangentBank,
     factual_tangent,
@@ -70,6 +75,18 @@ _PAIR_RUNTIME_DEFAULTS: dict[str, Any] = {
     "lambda_sat_cls_start": 0.68,
     "lambda_sat_cls_end": 0.68,
 }
+_CV2_PAIR_IDENTITY_CANDIDATES = frozenset({"CV2-T1", "CV2-T3"})
+_CV2_MARGIN_REX_CVAR_CANDIDATES = frozenset({"CV2-T2", "CV2-T3"})
+_CV2_PAIR_IDENTITY_EPSILON = 0.05
+_CV2_PAIR_IDENTITY_WEIGHT = 0.02
+_LEGACY_PAIR_IDENTITY_WEIGHT = 0.08
+_CV2_MARGIN_REX_LAMBDA = 0.02
+_CV2_MARGIN_CVAR_LAMBDA = 0.05
+_CV2_MARGIN_TAIL_FRACTION = 0.2
+_CV2_HARD_GROUP_CAP = 0.30
+_CV2_ADVERSARIAL_HEADS = frozenset(
+    {"id_receiver", "id_day", "id_channel", "dom_tx"}
+)
 
 
 @dataclass(frozen=True)
@@ -1017,6 +1034,60 @@ class BiCADXRTrainer(nn.Module):
     def optimizer_parameters(self) -> list[nn.Parameter]:
         return [parameter for _, parameter in self.named_optimizer_parameters()]
 
+    def adversarial_parameter_groups(self) -> dict[str, Any]:
+        """Return disjoint outer-loop parameter groups and CV2 protections.
+
+        Only active factorized adversarial heads are assigned to the
+        discriminator group.  All other trainable parameters remain in the
+        encoder group; constructing these groups never performs a forward.
+        """
+
+        named_parameters = self.named_optimizer_parameters()
+        active_heads: set[str] = set()
+        if self.factorized_heads is not None:
+            if self.config.conditional_cdan:
+                active_heads.update(
+                    {"id_receiver", "id_day", "id_channel"}
+                )
+            if self.config.zdom_tx_adversary:
+                active_heads.add("dom_tx")
+        discriminator_prefixes = tuple(
+            f"factorized_heads.{head}" for head in sorted(active_heads)
+        )
+
+        def is_discriminator_parameter(name: str) -> bool:
+            return any(
+                name == prefix or name.startswith(prefix + ".")
+                for prefix in discriminator_prefixes
+            )
+
+        discriminator = tuple(
+            parameter
+            for name, parameter in named_parameters
+            if is_discriminator_parameter(name)
+        )
+        discriminator_ids = {id(parameter) for parameter in discriminator}
+        encoder = tuple(
+            parameter
+            for name, parameter in named_parameters
+            if not is_discriminator_parameter(name)
+        )
+        encoder_ids = {id(parameter) for parameter in encoder}
+        all_ids = {id(parameter) for _, parameter in named_parameters}
+        if not encoder_ids.isdisjoint(discriminator_ids):
+            raise RuntimeError("encoder and discriminator parameters must be disjoint")
+        if encoder_ids | discriminator_ids != all_ids:
+            raise RuntimeError("encoder and discriminator groups must cover trainable parameters")
+        if not active_heads.issubset(_CV2_ADVERSARIAL_HEADS):
+            raise RuntimeError("unexpected factorized adversarial head")
+        return {
+            "encoder": encoder,
+            "discriminator": discriminator,
+            "local_protection_allowlist": tuple(DEFAULT_LOCAL_PROJECTION_ALLOWLIST),
+        }
+
+    cv2_parameter_groups = adversarial_parameter_groups
+
     def shared_stem_parameters(self) -> list[Tensor]:
         """Return only explicitly shared Sinc/HF parameters for LR control."""
 
@@ -1626,18 +1697,28 @@ class BiCADXRTrainer(nn.Module):
                     projected_satellite_id = satellite_pair_id
 
                 if self.config.pair_identity or self.config.pair_vicreg:
+                    candidate_key = self.config.candidate_id.strip().upper()
+                    identity_epsilon = _CV2_PAIR_IDENTITY_EPSILON
+                    identity_weight = (
+                        _CV2_PAIR_IDENTITY_WEIGHT
+                        if candidate_key in _CV2_PAIR_IDENTITY_CANDIDATES
+                        else _LEGACY_PAIR_IDENTITY_WEIGHT
+                    )
                     identity_raw = pair_identity_hinge(
                         projected_clean_id,
                         projected_satellite_id,
-                        epsilon=0.05,
+                        epsilon=identity_epsilon,
                     )
-                    identity_weighted = 0.08 * identity_raw
+                    identity_weighted = identity_weight * identity_raw
                     total = total + identity_weighted
                     components["pair_identity_hinge"] = self._component(
                         identity_raw,
                         identity_weighted,
                         called=True,
                         effective_count=pair_count,
+                    )
+                    components["pair_identity_hinge"].update(
+                        {"epsilon": identity_epsilon, "weight": identity_weight}
                     )
                     pair_called = True
 
@@ -1865,6 +1946,8 @@ class BiCADXRTrainer(nn.Module):
 
         tail_called = False
         tail_reason: str | None = None
+        tail_mode: str | None = None
+        hard_group_cap: float | None = None
         if not self.config.margin_tail:
             tail_reason = "candidate_disabled"
         elif stage.value in {"stage0", "stage1", "stage2"}:
@@ -1874,52 +1957,76 @@ class BiCADXRTrainer(nn.Module):
         else:
             assert self._tail_emas is not None
             tx_margins = classification_margin(logits[labeled_indices], tx_labeled)
-            tx_groups = _combine_group_ids(tx_labeled, receiver_labeled)
-            tx_risk = group_margin_cvar(
-                tx_margins,
-                tx_groups,
-                tail_fraction=self.config.margin_tail_cvar_fraction,
-                ema=self._tail_emas[0],
-            )
-            if (
-                xdc_output is not None
-                and xdc_output.skip_reason is None
-                and xdc_tx is not None
-                and xdc_receiver is not None
-            ):
-                xdc_groups = _combine_group_ids(xdc_tx, xdc_receiver)
-                xdc_risk = group_margin_cvar(
-                    classification_margin(xdc_output.ensemble_logits, xdc_tx),
-                    xdc_groups,
-                    tail_fraction=self.config.margin_tail_cvar_fraction,
-                    ema=self._tail_emas[1],
+            candidate_key = self.config.candidate_id.strip().upper()
+            if candidate_key in _CV2_MARGIN_REX_CVAR_CANDIDATES:
+                tx_groups = _combine_group_ids(
+                    tx_labeled, receiver_labeled, channel_labeled
+                )
+                tail_loss = margin_rex_cvar_loss(
+                    tx_margins,
+                    tx_groups,
+                    tail_fraction=_CV2_MARGIN_TAIL_FRACTION,
+                    lambda_rex=_CV2_MARGIN_REX_LAMBDA,
+                    lambda_cvar=_CV2_MARGIN_CVAR_LAMBDA,
+                )
+                total = total + tail_loss
+                tail_called = True
+                tail_mode = "margin_rex_cvar"
+                hard_group_cap = _CV2_HARD_GROUP_CAP
+                components["margin_tail"] = self._component(
+                    tail_loss,
+                    tail_loss,
+                    called=True,
+                    effective_count=int(torch.unique(tx_groups).numel()),
                 )
             else:
-                xdc_risk = zero
-            if tangent_logits is not None:
-                tangent_risk = group_margin_cvar(
-                    classification_margin(tangent_logits, tx_labeled),
+                tx_groups = _combine_group_ids(tx_labeled, receiver_labeled)
+                tx_risk = group_margin_cvar(
+                    tx_margins,
                     tx_groups,
                     tail_fraction=self.config.margin_tail_cvar_fraction,
-                    ema=self._tail_emas[2],
+                    ema=self._tail_emas[0],
                 )
-            else:
-                tangent_risk = zero
-            tail_loss = apply_margin_tail(
-                zero,
-                tx_risk,
-                xdc_risk,
-                tangent_risk,
-                weights=self.config.margin_tail_weights,
-            )
-            total = total + tail_loss
-            tail_called = True
-            components["margin_tail"] = self._component(
-                tail_loss,
-                tail_loss,
-                called=True,
-                effective_count=int(torch.unique(tx_groups).numel()),
-            )
+                if (
+                    xdc_output is not None
+                    and xdc_output.skip_reason is None
+                    and xdc_tx is not None
+                    and xdc_receiver is not None
+                ):
+                    xdc_groups = _combine_group_ids(xdc_tx, xdc_receiver)
+                    xdc_risk = group_margin_cvar(
+                        classification_margin(xdc_output.ensemble_logits, xdc_tx),
+                        xdc_groups,
+                        tail_fraction=self.config.margin_tail_cvar_fraction,
+                        ema=self._tail_emas[1],
+                    )
+                else:
+                    xdc_risk = zero
+                if tangent_logits is not None:
+                    tangent_risk = group_margin_cvar(
+                        classification_margin(tangent_logits, tx_labeled),
+                        tx_groups,
+                        tail_fraction=self.config.margin_tail_cvar_fraction,
+                        ema=self._tail_emas[2],
+                    )
+                else:
+                    tangent_risk = zero
+                tail_loss = apply_margin_tail(
+                    zero,
+                    tx_risk,
+                    xdc_risk,
+                    tangent_risk,
+                    weights=self.config.margin_tail_weights,
+                )
+                total = total + tail_loss
+                tail_called = True
+                tail_mode = "legacy_margin_tail"
+                components["margin_tail"] = self._component(
+                    tail_loss,
+                    tail_loss,
+                    called=True,
+                    effective_count=int(torch.unique(tx_groups).numel()),
+                )
         if not tail_called:
             components["margin_tail"] = self._component(skip_reason=tail_reason)
 
@@ -2123,6 +2230,7 @@ class BiCADXRTrainer(nn.Module):
             "tangent_skip_reason": tangent_reason,
             "tail_called": tail_called,
             "tail_skip_reason": tail_reason,
+            "margin_tail_mode": tail_mode,
             "task_protected_gradient_called": projection_called,
             "projection_triggered": projection_triggered,
             "projection_skip_reason": projection_reason,
@@ -2132,11 +2240,15 @@ class BiCADXRTrainer(nn.Module):
             "source_loro_window": source_loro_window,
             "extra_forward_count": 0,
             "model_forward_count": 1,
+            "backbone_forward_count": 1,
             "components": components,
             "checkpoint_runtime": runtime,
         }
         if pair_runtime is not None:
             audit["pairbicad_runtime"] = pair_runtime
+            pair_runtime["backbone_forward_count"] = 1
+        if hard_group_cap is not None:
+            audit["hard_group_cap"] = hard_group_cap
         audit["raw_losses"] = {name: value["raw"] for name, value in components.items()}
         audit["weighted_losses"] = {
             name: value["weighted"] for name, value in components.items()
