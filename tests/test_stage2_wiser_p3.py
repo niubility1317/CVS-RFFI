@@ -396,6 +396,22 @@ def test_gradient_projection_rejects_ambiguous_or_misaligned_gradient_slots() ->
         project_auxiliary_gradients((None,), (None,))
 
 
+def test_gradient_projection_exactly_removes_conflict_for_tiny_nonzero_primary() -> None:
+    """Catches epsilon-biased projection that leaves a negative global P3 dot product."""
+
+    tolerance = 1.0e-12
+    primary = (torch.tensor([1.0e-9], dtype=torch.float64),)
+    auxiliary = (torch.tensor([-1.0e9], dtype=torch.float64),)
+
+    projected, audit = project_auxiliary_gradients(primary, auxiliary)
+
+    assert torch.isfinite(projected[0]).all()
+    assert torch.isfinite(torch.tensor(tuple(audit.values()), dtype=torch.float64)).all()
+    assert audit["raw_dot"] < 0.0
+    assert audit["projected_dot"] >= -tolerance
+    assert torch.dot(primary[0], projected[0]) >= -tolerance
+
+
 def test_identity_fft_diagnostics_are_class_centered_and_stably_padded() -> None:
     """Catches between-class offsets leaking into redundancy diagnostics."""
 
@@ -423,6 +439,21 @@ def test_identity_fft_diagnostics_are_class_centered_and_stably_padded() -> None
     assert torch.isfinite(torch.tensor(diagnostics.joint_condition_number))
     assert diagnostics.joint_condition_number >= 1.0
     assert all(isinstance(value, float) for value in diagnostics.canonical_correlations)
+
+
+def test_identity_fft_diagnostics_zero_pads_beyond_effective_centered_rank() -> None:
+    """Catches jitter-induced CCA singular values reported beyond the true rank."""
+
+    labels = torch.arange(3, dtype=torch.long).repeat_interleave(2)
+    direction = torch.arange(1.0, 7.0, dtype=torch.float64)
+    signs = torch.tensor([-1.0, 1.0], dtype=torch.float64).repeat(3)
+    identity = labels[:, None].to(torch.float64) * 100.0 + signs[:, None] * direction
+    fft = labels[:, None].to(torch.float64) * 1_000.0 + signs[:, None] * (2.0 * direction)
+
+    diagnostics = identity_fft_diagnostics(identity, fft, labels)
+
+    assert diagnostics.canonical_correlations[0] > 0.99
+    assert diagnostics.canonical_correlations[1:] == (0.0, 0.0, 0.0, 0.0)
 
 
 def test_identity_fft_penalties_only_differentiate_identity_and_only_excess_duplication() -> None:

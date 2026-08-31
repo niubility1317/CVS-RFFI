@@ -388,7 +388,10 @@ def project_auxiliary_gradients(
     primary_norm = torch.stack(
         [torch.sum(primary_item.square()) for primary_item in primary_safe]
     ).sum()
-    coefficient = torch.minimum(raw_dot, raw_dot.new_zeros(())) / (primary_norm + float(eps))
+    if bool(raw_dot < 0.0) and bool(primary_norm > 0.0):
+        coefficient = raw_dot / primary_norm
+    else:
+        coefficient = raw_dot.new_zeros(())
     projected = tuple(
         auxiliary_item - coefficient * primary_item
         for primary_item, auxiliary_item in zip(primary_safe, auxiliary_safe)
@@ -480,7 +483,13 @@ def identity_fft_diagnostics(
         canonical = torch.linalg.svdvals(
             whitening_identity.matmul(cross_covariance).matmul(whitening_fft)
         ).clamp(min=0.0, max=1.0)
-        canonical_values = [float(value) for value in canonical[:5]]
+        effective_rank = min(
+            int(torch.linalg.matrix_rank(centered_identity).item()),
+            int(torch.linalg.matrix_rank(centered_fft).item()),
+            canonical.numel(),
+            5,
+        )
+        canonical_values = [float(value) for value in canonical[:effective_rank]]
         canonical_values.extend([0.0] * (5 - len(canonical_values)))
         joint = torch.cat((centered_identity, centered_fft), dim=1)
         joint_covariance = joint.transpose(0, 1).matmul(joint) / count
