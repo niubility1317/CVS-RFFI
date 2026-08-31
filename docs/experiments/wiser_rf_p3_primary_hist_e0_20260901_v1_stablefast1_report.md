@@ -80,3 +80,12 @@ CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/
 - pilot预期：18个`training_audit.json`、适配state、18个完整`predictions.npz`与receipt、`support_audit.json`、`pilot_result.json`。
 - prediction完整后另起独立`p3-score-pilot`连接truth，生成详细score与`score_collection.json`。报告绝对Accuracy/BA/floor/NLL、per-class、P1/P2/P3、适应增量、help/harm、训练/预测资源和三场景同row结果。
 - 只有三场景pilot门槛通过才授权Target25；Target25通过后才讨论完整125与阶段B。
+
+## 2026-09-01远端发布与启动回执
+
+- release归档本地/远端唯一SHA256均为`c27b1a136dff7e8912cfcb7936ee5d71724dbe49be3b36f84d2244f7b6b25ad9`；远端四个运行模块一次`py_compile`通过。
+- 启动前只读复核：8张GPU compute-app为空；新run、log根均不存在。物理GPU0被冻结且未超过每卡3个训练任务。
+- 远端owner PID=`3208551`（PPID1），smoke worker PID=`3208559`；worker CWD精确为`/home/szu2070436088/2510044040/CV-SincNet/releases/wiser_rf_p3_primary_hist_e0_20260901_v1_stablefast1_31381958`，cmdline、config、checkpoint、source summary、output root和runtime commit与预登记一致。
+- GPU映射：worker PID`3208559`位于物理GPU0 UUID=`GPU-56adac86-77cd-36c9-8770-dbf002650461`，首次采样显存6700MiB。
+- 启动36秒时`smoke/training_progress.jsonl`已有3957字节；最新事件为`stage2_time/step1`，loss、primary、auxiliary、projected、combined gradient及dual均有限，`zero_identity_count=0`，`query_rows_used=0`。日志仍为0字节属于stdout缓冲，不影响JSONL增长证据。
+- 当前最高状态更新为`RUNNING`。不重复启动、不热修改、不因中间性能停止；下一次检查在smoke预计完成后进行。
