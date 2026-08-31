@@ -10,6 +10,7 @@ import random
 import time
 from collections import defaultdict
 from copy import deepcopy
+from dataclasses import replace as dataclass_replace
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
@@ -238,6 +239,15 @@ _BICAD_XR_LEO_WEAK = (
     "leo_clear_weak",
     "leo_low_elev_weak",
     "leo_rain_weak",
+)
+_BICAD_XR_SOURCE_LORO_SCENARIOS = ("clean",) + _BICAD_XR_LEO_WEAK
+_BICAD_XR_SOURCE_RECEIVER_UNIVERSE = frozenset((1, 3, 4, 6, 8))
+_BICAD_XR_SOURCE_LORO_ACCESS_FLAGS = (
+    "target_access",
+    "phase2_access",
+    "support_access",
+    "query_access",
+    "truth_access",
 )
 _BICAD_XR_LEO_WEAK_CSV = ",".join(_BICAD_XR_LEO_WEAK)
 _BICAD_XR_SAT_VIEW_SCHEDULE = (
@@ -1123,6 +1133,11 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--direct_metric_require_effective_negative_grad", type=str2bool, default=False)
     parser.add_argument("--run_id", type=str, default="")
     parser.add_argument("--candidate_id", type=str, default="")
+    parser.add_argument("--bicad_optimizer_updates", type=int, default=0)
+    parser.add_argument("--bicad_loro_receiver", type=int, default=-1)
+    parser.add_argument("--bicad_loro_eval_interval_updates", type=int, default=0)
+    parser.add_argument("--bicad_loro_min_updates", type=int, default=4000)
+    parser.add_argument("--bicad_loro_patience", type=int, default=5)
     parser.add_argument("--base_candidate", type=str, default="")
     parser.add_argument("--formal_ablation", type=str2bool, default=False)
     parser.add_argument("--ablation_id", type=str, default="")
@@ -2364,6 +2379,7 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         ),
     )
     return {
+        "wisig_payload": ds_w,
         "train_loader": labeled_loader,
         "balanced_train_sampler": balanced_sampler,
         "probe_train_loader": probe_train_loader,
@@ -2376,6 +2392,7 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         "input_len": int(args.wisig_out_len),
         "class_id_to_tx": [str(value) for value in list(getattr(source_base, "tx_list", []) or [])],
         "source_receiver_indices": [int(value) for value in train_rxs],
+        "source_receiver_values": [rx_list[int(value)] for value in train_rxs],
         "source_day_indices": [int(value) for value in train_days],
         "split_info": {
             "mode": str(args.split_mode),
@@ -12961,6 +12978,447 @@ def _bicad_xr_mean_epoch_loss(values: Sequence[float]) -> float:
     return mean_loss
 
 
+def _validate_bicad_xr_optimizer_updates(value: Any) -> int:
+    """Validate the optional per-run BiCAD-XR optimizer budget."""
+
+    if isinstance(value, bool):
+        raise ValueError("bicad_optimizer_updates must be an integer")
+    try:
+        updates = int(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("bicad_optimizer_updates must be an integer") from exc
+    if updates == 0:
+        return 0
+    if updates < 4000 or updates > 9000 or updates % 500 != 0:
+        raise ValueError(
+            "bicad_optimizer_updates must be 0 or a 500-multiple in [4000,9000]"
+        )
+    return updates
+
+
+def _bicad_xr_apply_optimizer_budget(config, requested: Any):
+    """Apply a run-only budget without changing the frozen candidate registry."""
+
+    updates = _validate_bicad_xr_optimizer_updates(requested)
+    if updates == 0:
+        return config
+    return dataclass_replace(config, optimizer_updates=updates)
+
+
+def _validate_bicad_xr_loro_args(
+    args: Any,
+    *,
+    source_receiver_indices: Sequence[int],
+    source_receiver_values: Sequence[Any] | None = None,
+    planned_updates: int | None = None,
+) -> Dict[str, Any]:
+    """Validate source-LORO controls against the frozen source receiver row."""
+
+    optimizer_updates = _validate_bicad_xr_optimizer_updates(
+        getattr(args, "bicad_optimizer_updates", 0)
+    )
+    interval = int(getattr(args, "bicad_loro_eval_interval_updates", 0))
+    min_updates = int(getattr(args, "bicad_loro_min_updates", 4000))
+    patience = int(getattr(args, "bicad_loro_patience", 5))
+    heldout_receiver = int(getattr(args, "bicad_loro_receiver", -1))
+    if interval < 0:
+        raise ValueError("bicad_loro_eval_interval_updates must be non-negative")
+    enabled = interval > 0
+    result = {
+        "enabled": enabled,
+        "optimizer_updates": optimizer_updates,
+        "heldout_receiver": heldout_receiver,
+        "interval": interval,
+        "min_updates": min_updates,
+        "patience": patience,
+    }
+    if not enabled:
+        return result
+    if interval not in (250, 500):
+        raise ValueError("bicad_loro_eval_interval_updates must be 250 or 500")
+    if min_updates != 4000:
+        raise ValueError("bicad_loro_min_updates must be fixed at 4000")
+    if patience < 4 or patience > 6:
+        raise ValueError("bicad_loro_patience must be in [4,6]")
+    if planned_updates is not None and int(planned_updates) < min_updates:
+        raise ValueError("source-LORO convergence requires at least 4000 planned updates")
+    if heldout_receiver not in _BICAD_XR_SOURCE_RECEIVER_UNIVERSE:
+        raise ValueError(
+            "bicad_loro_receiver must belong to the ManySig source universe [1,3,4,6,8]"
+        )
+    source_values = (
+        list(source_receiver_values)
+        if source_receiver_values is not None
+        else list(source_receiver_indices)
+    )
+    source_value_set = {int(value) for value in source_values}
+    source_index_set = {int(value) for value in source_receiver_indices}
+    source_overlap = (
+        heldout_receiver in source_value_set
+        if source_receiver_values is not None
+        else heldout_receiver in source_index_set
+    )
+    if source_overlap:
+        raise ValueError("heldout receiver must not overlap source receivers")
+    return result
+
+
+def _bicad_xr_loro_eval_due(
+    update: int,
+    *,
+    planned_updates: int,
+    min_updates: int = 4000,
+    interval: int = 500,
+) -> bool:
+    """Return whether exactly one post-step source-LORO evaluation is due."""
+
+    update = int(update)
+    planned_updates = int(planned_updates)
+    min_updates = int(min_updates)
+    interval = int(interval)
+    return (
+        interval > 0
+        and min_updates <= update <= planned_updates
+        and (update - min_updates) % interval == 0
+    )
+
+
+def _bicad_xr_source_loro_primary_score(
+    clean_accuracy: float,
+    leo_accuracies: Sequence[float],
+) -> float:
+    """Compute the clean/weak-LEO harmonic main score in percentage units."""
+
+    clean = float(clean_accuracy)
+    leo_values = [float(value) for value in leo_accuracies]
+    if not leo_values or not math.isfinite(clean) or any(
+        not math.isfinite(value) for value in leo_values
+    ):
+        return 0.0
+    leo_floor = min(leo_values)
+    denominator = clean + leo_floor
+    if denominator == 0.0:
+        return 0.0
+    return 2.0 * clean * leo_floor / denominator
+
+
+def _bicad_xr_loro_selection_step(
+    state: Mapping[str, Any],
+    *,
+    update: int,
+    score: float,
+    patience: int,
+) -> Dict[str, Any]:
+    """Advance the strict-improvement source-LORO patience state."""
+
+    next_state = dict(state)
+    score_value = float(score)
+    previous_best = state.get("best_score")
+    try:
+        previous_best_value = float(previous_best)
+    except (TypeError, ValueError):
+        previous_best_value = float("-inf")
+    improved = (
+        previous_best is None
+        or not math.isfinite(previous_best_value)
+        or score_value > previous_best_value + 1e-12
+    )
+    if improved:
+        next_state["best_score"] = score_value
+        next_state["best_update"] = int(update)
+        next_state["bad_count"] = 0
+    else:
+        next_state["bad_count"] = int(state.get("bad_count", 0)) + 1
+    next_state["last_score"] = score_value
+    next_state["stopped_early"] = int(next_state["bad_count"]) >= int(patience)
+    return next_state
+
+
+def _bicad_xr_checkpoint_args_with_budget(
+    args: Mapping[str, Any],
+    *,
+    stop_update: int,
+    planned_updates: int,
+) -> Dict[str, Any]:
+    """Record actual and planned budgets in checkpoint args and its row key."""
+
+    stop_update = int(stop_update)
+    planned_updates = int(planned_updates)
+    result = dict(args)
+    result["optimizer_updates"] = stop_update
+    result["planned_optimizer_updates"] = planned_updates
+    raw_row_key = result.get("row_key")
+    row_key: Mapping[str, Any] | None = None
+    if isinstance(raw_row_key, Mapping):
+        row_key = raw_row_key
+    elif isinstance(raw_row_key, str) and raw_row_key.strip():
+        try:
+            parsed = json.loads(raw_row_key)
+        except json.JSONDecodeError:
+            parsed = None
+        if isinstance(parsed, Mapping):
+            row_key = parsed
+    if row_key is not None:
+        row_key_out = dict(row_key)
+        row_key_out["optimizer_updates"] = stop_update
+        row_key_out["planned_optimizer_updates"] = planned_updates
+        result["row_key"] = json.dumps(
+            row_key_out,
+            ensure_ascii=True,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+    return result
+
+
+def _bicad_xr_runtime_with_budget(
+    runtime: Mapping[str, Any],
+    *,
+    stop_update: int,
+    planned_updates: int,
+    candidate_optimizer_updates: int,
+) -> Dict[str, Any]:
+    """Normalize runtime budget fields while retaining the frozen candidate config."""
+
+    result = deepcopy(dict(runtime))
+    result["optimizer_update"] = int(stop_update)
+    result["total_updates"] = int(stop_update)
+    result["planned_total_updates"] = int(planned_updates)
+    result["source_only"] = True
+    for flag in _BICAD_XR_SOURCE_LORO_ACCESS_FLAGS:
+        result[flag] = False
+    candidate_config = result.get("candidate_config")
+    normalized_config = dict(candidate_config) if isinstance(candidate_config, Mapping) else {}
+    normalized_config["optimizer_updates"] = int(candidate_optimizer_updates)
+    result["candidate_config"] = normalized_config
+    return result
+
+
+def _bicad_xr_source_loro_selection(
+    *,
+    planned_updates: int,
+    stop_update: int,
+    best_update: int,
+    best_score: float | None,
+    bad_count: int,
+    patience: int,
+    interval: int,
+    stopped_early: bool,
+) -> Dict[str, Any]:
+    """Build the source-only convergence-selection artifact."""
+
+    return {
+        "planned_updates": int(planned_updates),
+        "stop_update": int(stop_update),
+        "best_update": int(best_update),
+        "best_score": None if best_score is None else float(best_score),
+        "bad_count": int(bad_count),
+        "patience": int(patience),
+        "interval": int(interval),
+        "stopped_early": bool(stopped_early),
+        "source_only": True,
+        **{flag: False for flag in _BICAD_XR_SOURCE_LORO_ACCESS_FLAGS},
+    }
+
+
+def _resolve_bicad_xr_loro_receiver_index(
+    payload: Mapping[str, Any],
+    receiver: int,
+) -> int:
+    rx_list = list(payload.get("rx_list", []))
+    for index, value in enumerate(rx_list):
+        if str(value) == str(int(receiver)):
+            return int(index)
+    raise ValueError(
+        f"bicad_loro_receiver {int(receiver)} is not present in the ManySig payload receiver list"
+    )
+
+
+def _build_bicad_xr_source_loro_loader(
+    args: Any,
+    data_ctx: Mapping[str, Any],
+    device: torch.device,
+    heldout_receiver: int,
+):
+    """Build one read-only held-out source receiver loader from the loaded payload."""
+
+    payload = data_ctx.get("wisig_payload")
+    if not isinstance(payload, Mapping):
+        raise ValueError("BiCAD-XR source-LORO requires the loaded wisig_payload reference")
+    receiver_index = _resolve_bicad_xr_loro_receiver_index(payload, int(heldout_receiver))
+    source_values = list(data_ctx.get("source_receiver_values", []))
+    if int(heldout_receiver) in {int(value) for value in source_values}:
+        raise ValueError("heldout receiver must not overlap source receivers")
+    source_indices = {int(value) for value in data_ctx.get("source_receiver_indices", [])}
+    if not source_values and receiver_index in source_indices:
+        raise ValueError("heldout receiver must not overlap source receivers")
+    day_indices = [int(value) for value in data_ctx.get("source_day_indices", [])]
+    if not day_indices:
+        raise ValueError("source-LORO requires the frozen source training days")
+    equalized = "both" if str(args.wisig_equalized).lower() == "both" else int(args.wisig_equalized)
+    dataset = WiSigCompactDataset(
+        payload,
+        out_len=int(args.wisig_out_len),
+        crop_mode="center",
+        normalize=True,
+        equalized=equalized,
+        rx_keep=[receiver_index],
+        day_keep=day_indices,
+        domain=str(args.wisig_domain),
+        max_samples_per_combo=(
+            None
+            if int(args.wisig_max_day123_per_combo) <= 0
+            else int(args.wisig_max_day123_per_combo)
+        ),
+        seed=int(args.seed),
+        build_index=True,
+    )
+    if len(dataset) <= 0:
+        raise ValueError("source-LORO held-out receiver/day loader is empty")
+    return make_loader(
+        dataset,
+        int(args.eval_batch_size),
+        False,
+        int(args.num_workers),
+        device,
+        False,
+        int(args.prefetch_factor),
+    )
+
+
+def _evaluate_bicad_xr_source_loro(
+    model: torch.nn.Module,
+    loader,
+    device: torch.device,
+    args: Any,
+    *,
+    scenario: str,
+    scenario_index: int,
+) -> Dict[str, Any]:
+    """Evaluate one source-LORO clean/LEO scenario without updating state."""
+
+    scenario = str(scenario)
+    if scenario not in _BICAD_XR_SOURCE_LORO_SCENARIOS:
+        raise ValueError(f"unsupported source-LORO scenario: {scenario}")
+    seed = int(getattr(args, "seed", 0)) + int(scenario_index) * 1000003
+    generator = make_torch_generator(device, seed) if make_torch_generator is not None else None
+    was_training = bool(model.training)
+    correct = 0
+    total = 0
+    class_correct: Dict[int, int] = defaultdict(int)
+    class_total: Dict[int, int] = defaultdict(int)
+    model.eval()
+    try:
+        with torch.no_grad():
+            for batch_index, batch in enumerate(loader, start=1):
+                if int(getattr(args, "eval_max_batches", 0)) > 0 and batch_index > int(
+                    getattr(args, "eval_max_batches")
+                ):
+                    break
+                x, y, _extra = move_batch(batch, device)
+                y = y.to(device=device, dtype=torch.long).reshape(-1)
+                if scenario != "clean":
+                    x, _ = apply_sat_channel_for_scenario(
+                        x,
+                        scenario,
+                        args,
+                        gen=generator,
+                        return_meta=False,
+                    )
+                output = model(x, y_tx=None, grl_lambda=1.0, return_aux=True)
+                logits = output.get("tx_logits", output.get("logits"))
+                if logits is None:
+                    raise ValueError("BiCAD-XR source-LORO model output is missing TX logits")
+                prediction = logits.argmax(dim=1)
+                correct += int((prediction == y).sum().item())
+                total += int(y.numel())
+                for label in torch.unique(y).detach().cpu().tolist():
+                    label_int = int(label)
+                    mask = y == label_int
+                    class_total[label_int] += int(mask.sum().item())
+                    class_correct[label_int] += int((prediction[mask] == y[mask]).sum().item())
+    finally:
+        model.train(was_training)
+    per_class_accuracy = {
+        str(label): 100.0 * class_correct[label] / max(1, class_total[label])
+        for label in sorted(class_total)
+    }
+    accuracy = 100.0 * correct / max(1, total)
+    floor = min(per_class_accuracy.values()) if per_class_accuracy else 0.0
+    return {
+        "scenario": scenario,
+        "scenario_index": int(scenario_index),
+        "seed": int(seed),
+        "accuracy": float(accuracy),
+        "tx_acc": float(accuracy),
+        "per_class_accuracy": per_class_accuracy,
+        "floor": float(floor),
+        "tx_correct": int(correct),
+        "tx_total": int(total),
+    }
+
+
+def _append_bicad_xr_source_loro_curve(path: Path, record: Mapping[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8", newline="") as handle:
+        handle.write(
+            json.dumps(_bicad_xr_jsonable(record), ensure_ascii=False, separators=(",", ":"))
+            + "\n"
+        )
+
+
+def _write_bicad_xr_source_loro_selection(path: Path, selection: Mapping[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        handle.write(json.dumps(_bicad_xr_jsonable(selection), ensure_ascii=False, indent=2) + "\n")
+
+
+def _save_bicad_xr_source_loro_checkpoint(path: Path, payload: Mapping[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("xb") as handle:
+        torch.save(dict(payload), handle)
+
+
+def _bicad_xr_checkpoint_payload(
+    *,
+    model: torch.nn.Module,
+    optimizer,
+    trainer,
+    model_args: Any,
+    protocol: BiCADXRProtocol,
+    epoch: int,
+    stop_update: int,
+    planned_updates: int,
+    candidate_optimizer_updates: int,
+) -> Dict[str, Any]:
+    runtime = trainer.checkpoint_runtime(update=int(stop_update), total_updates=int(planned_updates))
+    runtime = _bicad_xr_runtime_with_budget(
+        runtime,
+        stop_update=int(stop_update),
+        planned_updates=int(planned_updates),
+        candidate_optimizer_updates=int(candidate_optimizer_updates),
+    )
+    runtime["entry"] = bicad_xr_runtime(protocol)
+    args_mapping = vars(model_args) if hasattr(model_args, "__dict__") else model_args
+    checkpoint_args = _bicad_xr_checkpoint_args_with_budget(
+        args_mapping,
+        stop_update=int(stop_update),
+        planned_updates=int(planned_updates),
+    )
+    return {
+        "schema": "ssdg_phase1_bicad_xr_v1",
+        "phase1_method": "bicad_xr",
+        "candidate_id": protocol.candidate_id,
+        "model": deepcopy(model.state_dict()),
+        "optimizer": deepcopy(optimizer.state_dict()),
+        "epoch": int(epoch),
+        "optimizer_update": int(stop_update),
+        "planned_optimizer_updates": int(planned_updates),
+        "args": checkpoint_args,
+        "bicad_xr_runtime": runtime,
+    }
+
+
 def _bicad_xr_metadata(extra, key: str, device, expected_count: int) -> torch.Tensor:
     value = _metadata_label_tensor(extra, key, device, expected_count)
     if value is None:
@@ -13335,8 +13793,6 @@ def _load_bicad_xr_checkpoint_strict(
 def _train_bicad_xr(args) -> int:
     """Run the source-only BiCAD-XR main step without entering legacy SSDG."""
 
-    from dataclasses import replace as dataclass_replace
-
     from cvsrffi.phase1_bicad_xr.config import candidate_config
     from cvsrffi.phase1_bicad_xr.trainer import BiCADXRBatch, BiCADXRTrainer
 
@@ -13423,9 +13879,31 @@ def _train_bicad_xr(args) -> int:
             concat_sat_start_epoch=80,
             sat_train_scenarios=_BICAD_XR_LEO_WEAK,
         )
-    concat_model = _BiCADXRConcatForward(model)
+    config = _bicad_xr_apply_optimizer_budget(
+        config,
+        getattr(args, "bicad_optimizer_updates", 0),
+    )
     source_receiver_indices = list(data_ctx["source_receiver_indices"])
+    source_receiver_values = list(
+        data_ctx.get("source_receiver_values", source_receiver_indices)
+    )
     source_day_indices = list(data_ctx["source_day_indices"])
+    planned_updates = int(config.optimizer_updates)
+    loro_settings = _validate_bicad_xr_loro_args(
+        args,
+        source_receiver_indices=source_receiver_indices,
+        source_receiver_values=source_receiver_values,
+        planned_updates=planned_updates,
+    )
+    source_loro_loader = None
+    if loro_settings["enabled"]:
+        source_loro_loader = _build_bicad_xr_source_loro_loader(
+            args,
+            data_ctx,
+            device,
+            int(loro_settings["heldout_receiver"]),
+        )
+    concat_model = _BiCADXRConcatForward(model)
     trainer = BiCADXRTrainer(
         concat_model,
         config,
@@ -13448,14 +13926,28 @@ def _train_bicad_xr(args) -> int:
     if checkpoint is not None and isinstance(checkpoint.get("optimizer"), Mapping):
         optimizer.load_state_dict(checkpoint["optimizer"])
 
+    out_dir = Path(str(getattr(args, "output_dir", "") or "."))
+    out_dir.mkdir(parents=True, exist_ok=True)
     epochs = int(getattr(args, "epochs", 0))
     if epochs <= 0:
         epochs = 200
-    total_updates = int(config.optimizer_updates)
+    total_updates = planned_updates
+    candidate_optimizer_updates = int(planned_updates)
     update = 0
     epoch_rows: List[Dict[str, Any]] = []
     last_audit: Mapping[str, Any] = {}
     unlabeled_iter = iter(unlabeled_loader) if protocol.strict_pair_concat else None
+    source_loro_enabled = bool(loro_settings["enabled"])
+    source_loro_curve_path = out_dir / "source_loro_curve.jsonl"
+    source_loro_state: Dict[str, Any] = {
+        "best_update": 0,
+        "best_score": None,
+        "bad_count": 0,
+        "stopped_early": False,
+        "evaluations": 0,
+    }
+    if source_loro_enabled:
+        (out_dir / "source_loro").mkdir(parents=True, exist_ok=True)
     trainer.train()
     for epoch in range(1, epochs + 1):
         epoch_losses: List[float] = []
@@ -13578,12 +14070,82 @@ def _train_bicad_xr(args) -> int:
             update += 1
             epoch_losses.append(float(step_output.total.detach().cpu().item()))
             last_audit = step_output.audit
+            if source_loro_enabled and _bicad_xr_loro_eval_due(
+                update,
+                planned_updates=total_updates,
+                min_updates=int(loro_settings["min_updates"]),
+                interval=int(loro_settings["interval"]),
+            ):
+                scenario_results: Dict[str, Dict[str, Any]] = {}
+                for scenario_index, scenario in enumerate(_BICAD_XR_SOURCE_LORO_SCENARIOS):
+                    scenario_results[scenario] = _evaluate_bicad_xr_source_loro(
+                        model,
+                        source_loro_loader,
+                        device,
+                        args,
+                        scenario=scenario,
+                        scenario_index=scenario_index,
+                    )
+                clean_accuracy = float(scenario_results["clean"]["accuracy"])
+                leo_accuracies = [
+                    float(scenario_results[scenario]["accuracy"])
+                    for scenario in _BICAD_XR_LEO_WEAK
+                ]
+                primary_score = _bicad_xr_source_loro_primary_score(
+                    clean_accuracy,
+                    leo_accuracies,
+                )
+                source_loro_state = _bicad_xr_loro_selection_step(
+                    source_loro_state,
+                    update=update,
+                    score=primary_score,
+                    patience=int(loro_settings["patience"]),
+                )
+                source_loro_state["evaluations"] = int(
+                    source_loro_state.get("evaluations", 0)
+                ) + 1
+                loro_checkpoint = _bicad_xr_checkpoint_payload(
+                    model=model,
+                    optimizer=optimizer,
+                    trainer=trainer,
+                    model_args=model_args,
+                    protocol=protocol,
+                    epoch=epoch,
+                    stop_update=update,
+                    planned_updates=total_updates,
+                    candidate_optimizer_updates=candidate_optimizer_updates,
+                )
+                _save_bicad_xr_source_loro_checkpoint(
+                    out_dir / "source_loro" / f"checkpoint_u{update}.pth",
+                    loro_checkpoint,
+                )
+                _append_bicad_xr_source_loro_curve(
+                    source_loro_curve_path,
+                    {
+                        "update": update,
+                        "planned_updates": total_updates,
+                        "scenarios": scenario_results,
+                        "primary_score": primary_score,
+                        "best_update": source_loro_state["best_update"],
+                        "best_score": source_loro_state["best_score"],
+                        "bad_count": source_loro_state["bad_count"],
+                        "source_only": True,
+                        **{flag: False for flag in _BICAD_XR_SOURCE_LORO_ACCESS_FLAGS},
+                    },
+                )
+                if source_loro_state["stopped_early"]:
+                    break
         if epoch_losses:
             epoch_runtime = trainer.checkpoint_runtime(
                 update=update,
                 total_updates=total_updates,
             )
-            epoch_runtime["target_access"] = False
+            epoch_runtime = _bicad_xr_runtime_with_budget(
+                epoch_runtime,
+                stop_update=update,
+                planned_updates=total_updates,
+                candidate_optimizer_updates=candidate_optimizer_updates,
+            )
             epoch_rows.append(
                 {
                     "epoch": epoch,
@@ -13596,13 +14158,11 @@ def _train_bicad_xr(args) -> int:
                     "bicad_xr_audit": _bicad_xr_jsonable(last_audit),
                 }
             )
-        if update >= total_updates:
+        if source_loro_state["stopped_early"] or update >= total_updates:
             break
     if update == 0:
         raise RuntimeError("BiCAD-XR received no labeled source main step")
 
-    out_dir = Path(str(getattr(args, "output_dir", "") or "."))
-    out_dir.mkdir(parents=True, exist_ok=True)
     metrics_csv = str(getattr(args, "metrics_csv", "") or "").strip()
     metrics_jsonl = str(getattr(args, "metrics_jsonl", "") or "").strip()
     _write_ssdg_epoch_telemetry(
@@ -13611,25 +14171,25 @@ def _train_bicad_xr(args) -> int:
         epoch_rows,
     )
 
-    runtime = trainer.checkpoint_runtime(update=update, total_updates=total_updates)
-    runtime["target_access"] = False
-    runtime["entry"] = bicad_xr_runtime(protocol)
-    model_state = model.state_dict()
-    checkpoint_payload = {
-        "schema": "ssdg_phase1_bicad_xr_v1",
-        "phase1_method": "bicad_xr",
-        "candidate_id": protocol.candidate_id,
-        "model": model_state,
-        "optimizer": optimizer.state_dict(),
-        "epoch": int(epoch_rows[-1]["epoch"]),
-        "optimizer_update": update,
-        "args": dict(vars(model_args)),
-        "bicad_xr_runtime": runtime,
-    }
+    checkpoint_payload = _bicad_xr_checkpoint_payload(
+        model=model,
+        optimizer=optimizer,
+        trainer=trainer,
+        model_args=model_args,
+        protocol=protocol,
+        epoch=int(epoch_rows[-1]["epoch"]),
+        stop_update=update,
+        planned_updates=total_updates,
+        candidate_optimizer_updates=candidate_optimizer_updates,
+    )
     reconstructed_model = build_baseline_model(model_args, device)
+    reconstruction_config = dataclass_replace(
+        config,
+        optimizer_updates=candidate_optimizer_updates,
+    )
     reconstructed_trainer = BiCADXRTrainer(
         _BiCADXRConcatForward(reconstructed_model),
-        config,
+        reconstruction_config,
         num_receivers=len(source_receiver_indices),
         num_days=len(source_day_indices),
         num_channels=2 if protocol.strict_pair_concat else 4,
@@ -13640,6 +14200,21 @@ def _train_bicad_xr(args) -> int:
         trainer=reconstructed_trainer,
     )
     save_payload(out_dir / "bicad_xr_final.pth", checkpoint_payload)
+    if source_loro_enabled:
+        selection = _bicad_xr_source_loro_selection(
+            planned_updates=total_updates,
+            stop_update=update,
+            best_update=int(source_loro_state["best_update"]),
+            best_score=source_loro_state["best_score"],
+            bad_count=int(source_loro_state["bad_count"]),
+            patience=int(loro_settings["patience"]),
+            interval=int(loro_settings["interval"]),
+            stopped_early=bool(source_loro_state["stopped_early"]),
+        )
+        _write_bicad_xr_source_loro_selection(
+            out_dir / "source_loro_selection.json",
+            selection,
+        )
     return 0
 
 

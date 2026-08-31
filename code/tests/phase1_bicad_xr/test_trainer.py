@@ -496,6 +496,75 @@ def test_runtime_accepts_frozen_config_without_mutating_candidate() -> None:
     assert output.checkpoint_runtime["candidate_id"] == "D5"
 
 
+def test_pairbicad_final_runtime_records_stop_and_planned_budget_without_mutating_candidate() -> None:
+    from SSDG import train_ssdg
+
+    rewrite_args = getattr(train_ssdg, "_bicad_xr_checkpoint_args_with_budget", None)
+    assert callable(rewrite_args), "missing checkpoint budget args helper"
+    rewrite_runtime = getattr(train_ssdg, "_bicad_xr_runtime_with_budget", None)
+    assert callable(rewrite_runtime), "missing checkpoint budget runtime helper"
+
+    args = {
+        "row_key": json.dumps(
+            {"fold": 1, "optimizer_updates": 9000, "row_id": "P0-F1-S392001"},
+            sort_keys=True,
+            separators=(",", ":"),
+        ),
+        "optimizer_updates": 9000,
+    }
+    rewritten_args = rewrite_args(args, stop_update=6500, planned_updates=9000)
+    row_key = json.loads(rewritten_args["row_key"])
+    assert row_key["optimizer_updates"] == 6500
+    assert row_key["planned_optimizer_updates"] == 9000
+    assert rewritten_args["optimizer_updates"] == 6500
+    assert rewritten_args["planned_optimizer_updates"] == 9000
+
+    runtime = rewrite_runtime(
+        {
+            "optimizer_update": 6500,
+            "total_updates": 9000,
+            "candidate_config": {"optimizer_updates": 9000},
+        },
+        stop_update=6500,
+        planned_updates=9000,
+        candidate_optimizer_updates=9000,
+    )
+    assert runtime["optimizer_update"] == 6500
+    assert runtime["total_updates"] == 6500
+    assert runtime["planned_total_updates"] == 9000
+    assert runtime["candidate_config"]["optimizer_updates"] == 9000
+
+
+def test_pairbicad_source_loro_selection_exposes_only_source_access() -> None:
+    from SSDG import train_ssdg
+
+    make_selection = getattr(train_ssdg, "_bicad_xr_source_loro_selection", None)
+    assert callable(make_selection), "missing source-LORO selection helper"
+    selection = make_selection(
+        planned_updates=9000,
+        stop_update=6500,
+        best_update=4000,
+        best_score=80.0,
+        bad_count=5,
+        patience=5,
+        interval=500,
+        stopped_early=True,
+    )
+    assert selection["source_only"] is True
+    assert selection["planned_updates"] == 9000
+    assert selection["stop_update"] == 6500
+    assert selection["best_update"] == 4000
+    assert selection["stopped_early"] is True
+    for flag in (
+        "target_access",
+        "phase2_access",
+        "support_access",
+        "query_access",
+        "truth_access",
+    ):
+        assert selection[flag] is False
+
+
 def test_unlabeled_source_rows_never_enter_tx_conditioned_losses() -> None:
     base = _trainer("ADV3B02-BiCAD-XDC-V1")
     extended = _trainer("ADV3B02-BiCAD-XDC-V1")

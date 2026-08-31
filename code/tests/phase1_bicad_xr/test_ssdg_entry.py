@@ -461,3 +461,239 @@ def test_domain_remap_fails_closed_for_unregistered_source_index() -> None:
             [3, 4, 6, 8],
             name="receiver",
         )
+
+
+def _required_bicad_helper(name: str):
+    helper = getattr(train_ssdg, name, None)
+    assert callable(helper), f"missing required BiCAD-XR helper: {name}"
+    return helper
+
+
+def test_pairbicad_budget_cli_defaults_and_explicit_9000_override() -> None:
+    default = parse(["--phase1_method", "bicad_xr", "--candidate_id", "P0"])
+    assert getattr(default, "bicad_optimizer_updates", None) == 0
+    assert getattr(default, "bicad_loro_receiver", None) == -1
+    assert getattr(default, "bicad_loro_eval_interval_updates", None) == 0
+    assert getattr(default, "bicad_loro_min_updates", None) == 4000
+    assert getattr(default, "bicad_loro_patience", None) == 5
+
+    explicit = parse(
+        [
+            "--phase1_method",
+            "bicad_xr",
+            "--candidate_id",
+            "P0",
+            "--bicad_optimizer_updates",
+            "9000",
+        ]
+    )
+    assert explicit.bicad_optimizer_updates == 9000
+
+    from cvsrffi.phase1_bicad_xr.config import candidate_config
+
+    apply_budget = _required_bicad_helper("_bicad_xr_apply_optimizer_budget")
+    assert apply_budget(candidate_config("P0"), 0).optimizer_updates == 4000
+    assert apply_budget(candidate_config("P0"), 9000).optimizer_updates == 9000
+
+
+@pytest.mark.parametrize("updates", [-500, 1, 4250, 9500])
+def test_pairbicad_optimizer_budget_rejects_invalid_values(updates: int) -> None:
+    validate = _required_bicad_helper("_validate_bicad_xr_optimizer_updates")
+    with pytest.raises(ValueError, match="500.*4000.*9000"):
+        validate(updates)
+
+
+def test_pairbicad_source_loro_validation_rejects_overlap_and_foreign_receiver() -> None:
+    validate = _required_bicad_helper("_validate_bicad_xr_loro_args")
+    valid = SimpleNamespace(
+        bicad_optimizer_updates=9000,
+        bicad_loro_receiver=8,
+        bicad_loro_eval_interval_updates=500,
+        bicad_loro_min_updates=4000,
+        bicad_loro_patience=5,
+    )
+    settings = validate(
+        valid,
+        source_receiver_indices=[1, 3, 4, 6],
+        source_receiver_values=[1, 3, 4, 6],
+        planned_updates=9000,
+    )
+    assert settings["enabled"] is True
+    assert settings["heldout_receiver"] == 8
+
+    overlap = SimpleNamespace(
+        bicad_optimizer_updates=9000,
+        bicad_loro_receiver=6,
+        bicad_loro_eval_interval_updates=500,
+        bicad_loro_min_updates=4000,
+        bicad_loro_patience=5,
+    )
+    with pytest.raises(ValueError, match="heldout receiver.*source"):
+        validate(
+            overlap,
+            source_receiver_indices=[1, 3, 4, 6],
+            source_receiver_values=[1, 3, 4, 6],
+            planned_updates=9000,
+        )
+
+    foreign = SimpleNamespace(
+        bicad_optimizer_updates=9000,
+        bicad_loro_receiver=2,
+        bicad_loro_eval_interval_updates=500,
+        bicad_loro_min_updates=4000,
+        bicad_loro_patience=5,
+    )
+    with pytest.raises(ValueError, match="source universe"):
+        validate(
+            foreign,
+            source_receiver_indices=[1, 3, 4, 6],
+            source_receiver_values=[1, 3, 4, 6],
+            planned_updates=9000,
+        )
+
+    for field, value, pattern in (
+        ("bicad_loro_eval_interval_updates", 100, "interval.*250.*500"),
+        ("bicad_loro_min_updates", 4500, "min_updates.*4000"),
+        ("bicad_loro_patience", 3, "patience.*4.*6"),
+    ):
+        invalid = SimpleNamespace(
+            bicad_optimizer_updates=9000,
+            bicad_loro_receiver=8,
+            bicad_loro_eval_interval_updates=500,
+            bicad_loro_min_updates=4000,
+            bicad_loro_patience=5,
+        )
+        setattr(invalid, field, value)
+        with pytest.raises(ValueError, match=pattern):
+            validate(
+                invalid,
+                source_receiver_indices=[1, 3, 4, 6],
+                source_receiver_values=[1, 3, 4, 6],
+                planned_updates=9000,
+            )
+
+
+def test_pairbicad_loro_eval_clock_starts_at_4000_and_is_interval_bound() -> None:
+    due = _required_bicad_helper("_bicad_xr_loro_eval_due")
+    assert not due(3999, planned_updates=9000, min_updates=4000, interval=500)
+    assert due(4000, planned_updates=9000, min_updates=4000, interval=500)
+    assert not due(4001, planned_updates=9000, min_updates=4000, interval=500)
+    assert due(4500, planned_updates=9000, min_updates=4000, interval=500)
+    assert due(4250, planned_updates=9000, min_updates=4000, interval=250)
+    assert not due(9001, planned_updates=9000, min_updates=4000, interval=500)
+
+
+def test_pairbicad_source_loro_score_and_patience_use_strict_improvement() -> None:
+    score = _required_bicad_helper("_bicad_xr_source_loro_primary_score")
+    assert score(80.0, [50.0, 60.0, 70.0]) == pytest.approx(8000.0 / 130.0)
+    assert score(0.0, [50.0, 60.0, 70.0]) == 0.0
+
+    update_selection = _required_bicad_helper("_bicad_xr_loro_selection_step")
+    state = {
+        "best_update": 0,
+        "best_score": None,
+        "bad_count": 0,
+        "stopped_early": False,
+    }
+    state = update_selection(state, update=4000, score=80.0, patience=5)
+    assert state["best_update"] == 4000
+    assert state["bad_count"] == 0
+    for update in (4500, 5000, 5500, 6000, 6500):
+        state = update_selection(state, update=update, score=80.0, patience=5)
+    assert state["bad_count"] == 5
+    assert state["stopped_early"] is True
+
+    reset = update_selection(state, update=7000, score=80.0 + 2e-12, patience=5)
+    assert reset["best_update"] == 7000
+    assert reset["bad_count"] == 0
+
+
+def test_pairbicad_source_loro_loader_reuses_payload_reference() -> None:
+    build_loader = _required_bicad_helper("_build_bicad_xr_source_loro_loader")
+    payload = {"rx_list": [1, 3, 4, 6, 8], "capture_date_list": [1, 2, 3]}
+    captured = {}
+
+    class RecordingDataset:
+        def __init__(self, ds, **kwargs):
+            captured["payload"] = ds
+            captured["kwargs"] = kwargs
+
+        def __len__(self):
+            return 1
+
+    def fake_loader(dataset, *args, **kwargs):
+        captured["dataset"] = dataset
+        return dataset
+
+    original_dataset = train_ssdg.WiSigCompactDataset
+    original_loader = train_ssdg.make_loader
+    train_ssdg.WiSigCompactDataset = RecordingDataset
+    train_ssdg.make_loader = fake_loader
+    try:
+        args = SimpleNamespace(
+            wisig_equalized=1,
+            wisig_out_len=256,
+            wisig_domain="rx_day",
+            wisig_max_day123_per_combo=0,
+            seed=392001,
+            eval_batch_size=32,
+            num_workers=0,
+            prefetch_factor=2,
+        )
+        loader = build_loader(
+            args,
+            {
+                "wisig_payload": payload,
+                "source_day_indices": [0, 1, 2],
+                "source_receiver_indices": [1, 3, 4, 6],
+                "source_receiver_values": [1, 3, 4, 6],
+            },
+            torch.device("cpu"),
+            8,
+        )
+    finally:
+        train_ssdg.WiSigCompactDataset = original_dataset
+        train_ssdg.make_loader = original_loader
+
+    assert loader is captured["dataset"]
+    assert captured["payload"] is payload
+    assert captured["kwargs"]["rx_keep"] == [4]
+    assert captured["kwargs"]["day_keep"] == [0, 1, 2]
+
+
+def test_pairbicad_source_loro_eval_reports_class_floor_and_scenario_seed() -> None:
+    evaluate = _required_bicad_helper("_evaluate_bicad_xr_source_loro")
+
+    class FixedPredictionModel(nn.Module):
+        def forward(self, x, **kwargs):
+            del kwargs
+            prediction = (x[:, 0] >= 1.0).long()
+            logits = torch.full(
+                (x.size(0), 2),
+                -1.0,
+                dtype=x.dtype,
+                device=x.device,
+            )
+            logits.scatter_(1, prediction[:, None], 1.0)
+            return {"tx_logits": logits}
+
+    args = SimpleNamespace(seed=392001, eval_max_batches=0)
+    batch = (
+        torch.tensor([[0.0], [1.0], [2.0], [3.0]]),
+        torch.tensor([0, 0, 1, 1]),
+        torch.zeros(4, dtype=torch.long),
+        {},
+    )
+    result = evaluate(
+        FixedPredictionModel(),
+        [batch],
+        torch.device("cpu"),
+        args,
+        scenario="clean",
+        scenario_index=0,
+    )
+
+    assert result["seed"] == 392001
+    assert result["accuracy"] == pytest.approx(75.0)
+    assert result["per_class_accuracy"] == {"0": 50.0, "1": 100.0}
+    assert result["floor"] == pytest.approx(50.0)
