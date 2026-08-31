@@ -45,6 +45,11 @@ def d92_geometry_features(identity160: torch.Tensor, fft96: torch.Tensor) -> tor
         raise BiNOVAD92Error("FFT feature geometry must be [N,96]")
     if not torch.isfinite(identity).all() or not torch.isfinite(fft).all():
         raise BiNOVAD92Error("D92 input features must be finite")
+    both_modalities_zero = (identity.square().sum(dim=1) == 0.0) & (
+        fft.square().sum(dim=1) == 0.0
+    )
+    if bool(both_modalities_zero.any()):
+        raise BiNOVAD92Error("both modalities are zero for a D92 feature row")
     joined = torch.cat(
         [F.normalize(identity, dim=1), 4.0 * F.normalize(fft, dim=1)], dim=1
     )
@@ -180,6 +185,38 @@ def fit_differentiable_d92(
     )
 
 
+def differentiable_old_d92_logits(
+    fit_identity: torch.Tensor,
+    fit_fft: torch.Tensor,
+    fit_labels: torch.Tensor,
+    eval_identity: torch.Tensor,
+    eval_fft: torch.Tensor,
+) -> torch.Tensor:
+    """Match locked old-only D92 logits while retaining a differentiable surrogate."""
+
+    fit_rows = d92_geometry_features(fit_identity, fit_fft)
+    eval_rows = d92_geometry_features(eval_identity, eval_fft)
+    state = fit_differentiable_d92(fit_rows, fit_labels, old_class_count=6)
+    surrogate_logits = state.score(eval_rows)
+    exact = exact_d92_fit(
+        fit_identity.detach().cpu().numpy(),
+        fit_fft.detach().cpu().numpy(),
+        torch.as_tensor(fit_labels, dtype=torch.long).detach().cpu().numpy(),
+        class_ids=range(6),
+        old_class_count=6,
+        seed=713102,
+        device="cpu",
+    )
+    exact_logits = torch.as_tensor(
+        exact.score(
+            eval_identity.detach().cpu().numpy(), eval_fft.detach().cpu().numpy()
+        ),
+        dtype=surrogate_logits.dtype,
+        device=surrogate_logits.device,
+    )
+    return surrogate_logits + (exact_logits - surrogate_logits).detach()
+
+
 def _top_two_smallest(values: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
     ordered = torch.sort(values, dim=1).values
     first = ordered[:, 0]
@@ -255,6 +292,7 @@ __all__ = [
     "DifferentiableD92State",
     "d92_geometry_conditions",
     "d92_geometry_features",
+    "differentiable_old_d92_logits",
     "exact_d92_fit",
     "fit_differentiable_d92",
 ]
