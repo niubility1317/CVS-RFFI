@@ -3,11 +3,12 @@
 ## 状态与版本
 
 - run ID：`wiser_rf_p3_primary_hist_e0_20260831_v1`。
-- 当前状态：`LOCAL_VERIFIED`。本报告不声明已构建release、已连接N607、已启动pilot、已生成prediction或已获得性能结果。
+- 当前状态：`LOCAL_VERIFIED/TASK10_PREFLIGHT_VERIFIED`。本报告不声明已构建release、已启动pilot、已生成prediction或已获得性能结果。
 - 运行时代码冻结提交：`e669536eca19cd39154c6232d31f59bc7af0d7e8`（`fix: bind WISER Target25 champion runtime`）。该提交与后续仅包含追踪表和本报告镜像的文档提交分离；文档提交由Task9发布步骤产生并单独核验。
 - 本地CWD：`E:\type10-7\github_publish\CVS-RFFI-repo\.worktrees\meta-adapter-tri-r4-v1-20260824`。
-- 本地环境：`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe`。远端环境、具体GPU索引、GPU占用和路径可见性：`PENDING_TASK10_PREFLIGHT`。
-- 用户授权的资源上限：每张GPU最多3个训练实验；pilot实际GPU分配必须在Task10只读盘点后冻结，不得在本报告中虚构。
+- 本地环境：`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe`；远端环境：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`（Python 3.10.19、PyTorch 2.1.0+cu121、CUDA可用、8张GPU可见）。
+- 2026-08-31只读preflight确认普通账号、项目根、checkpoint、manifest、source summary均可见；GPU0至GPU7的compute-app列表均为空。用户授权上限为每张GPU最多3个训练实验；本pilot是依次执行N0至N6的单进程工作流，冻结物理GPU0，`CUDA_VISIBLE_DEVICES=0`后CLI设备为`cuda:0`，不会虚构为7个并行训练实验。
+- 本次唯一release提交：`cc720e43d45e0c66c2bc99a031b1a3d3d9418e0d`；release归档：`wiser_rf_p3_primary_hist_e0_20260831_v1_cc720e43.tar.gz`；远端release根：`/home/szu2070436088/2510044040/CV-SincNet/releases/wiser_rf_p3_primary_hist_e0_20260831_v1_cc720e43`。release尚未传输，本地/远端SHA比对与远端编译仍待执行。
 
 ## 冻结矩阵与输入绑定
 
@@ -25,19 +26,19 @@
 - pilot run root：`/home/szu2070436088/2510044040/CV-SincNet/runs/wiser_rf_p3_primary_hist_e0_20260831_v1/pilot`。
 - pilot log root：`/home/szu2070436088/2510044040/CV-SincNet/logs/wiser_rf_p3_primary_hist_e0_20260831_v1`。
 - score root：`/home/szu2070436088/2510044040/CV-SincNet/runs/wiser_rf_p3_primary_hist_e0_20260831_v1/score`。
-- GPU占位符`cuda:PENDING_TASK10_PREFLIGHT`只能在Task10盘点后替换为实际卡号。
+- pilot冻结物理GPU0；命令通过`CUDA_VISIBLE_DEVICES=0`隔离，程序内使用`cuda:0`。启动前必须重新确认run/log/release目标不存在；不得覆盖同名根目录。
 
 ```text
-python code/scripts/run_stage2_wiser_pilot.py p3-smoke --manifest <manifest> --pilot-outer-key rx_3_19__seed_713102__k_10__new_5 --p3-config configs/wiser_rf_p3_primary_20260831.json --checkpoint <checkpoint> --source-summary <source-summary> --source-binding configs/wiser_rf_adv3b02_source_binding.json --output-root <pilot-run-root>/smoke --device cuda:PENDING_TASK10_PREFLIGHT --runtime-commit e669536eca19cd39154c6232d31f59bc7af0d7e8 --arm N6 --scenario leo_clear_weak
-python code/scripts/run_stage2_wiser_pilot.py p3-pilot --manifest <manifest> --pilot-outer-key rx_3_19__seed_713102__k_10__new_5 --p3-config configs/wiser_rf_p3_primary_20260831.json --checkpoint <checkpoint> --source-summary <source-summary> --source-binding configs/wiser_rf_adv3b02_source_binding.json --output-root <pilot-run-root> --device cuda:PENDING_TASK10_PREFLIGHT --runtime-commit e669536eca19cd39154c6232d31f59bc7af0d7e8 --arms N0 N1 N2 N3 N4 N5 N6
-python code/scripts/run_stage2_wiser_pilot.py p3-score-pilot --manifest <manifest> --pilot-outer-key rx_3_19__seed_713102__k_10__new_5 --p3-config configs/wiser_rf_p3_primary_20260831.json --prediction-root <pilot-run-root> --output-root <score-root> --runtime-commit e669536eca19cd39154c6232d31f59bc7af0d7e8 --arms N0 N1 N2 N3 N4 N5 N6
+CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/scripts/run_stage2_wiser_pilot.py p3-smoke --manifest /home/szu2070436088/2510044040/CV-SincNet/runs/bisage_d92_hist_e0_target125_20260830_v1_techfix1/matrix_manifest.json --pilot-outer-key rx_3_19__seed_713102__k_10__new_5 --p3-config configs/wiser_rf_p3_primary_20260831.json --checkpoint /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth --source-summary /home/szu2070436088/2510044040/CV-SincNet/runs/d19_ciaf_int8_proto_20260717_1039/input/int8_component/int8_domain_class_prototypes.npz --source-binding configs/wiser_rf_adv3b02_source_binding.json --output-root /home/szu2070436088/2510044040/CV-SincNet/runs/wiser_rf_p3_primary_hist_e0_20260831_v1/smoke --device cuda:0 --runtime-commit cc720e43d45e0c66c2bc99a031b1a3d3d9418e0d --arm N6 --scenario leo_clear_weak
+CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/scripts/run_stage2_wiser_pilot.py p3-pilot --manifest /home/szu2070436088/2510044040/CV-SincNet/runs/bisage_d92_hist_e0_target125_20260830_v1_techfix1/matrix_manifest.json --pilot-outer-key rx_3_19__seed_713102__k_10__new_5 --p3-config configs/wiser_rf_p3_primary_20260831.json --checkpoint /home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth --source-summary /home/szu2070436088/2510044040/CV-SincNet/runs/d19_ciaf_int8_proto_20260717_1039/input/int8_component/int8_domain_class_prototypes.npz --source-binding configs/wiser_rf_adv3b02_source_binding.json --output-root /home/szu2070436088/2510044040/CV-SincNet/runs/wiser_rf_p3_primary_hist_e0_20260831_v1/pilot --device cuda:0 --runtime-commit cc720e43d45e0c66c2bc99a031b1a3d3d9418e0d --arms N0 N1 N2 N3 N4 N5 N6
+/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/scripts/run_stage2_wiser_pilot.py p3-score-pilot --manifest /home/szu2070436088/2510044040/CV-SincNet/runs/bisage_d92_hist_e0_target125_20260830_v1_techfix1/matrix_manifest.json --pilot-outer-key rx_3_19__seed_713102__k_10__new_5 --p3-config configs/wiser_rf_p3_primary_20260831.json --prediction-root /home/szu2070436088/2510044040/CV-SincNet/runs/wiser_rf_p3_primary_hist_e0_20260831_v1/pilot --output-root /home/szu2070436088/2510044040/CV-SincNet/runs/wiser_rf_p3_primary_hist_e0_20260831_v1/score --runtime-commit cc720e43d45e0c66c2bc99a031b1a3d3d9418e0d --arms N0 N1 N2 N3 N4 N5 N6
 ```
 
 仅当pilot产生完整21个prediction/receipt、独立评分完成且出现唯一冠军时，才允许条件性Target25：
 
 ```text
 python code/scripts/run_stage2_wiser_target25.py prepare --source-manifest <manifest> --pilot-marker <score-root>/score_collection.json --output-root <target25-root> --phase target25 --p3-config configs/wiser_rf_p3_primary_20260831.json --checkpoint <checkpoint> --source-summary <source-summary> --source-binding configs/wiser_rf_adv3b02_source_binding.json
-python code/scripts/run_stage2_wiser_target25.py run-shard --manifest <target25-root>/manifest.json --shard-index <index> --checkpoint <checkpoint> --source-summary <source-summary> --source-binding configs/wiser_rf_adv3b02_source_binding.json --p3-config configs/wiser_rf_p3_primary_20260831.json --output-root <target25-root>/prediction --device cuda:PENDING_TASK10_PREFLIGHT
+python code/scripts/run_stage2_wiser_target25.py run-shard --manifest <target25-root>/manifest.json --shard-index <index> --checkpoint <checkpoint> --source-summary <source-summary> --source-binding configs/wiser_rf_adv3b02_source_binding.json --p3-config configs/wiser_rf_p3_primary_20260831.json --output-root <target25-root>/prediction --device cuda:<按Target25发布前实时容量盘点冻结>
 python code/scripts/run_stage2_wiser_target25.py score-shard --manifest <target25-root>/manifest.json --shard-index <index> --prediction-root <target25-root>/prediction --output-root <target25-root>/score
 python code/scripts/run_stage2_wiser_target25.py analyze --manifest <target25-root>/manifest.json --score-root <target25-root>/score --output-root <target25-root>/analysis
 ```
