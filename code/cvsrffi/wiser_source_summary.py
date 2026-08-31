@@ -93,10 +93,10 @@ class QuantizedSourceSummary:
     basis: torch.Tensor
     coefficients: torch.Tensor
     radii: torch.Tensor
+    direct_points: torch.Tensor | None = None
     domain_registry: tuple[str, ...] = ()
     center_domain_handle: str | None = None
     residual_domain_registry: tuple[str, ...] = ()
-    direct_points: torch.Tensor | None = None
 
     def virtual_source_points(self) -> torch.Tensor:
         """Return normalized center and symmetric low-rank sigma points."""

@@ -9,6 +9,7 @@ import torch.nn.functional as F
 
 import cvsrffi.wiser_source_summary as summary_module
 from cvsrffi.wiser_source_summary import (
+    QuantizedSourceSummary,
     classwise_sliced_wasserstein,
     load_quantized_source_summary,
 )
@@ -112,6 +113,26 @@ def test_quantized_summary_builds_frozen_unit_virtual_points(tmp_path: Path) -> 
     assert torch.allclose(torch.linalg.vector_norm(points, dim=-1), torch.ones(2, 5))
     assert torch.allclose(points[:, 0], summary.centers)
     assert not torch.equal(points[:, 1], points[:, 2])
+
+
+def test_quantized_summary_keeps_direct_points_as_seventh_positional_argument() -> None:
+    """Catches metadata fields shifting the public direct-points constructor slot."""
+
+    direct_points = torch.tensor(
+        [
+            [[2.0, 0.0], [0.0, 3.0]],
+            [[0.0, 4.0], [5.0, 0.0]],
+        ]
+    )
+    summary = QuantizedSourceSummary(
+        "schema", ("c0", "c1"), torch.empty(2, 2), torch.empty(0), torch.empty(0),
+        torch.empty(0), direct_points,
+    )
+
+    assert summary.direct_points is direct_points
+    assert torch.allclose(
+        summary.virtual_source_points(), F.normalize(direct_points, dim=-1)
+    )
 
 
 def test_quantized_summary_rejects_sample_level_source_members(tmp_path: Path) -> None:
