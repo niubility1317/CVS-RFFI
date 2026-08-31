@@ -250,3 +250,37 @@ def test_duals_remain_nonnegative() -> None:
         torch.tensor([0.1, 0.0]), torch.tensor([-1.0, 0.4]), rate=0.5
     )
     assert torch.equal(updated, torch.tensor([0.0, 0.2]))
+
+
+def test_dual_updates_are_detached_between_optimization_steps() -> None:
+    """Catches dual ascent retaining a released P3 training graph across steps."""
+
+    identity, fft, labels, _, _ = make_small_k_d92_case(2)
+    identity.requires_grad_()
+    fft.requires_grad_()
+    tokens = tuple(f"opaque-support-{index:02d}" for index in range(len(labels)))
+    folds = stratified_crossfit_indices(labels, tokens, fold_count=2, seed=713102)
+    duals = torch.zeros(6)
+    baseline = torch.full((6,), 0.5, requires_grad=True)
+    epsilon = torch.zeros(6, requires_grad=True)
+    for _ in range(2):
+        result = cross_fitted_p3_loss(
+            identity,
+            fft,
+            labels,
+            folds=folds,
+            baseline_class_risk=baseline,
+            class_duals=duals,
+            epsilon=epsilon,
+            rho=2.0,
+            beta=0.25,
+            tau=0.1,
+        )
+        result.total.backward()
+        duals = update_nonnegative_duals(duals, result.violation, rate=0.5)
+        assert not duals.requires_grad
+        assert duals.grad_fn is None
+        identity.grad = None
+        fft.grad = None
+    assert baseline.grad is None
+    assert epsilon.grad is None

@@ -167,9 +167,13 @@ def cross_fitted_p3_loss(
     class_risk = frozen_class_risk(oof_logits, targets)
     reference = torch.as_tensor(
         baseline_class_risk, dtype=class_risk.dtype, device=class_risk.device
-    ).view(-1)
-    duals = torch.as_tensor(class_duals, dtype=class_risk.dtype, device=class_risk.device).view(-1)
-    allowance = torch.as_tensor(epsilon, dtype=class_risk.dtype, device=class_risk.device).view(-1)
+    ).detach().view(-1)
+    duals = torch.as_tensor(
+        class_duals, dtype=class_risk.dtype, device=class_risk.device
+    ).detach().view(-1)
+    allowance = torch.as_tensor(
+        epsilon, dtype=class_risk.dtype, device=class_risk.device
+    ).detach().view(-1)
     if not (len(reference) == len(duals) == len(allowance) == len(class_risk)):
         raise ValueError("class-risk vectors must match the registered class count")
 
@@ -204,7 +208,8 @@ def update_nonnegative_duals(
     values = torch.as_tensor(violation, dtype=duals.dtype, device=duals.device)
     if duals.shape != values.shape:
         raise ValueError("class_duals and violation must have matching shapes")
-    return torch.clamp_min(duals + float(rate) * values, 0.0)
+    with torch.no_grad():
+        return torch.clamp_min(duals + float(rate) * values, 0.0).detach()
 
 
 __all__ = [
