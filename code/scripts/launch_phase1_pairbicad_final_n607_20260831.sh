@@ -4,9 +4,9 @@ set -euo pipefail
 : "${PAIRBICAD_FINAL_CANDIDATE:?set one winning PairBiCAD candidate explicitly}"
 : "${PAIRBICAD_FINAL_OPTIMIZER_UPDATES:?set the frozen final optimizer budget explicitly}"
 
-RUN_ID="phase1_adv3b02_pairbicad_final_winner_seed3_20260831_r1"
+RUN_ID="phase1_adv3b02_pairbicad_final_p1_seed3_u6500_20260831_r1"
 PROJECT_ROOT="/home/szu2070436088/2510044040/CV-SincNet"
-RELEASE_ROOT="${PROJECT_ROOT}/releases/phase1_pairbicad_final_20260831_r1"
+RELEASE_ROOT="${PROJECT_ROOT}/releases/phase1_pairbicad_final_p1_u6500_20260831_r1"
 RUN_ROOT="${PROJECT_ROOT}/runs/${RUN_ID}"
 LOG_ROOT="${PROJECT_ROOT}/logs"
 DISPATCH_LOG="${LOG_ROOT}/${RUN_ID}.dispatcher.log"
