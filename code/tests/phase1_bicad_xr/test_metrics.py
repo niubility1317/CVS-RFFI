@@ -220,6 +220,23 @@ def test_checkpoint_runtime_requires_exact_row_identity() -> None:
     assert wrong["mismatches"] == ["seed"]
 
 
+def test_checkpoint_runtime_binds_planned_dynamic_budget() -> None:
+    expectation = {**_expectation(), "planned_optimizer_updates": 6_400}
+
+    valid = validate_checkpoint_runtime(
+        _runtime(planned_total_updates=6_400),
+        expectation,
+    )
+    wrong = validate_checkpoint_runtime(
+        _runtime(planned_total_updates=6_000),
+        expectation,
+    )
+
+    assert valid["valid"] is True
+    assert wrong["valid"] is False
+    assert wrong["mismatches"] == ["planned_optimizer_updates"]
+
+
 def test_closure_requires_clean_and_each_leo_scenario(tmp_path: Path) -> None:
     _write_complete_base(tmp_path)
     for scene in ("clean", "leo_clear_weak", "leo_low_elev_weak"):

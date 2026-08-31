@@ -678,15 +678,149 @@ def _build_final_evaluation_context(
     return context_type(row, roots, command)
 
 
-def _row_runtime_expectation(row: PlanRow) -> dict[str, Any]:
+def _row_runtime_expectation(
+    row: PlanRow,
+    *,
+    optimizer_updates: int | None = None,
+) -> dict[str, Any]:
     return {
         "candidate_id": row.candidate_id,
         "fold": row.fold,
         "seed": row.seed,
-        "optimizer_updates": row.optimizer_updates,
+        "optimizer_updates": (
+            row.optimizer_updates if optimizer_updates is None else optimizer_updates
+        ),
         "source_receivers": row.source_receivers,
         "train_days": row.train_days,
     }
+
+
+def _cv2_runtime_expectation(row_root: str | Path, row: PlanRow) -> dict[str, Any]:
+    """Validate dynamic CV2 convergence closure and bind its exact stop update."""
+
+    if not bool(row.configuration.get("coverage_convergence", False)):
+        return _row_runtime_expectation(row)
+
+    root = Path(row_root)
+    selection = _load_json_mapping(
+        root / "source_loro_selection.json",
+        label="source_loro_selection.json",
+    )
+    _validate_source_only_flags(selection, label="source-LORO selection")
+    plan = selection.get("cv2_coverage_plan")
+    terminal = selection.get("cv2_terminal")
+    if not isinstance(plan, Mapping):
+        raise ValueError("source-LORO selection has no CV2 coverage plan")
+    if not isinstance(terminal, Mapping):
+        raise ValueError("source-LORO selection has no terminal CV2 decision")
+
+    required_plan = (
+        "unlabeled_physical_count",
+        "source_receiver_count",
+        "unlabeled_per_four_updates",
+        "u_cycle_updates",
+        "eval_interval_updates",
+        "min_activation_updates",
+        "safety_updates",
+    )
+    if any(isinstance(plan.get(name), bool) or not isinstance(plan.get(name), int) for name in required_plan):
+        raise ValueError("CV2 coverage plan fields must be integers")
+    if any(int(plan[name]) <= 0 for name in required_plan):
+        raise ValueError("CV2 coverage plan fields must be positive")
+    if int(plan["source_receiver_count"]) != len(row.source_receivers):
+        raise ValueError("CV2 coverage plan source receiver count does not match row")
+    expected_four = 3 * 32 + (48 - 6 * len(row.source_receivers))
+    if int(plan["unlabeled_per_four_updates"]) != expected_four:
+        raise ValueError("CV2 coverage plan does not match structured batch cadence")
+
+    def expected_updates(multiplier: float) -> int:
+        target = int(math.ceil(int(plan["unlabeled_physical_count"]) * multiplier))
+        full_blocks, remainder = divmod(target, expected_four)
+        updates = full_blocks * 4
+        if remainder == 0:
+            return updates
+        for count in (32, 32, 32, 48 - 6 * len(row.source_receivers)):
+            updates += 1
+            remainder -= count
+            if remainder <= 0:
+                return updates
+        raise AssertionError("unreachable CV2 coverage remainder")
+
+    expected_plan = {
+        "u_cycle_updates": expected_updates(1.0),
+        "eval_interval_updates": max(500, expected_updates(0.5)),
+        "min_activation_updates": expected_updates(3.0),
+        "safety_updates": expected_updates(12.0),
+    }
+    if any(int(plan[name]) != value for name, value in expected_plan.items()):
+        raise ValueError("CV2 coverage plan update thresholds are inconsistent")
+
+    stop_update = selection.get("stop_update")
+    planned_updates = selection.get("planned_updates")
+    interval = selection.get("interval")
+    if any(
+        isinstance(value, bool) or not isinstance(value, int)
+        for value in (stop_update, planned_updates, interval)
+    ):
+        raise ValueError("CV2 selection update fields must be integers")
+    if planned_updates != int(plan["safety_updates"]):
+        raise ValueError("CV2 planned updates do not match the coverage safety budget")
+    if interval != int(plan["eval_interval_updates"]):
+        raise ValueError("CV2 evaluation interval does not match the coverage plan")
+    if not (0 < stop_update <= planned_updates):
+        raise ValueError("CV2 stop update is outside the planned budget")
+    if stop_update != planned_updates and stop_update % interval != 0:
+        raise ValueError("CV2 stop update is outside the source-LORO evaluation clock")
+    if selection.get("stopped_early") is not True:
+        raise ValueError("CV2 coverage candidate lacks a terminal stop decision")
+
+    status = terminal.get("status")
+    scientific = terminal.get("scientifically_converged")
+    if status not in {"SCIENTIFICALLY_CONVERGED", "NOT_CONVERGED_SAFETY_STOP"}:
+        raise ValueError("CV2 terminal status is invalid")
+    if scientific is not (status == "SCIENTIFICALLY_CONVERGED"):
+        raise ValueError("CV2 terminal status and scientific flag disagree")
+    if terminal.get("artifacts_allowed") is not True:
+        raise ValueError("CV2 terminal decision does not allow artifact closure")
+    if scientific and stop_update < int(plan["min_activation_updates"]):
+        raise ValueError("CV2 scientific stop precedes three U_s coverage cycles")
+
+    curve_path = root / "source_loro_curve.jsonl"
+    if not curve_path.is_file() or curve_path.stat().st_size <= 0:
+        raise FileNotFoundError("source_loro_curve.jsonl is missing or empty")
+    records: list[Mapping[str, Any]] = []
+    for line_number, line in enumerate(
+        curve_path.read_text(encoding="utf-8").splitlines(),
+        start=1,
+    ):
+        if not line.strip():
+            continue
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise ValueError(
+                f"source_loro_curve.jsonl line {line_number} is invalid JSON"
+            ) from exc
+        if not isinstance(record, Mapping):
+            raise ValueError(
+                f"source_loro_curve.jsonl line {line_number} is not an object"
+            )
+        _validate_source_only_flags(record, label=f"source-LORO curve line {line_number}")
+        update = record.get("update")
+        if isinstance(update, bool) or not isinstance(update, int):
+            raise ValueError("source-LORO curve update must be an integer")
+        if records and update <= int(records[-1]["update"]):
+            raise ValueError("source-LORO curve updates must increase strictly")
+        records.append(record)
+    if not records or records[-1].get("update") != stop_update:
+        raise ValueError("source-LORO curve does not end at CV2 stop update")
+    last_decision = records[-1].get("cv2_decision")
+    if not isinstance(last_decision, Mapping) or last_decision.get("status") != status:
+        raise ValueError("source-LORO curve terminal decision does not match selection")
+
+    expectation = _row_runtime_expectation(row, optimizer_updates=stop_update)
+    expectation["planned_optimizer_updates"] = planned_updates
+    return expectation
 
 
 def _assert_finite_json(value: Any, *, label: str) -> None:
@@ -823,6 +957,7 @@ def _validate_worker_artifacts(
     row_root: Path,
     checkpoint: Path,
     evaluation: Mapping[str, Any],
+    runtime_expectation: Mapping[str, Any],
 ) -> dict[str, Any]:
     if evaluation.get("complete") is not True:
         raise ValueError("formal final evaluation did not report complete")
@@ -838,7 +973,7 @@ def _validate_worker_artifacts(
     _validate_source_only_flags(runtime, label="checkpoint runtime")
     runtime_check = validate_checkpoint_runtime(
         runtime,
-        _row_runtime_expectation(row),
+        runtime_expectation,
     )
     if runtime_check.get("valid") is not True:
         raise ValueError(f"checkpoint runtime mismatch: {runtime_check}")
@@ -973,6 +1108,7 @@ def run_training_worker(row: PlanRow, roots: LauncherRoots, *, run_id: str) -> s
 
     try:
         checkpoint = _locate_final_checkpoint(row_root)
+        runtime_expectation = _cv2_runtime_expectation(row_root, row)
         context = _build_final_evaluation_context(row, roots, command)
         evaluator = _build_atomic_source_only_evaluator(
             context,
@@ -981,7 +1117,7 @@ def run_training_worker(row: PlanRow, roots: LauncherRoots, *, run_id: str) -> s
         )
         evaluation = evaluate_final_checkpoint(
             checkpoint,
-            expected_runtime=_row_runtime_expectation(row),
+            expected_runtime=runtime_expectation,
             output_dir=row_root,
             model_builder=context.build_model,
             trainer_runtime_restorer=context.restore_trainer_runtime,
@@ -992,6 +1128,7 @@ def run_training_worker(row: PlanRow, roots: LauncherRoots, *, run_id: str) -> s
             row_root,
             checkpoint,
             evaluation,
+            runtime_expectation,
         )
     except Exception as exc:
         return _stop_worker(

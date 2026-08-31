@@ -449,6 +449,13 @@ def validate_checkpoint_runtime(
         else:
             missing.append("optimizer_updates")
 
+    if "planned_optimizer_updates" in expectation:
+        compare(
+            "planned_optimizer_updates",
+            "planned_total_updates",
+            expectation["planned_optimizer_updates"],
+        )
+
     for name in ("source_receivers", "train_days"):
         if name not in expectation:
             missing.append(f"expectation.{name}")

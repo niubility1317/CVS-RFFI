@@ -1530,7 +1530,10 @@ def _partition_source_validation_roles(
 
 def _resolve_unlabeled_batch_size(args) -> int:
     if bool(getattr(args, "strict_pair_concat", False)):
-        return 32
+        value = int(getattr(args, "muse_unlabeled_batch_size", 32))
+        if value < 1 or value > 32:
+            raise ValueError("strict PairBiCAD unlabeled batch size must be in [1,32]")
+        return value
     if not bool(getattr(args, "use_muse_ssdg", False)):
         return int(args.batch_size)
     value = int(getattr(args, "muse_unlabeled_batch_size", 256))
@@ -12978,6 +12981,210 @@ def _bicad_xr_mean_epoch_loss(values: Sequence[float]) -> float:
     return mean_loss
 
 
+def _bicad_xr_cv2_coverage_plan(
+    *,
+    unlabeled_physical_count: int,
+    source_receiver_count: int,
+) -> Dict[str, int]:
+    """Resolve the frozen CV2 coverage cadence from source-only U samples."""
+
+    if (
+        isinstance(unlabeled_physical_count, bool)
+        or not isinstance(unlabeled_physical_count, int)
+        or unlabeled_physical_count <= 0
+    ):
+        raise ValueError("unlabeled_physical_count must be a positive integer")
+    if source_receiver_count not in (4, 5):
+        raise ValueError("source_receiver_count must be four or five")
+
+    structured_unlabeled = 48 - 6 * source_receiver_count
+    unlabeled_per_four_updates = 3 * 32 + structured_unlabeled
+
+    def updates_for_coverage(multiplier: float) -> int:
+        target = int(math.ceil(float(unlabeled_physical_count) * multiplier))
+        full_blocks, remainder = divmod(target, unlabeled_per_four_updates)
+        updates = full_blocks * 4
+        if remainder == 0:
+            return updates
+        for count in (32, 32, 32, structured_unlabeled):
+            updates += 1
+            remainder -= count
+            if remainder <= 0:
+                return updates
+        raise AssertionError("unreachable CV2 coverage remainder")
+
+    cycle_updates = updates_for_coverage(1.0)
+    return {
+        "unlabeled_physical_count": unlabeled_physical_count,
+        "source_receiver_count": source_receiver_count,
+        "unlabeled_per_four_updates": unlabeled_per_four_updates,
+        "u_cycle_updates": cycle_updates,
+        "eval_interval_updates": max(500, updates_for_coverage(0.5)),
+        "min_activation_updates": updates_for_coverage(3.0),
+        "safety_updates": updates_for_coverage(12.0),
+    }
+
+
+def _bicad_xr_cv2_batch_counts(
+    *,
+    update: int,
+    source_receiver_count: int,
+) -> Tuple[int, int]:
+    """Return normal or every-four-step structured physical batch counts."""
+
+    if isinstance(update, bool) or not isinstance(update, int) or update <= 0:
+        raise ValueError("update must be a positive integer")
+    if source_receiver_count not in (4, 5):
+        raise ValueError("CV2 structured batches require four or five receivers")
+    if update % 4 != 0:
+        return (16, 32)
+    labeled = 6 * source_receiver_count
+    return (labeled, 48 - labeled)
+
+
+def _bicad_xr_cv2_make_plateau_scheduler(optimizer):
+    """Build the preregistered CV2 source-V_cal plateau scheduler."""
+
+    return torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer,
+        mode="max",
+        factor=0.3,
+        patience=3,
+        min_lr=1.0e-6,
+    )
+
+
+def _bicad_xr_cv2_source_metrics(
+    scenario_results: Mapping[str, Mapping[str, Any]],
+) -> Dict[str, float]:
+    """Build one source-LORO CV2 observation on the frozen 0--1 scale."""
+
+    from cvsrffi.phase1_bicad_xr.metrics import compute_s_dg
+
+    required = ("clean", *_BICAD_XR_LEO_WEAK)
+    missing = [name for name in required if name not in scenario_results]
+    if missing:
+        raise ValueError("missing CV2 source scenario(s): " + ", ".join(missing))
+
+    def accuracy(name: str) -> float:
+        value = float(scenario_results[name]["accuracy"]) / 100.0
+        if not math.isfinite(value) or not 0.0 <= value <= 1.0:
+            raise ValueError(f"invalid CV2 source accuracy for {name}")
+        return value
+
+    clean = scenario_results["clean"]
+    clean_accuracy = accuracy("clean")
+    leo_floor = min(accuracy(name) for name in _BICAD_XR_LEO_WEAK)
+    negative_margin_rate = float(clean.get("negative_margin_rate", 0.0))
+    margin_q10 = float(clean.get("margin_q10", 0.0))
+    if (
+        not math.isfinite(negative_margin_rate)
+        or not 0.0 <= negative_margin_rate <= 1.0
+        or not math.isfinite(margin_q10)
+    ):
+        raise ValueError("invalid CV2 source margin diagnostics")
+    values = {
+        "clean_bal": clean_accuracy,
+        "leo_scene_floor_bal": leo_floor,
+        # One LORO row has one held-out receiver; its accuracy is therefore
+        # both the receiver mean and floor, with zero within-row receiver std.
+        "receiver_floor": clean_accuracy,
+        "receiver_std": 0.0,
+        "negative_margin_rate": negative_margin_rate,
+        "margin_q10": margin_q10,
+    }
+    values["s_dg"] = compute_s_dg(
+        values["clean_bal"],
+        values["leo_scene_floor_bal"],
+        values["receiver_floor"],
+        values["receiver_std"],
+        values["negative_margin_rate"],
+    )
+    return values
+
+
+def _bicad_xr_cv2_margin_values(
+    logits: torch.Tensor,
+    labels: torch.Tensor,
+) -> torch.Tensor:
+    """Return the true-class logit margin for source-only diagnostics."""
+
+    if logits.ndim != 2 or logits.size(1) < 2:
+        raise ValueError("CV2 margin logits must be [batch,classes>=2]")
+    labels = labels.to(device=logits.device, dtype=torch.long).reshape(-1)
+    if labels.numel() != logits.size(0):
+        raise ValueError("CV2 margin labels must match logits")
+    if not bool(torch.isfinite(logits).all()):
+        raise ValueError("CV2 margin logits must be finite")
+    row = torch.arange(logits.size(0), device=logits.device)
+    true_logits = logits[row, labels]
+    competitor_logits = logits.clone()
+    competitor_logits[row, labels] = float("-inf")
+    return true_logits - competitor_logits.max(dim=1).values
+
+
+def _bicad_xr_cv2_vector_drift(
+    current: torch.Tensor,
+    previous: torch.Tensor | None,
+) -> float:
+    """Return normalized L2 drift, or infinity before the first observation."""
+
+    current = current.detach().float().cpu().reshape(-1)
+    if previous is None:
+        return float("inf")
+    previous = previous.detach().float().cpu().reshape(-1)
+    if current.shape != previous.shape or not bool(
+        torch.isfinite(current).all() and torch.isfinite(previous).all()
+    ):
+        raise ValueError("CV2 drift vectors must be finite and shape-aligned")
+    denominator = max(float(torch.linalg.vector_norm(previous).item()), 1.0e-12)
+    return float(torch.linalg.vector_norm(current - previous).item()) / denominator
+
+
+def _bicad_xr_cv2_build_optimizers(
+    trainer: Any,
+    *,
+    lr: float,
+    weight_decay: float,
+):
+    """Build the frozen disjoint CV2 encoder/discriminator AdamW pair."""
+
+    from cvsrffi.phase1_bicad_xr.adversarial_game import (
+        build_adversarial_optimizers,
+    )
+
+    groups = trainer.adversarial_parameter_groups()
+    return build_adversarial_optimizers(
+        groups["encoder"],
+        groups["discriminator"],
+        encoder_lr=float(lr),
+        discriminator_lr_ratio=1.5,
+        optimizer_cls=torch.optim.AdamW,
+        optimizer_kwargs={"weight_decay": float(weight_decay)},
+    )
+
+
+def _bicad_xr_cv2_terminal_status(decision: Any) -> Dict[str, Any]:
+    """Serialize a convergence decision without promoting a safety stop."""
+
+    status = str(getattr(decision, "status", ""))
+    scientifically_converged = bool(
+        getattr(decision, "scientifically_converged", False)
+    )
+    if status not in {
+        "SCIENTIFICALLY_CONVERGED",
+        "NOT_CONVERGED_SAFETY_STOP",
+    }:
+        raise ValueError("decision is not a terminal CV2 convergence state")
+    if scientifically_converged != (status == "SCIENTIFICALLY_CONVERGED"):
+        raise ValueError("CV2 convergence status and scientific flag disagree")
+    return {
+        "status": status,
+        "scientifically_converged": scientifically_converged,
+        "artifacts_allowed": True,
+    }
+
+
 def _validate_bicad_xr_optimizer_updates(value: Any) -> int:
     """Validate the optional per-run BiCAD-XR optimizer budget."""
 
@@ -13068,7 +13275,10 @@ def _bicad_xr_loro_eval_due(
     return (
         interval > 0
         and min_updates <= update <= planned_updates
-        and (update - min_updates) % interval == 0
+        and (
+            update == planned_updates
+            or (update - min_updates) % interval == 0
+        )
     )
 
 
@@ -13293,6 +13503,9 @@ def _evaluate_bicad_xr_source_loro(
     total = 0
     class_correct: Dict[int, int] = defaultdict(int)
     class_total: Dict[int, int] = defaultdict(int)
+    margin_batches: List[torch.Tensor] = []
+    logit_sum: Optional[torch.Tensor] = None
+    logit_count = 0
     model.eval()
     try:
         with torch.no_grad():
@@ -13315,6 +13528,16 @@ def _evaluate_bicad_xr_source_loro(
                 logits = output.get("tx_logits", output.get("logits"))
                 if logits is None:
                     raise ValueError("BiCAD-XR source-LORO model output is missing TX logits")
+                margin_batches.append(
+                    _bicad_xr_cv2_margin_values(logits, y).detach().cpu()
+                )
+                batch_logit_sum = logits.detach().float().cpu().sum(dim=0)
+                logit_sum = (
+                    batch_logit_sum
+                    if logit_sum is None
+                    else logit_sum + batch_logit_sum
+                )
+                logit_count += int(logits.size(0))
                 prediction = logits.argmax(dim=1)
                 correct += int((prediction == y).sum().item())
                 total += int(y.numel())
@@ -13331,6 +13554,15 @@ def _evaluate_bicad_xr_source_loro(
     }
     accuracy = 100.0 * correct / max(1, total)
     floor = min(per_class_accuracy.values()) if per_class_accuracy else 0.0
+    margins = torch.cat(margin_batches) if margin_batches else torch.empty(0)
+    negative_margin_rate = (
+        float((margins < 0.0).float().mean().item()) if margins.numel() else 0.0
+    )
+    margin_q10 = (
+        float(torch.quantile(margins.float(), 0.10).item())
+        if margins.numel()
+        else 0.0
+    )
     return {
         "scenario": scenario,
         "scenario_index": int(scenario_index),
@@ -13339,6 +13571,13 @@ def _evaluate_bicad_xr_source_loro(
         "tx_acc": float(accuracy),
         "per_class_accuracy": per_class_accuracy,
         "floor": float(floor),
+        "negative_margin_rate": negative_margin_rate,
+        "margin_q10": margin_q10,
+        "mean_logits": (
+            (logit_sum / max(1, logit_count)).tolist()
+            if logit_sum is not None
+            else []
+        ),
         "tx_correct": int(correct),
         "tx_total": int(total),
     }
@@ -13376,6 +13615,7 @@ def _bicad_xr_checkpoint_payload(
     stop_update: int,
     planned_updates: int,
     candidate_optimizer_updates: int,
+    discriminator_optimizer=None,
 ) -> Dict[str, Any]:
     runtime = trainer.checkpoint_runtime(update=int(stop_update), total_updates=int(planned_updates))
     runtime = _bicad_xr_runtime_with_budget(
@@ -13391,7 +13631,7 @@ def _bicad_xr_checkpoint_payload(
         stop_update=int(stop_update),
         planned_updates=int(planned_updates),
     )
-    return {
+    payload = {
         "schema": "ssdg_phase1_bicad_xr_v1",
         "phase1_method": "bicad_xr",
         "candidate_id": protocol.candidate_id,
@@ -13403,6 +13643,11 @@ def _bicad_xr_checkpoint_payload(
         "args": checkpoint_args,
         "bicad_xr_runtime": runtime,
     }
+    if discriminator_optimizer is not None:
+        payload["discriminator_optimizer"] = deepcopy(
+            discriminator_optimizer.state_dict()
+        )
+    return payload
 
 
 def _bicad_xr_metadata(extra, key: str, device, expected_count: int) -> torch.Tensor:
@@ -13629,17 +13874,29 @@ def _bicad_xr_labeled_step(
         x_u = _safe_iq_tensor(torch.as_tensor(x_u, device=x.device))
         receiver_u = torch.as_tensor(receiver_u, device=x.device, dtype=torch.long).reshape(-1)
         day_u = torch.as_tensor(day_u, device=x.device, dtype=torch.long).reshape(-1)
+        if trainer.config.candidate_id.strip().upper().startswith("CV2-"):
+            expected_labeled, expected_unlabeled = _bicad_xr_cv2_batch_counts(
+                update=int(update),
+                source_receiver_count=int(trainer.num_receivers),
+            )
+        else:
+            expected_labeled, expected_unlabeled = (16, 32)
         if (
-            tx.numel() != 16
-            or x.size(0) != 16
-            or x_u.size(0) != 32
-            or receiver.numel() != 16
-            or day.numel() != 16
-            or receiver_u.numel() != 32
-            or day_u.numel() != 32
+            tx.numel() != expected_labeled
+            or x.size(0) != expected_labeled
+            or x_u.size(0) != expected_unlabeled
+            or receiver.numel() != expected_labeled
+            or day.numel() != expected_labeled
+            or receiver_u.numel() != expected_unlabeled
+            or day_u.numel() != expected_unlabeled
         ):
+            if not trainer.config.candidate_id.strip().upper().startswith("CV2-"):
+                raise ValueError(
+                    "strict PairBiCAD requires exactly 16 labeled and 32 unlabeled physical samples"
+                )
             raise ValueError(
-                "strict PairBiCAD requires exactly 16 labeled and 32 unlabeled physical samples"
+                "strict PairBiCAD physical counts do not match the frozen CV2 schedule: "
+                f"expected {expected_labeled}L+{expected_unlabeled}U"
             )
         if x.ndim < 2 or x_u.ndim != x.ndim or tuple(x.shape[1:]) != tuple(x_u.shape[1:]):
             raise ValueError("strict PairBiCAD labeled and unlabeled IQ shapes must align")
@@ -13780,6 +14037,12 @@ def _train_bicad_xr(args) -> int:
     """Run the source-only BiCAD-XR main step without entering legacy SSDG."""
 
     from cvsrffi.phase1_bicad_xr.config import candidate_config
+    from cvsrffi.phase1_bicad_xr.adversarial_game import DualRatioController
+    from cvsrffi.phase1_bicad_xr.convergence import (
+        ConvergenceController,
+        DGObservation,
+    )
+    from cvsrffi.phase1_bicad_xr.swad import SWADAccumulator
     from cvsrffi.phase1_bicad_xr.trainer import BiCADXRBatch, BiCADXRTrainer
 
     protocol = resolve_bicad_protocol(args)
@@ -13823,6 +14086,54 @@ def _train_bicad_xr(args) -> int:
     unlabeled_loader = data_ctx.get("unlabeled_loader")
     if protocol.strict_pair_concat and unlabeled_loader is None:
         raise RuntimeError("PairBiCAD requires the unlabeled source train loader")
+    structured_train_loader = None
+    structured_unlabeled_loader = None
+    if (
+        protocol.strict_pair_concat
+        and protocol.candidate_id.strip().upper().startswith("CV2-")
+    ):
+        receiver_count = len(data_ctx["source_receiver_indices"])
+        structured_labeled, structured_unlabeled = _bicad_xr_cv2_batch_counts(
+            update=4,
+            source_receiver_count=receiver_count,
+        )
+        structured_overrides = {
+            "batch_size": getattr(args, "batch_size", 48),
+            "use_tx_rx_balanced_sampler": getattr(
+                args, "use_tx_rx_balanced_sampler", False
+            ),
+            "balanced_sampler_tx_per_batch": getattr(
+                args, "balanced_sampler_tx_per_batch", 6
+            ),
+            "balanced_sampler_domain_per_batch": getattr(
+                args, "balanced_sampler_domain_per_batch", receiver_count
+            ),
+            "balanced_sampler_samples_per_cell": getattr(
+                args, "balanced_sampler_samples_per_cell", 1
+            ),
+            "use_muse_ssdg": getattr(args, "use_muse_ssdg", False),
+            "muse_level": getattr(args, "muse_level", "M0"),
+            "muse_unlabeled_batch_size": getattr(
+                args, "muse_unlabeled_batch_size", 256
+            ),
+        }
+        args.batch_size = structured_labeled
+        args.use_tx_rx_balanced_sampler = True
+        args.balanced_sampler_tx_per_batch = 6
+        args.balanced_sampler_domain_per_batch = receiver_count
+        args.balanced_sampler_samples_per_cell = 1
+        args.use_muse_ssdg = True
+        args.muse_level = "M1"
+        args.muse_unlabeled_batch_size = structured_unlabeled
+        try:
+            structured_ctx = _build_ssdg_wisig_data(args, device)
+        finally:
+            for name, value in structured_overrides.items():
+                setattr(args, name, value)
+        structured_train_loader = structured_ctx["train_loader"]
+        structured_unlabeled_loader = structured_ctx.get("unlabeled_loader")
+        if structured_train_loader is None or structured_unlabeled_loader is None:
+            raise RuntimeError("CV2 structured source loaders are incomplete")
 
     checkpoint = None
     baseline_ckpt = str(getattr(args, "baseline_ckpt", "") or "").strip()
@@ -13874,13 +14185,33 @@ def _train_bicad_xr(args) -> int:
         data_ctx.get("source_receiver_values", source_receiver_indices)
     )
     source_day_indices = list(data_ctx["source_day_indices"])
-    planned_updates = int(config.optimizer_updates)
+    candidate_optimizer_updates = int(config.optimizer_updates)
+    cv2_coverage_plan: Dict[str, int] | None = None
+    planned_updates = candidate_optimizer_updates
+    if config.coverage_convergence:
+        if unlabeled_loader is None or not hasattr(unlabeled_loader, "dataset"):
+            raise RuntimeError("CV2 coverage convergence requires source U_s dataset")
+        cv2_coverage_plan = _bicad_xr_cv2_coverage_plan(
+            unlabeled_physical_count=len(unlabeled_loader.dataset),
+            source_receiver_count=len(source_receiver_indices),
+        )
+        planned_updates = int(cv2_coverage_plan["safety_updates"])
     loro_settings = _validate_bicad_xr_loro_args(
         args,
         source_receiver_indices=source_receiver_indices,
         source_receiver_values=source_receiver_values,
-        planned_updates=planned_updates,
+        planned_updates=(None if config.coverage_convergence else planned_updates),
     )
+    if config.coverage_convergence:
+        if not loro_settings["enabled"]:
+            raise ValueError("CV2 coverage convergence requires source-LORO V_cal")
+        assert cv2_coverage_plan is not None
+        loro_settings["interval"] = int(
+            cv2_coverage_plan["eval_interval_updates"]
+        )
+        loro_settings["min_updates"] = int(
+            cv2_coverage_plan["eval_interval_updates"]
+        )
     source_loro_loader = None
     if loro_settings["enabled"]:
         source_loro_loader = _build_bicad_xr_source_loro_loader(
@@ -13904,13 +14235,63 @@ def _train_bicad_xr(args) -> int:
             trainer=trainer,
         )
     concat_sat_aug = _build_bicad_xr_concat_augmenter(args)
-    optimizer = torch.optim.AdamW(
-        trainer.parameters(),
-        lr=float(getattr(args, "lr", 2e-4)),
-        weight_decay=float(getattr(args, "weight_decay", 1e-4)),
-    )
+    discriminator_optimizer = None
+    adversarial_groups = None
+    if config.detached_adversarial:
+        adversarial_groups = trainer.adversarial_parameter_groups()
+        adversarial_optimizers = _bicad_xr_cv2_build_optimizers(
+            trainer,
+            lr=float(getattr(args, "lr", 2e-4)),
+            weight_decay=float(getattr(args, "weight_decay", 1e-4)),
+        )
+        optimizer = adversarial_optimizers.encoder
+        discriminator_optimizer = adversarial_optimizers.discriminator
+    else:
+        optimizer = torch.optim.AdamW(
+            trainer.parameters(),
+            lr=float(getattr(args, "lr", 2e-4)),
+            weight_decay=float(getattr(args, "weight_decay", 1e-4)),
+        )
     if checkpoint is not None and isinstance(checkpoint.get("optimizer"), Mapping):
         optimizer.load_state_dict(checkpoint["optimizer"])
+    if (
+        discriminator_optimizer is not None
+        and checkpoint is not None
+        and isinstance(checkpoint.get("discriminator_optimizer"), Mapping)
+    ):
+        discriminator_optimizer.load_state_dict(checkpoint["discriminator_optimizer"])
+    cv2_scheduler = (
+        _bicad_xr_cv2_make_plateau_scheduler(optimizer)
+        if config.reduce_lr_on_plateau
+        else None
+    )
+    gradient_ratio_targets: Dict[str, Tuple[float, float]] = {}
+    if config.conditional_cdan:
+        gradient_ratio_targets["conditional"] = (0.10, 0.20)
+    if config.zdom_tx_adversary:
+        gradient_ratio_targets["zdom_tx"] = (0.03, 0.08)
+    cv2_convergence = (
+        ConvergenceController(
+            last_mechanism_activation_coverage=0.0,
+            gradient_ratio_targets=gradient_ratio_targets,
+        )
+        if config.coverage_convergence
+        else None
+    )
+    cv2_swad = SWADAccumulator() if config.swad else None
+    cv2_started_at = time.monotonic()
+    cv2_previous_logits: torch.Tensor | None = None
+    cv2_previous_parameters: torch.Tensor | None = None
+    cv2_terminal: Dict[str, Any] | None = None
+    cv2_ratio_controller = (
+        DualRatioController() if config.detached_adversarial else None
+    )
+    cv2_adversarial_scales: Dict[str, float] = {
+        "conditional": 1.0,
+        "zdom_tx": 1.0,
+    }
+    cv2_gradient_ratios: Dict[str, float] = {}
+    cv2_unlabeled_seen = 0
 
     out_dir = Path(str(getattr(args, "output_dir", "") or "."))
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -13918,11 +14299,18 @@ def _train_bicad_xr(args) -> int:
     if epochs <= 0:
         epochs = 200
     total_updates = planned_updates
-    candidate_optimizer_updates = int(planned_updates)
     update = 0
     epoch_rows: List[Dict[str, Any]] = []
     last_audit: Mapping[str, Any] = {}
     unlabeled_iter = iter(unlabeled_loader) if protocol.strict_pair_concat else None
+    structured_labeled_iter = (
+        iter(structured_train_loader) if structured_train_loader is not None else None
+    )
+    structured_unlabeled_iter = (
+        iter(structured_unlabeled_loader)
+        if structured_unlabeled_loader is not None
+        else None
+    )
     source_loro_enabled = bool(loro_settings["enabled"])
     source_loro_curve_path = out_dir / "source_loro_curve.jsonl"
     source_loro_state: Dict[str, Any] = {
@@ -13931,6 +14319,7 @@ def _train_bicad_xr(args) -> int:
         "bad_count": 0,
         "stopped_early": False,
         "evaluations": 0,
+        "cv2_terminal": None,
     }
     if source_loro_enabled:
         (out_dir / "source_loro").mkdir(parents=True, exist_ok=True)
@@ -13940,6 +14329,15 @@ def _train_bicad_xr(args) -> int:
         for batch_idx, labeled_batch in enumerate(train_loader, start=1):
             if update >= total_updates:
                 break
+            use_structured_batch = bool(
+                structured_labeled_iter is not None and (update + 1) % 4 == 0
+            )
+            if use_structured_batch:
+                try:
+                    labeled_batch = next(structured_labeled_iter)
+                except StopIteration:
+                    structured_labeled_iter = iter(structured_train_loader)
+                    labeled_batch = next(structured_labeled_iter)
             x_l, y_l, extra_l = move_batch(labeled_batch, device)
             if y_l is None:
                 if protocol.strict_pair_concat:
@@ -13966,20 +14364,38 @@ def _train_bicad_xr(args) -> int:
                 name="day",
             )
             optimizer.zero_grad(set_to_none=True)
+            if discriminator_optimizer is not None:
+                discriminator_optimizer.zero_grad(set_to_none=True)
             step_view = None
             if protocol.strict_pair_concat:
-                if unlabeled_iter is None:
+                active_unlabeled_iter = (
+                    structured_unlabeled_iter
+                    if use_structured_batch
+                    else unlabeled_iter
+                )
+                active_unlabeled_loader = (
+                    structured_unlabeled_loader
+                    if use_structured_batch
+                    else unlabeled_loader
+                )
+                if active_unlabeled_iter is None or active_unlabeled_loader is None:
                     raise RuntimeError("PairBiCAD unlabeled iterator was not initialized")
                 try:
-                    unlabeled_batch = next(unlabeled_iter)
+                    unlabeled_batch = next(active_unlabeled_iter)
                 except StopIteration:
-                    unlabeled_iter = iter(unlabeled_loader)
+                    active_unlabeled_iter = iter(active_unlabeled_loader)
+                    if use_structured_batch:
+                        structured_unlabeled_iter = active_unlabeled_iter
+                    else:
+                        unlabeled_iter = active_unlabeled_iter
                     try:
-                        unlabeled_batch = next(unlabeled_iter)
+                        unlabeled_batch = next(active_unlabeled_iter)
                     except StopIteration as exc:
                         raise RuntimeError("PairBiCAD requires a non-empty unlabeled loader") from exc
                 x_u, extra_u = _move_bicad_xr_unlabeled_batch(unlabeled_batch, device)
                 unlabeled_count = int(x_u.size(0))
+                if cv2_coverage_plan is not None:
+                    cv2_unlabeled_seen += unlabeled_count
                 receiver_u = _bicad_xr_local_domain_labels(
                     _bicad_xr_required_metadata(
                         extra_u, "rx_i", device, unlabeled_count
@@ -14048,10 +14464,134 @@ def _train_bicad_xr(args) -> int:
                 if isinstance(pair_runtime, dict):
                     pair_runtime["scenario"] = step_view["scenario"]
                     pair_runtime["satellite_view_applied"] = step_view["applied"]
+            discriminator_gradients = None
+            if discriminator_optimizer is not None:
+                assert adversarial_groups is not None
+                if cv2_ratio_controller is not None and (update + 1) % 4 == 0:
+                    encoder_parameters = tuple(adversarial_groups["encoder"])
+                    reference_gradients = torch.autograd.grad(
+                        step_output.backward_plan.task_reference,
+                        encoder_parameters,
+                        retain_graph=True,
+                        allow_unused=True,
+                    )
+                    conditional_gradients = torch.autograd.grad(
+                        step_output.backward_plan.conditional_adversarial,
+                        encoder_parameters,
+                        retain_graph=True,
+                        allow_unused=True,
+                    )
+                    zdom_gradients = torch.autograd.grad(
+                        step_output.backward_plan.zdom_tx_adversarial,
+                        encoder_parameters,
+                        retain_graph=True,
+                        allow_unused=True,
+                    )
+
+                    def flatten_gradients(values):
+                        finite = [
+                            value.reshape(-1)
+                            for value in values
+                            if value is not None and bool(torch.isfinite(value).all())
+                        ]
+                        return torch.cat(finite) if finite else None
+
+                    reference_vector = flatten_gradients(reference_gradients)
+                    conditional_vector = flatten_gradients(conditional_gradients)
+                    zdom_vector = flatten_gradients(zdom_gradients)
+                    if reference_vector is not None and (
+                        conditional_vector is not None or zdom_vector is not None
+                    ):
+                        cv2_adversarial_scales.update(
+                            cv2_ratio_controller.update(
+                                reference_vector,
+                                conditional_gradient=conditional_vector,
+                                zdom_tx_gradient=zdom_vector,
+                            )
+                        )
+                        reference_norm = max(
+                            float(torch.linalg.vector_norm(reference_vector).item()),
+                            1.0e-12,
+                        )
+                        if conditional_vector is not None:
+                            cv2_gradient_ratios["conditional"] = (
+                                float(torch.linalg.vector_norm(conditional_vector).item())
+                                * cv2_adversarial_scales["conditional"]
+                                / reference_norm
+                            )
+                        if zdom_vector is not None:
+                            cv2_gradient_ratios["zdom_tx"] = (
+                                float(torch.linalg.vector_norm(zdom_vector).item())
+                                * cv2_adversarial_scales["zdom_tx"]
+                                / reference_norm
+                            )
+                plan = step_output.backward_plan
+                adjusted_conditional = (
+                    cv2_adversarial_scales["conditional"]
+                    * plan.conditional_adversarial
+                )
+                adjusted_zdom = (
+                    cv2_adversarial_scales["zdom_tx"]
+                    * plan.zdom_tx_adversarial
+                )
+                adjusted_adversarial = (
+                    plan.adversarial
+                    - plan.conditional_adversarial
+                    - plan.zdom_tx_adversarial
+                    + adjusted_conditional
+                    + adjusted_zdom
+                )
+                adjusted_total = (
+                    plan.total
+                    - plan.conditional_adversarial
+                    - plan.zdom_tx_adversarial
+                    + adjusted_conditional
+                    + adjusted_zdom
+                )
+                adjusted_plan = dataclass_replace(
+                    plan,
+                    total=adjusted_total,
+                    adversarial=adjusted_adversarial,
+                    conditional_adversarial=adjusted_conditional,
+                    zdom_tx_adversarial=adjusted_zdom,
+                )
+                step_output = dataclass_replace(
+                    step_output,
+                    total=adjusted_total,
+                    backward_plan=adjusted_plan,
+                )
+                step_output.audit["gradient_ratios"] = dict(cv2_gradient_ratios)
+                step_output.audit["adversarial_scales"] = dict(
+                    cv2_adversarial_scales
+                )
+                discriminator_parameters = tuple(adversarial_groups["discriminator"])
+                discriminator_gradients = torch.autograd.grad(
+                    step_output.backward_plan.adversarial,
+                    discriminator_parameters,
+                    retain_graph=True,
+                    allow_unused=True,
+                )
             trainer.apply_backward_controls(step_output)
+            if discriminator_optimizer is not None:
+                assert adversarial_groups is not None
+                discriminator_parameters = tuple(adversarial_groups["discriminator"])
+                for parameter, gradient in zip(
+                    discriminator_parameters,
+                    discriminator_gradients or (),
+                ):
+                    parameter.grad = (
+                        None if gradient is None else gradient.detach().clone()
+                    )
             max_grad_norm = float(getattr(args, "max_grad_norm", 0.0))
             if max_grad_norm > 0.0:
-                torch.nn.utils.clip_grad_norm_(trainer.parameters(), max_grad_norm)
+                clip_parameters = (
+                    adversarial_groups["encoder"]
+                    if adversarial_groups is not None
+                    else trainer.parameters()
+                )
+                torch.nn.utils.clip_grad_norm_(clip_parameters, max_grad_norm)
+            if discriminator_optimizer is not None:
+                discriminator_optimizer.step()
             optimizer.step()
             update += 1
             epoch_losses.append(float(step_output.total.detach().cpu().item()))
@@ -14081,18 +14621,98 @@ def _train_bicad_xr(args) -> int:
                     clean_accuracy,
                     leo_accuracies,
                 )
+                cv2_metrics = _bicad_xr_cv2_source_metrics(scenario_results)
+                cv2_decision = None
+                if cv2_scheduler is not None:
+                    cv2_scheduler.step(float(cv2_metrics["s_dg"]))
+                if cv2_convergence is not None:
+                    assert cv2_coverage_plan is not None
+                    clean_mean_logits = torch.as_tensor(
+                        scenario_results["clean"].get("mean_logits", []),
+                        dtype=torch.float32,
+                    )
+                    current_parameters = torch.cat(
+                        [
+                            parameter.detach().float().cpu().reshape(-1)
+                            for parameter in model.parameters()
+                        ]
+                    )
+                    d_logit = _bicad_xr_cv2_vector_drift(
+                        clean_mean_logits,
+                        cv2_previous_logits,
+                    )
+                    d_theta = _bicad_xr_cv2_vector_drift(
+                        current_parameters,
+                        cv2_previous_parameters,
+                    )
+                    cv2_previous_logits = clean_mean_logits
+                    cv2_previous_parameters = current_parameters
+                    raw_ratios = last_audit.get("gradient_ratios", {})
+                    if not isinstance(raw_ratios, Mapping):
+                        raw_ratios = {}
+                    gradient_ratios = {
+                        str(name): float(value)
+                        for name, value in raw_ratios.items()
+                        if isinstance(value, (int, float))
+                        and not isinstance(value, bool)
+                        and math.isfinite(float(value))
+                    }
+                    cv2_decision = cv2_convergence.observe(
+                        DGObservation(
+                            updates=update,
+                            coverage_u=(
+                                float(cv2_unlabeled_seen)
+                                / float(cv2_coverage_plan["unlabeled_physical_count"])
+                            ),
+                            s_dg=float(cv2_metrics["s_dg"]),
+                            learning_rate=float(optimizer.param_groups[0]["lr"]),
+                            d_logit=(d_logit if math.isfinite(d_logit) else 1.0e9),
+                            d_theta=(d_theta if math.isfinite(d_theta) else 1.0e9),
+                            margin_q10=float(cv2_metrics["margin_q10"]),
+                            elapsed_hours=(time.monotonic() - cv2_started_at) / 3600.0,
+                            gradient_ratios=gradient_ratios,
+                        )
+                    )
+                    if cv2_decision.should_stop:
+                        cv2_terminal = _bicad_xr_cv2_terminal_status(cv2_decision)
+                        source_loro_state["cv2_terminal"] = cv2_terminal
+                if (
+                    cv2_swad is not None
+                    and cv2_decision is not None
+                    and cv2_decision.plateau_slope is not None
+                    and abs(float(cv2_decision.plateau_slope)) < 0.0015
+                ):
+                    cv2_swad.consider(
+                        trainer.state_dict(),
+                        score=float(cv2_metrics["s_dg"]),
+                        clean_floor=float(scenario_results["clean"]["floor"]) / 100.0,
+                        leo_floor=min(
+                            float(scenario_results[name]["floor"]) / 100.0
+                            for name in _BICAD_XR_LEO_WEAK
+                        ),
+                        receiver_floor=float(cv2_metrics["receiver_floor"]),
+                    )
                 source_loro_state = _bicad_xr_loro_selection_step(
                     source_loro_state,
                     update=update,
-                    score=primary_score,
+                    score=(
+                        float(cv2_metrics["s_dg"]) * 100.0
+                        if config.coverage_convergence
+                        else primary_score
+                    ),
                     patience=int(loro_settings["patience"]),
                 )
+                if protocol.candidate_id.strip().upper().startswith("CV2-"):
+                    source_loro_state["stopped_early"] = bool(
+                        cv2_decision is not None and cv2_decision.should_stop
+                    )
                 source_loro_state["evaluations"] = int(
                     source_loro_state.get("evaluations", 0)
                 ) + 1
                 loro_checkpoint = _bicad_xr_checkpoint_payload(
                     model=model,
                     optimizer=optimizer,
+                    discriminator_optimizer=discriminator_optimizer,
                     trainer=trainer,
                     model_args=model_args,
                     protocol=protocol,
@@ -14112,6 +14732,20 @@ def _train_bicad_xr(args) -> int:
                         "planned_updates": total_updates,
                         "scenarios": scenario_results,
                         "primary_score": primary_score,
+                        "cv2_metrics": cv2_metrics,
+                        "cv2_decision": (
+                            None
+                            if cv2_decision is None
+                            else {
+                                "status": cv2_decision.status,
+                                "should_stop": cv2_decision.should_stop,
+                                "scientifically_converged": cv2_decision.scientifically_converged,
+                                "activation_age": cv2_decision.activation_age,
+                                "plateau_slope": cv2_decision.plateau_slope,
+                                "lr_reduction_count": cv2_decision.lr_reduction_count,
+                                "reason": cv2_decision.reason,
+                            }
+                        ),
                         "best_update": source_loro_state["best_update"],
                         "best_score": source_loro_state["best_score"],
                         "bad_count": source_loro_state["bad_count"],
@@ -14157,9 +14791,15 @@ def _train_bicad_xr(args) -> int:
         epoch_rows,
     )
 
+    cv2_selected_checkpoint = "final"
+    if cv2_swad is not None and cv2_swad.window_size > 0:
+        trainer.load_state_dict(cv2_swad.averaged_state_dict(), strict=True)
+        cv2_selected_checkpoint = "swad"
+
     checkpoint_payload = _bicad_xr_checkpoint_payload(
         model=model,
         optimizer=optimizer,
+        discriminator_optimizer=discriminator_optimizer,
         trainer=trainer,
         model_args=model_args,
         protocol=protocol,
@@ -14168,6 +14808,13 @@ def _train_bicad_xr(args) -> int:
         planned_updates=total_updates,
         candidate_optimizer_updates=candidate_optimizer_updates,
     )
+    checkpoint_payload["cv2_selection"] = {
+        "selected_checkpoint": cv2_selected_checkpoint,
+        "swad_window_size": 0 if cv2_swad is None else cv2_swad.window_size,
+        "coverage_plan": cv2_coverage_plan,
+        "terminal": cv2_terminal,
+        "source_only": True,
+    }
     reconstructed_model = build_baseline_model(model_args, device)
     reconstruction_config = dataclass_replace(
         config,
@@ -14197,6 +14844,12 @@ def _train_bicad_xr(args) -> int:
             interval=int(loro_settings["interval"]),
             stopped_early=bool(source_loro_state["stopped_early"]),
         )
+        selection["cv2_selected_checkpoint"] = cv2_selected_checkpoint
+        selection["cv2_swad_window_size"] = (
+            0 if cv2_swad is None else cv2_swad.window_size
+        )
+        selection["cv2_coverage_plan"] = cv2_coverage_plan
+        selection["cv2_terminal"] = cv2_terminal
         _write_bicad_xr_source_loro_selection(
             out_dir / "source_loro_selection.json",
             selection,

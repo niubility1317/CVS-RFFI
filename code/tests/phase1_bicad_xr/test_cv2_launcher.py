@@ -202,6 +202,97 @@ def test_parser_has_no_matrix_or_forbidden_data_role_overrides() -> None:
     )
 
 
+def _write_dynamic_cv2_selection(
+    row_root: Path,
+    *,
+    stop_update: int = 2_000,
+    status: str = "SCIENTIFICALLY_CONVERGED",
+) -> None:
+    plan = {
+        "unlabeled_physical_count": 16_000,
+        "source_receiver_count": 4,
+        "unlabeled_per_four_updates": 120,
+        "u_cycle_updates": 534,
+        "eval_interval_updates": 500,
+        "min_activation_updates": 1_600,
+        "safety_updates": 6_400,
+    }
+    scientific = status == "SCIENTIFICALLY_CONVERGED"
+    selection = {
+        "planned_updates": 6_400,
+        "stop_update": stop_update,
+        "interval": 500,
+        "stopped_early": True,
+        "cv2_coverage_plan": plan,
+        "cv2_terminal": {
+            "status": status,
+            "scientifically_converged": scientific,
+            "artifacts_allowed": True,
+        },
+        "source_only": True,
+        "target_access": False,
+        "phase2_access": False,
+        "support_access": False,
+        "query_access": False,
+        "truth_access": False,
+    }
+    (row_root / "source_loro_selection.json").write_text(
+        json.dumps(selection),
+        encoding="utf-8",
+    )
+    curve = {
+        "update": stop_update,
+        "cv2_decision": {"status": status},
+        "source_only": True,
+        "target_access": False,
+        "phase2_access": False,
+        "support_access": False,
+        "query_access": False,
+        "truth_access": False,
+    }
+    (row_root / "source_loro_curve.jsonl").write_text(
+        json.dumps(curve) + "\n",
+        encoding="utf-8",
+    )
+
+
+def test_dynamic_cv2_runtime_expectation_binds_actual_terminal_update(
+    tmp_path: Path,
+) -> None:
+    launcher = _load_launcher()
+    row = next(
+        item
+        for item in launcher.build_plan()
+        if item.configuration["coverage_convergence"]
+    )
+    _write_dynamic_cv2_selection(tmp_path)
+
+    expectation = launcher._cv2_runtime_expectation(tmp_path, row)
+
+    assert expectation["optimizer_updates"] == 2_000
+    assert expectation["planned_optimizer_updates"] == 6_400
+
+
+def test_dynamic_cv2_runtime_expectation_rejects_inconsistent_coverage_plan(
+    tmp_path: Path,
+) -> None:
+    launcher = _load_launcher()
+    row = next(
+        item
+        for item in launcher.build_plan()
+        if item.configuration["coverage_convergence"]
+    )
+    _write_dynamic_cv2_selection(tmp_path)
+    selection_path = tmp_path / "source_loro_selection.json"
+    selection = json.loads(selection_path.read_text(encoding="utf-8"))
+    selection["cv2_coverage_plan"]["safety_updates"] = 6_000
+    selection["planned_updates"] = 6_000
+    selection_path.write_text(json.dumps(selection), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="inconsistent"):
+        launcher._cv2_runtime_expectation(tmp_path, row)
+
+
 def test_run_layout_and_plan_are_non_overwriting(tmp_path: Path) -> None:
     launcher = _load_launcher()
     rows = launcher.build_plan()[:2]

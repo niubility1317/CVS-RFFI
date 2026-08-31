@@ -170,6 +170,8 @@ class BiCADXRBackwardPlan:
     update: int
     firewall_enabled: bool
     projection_enabled: bool
+    conditional_adversarial: Tensor | None = None
+    zdom_tx_adversarial: Tensor | None = None
 
 
 @dataclass(frozen=True)
@@ -1088,6 +1090,27 @@ class BiCADXRTrainer(nn.Module):
 
     cv2_parameter_groups = adversarial_parameter_groups
 
+    def cv2_local_protection_parameters(self) -> list[nn.Parameter]:
+        """Return only the identity tail/fusion/projection protection scope."""
+
+        protected: list[nn.Parameter] = []
+        for name, parameter in self.named_optimizer_parameters():
+            normalized = name.lower()
+            if normalized.startswith("factorized_heads.") or "model.domain" in normalized:
+                continue
+            if any(
+                token in normalized
+                for token in (
+                    "model.identity.",
+                    "id_backbone.fuse.",
+                    "id_backbone.con_proj.",
+                    "id_backbone.cls_head.",
+                    "pair_projector.",
+                )
+            ):
+                protected.append(parameter)
+        return protected
+
     def shared_stem_parameters(self) -> list[Tensor]:
         """Return only explicitly shared Sinc/HF parameters for LR control."""
 
@@ -1151,6 +1174,10 @@ class BiCADXRTrainer(nn.Module):
         parameters = self.optimizer_parameters()
         shared = self.shared_stem_parameters()
         shared_ids = {id(parameter) for parameter in shared}
+        cv2_candidate = self.config.candidate_id.strip().upper().startswith("CV2-")
+        protected = (
+            self.cv2_local_protection_parameters() if cv2_candidate else shared
+        )
         needs_decomposition = bool(plan.firewall_enabled or plan.projection_enabled)
         base_loss = plan.total
         if plan.firewall_enabled:
@@ -1184,10 +1211,10 @@ class BiCADXRTrainer(nn.Module):
         if plan.projection_enabled:
             task_gradients = torch.autograd.grad(
                 plan.task_reference,
-                shared,
+                protected,
                 retain_graph=True,
                 allow_unused=True,
-            ) if shared else tuple()
+            ) if protected else tuple()
             adversarial_gradients = list(
                 torch.autograd.grad(
                     plan.adversarial,
@@ -1198,7 +1225,7 @@ class BiCADXRTrainer(nn.Module):
             )
             task_by_id = {
                 id(parameter): gradient
-                for parameter, gradient in zip(shared, task_gradients)
+                for parameter, gradient in zip(protected, task_gradients)
             }
             for index, (parameter, gradient) in enumerate(
                 zip(parameters, adversarial_gradients)
@@ -1229,7 +1256,7 @@ class BiCADXRTrainer(nn.Module):
             "gradient_firewall_applied": firewall_applied,
             "task_projection_applied": projection_applied,
             "projection_triggered": projection_triggered,
-            "protected_parameter_count": len(shared),
+            "protected_parameter_count": len(protected),
             "stage4_scaled_parameter_count": stage4_scaled_count,
         }
         audit = getattr(output, "audit", None)
@@ -1260,7 +1287,7 @@ class BiCADXRTrainer(nn.Module):
                 if "task_protected_gradient" in components and projection_applied:
                     components["task_protected_gradient"] = self._component(
                         called=True,
-                        effective_count=len(shared),
+                        effective_count=len(protected),
                     )
         return result
 
@@ -2098,6 +2125,8 @@ class BiCADXRTrainer(nn.Module):
             total=total,
             domain_forward=domain_loss,
             adversarial=adversarial_loss,
+            conditional_adversarial=conditional_loss,
+            zdom_tx_adversarial=zdom_tx_loss,
             task_reference=zero if tx_loss is None else tx_loss,
             stage=stage,
             update=int(update),

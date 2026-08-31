@@ -232,3 +232,36 @@ def test_cv2_outer_parameter_groups_are_disjoint_and_scoped() -> None:
         "fusion",
         "projection",
     )
+
+
+def test_cv2_backward_plan_keeps_two_adversaries_separate() -> None:
+    trainer, _ = _trainer_for("CV2-D2")
+
+    output = trainer.compute_step(
+        _strict_pair_batch(), update=3504, total_updates=5000, epoch=1
+    )
+
+    plan = output.backward_plan
+    assert plan.conditional_adversarial.requires_grad
+    assert plan.zdom_tx_adversarial.requires_grad
+    assert float(plan.adversarial.detach()) == pytest.approx(
+        float((plan.conditional_adversarial + plan.zdom_tx_adversarial).detach())
+    )
+
+
+def test_cv2_local_protection_excludes_domain_and_adversarial_heads() -> None:
+    trainer, _ = _trainer_for("CV2-D3")
+    names_by_id = {
+        id(parameter): name for name, parameter in trainer.named_parameters()
+    }
+
+    protected = trainer.cv2_local_protection_parameters()
+    protected_names = {names_by_id[id(parameter)] for parameter in protected}
+
+    assert protected_names
+    assert all("factorized_heads" not in name for name in protected_names)
+    assert all("model.domain" not in name for name in protected_names)
+    assert all(
+        any(token in name for token in ("identity", "id_backbone", "fuse", "proj"))
+        for name in protected_names
+    )

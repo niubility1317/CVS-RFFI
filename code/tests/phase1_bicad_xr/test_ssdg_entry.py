@@ -619,6 +619,7 @@ def test_pairbicad_loro_eval_clock_starts_at_4000_and_is_interval_bound() -> Non
     assert not due(4001, planned_updates=9000, min_updates=4000, interval=500)
     assert due(4500, planned_updates=9000, min_updates=4000, interval=500)
     assert due(4250, planned_updates=9000, min_updates=4000, interval=250)
+    assert due(6400, planned_updates=6400, min_updates=500, interval=500)
     assert not due(9001, planned_updates=9000, min_updates=4000, interval=500)
 
 
