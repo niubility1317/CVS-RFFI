@@ -234,7 +234,50 @@ def test_valid_12_row_convergence_matrix_uses_declared_product_size(
     for candidate in candidates:
         for fold in FOLDS:
             for seed in SEEDS:
-                _write_row(run_root, candidate, fold, seed)
+                row_root = _write_row(run_root, candidate, fold, seed)
+                curve_record = {
+                    "update": UPDATES,
+                    "planned_updates": 9000,
+                    "scenarios": {
+                        scenario: {"accuracy": 50.0, "floor": 10.0}
+                        for scenario in SCENARIOS
+                    },
+                    "primary_score": 50.0,
+                    "best_update": UPDATES,
+                    "best_score": 50.0,
+                    "bad_count": 0,
+                    "source_only": True,
+                    "target_access": False,
+                    "phase2_access": False,
+                    "support_access": False,
+                    "query_access": False,
+                    "truth_access": False,
+                }
+                (row_root / "source_loro_curve.jsonl").write_text(
+                    json.dumps(curve_record) + "\n", encoding="utf-8", newline="\n"
+                )
+                _write_json(
+                    row_root / "source_loro_selection.json",
+                    {
+                        "planned_updates": 9000,
+                        "stop_update": UPDATES,
+                        "best_update": UPDATES,
+                        "best_score": 50.0,
+                        "bad_count": 0,
+                        "patience": 5,
+                        "interval": 500,
+                        "stopped_early": True,
+                        "source_only": True,
+                        "target_access": False,
+                        "phase2_access": False,
+                        "support_access": False,
+                        "query_access": False,
+                        "truth_access": False,
+                    },
+                )
+                source_loro = row_root / "source_loro"
+                source_loro.mkdir()
+                (source_loro / f"checkpoint_u{UPDATES}.pth").write_bytes(b"best")
 
     result = subprocess.run(
         [
@@ -249,7 +292,7 @@ def test_valid_12_row_convergence_matrix_uses_declared_product_size(
             "--expected-seeds",
             ",".join(map(str, SEEDS)),
             "--expected-updates",
-            str(UPDATES),
+            "9000",
             "--output-json",
             str(output_dir / "analysis.json"),
             "--output-csv",
@@ -266,6 +309,9 @@ def test_valid_12_row_convergence_matrix_uses_declared_product_size(
     assert payload["row_count"] == 12
     assert len(payload["rows"]) == 12
     assert set(payload["ranking"]) == set(candidates)
+    assert {row["planned_optimizer_updates"] for row in payload["rows"]} == {9000}
+    assert {row["stop_update"] for row in payload["rows"]} == {UPDATES}
+    assert {row["best_update"] for row in payload["rows"]} == {UPDATES}
 
 
 def test_csv_audit_field_larger_than_python_default_limit_is_fully_parsed(

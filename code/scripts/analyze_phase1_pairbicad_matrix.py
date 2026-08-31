@@ -292,6 +292,154 @@ def _validate_telemetry_record(
     return update
 
 
+def _validate_source_loro(
+    row_root: Path,
+    *,
+    row_id: str,
+    planned_updates: int,
+) -> dict[str, Any]:
+    selection_path = row_root / "source_loro_selection.json"
+    if not selection_path.is_file():
+        return {
+            "planned_updates": planned_updates,
+            "stop_update": planned_updates,
+            "best_update": planned_updates,
+            "best_score": None,
+            "curve_rows": 0,
+        }
+
+    selection = _require_mapping(
+        _read_json(selection_path, row_id=row_id, field="source_loro_selection"),
+        row_id=row_id,
+        field="source_loro_selection",
+    )
+    for name, expected in (
+        ("planned_updates", planned_updates),
+        ("interval", 500),
+        ("patience", 5),
+    ):
+        actual = _strict_int(
+            selection.get(name), row_id=row_id, field=f"source_loro_selection.{name}"
+        )
+        if actual != expected:
+            raise _row_error(
+                row_id,
+                f"source_loro_selection.{name}",
+                f"expected {expected}, got {actual}",
+            )
+    stop_update = _strict_int(
+        selection.get("stop_update"),
+        row_id=row_id,
+        field="source_loro_selection.stop_update",
+    )
+    best_update = _strict_int(
+        selection.get("best_update"),
+        row_id=row_id,
+        field="source_loro_selection.best_update",
+    )
+    best_score = _strict_number(
+        selection.get("best_score"),
+        row_id=row_id,
+        field="source_loro_selection.best_score",
+    )
+    if stop_update < 4000 or stop_update > planned_updates or stop_update % 500:
+        raise _row_error(
+            row_id,
+            "source_loro_selection.stop_update",
+            "must be a 500-update grid point in [4000, planned_updates]",
+        )
+    if best_update < 4000 or best_update > stop_update or best_update % 500:
+        raise _row_error(
+            row_id,
+            "source_loro_selection.best_update",
+            "must be a 500-update grid point in [4000, stop_update]",
+        )
+    _validate_access_flags(
+        selection,
+        row_id=row_id,
+        field_prefix="source_loro_selection",
+        required=True,
+    )
+
+    curve = _read_jsonl(row_root / "source_loro_curve.jsonl", row_id=row_id)
+    expected_curve_updates = list(range(4000, stop_update + 1, 500))
+    observed_updates: list[int] = []
+    selected_update = 0
+    selected_score: float | None = None
+    for index, raw_record in enumerate(curve, start=1):
+        record = _require_mapping(
+            raw_record, row_id=row_id, field=f"source_loro_curve.line[{index}]"
+        )
+        update = _strict_int(
+            record.get("update"),
+            row_id=row_id,
+            field=f"source_loro_curve.line[{index}].update",
+        )
+        observed_updates.append(update)
+        actual_planned = _strict_int(
+            record.get("planned_updates"),
+            row_id=row_id,
+            field=f"source_loro_curve.line[{index}].planned_updates",
+        )
+        if actual_planned != planned_updates:
+            raise _row_error(
+                row_id,
+                f"source_loro_curve.line[{index}].planned_updates",
+                f"expected {planned_updates}, got {actual_planned}",
+            )
+        score = _strict_number(
+            record.get("primary_score"),
+            row_id=row_id,
+            field=f"source_loro_curve.line[{index}].primary_score",
+        )
+        scenarios = _require_mapping(
+            record.get("scenarios"),
+            row_id=row_id,
+            field=f"source_loro_curve.line[{index}].scenarios",
+        )
+        if set(scenarios) != set(SCENARIOS):
+            raise _row_error(
+                row_id,
+                f"source_loro_curve.line[{index}].scenarios",
+                f"expected exactly {list(SCENARIOS)}",
+            )
+        _validate_access_flags(
+            record,
+            row_id=row_id,
+            field_prefix=f"source_loro_curve.line[{index}]",
+            required=True,
+        )
+        if selected_score is None or score > selected_score + 1e-12:
+            selected_update = update
+            selected_score = score
+    if observed_updates != expected_curve_updates:
+        raise _row_error(
+            row_id,
+            "source_loro_curve.update",
+            f"expected {expected_curve_updates}, got {observed_updates}",
+        )
+    if selected_update != best_update or selected_score is None or abs(selected_score - best_score) > 1e-9:
+        raise _row_error(
+            row_id,
+            "source_loro_selection.best",
+            "selection does not match the fully parsed source_loro_curve",
+        )
+    best_snapshot = row_root / "source_loro" / f"checkpoint_u{best_update}.pth"
+    if not best_snapshot.is_file() or best_snapshot.stat().st_size <= 0:
+        raise _row_error(
+            row_id,
+            "source_loro_selection.best_snapshot",
+            "best source-LORO checkpoint is missing or empty",
+        )
+    return {
+        "planned_updates": planned_updates,
+        "stop_update": stop_update,
+        "best_update": best_update,
+        "best_score": best_score,
+        "curve_rows": len(curve),
+    }
+
+
 def _validate_telemetry(
     row_root: Path,
     *,
@@ -641,13 +789,19 @@ def _analyze_row(
     expected_updates: int,
 ) -> dict[str, Any]:
     row_id = row_root.name
+    source_loro = _validate_source_loro(
+        row_root,
+        row_id=row_id,
+        planned_updates=expected_updates,
+    )
+    actual_updates = int(source_loro["stop_update"])
     _validate_telemetry(
         row_root,
         row_id=row_id,
         candidate=candidate,
         fold=fold,
         seed=seed,
-        expected_updates=expected_updates,
+        expected_updates=actual_updates,
     )
     _validate_checkpoint_runtime(
         row_root,
@@ -655,7 +809,7 @@ def _analyze_row(
         candidate=candidate,
         fold=fold,
         seed=seed,
-        expected_updates=expected_updates,
+        expected_updates=actual_updates,
     )
     _validate_diagnostics(row_root, row_id=row_id)
     scenarios = {
@@ -694,7 +848,12 @@ def _analyze_row(
         "candidate_id": candidate,
         "fold": fold,
         "seed": seed,
-        "optimizer_updates": expected_updates,
+        "optimizer_updates": actual_updates,
+        "planned_optimizer_updates": expected_updates,
+        "stop_update": actual_updates,
+        "best_update": source_loro["best_update"],
+        "source_loro_best_score": source_loro["best_score"],
+        "source_loro_curve_rows": source_loro["curve_rows"],
         "source_only": True,
         "scenarios": scenarios,
         "clean_accuracy": clean_accuracy,
@@ -718,16 +877,19 @@ def _population_std(values: Sequence[float], mean: float) -> float:
 
 
 def _candidate_summary(candidate: str, rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
-    if len(rows) != 6:
+    if not rows:
         raise MatrixAnalysisError(
-            f"candidate={candidate} field=row_count: expected 6 rows, got {len(rows)}"
+            f"candidate={candidate} field=row_count: expected at least one row"
         )
     summary: dict[str, Any] = {
         "candidate_id": candidate,
         "row_count": len(rows),
         "metrics": {},
     }
-    for metric in AGGREGATE_METRICS:
+    metrics = list(AGGREGATE_METRICS)
+    if all(row.get("source_loro_best_score") is not None for row in rows):
+        metrics.insert(0, "source_loro_best_score")
+    for metric in metrics:
         values = [float(row[metric]) for row in rows]
         mean = sum(values) / len(values)
         stats = {
@@ -746,7 +908,7 @@ def _candidate_summary(candidate: str, rows: Sequence[Mapping[str, Any]]) -> dic
     summary["worst_row"] = worst["row_id"]
     summary["worst_row_metrics"] = {
         metric: worst[metric]
-        for metric in AGGREGATE_METRICS
+        for metric in metrics
         if metric in worst
     }
     return summary
@@ -837,16 +999,27 @@ def analyze_matrix(
         for candidate in expected_candidates
     ]
     by_id = {summary["candidate_id"]: summary for summary in summaries}
-    ranking = sorted(
-        expected_candidates,
-        key=lambda candidate: (
-            -float(by_id[candidate]["metrics"]["source_sat_hmean"]["mean"]),
-            -float(by_id[candidate]["metrics"]["leo_mean"]["mean"]),
-            -float(by_id[candidate]["metrics"]["leo_scenario_floor"]["minimum"]),
-            -float(by_id[candidate]["metrics"]["clean_accuracy"]["mean"]),
-            candidate,
-        ),
-    )
+    candidate_order = {candidate: index for index, candidate in enumerate(expected_candidates)}
+    if all("source_loro_best_score" in summary["metrics"] for summary in summaries):
+        ranking = sorted(
+            expected_candidates,
+            key=lambda candidate: (
+                -float(by_id[candidate]["metrics"]["source_loro_best_score"]["mean"]),
+                -float(by_id[candidate]["metrics"]["source_loro_best_score"]["minimum"]),
+                candidate_order[candidate],
+            ),
+        )
+    else:
+        ranking = sorted(
+            expected_candidates,
+            key=lambda candidate: (
+                -float(by_id[candidate]["metrics"]["source_sat_hmean"]["mean"]),
+                -float(by_id[candidate]["metrics"]["leo_mean"]["mean"]),
+                -float(by_id[candidate]["metrics"]["leo_scenario_floor"]["minimum"]),
+                -float(by_id[candidate]["metrics"]["clean_accuracy"]["mean"]),
+                candidate,
+            ),
+        )
     ranked_summaries = [by_id[candidate] for candidate in ranking]
     return {
         "schema": "pairbicad_matrix_analysis_v1",
