@@ -64,6 +64,7 @@
 - 真实checkpoint无query smoke：历史`P1-F1-S392002/bicad_xr_final.pth`，`status=PASS`、严格恢复、一次新optimizer step、Clean和3种LEO前向完整、`source_only=true`、`query_access=false`。
 - Dispatcher PID：3118975；普通账户；release、run根和命令绑定正确。
 - 首次启动回读：15个直属worker；GPU0为1个本run训练进程加1个无关Stage2进程，GPU1–7各2个本run训练进程；GPU利用率84%–92%；0个`ARTIFACTS_COMPLETE`、0个`TECHNICAL_FAILURE`、0条确定性致命错误。训练日志初始为0字节，但绑定GPU计算已持续，判定健康启动。
+- 30分钟低频监控已启用，automation ID为`pairbicad-cv2-screen24`；全矩阵分析与Git发布完成后自动暂停或删除。
 
 ## 预期artifact与停止规则
 
