@@ -37,9 +37,9 @@ python code/scripts/run_stage2_wiser_pilot.py p3-score-pilot --manifest <manifes
 
 ```text
 python code/scripts/run_stage2_wiser_target25.py prepare --source-manifest <manifest> --pilot-marker <score-root>/score_collection.json --output-root <target25-root> --phase target25 --p3-config configs/wiser_rf_p3_primary_20260831.json --checkpoint <checkpoint> --source-summary <source-summary> --source-binding configs/wiser_rf_adv3b02_source_binding.json
-python code/scripts/run_stage2_wiser_target25.py run-shard --manifest <target25-root>/target25_manifest.json --shard-index <index> --checkpoint <checkpoint> --source-summary <source-summary> --source-binding configs/wiser_rf_adv3b02_source_binding.json --p3-config configs/wiser_rf_p3_primary_20260831.json --output-root <target25-root>/prediction --device cuda:PENDING_TASK10_PREFLIGHT
-python code/scripts/run_stage2_wiser_target25.py score-shard --manifest <target25-root>/target25_manifest.json --shard-index <index> --prediction-root <target25-root>/prediction --output-root <target25-root>/score
-python code/scripts/run_stage2_wiser_target25.py analyze --manifest <target25-root>/target25_manifest.json --score-root <target25-root>/score --output-root <target25-root>/analysis
+python code/scripts/run_stage2_wiser_target25.py run-shard --manifest <target25-root>/manifest.json --shard-index <index> --checkpoint <checkpoint> --source-summary <source-summary> --source-binding configs/wiser_rf_adv3b02_source_binding.json --p3-config configs/wiser_rf_p3_primary_20260831.json --output-root <target25-root>/prediction --device cuda:PENDING_TASK10_PREFLIGHT
+python code/scripts/run_stage2_wiser_target25.py score-shard --manifest <target25-root>/manifest.json --shard-index <index> --prediction-root <target25-root>/prediction --output-root <target25-root>/score
+python code/scripts/run_stage2_wiser_target25.py analyze --manifest <target25-root>/manifest.json --score-root <target25-root>/score --output-root <target25-root>/analysis
 ```
 
 ## 预期artifact、停止规则与科学门槛
