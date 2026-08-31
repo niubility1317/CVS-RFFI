@@ -50,6 +50,26 @@ def make_d92_case(
     return fit_identity, fit_fft, labels, eval_identity, eval_fft
 
 
+def make_small_k_d92_case(
+    k_shot: int,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Build the exact D62 small-K support cases without empty class IDs."""
+
+    generator = torch.Generator().manual_seed(713102 + k_shot)
+    labels = torch.arange(6, dtype=torch.long).repeat_interleave(k_shot)
+    eval_labels = torch.arange(6, dtype=torch.long)
+    fit_identity = 0.04 * torch.randn(6 * k_shot, 160, generator=generator)
+    fit_fft = 0.04 * torch.randn(6 * k_shot, 96, generator=generator)
+    eval_identity = 0.04 * torch.randn(6, 160, generator=generator)
+    eval_fft = 0.04 * torch.randn(6, 96, generator=generator)
+    for class_id in range(6):
+        fit_identity[labels == class_id, class_id] += 1.0
+        fit_fft[labels == class_id, class_id] += 0.8
+        eval_identity[eval_labels == class_id, class_id] += 1.0
+        eval_fft[eval_labels == class_id, class_id] += 0.8
+    return fit_identity, fit_fft, labels, eval_identity, eval_fft
+
+
 @pytest.mark.parametrize(
     "case", ["normal", "zero_identity", "zero_fft", "tiny", "ill_conditioned"]
 )
@@ -81,6 +101,28 @@ def test_differentiable_d92_rejects_both_modalities_zero() -> None:
         differentiable_old_d92_logits(
             zero_identity, zero_fft, labels, zero_identity[:2], zero_fft[:2]
         )
+
+
+@pytest.mark.parametrize("k_shot", [1, 2])
+def test_differentiable_old_d92_matches_exact_small_k_fallback(k_shot: int) -> None:
+    """Catches omission of the locked D62 K<=2 unit-covariance fallback."""
+
+    fit_id, fit_fft, labels, eval_id, eval_fft = make_small_k_d92_case(k_shot)
+    exact = exact_d92_fit(
+        fit_id.numpy(), fit_fft.numpy(), labels.numpy(),
+        class_ids=range(6), old_class_count=6, seed=713102, device="cpu",
+    )
+    expected = torch.tensor(exact.score(eval_id.numpy(), eval_fft.numpy()))
+    actual = differentiable_old_d92_logits(fit_id, fit_fft, labels, eval_id, eval_fft)
+    assert torch.isfinite(actual).all()
+    assert torch.max(torch.abs(actual.double() - expected.double())).item() < 1.0e-4
+
+    if k_shot == 2:
+        fit_id.requires_grad_()
+        eval_fft.requires_grad_()
+        differentiable_old_d92_logits(fit_id, fit_fft, labels, eval_id, eval_fft).square().mean().backward()
+        for gradient in (fit_id.grad, eval_fft.grad):
+            assert gradient is not None and torch.isfinite(gradient).all()
 
 
 def test_cross_fit_logits_have_nonzero_identity_and_fft_gradients() -> None:
@@ -124,8 +166,9 @@ def test_cross_fit_logits_autograd_matches_selected_finite_differences() -> None
         lower = differentiable_old_d92_logits(*arguments)[0, 0]
         return float(((upper - lower) / (2.0 * epsilon)).detach())
 
-    gradients = (eval_id.grad, eval_fft.grad)
-    for argument_index, gradient in zip((2, 3), gradients):
-        assert float(gradient[0, 0]) == pytest.approx(
-            finite_difference(argument_index, (0, 0)), rel=0.05, abs=5.0e-3
+    selected = ((0, (0, 0)), (1, (1, 0)), (2, (0, 0)), (3, (0, 0)))
+    gradients = (fit_id.grad, fit_fft.grad, eval_id.grad, eval_fft.grad)
+    for argument_index, index in selected:
+        assert float(gradients[argument_index][index]) == pytest.approx(
+            finite_difference(argument_index, index), rel=0.05, abs=5.0e-3
         )

@@ -287,6 +287,19 @@ def _d92_component(rows: torch.Tensor, labels: torch.Tensor, *, block: bool) -> 
 
     values = rows.to(dtype=torch.float64)
     targets = labels.to(dtype=torch.long, device=values.device)
+    k_shot = int((targets == 0).sum())
+    if k_shot <= 2:
+        # D42/D62 lock this regime to the nearest-centroid unit-covariance
+        # fallback, including its float32 means and minimum-solve semantics.
+        means = _d92_means(rows.to(dtype=torch.float32), targets)
+        coefficients = means
+        intercept = (
+            -0.5 * means.to(dtype=torch.float64).square().sum(dim=1)
+            - torch.log(values.new_tensor(6.0))
+        ).to(dtype=torch.float32)
+        coefficients = coefficients - coefficients.mean(dim=0, keepdim=True)
+        intercept = intercept - intercept.mean()
+        return coefficients, intercept
     means = _d92_means(values, targets)
     covariance = sum(
         _d92_ledoit_wolf_covariance(values[targets == index]) for index in range(6)
@@ -347,13 +360,17 @@ def _d92_d46_affine(rows: torch.Tensor, labels: torch.Tensor) -> tuple[torch.Ten
     k_shot = int((targets == 0).sum())
     full_coef, full_intercept = _d92_canonical_component(rows, targets, block=False)
     block_coef, block_intercept = _d92_canonical_component(rows, targets, block=True)
-    full_weight, block_weight = _d92_reliability_weights(
-        _d92_loo_ce(rows, targets, block=False), _d92_loo_ce(rows, targets, block=True), k_shot
-    ).unbind(dim=1)
+    if k_shot <= 2:
+        weights = rows.new_full((6, 2), 0.5, dtype=torch.float64)
+    else:
+        weights = _d92_reliability_weights(
+            _d92_loo_ce(rows, targets, block=False), _d92_loo_ce(rows, targets, block=True), k_shot
+        )
+    full_weight, block_weight = weights.unbind(dim=1)
     coefficient = full_weight[:, None] * full_coef / _d92_rms(rows, full_coef, full_intercept) + block_weight[:, None] * block_coef / _d92_rms(rows, block_coef, block_intercept)
     intercept = full_weight * full_intercept / _d92_rms(rows, full_coef, full_intercept) + block_weight * block_intercept / _d92_rms(rows, block_coef, block_intercept)
     coefficient, intercept = coefficient - coefficient.mean(dim=0, keepdim=True), intercept - intercept.mean()
-    return coefficient.to(dtype=torch.float32), intercept.to(dtype=torch.float32), torch.stack([full_weight, block_weight], dim=1)
+    return coefficient.to(dtype=torch.float32), intercept.to(dtype=torch.float32), weights
 
 
 def _d92_fisher_transform(rows: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
@@ -431,6 +448,9 @@ def _d92_gate(base_scores: torch.Tensor, residual_scores: torch.Tensor, labels: 
 
 def _d92_exact_old_affine(rows: torch.Tensor, labels: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
     base_coefficient, base_intercept, base_weights = _d92_d46_affine(rows, labels)
+    if int((labels == 0).sum()) <= 2:
+        # D62 deliberately declines Fisher residual replacement for K<=2.
+        return base_coefficient, base_intercept
     full = _d92_component_evidence(rows, labels, block=False)
     block = _d92_component_evidence(rows, labels, block=True)
     residual_weights = _d92_reliability_weights(full["residual_ce"], block["residual_ce"], int((labels == 0).sum()))
