@@ -58,3 +58,10 @@ PAIRBICAD_CONVERGENCE_CANDIDATES=P2,P1 bash code/scripts/launch_phase1_pairbicad
 - 初始计数：`ARTIFACTS_COMPLETE=0`、`TECHNICAL_FAILURE=0`；trainer日志0字节属于训练中结构化指标尚未写入的预期状态，GPU计算和进程绑定健康时不得据此干预。
 - 当前状态：`RUNNING`。
 
+## 结果冻结算法
+
+1. 每个row只使用其`source_loro_selection.json`记录的最佳source-only分数与最佳update；不得读取目标域或Phase2证据。
+2. 候选分数为该候选6个row最佳主分数的算术平均值，较高者胜出。
+3. 若候选均值在`1e-12`内相同，依次比较6行最小值，仍相同则沿用U4000冻结顺序`P2>P1`；禁止根据目标测试反馈破同分。
+4. 胜出候选的6个最佳update取中位数；若中位数落在两个500网格中点，向上取整，再限制到`[4000,9000]`，得到唯一固定最终预算。
+5. 预算与候选冻结后，最终矩阵固定为胜出候选×fold1–5×seed392001/392002/392003共15行；不允许在线早停、目标反馈调参、重训或选择性重跑。
