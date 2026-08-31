@@ -7,8 +7,11 @@ import pytest
 
 import cvsrffi.stage2_wiser_runner as runner_module
 from cvsrffi.stage2_wiser_runner import (
+    WISERP3TrainingConfig,
     WISERTrainingConfig,
     predict_wiser_representation_probes,
+    select_support_safe_interpolation,
+    train_wiser_p3_arm,
     train_wiser_arm,
 )
 from cvsrffi.wiser_source_summary import QuantizedSourceSummary
@@ -164,3 +167,121 @@ def test_prediction_refuses_trainable_model_before_query_forward() -> None:
             source_summary=_summary(),
             seed=1,
         )
+
+
+class _P3IdentityBackbone(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.sinc = nn.Identity()
+        self.time_fuse = nn.Linear(160, 160)
+        self.t1 = nn.Linear(160, 160)
+        self.t2 = nn.Linear(160, 160)
+        self.t3 = nn.Linear(160, 160)
+        self.f1 = nn.Linear(160, 160)
+        self.f2 = nn.Linear(160, 160)
+        self.f3 = nn.Linear(160, 160)
+        self.t_proj = nn.Linear(160, 160)
+        self.f_proj = nn.Linear(160, 160)
+        self.freq_gate = nn.Linear(160, 160)
+        self.freq_stats_proj = nn.Linear(160, 160)
+        self.fuse = nn.Linear(320, 160)
+        self.identity_capacity = nn.Linear(160, 160)
+        self.cls_head = nn.Module()
+        self.cls_head.id_proj = nn.Linear(160, 160)
+        self.cls_head.id_gate = nn.Linear(320, 160)
+        self.cls_head.joint_proj = nn.Linear(480, 160)
+        self.cls_head.head = nn.Linear(160, 6, bias=False)
+
+
+class _P3DualModel(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.id_backbone = _P3IdentityBackbone()
+        self.dom_backbone = nn.Linear(160, 160)
+        self.dom_head = nn.Linear(160, 6)
+        self.adv_head = nn.Linear(160, 6)
+        self.meta_adapter_alpha = nn.Linear(160, 160)
+        self.sat_anchor_identity_adapter = nn.Linear(160, 160)
+
+    def forward(self, value: torch.Tensor, y_tx=None, return_aux: bool = False):
+        flat = value.flatten(1)[:, :160]
+        t = torch.tanh(self.id_backbone.t3(torch.tanh(self.id_backbone.t2(torch.tanh(self.id_backbone.t1(self.id_backbone.time_fuse(flat)))))))
+        f = torch.tanh(self.id_backbone.f3(torch.tanh(self.id_backbone.f2(torch.tanh(self.id_backbone.f1(self.id_backbone.freq_gate(flat)))))))
+        base = torch.tanh(self.id_backbone.fuse(torch.cat((self.id_backbone.t_proj(t), self.id_backbone.f_proj(f)), dim=1)))
+        identity = torch.tanh(self.id_backbone.cls_head.id_proj(base))
+        zeros = torch.zeros_like(identity)
+        joint = torch.tanh(self.id_backbone.cls_head.joint_proj(torch.cat((identity, zeros, zeros), dim=1)))
+        logits = self.id_backbone.cls_head.head(joint)
+        return {"tx_logits": logits, "z_id": joint, "aux_id": {}} if return_aux else logits
+
+
+def _p3_support_fixture() -> tuple[torch.Tensor, torch.Tensor, tuple[str, ...], QuantizedSourceSummary]:
+    generator = torch.Generator().manual_seed(713102)
+    values = torch.randn((60, 2, 256), generator=generator) * 0.05
+    labels = torch.arange(6).repeat_interleave(10)
+    for class_id in range(6):
+        values[labels == class_id, 0, class_id] += 1.0
+    tokens = tuple(f"p3-support-{index:02d}" for index in range(60))
+    points = torch.randn((6, 2, 160), generator=generator)
+    empty = torch.empty(0)
+    summary = QuantizedSourceSummary(
+        feature_schema="p3-test160",
+        class_registry=tuple(f"c{index}" for index in range(6)),
+        centers=torch.nn.functional.normalize(points.mean(dim=1), dim=1),
+        basis=empty, coefficients=empty, radii=empty, direct_points=points,
+    )
+    return values, labels, tokens, summary
+
+
+@pytest.mark.parametrize("arm", ["N2", "N3", "N4", "N5", "N6"])
+def test_p3_arm_uses_only_support_and_refreezes(arm: str) -> None:
+    model = _P3DualModel()
+    support, labels, tokens, summary = _p3_support_fixture()
+
+    audit = train_wiser_p3_arm(
+        model, support, labels, support_tokens=tokens, source_summary=summary, arm=arm,
+        config=WISERP3TrainingConfig(
+            stage_steps=(1, 0, 0), diagnostic_interval=1, interpolation_grid=(0.0,)
+        ),
+    )
+
+    assert audit.query_rows_used == 0
+    assert audit.optimizer_steps > 0
+    assert audit.baseline_joint_condition_number >= 1.0
+    assert not model.training
+    assert not any(parameter.requires_grad for parameter in model.parameters())
+    assert {row["branch"] for row in audit.stage_audits if row["branch"].startswith("stage2")} == {
+        "stage2_time", "stage2_frequency", "stage2_joint"
+    }
+    stage3 = next(row for row in audit.stage_audits if row["branch"] == "stage3")
+    assert stage3["parent_branch"] in {"stage2_time", "stage2_frequency", "stage2_joint"}
+    assert all(not name.startswith(("dom_", "adv_", "meta_adapter_", "sat_anchor_")) for name in audit.reached_parameter_names)
+
+
+def test_p3_rejects_invalid_support_with_model_refrozen() -> None:
+    model = _P3DualModel()
+    bad_support = torch.zeros((6, 2, 255))
+
+    with pytest.raises(ValueError, match=r"\[rows,2,256\]"):
+        train_wiser_p3_arm(
+            model, bad_support, torch.arange(6), support_tokens=tuple(str(index) for index in range(6)),
+            source_summary=None, arm="N2", config=WISERP3TrainingConfig(stage_steps=(1, 0, 0)),
+        )
+
+    assert not model.training
+    assert not any(parameter.requires_grad for parameter in model.parameters())
+
+
+def test_stage_branch_selection_is_support_only_and_falls_back_to_alpha_zero() -> None:
+    base = {"weight": torch.tensor([1.0]), "frozen": torch.tensor([9.0])}
+    candidate = {"weight": torch.tensor([5.0]), "frozen": torch.tensor([2.0])}
+
+    result = select_support_safe_interpolation(
+        base, candidate, evaluator=lambda _: {"safe": False}, grid=(1.0, 0.5, 0.0),
+        trainable_parameter_names=("weight",),
+    )
+
+    assert result.alpha == 0.0
+    assert result.query_rows_used == 0
+    assert result.state["weight"].item() == 1.0
+    assert result.state["frozen"].item() == 9.0

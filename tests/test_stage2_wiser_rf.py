@@ -5,8 +5,10 @@ from types import SimpleNamespace
 import torch
 from torch import nn
 import torch.nn.functional as F
+import pytest
 
 from cvsrffi.stage2_wiser_rf import (
+    configure_p3_time_first_update,
     configure_progressive_identity_update,
     leave_one_out_prototype_logits,
     normalized_l2sp_penalty,
@@ -161,3 +163,49 @@ def test_normalized_l2sp_is_zero_at_anchor_and_positive_after_change() -> None:
 
     assert zero.item() == 0.0
     assert moved.item() > 0.0
+
+
+def test_p3_stage1_opens_time_late_and_keeps_frequency_frozen() -> None:
+    model = _DualModel()
+
+    audit = configure_p3_time_first_update(model, branch="stage1_time")
+
+    names = _trainable_names(model)
+    assert any(name.startswith("id_backbone.t3.") for name in names)
+    assert not any(
+        name.startswith(("id_backbone.f1.", "id_backbone.f2.", "id_backbone.f3.", "id_backbone.f_proj.", "id_backbone.freq_"))
+        for name in names
+    )
+    assert all(
+        name.startswith(
+            (
+                "id_backbone.t3.",
+                "id_backbone.t_proj.",
+                "id_backbone.fuse.",
+                "id_backbone.cls_head.id_proj.",
+                "id_backbone.cls_head.id_gate.",
+                "id_backbone.cls_head.joint_proj.",
+            )
+        )
+        for name in names
+    )
+    assert audit.sinc_frozen and audit.source_head_frozen and audit.domain_branch_frozen
+
+
+def test_p3_stage3_requires_and_inherits_an_explicit_stage2_parent() -> None:
+    model = _DualModel()
+
+    with torch.no_grad():
+        model.id_backbone.f3.weight.fill_(3.0)
+    audit = configure_p3_time_first_update(
+        model, branch="stage3", parent_branch="stage2_frequency"
+    )
+
+    names = _trainable_names(model)
+    assert audit.parent_branch == "stage2_frequency"
+    assert any(name.startswith("id_backbone.f3.") for name in names)
+    assert not any(name.startswith("id_backbone.t2.") for name in names)
+    assert any(name.startswith("id_backbone.t1.") for name in names)
+    assert any(name.startswith("id_backbone.time_fuse.") for name in names)
+    with pytest.raises(ValueError, match="parent"):
+        configure_p3_time_first_update(model, branch="stage3")

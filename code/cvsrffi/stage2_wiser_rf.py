@@ -33,9 +33,39 @@ _STAGE3_PREFIXES = _STAGE2_PREFIXES + (
 )
 
 
+_P3_STAGE1_TIME_PREFIXES = (
+    "id_backbone.t3.",
+    "id_backbone.t_proj.",
+    "id_backbone.fuse.",
+    "id_backbone.cls_head.id_proj.",
+    "id_backbone.cls_head.id_gate.",
+    "id_backbone.cls_head.joint_proj.",
+)
+_P3_STAGE2_PREFIXES = {
+    "stage2_time": _P3_STAGE1_TIME_PREFIXES + ("id_backbone.t2.",),
+    "stage2_frequency": _P3_STAGE1_TIME_PREFIXES
+    + ("id_backbone.f3.", "id_backbone.f2."),
+    "stage2_joint": _P3_STAGE1_TIME_PREFIXES
+    + ("id_backbone.t2.", "id_backbone.f3.", "id_backbone.f2."),
+}
+
+
 @dataclass(frozen=True)
 class ProgressiveUpdateAudit:
     stage: int
+    trainable_parameter_names: tuple[str, ...]
+    trainable_parameter_count: int
+    source_head_frozen: bool
+    domain_branch_frozen: bool
+    sinc_frozen: bool
+
+
+@dataclass(frozen=True)
+class P3TimeFirstUpdateAudit:
+    """Frozen whitelist receipt for one P3 time-first branch."""
+
+    branch: str
+    parent_branch: str | None
     trainable_parameter_names: tuple[str, ...]
     trainable_parameter_count: int
     source_head_frozen: bool
@@ -100,6 +130,78 @@ def configure_progressive_identity_update(
         stage=stage_value,
         trainable_parameter_names=tuple(trainable_names),
         trainable_parameter_count=trainable_count,
+        source_head_frozen=source_head_frozen,
+        domain_branch_frozen=domain_branch_frozen,
+        sinc_frozen=sinc_frozen,
+    )
+
+
+def configure_p3_time_first_update(
+    model: nn.Module,
+    *,
+    branch: str,
+    parent_branch: str | None = None,
+) -> P3TimeFirstUpdateAudit:
+    """Open exactly one P3-primary identity whitelist and freeze all else.
+
+    ``stage3`` deliberately requires the selected Stage2 parent.  This avoids
+    silently rebuilding a different branch from a display-name string.
+    """
+
+    branch_value = str(branch)
+    if branch_value == "stage1_time":
+        if parent_branch is not None:
+            raise ValueError("stage1_time must not have a parent branch")
+        prefixes = _P3_STAGE1_TIME_PREFIXES
+    elif branch_value in _P3_STAGE2_PREFIXES:
+        if parent_branch not in (None, "stage1_time"):
+            raise ValueError("Stage2 P3 branches must inherit stage1_time")
+        prefixes = _P3_STAGE2_PREFIXES[branch_value]
+    elif branch_value == "stage3":
+        if parent_branch not in _P3_STAGE2_PREFIXES:
+            raise ValueError("stage3 requires an explicit selected Stage2 parent")
+        prefixes = _P3_STAGE2_PREFIXES[parent_branch] + (
+            "id_backbone.t1.",
+            "id_backbone.time_fuse.",
+        )
+    else:
+        raise ValueError("unknown P3 time-first branch")
+
+    model.eval()
+    for parameter in model.parameters():
+        parameter.requires_grad_(False)
+    names: list[str] = []
+    count = 0
+    for name, parameter in model.named_parameters():
+        if any(name.startswith(prefix) for prefix in prefixes):
+            parameter.requires_grad_(True)
+            names.append(name)
+            count += int(parameter.numel())
+    if not names:
+        raise ValueError("P3 branch did not match any identity parameters")
+
+    source_head_frozen = not any(
+        parameter.requires_grad
+        for name, parameter in model.named_parameters()
+        if name.startswith("id_backbone.cls_head.head.")
+    )
+    domain_branch_frozen = not any(
+        parameter.requires_grad
+        for name, parameter in model.named_parameters()
+        if name.startswith(("dom_", "adv_", "tx_adv_", "meta_adapter_", "sat_anchor_"))
+    )
+    sinc_frozen = not any(
+        parameter.requires_grad
+        for name, parameter in model.named_parameters()
+        if name.startswith("id_backbone.sinc.")
+    )
+    if not (source_head_frozen and domain_branch_frozen and sinc_frozen):
+        raise RuntimeError("P3 time-first freeze invariant failed")
+    return P3TimeFirstUpdateAudit(
+        branch=branch_value,
+        parent_branch=parent_branch,
+        trainable_parameter_names=tuple(names),
+        trainable_parameter_count=count,
         source_head_frozen=source_head_frozen,
         domain_branch_frozen=domain_branch_frozen,
         sinc_frozen=sinc_frozen,
@@ -186,8 +288,10 @@ def normalized_l2sp_penalty(
 
 
 __all__ = [
+    "P3TimeFirstUpdateAudit",
     "ProgressiveUpdateAudit",
     "WISERDualLosses",
+    "configure_p3_time_first_update",
     "configure_progressive_identity_update",
     "leave_one_out_prototype_logits",
     "normalized_l2sp_penalty",
