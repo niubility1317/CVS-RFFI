@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-- 状态：`LOCAL_FIX_IN_VERIFICATION / RELEASE_PENDING`。
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
 - run ID：`phase1_pairbicad_cv2_fixed11_e200_seed392002_20260901_r2`。
 - r1因U批次物理ID与标签隔离冲突触发预登记系统技术停止；0行完成，partial artifact完整保留，不产生性能结论。
 
@@ -35,3 +35,12 @@
 - `train_ssdg.py`和新launcher编译通过；`git diff --check`通过。
 - launcher静态读回：run ID为r2、24行、12候选、fold1/8、seed392002、全部200epochs、每GPU上限2槽。
 - 原实现已经完成一次独立P0/P1审查；本次针对运行时异常仅核对ID同源、标签隔离、L五元路径和r2不可覆盖性，未发现未解决P0/P1。两次Luna定点复审实例均未在限时内返回，按最小流程记为`NONBLOCKING/REJECTED_EXTRA_GATE`，不增加重复审查轮次。
+
+## r2远端运行与技术停止
+
+- 代码提交：`1b2b97f0ef69556d55a8690726d109a88ce01547`；release：`phase1_pairbicad_cv2_e200_1b2b97f0`；归档本地/远端SHA256均为`29b9761fda2969ef834c6e6d87bdc7cbec1e8f741962d1dbc97481bf8ac7a1e2`。
+- 远端编译、历史真实checkpoint无query烟测、强制MUSE真实U批次ID烟测均通过。
+- dispatcher PID3219828；按资源库存使用GPU0一槽、GPU1—7各两槽，15行并发、9行排队；未影响GPU0的无关Stage2 PID3208551。
+- `CV2-B0-F1/F8`在prediction前重复触发`ValueError: U observation contains an undeclared sample ID`，0行`ARTIFACTS_COMPLETE`、2行`TECHNICAL_FAILURE`。
+- 已冻结dispatcher并按精确后代树终止本run，partial artifact保留；独立读回无绑定进程残留，GPU上仅剩无关PID3208551。
+- 根因：r2把普通U数据集账本也设为`base_index`，但非MUSE的B0批次合法使用五元物理ID，造成账本与批次ID表示不一致。r3将仅对真正经过`_MUSEUnlabeledDatasetView`的U使用`base_index`，普通U保持五元ID。

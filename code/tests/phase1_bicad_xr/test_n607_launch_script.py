@@ -36,7 +36,7 @@ def test_e200_repair_launcher_has_no_update_budget_cli() -> None:
     source = REPAIR_SCRIPT.read_text(encoding="utf-8")
 
     assert launcher.RUN_ID_DEFAULT == (
-        "phase1_pairbicad_cv2_fixed11_e200_seed392002_20260901_r2"
+        "phase1_pairbicad_cv2_fixed11_e200_seed392002_20260901_r3"
     )
     assert "--epochs" in source
     assert "--bicad_optimizer_updates" not in source

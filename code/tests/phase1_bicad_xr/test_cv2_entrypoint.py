@@ -8,6 +8,7 @@ import pytest
 import torch
 
 from SSDG.train_ssdg import (
+    _MUSEUnlabeledDatasetView,
     _build_bicad_xr_concat_augmenter,
     _bicad_xr_cv2_build_optimizers,
     _bicad_xr_cv2_batch_physical_ids,
@@ -318,12 +319,25 @@ def test_cv2_coverage_uses_label_free_base_index_for_muse_u_batches() -> None:
     assert _bicad_xr_cv2_batch_physical_ids(metadata, expected_count=3, role="U") == expected
 
     subset = SimpleNamespace(selected=[17, 23, 41])
-    muse_view = SimpleNamespace(base=subset)
+    muse_view = _MUSEUnlabeledDatasetView(subset)
     assert _bicad_xr_cv2_dataset_u_sample_ids(muse_view) == expected
 
     ledger = CoverageLedger(u_sample_ids=expected, l_groups=((0, 1, 1),))
     ledger.record_u(expected)
     assert _bicad_xr_cv2_coverage_snapshot(ledger)["u_unique_coverage"] == pytest.approx(1.0)
+
+
+def test_cv2_coverage_ordinary_u_dataset_keeps_five_field_physical_ids() -> None:
+    records = [
+        SimpleNamespace(tx_i=0, rx_i=1, day_i=1, eq_i=0, sig_i=10),
+        SimpleNamespace(tx_i=1, rx_i=3, day_i=2, eq_i=0, sig_i=12),
+    ]
+    ordinary_subset = SimpleNamespace(selected=[17, 41], index=records)
+
+    assert _bicad_xr_cv2_dataset_u_sample_ids(ordinary_subset) == (
+        (0, 1, 1, 0, 10),
+        (1, 3, 2, 0, 12),
+    )
 
 
 def test_cv2_coverage_warmup_precedes_plateau_scheduler() -> None:

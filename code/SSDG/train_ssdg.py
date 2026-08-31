@@ -13251,12 +13251,15 @@ def _bicad_xr_cv2_dataset_u_sample_ids(dataset: Any) -> Tuple[Any, ...]:
 
     current = dataset
     seen: set[int] = set()
+    label_free_u_view = False
     for _ in range(8):
         if current is None or id(current) in seen:
             break
         seen.add(id(current))
+        if isinstance(current, _MUSEUnlabeledDatasetView):
+            label_free_u_view = True
         selected = getattr(current, "selected", None)
-        if selected is not None:
+        if selected is not None and label_free_u_view:
             values = _as_plain_list(selected)
             try:
                 identities = tuple(("base_index", int(value)) for value in values)
@@ -13269,6 +13272,8 @@ def _bicad_xr_cv2_dataset_u_sample_ids(dataset: Any) -> Tuple[Any, ...]:
             if len(set(identities)) != len(identities):
                 raise ValueError("CV2 frozen U_s subset contains duplicate base_index IDs")
             return identities
+        if selected is not None:
+            break
         current = getattr(current, "base", None)
     return _bicad_xr_cv2_dataset_physical_ids(dataset)
 
