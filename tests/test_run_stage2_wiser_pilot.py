@@ -65,6 +65,31 @@ def test_p3_config_is_strict_before_output_root_creation(tmp_path: Path) -> None
         module._load_p3_config(path)
 
 
+@pytest.mark.parametrize(
+    ("field", "replacement"),
+    [
+        ("pilot_outer_key", "rx_other__seed_713102__k_10__new_5"),
+        ("receiver", "rx_3_19"),
+        ("capsule_id", "self-consistent-but-not-frozen"),
+        ("split_id", "self-consistent-but-not-frozen"),
+        ("checkpoint_id", "OTHER_CHECKPOINT"),
+    ],
+)
+def test_p3_config_rejects_self_consistent_drift_from_task6_identity(
+    tmp_path: Path, field: str, replacement: str
+) -> None:
+    module = _script_module()
+    config = module._default_p3_config_payload()
+    config[field] = replacement
+    if field == "checkpoint_id":
+        config["source_binding"]["checkpoint_id"] = replacement
+    path = tmp_path / "config.json"
+    path.write_text(json.dumps(config), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="identity|binding|checkpoint"):
+        module._load_p3_config(path)
+
+
 def test_p3_unit_training_audit_is_bound_to_its_receipt(tmp_path: Path) -> None:
     module = _script_module()
     unit = tmp_path / "leo_clear_weak" / "N6"
@@ -143,10 +168,18 @@ def test_p3_pilot_freezes_all_three_by_seven_support_units_before_query(
     monkeypatch.setattr(module, "load_quantized_source_summary", lambda *_args: SimpleNamespace(
         class_registry=registry, feature_schema=config["source_binding"]["feature_schema"], centers=torch.zeros((6, 160)),
     ))
-    monkeypatch.setattr(module, "frozen_checkpoint", lambda *_args: torch.nn.Linear(1, 1))
+    def fake_checkpoint(*_args):
+        calls.append(("checkpoint", "fresh"))
+        return torch.nn.Linear(1, 1)
+    monkeypatch.setattr(module, "frozen_checkpoint", fake_checkpoint)
     monkeypatch.setattr(module, "load_support_package", lambda *_args: support)
     def fake_query(_path):
         assert (tmp_path / "run" / "support_audit.json").is_file()
+        assert all(
+            (tmp_path / "run" / scenario / arm / name).is_file()
+            for scenario in module.SCENARIOS for arm in module.P3_ARMS
+            for name in ("adapted_state.pt", "training_audit.json")
+        )
         calls.append(("query", "opened"))
         return query
     monkeypatch.setattr(module, "load_query_package", fake_query)
@@ -165,8 +198,16 @@ def test_p3_pilot_freezes_all_three_by_seven_support_units_before_query(
             final_zero_identity_count=0, final_duals=(), config=asdict(kwargs["config"]),
         )
     monkeypatch.setattr(module, "train_wiser_p3_arm", fake_p3)
-    monkeypatch.setattr(module, "_save_adapted_state_new", lambda *_args: None)
-    monkeypatch.setattr(module, "_load_adapted_state", lambda *_args: None)
+    write_json_new = module._write_json_new
+    def audited_write(path, payload):
+        if path.name == "support_audit.json":
+            assert all(
+                (tmp_path / "run" / scenario / arm / name).is_file()
+                for scenario in module.SCENARIOS for arm in module.P3_ARMS
+                for name in ("adapted_state.pt", "training_audit.json")
+            )
+        return write_json_new(path, payload)
+    monkeypatch.setattr(module, "_write_json_new", audited_write)
     monkeypatch.setattr(module, "predict_wiser_representation_probes", lambda *_args, query_tokens, **_kwargs: {
         "query_tokens": np.asarray(query_tokens), "p1_predictions": np.zeros(len(query_tokens), np.int64),
         "p2_predictions": np.zeros(len(query_tokens), np.int64), "p3_predictions": np.zeros(len(query_tokens), np.int64),
@@ -182,8 +223,68 @@ def test_p3_pilot_freezes_all_three_by_seven_support_units_before_query(
 
     assert result["schema"] == "cvs.phase2.wiser_rf.p3_primary.pilot.v1"
     assert result["scene_arm_unit_count"] == 21
+    assert len([call for call in calls if call[0] == "checkpoint"]) == 21
     assert len([call for call in calls if call[0] == "p3"]) == 15
     assert len([call for call in calls if call[0] == "query"]) == 3
+    root_audit = json.loads((tmp_path / "run" / "support_audit.json").read_text(encoding="utf-8"))
+    assert len(root_audit["units"]) == 21
+
+
+def test_p3_score_validates_late_prediction_npz_before_any_truth_loader(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    module = _script_module()
+    config = module._default_p3_config_payload()
+    config_path = tmp_path / "config.json"
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+    manifest_path = tmp_path / "manifest.json"
+    job = {
+        "outer_key": config["pilot_outer_key"], "protocol_schema": "p2_min_v1",
+        "phase2_data_status": "VALIDATED_ONCE", "capsule_id": config["capsule_id"],
+        "split_id": config["split_id"], "receiver": config["receiver"], "seed": 713102,
+        "k_shot": 10, "new_class_count": 5, "truth_sidecar": str(tmp_path / "truth.json"),
+    }
+    manifest_path.write_text(json.dumps({"protocol_schema": "p2_min_v1", "jobs": [job]}), encoding="utf-8")
+    root = tmp_path / "predictions"
+    root.mkdir()
+    (root / "pilot_result.json").write_text(json.dumps({
+        "schema": "cvs.phase2.wiser_rf.p3_primary.pilot.v1", "status": "ARTIFACTS_COMPLETE", "arms": list(module.P3_ARMS),
+    }), encoding="utf-8")
+    (root / "support_audit.json").write_text(json.dumps({
+        "schema": "cvs.phase2.wiser_rf.p3_primary.support_audit.v1", "all_support_states_frozen": True,
+        **{key: job[key] for key in ("outer_key", "capsule_id", "split_id", "receiver")},
+        "arms": list(module.P3_ARMS), "scenarios": list(module.SCENARIOS), "expected_scene_arm_unit_count": 21,
+        "units": [{"scenario": scenario, "arm": arm, "status": "SUPPORT_STATE_FROZEN", "query_opened": False} for scenario in module.SCENARIOS for arm in module.P3_ARMS],
+    }), encoding="utf-8")
+    tokens = [f"q{index}" for index in range(6)]
+    for scenario in module.SCENARIOS:
+        for arm in module.P3_ARMS:
+            unit = root / scenario / arm
+            prediction = unit / "prediction"
+            prediction.mkdir(parents=True)
+            audit = {"outer_arm": arm, "trainer_arm": None if arm == "N0" else "A" if arm == "N1" else arm, "query_rows_used": 0, "support_state_frozen": True}
+            if arm not in {"N0", "N1"}:
+                audit.update({"baseline_joint_condition_number": 2.0, "final_joint_condition_number": 2.0, "final_zero_identity_count": 0})
+            (unit / "training_audit.json").write_text(json.dumps(audit), encoding="utf-8")
+            receipt = {"schema": "cvs.phase2.wiser_rf.p3_primary.prediction_receipt.v1", "status": "PREDICTIONS_COMPLETE", **{key: job[key] for key in ("outer_key", "capsule_id", "split_id", "receiver")}, "scenario": scenario, "arm": arm, "query_rows": 6, "expected_query_tokens": tokens, "query_truth_opened": False, "query_role_opened": False, "support_state_frozen_before_query": True, "support_audit_reference": "support_audit.json", "training_audit": audit}
+            (prediction / "prediction_receipt.json").write_text(json.dumps(receipt), encoding="utf-8")
+            arrays = {"query_tokens": np.asarray(tokens), "query_z_id": np.zeros((6, 160), np.float32)}
+            for prefix in ("p1", "p2", "p3"):
+                arrays[f"{prefix}_predictions"] = np.zeros(6, np.int64)
+                arrays[f"{prefix}_logits"] = np.zeros((6, 6), np.float32)
+            if scenario == "leo_rain_weak" and arm == "N6":
+                arrays.pop("p3_logits")
+            np.savez_compressed(prediction / "predictions.npz", **arrays)
+    truth_events: list[str] = []
+    monkeypatch.setattr(module, "score_wiser_predictions", lambda *_args: truth_events.append("truth") or {})
+
+    with pytest.raises(ValueError, match="prediction.*logit|prediction NPZ"):
+        module._p3_score_pilot(Namespace(
+            p3_config=config_path, manifest=manifest_path, pilot_outer_key=config["pilot_outer_key"],
+            prediction_root=root, output_root=tmp_path / "scores", arms=None,
+        ))
+
+    assert truth_events == []
 
 
 def test_cli_normalizes_bounded_arm_subset_with_required_baseline() -> None:

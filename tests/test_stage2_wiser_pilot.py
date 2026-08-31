@@ -12,6 +12,7 @@ from cvsrffi.stage2_wiser_pilot import (
     formal_p3_primary_decision,
     load_query_package,
     normalize_p3_arms,
+    select_p3_primary_champion,
 )
 
 
@@ -90,6 +91,48 @@ def test_p3_gate_requires_cross_scene_floor_flip_and_support_safety() -> None:
         "final_joint_condition_number": 4.1,
     }
     assert formal_p3_primary_decision(unsafe_condition, arm="N6")["passed"] is False
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("p3_ba", (2.99, 2.99, 3.01)),
+        ("p3_ba", (-0.51, 3.0, 3.0)),
+        ("p3_floor", (-0.01, -0.01, 0.0)),
+        ("p3_floor", (0.0, -0.01, 0.0)),
+        ("p1", (-2.01, -1.0, -1.0)),
+        ("p2", (-2.01, -1.0, -1.0)),
+        ("net", (1, 0, 0)),
+    ],
+)
+def test_p3_gate_fails_at_each_formal_threshold(field: str, value: tuple[float, float, float]) -> None:
+    rows = _paired_p3_rows()
+    if field == "p3_ba":
+        for row, item in zip(rows, value):
+            row["probes"]["P3_OLD_D92"]["balanced_accuracy_delta_pp"] = item
+    elif field == "p3_floor":
+        for row, item in zip(rows, value):
+            row["probes"]["P3_OLD_D92"]["floor_delta_pp"] = item
+    elif field in {"p1", "p2"}:
+        probe = "P1_SOURCE_HEAD" if field == "p1" else "P2_SOURCE_PROTOTYPE"
+        for row, item in zip(rows, value):
+            row["probes"][probe]["balanced_accuracy_delta_pp"] = item
+    else:
+        for row, item in zip(rows, value):
+            row["probes"]["P3_OLD_D92"]["help_count"] = max(int(item), 0)
+            row["probes"]["P3_OLD_D92"]["harm_count"] = max(-int(item), 0)
+            row["probes"]["P3_OLD_D92"]["net_help_minus_harm"] = int(item)
+    assert formal_p3_primary_decision(rows, arm="N6")["passed"] is False
+
+
+def test_p3_selection_rejects_n1_and_breaks_multiple_passing_arms_deterministically() -> None:
+    n1 = formal_p3_primary_decision(_paired_p3_rows(arm="N1"), arm="N1")
+    n2 = formal_p3_primary_decision(_paired_p3_rows(arm="N2"), arm="N2")
+    n3 = formal_p3_primary_decision(_paired_p3_rows(arm="N3"), arm="N3")
+
+    assert n1["passed"] is False
+    assert select_p3_primary_champion({"N1": n1, "N3": n3, "N2": n2}) == "N2"
+    assert select_p3_primary_champion({"N1": n1}) is None
 
 
 @pytest.mark.parametrize("mutation", ["missing", "duplicate", "nonfinite", "binding"])
