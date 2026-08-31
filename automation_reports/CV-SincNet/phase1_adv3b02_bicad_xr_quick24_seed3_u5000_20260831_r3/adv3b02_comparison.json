@@ -1,0 +1,249 @@
+{
+  "comparison_status": "ANALYZED",
+  "controlled_comparison": {
+    "baseline": "D0",
+    "candidate": "E1",
+    "matched_axes": [
+      "dataset",
+      "source_receiver_fold",
+      "train_days",
+      "seed",
+      "optimizer_updates",
+      "batch_size",
+      "concat_sat_ce_only",
+      "leo_weak_scenarios"
+    ],
+    "candidate_mean_percent": {
+      "D0": {
+        "clean": 55.5565,
+        "leo_mean": 29.1867,
+        "harmonic_clean_leo_mean": 38.2165,
+        "clean_class_floor": 0.9,
+        "leo_class_floor": 1.5667
+      },
+      "E1": {
+        "clean": 55.4083,
+        "leo_mean": 30.591,
+        "harmonic_clean_leo_mean": 39.2125,
+        "clean_class_floor": 0.2667,
+        "leo_class_floor": 2.6
+      },
+      "E1_minus_D0_pp": {
+        "clean": -0.1482,
+        "leo_mean": 1.4043,
+        "harmonic_clean_leo_mean": 0.996,
+        "clean_class_floor": -0.6333,
+        "leo_class_floor": 1.0333
+      }
+    },
+    "same_row_percent": {
+      "D0-F1-S392001": {
+        "clean": 60.8722,
+        "leo_clear_weak": 31.8944,
+        "leo_low_elev_weak": 30.0833,
+        "leo_rain_weak": 30.1556,
+        "leo_mean": 30.7111,
+        "harmonic_clean_leo_mean": 40.8252,
+        "clean_class_floor": 3.5,
+        "leo_class_floor": 6.4
+      },
+      "E1-F1-S392001": {
+        "clean": 58.0167,
+        "leo_clear_weak": 36.85,
+        "leo_low_elev_weak": 36.5333,
+        "leo_rain_weak": 36.8722,
+        "leo_mean": 36.7519,
+        "harmonic_clean_leo_mean": 44.9985,
+        "clean_class_floor": 0.2667,
+        "leo_class_floor": 3.5
+      },
+      "E1_minus_D0_pp": {
+        "clean": -2.8556,
+        "leo_clear_weak": 4.9556,
+        "leo_low_elev_weak": 6.45,
+        "leo_rain_weak": 6.7167,
+        "leo_mean": 6.0407,
+        "harmonic_clean_leo_mean": 4.1733,
+        "clean_class_floor": -3.2333,
+        "leo_class_floor": -2.9
+      }
+    },
+    "verdict": "MEAN_LEO_GAIN_WITH_FLOOR_REGRESSION"
+  },
+  "new_package_core90_seed_reference": {
+    "reference_label": "NEW_PACKAGE_CORE90_SEED_BATCH",
+    "actual_method": "ADV3B03_MU10_ALPHA20_E200",
+    "training_initialization": "FROM_SCRATCH",
+    "historical_core90_center_seed": 392002,
+    "source_run_ids": [
+      "phase1_adv3b03_core90seed_near3_day123_e200_20260830_r1",
+      "phase1_adv3b03_core90seed_near5_day123_e200_20260830_r1"
+    ],
+    "frozen_seed": 392005,
+    "target_run_id": "phase1_adv3b03_seed392005_targetrx_alldays_zeroadapt_20260830_r4",
+    "source_selection_note": "Eight seeds were ranked using source V_select only; seed392005 ranked first and seed392002 ranked second.",
+    "same_target_evaluation_axes": {
+      "receivers": [
+        "1-1",
+        "14-7",
+        "2-1",
+        "20-1",
+        "7-14",
+        "7-7",
+        "8-8"
+      ],
+      "days": [
+        "2021_03_01",
+        "2021_03_08",
+        "2021_03_15",
+        "2021_03_23"
+      ],
+      "receiver_day_cells": 28,
+      "samples_per_scenario": 168000,
+      "state_updates": false,
+      "strict_checkpoint_load": true
+    },
+    "overall_percent": {
+      "reference_ADV3B03_S392005_E200": {
+        "clean": 78.4363,
+        "leo_clear_weak": 62.8625,
+        "leo_low_elev_weak": 60.944,
+        "leo_rain_weak": 60.8655,
+        "leo_mean": 61.5573,
+        "leo_floor": 60.8655
+      },
+      "current_BICAD_XR_E1_S392001_U5000": {
+        "clean": 73.3923,
+        "leo_clear_weak": 42.5768,
+        "leo_low_elev_weak": 41.1631,
+        "leo_rain_weak": 41.1036,
+        "leo_mean": 41.6145,
+        "leo_floor": 41.1036
+      },
+      "E1_minus_reference_pp": {
+        "clean": -5.044,
+        "leo_clear_weak": -20.2857,
+        "leo_low_elev_weak": -19.7809,
+        "leo_rain_weak": -19.7619,
+        "leo_mean": -19.9428,
+        "leo_floor": -19.7619
+      }
+    },
+    "per_receiver_percent": {
+      "1-1": {
+        "reference_clean": 82.2125,
+        "E1_clean": 85.3042,
+        "clean_delta_pp": 3.0917,
+        "reference_leo_mean": 70.6125,
+        "E1_leo_mean": 43.7542,
+        "leo_mean_delta_pp": -26.8583
+      },
+      "14-7": {
+        "reference_clean": 64.7,
+        "E1_clean": 61.6625,
+        "clean_delta_pp": -3.0375,
+        "reference_leo_mean": 43.4625,
+        "E1_leo_mean": 33.5056,
+        "leo_mean_delta_pp": -9.9569
+      },
+      "2-1": {
+        "reference_clean": 87.7708,
+        "E1_clean": 67.25,
+        "clean_delta_pp": -20.5208,
+        "reference_leo_mean": 71.0986,
+        "E1_leo_mean": 42.5431,
+        "leo_mean_delta_pp": -28.5555
+      },
+      "20-1": {
+        "reference_clean": 71.6625,
+        "E1_clean": 72.5875,
+        "clean_delta_pp": 0.925,
+        "reference_leo_mean": 50.2917,
+        "E1_leo_mean": 37.225,
+        "leo_mean_delta_pp": -13.0667
+      },
+      "7-14": {
+        "reference_clean": 83.4833,
+        "E1_clean": 66.4958,
+        "clean_delta_pp": -16.9875,
+        "reference_leo_mean": 69.8014,
+        "E1_leo_mean": 48.8986,
+        "leo_mean_delta_pp": -20.9028
+      },
+      "7-7": {
+        "reference_clean": 80.5917,
+        "E1_clean": 72.675,
+        "clean_delta_pp": -7.9167,
+        "reference_leo_mean": 63.6556,
+        "E1_leo_mean": 38.7403,
+        "leo_mean_delta_pp": -24.9153
+      },
+      "8-8": {
+        "reference_clean": 78.6333,
+        "E1_clean": 87.7708,
+        "clean_delta_pp": 9.1375,
+        "reference_leo_mean": 61.9792,
+        "E1_leo_mean": 46.6347,
+        "leo_mean_delta_pp": -15.3445
+      }
+    },
+    "per_day_percent": {
+      "2021_03_01": {
+        "reference_clean": 76.6786,
+        "E1_clean": 70.7619,
+        "clean_delta_pp": -5.9167,
+        "reference_leo_mean": 58.5119,
+        "E1_leo_mean": 41.0278,
+        "leo_mean_delta_pp": -17.4841
+      },
+      "2021_03_08": {
+        "reference_clean": 80.9143,
+        "E1_clean": 74.8905,
+        "clean_delta_pp": -6.0238,
+        "reference_leo_mean": 63.8452,
+        "E1_leo_mean": 44.446,
+        "leo_mean_delta_pp": -19.3992
+      },
+      "2021_03_15": {
+        "reference_clean": 74.4929,
+        "E1_clean": 71.0738,
+        "clean_delta_pp": -3.4191,
+        "reference_leo_mean": 59.9643,
+        "E1_leo_mean": 39.7079,
+        "leo_mean_delta_pp": -20.2564
+      },
+      "2021_03_23": {
+        "reference_clean": 81.6595,
+        "E1_clean": 76.8429,
+        "clean_delta_pp": -4.8166,
+        "reference_leo_mean": 63.9079,
+        "E1_leo_mean": 41.2762,
+        "leo_mean_delta_pp": -22.6317
+      }
+    },
+    "unmatched_training_axes": {
+      "actual_method": [
+        "ADV3B03_MU10_ALPHA20_E200",
+        "BICAD_XR_E1_XDC_ONLY"
+      ],
+      "source_receivers": [
+        "1,3,4,6,8",
+        "3,4,6,8"
+      ],
+      "training_budget": [
+        "E200",
+        "U5000_actual_epoch97"
+      ],
+      "batch_size": [
+        128,
+        96
+      ],
+      "frozen_seed": [
+        392005,
+        392001
+      ]
+    },
+    "claim_boundary": "SAME_TARGET_PACKAGE_WORKING_POINT_COMPARISON_NOT_A_MATCHED_ARCHITECTURE_CAUSAL_TEST"
+  },
+  "final_verdict": "QUICK_SCREEN_WINNER_NO_PROMOTION_TO_DEFAULT"
+}
