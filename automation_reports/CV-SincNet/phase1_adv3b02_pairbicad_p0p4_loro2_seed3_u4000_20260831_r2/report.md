@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-- 状态：`LOCAL_VERIFIED`。
+- 状态：`LANDED`。
 - Run ID：`phase1_adv3b02_pairbicad_p0p4_loro2_seed3_u4000_20260831_r2`。
 - 失败前序run：`phase1_adv3b02_pairbicad_p0p4_loro2_seed3_u4000_20260831_r1`，保持只读，状态为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
 - 唯一修复：正式评估恢复器按冻结row和候选协议显式重建`num_receivers/num_days/num_channels`；训练方法、loss、数据、矩阵、seed、update预算和四场景评估不变。
@@ -44,7 +44,7 @@
 - 远端run根：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_pairbicad_p0p4_loro2_seed3_u4000_20260831_r2`。
 - 远端dispatcher日志：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_pairbicad_p0p4_loro2_seed3_u4000_20260831_r2.dispatcher.log`。
 - 数据：`/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl`。
-- Python：`/home/szu2070436088/miniconda3/envs/ssr-gpu/bin/python`。
+- Python：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`（Python3.10.19，与N607正式入口一致）。
 - CWD：上述远端release根。
 - 正式入口：`code/scripts/launch_phase1_pairbicad_p0p4_n607_20260831.sh`。
 
@@ -62,3 +62,11 @@ PAIRBICAD_RELEASE_ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1
 - 不得因中间或最终低性能停止、重启、热补丁或选择性重跑；不得影响无关进程。
 - 30/30行只有在严格checkpoint恢复及clean、`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`全部闭合后才可标为`ARTIFACTS_COMPLETE`。
 - 只按source LORO同row证据比较P0–P4；不得访问Phase2、目标接收机、support、query或truth。
+
+## N607落地回读
+
+- 发布前GPU0–7均为0%利用率、1MiB显存，无compute process；`/home`可用7.3TB。
+- 远端archive、release根、r2 run根、dispatcher日志和PID文件发布前均不存在，不会覆盖r1或其他任务。
+- release归档本地→远端SHA256一致：`ec5ca68e90fb3753b63ca19ae49fd9528e3b0d825ec9e0578d8b371f112ac09c`。
+- 归档已解压到预登记release根；使用正式入口同一Python3.10.19解释器对launcher、trainer和SSDG入口执行远端`py_compile`，结果PASS。
+- 首次compile探测使用了错误的预登记解释器路径并以exit127结束，未执行代码、未创建run；报告已更正为shell入口实际使用的`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。
