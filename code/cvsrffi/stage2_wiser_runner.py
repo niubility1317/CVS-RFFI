@@ -35,6 +35,9 @@ from cvsrffi.wiser_source_summary import (
 )
 
 
+_P3_STAGE2_BRANCHES = ("stage2_time", "stage2_frequency", "stage2_joint")
+
+
 @dataclass(frozen=True)
 class WISERTrainingConfig:
     stage_steps: tuple[int, int, int] = (1500, 2500, 4000)
@@ -101,7 +104,7 @@ class WISERP3TrainingConfig:
     duplication_weight: float = 0.1
     energy_weight: float = 0.1
     duplication_slack: float = 0.0
-    energy_floor: float = 0.0
+    energy_floor: float = 0.1
     interpolation_grid: tuple[float, ...] = (1.0, 0.75, 0.5, 0.25, 0.0)
     seed: int = 713102
 
@@ -118,7 +121,7 @@ class WISERP3TrainingConfig:
             self.risk_rho, self.floor_beta, self.dual_rate, self.class_risk_epsilon,
             self.manifold_l2, self.manifold_weight, self.source_head_weight,
             self.prototype_weight, self.duplication_weight, self.energy_weight,
-            self.duplication_slack, self.energy_floor,
+            self.duplication_slack,
         )
         if any(not math.isfinite(float(value)) or float(value) < 0.0 for value in finite_nonnegative):
             raise ValueError("P3 weights and constraints must be finite and nonnegative")
@@ -136,6 +139,10 @@ class WISERP3TrainingConfig:
             for alpha in self.interpolation_grid
         ):
             raise ValueError("P3 interpolation grid must contain finite [0,1] values")
+        if not any(float(alpha) == 0.0 for alpha in self.interpolation_grid):
+            raise ValueError("P3 interpolation grid must contain 0.0 for safe rollback")
+        if not math.isfinite(float(self.energy_floor)) or float(self.energy_floor) <= 0.0:
+            raise ValueError("P3 N6 energy_floor must be finite and positive")
 
 
 @dataclass(frozen=True)
@@ -446,10 +453,17 @@ def select_support_safe_interpolation(
     trainable = set(base_state) if trainable_parameter_names is None else set(trainable_parameter_names)
     if not trainable <= set(base_state):
         raise ValueError("interpolation whitelist is absent from state")
-    fallback: dict[str, torch.Tensor] = {name: value.detach().clone() for name, value in base_state.items()}
-    fallback_metrics: Mapping[str, Any] = {"safe": False}
+    fallback: dict[str, torch.Tensor] = {
+        name: value.detach().clone() for name, value in base_state.items()
+    }
+    observed_base = evaluator(fallback)
+    fallback_metrics: Mapping[str, Any] = (
+        {"safe": bool(observed_base)} if isinstance(observed_base, bool) else observed_base
+    )
     for raw_alpha in grid:
         alpha = float(raw_alpha)
+        if alpha == 0.0:
+            continue
         state: dict[str, torch.Tensor] = {}
         for name, base in base_state.items():
             candidate = candidate_state[name]
@@ -459,8 +473,6 @@ def select_support_safe_interpolation(
                 state[name] = base.detach().clone()
         observed = evaluator(state)
         metrics: Mapping[str, Any] = {"safe": bool(observed)} if isinstance(observed, bool) else observed
-        if alpha == 0.0:
-            fallback, fallback_metrics = state, metrics
         if bool(metrics.get("safe", False)):
             return SupportInterpolationResult(alpha=alpha, state=state, support_metrics=metrics)
     return SupportInterpolationResult(alpha=0.0, state=fallback, support_metrics=fallback_metrics)
@@ -473,15 +485,23 @@ def train_wiser_p3_arm(
     *,
     support_tokens: Sequence[str],
     source_summary: QuantizedSourceSummary | None,
+    expected_source_class_registry: Sequence[str] | None = None,
+    expected_source_feature_schema: str | None = None,
     arm: str,
     config: WISERP3TrainingConfig,
 ) -> WISERP3TrainingAudit:
     """Run the P3 arm and refreeze even rejected inputs or failed training."""
 
+    model.eval()
+    for parameter in model.parameters():
+        parameter.requires_grad_(False)
     try:
         return _train_wiser_p3_arm_impl(
             model, support_iq, support_labels, support_tokens=support_tokens,
-            source_summary=source_summary, arm=arm, config=config,
+            source_summary=source_summary,
+            expected_source_class_registry=expected_source_class_registry,
+            expected_source_feature_schema=expected_source_feature_schema,
+            arm=arm, config=config,
         )
     finally:
         model.eval()
@@ -496,6 +516,8 @@ def _train_wiser_p3_arm_impl(
     *,
     support_tokens: Sequence[str],
     source_summary: QuantizedSourceSummary | None,
+    expected_source_class_registry: Sequence[str] | None,
+    expected_source_feature_schema: str | None,
     arm: str,
     config: WISERP3TrainingConfig,
 ) -> WISERP3TrainingAudit:
@@ -509,6 +531,14 @@ def _train_wiser_p3_arm_impl(
     if needs_summary:
         if source_summary is None or len(source_summary.class_registry) != 6:
             raise ValueError("N4-N6 require a valid six-class immutable source summary")
+        if expected_source_class_registry is None:
+            raise ValueError("N4-N6 require an explicit expected source class registry")
+        if expected_source_feature_schema is None:
+            raise ValueError("N4-N6 require an explicit expected source feature schema")
+        if tuple(str(value) for value in expected_source_class_registry) != source_summary.class_registry:
+            raise ValueError("source summary class registry does not match the expected binding")
+        if str(expected_source_feature_schema) != source_summary.feature_schema:
+            raise ValueError("source summary feature schema does not match the expected binding")
         source_points = source_summary.domain_class_points().to(values.device)
         if source_points.ndim != 3 or source_points.shape[1:] != (6, 160):
             raise ValueError("N4-N6 require [domain,6,160] source summary points")
@@ -533,15 +563,21 @@ def _train_wiser_p3_arm_impl(
             initial_identity.detach(), labels, source_points, steps=int(config.manifold_steps),
             learning_rate=float(config.manifold_learning_rate), l2=float(config.manifold_l2),
         ).detach()
-    duals = torch.zeros(6, device=values.device)
+    initial_duals = torch.zeros(6, device=values.device)
     reached: set[str] = set()
     rows: list[dict[str, Any]] = []
     optimizer_steps = 0
 
-    def evaluate(state: Mapping[str, torch.Tensor], anchor_metrics: Mapping[str, Any]) -> Mapping[str, Any]:
+    def evaluate(
+        state: Mapping[str, torch.Tensor],
+        anchor_metrics: Mapping[str, Any],
+        metric_duals: torch.Tensor,
+    ) -> Mapping[str, Any]:
         model.load_state_dict(state, strict=True)
         model.eval()
-        metrics = _p3_metrics(model, values, labels, fft, folds, baseline_class_risk, duals, config)
+        metrics = _p3_metrics(
+            model, values, labels, fft, folds, baseline_class_risk, metric_duals, config
+        )
         metrics["safe"] = bool(
             metrics["oof_p3_ba"] > float(anchor_metrics["oof_p3_ba"])
             and metrics["oof_p3_floor"] >= float(anchor_metrics["oof_p3_floor"])
@@ -551,22 +587,29 @@ def _train_wiser_p3_arm_impl(
         return metrics
 
     def train_branch(
-        branch: str, parent_branch: str | None, stage_input: Mapping[str, torch.Tensor], step_count: int,
-    ) -> tuple[SupportInterpolationResult, dict[str, Any]]:
-        nonlocal optimizer_steps, duals
+        branch: str,
+        parent_branch: str | None,
+        stage_input: Mapping[str, torch.Tensor],
+        dual_input: torch.Tensor,
+        step_count: int,
+    ) -> tuple[SupportInterpolationResult, dict[str, Any], torch.Tensor]:
+        nonlocal optimizer_steps
+        branch_duals = dual_input.detach().clone()
         model.load_state_dict(stage_input, strict=True)
         update = configure_p3_time_first_update(model, branch=branch, parent_branch=parent_branch)
         trainable = [(name, parameter) for name, parameter in model.named_parameters() if parameter.requires_grad]
         optimizer = torch.optim.AdamW([{"params": [parameter], "lr": float(config.learning_rate)} for _, parameter in trainable], weight_decay=0.0)
-        anchor_metrics = _p3_metrics(model, values, labels, fft, folds, baseline_class_risk, duals, config)
+        anchor_metrics = _p3_metrics(
+            model, values, labels, fft, folds, baseline_class_risk, branch_duals, config
+        )
         projection_audits: list[Mapping[str, float]] = []
         for _ in range(int(step_count)):
             optimizer.zero_grad(set_to_none=True)
             source_logits, identity = _forward_identity(model, values)
             p3 = cross_fitted_p3_loss(
                 identity, fft, labels, folds=folds, baseline_class_risk=baseline_class_risk,
-                class_duals=(duals if arm_value != "N2" else torch.zeros_like(duals)),
-                epsilon=torch.full_like(duals, float(config.class_risk_epsilon)),
+                class_duals=(branch_duals if arm_value != "N2" else torch.zeros_like(branch_duals)),
+                epsilon=torch.full_like(branch_duals, float(config.class_risk_epsilon)),
                 rho=(0.0 if arm_value == "N2" else float(config.risk_rho)),
                 beta=(0.0 if arm_value == "N2" else float(config.floor_beta)), tau=float(config.floor_tau),
             )
@@ -601,31 +644,49 @@ def _train_wiser_p3_arm_impl(
             optimizer.step()
             optimizer_steps += 1
             if arm_value != "N2":
-                duals = update_nonnegative_duals(duals, p3.violation.detach(), rate=float(config.dual_rate))
+                branch_duals = update_nonnegative_duals(
+                    branch_duals, p3.violation.detach(), rate=float(config.dual_rate)
+                )
         candidate_state = _clone_state(model)
         selected = select_support_safe_interpolation(
-            stage_input, candidate_state, evaluator=lambda state: evaluate(state, anchor_metrics),
+            stage_input,
+            candidate_state,
+            evaluator=lambda state: evaluate(
+                state,
+                anchor_metrics,
+                dual_input if all(torch.equal(state[name], stage_input[name]) for name in state) else branch_duals,
+            ),
             grid=config.interpolation_grid, trainable_parameter_names=update.trainable_parameter_names,
         )
         model.load_state_dict(selected.state, strict=True)
+        model.eval()
+        for parameter in model.parameters():
+            parameter.requires_grad_(False)
+        selected_duals = dual_input.detach().clone() if selected.alpha == 0.0 else branch_duals.detach().clone()
         row = {
             "branch": branch, "parent_branch": parent_branch, "steps": int(step_count),
             "alpha": selected.alpha, "trainable_parameter_names": list(update.trainable_parameter_names),
             "trainable_parameter_count": update.trainable_parameter_count,
             "support_metrics": dict(selected.support_metrics), "query_rows_used": 0,
             "gradient_projection_audits": tuple(projection_audits),
+            "input_duals": tuple(float(value) for value in dual_input),
+            "output_duals": tuple(float(value) for value in selected_duals),
         }
-        return selected, row
+        return selected, row, selected_duals
 
     try:
-        stage1, row = train_branch("stage1_time", None, initial_state, int(config.stage_steps[0]))
+        stage1, row, stage1_duals = train_branch(
+            "stage1_time", None, initial_state, initial_duals, int(config.stage_steps[0])
+        )
         rows.append(row)
-        stage2_results: list[tuple[SupportInterpolationResult, dict[str, Any]]] = []
-        for branch in ("stage2_time", "stage2_frequency", "stage2_joint"):
-            selected, branch_row = train_branch(branch, "stage1_time", stage1.state, int(config.stage_steps[1]))
+        stage2_results: list[tuple[SupportInterpolationResult, dict[str, Any], torch.Tensor]] = []
+        for branch in _P3_STAGE2_BRANCHES:
+            selected, branch_row, branch_duals = train_branch(
+                branch, "stage1_time", stage1.state, stage1_duals, int(config.stage_steps[1])
+            )
             rows.append(branch_row)
-            stage2_results.append((selected, branch_row))
-        chosen_state, chosen_row = min(
+            stage2_results.append((selected, branch_row, branch_duals))
+        chosen_state, chosen_row, chosen_duals = min(
             stage2_results,
             key=lambda item: (
                 -float(item[0].support_metrics["oof_p3_ba"]),
@@ -634,7 +695,13 @@ def _train_wiser_p3_arm_impl(
                 int(item[1]["trainable_parameter_count"]), item[1]["branch"],
             ),
         )
-        stage3, row = train_branch("stage3", str(chosen_row["branch"]), chosen_state.state, int(config.stage_steps[2]))
+        stage3, row, final_duals = train_branch(
+            "stage3",
+            str(chosen_row["branch"]),
+            chosen_state.state,
+            chosen_duals,
+            int(config.stage_steps[2]),
+        )
         rows.append(row)
         final_metrics = dict(stage3.support_metrics)
     finally:
@@ -649,7 +716,7 @@ def _train_wiser_p3_arm_impl(
         baseline_joint_condition_number=float(baseline_diagnostics.joint_condition_number),
         final_joint_condition_number=float(final_metrics["joint_condition_number"]),
         final_zero_identity_count=int(final_metrics["zero_identity_count"]),
-        final_duals=tuple(float(value) for value in duals), config=asdict(config),
+        final_duals=tuple(float(value) for value in final_duals), config=asdict(config),
     )
 
 

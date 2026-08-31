@@ -6,6 +6,7 @@ from torch import nn
 import pytest
 
 import cvsrffi.stage2_wiser_runner as runner_module
+from cvsrffi.stage2_wiser_p3 import identity_fft_penalties
 from cvsrffi.stage2_wiser_runner import (
     WISERP3TrainingConfig,
     WISERTrainingConfig,
@@ -202,9 +203,10 @@ class _P3DualModel(nn.Module):
         self.adv_head = nn.Linear(160, 6)
         self.meta_adapter_alpha = nn.Linear(160, 160)
         self.sat_anchor_identity_adapter = nn.Linear(160, 160)
+        self.input_dropout = nn.Dropout(p=0.8)
 
     def forward(self, value: torch.Tensor, y_tx=None, return_aux: bool = False):
-        flat = value.flatten(1)[:, :160]
+        flat = self.input_dropout(value.flatten(1)[:, :160])
         t = torch.tanh(self.id_backbone.t3(torch.tanh(self.id_backbone.t2(torch.tanh(self.id_backbone.t1(self.id_backbone.time_fuse(flat)))))))
         f = torch.tanh(self.id_backbone.f3(torch.tanh(self.id_backbone.f2(torch.tanh(self.id_backbone.f1(self.id_backbone.freq_gate(flat)))))))
         base = torch.tanh(self.id_backbone.fuse(torch.cat((self.id_backbone.t_proj(t), self.id_backbone.f_proj(f)), dim=1)))
@@ -234,12 +236,24 @@ def _p3_support_fixture() -> tuple[torch.Tensor, torch.Tensor, tuple[str, ...], 
 
 
 @pytest.mark.parametrize("arm", ["N2", "N3", "N4", "N5", "N6"])
-def test_p3_arm_uses_only_support_and_refreezes(arm: str) -> None:
+def test_p3_arm_uses_only_support_and_refreezes(
+    arm: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
     model = _P3DualModel()
     support, labels, tokens, summary = _p3_support_fixture()
+    forward_modes: list[tuple[bool, bool]] = []
+    original_forward = runner_module._forward_identity
+
+    def traced_forward(current_model, values):
+        forward_modes.append((current_model.training, any(parameter.requires_grad for parameter in current_model.parameters())))
+        return original_forward(current_model, values)
+
+    monkeypatch.setattr(runner_module, "_forward_identity", traced_forward)
 
     audit = train_wiser_p3_arm(
         model, support, labels, support_tokens=tokens, source_summary=summary, arm=arm,
+        expected_source_class_registry=tuple(f"c{index}" for index in range(6)),
+        expected_source_feature_schema="p3-test160",
         config=WISERP3TrainingConfig(
             stage_steps=(1, 0, 0), diagnostic_interval=1, interpolation_grid=(0.0,)
         ),
@@ -248,6 +262,7 @@ def test_p3_arm_uses_only_support_and_refreezes(arm: str) -> None:
     assert audit.query_rows_used == 0
     assert audit.optimizer_steps > 0
     assert audit.baseline_joint_condition_number >= 1.0
+    assert forward_modes[0] == (False, False)
     assert not model.training
     assert not any(parameter.requires_grad for parameter in model.parameters())
     assert {row["branch"] for row in audit.stage_audits if row["branch"].startswith("stage2")} == {
@@ -255,6 +270,11 @@ def test_p3_arm_uses_only_support_and_refreezes(arm: str) -> None:
     }
     stage3 = next(row for row in audit.stage_audits if row["branch"] == "stage3")
     assert stage3["parent_branch"] in {"stage2_time", "stage2_frequency", "stage2_joint"}
+    stage1 = next(row for row in audit.stage_audits if row["branch"] == "stage1_time")
+    stage2 = [row for row in audit.stage_audits if row["branch"].startswith("stage2")]
+    assert all(row["input_duals"] == stage1["output_duals"] for row in stage2)
+    selected_stage2 = next(row for row in stage2 if row["branch"] == stage3["parent_branch"])
+    assert stage3["input_duals"] == selected_stage2["output_duals"]
     assert all(not name.startswith(("dom_", "adv_", "meta_adapter_", "sat_anchor_")) for name in audit.reached_parameter_names)
 
 
@@ -285,3 +305,62 @@ def test_stage_branch_selection_is_support_only_and_falls_back_to_alpha_zero() -
     assert result.query_rows_used == 0
     assert result.state["weight"].item() == 1.0
     assert result.state["frozen"].item() == 9.0
+
+
+def test_interpolation_evaluates_base_even_when_grid_omits_zero() -> None:
+    base = {"weight": torch.tensor([1.0])}
+    candidate = {"weight": torch.tensor([5.0])}
+    observed: list[float] = []
+
+    result = select_support_safe_interpolation(
+        base, candidate,
+        evaluator=lambda state: observed.append(float(state["weight"])) or {"safe": False, "oof_p3_ba": 0.2},
+        grid=(1.0,), trainable_parameter_names=("weight",),
+    )
+
+    assert result.alpha == 0.0
+    assert observed == [1.0, 5.0]
+    assert result.support_metrics["oof_p3_ba"] == 0.2
+
+
+def test_p3_config_rejects_interpolation_grid_without_alpha_zero() -> None:
+    with pytest.raises(ValueError, match="0.0"):
+        WISERP3TrainingConfig(stage_steps=(1, 0, 0), interpolation_grid=(1.0,))
+
+
+def test_n6_energy_guard_reaches_low_identity_gradients() -> None:
+    identity = torch.full((60, 160), 1.0e-3, requires_grad=True)
+    fft = torch.zeros((60, 96))
+    labels = torch.arange(6).repeat_interleave(10)
+
+    _, energy = identity_fft_penalties(
+        identity, fft, labels, baseline_cross_covariance_frobenius=0.0, energy_floor=0.1
+    )
+    energy.backward()
+
+    assert energy.item() > 0.0
+    assert identity.grad is not None and torch.isfinite(identity.grad).all()
+    assert identity.grad.abs().sum().item() > 0.0
+
+
+def test_n4_source_binding_rejects_wrong_schema_or_registry() -> None:
+    model = _P3DualModel()
+    support, labels, tokens, summary = _p3_support_fixture()
+    config = WISERP3TrainingConfig(stage_steps=(1, 0, 0), interpolation_grid=(0.0,))
+
+    with pytest.raises(ValueError, match="explicit expected source class registry"):
+        train_wiser_p3_arm(
+            model, support, labels, support_tokens=tokens, source_summary=summary, arm="N4", config=config,
+        )
+    with pytest.raises(ValueError, match="registry"):
+        train_wiser_p3_arm(
+            model, support, labels, support_tokens=tokens, source_summary=summary, arm="N4", config=config,
+            expected_source_class_registry=tuple(f"c{index}" for index in reversed(range(6))),
+            expected_source_feature_schema="p3-test160",
+        )
+    with pytest.raises(ValueError, match="feature schema"):
+        train_wiser_p3_arm(
+            model, support, labels, support_tokens=tokens, source_summary=summary, arm="N4", config=config,
+            expected_source_class_registry=tuple(f"c{index}" for index in range(6)),
+            expected_source_feature_schema="wrong-schema",
+        )
