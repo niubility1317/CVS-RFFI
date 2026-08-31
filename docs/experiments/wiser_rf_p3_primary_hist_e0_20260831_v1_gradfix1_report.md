@@ -2,7 +2,7 @@
 
 ## 状态与修复边界
 
-- run ID：`wiser_rf_p3_primary_hist_e0_20260831_v1_gradfix1`；当前状态：`LANDED`；Git提交：`fe9ec1424e8396d1f6a4e8931a8653750cbb74e9`。
+- run ID：`wiser_rf_p3_primary_hist_e0_20260831_v1_gradfix1`；当前状态：`RUNNING`；Git提交：`fe9ec1424e8396d1f6a4e8931a8653750cbb74e9`。
 - 本提交仅将精确D92的退化方差在`sqrt`前安全屏蔽，并为零`delta`预构造安全分母；不改变正常坐标的前向公式、P3方法、训练预算、arm、scene或晋级门槛。
 - 两个前序run分别因历史绑定漂移和退化坐标非有限梯度在无query smoke阶段停止，均为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，未进入pilot、未打开query、未产生prediction，原run/log根永久保留。
 - 回归证据：`zero_identity/zero_fft/ill_conditioned`三类D92反向测试先失败后通过；10个D92/P3/pilot/scoring/Target25测试文件完整通过；相关模块`py_compile`通过。
@@ -33,3 +33,9 @@ CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/
 - 预期artifact：smoke结果、21个support audit与prediction/receipt、completion marker、独立详细score、资源记录和`pilot_auto_result.json`。
 - pilot门槛不变：P3 BA三scene中位提升≥3pp、最差scene≥-0.5pp、P3 floor中位及low-elev floor不下降、P1/P2每scene≥-2pp、zero-id=0、条件数≤基线2倍、至少2/3scene净help为正；N1不得成为冠军。
 - 仅当三个scene完整且`full_target25_authorized=true`才发布Target25；否则报告科学未晋级。Target25通过才授权K10扩展，Stage B不在本run自动执行范围内。
+
+## 启动核验
+
+- 远端owner PID=`2958724`（PPID1），控制PID=`2958726`，当前smoke worker PID=`2958727`；worker CWD精确指向本run的`fe9ec142`release，cmdline为预登记`p3-smoke`，输出根为本run的`smoke`。
+- worker映射物理GPU0 UUID=`GPU-56adac86-77cd-36c9-8770-dbf002650461`，启动采样显存7646MiB；GPU0启动前已有2个训练进程，加入本run后总数为3，未超过用户授权上限。
+- 本地启动SSH在取得PID后因远端owner保持连接而主动断开；远端owner已脱离为PPID1且继续存活。首次日志采样为0字节，属于stdout缓冲，进程状态为运行且GPU已建立compute context；后续只读检查日志/artifact增长，不重复启动。
