@@ -33,6 +33,18 @@ class P3LossResult:
     oof_predictions: torch.Tensor
 
 
+@dataclass(frozen=True)
+class IdentityFFTDiagnostics:
+    """Detached support-only identity/FFT complementarity audit values."""
+
+    zero_identity_count: int
+    identity_norm_q01: float
+    dead_activation_ratio: float
+    cross_covariance_frobenius: float
+    joint_condition_number: float
+    canonical_correlations: tuple[float, float, float, float, float]
+
+
 def _token_order(seed: int, tokens: Sequence[str], indices: torch.Tensor) -> torch.Tensor:
     ordered = sorted(
         indices.tolist(),
@@ -316,12 +328,225 @@ def shared_domain_manifold_loss(
     return (current_centers - source_centers).square().mean()
 
 
+def _gradient_slots(
+    primary: Sequence[torch.Tensor | None],
+    auxiliary: Sequence[torch.Tensor | None],
+    reference: Sequence[torch.Tensor | None] | None,
+) -> tuple[tuple[torch.Tensor, ...], tuple[torch.Tensor, ...]]:
+    """Resolve absent gradients without inventing a parameter shape."""
+
+    if len(primary) != len(auxiliary):
+        raise ValueError("primary and auxiliary gradients must have the same length")
+    if reference is not None and len(reference) != len(primary):
+        raise ValueError("reference gradients must have the same length as gradient slots")
+
+    primary_safe: list[torch.Tensor] = []
+    auxiliary_safe: list[torch.Tensor] = []
+    for index, (primary_item, auxiliary_item) in enumerate(zip(primary, auxiliary)):
+        reference_item = None if reference is None else reference[index]
+        candidates = tuple(
+            item for item in (primary_item, auxiliary_item, reference_item) if item is not None
+        )
+        if not candidates:
+            raise ValueError(f"gradient slot {index} has both None values and no reference")
+        if any(not isinstance(item, torch.Tensor) for item in candidates):
+            raise TypeError("gradient slots and references must be tensors or None")
+        shape_source = candidates[0]
+        if any(
+            item.shape != shape_source.shape
+            or item.device != shape_source.device
+            or item.dtype != shape_source.dtype
+            for item in candidates[1:]
+        ):
+            raise ValueError("corresponding gradient slots must have matching shape, device, and dtype")
+        primary_safe.append(
+            torch.zeros_like(shape_source) if primary_item is None else primary_item
+        )
+        auxiliary_safe.append(
+            torch.zeros_like(shape_source) if auxiliary_item is None else auxiliary_item
+        )
+    if not primary_safe:
+        raise ValueError("at least one gradient slot is required")
+    return tuple(primary_safe), tuple(auxiliary_safe)
+
+
+def project_auxiliary_gradients(
+    primary: Sequence[torch.Tensor | None],
+    auxiliary: Sequence[torch.Tensor | None],
+    *,
+    reference: Sequence[torch.Tensor | None] | None = None,
+    eps: float = 1.0e-12,
+) -> tuple[tuple[torch.Tensor, ...], dict[str, float]]:
+    """Globally remove only an auxiliary component opposed to the P3 gradient."""
+
+    if eps <= 0.0:
+        raise ValueError("eps must be positive")
+    primary_safe, auxiliary_safe = _gradient_slots(primary, auxiliary, reference)
+    raw_dot = torch.stack(
+        [torch.sum(primary_item * auxiliary_item) for primary_item, auxiliary_item in zip(primary_safe, auxiliary_safe)]
+    ).sum()
+    primary_norm = torch.stack(
+        [torch.sum(primary_item.square()) for primary_item in primary_safe]
+    ).sum()
+    coefficient = torch.minimum(raw_dot, raw_dot.new_zeros(())) / (primary_norm + float(eps))
+    projected = tuple(
+        auxiliary_item - coefficient * primary_item
+        for primary_item, auxiliary_item in zip(primary_safe, auxiliary_safe)
+    )
+    projected_dot = torch.stack(
+        [torch.sum(primary_item * projected_item) for primary_item, projected_item in zip(primary_safe, projected)]
+    ).sum()
+    return projected, {
+        "raw_dot": float(raw_dot.detach()),
+        "projected_dot": float(projected_dot.detach()),
+    }
+
+
+def _identity_fft_inputs(
+    identity: torch.Tensor,
+    fft: torch.Tensor,
+    labels: torch.Tensor,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    identities = torch.as_tensor(identity)
+    fft_rows = torch.as_tensor(fft, device=identities.device)
+    target_labels = torch.as_tensor(labels, dtype=torch.long, device=identities.device).view(-1)
+    if identities.ndim != 2 or fft_rows.ndim != 2:
+        raise ValueError("identity and fft features must be two-dimensional")
+    if identities.shape[0] == 0 or identities.shape[0] != fft_rows.shape[0]:
+        raise ValueError("identity and fft features require matching nonempty rows")
+    if target_labels.numel() != identities.shape[0]:
+        raise ValueError("labels must align one-to-one with identity and fft rows")
+    if not torch.isfinite(identities).all() or not torch.isfinite(fft_rows).all():
+        raise ValueError("identity and fft features must be finite")
+    return identities, fft_rows, target_labels
+
+
+def _class_centered(features: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
+    """Subtract the current support mean within every observed class."""
+
+    classes, inverse = torch.unique(labels, sorted=True, return_inverse=True)
+    centers = torch.stack([features[labels == class_id].mean(dim=0) for class_id in classes])
+    return features - centers[inverse]
+
+
+def _class_centered_cross_covariance(
+    identity: torch.Tensor,
+    fft: torch.Tensor,
+    labels: torch.Tensor,
+) -> torch.Tensor:
+    centered_identity = _class_centered(identity, labels)
+    centered_fft = _class_centered(fft, labels)
+    return centered_identity.transpose(0, 1).matmul(centered_fft) / float(identity.shape[0])
+
+
+def _inverse_square_root(covariance: torch.Tensor, jitter: float) -> torch.Tensor:
+    """Build a deterministic positive-definite whitening transform."""
+
+    stabilized = covariance + float(jitter) * torch.eye(
+        covariance.shape[0], dtype=covariance.dtype, device=covariance.device
+    )
+    eigenvalues, eigenvectors = torch.linalg.eigh(stabilized)
+    return (eigenvectors * eigenvalues.clamp_min(float(jitter)).rsqrt()).matmul(
+        eigenvectors.transpose(0, 1)
+    )
+
+
+def identity_fft_diagnostics(
+    identity: torch.Tensor,
+    fft: torch.Tensor,
+    labels: torch.Tensor,
+    *,
+    zero_tolerance: float = 1.0e-12,
+    jitter: float = 1.0e-6,
+) -> IdentityFFTDiagnostics:
+    """Return stable, detached class-centered geometry diagnostics for N6 audits."""
+
+    if zero_tolerance < 0.0 or jitter <= 0.0:
+        raise ValueError("zero_tolerance must be nonnegative and jitter must be positive")
+    identities, fft_rows, target_labels = _identity_fft_inputs(identity, fft, labels)
+    with torch.no_grad():
+        identity_work = identities.detach().to(dtype=torch.float64)
+        fft_work = fft_rows.detach().to(dtype=torch.float64)
+        norms = torch.linalg.vector_norm(identity_work, dim=1)
+        zero_identity_count = int((norms <= float(zero_tolerance)).sum().item())
+        centered_identity = _class_centered(identity_work, target_labels)
+        centered_fft = _class_centered(fft_work, target_labels)
+        count = float(identity_work.shape[0])
+        cross_covariance = centered_identity.transpose(0, 1).matmul(centered_fft) / count
+        identity_covariance = centered_identity.transpose(0, 1).matmul(centered_identity) / count
+        fft_covariance = centered_fft.transpose(0, 1).matmul(centered_fft) / count
+        whitening_identity = _inverse_square_root(identity_covariance, jitter)
+        whitening_fft = _inverse_square_root(fft_covariance, jitter)
+        canonical = torch.linalg.svdvals(
+            whitening_identity.matmul(cross_covariance).matmul(whitening_fft)
+        ).clamp(min=0.0, max=1.0)
+        canonical_values = [float(value) for value in canonical[:5]]
+        canonical_values.extend([0.0] * (5 - len(canonical_values)))
+        joint = torch.cat((centered_identity, centered_fft), dim=1)
+        joint_covariance = joint.transpose(0, 1).matmul(joint) / count
+        joint_eigenvalues = torch.linalg.eigvalsh(
+            joint_covariance
+            + float(jitter) * torch.eye(
+                joint_covariance.shape[0], dtype=joint_covariance.dtype, device=joint_covariance.device
+            )
+        ).clamp_min(float(jitter))
+        condition = joint_eigenvalues.max() / joint_eigenvalues.min()
+        condition_value = float(condition)
+        if not torch.isfinite(condition):
+            condition_value = float(torch.finfo(joint_eigenvalues.dtype).max)
+        return IdentityFFTDiagnostics(
+            zero_identity_count=zero_identity_count,
+            identity_norm_q01=float(torch.quantile(norms, 0.01)),
+            dead_activation_ratio=float(zero_identity_count / identity_work.shape[0]),
+            cross_covariance_frobenius=float(torch.linalg.matrix_norm(cross_covariance, ord="fro")),
+            joint_condition_number=condition_value,
+            canonical_correlations=tuple(canonical_values),
+        )
+
+
+def identity_fft_penalties(
+    identity: torch.Tensor,
+    fft: torch.Tensor,
+    labels: torch.Tensor,
+    *,
+    baseline_cross_covariance_frobenius: float | torch.Tensor,
+    duplication_slack: float = 0.0,
+    energy_floor: float = 0.0,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Return differentiable N6 penalties with gradients restricted to identity."""
+
+    if duplication_slack < 0.0 or energy_floor < 0.0:
+        raise ValueError("duplication_slack and energy_floor must be nonnegative")
+    identities, fft_rows, target_labels = _identity_fft_inputs(identity, fft, labels)
+    frozen_fft = fft_rows.detach()
+    cross_covariance = _class_centered_cross_covariance(identities, frozen_fft, target_labels)
+    current_squared_norm = cross_covariance.square().sum()
+    baseline = torch.as_tensor(
+        baseline_cross_covariance_frobenius,
+        dtype=current_squared_norm.dtype,
+        device=current_squared_norm.device,
+    ).detach()
+    if baseline.numel() != 1 or not torch.isfinite(baseline).all() or bool((baseline < 0).any()):
+        raise ValueError("baseline cross-covariance Frobenius norm must be one finite nonnegative scalar")
+    duplication_excess = torch.relu(
+        current_squared_norm - baseline.square().reshape(()) - float(duplication_slack)
+    )
+    duplication_loss = duplication_excess.square()
+    pre_normalization_norms = torch.linalg.vector_norm(identities, dim=1)
+    energy_loss = torch.relu(float(energy_floor) - pre_normalization_norms).square().mean()
+    return duplication_loss, energy_loss
+
+
 __all__ = [
     "CrossFitFold",
+    "IdentityFFTDiagnostics",
     "P3LossResult",
     "cross_fitted_p3_loss",
     "frozen_class_risk",
+    "identity_fft_diagnostics",
+    "identity_fft_penalties",
     "infer_shared_domain_weights",
+    "project_auxiliary_gradients",
     "shared_domain_manifold_loss",
     "stratified_crossfit_indices",
     "update_nonnegative_duals",

@@ -12,7 +12,10 @@ from cvsrffi.stage2_binova_d92 import (
 from cvsrffi.stage2_wiser_p3 import (
     cross_fitted_p3_loss,
     frozen_class_risk,
+    identity_fft_diagnostics,
+    identity_fft_penalties,
     infer_shared_domain_weights,
+    project_auxiliary_gradients,
     shared_domain_manifold_loss,
     stratified_crossfit_indices,
     update_nonnegative_duals,
@@ -342,3 +345,116 @@ def test_shared_domain_manifold_loss_only_differentiates_current_target_features
     assert current_target.grad.abs().sum().item() > 0.0
     assert source_anchor.grad is None
     assert frozen_weights.grad is None
+
+
+def test_projected_auxiliary_gradient_cannot_oppose_primary() -> None:
+    """Catches an auxiliary update that reverses the primary P3 direction."""
+
+    primary = (torch.tensor([1.0, 0.0]),)
+    auxiliary = (torch.tensor([-1.0, 2.0]),)
+
+    projected, audit = project_auxiliary_gradients(primary, auxiliary)
+
+    assert torch.dot(primary[0], projected[0]) >= -1.0e-7
+    assert audit["raw_dot"] < 0.0
+    assert audit["projected_dot"] >= -1.0e-7
+
+
+def test_gradient_projection_uses_one_global_parameter_dot_product() -> None:
+    """Catches per-parameter projection that discards globally helpful gradients."""
+
+    primary = (torch.tensor([1.0]), torch.tensor([2.0]))
+    auxiliary = (torch.tensor([-3.0]), torch.tensor([2.0]))
+
+    projected, audit = project_auxiliary_gradients(primary, auxiliary)
+
+    assert torch.equal(projected[0], auxiliary[0])
+    assert torch.equal(projected[1], auxiliary[1])
+    assert audit["raw_dot"] == pytest.approx(1.0)
+    assert audit["projected_dot"] == pytest.approx(1.0)
+
+
+def test_gradient_projection_resolves_none_from_the_other_gradient_shape() -> None:
+    """Catches missing-gradient handling that changes a parameter's shape or direction."""
+
+    projected, audit = project_auxiliary_gradients(
+        (None, torch.tensor([2.0, 0.0])),
+        (torch.tensor([3.0, 4.0]), None),
+    )
+
+    assert torch.equal(projected[0], torch.tensor([3.0, 4.0]))
+    assert torch.equal(projected[1], torch.zeros(2))
+    assert audit == {"raw_dot": 0.0, "projected_dot": 0.0}
+
+
+def test_gradient_projection_rejects_ambiguous_or_misaligned_gradient_slots() -> None:
+    """Catches silently guessed shapes for absent or non-corresponding gradients."""
+
+    with pytest.raises(ValueError, match="same length"):
+        project_auxiliary_gradients((torch.ones(1),), ())
+    with pytest.raises(ValueError, match="both None"):
+        project_auxiliary_gradients((None,), (None,))
+
+
+def test_identity_fft_diagnostics_are_class_centered_and_stably_padded() -> None:
+    """Catches between-class offsets leaking into redundancy diagnostics."""
+
+    labels = torch.tensor([0, 0, 1, 1, 2, 2])
+    identity = torch.tensor(
+        [[0.0, 0.0], [1.0, 0.0], [100.0, 101.0], [101.0, 101.0], [200.0, 202.0], [201.0, 202.0]]
+    )
+    fft = torch.tensor(
+        [[0.0, 0.0], [2.0, 0.0], [500.0, 503.0], [502.0, 503.0], [1000.0, 1006.0], [1002.0, 1006.0]]
+    )
+    shifted_identity = identity + labels[:, None] * 10_000.0
+    shifted_fft = fft - labels[:, None] * 20_000.0
+
+    diagnostics = identity_fft_diagnostics(identity, fft, labels, zero_tolerance=1.0e-12)
+    shifted = identity_fft_diagnostics(
+        shifted_identity, shifted_fft, labels, zero_tolerance=1.0e-12
+    )
+
+    assert diagnostics.zero_identity_count == 1
+    assert diagnostics.cross_covariance_frobenius == pytest.approx(
+        shifted.cross_covariance_frobenius
+    )
+    assert len(diagnostics.canonical_correlations) == 5
+    assert diagnostics.canonical_correlations[2:] == (0.0, 0.0, 0.0)
+    assert torch.isfinite(torch.tensor(diagnostics.joint_condition_number))
+    assert diagnostics.joint_condition_number >= 1.0
+    assert all(isinstance(value, float) for value in diagnostics.canonical_correlations)
+
+
+def test_identity_fft_penalties_only_differentiate_identity_and_only_excess_duplication() -> None:
+    """Catches FFT or frozen-baseline gradients and penalties below the baseline."""
+
+    labels = torch.tensor([0, 0, 1, 1])
+    identity = torch.tensor([[0.2, 0.1], [1.2, 0.1], [0.2, 1.1], [1.2, 1.1]], requires_grad=True)
+    fft = torch.tensor([[0.0, 0.0], [1.0, 0.0], [0.0, 1.0], [1.0, 1.0]], requires_grad=True)
+    baseline = torch.tensor(0.0, requires_grad=True)
+
+    duplication_loss, energy_loss = identity_fft_penalties(
+        identity,
+        fft,
+        labels,
+        baseline_cross_covariance_frobenius=baseline,
+        duplication_slack=0.0,
+        energy_floor=2.0,
+    )
+    (duplication_loss + energy_loss).backward()
+
+    assert duplication_loss.item() > 0.0
+    assert energy_loss.item() > 0.0
+    assert identity.grad is not None and identity.grad.abs().sum().item() > 0.0
+    assert fft.grad is None
+    assert baseline.grad is None
+
+    no_excess, _ = identity_fft_penalties(
+        identity.detach(),
+        fft.detach(),
+        labels,
+        baseline_cross_covariance_frobenius=1_000.0,
+        duplication_slack=0.0,
+        energy_floor=0.0,
+    )
+    assert no_excess.item() == 0.0
