@@ -13154,6 +13154,19 @@ def _bicad_xr_cv2_batch_physical_ids(
     columns: Dict[str, List[Any]] = {}
     missing = [name for name in fields if name not in metadata]
     if missing:
+        opaque_base_indices = metadata.get("base_index")
+        if opaque_base_indices is not None:
+            values = _as_plain_list(opaque_base_indices)
+            if len(values) != count:
+                raise ValueError(
+                    f"CV2 {role} base_index metadata must match the batch"
+                )
+            try:
+                return tuple(("base_index", int(value)) for value in values)
+            except (TypeError, ValueError, OverflowError) as exc:
+                raise ValueError(
+                    f"CV2 {role} base_index metadata must be integer-valued"
+                ) from exc
         raise ValueError(
             f"CV2 {role} batch is missing physical sample ID metadata: "
             + ", ".join(missing)
@@ -13225,6 +13238,39 @@ def _bicad_xr_cv2_dataset_physical_ids(dataset: Any) -> Tuple[Tuple[int, int, in
     if len(set(values)) != len(values):
         raise ValueError("CV2 frozen dataset index contains duplicate physical sample IDs")
     return values
+
+
+def _bicad_xr_cv2_dataset_u_sample_ids(dataset: Any) -> Tuple[Any, ...]:
+    """Match label-free U batch IDs to its frozen subset selection.
+
+    MUSE deliberately strips TX identity from U metadata.  The immutable
+    ``base_index`` emitted by WiSig remains a real, label-free physical row
+    identity, so the coverage ledger binds to the subset's frozen ``selected``
+    indices instead of reconstructing or exposing TX labels.
+    """
+
+    current = dataset
+    seen: set[int] = set()
+    for _ in range(8):
+        if current is None or id(current) in seen:
+            break
+        seen.add(id(current))
+        selected = getattr(current, "selected", None)
+        if selected is not None:
+            values = _as_plain_list(selected)
+            try:
+                identities = tuple(("base_index", int(value)) for value in values)
+            except (TypeError, ValueError, OverflowError) as exc:
+                raise ValueError(
+                    "CV2 frozen U_s subset selected indices must be integer-valued"
+                ) from exc
+            if not identities:
+                raise ValueError("CV2 frozen U_s subset has no physical sample IDs")
+            if len(set(identities)) != len(identities):
+                raise ValueError("CV2 frozen U_s subset contains duplicate base_index IDs")
+            return identities
+        current = getattr(current, "base", None)
+    return _bicad_xr_cv2_dataset_physical_ids(dataset)
 
 
 def _bicad_xr_cv2_dataset_l_groups(dataset: Any) -> Tuple[Tuple[int, int, int], ...]:
@@ -14884,7 +14930,7 @@ def _train_bicad_xr(args) -> int:
             raise RuntimeError("CV2 CoverageLedger requires a source U_s dataset")
         if not hasattr(train_loader, "dataset"):
             raise RuntimeError("CV2 CoverageLedger requires a source L_s dataset")
-        u_physical_ids = _bicad_xr_cv2_dataset_physical_ids(unlabeled_loader.dataset)
+        u_physical_ids = _bicad_xr_cv2_dataset_u_sample_ids(unlabeled_loader.dataset)
         l_groups = _bicad_xr_cv2_dataset_l_groups(train_loader.dataset)
         cv2_coverage_ledger = CoverageLedger(
             u_sample_ids=u_physical_ids,

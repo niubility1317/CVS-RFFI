@@ -24,6 +24,7 @@ from SSDG.train_ssdg import (
     _bicad_xr_cv2_select_validation_candidate,
     _bicad_xr_cv2_source_metrics,
     _bicad_xr_cv2_terminal_status,
+    _bicad_xr_cv2_dataset_u_sample_ids,
     _bicad_xr_cv2_validation_role_audit,
     _bicad_xr_cv2_vector_drift,
     _resolve_unlabeled_batch_size,
@@ -297,6 +298,32 @@ def test_cv2_coverage_snapshot_uses_batch_physical_ids_and_fails_closed() -> Non
             expected_count=1,
             role="U",
         )
+
+
+def test_cv2_coverage_uses_label_free_base_index_for_muse_u_batches() -> None:
+    metadata = {
+        "base_index": torch.tensor([17, 23, 41]),
+        "rx_i": torch.tensor([1, 1, 3]),
+        "day_i": torch.tensor([1, 1, 2]),
+        "eq_i": torch.tensor([0, 0, 0]),
+        "sig_i": torch.tensor([10, 11, 12]),
+        "tx_label_visible": torch.tensor([False, False, False]),
+    }
+    expected = (
+        ("base_index", 17),
+        ("base_index", 23),
+        ("base_index", 41),
+    )
+
+    assert _bicad_xr_cv2_batch_physical_ids(metadata, expected_count=3, role="U") == expected
+
+    subset = SimpleNamespace(selected=[17, 23, 41])
+    muse_view = SimpleNamespace(base=subset)
+    assert _bicad_xr_cv2_dataset_u_sample_ids(muse_view) == expected
+
+    ledger = CoverageLedger(u_sample_ids=expected, l_groups=((0, 1, 1),))
+    ledger.record_u(expected)
+    assert _bicad_xr_cv2_coverage_snapshot(ledger)["u_unique_coverage"] == pytest.approx(1.0)
 
 
 def test_cv2_coverage_warmup_precedes_plateau_scheduler() -> None:

@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-- 状态：`LOCAL_VERIFIED / RELEASE_PENDING`。
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
 - run ID：`phase1_pairbicad_cv2_fixed11_e200_seed392002_20260901_r1`。
 - 旧run：`phase1_pairbicad_cv2_screen24_seed392002_20260831_r1`已由用户停止；16个完整行和partial artifact保留，仅作历史证据。
 - 设计冻结：[PairBiCAD-CV2-E200修复版冻结说明](../../../docs/superpowers/specs/2026-09-01-pairbicad-cv2-e200-repair.md)。
@@ -43,3 +43,13 @@
 - 改动模块`py_compile`通过，`git diff --check`通过。
 - 独立P0/P1审查曾发现分离优化器入口仍间接依赖`detached_adversarial`；现已改为直接消费`adversarial_two_time_scale`及其1.5倍LR契约，定点RED→GREEN闭合。当前无未解决P0/P1。
 - 尚未把“本地行为验证”冒充“N607运行时验证”；真实epoch200、CoverageLedger、V_cal/V_select、final/EMA/SWAD选择、机制审计和四场景评估须等待新run artifact。
+
+## N607发布与技术停止
+
+- Git/release代码提交：`f045c6c77d3e937f75e670cc8502388da57e5a5a`；release：`phase1_pairbicad_cv2_e200_f045c6c7`。
+- release归档本地/远端SHA256一致：`00e021c99f7c4ad07cbb7c38c68b97356558263827e8706649188c28d15859a0`；远端编译和真实checkpoint无query烟测通过。
+- dispatcher：PID3187719；启动时16个worker、每GPU2个训练进程均精确绑定本run和release。
+- 至少14行在prediction前重复触发同一异常：`ValueError: CV2 U batch is missing physical sample ID metadata: tx_i`。这是预登记的确定性系统技术失败，不是性能结果。
+- 已先冻结dispatcher，再按精确父子树终止PID3187736、3187739、3187720、3187722、3187719、3187718；独立读回无残留绑定进程，GPU计算进程为0。
+- 0行达到`ARTIFACTS_COMPLETE`；22个非空训练日志和全部partial artifact保留，远端已写入`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE.json`。
+- 根因：MUSE按协议从U批次删除TX真值，但CoverageLedger错误要求`tx_i`参与物理ID。r2改用冻结数据集已有、标签无关且唯一的`base_index`，不恢复或泄露U标签。

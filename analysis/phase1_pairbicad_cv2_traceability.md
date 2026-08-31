@@ -56,7 +56,7 @@ Ruling：为允许24行并发且不读取运行中冠军，`CV2-D0`和`CV2-T0`�
 |---|---|---|---|
 |E200-01|全部候选完整200epochs，无update/coverage/24小时正常提前终止|verified|固定E200循环、忽略科学停止请求、epoch200断言及launcher命令测试|
 |E200-02|strict Pair每个物理样本都是真实LEO，三种LEO从早期可达|verified|真实LEO fail-closed测试及epoch1三场景可达测试|
-|E200-03|CoverageLedger接入真实sample ID和L分组|verified|batch物理ID、dataset index、U唯一覆盖和L组暴露行为测试|
+|E200-03|CoverageLedger接入真实sample ID和L分组|verified|标签可见批次使用五元物理ID；MUSE U批次使用与冻结subset `selected`同源的不可变`base_index`，不恢复TX真值；U唯一覆盖和L组暴露行为测试|
 |E200-04|coverage warmup后再Plateau|verified|warmup前不step、warmup后Plateau参数和状态测试|
 |E200-05|`no_early_freeze`成为运行约束|verified|逐训练步`requires_grad`审计和冻结参数fail-closed测试|
 |E200-06|`adversarial_two_time_scale`成为显式运行分支|verified|入口直接消费该开关及契约，独立optimizer与1.5倍LR测试|
