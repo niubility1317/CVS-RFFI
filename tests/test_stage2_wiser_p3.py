@@ -8,6 +8,12 @@ from cvsrffi.stage2_binova_d92 import (
     differentiable_old_d92_logits,
     exact_d92_fit,
 )
+from cvsrffi.stage2_wiser_p3 import (
+    cross_fitted_p3_loss,
+    frozen_class_risk,
+    stratified_crossfit_indices,
+    update_nonnegative_duals,
+)
 
 
 def make_d92_case(
@@ -172,3 +178,75 @@ def test_cross_fit_logits_autograd_matches_selected_finite_differences() -> None
         assert float(gradients[argument_index][index]) == pytest.approx(
             finite_difference(argument_index, index), rel=0.05, abs=5.0e-3
         )
+
+
+def test_five_fold_crossfit_is_eight_fit_two_valid_per_class() -> None:
+    """Catches folds that omit support rows or leak a validation row into fitting."""
+
+    labels = torch.arange(6).repeat_interleave(10)
+    tokens = tuple(f"opaque-support-{index:02d}" for index in range(len(labels)))
+    folds = stratified_crossfit_indices(labels, tokens, fold_count=5, seed=713102)
+    assert len(folds) == 5
+    seen = torch.zeros(60, dtype=torch.long)
+    for fold in folds:
+        seen[fold.validation_indices] += 1
+        for class_id in range(6):
+            assert int((labels[fold.fit_indices] == class_id).sum()) == 8
+            assert int((labels[fold.validation_indices] == class_id).sum()) == 2
+    assert torch.equal(seen, torch.ones_like(seen))
+
+
+def test_crossfit_token_membership_is_invariant_to_package_row_order() -> None:
+    """Catches a fold assignment that silently changes when a support package is reordered."""
+
+    labels = torch.arange(6).repeat_interleave(10)
+    tokens = tuple(f"opaque-support-{index:02d}" for index in range(len(labels)))
+    original = stratified_crossfit_indices(labels, tokens, fold_count=5, seed=713102)
+    permutation = torch.Generator().manual_seed(713103)
+    row_order = torch.randperm(len(labels), generator=permutation)
+    permuted_tokens = tuple(tokens[index] for index in row_order.tolist())
+    permuted = stratified_crossfit_indices(
+        labels[row_order], permuted_tokens, fold_count=5, seed=713102
+    )
+    original_sets = [
+        {tokens[index] for index in fold.validation_indices.tolist()} for fold in original
+    ]
+    permuted_sets = [
+        {permuted_tokens[index] for index in fold.validation_indices.tolist()}
+        for fold in permuted
+    ]
+    assert original_sets == permuted_sets
+
+
+def test_p3_loss_reports_class_risk_and_penalizes_only_violations() -> None:
+    """Catches P3 risk that is not computed from held-out support predictions."""
+
+    identity, fft, labels, _, _ = make_d92_case("normal")
+    tokens = tuple(f"opaque-support-{index:02d}" for index in range(len(labels)))
+    folds = stratified_crossfit_indices(labels, tokens, fold_count=5, seed=713102)
+    result = cross_fitted_p3_loss(
+        identity,
+        fft,
+        labels,
+        folds=folds,
+        baseline_class_risk=torch.full((6,), 0.5),
+        class_duals=torch.ones(6),
+        epsilon=torch.zeros(6),
+        rho=2.0,
+        beta=0.25,
+        tau=0.1,
+    )
+    assert result.class_risk.shape == (6,)
+    assert torch.all(result.violation >= 0)
+    assert result.total >= result.mean_risk
+    assert torch.equal(result.oof_predictions, result.oof_logits.argmax(dim=1))
+    assert torch.allclose(result.class_risk, frozen_class_risk(result.oof_logits, labels))
+
+
+def test_duals_remain_nonnegative() -> None:
+    """Catches a dual update that rewards a resolved class-risk violation below zero."""
+
+    updated = update_nonnegative_duals(
+        torch.tensor([0.1, 0.0]), torch.tensor([-1.0, 0.4]), rate=0.5
+    )
+    assert torch.equal(updated, torch.tensor([0.0, 0.2]))
