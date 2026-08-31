@@ -358,6 +358,63 @@ def test_dispatcher_queues_third_row_per_gpu_and_never_exceeds_two_active(
     assert all(value == 0 for value in active.values())
 
 
+def test_dispatcher_honors_preflight_reduced_gpu_capacity(tmp_path: Path) -> None:
+    launcher = _load_launcher()
+    rows = launcher.build_plan()
+    roots = launcher.LauncherRoots(
+        Path("repo"),
+        Path("python"),
+        tmp_path / "cv2-screen24",
+        Path("dataset") / "ManySig.pkl",
+    )
+    active: Counter[int] = Counter()
+    peak: Counter[int] = Counter()
+
+    class FakeProcess:
+        def __init__(self, gpu_id: int) -> None:
+            self.gpu_id = gpu_id
+            self.poll_count = 0
+
+        def poll(self) -> int | None:
+            self.poll_count += 1
+            if self.poll_count < 2:
+                return None
+            active[self.gpu_id] -= 1
+            return 0
+
+    def worker_launcher(row: object, _roots: object, *, run_id: str) -> FakeProcess:
+        active[row.gpu_id] += 1
+        peak[row.gpu_id] = max(peak[row.gpu_id], active[row.gpu_id])
+        return FakeProcess(row.gpu_id)
+
+    capacities = {gpu_id: 2 for gpu_id in launcher.GPU_IDS}
+    capacities[0] = 1
+    statuses = launcher.dispatch_detached_workers(
+        rows,
+        roots,
+        run_id="cv2-screen24",
+        worker_launcher=worker_launcher,
+        poll_interval=0,
+        gpu_capacities=capacities,
+    )
+
+    assert set(statuses.values()) == {"ARTIFACTS_COMPLETE"}
+    assert peak[0] == 1
+    assert all(peak[gpu_id] <= capacities[gpu_id] for gpu_id in launcher.GPU_IDS)
+
+
+def test_gpu_capacity_parser_requires_all_gpus_and_caps_each_at_two() -> None:
+    launcher = _load_launcher()
+    parsed = launcher._parse_gpu_capacities("0:1,1:2,2:2,3:2,4:2,5:2,6:2,7:2")
+
+    assert parsed[0] == 1
+    assert sum(parsed.values()) == 15
+    with pytest.raises(ValueError):
+        launcher._parse_gpu_capacities("0:1,1:2")
+    with pytest.raises(ValueError):
+        launcher._parse_gpu_capacities("0:3,1:2,2:2,3:2,4:2,5:2,6:2,7:2")
+
+
 def test_real_mode_writes_static_plan_before_dispatch_without_child_launch(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -365,11 +422,18 @@ def test_real_mode_writes_static_plan_before_dispatch_without_child_launch(
     launcher = _load_launcher()
     observed: dict[str, object] = {}
 
-    def fake_dispatch(rows: object, roots: object, *, run_id: str) -> dict[str, str]:
+    def fake_dispatch(
+        rows: object,
+        roots: object,
+        *,
+        run_id: str,
+        gpu_capacities: object,
+    ) -> dict[str, str]:
         observed["row_count"] = len(rows)
         observed["run_root"] = roots.run_root
         observed["plan_exists"] = (roots.run_root / "plan.json").is_file()
         observed["run_id"] = run_id
+        observed["gpu_capacities"] = gpu_capacities
         return {row.row_id: "ARTIFACTS_COMPLETE" for row in rows}
 
     monkeypatch.setattr(launcher, "dispatch_detached_workers", fake_dispatch)
@@ -388,6 +452,7 @@ def test_real_mode_writes_static_plan_before_dispatch_without_child_launch(
         "run_root": tmp_path / "cv2-screen24-real-mode-test",
         "plan_exists": True,
         "run_id": "cv2-screen24-real-mode-test",
+        "gpu_capacities": {gpu_id: 2 for gpu_id in range(8)},
     }
 
 

@@ -249,9 +249,11 @@ def build_plan_payload(
     rows: Sequence[PlanRow] | None = None,
     *,
     run_id: str = RUN_ID_DEFAULT,
+    gpu_capacities: Mapping[int, int] | None = None,
 ) -> dict[str, Any]:
     selected = list(build_plan() if rows is None else rows)
     _validate_static_matrix(selected) if len(selected) == 24 else None
+    capacities = _normalise_gpu_capacities(gpu_capacities)
     return {
         "schema": PLAN_SCHEMA,
         "run_id": str(run_id),
@@ -262,7 +264,8 @@ def build_plan_payload(
         "seed": SEED,
         "gpu_ids": list(GPU_IDS),
         "max_active_per_gpu": MAX_ACTIVE_PER_GPU,
-        "queued_rows": max(0, len(selected) - len(GPU_IDS) * MAX_ACTIVE_PER_GPU),
+        "gpu_capacities": {str(gpu): capacities[gpu] for gpu in GPU_IDS},
+        "queued_rows": max(0, len(selected) - sum(capacities.values())),
         "source_receivers": list(SOURCE_RECEIVERS),
         "train_days": list(TRAIN_DAYS),
         "source_only": True,
@@ -345,10 +348,11 @@ def write_plan_json(
     rows: Sequence[PlanRow],
     *,
     run_id: str,
+    gpu_capacities: Mapping[int, int] | None = None,
 ) -> Path:
     return _write_json_once(
         Path(run_root) / "plan.json",
-        build_plan_payload(rows, run_id=run_id),
+        build_plan_payload(rows, run_id=run_id, gpu_capacities=gpu_capacities),
     )
 
 
@@ -565,6 +569,7 @@ def dispatch_detached_workers(
     run_id: str,
     worker_launcher: Callable[..., Any] = launch_detached_worker,
     poll_interval: float = 0.25,
+    gpu_capacities: Mapping[int, int] | None = None,
 ) -> dict[str, str]:
     """Run up to two detached workers per GPU and queue the remaining rows."""
 
@@ -575,6 +580,7 @@ def dispatch_detached_workers(
         raise ValueError("dispatcher row GPU must be one of GPU0-7")
     if poll_interval < 0:
         raise ValueError("poll_interval must be non-negative")
+    capacities = _normalise_gpu_capacities(gpu_capacities)
 
     pending = list(selected)
     active: dict[str, tuple[PlanRow, Any]] = {}
@@ -583,7 +589,7 @@ def dispatch_detached_workers(
         launched = False
         for gpu_id in GPU_IDS:
             active_count = sum(row.gpu_id == gpu_id for row, _ in active.values())
-            while active_count < MAX_ACTIVE_PER_GPU:
+            while active_count < capacities[gpu_id]:
                 pending_index = next(
                     (index for index, row in enumerate(pending) if row.gpu_id == gpu_id),
                     None,
@@ -1159,9 +1165,52 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--python", dest="python_path", default=sys.executable)
     parser.add_argument("--wisig-pkl", dest="wisig_pkl", default="")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument(
+        "--gpu-capacities",
+        default="",
+        help="Preflight-frozen per-GPU worker slots, for example 0:1,1:2,...,7:2.",
+    )
     parser.add_argument("--worker-row-id", dest="worker_row_id", default="", help=argparse.SUPPRESS)
     parser.add_argument("--run-root", dest="run_root", default="", help=argparse.SUPPRESS)
     return parser
+
+
+def _parse_gpu_capacities(raw: str) -> dict[int, int]:
+    if not str(raw).strip():
+        return _normalise_gpu_capacities(None)
+    parsed: dict[int, int] = {}
+    for item in str(raw).split(","):
+        fields = item.strip().split(":")
+        if len(fields) != 2:
+            raise ValueError("gpu-capacities must use gpu:slots comma-separated syntax")
+        gpu_id, slots = (int(value) for value in fields)
+        if gpu_id in parsed:
+            raise ValueError("gpu-capacities contains a duplicate GPU")
+        parsed[gpu_id] = slots
+    return _normalise_gpu_capacities(parsed)
+
+
+def _normalise_gpu_capacities(
+    capacities: Mapping[int, int] | None,
+) -> dict[int, int]:
+    resolved = (
+        {gpu_id: MAX_ACTIVE_PER_GPU for gpu_id in GPU_IDS}
+        if capacities is None
+        else dict(capacities)
+    )
+    if set(resolved) != set(GPU_IDS):
+        raise ValueError("gpu capacities must declare GPU0-7 exactly once")
+    if any(
+        isinstance(value, bool)
+        or not isinstance(value, int)
+        or value < 0
+        or value > MAX_ACTIVE_PER_GPU
+        for value in resolved.values()
+    ):
+        raise ValueError("each GPU capacity must be an integer in [0,2]")
+    if sum(resolved.values()) <= 0:
+        raise ValueError("at least one GPU worker slot is required")
+    return {gpu_id: int(resolved[gpu_id]) for gpu_id in GPU_IDS}
 
 
 def _resolve_paths(args: argparse.Namespace) -> tuple[Path, Path, Path, Path]:
@@ -1193,17 +1242,38 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _worker_main(args)
 
     rows = build_plan()
+    gpu_capacities = _parse_gpu_capacities(args.gpu_capacities)
     if args.dry_run:
-        print(json.dumps(build_plan_payload(rows, run_id=args.run_id), ensure_ascii=False, sort_keys=True))
+        print(
+            json.dumps(
+                build_plan_payload(
+                    rows,
+                    run_id=args.run_id,
+                    gpu_capacities=gpu_capacities,
+                ),
+                ensure_ascii=False,
+                sort_keys=True,
+            )
+        )
         return 0
     if not args.run_id:
         raise ValueError("run-id is required for a real launch")
 
     code_root, output_root, python_path, wisig_pkl = _resolve_paths(args)
     run_root = reserve_run_layout(output_root, args.run_id, rows)
-    write_plan_json(run_root, rows, run_id=args.run_id)
+    write_plan_json(
+        run_root,
+        rows,
+        run_id=args.run_id,
+        gpu_capacities=gpu_capacities,
+    )
     roots = LauncherRoots(code_root, python_path, run_root, wisig_pkl)
-    statuses = dispatch_detached_workers(rows, roots, run_id=args.run_id)
+    statuses = dispatch_detached_workers(
+        rows,
+        roots,
+        run_id=args.run_id,
+        gpu_capacities=gpu_capacities,
+    )
     write_dispatch_status(run_root, rows, statuses)
     return 0 if all(status == ARTIFACTS_COMPLETE_STATUS for status in statuses.values()) else 2
 
