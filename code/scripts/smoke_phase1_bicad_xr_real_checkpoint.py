@@ -138,8 +138,16 @@ def run_smoke(
     )):
         raise RuntimeError(f"strict checkpoint reconstruction failed: {reconstruction}")
 
+    candidate = candidate_config(candidate_id)
+    strict_pair_concat = bool(candidate.strict_pair_concat)
     concat_model = ssdg._BiCADXRConcatForward(model)
-    trainer = BiCADXRTrainer(concat_model, candidate_config(candidate_id), num_receivers=4).to(device)
+    trainer_kwargs = {"num_days": 3, "num_channels": 2} if strict_pair_concat else {}
+    trainer = BiCADXRTrainer(
+        concat_model,
+        candidate,
+        num_receivers=4,
+        **trainer_kwargs,
+    ).to(device)
     optimizer = torch.optim.AdamW(trainer.parameters(), lr=2e-4, weight_decay=1e-4)
     sat_args = SimpleNamespace(
         seed=int(seed),
@@ -150,26 +158,55 @@ def run_smoke(
     augmenter = ssdg._build_bicad_xr_concat_augmenter(sat_args)
 
     generator = torch.Generator(device=device).manual_seed(int(seed))
-    x = torch.randn((8, 2, input_len), generator=generator, device=device) * 0.05
-    tx = torch.tensor([0, 1, 2, 3, 0, 1, 2, 3], device=device, dtype=torch.long)
-    receiver = torch.tensor([0, 1, 2, 3, 1, 2, 3, 0], device=device, dtype=torch.long)
-    day = torch.tensor([0, 1, 2, 0, 1, 2, 0, 1], device=device, dtype=torch.long)
+    if strict_pair_concat:
+        x_l = torch.randn((16, 2, input_len), generator=generator, device=device) * 0.05
+        x_u = torch.randn((32, 2, input_len), generator=generator, device=device) * 0.05
+        tx_l = torch.arange(16, device=device, dtype=torch.long) % 6
+        receiver_l = torch.arange(16, device=device, dtype=torch.long) % 4
+        day_l = torch.arange(16, device=device, dtype=torch.long) % 3
+        receiver_u = (torch.arange(32, device=device, dtype=torch.long) + 1) % 4
+        day_u = (torch.arange(32, device=device, dtype=torch.long) + 1) % 3
+        evaluation_x = torch.cat((x_l, x_u), dim=0)
+    else:
+        x = torch.randn((8, 2, input_len), generator=generator, device=device) * 0.05
+        tx = torch.tensor([0, 1, 2, 3, 0, 1, 2, 3], device=device, dtype=torch.long)
+        receiver = torch.tensor([0, 1, 2, 3, 1, 2, 3, 0], device=device, dtype=torch.long)
+        day = torch.tensor([0, 1, 2, 0, 1, 2, 0, 1], device=device, dtype=torch.long)
+        evaluation_x = x
 
     trainer.train()
     optimizer.zero_grad(set_to_none=True)
-    step, view = ssdg._bicad_xr_labeled_step(
-        trainer,
-        augmenter,
-        x,
-        tx,
-        receiver,
-        day,
-        args=sat_args,
-        epoch=80,
-        batch_idx=1,
-        update=501,
-        total_updates=5000,
-    )
+    if strict_pair_concat:
+        step, view = ssdg._bicad_xr_labeled_step(
+            trainer,
+            augmenter,
+            x_l,
+            tx_l,
+            receiver_l,
+            day_l,
+            x_u,
+            receiver_u,
+            day_u,
+            args=sat_args,
+            epoch=80,
+            batch_idx=1,
+            update=501,
+            total_updates=4000,
+        )
+    else:
+        step, view = ssdg._bicad_xr_labeled_step(
+            trainer,
+            augmenter,
+            x,
+            tx,
+            receiver,
+            day,
+            args=sat_args,
+            epoch=80,
+            batch_idx=1,
+            update=501,
+            total_updates=5000,
+        )
     if not bool(torch.isfinite(step.total)):
         raise FloatingPointError("BiCAD-XR smoke loss is non-finite")
     backward_audit = trainer.apply_backward_controls(step)
@@ -182,17 +219,21 @@ def run_smoke(
         raise FloatingPointError("BiCAD-XR smoke gradients are missing or non-finite")
     optimizer.step()
 
+    physical_batch_size = int(view.get("physical_batch_size", view["clean_batch_size"]))
+    labeled_count = int(view.get("labeled_count", tx.numel() if not strict_pair_concat else 0))
+    unlabeled_count = int(view.get("unlabeled_count", 0))
+    network_batch_size = int(view.get("network_batch_size", view["total_batch_size"]))
     evaluations: dict[str, Any] = {}
     model.eval()
     with torch.no_grad():
         for index, scenario in enumerate(SCENARIOS):
-            observed = x
+            observed = evaluation_x
             if scenario != "clean":
                 scenario_generator = torch.Generator(device=device).manual_seed(
                     int(seed) + (index * 1_000_003)
                 )
                 received = ssdg.apply_sat_channel_for_scenario(
-                    x,
+                    evaluation_x,
                     scenario,
                     sat_args,
                     gen=scenario_generator,
@@ -227,6 +268,12 @@ def run_smoke(
         "backward_controls_complete": True,
         "backward_controls": backward_audit,
         "training_loss_finite": True,
+        "strict_pair_concat": strict_pair_concat,
+        "physical_batch_size": physical_batch_size,
+        "labeled_count": labeled_count,
+        "unlabeled_count": unlabeled_count,
+        "network_batch_size": network_batch_size,
+        "unlabeled_tx_access": False,
         "concat_sat_ce_only": True,
         "concat_forward_batch_size": int(view["total_batch_size"]),
         "satellite_training_scenario": str(view["scenario"]),
