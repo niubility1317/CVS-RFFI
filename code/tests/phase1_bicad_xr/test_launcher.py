@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import threading
+import time
 from collections import Counter
 from pathlib import Path
 from types import SimpleNamespace
@@ -76,6 +78,83 @@ def test_build_plan_supports_all_d0_through_f3_candidates_and_confirm_folds() ->
     assert {row.candidate_id for row in rows} == set(candidates)
     assert {row.fold for row in rows} == {1, 2, 3, 4, 5}
     assert {row.seed for row in rows} == {392001, 392002, 392003}
+
+
+def test_pairbicad_plan_is_exactly_the_frozen_30_row_source_only_matrix() -> None:
+    launcher = _load_launcher()
+
+    rows = launcher.build_plan(stage="pairbicad")
+
+    assert len(rows) == 30
+    assert {(row.candidate_id, row.fold, row.seed) for row in rows} == {
+        (candidate, fold, seed)
+        for candidate in ("P0", "P1", "P2", "P3", "P4")
+        for fold in (1, 8)
+        for seed in (392001, 392002, 392003)
+    }
+    assert len({row.row_id for row in rows}) == 30
+    assert all(row.optimizer_updates == 4000 for row in rows)
+    assert all(row.train_days == (1, 2, 3) for row in rows)
+    assert all(row.source_only for row in rows)
+    assert all(
+        not any(
+            (
+                row.target_access,
+                row.phase2_access,
+                row.support_access,
+                row.query_access,
+                row.truth_access,
+            )
+        )
+        for row in rows
+    )
+    assert {
+        row.fold: row.source_receivers
+        for row in rows
+    } == {
+        1: (3, 4, 6, 8),
+        8: (1, 3, 4, 6),
+    }
+
+
+def test_pairbicad_queue_assigns_all_rows_without_reinterpreting_legacy_pack_capacity() -> None:
+    launcher = _load_launcher()
+    rows = launcher.build_plan(stage="pairbicad")
+
+    queued = launcher.queue_rows(rows, gpu_ids=tuple(range(8)))
+
+    assert len(queued) == 30
+    assert Counter(row.gpu_id for row in queued) == Counter(
+        {0: 4, 1: 4, 2: 4, 3: 4, 4: 4, 5: 4, 6: 3, 7: 3}
+    )
+    with pytest.raises(ValueError, match="safe capacity"):
+        launcher.pack_rows(rows, gpu_ids=tuple(range(8)), max_jobs_per_gpu=2)
+
+
+def test_pairbicad_run_plan_queues_rows_and_never_exceeds_two_active_per_gpu() -> None:
+    launcher = _load_launcher()
+    rows = launcher.queue_rows(
+        launcher.build_plan(stage="pairbicad"), gpu_ids=tuple(range(8))
+    )
+    lock = threading.Lock()
+    active: Counter[int] = Counter()
+    peak: Counter[int] = Counter()
+
+    def runner(row: object) -> str:
+        gpu_id = int(row.gpu_id)
+        with lock:
+            active[gpu_id] += 1
+            peak[gpu_id] = max(peak[gpu_id], active[gpu_id])
+        time.sleep(0.01)
+        with lock:
+            active[gpu_id] -= 1
+        return "ok"
+
+    statuses = launcher.run_plan(rows, runner, max_active_per_gpu=2)
+
+    assert set(statuses) == {row.row_id for row in rows}
+    assert set(statuses.values()) == {"ok"}
+    assert max(peak.values()) <= 2
 
 
 def test_gpu_packing_is_exactly_three_rows_on_each_of_eight_gpus() -> None:
@@ -237,6 +316,43 @@ def test_train_command_is_consumed_by_real_ssdg_parser_and_records_row_runtime(
     assert candidate_config(parsed.candidate_id).optimizer_updates == 5000
 
 
+def test_pairbicad_train_command_uses_physical_batch_48_and_u4000() -> None:
+    from SSDG import train_ssdg
+
+    launcher = _load_launcher()
+    row = launcher.build_plan(stage="pairbicad")[0]
+    roots = launcher.LauncherRoots(
+        SCRIPT_PATH.resolve().parents[2],
+        Path("python"),
+        Path("/tmp/pairbicad-run"),
+        Path("/tmp/ManySig.pkl"),
+    )
+
+    command = launcher.build_train_command(row, roots, run_id="pairbicad-run")
+    parsed = train_ssdg.parse(command[3:])
+    row_record = json.loads(parsed.row_key)
+
+    assert parsed.candidate_id == "P0"
+    assert parsed.batch_size == 48
+    assert row_record["optimizer_updates"] == 4000
+    assert parsed.wisig_train_days == "1,2,3"
+    assert parsed.wisig_train_rxs == "3,4,6,8"
+
+
+def test_pairbicad_reconstruction_preserves_candidate_protocol() -> None:
+    launcher = _load_launcher()
+
+    config = launcher.reconstruction_config("P4")
+
+    assert config.batch_size == 48
+    assert config.optimizer_updates == 4000
+    assert config.concat_sat_start_epoch == 1
+    assert config.satellite_supervision_mode == "ce_only_plus_pair_selfsup"
+    assert config.strict_pair_concat is True
+    assert config.lambda_sat_cls_start == pytest.approx(0.5)
+    assert config.lambda_sat_cls_end == pytest.approx(1.0)
+
+
 def _write_strict_worker_artifacts(row_root: Path, row: object) -> None:
     checkpoint = row_root / "bicad_xr_final.pth"
     runtime = {
@@ -367,3 +483,50 @@ def test_worker_marks_complete_only_after_strict_four_scene_closure(
     )
     assert marker["complete"] is True
     assert set(marker["evaluations"]) == set(FORMAL_EVAL_SCENARIOS)
+
+
+def test_pairbicad_dry_run_prints_all_30_rows_without_creating_artifacts(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    launcher = _load_launcher()
+
+    def forbidden_launch(*args: object, **kwargs: object) -> None:
+        raise AssertionError("dry-run must not create a training process")
+
+    monkeypatch.setattr(launcher, "launch_row_process", forbidden_launch)
+    exit_code = launcher.main(
+        [
+            "--stage",
+            "pairbicad",
+            "--dry-run",
+            "--run-id",
+            "phase1_adv3b02_pairbicad_p0p4_loro2_seed3_u4000_20260831_r1",
+            "--output-root",
+            str(tmp_path),
+            "--gpu-ids",
+            "0,1,2,3,4,5,6,7",
+            "--max-jobs-per-gpu",
+            "2",
+        ]
+    )
+
+    payloads = [
+        json.loads(line)
+        for line in capsys.readouterr().out.splitlines()
+        if line.startswith("{")
+    ]
+    assert exit_code == 0
+    assert len(payloads) == 30
+    assert Counter(payload["gpu_id"] for payload in payloads) == Counter(
+        {0: 4, 1: 4, 2: 4, 3: 4, 4: 4, 5: 4, 6: 3, 7: 3}
+    )
+    assert all(payload["optimizer_updates"] == 4000 for payload in payloads)
+    assert all(payload["source_receivers"] for payload in payloads)
+    assert all(payload["train_days"] == [1, 2, 3] for payload in payloads)
+    assert not (tmp_path / "phase1_adv3b02_pairbicad_p0p4_loro2_seed3_u4000_20260831_r1").exists()
+    forbidden = ("target", "phase2", "support", "query", "truth")
+    assert not any(
+        any(token in key.lower() for token in forbidden)
+        for payload in payloads
+        for key in payload
+    )

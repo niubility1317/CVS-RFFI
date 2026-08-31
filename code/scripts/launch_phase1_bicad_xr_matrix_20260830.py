@@ -32,13 +32,17 @@ from cvsrffi.phase1_bicad_xr.metrics import (
 
 
 RUN_ID_DEFAULT = "phase1_bicad_xr_matrix_20260830_r1"
+PAIRBICAD_RUN_ID = "phase1_adv3b02_pairbicad_p0p4_loro2_seed3_u4000_20260831_r1"
 FORMAL_SEEDS: tuple[int, int, int] = (392001, 392002, 392003)
 QUICK_FOLDS: tuple[int, int] = (1, 8)
 CONFIRM_FOLDS: tuple[int, int, int, int, int] = (1, 2, 3, 4, 5)
+PAIRBICAD_FOLDS: tuple[int, int] = (1, 8)
 SOURCE_RECEIVERS: tuple[int, int, int, int, int] = (1, 3, 4, 6, 8)
 TRAIN_DAYS: tuple[int, int, int] = (1, 2, 3)
 OPTIMIZER_UPDATES = 5000
+PAIRBICAD_OPTIMIZER_UPDATES = 4000
 MAX_JOBS_PER_GPU = 3
+PAIRBICAD_MAX_JOBS_PER_GPU = 2
 QUICK_CANDIDATES: tuple[str, str, str, str] = (
     "D0",
     "D5",
@@ -49,6 +53,13 @@ CONFIRM_CANDIDATES: tuple[str, ...] = tuple(
     [f"D{i}" for i in range(7)]
     + [f"E{i}" for i in range(5)]
     + [f"F{i}" for i in range(4)]
+)
+PAIRBICAD_CANDIDATES: tuple[str, str, str, str, str] = (
+    "P0",
+    "P1",
+    "P2",
+    "P3",
+    "P4",
 )
 FORMAL_STATES = {
     "ARTIFACTS_COMPLETE",
@@ -146,6 +157,8 @@ def _validated_candidates(candidates: Sequence[str] | None, *, stage: str) -> tu
         QUICK_CANDIDATES
         if candidates is None and stage == "quick"
         else CONFIRM_CANDIDATES
+        if candidates is None and stage == "confirm"
+        else PAIRBICAD_CANDIDATES
         if candidates is None
         else tuple(candidates)
     )
@@ -165,28 +178,51 @@ def build_plan(
     seeds: Sequence[int] | None = None,
     gpu_ids: Sequence[int] | None = None,
     gpus: Sequence[int] | None = None,
-    optimizer_updates: int = OPTIMIZER_UPDATES,
+    optimizer_updates: int | None = None,
 ) -> list[PlanRow]:
     """Build a deterministic source-LORO plan without touching the filesystem."""
 
     key = str(stage).strip().lower()
     if key == "full":
         key = "confirm"
-    if key not in {"quick", "confirm"}:
+    if key not in {"quick", "confirm", "pairbicad"}:
         raise ValueError(f"unknown stage: {stage}")
     if gpu_ids is not None and gpus is not None:
         raise ValueError("pass only one of gpu_ids or gpus")
     selected_gpus = _validated_gpus(gpu_ids if gpu_ids is not None else gpus)
     selected_folds = _unique_ints(
-        QUICK_FOLDS if folds is None and key == "quick" else CONFIRM_FOLDS if folds is None else folds,
+        QUICK_FOLDS
+        if folds is None and key == "quick"
+        else PAIRBICAD_FOLDS
+        if folds is None and key == "pairbicad"
+        else CONFIRM_FOLDS
+        if folds is None
+        else folds,
         name="folds",
-        allowed=QUICK_FOLDS if key == "quick" else CONFIRM_FOLDS,
+        allowed=(
+            QUICK_FOLDS
+            if key == "quick"
+            else PAIRBICAD_FOLDS
+            if key == "pairbicad"
+            else CONFIRM_FOLDS
+        ),
     )
     selected_seeds = _validated_seeds(seeds)
-    if isinstance(optimizer_updates, bool) or not isinstance(optimizer_updates, int):
+    selected_updates = (
+        PAIRBICAD_OPTIMIZER_UPDATES
+        if optimizer_updates is None and key == "pairbicad"
+        else OPTIMIZER_UPDATES
+        if optimizer_updates is None
+        else optimizer_updates
+    )
+    if isinstance(selected_updates, bool) or not isinstance(selected_updates, int):
         raise ValueError("optimizer_updates must be an integer")
-    if optimizer_updates <= 0:
+    if selected_updates <= 0:
         raise ValueError("optimizer_updates must be positive")
+    if key == "pairbicad" and selected_updates != PAIRBICAD_OPTIMIZER_UPDATES:
+        raise ValueError(
+            f"pairbicad stage requires optimizer_updates={PAIRBICAD_OPTIMIZER_UPDATES}"
+        )
     selected_candidates = _validated_candidates(candidates, stage=key)
 
     rows: list[PlanRow] = []
@@ -204,7 +240,7 @@ def build_plan(
                         candidate_id=candidate_id,
                         fold=fold,
                         seed=seed,
-                        optimizer_updates=optimizer_updates,
+                        optimizer_updates=selected_updates,
                         gpu_id=selected_gpus[index % len(selected_gpus)],
                         source_receivers=source_receivers,
                         train_days=TRAIN_DAYS,
@@ -247,6 +283,22 @@ def pack_rows(
             raise ValueError(f"GPU {gpu} exceeds max_jobs_per_gpu={limit}")
         packed.append(row._replace(gpu_id=gpu))
     return packed
+
+
+def queue_rows(
+    rows: Sequence[PlanRow],
+    *,
+    gpu_ids: Sequence[int] = tuple(range(8)),
+) -> list[PlanRow]:
+    """Assign queued rows round-robin without changing legacy pack semantics."""
+
+    selected_gpus = _validated_gpus(gpu_ids)
+    if not rows:
+        return []
+    return [
+        row._replace(gpu_id=selected_gpus[index % len(selected_gpus)])
+        for index, row in enumerate(rows)
+    ]
 
 
 def safe_gpu_slots(
@@ -333,6 +385,7 @@ def build_train_command(row: PlanRow, roots: LauncherRoots, *, run_id: str = RUN
         )
     ):
         raise ValueError("BiCAD-XR rows must be source-only")
+    config = candidate_config(row.candidate_id)
     script = Path(roots.code_root) / "code" / "SSDG" / "train_ssdg.py"
     command = [
         str(roots.python),
@@ -373,7 +426,7 @@ def build_train_command(row: PlanRow, roots: LauncherRoots, *, run_id: str = RUN
         "--phase1_source_role_protocol",
         "l_s_u_s_v_cal_v_select",
         "--batch_size",
-        "96",
+        str(config.batch_size),
         "--use_tx_rx_balanced_sampler",
         "true",
         "--balanced_sampler_tx_per_batch",
@@ -482,6 +535,19 @@ def _load_ssdg_module(code_root: Path) -> Any:
     return module
 
 
+def reconstruction_config(candidate_id: str) -> Any:
+    """Resolve the candidate config used for strict final-checkpoint restore."""
+
+    from dataclasses import replace as dataclass_replace
+
+    return dataclass_replace(
+        candidate_config(candidate_id),
+        phase1_method="bicad_xr",
+        use_fasttrust=False,
+        use_mixstyle=False,
+    )
+
+
 class _FormalEvaluationContext:
     """Lazily construct the source-LORO evaluator after training exits cleanly."""
 
@@ -556,29 +622,13 @@ class _FormalEvaluationContext:
         return model
 
     def restore_trainer_runtime(self, model: Any, payload: Mapping[str, Any]) -> None:
-        from dataclasses import replace as dataclass_replace
-
         from cvsrffi.phase1_bicad_xr.trainer import BiCADXRTrainer
 
         self._ensure_runtime()
         runtime = payload.get("bicad_xr_runtime")
         if not isinstance(runtime, Mapping):
             raise ValueError("checkpoint is missing bicad_xr_runtime")
-        config = dataclass_replace(
-            candidate_config(self.row.candidate_id),
-            phase1_method="bicad_xr",
-            use_fasttrust=False,
-            use_mixstyle=False,
-            lambda_sat_cls=0.68,
-            lambda_sat_cons=0.0,
-            concat_sat_ce_only=True,
-            concat_sat_start_epoch=80,
-            sat_train_scenarios=(
-                "leo_clear_weak",
-                "leo_low_elev_weak",
-                "leo_rain_weak",
-            ),
-        )
+        config = reconstruction_config(self.row.candidate_id)
         self.trainer = BiCADXRTrainer(
             self.ssdg._BiCADXRConcatForward(model), config
         ).to(self.device)
@@ -825,12 +875,19 @@ def _max_jobs_arg(raw: str) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Plan a source-only BiCAD-XR Phase1 matrix.")
-    parser.add_argument("--stage", choices=("quick", "confirm", "full"), default="quick")
+    parser.add_argument(
+        "--stage", choices=("quick", "confirm", "full", "pairbicad"), default="quick"
+    )
     parser.add_argument("--candidates", default="")
     parser.add_argument("--folds", default="")
     parser.add_argument("--seeds", default="")
     parser.add_argument("--gpu-ids", dest="gpu_ids", default="0,1,2,3,4,5,6,7")
-    parser.add_argument("--max-jobs-per-gpu", dest="max_jobs_per_gpu", type=_max_jobs_arg, default=MAX_JOBS_PER_GPU)
+    parser.add_argument(
+        "--max-jobs-per-gpu",
+        dest="max_jobs_per_gpu",
+        type=_max_jobs_arg,
+        default=None,
+    )
     parser.add_argument("--run-id", default=RUN_ID_DEFAULT)
     parser.add_argument("--output-root", dest="output_root", default="")
     parser.add_argument("--code-root", dest="code_root", default="")
@@ -845,13 +902,26 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--gpu-id", type=int, default=0)
     parser.add_argument("--source-rxs", default="")
     parser.add_argument("--train-days", default="")
-    parser.add_argument("--optimizer-updates", type=int, default=OPTIMIZER_UPDATES)
+    parser.add_argument("--optimizer-updates", type=int, default=None)
     parser.add_argument("--row-root", default="")
     return parser
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
-    return build_parser().parse_args(argv)
+    args = build_parser().parse_args(argv)
+    if args.max_jobs_per_gpu is None:
+        args.max_jobs_per_gpu = (
+            PAIRBICAD_MAX_JOBS_PER_GPU
+            if str(args.stage).strip().lower() == "pairbicad"
+            else MAX_JOBS_PER_GPU
+        )
+    if args.optimizer_updates is None:
+        args.optimizer_updates = (
+            PAIRBICAD_OPTIMIZER_UPDATES
+            if str(args.stage).strip().lower() == "pairbicad"
+            else OPTIMIZER_UPDATES
+        )
+    return args
 
 
 def _resolve_paths(args: argparse.Namespace) -> tuple[Path, Path, Path, Path]:
@@ -897,7 +967,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         gpu_ids=gpu_ids,
         optimizer_updates=args.optimizer_updates,
     )
-    rows = pack_rows(rows, gpu_ids=gpu_ids, max_jobs_per_gpu=args.max_jobs_per_gpu)
+    stage_key = str(args.stage).strip().lower()
+    if stage_key == "pairbicad":
+        if args.max_jobs_per_gpu != PAIRBICAD_MAX_JOBS_PER_GPU:
+            raise ValueError(
+                f"pairbicad stage requires max_jobs_per_gpu={PAIRBICAD_MAX_JOBS_PER_GPU}"
+            )
+        rows = queue_rows(rows, gpu_ids=gpu_ids)
+    else:
+        rows = pack_rows(rows, gpu_ids=gpu_ids, max_jobs_per_gpu=args.max_jobs_per_gpu)
 
     if args.dry_run:
         for row in rows:
