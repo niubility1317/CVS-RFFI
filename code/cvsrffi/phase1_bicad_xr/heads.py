@@ -8,6 +8,7 @@ state.
 from __future__ import annotations
 
 import math
+from dataclasses import dataclass
 from typing import Dict
 
 import torch
@@ -58,6 +59,11 @@ def _validate_feature_tensor(value: Tensor, name: str) -> None:
         raise ValueError(f"{name} must have a non-empty feature dimension")
 
 
+def _validate_finite_tensor(value: Tensor, name: str) -> None:
+    if not torch.isfinite(value).all():
+        raise ValueError(f"{name} must contain only finite values")
+
+
 def _validate_tx_labels(
     tx: Tensor | None,
     *,
@@ -103,6 +109,51 @@ def conditional_outer(z_id: Tensor, tx: Tensor | None, num_classes: int) -> Tens
     )
     one_hot = F.one_hot(tx, num_classes=num_classes).to(dtype=z_id.dtype)
     return torch.einsum("bd,bc->bdc", z_id, one_hot).reshape(z_id.size(0), -1)
+
+
+@dataclass(frozen=True)
+class DomainFactors:
+    """The independent receiver, day, channel and interaction projections."""
+
+    z_r: Tensor
+    z_d: Tensor
+    z_c: Tensor
+    z_int: Tensor
+
+
+class FactorizedDomainProjector(nn.Module):
+    """Project ``z_dom`` into factor-specific domain representations."""
+
+    def __init__(self, feature_dim: int, factor_dim: int, interaction_dim: int) -> None:
+        super().__init__()
+        dimensions = {
+            "feature_dim": feature_dim,
+            "factor_dim": factor_dim,
+            "interaction_dim": interaction_dim,
+        }
+        for name, value in dimensions.items():
+            if not isinstance(value, int) or isinstance(value, bool) or value < 1:
+                raise ValueError(f"{name} must be a positive integer")
+
+        self.feature_dim = feature_dim
+        self.factor_dim = factor_dim
+        self.interaction_dim = interaction_dim
+        self.z_r = nn.Linear(feature_dim, factor_dim)
+        self.z_d = nn.Linear(feature_dim, factor_dim)
+        self.z_c = nn.Linear(feature_dim, factor_dim)
+        self.z_int = nn.Linear(feature_dim, interaction_dim)
+
+    def forward(self, z_dom: Tensor) -> DomainFactors:
+        _validate_feature_tensor(z_dom, "z_dom")
+        _validate_finite_tensor(z_dom, "z_dom")
+        if z_dom.size(1) != self.feature_dim:
+            raise ValueError("z_dom feature_dim must match projector feature_dim")
+        return DomainFactors(
+            z_r=self.z_r(z_dom),
+            z_d=self.z_d(z_dom),
+            z_c=self.z_c(z_dom),
+            z_int=self.z_int(z_dom),
+        )
 
 
 class FactorizedAdversarialHeads(nn.Module):
@@ -188,7 +239,9 @@ grad_reverse = gradient_reverse
 
 
 __all__ = [
+    "DomainFactors",
     "FactorizedAdversarialHeads",
+    "FactorizedDomainProjector",
     "conditional_outer",
     "grad_reverse",
     "gradient_reverse",

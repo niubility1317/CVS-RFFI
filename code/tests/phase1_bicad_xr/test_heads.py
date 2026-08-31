@@ -4,7 +4,9 @@ import pytest
 import torch
 
 from cvsrffi.phase1_bicad_xr.heads import (
+    DomainFactors,
     FactorizedAdversarialHeads,
+    FactorizedDomainProjector,
     conditional_outer,
 )
 from cvsrffi.phase1_bicad_xr.losses import conditional_cross_covariance
@@ -89,6 +91,45 @@ def test_factorized_heads_require_tx_labels_for_conditional_identity_heads() -> 
 
     with pytest.raises(ValueError, match="TX labels"):
         heads(torch.randn(4, 8), torch.randn(4, 8), None)
+
+
+def test_factorized_domain_projector_returns_independent_factor_projections() -> None:
+    projector = FactorizedDomainProjector(feature_dim=6, factor_dim=3, interaction_dim=2)
+    z_dom = torch.randn(5, 6, requires_grad=True)
+
+    factors = projector(z_dom)
+
+    assert isinstance(factors, DomainFactors)
+    assert factors.z_r.shape == (5, 3)
+    assert factors.z_d.shape == (5, 3)
+    assert factors.z_c.shape == (5, 3)
+    assert factors.z_int.shape == (5, 2)
+    assert factors.z_int is not factors.z_r
+    assert factors.z_int.data_ptr() != factors.z_r.data_ptr()
+    assert all(torch.isfinite(value).all() for value in vars(factors).values())
+
+    sum(factor.square().mean() for factor in vars(factors).values()).backward()
+    assert z_dom.grad is not None
+    assert torch.isfinite(z_dom.grad).all()
+    assert all(parameter.grad is not None for parameter in projector.parameters())
+    assert all(torch.isfinite(parameter.grad).all() for parameter in projector.parameters())
+
+
+@pytest.mark.parametrize(
+    ("z_dom", "message"),
+    [
+        (torch.randn(6), "shape"),
+        (torch.randn(2, 5), "feature_dim"),
+        (torch.tensor([[float("nan")] * 6]), "finite"),
+    ],
+)
+def test_factorized_domain_projector_rejects_malformed_or_nonfinite_input(
+    z_dom: torch.Tensor, message: str
+) -> None:
+    projector = FactorizedDomainProjector(feature_dim=6, factor_dim=3, interaction_dim=2)
+
+    with pytest.raises(ValueError, match=message):
+        projector(z_dom)
 
 
 def test_conditional_cross_covariance_is_zero_without_valid_tx_group() -> None:
