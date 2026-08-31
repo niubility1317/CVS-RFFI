@@ -2,7 +2,7 @@
 
 ## 状态与修复边界
 
-- run ID：`wiser_rf_p3_primary_hist_e0_20260831_v1_gradfix1`；当前状态：`LOCAL_VERIFIED`；Git提交：`fe9ec1424e8396d1f6a4e8931a8653750cbb74e9`。
+- run ID：`wiser_rf_p3_primary_hist_e0_20260831_v1_gradfix1`；当前状态：`LANDED`；Git提交：`fe9ec1424e8396d1f6a4e8931a8653750cbb74e9`。
 - 本提交仅将精确D92的退化方差在`sqrt`前安全屏蔽，并为零`delta`预构造安全分母；不改变正常坐标的前向公式、P3方法、训练预算、arm、scene或晋级门槛。
 - 两个前序run分别因历史绑定漂移和退化坐标非有限梯度在无query smoke阶段停止，均为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，未进入pilot、未打开query、未产生prediction，原run/log根永久保留。
 - 回归证据：`zero_identity/zero_fft/ill_conditioned`三类D92反向测试先失败后通过；10个D92/P3/pilot/scoring/Target25测试文件完整通过；相关模块`py_compile`通过。
@@ -18,7 +18,7 @@
 
 ## release、资源、路径与命令
 
-- release=`wiser_rf_p3_primary_hist_e0_20260831_v1_gradfix1_fe9ec142.tar.gz`；远端根=`/home/szu2070436088/2510044040/CV-SincNet/releases/wiser_rf_p3_primary_hist_e0_20260831_v1_gradfix1_fe9ec142`。只允许一次归档本地/远端SHA比对和一次远端编译。
+- release=`wiser_rf_p3_primary_hist_e0_20260831_v1_gradfix1_fe9ec142.tar.gz`；远端根=`/home/szu2070436088/2510044040/CV-SincNet/releases/wiser_rf_p3_primary_hist_e0_20260831_v1_gradfix1_fe9ec142`。归档大小36272459字节，本地/远端唯一SHA256均为`0199fe792f5c38f2b0dfc010fc1d0a4c14117dfb935346c641fec26dd2d6a931`；远端11个相关模块一次编译通过。
 - run root=`/home/szu2070436088/2510044040/CV-SincNet/runs/wiser_rf_p3_primary_hist_e0_20260831_v1_gradfix1`；log=`/home/szu2070436088/2510044040/CV-SincNet/logs/wiser_rf_p3_primary_hist_e0_20260831_v1_gradfix1/pilot.out`；score=`<run-root>/score`。四个新目标均已确认不存在。
 - pilot为单进程顺序工作流，冻结物理GPU0，`CUDA_VISIBLE_DEVICES=0`后程序使用`cuda:0`；启动前再次盘点且每GPU不超过用户授权的3个训练实验。
 
