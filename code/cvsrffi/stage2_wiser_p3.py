@@ -382,22 +382,60 @@ def project_auxiliary_gradients(
     if eps <= 0.0:
         raise ValueError("eps must be positive")
     primary_safe, auxiliary_safe = _gradient_slots(primary, auxiliary, reference)
-    raw_dot = torch.stack(
-        [torch.sum(primary_item * auxiliary_item) for primary_item, auxiliary_item in zip(primary_safe, auxiliary_safe)]
-    ).sum()
-    primary_norm = torch.stack(
-        [torch.sum(primary_item.square()) for primary_item in primary_safe]
-    ).sum()
-    if bool(raw_dot < 0.0) and bool(primary_norm > 0.0):
-        coefficient = raw_dot / primary_norm
-    else:
-        coefficient = raw_dot.new_zeros(())
-    projected = tuple(
-        auxiliary_item - coefficient * primary_item
-        for primary_item, auxiliary_item in zip(primary_safe, auxiliary_safe)
+    device = primary_safe[0].device
+    if any(item.device != device for item in (*primary_safe, *auxiliary_safe)):
+        raise ValueError("all gradient slots must be on one device for global projection")
+    if any(not item.is_floating_point() for item in (*primary_safe, *auxiliary_safe)):
+        raise TypeError("gradient slots must use floating-point tensors")
+
+    accumulator_dtype = torch.float64
+    primary_scale = torch.stack(
+        [primary_item.detach().abs().to(accumulator_dtype).amax() for primary_item in primary_safe]
+    ).amax()
+    if bool(primary_scale == 0.0):
+        return auxiliary_safe, {"raw_dot": 0.0, "projected_dot": 0.0}
+    auxiliary_scale = torch.stack(
+        [auxiliary_item.detach().abs().to(accumulator_dtype).amax() for auxiliary_item in auxiliary_safe]
+    ).amax()
+    if bool(auxiliary_scale == 0.0):
+        return auxiliary_safe, {"raw_dot": 0.0, "projected_dot": 0.0}
+
+    scaled_primary = tuple(
+        primary_item.to(accumulator_dtype) / primary_scale for primary_item in primary_safe
     )
+    scaled_auxiliary = tuple(
+        auxiliary_item.to(accumulator_dtype) / auxiliary_scale
+        for auxiliary_item in auxiliary_safe
+    )
+    scaled_raw_dot = torch.stack(
+        [torch.sum(primary_item * auxiliary_item) for primary_item, auxiliary_item in zip(scaled_primary, scaled_auxiliary)]
+    ).sum()
+    scaled_primary_norm = torch.stack(
+        [torch.sum(primary_item.square()) for primary_item in scaled_primary]
+    ).sum()
+    projected_scaled = scaled_auxiliary
+    if bool(scaled_raw_dot < 0.0):
+        coefficient = scaled_raw_dot / scaled_primary_norm
+        projected_scaled = tuple(
+            auxiliary_item - coefficient * primary_item
+            for primary_item, auxiliary_item in zip(scaled_primary, scaled_auxiliary)
+        )
+        correction_dot = torch.stack(
+            [torch.sum(primary_item * auxiliary_item) for primary_item, auxiliary_item in zip(scaled_primary, projected_scaled)]
+        ).sum()
+        if bool(correction_dot < 0.0):
+            projected_scaled = tuple(
+                auxiliary_item - (correction_dot / scaled_primary_norm) * primary_item
+                for primary_item, auxiliary_item in zip(scaled_primary, projected_scaled)
+            )
+    projected = tuple(
+        (projected_item * auxiliary_scale).to(dtype=auxiliary_item.dtype)
+        for projected_item, auxiliary_item in zip(projected_scaled, auxiliary_safe)
+    )
+    raw_dot = scaled_raw_dot * primary_scale * auxiliary_scale
     projected_dot = torch.stack(
-        [torch.sum(primary_item * projected_item) for primary_item, projected_item in zip(primary_safe, projected)]
+        [torch.sum(primary_item.to(accumulator_dtype) * projected_item.to(accumulator_dtype))
+         for primary_item, projected_item in zip(primary_safe, projected)]
     ).sum()
     return projected, {
         "raw_dot": float(raw_dot.detach()),

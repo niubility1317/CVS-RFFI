@@ -412,6 +412,37 @@ def test_gradient_projection_exactly_removes_conflict_for_tiny_nonzero_primary()
     assert torch.dot(primary[0], projected[0]) >= -tolerance
 
 
+@pytest.mark.parametrize(
+    ("dtype", "primary_value", "auxiliary_value", "tolerance"),
+    [
+        (torch.float32, 1.0e-30, -1.0e30, 1.0e-5),
+        (torch.float64, 1.0e-160, -1.0e160, 1.0e-12),
+    ],
+)
+def test_gradient_projection_handles_finite_inverse_scale_extremes(
+    dtype: torch.dtype,
+    primary_value: float,
+    auxiliary_value: float,
+    tolerance: float,
+) -> None:
+    """Catches global-dot underflow or norm overflow for finite inverse-scale gradients."""
+
+    primary = (torch.tensor([primary_value], dtype=dtype),)
+    auxiliary = (torch.tensor([auxiliary_value], dtype=dtype),)
+
+    projected, audit = project_auxiliary_gradients(primary, auxiliary)
+
+    assert all(torch.isfinite(value).all() for value in projected)
+    assert torch.isfinite(torch.tensor(tuple(audit.values()), dtype=torch.float64)).all()
+    external_dot = sum(
+        (primary_item.to(torch.float64) * projected_item.to(torch.float64)).sum()
+        for primary_item, projected_item in zip(primary, projected)
+    )
+    assert audit["raw_dot"] < 0.0
+    assert audit["projected_dot"] >= -tolerance
+    assert external_dot >= -tolerance
+
+
 def test_identity_fft_diagnostics_are_class_centered_and_stably_padded() -> None:
     """Catches between-class offsets leaking into redundancy diagnostics."""
 
