@@ -45,3 +45,16 @@ PAIRBICAD_CONVERGENCE_CANDIDATES=P2,P1 bash code/scripts/launch_phase1_pairbicad
 
 12行全部闭合后，只按source-only曲线冻结胜出候选。胜出候选6个row的最佳update取中位数并量化到500 updates，冻结为fold1–5×seed392001/392002/392003共15行最终确认预算；不得使用任何target或Phase2反馈。
 
+## r2发布与启动证据
+
+- 发布提交：`00c9ea7471d25d2e86ac98306010dd249c9c20cd`，远端OID与本地`HEAD`一致，工作树干净。
+- release归档：本地`E:\type10-7\release_archives\phase1_pairbicad_convergence_00c9ea74.tar.gz`→远端`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_pairbicad_convergence_00c9ea74.tar.gz`。
+- 唯一归档SHA256：`caf0c8214aa608a906319b28072e40e970533e67e479c7c8d125466c749b3f02`，本地/远端一致。
+- 远端release解包后编译：`PASS`。
+- 启动时间：2026-08-31约17:42 CST；dispatcher PID：`2946124`。
+- 启动绑定：dispatcher的CWD/命令行绑定到`phase1_pairbicad_convergence_20260831_r2`release和精确r2 run根；12个直属训练worker全部存在。
+- GPU映射：plan.json确认GPU0–3各2行、GPU4–7各1行，不超过每GPU2行；GPU0–7启动后均出现计算负载。
+- 矩阵读回：12/12行均为P2/P1、fold1/8、seed392001/392002/392003、U9000、day1/2/3和`source_only=true`。
+- 初始计数：`ARTIFACTS_COMPLETE=0`、`TECHNICAL_FAILURE=0`；trainer日志0字节属于训练中结构化指标尚未写入的预期状态，GPU计算和进程绑定健康时不得据此干预。
+- 当前状态：`RUNNING`。
+
