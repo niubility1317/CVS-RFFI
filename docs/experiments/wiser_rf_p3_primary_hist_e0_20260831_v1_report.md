@@ -3,12 +3,12 @@
 ## 状态与版本
 
 - run ID：`wiser_rf_p3_primary_hist_e0_20260831_v1`。
-- 当前状态：`LOCAL_VERIFIED/TASK10_PREFLIGHT_VERIFIED`。本报告不声明已构建release、已启动pilot、已生成prediction或已获得性能结果。
+- 当前状态：`LANDED`。本报告不声明已启动pilot、已生成prediction或已获得性能结果。
 - 运行时代码冻结提交：`e669536eca19cd39154c6232d31f59bc7af0d7e8`（`fix: bind WISER Target25 champion runtime`）。该提交与后续仅包含追踪表和本报告镜像的文档提交分离；文档提交由Task9发布步骤产生并单独核验。
 - 本地CWD：`E:\type10-7\github_publish\CVS-RFFI-repo\.worktrees\meta-adapter-tri-r4-v1-20260824`。
 - 本地环境：`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe`；远端环境：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`（Python 3.10.19、PyTorch 2.1.0+cu121、CUDA可用、8张GPU可见）。
 - 2026-08-31只读preflight确认普通账号、项目根、checkpoint、manifest、source summary均可见；GPU0至GPU7的compute-app列表均为空。用户授权上限为每张GPU最多3个训练实验；本pilot是依次执行N0至N6的单进程工作流，冻结物理GPU0，`CUDA_VISIBLE_DEVICES=0`后CLI设备为`cuda:0`，不会虚构为7个并行训练实验。
-- 本次唯一release提交：`cc720e43d45e0c66c2bc99a031b1a3d3d9418e0d`；release归档：`wiser_rf_p3_primary_hist_e0_20260831_v1_cc720e43.tar.gz`；远端release根：`/home/szu2070436088/2510044040/CV-SincNet/releases/wiser_rf_p3_primary_hist_e0_20260831_v1_cc720e43`。release尚未传输，本地/远端SHA比对与远端编译仍待执行。
+- 本次唯一release提交：`cc720e43d45e0c66c2bc99a031b1a3d3d9418e0d`；release归档：`wiser_rf_p3_primary_hist_e0_20260831_v1_cc720e43.tar.gz`；远端release根：`/home/szu2070436088/2510044040/CV-SincNet/releases/wiser_rf_p3_primary_hist_e0_20260831_v1_cc720e43`。归档大小为36254791字节，本地/远端唯一SHA256均为`2c3919e319be00310f5504a161f4174ab22c08d9b8490b57ae49943a41e689f6`；远端10个相关Python模块一次编译通过。
 
 ## 冻结矩阵与输入绑定
 
