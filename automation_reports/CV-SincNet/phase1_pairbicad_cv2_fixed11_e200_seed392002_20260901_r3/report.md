@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-- 状态：`LOCAL_FIX_IN_VERIFICATION / RELEASE_PENDING`。
+- 状态：`RUNNING`。
 - run ID：`phase1_pairbicad_cv2_fixed11_e200_seed392002_20260901_r3`。
 - r1、r2均按预登记系统技术失败规则停止，0行完成且partial artifact保留，不产生性能结论。
 
@@ -36,3 +36,13 @@ r3按数据视图选择同源ID：
 - 完整`code/tests/phase1_bicad_xr`回归472项全部通过；仅3条既存PyTorch autocast弃用警告。
 - 训练入口与launcher编译通过，`git diff --check`通过。
 - launcher静态读回：r3、24行、12候选、全部200epochs、每GPU最多2槽。
+
+## N607发布与启动证据
+
+- 代码提交：`394bee074bc191538fc1e09c3713a016b705fb62`；已自动push并独立核对远端OID一致。
+- release：`phase1_pairbicad_cv2_e200_394bee07`；归档本地/远端SHA256均为`06bd988e8f362a2d10d91ed060c192d9e8c4f1fcf8acf02138727b57cc9476d8`；远端编译通过。
+- 历史真实checkpoint无query烟测通过：严格重建缺失/意外/shape mismatch均为0，一次优化器步完成，Clean和三种LEO弱场景均有限值。
+- 真实ManySig双路径烟测通过：普通`CV2-B0`批次96个五元ID全部属于冻结U集合且CoverageLedger接受；MUSE `CV2-T3`批次32个`base_index`全部属于冻结U集合、CoverageLedger接受且TX字段不存在。
+- 启动时间：`2026-09-01T02:33+08:00`；dispatcher PID3235006，launcher wrapper PID3235005；CWD精确绑定上述release。
+- `plan.json`独立读回：24行、全部200epochs、GPU容量`0:1,1:2,...,7:2`、15行并发、9行排队。
+- 启动127秒检查：15个直属worker持续存在；GPU上15个本run计算进程加受保护的无关PID3208551；`TECHNICAL_FAILURE=0`、致命异常为空。健康运行不得因中间性能停止或热补丁。
