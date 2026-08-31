@@ -155,7 +155,7 @@ def score_wiser_predictions(
     rows = truth_payload.get("rows")
     if not isinstance(rows, list):
         raise ValueError("WISER truth rows are missing")
-    truth_lookup: dict[str, int] = {}
+    truth_lookup: dict[str, tuple[int, str]] = {}
     for row in rows:
         token = str(row["query_token"])
         if token in truth_lookup:
@@ -164,9 +164,15 @@ def score_wiser_predictions(
             class_id = int(row["true_class_index"])
         except (KeyError, TypeError, ValueError) as error:
             raise ValueError("WISER truth index is invalid") from error
-        if class_id < 0 or class_id >= 6:
+        role_value = row.get("evaluation_role")
+        role = "target_old" if role_value is None else str(role_value)
+        if role not in {"target_old", "target_new"}:
+            raise ValueError("WISER truth evaluation role is invalid")
+        if class_id < 0 or (role == "target_old" and class_id >= 6):
             raise ValueError("WISER truth index is outside the six-class registry")
-        truth_lookup[token] = class_id
+        if role == "target_new" and class_id < 6:
+            raise ValueError("WISER target-new truth overlaps the six-class registry")
+        truth_lookup[token] = (class_id, role)
 
     with np.load(Path(predictions_path), allow_pickle=False) as arrays:
         required = {"query_tokens", "query_z_id", *_PROBE_MEMBERS.values()}
@@ -186,12 +192,19 @@ def score_wiser_predictions(
             or not set(expected).issubset(truth_lookup)
         ):
             raise ValueError("WISER truth token join drift")
-        truth = np.asarray([truth_lookup[token] for token in tokens], dtype=np.int64)
+        full_truth = np.asarray(
+            [truth_lookup[token][0] for token in tokens], dtype=np.int64
+        )
+        roles = np.asarray([truth_lookup[token][1] for token in tokens])
+        old_mask = roles == "target_old"
+        truth = full_truth[old_mask]
         if set(truth.tolist()) != set(range(6)):
             raise ValueError("WISER representation probe needs complete six-old-class coverage")
-        features = np.asarray(arrays["query_z_id"], dtype=np.float64)
-        if features.shape[0] != len(tokens) or not np.isfinite(features).all():
+        full_features = np.asarray(arrays["query_z_id"], dtype=np.float64)
+        if full_features.shape[0] != len(tokens) or not np.isfinite(full_features).all():
             raise ValueError("WISER query feature closure drift")
+        features = full_features[old_mask]
+        scored_tokens = tokens[old_mask]
 
         detailed_members = set(_PROBE_LOGIT_MEMBERS.values())
         present_logits = detailed_members.intersection(arrays.files)
@@ -205,17 +218,27 @@ def score_wiser_predictions(
         pairing_predictions: dict[str, list[int]] = {}
         pairing_nll_contributions: dict[str, list[float]] = {}
         for probe_name, member in _PROBE_MEMBERS.items():
-            prediction = _validate_indices(
-                arrays[member], label=f"{probe_name} prediction", size=len(truth)
+            full_prediction = _validate_indices(
+                arrays[member], label=f"{probe_name} prediction", size=len(tokens)
             )
+            prediction = full_prediction[old_mask]
             if detailed:
-                probes[probe_name] = _probe_metrics(
-                    prediction, arrays[_PROBE_LOGIT_MEMBERS[probe_name]], truth
+                full_logits = np.asarray(
+                    arrays[_PROBE_LOGIT_MEMBERS[probe_name]], dtype=np.float64
                 )
+                if full_logits.shape != (len(tokens), 6):
+                    raise ValueError("WISER probe logit geometry drift")
+                if not bool(np.isfinite(full_logits).all()):
+                    raise ValueError("WISER probe logits must be finite")
+                if not np.array_equal(
+                    full_prediction, full_logits.argmax(axis=1).astype(np.int64)
+                ):
+                    raise ValueError("WISER probe prediction/argmax drift")
+                logits = full_logits[old_mask]
+                probes[probe_name] = _probe_metrics(prediction, logits, truth)
                 pairing_predictions[probe_name] = prediction.tolist()
                 pairing_nll_contributions[probe_name] = _nll_contributions(
-                    np.asarray(arrays[_PROBE_LOGIT_MEMBERS[probe_name]], dtype=np.float64),
-                    truth,
+                    logits, truth
                 ).tolist()
             else:
                 probes[probe_name] = _legacy_probe_metrics(prediction, truth)
@@ -231,8 +254,12 @@ def score_wiser_predictions(
         "arm": str(receipt["arm"]),
         "receiver": str(receipt["receiver"]),
         "scenario": str(receipt["scenario"]),
-        "query_rows": int(len(tokens)),
-        "old_query_rows": int(len(tokens)),
+        "query_rows": int(len(scored_tokens)),
+        "total_query_rows": int(len(tokens)),
+        "old_query_rows": int(len(scored_tokens)),
+        "ignored_non_old_query_rows": int(len(tokens) - len(scored_tokens)),
+        "scored_evaluation_role": "target_old",
+        "registration_state": "REG0",
         "probes": probes,
         "geometry": geometry,
         "truth_join_after_prediction_only": True,
@@ -244,11 +271,11 @@ def score_wiser_predictions(
                 "outer_key": str(receipt["outer_key"]),
                 "capsule_id": str(receipt["capsule_id"]),
                 "split_id": str(receipt["split_id"]),
-                "query_tokens": tokens.tolist(),
+                "query_tokens": scored_tokens.tolist(),
                 "class_registry": list(_CLASS_REGISTRY),
                 "per_class_query_rows": _class_counts(truth),
                 "pairing_payload": {
-                    "query_tokens": tokens.tolist(),
+                    "query_tokens": scored_tokens.tolist(),
                     "truth": truth.tolist(),
                     "true_class_indices": truth.tolist(),
                     "predictions": pairing_predictions,

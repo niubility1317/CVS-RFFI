@@ -168,6 +168,85 @@ def test_truth_last_detailed_score_reports_absolute_metrics_nll_and_binding(
     ).tolist()
 
 
+def test_truth_last_reg0_scores_old_roles_after_full_mixed_query_closure(
+    tmp_path: Path,
+) -> None:
+    tokens = np.asarray([f"q{index}" for index in range(18)])
+    truth_values = np.asarray(
+        [0, 6, 0, 1, 7, 1, 2, 8, 2, 3, 9, 3, 4, 10, 4, 5, 6, 5],
+        dtype=np.int64,
+    )
+    roles = np.asarray(
+        ["target_old" if class_id < 6 else "target_new" for class_id in truth_values]
+    )
+    predictions_values = np.where(truth_values < 6, truth_values, 0)
+    predictions = tmp_path / "predictions.npz"
+    np.savez_compressed(
+        predictions,
+        query_tokens=tokens,
+        p1_predictions=predictions_values,
+        p1_logits=_logits_for_predictions(predictions_values),
+        p2_predictions=predictions_values,
+        p2_logits=_logits_for_predictions(predictions_values),
+        p3_predictions=predictions_values,
+        p3_logits=_logits_for_predictions(predictions_values),
+        query_z_id=np.eye(6, dtype=np.float32)[predictions_values],
+    )
+    receipt = tmp_path / "receipt.json"
+    receipt.write_text(
+        json.dumps(
+            {
+                "status": "PREDICTIONS_COMPLETE",
+                "outer_key": "rx_3_19__seed_713102__k_10__new_5",
+                "capsule_id": "capsule-v1",
+                "split_id": "split-v1",
+                "arm": "N0",
+                "receiver": "rx_3_19",
+                "scenario": "leo_clear_weak",
+                "query_rows": 18,
+                "expected_query_tokens": tokens.tolist(),
+                "query_truth_opened": False,
+                "query_role_opened": False,
+                "support_state_frozen_before_query": True,
+            }
+        ),
+        encoding="utf-8",
+    )
+    truth = tmp_path / "truth.json"
+    truth.write_text(
+        json.dumps(
+            {
+                "receiver": "rx_3_19",
+                "rows": [
+                    {
+                        "query_token": token,
+                        "true_class_index": int(class_id),
+                        "evaluation_role": role,
+                    }
+                    for token, class_id, role in zip(
+                        tokens.tolist(), truth_values.tolist(), roles.tolist()
+                    )
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    result = score_wiser_predictions(predictions, receipt, truth)
+
+    expected_old_tokens = tokens[roles == "target_old"].tolist()
+    assert result["total_query_rows"] == 18
+    assert result["query_rows"] == 12
+    assert result["old_query_rows"] == 12
+    assert result["ignored_non_old_query_rows"] == 6
+    assert result["scored_evaluation_role"] == "target_old"
+    assert result["registration_state"] == "REG0"
+    assert result["query_tokens"] == expected_old_tokens
+    assert result["pairing_payload"]["query_tokens"] == expected_old_tokens
+    assert result["per_class_query_rows"] == {str(class_id): 2 for class_id in range(6)}
+    assert result["probes"]["P3_OLD_D92"]["balanced_accuracy"] == 1.0
+
+
 def test_truth_last_detailed_score_uses_stable_nll_for_extreme_finite_logits(tmp_path: Path) -> None:
     predictions, receipt, truth, expected_truth = _write_detailed_inputs(
         tmp_path, logits_margin=1.0
