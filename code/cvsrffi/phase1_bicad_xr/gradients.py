@@ -4,10 +4,17 @@ from __future__ import annotations
 
 import math
 import operator
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 
 import torch
 from torch import Tensor
+
+
+DEFAULT_LOCAL_PROJECTION_ALLOWLIST = (
+    "identity_last_block",
+    "fusion",
+    "projection",
+)
 
 
 def _positive_integer(name: str, value: object) -> int:
@@ -96,6 +103,8 @@ def project_conflicting_gradient(
     references: Tensor | Sequence[Tensor] | None = None,
     *,
     eps: float = 1e-12,
+    parameter_name: str | None = None,
+    allowlist: Sequence[str] | None = None,
 ) -> Tensor | list[Tensor]:
     """Project a gradient away from conflicting reference gradients.
 
@@ -110,6 +119,18 @@ def project_conflicting_gradient(
         raise ValueError("eps must be a finite positive number") from exc
     if not math.isfinite(resolved_eps) or resolved_eps <= 0.0:
         raise ValueError("eps must be a finite positive number")
+
+    if parameter_name is not None or allowlist is not None:
+        if not isinstance(parameter_name, str) or not parameter_name.strip():
+            raise ValueError("parameter_name is required when allowlist is used")
+        resolved_allowlist = _validate_projection_allowlist(
+            DEFAULT_LOCAL_PROJECTION_ALLOWLIST if allowlist is None else allowlist
+        )
+        if not _projection_name_allowed(parameter_name, resolved_allowlist):
+            if not torch.is_tensor(gradient):
+                raise ValueError("allowlist is supported only for tensor gradients")
+            _validate_gradient(gradient, "gradient")
+            return gradient.clone()
 
     if torch.is_tensor(gradient):
         _validate_gradient(gradient, "gradient")
@@ -145,6 +166,71 @@ def project_conflicting_gradient(
             current = _project_one(current, reference, resolved_eps)
         projected[index] = current
     return projected
+
+
+def _validate_projection_allowlist(
+    allowlist: Sequence[str],
+) -> tuple[str, ...]:
+    if isinstance(allowlist, (str, bytes)) or not isinstance(allowlist, Sequence):
+        raise ValueError("allowlist must contain non-empty parameter prefixes")
+    resolved = tuple(allowlist)
+    if not resolved or any(not isinstance(name, str) or not name.strip() for name in resolved):
+        raise ValueError("allowlist must contain non-empty parameter prefixes")
+    if len(set(resolved)) != len(resolved):
+        raise ValueError("allowlist must not contain duplicates")
+    return resolved
+
+
+def _projection_name_allowed(name: str, allowlist: Sequence[str]) -> bool:
+    return any(
+        name == prefix
+        or name.startswith(prefix + ".")
+        or name.startswith(prefix + "/")
+        for prefix in allowlist
+    )
+
+
+def project_local_conflicting_gradients(
+    gradients: Mapping[str, Tensor],
+    references: Mapping[str, Tensor],
+    *,
+    allowlist: Sequence[str] = DEFAULT_LOCAL_PROJECTION_ALLOWLIST,
+    eps: float = 1e-12,
+) -> dict[str, Tensor]:
+    """Project only explicitly allowlisted named gradients.
+
+    Non-allowlisted gradients are cloned unchanged.  The two mappings are
+    keyed by parameter name so the caller cannot accidentally project an
+    unrelated shared stem or discriminator parameter.
+    """
+
+    if not isinstance(gradients, Mapping) or not isinstance(references, Mapping):
+        raise ValueError("gradients and references must be mappings")
+    if not gradients:
+        raise ValueError("gradients must be non-empty")
+    resolved_allowlist = _validate_projection_allowlist(allowlist)
+    projected: dict[str, Tensor] = {}
+    for name, gradient in gradients.items():
+        if not isinstance(name, str) or not name:
+            raise ValueError("gradient names must be non-empty strings")
+        _validate_gradient(gradient, f"gradients[{name!r}]")
+        if not _projection_name_allowed(name, resolved_allowlist):
+            projected[name] = gradient.clone()
+            continue
+        if name not in references:
+            raise ValueError(f"missing reference gradient for {name}")
+        projected_value = project_conflicting_gradient(
+            gradient,
+            references[name],
+            eps=eps,
+        )
+        assert torch.is_tensor(projected_value)
+        projected[name] = projected_value
+    return projected
+
+
+project_local_conflicting_gradient = project_local_conflicting_gradients
+project_task_protected_gradients = project_local_conflicting_gradients
 
 
 def _gradient_norm(value: Tensor, name: str, eps: float) -> Tensor:
@@ -295,7 +381,11 @@ scale_parameter_gradients = scale_explicit_gradients
 
 
 __all__ = [
+    "DEFAULT_LOCAL_PROJECTION_ALLOWLIST",
     "GradientRatioController",
+    "project_local_conflicting_gradient",
+    "project_local_conflicting_gradients",
+    "project_task_protected_gradients",
     "project_conflicting_gradient",
     "safe_svd",
     "scale_explicit_gradients",

@@ -5,6 +5,7 @@ import torch
 
 from cvsrffi.phase1_bicad_xr.gradients import (
     GradientRatioController,
+    project_local_conflicting_gradients,
     project_conflicting_gradient,
     safe_svd,
     scale_explicit_gradients,
@@ -99,3 +100,22 @@ def test_gradient_ratio_controller_rejects_nonfinite_raw_ratio_without_state_mut
     assert controller.ema_ratio is not None
     assert torch.equal(controller.ema_ratio, before)
     assert controller.last_scale == pytest.approx(1e308)
+
+
+def test_local_projection_allowlist_changes_only_identity_fusion_and_projection() -> None:
+    gradients = {
+        "identity_last_block.weight": torch.tensor([1.0, 1.0]),
+        "fusion.bias": torch.tensor([1.0, 1.0]),
+        "projection.weight": torch.tensor([1.0, 1.0]),
+        "shared_stem.weight": torch.tensor([1.0, 1.0]),
+    }
+    references = {
+        name: torch.tensor([-1.0, 0.0]) for name in gradients
+    }
+
+    projected = project_local_conflicting_gradients(gradients, references)
+
+    for name in ("identity_last_block.weight", "fusion.bias", "projection.weight"):
+        assert torch.allclose(projected[name], torch.tensor([0.0, 1.0]))
+    assert torch.equal(projected["shared_stem.weight"], gradients["shared_stem.weight"])
+    assert torch.equal(gradients["identity_last_block.weight"], torch.tensor([1.0, 1.0]))
