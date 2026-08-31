@@ -2,7 +2,7 @@
 
 ## 状态与版本
 
-- run ID：`wiser_rf_p3_primary_hist_e0_20260831_v1_bindfix1`；当前状态：`LOCAL_VERIFIED`。
+- run ID：`wiser_rf_p3_primary_hist_e0_20260831_v1_bindfix1`；当前状态：`LANDED`。
 - Git提交：`ba704748d78d2ea37307c4a5aed2f582866bbfa6`。该提交只修复历史D92 E0 pilot的真实`capsule_id/split_id`绑定并增加回归测试；不改变P3方法、训练预算、arm、scene或科学门槛。
 - 前一run`wiser_rf_p3_primary_hist_e0_20260831_v1`在无query smoke阶段因旧绑定占位值退出，未进入pilot，永久保留为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；本run为用户已授权的新提交、新release和新run ID修复重发。
 - 本地环境：`C:\Users\lh594\.conda\envs\ssr-gpu\python.exe`；远端环境：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`。聚焦回归先复现失败，修复后pilot与Target25相关30项测试及`py_compile`通过。
@@ -19,7 +19,7 @@
 
 ## release、路径与命令
 
-- release归档：`wiser_rf_p3_primary_hist_e0_20260831_v1_bindfix1_ba704748.tar.gz`；远端release根：`/home/szu2070436088/2510044040/CV-SincNet/releases/wiser_rf_p3_primary_hist_e0_20260831_v1_bindfix1_ba704748`。仅允许一次归档本地/远端SHA比对和一次远端编译。
+- release归档：`wiser_rf_p3_primary_hist_e0_20260831_v1_bindfix1_ba704748.tar.gz`；远端release根：`/home/szu2070436088/2510044040/CV-SincNet/releases/wiser_rf_p3_primary_hist_e0_20260831_v1_bindfix1_ba704748`。归档大小36262652字节，本地/远端唯一SHA256均为`c2e9bea1b50acb13b4e12716d49c785b0d70fffd26a6b8d09ccb631e3aa5c04d`；远端相关模块一次编译通过。
 - run root：`/home/szu2070436088/2510044040/CV-SincNet/runs/wiser_rf_p3_primary_hist_e0_20260831_v1_bindfix1`；log：`/home/szu2070436088/2510044040/CV-SincNet/logs/wiser_rf_p3_primary_hist_e0_20260831_v1_bindfix1/pilot.out`；score root：`<run-root>/score`。四个新目标均已只读确认不存在。
 - smoke与pilot由同一后台owner串联，前者非零即不执行后者：
 
