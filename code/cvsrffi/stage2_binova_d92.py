@@ -30,6 +30,16 @@ class BiNOVAD92Error(ValueError):
     """Raised when differentiable or exact D92 geometry is invalid."""
 
 
+def _safe_nonnegative_sqrt(value: torch.Tensor) -> torch.Tensor:
+    """Preserve sqrt forward values while selecting a finite derivative at zero."""
+
+    values = torch.as_tensor(value)
+    positive = values > 0.0
+    safe_input = torch.where(positive, values, torch.ones_like(values))
+    roots = safe_input.sqrt()
+    return torch.where(positive, roots, torch.zeros_like(roots))
+
+
 @dataclass(frozen=True)
 class DifferentiableD92State:
     class_ids: tuple[int, ...]
@@ -234,7 +244,9 @@ def _d92_exact_metric(rows: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
             (log_diag, weights),
             create_graph=bool(rows.requires_grad),
         )
-        norm = torch.sqrt(log_grad.square().sum() + weight_grad.square().sum())
+        norm = _safe_nonnegative_sqrt(
+            log_grad.square().sum() + weight_grad.square().sum()
+        )
         scale = (GRAD_CLIP / (norm + 1.0e-6)).clamp(max=1.0)
         log_grad, weight_grad = log_grad * scale, weight_grad * scale
         log_m = beta1 * log_m + (1.0 - beta1) * log_grad
@@ -243,10 +255,10 @@ def _d92_exact_metric(rows: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
         weight_v = beta2 * weight_v + (1.0 - beta2) * weight_grad.square()
         log_diag = log_diag * (1.0 - STAGE2B_LR * WEIGHT_DECAY) - STAGE2B_LR * (
             log_m / (1.0 - beta1**step)
-        ) / (log_v / (1.0 - beta2**step)).sqrt().add(1.0e-8)
+        ) / _safe_nonnegative_sqrt(log_v / (1.0 - beta2**step)).add(1.0e-8)
         weights = weights * (1.0 - STAGE2B_LR * WEIGHT_DECAY) - STAGE2B_LR * (
             weight_m / (1.0 - beta1**step)
-        ) / (weight_v / (1.0 - beta2**step)).sqrt().add(1.0e-8)
+        ) / _safe_nonnegative_sqrt(weight_v / (1.0 - beta2**step)).add(1.0e-8)
         log_diag = torch.clamp(log_diag, min=lower, max=upper)
     return log_diag
 
@@ -330,7 +342,10 @@ def _d92_canonical_component(rows: torch.Tensor, labels: torch.Tensor, *, block:
 
 def _d92_rms(rows: torch.Tensor, coefficient: torch.Tensor, intercept: torch.Tensor) -> torch.Tensor:
     scores = rows.to(dtype=torch.float64) @ coefficient.T + intercept
-    return (scores - scores.mean(dim=1, keepdim=True)).square().mean().sqrt()
+    mean_square = (scores - scores.mean(dim=1, keepdim=True)).square().mean()
+    if bool((mean_square <= torch.finfo(mean_square.dtype).eps).detach()):
+        raise BiNOVAD92Error("D92 score RMS is zero or numerically degenerate")
+    return _safe_nonnegative_sqrt(mean_square)
 
 
 def _d92_classwise_ce(scores: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:

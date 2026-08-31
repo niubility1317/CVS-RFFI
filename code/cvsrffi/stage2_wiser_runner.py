@@ -2,15 +2,20 @@
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 import inspect
 import math
+import os
+import sys
+import time
 from typing import Any, Callable, Mapping, Sequence
 
 import numpy as np
 import torch
 from torch import nn
 import torch.nn.functional as F
+
+from cvsrffi.stage2_binova_d92 import BiNOVAD92Error
 
 from cvsrffi.stage2_wiser_rf import (
     configure_p3_time_first_update,
@@ -89,6 +94,9 @@ class WISERP3TrainingConfig:
     fold_count: int = 5
     stage_steps: tuple[int, int, int] = (1500, 2000, 2500)
     diagnostic_interval: int = 100
+    diagnostic_patience: int = 2
+    minimum_stage_steps: int = 10
+    early_stop_min_delta: float = 1.0e-4
     risk_rho: float = 2.0
     floor_beta: float = 0.25
     floor_tau: float = 0.1
@@ -115,13 +123,18 @@ class WISERP3TrainingConfig:
             raise ValueError("P3 stage_steps must contain three nonnegative values")
         if sum(int(value) for value in self.stage_steps) < 1:
             raise ValueError("P3 training needs at least one optimizer step")
-        if int(self.diagnostic_interval) < 1 or int(self.manifold_steps) < 1:
+        if (
+            int(self.diagnostic_interval) < 1
+            or int(self.diagnostic_patience) < 1
+            or int(self.minimum_stage_steps) < 1
+            or int(self.manifold_steps) < 1
+        ):
             raise ValueError("P3 diagnostic and manifold steps must be positive")
         finite_nonnegative = (
             self.risk_rho, self.floor_beta, self.dual_rate, self.class_risk_epsilon,
             self.manifold_l2, self.manifold_weight, self.source_head_weight,
             self.prototype_weight, self.duplication_weight, self.energy_weight,
-            self.duplication_slack,
+            self.duplication_slack, self.early_stop_min_delta,
         )
         if any(not math.isfinite(float(value)) or float(value) < 0.0 for value in finite_nonnegative):
             raise ValueError("P3 weights and constraints must be finite and nonnegative")
@@ -167,6 +180,32 @@ class WISERP3TrainingAudit:
     final_zero_identity_count: int
     final_duals: tuple[float, ...]
     config: Mapping[str, Any]
+    final_modality_oof_risk: Mapping[str, Mapping[str, Any]] = field(
+        default_factory=dict
+    )
+    training_elapsed_seconds: float = 0.0
+    peak_process_rss_bytes: int | None = None
+    peak_cuda_memory_allocated_bytes: int | None = None
+
+
+def _process_peak_rss_bytes() -> int | None:
+    """Return the process peak RSS without making diagnostics a dependency gate."""
+
+    if os.name == "posix":
+        try:
+            import resource
+
+            maximum = int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
+            return maximum if sys.platform == "darwin" else maximum * 1024
+        except (ImportError, OSError, ValueError):
+            return None
+    try:
+        import psutil
+
+        memory = psutil.Process().memory_info()
+        return int(getattr(memory, "peak_wset", memory.rss))
+    except (ImportError, OSError, ValueError):
+        return None
 
 
 def _forward_identity(model: nn.Module, values: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
@@ -432,7 +471,158 @@ def _p3_metrics(
         "oof_class_risk": tuple(float(value.detach()) for value in p3.class_risk),
         "joint_condition_number": diagnostics.joint_condition_number,
         "zero_identity_count": diagnostics.zero_identity_count,
+        "zero_identity_count_by_class": diagnostics.zero_identity_count_by_class,
+        "identity_block_trace": diagnostics.identity_block_trace,
+        "fft_block_trace": diagnostics.fft_block_trace,
         "cross_covariance_frobenius": diagnostics.cross_covariance_frobenius,
+        "canonical_correlations": diagnostics.canonical_correlations,
+    }
+
+
+def _gradient_statistics(
+    gradients: Sequence[torch.Tensor | None],
+) -> dict[str, float | bool]:
+    tensors = tuple(value for value in gradients if value is not None)
+    if not tensors:
+        return {"finite": True, "max_abs": 0.0, "l2_norm": 0.0}
+    finite = all(bool(torch.isfinite(value).all()) for value in tensors)
+    if not finite:
+        return {"finite": False, "max_abs": float("nan"), "l2_norm": float("nan")}
+    max_abs = max(float(value.detach().abs().max()) for value in tensors)
+    squared_norm = sum(
+        float(value.detach().to(dtype=torch.float64).square().sum()) for value in tensors
+    )
+    return {"finite": True, "max_abs": max_abs, "l2_norm": math.sqrt(squared_norm)}
+
+
+def _require_finite_component(
+    values: Sequence[torch.Tensor | None],
+    *,
+    component: str,
+    branch: str,
+    step: int,
+    parameter_names: Sequence[str],
+) -> None:
+    for name, value in zip(parameter_names, values):
+        if value is not None and not bool(torch.isfinite(value).all()):
+            raise RuntimeError(
+                f"P3 {component} gradient became nonfinite: "
+                f"branch={branch} step={step} parameter={name}"
+            )
+
+
+def _gradient_block_cosines(
+    parameter_names: Sequence[str],
+    primary: Sequence[torch.Tensor | None],
+    auxiliary: Sequence[torch.Tensor | None],
+) -> dict[str, float | None]:
+    grouped: dict[str, list[tuple[torch.Tensor, torch.Tensor]]] = {}
+    for name, primary_item, auxiliary_item in zip(
+        parameter_names, primary, auxiliary
+    ):
+        parts = name.split(".")
+        if len(parts) >= 3 and parts[:2] == ["id_backbone", "cls_head"]:
+            block = ".".join(parts[:3])
+        elif len(parts) >= 2:
+            block = ".".join(parts[:2])
+        else:
+            block = parts[0]
+        reference = primary_item if primary_item is not None else auxiliary_item
+        if reference is None:
+            continue
+        grouped.setdefault(block, []).append(
+            (
+                torch.zeros_like(reference) if primary_item is None else primary_item,
+                torch.zeros_like(reference) if auxiliary_item is None else auxiliary_item,
+            )
+        )
+    result: dict[str, float | None] = {}
+    for block, pairs in grouped.items():
+        dot = sum(
+            float((left.detach().double() * right.detach().double()).sum())
+            for left, right in pairs
+        )
+        left_norm = math.sqrt(
+            sum(float(left.detach().double().square().sum()) for left, _ in pairs)
+        )
+        right_norm = math.sqrt(
+            sum(float(right.detach().double().square().sum()) for _, right in pairs)
+        )
+        result[block] = (
+            None if left_norm == 0.0 or right_norm == 0.0 else dot / (left_norm * right_norm)
+        )
+    return result
+
+
+def _p3_step_metrics(
+    p3: Any,
+    identity: torch.Tensor,
+    fft: torch.Tensor,
+    labels: torch.Tensor,
+) -> dict[str, Any]:
+    accuracies = torch.stack(
+        [
+            (p3.oof_predictions[labels == class_id] == class_id).float().mean()
+            for class_id in range(6)
+        ]
+    )
+    diagnostics = identity_fft_diagnostics(identity, fft, labels)
+    return {
+        "oof_p3_ba": float(accuracies.mean()),
+        "oof_p3_floor": float(accuracies.min()),
+        "joint_condition_number": float(diagnostics.joint_condition_number),
+        "zero_identity_count": int(diagnostics.zero_identity_count),
+        "zero_identity_count_by_class": list(
+            diagnostics.zero_identity_count_by_class
+        ),
+        "identity_block_trace": float(diagnostics.identity_block_trace),
+        "fft_block_trace": float(diagnostics.fft_block_trace),
+        "cross_covariance_frobenius": float(diagnostics.cross_covariance_frobenius),
+        "canonical_correlations": list(diagnostics.canonical_correlations),
+    }
+
+
+def _p3_modality_risk(
+    identity: torch.Tensor,
+    fft: torch.Tensor,
+    labels: torch.Tensor,
+    folds: Sequence[Any],
+    *,
+    floor_tau: float,
+    joint_metrics: Mapping[str, Any],
+) -> dict[str, Mapping[str, Any]]:
+    zeros = torch.zeros(6, device=identity.device)
+
+    def measure(identity_rows: torch.Tensor, fft_rows: torch.Tensor) -> Mapping[str, Any]:
+        try:
+            result = cross_fitted_p3_loss(
+                identity_rows,
+                fft_rows,
+                labels,
+                folds=folds,
+                baseline_class_risk=zeros,
+                class_duals=zeros,
+                epsilon=zeros,
+                rho=0.0,
+                beta=0.0,
+                tau=float(floor_tau),
+            )
+        except BiNOVAD92Error as exc:
+            return {"status": "INVALID_GEOMETRY", "reason": str(exc), "class_risk": []}
+        return {
+            "status": "VALID",
+            "mean_risk": float(result.mean_risk.detach()),
+            "class_risk": [float(value) for value in result.class_risk.detach()],
+        }
+
+    return {
+        "identity_only": measure(identity, torch.zeros_like(fft)),
+        "fft_only": measure(torch.zeros_like(identity), fft),
+        "joint": {
+            "status": "VALID",
+            "mean_risk": float(joint_metrics["oof_mean_risk"]),
+            "class_risk": list(joint_metrics["oof_class_risk"]),
+        },
     }
 
 
@@ -489,6 +679,8 @@ def train_wiser_p3_arm(
     expected_source_feature_schema: str | None = None,
     arm: str,
     config: WISERP3TrainingConfig,
+    diagnostic_callback: Callable[[Mapping[str, Any]], None] | None = None,
+    force_stage_traversal: bool = False,
 ) -> WISERP3TrainingAudit:
     """Run the P3 arm and refreeze even rejected inputs or failed training."""
 
@@ -501,7 +693,8 @@ def train_wiser_p3_arm(
             source_summary=source_summary,
             expected_source_class_registry=expected_source_class_registry,
             expected_source_feature_schema=expected_source_feature_schema,
-            arm=arm, config=config,
+            arm=arm, config=config, diagnostic_callback=diagnostic_callback,
+            force_stage_traversal=force_stage_traversal,
         )
     finally:
         model.eval()
@@ -520,13 +713,18 @@ def _train_wiser_p3_arm_impl(
     expected_source_feature_schema: str | None,
     arm: str,
     config: WISERP3TrainingConfig,
+    diagnostic_callback: Callable[[Mapping[str, Any]], None] | None,
+    force_stage_traversal: bool,
 ) -> WISERP3TrainingAudit:
     """Train P3-primary arms from support only, then leave the model refrozen."""
 
+    training_started = time.perf_counter()
     arm_value = str(arm).upper()
     if arm_value not in {"N2", "N3", "N4", "N5", "N6"}:
         raise ValueError("P3 arm must be N2, N3, N4, N5 or N6")
     values, labels, _, fft, folds = _p3_support_inputs(model, support_iq, support_labels, support_tokens, config)
+    if values.is_cuda:
+        torch.cuda.reset_peak_memory_stats(values.device)
     needs_summary = arm_value in {"N4", "N5", "N6"}
     if needs_summary:
         if source_summary is None or len(source_summary.class_registry) != 6:
@@ -594,6 +792,7 @@ def _train_wiser_p3_arm_impl(
         step_count: int,
     ) -> tuple[SupportInterpolationResult, dict[str, Any], torch.Tensor]:
         nonlocal optimizer_steps
+        branch_started = time.perf_counter()
         branch_duals = dual_input.detach().clone()
         model.load_state_dict(stage_input, strict=True)
         update = configure_p3_time_first_update(model, branch=branch, parent_branch=parent_branch)
@@ -603,7 +802,39 @@ def _train_wiser_p3_arm_impl(
             model, values, labels, fft, folds, baseline_class_risk, branch_duals, config
         )
         projection_audits: list[Mapping[str, float]] = []
-        for _ in range(int(step_count)):
+        parameter_names = tuple(name for name, _ in trainable)
+        parameters = tuple(parameter for _, parameter in trainable)
+        executed_steps = 0
+        stale_diagnostics = 0
+        best_ba = float(anchor_metrics["oof_p3_ba"])
+        best_floor = float(anchor_metrics["oof_p3_floor"])
+        stop_reason = "max_steps"
+
+        def emit_nonfinite(
+            component: str,
+            step: int,
+            statistics: Mapping[str, Any] | None = None,
+        ) -> None:
+            if diagnostic_callback is None:
+                return
+            diagnostic_callback(
+                {
+                    "schema": "cvs.phase2.wiser_rf.p3_training_progress.v1",
+                    "status": "FAILED_NONFINITE",
+                    "component": component,
+                    "branch": branch,
+                    "parent_branch": parent_branch,
+                    "step": step,
+                    "max_steps": int(step_count),
+                    "elapsed_seconds": float(time.perf_counter() - branch_started),
+                    "process_peak_rss_bytes": _process_peak_rss_bytes(),
+                    "statistics": dict(statistics or {}),
+                    "query_rows_used": 0,
+                }
+            )
+
+        for step_index in range(int(step_count)):
+            step_number = step_index + 1
             optimizer.zero_grad(set_to_none=True)
             source_logits, identity = _forward_identity(model, values)
             p3 = cross_fitted_p3_loss(
@@ -617,6 +848,7 @@ def _train_wiser_p3_arm_impl(
             if source_points is not None:
                 assert shared_weights is not None
                 manifold = shared_domain_manifold_loss(identity, labels, source_points, shared_weights)
+            auxiliary = p3.total.new_zeros(())
             if arm_value in {"N5", "N6"}:
                 dual = wiser_dual_supervision_loss(source_logits, identity, labels, lambda_proto=1.0)
                 auxiliary = float(config.source_head_weight) * dual.source_head + float(config.prototype_weight) * dual.target_proto + float(config.manifold_weight) * manifold
@@ -627,26 +859,174 @@ def _train_wiser_p3_arm_impl(
                         duplication_slack=float(config.duplication_slack), energy_floor=float(config.energy_floor),
                     )
                     auxiliary = auxiliary + float(config.duplication_weight) * duplication + float(config.energy_weight) * energy
-                primary_grads = torch.autograd.grad(p3.total, [parameter for _, parameter in trainable], retain_graph=True, allow_unused=True)
-                auxiliary_grads = torch.autograd.grad(auxiliary, [parameter for _, parameter in trainable], allow_unused=True)
-                projected, projection_audit = project_auxiliary_gradients(primary_grads, auxiliary_grads, reference=[parameter for _, parameter in trainable])
-                projection_audits.append(projection_audit)
-                for (_, parameter), primary_grad, projected_grad in zip(trainable, primary_grads, projected):
-                    parameter.grad = (torch.zeros_like(parameter) if primary_grad is None else primary_grad) + projected_grad
+            elif arm_value == "N4":
+                auxiliary = float(config.manifold_weight) * manifold
+            loss_components = {
+                "total": p3.total,
+                "mean_risk": p3.mean_risk,
+                "soft_floor": p3.soft_floor,
+                "class_risk": p3.class_risk,
+                "violation": p3.violation,
+                "auxiliary": auxiliary,
+            }
+            for component_name, component_value in loss_components.items():
+                if not bool(torch.isfinite(component_value).all()):
+                    emit_nonfinite(component_name, step_number)
+                    raise RuntimeError(
+                        f"P3 {component_name} became nonfinite: "
+                        f"branch={branch} step={step_number}"
+                    )
+            primary_grads = torch.autograd.grad(
+                p3.total,
+                parameters,
+                retain_graph=bool(auxiliary.requires_grad),
+                allow_unused=True,
+            )
+            if auxiliary.requires_grad:
+                auxiliary_grads = torch.autograd.grad(
+                    auxiliary, parameters, allow_unused=True
+                )
             else:
-                total = p3.total + (float(config.manifold_weight) * manifold if arm_value == "N4" else 0.0)
-                total.backward()
-            for name, parameter in trainable:
-                if parameter.grad is not None:
-                    if not torch.isfinite(parameter.grad).all():
-                        raise RuntimeError(f"P3 gradient became nonfinite: {name}")
-                    reached.add(name)
+                auxiliary_grads = tuple(None for _ in parameters)
+            primary_statistics = _gradient_statistics(primary_grads)
+            if not bool(primary_statistics["finite"]):
+                emit_nonfinite("primary", step_number, primary_statistics)
+            _require_finite_component(
+                primary_grads,
+                component="primary",
+                branch=branch,
+                step=step_number,
+                parameter_names=parameter_names,
+            )
+            auxiliary_statistics = _gradient_statistics(auxiliary_grads)
+            if not bool(auxiliary_statistics["finite"]):
+                emit_nonfinite("auxiliary", step_number, auxiliary_statistics)
+            _require_finite_component(
+                auxiliary_grads,
+                component="auxiliary",
+                branch=branch,
+                step=step_number,
+                parameter_names=parameter_names,
+            )
+            if arm_value in {"N5", "N6"}:
+                projected, projection_audit = project_auxiliary_gradients(
+                    primary_grads, auxiliary_grads, reference=parameters
+                )
+                projection_audits.append(projection_audit)
+            else:
+                projected = tuple(
+                    torch.zeros_like(parameter) if gradient is None else gradient
+                    for parameter, gradient in zip(parameters, auxiliary_grads)
+                )
+                projection_audit = {"raw_dot": 0.0, "projected_dot": 0.0}
+            projected_statistics = _gradient_statistics(projected)
+            if not bool(projected_statistics["finite"]):
+                emit_nonfinite("projected", step_number, projected_statistics)
+            _require_finite_component(
+                projected,
+                component="projected",
+                branch=branch,
+                step=step_number,
+                parameter_names=parameter_names,
+            )
+            combined = tuple(
+                (torch.zeros_like(parameter) if primary_grad is None else primary_grad)
+                + projected_grad
+                for parameter, primary_grad, projected_grad in zip(
+                    parameters, primary_grads, projected
+                )
+            )
+            combined_statistics = _gradient_statistics(combined)
+            if not bool(combined_statistics["finite"]):
+                emit_nonfinite("combined", step_number, combined_statistics)
+            _require_finite_component(
+                combined,
+                component="combined",
+                branch=branch,
+                step=step_number,
+                parameter_names=parameter_names,
+            )
+            for (name, parameter), gradient in zip(trainable, combined):
+                parameter.grad = gradient
+                reached.add(name)
             optimizer.step()
             optimizer_steps += 1
+            executed_steps += 1
             if arm_value != "N2":
                 branch_duals = update_nonnegative_duals(
                     branch_duals, p3.violation.detach(), rate=float(config.dual_rate)
                 )
+                if not bool(torch.isfinite(branch_duals).all()):
+                    emit_nonfinite("class_duals", step_number)
+                    raise RuntimeError(
+                        f"P3 class dual became nonfinite: branch={branch} step={step_number}"
+                    )
+            diagnostic_due = (
+                step_number % int(config.diagnostic_interval) == 0
+                or step_number == int(step_count)
+            )
+            if diagnostic_due:
+                step_metrics = _p3_step_metrics(p3, identity, fft, labels)
+                gradient_components = {
+                    "primary": primary_statistics,
+                    "auxiliary": auxiliary_statistics,
+                    "projected": projected_statistics,
+                    "combined": combined_statistics,
+                }
+                event: dict[str, Any] = {
+                    "schema": "cvs.phase2.wiser_rf.p3_training_progress.v1",
+                    "branch": branch,
+                    "parent_branch": parent_branch,
+                    "step": step_number,
+                    "max_steps": int(step_count),
+                    "elapsed_seconds": float(time.perf_counter() - branch_started),
+                    "process_peak_rss_bytes": _process_peak_rss_bytes(),
+                    "p3_total": float(p3.total.detach()),
+                    "p3_mean_risk": float(p3.mean_risk.detach()),
+                    "p3_soft_floor": float(p3.soft_floor.detach()),
+                    "class_risk": [float(value) for value in p3.class_risk.detach()],
+                    "class_violation": [float(value) for value in p3.violation.detach()],
+                    "class_duals": [float(value) for value in branch_duals.detach()],
+                    "gradient_components": gradient_components,
+                    "block_gradient_cosines": _gradient_block_cosines(
+                        parameter_names, primary_grads, auxiliary_grads
+                    ),
+                    "projection": dict(projection_audit),
+                    "learning_rate": float(config.learning_rate),
+                    "query_rows_used": 0,
+                    **step_metrics,
+                }
+                if values.is_cuda:
+                    event["cuda_memory_allocated_bytes"] = int(
+                        torch.cuda.memory_allocated(values.device)
+                    )
+                    event["cuda_max_memory_allocated_bytes"] = int(
+                        torch.cuda.max_memory_allocated(values.device)
+                    )
+                if diagnostic_callback is not None:
+                    diagnostic_callback(event)
+                improved = (
+                    float(step_metrics["oof_p3_ba"])
+                    > best_ba + float(config.early_stop_min_delta)
+                    or (
+                        abs(float(step_metrics["oof_p3_ba"]) - best_ba)
+                        <= float(config.early_stop_min_delta)
+                        and float(step_metrics["oof_p3_floor"])
+                        > best_floor + float(config.early_stop_min_delta)
+                    )
+                )
+                if improved:
+                    best_ba = float(step_metrics["oof_p3_ba"])
+                    best_floor = float(step_metrics["oof_p3_floor"])
+                    stale_diagnostics = 0
+                else:
+                    stale_diagnostics += 1
+                if (
+                    step_number >= int(config.minimum_stage_steps)
+                    and stale_diagnostics >= int(config.diagnostic_patience)
+                ):
+                    stop_reason = "diagnostic_patience_exhausted"
+                    break
         candidate_state = _clone_state(model)
         selected = select_support_safe_interpolation(
             stage_input,
@@ -664,13 +1044,17 @@ def _train_wiser_p3_arm_impl(
             parameter.requires_grad_(False)
         selected_duals = dual_input.detach().clone() if selected.alpha == 0.0 else branch_duals.detach().clone()
         row = {
-            "branch": branch, "parent_branch": parent_branch, "steps": int(step_count),
+            "branch": branch, "parent_branch": parent_branch,
+            "steps": executed_steps, "max_steps": int(step_count),
+            "elapsed_seconds": float(time.perf_counter() - branch_started),
+            "stop_reason": stop_reason,
             "alpha": selected.alpha, "trainable_parameter_names": list(update.trainable_parameter_names),
             "trainable_parameter_count": update.trainable_parameter_count,
             "support_metrics": dict(selected.support_metrics), "query_rows_used": 0,
             "gradient_projection_audits": tuple(projection_audits),
             "input_duals": tuple(float(value) for value in dual_input),
             "output_duals": tuple(float(value) for value in selected_duals),
+            "stage_gate_passed": bool(selected.support_metrics.get("safe", False)),
         }
         return selected, row, selected_duals
 
@@ -679,31 +1063,67 @@ def _train_wiser_p3_arm_impl(
             "stage1_time", None, initial_state, initial_duals, int(config.stage_steps[0])
         )
         rows.append(row)
-        stage2_results: list[tuple[SupportInterpolationResult, dict[str, Any], torch.Tensor]] = []
-        for branch in _P3_STAGE2_BRANCHES:
-            selected, branch_row, branch_duals = train_branch(
-                branch, "stage1_time", stage1.state, stage1_duals, int(config.stage_steps[1])
+        final_selection = stage1
+        final_duals = stage1_duals
+        if bool(row["stage_gate_passed"]) or force_stage_traversal:
+            stage2_results: list[
+                tuple[SupportInterpolationResult, dict[str, Any], torch.Tensor]
+            ] = []
+            for branch in _P3_STAGE2_BRANCHES:
+                selected, branch_row, branch_duals = train_branch(
+                    branch,
+                    "stage1_time",
+                    stage1.state,
+                    stage1_duals,
+                    int(config.stage_steps[1]),
+                )
+                rows.append(branch_row)
+                stage2_results.append((selected, branch_row, branch_duals))
+            safe_stage2 = [
+                item for item in stage2_results if bool(item[1]["stage_gate_passed"])
+            ]
+            if force_stage_traversal and not safe_stage2:
+                safe_stage2 = stage2_results
+            if safe_stage2:
+                chosen_state, chosen_row, chosen_duals = min(
+                    safe_stage2,
+                    key=lambda item: (
+                        -float(item[0].support_metrics["oof_p3_ba"]),
+                        -float(item[0].support_metrics["oof_p3_floor"]),
+                        float(item[0].support_metrics["joint_condition_number"]),
+                        int(item[1]["trainable_parameter_count"]),
+                        item[1]["branch"],
+                    ),
+                )
+                final_selection = chosen_state
+                final_duals = chosen_duals
+                if int(config.stage_steps[2]) > 0 and (
+                    bool(chosen_row["stage_gate_passed"]) or force_stage_traversal
+                ):
+                    stage3, row, final_duals = train_branch(
+                        "stage3",
+                        str(chosen_row["branch"]),
+                        chosen_state.state,
+                        chosen_duals,
+                        int(config.stage_steps[2]),
+                    )
+                    rows.append(row)
+                    final_selection = stage3
+        model.load_state_dict(final_selection.state, strict=True)
+        model.eval()
+        for parameter in model.parameters():
+            parameter.requires_grad_(False)
+        final_metrics = dict(final_selection.support_metrics)
+        with torch.enable_grad():
+            _, final_identity = _forward_identity(model, values)
+            final_modality_oof_risk = _p3_modality_risk(
+                final_identity,
+                fft,
+                labels,
+                folds,
+                floor_tau=float(config.floor_tau),
+                joint_metrics=final_metrics,
             )
-            rows.append(branch_row)
-            stage2_results.append((selected, branch_row, branch_duals))
-        chosen_state, chosen_row, chosen_duals = min(
-            stage2_results,
-            key=lambda item: (
-                -float(item[0].support_metrics["oof_p3_ba"]),
-                -float(item[0].support_metrics["oof_p3_floor"]),
-                float(item[0].support_metrics["joint_condition_number"]),
-                int(item[1]["trainable_parameter_count"]), item[1]["branch"],
-            ),
-        )
-        stage3, row, final_duals = train_branch(
-            "stage3",
-            str(chosen_row["branch"]),
-            chosen_state.state,
-            chosen_duals,
-            int(config.stage_steps[2]),
-        )
-        rows.append(row)
-        final_metrics = dict(stage3.support_metrics)
     finally:
         model.eval()
         for parameter in model.parameters():
@@ -717,6 +1137,12 @@ def _train_wiser_p3_arm_impl(
         final_joint_condition_number=float(final_metrics["joint_condition_number"]),
         final_zero_identity_count=int(final_metrics["zero_identity_count"]),
         final_duals=tuple(float(value) for value in final_duals), config=asdict(config),
+        final_modality_oof_risk=final_modality_oof_risk,
+        training_elapsed_seconds=float(time.perf_counter() - training_started),
+        peak_process_rss_bytes=_process_peak_rss_bytes(),
+        peak_cuda_memory_allocated_bytes=(
+            int(torch.cuda.max_memory_allocated(values.device)) if values.is_cuda else None
+        ),
     )
 
 

@@ -54,6 +54,58 @@ def test_p3_cli_normalizes_n_series_subset_and_rejects_legacy_names() -> None:
         module.normalize_p3_arms(("N1", "A"))
 
 
+def test_p3_smoke_overrides_formal_training_budget_and_persists_progress_root(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Catches a technical smoke accidentally executing the full formal budget."""
+
+    module = _script_module()
+    config = module._default_p3_config_payload()
+    observed: dict[str, object] = {}
+    job = {
+        "outer_key": config["pilot_outer_key"],
+        "capsule_id": config["capsule_id"],
+        "split_id": config["split_id"],
+        "receiver": config["receiver"],
+    }
+    binding = {
+        "class_registry": config["source_binding"]["class_registry"],
+        "feature_schema": config["source_binding"]["feature_schema"],
+    }
+
+    monkeypatch.setattr(module, "_p3_context", lambda _args: (config, job, object(), binding))
+    monkeypatch.setattr(module, "load_support_package", lambda _path: object())
+    monkeypatch.setattr(module, "_support_path", lambda *_args: tmp_path / "support.npz")
+    monkeypatch.setattr(module, "frozen_checkpoint", lambda *_args: object())
+
+    def fake_train(
+        *_args, config, diagnostic_path, force_stage_traversal, **_kwargs
+    ):
+        observed["stage_steps"] = tuple(config["p3_training"]["stage_steps"])
+        observed["diagnostic_path"] = diagnostic_path
+        observed["force_stage_traversal"] = force_stage_traversal
+        return {"query_rows_used": 0}
+
+    monkeypatch.setattr(module, "_p3_train_one", fake_train)
+    output_root = tmp_path / "smoke"
+
+    result = module._p3_smoke(
+        Namespace(
+            output_root=output_root,
+            arm="N6",
+            scenario="leo_clear_weak",
+            checkpoint=tmp_path / "checkpoint.pt",
+            device="cpu",
+            smoke_stage_steps=(1, 1, 1),
+        )
+    )
+
+    assert observed["stage_steps"] == (1, 1, 1)
+    assert observed["diagnostic_path"] == output_root / "training_progress.jsonl"
+    assert observed["force_stage_traversal"] is True
+    assert result["status"] == "PASS"
+
+
 def test_p3_runtime_identity_hashes_actual_artifacts_and_requires_commit(tmp_path: Path) -> None:
     module = _script_module()
     checkpoint = tmp_path / "checkpoint.pt"
@@ -92,6 +144,23 @@ def test_p3_config_is_strict_before_output_root_creation(tmp_path: Path) -> None
 
     with pytest.raises(ValueError, match="unknown"):
         module._load_p3_config(path)
+
+
+def test_p3_config_loads_published_v1_without_new_runtime_stop_fields(
+    tmp_path: Path,
+) -> None:
+    module = _script_module()
+    config = module._default_p3_config_payload()
+    for field in ("diagnostic_patience", "minimum_stage_steps", "early_stop_min_delta"):
+        config["p3_training"].pop(field)
+    path = tmp_path / "published-v1.json"
+    path.write_text(json.dumps(config), encoding="utf-8")
+
+    loaded = module._load_p3_config(path)
+
+    assert loaded["p3_training"]["diagnostic_patience"] == 2
+    assert loaded["p3_training"]["minimum_stage_steps"] == 10
+    assert loaded["p3_training"]["early_stop_min_delta"] == pytest.approx(1.0e-4)
 
 
 @pytest.mark.parametrize(

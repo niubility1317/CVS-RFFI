@@ -38,8 +38,11 @@ class IdentityFFTDiagnostics:
     """Detached support-only identity/FFT complementarity audit values."""
 
     zero_identity_count: int
+    zero_identity_count_by_class: tuple[int, ...]
     identity_norm_q01: float
     dead_activation_ratio: float
+    identity_block_trace: float
+    fft_block_trace: float
     cross_covariance_frobenius: float
     joint_condition_number: float
     canonical_correlations: tuple[float, float, float, float, float]
@@ -387,6 +390,10 @@ def project_auxiliary_gradients(
         raise ValueError("all gradient slots must be on one device for global projection")
     if any(not item.is_floating_point() for item in (*primary_safe, *auxiliary_safe)):
         raise TypeError("gradient slots must use floating-point tensors")
+    if any(not torch.isfinite(item).all() for item in primary_safe):
+        raise ValueError("primary gradient contains nonfinite values before projection")
+    if any(not torch.isfinite(item).all() for item in auxiliary_safe):
+        raise ValueError("auxiliary gradient contains nonfinite values before projection")
 
     accumulator_dtype = torch.float64
     primary_scale = torch.stack(
@@ -509,7 +516,12 @@ def identity_fft_diagnostics(
         identity_work = identities.detach().to(dtype=torch.float64)
         fft_work = fft_rows.detach().to(dtype=torch.float64)
         norms = torch.linalg.vector_norm(identity_work, dim=1)
-        zero_identity_count = int((norms <= float(zero_tolerance)).sum().item())
+        zero_mask = norms <= float(zero_tolerance)
+        zero_identity_count = int(zero_mask.sum().item())
+        zero_identity_count_by_class = tuple(
+            int((zero_mask & (target_labels == class_id)).sum().item())
+            for class_id in torch.unique(target_labels, sorted=True).tolist()
+        )
         centered_identity = _class_centered(identity_work, target_labels)
         centered_fft = _class_centered(fft_work, target_labels)
         count = float(identity_work.shape[0])
@@ -543,8 +555,11 @@ def identity_fft_diagnostics(
             condition_value = float(torch.finfo(joint_eigenvalues.dtype).max)
         return IdentityFFTDiagnostics(
             zero_identity_count=zero_identity_count,
+            zero_identity_count_by_class=zero_identity_count_by_class,
             identity_norm_q01=float(torch.quantile(norms, 0.01)),
             dead_activation_ratio=float(zero_identity_count / identity_work.shape[0]),
+            identity_block_trace=float(torch.trace(identity_covariance)),
+            fft_block_trace=float(torch.trace(fft_covariance)),
             cross_covariance_frobenius=float(torch.linalg.matrix_norm(cross_covariance, ord="fro")),
             joint_condition_number=condition_value,
             canonical_correlations=tuple(canonical_values),

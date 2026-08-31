@@ -10,6 +10,7 @@ import json
 import math
 from pathlib import Path
 import sys
+import time
 from typing import Any, Mapping
 
 import numpy as np
@@ -141,6 +142,14 @@ def _write_json_new(path: Path, payload: Mapping[str, Any]) -> None:
     with path.open("x", encoding="utf-8", newline="\n") as handle:
         json.dump(payload, handle, ensure_ascii=False, indent=2, sort_keys=True)
         handle.write("\n")
+
+
+def _append_jsonl(path: Path, payload: Mapping[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8", newline="\n") as handle:
+        json.dump(payload, handle, ensure_ascii=False, sort_keys=True)
+        handle.write("\n")
+        handle.flush()
 
 
 def _new_root(path: Path) -> Path:
@@ -358,7 +367,16 @@ def _load_p3_config(path: Path) -> Mapping[str, Any]:
     ):
         raise ValueError("P3 config source binding drift")
     n1 = _strict_training_mapping(payload["n1_training"], template["n1_training"], label="n1_training")
-    p3 = _strict_training_mapping(payload["p3_training"], template["p3_training"], label="p3_training")
+    p3_payload = payload["p3_training"]
+    if not isinstance(p3_payload, Mapping):
+        raise ValueError("P3 config p3_training must be an object")
+    p3_payload = dict(p3_payload)
+    # The 2026-09-01 runtime repair adds optional diagnostic-stop controls.
+    # Preserve exact loading of already-published v1 configs while retaining
+    # strict rejection of unknown keys and strict typing of every value.
+    for field in ("diagnostic_patience", "minimum_stage_steps", "early_stop_min_delta"):
+        p3_payload.setdefault(field, template["p3_training"][field])
+    p3 = _strict_training_mapping(p3_payload, template["p3_training"], label="p3_training")
     if n1["seed"] != payload["seed"] or p3["seed"] != payload["seed"] or p3["fold_count"] != payload["fold_count"]:
         raise ValueError("P3 config nested training binding drift")
     return {**payload, "n1_training": n1, "p3_training": p3}
@@ -689,6 +707,9 @@ def _p3_n0_audit(config: Mapping[str, Any]) -> Mapping[str, Any]:
         "query_rows_used": 0,
         "stage_audits": [],
         "support_state_frozen": True,
+        "training_elapsed_seconds": 0.0,
+        "peak_process_rss_bytes": None,
+        "peak_cuda_memory_allocated_bytes": None,
         "config": {"p3_training": dict(config["p3_training"])},
     }
 
@@ -702,6 +723,8 @@ def _p3_train_one(
     summary: Any,
     binding: Mapping[str, Any],
     config: Mapping[str, Any],
+    diagnostic_path: Path | None = None,
+    force_stage_traversal: bool = False,
 ) -> Mapping[str, Any]:
     if arm == "N0":
         return _p3_n0_audit(config)
@@ -722,6 +745,12 @@ def _p3_train_one(
             expected_source_class_registry=tuple(binding["class_registry"]),
             expected_source_feature_schema=str(binding["feature_schema"]),
             arm=arm, config=_p3_training_config(config),
+            diagnostic_callback=(
+                None
+                if diagnostic_path is None
+                else lambda event: _append_jsonl(diagnostic_path, event)
+            ),
+            force_stage_traversal=force_stage_traversal,
         )
     )
     return {**audit, "outer_arm": arm, "trainer_arm": arm, "support_state_frozen": True}
@@ -735,8 +764,30 @@ def _p3_smoke(args: argparse.Namespace) -> Mapping[str, Any]:
     destination = _new_root(args.output_root)
     support = load_support_package(_support_path(job, args.scenario))
     model = frozen_checkpoint(args.checkpoint, args.device)
+    smoke_steps = tuple(int(value) for value in args.smoke_stage_steps)
+    if len(smoke_steps) != 3 or any(value < 1 or value > 5 for value in smoke_steps):
+        raise ValueError("P3 smoke stage steps must contain three values in [1,5]")
+    smoke_config = dict(config)
+    smoke_training = dict(config["p3_training"])
+    smoke_training.update(
+        {
+            "stage_steps": smoke_steps,
+            "diagnostic_interval": 1,
+            "diagnostic_patience": max(2, max(smoke_steps) + 1),
+            "minimum_stage_steps": 1,
+        }
+    )
+    smoke_config["p3_training"] = smoke_training
     audit = _p3_train_one(
-        arm, model, support, device=args.device, summary=summary, binding=binding, config=config
+        arm,
+        model,
+        support,
+        device=args.device,
+        summary=summary,
+        binding=binding,
+        config=smoke_config,
+        diagnostic_path=destination / "training_progress.jsonl",
+        force_stage_traversal=True,
     )
     result = {
         "schema": "cvs.phase2.wiser_rf.p3_primary.no_query_smoke.v1",
@@ -770,11 +821,20 @@ def _p3_pilot(args: argparse.Namespace) -> Mapping[str, Any]:
             unit.mkdir(parents=True, exist_ok=False)
             model = frozen_checkpoint(args.checkpoint, args.device)
             audit = _p3_train_one(
-                arm, model, support, device=args.device, summary=summary, binding=binding, config=config
+                arm,
+                model,
+                support,
+                device=args.device,
+                summary=summary,
+                binding=binding,
+                config=config,
+                diagnostic_path=unit / "training_progress.jsonl",
             )
             if int(audit.get("query_rows_used", -1)) != 0:
                 raise ValueError("P3 support training used query rows")
-            _save_adapted_state_new(unit / "adapted_state.pt", model, audit)
+            state_path = unit / "adapted_state.pt"
+            _save_adapted_state_new(state_path, model, audit)
+            audit = {**audit, "adapted_state_bytes": int(state_path.stat().st_size)}
             _write_json_new(unit / "training_audit.json", audit)
             frozen_models[(scenario, arm)] = model
             support_units.append(
@@ -808,10 +868,14 @@ def _p3_pilot(args: argparse.Namespace) -> Mapping[str, Any]:
             model = frozen_models[(scenario, arm)]
             _load_adapted_state(unit / "adapted_state.pt", model, args.device)
             audit = _load_json(unit / "training_audit.json")
+            if query_iq.is_cuda:
+                torch.cuda.reset_peak_memory_stats(query_iq.device)
+            prediction_started = time.perf_counter()
             predictions = predict_wiser_representation_probes(
                 model, support_iq, support_labels, query_iq, query_tokens=query.tokens,
                 source_summary=summary, seed=int(job["seed"]),
             )
+            prediction_elapsed = float(time.perf_counter() - prediction_started)
             np.savez_compressed(prediction_root / "predictions.npz", **predictions)
             receipt = {
                 "schema": "cvs.phase2.wiser_rf.p3_primary.prediction_receipt.v1",
@@ -822,6 +886,11 @@ def _p3_pilot(args: argparse.Namespace) -> Mapping[str, Any]:
                 "support_audit_reference": "support_audit.json", "query_truth_opened": False,
                 "query_role_opened": False, "support_state_frozen_before_query": True,
                 "training_audit": audit, "runtime_identity": runtime_identity,
+                "prediction_elapsed_seconds": prediction_elapsed,
+                "prediction_peak_cuda_memory_allocated_bytes": (
+                    int(torch.cuda.max_memory_allocated(query_iq.device))
+                    if query_iq.is_cuda else None
+                ),
             }
             _write_json_new(prediction_root / "prediction_receipt.json", receipt)
             completed.append({"scenario": scenario, "arm": arm, "status": "PREDICTIONS_COMPLETE", "query_rows": len(query.tokens)})
@@ -1074,6 +1143,9 @@ def parser() -> argparse.ArgumentParser:
     _add_p3_training(p3_smoke)
     p3_smoke.add_argument("--arm", choices=P3_ARMS, default="N6")
     p3_smoke.add_argument("--scenario", choices=SCENARIOS, default=SCENARIOS[0])
+    p3_smoke.add_argument(
+        "--smoke-stage-steps", nargs=3, type=int, default=(1, 1, 1)
+    )
     p3_pilot = commands.add_parser("p3-pilot")
     _add_p3_training(p3_pilot)
     p3_pilot.add_argument("--arms", nargs="+", choices=P3_ARMS, default=P3_ARMS)

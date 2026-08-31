@@ -6,6 +6,8 @@ import torch.nn.functional as functional
 
 from cvsrffi.stage2_binova_d92 import (
     BiNOVAD92Error,
+    _d92_exact_metric,
+    _d92_rms,
     differentiable_old_d92_logits,
     exact_d92_fit,
 )
@@ -117,6 +119,30 @@ def test_differentiable_old_d92_has_finite_gradients_with_constant_coordinates(c
     functional.cross_entropy(logits, eval_labels).backward()
     for gradient in (fit_id.grad, fit_fft.grad, eval_id.grad, eval_fft.grad):
         assert gradient is not None and torch.isfinite(gradient).all()
+
+
+def test_exact_metric_zero_adam_coordinates_have_finite_higher_order_gradient() -> None:
+    """Catches sqrt-at-zero in the unrolled Adam second moments."""
+
+    labels = torch.arange(6, dtype=torch.long).repeat_interleave(10)
+    rows = functional.one_hot(labels, num_classes=256).float().requires_grad_()
+
+    metric = _d92_exact_metric(rows, labels)
+    gradient = torch.autograd.grad(metric.square().sum(), rows)[0]
+
+    assert torch.isfinite(metric).all()
+    assert torch.isfinite(gradient).all()
+
+
+def test_d92_rms_rejects_zero_score_geometry_before_division() -> None:
+    """Catches an undefined zero score scale propagating NaN into P3 logits."""
+
+    rows = torch.zeros((48, 256), dtype=torch.float64)
+    coefficient = torch.zeros((6, 256), dtype=torch.float64)
+    intercept = torch.zeros(6, dtype=torch.float64)
+
+    with pytest.raises(BiNOVAD92Error, match="RMS"):
+        _d92_rms(rows, coefficient, intercept)
 
 
 def test_differentiable_d92_rejects_both_modalities_zero() -> None:
@@ -459,6 +485,24 @@ def test_gradient_projection_handles_finite_inverse_scale_extremes(
     assert external_dot >= -tolerance
 
 
+@pytest.mark.parametrize(
+    ("primary", "auxiliary", "component"),
+    [
+        ((torch.tensor([float("nan")]),), (torch.ones(1),), "primary"),
+        ((torch.ones(1),), (torch.tensor([float("inf")]),), "auxiliary"),
+    ],
+)
+def test_gradient_projection_rejects_nonfinite_input_component(
+    primary: tuple[torch.Tensor, ...],
+    auxiliary: tuple[torch.Tensor, ...],
+    component: str,
+) -> None:
+    """Catches projection arithmetic hiding the first contaminated gradient."""
+
+    with pytest.raises(ValueError, match=component):
+        project_auxiliary_gradients(primary, auxiliary)
+
+
 def test_identity_fft_diagnostics_are_class_centered_and_stably_padded() -> None:
     """Catches between-class offsets leaking into redundancy diagnostics."""
 
@@ -478,6 +522,9 @@ def test_identity_fft_diagnostics_are_class_centered_and_stably_padded() -> None
     )
 
     assert diagnostics.zero_identity_count == 1
+    assert diagnostics.zero_identity_count_by_class == (1, 0, 0)
+    assert diagnostics.identity_block_trace > 0.0
+    assert diagnostics.fft_block_trace > 0.0
     assert diagnostics.cross_covariance_frobenius == pytest.approx(
         shifted.cross_covariance_frobenius
     )

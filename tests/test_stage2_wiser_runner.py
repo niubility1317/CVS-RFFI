@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from dataclasses import replace
+
 import torch
 from torch import nn
 
@@ -265,17 +267,106 @@ def test_p3_arm_uses_only_support_and_refreezes(
     assert forward_modes[0] == (False, False)
     assert not model.training
     assert not any(parameter.requires_grad for parameter in model.parameters())
-    assert {row["branch"] for row in audit.stage_audits if row["branch"].startswith("stage2")} == {
-        "stage2_time", "stage2_frequency", "stage2_joint"
+    assert [row["branch"] for row in audit.stage_audits] == ["stage1_time"]
+    assert audit.stage_audits[0]["stage_gate_passed"] is False
+    assert audit.stage_audits[0]["stop_reason"] == "max_steps"
+    assert set(audit.final_modality_oof_risk) == {
+        "identity_only", "fft_only", "joint"
     }
-    stage3 = next(row for row in audit.stage_audits if row["branch"] == "stage3")
-    assert stage3["parent_branch"] in {"stage2_time", "stage2_frequency", "stage2_joint"}
-    stage1 = next(row for row in audit.stage_audits if row["branch"] == "stage1_time")
-    stage2 = [row for row in audit.stage_audits if row["branch"].startswith("stage2")]
-    assert all(row["input_duals"] == stage1["output_duals"] for row in stage2)
-    selected_stage2 = next(row for row in stage2 if row["branch"] == stage3["parent_branch"])
-    assert stage3["input_duals"] == selected_stage2["output_duals"]
+    assert all(
+        len(row["class_risk"]) == 6
+        for row in audit.final_modality_oof_risk.values()
+    )
     assert all(not name.startswith(("dom_", "adv_", "meta_adapter_", "sat_anchor_")) for name in audit.reached_parameter_names)
+
+
+def test_p3_diagnostics_are_emitted_and_patience_stops_a_stalled_stage() -> None:
+    """Catches an unused diagnostic interval and fixed-budget training after no progress."""
+
+    model = _P3DualModel()
+    support, labels, tokens, _ = _p3_support_fixture()
+    events: list[dict[str, object]] = []
+
+    audit = train_wiser_p3_arm(
+        model,
+        support,
+        labels,
+        support_tokens=tokens,
+        source_summary=None,
+        arm="N2",
+        config=WISERP3TrainingConfig(
+            stage_steps=(3, 0, 0),
+            diagnostic_interval=1,
+            diagnostic_patience=1,
+            minimum_stage_steps=1,
+            early_stop_min_delta=1.0,
+            interpolation_grid=(0.0,),
+        ),
+        diagnostic_callback=events.append,
+    )
+
+    assert audit.optimizer_steps == 1
+    assert audit.stage_audits[0]["stop_reason"] == "diagnostic_patience_exhausted"
+    assert len(events) == 1
+    event = events[0]
+    assert event["branch"] == "stage1_time"
+    assert event["step"] == 1
+    assert event["query_rows_used"] == 0
+    assert event["elapsed_seconds"] >= 0.0
+    assert "process_peak_rss_bytes" in event
+    assert event["gradient_components"]["primary"]["finite"] is True
+    assert event["gradient_components"]["combined"]["finite"] is True
+    assert "id_backbone.t3" in event["block_gradient_cosines"]
+    assert audit.training_elapsed_seconds > 0.0
+    assert audit.stage_audits[0]["elapsed_seconds"] >= 0.0
+    assert len(event["class_risk"]) == 6
+    assert len(event["class_violation"]) == 6
+    assert len(event["class_duals"]) == 6
+
+
+def test_p3_nonfinite_failure_is_persisted_before_the_runner_raises(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Catches a first-step numeric failure leaving no progress artifact."""
+
+    model = _P3DualModel()
+    support, labels, tokens, _ = _p3_support_fixture()
+    events: list[dict[str, object]] = []
+    calls = 0
+    original = runner_module.cross_fitted_p3_loss
+
+    def contaminated(*args, **kwargs):
+        nonlocal calls
+        calls += 1
+        result = original(*args, **kwargs)
+        if calls >= 3:
+            return replace(result, total=result.total * float("nan"))
+        return result
+
+    monkeypatch.setattr(runner_module, "cross_fitted_p3_loss", contaminated)
+
+    with pytest.raises(
+        RuntimeError, match="total.*branch=stage1_time step=1"
+    ):
+        train_wiser_p3_arm(
+            model,
+            support,
+            labels,
+            support_tokens=tokens,
+            source_summary=None,
+            arm="N2",
+            config=WISERP3TrainingConfig(
+                stage_steps=(1, 0, 0), diagnostic_interval=1,
+                interpolation_grid=(0.0,),
+            ),
+            diagnostic_callback=events.append,
+        )
+
+    assert events[-1]["status"] == "FAILED_NONFINITE"
+    assert events[-1]["component"] == "total"
+    assert events[-1]["branch"] == "stage1_time"
+    assert events[-1]["step"] == 1
+    assert events[-1]["query_rows_used"] == 0
 
 
 def test_p3_rejects_invalid_support_with_model_refrozen() -> None:
