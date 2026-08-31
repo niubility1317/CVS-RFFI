@@ -51,7 +51,7 @@
 - 30行矩阵launcher commit：`cadfdee0e7dedb2a88dbb26ce8e812ef17130458`。
 - 16L+32U单前向训练commit：`03e328f44001f9a3977da647ad4f2f494f15d78e`。
 - 真实checkpoint smoke修复commit：`90e05291d5e6d0ee977583489b6f381a6589ce17`。
-- 当前完整HEAD：`85989ed4d9bc15262b184e1d7b046780916843fa`；远端Git分支OID一致。
+- release代码HEAD：`85989ed4d9bc15262b184e1d7b046780916843fa`；归档前远端Git分支OID一致；后续报告提交不改变release代码。
 - release归档：本地`E:\type10-7\release_archives\phase1_pairbicad_p0p4_85989ed4.tar.gz`→N607`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_pairbicad_p0p4_85989ed4.tar.gz`。
 - release SHA256：本地/远端均为`044109cd4c0c7dfd417b788b15081ed7874a1894efb8533d6bc3aedfb26d8649`。
 - 解压根：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_pairbicad_p0p4_85989ed4`。
