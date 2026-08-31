@@ -5,7 +5,7 @@
 - 状态：LOCAL_VERIFIED。
 - Run ID：phase1_pairbicad_cv2_screen24_seed392002_20260831_r1。
 - 目标：在新CORE90数据包对应的Phase1 source-only划分上比较Core、BiAdv、Pair和TailGuard；不访问Phase2或目标接收机数据。
-- 正式实现提交：`20032361bebf43101023b9276589fa4c4a74e90f`；本报告随后的发布记录提交不改变训练代码。
+- 正式实现提交：`716fcf71ec51a4d89f9f9a1cf018fd41eba1c7a4`；包含preflight冻结的逐GPU容量入口。
 
 ## 冻结矩阵
 
@@ -39,6 +39,13 @@
 - 本地fixture checkpoint smoke为4/4通过；正式发布前仍须在N607用真实历史ADV3B02 checkpoint做一次无query smoke。
 - dry-run：24行、12候选、fold1/8、seed392002；GPU0–7各映射3行，dispatcher上限2/GPU。
 - 独立P0/P1审查：配置/矩阵无阻断；实际U覆盖计数、结构化24U/18U loader和动态stop update验收问题已修复，原问题定点复审均为RESOLVED。
+
+## N607发布前只读预检
+
+- 普通账户直连、服务器时间、项目根和8张RTX3090可见性均通过。
+- GPU0存在无关Stage2训练PID2958727，占用8616MiB；GPU1–7无计算进程。本run不触碰该进程。
+- 本run冻结容量为GPU0=1个worker，GPU1–7=2个worker，因此任何GPU上的总训练进程不超过2；矩阵行和候选配置不变，仅增加排队。
+- 正式run根和release根均确认不存在，可执行不可覆盖发布。
 
 ## 正式路径与命令
 
