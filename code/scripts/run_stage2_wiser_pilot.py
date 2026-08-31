@@ -60,6 +60,57 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _p3_runtime_identity(
+    *,
+    runtime_commit: str,
+    p3_config: Path,
+    checkpoint: Path,
+    source_summary: Path,
+    source_binding: Path,
+    job: Mapping[str, Any],
+    checkpoint_id: str,
+) -> dict[str, Any]:
+    """Bind a P3 prediction root to the exact runtime bytes and data row."""
+
+    commit = str(runtime_commit).strip()
+    if not commit:
+        raise ValueError("P3 runtime commit is required")
+    for path, label in ((p3_config, "P3 config"), (checkpoint, "checkpoint"), (source_summary, "source summary"), (source_binding, "source binding")):
+        if not path.is_file():
+            raise ValueError(f"P3 {label} is missing")
+    result = {
+        "runtime_commit": commit,
+        "p3_config_sha256": _sha256(p3_config),
+        "checkpoint_id": str(checkpoint_id),
+        "checkpoint_sha256": _sha256(checkpoint),
+        "source_summary_sha256": _sha256(source_summary),
+        "source_binding_sha256": _sha256(source_binding),
+    }
+    for field in ("outer_key", "capsule_id", "split_id", "receiver", "seed", "k_shot", "new_class_count"):
+        if field not in job or job[field] in (None, ""):
+            raise ValueError(f"P3 runtime identity {field} is missing")
+        result[field] = job[field]
+    return result
+
+
+def _validate_p3_runtime_identity(
+    identity: Any, *, runtime_commit: str, p3_config: Path, job: Mapping[str, Any]
+) -> Mapping[str, Any]:
+    if not isinstance(identity, Mapping):
+        raise ValueError("P3 runtime identity is missing")
+    if str(runtime_commit).strip() != identity.get("runtime_commit"):
+        raise ValueError("P3 runtime commit identity drift")
+    if not p3_config.is_file() or _sha256(p3_config) != identity.get("p3_config_sha256"):
+        raise ValueError("P3 config runtime identity drift")
+    for field in ("outer_key", "capsule_id", "split_id", "receiver", "seed", "k_shot", "new_class_count"):
+        if identity.get(field) != job.get(field):
+            raise ValueError("P3 runtime data binding drift")
+    for field in ("checkpoint_id", "checkpoint_sha256", "source_summary_sha256", "source_binding_sha256"):
+        if not isinstance(identity.get(field), str) or not identity[field]:
+            raise ValueError("P3 runtime artifact identity drift")
+    return identity
+
+
 def _validate_phase1_binding(
     checkpoint: Path,
     source_summary: Path,
@@ -701,6 +752,11 @@ def _p3_smoke(args: argparse.Namespace) -> Mapping[str, Any]:
 def _p3_pilot(args: argparse.Namespace) -> Mapping[str, Any]:
     config, job, summary, binding = _p3_context(args)
     arms = normalize_p3_arms(tuple(getattr(args, "arms", P3_ARMS)))
+    runtime_identity = _p3_runtime_identity(
+        runtime_commit=args.runtime_commit, p3_config=args.p3_config, checkpoint=args.checkpoint,
+        source_summary=args.source_summary, source_binding=args.source_binding, job=job,
+        checkpoint_id=str(binding["checkpoint_id"]),
+    )
     destination = _new_root(args.output_root)
     support_cache: dict[str, WISERSupportPackage] = {}
     frozen_models: dict[tuple[str, str], torch.nn.Module] = {}
@@ -732,6 +788,7 @@ def _p3_pilot(args: argparse.Namespace) -> Mapping[str, Any]:
         "expected_scene_arm_unit_count": len(SCENARIOS) * len(arms),
         "units": support_units, "query_opened": False,
         "all_support_states_frozen": len(support_units) == len(SCENARIOS) * len(arms),
+        "runtime_identity": runtime_identity,
     }
     _write_json_new(destination / "support_audit.json", support_audit)
     if not support_audit["all_support_states_frozen"]:
@@ -764,7 +821,7 @@ def _p3_pilot(args: argparse.Namespace) -> Mapping[str, Any]:
                 "query_rows": len(query.tokens), "expected_query_tokens": list(query.tokens),
                 "support_audit_reference": "support_audit.json", "query_truth_opened": False,
                 "query_role_opened": False, "support_state_frozen_before_query": True,
-                "training_audit": audit,
+                "training_audit": audit, "runtime_identity": runtime_identity,
             }
             _write_json_new(prediction_root / "prediction_receipt.json", receipt)
             completed.append({"scenario": scenario, "arm": arm, "status": "PREDICTIONS_COMPLETE", "query_rows": len(query.tokens)})
@@ -773,6 +830,7 @@ def _p3_pilot(args: argparse.Namespace) -> Mapping[str, Any]:
         "pilot_outer_key": job["outer_key"], "arms": list(arms), "scenarios": list(SCENARIOS),
         "scene_arm_unit_count": len(completed), "units": completed,
         "support_audit_reference": "support_audit.json", "truth_opened": False, "scoring_required": True,
+        "runtime_identity": runtime_identity,
     }
     _write_json_new(destination / "pilot_result.json", result)
     return result
@@ -789,7 +847,7 @@ def _p3_frozen_pilot_arms(prediction_root: Path, requested: Any) -> tuple[str, .
 
 
 def _p3_validate_prediction_registry(
-    prediction_root: Path, *, arms: tuple[str, ...], job: Mapping[str, Any]
+    prediction_root: Path, *, arms: tuple[str, ...], job: Mapping[str, Any], runtime_identity: Mapping[str, Any]
 ) -> None:
     support_audit = _load_json(prediction_root / "support_audit.json")
     if support_audit.get("schema") != "cvs.phase2.wiser_rf.p3_primary.support_audit.v1" or support_audit.get("all_support_states_frozen") is not True:
@@ -797,6 +855,8 @@ def _p3_validate_prediction_registry(
     for field in ("outer_key", "capsule_id", "split_id", "receiver"):
         if support_audit.get(field) != job[field]:
             raise ValueError("P3 support audit binding drift")
+    if support_audit.get("runtime_identity") != runtime_identity:
+        raise ValueError("P3 support audit runtime identity drift")
     if support_audit.get("arms") != list(arms) or support_audit.get("scenarios") != list(SCENARIOS):
         raise ValueError("P3 support audit registry drift")
     if int(support_audit.get("expected_scene_arm_unit_count", -1)) != len(SCENARIOS) * len(arms):
@@ -825,6 +885,8 @@ def _p3_validate_prediction_registry(
                     raise ValueError("P3 prediction receipt binding drift")
             if receipt.get("query_truth_opened") is not False or receipt.get("query_role_opened") is not False or receipt.get("support_state_frozen_before_query") is not True or receipt.get("support_audit_reference") != "support_audit.json":
                 raise ValueError("P3 prediction receipt truth-last drift")
+            if receipt.get("runtime_identity") != runtime_identity:
+                raise ValueError("P3 prediction receipt runtime identity drift")
             _p3_unit_training_audit(prediction_root / scenario / arm, receipt, arm=arm)
             _p3_validate_prediction_npz(source / "predictions.npz", receipt)
 
@@ -914,7 +976,12 @@ def _p3_score_pilot(args: argparse.Namespace) -> Mapping[str, Any]:
         raise ValueError("P3 CLI/config pilot outer binding drift")
     _validate_p3_job_binding(config, job, config["source_binding"])
     arms = _p3_frozen_pilot_arms(args.prediction_root, getattr(args, "arms", None))
-    _p3_validate_prediction_registry(args.prediction_root, arms=arms, job=job)
+    pilot = _load_json(args.prediction_root / "pilot_result.json")
+    runtime_identity = _validate_p3_runtime_identity(
+        pilot.get("runtime_identity"), runtime_commit=args.runtime_commit,
+        p3_config=args.p3_config, job=job,
+    )
+    _p3_validate_prediction_registry(args.prediction_root, arms=arms, job=job, runtime_identity=runtime_identity)
     destination = _new_root(args.output_root)
     truth = Path(str(job["truth_sidecar"]))
     scores: dict[tuple[str, str], Mapping[str, Any]] = {}
@@ -945,6 +1012,7 @@ def _p3_score_pilot(args: argparse.Namespace) -> Mapping[str, Any]:
         "scene_arm_unit_count": len(scores), "rows": list(scores.values()), "paired_rows": paired,
         "formal_p3_primary_decisions": decisions, "p3_primary_champion": champion,
         "full_target25_authorized": champion is not None, "truth_join_after_prediction_only": True,
+        "champion_identity": ({"arm": champion, **dict(runtime_identity)} if champion is not None else None),
     }
     _write_json_new(destination / "score_collection.json", result)
     return result
@@ -983,6 +1051,7 @@ def _add_p3_training(command: argparse.ArgumentParser) -> None:
     command.add_argument("--source-binding", type=Path, required=True)
     command.add_argument("--output-root", type=Path, required=True)
     command.add_argument("--device", required=True)
+    command.add_argument("--runtime-commit", required=True)
 
 
 def parser() -> argparse.ArgumentParser:
@@ -1014,6 +1083,7 @@ def parser() -> argparse.ArgumentParser:
     p3_score.add_argument("--prediction-root", type=Path, required=True)
     p3_score.add_argument("--output-root", type=Path, required=True)
     p3_score.add_argument("--arms", nargs="+", choices=P3_ARMS)
+    p3_score.add_argument("--runtime-commit", required=True)
     return root
 
 

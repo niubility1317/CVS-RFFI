@@ -17,14 +17,15 @@ from cvsrffi.stage2_wiser_target25 import (
 
 def _marker() -> dict[str, object]:
     return {
-        "schema": "cvs.phase2.wiser_rf.p3_primary.target25_authorization.v1",
+        "schema": "cvs.phase2.wiser_rf.p3_primary.score_collection.v1",
         "status": "ANALYZED",
         "full_target25_authorized": True,
         "p3_primary_champion": "N6",
         "champion_identity": {
-            "arm": "N6", "commit": "abc123", "config_id": "p3-config-v1",
-            "checkpoint_id": "ADV3B02_CORE90_SOFT_E200", "capsule_id": "pilot-capsule",
-            "split_id": "pilot-split",
+            "arm": "N6", "runtime_commit": "abc123", "p3_config_sha256": "a" * 64,
+            "checkpoint_id": "ADV3B02_CORE90_SOFT_E200", "checkpoint_sha256": "b" * 64,
+            "source_summary_sha256": "c" * 64, "source_binding_sha256": "d" * 64,
+            "outer_key": "pilot", "capsule_id": "pilot-capsule", "split_id": "pilot-split", "receiver": "3-19", "seed": 713102, "k_shot": 10, "new_class_count": 5,
         },
     }
 

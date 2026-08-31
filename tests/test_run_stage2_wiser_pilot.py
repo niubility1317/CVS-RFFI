@@ -54,6 +54,35 @@ def test_p3_cli_normalizes_n_series_subset_and_rejects_legacy_names() -> None:
         module.normalize_p3_arms(("N1", "A"))
 
 
+def test_p3_runtime_identity_hashes_actual_artifacts_and_requires_commit(tmp_path: Path) -> None:
+    module = _script_module()
+    checkpoint = tmp_path / "checkpoint.pt"
+    summary = tmp_path / "summary.npz"
+    binding = tmp_path / "binding.json"
+    config = tmp_path / "p3.json"
+    for path, payload in ((checkpoint, b"checkpoint"), (summary, b"summary"), (binding, b"binding"), (config, b"config")):
+        path.write_bytes(payload)
+
+    identity = module._p3_runtime_identity(
+        runtime_commit="abc123", p3_config=config, checkpoint=checkpoint,
+        source_summary=summary, source_binding=binding,
+        job={"outer_key": "outer", "capsule_id": "capsule", "split_id": "split", "receiver": "3-19", "seed": 713102, "k_shot": 10, "new_class_count": 5},
+        checkpoint_id="ADV3B02_CORE90_SOFT_E200",
+    )
+
+    assert identity["runtime_commit"] == "abc123"
+    assert identity["checkpoint_sha256"] == module._sha256(checkpoint)
+    summary.write_bytes(b"different")
+    assert identity["source_summary_sha256"] != module._sha256(summary)
+    with pytest.raises(ValueError, match="runtime commit"):
+        module._p3_runtime_identity(
+            runtime_commit="", p3_config=config, checkpoint=checkpoint,
+            source_summary=summary, source_binding=binding,
+            job={"outer_key": "outer", "capsule_id": "capsule", "split_id": "split", "receiver": "3-19", "seed": 713102, "k_shot": 10, "new_class_count": 5},
+            checkpoint_id="ADV3B02_CORE90_SOFT_E200",
+        )
+
+
 def test_p3_config_is_strict_before_output_root_creation(tmp_path: Path) -> None:
     module = _script_module()
     config = module._default_p3_config_payload()
@@ -214,11 +243,13 @@ def test_p3_pilot_freezes_all_three_by_seven_support_units_before_query(
         "p1_logits": np.zeros((len(query_tokens), 6), np.float32), "p2_logits": np.zeros((len(query_tokens), 6), np.float32),
         "p3_logits": np.zeros((len(query_tokens), 6), np.float32), "query_z_id": np.zeros((len(query_tokens), 160), np.float32),
     })
+    for path in (tmp_path / "checkpoint.pth", tmp_path / "summary.npz", tmp_path / "binding.json"):
+        path.write_bytes(path.name.encode("utf-8"))
 
     result = module._p3_pilot(Namespace(
         p3_config=config_path, manifest=manifest_path, pilot_outer_key=config["pilot_outer_key"],
         checkpoint=tmp_path / "checkpoint.pth", source_summary=tmp_path / "summary.npz",
-        source_binding=tmp_path / "binding.json", output_root=tmp_path / "run", device="cpu", arms=module.P3_ARMS,
+        source_binding=tmp_path / "binding.json", output_root=tmp_path / "run", device="cpu", arms=module.P3_ARMS, runtime_commit="abc123",
     ))
 
     assert result["schema"] == "cvs.phase2.wiser_rf.p3_primary.pilot.v1"
@@ -247,14 +278,20 @@ def test_p3_score_validates_late_prediction_npz_before_any_truth_loader(
     manifest_path.write_text(json.dumps({"protocol_schema": "p2_min_v1", "jobs": [job]}), encoding="utf-8")
     root = tmp_path / "predictions"
     root.mkdir()
+    runtime_identity = {
+        "runtime_commit": "abc123", "p3_config_sha256": module._sha256(config_path),
+        "checkpoint_id": config["checkpoint_id"], "checkpoint_sha256": "a" * 64,
+        "source_summary_sha256": "b" * 64, "source_binding_sha256": "c" * 64,
+        **{key: job[key] for key in ("outer_key", "capsule_id", "split_id", "receiver", "seed", "k_shot", "new_class_count")},
+    }
     (root / "pilot_result.json").write_text(json.dumps({
-        "schema": "cvs.phase2.wiser_rf.p3_primary.pilot.v1", "status": "ARTIFACTS_COMPLETE", "arms": list(module.P3_ARMS),
+        "schema": "cvs.phase2.wiser_rf.p3_primary.pilot.v1", "status": "ARTIFACTS_COMPLETE", "arms": list(module.P3_ARMS), "runtime_identity": runtime_identity,
     }), encoding="utf-8")
     (root / "support_audit.json").write_text(json.dumps({
         "schema": "cvs.phase2.wiser_rf.p3_primary.support_audit.v1", "all_support_states_frozen": True,
         **{key: job[key] for key in ("outer_key", "capsule_id", "split_id", "receiver")},
         "arms": list(module.P3_ARMS), "scenarios": list(module.SCENARIOS), "expected_scene_arm_unit_count": 21,
-        "units": [{"scenario": scenario, "arm": arm, "status": "SUPPORT_STATE_FROZEN", "query_opened": False} for scenario in module.SCENARIOS for arm in module.P3_ARMS],
+        "units": [{"scenario": scenario, "arm": arm, "status": "SUPPORT_STATE_FROZEN", "query_opened": False} for scenario in module.SCENARIOS for arm in module.P3_ARMS], "runtime_identity": runtime_identity,
     }), encoding="utf-8")
     tokens = [f"q{index}" for index in range(6)]
     for scenario in module.SCENARIOS:
@@ -266,7 +303,7 @@ def test_p3_score_validates_late_prediction_npz_before_any_truth_loader(
             if arm not in {"N0", "N1"}:
                 audit.update({"baseline_joint_condition_number": 2.0, "final_joint_condition_number": 2.0, "final_zero_identity_count": 0})
             (unit / "training_audit.json").write_text(json.dumps(audit), encoding="utf-8")
-            receipt = {"schema": "cvs.phase2.wiser_rf.p3_primary.prediction_receipt.v1", "status": "PREDICTIONS_COMPLETE", **{key: job[key] for key in ("outer_key", "capsule_id", "split_id", "receiver")}, "scenario": scenario, "arm": arm, "query_rows": 6, "expected_query_tokens": tokens, "query_truth_opened": False, "query_role_opened": False, "support_state_frozen_before_query": True, "support_audit_reference": "support_audit.json", "training_audit": audit}
+            receipt = {"schema": "cvs.phase2.wiser_rf.p3_primary.prediction_receipt.v1", "status": "PREDICTIONS_COMPLETE", **{key: job[key] for key in ("outer_key", "capsule_id", "split_id", "receiver")}, "scenario": scenario, "arm": arm, "query_rows": 6, "expected_query_tokens": tokens, "query_truth_opened": False, "query_role_opened": False, "support_state_frozen_before_query": True, "support_audit_reference": "support_audit.json", "training_audit": audit, "runtime_identity": runtime_identity}
             (prediction / "prediction_receipt.json").write_text(json.dumps(receipt), encoding="utf-8")
             arrays = {"query_tokens": np.asarray(tokens), "query_z_id": np.zeros((6, 160), np.float32)}
             for prefix in ("p1", "p2", "p3"):
@@ -281,7 +318,7 @@ def test_p3_score_validates_late_prediction_npz_before_any_truth_loader(
     with pytest.raises(ValueError, match="prediction.*logit|prediction NPZ"):
         module._p3_score_pilot(Namespace(
             p3_config=config_path, manifest=manifest_path, pilot_outer_key=config["pilot_outer_key"],
-            prediction_root=root, output_root=tmp_path / "scores", arms=None,
+            prediction_root=root, output_root=tmp_path / "scores", arms=None, runtime_commit="abc123",
         ))
 
     assert truth_events == []
@@ -334,6 +371,8 @@ def _score_p3_collection_with_paired_metrics(
             (prediction / "prediction_receipt.json").write_text(json.dumps({"training_audit": audit}), encoding="utf-8")
 
     monkeypatch.setattr(module, "_p3_validate_prediction_registry", lambda *_args, **_kwargs: None)
+    identity = {"runtime_commit": "abc123", "p3_config_sha256": module._sha256(config_path), "checkpoint_id": config["checkpoint_id"], "checkpoint_sha256": "a" * 64, "source_summary_sha256": "b" * 64, "source_binding_sha256": "c" * 64, **{key: job[key] for key in ("outer_key", "capsule_id", "split_id", "receiver", "seed", "k_shot", "new_class_count")}}
+    monkeypatch.setattr(module, "_validate_p3_runtime_identity", lambda *_args, **_kwargs: identity)
     monkeypatch.setattr(
         module,
         "score_wiser_predictions",
@@ -370,7 +409,7 @@ def _score_p3_collection_with_paired_metrics(
     monkeypatch.setattr(module, "compare_wiser_score_rows", paired)
     result = module._p3_score_pilot(Namespace(
         p3_config=config_path, manifest=manifest_path, pilot_outer_key=config["pilot_outer_key"],
-        prediction_root=root, output_root=tmp_path / "scores", arms=None,
+        prediction_root=root, output_root=tmp_path / "scores", arms=None, runtime_commit="abc123",
     ))
     return dict(result)
 

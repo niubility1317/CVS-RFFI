@@ -32,7 +32,10 @@ _PACKAGE_ROLES = (
     "before_enrollment", "before_apply", "after_enrollment", "after_apply"
 )
 _CHAMPION_ARMS = {"N2", "N3", "N4", "N5", "N6"}
-_CHAMPION_FIELDS = ("arm", "commit", "config_id", "checkpoint_id", "capsule_id", "split_id")
+_CHAMPION_FIELDS = (
+    "arm", "runtime_commit", "p3_config_sha256", "checkpoint_id", "checkpoint_sha256",
+    "source_summary_sha256", "source_binding_sha256", "outer_key", "capsule_id", "split_id", "receiver", "seed", "k_shot", "new_class_count",
+)
 _P3_PROBE = "P3_OLD_D92"
 
 
@@ -76,7 +79,7 @@ def validate_p3_primary_marker(marker: Mapping[str, Any]) -> dict[str, str]:
 
     if not isinstance(marker, Mapping):
         raise WISERTarget25Error("P3 pilot marker must be an object")
-    if marker.get("schema") != "cvs.phase2.wiser_rf.p3_primary.target25_authorization.v1":
+    if marker.get("schema") != "cvs.phase2.wiser_rf.p3_primary.score_collection.v1":
         raise WISERTarget25Error("P3 pilot marker schema drift")
     if marker.get("status") != "ANALYZED" or marker.get("full_target25_authorized") is not True:
         raise WISERTarget25Error("P3 pilot marker does not authorize Target25")
@@ -84,7 +87,13 @@ def validate_p3_primary_marker(marker: Mapping[str, Any]) -> dict[str, str]:
     identity = marker.get("champion_identity")
     if arm not in _CHAMPION_ARMS or not isinstance(identity, Mapping):
         raise WISERTarget25Error("P3 pilot marker champion is invalid")
-    result = {field: _as_nonempty_string(identity.get(field), f"champion {field}") for field in _CHAMPION_FIELDS}
+    integer_fields = {"seed", "k_shot", "new_class_count"}
+    result = {
+        field: (int(identity[field]) if field in integer_fields and not isinstance(identity.get(field), bool) else _as_nonempty_string(identity.get(field), f"champion {field}"))
+        for field in _CHAMPION_FIELDS
+    }
+    if any(field not in identity or isinstance(identity.get(field), bool) or not isinstance(identity.get(field), int) for field in integer_fields):
+        raise WISERTarget25Error("P3 champion integer identity drift")
     if result["arm"] != arm:
         raise WISERTarget25Error("P3 champion identity drift")
     return result
@@ -153,9 +162,10 @@ def build_wiser_target25_manifest(
         job.update({
             "validation_phase": str(phase).lower(),
             "output_root": str(root / "jobs" / str(canonical["outer_key"])),
-            "champion_arm": identity["arm"], "champion_commit": identity["commit"],
-            "champion_config_id": identity["config_id"], "champion_checkpoint_id": identity["checkpoint_id"],
-            "champion_capsule_id": identity["capsule_id"], "champion_split_id": identity["split_id"],
+            "champion_identity": deepcopy(identity), "champion_arm": identity["arm"],
+            "champion_runtime_commit": identity["runtime_commit"], "champion_p3_config_sha256": identity["p3_config_sha256"],
+            "champion_checkpoint_id": identity["checkpoint_id"], "champion_checkpoint_sha256": identity["checkpoint_sha256"],
+            "champion_source_summary_sha256": identity["source_summary_sha256"], "champion_source_binding_sha256": identity["source_binding_sha256"],
             "query_rows_used": 0,
         })
         jobs.append(job)
@@ -202,7 +212,9 @@ def validate_wiser_target25_manifest(manifest: Mapping[str, Any]) -> dict[str, i
             raise WISERTarget25Error("Target25 source capsule/split drift")
         if job.get("validation_phase") != phase or job.get("query_rows_used") != 0:
             raise WISERTarget25Error("Target25 query policy drift")
-        for field, identity_field in (("champion_arm", "arm"), ("champion_commit", "commit"), ("champion_config_id", "config_id"), ("champion_checkpoint_id", "checkpoint_id"), ("champion_capsule_id", "capsule_id"), ("champion_split_id", "split_id")):
+        if job.get("champion_identity") != identity:
+            raise WISERTarget25Error("Target25 champion identity drift")
+        for field, identity_field in (("champion_arm", "arm"), ("champion_runtime_commit", "runtime_commit"), ("champion_p3_config_sha256", "p3_config_sha256"), ("champion_checkpoint_id", "checkpoint_id"), ("champion_checkpoint_sha256", "checkpoint_sha256"), ("champion_source_summary_sha256", "source_summary_sha256"), ("champion_source_binding_sha256", "source_binding_sha256")):
             if job.get(field) != identity[identity_field]:
                 raise WISERTarget25Error("Target25 champion binding drift")
         root = _as_nonempty_string(job.get("output_root"), "Target25 output root")

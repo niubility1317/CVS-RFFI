@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 from dataclasses import asdict
+import hashlib
 import json
 from pathlib import Path
 import sys
@@ -39,6 +40,14 @@ def _load_json(path: Path) -> dict[str, Any]:
     if not isinstance(payload, dict):
         raise ValueError(f"JSON object required: {path}")
     return payload
+
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
 
 
 def _write_json_new(path: Path, payload: Mapping[str, Any]) -> None:
@@ -88,7 +97,7 @@ def _validate_source_binding(path: Path, job: Mapping[str, Any]) -> Mapping[str,
     binding = _load_json(path)
     if binding.get("schema") != "cvs.phase1.wiser_rf.source_binding.v1":
         raise ValueError("Target25 source-binding schema drift")
-    if binding.get("checkpoint_id") != job.get("champion_checkpoint_id"):
+    if binding.get("checkpoint_id") != job.get("champion_checkpoint_id") or _sha256(path) != job.get("champion_source_binding_sha256"):
         raise ValueError("Target25 champion checkpoint binding drift")
     registry = binding.get("class_registry")
     if binding.get("feature_schema") != "ADV3B02:z_id:unit_l2:160:v1" or binding.get("feature_dim") != 160 or not isinstance(registry, list) or len(registry) != 6 or len(set(map(str, registry))) != 6:
@@ -96,11 +105,28 @@ def _validate_source_binding(path: Path, job: Mapping[str, Any]) -> Mapping[str,
     return binding
 
 
+def _validate_champion_files(*, job: Mapping[str, Any], p3_config: Path, checkpoint: Path, source_summary: Path, source_binding: Path) -> None:
+    expected = ((p3_config, "champion_p3_config_sha256"), (checkpoint, "champion_checkpoint_sha256"), (source_summary, "champion_source_summary_sha256"), (source_binding, "champion_source_binding_sha256"))
+    for path, field in expected:
+        if not path.is_file() or _sha256(path) != job.get(field):
+            raise ValueError(f"Target25 {field} byte binding drift")
+
+
+def _target_p3_config(path: Path, job: Mapping[str, Any]) -> WISERP3TrainingConfig:
+    payload = _load_json(path)
+    if payload.get("schema") != "cvs.phase2.wiser_rf.p3_primary.config.v1" or payload.get("checkpoint_id") != job.get("champion_checkpoint_id") or not isinstance(payload.get("p3_training"), Mapping):
+        raise ValueError("Target25 champion P3 config binding drift")
+    values = dict(payload["p3_training"])
+    values["seed"] = int(job["seed"])
+    return WISERP3TrainingConfig(**values)
+
+
 def _prepare(args: argparse.Namespace) -> Mapping[str, Any]:
     source = _load_json(args.source_manifest)
     marker = _load_json(args.pilot_marker)
     # Validate all immutable inputs before claiming an output root.
     manifest = build_wiser_target25_manifest(source, marker, str(args.output_root), phase=args.phase)
+    _validate_champion_files(job=manifest["jobs"][0], p3_config=args.p3_config, checkpoint=args.checkpoint, source_summary=args.source_summary, source_binding=args.source_binding)
     destination = _new_root(args.output_root)
     _write_json_new(destination / "manifest.json", manifest)
     for shard in range(8):
@@ -116,14 +142,14 @@ def _prepare(args: argparse.Namespace) -> Mapping[str, Any]:
             "shard_count": 8, "query_opened": False, "truth_opened": False}
 
 
-def _train_candidate(job: Mapping[str, Any], support: Any, *, checkpoint: Path, source_summary: Any, binding: Mapping[str, Any], device: str) -> tuple[torch.nn.Module, Mapping[str, Any]]:
+def _train_candidate(job: Mapping[str, Any], support: Any, *, checkpoint: Path, source_summary: Any, binding: Mapping[str, Any], config: WISERP3TrainingConfig, device: str) -> tuple[torch.nn.Module, Mapping[str, Any]]:
     model = frozen_checkpoint(checkpoint, device)
     audit = train_wiser_p3_arm(
         model, _tensor(support.iq, device), _tensor(support.labels, device, labels=True),
         support_tokens=support.tokens, source_summary=source_summary,
         expected_source_class_registry=tuple(binding["class_registry"]),
         expected_source_feature_schema=str(binding["feature_schema"]), arm=str(job["champion_arm"]),
-        config=WISERP3TrainingConfig(seed=int(job["seed"])),
+        config=config,
     )
     result = {**asdict(audit), "outer_arm": str(job["champion_arm"]), "trainer_arm": str(job["champion_arm"]), "support_state_frozen": True}
     if result["query_rows_used"] != 0:
@@ -134,13 +160,15 @@ def _train_candidate(job: Mapping[str, Any], support: Any, *, checkpoint: Path, 
 def _run_shard(args: argparse.Namespace) -> Mapping[str, Any]:
     manifest = _load_json(args.manifest)
     jobs = _jobs_for_shard(manifest, int(args.shard_index))
+    _validate_champion_files(job=jobs[0], p3_config=args.p3_config, checkpoint=args.checkpoint, source_summary=args.source_summary, source_binding=args.source_binding)
     binding = _validate_source_binding(args.source_binding, jobs[0])
     if any(job["champion_checkpoint_id"] != jobs[0]["champion_checkpoint_id"] for job in jobs):
         raise ValueError("Target25 shard champion checkpoint drift")
     source_summary = load_quantized_source_summary(args.source_summary)
     if tuple(source_summary.class_registry) != tuple(binding["class_registry"]) or source_summary.feature_schema != binding["feature_schema"] or tuple(source_summary.centers.shape) != (6, 160):
         raise ValueError("Target25 source summary binding drift")
-    destination = _new_root(args.output_root)
+    p3_config = _target_p3_config(args.p3_config, jobs[0])
+    destination = _new_root(args.output_root / f"shard_{int(args.shard_index)}")
     completed: list[dict[str, Any]] = []
     # Each unit fresh-loads N0 and the champion; all support state freezes before its query.
     for job in jobs:
@@ -148,7 +176,7 @@ def _run_shard(args: argparse.Namespace) -> Mapping[str, Any]:
             support = load_support_package(_packages(job, "before_enrollment") / f"support_{scenario}.npz")
             support_iq, support_labels = _tensor(support.iq, args.device), _tensor(support.labels, args.device, labels=True)
             baseline = frozen_checkpoint(args.checkpoint, args.device)
-            candidate, audit = _train_candidate(job, support, checkpoint=args.checkpoint, source_summary=source_summary, binding=binding, device=args.device)
+            candidate, audit = _train_candidate(job, support, checkpoint=args.checkpoint, source_summary=source_summary, binding=binding, config=p3_config, device=args.device)
             query = load_query_package(_packages(job, "before_apply") / f"query_{scenario}.npz")
             query_iq = _tensor(query.iq, args.device)
             for arm, model, training_audit in (("N0", baseline, {"outer_arm": "N0", "trainer_arm": None, "query_rows_used": 0, "support_state_frozen": True}), (str(job["champion_arm"]), candidate, audit)):
@@ -159,7 +187,7 @@ def _run_shard(args: argparse.Namespace) -> Mapping[str, Any]:
                 _write_json_new(prediction / "prediction_receipt.json", {
                     "schema": "cvs.phase2.wiser_rf.target25.prediction_receipt.v1", "status": "PREDICTIONS_COMPLETE",
                     **{field: job[field] for field in ("outer_key", "capsule_id", "split_id", "receiver", "seed", "k_shot", "new_class_count", "planned_shard_index")},
-                    "scenario": scenario, "arm": arm, "champion_arm": job["champion_arm"], "champion_commit": job["champion_commit"],
+                    "scenario": scenario, "arm": arm, "champion_identity": job["champion_identity"], "champion_arm": job["champion_arm"],
                     "query_rows": len(query.tokens), "expected_query_tokens": list(query.tokens), "query_rows_used": 0,
                     "query_truth_opened": False, "query_role_opened": False, "support_state_frozen_before_query": True,
                     "training_audit": training_audit,
@@ -205,7 +233,7 @@ def _validate_prediction_registry(manifest: Mapping[str, Any], prediction_root: 
                     raise ValueError("Target25 prediction receipt schema/status drift")
                 for field in ("outer_key", "capsule_id", "split_id", "receiver", "seed", "k_shot", "new_class_count", "planned_shard_index"):
                     if receipt.get(field) != job[field]: raise ValueError("Target25 prediction receipt binding drift")
-                if receipt.get("scenario") != scenario or receipt.get("arm") != arm or receipt.get("champion_arm") != job["champion_arm"] or receipt.get("champion_commit") != job["champion_commit"] or receipt.get("query_rows_used") != 0 or receipt.get("query_truth_opened") is not False or receipt.get("query_role_opened") is not False or receipt.get("support_state_frozen_before_query") is not True:
+                if receipt.get("scenario") != scenario or receipt.get("arm") != arm or receipt.get("champion_arm") != job["champion_arm"] or receipt.get("champion_identity") != job["champion_identity"] or receipt.get("query_rows_used") != 0 or receipt.get("query_truth_opened") is not False or receipt.get("query_role_opened") is not False or receipt.get("support_state_frozen_before_query") is not True:
                     raise ValueError("Target25 prediction receipt truth-last drift")
                 audit = receipt.get("training_audit")
                 if not isinstance(audit, Mapping) or audit.get("query_rows_used") != 0 or audit.get("support_state_frozen") is not True:
@@ -219,7 +247,7 @@ def _score_shard(args: argparse.Namespace) -> Mapping[str, Any]:
     manifest = _load_json(args.manifest)
     # This must complete before the first truth_sidecar path is read.
     validated = _validate_prediction_registry(manifest, args.prediction_root, int(args.shard_index))
-    destination = _new_root(args.output_root)
+    destination = _new_root(args.output_root / f"shard_{int(args.shard_index)}")
     scores: dict[tuple[str, str, str], Mapping[str, Any]] = {}
     for job, scenario, arm, root, _receipt in validated:
         score = score_wiser_predictions(root / "predictions.npz", root / "prediction_receipt.json", Path(str(job["truth_sidecar"])))
@@ -232,11 +260,12 @@ def _score_shard(args: argparse.Namespace) -> Mapping[str, Any]:
             comparison = dict(compare_wiser_score_rows(scores[(str(job["outer_key"]), scenario, "N0")], scores[(str(job["outer_key"]), scenario, candidate_arm)]))
             candidate_receipt = _load_json(_prediction_root(args.prediction_root, job, scenario, candidate_arm) / "prediction_receipt.json")
             comparison.update({field: job[field] for field in ("seed", "k_shot", "new_class_count", "planned_shard_index")})
+            comparison["champion_identity"] = job["champion_identity"]
             comparison["expected_query_tokens"] = candidate_receipt["expected_query_tokens"]
             comparison["query_rows_used"] = 0
             comparison["candidate_training_audit"] = candidate_receipt["training_audit"]
             paired.append(comparison)
-    result = {"schema": "cvs.phase2.wiser_rf.target25.score_shard.v1", "status": "ANALYZED", "shard_index": int(args.shard_index), "paired_rows": paired, "truth_join_after_prediction_only": True}
+    result = {"schema": "cvs.phase2.wiser_rf.target25.score_shard.v1", "status": "ANALYZED", "shard_index": int(args.shard_index), "champion_identity": jobs[0]["champion_identity"] if (jobs := _jobs_for_shard(manifest, int(args.shard_index))) else None, "paired_rows": paired, "truth_join_after_prediction_only": True}
     _write_json_new(destination / "score_collection.json", result)
     return {"status": "ANALYZED", "shard_index": int(args.shard_index), "score_root": str(destination), "paired_scene_unit_count": len(paired)}
 
@@ -249,7 +278,13 @@ def _analyze(args: argparse.Namespace) -> Mapping[str, Any]:
         payload = _load_json(args.score_root / f"shard_{shard}" / "score_collection.json")
         if payload.get("schema") != "cvs.phase2.wiser_rf.target25.score_shard.v1" or payload.get("status") != "ANALYZED" or payload.get("shard_index") != shard or not isinstance(payload.get("paired_rows"), list):
             raise ValueError("Target25 score-shard collection drift")
+        if payload.get("champion_identity") != manifest.get("champion_identity"):
+            raise ValueError("Target25 score-shard champion identity drift")
         paired.extend(payload["paired_rows"])
+    for row in paired:
+        job = next((item for item in manifest["jobs"] if item["outer_key"] == row.get("outer_key")), None)
+        if not isinstance(job, Mapping) or row.get("champion_identity") != manifest["champion_identity"] or row.get("candidate_arm") != manifest["champion_identity"]["arm"] or row.get("control_arm") != "N0" or any(row.get(field) != job.get(field) for field in ("capsule_id", "split_id", "receiver", "seed", "k_shot", "new_class_count", "planned_shard_index")):
+            raise ValueError("Target25 analyzed paired-row binding drift")
     # Analyzer sees only scored JSON rows, never raw query packages or truth sidecars.
     decision = target25_promotion_decision(paired, phase=str(manifest["validation_phase"]))
     destination = _new_root(args.output_root)
@@ -265,9 +300,10 @@ def parser() -> argparse.ArgumentParser:
     prepare.add_argument("--pilot-marker", type=Path, required=True)
     prepare.add_argument("--output-root", type=Path, required=True)
     prepare.add_argument("--phase", choices=("target25", "k10"), default="target25")
+    prepare.add_argument("--p3-config", type=Path, required=True); prepare.add_argument("--checkpoint", type=Path, required=True); prepare.add_argument("--source-summary", type=Path, required=True); prepare.add_argument("--source-binding", type=Path, required=True)
     run = commands.add_parser("run-shard")
     run.add_argument("--manifest", type=Path, required=True); run.add_argument("--shard-index", type=int, required=True)
-    run.add_argument("--checkpoint", type=Path, required=True); run.add_argument("--source-summary", type=Path, required=True); run.add_argument("--source-binding", type=Path, required=True)
+    run.add_argument("--checkpoint", type=Path, required=True); run.add_argument("--source-summary", type=Path, required=True); run.add_argument("--source-binding", type=Path, required=True); run.add_argument("--p3-config", type=Path, required=True)
     run.add_argument("--output-root", type=Path, required=True); run.add_argument("--device", required=True)
     score = commands.add_parser("score-shard")
     score.add_argument("--manifest", type=Path, required=True); score.add_argument("--shard-index", type=int, required=True)
