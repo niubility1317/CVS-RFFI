@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-- 状态：`LOCAL_VERIFIED`；正式N607发布尚未执行。
+- 状态：`LANDED`；release已在N607普通账户完成校验与编译，正式dispatcher尚未启动。
 - Run ID：`phase1_adv3b02_pairbicad_p0p4_loro2_seed3_u4000_20260831_r1`。
 - 方法范围：`P0/P1/P2/P3/P4`；P5–P9不属于本run。
 - source数据：`Dataset_WigSig/ManySig.pkl`；训练day1/day2/day3。
@@ -51,7 +51,15 @@
 - 30行矩阵launcher commit：`cadfdee0e7dedb2a88dbb26ce8e812ef17130458`。
 - 16L+32U单前向训练commit：`03e328f44001f9a3977da647ad4f2f494f15d78e`。
 - 真实checkpoint smoke修复commit：`90e05291d5e6d0ee977583489b6f381a6589ce17`。
-- N607 release与命令：pending。
+- 当前完整HEAD：`85989ed4d9bc15262b184e1d7b046780916843fa`；远端Git分支OID一致。
+- release归档：本地`E:\type10-7\release_archives\phase1_pairbicad_p0p4_85989ed4.tar.gz`→N607`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_pairbicad_p0p4_85989ed4.tar.gz`。
+- release SHA256：本地/远端均为`044109cd4c0c7dfd417b788b15081ed7874a1894efb8533d6bc3aedfb26d8649`。
+- 解压根：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_pairbicad_p0p4_85989ed4`。
+- N607账户：`szu2070436088`；未使用管理员账户。
+- N607预检：项目根、Python、ManySig存在；`/home`可用7.3TB；GPU0–7无compute process，显存各1MiB；run/release目标路径发布前均不存在。
+- 远端编译：`train_ssdg.py`、PairBiCAD模块及launcher全部通过`py_compile`。
+- 远端dry-run：30/30行，P0–P4×fold1/8×seed392001/392002/392003，全部U4000、day1/2/3、source-only；GPU队列4/4/4/4/4/4/3/3。
+- 正式入口：`code/scripts/launch_phase1_pairbicad_p0p4_n607_20260831.sh`；通过环境变量固定上述release根，`--max-jobs-per-gpu 2`。
 
 ## 已落地实现
 
