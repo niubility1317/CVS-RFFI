@@ -133,6 +133,7 @@ def _reject_csv_nonfinite(value: str, *, row_id: str, field: str) -> None:
 def _read_csv(path: Path, *, row_id: str) -> list[Mapping[str, str]]:
     if not path.is_file():
         raise _row_error(row_id, "metrics_epoch.csv", "missing file")
+    csv.field_size_limit(max(csv.field_size_limit(), 64 * 1024 * 1024))
     try:
         with path.open("r", encoding="utf-8-sig", newline="") as handle:
             reader = csv.DictReader(handle)

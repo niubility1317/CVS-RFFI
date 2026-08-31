@@ -225,6 +225,39 @@ def test_valid_30_row_run_writes_same_row_metrics_and_ranked_candidates(
     assert csv_rows[0]["row_id"] == "P0-F1-S392001"
 
 
+def test_csv_audit_field_larger_than_python_default_limit_is_fully_parsed(
+    tmp_path: Path,
+) -> None:
+    run_root = tmp_path / "run"
+    output_dir = tmp_path / "out"
+    _write_valid_run(run_root)
+    row_root = run_root / "P0-F1-S392001"
+    jsonl_path = row_root / "metrics_epoch.jsonl"
+    records = [
+        json.loads(line)
+        for line in jsonl_path.read_text(encoding="utf-8").splitlines()
+    ]
+    for record in records:
+        record["audit_blob"] = "x" * 200_000
+    jsonl_path.write_text(
+        "\n".join(json.dumps(record, sort_keys=True) for record in records) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    with (row_root / "metrics_epoch.csv").open(
+        "w", encoding="utf-8", newline=""
+    ) as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(records[0]))
+        writer.writeheader()
+        writer.writerows(records)
+
+    result = _run_cli(run_root, output_dir)
+
+    assert result.returncode == 0, _combined_output(result)
+    payload = json.loads((output_dir / "analysis.json").read_text(encoding="utf-8"))
+    assert payload["row_count"] == 30
+
+
 def test_missing_row_fails_with_exact_row_id(tmp_path: Path) -> None:
     run_root = tmp_path / "run"
     _write_valid_run(run_root)
