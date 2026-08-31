@@ -10,7 +10,11 @@ import torch
 from cvsrffi.phase1_bicad_xr.metrics import (
     FORMAL_EVAL_SCENARIOS,
     BiCADXRMetricStore,
+    S_DG,
+    compute_s_dg,
     evaluate_final_checkpoint,
+    evaluate_mainline_gate,
+    evaluate_tailguard_gate,
     validate_artifact_closure,
     validate_checkpoint_runtime,
 )
@@ -119,6 +123,92 @@ def test_metric_store_exposes_the_complete_diagnostic_schema() -> None:
         "inference_parameter_count",
     } <= set(snapshot)
     assert snapshot["paired_satellite"] == "N/A"
+
+
+def test_s_dg_uses_three_way_harmonic_mean_and_explicit_penalties() -> None:
+    expected_hm = 3.0 / (1.0 / 0.80 + 1.0 / 0.60 + 1.0 / 0.70)
+    expected = expected_hm - 0.10 * 0.05 - 0.05 * 0.02
+
+    assert compute_s_dg(0.80, 0.60, 0.70, 0.05, 0.02) == pytest.approx(expected)
+    assert S_DG(0.80, 0.60, 0.70, 0.05, 0.02) == pytest.approx(expected)
+
+
+def test_same_row_mainline_gate_reports_negative_science_without_technical_failure() -> None:
+    control = {
+        "candidate_id": "CV2-D0",
+        "fold": 1,
+        "seed": 392002,
+        "s_dg": 0.70,
+        "leo_mean": 0.70,
+        "leo_class_floor": 0.60,
+        "clean_accuracy": 0.80,
+        "source_sat_hmean": 0.68,
+        "receiver_floor": 0.55,
+    }
+    candidate = {
+        **control,
+        "candidate_id": "CV2-D1",
+        "s_dg": 0.695,
+        "leo_mean": 0.71,
+        "leo_class_floor": 0.59,
+        "clean_accuracy": 0.80,
+        "receiver_floor": 0.55,
+    }
+
+    result = evaluate_mainline_gate(candidate, control)
+
+    assert result["same_row"] is True
+    assert result["passed"] is False
+    assert result["scientific_result"] == "NEGATIVE_SCIENTIFIC_RESULT"
+    assert result["technical_failure"] is False
+    assert "s_dg_delta" in result["failed_conditions"]
+    assert "leo_class_floor_delta" in result["failed_conditions"]
+
+
+def test_same_row_gate_rejects_missing_row_identity() -> None:
+    control = {
+        "candidate_id": "CV2-D0",
+        "s_dg": 0.70,
+        "leo_mean": 0.70,
+        "leo_class_floor": 0.60,
+        "clean_accuracy": 0.80,
+        "source_sat_hmean": 0.68,
+    }
+    candidate = {**control, "candidate_id": "CV2-D1"}
+
+    with pytest.raises(ValueError, match="same-row identity"):
+        evaluate_mainline_gate(candidate, control)
+
+
+def test_tailguard_gate_requires_class_floor_gain_and_preserves_receiver_floor() -> None:
+    control = {
+        "candidate_id": "CV2-T0",
+        "fold": 8,
+        "seed": 392002,
+        "s_dg": 0.70,
+        "leo_mean": 0.70,
+        "leo_class_floor": 0.60,
+        "clean_accuracy": 0.80,
+        "source_sat_hmean": 0.68,
+        "receiver_floor": 0.55,
+    }
+    candidate = {
+        **control,
+        "candidate_id": "CV2-T2",
+        "s_dg": 0.705,
+        "leo_mean": 0.71,
+        "leo_class_floor": 0.61,
+        "clean_accuracy": 0.798,
+        "source_sat_hmean": 0.679,
+        "receiver_floor": 0.55,
+    }
+
+    result = evaluate_tailguard_gate(candidate, control)
+
+    assert result["same_row"] is True
+    assert result["passed"] is True
+    assert result["scientific_result"] == "SCIENTIFIC_GATE_PASS"
+    assert result["failed_conditions"] == []
 
 
 def test_checkpoint_runtime_requires_exact_row_identity() -> None:

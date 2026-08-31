@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import copy
 import json
+import math
 import re
 from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
@@ -45,6 +46,9 @@ DIAGNOSTIC_SCHEMA: tuple[str, ...] = (
     "gpu_hours",
     "extra_forward_ratio",
     "inference_parameter_count",
+    "receiver_floor",
+    "receiver_std",
+    "negative_margin_rate",
 )
 
 _DEFAULT_DIAGNOSTICS: dict[str, Any] = {
@@ -103,6 +107,266 @@ class BiCADXRMetricStore:
 
     def items(self):
         return self._values.items()
+
+
+_SDG_ALIASES: dict[str, tuple[str, ...]] = {
+    "clean_bal": ("clean_bal", "clean_accuracy", "clean_floor_accuracy"),
+    "leo_scene_floor_bal": (
+        "leo_scene_floor_bal",
+        "leo_scenario_floor",
+        "leo_scene_floor",
+        "leo_floor",
+    ),
+    "receiver_floor": ("receiver_floor", "receiver_floor_accuracy"),
+    "receiver_std": ("receiver_std", "receiver_population_std"),
+    "negative_margin_rate": ("negative_margin_rate", "negative_margin"),
+}
+
+
+def _finite_metric(value: Any, *, name: str) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f"{name} must be a finite number")
+    result = float(value)
+    if not math.isfinite(result):
+        raise ValueError(f"{name} must be a finite number")
+    return result
+
+
+def _sdg_mapping_value(mapping: Mapping[str, Any], name: str) -> Any:
+    nested = mapping.get("metrics")
+    sources: tuple[Mapping[str, Any], ...]
+    if isinstance(nested, Mapping):
+        sources = (mapping, nested)
+    else:
+        sources = (mapping,)
+    for source in sources:
+        for alias in _SDG_ALIASES[name]:
+            if alias in source:
+                return source[alias]
+    raise ValueError(f"missing S_DG input: {name}")
+
+
+def compute_s_dg(
+    clean_bal: float | Mapping[str, Any],
+    leo_scene_floor_bal: float | None = None,
+    receiver_floor: float | None = None,
+    receiver_std: float | None = None,
+    negative_margin_rate: float | None = None,
+) -> float:
+    """Compute the frozen source-domain generalization score.
+
+    The score is defined on the 0--1 scale as the three-way harmonic mean of
+    clean, LEO-scene-floor, and receiver-floor accuracy, with the specified
+    receiver-variance and negative-margin penalties.  A mapping input accepts
+    the row/artifact field aliases used by the analyzer.
+    """
+
+    if isinstance(clean_bal, Mapping):
+        values = {
+            name: _finite_metric(_sdg_mapping_value(clean_bal, name), name=name)
+            for name in _SDG_ALIASES
+        }
+    else:
+        raw_values = {
+            "clean_bal": clean_bal,
+            "leo_scene_floor_bal": leo_scene_floor_bal,
+            "receiver_floor": receiver_floor,
+            "receiver_std": receiver_std,
+            "negative_margin_rate": negative_margin_rate,
+        }
+        missing = [name for name, value in raw_values.items() if value is None]
+        if missing:
+            raise ValueError("missing S_DG input: " + ", ".join(missing))
+        values = {
+            name: _finite_metric(value, name=name)
+            for name, value in raw_values.items()
+        }
+
+    for name in ("clean_bal", "leo_scene_floor_bal", "receiver_floor"):
+        if not 0.0 <= values[name] <= 1.0:
+            raise ValueError(f"{name} must be between 0 and 1")
+    if values["receiver_std"] < 0.0:
+        raise ValueError("receiver_std must be non-negative")
+    if not 0.0 <= values["negative_margin_rate"] <= 1.0:
+        raise ValueError("negative_margin_rate must be between 0 and 1")
+
+    accuracy_values = tuple(
+        values[name] for name in ("clean_bal", "leo_scene_floor_bal", "receiver_floor")
+    )
+    harmonic_mean = 0.0
+    if all(value > 0.0 for value in accuracy_values):
+        denominator = sum(1.0 / value for value in accuracy_values)
+        harmonic_mean = 3.0 / denominator
+    return harmonic_mean - 0.10 * values["receiver_std"] - 0.05 * values[
+        "negative_margin_rate"
+    ]
+
+
+S_DG = compute_s_dg
+s_dg = compute_s_dg
+
+
+def aggregate_s_dg(rows: Sequence[Mapping[str, Any]]) -> dict[str, float]:
+    """Aggregate already-scored rows without mixing unrelated metrics."""
+
+    if isinstance(rows, (str, bytes)) or not isinstance(rows, Sequence) or not rows:
+        raise ValueError("rows must be a non-empty sequence")
+    values = []
+    for row in rows:
+        if not isinstance(row, Mapping):
+            raise ValueError("each S_DG row must be a mapping")
+        value = row.get("s_dg", row.get("S_DG"))
+        values.append(_finite_metric(value, name="s_dg"))
+    mean = sum(values) / len(values)
+    return {
+        "mean": mean,
+        "population_std": (sum((value - mean) ** 2 for value in values) / len(values))
+        ** 0.5,
+        "minimum": min(values),
+    }
+
+
+_GATE_METRIC_ALIASES: dict[str, tuple[str, ...]] = {
+    "s_dg": ("s_dg", "S_DG"),
+    "leo_mean": ("leo_mean", "leo_accuracy_mean"),
+    "leo_class_floor": ("leo_class_floor", "leo_class_floor_accuracy"),
+    "clean_accuracy": ("clean_accuracy", "clean_bal"),
+    "h": ("source_sat_hmean", "hmean", "H", "h"),
+    "receiver_floor": ("receiver_floor", "receiver_floor_accuracy"),
+}
+
+
+def _gate_metric(row: Mapping[str, Any], name: str) -> float:
+    for alias in _GATE_METRIC_ALIASES[name]:
+        if alias in row:
+            return _finite_metric(row[alias], name=name)
+    raise ValueError(f"missing gate metric: {name}")
+
+
+_SAME_ROW_IDENTITY_FIELDS = (
+    "fold",
+    "seed",
+    "same_row_key",
+    "split_id",
+    "k_shot",
+    "source_receivers",
+    "train_days",
+)
+
+
+def _assert_same_row(candidate: Mapping[str, Any], control: Mapping[str, Any]) -> None:
+    required_fields = ("fold", "seed")
+    missing = [
+        name
+        for name in required_fields
+        if name not in candidate or name not in control
+    ]
+    if missing:
+        raise ValueError("same-row identity missing: " + ", ".join(missing))
+
+    mismatches = [
+        name
+        for name in _SAME_ROW_IDENTITY_FIELDS
+        if name in candidate and name in control and candidate[name] != control[name]
+    ]
+    if mismatches:
+        raise ValueError("same-row identity mismatch: " + ", ".join(mismatches))
+
+
+def _gate_result(
+    candidate: Mapping[str, Any],
+    control: Mapping[str, Any],
+    *,
+    kind: str,
+    checks: Mapping[str, bool],
+    deltas: Mapping[str, float],
+) -> dict[str, Any]:
+    _assert_same_row(candidate, control)
+    failed = [name for name, passed in checks.items() if not passed]
+    passed = not failed
+    return {
+        "gate": kind,
+        "same_row": True,
+        "candidate_id": candidate.get("candidate_id"),
+        "control_candidate_id": control.get("candidate_id"),
+        "passed": passed,
+        "status": "PASS" if passed else "FAIL",
+        "scientific_result": (
+            "SCIENTIFIC_GATE_PASS" if passed else "NEGATIVE_SCIENTIFIC_RESULT"
+        ),
+        "technical_failure": False,
+        "failed_conditions": failed,
+        "deltas": dict(deltas),
+    }
+
+
+def evaluate_mainline_gate(
+    candidate: Mapping[str, Any], control: Mapping[str, Any]
+) -> dict[str, Any]:
+    """Evaluate the mainline criteria against a same-row control."""
+
+    _assert_same_row(candidate, control)
+    deltas = {
+        name: _gate_metric(candidate, name) - _gate_metric(control, name)
+        for name in ("s_dg", "leo_mean", "leo_class_floor", "clean_accuracy", "h")
+    }
+    checks = {
+        "s_dg_delta": deltas["s_dg"] >= 0.005,
+        "leo_mean_delta": deltas["leo_mean"] > 0.0,
+        "leo_class_floor_delta": deltas["leo_class_floor"] >= 0.0,
+        "clean_accuracy_delta": deltas["clean_accuracy"] >= -0.005,
+        "h_delta": deltas["h"] >= -0.03,
+    }
+    return _gate_result(candidate, control, kind="mainline", checks=checks, deltas=deltas)
+
+
+def evaluate_tailguard_gate(
+    candidate: Mapping[str, Any], control: Mapping[str, Any]
+) -> dict[str, Any]:
+    """Evaluate the dedicated TailGuard criteria against a same-row control."""
+
+    _assert_same_row(candidate, control)
+    deltas = {
+        name: _gate_metric(candidate, name) - _gate_metric(control, name)
+        for name in (
+            "leo_class_floor",
+            "clean_accuracy",
+            "h",
+            "receiver_floor",
+        )
+    }
+    checks = {
+        "leo_class_floor_delta": deltas["leo_class_floor"] >= 0.01,
+        "h_delta": deltas["h"] >= -0.003,
+        "clean_accuracy_delta": deltas["clean_accuracy"] >= -0.005,
+        "receiver_floor_delta": deltas["receiver_floor"] >= 0.0,
+    }
+    return _gate_result(candidate, control, kind="tailguard", checks=checks, deltas=deltas)
+
+
+def evaluate_candidate_gate(
+    candidate: Mapping[str, Any],
+    control: Mapping[str, Any],
+    *,
+    kind: str = "mainline",
+) -> dict[str, Any]:
+    if kind == "mainline":
+        return evaluate_mainline_gate(candidate, control)
+    if kind == "tailguard":
+        return evaluate_tailguard_gate(candidate, control)
+    raise ValueError("kind must be mainline or tailguard")
+
+
+def validate_four_scenario_closure(row_root: str | Path) -> dict[str, Any]:
+    """Validate clean plus all three LEO artifacts without scoring a gate."""
+
+    result = validate_artifact_closure(row_root)
+    result["four_scenario_complete"] = result["complete"]
+    result["technical_failure"] = not result["complete"]
+    return result
+
+
+validate_cv2_artifact_closure = validate_four_scenario_closure
 
 
 def _is_int(value: Any) -> bool:
@@ -649,7 +913,16 @@ __all__ = [
     "FORMAL_EVAL_SCENARIOS",
     "LEO_WEAK_SCENARIOS",
     "BiCADXRMetricStore",
+    "S_DG",
+    "aggregate_s_dg",
+    "compute_s_dg",
     "evaluate_final_checkpoint",
+    "evaluate_candidate_gate",
+    "evaluate_mainline_gate",
+    "evaluate_tailguard_gate",
     "validate_artifact_closure",
+    "validate_cv2_artifact_closure",
     "validate_checkpoint_runtime",
+    "validate_four_scenario_closure",
+    "s_dg",
 ]

@@ -59,6 +59,11 @@ _CANDIDATE_SWITCHES = (
     "pair_vicreg",
     "pair_delta",
     "dynamic_adversarial_dose",
+    "coverage_convergence",
+    "reduce_lr_on_plateau",
+    "no_early_freeze",
+    "detached_adversarial",
+    "adversarial_two_time_scale",
 )
 
 _FORBIDDEN_LEGACY_FEATURES = (
@@ -77,6 +82,55 @@ _FORBIDDEN_LEGACY_FEATURES = (
 )
 
 _SOURCE_SEARCH_OVERRIDE_FIELDS = frozenset({"lambda_cond_xcov"})
+
+CV2_CANDIDATE_IDS: tuple[str, ...] = (
+    "CV2-B0",
+    "CV2-B1",
+    "CV2-B2",
+    "CV2-B3",
+    "CV2-D0",
+    "CV2-D1",
+    "CV2-D2",
+    "CV2-D3",
+    "CV2-T0",
+    "CV2-T1",
+    "CV2-T2",
+    "CV2-T3",
+)
+CV2_CANDIDATES = CV2_CANDIDATE_IDS
+
+CV2_DEFERRED_FEATURES: tuple[str, ...] = (
+    "vicreg",
+    "pair_delta",
+    "soft_u_cdan",
+    "ema_teacher",
+    "robust_class_reference",
+    "sparse_xdc",
+    "receiver_frontend_augmentation",
+    "hard_leo_mining",
+    "third_view",
+    "hcf_counterfactual_transport",
+    "rank4_common_specific",
+    "content_conditioned_lodo",
+    "iq_mixup",
+    "fishr",
+    "fasttrust_pseudolabel",
+)
+DEFERRED_FEATURES = CV2_DEFERRED_FEATURES
+
+_CV2_DEFERRED_CONFIG_FIELDS = frozenset(
+    {
+        "pair_vicreg",
+        "pair_delta",
+        "sparse_xdc",
+        "use_fishr",
+        "use_fasttrust",
+        "use_pseudo_label",
+        "use_generic_mixup",
+        "use_hcf_transport",
+        "use_content_lodo",
+    }
+) | frozenset(CV2_DEFERRED_FEATURES) | frozenset(_FORBIDDEN_LEGACY_FEATURES)
 
 
 @dataclass(frozen=True)
@@ -103,6 +157,11 @@ class BiCADXRConfig:
     pair_vicreg: bool = False
     pair_delta: bool = False
     dynamic_adversarial_dose: bool = False
+    coverage_convergence: bool = False
+    reduce_lr_on_plateau: bool = False
+    no_early_freeze: bool = False
+    detached_adversarial: bool = False
+    adversarial_two_time_scale: bool = False
 
     # Legacy mechanisms are explicit so an accidental carry-over fails closed.
     use_fasttrust: bool = False
@@ -171,8 +230,30 @@ class BiCADXRConfig:
             names = ", ".join(incompatible)
             raise ValueError(f"incompatible legacy features: {names}")
 
+        if self.candidate_id.strip().upper().startswith("CV2-"):
+            deferred = [
+                name
+                for name, enabled in (
+                    ("vicreg", self.pair_vicreg),
+                    ("pair_delta", self.pair_delta),
+                    ("sparse_xdc", self.sparse_xdc),
+                )
+                if enabled
+            ]
+            if deferred:
+                raise ValueError(
+                    "incompatible frozen/deferred features are disabled: "
+                    + ", ".join(deferred)
+                )
+
         if self.receiver_tangent not in {"off", "factual", "worst"}:
             raise ValueError("receiver_tangent must be one of: off, factual, worst")
+        if self.reduce_lr_on_plateau and not self.coverage_convergence:
+            raise ValueError("reduce_lr_on_plateau requires coverage_convergence")
+        if self.no_early_freeze and not self.coverage_convergence:
+            raise ValueError("no_early_freeze requires coverage_convergence")
+        if self.adversarial_two_time_scale and not self.detached_adversarial:
+            raise ValueError("adversarial_two_time_scale requires detached_adversarial")
         if self.phase1_method != "bicad_xr":
             raise ValueError("incompatible phase1_method for BiCAD-XR")
         if self.optimizer_updates <= 0:
@@ -284,6 +365,56 @@ def _candidate_registry() -> dict[str, BiCADXRConfig]:
         pair_delta=True,
         dynamic_adversarial_dose=True,
     )
+
+    cv2_b0 = replace(d0, candidate_id="CV2-B0")
+    cv2_b1 = replace(
+        p1,
+        candidate_id="CV2-B1",
+        optimizer_updates=6500,
+    )
+    cv2_b2 = replace(
+        cv2_b1,
+        candidate_id="CV2-B2",
+        coverage_convergence=True,
+        reduce_lr_on_plateau=True,
+        no_early_freeze=True,
+    )
+    cv2_b3 = replace(cv2_b2, candidate_id="CV2-B3", swad=True)
+
+    # The D/T stage-zero rows are frozen copies of the fully formed B3 row.
+    # They are independent static registry entries, not aliases selected from
+    # a live champion or copies of the historical short-id D0.
+    cv2_d0 = replace(cv2_b3, candidate_id="CV2-D0")
+    cv2_d1 = replace(
+        cv2_d0,
+        candidate_id="CV2-D1",
+        conditional_cdan=True,
+        detached_adversarial=True,
+        adversarial_two_time_scale=True,
+    )
+    cv2_d2 = replace(
+        cv2_d1,
+        candidate_id="CV2-D2",
+        zdom_tx_adversary=True,
+        conditional_xcov=True,
+    )
+    cv2_d3 = replace(
+        cv2_d2,
+        candidate_id="CV2-D3",
+        dynamic_adversarial_dose=True,
+        task_protected_gradient=True,
+    )
+
+    cv2_t0 = replace(cv2_b3, candidate_id="CV2-T0")
+    cv2_t1 = replace(cv2_t0, candidate_id="CV2-T1", pair_identity=True)
+    cv2_t2 = replace(cv2_t0, candidate_id="CV2-T2", margin_tail=True)
+    cv2_t3 = replace(
+        cv2_t0,
+        candidate_id="CV2-T3",
+        pair_identity=True,
+        margin_tail=True,
+    )
+
     return {
         config.candidate_id.upper(): config
         for config in (
@@ -309,6 +440,18 @@ def _candidate_registry() -> dict[str, BiCADXRConfig]:
             p2,
             p3,
             p4,
+            cv2_b0,
+            cv2_b1,
+            cv2_b2,
+            cv2_b3,
+            cv2_d0,
+            cv2_d1,
+            cv2_d2,
+            cv2_d3,
+            cv2_t0,
+            cv2_t1,
+            cv2_t2,
+            cv2_t3,
         )
     }
 
@@ -347,6 +490,16 @@ def candidate_config(
         raise ValueError("overrides must be a mapping")
 
     override_values = dict(overrides)
+    deferred = sorted(
+        name
+        for name in override_values
+        if name in _CV2_DEFERRED_CONFIG_FIELDS and override_values[name]
+    )
+    if deferred:
+        raise ValueError(
+            "incompatible frozen/deferred features are disabled: "
+            + ", ".join(deferred)
+        )
     unknown = sorted(set(override_values) - _CONFIG_FIELD_NAMES)
     if unknown:
         raise ValueError(f"unknown config override(s): {', '.join(unknown)}")
@@ -416,12 +569,87 @@ def candidate_diff(
     }
 
 
+def _cv2_identity(candidate_id: str) -> tuple[str, int]:
+    key = _candidate_key(candidate_id)
+    if not key.startswith("CV2-") or len(key) != 6 or key[5] not in "0123":
+        raise ValueError(f"not a CV2 candidate: {candidate_id}")
+    family = key[4]
+    if family not in {"B", "D", "T"}:
+        raise ValueError(f"not a CV2 candidate: {candidate_id}")
+    return family, int(key[5])
+
+
+def method_lock_payload(value: str | BiCADXRConfig) -> dict[str, Any]:
+    """Return a source-only, immutable-by-convention lock for one CV2 row.
+
+    The returned payload contains no target, support, query, or truth input.
+    Each call returns a fresh dictionary so callers cannot mutate the registry.
+    """
+
+    config = _resolve_config(value)
+    family, level = _cv2_identity(config.candidate_id)
+    disabled = {
+        name: False
+        for name in CV2_DEFERRED_FEATURES
+    }
+    if config.pair_vicreg or config.pair_delta or config.sparse_xdc:
+        raise ValueError("deferred features are disabled for CV2")
+    return {
+        "schema": "pairbicad_cv2_method_lock_v1",
+        "candidate_id": config.candidate_id,
+        "candidate_family": family,
+        "candidate_level": level,
+        "frozen": True,
+        "dynamic_alias": False,
+        "phase1_method": config.phase1_method,
+        "source_only": True,
+        "target_access": False,
+        "phase2_access": False,
+        "support_access": False,
+        "query_access": False,
+        "truth_access": False,
+        "deferred_features": disabled,
+        "configuration": {
+            field.name: getattr(config, field.name)
+            for field in fields(BiCADXRConfig)
+        },
+    }
+
+
+def cv2_method_lock(value: str | BiCADXRConfig) -> dict[str, Any]:
+    """Compatibility alias for :func:`method_lock_payload`."""
+
+    return method_lock_payload(value)
+
+
+candidate_method_lock = method_lock_payload
+
+
+def cv2_candidate_config(
+    candidate_id: str,
+    overrides: Mapping[str, Any] | None = None,
+) -> BiCADXRConfig:
+    """Resolve a CV2 candidate and reject non-CV2 aliases."""
+
+    config = candidate_config(candidate_id, overrides=overrides)
+    _cv2_identity(config.candidate_id)
+    return config
+
+
 __all__ = [
     "BiCADXRConfig",
     "BiCADXRStage",
     "CANDIDATE_IDS",
+    "CV2_CANDIDATES",
+    "CV2_CANDIDATE_IDS",
+    "CV2_DEFERRED_FEATURES",
+    "DEFERRED_FEATURES",
     "LEO_WEAK_SCENARIOS",
     "candidate_config",
     "candidate_diff",
+    "cv2_candidate_config",
+    "cv2_method_lock",
+    "candidate_method_lock",
+    "method_lock_payload",
     "stage_for_update",
 ]

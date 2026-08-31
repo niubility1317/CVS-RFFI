@@ -7,14 +7,104 @@ import pytest
 from cvsrffi.phase1_bicad_xr.config import (
     BiCADXRConfig,
     BiCADXRStage,
+    CV2_CANDIDATE_IDS,
     CANDIDATE_IDS,
     candidate_config,
     candidate_diff,
+    method_lock_payload,
     stage_for_update,
 )
 
 
 P_CANDIDATE_IDS = ("P0", "P1", "P2", "P3", "P4")
+CV2_IDS = tuple(
+    f"CV2-{family}{index}"
+    for family in ("B", "D", "T")
+    for index in range(4)
+)
+
+
+def test_cv2_registry_has_exactly_twelve_namespaced_static_candidates() -> None:
+    assert CV2_CANDIDATE_IDS == CV2_IDS
+    assert set(CV2_IDS).issubset(CANDIDATE_IDS)
+    assert all(candidate_config(candidate).candidate_id == candidate for candidate in CV2_IDS)
+
+
+@pytest.mark.parametrize(
+    ("left", "right", "changed"),
+    [
+        ("CV2-B2", "CV2-B3", {"swad"}),
+        (
+            "CV2-D0",
+            "CV2-D1",
+            {"conditional_cdan", "detached_adversarial", "adversarial_two_time_scale"},
+        ),
+        (
+            "CV2-D1",
+            "CV2-D2",
+            {"conditional_xcov", "zdom_tx_adversary"},
+        ),
+        (
+            "CV2-D2",
+            "CV2-D3",
+            {"dynamic_adversarial_dose", "task_protected_gradient"},
+        ),
+        ("CV2-T0", "CV2-T1", {"pair_identity"}),
+        ("CV2-T0", "CV2-T2", {"margin_tail"}),
+        ("CV2-T0", "CV2-T3", {"pair_identity", "margin_tail"}),
+    ],
+)
+def test_cv2_adjacent_candidates_differ_only_by_declared_static_switches(
+    left: str, right: str, changed: set[str]
+) -> None:
+    assert set(candidate_diff(left, right)) == changed
+
+
+@pytest.mark.parametrize("candidate_id", ["CV2-D0", "CV2-T0"])
+def test_cv2_stage0_candidates_are_static_copies_of_b3_except_candidate_id(
+    candidate_id: str,
+) -> None:
+    assert candidate_diff(candidate_id, "CV2-B3") == {}
+    assert candidate_config(candidate_id).candidate_id == candidate_id
+    assert candidate_config("CV2-B3").candidate_id == "CV2-B3"
+
+
+def test_cv2_stage0_copy_does_not_rewrite_historical_d0() -> None:
+    historical = candidate_config("D0")
+
+    assert historical.candidate_id == "D0"
+    assert historical.optimizer_updates == 5000
+    assert historical.batch_size == 96
+    assert historical.concat_sat_start_epoch == 80
+    assert historical.satellite_supervision_mode == "ce_only"
+    assert historical.factorized_domains is False
+    assert historical.gradient_firewall is False
+    assert historical.swad is False
+
+
+@pytest.mark.parametrize("candidate_id", CV2_IDS)
+def test_cv2_method_lock_is_source_only_and_deferred_features_are_disabled(
+    candidate_id: str,
+) -> None:
+    cfg = candidate_config(candidate_id)
+    lock = method_lock_payload(cfg)
+
+    assert lock["candidate_id"] == candidate_id
+    assert lock["frozen"] is True
+    assert lock["dynamic_alias"] is False
+    assert lock["source_only"] is True
+    assert lock["target_access"] is False
+    assert lock["phase2_access"] is False
+    assert lock["support_access"] is False
+    assert lock["query_access"] is False
+    assert lock["truth_access"] is False
+    assert all(value is False for value in lock["deferred_features"].values())
+
+
+@pytest.mark.parametrize("deferred", ["ema_teacher", "hard_leo_mining", "iq_mixup"])
+def test_cv2_deferred_overrides_fail_closed(deferred: str) -> None:
+    with pytest.raises(ValueError, match="deferred|disabled|incompatible"):
+        candidate_config("CV2-T0", overrides={deferred: True})
 
 
 def test_pairbicad_p0_to_p4_are_registered_with_shared_frozen_config() -> None:
