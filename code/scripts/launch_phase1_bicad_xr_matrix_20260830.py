@@ -37,10 +37,16 @@ FORMAL_SEEDS: tuple[int, int, int] = (392001, 392002, 392003)
 QUICK_FOLDS: tuple[int, int] = (1, 8)
 CONFIRM_FOLDS: tuple[int, int, int, int, int] = (1, 2, 3, 4, 5)
 PAIRBICAD_FOLDS: tuple[int, int] = (1, 8)
+PAIRBICAD_CONVERGENCE_FOLDS: tuple[int, int] = (1, 8)
+PAIRBICAD_FINAL_FOLDS: tuple[int, int, int, int, int] = (1, 2, 3, 4, 5)
 SOURCE_RECEIVERS: tuple[int, int, int, int, int] = (1, 3, 4, 6, 8)
 TRAIN_DAYS: tuple[int, int, int] = (1, 2, 3)
 OPTIMIZER_UPDATES = 5000
 PAIRBICAD_OPTIMIZER_UPDATES = 4000
+PAIRBICAD_CONVERGENCE_OPTIMIZER_UPDATES = 9000
+PAIRBICAD_FINAL_MIN_UPDATES = 4000
+PAIRBICAD_FINAL_MAX_UPDATES = 9000
+PAIRBICAD_UPDATE_INTERVAL = 500
 MAX_JOBS_PER_GPU = 3
 PAIRBICAD_MAX_JOBS_PER_GPU = 2
 QUICK_CANDIDATES: tuple[str, str, str, str] = (
@@ -60,6 +66,17 @@ PAIRBICAD_CANDIDATES: tuple[str, str, str, str, str] = (
     "P2",
     "P3",
     "P4",
+)
+LORO_HELDOUT_RECEIVER: dict[int, int] = {
+    1: 1,
+    2: 3,
+    3: 4,
+    4: 6,
+    5: 8,
+    8: 8,
+}
+PAIRBICAD_CONVERGENCE_STAGES = frozenset(
+    {"pairbicad_convergence", "pairbicad_final"}
 )
 FORMAL_STATES = {
     "ARTIFACTS_COMPLETE",
@@ -83,6 +100,7 @@ class PlanRow(NamedTuple):
     support_access: bool = False
     query_access: bool = False
     truth_access: bool = False
+    stage: str = "quick"
 
     @property
     def row_id(self) -> str:
@@ -153,20 +171,29 @@ def _canonical_candidate(candidate_id: str) -> str:
 
 
 def _validated_candidates(candidates: Sequence[str] | None, *, stage: str) -> tuple[str, ...]:
-    selected = (
-        QUICK_CANDIDATES
-        if candidates is None and stage == "quick"
-        else CONFIRM_CANDIDATES
-        if candidates is None and stage == "confirm"
-        else PAIRBICAD_CANDIDATES
-        if candidates is None
-        else tuple(candidates)
-    )
+    if candidates is None and stage == "quick":
+        selected = QUICK_CANDIDATES
+    elif candidates is None and stage == "confirm":
+        selected = CONFIRM_CANDIDATES
+    elif candidates is None and stage == "pairbicad":
+        selected = PAIRBICAD_CANDIDATES
+    elif candidates is None:
+        raise ValueError(f"{stage} requires explicit PairBiCAD candidates")
+    else:
+        selected = tuple(candidates)
     if isinstance(selected, (str, bytes)) or not selected:
         raise ValueError("candidates must be a non-empty sequence")
     canonical = tuple(_canonical_candidate(value) for value in selected)
     if len(canonical) != len(set(canonical)):
         raise ValueError("candidates must be unique")
+    if stage in PAIRBICAD_CONVERGENCE_STAGES:
+        if any(value not in PAIRBICAD_CANDIDATES for value in canonical):
+            raise ValueError("pairbicad stages require PairBiCAD candidates")
+        expected_count = 2 if stage == "pairbicad_convergence" else 1
+        if len(canonical) != expected_count:
+            raise ValueError(
+                f"{stage} requires exactly {expected_count} distinct PairBiCAD candidates"
+            )
     return canonical
 
 
@@ -185,7 +212,13 @@ def build_plan(
     key = str(stage).strip().lower()
     if key == "full":
         key = "confirm"
-    if key not in {"quick", "confirm", "pairbicad"}:
+    if key not in {
+        "quick",
+        "confirm",
+        "pairbicad",
+        "pairbicad_convergence",
+        "pairbicad_final",
+    }:
         raise ValueError(f"unknown stage: {stage}")
     if gpu_ids is not None and gpus is not None:
         raise ValueError("pass only one of gpu_ids or gpus")
@@ -194,7 +227,9 @@ def build_plan(
         QUICK_FOLDS
         if folds is None and key == "quick"
         else PAIRBICAD_FOLDS
-        if folds is None and key == "pairbicad"
+        if folds is None and key in {"pairbicad", "pairbicad_convergence"}
+        else PAIRBICAD_FINAL_FOLDS
+        if folds is None and key == "pairbicad_final"
         else CONFIRM_FOLDS
         if folds is None
         else folds,
@@ -203,18 +238,39 @@ def build_plan(
             QUICK_FOLDS
             if key == "quick"
             else PAIRBICAD_FOLDS
-            if key == "pairbicad"
+            if key in {"pairbicad", "pairbicad_convergence"}
+            else PAIRBICAD_FINAL_FOLDS
+            if key == "pairbicad_final"
             else CONFIRM_FOLDS
         ),
     )
     selected_seeds = _validated_seeds(seeds)
+    if key in PAIRBICAD_CONVERGENCE_STAGES and selected_seeds != FORMAL_SEEDS:
+        raise ValueError(
+            f"{key} requires seeds exactly {FORMAL_SEEDS}"
+        )
+    required_folds = (
+        PAIRBICAD_CONVERGENCE_FOLDS
+        if key == "pairbicad_convergence"
+        else PAIRBICAD_FINAL_FOLDS
+        if key == "pairbicad_final"
+        else None
+    )
+    if required_folds is not None and selected_folds != required_folds:
+        raise ValueError(f"{key} requires folds exactly {required_folds}")
     selected_updates = (
         PAIRBICAD_OPTIMIZER_UPDATES
         if optimizer_updates is None and key == "pairbicad"
+        else PAIRBICAD_CONVERGENCE_OPTIMIZER_UPDATES
+        if optimizer_updates is None and key == "pairbicad_convergence"
+        else None
+        if optimizer_updates is None and key == "pairbicad_final"
         else OPTIMIZER_UPDATES
         if optimizer_updates is None
         else optimizer_updates
     )
+    if selected_updates is None:
+        raise ValueError("pairbicad_final requires an explicit optimizer_updates budget")
     if isinstance(selected_updates, bool) or not isinstance(selected_updates, int):
         raise ValueError("optimizer_updates must be an integer")
     if selected_updates <= 0:
@@ -223,17 +279,32 @@ def build_plan(
         raise ValueError(
             f"pairbicad stage requires optimizer_updates={PAIRBICAD_OPTIMIZER_UPDATES}"
         )
+    if key == "pairbicad_convergence" and selected_updates != PAIRBICAD_CONVERGENCE_OPTIMIZER_UPDATES:
+        raise ValueError(
+            "pairbicad_convergence stage requires "
+            f"optimizer_updates={PAIRBICAD_CONVERGENCE_OPTIMIZER_UPDATES}"
+        )
+    if key == "pairbicad_final" and not (
+        PAIRBICAD_FINAL_MIN_UPDATES <= selected_updates <= PAIRBICAD_FINAL_MAX_UPDATES
+        and selected_updates % PAIRBICAD_UPDATE_INTERVAL == 0
+    ):
+        raise ValueError(
+            "pairbicad_final optimizer_updates must be a 500-multiple in [4000,9000]"
+        )
     selected_candidates = _validated_candidates(candidates, stage=key)
 
     rows: list[PlanRow] = []
     index = 0
-    fold_to_receiver = {1: 1, 2: 3, 3: 4, 4: 6, 5: 8, 8: 8}
     for candidate_id in selected_candidates:
         for fold in selected_folds:
-            heldout_receiver = fold_to_receiver[fold]
+            heldout_receiver = LORO_HELDOUT_RECEIVER[fold]
             source_receivers = tuple(
                 receiver for receiver in SOURCE_RECEIVERS if receiver != heldout_receiver
             )
+            if heldout_receiver not in SOURCE_RECEIVERS:
+                raise ValueError("heldout receiver must belong to the source receiver universe")
+            if heldout_receiver in source_receivers:
+                raise ValueError("heldout receiver must not overlap source receivers")
             for seed in selected_seeds:
                 rows.append(
                     PlanRow(
@@ -244,6 +315,7 @@ def build_plan(
                         gpu_id=selected_gpus[index % len(selected_gpus)],
                         source_receivers=source_receivers,
                         train_days=TRAIN_DAYS,
+                        stage=key,
                     )
                 )
                 index += 1
@@ -361,12 +433,20 @@ def _row_root(row: PlanRow, roots: LauncherRoots) -> Path:
     return Path(roots.run_root) / row.row_id
 
 
-def _row_expectation(row: PlanRow) -> dict[str, Any]:
+def _row_expectation(
+    row: PlanRow,
+    *,
+    optimizer_updates: int | None = None,
+) -> dict[str, Any]:
     return {
         "candidate_id": row.candidate_id,
         "fold": row.fold,
         "seed": row.seed,
-        "optimizer_updates": row.optimizer_updates,
+        "optimizer_updates": (
+            row.optimizer_updates
+            if optimizer_updates is None
+            else int(optimizer_updates)
+        ),
         "source_receivers": row.source_receivers,
         "train_days": row.train_days,
     }
@@ -465,6 +545,30 @@ def build_train_command(row: PlanRow, roots: LauncherRoots, *, run_id: str = RUN
         "--seed",
         str(row.seed),
     ]
+    if row.stage == "pairbicad_convergence":
+        command.extend(
+            [
+                "--bicad_optimizer_updates",
+                str(PAIRBICAD_CONVERGENCE_OPTIMIZER_UPDATES),
+                "--bicad_loro_receiver",
+                str(LORO_HELDOUT_RECEIVER[row.fold]),
+                "--bicad_loro_eval_interval_updates",
+                str(PAIRBICAD_UPDATE_INTERVAL),
+                "--bicad_loro_min_updates",
+                str(PAIRBICAD_FINAL_MIN_UPDATES),
+                "--bicad_loro_patience",
+                "5",
+            ]
+        )
+    elif row.stage == "pairbicad_final":
+        command.extend(
+            [
+                "--bicad_optimizer_updates",
+                str(row.optimizer_updates),
+                "--bicad_loro_eval_interval_updates",
+                "0",
+            ]
+        )
     option_names = {token.lower() for token in command if token.startswith("--")}
     forbidden = {
         option for option in option_names if any(token in option for token in _FORBIDDEN_OPTION_TOKENS)
@@ -486,6 +590,7 @@ def _row_payload(row: PlanRow) -> dict[str, Any]:
         "source_receivers": list(row.source_receivers),
         "train_days": list(row.train_days),
         "source_only": row.source_only,
+        "stage": row.stage,
     }
 
 
@@ -535,16 +640,28 @@ def _load_ssdg_module(code_root: Path) -> Any:
     return module
 
 
-def reconstruction_config(candidate_id: str) -> Any:
+def reconstruction_config(
+    candidate_id: str,
+    *,
+    optimizer_updates: int | None = None,
+) -> Any:
     """Resolve the candidate config used for strict final-checkpoint restore."""
 
     from dataclasses import replace as dataclass_replace
 
+    updates = {}
+    if optimizer_updates is not None:
+        if isinstance(optimizer_updates, bool) or not isinstance(optimizer_updates, int):
+            raise ValueError("optimizer_updates must be an integer")
+        if optimizer_updates <= 0:
+            raise ValueError("optimizer_updates must be positive")
+        updates["optimizer_updates"] = optimizer_updates
     return dataclass_replace(
         candidate_config(candidate_id),
         phase1_method="bicad_xr",
         use_fasttrust=False,
         use_mixstyle=False,
+        **updates,
     )
 
 
@@ -628,7 +745,10 @@ class _FormalEvaluationContext:
         runtime = payload.get("bicad_xr_runtime")
         if not isinstance(runtime, Mapping):
             raise ValueError("checkpoint is missing bicad_xr_runtime")
-        config = reconstruction_config(self.row.candidate_id)
+        config = reconstruction_config(
+            self.row.candidate_id,
+            optimizer_updates=self.row.optimizer_updates,
+        )
         self.trainer = BiCADXRTrainer(
             self.ssdg._BiCADXRConcatForward(model),
             config,
@@ -796,6 +916,183 @@ def _locate_final_checkpoint(row_root: Path) -> Path:
     raise FileNotFoundError("row final checkpoint is missing or empty")
 
 
+_SOURCE_LORO_ACCESS_FLAGS = (
+    "target_access",
+    "phase2_access",
+    "support_access",
+    "query_access",
+    "truth_access",
+)
+
+
+def _source_loro_row_identity_matches(
+    record: Mapping[str, Any],
+    row: PlanRow,
+    *,
+    label: str,
+) -> None:
+    """Check optional row identity fields without requiring trainer extensions."""
+
+    expected: dict[str, Any] = {
+        "candidate_id": row.candidate_id,
+        "fold": row.fold,
+        "seed": row.seed,
+        "source_receivers": tuple(row.source_receivers),
+        "train_days": tuple(row.train_days),
+    }
+    for name, expected_value in expected.items():
+        if name not in record:
+            continue
+        actual_value = record[name]
+        if name in {"source_receivers", "train_days"}:
+            try:
+                matches = tuple(int(value) for value in actual_value) == expected_value
+            except (TypeError, ValueError):
+                matches = False
+        else:
+            matches = type(actual_value) is type(expected_value) and actual_value == expected_value
+        if not matches:
+            raise ValueError(f"{label} field {name} does not match row {row.row_id}")
+    for name in ("optimizer_updates", "planned_optimizer_updates"):
+        if name in record:
+            value = record[name]
+            if isinstance(value, bool) or not isinstance(value, int) or value != row.optimizer_updates:
+                raise ValueError(f"{label} field {name} does not match planned row budget")
+
+
+def _load_json_mapping(path: Path, *, label: str) -> dict[str, Any]:
+    if not path.is_file() or path.stat().st_size <= 0:
+        raise FileNotFoundError(f"{label} is missing or empty: {path.name}")
+    try:
+        with path.open("r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError(f"{label} is not valid JSON") from exc
+    if not isinstance(payload, Mapping):
+        raise ValueError(f"{label} must be a JSON object")
+    return dict(payload)
+
+
+def _convergence_runtime_expectation(
+    row_root: str | Path,
+    row: PlanRow,
+) -> dict[str, Any]:
+    """Validate source-LORO closure and return the actual runtime expectation."""
+
+    if row.stage != "pairbicad_convergence":
+        raise ValueError("source-LORO runtime expectation requires pairbicad_convergence")
+    root = Path(row_root)
+    planned_updates = PAIRBICAD_CONVERGENCE_OPTIMIZER_UPDATES
+    selection = _load_json_mapping(
+        root / "source_loro_selection.json",
+        label="source_loro_selection.json",
+    )
+    _source_loro_row_identity_matches(selection, row, label="source_loro_selection.json")
+    required_selection = ("planned_updates", "stop_update", "best_update", "patience", "interval")
+    missing = [name for name in required_selection if name not in selection]
+    if missing:
+        raise ValueError(
+            "source_loro_selection.json is missing fields: " + ",".join(missing)
+        )
+    if selection.get("planned_updates") != planned_updates:
+        raise ValueError("source-LORO selection planned_updates does not match row")
+    stop_update = selection.get("stop_update")
+    best_update = selection.get("best_update")
+    if any(
+        isinstance(value, bool) or not isinstance(value, int)
+        for value in (stop_update, best_update)
+    ):
+        raise ValueError("source-LORO selection update fields must be integers")
+    if not (
+        PAIRBICAD_FINAL_MIN_UPDATES <= stop_update <= planned_updates
+        and stop_update % PAIRBICAD_UPDATE_INTERVAL == 0
+    ):
+        raise ValueError("source-LORO stop_update is outside the planned evaluation clock")
+    if not (
+        PAIRBICAD_FINAL_MIN_UPDATES <= best_update <= stop_update
+        and best_update % PAIRBICAD_UPDATE_INTERVAL == 0
+    ):
+        raise ValueError("source-LORO best_update is outside the planned evaluation clock")
+    if selection.get("patience") != 5 or selection.get("interval") != PAIRBICAD_UPDATE_INTERVAL:
+        raise ValueError("source-LORO selection controls do not match convergence settings")
+    if selection.get("source_only") is not True:
+        raise ValueError("source-LORO selection must be source-only")
+    for name in _SOURCE_LORO_ACCESS_FLAGS:
+        if selection.get(name) is not False:
+            raise ValueError(f"source-LORO selection {name} must be false")
+
+    curve_path = root / "source_loro_curve.jsonl"
+    if not curve_path.is_file() or curve_path.stat().st_size <= 0:
+        raise FileNotFoundError("source_loro_curve.jsonl is missing or empty")
+    records: list[dict[str, Any]] = []
+    try:
+        lines = curve_path.read_text(encoding="utf-8").splitlines()
+    except OSError as exc:
+        raise ValueError("source_loro_curve.jsonl cannot be read") from exc
+    for line_number, line in enumerate(lines, start=1):
+        if not line.strip():
+            continue
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"source_loro_curve.jsonl line {line_number} is invalid JSON") from exc
+        if not isinstance(record, Mapping):
+            raise ValueError(f"source_loro_curve.jsonl line {line_number} is not an object")
+        record = dict(record)
+        _source_loro_row_identity_matches(
+            record,
+            row,
+            label=f"source_loro_curve.jsonl line {line_number}",
+        )
+        if record.get("planned_updates") != planned_updates:
+            raise ValueError("source-LORO curve planned_updates does not match row")
+        if record.get("source_only") is not True:
+            raise ValueError("source-LORO curve must be source-only")
+        for name in _SOURCE_LORO_ACCESS_FLAGS:
+            if record.get(name) is not False:
+                raise ValueError(f"source-LORO curve {name} must be false")
+        update = record.get("update")
+        if (
+            isinstance(update, bool)
+            or not isinstance(update, int)
+            or update < PAIRBICAD_FINAL_MIN_UPDATES
+            or update > planned_updates
+            or update % PAIRBICAD_UPDATE_INTERVAL != 0
+        ):
+            raise ValueError("source-LORO curve contains an invalid update")
+        if records and update <= records[-1]["update"]:
+            raise ValueError("source-LORO curve updates must increase strictly")
+        records.append(record)
+    if not records:
+        raise ValueError("source_loro_curve.jsonl has no records")
+    if records[-1]["update"] != stop_update:
+        raise ValueError("source-LORO curve does not end at selection stop_update")
+
+    best_snapshot = root / "source_loro" / f"checkpoint_u{best_update}.pth"
+    declared_snapshot = selection.get("best_snapshot")
+    if isinstance(declared_snapshot, str) and declared_snapshot.strip():
+        declared_path = (root / declared_snapshot).resolve()
+        if root.resolve() not in declared_path.parents:
+            raise ValueError("source-LORO best snapshot escapes the row root")
+        if declared_path != best_snapshot.resolve() and declared_path.name != "source_loro_best.pth":
+            raise ValueError("source-LORO best snapshot does not match best_update")
+        best_snapshot = declared_path
+    if not best_snapshot.is_file() or best_snapshot.stat().st_size <= 0:
+        raise FileNotFoundError(
+            "source-LORO best-update snapshot is missing or empty: "
+            f"{best_snapshot.name}"
+        )
+
+    expectation = _row_expectation(row, optimizer_updates=stop_update)
+    expectation["planned_optimizer_updates"] = planned_updates
+    expectation["source_loro_stop_update"] = stop_update
+    expectation["source_loro_best_update"] = best_update
+    expectation["source_loro_best_snapshot"] = str(
+        best_snapshot.resolve().relative_to(root.resolve())
+    )
+    return expectation
+
+
 def launch_row_process(row: PlanRow, roots: LauncherRoots, *, run_id: str) -> str:
     """Launch one row in its already-reserved directory and retain its log."""
 
@@ -824,18 +1121,41 @@ def launch_row_process(row: PlanRow, roots: LauncherRoots, *, run_id: str) -> st
         )
         return "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
 
+    if row.stage == "pairbicad_convergence":
+        try:
+            runtime_expectation = _convergence_runtime_expectation(row_root, row)
+        except (FileNotFoundError, OSError, ValueError) as exc:
+            _record_technical_failure(
+                row_root,
+                reason="SOURCE_LORO_CLOSURE_FAILED",
+                details={"exception_type": type(exc).__name__, "message": str(exc)},
+            )
+            return "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
+    else:
+        runtime_expectation = _row_expectation(row)
+
     try:
         checkpoint = _locate_final_checkpoint(row_root)
         context = _FormalEvaluationContext(row, roots, command)
         evaluation = evaluate_final_checkpoint(
             checkpoint,
-            expected_runtime=_row_expectation(row),
+            expected_runtime=runtime_expectation,
             output_dir=row_root,
             model_builder=context.build_model,
             trainer_runtime_restorer=context.restore_trainer_runtime,
             evaluator=context.evaluate,
         )
         closure = validate_artifact_closure(row_root)
+        if row.stage == "pairbicad_convergence":
+            closure = {
+                **dict(closure),
+                "source_loro": {
+                    "planned_optimizer_updates": row.optimizer_updates,
+                    "stop_update": runtime_expectation["optimizer_updates"],
+                    "best_update": runtime_expectation["source_loro_best_update"],
+                    "best_snapshot": runtime_expectation["source_loro_best_snapshot"],
+                },
+            }
         if not bool(evaluation.get("complete")) or not bool(closure.get("complete")):
             _record_technical_failure(
                 row_root,
@@ -880,7 +1200,16 @@ def _max_jobs_arg(raw: str) -> int:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Plan a source-only BiCAD-XR Phase1 matrix.")
     parser.add_argument(
-        "--stage", choices=("quick", "confirm", "full", "pairbicad"), default="quick"
+        "--stage",
+        choices=(
+            "quick",
+            "confirm",
+            "full",
+            "pairbicad",
+            "pairbicad_convergence",
+            "pairbicad_final",
+        ),
+        default="quick",
     )
     parser.add_argument("--candidates", default="")
     parser.add_argument("--folds", default="")
@@ -913,16 +1242,25 @@ def build_parser() -> argparse.ArgumentParser:
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     args = build_parser().parse_args(argv)
+    stage_key = str(args.stage).strip().lower()
     if args.max_jobs_per_gpu is None:
         args.max_jobs_per_gpu = (
             PAIRBICAD_MAX_JOBS_PER_GPU
-            if str(args.stage).strip().lower() == "pairbicad"
+            if stage_key in {"pairbicad", *PAIRBICAD_CONVERGENCE_STAGES}
             else MAX_JOBS_PER_GPU
+        )
+    if stage_key in PAIRBICAD_CONVERGENCE_STAGES and args.max_jobs_per_gpu != PAIRBICAD_MAX_JOBS_PER_GPU:
+        raise ValueError(
+            f"{stage_key} stage requires max_jobs_per_gpu={PAIRBICAD_MAX_JOBS_PER_GPU}"
         )
     if args.optimizer_updates is None:
         args.optimizer_updates = (
             PAIRBICAD_OPTIMIZER_UPDATES
-            if str(args.stage).strip().lower() == "pairbicad"
+            if stage_key == "pairbicad"
+            else PAIRBICAD_CONVERGENCE_OPTIMIZER_UPDATES
+            if stage_key == "pairbicad_convergence"
+            else None
+            if stage_key == "pairbicad_final"
             else OPTIMIZER_UPDATES
         )
     return args
@@ -948,6 +1286,7 @@ def _worker_row(args: argparse.Namespace) -> int:
         gpu_id=args.gpu_id,
         source_receivers=source_rxs,
         train_days=train_days,
+        stage=str(args.stage).strip().lower(),
     )
     code_root, _, python_path, wisig_pkl = _resolve_paths(args)
     roots = LauncherRoots(code_root, python_path, Path(args.row_root).resolve().parent, wisig_pkl)
@@ -978,6 +1317,12 @@ def main(argv: Sequence[str] | None = None) -> int:
                 f"pairbicad stage requires max_jobs_per_gpu={PAIRBICAD_MAX_JOBS_PER_GPU}"
             )
         rows = queue_rows(rows, gpu_ids=gpu_ids)
+    elif stage_key in PAIRBICAD_CONVERGENCE_STAGES:
+        if args.max_jobs_per_gpu != PAIRBICAD_MAX_JOBS_PER_GPU:
+            raise ValueError(
+                f"{stage_key} stage requires max_jobs_per_gpu={PAIRBICAD_MAX_JOBS_PER_GPU}"
+            )
+        rows = pack_rows(rows, gpu_ids=gpu_ids, max_jobs_per_gpu=args.max_jobs_per_gpu)
     else:
         rows = pack_rows(rows, gpu_ids=gpu_ids, max_jobs_per_gpu=args.max_jobs_per_gpu)
 

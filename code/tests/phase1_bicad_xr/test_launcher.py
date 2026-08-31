@@ -409,6 +409,63 @@ def test_pairbicad_formal_restore_reconstructs_training_domain_dimensions(
     assert captured["strict"] is True
 
 
+@pytest.mark.parametrize(
+    ("stage", "candidate", "updates"),
+    [
+        ("pairbicad_convergence", "P2", 9000),
+        ("pairbicad_final", "P4", 6500),
+    ],
+)
+def test_formal_restore_uses_planned_row_budget_for_new_pairbicad_stages(
+    monkeypatch: pytest.MonkeyPatch,
+    stage: str,
+    candidate: str,
+    updates: int,
+) -> None:
+    import cvsrffi.phase1_bicad_xr.trainer as trainer_module
+
+    launcher = _load_launcher()
+    rows = launcher.build_plan(
+        stage=stage,
+        candidates=(candidate, "P3") if stage == "pairbicad_convergence" else (candidate,),
+        folds=(1, 8) if stage == "pairbicad_convergence" else (1, 2, 3, 4, 5),
+        seeds=(392001, 392002, 392003),
+        optimizer_updates=updates,
+    )
+    row = rows[0]
+    roots = launcher.LauncherRoots(
+        SCRIPT_PATH.resolve().parents[2],
+        Path("python"),
+        Path("/tmp/pairbicad-run"),
+        Path("/tmp/ManySig.pkl"),
+    )
+    context = launcher._FormalEvaluationContext(row, roots, ())
+    context.ssdg = SimpleNamespace(_BiCADXRConcatForward=lambda model: model)
+    context.device = "cpu"
+    captured: dict[str, object] = {}
+
+    class CapturingTrainer:
+        def __init__(self, model: object, config: object, **dimensions: object) -> None:
+            captured["config"] = config
+            captured["dimensions"] = dimensions
+
+        def to(self, device: object) -> "CapturingTrainer":
+            return self
+
+        def load_checkpoint_runtime(self, runtime: object, *, strict: bool) -> None:
+            captured["runtime"] = runtime
+            captured["strict"] = strict
+
+    monkeypatch.setattr(trainer_module, "BiCADXRTrainer", CapturingTrainer)
+    context.restore_trainer_runtime(
+        object(),
+        {"bicad_xr_runtime": {"candidate_config": {"optimizer_updates": updates}}},
+    )
+
+    assert captured["config"].optimizer_updates == updates
+    assert captured["strict"] is True
+
+
 def _write_strict_worker_artifacts(row_root: Path, row: object) -> None:
     checkpoint = row_root / "bicad_xr_final.pth"
     runtime = {
@@ -586,3 +643,300 @@ def test_pairbicad_dry_run_prints_all_30_rows_without_creating_artifacts(
         for payload in payloads
         for key in payload
     )
+
+
+def test_pairbicad_convergence_plan_is_exactly_two_candidates_by_two_folds_and_three_seeds() -> None:
+    launcher = _load_launcher()
+
+    rows = launcher.build_plan(
+        stage="pairbicad_convergence",
+        candidates=("P2", "P4"),
+        folds=(1, 8),
+        seeds=(392001, 392002, 392003),
+        optimizer_updates=9000,
+    )
+
+    assert len(rows) == 12
+    assert {row.candidate_id for row in rows} == {"P2", "P4"}
+    assert {row.fold for row in rows} == {1, 8}
+    assert {row.seed for row in rows} == {392001, 392002, 392003}
+    assert all(row.optimizer_updates == 9000 for row in rows)
+    assert all(row.stage == "pairbicad_convergence" for row in rows)
+    assert len({row.row_id for row in rows}) == 12
+
+
+@pytest.mark.parametrize(
+    ("kwargs", "message"),
+    [
+        ({"candidates": ("P2",)}, "exactly 2"),
+        ({"candidates": ("P2", "D0")}, "PairBiCAD"),
+        ({"candidates": ("P2", "P2")}, "unique"),
+        ({"folds": (1, 2)}, "folds"),
+        ({"seeds": (392001, 392002)}, "seeds"),
+        ({"optimizer_updates": 8500}, "optimizer_updates"),
+    ],
+)
+def test_pairbicad_convergence_rejects_any_frozen_matrix_mismatch(
+    kwargs: dict[str, object], message: str
+) -> None:
+    launcher = _load_launcher()
+    base = {
+        "stage": "pairbicad_convergence",
+        "candidates": ("P2", "P4"),
+        "folds": (1, 8),
+        "seeds": (392001, 392002, 392003),
+        "optimizer_updates": 9000,
+    }
+    base.update(kwargs)
+
+    with pytest.raises(ValueError, match=message):
+        launcher.build_plan(**base)
+
+
+def test_pairbicad_final_plan_is_exactly_one_candidate_by_five_folds_and_three_seeds() -> None:
+    launcher = _load_launcher()
+
+    rows = launcher.build_plan(
+        stage="pairbicad_final",
+        candidates=("P4",),
+        folds=(1, 2, 3, 4, 5),
+        seeds=(392001, 392002, 392003),
+        optimizer_updates=6500,
+    )
+
+    assert len(rows) == 15
+    assert {row.candidate_id for row in rows} == {"P4"}
+    assert {row.fold for row in rows} == {1, 2, 3, 4, 5}
+    assert {row.seed for row in rows} == {392001, 392002, 392003}
+    assert all(row.optimizer_updates == 6500 for row in rows)
+    assert all(row.stage == "pairbicad_final" for row in rows)
+
+
+@pytest.mark.parametrize("updates", [3999, 4250, 9500])
+def test_pairbicad_final_rejects_non_frozen_budget(updates: int) -> None:
+    launcher = _load_launcher()
+
+    with pytest.raises(ValueError, match="4000.*9000|500"):
+        launcher.build_plan(
+            stage="pairbicad_final",
+            candidates=("P4",),
+            folds=(1, 2, 3, 4, 5),
+            seeds=(392001, 392002, 392003),
+            optimizer_updates=updates,
+        )
+
+
+def test_pairbicad_stage_parser_defaults_new_stages_to_two_jobs_per_gpu() -> None:
+    launcher = _load_launcher()
+
+    convergence = launcher.parse_args(["--stage", "pairbicad_convergence", "--dry-run"])
+    final = launcher.parse_args(["--stage", "pairbicad_final", "--dry-run"])
+
+    assert convergence.max_jobs_per_gpu == 2
+    assert convergence.optimizer_updates == 9000
+    assert final.max_jobs_per_gpu == 2
+    assert final.optimizer_updates is None
+
+
+def test_pairbicad_loro_receiver_mapping_is_source_only_and_disjoint() -> None:
+    launcher = _load_launcher()
+    expected = {1: 1, 2: 3, 3: 4, 4: 6, 5: 8, 8: 8}
+
+    rows = launcher.build_plan(
+        stage="pairbicad_convergence",
+        candidates=("P2", "P4"),
+        folds=(1, 8),
+        seeds=(392001, 392002, 392003),
+        optimizer_updates=9000,
+    )
+    for row in rows:
+        heldout = launcher.LORO_HELDOUT_RECEIVER[row.fold]
+        assert heldout == expected[row.fold]
+        assert heldout in launcher.SOURCE_RECEIVERS
+        assert heldout not in row.source_receivers
+
+
+def _command_value(command: list[str], option: str) -> str:
+    index = command.index(option)
+    return command[index + 1]
+
+
+def test_pairbicad_convergence_command_has_all_five_source_loro_controls() -> None:
+    launcher = _load_launcher()
+    row = launcher.build_plan(
+        stage="pairbicad_convergence",
+        candidates=("P2", "P4"),
+        folds=(1, 8),
+        seeds=(392001, 392002, 392003),
+        optimizer_updates=9000,
+    )[0]
+    roots = launcher.LauncherRoots(
+        SCRIPT_PATH.resolve().parents[2],
+        Path("python"),
+        Path("/tmp/pairbicad-convergence-run"),
+        Path("/tmp/ManySig.pkl"),
+    )
+
+    command = launcher.build_train_command(row, roots, run_id="pairbicad-convergence")
+
+    assert _command_value(command, "--bicad_optimizer_updates") == "9000"
+    assert _command_value(command, "--bicad_loro_receiver") == "1"
+    assert _command_value(command, "--bicad_loro_eval_interval_updates") == "500"
+    assert _command_value(command, "--bicad_loro_min_updates") == "4000"
+    assert _command_value(command, "--bicad_loro_patience") == "5"
+
+
+def test_pairbicad_final_command_disables_online_source_loro_evaluation() -> None:
+    launcher = _load_launcher()
+    row = launcher.build_plan(
+        stage="pairbicad_final",
+        candidates=("P4",),
+        folds=(1, 2, 3, 4, 5),
+        seeds=(392001, 392002, 392003),
+        optimizer_updates=6500,
+    )[0]
+    roots = launcher.LauncherRoots(
+        SCRIPT_PATH.resolve().parents[2],
+        Path("python"),
+        Path("/tmp/pairbicad-final-run"),
+        Path("/tmp/ManySig.pkl"),
+    )
+
+    command = launcher.build_train_command(row, roots, run_id="pairbicad-final")
+    options = {token for token in command if token.startswith("--")}
+
+    assert _command_value(command, "--bicad_optimizer_updates") == "6500"
+    assert _command_value(command, "--bicad_loro_eval_interval_updates") == "0"
+    assert "--bicad_loro_receiver" not in options
+    assert "--bicad_loro_min_updates" not in options
+    assert "--bicad_loro_patience" not in options
+
+
+def _write_source_loro_fixture(row_root: Path, row: object, *, stop_update: int) -> None:
+    (row_root / "source_loro").mkdir(parents=True, exist_ok=True)
+    (row_root / "source_loro" / f"checkpoint_u{stop_update}.pth").write_bytes(b"best")
+    (row_root / "source_loro_curve.jsonl").write_text(
+        json.dumps(
+            {
+                "update": stop_update,
+                "planned_updates": row.optimizer_updates,
+                "source_only": True,
+                "target_access": False,
+                "phase2_access": False,
+                "support_access": False,
+                "query_access": False,
+                "truth_access": False,
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (row_root / "source_loro_selection.json").write_text(
+        json.dumps(
+            {
+                "planned_updates": row.optimizer_updates,
+                "stop_update": stop_update,
+                "best_update": stop_update,
+                "patience": 5,
+                "interval": 500,
+                "source_only": True,
+                "target_access": False,
+                "phase2_access": False,
+                "support_access": False,
+                "query_access": False,
+                "truth_access": False,
+            }
+        ),
+        encoding="utf-8",
+    )
+
+
+def test_pairbicad_convergence_runtime_expectation_uses_selection_stop_update(
+    tmp_path: Path,
+) -> None:
+    launcher = _load_launcher()
+    row = launcher.build_plan(
+        stage="pairbicad_convergence",
+        candidates=("P2", "P4"),
+        folds=(1, 8),
+        seeds=(392001, 392002, 392003),
+        optimizer_updates=9000,
+    )[0]
+    _write_source_loro_fixture(tmp_path, row, stop_update=6500)
+
+    expectation = launcher._convergence_runtime_expectation(tmp_path, row)
+
+    assert expectation["optimizer_updates"] == 6500
+    assert expectation["planned_optimizer_updates"] == 9000
+
+
+@pytest.mark.parametrize(
+    "fixture_change",
+    [
+        lambda root: None,
+        lambda root: (root / "source_loro_selection.json").write_text(
+            json.dumps({"planned_updates": 9000, "stop_update": 6500}), encoding="utf-8"
+        ),
+        lambda root: (root / "source_loro_selection.json").write_text(
+            json.dumps(
+                {
+                    "planned_updates": 9000,
+                    "stop_update": 6500,
+                    "best_update": 7000,
+                    "patience": 5,
+                    "interval": 500,
+                    "source_only": True,
+                }
+            ),
+            encoding="utf-8",
+        ),
+    ],
+)
+def test_pairbicad_convergence_missing_or_incorrect_selection_is_technical_failure(
+    tmp_path: Path, fixture_change: object
+) -> None:
+    launcher = _load_launcher()
+    row = launcher.build_plan(
+        stage="pairbicad_convergence",
+        candidates=("P2", "P4"),
+        folds=(1, 8),
+        seeds=(392001, 392002, 392003),
+        optimizer_updates=9000,
+    )[0]
+    (tmp_path / "source_loro_curve.jsonl").write_text("{}\n", encoding="utf-8")
+    fixture_change(tmp_path)
+
+    with pytest.raises((FileNotFoundError, ValueError)):
+        launcher._convergence_runtime_expectation(tmp_path, row)
+
+
+def test_pairbicad_convergence_missing_selection_marks_row_as_technical_failure(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    launcher = _load_launcher()
+    row = launcher.build_plan(
+        stage="pairbicad_convergence",
+        candidates=("P2", "P4"),
+        folds=(1, 8),
+        seeds=(392001, 392002, 392003),
+        optimizer_updates=9000,
+    )[0]
+    row_root = tmp_path / row.row_id
+    row_root.mkdir()
+    roots = launcher.LauncherRoots(
+        SCRIPT_PATH.resolve().parents[2],
+        Path("python"),
+        tmp_path,
+        tmp_path / "ManySig.pkl",
+    )
+    monkeypatch.setattr(
+        launcher.subprocess,
+        "run",
+        lambda *args, **kwargs: SimpleNamespace(returncode=0),
+    )
+
+    status = launcher.launch_row_process(row, roots, run_id="pairbicad-convergence")
+
+    assert status == "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE"
+    failure = json.loads((row_root / "TECHNICAL_FAILURE.json").read_text(encoding="utf-8"))
+    assert failure["reason"] == "SOURCE_LORO_CLOSURE_FAILED"

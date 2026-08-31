@@ -10,6 +10,10 @@ SCRIPT = (
 )
 R3_SCRIPT = SCRIPT.with_name("launch_phase1_bicad_xr_quick24_n607_20260831_r3.sh")
 PAIRBICAD_SCRIPT = SCRIPT.with_name("launch_phase1_pairbicad_p0p4_n607_20260831.sh")
+CONVERGENCE_SCRIPT = SCRIPT.with_name(
+    "launch_phase1_pairbicad_convergence_n607_20260831.sh"
+)
+FINAL_SCRIPT = SCRIPT.with_name("launch_phase1_pairbicad_final_n607_20260831.sh")
 
 
 def test_n607_launch_script_is_fixed_to_registered_quick24_matrix() -> None:
@@ -75,5 +79,45 @@ def test_pairbicad_n607_launch_script_is_source_only_and_nonoverwriting() -> Non
     assert "rm " not in source
     assert "pkill" not in source
     assert "killall" not in source
+    forbidden = ("phase2", "target", "support", "query", "truth", "admin")
+    assert not any(token in source.lower() for token in forbidden)
+
+
+def test_pairbicad_convergence_n607_script_uses_explicit_top_candidates() -> None:
+    source = CONVERGENCE_SCRIPT.read_text(encoding="utf-8")
+
+    assert "PAIRBICAD_CONVERGENCE_CANDIDATES" in source
+    assert ": \"${PAIRBICAD_CONVERGENCE_CANDIDATES:?" in source
+    assert "--stage pairbicad_convergence" in source
+    assert '--candidates "${PAIRBICAD_CONVERGENCE_CANDIDATES}"' in source
+    assert "--folds 1,8" in source
+    assert "--seeds 392001,392002,392003" in source
+    assert "--optimizer-updates 9000" in source
+    assert "--max-jobs-per-gpu 2" in source
+    assert 'test ! -e "${RUN_ROOT}"' in source
+    assert 'test ! -e "${DISPATCH_LOG}"' in source
+    assert 'test ! -e "${PID_FILE}"' in source
+    assert "nohup" in source
+    forbidden = ("phase2", "target", "support", "query", "truth", "admin")
+    assert not any(token in source.lower() for token in forbidden)
+
+
+def test_pairbicad_final_n607_script_uses_explicit_candidate_and_budget() -> None:
+    source = FINAL_SCRIPT.read_text(encoding="utf-8")
+
+    assert "PAIRBICAD_FINAL_CANDIDATE" in source
+    assert ": \"${PAIRBICAD_FINAL_CANDIDATE:?" in source
+    assert "PAIRBICAD_FINAL_OPTIMIZER_UPDATES" in source
+    assert ": \"${PAIRBICAD_FINAL_OPTIMIZER_UPDATES:?" in source
+    assert "--stage pairbicad_final" in source
+    assert '--candidates "${PAIRBICAD_FINAL_CANDIDATE}"' in source
+    assert "--folds 1,2,3,4,5" in source
+    assert "--seeds 392001,392002,392003" in source
+    assert '--optimizer-updates "${PAIRBICAD_FINAL_OPTIMIZER_UPDATES}"' in source
+    assert "--max-jobs-per-gpu 2" in source
+    assert 'test ! -e "${RUN_ROOT}"' in source
+    assert 'test ! -e "${DISPATCH_LOG}"' in source
+    assert 'test ! -e "${PID_FILE}"' in source
+    assert "nohup" in source
     forbidden = ("phase2", "target", "support", "query", "truth", "admin")
     assert not any(token in source.lower() for token in forbidden)
