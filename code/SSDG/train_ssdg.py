@@ -13046,19 +13046,8 @@ def _validate_bicad_xr_loro_args(
         raise ValueError(
             "bicad_loro_receiver must belong to the ManySig source universe [1,3,4,6,8]"
         )
-    source_values = (
-        list(source_receiver_values)
-        if source_receiver_values is not None
-        else list(source_receiver_indices)
-    )
-    source_value_set = {int(value) for value in source_values}
     source_index_set = {int(value) for value in source_receiver_indices}
-    source_overlap = (
-        heldout_receiver in source_value_set
-        if source_receiver_values is not None
-        else heldout_receiver in source_index_set
-    )
-    if source_overlap:
+    if heldout_receiver in source_index_set:
         raise ValueError("heldout receiver must not overlap source receivers")
     return result
 
@@ -13226,11 +13215,11 @@ def _resolve_bicad_xr_loro_receiver_index(
     receiver: int,
 ) -> int:
     rx_list = list(payload.get("rx_list", []))
-    for index, value in enumerate(rx_list):
-        if str(value) == str(int(receiver)):
-            return int(index)
+    receiver_index = int(receiver)
+    if 0 <= receiver_index < len(rx_list):
+        return receiver_index
     raise ValueError(
-        f"bicad_loro_receiver {int(receiver)} is not present in the ManySig payload receiver list"
+        f"bicad_loro_receiver index {receiver_index} is outside the ManySig payload receiver list"
     )
 
 
@@ -13246,11 +13235,8 @@ def _build_bicad_xr_source_loro_loader(
     if not isinstance(payload, Mapping):
         raise ValueError("BiCAD-XR source-LORO requires the loaded wisig_payload reference")
     receiver_index = _resolve_bicad_xr_loro_receiver_index(payload, int(heldout_receiver))
-    source_values = list(data_ctx.get("source_receiver_values", []))
-    if int(heldout_receiver) in {int(value) for value in source_values}:
-        raise ValueError("heldout receiver must not overlap source receivers")
     source_indices = {int(value) for value in data_ctx.get("source_receiver_indices", [])}
-    if not source_values and receiver_index in source_indices:
+    if receiver_index in source_indices:
         raise ValueError("heldout receiver must not overlap source receivers")
     day_indices = [int(value) for value in data_ctx.get("source_day_indices", [])]
     if not day_indices:

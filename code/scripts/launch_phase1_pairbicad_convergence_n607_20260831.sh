@@ -3,9 +3,9 @@ set -euo pipefail
 
 : "${PAIRBICAD_CONVERGENCE_CANDIDATES:?set two comma-separated PairBiCAD candidates explicitly}"
 
-RUN_ID="phase1_adv3b02_pairbicad_convergence_top2_seed3_u9000_20260831_r1"
+RUN_ID="phase1_adv3b02_pairbicad_convergence_top2_seed3_u9000_20260831_r2"
 PROJECT_ROOT="/home/szu2070436088/2510044040/CV-SincNet"
-RELEASE_ROOT="${PROJECT_ROOT}/releases/phase1_pairbicad_convergence_20260831_r1"
+RELEASE_ROOT="${PROJECT_ROOT}/releases/phase1_pairbicad_convergence_20260831_r2"
 RUN_ROOT="${PROJECT_ROOT}/runs/${RUN_ID}"
 LOG_ROOT="${PROJECT_ROOT}/logs"
 DISPATCH_LOG="${LOG_ROOT}/${RUN_ID}.dispatcher.log"

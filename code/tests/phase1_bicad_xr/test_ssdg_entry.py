@@ -573,6 +573,45 @@ def test_pairbicad_source_loro_validation_rejects_overlap_and_foreign_receiver()
             )
 
 
+def test_pairbicad_source_loro_accepts_real_receiver_labels_with_index_identity() -> None:
+    validate = _required_bicad_helper("_validate_bicad_xr_loro_args")
+    settings = validate(
+        SimpleNamespace(
+            bicad_optimizer_updates=9000,
+            bicad_loro_receiver=1,
+            bicad_loro_eval_interval_updates=500,
+            bicad_loro_min_updates=4000,
+            bicad_loro_patience=5,
+        ),
+        source_receiver_indices=[3, 4, 6, 8],
+        source_receiver_values=["18-2", "18-3", "18-5", "18-7"],
+        planned_updates=9000,
+    )
+
+    assert settings["enabled"] is True
+    assert settings["heldout_receiver"] == 1
+
+
+def test_pairbicad_source_loro_resolves_heldout_receiver_as_payload_index() -> None:
+    resolve = _required_bicad_helper("_resolve_bicad_xr_loro_receiver_index")
+    payload = {
+        "rx_list": [
+            "18-1",
+            "18-2",
+            "18-3",
+            "18-4",
+            "18-5",
+            "18-6",
+            "18-7",
+            "18-8",
+            "18-9",
+        ]
+    }
+
+    assert resolve(payload, 1) == 1
+    assert resolve(payload, 8) == 8
+
+
 def test_pairbicad_loro_eval_clock_starts_at_4000_and_is_interval_bound() -> None:
     due = _required_bicad_helper("_bicad_xr_loro_eval_due")
     assert not due(3999, planned_updates=9000, min_updates=4000, interval=500)
@@ -610,7 +649,20 @@ def test_pairbicad_source_loro_score_and_patience_use_strict_improvement() -> No
 
 def test_pairbicad_source_loro_loader_reuses_payload_reference() -> None:
     build_loader = _required_bicad_helper("_build_bicad_xr_source_loro_loader")
-    payload = {"rx_list": [1, 3, 4, 6, 8], "capture_date_list": [1, 2, 3]}
+    payload = {
+        "rx_list": [
+            "18-1",
+            "18-2",
+            "18-3",
+            "18-4",
+            "18-5",
+            "18-6",
+            "18-7",
+            "18-8",
+            "18-9",
+        ],
+        "capture_date_list": [1, 2, 3],
+    }
     captured = {}
 
     class RecordingDataset:
@@ -646,7 +698,7 @@ def test_pairbicad_source_loro_loader_reuses_payload_reference() -> None:
                 "wisig_payload": payload,
                 "source_day_indices": [0, 1, 2],
                 "source_receiver_indices": [1, 3, 4, 6],
-                "source_receiver_values": [1, 3, 4, 6],
+                "source_receiver_values": ["18-2", "18-4", "18-5", "18-7"],
             },
             torch.device("cpu"),
             8,
@@ -657,7 +709,7 @@ def test_pairbicad_source_loro_loader_reuses_payload_reference() -> None:
 
     assert loader is captured["dataset"]
     assert captured["payload"] is payload
-    assert captured["kwargs"]["rx_keep"] == [4]
+    assert captured["kwargs"]["rx_keep"] == [8]
     assert captured["kwargs"]["day_keep"] == [0, 1, 2]
 
 
