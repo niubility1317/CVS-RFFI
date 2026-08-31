@@ -89,3 +89,11 @@ CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/
 - GPU映射：worker PID`3208559`位于物理GPU0 UUID=`GPU-56adac86-77cd-36c9-8770-dbf002650461`，首次采样显存6700MiB。
 - 启动36秒时`smoke/training_progress.jsonl`已有3957字节；最新事件为`stage2_time/step1`，loss、primary、auxiliary、projected、combined gradient及dual均有限，`zero_identity_count=0`，`query_rows_used=0`。日志仍为0字节属于stdout缓冲，不影响JSONL增长证据。
 - 当前最高状态更新为`RUNNING`。不重复启动、不热修改、不因中间性能停止；下一次检查在smoke预计完成后进行。
+
+## 2026-09-01 03:00CST小时检查
+
+- 真实ADV3B02 checkpoint无query smoke已`PASS`：5个optimizer step完整覆盖Stage1、三个Stage2分支和Stage3，总训练耗时90.466秒；旧smoke约6小时仍未完成，快速闭环已经由真实远端证据确认。
+- smoke峰值CUDA分配6395007488字节，进程峰值RSS2075070464字节；最终`zero_identity_count=0`，identity-only、FFT-only、joint OOF风险均为`VALID`，全程`query_rows_used=0/query_opened=false`。
+- 同一owner PID`3208551`已按预登记自动进入`p3-pilot`，当前运行约1小时3分；物理GPU0显存8788MiB。
+- pilot支持适配阶段已完成5个`training_audit.json`，当前推进到`leo_clear_weak/N6`，对应进度JSONL为8221字节；尚未打开query，因此prediction/receipt为0/18符合support-first顺序。
+- 定点扫描未发现`FAILED_NONFINITE`，未发现技术异常。保持运行，不终止、不重启、不热修改、不因性能停止。
