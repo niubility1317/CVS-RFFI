@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-- 状态：`LANDED`；release已在N607普通账户完成校验与编译，正式dispatcher尚未启动。
+- 状态：`RUNNING`。
 - Run ID：`phase1_adv3b02_pairbicad_p0p4_loro2_seed3_u4000_20260831_r1`。
 - 方法范围：`P0/P1/P2/P3/P4`；P5–P9不属于本run。
 - source数据：`Dataset_WigSig/ManySig.pkl`；训练day1/day2/day3。
@@ -120,3 +120,13 @@
 - 只使用source LORO的`V_select`比较P0→P4；同row同时报告clean、三种LEO、LEO mean、LEO floor、clean代价和资源成本。
 - 禁止把不同row的单项最大值拼成虚构冠军；禁止使用目标接收机、Phase2或query结果反馈选种、调参、重训或选择性重跑。
 - P5–P9继续保持deferred；本run只回答P0–P4逐级机制是否在新数据包Phase1 source-only划分上有效。
+
+## N607正式启动回读
+
+- 启动时间：2026-08-31 13:49 CST后；普通账户`szu2070436088`。
+- dispatcher PID：`2807256`，PPID=1；cmdline精确绑定release`phase1_pairbicad_p0p4_85989ed4`、本Run ID、P0–P4、fold1/8、3个seed、U4000和`--max-jobs-per-gpu 2`。
+- 第一波worker：16个直属主训练进程；每GPU恰好2个，GPU0–7利用率84%–91%，显存约1.62–1.77GiB/卡。
+- 16个worker CWD全部为`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_pairbicad_p0p4_85989ed4`；输出分别绑定本run的唯一row目录。
+- 第一波覆盖P0全6行、P1全6行和P2前4行；其余14行在dispatcher内排队，不会突破每GPU2个活跃训练进程。
+- `plan.json`已存在；16个`train.log`已建立。启动早期日志为0字节，但GPU计算、进程归属和cmdline均持续有效；该trainer在epoch/update汇总前不保证stdout增长，不能据此停止。
+- 启动回读未发现`TECHNICAL_FAILURE`或`ARTIFACTS_COMPLETE`marker；当前没有性能结论。
