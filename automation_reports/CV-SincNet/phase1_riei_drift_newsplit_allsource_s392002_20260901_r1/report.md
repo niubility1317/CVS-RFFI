@@ -1,7 +1,7 @@
 # RIEI/DRIFT全source receiver Phase1实验报告
 
 - run_id：`phase1_riei_drift_newsplit_allsource_s392002_20260901_r1`
-- 当前状态：`LOCAL_VERIFIED`
+- 当前状态：`RUNNING`
 - 候选矩阵：RIEI=`RIEI_C06_sum_featnorm1e4`、DRIFT=`DRIFT_N02_raw_cap4000`，各1行。
 - 冻结代码提交：`2df2a33689fcd75587424e68afec44c0e13015d7`
 - 本地环境/CWD：`ssr-gpu`；`E:\type10-7\github_publish\CVS-RFFI-repo`
@@ -35,3 +35,14 @@ PYTHONPATH=<release>/code:<release> /home/szu2070436088/.conda/envs/CVS-RFFI/bin
 - 独立P0/P1审查发现并修复1个全source默认GPU数量P1；仅针对原问题定点复审后`READY`。
 - 命令级dry-run：2行，完整source receivers均为`[1,3,4,6,8]`，无holdout参数。
 - Git push与远端OID回读：`VERIFIED`，远端`work/cvs-active`=`2df2a33689fcd75587424e68afec44c0e13015d7`。
+
+## Release、smoke与正式启动
+
+- release映射：本地`E:\type10-7\release_archives\phase1_riei_drift_newsplit_allsource_s392002_20260901_r1_2df2a336.tar.gz`→远端`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_riei_drift_newsplit_allsource_s392002_20260901_r1_2df2a336.tar.gz`。
+- 唯一归档SHA256本地/远端一致：`b2c5cfd161d4d716c88a8da23e4a5974bc5da6248e7d7be0cc40bb5daeff90c5`；远端解包和关键入口编译`PASS`。
+- N607预检：普通账户直连`PASS`；GPU0/1空闲；新release、run、log路径启动前均不存在。
+- 真实checkpoint无query smoke：`PASS`。RIEI_C06的epoch186 checkpoint载入132个有限tensor；DRIFT_N02的epoch76 checkpoint载入136个有限tensor；未读取数据集或目标query。
+- 正式启动时间：2026-09-01约16:45 CST。
+  - RIEI：PID`3637386`，GPU0，row=`RIEI_ALLSRC_S392002`。
+  - DRIFT：PID`3637387`，GPU1，row=`DRIFT_ALLSRC_S392002`。
+- 启动后回读：两个PID的PPID/PGID/SID、CWD、完整cmdline、run-root和`CUDA_VISIBLE_DEVICES`绑定正确；两行均已完成E1并进入E2，日志增长且已写出E1的`best_by_val.pt`；未见`Traceback`、`RuntimeError`、CUDA OOM、`Killed`或`AssertionError`。
