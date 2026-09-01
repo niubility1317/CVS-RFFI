@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -24,13 +25,69 @@ from .meta_episodes import (
     validate_episode_semantics,
 )
 from .meta_support_set_encoder import SupportSetEncoder
+from .marc_ot_support_features import build_marc_ot_support_features
 from .meta_trainer import MetaEpisodeBatch
-from .meta_weight_bank import BlockSpec, WeightDeltaBank
+from .meta_weight_bank import BlockSpec, DeltaTaskKey, WeightDeltaBank
 from .meta_weight_bank_checkpoint import (
     MetaWeightBundle,
+    TaskDomainDescriptor,
     load_meta_weight_bundle,
     save_meta_weight_bundle,
 )
+
+
+@dataclass(frozen=True)
+class MARCOTTaskDomainSelection:
+    """Explicit task key and legal Phase1 partition used for one aggregate."""
+
+    task_key: DeltaTaskKey
+    partition: str
+
+
+def canonical_episode_task_domain_selection(
+    episode: MetaEpisode,
+) -> MARCOTTaskDomainSelection:
+    """Bind the default pseudo-target domain from explicit query-adapt facts."""
+
+    if not isinstance(episode, MetaEpisode) or not episode.query_adapt:
+        raise ValueError("episode query_adapt facts are required for task domain binding")
+    facts = {(ref.rx_i, ref.day_i, ref.view) for ref in episode.query_adapt}
+    if len(facts) != 1:
+        raise ValueError("episode query_adapt facts do not identify one task domain")
+    receiver, day, scene = next(iter(facts))
+    return MARCOTTaskDomainSelection(
+        task_key=DeltaTaskKey(str(int(receiver)), str(int(day)), str(scene), episode.k_shot),
+        partition="query_adapt",
+    )
+
+
+def _validated_task_domain_selection(
+    episode: MetaEpisode,
+    selection: MARCOTTaskDomainSelection,
+) -> tuple[tuple[object, ...], DeltaTaskKey]:
+    if not isinstance(selection, MARCOTTaskDomainSelection):
+        raise ValueError("task domain selector must return MARCOTTaskDomainSelection")
+    if selection.partition not in {"support", "query_adapt"}:
+        raise ValueError("task domain partition must be support or query_adapt; query_guard is forbidden")
+    key = selection.task_key
+    if not isinstance(key, DeltaTaskKey):
+        raise ValueError("task domain selector returned an invalid task key")
+    refs = tuple(getattr(episode, selection.partition))
+    if len(refs) < 2:
+        raise ValueError("task domain descriptor requires multiple physical samples")
+    facts = {(ref.rx_i, ref.day_i, ref.view) for ref in refs}
+    if len(facts) != 1:
+        raise ValueError("selected episode partition does not identify one task domain")
+    receiver, day, scene = next(iter(facts))
+    explicit_key = DeltaTaskKey(
+        str(int(receiver)), str(int(day)), str(scene), int(episode.k_shot)
+    )
+    if key != explicit_key:
+        raise ValueError("task domain key differs from explicit episode partition facts")
+    physical_ids = tuple(ref.physical_sample_id for ref in refs)
+    if len(set(physical_ids)) != len(physical_ids):
+        raise ValueError("task domain partition repeats a physical sample")
+    return refs, key
 
 
 @dataclass(frozen=True)
@@ -129,6 +186,9 @@ def run_marc_ot_phase1_bank_training(
         [tuple[MetaEpisode, ...]], Sequence[MetaEpisode]
     ],
     schedule_seed: int = 0,
+    task_domain_selector: Callable[
+        [MetaEpisode], MARCOTTaskDomainSelection
+    ] = canonical_episode_task_domain_selection,
 ) -> MARCOTPhase1Closure:
     """Run the real MARC-OT bank trainer after complete schedule validation.
 
@@ -138,8 +198,22 @@ def run_marc_ot_phase1_bank_training(
 
     if not isinstance(trainer_config, MetaBankTrainerConfig):
         raise TypeError("trainer_config must be MetaBankTrainerConfig")
-    if not callable(batch_builder) or not callable(training_episode_selector):
-        raise TypeError("batch_builder and training_episode_selector must be callable")
+    if (
+        not callable(batch_builder)
+        or not callable(training_episode_selector)
+        or not callable(task_domain_selector)
+    ):
+        raise TypeError("batch_builder, training selector, and task domain selector must be callable")
+    if not isinstance(optimizer, torch.optim.Optimizer):
+        raise TypeError("optimizer must be a torch.optim.Optimizer")
+    if any(
+        isinstance(group.get("lr"), bool)
+        or not isinstance(group.get("lr"), (int, float))
+        or not math.isfinite(float(group["lr"]))
+        or float(group["lr"]) <= 0.0
+        for group in optimizer.param_groups
+    ):
+        raise ValueError("optimizer learning rate must be finite and positive")
     destination = Path(bundle_path)
     if destination.exists() or destination.is_symlink():
         raise FileExistsError(f"immutable MARC-OT bundle exists: {destination}")
@@ -172,8 +246,29 @@ def run_marc_ot_phase1_bank_training(
     if any(episode not in scheduled_set for episode in selected):
         raise ValueError("training selector returned an episode outside the frozen schedule")
 
+    selections: list[tuple[tuple[object, ...], DeltaTaskKey, str]] = []
+    semantic_to_task: dict[object, DeltaTaskKey] = {}
+    selected_task_keys: list[DeltaTaskKey] = []
+    for episode, semantic_key in zip(selected, semantic_keys, strict=True):
+        selection = task_domain_selector(episode)
+        refs, task_key = _validated_task_domain_selection(episode, selection)
+        prior = semantic_to_task.setdefault(semantic_key, task_key)
+        if prior != task_key:
+            raise ValueError("one semantic episode cell maps to multiple task keys")
+        selections.append((refs, task_key, selection.partition))
+        selected_task_keys.append(task_key)
+    if set(selected_task_keys) != set(bank.task_keys):
+        missing = set(bank.task_keys) - set(selected_task_keys)
+        extra = set(selected_task_keys) - set(bank.task_keys)
+        raise ValueError(
+            f"task domain coverage must exactly match bank task keys: missing={missing!r}, extra={extra!r}"
+        )
+
     results: list[MetaBankStepResult] = []
-    for episode in selected:
+    task_row_sums: dict[DeltaTaskKey, Tensor] = {}
+    task_row_counts: dict[DeltaTaskKey, int] = {}
+    task_physical_ids: dict[DeltaTaskKey, set[str]] = {}
+    for episode, (refs, task_key, partition) in zip(selected, selections, strict=True):
         validate_episode_semantics(
             episode,
             source_receiver_ids=trainer_config.source_receiver_ids,
@@ -181,6 +276,36 @@ def run_marc_ot_phase1_bank_training(
         batch = batch_builder(episode)
         if not isinstance(batch, MetaEpisodeBatch) or batch.episode != episode:
             raise ValueError("batch builder must preserve the exact scheduled episode")
+        if partition == "query_adapt":
+            row_mask = batch.adapt_mask
+            descriptor_iq = batch.query_x[row_mask]
+            descriptor_labels = batch.query_y[row_mask]
+            nominal_k = episode.query_per_class
+        else:
+            descriptor_iq = batch.support_x
+            descriptor_labels = batch.support_y
+            nominal_k = episode.k_shot
+        physical_ids = tuple(str(ref.physical_sample_id) for ref in refs)
+        if len(physical_ids) != len(descriptor_iq):
+            raise ValueError("task domain descriptor rows differ from explicit partition facts")
+        seen_ids = task_physical_ids.setdefault(task_key, set())
+        if seen_ids.intersection(physical_ids):
+            raise ValueError("task domain aggregation repeats a physical sample")
+        seen_ids.update(physical_ids)
+        with torch.no_grad():
+            feature_batch = build_marc_ot_support_features(
+                support_feature_model,
+                descriptor_iq,
+                descriptor_labels,
+                physical_ids,
+                nominal_k=nominal_k,
+                validated_unpadded=True,
+                scope="phase1_source",
+                fit_scope="full_episode",
+            )
+        row_sum = feature_batch.rows.detach().to(device="cpu", dtype=torch.float32).sum(dim=0)
+        task_row_sums[task_key] = task_row_sums.get(task_key, torch.zeros_like(row_sum)) + row_sum
+        task_row_counts[task_key] = task_row_counts.get(task_key, 0) + len(feature_batch.rows)
         results.append(
             run_meta_bank_step(
                 functional_forward,
@@ -206,6 +331,16 @@ def run_marc_ot_phase1_bank_training(
     if not updated_names:
         raise RuntimeError("Phase1 bank step did not update any required bank/encoder tensor")
 
+    if set(task_row_sums) != set(bank.task_keys):
+        raise RuntimeError("task domain aggregate coverage changed during Phase1 training")
+    task_domain_descriptors = {
+        task_key: TaskDomainDescriptor(
+            values=task_row_sums[task_key] / float(task_row_counts[task_key]),
+            aggregation_count=task_row_counts[task_key],
+        )
+        for task_key in bank.task_keys
+    }
+
     saved = save_meta_weight_bundle(
         destination,
         base_checkpoint_id=base_checkpoint_id,
@@ -213,6 +348,7 @@ def run_marc_ot_phase1_bank_training(
         bank=bank,
         support_encoder=support_encoder,
         expected_block_specs=expected_block_specs,
+        task_domain_descriptors=task_domain_descriptors,
     )
     loaded = load_meta_weight_bundle(
         saved,
@@ -244,5 +380,7 @@ def run_marc_ot_phase1_bank_training(
 
 __all__ = [
     "MARCOTPhase1Closure",
+    "MARCOTTaskDomainSelection",
+    "canonical_episode_task_domain_selection",
     "run_marc_ot_phase1_bank_training",
 ]

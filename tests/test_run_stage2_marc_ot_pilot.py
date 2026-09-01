@@ -46,6 +46,141 @@ def _fake_feature_batch(values, labels, tokens):
     )
 
 
+def test_bank_task_features_dequantizes_only_the_frozen_685d_descriptor() -> None:
+    from cvsrffi.marc_ot_support_features import MARC_OT_SUPPORT_FEATURE_CONFIG
+    from cvsrffi.meta_weight_bank import DeltaTaskKey
+    from cvsrffi.meta_weight_bank_checkpoint import QuantizedTaskDomainBank
+
+    module = _module()
+    task_keys = (DeltaTaskKey("3", "1", "leo_clear_weak", 10),)
+    quantized = QuantizedTaskDomainBank(
+        schema="marc_ot.task_domain_bank.int8.v1",
+        task_keys=task_keys,
+        values=torch.full((1, 685), 2, dtype=torch.int8),
+        scales=torch.full((685,), 0.25, dtype=torch.float16),
+        zero_points=torch.zeros(685, dtype=torch.int16),
+        aggregation_counts=torch.tensor([20], dtype=torch.int64),
+        feature_schema="marc_ot.support.row.v1",
+        feature_dim=685,
+        feature_config=dict(MARC_OT_SUPPORT_FEATURE_CONFIG),
+        aggregation="sample_count_weighted_mean",
+    )
+    bundle = SimpleNamespace(
+        task_domain_bank=quantized,
+        bank=SimpleNamespace(
+            task_keys=task_keys,
+            entries=(
+                SimpleNamespace(
+                    task_coefficients=torch.full((1, 7), 99.0),
+                    effective_rank=7,
+                ),
+            ),
+        ),
+    )
+
+    features = module._bank_task_features(bundle, torch.device("cpu"))
+
+    assert features.shape == (1, 685)
+    assert features.dtype == torch.float32
+    assert features.requires_grad is False
+    assert torch.all(features == 0.5)
+
+
+def _support_cv_evidence(delta_pp=0.0):
+    return {
+        "schema": "cvs.phase2.marc_ot.support_cv.v1",
+        "source": "TRUE_HELD_OUT_CROSSFIT",
+        "fold_count": 5,
+        "baseline_balanced_accuracy": 0.75,
+        "selected_balanced_accuracy": 0.75 + delta_pp / 100.0,
+        "balanced_accuracy_delta_pp": delta_pp,
+        "baseline_class_floor": 0.5,
+        "selected_class_floor": 0.5,
+        "class_floor_delta_pp": 0.0,
+    }
+
+
+def _support_cv_for_pilot(pilot_k: int, delta_pp=0.0):
+    if pilot_k != 1:
+        return _support_cv_evidence(delta_pp)
+    return {
+        "schema": "cvs.phase2.marc_ot.support_cv.v1",
+        "source": "UNAVAILABLE_K1",
+        "fold_count": 0,
+        "baseline_balanced_accuracy": None,
+        "selected_balanced_accuracy": None,
+        "balanced_accuracy_delta_pp": None,
+        "baseline_class_floor": None,
+        "selected_class_floor": None,
+        "class_floor_delta_pp": None,
+    }
+
+
+def _passing_paired_rows(*, zero_id_count=0, support_delta_pp=1.0, query_delta_pp=4.0):
+    rows = []
+    for scenario in SCENARIOS:
+        rows.append(
+            {
+                "scenario": scenario,
+                "candidate_arm": "R8",
+                "probes": {
+                    "P1_SOURCE_HEAD": {"balanced_accuracy_delta_pp": 0.0},
+                    "P2_SUPPORT_PROTOTYPE": {"balanced_accuracy_delta_pp": 0.0},
+                    "P3_OLD_D92": {
+                        "balanced_accuracy_delta_pp": query_delta_pp,
+                        "floor_delta_pp": 2.0,
+                        "help_count": 2,
+                        "harm_count": 0,
+                    },
+                },
+                "zero_id_evidence": {
+                    "control": {"threshold": 1e-12, "count": 0},
+                    "candidate": {"threshold": 1e-12, "count": zero_id_count},
+                },
+                "support_cv_evidence": {
+                    "control": _support_cv_evidence(0.0),
+                    "candidate": _support_cv_evidence(support_delta_pp),
+                },
+            }
+        )
+    return rows
+
+
+def _passing_gates():
+    return {
+        "median_p3_ba_delta_pp": -2.0,
+        "worst_scene_p3_ba_delta_pp": -2.0,
+        "median_p3_floor_delta_pp": -2.0,
+        "low_elev_p3_floor_delta_pp": -2.0,
+        "max_p1_p2_scene_drop_pp": 2.0,
+        "minimum_help_gt_harm_scenes": 2,
+        "support_query_direction_tolerance_pp": 1e-9,
+    }
+
+
+def test_promotion_zero_id_gate_blocks_without_technical_failure() -> None:
+    decision = _module()._promotion_decision(
+        _passing_paired_rows(zero_id_count=1), _passing_gates(), "R8"
+    )
+    assert decision["passed"] is False
+    assert decision["status"] == "NO_PROMOTION_TO_TARGET25"
+    assert decision["gates"]["zero_id_all_arms"] is False
+    assert decision["gates"]["support_query_direction"] is True
+
+
+def test_promotion_support_query_direction_blocks_opposite_sign() -> None:
+    decision = _module()._promotion_decision(
+        _passing_paired_rows(support_delta_pp=1.0, query_delta_pp=-1.0),
+        _passing_gates(),
+        "R8",
+    )
+    assert decision["passed"] is False
+    assert decision["status"] == "NO_PROMOTION_TO_TARGET25"
+    assert decision["gates"]["zero_id_all_arms"] is True
+    assert decision["gates"]["support_query_direction"] is False
+    assert all(row["consistent"] is False for row in decision["direction_diagnostics"])
+
+
 def test_cli_has_exact_smoke_pilot_score_commands_and_smoke_has_no_query_path() -> None:
     module = _module()
     parser = module.parser()
@@ -525,6 +660,7 @@ def test_pilot_result_binds_k_coverage_execution_and_unit_evidence(
         "training_coverage_k": [],
         "pilot_k": 10,
         "promotion_gates": {"gate": 1.0},
+        "zero_id_norm_threshold": 1e-12,
     }
     job = {
         "outer_key": "outer",
@@ -545,6 +681,7 @@ def test_pilot_result_binds_k_coverage_execution_and_unit_evidence(
             "model_state": {},
             "audit": {
                 "held_out_support_evidence": held_out,
+                "support_cv_evidence": _support_cv_evidence(0.0),
                 "training_seconds": 0.0,
                 "peak_cuda_bytes": None,
             },
@@ -559,13 +696,17 @@ def test_pilot_result_binds_k_coverage_execution_and_unit_evidence(
     monkeypatch.setattr(module, "load_support_package", lambda _path: object())
     monkeypatch.setattr(module, "load_query_package", lambda _path: object())
     monkeypatch.setattr(module, "_adapt_unit", fake_adapt)
-    monkeypatch.setattr(
-        module,
-        "_predict_unit",
-        lambda _args, _config, _job, _destination, scenario, arm, *_rest: predictions.append(
-            (scenario, arm)
-        ),
-    )
+    def fake_predict(_args, _config, _job, _destination, scenario, arm, *_rest):
+        predictions.append((scenario, arm))
+        return {
+            "scenario": scenario,
+            "arm": arm,
+            "zero_id_norm_threshold": 1e-12,
+            "zero_id_count": 0,
+            "support_cv_evidence": _support_cv_evidence(0.0),
+        }
+
+    monkeypatch.setattr(module, "_predict_unit", fake_predict)
     args = SimpleNamespace(output_root=tmp_path / "pilot")
 
     result = module._pilot(args)
@@ -579,6 +720,7 @@ def test_pilot_result_binds_k_coverage_execution_and_unit_evidence(
     assert len(evidence) == len(SCENARIOS) * (len(FORMAL_ARMS) - 1)
     assert all(row["arm"] != "R0" for row in evidence)
     assert all(row["held_out_support_evidence"] is True for row in evidence)
+    assert len(result["prediction_unit_evidence"]) == len(SCENARIOS) * len(FORMAL_ARMS)
     for row in evidence:
         receipt = json.loads(
             (
@@ -609,12 +751,24 @@ def _write_prediction_unit(
     corrupt=False,
     pilot_k=10,
     held_out_support_evidence=None,
+    zero_id_count=0,
+    support_delta_pp=0.0,
+    predictions_override=None,
 ) -> None:
     root.mkdir(parents=True)
     tokens = np.asarray(["q0", "q1"])
     logits = np.asarray([[2.0, 0.0], [0.0, 2.0]], dtype=np.float64)
-    predictions = np.asarray([0, 1], dtype=np.int64)
-    members = {"query_tokens": tokens}
+    predictions = np.asarray(
+        [0, 1] if predictions_override is None else predictions_override,
+        dtype=np.int64,
+    )
+    logits = np.asarray(
+        [[2.0, 0.0] if prediction == 0 else [0.0, 2.0] for prediction in predictions],
+        dtype=np.float64,
+    )
+    query_z_id = np.ones((len(tokens), 160), dtype=np.float64)
+    query_z_id[:zero_id_count] = 0.0
+    members = {"query_tokens": tokens, "query_z_id": query_z_id}
     for prefix in ("p1", "p2", "p3"):
         members[f"{prefix}_logits"] = logits.copy()
         members[f"{prefix}_predictions"] = predictions.copy()
@@ -646,6 +800,9 @@ def _write_prediction_unit(
             if held_out_support_evidence is None
             else held_out_support_evidence
         ),
+        "zero_id_norm_threshold": 1e-12,
+        "zero_id_count": zero_id_count,
+        "support_cv_evidence": _support_cv_for_pilot(pilot_k, support_delta_pp),
         "resources": {
             "training_seconds": 1.0,
             "inference_seconds": 0.1,
@@ -665,10 +822,18 @@ def _write_bound_prediction_root(
     pilot_k: int,
     pilot_executed: bool,
     held_out_support_evidence: bool,
+    zero_pair: tuple[str, str] | None = None,
+    opposite_direction: bool = False,
 ) -> Path:
     evidence = []
+    prediction_evidence = []
     for scenario in SCENARIOS:
         for arm in FORMAL_ARMS:
+            zero_id_count = int(zero_pair == (scenario, arm))
+            support_delta_pp = 1.0 if opposite_direction and arm != "R0" else 0.0
+            support_cv_evidence = _support_cv_for_pilot(
+                pilot_k, support_delta_pp
+            )
             _write_prediction_unit(
                 root / scenario / arm / "prediction",
                 scenario,
@@ -677,26 +842,43 @@ def _write_bound_prediction_root(
                 held_out_support_evidence=(
                     False if arm == "R0" else held_out_support_evidence
                 ),
+                zero_id_count=zero_id_count,
+                support_delta_pp=support_delta_pp,
+                predictions_override=(
+                    [1, 0] if opposite_direction and arm != "R0" else None
+                ),
             )
-            if arm == "R0":
-                continue
-            row = {
-                "scenario": scenario,
-                "arm": arm,
-                "held_out_support_evidence": held_out_support_evidence,
-            }
-            evidence.append(row)
+            prediction_evidence.append(
+                {
+                    "scenario": scenario,
+                    "arm": arm,
+                    "zero_id_norm_threshold": 1e-12,
+                    "zero_id_count": zero_id_count,
+                    "support_cv_evidence": support_cv_evidence,
+                }
+            )
+            if arm != "R0":
+                row = {
+                    "scenario": scenario,
+                    "arm": arm,
+                    "held_out_support_evidence": held_out_support_evidence,
+                    "support_cv_evidence": support_cv_evidence,
+                }
+                evidence.append(row)
+            unit_held_out = False if arm == "R0" else held_out_support_evidence
             receipt = {
                 "schema": "cvs.phase2.marc_ot.support_state_receipt.v1",
                 "status": "SUPPORT_STATE_FROZEN",
                 "scenario": scenario,
                 "arm": arm,
-                "held_out_support_evidence": held_out_support_evidence,
+                "held_out_support_evidence": unit_held_out,
+                "support_cv_evidence": support_cv_evidence,
                 "software_supported_k": [1, 2, 5, 10, 20],
                 "training_coverage_k": [],
                 "pilot_k": pilot_k,
                 "training_audit": {
-                    "held_out_support_evidence": held_out_support_evidence,
+                    "held_out_support_evidence": unit_held_out,
+                    "support_cv_evidence": support_cv_evidence,
                 },
             }
             (root / scenario / arm / "support_state_receipt.json").write_text(
@@ -714,6 +896,8 @@ def _write_bound_prediction_root(
         "pilot_k": pilot_k,
         "pilot_executed": pilot_executed,
         "adaptation_unit_evidence": evidence,
+        "prediction_unit_evidence": prediction_evidence,
+        "zero_id_norm_threshold": 1e-12,
         "promotion_gates": {
             "median_p3_ba_delta_pp": -1.0,
             "worst_scene_p3_ba_delta_pp": -1.0,
@@ -721,6 +905,7 @@ def _write_bound_prediction_root(
             "low_elev_p3_floor_delta_pp": -1.0,
             "max_p1_p2_scene_drop_pp": 1.0,
             "minimum_help_gt_harm_scenes": 0,
+            "support_query_direction_tolerance_pp": 1e-9,
         },
     }
     (root / "pilot_result.json").write_text(json.dumps(pilot), encoding="utf-8")
@@ -809,7 +994,16 @@ def test_score_preflights_all_18_predictions_before_first_truth_open(tmp_path) -
     assert observed_truth.open_attempts == 0
 
 
-@pytest.mark.parametrize("tamper", ("software_k", "unit_receipt"))
+@pytest.mark.parametrize(
+    "tamper",
+    (
+        "software_k",
+        "unit_receipt",
+        "support_cv_summary",
+        "zero_summary",
+        "prediction_receipt_support",
+    ),
+)
 def test_score_rejects_tampered_pilot_binding_before_truth(tmp_path, tamper: str) -> None:
     module = _module()
     prediction_root = tmp_path / f"pilot-{tamper}"
@@ -825,7 +1019,7 @@ def test_score_rejects_tampered_pilot_binding_before_truth(tmp_path, tamper: str
         (prediction_root / "pilot_result.json").write_text(
             json.dumps(pilot), encoding="utf-8"
         )
-    else:
+    elif tamper == "unit_receipt":
         receipt_path = (
             prediction_root
             / SCENARIOS[0]
@@ -834,6 +1028,31 @@ def test_score_rejects_tampered_pilot_binding_before_truth(tmp_path, tamper: str
         )
         receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
         receipt["held_out_support_evidence"] = False
+        receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+    elif tamper in {"support_cv_summary", "zero_summary"}:
+        pilot_path = prediction_root / "pilot_result.json"
+        pilot = json.loads(pilot_path.read_text(encoding="utf-8"))
+        if tamper == "support_cv_summary":
+            pilot["adaptation_unit_evidence"][0]["support_cv_evidence"][
+                "selected_balanced_accuracy"
+            ] = 0.8
+            pilot["adaptation_unit_evidence"][0]["support_cv_evidence"][
+                "balanced_accuracy_delta_pp"
+            ] = 5.0
+        else:
+            pilot["prediction_unit_evidence"][0]["zero_id_count"] = 1
+        pilot_path.write_text(json.dumps(pilot), encoding="utf-8")
+    else:
+        receipt_path = (
+            prediction_root
+            / SCENARIOS[0]
+            / "R2"
+            / "prediction"
+            / "prediction_receipt.json"
+        )
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        receipt["support_cv_evidence"]["selected_balanced_accuracy"] = 0.8
+        receipt["support_cv_evidence"]["balanced_accuracy_delta_pp"] = 5.0
         receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
     observed_truth = _CountingTruthPath(truth_path)
 
@@ -911,3 +1130,61 @@ def test_score_keeps_valid_k10_crossfit_root_promotion_eligible(tmp_path) -> Non
     assert result["analysis_only_reasons"] == []
     assert result["next_state"] == "PROMOTE_TO_TARGET25"
     assert result["best_promotable_arm"] == "R8"
+
+
+def test_score_zero_id_in_any_arm_is_analyzed_without_any_promotion(tmp_path) -> None:
+    module = _module()
+    prediction_root = tmp_path / "pilot-zero"
+    truth_path = _write_bound_prediction_root(
+        prediction_root,
+        pilot_k=10,
+        pilot_executed=True,
+        held_out_support_evidence=True,
+        zero_pair=(SCENARIOS[0], "R1"),
+    )
+
+    result = module._score(
+        SimpleNamespace(
+            prediction_root=prediction_root,
+            truth_sidecar=truth_path,
+            output_root=tmp_path / "score-zero",
+        )
+    )
+
+    assert result["status"] == "ANALYZED"
+    assert result["next_state"] == "NO_PROMOTION_TO_TARGET25"
+    assert result["best_promotable_arm"] is None
+    assert all(
+        decision["gates"]["zero_id_all_arms"] is False
+        for decision in result["decisions"].values()
+    )
+
+
+def test_score_opposite_support_query_direction_is_analyzed_without_promotion(
+    tmp_path,
+) -> None:
+    module = _module()
+    prediction_root = tmp_path / "pilot-direction"
+    truth_path = _write_bound_prediction_root(
+        prediction_root,
+        pilot_k=10,
+        pilot_executed=True,
+        held_out_support_evidence=True,
+        opposite_direction=True,
+    )
+
+    result = module._score(
+        SimpleNamespace(
+            prediction_root=prediction_root,
+            truth_sidecar=truth_path,
+            output_root=tmp_path / "score-direction",
+        )
+    )
+
+    assert result["status"] == "ANALYZED"
+    assert result["next_state"] == "NO_PROMOTION_TO_TARGET25"
+    assert result["best_promotable_arm"] is None
+    assert all(
+        decision["gates"]["support_query_direction"] is False
+        for decision in result["decisions"].values()
+    )

@@ -58,6 +58,18 @@ def _encoder(bank, *, feature_dim: int = 685):
     )
 
 
+def _task_domain_descriptors(bank):
+    from cvsrffi.meta_weight_bank_checkpoint import TaskDomainDescriptor
+
+    return {
+        task_key: TaskDomainDescriptor(
+            values=torch.linspace(-1.0, 1.0, 685) + float(index),
+            aggregation_count=20 + index,
+        )
+        for index, task_key in enumerate(bank.task_keys)
+    }
+
+
 def _expected_block_specs():
     from cvsrffi.meta_weight_bank import BlockSpec
 
@@ -93,6 +105,7 @@ def _save_bundle(path: Path):
         bank=bank,
         support_encoder=encoder,
         expected_block_specs=_expected_block_specs(),
+        task_domain_descriptors=_task_domain_descriptors(bank),
     )
     return bank, encoder
 
@@ -112,6 +125,22 @@ def test_meta_weight_bundle_round_trip_preserves_support_composition_bitwise(tmp
     assert raw["support_feature"]["schema"] == "marc_ot.support.row.v1"
     assert raw["support_feature"]["dim"] == 685
     assert raw["support_feature"]["config"]["rf_lite_dim"] == 10
+    assert raw["task_domain_bank"]["schema"] == "marc_ot.task_domain_bank.int8.v1"
+    assert raw["task_domain_bank"]["values"].dtype == torch.int8
+    assert raw["task_domain_bank"]["values"].shape == (2, 685)
+    assert raw["task_domain_bank"]["aggregation_counts"].tolist() == [20, 21]
+    assert set(raw["task_domain_bank"]) == {
+        "schema",
+        "task_keys",
+        "values",
+        "scales",
+        "zero_points",
+        "aggregation_counts",
+        "feature_schema",
+        "feature_dim",
+        "feature_config",
+        "aggregation",
+    }
     loaded = load_meta_weight_bundle(
         path,
         expected_base_checkpoint_id="base-checkpoint-7",
@@ -122,6 +151,9 @@ def test_meta_weight_bundle_round_trip_preserves_support_composition_bitwise(tmp
     assert loaded.feature_schema == "marc_ot.support.row.v1"
     assert loaded.feature_dim == 685
     assert loaded.feature_config["psd_bins"] == 16
+    assert loaded.task_domain_bank.task_keys == loaded.bank.task_keys
+    assert loaded.task_domain_bank.values.dtype == torch.int8
+    assert loaded.task_domain_bank.aggregation_counts.tolist() == [20, 21]
 
     features = torch.zeros(3, 685)
     features[:, :3] = torch.tensor(
@@ -318,4 +350,85 @@ def test_meta_weight_bundle_save_rejects_old_160d_encoder(tmp_path: Path) -> Non
             bank=bank,
             support_encoder=_encoder(bank, feature_dim=160),
             expected_block_specs=_expected_block_specs(),
+            task_domain_descriptors=_task_domain_descriptors(bank),
         )
+
+
+@pytest.mark.parametrize(
+    "tamper",
+    (
+        "missing",
+        "task_order",
+        "geometry",
+        "dtype",
+        "scale",
+        "zero_point",
+        "count",
+        "forbidden_source_sample",
+        "duplicate_key",
+    ),
+)
+def test_meta_weight_bundle_rejects_invalid_task_domain_bank(
+    tmp_path: Path, tamper: str
+) -> None:
+    """The Phase2 OT bank must be a complete task-key-bound int8 aggregate."""
+    from cvsrffi.meta_weight_bank_checkpoint import load_meta_weight_bundle
+
+    path = tmp_path / "valid.pt"
+    _save_bundle(path)
+    raw = _load_raw(path)
+    task_domain = raw["task_domain_bank"]
+    if tamper == "missing":
+        raw.pop("task_domain_bank")
+    elif tamper == "task_order":
+        task_domain["task_keys"] = list(reversed(task_domain["task_keys"]))
+    elif tamper == "geometry":
+        task_domain["values"] = task_domain["values"][:, :-1]
+    elif tamper == "dtype":
+        task_domain["values"] = task_domain["values"].to(torch.float32)
+    elif tamper == "scale":
+        task_domain["scales"][0] = float("inf")
+    elif tamper == "zero_point":
+        task_domain["zero_points"][0] = 1
+    elif tamper == "count":
+        task_domain["aggregation_counts"][0] = 1
+    elif tamper == "forbidden_source_sample":
+        task_domain["source_sample_embeddings"] = torch.ones(2, 685)
+    else:
+        raw["bank"]["task_keys"][1] = dict(raw["bank"]["task_keys"][0])
+        task_domain["task_keys"][1] = dict(task_domain["task_keys"][0])
+    tampered = tmp_path / f"task-domain-{tamper}.pt"
+    torch.save(raw, tampered)
+
+    with pytest.raises(ValueError, match="task.domain|member|aggregate"):
+        load_meta_weight_bundle(
+            tampered,
+            expected_base_checkpoint_id="base-checkpoint-7",
+            base_state=_base_state(),
+            expected_block_specs=_expected_block_specs(),
+        )
+
+
+def test_task_domain_bank_dequantizes_only_frozen_685d_aggregates(tmp_path: Path) -> None:
+    from cvsrffi.meta_weight_bank_checkpoint import (
+        dequantize_task_domain_features,
+        load_meta_weight_bundle,
+    )
+
+    path = tmp_path / "valid.pt"
+    bank, _encoder_value = _save_bundle(path)
+    loaded = load_meta_weight_bundle(
+        path,
+        expected_base_checkpoint_id="base-checkpoint-7",
+        base_state=_base_state(),
+        expected_block_specs=_expected_block_specs(),
+    )
+    restored = dequantize_task_domain_features(loaded.task_domain_bank)
+
+    assert restored.shape == (len(bank.task_keys), 685)
+    assert restored.dtype == torch.float32
+    assert restored.requires_grad is False
+    expected = torch.stack(
+        [_task_domain_descriptors(bank)[key].values for key in bank.task_keys]
+    )
+    assert torch.allclose(restored, expected, atol=0.02, rtol=0.0)

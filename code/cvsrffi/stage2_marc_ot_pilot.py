@@ -110,6 +110,7 @@ _CONFIG_KEYS = frozenset(
         "supcon",
         "ratio_cap",
         "interpolation_grid",
+        "zero_id_norm_threshold",
         "promotion_gates",
         "mrior_controls",
     }
@@ -122,6 +123,7 @@ _PROMOTION_GATE_KEYS = frozenset(
         "low_elev_p3_floor_delta_pp",
         "max_p1_p2_scene_drop_pp",
         "minimum_help_gt_harm_scenes",
+        "support_query_direction_tolerance_pp",
     }
 )
 
@@ -284,6 +286,10 @@ def validate_pilot_config(value: Any) -> Mapping[str, Any]:
     alphas = tuple(_finite_number(alpha, field="interpolation_grid") for alpha in grid)
     if any(not 0.0 <= alpha <= 1.0 for alpha in alphas) or 0.0 not in alphas:
         raise ValueError("interpolation_grid must contain alpha=0 and stay in [0,1]")
+    if _finite_number(
+        value.get("zero_id_norm_threshold"), field="zero_id_norm_threshold"
+    ) < 0.0:
+        raise ValueError("zero_id_norm_threshold must be nonnegative")
     gates = value.get("promotion_gates")
     if not isinstance(gates, Mapping) or set(gates) != _PROMOTION_GATE_KEYS:
         raise ValueError("promotion_gates field set drift")
@@ -293,7 +299,9 @@ def validate_pilot_config(value: Any) -> Mapping[str, Any]:
             if count > len(SCENARIOS):
                 raise ValueError("minimum_help_gt_harm_scenes exceeds scene count")
         else:
-            _finite_number(gate, field=field)
+            numeric_gate = _finite_number(gate, field=field)
+            if field == "support_query_direction_tolerance_pp" and numeric_gate < 0.0:
+                raise ValueError("support/query direction tolerance must be nonnegative")
     validate_mrior_controls(value.get("mrior_controls"))
     return dict(value)
 

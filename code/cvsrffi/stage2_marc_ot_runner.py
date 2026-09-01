@@ -192,6 +192,7 @@ class MARCOTTrainingAudit:
     peak_cuda_bytes: int | None
     reached_parameter_names: tuple[str, ...] = field(default_factory=tuple)
     held_out_support_evidence: bool = False
+    support_cv_evidence: Mapping[str, Any] = field(default_factory=dict)
 
 
 def _clone_tensors(values: Mapping[str, Tensor], *, context: str) -> dict[str, Tensor]:
@@ -459,6 +460,78 @@ def _aggregate_fold_metrics(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]
         "oof_ba": float(np.mean(ba)) if ba else float("nan"),
         "oof_floor": float(min(floor)) if floor else float("nan"),
     }
+
+
+def _unavailable_support_cv_evidence() -> dict[str, Any]:
+    return {
+        "schema": "cvs.phase2.marc_ot.support_cv.v1",
+        "source": "UNAVAILABLE_K1",
+        "fold_count": 0,
+        "baseline_balanced_accuracy": None,
+        "selected_balanced_accuracy": None,
+        "balanced_accuracy_delta_pp": None,
+        "baseline_class_floor": None,
+        "selected_class_floor": None,
+        "class_floor_delta_pp": None,
+    }
+
+
+def _true_support_cv_evidence(
+    model: nn.Module,
+    values: Tensor,
+    labels: Tensor,
+    folds: Sequence[tuple[Tensor, Tensor]],
+    *,
+    baseline_state: Mapping[str, Tensor],
+    selected_states: Sequence[Mapping[str, Tensor]],
+) -> dict[str, Any]:
+    if len(folds) < 2 or len(selected_states) != len(folds):
+        raise ValueError("true support cross-fit state geometry drift")
+    baseline_rows: list[Mapping[str, Any]] = []
+    selected_rows: list[Mapping[str, Any]] = []
+    for selected_state, (fit, validation) in zip(selected_states, folds, strict=True):
+        baseline_rows.append(
+            _default_fold_metrics(
+                model,
+                baseline_state,
+                values[fit],
+                labels[fit],
+                values[validation],
+                labels[validation],
+            )
+        )
+        selected_rows.append(
+            _default_fold_metrics(
+                model,
+                selected_state,
+                values[fit],
+                labels[fit],
+                values[validation],
+                labels[validation],
+            )
+        )
+    baseline = _aggregate_fold_metrics(baseline_rows)
+    selected = _aggregate_fold_metrics(selected_rows)
+    metrics = {
+        "schema": "cvs.phase2.marc_ot.support_cv.v1",
+        "source": "TRUE_HELD_OUT_CROSSFIT",
+        "fold_count": len(folds),
+        "baseline_balanced_accuracy": float(baseline["oof_ba"]),
+        "selected_balanced_accuracy": float(selected["oof_ba"]),
+        "balanced_accuracy_delta_pp": 100.0
+        * (float(selected["oof_ba"]) - float(baseline["oof_ba"])),
+        "baseline_class_floor": float(baseline["oof_floor"]),
+        "selected_class_floor": float(selected["oof_floor"]),
+        "class_floor_delta_pp": 100.0
+        * (float(selected["oof_floor"]) - float(baseline["oof_floor"])),
+    }
+    if any(
+        not math.isfinite(float(value))
+        for key, value in metrics.items()
+        if key not in {"schema", "source", "fold_count"}
+    ):
+        raise RuntimeError("true support cross-fit evidence is nonfinite")
+    return metrics
 
 
 def _interpolate_for_alpha(
@@ -758,7 +831,26 @@ def train_marc_ot_arm(
     try:
         _load_state(model, original_base)
         refreeze()
+        fold_plan = build_marc_ot_support_fold_plan(
+            labels,
+            tokens,
+            fold_count=int(config.fold_count),
+            seed=int(config.seed),
+        )
         if arm_value == "R0":
+            _load_state(model, original_base)
+            support_cv_evidence = (
+                _true_support_cv_evidence(
+                    model,
+                    values,
+                    labels,
+                    fold_plan.folds,
+                    baseline_state=original_base,
+                    selected_states=[original_base for _ in fold_plan.folds],
+                )
+                if fold_plan.held_out_support_evidence
+                else _unavailable_support_cv_evidence()
+            )
             _load_state(model, original_base)
             return MARCOTTrainingAudit(
                 arm=arm_value,
@@ -773,14 +865,9 @@ def train_marc_ot_arm(
                 training_seconds=float(time.perf_counter() - started),
                 peak_cuda_bytes=(int(torch.cuda.max_memory_allocated(values.device)) if values.is_cuda else None),
                 held_out_support_evidence=False,
+                support_cv_evidence=support_cv_evidence,
             )
 
-        fold_plan = build_marc_ot_support_fold_plan(
-            labels,
-            tokens,
-            fold_count=int(config.fold_count),
-            seed=int(config.seed),
-        )
         if not fold_plan.held_out_support_evidence:
             _load_state(model, original_base)
             return MARCOTTrainingAudit(
@@ -809,6 +896,7 @@ def train_marc_ot_arm(
                     else None
                 ),
                 held_out_support_evidence=False,
+                support_cv_evidence=_unavailable_support_cv_evidence(),
             )
         fold_indices = fold_plan.folds
 
@@ -1088,6 +1176,68 @@ def train_marc_ot_arm(
             current_state = _clone_tensors(original_base, context="original fallback state")
             current_duals = _clone_tensors(original_duals, context="original fallback duals")
             _load_state(model, current_state)
+        crossfit_selected_states: list[Mapping[str, Tensor]] = []
+        for fit, _validation in fold_indices:
+            shadow_state = _clone_tensors(original_base, context="crossfit evidence state")
+            shadow_duals = _clone_tensors(original_duals, context="crossfit evidence duals")
+            if (
+                initial_state_factory is not None
+                and arm_value in {"R4", "R6", "R8"}
+                and initial_selected_alpha != 0.0
+            ):
+                _load_state(model, original_base)
+                fit_iq, fit_labels, fit_tokens = fold_payload(fit)
+                initial_candidate = _clone_tensors(
+                    initial_state_factory(
+                        fit_iq, fit_labels, fit_tokens, "crossfit"
+                    ),
+                    context="crossfit evidence initial state",
+                )
+                shadow_state, shadow_duals = _interpolate_for_alpha(
+                    shadow_state,
+                    initial_candidate,
+                    shadow_duals,
+                    shadow_duals,
+                    alpha=initial_selected_alpha,
+                    trainable_parameter_names=tuple(
+                        name
+                        for name in shadow_state
+                        if parameter_block_key(name) is not None
+                    ),
+                )
+            for stage_index, (stage, alpha) in enumerate(
+                zip(MARCOT_PROGRESSIVE_STAGES, stage_selected_alphas, strict=True)
+            ):
+                if alpha == 0.0:
+                    continue
+                _load_state(model, shadow_state)
+                evidence_reached = _stage_reached_names(model, stage_index)
+                candidate_state, candidate_duals = update_from_stage_base(
+                    shadow_state,
+                    shadow_duals,
+                    stage,
+                    evidence_reached,
+                    fit,
+                    fit_scope="crossfit",
+                )
+                shadow_state, shadow_duals = _interpolate_for_alpha(
+                    shadow_state,
+                    candidate_state,
+                    shadow_duals,
+                    candidate_duals,
+                    alpha=alpha,
+                    trainable_parameter_names=evidence_reached,
+                )
+            crossfit_selected_states.append(shadow_state)
+        support_cv_evidence = _true_support_cv_evidence(
+            model,
+            values,
+            labels,
+            fold_indices,
+            baseline_state=original_base,
+            selected_states=crossfit_selected_states,
+        )
+        _load_state(model, current_state)
         return MARCOTTrainingAudit(
             arm=arm_value,
             selected_alpha=selected_alpha,
@@ -1102,6 +1252,7 @@ def train_marc_ot_arm(
             peak_cuda_bytes=(int(torch.cuda.max_memory_allocated(values.device)) if values.is_cuda else None),
             reached_parameter_names=reached,
             held_out_support_evidence=True,
+            support_cv_evidence=support_cv_evidence,
         )
     except Exception:
         _load_state(model, original_base)

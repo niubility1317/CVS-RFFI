@@ -13,7 +13,29 @@ from cvsrffi.stage2_marc_ot_scoring import (
 )
 
 
-def _write_prediction(root, *, arm="R0", predictions=(0, 1, 1, 1), receipt_updates=None):
+def _support_cv_evidence(delta_pp=0.0):
+    return {
+        "schema": "cvs.phase2.marc_ot.support_cv.v1",
+        "source": "TRUE_HELD_OUT_CROSSFIT",
+        "fold_count": 2,
+        "baseline_balanced_accuracy": 0.75,
+        "selected_balanced_accuracy": 0.75 + delta_pp / 100.0,
+        "balanced_accuracy_delta_pp": delta_pp,
+        "baseline_class_floor": 0.5,
+        "selected_class_floor": 0.5,
+        "class_floor_delta_pp": 0.0,
+    }
+
+
+def _write_prediction(
+    root,
+    *,
+    arm="R0",
+    predictions=(0, 1, 1, 1),
+    zero_id_count=0,
+    support_delta_pp=0.0,
+    receipt_updates=None,
+):
     root.mkdir()
     tokens = np.asarray(["q0", "q1", "q2", "q3"])
     probs = np.asarray(
@@ -21,7 +43,9 @@ def _write_prediction(root, *, arm="R0", predictions=(0, 1, 1, 1), receipt_updat
         dtype=np.float64,
     )
     logits = np.log(probs)
-    members = {"query_tokens": tokens}
+    query_z_id = np.ones((len(tokens), 160), dtype=np.float64)
+    query_z_id[:zero_id_count] = 0.0
+    members = {"query_tokens": tokens, "query_z_id": query_z_id}
     for prefix in ("p1", "p2", "p3"):
         members[f"{prefix}_logits"] = logits
         members[f"{prefix}_predictions"] = np.asarray(predictions, dtype=np.int64)
@@ -43,6 +67,9 @@ def _write_prediction(root, *, arm="R0", predictions=(0, 1, 1, 1), receipt_updat
         "query_truth_opened": False,
         "query_role_opened": False,
         "support_state_frozen_before_query": True,
+        "zero_id_norm_threshold": 1e-12,
+        "zero_id_count": zero_id_count,
+        "support_cv_evidence": _support_cv_evidence(support_delta_pp),
         "resources": {
             "training_seconds": 1.25,
             "inference_seconds": 0.5,
@@ -96,6 +123,31 @@ def test_truth_last_score_outputs_absolute_metrics_per_class_and_resources(tmp_p
     assert p3["per_class_accuracy"] == {"old0": 0.5, "old1": 1.0}
     assert score["resources"]["training_seconds"] == 1.25
     assert score["truth_join_after_prediction_only"] is True
+    assert score["zero_id_evidence"]["count"] == 0
+    assert score["support_cv_evidence"]["balanced_accuracy_delta_pp"] == 0.0
+
+
+def test_prediction_preflight_requires_and_recomputes_zero_id_and_support_cv(tmp_path) -> None:
+    root = _write_prediction(tmp_path / "prediction", zero_id_count=1)
+    score = score_marc_ot_predictions(root, _truth(tmp_path / "truth.json"))
+    assert score["zero_id_evidence"] == {"threshold": 1e-12, "count": 1}
+
+    receipt_path = root / "prediction_receipt.json"
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt["zero_id_count"] = 0
+    receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+    with pytest.raises(ValueError, match="zero.*binding|zero.*count"):
+        score_marc_ot_predictions(root, tmp_path / "truth.json")
+
+
+def test_prediction_preflight_rejects_tampered_support_cv_delta(tmp_path) -> None:
+    root = _write_prediction(tmp_path / "prediction")
+    receipt_path = root / "prediction_receipt.json"
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt["support_cv_evidence"]["balanced_accuracy_delta_pp"] = 99.0
+    receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+    with pytest.raises(ValueError, match="support CV|cross-fit"):
+        score_marc_ot_predictions(root, _truth(tmp_path / "truth.json"))
 
 
 @pytest.mark.parametrize(
@@ -189,6 +241,9 @@ def test_stage2b_score_filters_predicted_target_new_rows_from_reg0_metrics(tmp_p
     with np.load(root / "predictions.npz", allow_pickle=False) as source:
         members = {name: np.asarray(source[name]) for name in source.files}
     members["query_tokens"] = np.append(members["query_tokens"], "q4")
+    members["query_z_id"] = np.vstack(
+        (members["query_z_id"], np.ones((1, members["query_z_id"].shape[1])))
+    )
     for prefix in ("p1", "p2", "p3"):
         members[f"{prefix}_predictions"] = np.append(
             members[f"{prefix}_predictions"], 0

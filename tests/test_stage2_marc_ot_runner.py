@@ -314,6 +314,17 @@ def test_progressive_runner_uses_fixed_stage_order_and_refreezes() -> None:
     assert all(names for _, names in observed)
     assert audit.query_rows_used == 0
     assert audit.held_out_support_evidence is True
+    assert audit.support_cv_evidence == {
+        "schema": "cvs.phase2.marc_ot.support_cv.v1",
+        "source": "TRUE_HELD_OUT_CROSSFIT",
+        "fold_count": 2,
+        "baseline_balanced_accuracy": 1.0,
+        "selected_balanced_accuracy": 1.0,
+        "balanced_accuracy_delta_pp": 0.0,
+        "baseline_class_floor": 1.0,
+        "selected_class_floor": 1.0,
+        "class_floor_delta_pp": 0.0,
+    }
     assert not model.training
     assert all(not parameter.requires_grad for parameter in model.parameters())
 

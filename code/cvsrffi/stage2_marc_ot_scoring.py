@@ -68,6 +68,89 @@ def _validate_receipt(value: Mapping[str, Any]) -> None:
             raise ValueError(f"MARC-OT prediction receipt binding missing: {field}")
 
 
+_SUPPORT_CV_KEYS = frozenset(
+    {
+        "schema",
+        "source",
+        "fold_count",
+        "baseline_balanced_accuracy",
+        "selected_balanced_accuracy",
+        "balanced_accuracy_delta_pp",
+        "baseline_class_floor",
+        "selected_class_floor",
+        "class_floor_delta_pp",
+    }
+)
+
+
+def validate_support_cv_evidence(value: Any) -> Mapping[str, Any]:
+    """Validate one receipt-safe support-only cross-fit summary."""
+
+    if not isinstance(value, Mapping) or frozenset(value) != _SUPPORT_CV_KEYS:
+        raise ValueError("MARC-OT support CV evidence field drift")
+    if value.get("schema") != "cvs.phase2.marc_ot.support_cv.v1":
+        raise ValueError("MARC-OT support CV evidence schema drift")
+    source = value.get("source")
+    fold_count = value.get("fold_count")
+    metric_fields = tuple(_SUPPORT_CV_KEYS - {"schema", "source", "fold_count"})
+    if source == "UNAVAILABLE_K1":
+        if fold_count != 0 or any(value[field] is not None for field in metric_fields):
+            raise ValueError("MARC-OT K1 support CV evidence is malformed")
+        return dict(value)
+    if source != "TRUE_HELD_OUT_CROSSFIT":
+        raise ValueError("MARC-OT support CV evidence must come from true cross-fit")
+    if (
+        not isinstance(fold_count, int)
+        or isinstance(fold_count, bool)
+        or fold_count < 2
+    ):
+        raise ValueError("MARC-OT support CV fold count is invalid")
+    numbers: dict[str, float] = {}
+    for field in metric_fields:
+        raw = value[field]
+        if not isinstance(raw, (int, float)) or isinstance(raw, bool):
+            raise ValueError("MARC-OT support CV metrics must be numeric")
+        numbers[field] = float(raw)
+        if not math.isfinite(numbers[field]):
+            raise ValueError("MARC-OT support CV metrics must be finite")
+    for field in (
+        "baseline_balanced_accuracy",
+        "selected_balanced_accuracy",
+        "baseline_class_floor",
+        "selected_class_floor",
+    ):
+        if not 0.0 <= numbers[field] <= 1.0:
+            raise ValueError("MARC-OT support CV metric is outside [0,1]")
+    expected_ba = 100.0 * (
+        numbers["selected_balanced_accuracy"]
+        - numbers["baseline_balanced_accuracy"]
+    )
+    expected_floor = 100.0 * (
+        numbers["selected_class_floor"] - numbers["baseline_class_floor"]
+    )
+    if not math.isclose(
+        numbers["balanced_accuracy_delta_pp"], expected_ba, rel_tol=0.0, abs_tol=1e-9
+    ) or not math.isclose(
+        numbers["class_floor_delta_pp"], expected_floor, rel_tol=0.0, abs_tol=1e-9
+    ):
+        raise ValueError("MARC-OT support CV delta disagrees with cross-fit values")
+    return dict(value)
+
+
+def count_zero_identity_rows(values: Any, threshold: Any) -> int:
+    """Count finite identity rows whose L2 norm is at the frozen zero threshold."""
+
+    if not isinstance(threshold, (int, float)) or isinstance(threshold, bool):
+        raise ValueError("MARC-OT zero-id threshold must be numeric")
+    resolved = float(threshold)
+    if not math.isfinite(resolved) or resolved < 0.0:
+        raise ValueError("MARC-OT zero-id threshold must be finite and nonnegative")
+    features = np.asarray(values, dtype=np.float64)
+    if features.ndim != 2 or features.shape[0] == 0 or not np.isfinite(features).all():
+        raise ValueError("MARC-OT query feature geometry or finiteness drift")
+    return int(np.sum(np.linalg.norm(features, axis=1) <= resolved))
+
+
 def _truth_lookup(
     truth_payload: Mapping[str, Any], receipt: Mapping[str, Any], registry_size: int
 ) -> dict[str, tuple[int, str]]:
@@ -207,11 +290,10 @@ def preflight_marc_ot_prediction(
     except OSError as error:
         raise ValueError("MARC-OT prediction artifact is missing") from error
     with arrays:
-        required = {"query_tokens"}
+        required = {"query_tokens", "query_z_id"}
         for prediction_member, logit_member in _PROBES.values():
             required.update((prediction_member, logit_member))
-        allowed = required | {"query_z_id"}
-        if not required.issubset(arrays.files) or not set(arrays.files).issubset(allowed):
+        if set(arrays.files) != required:
             raise ValueError("MARC-OT prediction members are incomplete")
         tokens = np.asarray(arrays["query_tokens"]).astype(str)
         expected_raw = receipt.get("expected_query_tokens")
@@ -226,11 +308,19 @@ def preflight_marc_ot_prediction(
         ):
             raise ValueError("MARC-OT prediction/receipt token binding drift")
         material = {"query_tokens": tokens.copy()}
-        if "query_z_id" in arrays.files:
-            features = np.asarray(arrays["query_z_id"], dtype=np.float64)
-            if features.ndim != 2 or features.shape[0] != len(tokens) or not np.isfinite(features).all():
-                raise ValueError("MARC-OT query feature geometry or finiteness drift")
-            material["query_z_id"] = features.copy()
+        features = np.asarray(arrays["query_z_id"], dtype=np.float64)
+        if features.ndim != 2 or features.shape[0] != len(tokens):
+            raise ValueError("MARC-OT query feature geometry or finiteness drift")
+        threshold = receipt.get("zero_id_norm_threshold")
+        zero_id_count = count_zero_identity_rows(features, threshold)
+        declared_zero_count = receipt.get("zero_id_count")
+        if (
+            not isinstance(declared_zero_count, int)
+            or isinstance(declared_zero_count, bool)
+            or declared_zero_count != zero_id_count
+        ):
+            raise ValueError("MARC-OT zero-id count binding drift")
+        material["query_z_id"] = features.copy()
         for probe, (prediction_member, logit_member) in _PROBES.items():
             prediction = _validate_predictions(
                 arrays[prediction_member], rows=len(tokens), classes=len(registry), label=probe
@@ -243,6 +333,7 @@ def preflight_marc_ot_prediction(
             material[prediction_member] = prediction.copy()
             material[logit_member] = logits.copy()
     resources = _resources(receipt.get("resources"))
+    validate_support_cv_evidence(receipt.get("support_cv_evidence"))
     return MARCOTPredictionPreflight(
         receipt=dict(receipt),
         registry=registry,
@@ -304,6 +395,13 @@ def score_preflighted_marc_ot_prediction(
         "class_registry": list(registry),
         "probes": probes,
         "resources": dict(preflight.resources),
+        "zero_id_evidence": {
+            "threshold": float(receipt["zero_id_norm_threshold"]),
+            "count": int(receipt["zero_id_count"]),
+        },
+        "support_cv_evidence": dict(
+            validate_support_cv_evidence(receipt["support_cv_evidence"])
+        ),
         "pairing_payload": {
             "query_tokens": scored_tokens.tolist(),
             "truth": truth.tolist(),
@@ -491,6 +589,14 @@ def compare_marc_ot_score_rows(
             "candidate": dict(candidate["resources"]),
             "delta": resource_delta,
         },
+        "zero_id_evidence": {
+            "control": dict(control["zero_id_evidence"]),
+            "candidate": dict(candidate["zero_id_evidence"]),
+        },
+        "support_cv_evidence": {
+            "control": dict(control["support_cv_evidence"]),
+            "candidate": dict(candidate["support_cv_evidence"]),
+        },
     }
 
 
@@ -501,4 +607,6 @@ __all__ = [
     "preflight_marc_ot_prediction",
     "score_marc_ot_predictions",
     "score_preflighted_marc_ot_prediction",
+    "count_zero_identity_rows",
+    "validate_support_cv_evidence",
 ]

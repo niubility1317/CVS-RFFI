@@ -17,6 +17,7 @@
     0.25,
     0.0
   ],
+  "zero_id_norm_threshold": 1e-12,
   "k_shot": 10,
   "software_supported_k": [
     1,
@@ -62,6 +63,7 @@
     "median_p3_ba_delta_pp": 3.0,
     "median_p3_floor_delta_pp": 0.0,
     "minimum_help_gt_harm_scenes": 2,
+    "support_query_direction_tolerance_pp": 1e-09,
     "worst_scene_p3_ba_delta_pp": -0.5
   },
   "protocol_schema": "p2_min_v1",

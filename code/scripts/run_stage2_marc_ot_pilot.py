@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 from dataclasses import asdict, replace
 import json
+import math
 from pathlib import Path
 from statistics import median
 import sys
@@ -27,7 +28,10 @@ from cvsrffi.marc_ot_support_features import (  # noqa: E402
     MARC_OT_SUPPORT_ROW_SCHEMA,
     build_marc_ot_support_features,
 )
-from cvsrffi.meta_weight_bank_checkpoint import load_meta_weight_bundle  # noqa: E402
+from cvsrffi.meta_weight_bank_checkpoint import (  # noqa: E402
+    dequantize_task_domain_features,
+    load_meta_weight_bundle,
+)
 from cvsrffi.meta_weight_calibrator import calibrate_weight_plan  # noqa: E402
 from cvsrffi.stage2_bisage_runner import frozen_checkpoint  # noqa: E402
 from cvsrffi.stage2_marc_ot_pilot import (  # noqa: E402
@@ -46,9 +50,11 @@ from cvsrffi.stage2_marc_ot_runner import (  # noqa: E402
 )
 from cvsrffi.stage2_marc_ot_scoring import (  # noqa: E402
     compare_marc_ot_score_rows,
+    count_zero_identity_rows,
     load_marc_ot_truth,
     preflight_marc_ot_prediction,
     score_preflighted_marc_ot_prediction,
+    validate_support_cv_evidence,
 )
 
 
@@ -322,17 +328,12 @@ def _build_support_features(
 
 
 def _bank_task_features(bundle: Any, device: torch.device) -> torch.Tensor:
-    task_count = len(bundle.bank.task_keys)
-    members = []
-    for entry in bundle.bank.entries:
-        coefficients = entry.task_coefficients.detach().to(device=device, dtype=torch.float32)
-        if coefficients.shape != (task_count, entry.effective_rank):
-            raise ValueError("MARC-OT bank task coefficient geometry drift")
-        members.append(coefficients)
-    result = torch.cat(members, dim=1)
-    if result.shape[1] == 0 or not bool(torch.isfinite(result).all()):
-        raise ValueError("MARC-OT bank task coefficient space is empty or nonfinite")
-    return result
+    result = dequantize_task_domain_features(bundle.task_domain_bank).to(device=device)
+    if result.shape != (len(bundle.bank.task_keys), 685):
+        raise ValueError("MARC-OT task-domain descriptor geometry drift")
+    if not bool(torch.isfinite(result).all().item()):
+        raise ValueError("MARC-OT task-domain descriptor space is nonfinite")
+    return result.detach()
 
 
 def _calibration_transform(
@@ -531,6 +532,9 @@ def _save_frozen_unit(
     held_out = audit.get("held_out_support_evidence") if isinstance(audit, Mapping) else None
     if not isinstance(held_out, bool):
         raise ValueError("support training audit lacks held-out evidence status")
+    support_cv_evidence = validate_support_cv_evidence(
+        audit.get("support_cv_evidence") if isinstance(audit, Mapping) else None
+    )
     _write_json_new(
         unit / "support_state_receipt.json",
         {
@@ -544,6 +548,7 @@ def _save_frozen_unit(
             "training_coverage_k": list(config["training_coverage_k"]),
             "pilot_k": int(config["pilot_k"]),
             "held_out_support_evidence": held_out,
+            "support_cv_evidence": dict(support_cv_evidence),
             "training_audit": state["audit"],
             "bank_initialization": state["bank_initialization"],
             "support_feature_abi": state["support_feature_abi"],
@@ -564,7 +569,7 @@ def _predict_unit(
     support: Any,
     query: Any,
     state: Mapping[str, Any],
-) -> None:
+) -> Mapping[str, Any]:
     unit_device = torch.device(args.device)
     if unit_device.type == "cuda":
         torch.cuda.reset_peak_memory_stats(unit_device)
@@ -586,6 +591,13 @@ def _predict_unit(
         class_registry=registry,
         seed=int(config["seed"]),
         batch_size=int(args.batch_size),
+    )
+    zero_threshold = float(config["zero_id_norm_threshold"])
+    zero_id_count = count_zero_identity_rows(
+        predictions.get("query_z_id"), zero_threshold
+    )
+    support_cv_evidence = validate_support_cv_evidence(
+        state["audit"].get("support_cv_evidence")
     )
     inference_seconds = float(time.perf_counter() - started)
     inference_cuda_peak = (
@@ -626,6 +638,9 @@ def _predict_unit(
             "held_out_support_evidence": bool(
                 state["audit"]["held_out_support_evidence"]
             ),
+            "zero_id_norm_threshold": zero_threshold,
+            "zero_id_count": zero_id_count,
+            "support_cv_evidence": dict(support_cv_evidence),
             "resources": _resource_receipt(
                 training_seconds=float(audit["training_seconds"]),
                 inference_seconds=inference_seconds,
@@ -642,6 +657,13 @@ def _predict_unit(
             ),
         },
     )
+    return {
+        "scenario": scenario,
+        "arm": arm,
+        "zero_id_norm_threshold": zero_threshold,
+        "zero_id_count": zero_id_count,
+        "support_cv_evidence": dict(support_cv_evidence),
+    }
 
 
 def _context(args: argparse.Namespace):
@@ -681,6 +703,7 @@ def _pilot(args: argparse.Namespace) -> Mapping[str, Any]:
     destination = create_immutable_output_root(args.output_root)
     config, job = _context(args)
     adaptation_unit_evidence: list[Mapping[str, Any]] = []
+    prediction_unit_evidence: list[Mapping[str, Any]] = []
 
     def support_loader(scenario: str):
         return load_support_package(_support_path(job, scenario))
@@ -701,6 +724,11 @@ def _pilot(args: argparse.Namespace) -> Mapping[str, Any]:
                     "scenario": scenario,
                     "arm": arm,
                     "held_out_support_evidence": held_out,
+                    "support_cv_evidence": dict(
+                        validate_support_cv_evidence(
+                            audit.get("support_cv_evidence")
+                        )
+                    ),
                 }
             )
         return state
@@ -712,7 +740,12 @@ def _pilot(args: argparse.Namespace) -> Mapping[str, Any]:
         return load_query_package(_query_path(job, scenario))
 
     def predict(scenario: str, arm: str, support: Any, query: Any, state: Mapping[str, Any]):
-        _predict_unit(args, config, job, destination, scenario, arm, support, query, state)
+        evidence = _predict_unit(
+            args, config, job, destination, scenario, arm, support, query, state
+        )
+        if not isinstance(evidence, Mapping):
+            raise ValueError("prediction unit did not return bound zero-id evidence")
+        prediction_unit_evidence.append(dict(evidence))
 
     lifecycle = run_support_then_query(
         scenarios=SCENARIOS,
@@ -734,6 +767,8 @@ def _pilot(args: argparse.Namespace) -> Mapping[str, Any]:
         "pilot_k": int(config["pilot_k"]),
         "pilot_executed": True,
         "adaptation_unit_evidence": adaptation_unit_evidence,
+        "prediction_unit_evidence": prediction_unit_evidence,
+        "zero_id_norm_threshold": float(config["zero_id_norm_threshold"]),
         "promotion_gates": dict(config["promotion_gates"]),
         "scoring_required": True,
     }
@@ -760,6 +795,61 @@ def _promotion_decision(
         for row in selected
     )
     low_elev = next(row for row in selected if row["scenario"] == "leo_low_elev_weak")
+    tolerance = float(gates["support_query_direction_tolerance_pp"])
+    direction_diagnostics: list[Mapping[str, Any]] = []
+    for row in selected:
+        support_evidence = row.get("support_cv_evidence")
+        if not isinstance(support_evidence, Mapping):
+            raise ValueError("MARC-OT paired support CV evidence is missing")
+        candidate_support = validate_support_cv_evidence(
+            support_evidence.get("candidate")
+        )
+        query_delta = float(
+            row["probes"]["P3_OLD_D92"]["balanced_accuracy_delta_pp"]
+        )
+        raw_support_delta = candidate_support["balanced_accuracy_delta_pp"]
+        support_delta = (
+            None if raw_support_delta is None else float(raw_support_delta)
+        )
+        if support_delta is None:
+            consistent = False
+        elif support_delta > tolerance:
+            consistent = query_delta >= -tolerance
+        elif support_delta < -tolerance:
+            consistent = query_delta <= tolerance
+        else:
+            consistent = abs(query_delta) <= tolerance
+        direction_diagnostics.append(
+            {
+                "scenario": row["scenario"],
+                "support_cv_ba_delta_pp": support_delta,
+                "query_p3_ba_delta_pp": query_delta,
+                "tolerance_pp": tolerance,
+                "consistent": bool(consistent),
+            }
+        )
+    zero_diagnostics: list[Mapping[str, Any]] = []
+    for row in paired_rows:
+        evidence = row.get("zero_id_evidence")
+        if not isinstance(evidence, Mapping):
+            raise ValueError("MARC-OT paired zero-id evidence is missing")
+        for side, arm_name in (
+            ("control", str(row.get("control_arm"))),
+            ("candidate", str(row.get("candidate_arm"))),
+        ):
+            current = evidence.get(side)
+            if not isinstance(current, Mapping):
+                raise ValueError("MARC-OT paired zero-id evidence is malformed")
+            count = current.get("count")
+            if not isinstance(count, int) or isinstance(count, bool) or count < 0:
+                raise ValueError("MARC-OT paired zero-id count is invalid")
+            zero_diagnostics.append(
+                {
+                    "scenario": row["scenario"],
+                    "arm": arm_name,
+                    "count": count,
+                }
+            )
     checks = {
         "median_p3_ba": median(p3_ba) >= float(gates["median_p3_ba_delta_pp"]),
         "worst_scene_p3_ba": min(p3_ba) >= float(gates["worst_scene_p3_ba_delta_pp"]),
@@ -768,6 +858,10 @@ def _promotion_decision(
         >= float(gates["low_elev_p3_floor_delta_pp"]),
         "p1_p2_scene_drop": min(p1_p2) >= -float(gates["max_p1_p2_scene_drop_pp"]),
         "help_gt_harm_scenes": help_scenes >= int(gates["minimum_help_gt_harm_scenes"]),
+        "zero_id_all_arms": all(row["count"] == 0 for row in zero_diagnostics),
+        "support_query_direction": all(
+            row["consistent"] for row in direction_diagnostics
+        ),
     }
     passed = all(checks.values())
     return {
@@ -775,6 +869,8 @@ def _promotion_decision(
         "status": "PROMOTE_TO_TARGET25" if passed else "NO_PROMOTION_TO_TARGET25",
         "passed": passed,
         "gates": checks,
+        "zero_id_diagnostics": zero_diagnostics,
+        "direction_diagnostics": direction_diagnostics,
     }
 
 
@@ -808,6 +904,14 @@ def _preflight_pilot_promotion_binding(
     pilot_executed = pilot.get("pilot_executed")
     if not isinstance(pilot_executed, bool):
         raise ValueError("MARC-OT pilot execution binding drift")
+    zero_threshold = pilot.get("zero_id_norm_threshold")
+    if (
+        not isinstance(zero_threshold, (int, float))
+        or isinstance(zero_threshold, bool)
+        or not math.isfinite(float(zero_threshold))
+        or float(zero_threshold) < 0.0
+    ):
+        raise ValueError("MARC-OT pilot zero-id threshold binding drift")
 
     raw_evidence = pilot.get("adaptation_unit_evidence")
     if not isinstance(raw_evidence, list):
@@ -818,21 +922,62 @@ def _preflight_pilot_promotion_binding(
         for arm in FORMAL_ARMS
         if arm != "R0"
     )
-    evidence: dict[tuple[str, str], bool] = {}
+    evidence: dict[tuple[str, str], tuple[bool, Mapping[str, Any]]] = {}
     for row in raw_evidence:
         if not isinstance(row, Mapping) or set(row) != {
             "scenario",
             "arm",
             "held_out_support_evidence",
+            "support_cv_evidence",
         }:
             raise ValueError("MARC-OT adaptation unit evidence field drift")
         pair = (str(row["scenario"]), str(row["arm"]))
         held_out = row["held_out_support_evidence"]
         if pair in evidence or not isinstance(held_out, bool):
             raise ValueError("MARC-OT adaptation unit evidence duplicate or type drift")
-        evidence[pair] = held_out
+        support_cv = validate_support_cv_evidence(row["support_cv_evidence"])
+        evidence[pair] = (held_out, support_cv)
     if tuple(evidence) != expected_pairs:
         raise ValueError("MARC-OT adaptation unit evidence coverage drift")
+
+    raw_prediction_evidence = pilot.get("prediction_unit_evidence")
+    if not isinstance(raw_prediction_evidence, list):
+        raise ValueError("MARC-OT prediction unit evidence is missing")
+    expected_prediction_pairs = tuple(
+        (scenario, arm) for scenario in SCENARIOS for arm in FORMAL_ARMS
+    )
+    prediction_evidence: dict[
+        tuple[str, str], tuple[int, float, Mapping[str, Any]]
+    ] = {}
+    for row in raw_prediction_evidence:
+        if not isinstance(row, Mapping) or set(row) != {
+            "scenario",
+            "arm",
+            "zero_id_norm_threshold",
+            "zero_id_count",
+            "support_cv_evidence",
+        }:
+            raise ValueError("MARC-OT prediction unit evidence field drift")
+        pair = (str(row["scenario"]), str(row["arm"]))
+        count = row["zero_id_count"]
+        threshold = row["zero_id_norm_threshold"]
+        if (
+            pair in prediction_evidence
+            or not isinstance(count, int)
+            or isinstance(count, bool)
+            or count < 0
+            or not isinstance(threshold, (int, float))
+            or isinstance(threshold, bool)
+            or float(threshold) != float(zero_threshold)
+        ):
+            raise ValueError("MARC-OT prediction unit evidence binding drift")
+        prediction_evidence[pair] = (
+            count,
+            float(threshold),
+            validate_support_cv_evidence(row["support_cv_evidence"]),
+        )
+    if tuple(prediction_evidence) != expected_prediction_pairs:
+        raise ValueError("MARC-OT prediction unit evidence coverage drift")
 
     immutable = {
         "software_supported_k": software_k,
@@ -844,8 +989,6 @@ def _preflight_pilot_promotion_binding(
             prediction_receipt = preflighted[(scenario, arm)].receipt
             if any(prediction_receipt.get(name) != value for name, value in immutable.items()):
                 raise ValueError("MARC-OT prediction receipt K binding drift")
-            if arm == "R0":
-                continue
             support_receipt = _load_json(
                 prediction_root / scenario / arm / "support_state_receipt.json"
             )
@@ -862,17 +1005,44 @@ def _preflight_pilot_promotion_binding(
             ):
                 raise ValueError("MARC-OT support unit receipt binding drift")
             training_audit = support_receipt.get("training_audit")
-            held_out = evidence[(scenario, arm)]
+            if not isinstance(training_audit, Mapping):
+                raise ValueError("MARC-OT support training audit binding drift")
+            receipt_cv = validate_support_cv_evidence(
+                support_receipt.get("support_cv_evidence")
+            )
+            audit_cv = validate_support_cv_evidence(
+                training_audit.get("support_cv_evidence")
+            )
+            prediction_cv = validate_support_cv_evidence(
+                prediction_receipt.get("support_cv_evidence")
+            )
+            count, threshold, summary_cv = prediction_evidence[(scenario, arm)]
             if (
-                not isinstance(training_audit, Mapping)
-                or support_receipt.get("held_out_support_evidence") is not held_out
+                receipt_cv != audit_cv
+                or receipt_cv != prediction_cv
+                or receipt_cv != summary_cv
+                or prediction_receipt.get("zero_id_count") != count
+                or float(prediction_receipt.get("zero_id_norm_threshold", -1.0))
+                != threshold
+            ):
+                raise ValueError("MARC-OT support CV/zero-id receipt binding drift")
+            if arm == "R0":
+                continue
+            held_out, adaptation_cv = evidence[(scenario, arm)]
+            if (
+                support_receipt.get("held_out_support_evidence") is not held_out
                 or training_audit.get("held_out_support_evidence") is not held_out
                 or prediction_receipt.get("held_out_support_evidence") is not held_out
+                or adaptation_cv != receipt_cv
             ):
                 raise ValueError("MARC-OT held-out unit receipt binding drift")
 
-    if pilot_k == 1 and any(evidence.values()):
-        raise ValueError("MARC-OT K1 cannot claim held-out support evidence")
+    if pilot_k == 1:
+        if any(row[0] for row in evidence.values()) or any(
+            row[2].get("source") != "UNAVAILABLE_K1"
+            for row in prediction_evidence.values()
+        ):
+            raise ValueError("MARC-OT K1 cannot claim held-out support CV evidence")
     reasons: list[str] = []
     if pilot_k == 1:
         reasons.append("PILOT_K1_NO_HELD_OUT_SUPPORT_EVIDENCE")
@@ -880,7 +1050,7 @@ def _preflight_pilot_promotion_binding(
         reasons.append("PILOT_NOT_EXECUTED")
     reasons.extend(
         f"UNIT_HELD_OUT_SUPPORT_EVIDENCE_MISSING:{scenario}/{arm}"
-        for (scenario, arm), held_out in evidence.items()
+        for (scenario, arm), (held_out, _support_cv) in evidence.items()
         if not held_out
     )
     return tuple(reasons)

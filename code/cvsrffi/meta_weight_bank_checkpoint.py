@@ -27,6 +27,31 @@ from .meta_weight_bank import (
 
 
 META_WEIGHT_BUNDLE_SCHEMA = "marc_ot_weight_bank_v1"
+MARC_OT_TASK_DOMAIN_BANK_SCHEMA = "marc_ot.task_domain_bank.int8.v1"
+
+
+@dataclass(frozen=True)
+class TaskDomainDescriptor:
+    """One multi-sample Phase1 task-domain aggregate before quantization."""
+
+    values: Tensor
+    aggregation_count: int
+
+
+@dataclass(frozen=True)
+class QuantizedTaskDomainBank:
+    """Strict task-key-bound int8 Phase1 descriptors allowed in Phase2."""
+
+    schema: str
+    task_keys: tuple[DeltaTaskKey, ...]
+    values: Tensor
+    scales: Tensor
+    zero_points: Tensor
+    aggregation_counts: Tensor
+    feature_schema: str
+    feature_dim: int
+    feature_config: Mapping[str, object]
+    aggregation: str
 
 
 @dataclass(frozen=True)
@@ -37,6 +62,7 @@ class MetaWeightBundle:
     base_checkpoint_id: str
     bank: WeightDeltaBank
     support_encoder: SupportSetEncoder
+    task_domain_bank: QuantizedTaskDomainBank
     feature_schema: str
     feature_dim: int
     feature_config: Mapping[str, object]
@@ -102,6 +128,8 @@ def _validate_bank(
         raise ValueError("weight delta bank base checkpoint identity is invalid")
     if not isinstance(bank.task_keys, tuple) or not bank.task_keys:
         raise ValueError("weight delta bank task keys must be non-empty")
+    if len(set(bank.task_keys)) != len(bank.task_keys):
+        raise ValueError("weight delta bank task domain keys must be unique")
     if not isinstance(bank.entries, tuple) or not bank.entries:
         raise ValueError("weight delta bank entries must be non-empty")
     expected_block_specs = _validate_expected_block_specs(expected_block_specs)
@@ -270,6 +298,74 @@ def _support_feature_payload() -> dict[str, object]:
     }
 
 
+def _task_keys_payload(task_keys: tuple[DeltaTaskKey, ...]) -> list[dict[str, object]]:
+    return [
+        {
+            "receiver": task.receiver,
+            "day": task.day,
+            "scene": task.scene,
+            "k_shot": task.k_shot,
+        }
+        for task in task_keys
+    ]
+
+
+def _quantize_task_domain_descriptors(
+    task_keys: tuple[DeltaTaskKey, ...],
+    descriptors: Mapping[DeltaTaskKey, TaskDomainDescriptor],
+) -> QuantizedTaskDomainBank:
+    if not isinstance(descriptors, Mapping):
+        raise ValueError("task domain descriptors must be a mapping")
+    if set(descriptors) != set(task_keys) or len(descriptors) != len(task_keys):
+        raise ValueError("task domain descriptor coverage must exactly match bank task keys")
+    rows: list[Tensor] = []
+    counts: list[int] = []
+    for key in task_keys:
+        descriptor = descriptors.get(key)
+        if not isinstance(descriptor, TaskDomainDescriptor):
+            raise ValueError("task domain descriptor type is invalid")
+        values = _finite_tensor(descriptor.values, f"task domain descriptor {key!r}")
+        if not values.is_floating_point() or values.shape != (MARC_OT_SUPPORT_ROW_DIM,):
+            raise ValueError("task domain descriptor geometry must be one finite 685D row")
+        count = descriptor.aggregation_count
+        if isinstance(count, bool) or not isinstance(count, int) or count < 2:
+            raise ValueError("task domain descriptor must aggregate at least two samples")
+        rows.append(values.detach().to(device="cpu", dtype=torch.float32).clone())
+        counts.append(count)
+    stacked = torch.stack(rows)
+    maximum = stacked.abs().amax(dim=0)
+    minimum_scale = torch.tensor(torch.finfo(torch.float16).tiny, dtype=torch.float32)
+    scales = torch.maximum(maximum / 127.0, minimum_scale).to(torch.float16)
+    quantized = torch.round(stacked / scales.to(torch.float32)).clamp(-127, 127).to(torch.int8)
+    return QuantizedTaskDomainBank(
+        schema=MARC_OT_TASK_DOMAIN_BANK_SCHEMA,
+        task_keys=task_keys,
+        values=quantized,
+        scales=scales,
+        zero_points=torch.zeros(MARC_OT_SUPPORT_ROW_DIM, dtype=torch.int16),
+        aggregation_counts=torch.tensor(counts, dtype=torch.int64),
+        feature_schema=MARC_OT_SUPPORT_ROW_SCHEMA,
+        feature_dim=MARC_OT_SUPPORT_ROW_DIM,
+        feature_config=dict(MARC_OT_SUPPORT_FEATURE_CONFIG),
+        aggregation="sample_count_weighted_mean",
+    )
+
+
+def _task_domain_payload(bank: QuantizedTaskDomainBank) -> dict[str, object]:
+    return {
+        "schema": bank.schema,
+        "task_keys": _task_keys_payload(bank.task_keys),
+        "values": bank.values.detach().cpu().clone(),
+        "scales": bank.scales.detach().cpu().clone(),
+        "zero_points": bank.zero_points.detach().cpu().clone(),
+        "aggregation_counts": bank.aggregation_counts.detach().cpu().clone(),
+        "feature_schema": bank.feature_schema,
+        "feature_dim": bank.feature_dim,
+        "feature_config": dict(bank.feature_config),
+        "aggregation": bank.aggregation,
+    }
+
+
 def _decode_support_feature(raw: object) -> dict[str, object]:
     data = _require_exact_keys(raw, {"schema", "dim", "config"}, "support feature")
     if data["schema"] != MARC_OT_SUPPORT_ROW_SCHEMA:
@@ -303,6 +399,84 @@ def _decode_task_keys(raw: object) -> tuple[DeltaTaskKey, ...]:
             )
         )
     return tuple(tasks)
+
+
+def _decode_task_domain_bank(
+    raw: object,
+    expected_task_keys: tuple[DeltaTaskKey, ...],
+) -> QuantizedTaskDomainBank:
+    data = _require_exact_keys(
+        raw,
+        {
+            "schema",
+            "task_keys",
+            "values",
+            "scales",
+            "zero_points",
+            "aggregation_counts",
+            "feature_schema",
+            "feature_dim",
+            "feature_config",
+            "aggregation",
+        },
+        "task domain bank",
+    )
+    if data["schema"] != MARC_OT_TASK_DOMAIN_BANK_SCHEMA:
+        raise ValueError("task domain bank schema mismatch")
+    task_keys = _decode_task_keys(data["task_keys"])
+    if task_keys != expected_task_keys:
+        raise ValueError("task domain bank task keys/order differ from weight bank")
+    task_count = len(expected_task_keys)
+    values = _finite_tensor(data["values"], "task domain bank values")
+    scales = _finite_tensor(data["scales"], "task domain bank scales")
+    zero_points = _finite_tensor(data["zero_points"], "task domain bank zero points")
+    counts = _finite_tensor(data["aggregation_counts"], "task domain bank aggregation counts")
+    if values.dtype != torch.int8 or values.shape != (task_count, MARC_OT_SUPPORT_ROW_DIM):
+        raise ValueError("task domain bank values geometry or dtype is invalid")
+    if scales.dtype != torch.float16 or scales.shape != (MARC_OT_SUPPORT_ROW_DIM,):
+        raise ValueError("task domain bank scale geometry or dtype is invalid")
+    if not bool((scales > 0).all().item()):
+        raise ValueError("task domain bank scales must be finite and positive")
+    if zero_points.dtype != torch.int16 or zero_points.shape != (MARC_OT_SUPPORT_ROW_DIM,):
+        raise ValueError("task domain bank zero-point geometry or dtype is invalid")
+    if bool((zero_points != 0).any().item()):
+        raise ValueError("task domain bank requires symmetric zero points")
+    if counts.dtype != torch.int64 or counts.shape != (task_count,):
+        raise ValueError("task domain bank aggregation count geometry or dtype is invalid")
+    if bool((counts < 2).any().item()):
+        raise ValueError("task domain bank rows must aggregate at least two samples")
+    if data["feature_schema"] != MARC_OT_SUPPORT_ROW_SCHEMA:
+        raise ValueError("task domain bank feature schema mismatch")
+    if data["feature_dim"] != MARC_OT_SUPPORT_ROW_DIM:
+        raise ValueError("task domain bank feature dimension mismatch")
+    if not isinstance(data["feature_config"], Mapping) or dict(data["feature_config"]) != dict(
+        MARC_OT_SUPPORT_FEATURE_CONFIG
+    ):
+        raise ValueError("task domain bank feature config mismatch")
+    if data["aggregation"] != "sample_count_weighted_mean":
+        raise ValueError("task domain bank aggregation method mismatch")
+    return QuantizedTaskDomainBank(
+        schema=MARC_OT_TASK_DOMAIN_BANK_SCHEMA,
+        task_keys=task_keys,
+        values=values.detach().clone(),
+        scales=scales.detach().clone(),
+        zero_points=zero_points.detach().clone(),
+        aggregation_counts=counts.detach().clone(),
+        feature_schema=MARC_OT_SUPPORT_ROW_SCHEMA,
+        feature_dim=MARC_OT_SUPPORT_ROW_DIM,
+        feature_config=dict(MARC_OT_SUPPORT_FEATURE_CONFIG),
+        aggregation="sample_count_weighted_mean",
+    )
+
+
+def dequantize_task_domain_features(bank: QuantizedTaskDomainBank) -> Tensor:
+    """Decode only the validated frozen int8 aggregate matrix for OT."""
+
+    validated = _decode_task_domain_bank(_task_domain_payload(bank), bank.task_keys)
+    return (
+        validated.values.to(torch.float32)
+        * validated.scales.to(torch.float32).unsqueeze(0)
+    ).detach()
 
 
 def _decode_bank(raw: object, base_checkpoint_id: str) -> WeightDeltaBank:
@@ -440,6 +614,7 @@ def _decode_bundle(
             "bank",
             "support_encoder",
             "support_feature",
+            "task_domain_bank",
         },
         "meta weight bundle",
     )
@@ -459,6 +634,7 @@ def _decode_bundle(
         raise ValueError("bundle-declared block geometry or order differs from caller expectation")
     bank = _decode_bank(data["bank"], expected_base_checkpoint_id)
     _validate_bank(bank, base_state, expected_block_specs)
+    task_domain_bank = _decode_task_domain_bank(data["task_domain_bank"], bank.task_keys)
     encoder = _decode_encoder(data["support_encoder"], bank)
     if encoder.feature_dim != feature_binding["dim"]:
         raise ValueError("support feature encoder/config dimension mismatch")
@@ -467,6 +643,7 @@ def _decode_bundle(
         base_checkpoint_id=expected_base_checkpoint_id,
         bank=bank,
         support_encoder=encoder,
+        task_domain_bank=task_domain_bank,
         feature_schema=str(feature_binding["schema"]),
         feature_dim=int(feature_binding["dim"]),
         feature_config=dict(feature_binding["config"]),
@@ -488,6 +665,7 @@ def save_meta_weight_bundle(
     bank: WeightDeltaBank,
     support_encoder: SupportSetEncoder,
     expected_block_specs: tuple[BlockSpec, ...],
+    task_domain_descriptors: Mapping[DeltaTaskKey, TaskDomainDescriptor],
 ) -> Path:
     """Validate and persist the only allowed MARC-OT deployment members."""
 
@@ -500,6 +678,7 @@ def save_meta_weight_bundle(
     if bank.base_checkpoint_id != base_checkpoint_id:
         raise ValueError("base checkpoint identity does not match weight delta bank")
     _validate_encoder_for_bank(support_encoder, bank)
+    task_domain_bank = _quantize_task_domain_descriptors(bank.task_keys, task_domain_descriptors)
     payload = {
         "schema": META_WEIGHT_BUNDLE_SCHEMA,
         "base_checkpoint_id": base_checkpoint_id,
@@ -507,6 +686,7 @@ def save_meta_weight_bundle(
         "bank": _bank_payload(bank),
         "support_encoder": _encoder_payload(support_encoder),
         "support_feature": _support_feature_payload(),
+        "task_domain_bank": _task_domain_payload(task_domain_bank),
     }
     torch.save(payload, destination)
     _decode_bundle(
@@ -536,8 +716,12 @@ def load_meta_weight_bundle(
 
 
 __all__ = [
+    "MARC_OT_TASK_DOMAIN_BANK_SCHEMA",
     "META_WEIGHT_BUNDLE_SCHEMA",
     "MetaWeightBundle",
+    "QuantizedTaskDomainBank",
+    "TaskDomainDescriptor",
+    "dequantize_task_domain_features",
     "load_meta_weight_bundle",
     "save_meta_weight_bundle",
 ]

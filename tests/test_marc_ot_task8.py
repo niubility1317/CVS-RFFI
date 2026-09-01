@@ -195,7 +195,7 @@ def _bank_and_state():
         schema=WEIGHT_DELTA_BANK_SCHEMA,
         base_checkpoint_id="base-task8",
         task_keys=(
-            DeltaTaskKey("rx-0", "day-0", "leo_clear_weak", 2),
+            DeltaTaskKey("0", "0", "leo_clear_weak", 2),
         ),
         entries=(
             DeltaBankEntry(
@@ -315,7 +315,13 @@ def test_real_phase1_entry_runs_bank_step_and_strict_bundle_round_trip(tmp_path:
         selector=lambda episodes: tuple(
             row
             for row in episodes
-            if row.k_shot == 2 and row.guard_class_ids
+            if (
+                row.k_shot == 2
+                and row.guard_class_ids
+                and row.query_adapt[0].rx_i == 0
+                and row.query_adapt[0].day_i == 0
+                and row.query_adapt[0].view == "leo_clear_weak"
+            )
         )[:1],
     )
 
@@ -330,6 +336,10 @@ def test_real_phase1_entry_runs_bank_step_and_strict_bundle_round_trip(tmp_path:
     assert "source_training_executed" not in result.training_coverage
     assert result.pilot_executed is False
     assert result.loaded_bundle.base_checkpoint_id == "base-task8"
+    assert result.loaded_bundle.task_domain_bank.task_keys == bank.task_keys
+    assert result.loaded_bundle.task_domain_bank.values.shape == (1, 685)
+    assert result.loaded_bundle.task_domain_bank.values.dtype == torch.int8
+    assert result.loaded_bundle.task_domain_bank.aggregation_counts.tolist() == [4]
     assert all(not entry.basis.requires_grad for entry in result.loaded_bundle.bank.entries)
     assert all(not parameter.requires_grad for parameter in result.loaded_bundle.support_encoder.parameters())
     post_step = {
@@ -356,6 +366,138 @@ def test_real_phase1_entry_runs_bank_step_and_strict_bundle_round_trip(tmp_path:
     assert any(not torch.equal(post_step[name], pre_step[name]) for name in pre_step)
     assert all(torch.equal(loaded[name], post_step[name]) for name in post_step)
     assert any(not torch.equal(loaded[name], pre_step[name]) for name in pre_step)
+
+
+def test_phase1_default_task_key_uses_explicit_pseudo_target_facts_only() -> None:
+    """Changing query-adapt domain facts must change the canonical key without token parsing."""
+    from cvsrffi.marc_ot_phase1 import canonical_episode_task_domain_selection
+    from cvsrffi.meta_episodes import EpisodeKind, sample_marc_ot_coverage_schedule
+    from cvsrffi.meta_weight_bank import DeltaTaskKey
+
+    episode = next(
+        row
+        for row in sample_marc_ot_coverage_schedule(_sampler(), seed=41)
+        if row.kind is EpisodeKind.CLEAN_TO_LEO and row.k_shot == 2
+    )
+    selection = canonical_episode_task_domain_selection(episode)
+    target = episode.query_adapt[0]
+
+    assert selection.partition == "query_adapt"
+    assert selection.task_key == DeltaTaskKey(
+        str(target.rx_i),
+        str(target.day_i),
+        target.view,
+        episode.k_shot,
+    )
+    assert all(
+        opaque not in selection.task_key.receiver
+        for opaque in (episode.query_adapt[0].physical_sample_id, str(episode.seed))
+    )
+
+
+@pytest.mark.parametrize("arm", ("R6", "R8"))
+def test_phase1_685d_bundle_runs_real_default_ot_stage_for_r6_and_r8(
+    tmp_path: Path, arm: str
+) -> None:
+    """The production builder/bundle/load output must share the R6/R8 OT space."""
+    import cvsrffi.stage2_marc_ot_runner as runner_subject
+    from cvsrffi.meta_weight_bank_checkpoint import dequantize_task_domain_features
+    from cvsrffi.stage2_marc_ot_runner import MARCOTRunnerConfig
+
+    result, _bank, _encoder, _pre_step = _run_phase1_test_entry(
+        tmp_path / f"{arm.lower()}-bundle.pt",
+        learning_rate=0.01,
+        selector=lambda episodes: tuple(
+            row
+            for row in episodes
+            if (
+                row.k_shot == 2
+                and row.guard_class_ids
+                and row.query_adapt[0].rx_i == 0
+                and row.query_adapt[0].day_i == 0
+                and row.query_adapt[0].view == "leo_clear_weak"
+            )
+        )[:1],
+    )
+
+    class StageBackbone(nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.t1 = nn.Linear(2, 2, bias=False)
+
+    class StageModel(nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.id_backbone = StageBackbone()
+
+        def forward(self, values, return_aux=True):
+            del return_aux
+            features = self.id_backbone.t1(values.float())
+            return {"tx_logits": features, "z_id": features}
+
+    model = StageModel()
+    initial = {
+        name: value.detach().clone() for name, value in model.state_dict().items()
+    }
+    values = torch.tensor(
+        [[2.0, 0.1], [1.7, 0.2], [0.1, 2.0], [0.2, 1.7]],
+        dtype=torch.float32,
+    )
+    labels = torch.tensor([0, 0, 1, 1])
+    tokens = ("a0", "a1", "b0", "b1")
+
+    def transform(current, fit_iq, _labels, _tokens, _fit_scope):
+        features = current(fit_iq, return_aux=True)["z_id"]
+        return features.repeat(1, 343)[:, :685]
+
+    bank_features = dequantize_task_domain_features(
+        result.loaded_bundle.task_domain_bank
+    )
+    state, _duals = runner_subject._default_stage_update(
+        model,
+        "t1",
+        ("id_backbone.t1.weight",),
+        1,
+        {"class_duals": torch.zeros(2)},
+        values=values,
+        labels=labels,
+        tokens=tokens,
+        arm=arm,
+        config=MARCOTRunnerConfig(
+            stage_steps=(1, 0, 0, 0), fold_count=2, ot_iterations=2
+        ),
+        bank_task_features=bank_features,
+        calibration_feature_transform=transform,
+        fit_scope="crossfit",
+        block_learning_rates=None,
+        original_base=initial,
+    )
+
+    assert bank_features.shape == (1, 685)
+    assert bank_features.requires_grad is False
+    assert all(bool(torch.isfinite(value).all()) for value in state.values())
+
+
+def test_phase1_descriptor_coverage_fails_closed_when_bank_key_is_missing(
+    tmp_path: Path,
+) -> None:
+    """A trained episode for a different explicit domain cannot populate the frozen task row."""
+    with pytest.raises(ValueError, match="task.domain|task key|coverage"):
+        _run_phase1_test_entry(
+            tmp_path / "missing-task.pt",
+            learning_rate=0.01,
+            selector=lambda episodes: tuple(
+                row
+                for row in episodes
+                if row.k_shot == 2
+                and (
+                    row.query_adapt[0].rx_i != 0
+                    or row.query_adapt[0].day_i != 0
+                    or row.query_adapt[0].view != "leo_clear_weak"
+                )
+            )[:1],
+        )
+    assert not (tmp_path / "missing-task.pt").exists()
 
 
 def test_phase1_entry_rejects_zero_lr_and_duplicate_selector(tmp_path: Path) -> None:

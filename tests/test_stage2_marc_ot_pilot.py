@@ -54,6 +54,7 @@ def _config():
         "supcon": {"temperature": 0.07, "weight": 0.1},
         "ratio_cap": 0.5,
         "interpolation_grid": [1.0, 0.75, 0.5, 0.25, 0.0],
+        "zero_id_norm_threshold": 1e-12,
         "promotion_gates": {
             "median_p3_ba_delta_pp": 3.0,
             "worst_scene_p3_ba_delta_pp": -0.5,
@@ -61,6 +62,7 @@ def _config():
             "low_elev_p3_floor_delta_pp": 0.0,
             "max_p1_p2_scene_drop_pp": 2.0,
             "minimum_help_gt_harm_scenes": 2,
+            "support_query_direction_tolerance_pp": 1e-9,
         },
         "mrior_controls": _mrior_controls(),
     }
@@ -106,6 +108,8 @@ def test_config_reuses_validated_once_handles_without_matrix_expansion() -> None
     assert tuple(validated["arms"]) == FORMAL_ARMS
     assert tuple(validated["scenarios"]) == SCENARIOS
     assert validated["interpolation_grid"][-1] == 0.0
+    assert validated["zero_id_norm_threshold"] == 1e-12
+    assert validated["promotion_gates"]["support_query_direction_tolerance_pp"] == 1e-9
     invalid = _config()
     invalid["phase2_data_status"] = "REVALIDATE"
     with pytest.raises(ValueError, match="VALIDATED_ONCE"):
