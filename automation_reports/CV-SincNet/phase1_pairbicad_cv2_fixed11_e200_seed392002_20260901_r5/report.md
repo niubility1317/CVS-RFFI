@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-- 状态：`LOCAL_VERIFIED / RELEASE_LANDED`，等待正式启动。
+- 状态：`RUNNING`。
 - run ID：`phase1_pairbicad_cv2_fixed11_e200_seed392002_20260901_r5`。
 - Git提交：`5f785287935f2b58f4e7a4f95b37341de2a176a0`；已push并独立核对远端分支OID一致。
 - r4已固定为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，输出根和partial artifact保留；r5使用全新release和不可覆盖run根。
@@ -48,4 +48,12 @@ r5恢复完整闭合：定位非空final checkpoint；从独立`source_loro_sele
 每行必须闭合200epoch telemetry、final checkpoint、严格checkpoint/trainer runtime重建、final/EMA/SWAD一次`V_select`选择、`checkpoint_runtime.json`、`diagnostics.json`、clean与三种LEO弱场景独立JSON/日志以及`ARTIFACTS_COMPLETE.json`。
 
 仅允许因数据/query越权、错误candidate/fold/receiver/day/seed/epoch、输出冲突、错误release/CWD、命令无法运行、无合法prediction/artifact闭合、同一确定性异常至少重复两行或进程归属不清而停止精确run进程树。低性能、中间指标、缺少非必要receipt/hash或报告字段不得停止、重启、热补丁或选择性重跑。若出现预登记系统技术失败，必须保留partial artifact，在本地Git修复并验证后以新release、新run ID重新发布；不得原地重启。
+
+## 正式启动证据
+
+- 启动时间：2026-09-01 11:11 CST；dispatcher PID`3472323`。
+- dispatcher父PID为1；`/proc/3472323/cwd`独立读回精确指向release`phase1_pairbicad_cv2_e200_5f785287`，cmdline精确绑定r5、ManySig、普通账户Python和GPU容量`0:2,...,7:2`。
+- 直属worker为16个，16个`train.log`已创建；GPU0—7各有2个本run计算进程，共16个，启动检查时利用率6%—40%、显存679—1,271MiB，处于数据加载/早期计算阶段。
+- `ARTIFACTS_COMPLETE=0`、`TECHNICAL_FAILURE=0`；在本run目录未检出Traceback、RuntimeError、ValueError、OOM或final-artifact确定性异常。
+- 判定：`RUNNING`。启动绑定和资源分配符合冻结矩阵；不得因早期利用率或性能停止、重启或热补丁。
 
