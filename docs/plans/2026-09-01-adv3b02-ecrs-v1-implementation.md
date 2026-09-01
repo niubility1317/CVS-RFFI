@@ -13,6 +13,8 @@
 ## Global Constraints
 
 - 唯一方法规格是上述设计稿及`docs/CVS_PHASE1_ADV3B02_ECRS_V1_TRACE_20260901.md`；不得新增设计稿之外的识别分支、自由MLP响应基或query适配。
+- 实现目标树固定为`E:\type10-7\github_publish\CVS-RFFI-repo`；所有`code/...`路径均相对于该Git仓库。`E:\type10-7\code`是非Git运行副本，只能在提交和远端OID验证后接受精确同步。
+- 保留目标树当前已有SAT-Anchor、CRRA和parameter-matched capacity接口；ECRS关闭时它们的行为不变，ECRS开启时也不得在设计稿没有规定的情况下将它们拼入响应分支。
 - `use_ecrs=false`时不得实例化ECRS参数，旧ADV3B02`state_dict`键、logits、`z_id`和严格checkpoint加载必须逐项兼容。
 - V1保留原PA分支、现有160维身份主干和clean+LEO训练，不允许以响应分支替换主干。
 - Canonicalizer只执行CFO、公共相位和标量增益解析归一化；V1禁止自由RX-IQ纠正与高容量FIR。
@@ -27,7 +29,7 @@
 ### Task 1: 锁定旧ADV3B02兼容基线与ECRS开关
 
 **Files:**
-- Modify: `code/model_dual_cvsincnet.py:390`
+- Modify: `code/model_dual_cvsincnet.py:507`
 - Modify: `code/train.py:2109`
 - Test: `code/tests/test_ecrs_model_contract.py`
 
@@ -439,19 +441,23 @@ Expected: PASS。
 
 只记录候选/矩阵、commit、命令、环境/CWD、输入输出路径、GPU、停止规则和预期artifact。
 
-- [ ] **Step 2: 进行一次N607资源/路径preflight、一次release归档SHA对比和一次远端编译**
+- [ ] **Step 2: 从Git目标树精确同步已提交实现到本地运行副本**
+
+只同步本次变更文件并读回内容；不得从非Git运行副本反向覆盖目标树，也不得覆盖无关本地改动。
+
+- [ ] **Step 3: 进行一次N607资源/路径preflight、一次release归档SHA对比和一次远端编译**
 
 不得增加成员hash、seal、receipt链或重复审查。
 
-- [ ] **Step 3: 启动后只做一次PID/CWD/cmdline/GPU/log增长绑定检查**
+- [ ] **Step 4: 启动后只做一次PID/CWD/cmdline/GPU/log增长绑定检查**
 
 低性能不得停止实验；只按预注册系统技术失败规则处理。
 
-- [ ] **Step 4: prediction完成后由独立scorer连接truth**
+- [ ] **Step 5: prediction完成后由独立scorer连接truth**
 
 同row报告clean、三种LEO弱场景、LEO mean、LEO floor、strict UDU、response cross-pred、gate rescue/harm和资源成本。
 
-- [ ] **Step 5: 只按设计稿判定是否进入后续项**
+- [ ] **Step 6: 只按设计稿判定是否进入后续项**
 
 若V1未同时满足响应可辨识性和身份指标稳定提升，保留负结果并停止在R8；不得直接跳到共享低秩基、反事实移植或Phase2响应注册。
 

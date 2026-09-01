@@ -6,7 +6,7 @@
 
 | ID | 来源章节 | 设计要求 | 目标文件 | 当前状态 | 验证方式 | 备注 |
 |---|---|---|---|---|---|---|
-| ECRS-01 | 第1、16、31节 | 保留现有ADV3B02全部主干，在旁路新增局部系统辨识器 | `code/model_dual_cvsincnet.py` | pending | 旧checkpoint严格加载；关闭ECRS时输出逐元素一致 | 禁止替换原PA分支 |
+| ECRS-01 | 第1、16、31节 | 保留现有ADV3B02全部主干，在旁路新增局部系统辨识器 | `code/model_dual_cvsincnet.py` | pending | 旧checkpoint严格加载；关闭ECRS时输出逐元素一致 | 禁止替换原PA分支；保留现有SAT-Anchor、CRRA及容量对照接口，不将其擅自并入ECRS |
 | ECRS-02 | 第7、31节 | `NuisanceEstimator`只估计保守CFO、相位、标量增益 | `code/model_dual_cvsincnet.py` | pending | 合成扰动参数恢复测试 | V1不启用自由RX-IQ纠正和高容量FIR |
 | ECRS-03 | 第7、31节 | `AnalyticCanonicalizer`以解析算子执行CFO、相位、增益归一化 | `code/model_dual_cvsincnet.py` | pending | 公共相位/CFO等变性测试 | 不声称恢复真实发射端波形 |
 | ECRS-04 | 第8、16节 | 低容量`ContentEstimator`输出规范激励与逐采样置信度 | `code/model_dual_cvsincnet.py` | pending | 形状、有限值、TX梯度隔离测试 | 初期禁止TX分类梯度进入内容估计器 |
@@ -37,3 +37,5 @@
 ## 设计一致性判定
 
 实现完成前，所有`pending`项必须转为`verified`、`deferred`、`rejected`或`blocked`之一。只有ECRS-01至ECRS-22全部有证据，且V1范围内不存在`pending`，才能声明“与设计稿一致”。
+
+实现的Git目标树固定为`E:\type10-7\github_publish\CVS-RFFI-repo`。`E:\type10-7\code`只作为当前运行副本进行差异核对，不能作为最终编辑或提交位置；同步到运行副本和N607必须发生在Git目标树验证、提交和远端OID读回之后。
