@@ -156,6 +156,7 @@ from cvsrffi.phase1_fcr_fingerprint import FingerprintFactorOutput, fixed_respon
 from cvsrffi.phase1_fcr_interventions import InterventionCubeBatchBuilder
 from cvsrffi.phase1_fcr_losses import (
     compute_cross_losses,
+    compute_three_axis_intervention_loss,
     compute_transplant_losses,
     mrstft_loss,
     phase_increment_loss,
@@ -168,7 +169,11 @@ from cvsrffi.phase1_fcr_physics import (
     parameter_boundary_penalty,
     response_smoothness_penalty,
 )
-from cvsrffi.phase1_fcr_transplant import TransplantLossOutput, freeze_identity_classifier
+from cvsrffi.phase1_fcr_transplant import (
+    TransplantLossOutput,
+    compute_basic_drop_f_necessity_loss,
+    freeze_identity_classifier,
+)
 from cvsrffi.phase1_fcr_types import FCRConfig, FCRLossOutput, FCRPairBatch
 from cvsrffi.phase1_fcr_diagnostics import compute_fcr_diagnostics, write_fcr_diagnostics_json
 from cvsrffi.tensors import (
@@ -224,10 +229,10 @@ FCR_ABLATION_ACTIVE_LAMBDAS = {
     "R2": frozenset({"self", "eta", "swap"}),
     "R3": frozenset({"self", "eta", "swap", "shared"}),
     "R4": frozenset({"self", "eta", "swap", "shared", "latent_cycle"}),
-    "R5": frozenset({"self", "eta", "swap", "shared", "latent_cycle", "factor"}),
-    "R6": frozenset({"self", "eta", "swap", "shared", "latent_cycle", "factor", "need"}),
-    "R7": frozenset({"self", "eta", "swap", "shared", "latent_cycle", "factor", "need", "phys"}),
-    "R8": frozenset(FCR_LAMBDA_FLAGS),
+    "R5": frozenset({"self", "eta", "swap", "shared", "latent_cycle", "need"}),
+    "R6": frozenset({"self", "eta", "swap", "shared", "latent_cycle", "need"}),
+    "R7": frozenset({"self", "eta", "swap", "shared", "latent_cycle", "need", "phys"}),
+    "R8": frozenset({"self", "eta", "swap", "shared", "latent_cycle", "need", "phys", "factor"}),
 }
 
 
@@ -299,6 +304,26 @@ def resolve_fcr_training_options(args):
     args.fcr_targeted_transplant = bool(args.use_fcr and row_index >= 6)
     args.fcr_physics_ordered_decoder = bool(args.use_fcr and row_index >= 7)
     args.fcr_three_axis_intervention = bool(args.use_fcr and row_index >= 8)
+    args.fcr_decoder_mode = (
+        "full_physics"
+        if args.use_fcr and args.fcr_physics_ordered_decoder
+        else "control"
+        if args.use_fcr
+        else "disabled"
+    )
+    args.fcr_objective_capabilities = {
+        "basic_need": bool(args.fcr_basic_need_diagnostic),
+        "targeted_transplant": bool(args.fcr_targeted_transplant),
+        "physics_ordered": bool(args.fcr_physics_ordered_decoder),
+        "three_axis": bool(args.fcr_three_axis_intervention),
+    }
+    active_signature = ",".join(sorted(name for name, value in args.effective_fcr_lambdas.items() if value > 0.0))
+    capability_signature = ",".join(
+        f"{name}={int(enabled)}" for name, enabled in args.fcr_objective_capabilities.items()
+    )
+    args.fcr_execution_signature = (
+        f"{row}|lambdas={active_signature or 'none'}|{capability_signature}|decoder={args.fcr_decoder_mode}"
+    )
     if args.use_fcr and int(getattr(args, "epochs", 200)) != 200:
         raise ValueError("ADV3B02-FCR uses the frozen 200-epoch schedule")
     if args.use_fcr and str(getattr(args, "train_mode", "centralized")) != "centralized":
@@ -341,6 +366,9 @@ def fcr_dry_run_payload(args) -> Dict[str, Any]:
         "targeted_transplant": bool(args.fcr_targeted_transplant),
         "physics_ordered_decoder": bool(args.fcr_physics_ordered_decoder),
         "three_axis_intervention": bool(args.fcr_three_axis_intervention),
+        "decoder_mode": str(args.fcr_decoder_mode),
+        "objective_capabilities": dict(args.fcr_objective_capabilities),
+        "execution_signature": str(args.fcr_execution_signature),
         "satellite_aux_ce_start_epoch": 80,
         "meta_ssl_roles": {
             "labeled": float(args.ssl_labeled_ratio),
@@ -464,6 +492,7 @@ def collect_fcr_diagnostic_artifacts(
     artifacts["z_n"] = {
         name: torch.cat(values, dim=0) for name, values in nuisance_chunks.items()
     }
+    artifacts["decoder_mode"] = str(raw_model.fcr.decoder.mode)
     row_count = int(artifacts["z_f_id"].size(0))
     row_index = torch.arange(row_count)
     artifacts["probe_train_mask"] = row_index.remainder(2).eq(0)
@@ -505,16 +534,25 @@ def combine_fcr_training_losses(
     pair: FCRPairBatch,
     cross: FCRLossOutput,
     transplant: TransplantLossOutput,
+    basic_necessity: TransplantLossOutput | None = None,
+    three_axis: FCRLossOutput | None = None,
     identity_per_sample: torch.Tensor,
     physical_components: Dict[str, torch.Tensor],
     stage: FCRStageState,
     configured: FCRLambdaConfig,
+    capabilities: Dict[str, bool] | None = None,
 ) -> FCRLossOutput:
     """Apply stage and permission routing to existing Task6/7/8 losses."""
 
     del configured
     reference = cross.total
     zero = reference.reshape(-1).sum() * 0.0
+    route = dict(capabilities or {
+        "basic_need": False,
+        "targeted_transplant": True,
+        "physics_ordered": True,
+        "three_axis": False,
+    })
     label_mask = torch.as_tensor(pair.label_mask, device=identity_per_sample.device, dtype=torch.bool).reshape(-1)
     is_unlabeled_role = bool(torch.as_tensor(pair.labels, device=label_mask.device).eq(-1).all())
     if identity_per_sample.ndim != 1 or identity_per_sample.numel() != label_mask.numel():
@@ -533,7 +571,8 @@ def combine_fcr_training_losses(
     shared_loss = stage.scales["shared"] * cross.components["shared"] if "shared" in stage.active else zero
     cycle_loss = stage.scales["latent_cycle"] * cross.components["latent_cycle"] if "latent_cycle" in stage.active else zero
     eta_loss = stage.scales["eta"] * cross.components["eta"] if "eta" in stage.active else zero
-    factor_raw = cross.components["factor"] + cross.components.get("anti_collapse", zero)
+    three_axis_raw = three_axis.total if route.get("three_axis", False) and three_axis is not None else zero
+    factor_raw = cross.components["factor"] + cross.components.get("anti_collapse", zero) + three_axis_raw
     factor_loss = (
         stage.scales["factor"] * factor_raw
         if "factor" in stage.active and not is_unlabeled_role
@@ -542,9 +581,23 @@ def combine_fcr_training_losses(
     phys_raw = sum(
         (value for name, value in physical_components.items() if name not in {"mrstft", "phase"}), zero
     )
-    phys_loss = stage.scales["phys"] * phys_raw if "phys" in stage.active else zero
+    phys_loss = (
+        stage.scales["phys"] * phys_raw
+        if "phys" in stage.active and route.get("physics_ordered", False)
+        else zero
+    )
     transplant_allowed = bool(label_mask.any()) and ("transplant" in stage.active or "necessity" in stage.active)
-    transplant_loss = stage.scales["need"] * transplant.total if transplant_allowed else zero
+    basic_raw = (
+        basic_necessity.total
+        if transplant_allowed and route.get("basic_need", False) and basic_necessity is not None
+        else zero
+    )
+    targeted_raw = (
+        transplant.total
+        if transplant_allowed and route.get("targeted_transplant", False)
+        else zero
+    )
+    transplant_loss = stage.scales["need"] * (basic_raw + targeted_raw)
 
     components = {
         "id": id_loss,
@@ -559,7 +612,14 @@ def combine_fcr_training_losses(
     }
     total = sum(components.values(), zero)
     metrics = {name: float(value.detach().cpu()) for name, value in components.items()}
-    metrics["active_fingerprint_pairs"] = float(transplant.active_pairs if transplant_allowed else 0)
+    targeted_active = bool(transplant_allowed and route.get("targeted_transplant", False))
+    metrics["active_fingerprint_pairs"] = float(transplant.active_pairs if targeted_active else 0)
+    metrics["basic_need_active_rows"] = float(
+        basic_necessity.active_pairs
+        if transplant_allowed and route.get("basic_need", False) and basic_necessity is not None
+        else 0
+    )
+    metrics["three_axis_active"] = float(route.get("three_axis", False))
     metrics["freeze_decoder_for_necessity"] = float(stage.freeze_decoder_for_necessity)
     for name, value in physical_components.items():
         metrics[f"physical_{name}"] = float(value.detach().cpu())
@@ -628,6 +688,7 @@ def compute_fcr_pair_objective(
     stage: FCRStageState,
     configured: FCRLambdaConfig,
     frozen_identity_classifier: nn.Module,
+    capabilities: Dict[str, bool] | None = None,
 ) -> FCRLossOutput:
     """Compose Task6/7/8 losses for one legal L_s or U_s pair batch."""
 
@@ -635,6 +696,12 @@ def compute_fcr_pair_objective(
     if not permission.optimizer_step:
         raise ValueError(f"role {permission.role} cannot enter the optimizer path")
     validate_fcr_pair_for_role(pair, role)
+    route = dict(capabilities or {
+        "basic_need": True,
+        "targeted_transplant": True,
+        "physics_ordered": True,
+        "three_axis": True,
+    })
     fcr = raw_model.fcr
     clean = _fcr_aggregate(model, raw_model, pair.clean_iq)
     leo = _fcr_aggregate(model, raw_model, pair.leo_iq)
@@ -678,32 +745,33 @@ def compute_fcr_pair_objective(
             + phase_increment_loss(pair.leo_iq, leo.decode.mu_iq)
         ),
     }
-    basis = fixed_response_basis(clean.content.s_hat.detach()).abs().float()
-    gram = basis.transpose(1, 2).matmul(basis) / max(1, int(basis.size(1)))
-    snr_db = None
-    if known_nuisance.ndim == 2 and known_nuisance.size(1) > 0:
-        snr_db = known_nuisance[:, 0].detach() * 20.0
-    gate = FisherIdentifiabilityGate()(pair.clean_iq, gram, snr_db)
-    raw_reconstruction["features"] = 0.5 * (
-        physical_feature_loss(pair.clean_iq, clean.decode.mu_iq, gate)
-        + physical_feature_loss(pair.leo_iq, leo.decode.mu_iq, gate)
-    )
-    raw_reconstruction["fingerprint_energy"] = 0.5 * (
-        fingerprint_energy_penalty(clean.response.delta_f, clean.content.s_hat)
-        + fingerprint_energy_penalty(leo.response.delta_f, leo.content.s_hat)
-    )
-    raw_reconstruction["response_smoothness"] = 0.5 * (
-        response_smoothness_penalty(clean.response.delta_f)
-        + response_smoothness_penalty(leo.response.delta_f)
-    )
-    raw_reconstruction["parameter_boundary"] = 0.25 * sum(
-        (
-            parameter_boundary_penalty(response.response_coef.real, -0.05, 0.05)
-            + parameter_boundary_penalty(response.response_coef.imag, -0.05, 0.05)
-            for response in (clean.response, leo.response)
-        ),
-        clean.response.response_coef.real.new_zeros(()),
-    )
+    if route.get("physics_ordered", False):
+        basis = fixed_response_basis(clean.content.s_hat.detach()).abs().float()
+        gram = basis.transpose(1, 2).matmul(basis) / max(1, int(basis.size(1)))
+        snr_db = None
+        if known_nuisance.ndim == 2 and known_nuisance.size(1) > 0:
+            snr_db = known_nuisance[:, 0].detach() * 20.0
+        gate = FisherIdentifiabilityGate()(pair.clean_iq, gram, snr_db)
+        raw_reconstruction["features"] = 0.5 * (
+            physical_feature_loss(pair.clean_iq, clean.decode.mu_iq, gate)
+            + physical_feature_loss(pair.leo_iq, leo.decode.mu_iq, gate)
+        )
+        raw_reconstruction["fingerprint_energy"] = 0.5 * (
+            fingerprint_energy_penalty(clean.response.delta_f, clean.content.s_hat)
+            + fingerprint_energy_penalty(leo.response.delta_f, leo.content.s_hat)
+        )
+        raw_reconstruction["response_smoothness"] = 0.5 * (
+            response_smoothness_penalty(clean.response.delta_f)
+            + response_smoothness_penalty(leo.response.delta_f)
+        )
+        raw_reconstruction["parameter_boundary"] = 0.25 * sum(
+            (
+                parameter_boundary_penalty(response.response_coef.real, -0.05, 0.05)
+                + parameter_boundary_penalty(response.response_coef.imag, -0.05, 0.05)
+                for response in (clean.response, leo.response)
+            ),
+            clean.response.response_coef.real.new_zeros(()),
+        )
 
     decoder_adapter = FCRTransplantDecoderAdapter(fcr)
 
@@ -711,33 +779,58 @@ def compute_fcr_pair_objective(
         aggregate = _fcr_aggregate(model, raw_model, iq)
         return aggregate.response.delta_f.abs().square().mean()
 
-    transplant = compute_transplant_losses(
-        pair=pair,
-        source_factors=clean.factors,
-        target_factors=clean.factors,
-        decoder=decoder_adapter,
-        reencode=reencode,
-        identity_classifier=frozen_identity_classifier,
-        fingerprint_residual_error=fingerprint_residual_error,
-        freeze_decoder=bool(stage.freeze_decoder_for_necessity),
+    zero = clean.factors.z_s.reshape(-1).sum() * 0.0
+    transplant = TransplantLossOutput(
+        active_pairs=0,
+        total=zero,
+        components={name: zero for name in ("target_id", "preserve_s", "preserve_n", "same_f", "drop_f")},
+        metrics={"active_pairs": 0.0, "status": "N/A"},
     )
-    if "transplant" not in permission.allowed:
-        zero = transplant.total * 0.0
-        transplant = TransplantLossOutput(
-            active_pairs=0,
-            total=zero,
-            components={name: value * 0.0 for name, value in transplant.components.items()},
-            metrics={"active_pairs": 0.0},
+    if route.get("targeted_transplant", False) and "transplant" in permission.allowed:
+        transplant = compute_transplant_losses(
+            pair=pair,
+            source_factors=clean.factors,
+            target_factors=clean.factors,
+            decoder=decoder_adapter,
+            reencode=reencode,
+            identity_classifier=frozen_identity_classifier,
+            fingerprint_residual_error=fingerprint_residual_error,
+            freeze_decoder=bool(stage.freeze_decoder_for_necessity),
+        )
+    basic_necessity = TransplantLossOutput(
+        active_pairs=0,
+        total=zero,
+        components={"drop_f": zero},
+        metrics={"active_rows": 0.0, "status": "N/A"},
+    )
+    if route.get("basic_need", False) and permission.role == "L_s":
+        basic_necessity = compute_basic_drop_f_necessity_loss(
+            source_factors=clean.factors,
+            decoder=decoder_adapter,
+            fingerprint_residual_error=fingerprint_residual_error,
+            active_mask=pair.label_mask,
+            freeze_decoder=bool(stage.freeze_decoder_for_necessity),
+        )
+    three_axis = None
+    if route.get("three_axis", False):
+        three_axis = compute_three_axis_intervention_loss(
+            pair=pair,
+            clean_factors=clean.factors,
+            leo_factors=leo.factors,
+            allow_fingerprint=permission.role == "L_s",
         )
     identity_per_sample = pair.clean_iq.new_zeros((pair.clean_iq.size(0),))
     combined = combine_fcr_training_losses(
         pair=pair,
         cross=cross,
         transplant=transplant,
+        basic_necessity=basic_necessity,
+        three_axis=three_axis,
         identity_per_sample=identity_per_sample,
         physical_components=raw_reconstruction,
         stage=stage,
         configured=configured,
+        capabilities=route,
     )
     combined.metrics["role_labeled"] = float(permission.role == "L_s")
     combined.metrics["role_unlabeled"] = float(permission.role == "U_s")
@@ -3677,7 +3770,14 @@ def main():
                                fast_infer_when_no_aux=bool(args.fast_infer_when_no_aux),
                                use_tx_adv_on_zdom=bool(args.use_tx_adv_on_zdom or str(args.train_mode).lower() == "fedcvs_vmb"),
                                use_fcr=bool(args.use_fcr),
-                               fcr_config=(FCRConfig(input_len=int(input_len)) if bool(args.use_fcr) else None),
+                               fcr_config=(
+                                   FCRConfig(
+                                       input_len=int(input_len),
+                                       decoder_mode=str(args.fcr_decoder_mode),
+                                   )
+                                   if bool(args.use_fcr)
+                                   else None
+                               ),
                                arch_family=str(args.arch_family)).to(device)
     load_init_checkpoint_weights(
         model,
@@ -4392,6 +4492,7 @@ def main():
                         stage=fcr_stage_state,
                         configured=configured_fcr,
                         frozen_identity_classifier=fcr_identity_classifier,
+                        capabilities=args.fcr_objective_capabilities,
                     )
                     fcr_loss = labeled_fcr_loss
                     if fcr_unlabeled_pair is not None:
@@ -4403,6 +4504,7 @@ def main():
                             stage=fcr_stage_state,
                             configured=configured_fcr,
                             frozen_identity_classifier=fcr_identity_classifier,
+                            capabilities=args.fcr_objective_capabilities,
                         )
                         fcr_loss = FCRLossOutput(
                             total=labeled_fcr_loss.total + unlabeled_fcr_loss.total,
@@ -5091,6 +5193,7 @@ def main():
                 resources=diagnostic_resources,
                 row_id=str(args.fcr_ablation_row),
             )
+            diagnostic_metrics["decoder_mode"] = str(diagnostic_artifacts["decoder_mode"])
             write_fcr_diagnostics_json(diagnostics_path, diagnostic_metrics)
             print(
                 f"[FCR-DIAGNOSTICS] row={args.fcr_ablation_row} path={diagnostics_path}",

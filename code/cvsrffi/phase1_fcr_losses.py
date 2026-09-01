@@ -153,6 +153,109 @@ def _unit_sphere(z_f_id: torch.Tensor, eps: float = 1e-8) -> torch.Tensor:
     return z_f_id / z_f_id.norm(dim=-1, keepdim=True).clamp_min(eps)
 
 
+def _strict_axis_rows(pair: FCRPairBatch, axis: str) -> tuple[torch.Tensor, torch.Tensor]:
+    """Resolve only explicitly valid, in-bounds intervention indices."""
+
+    batch_size = int(pair.clean_iq.size(0))
+    device = pair.clean_iq.device
+    index = torch.as_tensor(
+        getattr(pair, f"{axis}_pair_index"),
+        device=device,
+        dtype=torch.long,
+    ).reshape(-1)
+    mask = torch.as_tensor(
+        pair.pair_valid_mask.get(axis, torch.zeros(batch_size, device=device)),
+        device=device,
+        dtype=torch.bool,
+    ).reshape(-1)
+    if index.numel() != batch_size or mask.numel() != batch_size:
+        raise ValueError(f"{axis} intervention fields must have one entry per batch row")
+    valid = mask & index.ge(0) & index.lt(batch_size)
+    source = torch.arange(batch_size, device=device)[valid]
+    return source, index[valid]
+
+
+def compute_three_axis_intervention_loss(
+    *,
+    pair: FCRPairBatch,
+    clean_factors: FCRFactorOutput,
+    leo_factors: FCRFactorOutput,
+    allow_fingerprint: bool,
+) -> FCRLossOutput:
+    """Consume strict nuisance/content/fingerprint axes without fallback pairs."""
+
+    zero = _connected_zero(clean_factors.z_s) + _connected_zero(leo_factors.z_s)
+    components: dict[str, torch.Tensor] = {}
+    metrics: dict[str, float | str] = {}
+
+    nuisance_source, nuisance_target = _strict_axis_rows(pair, "nuisance")
+    if nuisance_source.numel() == 0:
+        components["nuisance_axis"] = zero
+        metrics["nuisance_status"] = "N/A"
+    else:
+        components["nuisance_axis"] = (
+            symmetric_stopgrad_distance(
+                clean_factors.z_s[nuisance_source],
+                leo_factors.z_s[nuisance_target],
+            )
+            + symmetric_stopgrad_distance(
+                clean_factors.z_f_id[nuisance_source],
+                leo_factors.z_f_id[nuisance_target],
+            )
+            + symmetric_stopgrad_distance(
+                clean_factors.z_tx_state[nuisance_source],
+                leo_factors.z_tx_state[nuisance_target],
+            )
+        )
+        metrics["nuisance_status"] = "available"
+    metrics["nuisance_pairs"] = float(nuisance_source.numel())
+
+    content_source, content_target = _strict_axis_rows(pair, "content")
+    if content_source.numel() == 0:
+        components["content_axis"] = zero
+        metrics["content_status"] = "N/A"
+    else:
+        components["content_axis"] = (
+            symmetric_stopgrad_distance(
+                clean_factors.z_f_id[content_source],
+                clean_factors.z_f_id[content_target],
+            )
+            + symmetric_stopgrad_distance(
+                clean_factors.z_tx_state[content_source],
+                clean_factors.z_tx_state[content_target],
+            )
+            + symmetric_stopgrad_distance(
+                _nuisance_vector(clean_factors)[content_source],
+                _nuisance_vector(clean_factors)[content_target],
+            )
+        )
+        metrics["content_status"] = "available"
+    metrics["content_pairs"] = float(content_source.numel())
+
+    fingerprint_source, fingerprint_target = _strict_axis_rows(pair, "fingerprint")
+    if not bool(allow_fingerprint) or fingerprint_source.numel() == 0:
+        components["fingerprint_axis"] = zero
+        metrics["fingerprint_status"] = "N/A"
+        fingerprint_count = 0
+    else:
+        components["fingerprint_axis"] = (
+            symmetric_stopgrad_distance(
+                clean_factors.z_s[fingerprint_source],
+                clean_factors.z_s[fingerprint_target],
+            )
+            + symmetric_stopgrad_distance(
+                _nuisance_vector(clean_factors)[fingerprint_source],
+                _nuisance_vector(clean_factors)[fingerprint_target],
+            )
+        )
+        metrics["fingerprint_status"] = "available"
+        fingerprint_count = int(fingerprint_source.numel())
+    metrics["fingerprint_pairs"] = float(fingerprint_count)
+
+    total = sum(components.values(), zero)
+    return FCRLossOutput(total=total, components=components, metrics=metrics)
+
+
 def symmetric_stopgrad_distance(left: torch.Tensor, right: torch.Tensor) -> torch.Tensor:
     """Symmetric two-way stop-gradient distance, retaining gradients for both branches."""
 

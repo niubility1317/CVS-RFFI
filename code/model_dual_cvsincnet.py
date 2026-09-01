@@ -972,6 +972,7 @@ class DualCVSincNetDisentangle(nn.Module):
                 },
                 "fcr_tx_logits": fcr_tx_logits,
                 "fcr_decode": aggregate.decode,
+                "fcr_decoder_mode": aggregate.decode.decoder_mode,
                 "fcr_quality": aggregate.quality,
                 "feature_schema": FCR_FEATURE_SCHEMA,
             }

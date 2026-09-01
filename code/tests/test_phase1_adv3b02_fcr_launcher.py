@@ -39,17 +39,36 @@ def _resolve(row: str):
 def test_r0_r8_are_explicit_validated_rows_with_monotone_capabilities() -> None:
     rows = [_resolve(f"R{index}") for index in range(9)]
     assert [args.fcr_ablation_row for args in rows] == [f"R{index}" for index in range(9)]
-    assert rows[0].effective_fcr_lambdas == {name: 0.0 for name in rows[0].effective_fcr_lambdas}
-    assert rows[1].effective_fcr_lambdas["self"] == 1.0
-    assert rows[2].effective_fcr_lambdas["swap"] == 1.0
-    assert rows[3].effective_fcr_lambdas["shared"] == 1.0
-    assert rows[4].effective_fcr_lambdas["latent_cycle"] == 1.0
+    expected_active = (
+        set(),
+        {"self", "eta"},
+        {"self", "eta", "swap"},
+        {"self", "eta", "swap", "shared"},
+        {"self", "eta", "swap", "shared", "latent_cycle"},
+        {"self", "eta", "swap", "shared", "latent_cycle", "need"},
+        {"self", "eta", "swap", "shared", "latent_cycle", "need"},
+        {"self", "eta", "swap", "shared", "latent_cycle", "need", "phys"},
+        {"self", "eta", "swap", "shared", "latent_cycle", "need", "phys", "factor"},
+    )
+    for args, expected in zip(rows, expected_active):
+        active = {name for name, value in args.effective_fcr_lambdas.items() if value > 0.0}
+        assert active == expected
     assert rows[5].fcr_basic_need_diagnostic is True
+    assert rows[5].fcr_targeted_transplant is False
     assert rows[6].fcr_targeted_transplant is True
     assert rows[6].effective_fcr_lambdas["need"] == 1.0
+    assert rows[6].fcr_physics_ordered_decoder is False
+    assert rows[6].fcr_decoder_mode == "control"
     assert rows[7].fcr_physics_ordered_decoder is True
+    assert rows[7].fcr_decoder_mode == "full_physics"
     assert rows[7].effective_fcr_lambdas["phys"] == 1.0
+    assert rows[7].fcr_three_axis_intervention is False
     assert rows[8].fcr_three_axis_intervention is True
+    signatures = [args.fcr_execution_signature for args in rows]
+    assert len(signatures) == len(set(signatures)) == 9
+    assert signatures[7] != signatures[8]
+    assert "decoder=control" in signatures[6]
+    assert "decoder=full_physics" in signatures[7]
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--epochs", type=int, default=200)

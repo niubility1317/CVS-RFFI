@@ -64,3 +64,20 @@ def test_decoder_backpropagates_to_content_fingerprint_and_all_nuisance_parts() 
         assert tensor.grad is not None
         assert torch.isfinite(tensor.grad).all()
         assert tensor.grad.abs().sum() > 0
+
+
+def test_control_mode_stops_after_fingerprint_without_nuisance_mean_chain() -> None:
+    config = FCRConfig(decoder_mode="control")
+    decoder = PhysicsOrderedDecoder(config)
+    s_hat = torch.randn(2, config.input_len, dtype=torch.complex64)
+    delta_f = torch.randn(2, config.input_len, dtype=torch.complex64)
+
+    out = decoder(s_hat, delta_f, _nuisance(2))
+
+    expected = s_hat + delta_f
+    torch.testing.assert_close(out.mu_iq, torch.stack((expected.real, expected.imag), dim=1))
+    assert out.decoder_mode == "control"
+    assert decoder.call_trace == ("content", "fingerprint", "control")
+    variance = out.log_variance.exp()
+    assert (variance >= config.variance_floor).all()
+    assert (variance <= config.variance_ceiling).all()

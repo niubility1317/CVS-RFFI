@@ -15,13 +15,17 @@ if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
 from cvsrffi import checkpoint as checkpoint_module  # noqa: E402
+from cvsrffi.phase1_fcr_types import FCRConfig  # noqa: E402
 from model_dual_cvsincnet import build_dual_model  # noqa: E402
 
 
 FEATURE_SCHEMA = "ADV3B02:FCR:z_f_id:unit_l2:160:v1"
 
 
-def _small_model(*, use_fcr: bool):
+def _small_model(*, use_fcr: bool, decoder_mode: str | None = None):
+    fcr_config = None
+    if use_fcr and decoder_mode is not None:
+        fcr_config = FCRConfig(input_len=64, decoder_mode=decoder_mode)
     return build_dual_model(
         num_classes=3,
         num_domains=2,
@@ -31,6 +35,7 @@ def _small_model(*, use_fcr: bool):
         model_variant="lite_d",
         fast_infer_when_no_aux=False,
         use_fcr=use_fcr,
+        fcr_config=fcr_config,
     )
 
 
@@ -67,6 +72,7 @@ def test_fcr_checkpoint_bundle_is_complete_and_does_not_duplicate_weights(tmp_pa
         "gain_dim": 3,
         "variance_floor": 1e-4,
         "variance_ceiling": 1.0,
+        "decoder_mode": "full_physics",
     }
     assert bundle["physical_basis"]["identifier"] == "fixed_response_basis:pa_conjugate_memory4:v1"
     assert bundle["input_normalization"]["version"] == "adv3b02_input_iq:v1"
@@ -101,6 +107,20 @@ def test_fcr_strict_round_trip_reproduces_single_leo_zf_id(tmp_path: Path) -> No
         actual = restored(leo_iq, return_aux=True)["z_f_id"]
 
     torch.testing.assert_close(actual, reference, rtol=0.0, atol=0.0)
+
+
+def test_decoder_mode_is_bundled_and_mismatched_evaluation_model_fails_closed(tmp_path: Path) -> None:
+    source = _small_model(use_fcr=True, decoder_mode="control")
+    payload = _save(tmp_path / "control.pth", source)
+    assert payload["fcr_bundle"]["fcr_config"]["decoder_mode"] == "control"
+
+    wrong_mode = _small_model(use_fcr=True, decoder_mode="full_physics")
+    with pytest.raises(ValueError, match="fcr_config"):
+        checkpoint_module.load_fcr_checkpoint_strict(
+            tmp_path / "control.pth",
+            wrong_mode,
+            map_location="cpu",
+        )
 
 
 def test_legacy_checkpoint_without_bundle_strictly_loads_closed_model(tmp_path: Path) -> None:

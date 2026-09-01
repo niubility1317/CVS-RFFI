@@ -160,4 +160,5 @@ def test_training_external_collector_detaches_source_clean_leo_artifacts() -> No
             assert value.requires_grad is False
     assert artifacts["z_f_id"].shape[0] == 8
     assert artifacts["clean_z_f_id"].shape == artifacts["leo_z_f_id"].shape
+    assert artifacts["decoder_mode"] == "full_physics"
     assert resources["latency_ms"] >= 0.0

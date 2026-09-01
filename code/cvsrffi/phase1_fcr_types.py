@@ -28,6 +28,7 @@ class FCRConfig:
     gain_dim: int = 3
     variance_floor: float = 1e-4
     variance_ceiling: float = 1.0
+    decoder_mode: str = "full_physics"
 
 
 @dataclass
@@ -67,6 +68,7 @@ class FCRDecodeOutput:
     mu_iq: torch.Tensor
     log_variance: torch.Tensor
     delta_f: torch.Tensor
+    decoder_mode: str = "full_physics"
 
 
 @dataclass

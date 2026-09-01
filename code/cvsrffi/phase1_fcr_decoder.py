@@ -17,7 +17,11 @@ class PhysicsOrderedDecoder(nn.Module):
         super().__init__()
         if not 0.0 < config.variance_floor <= config.variance_ceiling:
             raise ValueError("variance bounds must satisfy 0 < floor <= ceiling")
+        mode = str(config.decoder_mode).strip().lower()
+        if mode not in {"control", "full_physics"}:
+            raise ValueError("decoder_mode must be 'control' or 'full_physics'")
         self.config = config
+        self.mode = mode
         nuisance_dim = config.channel_dim + config.receiver_dim + config.sync_dim + config.gain_dim
         self.variance_head = nn.Linear(nuisance_dim, 1)
         self.call_trace: tuple[str, ...] = ()
@@ -104,13 +108,18 @@ class PhysicsOrderedDecoder(nn.Module):
         self._check_nuisance(nuisance, s_hat.size(0))
 
         u_hat = s_hat + delta_f
-        linked = self.apply_short_channel(u_hat, nuisance.z_ch)
-        linked = self.apply_rx_residual(linked, nuisance.z_rx)
-        mu = self.apply_sync_and_gain(linked, nuisance.z_sync, nuisance.z_gain)
+        if self.mode == "control":
+            mu = u_hat
+            self.call_trace = ("content", "fingerprint", "control")
+        else:
+            linked = self.apply_short_channel(u_hat, nuisance.z_ch)
+            linked = self.apply_rx_residual(linked, nuisance.z_rx)
+            mu = self.apply_sync_and_gain(linked, nuisance.z_sync, nuisance.z_gain)
+            self.call_trace = ("content", "fingerprint", "channel_receiver")
         log_variance = self.bounded_variance_head(nuisance).expand(-1, self.config.input_len)
-        self.call_trace = ("content", "fingerprint", "channel_receiver")
         return FCRDecodeOutput(
             mu_iq=torch.stack((mu.real, mu.imag), dim=1),
             log_variance=log_variance,
             delta_f=delta_f,
+            decoder_mode=self.mode,
         )

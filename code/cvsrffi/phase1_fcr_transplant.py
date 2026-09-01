@@ -140,6 +140,67 @@ def _run_decoder(
             parameter.requires_grad_(required)
 
 
+def compute_basic_drop_f_necessity_loss(
+    *,
+    source_factors: FCRFactorOutput,
+    decoder: Decoder,
+    fingerprint_residual_error: FingerprintError,
+    active_mask: torch.Tensor,
+    necessity_margin: float = 0.05,
+    freeze_decoder: bool = False,
+) -> TransplantLossOutput:
+    """Measure labeled-sample fingerprint necessity without a cross-TX pair."""
+
+    mask = torch.as_tensor(
+        active_mask,
+        device=source_factors.z_s.device,
+        dtype=torch.bool,
+    ).reshape(-1)
+    if mask.numel() != int(source_factors.z_s.size(0)):
+        raise ValueError("basic drop-f active_mask must have one entry per batch row")
+    rows = torch.arange(mask.numel(), device=mask.device)[mask]
+    if rows.numel() == 0:
+        zero = _zero(source_factors.z_s)
+        return TransplantLossOutput(
+            active_pairs=0,
+            total=zero,
+            components={"drop_f": zero},
+            metrics={"active_rows": 0.0, "status": "N/A"},
+        )
+
+    source = _select_factors(source_factors, rows)
+    original_flags = []
+    if freeze_decoder and isinstance(decoder, nn.Module):
+        original_flags = [parameter.requires_grad for parameter in decoder.parameters()]
+        for parameter in decoder.parameters():
+            parameter.requires_grad_(False)
+    try:
+        correct_decode = _same_tx_decode(decoder, source)
+        dropped_decode = _drop_f_decode(decoder, source)
+    finally:
+        if original_flags:
+            for parameter, required in zip(decoder.parameters(), original_flags):
+                parameter.requires_grad_(required)
+
+    correct_error = fingerprint_residual_error(correct_decode.mu_iq)
+    dropped_error = fingerprint_residual_error(dropped_decode.mu_iq)
+    if correct_error.ndim != 0:
+        correct_error = correct_error.mean()
+    if dropped_error.ndim != 0:
+        dropped_error = dropped_error.mean()
+    drop_f = (correct_error.detach() + float(necessity_margin) - dropped_error).clamp_min(0.0)
+    return TransplantLossOutput(
+        active_pairs=int(rows.numel()),
+        total=drop_f,
+        components={"drop_f": drop_f},
+        metrics={
+            "active_rows": float(rows.numel()),
+            "status": "available",
+            "drop_f": float(drop_f.detach().cpu()),
+        },
+    )
+
+
 def compute_directed_transplant_losses(
     *,
     pair: FCRPairBatch,
