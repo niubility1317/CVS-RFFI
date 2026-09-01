@@ -6,6 +6,8 @@
 
 实现规格：`docs/superpowers/specs/2026-09-01-adv3b02-factorized-cross-reconstruction-design.md`
 
+实施计划：`docs/superpowers/plans/2026-09-01-adv3b02-factorized-cross-reconstruction.md`
+
 | ID | 来源章节 | Requirement | Target files | Status | Verification | Notes |
 |---|---|---|---|---|---|---|
 | FCR-01 | 总体判断、第二节 | clean/LEO必须是同一物理片段、同一内容和同一TX的干预式配对 | `code/baseline_origin_sat_view.py`、`code/cvsrffi/phase1_fcr_interventions.py` | pending | `test_phase1_fcr_pairing.py`核对physical ID、crop和view | 不产生第二个Phase2观测 |
