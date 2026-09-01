@@ -1,0 +1,524 @@
+#!/usr/bin/env python3
+"""Run MARC-OT no-query smoke, frozen pilot, or independent score."""
+
+from __future__ import annotations
+
+import argparse
+from dataclasses import asdict, replace
+import json
+from pathlib import Path
+from statistics import median
+import sys
+import time
+from typing import Any, Mapping
+
+import numpy as np
+import torch
+
+CODE_ROOT = Path(__file__).resolve().parents[1]
+if str(CODE_ROOT) not in sys.path:
+    sys.path.insert(0, str(CODE_ROOT))
+
+from cvsrffi.meta_weight_bank import BlockSpec, parameter_block_key  # noqa: E402
+from cvsrffi.meta_weight_bank_checkpoint import load_meta_weight_bundle  # noqa: E402
+from cvsrffi.meta_weight_calibrator import calibrate_weight_plan  # noqa: E402
+from cvsrffi.stage2_bisage_runner import frozen_checkpoint  # noqa: E402
+from cvsrffi.stage2_marc_ot_pilot import (  # noqa: E402
+    FORMAL_ARMS,
+    SCENARIOS,
+    load_query_package,
+    load_support_package,
+    run_support_then_query,
+    validate_manifest_job,
+    validate_pilot_config,
+)
+from cvsrffi.stage2_marc_ot_runner import (  # noqa: E402
+    MARCOTRunnerConfig,
+    predict_marc_ot_probes,
+    train_marc_ot_arm,
+)
+from cvsrffi.stage2_marc_ot_scoring import (  # noqa: E402
+    compare_marc_ot_score_rows,
+    score_marc_ot_predictions,
+)
+
+
+def _load_json(path: Path) -> Mapping[str, Any]:
+    value = json.loads(path.read_text(encoding="utf-8-sig"))
+    if not isinstance(value, Mapping):
+        raise ValueError(f"JSON object required: {path}")
+    return value
+
+
+def _write_json_new(path: Path, value: Mapping[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("x", encoding="utf-8", newline="\n") as handle:
+        json.dump(value, handle, ensure_ascii=False, indent=2, sort_keys=True)
+        handle.write("\n")
+
+
+def create_immutable_output_root(path: str | Path) -> Path:
+    destination = Path(path)
+    if destination.exists() or destination.is_symlink():
+        raise FileExistsError(f"immutable output root exists: {destination}")
+    destination.mkdir(parents=True, exist_ok=False)
+    return destination
+
+
+def _tensor(values: np.ndarray, device: str, *, labels: bool = False) -> torch.Tensor:
+    dtype = torch.long if labels else torch.float32
+    contiguous = np.ascontiguousarray(values)
+    return torch.from_numpy(contiguous).to(device=torch.device(device), dtype=dtype)
+
+
+def _runner_config(config: Mapping[str, Any]) -> MARCOTRunnerConfig:
+    return MARCOTRunnerConfig(
+        fold_count=int(config["fold_count"]),
+        stage_steps=tuple(int(value) for value in config["stage_steps"]),
+        learning_rate_min=float(config["learning_rate_bounds"]["min"]),
+        learning_rate_max=float(config["learning_rate_bounds"]["max"]),
+        ot_epsilon=float(config["ot"]["epsilon"]),
+        ot_iterations=int(config["ot"]["iterations"]),
+        ratio_cap=float(config["ratio_cap"]),
+        interpolation_grid=tuple(float(value) for value in config["interpolation_grid"]),
+        seed=int(config["seed"]),
+    )
+
+
+def _package_root(job: Mapping[str, Any], name: str) -> Path:
+    packages = job.get("packages")
+    if not isinstance(packages, Mapping):
+        raise ValueError("MARC-OT package registry is missing")
+    row = packages.get(name)
+    if not isinstance(row, Mapping) or not isinstance(row.get("package_root"), str):
+        raise ValueError(f"MARC-OT {name} package root is missing")
+    return Path(row["package_root"])
+
+
+def _support_path(job: Mapping[str, Any], scenario: str) -> Path:
+    return _package_root(job, "before_enrollment") / f"support_{scenario}.npz"
+
+
+def _query_path(job: Mapping[str, Any], scenario: str) -> Path:
+    return _package_root(job, "before_apply") / f"query_{scenario}.npz"
+
+
+def _expected_block_specs(model: torch.nn.Module) -> tuple[BlockSpec, ...]:
+    grouped: dict[str, list[tuple[str, torch.Tensor]]] = {}
+    for name, value in model.named_parameters():
+        block = parameter_block_key(name)
+        if block is not None:
+            grouped.setdefault(block, []).append((name, value))
+    if not grouped:
+        raise ValueError("ADV3B02 checkpoint has no canonical MARC-OT blocks")
+    return tuple(
+        BlockSpec(
+            name=block,
+            parameter_names=tuple(name for name, _ in sorted(rows)),
+            shapes=tuple(tuple(value.shape) for _, value in sorted(rows)),
+            dtypes=tuple(str(value.dtype) for _, value in sorted(rows)),
+        )
+        for block, rows in sorted(grouped.items())
+    )
+
+
+def _load_model_and_bundle(args: argparse.Namespace, config: Mapping[str, Any]):
+    model = frozen_checkpoint(args.checkpoint, args.device)
+    base_state = {name: value.detach().clone() for name, value in model.state_dict().items()}
+    bundle = load_meta_weight_bundle(
+        args.bundle,
+        expected_base_checkpoint_id=str(config["checkpoint_id"]),
+        base_state=base_state,
+        expected_block_specs=_expected_block_specs(model),
+    )
+    bundle.support_encoder.to(torch.device(args.device)).eval()
+    for parameter in bundle.support_encoder.parameters():
+        parameter.requires_grad_(False)
+    return model, bundle, base_state
+
+
+def _identity_features(model: torch.nn.Module, values: torch.Tensor) -> torch.Tensor:
+    with torch.inference_mode():
+        output = model(values, return_aux=True)
+    if not isinstance(output, Mapping) or not torch.is_tensor(output.get("z_id")):
+        raise ValueError("MARC-OT checkpoint does not expose z_id")
+    features = output["z_id"]
+    if features.ndim != 2 or not bool(torch.isfinite(features).all()):
+        raise ValueError("MARC-OT support z_id is invalid")
+    return features
+
+
+def _bank_task_features(bundle: Any, device: torch.device) -> torch.Tensor:
+    task_count = len(bundle.bank.task_keys)
+    members = []
+    for entry in bundle.bank.entries:
+        coefficients = entry.task_coefficients.detach().to(device=device, dtype=torch.float32)
+        if coefficients.shape != (task_count, entry.effective_rank):
+            raise ValueError("MARC-OT bank task coefficient geometry drift")
+        members.append(coefficients)
+    result = torch.cat(members, dim=1)
+    if result.shape[1] == 0 or not bool(torch.isfinite(result).all()):
+        raise ValueError("MARC-OT bank task coefficient space is empty or nonfinite")
+    return result
+
+
+def _calibration_transform(bundle: Any):
+    encoder = bundle.support_encoder
+
+    def transform(features: torch.Tensor, labels: torch.Tensor, tokens: tuple[str, ...]):
+        rows = []
+        for index, token in enumerate(tokens):
+            state = encoder(features[index : index + 1], labels[index : index + 1], (token,))
+            rows.append(state.q)
+        return torch.stack(rows)
+
+    return transform
+
+
+def _adapt_unit(
+    args: argparse.Namespace,
+    config: Mapping[str, Any],
+    support: Any,
+    arm: str,
+    *,
+    smoke: bool,
+) -> Mapping[str, Any]:
+    model, bundle, base_state = _load_model_and_bundle(args, config)
+    support_iq = _tensor(support.iq, args.device)
+    support_labels = _tensor(support.labels, args.device, labels=True)
+    features = _identity_features(model, support_iq)
+    support_state = bundle.support_encoder(features, support_labels, support.tokens)
+    plan = calibrate_weight_plan(
+        base_state,
+        str(config["checkpoint_id"]),
+        bundle.bank,
+        support_state,
+        lr_min=float(config["learning_rate_bounds"]["min"]),
+        lr_max=float(config["learning_rate_bounds"]["max"]),
+    )
+    runner = _runner_config(config)
+    if smoke:
+        runner = replace(runner, stage_steps=(1, 1, 1, 1))
+    audit = train_marc_ot_arm(
+        model,
+        support_iq,
+        support_labels,
+        support.tokens,
+        arm=arm,
+        config=runner,
+        bank_task_features=(
+            _bank_task_features(bundle, support_iq.device) if arm in {"R6", "R8"} else None
+        ),
+        calibration_feature_transform=(
+            _calibration_transform(bundle) if arm in {"R2", "R4", "R6", "R8"} else None
+        ),
+        initial_state=(plan.state_dict if arm in {"R4", "R6", "R8"} else None),
+        block_learning_rates=(
+            {
+                entry.spec.name: float(plan.block_lrs[index])
+                for index, entry in enumerate(bundle.bank.entries)
+            }
+            if arm in {"R4", "R6", "R8"}
+            else None
+        ),
+    )
+    state = {name: value.detach().cpu() for name, value in model.state_dict().items()}
+    reached = set(audit.reached_parameter_names)
+    trainable_count = sum(
+        int(parameter.numel()) for name, parameter in model.named_parameters() if name in reached
+    )
+    return {
+        "model_state": state,
+        "audit": asdict(audit),
+        "trainable_parameter_count": trainable_count,
+        "bank_initialization": {
+            "applied": bool(plan.applied),
+            "reason": str(plan.reason),
+            "uncertainty": float(plan.uncertainty),
+            "block_gates": list(plan.block_gates),
+            "block_lrs": list(plan.block_lrs),
+        },
+    }
+
+
+def _save_frozen_unit(destination: Path, scenario: str, arm: str, state: Mapping[str, Any]) -> None:
+    unit = destination / scenario / arm
+    unit.mkdir(parents=True, exist_ok=False)
+    model_path = unit / "support_frozen_state.pt"
+    if model_path.exists() or model_path.is_symlink():
+        raise FileExistsError(f"immutable support state exists: {model_path}")
+    torch.save(state["model_state"], model_path)
+    _write_json_new(
+        unit / "support_state_receipt.json",
+        {
+            "schema": "cvs.phase2.marc_ot.support_state_receipt.v1",
+            "status": "SUPPORT_STATE_FROZEN",
+            "scenario": scenario,
+            "arm": arm,
+            "query_opened": False,
+            "query_rows_used": 0,
+            "training_audit": state["audit"],
+            "bank_initialization": state["bank_initialization"],
+            "trainable_parameter_count": state["trainable_parameter_count"],
+        },
+    )
+
+
+def _predict_unit(
+    args: argparse.Namespace,
+    config: Mapping[str, Any],
+    job: Mapping[str, Any],
+    destination: Path,
+    scenario: str,
+    arm: str,
+    support: Any,
+    query: Any,
+    state: Mapping[str, Any],
+) -> None:
+    model = frozen_checkpoint(args.checkpoint, args.device)
+    model.load_state_dict(state["model_state"], strict=True)
+    model.eval()
+    for parameter in model.parameters():
+        parameter.requires_grad_(False)
+    class_count = len(set(int(value) for value in support.labels.tolist()))
+    registry = tuple(str(index) for index in range(class_count))
+    started = time.perf_counter()
+    predictions = predict_marc_ot_probes(
+        model,
+        _tensor(support.iq, args.device),
+        _tensor(support.labels, args.device, labels=True),
+        _tensor(query.iq, args.device),
+        support_tokens=support.tokens,
+        query_tokens=query.tokens,
+        class_registry=registry,
+        seed=int(config["seed"]),
+        batch_size=int(args.batch_size),
+    )
+    inference_seconds = float(time.perf_counter() - started)
+    prediction_root = destination / scenario / arm / "prediction"
+    prediction_root.mkdir(parents=True, exist_ok=False)
+    prediction_path = prediction_root / "predictions.npz"
+    if prediction_path.exists() or prediction_path.is_symlink():
+        raise FileExistsError(f"immutable prediction exists: {prediction_path}")
+    np.savez_compressed(prediction_path, **predictions)
+    audit = state["audit"]
+    _write_json_new(
+        prediction_root / "prediction_receipt.json",
+        {
+            "schema": "cvs.phase2.marc_ot.prediction_receipt.v1",
+            "status": "PREDICTIONS_COMPLETE",
+            "protocol_schema": "p2_min_v1",
+            "phase2_data_status": "VALIDATED_ONCE",
+            "outer_key": str(job["outer_key"]),
+            "capsule_id": str(job["capsule_id"]),
+            "split_id": str(job["split_id"]),
+            "receiver": str(job["receiver"]),
+            "scenario": scenario,
+            "arm": arm,
+            "query_rows": len(query.tokens),
+            "expected_query_tokens": list(query.tokens),
+            "class_registry": list(registry),
+            "query_truth_opened": False,
+            "query_role_opened": False,
+            "support_state_frozen_before_query": True,
+            "query_decision_policy": "per_sample_all_registered_classes",
+            "resources": {
+                "training_seconds": float(audit["training_seconds"]),
+                "inference_seconds": inference_seconds,
+                "peak_rss_bytes": 0,
+                "peak_cuda_bytes": int(audit["peak_cuda_bytes"] or 0),
+                "trainable_parameter_count": int(state["trainable_parameter_count"]),
+            },
+        },
+    )
+
+
+def _context(args: argparse.Namespace):
+    config = validate_pilot_config(_load_json(args.config))
+    manifest = _load_json(args.manifest)
+    job = validate_manifest_job(
+        manifest, outer_key=str(config["pilot_outer_key"]), config=config
+    )
+    return config, job
+
+
+def _smoke(args: argparse.Namespace) -> Mapping[str, Any]:
+    destination = create_immutable_output_root(args.output_root)
+    config, job = _context(args)
+    support = load_support_package(_support_path(job, args.scenario))
+    state = _adapt_unit(args, config, support, args.arm, smoke=True)
+    result = {
+        "schema": "cvs.phase2.marc_ot.no_query_smoke.v1",
+        "status": "PASS",
+        "arm": args.arm,
+        "scenario": args.scenario,
+        "outer_key": str(job["outer_key"]),
+        "capsule_id": str(job["capsule_id"]),
+        "split_id": str(job["split_id"]),
+        "query_opened": False,
+        "query_rows_used": 0,
+        "training_audit": state["audit"],
+    }
+    _write_json_new(destination / "smoke_result.json", result)
+    return result
+
+
+def _pilot(args: argparse.Namespace) -> Mapping[str, Any]:
+    destination = create_immutable_output_root(args.output_root)
+    config, job = _context(args)
+
+    def support_loader(scenario: str):
+        return load_support_package(_support_path(job, scenario))
+
+    def adapt(scenario: str, arm: str, support: Any):
+        del scenario
+        return _adapt_unit(args, config, support, arm, smoke=False)
+
+    def write_state(scenario: str, arm: str, state: Mapping[str, Any]):
+        _save_frozen_unit(destination, scenario, arm, state)
+
+    def query_loader(scenario: str):
+        return load_query_package(_query_path(job, scenario))
+
+    def predict(scenario: str, arm: str, support: Any, query: Any, state: Mapping[str, Any]):
+        _predict_unit(args, config, job, destination, scenario, arm, support, query, state)
+
+    lifecycle = run_support_then_query(
+        scenarios=SCENARIOS,
+        arms=FORMAL_ARMS,
+        support_loader=support_loader,
+        adapt_and_freeze=adapt,
+        support_state_writer=write_state,
+        query_loader=query_loader,
+        predict_and_write=predict,
+    )
+    result = {
+        **lifecycle,
+        "pilot_outer_key": str(job["outer_key"]),
+        "capsule_id": str(job["capsule_id"]),
+        "split_id": str(job["split_id"]),
+        "receiver": str(job["receiver"]),
+        "promotion_gates": dict(config["promotion_gates"]),
+        "scoring_required": True,
+    }
+    _write_json_new(destination / "pilot_result.json", result)
+    return result
+
+
+def _promotion_decision(
+    paired_rows: list[Mapping[str, Any]], gates: Mapping[str, Any], arm: str
+) -> Mapping[str, Any]:
+    selected = [row for row in paired_rows if row["candidate_arm"] == arm]
+    if len(selected) != len(SCENARIOS):
+        raise ValueError("MARC-OT promotion requires three-scene paired evidence")
+    p3_ba = [row["probes"]["P3_OLD_D92"]["balanced_accuracy_delta_pp"] for row in selected]
+    p3_floor = [row["probes"]["P3_OLD_D92"]["floor_delta_pp"] for row in selected]
+    p1_p2 = [
+        row["probes"][probe]["balanced_accuracy_delta_pp"]
+        for row in selected
+        for probe in ("P1_SOURCE_HEAD", "P2_SUPPORT_PROTOTYPE")
+    ]
+    help_scenes = sum(
+        row["probes"]["P3_OLD_D92"]["help_count"]
+        > row["probes"]["P3_OLD_D92"]["harm_count"]
+        for row in selected
+    )
+    low_elev = next(row for row in selected if row["scenario"] == "leo_low_elev_weak")
+    checks = {
+        "median_p3_ba": median(p3_ba) >= float(gates["median_p3_ba_delta_pp"]),
+        "worst_scene_p3_ba": min(p3_ba) >= float(gates["worst_scene_p3_ba_delta_pp"]),
+        "median_p3_floor": median(p3_floor) >= float(gates["median_p3_floor_delta_pp"]),
+        "low_elev_p3_floor": low_elev["probes"]["P3_OLD_D92"]["floor_delta_pp"]
+        >= float(gates["low_elev_p3_floor_delta_pp"]),
+        "p1_p2_scene_drop": min(p1_p2) >= -float(gates["max_p1_p2_scene_drop_pp"]),
+        "help_gt_harm_scenes": help_scenes >= int(gates["minimum_help_gt_harm_scenes"]),
+    }
+    passed = all(checks.values())
+    return {
+        "arm": arm,
+        "status": "PROMOTE_TO_TARGET25" if passed else "NO_PROMOTION_TO_TARGET25",
+        "passed": passed,
+        "gates": checks,
+    }
+
+
+def _score(args: argparse.Namespace) -> Mapping[str, Any]:
+    destination = create_immutable_output_root(args.output_root)
+    pilot = _load_json(args.prediction_root / "pilot_result.json")
+    if (
+        pilot.get("status") != "ARTIFACTS_COMPLETE"
+        or pilot.get("support_frozen_unit_count") != len(SCENARIOS) * len(FORMAL_ARMS)
+        or pilot.get("prediction_unit_count") != len(SCENARIOS) * len(FORMAL_ARMS)
+        or tuple(pilot.get("arms", ())) != FORMAL_ARMS
+        or tuple(pilot.get("scenarios", ())) != SCENARIOS
+        or pilot.get("truth_opened") is not False
+    ):
+        raise ValueError("MARC-OT prediction root is incomplete")
+    rows: list[Mapping[str, Any]] = []
+    paired: list[Mapping[str, Any]] = []
+    for scenario in SCENARIOS:
+        scores: dict[str, Mapping[str, Any]] = {}
+        for arm in FORMAL_ARMS:
+            source = args.prediction_root / scenario / arm / "prediction"
+            score = score_marc_ot_predictions(source, args.truth_sidecar)
+            scores[arm] = score
+            rows.append(score)
+            _write_json_new(destination / scenario / arm / "score.json", score)
+        for arm in FORMAL_ARMS[1:]:
+            comparison = compare_marc_ot_score_rows(scores["R0"], scores[arm])
+            paired.append(comparison)
+            _write_json_new(destination / scenario / arm / "paired_vs_r0.json", comparison)
+    gates = pilot.get("promotion_gates")
+    if not isinstance(gates, Mapping):
+        raise ValueError("MARC-OT frozen promotion gates are missing")
+    decisions = {arm: _promotion_decision(paired, gates, arm) for arm in FORMAL_ARMS[1:]}
+    promotable = [arm for arm in FORMAL_ARMS[1:] if decisions[arm]["passed"]]
+    result = {
+        "schema": "cvs.phase2.marc_ot.score_collection.v1",
+        "status": "ANALYZED",
+        "rows": rows,
+        "paired_rows": paired,
+        "decisions": decisions,
+        "best_promotable_arm": promotable[-1] if promotable else None,
+        "next_state": "PROMOTE_TO_TARGET25" if promotable else "NO_PROMOTION_TO_TARGET25",
+        "truth_join_after_prediction_only": True,
+    }
+    _write_json_new(destination / "score_collection.json", result)
+    return result
+
+
+def _add_execution(command: argparse.ArgumentParser) -> None:
+    command.add_argument("--config", type=Path, required=True)
+    command.add_argument("--manifest", type=Path, required=True)
+    command.add_argument("--checkpoint", type=Path, required=True)
+    command.add_argument("--bundle", type=Path, required=True)
+    command.add_argument("--output-root", type=Path, required=True)
+    command.add_argument("--device", required=True)
+    command.add_argument("--batch-size", type=int, default=128)
+
+
+def parser() -> argparse.ArgumentParser:
+    root = argparse.ArgumentParser(description=__doc__)
+    commands = root.add_subparsers(dest="command", required=True)
+    smoke = commands.add_parser("smoke", help="one support-only no-query smoke")
+    _add_execution(smoke)
+    smoke.add_argument("--arm", choices=FORMAL_ARMS, default="R8")
+    smoke.add_argument("--scenario", choices=SCENARIOS, default=SCENARIOS[0])
+    pilot = commands.add_parser("pilot", help="freeze all support states, then predict")
+    _add_execution(pilot)
+    score = commands.add_parser("score", help="independent truth-last scoring")
+    score.add_argument("--prediction-root", type=Path, required=True)
+    score.add_argument("--truth-sidecar", type=Path, required=True)
+    score.add_argument("--output-root", type=Path, required=True)
+    return root
+
+
+def main() -> int:
+    args = parser().parse_args()
+    result = {"smoke": _smoke, "pilot": _pilot, "score": _score}[args.command](args)
+    print(json.dumps(dict(result), ensure_ascii=False, sort_keys=True))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

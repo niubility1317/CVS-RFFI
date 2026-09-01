@@ -1,0 +1,70 @@
+{
+  "arms": [
+    "R0",
+    "R1",
+    "R2",
+    "R4",
+    "R6",
+    "R8"
+  ],
+  "capsule_id": "d92-e0-full-target125:5910674066e8bbf93684fddd6af6fd2cef7e8f208d64e403ac7e58030a2a8cc5",
+  "checkpoint_id": "ADV3B02_CORE90_SOFT_E200",
+  "fold_count": 5,
+  "interpolation_grid": [
+    1.0,
+    0.75,
+    0.5,
+    0.25,
+    0.0
+  ],
+  "k_shot": 10,
+  "learning_rate_bounds": {
+    "max": 0.0003,
+    "min": 0.00001
+  },
+  "mrior_controls": {
+    "MRIOR-B": {
+      "claim_scope": "MATCHED_PERMISSION_CONTROL",
+      "permission_scope": "P2_MIN_V1_TARGET_SUPPORT_ONLY_BACKBONE_CONTROL"
+    },
+    "MRIOR-H": {
+      "claim_scope": "MECHANISM_CONTROL_ONLY",
+      "permission_scope": "TARGET_SUPPORT_ONLY_HEAD_CONTROL_DIAGNOSTIC_NON_FORMAL"
+    },
+    "MRIOR-HB": {
+      "claim_scope": "MECHANISM_CONTROL_ONLY",
+      "permission_scope": "TARGET_SUPPORT_ONLY_HEAD_BACKBONE_CONTROL_DIAGNOSTIC_NON_FORMAL"
+    }
+  },
+  "ot": {
+    "epsilon": 0.1,
+    "iterations": 80
+  },
+  "phase2_data_status": "VALIDATED_ONCE",
+  "pilot_outer_key": "rx_3_19__seed_713102__k_10__new_5",
+  "promotion_gates": {
+    "low_elev_p3_floor_delta_pp": 0.0,
+    "max_p1_p2_scene_drop_pp": 2.0,
+    "median_p3_ba_delta_pp": 3.0,
+    "median_p3_floor_delta_pp": 0.0,
+    "minimum_help_gt_harm_scenes": 2,
+    "worst_scene_p3_ba_delta_pp": -0.5
+  },
+  "protocol_schema": "p2_min_v1",
+  "ratio_cap": 0.5,
+  "receiver": "3-19",
+  "scenarios": [
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak"
+  ],
+  "schema": "cvs.phase2.marc_ot.pilot_config.v1",
+  "seed": 713102,
+  "split_id": "d92-e0-full-target125:rx_3_19__seed_713102__k_10__new_5",
+  "stage_steps": [
+    1500,
+    2000,
+    2500,
+    3000
+  ]
+}
