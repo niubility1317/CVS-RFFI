@@ -128,18 +128,6 @@ def support_bank_transport(
     return plan
 
 
-def _block_name(name: str) -> str:
-    value = str(name)
-    if not value:
-        raise ValueError("gradient block names must be nonempty")
-    routed = parameter_block_key(value)
-    if routed is not None:
-        return routed
-    if "." in value:
-        raise ValueError(f"parameter name is outside the canonical block routing: {value!r}")
-    return value
-
-
 def _finite_from_logs(sign: float, log_abs: float) -> float:
     if sign == 0.0:
         return 0.0
@@ -191,31 +179,14 @@ def _projection_factor(
     return 1.0 if log_ratio >= 0.0 else math.exp(log_ratio)
 
 
-def _epsilon_in_scaled_primary_units(eps: float, primary_scale: Tensor) -> float:
-    if bool(primary_scale == 0.0):
-        return float(torch.finfo(torch.float64).max)
-    log_value = math.log(eps) - 2.0 * math.log(float(primary_scale))
-    if log_value >= math.log(float(torch.finfo(torch.float64).max)):
-        return float(torch.finfo(torch.float64).max)
-    if log_value <= math.log(float(torch.finfo(torch.float64).tiny)):
-        return 0.0
-    return math.exp(log_value)
-
-
-def blockwise_primary_projection(
+def _blockwise_project_grouped(
     primary: Mapping[str, Sequence[Tensor | None]],
     auxiliary: Mapping[str, Sequence[Tensor | None]],
     *,
     ratio_cap: float,
     eps: float = 1.0e-12,
 ) -> Mapping[str, list[Tensor | None]]:
-    """Project calibration gradients per canonical parameter block.
-
-    Dotted parameter names are grouped through the single Task1
-    :func:`parameter_block_key` router.  Plain keys are treated as already
-    grouped diagnostic names, which keeps the low-level helper usable with the
-    hand-specified blocks in the implementation brief.
-    """
+    """Project gradients already grouped by a trusted canonical block key."""
 
     if not isinstance(primary, Mapping) or not isinstance(auxiliary, Mapping):
         raise ValueError("primary and auxiliary gradients must be mappings")
@@ -224,7 +195,7 @@ def blockwise_primary_projection(
     cap = float(ratio_cap)
     if not math.isfinite(cap) or cap < 0.0:
         raise ValueError("ratio_cap must be finite and nonnegative")
-    epsilon_value = _finite_positive_scalar(eps, name="eps")
+    _finite_positive_scalar(eps, name="eps")
 
     grouped: dict[str, list[tuple[Tensor | None, Tensor | None]]] = {}
     for raw_name in primary:
@@ -239,7 +210,9 @@ def blockwise_primary_projection(
             raise ValueError("each gradient block must contain a sequence of slots")
         if len(primary_slots) != len(auxiliary_slots):
             raise ValueError("corresponding gradient blocks must have equal slot counts")
-        block = _block_name(raw_name)
+        block = str(raw_name)
+        if not block:
+            raise ValueError("grouped gradient block names must be nonempty")
         grouped.setdefault(block, []).extend(zip(primary_slots, auxiliary_slots))
     if not grouped:
         raise ValueError("at least one gradient block is required")
@@ -326,10 +299,7 @@ def blockwise_primary_projection(
         conflict = bool(raw_dot_scaled < 0.0) and bool(primary_square > 0.0)
         projected_scaled = auxiliary_scaled
         if conflict:
-            scaled_epsilon = _epsilon_in_scaled_primary_units(
-                epsilon_value, primary_scale
-            )
-            coefficient = raw_dot_scaled / (primary_square + scaled_epsilon)
+            coefficient = raw_dot_scaled / primary_square
             projected_scaled = tuple(
                 auxiliary_value - coefficient * primary_value
                 for primary_value, auxiliary_value in zip(primary_scaled, auxiliary_scaled)
@@ -340,7 +310,7 @@ def blockwise_primary_projection(
                     for primary_value, projected_value in zip(primary_scaled, projected_scaled)
                 ]
             ).sum()
-            if bool(residual < 0.0) and abs(float(residual)) <= 1.0e-10:
+            if bool(residual < 0.0):
                 projected_scaled = tuple(
                     projected_value - (residual / primary_square) * primary_value
                     for primary_value, projected_value in zip(primary_scaled, projected_scaled)
@@ -396,6 +366,50 @@ def blockwise_primary_projection(
         }
         projected_by_block[block] = result_slots
     return _ProjectedGradientMap(projected_by_block, diagnostics)
+
+
+def blockwise_primary_projection(
+    primary: Mapping[str, Sequence[Tensor | None]],
+    auxiliary: Mapping[str, Sequence[Tensor | None]],
+    *,
+    ratio_cap: float,
+    eps: float = 1.0e-12,
+) -> Mapping[str, list[Tensor | None]]:
+    """Group real parameter names with Task1's only router, then project."""
+
+    if not isinstance(primary, Mapping) or not isinstance(auxiliary, Mapping):
+        raise ValueError("primary and auxiliary gradients must be mappings")
+    if set(primary) != set(auxiliary):
+        raise ValueError("primary and auxiliary gradients must have identical keys")
+    grouped_primary: dict[str, list[Tensor | None]] = {}
+    grouped_auxiliary: dict[str, list[Tensor | None]] = {}
+    for parameter_name in primary:
+        if not isinstance(parameter_name, str) or not parameter_name:
+            raise ValueError("gradient parameter names must be nonempty strings")
+        block = parameter_block_key(parameter_name)
+        if block is None:
+            raise ValueError(
+                f"parameter name is outside the canonical block routing: {parameter_name!r}"
+            )
+        primary_slots = primary[parameter_name]
+        auxiliary_slots = auxiliary[parameter_name]
+        if (
+            not isinstance(primary_slots, Sequence)
+            or isinstance(primary_slots, Tensor)
+            or not isinstance(auxiliary_slots, Sequence)
+            or isinstance(auxiliary_slots, Tensor)
+        ):
+            raise ValueError("each parameter gradient must contain a sequence of slots")
+        if len(primary_slots) != len(auxiliary_slots):
+            raise ValueError("corresponding parameter gradients must have equal slot counts")
+        grouped_primary.setdefault(block, []).extend(primary_slots)
+        grouped_auxiliary.setdefault(block, []).extend(auxiliary_slots)
+    return _blockwise_project_grouped(
+        grouped_primary,
+        grouped_auxiliary,
+        ratio_cap=ratio_cap,
+        eps=eps,
+    )
 
 
 def _support_inputs(
@@ -574,6 +588,22 @@ def marc_ot_losses(
     if any(not math.isfinite(float(value)) or float(value) < 0.0 for value in weights):
         raise ValueError("MARC-OT loss weights must be finite and nonnegative")
 
+    fft: Tensor | None = None
+    if support_fft_features is not None:
+        fft = torch.as_tensor(
+            support_fft_features,
+            device=features.device,
+            dtype=features.dtype,
+        )
+        if features.shape[1] != 160 or fft.shape != (len(features), 96):
+            raise ValueError("old-only D92 cross-fit requires support [N,160] and FFT [N,96]")
+        if not bool(torch.isfinite(fft).all()):
+            raise ValueError("support FFT features must be finite")
+        if int(torch.unique(labels).numel()) != 6:
+            raise ValueError("old-only D92 cross-fit requires six registered classes")
+        if k_shot < 2:
+            raise ValueError("old-only D92 cross-fit requires K>=2")
+
     frozen_head_ce = functional.cross_entropy(head_logits, labels)
     if k_shot == 1:
         cross_fit_ce = features.sum() * 0.0
@@ -582,7 +612,7 @@ def marc_ot_losses(
         cross_fit_mode = "k1_frozen_head"
     else:
         effective_folds = min(fold_count, k_shot)
-        if support_fft_features is None:
+        if fft is None:
             cross_fit_logits = _cross_fitted_prototype_logits(
                 features,
                 labels,
@@ -595,17 +625,6 @@ def marc_ot_losses(
             class_risk = frozen_class_risk(cross_fit_logits, labels)
             cross_fit_mode = "prototype"
         else:
-            fft = torch.as_tensor(
-                support_fft_features,
-                device=features.device,
-                dtype=features.dtype,
-            )
-            if features.shape[1] != 160 or fft.shape != (len(features), 96):
-                raise ValueError("old-only D92 cross-fit requires support [N,160] and FFT [N,96]")
-            if int(torch.unique(labels).numel()) != 6:
-                raise ValueError("old-only D92 cross-fit requires six registered classes")
-            if not bool(torch.isfinite(fft).all()):
-                raise ValueError("support FFT features must be finite")
             folds = stratified_crossfit_indices(
                 labels,
                 tokens,

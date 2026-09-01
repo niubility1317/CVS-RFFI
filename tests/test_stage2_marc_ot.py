@@ -6,6 +6,7 @@ import math
 import pytest
 import torch
 
+import cvsrffi.stage2_marc_ot as marc_ot
 from cvsrffi.stage2_marc_ot import (
     MARCOTDiagnostics,
     blockwise_primary_projection,
@@ -79,7 +80,7 @@ def test_blockwise_projection_only_changes_conflicting_block() -> None:
         "freq": [torch.tensor([1.0, 1.0])],
     }
 
-    projected = blockwise_primary_projection(primary, auxiliary, ratio_cap=0.5)
+    projected = marc_ot._blockwise_project_grouped(primary, auxiliary, ratio_cap=0.5)
 
     assert torch.dot(projected["time"][0], primary["time"][0]) >= 0
     assert torch.allclose(projected["time"][0], torch.tensor([0.0, 0.5]), atol=1.0e-6)
@@ -97,7 +98,7 @@ def test_blockwise_projection_reuses_canonical_parameter_routing() -> None:
         "id_backbone.t1.bias": [torch.tensor([1.0])],
     }
     auxiliary = {
-        "id_backbone.t1.weight": [torch.tensor([-1.0])],
+        "id_backbone.t1.weight": [torch.tensor([-2.0])],
         "id_backbone.t1.bias": [torch.tensor([1.0])],
     }
 
@@ -105,10 +106,18 @@ def test_blockwise_projection_reuses_canonical_parameter_routing() -> None:
 
     assert tuple(projected) == ("t1",)
     assert len(projected["t1"]) == 2
+    assert torch.allclose(projected["t1"][0], torch.tensor([-1.0]))
+    assert torch.allclose(projected["t1"][1], torch.tensor([1.0]))
     with pytest.raises(ValueError, match="canonical"):
         blockwise_primary_projection(
             {"id_backbone.cls_head.head.weight": [torch.ones(1)]},
             {"id_backbone.cls_head.head.weight": [torch.ones(1)]},
+            ratio_cap=1.0,
+        )
+    with pytest.raises(ValueError, match="canonical"):
+        blockwise_primary_projection(
+            {"time": [torch.ones(1)]},
+            {"time": [torch.ones(1)]},
             ratio_cap=1.0,
         )
 
@@ -123,7 +132,7 @@ def test_blockwise_projection_handles_none_zero_primary_and_extreme_scales() -> 
         "extreme": [torch.tensor([-1.0e20, 1.0e20], dtype=torch.float64)],
     }
 
-    projected = blockwise_primary_projection(primary, auxiliary, ratio_cap=0.25)
+    projected = marc_ot._blockwise_project_grouped(primary, auxiliary, ratio_cap=0.25)
 
     assert torch.equal(projected["missing"][0], torch.zeros(1))
     assert torch.equal(projected["missing"][1], torch.zeros(2))
@@ -132,24 +141,42 @@ def test_blockwise_projection_handles_none_zero_primary_and_extreme_scales() -> 
         torch.tensor([0.0, 2.5e19], dtype=torch.float64),
         rtol=1.0e-12,
     )
+    assert torch.dot(projected["extreme"][0], primary["extreme"][0]) >= 0.0
     assert math.isfinite(projected.diagnostics["extreme"]["projected_norm"])
 
 
-def test_blockwise_projection_uses_eps_in_conflict_denominator() -> None:
-    projected = blockwise_primary_projection(
-        {"time": [torch.tensor([1.0, 0.0])]},
+def test_blockwise_projection_removes_conflict_even_when_eps_is_one() -> None:
+    primary = {"time": [torch.tensor([1.0, 0.0])]}
+    projected = marc_ot._blockwise_project_grouped(
+        primary,
         {"time": [torch.tensor([-1.0, 1.0])]},
         ratio_cap=10.0,
         eps=1.0,
     )
-    assert torch.allclose(projected["time"][0], torch.tensor([-0.5, 1.0]))
+    assert torch.allclose(projected["time"][0], torch.tensor([0.0, 1.0]))
+    assert torch.dot(projected["time"][0], primary["time"][0]) >= 0.0
+
+
+def test_blockwise_projection_keeps_nonnegative_dot_for_small_primary() -> None:
+    primary = {"tiny": [torch.tensor([1.0e-30, 0.0], dtype=torch.float64)]}
+    projected = marc_ot._blockwise_project_grouped(
+        primary,
+        {"tiny": [torch.tensor([-1.0, 1.0], dtype=torch.float64)]},
+        ratio_cap=1.0,
+        eps=1.0,
+    )
+    assert torch.dot(projected["tiny"][0], primary["tiny"][0]) >= 0.0
+    assert float(torch.linalg.vector_norm(projected["tiny"][0])) == pytest.approx(
+        1.0e-30, rel=1.0e-12
+    )
 
 
 @pytest.mark.parametrize("side", ["primary", "auxiliary"])
 def test_blockwise_projection_rejects_nonfinite_gradients(side: str) -> None:
-    primary = {"time": [torch.ones(1)]}
-    auxiliary = {"time": [torch.ones(1)]}
-    (primary if side == "primary" else auxiliary)["time"][0] = torch.tensor([math.inf])
+    name = "id_backbone.t1.weight"
+    primary = {name: [torch.ones(1)]}
+    auxiliary = {name: [torch.ones(1)]}
+    (primary if side == "primary" else auxiliary)[name][0] = torch.tensor([math.inf])
     with pytest.raises(ValueError, match="nonfinite"):
         blockwise_primary_projection(primary, auxiliary, ratio_cap=1.0)
 
@@ -246,6 +273,32 @@ def test_marc_ot_losses_reuse_existing_old_only_d92_cross_fit() -> None:
     cross_fit_gradient = torch.autograd.grad(result.cross_fit_ce, identity)[0]
     assert torch.isfinite(cross_fit_gradient).all()
     assert torch.linalg.vector_norm(cross_fit_gradient) > 0.0
+
+
+def test_marc_ot_k1_fft_validation_precedes_explicit_d92_rejection() -> None:
+    labels = torch.arange(6)
+    tokens = tuple(f"k1-{index}" for index in range(6))
+    identity = torch.zeros(6, 160)
+    logits = torch.zeros(6, 6)
+    bank = torch.zeros(3, 160)
+
+    with pytest.raises(ValueError, match=r"\[N,160\].*\[N,96\]"):
+        marc_ot_losses(
+            identity[:, :159], labels, tokens, logits, bank[:, :159],
+            support_fft_features=torch.zeros(6, 96),
+        )
+    nonfinite_fft = torch.zeros(6, 96)
+    nonfinite_fft[0, 0] = math.inf
+    with pytest.raises(ValueError, match="FFT features must be finite"):
+        marc_ot_losses(
+            identity, labels, tokens, logits, bank,
+            support_fft_features=nonfinite_fft,
+        )
+    with pytest.raises(ValueError, match=r"D92 cross-fit requires K>=2"):
+        marc_ot_losses(
+            identity, labels, tokens, logits, bank,
+            support_fft_features=torch.zeros(6, 96),
+        )
 
 
 def test_marc_ot_losses_reject_unequal_k_and_nonfinite_frozen_head_logits() -> None:
