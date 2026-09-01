@@ -424,6 +424,154 @@ class WeightedRidgeLayer(nn.Module):
         }
 
 
+class SurfaceAnchorEncoder(nn.Module):
+    """Evaluate a fitted response on one fixed 32-point complex excitation grid."""
+
+    def __init__(self, response_basis: ResponseBasis, variance_temperature: float = 1.0):
+        super().__init__()
+        amplitudes = torch.tensor(
+            [0.15, 0.30, 0.45, 0.60, 0.75, 0.90, 1.05, 1.20], dtype=torch.float32
+        )
+        phases = torch.tensor([0.0, 0.5 * math.pi, math.pi, 1.5 * math.pi])
+        anchor_grid = (
+            amplitudes[:, None] * torch.exp(torch.complex(torch.zeros_like(phases), phases))[None, :]
+        ).reshape(1, 32).to(torch.complex64)
+        with torch.no_grad():
+            anchor_design = response_basis(anchor_grid).squeeze(0)
+        self.register_buffer("anchor_grid", anchor_grid.squeeze(0), persistent=True)
+        self.register_buffer("anchor_design", anchor_design, persistent=True)
+        self.variance_temperature = float(variance_temperature)
+
+    def forward(
+        self,
+        resp_coef: torch.Tensor,
+        resp_cov_diag: torch.Tensor,
+        coverage: torch.Tensor,
+    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+        design = self.anchor_design.to(device=resp_coef.device, dtype=torch.complex64)
+        anchor = torch.einsum("qk,bk->bq", design, resp_coef.to(torch.complex64))
+        variance = torch.einsum(
+            "qk,bk->bq", design.abs().square().float(), resp_cov_diag.float()
+        ).clamp_min(0.0)
+        reliability = coverage.float().reshape(-1, 1).clamp(0.0, 1.0) * torch.exp(
+            -variance / max(self.variance_temperature, 1e-6)
+        )
+        weighted_anchor = anchor * reliability.sqrt().to(torch.complex64)
+        z_resp = torch.cat([weighted_anchor.real, weighted_anchor.imag], dim=1)
+        z_resp = torch.nn.functional.normalize(z_resp.float(), dim=1, eps=1e-6)
+        return anchor, z_resp, variance, reliability
+
+
+class ResponseFusionGate(nn.Module):
+    """Quality-only bounded residual gate; all quality inputs are detached."""
+
+    def __init__(self, rho_max: float = 0.25, hidden: int = 8):
+        super().__init__()
+        rho_max = float(rho_max)
+        if rho_max != 0.25:
+            raise ValueError("ADV3B02-ECRS-V1 fixes rho_max=0.25")
+        self.rho_max = rho_max
+        self.active_rho_max = rho_max
+        self.net = nn.Sequential(
+            nn.Linear(7, int(hidden)),
+            nn.GELU(),
+            nn.Linear(int(hidden), 1),
+        )
+        nn.init.zeros_(self.net[-1].weight)
+        nn.init.zeros_(self.net[-1].bias)
+
+    def set_active_rho_max(self, value: float) -> None:
+        self.active_rho_max = min(self.rho_max, max(0.0, float(value)))
+
+    def forward(
+        self,
+        quality: Mapping[str, torch.Tensor],
+        resp_cov_diag: torch.Tensor,
+        sample_count: int,
+    ) -> torch.Tensor:
+        values = torch.stack(
+            [
+                quality["log_condition"],
+                quality["effective_rank"] / 28.0,
+                quality["effective_sample_size"] / float(max(1, sample_count)),
+                quality["coverage"],
+                torch.log1p(quality["nmse"].clamp_min(0.0)),
+                quality["snr_db"] / 40.0,
+                torch.log1p(resp_cov_diag.mean(dim=1).clamp_min(0.0)),
+            ],
+            dim=1,
+        ).detach()
+        return self.active_rho_max * torch.sigmoid(self.net(values).squeeze(-1))
+
+
+class ResponseSurfaceBranch(nn.Module):
+    """Parallel ADV3B02-ECRS-V1 local system-identification branch."""
+
+    def __init__(
+        self,
+        identity_dim: int,
+        *,
+        response_basis_dim: int = 28,
+        response_dim: int = 64,
+        rho_max: float = 0.25,
+        ridge_alpha: float = 1e-4,
+    ):
+        super().__init__()
+        if int(identity_dim) != 160:
+            raise ValueError("ADV3B02-ECRS-V1 fixes the existing identity dimension at 160")
+        if int(response_basis_dim) != 28:
+            raise ValueError("ADV3B02-ECRS-V1 fixes response_basis_dim=28")
+        if int(response_dim) != 64:
+            raise ValueError("ADV3B02-ECRS-V1 fixes response_dim=64")
+        self.identity_dim = int(identity_dim)
+        self.response_basis = ResponseBasis()
+        self.nuisance_estimator = NuisanceEstimator()
+        self.canonicalizer = AnalyticCanonicalizer()
+        self.content_estimator = ContentEstimator()
+        self.weighted_ridge = WeightedRidgeLayer(alpha_lambda=float(ridge_alpha))
+        self.anchor_encoder = SurfaceAnchorEncoder(self.response_basis)
+        self.fusion_gate = ResponseFusionGate(rho_max=float(rho_max))
+        self.response_projection = nn.Linear(64, self.identity_dim, bias=False)
+        nn.init.zeros_(self.response_projection.weight)
+
+    def forward(self, x: torch.Tensor, z_id_raw: torch.Tensor) -> Dict[str, object]:
+        nuisance_coef = self.nuisance_estimator(x)
+        canonical_iq = self.canonicalizer(x, nuisance_coef)
+        s_hat, content_confidence = self.content_estimator(canonical_iq)
+        design = self.response_basis(s_hat)
+        ridge = self.weighted_ridge(
+            design, iq_to_complex(canonical_iq), content_confidence
+        )
+        quality = dict(ridge["resp_quality"])
+        quality["snr_db"] = -10.0 * torch.log10(quality["nmse"].clamp_min(1e-8))
+        anchor, z_resp, anchor_variance, anchor_reliability = self.anchor_encoder(
+            ridge["resp_coef"], ridge["resp_cov_diag"], quality["coverage"]
+        )
+        quality["anchor_variance"] = anchor_variance
+        quality["anchor_reliability"] = anchor_reliability
+        rho = self.fusion_gate(quality, ridge["resp_cov_diag"], int(x.size(-1)))
+        residual = self.response_projection(z_resp)
+        z_id_fused = torch.nn.functional.normalize(
+            z_id_raw.float() + rho.unsqueeze(1) * residual.float(), dim=1, eps=1e-6
+        )
+        return {
+            "z_resp": z_resp,
+            "z_id_fused": z_id_fused,
+            "resp_coef": ridge["resp_coef"],
+            "resp_cov_diag": ridge["resp_cov_diag"],
+            "resp_quality": quality,
+            "resp_anchor": anchor,
+            "nuisance_coef": nuisance_coef,
+            "content_confidence": content_confidence,
+            "canonical_iq": canonical_iq,
+            "s_hat": s_hat,
+            "response_design": design,
+            "response_weights": ridge["weights"],
+            "ridge_info": ridge["ridge_info"],
+            "rho_resp": rho,
+        }
+
+
 class SatAnchorIdentityAdapter(nn.Module):
     """Zero-initialized low-rank identity residual and logit correction."""
 
@@ -981,6 +1129,25 @@ class DualCVSincNetDisentangle(nn.Module):
             self._share_early_stem()
 
         self.emb_dim = self._infer_emb_dim(self.id_backbone)
+        if self.use_ecrs:
+            if self.representation_mode != "dual":
+                raise ValueError("ADV3B02-ECRS-V1 requires the existing dual ADV3B02 backbone")
+            allowed_ecrs_keys = {
+                "response_basis_dim",
+                "response_dim",
+                "rho_max",
+                "ridge_alpha",
+            }
+            unknown_ecrs_keys = sorted(set(self.ecrs_config) - allowed_ecrs_keys)
+            if unknown_ecrs_keys:
+                raise ValueError(f"unsupported ECRS-V1 config keys: {unknown_ecrs_keys}")
+            self.ecrs = ResponseSurfaceBranch(
+                self.emb_dim,
+                response_basis_dim=int(self.ecrs_config.get("response_basis_dim", 28)),
+                response_dim=int(self.ecrs_config.get("response_dim", 64)),
+                rho_max=float(self.ecrs_config.get("rho_max", 0.25)),
+                ridge_alpha=float(self.ecrs_config.get("ridge_alpha", 1e-4)),
+            )
         self.sat_anchor_identity_adapter = (
             SatAnchorIdentityAdapter(
                 self.emb_dim,
@@ -1109,6 +1276,16 @@ class DualCVSincNetDisentangle(nn.Module):
     def _pick_z_dom(self, aux: Dict[str, torch.Tensor]) -> torch.Tensor:
         return self._pick_from_keys(aux, self.dom_feature_key, ("feat_imp", "feat_pa", "feat_dac", "base", "feat_con", "feat_cls", "feat_joint"))
 
+    def _classify_identity_feature(
+        self,
+        feature: torch.Tensor,
+        labels: Optional[torch.Tensor],
+    ) -> torch.Tensor:
+        classifier = getattr(getattr(self.id_backbone, "cls_head", None), "head", None)
+        if classifier is None or not callable(classifier):
+            raise RuntimeError("ECRS requires the existing ADV3B02 CosFace identity head")
+        return classifier(feature, labels=labels)
+
     def forward(
         self,
         x: torch.Tensor,
@@ -1177,6 +1354,7 @@ class DualCVSincNetDisentangle(nn.Module):
             (not return_aux)
             and self.fast_infer_when_no_aux
             and self.sat_anchor_identity_adapter is None
+            and not self.use_ecrs
         ):
             return backbone_forward_compat(
                 self.id_backbone,
@@ -1211,6 +1389,7 @@ class DualCVSincNetDisentangle(nn.Module):
         )
 
         tx_logits = aux_id["logits"]
+        tx_logits_raw = tx_logits
         z_id = self._pick_z_id(aux_id)
         if self.sat_anchor_identity_adapter is not None:
             z_id, sat_correction = self.sat_anchor_identity_adapter(
@@ -1223,6 +1402,13 @@ class DualCVSincNetDisentangle(nn.Module):
                 else tx_logits
             )
             tx_logits = base_tx_logits + sat_correction
+            tx_logits_raw = tx_logits
+        z_id_raw = z_id
+        ecrs_out = None
+        if self.ecrs is not None:
+            ecrs_out = self.ecrs(x, z_id_raw)
+            z_id = ecrs_out["z_id_fused"]
+            tx_logits = self._classify_identity_feature(z_id, y_tx)
         z_dom_raw = self._pick_z_dom(aux_dom)
         z_dom, z_dom_rcn = self.dom_enhancer(z_dom_raw, x)
 
@@ -1272,6 +1458,12 @@ class DualCVSincNetDisentangle(nn.Module):
             "crra_nuisance_pred": aux_id.get("crra_nuisance_pred", None),
             "crra_condition_tx_adv_logits": crra_condition_tx_adv_logits,
         }
+        if ecrs_out is not None:
+            out.update(ecrs_out)
+            out["tx_logits_raw"] = tx_logits_raw
+            out["z_id_raw"] = z_id_raw
+            out["z_id_fused"] = z_id
+            out["z_id"] = z_id
         if torch.is_tensor(tx_adv_logits):
             out["tx_adv_logits"] = tx_adv_logits
         if torch.is_tensor(crra_condition_tx_adv_logits):
