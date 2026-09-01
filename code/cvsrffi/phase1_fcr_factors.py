@@ -9,6 +9,16 @@ from torch import nn
 from .phase1_fcr_types import FCRConfig
 
 
+def excitation_features(s: torch.Tensor) -> torch.Tensor:
+    """Return fixed amplitude and slew features for a complex excitation."""
+
+    if not torch.is_complex(s) or s.ndim != 2:
+        raise ValueError("s must be complex [B,input_len]")
+    amp = s.abs()
+    slew = torch.diff(amp, dim=-1, prepend=amp[..., :1])
+    return torch.stack((amp, amp.square(), amp.pow(3), slew), dim=-1)
+
+
 @dataclass
 class ContentOutput:
     z_s: torch.Tensor
