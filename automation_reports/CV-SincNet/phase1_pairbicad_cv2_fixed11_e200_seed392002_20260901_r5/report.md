@@ -89,3 +89,10 @@ r5恢复完整闭合：定位非空final checkpoint；从独立`source_loro_sele
 - GPU0、1、2、3、6、7可见阶段性计算，GPU4、5空闲；当前仅有4个本run worker，未超过每GPU最多2个的限制，也未影响无关进程。
 - 未检出Traceback、CUDA OOM、`RuntimeError:`或`ValueError:`确定性致命指纹。判定保持`RUNNING`，不停止、不重启、不热补丁。
 - 按16:25—16:47实际吞吐，T1预计约17:05—17:10完成，瓶颈T3预计约17:18—17:25完成；24行artifact闭合预计约17:20—17:30。之后完整读取与分析、报告和Git发布预计仍需45—75分钟，最终`ANALYZED`预计约18:05—18:45。
+
+## 2026-09-01 17:10只读监控
+
+- `ARTIFACTS_COMPLETE=22/24`、`TECHNICAL_FAILURE=0`；T1 fold8和fold1分别于17:07:57、17:09:27完成E200及四场景闭合。
+- dispatcher PID`3472323`继续存活，现仅有2个直属worker，精确绑定T3 fold1/8；两行均到`59500/63000 updates`，source-LORO文件继续增长。
+- GPU6、7承载剩余T3计算；其他GPU已释放或处于无本run训练负载状态。未检出确定性致命错误，也未影响无关进程。
+- 按最近23分钟实际吞吐，T3训练终点预计约17:21—17:23，计入最终checkpoint与四场景评估后，24行全部artifact预计约17:24—17:28闭合；最终完整分析与Git发布预计约18:10—18:40。
