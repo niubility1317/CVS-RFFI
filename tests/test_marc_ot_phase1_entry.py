@@ -141,6 +141,7 @@ def test_formal_config_is_exact_and_valid() -> None:
     path = ROOT / "configs" / "marc_ot_phase1_bundle_20260901.json"
     payload = json.loads(path.read_text(encoding="utf-8"))
     assert validate_marc_ot_phase1_config(payload) == payload
+    assert payload["run_id"] == "marc_ot_phase1_bundle_20260901_r2"
     assert payload["base_checkpoint"] == (
         "/home/szu2070436088/2510044040/CV-SincNet/runs/"
         "phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/"
@@ -253,7 +254,10 @@ def _role_datasets():
 
 def test_injected_entry_runs_real_schedule_and_enforces_source_boundaries(tmp_path: Path) -> None:
     from cvsrffi.marc_ot_source_experts import build_source_expert_bank
-    from cvsrffi.meta_episodes import sample_marc_ot_coverage_schedule
+    from cvsrffi.meta_episodes import (
+        audit_marc_ot_episode_coverage,
+        sample_marc_ot_coverage_schedule,
+    )
 
     payload = _valid_payload()
     model = _ToyModel()
@@ -272,6 +276,11 @@ def test_injected_entry_runs_real_schedule_and_enforces_source_boundaries(tmp_pa
     def bank_training_boundary(**kwargs):
         scheduled = sample_marc_ot_coverage_schedule(
             kwargs["sampler"], seed=kwargs["schedule_seed"]
+        )
+        audit_marc_ot_episode_coverage(
+            scheduled,
+            source_receiver_ids=tuple(payload["source_receiver_ids"]),
+            require_complete=True,
         )
         selected = tuple(kwargs["training_episode_selector"](scheduled))
         assert len(scheduled) == 55

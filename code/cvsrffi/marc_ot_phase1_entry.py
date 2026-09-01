@@ -726,6 +726,8 @@ def run_marc_ot_phase1_bundle(
                 query_per_class=int(config["query_per_class"]),
                 allowed_roles=("L_s",),
                 training=True,
+                partial_coverage_probability=1.0,
+                partial_class_fraction=(0.50, 0.80),
             ),
         )
         schedule = sample_marc_ot_coverage_schedule(
