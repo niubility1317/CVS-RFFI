@@ -32,6 +32,16 @@ def test_extract_block_delta_changes_only_allowlisted_parameters() -> None:
     assert torch.equal(delta["id_backbone.t3.weight"], torch.eye(2))
 
 
+def test_extract_block_delta_rejects_classifier_prefix_even_when_changed() -> None:
+    from cvsrffi.meta_weight_bank import extract_block_delta
+
+    base = {"classifier.weight": torch.zeros(2, 2)}
+    adapted = {"classifier.weight": torch.eye(2)}
+
+    with pytest.raises(ValueError, match="canonical"):
+        extract_block_delta(base, adapted, prefixes=("classifier.",))
+
+
 @pytest.mark.parametrize(
     ("base", "adapted", "match"),
     [
@@ -91,6 +101,7 @@ def test_parameter_block_key_routes_only_canonical_identity_blocks() -> None:
 
     assert parameter_block_key("id_backbone.t3.weight") == "t3"
     assert parameter_block_key("id_backbone.frequency_projection.weight") == "frequency_projection"
+    assert parameter_block_key("id_backbone.freq_stats_proj.weight") == "frequency_projection"
     assert parameter_block_key("classifier.weight") is None
 
 
@@ -145,6 +156,21 @@ def test_fit_weight_delta_bank_respects_rank_cap_unless_error_threshold_requires
     assert exact.entries[0].relative_error == pytest.approx(0.0, abs=1e-7)
 
 
+def test_fit_weight_delta_bank_preserves_single_task_delta() -> None:
+    from cvsrffi.meta_weight_bank import DeltaTaskKey, compose_weight_delta, fit_weight_delta_bank
+
+    task = DeltaTaskKey("rx-a", "d1", "leo_clear_weak", 10)
+    bank = fit_weight_delta_bank(
+        "base-123", {task: {"id_backbone.t3.weight": torch.tensor([1.0, -2.0])}}
+    )
+
+    entry = bank.entries[0]
+    assert entry.effective_rank == 1
+    assert entry.relative_error == pytest.approx(0.0, abs=2e-7)
+    composed = compose_weight_delta(entry, entry.task_coefficients[0])
+    assert torch.allclose(composed["id_backbone.t3.weight"], torch.tensor([1.0, -2.0]))
+
+
 def test_compose_weight_delta_rejects_bad_coefficients() -> None:
     from cvsrffi.meta_weight_bank import DeltaTaskKey, compose_weight_delta, fit_weight_delta_bank
 
@@ -165,3 +191,94 @@ def test_compose_weight_delta_rejects_bad_coefficients() -> None:
         compose_weight_delta(entry, torch.ones(2))
     with pytest.raises(ValueError, match="non-finite"):
         compose_weight_delta(entry, torch.tensor([float("nan")]))
+    with pytest.raises(ValueError, match="floating"):
+        compose_weight_delta(entry, torch.tensor([1], dtype=torch.int64))
+
+
+def test_compose_weight_delta_rejects_non_fp32_basis_and_overflow() -> None:
+    from cvsrffi.meta_weight_bank import BlockSpec, DeltaBankEntry, compose_weight_delta
+
+    spec = BlockSpec(
+        name="t3",
+        parameter_names=("id_backbone.t3.weight",),
+        shapes=((1,),),
+        dtypes=("torch.float32",),
+    )
+    non_fp32 = DeltaBankEntry(
+        spec=spec,
+        basis=torch.ones((1, 1), dtype=torch.float16),
+        task_coefficients=torch.ones((1, 1), dtype=torch.float32),
+        effective_rank=1,
+        relative_error=0.0,
+    )
+    multiplication_overflow = DeltaBankEntry(
+        spec=spec,
+        basis=torch.tensor([[torch.finfo(torch.float32).max]], dtype=torch.float32),
+        task_coefficients=torch.ones((1, 1), dtype=torch.float32),
+        effective_rank=1,
+        relative_error=0.0,
+    )
+
+    with pytest.raises(ValueError, match="float32"):
+        compose_weight_delta(non_fp32, torch.ones(1))
+    with pytest.raises(ValueError, match="non-finite"):
+        compose_weight_delta(multiplication_overflow, torch.tensor([2.0]))
+
+
+def test_compose_weight_delta_rejects_low_precision_conversion_overflow() -> None:
+    from cvsrffi.meta_weight_bank import BlockSpec, DeltaBankEntry, compose_weight_delta
+
+    entry = DeltaBankEntry(
+        spec=BlockSpec(
+            name="t3",
+            parameter_names=("id_backbone.t3.weight",),
+            shapes=((1,),),
+            dtypes=("torch.float16",),
+        ),
+        basis=torch.tensor([[65520.0]], dtype=torch.float32),
+        task_coefficients=torch.ones((1, 1), dtype=torch.float32),
+        effective_rank=1,
+        relative_error=0.0,
+    )
+
+    with pytest.raises(ValueError, match="non-finite"):
+        compose_weight_delta(entry, torch.ones(1))
+
+
+@pytest.mark.parametrize(
+    ("raw_task_key", "task_values"),
+    [
+        pytest.param("not-a-task-key", None, id="wrong-type"),
+        pytest.param(None, ("", "d1", "leo_clear_weak", 10), id="empty-receiver"),
+        pytest.param(None, ("rx-a", 1, "leo_clear_weak", 10), id="non-string-day"),
+        pytest.param(None, ("rx-a", "d1", "leo_clear_weak", 0), id="zero-k"),
+        pytest.param(None, ("rx-a", "d1", "leo_clear_weak", 1.5), id="non-integer-k"),
+    ],
+)
+def test_fit_weight_delta_bank_rejects_invalid_task_keys_before_sorting(
+    raw_task_key: object, task_values: tuple[object, object, object, object] | None
+) -> None:
+    from cvsrffi.meta_weight_bank import DeltaTaskKey, fit_weight_delta_bank
+
+    task_key = raw_task_key if task_values is None else DeltaTaskKey(*task_values)
+
+    with pytest.raises(ValueError, match="task key"):
+        fit_weight_delta_bank(
+            "base-123", {task_key: {"id_backbone.t3.weight": torch.tensor([1.0])}}
+        )
+
+
+@pytest.mark.parametrize("max_rank", [1.5, True, "1"])
+def test_fit_weight_delta_bank_rejects_non_integer_max_rank(max_rank: object) -> None:
+    from cvsrffi.meta_weight_bank import DeltaTaskKey, fit_weight_delta_bank
+
+    with pytest.raises(ValueError, match="max_rank"):
+        fit_weight_delta_bank(
+            "base-123",
+            {
+                DeltaTaskKey("rx-a", "d1", "leo_clear_weak", 10): {
+                    "id_backbone.t3.weight": torch.tensor([1.0])
+                }
+            },
+            max_rank=max_rank,
+        )

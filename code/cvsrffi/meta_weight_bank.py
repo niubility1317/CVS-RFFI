@@ -65,6 +65,7 @@ _BLOCK_PREFIXES: tuple[tuple[str, str], ...] = (
     ("id_backbone.time_proj.", "time_projection"),
     ("id_backbone.frequency_projection.", "frequency_projection"),
     ("id_backbone.f_proj.", "frequency_projection"),
+    ("id_backbone.freq_stats_proj.", "frequency_projection"),
     ("id_backbone.fusion.", "fusion"),
     ("id_backbone.time_fuse.", "fusion"),
     ("id_backbone.freq_gate.", "fusion"),
@@ -92,6 +93,8 @@ def _validate_explicit_prefixes(prefixes: tuple[str, ...]) -> tuple[str, ...]:
         raise ValueError("prefixes must be a non-empty tuple of explicit prefixes")
     if len(set(prefixes)) != len(prefixes):
         raise ValueError("prefixes must not contain duplicates")
+    if any(parameter_block_key(f"{prefix}__probe__") is None for prefix in prefixes):
+        raise ValueError("prefixes must target canonical parameter blocks")
     return prefixes
 
 
@@ -144,6 +147,8 @@ def extract_block_delta(
             if not _bitwise_equal(base_value, adapted_value):
                 raise ValueError(f"unallowlisted tensor changed: {name!r}")
             continue
+        if parameter_block_key(name) is None:
+            raise ValueError(f"allowlisted tensor is outside canonical blocks: {name!r}")
         if not base_value.is_floating_point():
             raise ValueError(f"allowlisted tensor must be floating point: {name!r}")
         delta = adapted_value.detach() - base_value.detach()
@@ -155,6 +160,20 @@ def extract_block_delta(
 
 def _task_sort_key(task_key: DeltaTaskKey) -> tuple[str, str, str, int]:
     return (task_key.receiver, task_key.day, task_key.scene, task_key.k_shot)
+
+
+def _validate_task_key(task_key: object) -> DeltaTaskKey:
+    if not isinstance(task_key, DeltaTaskKey):
+        raise ValueError("task key must be a DeltaTaskKey")
+    if any(not isinstance(value, str) or not value for value in (task_key.receiver, task_key.day, task_key.scene)):
+        raise ValueError("task key receiver, day and scene must be non-empty strings")
+    if (
+        not isinstance(task_key.k_shot, int)
+        or isinstance(task_key.k_shot, bool)
+        or task_key.k_shot <= 0
+    ):
+        raise ValueError("task key k_shot must be a positive integer")
+    return task_key
 
 
 def _validate_delta_mapping(delta: Mapping[str, Tensor]) -> tuple[str, ...]:
@@ -214,16 +233,17 @@ def fit_weight_delta_bank(
         raise ValueError("base_checkpoint_id must be a non-empty string")
     if not task_deltas:
         raise ValueError("task_deltas must not be empty")
-    if max_rank < 0:
-        raise ValueError("max_rank must be non-negative")
+    if not isinstance(max_rank, int) or isinstance(max_rank, bool) or max_rank < 0:
+        raise ValueError("max_rank must be a non-negative integer")
     if max_relative_error is not None and (
         not math.isfinite(max_relative_error) or max_relative_error < 0.0
     ):
         raise ValueError("max_relative_error must be finite and non-negative")
 
-    ordered_items = tuple(sorted(task_deltas.items(), key=lambda item: _task_sort_key(item[0])))
-    if any(not isinstance(task_key, DeltaTaskKey) for task_key, _ in ordered_items):
-        raise ValueError("task_deltas keys must be DeltaTaskKey values")
+    raw_items = tuple(task_deltas.items())
+    for task_key, _ in raw_items:
+        _validate_task_key(task_key)
+    ordered_items = tuple(sorted(raw_items, key=lambda item: _task_sort_key(item[0])))
     reference_names = _validate_delta_mapping(ordered_items[0][1])
     reference = ordered_items[0][1]
     for task_key, delta in ordered_items[1:]:
@@ -259,7 +279,7 @@ def fit_weight_delta_bank(
         )
         _, singular_values, vh = torch.linalg.svd(matrix, full_matrices=False)
         singular_rank = int(torch.count_nonzero(singular_values > 0).item())
-        nominal_rank = min(max_rank, max(task_count - 1, 0), singular_rank)
+        nominal_rank = min(max_rank, task_count, singular_rank)
 
         def compose_at_rank(rank: int) -> tuple[Tensor, Tensor, float]:
             basis = vh[:rank].T.contiguous()
@@ -293,6 +313,8 @@ def compose_weight_delta(entry: DeltaBankEntry, coefficients: Tensor) -> dict[st
 
     if not isinstance(coefficients, Tensor):
         raise ValueError("coefficients must be a torch.Tensor")
+    if not coefficients.is_floating_point():
+        raise ValueError("coefficients must be floating point")
     if coefficients.ndim != 1 or coefficients.shape[0] != entry.effective_rank:
         raise ValueError("coefficient shape does not match the entry rank")
     if not bool(torch.isfinite(coefficients).all()):
@@ -300,17 +322,24 @@ def compose_weight_delta(entry: DeltaBankEntry, coefficients: Tensor) -> dict[st
     expected_numel = sum(math.prod(shape) for shape in entry.spec.shapes)
     if entry.basis.ndim != 2 or entry.basis.shape != (expected_numel, entry.effective_rank):
         raise ValueError("entry basis geometry does not match its BlockSpec")
+    if entry.basis.dtype != torch.float32:
+        raise ValueError("entry basis must be float32")
     if not bool(torch.isfinite(entry.basis).all()):
         raise ValueError("entry basis contains non-finite values")
 
     flat = entry.basis @ coefficients.to(device=entry.basis.device, dtype=entry.basis.dtype)
+    if not bool(torch.isfinite(flat).all()):
+        raise ValueError("non-finite composed delta")
     result: dict[str, Tensor] = {}
     offset = 0
     for name, shape, dtype_name in zip(
         entry.spec.parameter_names, entry.spec.shapes, entry.spec.dtypes, strict=True
     ):
         count = math.prod(shape)
-        result[name] = flat[offset : offset + count].reshape(shape).to(_dtype_from_name(dtype_name))
+        restored = flat[offset : offset + count].reshape(shape).to(_dtype_from_name(dtype_name))
+        if not bool(torch.isfinite(restored).all()):
+            raise ValueError(f"non-finite restored delta for {name!r}")
+        result[name] = restored
         offset += count
     return result
 
