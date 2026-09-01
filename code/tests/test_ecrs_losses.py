@@ -13,6 +13,7 @@ if str(CODE_ROOT) not in sys.path:
 
 from cvsrffi.losses import (  # noqa: E402
     basis_gauge_loss,
+    different_tx_cross_response_error,
     different_tx_response_ranking_loss,
     response_gate_calibration_loss,
     response_pair_cross_prediction_loss,
@@ -94,7 +95,19 @@ def test_labeled_response_losses_require_cross_receiver_positive_and_matched_neg
     ranking = different_tx_response_ranking_loss(
         anchor, variance, labels, receiver, day, ["clean"] * 4, label_mask, margin=0.5
     )
+    different = different_tx_cross_response_error(
+        coefficient,
+        design,
+        target,
+        torch.ones(4, 48),
+        labels,
+        receiver,
+        day,
+        ["clean"] * 4,
+        label_mask,
+    )
     assert same < 0.1
+    assert different > same * 10.0
     assert ranking < 0.1
 
 

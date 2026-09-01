@@ -4725,6 +4725,42 @@ def same_tx_cross_response_loss(
     return torch.stack(losses).mean() if losses else target.real.sum() * 0.0
 
 
+def different_tx_cross_response_error(
+    resp_coef: torch.Tensor,
+    design: torch.Tensor,
+    target: torch.Tensor,
+    weight: torch.Tensor,
+    labels: torch.Tensor,
+    receiver_id: torch.Tensor,
+    day_id: torch.Tensor,
+    view_type: List[str],
+    label_mask: torch.Tensor,
+) -> torch.Tensor:
+    """Diagnostic cross-prediction error for different TX under matched RX/day/view."""
+    losses = []
+    count = int(design.size(0))
+    for left in range(count):
+        if not bool(label_mask[left]):
+            continue
+        for right in range(left + 1, count):
+            if not bool(label_mask[right]) or int(labels[left]) == int(labels[right]):
+                continue
+            if int(receiver_id[left]) != int(receiver_id[right]) or int(day_id[left]) != int(day_id[right]):
+                continue
+            if str(view_type[left]) != str(view_type[right]):
+                continue
+            for source, destination in ((left, right), (right, left)):
+                prediction = design[destination] @ resp_coef[source]
+                losses.append(
+                    _weighted_complex_nmse(
+                        prediction, target[destination], weight[destination]
+                    )
+                )
+    if losses:
+        return torch.stack(losses).mean()
+    return target.real.new_full((), float("nan"))
+
+
 def different_tx_response_ranking_loss(
     anchors: torch.Tensor,
     variance: torch.Tensor,

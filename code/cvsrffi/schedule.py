@@ -193,6 +193,39 @@ def ecrs_stage_for_epoch(
     )
 
 
+def apply_ecrs_rung_mask(state: Dict[str, Any], rung: str) -> Dict[str, Any]:
+    """Apply the report R0-R8 ablation ladder without enabling R9-R11."""
+    text = str(rung).upper().strip()
+    if text not in {f"R{index}" for index in range(9)}:
+        raise ValueError("ECRS V1 rung must be R0 through R8")
+    level = int(text[1:])
+    out = dict(state)
+    out["rung"] = text
+    out["canonical"] = bool(out["canonical"] and level >= 1)
+    out["content"] = bool(out["content"] and level >= 1)
+    out["split_fit"] = bool(out["split_fit"] and level >= 3)
+    out["pair_cross"] = bool(out["pair_cross"] and level >= 4)
+    out["pair_surface"] = bool(out["pair_surface"] and level >= 4)
+    out["same_tx_cross"] = bool(out["same_tx_cross"] and level >= 6)
+    out["resp_cls"] = bool(out["resp_cls"] and level >= 7)
+    out["diff_tx"] = bool(out["diff_tx"] and level >= 7)
+    out["gate_calibration"] = bool(out["gate_calibration"] and level >= 8)
+    if level < 8:
+        out["active_rho_max"] = 0.0
+    for key, enabled_key in (
+        ("canonical_scale", "canonical"),
+        ("content_scale", "content"),
+        ("split_fit_scale", "split_fit"),
+        ("pair_cross_scale", "pair_cross"),
+        ("resp_cls_scale", "resp_cls"),
+        ("same_tx_scale", "same_tx_cross"),
+        ("diff_tx_scale", "diff_tx"),
+    ):
+        if not out[enabled_key]:
+            out[key] = 0.0
+    return out
+
+
 def configure_ecrs_for_epoch(model, epoch: int, args) -> Dict[str, Any]:
     raw_model = getattr(model, "_orig_mod", model)
     branch = getattr(raw_model, "ecrs", None)
@@ -206,6 +239,7 @@ def configure_ecrs_for_epoch(model, epoch: int, args) -> Dict[str, Any]:
         enable_fasttrust=bool(getattr(args, "ecrs_enable_fasttrust", False)),
         teacher_stable=bool(getattr(args, "ecrs_teacher_stable", False)),
     )
+    state = apply_ecrs_rung_mask(state, getattr(args, "ecrs_rung", "R8"))
     for parameter in branch.parameters():
         parameter.requires_grad_(False)
     if state["canonical"]:

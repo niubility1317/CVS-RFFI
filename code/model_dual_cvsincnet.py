@@ -226,8 +226,11 @@ class ResponseBasis(nn.Module):
         "slew": slice(20, 28),
     }
 
-    def __init__(self):
+    def __init__(self, mode: str = "fixed_spline"):
         super().__init__()
+        self.mode = str(mode).lower().strip()
+        if self.mode not in {"fixed_spline", "fixed_mp"}:
+            raise ValueError("ECRS V1 basis mode must be fixed_spline or fixed_mp")
         self.register_buffer(
             "amplitude_centers",
             torch.tensor([0.15, 0.45, 0.75, 1.05], dtype=torch.float32),
@@ -255,8 +258,13 @@ class ResponseBasis(nn.Module):
         amplitude = s_hat.abs().float() / scale
         s_prev = self._delay(s_hat, 1)
         amp_prev = self._delay(amplitude, 1)
-        b_now = self._rbf(amplitude).to(torch.complex64)
-        b_prev = self._rbf(amp_prev).to(torch.complex64)
+        if self.mode == "fixed_mp":
+            powers = torch.arange(4, device=s_hat.device, dtype=torch.float32)
+            b_now = amplitude.unsqueeze(-1).pow(powers).to(torch.complex64)
+            b_prev = amp_prev.unsqueeze(-1).pow(powers).to(torch.complex64)
+        else:
+            b_now = self._rbf(amplitude).to(torch.complex64)
+            b_prev = self._rbf(amp_prev).to(torch.complex64)
 
         pa = torch.cat([s_hat.unsqueeze(-1) * b_now, s_prev.unsqueeze(-1) * b_prev], dim=-1)
         iq = torch.cat(
@@ -522,6 +530,7 @@ class ResponseSurfaceBranch(nn.Module):
         response_dim: int = 64,
         rho_max: float = 0.25,
         ridge_alpha: float = 1e-4,
+        basis_mode: str = "fixed_spline",
     ):
         super().__init__()
         if int(identity_dim) != 160:
@@ -532,7 +541,7 @@ class ResponseSurfaceBranch(nn.Module):
             raise ValueError("ADV3B02-ECRS-V1 fixes response_dim=64")
         self.identity_dim = int(identity_dim)
         self.num_classes = int(num_classes)
-        self.response_basis = ResponseBasis()
+        self.response_basis = ResponseBasis(mode=basis_mode)
         self.nuisance_estimator = NuisanceEstimator()
         self.canonicalizer = AnalyticCanonicalizer()
         self.content_estimator = ContentEstimator()
@@ -563,7 +572,7 @@ class ResponseSurfaceBranch(nn.Module):
         return {
             "version": "v1",
             "basis": {
-                "type": "fixed_complex_phase_structured_rbf",
+                "type": self.response_basis.mode,
                 "dimension": 28,
                 "block_slices": {"pa": [0, 8], "iq": [8, 16], "cross": [16, 20], "slew": [20, 28]},
                 "state": self._cpu_state(self.response_basis),
@@ -1192,6 +1201,7 @@ class DualCVSincNetDisentangle(nn.Module):
                 "response_dim",
                 "rho_max",
                 "ridge_alpha",
+                "basis_mode",
             }
             unknown_ecrs_keys = sorted(set(self.ecrs_config) - allowed_ecrs_keys)
             if unknown_ecrs_keys:
@@ -1203,6 +1213,7 @@ class DualCVSincNetDisentangle(nn.Module):
                 response_dim=int(self.ecrs_config.get("response_dim", 64)),
                 rho_max=float(self.ecrs_config.get("rho_max", 0.25)),
                 ridge_alpha=float(self.ecrs_config.get("ridge_alpha", 1e-4)),
+                basis_mode=str(self.ecrs_config.get("basis_mode", "fixed_spline")),
             )
         self.sat_anchor_identity_adapter = (
             SatAnchorIdentityAdapter(

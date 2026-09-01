@@ -9,7 +9,11 @@ CODE_ROOT = PROJECT_ROOT / "code"
 if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
-from cvsrffi.schedule import build_ecrs_stage_state, ecrs_stage_for_epoch  # noqa: E402
+from cvsrffi.schedule import (  # noqa: E402
+    apply_ecrs_rung_mask,
+    build_ecrs_stage_state,
+    ecrs_stage_for_epoch,
+)
 
 
 def test_report_stage0_to_stage6_matrix_and_v1_defaults() -> None:
@@ -45,3 +49,28 @@ def test_stage5_and_stage6_require_explicit_report_conditions() -> None:
     assert build_ecrs_stage_state(5, enable_learnable_basis=True)["learnable_basis"]
     assert not build_ecrs_stage_state(6, enable_fasttrust=True, teacher_stable=False)["fasttrust"]
     assert build_ecrs_stage_state(6, enable_fasttrust=True, teacher_stable=True)["fasttrust"]
+
+
+def test_report_r0_to_r8_masks_add_one_mechanism_at_a_time() -> None:
+    full = build_ecrs_stage_state(4, progress=1.0)
+    expected = {
+        "R0": (False, False, False, False, 0.0),
+        "R1": (True, False, False, False, 0.0),
+        "R2": (True, False, False, False, 0.0),
+        "R3": (True, True, False, False, 0.0),
+        "R4": (True, True, True, False, 0.0),
+        "R5": (True, True, True, False, 0.0),
+        "R6": (True, True, True, False, 0.0),
+        "R7": (True, True, True, True, 0.0),
+        "R8": (True, True, True, True, 0.2),
+    }
+    for rung, contract in expected.items():
+        state = apply_ecrs_rung_mask(full, rung)
+        actual = (
+            state["canonical"],
+            state["split_fit"],
+            state["pair_cross"],
+            state["resp_cls"],
+            state["active_rho_max"],
+        )
+        assert actual == contract

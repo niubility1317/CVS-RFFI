@@ -115,6 +115,7 @@ from cvsrffi.losses import (
     response_split_fit_loss,
     response_surface_distance,
     same_tx_cross_response_loss,
+    different_tx_cross_response_error,
     different_tx_response_ranking_loss,
     response_gate_calibration_loss,
     same_tx_cross_domain_consistency,
@@ -838,6 +839,9 @@ def compute_ecrs_paired_losses(
     same_tx = zero
     diff_tx = zero
     gate_calibration = zero
+    different_tx_prediction_error = reference.new_full((), float("nan"))
+    raw_correct = None
+    fused_correct = None
     if labels is not None:
         labels = labels.to(device=reference.device).long().reshape(-1)
         labels_both = torch.cat([labels, labels], dim=0)
@@ -860,6 +864,17 @@ def compute_ecrs_paired_losses(
                 diff_tx = different_tx_response_ranking_loss(
                     combined["resp_anchor"],
                     variance,
+                    labels_both,
+                    pair_meta["receiver_id"],
+                    pair_meta["day_id"],
+                    list(pair_meta["view_type"]),
+                    valid,
+                )
+                different_tx_prediction_error = different_tx_cross_response_error(
+                    combined["resp_coef"],
+                    combined["response_design"],
+                    target,
+                    combined["response_weights"],
                     labels_both,
                     pair_meta["receiver_id"],
                     pair_meta["day_id"],
@@ -896,6 +911,103 @@ def compute_ecrs_paired_losses(
         "same_tx": same_tx,
         "diff_tx": diff_tx,
         "gate": gate_calibration,
+        "same_tx_prediction_error": same_tx.detach(),
+        "different_tx_prediction_error": different_tx_prediction_error.detach(),
+        "raw_correct": None if raw_correct is None else raw_correct.detach(),
+        "fused_correct": None if fused_correct is None else fused_correct.detach(),
+    }
+
+
+def build_ecrs_negative_controls(
+    out: Dict[str, Any],
+    pair_ids: Optional[List[str]] = None,
+) -> Dict[str, Any]:
+    """Materialize only the report Section28 negative-control inputs."""
+    coef = out["resp_coef"]
+    covariance = out["resp_cov_diag"].float().clamp_min(1e-6)
+    quality = out["resp_quality"]
+    quality_only = torch.stack(
+        [
+            quality["log_condition"],
+            quality["effective_rank"],
+            quality["effective_sample_size"],
+            quality["coverage"],
+            quality["nmse"],
+            quality["snr_db"],
+            covariance.mean(dim=1),
+        ],
+        dim=1,
+    ).detach()
+    controls = {
+        "excitation_shuffle": out["response_design"].roll(1, dims=1),
+        "residual_shuffle": _complex_from_iq(out["canonical_iq"]).roll(1, dims=1),
+        "quality_only_tx_probe": quality_only,
+        "raw_coefficient": torch.view_as_real(coef).flatten(1),
+        "whitened_coefficient": torch.view_as_real(coef / covariance.sqrt()).flatten(1),
+        "anchor_surface": torch.view_as_real(out["resp_anchor"]).flatten(1),
+        "basis_controls": (
+            "fixed_mp",
+            "fixed_spline",
+            "learned_lowrank_deferred_R9",
+            "free_mlp_forbidden_in_v1",
+        ),
+    }
+    if pair_ids is not None:
+        controls["pair_id_shuffle"] = list(pair_ids[1:]) + list(pair_ids[:1])
+    return controls
+
+
+def summarize_ecrs_diagnostics(
+    out: Dict[str, Any],
+    *,
+    tx_labels: Optional[torch.Tensor] = None,
+    receiver_labels: Optional[torch.Tensor] = None,
+    same_tx_prediction_error: Optional[torch.Tensor] = None,
+    different_tx_prediction_error: Optional[torch.Tensor] = None,
+    raw_correct: Optional[torch.Tensor] = None,
+    fused_correct: Optional[torch.Tensor] = None,
+) -> Dict[str, Any]:
+    quality = out["resp_quality"]
+    ridge_info = out["ridge_info"]
+    nan_value = quality["nmse"].new_full((), float("nan"))
+    if same_tx_prediction_error is None or different_tx_prediction_error is None:
+        same_diff_ratio = nan_value
+    elif not bool(torch.isfinite(different_tx_prediction_error)):
+        same_diff_ratio = nan_value
+    else:
+        same_diff_ratio = same_tx_prediction_error.detach() / different_tx_prediction_error.detach().clamp_min(1e-8)
+    if raw_correct is None or fused_correct is None:
+        gate_rescue = gate_harm = gate_net_gain = 0
+    else:
+        raw_correct = raw_correct.detach().bool()
+        fused_correct = fused_correct.detach().bool()
+        gate_rescue = int((~raw_correct & fused_correct).sum().item())
+        gate_harm = int((raw_correct & ~fused_correct).sum().item())
+        gate_net_gain = gate_rescue - gate_harm
+    return {
+        "response_nmse": quality["nmse"].detach(),
+        "gram_log_condition": quality["log_condition"].detach(),
+        "effective_rank": quality["effective_rank"].detach(),
+        "effective_sample_size": quality["effective_sample_size"].detach(),
+        "coverage": quality["coverage"].detach(),
+        "ridge_fallback_rate": ridge_info.gt(0).float().mean().detach(),
+        "ridge_qr_rate": ridge_info.eq(2).float().mean().detach(),
+        "same_diff_prediction_ratio": same_diff_ratio,
+        "gate_rescue_count": gate_rescue,
+        "gate_harm_count": gate_harm,
+        "gate_net_gain": gate_net_gain,
+        "anchor_variance": quality["anchor_variance"].detach(),
+        "rho_resp": out["rho_resp"].detach(),
+        "probe_payload": {
+            "z_resp": out["z_resp"].detach(),
+            "tx_labels": None if tx_labels is None else tx_labels.detach(),
+            "receiver_labels": None if receiver_labels is None else receiver_labels.detach(),
+        },
+        "surface_export": {
+            "resp_anchor": out["resp_anchor"].detach(),
+            "resp_coef": out["resp_coef"].detach(),
+            "resp_cov_diag": out["resp_cov_diag"].detach(),
+        },
     }
 
 
@@ -2333,6 +2445,11 @@ def main():
                  "Declare the Stage6 teacher stable", "Do not authorize Stage6 pseudo-label structure")
     parser.add_argument("--ecrs_raw_ce_weight", type=float, default=0.30)
     parser.add_argument("--ecrs_alpha_resp", type=float, default=0.15)
+    parser.add_argument("--ecrs_rung", type=str, default="R8",
+                        choices=[f"R{i}" for i in range(9)])
+    parser.add_argument("--ecrs_basis_mode", type=str, default="fixed_spline",
+                        choices=["fixed_spline", "fixed_mp"])
+    parser.add_argument("--ecrs_ridge_alpha", type=float, default=1e-4)
     parser.add_argument("--lambda_ecrs_canonical", type=float, default=1.0)
     parser.add_argument("--lambda_ecrs_content", type=float, default=1.0)
     parser.add_argument("--lambda_ecrs_split_fit", type=float, default=1.0)
@@ -3252,7 +3369,14 @@ def main():
                                fast_infer_when_no_aux=bool(args.fast_infer_when_no_aux),
                                use_tx_adv_on_zdom=bool(args.use_tx_adv_on_zdom or str(args.train_mode).lower() == "fedcvs_vmb"),
                                arch_family=str(args.arch_family),
-                               use_ecrs=bool(args.use_ecrs)).to(device)
+                               use_ecrs=bool(args.use_ecrs),
+                               ecrs_config={
+                                   "response_basis_dim": 28,
+                                   "response_dim": 64,
+                                   "rho_max": 0.25,
+                                   "ridge_alpha": float(args.ecrs_ridge_alpha),
+                                   "basis_mode": str(args.ecrs_basis_mode),
+                               } if bool(args.use_ecrs) else None).to(device)
     load_init_checkpoint_weights(
         model,
         str(getattr(args, "init_checkpoint", "") or ""),
@@ -3524,6 +3648,9 @@ def main():
             "meta_ssl_tx", "meta_ssl_proto", "meta_ssl_dom", "meta_ssl_adv",
             "meta_ssl_coverage", "meta_ssl_accept", "meta_ssl_proto_agree", "meta_ssl_teacher_conf",
             "meta_ssl_proto_active",
+            "ecrs_loss", "ecrs_nmse", "ecrs_log_condition", "ecrs_effective_rank",
+            "ecrs_effective_samples", "ecrs_coverage", "ecrs_ridge_fallback", "ecrs_rho",
+            "ecrs_same_diff_ratio", "ecrs_gate_rescue", "ecrs_gate_harm", "ecrs_gate_net_gain",
             "w_cls", "w_dom", "w_adv", "w_orth", "w_cons", "w_group_ce",
             "w_cls_pa", "w_cls_dac", "w_pa_joint_inv", "w_pa_kl", "w_dac_reg", "w_pa_reg",
             "w_sat_cls", "w_sat_cons", "w_proto", "w_supcon", "w_fishr", "w_open_world_feat", "w_feature_norm",
@@ -3699,6 +3826,7 @@ def main():
                 loss_sat_cls = z_id.new_tensor(0.0)
                 loss_sat_cons = z_id.new_tensor(0.0)
                 loss_ecrs = z_id.new_tensor(0.0)
+                ecrs_diagnostics = None
                 out_sat = None
                 sat_pair_meta = None
                 sat_cos = float("nan")
@@ -3780,6 +3908,15 @@ def main():
                         args,
                     )
                     loss_ecrs = ecrs_losses["loss"]
+                    ecrs_diagnostics = summarize_ecrs_diagnostics(
+                        out_ecrs_clean,
+                        tx_labels=y,
+                        receiver_labels=d_raw,
+                        same_tx_prediction_error=ecrs_losses["same_tx_prediction_error"],
+                        different_tx_prediction_error=ecrs_losses["different_tx_prediction_error"],
+                        raw_correct=ecrs_losses["raw_correct"],
+                        fused_correct=ecrs_losses["fused_correct"],
+                    )
 
                 if (
                     bool(args.use_ecrs)
@@ -3994,6 +4131,21 @@ def main():
             meters["sat_cls"].update(loss_sat_cls.item(), bsz)
             meters["sat_cons"].update(loss_sat_cons.item(), bsz)
             meters["sat_cos"].update(sat_cos, bsz)
+            meters["ecrs_loss"].update(loss_ecrs.item(), bsz)
+            if ecrs_diagnostics is not None:
+                meters["ecrs_nmse"].update(ecrs_diagnostics["response_nmse"].mean().item(), bsz)
+                meters["ecrs_log_condition"].update(ecrs_diagnostics["gram_log_condition"].mean().item(), bsz)
+                meters["ecrs_effective_rank"].update(ecrs_diagnostics["effective_rank"].mean().item(), bsz)
+                meters["ecrs_effective_samples"].update(ecrs_diagnostics["effective_sample_size"].mean().item(), bsz)
+                meters["ecrs_coverage"].update(ecrs_diagnostics["coverage"].mean().item(), bsz)
+                meters["ecrs_ridge_fallback"].update(ecrs_diagnostics["ridge_fallback_rate"].item(), bsz)
+                meters["ecrs_rho"].update(ecrs_diagnostics["rho_resp"].mean().item(), bsz)
+                same_diff_ratio = float(ecrs_diagnostics["same_diff_prediction_ratio"].item())
+                if math.isfinite(same_diff_ratio):
+                    meters["ecrs_same_diff_ratio"].update(same_diff_ratio, bsz)
+                meters["ecrs_gate_rescue"].update(float(ecrs_diagnostics["gate_rescue_count"]), 1)
+                meters["ecrs_gate_harm"].update(float(ecrs_diagnostics["gate_harm_count"]), 1)
+                meters["ecrs_gate_net_gain"].update(float(ecrs_diagnostics["gate_net_gain"]), 1)
             meters["proto"].update(loss_proto.item(), bsz)
             meters["proto_pull_cos"].update(proto_info.get("proto_pull_cos", float("nan")), bsz)
             meters["supcon"].update(loss_supcon.item(), bsz)
@@ -4193,6 +4345,18 @@ def main():
             "train_meta_ssl_teacher_confidence": meters["meta_ssl_teacher_conf"].avg,
             "train_meta_ssl_active_prototypes": meters["meta_ssl_proto_active"].avg,
             "train_zid_norm": meters["zid_norm"].avg,
+            "train_ecrs_loss": meters["ecrs_loss"].avg,
+            "train_ecrs_response_nmse": meters["ecrs_nmse"].avg,
+            "train_ecrs_gram_log_condition": meters["ecrs_log_condition"].avg,
+            "train_ecrs_effective_rank": meters["ecrs_effective_rank"].avg,
+            "train_ecrs_effective_samples": meters["ecrs_effective_samples"].avg,
+            "train_ecrs_coverage": meters["ecrs_coverage"].avg,
+            "train_ecrs_ridge_fallback_rate": meters["ecrs_ridge_fallback"].avg,
+            "train_ecrs_rho": meters["ecrs_rho"].avg,
+            "train_ecrs_same_diff_prediction_ratio": meters["ecrs_same_diff_ratio"].avg,
+            "train_ecrs_gate_rescue_per_batch": meters["ecrs_gate_rescue"].avg,
+            "train_ecrs_gate_harm_per_batch": meters["ecrs_gate_harm"].avg,
+            "train_ecrs_gate_net_gain_per_batch": meters["ecrs_gate_net_gain"].avg,
             "test_named": named_test_stats,
             "sat_test_named": sat_test_stats,
             "meta_ssl_enabled": bool(meta_ssl_enabled),
@@ -4207,6 +4371,7 @@ def main():
             "mixstyle_state": mixstyle_state,
             "collapse_guard": collapse_guard,
             "stage_state": stage_state,
+            "ecrs_stage_state": ecrs_stage_state,
             **time_stats,
             "skipped_backward_batches_so_far": skipped_backward_batches,
             "skipped_backward_batches_this_epoch": skipped_delta,
