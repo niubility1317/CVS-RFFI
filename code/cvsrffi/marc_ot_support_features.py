@@ -18,6 +18,7 @@ from .stage2_m23_rfguard import extract_rf_lite_quality
 MARC_OT_SUPPORT_ROW_SCHEMA = "marc_ot.support.row.v1"
 MARC_OT_SUPPORT_ROW_DIM = 685
 MARC_OT_SUPPORTED_K = (1, 2, 5, 10, 20)
+_MIN_DC_REMOVED_COMPLEX_RMS = 1.0e-8
 
 MARC_OT_SUPPORT_LAYOUT: Mapping[str, slice] = MappingProxyType(
     {
@@ -40,6 +41,7 @@ MARC_OT_SUPPORT_FEATURE_CONFIG: Mapping[str, Any] = MappingProxyType(
     {
         "embedding_dim": 160,
         "deterministic_view": "dc_removed_complex_unit_rms_v1",
+        "deterministic_view_min_complex_rms": _MIN_DC_REMOVED_COMPLEX_RMS,
         "embedding_normalization": "l2_eps_1e-8",
         "view_relative_drift": "l2_delta_over_reference_l2_eps_1e-8",
         "cfo_proxy": "wrapped_phase_increment_mean_std_PROXY_ONLY",
@@ -91,6 +93,8 @@ def _validated_inputs(
     nominal_k: int,
     effective_mask: Tensor | Sequence[int | float] | None,
     validated_unpadded: bool,
+    scope: str,
+    fit_scope: str,
 ) -> tuple[Tensor, Tensor, tuple[object, ...], Tensor, dict[int, int]]:
     if not isinstance(support_iq, Tensor) or not support_iq.is_floating_point():
         raise ValueError("support IQ must be a floating torch.Tensor")
@@ -115,6 +119,13 @@ def _validated_inputs(
         or nominal_k not in MARC_OT_SUPPORTED_K
     ):
         raise ValueError("nominal K must be one of 1/2/5/10/20")
+    legal_scope_pairs = {
+        ("phase1_source", "full_episode"),
+        ("phase2_support", "crossfit"),
+        ("phase2_support", "full_support"),
+    }
+    if (scope, fit_scope) not in legal_scope_pairs:
+        raise ValueError("MARC-OT support input scope/fit scope is invalid")
     tokens = _validated_tokens(physical_tokens, expected_rows=int(support_iq.shape[0]))
 
     unique_labels, label_counts = torch.unique(labels, sorted=True, return_counts=True)
@@ -124,6 +135,9 @@ def _validated_inputs(
         or int(label_counts[0].item()) > nominal_k
     ):
         raise ValueError("support class K mismatch")
+    allow_subset = scope == "phase2_support" and fit_scope == "crossfit"
+    if int(label_counts[0].item()) < nominal_k and not allow_subset:
+        raise ValueError(f"{fit_scope} class K mismatch")
     if effective_mask is None:
         if not bool(validated_unpadded):
             raise ValueError(
@@ -176,7 +190,9 @@ def _model_aux(model: nn.Module, values: Tensor) -> tuple[Tensor, Tensor, Tensor
 def _fixed_mathematical_view(values: Tensor) -> Tensor:
     centered = values - values.mean(dim=-1, keepdim=True)
     complex_rms = centered.square().sum(dim=1).mean(dim=-1, keepdim=True).sqrt()
-    return centered / complex_rms.clamp_min(1.0e-8).unsqueeze(1)
+    if bool((complex_rms <= _MIN_DC_REMOVED_COMPLEX_RMS).any().item()):
+        raise ValueError("DC-removed complex RMS is below the fixed minimum")
+    return centered / complex_rms.unsqueeze(1)
 
 
 def _cosine_and_relative_drift(reference: Tensor, view: Tensor) -> Tensor:
@@ -235,6 +251,8 @@ def build_marc_ot_support_features(
     nominal_k: int,
     effective_mask: Tensor | Sequence[int | float] | None = None,
     validated_unpadded: bool = False,
+    scope: str,
+    fit_scope: str,
 ) -> MARCOTSupportFeatureBatch:
     """Build the single production 685D support row ABI from legal IQ only."""
 
@@ -247,14 +265,17 @@ def build_marc_ot_support_features(
         nominal_k=nominal_k,
         effective_mask=effective_mask,
         validated_unpadded=validated_unpadded,
+        scope=scope,
+        fit_scope=fit_scope,
     )
-    previous_training = bool(model.training)
+    module_modes = tuple((module, bool(module.training)) for module in model.modules())
     try:
         model.eval()
         z_id, t_emb, f_emb = _model_aux(model, values)
         view_z, view_t, view_f = _model_aux(model, _fixed_mathematical_view(values))
     finally:
-        model.train(previous_training)
+        for module, training in module_modes:
+            module.training = training
 
     embedding_norms = torch.stack(
         (z_id.norm(dim=1), t_emb.norm(dim=1), f_emb.norm(dim=1)), dim=1
@@ -317,10 +338,11 @@ def build_marc_ot_support_features(
         "feature_config": dict(MARC_OT_SUPPORT_FEATURE_CONFIG),
         "support_rows": int(len(rows)),
         "physical_token_count": int(len(tokens)),
+        "input_scope": scope,
+        "fit_scope": fit_scope,
         "nominal_k": int(nominal_k),
         "effective_k_by_class": dict(effective_by_class),
         "query_rows_used": 0,
-        "source_iq_rows_used": 0,
         "deterministic_view": {
             "method": "DC_REMOVED_COMPLEX_UNIT_RMS",
             "adds_physical_rows": False,

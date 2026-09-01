@@ -71,6 +71,7 @@
     "config": {
       "cfo_proxy": "wrapped_phase_increment_mean_std_PROXY_ONLY",
       "deterministic_view": "dc_removed_complex_unit_rms_v1",
+      "deterministic_view_min_complex_rms": 1e-08,
       "embedding_dim": 160,
       "embedding_normalization": "l2_eps_1e-8",
       "psd": "full_fft_adaptive_16_log_standardized_v1",

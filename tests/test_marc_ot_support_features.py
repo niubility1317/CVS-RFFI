@@ -69,6 +69,8 @@ def _batch(iq: torch.Tensor, *, nominal_k: int, effective_mask=None):
         nominal_k=nominal_k,
         effective_mask=effective_mask,
         validated_unpadded=effective_mask is None,
+        scope="phase2_support",
+        fit_scope="full_support",
     )
 
 
@@ -82,6 +84,8 @@ def test_builder_has_exact_685d_schema_order_and_ignores_domain_aux() -> None:
         ("opaque-token",),
         nominal_k=1,
         validated_unpadded=True,
+        scope="phase2_support",
+        fit_scope="full_support",
     )
     with torch.no_grad():
         aux = model(iq, return_aux=True)
@@ -138,10 +142,24 @@ def test_builder_is_bitwise_deterministic_and_row_permutation_equivariant() -> N
     tokens = ("a0", "a1", "b0", "b1")
     model = _ReviewedAuxModel()
     first = build_marc_ot_support_features(
-        model, iq, labels, tokens, nominal_k=2, validated_unpadded=True
+        model,
+        iq,
+        labels,
+        tokens,
+        nominal_k=2,
+        validated_unpadded=True,
+        scope="phase2_support",
+        fit_scope="full_support",
     )
     second = build_marc_ot_support_features(
-        model, iq, labels, tokens, nominal_k=2, validated_unpadded=True
+        model,
+        iq,
+        labels,
+        tokens,
+        nominal_k=2,
+        validated_unpadded=True,
+        scope="phase2_support",
+        fit_scope="full_support",
     )
     order = torch.tensor([2, 0, 3, 1])
     permuted = build_marc_ot_support_features(
@@ -151,6 +169,8 @@ def test_builder_is_bitwise_deterministic_and_row_permutation_equivariant() -> N
         tuple(tokens[index] for index in order.tolist()),
         nominal_k=2,
         validated_unpadded=True,
+        scope="phase2_support",
+        fit_scope="full_support",
     )
 
     assert torch.equal(first.rows, second.rows)
@@ -183,7 +203,13 @@ def test_builder_tracks_effective_k_and_requires_explicit_mask_for_padding() -> 
     tokens = ("a0", "a1", "b0", "b1")
     with pytest.raises(ValueError, match="effective_mask"):
         build_marc_ot_support_features(
-            _ReviewedAuxModel(), iq, labels, tokens, nominal_k=2
+            _ReviewedAuxModel(),
+            iq,
+            labels,
+            tokens,
+            nominal_k=2,
+            scope="phase2_support",
+            fit_scope="full_support",
         )
     built = build_marc_ot_support_features(
         _ReviewedAuxModel(),
@@ -192,6 +218,8 @@ def test_builder_tracks_effective_k_and_requires_explicit_mask_for_padding() -> 
         tokens,
         nominal_k=2,
         effective_mask=torch.tensor([1, 0, 0, 1]),
+        scope="phase2_support",
+        fit_scope="full_support",
     )
 
     assert built.effective_mask.tolist() == [1.0, 0.0, 0.0, 1.0]
@@ -215,11 +243,108 @@ def test_builder_records_formal_nominal_k_for_fit_only_crossfit_subset() -> None
         tokens,
         nominal_k=10,
         effective_mask=torch.ones(16),
+        scope="phase2_support",
+        fit_scope="crossfit",
     )
 
     assert built.rows[:, MARC_OT_SUPPORT_LAYOUT["k_and_mask"]].tolist() == [
         [10.0, 8.0, 1.0]
     ] * 16
+
+
+def test_builder_rejects_k8_as_damaged_k10_full_support() -> None:
+    iq = _tone(frequency=4.0 / 256.0, rows=16)
+    labels = torch.tensor([0] * 8 + [1] * 8)
+    tokens = tuple(f"full-{index}" for index in range(16))
+
+    with pytest.raises(ValueError, match="full.*K mismatch"):
+        build_marc_ot_support_features(
+            _ReviewedAuxModel(),
+            iq,
+            labels,
+            tokens,
+            nominal_k=10,
+            effective_mask=torch.ones(16),
+            scope="phase2_support",
+            fit_scope="full_support",
+        )
+
+
+def test_builder_restores_mixed_parent_and_child_module_modes_exactly() -> None:
+    model = _ReviewedAuxModel()
+    model.batch_norm = nn.BatchNorm1d(2)
+    model.dropout = nn.Dropout()
+    model.train()
+    model.batch_norm.eval()
+    before = tuple(module.training for module in model.modules())
+
+    build_marc_ot_support_features(
+        model,
+        _tone(frequency=4.0 / 256.0),
+        torch.tensor([0]),
+        ("mixed-mode",),
+        nominal_k=1,
+        validated_unpadded=True,
+        scope="phase2_support",
+        fit_scope="full_support",
+    )
+
+    assert tuple(module.training for module in model.modules()) == before
+
+
+def test_builder_rejects_zero_dc_removed_rms_and_uses_true_unit_rms_view() -> None:
+    constant = torch.tensor([[[1.0] * 256, [0.25] * 256]])
+    with pytest.raises(ValueError, match="DC-removed complex RMS"):
+        build_marc_ot_support_features(
+            _ReviewedAuxModel(),
+            constant,
+            torch.tensor([0]),
+            ("constant",),
+            nominal_k=1,
+            validated_unpadded=True,
+            scope="phase2_support",
+            fit_scope="full_support",
+        )
+
+    class CapturingModel(_ReviewedAuxModel):
+        def __init__(self) -> None:
+            super().__init__()
+            self.observed: list[torch.Tensor] = []
+
+        def forward(self, values: torch.Tensor, return_aux: bool = True):
+            self.observed.append(values.detach().clone())
+            return super().forward(values, return_aux=return_aux)
+
+    model = CapturingModel()
+    build_marc_ot_support_features(
+        model,
+        _tone(frequency=4.0 / 256.0),
+        torch.tensor([0]),
+        ("normal",),
+        nominal_k=1,
+        validated_unpadded=True,
+        scope="phase2_support",
+        fit_scope="full_support",
+    )
+    view_rms = model.observed[1].square().sum(dim=1).mean(dim=1).sqrt()
+
+    assert view_rms.tolist() == pytest.approx([1.0], abs=1.0e-6)
+
+
+def test_phase1_builder_audit_names_source_scope_without_false_zero_source_claim() -> None:
+    built = build_marc_ot_support_features(
+        _ReviewedAuxModel(),
+        _tone(frequency=4.0 / 256.0),
+        torch.tensor([0]),
+        ("source-row",),
+        nominal_k=1,
+        validated_unpadded=True,
+        scope="phase1_source",
+        fit_scope="full_episode",
+    )
+
+    assert built.audit["input_scope"] == "phase1_source"
+    assert "source_iq_rows_used" not in built.audit
 
 
 def test_known_tone_and_chirp_have_expected_phase_and_psd_proxies() -> None:
@@ -282,6 +407,8 @@ def test_builder_fails_closed_on_token_k_input_or_aux_drift(mutation: str, match
             tokens,
             nominal_k=2,
             validated_unpadded=True,
+            scope="phase2_support",
+            fit_scope="full_support",
         )
 
 
@@ -294,6 +421,8 @@ def test_builder_keeps_gradient_through_reviewed_model_features() -> None:
         ("one",),
         nominal_k=1,
         validated_unpadded=True,
+        scope="phase2_support",
+        fit_scope="full_support",
     )
 
     built.rows[:, :640].sum().backward()

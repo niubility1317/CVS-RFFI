@@ -145,6 +145,7 @@ def test_real_adapt_unit_r8_builds_fold_scoped_plans_and_learning_rates(
     plan_tokens: list[tuple[str, ...]] = []
     builder_tokens: list[tuple[str, ...]] = []
     builder_nominal_k: list[int] = []
+    builder_scopes: list[tuple[str, str]] = []
 
     class Encoder:
         def __call__(self, _features, _labels, tokens, _mask):
@@ -181,14 +182,16 @@ def test_real_adapt_unit_r8_builds_fold_scoped_plans_and_learning_rates(
             indices = torch.tensor(fold, dtype=torch.long)
             fit_tokens = tuple(tokens[index] for index in fold)
             initial_factory(values[indices], labels[indices], fit_tokens, "crossfit")
-            stage_transform(_model, values[indices], labels[indices], fit_tokens)
+            stage_transform(
+                _model, values[indices], labels[indices], fit_tokens, "crossfit"
+            )
             observed_rates.append(
                 learning_rate_factory(
                     values[indices], labels[indices], fit_tokens, "crossfit"
                 )["t1"]
             )
         initial_factory(values, labels, tuple(tokens), "full_support")
-        stage_transform(_model, values, labels, tuple(tokens))
+        stage_transform(_model, values, labels, tuple(tokens), "full_support")
         observed_rates.append(
             learning_rate_factory(values, labels, tuple(tokens), "full_support")["t1"]
         )
@@ -216,6 +219,7 @@ def test_real_adapt_unit_r8_builds_fold_scoped_plans_and_learning_rates(
     def fake_builder(_model, values, labels, tokens, **kwargs):
         builder_tokens.append(tuple(tokens))
         builder_nominal_k.append(int(kwargs["nominal_k"]))
+        builder_scopes.append((str(kwargs["scope"]), str(kwargs["fit_scope"])))
         return _fake_feature_batch(values, labels, tokens)
 
     monkeypatch.setattr(module, "build_marc_ot_support_features", fake_builder)
@@ -252,8 +256,20 @@ def test_real_adapt_unit_r8_builds_fold_scoped_plans_and_learning_rates(
         support.tokens,
     ]
     assert builder_nominal_k == [10] * 6
+    assert builder_scopes == [
+        ("phase2_support", "crossfit"),
+        ("phase2_support", "crossfit"),
+        ("phase2_support", "crossfit"),
+        ("phase2_support", "crossfit"),
+        ("phase2_support", "full_support"),
+        ("phase2_support", "full_support"),
+    ]
     assert result["support_feature_audits"]
     assert all(row["cfo"]["status"] == "PROXY_ONLY" for row in result["support_feature_audits"])
+    assert result["support_feature_boundary"] == {
+        "source_iq_rows_used": 0,
+        "query_rows_used": 0,
+    }
     assert result["bank_initialization"]["block_lrs"] == [4.0e-5]
 
 
@@ -379,7 +395,11 @@ def test_real_adapt_unit_restores_train_mode_when_late_stage_first_builds_full_p
 
     monkeypatch.setattr(module, "build_marc_ot_support_features", fake_builder)
     monkeypatch.setattr(
-        module, "_calibration_transform", lambda _audits, *, nominal_k: None
+        module,
+        "_calibration_transform",
+        lambda _audits, *, nominal_k: (
+            lambda _model, values, _labels, _tokens, _fit_scope: values
+        ),
     )
     args = SimpleNamespace(device="cpu")
     config = {
@@ -450,11 +470,18 @@ def test_stage_calibration_transform_returns_builder_rows_with_gradient(monkeypa
     values = torch.randn(4, 2, 16, requires_grad=True)
     labels = torch.tensor([0, 0, 1, 1])
     tokens = ("a0", "a1", "b0", "b1")
-    observed: list[tuple[int, tuple[str, ...]]] = []
+    observed: list[tuple[int, tuple[str, ...], str, str]] = []
     audits: list[dict] = []
 
     def fake_builder(_model, fit_iq, fit_labels, fit_tokens, **_kwargs):
-        observed.append((fit_iq.data_ptr(), tuple(fit_tokens)))
+        observed.append(
+            (
+                fit_iq.data_ptr(),
+                tuple(fit_tokens),
+                str(_kwargs["scope"]),
+                str(_kwargs["fit_scope"]),
+            )
+        )
         rows = fit_iq.flatten(start_dim=1)
         built = _fake_feature_batch(rows, fit_labels, fit_tokens)
         built.audit["fit_scope"] = "stage"
@@ -462,9 +489,11 @@ def test_stage_calibration_transform_returns_builder_rows_with_gradient(monkeypa
 
     monkeypatch.setattr(module, "build_marc_ot_support_features", fake_builder)
     transform = module._calibration_transform(audits, nominal_k=10)
-    result = transform(torch.nn.Identity(), values, labels, tokens)
+    result = transform(torch.nn.Identity(), values, labels, tokens, "crossfit")
 
-    assert observed == [(values.data_ptr(), tokens)]
+    assert observed == [
+        (values.data_ptr(), tokens, "phase2_support", "crossfit")
+    ]
     assert result.requires_grad
     result.sum().backward()
     assert values.grad is not None and torch.count_nonzero(values.grad)

@@ -53,8 +53,9 @@ def _batch():
     query_core = torch.tensor(
         [[0.9, 0.0], [0.0, 0.9], [1.1, 0.2], [-0.2, 1.1], [-0.8, -0.7], [-0.6, -1.0]]
     )
-    support_x = support_core.unsqueeze(-1).repeat(1, 1, 16)
-    query_x = query_core.unsqueeze(-1).repeat(1, 1, 16)
+    waveform = torch.linspace(1.0, 0.5, 16)
+    support_x = support_core.unsqueeze(-1) * waveform
+    query_x = query_core.unsqueeze(-1) * waveform
     return MetaEpisodeBatch(
         episode=episode,
         support_x=support_x,
@@ -361,9 +362,18 @@ def test_meta_bank_step_uses_canonical_builder_on_support_only(monkeypatch) -> N
     bank, basis_tensors = _trainable_bank()
     encoder = _encoder()
     observed: list[tuple[int, tuple[str, ...]]] = []
+    observed_scope: list[tuple[str, str, bool, object]] = []
 
     def spy_builder(model, iq, labels, tokens, **kwargs):
         observed.append((iq.data_ptr(), tuple(tokens)))
+        observed_scope.append(
+            (
+                str(kwargs["scope"]),
+                str(kwargs["fit_scope"]),
+                bool(kwargs["validated_unpadded"]),
+                kwargs.get("effective_mask"),
+            )
+        )
         return build_marc_ot_support_features(model, iq, labels, tokens, **kwargs)
 
     monkeypatch.setattr(subject, "build_marc_ot_support_features", spy_builder)
@@ -385,5 +395,31 @@ def test_meta_bank_step_uses_canonical_builder_on_support_only(monkeypatch) -> N
             tuple(row.physical_sample_id for row in batch.episode.support),
         )
     ]
+    assert observed_scope == [("phase1_source", "full_episode", True, None)]
     query_tokens = {row.physical_sample_id for row in batch.episode.query_adapt + batch.episode.query_guard}
     assert query_tokens.isdisjoint(observed[0][1])
+
+
+def test_meta_bank_step_rejects_forged_phase1_k_metadata() -> None:
+    from cvsrffi.meta_bank_trainer import (
+        MetaBankTrainerConfig,
+        run_meta_bank_step,
+    )
+
+    batch = _batch()
+    forged = replace(batch, episode=replace(batch.episode, k_shot=5))
+    bank, basis_tensors = _trainable_bank()
+    encoder = _encoder()
+
+    with pytest.raises(ValueError, match="full.*K mismatch"):
+        run_meta_bank_step(
+            _functional_forward([]),
+            base_state=_base_state(),
+            base_checkpoint_id="base-meta",
+            bank=bank,
+            support_encoder=encoder,
+            support_feature_model=_SupportFeatureModel(),
+            batch=forged,
+            config=MetaBankTrainerConfig(source_receiver_ids=(1, 2), inner_steps=1),
+            optimizer=_optimizer(encoder, basis_tensors),
+        )

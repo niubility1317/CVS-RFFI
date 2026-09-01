@@ -328,9 +328,9 @@ def run_meta_bank_step(
         support_labels,
         physical_tokens,
         nominal_k=int(batch.episode.k_shot),
-        effective_mask=torch.ones(
-            len(support_labels), device=batch.support_x.device, dtype=batch.support_x.dtype
-        ),
+        validated_unpadded=True,
+        scope="phase1_source",
+        fit_scope="full_episode",
     )
     support_state = support_encoder(
         support_batch.rows,

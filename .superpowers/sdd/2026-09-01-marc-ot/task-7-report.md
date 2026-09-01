@@ -48,3 +48,23 @@
 - `rg`生产调用面：Phase1 trainer与Phase2 CLI均直接调用共同builder；MARC-OT生产路径无`z_dom/aux_dom`引用，无直接`support_encoder(z_id,...)`。
 - `git diff --check`：退出码0。未访问N607，未改变数据验证，未运行训练或生成性能结论。
 - Git阶段只纳入本表对应的13个代码/config/测试文件与本Task报告；明确排除既有`analysis/marc_ot_traceability_20260901.md`、Task6 docs、`conversation_index/`和`local_artifacts/`。提交主题固定为`feat: add MARC-OT support feature ABI`；提交后的本地/远端OID一致性由交付状态记录。
+
+## 定点修复round1（REQUEST_CHANGES）
+
+本节取代上文关于“任意显式全1mask可承载K10子集”及共享builder固定记录`source_iq_rows_used=0`的旧说明；其余Task7设计与边界保持不变。
+
+- P1-1 exact K：builder新增必填`scope/fit_scope`。合法组合仅为`phase1_source/full_episode`、`phase2_support/crossfit`、`phase2_support/full_support`；只有Phase2 crossfit允许每类row K小于nominal K。Phase1完整episode和Phase2 full support必须每类row K严格等于nominal K，且调用方使用validated-unpadded exact-K路径，不再以全1mask绕过。新增K10 full support仅K8拒绝、crossfit K8/K10接受、Phase1伪造K元数据拒绝测试。
+- P1-2 runner唯一ABI：`R2/R4/R6/R8`缺少可调用`calibration_feature_transform`时在公共runner入口fail closed；默认stage更新同时删除`z_id`回退分支。`R0/R1`不消费canonical support rows，保持原路径。
+- P1-3 model mode：builder保存`model.modules()`中每个module的原始training flag；finally逐module直接恢复属性，不调用父module递归`train()`覆盖子module状态。父train/子BatchNorm eval混合状态测试通过。
+- P2-1 unit-RMS：ABI config绑定`deterministic_view_min_complex_rms=1e-8`。DC移除后的complex RMS小于等于阈值时fail closed；其余输入除以真实RMS而非clamp值。非零常量IQ拒绝与正常view RMS约等于1测试通过。
+- P2-2 audit scope：共享builder audit改为记录明确`input_scope/fit_scope`，移除无条件`source_iq_rows_used=0`。Phase1 audit不再产生假零来源声明；Phase2 CLI在support state与smoke receipt的`support_feature_boundary`中独立记录`source_iq_rows_used=0/query_rows_used=0`。
+
+### round1 TDD与验证
+
+- RED：定点命令得到13个预期失败，分别覆盖缺少scope、损坏full K未拒绝、Phase1伪K未拒绝、混合module mode恢复错误、零DC-removed RMS未拒绝、4个canonical arm允许None回退、runner/CLI未传fit scope及Phase2 boundary缺失。
+- GREEN：上述定点集合14项通过。
+- Task7聚焦：95项通过。
+- Task1-5相邻：158项通过。
+- RF-lite/WISER/ADV3B02 aux相邻：41项通过；仅既存TorchScript API弃用告警。
+- CLI help：退出码0，显示`smoke/pilot/score`；12个生产/测试文件`py_compile`退出码0；`git diff --check`退出码0。
+- 未访问N607，未改变数据验证，未运行训练或生成性能结论。round1只stage本节对应Task7代码/config/测试与本报告；Task6 docs、既有analysis、索引及本地产物继续排除。

@@ -405,9 +405,10 @@ def _default_stage_update(
     config: MARCOTRunnerConfig,
     bank_task_features: Tensor | None,
     calibration_feature_transform: Callable[
-        [nn.Module, Tensor, Tensor, tuple[str, ...]], Tensor
+        [nn.Module, Tensor, Tensor, tuple[str, ...], str], Tensor
     ]
     | None,
+    fit_scope: str,
     block_learning_rates: Mapping[str, float] | None,
     original_base: Mapping[str, Tensor],
 ) -> tuple[Mapping[str, Tensor], Mapping[str, Tensor]]:
@@ -437,10 +438,12 @@ def _default_stage_update(
             loss = functional.cross_entropy(logits, labels)
             loss.backward()
         else:
-            calibration_features = (
-                features
-                if calibration_feature_transform is None
-                else calibration_feature_transform(model, values, labels, tokens)
+            if calibration_feature_transform is None:
+                raise ValueError(
+                    f"{arm} requires calibration_feature_transform for the canonical support ABI"
+                )
+            calibration_features = calibration_feature_transform(
+                model, values, labels, tokens, fit_scope
             )
             if (
                 not isinstance(calibration_features, Tensor)
@@ -608,7 +611,7 @@ def train_marc_ot_arm(
     config: MARCOTRunnerConfig,
     bank_task_features: Tensor | None = None,
     calibration_feature_transform: Callable[
-        [nn.Module, Tensor, Tensor, tuple[str, ...]], Tensor
+        [nn.Module, Tensor, Tensor, tuple[str, ...], str], Tensor
     ]
     | None = None,
     block_learning_rates: Mapping[str, float] | None = None,
@@ -632,6 +635,12 @@ def train_marc_ot_arm(
         raise ValueError("MARC-OT arm is outside the frozen R matrix")
     if not isinstance(config, MARCOTRunnerConfig):
         raise ValueError("config must be MARCOTRunnerConfig")
+    if arm_value in {"R2", "R4", "R6", "R8"} and not callable(
+        calibration_feature_transform
+    ):
+        raise ValueError(
+            f"{arm_value} requires calibration_feature_transform for the canonical support ABI"
+        )
     if block_learning_rates is not None and block_learning_rate_factory is not None:
         raise ValueError("static and fit-scope block learning rates are mutually exclusive")
     values, labels, tokens = _validate_support(support_iq, support_labels, support_tokens)
@@ -849,6 +858,7 @@ def train_marc_ot_arm(
                     config=config,
                     bank_task_features=bank_task_features,
                     calibration_feature_transform=calibration_feature_transform,
+                    fit_scope=fit_scope,
                     block_learning_rates=scoped_learning_rates,
                     original_base=original_base,
                 )

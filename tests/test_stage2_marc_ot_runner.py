@@ -57,6 +57,16 @@ class _DifferentiableTinyModel(nn.Module):
         return {"tx_logits": features, "z_id": features}
 
 
+def _test_calibration_transform(
+    model: nn.Module,
+    values: torch.Tensor,
+    _labels: torch.Tensor,
+    _tokens: tuple[str, ...],
+    _fit_scope: str,
+) -> torch.Tensor:
+    return model(values, return_aux=True)["z_id"]
+
+
 def _state(seed: int) -> OrderedDict[str, torch.Tensor]:
     torch.manual_seed(seed)
     return OrderedDict(
@@ -68,6 +78,19 @@ def _state(seed: int) -> OrderedDict[str, torch.Tensor]:
 def test_training_surface_has_no_query_argument() -> None:
     names = tuple(inspect.signature(train_marc_ot_arm).parameters)
     assert all("query" not in name.lower() for name in names)
+
+
+@pytest.mark.parametrize("arm", ("R2", "R4", "R6", "R8"))
+def test_canonical_feature_arms_reject_missing_transform(arm: str) -> None:
+    with pytest.raises(ValueError, match="calibration_feature_transform"):
+        train_marc_ot_arm(
+            _TinyModel(),
+            torch.tensor([[2.0, 0.0], [1.5, 0.0], [0.0, 2.0], [0.0, 1.5]]),
+            torch.tensor([0, 0, 1, 1]),
+            ("a0", "a1", "b0", "b1"),
+            arm=arm,
+            config=MARCOTRunnerConfig(stage_steps=(0, 0, 0, 0), fold_count=2),
+        )
 
 
 def test_r8_combines_primary_with_projected_calibration_gradient() -> None:
@@ -105,13 +128,15 @@ def test_default_stage_transform_receives_fit_iq_model_and_keeps_gradient_path()
     values = torch.tensor([[2.0, 0.1], [1.5, 0.2], [0.1, 2.0], [0.2, 1.5]])
     labels = torch.tensor([0, 0, 1, 1])
     tokens = ("a0", "a1", "b0", "b1")
-    observed: list[tuple[int, tuple[str, ...], bool]] = []
+    observed: list[tuple[int, tuple[str, ...], bool, str]] = []
 
-    def transform(current, fit_iq, fit_labels, fit_tokens):
+    def transform(current, fit_iq, fit_labels, fit_tokens, fit_scope):
         assert current is model
         logits, features = runner_subject._forward_identity(current, fit_iq)
         del logits, fit_labels
-        observed.append((fit_iq.data_ptr(), tuple(fit_tokens), features.requires_grad))
+        observed.append(
+            (fit_iq.data_ptr(), tuple(fit_tokens), features.requires_grad, fit_scope)
+        )
         return features
 
     runner_subject._default_stage_update(
@@ -127,11 +152,12 @@ def test_default_stage_transform_receives_fit_iq_model_and_keeps_gradient_path()
         config=MARCOTRunnerConfig(stage_steps=(1, 0, 0, 0), fold_count=2),
         bank_task_features=None,
         calibration_feature_transform=transform,
+        fit_scope="crossfit",
         block_learning_rates=None,
         original_base={name: value.detach().clone() for name, value in model.state_dict().items()},
     )
 
-    assert observed == [(values.data_ptr(), tokens, True)]
+    assert observed == [(values.data_ptr(), tokens, True, "crossfit")]
 
 
 def test_all_unsafe_interpolations_restore_base_state_duals_and_integer_buffer() -> None:
@@ -178,6 +204,7 @@ def test_progressive_runner_uses_fixed_stage_order_and_refreezes() -> None:
         arm="R8",
         config=MARCOTRunnerConfig(stage_steps=(1, 1, 1, 1), fold_count=2),
         initial_duals={"class_duals": torch.zeros(2)},
+        calibration_feature_transform=_test_calibration_transform,
         stage_update=stage_update,
         support_evaluator=lambda *_args: {"safe": True, "oof_ba": 1.0},
     )
@@ -217,6 +244,7 @@ def test_global_alpha_preserves_early_acceptance_when_later_stages_reject() -> N
         ("a0", "a1", "b0", "b1"),
         arm="R8",
         config=MARCOTRunnerConfig(stage_steps=(1, 1, 1, 1), fold_count=2),
+        calibration_feature_transform=_test_calibration_transform,
         stage_update=stage_update,
         support_evaluator=evaluator,
     )
@@ -275,6 +303,7 @@ def test_adapter_crossfit_never_optimizes_validation_tokens() -> None:
         ("a0", "a1", "b0", "b1"),
         arm="R8",
         config=MARCOTRunnerConfig(stage_steps=(1, 1, 1, 1), fold_count=2),
+        calibration_feature_transform=_test_calibration_transform,
         block_learning_rate_factory=learning_rate_factory,
         stage_update=stage_update,
         support_evaluator=evaluator,
@@ -328,6 +357,7 @@ def test_initial_bank_candidate_is_fit_per_fold_before_full_support_refit() -> N
         ("a0", "a1", "b0", "b1"),
         arm="R4",
         config=MARCOTRunnerConfig(stage_steps=(1, 1, 1, 1), fold_count=2),
+        calibration_feature_transform=_test_calibration_transform,
         initial_state_factory=initial_state_factory,
         stage_update=stage_update,
         support_evaluator=lambda *_args: {"safe": True},
@@ -368,6 +398,7 @@ def test_all_unsafe_stages_restore_immutable_original_model_duals_and_buffer() -
         ("a0", "a1", "b0", "b1"),
         arm="R8",
         config=MARCOTRunnerConfig(stage_steps=(1, 1, 1, 1), fold_count=2),
+        calibration_feature_transform=_test_calibration_transform,
         initial_state_factory=initial_state_factory,
         initial_duals=original_duals,
         stage_update=stage_update,
@@ -395,6 +426,7 @@ def test_runner_refreezes_after_stage_exception() -> None:
             ("s0", "s1", "s2", "s3"),
             arm="R8",
             config=MARCOTRunnerConfig(stage_steps=(1, 1, 1, 1), fold_count=2),
+            calibration_feature_transform=_test_calibration_transform,
             stage_update=lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("boom")),
         )
 

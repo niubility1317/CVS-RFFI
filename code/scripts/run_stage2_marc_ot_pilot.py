@@ -293,8 +293,11 @@ def _build_support_features(
     tokens: tuple[str, ...],
     *,
     nominal_k: int,
+    fit_scope: str,
 ):
     row_k = _rows_per_class(labels)
+    if fit_scope not in {"crossfit", "full_support"}:
+        raise ValueError("MARC-OT Phase2 fit scope is invalid")
     return build_marc_ot_support_features(
         model,
         values,
@@ -302,11 +305,13 @@ def _build_support_features(
         tokens,
         nominal_k=nominal_k,
         effective_mask=(
-            None
-            if row_k == nominal_k
-            else torch.ones(len(labels), device=values.device, dtype=values.dtype)
+            torch.ones(len(labels), device=values.device, dtype=values.dtype)
+            if fit_scope == "crossfit" and row_k < nominal_k
+            else None
         ),
         validated_unpadded=row_k == nominal_k,
+        scope="phase2_support",
+        fit_scope=fit_scope,
     )
 
 
@@ -332,9 +337,15 @@ def _calibration_transform(
         values: torch.Tensor,
         labels: torch.Tensor,
         tokens: tuple[str, ...],
+        fit_scope: str,
     ):
         built = _build_support_features(
-            model, values, labels, tokens, nominal_k=nominal_k
+            model,
+            values,
+            labels,
+            tokens,
+            nominal_k=nominal_k,
+            fit_scope=fit_scope,
         )
         audit_sink.append(dict(built.audit))
         return built.rows
@@ -378,6 +389,7 @@ def _adapt_unit(
                 fit_labels,
                 fit_tokens,
                 nominal_k=int(config["k_shot"]),
+                fit_scope=fit_scope,
             )
             support_feature_audits.append(dict(built.audit))
             support_state = bundle.support_encoder(
@@ -489,6 +501,10 @@ def _adapt_unit(
             "config": _json_feature_config(),
         },
         "support_feature_audits": support_feature_audits,
+        "support_feature_boundary": {
+            "source_iq_rows_used": 0,
+            "query_rows_used": 0,
+        },
     }
 
 
@@ -512,6 +528,7 @@ def _save_frozen_unit(destination: Path, scenario: str, arm: str, state: Mapping
             "bank_initialization": state["bank_initialization"],
             "support_feature_abi": state["support_feature_abi"],
             "support_feature_audits": state["support_feature_audits"],
+            "support_feature_boundary": state["support_feature_boundary"],
             "trainable_parameter_count": state["trainable_parameter_count"],
         },
     )
@@ -628,6 +645,7 @@ def _smoke(args: argparse.Namespace) -> Mapping[str, Any]:
         "training_audit": state["audit"],
         "support_feature_abi": state["support_feature_abi"],
         "support_feature_audits": state["support_feature_audits"],
+        "support_feature_boundary": state["support_feature_boundary"],
     }
     _write_json_new(destination / "smoke_result.json", result)
     return result
