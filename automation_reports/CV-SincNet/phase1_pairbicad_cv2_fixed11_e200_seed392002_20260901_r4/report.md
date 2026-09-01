@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-- 状态：`LOCAL_VERIFIED`。
+- 状态：`LANDED`，等待正式启动。
 - run ID：`phase1_pairbicad_cv2_fixed11_e200_seed392002_20260901_r4`。
 - 代码提交：`67c25004e10d2b07575a8bff2cd2529caee24a1b`，已push并独立核对远端OID一致。
 - 旧r3已固定为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，partial artifact保留；r4使用新不可覆盖输出根，不复用或覆盖r3。
@@ -28,7 +28,7 @@ r4只补充`BiCADXRTrainer.forward`，把推理调用透明转发给当前`self.
 - `code/tests/phase1_bicad_xr`完整回归通过；仅3条既存PyTorch autocast弃用警告。
 - `trainer.py`、`train_ssdg.py`和launcher均通过`py_compile`；`git diff --check`通过。
 - launcher dry-run读回：r4、24行、12候选、fold1/8、seed392002、全部200epochs、source-only、GPU最大2槽。
-- 一次独立P0/P1定点审查仅核对本次评估接口修复；审查结论将在N607发布前补入。
+- Luna一次独立P0/P1定点审查结论为`PASS / NO_BLOCKING_FINDINGS`：确认final/EMA/SWAD状态在评估前严格加载、选择后恢复；周期性source-LORO仍保持source-only；静态`CV2-B0`与最终`V_select`统一入口可调用。建议按预登记r4启动。
 
 ## N607发布计划
 
@@ -48,3 +48,9 @@ r4只补充`BiCADXRTrainer.forward`，把推理调用透明转发给当前`self.
 每行必须闭合epoch200 final checkpoint、严格重建、final/EMA/SWAD与一次`V_select`选择、Coverage/LR/机制/梯度遥测、Clean和三种LEO弱场景独立JSON以及`ARTIFACTS_COMPLETE.json`。
 
 只允许因数据/query越权、错误candidate/fold/receiver/day/seed/epoch、输出冲突、错误release/CWD、命令无法运行、同一确定性异常重复、进程归属不清或无法形成合法checkpoint/四场景artifact而停止精确run进程树。低性能和中间指标下降不得停止、重启、热补丁或选择性重跑。
+
+## Release与smoke证据
+
+- 单一release归档本地/远端SHA256一致：`a2b2f44d217c5d0c873b914631000acca9a21c83256fef8e221f6bd24f93d828`；远端release已解压，入口、trainer和launcher一次编译通过。
+- N607环境没有pytest，因此未把缺少测试依赖误判为代码失败；改用本地先验证的无pytest定点脚本，在正式release上执行`CV2-B0 -> BiCADXRTrainer -> _evaluate_bicad_xr_source_loro`，结果`PASS`，`tx_total=2`且底层模型恰好前向一次。
+- 历史真实checkpoint无query smoke在GPU0通过：严格重建missing/unexpected/shape mismatch均为0，fresh optimizer step完成，Clean与三种LEO弱场景均为有限值，`target/Phase2/support/query/truth_access=false`。
