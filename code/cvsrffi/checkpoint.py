@@ -6,6 +6,9 @@ from typing import Dict, List
 import torch
 
 
+ECRS_FEATURE_SCHEMA = "ADV3B02:ECRS:z_fused:unit_l2:160:v1"
+
+
 class AveragedModelState:
     """EMA/SWA/SWAD-style online weight averaging."""
 
@@ -59,6 +62,17 @@ def save_checkpoint(path: str, *, model, optimizer, scheduler, scaler, epoch: in
     if parent:
         os.makedirs(parent, exist_ok=True)
     state_model = getattr(model, "_orig_mod", model)
+    use_ecrs = bool(getattr(state_model, "use_ecrs", False))
+    ecrs_bundle = (
+        state_model.export_ecrs_bundle()
+        if use_ecrs and hasattr(state_model, "export_ecrs_bundle")
+        else None
+    )
+    feature_schema = (
+        ECRS_FEATURE_SCHEMA
+        if use_ecrs
+        else str(getattr(args, "feature_schema", "ADV3B02:z_id:legacy"))
+    )
     payload = {
         "model": state_model.state_dict(),
         "optimizer": optimizer.state_dict() if optimizer is not None else None,
@@ -68,6 +82,8 @@ def save_checkpoint(path: str, *, model, optimizer, scheduler, scaler, epoch: in
         "args": vars(args),
         "split_info": split_info,
         "stats": stats,
+        "feature_schema": feature_schema,
+        "ecrs_bundle": ecrs_bundle,
     }
     torch.save(payload, path)
 

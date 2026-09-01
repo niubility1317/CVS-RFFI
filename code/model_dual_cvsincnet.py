@@ -471,7 +471,7 @@ class ResponseFusionGate(nn.Module):
         if rho_max != 0.25:
             raise ValueError("ADV3B02-ECRS-V1 fixes rho_max=0.25")
         self.rho_max = rho_max
-        self.active_rho_max = 0.0
+        self.register_buffer("_active_rho_max", torch.tensor(0.0), persistent=True)
         self.net = nn.Sequential(
             nn.Linear(7, int(hidden)),
             nn.GELU(),
@@ -481,7 +481,11 @@ class ResponseFusionGate(nn.Module):
         nn.init.zeros_(self.net[-1].bias)
 
     def set_active_rho_max(self, value: float) -> None:
-        self.active_rho_max = min(self.rho_max, max(0.0, float(value)))
+        self._active_rho_max.fill_(min(self.rho_max, max(0.0, float(value))))
+
+    @property
+    def active_rho_max(self) -> float:
+        return float(self._active_rho_max.item())
 
     def forward(
         self,
@@ -501,7 +505,9 @@ class ResponseFusionGate(nn.Module):
             ],
             dim=1,
         ).detach()
-        return self.active_rho_max * torch.sigmoid(self.net(values).squeeze(-1))
+        return self._active_rho_max.to(device=values.device) * torch.sigmoid(
+            self.net(values).squeeze(-1)
+        )
 
 
 class ResponseSurfaceBranch(nn.Module):
@@ -510,6 +516,7 @@ class ResponseSurfaceBranch(nn.Module):
     def __init__(
         self,
         identity_dim: int,
+        num_classes: int,
         *,
         response_basis_dim: int = 28,
         response_dim: int = 64,
@@ -524,6 +531,7 @@ class ResponseSurfaceBranch(nn.Module):
         if int(response_dim) != 64:
             raise ValueError("ADV3B02-ECRS-V1 fixes response_dim=64")
         self.identity_dim = int(identity_dim)
+        self.num_classes = int(num_classes)
         self.response_basis = ResponseBasis()
         self.nuisance_estimator = NuisanceEstimator()
         self.canonicalizer = AnalyticCanonicalizer()
@@ -534,6 +542,47 @@ class ResponseSurfaceBranch(nn.Module):
         self.response_projection = nn.Linear(64, self.identity_dim, bias=False)
         nn.init.normal_(self.response_projection.weight, mean=0.0, std=1e-3)
         self.detach_identification_for_identity = True
+        self.register_buffer("M_ref", torch.eye(28, dtype=torch.complex64), persistent=True)
+        self.register_buffer("z_resp_center", torch.zeros(64), persistent=True)
+        self.register_buffer("z_resp_scale", torch.ones(64), persistent=True)
+        self.register_buffer(
+            "response_prototypes", torch.zeros(self.num_classes, 64), persistent=True
+        )
+        self.register_buffer(
+            "response_covariance", torch.ones(self.num_classes, 64), persistent=True
+        )
+
+    @staticmethod
+    def _cpu_state(module: nn.Module) -> Dict[str, torch.Tensor]:
+        return {
+            key: value.detach().cpu().clone()
+            for key, value in module.state_dict().items()
+        }
+
+    def export_bundle(self) -> Dict[str, object]:
+        return {
+            "version": "v1",
+            "basis": {
+                "type": "fixed_complex_phase_structured_rbf",
+                "dimension": 28,
+                "block_slices": {"pa": [0, 8], "iq": [8, 16], "cross": [16, 20], "slew": [20, 28]},
+                "state": self._cpu_state(self.response_basis),
+            },
+            "M_ref": self.M_ref.detach().cpu().clone(),
+            "anchor_grid": self.anchor_encoder.anchor_grid.detach().cpu().clone(),
+            "anchor_design": self.anchor_encoder.anchor_design.detach().cpu().clone(),
+            "normalization": {
+                "mode": "unit_l2",
+                "center": self.z_resp_center.detach().cpu().clone(),
+                "scale": self.z_resp_scale.detach().cpu().clone(),
+            },
+            "response_projection": self._cpu_state(self.response_projection),
+            "fusion_gate": self._cpu_state(self.fusion_gate),
+            "response_prototypes": self.response_prototypes.detach().cpu().clone(),
+            "response_covariance": self.response_covariance.detach().cpu().clone(),
+            "rho_max": 0.25,
+            "single_view_inference": True,
+        }
 
     def forward(self, x: torch.Tensor, z_id_raw: torch.Tensor) -> Dict[str, object]:
         nuisance_coef = self.nuisance_estimator(x)
@@ -1149,6 +1198,7 @@ class DualCVSincNetDisentangle(nn.Module):
                 raise ValueError(f"unsupported ECRS-V1 config keys: {unknown_ecrs_keys}")
             self.ecrs = ResponseSurfaceBranch(
                 self.emb_dim,
+                self.num_classes,
                 response_basis_dim=int(self.ecrs_config.get("response_basis_dim", 28)),
                 response_dim=int(self.ecrs_config.get("response_dim", 64)),
                 rho_max=float(self.ecrs_config.get("rho_max", 0.25)),
@@ -1230,6 +1280,11 @@ class DualCVSincNetDisentangle(nn.Module):
         for backbone in (self.id_backbone, self.dom_backbone):
             if backbone is not None and hasattr(backbone, "set_crra_epoch"):
                 backbone.set_crra_epoch(self.crra_epoch)
+
+    def export_ecrs_bundle(self) -> Optional[Dict[str, object]]:
+        if self.ecrs is None:
+            return None
+        return self.ecrs.export_bundle()
 
     def _share_early_stem(self) -> None:
         """Share the lowest-level IQ/filterbank stem only for Lite-B.
