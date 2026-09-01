@@ -203,6 +203,7 @@ def run_marc_ot_phase1_bank_training(
     task_domain_selector: Callable[
         [MetaEpisode], MARCOTTaskDomainSelection
     ] = canonical_episode_task_domain_selection,
+    episode_coefficient_mask: Callable[[MetaEpisode], Tensor] | None = None,
 ) -> MARCOTPhase1Closure:
     """Run the real MARC-OT bank trainer after complete schedule validation.
 
@@ -222,6 +223,8 @@ def run_marc_ot_phase1_bank_training(
         or not callable(task_domain_selector)
     ):
         raise TypeError("batch_builder, training selector, and task domain selector must be callable")
+    if episode_coefficient_mask is not None and not callable(episode_coefficient_mask):
+        raise TypeError("episode_coefficient_mask must be callable when provided")
     if not isinstance(optimizer, torch.optim.Optimizer):
         raise TypeError("optimizer must be a torch.optim.Optimizer")
     if any(
@@ -284,6 +287,7 @@ def run_marc_ot_phase1_bank_training(
 
     results: list[MetaBankStepResult] = []
     cached_batches: list[MetaEpisodeBatch] = []
+    cached_masks: list[Tensor | None] = []
     task_row_sums: dict[DeltaTaskKey, Tensor] = {}
     task_row_counts: dict[DeltaTaskKey, int] = {}
     task_physical_ids: dict[DeltaTaskKey, set[str]] = {}
@@ -308,27 +312,36 @@ def run_marc_ot_phase1_bank_training(
         if len(physical_ids) != len(descriptor_iq):
             raise ValueError("task domain descriptor rows differ from explicit partition facts")
         seen_ids = task_physical_ids.setdefault(task_key, set())
-        if seen_ids.intersection(physical_ids):
-            raise ValueError("task domain aggregation repeats a physical sample")
-        seen_ids.update(physical_ids)
-        with torch.no_grad():
-            feature_batch = build_marc_ot_support_features(
-                support_feature_model,
-                descriptor_iq,
-                descriptor_labels,
-                physical_ids,
-                nominal_k=nominal_k,
-                validated_unpadded=True,
-                scope="phase1_source",
-                fit_scope="full_episode",
-            )
-        row_sum = feature_batch.rows.detach().to(device="cpu", dtype=torch.float32).sum(dim=0)
-        task_row_sums[task_key] = task_row_sums.get(task_key, torch.zeros_like(row_sum)) + row_sum
-        task_row_counts[task_key] = task_row_counts.get(task_key, 0) + len(feature_batch.rows)
+        unseen_indices = tuple(
+            index for index, physical_id in enumerate(physical_ids) if physical_id not in seen_ids
+        )
+        if unseen_indices:
+            unique_physical_ids = tuple(physical_ids[index] for index in unseen_indices)
+            seen_ids.update(unique_physical_ids)
+            with torch.no_grad():
+                feature_batch = build_marc_ot_support_features(
+                    support_feature_model,
+                    descriptor_iq,
+                    descriptor_labels,
+                    physical_ids,
+                    nominal_k=nominal_k,
+                    validated_unpadded=True,
+                    scope="phase1_source",
+                    fit_scope="full_episode",
+                )
+            unique_rows = feature_batch.rows[list(unseen_indices)]
+            row_sum = unique_rows.detach().to(device="cpu", dtype=torch.float32).sum(dim=0)
+            task_row_sums[task_key] = task_row_sums.get(task_key, torch.zeros_like(row_sum)) + row_sum
+            task_row_counts[task_key] = task_row_counts.get(task_key, 0) + len(unique_rows)
         cached_batches.append(batch)
+        cached_masks.append(
+            None
+            if episode_coefficient_mask is None
+            else episode_coefficient_mask(episode)
+        )
 
     for _ in range(outer_cycles):
-        for batch in cached_batches:
+        for batch, coefficient_mask in zip(cached_batches, cached_masks, strict=True):
             results.append(
                 run_meta_bank_step(
                     functional_forward,
@@ -340,6 +353,7 @@ def run_marc_ot_phase1_bank_training(
                     batch=batch,
                     config=trainer_config,
                     optimizer=optimizer,
+                    coefficient_mask=coefficient_mask,
                 )
             )
 
@@ -354,7 +368,10 @@ def run_marc_ot_phase1_bank_training(
     if not updated_names:
         raise RuntimeError("Phase1 bank step did not update any required bank/encoder tensor")
 
-    if set(task_row_sums) != set(bank.task_keys):
+    if (
+        set(task_row_sums) != set(bank.task_keys)
+        or any(task_row_counts.get(task_key, 0) < 1 for task_key in bank.task_keys)
+    ):
         raise RuntimeError("task domain aggregate coverage changed during Phase1 training")
     task_domain_descriptors = {
         task_key: TaskDomainDescriptor(

@@ -269,29 +269,21 @@ class HierarchicalMetaEpisodeSampler:
                     },
                 )
         elif kind is EpisodeKind.RX_HOLDOUT:
-            grouped = defaultdict(list)
-            for descriptor in descriptors:
-                grouped[(descriptor[1], descriptor[2], descriptor[4])].append(descriptor)
-            for rows in grouped.values():
-                for support in rows:
-                    for query in rows:
-                        if support[0] == query[0]:
-                            continue
-                        add(
-                            {
-                                "rx_i": support[0],
-                                "day_i": support[1],
-                                "eq_i": support[2],
-                                "view": support[4],
-                            },
-                            {
-                                "rx_i": query[0],
-                                "day_i": query[1],
-                                "eq_i": query[2],
-                                "capture_block_i": query[3],
-                                "view": query[4],
-                            },
-                        )
+            # Receiver holdout is a knowledge holdout, not a cross-receiver
+            # support shortcut: both inner support and hidden query belong to
+            # pseudo-target receiver d.  The Phase1 entry separately removes
+            # d's expert coordinates from the historical bank for this fold.
+            for rx_i, day_i, eq_i, block_i, view in descriptors:
+                add(
+                    {"rx_i": rx_i, "day_i": day_i, "eq_i": eq_i, "view": view},
+                    {
+                        "rx_i": rx_i,
+                        "day_i": day_i,
+                        "eq_i": eq_i,
+                        "capture_block_i": block_i,
+                        "view": view,
+                    },
+                )
         elif kind is EpisodeKind.DAY_CHANNEL_HOLDOUT:
             grouped = defaultdict(list)
             for descriptor in descriptors:
@@ -739,7 +731,7 @@ def validate_episode_semantics(
         )
     elif kind is EpisodeKind.RX_HOLDOUT:
         relation_valid = (
-            support_rx != query_rx
+            support_rx == query_rx
             and support_day == query_day
             and support_eq == query_eq
             and support_view == query_view
@@ -778,6 +770,8 @@ def validate_episode_semantics(
         "query_view": query_view,
         "support_capture_block_count": len(support_blocks),
         "query_capture_block": int(query_block),
+        "pseudo_target_receiver": int(query_rx),
+        "receiver_knowledge_holdout": kind is EpisodeKind.RX_HOLDOUT,
         "source_only": True,
     }
 

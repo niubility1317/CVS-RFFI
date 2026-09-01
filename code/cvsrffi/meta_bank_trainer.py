@@ -5,7 +5,7 @@ from __future__ import annotations
 import math
 from collections import OrderedDict, defaultdict
 from collections.abc import Callable, Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 import torch
 import torch.nn.functional as F
@@ -172,6 +172,26 @@ def _validate_bank_and_compose_initial(
     return initial, block_lrs
 
 
+def apply_bank_coefficient_mask(
+    support_state: SupportDomainState,
+    coefficient_mask: Tensor | None,
+) -> SupportDomainState:
+    """Apply one explicit task-coordinate knowledge mask to a support state."""
+
+    if coefficient_mask is None:
+        return support_state
+    if not isinstance(coefficient_mask, Tensor):
+        raise ValueError("bank coefficient mask must be a torch.Tensor")
+    mask = coefficient_mask.to(device=support_state.q.device, dtype=support_state.q.dtype)
+    if mask.shape != support_state.q.shape or not _finite(mask):
+        raise ValueError("bank coefficient mask must be finite and q-aligned")
+    if not bool(((mask == 0.0) | (mask == 1.0)).all()):
+        raise ValueError("bank coefficient mask must contain only zero or one")
+    if not bool(mask.any()):
+        raise ValueError("bank coefficient mask must retain historical knowledge")
+    return replace(support_state, q=support_state.q * mask)
+
+
 def _outer_components(
     logits: Tensor,
     batch: MetaEpisodeBatch,
@@ -307,6 +327,7 @@ def run_meta_bank_step(
     batch: MetaEpisodeBatch,
     config: MetaBankTrainerConfig,
     optimizer: torch.optim.Optimizer,
+    coefficient_mask: Tensor | None = None,
 ) -> MetaBankStepResult:
     """Backpropagate one source-only bank meta episode.
 
@@ -347,6 +368,7 @@ def run_meta_bank_step(
         support_batch.physical_tokens,
         support_batch.effective_mask,
     )
+    support_state = apply_bank_coefficient_mask(support_state, coefficient_mask)
     for value in (
         support_state.q,
         support_state.uncertainty,
@@ -394,6 +416,7 @@ def run_meta_bank_step(
 
 
 __all__ = [
+    "apply_bank_coefficient_mask",
     "MetaBankStepResult",
     "MetaBankTrainerConfig",
     "MetaBankTrainerError",

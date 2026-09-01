@@ -182,7 +182,8 @@ def test_each_episode_kind_is_constructible_and_respects_domain_relation(kind):
         }
         assert support_domain == query_domain
     elif kind is EpisodeKind.RX_HOLDOUT:
-        assert {row.rx_i for row in support}.isdisjoint({row.rx_i for row in query})
+        assert {row.rx_i for row in support} == {row.rx_i for row in query}
+        assert len({row.rx_i for row in support}) == 1
         assert {row.tx_i for row in support} == {row.tx_i for row in query}
     elif kind is EpisodeKind.DAY_CHANNEL_HOLDOUT:
         assert {row.rx_i for row in support} == {row.rx_i for row in query}
@@ -278,16 +279,16 @@ def test_rx_holdout_plan_build_scans_descriptor_collection_once():
     sampler._descriptors = descriptors
     plans = sampler._candidate_plans(EpisodeKind.RX_HOLDOUT)
 
-    assert len(plans) == 144
+    assert len(plans) == 72
     assert descriptors.iterations == 1
 
 
 @pytest.mark.parametrize(
     ("kind", "expected_count"),
     [
-        (EpisodeKind.SAME_DOMAIN, 36),
-        (EpisodeKind.RX_HOLDOUT, 144),
-        (EpisodeKind.DAY_CHANNEL_HOLDOUT, 360),
+        (EpisodeKind.SAME_DOMAIN, 72),
+        (EpisodeKind.RX_HOLDOUT, 72),
+        (EpisodeKind.DAY_CHANNEL_HOLDOUT, 144),
         (EpisodeKind.CLEAN_TO_LEO, 54),
         (EpisodeKind.LEO_CROSS, 108),
     ],

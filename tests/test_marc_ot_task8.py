@@ -375,12 +375,16 @@ def _run_phase1_test_entry(
     selector,
     batch_builder=_episode_batch,
     outer_cycles: int = 1,
+    schedule_seed: int = 31,
+    bank_task_key=None,
 ):
     from cvsrffi.marc_ot_phase1 import run_marc_ot_phase1_bank_training
     from cvsrffi.meta_bank_trainer import MetaBankTrainerConfig
     from cvsrffi.meta_support_set_encoder import SupportSetEncoder
 
     bank, base_state, specs, bases = _bank_and_state()
+    if bank_task_key is not None:
+        bank = replace(bank, task_keys=(bank_task_key,))
     encoder = SupportSetEncoder(
         feature_dim=685,
         coefficient_dim=2,
@@ -422,10 +426,50 @@ def _run_phase1_test_entry(
         expected_block_specs=specs,
         bundle_path=bundle_path,
         training_episode_selector=selector,
-        schedule_seed=31,
+        schedule_seed=schedule_seed,
         outer_cycles=outer_cycles,
     )
     return result, bank, encoder, pre_step
+
+
+def test_phase1_descriptor_aggregation_deduplicates_reused_physical_ids_per_task_key(
+    tmp_path: Path,
+) -> None:
+    """Different formal semantic cells may reuse a query row for one task descriptor."""
+    from cvsrffi.marc_ot_phase1 import canonical_episode_task_domain_selection
+    from cvsrffi.meta_episodes import sample_marc_ot_coverage_schedule
+    from cvsrffi.meta_weight_bank import DeltaTaskKey
+
+    task_key = DeltaTaskKey("1", "0", "leo_clear_weak", 10, "0")
+
+    def select_formal_colliding_cells(episodes):
+        selected = tuple(
+            episode
+            for episode in episodes
+            if canonical_episode_task_domain_selection(episode).task_key == task_key
+        )
+        assert len(selected) == 3
+        assert len({episode.kind for episode in selected}) == 3
+        physical_ids = [
+            ref.physical_sample_id
+            for episode in selected
+            for ref in episode.query_adapt
+        ]
+        assert len(physical_ids) == 12
+        assert len(set(physical_ids)) == 11
+        return selected
+
+    result, _bank, _encoder, _pre_step = _run_phase1_test_entry(
+        tmp_path / "marc_ot_deduplicated_descriptor.pt",
+        learning_rate=0.01,
+        selector=select_formal_colliding_cells,
+        schedule_seed=713104,
+        bank_task_key=task_key,
+    )
+
+    assert result.training_coverage["trained_episode_count"] == 3
+    assert len(result.step_results) == 3
+    assert result.loaded_bundle.task_domain_bank.aggregation_counts.tolist() == [11]
 
 
 def test_real_phase1_entry_runs_bank_step_and_strict_bundle_round_trip(tmp_path: Path) -> None:
