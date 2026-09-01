@@ -74,3 +74,10 @@ CUDA_VISIBLE_DEVICES=<physical_gpu> /home/szu2070436088/.conda/envs/CVS-RFFI/bin
 - r6新增`leo_low_elev_weak/R6`冻结态，当前共7份合法support回执，精确适配进程降至10个。
 - 异常日志仍仅为已知`leo_low_elev_weak/R2`，未出现新故障指纹；query仍保持关闭。
 - N607共有25个GPU计算进程，完整替代矩阵仍无安全容量；不启动替代run，继续只读等待。
+
+## 2026-09-02 06:06第二个同指纹技术失败
+
+- `leo_rain_weak/R2`已退出并出现与首个失败相同的零权重OT收敛异常：`row_error=0.000105031 column_error=9.31323e-09`。
+- 当前r6为7份冻结态、9个精确适配进程、2个同指纹R2失败；这确认故障是旧R2路径的确定性系统问题，而非单场景偶发性能现象。
+- 本地lazy-skip修复尚未部署到r6，因此不属于“修复后复现”；继续保留全部partial artifacts，不热补丁、不原地重启，也不停止仍健康的9个单元。
+- GPU仍有24个计算进程，替代矩阵容量不足；query继续关闭，r6保持`NO_PERFORMANCE_RESULT`。
