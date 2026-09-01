@@ -257,15 +257,21 @@ class HierarchicalMetaEpisodeSampler:
             plans.add((support_key, query_key))
 
         if kind is EpisodeKind.SAME_DOMAIN:
-            for rx_i, day_i, eq_i, _block_i, view in descriptors:
+            for rx_i, day_i, eq_i, block_i, view in descriptors:
                 add(
                     {"rx_i": rx_i, "day_i": day_i, "eq_i": eq_i, "view": view},
-                    {"rx_i": rx_i, "day_i": day_i, "eq_i": eq_i, "view": view},
+                    {
+                        "rx_i": rx_i,
+                        "day_i": day_i,
+                        "eq_i": eq_i,
+                        "capture_block_i": block_i,
+                        "view": view,
+                    },
                 )
         elif kind is EpisodeKind.RX_HOLDOUT:
             grouped = defaultdict(list)
             for descriptor in descriptors:
-                grouped[descriptor[1:]].append(descriptor)
+                grouped[(descriptor[1], descriptor[2], descriptor[4])].append(descriptor)
             for rows in grouped.values():
                 for support in rows:
                     for query in rows:
@@ -276,7 +282,6 @@ class HierarchicalMetaEpisodeSampler:
                                 "rx_i": support[0],
                                 "day_i": support[1],
                                 "eq_i": support[2],
-                                "capture_block_i": support[3],
                                 "view": support[4],
                             },
                             {
@@ -294,14 +299,13 @@ class HierarchicalMetaEpisodeSampler:
             for rows in grouped.values():
                 for support in rows:
                     for query in rows:
-                        if (support[1], support[3]) == (query[1], query[3]):
+                        if support[1] == query[1]:
                             continue
                         add(
                             {
                                 "rx_i": support[0],
                                 "day_i": support[1],
                                 "eq_i": support[2],
-                                "capture_block_i": support[3],
                                 "view": support[4],
                             },
                             {
@@ -315,18 +319,17 @@ class HierarchicalMetaEpisodeSampler:
         elif kind is EpisodeKind.CLEAN_TO_LEO:
             grouped = defaultdict(list)
             for descriptor in descriptors:
-                grouped[descriptor[:4]].append(descriptor)
+                grouped[descriptor[:3]].append(descriptor)
             for rows in grouped.values():
                 clean_rows = [row for row in rows if row[4] == "clean"]
                 leo_rows = [row for row in rows if self._is_leo(row[4])]
-                for rx_i, day_i, eq_i, block_i, _view in clean_rows:
+                for rx_i, day_i, eq_i, _block_i, _view in clean_rows:
                     for leo_rx, leo_day, leo_eq, leo_block, leo_view in leo_rows:
                         add(
                             {
                                 "rx_i": rx_i,
                                 "day_i": day_i,
                                 "eq_i": eq_i,
-                                "capture_block_i": block_i,
                                 "view": "clean",
                             },
                             {
@@ -341,7 +344,7 @@ class HierarchicalMetaEpisodeSampler:
             grouped = defaultdict(list)
             for descriptor in descriptors:
                 if self._is_leo(descriptor[4]):
-                    grouped[descriptor[:4]].append(descriptor)
+                    grouped[descriptor[:3]].append(descriptor)
             for rows in grouped.values():
                 for support in rows:
                     for query in rows:
@@ -352,7 +355,6 @@ class HierarchicalMetaEpisodeSampler:
                                 "rx_i": support[0],
                                 "day_i": support[1],
                                 "eq_i": support[2],
-                                "capture_block_i": support[3],
                                 "view": support[4],
                             },
                             {
@@ -443,10 +445,10 @@ class HierarchicalMetaEpisodeSampler:
             query_pool = self._pool(class_id, query_spec)
             if class_id in adapt_set:
                 support_pool = self._pool(class_id, support_spec)
-                selected_support = self._choose_rows(support_pool, k_shot, rng, used_ids)
-                used_ids.update(str(row.physical_sample_id) for row in selected_support)
                 selected_query = self._choose_rows(query_pool, query_count, rng, used_ids)
                 used_ids.update(str(row.physical_sample_id) for row in selected_query)
+                selected_support = self._choose_rows(support_pool, k_shot, rng, used_ids)
+                used_ids.update(str(row.physical_sample_id) for row in selected_support)
                 support_rows.extend(selected_support)
                 query_adapt_rows.extend(selected_query)
             else:
@@ -720,20 +722,13 @@ def validate_episode_semantics(
     query_day = _single_value(query, "day_i")
     support_eq = _single_value(support, "eq_i")
     query_eq = _single_value(query, "eq_i")
-    support_block = _single_value(support, "capture_block_i")
+    support_blocks = {int(row.capture_block_i) for row in support}
+    if not support_blocks:
+        raise ValueError("episode support requires a nonempty capture_block_i set")
     query_block = _single_value(query, "capture_block_i")
     support_view = str(_single_value(support, "view"))
     query_view = str(_single_value(query, "view"))
 
-    same_capture = (
-        support_day,
-        support_eq,
-        support_block,
-    ) == (
-        query_day,
-        query_eq,
-        query_block,
-    )
     relation_valid = False
     if kind is EpisodeKind.SAME_DOMAIN:
         relation_valid = (
@@ -745,7 +740,8 @@ def validate_episode_semantics(
     elif kind is EpisodeKind.RX_HOLDOUT:
         relation_valid = (
             support_rx != query_rx
-            and same_capture
+            and support_day == query_day
+            and support_eq == query_eq
             and support_view == query_view
         )
     elif kind is EpisodeKind.DAY_CHANNEL_HOLDOUT:
@@ -753,19 +749,21 @@ def validate_episode_semantics(
             support_rx == query_rx
             and support_eq == query_eq
             and support_view == query_view
-            and (support_day, support_block) != (query_day, query_block)
+            and support_day != query_day
         )
     elif kind is EpisodeKind.CLEAN_TO_LEO:
         relation_valid = (
             support_rx == query_rx
-            and same_capture
+            and support_day == query_day
+            and support_eq == query_eq
             and support_view == "clean"
             and query_view in MARC_OT_LEO_WEAK_SCENES
         )
     elif kind is EpisodeKind.LEO_CROSS:
         relation_valid = (
             support_rx == query_rx
-            and same_capture
+            and support_day == query_day
+            and support_eq == query_eq
             and support_view in MARC_OT_LEO_WEAK_SCENES
             and query_view in MARC_OT_LEO_WEAK_SCENES
             and support_view != query_view
@@ -778,6 +776,8 @@ def validate_episode_semantics(
         "query_per_class": int(episode.query_per_class),
         "support_view": support_view,
         "query_view": query_view,
+        "support_capture_block_count": len(support_blocks),
+        "query_capture_block": int(query_block),
         "source_only": True,
     }
 

@@ -45,6 +45,62 @@ def _ref_pool(*, rows_per_domain: int = 22):
     return rows
 
 
+def _real_capture_capacity_ref_pool():
+    """Phase1-like refs: eight physical samples per capture and three captures."""
+    from cvsrffi.meta_episodes import MetaSampleRef
+
+    rows = []
+    index = 0
+    for tx_i in range(3):
+        for rx_i in range(2):
+            for day_i in range(2):
+                for capture_block_i in range(3):
+                    for sample_i in range(8):
+                        physical_id = (
+                            f"tx{tx_i}|rx{rx_i}|day{day_i}|"
+                            f"block{capture_block_i}|sig{sample_i}"
+                        )
+                        for view in (
+                            "clean",
+                            "leo_clear_weak",
+                            "leo_low_elev_weak",
+                            "leo_rain_weak",
+                        ):
+                            rows.append(
+                                MetaSampleRef(
+                                    dataset_index=index,
+                                    tx_i=tx_i,
+                                    rx_i=rx_i,
+                                    day_i=day_i,
+                                    eq_i=0,
+                                    capture_block_i=capture_block_i,
+                                    physical_sample_id=physical_id,
+                                    role="L_s",
+                                    view=view,
+                                )
+                            )
+                            index += 1
+    return rows
+
+
+def _real_capture_capacity_sampler():
+    from cvsrffi.meta_episodes import (
+        HierarchicalMetaEpisodeSampler,
+        MARC_OT_CANONICAL_K,
+        MetaEpisodeSamplerConfig,
+    )
+
+    return HierarchicalMetaEpisodeSampler(
+        _real_capture_capacity_ref_pool(),
+        MetaEpisodeSamplerConfig(
+            k_choices=MARC_OT_CANONICAL_K,
+            query_per_class=2,
+            partial_coverage_probability=1.0,
+            partial_class_fraction=(0.5, 0.8),
+        ),
+    )
+
+
 def _sampler():
     from cvsrffi.meta_episodes import (
         HierarchicalMetaEpisodeSampler,
@@ -115,6 +171,63 @@ def test_canonical_schedule_closes_k20_and_every_required_domain_relation() -> N
                 source_receiver_ids=(0, 1),
                 require_complete=True,
             )
+
+
+def test_real_capture_capacity_closes_k20_schedule_with_single_capture_queries() -> None:
+    """Keeping support capture-bound would leave each real pool below K20."""
+    from cvsrffi.meta_episodes import (
+        EpisodeKind,
+        audit_marc_ot_episode_coverage,
+        sample_marc_ot_coverage_schedule,
+        validate_episode_semantics,
+    )
+
+    episodes = sample_marc_ot_coverage_schedule(
+        _real_capture_capacity_sampler(), seed=713104
+    )
+    audit = audit_marc_ot_episode_coverage(
+        episodes,
+        source_receiver_ids=(0, 1),
+        require_complete=True,
+    )
+
+    assert len(episodes) == audit["episode_count"] == 55
+    for episode in episodes:
+        support_ids = {row.physical_sample_id for row in episode.support}
+        adapt_ids = {row.physical_sample_id for row in episode.query_adapt}
+        guard_ids = {row.physical_sample_id for row in episode.query_guard}
+        assert len(support_ids) == len(episode.support)
+        assert len(adapt_ids) == len(episode.query_adapt)
+        assert len(guard_ids) == len(episode.query_guard)
+        assert support_ids.isdisjoint(adapt_ids | guard_ids)
+        assert adapt_ids.isdisjoint(guard_ids)
+        assert len({row.capture_block_i for row in episode.query_adapt + episode.query_guard}) == 1
+
+    k20 = [episode for episode in episodes if episode.k_shot == 20]
+    assert len(k20) == 11
+    for episode in k20:
+        for tx_i in episode.adapt_class_ids:
+            support = [row for row in episode.support if row.tx_i == tx_i]
+            assert len({row.physical_sample_id for row in support}) == 20
+            assert len({row.capture_block_i for row in support}) >= 3
+
+    target = next(
+        episode
+        for episode in episodes
+        if episode.kind is EpisodeKind.CLEAN_TO_LEO and episode.k_shot == 20
+    )
+    forged = replace(
+        target,
+        query_adapt=(
+            replace(
+                target.query_adapt[0],
+                capture_block_i=int(target.query_adapt[0].capture_block_i) + 1,
+            ),
+            *target.query_adapt[1:],
+        ),
+    )
+    with pytest.raises(ValueError, match="one capture_block_i|relation"):
+        validate_episode_semantics(forged, source_receiver_ids=(0, 1))
 
 
 def test_episode_semantics_reject_forged_kind_k_and_partition_overlap() -> None:
