@@ -18,7 +18,11 @@ from train import effective_concat_sat_ce_weight, validate_ecrs_v1_hyperparamete
 
 def _bash_executable() -> str:
     configured = os.environ.get("HERMES_GIT_BASH_PATH", "").strip()
-    return configured if configured else "bash"
+    if configured:
+        return configured
+    if os.name == "nt":
+        return r"C:\Program Files\Git\bin\bash.exe"
+    return "bash"
 
 
 def test_launcher_dry_run_freezes_report_v1_contract() -> None:
@@ -32,10 +36,14 @@ def test_launcher_dry_run_freezes_report_v1_contract() -> None:
         check=True,
     )
     output = result.stdout
-    assert output.count("[ECRS-V1-CANDIDATE]") == 9
+    assert output.count("[ECRS-V1-CANDIDATE]") == 8
+    assert output.count("[ECRS-V1-BASELINE]") == 1
     assert "rung=R0" in output and "rung=R8" in output
-    assert "rung=R0 mode=reference_checkpoint" in output
-    assert "--init_checkpoint" in output
+    assert "rung=R0 mode=train_shared_baseline" in output
+    baseline_cmd = output.split("[ECRS-V1-BASELINE]", 1)[1].split("[ECRS-V1-CANDIDATE]", 1)[0]
+    assert "--init_checkpoint" not in baseline_cmd
+    assert output.count("--init_checkpoint") == 8
+    assert "ADV3B02_ECRS_R0/best.pth" in output
     for token in (
         "--model_variant lite_d",
         "--branch_ablation no_dac",
@@ -43,6 +51,15 @@ def test_launcher_dry_run_freezes_report_v1_contract() -> None:
         "--ssl_labeled_ratio 0.07",
         "--ssl_unlabeled_ratio 0.63",
         "--ssl_val_ratio 0.30",
+        "--seed 392005",
+        "--wisig_equalized 1",
+        "--wisig_target_receiver_only_eval",
+        "source_days=1,2,3",
+        "target_days=0,1,2,3",
+        "source_rxs=1,3,4,6,8",
+        "target_rxs=0,2,5,7,9,10,11",
+        "source_pool=90000 L_s=6300 U_s=56700 V=27000",
+        "target_per_scenario=168000",
         "--concat_sat_ce_only",
         "--concat_sat_ce_weight 0.68",
         "--concat_sat_start_epoch 1",
@@ -53,6 +70,11 @@ def test_launcher_dry_run_freezes_report_v1_contract() -> None:
         "91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
         "--eval_sat_scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
         "--epochs 200",
+        "--test_eval_policy interval_final",
+        "--test_eval_start_epoch 200",
+        "--test_eval_interval 200",
+        "--test_eval_final_window 0",
+        "--test_eval_final_interval 0",
         "K=28 anchors=8 response_dim=64 rho_max=0.25",
         "--no_ecrs_enable_learnable_basis",
         "--no_ecrs_enable_fasttrust",

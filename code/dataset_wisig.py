@@ -712,9 +712,9 @@ def make_wisig_meta_ssl_source_split(
 ):
     """Build the source-only 0.07L/0.63U/0.30V Phase1 split.
 
-    Only source train day/rx combinations are used. Optional holdout day/rx
-    values are removed before the split so target/deployment samples cannot
-    enter pseudo-label fitting, prototype warm start, or early stopping.
+    Only source train day/rx combinations are used. Receiver-disjoint target
+    domains may share capture dates with source; date overlap is removed only
+    when receiver isolation is absent.
     """
     day_list = list(ds.get("capture_date_list", []))
     rx_list = list(ds.get("rx_list", []))
@@ -740,7 +740,9 @@ def make_wisig_meta_ssl_source_split(
     train_rx_idx = _resolve_rxs(rx_list, train_rxs if train_rxs is not None else default_train_rxs, [])
     holdout_rx_idx = _resolve_rxs(rx_list, holdout_rxs if holdout_rxs is not None else default_holdout_rxs, [])
 
-    train_day_idx = [d for d in train_day_idx if d not in holdout_day_idx]
+    receiver_sets_disjoint = bool(holdout_rx_idx) and set(train_rx_idx).isdisjoint(holdout_rx_idx)
+    if not receiver_sets_disjoint:
+        train_day_idx = [d for d in train_day_idx if d not in holdout_day_idx]
     train_rx_idx = [r for r in train_rx_idx if r not in holdout_rx_idx]
     if not train_day_idx:
         raise ValueError("No Meta-SSL source train days left after holdout removal.")
@@ -830,6 +832,7 @@ def make_wisig_meta_ssl_source_split(
         "train_rxs_idx": train_rx_idx,
         "train_rxs_label": [rx_list[i] for i in train_rx_idx],
         "holdout_rxs_idx": holdout_rx_idx,
+        "receiver_sets_disjoint": bool(receiver_sets_disjoint),
         "base_source_pool_size": int(total),
         "labeled_size": len(labeled_ds),
         "unlabeled_size": len(unlabeled_ds),
@@ -915,6 +918,7 @@ def make_wisig_trainval_test_by_day_rx(
     split_strategy: str = "random",
     cap_strategy: str = "random",
     train_class_cap_strategy: str = "domain_balanced",
+    target_receiver_only_eval: bool = False,
 ):
     """
     General WiSig split with explicit day and receiver isolation.
@@ -973,13 +977,24 @@ def make_wisig_trainval_test_by_day_rx(
     train_rx_idx = _resolve_rxs(rx_list, train_rxs if train_rxs is not None else default_train_rxs, [])
     test_rx_idx = _resolve_rxs(rx_list, test_rxs if test_rxs is not None else default_test_rxs, [])
 
-    train_day_idx = [d for d in train_day_idx if d not in test_day_idx]
+    receiver_sets_disjoint = bool(test_rx_idx) and set(train_rx_idx).isdisjoint(test_rx_idx)
+    if bool(target_receiver_only_eval) and not receiver_sets_disjoint:
+        raise ValueError("target_receiver_only_eval requires disjoint train/test receivers")
+    if not (bool(target_receiver_only_eval) and receiver_sets_disjoint):
+        train_day_idx = [d for d in train_day_idx if d not in test_day_idx]
     train_rx_idx = [r for r in train_rx_idx if r not in test_rx_idx]
 
     if len(train_day_idx) == 0:
         raise ValueError("No train days left after removing test days.")
     if len(train_rx_idx) == 0:
         raise ValueError("No train receivers left after removing test receivers.")
+
+    if bool(target_receiver_only_eval):
+        unseen_test_day_idx = [d for d in test_day_idx if d not in train_day_idx]
+        seen_target_day_idx = [d for d in test_day_idx if d in train_day_idx]
+    else:
+        unseen_test_day_idx = list(test_day_idx)
+        seen_target_day_idx = list(train_day_idx)
 
     base_trainval = WiSigCompactDataset(
         ds,
@@ -1071,14 +1086,14 @@ def make_wisig_trainval_test_by_day_rx(
     named_tests: Dict[str, Dataset] = {}
     named_test_meta: Dict[str, Dict[str, Any]] = {}
 
-    if len(test_day_idx) > 0:
+    if not bool(target_receiver_only_eval) and len(unseen_test_day_idx) > 0:
         ds_day = _build_full_subset(
             ds,
             out_len=out_len,
             crop_mode=crop_mode,
             normalize=normalize,
             equalized=equalized,
-            day_keep=test_day_idx,
+            day_keep=unseen_test_day_idx,
             rx_keep=train_rx_idx,
             domain=domain,
             transform_eval=transform_eval,
@@ -1090,14 +1105,14 @@ def make_wisig_trainval_test_by_day_rx(
         if ds_day is not None and len(ds_day) > 0:
             named_tests["test_unseen_day_seen_rx"] = ds_day
             named_test_meta["test_unseen_day_seen_rx"] = {
-                "days_idx": list(test_day_idx),
-                "days_label": [day_list[i] for i in test_day_idx],
+                "days_idx": list(unseen_test_day_idx),
+                "days_label": [day_list[i] for i in unseen_test_day_idx],
                 "rxs_idx": list(train_rx_idx),
                 "rxs_label": [rx_list[i] for i in train_rx_idx],
                 "size": len(ds_day),
             }
 
-        for d_idx in test_day_idx:
+        for d_idx in unseen_test_day_idx:
             ds_one = _build_full_subset(
                 ds,
                 out_len=out_len,
@@ -1124,14 +1139,14 @@ def make_wisig_trainval_test_by_day_rx(
                     "size": len(ds_one),
                 }
 
-    if len(test_rx_idx) > 0:
+    if len(test_rx_idx) > 0 and len(seen_target_day_idx) > 0:
         ds_rx = _build_full_subset(
             ds,
             out_len=out_len,
             crop_mode=crop_mode,
             normalize=normalize,
             equalized=equalized,
-            day_keep=train_day_idx,
+            day_keep=seen_target_day_idx,
             rx_keep=test_rx_idx,
             domain=domain,
             transform_eval=transform_eval,
@@ -1143,8 +1158,8 @@ def make_wisig_trainval_test_by_day_rx(
         if ds_rx is not None and len(ds_rx) > 0:
             named_tests["test_seen_day_unseen_rx"] = ds_rx
             named_test_meta["test_seen_day_unseen_rx"] = {
-                "days_idx": list(train_day_idx),
-                "days_label": [day_list[i] for i in train_day_idx],
+                "days_idx": list(seen_target_day_idx),
+                "days_label": [day_list[i] for i in seen_target_day_idx],
                 "rxs_idx": list(test_rx_idx),
                 "rxs_label": [rx_list[i] for i in test_rx_idx],
                 "size": len(ds_rx),
@@ -1157,7 +1172,7 @@ def make_wisig_trainval_test_by_day_rx(
                 crop_mode=crop_mode,
                 normalize=normalize,
                 equalized=equalized,
-                day_keep=train_day_idx,
+                day_keep=seen_target_day_idx,
                 rx_keep=[r_idx],
                 domain=domain,
                 transform_eval=transform_eval,
@@ -1170,21 +1185,21 @@ def make_wisig_trainval_test_by_day_rx(
                 key = f"test_rx_{r_idx}"
                 named_tests[key] = ds_one
                 named_test_meta[key] = {
-                    "days_idx": list(train_day_idx),
-                    "days_label": [day_list[i] for i in train_day_idx],
+                    "days_idx": list(seen_target_day_idx),
+                    "days_label": [day_list[i] for i in seen_target_day_idx],
                     "rxs_idx": [r_idx],
                     "rxs_label": [rx_list[r_idx]],
                     "size": len(ds_one),
                 }
 
-    if len(test_day_idx) > 0 and len(test_rx_idx) > 0:
+    if len(unseen_test_day_idx) > 0 and len(test_rx_idx) > 0:
         ds_day_rx = _build_full_subset(
             ds,
             out_len=out_len,
             crop_mode=crop_mode,
             normalize=normalize,
             equalized=equalized,
-            day_keep=test_day_idx,
+            day_keep=unseen_test_day_idx,
             rx_keep=test_rx_idx,
             domain=domain,
             transform_eval=transform_eval,
@@ -1196,8 +1211,8 @@ def make_wisig_trainval_test_by_day_rx(
         if ds_day_rx is not None and len(ds_day_rx) > 0:
             named_tests["test_unseen_day_unseen_rx"] = ds_day_rx
             named_test_meta["test_unseen_day_unseen_rx"] = {
-                "days_idx": list(test_day_idx),
-                "days_label": [day_list[i] for i in test_day_idx],
+                "days_idx": list(unseen_test_day_idx),
+                "days_label": [day_list[i] for i in unseen_test_day_idx],
                 "rxs_idx": list(test_rx_idx),
                 "rxs_label": [rx_list[i] for i in test_rx_idx],
                 "size": len(ds_day_rx),
@@ -1210,7 +1225,7 @@ def make_wisig_trainval_test_by_day_rx(
                 crop_mode=crop_mode,
                 normalize=normalize,
                 equalized=equalized,
-                day_keep=test_day_idx,
+                day_keep=unseen_test_day_idx,
                 rx_keep=[r_idx],
                 domain=domain,
                 transform_eval=transform_eval,
@@ -1223,14 +1238,20 @@ def make_wisig_trainval_test_by_day_rx(
                 key = f"test_unseen_day_rx_{r_idx}"
                 named_tests[key] = ds_one
                 named_test_meta[key] = {
-                    "days_idx": list(test_day_idx),
-                    "days_label": [day_list[i] for i in test_day_idx],
+                    "days_idx": list(unseen_test_day_idx),
+                    "days_label": [day_list[i] for i in unseen_test_day_idx],
                     "rxs_idx": [r_idx],
                     "rxs_label": [rx_list[r_idx]],
                     "size": len(ds_one),
                 }
 
-    test_parts = [named_tests[k] for k in ["test_unseen_day_seen_rx", "test_seen_day_unseen_rx", "test_unseen_day_unseen_rx"] if k in named_tests]
+    aggregate_test_keys = (
+        ["test_seen_day_unseen_rx", "test_unseen_day_unseen_rx"]
+        if bool(target_receiver_only_eval)
+        else ["test_unseen_day_seen_rx", "test_seen_day_unseen_rx", "test_unseen_day_unseen_rx"]
+    )
+    aggregate_test_keys = [key for key in aggregate_test_keys if key in named_tests]
+    test_parts = [named_tests[key] for key in aggregate_test_keys]
     if len(test_parts) == 0:
         raise ValueError("No test subsets were created. Please check test_days/test_rxs.")
     test_ds = WiSigConcatDataset(test_parts) if len(test_parts) > 1 else test_parts[0]
@@ -1245,6 +1266,9 @@ def make_wisig_trainval_test_by_day_rx(
         "train_rxs_label": [rx_list[i] for i in train_rx_idx],
         "test_rxs_idx": test_rx_idx,
         "test_rxs_label": [rx_list[i] for i in test_rx_idx],
+        "receiver_sets_disjoint": bool(receiver_sets_disjoint),
+        "target_receiver_only_eval": bool(target_receiver_only_eval),
+        "aggregate_test_keys": aggregate_test_keys,
         "train_ratio": float(train_ratio),
         "requested_val_ratio": float(1.0 - train_ratio),
         "guard_gap": int(guard_gap),

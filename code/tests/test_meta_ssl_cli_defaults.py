@@ -75,4 +75,4 @@ def test_train_meta_ssl_protocol_check_is_default_off_and_exits_before_training(
     payload = json.loads(report.read_text(encoding="utf-8"))
     assert payload["verdict"] == "PASS"
     assert payload["split"]["overlap_count"] == 0
-    assert payload["split"]["tx_label_policy"]["unlabeled_source"] == "masked_y_minus_1_true_tx_in_meta_only"
+    assert payload["split"]["tx_label_policy"]["unlabeled_source"] == "masked_y_minus_1_no_tx_truth_in_training_metadata"

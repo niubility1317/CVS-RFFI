@@ -411,7 +411,7 @@ def run_meta_ssl_protocol_check(args, ds_w: Dict[str, Any]) -> Dict[str, Any]:
     payload = {
         "schema": "meta_ssl_cvs_protocol_check_v1",
         "route_family": "Meta-SSL-CVS-R04",
-        "source_ssl_split": "0.1L/0.7U/0.2Val",
+        "source_ssl_split": str(meta_info.get("source_ssl_split", "")),
         "ground_dg_claim_scope": "source_only",
         "satellite_leo_stress_role": "validation_control",
         "meta_ssl_enabled": bool(args.use_meta_ssl_cvs),
@@ -2083,6 +2083,13 @@ def main():
         choices=["random", "front"],
         help="CVS WiSig per-combo cap strategy for few-shot train/val/test subsets.",
     )
+    add_bool_arg(
+        parser,
+        "wisig_target_receiver_only_eval",
+        False,
+        "Restrict aggregate WiSig evaluation to the explicit target receiver set.",
+        "Use the legacy aggregate WiSig evaluation over all configured test subsets.",
+    )
     parser.add_argument("--wisig_train_days", type=str, default="0,1")
     parser.add_argument("--wisig_test_days", type=str, default="2,3")
     parser.add_argument("--wisig_train_rxs", type=str, default="0,1,2,3,4,5,6")
@@ -3386,6 +3393,7 @@ def main():
                 split_strategy=str(args.wisig_split_strategy),
                 cap_strategy=str(args.wisig_cap_strategy),
                 train_class_cap_strategy=str(args.wisig_train_shot_strategy),
+                target_receiver_only_eval=bool(args.wisig_target_receiver_only_eval),
             )
         input_len = int(args.wisig_out_len)
         print(f"[WISIG] pkl={args.wisig_pkl} protocol={protocol} eq={eq2} out_len={input_len} domain={args.wisig_domain}")
@@ -3430,7 +3438,7 @@ def main():
                 split_info["meta_ssl_source_split"] = meta_ssl_split_info
             print(
                 "[META-SSL-CVS-TRAIN] "
-                "enabled=1 route=Meta-SSL-CVS-R04 source_ssl_split=0.1L/0.7U/0.2Val "
+                f"enabled=1 route=Meta-SSL-CVS-R04 source_ssl_split={meta_ssl_split_info.get('source_ssl_split', '')} "
                 f"labeled={len(meta_labeled_ds)} unlabeled={len(meta_ssl_unlabeled_ds)} source_val={len(meta_source_val_ds)} "
                 f"lambda_ssl_tx={float(args.lambda_ssl_tx):.4f} "
                 f"lambda_ssl_proto={float(args.lambda_ssl_proto):.4f} "
