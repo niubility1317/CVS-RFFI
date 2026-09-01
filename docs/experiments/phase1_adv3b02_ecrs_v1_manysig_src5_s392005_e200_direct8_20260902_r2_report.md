@@ -3,7 +3,7 @@
 ## 1.状态与变更边界
 
 - run_id：`phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_direct8_20260902_r2`
-- 当前状态：`LANDED`；等待是否允许多数GPU达到每卡4个训练任务的明确授权
+- 当前状态：`LANDED`；已安排2026-09-02 16:00（Asia/Hong_Kong）启动
 - 正式实验：R1–R8，共8个
 - code_commit：`1fb9fe05d9dcaba5cd21e8fed16270d0745e2e72`
 - Git分支：`codex/adv3b02-ecrs-v1-parity-fix-20260901`
@@ -42,7 +42,7 @@
 |6|R7|R6＋response auxiliary classifier与不同TX排序|
 |7|R8|R7＋受限残差融合gate|
 
-每个候选从随机初始化开始，不加载R0或任何历史checkpoint。每张GPU只启动1个本run实验。用户已授权每张卡在现有任务基础上再增加1个实验，启动时设置`MAX_GPU_TRAIN_PROCS=3`。
+每个候选从随机初始化开始，不加载R0或任何历史checkpoint。每张GPU只启动1个本run实验。用户于2026-09-02明确授权本次启动无视显卡训练进程数限制，启动时设置`MAX_GPU_TRAIN_PROCS=999`；该授权不允许停止、迁移、修改或影响外部实验。
 
 ## 4.训练与评测冻结项
 
@@ -78,7 +78,7 @@
 - CWD：远端release根
 
 ```bash
-env ROOT=<release-root> PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python RUN_ID=phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_direct8_20260902_r2 RUNS_ROOT=<run-root> LOG_ROOT=<log-root> WISIG_PKL=/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl DIRECT_FROM_SCRATCH=1 MAX_GPU_TRAIN_PROCS=3 bash <release-root>/code/scripts/launch_phase1_adv3b02_ecrs_v1_20260901.sh
+env ROOT=<release-root> PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python RUN_ID=phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_direct8_20260902_r2 RUNS_ROOT=<run-root> LOG_ROOT=<log-root> WISIG_PKL=/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl DIRECT_FROM_SCRATCH=1 MAX_GPU_TRAIN_PROCS=999 bash <release-root>/code/scripts/launch_phase1_adv3b02_ecrs_v1_20260901.sh
 ```
 
 ## 7.停止规则与预期产物
@@ -87,11 +87,12 @@ env ROOT=<release-root> PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/pyth
 
 每个R1–R8必须产生：`best.pth`、`latest.pth`、训练指标、clean与三种LEO最终指标、ECRS响应/不确定性/融合诊断及独立日志。
 
-## 8.落地状态与资源阻塞
+## 8.落地状态与定时启动
 
 - release归档本地/远端SHA256一致：`ef46c2dc889d3d6f72e36a1131393b32f63ab245ad32133dd55060bcd3743a0b`
 - 远端release解压、Python编译和launcher语法检查：`VERIFIED`
 - 新run/log输出根仍不存在，R1–R8尚未启动
 - 资源变化：在本run发布前，另一个DAOT-STN八卡矩阵新启动；GPU0、1、2、3、5、6当前各有3个训练进程，GPU4、7各有2个
-- 用户此前授权的“每卡多1个”对应总上限3；该新增矩阵已占用多数卡的第3个位置
-- 未经进一步明确授权，不把多数GPU扩展到每卡4个训练任务；不停止、不迁移、不修改任何外部实验
+- 用户于2026-09-02明确授权本次启动无视显卡进程数限制；资源slot guard固定为`MAX_GPU_TRAIN_PROCS=999`
+- 已创建一次性自动任务`16点启动ECRS R1-R8`，状态`ACTIVE`，下一次本地时间16:00执行；完成启动与首次绑定核验后暂停，禁止重复启动
+- 资源授权只解除本run的进程数门槛；仍不得停止、迁移、修改或影响任何外部实验
