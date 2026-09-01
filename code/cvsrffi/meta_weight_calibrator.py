@@ -51,7 +51,10 @@ def _validate_lr_bounds(lr_min: float, lr_max: float) -> None:
 def _fallback_metadata(
     bank: object, lr_min: object, lr_max: object
 ) -> tuple[float, tuple[float, ...], tuple[float, ...]]:
-    block_count = len(bank.entries) if isinstance(bank, WeightDeltaBank) else 0
+    try:
+        block_count = len(getattr(bank, "entries"))
+    except Exception:
+        block_count = 0
     safe_lr = 1e-4
     if isinstance(lr_min, (int, float)) and not isinstance(lr_min, bool) and isinstance(lr_max, (int, float)) and not isinstance(lr_max, bool):
         if math.isfinite(lr_min) and math.isfinite(lr_max) and 0.0 < lr_min < lr_max:

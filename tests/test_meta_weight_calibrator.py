@@ -252,3 +252,29 @@ def test_calibrator_falls_back_for_duplicate_block_name_even_with_disjoint_param
     assert "duplicate block name" in plan.reason
     _assert_exact_base_copy(base, plan.state_dict)
     _assert_safe_fallback_metadata(plan, len(bank.entries))
+
+
+def test_calibrator_handles_malformed_bank_entries_without_escaping_atomic_fallback() -> None:
+    from cvsrffi.meta_support_set_encoder import SupportDomainState
+    from cvsrffi.meta_weight_bank import WEIGHT_DELTA_BANK_SCHEMA, WeightDeltaBank
+    from cvsrffi.meta_weight_calibrator import calibrate_weight_plan
+
+    base = _base_state()
+    malformed_bank = WeightDeltaBank(
+        schema=WEIGHT_DELTA_BANK_SCHEMA,
+        base_checkpoint_id="base-a",
+        task_keys=(),
+        entries=None,  # type: ignore[arg-type]
+    )
+    state = SupportDomainState(
+        q=torch.ones(1),
+        uncertainty=torch.tensor(0.0),
+        block_gates=torch.empty(0),
+        block_lrs=torch.empty(0),
+    )
+
+    plan = calibrate_weight_plan(base, "base-a", malformed_bank, state, **CALIBRATION_KWARGS)
+
+    assert plan.applied is False
+    _assert_exact_base_copy(base, plan.state_dict)
+    _assert_safe_fallback_metadata(plan, 0)
