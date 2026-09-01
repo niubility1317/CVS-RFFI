@@ -62,3 +62,4 @@
 ## 6.实施进度
 
 - 2026-09-01，任务1：`VERIFIED_LOCAL`。新增默认关闭的`physical_gate_variant=none|nmfdu_v1`契约；默认路径与显式`none`逐tensor一致；只有身份骨干的`nmfdu_v1`路径新增门控参数；训练CLI和候选配置已绑定。验证命令：`python -m pytest -q code/tests/test_adv3b02_nmfdu_legacy_contract.py code/tests/test_identity_only_forward.py code/tests/test_exact_ssdg_checkpoint_loading.py`，结果`9 passed`。这不表示NMFDU统计、融合或训练已经实现。
+- 2026-09-01，任务2：`VERIFIED_LOCAL`。新增有效Fisher、复激励非圆性、归一化PA记忆多项式Gram、频谱占用、低阶相位干扰投影和分段HOS置信度纯统计API；合成测试覆盖Schur共线消除、BPSK/QPSK方向、恒包络秩亏、尺度不变、cycle slip和段间失稳。验证命令：`python -m pytest -q code/tests/test_identifiability_stats.py code/tests/test_adv3b02_nmfdu_legacy_contract.py`，结果`10 passed`。NMFDU-02及NMFDU-04至NMFDU-10仍保持`PENDING`，直到这些统计实际接入五分支和门控路径。
