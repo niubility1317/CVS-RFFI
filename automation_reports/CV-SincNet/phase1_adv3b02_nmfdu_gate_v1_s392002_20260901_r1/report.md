@@ -12,3 +12,15 @@
 - GPU：预登记M1/M2/M3/M4依次使用GPU4/5/6/7；启动前以N607资源preflight为准，且每GPU训练进程不超过2个
 - 停止规则：仅在数据/query越权、错误split/receiver/seed/场景、输出覆盖、错误checkout、进程归属不清、无prediction闭合或同一确定性系统异常导致合法产物无法产生时停止；低性能不停止
 - 预期artifact：每个训练row的最终checkpoint、训练日志、clean及`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`分场景评估、门控诊断与prediction；M0保存同协议评估结果
+
+## 发布与启动绑定
+
+- 代码变更：NMFDU规范激励、五分支局部门、Fisher门、训练目标/三阶段控制、M0–M4消融、真实checkpoint smoke和不可覆盖launcher
+- 本地验证：聚焦协议/机制套件`72 passed`；关键Python模块`py_compile`通过；一次定点复审的四个P1均为`FIXED`
+- release提交：`a2d5c05b597cd2b95fc346df345f643859d6e70d`
+- release归档：`E:\type10-7\local_artifacts\releases\adv3b02_nmfdu_gate_v1_a2d5c05b.tar.gz`→`/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate_v1_a2d5c05b.tar.gz`
+- release根：`/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate_v1_a2d5c05b`
+- 归档SHA对照：本地与远端均为`6ce908e6121d4f02072ae83cd4ef389b778a62aa25d332258dff1fd993acd96b`
+- N607验证：原生`bash -n`、launcher dry-run和远端Python编译通过
+- 真实checkpoint无query smoke：`PASS`；结果=`runs/phase1_adv3b02_nmfdu_gate_v1_s392002_20260901_r1_smoke/nmfdu_real_checkpoint_smoke.json`
+- 实际启动命令：`env ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate_v1_a2d5c05b WISIG_PKL=/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl CORE90_CKPT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth RUNS_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_nmfdu_gate_v1_s392002_20260901_r1 LOG_ROOT=/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_nmfdu_gate_v1_s392002_20260901_r1 RUN_ID=phase1_adv3b02_nmfdu_gate_v1_s392002_20260901_r1 GPU_MAP=4,5,6,7 bash /home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate_v1_a2d5c05b/code/scripts/launch_phase1_adv3b02_nmfdu_gate_v1_queue_20260901.sh`
