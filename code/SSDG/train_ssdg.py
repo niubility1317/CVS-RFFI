@@ -6043,6 +6043,60 @@ def _rc4_should_collect_gradient_telemetry(
     )
 
 
+def _rc4_route_telemetry(
+    rc4_route: Any | None, *, unlabeled_count: int
+) -> Dict[str, Any]:
+    if rc4_route is None:
+        return {
+            "rc4/hard_count": 0.0,
+            "rc4/partial_count": 0.0,
+            "rc4/negative_count": 0.0,
+            "rc4/representation_count": 0.0,
+            "rc4/effective_weighted_coverage": 0.0,
+            "rc4/risk_mean": 0.0,
+            "rc4/p_correct_mean": 0.0,
+            "rc4/estimated_error_mean": 0.0,
+            "rc4/p_set_safe_mean": 0.0,
+            "rc4/p_exclusion_safe_mean": 0.0,
+            "rc4/partial_safety_threshold": 0.0,
+            "rc4/hard_effective_coverage": 0.0,
+            "rc4/partial_effective_coverage": 0.0,
+            "rc4/negative_effective_coverage": 0.0,
+            "rc4/candidate_size_mean": 0.0,
+        }
+    denominator = float(max(1, int(unlabeled_count)))
+    return {
+        "rc4/hard_count": rc4_route.hard.sum().detach(),
+        "rc4/partial_count": rc4_route.partial.sum().detach(),
+        "rc4/negative_count": rc4_route.negative.sum().detach(),
+        "rc4/representation_count": rc4_route.representation.sum().detach(),
+        "rc4/effective_weighted_coverage": rc4_route.weights.sum().detach()
+        / denominator,
+        "rc4/risk_mean": rc4_route.risk.mean().detach(),
+        "rc4/p_correct_mean": rc4_route.p_correct.mean().detach(),
+        "rc4/estimated_error_mean": (1.0 - rc4_route.p_correct).mean().detach(),
+        "rc4/p_set_safe_mean": rc4_route.p_set_safe.mean().detach(),
+        "rc4/p_exclusion_safe_mean": rc4_route.p_exclusion_safe.mean().detach(),
+        "rc4/partial_safety_threshold": rc4_route.partial_threshold.detach(),
+        "rc4/hard_effective_coverage": rc4_route.weights[rc4_route.hard]
+        .sum()
+        .detach()
+        / denominator,
+        "rc4/partial_effective_coverage": rc4_route.weights[rc4_route.partial]
+        .sum()
+        .detach()
+        / denominator,
+        "rc4/negative_effective_coverage": rc4_route.weights[rc4_route.negative]
+        .sum()
+        .detach()
+        / denominator,
+        "rc4/candidate_size_mean": rc4_route.candidate_mask.sum(dim=-1)
+        .float()
+        .mean()
+        .detach(),
+    }
+
+
 def _detach_log_mapping(values: Mapping[str, Any]) -> Dict[str, Any]:
     """Detach every tensor before an epoch log retains the batch snapshot."""
 
@@ -9384,6 +9438,9 @@ def train(args) -> int:
                 loss_open_l = loss_open_invariant_l + loss_open_boundary_l + loss_open_source_l
                 loss_l = loss_closed_l + loss_open_l
                 nmfdu_u_quality_mean = z_id_l.sum().detach() * 0.0
+                unlabeled_count = 0
+                sat_anchor_route = None
+                rc4_route = None
                 if muse_state is not None:
                     if muse_unlabeled_batch is None:
                         raise RuntimeError("MUSE epoch pair is missing its U_s batch")
@@ -9463,8 +9520,6 @@ def train(args) -> int:
                     u_sat_scenario = select_adv3b02_u_satellite_scenario(
                         int(epoch), int(batch_idx), int(args.seed)
                     )
-                    sat_anchor_route = None
-                    rc4_route = None
                     sat_anchor_pair_active = False
                     if bool(muse_state.get("sat_anchor_ssl", False)):
                         if bool(muse_state.get("fasttrust_rc4", False)):
@@ -11226,20 +11281,9 @@ def train(args) -> int:
                     )
                     if muse_state is not None
                     else 0.0,
-                    "rc4/hard_count": rc4_route.hard.sum().detach() if rc4_route is not None else 0.0,
-                    "rc4/partial_count": rc4_route.partial.sum().detach() if rc4_route is not None else 0.0,
-                    "rc4/negative_count": rc4_route.negative.sum().detach() if rc4_route is not None else 0.0,
-                    "rc4/representation_count": rc4_route.representation.sum().detach() if rc4_route is not None else 0.0,
-                    "rc4/effective_weighted_coverage": rc4_route.weights.sum().detach() / float(max(1, unlabeled_count)) if rc4_route is not None else 0.0,
-                    "rc4/risk_mean": rc4_route.risk.mean().detach() if rc4_route is not None else 0.0,
-                    "rc4/p_correct_mean": rc4_route.p_correct.mean().detach() if rc4_route is not None else 0.0,
-                    "rc4/estimated_error_mean": (1.0 - rc4_route.p_correct).mean().detach() if rc4_route is not None else 0.0,
-                    "rc4/p_set_safe_mean": rc4_route.p_set_safe.mean().detach() if rc4_route is not None else 0.0,
-                    "rc4/p_exclusion_safe_mean": rc4_route.p_exclusion_safe.mean().detach() if rc4_route is not None else 0.0,
-                    "rc4/partial_safety_threshold": rc4_route.partial_threshold.detach() if rc4_route is not None else 0.0,
-                    "rc4/hard_effective_coverage": rc4_route.weights[rc4_route.hard].sum().detach() / float(max(1, unlabeled_count)) if rc4_route is not None else 0.0,
-                    "rc4/partial_effective_coverage": rc4_route.weights[rc4_route.partial].sum().detach() / float(max(1, unlabeled_count)) if rc4_route is not None else 0.0,
-                    "rc4/negative_effective_coverage": rc4_route.weights[rc4_route.negative].sum().detach() / float(max(1, unlabeled_count)) if rc4_route is not None else 0.0,
+                    **_rc4_route_telemetry(
+                        rc4_route, unlabeled_count=unlabeled_count
+                    ),
                     "rc4/partial_set_loss": muse_losses.get("rc4_partial_set", 0.0) if muse_state is not None else 0.0,
                     "rc4/partial_conditional_loss": muse_losses.get("rc4_partial_conditional", 0.0) if muse_state is not None else 0.0,
                     "rc4/negative_set_loss": muse_losses.get("rc4_negative_set", 0.0) if muse_state is not None else 0.0,
@@ -11251,7 +11295,6 @@ def train(args) -> int:
                     "rc4/partial_set_tail_scale": muse_losses.get("rc4_partial_set_tail_scale", 1.0) if muse_state is not None else 1.0,
                     "rc4/partial_conditional_tail_scale": muse_losses.get("rc4_partial_conditional_tail_scale", 1.0) if muse_state is not None else 1.0,
                     "rc4/components_finite": muse_losses.get("rc4_components_finite", 1.0) if muse_state is not None else 1.0,
-                    "rc4/candidate_size_mean": rc4_route.candidate_mask.sum(dim=-1).float().mean().detach() if rc4_route is not None else 0.0,
                     **rc4_gradient_metrics,
                     "sat_anchor/trusted_count": (
                         sat_anchor_route.trusted.sum().detach()

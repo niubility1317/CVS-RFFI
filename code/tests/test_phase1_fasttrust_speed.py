@@ -25,6 +25,28 @@ def test_non_muse_loader_keeps_the_legacy_batch_size():
     assert train_ssdg._resolve_unlabeled_batch_size(args) == 96
 
 
+def test_non_muse_rc4_telemetry_is_zero_without_a_route():
+    metrics = train_ssdg._rc4_route_telemetry(None, unlabeled_count=0)
+
+    assert metrics == {
+        "rc4/hard_count": 0.0,
+        "rc4/partial_count": 0.0,
+        "rc4/negative_count": 0.0,
+        "rc4/representation_count": 0.0,
+        "rc4/effective_weighted_coverage": 0.0,
+        "rc4/risk_mean": 0.0,
+        "rc4/p_correct_mean": 0.0,
+        "rc4/estimated_error_mean": 0.0,
+        "rc4/p_set_safe_mean": 0.0,
+        "rc4/p_exclusion_safe_mean": 0.0,
+        "rc4/partial_safety_threshold": 0.0,
+        "rc4/hard_effective_coverage": 0.0,
+        "rc4/partial_effective_coverage": 0.0,
+        "rc4/negative_effective_coverage": 0.0,
+        "rc4/candidate_size_mean": 0.0,
+    }
+
+
 def test_muse_u_loader_keeps_tail_batch_and_m0_uses_fasttrust_lr():
     muse_m0 = train_ssdg.build_arg_parser().parse_args(
         ["--output_dir", "out", "--use_muse_ssdg", "true", "--muse_level", "M0"]

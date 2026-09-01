@@ -31,3 +31,14 @@
 - N607运行环境未安装`pytest`，因此未使用远端测试框架；改由同一远端Python/CUDA直接执行两处autocast回归，结果为`NMFDU_R2_N607_CUDA_AUTOCAST_PASS`。
 - 启动前GPU0–7独立计算进程数为`1/2/2/3/2/3/3/2`；在用户授权的上限4内可分别新增一个E1–E8任务。
 - 当前状态：`LANDED / READY_TO_LAUNCH / NOT_LAUNCHED`
+
+## r2启动与第二个系统技术失败
+
+- E1–E8均已落地并分别绑定GPU0–7；主PID依次为E1=`3911784`、E2=`3911789`、E3=`3911777`、E4=`3911771`、E5=`3911768`、E6=`3911780`、E7=`3911774`、E8=`3911786`。
+- r1的CUDA Half线性求解错误未复现，但8行在首批通用遥测处均出现新的确定性异常：`UnboundLocalError: local variable 'rc4_route' referenced before assignment`，定位到`code/SSDG/train_ssdg.py`的RC4遥测字典。
+- 根因：`rc4_route`此前只在MUSE分支内部初始化，而普通NMFDU训练关闭MUSE后仍进入通用遥测构造。该问题与NMFDU公式、数据、GPU并发和r1精度修复无关。
+- 8个run进程和dispatcher均已自然退出，无需终止；r2目录与日志完整保留，未触碰其他任务。
+- 回归测试先因缺少安全的非MUSE RC4遥测行为而失败；修复在每个通用批次进入MUSE条件前初始化可选route，并通过统一helper在route为空时输出完整零遥测，真实RC4 route的原计数、均值和coverage公式保持不变。
+- 修复后相关训练/launcher测试`47 passed`，NMFDU+FastTrust聚焦套件`119 passed`，关键模块`py_compile`通过；一次独立P0/P1定点审查结论为`PASS`，无P0/P1。
+- r2没有形成prediction或性能结果，不得用于方法比较或性能判断。
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；后续仅以新release和新run ID重启相同冻结矩阵。
