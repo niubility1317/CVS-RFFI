@@ -6,7 +6,14 @@ from collections.abc import Callable
 import torch
 
 from .phase1_fcr_physics import FisherGateOutput, FrozenFingerprintFeatureBank, _as_complex_iq
+from .phase1_fcr_transplant import TransplantLossOutput, compute_directed_transplant_losses
 from .phase1_fcr_types import FCRConfig, FCRDecodeOutput, FCRFactorOutput, FCRLossOutput, FCRPairBatch
+
+
+def compute_transplant_losses(**kwargs) -> TransplantLossOutput:
+    """Expose Task8 directed-transplant loss through the shared FCR loss module."""
+
+    return compute_directed_transplant_losses(**kwargs)
 
 
 def heteroscedastic_complex_nll(
