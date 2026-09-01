@@ -123,6 +123,99 @@ class MLPHead(nn.Module):
         return self.net(x)
 
 
+def iq_to_complex(x: torch.Tensor) -> torch.Tensor:
+    if x.ndim != 3 or int(x.size(1)) != 2:
+        raise ValueError("IQ input must have shape [batch, 2, time]")
+    return torch.complex(x[:, 0].float(), x[:, 1].float())
+
+
+def complex_to_iq(z: torch.Tensor, *, dtype: Optional[torch.dtype] = None) -> torch.Tensor:
+    if not torch.is_complex(z) or z.ndim != 2:
+        raise ValueError("complex waveform must have shape [batch, time]")
+    out = torch.stack([z.real, z.imag], dim=1)
+    return out.to(dtype=dtype or out.dtype)
+
+
+class NuisanceEstimator(nn.Module):
+    """Predict only normalized CFO, common phase and scalar log-gain."""
+
+    def __init__(
+        self,
+        hidden: int = 8,
+        max_cfo_cycles_per_sample: float = 0.05,
+        max_log_gain: float = 2.0,
+    ):
+        super().__init__()
+        self.max_cfo_cycles_per_sample = float(max_cfo_cycles_per_sample)
+        self.max_log_gain = float(max_log_gain)
+        self.features = nn.Sequential(
+            nn.Conv1d(2, int(hidden), kernel_size=7, padding=3, bias=False),
+            nn.GELU(),
+            nn.AdaptiveAvgPool1d(1),
+        )
+        self.head = nn.Linear(int(hidden), 3)
+        nn.init.zeros_(self.head.weight)
+        nn.init.zeros_(self.head.bias)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        raw = self.head(self.features(x.float()).squeeze(-1))
+        return torch.stack(
+            [
+                torch.tanh(raw[:, 0]) * self.max_cfo_cycles_per_sample,
+                torch.tanh(raw[:, 1]) * math.pi,
+                torch.tanh(raw[:, 2]) * self.max_log_gain,
+            ],
+            dim=1,
+        )
+
+
+class AnalyticCanonicalizer(nn.Module):
+    """Analytic inverse for CFO, common phase and scalar gain only."""
+
+    def forward(self, x: torch.Tensor, nuisance_coef: torch.Tensor) -> torch.Tensor:
+        if nuisance_coef.ndim != 2 or tuple(nuisance_coef.shape[1:]) != (3,):
+            raise ValueError("nuisance_coef must have shape [batch, 3]")
+        z = iq_to_complex(x)
+        coef = nuisance_coef.to(device=z.device, dtype=torch.float32)
+        n = torch.arange(z.size(-1), device=z.device, dtype=torch.float32).unsqueeze(0)
+        phase = 2.0 * math.pi * coef[:, 0:1] * n + coef[:, 1:2]
+        canonical = z * torch.exp(torch.complex(torch.zeros_like(phase), -phase))
+        canonical = canonical * torch.exp(-coef[:, 2:3])
+        return complex_to_iq(canonical, dtype=x.dtype)
+
+
+class ContentEstimator(nn.Module):
+    """Bandwidth-limited blind content estimator with per-sample confidence."""
+
+    def __init__(self, kernel_size: int = 5):
+        super().__init__()
+        kernel_size = int(kernel_size)
+        if kernel_size < 3 or kernel_size % 2 == 0:
+            raise ValueError("kernel_size must be an odd integer >= 3")
+        self.smoother = nn.Conv1d(
+            2,
+            2,
+            kernel_size=kernel_size,
+            padding=kernel_size // 2,
+            groups=2,
+            bias=False,
+        )
+        nn.init.constant_(self.smoother.weight, 1.0 / float(kernel_size))
+        self.residual_mix_logit = nn.Parameter(torch.tensor(0.0))
+        self.confidence_bias = nn.Parameter(torch.tensor(1.5))
+        self.confidence_scale_raw = nn.Parameter(torch.tensor(0.0))
+
+    def forward(self, canonical_iq: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        x = canonical_iq.float()
+        filtered = self.smoother(x)
+        mix = torch.sigmoid(self.residual_mix_logit)
+        estimate_iq = mix * x + (1.0 - mix) * filtered
+        residual_power = (x - estimate_iq).square().sum(dim=1)
+        scale = torch.nn.functional.softplus(self.confidence_scale_raw) + 1e-6
+        confidence = torch.sigmoid(self.confidence_bias - scale * residual_power)
+        return iq_to_complex(estimate_iq), confidence
+
+
 class SatAnchorIdentityAdapter(nn.Module):
     """Zero-initialized low-rank identity residual and logit correction."""
 
