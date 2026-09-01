@@ -1,9 +1,9 @@
-# ADV3B02-FCR R1-R8八卡并行实验v3预登记
+# ADV3B02-FCR R1-R8八卡并行实验v3报告
 
 ## 状态
 
 - run_id：`phase1_adv3b02_fcr_r1r8_s392002_20260902_v3`
-- 当前状态：`LOCAL_VERIFIED`
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - protocol_scope：Phase1 source-only；不访问Phase2 support/query/truth
 - implementation_commit：`684ec110ffd7306ef836d82cf0cc5967ebc3c596`
 - branch：`codex/adv3b02-fcr-20260901`
@@ -60,3 +60,14 @@ R0及旧ADV3B02基线均不启动。所有row固定`seed=392002`、`epochs=200`�
 ## 预期artifact
 
 每个R1-R8独立保存`best_joint.pth`、`fcr_diagnostics.json`、`fcr_predictions.json`、`train.log`和`status.txt`。完成训练的row必须产生clean、`leo_clear_weak`、`leo_low_elev_weak`和`leo_rain_weak`四场景prediction。启动闭合只证明`RUNNING`；独立truth-last评分后才能进入`ARTIFACTS_COMPLETE/ANALYZED`。
+
+## 启动与技术失败闭合
+
+- 05:22完成v3落地并启动R1-R8；未启动R0或旧ADV3B02基线。
+- launcher PID：R1=`4029158`、R2=`4029159`、R3=`4029160`、R4=`4029161`、R5=`4029162`、R6=`4029163`、R7=`4029164`、R8=`4029165`。
+- 首次进程核验确认训练PID为R1=`4029176`、R2=`4029189`、R3=`4029188`、R4=`4029178`、R5=`4029186`、R6=`4029185`、R7=`4029184`、R8=`4029190`，工作目录均为本v3 release，命令均含`--model_variant lite_d`，GPU映射严格为R1→GPU0至R8→GPU7。
+- release归档本地/远端SHA256一致；远端`bash -n`、Python编译和launcher dry-run均通过。
+- 05:23，8个row在首次真实FCR前向中以同一确定性异常退出：`RuntimeError: "cuda_scatter_gather_base_kernel_func" not implemented for 'ComplexHalf'`。异常位置为`phase1_fcr_fingerprint.py:116`的`s.gather(1,index)`；上游在自动混合精度下构造了CUDA `ComplexHalf`张量。
+- R1-R8的`status.txt`均为`TRAIN_FAILED`；未生成checkpoint、diagnostics或prediction，未连接truth，因此没有性能结果。
+- 所有v3进程自然退出，没有停止、修改或重启任何既有GPU进程；8个row的`train.log`和`status.txt`均保留在不可覆盖run root。
+- 这是v1空nuisance掩码、v2身份嵌入维度之后的第三个独立预训练启动故障。为避免盲目修复/重启循环，本次不自动创建v4；后续应先在与N607一致的CUDA自动混合精度环境复现并解决复数半精度算子兼容性，再以新run ID重新发布。
