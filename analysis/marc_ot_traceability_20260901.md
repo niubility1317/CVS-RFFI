@@ -26,7 +26,7 @@
 |---|---|---|---|
 |VERIFY-LOCAL-01|Task1～9及新增真实Phase1入口的聚焦pytest、CLI help、相关模块compile、JSON和最终diff检查|verified|既有闭合回归`403 passed`；新增Phase1/LORO完整相邻回归`281 passed`；CLI help、相关入口`py_compile`和`git diff --check`均exit0|
 |REVIEW-01|新增真实Phase1生产入口的一次独立P0/P1审查及一次原问题定点复审|verified|审查发现3个P1：release路径、descriptor碰撞和伪LORO；单次修复后定点复审`APPROVED`，42项通过，原3项均关闭|
-|RELEASE-SMOKE-01|release归档一次本地/远端SHA比较、远端compile和真实checkpoint无query smoke|pending|`r1`release已完成SHA一致与远端compile，但真实Phase1因生产sampler空`query_guard`技术失败，无bundle/性能结果；修复commit`8bf3d9ab`已通过本地复现、69项回归和定点审查，等待全新`r2`release|
+|RELEASE-SMOKE-01|release归档一次本地/远端SHA比较、远端compile和真实checkpoint无query smoke|pending|r1为空`query_guard`、r2为真实共享Sinc functional state冲突，均技术失败且无性能结果；两项均本地复现并经回归/定点审查修复，等待新commit`d6dd6c67`的r3 release|
 |PILOT-01|K10/Target5三场景六arm prediction闭合和独立truth-last评分|pending|正式配置仍为`pilot_executed=false`；未启动N607、未产生prediction或score|
 |T25-01|pilot达到预登记科学门槛后运行Target25|blocked|等待PILOT-01；低性能只产生`NO_PROMOTION_TO_TARGET25`，不构成技术失败|
 |STAGEC-01|Stage2-C冻结`phi_D`并另训`phi_R`|deferred|设计明确排除在首轮交付之外|
