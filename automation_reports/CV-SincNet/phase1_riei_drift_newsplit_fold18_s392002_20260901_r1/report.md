@@ -1,7 +1,7 @@
 # RIEI/DRIFT新Phase1数据包fold1/fold8首轮报告
 
 - run_id：`phase1_riei_drift_newsplit_fold18_s392002_20260901_r1`
-- 当前状态：`LOCAL_VERIFIED`
+- 当前状态：`STOPPED_EARLY_PROTOCOL_CORRECTION / NO_PERFORMANCE_RESULT`
 - 固定方法版本：RIEI=`RIEI_C06_sum_featnorm1e4`；DRIFT=`DRIFT_N02_raw_cap4000`。
 - 冻结代码提交：`55f4e14c3e38042ff113f2585517190aa4e5b68e`
 - 本地环境/CWD：`ssr-gpu`；`E:\type10-7\github_publish\CVS-RFFI-repo`
@@ -52,3 +52,10 @@ PYTHONPATH=<release>/code:<release> /home/szu2070436088/.conda/envs/CVS-RFFI/bin
   - DRIFT-fold1：PID`3615562`，GPU2。
   - DRIFT-fold8：PID`3615563`，GPU3。
 - 启动后独立回读：4个PID/CWD/完整cmdline/run-root/GPU绑定正确；4个日志均已增长；RIEI进入E3、DRIFT进入E4；未见`Traceback`、`RuntimeError`、CUDA OOM或`Killed`。E80前`loss_sat_ce=0`符合冻结日程。
+
+## 用户纠正与精确停止
+
+- 2026-09-01 16:13 CST，用户明确纠正：不再使用fold1/fold8留出，5个source receiver=`[1,3,4,6,8]`必须全部进入训练。
+- 停止前独立核对PID、PPID、PGID、SID、CWD、完整cmdline与run_id；4个进程均为本run直属训练进程且无子进程，命令分别包含`--wisig_source_holdout_rxs 1/8`。
+- 仅向PID`3615560/3615561/3615562/3615563`发送`SIGTERM`；独立回读4个PID均已退出。未使用`pkill`，未触碰无关进程，未删除或覆盖run/log/checkpoint等partial artifact。
+- 本run因矩阵语义被用户纠正而终止，不产生性能结论，也不得作为RIEI/DRIFT公平对比结果。后续必须使用新Run ID，以RIEI和DRIFT各1行、完整source receiver集合且无holdout参数重新训练。
