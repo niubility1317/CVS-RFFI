@@ -30,16 +30,19 @@ class FisherDiscriminabilityUncertaintyGate(nn.Module):
         self.delta_max = float(delta_max)
         self.use_learned_correction = bool(use_learned_correction)
         self.eps = float(eps)
-        self.log_coefficients = nn.Parameter(torch.zeros(4))
+        self.log_coefficients = nn.Parameter(torch.zeros(self.branch_count, 4))
         self.log_temperature = nn.Parameter(
             torch.tensor(math.log(max(float(temperature), self.eps)))
         )
         if self.use_learned_correction:
             hidden = max(8, self.correction_dim)
-            self.correction_net = nn.Sequential(
-                nn.Linear(self.correction_dim, hidden),
-                nn.SiLU(),
-                nn.Linear(hidden, 1),
+            self.correction_net = nn.ModuleList(
+                nn.Sequential(
+                    nn.Linear(self.correction_dim, hidden),
+                    nn.SiLU(),
+                    nn.Linear(hidden, 1),
+                )
+                for _ in range(self.branch_count)
             )
         else:
             self.correction_net = None
@@ -70,10 +73,10 @@ class FisherDiscriminabilityUncertaintyGate(nn.Module):
 
         coefficients = F.softplus(self.log_coefficients) + self.eps
         physical_logits = (
-            coefficients[0] * torch.log(i + self.eps)
-            + coefficients[1] * torch.log(d + self.eps)
-            + coefficients[2] * torch.log(s + self.eps)
-            - coefficients[3] * u
+            coefficients[:, 0].unsqueeze(0) * torch.log(i + self.eps)
+            + coefficients[:, 1].unsqueeze(0) * torch.log(d + self.eps)
+            + coefficients[:, 2].unsqueeze(0) * torch.log(s + self.eps)
+            - coefficients[:, 3].unsqueeze(0) * u
         )
         quality = (i * d * s * (1.0 - u)).clamp(0.0, 1.0)
 
@@ -84,7 +87,14 @@ class FisherDiscriminabilityUncertaintyGate(nn.Module):
                 raise ValueError("correction_context must start with [B,branch_count]")
             if correction_context.size(-1) != self.correction_dim:
                 raise ValueError("correction_context final dimension is incorrect")
-            raw_correction = self.correction_net(correction_context.detach()).squeeze(-1)
+            detached_context = correction_context.detach()
+            raw_correction = torch.cat(
+                [
+                    network(detached_context[:, branch_index, :])
+                    for branch_index, network in enumerate(self.correction_net)
+                ],
+                dim=-1,
+            )
             correction = self.delta_max * torch.tanh(raw_correction) * quality
         else:
             correction = torch.zeros_like(physical_logits)

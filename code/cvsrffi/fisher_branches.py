@@ -6,9 +6,11 @@ from typing import Dict, Optional, Sequence
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 from .identifiability_stats import (
     complex_excitation_stats,
+    effective_fisher_summary,
     hos_confidence_stats,
     memory_polynomial_gram_stats,
     phase_residual_stats,
@@ -120,10 +122,37 @@ class FisherBranchBank(nn.Module):
         phase = phase_residual_stats(canonical_iq, confidence, eps=self.eps)
         hos = hos_confidence_stats(canonical_iq, eps=self.eps)
 
-        iq_eigen = excitation["iq_eigenvalues"]
+        time_axis = torch.linspace(
+            -1.0, 1.0, length, device=s_hat.device, dtype=s_hat.real.dtype
+        ).unsqueeze(0)
+        iq_target = torch.stack([s_hat.conj(), 1j * s_hat.conj()], dim=-1)
+        nuisance_jacobian = torch.stack(
+            [s_hat, 1j * s_hat, time_axis * s_hat], dim=-1
+        )
+        iq_effective = effective_fisher_summary(
+            iq_target, nuisance_jacobian, confidence, eps=self.eps
+        )
+
+        nonlinear_orders = tuple(order for order in self.pa_orders if order > 1)
+        if nonlinear_orders:
+            pa_target = torch.stack(
+                [s_hat * s_hat.abs().pow(order - 1) for order in nonlinear_orders],
+                dim=-1,
+            )
+        else:
+            pa_target = (
+                s_hat * (s_hat.abs() - s_hat.abs().mean(dim=-1, keepdim=True))
+            ).unsqueeze(-1)
+        pa_effective = effective_fisher_summary(
+            pa_target, nuisance_jacobian, confidence, eps=self.eps
+        )
+
+        iq_eigen = iq_effective["eigenvalues"]
         iq_direction = iq_eigen / iq_eigen.sum(dim=-1, keepdim=True).clamp_min(self.eps)
         raw_i = _finite_unit(
-            2.0 * excitation["iq_lambda_min"] * confidence_mean
+            iq_effective["lambda_min"]
+            / (iq_effective["trace"] / float(iq_eigen.size(-1))).clamp_min(self.eps)
+            * confidence_mean
         )
         raw_s = _finite_unit(confidence_mean)
         raw_u = _finite_unit(1.0 - raw_i * raw_s, default=1.0)
@@ -144,6 +173,12 @@ class FisherBranchBank(nn.Module):
         )
         hom_s = _finite_unit(confidence_mean * (1.0 - spectrum["edge_energy"]))
         hom_u = _finite_unit(1.0 - hom_i * hom_s, default=1.0)
+        excitation_spectrum = torch.fft.fftshift(torch.fft.fft(s_hat, dim=-1), dim=-1)
+        spectral_power = excitation_spectrum.abs().square()
+        hom_local_mask = spectral_power / spectral_power.amax(
+            dim=-1, keepdim=True
+        ).clamp_min(self.eps)
+        hom_local_mask = _finite_unit(hom_local_mask)
 
         phase_s = _finite_unit(phase["stability"] * (1.0 - phase["cycle_slip_rate"]))
         phase_i = _finite_unit(phase_s * confidence_mean)
@@ -161,18 +196,37 @@ class FisherBranchBank(nn.Module):
             dim=-1,
         )
         phase_embedding = self.phase_projection(phase_features)
+        canonical_complex = torch.complex(canonical_iq[:, 0], canonical_iq[:, 1])
+        if length > 2:
+            phase_step = torch.angle(
+                canonical_complex[:, 1:] * canonical_complex[:, :-1].conj()
+            )
+            phase_curvature = torch.remainder(
+                phase_step[:, 1:] - phase_step[:, :-1] + torch.pi,
+                2.0 * torch.pi,
+            ) - torch.pi
+            phase_local_mask = F.pad(
+                torch.exp(-phase_curvature.abs()), (2, 0), value=1.0
+            )
+        else:
+            phase_local_mask = confidence.new_ones((batch, length))
+        phase_local_mask = _finite_unit(phase_local_mask * confidence)
 
-        pa_eigen = pa["gram_eigenvalues"]
+        pa_eigen = pa_effective["eigenvalues"]
         pa_direction = pa_eigen / pa_eigen.sum(dim=-1, keepdim=True).clamp_min(self.eps)
-        rank_fraction = pa["effective_rank"] / float(pa_eigen.size(-1))
+        rank_fraction = pa_effective["effective_rank"] / float(pa_eigen.size(-1))
+        weakest_direction = pa_effective["lambda_min"] / (
+            pa_effective["trace"] / float(pa_eigen.size(-1))
+        ).clamp_min(self.eps)
         pa_i = _finite_unit(
             rank_fraction
+            * weakest_direction
             * pa["amplitude_entropy"]
             * torch.tanh(pa["amplitude_dynamic_range"])
         )
         pa_s = _finite_unit(confidence_mean * (1.0 - pa["clipping_rate"]))
         pa_u = _finite_unit(1.0 - pa_i * pa_s, default=1.0)
-        amplitude = torch.complex(canonical_iq[:, 0], canonical_iq[:, 1]).abs()
+        amplitude = canonical_complex.abs()
         amplitude_mask = amplitude / amplitude.amax(dim=-1, keepdim=True).clamp_min(self.eps)
         amplitude_mask = _finite_unit(amplitude_mask * confidence)
 
@@ -191,6 +245,9 @@ class FisherBranchBank(nn.Module):
             dim=-1,
         )
         hos_embedding = self.hos_projection(hos_features)
+        amplitude_mean = amplitude.mean(dim=-1, keepdim=True).clamp_min(self.eps)
+        hos_local_mask = torch.exp(-(amplitude / amplitude_mean - 1.0).abs())
+        hos_local_mask = _finite_unit(hos_local_mask * confidence)
 
         outputs = OrderedDict()
         branch_values = (
@@ -206,7 +263,7 @@ class FisherBranchBank(nn.Module):
             (
                 "hom",
                 hom_embedding,
-                confidence,
+                hom_local_mask,
                 hom_direction,
                 hom_i,
                 hom_s,
@@ -215,7 +272,7 @@ class FisherBranchBank(nn.Module):
             (
                 "phase",
                 phase_embedding,
-                confidence * phase_s.unsqueeze(-1),
+                phase_local_mask,
                 torch.stack([phase_i, phase_s, 1.0 - phase_u], dim=-1),
                 phase_i,
                 phase_s,
@@ -233,7 +290,7 @@ class FisherBranchBank(nn.Module):
             (
                 "hos",
                 hos_embedding,
-                confidence * hos_s.unsqueeze(-1),
+                hos_local_mask,
                 torch.stack([hos_i, hos_s], dim=-1),
                 hos_i,
                 hos_s,
@@ -244,10 +301,23 @@ class FisherBranchBank(nn.Module):
             ident = _finite_unit(ident)
             stable = _finite_unit(stable)
             uncertainty = _finite_unit(uncertainty, default=1.0)
+            local_mask = _finite_unit(local_mask)
+            direction = _finite_unit(direction)
+            direction_profile = F.interpolate(
+                direction.unsqueeze(1),
+                size=self.embedding_dim,
+                mode="linear",
+                align_corners=False,
+            ).squeeze(1)
+            gated_embedding = (
+                torch.nan_to_num(embedding)
+                * direction_profile
+                * local_mask.mean(dim=-1, keepdim=True)
+            )
             outputs[name] = BranchOutput(
-                embedding=torch.nan_to_num(embedding),
-                local_mask=_finite_unit(local_mask),
-                direction_gate=_finite_unit(direction),
+                embedding=gated_embedding,
+                local_mask=local_mask,
+                direction_gate=direction,
                 identifiability=ident,
                 stability=stable,
                 uncertainty=uncertainty,

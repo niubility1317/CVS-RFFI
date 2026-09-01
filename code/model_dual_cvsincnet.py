@@ -77,6 +77,8 @@ def backbone_forward_compat(
     crra_epoch: Optional[int] = None,
     update_crra_support: bool = False,
     crra_support_mask: Optional[torch.Tensor] = None,
+    update_nmfdu_support: bool = False,
+    return_physical_gate_diag: bool = False,
 ):
     try:
         return backbone(
@@ -87,6 +89,8 @@ def backbone_forward_compat(
             crra_epoch=crra_epoch,
             update_crra_support=update_crra_support,
             crra_support_mask=crra_support_mask,
+            update_nmfdu_support=update_nmfdu_support,
+            return_physical_gate_diag=return_physical_gate_diag,
         )
     except TypeError:
         return backbone(x, y=y, return_aux=return_aux)
@@ -847,6 +851,8 @@ class DualCVSincNetDisentangle(nn.Module):
         update_crra_support: bool = False,
         crra_support_mask: Optional[torch.Tensor] = None,
         sat_anchor_detach_backbone: bool = False,
+        update_nmfdu_support: bool = False,
+        return_physical_gate_diag: bool = False,
     ):
         if self.representation_mode == "single_parameter_matched":
             aux_id = backbone_forward_compat(
@@ -858,6 +864,8 @@ class DualCVSincNetDisentangle(nn.Module):
                 crra_epoch=crra_epoch,
                 update_crra_support=update_crra_support,
                 crra_support_mask=crra_support_mask,
+                update_nmfdu_support=update_nmfdu_support,
+                return_physical_gate_diag=return_physical_gate_diag,
             )
             base_logits = aux_id["logits"]
             base_z_id = self._pick_z_id(aux_id)
@@ -914,6 +922,8 @@ class DualCVSincNetDisentangle(nn.Module):
                 crra_epoch=crra_epoch,
                 update_crra_support=update_crra_support,
                 crra_support_mask=crra_support_mask,
+                update_nmfdu_support=update_nmfdu_support,
+                return_physical_gate_diag=return_physical_gate_diag,
             )
 
         aux_id = backbone_forward_compat(
@@ -925,6 +935,8 @@ class DualCVSincNetDisentangle(nn.Module):
             crra_epoch=crra_epoch,
             update_crra_support=update_crra_support,
             crra_support_mask=crra_support_mask,
+            update_nmfdu_support=update_nmfdu_support,
+            return_physical_gate_diag=return_physical_gate_diag,
         )
         aux_dom = backbone_forward_compat(
             self.dom_backbone,
@@ -935,6 +947,8 @@ class DualCVSincNetDisentangle(nn.Module):
             crra_epoch=crra_epoch,
             update_crra_support=False,
             crra_support_mask=None,
+            update_nmfdu_support=False,
+            return_physical_gate_diag=False,
         )
 
         tx_logits = aux_id["logits"]

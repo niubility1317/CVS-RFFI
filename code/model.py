@@ -7,6 +7,13 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from crra import CRRAAdapter
+from cvsrffi.canonical_excitation import CanonicalExcitationEstimator
+from cvsrffi.fisher_branches import BRANCH_NAMES, FisherBranchBank
+from cvsrffi.fisher_gate import (
+    FisherDiscriminabilityUncertaintyGate,
+    NormalizedFiveBranchFusion,
+)
+from cvsrffi.gate_evidence import GateEvidenceState
 
 
 # ----------------------- input length adapter -----------------------
@@ -899,20 +906,120 @@ class PhysicalAwareClassifier(nn.Module):
 
 
 class NMFDUFeatureGateContract(nn.Module):
-    """Reachability contract for the opt-in NMFDU gate.
+    """Opt-in five-branch NMFDU identity fusion.
 
-    The physical statistics and fusion behavior are added in subsequent
-    implementation tasks. Keeping this module absent on the legacy path is
-    what preserves strict historical checkpoint reconstruction.
+    The interface accepts only the current physical reception, branch
+    embeddings and an explicitly authorized labelled-support update. It has no
+    receiver, TX-name, Phase2, query-role or query-truth input.
     """
 
-    branch_names = ("raw", "hom", "phase", "pa", "hos")
+    branch_names = BRANCH_NAMES
 
-    def __init__(self, emb_dim: int):
+    def __init__(
+        self,
+        emb_dim: int,
+        num_classes: int,
+        pa_orders: Sequence[int],
+        pa_memory_depth: int,
+        margin_s: float,
+        margin_m: float,
+    ):
         super().__init__()
         self.emb_dim = int(emb_dim)
-        self.branch_logit_bias = nn.Parameter(torch.zeros(len(self.branch_names) + 1))
-        self.bounded_delta_scale = nn.Parameter(torch.zeros(len(self.branch_names)))
+        self.canonical_excitation = CanonicalExcitationEstimator(
+            detach_gate_input=True
+        )
+        self.branch_bank = FisherBranchBank(
+            embedding_dim=self.emb_dim,
+            pa_orders=pa_orders,
+            pa_memory_depth=pa_memory_depth,
+        )
+        self.evidence_state = GateEvidenceState(self.branch_names, momentum=0.95)
+        self.sample_gate = FisherDiscriminabilityUncertaintyGate(
+            branch_count=len(self.branch_names),
+            correction_dim=4,
+            delta_max=0.15,
+        )
+        self.fusion = NormalizedFiveBranchFusion(
+            branch_names=self.branch_names,
+            input_dim=self.emb_dim,
+            output_dim=self.emb_dim,
+        )
+        self.branch_heads = nn.ModuleDict(
+            {
+                name: CosFaceHead(
+                    self.emb_dim,
+                    int(num_classes),
+                    s=float(margin_s),
+                    m=float(margin_m),
+                )
+                for name in self.branch_names
+            }
+        )
+
+    def forward(
+        self,
+        received_iq: torch.Tensor,
+        *,
+        raw_embedding: torch.Tensor,
+        hom_embedding: torch.Tensor,
+        pa_embedding: torch.Tensor,
+        labels: Optional[torch.Tensor] = None,
+        update_discriminability: bool = False,
+    ):
+        if update_discriminability and not self.training:
+            raise RuntimeError("NMFDU discriminability updates require training mode")
+        if update_discriminability and labels is None:
+            raise ValueError("labels are required for an authorized L_s update")
+        canonical = self.canonical_excitation(received_iq)
+        branches = self.branch_bank(
+            canonical.canonical_iq,
+            canonical.s_hat,
+            raw_embedding=raw_embedding,
+            hom_embedding=hom_embedding,
+            pa_embedding=pa_embedding,
+            content_confidence=canonical.content_confidence,
+            valid_mask=canonical.valid_mask,
+        )
+        embeddings = {name: branches[name].embedding for name in self.branch_names}
+        if update_discriminability:
+            self.evidence_state.update_discriminability(embeddings, labels)
+        identifiability = torch.stack(
+            [branches[name].identifiability for name in self.branch_names], dim=-1
+        )
+        stability = torch.stack(
+            [branches[name].stability for name in self.branch_names], dim=-1
+        )
+        uncertainty = torch.stack(
+            [branches[name].uncertainty for name in self.branch_names], dim=-1
+        )
+        evidence = self.evidence_state.compose(
+            identifiability=identifiability,
+            stability=stability,
+            uncertainty=uncertainty,
+        )
+        correction_context = torch.stack(
+            [evidence["I"], evidence["D"], evidence["S"], evidence["U"]],
+            dim=-1,
+        )
+        gate = self.sample_gate(
+            evidence, correction_context=correction_context
+        )
+        fused, fusion_diagnostics = self.fusion(embeddings, gate["weights"])
+        branch_logits = {
+            name: self.branch_heads[name](embeddings[name], labels=labels)
+            for name in self.branch_names
+        }
+        return {
+            "fused": fused,
+            "branches": branches,
+            "branch_embeddings": embeddings,
+            "branch_logits": branch_logits,
+            "evidence": evidence,
+            "gate": gate,
+            "fusion_diagnostics": fusion_diagnostics,
+            "canonical": canonical,
+        }
 
 
 # ----------------------- Main model -----------------------
@@ -1045,7 +1152,14 @@ class CVSincNet(nn.Module):
                 "physical_gate_variant must be one of: none,nmfdu_v1"
             )
         self.nmfdu_gate = (
-            NMFDUFeatureGateContract(self.emb_dim)
+            NMFDUFeatureGateContract(
+                self.emb_dim,
+                num_classes=int(num_classes),
+                pa_orders=pa_orders,
+                pa_memory_depth=int(pa_memory_depth),
+                margin_s=float(margin_s),
+                margin_m=float(margin_m),
+            )
             if self.physical_gate_variant == "nmfdu_v1"
             else None
         )
@@ -1541,6 +1655,8 @@ class CVSincNet(nn.Module):
         crra_epoch: Optional[int] = None,
         update_crra_support: bool = False,
         crra_support_mask: Optional[torch.Tensor] = None,
+        update_nmfdu_support: bool = False,
+        return_physical_gate_diag: bool = False,
     ):
         x = pad_crop_iq(x, self.input_len, mode=self.pad_crop_mode)
         B = x.size(0)
@@ -1673,7 +1789,22 @@ class CVSincNet(nn.Module):
         base_in = torch.cat(base_parts, dim=1)
         base = self.fuse(base_in)
 
+        nmfdu_out = None
+        if self.nmfdu_gate is not None:
+            raw_embedding = t_emb + 0.25 * dac_local if need_time else base
+            nmfdu_out = self.nmfdu_gate(
+                x,
+                raw_embedding=raw_embedding,
+                hom_embedding=f_emb,
+                pa_embedding=pa_local,
+                labels=y,
+                update_discriminability=bool(update_nmfdu_support),
+            )
+            nmfdu_logits = self.cls_head.head(nmfdu_out["fused"], labels=y)
+
         if not return_aux:
+            if nmfdu_out is not None:
+                return nmfdu_logits
             return self.cls_head.forward_logits(
                 base,
                 dac_local=dac_local,
@@ -1695,6 +1826,48 @@ class CVSincNet(nn.Module):
             pa_delta=pa_delta,
         )
 
+        if nmfdu_out is not None:
+            logits = nmfdu_logits
+            feat_id = nmfdu_out["fused"]
+            feat_joint = nmfdu_out["fused"]
+
+        physical_gate_diag = None
+        if nmfdu_out is not None:
+            branch_outputs = nmfdu_out["branches"]
+            gate_output = nmfdu_out["gate"]
+            physical_gate_diag = {
+                "branch_names": tuple(self.nmfdu_gate.branch_names),
+                "weights_mean": gate_output["weights"].mean(dim=0),
+                "null_mean": gate_output["null_weight"].mean(),
+                "q_sample_mean": gate_output["q_sample"].mean(),
+                "entropy_mean": gate_output["entropy"].mean(),
+                "local_mask_mean": torch.stack(
+                    [
+                        branch_outputs[name].local_mask.mean()
+                        for name in self.nmfdu_gate.branch_names
+                    ]
+                ),
+                "direction_gate_mean": torch.stack(
+                    [
+                        branch_outputs[name].direction_gate.mean()
+                        for name in self.nmfdu_gate.branch_names
+                    ]
+                ),
+            }
+            if return_physical_gate_diag:
+                physical_gate_diag["per_sample"] = {
+                    "weights": gate_output["weights"],
+                    "null_weight": gate_output["null_weight"],
+                    "q_sample": gate_output["q_sample"],
+                    "entropy": gate_output["entropy"],
+                    "I": nmfdu_out["evidence"]["I"],
+                    "D": nmfdu_out["evidence"]["D"],
+                    "S": nmfdu_out["evidence"]["S"],
+                    "U": nmfdu_out["evidence"]["U"],
+                    "physical_logits": gate_output["physical_logits"],
+                    "correction": gate_output["correction"],
+                }
+
         return {
             'logits': logits,
             'dac_pred': dac_pred,
@@ -1714,6 +1887,17 @@ class CVSincNet(nn.Module):
             'pa_stats': pa_stats,
             'base': base,
             'feat_joint': feat_joint,
+            **(
+                {
+                    'physical_gate_variant': self.physical_gate_variant,
+                    'physical_gate_diag': physical_gate_diag,
+                    'nmfdu_branch_logits': nmfdu_out["branch_logits"],
+                    'nmfdu_branch_embeddings': nmfdu_out["branch_embeddings"],
+                    'nmfdu_q_sample': nmfdu_out["gate"]["q_sample"],
+                }
+                if nmfdu_out is not None
+                else {}
+            ),
             'crra_enabled': bool(self.use_crra),
             'crra_pa_bypass': True,
             'crra_correction_energy': (

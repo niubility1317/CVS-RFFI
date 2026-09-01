@@ -79,13 +79,13 @@ def effective_fisher_summary(
 ) -> Dict[str, torch.Tensor]:
     """Return nuisance-marginalized Fisher evidence via a Schur complement."""
 
-    target, normalized_weight = _weighted_jacobian(j_target, weight)
+    target, _ = _weighted_jacobian(j_target, weight)
     j_tt = target.transpose(-1, -2) @ target
     if j_nuisance is None or int(j_nuisance.shape[-1]) == 0:
         summary = _matrix_summary(j_tt, eps)
         summary["raw_matrix"] = j_tt
         return summary
-    nuisance, _ = _weighted_jacobian(j_nuisance, normalized_weight)
+    nuisance, _ = _weighted_jacobian(j_nuisance, weight)
     if nuisance.shape[:2] != target.shape[:2]:
         raise ValueError("target and nuisance jacobians must share [B,N]")
     j_tn = target.transpose(-1, -2) @ nuisance
