@@ -159,6 +159,67 @@ def test_fold18_matrix_freezes_new_split_and_target_blind_selection(tmp_path: Pa
         assert "V_select" not in joined
 
 
+def test_all_source_matrix_trains_every_source_receiver_without_holdout(tmp_path: Path) -> None:
+    from cvsrffi.phase1_baseline_fold_matrix import build_all_source_rows
+
+    rows = build_all_source_rows(
+        run_id="phase1_riei_drift_newsplit_allsource_s392002_test",
+        project_root=Path("/srv/CV-SincNet"),
+        wisig_pkl=Path("/data/ManySig.pkl"),
+        run_root=tmp_path / "runs",
+        log_root=tmp_path / "logs",
+        python_bin="python3",
+        gpu_ids=(0, 1),
+    )
+
+    assert [(row.row_id, row.method, row.fold, row.gpu) for row in rows] == [
+        ("RIEI_ALLSRC_S392002", "RIEI", None, 0),
+        ("DRIFT_ALLSRC_S392002", "DRIFT", None, 1),
+    ]
+    assert [row.method_version for row in rows] == [
+        "RIEI_C06_sum_featnorm1e4",
+        "DRIFT_N02_raw_cap4000",
+    ]
+    assert {tuple(row.train_receivers) for row in rows} == {(1, 3, 4, 6, 8)}
+    assert {tuple(row.target_receivers) for row in rows} == {(0, 2, 5, 7, 9, 10, 11)}
+
+    for row in rows:
+        joined = " ".join(row.command)
+        assert "--wisig_train_rxs 1,3,4,6,8" in joined
+        assert "--wisig_source_holdout_rxs" not in joined
+        assert "--wisig_labeled_ratio 0.07" in joined
+        assert "--wisig_unlabeled_ratio 0.63" in joined
+        assert "--wisig_source_val_ratio 0.3" in joined
+        assert "--wisig_train_days 0,1,2" in joined
+        assert "--seed 392002" in joined
+        assert "--epochs 200" in joined
+        assert "--use_concat_sat_channel_aug" in joined
+        assert "--concat_sat_ce_only" in joined
+        assert "--lambda_sat_cls 0.68" in joined
+        assert "--lambda_sat_cons 0" in joined
+        assert "--final_test_target_only" in row.command
+
+
+def test_all_source_cli_uses_two_default_gpus(tmp_path: Path, capsys) -> None:
+    from cvsrffi.phase1_baseline_fold_matrix import main
+
+    result = main(
+        [
+            "--run-id",
+            "phase1_riei_drift_newsplit_allsource_s392002_test",
+            "--project-root",
+            str(tmp_path),
+            "--wisig-pkl",
+            str(tmp_path / "ManySig.pkl"),
+            "--all-source",
+        ]
+    )
+
+    payload = json.loads(capsys.readouterr().out)
+    assert result == 0
+    assert [row["gpu"] for row in payload["rows"]] == [4, 5]
+
+
 class _OneRowDataset(Dataset):
     def __len__(self) -> int:
         return 1

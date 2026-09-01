@@ -27,7 +27,7 @@ class MatrixRow:
     row_id: str
     method: str
     method_version: str
-    fold: int
+    fold: int | None
     gpu: int
     train_receivers: tuple[int, ...]
     target_receivers: tuple[int, ...]
@@ -42,9 +42,9 @@ def _common_command(
     module: str,
     wisig_pkl: Path,
     output_dir: Path,
-    fold: int,
+    fold: int | None,
 ) -> list[str]:
-    return [
+    command = [
         str(python_bin),
         "-u",
         "-m",
@@ -72,8 +72,11 @@ def _common_command(
         "3",
         "--wisig_train_rxs",
         ",".join(map(str, SOURCE_RECEIVERS)),
-        "--wisig_source_holdout_rxs",
-        str(fold),
+    ]
+    if fold is not None:
+        command.extend(["--wisig_source_holdout_rxs", str(fold)])
+    command.extend(
+        [
         "--wisig_test_rxs",
         ",".join(map(str, TARGET_RECEIVERS)),
         "--wisig_split_strategy",
@@ -115,7 +118,9 @@ def _common_command(
         "--final_test_target_only",
         "--output_dir",
         str(output_dir),
-    ]
+        ]
+    )
+    return command
 
 
 def build_rows(
@@ -128,13 +133,65 @@ def build_rows(
     python_bin: str,
     gpu_ids: Sequence[int],
 ) -> list[MatrixRow]:
-    if len(gpu_ids) != 4:
-        raise ValueError("exactly four GPU ids are required")
+    specs: tuple[tuple[str, int | None], ...] = (
+        ("RIEI", 1),
+        ("RIEI", 8),
+        ("DRIFT", 1),
+        ("DRIFT", 8),
+    )
+    return _build_rows_from_specs(
+        specs=specs,
+        wisig_pkl=wisig_pkl,
+        run_root=run_root,
+        log_root=log_root,
+        python_bin=python_bin,
+        gpu_ids=gpu_ids,
+    )
+
+
+def build_all_source_rows(
+    *,
+    run_id: str,
+    project_root: Path,
+    wisig_pkl: Path,
+    run_root: Path,
+    log_root: Path,
+    python_bin: str,
+    gpu_ids: Sequence[int],
+) -> list[MatrixRow]:
+    return _build_rows_from_specs(
+        specs=(("RIEI", None), ("DRIFT", None)),
+        wisig_pkl=wisig_pkl,
+        run_root=run_root,
+        log_root=log_root,
+        python_bin=python_bin,
+        gpu_ids=gpu_ids,
+    )
+
+
+def _build_rows_from_specs(
+    *,
+    specs: Sequence[tuple[str, int | None]],
+    wisig_pkl: Path,
+    run_root: Path,
+    log_root: Path,
+    python_bin: str,
+    gpu_ids: Sequence[int],
+) -> list[MatrixRow]:
+    if len(gpu_ids) != len(specs):
+        raise ValueError(f"exactly {len(specs)} GPU ids are required")
     rows: list[MatrixRow] = []
-    specs = (("RIEI", 1), ("RIEI", 8), ("DRIFT", 1), ("DRIFT", 8))
     for (method, fold), gpu in zip(specs, gpu_ids):
-        train_receivers = tuple(rx for rx in SOURCE_RECEIVERS if rx != fold)
-        row_id = f"{method}_FOLD{fold}_S{SEED}"
+        train_receivers = (
+            SOURCE_RECEIVERS
+            if fold is None
+            else tuple(rx for rx in SOURCE_RECEIVERS if rx != fold)
+        )
+        row_id = (
+            f"{method}_ALLSRC_S{SEED}"
+            if fold is None
+            else f"{method}_FOLD{fold}_S{SEED}"
+        )
         output_dir = run_root / row_id
         log_file = log_root / f"{row_id}.log"
         module = "baselines.riei_fd.train" if method == "RIEI" else "baselines.drift.train"
@@ -221,10 +278,10 @@ def _write_json(path: Path, payload: object) -> None:
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
-def _parse_gpu_ids(raw: str) -> tuple[int, ...]:
+def _parse_gpu_ids(raw: str, *, expected: int = 4) -> tuple[int, ...]:
     values = tuple(int(value.strip()) for value in str(raw).split(",") if value.strip())
-    if len(values) != 4 or len(set(values)) != 4:
-        raise ValueError("--gpu-ids must contain four distinct GPU ids")
+    if len(values) != expected or len(set(values)) != expected:
+        raise ValueError(f"--gpu-ids must contain {expected} distinct GPU ids")
     return values
 
 
@@ -236,21 +293,28 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--run-root", type=Path)
     parser.add_argument("--log-root", type=Path)
     parser.add_argument("--python-bin", default=sys.executable)
-    parser.add_argument("--gpu-ids", default="4,5,6,7")
+    parser.add_argument("--gpu-ids")
+    parser.add_argument("--all-source", action="store_true")
     parser.add_argument("--execute", action="store_true")
     args = parser.parse_args(argv)
 
     project_root = args.project_root.resolve()
     run_root = (args.run_root or project_root / "runs" / args.run_id).resolve()
     log_root = (args.log_root or project_root / "logs" / args.run_id).resolve()
-    rows = build_rows(
+    default_gpu_ids = "4,5" if args.all_source else "4,5,6,7"
+    gpu_ids = _parse_gpu_ids(
+        args.gpu_ids or default_gpu_ids,
+        expected=2 if args.all_source else 4,
+    )
+    row_builder = build_all_source_rows if args.all_source else build_rows
+    rows = row_builder(
         run_id=args.run_id,
         project_root=project_root,
         wisig_pkl=args.wisig_pkl,
         run_root=run_root,
         log_root=log_root,
         python_bin=args.python_bin,
-        gpu_ids=_parse_gpu_ids(args.gpu_ids),
+        gpu_ids=gpu_ids,
     )
     payload = {
         "run_id": args.run_id,
@@ -262,6 +326,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "target_test_days": [0, 1, 2, 3],
         "checkpoint_selection": "source_V_only",
         "target_feedback": False,
+        "matrix_mode": "all_source" if args.all_source else "fold18",
         "rows": [asdict(row) for row in rows],
     }
     if not args.execute:
