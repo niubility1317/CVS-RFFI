@@ -91,6 +91,39 @@ def test_support_discriminability_updates_only_under_explicit_training_flag() ->
         model(x, y=labels, return_aux=True, update_nmfdu_support=True)
 
 
+def test_support_mask_prevents_satellite_or_unlabeled_labels_from_updating_d() -> None:
+    torch.manual_seed(721)
+    first = _small_backbone().train()
+    second = copy.deepcopy(first).train()
+    x = torch.randn(8, 2, 96)
+    support_mask = torch.tensor([True, True, True, True, False, False, False, False])
+    labels = torch.tensor([0, 0, 1, 1, 0, 0, 1, 1])
+    changed_tail = torch.tensor([0, 0, 1, 1, 2, 2, 2, 2])
+
+    torch.manual_seed(722)
+    first(
+        x,
+        y=labels,
+        return_aux=True,
+        update_nmfdu_support=True,
+        nmfdu_support_mask=support_mask,
+    )
+    torch.manual_seed(722)
+    second(
+        x,
+        y=changed_tail,
+        return_aux=True,
+        update_nmfdu_support=True,
+        nmfdu_support_mask=support_mask,
+    )
+    torch.testing.assert_close(
+        first.nmfdu_gate.evidence_state.discriminability_ema,
+        second.nmfdu_gate.evidence_state.discriminability_ema,
+        rtol=0.0,
+        atol=0.0,
+    )
+
+
 def test_labels_cannot_change_physical_evidence_without_authorized_update() -> None:
     torch.manual_seed(73)
     model = _small_backbone().eval()

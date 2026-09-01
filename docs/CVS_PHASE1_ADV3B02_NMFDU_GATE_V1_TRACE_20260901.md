@@ -6,7 +6,7 @@
 - 对应实施计划：`docs/plans/2026-09-01-adv3b02-nmfdu-gate-v1-implementation.md`
 - 基线：`ADV3B02_CORE90_SOFT_E200`，seed=`392002`，epochs=`200`，`z_id=160`
 - 新变体：`ADV3B02_NMFDU_GATE_V1_E200`
-- 当前状态：`PLAN_ONLY / NOT_IMPLEMENTED / NOT_RUN`
+- 当前状态：`IMPLEMENTED_LOCAL / REAL_CHECKPOINT_SMOKE_PENDING / NOT_RUN`
 
 `NMFDU`表示`Nuisance-Marginalized Fisher–Discriminability–Uncertainty`。该名称用于明确区分报告要求的门控与现有`id_gate`、`freq_gate`等普通学习门。
 
@@ -66,3 +66,4 @@
 - 2026-09-01，任务3：`VERIFIED_LOCAL`。新增共享`NuisanceEstimator→AnalyticCanonicalizer→ContentExcitationEstimator`接口；仅解析处理标量增益、公共相位、CFO和粗时移，默认截断送入门控的`ŝ`与置信度梯度，零信息输入回退为高不确定度，并提供physical sample去重。参考辅助合成测试恢复gain/phase/CFO/shift且规范化NMSE小于`1e-5`；API不接收TX/query标签。验证命令：`python -m pytest -q code/tests/test_canonical_excitation.py code/tests/test_identifiability_stats.py`，结果`11 passed`。NMFDU-03仍保持`PENDING`，直到`ŝ`进入实际IQ/PA门控路径。
 - 2026-09-01，任务4–6：`VERIFIED_CORE_LOCAL`。新增固定顺序`raw/hom/phase/pa/hos`五分支证据库、checkpoint可恢复且可冻结的源域判别性EMA、`I/D/S/U`合成、有界且截断上下文梯度的学习校正、显式`g_null`和归一化五分支融合。验证覆盖幅度丰富激励相对恒包络提高PA可辨识性、cycle slip及分段失稳提高phase/HOS不确定度、类别编号置换不改变判别性、冻结状态不自强化、非有限证据安全回退、无有效证据时空路由占主导、可靠分支胜出、物理-only校正严格为零及投影范数均衡。验证命令：`python -m pytest -q code/tests/test_fisher_branches.py code/tests/test_gate_evidence.py code/tests/test_fisher_gate.py`，结果`10 passed`。这些条目只表示门控核心局部成立；NMFDU-01及NMFDU-03至NMFDU-16仍保持`PENDING`，直到核心接入`CVSincNet`身份路径并通过端到端测试。
 - 2026-09-01，任务7局部接入：`VERIFIED_INTEGRATION_LOCAL`。NMFDU现已接入`CVSincNet`身份融合点并仅由双骨干模型的身份骨干启用；raw/hom/phase/PA/HOS先经过局部覆盖和参数方向门，再进入`I/D/S/U→g_null+五分支→160维归一化融合`。IQ镜像与PA非线性目标Jacobian显式对增益、公共相位和线性时间趋势执行Schur边缘化；物理证据不接收标签，`D_b`仅在训练模式且显式`update_nmfdu_support`时更新。新路径输出结构化门控摘要，可选逐样本诊断，新checkpoint可`strict=True`恢复；legacy路径未增加模块、state key或forward字段。验证命令：`python -m pytest -q code/tests/test_adv3b02_nmfdu_integration.py code/tests/test_adv3b02_nmfdu_legacy_contract.py`，结果`9 passed`。真实Core90 checkpoint无query smoke和正式训练恢复尚未执行，因此任务7及对应追踪条目仍保持`PENDING`。
+- 2026-09-01，任务8训练接入：`VERIFIED_TRAINING_LOCAL`。训练器已按E1–80、E81–120、E121–200实施分支预训练、冻结分支训练样本门和低学习率联合微调；使用稳定优化器参数组跨阶段保留AdamW状态，`training_stage`、`D_b`EMA及冻结状态均随checkpoint恢复。第一阶段固定五分支等权且关闭`g_null`竞争；第二、三阶段使用分类margin oracle、物理先验、空路由校准、使用率平衡；第三阶段仅对成对clean–LEO样本施加融合特征一致性和双方可靠分支交集一致性。`D_b`更新显式限制在第一阶段的清洁`L_s`掩码；`U_s`伪标签置信度和损失乘截断梯度的`Q_sample`，NMFDU路径不读取`U_s`真值统计。验证命令：`python -m py_compile code/SSDG/train_ssdg.py code/cvsrffi/nmfdu_training.py code/model.py code/model_dual_cvsincnet.py`以及`python -m pytest -q code/tests/test_nmfdu_training_schedule.py code/tests/test_adv3b02_nmfdu_integration.py`，结果`14 passed`。真实checkpoint无query smoke尚未执行，因此NMFDU-17至NMFDU-19仍保持`PENDING`。

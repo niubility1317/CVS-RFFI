@@ -124,6 +124,13 @@ try:
         unlabeled_known_acceptance_quarantine_loss,
         zid_compactness_loss,
     )
+    from cvsrffi.nmfdu_training import (
+        NMFDUStageController,
+        apply_nmfdu_optimizer_lr,
+        nmfdu_labeled_objective,
+        nmfdu_optimizer_groups,
+        quality_weighted_mean,
+    )
     from cvsrffi.leakage_probe import frozen_ridge_linear_probe
     from cvsrffi.phase2_prototypes import (
         Phase1CalibrationError,
@@ -1024,6 +1031,19 @@ def build_arg_parser() -> argparse.ArgumentParser:
         default="none",
         choices=["none", "nmfdu_v1"],
     )
+    parser.add_argument("--nmfdu_stage1_end", type=int, default=80)
+    parser.add_argument("--nmfdu_stage2_end", type=int, default=120)
+    parser.add_argument("--nmfdu_stage3_end", type=int, default=200)
+    parser.add_argument("--nmfdu_gate_lr_scale", type=float, default=0.5)
+    parser.add_argument("--nmfdu_joint_backbone_lr_scale", type=float, default=0.1)
+    parser.add_argument("--lambda_nmfdu_branch_aux", type=float, default=0.2)
+    parser.add_argument("--lambda_nmfdu_route", type=float, default=0.1)
+    parser.add_argument("--lambda_nmfdu_phys", type=float, default=0.1)
+    parser.add_argument("--lambda_nmfdu_fused_pair", type=float, default=0.2)
+    parser.add_argument("--lambda_nmfdu_branch_pair", type=float, default=0.1)
+    parser.add_argument("--lambda_nmfdu_null_cal", type=float, default=0.05)
+    parser.add_argument("--lambda_nmfdu_balance", type=float, default=0.01)
+    parser.add_argument("--nmfdu_oracle_temperature", type=float, default=0.5)
     parser.add_argument(
         "--representation_mode",
         type=str,
@@ -7544,11 +7564,32 @@ def train(args) -> int:
         )
     rc4_anomaly_path = out_dir / "first_rc4_anomaly.pt"
     rc4_anomaly_written = False
-    optimizer_parameters = (
-        _fasttrust_optimizer_groups(model, muse_state)
-        if _fasttrust_lr_enabled(args)
-        else _optimizer_parameters(model, muse_state)
-    )
+    nmfdu_enabled = str(getattr(args, "physical_gate_variant", "none")) == "nmfdu_v1"
+    nmfdu_controller = None
+    if nmfdu_enabled:
+        nmfdu_controller = NMFDUStageController(
+            boundaries=(
+                int(args.nmfdu_stage1_end),
+                int(args.nmfdu_stage2_end),
+                int(args.nmfdu_stage3_end),
+            )
+        )
+        if int(args.epochs) != int(args.nmfdu_stage3_end):
+            raise ValueError("NMFDU stage3 boundary must equal the configured epochs")
+        nmfdu_all_parameters = list(model.parameters())
+        if muse_state is not None:
+            nmfdu_all_parameters.extend(muse_state["heads"].parameters())
+        optimizer_parameters = nmfdu_optimizer_groups(
+            model,
+            nmfdu_all_parameters,
+            base_lr=float(args.lr),
+        )
+    else:
+        optimizer_parameters = (
+            _fasttrust_optimizer_groups(model, muse_state)
+            if _fasttrust_lr_enabled(args)
+            else _optimizer_parameters(model, muse_state)
+        )
     optimizer = torch.optim.AdamW(
         optimizer_parameters,
         lr=float(args.lr),
@@ -7877,6 +7918,23 @@ def train(args) -> int:
             torch.cuda.reset_peak_memory_stats(device)
         if _fasttrust_lr_enabled(args):
             _apply_fasttrust_lr(optimizer, base_lr=float(args.lr), epoch=int(epoch))
+        nmfdu_stage = None
+        if nmfdu_controller is not None:
+            nmfdu_stage = nmfdu_controller.apply(model, int(epoch))
+            if ema_model is not None:
+                ema_nmfdu_backbone = (
+                    ema_model.id_backbone
+                    if hasattr(ema_model, "id_backbone")
+                    else ema_model
+                )
+                ema_nmfdu_backbone.set_nmfdu_stage(nmfdu_stage.index)
+            apply_nmfdu_optimizer_lr(
+                optimizer,
+                stage=nmfdu_stage.index,
+                base_lr=float(args.lr),
+                gate_lr_scale=float(args.nmfdu_gate_lr_scale),
+                joint_backbone_lr_scale=float(args.nmfdu_joint_backbone_lr_scale),
+            )
         if muse_state is not None:
             _configure_muse_epoch_state(muse_state, int(epoch))
             if bool(muse_state.get("fasttrust_rc4", False)):
@@ -8042,7 +8100,52 @@ def train(args) -> int:
                         and concat_sat_clean_bsz > 0
                         else None
                     ),
+                    update_nmfdu_support=bool(
+                        nmfdu_stage is not None and nmfdu_stage.index == 1
+                    ),
+                    nmfdu_support_mask=(
+                        torch.arange(x_l_main.size(0), device=x_l_main.device)
+                        < int(labeled_clean_count)
+                        if nmfdu_stage is not None
+                        and int(x_l_main.size(0)) != int(labeled_clean_count)
+                        else None
+                    ),
+                    return_physical_gate_diag=bool(nmfdu_stage is not None),
                 )
+                nmfdu_zero = out_l["tx_logits"].sum() * 0.0
+                nmfdu_losses = {
+                    "total": nmfdu_zero,
+                    "branch_aux": nmfdu_zero,
+                    "route": nmfdu_zero,
+                    "phys": nmfdu_zero,
+                    "fused_pair": nmfdu_zero,
+                    "branch_pair": nmfdu_zero,
+                    "null_cal": nmfdu_zero,
+                    "balance": nmfdu_zero,
+                    "q_sample_mean": nmfdu_zero.detach(),
+                    "null_mean": nmfdu_zero.detach(),
+                    "entropy_mean": nmfdu_zero.detach(),
+                }
+                if nmfdu_stage is not None:
+                    nmfdu_losses = nmfdu_labeled_objective(
+                        out_l["aux_id"],
+                        y_l,
+                        stage=nmfdu_stage.index,
+                        clean_count=(
+                            int(concat_sat_clean_bsz)
+                            if concat_sat_full_batch
+                            and float(concat_sat_info.get("applied", 0.0)) > 0.0
+                            else 0
+                        ),
+                        lambda_branch_aux=float(args.lambda_nmfdu_branch_aux),
+                        lambda_route=float(args.lambda_nmfdu_route),
+                        lambda_phys=float(args.lambda_nmfdu_phys),
+                        lambda_fused_pair=float(args.lambda_nmfdu_fused_pair),
+                        lambda_branch_pair=float(args.lambda_nmfdu_branch_pair),
+                        lambda_null_cal=float(args.lambda_nmfdu_null_cal),
+                        lambda_balance=float(args.lambda_nmfdu_balance),
+                        oracle_temperature=float(args.nmfdu_oracle_temperature),
+                    )
                 domain_stats = {"valid": (d_l >= 0) if d_l is not None else None}
                 domain_gates = {
                     "dom": d_l is not None and "dom_logits" in out_l and cur_w["dom"] > 0.0,
@@ -9105,6 +9208,12 @@ def train(args) -> int:
                     + (float(args.lambda_teacher_clean_kl) * teacher_scale) * sanitize_loss("teacher_clean_kl", loss_teacher_clean_kl_l, z_id_l, loss_warn_counts)
                     + (float(args.lambda_teacher_sat_kl) * teacher_scale) * sanitize_loss("teacher_sat_kl", loss_teacher_sat_kl_l, z_id_l, loss_warn_counts)
                     + (float(args.lambda_teacher_zid_mse) * teacher_scale) * sanitize_loss("teacher_zid_mse", loss_teacher_zid_mse_l, z_id_l, loss_warn_counts)
+                    + sanitize_loss(
+                        "nmfdu_labeled",
+                        nmfdu_losses["total"],
+                        z_id_l,
+                        loss_warn_counts,
+                    )
                 )
                 loss_open_invariant_l = (
                     sanitize_loss("ssdg_zid_domain_invariance", loss_zid_invariance_l, z_id_l, loss_warn_counts)
@@ -9122,6 +9231,7 @@ def train(args) -> int:
                 )
                 loss_open_l = loss_open_invariant_l + loss_open_boundary_l + loss_open_source_l
                 loss_l = loss_closed_l + loss_open_l
+                nmfdu_u_quality_mean = z_id_l.sum().detach() * 0.0
                 if muse_state is not None:
                     if muse_unlabeled_batch is None:
                         raise RuntimeError("MUSE epoch pair is missing its U_s batch")
@@ -9496,7 +9606,19 @@ def train(args) -> int:
                     pseudo_truth_available = 0.0
                     pseudo = muse_losses["pseudo"]
                     zero_u = out_s["tx_logits"].sum() * 0.0
-                    loss_u = muse_losses["total"]
+                    nmfdu_u_quality = out_s.get("aux_id", out_s).get(
+                        "nmfdu_q_sample", None
+                    )
+                    if torch.is_tensor(nmfdu_u_quality):
+                        nmfdu_u_quality = nmfdu_u_quality.detach().clamp(0.0, 1.0)
+                        nmfdu_u_quality_mean = (
+                            nmfdu_u_quality[mask].mean()
+                            if bool(mask.any())
+                            else nmfdu_u_quality.mean()
+                        )
+                    else:
+                        nmfdu_u_quality_mean = zero_u.detach().new_tensor(1.0)
+                    loss_u = muse_losses["total"] * nmfdu_u_quality_mean
                     loss_ent = zero_u
                     loss_u_domain = zero_u
                     loss_u_adv = zero_u
@@ -9527,7 +9649,14 @@ def train(args) -> int:
                         "channel_loss": 0.0,
                     }
                     reliable_ratio = mask.float().mean()
-                    pseudo_conf = muse_losses["reliability"].mean()
+                    pseudo_conf = (
+                        muse_losses["reliability"]
+                        * (
+                            nmfdu_u_quality
+                            if torch.is_tensor(nmfdu_u_quality)
+                            else torch.ones_like(muse_losses["reliability"])
+                        )
+                    ).mean()
                     domain_mask = (
                         (d_u >= 0)
                         if torch.is_tensor(d_u)
@@ -9559,6 +9688,11 @@ def train(args) -> int:
                             model.train()
                         prob_w = out_w["tx_logits"].softmax(dim=1)
                         conf, pseudo = prob_w.max(dim=1)
+                        nmfdu_weak_quality = out_w.get("aux_id", out_w).get(
+                            "nmfdu_q_sample", None
+                        )
+                        if torch.is_tensor(nmfdu_weak_quality):
+                            conf = conf * nmfdu_weak_quality.detach().clamp(0.0, 1.0)
                         conf_mask = _threshold_mask(conf, d_u, args)
                         if bool(args.pseudo_domain_gate):
                             if d_u is None or "dom_logits" not in out_w:
@@ -9592,10 +9726,33 @@ def train(args) -> int:
                     mask = base_mask & strong_mask
                     pseudo_total = int(pseudo.numel())
                     pseudo_selected = int(mask.sum().detach().item())
-                    pseudo_correct = int(((pseudo == y_u) & mask).sum().detach().item())
-                    pseudo_truth_available = 1.0
+                    if nmfdu_enabled:
+                        pseudo_correct = 0
+                        pseudo_truth_available = 0.0
+                    else:
+                        pseudo_correct = int(
+                            ((pseudo == y_u) & mask).sum().detach().item()
+                        )
+                        pseudo_truth_available = 1.0
                     if bool(mask.any()):
-                        loss_u = F.cross_entropy(out_s["tx_logits"][mask], pseudo[mask])
+                        nmfdu_strong_quality = out_s.get("aux_id", out_s).get(
+                            "nmfdu_q_sample", None
+                        )
+                        if torch.is_tensor(nmfdu_strong_quality):
+                            selected_quality = nmfdu_strong_quality[mask].detach()
+                            nmfdu_u_quality_mean = selected_quality.mean()
+                            loss_u = quality_weighted_mean(
+                                F.cross_entropy(
+                                    out_s["tx_logits"][mask],
+                                    pseudo[mask],
+                                    reduction="none",
+                                ),
+                                selected_quality,
+                            )
+                        else:
+                            loss_u = F.cross_entropy(
+                                out_s["tx_logits"][mask], pseudo[mask]
+                            )
                     else:
                         loss_u = out_s["tx_logits"].sum() * 0.0
                     prob_s = out_s["tx_logits"].softmax(dim=1)
@@ -9861,23 +10018,61 @@ def train(args) -> int:
                             loss_u_sat_cons = zero_u
                     if bool(getattr(args, "u_geometry_all_valid_queries", False)):
                         if bool(routed_pseudo_mask.any()):
-                            loss_u = F.cross_entropy(
-                                out_s["tx_logits"][routed_pseudo_mask], pseudo[routed_pseudo_mask]
+                            routed_quality = out_s.get("aux_id", out_s).get(
+                                "nmfdu_q_sample", None
                             )
+                            if torch.is_tensor(routed_quality):
+                                selected_routed_quality = routed_quality[
+                                    routed_pseudo_mask
+                                ].detach()
+                                nmfdu_u_quality_mean = selected_routed_quality.mean()
+                                loss_u = quality_weighted_mean(
+                                    F.cross_entropy(
+                                        out_s["tx_logits"][routed_pseudo_mask],
+                                        pseudo[routed_pseudo_mask],
+                                        reduction="none",
+                                    ),
+                                    selected_routed_quality,
+                                )
+                            else:
+                                loss_u = F.cross_entropy(
+                                    out_s["tx_logits"][routed_pseudo_mask],
+                                    pseudo[routed_pseudo_mask],
+                                )
                             if out_u_sat is not None:
+                                satellite_routed_quality = out_u_sat.get(
+                                    "aux_id", out_u_sat
+                                ).get("nmfdu_q_sample", None)
+                                satellite_loss = F.cross_entropy(
+                                    out_u_sat["tx_logits"][routed_pseudo_mask],
+                                    pseudo[routed_pseudo_mask],
+                                    reduction=(
+                                        "none"
+                                        if torch.is_tensor(satellite_routed_quality)
+                                        else "mean"
+                                    ),
+                                )
+                                if torch.is_tensor(satellite_routed_quality):
+                                    satellite_loss = quality_weighted_mean(
+                                        satellite_loss,
+                                        satellite_routed_quality[
+                                            routed_pseudo_mask
+                                        ].detach(),
+                                    )
                                 loss_u = 0.5 * (
                                     loss_u
-                                    + F.cross_entropy(
-                                        out_u_sat["tx_logits"][routed_pseudo_mask],
-                                        pseudo[routed_pseudo_mask],
-                                    )
+                                    + satellite_loss
                                 )
                         else:
                             loss_u = out_s["tx_logits"].sum() * 0.0
                         pseudo_selected = int(routed_pseudo_mask.sum().detach().item())
-                        pseudo_correct = int(
-                            ((pseudo == y_u) & routed_pseudo_mask).sum().detach().item()
-                        )
+                        if not nmfdu_enabled:
+                            pseudo_correct = int(
+                                ((pseudo == y_u) & routed_pseudo_mask)
+                                .sum()
+                                .detach()
+                                .item()
+                            )
                         mask = routed_pseudo_mask
                         loss_ent = (
                             entropy_per_sample[u_geometry_core_mask].mean()
@@ -10644,6 +10839,19 @@ def train(args) -> int:
                     "train/concat_sat_view_prob": float(concat_sat_info.get("view_prob", 0.0)),
                     "train/concat_sat_stage_start_epoch": float(concat_sat_info.get("stage_start_epoch", float("nan"))),
                     "train/concat_sat_stage_index": float(concat_sat_info.get("stage_index", float("nan"))),
+                    "nmfdu/stage": float(nmfdu_stage.index) if nmfdu_stage is not None else 0.0,
+                    "nmfdu/loss_total": nmfdu_losses["total"].detach(),
+                    "nmfdu/loss_branch_aux": nmfdu_losses["branch_aux"].detach(),
+                    "nmfdu/loss_route": nmfdu_losses["route"].detach(),
+                    "nmfdu/loss_phys": nmfdu_losses["phys"].detach(),
+                    "nmfdu/loss_fused_pair": nmfdu_losses["fused_pair"].detach(),
+                    "nmfdu/loss_branch_pair": nmfdu_losses["branch_pair"].detach(),
+                    "nmfdu/loss_null_cal": nmfdu_losses["null_cal"].detach(),
+                    "nmfdu/loss_balance": nmfdu_losses["balance"].detach(),
+                    "nmfdu/q_labeled_mean": nmfdu_losses["q_sample_mean"],
+                    "nmfdu/null_mean": nmfdu_losses["null_mean"],
+                    "nmfdu/entropy_mean": nmfdu_losses["entropy_mean"],
+                    "nmfdu/q_unlabeled_mean": nmfdu_u_quality_mean,
                     "train/loss_unlabeled": loss_u.detach(),
                     "train/loss_u_domain": loss_u_domain.detach(),
                     "train/loss_u_adv": loss_u_adv.detach(),

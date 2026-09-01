@@ -956,6 +956,13 @@ class NMFDUFeatureGateContract(nn.Module):
                 for name in self.branch_names
             }
         )
+        self.register_buffer("training_stage", torch.ones((), dtype=torch.long))
+
+    def set_stage(self, stage: int) -> None:
+        stage = int(stage)
+        if stage not in (1, 2, 3):
+            raise ValueError("NMFDU training stage must be 1, 2 or 3")
+        self.training_stage.fill_(stage)
 
     def forward(
         self,
@@ -966,6 +973,7 @@ class NMFDUFeatureGateContract(nn.Module):
         pa_embedding: torch.Tensor,
         labels: Optional[torch.Tensor] = None,
         update_discriminability: bool = False,
+        support_mask: Optional[torch.Tensor] = None,
     ):
         if update_discriminability and not self.training:
             raise RuntimeError("NMFDU discriminability updates require training mode")
@@ -983,7 +991,22 @@ class NMFDUFeatureGateContract(nn.Module):
         )
         embeddings = {name: branches[name].embedding for name in self.branch_names}
         if update_discriminability:
-            self.evidence_state.update_discriminability(embeddings, labels)
+            support_embeddings = embeddings
+            support_labels = labels
+            if support_mask is not None:
+                support_mask = support_mask.to(device=labels.device, dtype=torch.bool)
+                if support_mask.shape != labels.shape:
+                    raise ValueError("NMFDU support_mask must match labels")
+                support_embeddings = {
+                    name: embedding[support_mask]
+                    for name, embedding in embeddings.items()
+                }
+                support_labels = labels[support_mask]
+                if support_labels.numel() == 0:
+                    raise ValueError("NMFDU support_mask selected no labelled samples")
+            self.evidence_state.update_discriminability(
+                support_embeddings, support_labels
+            )
         identifiability = torch.stack(
             [branches[name].identifiability for name in self.branch_names], dim=-1
         )
@@ -1005,6 +1028,22 @@ class NMFDUFeatureGateContract(nn.Module):
         gate = self.sample_gate(
             evidence, correction_context=correction_context
         )
+        if int(self.training_stage.item()) == 1:
+            batch = identifiability.size(0)
+            equal_weights = identifiability.new_full(
+                (batch, len(self.branch_names)), 1.0 / len(self.branch_names)
+            )
+            gate = {
+                **gate,
+                "weights": equal_weights,
+                "null_weight": identifiability.new_zeros((batch,)),
+                "q_sample": identifiability.new_ones((batch,)),
+                "correction": torch.zeros_like(gate["correction"]),
+                "entropy": identifiability.new_full(
+                    (batch,), float(np.log(len(self.branch_names)))
+                ),
+                "branch_usage": equal_weights.mean(dim=0),
+            }
         fused, fusion_diagnostics = self.fusion(embeddings, gate["weights"])
         branch_logits = {
             name: self.branch_heads[name](embeddings[name], labels=labels)
@@ -1384,6 +1423,13 @@ class CVSincNet(nn.Module):
     def set_crra_epoch(self, epoch: int) -> None:
         self.crra_epoch = max(1, int(epoch))
 
+    def set_nmfdu_stage(self, stage: int) -> None:
+        if self.nmfdu_gate is None:
+            if int(stage) != 1:
+                raise ValueError("cannot set an NMFDU stage when the gate is disabled")
+            return
+        self.nmfdu_gate.set_stage(stage)
+
     @staticmethod
     def _parse_branch_ablation(branch_ablation: str):
         raw = str(branch_ablation or "none").lower().replace(";", ",").replace("+", ",")
@@ -1656,6 +1702,7 @@ class CVSincNet(nn.Module):
         update_crra_support: bool = False,
         crra_support_mask: Optional[torch.Tensor] = None,
         update_nmfdu_support: bool = False,
+        nmfdu_support_mask: Optional[torch.Tensor] = None,
         return_physical_gate_diag: bool = False,
     ):
         x = pad_crop_iq(x, self.input_len, mode=self.pad_crop_mode)
@@ -1799,6 +1846,7 @@ class CVSincNet(nn.Module):
                 pa_embedding=pa_local,
                 labels=y,
                 update_discriminability=bool(update_nmfdu_support),
+                support_mask=nmfdu_support_mask,
             )
             nmfdu_logits = self.cls_head.head(nmfdu_out["fused"], labels=y)
 

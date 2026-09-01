@@ -17,6 +17,23 @@
     120,
     200
   ],
+  "training_schedule": {
+    "stage1": "branch_pretraining_equal_non_null",
+    "stage2": "gate_training_frozen_branches",
+    "stage3": "joint_finetuning",
+    "gate_lr_scale": 0.5,
+    "joint_backbone_lr_scale": 0.1
+  },
+  "loss_weights": {
+    "lambda_nmfdu_branch_aux": 0.2,
+    "lambda_nmfdu_route": 0.1,
+    "lambda_nmfdu_phys": 0.1,
+    "lambda_nmfdu_fused_pair": 0.2,
+    "lambda_nmfdu_branch_pair": 0.1,
+    "lambda_nmfdu_null_cal": 0.05,
+    "lambda_nmfdu_balance": 0.01,
+    "nmfdu_oracle_temperature": 0.5
+  },
   "source_split": {
     "L_s": 0.07,
     "U_s": 0.63,
@@ -25,6 +42,7 @@
   "concat_sat_ce_only": true,
   "lambda_sat_cls": 0.68,
   "lambda_sat_cons": 0.0,
+  "unlabeled_quality_weight": "Q_sample_detached",
   "eval_scenarios": [
     "clean",
     "leo_clear_weak",

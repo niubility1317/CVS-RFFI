@@ -78,6 +78,7 @@ def backbone_forward_compat(
     update_crra_support: bool = False,
     crra_support_mask: Optional[torch.Tensor] = None,
     update_nmfdu_support: bool = False,
+    nmfdu_support_mask: Optional[torch.Tensor] = None,
     return_physical_gate_diag: bool = False,
 ):
     try:
@@ -90,6 +91,7 @@ def backbone_forward_compat(
             update_crra_support=update_crra_support,
             crra_support_mask=crra_support_mask,
             update_nmfdu_support=update_nmfdu_support,
+            nmfdu_support_mask=nmfdu_support_mask,
             return_physical_gate_diag=return_physical_gate_diag,
         )
     except TypeError:
@@ -852,6 +854,7 @@ class DualCVSincNetDisentangle(nn.Module):
         crra_support_mask: Optional[torch.Tensor] = None,
         sat_anchor_detach_backbone: bool = False,
         update_nmfdu_support: bool = False,
+        nmfdu_support_mask: Optional[torch.Tensor] = None,
         return_physical_gate_diag: bool = False,
     ):
         if self.representation_mode == "single_parameter_matched":
@@ -865,6 +868,7 @@ class DualCVSincNetDisentangle(nn.Module):
                 update_crra_support=update_crra_support,
                 crra_support_mask=crra_support_mask,
                 update_nmfdu_support=update_nmfdu_support,
+                nmfdu_support_mask=nmfdu_support_mask,
                 return_physical_gate_diag=return_physical_gate_diag,
             )
             base_logits = aux_id["logits"]
@@ -923,6 +927,7 @@ class DualCVSincNetDisentangle(nn.Module):
                 update_crra_support=update_crra_support,
                 crra_support_mask=crra_support_mask,
                 update_nmfdu_support=update_nmfdu_support,
+                nmfdu_support_mask=nmfdu_support_mask,
                 return_physical_gate_diag=return_physical_gate_diag,
             )
 
@@ -936,6 +941,7 @@ class DualCVSincNetDisentangle(nn.Module):
             update_crra_support=update_crra_support,
             crra_support_mask=crra_support_mask,
             update_nmfdu_support=update_nmfdu_support,
+            nmfdu_support_mask=nmfdu_support_mask,
             return_physical_gate_diag=return_physical_gate_diag,
         )
         aux_dom = backbone_forward_compat(
@@ -948,6 +954,7 @@ class DualCVSincNetDisentangle(nn.Module):
             update_crra_support=False,
             crra_support_mask=None,
             update_nmfdu_support=False,
+            nmfdu_support_mask=None,
             return_physical_gate_diag=False,
         )
 
