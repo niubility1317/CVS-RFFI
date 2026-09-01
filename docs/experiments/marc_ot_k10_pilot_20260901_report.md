@@ -3,8 +3,8 @@
 ## 状态与冻结范围
 
 - 新不可覆盖run ID：`marc_ot_k10_target5_r0r1r2r4r6r8_20260901_r1`。2026-09-01再次检查本地`automation_reports/CV-SincNet/<run-id>`、根目录`runs/<run-id>`、worktree`runs/<run-id>`及`docs/experiments/<run-id>_report.md`四个run-specific冲突路径，均为`ABSENT`。
-- 冻结代码commit：`cba32b2bfb59e3a0e26979f4b1237452ab0839e3`。
-- 当前状态：`LOCAL_VERIFIED / FINAL_P0P1_REVIEW_PENDING / N607_NOT_RUN`。最终独立P0/P1审查、真实Phase1 MARC-OT bundle、N607 preflight/release/compile、真实checkpoint无query smoke、pilot和评分均待主Agent执行；`pilot_executed=false`，不得推导训练覆盖或性能结论。
+- 冻结代码commit：`12a6379823776b8ce5e8d3c6d3313f618f878fc4`。
+- 当前状态：`LOCAL_VERIFIED / FINAL_P0P1_REVIEW_APPROVED / N607_NOT_RUN`。最终独立P0/P1审查及唯一一次定点复审均已通过；真实Phase1 MARC-OT bundle、N607 preflight/release/compile、真实checkpoint无query smoke、pilot和评分仍待执行；`pilot_executed=false`，不得推导训练覆盖或性能结论。
 - 冻结矩阵：`R0/R1/R2/R4/R6/R8`；Target5 pilot outer=`rx_3_19__seed_713102__k_10__new_5`；K=`10`；场景=`leo_clear_weak,leo_low_elev_weak,leo_rain_weak`。
 
 ## Environment、CWD与GPU
