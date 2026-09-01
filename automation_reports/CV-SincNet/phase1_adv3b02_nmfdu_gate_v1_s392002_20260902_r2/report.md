@@ -13,3 +13,13 @@
 - GPU：预登记M1/M2/M3/M4依次使用GPU4/5/6/7；启动前preflight确认，且每GPU训练进程不超过2个
 - 停止规则：仅在数据/query越权、错误split/receiver/seed/场景、输出覆盖、错误checkout、进程归属不清、无prediction闭合或同一确定性系统异常导致合法产物无法产生时停止；低性能不停止
 - 预期artifact：每个训练row的最终checkpoint、训练日志、clean及`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`分场景评估、门控诊断与prediction；M0保存同协议评估结果
+
+## r2发布状态
+
+- release提交：`d716c735ddad657be2d2cd2e6e587397ebcb0132`
+- release归档：`E:\type10-7\local_artifacts\releases\adv3b02_nmfdu_gate_v1_d716c735.tar.gz`→`/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate_v1_d716c735.tar.gz`
+- release根：`/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate_v1_d716c735`
+- 归档SHA对照：本地与远端均为`2249f2c72cfbd9505ff74c35e9db5ce18b08e2dead55ecb11d5d26dfacd268c7`
+- N607验证：原生`bash -n`、远端Python编译和M4 dry-run通过；dry-run读回`source_val_sat_hmean/false/final_only`
+- 真实checkpoint无query smoke：`PASS`；严格加载、52个NMFDU新state、23组非零梯度，query/Phase2访问均为`false`
+- 当前资源：GPU4–6各有2个MARC-OT进程，GPU7有1个；未启动r2，等待满足每GPU最多2个进程的资源边界
