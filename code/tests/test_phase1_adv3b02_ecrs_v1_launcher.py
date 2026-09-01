@@ -44,6 +44,8 @@ def test_launcher_dry_run_freezes_report_v1_contract() -> None:
     assert "--init_checkpoint" not in baseline_cmd
     assert output.count("--init_checkpoint") == 8
     assert "ADV3B02_ECRS_R0/best.pth" in output
+    assert "max_gpu_train_processes=2" in output
+    assert "baseline_gpu=4" in output
     for token in (
         "--model_variant lite_d",
         "--branch_ablation no_dac",

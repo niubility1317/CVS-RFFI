@@ -10,6 +10,8 @@ WISIG_PKL="${WISIG_PKL:-${ROOT}/Dataset_WigSig/ManySig.pkl}"
 BASE_CHECKPOINT="${RUNS_ROOT}/ADV3B02_ECRS_R0/best.pth"
 DRY_RUN="${DRY_RUN:-0}"
 ONLY_CANDIDATES="${ONLY_CANDIDATES:-}"
+MAX_GPU_TRAIN_PROCS="${MAX_GPU_TRAIN_PROCS:-2}"
+GPU_SLOT_POLL_SECONDS="${GPU_SLOT_POLL_SECONDS:-30}"
 
 for arg in "$@"; do
   case "${arg}" in
@@ -34,6 +36,20 @@ esac
 candidate_enabled() {
   local candidate="$1"
   [[ -z "${ONLY_CANDIDATES}" || ",${ONLY_CANDIDATES}," == *",${candidate},"* ]]
+}
+
+wait_for_gpu_slot() {
+  local gpu="$1" candidate="$2" active
+  while true; do
+    active="$(nvidia-smi -i "${gpu}" --query-compute-apps=pid --format=csv,noheader,nounits 2>/dev/null | sed '/^[[:space:]]*$/d' | wc -l)"
+    active="${active//[[:space:]]/}"
+    if [[ "${active}" -lt "${MAX_GPU_TRAIN_PROCS}" ]]; then
+      echo "[ECRS-V1-GPU-SLOT] id=${candidate} gpu=${gpu} active_before=${active} limit=${MAX_GPU_TRAIN_PROCS}"
+      return 0
+    fi
+    echo "[ECRS-V1-GPU-WAIT] id=${candidate} gpu=${gpu} active=${active} limit=${MAX_GPU_TRAIN_PROCS} poll_s=${GPU_SLOT_POLL_SECONDS}"
+    sleep "${GPU_SLOT_POLL_SECONDS}"
+  done
 }
 
 build_common_cmd() {
@@ -103,6 +119,7 @@ launch_rung() {
     if [[ "${DRY_RUN}" == "1" ]]; then
       return 0
     fi
+    wait_for_gpu_slot "${gpu}" "${candidate}"
     if [[ -e "${out_dir}" || -e "${log_path}" ]]; then
       echo "[ERROR] immutable baseline output already exists: ${out_dir} or ${log_path}" >&2
       exit 5
@@ -142,6 +159,7 @@ launch_rung() {
   if [[ "${DRY_RUN}" == "1" ]]; then
     return 0
   fi
+  wait_for_gpu_slot "${gpu}" "${candidate}"
   if [[ -e "${out_dir}" || -e "${log_path}" ]]; then
     echo "[ERROR] immutable output already exists: ${out_dir} or ${log_path}" >&2
     exit 5
@@ -153,8 +171,9 @@ launch_rung() {
 
 echo "[ECRS-V1-DATA] dataset=ManySig path=${WISIG_PKL} equalized=1 requested_split_mode=tx_rx_day_1_7_2 protocol_split=L_s/U_s/V=0.07/0.63/0.30 seed=392005 source_rxs=1,3,4,6,8 source_days=1,2,3 source_pool=90000 L_s=6300 U_s=56700 V=27000 target_rxs=0,2,5,7,9,10,11 target_days=0,1,2,3 target_tx=0,1,2,3,4,5 target_per_scenario=168000"
 echo "[ECRS-V1-PROTOCOL] concat_sat_ce_only=1 lambda_sat_cls=0.68 lambda_sat_cons=0 schedule=1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak --eval_sat_scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
+echo "[ECRS-V1-RESOURCES] max_gpu_train_processes=${MAX_GPU_TRAIN_PROCS} slot_poll_seconds=${GPU_SLOT_POLL_SECONDS} baseline_gpu=4"
 
-launch_rung R0 0 fixed_spline 0.01
+launch_rung R0 4 fixed_spline 0.01
 if [[ "${DRY_RUN}" != "1" && ! -f "${BASE_CHECKPOINT}" ]]; then
   echo "[ERROR] exact source-only R0 checkpoint not found after baseline stage: ${BASE_CHECKPOINT}" >&2
   exit 6
