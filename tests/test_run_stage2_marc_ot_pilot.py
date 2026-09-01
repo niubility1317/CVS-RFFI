@@ -217,6 +217,154 @@ def test_real_adapt_unit_r8_builds_fold_scoped_plans_and_learning_rates(
     assert result["bank_initialization"]["block_lrs"] == [4.0e-5]
 
 
+def test_real_adapt_unit_restores_train_mode_when_late_stage_first_builds_full_plan(
+    monkeypatch,
+) -> None:
+    module = _module()
+    plan_forward_modes: list[bool] = []
+    update_modes: list[tuple[str, bool]] = []
+    plan_tokens: list[tuple[str, ...]] = []
+
+    class Backbone(torch.nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            for name in (
+                "t1",
+                "t2",
+                "t3",
+                "f1",
+                "f2",
+                "f3",
+                "time_projection",
+                "frequency_projection",
+                "fusion",
+                "identity_mapping",
+            ):
+                setattr(self, name, torch.nn.Linear(2, 2, bias=False))
+            self.norm = torch.nn.LayerNorm(2)
+
+    class ModeModel(torch.nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.id_backbone = Backbone()
+
+        def forward(self, values, return_aux=True):
+            del return_aux
+            plan_forward_modes.append(self.training)
+            features = values.float()
+            return {"tx_logits": features, "z_id": features}
+
+    model = ModeModel()
+    base_state = {
+        name: value.detach().clone() for name, value in model.state_dict().items()
+    }
+
+    class Encoder:
+        def __call__(self, _features, _labels, tokens):
+            return SimpleNamespace(tokens=tuple(tokens))
+
+    entry = SimpleNamespace(spec=SimpleNamespace(name="t1"))
+    bundle = SimpleNamespace(
+        support_encoder=Encoder(),
+        bank=SimpleNamespace(entries=(entry,)),
+    )
+
+    def fake_plan(_base, _checkpoint_id, _bank, support_state, **_kwargs):
+        tokens = tuple(support_state.tokens)
+        plan_tokens.append(tokens)
+        return SimpleNamespace(
+            state_dict={
+                name: value.detach().clone() for name, value in base_state.items()
+            },
+            block_lrs=(1.0e-5 * len(tokens),),
+            applied=True,
+            reason="APPLIED",
+            uncertainty=0.25,
+            block_gates=(1.0,),
+        )
+
+    original_train = module.train_marc_ot_arm
+
+    def stage_update(
+        current,
+        _stage,
+        trainable_names,
+        _steps,
+        duals,
+        _fit_iq,
+        _fit_labels,
+        _fit_tokens,
+        fit_scope,
+    ):
+        update_modes.append((fit_scope, current.training))
+        candidate = {
+            name: value.detach().clone() for name, value in current.state_dict().items()
+        }
+        for name in trainable_names:
+            candidate[name] = candidate[name] + 0.01
+        return candidate, {
+            name: value.detach().clone() for name, value in duals.items()
+        }
+
+    def support_evaluator(state, _duals, *_fold):
+        changed = any(
+            value.is_floating_point() and not torch.equal(value, base_state[name])
+            for name, value in state.items()
+        )
+        return {"safe": changed, "oof_ba": 1.0, "oof_floor": 1.0}
+
+    def train_with_mode_spy(*args, **kwargs):
+        return original_train(
+            *args,
+            **kwargs,
+            stage_update=stage_update,
+            support_evaluator=support_evaluator,
+        )
+
+    monkeypatch.setattr(
+        module,
+        "_load_model_and_bundle",
+        lambda _args, _config: (model, bundle, base_state),
+    )
+    monkeypatch.setattr(module, "calibrate_weight_plan", fake_plan)
+    monkeypatch.setattr(module, "train_marc_ot_arm", train_with_mode_spy)
+    monkeypatch.setattr(
+        module, "_bank_task_features", lambda _bundle, _device: torch.ones(1, 1)
+    )
+    monkeypatch.setattr(module, "_calibration_transform", lambda _bundle: None)
+    args = SimpleNamespace(device="cpu")
+    config = {
+        "checkpoint_id": "ADV3B02_CORE90_SOFT_E200",
+        "fold_count": 2,
+        "stage_steps": [1, 1, 1, 1],
+        "learning_rate_bounds": {"min": 1.0e-5, "max": 3.0e-4},
+        "ot": {"epsilon": 0.1, "iterations": 2},
+        "ratio_cap": 0.5,
+        "interpolation_grid": [1.0, 0.0],
+        "seed": 713102,
+    }
+    support = SimpleNamespace(
+        iq=np.asarray([[2.0, 0.0], [1.5, 0.0], [0.0, 2.0], [0.0, 1.5]]),
+        labels=np.asarray([0, 0, 1, 1], dtype=np.int64),
+        tokens=("a0", "a1", "b0", "b1"),
+    )
+
+    result = module._adapt_unit(args, config, support, "R8", smoke=False)
+
+    assert result["audit"]["initial_selected_alpha"] == 0.0
+    assert any(alpha > 0.0 for alpha in result["audit"]["stage_selected_alphas"])
+    assert len(plan_tokens) == 3
+    assert set(plan_tokens[0]).isdisjoint(plan_tokens[1])
+    assert set(plan_tokens[0]) | set(plan_tokens[1]) == set(support.tokens)
+    assert plan_tokens[2] == support.tokens
+    assert plan_forward_modes and all(mode is False for mode in plan_forward_modes)
+    assert update_modes and all(mode is True for _scope, mode in update_modes)
+    assert any(scope == "crossfit" for scope, _mode in update_modes)
+    assert any(scope == "full_support" for scope, _mode in update_modes)
+    assert model.training is False
+    assert all(parameter.requires_grad is False for parameter in model.parameters())
+
+
 def test_frozen_k10_config_is_complete_and_has_no_mrior_history_fields() -> None:
     payload = json.loads(CONFIG.read_text(encoding="utf-8-sig"))
     validated = validate_pilot_config(payload)

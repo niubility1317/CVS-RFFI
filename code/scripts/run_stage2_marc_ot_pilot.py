@@ -295,17 +295,21 @@ def _adapt_unit(
         key = (str(fit_scope), tuple(fit_tokens))
         if key in scoped_plans:
             return scoped_plans[key]
-        model.eval()
-        features = _identity_features(model, fit_iq)
-        support_state = bundle.support_encoder(features, fit_labels, fit_tokens)
-        plan = calibrate_weight_plan(
-            base_state,
-            str(config["checkpoint_id"]),
-            bundle.bank,
-            support_state,
-            lr_min=float(config["learning_rate_bounds"]["min"]),
-            lr_max=float(config["learning_rate_bounds"]["max"]),
-        )
+        previous_training = bool(model.training)
+        try:
+            model.eval()
+            features = _identity_features(model, fit_iq)
+            support_state = bundle.support_encoder(features, fit_labels, fit_tokens)
+            plan = calibrate_weight_plan(
+                base_state,
+                str(config["checkpoint_id"]),
+                bundle.bank,
+                support_state,
+                lr_min=float(config["learning_rate_bounds"]["min"]),
+                lr_max=float(config["learning_rate_bounds"]["max"]),
+            )
+        finally:
+            model.train(previous_training)
         if fit_scope == "full_support":
             full_support_plans.append(plan)
         scoped_plans[key] = plan
