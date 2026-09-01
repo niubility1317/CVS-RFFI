@@ -128,12 +128,23 @@ def run_smoke(args: argparse.Namespace) -> dict[str, Any]:
         device=device,
     )
     dataset = load_wisig_compact_pkl(str(wisig_path))
+    train_rxs = parse_index_csv(
+        args.train_rxs or checkpoint_args.get("wisig_train_rxs", "0")
+    )
+    train_days = parse_index_csv(
+        args.train_days or checkpoint_args.get("wisig_train_days", "0")
+    )
+    equalized = int(
+        args.equalized
+        if str(args.equalized).strip()
+        else checkpoint_args.get("wisig_equalized", 1)
+    )
     x, y, metadata = build_real_source_batch(
         dataset,
         input_len=input_len,
-        train_rxs=parse_index_csv(checkpoint_args.get("wisig_train_rxs", "0")),
-        train_days=parse_index_csv(checkpoint_args.get("wisig_train_days", "0")),
-        equalized=int(checkpoint_args.get("wisig_equalized", 1)),
+        train_rxs=train_rxs,
+        train_days=train_days,
+        equalized=equalized,
         batch_size=int(args.batch_size),
     )
     x = x.to(device)
@@ -197,6 +208,10 @@ def run_smoke(args: argparse.Namespace) -> dict[str, Any]:
         "wisig_pkl": str(wisig_path),
         "input_len": input_len,
         "rows": int(y.numel()),
+        "source_receivers": list(train_rxs),
+        "source_days": list(train_days),
+        "equalized": equalized,
+        "split_seed": int(args.split_seed),
         "source_sample_metadata": metadata,
         "query_truth_read": False,
         "phase2_support_or_query_read": False,
@@ -222,6 +237,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--output", required=True)
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--batch_size", type=int, default=2)
+    parser.add_argument("--train_rxs", default="")
+    parser.add_argument("--train_days", default="")
+    parser.add_argument("--equalized", default="")
+    parser.add_argument("--split_seed", type=int, default=-1)
     return parser
 
 

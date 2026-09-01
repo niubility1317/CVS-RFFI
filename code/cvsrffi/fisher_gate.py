@@ -73,12 +73,35 @@ class FisherDiscriminabilityUncertaintyGate(nn.Module):
         if i.dim() != 2 or i.size(-1) != self.branch_count:
             raise ValueError("gate evidence must have shape [B,branch_count]")
         evidence_mode = str(evidence_mode).lower().strip()
+        valid_modes = {"i_only", "i_d", "i_d_s", "full_fixed", "full"}
+        if evidence_mode not in valid_modes:
+            raise ValueError(
+                "evidence_mode must be one of: i_only,i_d,i_d_s,full_fixed,full"
+            )
         if evidence_mode == "i_only":
             d = torch.ones_like(d)
             s = torch.ones_like(s)
             u = torch.zeros_like(u)
             physical_logits = torch.log(i + self.eps)
-        elif evidence_mode == "full":
+        elif evidence_mode == "i_d":
+            s = torch.ones_like(s)
+            u = torch.zeros_like(u)
+            physical_logits = torch.log(i + self.eps) + torch.log(d + self.eps)
+        elif evidence_mode == "i_d_s":
+            u = torch.zeros_like(u)
+            physical_logits = (
+                torch.log(i + self.eps)
+                + torch.log(d + self.eps)
+                + torch.log(s + self.eps)
+            )
+        elif evidence_mode == "full_fixed":
+            physical_logits = (
+                torch.log(i + self.eps)
+                + torch.log(d + self.eps)
+                + torch.log(s + self.eps)
+                - u
+            )
+        else:
             coefficients = F.softplus(self.log_coefficients) + self.eps
             physical_logits = (
                 coefficients[:, 0].unsqueeze(0) * torch.log(i + self.eps)
@@ -86,8 +109,6 @@ class FisherDiscriminabilityUncertaintyGate(nn.Module):
                 + coefficients[:, 2].unsqueeze(0) * torch.log(s + self.eps)
                 - coefficients[:, 3].unsqueeze(0) * u
             )
-        else:
-            raise ValueError("evidence_mode must be full or i_only")
         quality = (i * d * s * (1.0 - u)).clamp(0.0, 1.0)
 
         correction_enabled = (

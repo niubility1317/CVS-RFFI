@@ -23,3 +23,9 @@
 - N607验证：原生`bash -n`、远端Python编译和M4 dry-run通过；dry-run读回`source_val_sat_hmean/false/final_only`
 - 真实checkpoint无query smoke：`PASS`；严格加载、52个NMFDU新state、23组非零梯度，query/Phase2访问均为`false`
 - 当前资源：GPU4–6各有2个MARC-OT进程，GPU7有1个；未启动r2，等待满足每GPU最多2个进程的资源边界
+
+## 终止状态
+
+- 状态：`SUPERSEDED_BEFORE_LAUNCH_BY_USER_DATA_CONFIG`
+- 说明：用户于2026-09-02固定新的ManySig接收机、日期和seed=`392005`配置，并要求八实验发布；r2正式训练从未启动，原release与smoke证据保留但不再排队。
+- 后继run：`phase1_adv3b02_nmfdu_gate8_manysig392005_20260902_r1`

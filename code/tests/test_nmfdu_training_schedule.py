@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 
+import pytest
 import torch
 
 from SSDG.train_ssdg import build_arg_parser
@@ -250,9 +251,19 @@ def test_uniformly_low_quality_absolutely_downweights_loss() -> None:
     torch.testing.assert_close(low, high * 0.01)
 
 
-def test_i_only_objective_does_not_consume_d_s_or_u() -> None:
+@pytest.mark.parametrize(
+    ("mode", "ignored"),
+    [
+        ("i_only", ("D", "S", "U")),
+        ("i_d", ("S", "U")),
+        ("i_d_s", ("U",)),
+    ],
+)
+def test_factor_ladder_objective_does_not_consume_omitted_terms(
+    mode: str, ignored: tuple[str, ...]
+) -> None:
     torch.manual_seed(83)
-    model = _model(ablation_mode="i_only").train()
+    model = _model(ablation_mode=mode).train()
     labels = torch.tensor([0, 1])
     output = model(
         torch.randn(2, 2, 64),
@@ -268,9 +279,8 @@ def test_i_only_objective_does_not_consume_d_s_or_u() -> None:
         },
     }
     diagnostics = changed["physical_gate_diag"]["per_sample"]
-    diagnostics["D"] = torch.rand_like(diagnostics["D"])
-    diagnostics["S"] = torch.rand_like(diagnostics["S"])
-    diagnostics["U"] = torch.rand_like(diagnostics["U"])
+    for key in ignored:
+        diagnostics[key] = torch.rand_like(diagnostics[key])
 
     kwargs = dict(
         stage=2,
@@ -282,7 +292,7 @@ def test_i_only_objective_does_not_consume_d_s_or_u() -> None:
         lambda_branch_pair=0.1,
         lambda_null_cal=0.05,
         lambda_balance=0.01,
-        ablation_mode="i_only",
+        ablation_mode=mode,
     )
     original_loss = nmfdu_labeled_objective(output, labels, **kwargs)
     changed_loss = nmfdu_labeled_objective(changed, labels, **kwargs)
@@ -295,3 +305,30 @@ def test_i_only_objective_does_not_consume_d_s_or_u() -> None:
         changed, labels, **{**kwargs, "stage": 3, "clean_count": 1}
     )
     torch.testing.assert_close(changed_stage3["branch_pair"], original_stage3["branch_pair"])
+
+
+def test_full_no_null_objective_disables_null_calibration_loss() -> None:
+    torch.manual_seed(84)
+    model = _model(ablation_mode="full_no_null").train()
+    labels = torch.tensor([0, 1])
+    output = model(
+        torch.randn(2, 2, 64),
+        y=labels,
+        return_aux=True,
+        return_physical_gate_diag=True,
+    )
+    losses = nmfdu_labeled_objective(
+        output,
+        labels,
+        stage=2,
+        clean_count=0,
+        lambda_branch_aux=0.2,
+        lambda_route=0.1,
+        lambda_phys=0.1,
+        lambda_fused_pair=0.2,
+        lambda_branch_pair=0.1,
+        lambda_null_cal=0.05,
+        lambda_balance=0.01,
+        ablation_mode="full_no_null",
+    )
+    assert losses["null_cal"].item() == 0.0

@@ -255,7 +255,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
         "--phase1_source_role_protocol",
         type=str,
         default="legacy_l_u_v",
-        choices=["l_s_u_s_v_cal_v_select", "legacy_l_u_v"],
+        choices=["l_s_u_s_v", "l_s_u_s_v_cal_v_select", "legacy_l_u_v"],
     )
     parser.add_argument("--pseudo_threshold_mode", type=str, default="rx_day_quantile", choices=["global", "rx_day_quantile"])
     parser.add_argument("--pseudo_quantile", type=float, default=0.70)
@@ -1035,7 +1035,16 @@ def build_arg_parser() -> argparse.ArgumentParser:
         "--nmfdu_ablation_mode",
         type=str,
         default="full",
-        choices=["equal", "i_only", "physical_full", "full"],
+        choices=[
+            "equal",
+            "i_only",
+            "i_d",
+            "i_d_s",
+            "physical_fixed",
+            "physical_full",
+            "full_no_null",
+            "full",
+        ],
     )
     parser.add_argument("--nmfdu_stage1_end", type=int, default=80)
     parser.add_argument("--nmfdu_stage2_end", type=int, default=120)
@@ -1987,6 +1996,98 @@ def _build_source_split_receipt(
     return receipt
 
 
+def resolve_phase1_source_target_scope(
+    source_days: Sequence[int],
+    target_days: Sequence[int],
+    source_receivers: Sequence[int],
+    target_receivers: Sequence[int],
+    *,
+    allow_day_overlap_by_disjoint_rx: bool,
+) -> Tuple[List[int], List[int], List[int], List[int]]:
+    """Resolve source/target scope without silently weakening an explicit split.
+
+    Legacy callers retain the old conservative behavior. The explicit overlap
+    mode is valid only when receiver sets are strictly disjoint, which makes a
+    shared capture day a different physical receiver domain rather than a
+    source/target row collision.
+    """
+
+    source_days = [int(value) for value in source_days]
+    target_days = [int(value) for value in target_days]
+    source_receivers = [int(value) for value in source_receivers]
+    target_receivers = [int(value) for value in target_receivers]
+    if bool(allow_day_overlap_by_disjoint_rx):
+        overlap = sorted(set(source_receivers).intersection(target_receivers))
+        if overlap:
+            raise ValueError(
+                "source/target day overlap requires disjoint receiver sets; "
+                f"overlapping receiver indices={overlap}"
+            )
+    else:
+        source_days = [value for value in source_days if value not in target_days]
+        source_receivers = [
+            value for value in source_receivers if value not in target_receivers
+        ]
+    if not source_days or not source_receivers:
+        raise ValueError("resolved Phase1 source scope is empty")
+    return source_days, target_days, source_receivers, target_receivers
+
+
+def _build_exact_target_test_scope(
+    dataset: Mapping[str, Any],
+    *,
+    equalized: Any,
+    out_len: int,
+    domain: str,
+    target_days: Sequence[int],
+    target_receivers: Sequence[int],
+    max_samples_per_combo: Optional[int],
+    seed: int,
+) -> Tuple[Dict[str, Any], Dict[str, Dict[str, Any]], Dict[str, Any]]:
+    """Build only the explicitly declared target receiver/day Cartesian scope."""
+
+    target = WiSigCompactDataset(
+        dict(dataset),
+        out_len=int(out_len),
+        crop_mode="center",
+        normalize=True,
+        equalized=equalized,
+        day_keep=list(target_days),
+        rx_keep=list(target_receivers),
+        domain=str(domain),
+        max_samples_per_combo=max_samples_per_combo,
+        seed=int(seed),
+        build_index=True,
+    )
+    if len(target) <= 0:
+        raise ValueError("explicit target receiver/day scope contains no samples")
+    day_labels = list(dataset.get("capture_date_list", []))
+    receiver_labels = list(dataset.get("rx_list", []))
+    name = "test_unseen_day_unseen_rx"
+    metadata = {
+        name: {
+            "days_idx": list(target_days),
+            "days_label": [day_labels[index] for index in target_days],
+            "rxs_idx": list(target_receivers),
+            "rxs_label": [receiver_labels[index] for index in target_receivers],
+            "size": len(target),
+            "scope_semantics": "exact_declared_target_test",
+        }
+    }
+    info = {
+        "mode": "exact_target_scope_disjoint_receivers_shared_days",
+        "test_days_idx": list(target_days),
+        "test_days_label": [day_labels[index] for index in target_days],
+        "test_rxs_idx": list(target_receivers),
+        "test_rxs_label": [receiver_labels[index] for index in target_receivers],
+        "seed": int(seed),
+        "test_size": len(target),
+        "max_samples_per_combo_test": max_samples_per_combo,
+        "named_test_sizes": {name: len(target)},
+    }
+    return {name: target}, metadata, info
+
+
 def _build_ssdg_wisig_data(args, device: torch.device):
     ds_w = load_wisig_compact_pkl(args.wisig_pkl)
     infer_nc = len(ds_w.get("tx_list", []))
@@ -1999,8 +2100,17 @@ def _build_ssdg_wisig_data(args, device: torch.device):
     test_days = _resolve_days(day_list, parse_csv_indices(args.wisig_test_days), [len(day_list) - 1])
     train_rxs = _resolve_rxs(rx_list, parse_csv_indices(args.wisig_train_rxs), list(range(len(rx_list))))
     test_rxs = _resolve_rxs(rx_list, parse_csv_indices(args.wisig_test_rxs), [])
-    train_days = [d for d in train_days if d not in test_days]
-    train_rxs = [r for r in train_rxs if r not in test_rxs]
+    train_days, test_days, train_rxs, test_rxs = resolve_phase1_source_target_scope(
+        train_days,
+        test_days,
+        train_rxs,
+        test_rxs,
+        allow_day_overlap_by_disjoint_rx=bool(
+            getattr(args, "allow_source_target_day_overlap_by_disjoint_rx", False)
+        ),
+    )
+    requested_split_seed = int(getattr(args, "wisig_split_seed", -1))
+    split_seed = int(args.seed) if requested_split_seed < 0 else requested_split_seed
 
     source_base = WiSigCompactDataset(
         ds_w,
@@ -2012,7 +2122,7 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         rx_keep=train_rxs,
         domain=str(args.wisig_domain),
         max_samples_per_combo=None if int(args.wisig_max_day123_per_combo) <= 0 else int(args.wisig_max_day123_per_combo),
-        seed=int(args.seed),
+        seed=split_seed,
         build_index=True,
     )
     source_role_protocol = str(
@@ -2052,22 +2162,39 @@ def _build_ssdg_wisig_data(args, device: torch.device):
     cal_ds = WiSigSubsetDataset(source_base, source_cal_idx, split_source="ssdg_source_v_cal")
     val_ds = WiSigSubsetDataset(source_base, val_idx, split_source="ssdg_source_v_select")
 
-    _, _, _, named_tests, named_meta, test_split_info = make_wisig_trainval_test_by_day_rx(
-        ds_w,
-        equalized=eq,
-        out_len=int(args.wisig_out_len),
-        domain=str(args.wisig_domain),
-        normalize=True,
-        crop_mode="center",
-        train_ratio=0.5,
-        guard_gap=int(args.wisig_guard_gap),
-        train_days=train_days,
-        test_days=test_days,
-        train_rxs=train_rxs,
-        test_rxs=test_rxs,
-        max_samples_per_combo_test=None if int(args.wisig_max_test_per_combo) <= 0 else int(args.wisig_max_test_per_combo),
-        seed=int(args.seed),
+    max_target_per_combo = (
+        None
+        if int(args.wisig_max_test_per_combo) <= 0
+        else int(args.wisig_max_test_per_combo)
     )
+    if bool(getattr(args, "allow_source_target_day_overlap_by_disjoint_rx", False)):
+        named_tests, named_meta, test_split_info = _build_exact_target_test_scope(
+            ds_w,
+            equalized=eq,
+            out_len=int(args.wisig_out_len),
+            domain=str(args.wisig_domain),
+            target_days=test_days,
+            target_receivers=test_rxs,
+            max_samples_per_combo=max_target_per_combo,
+            seed=split_seed,
+        )
+    else:
+        _, _, _, named_tests, named_meta, test_split_info = make_wisig_trainval_test_by_day_rx(
+            ds_w,
+            equalized=eq,
+            out_len=int(args.wisig_out_len),
+            domain=str(args.wisig_domain),
+            normalize=True,
+            crop_mode="center",
+            train_ratio=0.5,
+            guard_gap=int(args.wisig_guard_gap),
+            train_days=train_days,
+            test_days=test_days,
+            train_rxs=train_rxs,
+            test_rxs=test_rxs,
+            max_samples_per_combo_test=max_target_per_combo,
+            seed=split_seed,
+        )
     balanced_sampler = None
     if bool(getattr(args, "use_tx_rx_balanced_sampler", False)):
         if BalancedTxDomainBatchSampler is None or DataLoader is None:
@@ -2143,7 +2270,7 @@ def _build_ssdg_wisig_data(args, device: torch.device):
     }
     domain_label_map = build_domain_label_map(source_base)
     split_receipt = _build_source_split_receipt(
-        seed=int(args.seed),
+        seed=split_seed,
         split_mode=str(args.split_mode),
         source_days=train_days,
         target_days=test_days,
@@ -2185,15 +2312,31 @@ def _build_ssdg_wisig_data(args, device: torch.device):
             "labeled_size": len(labeled_ds),
             "unlabeled_size": len(unlabeled_ds),
             "source_val_size": len(val_ds),
-            "source_calibration_size": len(cal_ds),
-            "source_selection_size": len(val_ds),
+            "source_calibration_size": (
+                len(cal_ds)
+                if source_role_protocol == "l_s_u_s_v_cal_v_select"
+                else 0
+            ),
+            "source_selection_size": (
+                len(val_ds)
+                if source_role_protocol == "l_s_u_s_v_cal_v_select"
+                else 0
+            ),
             "source_role_protocol": source_role_protocol,
-            "source_role_ratios": {
-                "L_s": float(args.labeled_ratio),
-                "U_s": float(args.unlabeled_ratio),
-                "V_cal": float(getattr(args, "source_cal_ratio", 0.0)),
-                "V_select": float(getattr(args, "source_select_ratio", 0.0)),
-            },
+            "source_role_ratios": (
+                {
+                    "L_s": float(args.labeled_ratio),
+                    "U_s": float(args.unlabeled_ratio),
+                    "V": float(args.source_val_ratio),
+                }
+                if source_role_protocol == "l_s_u_s_v"
+                else {
+                    "L_s": float(args.labeled_ratio),
+                    "U_s": float(args.unlabeled_ratio),
+                    "V_cal": float(getattr(args, "source_cal_ratio", 0.0)),
+                    "V_select": float(getattr(args, "source_select_ratio", 0.0)),
+                }
+            ),
             "rho_label": float(len(labeled_ds)) / float(max(1, len(labeled_ds) + len(unlabeled_ds))),
             "balanced_sampler_active": bool(balanced_sampler is not None),
             "balanced_sampler_batch_size": int(balanced_sampler.batch_size) if balanced_sampler is not None else int(args.batch_size),

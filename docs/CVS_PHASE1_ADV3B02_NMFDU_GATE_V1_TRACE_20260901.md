@@ -6,7 +6,7 @@
 - 对应实施计划：`docs/plans/2026-09-01-adv3b02-nmfdu-gate-v1-implementation.md`
 - 基线：`ADV3B02_CORE90_SOFT_E200`，seed=`392002`，epochs=`200`，`z_id=160`
 - 新变体：`ADV3B02_NMFDU_GATE_V1_E200`
-- 当前状态：`IMPLEMENTED_LOCAL / REAL_CHECKPOINT_SMOKE_PENDING / NOT_RUN`
+- 当前状态：`IMPLEMENTED_LOCAL / MANY_SIG_392005_GATE8_RELEASE_PREPARING / NOT_RUN`
 
 `NMFDU`表示`Nuisance-Marginalized Fisher–Discriminability–Uncertainty`。该名称用于明确区分报告要求的门控与现有`id_gate`、`freq_gate`等普通学习门。
 
@@ -70,3 +70,20 @@
 - 2026-09-01，任务9诊断与多burst：`VERIFIED_DIAGNOSTICS_LOCAL`。新增逐样本门控证据采集、逐场景同row摘要、分支饥饿/过硬路由/null饱和检测、控制信号质量后的receiver probe及报告预期行为检查。多burst严格执行`Q_m=1-g_null`可靠性加权身份融合，并对独立观测的分支Fisher直接求和；重复physical ID会被拒绝，同一结构性秩亏不会因增加burst数被错误修复。验证命令：`python -m pytest -q code/tests/test_fisher_gate_diagnostics.py code/tests/test_nmfdu_multiburst.py code/tests/test_nmfdu_training_schedule.py code/tests/test_adv3b02_nmfdu_integration.py code/tests/test_adv3b02_nmfdu_legacy_contract.py code/tests/test_fisher_branches.py code/tests/test_fisher_gate.py code/tests/test_gate_evidence.py code/tests/test_canonical_excitation.py code/tests/test_identifiability_stats.py code/tests/test_identity_only_forward.py code/tests/test_exact_ssdg_checkpoint_loading.py`，结果`53 passed`。receiver shortcut、分支塌缩和各场景预期行为仍需真实评估数据确认，因此NMFDU-21仅标记本地机制成立，NMFDU-22保持`PENDING`。
 - 2026-09-01，P0/P1审查修复：`VERIFIED_LOCAL / TARGETED_REVIEW_PASSED`。针对独立审查的四个P1，`ŝ`改为标签无关的软符号后验重建，不再复制接收IQ幅相；局部掩码改为在局部统计提取前作用，`g_null/Q_sample`通过可学习null方向真实改变融合方向；质量加权损失改为绝对降权；smoke允许父目录已存在但以独占创建拒绝覆盖结果文件。对应回归测试覆盖中等接收响应变化、模型失配不确定度、mask/null方向变化、统一低质量缩放和已有父目录写入。一次定点复审仅核对原四项，结论均为`FIXED`，对应六个测试文件结果`41 passed`。
 - 2026-09-01，M0–M4最小矩阵：`VERIFIED_LOCAL / NOT_RUN`。M0固定为历史Core90 checkpoint只评估；M1为全程五分支等权容量对照；M2为`I_b+g_null`且门控及训练目标均不使用`D/S/U/δ`；M3为完整物理`I/D/S/U`且`δ=0`；M4为完整物理项、显式null和有界学习校正。M1控制器在全部200epoch持续训练分支和骨干，避免E81–120无有效可训练路径。不可覆盖launcher固定seed=`392002`、E200、`L_s/U_s/V=0.07/0.63/0.30`、`lambda_sat_cls=0.68`、`lambda_sat_cons=0`及clean/三种`leo_*_weak`评估，不含Phase2或query数据参数。本机Git Bash通道被错误路由至故障WSL，故本地`bash -n`未取得有效证据；后续release将在N607原生Linux Bash中完成语法与dry-run验证。完整聚焦套件结果为`72 passed`，关键Python模块`py_compile`通过。
+
+## 7.ManySig392005八实验发布矩阵
+
+2026-09-02，用户固定ManySig范围后，发布矩阵扩展为八个均需真实训练的同seed NMFDU实验；用户随后明确排除ADV3B02对比基线，因此八行全部用于NMFDU内部机制比较。所有实验共同使用equalized IQ、`split_mode=tx_rx_day_1_7_2`、训练/划分seed=`392005`、源接收机`[1,3,4,6,8]`、源日期`[1,2,3]`、目标接收机`[0,2,5,7,9,10,11]`、目标日期`[0,1,2,3]`和全部六个TX。源池固定为90000条物理记录，分成`L_s=6300`、`U_s=56700`和单一`V=27000`。用户给出的两个13500验证子数只作为数量描述保留；依据当前`项目.md`，不得把它们赋予不同方法权限，目标测试也不得参与checkpoint选择。
+
+|实验|门控配置|直接回答的问题|
+|---|---|---|
+|E1|五分支等权|差异是否仅来自分支容量而非门控证据|
+|E2|仅`I`|样本可辨识性是否提供有效路由信号|
+|E3|`I+D`|源域身份判别性是否补足纯物理可辨识性|
+|E4|`I+D+S`|跨局部窗口稳定性是否提高可靠路由|
+|E5|固定单位系数`I+D+S+U`，无学习校正|完整物理公式本身的效果|
+|E6|可学习全局正系数`I+D+S+U`，无样本校正|报告中的全局证据系数是否有必要学习|
+|E7|完整物理证据+有界样本校正，无null|样本校正的效果以及显式拒绝通道是否必要|
+|E8|完整NMFDU|完整设计的最终候选|
+
+为忠实表达用户的日期/接收机组合，数据加载器新增显式`allow_source_target_day_overlap_by_disjoint_rx=true`契约：只有源/目标接收机集合严格不交叠时才保留共享日期；接收机一旦交叠立即失败。独立`wisig_split_seed`确保八行使用同一物理划分，训练seed不再隐式改变划分。目标clean和三种`leo_*_weak`每场景168000条，仅用于测试与独立评分。

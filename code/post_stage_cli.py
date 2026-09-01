@@ -34,6 +34,8 @@ def default_data_args() -> Dict[str, Any]:
         "wisig_test_days": "2,3",
         "wisig_train_rxs": "0,1,2,3,4,5,6",
         "wisig_test_rxs": "7,8,9,10,11",
+        "wisig_split_seed": -1,
+        "allow_source_target_day_overlap_by_disjoint_rx": False,
         "wisig_split_strategy": "random",
         "wisig_cap_strategy": "random",
         "wisig_max_day123_per_combo": 0,
@@ -68,6 +70,12 @@ def add_common_data_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--wisig_test_days", type=str, default=defaults["wisig_test_days"])
     parser.add_argument("--wisig_train_rxs", type=str, default=defaults["wisig_train_rxs"])
     parser.add_argument("--wisig_test_rxs", type=str, default=defaults["wisig_test_rxs"])
+    parser.add_argument("--wisig_split_seed", type=int, default=defaults["wisig_split_seed"])
+    parser.add_argument(
+        "--allow_source_target_day_overlap_by_disjoint_rx",
+        type=str2bool,
+        default=defaults["allow_source_target_day_overlap_by_disjoint_rx"],
+    )
     parser.add_argument("--wisig_split_strategy", type=str, default=defaults["wisig_split_strategy"], choices=["random", "contiguous"])
     parser.add_argument("--wisig_cap_strategy", type=str, default=defaults["wisig_cap_strategy"], choices=["random", "front"])
     parser.add_argument("--wisig_max_day123_per_combo", type=int, default=defaults["wisig_max_day123_per_combo"])

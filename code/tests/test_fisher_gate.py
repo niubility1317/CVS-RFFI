@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import torch
 import torch.nn.functional as F
+import pytest
 
 from cvsrffi.fisher_gate import (
     FisherDiscriminabilityUncertaintyGate,
@@ -99,3 +100,87 @@ def test_null_quality_changes_fused_direction_instead_of_being_normalized_away()
     low_quality, _ = fusion(branches, conditional * 0.05)
     assert not torch.allclose(high_quality, low_quality, atol=1e-4, rtol=0.0)
     assert F.cosine_similarity(high_quality, low_quality).max().item() < 0.999
+
+
+@pytest.mark.parametrize(
+    ("mode", "ignored"),
+    [
+        ("i_only", ("D", "S", "U")),
+        ("i_d", ("S", "U")),
+        ("i_d_s", ("U",)),
+    ],
+)
+def test_factor_ladder_ignores_only_the_omitted_physical_terms(
+    mode: str, ignored: tuple[str, ...]
+) -> None:
+    gate = FisherDiscriminabilityUncertaintyGate(
+        branch_count=5, correction_dim=4
+    ).eval()
+    evidence = {
+        "I": torch.full((2, 5), 0.8, requires_grad=True),
+        "D": torch.full((2, 5), 0.7, requires_grad=True),
+        "S": torch.full((2, 5), 0.6, requires_grad=True),
+        "U": torch.full((2, 5), 0.2, requires_grad=True),
+    }
+    changed = {key: value.clone() for key, value in evidence.items()}
+    for key in ignored:
+        changed[key].fill_(0.95 if key != "U" else 0.9)
+    first = gate(evidence, evidence_mode=mode, enable_correction=False)
+    second = gate(changed, evidence_mode=mode, enable_correction=False)
+    torch.testing.assert_close(first["physical_logits"], second["physical_logits"])
+    torch.testing.assert_close(first["q_sample"], second["q_sample"])
+
+
+def test_fixed_full_physical_mode_uses_unit_coefficients() -> None:
+    gate = FisherDiscriminabilityUncertaintyGate(
+        branch_count=5, correction_dim=4
+    ).eval()
+    evidence = {
+        "I": torch.full((2, 5), 0.8),
+        "D": torch.full((2, 5), 0.7),
+        "S": torch.full((2, 5), 0.6),
+        "U": torch.full((2, 5), 0.2),
+    }
+    output = gate(
+        evidence, evidence_mode="full_fixed", enable_correction=False
+    )
+    expected = (
+        torch.log(evidence["I"] + 1e-6)
+        + torch.log(evidence["D"] + 1e-6)
+        + torch.log(evidence["S"] + 1e-6)
+        - evidence["U"]
+    )
+    torch.testing.assert_close(output["physical_logits"], expected)
+
+
+@pytest.mark.parametrize(
+    ("mode", "active"),
+    [
+        ("i_only", ("I",)),
+        ("i_d", ("I", "D")),
+        ("i_d_s", ("I", "D", "S")),
+        ("full_fixed", ("I", "D", "S", "U")),
+    ],
+)
+def test_fixed_factor_ladder_has_exact_logits_and_no_coefficient_gradient(
+    mode: str, active: tuple[str, ...]
+) -> None:
+    gate = FisherDiscriminabilityUncertaintyGate(
+        branch_count=5, correction_dim=4
+    ).train()
+    evidence = {
+        "I": torch.full((2, 5), 0.8, requires_grad=True),
+        "D": torch.full((2, 5), 0.7, requires_grad=True),
+        "S": torch.full((2, 5), 0.6, requires_grad=True),
+        "U": torch.full((2, 5), 0.2, requires_grad=True),
+    }
+    output = gate(evidence, evidence_mode=mode, enable_correction=False)
+    expected = torch.zeros_like(evidence["I"])
+    for key in ("I", "D", "S"):
+        if key in active:
+            expected = expected + torch.log(evidence[key] + 1e-6)
+    if "U" in active:
+        expected = expected - evidence["U"]
+    torch.testing.assert_close(output["physical_logits"], expected)
+    output["physical_logits"].sum().backward()
+    assert gate.log_coefficients.grad is None

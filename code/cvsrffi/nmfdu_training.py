@@ -312,7 +312,16 @@ def nmfdu_labeled_objective(
         raise KeyError(f"missing NMFDU training outputs: {missing}")
     diagnostics = aux_id["physical_gate_diag"]["per_sample"]
     ablation_mode = str(ablation_mode or "full").lower().strip()
-    if ablation_mode not in {"equal", "i_only", "physical_full", "full"}:
+    if ablation_mode not in {
+        "equal",
+        "i_only",
+        "i_d",
+        "i_d_s",
+        "physical_fixed",
+        "physical_full",
+        "full_no_null",
+        "full",
+    }:
         raise ValueError("unknown NMFDU ablation mode")
     branch_logits = aux_id["nmfdu_branch_logits"]
     branch_embeddings = aux_id["nmfdu_branch_embeddings"]
@@ -320,10 +329,17 @@ def nmfdu_labeled_objective(
     branch_aux = branch_auxiliary_loss(branch_logits, labels) if stage in (1, 3) else zero
     route = phys = null_cal = balance = zero
     if stage in (2, 3):
+        uses_stability = ablation_mode not in {"i_only", "i_d"}
+        uses_uncertainty = ablation_mode in {
+            "physical_fixed",
+            "physical_full",
+            "full_no_null",
+            "full",
+        }
         route_uncertainty = (
-            torch.zeros_like(diagnostics["U"])
-            if ablation_mode == "i_only"
-            else diagnostics["U"]
+            diagnostics["U"]
+            if uses_uncertainty
+            else torch.zeros_like(diagnostics["U"])
         )
         oracle = oracle_margin_distribution(
             branch_logits,
@@ -334,19 +350,20 @@ def nmfdu_labeled_objective(
         route = route_kl_loss(diagnostics["weights"], oracle)
         physical_prior = torch.softmax(diagnostics["physical_logits"].detach(), dim=-1)
         phys = route_kl_loss(diagnostics["weights"], physical_prior)
-        if ablation_mode == "i_only":
-            physical_quality = diagnostics["I"].max(dim=-1).values.detach()
-        else:
-            physical_quality = (
-                diagnostics["I"]
-                * diagnostics["D"]
-                * diagnostics["S"]
-                * (1.0 - diagnostics["U"])
-            ).max(dim=-1).values.detach()
+        reliability = diagnostics["I"]
+        if ablation_mode != "i_only":
+            reliability = reliability * diagnostics["D"]
+        if uses_stability:
+            reliability = reliability * diagnostics["S"]
+        if uses_uncertainty:
+            reliability = reliability * (1.0 - diagnostics["U"])
+        physical_quality = reliability.max(dim=-1).values.detach()
         null_target = 1.0 - physical_quality
-        null_cal = F.binary_cross_entropy(
-            diagnostics["null_weight"].clamp(1e-6, 1.0 - 1e-6), null_target
-        )
+        if ablation_mode != "full_no_null":
+            null_cal = F.binary_cross_entropy(
+                diagnostics["null_weight"].clamp(1e-6, 1.0 - 1e-6),
+                null_target,
+            )
         usage = diagnostics["weights"].mean(dim=0)
         balance = (usage - usage.new_full(usage.shape, 1.0 / usage.numel())).square().mean()
 
@@ -362,16 +379,18 @@ def nmfdu_labeled_objective(
             clean_quality=diagnostics["q_sample"][clean_slice],
             leo_quality=diagnostics["q_sample"][leo_slice],
         )
-        reliability = (
-            diagnostics["I"]
-            if ablation_mode == "i_only"
-            else (
-                diagnostics["I"]
-                * diagnostics["D"]
-                * diagnostics["S"]
-                * (1.0 - diagnostics["U"])
-            )
-        )
+        reliability = diagnostics["I"]
+        if ablation_mode != "i_only":
+            reliability = reliability * diagnostics["D"]
+        if ablation_mode not in {"i_only", "i_d"}:
+            reliability = reliability * diagnostics["S"]
+        if ablation_mode in {
+            "physical_fixed",
+            "physical_full",
+            "full_no_null",
+            "full",
+        }:
+            reliability = reliability * (1.0 - diagnostics["U"])
         clean_embeddings = {
             name: value[clean_slice] for name, value in branch_embeddings.items()
         }

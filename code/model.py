@@ -928,9 +928,20 @@ class NMFDUFeatureGateContract(nn.Module):
         super().__init__()
         self.emb_dim = int(emb_dim)
         self.ablation_mode = str(ablation_mode or "full").lower().strip()
-        if self.ablation_mode not in {"equal", "i_only", "physical_full", "full"}:
+        valid_modes = {
+            "equal",
+            "i_only",
+            "i_d",
+            "i_d_s",
+            "physical_fixed",
+            "physical_full",
+            "full_no_null",
+            "full",
+        }
+        if self.ablation_mode not in valid_modes:
             raise ValueError(
-                "nmfdu_ablation_mode must be one of: equal,i_only,physical_full,full"
+                "nmfdu_ablation_mode must be one of: "
+                "equal,i_only,i_d,i_d_s,physical_fixed,physical_full,full_no_null,full"
             )
         self.canonical_excitation = CanonicalExcitationEstimator(
             detach_gate_input=True
@@ -1031,12 +1042,33 @@ class NMFDUFeatureGateContract(nn.Module):
             [evidence["I"], evidence["D"], evidence["S"], evidence["U"]],
             dim=-1,
         )
+        evidence_mode = {
+            "i_only": "i_only",
+            "i_d": "i_d",
+            "i_d_s": "i_d_s",
+            "physical_fixed": "full_fixed",
+        }.get(self.ablation_mode, "full")
         gate = self.sample_gate(
             evidence,
             correction_context=correction_context,
-            evidence_mode=("i_only" if self.ablation_mode == "i_only" else "full"),
-            enable_correction=(self.ablation_mode == "full"),
+            evidence_mode=evidence_mode,
+            enable_correction=(self.ablation_mode in {"full_no_null", "full"}),
         )
+        if self.ablation_mode == "full_no_null":
+            weights = gate["weights"] / gate["weights"].sum(
+                dim=-1, keepdim=True
+            ).clamp_min(1e-6)
+            entropy = -(
+                weights * weights.clamp_min(1e-6).log()
+            ).sum(dim=-1)
+            gate = {
+                **gate,
+                "weights": weights,
+                "null_weight": identifiability.new_zeros((identifiability.size(0),)),
+                "q_sample": identifiability.new_ones((identifiability.size(0),)),
+                "entropy": entropy,
+                "branch_usage": weights.mean(dim=0),
+            }
         if int(self.training_stage.item()) == 1 or self.ablation_mode == "equal":
             batch = identifiability.size(0)
             equal_weights = identifiability.new_full(

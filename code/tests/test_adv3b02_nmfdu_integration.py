@@ -198,7 +198,11 @@ def test_dual_model_routes_nmfdu_only_through_identity_backbone() -> None:
     [
         ("equal", True, False),
         ("i_only", False, False),
+        ("i_d", False, False),
+        ("i_d_s", False, False),
+        ("physical_fixed", False, False),
         ("physical_full", False, False),
+        ("full_no_null", False, True),
         ("full", False, True),
     ],
 )
@@ -222,6 +226,10 @@ def test_registered_ablation_modes_have_distinct_gate_semantics(
         torch.testing.assert_close(
             sample["physical_logits"], torch.log(sample["I"] + 1e-6), atol=1e-5, rtol=0.0
         )
+    if mode == "full_no_null":
+        torch.testing.assert_close(sample["null_weight"], torch.zeros(3))
+        torch.testing.assert_close(sample["q_sample"], torch.ones(3))
+        torch.testing.assert_close(sample["weights"].sum(dim=-1), torch.ones(3))
     if correction_expected:
         assert sample["correction"].abs().sum().item() > 0.0
     else:
