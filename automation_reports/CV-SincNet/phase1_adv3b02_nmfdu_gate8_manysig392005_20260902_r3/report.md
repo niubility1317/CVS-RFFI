@@ -25,4 +25,13 @@
 - N607真实checkpoint无query smoke：`PASS`；严格加载195个state tensor，missing/unexpected均为0；初始化52个NMFDU state key，得到23个有限非零梯度；source RX/day/equalized/split seed匹配，query truth和Phase2访问均为`false`
 - N607定点技术smoke：`NMFDU_R3_N607_TECHNICAL_SMOKE_PASS`；CUDA autocast下Fisher/相位线性代数保持FP32且有限，非MUSE空route返回完整零RC4遥测
 - 启动前GPU计算进程数：GPU0–7=`1/2/2/3/2/3/3/2`；加入E1–E8后预计=`2/3/3/4/3/4/4/3`，不超过用户授权的每GPU最多4个训练进程
-- 当前状态：`LANDED / READY_TO_LAUNCH`
+- 当前状态：`RUNNING`
+
+## 启动读回
+
+- N607启动时间：`2026-09-02 01:30:49 +0800`；dispatcher PID=`3921425`
+- 行PID/GPU：E1=`3921488/GPU0`、E2=`3921485/GPU1`、E3=`3921500/GPU2`、E4=`3921503/GPU3`、E5=`3921497/GPU4`、E6=`3921494/GPU5`、E7=`3921506/GPU6`、E8=`3921491/GPU7`
+- 8行均读回`[NMFDU-LANDED]`；CWD=`/home/szu2070436088`，cmdline均绑定新release、对应不可覆盖run root、ManySig路径、split seed=`392005`及各自NMFDU消融模式
+- GPU读回包含上述8个PID；启动后GPU0–7计算进程数=`2/3/3/4/3/4/4/3`，未超过用户授权上限
+- 8份日志均已产生并完整打印配置、数据协议、训练和遥测路径；延后检查时8个进程持续运行且CPU/GPU有活动，仍处于首个epoch前的数据初始化阶段
+- 异常扫描：未发现`Traceback`、`RuntimeError`、`UnboundLocalError`或OOM；尚无性能结果，不作科学结论
