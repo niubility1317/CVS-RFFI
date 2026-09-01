@@ -2,9 +2,10 @@
 
 - run_id：`phase1_riei_drift_newsplit_fold18_s392002_20260901_r1`
 - 当前状态：`LOCAL_VERIFIED`
-- 冻结代码提交：`77f90a3324f5ab1dea373be96576082e43cfca75`
+- 固定方法版本：RIEI=`RIEI_C06_sum_featnorm1e4`；DRIFT=`DRIFT_N02_raw_cap4000`。
+- 冻结代码提交：`55f4e14c3e38042ff113f2585517190aa4e5b68e`
 - 本地环境/CWD：`ssr-gpu`；`E:\type10-7\github_publish\CVS-RFFI-repo`
-- N607环境/CWD：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；不可变release目录`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_riei_drift_newsplit_fold18_s392002_20260901_r1_77f90a33`
+- N607环境/CWD：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；不可变release目录`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_riei_drift_newsplit_fold18_s392002_20260901_r1_55f4e14c`
 - 数据输入：`/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl`
 - 输出根：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_riei_drift_newsplit_fold18_s392002_20260901_r1`
 - 日志根：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_riei_drift_newsplit_fold18_s392002_20260901_r1`
@@ -21,7 +22,7 @@
 | DRIFT | 1 | 392002 | 0.07/0.63/0.30 | receiver1 | 2 |
 | DRIFT | 8 | 392002 | 0.07/0.63/0.30 | receiver8 | 3 |
 
-统一source receivers=`[1,3,4,6,8]`，训练day1–day3。单一source验证集`V=0.30`用于checkpoint选择，不拆分其他验证角色。训练采用真实`clean+satellite`批次拼接；clean半批计算方法原损失，satellite半批只计算TX交叉熵，`lambda_sat_cls=0.68`、`lambda_sat_cons=0`。卫星辅助CE从E80开始，课程为E1–40 clear/p=0.30、E41–90 low-elev+rain/p=0.60、E91–200三场景/p=0.80。训练期不运行目标测试；冻结V选择checkpoint后，只在目标receiver全集上评估day1–day4的clean及三种LEO_WEAK，结果不得反馈选种、调参或重训。
+统一source receivers=`[1,3,4,6,8]`，训练day1–day3。方法核心严格沿用既有固定版本：RIEI保留Adam、CE/MI/IE sum reduction与`lambda_feature_norm=1e-4`；DRIFT保留raw negative-MSE sum、`mse_cap=4000`、EMA center及其余固定项。单一source验证集`V=0.30`用于checkpoint选择，不拆分其他验证角色。训练采用真实`clean+satellite`批次拼接；clean半批计算固定版本原损失，satellite半批只计算TX交叉熵，`lambda_sat_cls=0.68`、`lambda_sat_cons=0`。卫星辅助CE从E80开始，课程为E1–40 clear/p=0.30、E41–90 low-elev+rain/p=0.60、E91–200三场景/p=0.80。训练期不运行目标测试；冻结V选择checkpoint后，只在目标receiver全集上评估day1–day4的clean及三种LEO_WEAK，结果不得反馈选种、调参或重训。
 
 ## 启动命令
 
@@ -35,6 +36,5 @@ PYTHONPATH=<release>/code:<release> /home/szu2070436088/.conda/envs/CVS-RFFI/bin
 - 聚焦+相邻回归：30项通过。
 - Python编译与`git diff --check`：通过。
 - 独立P0/P1审查及一次原问题定点复审：`READY`。
-- Git push与远端OID回读：`VERIFIED`，远端`work/cvs-active`=`77f90a3324f5ab1dea373be96576082e43cfca75`。
-- release映射：本地`E:\type10-7\release_archives\phase1_riei_drift_newsplit_fold18_s392002_20260901_r1_77f90a33.tar.gz`→远端`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_riei_drift_newsplit_fold18_s392002_20260901_r1_77f90a33.tar.gz`；仅比较该归档一次本地/远端SHA256。
-
+- Git push与远端OID回读：`VERIFIED`，远端`work/cvs-active`=`55f4e14c3e38042ff113f2585517190aa4e5b68e`。
+- release映射：本地`E:\type10-7\release_archives\phase1_riei_drift_newsplit_fold18_s392002_20260901_r1_55f4e14c.tar.gz`→远端`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_riei_drift_newsplit_fold18_s392002_20260901_r1_55f4e14c.tar.gz`；仅比较该归档一次本地/远端SHA256。
