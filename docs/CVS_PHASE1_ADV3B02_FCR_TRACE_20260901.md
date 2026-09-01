@@ -11,12 +11,12 @@
 | ID | 来源章节 | Requirement | Target files | Status | Verification | Notes |
 |---|---|---|---|---|---|---|
 | FCR-01 | 总体判断、第二节 | clean/LEO必须是同一物理片段、同一内容和同一TX的干预式配对 | `code/baseline_origin_sat_view.py`、`code/cvsrffi/phase1_fcr_interventions.py` | verified | `test_phase1_fcr_pairing.py`核对physical ID、crop和view | 不产生第二个Phase2观测 |
-| FCR-02 | 第一、十三节 | Decoder遵循内容生成→TX响应→链路/接收机的物理顺序 | `code/cvsrffi/phase1_fcr_decoder.py` | pending | 模块调用顺序和梯度路径测试 | 禁止普通latent concat Decoder |
+| FCR-02 | 第一、十三节 | Decoder遵循内容生成→TX响应→链路/接收机的物理顺序 | `code/cvsrffi/phase1_fcr_decoder.py` | implemented | 本地模块测试核对内容→指纹→信道/接收机调用顺序、形状和全部latent梯度 | 禁止普通latent concat Decoder；端到端和N607证据待后续任务 |
 | FCR-03 | 第六节6.1 | `z_s`是低采样率时序token并承担内容/激励，不携带TX/receiver/domain | `code/cvsrffi/phase1_fcr_factors.py` | implemented | 本地聚焦测试核对`[B,64,32]`时序token、masked reconstruction梯度和默认detach身份输入；独立probe待后续任务 | TX CE默认不更新`E_s`；未形成端到端或N607证据 |
 | FCR-04 | 第六节6.2 | `z_f=[z_f_id,z_tx_state]`，作为激励条件化响应算子参数 | `code/cvsrffi/phase1_fcr_factors.py`、`code/cvsrffi/phase1_fcr_fingerprint.py` | implemented | 本地模块测试核对`z_f_id:[B,160]`单位范数和`z_tx_state:[B,16]`输出 | `L_id`只作用于`z_f_id`；跨天稳定性和端到端证据待后续任务 |
 | FCR-05 | 第六节6.2 | `G_f(e,z_f)`由物理基和受限小残差产生`delta_f` | `code/cvsrffi/phase1_fcr_fingerprint.py` | implemented | 本地模块测试核对固定基、公共相位等变、零输入有限和逐样本能量上限 | 受限残差只读excitation和`z_tx_state`；未形成端到端或N607证据 |
-| FCR-06 | 第六节6.3 | `z_n=[z_ch,z_rx,z_sync,z_gain]`且为低容量结构化latent | `code/cvsrffi/phase1_fcr_nuisance.py` | pending | 容量、形状、类别泄漏和skip负测 | 禁止目标波形旁路 |
-| FCR-07 | 第七节 | 噪声以条件均值和方差建模，不精确重构noise realization | `code/cvsrffi/phase1_fcr_decoder.py`、`code/cvsrffi/phase1_fcr_losses.py` | pending | 异方差NLL、方差上下界和逃逸负测 | `sigma`不能无限增大 |
+| FCR-06 | 第六节6.3 | `z_n=[z_ch,z_rx,z_sync,z_gain]`且为低容量结构化latent | `code/cvsrffi/phase1_fcr_nuisance.py` | implemented | 本地模块测试核对33维容量、四段形状、无skip/时序latent和零/近零输入有限有界 | 禁止目标波形旁路；类别泄漏probe待后续任务 |
+| FCR-07 | 第七节 | 噪声以条件均值和方差建模，不精确重构noise realization | `code/cvsrffi/phase1_fcr_decoder.py`、`code/cvsrffi/phase1_fcr_losses.py` | implemented | 本地Decoder测试核对条件均值、方差上下界、零内容有限和latent梯度；异方差NLL待Task6 | `sigma`不能无限增大；未形成端到端或N607证据 |
 | FCR-08 | 第八节8.1-8.3 | 重构误差包含受限对齐、MRSTFT和幅度门控共轭相位增量 | `code/cvsrffi/phase1_fcr_losses.py` | pending | CFO边界、STFT噪声地板和phase wrap测试 | 不直接对wrapped phase做L1 |
 | FCR-09 | 第八节8.4 | `R_fp`是冻结物理特征集合并受Fisher可辨识性门控 | `code/cvsrffi/phase1_fcr_physics.py` | pending | 冻结参数、低PAPR关闭PA项和噪声地板测试 | 不与Decoder自由协同训练 |
 | FCR-10 | 第九节 | 交叉生成结果重新编码并恢复来源`z_s/z_f`及目标`z_n` | `code/cvsrffi/phase1_fcr_losses.py` | pending | 双向latent-cycle合成测试 | 所有参考latent使用stop-gradient |
@@ -40,11 +40,11 @@
 ## 当前计数
 
 - `verified`：2
-- `implemented`：5
+- `implemented`：8
 - `deferred`：0
 - `rejected`：0
 - `blocked`：1
-- `pending`：20
+- `pending`：17
 
 ## 最高风险项
 
