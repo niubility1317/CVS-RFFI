@@ -181,13 +181,21 @@ def test_promotion_support_query_direction_blocks_opposite_sign() -> None:
     assert all(row["consistent"] is False for row in decision["direction_diagnostics"])
 
 
-def test_cli_has_exact_smoke_pilot_score_commands_and_smoke_has_no_query_path() -> None:
+def test_cli_has_exact_execution_commands_and_smoke_has_no_query_path() -> None:
     module = _module()
     parser = module.parser()
     subparsers = next(
         action for action in parser._actions if hasattr(action, "choices") and action.choices
     )
-    assert tuple(subparsers.choices) == ("smoke", "pilot", "score")
+    assert tuple(subparsers.choices) == (
+        "smoke",
+        "pilot",
+        "adapt-unit",
+        "freeze-collection",
+        "predict-unit",
+        "finalize",
+        "score",
+    )
     smoke = subparsers.choices["smoke"]
     smoke_options = {
         option
@@ -379,6 +387,7 @@ def test_real_adapt_unit_r8_builds_fold_scoped_plans_and_learning_rates(
     args = SimpleNamespace(device="cpu")
     config = {
         "checkpoint_id": "ADV3B02_CORE90_SOFT_E200",
+        "seed": 713102,
         "k_shot": 10,
         "fold_count": 2,
         "stage_steps": [1, 1, 1, 1],
@@ -674,6 +683,7 @@ def test_pilot_result_binds_k_coverage_execution_and_unit_evidence(
         "software_supported_k": [1, 2, 5, 10, 20],
         "training_coverage_k": [],
         "pilot_k": 10,
+        "stage_steps": [2, 2, 2, 2],
         "promotion_gates": {"gate": 1.0},
         "zero_id_norm_threshold": 1e-12,
     }
@@ -756,6 +766,399 @@ def test_pilot_result_binds_k_coverage_execution_and_unit_evidence(
     with pytest.raises(RuntimeError, match="prediction interrupted"):
         module._pilot(failed_args)
     assert not (failed_args.output_root / "pilot_result.json").exists()
+
+
+def _sharded_config():
+    return {
+        "protocol_schema": "p2_min_v1",
+        "phase2_data_status": "VALIDATED_ONCE",
+        "pilot_outer_key": "outer",
+        "capsule_id": "capsule",
+        "split_id": "split",
+        "receiver": "3-19",
+        "checkpoint_id": "ADV3B02_CORE90_SOFT_E200",
+        "seed": 713102,
+        "software_supported_k": [1, 2, 5, 10, 20],
+        "training_coverage_k": [],
+        "pilot_k": 10,
+        "promotion_gates": {"gate": 1.0},
+        "zero_id_norm_threshold": 1e-12,
+    }
+
+
+def _sharded_job(tmp_path):
+    return {
+        "outer_key": "outer",
+        "capsule_id": "capsule",
+        "split_id": "split",
+        "receiver": "3-19",
+        "packages": {
+            "before_enrollment": {"package_root": str(tmp_path / "support")},
+            "before_apply": {"package_root": str(tmp_path / "query")},
+        },
+    }
+
+
+def _sharded_state(arm):
+    held_out = arm != "R0"
+    support_cv = _support_cv_evidence(0.0)
+    return {
+        "model_state": {"weight": torch.tensor([1.0])},
+        "audit": {
+            "held_out_support_evidence": held_out,
+            "support_cv_evidence": support_cv,
+            "training_seconds": 1.0,
+            "peak_cuda_bytes": None,
+        },
+        "bank_initialization": {},
+        "support_feature_abi": {},
+        "support_feature_audits": [],
+        "support_feature_boundary": {"source_iq_rows_used": 0, "query_rows_used": 0},
+        "trainable_parameter_count": 1,
+    }
+
+
+def _write_all_sharded_support_units(module, root, config):
+    for scenario in SCENARIOS:
+        for arm in FORMAL_ARMS:
+            module._save_frozen_unit(
+                root, scenario, arm, _sharded_state(arm), config
+            )
+
+
+def test_sharded_cli_exposes_support_barrier_and_unit_commands() -> None:
+    module = _module()
+    command_parser = module.parser()
+    subparsers = next(
+        action
+        for action in command_parser._actions
+        if hasattr(action, "choices") and action.choices
+    )
+    assert {
+        "adapt-unit",
+        "freeze-collection",
+        "predict-unit",
+        "finalize",
+    } <= set(subparsers.choices)
+    for name in ("adapt-unit", "predict-unit"):
+        options = {
+            option
+            for action in subparsers.choices[name]._actions
+            for option in action.option_strings
+        }
+        assert {"--scenario", "--arm", "--output-root"} <= options
+
+
+def test_adapt_unit_command_never_opens_query_and_unit_is_immutable(
+    tmp_path, monkeypatch
+) -> None:
+    module = _module()
+    config = _sharded_config()
+    job = _sharded_job(tmp_path)
+    monkeypatch.setattr(module, "_context", lambda _args: (config, job))
+    monkeypatch.setattr(module, "load_support_package", lambda _path: object())
+    monkeypatch.setattr(
+        module,
+        "load_query_package",
+        lambda _path: pytest.fail("adapt-unit opened query"),
+    )
+    monkeypatch.setattr(
+        module,
+        "_adapt_unit",
+        lambda _args, _config, _support, arm, *, smoke: _sharded_state(arm),
+    )
+    args = SimpleNamespace(
+        output_root=tmp_path / "pilot",
+        scenario=SCENARIOS[0],
+        arm=FORMAL_ARMS[0],
+    )
+
+    result = module._adapt_unit_command(args)
+
+    assert result["status"] == "SUPPORT_STATE_FROZEN"
+    receipt = json.loads(
+        (args.output_root / args.scenario / args.arm / "support_state_receipt.json")
+        .read_text(encoding="utf-8")
+    )
+    assert receipt["query_opened"] is False
+    assert receipt["capsule_id"] == config["capsule_id"]
+    with pytest.raises(FileExistsError):
+        module._adapt_unit_command(args)
+
+
+def test_predict_unit_rejects_incomplete_collection_before_query_open(
+    tmp_path, monkeypatch
+) -> None:
+    module = _module()
+    config = _sharded_config()
+    job = _sharded_job(tmp_path)
+    module._save_frozen_unit(
+        tmp_path / "pilot", SCENARIOS[0], FORMAL_ARMS[0], _sharded_state("R0"), config
+    )
+    monkeypatch.setattr(module, "_context", lambda _args: (config, job))
+    query_loads = []
+    monkeypatch.setattr(
+        module, "load_query_package", lambda path: query_loads.append(path)
+    )
+    args = SimpleNamespace(
+        output_root=tmp_path / "pilot",
+        scenario=SCENARIOS[0],
+        arm=FORMAL_ARMS[0],
+    )
+
+    with pytest.raises((FileNotFoundError, ValueError), match="collection|support"):
+        module._predict_unit_command(args)
+
+    assert query_loads == []
+
+
+def test_freeze_collection_requires_all_18_units_and_predict_validates_barrier_first(
+    tmp_path, monkeypatch
+) -> None:
+    module = _module()
+    config = _sharded_config()
+    job = _sharded_job(tmp_path)
+    root = tmp_path / "pilot"
+    _write_all_sharded_support_units(module, root, config)
+    monkeypatch.setattr(module, "_context", lambda _args: (config, job))
+    barrier = module._freeze_collection_command(SimpleNamespace(output_root=root))
+    assert barrier["support_frozen_unit_count"] == 18
+    assert barrier["query_opened"] is False
+
+    events = []
+    monkeypatch.setattr(
+        module, "load_support_package", lambda _path: events.append("support") or object()
+    )
+    monkeypatch.setattr(
+        module, "load_query_package", lambda _path: events.append("query") or object()
+    )
+    monkeypatch.setattr(
+        module,
+        "_predict_unit",
+        lambda *_args, **_kwargs: {
+            "scenario": SCENARIOS[0],
+            "arm": FORMAL_ARMS[0],
+            "zero_id_norm_threshold": 1e-12,
+            "zero_id_count": 0,
+            "support_cv_evidence": _support_cv_evidence(0.0),
+        },
+    )
+    result = module._predict_unit_command(
+        SimpleNamespace(output_root=root, scenario=SCENARIOS[0], arm=FORMAL_ARMS[0])
+    )
+    assert events == ["support", "query"]
+    assert result["status"] == "PREDICTIONS_COMPLETE"
+
+
+def test_predict_unit_revalidates_tampered_support_after_barrier_before_query(
+    tmp_path, monkeypatch
+) -> None:
+    module = _module()
+    config = _sharded_config()
+    job = _sharded_job(tmp_path)
+    root = tmp_path / "pilot"
+    _write_all_sharded_support_units(module, root, config)
+    monkeypatch.setattr(module, "_context", lambda _args: (config, job))
+    module._freeze_collection_command(SimpleNamespace(output_root=root))
+    receipt_path = root / SCENARIOS[-1] / FORMAL_ARMS[-1] / "support_state_receipt.json"
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt["query_opened"] = True
+    receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+    query_loads = []
+    monkeypatch.setattr(
+        module, "load_query_package", lambda path: query_loads.append(path)
+    )
+
+    with pytest.raises(ValueError, match="support unit binding"):
+        module._predict_unit_command(
+            SimpleNamespace(output_root=root, scenario=SCENARIOS[0], arm=FORMAL_ARMS[0])
+        )
+
+    assert query_loads == []
+
+
+def _swap_support_state_files(root: Path, first_pair, second_pair) -> None:
+    first = root / first_pair[0] / first_pair[1] / "support_frozen_state.pt"
+    second = root / second_pair[0] / second_pair[1] / "support_frozen_state.pt"
+    temporary = root / "swapped-support-state.pt"
+    first.replace(temporary)
+    second.replace(first)
+    temporary.replace(second)
+
+
+def test_support_barrier_rejects_state_files_swapped_between_pairs(tmp_path, monkeypatch) -> None:
+    module = _module()
+    config = _sharded_config()
+    job = _sharded_job(tmp_path)
+    root = tmp_path / "pilot"
+    _write_all_sharded_support_units(module, root, config)
+    monkeypatch.setattr(module, "_context", lambda _args: (config, job))
+    _swap_support_state_files(
+        root,
+        (SCENARIOS[0], FORMAL_ARMS[0]),
+        (SCENARIOS[-1], FORMAL_ARMS[-1]),
+    )
+
+    with pytest.raises(ValueError, match="support frozen state binding"):
+        module._freeze_collection_command(SimpleNamespace(output_root=root))
+
+    assert not (root / "support_collection.json").exists()
+
+
+def test_predict_rechecks_state_pair_binding_before_query_open(tmp_path, monkeypatch) -> None:
+    module = _module()
+    config = _sharded_config()
+    job = _sharded_job(tmp_path)
+    root = tmp_path / "pilot"
+    _write_all_sharded_support_units(module, root, config)
+    monkeypatch.setattr(module, "_context", lambda _args: (config, job))
+    module._freeze_collection_command(SimpleNamespace(output_root=root))
+    _swap_support_state_files(
+        root,
+        (SCENARIOS[0], FORMAL_ARMS[0]),
+        (SCENARIOS[-1], FORMAL_ARMS[-1]),
+    )
+    query_loads = []
+    monkeypatch.setattr(
+        module, "load_query_package", lambda path: query_loads.append(path)
+    )
+
+    with pytest.raises(ValueError, match="support frozen state binding"):
+        module._predict_unit_command(
+            SimpleNamespace(output_root=root, scenario=SCENARIOS[0], arm=FORMAL_ARMS[0])
+        )
+
+    assert query_loads == []
+
+
+@pytest.mark.parametrize("drift", ("threshold", "gates", "stage_steps"))
+def test_config_semantic_drift_rejected_before_query_and_finalize(
+    tmp_path, monkeypatch, drift
+) -> None:
+    module = _module()
+    config = _sharded_config()
+    job = _sharded_job(tmp_path)
+    root = tmp_path / "pilot"
+    _write_all_sharded_support_units(module, root, config)
+    monkeypatch.setattr(module, "_context", lambda _args: (config, job))
+    module._freeze_collection_command(SimpleNamespace(output_root=root))
+    drifted = json.loads(json.dumps(config))
+    if drift == "threshold":
+        drifted["zero_id_norm_threshold"] = 1e-6
+    elif drift == "gates":
+        drifted["promotion_gates"]["gate"] = 2.0
+    else:
+        drifted["stage_steps"] = [3, 2, 2, 2]
+    monkeypatch.setattr(module, "_context", lambda _args: (drifted, job))
+    query_loads = []
+    monkeypatch.setattr(
+        module, "load_query_package", lambda path: query_loads.append(path)
+    )
+
+    with pytest.raises(ValueError, match="support collection binding"):
+        module._predict_unit_command(
+            SimpleNamespace(output_root=root, scenario=SCENARIOS[0], arm=FORMAL_ARMS[0])
+        )
+    with pytest.raises(ValueError, match="support collection binding"):
+        module._finalize_command(SimpleNamespace(output_root=root))
+
+    assert query_loads == []
+    assert not (root / "pilot_result.json").exists()
+
+
+def test_finalize_builds_pilot_compatible_result_only_after_all_predictions(
+    tmp_path, monkeypatch
+) -> None:
+    module = _module()
+    config = _sharded_config()
+    job = _sharded_job(tmp_path)
+    root = tmp_path / "pilot"
+    _write_all_sharded_support_units(module, root, config)
+    monkeypatch.setattr(module, "_context", lambda _args: (config, job))
+    module._freeze_collection_command(SimpleNamespace(output_root=root))
+    monkeypatch.setattr(
+        module,
+        "preflight_marc_ot_prediction",
+        lambda path: SimpleNamespace(
+            receipt={
+                "status": "PREDICTIONS_COMPLETE",
+                "protocol_schema": "p2_min_v1",
+                "phase2_data_status": "VALIDATED_ONCE",
+                "outer_key": "outer",
+                "capsule_id": "capsule",
+                "split_id": "split",
+                "receiver": "3-19",
+                "scenario": path.parents[1].name,
+                "arm": path.parent.name,
+                "query_truth_opened": False,
+                "query_role_opened": False,
+                "support_state_frozen_before_query": True,
+                "seed": 713102,
+                "software_supported_k": [1, 2, 5, 10, 20],
+                "training_coverage_k": [],
+                "pilot_k": 10,
+                "held_out_support_evidence": path.parent.name != "R0",
+                "zero_id_norm_threshold": 1e-12,
+                "zero_id_count": 0,
+                "support_cv_evidence": _support_cv_evidence(0.0),
+            }
+        ),
+    )
+
+    result = module._finalize_command(SimpleNamespace(output_root=root))
+
+    assert result["status"] == "ARTIFACTS_COMPLETE"
+    assert result["support_frozen_unit_count"] == 18
+    assert result["prediction_unit_count"] == 18
+    assert len(result["adaptation_unit_evidence"]) == 15
+    assert len(result["prediction_unit_evidence"]) == 18
+    assert (root / "pilot_result.json").exists()
+
+
+def test_finalize_rejects_prediction_evidence_not_bound_to_frozen_support(
+    tmp_path, monkeypatch
+) -> None:
+    module = _module()
+    config = _sharded_config()
+    job = _sharded_job(tmp_path)
+    root = tmp_path / "pilot"
+    _write_all_sharded_support_units(module, root, config)
+    monkeypatch.setattr(module, "_context", lambda _args: (config, job))
+    module._freeze_collection_command(SimpleNamespace(output_root=root))
+    mismatched_cv = _support_cv_evidence(2.0)
+    monkeypatch.setattr(
+        module,
+        "preflight_marc_ot_prediction",
+        lambda path: SimpleNamespace(
+            receipt={
+                "status": "PREDICTIONS_COMPLETE",
+                "protocol_schema": "p2_min_v1",
+                "phase2_data_status": "VALIDATED_ONCE",
+                "outer_key": "outer",
+                "capsule_id": "capsule",
+                "split_id": "split",
+                "receiver": "3-19",
+                "scenario": path.parents[1].name,
+                "arm": path.parent.name,
+                "query_truth_opened": False,
+                "query_role_opened": False,
+                "support_state_frozen_before_query": True,
+                "seed": 713102,
+                "software_supported_k": [1, 2, 5, 10, 20],
+                "training_coverage_k": [],
+                "pilot_k": 10,
+                "held_out_support_evidence": path.parent.name != "R0",
+                "zero_id_norm_threshold": 1e-12,
+                "zero_id_count": 0,
+                "support_cv_evidence": mismatched_cv,
+            }
+        ),
+    )
+
+    with pytest.raises(ValueError, match="prediction.*evidence"):
+        module._finalize_command(SimpleNamespace(output_root=root))
+
+    assert not (root / "pilot_result.json").exists()
 
 
 def _write_prediction_unit(

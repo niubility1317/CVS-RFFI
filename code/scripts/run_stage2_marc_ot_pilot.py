@@ -533,7 +533,6 @@ def _save_frozen_unit(
     model_path = unit / "support_frozen_state.pt"
     if model_path.exists() or model_path.is_symlink():
         raise FileExistsError(f"immutable support state exists: {model_path}")
-    torch.save(state["model_state"], model_path)
     audit = state.get("audit")
     held_out = audit.get("held_out_support_evidence") if isinstance(audit, Mapping) else None
     if not isinstance(held_out, bool):
@@ -541,11 +540,38 @@ def _save_frozen_unit(
     support_cv_evidence = validate_support_cv_evidence(
         audit.get("support_cv_evidence") if isinstance(audit, Mapping) else None
     )
+    torch.save(
+        {
+            "schema": "cvs.phase2.marc_ot.support_frozen_state.v1",
+            "protocol_schema": config.get("protocol_schema", "p2_min_v1"),
+            "phase2_data_status": config.get("phase2_data_status", "VALIDATED_ONCE"),
+            "outer_key": config.get("pilot_outer_key"),
+            "capsule_id": config.get("capsule_id"),
+            "split_id": config.get("split_id"),
+            "receiver": config.get("receiver"),
+            "checkpoint_id": config.get("checkpoint_id"),
+            "seed": config.get("seed"),
+            "scenario": scenario,
+            "arm": arm,
+            "model_state": state["model_state"],
+        },
+        model_path,
+    )
     _write_json_new(
         unit / "support_state_receipt.json",
         {
             "schema": "cvs.phase2.marc_ot.support_state_receipt.v1",
             "status": "SUPPORT_STATE_FROZEN",
+            "protocol_schema": config.get("protocol_schema", "p2_min_v1"),
+            "phase2_data_status": config.get(
+                "phase2_data_status", "VALIDATED_ONCE"
+            ),
+            "outer_key": config.get("pilot_outer_key"),
+            "capsule_id": config.get("capsule_id"),
+            "split_id": config.get("split_id"),
+            "receiver": config.get("receiver"),
+            "checkpoint_id": config.get("checkpoint_id"),
+            "seed": config.get("seed"),
             "scenario": scenario,
             "arm": arm,
             "query_opened": False,
@@ -563,6 +589,347 @@ def _save_frozen_unit(
             "trainable_parameter_count": state["trainable_parameter_count"],
         },
     )
+
+
+def _expected_unit_pairs() -> tuple[tuple[str, str], ...]:
+    return tuple((scenario, arm) for scenario in SCENARIOS for arm in FORMAL_ARMS)
+
+
+def _support_unit_path(output_root: Path, scenario: str, arm: str) -> Path:
+    return output_root / scenario / arm
+
+
+def _support_state_binding(
+    config: Mapping[str, Any], job: Mapping[str, Any], scenario: str, arm: str
+) -> Mapping[str, Any]:
+    return {
+        "schema": "cvs.phase2.marc_ot.support_frozen_state.v1",
+        "protocol_schema": "p2_min_v1",
+        "phase2_data_status": "VALIDATED_ONCE",
+        "outer_key": str(job["outer_key"]),
+        "capsule_id": str(job["capsule_id"]),
+        "split_id": str(job["split_id"]),
+        "receiver": str(job["receiver"]),
+        "checkpoint_id": str(config["checkpoint_id"]),
+        "seed": int(config["seed"]),
+        "scenario": scenario,
+        "arm": arm,
+    }
+
+
+def _load_bound_support_state(
+    state_path: Path,
+    config: Mapping[str, Any],
+    job: Mapping[str, Any],
+    scenario: str,
+    arm: str,
+) -> Mapping[str, torch.Tensor]:
+    try:
+        payload = torch.load(state_path, map_location="cpu", weights_only=True)
+    except (OSError, RuntimeError, ValueError, TypeError) as error:
+        raise ValueError(
+            f"support frozen state cannot be read safely: {scenario}/{arm}"
+        ) from error
+    expected = _support_state_binding(config, job, scenario, arm)
+    if not isinstance(payload, Mapping) or set(payload) != {*expected, "model_state"}:
+        raise ValueError(f"support frozen state binding drift: {scenario}/{arm}")
+    if any(payload.get(field) != value for field, value in expected.items()):
+        raise ValueError(f"support frozen state binding drift: {scenario}/{arm}")
+    model_state = payload.get("model_state")
+    if not isinstance(model_state, Mapping) or not all(
+        isinstance(name, str) and isinstance(value, torch.Tensor)
+        for name, value in model_state.items()
+    ):
+        raise ValueError(f"support frozen state payload drift: {scenario}/{arm}")
+    return dict(model_state)
+
+
+def _validate_support_unit(
+    output_root: Path,
+    config: Mapping[str, Any],
+    job: Mapping[str, Any],
+    scenario: str,
+    arm: str,
+) -> Mapping[str, Any]:
+    unit = _support_unit_path(output_root, scenario, arm)
+    state_path = unit / "support_frozen_state.pt"
+    receipt_path = unit / "support_state_receipt.json"
+    if not state_path.is_file() or state_path.is_symlink():
+        raise ValueError(f"support state is missing or unsafe: {scenario}/{arm}")
+    if not receipt_path.is_file() or receipt_path.is_symlink():
+        raise ValueError(f"support receipt is missing or unsafe: {scenario}/{arm}")
+    _load_bound_support_state(state_path, config, job, scenario, arm)
+    receipt = _load_json(receipt_path)
+    expected = {
+        "schema": "cvs.phase2.marc_ot.support_state_receipt.v1",
+        "status": "SUPPORT_STATE_FROZEN",
+        "protocol_schema": "p2_min_v1",
+        "phase2_data_status": "VALIDATED_ONCE",
+        "outer_key": str(job["outer_key"]),
+        "capsule_id": str(job["capsule_id"]),
+        "split_id": str(job["split_id"]),
+        "receiver": str(job["receiver"]),
+        "checkpoint_id": str(config["checkpoint_id"]),
+        "seed": int(config["seed"]),
+        "scenario": scenario,
+        "arm": arm,
+        "query_opened": False,
+        "query_rows_used": 0,
+        "software_supported_k": list(config["software_supported_k"]),
+        "training_coverage_k": list(config["training_coverage_k"]),
+        "pilot_k": int(config["pilot_k"]),
+    }
+    if any(receipt.get(field) != value for field, value in expected.items()):
+        raise ValueError(f"support unit binding drift: {scenario}/{arm}")
+    training_audit = receipt.get("training_audit")
+    if not isinstance(training_audit, Mapping):
+        raise ValueError(f"support training audit is missing: {scenario}/{arm}")
+    held_out = receipt.get("held_out_support_evidence")
+    if not isinstance(held_out, bool) or training_audit.get(
+        "held_out_support_evidence"
+    ) is not held_out:
+        raise ValueError(f"support held-out evidence drift: {scenario}/{arm}")
+    support_cv = validate_support_cv_evidence(receipt.get("support_cv_evidence"))
+    audit_cv = validate_support_cv_evidence(training_audit.get("support_cv_evidence"))
+    if support_cv != audit_cv:
+        raise ValueError(f"support CV evidence drift: {scenario}/{arm}")
+    return {
+        "scenario": scenario,
+        "arm": arm,
+        "status": "SUPPORT_STATE_FROZEN",
+        "query_opened": False,
+        "held_out_support_evidence": held_out,
+        "support_cv_evidence": dict(support_cv),
+    }
+
+
+def _collect_support_units(
+    output_root: Path, config: Mapping[str, Any], job: Mapping[str, Any]
+) -> list[Mapping[str, Any]]:
+    return [
+        _validate_support_unit(output_root, config, job, scenario, arm)
+        for scenario, arm in _expected_unit_pairs()
+    ]
+
+
+def _support_collection_payload(
+    config: Mapping[str, Any], job: Mapping[str, Any], units: list[Mapping[str, Any]]
+) -> Mapping[str, Any]:
+    return {
+        "schema": "cvs.phase2.marc_ot.support_collection.v1",
+        "status": "ALL_SUPPORT_STATES_FROZEN",
+        "protocol_schema": "p2_min_v1",
+        "phase2_data_status": "VALIDATED_ONCE",
+        "outer_key": str(job["outer_key"]),
+        "capsule_id": str(job["capsule_id"]),
+        "split_id": str(job["split_id"]),
+        "receiver": str(job["receiver"]),
+        "checkpoint_id": str(config["checkpoint_id"]),
+        "seed": int(config["seed"]),
+        "validated_config": json.loads(json.dumps(dict(config))),
+        "arms": list(FORMAL_ARMS),
+        "scenarios": list(SCENARIOS),
+        "support_frozen_unit_count": len(units),
+        "query_opened": False,
+        "units": units,
+    }
+
+
+def _validate_support_collection(
+    output_root: Path, config: Mapping[str, Any], job: Mapping[str, Any]
+) -> Mapping[str, Any]:
+    path = output_root / "support_collection.json"
+    if not path.is_file() or path.is_symlink():
+        raise FileNotFoundError(f"support collection is missing or unsafe: {path}")
+    observed = _load_json(path)
+    units = _collect_support_units(output_root, config, job)
+    expected = _support_collection_payload(config, job, units)
+    if dict(observed) != dict(expected):
+        raise ValueError("support collection binding drift")
+    return observed
+
+
+def _load_frozen_unit_state(
+    output_root: Path,
+    config: Mapping[str, Any],
+    job: Mapping[str, Any],
+    scenario: str,
+    arm: str,
+) -> Mapping[str, Any]:
+    unit = _support_unit_path(output_root, scenario, arm)
+    model_state = _load_bound_support_state(
+        unit / "support_frozen_state.pt", config, job, scenario, arm
+    )
+    receipt = _load_json(unit / "support_state_receipt.json")
+    return {
+        "model_state": dict(model_state),
+        "audit": receipt["training_audit"],
+        "bank_initialization": receipt["bank_initialization"],
+        "support_feature_abi": receipt["support_feature_abi"],
+        "support_feature_audits": receipt["support_feature_audits"],
+        "support_feature_boundary": receipt["support_feature_boundary"],
+        "trainable_parameter_count": receipt["trainable_parameter_count"],
+    }
+
+
+def _adapt_unit_command(args: argparse.Namespace) -> Mapping[str, Any]:
+    config, job = _context(args)
+    support = load_support_package(_support_path(job, args.scenario))
+    state = _adapt_unit(args, config, support, args.arm, smoke=False)
+    _save_frozen_unit(args.output_root, args.scenario, args.arm, state, config)
+    return {
+        "schema": "cvs.phase2.marc_ot.adapt_unit.v1",
+        "status": "SUPPORT_STATE_FROZEN",
+        "scenario": args.scenario,
+        "arm": args.arm,
+        "query_opened": False,
+        "query_rows_used": 0,
+    }
+
+
+def _freeze_collection_command(args: argparse.Namespace) -> Mapping[str, Any]:
+    config, job = _context(args)
+    units = _collect_support_units(args.output_root, config, job)
+    result = _support_collection_payload(config, job, units)
+    _write_json_new(args.output_root / "support_collection.json", result)
+    return result
+
+
+def _predict_unit_command(args: argparse.Namespace) -> Mapping[str, Any]:
+    config, job = _context(args)
+    _validate_support_collection(args.output_root, config, job)
+    state = _load_frozen_unit_state(
+        args.output_root, config, job, args.scenario, args.arm
+    )
+    support = load_support_package(_support_path(job, args.scenario))
+    query = load_query_package(_query_path(job, args.scenario))
+    evidence = _predict_unit(
+        args,
+        config,
+        job,
+        args.output_root,
+        args.scenario,
+        args.arm,
+        support,
+        query,
+        state,
+    )
+    return {
+        "schema": "cvs.phase2.marc_ot.predict_unit.v1",
+        "status": "PREDICTIONS_COMPLETE",
+        **dict(evidence),
+    }
+
+
+def _finalize_command(args: argparse.Namespace) -> Mapping[str, Any]:
+    config, job = _context(args)
+    collection = _validate_support_collection(args.output_root, config, job)
+    frozen_config = collection["validated_config"]
+    adaptation_evidence = [
+        {
+            "scenario": row["scenario"],
+            "arm": row["arm"],
+            "held_out_support_evidence": row["held_out_support_evidence"],
+            "support_cv_evidence": row["support_cv_evidence"],
+        }
+        for row in collection["units"]
+        if row["arm"] != "R0"
+    ]
+    prediction_evidence: list[Mapping[str, Any]] = []
+    prediction_units: list[Mapping[str, Any]] = []
+    support_by_pair = {
+        (str(row["scenario"]), str(row["arm"])): row
+        for row in collection["units"]
+    }
+    for scenario, arm in _expected_unit_pairs():
+        preflighted = preflight_marc_ot_prediction(
+            args.output_root / scenario / arm / "prediction"
+        )
+        receipt = preflighted.receipt
+        expected = {
+            "status": "PREDICTIONS_COMPLETE",
+            "protocol_schema": "p2_min_v1",
+            "phase2_data_status": "VALIDATED_ONCE",
+            "outer_key": str(job["outer_key"]),
+            "capsule_id": str(job["capsule_id"]),
+            "split_id": str(job["split_id"]),
+            "receiver": str(job["receiver"]),
+            "seed": int(frozen_config["seed"]),
+            "scenario": scenario,
+            "arm": arm,
+            "query_truth_opened": False,
+            "query_role_opened": False,
+            "support_state_frozen_before_query": True,
+            "software_supported_k": list(frozen_config["software_supported_k"]),
+            "training_coverage_k": list(frozen_config["training_coverage_k"]),
+            "pilot_k": int(frozen_config["pilot_k"]),
+        }
+        if any(receipt.get(field) != value for field, value in expected.items()):
+            raise ValueError(f"prediction unit binding drift: {scenario}/{arm}")
+        support_cv = validate_support_cv_evidence(receipt.get("support_cv_evidence"))
+        support_unit = support_by_pair[(scenario, arm)]
+        if (
+            receipt.get("held_out_support_evidence")
+            is not support_unit["held_out_support_evidence"]
+            or dict(support_cv) != dict(support_unit["support_cv_evidence"])
+            or not isinstance(receipt.get("zero_id_count"), int)
+            or isinstance(receipt.get("zero_id_count"), bool)
+            or int(receipt["zero_id_count"]) < 0
+            or not isinstance(receipt.get("zero_id_norm_threshold"), (int, float))
+            or isinstance(receipt.get("zero_id_norm_threshold"), bool)
+            or float(receipt["zero_id_norm_threshold"])
+            != float(frozen_config["zero_id_norm_threshold"])
+        ):
+            raise ValueError(f"prediction unit evidence binding drift: {scenario}/{arm}")
+        prediction_evidence.append(
+            {
+                "scenario": scenario,
+                "arm": arm,
+                "zero_id_norm_threshold": float(
+                    receipt["zero_id_norm_threshold"]
+                ),
+                "zero_id_count": int(receipt["zero_id_count"]),
+                "support_cv_evidence": dict(support_cv),
+            }
+        )
+        prediction_units.append(
+            {"scenario": scenario, "arm": arm, "status": "PREDICTIONS_COMPLETE"}
+        )
+    result = {
+        "schema": "cvs.phase2.marc_ot.pilot_lifecycle.v1",
+        "status": "ARTIFACTS_COMPLETE",
+        "arms": list(FORMAL_ARMS),
+        "scenarios": list(SCENARIOS),
+        "support_frozen_unit_count": len(collection["units"]),
+        "prediction_unit_count": len(prediction_units),
+        "support_units": [
+            {
+                "scenario": row["scenario"],
+                "arm": row["arm"],
+                "status": "SUPPORT_STATE_FROZEN",
+                "query_opened": False,
+            }
+            for row in collection["units"]
+        ],
+        "prediction_units": prediction_units,
+        "truth_opened": False,
+        "query_policy": "per_sample_all_registered_classes_after_all_support_freeze",
+        "pilot_outer_key": str(job["outer_key"]),
+        "capsule_id": str(job["capsule_id"]),
+        "split_id": str(job["split_id"]),
+        "receiver": str(job["receiver"]),
+        "software_supported_k": list(frozen_config["software_supported_k"]),
+        "training_coverage_k": list(frozen_config["training_coverage_k"]),
+        "pilot_k": int(frozen_config["pilot_k"]),
+        "pilot_executed": True,
+        "adaptation_unit_evidence": adaptation_evidence,
+        "prediction_unit_evidence": prediction_evidence,
+        "zero_id_norm_threshold": float(frozen_config["zero_id_norm_threshold"]),
+        "promotion_gates": dict(frozen_config["promotion_gates"]),
+        "scoring_required": True,
+    }
+    _write_json_new(args.output_root / "pilot_result.json", result)
+    return result
 
 
 def _predict_unit(
@@ -628,6 +995,7 @@ def _predict_unit(
             "capsule_id": str(job["capsule_id"]),
             "split_id": str(job["split_id"]),
             "receiver": str(job["receiver"]),
+            "seed": int(config["seed"]),
             "scenario": scenario,
             "arm": arm,
             "query_rows": len(query.tokens),
@@ -1154,6 +1522,17 @@ def _add_execution(command: argparse.ArgumentParser) -> None:
     command.add_argument("--batch-size", type=int, default=128)
 
 
+def _add_collection(command: argparse.ArgumentParser) -> None:
+    command.add_argument("--config", type=Path, required=True)
+    command.add_argument("--manifest", type=Path, required=True)
+    command.add_argument("--output-root", type=Path, required=True)
+
+
+def _add_unit_selector(command: argparse.ArgumentParser) -> None:
+    command.add_argument("--arm", choices=FORMAL_ARMS, required=True)
+    command.add_argument("--scenario", choices=SCENARIOS, required=True)
+
+
 def parser() -> argparse.ArgumentParser:
     root = argparse.ArgumentParser(description=__doc__)
     commands = root.add_subparsers(dest="command", required=True)
@@ -1163,6 +1542,24 @@ def parser() -> argparse.ArgumentParser:
     smoke.add_argument("--scenario", choices=SCENARIOS, default=SCENARIOS[0])
     pilot = commands.add_parser("pilot", help="freeze all support states, then predict")
     _add_execution(pilot)
+    adapt_unit = commands.add_parser(
+        "adapt-unit", help="freeze exactly one support-only scenario/arm unit"
+    )
+    _add_execution(adapt_unit)
+    _add_unit_selector(adapt_unit)
+    freeze_collection = commands.add_parser(
+        "freeze-collection", help="verify and bind all 18 frozen support units"
+    )
+    _add_collection(freeze_collection)
+    predict_unit = commands.add_parser(
+        "predict-unit", help="predict one unit after the 18-unit support barrier"
+    )
+    _add_execution(predict_unit)
+    _add_unit_selector(predict_unit)
+    finalize = commands.add_parser(
+        "finalize", help="verify all 18 predictions and write pilot_result.json"
+    )
+    _add_collection(finalize)
     score = commands.add_parser("score", help="independent truth-last scoring")
     score.add_argument("--prediction-root", type=Path, required=True)
     score.add_argument("--truth-sidecar", type=Path, required=True)
@@ -1172,7 +1569,15 @@ def parser() -> argparse.ArgumentParser:
 
 def main() -> int:
     args = parser().parse_args()
-    result = {"smoke": _smoke, "pilot": _pilot, "score": _score}[args.command](args)
+    result = {
+        "smoke": _smoke,
+        "pilot": _pilot,
+        "adapt-unit": _adapt_unit_command,
+        "freeze-collection": _freeze_collection_command,
+        "predict-unit": _predict_unit_command,
+        "finalize": _finalize_command,
+        "score": _score,
+    }[args.command](args)
     print(json.dumps(dict(result), ensure_ascii=False, sort_keys=True))
     return 0
 
