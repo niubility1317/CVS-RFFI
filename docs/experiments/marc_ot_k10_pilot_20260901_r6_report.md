@@ -68,3 +68,9 @@ CUDA_VISIBLE_DEVICES=<physical_gpu> /home/szu2070436088/.conda/envs/CVS-RFFI/bin
 - 精确r6 Python适配进程由14个降至11个；当前仍只有`leo_low_elev_weak/R2`一个异常日志，未出现第二种故障指纹。
 - r6仍保持`PARTIAL_RUNNING_WITH_ONE_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，不得执行freeze-collection或打开query。
 - 当前GPU仍承载r6剩余任务及其他既有工作负载，不满足安全发布完整替代矩阵的容量条件；本次不启动、不终止、不覆盖任何任务，继续等待。
+
+## 2026-09-02 03:02只读进度
+
+- r6新增`leo_low_elev_weak/R6`冻结态，当前共7份合法support回执，精确适配进程降至10个。
+- 异常日志仍仅为已知`leo_low_elev_weak/R2`，未出现新故障指纹；query仍保持关闭。
+- N607共有25个GPU计算进程，完整替代矩阵仍无安全容量；不启动替代run，继续只读等待。
