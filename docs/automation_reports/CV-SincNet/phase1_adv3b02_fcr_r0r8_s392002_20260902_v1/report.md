@@ -52,3 +52,11 @@ nohup env RUN_ID=phase1_adv3b02_fcr_r0r8_s392002_20260902_v1 OUTPUT_ROOT=/home/s
 ## 预期artifact
 
 每个`R0`至`R8`row独立保存`best_joint.pth`、`fcr_diagnostics.json`、`fcr_predictions.json`、`train.log`和`status.txt`。完成训练的row必须用选定checkpoint产生clean、`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`四场景完整prediction。launcher最多标记`PREDICTIONS_READY`；只有独立truth-last scorer完成同row评分后才可进入`ARTIFACTS_COMPLETE/ANALYZED`。
+
+## 2026-09-02 N607发布前读回
+
+- 直连SSH配置、普通账户、服务器时间、项目根和GPU可见性：`VERIFIED`。
+- 远端run root与release root碰撞检查：均未发现同名路径。
+- GPU0已绑定两个compute进程：PID`3850833`为既有Stage2 MARC-OT任务，PID`3921488`为既有Phase1 NMFDU E200任务；GPU0利用率约96%。
+- 其余GPU利用率约98%–99%，每卡已有3–4个compute进程。
+- 发布决定：未达到“每GPU最多两个训练任务”的资源条件，因此未执行SCP、远端解压、编译或launch；未创建远端run/release路径，未触碰任何既有进程。当前状态继续保持`LOCAL_VERIFIED`，这不是方法失败或技术失败。
