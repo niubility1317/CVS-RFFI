@@ -42,3 +42,12 @@ CUDA_VISIBLE_DEVICES=<physical_gpu> /home/szu2070436088/.conda/envs/CVS-RFFI/bin
 - smoke边界：`query_opened=false`、`query_rows_used=0`、`source_iq_rows_used=0`
 - 正式启动前GPU0～7均恢复为空闲
 - 状态：`LANDED / SMOKE_PASS`
+
+## 正式启动与首次回读
+
+- 启动时间：2026-09-01 23:56～23:57 CST
+- 状态：`RUNNING`
+- `R0`已在三个场景顺序完成，共3份`support_frozen_state.pt`和3份`support_state_receipt.json`；三个回执均为`SUPPORT_STATE_FROZEN`，且`query_opened=false`、`query_rows_used=0`
+- 其余15个`adapt-unit`均已启动；PID与物理GPU映射已逐项回读，GPU0～6各2个训练单元，GPU7为1个训练单元，未超过每卡2个训练实验的上限
+- 15个Python进程的CWD均为r6不可变release checkout；GPU显存占用约820～912MiB/进程，首次回读未见`Traceback`、`RuntimeError`、CUDA OOM或协议异常指纹
+- 启动用本地SSH通道已全部退出；远端训练继续运行。后续保持低频只读监控，不因中间性能停止，不在18份冻结态齐备前执行`freeze-collection`或打开query
