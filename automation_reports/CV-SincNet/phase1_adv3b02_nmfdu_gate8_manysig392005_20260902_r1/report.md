@@ -20,3 +20,15 @@
 - 独立P0/P1审查：初审发现E3/E4提前引入可学习系数的P1；已改为E2–E5固定单位系数逐项累加，定点复审`FIXED`，无其他P0/P1
 - N607只读preflight：`VERIFIED`；普通账户、项目根和8张RTX3090均可见，未改变远端状态
 - 当前状态：`LOCAL_VERIFIED / RELEASE_PREPARING / NOT_LAUNCHED`
+
+## release与N607发布状态
+
+- release提交：`672797082d523cf1b441928fe6632b47ed0aa49b`
+- release归档：`E:\type10-7\local_artifacts\releases\adv3b02_nmfdu_gate8_manysig392005_67279708.tar.gz`→`/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate8_manysig392005_67279708.tar.gz`
+- release根：`/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate8_manysig392005_67279708`
+- 归档SHA对照：本地与远端均为`165093278f1f3463a1c1adad706ab600d2a7d5c2618e98fae6bc888cf94194e9`
+- N607验证：原生`bash -n`、远端Python编译和E8完整dry-run通过；dry-run读回E1–E8矩阵、精确RX/day、single V、seed=`392005`及源域选择指标
+- 真实checkpoint无query smoke：`PASS`；严格加载、52个NMFDU新state、23组非零梯度，source RX/day/equalized/split seed与预登记一致，query/Phase2访问均为`false`
+- 正式启动命令：`env ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate8_manysig392005_67279708 WISIG_PKL=/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl RUNS_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_nmfdu_gate8_manysig392005_20260902_r1 LOG_ROOT=/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_nmfdu_gate8_manysig392005_20260902_r1 bash /home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate8_manysig392005_67279708/code/scripts/launch_phase1_adv3b02_nmfdu_gate8_manysig392005_20260902.sh`
+- 资源读回：GPU0–7现有计算进程数依次为`2/3/3/3/2/3/3/2`，没有任何GPU低于启动上限2；未启动、不排队、不干预现有任务
+- 当前状态：`RELEASED_READY / WAITING_FOR_GPU_SLOTS / NOT_LAUNCHED`
