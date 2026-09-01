@@ -147,8 +147,21 @@ def main() -> None:
     )
 
     def train_step(model, batch, device, epoch, step):
-        batch = supervised_sat_view_batch(batch, device, sat_view_aug)
-        batch = dict(batch)
+        concat_ce_only = bool(getattr(args, "concat_sat_ce_only", False))
+        sat_iq = None
+        if sat_view_aug is not None:
+            sat_view_aug.set_epoch(epoch)
+        if (
+            concat_ce_only
+            and sat_view_aug is not None
+            and int(epoch) >= int(getattr(args, "concat_sat_start_epoch", 80))
+        ):
+            batch = dict(batch)
+            batch["iq"] = batch["iq"].to(device)
+            sat_iq = sat_view_aug(batch["iq"])
+        else:
+            batch = supervised_sat_view_batch(batch, device, sat_view_aug if not concat_ce_only else None)
+            batch = dict(batch)
         batch["receiver_target"] = compact_receiver_targets(batch["receiver"].to(device), loaders.split.split_info)
         return alternating_training_step(
             model,
@@ -166,6 +179,8 @@ def main() -> None:
             disentangle_steps=args.disentangle_steps,
             grad_clip_norm=args.grad_clip_norm,
             lambda_feature_norm=args.lambda_feature_norm,
+            sat_iq=sat_iq,
+            lambda_sat_cls=float(args.lambda_sat_cls) if concat_ce_only else 0.0,
         )
 
     def forward_eval(model, batch, device):
@@ -231,6 +246,12 @@ def main() -> None:
         test_eval_interval=args.test_eval_interval,
         test_eval_start_epoch=args.test_eval_start_epoch,
         test_on_val_improve=args.test_on_val_improve,
+        reload_best_for_final_test=bool(args.final_test_best_by_val),
+        test_keys=(
+            ["test_seen_day_unseen_rx", "test_unseen_day_unseen_rx"]
+            if bool(args.final_test_target_only)
+            else None
+        ),
         output_dir=args.output_dir,
     )
 

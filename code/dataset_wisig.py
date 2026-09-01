@@ -686,9 +686,9 @@ def make_wisig_meta_ssl_source_split(
     transform_labeled: Optional[Callable[[torch.Tensor], torch.Tensor]] = None,
     transform_unlabeled: Optional[Callable[[torch.Tensor], torch.Tensor]] = None,
     transform_val: Optional[Callable[[torch.Tensor], torch.Tensor]] = None,
-    labeled_ratio: float = 0.1,
-    unlabeled_ratio: float = 0.7,
-    val_ratio: float = 0.2,
+    labeled_ratio: float = 0.07,
+    unlabeled_ratio: float = 0.63,
+    val_ratio: float = 0.30,
     train_days: Optional[Sequence[Union[int, str]]] = None,
     holdout_days: Optional[Sequence[Union[int, str]]] = None,
     train_rxs: Optional[Sequence[Union[int, str]]] = None,
@@ -697,7 +697,7 @@ def make_wisig_meta_ssl_source_split(
     seed: int = 0,
     sample_strategy: str = "front",
 ):
-    """Build the source-only 0.1L/0.7U/0.2Val Meta-SSL-CVS split.
+    """Build the source-only 0.07L/0.63U/0.30V Phase1 split.
 
     Only source train day/rx combinations are used. Optional holdout day/rx
     values are removed before the split so target/deployment samples cannot

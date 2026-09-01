@@ -12,11 +12,13 @@ from .spectrogram import ensure_iq_2xl
 try:
     from training_controls import parse_sat_scenarios, sat_channel_config_for_scenario
     from sat_channel import SatSimConfig, apply_sat_gnd_channel_batch
+    from baseline_origin_sat_view import parse_sat_view_schedule
 except Exception:
     parse_sat_scenarios = None
     sat_channel_config_for_scenario = None
     SatSimConfig = None
     apply_sat_gnd_channel_batch = None
+    parse_sat_view_schedule = None
 
 
 class OnlineRFChannelAugment:
@@ -121,8 +123,14 @@ class OnlineRFChannelAugment:
 
 def add_sat_channel_view_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     parser.add_argument("--use_sat_channel_view_aug", action="store_true")
+    parser.add_argument("--use_concat_sat_channel_aug", action="store_true")
+    parser.add_argument("--concat_sat_ce_only", action="store_true")
+    parser.add_argument("--concat_sat_start_epoch", type=int, default=80)
+    parser.add_argument("--lambda_sat_cls", type=float, default=0.68)
+    parser.add_argument("--lambda_sat_cons", type=float, default=0.0)
     parser.add_argument("--sat_train_scenario", type=str, default="clear_leo")
     parser.add_argument("--sat_train_scenarios", type=str, default="")
+    parser.add_argument("--sat_view_schedule", type=str, default="")
     parser.add_argument("--sat_view_prob", type=float, default=1.0)
     parser.add_argument("--sat_view_seed", type=int, default=2027)
     return parser
@@ -139,19 +147,42 @@ class SatGroundChannelViewAugment:
         fc_hz: float = 2.462e9,
         p: float = 1.0,
         seed: int = 2027,
+        schedule: str = "",
     ):
         if SatSimConfig is None or apply_sat_gnd_channel_batch is None or sat_channel_config_for_scenario is None:
             raise ImportError("sat_channel.py and training_controls.py are required for satellite channel view augmentation.")
         names = [str(s).strip().lower().replace("-", "_") for s in scenarios if str(s).strip()]
         if not names:
             names = ["clear_leo"]
-        self.scenarios = names
+        self.schedule = str(schedule or "").strip()
+        self.stages = (
+            parse_sat_view_schedule(self.schedule, default_prob=float(p))
+            if self.schedule and parse_sat_view_schedule is not None
+            else tuple()
+        )
+        scheduled_names = [scenario for stage in self.stages for scenario in stage.scenarios]
+        self.scenarios = list(dict.fromkeys(scheduled_names or names))
         self.fs_hz = float(fs_hz)
         self.fc_hz = float(fc_hz)
         self.p = max(0.0, min(1.0, float(p)))
         self.seed = int(seed)
+        self.epoch = 1
         self._generators: Dict[str, torch.Generator] = {}
         self._configs = {name: self._make_config(name) for name in self.scenarios}
+
+    def set_epoch(self, epoch: int) -> None:
+        self.epoch = max(1, int(epoch))
+
+    def _epoch_policy(self) -> tuple[tuple[str, ...], float]:
+        if not self.stages:
+            return tuple(self.scenarios), self.p
+        current = self.stages[0]
+        for stage in self.stages:
+            if self.epoch >= int(stage.start_epoch):
+                current = stage
+            else:
+                break
+        return tuple(current.scenarios), float(current.view_prob)
 
     def _make_config(self, scenario: str):
         kwargs = sat_channel_config_for_scenario(scenario)
@@ -178,18 +209,22 @@ class SatGroundChannelViewAugment:
         x = ensure_iq_2xl(iq)
         was_single = iq.dim() == 2
         gen = self._generator_for(x.device)
-        if self.p <= 0 or float(torch.rand((), device=x.device, generator=gen)) > self.p:
+        scenarios, view_prob = self._epoch_policy()
+        if view_prob <= 0 or float(torch.rand((), device=x.device, generator=gen)) > view_prob:
             out = x.clone()
         else:
-            scenario_idx = int(torch.randint(0, len(self.scenarios), (1,), device=x.device, generator=gen).item())
-            cfg = self._configs[self.scenarios[scenario_idx]]
+            scenario_idx = int(torch.randint(0, len(scenarios), (1,), device=x.device, generator=gen).item())
+            cfg = self._configs[scenarios[scenario_idx]]
             y, _, _ = apply_sat_gnd_channel_batch(self._safe_iq(x), cfg, gen=gen, return_meta=False)
             out = y.to(device=x.device, dtype=x.dtype)
         return out[0] if was_single else out
 
 
 def build_sat_channel_view_augment(args: Any) -> Optional[SatGroundChannelViewAugment]:
-    if not bool(getattr(args, "use_sat_channel_view_aug", False)):
+    if not (
+        bool(getattr(args, "use_sat_channel_view_aug", False))
+        or bool(getattr(args, "use_concat_sat_channel_aug", False))
+    ):
         return None
     if parse_sat_scenarios is None:
         raise ImportError("training_controls.py is required for --use_sat_channel_view_aug.")
@@ -201,6 +236,7 @@ def build_sat_channel_view_augment(args: Any) -> Optional[SatGroundChannelViewAu
         fc_hz=float(getattr(args, "sat_fc_hz", 2.462e9)),
         p=float(getattr(args, "sat_view_prob", 1.0)),
         seed=int(getattr(args, "sat_view_seed", 2027)),
+        schedule=str(getattr(args, "sat_view_schedule", "") or ""),
     )
 
 
@@ -223,3 +259,52 @@ def supervised_sat_view_batch(batch: Dict[str, Any], device, sat_augment: Option
         else:
             out[key] = value
     return out
+
+
+def concat_sat_ce_only_loss(
+    clean_loss: torch.Tensor,
+    sat_tx_logits: torch.Tensor,
+    tx_labels: torch.Tensor,
+    *,
+    weight: float,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Add only transmitter CE from the satellite view to a clean objective."""
+    sat_ce = F.cross_entropy(sat_tx_logits, tx_labels)
+    return clean_loss + float(weight) * sat_ce, sat_ce
+
+
+def forward_concat_sat_ce_only(
+    model,
+    clean_iq: torch.Tensor,
+    sat_iq: torch.Tensor,
+    *,
+    logits_key: str,
+    model_kwargs: Optional[Dict[str, Any]] = None,
+) -> tuple[Dict[str, torch.Tensor], torch.Tensor]:
+    """Run one clean+satellite concatenated forward and split the two halves."""
+    if clean_iq.shape != sat_iq.shape:
+        raise ValueError("clean and satellite IQ batches must have identical shapes")
+    clean_count = int(clean_iq.size(0))
+    joint = model(torch.cat([clean_iq, sat_iq], dim=0), **(model_kwargs or {}))
+    joint_count = 2 * clean_count
+    clean_outputs: Dict[str, torch.Tensor] = {}
+    for key, value in joint.items():
+        if not torch.is_tensor(value) or value.dim() == 0 or int(value.size(0)) != joint_count:
+            raise ValueError(f"model output {key!r} is not aligned with the concatenated batch")
+        clean_outputs[key] = value[:clean_count]
+    return clean_outputs, joint[logits_key][clean_count:]
+
+
+def resolve_sat_view_stage(schedule: str, epoch: int) -> tuple[tuple[str, ...], float]:
+    if parse_sat_view_schedule is None:
+        raise ImportError("baseline_origin_sat_view.py is required for satellite curricula.")
+    stages = parse_sat_view_schedule(str(schedule), default_prob=1.0)
+    if not stages:
+        raise ValueError("satellite view schedule must not be empty")
+    current = stages[0]
+    for stage in stages:
+        if int(epoch) >= int(stage.start_epoch):
+            current = stage
+        else:
+            break
+    return tuple(current.scenarios), float(current.view_prob)

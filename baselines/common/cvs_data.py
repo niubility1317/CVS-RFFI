@@ -65,14 +65,20 @@ def add_cvs_data_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParse
         action="store_true",
         help="Use a source-only labeled/unlabeled/validation split for pseudo-label training.",
     )
-    parser.add_argument("--wisig_labeled_ratio", type=float, default=0.1)
-    parser.add_argument("--wisig_unlabeled_ratio", type=float, default=0.6)
+    parser.add_argument("--wisig_labeled_ratio", type=float, default=0.07)
+    parser.add_argument("--wisig_unlabeled_ratio", type=float, default=0.63)
     parser.add_argument("--wisig_source_val_ratio", type=float, default=0.3)
     parser.add_argument("--wisig_guard_gap", type=int, default=8)
     parser.add_argument("--wisig_train_days", type=str, default="0,1")
     parser.add_argument("--wisig_test_days", type=str, default="2,3")
     parser.add_argument("--wisig_train_rxs", type=str, default="0,1,2,3,4,5,6")
     parser.add_argument("--wisig_test_rxs", type=str, default="7,8,9,10,11")
+    parser.add_argument(
+        "--wisig_source_holdout_rxs",
+        type=str,
+        default="",
+        help="Source receivers removed from L/U/V without changing the target-test receiver set.",
+    )
     parser.add_argument("--wisig_split_strategy", type=str, default="random", choices=["random", "contiguous"])
     parser.add_argument(
         "--wisig_split_seed",
@@ -121,6 +127,8 @@ def add_cvs_data_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParse
     parser.add_argument("--test_eval_start_epoch", type=int, default=1)
     parser.add_argument("--test_on_val_improve", dest="test_on_val_improve", action="store_true", default=True)
     parser.add_argument("--no_test_on_val_improve", dest="test_on_val_improve", action="store_false")
+    parser.add_argument("--final_test_best_by_val", action="store_true")
+    parser.add_argument("--final_test_target_only", action="store_true")
     parser.add_argument("--batch_size", type=int, default=128)
     parser.add_argument("--eval_batch_size", type=int, default=256)
     parser.add_argument("--train_drop_last", dest="train_drop_last", action="store_true", default=True)
@@ -241,6 +249,12 @@ def build_cvs_split(
     if bool(getattr(args, "use_source_ssl_split", False)):
         if protocol != "cvs_day_rx":
             raise ValueError("Source SSL split is only valid with wisig_protocol=cvs_day_rx.")
+        source_holdout_raw = str(getattr(args, "wisig_source_holdout_rxs", "") or "").strip()
+        source_holdout_rxs = (
+            parse_csv_indices(source_holdout_raw)
+            if source_holdout_raw
+            else parse_csv_indices(args.wisig_test_rxs)
+        )
         labeled_ds, unlabeled_ds, val_ds, ssl_info = make_wisig_meta_ssl_source_split(
             ds_w,
             equalized=eq,
@@ -257,7 +271,7 @@ def build_cvs_split(
             train_days=parse_csv_indices(args.wisig_train_days),
             holdout_days=parse_csv_indices(args.wisig_test_days),
             train_rxs=parse_csv_indices(args.wisig_train_rxs),
-            holdout_rxs=parse_csv_indices(args.wisig_test_rxs),
+            holdout_rxs=source_holdout_rxs,
             max_samples_per_combo_source=_cap_arg(args.wisig_max_day123_per_combo),
             seed=split_seed,
             sample_strategy=str(getattr(args, "wisig_cap_strategy", "random")),

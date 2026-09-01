@@ -9,8 +9,14 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 import torch
+import torch.nn.functional as F
 
-from baselines.common.augmentation import add_sat_channel_view_args, build_sat_channel_view_augment, supervised_sat_view_batch
+from baselines.common.augmentation import (
+    add_sat_channel_view_args,
+    build_sat_channel_view_augment,
+    forward_concat_sat_ce_only,
+    supervised_sat_view_batch,
+)
 from baselines.common.consistency import (
     add_augmentation_consistency_args,
     build_augmentation_consistency_config,
@@ -143,10 +149,33 @@ def main() -> None:
         ).to(device)
 
     def train_step(model, batch, device, epoch, step):
-        batch = supervised_sat_view_batch(batch, device, sat_view_aug)
+        concat_ce_only = bool(getattr(args, "concat_sat_ce_only", False))
+        sat_iq = None
+        if sat_view_aug is not None:
+            sat_view_aug.set_epoch(epoch)
+        if (
+            concat_ce_only
+            and sat_view_aug is not None
+            and int(epoch) >= int(getattr(args, "concat_sat_start_epoch", 80))
+        ):
+            batch = dict(batch)
+            batch["iq"] = batch["iq"].to(device)
+            sat_iq = sat_view_aug(batch["iq"])
+        else:
+            batch = supervised_sat_view_batch(batch, device, sat_view_aug if not concat_ce_only else None)
         progress = float(step) / float(total_steps)
         grl = dann_lambda(progress) if args.grl_schedule == "dann" else args.grl_coeff
-        out = model(batch["iq"], grl_lambda=grl)
+        sat_tx_logits = None
+        if sat_iq is not None and float(args.lambda_sat_cls) > 0.0:
+            out, sat_tx_logits = forward_concat_sat_ce_only(
+                model,
+                batch["iq"],
+                sat_iq,
+                logits_key="tx_logits",
+                model_kwargs={"grl_lambda": grl},
+            )
+        else:
+            out = model(batch["iq"], grl_lambda=grl)
         receiver_target = compact_receiver_targets(batch["receiver"].to(device), loaders.split.split_info)
         losses = compute_drift_loss(
             out,
@@ -163,6 +192,12 @@ def main() -> None:
             center_mode=args.center_mode,
             center_memory=center_memory,
         )
+        if sat_tx_logits is not None:
+            loss_sat_ce = F.cross_entropy(sat_tx_logits, batch["label"].to(device))
+            losses["loss"] = losses["loss"] + float(args.lambda_sat_cls) * loss_sat_ce
+            losses["loss_sat_ce"] = loss_sat_ce
+        else:
+            losses["loss_sat_ce"] = torch.zeros((), device=device)
         optimizer.zero_grad()
         losses["loss"].backward()
         if float(args.grad_clip_norm) > 0.0:
@@ -234,6 +269,12 @@ def main() -> None:
         test_eval_interval=args.test_eval_interval,
         test_eval_start_epoch=args.test_eval_start_epoch,
         test_on_val_improve=args.test_on_val_improve,
+        reload_best_for_final_test=bool(args.final_test_best_by_val),
+        test_keys=(
+            ["test_seen_day_unseen_rx", "test_unseen_day_unseen_rx"]
+            if bool(args.final_test_target_only)
+            else None
+        ),
         output_dir=args.output_dir,
     )
 

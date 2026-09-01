@@ -36,7 +36,7 @@ U_s = {(x_j,d_j): receiver(x_j) ∈ R_s, y_j hidden or unavailable}
 rho_label ≤ 0.1
 ```
 
-当前统一划分语义为相对source全池`L_s/U_s/V_cal/V_select=0.07/0.63/0.15/0.15`：有TX标签训练集、无TX标签训练集、校准validation与选模validation。四个角色均不得包含`R_t`，物理样本ID两两不交；`V_select`只能用于源侧模型选择，`V_cal`只能用于源侧校准与导出，不得反向传播、更新EMA或更新其他持久状态。Phase1可使用source clean与卫星增强训练，但这不授予Phase2访问这些样本或派生状态的权限。
+当前统一划分语义为相对source全池`L_s/U_s/V=0.07/0.63/0.30`：有TX标签训练集、无TX标签训练集和单一source validation。三个角色均不得包含`R_t`，物理样本ID两两不交。`V`可用于source侧校准、阈值冻结和checkpoint选择，但不得反向传播、更新EMA、prototype、normalization或其他持久状态；不得再把`V`拆成`V_cal/V_select`等方法角色。Phase1可使用source clean与卫星增强训练，但这不授予Phase2访问这些样本或派生状态的权限。
 
 ## Phase2最小数据协议
 

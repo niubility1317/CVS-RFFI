@@ -8,7 +8,9 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 import torch
+import torch.nn.functional as F
 
+from baselines.common.augmentation import forward_concat_sat_ce_only
 from baselines.riei_fd.losses import mutual_independence_loss, entropy_from_logits, riei_total_loss
 
 
@@ -43,12 +45,23 @@ def alternating_training_step(
     disentangle_steps: int = 1,
     grad_clip_norm: float = 0.0,
     lambda_feature_norm: float = 0.0,
+    sat_iq: torch.Tensor | None = None,
+    lambda_sat_cls: float = 0.0,
 ):
     x, y = batch["iq"].to(device), batch["label"].to(device)
     d = batch["receiver_target"].to(device) if "receiver_target" in batch else batch["receiver"].to(device)
     set_requires_grad(model.ec, True)
     set_requires_grad(model.rc, True)
-    out = model(x)
+    sat_emitter_logits = None
+    if sat_iq is not None and float(lambda_sat_cls) > 0.0:
+        out, sat_emitter_logits = forward_concat_sat_ce_only(
+            model,
+            x,
+            sat_iq.to(device),
+            logits_key="emitter_logits",
+        )
+    else:
+        out = model(x)
     loss_ce = riei_total_loss(
         out,
         y,
@@ -61,6 +74,14 @@ def alternating_training_step(
     )["loss_ce"]
     loss_feature_norm = _feature_norm_penalty(out["z_e"], out["z_r"])
     loss_all = loss_ce
+    loss_sat_ce = torch.zeros((), device=x.device)
+    if sat_emitter_logits is not None:
+        loss_sat_ce = F.cross_entropy(
+            sat_emitter_logits,
+            y,
+            reduction=ce_reduction,
+        )
+        loss_all = loss_all + float(lambda_sat_cls) * loss_sat_ce
     if float(lambda_feature_norm) > 0.0:
         loss_all = loss_all + float(lambda_feature_norm) * loss_feature_norm
     optimizer_all.zero_grad()
@@ -109,7 +130,7 @@ def alternating_training_step(
     loss_ie = torch.stack([m["loss_ie"] for m in dis_metrics]).mean()
     loss_dis = torch.stack([m["loss_dis"] for m in dis_metrics]).mean()
     loss_feature_norm = torch.stack([m["loss_feature_norm"] for m in dis_metrics]).mean()
-    loss_total = loss_ce + loss_dis
+    loss_total = loss_ce + loss_dis + float(lambda_sat_cls) * loss_sat_ce
     if float(lambda_feature_norm) > 0.0:
         loss_total = loss_total + float(lambda_feature_norm) * loss_feature_norm
     return {
@@ -119,6 +140,7 @@ def alternating_training_step(
         "loss_ie": float(loss_ie.detach().cpu()),
         "loss_dis": float(loss_dis.detach().cpu()),
         "loss_feature_norm": float(loss_feature_norm.detach().cpu()),
+        "loss_sat_ce": float(loss_sat_ce.detach().cpu()),
         "grad_norm_all": float(grad_norm_all.detach().cpu()),
         "grad_norm_fed": float(grad_norm_fed.detach().cpu()),
     }

@@ -402,6 +402,7 @@ def run_validation_gated_training(
     test_eval_interval: int = 0,
     test_eval_start_epoch: int = 1,
     test_on_val_improve: bool = True,
+    reload_best_for_final_test: bool = False,
     checkpoint_name: str = "best_by_val.pt",
 ) -> TrainHistory:
     ensure_dir(output_dir)
@@ -655,6 +656,20 @@ def run_validation_gated_training(
             )
             break
     if history.epochs:
+        final_checkpoint_source = "last_epoch"
+        final_checkpoint_epoch = int(history.epochs[-1].get("epoch", epochs))
+        if bool(reload_best_for_final_test) and os.path.isfile(best_path):
+            try:
+                payload = torch.load(best_path, map_location=device, weights_only=False)
+            except TypeError:
+                payload = torch.load(best_path, map_location=device)
+            model.load_state_dict(payload["model"], strict=True)
+            final_checkpoint_source = "best_by_val"
+            final_checkpoint_epoch = int(payload.get("epoch", history.best.get("epoch", -1)))
+            print(
+                f"[FINAL-TEST-CHECKPOINT] source=best_by_val epoch={final_checkpoint_epoch} path={best_path}",
+                flush=True,
+            )
         last_epoch = history.epochs[-1]
         test_result = evaluate_primary_and_obs_tests(
             model=model,
@@ -668,6 +683,8 @@ def run_validation_gated_training(
         final = {
             "epoch": last_epoch.get("epoch"),
             "reason": "post_training",
+            "checkpoint_source": final_checkpoint_source,
+            "checkpoint_epoch": final_checkpoint_epoch,
             "last_epoch_tested": bool(last_epoch.get("tested")),
             **test_result,
             "extra_tests": extra_tests,
