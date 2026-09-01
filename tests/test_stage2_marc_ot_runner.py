@@ -16,6 +16,7 @@ from cvsrffi.stage2_marc_ot_runner import (
     select_support_safe_state,
     train_marc_ot_arm,
 )
+import cvsrffi.stage2_marc_ot_runner as runner_subject
 
 
 class _IdentityBackbone(nn.Module):
@@ -44,6 +45,16 @@ class _TinyModel(nn.Module):
         features = values.float()
         logits = torch.stack((features[:, 0], features[:, 1]), dim=1)
         return {"tx_logits": logits, "z_id": features}
+
+
+class _DifferentiableTinyModel(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.id_backbone = _IdentityBackbone()
+
+    def forward(self, values: torch.Tensor, return_aux: bool = True):
+        features = self.id_backbone.norm(values.float())
+        return {"tx_logits": features, "z_id": features}
 
 
 def _state(seed: int) -> OrderedDict[str, torch.Tensor]:
@@ -87,6 +98,40 @@ def test_task_conditioned_block_learning_rates_are_bounded_and_routed() -> None:
             {"t1": 1.0e-2},
             config=config,
         )
+
+
+def test_default_stage_transform_receives_fit_iq_model_and_keeps_gradient_path() -> None:
+    model = _DifferentiableTinyModel()
+    values = torch.tensor([[2.0, 0.1], [1.5, 0.2], [0.1, 2.0], [0.2, 1.5]])
+    labels = torch.tensor([0, 0, 1, 1])
+    tokens = ("a0", "a1", "b0", "b1")
+    observed: list[tuple[int, tuple[str, ...], bool]] = []
+
+    def transform(current, fit_iq, fit_labels, fit_tokens):
+        assert current is model
+        logits, features = runner_subject._forward_identity(current, fit_iq)
+        del logits, fit_labels
+        observed.append((fit_iq.data_ptr(), tuple(fit_tokens), features.requires_grad))
+        return features
+
+    runner_subject._default_stage_update(
+        model,
+        "norm_fusion_projection",
+        ("id_backbone.norm.weight", "id_backbone.norm.bias"),
+        1,
+        {"class_duals": torch.zeros(2)},
+        values=values,
+        labels=labels,
+        tokens=tokens,
+        arm="R2",
+        config=MARCOTRunnerConfig(stage_steps=(1, 0, 0, 0), fold_count=2),
+        bank_task_features=None,
+        calibration_feature_transform=transform,
+        block_learning_rates=None,
+        original_base={name: value.detach().clone() for name, value in model.state_dict().items()},
+    )
+
+    assert observed == [(values.data_ptr(), tokens, True)]
 
 
 def test_all_unsafe_interpolations_restore_base_state_duals_and_integer_buffer() -> None:

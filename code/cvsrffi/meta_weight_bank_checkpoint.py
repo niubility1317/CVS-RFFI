@@ -10,6 +10,11 @@ from pathlib import Path
 import torch
 from torch import Tensor, nn
 
+from .marc_ot_support_features import (
+    MARC_OT_SUPPORT_FEATURE_CONFIG,
+    MARC_OT_SUPPORT_ROW_DIM,
+    MARC_OT_SUPPORT_ROW_SCHEMA,
+)
 from .meta_support_set_encoder import SupportSetEncoder
 from .meta_weight_bank import (
     BlockSpec,
@@ -32,6 +37,9 @@ class MetaWeightBundle:
     base_checkpoint_id: str
     bank: WeightDeltaBank
     support_encoder: SupportSetEncoder
+    feature_schema: str
+    feature_dim: int
+    feature_config: Mapping[str, object]
 
 
 def _require_exact_keys(value: object, expected: set[str], context: str) -> Mapping[str, object]:
@@ -195,6 +203,8 @@ def _encoder_config(encoder: SupportSetEncoder) -> dict[str, object]:
 
 def _validate_encoder_for_bank(encoder: SupportSetEncoder, bank: WeightDeltaBank) -> None:
     config = _encoder_config(encoder)
+    if config["feature_dim"] != MARC_OT_SUPPORT_ROW_DIM:
+        raise ValueError("support feature encoder must consume the fixed 685D ABI")
     if config["coefficient_dim"] != sum(entry.effective_rank for entry in bank.entries):
         raise ValueError("support encoder coefficient geometry does not match bank ranks")
     if config["block_count"] != len(bank.entries):
@@ -249,6 +259,30 @@ def _encoder_payload(encoder: SupportSetEncoder) -> dict[str, object]:
         "state_dict": {
             name: value.detach().cpu().clone() for name, value in encoder.state_dict().items()
         },
+    }
+
+
+def _support_feature_payload() -> dict[str, object]:
+    return {
+        "schema": MARC_OT_SUPPORT_ROW_SCHEMA,
+        "dim": MARC_OT_SUPPORT_ROW_DIM,
+        "config": dict(MARC_OT_SUPPORT_FEATURE_CONFIG),
+    }
+
+
+def _decode_support_feature(raw: object) -> dict[str, object]:
+    data = _require_exact_keys(raw, {"schema", "dim", "config"}, "support feature")
+    if data["schema"] != MARC_OT_SUPPORT_ROW_SCHEMA:
+        raise ValueError("support feature schema mismatch")
+    if data["dim"] != MARC_OT_SUPPORT_ROW_DIM:
+        raise ValueError("support feature dimension mismatch")
+    config = data["config"]
+    if not isinstance(config, Mapping) or dict(config) != dict(MARC_OT_SUPPORT_FEATURE_CONFIG):
+        raise ValueError("support feature config mismatch")
+    return {
+        "schema": MARC_OT_SUPPORT_ROW_SCHEMA,
+        "dim": MARC_OT_SUPPORT_ROW_DIM,
+        "config": dict(MARC_OT_SUPPORT_FEATURE_CONFIG),
     }
 
 
@@ -365,6 +399,8 @@ def _decode_encoder(raw: object, bank: WeightDeltaBank) -> SupportSetEncoder:
         {"feature_dim", "coefficient_dim", "block_count", "hidden_dim", "lr_min", "lr_max"},
         "support_encoder.config",
     )
+    if config["feature_dim"] != MARC_OT_SUPPORT_ROW_DIM:
+        raise ValueError("support feature encoder config must bind the fixed 685D ABI")
     try:
         encoder = SupportSetEncoder(**dict(config))
     except (TypeError, ValueError) as error:
@@ -397,7 +433,14 @@ def _decode_bundle(
 ) -> MetaWeightBundle:
     data = _require_exact_keys(
         raw,
-        {"schema", "base_checkpoint_id", "block_geometry", "bank", "support_encoder"},
+        {
+            "schema",
+            "base_checkpoint_id",
+            "block_geometry",
+            "bank",
+            "support_encoder",
+            "support_feature",
+        },
         "meta weight bundle",
     )
     if data["schema"] != META_WEIGHT_BUNDLE_SCHEMA:
@@ -410,17 +453,23 @@ def _decode_bundle(
         raise ValueError("meta weight bundle base checkpoint identity mismatch")
     _validate_base_state(base_state)
     expected_block_specs = _validate_expected_block_specs(expected_block_specs)
+    feature_binding = _decode_support_feature(data["support_feature"])
     declared_block_specs = _decode_block_specs(data["block_geometry"], "block_geometry")
     if declared_block_specs != expected_block_specs:
         raise ValueError("bundle-declared block geometry or order differs from caller expectation")
     bank = _decode_bank(data["bank"], expected_base_checkpoint_id)
     _validate_bank(bank, base_state, expected_block_specs)
     encoder = _decode_encoder(data["support_encoder"], bank)
+    if encoder.feature_dim != feature_binding["dim"]:
+        raise ValueError("support feature encoder/config dimension mismatch")
     return MetaWeightBundle(
         schema=META_WEIGHT_BUNDLE_SCHEMA,
         base_checkpoint_id=expected_base_checkpoint_id,
         bank=bank,
         support_encoder=encoder,
+        feature_schema=str(feature_binding["schema"]),
+        feature_dim=int(feature_binding["dim"]),
+        feature_config=dict(feature_binding["config"]),
     )
 
 
@@ -457,6 +506,7 @@ def save_meta_weight_bundle(
         "block_geometry": _block_specs_payload(expected_block_specs),
         "bank": _bank_payload(bank),
         "support_encoder": _encoder_payload(support_encoder),
+        "support_feature": _support_feature_payload(),
     }
     torch.save(payload, destination)
     _decode_bundle(

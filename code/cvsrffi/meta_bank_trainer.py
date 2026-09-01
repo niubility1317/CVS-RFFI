@@ -11,6 +11,7 @@ import torch
 import torch.nn.functional as F
 from torch import Tensor, nn
 
+from .marc_ot_support_features import build_marc_ot_support_features
 from .meta_bank_inner_loop import BankFastState, first_order_bank_adapt
 from .meta_support_set_encoder import SupportDomainState, SupportSetEncoder
 from .meta_trainer import (
@@ -293,7 +294,7 @@ def run_meta_bank_step(
     base_checkpoint_id: str,
     bank: WeightDeltaBank,
     support_encoder: SupportSetEncoder,
-    support_features: Tensor,
+    support_feature_model: nn.Module,
     batch: MetaEpisodeBatch,
     config: MetaBankTrainerConfig,
     optimizer: torch.optim.Optimizer,
@@ -311,23 +312,32 @@ def run_meta_bank_step(
         raise TypeError("config must be a MetaBankTrainerConfig")
     if not isinstance(support_encoder, SupportSetEncoder):
         raise TypeError("support_encoder must be a SupportSetEncoder")
+    if not isinstance(support_feature_model, nn.Module):
+        raise TypeError("support_feature_model must be a torch.nn.Module")
     _validate_episode_batch_integrity(batch)
     _validate_episode_roles(batch, _SOURCE_ROLES, config.source_receiver_ids)
-    if (
-        not isinstance(support_features, Tensor)
-        or support_features.ndim != 2
-        or support_features.shape[0] != batch.support_x.shape[0]
-        or not support_features.is_floating_point()
-        or not _finite(support_features)
-    ):
-        raise ValueError("support_features must be finite floating rows aligned to episode support")
 
     required_parameters = _required_outer_parameters(support_encoder, bank)
     _clear_required_gradients(required_parameters)
     _validate_optimizer_scope(optimizer, required_parameters)
-    support_labels = batch.support_y.to(device=support_features.device, dtype=torch.long)
+    support_labels = batch.support_y.to(device=batch.support_x.device, dtype=torch.long)
     physical_tokens = tuple(row.physical_sample_id for row in batch.episode.support)
-    support_state = support_encoder(support_features, support_labels, physical_tokens)
+    support_batch = build_marc_ot_support_features(
+        support_feature_model,
+        batch.support_x,
+        support_labels,
+        physical_tokens,
+        nominal_k=int(batch.episode.k_shot),
+        effective_mask=torch.ones(
+            len(support_labels), device=batch.support_x.device, dtype=batch.support_x.dtype
+        ),
+    )
+    support_state = support_encoder(
+        support_batch.rows,
+        support_batch.labels,
+        support_batch.physical_tokens,
+        support_batch.effective_mask,
+    )
     for value in (
         support_state.q,
         support_state.uncertainty,

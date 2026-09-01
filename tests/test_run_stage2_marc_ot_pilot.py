@@ -27,6 +27,25 @@ def _module():
     return module
 
 
+def _fake_feature_batch(values, labels, tokens):
+    return SimpleNamespace(
+        rows=values.float(),
+        labels=labels,
+        physical_tokens=tuple(tokens),
+        effective_mask=torch.ones(len(labels), device=values.device),
+        feature_schema="marc_ot.support.row.v1",
+        feature_dim=685,
+        feature_config={"rf_lite_dim": 10},
+        audit={
+            "feature_schema": "marc_ot.support.row.v1",
+            "feature_dim": 685,
+            "cfo": {"status": "PROXY_ONLY"},
+            "sfo": {"status": "PROXY_ONLY"},
+            "query_rows_used": 0,
+        },
+    )
+
+
 def test_cli_has_exact_smoke_pilot_score_commands_and_smoke_has_no_query_path() -> None:
     module = _module()
     parser = module.parser()
@@ -124,9 +143,11 @@ def test_real_adapt_unit_r8_builds_fold_scoped_plans_and_learning_rates(
         name: value.detach().clone() for name, value in model.state_dict().items()
     }
     plan_tokens: list[tuple[str, ...]] = []
+    builder_tokens: list[tuple[str, ...]] = []
+    builder_nominal_k: list[int] = []
 
     class Encoder:
-        def __call__(self, _features, _labels, tokens):
+        def __call__(self, _features, _labels, tokens, _mask):
             return SimpleNamespace(tokens=tuple(tokens))
 
     entry = SimpleNamespace(spec=SimpleNamespace(name="t1"))
@@ -153,18 +174,21 @@ def test_real_adapt_unit_r8_builds_fold_scoped_plans_and_learning_rates(
     def fake_train(_model, values, labels, tokens, **kwargs):
         initial_factory = kwargs["initial_state_factory"]
         learning_rate_factory = kwargs["block_learning_rate_factory"]
+        stage_transform = kwargs["calibration_feature_transform"]
         folds = ((0, 2), (1, 3))
         observed_rates = []
         for fold in folds:
             indices = torch.tensor(fold, dtype=torch.long)
             fit_tokens = tuple(tokens[index] for index in fold)
             initial_factory(values[indices], labels[indices], fit_tokens, "crossfit")
+            stage_transform(_model, values[indices], labels[indices], fit_tokens)
             observed_rates.append(
                 learning_rate_factory(
                     values[indices], labels[indices], fit_tokens, "crossfit"
                 )["t1"]
             )
         initial_factory(values, labels, tuple(tokens), "full_support")
+        stage_transform(_model, values, labels, tuple(tokens))
         observed_rates.append(
             learning_rate_factory(values, labels, tuple(tokens), "full_support")["t1"]
         )
@@ -189,14 +213,19 @@ def test_real_adapt_unit_r8_builds_fold_scoped_plans_and_learning_rates(
         "_load_model_and_bundle",
         lambda _args, _config: (model, bundle, base_state),
     )
-    monkeypatch.setattr(module, "_identity_features", lambda _model, values: values.float())
+    def fake_builder(_model, values, labels, tokens, **kwargs):
+        builder_tokens.append(tuple(tokens))
+        builder_nominal_k.append(int(kwargs["nominal_k"]))
+        return _fake_feature_batch(values, labels, tokens)
+
+    monkeypatch.setattr(module, "build_marc_ot_support_features", fake_builder)
     monkeypatch.setattr(module, "calibrate_weight_plan", fake_plan)
     monkeypatch.setattr(module, "train_marc_ot_arm", fake_train)
     monkeypatch.setattr(module, "_bank_task_features", lambda _bundle, _device: torch.ones(1, 1))
-    monkeypatch.setattr(module, "_calibration_transform", lambda _bundle: None)
     args = SimpleNamespace(device="cpu")
     config = {
         "checkpoint_id": "ADV3B02_CORE90_SOFT_E200",
+        "k_shot": 10,
         "fold_count": 2,
         "stage_steps": [1, 1, 1, 1],
         "learning_rate_bounds": {"min": 1.0e-5, "max": 3.0e-4},
@@ -214,6 +243,17 @@ def test_real_adapt_unit_r8_builds_fold_scoped_plans_and_learning_rates(
     result = module._adapt_unit(args, config, support, "R8", smoke=False)
 
     assert plan_tokens == [("a0", "b0"), ("a1", "b1"), support.tokens]
+    assert builder_tokens == [
+        ("a0", "b0"),
+        ("a0", "b0"),
+        ("a1", "b1"),
+        ("a1", "b1"),
+        support.tokens,
+        support.tokens,
+    ]
+    assert builder_nominal_k == [10] * 6
+    assert result["support_feature_audits"]
+    assert all(row["cfo"]["status"] == "PROXY_ONLY" for row in result["support_feature_audits"])
     assert result["bank_initialization"]["block_lrs"] == [4.0e-5]
 
 
@@ -224,6 +264,7 @@ def test_real_adapt_unit_restores_train_mode_when_late_stage_first_builds_full_p
     plan_forward_modes: list[bool] = []
     update_modes: list[tuple[str, bool]] = []
     plan_tokens: list[tuple[str, ...]] = []
+    builder_tokens: list[tuple[str, ...]] = []
 
     class Backbone(torch.nn.Module):
         def __init__(self) -> None:
@@ -260,7 +301,7 @@ def test_real_adapt_unit_restores_train_mode_when_late_stage_first_builds_full_p
     }
 
     class Encoder:
-        def __call__(self, _features, _labels, tokens):
+        def __call__(self, _features, _labels, tokens, _mask):
             return SimpleNamespace(tokens=tuple(tokens))
 
     entry = SimpleNamespace(spec=SimpleNamespace(name="t1"))
@@ -331,10 +372,19 @@ def test_real_adapt_unit_restores_train_mode_when_late_stage_first_builds_full_p
     monkeypatch.setattr(
         module, "_bank_task_features", lambda _bundle, _device: torch.ones(1, 1)
     )
-    monkeypatch.setattr(module, "_calibration_transform", lambda _bundle: None)
+    def fake_builder(_model, values, labels, tokens, **_kwargs):
+        plan_forward_modes.append(_model.training)
+        builder_tokens.append(tuple(tokens))
+        return _fake_feature_batch(values, labels, tokens)
+
+    monkeypatch.setattr(module, "build_marc_ot_support_features", fake_builder)
+    monkeypatch.setattr(
+        module, "_calibration_transform", lambda _audits, *, nominal_k: None
+    )
     args = SimpleNamespace(device="cpu")
     config = {
         "checkpoint_id": "ADV3B02_CORE90_SOFT_E200",
+        "k_shot": 10,
         "fold_count": 2,
         "stage_steps": [1, 1, 1, 1],
         "learning_rate_bounds": {"min": 1.0e-5, "max": 3.0e-4},
@@ -357,6 +407,7 @@ def test_real_adapt_unit_restores_train_mode_when_late_stage_first_builds_full_p
     assert set(plan_tokens[0]).isdisjoint(plan_tokens[1])
     assert set(plan_tokens[0]) | set(plan_tokens[1]) == set(support.tokens)
     assert plan_tokens[2] == support.tokens
+    assert builder_tokens == plan_tokens
     assert plan_forward_modes and all(mode is False for mode in plan_forward_modes)
     assert update_modes and all(mode is True for _scope, mode in update_modes)
     assert any(scope == "crossfit" for scope, _mode in update_modes)
@@ -366,14 +417,58 @@ def test_real_adapt_unit_restores_train_mode_when_late_stage_first_builds_full_p
 
 
 def test_frozen_k10_config_is_complete_and_has_no_mrior_history_fields() -> None:
+    module = _module()
     payload = json.loads(CONFIG.read_text(encoding="utf-8-sig"))
-    validated = validate_pilot_config(payload)
+    validated = module._validate_config_payload(payload)
     assert tuple(validated["arms"]) == FORMAL_ARMS
     assert tuple(validated["scenarios"]) == SCENARIOS
     assert validated["k_shot"] == 10
     controls = json.dumps(validated["mrior_controls"], sort_keys=True).lower()
     assert "historical" not in controls
     assert "mrior_sda_result" not in controls
+    assert validated["support_feature"]["schema"] == "marc_ot.support.row.v1"
+    assert validated["support_feature"]["dim"] == 685
+
+
+@pytest.mark.parametrize("tamper", ("schema", "dim", "config"))
+def test_config_rejects_mismatched_support_feature_binding(tamper: str) -> None:
+    module = _module()
+    payload = json.loads(CONFIG.read_text(encoding="utf-8-sig"))
+    if tamper == "schema":
+        payload["support_feature"]["schema"] = "marc_ot.support.row.v0"
+    elif tamper == "dim":
+        payload["support_feature"]["dim"] = 160
+    else:
+        payload["support_feature"]["config"]["psd_bins"] = 8
+
+    with pytest.raises(ValueError, match="support feature"):
+        module._validate_config_payload(payload)
+
+
+def test_stage_calibration_transform_returns_builder_rows_with_gradient(monkeypatch) -> None:
+    module = _module()
+    values = torch.randn(4, 2, 16, requires_grad=True)
+    labels = torch.tensor([0, 0, 1, 1])
+    tokens = ("a0", "a1", "b0", "b1")
+    observed: list[tuple[int, tuple[str, ...]]] = []
+    audits: list[dict] = []
+
+    def fake_builder(_model, fit_iq, fit_labels, fit_tokens, **_kwargs):
+        observed.append((fit_iq.data_ptr(), tuple(fit_tokens)))
+        rows = fit_iq.flatten(start_dim=1)
+        built = _fake_feature_batch(rows, fit_labels, fit_tokens)
+        built.audit["fit_scope"] = "stage"
+        return built
+
+    monkeypatch.setattr(module, "build_marc_ot_support_features", fake_builder)
+    transform = module._calibration_transform(audits, nominal_k=10)
+    result = transform(torch.nn.Identity(), values, labels, tokens)
+
+    assert observed == [(values.data_ptr(), tokens)]
+    assert result.requires_grad
+    result.sum().backward()
+    assert values.grad is not None and torch.count_nonzero(values.grad)
+    assert audits[0]["cfo"]["status"] == "PROXY_ONLY"
 
 
 def _write_prediction_unit(root, scenario, arm, *, corrupt=False) -> None:

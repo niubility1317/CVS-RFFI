@@ -44,12 +44,12 @@ def _bank():
     )
 
 
-def _encoder(bank):
+def _encoder(bank, *, feature_dim: int = 685):
     from cvsrffi.meta_support_set_encoder import SupportSetEncoder
 
     torch.manual_seed(101)
     return SupportSetEncoder(
-        feature_dim=3,
+        feature_dim=feature_dim,
         coefficient_dim=sum(entry.effective_rank for entry in bank.entries),
         block_count=len(bank.entries),
         hidden_dim=6,
@@ -109,6 +109,9 @@ def test_meta_weight_bundle_round_trip_preserves_support_composition_bitwise(tmp
     original_bank, original_encoder = _save_bundle(path)
     raw = _load_raw(path)
     assert raw["schema"] == "marc_ot_weight_bank_v1"
+    assert raw["support_feature"]["schema"] == "marc_ot.support.row.v1"
+    assert raw["support_feature"]["dim"] == 685
+    assert raw["support_feature"]["config"]["rf_lite_dim"] == 10
     loaded = load_meta_weight_bundle(
         path,
         expected_base_checkpoint_id="base-checkpoint-7",
@@ -116,12 +119,19 @@ def test_meta_weight_bundle_round_trip_preserves_support_composition_bitwise(tmp
         expected_block_specs=_expected_block_specs(),
     )
     assert loaded.schema == META_WEIGHT_BUNDLE_SCHEMA
+    assert loaded.feature_schema == "marc_ot.support.row.v1"
+    assert loaded.feature_dim == 685
+    assert loaded.feature_config["psd_bins"] == 16
 
-    features = torch.tensor([[1.0, 0.2, -0.1], [0.4, 0.8, 0.3], [-0.2, 0.5, 1.1]])
+    features = torch.zeros(3, 685)
+    features[:, :3] = torch.tensor(
+        [[1.0, 0.2, -0.1], [0.4, 0.8, 0.3], [-0.2, 0.5, 1.1]]
+    )
     labels = torch.tensor([4, 4, 9])
     tokens = ("s0", "s1", "s2")
-    original_support = original_encoder(features, labels, tokens)
-    loaded_support = loaded.support_encoder(features, labels, tokens)
+    mask = torch.ones(3)
+    original_support = original_encoder(features, labels, tokens, mask)
+    loaded_support = loaded.support_encoder(features, labels, tokens, mask)
     for original, restored in zip(
         (
             original_support.q,
@@ -258,5 +268,54 @@ def test_meta_weight_bundle_rejects_synchronized_parameter_geometry_reorder(
             tampered,
             expected_base_checkpoint_id="base-checkpoint-7",
             base_state=_base_state(),
+            expected_block_specs=_expected_block_specs(),
+        )
+
+
+@pytest.mark.parametrize(
+    "tamper",
+    ("feature_schema", "feature_dim", "feature_config", "legacy160", "missing_feature_binding"),
+)
+def test_meta_weight_bundle_rejects_old_or_mismatched_support_feature_abi(
+    tmp_path: Path, tamper: str
+) -> None:
+    from cvsrffi.meta_weight_bank_checkpoint import load_meta_weight_bundle
+
+    path = tmp_path / "valid.pt"
+    _save_bundle(path)
+    raw = _load_raw(path)
+    if tamper == "feature_schema":
+        raw["support_feature"]["schema"] = "marc_ot.support.row.v0"
+    elif tamper == "feature_dim":
+        raw["support_feature"]["dim"] = 160
+    elif tamper == "feature_config":
+        raw["support_feature"]["config"]["psd_bins"] = 8
+    elif tamper == "legacy160":
+        raw["support_encoder"]["config"]["feature_dim"] = 160
+    else:
+        raw.pop("support_feature")
+    tampered = tmp_path / f"{tamper}.pt"
+    torch.save(raw, tampered)
+
+    with pytest.raises(ValueError, match="support feature|member|config"):
+        load_meta_weight_bundle(
+            tampered,
+            expected_base_checkpoint_id="base-checkpoint-7",
+            base_state=_base_state(),
+            expected_block_specs=_expected_block_specs(),
+        )
+
+
+def test_meta_weight_bundle_save_rejects_old_160d_encoder(tmp_path: Path) -> None:
+    from cvsrffi.meta_weight_bank_checkpoint import save_meta_weight_bundle
+
+    bank = _bank()
+    with pytest.raises(ValueError, match="685|support feature"):
+        save_meta_weight_bundle(
+            tmp_path / "legacy160.pt",
+            base_checkpoint_id="base-checkpoint-7",
+            base_state=_base_state(),
+            bank=bank,
+            support_encoder=_encoder(bank, feature_dim=160),
             expected_block_specs=_expected_block_specs(),
         )

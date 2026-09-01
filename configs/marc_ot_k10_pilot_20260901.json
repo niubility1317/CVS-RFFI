@@ -66,5 +66,29 @@
     2000,
     2500,
     3000
-  ]
+  ],
+  "support_feature": {
+    "config": {
+      "cfo_proxy": "wrapped_phase_increment_mean_std_PROXY_ONLY",
+      "deterministic_view": "dc_removed_complex_unit_rms_v1",
+      "embedding_dim": 160,
+      "embedding_normalization": "l2_eps_1e-8",
+      "psd": "full_fft_adaptive_16_log_standardized_v1",
+      "psd_bins": 16,
+      "quality": "stage2_m23_rfguard.quality.v1",
+      "rf_lite": "stage2_m23_rfguard.scale_free.v1",
+      "rf_lite_dim": 10,
+      "sfo_proxy": "phase_increment_half_drift_slope_PROXY_ONLY",
+      "supported_k": [
+        1,
+        2,
+        5,
+        10,
+        20
+      ],
+      "view_relative_drift": "l2_delta_over_reference_l2_eps_1e-8"
+    },
+    "dim": 685,
+    "schema": "marc_ot.support.row.v1"
+  }
 }

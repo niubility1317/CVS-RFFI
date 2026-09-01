@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 import torch
 import torch.nn.functional as F
+from torch import nn
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -48,10 +49,12 @@ def _batch():
         k_shot=2,
         seed=17,
     )
-    support_x = torch.tensor([[1.0, 0.2], [0.8, -0.1], [-0.3, 1.0], [0.1, 0.9]])
-    query_x = torch.tensor(
+    support_core = torch.tensor([[1.0, 0.2], [0.8, -0.1], [-0.3, 1.0], [0.1, 0.9]])
+    query_core = torch.tensor(
         [[0.9, 0.0], [0.0, 0.9], [1.1, 0.2], [-0.2, 1.1], [-0.8, -0.7], [-0.6, -1.0]]
     )
+    support_x = support_core.unsqueeze(-1).repeat(1, 1, 16)
+    query_x = query_core.unsqueeze(-1).repeat(1, 1, 16)
     return MetaEpisodeBatch(
         episode=episode,
         support_x=support_x,
@@ -116,7 +119,7 @@ def _encoder():
 
     torch.manual_seed(31)
     return SupportSetEncoder(
-        feature_dim=2,
+        feature_dim=685,
         coefficient_dim=2,
         block_count=2,
         hidden_dim=5,
@@ -144,9 +147,25 @@ def _optimizer(encoder, basis_tensors, *, omit_last_basis=False, extra=None):
 def _functional_forward(calls: list[int]):
     def forward(state, x):
         calls.append(x.data_ptr())
-        return x @ state["id_backbone.t3.weight"] + state["id_backbone.fusion.bias"]
+        core = x[:, :, 0]
+        return core @ state["id_backbone.t3.weight"] + state["id_backbone.fusion.bias"]
 
     return forward
+
+
+class _SupportFeatureModel(nn.Module):
+    def forward(self, values, return_aux=True):
+        assert return_aux is True
+        core = values.float().mean(dim=-1)
+        weights = torch.linspace(0.25, 1.25, 160, device=values.device).view(1, -1)
+        z_id = (core[:, :1] + 1.5) * weights
+        t_emb = (core[:, 1:] + 2.0) * weights
+        f_emb = (core.mean(dim=1, keepdim=True) + 2.5) * weights.flip(1)
+        return {
+            "z_id": z_id,
+            "aux_id": {"t_emb": t_emb, "f_emb": f_emb},
+            "z_dom": torch.full_like(z_id, float("nan")),
+        }
 
 
 def test_meta_bank_step_keeps_query_out_of_inner_loop_and_backpropagates_all_outer_paths() -> None:
@@ -172,7 +191,7 @@ def test_meta_bank_step_keeps_query_out_of_inner_loop_and_backpropagates_all_out
         base_checkpoint_id="base-meta",
         bank=bank,
         support_encoder=encoder,
-        support_features=batch.support_x,
+        support_feature_model=_SupportFeatureModel(),
         batch=batch,
         config=config,
         optimizer=optimizer,
@@ -221,7 +240,7 @@ def test_meta_bank_step_outer_objective_matches_mean_receiver_cvar_and_worst_gua
         base_checkpoint_id="base-meta",
         bank=bank,
         support_encoder=encoder,
-        support_features=batch.support_x,
+        support_feature_model=_SupportFeatureModel(),
         batch=batch,
         config=config,
         optimizer=optimizer,
@@ -257,7 +276,7 @@ def test_meta_bank_step_reuses_source_episode_role_checks() -> None:
             base_checkpoint_id="base-meta",
             bank=bank,
             support_encoder=encoder,
-            support_features=bad_batch.support_x,
+            support_feature_model=_SupportFeatureModel(),
             batch=bad_batch,
             config=MetaBankTrainerConfig(source_receiver_ids=(1, 2), inner_steps=1),
             optimizer=_optimizer(encoder, basis_tensors),
@@ -282,7 +301,7 @@ def test_meta_bank_step_rejects_optimizer_missing_basis_after_clearing_stale_gra
             base_checkpoint_id="base-meta",
             bank=bank,
             support_encoder=encoder,
-            support_features=batch.support_x,
+            support_feature_model=_SupportFeatureModel(),
             batch=batch,
             config=MetaBankTrainerConfig(source_receiver_ids=(1, 2), inner_steps=1),
             optimizer=_optimizer(encoder, basis_tensors, omit_last_basis=True),
@@ -309,7 +328,7 @@ def test_meta_bank_step_rejects_optimizer_with_unrelated_parameter_before_forwar
             base_checkpoint_id="base-meta",
             bank=bank,
             support_encoder=encoder,
-            support_features=batch.support_x,
+            support_feature_model=_SupportFeatureModel(),
             batch=batch,
             config=MetaBankTrainerConfig(source_receiver_ids=(1, 2), inner_steps=1),
             optimizer=_optimizer(encoder, basis_tensors, extra=unrelated),
@@ -332,3 +351,39 @@ def test_meta_bank_config_cannot_disable_required_inner_or_outer_paths(kwargs) -
 
     with pytest.raises(ValueError):
         MetaBankTrainerConfig(source_receiver_ids=(1, 2), **kwargs)
+
+
+def test_meta_bank_step_uses_canonical_builder_on_support_only(monkeypatch) -> None:
+    import cvsrffi.meta_bank_trainer as subject
+    from cvsrffi.marc_ot_support_features import build_marc_ot_support_features
+
+    batch = _batch()
+    bank, basis_tensors = _trainable_bank()
+    encoder = _encoder()
+    observed: list[tuple[int, tuple[str, ...]]] = []
+
+    def spy_builder(model, iq, labels, tokens, **kwargs):
+        observed.append((iq.data_ptr(), tuple(tokens)))
+        return build_marc_ot_support_features(model, iq, labels, tokens, **kwargs)
+
+    monkeypatch.setattr(subject, "build_marc_ot_support_features", spy_builder)
+    subject.run_meta_bank_step(
+        _functional_forward([]),
+        base_state=_base_state(),
+        base_checkpoint_id="base-meta",
+        bank=bank,
+        support_encoder=encoder,
+        support_feature_model=_SupportFeatureModel(),
+        batch=batch,
+        config=subject.MetaBankTrainerConfig(source_receiver_ids=(1, 2), inner_steps=1),
+        optimizer=_optimizer(encoder, basis_tensors),
+    )
+
+    assert observed == [
+        (
+            batch.support_x.data_ptr(),
+            tuple(row.physical_sample_id for row in batch.episode.support),
+        )
+    ]
+    query_tokens = {row.physical_sample_id for row in batch.episode.query_adapt + batch.episode.query_guard}
+    assert query_tokens.isdisjoint(observed[0][1])

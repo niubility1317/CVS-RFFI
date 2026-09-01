@@ -404,7 +404,10 @@ def _default_stage_update(
     arm: str,
     config: MARCOTRunnerConfig,
     bank_task_features: Tensor | None,
-    calibration_feature_transform: Callable[[Tensor, Tensor, tuple[str, ...]], Tensor] | None,
+    calibration_feature_transform: Callable[
+        [nn.Module, Tensor, Tensor, tuple[str, ...]], Tensor
+    ]
+    | None,
     block_learning_rates: Mapping[str, float] | None,
     original_base: Mapping[str, Tensor],
 ) -> tuple[Mapping[str, Tensor], Mapping[str, Tensor]]:
@@ -437,7 +440,7 @@ def _default_stage_update(
             calibration_features = (
                 features
                 if calibration_feature_transform is None
-                else calibration_feature_transform(features, labels, tokens)
+                else calibration_feature_transform(model, values, labels, tokens)
             )
             if (
                 not isinstance(calibration_features, Tensor)
@@ -604,7 +607,9 @@ def train_marc_ot_arm(
     arm: str,
     config: MARCOTRunnerConfig,
     bank_task_features: Tensor | None = None,
-    calibration_feature_transform: Callable[[Tensor, Tensor, tuple[str, ...]], Tensor]
+    calibration_feature_transform: Callable[
+        [nn.Module, Tensor, Tensor, tuple[str, ...]], Tensor
+    ]
     | None = None,
     block_learning_rates: Mapping[str, float] | None = None,
     block_learning_rate_factory: Callable[

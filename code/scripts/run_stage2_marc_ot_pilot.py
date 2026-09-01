@@ -20,6 +20,12 @@ if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
 from cvsrffi.meta_weight_bank import BlockSpec, parameter_block_key  # noqa: E402
+from cvsrffi.marc_ot_support_features import (  # noqa: E402
+    MARC_OT_SUPPORT_FEATURE_CONFIG,
+    MARC_OT_SUPPORT_ROW_DIM,
+    MARC_OT_SUPPORT_ROW_SCHEMA,
+    build_marc_ot_support_features,
+)
 from cvsrffi.meta_weight_bank_checkpoint import load_meta_weight_bundle  # noqa: E402
 from cvsrffi.meta_weight_calibrator import calibrate_weight_plan  # noqa: E402
 from cvsrffi.stage2_bisage_runner import frozen_checkpoint  # noqa: E402
@@ -50,6 +56,40 @@ def _load_json(path: Path) -> Mapping[str, Any]:
     if not isinstance(value, Mapping):
         raise ValueError(f"JSON object required: {path}")
     return value
+
+
+def _json_feature_config() -> Mapping[str, Any]:
+    return json.loads(json.dumps(dict(MARC_OT_SUPPORT_FEATURE_CONFIG)))
+
+
+def _validate_support_feature_binding(value: Any) -> Mapping[str, Any]:
+    expected_config = _json_feature_config()
+    if not isinstance(value, Mapping) or set(value) != {"schema", "dim", "config"}:
+        raise ValueError("support feature binding field set drift")
+    if value["schema"] != MARC_OT_SUPPORT_ROW_SCHEMA:
+        raise ValueError("support feature schema mismatch")
+    if value["dim"] != MARC_OT_SUPPORT_ROW_DIM:
+        raise ValueError("support feature dimension mismatch")
+    if not isinstance(value["config"], Mapping) or dict(value["config"]) != dict(
+        expected_config
+    ):
+        raise ValueError("support feature config mismatch")
+    return {
+        "schema": MARC_OT_SUPPORT_ROW_SCHEMA,
+        "dim": MARC_OT_SUPPORT_ROW_DIM,
+        "config": dict(expected_config),
+    }
+
+
+def _validate_config_payload(value: Any) -> Mapping[str, Any]:
+    if not isinstance(value, Mapping) or "support_feature" not in value:
+        raise ValueError("support feature binding is required")
+    feature_binding = _validate_support_feature_binding(value["support_feature"])
+    legacy_payload = dict(value)
+    legacy_payload.pop("support_feature")
+    validated = dict(validate_pilot_config(legacy_payload))
+    validated["support_feature"] = feature_binding
+    return validated
 
 
 def _write_json_new(path: Path, value: Mapping[str, Any]) -> None:
@@ -225,21 +265,49 @@ def _load_model_and_bundle(args: argparse.Namespace, config: Mapping[str, Any]):
         base_state=base_state,
         expected_block_specs=_expected_block_specs(model),
     )
+    feature_binding = _validate_support_feature_binding(config.get("support_feature"))
+    if (
+        bundle.feature_schema != feature_binding["schema"]
+        or bundle.feature_dim != feature_binding["dim"]
+        or json.loads(json.dumps(dict(bundle.feature_config)))
+        != dict(feature_binding["config"])
+    ):
+        raise ValueError("bundle/config support feature ABI mismatch")
     bundle.support_encoder.to(torch.device(args.device)).eval()
     for parameter in bundle.support_encoder.parameters():
         parameter.requires_grad_(False)
     return model, bundle, base_state
 
 
-def _identity_features(model: torch.nn.Module, values: torch.Tensor) -> torch.Tensor:
-    with torch.inference_mode():
-        output = model(values, return_aux=True)
-    if not isinstance(output, Mapping) or not torch.is_tensor(output.get("z_id")):
-        raise ValueError("MARC-OT checkpoint does not expose z_id")
-    features = output["z_id"]
-    if features.ndim != 2 or not bool(torch.isfinite(features).all()):
-        raise ValueError("MARC-OT support z_id is invalid")
-    return features
+def _rows_per_class(labels: torch.Tensor) -> int:
+    _, counts = torch.unique(labels, sorted=True, return_counts=True)
+    if counts.numel() == 0 or bool((counts != counts[0]).any()):
+        raise ValueError("MARC-OT support class K mismatch before feature building")
+    return int(counts[0].item())
+
+
+def _build_support_features(
+    model: torch.nn.Module,
+    values: torch.Tensor,
+    labels: torch.Tensor,
+    tokens: tuple[str, ...],
+    *,
+    nominal_k: int,
+):
+    row_k = _rows_per_class(labels)
+    return build_marc_ot_support_features(
+        model,
+        values,
+        labels,
+        tokens,
+        nominal_k=nominal_k,
+        effective_mask=(
+            None
+            if row_k == nominal_k
+            else torch.ones(len(labels), device=values.device, dtype=values.dtype)
+        ),
+        validated_unpadded=row_k == nominal_k,
+    )
 
 
 def _bank_task_features(bundle: Any, device: torch.device) -> torch.Tensor:
@@ -256,15 +324,20 @@ def _bank_task_features(bundle: Any, device: torch.device) -> torch.Tensor:
     return result
 
 
-def _calibration_transform(bundle: Any):
-    encoder = bundle.support_encoder
-
-    def transform(features: torch.Tensor, labels: torch.Tensor, tokens: tuple[str, ...]):
-        rows = []
-        for index, token in enumerate(tokens):
-            state = encoder(features[index : index + 1], labels[index : index + 1], (token,))
-            rows.append(state.q)
-        return torch.stack(rows)
+def _calibration_transform(
+    audit_sink: list[Mapping[str, Any]], *, nominal_k: int
+):
+    def transform(
+        model: torch.nn.Module,
+        values: torch.Tensor,
+        labels: torch.Tensor,
+        tokens: tuple[str, ...],
+    ):
+        built = _build_support_features(
+            model, values, labels, tokens, nominal_k=nominal_k
+        )
+        audit_sink.append(dict(built.audit))
+        return built.rows
 
     return transform
 
@@ -285,6 +358,7 @@ def _adapt_unit(
     support_labels = _tensor(support.labels, args.device, labels=True)
     full_support_plans: list[Any] = []
     scoped_plans: dict[tuple[str, tuple[str, ...]], Any] = {}
+    support_feature_audits: list[Mapping[str, Any]] = []
 
     def plan_for_fit(
         fit_iq: torch.Tensor,
@@ -298,8 +372,20 @@ def _adapt_unit(
         previous_training = bool(model.training)
         try:
             model.eval()
-            features = _identity_features(model, fit_iq)
-            support_state = bundle.support_encoder(features, fit_labels, fit_tokens)
+            built = _build_support_features(
+                model,
+                fit_iq,
+                fit_labels,
+                fit_tokens,
+                nominal_k=int(config["k_shot"]),
+            )
+            support_feature_audits.append(dict(built.audit))
+            support_state = bundle.support_encoder(
+                built.rows,
+                built.labels,
+                built.physical_tokens,
+                built.effective_mask,
+            )
             plan = calibrate_weight_plan(
                 base_state,
                 str(config["checkpoint_id"]),
@@ -352,7 +438,11 @@ def _adapt_unit(
             _bank_task_features(bundle, support_iq.device) if arm in {"R6", "R8"} else None
         ),
         calibration_feature_transform=(
-            _calibration_transform(bundle) if arm in {"R2", "R4", "R6", "R8"} else None
+            _calibration_transform(
+                support_feature_audits, nominal_k=int(config["k_shot"])
+            )
+            if arm in {"R2", "R4", "R6", "R8"}
+            else None
         ),
         initial_state_factory=(
             initial_state_factory if arm in {"R4", "R6", "R8"} else None
@@ -393,6 +483,12 @@ def _adapt_unit(
         "trainable_parameter_count": trainable_count,
         "peak_rss_bytes": _peak_rss_bytes(),
         "bank_initialization": bank_initialization,
+        "support_feature_abi": {
+            "schema": MARC_OT_SUPPORT_ROW_SCHEMA,
+            "dim": MARC_OT_SUPPORT_ROW_DIM,
+            "config": _json_feature_config(),
+        },
+        "support_feature_audits": support_feature_audits,
     }
 
 
@@ -414,6 +510,8 @@ def _save_frozen_unit(destination: Path, scenario: str, arm: str, state: Mapping
             "query_rows_used": 0,
             "training_audit": state["audit"],
             "bank_initialization": state["bank_initialization"],
+            "support_feature_abi": state["support_feature_abi"],
+            "support_feature_audits": state["support_feature_audits"],
             "trainable_parameter_count": state["trainable_parameter_count"],
         },
     )
@@ -504,7 +602,7 @@ def _predict_unit(
 
 
 def _context(args: argparse.Namespace):
-    config = validate_pilot_config(_load_json(args.config))
+    config = _validate_config_payload(_load_json(args.config))
     manifest = _load_json(args.manifest)
     job = validate_manifest_job(
         manifest, outer_key=str(config["pilot_outer_key"]), config=config
@@ -528,6 +626,8 @@ def _smoke(args: argparse.Namespace) -> Mapping[str, Any]:
         "query_opened": False,
         "query_rows_used": 0,
         "training_audit": state["audit"],
+        "support_feature_abi": state["support_feature_abi"],
+        "support_feature_audits": state["support_feature_audits"],
     }
     _write_json_new(destination / "smoke_result.json", result)
     return result
