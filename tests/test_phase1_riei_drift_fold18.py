@@ -116,6 +116,12 @@ def test_fold18_matrix_freezes_new_split_and_target_blind_selection(tmp_path: Pa
         ("DRIFT", 1, 6),
         ("DRIFT", 8, 7),
     ]
+    assert [row.method_version for row in rows] == [
+        "RIEI_C06_sum_featnorm1e4",
+        "RIEI_C06_sum_featnorm1e4",
+        "DRIFT_N02_raw_cap4000",
+        "DRIFT_N02_raw_cap4000",
+    ]
     by_fold = {fold: [row for row in rows if row.fold == fold] for fold in (1, 8)}
     assert {tuple(row.train_receivers) for row in by_fold[1]} == {(3, 4, 6, 8)}
     assert {tuple(row.train_receivers) for row in by_fold[8]} == {(1, 3, 4, 6)}

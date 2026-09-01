@@ -26,6 +26,7 @@ SAT_SCHEDULE = (
 class MatrixRow:
     row_id: str
     method: str
+    method_version: str
     fold: int
     gpu: int
     train_receivers: tuple[int, ...]
@@ -198,6 +199,11 @@ def build_rows(
             MatrixRow(
                 row_id=row_id,
                 method=method,
+                method_version=(
+                    "RIEI_C06_sum_featnorm1e4"
+                    if method == "RIEI"
+                    else "DRIFT_N02_raw_cap4000"
+                ),
                 fold=fold,
                 gpu=int(gpu),
                 train_receivers=train_receivers,
