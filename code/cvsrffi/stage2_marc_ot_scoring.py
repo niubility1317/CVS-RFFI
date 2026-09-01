@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import math
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -24,6 +25,18 @@ _RESOURCE_FIELDS = (
     "peak_cuda_bytes",
     "trainable_parameter_count",
 )
+_RESOURCE_STATUS_FIELDS = ("peak_rss_status", "peak_cuda_status")
+
+
+@dataclass(frozen=True)
+class MARCOTPredictionPreflight:
+    """Truth-blind, fully validated prediction material for one immutable unit."""
+
+    receipt: Mapping[str, Any]
+    registry: tuple[str, ...]
+    tokens: tuple[str, ...]
+    arrays: Mapping[str, np.ndarray]
+    resources: Mapping[str, Any]
 
 
 def _read_object(path: Path, *, context: str) -> Mapping[str, Any]:
@@ -144,37 +157,51 @@ def _metrics(
     )
 
 
-def _resources(value: Any) -> Mapping[str, float | int]:
-    if not isinstance(value, Mapping) or set(value) != set(_RESOURCE_FIELDS):
+def _resources(value: Any) -> Mapping[str, Any]:
+    allowed_sets = {
+        frozenset(_RESOURCE_FIELDS),
+        frozenset((*_RESOURCE_FIELDS, *_RESOURCE_STATUS_FIELDS)),
+    }
+    if not isinstance(value, Mapping) or frozenset(value) not in allowed_sets:
         raise ValueError("MARC-OT resource receipt is incomplete")
-    result: dict[str, float | int] = {}
+    result: dict[str, Any] = {}
     for field in _RESOURCE_FIELDS:
         current = value[field]
+        if field in {"peak_rss_bytes", "peak_cuda_bytes"} and current == "N/A":
+            status = value.get(field.replace("_bytes", "_status"))
+            if status not in {"UNAVAILABLE", "NOT_APPLICABLE"}:
+                raise ValueError("MARC-OT unavailable resource lacks an explicit status")
+            result[field] = "N/A"
+            continue
         if not isinstance(current, (int, float)) or isinstance(current, bool):
             raise ValueError("MARC-OT resource receipt is malformed")
         numeric = float(current)
         if not math.isfinite(numeric) or numeric < 0.0:
             raise ValueError("MARC-OT resource receipt is malformed")
         result[field] = int(current) if field.endswith(("_bytes", "_count")) else numeric
+    for field in _RESOURCE_STATUS_FIELDS:
+        if field in value:
+            status = value[field]
+            if status not in {"MEASURED", "UNAVAILABLE", "NOT_APPLICABLE"}:
+                raise ValueError("MARC-OT resource status is malformed")
+            result[field] = status
     return result
 
 
-def score_marc_ot_predictions(
-    prediction_root: str | Path, truth_sidecar: str | Path
-) -> Mapping[str, Any]:
-    """Open truth only after validating a complete frozen prediction root."""
+def preflight_marc_ot_prediction(
+    prediction_root: str | Path,
+) -> MARCOTPredictionPreflight:
+    """Validate receipt and every prediction member without opening truth."""
 
     root = Path(prediction_root)
     receipt = _read_object(root / "prediction_receipt.json", context="prediction receipt")
     _validate_receipt(receipt)
-    truth_payload = _read_object(Path(truth_sidecar), context="truth sidecar")
     registry_raw = receipt.get("class_registry")
     if not isinstance(registry_raw, list):
         raise ValueError("MARC-OT full class registry is missing")
     registry = tuple(str(value) for value in registry_raw)
     if not registry or len(set(registry)) != len(registry):
         raise ValueError("MARC-OT full class registry is invalid")
-    lookup = _truth_lookup(truth_payload, receipt, len(registry))
     try:
         arrays = np.load(root / "predictions.npz", allow_pickle=False)
     except OSError as error:
@@ -183,7 +210,8 @@ def score_marc_ot_predictions(
         required = {"query_tokens"}
         for prediction_member, logit_member in _PROBES.values():
             required.update((prediction_member, logit_member))
-        if not required.issubset(arrays.files):
+        allowed = required | {"query_z_id"}
+        if not required.issubset(arrays.files) or not set(arrays.files).issubset(allowed):
             raise ValueError("MARC-OT prediction members are incomplete")
         tokens = np.asarray(arrays["query_tokens"]).astype(str)
         expected_raw = receipt.get("expected_query_tokens")
@@ -195,18 +223,14 @@ def score_marc_ot_predictions(
             or len(tokens) != int(receipt.get("query_rows", -1))
             or tuple(tokens.tolist()) != expected
             or len(set(expected)) != len(expected)
-            or not set(expected).issubset(lookup)
         ):
             raise ValueError("MARC-OT prediction/receipt token binding drift")
-        roles = np.asarray([lookup[token][1] for token in expected])
-        old_mask = roles == "target_old"
-        truth = np.asarray(
-            [lookup[token][0] for token in expected], dtype=np.int64
-        )[old_mask]
-        scored_tokens = tokens[old_mask]
-        probes: dict[str, Mapping[str, Any]] = {}
-        pairing_predictions: dict[str, list[int]] = {}
-        pairing_nll: dict[str, list[float]] = {}
+        material = {"query_tokens": tokens.copy()}
+        if "query_z_id" in arrays.files:
+            features = np.asarray(arrays["query_z_id"], dtype=np.float64)
+            if features.ndim != 2 or features.shape[0] != len(tokens) or not np.isfinite(features).all():
+                raise ValueError("MARC-OT query feature geometry or finiteness drift")
+            material["query_z_id"] = features.copy()
         for probe, (prediction_member, logit_member) in _PROBES.items():
             prediction = _validate_predictions(
                 arrays[prediction_member], rows=len(tokens), classes=len(registry), label=probe
@@ -216,14 +240,53 @@ def score_marc_ot_predictions(
                 raise ValueError("MARC-OT probe logit geometry or finiteness drift")
             if not np.array_equal(prediction, logits.argmax(axis=1).astype(np.int64)):
                 raise ValueError("MARC-OT probe prediction/argmax receipt drift")
-            scored_prediction = prediction[old_mask]
-            metrics, contributions = _metrics(
-                scored_prediction, logits[old_mask], truth, registry
-            )
-            probes[probe] = metrics
-            pairing_predictions[probe] = scored_prediction.tolist()
-            pairing_nll[probe] = contributions.tolist()
+            material[prediction_member] = prediction.copy()
+            material[logit_member] = logits.copy()
     resources = _resources(receipt.get("resources"))
+    return MARCOTPredictionPreflight(
+        receipt=dict(receipt),
+        registry=registry,
+        tokens=expected,
+        arrays=material,
+        resources=dict(resources),
+    )
+
+
+def load_marc_ot_truth(truth_sidecar: str | Path) -> Mapping[str, Any]:
+    """Open one truth sidecar after the caller has completed prediction preflight."""
+
+    return _read_object(Path(truth_sidecar), context="truth sidecar")
+
+
+def score_preflighted_marc_ot_prediction(
+    preflight: MARCOTPredictionPreflight,
+    truth_payload: Mapping[str, Any],
+) -> Mapping[str, Any]:
+    """Join one already-preflighted prediction unit to an already-opened truth object."""
+
+    if not isinstance(preflight, MARCOTPredictionPreflight):
+        raise ValueError("MARC-OT prediction preflight is required")
+    receipt = preflight.receipt
+    registry = preflight.registry
+    expected = preflight.tokens
+    arrays = preflight.arrays
+    lookup = _truth_lookup(truth_payload, receipt, len(registry))
+    if not set(expected).issubset(lookup):
+        raise ValueError("MARC-OT prediction/receipt token binding drift")
+    roles = np.asarray([lookup[token][1] for token in expected])
+    old_mask = roles == "target_old"
+    truth = np.asarray([lookup[token][0] for token in expected], dtype=np.int64)[old_mask]
+    scored_tokens = np.asarray(expected)[old_mask]
+    probes: dict[str, Mapping[str, Any]] = {}
+    pairing_predictions: dict[str, list[int]] = {}
+    pairing_nll: dict[str, list[float]] = {}
+    for probe, (prediction_member, logit_member) in _PROBES.items():
+        prediction = arrays[prediction_member][old_mask]
+        logits = arrays[logit_member][old_mask]
+        metrics, contributions = _metrics(prediction, logits, truth, registry)
+        probes[probe] = metrics
+        pairing_predictions[probe] = prediction.tolist()
+        pairing_nll[probe] = contributions.tolist()
     arm = str(receipt["arm"])
     return {
         "schema": "cvs.phase2.marc_ot.truth_last_score.v1",
@@ -233,14 +296,14 @@ def score_marc_ot_predictions(
         "registration_state": "REG0",
         **{field: str(receipt[field]) for field in _BINDING_FIELDS},
         "query_rows": len(scored_tokens),
-        "total_query_rows": len(tokens),
+        "total_query_rows": len(expected),
         "old_query_rows": len(scored_tokens),
-        "ignored_non_old_query_rows": int(len(tokens) - len(scored_tokens)),
+        "ignored_non_old_query_rows": int(len(expected) - len(scored_tokens)),
         "scored_evaluation_role": "target_old",
         "query_tokens": scored_tokens.tolist(),
         "class_registry": list(registry),
         "probes": probes,
-        "resources": dict(resources),
+        "resources": dict(preflight.resources),
         "pairing_payload": {
             "query_tokens": scored_tokens.tolist(),
             "truth": truth.tolist(),
@@ -250,6 +313,16 @@ def score_marc_ot_predictions(
         "truth_join_after_prediction_only": True,
         "truth_handle_alignment_verified": True,
     }
+
+
+def score_marc_ot_predictions(
+    prediction_root: str | Path, truth_sidecar: str | Path
+) -> Mapping[str, Any]:
+    """Preflight a complete frozen prediction root, then open truth exactly once."""
+
+    preflight = preflight_marc_ot_prediction(prediction_root)
+    truth_payload = load_marc_ot_truth(truth_sidecar)
+    return score_preflighted_marc_ot_prediction(preflight, truth_payload)
 
 
 def _pairing(row: Mapping[str, Any], *, side: str):
@@ -393,10 +466,18 @@ def compare_marc_ot_score_rows(
             "unchanged_correctness_count": int(len(control_truth) - help_mask.sum() - harm_mask.sum()),
             "prediction_flip_count": int((control_prediction != candidate_prediction).sum()),
         }
-    resource_delta = {
-        field: float(candidate["resources"][field]) - float(control["resources"][field])
-        for field in _RESOURCE_FIELDS
-    }
+    resource_delta = {}
+    for field in _RESOURCE_FIELDS:
+        control_value = control["resources"][field]
+        candidate_value = candidate["resources"][field]
+        resource_delta[field] = (
+            float(candidate_value) - float(control_value)
+            if isinstance(control_value, (int, float))
+            and not isinstance(control_value, bool)
+            and isinstance(candidate_value, (int, float))
+            and not isinstance(candidate_value, bool)
+            else "N/A"
+        )
     return {
         "schema": "cvs.phase2.marc_ot.paired_query_delta.v1",
         "comparison_state": "DA1_REG0-DA0_REG0",
@@ -413,4 +494,11 @@ def compare_marc_ot_score_rows(
     }
 
 
-__all__ = ["compare_marc_ot_score_rows", "score_marc_ot_predictions"]
+__all__ = [
+    "MARCOTPredictionPreflight",
+    "compare_marc_ot_score_rows",
+    "load_marc_ot_truth",
+    "preflight_marc_ot_prediction",
+    "score_marc_ot_predictions",
+    "score_preflighted_marc_ot_prediction",
+]

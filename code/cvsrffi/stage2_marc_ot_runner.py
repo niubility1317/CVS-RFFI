@@ -91,6 +91,8 @@ class SupportSafeSelection:
 class MARCOTTrainingAudit:
     arm: str
     selected_alpha: float
+    initial_selected_alpha: float
+    stage_selected_alphas: tuple[float, ...]
     optimizer_steps: int
     query_rows_used: int
     stage_audits: tuple[Mapping[str, Any], ...]
@@ -295,6 +297,98 @@ def _support_crossfit_metrics(
         "oof_ba": float(per_class.mean()),
         "oof_floor": float(per_class.min()),
     }
+
+
+def _default_fold_metrics(
+    model: nn.Module,
+    state: Mapping[str, Tensor],
+    fit_iq: Tensor,
+    fit_labels: Tensor,
+    validation_iq: Tensor,
+    validation_labels: Tensor,
+) -> Mapping[str, Any]:
+    _load_state(model, state)
+    model.eval()
+    with torch.inference_mode():
+        _, fit_features = _forward_identity(model, fit_iq)
+        _, validation_features = _forward_identity(model, validation_iq)
+        class_count = int(torch.unique(fit_labels).numel())
+        prototypes = torch.stack(
+            [
+                fit_features[fit_labels == class_id].mean(dim=0)
+                for class_id in range(class_count)
+            ]
+        )
+        logits = functional.normalize(validation_features.float(), dim=1) @ functional.normalize(
+            prototypes.float(), dim=1
+        ).T
+        predictions = logits.argmax(dim=1)
+    correct = tuple(
+        int((predictions[validation_labels == class_id] == class_id).sum())
+        for class_id in range(class_count)
+    )
+    rows = tuple(
+        int((validation_labels == class_id).sum()) for class_id in range(class_count)
+    )
+    return {
+        "safe": bool(torch.isfinite(logits).all()) and all(value > 0 for value in rows),
+        "per_class_correct": correct,
+        "per_class_rows": rows,
+    }
+
+
+def _aggregate_fold_metrics(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    if not rows:
+        raise ValueError("MARC-OT cross-fit needs at least one fold metric")
+    safe = all(bool(row.get("safe", False)) for row in rows)
+    if all("per_class_correct" in row and "per_class_rows" in row for row in rows):
+        class_count = len(tuple(rows[0]["per_class_rows"]))
+        correct = np.zeros(class_count, dtype=np.float64)
+        counts = np.zeros(class_count, dtype=np.float64)
+        for row in rows:
+            current_correct = np.asarray(row["per_class_correct"], dtype=np.float64)
+            current_counts = np.asarray(row["per_class_rows"], dtype=np.float64)
+            if current_correct.shape != (class_count,) or current_counts.shape != (class_count,):
+                raise ValueError("MARC-OT cross-fit class metric geometry drift")
+            correct += current_correct
+            counts += current_counts
+        if bool((counts <= 0.0).any()):
+            raise ValueError("MARC-OT cross-fit lacks registered-class validation rows")
+        per_class = correct / counts
+        return {
+            "safe": safe and bool(np.isfinite(per_class).all()),
+            "oof_ba": float(per_class.mean()),
+            "oof_floor": float(per_class.min()),
+            "per_class_accuracy": per_class.tolist(),
+        }
+    ba = [float(row["oof_ba"]) for row in rows if "oof_ba" in row]
+    floor = [float(row["oof_floor"]) for row in rows if "oof_floor" in row]
+    return {
+        "safe": safe,
+        "oof_ba": float(np.mean(ba)) if ba else float("nan"),
+        "oof_floor": float(min(floor)) if floor else float("nan"),
+    }
+
+
+def _interpolate_for_alpha(
+    base_state: Mapping[str, Tensor],
+    candidate_state: Mapping[str, Tensor],
+    base_duals: Mapping[str, Tensor],
+    candidate_duals: Mapping[str, Tensor],
+    *,
+    alpha: float,
+    trainable_parameter_names: Sequence[str],
+) -> tuple[Mapping[str, Tensor], Mapping[str, Tensor]]:
+    selection = select_support_safe_state(
+        base_state,
+        candidate_state,
+        base_duals=base_duals,
+        candidate_duals=candidate_duals,
+        evaluator=lambda _state, _duals: True,
+        grid=((float(alpha), 0.0) if float(alpha) != 0.0 else (0.0,)),
+        trainable_parameter_names=trainable_parameter_names,
+    )
+    return selection.state, selection.duals
 
 
 def _default_stage_update(
@@ -513,15 +607,14 @@ def train_marc_ot_arm(
     calibration_feature_transform: Callable[[Tensor, Tensor, tuple[str, ...]], Tensor]
     | None = None,
     block_learning_rates: Mapping[str, float] | None = None,
-    initial_state: Mapping[str, Tensor] | None = None,
-    initial_duals: Mapping[str, Tensor] | None = None,
-    stage_update: Callable[
-        [nn.Module, str, Sequence[str], int, Mapping[str, Tensor]],
-        tuple[Mapping[str, Tensor], Mapping[str, Tensor]],
+    initial_state_factory: Callable[
+        [Tensor, Tensor, tuple[str, ...], str], Mapping[str, Tensor]
     ]
     | None = None,
-    support_evaluator: Callable[[Mapping[str, Tensor], Mapping[str, Tensor]], Mapping[str, Any] | bool]
+    initial_duals: Mapping[str, Tensor] | None = None,
+    stage_update: Callable[..., tuple[Mapping[str, Tensor], Mapping[str, Tensor]]]
     | None = None,
+    support_evaluator: Callable[..., Mapping[str, Any] | bool] | None = None,
 ) -> MARCOTTrainingAudit:
     """Adapt from legal support only, select by support cross-fit, then refreeze."""
 
@@ -532,7 +625,7 @@ def train_marc_ot_arm(
         raise ValueError("config must be MARCOTRunnerConfig")
     values, labels, tokens = _validate_support(support_iq, support_labels, support_tokens)
     original_base = _clone_tensors(model.state_dict(), context="base model state")
-    base_duals = (
+    original_duals = (
         {"class_duals": torch.zeros(int(torch.unique(labels).numel()), device=values.device)}
         if initial_duals is None
         else _clone_tensors(initial_duals, context="initial duals")
@@ -541,8 +634,10 @@ def train_marc_ot_arm(
     stage_audits: list[Mapping[str, Any]] = []
     reached: tuple[str, ...] = ()
     selected_alpha = 0.0
+    initial_selected_alpha = 0.0
+    stage_selected_alphas: list[float] = []
     optimizer_steps = 0
-    current_duals = _clone_tensors(base_duals, context="current duals")
+    current_duals = _clone_tensors(original_duals, context="current duals")
 
     def refreeze() -> None:
         model.eval()
@@ -552,86 +647,182 @@ def train_marc_ot_arm(
     try:
         _load_state(model, original_base)
         refreeze()
-        if support_evaluator is None:
-            baseline = _support_crossfit_metrics(
-                model,
-                values,
-                labels,
-                tokens,
-                fold_count=int(config.fold_count),
-                seed=int(config.seed),
-            )
-
-            def evaluator(state: Mapping[str, Tensor], duals: Mapping[str, Tensor]):
-                del duals
-                _load_state(model, state)
-                observed = _support_crossfit_metrics(
-                    model,
-                    values,
-                    labels,
-                    tokens,
-                    fold_count=int(config.fold_count),
-                    seed=int(config.seed),
-                )
-                observed["safe"] = bool(observed["safe"]) and (
-                    float(observed["oof_ba"])
-                    >= float(baseline["oof_ba"]) - float(config.support_ba_tolerance)
-                    and float(observed["oof_floor"])
-                    >= float(baseline["oof_floor"]) - float(config.support_floor_tolerance)
-                )
-                return observed
-
-        else:
-            evaluator = support_evaluator
-
         if arm_value == "R0":
             _load_state(model, original_base)
             return MARCOTTrainingAudit(
                 arm=arm_value,
                 selected_alpha=0.0,
+                initial_selected_alpha=0.0,
+                stage_selected_alphas=(),
                 optimizer_steps=0,
                 query_rows_used=0,
                 stage_audits=(),
-                final_duals=_serialize_duals(base_duals),
+                final_duals=_serialize_duals(original_duals),
                 config=asdict(config),
                 training_seconds=float(time.perf_counter() - started),
                 peak_cuda_bytes=(int(torch.cuda.max_memory_allocated(values.device)) if values.is_cuda else None),
             )
 
-        current_state = _clone_tensors(original_base, context="current state")
-        if initial_state is not None and arm_value in {"R4", "R6", "R8"}:
-            initialization = select_support_safe_state(
-                current_state,
-                initial_state,
-                base_duals=current_duals,
-                candidate_duals=current_duals,
-                evaluator=evaluator,
-                grid=config.interpolation_grid,
-                trainable_parameter_names=tuple(
-                    name for name in current_state if parameter_block_key(name) is not None
+        class_minimum = int(torch.bincount(labels).min())
+        if class_minimum >= 2:
+            raw_folds = stratified_crossfit_indices(
+                labels,
+                tokens,
+                fold_count=min(int(config.fold_count), class_minimum),
+                seed=int(config.seed),
+            )
+            fold_indices = tuple(
+                (
+                    fold.fit_indices.to(device=labels.device, dtype=torch.long),
+                    fold.validation_indices.to(device=labels.device, dtype=torch.long),
+                )
+                for fold in raw_folds
+            )
+        elif support_evaluator is not None and stage_update is not None:
+            # A K=1 unit cannot form a fitted class prototype.  Keep the legacy
+            # callback-only seam usable without ever putting validation rows in
+            # its selection update; formal pilot units use K=10.
+            fold_indices = (
+                (
+                    torch.empty(0, dtype=torch.long, device=labels.device),
+                    torch.arange(len(labels), dtype=torch.long, device=labels.device),
                 ),
             )
-            current_state = dict(initialization.state)
-            current_duals = dict(initialization.duals)
-            selected_alpha = initialization.selected_alpha
-            _load_state(model, current_state)
+        else:
+            raise ValueError("MARC-OT adapter cross-fit requires at least two support rows per class")
 
-        for index, stage in enumerate(MARCOT_PROGRESSIVE_STAGES):
-            reached = _stage_reached_names(model, index)
-            _load_state(model, current_state)
+        def fold_payload(indices: Tensor) -> tuple[Tensor, Tensor, tuple[str, ...]]:
+            selected = tuple(tokens[int(index)] for index in indices.detach().cpu().tolist())
+            return values[indices], labels[indices], selected
+
+        def evaluate_fold(
+            state: Mapping[str, Tensor],
+            duals: Mapping[str, Tensor],
+            fit_indices: Tensor,
+            validation_indices: Tensor,
+        ) -> Mapping[str, Any]:
+            fit_iq, fit_labels, fit_tokens = fold_payload(fit_indices)
+            validation_iq, validation_labels, validation_tokens = fold_payload(
+                validation_indices
+            )
+            if support_evaluator is None:
+                return _default_fold_metrics(
+                    model,
+                    state,
+                    fit_iq,
+                    fit_labels,
+                    validation_iq,
+                    validation_labels,
+                )
+            observed = support_evaluator(
+                state,
+                duals,
+                fit_iq,
+                fit_labels,
+                fit_tokens,
+                validation_iq,
+                validation_labels,
+                validation_tokens,
+            )
+            return {"safe": bool(observed)} if isinstance(observed, bool) else dict(observed)
+
+        def aggregate_states(
+            states: Sequence[Mapping[str, Tensor]],
+            duals: Sequence[Mapping[str, Tensor]],
+        ) -> dict[str, Any]:
+            if len(states) != len(fold_indices) or len(duals) != len(fold_indices):
+                raise ValueError("MARC-OT cross-fit state count drift")
+            return _aggregate_fold_metrics(
+                [
+                    evaluate_fold(state, dual, fit, validation)
+                    for state, dual, (fit, validation) in zip(
+                        states, duals, fold_indices, strict=True
+                    )
+                ]
+            )
+
+        def select_crossfit_candidate(
+            stage_base_state: Mapping[str, Tensor],
+            stage_base_duals: Mapping[str, Tensor],
+            candidate_states: Sequence[Mapping[str, Tensor]],
+            candidate_duals: Sequence[Mapping[str, Tensor]],
+            *,
+            trainable_parameter_names: Sequence[str],
+        ) -> tuple[float, Mapping[str, Any]]:
+            base_states = [stage_base_state for _ in fold_indices]
+            base_dual_rows = [stage_base_duals for _ in fold_indices]
+            baseline_metrics = aggregate_states(base_states, base_dual_rows)
+            fallback_metrics: Mapping[str, Any] = baseline_metrics
+            for alpha in tuple(float(value) for value in config.interpolation_grid):
+                interpolated = [
+                    _interpolate_for_alpha(
+                        stage_base_state,
+                        candidate_state,
+                        stage_base_duals,
+                        dual_candidate,
+                        alpha=alpha,
+                        trainable_parameter_names=trainable_parameter_names,
+                    )
+                    for candidate_state, dual_candidate in zip(
+                        candidate_states, candidate_duals, strict=True
+                    )
+                ]
+                metrics = aggregate_states(
+                    [row[0] for row in interpolated],
+                    [row[1] for row in interpolated],
+                )
+                if support_evaluator is None:
+                    metrics["safe"] = bool(metrics.get("safe", False)) and (
+                        float(metrics["oof_ba"])
+                        >= float(baseline_metrics["oof_ba"])
+                        - float(config.support_ba_tolerance)
+                        and float(metrics["oof_floor"])
+                        >= float(baseline_metrics["oof_floor"])
+                        - float(config.support_floor_tolerance)
+                    )
+                if alpha == 0.0:
+                    fallback_metrics = metrics
+                if alpha != 0.0 and bool(metrics.get("safe", False)):
+                    return alpha, metrics
+            return 0.0, fallback_metrics
+
+        def update_from_stage_base(
+            stage_base_state: Mapping[str, Tensor],
+            stage_base_duals: Mapping[str, Tensor],
+            stage: str,
+            trainable_names: Sequence[str],
+            fit_indices: Tensor,
+            *,
+            fit_scope: str,
+        ) -> tuple[Mapping[str, Tensor], Mapping[str, Tensor]]:
+            _load_state(model, stage_base_state)
             model.train()
+            trainable = set(trainable_names)
             for name, parameter in model.named_parameters():
-                parameter.requires_grad_(name in set(reached))
-            if stage_update is None:
-                candidate_state, candidate_duals = _default_stage_update(
+                parameter.requires_grad_(name in trainable)
+            fit_iq, fit_labels, fit_tokens = fold_payload(fit_indices)
+            if stage_update is not None:
+                state, duals = stage_update(
                     model,
                     stage,
-                    reached,
-                    int(config.stage_steps[index]),
-                    current_duals,
-                    values=values,
-                    labels=labels,
-                    tokens=tokens,
+                    trainable_names,
+                    int(config.stage_steps[MARCOT_PROGRESSIVE_STAGES.index(stage)]),
+                    _clone_tensors(stage_base_duals, context="stage update duals"),
+                    fit_iq,
+                    fit_labels,
+                    fit_tokens,
+                    fit_scope,
+                )
+            else:
+                state, duals = _default_stage_update(
+                    model,
+                    stage,
+                    trainable_names,
+                    int(config.stage_steps[MARCOT_PROGRESSIVE_STAGES.index(stage)]),
+                    stage_base_duals,
+                    values=fit_iq,
+                    labels=fit_labels,
+                    tokens=fit_tokens,
                     arm=arm_value,
                     config=config,
                     bank_task_features=bank_task_features,
@@ -639,41 +830,136 @@ def train_marc_ot_arm(
                     block_learning_rates=block_learning_rates,
                     original_base=original_base,
                 )
-            else:
-                candidate_state, candidate_duals = stage_update(
-                    model,
+            cloned_state = _clone_tensors(state, context="stage candidate state")
+            cloned_duals = _clone_tensors(duals, context="stage candidate duals")
+            _validate_matching_state(
+                stage_base_state, cloned_state, context="stage candidate state"
+            )
+            _validate_matching_state(
+                stage_base_duals, cloned_duals, context="stage candidate duals"
+            )
+            return cloned_state, cloned_duals
+
+        current_state = _clone_tensors(original_base, context="current state")
+        if initial_state_factory is not None and arm_value in {"R4", "R6", "R8"}:
+            fold_bank_states: list[Mapping[str, Tensor]] = []
+            for fit, _validation in fold_indices:
+                _load_state(model, original_base)
+                fit_iq, fit_labels, fit_tokens = fold_payload(fit)
+                bank_state = _clone_tensors(
+                    initial_state_factory(
+                        fit_iq, fit_labels, fit_tokens, "crossfit"
+                    ),
+                    context="fold initial bank state",
+                )
+                _validate_matching_state(
+                    original_base, bank_state, context="fold initial bank state"
+                )
+                fold_bank_states.append(bank_state)
+            initial_selected_alpha, initial_metrics = select_crossfit_candidate(
+                current_state,
+                current_duals,
+                fold_bank_states,
+                [current_duals for _ in fold_indices],
+                trainable_parameter_names=tuple(
+                    name for name in current_state if parameter_block_key(name) is not None
+                ),
+            )
+            del initial_metrics
+            if initial_selected_alpha != 0.0:
+                _load_state(model, original_base)
+                bank_state = _clone_tensors(
+                    initial_state_factory(values, labels, tokens, "full_support"),
+                    context="full-support initial bank state",
+                )
+                _validate_matching_state(
+                    original_base, bank_state, context="full-support initial bank state"
+                )
+                current_state, current_duals = _interpolate_for_alpha(
+                    current_state,
+                    bank_state,
+                    current_duals,
+                    current_duals,
+                    alpha=initial_selected_alpha,
+                    trainable_parameter_names=tuple(
+                        name for name in current_state if parameter_block_key(name) is not None
+                    ),
+                )
+                current_state = dict(current_state)
+                current_duals = dict(current_duals)
+                selected_alpha = initial_selected_alpha
+            _load_state(model, current_state)
+
+        for index, stage in enumerate(MARCOT_PROGRESSIVE_STAGES):
+            reached = _stage_reached_names(model, index)
+            stage_base_state = _clone_tensors(current_state, context="stage base state")
+            stage_base_duals = _clone_tensors(current_duals, context="stage base duals")
+            fold_candidates = [
+                update_from_stage_base(
+                    stage_base_state,
+                    stage_base_duals,
                     stage,
                     reached,
-                    int(config.stage_steps[index]),
-                    _clone_tensors(current_duals, context="stage duals"),
+                    fit,
+                    fit_scope="crossfit",
                 )
-            selection = select_support_safe_state(
-                current_state,
-                candidate_state,
-                base_duals=current_duals,
-                candidate_duals=candidate_duals,
-                evaluator=evaluator,
-                grid=config.interpolation_grid,
+                for fit, _validation in fold_indices
+            ]
+            optimizer_steps += int(config.stage_steps[index]) * len(fold_indices)
+            stage_alpha, support_metrics = select_crossfit_candidate(
+                stage_base_state,
+                stage_base_duals,
+                [row[0] for row in fold_candidates],
+                [row[1] for row in fold_candidates],
                 trainable_parameter_names=reached,
             )
-            current_state = dict(selection.state)
-            current_duals = dict(selection.duals)
-            selected_alpha = float(selection.selected_alpha)
-            optimizer_steps += int(config.stage_steps[index])
+            stage_selected_alphas.append(stage_alpha)
+            if stage_alpha != 0.0:
+                full_candidate_state, full_candidate_duals = update_from_stage_base(
+                    stage_base_state,
+                    stage_base_duals,
+                    stage,
+                    reached,
+                    torch.arange(len(labels), dtype=torch.long, device=labels.device),
+                    fit_scope="full_support",
+                )
+                current_state, current_duals = _interpolate_for_alpha(
+                    stage_base_state,
+                    full_candidate_state,
+                    stage_base_duals,
+                    full_candidate_duals,
+                    alpha=stage_alpha,
+                    trainable_parameter_names=reached,
+                )
+                current_state = dict(current_state)
+                current_duals = dict(current_duals)
+                selected_alpha = stage_alpha
+                optimizer_steps += int(config.stage_steps[index])
+            else:
+                current_state = stage_base_state
+                current_duals = stage_base_duals
             stage_audits.append(
                 {
                     "stage": stage,
-                    "selected_alpha": selected_alpha,
+                    "selected_alpha": stage_alpha,
                     "trainable_parameter_names": list(reached),
-                    "support_metrics": dict(selection.support_metrics),
-                    "optimizer_steps": int(config.stage_steps[index]),
+                    "support_metrics": dict(support_metrics),
+                    "crossfit_fold_count": len(fold_indices),
+                    "optimizer_steps": int(config.stage_steps[index])
+                    * (len(fold_indices) + (1 if stage_alpha != 0.0 else 0)),
                     "query_rows_used": 0,
                 }
             )
             _load_state(model, current_state)
+        if selected_alpha == 0.0:
+            current_state = _clone_tensors(original_base, context="original fallback state")
+            current_duals = _clone_tensors(original_duals, context="original fallback duals")
+            _load_state(model, current_state)
         return MARCOTTrainingAudit(
             arm=arm_value,
             selected_alpha=selected_alpha,
+            initial_selected_alpha=initial_selected_alpha,
+            stage_selected_alphas=tuple(stage_selected_alphas),
             optimizer_steps=optimizer_steps,
             query_rows_used=0,
             stage_audits=tuple(stage_audits),

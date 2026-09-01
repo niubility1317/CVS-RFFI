@@ -39,7 +39,9 @@ from cvsrffi.stage2_marc_ot_runner import (  # noqa: E402
 )
 from cvsrffi.stage2_marc_ot_scoring import (  # noqa: E402
     compare_marc_ot_score_rows,
-    score_marc_ot_predictions,
+    load_marc_ot_truth,
+    preflight_marc_ot_prediction,
+    score_preflighted_marc_ot_prediction,
 )
 
 
@@ -68,7 +70,74 @@ def create_immutable_output_root(path: str | Path) -> Path:
 def _tensor(values: np.ndarray, device: str, *, labels: bool = False) -> torch.Tensor:
     dtype = torch.long if labels else torch.float32
     contiguous = np.ascontiguousarray(values)
-    return torch.from_numpy(contiguous).to(device=torch.device(device), dtype=dtype)
+    target = torch.device(device)
+    try:
+        return torch.from_numpy(contiguous).to(device=target, dtype=dtype)
+    except TypeError:
+        if contiguous.size > 10_000_000:
+            raise ValueError("NumPy bridge fallback exceeds bounded tensor size")
+        return torch.tensor(contiguous.tolist(), device=target, dtype=dtype)
+
+
+def _peak_rss_bytes() -> int | None:
+    """Return the process peak resident set using only the standard library."""
+
+    try:
+        import resource
+
+        value = int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
+        return value if sys.platform == "darwin" else value * 1024
+    except (ImportError, AttributeError, OSError, ValueError):
+        pass
+    if sys.platform != "win32":
+        return None
+    try:
+        import ctypes
+
+        class ProcessMemoryCounters(ctypes.Structure):
+            _fields_ = (
+                ("cb", ctypes.c_ulong),
+                ("PageFaultCount", ctypes.c_ulong),
+                ("PeakWorkingSetSize", ctypes.c_size_t),
+                ("WorkingSetSize", ctypes.c_size_t),
+                ("QuotaPeakPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaPeakNonPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaNonPagedPoolUsage", ctypes.c_size_t),
+                ("PagefileUsage", ctypes.c_size_t),
+                ("PeakPagefileUsage", ctypes.c_size_t),
+            )
+
+        counters = ProcessMemoryCounters()
+        counters.cb = ctypes.sizeof(counters)
+        handle = ctypes.windll.kernel32.GetCurrentProcess()
+        measured = ctypes.windll.psapi.GetProcessMemoryInfo(
+            handle, ctypes.byref(counters), counters.cb
+        )
+        return int(counters.PeakWorkingSetSize) if measured else None
+    except (AttributeError, OSError, TypeError, ValueError):
+        return None
+
+
+def _resource_receipt(
+    *,
+    training_seconds: float,
+    inference_seconds: float,
+    peak_rss_bytes: int | None,
+    peak_cuda_bytes: int | None,
+    peak_cuda_status: str,
+    trainable_parameter_count: int,
+) -> Mapping[str, Any]:
+    rss_status = "MEASURED" if peak_rss_bytes is not None else "UNAVAILABLE"
+    return {
+        "training_seconds": float(training_seconds),
+        "inference_seconds": float(inference_seconds),
+        "peak_rss_bytes": int(peak_rss_bytes) if peak_rss_bytes is not None else "N/A",
+        "peak_cuda_bytes": int(peak_cuda_bytes) if peak_cuda_bytes is not None else "N/A",
+        "peak_rss_status": rss_status,
+        "peak_cuda_status": str(peak_cuda_status),
+        "trainable_parameter_count": int(trainable_parameter_count),
+    }
 
 
 def _runner_config(config: Mapping[str, Any]) -> MARCOTRunnerConfig:
@@ -122,7 +191,32 @@ def _expected_block_specs(model: torch.nn.Module) -> tuple[BlockSpec, ...]:
     )
 
 
+def _validate_checkpoint_identity(path: Path, expected_checkpoint_id: str) -> str:
+    """Fail closed unless the checkpoint embeds the configured method identity."""
+
+    try:
+        payload = torch.load(path, map_location="cpu", weights_only=False)
+    except TypeError:
+        payload = torch.load(path, map_location="cpu")
+    except (OSError, RuntimeError, ValueError) as error:
+        raise ValueError(f"cannot load checkpoint identity: {path}") from error
+    if not isinstance(payload, Mapping):
+        raise ValueError("checkpoint identity root must be a mapping")
+    args = payload.get("args")
+    sources = (payload, args) if isinstance(args, Mapping) else (payload,)
+    identities = {
+        str(source[key])
+        for source in sources
+        for key in ("candidate_id", "checkpoint_id", "method_id")
+        if isinstance(source.get(key), str) and str(source[key]).strip()
+    }
+    if len(identities) != 1 or identities != {str(expected_checkpoint_id)}:
+        raise ValueError("checkpoint embedded identity does not match config checkpoint_id")
+    return next(iter(identities))
+
+
 def _load_model_and_bundle(args: argparse.Namespace, config: Mapping[str, Any]):
+    _validate_checkpoint_identity(args.checkpoint, str(config["checkpoint_id"]))
     model = frozen_checkpoint(args.checkpoint, args.device)
     base_state = {name: value.detach().clone() for name, value in model.state_dict().items()}
     bundle = load_meta_weight_bundle(
@@ -183,19 +277,35 @@ def _adapt_unit(
     *,
     smoke: bool,
 ) -> Mapping[str, Any]:
+    unit_device = torch.device(args.device)
+    if unit_device.type == "cuda":
+        torch.cuda.reset_peak_memory_stats(unit_device)
     model, bundle, base_state = _load_model_and_bundle(args, config)
     support_iq = _tensor(support.iq, args.device)
     support_labels = _tensor(support.labels, args.device, labels=True)
-    features = _identity_features(model, support_iq)
-    support_state = bundle.support_encoder(features, support_labels, support.tokens)
-    plan = calibrate_weight_plan(
-        base_state,
-        str(config["checkpoint_id"]),
-        bundle.bank,
-        support_state,
-        lr_min=float(config["learning_rate_bounds"]["min"]),
-        lr_max=float(config["learning_rate_bounds"]["max"]),
-    )
+    full_support_plans: list[Any] = []
+
+    def initial_state_factory(
+        fit_iq: torch.Tensor,
+        fit_labels: torch.Tensor,
+        fit_tokens: tuple[str, ...],
+        fit_scope: str,
+    ) -> Mapping[str, torch.Tensor]:
+        model.eval()
+        features = _identity_features(model, fit_iq)
+        support_state = bundle.support_encoder(features, fit_labels, fit_tokens)
+        plan = calibrate_weight_plan(
+            base_state,
+            str(config["checkpoint_id"]),
+            bundle.bank,
+            support_state,
+            lr_min=float(config["learning_rate_bounds"]["min"]),
+            lr_max=float(config["learning_rate_bounds"]["max"]),
+        )
+        if fit_scope == "full_support":
+            full_support_plans.append(plan)
+        return plan.state_dict
+
     runner = _runner_config(config)
     if smoke:
         runner = replace(runner, stage_steps=(1, 1, 1, 1))
@@ -212,7 +322,9 @@ def _adapt_unit(
         calibration_feature_transform=(
             _calibration_transform(bundle) if arm in {"R2", "R4", "R6", "R8"} else None
         ),
-        initial_state=(plan.state_dict if arm in {"R4", "R6", "R8"} else None),
+        initial_state_factory=(
+            initial_state_factory if arm in {"R4", "R6", "R8"} else None
+        ),
         block_learning_rates=(
             {
                 entry.spec.name: float(plan.block_lrs[index])
@@ -227,17 +339,33 @@ def _adapt_unit(
     trainable_count = sum(
         int(parameter.numel()) for name, parameter in model.named_parameters() if name in reached
     )
-    return {
-        "model_state": state,
-        "audit": asdict(audit),
-        "trainable_parameter_count": trainable_count,
-        "bank_initialization": {
+    if full_support_plans:
+        plan = full_support_plans[0]
+        bank_initialization = {
             "applied": bool(plan.applied),
             "reason": str(plan.reason),
             "uncertainty": float(plan.uncertainty),
             "block_gates": list(plan.block_gates),
             "block_lrs": list(plan.block_lrs),
-        },
+        }
+    else:
+        bank_initialization = {
+            "applied": False,
+            "reason": (
+                "SUPPORT_CROSSFIT_REJECTED"
+                if arm in {"R4", "R6", "R8"}
+                else "NOT_APPLICABLE"
+            ),
+            "uncertainty": None,
+            "block_gates": [],
+            "block_lrs": [],
+        }
+    return {
+        "model_state": state,
+        "audit": asdict(audit),
+        "trainable_parameter_count": trainable_count,
+        "peak_rss_bytes": _peak_rss_bytes(),
+        "bank_initialization": bank_initialization,
     }
 
 
@@ -275,6 +403,9 @@ def _predict_unit(
     query: Any,
     state: Mapping[str, Any],
 ) -> None:
+    unit_device = torch.device(args.device)
+    if unit_device.type == "cuda":
+        torch.cuda.reset_peak_memory_stats(unit_device)
     model = frozen_checkpoint(args.checkpoint, args.device)
     model.load_state_dict(state["model_state"], strict=True)
     model.eval()
@@ -295,6 +426,11 @@ def _predict_unit(
         batch_size=int(args.batch_size),
     )
     inference_seconds = float(time.perf_counter() - started)
+    inference_cuda_peak = (
+        int(torch.cuda.max_memory_allocated(unit_device))
+        if unit_device.type == "cuda"
+        else None
+    )
     prediction_root = destination / scenario / arm / "prediction"
     prediction_root.mkdir(parents=True, exist_ok=False)
     prediction_path = prediction_root / "predictions.npz"
@@ -322,13 +458,20 @@ def _predict_unit(
             "query_role_opened": False,
             "support_state_frozen_before_query": True,
             "query_decision_policy": "per_sample_all_registered_classes",
-            "resources": {
-                "training_seconds": float(audit["training_seconds"]),
-                "inference_seconds": inference_seconds,
-                "peak_rss_bytes": 0,
-                "peak_cuda_bytes": int(audit["peak_cuda_bytes"] or 0),
-                "trainable_parameter_count": int(state["trainable_parameter_count"]),
-            },
+            "resources": _resource_receipt(
+                training_seconds=float(audit["training_seconds"]),
+                inference_seconds=inference_seconds,
+                peak_rss_bytes=_peak_rss_bytes(),
+                peak_cuda_bytes=(
+                    max(int(audit["peak_cuda_bytes"] or 0), inference_cuda_peak or 0)
+                    if unit_device.type == "cuda"
+                    else None
+                ),
+                peak_cuda_status=(
+                    "MEASURED" if unit_device.type == "cuda" else "NOT_APPLICABLE"
+                ),
+                trainable_parameter_count=int(state["trainable_parameter_count"]),
+            ),
         },
     )
 
@@ -454,13 +597,22 @@ def _score(args: argparse.Namespace) -> Mapping[str, Any]:
         or pilot.get("truth_opened") is not False
     ):
         raise ValueError("MARC-OT prediction root is incomplete")
+    preflighted = {
+        (scenario, arm): preflight_marc_ot_prediction(
+            args.prediction_root / scenario / arm / "prediction"
+        )
+        for scenario in SCENARIOS
+        for arm in FORMAL_ARMS
+    }
+    truth_payload = load_marc_ot_truth(args.truth_sidecar)
     rows: list[Mapping[str, Any]] = []
     paired: list[Mapping[str, Any]] = []
     for scenario in SCENARIOS:
         scores: dict[str, Mapping[str, Any]] = {}
         for arm in FORMAL_ARMS:
-            source = args.prediction_root / scenario / arm / "prediction"
-            score = score_marc_ot_predictions(source, args.truth_sidecar)
+            score = score_preflighted_marc_ot_prediction(
+                preflighted[(scenario, arm)], truth_payload
+            )
             scores[arm] = score
             rows.append(score)
             _write_json_new(destination / scenario / arm / "score.json", score)

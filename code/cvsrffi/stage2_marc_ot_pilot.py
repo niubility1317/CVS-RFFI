@@ -17,6 +17,20 @@ from .stage2_wiser_pilot import (
 SCENARIOS = ("leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
 FORMAL_ARMS = ("R0", "R1", "R2", "R4", "R6", "R8")
 MRIOR_CONTROLS = ("MRIOR-H", "MRIOR-B", "MRIOR-HB")
+MRIOR_CONTROL_SCOPES: Mapping[str, tuple[str, str]] = {
+    "MRIOR-H": (
+        "TARGET_SUPPORT_ONLY_HEAD_CONTROL_DIAGNOSTIC_NON_FORMAL",
+        "MECHANISM_CONTROL_ONLY",
+    ),
+    "MRIOR-B": (
+        "P2_MIN_V1_TARGET_SUPPORT_ONLY_BACKBONE_CONTROL",
+        "MATCHED_PERMISSION_CONTROL",
+    ),
+    "MRIOR-HB": (
+        "TARGET_SUPPORT_ONLY_HEAD_BACKBONE_CONTROL_DIAGNOSTIC_NON_FORMAL",
+        "MECHANISM_CONTROL_ONLY",
+    ),
+}
 FORMAL_ARM_SPECS: Mapping[str, Mapping[str, bool]] = {
     "R0": {
         "support_residual": False,
@@ -127,6 +141,13 @@ def validate_mrior_controls(value: Any) -> Mapping[str, Mapping[str, str]]:
         lowered = path.lower().replace("-", "_")
         if "mrior_sda" in lowered:
             raise ValueError("MRIOR-SDA historical results cannot backfill H/B/HB controls")
+        if isinstance(item, str):
+            lowered_value = item.lower().replace("-", "_")
+            if any(
+                token in lowered_value
+                for token in ("mrior_sda", "history", "historical", "backfill")
+            ):
+                raise ValueError("MRIOR-SDA/history/backfill strings are forbidden")
         if "histor" in lowered and isinstance(item, (int, float)) and not isinstance(item, bool):
             raise ValueError("MRIOR controls cannot contain historical numerical fields")
     result: dict[str, Mapping[str, str]] = {}
@@ -149,6 +170,8 @@ def validate_mrior_controls(value: Any) -> Mapping[str, Mapping[str, str]]:
             raise ValueError(f"{name} permission_scope must be a nonempty string")
         if not isinstance(claim, str) or not claim.strip():
             raise ValueError(f"{name} claim_scope must be a nonempty string")
+        if (permission, claim) != MRIOR_CONTROL_SCOPES[name]:
+            raise ValueError(f"{name} permission_scope/claim_scope is outside the frozen enum")
         result[name] = {
             "permission_scope": permission,
             "claim_scope": claim,
@@ -323,6 +346,7 @@ __all__ = [
     "FORMAL_ARMS",
     "FORMAL_ARM_SPECS",
     "MRIOR_CONTROLS",
+    "MRIOR_CONTROL_SCOPES",
     "SCENARIOS",
     "WISERQueryPackage",
     "WISERSupportPackage",

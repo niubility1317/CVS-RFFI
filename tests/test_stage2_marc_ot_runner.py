@@ -117,8 +117,9 @@ def test_progressive_runner_uses_fixed_stage_order_and_refreezes() -> None:
     model = _TinyModel()
     observed: list[tuple[str, tuple[str, ...]]] = []
 
-    def stage_update(current, stage, trainable_names, _steps, duals):
-        observed.append((stage, tuple(trainable_names)))
+    def stage_update(current, stage, trainable_names, _steps, duals, *_fit):
+        if _fit[-1] == "full_support":
+            observed.append((stage, tuple(trainable_names)))
         candidate = {name: value.detach().clone() for name, value in current.state_dict().items()}
         for name in trainable_names:
             candidate[name] = candidate[name] + 0.01
@@ -133,7 +134,7 @@ def test_progressive_runner_uses_fixed_stage_order_and_refreezes() -> None:
         config=MARCOTRunnerConfig(stage_steps=(1, 1, 1, 1), fold_count=2),
         initial_duals={"class_duals": torch.zeros(2)},
         stage_update=stage_update,
-        support_evaluator=lambda _state, _duals: {"safe": True, "oof_ba": 1.0},
+        support_evaluator=lambda *_args: {"safe": True, "oof_ba": 1.0},
     )
 
     assert tuple(stage for stage, _ in observed) == MARCOT_PROGRESSIVE_STAGES
@@ -141,6 +142,183 @@ def test_progressive_runner_uses_fixed_stage_order_and_refreezes() -> None:
     assert audit.query_rows_used == 0
     assert not model.training
     assert all(not parameter.requires_grad for parameter in model.parameters())
+
+
+def test_global_alpha_preserves_early_acceptance_when_later_stages_reject() -> None:
+    model = _TinyModel()
+    original = {name: value.detach().clone() for name, value in model.state_dict().items()}
+
+    def stage_update(current, stage, trainable_names, _steps, duals, *_fit):
+        candidate = {name: value.detach().clone() for name, value in current.state_dict().items()}
+        for name in trainable_names:
+            candidate[name] = candidate[name] + 0.1
+        return candidate, {name: value + 0.1 for name, value in duals.items()}
+
+    def evaluator(state, _duals, *_fold):
+        changed = [
+            name
+            for name, value in state.items()
+            if value.is_floating_point() and not torch.equal(value, original[name])
+        ]
+        stage_one = all(
+            torch.allclose(state[name], original[name] + 0.1) for name in changed
+        )
+        return {"safe": bool(changed) and stage_one}
+
+    audit = train_marc_ot_arm(
+        model,
+        torch.tensor([[2.0, 0.0], [1.5, 0.0], [0.0, 2.0], [0.0, 1.5]]),
+        torch.tensor([0, 0, 1, 1]),
+        ("a0", "a1", "b0", "b1"),
+        arm="R8",
+        config=MARCOTRunnerConfig(stage_steps=(1, 1, 1, 1), fold_count=2),
+        stage_update=stage_update,
+        support_evaluator=evaluator,
+    )
+
+    assert audit.stage_selected_alphas == (1.0, 0.0, 0.0, 0.0)
+    assert audit.selected_alpha == 1.0
+    assert torch.equal(model.counter, original["counter"])
+
+
+def test_adapter_crossfit_never_optimizes_validation_tokens() -> None:
+    model = _TinyModel()
+    all_tokens = {"a0", "a1", "b0", "b1"}
+    crossfit_updates: list[set[str]] = []
+    evaluated_folds: list[tuple[set[str], set[str]]] = []
+
+    def stage_update(
+        current,
+        _stage,
+        trainable_names,
+        _steps,
+        duals,
+        _fit_iq,
+        _fit_labels,
+        fit_tokens,
+        fit_scope,
+    ):
+        if fit_scope == "crossfit":
+            crossfit_updates.append(set(fit_tokens))
+        candidate = {name: value.detach().clone() for name, value in current.state_dict().items()}
+        for name in trainable_names:
+            candidate[name] = candidate[name] + 0.01
+        return candidate, {name: value.detach().clone() for name, value in duals.items()}
+
+    def evaluator(
+        _state,
+        _duals,
+        _fit_iq,
+        _fit_labels,
+        fit_tokens,
+        _validation_iq,
+        _validation_labels,
+        validation_tokens,
+    ):
+        evaluated_folds.append((set(fit_tokens), set(validation_tokens)))
+        return {"safe": True, "oof_ba": 1.0, "oof_floor": 1.0}
+
+    train_marc_ot_arm(
+        model,
+        torch.tensor([[2.0, 0.0], [1.5, 0.0], [0.0, 2.0], [0.0, 1.5]]),
+        torch.tensor([0, 0, 1, 1]),
+        ("a0", "a1", "b0", "b1"),
+        arm="R8",
+        config=MARCOTRunnerConfig(stage_steps=(1, 1, 1, 1), fold_count=2),
+        stage_update=stage_update,
+        support_evaluator=evaluator,
+    )
+
+    assert crossfit_updates
+    assert evaluated_folds
+    assert all(fit and validation for fit, validation in evaluated_folds)
+    assert all(fit.isdisjoint(validation) for fit, validation in evaluated_folds)
+    assert all(fit | validation == all_tokens for fit, validation in evaluated_folds)
+    assert all(updated != all_tokens for updated in crossfit_updates)
+
+
+def test_initial_bank_candidate_is_fit_per_fold_before_full_support_refit() -> None:
+    model = _TinyModel()
+    all_tokens = {"a0", "a1", "b0", "b1"}
+    factory_calls: list[tuple[str, set[str]]] = []
+
+    def initial_state_factory(_fit_iq, _fit_labels, fit_tokens, fit_scope):
+        factory_calls.append((fit_scope, set(fit_tokens)))
+        candidate = {
+            name: value.detach().clone() for name, value in model.state_dict().items()
+        }
+        for name, value in candidate.items():
+            if value.is_floating_point():
+                candidate[name] = value + 0.05
+        return candidate
+
+    def stage_update(current, _stage, _names, _steps, duals, *_fit):
+        return (
+            {name: value.detach().clone() for name, value in current.state_dict().items()},
+            {name: value.detach().clone() for name, value in duals.items()},
+        )
+
+    train_marc_ot_arm(
+        model,
+        torch.tensor([[2.0, 0.0], [1.5, 0.0], [0.0, 2.0], [0.0, 1.5]]),
+        torch.tensor([0, 0, 1, 1]),
+        ("a0", "a1", "b0", "b1"),
+        arm="R4",
+        config=MARCOTRunnerConfig(stage_steps=(1, 1, 1, 1), fold_count=2),
+        initial_state_factory=initial_state_factory,
+        stage_update=stage_update,
+        support_evaluator=lambda *_args: {"safe": True},
+    )
+
+    crossfit_tokens = [tokens for scope, tokens in factory_calls if scope == "crossfit"]
+    full_tokens = [tokens for scope, tokens in factory_calls if scope == "full_support"]
+    assert crossfit_tokens and all(tokens != all_tokens for tokens in crossfit_tokens)
+    assert full_tokens == [all_tokens]
+
+
+def test_all_unsafe_stages_restore_immutable_original_model_duals_and_buffer() -> None:
+    model = _TinyModel()
+    original = {name: value.detach().clone() for name, value in model.state_dict().items()}
+    original_duals = {"class_duals": torch.tensor([0.25, 0.5])}
+    initial_scopes: list[str] = []
+
+    def initial_state_factory(_fit_iq, _fit_labels, _fit_tokens, fit_scope):
+        initial_scopes.append(fit_scope)
+        candidate = {name: value.detach().clone() for name, value in model.state_dict().items()}
+        for name, value in candidate.items():
+            if value.is_floating_point():
+                candidate[name] = value + 3.0
+        candidate["counter"] = torch.tensor(123, dtype=torch.int64)
+        return candidate
+
+    def stage_update(current, _stage, trainable_names, _steps, duals, *_fit):
+        candidate = {name: value.detach().clone() for name, value in current.state_dict().items()}
+        for name in trainable_names:
+            candidate[name] = candidate[name] + 2.0
+        candidate["counter"] = torch.tensor(999, dtype=torch.int64)
+        return candidate, {name: value + 4.0 for name, value in duals.items()}
+
+    audit = train_marc_ot_arm(
+        model,
+        torch.tensor([[2.0, 0.0], [1.5, 0.0], [0.0, 2.0], [0.0, 1.5]]),
+        torch.tensor([0, 0, 1, 1]),
+        ("a0", "a1", "b0", "b1"),
+        arm="R8",
+        config=MARCOTRunnerConfig(stage_steps=(1, 1, 1, 1), fold_count=2),
+        initial_state_factory=initial_state_factory,
+        initial_duals=original_duals,
+        stage_update=stage_update,
+        support_evaluator=lambda *_args: {"safe": False},
+    )
+
+    assert audit.selected_alpha == 0.0
+    assert audit.initial_selected_alpha == 0.0
+    assert audit.stage_selected_alphas == (0.0, 0.0, 0.0, 0.0)
+    assert "full_support" not in initial_scopes
+    for name, value in original.items():
+        assert torch.equal(model.state_dict()[name], value)
+    assert audit.final_duals["class_duals"] == (0.25, 0.5)
+    assert torch.equal(model.counter, original["counter"])
 
 
 def test_runner_refreezes_after_stage_exception() -> None:

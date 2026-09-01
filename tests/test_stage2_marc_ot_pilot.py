@@ -86,6 +86,14 @@ def test_mrior_controls_require_permission_scope_and_reject_historical_backfill(
         validate_mrior_controls(backfill)
 
 
+@pytest.mark.parametrize("injection", ("MRIOR-SDA", "history", "backfill"))
+def test_mrior_permission_scope_rejects_historical_string_injection(injection) -> None:
+    controls = _mrior_controls()
+    controls["MRIOR-B"]["permission_scope"] += f"_{injection}"
+    with pytest.raises(ValueError, match="permission_scope|historical|backfill|MRIOR-SDA"):
+        validate_mrior_controls(controls)
+
+
 def test_config_reuses_validated_once_handles_without_matrix_expansion() -> None:
     validated = validate_pilot_config(_config())
     assert validated["protocol_schema"] == "p2_min_v1"
