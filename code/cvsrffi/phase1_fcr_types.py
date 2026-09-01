@@ -1,9 +1,19 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 import torch
+
+
+if TYPE_CHECKING:
+    from .phase1_fcr_canonicalizer import CanonicalOutput
+    from .phase1_fcr_factors import ContentOutput
+    from .phase1_fcr_fingerprint import (
+        FingerprintFactorOutput,
+        FingerprintResponseOutput,
+    )
+    from .phase1_fcr_nuisance import NuisanceOutput
 
 
 @dataclass(frozen=True)
@@ -57,6 +67,18 @@ class FCRDecodeOutput:
     mu_iq: torch.Tensor
     log_variance: torch.Tensor
     delta_f: torch.Tensor
+
+
+@dataclass
+class FCRAggregateOutput:
+    canonical: "CanonicalOutput"
+    content: "ContentOutput"
+    fingerprint: "FingerprintFactorOutput"
+    response: "FingerprintResponseOutput"
+    nuisance: "NuisanceOutput"
+    factors: FCRFactorOutput
+    decode: FCRDecodeOutput
+    quality: dict[str, torch.Tensor]
 
 
 @dataclass

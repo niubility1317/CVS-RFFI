@@ -9,7 +9,19 @@ from typing import Dict, Optional, Sequence, Tuple
 import torch
 import torch.nn as nn
 
-from cvsrffi.phase1_fcr_types import FCRConfig
+from cvsrffi.phase1_fcr_canonicalizer import ConservativeCanonicalizer
+from cvsrffi.phase1_fcr_decoder import PhysicsOrderedDecoder
+from cvsrffi.phase1_fcr_factors import ContentFactorEncoder, excitation_features
+from cvsrffi.phase1_fcr_fingerprint import (
+    ExcitationConditionedFingerprintOperator,
+    FingerprintFactorEncoder,
+)
+from cvsrffi.phase1_fcr_nuisance import StructuredNuisanceEncoder
+from cvsrffi.phase1_fcr_types import (
+    FCRAggregateOutput,
+    FCRConfig,
+    FCRFactorOutput,
+)
 
 _CODE_ROOT = Path(__file__).resolve().parent
 _REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -532,6 +544,89 @@ def build_arch_backbone(
     )
 
 
+FCR_FEATURE_SCHEMA = "ADV3B02:FCR:z_f_id:unit_l2:160:v1"
+
+
+class ADV3B02FactorizedCrossReconstruction(nn.Module):
+    """Compose the committed FCR factors without adding a waveform bypass."""
+
+    def __init__(self, config: FCRConfig) -> None:
+        super().__init__()
+        self.config = config
+        self.canonicalizer = ConservativeCanonicalizer(config)
+        self.content = ContentFactorEncoder(config)
+        self.fingerprint = FingerprintFactorEncoder(config)
+        self.fingerprint_operator = ExcitationConditionedFingerprintOperator(config)
+        self.nuisance = StructuredNuisanceEncoder(config)
+        self.decoder = PhysicsOrderedDecoder(config)
+
+    def forward(
+        self,
+        x: torch.Tensor,
+        id_feature_raw: torch.Tensor,
+        *,
+        pair_context=None,
+    ) -> FCRAggregateOutput:
+        # Pair context is intentionally optional. Task10 may consume it for
+        # paired losses; single-view factorization never requires a companion.
+        del pair_context
+        canonical = self.canonicalizer(x)
+        content = self.content(canonical.canonical_iq)
+        fingerprint_excitation = content.s_hat.detach()
+        fingerprint = self.fingerprint(
+            id_feature_raw,
+            canonical.canonical_iq,
+            canonical.residual_iq,
+            excitation_features(fingerprint_excitation),
+        )
+        response = self.fingerprint_operator(fingerprint_excitation, fingerprint)
+        nuisance = self.nuisance(x, canonical.eta_hat)
+        decoded = self.decoder(content.s_hat, response.delta_f, nuisance)
+        z_n_parts = {
+            "channel": nuisance.z_ch,
+            "receiver": nuisance.z_rx,
+            "sync": nuisance.z_sync,
+            "gain": nuisance.z_gain,
+            "eta_pred": nuisance.eta_pred,
+        }
+        factors = FCRFactorOutput(
+            z_s=content.z_s,
+            z_f_id=fingerprint.z_f_id,
+            z_tx_state=fingerprint.z_tx_state,
+            z_n_parts=z_n_parts,
+            s_hat=content.s_hat,
+            content_confidence=content.content_confidence,
+            response_coef=response.response_coef,
+            response_quality=response.response_quality,
+        )
+        nuisance_vector = torch.cat(
+            (nuisance.z_ch, nuisance.z_rx, nuisance.z_sync, nuisance.z_gain), dim=1
+        )
+        quality = {
+            **{
+                f"canonical_{name}": value
+                for name, value in canonical.quality.items()
+            },
+            "content_confidence": content.content_confidence,
+            **{
+                f"fingerprint_{name}": value
+                for name, value in response.response_quality.items()
+            },
+            "nuisance_norm": nuisance_vector.norm(dim=1),
+            "decode_variance_mean": decoded.log_variance.exp().mean(dim=1),
+        }
+        return FCRAggregateOutput(
+            canonical=canonical,
+            content=content,
+            fingerprint=fingerprint,
+            response=response,
+            nuisance=nuisance,
+            factors=factors,
+            decode=decoded,
+            quality=quality,
+        )
+
+
 class DualCVSincNetDisentangle(nn.Module):
     """
     双 CV-SincNet 解耦模型。
@@ -623,7 +718,7 @@ class DualCVSincNetDisentangle(nn.Module):
         self.use_tx_adv_on_zdom = bool(use_tx_adv_on_zdom)
         self.use_crra = bool(use_crra)
         self.use_fcr = bool(use_fcr)
-        self.fcr_config = fcr_config if self.use_fcr else None
+        self.fcr_config = None
         self.fcr = None
         self.physical_gate_variant = str(
             physical_gate_variant or "none"
@@ -786,6 +881,12 @@ class DualCVSincNetDisentangle(nn.Module):
             self.tx_adv_head = None
             self.crra_condition_tx_adv_head = None
 
+        if self.use_fcr:
+            self.fcr_config = (
+                fcr_config if fcr_config is not None else FCRConfig(input_len=int(input_len))
+            )
+            self.fcr = ADV3B02FactorizedCrossReconstruction(self.fcr_config)
+
     def set_crra_epoch(self, epoch: int) -> None:
         self.crra_epoch = max(1, int(epoch))
         for backbone in (self.id_backbone, self.dom_backbone):
@@ -843,6 +944,34 @@ class DualCVSincNetDisentangle(nn.Module):
     def _pick_z_dom(self, aux: Dict[str, torch.Tensor]) -> torch.Tensor:
         return self._pick_from_keys(aux, self.dom_feature_key, ("feat_imp", "feat_pa", "feat_dac", "base", "feat_con", "feat_cls", "feat_joint"))
 
+    def _attach_fcr_outputs(
+        self,
+        out: Dict[str, object],
+        x: torch.Tensor,
+        z_id: torch.Tensor,
+    ) -> Dict[str, object]:
+        if not self.use_fcr:
+            return out
+        if self.fcr is None:
+            raise RuntimeError("use_fcr=True requires an instantiated FCR module")
+        aggregate = self.fcr(x, z_id)
+        out.update(
+            {
+                "z_id_raw": z_id,
+                "z_f_id": aggregate.factors.z_f_id,
+                "z_tx_state": aggregate.factors.z_tx_state,
+                "z_s": aggregate.factors.z_s,
+                "z_n": {
+                    name: aggregate.factors.z_n_parts[name]
+                    for name in ("channel", "receiver", "sync", "gain")
+                },
+                "fcr_decode": aggregate.decode,
+                "fcr_quality": aggregate.quality,
+                "feature_schema": FCR_FEATURE_SCHEMA,
+            }
+        )
+        return out
+
     def forward(
         self,
         x: torch.Tensor,
@@ -886,7 +1015,7 @@ class DualCVSincNetDisentangle(nn.Module):
             zero_domain_logits = tx_logits.new_zeros(
                 (int(tx_logits.size(0)), self.num_domains)
             )
-            return {
+            out = {
                 "tx_logits": tx_logits,
                 "dom_logits": zero_domain_logits,
                 "adv_dom_logits": zero_domain_logits,
@@ -906,6 +1035,7 @@ class DualCVSincNetDisentangle(nn.Module):
                 "aux_id": aux_id,
                 "aux_dom": {},
             }
+            return self._attach_fcr_outputs(out, x, z_id)
 
         if (
             (not return_aux)
@@ -1038,7 +1168,7 @@ class DualCVSincNetDisentangle(nn.Module):
             v = out[g].get(k, None)
             if torch.is_tensor(v):
                 out[name] = v
-        return out
+        return self._attach_fcr_outputs(out, x, z_id)
 
 
 def build_dual_model(

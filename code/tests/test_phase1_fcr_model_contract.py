@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import torch
 
@@ -12,6 +13,30 @@ if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
 from model_dual_cvsincnet import build_dual_model  # noqa: E402
+
+
+FCR_ONLY_OUTPUT_KEYS = {
+    "z_id_raw",
+    "z_f_id",
+    "z_tx_state",
+    "z_s",
+    "z_n",
+    "fcr_decode",
+    "fcr_quality",
+    "feature_schema",
+}
+
+
+def _assert_nested_tensor_equal(left: Any, right: Any) -> None:
+    assert type(left) is type(right)
+    if torch.is_tensor(left):
+        torch.testing.assert_close(left, right, rtol=0.0, atol=0.0)
+    elif isinstance(left, dict):
+        assert left.keys() == right.keys()
+        for key in left:
+            _assert_nested_tensor_equal(left[key], right[key])
+    else:
+        assert left == right
 
 
 def _small_model(**kwargs):
@@ -48,9 +73,6 @@ def test_fcr_off_preserves_legacy_state_dict_and_outputs() -> None:
     with torch.no_grad():
         legacy_out = legacy(x, return_aux=True)
         fcr_off_out = fcr_off(x, return_aux=True)
-    torch.testing.assert_close(
-        legacy_out["tx_logits"], fcr_off_out["tx_logits"], rtol=0.0, atol=0.0
-    )
-    torch.testing.assert_close(
-        legacy_out["z_id"], fcr_off_out["z_id"], rtol=0.0, atol=0.0
-    )
+    assert legacy_out.keys() == fcr_off_out.keys()
+    assert FCR_ONLY_OUTPUT_KEYS.isdisjoint(fcr_off_out)
+    _assert_nested_tensor_equal(legacy_out, fcr_off_out)
