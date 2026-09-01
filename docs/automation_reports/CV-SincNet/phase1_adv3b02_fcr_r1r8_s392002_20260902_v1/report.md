@@ -3,7 +3,7 @@
 ## 状态
 
 - run_id：`phase1_adv3b02_fcr_r1r8_s392002_20260902_v1`
-- 当前状态：`LOCAL_VERIFIED`
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - protocol_scope：Phase1 source-only；不访问Phase2 support/query/truth
 - implementation_commit：`7fbde1e8547d90c821438b8401f754383d493bc3`
 - prereg_base_commit：`9fc27f311bd5fb5e7d278bd5f07ca19e9f507509`
@@ -45,6 +45,19 @@ R0及任何旧ADV3B02对比基线均不启动。所有row固定`seed=392002`、`
 - 远端归档：`/home/szu2070436088/2510044040/CV-SincNet/releases/archives/phase1_adv3b02_fcr_r1r8_s392002_20260902_v1_73458d90.tar.gz`
 - SHA256：`eae6c8bba62311a9ee0ccef5b59791dc7c2e117f472868e03dfa4ec9fb45f43c`
 - 解压策略：在不可覆盖release root内使用`--strip-components=1`。
+
+## v1启动与技术失败闭合
+
+- 启动时间：N607 2026-09-02 05:05:03 CST
+- launcher PID：R1-R8依次为`4017032`、`4017033`、`4017034`、`4017035`、`4017036`、`4017037`、`4017038`、`4017039`
+- 启动绑定：8个launcher命令行分别绑定R1-R8；日志分别绑定`CUDA_VISIBLE_DEVICES=0..7`和独立row输出根。
+- 技术结果：8个row均在prediction前写入`TRAIN_FAILED`，未产生checkpoint或prediction。
+- 确定性指纹：`phase1_fcr_interventions.py:158`对显式`nuisance_valid=None`执行`torch.as_tensor`，统一触发`TypeError: 'NoneType' object cannot be interpreted as an integer`。
+- 处置：全部launcher自然退出，无本run残留进程；未停止或修改任何既有任务。v1的run root、8份`train.log`和`status.txt`全部保留，不复用、不覆盖。
+- 本地复现：新增回归测试先在`ssr-gpu`中复现同一TypeError，再以最小归一化修复转绿。
+- 修复验证：完整FCR聚焦组95项通过；定点P0/P1复审无新增阻断项。
+- 修复提交：`df19a485347ac18e350cddfd533ebc9894762e79`，远端分支OID独立核对一致。
+- 后继run：`phase1_adv3b02_fcr_r1r8_s392002_20260902_v2`，矩阵、seed、训练预算、GPU映射和科学选择规则保持不变。
 
 ## 直接技术停止规则
 
