@@ -319,10 +319,17 @@ def build_marc_ot_functional_forward(
                 state,
                 (values,),
                 {"return_aux": True},
+                tie_weights=False,
                 strict=True,
             )
         except TypeError:
-            output = torch.func.functional_call(model, state, (values,), strict=True)
+            output = torch.func.functional_call(
+                model,
+                state,
+                (values,),
+                tie_weights=False,
+                strict=True,
+            )
         if isinstance(output, Tensor):
             logits = output
         elif isinstance(output, Mapping):

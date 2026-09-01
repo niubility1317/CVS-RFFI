@@ -141,7 +141,7 @@ def test_formal_config_is_exact_and_valid() -> None:
     path = ROOT / "configs" / "marc_ot_phase1_bundle_20260901.json"
     payload = json.loads(path.read_text(encoding="utf-8"))
     assert validate_marc_ot_phase1_config(payload) == payload
-    assert payload["run_id"] == "marc_ot_phase1_bundle_20260901_r2"
+    assert payload["run_id"] == "marc_ot_phase1_bundle_20260901_r3"
     assert payload["base_checkpoint"] == (
         "/home/szu2070436088/2510044040/CV-SincNet/runs/"
         "phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/"
@@ -201,6 +201,50 @@ def test_functional_forward_overrides_only_canonical_fast_parameters() -> None:
 
     with pytest.raises(ValueError, match="canonical|fast"):
         forward({"head.weight": base_state["head.weight"].clone().requires_grad_(True)}, values)
+
+
+class _TiedSinc(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.t_ = nn.Parameter(torch.tensor([0.25]))
+
+
+class _TiedBranch(nn.Module):
+    def __init__(self, shared_sinc: nn.Module) -> None:
+        super().__init__()
+        self.sinc = shared_sinc
+        self.t1 = nn.Linear(2, 160, bias=False)
+
+
+class _TiedDualModel(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        shared_sinc = _TiedSinc()
+        self.id_backbone = _TiedBranch(shared_sinc)
+        self.dom_backbone = _TiedBranch(shared_sinc)
+        self.head = nn.Linear(160, 6, bias=False)
+
+    def forward(self, values, return_aux=False):
+        pooled = values.float().mean(dim=-1) if values.ndim == 3 else values.float()
+        z_id = self.id_backbone.t1(pooled) * self.id_backbone.sinc.t_
+        logits = self.head(z_id)
+        return {"tx_logits": logits} if return_aux else logits
+
+
+def test_functional_forward_accepts_real_dual_style_tied_sinc_state() -> None:
+    model = _TiedDualModel()
+    base_state = {name: value.detach().clone() for name, value in model.state_dict().items()}
+    assert "id_backbone.sinc.t_" in base_state
+    assert "dom_backbone.sinc.t_" in base_state
+    forward = build_marc_ot_functional_forward(model, base_state)
+    fast_weight = base_state["id_backbone.t1.weight"].clone().requires_grad_(True)
+    logits = forward(
+        {"id_backbone.t1.weight": fast_weight},
+        torch.ones(2, 2, 16),
+    )
+    assert tuple(logits.shape) == (2, 6)
+    gradient = torch.autograd.grad(logits.sum(), fast_weight)[0]
+    assert torch.count_nonzero(gradient)
 
 
 class _RoleDataset:
