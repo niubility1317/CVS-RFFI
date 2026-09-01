@@ -38,3 +38,17 @@ PYTHONPATH=<release>/code:<release> /home/szu2070436088/.conda/envs/CVS-RFFI/bin
 - 独立P0/P1审查及一次原问题定点复审：`READY`。
 - Git push与远端OID回读：`VERIFIED`，远端`work/cvs-active`=`55f4e14c3e38042ff113f2585517190aa4e5b68e`。
 - release映射：本地`E:\type10-7\release_archives\phase1_riei_drift_newsplit_fold18_s392002_20260901_r1_55f4e14c.tar.gz`→远端`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_riei_drift_newsplit_fold18_s392002_20260901_r1_55f4e14c.tar.gz`；仅比较该归档一次本地/远端SHA256。
++
+## 启动与运行状态
+
+- 2026-09-01 15:52 CST：N607直连preflight通过；项目根、2.2GB新ManySig数据包及8块GPU可见。
+- 启动前资源：GPU0/1各0个compute进程，GPU2/3各1个外部训练进程；本run各增加1行后均不超过每GPU两个训练。未干预任何既有进程。
+- release归档SHA256本地/远端唯一比较一致：`bd90ba56d3ad0b7b85482c1f08331e566237d355e8955234689fcaadc391538b`；远端编译`PASS`。
+- 固定版本真实checkpoint、无query smoke：`PASS`。读取RIEI_C06的E186 checkpoint和DRIFT_N02的E76 checkpoint，均为非空且tensor有限；未读取任何target/query样本。
+- 远端dry-run确认4行manifest含固定版本ID、单一`V=0.30`、真实拼接CE-only、目标盲选和目标receiver-only最终clean/LEO评估。
+- 2026-09-01 16:00 CST正式状态：`RUNNING`。
+  - RIEI-fold1：PID`3615560`，GPU0。
+  - RIEI-fold8：PID`3615561`，GPU1。
+  - DRIFT-fold1：PID`3615562`，GPU2。
+  - DRIFT-fold8：PID`3615563`，GPU3。
+- 启动后独立回读：4个PID/CWD/完整cmdline/run-root/GPU绑定正确；4个日志均已增长；RIEI进入E3、DRIFT进入E4；未见`Traceback`、`RuntimeError`、CUDA OOM或`Killed`。E80前`loss_sat_ce=0`符合冻结日程。
