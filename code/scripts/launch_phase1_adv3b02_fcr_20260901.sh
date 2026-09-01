@@ -46,6 +46,7 @@ run_row() {
     "${PYTHON}" -u "${CODE_ROOT}/code/train.py"
     --dataset wisig
     --wisig_pkl "${WISIG_PKL}"
+    --model_variant lite_d
     --run_name "${RUN_ID}_${row}"
     --seed "${SEED}"
     --device cuda:0

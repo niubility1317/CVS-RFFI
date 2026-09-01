@@ -135,6 +135,7 @@ def test_launcher_freezes_defaults_four_evaluations_and_no_query_paths() -> None
     required_fragments = (
         "--phase1_method adv3b02_fcr",
         "--use_fcr",
+        "--model_variant lite_d",
         "--epochs 200",
         "--fcr_ablation_row",
         "--use_meta_ssl_cvs",
