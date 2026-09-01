@@ -81,3 +81,12 @@
 - TDD证据：新增2项回归先因helper不存在而失败，修复后通过；相关测试集共84项全部通过。
 - 真实checkpoint无query smoke：`PASS`，`query_inputs=0`、`target_inputs=0`，checkpoint epoch=200。
 - 定点P0/P1复审：未发现会导致r2再次启动错误、越权、覆盖输出或无法产生合法artifact的遗留问题。
+
+## r2协议失败与r3修订
+
+- r2已证明14→15域输出修复有效，但旧MUSE兼容函数把显式单一`V=27000`自动改写为`V_cal/V_select=13500/13500`，因此r2按协议错误停止且无性能结果。
+- 用户最新矩阵修订：不需要ADV3B02对比基线；r3仅保留A1～A7七行，A0不再启动、不参与结果比较。
+- r3修复：显式`legacy_l_u_v+0.07/0.63/0.30+cal/select=0`保持原样；旧默认参数仍沿用既有MUSE兼容转换。
+- 运行时日志按协议分型：单一V只输出`L/U/V=6300/56700/27000`，不再伪装成两个validation集合。
+- 新增回归均先失败后通过；完整相关测试87项通过，真实checkpoint无query smoke通过。
+- 定点P0/P1复审：A1～A7 launcher、MUSE协议保持和运行时summary未发现直接阻断问题。

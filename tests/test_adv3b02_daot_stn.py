@@ -4,6 +4,7 @@ import math
 from pathlib import Path
 import subprocess
 import sys
+from types import SimpleNamespace
 
 import pytest
 import torch
@@ -13,8 +14,10 @@ from model_dual_cvsincnet import NuisanceHeteroscedasticHead, build_dual_model
 from SSDG.train_ssdg import (
     _compute_daot_labeled_step,
     _compute_daot_unlabeled_step,
+    _enforce_muse_source_protocol,
     _load_baseline_state_allowing_domain_output_resize,
     _resolve_source_target_axes,
+    _source_role_split_summary,
     _validate_daot_config,
     build_arg_parser,
 )
@@ -102,6 +105,51 @@ def test_checkpoint_load_rejects_non_domain_shape_mismatch() -> None:
         _load_baseline_state_allowing_domain_output_resize(target_model, invalid_state)
 
 
+def test_muse_preserves_explicit_single_source_validation_protocol() -> None:
+    args = SimpleNamespace(
+        use_muse_ssdg=True,
+        muse_level="M3",
+        split_mode="tx_rx_day_1_7_2",
+        labeled_ratio=0.07,
+        unlabeled_ratio=0.63,
+        source_val_ratio=0.30,
+        source_cal_ratio=0.0,
+        source_select_ratio=0.0,
+        phase1_source_role_protocol="legacy_l_u_v",
+    )
+
+    _enforce_muse_source_protocol(args)
+
+    assert args.source_cal_ratio == 0.0
+    assert args.source_select_ratio == 0.0
+    assert args.phase1_source_role_protocol == "legacy_l_u_v"
+
+
+def test_single_validation_runtime_summary_does_not_report_two_validation_sets() -> None:
+    args = SimpleNamespace(
+        phase1_source_role_protocol="legacy_l_u_v",
+        labeled_ratio=0.07,
+        unlabeled_ratio=0.63,
+        source_val_ratio=0.30,
+        source_cal_ratio=0.0,
+        source_select_ratio=0.0,
+    )
+    split_info = {
+        "labeled_size": 6300,
+        "unlabeled_size": 56700,
+        "source_val_size": 27000,
+        "source_calibration_size": 27000,
+        "source_selection_size": 27000,
+    }
+
+    summary = _source_role_split_summary(args, split_info)
+
+    assert "L/U/V=6300/56700/27000" in summary
+    assert "ratios=0.070/0.630/0.300" in summary
+    assert "Vcal" not in summary
+    assert "Vselect" not in summary
+
+
 def test_real_checkpoint_smoke_entrypoint_imports_from_repository_root() -> None:
     repository_root = Path(__file__).resolve().parents[1]
     completed = subprocess.run(
@@ -187,6 +235,27 @@ def test_manysig_a0_a7_release_freezes_approved_matrix_and_single_v_protocol() -
     assert "ALLOW_SOURCE_TARGET_DAY_OVERLAP=true" in launcher
     assert "TARGET_GROUP_LOADER=test_all_day_unseen_rx" in launcher
     assert "A8" not in launcher
+
+
+def test_manysig_a1_a7_release_excludes_unrequested_comparison_baseline() -> None:
+    repository_root = Path(__file__).resolve().parents[1]
+    launcher = (
+        repository_root
+        / "code"
+        / "scripts"
+        / "launch_phase1_adv3b02_daot_stn_a1_a7_manysig_s392005_20260902.sh"
+    ).read_text(encoding="utf-8")
+
+    assert "ROWS=(A1 A2 A3 A4 A5 A6 A7)" in launcher
+    assert "GPUS=(1 2 3 4 5 6 7)" in launcher
+    assert "rows=7" in launcher
+    assert "baseline=excluded_by_user" in launcher
+    assert "ROWS=(A0" not in launcher
+    assert "--only=A[1-7]" in launcher
+    assert "PHASE1_SOURCE_ROLE_PROTOCOL=legacy_l_u_v" in launcher
+    assert "SOURCE_VAL_RATIO=0.30" in launcher
+    assert "SOURCE_CAL_RATIO=0" in launcher
+    assert "SOURCE_SELECT_RATIO=0" in launcher
 
 
 def test_worker_records_actual_single_v_release_roles_in_run_artifacts() -> None:

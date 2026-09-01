@@ -2,7 +2,7 @@
 
 ## 状态
 
-- 当前状态：`LOCAL_VERIFIED`
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - run ID：`phase1_adv3b02_daot_stn_a0_a7_manysig_s392005_20260901_r2`
 - 代码与配置commit：`b57f20cf711cbd150f82e9c28eecfc4c495ff8f6`
 - 分支：`codex/adv3b02-daot-stn-v1-20260901`
@@ -65,3 +65,14 @@ nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet CODE_ROOT=/home/szu2070
 仅在数据/query边界违反、错误split/receiver/day、输出碰撞、错误checkout/CWD、确定性异常至少两行重复、无prediction闭合或scorer连接错误时停止精确绑定的r2进程树。低性能不停止。
 
 每行预期生成`config.json`、`train.log`、checkpoint、clean与三个LEO弱场景的独立评测日志和指标、`status.txt`；四场景齐全后才可标记`ARTIFACTS_COMPLETE`。
+
+## r2启动、用户矩阵修订与协议停止
+
+- 用户明确覆盖默认GPU并发限制后，r2 dispatcher PID=`3872274`启动；8个主训练进程分别绑定GPU0～7、正确release CWD和独立候选输出目录。
+- r1的14→15域输出故障已修复：8行student与teacher均打印4个域输出张量重建marker，未再出现形状异常。
+- 用户随后明确“不需要ADV3B02对比基线”，因此A0进程树被精确绑定并停止，partial日志保留，不纳入科学比较。
+- 启动日志暴露新的协议错误：命令行虽传入`legacy_l_u_v`及`0.07/0.63/0.30`，旧`_enforce_muse_source_protocol`仍自动改写为`l_s_u_s_v_cal_v_select`及`0.07/0.63/0.15/0.15`。
+- 该改写违反用户批准的单一只读V=27000协议，故按协议错误规则停止r2完整进程树；共133个仅属于r2的dispatcher、worker和DataLoader进程被精确停止并核对无残留，其他运行不受影响。
+- r2所有release、日志和partial产物均保留，未原地修补或重启。
+- 科学判定：`NO_PERFORMANCE_RESULT`。
+- 后续：本地修复MUSE自动改写，新增运行时单一V日志负测，并以A1～A7七行、全新r3 release/run root重新发布。

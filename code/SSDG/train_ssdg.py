@@ -5921,6 +5921,18 @@ def _enforce_muse_source_protocol(args) -> None:
     capabilities = _muse_level_capabilities(getattr(args, "muse_level", "M0"))
     if not capabilities["base"]:
         return
+    explicit_single_validation = (
+        str(getattr(args, "phase1_source_role_protocol", "legacy_l_u_v"))
+        == "legacy_l_u_v"
+        and str(getattr(args, "split_mode", "")) == "tx_rx_day_1_7_2"
+        and abs(float(getattr(args, "labeled_ratio", 0.0)) - 0.07) <= 1e-12
+        and abs(float(getattr(args, "unlabeled_ratio", 0.0)) - 0.63) <= 1e-12
+        and abs(float(getattr(args, "source_val_ratio", 0.0)) - 0.30) <= 1e-12
+        and abs(float(getattr(args, "source_cal_ratio", 0.0))) <= 1e-12
+        and abs(float(getattr(args, "source_select_ratio", 0.0))) <= 1e-12
+    )
+    if explicit_single_validation:
+        return
     legacy_defaults = {
         "split_mode": "tx_rx_day_1_6_3",
         "labeled_ratio": 0.08,
@@ -5957,6 +5969,28 @@ def _enforce_muse_source_protocol(args) -> None:
         mismatches.append(f"{name}={actual!r} expected={expected!r}")
     if mismatches:
         raise ValueError("MUSE source protocol mismatch: " + "; ".join(mismatches))
+
+
+def _source_role_split_summary(args: Any, split_info: Mapping[str, Any]) -> str:
+    role_protocol = str(
+        getattr(args, "phase1_source_role_protocol", "legacy_l_u_v")
+    )
+    if role_protocol == "legacy_l_u_v":
+        return (
+            f"L/U/V={split_info['labeled_size']}/{split_info['unlabeled_size']}/"
+            f"{split_info['source_val_size']} "
+            f"ratios={float(args.labeled_ratio):.3f}/{float(args.unlabeled_ratio):.3f}/"
+            f"{float(args.source_val_ratio):.3f} role_protocol={role_protocol}"
+        )
+    return (
+        f"L/U/Vcal/Vselect={split_info['labeled_size']}/{split_info['unlabeled_size']}/"
+        f"{split_info.get('source_calibration_size', split_info['source_val_size'])}/"
+        f"{split_info.get('source_selection_size', 0)} "
+        f"ratios={float(args.labeled_ratio):.3f}/{float(args.unlabeled_ratio):.3f}/"
+        f"{float(getattr(args, 'source_cal_ratio', 0.0)):.3f}/"
+        f"{float(getattr(args, 'source_select_ratio', 0.0)):.3f} "
+        f"role_protocol={role_protocol}"
+    )
 
 
 class _MUSEUnlabeledDatasetView:
@@ -8261,6 +8295,7 @@ def train(args) -> int:
         )
     aug_base_cfg = build_aug_base_cfg(args) if bool(args.use_aug) and build_aug_base_cfg is not None else None
     augmentor = make_augmentor(aug_base_cfg) if aug_base_cfg is not None and make_augmentor is not None else None
+    source_role_summary = _source_role_split_summary(args, data_ctx["split_info"])
     print(
         "\n".join(
             [
@@ -8269,12 +8304,7 @@ def train(args) -> int:
                 f"from_scratch={int(bool(args.from_scratch))} freeze_backbone={int(bool(args.freeze_backbone))}",
                 "[CONFIG-DATA] "
                 f"dataset={getattr(args, 'dataset', 'wisig')} split_mode={args.split_mode} "
-                f"L/U/Vcal/Vselect={data_ctx['split_info']['labeled_size']}/{data_ctx['split_info']['unlabeled_size']}/"
-                f"{data_ctx['split_info'].get('source_calibration_size', data_ctx['split_info']['source_val_size'])}/"
-                f"{data_ctx['split_info'].get('source_selection_size', 0)} "
-                f"ratios={float(args.labeled_ratio):.3f}/{float(args.unlabeled_ratio):.3f}/"
-                f"{float(getattr(args, 'source_cal_ratio', 0.0)):.3f}/{float(getattr(args, 'source_select_ratio', 0.0)):.3f} "
-                f"role_protocol={getattr(args, 'phase1_source_role_protocol', 'legacy_l_u_v')}",
+                f"{source_role_summary}",
                 "[CONFIG-OPT] "
                 f"optimizer=AdamW lr={float(args.lr):.6g} weight_decay={float(args.weight_decay):.6g} amp={int(bool(args.amp))} "
                 f"params_trainable={trainable_params} params_total={total_params} "
@@ -8464,12 +8494,7 @@ def train(args) -> int:
     )
     print(
         f"[SSDG-TRAIN] init={'scratch' if not use_ckpt else args.baseline_ckpt} split={data_ctx['split_info']['mode']} "
-        f"L/U/Vcal/Vselect={data_ctx['split_info']['labeled_size']}/{data_ctx['split_info']['unlabeled_size']}/"
-        f"{data_ctx['split_info'].get('source_calibration_size', data_ctx['split_info']['source_val_size'])}/"
-        f"{data_ctx['split_info'].get('source_selection_size', 0)} "
-        f"ratios={float(args.labeled_ratio):.3f}/{float(args.unlabeled_ratio):.3f}/"
-        f"{float(getattr(args, 'source_cal_ratio', 0.0)):.3f}/{float(getattr(args, 'source_select_ratio', 0.0)):.3f} "
-        f"role_protocol={getattr(args, 'phase1_source_role_protocol', 'legacy_l_u_v')} "
+        f"{source_role_summary} "
         f"label_epochs={args.label_epochs} pseudo_epochs={args.pseudo_epochs} "
         f"lambda_domain={float(args.lambda_domain):.3f} lambda_fishr={float(args.lambda_fishr):.3f} "
         f"threshold={args.pseudo_threshold_mode} domain_gate={int(args.pseudo_domain_gate)} "
