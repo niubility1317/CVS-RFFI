@@ -117,6 +117,7 @@ def _actual_training_coverage(
     episodes: Sequence[MetaEpisode],
     *,
     updated_required_tensor_count: int,
+    outer_cycles: int,
 ) -> Mapping[str, Any]:
     rows = tuple(episodes)
     transitions = tuple(
@@ -137,6 +138,8 @@ def _actual_training_coverage(
         "episode_kinds": tuple(sorted({str(episode.kind.value) for episode in rows})),
         "scene_transitions": transitions,
         "training_step_executed": True,
+        "optimizer_step_count": len(rows) * outer_cycles,
+        "outer_cycles": outer_cycles,
         "updated_required_tensor_count": int(updated_required_tensor_count),
         "input_provenance": "CALLER_SUPPLIED_UNCLAIMED",
         "pilot_executed": False,
@@ -196,6 +199,7 @@ def run_marc_ot_phase1_bank_training(
         [tuple[MetaEpisode, ...]], Sequence[MetaEpisode]
     ],
     schedule_seed: int = 0,
+    outer_cycles: int = 1,
     task_domain_selector: Callable[
         [MetaEpisode], MARCOTTaskDomainSelection
     ] = canonical_episode_task_domain_selection,
@@ -208,6 +212,10 @@ def run_marc_ot_phase1_bank_training(
 
     if not isinstance(trainer_config, MetaBankTrainerConfig):
         raise TypeError("trainer_config must be MetaBankTrainerConfig")
+    if isinstance(outer_cycles, bool) or not isinstance(outer_cycles, int):
+        raise TypeError("outer_cycles must be an integer >= 1")
+    if outer_cycles < 1:
+        raise ValueError("outer_cycles must be >= 1")
     if (
         not callable(batch_builder)
         or not callable(training_episode_selector)
@@ -275,6 +283,7 @@ def run_marc_ot_phase1_bank_training(
         )
 
     results: list[MetaBankStepResult] = []
+    cached_batches: list[MetaEpisodeBatch] = []
     task_row_sums: dict[DeltaTaskKey, Tensor] = {}
     task_row_counts: dict[DeltaTaskKey, int] = {}
     task_physical_ids: dict[DeltaTaskKey, set[str]] = {}
@@ -316,19 +325,23 @@ def run_marc_ot_phase1_bank_training(
         row_sum = feature_batch.rows.detach().to(device="cpu", dtype=torch.float32).sum(dim=0)
         task_row_sums[task_key] = task_row_sums.get(task_key, torch.zeros_like(row_sum)) + row_sum
         task_row_counts[task_key] = task_row_counts.get(task_key, 0) + len(feature_batch.rows)
-        results.append(
-            run_meta_bank_step(
-                functional_forward,
-                base_state=base_state,
-                base_checkpoint_id=base_checkpoint_id,
-                bank=bank,
-                support_encoder=support_encoder,
-                support_feature_model=support_feature_model,
-                batch=batch,
-                config=trainer_config,
-                optimizer=optimizer,
+        cached_batches.append(batch)
+
+    for _ in range(outer_cycles):
+        for batch in cached_batches:
+            results.append(
+                run_meta_bank_step(
+                    functional_forward,
+                    base_state=base_state,
+                    base_checkpoint_id=base_checkpoint_id,
+                    bank=bank,
+                    support_encoder=support_encoder,
+                    support_feature_model=support_feature_model,
+                    batch=batch,
+                    config=trainer_config,
+                    optimizer=optimizer,
+                )
             )
-        )
 
     post_step_state = _snapshot_required_training_state(bank, support_encoder)
     if set(post_step_state) != set(pre_step_state):
@@ -380,6 +393,7 @@ def run_marc_ot_phase1_bank_training(
             _actual_training_coverage(
                 selected,
                 updated_required_tensor_count=len(updated_names),
+                outer_cycles=outer_cycles,
             )
         ),
         step_results=tuple(results),

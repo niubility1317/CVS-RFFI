@@ -255,7 +255,14 @@ def _episode_batch(episode):
     )
 
 
-def _run_phase1_test_entry(bundle_path: Path, *, learning_rate: float, selector):
+def _run_phase1_test_entry(
+    bundle_path: Path,
+    *,
+    learning_rate: float,
+    selector,
+    batch_builder=_episode_batch,
+    outer_cycles: int = 1,
+):
     from cvsrffi.marc_ot_phase1 import run_marc_ot_phase1_bank_training
     from cvsrffi.meta_bank_trainer import MetaBankTrainerConfig
     from cvsrffi.meta_support_set_encoder import SupportSetEncoder
@@ -287,7 +294,7 @@ def _run_phase1_test_entry(bundle_path: Path, *, learning_rate: float, selector)
 
     result = run_marc_ot_phase1_bank_training(
         sampler=_sampler(),
-        batch_builder=_episode_batch,
+        batch_builder=batch_builder,
         functional_forward=functional_forward,
         base_state=base_state,
         base_checkpoint_id="base-task8",
@@ -303,6 +310,7 @@ def _run_phase1_test_entry(bundle_path: Path, *, learning_rate: float, selector)
         bundle_path=bundle_path,
         training_episode_selector=selector,
         schedule_seed=31,
+        outer_cycles=outer_cycles,
     )
     return result, bank, encoder, pre_step
 
@@ -366,6 +374,79 @@ def test_real_phase1_entry_runs_bank_step_and_strict_bundle_round_trip(tmp_path:
     assert any(not torch.equal(post_step[name], pre_step[name]) for name in pre_step)
     assert all(torch.equal(loaded[name], post_step[name]) for name in post_step)
     assert any(not torch.equal(loaded[name], pre_step[name]) for name in pre_step)
+
+
+def test_phase1_outer_cycles_cache_physical_batches_and_repeat_only_optimizer_steps(
+    tmp_path: Path,
+) -> None:
+    """Repeating a cycle must not rebuild physical batches or re-aggregate its descriptor."""
+    builder_calls: list[object] = []
+
+    def counting_batch_builder(episode):
+        builder_calls.append(episode)
+        return _episode_batch(episode)
+
+    result, bank, encoder, pre_step = _run_phase1_test_entry(
+        tmp_path / "marc_ot_outer_cycles_bundle.pt",
+        learning_rate=0.01,
+        selector=lambda episodes: tuple(
+            row
+            for row in episodes
+            if (
+                row.k_shot == 2
+                and row.guard_class_ids
+                and row.query_adapt[0].rx_i == 0
+                and row.query_adapt[0].day_i == 0
+                and row.query_adapt[0].view == "leo_clear_weak"
+            )
+        )[:1],
+        batch_builder=counting_batch_builder,
+        outer_cycles=3,
+    )
+
+    assert len(builder_calls) == result.training_coverage["trained_episode_count"] == 1
+    assert len(result.step_results) == 3
+    assert result.training_coverage["optimizer_step_count"] == 3
+    assert result.training_coverage["outer_cycles"] == 3
+    assert result.training_coverage["training_step_executed"] is True
+    assert result.loaded_bundle.task_domain_bank.aggregation_counts.tolist() == [4]
+    post_step = {
+        **{
+            f"bank_basis.{entry.spec.name}": entry.basis.detach().clone()
+            for entry in bank.entries
+        },
+        **{
+            f"support_encoder.{name}": value.detach().clone()
+            for name, value in encoder.state_dict().items()
+        },
+    }
+    loaded = {
+        **{
+            f"bank_basis.{entry.spec.name}": entry.basis.detach().clone()
+            for entry in result.loaded_bundle.bank.entries
+        },
+        **{
+            f"support_encoder.{name}": value.detach().clone()
+            for name, value in result.loaded_bundle.support_encoder.state_dict().items()
+        },
+    }
+    assert any(not torch.equal(post_step[name], pre_step[name]) for name in pre_step)
+    assert all(torch.equal(loaded[name], post_step[name]) for name in post_step)
+
+
+@pytest.mark.parametrize("outer_cycles", [True, False, 0, -1, 1.5, "3"])
+def test_phase1_outer_cycles_rejects_non_positive_or_non_integer_values(
+    tmp_path: Path,
+    outer_cycles,
+) -> None:
+    """Invalid cycle counts must fail before a batch can be materialized."""
+    with pytest.raises((TypeError, ValueError), match="outer_cycles"):
+        _run_phase1_test_entry(
+            tmp_path / f"marc_ot_invalid_cycles_{outer_cycles!s}.pt",
+            learning_rate=0.01,
+            selector=lambda episodes: (episodes[0],),
+            outer_cycles=outer_cycles,
+        )
 
 
 def test_phase1_default_task_key_uses_explicit_pseudo_target_facts_only() -> None:
