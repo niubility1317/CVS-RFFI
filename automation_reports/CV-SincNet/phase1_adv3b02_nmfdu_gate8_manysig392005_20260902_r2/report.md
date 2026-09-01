@@ -23,3 +23,11 @@
 - 本地验证：两个CUDA autocast回归测试先失败后通过；关键模块`py_compile`通过；完整NMFDU聚焦套件`96 passed`；完整小型NMFDU CUDA autocast前向通过；一次独立P0/P1定点审查`PASS`
 - 当前状态：`LOCAL_VERIFIED / RELEASE_PREPARING / NOT_LAUNCHED`
 
+## 发布前远端验证
+
+- release归档本地与N607远端SHA256一致：`8dd447aa74e07bcfb67bc4654917dc3248a015cbd1c9b13cbcb90221c395dfd4`。
+- 新release远端Python编译与launcher原生`bash -n`均通过。
+- 真实ADV3B02 checkpoint无query smoke在N607 GPU0通过：严格加载、52个NMFDU初始化state key、23个有限非零梯度，source RX/day/equalized/split seed匹配，query truth和Phase2访问均为`false`。
+- N607运行环境未安装`pytest`，因此未使用远端测试框架；改由同一远端Python/CUDA直接执行两处autocast回归，结果为`NMFDU_R2_N607_CUDA_AUTOCAST_PASS`。
+- 启动前GPU0–7独立计算进程数为`1/2/2/3/2/3/3/2`；在用户授权的上限4内可分别新增一个E1–E8任务。
+- 当前状态：`LANDED / READY_TO_LAUNCH / NOT_LAUNCHED`
