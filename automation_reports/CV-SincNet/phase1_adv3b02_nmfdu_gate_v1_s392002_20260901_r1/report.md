@@ -24,3 +24,11 @@
 - N607验证：原生`bash -n`、launcher dry-run和远端Python编译通过
 - 真实checkpoint无query smoke：`PASS`；结果=`runs/phase1_adv3b02_nmfdu_gate_v1_s392002_20260901_r1_smoke/nmfdu_real_checkpoint_smoke.json`
 - 实际启动命令：`env ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate_v1_a2d5c05b WISIG_PKL=/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl CORE90_CKPT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth RUNS_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_nmfdu_gate_v1_s392002_20260901_r1 LOG_ROOT=/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_nmfdu_gate_v1_s392002_20260901_r1 RUN_ID=phase1_adv3b02_nmfdu_gate_v1_s392002_20260901_r1 GPU_MAP=4,5,6,7 bash /home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate_v1_a2d5c05b/code/scripts/launch_phase1_adv3b02_nmfdu_gate_v1_queue_20260901.sh`
+
+## r1启动结果
+
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
+- 影响范围：M1–M4均在训练前退出；未进入数据加载、训练或性能评估
+- 失败指纹：`ValueError: Phase1 source-only checkpoint selection forbids test/receiver/satellite-test best metrics; use --best_metric clean_val_tx or source_val_sat_hmean.`
+- 原因：launcher沿用了历史`--best_metric joint_safe`和`enable_joint_safe_guard=true`，两者均与当前source-only保护不兼容
+- 处置：保留r1全部日志和空输出目录；本地改为`source_val_sat_hmean`、关闭held-out joint guard并保留`checkpoint_selection=final_only`；回归测试`3 passed`，修复后定点复审为`FIXED`；以全新r2 run ID/release重新发布

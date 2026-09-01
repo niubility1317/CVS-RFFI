@@ -26,6 +26,10 @@ def test_launcher_freezes_report_matrix_and_current_source_protocol() -> None:
     assert '--seed "${SEED}"' in text
     assert "--lambda_sat_cls 0.68" in text
     assert "--lambda_sat_cons 0" in text
+    assert "--best_metric source_val_sat_hmean" in text
+    assert "--best_metric joint_safe" not in text
+    assert "--enable_joint_safe_guard false" in text
+    assert "--enable_joint_safe_guard true" not in text
     assert "leo_clear_weak,leo_low_elev_weak,leo_rain_weak" in text
 
 

@@ -69,8 +69,8 @@ build_command() {
     --label_epochs 130
     --pseudo_epochs 70
     --from_scratch true
-    --best_metric joint_safe
-    --enable_joint_safe_guard true
+    --best_metric source_val_sat_hmean
+    --enable_joint_safe_guard false
     --checkpoint_selection final_only
     --use_feature_masks true
     --use_txrx_geometry_losses true
