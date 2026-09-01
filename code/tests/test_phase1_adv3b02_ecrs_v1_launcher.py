@@ -98,6 +98,28 @@ def test_core90_sat_ce_starts_e80_without_suppressing_ecrs_pair_view() -> None:
     assert effective_concat_sat_ce_weight(args, 80) == 0.68
 
 
+def test_launcher_direct_mode_runs_r1_to_r8_from_scratch_on_all_gpus() -> None:
+    env = dict(os.environ)
+    env["DIRECT_FROM_SCRATCH"] = "1"
+    result = subprocess.run(
+        [_bash_executable(), str(SCRIPT), "--dry-run"],
+        cwd=PROJECT_ROOT,
+        env=env,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        capture_output=True,
+        check=True,
+    )
+    output = result.stdout
+    assert output.count("[ECRS-V1-CANDIDATE]") == 8
+    assert "[ECRS-V1-BASELINE]" not in output
+    assert "--init_checkpoint" not in output
+    assert "shared_r0=0 init_checkpoint=none" in output
+    for rung, gpu in zip(range(1, 9), range(8)):
+        assert f"rung=R{rung} gpu={gpu}" in output
+
+
 def test_ecrs_v1_rejects_out_of_report_weight_ranges() -> None:
     valid = SimpleNamespace(
         lambda_ecrs_canonical=0.10,

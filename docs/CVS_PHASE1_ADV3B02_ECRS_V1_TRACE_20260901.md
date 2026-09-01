@@ -28,6 +28,7 @@
 | ECRS-20 | 第30节 | checkpoint保存basis、`M_ref`、anchor、归一化统计、encoder、gate、response原型/协方差和schema | `code/cvsrffi/checkpoint.py`、`code/train.py` | verified（本地） | 真实ADV3B02 checkpoint保存—加载—单视图推理精确往返 | schema固定为`ADV3B02:ECRS:z_fused:unit_l2:160:v1` |
 | ECRS-21 | 第31节 | 单条LEO IQ独立推理，所有source receiver参与最终训练 | `code/model_dual_cvsincnet.py`、`code/train.py` | verified（本地实现） | 无clean输入推理测试；launcher保持全部source receiver | 不改变Phase2 query边界；尚未启动N607性能实验 |
 | ECRS-22 | 项目协议4.3节 | 继续使用`concat_sat_ce_only=true`、`lambda_sat_cls=0.68`、`lambda_sat_cons=0`及三段LEO_WEAK日程 | `code/train.py`、正式launcher | verified（本地实现） | CLI解析、E80 CE边界与R0–R8 dry-run | 最终clean和三个`leo_*_weak`实测须由后续N607实验产生 |
+| ECRS-24 | 用户2026-09-02直接发布指令 | 不运行共享R0，R1–R8分别在GPU0–7从头端到端训练 | `code/scripts/launch_phase1_adv3b02_ecrs_v1_20260901.sh`、launcher测试、新run报告 | implemented | direct模式dry-run必须为8个候选、0个R0、0个`--init_checkpoint`，GPU映射R1→0至R8→7 | 用户明确覆盖第28、29节的共享收敛R0前置；属于报告设计近似，不得声明严格共享基线递进因果结论 |
 
 ## 明确不进入V1的设计稿后续项
 

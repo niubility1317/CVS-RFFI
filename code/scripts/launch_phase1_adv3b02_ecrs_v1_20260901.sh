@@ -10,6 +10,7 @@ WISIG_PKL="${WISIG_PKL:-${ROOT}/Dataset_WigSig/ManySig.pkl}"
 BASE_CHECKPOINT="${RUNS_ROOT}/ADV3B02_ECRS_R0/best.pth"
 DRY_RUN="${DRY_RUN:-0}"
 ONLY_CANDIDATES="${ONLY_CANDIDATES:-}"
+DIRECT_FROM_SCRATCH="${DIRECT_FROM_SCRATCH:-0}"
 MAX_GPU_TRAIN_PROCS="${MAX_GPU_TRAIN_PROCS:-2}"
 GPU_SLOT_POLL_SECONDS="${GPU_SLOT_POLL_SECONDS:-30}"
 
@@ -107,6 +108,9 @@ launch_rung() {
   local rung="$1" gpu="$2" basis="$3" ridge="$4"
   local candidate="ADV3B02_ECRS_${rung}"
   candidate_enabled "${candidate}" || return 0
+  if [[ "${rung}" == "R0" && "${DIRECT_FROM_SCRATCH}" == "1" ]]; then
+    return 0
+  fi
   local out_dir="${RUNS_ROOT}/${candidate}"
   local log_path="${LOG_ROOT}/${candidate}.out"
   build_common_cmd "${gpu}" "${candidate}" "${out_dir}"
@@ -136,8 +140,11 @@ launch_rung() {
   fi
   local ecrs_flags=(--use_ecrs --ecrs_rung "${rung}" --ecrs_basis_mode "${basis}" --ecrs_ridge_alpha "${ridge}")
 
-  cmd=("${common_cmd[@]}"
-    --init_checkpoint "${BASE_CHECKPOINT}"
+  cmd=("${common_cmd[@]}")
+  if [[ "${DIRECT_FROM_SCRATCH}" != "1" ]]; then
+    cmd+=(--init_checkpoint "${BASE_CHECKPOINT}")
+  fi
+  cmd+=(
     --ecrs_raw_ce_weight 0.30
     --ecrs_alpha_resp 0.15
     --lambda_ecrs_canonical 0.10
@@ -171,8 +178,21 @@ launch_rung() {
 
 echo "[ECRS-V1-DATA] dataset=ManySig path=${WISIG_PKL} equalized=1 requested_split_mode=tx_rx_day_1_7_2 protocol_split=L_s/U_s/V=0.07/0.63/0.30 seed=392005 source_rxs=1,3,4,6,8 source_days=1,2,3 source_pool=90000 L_s=6300 U_s=56700 V=27000 target_rxs=0,2,5,7,9,10,11 target_days=0,1,2,3 target_tx=0,1,2,3,4,5 target_per_scenario=168000"
 echo "[ECRS-V1-PROTOCOL] concat_sat_ce_only=1 lambda_sat_cls=0.68 lambda_sat_cons=0 schedule=1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak --eval_sat_scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
-echo "[ECRS-V1-RESOURCES] max_gpu_train_processes=${MAX_GPU_TRAIN_PROCS} slot_poll_seconds=${GPU_SLOT_POLL_SECONDS} baseline_gpu=4"
+if [[ "${DIRECT_FROM_SCRATCH}" == "1" ]]; then
+  echo "[ECRS-V1-DIRECT] enabled=1 shared_r0=0 init_checkpoint=none parity_scope=user_override_non_shared_baseline"
+  echo "[ECRS-V1-RESOURCES] max_gpu_train_processes=${MAX_GPU_TRAIN_PROCS} slot_poll_seconds=${GPU_SLOT_POLL_SECONDS} mapping=R1:0,R2:1,R3:2,R4:3,R5:4,R6:5,R7:6,R8:7"
+  launch_rung R1 0 fixed_mp 0.01
+  launch_rung R2 1 fixed_spline 0.01
+  launch_rung R3 2 fixed_spline 0.01
+  launch_rung R4 3 fixed_spline 0.01
+  launch_rung R5 4 fixed_spline 0.01
+  launch_rung R6 5 fixed_spline 0.01
+  launch_rung R7 6 fixed_spline 0.01
+  launch_rung R8 7 fixed_spline 0.01
+  exit 0
+fi
 
+echo "[ECRS-V1-RESOURCES] max_gpu_train_processes=${MAX_GPU_TRAIN_PROCS} slot_poll_seconds=${GPU_SLOT_POLL_SECONDS} baseline_gpu=4"
 launch_rung R0 4 fixed_spline 0.01
 if [[ "${DRY_RUN}" != "1" && ! -f "${BASE_CHECKPOINT}" ]]; then
   echo "[ERROR] exact source-only R0 checkpoint not found after baseline stage: ${BASE_CHECKPOINT}" >&2

@@ -3,7 +3,7 @@
 ## 1.状态
 
 - run_id：`phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_20260901_r1`
-- 当前状态：`RUNNING`（R0运行中；R1–R8已发布并等待R0成功后自动启动）
+- 当前状态：`STOPPED_BY_USER / NO_PERFORMANCE_RESULT`
 - 正式实验数：8（R1–R8）
 - 共享先决阶段：R0，仅训练一次，不计入八个正式实验
 - code_commit：`682701c72c2d573053ff5c66b23ba180cc831ec1`
@@ -118,3 +118,12 @@ nohup env ROOT=<release-root> PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bi
 - R0 checkpoint：E1已生成`best.pth`与`latest.pth`
 - R1–R8状态：`QUEUED_AFTER_R0`；只有R0正常结束且本run的`best.pth`存在后才自动启动
 - 启动检查结论：PID/CWD/cmdline/GPU/log增长/run-root绑定均为`VERIFIED`
+
+## 9.用户终止与新run迁移
+
+- 2026-09-02用户明确要求“不跑R0，直接上R1–R8”。
+- 本run只启动过共享R0；R1–R8尚未启动。
+- 停止前最后完整epoch：`E021/200`；R0未完成规定的E200及最终clean/三LEO评测，因此本run没有性能结果。
+- 精确停止范围：pipeline PID`3866394`、R0主PID`3866412`及12个run-owned DataLoader子进程；停止后14个目标PID均不存在。
+- 旧run目录、`best.pth`、`latest.pth`、日志、协议检查和release全部保留，未删除、未覆盖。
+- 后继run改为R1–R8各自从头训练并分布到GPU0–7；该变更是用户对共享收敛R0前置的明确覆盖，不得据此声明严格共享基线递进因果结论。
