@@ -21,5 +21,8 @@
 - 停止规则：仅在数据/query越权、错误split/RX/day/seed/场景、输出覆盖、错误checkout、进程归属不清、无prediction闭合或至少两行出现同一确定性系统异常时停止；不得因低性能停止
 - 预期artifact：每行最终checkpoint、训练日志、clean及三个LEO弱场景独立结果、prediction与独立scorer同row指标
 - 本地验证：CUDA autocast回归、非MUSE零RC4遥测回归、关键模块`py_compile`通过；NMFDU+FastTrust聚焦套件`119 passed`；两次修复各自的一次独立P0/P1定点审查均`PASS`
-- 当前状态：`LOCAL_VERIFIED / RELEASE_PREPARING / NOT_LAUNCHED`
-
+- N607归档独立读回：远端SHA256=`6d89477c7374c048d808521b8e1528eac38c6ba71e5474ad8faaff36f6afa4e0`，与本地归档一致；新release关键Python模块编译和launcher原生`bash -n`通过
+- N607真实checkpoint无query smoke：`PASS`；严格加载195个state tensor，missing/unexpected均为0；初始化52个NMFDU state key，得到23个有限非零梯度；source RX/day/equalized/split seed匹配，query truth和Phase2访问均为`false`
+- N607定点技术smoke：`NMFDU_R3_N607_TECHNICAL_SMOKE_PASS`；CUDA autocast下Fisher/相位线性代数保持FP32且有限，非MUSE空route返回完整零RC4遥测
+- 启动前GPU计算进程数：GPU0–7=`1/2/2/3/2/3/3/2`；加入E1–E8后预计=`2/3/3/4/3/4/4/3`，不超过用户授权的每GPU最多4个训练进程
+- 当前状态：`LANDED / READY_TO_LAUNCH`
