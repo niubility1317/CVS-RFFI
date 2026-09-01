@@ -219,6 +219,12 @@ class WiSigCompactDataset(Dataset):
         it = self.index[k]
         x = self.data[it.tx_i][it.rx_i][it.day_i][it.eq_i][it.sig_i]
         x_2t = np.asarray(x, dtype=np.float32).T
+        source_len = int(x_2t.shape[1])
+        crop_offset = (
+            0
+            if source_len <= self.out_len or self.crop_mode == "left"
+            else (source_len - self.out_len) // 2
+        )
         if self.out_len != x_2t.shape[1]:
             x_2t = _pad_or_crop_2t(x_2t, self.out_len, mode=self.crop_mode)
         if self.normalize:
@@ -228,6 +234,10 @@ class WiSigCompactDataset(Dataset):
             x_t = self.transform(x_t)
         y = int(it.tx_i)
         d = int(self._domain_lut[(it.rx_i, it.day_i)])
+        physical_sample_id = (
+            f"tx{int(it.tx_i)}:rx{int(it.rx_i)}:day{int(it.day_i)}:"
+            f"eq{int(it.eq_i)}:sig{int(it.sig_i)}"
+        )
         meta = {
             "base_index": int(k),
             "tx_i": it.tx_i,
@@ -239,6 +249,12 @@ class WiSigCompactDataset(Dataset):
             "rx": self.rx_list[it.rx_i] if it.rx_i < len(self.rx_list) else it.rx_i,
             "day": self.day_list[it.day_i] if it.day_i < len(self.day_list) else it.day_i,
             "equalized": self.eq_list[it.eq_i] if it.eq_i < len(self.eq_list) else None,
+            "physical_sample_id": physical_sample_id,
+            "pair_id": physical_sample_id,
+            "receiver_id": int(it.rx_i),
+            "day_id": int(it.day_i),
+            "crop_offset": int(crop_offset),
+            "synchronized_crop": True,
         }
         return x_t, y, d, meta
 

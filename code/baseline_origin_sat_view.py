@@ -54,6 +54,7 @@ class SatViewTransform:
     nuisance: Optional[torch.Tensor] = None
     nuisance_valid: Optional[torch.Tensor] = None
     nuisance_fields: tuple[str, ...] = ()
+    pair_meta: Optional[dict[str, Any]] = None
 
 
 @dataclass
@@ -72,6 +73,7 @@ class BaselineOriginSatViewBatch:
     nuisance: Optional[torch.Tensor] = None
     nuisance_valid: Optional[torch.Tensor] = None
     nuisance_fields: tuple[str, ...] = ()
+    pair_meta: Optional[dict[str, Any]] = None
 
 
 def normalize_scenario_name(name: str) -> str:
@@ -280,13 +282,16 @@ class BaselineOriginSatViewAugment:
         args: Any,
         epoch: int,
         batch_idx: int,
+        use_ecrs: bool = False,
+        sample_meta: Optional[Mapping[str, Any]] = None,
+        label_mask: Optional[torch.Tensor] = None,
     ) -> SatViewTransform:
         clean_bsz = int(x.size(0))
         stage_index, stage = self.stage_for_epoch(epoch)
         gen = self._generator(x.device, epoch, batch_idx)
         p = _clamp_prob(stage.view_prob)
         if p <= 0.0 or float(torch.rand((), device=x.device, generator=gen).item()) > p:
-            return SatViewTransform(
+            skipped = SatViewTransform(
                 x=x.clone(),
                 scenario="clean_duplicate",
                 stage_start_epoch=int(stage.start_epoch),
@@ -296,6 +301,17 @@ class BaselineOriginSatViewAugment:
                 clean_batch_size=clean_bsz,
                 meta={"scenario": "clean_duplicate", "valid": False},
             )
+            if bool(use_ecrs):
+                from cvsrffi.tensors import build_ecrs_pair_metadata
+
+                skipped.pair_meta = build_ecrs_pair_metadata(
+                    sample_meta or {},
+                    batch_size=clean_bsz,
+                    device=x.device,
+                    label_mask=label_mask,
+                    sat_meta=skipped.meta,
+                )
+            return skipped
         scenario = self._select_scenario(stage, gen, x.device)
         x_sat, raw_meta = self.apply_fn(x, scenario, args, gen=gen, return_meta=True)
         meta, nuisance, nuisance_valid, nuisance_fields = _normalize_nuisance_meta(
@@ -304,7 +320,7 @@ class BaselineOriginSatViewAugment:
             batch_size=clean_bsz,
             device=x.device,
         )
-        return SatViewTransform(
+        transformed = SatViewTransform(
             x=x_sat.to(device=x.device, dtype=x.dtype),
             scenario=scenario,
             stage_start_epoch=int(stage.start_epoch),
@@ -317,6 +333,17 @@ class BaselineOriginSatViewAugment:
             nuisance_valid=nuisance_valid,
             nuisance_fields=nuisance_fields,
         )
+        if bool(use_ecrs):
+            from cvsrffi.tensors import build_ecrs_pair_metadata
+
+            transformed.pair_meta = build_ecrs_pair_metadata(
+                sample_meta or {},
+                batch_size=clean_bsz,
+                device=x.device,
+                label_mask=label_mask,
+                sat_meta=meta,
+            )
+        return transformed
 
     def expand(
         self,
@@ -327,8 +354,19 @@ class BaselineOriginSatViewAugment:
         args: Any,
         epoch: int,
         batch_idx: int,
+        use_ecrs: bool = False,
+        sample_meta: Optional[Mapping[str, Any]] = None,
+        label_mask: Optional[torch.Tensor] = None,
     ) -> BaselineOriginSatViewBatch:
-        view = self.transform(x, args=args, epoch=epoch, batch_idx=batch_idx)
+        view = self.transform(
+            x,
+            args=args,
+            epoch=epoch,
+            batch_idx=batch_idx,
+            use_ecrs=use_ecrs,
+            sample_meta=sample_meta,
+            label_mask=label_mask,
+        )
         y_view = y.to(device=x.device)
         x_cat = torch.cat([x, view.x], dim=0)
         y_cat = torch.cat([y_view, y_view], dim=0)
@@ -353,4 +391,5 @@ class BaselineOriginSatViewAugment:
             nuisance=nuisance,
             nuisance_valid=nuisance_valid,
             nuisance_fields=view.nuisance_fields,
+            pair_meta=view.pair_meta,
         )

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import math
 import random
+from collections.abc import Mapping
 from typing import Any, Dict, List, Optional
 
 import numpy as np
@@ -41,6 +42,90 @@ def unpack_batch(batch):
 def extract_domain_from_extra(extra, device) -> Optional[torch.Tensor]:
     if extra is None or len(extra) == 0:
         return None
+
+
+def extract_meta_from_extra(extra) -> Optional[Dict[str, Any]]:
+    if extra is None:
+        return None
+    for value in extra:
+        if isinstance(value, Mapping):
+            return dict(value)
+    return None
+
+
+def _meta_list(meta: Mapping[str, Any], key: str, batch_size: int) -> List[str]:
+    value = meta.get(key)
+    if isinstance(value, (list, tuple)):
+        items = [str(item) for item in value]
+    elif torch.is_tensor(value):
+        items = [str(item) for item in value.detach().cpu().reshape(-1).tolist()]
+    elif value is None:
+        items = []
+    else:
+        items = [str(value)]
+    if len(items) == 1 and int(batch_size) > 1:
+        items *= int(batch_size)
+    if len(items) != int(batch_size):
+        raise ValueError(f"metadata field {key!r} must have {batch_size} values")
+    return items
+
+
+def _meta_tensor(
+    meta: Mapping[str, Any],
+    keys: tuple[str, ...],
+    batch_size: int,
+    device: torch.device,
+) -> torch.Tensor:
+    value = next((meta[key] for key in keys if key in meta), None)
+    if value is None:
+        raise KeyError(f"paired ECRS metadata requires one of {keys}")
+    tensor = torch.as_tensor(value, device=device, dtype=torch.long).reshape(-1)
+    if tensor.numel() == 1 and int(batch_size) > 1:
+        tensor = tensor.expand(int(batch_size))
+    if tensor.numel() != int(batch_size):
+        raise ValueError(f"metadata field {keys} must have {batch_size} values")
+    return tensor
+
+
+def build_ecrs_pair_metadata(
+    sample_meta: Mapping[str, Any],
+    *,
+    batch_size: int,
+    device: torch.device,
+    label_mask: Optional[torch.Tensor] = None,
+    sat_meta: Optional[Mapping[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Build the synchronized clean/LEO pairing contract without TX truth."""
+    if not isinstance(sample_meta, Mapping):
+        raise TypeError("sample_meta must be a mapping for ECRS paired views")
+    physical_ids = _meta_list(sample_meta, "physical_sample_id", int(batch_size))
+    pair_ids = _meta_list(sample_meta, "pair_id", int(batch_size))
+    receiver = _meta_tensor(sample_meta, ("receiver_id", "rx_i"), batch_size, device)
+    day = _meta_tensor(sample_meta, ("day_id", "day_i"), batch_size, device)
+    crop = _meta_tensor(sample_meta, ("crop_offset",), batch_size, device)
+    if label_mask is None:
+        labels = torch.ones(int(batch_size), device=device, dtype=torch.bool)
+    else:
+        labels = torch.as_tensor(label_mask, device=device, dtype=torch.bool).reshape(-1)
+        if labels.numel() != int(batch_size):
+            raise ValueError("label_mask must match the clean batch size")
+    clean_mask = torch.cat(
+        [torch.ones(int(batch_size), dtype=torch.bool, device=device),
+         torch.zeros(int(batch_size), dtype=torch.bool, device=device)]
+    )
+    return {
+        "physical_sample_id": physical_ids + physical_ids,
+        "pair_id": pair_ids + pair_ids,
+        "view_type": ["clean"] * int(batch_size) + ["leo"] * int(batch_size),
+        "label_mask": torch.cat([labels, labels], dim=0),
+        "receiver_id": torch.cat([receiver, receiver], dim=0),
+        "day_id": torch.cat([day, day], dim=0),
+        "crop_offset": torch.cat([crop, crop], dim=0),
+        "synchronized_crop": True,
+        "clean_mask": clean_mask,
+        "leo_mask": ~clean_mask,
+        "sat_meta": dict(sat_meta or {}),
+    }
     d0 = extra[0]
     if torch.is_tensor(d0):
         return d0.to(device, non_blocking=True).view(-1)

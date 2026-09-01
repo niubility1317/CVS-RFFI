@@ -149,6 +149,7 @@ from cvsrffi.tensors import (
     batch_domain_stats,
     build_domain_label_map,
     extract_domain_from_extra,
+    extract_meta_from_extra,
     get_nested_tensor,
     make_torch_generator,
     parse_csv_indices,
@@ -684,12 +685,21 @@ def prepare_concat_sat_batch_for_training(
     args,
     epoch: int,
     batch_idx: int,
+    sample_meta: Optional[Dict[str, Any]] = None,
 ):
     """Return either the legacy 2B concat batch or a separate CE-only satellite view."""
     if concat_sat_aug is None or int(epoch) < int(getattr(args, "concat_sat_start_epoch", 1)):
         return x, y, d_raw, None
     if bool(getattr(args, "concat_sat_ce_only", False)):
-        sat_view = concat_sat_aug.transform(x, args=args, epoch=epoch, batch_idx=batch_idx)
+        sat_view = concat_sat_aug.transform(
+            x,
+            args=args,
+            epoch=epoch,
+            batch_idx=batch_idx,
+            use_ecrs=bool(getattr(args, "use_ecrs", False)),
+            sample_meta=sample_meta,
+            label_mask=y >= 0,
+        )
         return x, y, d_raw, sat_view
     concat_batch = concat_sat_aug.expand(
         x,
@@ -698,6 +708,9 @@ def prepare_concat_sat_batch_for_training(
         args=args,
         epoch=epoch,
         batch_idx=batch_idx,
+        use_ecrs=bool(getattr(args, "use_ecrs", False)),
+        sample_meta=sample_meta,
+        label_mask=y >= 0,
     )
     return safe_iq_tensor(concat_batch.x), concat_batch.y, concat_batch.d_raw, None
 
@@ -3356,6 +3369,7 @@ def main():
             x = x.to(device, non_blocking=True)
             y = y.to(device, non_blocking=True)
             d_raw = extract_domain_from_extra(extra, device)
+            sample_meta = extract_meta_from_extra(extra)
             meta_ssl_batch = None
             if meta_ssl_unlabeled_iter is not None:
                 try:
@@ -3383,6 +3397,7 @@ def main():
                 args=args,
                 epoch=epoch,
                 batch_idx=batch_idx,
+                sample_meta=sample_meta,
             )
             d = remap_domain_tensor(d_raw, domain_label_map, device) if d_raw is not None else None
             domain_stats = batch_domain_stats(d, y, num_domains)
