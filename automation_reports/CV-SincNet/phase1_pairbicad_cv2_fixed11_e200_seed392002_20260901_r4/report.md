@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-- 状态：`LANDED`，等待正式启动。
+- 状态：`RUNNING`。
 - run ID：`phase1_pairbicad_cv2_fixed11_e200_seed392002_20260901_r4`。
 - 代码提交：`67c25004e10d2b07575a8bff2cd2529caee24a1b`，已push并独立核对远端OID一致。
 - 旧r3已固定为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，partial artifact保留；r4使用新不可覆盖输出根，不复用或覆盖r3。
@@ -54,3 +54,11 @@ r4只补充`BiCADXRTrainer.forward`，把推理调用透明转发给当前`self.
 - 单一release归档本地/远端SHA256一致：`a2b2f44d217c5d0c873b914631000acca9a21c83256fef8e221f6bd24f93d828`；远端release已解压，入口、trainer和launcher一次编译通过。
 - N607环境没有pytest，因此未把缺少测试依赖误判为代码失败；改用本地先验证的无pytest定点脚本，在正式release上执行`CV2-B0 -> BiCADXRTrainer -> _evaluate_bicad_xr_source_loro`，结果`PASS`，`tx_total=2`且底层模型恰好前向一次。
 - 历史真实checkpoint无query smoke在GPU0通过：严格重建missing/unexpected/shape mismatch均为0，fresh optimizer step完成，Clean与三种LEO弱场景均为有限值，`target/Phase2/support/query/truth_access=false`。
+
+## 正式启动证据
+
+- 启动时间：2026-09-01 10:22 CST；dispatcher PID`3441034`。
+- dispatcher CWD精确绑定`phase1_pairbicad_cv2_e200_67c25004`，cmdline精确绑定r4、ManySig、普通账户Python及GPU容量`0:2,...,7:2`。
+- `plan.json`独立读回：24行、seed392002、终止方式`epochs=200`、8行排队。
+- 启动后检查：16个直属worker、GPU0—7各2个本run计算进程，GPU利用率81%—90%；`ARTIFACTS_COMPLETE=0`、`TECHNICAL_FAILURE=0`、确定性致命异常为空。
+- 16个`train.log`已创建；启动早期文件仍为0字节，但绑定训练进程和GPU计算持续，因此按预登记规则判定健康启动，不因日志尚未写epoch行而停止或重启。
