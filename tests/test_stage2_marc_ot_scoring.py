@@ -47,7 +47,9 @@ def _write_prediction(root, *, arm="R0", predictions=(0, 1, 1, 1), receipt_updat
             "training_seconds": 1.25,
             "inference_seconds": 0.5,
             "peak_rss_bytes": 1024,
-            "peak_cuda_bytes": 0,
+            "peak_cuda_bytes": 2048,
+            "peak_rss_status": "MEASURED",
+            "peak_cuda_status": "MEASURED",
             "trainable_parameter_count": 8,
         },
     }
@@ -94,6 +96,32 @@ def test_truth_last_score_outputs_absolute_metrics_per_class_and_resources(tmp_p
     assert p3["per_class_accuracy"] == {"old0": 0.5, "old1": 1.0}
     assert score["resources"]["training_seconds"] == 1.25
     assert score["truth_join_after_prediction_only"] is True
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    (
+        "missing_both_status",
+        "missing_peak_rss_status",
+        "missing_peak_cuda_status",
+        "measured_zero_rss",
+    ),
+)
+def test_scorer_rejects_missing_resource_status_or_measured_zero(tmp_path, mutation) -> None:
+    root = _write_prediction(tmp_path / "prediction")
+    receipt_path = root / "prediction_receipt.json"
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    if mutation == "missing_both_status":
+        del receipt["resources"]["peak_rss_status"]
+        del receipt["resources"]["peak_cuda_status"]
+    elif mutation.startswith("missing_"):
+        del receipt["resources"][mutation.removeprefix("missing_")]
+    else:
+        receipt["resources"]["peak_rss_bytes"] = 0
+    receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="resource"):
+        score_marc_ot_predictions(root, _truth(tmp_path / "truth.json"))
 
 
 @pytest.mark.parametrize(

@@ -186,6 +186,7 @@ def test_adapter_crossfit_never_optimizes_validation_tokens() -> None:
     all_tokens = {"a0", "a1", "b0", "b1"}
     crossfit_updates: list[set[str]] = []
     evaluated_folds: list[tuple[set[str], set[str]]] = []
+    learning_rate_scopes: list[tuple[str, set[str]]] = []
 
     def stage_update(
         current,
@@ -218,6 +219,10 @@ def test_adapter_crossfit_never_optimizes_validation_tokens() -> None:
         evaluated_folds.append((set(fit_tokens), set(validation_tokens)))
         return {"safe": True, "oof_ba": 1.0, "oof_floor": 1.0}
 
+    def learning_rate_factory(_fit_iq, _fit_labels, fit_tokens, fit_scope):
+        learning_rate_scopes.append((fit_scope, set(fit_tokens)))
+        return {}
+
     train_marc_ot_arm(
         model,
         torch.tensor([[2.0, 0.0], [1.5, 0.0], [0.0, 2.0], [0.0, 1.5]]),
@@ -225,6 +230,7 @@ def test_adapter_crossfit_never_optimizes_validation_tokens() -> None:
         ("a0", "a1", "b0", "b1"),
         arm="R8",
         config=MARCOTRunnerConfig(stage_steps=(1, 1, 1, 1), fold_count=2),
+        block_learning_rate_factory=learning_rate_factory,
         stage_update=stage_update,
         support_evaluator=evaluator,
     )
@@ -235,6 +241,18 @@ def test_adapter_crossfit_never_optimizes_validation_tokens() -> None:
     assert all(fit.isdisjoint(validation) for fit, validation in evaluated_folds)
     assert all(fit | validation == all_tokens for fit, validation in evaluated_folds)
     assert all(updated != all_tokens for updated in crossfit_updates)
+    assert any(scope == "crossfit" for scope, _tokens in learning_rate_scopes)
+    assert any(scope == "full_support" for scope, _tokens in learning_rate_scopes)
+    assert all(
+        tokens != all_tokens
+        for scope, tokens in learning_rate_scopes
+        if scope == "crossfit"
+    )
+    assert all(
+        tokens == all_tokens
+        for scope, tokens in learning_rate_scopes
+        if scope == "full_support"
+    )
 
 
 def test_initial_bank_candidate_is_fit_per_fold_before_full_support_refit() -> None:

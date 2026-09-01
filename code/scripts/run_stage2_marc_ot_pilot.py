@@ -284,13 +284,17 @@ def _adapt_unit(
     support_iq = _tensor(support.iq, args.device)
     support_labels = _tensor(support.labels, args.device, labels=True)
     full_support_plans: list[Any] = []
+    scoped_plans: dict[tuple[str, tuple[str, ...]], Any] = {}
 
-    def initial_state_factory(
+    def plan_for_fit(
         fit_iq: torch.Tensor,
         fit_labels: torch.Tensor,
         fit_tokens: tuple[str, ...],
         fit_scope: str,
-    ) -> Mapping[str, torch.Tensor]:
+    ) -> Any:
+        key = (str(fit_scope), tuple(fit_tokens))
+        if key in scoped_plans:
+            return scoped_plans[key]
         model.eval()
         features = _identity_features(model, fit_iq)
         support_state = bundle.support_encoder(features, fit_labels, fit_tokens)
@@ -304,7 +308,31 @@ def _adapt_unit(
         )
         if fit_scope == "full_support":
             full_support_plans.append(plan)
+        scoped_plans[key] = plan
+        return plan
+
+    def initial_state_factory(
+        fit_iq: torch.Tensor,
+        fit_labels: torch.Tensor,
+        fit_tokens: tuple[str, ...],
+        fit_scope: str,
+    ) -> Mapping[str, torch.Tensor]:
+        plan = plan_for_fit(fit_iq, fit_labels, fit_tokens, fit_scope)
         return plan.state_dict
+
+    def block_learning_rate_factory(
+        fit_iq: torch.Tensor,
+        fit_labels: torch.Tensor,
+        fit_tokens: tuple[str, ...],
+        fit_scope: str,
+    ) -> Mapping[str, float]:
+        plan = plan_for_fit(fit_iq, fit_labels, fit_tokens, fit_scope)
+        if len(plan.block_lrs) != len(bundle.bank.entries):
+            raise ValueError("fit-scope MARC-OT block learning-rate geometry drift")
+        return {
+            entry.spec.name: float(plan.block_lrs[index])
+            for index, entry in enumerate(bundle.bank.entries)
+        }
 
     runner = _runner_config(config)
     if smoke:
@@ -325,13 +353,8 @@ def _adapt_unit(
         initial_state_factory=(
             initial_state_factory if arm in {"R4", "R6", "R8"} else None
         ),
-        block_learning_rates=(
-            {
-                entry.spec.name: float(plan.block_lrs[index])
-                for index, entry in enumerate(bundle.bank.entries)
-            }
-            if arm in {"R4", "R6", "R8"}
-            else None
+        block_learning_rate_factory=(
+            block_learning_rate_factory if arm in {"R4", "R6", "R8"} else None
         ),
     )
     state = {name: value.detach().cpu() for name, value in model.state_dict().items()}

@@ -158,17 +158,15 @@ def _metrics(
 
 
 def _resources(value: Any) -> Mapping[str, Any]:
-    allowed_sets = {
-        frozenset(_RESOURCE_FIELDS),
-        frozenset((*_RESOURCE_FIELDS, *_RESOURCE_STATUS_FIELDS)),
-    }
-    if not isinstance(value, Mapping) or frozenset(value) not in allowed_sets:
+    required = frozenset((*_RESOURCE_FIELDS, *_RESOURCE_STATUS_FIELDS))
+    if not isinstance(value, Mapping) or frozenset(value) != required:
         raise ValueError("MARC-OT resource receipt is incomplete")
     result: dict[str, Any] = {}
     for field in _RESOURCE_FIELDS:
         current = value[field]
-        if field in {"peak_rss_bytes", "peak_cuda_bytes"} and current == "N/A":
-            status = value.get(field.replace("_bytes", "_status"))
+        is_peak = field in {"peak_rss_bytes", "peak_cuda_bytes"}
+        status = value[field.replace("_bytes", "_status")] if is_peak else None
+        if is_peak and current == "N/A":
             if status not in {"UNAVAILABLE", "NOT_APPLICABLE"}:
                 raise ValueError("MARC-OT unavailable resource lacks an explicit status")
             result[field] = "N/A"
@@ -178,6 +176,8 @@ def _resources(value: Any) -> Mapping[str, Any]:
         numeric = float(current)
         if not math.isfinite(numeric) or numeric < 0.0:
             raise ValueError("MARC-OT resource receipt is malformed")
+        if is_peak and (status != "MEASURED" or numeric <= 0.0):
+            raise ValueError("MARC-OT measured resource peak must be positive")
         result[field] = int(current) if field.endswith(("_bytes", "_count")) else numeric
     for field in _RESOURCE_STATUS_FIELDS:
         if field in value:

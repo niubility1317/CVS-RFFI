@@ -11,6 +11,7 @@ import pytest
 import torch
 
 from cvsrffi.stage2_marc_ot_pilot import FORMAL_ARMS, SCENARIOS, validate_pilot_config
+from cvsrffi.stage2_marc_ot_runner import MARCOTTrainingAudit
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -114,6 +115,108 @@ def test_resource_receipt_uses_measured_values_or_explicit_na_status() -> None:
     assert resources["peak_cuda_status"] == "NOT_APPLICABLE"
 
 
+def test_real_adapt_unit_r8_builds_fold_scoped_plans_and_learning_rates(
+    monkeypatch,
+) -> None:
+    module = _module()
+    model = torch.nn.Linear(2, 2, bias=False)
+    base_state = {
+        name: value.detach().clone() for name, value in model.state_dict().items()
+    }
+    plan_tokens: list[tuple[str, ...]] = []
+
+    class Encoder:
+        def __call__(self, _features, _labels, tokens):
+            return SimpleNamespace(tokens=tuple(tokens))
+
+    entry = SimpleNamespace(spec=SimpleNamespace(name="t1"))
+    bundle = SimpleNamespace(
+        support_encoder=Encoder(),
+        bank=SimpleNamespace(entries=(entry,)),
+    )
+
+    def fake_plan(_base, _checkpoint_id, _bank, support_state, **_kwargs):
+        tokens = tuple(support_state.tokens)
+        plan_tokens.append(tokens)
+        learning_rate = 1.0e-5 * len(tokens)
+        return SimpleNamespace(
+            state_dict={
+                name: value.detach().clone() for name, value in base_state.items()
+            },
+            block_lrs=(learning_rate,),
+            applied=True,
+            reason="APPLIED",
+            uncertainty=0.25,
+            block_gates=(1.0,),
+        )
+
+    def fake_train(_model, values, labels, tokens, **kwargs):
+        initial_factory = kwargs["initial_state_factory"]
+        learning_rate_factory = kwargs["block_learning_rate_factory"]
+        folds = ((0, 2), (1, 3))
+        observed_rates = []
+        for fold in folds:
+            indices = torch.tensor(fold, dtype=torch.long)
+            fit_tokens = tuple(tokens[index] for index in fold)
+            initial_factory(values[indices], labels[indices], fit_tokens, "crossfit")
+            observed_rates.append(
+                learning_rate_factory(
+                    values[indices], labels[indices], fit_tokens, "crossfit"
+                )["t1"]
+            )
+        initial_factory(values, labels, tuple(tokens), "full_support")
+        observed_rates.append(
+            learning_rate_factory(values, labels, tuple(tokens), "full_support")["t1"]
+        )
+        assert observed_rates == [2.0e-5, 2.0e-5, 4.0e-5]
+        return MARCOTTrainingAudit(
+            arm="R8",
+            selected_alpha=1.0,
+            initial_selected_alpha=1.0,
+            stage_selected_alphas=(1.0, 1.0, 1.0, 1.0),
+            optimizer_steps=12,
+            query_rows_used=0,
+            stage_audits=(),
+            final_duals={},
+            config={},
+            training_seconds=0.1,
+            peak_cuda_bytes=None,
+            reached_parameter_names=(),
+        )
+
+    monkeypatch.setattr(
+        module,
+        "_load_model_and_bundle",
+        lambda _args, _config: (model, bundle, base_state),
+    )
+    monkeypatch.setattr(module, "_identity_features", lambda _model, values: values.float())
+    monkeypatch.setattr(module, "calibrate_weight_plan", fake_plan)
+    monkeypatch.setattr(module, "train_marc_ot_arm", fake_train)
+    monkeypatch.setattr(module, "_bank_task_features", lambda _bundle, _device: torch.ones(1, 1))
+    monkeypatch.setattr(module, "_calibration_transform", lambda _bundle: None)
+    args = SimpleNamespace(device="cpu")
+    config = {
+        "checkpoint_id": "ADV3B02_CORE90_SOFT_E200",
+        "fold_count": 2,
+        "stage_steps": [1, 1, 1, 1],
+        "learning_rate_bounds": {"min": 1.0e-5, "max": 3.0e-4},
+        "ot": {"epsilon": 0.1, "iterations": 2},
+        "ratio_cap": 0.5,
+        "interpolation_grid": [1.0, 0.0],
+        "seed": 713102,
+    }
+    support = SimpleNamespace(
+        iq=np.asarray([[2.0, 0.0], [1.5, 0.0], [0.0, 2.0], [0.0, 1.5]]),
+        labels=np.asarray([0, 0, 1, 1], dtype=np.int64),
+        tokens=("a0", "a1", "b0", "b1"),
+    )
+
+    result = module._adapt_unit(args, config, support, "R8", smoke=False)
+
+    assert plan_tokens == [("a0", "b0"), ("a1", "b1"), support.tokens]
+    assert result["bank_initialization"]["block_lrs"] == [4.0e-5]
+
+
 def test_frozen_k10_config_is_complete_and_has_no_mrior_history_fields() -> None:
     payload = json.loads(CONFIG.read_text(encoding="utf-8-sig"))
     validated = validate_pilot_config(payload)
@@ -159,6 +262,8 @@ def _write_prediction_unit(root, scenario, arm, *, corrupt=False) -> None:
             "inference_seconds": 0.1,
             "peak_rss_bytes": 4096,
             "peak_cuda_bytes": 1024,
+            "peak_rss_status": "MEASURED",
+            "peak_cuda_status": "MEASURED",
             "trainable_parameter_count": 8,
         },
     }

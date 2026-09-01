@@ -607,6 +607,10 @@ def train_marc_ot_arm(
     calibration_feature_transform: Callable[[Tensor, Tensor, tuple[str, ...]], Tensor]
     | None = None,
     block_learning_rates: Mapping[str, float] | None = None,
+    block_learning_rate_factory: Callable[
+        [Tensor, Tensor, tuple[str, ...], str], Mapping[str, float]
+    ]
+    | None = None,
     initial_state_factory: Callable[
         [Tensor, Tensor, tuple[str, ...], str], Mapping[str, Tensor]
     ]
@@ -623,6 +627,8 @@ def train_marc_ot_arm(
         raise ValueError("MARC-OT arm is outside the frozen R matrix")
     if not isinstance(config, MARCOTRunnerConfig):
         raise ValueError("config must be MARCOTRunnerConfig")
+    if block_learning_rates is not None and block_learning_rate_factory is not None:
+        raise ValueError("static and fit-scope block learning rates are mutually exclusive")
     values, labels, tokens = _validate_support(support_iq, support_labels, support_tokens)
     original_base = _clone_tensors(model.state_dict(), context="base model state")
     original_duals = (
@@ -801,6 +807,17 @@ def train_marc_ot_arm(
             for name, parameter in model.named_parameters():
                 parameter.requires_grad_(name in trainable)
             fit_iq, fit_labels, fit_tokens = fold_payload(fit_indices)
+            scoped_learning_rates = block_learning_rates
+            if block_learning_rate_factory is not None:
+                observed_learning_rates = block_learning_rate_factory(
+                    fit_iq, fit_labels, fit_tokens, fit_scope
+                )
+                if not isinstance(observed_learning_rates, Mapping):
+                    raise ValueError("fit-scope block learning-rate factory is invalid")
+                scoped_learning_rates = dict(observed_learning_rates)
+                resolve_block_learning_rates(
+                    trainable_names, scoped_learning_rates, config=config
+                )
             if stage_update is not None:
                 state, duals = stage_update(
                     model,
@@ -827,7 +844,7 @@ def train_marc_ot_arm(
                     config=config,
                     bank_task_features=bank_task_features,
                     calibration_feature_transform=calibration_feature_transform,
-                    block_learning_rates=block_learning_rates,
+                    block_learning_rates=scoped_learning_rates,
                     original_base=original_base,
                 )
             cloned_state = _clone_tensors(state, context="stage candidate state")
