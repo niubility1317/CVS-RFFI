@@ -9,7 +9,7 @@
 - 用户修订：新方法默认使用性能优先的三教师视图`clean+medium+hard`；Temporal Orbit Memory仅作为A8效率对照。
 - 声明边界：没有真实LEO参数统计时只称为`deployment-proxy matched`。
 - 隔离交付：实现位于工作树`.worktrees/adv3b02-daot-stn-v1`和分支`codex/adv3b02-daot-stn-v1-20260901`，不与并行方法改动混合。
-- 执行边界：本轮只完成报告落地、测试和无query smoke，未启动本地或N607性能实验。
+- 执行边界：r1已在N607启动，但8行均在训练前因域输出头14→15维checkpoint不兼容而系统性技术失败；没有性能结果。修复后只允许以新run ID和新输出根发布r2。
 
 ## 追踪矩阵
 
@@ -37,6 +37,7 @@
 | FM-01 | 9.24 | 六类失败模式的可观测防护 | 上述模块 | verified | clean权重、`N_eff`、dispersion、共识率、逐项尺度、梯度比及灵敏度均可观测 | 阈值由真实训练校准，低性能不作技术停止条件 |
 | PR-01 | 项目协议 | source-only、V只读、target/query不可达 | `code/SSDG/train_ssdg.py`、tests | verified | U路由签名负测和真实checkpoint无query smoke通过 | smoke记录`query_inputs=0`、`target_inputs=0` |
 | BC-01 | 兼容要求 | 新方法关闭时旧行为、参数和checkpoint兼容 | 主链及模型 | verified | opt-in默认值、旧checkpoint装载及相邻回归通过 | 新功能全部显式opt-in |
+| BC-02 | r1故障复现 | source域数由checkpoint的14变为当前15时，只重建`dom_head/adv_head`最终域输出层 | `code/SSDG/train_ssdg.py`、tests | verified | 14→15正测和非域参数错配负测通过 | student与frozen teacher共用同一受限加载器；身份几何不允许静默错配 |
 
 ## 实施顺序
 
@@ -71,3 +72,12 @@
 | REL-03 | 用户target配置 | source第1/2/3天与target第0/1/2/3天可重叠，但接收机必须不相交 | `dataset_wisig.py`、`train_ssdg.py` | verified | receiver交叠负测及同日正测通过 | 目标全集命名为`test_all_day_unseen_rx` |
 | REL-04 | 用户target配置 | 每个clean/LEO场景覆盖7接收机×4天×6TX×1000=168000样本 | evaluator、worker | implemented | 合成数据全集计数测试通过 | N607真实ManySig计数待启动日志回读 |
 | REL-05 | 最小实验流程 | 不可覆盖run root、真实checkpoint smoke、远端编译和启动绑定 | launcher、实验报告 | pending | 本地smoke已通过 | 提交、N607预检及启动后证据待完成 |
+
+## r1系统性技术失败与r2修复边界
+
+- r1状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；8行均为同一异常，未形成可分析性能结果。
+- 故障指纹：checkpoint的`dom_head.net.3`与`adv_head.net.3`输出宽度为14，当前source的5接收机×3天产生15个域标签，PyTorch即使`strict=False`仍拒绝形状不一致。
+- 定点修复：仅在上述4个最终域输出weight/bias发生形状变化时保留当前模型初始化；所有同形状共享参数照常从checkpoint恢复，任何其他形状不一致继续硬失败。
+- TDD证据：新增2项回归先因helper不存在而失败，修复后通过；相关测试集共84项全部通过。
+- 真实checkpoint无query smoke：`PASS`，`query_inputs=0`、`target_inputs=0`，checkpoint epoch=200。
+- 定点P0/P1复审：未发现会导致r2再次启动错误、越权、覆盖输出或无法产生合法artifact的遗留问题。

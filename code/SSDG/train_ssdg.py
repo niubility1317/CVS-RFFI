@@ -7733,6 +7733,49 @@ def _compose_unlabeled_closed_loss(
     )
 
 
+_RESIZABLE_DOMAIN_OUTPUT_KEYS = frozenset(
+    {
+        "dom_head.net.3.weight",
+        "dom_head.net.3.bias",
+        "adv_head.net.3.weight",
+        "adv_head.net.3.bias",
+    }
+)
+
+
+def _load_baseline_state_allowing_domain_output_resize(
+    model: Any,
+    checkpoint_state: Mapping[str, Any],
+) -> Tuple[str, ...]:
+    """Load a baseline while rebuilding only resized domain-output layers."""
+
+    model_state = model.state_dict()
+    filtered_state = dict(checkpoint_state)
+    skipped: List[str] = []
+    illegal_mismatches: List[str] = []
+    for key, value in checkpoint_state.items():
+        if key not in model_state or not hasattr(value, "shape"):
+            continue
+        checkpoint_shape = tuple(value.shape)
+        model_shape = tuple(model_state[key].shape)
+        if checkpoint_shape == model_shape:
+            continue
+        if key in _RESIZABLE_DOMAIN_OUTPUT_KEYS:
+            filtered_state.pop(key, None)
+            skipped.append(key)
+        else:
+            illegal_mismatches.append(
+                f"{key}: checkpoint={checkpoint_shape}, model={model_shape}"
+            )
+    if illegal_mismatches:
+        raise RuntimeError(
+            "checkpoint contains non-domain-output shape mismatches: "
+            + "; ".join(sorted(illegal_mismatches))
+        )
+    model.load_state_dict(filtered_state, strict=False)
+    return tuple(sorted(skipped))
+
+
 def train(args) -> int:
     training_wall_started = time.time()
     _validate_daot_config(args)
@@ -8068,7 +8111,15 @@ def train(args) -> int:
     model_args = _apply_model_cli_args(model_args, args)
     model = build_baseline_model(model_args, device)
     if use_ckpt:
-        model.load_state_dict(ckpt["model"], strict=False)
+        resized_domain_outputs = _load_baseline_state_allowing_domain_output_resize(
+            model,
+            ckpt["model"],
+        )
+        if resized_domain_outputs:
+            print(
+                "[CHECKPOINT-DOMAIN-RESIZE] role=student reinitialized="
+                + ",".join(resized_domain_outputs)
+            )
     if bool(args.freeze_backbone):
         for name, param in model.named_parameters():
             param.requires_grad = any(key in name for key in ("cls_head", "dom_head", "adv_head"))
@@ -8113,7 +8164,15 @@ def train(args) -> int:
         # toward the legacy defect-gated joint feature.
         teacher_model_args.id_feature_key = str(getattr(args, "id_feature_key", "feat_joint"))
         teacher_model = build_baseline_model(teacher_model_args, device)
-        teacher_model.load_state_dict(teacher_ckpt["model"], strict=False)
+        resized_teacher_domain_outputs = _load_baseline_state_allowing_domain_output_resize(
+            teacher_model,
+            teacher_ckpt["model"],
+        )
+        if resized_teacher_domain_outputs:
+            print(
+                "[CHECKPOINT-DOMAIN-RESIZE] role=teacher reinitialized="
+                + ",".join(resized_teacher_domain_outputs)
+            )
         teacher_model.eval()
         for param in teacher_model.parameters():
             param.requires_grad = False

@@ -7,11 +7,13 @@ import sys
 
 import pytest
 import torch
+from torch import nn
 
 from model_dual_cvsincnet import NuisanceHeteroscedasticHead, build_dual_model
 from SSDG.train_ssdg import (
     _compute_daot_labeled_step,
     _compute_daot_unlabeled_step,
+    _load_baseline_state_allowing_domain_output_resize,
     _resolve_source_target_axes,
     _validate_daot_config,
     build_arg_parser,
@@ -49,6 +51,55 @@ from cvsrffi.selective_tangent import (
     selective_tangent_loss,
     worst_channel_bucket_accuracy,
 )
+
+
+class _CheckpointResizeProbe(nn.Module):
+    def __init__(self, num_domains: int) -> None:
+        super().__init__()
+        self.identity = nn.Linear(4, 3)
+        self.dom_head = nn.Module()
+        self.dom_head.net = nn.Sequential(
+            nn.Linear(4, 4), nn.ReLU(), nn.Identity(), nn.Linear(4, num_domains)
+        )
+        self.adv_head = nn.Module()
+        self.adv_head.net = nn.Sequential(
+            nn.Linear(4, 4), nn.ReLU(), nn.Identity(), nn.Linear(4, num_domains)
+        )
+
+
+def test_checkpoint_load_reinitializes_only_resized_domain_outputs() -> None:
+    checkpoint_model = _CheckpointResizeProbe(num_domains=14)
+    target_model = _CheckpointResizeProbe(num_domains=15)
+    initial_domain_weight = target_model.dom_head.net[3].weight.detach().clone()
+
+    skipped = _load_baseline_state_allowing_domain_output_resize(
+        target_model,
+        checkpoint_model.state_dict(),
+    )
+
+    assert skipped == (
+        "adv_head.net.3.bias",
+        "adv_head.net.3.weight",
+        "dom_head.net.3.bias",
+        "dom_head.net.3.weight",
+    )
+    assert torch.equal(target_model.identity.weight, checkpoint_model.identity.weight)
+    assert torch.equal(
+        target_model.dom_head.net[0].weight,
+        checkpoint_model.dom_head.net[0].weight,
+    )
+    assert torch.equal(target_model.dom_head.net[3].weight, initial_domain_weight)
+    assert target_model.dom_head.net[3].weight.shape[0] == 15
+
+
+def test_checkpoint_load_rejects_non_domain_shape_mismatch() -> None:
+    checkpoint_model = _CheckpointResizeProbe(num_domains=14)
+    target_model = _CheckpointResizeProbe(num_domains=15)
+    invalid_state = dict(checkpoint_model.state_dict())
+    invalid_state["identity.weight"] = torch.zeros(2, 4)
+
+    with pytest.raises(RuntimeError, match="identity.weight"):
+        _load_baseline_state_allowing_domain_output_resize(target_model, invalid_state)
 
 
 def test_real_checkpoint_smoke_entrypoint_imports_from_repository_root() -> None:

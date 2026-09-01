@@ -2,7 +2,7 @@
 
 ## 状态
 
-- 当前状态：`LOCAL_VERIFIED`
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - run ID：`phase1_adv3b02_daot_stn_a0_a7_manysig_s392005_20260901_r1`
 - 代码与配置commit：`b0c876230c761988999ba8d0e1ffbc3cbb13ab9d`
 - 分支：`codex/adv3b02-daot-stn-v1-20260901`
@@ -67,3 +67,12 @@ nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet CODE_ROOT=/home/szu2070
 
 每行独立目录应包含：`config.json`、`train.log`、`final_ssdg.pth`、`eval_joint.log`、`metrics_joint.json`、四个场景的`eval_*.log`和`metrics_*.json`、`status.txt`。只有clean与三个LEO弱场景均完整时，单行才能标记`ARTIFACTS_COMPLETE`。
 
+## r1启动后证据与技术停止
+
+- dispatcher PID：`3847441`，启动后已退出。
+- 8个候选目录均已创建，8行均写入`TRAIN_FAILED`；没有与本run绑定的活动进程。
+- 相同确定性异常在A0～A7全部复现：checkpoint的`dom_head.net.3.weight/bias`与`adv_head.net.3.weight/bias`输出宽度为14，而当前source的5接收机×3天产生15个域标签，模型对应输出宽度为15。
+- 根因：`load_state_dict(..., strict=False)`仍会拒绝同名张量的形状不一致，训练在首个epoch前终止。
+- r1所有远端输出和日志均保留在原输出根；没有原地修补、重启或覆盖。
+- 科学判定：`NO_PERFORMANCE_RESULT`，不得把本次技术失败解释为方法性能结论。
+- 后续：在本地Git工作树完成定点回归、修复、验证和提交后，仅用全新的r2 release、run ID和输出根重新发布冻结矩阵。
