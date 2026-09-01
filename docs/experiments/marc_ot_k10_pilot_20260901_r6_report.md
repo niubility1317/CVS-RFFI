@@ -60,3 +60,11 @@ CUDA_VISIBLE_DEVICES=<physical_gpu> /home/szu2070436088/.conda/envs/CVS-RFFI/bin
 - 影响：3个R0已完成，14个Python适配进程仍健康运行约49分钟，失败单元已退出；18/18冻结态无法闭合，因此不得打开query、不得连接truth、不得评分。
 - 处置：保留r6全部产物，不覆盖、不原地重启、不停止其余14个健康单元。本地修复采用零权重lazy-skip并已有回归测试；完成定点P1修复、验证、Git发布和新不可变release后，只能以新run ID执行替代实验。
 - ETA：当前r6本身不能合法完成，故无有效完成时间；替代run的ETA需在修复release真实smoke和首个完整适配单元后重新估算。
+
+## 2026-09-02 01:30只读进度
+
+- 直接N607 preflight：`PASS`；项目根目录与8张GPU可见。
+- r6冻结态由3份增至6份：三个R0和三个R1均已完成；`query_opened=false`边界不变。
+- 精确r6 Python适配进程由14个降至11个；当前仍只有`leo_low_elev_weak/R2`一个异常日志，未出现第二种故障指纹。
+- r6仍保持`PARTIAL_RUNNING_WITH_ONE_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，不得执行freeze-collection或打开query。
+- 当前GPU仍承载r6剩余任务及其他既有工作负载，不满足安全发布完整替代矩阵的容量条件；本次不启动、不终止、不覆盖任何任务，继续等待。
