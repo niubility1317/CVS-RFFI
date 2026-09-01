@@ -84,6 +84,40 @@ def test_builder_returns_explicit_invalid_indices_without_strict_evidence() -> N
     assert builder.capability.reason["fingerprint"] == "missing_common_preamble_metadata"
 
 
+def test_builder_treats_explicit_none_nuisance_valid_as_unavailable() -> None:
+    """A non-applied satellite view must remain a valid zero-capability FCR batch."""
+
+    from cvsrffi.phase1_fcr_interventions import InterventionCubeBatchBuilder
+
+    clean = torch.zeros(2, 2, 8)
+    labels = torch.tensor([0, 1])
+    domains = torch.tensor([0, 0])
+    meta = {
+        "physical_sample_id": ["sample:a", "sample:b"],
+        "crop_offset": [0, 0],
+        "rx_i": [0, 0],
+        "day_i": [0, 0],
+        "label_visible": [True, True],
+    }
+    clean_duplicate = SimpleNamespace(
+        x=clean.clone(),
+        applied=False,
+        physical_sample_id=tuple(meta["physical_sample_id"]),
+        pair_id=tuple(meta["physical_sample_id"]),
+        crop_offset=torch.tensor(meta["crop_offset"]),
+        nuisance=None,
+        nuisance_valid=None,
+    )
+
+    batch = InterventionCubeBatchBuilder().build(
+        clean, clean_duplicate, labels, domains, meta
+    )
+
+    assert batch.nuisance.shape == (2, 0)
+    assert batch.nuisance_valid.tolist() == [False, False]
+    assert batch.nuisance_pair_index.tolist() == [-1, -1]
+
+
 def test_sanitization_keeps_only_non_reversible_unlabeled_identity() -> None:
     """A hidden-role caller cannot reconstruct its TX label from FCR metadata."""
 

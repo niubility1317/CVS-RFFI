@@ -155,11 +155,15 @@ class InterventionCubeBatchBuilder:
         label_mask = (labels >= 0) & label_visible
 
         applied = bool(getattr(leo_view, "applied", False))
-        nuisance_valid = torch.as_tensor(
-            getattr(leo_view, "nuisance_valid", torch.zeros(batch_size, dtype=torch.bool)),
-            device=device,
-            dtype=torch.bool,
-        ).reshape(-1)
+        raw_nuisance_valid = getattr(leo_view, "nuisance_valid", None)
+        if raw_nuisance_valid is None:
+            nuisance_valid = torch.zeros(batch_size, dtype=torch.bool, device=device)
+        else:
+            nuisance_valid = torch.as_tensor(
+                raw_nuisance_valid,
+                device=device,
+                dtype=torch.bool,
+            ).reshape(-1)
         if int(nuisance_valid.numel()) != batch_size:
             nuisance_valid = torch.zeros(batch_size, dtype=torch.bool, device=device)
         nuisance = getattr(leo_view, "nuisance", None)
