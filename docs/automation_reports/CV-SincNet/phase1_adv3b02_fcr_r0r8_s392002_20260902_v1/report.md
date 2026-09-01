@@ -33,6 +33,14 @@
 - launcher日志：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_fcr_r0r8_s392002_20260902_v1.launcher.out`
 - GPU：`0`；row顺序执行，不超过每GPU两个训练任务
 
+## Release归档映射
+
+- archive_source_commit：`3de93cd7b67a3ddd62757d73c7d2d13612b2e460`
+- 本地归档：`E:\type10-7\release_archives\phase1_adv3b02_fcr_r0r8_s392002_20260902_v1_3de93cd7.tar.gz`
+- 远端归档：`/home/szu2070436088/2510044040/CV-SincNet/releases/archives/phase1_adv3b02_fcr_r0r8_s392002_20260902_v1_3de93cd7.tar.gz`
+- 远端解压根：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_fcr_r0r8_s392002_20260902_v1`
+- archive_sha256：`401cd3c3a6fdde967333ff87371d3388656edbf77b79a7d229c83bd64a38f709`
+
 ```text
 nohup env RUN_ID=phase1_adv3b02_fcr_r0r8_s392002_20260902_v1 OUTPUT_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r0r8_s392002_20260902_v1 ROOT=/home/szu2070436088/2510044040/CV-SincNet CODE_ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_fcr_r0r8_s392002_20260902_v1 GPU=0 SEED=392002 bash /home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_fcr_r0r8_s392002_20260902_v1/code/scripts/launch_phase1_adv3b02_fcr_20260901.sh > /home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_fcr_r0r8_s392002_20260902_v1.launcher.out 2>&1 &
 ```
