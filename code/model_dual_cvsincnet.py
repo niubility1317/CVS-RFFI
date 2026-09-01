@@ -216,6 +216,214 @@ class ContentEstimator(nn.Module):
         return iq_to_complex(estimate_iq), confidence
 
 
+class ResponseBasis(nn.Module):
+    """Fixed 28-column physical response dictionary used by ECRS V1."""
+
+    block_slices = {
+        "pa": slice(0, 8),
+        "iq": slice(8, 16),
+        "cross": slice(16, 20),
+        "slew": slice(20, 28),
+    }
+
+    def __init__(self):
+        super().__init__()
+        self.register_buffer(
+            "amplitude_centers",
+            torch.tensor([0.15, 0.45, 0.75, 1.05], dtype=torch.float32),
+            persistent=True,
+        )
+        self.register_buffer("amplitude_width", torch.tensor(0.30), persistent=True)
+
+    @staticmethod
+    def _delay(value: torch.Tensor, steps: int = 1) -> torch.Tensor:
+        steps = int(steps)
+        if steps <= 0:
+            return value
+        return torch.nn.functional.pad(value[..., :-steps], (steps, 0))
+
+    def _rbf(self, amplitude: torch.Tensor) -> torch.Tensor:
+        centers = self.amplitude_centers.to(device=amplitude.device, dtype=amplitude.dtype)
+        width = self.amplitude_width.to(device=amplitude.device, dtype=amplitude.dtype)
+        return torch.exp(-0.5 * ((amplitude.unsqueeze(-1) - centers) / width) ** 2)
+
+    def forward(self, s_hat: torch.Tensor) -> torch.Tensor:
+        if not torch.is_complex(s_hat) or s_hat.ndim != 2:
+            raise ValueError("s_hat must be a complex tensor with shape [batch, time]")
+        s_hat = s_hat.to(torch.complex64)
+        scale = torch.quantile(s_hat.abs().float(), 0.95, dim=1, keepdim=True).clamp_min(1e-4)
+        amplitude = s_hat.abs().float() / scale
+        s_prev = self._delay(s_hat, 1)
+        amp_prev = self._delay(amplitude, 1)
+        b_now = self._rbf(amplitude).to(torch.complex64)
+        b_prev = self._rbf(amp_prev).to(torch.complex64)
+
+        pa = torch.cat([s_hat.unsqueeze(-1) * b_now, s_prev.unsqueeze(-1) * b_prev], dim=-1)
+        iq = torch.cat(
+            [s_hat.conj().unsqueeze(-1) * b_now, s_prev.conj().unsqueeze(-1) * b_prev],
+            dim=-1,
+        )
+        cross = s_hat.unsqueeze(-1) * b_prev
+        delta = s_hat - s_prev
+        acceleration = delta - self._delay(delta, 1)
+        slew = torch.cat(
+            [delta.unsqueeze(-1) * b_now, acceleration.unsqueeze(-1) * b_now], dim=-1
+        )
+        return torch.cat([pa, iq, cross, slew], dim=-1).to(torch.complex64)
+
+
+class WeightedRidgeLayer(nn.Module):
+    """Differentiable complex64 weighted ridge with bounded weights and fallbacks."""
+
+    def __init__(self, alpha_lambda: float = 1e-4, min_weight: float = 0.05, eps: float = 1e-6):
+        super().__init__()
+        self.alpha_lambda = float(alpha_lambda)
+        self.min_weight = float(min_weight)
+        self.eps = float(eps)
+
+    @staticmethod
+    def _cholesky_solve(matrix: torch.Tensor, rhs: torch.Tensor) -> Optional[torch.Tensor]:
+        chol, info = torch.linalg.cholesky_ex(matrix)
+        if int(info.item()) != 0:
+            return None
+        return torch.cholesky_solve(rhs.unsqueeze(-1), chol).squeeze(-1)
+
+    def _coverage(self, amplitude: torch.Tensor, weight: torch.Tensor) -> torch.Tensor:
+        scale = torch.quantile(amplitude, 0.95).clamp_min(self.eps)
+        normalized = amplitude / scale
+        centers = torch.linspace(0.15, 1.20, 8, device=amplitude.device)
+        bins = torch.exp(-0.5 * ((normalized.unsqueeze(-1) - centers) / 0.16) ** 2)
+        occupancy = (bins * weight.unsqueeze(-1)).sum(dim=0) / weight.sum().clamp_min(self.eps)
+        return (occupancy > 0.02).float().mean()
+
+    def _block_regularization(
+        self,
+        phi: torch.Tensor,
+        target: torch.Tensor,
+        weight: torch.Tensor,
+        gram_trace_over_k: torch.Tensor,
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
+        n_eff = weight.sum().square() / weight.square().sum().clamp_min(self.eps)
+        coverage = self._coverage(target.abs().float(), weight)
+        total_energy = phi.abs().square().mean().clamp_min(self.eps)
+        slew_energy = phi[..., 20:28].abs().square().mean() / total_energy
+        q_values = torch.stack(
+            [
+                coverage,
+                coverage,
+                (n_eff / float(max(1, phi.size(0)))).clamp(0.05, 1.0),
+                slew_energy.float().clamp(0.05, 1.0),
+            ]
+        ).clamp_min(0.05)
+        block_sizes = (8, 8, 4, 8)
+        chunks = []
+        for q_value, size in zip(q_values, block_sizes):
+            value = self.alpha_lambda * gram_trace_over_k / (q_value + self.eps)
+            chunks.append(value.expand(size))
+        return torch.cat(chunks), coverage
+
+    def forward(
+        self,
+        phi: torch.Tensor,
+        target: torch.Tensor,
+        content_confidence: torch.Tensor,
+    ) -> Dict[str, object]:
+        if phi.ndim != 3 or int(phi.size(-1)) != 28 or not torch.is_complex(phi):
+            raise ValueError("phi must be complex [batch, samples, 28]")
+        if target.shape != phi.shape[:2] or not torch.is_complex(target):
+            raise ValueError("target must be complex [batch, samples]")
+        if content_confidence.shape != target.shape:
+            raise ValueError("content_confidence must match target")
+        coefficients = []
+        covariance = []
+        infos = []
+        eigenvalues = []
+        log_conditions = []
+        effective_ranks = []
+        effective_samples = []
+        coverages = []
+        nmses = []
+        normalized_weights = []
+
+        with torch.autocast(device_type=phi.device.type, enabled=False):
+            for batch_index in range(int(phi.size(0))):
+                design = phi[batch_index].to(torch.complex64)
+                response = target[batch_index].to(torch.complex64)
+                weight = content_confidence[batch_index].float().clamp(self.min_weight, 1.0)
+                weight = weight / weight.mean().clamp_min(self.eps)
+                normalized_weights.append(weight)
+                gram = design.conj().transpose(0, 1) @ (weight.unsqueeze(-1) * design)
+                rhs = design.conj().transpose(0, 1) @ (weight * response)
+                gram_trace_over_k = gram.diagonal().real.mean().clamp_min(self.eps)
+                lambda_diag, coverage = self._block_regularization(
+                    design, response, weight, gram_trace_over_k
+                )
+                regularizer = torch.diag(lambda_diag).to(torch.complex64)
+                solved = self._cholesky_solve(gram + regularizer, rhs)
+                info = 0
+                used_lambda = lambda_diag
+                if solved is None:
+                    used_lambda = lambda_diag * 10.0
+                    solved = self._cholesky_solve(
+                        gram + torch.diag(used_lambda).to(torch.complex64), rhs
+                    )
+                    info = 1
+                if solved is None:
+                    sqrt_weight = weight.sqrt().to(torch.complex64)
+                    weighted_design = sqrt_weight.unsqueeze(-1) * design
+                    weighted_response = sqrt_weight * response
+                    augmented_design = torch.cat(
+                        [
+                            weighted_design,
+                            torch.diag(used_lambda.clamp_min(0.0).sqrt()).to(torch.complex64),
+                        ],
+                        dim=0,
+                    )
+                    augmented_response = torch.cat(
+                        [weighted_response, torch.zeros(28, device=phi.device, dtype=torch.complex64)]
+                    )
+                    solved = torch.linalg.lstsq(augmented_design, augmented_response).solution
+                    info = 2
+
+                fitted = design @ solved
+                residual = response - fitted
+                eig = torch.linalg.eigvalsh(gram).real.clamp_min(0.0)
+                spectrum_sum = eig.sum().clamp_min(self.eps)
+                probability = (eig / spectrum_sum).clamp_min(self.eps)
+                effective_rank = torch.exp(-(probability * probability.log()).sum())
+                condition = (eig[-1] + self.eps) / (eig[0] + self.eps)
+                n_eff = weight.sum().square() / weight.square().sum().clamp_min(self.eps)
+                nmse = (weight * residual.abs().square()).sum() / (
+                    (weight * response.abs().square()).sum().clamp_min(self.eps)
+                )
+                system_diag = (gram.diagonal().real + used_lambda).clamp_min(self.eps)
+
+                coefficients.append(solved)
+                covariance.append(system_diag.reciprocal())
+                infos.append(info)
+                eigenvalues.append(eig)
+                log_conditions.append(condition.log())
+                effective_ranks.append(effective_rank)
+                effective_samples.append(n_eff)
+                coverages.append(coverage)
+                nmses.append(nmse.real)
+
+        return {
+            "resp_coef": torch.stack(coefficients, dim=0),
+            "resp_cov_diag": torch.stack(covariance, dim=0),
+            "weights": torch.stack(normalized_weights, dim=0),
+            "ridge_info": torch.tensor(infos, device=phi.device, dtype=torch.long),
+            "resp_quality": {
+                "gram_eigenvalues": torch.stack(eigenvalues, dim=0),
+                "log_condition": torch.stack(log_conditions, dim=0),
+                "effective_rank": torch.stack(effective_ranks, dim=0),
+                "effective_sample_size": torch.stack(effective_samples, dim=0),
+                "coverage": torch.stack(coverages, dim=0),
+                "nmse": torch.stack(nmses, dim=0),
+            },
+        }
+
+
 class SatAnchorIdentityAdapter(nn.Module):
     """Zero-initialized low-rank identity residual and logit correction."""
 
