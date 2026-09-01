@@ -898,6 +898,23 @@ class PhysicalAwareClassifier(nn.Module):
         return logits, dac_pred, pa_pred, feat_id, feat_dac, feat_pa, feat_imp, feat_joint
 
 
+class NMFDUFeatureGateContract(nn.Module):
+    """Reachability contract for the opt-in NMFDU gate.
+
+    The physical statistics and fusion behavior are added in subsequent
+    implementation tasks. Keeping this module absent on the legacy path is
+    what preserves strict historical checkpoint reconstruction.
+    """
+
+    branch_names = ("raw", "hom", "phase", "pa", "hos")
+
+    def __init__(self, emb_dim: int):
+        super().__init__()
+        self.emb_dim = int(emb_dim)
+        self.branch_logit_bias = nn.Parameter(torch.zeros(len(self.branch_names) + 1))
+        self.bounded_delta_scale = nn.Parameter(torch.zeros(len(self.branch_names)))
+
+
 # ----------------------- Main model -----------------------
 class CVSincNet(nn.Module):
     """
@@ -978,6 +995,7 @@ class CVSincNet(nn.Module):
         crra_nuisance_dim: int = 9,
         crra_start_epoch: int = 17,
         crra_ramp_epochs: int = 30,
+        physical_gate_variant: str = "none",
     ):
         super().__init__()
         self.dataset = str(dataset)
@@ -1021,6 +1039,16 @@ class CVSincNet(nn.Module):
         self.crra_rank = int(crra_rank)
         self.crra_alpha_max = float(crra_alpha_max)
         self.crra_epoch = 1
+        self.physical_gate_variant = str(physical_gate_variant or "none").lower().strip()
+        if self.physical_gate_variant not in {"none", "nmfdu_v1"}:
+            raise ValueError(
+                "physical_gate_variant must be one of: none,nmfdu_v1"
+            )
+        self.nmfdu_gate = (
+            NMFDUFeatureGateContract(self.emb_dim)
+            if self.physical_gate_variant == "nmfdu_v1"
+            else None
+        )
         self.branch_ablation = self._parse_branch_ablation(branch_ablation)
         self.use_time_path = not self._ablated("no_time")
         self.use_dac_path = not self._ablated("no_dac")
@@ -1746,6 +1774,7 @@ def build_model(
     crra_nuisance_dim: int = 9,
     crra_start_epoch: int = 17,
     crra_ramp_epochs: int = 30,
+    physical_gate_variant: str = "none",
 ):
     ds = str(dataset).lower()
     ms = str(model_size).upper().strip()
@@ -1925,5 +1954,6 @@ def build_model(
         crra_nuisance_dim=crra_nuisance_dim,
         crra_start_epoch=crra_start_epoch,
         crra_ramp_epochs=crra_ramp_epochs,
+        physical_gate_variant=physical_gate_variant,
         **cfg,
     )

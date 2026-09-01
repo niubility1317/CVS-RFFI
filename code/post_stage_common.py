@@ -142,6 +142,7 @@ def default_data_args() -> Dict[str, Any]:
         "seed": 1337,
         "eval_max_batches": 0,
         "sample_rate_hz": 0.0,
+        "physical_gate_variant": "none",
     }
 
 
@@ -355,6 +356,9 @@ def build_baseline_model(model_args, device: torch.device) -> nn.Module:
         arch_family=str(getattr(model_args, "arch_family", "cvsincnet")),
         representation_mode=str(
             getattr(model_args, "representation_mode", "dual")
+        ),
+        physical_gate_variant=str(
+            getattr(model_args, "physical_gate_variant", "none")
         ),
     ).to(device)
 

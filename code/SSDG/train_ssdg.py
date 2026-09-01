@@ -1019,6 +1019,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--model_size", type=str, default="M")
     parser.add_argument("--model_variant", type=str, default="lite_d")
     parser.add_argument(
+        "--physical_gate_variant",
+        type=str,
+        default="none",
+        choices=["none", "nmfdu_v1"],
+    )
+    parser.add_argument(
         "--representation_mode",
         type=str,
         default="dual",

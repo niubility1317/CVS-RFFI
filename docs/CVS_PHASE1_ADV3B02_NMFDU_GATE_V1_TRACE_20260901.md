@@ -58,3 +58,7 @@
 ## 5.交付判定
 
 本追踪表完成不等于方法实现或性能验证。只有代码、聚焦负测、真实checkpoint无query smoke、单seed最小矩阵、清洁及三LEO场景评估均完成后，才能分别标记`LOCAL_VERIFIED`、`ARTIFACTS_COMPLETE`或`ANALYZED`。任何未运行项目均保持`PENDING`。
+
+## 6.实施进度
+
+- 2026-09-01，任务1：`VERIFIED_LOCAL`。新增默认关闭的`physical_gate_variant=none|nmfdu_v1`契约；默认路径与显式`none`逐tensor一致；只有身份骨干的`nmfdu_v1`路径新增门控参数；训练CLI和候选配置已绑定。验证命令：`python -m pytest -q code/tests/test_adv3b02_nmfdu_legacy_contract.py code/tests/test_identity_only_forward.py code/tests/test_exact_ssdg_checkpoint_loading.py`，结果`9 passed`。这不表示NMFDU统计、融合或训练已经实现。

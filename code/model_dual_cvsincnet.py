@@ -328,6 +328,28 @@ class ParameterMatchedIdentityCapacity(nn.Module):
         return adapted, self.tx_correction(adapted)
 
 
+class NuisanceHeteroscedasticHead(nn.Module):
+    """Predict standardized channel coordinates and their aleatoric scale."""
+
+    def __init__(self, embedding_dim: int, nuisance_dim: int, hidden: Optional[int] = None):
+        super().__init__()
+        embedding_dim = int(embedding_dim)
+        nuisance_dim = int(nuisance_dim)
+        if embedding_dim < 1 or nuisance_dim < 1:
+            raise ValueError("embedding_dim and nuisance_dim must be positive")
+        hidden_dim = int(hidden or max(32, embedding_dim // 2))
+        self.nuisance_dim = nuisance_dim
+        self.net = nn.Sequential(
+            nn.Linear(embedding_dim, hidden_dim),
+            nn.GELU(),
+            nn.Linear(hidden_dim, 2 * nuisance_dim),
+        )
+
+    def forward(self, z_dom: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        mean, log_variance = self.net(z_dom).chunk(2, dim=-1)
+        return mean, log_variance.clamp(-8.0, 8.0)
+
+
 class FeatureBackboneAdapter(nn.Module):
     """Expose common RFFI backbones through the CVS-RFFI auxiliary-output API."""
 
@@ -453,6 +475,7 @@ def build_arch_backbone(
     crra_nuisance_dim: int = 9,
     crra_start_epoch: int = 17,
     crra_ramp_epochs: int = 30,
+    physical_gate_variant: str = "none",
 ) -> nn.Module:
     family = str(arch_family or "cvsincnet").lower().strip()
     if family == "cvsincnet":
@@ -494,7 +517,10 @@ def build_arch_backbone(
             crra_nuisance_dim=int(crra_nuisance_dim),
             crra_start_epoch=int(crra_start_epoch),
             crra_ramp_epochs=int(crra_ramp_epochs),
+            physical_gate_variant=str(physical_gate_variant),
         )
+    if str(physical_gate_variant or "none").lower().strip() != "none":
+        raise ValueError("physical_gate_variant is supported only by cvsincnet")
     return FeatureBackboneAdapter(
         family,
         num_classes=int(num_classes),
@@ -568,6 +594,7 @@ class DualCVSincNetDisentangle(nn.Module):
         crra_ramp_epochs: int = 30,
         sat_anchor_adapter: bool = False,
         sat_anchor_adapter_rank: int = 8,
+        physical_gate_variant: str = "none",
     ):
         super().__init__()
         self.num_classes = int(num_classes)
@@ -591,6 +618,13 @@ class DualCVSincNetDisentangle(nn.Module):
         self.fast_infer_when_no_aux = bool(fast_infer_when_no_aux)
         self.use_tx_adv_on_zdom = bool(use_tx_adv_on_zdom)
         self.use_crra = bool(use_crra)
+        self.physical_gate_variant = str(
+            physical_gate_variant or "none"
+        ).lower().strip()
+        if self.physical_gate_variant not in {"none", "nmfdu_v1"}:
+            raise ValueError(
+                "physical_gate_variant must be one of: none,nmfdu_v1"
+            )
         self.crra_epoch = 1
         self.id_time_stability_mode = str(id_time_stability_mode or "off").lower().strip()
         self.id_freq_stability_mode = str(id_freq_stability_mode or "off").lower().strip()
@@ -642,6 +676,7 @@ class DualCVSincNetDisentangle(nn.Module):
             crra_nuisance_dim=int(crra_nuisance_dim),
             crra_start_epoch=int(crra_start_epoch),
             crra_ramp_epochs=int(crra_ramp_epochs),
+            physical_gate_variant=self.physical_gate_variant,
         )
         self.dom_backbone = build_arch_backbone(
             self.arch_family,
@@ -667,6 +702,7 @@ class DualCVSincNetDisentangle(nn.Module):
             time_stability_channels=int(time_stability_channels),
             freq_stability_channels=int(freq_stability_channels),
             use_crra=False,
+            physical_gate_variant="none",
         )
         if self.arch_family == "cvsincnet" and self.model_variant in {"lite_b", "lite_d", "lite_e", "lite_f", "lite_g", "lite_h"}:
             self._share_early_stem()
@@ -1050,6 +1086,7 @@ def build_dual_model(
     crra_ramp_epochs: int = 30,
     sat_anchor_adapter: bool = False,
     sat_anchor_adapter_rank: int = 8,
+    physical_gate_variant: str = "none",
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -1103,4 +1140,5 @@ def build_dual_model(
         crra_ramp_epochs=crra_ramp_epochs,
         sat_anchor_adapter=sat_anchor_adapter,
         sat_anchor_adapter_rank=sat_anchor_adapter_rank,
+        physical_gate_variant=physical_gate_variant,
     )

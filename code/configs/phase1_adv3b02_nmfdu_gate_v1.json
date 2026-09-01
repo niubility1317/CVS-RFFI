@@ -1,0 +1,36 @@
+{
+  "candidate_id": "ADV3B02_NMFDU_GATE_V1_E200",
+  "base_candidate": "ADV3B02_CORE90_SOFT_E200",
+  "seed": 392002,
+  "epochs": 200,
+  "physical_gate_variant": "nmfdu_v1",
+  "branch_names": [
+    "raw",
+    "hom",
+    "phase",
+    "pa",
+    "hos"
+  ],
+  "embedding_dim": 160,
+  "stage_boundaries": [
+    80,
+    120,
+    200
+  ],
+  "source_split": {
+    "L_s": 0.07,
+    "U_s": 0.63,
+    "V": 0.30
+  },
+  "concat_sat_ce_only": true,
+  "lambda_sat_cls": 0.68,
+  "lambda_sat_cons": 0.0,
+  "eval_scenarios": [
+    "clean",
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak"
+  ],
+  "phase2_access": false,
+  "query_access": false
+}
