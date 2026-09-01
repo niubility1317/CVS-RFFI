@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import os
 import subprocess
@@ -19,6 +20,7 @@ from collections import Counter
 from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
 from types import MappingProxyType
+from types import SimpleNamespace
 from typing import Any, NamedTuple
 
 
@@ -34,10 +36,13 @@ from cvsrffi.phase1_bicad_xr.config import (
     cv2_configuration_payload,
     method_lock_payload,
 )
-from cvsrffi.phase1_bicad_xr.metrics import validate_artifact_closure
+from cvsrffi.phase1_bicad_xr.metrics import (
+    evaluate_final_checkpoint,
+    validate_artifact_closure,
+)
 
 
-RUN_ID_DEFAULT = "phase1_pairbicad_cv2_fixed11_e200_seed392002_20260901_r4"
+RUN_ID_DEFAULT = "phase1_pairbicad_cv2_fixed11_e200_seed392002_20260901_r5"
 CANDIDATE_IDS = CV2_CANDIDATE_IDS
 STATIC_BRANCH_BASELINES = CV2_STATIC_BRANCH_BASELINES
 FOLDS: tuple[int, int] = (1, 8)
@@ -108,6 +113,12 @@ def _static_candidate_data() -> dict[str, tuple[Mapping[str, Any], Mapping[str, 
 
 
 _STATIC_CANDIDATE_DATA = _static_candidate_data()
+_STATIC_RECONSTRUCTION_UPDATES = MappingProxyType(
+    {
+        candidate_id: int(candidate_config(candidate_id).optimizer_updates)
+        for candidate_id in CANDIDATE_IDS
+    }
+)
 
 
 class PlanRow(NamedTuple):
@@ -659,6 +670,175 @@ def write_dispatch_status(
     )
 
 
+_FORMAL_EVALUATOR_MODULE: Any | None = None
+
+
+def _load_formal_evaluator_module(code_root: Path) -> Any:
+    """Load the existing source-LORO evaluator used by formal Phase1 runs."""
+
+    global _FORMAL_EVALUATOR_MODULE
+    if _FORMAL_EVALUATOR_MODULE is not None:
+        return _FORMAL_EVALUATOR_MODULE
+    path = code_root / "code" / "scripts" / "launch_phase1_bicad_xr_matrix_20260830.py"
+    if not path.is_file():
+        raise FileNotFoundError(f"formal BiCAD-XR evaluator is missing: {path}")
+    for value in (str(code_root / "code"), str(code_root / "code" / "SSDG")):
+        if value not in sys.path:
+            sys.path.insert(0, value)
+    spec = importlib.util.spec_from_file_location("pairbicad_cv2_formal_launcher", path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"cannot load formal BiCAD-XR evaluator: {path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    _FORMAL_EVALUATOR_MODULE = module
+    return module
+
+
+def _build_final_evaluation_context(
+    row: PlanRow,
+    roots: LauncherRoots,
+    command: Sequence[str],
+) -> Any:
+    formal_launcher = _load_formal_evaluator_module(Path(roots.code_root))
+    context_type = getattr(formal_launcher, "_FormalEvaluationContext", None)
+    if context_type is None:
+        raise RuntimeError("formal BiCAD-XR evaluation context is unavailable")
+    compatible_row = SimpleNamespace(
+        candidate_id=row.candidate_id,
+        source_receivers=row.source_receivers,
+        train_days=row.train_days,
+        seed=row.seed,
+        optimizer_updates=_STATIC_RECONSTRUCTION_UPDATES[row.candidate_id],
+    )
+    return context_type(compatible_row, roots, command)
+
+
+def _load_json_mapping(path: Path, *, label: str) -> dict[str, Any]:
+    if not path.is_file() or path.stat().st_size <= 0:
+        raise FileNotFoundError(f"{label} is missing or empty: {path}")
+    try:
+        with path.open("r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError(f"{label} is not valid JSON") from exc
+    if not isinstance(payload, Mapping):
+        raise ValueError(f"{label} must be a JSON object")
+    return dict(payload)
+
+
+def _validate_source_only_flags(payload: Mapping[str, Any], *, label: str) -> None:
+    if payload.get("source_only") is not True:
+        raise ValueError(f"{label} must declare source_only=true")
+    for name in SOURCE_ONLY_ACCESS_FLAGS:
+        if payload.get(name) is not False:
+            raise ValueError(f"{label} {name} must be false")
+
+
+def _cv2_runtime_expectation(row_root: str | Path, row: PlanRow) -> dict[str, Any]:
+    """Bind the strict checkpoint restore to an independently written E200 record."""
+
+    root = Path(row_root)
+    selection = _load_json_mapping(
+        root / "source_loro_selection.json",
+        label="source_loro_selection.json",
+    )
+    _validate_source_only_flags(selection, label="source-LORO selection")
+    stop_update = selection.get("stop_update")
+    planned_updates = selection.get("planned_updates")
+    if any(
+        isinstance(value, bool) or not isinstance(value, int) or value <= 0
+        for value in (stop_update, planned_updates)
+    ):
+        raise ValueError("E200 selection update fields must be positive integers")
+    if stop_update != planned_updates:
+        raise ValueError("E200 selection must stop only after its full planned budget")
+    if selection.get("stopped_early") is not False:
+        raise ValueError("E200 selection must not report early stopping")
+    if selection.get("final_epoch") != CV2_EPOCHS:
+        raise ValueError("E200 selection does not identify final epoch 200")
+
+    telemetry = root / "metrics_epoch.jsonl"
+    if not telemetry.is_file() or telemetry.stat().st_size <= 0:
+        raise FileNotFoundError("metrics_epoch.jsonl is missing or empty")
+    records: list[Mapping[str, Any]] = []
+    for line_number, line in enumerate(
+        telemetry.read_text(encoding="utf-8").splitlines(),
+        start=1,
+    ):
+        if not line.strip():
+            continue
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise ValueError(
+                f"metrics_epoch.jsonl line {line_number} is invalid JSON"
+            ) from exc
+        if not isinstance(record, Mapping):
+            raise ValueError(
+                f"metrics_epoch.jsonl line {line_number} is not an object"
+            )
+        records.append(record)
+    if len(records) != CV2_EPOCHS or records[-1].get("epoch") != CV2_EPOCHS:
+        raise ValueError("formal CV2 telemetry must contain exactly 200 completed epochs")
+
+    return {
+        "candidate_id": row.candidate_id,
+        "fold": row.fold,
+        "seed": row.seed,
+        "optimizer_updates": int(stop_update),
+        "planned_optimizer_updates": int(planned_updates),
+        "source_receivers": row.source_receivers,
+        "train_days": row.train_days,
+    }
+
+
+def _build_source_only_evaluator(context: Any) -> Callable[[Any, str], Mapping[str, Any]]:
+    def evaluate(model: Any, scenario: str) -> Mapping[str, Any]:
+        if scenario not in FORMAL_SCENARIOS:
+            raise ValueError(f"unsupported formal evaluation scenario: {scenario}")
+        metrics = context.evaluate(model, scenario)
+        if not isinstance(metrics, Mapping):
+            raise TypeError("formal evaluator callback must return a mapping")
+        payload = dict(metrics)
+        payload["source_only"] = True
+        payload.update({name: False for name in SOURCE_ONLY_ACCESS_FLAGS})
+        return payload
+
+    return evaluate
+
+
+def _locate_final_checkpoint(row_root: Path) -> Path:
+    checkpoint = row_root / EXPECTED_ARTIFACTS["final_checkpoint"]
+    if not checkpoint.is_file() or checkpoint.stat().st_size <= 0:
+        raise FileNotFoundError("row final checkpoint is missing or empty")
+    return checkpoint
+
+
+def _validate_worker_artifacts(
+    row: PlanRow,
+    row_root: Path,
+    checkpoint: Path,
+    evaluation: Mapping[str, Any],
+    runtime_expectation: Mapping[str, Any],
+) -> dict[str, Any]:
+    del row, checkpoint, runtime_expectation
+    if evaluation.get("complete") is not True:
+        raise ValueError(f"formal final evaluation did not complete: {evaluation}")
+    runtime_result = evaluation.get("runtime")
+    if not isinstance(runtime_result, Mapping) or runtime_result.get("valid") is not True:
+        raise ValueError(f"formal checkpoint runtime validation failed: {runtime_result}")
+    closure = validate_artifact_closure(row_root)
+    if closure.get("complete") is not True:
+        raise ValueError(f"formal artifact closure is incomplete: {closure}")
+    if set(closure.get("evaluations", {})) != set(FORMAL_SCENARIOS):
+        raise ValueError("formal artifact closure is missing one or more scenarios")
+    for scenario, payload in closure["evaluations"].items():
+        if not isinstance(payload, Mapping):
+            raise ValueError(f"formal evaluation payload is invalid: {scenario}")
+        _validate_source_only_flags(payload, label=f"evaluation[{scenario}]")
+    return dict(closure)
+
+
 def _record_technical_failure(
     row_root: Path,
     *,
@@ -719,7 +899,7 @@ def _stop_worker(
 
 
 def run_training_worker(row: PlanRow, roots: LauncherRoots, *, run_id: str) -> str:
-    """Train one row and require the entrypoint's complete formal artifacts."""
+    """Train one row, then strictly restore and evaluate its final checkpoint."""
 
     _require_static_row(row)
     row_root = _row_root(row, roots)
@@ -757,14 +937,29 @@ def run_training_worker(row: PlanRow, roots: LauncherRoots, *, run_id: str) -> s
         )
 
     try:
-        closure = validate_artifact_closure(row_root)
-        if closure.get("complete") is not True:
-            raise ValueError(f"formal artifact closure is incomplete: {closure}")
+        checkpoint = _locate_final_checkpoint(row_root)
+        runtime_expectation = _cv2_runtime_expectation(row_root, row)
+        context = _build_final_evaluation_context(row, roots, command)
+        evaluation = evaluate_final_checkpoint(
+            checkpoint,
+            expected_runtime=runtime_expectation,
+            output_dir=row_root,
+            model_builder=context.build_model,
+            trainer_runtime_restorer=context.restore_trainer_runtime,
+            evaluator=_build_source_only_evaluator(context),
+        )
+        closure = _validate_worker_artifacts(
+            row,
+            row_root,
+            checkpoint,
+            evaluation,
+            runtime_expectation,
+        )
     except Exception as exc:
         return _stop_worker(
             row,
             row_root,
-            reason="FINAL_ARTIFACT_CLOSURE_FAILED",
+            reason="FINAL_ARTIFACT_EVALUATION_FAILED",
             details={"exception_type": type(exc).__name__, "message": str(exc)},
             returncode=int(completed.returncode),
         )

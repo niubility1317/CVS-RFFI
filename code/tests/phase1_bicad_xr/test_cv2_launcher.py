@@ -413,3 +413,121 @@ def test_real_mode_writes_static_plan_before_dispatch_without_child_launch(
         "run_id": "cv2-screen24-real-mode-test",
         "gpu_capacities": {gpu_id: 2 for gpu_id in range(8)},
     }
+
+
+def test_worker_runs_strict_final_evaluation_before_marking_complete(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    launcher = _load_launcher()
+    row = launcher.build_plan()[0]
+    run_root = tmp_path / "cv2-screen24"
+    row_root = run_root / row.row_id
+    row_root.mkdir(parents=True)
+    checkpoint = row_root / "bicad_xr_final.pth"
+    roots = launcher.LauncherRoots(
+        Path("repo"),
+        Path("python"),
+        run_root,
+        Path("dataset") / "ManySig.pkl",
+    )
+
+    class Completed:
+        returncode = 0
+
+    def fake_run(*_args: object, **_kwargs: object) -> Completed:
+        checkpoint.write_bytes(b"checkpoint")
+        return Completed()
+
+    calls: list[Path] = []
+
+    def fake_evaluate(checkpoint_path: Path, **_kwargs: object) -> dict[str, object]:
+        calls.append(Path(checkpoint_path))
+        return {
+            "complete": True,
+            "status": "ARTIFACTS_COMPLETE",
+            "missing": [],
+            "reconstruction": {"missing": [], "unexpected": [], "shape_mismatch": []},
+            "evaluations": {scenario: {} for scenario in launcher.FORMAL_SCENARIOS},
+        }
+
+    monkeypatch.setattr(launcher.subprocess, "run", fake_run)
+    monkeypatch.setattr(launcher, "_cv2_runtime_expectation", lambda *_args: {})
+    class Context:
+        build_model = object()
+        restore_trainer_runtime = object()
+
+        def evaluate(self, *_args: object) -> dict[str, object]:
+            return {}
+
+    monkeypatch.setattr(launcher, "_build_final_evaluation_context", lambda *_args: Context())
+    monkeypatch.setattr(launcher, "evaluate_final_checkpoint", fake_evaluate, raising=False)
+    monkeypatch.setattr(
+        launcher,
+        "_validate_worker_artifacts",
+        lambda _row, _root, _checkpoint, evaluation, _expectation: evaluation,
+        raising=False,
+    )
+
+    status = launcher.run_training_worker(row, roots, run_id="cv2-screen24")
+
+    assert status == "ARTIFACTS_COMPLETE"
+    assert calls == [checkpoint]
+    assert (row_root / "ARTIFACTS_COMPLETE.json").is_file()
+    assert not (row_root / "TECHNICAL_FAILURE.json").exists()
+
+
+def test_e200_runtime_expectation_binds_200_epochs_and_terminal_update(
+    tmp_path: Path,
+) -> None:
+    launcher = _load_launcher()
+    row = launcher.build_plan()[0]
+    selection = {
+        "planned_updates": 10400,
+        "stop_update": 10400,
+        "stopped_early": False,
+        "final_epoch": 200,
+        "source_only": True,
+        **{name: False for name in launcher.SOURCE_ONLY_ACCESS_FLAGS},
+    }
+    (tmp_path / "source_loro_selection.json").write_text(
+        json.dumps(selection), encoding="utf-8"
+    )
+    (tmp_path / "metrics_epoch.jsonl").write_text(
+        "".join(json.dumps({"epoch": epoch}) + "\n" for epoch in range(1, 201)),
+        encoding="utf-8",
+    )
+
+    expectation = launcher._cv2_runtime_expectation(tmp_path, row)
+
+    assert expectation == {
+        "candidate_id": row.candidate_id,
+        "fold": row.fold,
+        "seed": 392002,
+        "optimizer_updates": 10400,
+        "planned_optimizer_updates": 10400,
+        "source_receivers": row.source_receivers,
+        "train_days": (1, 2, 3),
+    }
+
+
+def test_final_evaluation_context_restores_with_frozen_candidate_budget() -> None:
+    launcher = _load_launcher()
+    row = launcher.build_plan()[0]
+    repo_root = Path(__file__).resolve().parents[3]
+    roots = launcher.LauncherRoots(
+        repo_root,
+        Path("python"),
+        Path("runs") / "cv2-screen24",
+        Path("dataset") / "ManySig.pkl",
+    )
+
+    context = launcher._build_final_evaluation_context(
+        row,
+        roots,
+        launcher.build_train_command(row, roots, run_id="cv2-screen24"),
+    )
+
+    assert context.row.candidate_id == row.candidate_id
+    assert context.row.optimizer_updates == 5000
+    assert context.row.source_receivers == row.source_receivers

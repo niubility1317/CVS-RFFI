@@ -62,3 +62,11 @@ r4只补充`BiCADXRTrainer.forward`，把推理调用透明转发给当前`self.
 - `plan.json`独立读回：24行、seed392002、终止方式`epochs=200`、8行排队。
 - 启动后检查：16个直属worker、GPU0—7各2个本run计算进程，GPU利用率81%—90%；`ARTIFACTS_COMPLETE=0`、`TECHNICAL_FAILURE=0`、确定性致命异常为空。
 - 16个`train.log`已创建；启动早期文件仍为0字节，但绑定训练进程和GPU计算持续，因此按预登记规则判定健康启动，不因日志尚未写epoch行而停止或重启。
+
+## 2026-09-01 10:39—11:03系统技术失败与停止
+
+- `CV2-B0-F1-S392002`和`CV2-B0-F8-S392002`均完成200epoch，训练子进程返回码为0并分别写出`bicad_xr_final.pth`（10,567,139 bytes）和完整`metrics_epoch.jsonl`（4,226,205/4,226,543 bytes）。
+- 两行随后以同一确定性指纹`FINAL_ARTIFACT_CLOSURE_FAILED`进入技术失败：缺少`checkpoint_runtime.json`、`diagnostics.json`及clean/三种LEO正式评估JSON和日志。该问题与性能无关，根因是r4启动器在重构后只调用`validate_artifact_closure`，没有调用已经存在的`evaluate_final_checkpoint`正式闭合流程。
+- 同一指纹在两行重复，满足预登记系统性技术失败停止条件。2026-09-01 11:02 CST使用普通账户精确绑定dispatcher PID`3441034`及其全部后代；所有后代cmdline均同时包含本run ID和release ID后才停止。停止标记独立读回为`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`，`residual_bound_pids=[]`。
+- 停止后`pgrep`未发现本run残留进程，`nvidia-smi`无计算进程。r4输出根、两个final checkpoint、metrics和全部partial artifact原样保留；未覆盖、删除、重启或热补丁。
+- r4最终状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；不得作为科学性能结果。修复在本地Git工作树进行，并使用新release、新run ID`phase1_pairbicad_cv2_fixed11_e200_seed392002_20260901_r5`重新发布。
