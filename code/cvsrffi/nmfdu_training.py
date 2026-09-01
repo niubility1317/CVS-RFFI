@@ -45,6 +45,17 @@ class NMFDUStageController:
     def apply(self, model, epoch: int) -> NMFDUStage:
         stage_index = self.stage_for_epoch(epoch)
         backbone, gate = self._resolve_backbone_and_gate(model)
+        if getattr(gate, "ablation_mode", "full") == "equal":
+            for parameter in model.parameters():
+                parameter.requires_grad_(True)
+            for parameter in gate.sample_gate.parameters():
+                parameter.requires_grad_(False)
+            gate.evidence_state.freeze_discriminability(False)
+            if hasattr(backbone, "set_nmfdu_stage"):
+                backbone.set_nmfdu_stage(1)
+            else:
+                gate.set_stage(1)
+            return NMFDUStage(1, "equal_capacity_control", "equal_non_null")
         if stage_index == 1:
             for parameter in model.parameters():
                 parameter.requires_grad_(True)
@@ -232,7 +243,7 @@ def quality_weighted_mean(
     if per_sample_loss.shape != quality.shape:
         raise ValueError("loss and quality must share shape")
     quality = torch.nan_to_num(quality.float(), nan=0.0).clamp(0.0, 1.0)
-    return (per_sample_loss * quality).sum() / quality.sum().clamp_min(eps)
+    return (per_sample_loss * quality).mean()
 
 
 def fused_pair_loss(
@@ -269,7 +280,7 @@ def reliable_branch_pair_loss(
         losses.append(1.0 - F.cosine_similarity(clean, leo, dim=-1, eps=eps))
     per_branch = torch.stack(losses, dim=-1)
     reliability = torch.minimum(clean_reliability, leo_reliability).detach().clamp(0.0, 1.0)
-    return (per_branch * reliability).sum() / reliability.sum().clamp_min(eps)
+    return (per_branch * reliability).mean()
 
 
 def nmfdu_labeled_objective(
@@ -286,6 +297,7 @@ def nmfdu_labeled_objective(
     lambda_null_cal: float,
     lambda_balance: float,
     oracle_temperature: float = 0.5,
+    ablation_mode: str = "full",
 ) -> Mapping[str, torch.Tensor]:
     """Compose only the NMFDU additions for an L_s clean/LEO batch."""
 
@@ -299,27 +311,38 @@ def nmfdu_labeled_objective(
     if missing:
         raise KeyError(f"missing NMFDU training outputs: {missing}")
     diagnostics = aux_id["physical_gate_diag"]["per_sample"]
+    ablation_mode = str(ablation_mode or "full").lower().strip()
+    if ablation_mode not in {"equal", "i_only", "physical_full", "full"}:
+        raise ValueError("unknown NMFDU ablation mode")
     branch_logits = aux_id["nmfdu_branch_logits"]
     branch_embeddings = aux_id["nmfdu_branch_embeddings"]
     zero = aux_id["feat_joint"].sum() * 0.0
     branch_aux = branch_auxiliary_loss(branch_logits, labels) if stage in (1, 3) else zero
     route = phys = null_cal = balance = zero
     if stage in (2, 3):
+        route_uncertainty = (
+            torch.zeros_like(diagnostics["U"])
+            if ablation_mode == "i_only"
+            else diagnostics["U"]
+        )
         oracle = oracle_margin_distribution(
             branch_logits,
             labels,
-            uncertainty=diagnostics["U"],
+            uncertainty=route_uncertainty,
             temperature=oracle_temperature,
         )
         route = route_kl_loss(diagnostics["weights"], oracle)
         physical_prior = torch.softmax(diagnostics["physical_logits"].detach(), dim=-1)
         phys = route_kl_loss(diagnostics["weights"], physical_prior)
-        physical_quality = (
-            diagnostics["I"]
-            * diagnostics["D"]
-            * diagnostics["S"]
-            * (1.0 - diagnostics["U"])
-        ).max(dim=-1).values.detach()
+        if ablation_mode == "i_only":
+            physical_quality = diagnostics["I"].max(dim=-1).values.detach()
+        else:
+            physical_quality = (
+                diagnostics["I"]
+                * diagnostics["D"]
+                * diagnostics["S"]
+                * (1.0 - diagnostics["U"])
+            ).max(dim=-1).values.detach()
         null_target = 1.0 - physical_quality
         null_cal = F.binary_cross_entropy(
             diagnostics["null_weight"].clamp(1e-6, 1.0 - 1e-6), null_target
@@ -341,9 +364,13 @@ def nmfdu_labeled_objective(
         )
         reliability = (
             diagnostics["I"]
-            * diagnostics["D"]
-            * diagnostics["S"]
-            * (1.0 - diagnostics["U"])
+            if ablation_mode == "i_only"
+            else (
+                diagnostics["I"]
+                * diagnostics["D"]
+                * diagnostics["S"]
+                * (1.0 - diagnostics["U"])
+            )
         )
         clean_embeddings = {
             name: value[clean_slice] for name, value in branch_embeddings.items()

@@ -923,9 +923,15 @@ class NMFDUFeatureGateContract(nn.Module):
         pa_memory_depth: int,
         margin_s: float,
         margin_m: float,
+        ablation_mode: str = "full",
     ):
         super().__init__()
         self.emb_dim = int(emb_dim)
+        self.ablation_mode = str(ablation_mode or "full").lower().strip()
+        if self.ablation_mode not in {"equal", "i_only", "physical_full", "full"}:
+            raise ValueError(
+                "nmfdu_ablation_mode must be one of: equal,i_only,physical_full,full"
+            )
         self.canonical_excitation = CanonicalExcitationEstimator(
             detach_gate_input=True
         )
@@ -1026,9 +1032,12 @@ class NMFDUFeatureGateContract(nn.Module):
             dim=-1,
         )
         gate = self.sample_gate(
-            evidence, correction_context=correction_context
+            evidence,
+            correction_context=correction_context,
+            evidence_mode=("i_only" if self.ablation_mode == "i_only" else "full"),
+            enable_correction=(self.ablation_mode == "full"),
         )
-        if int(self.training_stage.item()) == 1:
+        if int(self.training_stage.item()) == 1 or self.ablation_mode == "equal":
             batch = identifiability.size(0)
             equal_weights = identifiability.new_full(
                 (batch, len(self.branch_names)), 1.0 / len(self.branch_names)
@@ -1142,6 +1151,7 @@ class CVSincNet(nn.Module):
         crra_start_epoch: int = 17,
         crra_ramp_epochs: int = 30,
         physical_gate_variant: str = "none",
+        nmfdu_ablation_mode: str = "full",
     ):
         super().__init__()
         self.dataset = str(dataset)
@@ -1186,6 +1196,7 @@ class CVSincNet(nn.Module):
         self.crra_alpha_max = float(crra_alpha_max)
         self.crra_epoch = 1
         self.physical_gate_variant = str(physical_gate_variant or "none").lower().strip()
+        self.nmfdu_ablation_mode = str(nmfdu_ablation_mode or "full").lower().strip()
         if self.physical_gate_variant not in {"none", "nmfdu_v1"}:
             raise ValueError(
                 "physical_gate_variant must be one of: none,nmfdu_v1"
@@ -1198,6 +1209,7 @@ class CVSincNet(nn.Module):
                 pa_memory_depth=int(pa_memory_depth),
                 margin_s=float(margin_s),
                 margin_m=float(margin_m),
+                ablation_mode=self.nmfdu_ablation_mode,
             )
             if self.physical_gate_variant == "nmfdu_v1"
             else None
@@ -2007,6 +2019,7 @@ def build_model(
     crra_start_epoch: int = 17,
     crra_ramp_epochs: int = 30,
     physical_gate_variant: str = "none",
+    nmfdu_ablation_mode: str = "full",
 ):
     ds = str(dataset).lower()
     ms = str(model_size).upper().strip()
@@ -2187,5 +2200,6 @@ def build_model(
         crra_start_epoch=crra_start_epoch,
         crra_ramp_epochs=crra_ramp_epochs,
         physical_gate_variant=physical_gate_variant,
+        nmfdu_ablation_mode=nmfdu_ablation_mode,
         **cfg,
     )

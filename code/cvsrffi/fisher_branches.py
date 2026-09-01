@@ -69,12 +69,59 @@ class FisherBranchBank(nn.Module):
         self.hos_projection = nn.Sequential(
             nn.Linear(5, self.embedding_dim), nn.LayerNorm(self.embedding_dim)
         )
+        self.local_projections = nn.ModuleDict(
+            {
+                name: nn.Linear(8, self.embedding_dim, bias=False)
+                for name in BRANCH_NAMES
+            }
+        )
 
     def _validate_embedding(self, name: str, value: torch.Tensor, batch: int) -> None:
         if tuple(value.shape) != (batch, self.embedding_dim):
             raise ValueError(
                 f"{name}_embedding must have shape [B,{self.embedding_dim}]"
             )
+
+    def _masked_local_summary(
+        self, signal: torch.Tensor, local_mask: torch.Tensor
+    ) -> torch.Tensor:
+        """Extract branch context only after applying its local time/frequency mask."""
+
+        weight = local_mask.float().clamp(0.0, 1.0)
+        denominator = weight.sum(dim=-1, keepdim=True).clamp_min(self.eps)
+        normalized = weight / denominator
+        mean = (signal * normalized).sum(dim=-1)
+        amplitude = signal.abs()
+        amplitude_mean = (amplitude * normalized).sum(dim=-1)
+        amplitude_variance = (
+            (amplitude - amplitude_mean.unsqueeze(-1)).square() * normalized
+        ).sum(dim=-1)
+        power = (amplitude.square() * normalized).sum(dim=-1)
+        unit = signal / amplitude.clamp_min(self.eps)
+        coherence = (unit * normalized).sum(dim=-1).abs()
+        if signal.size(-1) > 1:
+            difference = signal[:, 1:] - signal[:, :-1]
+            pair_weight = torch.minimum(weight[:, 1:], weight[:, :-1])
+            pair_weight = pair_weight / pair_weight.sum(
+                dim=-1, keepdim=True
+            ).clamp_min(self.eps)
+            difference_mean = (difference * pair_weight).sum(dim=-1)
+        else:
+            difference_mean = torch.zeros_like(mean)
+        coverage = weight.mean(dim=-1)
+        return torch.stack(
+            [
+                mean.real,
+                mean.imag,
+                amplitude_mean,
+                amplitude_variance.sqrt(),
+                power,
+                coherence,
+                difference_mean.abs(),
+                coverage,
+            ],
+            dim=-1,
+        )
 
     def forward(
         self,
@@ -259,6 +306,7 @@ class FisherBranchBank(nn.Module):
                 raw_i,
                 raw_s,
                 raw_u,
+                canonical_complex,
             ),
             (
                 "hom",
@@ -268,6 +316,7 @@ class FisherBranchBank(nn.Module):
                 hom_i,
                 hom_s,
                 hom_u,
+                excitation_spectrum,
             ),
             (
                 "phase",
@@ -277,6 +326,7 @@ class FisherBranchBank(nn.Module):
                 phase_i,
                 phase_s,
                 phase_u,
+                canonical_complex,
             ),
             (
                 "pa",
@@ -286,6 +336,7 @@ class FisherBranchBank(nn.Module):
                 pa_i,
                 pa_s,
                 pa_u,
+                canonical_complex,
             ),
             (
                 "hos",
@@ -295,9 +346,19 @@ class FisherBranchBank(nn.Module):
                 hos_i,
                 hos_s,
                 hos_u,
+                canonical_complex,
             ),
         )
-        for name, embedding, local_mask, direction, ident, stable, uncertainty in branch_values:
+        for (
+            name,
+            embedding,
+            local_mask,
+            direction,
+            ident,
+            stable,
+            uncertainty,
+            local_signal,
+        ) in branch_values:
             ident = _finite_unit(ident)
             stable = _finite_unit(stable)
             uncertainty = _finite_unit(uncertainty, default=1.0)
@@ -309,10 +370,11 @@ class FisherBranchBank(nn.Module):
                 mode="linear",
                 align_corners=False,
             ).squeeze(1)
+            local_summary = self._masked_local_summary(local_signal, local_mask)
+            local_context = self.local_projections[name](local_summary)
             gated_embedding = (
-                torch.nan_to_num(embedding)
+                torch.nan_to_num(embedding + local_context)
                 * direction_profile
-                * local_mask.mean(dim=-1, keepdim=True)
             )
             outputs[name] = BranchOutput(
                 embedding=gated_embedding,

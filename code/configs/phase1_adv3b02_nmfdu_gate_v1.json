@@ -50,5 +50,37 @@
     "leo_rain_weak"
   ],
   "phase2_access": false,
-  "query_access": false
+  "query_access": false,
+  "single_seed_matrix": [
+    {
+      "row": "M0",
+      "candidate_id": "ADV3B02_CORE90_SOFT_E200",
+      "execution": "historical_checkpoint_eval_only",
+      "physical_gate_variant": "none"
+    },
+    {
+      "row": "M1",
+      "candidate_id": "ADV3B02_NMFDU_M1_EQUAL_E200_S392002",
+      "physical_gate_variant": "nmfdu_v1",
+      "nmfdu_ablation_mode": "equal"
+    },
+    {
+      "row": "M2",
+      "candidate_id": "ADV3B02_NMFDU_M2_I_ONLY_E200_S392002",
+      "physical_gate_variant": "nmfdu_v1",
+      "nmfdu_ablation_mode": "i_only"
+    },
+    {
+      "row": "M3",
+      "candidate_id": "ADV3B02_NMFDU_M3_PHYSICAL_E200_S392002",
+      "physical_gate_variant": "nmfdu_v1",
+      "nmfdu_ablation_mode": "physical_full"
+    },
+    {
+      "row": "M4",
+      "candidate_id": "ADV3B02_NMFDU_M4_FULL_E200_S392002",
+      "physical_gate_variant": "nmfdu_v1",
+      "nmfdu_ablation_mode": "full"
+    }
+  ]
 }

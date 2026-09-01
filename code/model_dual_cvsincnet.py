@@ -482,6 +482,7 @@ def build_arch_backbone(
     crra_start_epoch: int = 17,
     crra_ramp_epochs: int = 30,
     physical_gate_variant: str = "none",
+    nmfdu_ablation_mode: str = "full",
 ) -> nn.Module:
     family = str(arch_family or "cvsincnet").lower().strip()
     if family == "cvsincnet":
@@ -524,6 +525,7 @@ def build_arch_backbone(
             crra_start_epoch=int(crra_start_epoch),
             crra_ramp_epochs=int(crra_ramp_epochs),
             physical_gate_variant=str(physical_gate_variant),
+            nmfdu_ablation_mode=str(nmfdu_ablation_mode),
         )
     if str(physical_gate_variant or "none").lower().strip() != "none":
         raise ValueError("physical_gate_variant is supported only by cvsincnet")
@@ -601,6 +603,7 @@ class DualCVSincNetDisentangle(nn.Module):
         sat_anchor_adapter: bool = False,
         sat_anchor_adapter_rank: int = 8,
         physical_gate_variant: str = "none",
+        nmfdu_ablation_mode: str = "full",
     ):
         super().__init__()
         self.num_classes = int(num_classes)
@@ -626,6 +629,9 @@ class DualCVSincNetDisentangle(nn.Module):
         self.use_crra = bool(use_crra)
         self.physical_gate_variant = str(
             physical_gate_variant or "none"
+        ).lower().strip()
+        self.nmfdu_ablation_mode = str(
+            nmfdu_ablation_mode or "full"
         ).lower().strip()
         if self.physical_gate_variant not in {"none", "nmfdu_v1"}:
             raise ValueError(
@@ -683,6 +689,7 @@ class DualCVSincNetDisentangle(nn.Module):
             crra_start_epoch=int(crra_start_epoch),
             crra_ramp_epochs=int(crra_ramp_epochs),
             physical_gate_variant=self.physical_gate_variant,
+            nmfdu_ablation_mode=self.nmfdu_ablation_mode,
         )
         self.dom_backbone = build_arch_backbone(
             self.arch_family,
@@ -709,6 +716,7 @@ class DualCVSincNetDisentangle(nn.Module):
             freq_stability_channels=int(freq_stability_channels),
             use_crra=False,
             physical_gate_variant="none",
+            nmfdu_ablation_mode="full",
         )
         if self.arch_family == "cvsincnet" and self.model_variant in {"lite_b", "lite_d", "lite_e", "lite_f", "lite_g", "lite_h"}:
             self._share_early_stem()
@@ -1108,6 +1116,7 @@ def build_dual_model(
     sat_anchor_adapter: bool = False,
     sat_anchor_adapter_rank: int = 8,
     physical_gate_variant: str = "none",
+    nmfdu_ablation_mode: str = "full",
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -1162,4 +1171,5 @@ def build_dual_model(
         sat_anchor_adapter=sat_anchor_adapter,
         sat_anchor_adapter_rank=sat_anchor_adapter_rank,
         physical_gate_variant=physical_gate_variant,
+        nmfdu_ablation_mode=nmfdu_ablation_mode,
     )

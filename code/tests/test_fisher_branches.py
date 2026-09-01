@@ -3,6 +3,7 @@ from __future__ import annotations
 import math
 
 import torch
+import torch.nn.functional as F
 
 from cvsrffi.fisher_branches import FisherBranchBank
 
@@ -101,3 +102,29 @@ def test_phase_and_hos_uncertainty_increase_under_slip_and_segment_instability()
 
     assert unstable["phase"].uncertainty.item() > stable["phase"].uncertainty.item()
     assert unstable["hos"].uncertainty.item() > stable["hos"].uncertainty.item()
+
+
+def test_local_mask_changes_embedding_direction_not_only_its_norm() -> None:
+    torch.manual_seed(43)
+    canonical, s_hat, embeddings, _ = _inputs(batch=1, length=96, emb_dim=16)
+    bank = FisherBranchBank(embedding_dim=16, pa_orders=(1, 3), pa_memory_depth=1)
+    first_half = torch.cat([torch.ones(1, 48), torch.zeros(1, 48)], dim=1)
+    second_half = 1.0 - first_half
+    left = bank(
+        canonical,
+        s_hat,
+        raw_embedding=embeddings[0],
+        hom_embedding=embeddings[1],
+        pa_embedding=embeddings[2],
+        content_confidence=first_half,
+    )
+    right = bank(
+        canonical,
+        s_hat,
+        raw_embedding=embeddings[0],
+        hom_embedding=embeddings[1],
+        pa_embedding=embeddings[2],
+        content_confidence=second_half,
+    )
+    cosine = F.cosine_similarity(left["raw"].embedding, right["raw"].embedding)
+    assert cosine.item() < 0.999

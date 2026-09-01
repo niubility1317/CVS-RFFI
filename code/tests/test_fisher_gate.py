@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import torch
+import torch.nn.functional as F
 
 from cvsrffi.fisher_gate import (
     FisherDiscriminabilityUncertaintyGate,
@@ -81,3 +82,20 @@ def test_normalized_fusion_equalizes_branch_norms_before_weighting() -> None:
     torch.testing.assert_close(
         diagnostics["projected_norms"], torch.ones(2, 5), atol=1e-5, rtol=1e-5
     )
+
+
+def test_null_quality_changes_fused_direction_instead_of_being_normalized_away() -> None:
+    torch.manual_seed(55)
+    fusion = NormalizedFiveBranchFusion(
+        branch_names=("raw", "hom", "phase", "pa", "hos"),
+        input_dim=8,
+        output_dim=8,
+    )
+    branches = {
+        name: torch.randn(2, 8) for name in ("raw", "hom", "phase", "pa", "hos")
+    }
+    conditional = torch.full((2, 5), 0.2)
+    high_quality, _ = fusion(branches, conditional * 0.95)
+    low_quality, _ = fusion(branches, conditional * 0.05)
+    assert not torch.allclose(high_quality, low_quality, atol=1e-4, rtol=0.0)
+    assert F.cosine_similarity(high_quality, low_quality).max().item() < 0.999

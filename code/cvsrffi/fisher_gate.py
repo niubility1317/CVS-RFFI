@@ -61,6 +61,8 @@ class FisherDiscriminabilityUncertaintyGate(nn.Module):
         evidence: Mapping[str, torch.Tensor],
         *,
         correction_context: Optional[torch.Tensor] = None,
+        evidence_mode: str = "full",
+        enable_correction: Optional[bool] = None,
     ) -> Dict[str, torch.Tensor]:
         i = self._evidence_tensor(evidence, "I")
         d = self._evidence_tensor(evidence, "D")
@@ -70,17 +72,30 @@ class FisherDiscriminabilityUncertaintyGate(nn.Module):
             raise ValueError("I, D, S and U must share shape [B,branch_count]")
         if i.dim() != 2 or i.size(-1) != self.branch_count:
             raise ValueError("gate evidence must have shape [B,branch_count]")
-
-        coefficients = F.softplus(self.log_coefficients) + self.eps
-        physical_logits = (
-            coefficients[:, 0].unsqueeze(0) * torch.log(i + self.eps)
-            + coefficients[:, 1].unsqueeze(0) * torch.log(d + self.eps)
-            + coefficients[:, 2].unsqueeze(0) * torch.log(s + self.eps)
-            - coefficients[:, 3].unsqueeze(0) * u
-        )
+        evidence_mode = str(evidence_mode).lower().strip()
+        if evidence_mode == "i_only":
+            d = torch.ones_like(d)
+            s = torch.ones_like(s)
+            u = torch.zeros_like(u)
+            physical_logits = torch.log(i + self.eps)
+        elif evidence_mode == "full":
+            coefficients = F.softplus(self.log_coefficients) + self.eps
+            physical_logits = (
+                coefficients[:, 0].unsqueeze(0) * torch.log(i + self.eps)
+                + coefficients[:, 1].unsqueeze(0) * torch.log(d + self.eps)
+                + coefficients[:, 2].unsqueeze(0) * torch.log(s + self.eps)
+                - coefficients[:, 3].unsqueeze(0) * u
+            )
+        else:
+            raise ValueError("evidence_mode must be full or i_only")
         quality = (i * d * s * (1.0 - u)).clamp(0.0, 1.0)
 
-        if self.use_learned_correction:
+        correction_enabled = (
+            self.use_learned_correction
+            if enable_correction is None
+            else bool(enable_correction) and self.use_learned_correction
+        )
+        if correction_enabled:
             if correction_context is None:
                 raise ValueError("correction_context is required when correction is enabled")
             if tuple(correction_context.shape[:2]) != tuple(i.shape):
@@ -146,6 +161,8 @@ class NormalizedFiveBranchFusion(nn.Module):
             }
         )
         self.output_norm = nn.LayerNorm(self.output_dim)
+        self.null_direction = nn.Parameter(torch.empty(self.output_dim))
+        nn.init.normal_(self.null_direction, mean=0.0, std=0.02)
 
     def forward(
         self, branches: Mapping[str, torch.Tensor], weights: torch.Tensor
@@ -159,10 +176,23 @@ class NormalizedFiveBranchFusion(nn.Module):
                 raise ValueError(f"branch {name} has the wrong embedding shape")
             projected.append(F.normalize(self.projections[name](value), dim=-1, eps=self.eps))
         stacked = torch.stack(projected, dim=1)
-        fused = (stacked * weights.unsqueeze(-1)).sum(dim=1)
-        fused = F.normalize(self.output_norm(fused), dim=-1, eps=self.eps)
+        quality = weights.sum(dim=1).clamp(0.0, 1.0)
+        conditional_weights = weights / quality.unsqueeze(1).clamp_min(self.eps)
+        fingerprint = (stacked * conditional_weights.unsqueeze(-1)).sum(dim=1)
+        fingerprint = self.output_norm(fingerprint)
+        null_direction = F.normalize(
+            self.null_direction, dim=0, eps=self.eps
+        ).unsqueeze(0)
+        fused = F.normalize(
+            quality.unsqueeze(1) * fingerprint
+            + (1.0 - quality).unsqueeze(1) * null_direction,
+            dim=-1,
+            eps=self.eps,
+        )
         diagnostics = {
             "projected_norms": stacked.norm(dim=-1),
             "weighted_branch_norms": stacked.norm(dim=-1) * weights,
+            "conditional_weights": conditional_weights,
+            "quality": quality,
         }
         return fused, diagnostics

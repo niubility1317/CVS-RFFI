@@ -143,6 +143,7 @@ def default_data_args() -> Dict[str, Any]:
         "eval_max_batches": 0,
         "sample_rate_hz": 0.0,
         "physical_gate_variant": "none",
+        "nmfdu_ablation_mode": "full",
     }
 
 
@@ -359,6 +360,9 @@ def build_baseline_model(model_args, device: torch.device) -> nn.Module:
         ),
         physical_gate_variant=str(
             getattr(model_args, "physical_gate_variant", "none")
+        ),
+        nmfdu_ablation_mode=str(
+            getattr(model_args, "nmfdu_ablation_mode", "full")
         ),
     ).to(device)
 

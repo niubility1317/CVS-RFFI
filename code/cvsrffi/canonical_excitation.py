@@ -213,8 +213,29 @@ class AnalyticCanonicalizer(nn.Module):
         return canonical_iq, valid
 
 
+def _content_constellations(device: torch.device, dtype: torch.dtype):
+    complex_dtype = torch.complex64 if dtype == torch.float32 else torch.complex128
+    bpsk = torch.tensor([-1.0, 1.0], device=device, dtype=dtype).to(complex_dtype)
+    qpsk = torch.exp(
+        1j
+        * torch.arange(4, device=device, dtype=dtype)
+        * (2.0 * math.pi / 4.0)
+    ).to(complex_dtype)
+    psk8 = torch.exp(
+        1j
+        * torch.arange(8, device=device, dtype=dtype)
+        * (2.0 * math.pi / 8.0)
+    ).to(complex_dtype)
+    levels = torch.tensor([-3.0, -1.0, 1.0, 3.0], device=device, dtype=dtype)
+    qam16 = torch.complex(
+        levels.repeat_interleave(4), levels.repeat(4)
+    )
+    qam16 = qam16 / qam16.abs().square().mean().sqrt()
+    return (bpsk, qpsk, psk8, qam16)
+
+
 class ContentExcitationEstimator(nn.Module):
-    """Low-capacity analytic reconstruction of the excitation presented to the gate."""
+    """Label-free soft-symbol reconstruction presented to the physical gate."""
 
     def __init__(self, detach_gate_input: bool = True, eps: float = 1e-6):
         super().__init__()
@@ -230,52 +251,85 @@ class ContentExcitationEstimator(nn.Module):
         elif valid_mask.dim() == 1:
             valid_mask = valid_mask.unsqueeze(0).expand(canonical.size(0), -1)
         valid_mask = valid_mask.to(device=canonical.device, dtype=canonical.real.dtype).clamp(0.0, 1.0)
-        reconstructed = []
-        confidences = []
-        nmse_values = []
-        conditions = []
-        uncertainties = []
-        for batch_index in range(canonical.size(0)):
-            z = canonical[batch_index]
-            mask = valid_mask[batch_index] > 0.5
-            amplitude = z.abs()
-            valid_amplitude = amplitude[mask]
-            if valid_amplitude.numel() == 0 or float(
-                valid_amplitude.square().mean().detach()
-            ) <= self.eps:
-                s_hat = torch.zeros_like(z)
-                confidence = torch.zeros_like(amplitude)
-                condition = amplitude.new_tensor(1.0 / self.eps)
-                uncertainty = amplitude.new_tensor(1.0)
-            else:
-                median = valid_amplitude.median().clamp_min(self.eps)
-                low = torch.quantile(valid_amplitude, 0.10)
-                high = torch.quantile(valid_amplitude, 0.90).clamp_min(low + self.eps)
-                clipped_amplitude = amplitude.clamp(min=low, max=high)
-                unit_phase = z / amplitude.clamp_min(self.eps)
-                s_hat = unit_phase * clipped_amplitude
-                log_deviation = (amplitude.clamp_min(self.eps) / median).log().abs()
-                confidence = torch.exp(-log_deviation) * valid_mask[batch_index]
-                condition = high / low.clamp_min(self.eps)
-                uncertainty = 1.0 - confidence.sum() / valid_mask[batch_index].sum().clamp_min(1.0)
-            denominator = (z.abs().square() * valid_mask[batch_index]).sum().clamp_min(self.eps)
-            nmse = ((z - s_hat).abs().square() * valid_mask[batch_index]).sum() / denominator
-            reconstructed.append(s_hat)
-            confidences.append(confidence)
-            nmse_values.append(nmse)
-            conditions.append(condition)
-            uncertainties.append(uncertainty.clamp(0.0, 1.0))
-        s_hat = torch.stack(reconstructed)
-        content_confidence = torch.stack(confidences)
+        energy = (
+            canonical.abs().square() * valid_mask
+        ).sum(dim=-1) / valid_mask.sum(dim=-1).clamp_min(1.0)
+        valid_rows = energy > self.eps
+        normalized = canonical / energy.sqrt().clamp_min(self.eps).unsqueeze(-1)
+        angles = torch.arange(
+            16, device=canonical.device, dtype=canonical.real.dtype
+        ) * (2.0 * math.pi / 16.0)
+        rotations = torch.exp(-1j * angles).view(1, 16, 1, 1)
+        best_score = canonical.real.new_full((canonical.size(0),), float("inf"))
+        best_symbol = torch.zeros_like(canonical)
+        best_confidence = torch.zeros_like(canonical.real)
+        best_nmse = torch.ones_like(canonical.real[:, 0])
+        for constellation in _content_constellations(
+            canonical.device, canonical.real.dtype
+        ):
+            rotated = normalized[:, None, :, None] * rotations
+            distance = (rotated - constellation.view(1, 1, 1, -1)).abs().square()
+            posterior = torch.softmax(-distance / 0.08, dim=-1)
+            soft_symbol = (posterior * constellation.view(1, 1, 1, -1)).sum(dim=-1)
+            entropy = -(
+                posterior * posterior.clamp_min(self.eps).log()
+            ).sum(dim=-1) / math.log(float(constellation.numel()))
+            reconstruction_error = (rotated.squeeze(-1) - soft_symbol).abs().square()
+            masked_nmse = (
+                reconstruction_error * valid_mask[:, None, :]
+            ).sum(dim=-1) / valid_mask.sum(dim=-1, keepdim=True).clamp_min(1.0)
+            mean_entropy = (
+                entropy * valid_mask[:, None, :]
+            ).sum(dim=-1) / valid_mask.sum(dim=-1, keepdim=True).clamp_min(1.0)
+            score = masked_nmse + 0.10 * mean_entropy
+            rotation_index = score.argmin(dim=1)
+            batch_index = torch.arange(canonical.size(0), device=canonical.device)
+            candidate_nmse = masked_nmse[batch_index, rotation_index]
+            candidate_symbol = soft_symbol[batch_index, rotation_index]
+            candidate_entropy = entropy[batch_index, rotation_index]
+            fit_confidence = torch.exp(-12.0 * candidate_nmse).clamp(0.0, 1.0)
+            candidate_confidence = (
+                (1.0 - candidate_entropy).clamp(0.0, 1.0)
+                * fit_confidence.unsqueeze(-1)
+                * valid_mask
+            )
+            better = score[batch_index, rotation_index] < best_score
+            best_score = torch.where(
+                better, score[batch_index, rotation_index], best_score
+            )
+            best_nmse = torch.where(better, candidate_nmse, best_nmse)
+            best_symbol = torch.where(
+                better.unsqueeze(-1), candidate_symbol, best_symbol
+            )
+            best_confidence = torch.where(
+                better.unsqueeze(-1), candidate_confidence, best_confidence
+            )
+        content_confidence = torch.where(
+            valid_rows.unsqueeze(-1), best_confidence, torch.zeros_like(best_confidence)
+        )
+        s_hat = torch.where(
+            valid_rows.unsqueeze(-1), best_symbol, torch.zeros_like(best_symbol)
+        )
+        uncertainty = 1.0 - content_confidence.sum(dim=-1) / valid_mask.sum(
+            dim=-1
+        ).clamp_min(1.0)
+        uncertainty = torch.where(valid_rows, uncertainty, torch.ones_like(uncertainty))
+        condition = torch.where(
+            valid_rows,
+            best_score.clamp_min(self.eps).reciprocal(),
+            best_score.new_full(best_score.shape, 1.0 / self.eps),
+        )
         if self.detach_gate_input:
             s_hat = s_hat.detach()
             content_confidence = content_confidence.detach()
         return ContentExcitationOutput(
             s_hat=s_hat,
             content_confidence=content_confidence,
-            reconstruction_nmse=torch.stack(nmse_values),
-            condition=torch.stack(conditions),
-            uncertainty=torch.stack(uncertainties),
+            reconstruction_nmse=torch.where(
+                valid_rows, best_nmse, torch.ones_like(best_nmse)
+            ),
+            condition=condition,
+            uncertainty=uncertainty.clamp(0.0, 1.0),
         )
 
 

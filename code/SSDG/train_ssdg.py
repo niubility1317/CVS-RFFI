@@ -1031,6 +1031,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
         default="none",
         choices=["none", "nmfdu_v1"],
     )
+    parser.add_argument(
+        "--nmfdu_ablation_mode",
+        type=str,
+        default="full",
+        choices=["equal", "i_only", "physical_full", "full"],
+    )
     parser.add_argument("--nmfdu_stage1_end", type=int, default=80)
     parser.add_argument("--nmfdu_stage2_end", type=int, default=120)
     parser.add_argument("--nmfdu_stage3_end", type=int, default=200)
@@ -1830,6 +1836,8 @@ def _apply_model_cli_args(model_args, args):
         "crra_ramp_epochs",
         "sat_anchor_adapter",
         "sat_anchor_adapter_rank",
+        "physical_gate_variant",
+        "nmfdu_ablation_mode",
     ):
         if hasattr(args, key):
             setattr(model_args, key, getattr(args, key))
@@ -8145,6 +8153,7 @@ def train(args) -> int:
                         lambda_null_cal=float(args.lambda_nmfdu_null_cal),
                         lambda_balance=float(args.lambda_nmfdu_balance),
                         oracle_temperature=float(args.nmfdu_oracle_temperature),
+                        ablation_mode=str(args.nmfdu_ablation_mode),
                     )
                 domain_stats = {"valid": (d_l >= 0) if d_l is not None else None}
                 domain_gates = {

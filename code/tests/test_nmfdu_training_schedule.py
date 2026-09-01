@@ -6,6 +6,7 @@ import torch
 
 from SSDG.train_ssdg import build_arg_parser
 from cvsrffi.nmfdu_training import (
+    NMFDUStage,
     NMFDUStageController,
     apply_nmfdu_optimizer_lr,
     branch_auxiliary_loss,
@@ -20,7 +21,7 @@ from cvsrffi.nmfdu_training import (
 from model import CVSincNet
 
 
-def _model() -> CVSincNet:
+def _model(*, ablation_mode: str = "full") -> CVSincNet:
     return CVSincNet(
         num_classes=3,
         input_len=64,
@@ -43,6 +44,7 @@ def _model() -> CVSincNet:
         pa_ch2=8,
         pa_ch3=8,
         physical_gate_variant="nmfdu_v1",
+        nmfdu_ablation_mode=ablation_mode,
     )
 
 
@@ -86,6 +88,16 @@ def test_stage_one_bypasses_competition_with_equal_non_null_weights() -> None:
     torch.testing.assert_close(diag["weights"], torch.full((2, 5), 0.2))
     assert torch.equal(diag["null_weight"], torch.zeros(2))
     assert torch.equal(diag["q_sample"], torch.ones(2))
+
+
+def test_equal_capacity_control_trains_branches_for_all_epochs() -> None:
+    model = _model(ablation_mode="equal")
+    stage = NMFDUStageController().apply(model, epoch=100)
+    assert stage == NMFDUStage(1, "equal_capacity_control", "equal_non_null")
+    assert model.nmfdu_gate.training_stage.item() == 1
+    assert any(p.requires_grad for p in model.nmfdu_gate.branch_bank.parameters())
+    assert any(p.requires_grad for p in model.nmfdu_gate.branch_heads.parameters())
+    assert not any(p.requires_grad for p in model.nmfdu_gate.sample_gate.parameters())
 
 
 def test_stage_and_discriminability_state_survive_checkpoint_round_trip() -> None:
@@ -164,7 +176,7 @@ def test_oracle_route_auxiliary_and_quality_losses_follow_report_semantics() -> 
     assert route_kl_loss(gate_weights, oracle).item() >= 0.0
 
     per_sample = torch.tensor([2.0, 6.0])
-    assert quality_weighted_mean(per_sample, torch.tensor([1.0, 0.0])).item() == 2.0
+    assert quality_weighted_mean(per_sample, torch.tensor([1.0, 0.0])).item() == 1.0
 
 
 def test_pair_losses_allow_gate_change_and_ignore_unreliable_branch_alignment() -> None:
@@ -176,7 +188,7 @@ def test_pair_losses_allow_gate_change_and_ignore_unreliable_branch_alignment() 
         clean_quality=torch.tensor([1.0]),
         leo_quality=torch.tensor([0.5]),
     )
-    assert pair.item() == 1.0
+    assert pair.item() == 0.5
 
     clean = {
         "raw": torch.tensor([[1.0, 0.0]]),
@@ -229,3 +241,57 @@ def test_high_level_labeled_objective_is_finite_for_paired_stage_three_batch() -
         parameter.grad is not None
         for parameter in model.nmfdu_gate.sample_gate.parameters()
     )
+
+
+def test_uniformly_low_quality_absolutely_downweights_loss() -> None:
+    per_sample = torch.tensor([1.0, 2.0, 3.0])
+    high = quality_weighted_mean(per_sample, torch.ones(3))
+    low = quality_weighted_mean(per_sample, torch.full((3,), 0.01))
+    torch.testing.assert_close(low, high * 0.01)
+
+
+def test_i_only_objective_does_not_consume_d_s_or_u() -> None:
+    torch.manual_seed(83)
+    model = _model(ablation_mode="i_only").train()
+    labels = torch.tensor([0, 1])
+    output = model(
+        torch.randn(2, 2, 64),
+        y=labels,
+        return_aux=True,
+        return_physical_gate_diag=True,
+    )
+    changed = {
+        **output,
+        "physical_gate_diag": {
+            **output["physical_gate_diag"],
+            "per_sample": dict(output["physical_gate_diag"]["per_sample"]),
+        },
+    }
+    diagnostics = changed["physical_gate_diag"]["per_sample"]
+    diagnostics["D"] = torch.rand_like(diagnostics["D"])
+    diagnostics["S"] = torch.rand_like(diagnostics["S"])
+    diagnostics["U"] = torch.rand_like(diagnostics["U"])
+
+    kwargs = dict(
+        stage=2,
+        clean_count=0,
+        lambda_branch_aux=0.2,
+        lambda_route=0.1,
+        lambda_phys=0.1,
+        lambda_fused_pair=0.2,
+        lambda_branch_pair=0.1,
+        lambda_null_cal=0.05,
+        lambda_balance=0.01,
+        ablation_mode="i_only",
+    )
+    original_loss = nmfdu_labeled_objective(output, labels, **kwargs)
+    changed_loss = nmfdu_labeled_objective(changed, labels, **kwargs)
+    torch.testing.assert_close(changed_loss["route"], original_loss["route"])
+    torch.testing.assert_close(changed_loss["null_cal"], original_loss["null_cal"])
+    original_stage3 = nmfdu_labeled_objective(
+        output, labels, **{**kwargs, "stage": 3, "clean_count": 1}
+    )
+    changed_stage3 = nmfdu_labeled_objective(
+        changed, labels, **{**kwargs, "stage": 3, "clean_count": 1}
+    )
+    torch.testing.assert_close(changed_stage3["branch_pair"], original_stage3["branch_pair"])

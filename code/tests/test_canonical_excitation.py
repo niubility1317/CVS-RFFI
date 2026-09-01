@@ -13,6 +13,7 @@ from cvsrffi.canonical_excitation import (
     NuisanceEstimator,
     unique_physical_sample_mask,
 )
+from cvsrffi.identifiability_stats import complex_excitation_stats
 
 
 def _qpsk(length: int) -> torch.Tensor:
@@ -93,3 +94,30 @@ def test_physical_sample_deduplication_does_not_count_views_as_new_bursts() -> N
     mask = unique_physical_sample_mask(["sample-a", "sample-a", "sample-b", "sample-a"])
     assert mask.tolist() == [True, False, True, False]
     assert int(mask.sum()) == 2
+
+
+def test_soft_symbol_excitation_stats_resist_moderate_receive_response_change() -> None:
+    source = _qpsk(256)
+    response_a = source
+    response_b = 1.15 * source + (0.12 + 0.04j) * source.conj()
+    estimator = ContentExcitationEstimator(detach_gate_input=True)
+    reconstructed_a = estimator(
+        torch.stack([response_a.real, response_a.imag], dim=1)
+    )
+    reconstructed_b = estimator(
+        torch.stack([response_b.real, response_b.imag], dim=1)
+    )
+    stats_a = complex_excitation_stats(reconstructed_a.s_hat)
+    stats_b = complex_excitation_stats(reconstructed_b.s_hat)
+    torch.testing.assert_close(stats_a["rho"], stats_b["rho"], atol=0.03, rtol=0.0)
+    assert reconstructed_a.uncertainty.item() < 0.2
+    assert reconstructed_b.uncertainty.item() < 0.3
+
+
+def test_content_mismatch_fails_closed_instead_of_copying_receive_iq() -> None:
+    generator = torch.Generator().manual_seed(77)
+    mismatch = torch.randn(1, 2, 256, generator=generator)
+    output = ContentExcitationEstimator(detach_gate_input=True)(mismatch)
+    copied = torch.complex(mismatch[:, 0], mismatch[:, 1])
+    assert not torch.allclose(output.s_hat, copied)
+    assert output.uncertainty.item() > 0.45

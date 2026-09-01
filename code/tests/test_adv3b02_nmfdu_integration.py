@@ -9,7 +9,9 @@ from model import CVSincNet
 from model_dual_cvsincnet import build_dual_model
 
 
-def _small_backbone(variant: str = "nmfdu_v1") -> CVSincNet:
+def _small_backbone(
+    variant: str = "nmfdu_v1", ablation_mode: str = "full"
+) -> CVSincNet:
     return CVSincNet(
         num_classes=3,
         input_len=96,
@@ -32,6 +34,7 @@ def _small_backbone(variant: str = "nmfdu_v1") -> CVSincNet:
         pa_ch2=8,
         pa_ch3=8,
         physical_gate_variant=variant,
+        nmfdu_ablation_mode=ablation_mode,
     )
 
 
@@ -188,3 +191,43 @@ def test_dual_model_routes_nmfdu_only_through_identity_backbone() -> None:
     assert output["aux_id"]["physical_gate_diag"]["per_sample"]["weights"].shape == (2, 5)
     assert "physical_gate_diag" not in output["aux_dom"]
     torch.testing.assert_close(output["z_id"], output["aux_id"]["feat_joint"])
+
+
+@pytest.mark.parametrize(
+    ("mode", "equal_expected", "correction_expected"),
+    [
+        ("equal", True, False),
+        ("i_only", False, False),
+        ("physical_full", False, False),
+        ("full", False, True),
+    ],
+)
+def test_registered_ablation_modes_have_distinct_gate_semantics(
+    mode: str, equal_expected: bool, correction_expected: bool
+) -> None:
+    torch.manual_seed(76)
+    model = _small_backbone(ablation_mode=mode).eval()
+    model.nmfdu_gate.evidence_state.discriminability_ema.fill_(0.5)
+    model.set_nmfdu_stage(3)
+    with torch.no_grad():
+        sample = model(
+            torch.randn(3, 2, 96),
+            return_aux=True,
+            return_physical_gate_diag=True,
+        )["physical_gate_diag"]["per_sample"]
+    if equal_expected:
+        torch.testing.assert_close(sample["weights"], torch.full((3, 5), 0.2))
+        torch.testing.assert_close(sample["null_weight"], torch.zeros(3))
+    if mode == "i_only":
+        torch.testing.assert_close(
+            sample["physical_logits"], torch.log(sample["I"] + 1e-6), atol=1e-5, rtol=0.0
+        )
+    if correction_expected:
+        assert sample["correction"].abs().sum().item() > 0.0
+    else:
+        torch.testing.assert_close(sample["correction"], torch.zeros_like(sample["correction"]))
+
+
+def test_unknown_nmfdu_ablation_mode_fails_closed() -> None:
+    with pytest.raises(ValueError, match="nmfdu_ablation_mode"):
+        _small_backbone(ablation_mode="ordinary_attention")

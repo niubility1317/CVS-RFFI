@@ -8,6 +8,7 @@ from cvsrffi.nmfdu_real_checkpoint_smoke import (
     build_real_source_batch,
     parse_index_csv,
     validate_legacy_transfer,
+    write_result_exclusive,
 )
 
 
@@ -59,3 +60,12 @@ def test_parse_index_csv_rejects_empty_source_scope() -> None:
     assert parse_index_csv("0,2,3") == (0, 2, 3)
     with pytest.raises(ValueError, match="at least one"):
         parse_index_csv("")
+
+
+def test_smoke_output_allows_existing_parent_but_never_overwrites(tmp_path) -> None:
+    output = tmp_path / "existing-run" / "smoke.json"
+    output.parent.mkdir()
+    write_result_exclusive(output, {"status": "PASS"})
+    assert '"PASS"' in output.read_text(encoding="utf-8")
+    with pytest.raises(FileExistsError):
+        write_result_exclusive(output, {"status": "SECOND"})

@@ -225,15 +225,19 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def write_result_exclusive(output: Path, result: Mapping[str, Any]) -> None:
+    output = Path(output).resolve()
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with output.open("x", encoding="utf-8", newline="\n") as handle:
+        handle.write(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+        handle.write("\n")
+
+
 def main() -> None:
     args = build_parser().parse_args()
     result = run_smoke(args)
     output = Path(args.output).resolve()
-    output.parent.mkdir(parents=True, exist_ok=False)
-    output.write_text(
-        json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
-    )
+    write_result_exclusive(output, result)
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
 
 
