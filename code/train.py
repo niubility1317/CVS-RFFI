@@ -2149,6 +2149,13 @@ def main():
     parser.add_argument("--domain_enhancer", type=str, default="rcn_stats", choices=["off", "rcn_stats", "rcn_minimal_6stats"],
                         help="Second-backbone RCN enhancement module for receiver/channel/noise domain cues.")
     parser.add_argument("--domain_enhancer_strength", type=float, default=0.35)
+    add_bool_arg(
+        parser,
+        "use_ecrs",
+        False,
+        "Enable the opt-in ADV3B02 ECRS local system-identification branch",
+        "Keep the legacy ADV3B02 route without ECRS parameters",
+    )
     parser.add_argument("--id_time_stability_mode", type=str, default="off", choices=["off", "phase_delta"],
                         help="Optional complex time-stability cues for the ID backbone.")
     parser.add_argument("--id_freq_stability_mode", type=str, default="off", choices=["off", "dsq"],
@@ -3057,7 +3064,8 @@ def main():
                                channel_trim_scale=float(args.channel_trim_scale),
                                fast_infer_when_no_aux=bool(args.fast_infer_when_no_aux),
                                use_tx_adv_on_zdom=bool(args.use_tx_adv_on_zdom or str(args.train_mode).lower() == "fedcvs_vmb"),
-                               arch_family=str(args.arch_family)).to(device)
+                               arch_family=str(args.arch_family),
+                               use_ecrs=bool(args.use_ecrs)).to(device)
     load_init_checkpoint_weights(
         model,
         str(getattr(args, "init_checkpoint", "") or ""),

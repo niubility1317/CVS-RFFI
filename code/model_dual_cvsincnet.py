@@ -4,7 +4,7 @@ from __future__ import annotations
 import math
 from pathlib import Path
 import sys
-from typing import Dict, Optional, Sequence, Tuple
+from typing import Dict, Mapping, Optional, Sequence, Tuple
 
 import torch
 import torch.nn as nn
@@ -568,6 +568,8 @@ class DualCVSincNetDisentangle(nn.Module):
         crra_ramp_epochs: int = 30,
         sat_anchor_adapter: bool = False,
         sat_anchor_adapter_rank: int = 8,
+        use_ecrs: bool = False,
+        ecrs_config: Optional[Mapping[str, object]] = None,
     ):
         super().__init__()
         self.num_classes = int(num_classes)
@@ -591,6 +593,12 @@ class DualCVSincNetDisentangle(nn.Module):
         self.fast_infer_when_no_aux = bool(fast_infer_when_no_aux)
         self.use_tx_adv_on_zdom = bool(use_tx_adv_on_zdom)
         self.use_crra = bool(use_crra)
+        self.use_ecrs = bool(use_ecrs)
+        self.ecrs_config = dict(ecrs_config or {})
+        # The response branch is populated only on the opt-in route. Keeping a
+        # plain None here is deliberate: the legacy route gains no parameters
+        # and therefore preserves strict state_dict compatibility.
+        self.ecrs = None
         self.crra_epoch = 1
         self.id_time_stability_mode = str(id_time_stability_mode or "off").lower().strip()
         self.id_freq_stability_mode = str(id_freq_stability_mode or "off").lower().strip()
@@ -1050,6 +1058,8 @@ def build_dual_model(
     crra_ramp_epochs: int = 30,
     sat_anchor_adapter: bool = False,
     sat_anchor_adapter_rank: int = 8,
+    use_ecrs: bool = False,
+    ecrs_config: Optional[Mapping[str, object]] = None,
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -1103,4 +1113,6 @@ def build_dual_model(
         crra_ramp_epochs=crra_ramp_epochs,
         sat_anchor_adapter=sat_anchor_adapter,
         sat_anchor_adapter_rank=sat_anchor_adapter_rank,
+        use_ecrs=use_ecrs,
+        ecrs_config=ecrs_config,
     )
