@@ -17,8 +17,8 @@
 | FCR-05 | 第六节6.2 | `G_f(e,z_f)`由物理基和受限小残差产生`delta_f` | `code/cvsrffi/phase1_fcr_fingerprint.py` | implemented | 本地模块测试核对固定基、公共相位等变、零输入有限和逐样本能量上限 | 受限残差只读excitation和`z_tx_state`；未形成端到端或N607证据 |
 | FCR-06 | 第六节6.3 | `z_n=[z_ch,z_rx,z_sync,z_gain]`且为低容量结构化latent | `code/cvsrffi/phase1_fcr_nuisance.py` | implemented | 本地模块测试核对33维容量、四段形状、无skip/时序latent和零/近零输入有限有界 | 禁止目标波形旁路；类别泄漏probe待后续任务 |
 | FCR-07 | 第七节 | 噪声以条件均值和方差建模，不精确重构noise realization | `code/cvsrffi/phase1_fcr_decoder.py`、`code/cvsrffi/phase1_fcr_losses.py` | implemented | 本地Decoder测试核对条件均值、方差上下界、零内容有限和latent梯度；异方差NLL待Task6 | `sigma`不能无限增大；未形成端到端或N607证据 |
-| FCR-08 | 第八节8.1-8.3 | 重构误差包含受限对齐、MRSTFT和幅度门控共轭相位增量 | `code/cvsrffi/phase1_fcr_losses.py` | pending | CFO边界、STFT噪声地板和phase wrap测试 | 不直接对wrapped phase做L1 |
-| FCR-09 | 第八节8.4 | `R_fp`是冻结物理特征集合并受Fisher可辨识性门控 | `code/cvsrffi/phase1_fcr_physics.py` | pending | 冻结参数、低PAPR关闭PA项和噪声地板测试 | 不与Decoder自由协同训练 |
+| FCR-08 | 第八节8.1-8.3 | 重构误差包含受限对齐、MRSTFT和幅度门控共轭相位增量 | `code/cvsrffi/phase1_fcr_losses.py` | implemented | 本地聚焦测试核对有界异方差NLL排序、三窗MRSTFT噪声地板、phase wrap、零输入有限及预测梯度 | 不直接对wrapped phase做L1；未形成端到端或N607证据 |
+| FCR-09 | 第八节8.4 | `R_fp`是冻结物理特征集合并受Fisher可辨识性门控 | `code/cvsrffi/phase1_fcr_physics.py` | implemented | 本地聚焦测试核对零参数确定性八块特征、Gram有效秩/覆盖/PAPR/SNR/噪声地板detach质量和低PAPR下调PA | 不与Decoder自由协同训练；未形成端到端或N607证据 |
 | FCR-10 | 第九节 | 交叉生成结果重新编码并恢复来源`z_s/z_f`及目标`z_n` | `code/cvsrffi/phase1_fcr_losses.py` | pending | 双向latent-cycle合成测试 | 所有参考latent使用stop-gradient |
 | FCR-11 | 第十节 | clean/LEO显式共享一致性并配置防塌缩约束 | `code/cvsrffi/phase1_fcr_losses.py` | pending | variance、covariance和常数塌缩负测 | 不最大化`z_n`无界距离 |
 | FCR-12 | 第十节 | `z_n`回归或分类已知Doppler、SNR、delay、rate、taps、SFO、STO | `code/cvsrffi/phase1_fcr_nuisance.py`、`code/cvsrffi/phase1_fcr_losses.py` | pending | 已知增强参数恢复测试 | 使用免费模拟监督 |
@@ -28,7 +28,7 @@
 | FCR-16 | 第十四节1-6 | 实现`L_id/self/swap/shared/latent-cycle/eta` | `code/cvsrffi/phase1_fcr_losses.py` | pending | 每项独立单测和训练可达性测试 | swap为clean↔LEO双向 |
 | FCR-17 | 第十四节7 | 因子泄漏抑制要求`z_f/z_n/z_s`各自高目标信息、低非目标信息 | `code/cvsrffi/phase1_fcr_losses.py`、`code/cvsrffi/phase1_fcr_diagnostics.py` | pending | 条件域混淆、cross-covariance和独立probe | 不完全依赖全局DANN |
 | FCR-18 | 第四、五、十四节8 | 改进necessity为定向移植、保持内容/nuisance、同TX和drop-f三角验证 | `code/cvsrffi/phase1_fcr_transplant.py` | pending | 独立冻结分类器和重编码测试 | shuffle gap单独不算通过 |
-| FCR-19 | 第十四节9 | 实现指纹能量、响应平滑、参数边界和物理特征约束 | `code/cvsrffi/phase1_fcr_physics.py`、`code/cvsrffi/phase1_fcr_losses.py` | pending | 每项边界与有限值测试 | 物理项受Fisher gate控制 |
+| FCR-19 | 第十四节9 | 实现指纹能量、响应平滑、参数边界和物理特征约束 | `code/cvsrffi/phase1_fcr_physics.py`、`code/cvsrffi/phase1_fcr_losses.py` | implemented | 本地聚焦测试核对逐物理块Fisher加权、零权重归零、零/近零有限和预测梯度；模块提供指纹能量、响应平滑及参数边界罚项 | 物理项受Fisher gate控制；未形成端到端或N607证据 |
 | FCR-20 | 第十五节 | `U_s`只使用无标签自监督项，不能读取隐藏TX真值 | `code/dataset_wisig.py`、`code/cvsrffi/phase1_fcr_interventions.py`、`code/train.py` | implemented | `test_phase1_fcr_pairing.py`和`test_phase1_fcr_interventions.py`验证元数据不可逆TX边界 | 本任务仅完成并验证U_s元数据边界；训练梯度路由由后续任务接线验证 |
 | FCR-21 | 第十六节 | 训练按基础重构→swap/cycle→定向移植→身份DG四阶段启用 | `code/cvsrffi/phase1_fcr_schedule.py`、`code/train.py` | pending | E1-40/E41-90/E91-150/E151-200启用矩阵测试 | 权重采用ramp而非瞬时全开 |
 | FCR-22 | 第十七节 | 保存latent纯度、配对距离、移植、参数恢复和资源诊断 | `code/cvsrffi/phase1_fcr_diagnostics.py`、`code/train.py` | pending | 日志字段完整性测试 | probe独立于训练分类器 |
