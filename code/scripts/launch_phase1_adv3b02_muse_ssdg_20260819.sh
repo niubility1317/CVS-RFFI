@@ -8,6 +8,20 @@ CONTROL_PYTHON="${CONTROL_PYTHON:-${PYTHON}}"
 RUN_ID="${RUN_ID:-phase1_adv3b02_muse_ssdg_20260819}"
 RUNS_ROOT="${RUNS_ROOT:-${ROOT}/runs/${RUN_ID}}"
 WISIG_PKL="${WISIG_PKL:-${ROOT}/Dataset_WigSig/ManySig.pkl}"
+WISIG_EQUALIZED="${WISIG_EQUALIZED:-1}"
+WISIG_TRAIN_DAYS="${WISIG_TRAIN_DAYS:-0,1}"
+WISIG_TEST_DAYS="${WISIG_TEST_DAYS:-2,3}"
+WISIG_TRAIN_RXS="${WISIG_TRAIN_RXS:-0,1,2,3,4,5,6}"
+WISIG_TEST_RXS="${WISIG_TEST_RXS:-7,8,9,10,11}"
+SPLIT_MODE="${SPLIT_MODE:-tx_rx_day_1_7_2}"
+LABELED_RATIO="${LABELED_RATIO:-0.07}"
+UNLABELED_RATIO="${UNLABELED_RATIO:-0.63}"
+SOURCE_VAL_RATIO="${SOURCE_VAL_RATIO:-0.30}"
+SOURCE_CAL_RATIO="${SOURCE_CAL_RATIO:-0.15}"
+SOURCE_SELECT_RATIO="${SOURCE_SELECT_RATIO:-0.15}"
+PHASE1_SOURCE_ROLE_PROTOCOL="${PHASE1_SOURCE_ROLE_PROTOCOL:-l_s_u_s_v_cal_v_select}"
+ALLOW_SOURCE_TARGET_DAY_OVERLAP="${ALLOW_SOURCE_TARGET_DAY_OVERLAP:-false}"
+TARGET_GROUP_LOADER="${TARGET_GROUP_LOADER:-}"
 GPU="${GPU:-0}"
 SEED="${SEED:-392002}"
 ABLATION="${ABLATION:-NONE}"
@@ -221,13 +235,19 @@ build_train_command() {
     "CUDA_VISIBLE_DEVICES=${GPU}"
     "${PYTHON}" -u "${CODE_ROOT}/code/SSDG/train_ssdg.py"
     --wisig_pkl "${WISIG_PKL}"
-    --split_mode tx_rx_day_1_7_2
-    --labeled_ratio 0.07
-    --unlabeled_ratio 0.63
-    --source_val_ratio 0.30
-    --source_cal_ratio 0.15
-    --source_select_ratio 0.15
-    --phase1_source_role_protocol l_s_u_s_v_cal_v_select
+    --wisig_equalized "${WISIG_EQUALIZED}"
+    --wisig_train_days "${WISIG_TRAIN_DAYS}"
+    --wisig_test_days "${WISIG_TEST_DAYS}"
+    --wisig_train_rxs "${WISIG_TRAIN_RXS}"
+    --wisig_test_rxs "${WISIG_TEST_RXS}"
+    --split_mode "${SPLIT_MODE}"
+    --labeled_ratio "${LABELED_RATIO}"
+    --unlabeled_ratio "${UNLABELED_RATIO}"
+    --source_val_ratio "${SOURCE_VAL_RATIO}"
+    --source_cal_ratio "${SOURCE_CAL_RATIO}"
+    --source_select_ratio "${SOURCE_SELECT_RATIO}"
+    --phase1_source_role_protocol "${PHASE1_SOURCE_ROLE_PROTOCOL}"
+    --allow_source_target_day_overlap "${ALLOW_SOURCE_TARGET_DAY_OVERLAP}"
     --output_dir "${candidate_root}"
     --run_id "${RUN_ID}"
     --candidate_id "${candidate_id}"
@@ -515,6 +535,9 @@ build_eval_command() {
     --sat_seed "${SEED}"
     --strict_reconstruction
   )
+  if [[ -n "${TARGET_GROUP_LOADER}" ]]; then
+    EVAL_CMD+=(--group_loader "${TARGET_GROUP_LOADER}")
+  fi
 }
 
 split_joint_metrics() {
@@ -656,8 +679,10 @@ write_config() {
   local candidate_id="$2"
   local capabilities="$3"
   local candidate_root="$4"
-  printf '{\n  "run_id": "%s",\n  "candidate": "%s",\n  "muse_level": "%s",\n  "ablation": "%s",\n  "init_mode": "%s",\n  "base_checkpoint": "%s",\n  "base_candidate": "ADV3B02_CORE90_SOFT_E200",\n  "capabilities": "%s",\n  "seed": %d,\n  "epochs": %d,\n  "labeled_batch_size": 128,\n  "unlabeled_batch_size": %d,\n  "ratios": {"L_s": 0.07, "U_s": 0.63, "V_cal": 0.15, "V_select": 0.15},\n  "checkpoint_selection": "final_only",\n  "final_evaluation": ["clean", "leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"]\n}\n' \
-    "${RUN_ID}" "${candidate_id}" "${level}" "${ABLATION}" "${INIT_MODE}" "${BASE_CKPT}" "${capabilities}" "${SEED}" "${TOTAL_EPOCHS}" "${MUSE_UNLABELED_BATCH_SIZE}" > "${candidate_root}/config.json"
+  printf '{\n  "run_id": "%s",\n  "candidate": "%s",\n  "muse_level": "%s",\n  "ablation": "%s",\n  "init_mode": "%s",\n  "base_checkpoint": "%s",\n  "base_candidate": "ADV3B02_CORE90_SOFT_E200",\n  "capabilities": "%s",\n  "seed": %d,\n  "epochs": %d,\n  "labeled_batch_size": 128,\n  "unlabeled_batch_size": %d,\n  "ratios": {"L_s": %s, "U_s": %s, "V": %s},\n  "source_role_protocol": "%s",\n  "source_days": "%s",\n  "target_days": "%s",\n  "source_receivers": "%s",\n  "target_receivers": "%s",\n  "checkpoint_selection": "final_only",\n  "final_evaluation": ["clean", "leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"]\n}\n' \
+    "${RUN_ID}" "${candidate_id}" "${level}" "${ABLATION}" "${INIT_MODE}" "${BASE_CKPT}" "${capabilities}" "${SEED}" "${TOTAL_EPOCHS}" "${MUSE_UNLABELED_BATCH_SIZE}" \
+    "${LABELED_RATIO}" "${UNLABELED_RATIO}" "${SOURCE_VAL_RATIO}" "${PHASE1_SOURCE_ROLE_PROTOCOL}" \
+    "${WISIG_TRAIN_DAYS}" "${WISIG_TEST_DAYS}" "${WISIG_TRAIN_RXS}" "${WISIG_TEST_RXS}" > "${candidate_root}/config.json"
 }
 
 run_candidate() {
@@ -743,7 +768,7 @@ run_candidate() {
 validate_only
 validate_ablation
 build_ablation_args
-echo "[MUSE-RUN] run_id=${RUN_ID} root=${RUNS_ROOT} dry_run=${DRY_RUN} gpu=${GPU} seed=${SEED} ablation=${ABLATION} ratios=0.07/0.63/0.15/0.15 roles=L_s/U_s/V_cal/V_select checkpoint_selection=final_only"
+echo "[MUSE-RUN] run_id=${RUN_ID} root=${RUNS_ROOT} dry_run=${DRY_RUN} gpu=${GPU} seed=${SEED} ablation=${ABLATION} ratios=${LABELED_RATIO}/${UNLABELED_RATIO}/${SOURCE_VAL_RATIO} roles=${PHASE1_SOURCE_ROLE_PROTOCOL} checkpoint_selection=final_only"
 for level in M0 M1 M2 M3; do
   if candidate_selected "${level}"; then
     run_candidate "${level}"

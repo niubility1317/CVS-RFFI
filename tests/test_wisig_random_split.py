@@ -85,6 +85,32 @@ def _combined_grouped_sig_indices(*datasets):
 
 
 class WiSigRandomSplitTest(unittest.TestCase):
+    def test_disjoint_receiver_release_keeps_all_requested_target_days_once(self):
+        from dataset_wisig import make_wisig_trainval_test_by_day_rx
+
+        train, _val, _test, named_tests, named_meta, info = make_wisig_trainval_test_by_day_rx(
+            _tiny_wisig(samples_per_combo=8, num_tx=2, num_rx=6, num_days=4),
+            out_len=16,
+            train_ratio=0.5,
+            guard_gap=0,
+            train_days=[1, 2, 3],
+            test_days=[0, 1, 2, 3],
+            train_rxs=[1, 3, 4],
+            test_rxs=[0, 2, 5],
+            split_strategy="random",
+            cap_strategy="random",
+            seed=392005,
+            allow_source_target_day_overlap=True,
+        )
+
+        self.assertGreater(len(train), 0)
+        self.assertEqual(info["train_days_idx"], [1, 2, 3])
+        self.assertEqual(named_meta["test_all_day_unseen_rx"]["days_idx"], [0, 1, 2, 3])
+        self.assertEqual(named_meta["test_all_day_unseen_rx"]["rxs_idx"], [0, 2, 5])
+        self.assertEqual(len(named_tests["test_all_day_unseen_rx"]), 2 * 3 * 4 * 8)
+        self.assertEqual(len(named_tests["test_seen_day_unseen_rx"]), 2 * 3 * 3 * 8)
+        self.assertEqual(len(named_tests["test_unseen_day_unseen_rx"]), 2 * 3 * 1 * 8)
+
     def test_random_split_and_cap_are_seed_reproducible(self):
         from dataset_wisig import make_wisig_trainval_test_by_day_rx
 

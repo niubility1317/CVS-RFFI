@@ -61,3 +61,13 @@
 ## 交付判定
 
 只有状态为`verified`的条目可称为已完成。`partial`表示核心路径已实现，但报告要求的周期诊断、损失尺度校准或真实N607结果尚未闭合；不得以单元测试代替实验结论。
+
+## ManySig A0～A7发布追踪
+
+| ID | 来源 | 要求 | 目标文件 | 状态 | 验证 | 备注 |
+|---|---|---|---|---|---|---|
+| REL-01 | 用户数据配置、`项目.md`4节 | `L_s/U_s/V=0.07/0.63/0.30`，单一V只读 | `train_ssdg.py`、worker | verified | 单一V参数与artifact记录测试通过 | 用户已批准合并原`V_cal/V_select` |
+| REL-02 | 用户批准矩阵、报告9.23 | 只发布A0～A7，共8行，GPU0～7 | ManySig专用launcher | verified | 冻结矩阵测试通过 | 不发布A8 Temporal Memory效率行 |
+| REL-03 | 用户target配置 | source第1/2/3天与target第0/1/2/3天可重叠，但接收机必须不相交 | `dataset_wisig.py`、`train_ssdg.py` | verified | receiver交叠负测及同日正测通过 | 目标全集命名为`test_all_day_unseen_rx` |
+| REL-04 | 用户target配置 | 每个clean/LEO场景覆盖7接收机×4天×6TX×1000=168000样本 | evaluator、worker | implemented | 合成数据全集计数测试通过 | N607真实ManySig计数待启动日志回读 |
+| REL-05 | 最小实验流程 | 不可覆盖run root、真实checkpoint smoke、远端编译和启动绑定 | launcher、实验报告 | pending | 本地smoke已通过 | 提交、N607预检及启动后证据待完成 |

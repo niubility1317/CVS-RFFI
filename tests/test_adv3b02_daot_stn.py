@@ -12,6 +12,7 @@ from model_dual_cvsincnet import NuisanceHeteroscedasticHead, build_dual_model
 from SSDG.train_ssdg import (
     _compute_daot_labeled_step,
     _compute_daot_unlabeled_step,
+    _resolve_source_target_axes,
     _validate_daot_config,
     build_arg_parser,
 )
@@ -84,6 +85,69 @@ def test_a0_a8_launcher_binds_the_fasttrust_eff_baseline_route() -> None:
     ).read_text(encoding="utf-8")
     assert "--daot_loss_ablation" in worker
     assert "none|no_z|no_logit|no_proto|relation_on" in worker
+
+
+def test_manysig_release_keeps_overlapping_days_when_receivers_are_disjoint() -> None:
+    source_days, target_days, source_rxs, target_rxs = _resolve_source_target_axes(
+        requested_source_days=[1, 2, 3],
+        requested_target_days=[0, 1, 2, 3],
+        requested_source_receivers=[1, 3, 4, 6, 8],
+        requested_target_receivers=[0, 2, 5, 7, 9, 10, 11],
+        allow_day_overlap=True,
+    )
+
+    assert source_days == [1, 2, 3]
+    assert target_days == [0, 1, 2, 3]
+    assert source_rxs == [1, 3, 4, 6, 8]
+    assert target_rxs == [0, 2, 5, 7, 9, 10, 11]
+
+
+def test_day_overlap_release_rejects_any_source_target_receiver_overlap() -> None:
+    with pytest.raises(ValueError, match="receiver-disjoint"):
+        _resolve_source_target_axes(
+            requested_source_days=[1, 2, 3],
+            requested_target_days=[0, 1, 2, 3],
+            requested_source_receivers=[1, 3, 4, 6, 8],
+            requested_target_receivers=[0, 2, 5, 7, 8, 10, 11],
+            allow_day_overlap=True,
+        )
+
+
+def test_manysig_a0_a7_release_freezes_approved_matrix_and_single_v_protocol() -> None:
+    repository_root = Path(__file__).resolve().parents[1]
+    launcher = (
+        repository_root
+        / "code"
+        / "scripts"
+        / "launch_phase1_adv3b02_daot_stn_a0_a7_manysig_s392005_20260901.sh"
+    ).read_text(encoding="utf-8")
+
+    assert "ROWS=(A0 A1 A2 A3 A4 A5 A6 A7)" in launcher
+    assert "GPUS=(0 1 2 3 4 5 6 7)" in launcher
+    assert "SEED=\"${SEED:-392005}\"" in launcher
+    assert "WISIG_TRAIN_DAYS=1,2,3" in launcher
+    assert "WISIG_TEST_DAYS=0,1,2,3" in launcher
+    assert "WISIG_TRAIN_RXS=1,3,4,6,8" in launcher
+    assert "WISIG_TEST_RXS=0,2,5,7,9,10,11" in launcher
+    assert "PHASE1_SOURCE_ROLE_PROTOCOL=legacy_l_u_v" in launcher
+    assert "SOURCE_VAL_RATIO=0.30" in launcher
+    assert "SOURCE_CAL_RATIO=0" in launcher
+    assert "SOURCE_SELECT_RATIO=0" in launcher
+    assert "ALLOW_SOURCE_TARGET_DAY_OVERLAP=true" in launcher
+    assert "TARGET_GROUP_LOADER=test_all_day_unseen_rx" in launcher
+    assert "A8" not in launcher
+
+
+def test_worker_records_actual_single_v_release_roles_in_run_artifacts() -> None:
+    repository_root = Path(__file__).resolve().parents[1]
+    worker = (
+        repository_root / "code" / "scripts" / "launch_phase1_adv3b02_muse_ssdg_20260819.sh"
+    ).read_text(encoding="utf-8")
+
+    assert '"ratios": {"L_s": %s, "U_s": %s, "V": %s}' in worker
+    assert '"source_role_protocol": "%s"' in worker
+    assert 'roles=${PHASE1_SOURCE_ROLE_PROTOCOL}' in worker
+    assert 'ratios=${LABELED_RATIO}/${UNLABELED_RATIO}/${SOURCE_VAL_RATIO}' in worker
 
 
 def test_default_performance_teacher_uses_clean_medium_hard_views() -> None:

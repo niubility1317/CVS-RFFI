@@ -289,6 +289,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--source_val_ratio", type=float, default=0.20)
     parser.add_argument("--source_cal_ratio", type=float, default=0.0)
     parser.add_argument("--source_select_ratio", type=float, default=0.0)
+    parser.add_argument("--allow_source_target_day_overlap", type=str2bool, default=False)
     parser.add_argument(
         "--phase1_source_role_protocol",
         type=str,
@@ -2533,6 +2534,31 @@ def _build_source_split_receipt(
     return receipt
 
 
+def _resolve_source_target_axes(
+    *,
+    requested_source_days: Sequence[Any],
+    requested_target_days: Sequence[Any],
+    requested_source_receivers: Sequence[Any],
+    requested_target_receivers: Sequence[Any],
+    allow_day_overlap: bool,
+) -> tuple[List[Any], List[Any], List[Any], List[Any]]:
+    source_days = list(requested_source_days)
+    target_days = list(requested_target_days)
+    source_receivers = list(requested_source_receivers)
+    target_receivers = list(requested_target_receivers)
+    receiver_overlap = set(source_receivers).intersection(target_receivers)
+    if allow_day_overlap:
+        if receiver_overlap:
+            raise ValueError(
+                "source/target day overlap requires receiver-disjoint sets; "
+                f"overlap={sorted(receiver_overlap)}"
+            )
+        return source_days, target_days, source_receivers, target_receivers
+    source_days = [value for value in source_days if value not in target_days]
+    source_receivers = [value for value in source_receivers if value not in target_receivers]
+    return source_days, target_days, source_receivers, target_receivers
+
+
 def _build_ssdg_wisig_data(args, device: torch.device):
     ds_w = load_wisig_compact_pkl(args.wisig_pkl)
     infer_nc = len(ds_w.get("tx_list", []))
@@ -2545,8 +2571,13 @@ def _build_ssdg_wisig_data(args, device: torch.device):
     test_days = _resolve_days(day_list, parse_csv_indices(args.wisig_test_days), [len(day_list) - 1])
     train_rxs = _resolve_rxs(rx_list, parse_csv_indices(args.wisig_train_rxs), list(range(len(rx_list))))
     test_rxs = _resolve_rxs(rx_list, parse_csv_indices(args.wisig_test_rxs), [])
-    train_days = [d for d in train_days if d not in test_days]
-    train_rxs = [r for r in train_rxs if r not in test_rxs]
+    train_days, test_days, train_rxs, test_rxs = _resolve_source_target_axes(
+        requested_source_days=train_days,
+        requested_target_days=test_days,
+        requested_source_receivers=train_rxs,
+        requested_target_receivers=test_rxs,
+        allow_day_overlap=bool(getattr(args, "allow_source_target_day_overlap", False)),
+    )
 
     source_base = WiSigCompactDataset(
         ds_w,
@@ -2613,6 +2644,9 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         test_rxs=test_rxs,
         max_samples_per_combo_test=None if int(args.wisig_max_test_per_combo) <= 0 else int(args.wisig_max_test_per_combo),
         seed=int(args.seed),
+        allow_source_target_day_overlap=bool(
+            getattr(args, "allow_source_target_day_overlap", False)
+        ),
     )
     balanced_sampler = None
     if bool(getattr(args, "use_tx_rx_balanced_sampler", False)):
