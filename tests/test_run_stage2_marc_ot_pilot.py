@@ -269,6 +269,21 @@ def test_resource_receipt_uses_measured_values_or_explicit_na_status() -> None:
     assert resources["peak_cuda_status"] == "NOT_APPLICABLE"
 
 
+def test_cuda_peak_reset_initializes_selected_device_before_reset(monkeypatch) -> None:
+    module = _module()
+    calls = []
+    monkeypatch.setattr(module.torch.cuda, "set_device", lambda device: calls.append(("set", str(device))))
+    monkeypatch.setattr(
+        module.torch.cuda,
+        "reset_peak_memory_stats",
+        lambda device: calls.append(("reset", str(device))),
+    )
+
+    module._reset_cuda_peak_memory_stats(torch.device("cuda:0"))
+
+    assert calls == [("set", "cuda:0"), ("reset", "cuda:0")]
+
+
 def test_real_adapt_unit_r8_builds_fold_scoped_plans_and_learning_rates(
     monkeypatch,
 ) -> None:

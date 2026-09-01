@@ -360,6 +360,13 @@ def _calibration_transform(
     return transform
 
 
+def _reset_cuda_peak_memory_stats(unit_device: torch.device) -> None:
+    if unit_device.type != "cuda":
+        return
+    torch.cuda.set_device(unit_device)
+    torch.cuda.reset_peak_memory_stats(unit_device)
+
+
 def _adapt_unit(
     args: argparse.Namespace,
     config: Mapping[str, Any],
@@ -369,8 +376,7 @@ def _adapt_unit(
     smoke: bool,
 ) -> Mapping[str, Any]:
     unit_device = torch.device(args.device)
-    if unit_device.type == "cuda":
-        torch.cuda.reset_peak_memory_stats(unit_device)
+    _reset_cuda_peak_memory_stats(unit_device)
     model, bundle, base_state = _load_model_and_bundle(args, config)
     support_iq = _tensor(support.iq, args.device)
     support_labels = _tensor(support.labels, args.device, labels=True)
@@ -571,8 +577,7 @@ def _predict_unit(
     state: Mapping[str, Any],
 ) -> Mapping[str, Any]:
     unit_device = torch.device(args.device)
-    if unit_device.type == "cuda":
-        torch.cuda.reset_peak_memory_stats(unit_device)
+    _reset_cuda_peak_memory_stats(unit_device)
     model = frozen_checkpoint(args.checkpoint, args.device)
     model.load_state_dict(state["model_state"], strict=True)
     model.eval()
