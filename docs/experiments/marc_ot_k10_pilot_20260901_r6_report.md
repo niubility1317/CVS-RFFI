@@ -33,3 +33,12 @@ CUDA_VISIBLE_DEVICES=<physical_gpu> /home/szu2070436088/.conda/envs/CVS-RFFI/bin
 ```
 
 只有18份冻结态全部通过`freeze-collection`后，`predict-unit`才可打开query；prediction完整前不得连接truth。
+
+## LANDED与smoke
+
+- release归档SHA256：`4a846308aad6f53c85dd23d448ff7ed570257fb9e25f5732392e7bdbb66c1dd3`，本地/远端一致
+- r6 checkout远端编译通过
+- 真实checkpoint no-query smoke：`PASS`
+- smoke边界：`query_opened=false`、`query_rows_used=0`、`source_iq_rows_used=0`
+- 正式启动前GPU0～7均恢复为空闲
+- 状态：`LANDED / SMOKE_PASS`
