@@ -20,3 +20,19 @@ CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/
 ```
 
 smoke必须`query_opened=false/query_rows_used=0`；prediction完整前不得连接truth。
+
+## LANDED
+
+- release归档SHA256：`6cc3f1b64c2dc830802e09b5c9d419791a42f5f594e19d94a762df08c0b170ba`，本地/远端一致
+- r5 checkout远端编译通过；发布前GPU0空闲
+- 状态：`LANDED`
+
+## no-query smoke
+
+- 状态：`PASS`
+- artifact：`smoke/smoke_result.json`，`99,248`字节
+- 边界：`query_opened=false`、`query_rows_used=0`、`source_iq_rows_used=0`
+- 绑定：`capsule_id`、`split_id`、Target5 outer key与预登记一致
+- 执行：R8四阶段共24个优化步，5折held-out support证据有效，完整support路径完成
+- 资源：训练`15.1459s`，CUDA峰值`424,442,368`字节
+- 性能声明：smoke不连接truth，不产生正式性能结论
