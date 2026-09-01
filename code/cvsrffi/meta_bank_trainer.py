@@ -206,11 +206,56 @@ def _outer_components(
     return query_adapt_mean, receiver_cvar, worst_class_guard
 
 
-def _clear_trainable_gradients(support_encoder: SupportSetEncoder, bank: WeightDeltaBank) -> None:
-    for parameter in support_encoder.parameters():
-        parameter.grad = None
+def _required_outer_parameters(
+    support_encoder: SupportSetEncoder, bank: WeightDeltaBank
+) -> tuple[tuple[str, Tensor], ...]:
+    required: list[tuple[str, Tensor]] = []
+    for name, parameter in support_encoder.named_parameters():
+        if not parameter.requires_grad:
+            raise ValueError(f"required support encoder parameter {name!r} is frozen")
+        required.append((f"support_encoder.{name}", parameter))
     for entry in bank.entries:
-        entry.basis.grad = None
+        if not isinstance(entry.basis, Tensor) or not entry.basis.requires_grad:
+            raise ValueError(
+                f"required bank basis {entry.spec.name!r} must require gradients"
+            )
+        required.append((f"bank_basis.{entry.spec.name}", entry.basis))
+    identities = [id(parameter) for _, parameter in required]
+    if len(identities) != len(set(identities)):
+        raise ValueError("required outer parameters contain duplicate tensor identities")
+    return tuple(required)
+
+
+def _clear_required_gradients(required: tuple[tuple[str, Tensor], ...]) -> None:
+    for _, parameter in required:
+        parameter.grad = None
+
+
+def _validate_optimizer_scope(
+    optimizer: torch.optim.Optimizer,
+    required: tuple[tuple[str, Tensor], ...],
+) -> None:
+    if not isinstance(optimizer, torch.optim.Optimizer):
+        raise TypeError("optimizer must be a torch.optim.Optimizer")
+    actual = tuple(
+        parameter
+        for group in optimizer.param_groups
+        for parameter in group.get("params", ())
+    )
+    actual_ids = tuple(id(parameter) for parameter in actual)
+    if len(actual_ids) != len(set(actual_ids)):
+        raise ValueError("optimizer contains duplicate parameter identities")
+    expected_by_id = {id(parameter): name for name, parameter in required}
+    actual_id_set = set(actual_ids)
+    expected_id_set = set(expected_by_id)
+    if actual_id_set != expected_id_set:
+        missing = tuple(
+            expected_by_id[identity] for identity in expected_id_set - actual_id_set
+        )
+        extra = len(actual_id_set - expected_id_set)
+        raise ValueError(
+            f"optimizer parameter scope mismatch: missing={sorted(missing)!r}, extra_count={extra}"
+        )
 
 
 def _require_outer_gradients(
@@ -251,7 +296,7 @@ def run_meta_bank_step(
     support_features: Tensor,
     batch: MetaEpisodeBatch,
     config: MetaBankTrainerConfig,
-    optimizer: torch.optim.Optimizer | None = None,
+    optimizer: torch.optim.Optimizer,
 ) -> MetaBankStepResult:
     """Backpropagate one source-only bank meta episode.
 
@@ -277,10 +322,9 @@ def run_meta_bank_step(
     ):
         raise ValueError("support_features must be finite floating rows aligned to episode support")
 
-    if optimizer is not None:
-        optimizer.zero_grad(set_to_none=True)
-    else:
-        _clear_trainable_gradients(support_encoder, bank)
+    required_parameters = _required_outer_parameters(support_encoder, bank)
+    _clear_required_gradients(required_parameters)
+    _validate_optimizer_scope(optimizer, required_parameters)
     support_labels = batch.support_y.to(device=support_features.device, dtype=torch.long)
     physical_tokens = tuple(row.physical_sample_id for row in batch.episode.support)
     support_state = support_encoder(support_features, support_labels, physical_tokens)
@@ -320,8 +364,7 @@ def run_meta_bank_step(
         raise MetaBankTrainerError("meta-bank outer loss must be finite and differentiable")
     total_loss.backward()
     _require_outer_gradients(support_encoder, support_state, bank)
-    if optimizer is not None:
-        optimizer.step()
+    optimizer.step()
     return MetaBankStepResult(
         loss=total_loss.detach(),
         query_adapt_mean=query_adapt_mean.detach(),

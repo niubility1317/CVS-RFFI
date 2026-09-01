@@ -16,6 +16,7 @@ if str(CODE_ROOT) not in sys.path:
 def _base_state():
     return {
         "id_backbone.t3.weight": torch.zeros(2, 2),
+        "id_backbone.t3.bias": torch.zeros(2),
         "id_backbone.fusion.bias": torch.zeros(2),
         "classifier.weight": torch.ones(2, 2),
         "running_count": torch.tensor([4], dtype=torch.int64),
@@ -30,10 +31,12 @@ def _bank():
         {
             DeltaTaskKey("rx-1", "day-a", "leo_clear_weak", 10): {
                 "id_backbone.t3.weight": torch.tensor([[0.3, -0.1], [0.2, 0.4]]),
+                "id_backbone.t3.bias": torch.tensor([0.1, -0.2]),
                 "id_backbone.fusion.bias": torch.tensor([0.2, -0.3]),
             },
             DeltaTaskKey("rx-2", "day-a", "leo_rain_weak", 10): {
                 "id_backbone.t3.weight": torch.tensor([[-0.2, 0.5], [0.1, -0.4]]),
+                "id_backbone.t3.bias": torch.tensor([-0.3, 0.2]),
                 "id_backbone.fusion.bias": torch.tensor([-0.1, 0.4]),
             },
         },
@@ -55,6 +58,25 @@ def _encoder(bank):
     )
 
 
+def _expected_block_specs():
+    from cvsrffi.meta_weight_bank import BlockSpec
+
+    return (
+        BlockSpec(
+            "fusion",
+            ("id_backbone.fusion.bias",),
+            ((2,),),
+            ("torch.float32",),
+        ),
+        BlockSpec(
+            "t3",
+            ("id_backbone.t3.bias", "id_backbone.t3.weight"),
+            ((2,), (2, 2)),
+            ("torch.float32", "torch.float32"),
+        ),
+    )
+
+
 def _load_raw(path: Path):
     return torch.load(path, map_location="cpu", weights_only=True)
 
@@ -70,6 +92,7 @@ def _save_bundle(path: Path):
         base_state=_base_state(),
         bank=bank,
         support_encoder=encoder,
+        expected_block_specs=_expected_block_specs(),
     )
     return bank, encoder
 
@@ -90,6 +113,7 @@ def test_meta_weight_bundle_round_trip_preserves_support_composition_bitwise(tmp
         path,
         expected_base_checkpoint_id="base-checkpoint-7",
         base_state=_base_state(),
+        expected_block_specs=_expected_block_specs(),
     )
     assert loaded.schema == META_WEIGHT_BUNDLE_SCHEMA
 
@@ -160,6 +184,7 @@ def test_meta_weight_bundle_rejects_schema_binding_and_block_geometry(
             tampered,
             expected_base_checkpoint_id="base-checkpoint-7",
             base_state=_base_state(),
+            expected_block_specs=_expected_block_specs(),
         )
 
 
@@ -188,4 +213,50 @@ def test_meta_weight_bundle_rejects_forbidden_or_nonfinite_members(
             tampered,
             expected_base_checkpoint_id="base-checkpoint-7",
             base_state=_base_state(),
+            expected_block_specs=_expected_block_specs(),
+        )
+
+
+def test_meta_weight_bundle_rejects_swapped_block_entry_order(tmp_path: Path) -> None:
+    """Payload entry order must be bound independently, not accepted as self-authenticating."""
+    from cvsrffi.meta_weight_bank_checkpoint import load_meta_weight_bundle
+
+    path = tmp_path / "valid.pt"
+    _save_bundle(path)
+    raw = _load_raw(path)
+    raw["bank"]["entries"] = list(reversed(raw["bank"]["entries"]))
+    tampered = tmp_path / "swapped-entries.pt"
+    torch.save(raw, tampered)
+
+    with pytest.raises(ValueError):
+        load_meta_weight_bundle(
+            tampered,
+            expected_base_checkpoint_id="base-checkpoint-7",
+            base_state=_base_state(),
+            expected_block_specs=_expected_block_specs(),
+        )
+
+
+def test_meta_weight_bundle_rejects_synchronized_parameter_geometry_reorder(
+    tmp_path: Path,
+) -> None:
+    """Swapping names with their shapes/dtypes must still violate canonical block order."""
+    from cvsrffi.meta_weight_bank_checkpoint import load_meta_weight_bundle
+
+    path = tmp_path / "valid.pt"
+    _save_bundle(path)
+    raw = _load_raw(path)
+    t3_entry = next(entry for entry in raw["bank"]["entries"] if entry["name"] == "t3")
+    assert len(t3_entry["parameter_names"]) == 2
+    for key in ("parameter_names", "shapes", "dtypes"):
+        t3_entry[key] = list(reversed(t3_entry[key]))
+    tampered = tmp_path / "swapped-parameter-order.pt"
+    torch.save(raw, tampered)
+
+    with pytest.raises(ValueError):
+        load_meta_weight_bundle(
+            tampered,
+            expected_base_checkpoint_id="base-checkpoint-7",
+            base_state=_base_state(),
+            expected_block_specs=_expected_block_specs(),
         )

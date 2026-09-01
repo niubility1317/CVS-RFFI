@@ -65,7 +65,29 @@ def _validate_base_state(base_state: Mapping[str, Tensor]) -> None:
         _finite_tensor(value, f"base_state[{name!r}]")
 
 
-def _validate_bank(bank: WeightDeltaBank, base_state: Mapping[str, Tensor]) -> None:
+def _validate_expected_block_specs(
+    expected_block_specs: tuple[BlockSpec, ...],
+) -> tuple[BlockSpec, ...]:
+    if not isinstance(expected_block_specs, tuple) or not expected_block_specs:
+        raise ValueError("expected_block_specs must be a non-empty tuple")
+    if any(not isinstance(spec, BlockSpec) for spec in expected_block_specs):
+        raise ValueError("expected_block_specs must contain BlockSpec values")
+    block_names = tuple(spec.name for spec in expected_block_specs)
+    if block_names != tuple(sorted(block_names)) or len(set(block_names)) != len(block_names):
+        raise ValueError("expected block order must follow Task1 canonical sorted block names")
+    for spec in expected_block_specs:
+        if spec.parameter_names != tuple(sorted(spec.parameter_names)):
+            raise ValueError(
+                f"expected parameter order for block {spec.name!r} must follow Task1 canonical sorting"
+            )
+    return expected_block_specs
+
+
+def _validate_bank(
+    bank: WeightDeltaBank,
+    base_state: Mapping[str, Tensor],
+    expected_block_specs: tuple[BlockSpec, ...],
+) -> None:
     if not isinstance(bank, WeightDeltaBank) or bank.schema != WEIGHT_DELTA_BANK_SCHEMA:
         raise ValueError("weight delta bank schema mismatch")
     if not isinstance(bank.base_checkpoint_id, str) or not bank.base_checkpoint_id:
@@ -74,6 +96,10 @@ def _validate_bank(bank: WeightDeltaBank, base_state: Mapping[str, Tensor]) -> N
         raise ValueError("weight delta bank task keys must be non-empty")
     if not isinstance(bank.entries, tuple) or not bank.entries:
         raise ValueError("weight delta bank entries must be non-empty")
+    expected_block_specs = _validate_expected_block_specs(expected_block_specs)
+    actual_block_specs = tuple(entry.spec for entry in bank.entries)
+    if actual_block_specs != expected_block_specs:
+        raise ValueError("weight delta bank block geometry or order differs from expected geometry")
 
     seen_blocks: set[str] = set()
     seen_parameters: set[str] = set()
@@ -205,6 +231,18 @@ def _bank_payload(bank: WeightDeltaBank) -> dict[str, object]:
     }
 
 
+def _block_specs_payload(specs: tuple[BlockSpec, ...]) -> list[dict[str, object]]:
+    return [
+        {
+            "name": spec.name,
+            "parameter_names": list(spec.parameter_names),
+            "shapes": [list(shape) for shape in spec.shapes],
+            "dtypes": list(spec.dtypes),
+        }
+        for spec in specs
+    ]
+
+
 def _encoder_payload(encoder: SupportSetEncoder) -> dict[str, object]:
     return {
         "config": _encoder_config(encoder),
@@ -290,6 +328,36 @@ def _decode_bank(raw: object, base_checkpoint_id: str) -> WeightDeltaBank:
     )
 
 
+def _decode_block_specs(raw: object, context: str) -> tuple[BlockSpec, ...]:
+    if not isinstance(raw, list) or not raw:
+        raise ValueError(f"{context} must be a non-empty list")
+    specs: list[BlockSpec] = []
+    for index, item in enumerate(raw):
+        data = _require_exact_keys(
+            item,
+            {"name", "parameter_names", "shapes", "dtypes"},
+            f"{context}[{index}]",
+        )
+        if (
+            not isinstance(data["parameter_names"], list)
+            or not isinstance(data["shapes"], list)
+            or not isinstance(data["dtypes"], list)
+        ):
+            raise ValueError(f"{context}[{index}] geometry members must be lists")
+        try:
+            specs.append(
+                BlockSpec(
+                    name=data["name"],
+                    parameter_names=tuple(data["parameter_names"]),
+                    shapes=tuple(tuple(shape) for shape in data["shapes"]),
+                    dtypes=tuple(data["dtypes"]),
+                )
+            )
+        except TypeError as error:
+            raise ValueError(f"{context}[{index}] geometry is malformed") from error
+    return tuple(specs)
+
+
 def _decode_encoder(raw: object, bank: WeightDeltaBank) -> SupportSetEncoder:
     data = _require_exact_keys(raw, {"config", "state_dict"}, "support_encoder")
     config = _require_exact_keys(
@@ -325,10 +393,11 @@ def _decode_bundle(
     *,
     expected_base_checkpoint_id: str,
     base_state: Mapping[str, Tensor],
+    expected_block_specs: tuple[BlockSpec, ...],
 ) -> MetaWeightBundle:
     data = _require_exact_keys(
         raw,
-        {"schema", "base_checkpoint_id", "bank", "support_encoder"},
+        {"schema", "base_checkpoint_id", "block_geometry", "bank", "support_encoder"},
         "meta weight bundle",
     )
     if data["schema"] != META_WEIGHT_BUNDLE_SCHEMA:
@@ -340,8 +409,12 @@ def _decode_bundle(
     ):
         raise ValueError("meta weight bundle base checkpoint identity mismatch")
     _validate_base_state(base_state)
+    expected_block_specs = _validate_expected_block_specs(expected_block_specs)
+    declared_block_specs = _decode_block_specs(data["block_geometry"], "block_geometry")
+    if declared_block_specs != expected_block_specs:
+        raise ValueError("bundle-declared block geometry or order differs from caller expectation")
     bank = _decode_bank(data["bank"], expected_base_checkpoint_id)
-    _validate_bank(bank, base_state)
+    _validate_bank(bank, base_state, expected_block_specs)
     encoder = _decode_encoder(data["support_encoder"], bank)
     return MetaWeightBundle(
         schema=META_WEIGHT_BUNDLE_SCHEMA,
@@ -365,6 +438,7 @@ def save_meta_weight_bundle(
     base_state: Mapping[str, Tensor],
     bank: WeightDeltaBank,
     support_encoder: SupportSetEncoder,
+    expected_block_specs: tuple[BlockSpec, ...],
 ) -> Path:
     """Validate and persist the only allowed MARC-OT deployment members."""
 
@@ -372,13 +446,15 @@ def save_meta_weight_bundle(
     if not isinstance(base_checkpoint_id, str) or not base_checkpoint_id:
         raise ValueError("base_checkpoint_id must be a non-empty string")
     _validate_base_state(base_state)
-    _validate_bank(bank, base_state)
+    expected_block_specs = _validate_expected_block_specs(expected_block_specs)
+    _validate_bank(bank, base_state, expected_block_specs)
     if bank.base_checkpoint_id != base_checkpoint_id:
         raise ValueError("base checkpoint identity does not match weight delta bank")
     _validate_encoder_for_bank(support_encoder, bank)
     payload = {
         "schema": META_WEIGHT_BUNDLE_SCHEMA,
         "base_checkpoint_id": base_checkpoint_id,
+        "block_geometry": _block_specs_payload(expected_block_specs),
         "bank": _bank_payload(bank),
         "support_encoder": _encoder_payload(support_encoder),
     }
@@ -387,6 +463,7 @@ def save_meta_weight_bundle(
         _load_raw(destination),
         expected_base_checkpoint_id=base_checkpoint_id,
         base_state=base_state,
+        expected_block_specs=expected_block_specs,
     )
     return destination
 
@@ -396,6 +473,7 @@ def load_meta_weight_bundle(
     *,
     expected_base_checkpoint_id: str,
     base_state: Mapping[str, Tensor],
+    expected_block_specs: tuple[BlockSpec, ...],
 ) -> MetaWeightBundle:
     """Load a fail-closed bundle and freeze its Phase2 bank/encoder state."""
 
@@ -403,6 +481,7 @@ def load_meta_weight_bundle(
         _load_raw(Path(path)),
         expected_base_checkpoint_id=expected_base_checkpoint_id,
         base_state=base_state,
+        expected_block_specs=expected_block_specs,
     )
 
 

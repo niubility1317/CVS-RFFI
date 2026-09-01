@@ -132,6 +132,15 @@ def _base_state():
     }
 
 
+def _optimizer(encoder, basis_tensors, *, omit_last_basis=False, extra=None):
+    parameters = list(encoder.parameters()) + list(
+        basis_tensors[:-1] if omit_last_basis else basis_tensors
+    )
+    if extra is not None:
+        parameters.append(extra)
+    return torch.optim.SGD(parameters, lr=0.01)
+
+
 def _functional_forward(calls: list[int]):
     def forward(state, x):
         calls.append(x.data_ptr())
@@ -155,6 +164,7 @@ def test_meta_bank_step_keeps_query_out_of_inner_loop_and_backpropagates_all_out
         receiver_cvar_weight=0.4,
         worst_class_guard_weight=0.7,
     )
+    optimizer = _optimizer(encoder, basis_tensors)
 
     result = run_meta_bank_step(
         _functional_forward(calls),
@@ -165,6 +175,7 @@ def test_meta_bank_step_keeps_query_out_of_inner_loop_and_backpropagates_all_out
         support_features=batch.support_x,
         batch=batch,
         config=config,
+        optimizer=optimizer,
     )
 
     assert calls == [batch.support_x.data_ptr(), batch.query_x.data_ptr()]
@@ -192,7 +203,7 @@ def test_meta_bank_step_outer_objective_matches_mean_receiver_cvar_and_worst_gua
     from cvsrffi.meta_bank_trainer import MetaBankTrainerConfig, run_meta_bank_step
 
     batch = _batch()
-    bank, _ = _trainable_bank()
+    bank, basis_tensors = _trainable_bank()
     encoder = _encoder()
     calls: list[int] = []
     config = MetaBankTrainerConfig(
@@ -203,6 +214,7 @@ def test_meta_bank_step_outer_objective_matches_mean_receiver_cvar_and_worst_gua
         worst_class_guard_weight=0.7,
     )
     forward = _functional_forward(calls)
+    optimizer = _optimizer(encoder, basis_tensors)
     result = run_meta_bank_step(
         forward,
         base_state=_base_state(),
@@ -212,6 +224,7 @@ def test_meta_bank_step_outer_objective_matches_mean_receiver_cvar_and_worst_gua
         support_features=batch.support_x,
         batch=batch,
         config=config,
+        optimizer=optimizer,
     )
     logits = forward(result.fast_state.parameters, batch.query_x)
     row_losses = F.cross_entropy(logits, batch.query_y, reduction="none")
@@ -234,7 +247,8 @@ def test_meta_bank_step_reuses_source_episode_role_checks() -> None:
     batch = _batch()
     bad_support = (replace(batch.episode.support[0], role="target_support"), *batch.episode.support[1:])
     bad_batch = replace(batch, episode=replace(batch.episode, support=bad_support))
-    bank, _ = _trainable_bank()
+    bank, basis_tensors = _trainable_bank()
+    encoder = _encoder()
 
     with pytest.raises(ValueError, match="forbidden target/query field"):
         run_meta_bank_step(
@@ -242,11 +256,66 @@ def test_meta_bank_step_reuses_source_episode_role_checks() -> None:
             base_state=_base_state(),
             base_checkpoint_id="base-meta",
             bank=bank,
-            support_encoder=_encoder(),
+            support_encoder=encoder,
             support_features=bad_batch.support_x,
             batch=bad_batch,
             config=MetaBankTrainerConfig(source_receiver_ids=(1, 2), inner_steps=1),
+            optimizer=_optimizer(encoder, basis_tensors),
         )
+
+
+def test_meta_bank_step_rejects_optimizer_missing_basis_after_clearing_stale_grad() -> None:
+    """A stale omitted-basis gradient must not satisfy the current-episode proof."""
+    from cvsrffi.meta_bank_trainer import MetaBankTrainerConfig, run_meta_bank_step
+
+    batch = _batch()
+    bank, basis_tensors = _trainable_bank()
+    encoder = _encoder()
+    omitted_basis = basis_tensors[-1]
+    omitted_basis.grad = torch.full_like(omitted_basis, 123.0)
+    calls: list[int] = []
+
+    with pytest.raises(ValueError, match="optimizer"):
+        run_meta_bank_step(
+            _functional_forward(calls),
+            base_state=_base_state(),
+            base_checkpoint_id="base-meta",
+            bank=bank,
+            support_encoder=encoder,
+            support_features=batch.support_x,
+            batch=batch,
+            config=MetaBankTrainerConfig(source_receiver_ids=(1, 2), inner_steps=1),
+            optimizer=_optimizer(encoder, basis_tensors, omit_last_basis=True),
+        )
+
+    assert omitted_basis.grad is None
+    assert calls == []
+
+
+def test_meta_bank_step_rejects_optimizer_with_unrelated_parameter_before_forward() -> None:
+    """An optimizer may contain only the encoder and bank-basis parameters."""
+    from cvsrffi.meta_bank_trainer import MetaBankTrainerConfig, run_meta_bank_step
+
+    batch = _batch()
+    bank, basis_tensors = _trainable_bank()
+    encoder = _encoder()
+    unrelated = torch.nn.Parameter(torch.tensor(1.0))
+    calls: list[int] = []
+
+    with pytest.raises(ValueError, match="optimizer"):
+        run_meta_bank_step(
+            _functional_forward(calls),
+            base_state=_base_state(),
+            base_checkpoint_id="base-meta",
+            bank=bank,
+            support_encoder=encoder,
+            support_features=batch.support_x,
+            batch=batch,
+            config=MetaBankTrainerConfig(source_receiver_ids=(1, 2), inner_steps=1),
+            optimizer=_optimizer(encoder, basis_tensors, extra=unrelated),
+        )
+
+    assert calls == []
 
 
 @pytest.mark.parametrize(
