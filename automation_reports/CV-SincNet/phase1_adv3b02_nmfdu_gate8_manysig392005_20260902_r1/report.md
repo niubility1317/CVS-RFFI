@@ -3,7 +3,7 @@
 - run ID：`phase1_adv3b02_nmfdu_gate8_manysig392005_20260902_r1`
 - 候选矩阵：E1=五分支等权；E2=`I`；E3=`I+D`；E4=`I+D+S`；E5=固定单位系数`I+D+S+U`；E6=可学习全局正系数`I+D+S+U`且无样本校正；E7=完整物理证据+有界样本校正但无null；E8=完整NMFDU。按用户要求不包含ADV3B02对比基线。
 - Git分支：`work/adv3b02-nmfdu-gate-v1`
-- Git提交：待本地验证后填写
+- 实现提交：`df3b350b5e5c6b0ae185eab6c6d62f81de419f39`，已push并独立核对远端分支OID一致
 - 命令：`bash code/scripts/launch_phase1_adv3b02_nmfdu_gate8_manysig392005_20260902.sh`
 - 环境/CWD：N607普通账户；`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`；新release根
 - 输入：`/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl`，equalized=`1`
@@ -16,4 +16,7 @@
 - GPU：E1–E8预登记依次使用GPU0–7；启动前检查资源，每GPU训练进程不超过2个
 - 停止规则：仅在数据/query越权、错误split/RX/day/seed/场景、输出覆盖、错误checkout、进程归属不清、无prediction闭合或同一确定性系统异常导致合法产物无法产生时停止；低性能不停止
 - 预期artifact：八行各自最终checkpoint、训练日志、clean及三种LEO弱场景评估、门控诊断与prediction；prediction完整后由独立scorer连接truth并做同row分析
-- 当前状态：`LOCAL_IMPLEMENTATION_IN_PROGRESS / NOT_RELEASED / NOT_LAUNCHED`
+- 本地验证：关键Python模块`py_compile`通过；NMFDU、数据作用域、launcher、checkpoint兼容等聚焦套件`94 passed`
+- 独立P0/P1审查：初审发现E3/E4提前引入可学习系数的P1；已改为E2–E5固定单位系数逐项累加，定点复审`FIXED`，无其他P0/P1
+- N607只读preflight：`VERIFIED`；普通账户、项目根和8张RTX3090均可见，未改变远端状态
+- 当前状态：`LOCAL_VERIFIED / RELEASE_PREPARING / NOT_LAUNCHED`
