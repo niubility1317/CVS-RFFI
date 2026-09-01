@@ -3,7 +3,7 @@
 ## 1.状态
 
 - run_id：`phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_20260901_r1`
-- 当前状态：`LOCAL_VERIFIED`
+- 当前状态：`RUNNING`（R0运行中；R1–R8已发布并等待R0成功后自动启动）
 - 正式实验数：8（R1–R8）
 - 共享先决阶段：R0，仅训练一次，不计入八个正式实验
 - code_commit：`682701c72c2d573053ff5c66b23ba180cc831ec1`
@@ -104,3 +104,17 @@ nohup env ROOT=<release-root> PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bi
 - R1–R8：各自`best.pth`、`latest.pth`、训练指标、clean与三种LEO最终指标、ECRS响应/不确定性/融合诊断
 - pipeline日志与每个候选独立日志
 - 完成后在本报告追加同row结果、异常、解释和下一候选决策
+
+## 8.发布与启动实证
+
+- release传输：`VERIFIED`；本地与远端归档SHA256均为`c6cd0f452e7bdfebf88a64abd06011d8774dca3b53badb629aee0feb4e81e40f`
+- 远端编译：`train.py`、`dataset_wisig.py`和launcher语法检查通过
+- 真实数据协议检查：`PASS`；source pool=90000，`L_s=6300`，`U_s=56700`，`V=27000`，target=168000/场景，overlap=0，`U_s`不含TX真值训练元数据
+- pipeline PID：`3866394`
+- pipeline CWD：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_20260901_r1_682701c7`
+- R0主训练PID：`3866412`
+- R0 GPU：4；启动前该卡1个外部GPU进程，启动后为外部1个＋本run 1个
+- 启动日志：`ADV3B02_ECRS_R0.out`从12520增长到16110字节，已记录`[EPOCH-END] E001/200`
+- R0 checkpoint：E1已生成`best.pth`与`latest.pth`
+- R1–R8状态：`QUEUED_AFTER_R0`；只有R0正常结束且本run的`best.pth`存在后才自动启动
+- 启动检查结论：PID/CWD/cmdline/GPU/log增长/run-root绑定均为`VERIFIED`
