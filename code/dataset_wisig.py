@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hmac
 import os
 import pickle
 from dataclasses import dataclass
@@ -46,6 +47,14 @@ def _pad_or_crop_2t(x_2t: np.ndarray, out_len: int, mode: str = "center") -> np.
         left = (out_len - T) // 2
         out[:, left : left + T] = x_2t
     return out
+
+
+def _crop_offset(length: int, out_len: int, mode: str) -> int:
+    """Return the source-window start used by ``_pad_or_crop_2t``."""
+
+    if int(length) <= int(out_len) or str(mode) == "left":
+        return 0
+    return (int(length) - int(out_len)) // 2
 
 
 
@@ -146,6 +155,7 @@ class WiSigCompactDataset(Dataset):
             allowed=("front", "random"),
         )
         self.rng = np.random.default_rng(seed)
+        self._fcr_meta_secret = os.urandom(32)
 
         if isinstance(equalized, str) and equalized.lower() == "both":
             self.eq_keep = list(range(len(self.eq_list)))
@@ -219,6 +229,7 @@ class WiSigCompactDataset(Dataset):
         it = self.index[k]
         x = self.data[it.tx_i][it.rx_i][it.day_i][it.eq_i][it.sig_i]
         x_2t = np.asarray(x, dtype=np.float32).T
+        crop_offset = _crop_offset(int(x_2t.shape[1]), self.out_len, self.crop_mode)
         if self.out_len != x_2t.shape[1]:
             x_2t = _pad_or_crop_2t(x_2t, self.out_len, mode=self.crop_mode)
         if self.normalize:
@@ -239,7 +250,11 @@ class WiSigCompactDataset(Dataset):
             "rx": self.rx_list[it.rx_i] if it.rx_i < len(self.rx_list) else it.rx_i,
             "day": self.day_list[it.day_i] if it.day_i < len(self.day_list) else it.day_i,
             "equalized": self.eq_list[it.eq_i] if it.eq_i < len(self.eq_list) else None,
+            "crop_offset": int(crop_offset),
         }
+        from cvsrffi.phase1_fcr_interventions import build_physical_sample_id
+
+        meta["physical_sample_id"] = build_physical_sample_id(meta)
         return x_t, y, d, meta
 
 
@@ -276,9 +291,8 @@ class WiSigSubsetDataset(Dataset):
 class WiSigMetaSslSubsetDataset(WiSigSubsetDataset):
     """WiSig subset with explicit Meta-SSL role and TX-label masking.
 
-    The underlying sample metadata keeps the original transmitter id for audit,
-    but unlabeled-source samples return y=-1 so ordinary TX CE paths cannot
-    accidentally consume masked labels.
+    Unlabeled-source samples return y=-1 and must not expose a reversible
+    transmitter identity through their batch metadata.
     """
 
     def __init__(
@@ -297,11 +311,19 @@ class WiSigMetaSslSubsetDataset(WiSigSubsetDataset):
 
     def __getitem__(self, k: int):
         x, y, d, meta = super().__getitem__(k)
+        label_visible = bool(self.tx_label_visible)
+        from cvsrffi.phase1_fcr_interventions import sanitize_fcr_meta
+
+        if not label_visible:
+            physical_id = str(meta["physical_sample_id"])
+            meta["_fcr_opaque_physical_id"] = "sample:" + hmac.new(
+                self.base._fcr_meta_secret, physical_id.encode("utf-8"), "sha256"
+            ).hexdigest()
+        meta = sanitize_fcr_meta(meta, label_visible=label_visible)
         meta = dict(meta)
         meta["meta_ssl_role"] = self.role
-        meta["tx_label_visible"] = self.tx_label_visible
-        if not self.tx_label_visible:
-            meta["true_tx_i"] = int(y)
+        meta["tx_label_visible"] = label_visible
+        if not label_visible:
             y = -1
         return x, y, d, meta
 
@@ -828,7 +850,7 @@ def make_wisig_meta_ssl_source_split(
         "overlap_count": int(overlap_count),
         "tx_label_policy": {
             "labeled_train": "visible",
-            "unlabeled_source": "masked_y_minus_1_true_tx_in_meta_only",
+            "unlabeled_source": "masked_y_minus_1_no_reversible_tx_metadata",
             "source_val": "visible_eval_only",
         },
         "seed": int(seed),

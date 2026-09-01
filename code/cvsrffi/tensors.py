@@ -50,6 +50,17 @@ def extract_domain_from_extra(extra, device) -> Optional[torch.Tensor]:
         return None
 
 
+def extract_batch_meta(extra) -> Optional[Dict[str, Any]]:
+    """Return collated sample metadata without changing the legacy batch shape."""
+
+    if extra is None:
+        return None
+    for value in extra:
+        if isinstance(value, dict):
+            return value
+    return None
+
+
 def parse_csv_indices(s: str):
     s = str(s).strip()
     if s == "":

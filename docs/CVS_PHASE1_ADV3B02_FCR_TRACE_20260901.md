@@ -10,7 +10,7 @@
 
 | ID | 来源章节 | Requirement | Target files | Status | Verification | Notes |
 |---|---|---|---|---|---|---|
-| FCR-01 | 总体判断、第二节 | clean/LEO必须是同一物理片段、同一内容和同一TX的干预式配对 | `code/baseline_origin_sat_view.py`、`code/cvsrffi/phase1_fcr_interventions.py` | pending | `test_phase1_fcr_pairing.py`核对physical ID、crop和view | 不产生第二个Phase2观测 |
+| FCR-01 | 总体判断、第二节 | clean/LEO必须是同一物理片段、同一内容和同一TX的干预式配对 | `code/baseline_origin_sat_view.py`、`code/cvsrffi/phase1_fcr_interventions.py` | verified | `test_phase1_fcr_pairing.py`核对physical ID、crop和view | 不产生第二个Phase2观测 |
 | FCR-02 | 第一、十三节 | Decoder遵循内容生成→TX响应→链路/接收机的物理顺序 | `code/cvsrffi/phase1_fcr_decoder.py` | pending | 模块调用顺序和梯度路径测试 | 禁止普通latent concat Decoder |
 | FCR-03 | 第六节6.1 | `z_s`是低采样率时序token并承担内容/激励，不携带TX/receiver/domain | `code/cvsrffi/phase1_fcr_factors.py` | pending | 形状、masked prediction和独立probe | TX CE默认不更新`E_s` |
 | FCR-04 | 第六节6.2 | `z_f=[z_f_id,z_tx_state]`，作为激励条件化响应算子参数 | `code/cvsrffi/phase1_fcr_factors.py`、`code/cvsrffi/phase1_fcr_fingerprint.py` | pending | 跨天身份稳定、状态可变和输出契约测试 | `L_id`只作用于`z_f_id` |
@@ -22,14 +22,14 @@
 | FCR-10 | 第九节 | 交叉生成结果重新编码并恢复来源`z_s/z_f`及目标`z_n` | `code/cvsrffi/phase1_fcr_losses.py` | pending | 双向latent-cycle合成测试 | 所有参考latent使用stop-gradient |
 | FCR-11 | 第十节 | clean/LEO显式共享一致性并配置防塌缩约束 | `code/cvsrffi/phase1_fcr_losses.py` | pending | variance、covariance和常数塌缩负测 | 不最大化`z_n`无界距离 |
 | FCR-12 | 第十节 | `z_n`回归或分类已知Doppler、SNR、delay、rate、taps、SFO、STO | `code/cvsrffi/phase1_fcr_nuisance.py`、`code/cvsrffi/phase1_fcr_losses.py` | pending | 已知增强参数恢复测试 | 使用免费模拟监督 |
-| FCR-13 | 第十一节 | 构造Nuisance、Content、Fingerprint三轴干预立方体 | `code/cvsrffi/phase1_fcr_interventions.py` | pending | 三类pair保持/改变因素测试 | Fingerprint Pair是最高风险项 |
+| FCR-13 | 第十一节 | 构造Nuisance、Content、Fingerprint三轴干预立方体 | `code/cvsrffi/phase1_fcr_interventions.py` | blocked | 合成夹具验证严格索引；真实WiSig能力未测量 | 未发现可只读使用的本地WiSig索引/公共前导配置；禁止把合成Fingerprint Pair写成真实证据 |
 | FCR-14 | 第十二节 | 采用方案A，`z_n^leo`解释相对clean的新增复合nuisance | 规格、正式配置和报告 | pending | 配置标记和claim boundary测试 | 不声明纯星地信道恢复 |
 | FCR-15 | 第十三节 | Canonicalizer输出`x_tilde/eta_hat/r_can`并保留细粒度TX残差 | `code/cvsrffi/phase1_fcr_canonicalizer.py` | pending | 合成粗nuisance恢复和TX残差保持测试 | 初始实现保守解析归一化 |
 | FCR-16 | 第十四节1-6 | 实现`L_id/self/swap/shared/latent-cycle/eta` | `code/cvsrffi/phase1_fcr_losses.py` | pending | 每项独立单测和训练可达性测试 | swap为clean↔LEO双向 |
 | FCR-17 | 第十四节7 | 因子泄漏抑制要求`z_f/z_n/z_s`各自高目标信息、低非目标信息 | `code/cvsrffi/phase1_fcr_losses.py`、`code/cvsrffi/phase1_fcr_diagnostics.py` | pending | 条件域混淆、cross-covariance和独立probe | 不完全依赖全局DANN |
 | FCR-18 | 第四、五、十四节8 | 改进necessity为定向移植、保持内容/nuisance、同TX和drop-f三角验证 | `code/cvsrffi/phase1_fcr_transplant.py` | pending | 独立冻结分类器和重编码测试 | shuffle gap单独不算通过 |
 | FCR-19 | 第十四节9 | 实现指纹能量、响应平滑、参数边界和物理特征约束 | `code/cvsrffi/phase1_fcr_physics.py`、`code/cvsrffi/phase1_fcr_losses.py` | pending | 每项边界与有限值测试 | 物理项受Fisher gate控制 |
-| FCR-20 | 第十五节 | `U_s`只使用无标签自监督项，不能读取隐藏TX真值 | `code/dataset_wisig.py`、`code/cvsrffi/phase1_fcr_interventions.py`、`code/train.py` | pending | label_mask、梯度路由和真值不可达负测 | 第一版不使用硬伪标签 |
+| FCR-20 | 第十五节 | `U_s`只使用无标签自监督项，不能读取隐藏TX真值 | `code/dataset_wisig.py`、`code/cvsrffi/phase1_fcr_interventions.py`、`code/train.py` | implemented | `test_phase1_fcr_pairing.py`和`test_phase1_fcr_interventions.py`验证元数据不可逆TX边界 | 本任务仅完成并验证U_s元数据边界；训练梯度路由由后续任务接线验证 |
 | FCR-21 | 第十六节 | 训练按基础重构→swap/cycle→定向移植→身份DG四阶段启用 | `code/cvsrffi/phase1_fcr_schedule.py`、`code/train.py` | pending | E1-40/E41-90/E91-150/E151-200启用矩阵测试 | 权重采用ramp而非瞬时全开 |
 | FCR-22 | 第十七节 | 保存latent纯度、配对距离、移植、参数恢复和资源诊断 | `code/cvsrffi/phase1_fcr_diagnostics.py`、`code/train.py` | pending | 日志字段完整性测试 | probe独立于训练分类器 |
 | FCR-23 | 第十七节 | 实现R0-R8递进消融并绑定同row结果 | `code/scripts/`、正式实验报告 | pending | launcher dry-run和结果行绑定测试 | 先单seed最小可证伪矩阵 |
@@ -39,11 +39,12 @@
 
 ## 当前计数
 
-- `verified`：0
+- `verified`：2
+- `implemented`：1
 - `deferred`：0
 - `rejected`：0
-- `blocked`：0
-- `pending`：26
+- `blocked`：1
+- `pending`：22
 
 ## 最高风险项
 

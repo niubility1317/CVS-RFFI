@@ -54,6 +54,9 @@ class SatViewTransform:
     nuisance: Optional[torch.Tensor] = None
     nuisance_valid: Optional[torch.Tensor] = None
     nuisance_fields: tuple[str, ...] = ()
+    pair_id: Optional[tuple[str, ...]] = None
+    physical_sample_id: Optional[tuple[str, ...]] = None
+    crop_offset: Optional[torch.Tensor] = None
 
 
 @dataclass
@@ -228,6 +231,34 @@ def _expand_nuisance(
     return torch.cat([clean_nuisance, nuisance], dim=0), torch.cat([clean_valid, valid], dim=0)
 
 
+def _pair_meta_from_batch(
+    batch_meta: Any,
+    *,
+    batch_size: int,
+    device: torch.device,
+) -> tuple[Optional[tuple[str, ...]], Optional[torch.Tensor]]:
+    if not isinstance(batch_meta, Mapping):
+        return None, None
+    raw_ids = batch_meta.get("physical_sample_id")
+    raw_offsets = batch_meta.get("crop_offset")
+    if torch.is_tensor(raw_ids):
+        raw_ids = raw_ids.detach().cpu().reshape(-1).tolist()
+    if torch.is_tensor(raw_offsets):
+        raw_offsets = raw_offsets.detach().to(device=device, dtype=torch.long).reshape(-1)
+    if not isinstance(raw_ids, (tuple, list)) or len(raw_ids) != int(batch_size):
+        return None, None
+    if raw_offsets is None:
+        return None, None
+    if not torch.is_tensor(raw_offsets):
+        try:
+            raw_offsets = torch.as_tensor(raw_offsets, dtype=torch.long, device=device).reshape(-1)
+        except (TypeError, ValueError, RuntimeError):
+            return None, None
+    if int(raw_offsets.numel()) != int(batch_size):
+        return None, None
+    return tuple(str(value) for value in raw_ids), raw_offsets
+
+
 class BaselineOriginSatViewAugment:
     """Baseline-origin supervised satellite view generator.
 
@@ -280,8 +311,12 @@ class BaselineOriginSatViewAugment:
         args: Any,
         epoch: int,
         batch_idx: int,
+        batch_meta: Optional[Mapping[str, Any]] = None,
     ) -> SatViewTransform:
         clean_bsz = int(x.size(0))
+        physical_sample_id, crop_offset = _pair_meta_from_batch(
+            batch_meta, batch_size=clean_bsz, device=x.device
+        )
         stage_index, stage = self.stage_for_epoch(epoch)
         gen = self._generator(x.device, epoch, batch_idx)
         p = _clamp_prob(stage.view_prob)
@@ -295,6 +330,9 @@ class BaselineOriginSatViewAugment:
                 applied=False,
                 clean_batch_size=clean_bsz,
                 meta={"scenario": "clean_duplicate", "valid": False},
+                pair_id=physical_sample_id,
+                physical_sample_id=physical_sample_id,
+                crop_offset=crop_offset,
             )
         scenario = self._select_scenario(stage, gen, x.device)
         x_sat, raw_meta = self.apply_fn(x, scenario, args, gen=gen, return_meta=True)
@@ -316,6 +354,9 @@ class BaselineOriginSatViewAugment:
             nuisance=nuisance,
             nuisance_valid=nuisance_valid,
             nuisance_fields=nuisance_fields,
+            pair_id=physical_sample_id,
+            physical_sample_id=physical_sample_id,
+            crop_offset=crop_offset,
         )
 
     def expand(
