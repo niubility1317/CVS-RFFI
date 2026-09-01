@@ -6,7 +6,7 @@
 - 当前状态：`LOCAL_VERIFIED`
 - 正式实验数：8（R1–R8）
 - 共享先决阶段：R0，仅训练一次，不计入八个正式实验
-- code_commit：`ca86bf9ecfd288ccbdedf61acc429addc566a38c`
+- code_commit：`682701c72c2d573053ff5c66b23ba180cc831ec1`
 - Git分支：`codex/adv3b02-ecrs-v1-parity-fix-20260901`
 - 独立P0/P1审查：`READY`，原checkpoint污染与R0非同池评测问题均已关闭
 
@@ -39,7 +39,7 @@ R0从随机初始化开始，在上述冻结source上训练200epoch；不加载�
 
 |阶段/实验|GPU|设计改动|验证问题|
 |---|---:|---|---|
-|R0共享基线|0|收敛ADV3B02；无ECRS；无历史初始化|提供同source、同target评测池的公平共同基线|
+|R0共享基线|4|收敛ADV3B02；无ECRS；无历史初始化|提供同source、同target评测池的公平共同基线|
 |R1|1|固定Memory Polynomial＋内容估计＋岭回归|响应辨识是否有基本价值|
 |R2|2|固定样条响应曲面|样条是否优于固定多项式|
 |R3|3|R2＋包内split-fit|无标签自监督是否有效|
@@ -49,7 +49,7 @@ R0从随机初始化开始，在上述冻结source上训练200epoch；不加载�
 |R7|7|R6＋response auxiliary classifier和不同TX排序|响应曲面是否具备TX可分性|
 |R8|0|R7＋受限残差融合gate|是否能在不破坏主干的前提下提高识别|
 
-R0完成后GPU0释放，再由R8使用；任何时刻每张GPU最多一个本run训练任务。
+R0完成后GPU4释放，再由R4使用；R8使用GPU0。本run在每张GPU上最多同时运行一个训练任务。2026-09-02用户明确授权每张卡在现有任务基础上再增加1个实验，本次启动显式设置`MAX_GPU_TRAIN_PROCS=3`；若总进程数已达到3则保持队列等待，不干预外部任务。
 
 ## 4.冻结训练配置
 
@@ -73,13 +73,15 @@ R0完成后GPU0释放，再由R8使用；任何时刻每张GPU最多一个本run
 - 真实ADV3B02 checkpoint无query smoke：通过；验证ECRS前向、反向、checkpoint roundtrip和单LEO推理，未读取Phase2 query
 - N607只读数据核对：source 90000、`L_s=6300`、`U_s=56700`、`V=27000`；target 168000/场景
 - N607现有run只读检索：不存在匹配source receivers `1,3,4,6,8`和days `1,2,3`的可复用收敛ADV3B02 checkpoint
+- 2026-09-02发布前占用：多数GPU已有2个外部训练进程，GPU4与GPU7各有1个；launcher保留启动前GPU进程数守卫
+- GPU守卫launcher测试：4项通过
 
 ## 6.发布与启动
 
-- 本地release：`E:\type10-7\local_artifacts\releases\phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_20260901_r1_ca86bf9e.zip`
-- 本地release SHA256：`95D21FE27B0647F903D386B3B135B6329E5303DD8F2832295D85CE3D97A5E9D0`
-- 计划远端归档：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_20260901_r1_ca86bf9e.zip`
-- 计划远端release根：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_20260901_r1_ca86bf9e`
+- 本地release：`E:\type10-7\local_artifacts\releases\phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_20260901_r1_682701c7.zip`
+- 本地release SHA256：`C6CD0F452E7BDFEBF88A64ABD06011D8774DCA3B53BADB629AEE0FEB4E81E40F`
+- 计划远端归档：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_20260901_r1_682701c7.zip`
+- 计划远端release根：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_20260901_r1_682701c7`
 - 远端run根：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_20260901_r1`
 - 远端log根：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_20260901_r1`
 - 环境：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python`
@@ -89,7 +91,7 @@ R0完成后GPU0释放，再由R8使用；任何时刻每张GPU最多一个本run
 计划启动命令：
 
 ```bash
-nohup env ROOT=<release-root> PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python RUN_ID=phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_20260901_r1 RUNS_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_20260901_r1 LOG_ROOT=/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_20260901_r1 WISIG_PKL=/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl bash <release-root>/code/scripts/launch_phase1_adv3b02_ecrs_v1_20260901.sh > <log-root>/pipeline.out 2>&1 &
+nohup env ROOT=<release-root> PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python RUN_ID=phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_20260901_r1 RUNS_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_20260901_r1 LOG_ROOT=/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_20260901_r1 WISIG_PKL=/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl MAX_GPU_TRAIN_PROCS=3 bash <release-root>/code/scripts/launch_phase1_adv3b02_ecrs_v1_20260901.sh > <log-root>/pipeline.out 2>&1 &
 ```
 
 ## 7.停止规则与预期产物
@@ -102,4 +104,3 @@ nohup env ROOT=<release-root> PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bi
 - R1–R8：各自`best.pth`、`latest.pth`、训练指标、clean与三种LEO最终指标、ECRS响应/不确定性/融合诊断
 - pipeline日志与每个候选独立日志
 - 完成后在本报告追加同row结果、异常、解释和下一候选决策
-
