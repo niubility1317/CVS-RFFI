@@ -6,6 +6,7 @@ from typing import Any, Dict, Tuple
 
 from DataAugmentation import build_augmentor
 from training_controls import compute_mixstyle_epoch_state
+from cvsrffi.phase1_fcr_schedule import FCRLambdaConfig, FCRStageState, stage_for_epoch
 
 
 def add_bool_arg(parser: argparse.ArgumentParser, name: str, default: bool, help_true: str, help_false: str):
@@ -308,4 +309,30 @@ def training_stage_controller(epoch: int, args, domain_stats: Dict[str, Any], nu
     if not gates.get("group_ce", False):
         cur_w["group_ce"] = 0.0
     return stage_state, cur_w, gates
+
+
+def build_fcr_stage_state(epoch: int, args, optimizer_step: int) -> FCRStageState | None:
+    """Add the FCR schedule without mutating the existing ADV3B02/LEO state."""
+
+    if not bool(getattr(args, "use_fcr", False)):
+        return None
+    if str(getattr(args, "phase1_method", "adv3b02")) != "adv3b02_fcr":
+        raise ValueError("use_fcr=True requires phase1_method=adv3b02_fcr")
+    effective = dict(getattr(args, "effective_fcr_lambdas", {}) or {})
+    configured = FCRLambdaConfig(
+        self_reconstruction=float(effective.get("self", getattr(args, "lambda_fcr_self", 1.0))),
+        swap=float(effective.get("swap", getattr(args, "lambda_fcr_swap", 1.0))),
+        shared=float(effective.get("shared", getattr(args, "lambda_fcr_shared", 1.0))),
+        latent_cycle=float(effective.get("latent_cycle", getattr(args, "lambda_fcr_cycle", 1.0))),
+        eta=float(effective.get("eta", getattr(args, "lambda_fcr_eta", 1.0))),
+        factor=float(effective.get("factor", getattr(args, "lambda_fcr_factor", 1.0))),
+        transplant_necessity=float(effective.get("need", getattr(args, "lambda_fcr_need", 1.0))),
+        physical_features=float(effective.get("phys", getattr(args, "lambda_fcr_phys", 1.0))),
+    )
+    return stage_for_epoch(
+        epoch,
+        optimizer_step=int(optimizer_step),
+        configured=configured,
+        total_epochs=int(getattr(args, "epochs", 200)),
+    )
 

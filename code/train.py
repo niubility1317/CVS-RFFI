@@ -35,7 +35,7 @@ from dataset_wisig import (
     make_wisig_riei_receiver_holdout_split,
     make_wisig_trainval_test_by_day_rx,
 )
-from model_dual_cvsincnet import build_dual_model
+from model_dual_cvsincnet import build_dual_model, backbone_forward_compat
 from DataAugmentation import build_augmentor, apply_receiver_dg
 from training_controls import (
     collapse_guard_decision,
@@ -144,10 +144,31 @@ from cvsrffi.schedule import (
     make_augmentor,
     ramp_value,
     training_stage_controller,
+    build_fcr_stage_state,
 )
+from cvsrffi.phase1_fcr_schedule import FCRLambdaConfig, FCRStageState, permission_for_role
+from cvsrffi.phase1_fcr_fingerprint import FingerprintFactorOutput, fixed_response_basis
+from cvsrffi.phase1_fcr_interventions import InterventionCubeBatchBuilder
+from cvsrffi.phase1_fcr_losses import (
+    compute_cross_losses,
+    compute_transplant_losses,
+    mrstft_loss,
+    phase_increment_loss,
+    physical_feature_loss,
+)
+from cvsrffi.phase1_fcr_nuisance import NuisanceOutput
+from cvsrffi.phase1_fcr_physics import (
+    FisherIdentifiabilityGate,
+    fingerprint_energy_penalty,
+    parameter_boundary_penalty,
+    response_smoothness_penalty,
+)
+from cvsrffi.phase1_fcr_transplant import TransplantLossOutput, freeze_identity_classifier
+from cvsrffi.phase1_fcr_types import FCRConfig, FCRLossOutput, FCRPairBatch
 from cvsrffi.tensors import (
     batch_domain_stats,
     build_domain_label_map,
+    extract_batch_meta,
     extract_domain_from_extra,
     get_nested_tensor,
     make_torch_generator,
@@ -179,6 +200,335 @@ from cvsrffi.ssl_pseudo_label import PseudoLabelGateConfig, select_pseudo_labels
 
 SAT_EVAL_SCENARIOS_DEFAULT = "leo_clear_weak,leo_low_elev_weak,leo_rain_weak"
 FEDERATED_MAIN_SAT_EVAL_ON = "test_unseen_day_seen_rx,test_seen_day_unseen_rx,test_unseen_day_unseen_rx"
+
+FCR_LAMBDA_FLAGS = {
+    "self": "lambda_fcr_self",
+    "swap": "lambda_fcr_swap",
+    "shared": "lambda_fcr_shared",
+    "latent_cycle": "lambda_fcr_cycle",
+    "eta": "lambda_fcr_eta",
+    "factor": "lambda_fcr_factor",
+    "need": "lambda_fcr_need",
+    "phys": "lambda_fcr_phys",
+}
+
+
+def add_fcr_training_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
+    parser.add_argument(
+        "--phase1_method",
+        type=str,
+        default="adv3b02",
+        choices=["adv3b02", "adv3b02_fcr"],
+    )
+    add_bool_arg(
+        parser,
+        "use_fcr",
+        False,
+        "Enable FCR only for --phase1_method adv3b02_fcr",
+        "Keep the legacy ADV3B02 path without FCR parameters or losses",
+    )
+    parser.add_argument("--lambda_fcr_self", type=float, default=1.0)
+    parser.add_argument("--lambda_fcr_swap", type=float, default=1.0)
+    parser.add_argument("--lambda_fcr_shared", type=float, default=1.0)
+    parser.add_argument("--lambda_fcr_cycle", type=float, default=1.0)
+    parser.add_argument("--lambda_fcr_eta", type=float, default=1.0)
+    parser.add_argument("--lambda_fcr_factor", type=float, default=1.0)
+    parser.add_argument("--lambda_fcr_need", type=float, default=1.0)
+    parser.add_argument("--lambda_fcr_phys", type=float, default=1.0)
+    return parser
+
+
+def resolve_fcr_training_options(args):
+    method = str(getattr(args, "phase1_method", "adv3b02") or "adv3b02").strip().lower()
+    requested = bool(getattr(args, "use_fcr", False))
+    if requested and method != "adv3b02_fcr":
+        raise ValueError("--use_fcr requires --phase1_method adv3b02_fcr")
+    if method == "adv3b02_fcr" and not requested:
+        raise ValueError("--phase1_method adv3b02_fcr requires explicit --use_fcr")
+    raw = {name: float(getattr(args, attr, 1.0)) for name, attr in FCR_LAMBDA_FLAGS.items()}
+    for name, value in raw.items():
+        if not math.isfinite(value) or value < 0.0:
+            raise ValueError(f"FCR lambda {name} must be finite and >= 0")
+    args.phase1_method = method
+    args.use_fcr = bool(requested and method == "adv3b02_fcr")
+    args.effective_fcr_lambdas = raw if args.use_fcr else {name: 0.0 for name in raw}
+    if args.use_fcr and int(getattr(args, "epochs", 200)) != 200:
+        raise ValueError("ADV3B02-FCR uses the frozen 200-epoch schedule")
+    if args.use_fcr and str(getattr(args, "train_mode", "centralized")) != "centralized":
+        raise ValueError("ADV3B02-FCR Task10 supports centralized Phase1 training only")
+    if args.use_fcr and bool(getattr(args, "use_concat_sat_channel_aug", False)):
+        raise ValueError("ADV3B02-FCR builds its synchronized clean/LEO pair before any concat augmentation")
+    return args
+
+
+def validate_fcr_pair_for_role(pair: FCRPairBatch, role: str) -> None:
+    permission = permission_for_role(role)
+    if permission.role != "U_s":
+        return
+    if not bool(torch.as_tensor(pair.labels).eq(-1).all()):
+        raise ValueError("U_s FCR pairs must expose labels=-1 only")
+    if bool(torch.as_tensor(pair.label_mask, dtype=torch.bool).any()):
+        raise ValueError("U_s FCR pairs must have label_mask=false")
+    fingerprint_valid = torch.as_tensor(
+        pair.pair_valid_mask.get("fingerprint", torch.zeros_like(pair.label_mask)),
+        dtype=torch.bool,
+    )
+    if bool(fingerprint_valid.any()) or bool(torch.as_tensor(pair.fingerprint_pair_index).ge(0).any()):
+        raise ValueError("U_s FCR pairs cannot carry fingerprint/transplant capability")
+
+
+def fcr_readonly_validation_forward(model, x: torch.Tensor, **forward_kwargs):
+    was_training = bool(model.training)
+    model.eval()
+    try:
+        with torch.no_grad():
+            return model(x, **forward_kwargs)
+    finally:
+        model.train(was_training)
+
+
+def combine_fcr_training_losses(
+    *,
+    pair: FCRPairBatch,
+    cross: FCRLossOutput,
+    transplant: TransplantLossOutput,
+    identity_per_sample: torch.Tensor,
+    physical_components: Dict[str, torch.Tensor],
+    stage: FCRStageState,
+    configured: FCRLambdaConfig,
+) -> FCRLossOutput:
+    """Apply stage and permission routing to existing Task6/7/8 losses."""
+
+    del configured
+    reference = cross.total
+    zero = reference.reshape(-1).sum() * 0.0
+    label_mask = torch.as_tensor(pair.label_mask, device=identity_per_sample.device, dtype=torch.bool).reshape(-1)
+    is_unlabeled_role = bool(torch.as_tensor(pair.labels, device=label_mask.device).eq(-1).all())
+    if identity_per_sample.ndim != 1 or identity_per_sample.numel() != label_mask.numel():
+        raise ValueError("identity_per_sample and label_mask must have one value per row")
+
+    id_loss = identity_per_sample[label_mask].mean() if bool(label_mask.any()) and "id" in stage.active else zero
+    raw_physical = sum(
+        (value for name, value in physical_components.items() if name in {"mrstft", "phase"}), zero
+    )
+    self_loss = (
+        stage.scales["self"] * (cross.components["self"] + raw_physical)
+        if "self" in stage.active
+        else zero
+    )
+    swap_loss = stage.scales["swap"] * cross.components["swap"] if "swap" in stage.active else zero
+    shared_loss = stage.scales["shared"] * cross.components["shared"] if "shared" in stage.active else zero
+    cycle_loss = stage.scales["latent_cycle"] * cross.components["latent_cycle"] if "latent_cycle" in stage.active else zero
+    eta_loss = stage.scales["eta"] * cross.components["eta"] if "eta" in stage.active else zero
+    factor_raw = cross.components["factor"] + cross.components.get("anti_collapse", zero)
+    factor_loss = (
+        stage.scales["factor"] * factor_raw
+        if "factor" in stage.active and not is_unlabeled_role
+        else zero
+    )
+    phys_raw = sum(
+        (value for name, value in physical_components.items() if name not in {"mrstft", "phase"}), zero
+    )
+    phys_loss = stage.scales["phys"] * phys_raw if "phys" in stage.active else zero
+    transplant_allowed = bool(label_mask.any()) and ("transplant" in stage.active or "necessity" in stage.active)
+    transplant_loss = stage.scales["need"] * transplant.total if transplant_allowed else zero
+
+    components = {
+        "id": id_loss,
+        "self": self_loss,
+        "swap": swap_loss,
+        "shared": shared_loss,
+        "latent_cycle": cycle_loss,
+        "eta": eta_loss,
+        "factor": factor_loss,
+        "transplant": transplant_loss,
+        "phys": phys_loss,
+    }
+    total = sum(components.values(), zero)
+    metrics = {name: float(value.detach().cpu()) for name, value in components.items()}
+    metrics["active_fingerprint_pairs"] = float(transplant.active_pairs if transplant_allowed else 0)
+    metrics["freeze_decoder_for_necessity"] = float(stage.freeze_decoder_for_necessity)
+    for name, value in physical_components.items():
+        metrics[f"physical_{name}"] = float(value.detach().cpu())
+    return FCRLossOutput(total=total, components=components, metrics=metrics)
+
+
+class FrozenADV3B02IdentityClassifier(nn.Module):
+    """Frozen normal ADV3B02 identity backbone used only by strict Task8 pairs."""
+
+    def __init__(self, raw_model: nn.Module) -> None:
+        super().__init__()
+        self.backbone = deepcopy(raw_model.id_backbone)
+        freeze_identity_classifier(self)
+
+    def forward(self, iq: torch.Tensor) -> torch.Tensor:
+        out = backbone_forward_compat(self.backbone, iq, y=None, return_aux=True)
+        return out["logits"]
+
+
+class FCRTransplantDecoderAdapter(nn.Module):
+    """Adapt Task9 modules to Task8 without introducing replacement math."""
+
+    def __init__(self, fcr_module: nn.Module) -> None:
+        super().__init__()
+        object.__setattr__(self, "_fcr_module", fcr_module)
+
+    def parameters(self, recurse: bool = True):
+        del recurse
+        return self._fcr_module.decoder.parameters()
+
+    def forward(
+        self,
+        z_s: torch.Tensor,
+        z_f_id: torch.Tensor,
+        z_tx_state: torch.Tensor,
+        z_n_parts: Dict[str, torch.Tensor],
+    ):
+        fcr = self._fcr_module
+        s_hat = fcr.content.generator(z_s)
+        fingerprint = FingerprintFactorOutput(z_f_id=z_f_id, z_tx_state=z_tx_state)
+        # Task9 intentionally detaches fingerprint excitation: G_f -> E_s is absent.
+        response = fcr.fingerprint_operator(s_hat.detach(), fingerprint)
+        nuisance = NuisanceOutput(
+            z_ch=z_n_parts["channel"],
+            z_rx=z_n_parts["receiver"],
+            z_sync=z_n_parts["sync"],
+            z_gain=z_n_parts["gain"],
+            eta_pred=z_n_parts["eta_pred"],
+        )
+        return fcr.decoder(s_hat, response.delta_f, nuisance)
+
+
+def _fcr_aggregate(model, raw_model, iq: torch.Tensor):
+    out = model(iq, y_tx=None, grl_lambda=0.0, return_aux=True, domain_labels=None)
+    if not bool(getattr(raw_model, "use_fcr", False)) or getattr(raw_model, "fcr", None) is None:
+        raise RuntimeError("FCR objective requires raw_model.use_fcr=True")
+    return raw_model.fcr(iq, out["z_id"])
+
+
+def compute_fcr_pair_objective(
+    *,
+    model,
+    raw_model,
+    pair: FCRPairBatch,
+    role: str,
+    stage: FCRStageState,
+    configured: FCRLambdaConfig,
+    frozen_identity_classifier: nn.Module,
+) -> FCRLossOutput:
+    """Compose Task6/7/8 losses for one legal L_s or U_s pair batch."""
+
+    permission = permission_for_role(role)
+    if not permission.optimizer_step:
+        raise ValueError(f"role {permission.role} cannot enter the optimizer path")
+    validate_fcr_pair_for_role(pair, role)
+    fcr = raw_model.fcr
+    clean = _fcr_aggregate(model, raw_model, pair.clean_iq)
+    leo = _fcr_aggregate(model, raw_model, pair.leo_iq)
+
+    def cross_decode(source, destination):
+        # Keep Task9's recorded detach route; do not claim G_f -> E_s.
+        response = fcr.fingerprint_operator(source.content.s_hat.detach(), destination.fingerprint)
+        return fcr.decoder(source.content.s_hat, response.delta_f, destination.nuisance)
+
+    clean_to_leo = cross_decode(clean, leo)
+    leo_to_clean = cross_decode(leo, clean)
+
+    def reencode(iq: torch.Tensor):
+        return _fcr_aggregate(model, raw_model, iq).factors
+
+    known_nuisance = pair.nuisance
+    eta_pred = leo.factors.z_n_parts.get("eta_pred")
+    if eta_pred is not None and tuple(pair.nuisance.shape) != tuple(eta_pred.shape):
+        pair.nuisance = torch.zeros_like(eta_pred)
+        pair.nuisance_valid = torch.zeros_like(eta_pred, dtype=torch.bool)
+    cross = compute_cross_losses(
+        clean_factors=clean.factors,
+        leo_factors=leo.factors,
+        clean_self=clean.decode,
+        leo_self=leo.decode,
+        clean_to_leo=clean_to_leo,
+        leo_to_clean=leo_to_clean,
+        pair=pair,
+        reencode_clean_to_leo=reencode,
+        reencode_leo_to_clean=reencode,
+        config=fcr.config,
+    )
+
+    raw_reconstruction = {
+        "mrstft": 0.5 * (
+            mrstft_loss(pair.clean_iq, clean.decode.mu_iq)
+            + mrstft_loss(pair.leo_iq, leo.decode.mu_iq)
+        ),
+        "phase": 0.5 * (
+            phase_increment_loss(pair.clean_iq, clean.decode.mu_iq)
+            + phase_increment_loss(pair.leo_iq, leo.decode.mu_iq)
+        ),
+    }
+    basis = fixed_response_basis(clean.content.s_hat.detach()).abs().float()
+    gram = basis.transpose(1, 2).matmul(basis) / max(1, int(basis.size(1)))
+    snr_db = None
+    if known_nuisance.ndim == 2 and known_nuisance.size(1) > 0:
+        snr_db = known_nuisance[:, 0].detach() * 20.0
+    gate = FisherIdentifiabilityGate()(pair.clean_iq, gram, snr_db)
+    raw_reconstruction["features"] = 0.5 * (
+        physical_feature_loss(pair.clean_iq, clean.decode.mu_iq, gate)
+        + physical_feature_loss(pair.leo_iq, leo.decode.mu_iq, gate)
+    )
+    raw_reconstruction["fingerprint_energy"] = 0.5 * (
+        fingerprint_energy_penalty(clean.response.delta_f, clean.content.s_hat)
+        + fingerprint_energy_penalty(leo.response.delta_f, leo.content.s_hat)
+    )
+    raw_reconstruction["response_smoothness"] = 0.5 * (
+        response_smoothness_penalty(clean.response.delta_f)
+        + response_smoothness_penalty(leo.response.delta_f)
+    )
+    raw_reconstruction["parameter_boundary"] = 0.25 * sum(
+        (
+            parameter_boundary_penalty(response.response_coef.real, -0.05, 0.05)
+            + parameter_boundary_penalty(response.response_coef.imag, -0.05, 0.05)
+            for response in (clean.response, leo.response)
+        ),
+        clean.response.response_coef.real.new_zeros(()),
+    )
+
+    decoder_adapter = FCRTransplantDecoderAdapter(fcr)
+
+    def fingerprint_residual_error(iq: torch.Tensor) -> torch.Tensor:
+        aggregate = _fcr_aggregate(model, raw_model, iq)
+        return aggregate.response.delta_f.abs().square().mean()
+
+    transplant = compute_transplant_losses(
+        pair=pair,
+        source_factors=clean.factors,
+        target_factors=clean.factors,
+        decoder=decoder_adapter,
+        reencode=reencode,
+        identity_classifier=frozen_identity_classifier,
+        fingerprint_residual_error=fingerprint_residual_error,
+        freeze_decoder=bool(stage.freeze_decoder_for_necessity),
+    )
+    if "transplant" not in permission.allowed:
+        zero = transplant.total * 0.0
+        transplant = TransplantLossOutput(
+            active_pairs=0,
+            total=zero,
+            components={name: value * 0.0 for name, value in transplant.components.items()},
+            metrics={"active_pairs": 0.0},
+        )
+    identity_per_sample = pair.clean_iq.new_zeros((pair.clean_iq.size(0),))
+    combined = combine_fcr_training_losses(
+        pair=pair,
+        cross=cross,
+        transplant=transplant,
+        identity_per_sample=identity_per_sample,
+        physical_components=raw_reconstruction,
+        stage=stage,
+        configured=configured,
+    )
+    combined.metrics["role_labeled"] = float(permission.role == "L_s")
+    combined.metrics["role_unlabeled"] = float(permission.role == "U_s")
+    return combined
 
 
 def load_init_checkpoint_weights(model: nn.Module, path: str, device: torch.device, strict: bool = False) -> None:
@@ -2582,6 +2932,7 @@ def main():
     parser.add_argument("--swad_tolerance", type=float, default=2.0,
                         help="Collect epochs whose primary OOD score is within this margin of the best-so-far score.")
     parser.add_argument("--swad_save_path", type=str, default="")
+    add_fcr_training_args(parser)
     args = parser.parse_args()
     explicit_group_ce_min_domains = None
     explicit_fishr_min_domains = None
@@ -2611,6 +2962,7 @@ def main():
     args = apply_training_test_eval_defaults(args)
     args = enforce_federated_sat_eval_args(args)
     args = apply_force_ce_grl_only(args)
+    args = resolve_fcr_training_options(args)
     args.runtime_thread_info = configure_torch_thread_runtime(
         cpu_threads=args.cpu_threads if int(args.cpu_threads) > 0 else None,
         cpu_interop_threads=args.cpu_interop_threads if int(args.cpu_interop_threads) > 0 else None,
@@ -2649,12 +3001,12 @@ def main():
         raise ValueError("--fl_baseline_view_ce_weight must be >= 0")
     if bool(getattr(args, "concat_sat_ce_only", False)) and not use_concat_sat:
         print("[WARN] --concat_sat_ce_only has no effect unless --use_concat_sat_channel_aug is enabled.", flush=True)
-    if (bool(args.eval_sat_channel) or bool(args.use_sat_consistency) or use_concat_sat) and SatSimConfig is None:
+    if (bool(args.eval_sat_channel) or bool(args.use_sat_consistency) or use_concat_sat or bool(args.use_fcr)) and SatSimConfig is None:
         raise ImportError("sat_channel.py is required when satellite evaluation/training is enabled.")
     if bool(args.eval_sat_channel):
         for scenario in args.eval_sat_scenario_list:
             sat_channel_config_for_scenario(scenario)
-    if bool(args.use_sat_consistency) or use_concat_sat:
+    if bool(args.use_sat_consistency) or use_concat_sat or bool(args.use_fcr):
         for scenario in args.sat_train_scenario_list:
             sat_channel_config_for_scenario(scenario)
         if args.sat_view_schedule:
@@ -2717,6 +3069,22 @@ def main():
         print(
             f"[BOSV-SAT-TRAIN] schedule={sat_view_schedule} "
             f"default_prob={float(args.sat_view_prob):.3f}",
+            flush=True,
+        )
+    fcr_view_aug = None
+    if bool(args.use_fcr):
+        fcr_view_aug = BaselineOriginSatViewAugment(
+            scenarios=getattr(args, "sat_train_scenario_list", [args.sat_train_scenario]),
+            schedule=sat_view_schedule,
+            p=1.0,
+            seed=int(getattr(args, "sat_view_seed", args.seed)) + 104729,
+            apply_fn=apply_sat_channel_for_scenario,
+        )
+        print(
+            "[FCR-CONFIG] "
+            f"method={args.phase1_method} use_fcr=1 epochs={args.epochs} "
+            f"effective_lambdas={json.dumps(args.effective_fcr_lambdas, sort_keys=True)} "
+            "task9_fingerprint_excitation_detach=1 query_access=0",
             flush=True,
         )
     concat_sat_aug = None
@@ -3057,6 +3425,8 @@ def main():
                                channel_trim_scale=float(args.channel_trim_scale),
                                fast_infer_when_no_aux=bool(args.fast_infer_when_no_aux),
                                use_tx_adv_on_zdom=bool(args.use_tx_adv_on_zdom or str(args.train_mode).lower() == "fedcvs_vmb"),
+                               use_fcr=bool(args.use_fcr),
+                               fcr_config=(FCRConfig(input_len=int(input_len)) if bool(args.use_fcr) else None),
                                arch_family=str(args.arch_family)).to(device)
     load_init_checkpoint_weights(
         model,
@@ -3302,9 +3672,17 @@ def main():
             f"losses=tx:{float(args.lambda_ssl_tx):.4f},proto:{float(args.lambda_ssl_proto):.4f},receiver_branch:{float(args.lambda_meta_ssl):.4f}",
             flush=True,
         )
+    fcr_identity_classifier = None
+    if bool(args.use_fcr):
+        raw_model = getattr(model, "_orig_mod", model)
+        if not bool(getattr(raw_model, "use_fcr", False)) or getattr(raw_model, "fcr", None) is None:
+            raise RuntimeError("explicit ADV3B02-FCR route did not construct the FCR model")
+        fcr_identity_classifier = FrozenADV3B02IdentityClassifier(raw_model).to(device)
+        print("[FCR-IDENTITY] frozen_normal_adv3b02_backbone=1", flush=True)
     ema_avg = AveragedModelState("ema", decay=float(args.ema_decay)) if bool(args.use_ema_ckpt) else None
     swa_avg = AveragedModelState("swa") if bool(args.use_swa_ckpt) else None
     swad_avg = AveragedModelState("swad") if bool(args.use_swad_ckpt) else None
+    optimizer_step_count = 0
 
     for epoch in range(1, args.epochs + 1):
         model.train()
@@ -3314,6 +3692,8 @@ def main():
         skipped_before_epoch = int(skipped_backward_batches)
         diag_sat_cls_active_epoch = False
         diag_sat_cons_active_epoch = False
+        fcr_capability_reasons_epoch: Dict[str, int] = {}
+        fcr_stage_state = build_fcr_stage_state(epoch, args, optimizer_step_count)
         epoch_t0 = time.perf_counter()
         meters = {k: AverageMeter() for k in [
             "loss", "cls", "dom", "adv", "orth", "cons", "group_ce", "txacc",
@@ -3329,6 +3709,8 @@ def main():
             "meta_ssl_tx", "meta_ssl_proto", "meta_ssl_dom", "meta_ssl_adv",
             "meta_ssl_coverage", "meta_ssl_accept", "meta_ssl_proto_agree", "meta_ssl_teacher_conf",
             "meta_ssl_proto_active",
+            "fcr_total", "fcr_id", "fcr_self", "fcr_swap", "fcr_shared", "fcr_latent_cycle",
+            "fcr_eta", "fcr_factor", "fcr_transplant", "fcr_phys", "fcr_active_pairs",
             "w_cls", "w_dom", "w_adv", "w_orth", "w_cons", "w_group_ce",
             "w_cls_pa", "w_cls_dac", "w_pa_joint_inv", "w_pa_kl", "w_dac_reg", "w_pa_reg",
             "w_sat_cls", "w_sat_cons", "w_proto", "w_supcon", "w_fishr", "w_open_world_feat", "w_feature_norm",
@@ -3359,12 +3741,15 @@ def main():
                     except StopIteration:
                         meta_ssl_batch = None
             if meta_ssl_batch is not None:
-                x_meta_ssl, _, extra_meta_ssl = unpack_batch(meta_ssl_batch)
+                x_meta_ssl, y_meta_ssl, extra_meta_ssl = unpack_batch(meta_ssl_batch)
                 x_meta_ssl = x_meta_ssl.to(device, non_blocking=True)
+                y_meta_ssl = y_meta_ssl.to(device, non_blocking=True)
                 d_meta_ssl_raw = extract_domain_from_extra(extra_meta_ssl, device)
                 d_meta_ssl = remap_domain_tensor(d_meta_ssl_raw, domain_label_map, device) if d_meta_ssl_raw is not None else None
             else:
                 x_meta_ssl = None
+                y_meta_ssl = None
+                extra_meta_ssl = None
                 d_meta_ssl_raw = None
                 d_meta_ssl = None
             x, y, d_raw, concat_sat_ce_view = prepare_concat_sat_batch_for_training(
@@ -3379,6 +3764,53 @@ def main():
             d = remap_domain_tensor(d_raw, domain_label_map, device) if d_raw is not None else None
             domain_stats = batch_domain_stats(d, y, num_domains)
             stage_state, cur_w, domain_gates = training_stage_controller(epoch, args, domain_stats, num_domains)
+            fcr_stage_state = build_fcr_stage_state(epoch, args, optimizer_step_count)
+
+            fcr_labeled_pair = None
+            fcr_unlabeled_pair = None
+            if bool(args.use_fcr):
+                if fcr_view_aug is None or fcr_stage_state is None or fcr_identity_classifier is None:
+                    raise RuntimeError("FCR training route is incompletely configured")
+                batch_meta = extract_batch_meta(extra)
+                if batch_meta is None:
+                    raise ValueError("ADV3B02-FCR L_s requires collated Phase1 sample metadata")
+                with torch.no_grad():
+                    labeled_leo_view = fcr_view_aug.transform(
+                        safe_iq_tensor(x),
+                        args=args,
+                        epoch=epoch,
+                        batch_idx=batch_idx,
+                        batch_meta=batch_meta,
+                    )
+                labeled_builder = InterventionCubeBatchBuilder()
+                fcr_labeled_pair = labeled_builder.build(
+                    safe_iq_tensor(x), labeled_leo_view, y, d_raw, batch_meta
+                )
+                for reason in labeled_builder.capability.reason.values():
+                    fcr_capability_reasons_epoch[reason] = fcr_capability_reasons_epoch.get(reason, 0) + 1
+                if x_meta_ssl is not None:
+                    unlabeled_meta = extract_batch_meta(extra_meta_ssl)
+                    if unlabeled_meta is None:
+                        raise ValueError("ADV3B02-FCR U_s requires collated Phase1 sample metadata")
+                    with torch.no_grad():
+                        unlabeled_leo_view = fcr_view_aug.transform(
+                            safe_iq_tensor(x_meta_ssl),
+                            args=args,
+                            epoch=epoch,
+                            batch_idx=batch_idx + 1_000_000,
+                            batch_meta=unlabeled_meta,
+                        )
+                    unlabeled_builder = InterventionCubeBatchBuilder()
+                    fcr_unlabeled_pair = unlabeled_builder.build(
+                        safe_iq_tensor(x_meta_ssl),
+                        unlabeled_leo_view,
+                        y_meta_ssl,
+                        d_meta_ssl_raw,
+                        unlabeled_meta,
+                    )
+                    validate_fcr_pair_for_role(fcr_unlabeled_pair, "U_s")
+                    for reason in unlabeled_builder.capability.reason.values():
+                        fcr_capability_reasons_epoch[reason] = fcr_capability_reasons_epoch.get(reason, 0) + 1
 
             need_dac_aux = bool(args.enable_dac_aux and stage_state["use_aux_views"] > 0.0 and (
                 cur_w["cls_dac"] > 0.0 or cur_w["dac_reg"] > 0.0
@@ -3639,6 +4071,61 @@ def main():
                         "proto_active": int(meta_ssl_proto_bank.active_count()),
                     }
 
+                fcr_loss = FCRLossOutput(
+                    total=z_id.new_zeros(()),
+                    components={name: z_id.new_zeros(()) for name in (
+                        "id", "self", "swap", "shared", "latent_cycle", "eta", "factor", "transplant", "phys"
+                    )},
+                    metrics={"active_fingerprint_pairs": 0.0},
+                )
+                if bool(args.use_fcr):
+                    configured_fcr = FCRLambdaConfig(
+                        self_reconstruction=float(args.effective_fcr_lambdas["self"]),
+                        swap=float(args.effective_fcr_lambdas["swap"]),
+                        shared=float(args.effective_fcr_lambdas["shared"]),
+                        latent_cycle=float(args.effective_fcr_lambdas["latent_cycle"]),
+                        eta=float(args.effective_fcr_lambdas["eta"]),
+                        factor=float(args.effective_fcr_lambdas["factor"]),
+                        transplant_necessity=float(args.effective_fcr_lambdas["need"]),
+                        physical_features=float(args.effective_fcr_lambdas["phys"]),
+                    )
+                    raw_model = getattr(model, "_orig_mod", model)
+                    labeled_fcr_loss = compute_fcr_pair_objective(
+                        model=model,
+                        raw_model=raw_model,
+                        pair=fcr_labeled_pair,
+                        role="L_s",
+                        stage=fcr_stage_state,
+                        configured=configured_fcr,
+                        frozen_identity_classifier=fcr_identity_classifier,
+                    )
+                    fcr_loss = labeled_fcr_loss
+                    if fcr_unlabeled_pair is not None:
+                        unlabeled_fcr_loss = compute_fcr_pair_objective(
+                            model=model,
+                            raw_model=raw_model,
+                            pair=fcr_unlabeled_pair,
+                            role="U_s",
+                            stage=fcr_stage_state,
+                            configured=configured_fcr,
+                            frozen_identity_classifier=fcr_identity_classifier,
+                        )
+                        fcr_loss = FCRLossOutput(
+                            total=labeled_fcr_loss.total + unlabeled_fcr_loss.total,
+                            components={
+                                name: labeled_fcr_loss.components[name] + unlabeled_fcr_loss.components[name]
+                                for name in labeled_fcr_loss.components
+                            },
+                            metrics={
+                                **labeled_fcr_loss.metrics,
+                                "active_fingerprint_pairs": (
+                                    labeled_fcr_loss.metrics.get("active_fingerprint_pairs", 0.0)
+                                    + unlabeled_fcr_loss.metrics.get("active_fingerprint_pairs", 0.0)
+                                ),
+                                "u_s_active": 1.0,
+                            },
+                        )
+
                 loss_cls = core["loss_cls"]
                 loss_dom = core["loss_dom"]
                 loss_adv = core["loss_adv"]
@@ -3686,6 +4173,7 @@ def main():
                     + float(args.lambda_ssl_proto) * sanitize_loss("meta_ssl_proto", loss_meta_ssl_proto, z_id, loss_warn_counts)
                     + float(args.lambda_meta_ssl) * sanitize_loss("meta_ssl_dom", loss_meta_ssl_dom, z_id, loss_warn_counts)
                     + float(args.lambda_meta_ssl) * sanitize_loss("meta_ssl_adv", loss_meta_ssl_adv, z_id, loss_warn_counts)
+                    + sanitize_loss("fcr", fcr_loss.total, z_id, loss_warn_counts)
                 )
 
             stepped, grad_stats = safe_backward_step(model, optimizer, scaler, loss, args, use_amp)
@@ -3699,6 +4187,8 @@ def main():
                 update_meta_ssl_teacher_ema(meta_ssl_teacher, model, float(args.ssl_teacher_ema))
             if stepped and ema_avg is not None and epoch >= int(args.ema_start_epoch):
                 ema_avg.update(model, epoch, ema=True)
+            if stepped:
+                optimizer_step_count += 1
 
             bsz = x.size(0)
             meters["loss"].update(loss.item(), bsz)
@@ -3745,6 +4235,10 @@ def main():
             meters["meta_ssl_proto_agree"].update(meta_ssl_stats["proto_agreement_rate"], bsz)
             meters["meta_ssl_teacher_conf"].update(meta_ssl_stats["teacher_confidence"], bsz)
             meters["meta_ssl_proto_active"].update(meta_ssl_stats["proto_active"], 1)
+            meters["fcr_total"].update(fcr_loss.total.item(), bsz)
+            for fcr_name in ("id", "self", "swap", "shared", "latent_cycle", "eta", "factor", "transplant", "phys"):
+                meters[f"fcr_{fcr_name}"].update(fcr_loss.components[fcr_name].item(), bsz)
+            meters["fcr_active_pairs"].update(fcr_loss.metrics.get("active_fingerprint_pairs", 0.0), 1)
             meters["w_cls"].update(loss_cls.item(), bsz)
             meters["w_dom"].update(cur_w["dom"] * loss_dom.item(), bsz)
             meters["w_adv"].update(cur_w["adv"] * loss_adv.item(), bsz)
@@ -3920,6 +4414,15 @@ def main():
             "train_meta_ssl_proto_agreement_rate": meters["meta_ssl_proto_agree"].avg,
             "train_meta_ssl_teacher_confidence": meters["meta_ssl_teacher_conf"].avg,
             "train_meta_ssl_active_prototypes": meters["meta_ssl_proto_active"].avg,
+            "fcr_enabled": bool(args.use_fcr),
+            "fcr_stage": None if fcr_stage_state is None else fcr_stage_state.name,
+            "fcr_scales": {} if fcr_stage_state is None else dict(fcr_stage_state.scales),
+            "fcr_freeze_decoder_for_necessity": (
+                False if fcr_stage_state is None else bool(fcr_stage_state.freeze_decoder_for_necessity)
+            ),
+            "fcr_train_total_loss": meters["fcr_total"].avg,
+            "fcr_active_fingerprint_pairs": meters["fcr_active_pairs"].avg,
+            "fcr_capability_reasons": dict(fcr_capability_reasons_epoch),
             "train_zid_norm": meters["zid_norm"].avg,
             "test_named": named_test_stats,
             "sat_test_named": sat_test_stats,
@@ -4168,6 +4671,21 @@ def main():
                                  test_ran=test_ran_this_epoch,
                                  time_stats=time_stats),
               flush=True)
+        if fcr_stage_state is not None:
+            fcr_components_log = {
+                name: meters[f"fcr_{name}"].avg
+                for name in ("id", "self", "swap", "shared", "latent_cycle", "eta", "factor", "transplant", "phys")
+            }
+            print(
+                "[FCR] "
+                f"stage={fcr_stage_state.name} "
+                f"scales={json.dumps(dict(fcr_stage_state.scales), sort_keys=True)} "
+                f"components={json.dumps(fcr_components_log, sort_keys=True)} "
+                f"active_pairs={meters['fcr_active_pairs'].avg:.3f} "
+                f"capability_reasons={json.dumps(fcr_capability_reasons_epoch, sort_keys=True)} "
+                f"freeze_decoder_for_necessity={int(fcr_stage_state.freeze_decoder_for_necessity)}",
+                flush=True,
+            )
         for sat_line in format_sat_test_lines(sat_test_stats):
             print(sat_line, flush=True)
         print(

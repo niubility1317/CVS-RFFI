@@ -23,17 +23,17 @@
 | FCR-11 | 第十节 | clean/LEO显式共享一致性并配置防塌缩约束 | `code/cvsrffi/phase1_fcr_losses.py` | implemented | `test_phase1_fcr_cross_losses.py`核对双向stop-gradient、variance/covariance和常数塌缩正罚项 | 不最大化`z_n`无界距离；未形成端到端或N607证据 |
 | FCR-12 | 第十节 | `z_n`回归或分类已知Doppler、SNR、delay、rate、taps、SFO、STO | `code/cvsrffi/phase1_fcr_nuisance.py`、`code/cvsrffi/phase1_fcr_losses.py` | implemented | `test_phase1_fcr_cross_losses.py`核对`nuisance_valid`字段掩码和无效字段零梯度 | 使用免费模拟监督；未形成端到端或N607证据 |
 | FCR-13 | 第十一节 | 构造Nuisance、Content、Fingerprint三轴干预立方体 | `code/cvsrffi/phase1_fcr_interventions.py` | blocked | 合成夹具验证严格索引；真实WiSig能力未测量 | 未发现可只读使用的本地WiSig索引/公共前导配置；禁止把合成Fingerprint Pair写成真实证据 |
-| FCR-14 | 第十二节 | 采用方案A，`z_n^leo`解释相对clean的新增复合nuisance | 规格、正式配置和报告 | pending | 配置标记和claim boundary测试 | 不声明纯星地信道恢复 |
+| FCR-14 | 第十二节 | 采用方案A，`z_n^leo`解释相对clean的新增复合nuisance | `code/train.py`、Task10报告 | implemented | 候选路径用同物理clean/LEO pair将LEO factor作为cross decode目标nuisance并记录相对链路claim boundary | 仅为成对训练语义；不声明纯星地信道恢复或真实实验效果 |
 | FCR-15 | 第十三节 | Canonicalizer输出`x_tilde/eta_hat/r_can`并保留细粒度TX残差 | `code/cvsrffi/phase1_fcr_canonicalizer.py` | implemented | 本地合成测试核对公共gain/phase/CFO误差下降与非公共IQ imbalance残差能量保持 | 初始实现保守解析归一化；未形成端到端或N607证据 |
-| FCR-16 | 第十四节1-6 | 实现`L_id/self/swap/shared/latent-cycle/eta` | `code/cvsrffi/phase1_fcr_losses.py` | implemented | `test_phase1_fcr_cross_losses.py`核对self、双向destination-bound swap、shared、cycle、eta及有限空pair | swap为clean↔LEO双向；未形成训练可达性或N607证据 |
+| FCR-16 | 第十四节1-6 | 实现`L_id/self/swap/shared/latent-cycle/eta` | `code/cvsrffi/phase1_fcr_losses.py`、`code/train.py` | implemented | 既有cross-loss测试加`test_phase1_fcr_gradient_routing.py`核对完整Task6/7/8组合、双向swap/cycle和有限反传 | 已形成候选训练本地可达性；未形成真实checkpoint或N607证据 |
 | FCR-17 | 第十四节7 | 因子泄漏抑制要求`z_f/z_n/z_s`各自高目标信息、低非目标信息 | `code/cvsrffi/phase1_fcr_losses.py`、`code/cvsrffi/phase1_fcr_diagnostics.py` | implemented | `test_phase1_fcr_cross_losses.py`核对cross-covariance组合和训练外probe接口 | 条件domain-confusion由调用方显式提供；不完全依赖全局DANN |
 | FCR-18 | 第四、五、十四节8 | 改进necessity为定向移植、保持内容/nuisance、同TX和drop-f三角验证 | `code/cvsrffi/phase1_fcr_transplant.py` | implemented | 本地定向移植测试核对严格索引、空pair零调用、冻结分类器输入梯度、内容/nuisance保持、同TX控制、drop-f stop-gradient和Decoder冻结 | FCR-13仍blocked；本条仅为模块语义实现，不构成真实strict-pair、端到端或N607证据；shuffle gap单独不算通过 |
 | FCR-19 | 第十四节9 | 实现指纹能量、响应平滑、参数边界和物理特征约束 | `code/cvsrffi/phase1_fcr_physics.py`、`code/cvsrffi/phase1_fcr_losses.py` | implemented | 本地聚焦测试核对逐物理块Fisher加权、零权重归零、零/近零有限和预测梯度；模块提供指纹能量、响应平滑及参数边界罚项 | 物理项受Fisher gate控制；未形成端到端或N607证据 |
-| FCR-20 | 第十五节 | `U_s`只使用无标签自监督项，不能读取隐藏TX真值 | `code/dataset_wisig.py`、`code/cvsrffi/phase1_fcr_interventions.py`、`code/train.py` | implemented | `test_phase1_fcr_pairing.py`和`test_phase1_fcr_interventions.py`验证元数据不可逆TX边界 | 本任务仅完成并验证U_s元数据边界；训练梯度路由由后续任务接线验证 |
-| FCR-21 | 第十六节 | 训练按基础重构→swap/cycle→定向移植→身份DG四阶段启用 | `code/cvsrffi/phase1_fcr_schedule.py`、`code/train.py` | pending | E1-40/E41-90/E91-150/E151-200启用矩阵测试 | 权重采用ramp而非瞬时全开 |
+| FCR-20 | 第十五节 | `U_s`只使用无标签自监督项，不能读取隐藏TX真值 | `code/dataset_wisig.py`、`code/cvsrffi/phase1_fcr_interventions.py`、`code/train.py` | verified | `test_phase1_fcr_unlabeled_boundary.py`和gradient测试核对`labels=-1`、显式mask、无identity/factor/transplant且允许项可反传 | 验证范围仅限本地U_s训练路由；无真TX、硬伪标签或query证据面 |
+| FCR-21 | 第十六节 | 训练按基础重构→swap/cycle→定向移植→身份DG四阶段启用 | `code/cvsrffi/phase1_fcr_schedule.py`、`code/cvsrffi/schedule.py`、`code/train.py` | implemented | `test_phase1_fcr_schedule.py`核对E1/40/41/90/91/150/151/200、线性ramp、optimizer step交替和越界拒绝 | FCR权重独立于既有E80 sat CE/LEO_WEAK；未形成真实checkpoint证据 |
 | FCR-22 | 第十七节 | 保存latent纯度、配对距离、移植、参数恢复和资源诊断 | `code/cvsrffi/phase1_fcr_diagnostics.py`、`code/train.py` | pending | 日志字段完整性测试 | probe独立于训练分类器 |
 | FCR-23 | 第十七节 | 实现R0-R8递进消融并绑定同row结果 | `code/scripts/`、正式实验报告 | pending | launcher dry-run和结果行绑定测试 | 先单seed最小可证伪矩阵 |
-| FCR-24 | 项目协议4、4.3节 | 保持`L_s/U_s/V`权限、LEO_WEAK日程和clean/三场景最终评测 | `code/train.py`、正式launcher | pending | 协议负测、真实checkpoint无query smoke、四评测检查 | 不修改普通ADV3B02全局默认 |
+| FCR-24 | 项目协议4、4.3节 | 保持`L_s/U_s/V`权限、LEO_WEAK日程和clean/三场景最终评测 | `code/train.py`、`code/cvsrffi/phase1_fcr_schedule.py`、正式launcher | pending | Task10协议负测已核对L_s/U_s/V、query不可达、只读V和普通路径有效lambda归零；Task11仍须真实checkpoint无query smoke及clean/三场景最终评测 | 本任务不修改普通ADV3B02、E80 sat CE或LEO_WEAK默认；未作实验完成声明 |
 | FCR-25 | ADV3B02集成要求 | `use_fcr=false`保持旧checkpoint、state和输出兼容 | `code/model_dual_cvsincnet.py`、`code/cvsrffi/checkpoint.py` | verified | 严格加载和逐元素关闭态测试 | 仅开启时实例化FCR参数 |
 | FCR-26 | 部署闭合 | checkpoint保存FCR模块、物理基、统计和feature schema；单LEO IQ独立推理 | `code/cvsrffi/checkpoint.py`、`code/model_dual_cvsincnet.py` | pending | 保存—加载—单视图推理往返 | 推理不需要clean伴随输入 |
 
