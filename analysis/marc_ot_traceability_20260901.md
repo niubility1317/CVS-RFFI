@@ -1,5 +1,7 @@
 # MARC-OT设计落地追踪
 
+> 2026-09-02状态更新：本文件记录的是早期首轮软件闭合，部分“严格同构”表述已被真实r3/r6运行前后的反向审计收紧。最新逐项差距、在途r6状态和下一版优化以`docs/experiments/marc_ot_design_alignment_20260902.md`为准；本文件不再作为完整设计parity结论。
+
 设计来源：`docs/superpowers/specs/2026-09-01-marc-ot-design.md`、`docs/superpowers/plans/2026-09-01-marc-ot.md`、`项目.md`及Task1～9实现报告。冻结代码提交为`452967f1bb38f133afb69d0f7e5c027d97bcc92a`。
 
 状态口径：`verified`表示生产文件与本轮测试共同证明相应软件要求；`pending`、`blocked`和`deferred`分别表示证据尚待取得、受前置科学结果约束和明确不在首轮范围。`software supported`只表示接口、调度和失败语义已由测试覆盖；`training coverage capability`只表示生产训练入口能消费合法调度、执行真实优化步并如实记录所训练子集；两者都不等于真实Phase1训练，更不等于`pilot_executed=true`或存在性能结果。

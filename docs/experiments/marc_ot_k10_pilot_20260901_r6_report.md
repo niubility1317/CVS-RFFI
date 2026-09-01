@@ -51,3 +51,12 @@ CUDA_VISIBLE_DEVICES=<physical_gpu> /home/szu2070436088/.conda/envs/CVS-RFFI/bin
 - 其余15个`adapt-unit`均已启动；PID与物理GPU映射已逐项回读，GPU0～6各2个训练单元，GPU7为1个训练单元，未超过每卡2个训练实验的上限
 - 15个Python进程的CWD均为r6不可变release checkout；GPU显存占用约820～912MiB/进程，首次回读未见`Traceback`、`RuntimeError`、CUDA OOM或协议异常指纹
 - 启动用本地SSH通道已全部退出；远端训练继续运行。后续保持低频只读监控，不因中间性能停止，不在18份冻结态齐备前执行`freeze-collection`或打开query
+
+## 2026-09-02 00:44技术异常回读
+
+- 状态：`PARTIAL_RUNNING_WITH_ONE_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。
+- `leo_low_elev_weak/R2`在support-only阶段失败：`support-bank transport marginals failed to converge: row_error=0.00010051 column_error=5.58794e-09`。
+- 根因：R2的transport/statistics权重均为0，但r6旧实现仍无条件计算Sinkhorn并执行收敛检查；与R2目标无关的零权重分支中断了该单元。
+- 影响：3个R0已完成，14个Python适配进程仍健康运行约49分钟，失败单元已退出；18/18冻结态无法闭合，因此不得打开query、不得连接truth、不得评分。
+- 处置：保留r6全部产物，不覆盖、不原地重启、不停止其余14个健康单元。本地修复采用零权重lazy-skip并已有回归测试；完成定点P1修复、验证、Git发布和新不可变release后，只能以新run ID执行替代实验。
+- ETA：当前r6本身不能合法完成，故无有效完成时间；替代run的ETA需在修复release真实smoke和首个完整适配单元后重新估算。

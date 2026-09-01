@@ -94,7 +94,32 @@ def _validate_config_payload(value: Any) -> Mapping[str, Any]:
     feature_binding = _validate_support_feature_binding(value["support_feature"])
     legacy_payload = dict(value)
     legacy_payload.pop("support_feature")
+    extensions: dict[str, Any] = {}
+    if legacy_payload.get("schema") == "cvs.phase2.marc_ot.pilot_config.v2":
+        for name in ("optimizer", "support_selection", "loss"):
+            extension = legacy_payload.pop(name, None)
+            if not isinstance(extension, Mapping):
+                raise ValueError(f"optimized MARC-OT config requires {name}")
+            extensions[name] = dict(extension)
+        expected_selection = {
+            "mode": "EXACT_D92_OLD_ONLY",
+            "identity_dim": 160,
+            "fft_dim": 96,
+            "class_scope": "OLD_ONLY_6",
+        }
+        if extensions["support_selection"] != expected_selection:
+            raise ValueError("optimized MARC-OT support_selection binding drift")
+        bounds = dict(legacy_payload["learning_rate_bounds"])
+        t1_f1_min = bounds.pop("t1_f1_min", None)
+        if not isinstance(t1_f1_min, (int, float)) or isinstance(t1_f1_min, bool):
+            raise ValueError("optimized MARC-OT config requires t1/f1 learning-rate floor")
+        extensions["learning_rate_t1_f1_min"] = float(t1_f1_min)
+        legacy_payload["learning_rate_bounds"] = bounds
+        legacy_payload["schema"] = "cvs.phase2.marc_ot.pilot_config.v1"
     validated = dict(validate_pilot_config(legacy_payload))
+    if extensions:
+        validated["schema"] = "cvs.phase2.marc_ot.pilot_config.v2"
+        validated.update(extensions)
     validated["support_feature"] = feature_binding
     return validated
 
@@ -191,17 +216,41 @@ def _runner_config(config: Mapping[str, Any]) -> MARCOTRunnerConfig:
     supcon = config.get("supcon", {"weight": 0.1, "temperature": 0.07})
     if not isinstance(supcon, Mapping):
         raise ValueError("runner SupCon config must be a mapping")
+    optimizer = config.get("optimizer", {"weight_decay": 0.0, "gradient_clip_norm": None})
+    selection = config.get("support_selection", {"mode": "PROTOTYPE_LEGACY"})
+    loss = config.get("loss", {})
+    if not all(isinstance(row, Mapping) for row in (optimizer, selection, loss)):
+        raise ValueError("runner optimized config sections must be mappings")
     return MARCOTRunnerConfig(
         fold_count=int(config["fold_count"]),
         stage_steps=tuple(int(value) for value in config["stage_steps"]),
         learning_rate_min=float(config["learning_rate_bounds"]["min"]),
         learning_rate_max=float(config["learning_rate_bounds"]["max"]),
+        learning_rate_t1_f1_min=float(
+            config.get(
+                "learning_rate_t1_f1_min",
+                config["learning_rate_bounds"]["min"],
+            )
+        ),
+        optimizer_weight_decay=float(optimizer["weight_decay"]),
+        gradient_clip_norm=(
+            float(optimizer["gradient_clip_norm"])
+            if optimizer["gradient_clip_norm"] is not None
+            else None
+        ),
+        support_selection_mode=str(selection["mode"]),
+        statistic_rank=int(loss.get("statistic_rank", 2)),
+        prototype_scale=float(loss.get("prototype_scale", 10.0)),
+        floor_tau=float(loss.get("floor_tau", 0.1)),
         ot_epsilon=float(config["ot"]["epsilon"]),
         ot_iterations=int(config["ot"]["iterations"]),
         ratio_cap=float(config["ratio_cap"]),
         interpolation_grid=tuple(float(value) for value in config["interpolation_grid"]),
         supcon_weight=float(supcon["weight"]),
         supcon_temperature=float(supcon["temperature"]),
+        support_ba_tolerance=float(loss.get("support_ba_tolerance", 0.0)),
+        support_floor_tolerance=float(loss.get("support_floor_tolerance", 0.0)),
+        trust_weight=float(loss.get("trust_weight", 1.0e-4)),
         seed=int(config["seed"]),
     )
 
@@ -277,6 +326,11 @@ def _load_model_and_bundle(args: argparse.Namespace, config: Mapping[str, Any]):
         base_state=base_state,
         expected_block_specs=_expected_block_specs(model),
     )
+    if config.get("schema") == "cvs.phase2.marc_ot.pilot_config.v2":
+        observed_k = sorted({int(key.k_shot) for key in bundle.bank.task_keys})
+        expected_k = [int(value) for value in config["training_coverage_k"]]
+        if observed_k != expected_k:
+            raise ValueError("bundle training K coverage does not match optimized config")
     feature_binding = _validate_support_feature_binding(config.get("support_feature"))
     if (
         bundle.feature_schema != feature_binding["schema"]
@@ -416,7 +470,12 @@ def _adapt_unit(
                 str(config["checkpoint_id"]),
                 bundle.bank,
                 support_state,
-                lr_min=float(config["learning_rate_bounds"]["min"]),
+                lr_min=float(
+                    config.get(
+                        "learning_rate_t1_f1_min",
+                        config["learning_rate_bounds"]["min"],
+                    )
+                ),
                 lr_max=float(config["learning_rate_bounds"]["max"]),
             )
         finally:
@@ -445,7 +504,14 @@ def _adapt_unit(
         if len(plan.block_lrs) != len(bundle.bank.entries):
             raise ValueError("fit-scope MARC-OT block learning-rate geometry drift")
         return {
-            entry.spec.name: float(plan.block_lrs[index])
+            entry.spec.name: max(
+                float(plan.block_lrs[index]),
+                float(
+                    runner.learning_rate_t1_f1_min
+                    if entry.spec.name in {"t1", "f1"}
+                    else runner.learning_rate_min
+                ),
+            )
             for index, entry in enumerate(bundle.bank.entries)
         }
 
@@ -918,6 +984,7 @@ def _finalize_command(args: argparse.Namespace) -> Mapping[str, Any]:
         "capsule_id": str(job["capsule_id"]),
         "split_id": str(job["split_id"]),
         "receiver": str(job["receiver"]),
+        "seed": int(frozen_config["seed"]),
         "software_supported_k": list(frozen_config["software_supported_k"]),
         "training_coverage_k": list(frozen_config["training_coverage_k"]),
         "pilot_k": int(frozen_config["pilot_k"]),
@@ -1135,6 +1202,7 @@ def _pilot(args: argparse.Namespace) -> Mapping[str, Any]:
         "capsule_id": str(job["capsule_id"]),
         "split_id": str(job["split_id"]),
         "receiver": str(job["receiver"]),
+        "seed": int(config["seed"]),
         "software_supported_k": list(config["software_supported_k"]),
         "training_coverage_k": list(config["training_coverage_k"]),
         "pilot_k": int(config["pilot_k"]),
@@ -1356,6 +1424,7 @@ def _preflight_pilot_promotion_binding(
         "software_supported_k": software_k,
         "training_coverage_k": training_k,
         "pilot_k": pilot_k,
+        "seed": pilot.get("seed"),
     }
     for scenario in SCENARIOS:
         for arm in FORMAL_ARMS:

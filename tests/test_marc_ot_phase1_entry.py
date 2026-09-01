@@ -94,6 +94,15 @@ def _valid_payload() -> dict:
     }
 
 
+def _optimized_payload() -> dict:
+    payload = _valid_payload()
+    payload["schema"] = "cvs.phase1.marc_ot.bundle.v2"
+    payload["run_id"] = "marc_ot_phase1_bundle_20260902_r1"
+    payload["expert"]["mode"] = "stratified_select"
+    payload["expert"]["paired_consistency_weight"] = 0.05
+    return payload
+
+
 def test_config_rejects_split_validation_roles_wrong_ratios_and_training_k() -> None:
     payload = _valid_payload()
     payload["source_roles"] = {
@@ -247,6 +256,65 @@ def test_functional_forward_accepts_real_dual_style_tied_sinc_state() -> None:
     assert torch.count_nonzero(gradient)
 
 
+class _StatefulFunctionalModel(_ToyModel):
+    def __init__(self) -> None:
+        super().__init__()
+        self.register_buffer("call_counter", torch.zeros((), dtype=torch.long))
+        self.observed_modes = []
+
+    def forward(self, values, return_aux=False):
+        self.observed_modes.append(
+            {name: module.training for name, module in self.named_modules()}
+        )
+        self.call_counter.add_(1)
+        output = super().forward(values, return_aux=return_aux)
+        if isinstance(output, dict):
+            output["tx_logits"] = output["tx_logits"] + self.call_counter.float()
+            return output
+        return output + self.call_counter.float()
+
+
+def test_functional_forward_is_stateless_eval_and_can_bind_exact_bank_parameters() -> None:
+    model = _StatefulFunctionalModel().train()
+    model.id_backbone.eval()
+    original_modes = {name: module.training for name, module in model.named_modules()}
+    original_state = {name: value.detach().clone() for name, value in model.state_dict().items()}
+    forward = build_marc_ot_functional_forward(
+        model,
+        original_state,
+        expected_fast_parameter_names=("id_backbone.t1.weight",),
+    )
+    fast = {"id_backbone.t1.weight": original_state["id_backbone.t1.weight"].clone()}
+    values = torch.ones(2, 2, 8)
+
+    first = forward(fast, values)
+    second = forward(fast, values)
+
+    assert torch.equal(first, second)
+    assert model.observed_modes and all(
+        not mode for observed in model.observed_modes for mode in observed.values()
+    )
+    assert {name: module.training for name, module in model.named_modules()} == original_modes
+    assert all(torch.equal(model.state_dict()[name], value) for name, value in original_state.items())
+    with pytest.raises(ValueError, match="exact fast parameter set"):
+        forward({}, values)
+
+
+def test_optimized_20260902_config_enables_small_paired_consistency() -> None:
+    path = ROOT / "configs" / "marc_ot_phase1_bundle_20260902.json"
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    assert validate_marc_ot_phase1_config(payload) == payload
+    assert payload["schema"] == "cvs.phase1.marc_ot.bundle.v2"
+    assert payload["expert"]["mode"] == "stratified_select"
+    assert 0.0 < payload["expert"]["paired_consistency_weight"] <= 0.1
+
+    legacy = _valid_payload()
+    legacy["expert"]["mode"] = "stratified_select"
+    legacy["expert"]["paired_consistency_weight"] = 0.05
+    with pytest.raises(ValueError, match="schema|expert"):
+        validate_marc_ot_phase1_config(legacy)
+
+
 class _RoleDataset:
     def __init__(self, rows) -> None:
         self.index = list(rows)
@@ -296,6 +364,49 @@ def _role_datasets():
     return {"L_s": _RoleDataset(labeled), "U_s": _RoleDataset(unlabeled), "V": _RoleDataset(validation)}
 
 
+def test_v1_entry_materializes_historical_single_task_batches() -> None:
+    from cvsrffi.marc_ot_phase1_entry import (
+        _materialize_expert_task_batches,
+        _training_selector,
+    )
+    from cvsrffi.meta_episodes import (
+        HierarchicalMetaEpisodeSampler,
+        MetaEpisodeSamplerConfig,
+        sample_marc_ot_coverage_schedule,
+    )
+    from cvsrffi.meta_phase1_entry import _build_refs
+
+    payload = validate_marc_ot_phase1_config(_valid_payload())
+    l_s = _role_datasets()["L_s"]
+    refs, dataset = _build_refs(l_s, "L_s")
+    sampler = HierarchicalMetaEpisodeSampler(
+        refs,
+        MetaEpisodeSamplerConfig(
+            k_choices=tuple(payload["k_choices"]),
+            query_per_class=int(payload["query_per_class"]),
+            allowed_roles=("L_s",),
+            training=True,
+            partial_coverage_probability=1.0,
+            partial_class_fraction=(0.50, 0.80),
+        ),
+    )
+    selected = _training_selector(payload["training_k"])(
+        sample_marc_ot_coverage_schedule(sampler, seed=payload["schedule_seed"])
+    )
+    batches = _materialize_expert_task_batches(
+        selected,
+        refs,
+        dataset,
+        device=torch.device("cpu"),
+        view_seed=payload["schedule_seed"],
+        expert_mode="legacy_final_step",
+    )
+
+    assert batches
+    assert all("iq" in batch and "labels" in batch for batch in batches.values())
+    assert all("expert_fit" not in batch and "expert_select" not in batch for batch in batches.values())
+
+
 def test_injected_entry_runs_real_schedule_and_enforces_source_boundaries(tmp_path: Path) -> None:
     from cvsrffi.marc_ot_source_experts import build_source_expert_bank
     from cvsrffi.meta_episodes import (
@@ -303,7 +414,7 @@ def test_injected_entry_runs_real_schedule_and_enforces_source_boundaries(tmp_pa
         sample_marc_ot_coverage_schedule,
     )
 
-    payload = _valid_payload()
+    payload = _optimized_payload()
     model = _ToyModel()
     role_datasets = _role_datasets()
     captured = {}
@@ -413,6 +524,18 @@ def test_injected_entry_runs_real_schedule_and_enforces_source_boundaries(tmp_pa
         assert {ref.view for ref in refs} == {key.scene}
         assert len({ref.physical_sample_id for ref in refs}) == len(refs)
         assert set(task_batch["physical_ids"]).isdisjoint(task_batch["excluded_outer_query_ids"])
+        fit = task_batch["expert_fit"]
+        select = task_batch["expert_select"]
+        assert set(fit["physical_ids"]).isdisjoint(select["physical_ids"])
+        assert set(fit["physical_ids"]).isdisjoint(task_batch["excluded_outer_query_ids"])
+        assert set(select["physical_ids"]).isdisjoint(task_batch["excluded_outer_query_ids"])
+        assert set(fit["labels"].tolist()) == set(range(6))
+        assert set(select["labels"].tolist()) == set(range(6))
+        assert fit["clean_iq"].shape == fit["leo_iq"].shape == fit["iq"].shape
+
+    assert len(summary["expert_selection"]) == summary["task_count"]
+    assert all(0 <= row["selected_step"] <= payload["expert"]["steps"] for row in summary["expert_selection"])
+    assert all(math.isfinite(row["select_loss"]) for row in summary["expert_selection"])
 
     before = (output_root / "summary.json").read_bytes()
     with pytest.raises(FileExistsError, match="output root"):

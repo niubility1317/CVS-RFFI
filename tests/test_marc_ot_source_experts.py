@@ -63,6 +63,27 @@ def _batches():
     }
 
 
+def _split_batches():
+    result = {}
+    for task_key, (iq, _labels) in _batches().items():
+        labels = torch.tensor([0, 1])
+        result[task_key] = {
+            "expert_fit": {
+                "iq": iq,
+                "clean_iq": iq,
+                "leo_iq": iq.flip(-1),
+                "labels": labels,
+                "physical_ids": ("fit-0", "fit-1"),
+            },
+            "expert_select": {
+                "iq": iq.flip(0),
+                "labels": labels.flip(0),
+                "physical_ids": ("select-0", "select-1"),
+            },
+        }
+    return result
+
+
 def test_source_experts_change_only_allowlisted_identity_parameters_per_distinct_task():
     """Would fail if the frozen classifier/buffer changes or task experts collapse to one delta."""
     model = _ToySourceModel()
@@ -113,6 +134,47 @@ def test_delta_bank_uses_existing_blockwise_type_with_rank_bounded_by_unique_tas
     assert entry.basis.is_leaf and entry.basis.requires_grad is True
     assert entry.task_coefficients.requires_grad is False
     assert entry.task_coefficients.shape[0] == 3
+
+
+def test_experts_select_checkpoint_on_disjoint_holdout_and_record_selection() -> None:
+    result = build_source_expert_bank(
+        _ToySourceModel(),
+        _split_batches(),
+        _config(
+            steps=3,
+            paired_consistency_weight=0.05,
+            expert_mode="stratified_select",
+        ),
+    )
+
+    assert set(result.selected_steps) == set(_split_batches())
+    assert set(result.select_losses) == set(_split_batches())
+    assert all(0 <= step <= 3 for step in result.selected_steps.values())
+    assert all(torch.isfinite(torch.tensor(loss)) for loss in result.select_losses.values())
+
+
+def test_expert_split_fails_closed_without_all_classes_or_disjoint_physical_ids() -> None:
+    batches = _split_batches()
+    first = next(iter(batches))
+    batches[first]["expert_select"]["labels"] = torch.tensor([0, 0])
+    with pytest.raises(ValueError, match="all old classes"):
+        build_source_expert_bank(
+            _ToySourceModel(), batches, _config(expert_mode="stratified_select")
+        )
+
+    batches = _split_batches()
+    batches[first]["expert_select"]["physical_ids"] = ("fit-0", "select-1")
+    with pytest.raises(ValueError, match="disjoint"):
+        build_source_expert_bank(
+            _ToySourceModel(), batches, _config(expert_mode="stratified_select")
+        )
+
+
+def test_legacy_mode_rejects_split_batches_and_records_fixed_final_step() -> None:
+    result = build_source_expert_bank(_ToySourceModel(), _batches(), _config(steps=3))
+    assert set(result.selected_steps.values()) == {3}
+    with pytest.raises(ValueError, match="legacy|single batch"):
+        build_source_expert_bank(_ToySourceModel(), _split_batches(), _config())
 
 
 def test_buffer_drift_is_rejected_and_model_is_restored_instead_of_silently_rewritten():

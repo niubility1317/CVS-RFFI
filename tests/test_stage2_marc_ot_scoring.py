@@ -60,6 +60,7 @@ def _write_prediction(
         "split_id": "split",
         "receiver": "3-19",
         "scenario": "leo_clear_weak",
+        "seed": 713102,
         "arm": arm,
         "query_rows": 4,
         "expected_query_tokens": tokens.tolist(),

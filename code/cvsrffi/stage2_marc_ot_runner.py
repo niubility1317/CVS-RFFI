@@ -35,7 +35,14 @@ class MARCOTRunnerConfig:
     fold_count: int = 5
     stage_steps: tuple[int, int, int, int] = (1500, 2000, 2500, 3000)
     learning_rate_min: float = 1.0e-5
+    learning_rate_t1_f1_min: float | None = None
     learning_rate_max: float = 3.0e-4
+    optimizer_weight_decay: float = 0.0
+    gradient_clip_norm: float | None = None
+    support_selection_mode: str = "PROTOTYPE_LEGACY"
+    statistic_rank: int = 2
+    prototype_scale: float = 10.0
+    floor_tau: float = 0.1
     ot_epsilon: float = 0.1
     ot_iterations: int = 80
     ratio_cap: float = 0.5
@@ -57,9 +64,27 @@ class MARCOTRunnerConfig:
             raise ValueError("stage_steps must contain four nonnegative integers")
         if self.learning_rate_min <= 0.0 or self.learning_rate_min >= self.learning_rate_max:
             raise ValueError("learning-rate bounds must be positive and ordered")
-        finite_positive = (self.ot_epsilon, self.learning_rate_max)
+        t1_f1_min = (
+            self.learning_rate_min
+            if self.learning_rate_t1_f1_min is None
+            else self.learning_rate_t1_f1_min
+        )
+        object.__setattr__(self, "learning_rate_t1_f1_min", float(t1_f1_min))
+        if not 0.0 < float(t1_f1_min) <= self.learning_rate_min:
+            raise ValueError("t1/f1 learning-rate lower bound must be positive and ordered")
+        finite_positive = (
+            self.ot_epsilon,
+            self.learning_rate_max,
+        )
         if any(not math.isfinite(float(value)) or float(value) <= 0.0 for value in finite_positive):
             raise ValueError("positive runner values must be finite")
+        if not math.isfinite(float(self.optimizer_weight_decay)) or float(self.optimizer_weight_decay) < 0.0:
+            raise ValueError("optimizer weight decay must be finite and nonnegative")
+        if self.gradient_clip_norm is not None and (
+            not math.isfinite(float(self.gradient_clip_norm))
+            or float(self.gradient_clip_norm) <= 0.0
+        ):
+            raise ValueError("gradient clip norm must be finite and positive when enabled")
         if not isinstance(self.ot_iterations, int) or isinstance(self.ot_iterations, bool) or self.ot_iterations < 1:
             raise ValueError("ot_iterations must be a positive integer")
         if not math.isfinite(float(self.ratio_cap)) or float(self.ratio_cap) < 0.0:
@@ -82,6 +107,15 @@ class MARCOTRunnerConfig:
             raise ValueError("supcon_weight must be finite and positive for R2/R4/R6/R8")
         if not math.isfinite(float(self.supcon_temperature)) or float(self.supcon_temperature) <= 0.0:
             raise ValueError("supcon_temperature must be finite and positive")
+        if self.support_selection_mode not in {"PROTOTYPE_LEGACY", "EXACT_D92_OLD_ONLY"}:
+            raise ValueError("unsupported MARC-OT support selection mode")
+        if not isinstance(self.statistic_rank, int) or isinstance(self.statistic_rank, bool) or self.statistic_rank < 1:
+            raise ValueError("statistic_rank must be a positive integer")
+        if any(
+            not math.isfinite(float(value)) or float(value) <= 0.0
+            for value in (self.prototype_scale, self.floor_tau)
+        ):
+            raise ValueError("D92 objective scalars must be finite and positive")
 
 
 @dataclass(frozen=True)
@@ -398,6 +432,9 @@ def _default_fold_metrics(
     fit_labels: Tensor,
     validation_iq: Tensor,
     validation_labels: Tensor,
+    *,
+    selection_mode: str = "PROTOTYPE_LEGACY",
+    seed: int = 0,
 ) -> Mapping[str, Any]:
     _load_state(model, state)
     model.eval()
@@ -405,16 +442,41 @@ def _default_fold_metrics(
         _, fit_features = _forward_identity(model, fit_iq)
         _, validation_features = _forward_identity(model, validation_iq)
         class_count = int(torch.unique(fit_labels).numel())
-        prototypes = torch.stack(
-            [
-                fit_features[fit_labels == class_id].mean(dim=0)
-                for class_id in range(class_count)
-            ]
-        )
-        logits = functional.normalize(validation_features.float(), dim=1) @ functional.normalize(
-            prototypes.float(), dim=1
-        ).T
-        predictions = logits.argmax(dim=1)
+        if selection_mode == "EXACT_D92_OLD_ONLY":
+            if class_count != 6 or fit_features.shape[1] != 160:
+                raise ValueError("exact D92 selection requires six-class Identity160 support")
+            from .stage2_binova_d92 import exact_d92_fit
+            from .stage2_binova_features import make_fft96
+
+            fit_np = np.asarray(fit_iq.detach().cpu().tolist(), dtype=np.float32)
+            validation_np = np.asarray(validation_iq.detach().cpu().tolist(), dtype=np.float32)
+            fitted = exact_d92_fit(
+                fit_features.detach().cpu().numpy(),
+                make_fft96(fit_np),
+                fit_labels.detach().cpu().numpy(),
+                class_ids=tuple(range(6)),
+                old_class_count=6,
+                seed=int(seed),
+                device=fit_features.device,
+            )
+            logits = torch.as_tensor(
+                fitted.score(
+                    validation_features.detach().cpu().numpy(), make_fft96(validation_np)
+                ),
+                device=validation_labels.device,
+            )
+            predictions = logits.argmax(dim=1)
+        else:
+            prototypes = torch.stack(
+                [
+                    fit_features[fit_labels == class_id].mean(dim=0)
+                    for class_id in range(class_count)
+                ]
+            )
+            logits = functional.normalize(validation_features.float(), dim=1) @ functional.normalize(
+                prototypes.float(), dim=1
+            ).T
+            predictions = logits.argmax(dim=1)
     correct = tuple(
         int((predictions[validation_labels == class_id] == class_id).sum())
         for class_id in range(class_count)
@@ -484,6 +546,8 @@ def _true_support_cv_evidence(
     *,
     baseline_state: Mapping[str, Tensor],
     selected_states: Sequence[Mapping[str, Tensor]],
+    selection_mode: str = "PROTOTYPE_LEGACY",
+    seed: int = 0,
 ) -> dict[str, Any]:
     if len(folds) < 2 or len(selected_states) != len(folds):
         raise ValueError("true support cross-fit state geometry drift")
@@ -498,6 +562,8 @@ def _true_support_cv_evidence(
                 labels[fit],
                 values[validation],
                 labels[validation],
+                selection_mode=selection_mode,
+                seed=seed,
             )
         )
         selected_rows.append(
@@ -508,6 +574,8 @@ def _true_support_cv_evidence(
                 labels[fit],
                 values[validation],
                 labels[validation],
+                selection_mode=selection_mode,
+                seed=seed,
             )
         )
     baseline = _aggregate_fold_metrics(baseline_rows)
@@ -591,7 +659,7 @@ def _default_stage_update(
             {"params": [parameter], "lr": learning_rate}
             for parameter, learning_rate in zip(selected, resolved_learning_rates, strict=True)
         ],
-        weight_decay=0.0,
+        weight_decay=float(config.optimizer_weight_decay),
     )
     for _ in range(int(steps)):
         optimizer.zero_grad(set_to_none=True)
@@ -627,16 +695,32 @@ def _default_stage_update(
             )
             if arm in {"R6", "R8"} and bank_task_features is None:
                 raise ValueError(f"{arm} requires frozen bank task features")
+            fft_features = None
+            if config.support_selection_mode == "EXACT_D92_OLD_ONLY":
+                from .stage2_binova_features import make_fft96
+
+                fft_features = torch.as_tensor(
+                    make_fft96(
+                        np.asarray(values.detach().cpu().tolist(), dtype=np.float32)
+                    ),
+                    device=features.device,
+                    dtype=features.dtype,
+                )
             diagnostics = marc_ot_losses(
-                calibration_features,
+                features,
                 labels,
                 tokens,
                 logits,
                 bank,
+                support_fft_features=fft_features,
+                support_task_features=calibration_features,
                 fold_count=int(config.fold_count),
                 fold_seed=int(config.seed),
                 ot_epsilon=float(config.ot_epsilon),
                 ot_iterations=int(config.ot_iterations),
+                statistic_rank=int(config.statistic_rank),
+                prototype_scale=float(config.prototype_scale),
+                floor_tau=float(config.floor_tau),
                 transport_weight=1.0 if arm in {"R6", "R8"} else 0.0,
                 statistics_weight=1.0 if arm in {"R6", "R8"} else 0.0,
                 supcon_weight=supcon_weight_for_arm(arm, config),
@@ -672,6 +756,10 @@ def _default_stage_update(
         for name, parameter in zip(trainable_names, selected, strict=True):
             if parameter.grad is not None and not bool(torch.isfinite(parameter.grad).all()):
                 raise RuntimeError(f"MARC-OT gradient became nonfinite: {name}")
+        if config.gradient_clip_norm is not None:
+            torch.nn.utils.clip_grad_norm_(
+                selected, max_norm=float(config.gradient_clip_norm)
+            )
         optimizer.step()
         if any(not bool(torch.isfinite(parameter).all()) for parameter in selected):
             raise RuntimeError("MARC-OT parameter became nonfinite")
@@ -695,9 +783,14 @@ def resolve_block_learning_rates(
         if not isinstance(value, (int, float)) or isinstance(value, bool):
             raise ValueError("block learning rates must be numeric")
         numeric = float(value)
+        lower_bound = (
+            float(config.learning_rate_t1_f1_min)
+            if block in {"t1", "f1"}
+            else float(config.learning_rate_min)
+        )
         if (
             not math.isfinite(numeric)
-            or numeric < float(config.learning_rate_min)
+            or numeric < lower_bound
             or numeric > float(config.learning_rate_max)
         ):
             raise ValueError("block learning rates are outside frozen bounds")
@@ -922,6 +1015,8 @@ def train_marc_ot_arm(
                     fit_labels,
                     validation_iq,
                     validation_labels,
+                    selection_mode=config.support_selection_mode,
+                    seed=config.seed,
                 )
             observed = support_evaluator(
                 state,
@@ -1169,6 +1264,12 @@ def train_marc_ot_arm(
                     "optimizer_steps": int(config.stage_steps[index])
                     * (len(fold_indices) + (1 if stage_alpha != 0.0 else 0)),
                     "query_rows_used": 0,
+                    "objective_crossfit": (
+                        "DIFFERENTIABLE_D92_OLD_ONLY"
+                        if config.support_selection_mode == "EXACT_D92_OLD_ONLY"
+                        else "PROTOTYPE_LEGACY"
+                    ),
+                    "selection_metric": config.support_selection_mode,
                 }
             )
             _load_state(model, current_state)
@@ -1236,6 +1337,8 @@ def train_marc_ot_arm(
             fold_indices,
             baseline_state=original_base,
             selected_states=crossfit_selected_states,
+            selection_mode=config.support_selection_mode,
+            seed=config.seed,
         )
         _load_state(model, current_state)
         return MARCOTTrainingAudit(

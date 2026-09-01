@@ -17,7 +17,7 @@ _PROBES = {
     "P3_OLD_D92": ("p3_predictions", "p3_logits"),
 }
 _RECEIPT_SCHEMA = "cvs.phase2.marc_ot.prediction_receipt.v1"
-_BINDING_FIELDS = ("outer_key", "capsule_id", "split_id", "receiver", "scenario")
+_BINDING_FIELDS = ("outer_key", "capsule_id", "split_id", "receiver", "scenario", "seed")
 _RESOURCE_FIELDS = (
     "training_seconds",
     "inference_seconds",
@@ -64,6 +64,10 @@ def _validate_receipt(value: Mapping[str, Any]) -> None:
     if value.get("protocol_schema") != "p2_min_v1" or value.get("phase2_data_status") != "VALIDATED_ONCE":
         raise ValueError("MARC-OT prediction protocol binding drift")
     for field in (*_BINDING_FIELDS, "arm"):
+        if field == "seed":
+            if not isinstance(value.get(field), int) or isinstance(value.get(field), bool) or value[field] < 0:
+                raise ValueError("MARC-OT prediction receipt binding missing: seed")
+            continue
         if not isinstance(value.get(field), str) or not str(value[field]):
             raise ValueError(f"MARC-OT prediction receipt binding missing: {field}")
 
@@ -385,7 +389,7 @@ def score_preflighted_marc_ot_prediction(
         "arm": arm,
         "adaptation_state": "DA0" if arm == "R0" else "DA1",
         "registration_state": "REG0",
-        **{field: str(receipt[field]) for field in _BINDING_FIELDS},
+        **{field: receipt[field] for field in _BINDING_FIELDS},
         "query_rows": len(scored_tokens),
         "total_query_rows": len(expected),
         "old_query_rows": len(scored_tokens),

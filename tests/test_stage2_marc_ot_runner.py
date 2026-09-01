@@ -123,6 +123,120 @@ def test_task_conditioned_block_learning_rates_are_bounded_and_routed() -> None:
         )
 
 
+def test_t1_f1_learning_rate_has_explicit_lower_floor() -> None:
+    config = MARCOTRunnerConfig(
+        learning_rate_min=1.0e-5,
+        learning_rate_t1_f1_min=3.0e-6,
+    )
+    assert resolve_block_learning_rates(
+        ("id_backbone.t1.weight",), {"t1": 3.0e-6}, config=config
+    ) == (3.0e-6,)
+    with pytest.raises(ValueError, match="outside frozen bounds"):
+        resolve_block_learning_rates(
+            ("id_backbone.t2.weight",), {"t2": 3.0e-6}, config=config
+        )
+
+
+def test_production_selection_uses_exact_d92_identity160_fft96(monkeypatch) -> None:
+    import cvsrffi.stage2_binova_d92 as d92_module
+    import cvsrffi.stage2_binova_features as feature_module
+
+    observed: dict[str, object] = {}
+
+    class Model(nn.Module):
+        def forward(self, values, return_aux=True):
+            identity = values.reshape(len(values), -1)[:, :160]
+            return {"tx_logits": identity[:, :6], "z_id": identity}
+
+    class Fit:
+        def score(self, identity, fft):
+            observed["score_geometry"] = (identity.shape, fft.shape)
+            return torch.eye(6).numpy()
+
+    def fake_fit(identity, fft, labels, **kwargs):
+        observed["fit_geometry"] = (identity.shape, fft.shape, tuple(kwargs["class_ids"]))
+        return Fit()
+
+    monkeypatch.setattr(d92_module, "exact_d92_fit", fake_fit)
+    monkeypatch.setattr(
+        feature_module,
+        "make_fft96",
+        lambda iq: torch.zeros(len(iq), 96).numpy(),
+    )
+    model = Model()
+    state = model.state_dict()
+    fit_iq = torch.randn(6, 2, 256)
+    validation_iq = torch.randn(6, 2, 256)
+    labels = torch.arange(6)
+    result = runner_subject._default_fold_metrics(
+        model,
+        state,
+        fit_iq,
+        labels,
+        validation_iq,
+        labels,
+        selection_mode="EXACT_D92_OLD_ONLY",
+        seed=713102,
+    )
+    assert result["safe"] is True
+    assert observed["fit_geometry"] == ((6, 160), (6, 96), tuple(range(6)))
+    assert observed["score_geometry"] == ((6, 160), (6, 96))
+
+
+@pytest.mark.parametrize(
+    ("config", "expected_decay", "expected_clip"),
+    (
+        (MARCOTRunnerConfig(), 0.0, None),
+        (
+            MARCOTRunnerConfig(
+                optimizer_weight_decay=1.0e-4,
+                gradient_clip_norm=5.0,
+                learning_rate_t1_f1_min=3.0e-6,
+            ),
+            1.0e-4,
+            5.0,
+        ),
+    ),
+)
+def test_optimizer_v1_legacy_and_v2_explicit_semantics(
+    monkeypatch, config, expected_decay, expected_clip
+) -> None:
+    observed: dict[str, object] = {"clips": []}
+    real_adamw = torch.optim.AdamW
+
+    def adamw(*args, **kwargs):
+        observed["weight_decay"] = kwargs["weight_decay"]
+        return real_adamw(*args, **kwargs)
+
+    monkeypatch.setattr(torch.optim, "AdamW", adamw)
+    monkeypatch.setattr(
+        torch.nn.utils,
+        "clip_grad_norm_",
+        lambda _parameters, max_norm: observed["clips"].append(max_norm),
+    )
+    model = _DifferentiableTinyModel()
+    base = {name: value.detach().clone() for name, value in model.state_dict().items()}
+    runner_subject._default_stage_update(
+        model,
+        "norm_fusion_projection",
+        ("id_backbone.norm.weight",),
+        1,
+        {},
+        values=torch.tensor([[2.0, 0.1], [1.5, 0.2], [0.1, 2.0], [0.2, 1.5]]),
+        labels=torch.tensor([0, 0, 1, 1]),
+        tokens=("a0", "a1", "b0", "b1"),
+        arm="R1",
+        config=config,
+        bank_task_features=None,
+        calibration_feature_transform=None,
+        fit_scope="full_support",
+        block_learning_rates=None,
+        original_base=base,
+    )
+    assert observed["weight_decay"] == expected_decay
+    assert observed["clips"] == ([] if expected_clip is None else [expected_clip])
+
+
 def test_default_stage_transform_receives_fit_iq_model_and_keeps_gradient_path() -> None:
     model = _DifferentiableTinyModel()
     values = torch.tensor([[2.0, 0.1], [1.5, 0.2], [0.1, 2.0], [0.2, 1.5]])

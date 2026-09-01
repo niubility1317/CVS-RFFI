@@ -17,6 +17,7 @@ from cvsrffi.stage2_marc_ot_runner import MARCOTTrainingAudit
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "code" / "scripts" / "run_stage2_marc_ot_pilot.py"
 CONFIG = ROOT / "configs" / "marc_ot_k10_pilot_20260901.json"
+OPTIMIZED_CONFIG = ROOT / "configs" / "marc_ot_k10_optimized_20260902.json"
 
 
 def _module():
@@ -610,6 +611,40 @@ def test_frozen_k10_config_is_complete_and_has_no_mrior_history_fields() -> None
     runner = module._runner_config(validated)
     assert runner.supcon_weight == validated["supcon"]["weight"] == 0.1
     assert runner.supcon_temperature == validated["supcon"]["temperature"] == 0.07
+    assert runner.optimizer_weight_decay == 0.0
+    assert runner.gradient_clip_norm is None
+    assert runner.learning_rate_t1_f1_min == runner.learning_rate_min
+
+
+def test_optimized_config_freezes_d92_optimizer_and_k10_coverage() -> None:
+    module = _module()
+    validated = module._validate_config_payload(
+        json.loads(OPTIMIZED_CONFIG.read_text(encoding="utf-8-sig"))
+    )
+    runner = module._runner_config(validated)
+    assert validated["training_coverage_k"] == [10]
+    assert runner.support_selection_mode == "EXACT_D92_OLD_ONLY"
+    assert runner.optimizer_weight_decay == 1.0e-4
+    assert runner.gradient_clip_norm == 5.0
+    assert runner.learning_rate_t1_f1_min == 3.0e-6
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("mode", "PROTOTYPE_LEGACY"),
+        ("identity_dim", 159),
+        ("fft_dim", 95),
+        ("class_scope", "OLD_ONLY_5"),
+        ("extra", True),
+    ),
+)
+def test_optimized_config_rejects_support_selection_binding_drift(field, value) -> None:
+    module = _module()
+    payload = json.loads(OPTIMIZED_CONFIG.read_text(encoding="utf-8-sig"))
+    payload["support_selection"][field] = value
+    with pytest.raises(ValueError, match="support_selection"):
+        module._validate_config_payload(payload)
 
 
 def test_runner_consumes_the_validated_frozen_supcon_config() -> None:
@@ -680,6 +715,7 @@ def test_pilot_result_binds_k_coverage_execution_and_unit_evidence(
     """Dropping K bindings or per-unit cross-fit evidence makes the pilot unscoreable."""
     module = _module()
     config = {
+        "seed": 713102,
         "software_supported_k": [1, 2, 5, 10, 20],
         "training_coverage_k": [],
         "pilot_k": 10,
@@ -1202,6 +1238,7 @@ def _write_prediction_unit(
         "capsule_id": "capsule",
         "split_id": "split",
         "receiver": "3-19",
+        "seed": 713102,
         "scenario": scenario,
         "arm": arm,
         "query_rows": 2,
@@ -1289,6 +1326,7 @@ def _write_bound_prediction_root(
                 "status": "SUPPORT_STATE_FROZEN",
                 "scenario": scenario,
                 "arm": arm,
+                "seed": 713102,
                 "held_out_support_evidence": unit_held_out,
                 "support_cv_evidence": support_cv_evidence,
                 "software_supported_k": [1, 2, 5, 10, 20],
@@ -1309,6 +1347,7 @@ def _write_bound_prediction_root(
         "arms": list(FORMAL_ARMS),
         "scenarios": list(SCENARIOS),
         "truth_opened": False,
+        "seed": 713102,
         "software_supported_k": [1, 2, 5, 10, 20],
         "training_coverage_k": [],
         "pilot_k": pilot_k,
@@ -1374,6 +1413,7 @@ def test_score_preflights_all_18_predictions_before_first_truth_open(tmp_path) -
         "arms": list(FORMAL_ARMS),
         "scenarios": list(SCENARIOS),
         "truth_opened": False,
+        "seed": 713102,
         "promotion_gates": {
             "median_p3_ba_delta_pp": 3.0,
             "worst_scene_p3_ba_delta_pp": -0.5,

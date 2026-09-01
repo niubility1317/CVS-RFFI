@@ -9,6 +9,7 @@ import os
 import random
 from collections import defaultdict
 from collections.abc import Callable, Mapping, Sequence
+from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
@@ -42,6 +43,7 @@ from .meta_weight_bank import (
 
 
 MARC_OT_PHASE1_BUNDLE_SCHEMA = "cvs.phase1.marc_ot.bundle.v1"
+MARC_OT_PHASE1_OPTIMIZED_BUNDLE_SCHEMA = "cvs.phase1.marc_ot.bundle.v2"
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 _ROLE_RATIOS = {"L_s": 0.07, "U_s": 0.63, "V": 0.30}
 _REQUIRED_TRAINABLE_PREFIXES = (
@@ -109,6 +111,7 @@ _MODEL_KEYS = {
     "domain_enhancer_strength",
 }
 _EXPERT_KEYS = {"steps", "lr", "max_rank", "trainable_prefixes"}
+_EXPERT_OPTIMIZED_KEYS = _EXPERT_KEYS | {"mode", "paired_consistency_weight"}
 _ENCODER_KEYS = {"hidden_dim", "lr_min", "lr_max"}
 _TRAINER_KEYS = {
     "inner_steps",
@@ -158,8 +161,11 @@ def validate_marc_ot_phase1_config(payload: Any) -> dict[str, Any]:
     """Validate the exact source-only MARC-OT Phase1 production contract."""
 
     root = _exact_mapping(payload, _TOP_LEVEL_KEYS, name="config")
-    if root["schema"] != MARC_OT_PHASE1_BUNDLE_SCHEMA:
-        raise ValueError(f"schema must be {MARC_OT_PHASE1_BUNDLE_SCHEMA!r}")
+    if root["schema"] not in {
+        MARC_OT_PHASE1_BUNDLE_SCHEMA,
+        MARC_OT_PHASE1_OPTIMIZED_BUNDLE_SCHEMA,
+    }:
+        raise ValueError("schema must be the legacy v1 or optimized v2 contract")
     run_id = _nonempty_string(root["run_id"], name="run_id")
     if Path(run_id).name != run_id or run_id in {".", ".."}:
         raise ValueError("run_id must be one immutable path segment")
@@ -236,13 +242,29 @@ def validate_marc_ot_phase1_config(payload: Any) -> dict[str, Any]:
         raise ValueError("training_k must be exactly [10] for the first production bundle")
     _integer(root["query_per_class"], name="query_per_class", minimum=1)
 
-    expert = _exact_mapping(root["expert"], _EXPERT_KEYS, name="expert")
+    expected_expert_keys = (
+        _EXPERT_KEYS
+        if root["schema"] == MARC_OT_PHASE1_BUNDLE_SCHEMA
+        else _EXPERT_OPTIMIZED_KEYS
+    )
+    if not isinstance(root["expert"], Mapping) or set(root["expert"]) != expected_expert_keys:
+        raise ValueError("expert exact-key mismatch")
+    expert = root["expert"]
+    if root["schema"] == MARC_OT_PHASE1_OPTIMIZED_BUNDLE_SCHEMA:
+        if expert["mode"] != "stratified_select":
+            raise ValueError("optimized expert.mode must be stratified_select")
     if _integer(expert["steps"], name="expert.steps", minimum=1) != 25:
         raise ValueError("expert.steps must be 25")
     if _finite(expert["lr"], name="expert.lr", positive=True) != 3e-5:
         raise ValueError("expert.lr must be 3e-5")
     if _integer(expert["max_rank"], name="expert.max_rank", minimum=1) != 16:
         raise ValueError("expert.max_rank must be 16")
+    paired_weight = _finite(
+        expert.get("paired_consistency_weight", 0.0),
+        name="expert.paired_consistency_weight",
+    )
+    if not 0.0 <= paired_weight <= 0.1:
+        raise ValueError("expert.paired_consistency_weight must be in [0, 0.1]")
     if expert["trainable_prefixes"] != list(_REQUIRED_TRAINABLE_PREFIXES):
         raise ValueError(
             "expert.trainable_prefixes must exactly cover the canonical identity aliases"
@@ -282,6 +304,8 @@ def validate_marc_ot_phase1_config(payload: Any) -> dict[str, Any]:
 def build_marc_ot_functional_forward(
     model: nn.Module,
     base_state: Mapping[str, Tensor],
+    *,
+    expected_fast_parameter_names: Sequence[str] | None = None,
 ) -> Callable[[Mapping[str, Tensor], Tensor], Tensor]:
     """Build a frozen-head functional forward with canonical fast overrides only."""
 
@@ -292,15 +316,35 @@ def build_marc_ot_functional_forward(
     if set(full_base) != set(model_state):
         raise ValueError("base_state must contain the complete model parameters and buffers")
     parameter_names = {name for name, _parameter in model.named_parameters()}
+    buffer_names = {name for name, _buffer in model.named_buffers()}
+    expected_fast_names = (
+        None
+        if expected_fast_parameter_names is None
+        else frozenset(str(name) for name in expected_fast_parameter_names)
+    )
+    if expected_fast_names is not None:
+        invalid = expected_fast_names - parameter_names
+        noncanonical = {
+            name for name in expected_fast_names if parameter_block_key(name) is None
+        }
+        if not expected_fast_names or invalid or noncanonical:
+            raise ValueError("expected fast parameter set must be non-empty canonical parameters")
     for name, value in full_base.items():
         expected = model_state[name]
         if not isinstance(value, Tensor) or value.shape != expected.shape or value.dtype != expected.dtype:
             raise ValueError(f"base_state geometry drift for {name!r}")
 
     def functional_forward(fast_state: Mapping[str, Tensor], values: Tensor) -> Tensor:
-        if not isinstance(fast_state, Mapping) or not fast_state:
+        if not isinstance(fast_state, Mapping):
+            raise ValueError("fast state must be a mapping")
+        if expected_fast_names is not None and set(fast_state) != expected_fast_names:
+            raise ValueError("exact fast parameter set does not match the bound bank blocks")
+        if not fast_state:
             raise ValueError("fast state must be a non-empty mapping")
-        state = dict(full_base)
+        state = {
+            name: value.detach().clone() if name in buffer_names else value
+            for name, value in full_base.items()
+        }
         for name, value in fast_state.items():
             if (
                 name not in parameter_names
@@ -313,23 +357,29 @@ def build_marc_ot_functional_forward(
             if value.dtype != full_base[name].dtype or value.device != full_base[name].device:
                 raise ValueError(f"fast parameter dtype/device drift: {name!r}")
             state[name] = value
+        training_modes = {name: module.training for name, module in model.named_modules()}
         try:
-            output = torch.func.functional_call(
-                model,
-                state,
-                (values,),
-                {"return_aux": True},
-                tie_weights=False,
-                strict=True,
-            )
-        except TypeError:
-            output = torch.func.functional_call(
-                model,
-                state,
-                (values,),
-                tie_weights=False,
-                strict=True,
-            )
+            model.eval()
+            try:
+                output = torch.func.functional_call(
+                    model,
+                    state,
+                    (values,),
+                    {"return_aux": True},
+                    tie_weights=False,
+                    strict=True,
+                )
+            except TypeError:
+                output = torch.func.functional_call(
+                    model,
+                    state,
+                    (values,),
+                    tie_weights=False,
+                    strict=True,
+                )
+        finally:
+            for name, module in model.named_modules():
+                module.train(training_modes[name])
         if isinstance(output, Tensor):
             logits = output
         elif isinstance(output, Mapping):
@@ -566,6 +616,7 @@ def _materialize_expert_task_batches(
     *,
     device: torch.device,
     view_seed: int,
+    expert_mode: str = "legacy_final_step",
 ) -> dict[Any, Mapping[str, Any]]:
     from .meta_phase1_entry import _materialize_ref_view
 
@@ -573,13 +624,17 @@ def _materialize_expert_task_batches(
     for episode in selected_episodes:
         selection = canonical_episode_task_domain_selection(episode)
         episodes_by_key[selection.task_key].append(episode)
+    global_outer_query_ids = {
+        str(ref.physical_sample_id)
+        for episode in selected_episodes
+        for ref in episode.query_adapt + episode.query_guard
+    }
+    all_old_classes = {int(ref.tx_i) for ref in l_s_refs}
+    if not all_old_classes:
+        raise ValueError("L_s source pool has no old classes")
     batches: dict[Any, Mapping[str, Any]] = {}
     for task_key, episodes in episodes_by_key.items():
-        excluded = {
-            str(ref.physical_sample_id)
-            for episode in episodes
-            for ref in episode.query_adapt + episode.query_guard
-        }
+        excluded = set(global_outer_query_ids)
         by_physical: dict[str, Any] = {}
         for ref in l_s_refs:
             physical_id = str(ref.physical_sample_id)
@@ -594,27 +649,96 @@ def _materialize_expert_task_batches(
         refs = tuple(sorted(by_physical.values(), key=lambda row: (int(row.tx_i), str(row.physical_sample_id))))
         if not refs:
             raise ValueError(f"source expert task has no non-query L_s rows: {task_key!r}")
-        rows: list[Tensor] = []
-        labels: list[int] = []
-        for ref in refs:
-            item = l_s_dataset[int(ref.dataset_index)]
-            if not isinstance(item, (tuple, list)) or len(item) < 2:
-                raise ValueError("L_s expert dataset item must contain IQ and TX label")
-            x = item[0] if isinstance(item[0], Tensor) else torch.as_tensor(item[0])
-            rows.append(
-                _materialize_ref_view(
-                    x.detach().float(),
-                    ref,
-                    view_seed=int(view_seed),
+        if expert_mode == "legacy_final_step":
+            rows: list[Tensor] = []
+            labels: list[int] = []
+            for ref in refs:
+                item = l_s_dataset[int(ref.dataset_index)]
+                if not isinstance(item, (tuple, list)) or len(item) < 2:
+                    raise ValueError("L_s expert dataset item must contain IQ and TX label")
+                x = item[0] if isinstance(item[0], Tensor) else torch.as_tensor(item[0])
+                rows.append(
+                    _materialize_ref_view(
+                        x.detach().float(), ref, view_seed=int(view_seed)
+                    )
                 )
+                labels.append(int(ref.tx_i))
+            physical_ids = tuple(str(ref.physical_sample_id) for ref in refs)
+            batches[task_key] = {
+                "iq": torch.stack(rows).to(device),
+                "labels": torch.tensor(labels, dtype=torch.long, device=device),
+                "physical_ids": physical_ids,
+                "excluded_outer_query_ids": frozenset(excluded),
+                "refs": refs,
+                "source_role": "L_s",
+            }
+            continue
+        if expert_mode != "stratified_select":
+            raise ValueError("unknown source expert mode")
+        refs_by_class: dict[int, list[Any]] = defaultdict(list)
+        for ref in refs:
+            refs_by_class[int(ref.tx_i)].append(ref)
+        if not refs_by_class or any(len(rows) < 2 for rows in refs_by_class.values()):
+            raise ValueError(
+                f"source expert task cannot form class-complete disjoint fit/select splits: {task_key!r}"
             )
-            labels.append(int(ref.tx_i))
+        fit_refs = tuple(
+            ref
+            for class_id in sorted(refs_by_class)
+            for ref in refs_by_class[class_id][::2]
+        )
+        select_refs = tuple(
+            ref
+            for class_id in sorted(refs_by_class)
+            for ref in refs_by_class[class_id][1::2]
+        )
+        expected_classes = set(refs_by_class)
+        if (
+            expected_classes != all_old_classes
+            or {int(ref.tx_i) for ref in fit_refs} != expected_classes
+            or {int(ref.tx_i) for ref in select_refs} != expected_classes
+        ):
+            raise ValueError("expert_fit and expert_select must each cover all old classes")
+
+        def materialize(rows: Sequence[Any], *, paired: bool) -> dict[str, Any]:
+            scene_iq: list[Tensor] = []
+            clean_iq: list[Tensor] = []
+            labels: list[int] = []
+            for ref in rows:
+                item = l_s_dataset[int(ref.dataset_index)]
+                if not isinstance(item, (tuple, list)) or len(item) < 2:
+                    raise ValueError("L_s expert dataset item must contain IQ and TX label")
+                x = item[0] if isinstance(item[0], Tensor) else torch.as_tensor(item[0])
+                raw = x.detach().float()
+                scene_iq.append(
+                    _materialize_ref_view(raw, ref, view_seed=int(view_seed))
+                )
+                if paired:
+                    clean_iq.append(
+                        _materialize_ref_view(
+                            raw,
+                            replace(ref, view="clean"),
+                            view_seed=int(view_seed),
+                        )
+                    )
+                labels.append(int(ref.tx_i))
+            result: dict[str, Any] = {
+                "iq": torch.stack(scene_iq).to(device),
+                "labels": torch.tensor(labels, dtype=torch.long, device=device),
+                "physical_ids": tuple(str(ref.physical_sample_id) for ref in rows),
+                "refs": tuple(rows),
+            }
+            if paired:
+                result["clean_iq"] = torch.stack(clean_iq).to(device)
+                result["leo_iq"] = result["iq"]
+            return result
+
         physical_ids = tuple(str(ref.physical_sample_id) for ref in refs)
         if set(physical_ids).intersection(excluded):
             raise RuntimeError("source expert batch contains an outer query physical ID")
         batches[task_key] = {
-            "iq": torch.stack(rows).to(device),
-            "labels": torch.tensor(labels, dtype=torch.long, device=device),
+            "expert_fit": materialize(fit_refs, paired=True),
+            "expert_select": materialize(select_refs, paired=False),
             "physical_ids": physical_ids,
             "excluded_outer_query_ids": frozenset(excluded),
             "refs": refs,
@@ -642,6 +766,7 @@ def _summary_from_closure(
     closure: Any,
     bank: Any,
     role_sizes: Mapping[str, int],
+    expert_result: Any,
 ) -> dict[str, Any]:
     if not Path(closure.bundle_path).is_file() or Path(closure.bundle_path).is_symlink():
         raise RuntimeError("MARC-OT bundle strict readback did not produce a regular file")
@@ -652,8 +777,20 @@ def _summary_from_closure(
     software = dict(closure.software_coverage)
     training = dict(closure.training_coverage)
     entries = tuple(bank.entries)
+    selected_steps = getattr(expert_result, "selected_steps", None)
+    select_losses = getattr(expert_result, "select_losses", None)
+    if not isinstance(selected_steps, Mapping) or not isinstance(select_losses, Mapping):
+        raise ValueError("source expert result must record selected_step and select_loss")
+    expert_selection = [
+        {
+            "task_key": repr(task_key),
+            "selected_step": int(selected_steps[task_key]),
+            "select_loss": float(select_losses[task_key]),
+        }
+        for task_key in bank.task_keys
+    ]
     return {
-        "schema": MARC_OT_PHASE1_BUNDLE_SCHEMA,
+        "schema": str(config["schema"]),
         "status": "BUNDLE_PRODUCED_NO_PERFORMANCE_CLAIM",
         "run_id": str(config["run_id"]),
         "base_checkpoint_id": str(config["base_checkpoint_id"]),
@@ -664,6 +801,7 @@ def _summary_from_closure(
         "optimizer_step_count": int(training["optimizer_step_count"]),
         "outer_cycles": int(training["outer_cycles"]),
         "task_count": int(len(bank.task_keys)),
+        "expert_selection": expert_selection,
         "bank": {
             "block_count": int(len(entries)),
             "effective_ranks": [int(entry.effective_rank) for entry in entries],
@@ -748,6 +886,7 @@ def run_marc_ot_phase1_bundle(
             l_s_dataset,
             device=device,
             view_seed=int(config["schedule_seed"]),
+            expert_mode=str(config["expert"].get("mode", "legacy_final_step")),
         )
         expert_config = MARCOTSourceExpertConfig(
             trainable_prefixes=tuple(config["expert"]["trainable_prefixes"]),
@@ -755,6 +894,10 @@ def run_marc_ot_phase1_bundle(
             steps=int(config["expert"]["steps"]),
             lr=float(config["expert"]["lr"]),
             max_rank=int(config["expert"]["max_rank"]),
+            paired_consistency_weight=float(
+                config["expert"].get("paired_consistency_weight", 0.0)
+            ),
+            expert_mode=str(config["expert"].get("mode", "legacy_final_step")),
         )
         expert_builder = context.get("build_source_expert_bank", build_source_expert_bank)
         if not callable(expert_builder):
@@ -801,7 +944,16 @@ def run_marc_ot_phase1_bundle(
         base_state = {
             name: value.detach().clone() for name, value in model.state_dict().items()
         }
-        functional_forward = build_marc_ot_functional_forward(model, base_state)
+        expected_fast_names = tuple(
+            name
+            for entry in bank.entries
+            for name in entry.spec.parameter_names
+        )
+        functional_forward = build_marc_ot_functional_forward(
+            model,
+            base_state,
+            expected_fast_parameter_names=expected_fast_names,
+        )
         batch_cache: dict[Any, Any] = {}
 
         def batch_builder(episode: Any) -> Any:
@@ -852,12 +1004,12 @@ def run_marc_ot_phase1_bundle(
                 excluded_receiver=(episode.query_adapt + episode.query_guard)[0].rx_i,
             ),
         )
-        summary = _summary_from_closure(config, closure, bank, role_sizes)
+        summary = _summary_from_closure(config, closure, bank, role_sizes, expert_result)
         _write_json_exclusive(output_root / "summary.json", summary)
         return summary
     except Exception as error:
         failed = {
-            "schema": MARC_OT_PHASE1_BUNDLE_SCHEMA,
+            "schema": str(config["schema"]) if config is not None else MARC_OT_PHASE1_BUNDLE_SCHEMA,
             "status": "FAILED",
             "run_id": None if config is None else config.get("run_id"),
             "error_type": type(error).__name__,
@@ -873,6 +1025,7 @@ def run_marc_ot_phase1_bundle(
 
 __all__ = [
     "MARC_OT_PHASE1_BUNDLE_SCHEMA",
+    "MARC_OT_PHASE1_OPTIMIZED_BUNDLE_SCHEMA",
     "build_loro_coefficient_mask",
     "build_marc_ot_functional_forward",
     "build_task_coordinate_bank",

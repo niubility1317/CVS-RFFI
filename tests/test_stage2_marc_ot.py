@@ -339,6 +339,48 @@ def test_marc_ot_losses_reuse_existing_old_only_d92_cross_fit() -> None:
     assert torch.linalg.vector_norm(cross_fit_gradient) > 0.0
 
 
+def test_zero_transport_and_statistics_weights_lazy_skip_ot(monkeypatch) -> None:
+    import cvsrffi.stage2_marc_ot as module
+
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("zero-weight R2/R4 must not execute OT/statistics")
+
+    monkeypatch.setattr(module, "support_bank_transport", forbidden)
+    monkeypatch.setattr(module, "_statistics_loss", forbidden)
+    features = torch.randn(4, 3, requires_grad=True)
+    result = marc_ot_losses(
+        features,
+        torch.tensor([0, 0, 1, 1]),
+        ("a", "b", "c", "d"),
+        torch.randn(4, 2),
+        torch.empty(0, 685),
+        transport_weight=0.0,
+        statistics_weight=0.0,
+    )
+    result.total.backward()
+    assert result.transport_loss.item() == 0.0
+    assert result.statistics_loss.item() == 0.0
+    assert result.statistics_mode == "disabled"
+
+
+def test_d92_objective_keeps_task_features_separate_from_identity_geometry() -> None:
+    generator = torch.Generator().manual_seed(29)
+    identity = torch.randn(12, 160, generator=generator, requires_grad=True)
+    task = torch.randn(12, 685, generator=generator, requires_grad=True)
+    result = marc_ot_losses(
+        identity,
+        torch.arange(6).repeat_interleave(2),
+        tuple(f"s{index}" for index in range(12)),
+        torch.randn(12, 6, generator=generator),
+        torch.randn(4, 685, generator=generator),
+        support_fft_features=torch.randn(12, 96, generator=generator),
+        support_task_features=task,
+        transport_weight=0.0,
+        statistics_weight=0.0,
+    )
+    assert result.cross_fit_mode == "d92_old_only"
+
+
 def test_marc_ot_k1_fft_validation_precedes_explicit_d92_rejection() -> None:
     labels = torch.arange(6)
     tokens = tuple(f"k1-{index}" for index in range(6))

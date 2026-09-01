@@ -636,6 +636,7 @@ def marc_ot_losses(
     frozen_bank_task_features: Tensor,
     *,
     support_fft_features: Tensor | None = None,
+    support_task_features: Tensor | None = None,
     fold_count: int = 2,
     fold_seed: int = 0,
     ot_epsilon: float = 0.1,
@@ -745,32 +746,50 @@ def marc_ot_losses(
         temperature=supcon_temperature,
     )
 
-    transport = support_bank_transport(
-        features,
-        frozen_bank_task_features,
-        epsilon=ot_epsilon,
-        iterations=ot_iterations,
-    )
-    bank = frozen_bank_task_features.detach().to(
-        device=features.device, dtype=torch.float32
-    )
-    cost = _mean_squared_pairwise_cost(features.float(), bank)
-    transport_loss = torch.sum(transport * cost)
-    row_mass = transport.sum(dim=1, keepdim=True)
-    transported_bank = transport @ bank / row_mass
-    statistics_loss, statistics_mode = _statistics_loss(
-        features,
-        transported_bank,
-        labels,
-        k_shot=k_shot,
-        statistic_rank=statistic_rank,
-    )
-    row_target = transport.new_full((transport.shape[0],), 1.0 / float(transport.shape[0]))
-    column_target = transport.new_full(
-        (transport.shape[1],), 1.0 / float(transport.shape[1])
-    )
-    row_error = float((transport.detach().sum(dim=1) - row_target).abs().max())
-    column_error = float((transport.detach().sum(dim=0) - column_target).abs().max())
+    task_features = features
+    if support_task_features is not None:
+        task_features = torch.as_tensor(
+            support_task_features, device=features.device, dtype=features.dtype
+        )
+        if task_features.ndim != 2 or task_features.shape[0] != len(features):
+            raise ValueError("support task features must be finite aligned rows")
+        if not bool(torch.isfinite(task_features).all()):
+            raise ValueError("support task features must be finite aligned rows")
+    zero = task_features.sum() * 0.0
+    transport_loss = zero
+    statistics_loss = zero
+    statistics_mode = "disabled"
+    row_error = 0.0
+    column_error = 0.0
+    if float(transport_weight) > 0.0 or float(statistics_weight) > 0.0:
+        transport = support_bank_transport(
+            task_features,
+            frozen_bank_task_features,
+            epsilon=ot_epsilon,
+            iterations=ot_iterations,
+        )
+        bank = frozen_bank_task_features.detach().to(
+            device=features.device, dtype=torch.float32
+        )
+        cost = _mean_squared_pairwise_cost(task_features.float(), bank)
+        if float(transport_weight) > 0.0:
+            transport_loss = torch.sum(transport * cost)
+        if float(statistics_weight) > 0.0:
+            row_mass = transport.sum(dim=1, keepdim=True)
+            transported_bank = transport @ bank / row_mass
+            statistics_loss, statistics_mode = _statistics_loss(
+                task_features,
+                transported_bank,
+                labels,
+                k_shot=k_shot,
+                statistic_rank=statistic_rank,
+            )
+        row_target = transport.new_full((transport.shape[0],), 1.0 / float(transport.shape[0]))
+        column_target = transport.new_full(
+            (transport.shape[1],), 1.0 / float(transport.shape[1])
+        )
+        row_error = float((transport.detach().sum(dim=1) - row_target).abs().max())
+        column_error = float((transport.detach().sum(dim=0) - column_target).abs().max())
     total = (
         float(frozen_head_weight) * frozen_head_ce
         + float(cross_fit_weight) * cross_fit_ce
