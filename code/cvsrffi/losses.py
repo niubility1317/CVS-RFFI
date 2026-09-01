@@ -4575,3 +4575,243 @@ def compute_aux_losses(
 
     return out
 
+
+def stratified_response_split(
+    amplitude: torch.Tensor,
+    *,
+    bins: int = 8,
+) -> Tuple[torch.Tensor, torch.Tensor]:
+    """Deterministic 50/50 split with alternating ranks inside amplitude strata."""
+    if amplitude.ndim != 2:
+        raise ValueError("amplitude must have shape [batch, samples]")
+    batch, samples = amplitude.shape
+    if int(samples) < 4:
+        raise ValueError("split-fit requires at least four samples")
+    mask_a = torch.zeros_like(amplitude, dtype=torch.bool)
+    for row in range(int(batch)):
+        order = torch.argsort(amplitude[row].detach(), stable=True)
+        chunks = torch.tensor_split(order, max(1, int(bins)))
+        for chunk in chunks:
+            mask_a[row, chunk[::2]] = True
+    return mask_a, ~mask_a
+
+
+def _fit_response_coef(
+    design: torch.Tensor,
+    target: torch.Tensor,
+    weight: torch.Tensor,
+    ridge: float,
+) -> torch.Tensor:
+    sqrt_weight = weight.float().clamp_min(0.05).sqrt().to(torch.complex64)
+    weighted_design = design.to(torch.complex64) * sqrt_weight.unsqueeze(-1)
+    weighted_target = target.to(torch.complex64) * sqrt_weight
+    regularizer = torch.eye(
+        int(design.size(-1)), device=design.device, dtype=torch.complex64
+    ) * math.sqrt(max(0.0, float(ridge)))
+    augmented_design = torch.cat([weighted_design, regularizer], dim=0)
+    augmented_target = torch.cat(
+        [
+            weighted_target,
+            torch.zeros(int(design.size(-1)), device=design.device, dtype=torch.complex64),
+        ]
+    )
+    return torch.linalg.lstsq(augmented_design, augmented_target).solution
+
+
+def _weighted_complex_nmse(
+    prediction: torch.Tensor,
+    target: torch.Tensor,
+    weight: torch.Tensor,
+    eps: float = 1e-6,
+) -> torch.Tensor:
+    weight = weight.float().clamp_min(0.05)
+    return (weight * (prediction - target).abs().square()).sum() / (
+        (weight * target.abs().square()).sum().clamp_min(float(eps))
+    )
+
+
+def response_split_fit_loss(
+    design: torch.Tensor,
+    target: torch.Tensor,
+    weight: torch.Tensor,
+    amplitude: torch.Tensor,
+    *,
+    ridge: float = 1e-6,
+) -> torch.Tensor:
+    """Fit A/predict B and fit B/predict A without reading TX labels."""
+    mask_a, mask_b = stratified_response_split(amplitude)
+    losses = []
+    for row in range(int(design.size(0))):
+        for fit_mask, eval_mask in ((mask_a[row], mask_b[row]), (mask_b[row], mask_a[row])):
+            coef = _fit_response_coef(
+                design[row, fit_mask], target[row, fit_mask], weight[row, fit_mask], ridge
+            )
+            prediction = design[row, eval_mask].to(torch.complex64) @ coef
+            losses.append(
+                _weighted_complex_nmse(
+                    prediction, target[row, eval_mask], weight[row, eval_mask]
+                )
+            )
+    return torch.stack(losses).mean() if losses else target.real.sum() * 0.0
+
+
+def response_pair_cross_prediction_loss(
+    resp_coef: torch.Tensor,
+    design: torch.Tensor,
+    target: torch.Tensor,
+    pair_ids: List[str],
+    clean_mask: torch.Tensor,
+    leo_mask: torch.Tensor,
+    weight: torch.Tensor,
+) -> torch.Tensor:
+    """Apply clean coefficients to LEO content and LEO coefficients to clean content."""
+    losses = []
+    unique_pairs = list(dict.fromkeys(str(value) for value in pair_ids))
+    for pair_id in unique_pairs:
+        indices = [index for index, value in enumerate(pair_ids) if str(value) == pair_id]
+        clean = [index for index in indices if bool(clean_mask[index])]
+        leo = [index for index in indices if bool(leo_mask[index])]
+        if len(clean) != 1 or len(leo) != 1:
+            continue
+        clean_index, leo_index = clean[0], leo[0]
+        for source, destination in ((clean_index, leo_index), (leo_index, clean_index)):
+            prediction = design[destination] @ resp_coef[source]
+            losses.append(
+                _weighted_complex_nmse(
+                    prediction, target[destination], weight[destination]
+                )
+            )
+    return torch.stack(losses).mean() if losses else target.real.sum() * 0.0
+
+
+def response_surface_distance(
+    anchor_a: torch.Tensor,
+    anchor_b: torch.Tensor,
+    variance_a: torch.Tensor,
+    variance_b: torch.Tensor,
+    *,
+    tau: float = 1e-3,
+) -> torch.Tensor:
+    reliability = (variance_a.float() + variance_b.float() + float(tau)).reciprocal()
+    return (reliability * (anchor_a - anchor_b).abs().square()).sum() / reliability.sum().clamp_min(1e-6)
+
+
+def same_tx_cross_response_loss(
+    resp_coef: torch.Tensor,
+    design: torch.Tensor,
+    target: torch.Tensor,
+    weight: torch.Tensor,
+    labels: torch.Tensor,
+    receiver_id: torch.Tensor,
+    day_id: torch.Tensor,
+    label_mask: torch.Tensor,
+) -> torch.Tensor:
+    losses = []
+    for left in range(int(design.size(0))):
+        if not bool(label_mask[left]):
+            continue
+        for right in range(left + 1, int(design.size(0))):
+            if not bool(label_mask[right]) or int(labels[left]) != int(labels[right]):
+                continue
+            if int(receiver_id[left]) == int(receiver_id[right]) and int(day_id[left]) == int(day_id[right]):
+                continue
+            for source, destination in ((left, right), (right, left)):
+                prediction = design[destination] @ resp_coef[source]
+                losses.append(
+                    _weighted_complex_nmse(
+                        prediction, target[destination], weight[destination]
+                    )
+                )
+    return torch.stack(losses).mean() if losses else target.real.sum() * 0.0
+
+
+def different_tx_response_ranking_loss(
+    anchors: torch.Tensor,
+    variance: torch.Tensor,
+    labels: torch.Tensor,
+    receiver_id: torch.Tensor,
+    day_id: torch.Tensor,
+    view_type: List[str],
+    label_mask: torch.Tensor,
+    *,
+    margin: float = 0.5,
+) -> torch.Tensor:
+    losses = []
+    count = int(anchors.size(0))
+    for anchor_index in range(count):
+        if not bool(label_mask[anchor_index]):
+            continue
+        positives = [
+            index
+            for index in range(count)
+            if index != anchor_index
+            and bool(label_mask[index])
+            and int(labels[index]) == int(labels[anchor_index])
+            and (
+                int(receiver_id[index]) != int(receiver_id[anchor_index])
+                or int(day_id[index]) != int(day_id[anchor_index])
+            )
+        ]
+        negatives = [
+            index
+            for index in range(count)
+            if bool(label_mask[index])
+            and int(labels[index]) != int(labels[anchor_index])
+            and int(receiver_id[index]) == int(receiver_id[anchor_index])
+            and int(day_id[index]) == int(day_id[anchor_index])
+            and str(view_type[index]) == str(view_type[anchor_index])
+        ]
+        if not positives or not negatives:
+            continue
+        positive = positives[0]
+        negative = negatives[0]
+        d_positive = response_surface_distance(
+            anchors[anchor_index], anchors[positive], variance[anchor_index], variance[positive]
+        )
+        d_negative = response_surface_distance(
+            anchors[anchor_index], anchors[negative], variance[anchor_index], variance[negative]
+        )
+        losses.append(F.relu(float(margin) + d_positive - d_negative))
+    return torch.stack(losses).mean() if losses else anchors.real.sum() * 0.0
+
+
+def basis_gauge_loss(
+    design: torch.Tensor,
+    weight: torch.Tensor,
+    *,
+    eps: float = 1e-6,
+) -> torch.Tensor:
+    losses = []
+    identity = torch.eye(int(design.size(-1)), device=design.device, dtype=torch.complex64)
+    for row in range(int(design.size(0))):
+        w = weight[row].float().clamp_min(0.05)
+        gram = design[row].conj().transpose(0, 1) @ (w.unsqueeze(-1) * design[row])
+        diagonal = gram.diagonal().real.clamp_min(float(eps)).sqrt()
+        correlation = gram / (diagonal[:, None] * diagonal[None, :])
+        losses.append((correlation - identity).abs().square().mean())
+    return torch.stack(losses).mean()
+
+
+def response_gate_calibration_loss(
+    rho: torch.Tensor,
+    raw_correct: torch.Tensor,
+    fused_correct: torch.Tensor,
+    *,
+    rho_max: float = 0.25,
+) -> Tuple[torch.Tensor, Dict[str, int]]:
+    rescue = (~raw_correct.bool()) & fused_correct.bool()
+    harm = raw_correct.bool() & (~fused_correct.bool())
+    active = rescue | harm
+    probability = (rho.float() / float(rho_max)).clamp(1e-5, 1.0 - 1e-5)
+    target = rescue.float()
+    loss = (
+        F.binary_cross_entropy(probability[active], target[active])
+        if bool(active.any())
+        else probability.sum() * 0.0
+    )
+    return loss, {
+        "rescue": int(rescue.sum().item()),
+        "harm": int(harm.sum().item()),
+        "unchanged": int((~active).sum().item()),
+    }
+
