@@ -88,6 +88,8 @@ def test_canonical_schedule_closes_k20_and_every_required_domain_relation() -> N
         "leo_rain_weak",
     )
     assert len(audit["leo_cross_scene_pairs"]) == 6
+    assert audit["episode_count"] == 55
+    assert audit["semantic_cell_count"] == 55
 
     without_k20 = tuple(episode for episode in episodes if episode.k_shot != 20)
     with pytest.raises(ValueError, match="K.*20|coverage"):
@@ -96,6 +98,23 @@ def test_canonical_schedule_closes_k20_and_every_required_domain_relation() -> N
             source_receiver_ids=(0, 1),
             require_complete=True,
         )
+
+    duplicate_cell = (*episodes, episodes[0])
+    extra_cell = (
+        *episodes,
+        _sampler().sample_requested(
+            kind="Q_SAME_DOMAIN",
+            k_shot=1,
+            seed=991,
+        ),
+    )
+    for forged in (duplicate_cell, extra_cell):
+        with pytest.raises(ValueError, match="55|semantic|coverage"):
+            audit_marc_ot_episode_coverage(
+                forged,
+                source_receiver_ids=(0, 1),
+                require_complete=True,
+            )
 
 
 def test_episode_semantics_reject_forged_kind_k_and_partition_overlap() -> None:
@@ -236,13 +255,11 @@ def _episode_batch(episode):
     )
 
 
-def test_real_phase1_entry_runs_bank_step_and_strict_bundle_round_trip(tmp_path: Path) -> None:
-    """Replacing the new bank step with the legacy adapter path breaks this integration."""
+def _run_phase1_test_entry(bundle_path: Path, *, learning_rate: float, selector):
     from cvsrffi.marc_ot_phase1 import run_marc_ot_phase1_bank_training
     from cvsrffi.meta_bank_trainer import MetaBankTrainerConfig
     from cvsrffi.meta_support_set_encoder import SupportSetEncoder
 
-    sampler = _sampler()
     bank, base_state, specs, bases = _bank_and_state()
     encoder = SupportSetEncoder(
         feature_dim=685,
@@ -252,14 +269,24 @@ def test_real_phase1_entry_runs_bank_step_and_strict_bundle_round_trip(tmp_path:
         lr_min=0.01,
         lr_max=0.08,
     )
-    optimizer = torch.optim.SGD([*encoder.parameters(), *bases], lr=0.01)
+    optimizer = torch.optim.SGD([*encoder.parameters(), *bases], lr=learning_rate)
+    pre_step = {
+        **{
+            f"bank_basis.{entry.spec.name}": entry.basis.detach().clone()
+            for entry in bank.entries
+        },
+        **{
+            f"support_encoder.{name}": value.detach().clone()
+            for name, value in encoder.state_dict().items()
+        },
+    }
 
     def functional_forward(state, values):
         core = values[:, :, 0]
         return core @ state["id_backbone.t3.weight"] + state["id_backbone.fusion.bias"]
 
     result = run_marc_ot_phase1_bank_training(
-        sampler=sampler,
+        sampler=_sampler(),
         batch_builder=_episode_batch,
         functional_forward=functional_forward,
         base_state=base_state,
@@ -273,13 +300,23 @@ def test_real_phase1_entry_runs_bank_step_and_strict_bundle_round_trip(tmp_path:
         ),
         optimizer=optimizer,
         expected_block_specs=specs,
-        bundle_path=tmp_path / "marc_ot_bundle.pt",
-        training_episode_selector=lambda episodes: tuple(
+        bundle_path=bundle_path,
+        training_episode_selector=selector,
+        schedule_seed=31,
+    )
+    return result, bank, encoder, pre_step
+
+
+def test_real_phase1_entry_runs_bank_step_and_strict_bundle_round_trip(tmp_path: Path) -> None:
+    """Replacing the new bank step with the legacy adapter path breaks this integration."""
+    result, bank, encoder, pre_step = _run_phase1_test_entry(
+        tmp_path / "marc_ot_bundle.pt",
+        learning_rate=0.01,
+        selector=lambda episodes: tuple(
             row
             for row in episodes
             if row.k_shot == 2 and row.guard_class_ids
         )[:1],
-        schedule_seed=31,
     )
 
     assert result.entrypoint == "run_marc_ot_phase1_bank_training"
@@ -289,11 +326,80 @@ def test_real_phase1_entry_runs_bank_step_and_strict_bundle_round_trip(tmp_path:
     assert result.training_coverage["k_shot"] == (2,)
     assert result.training_coverage["training_step_executed"] is True
     assert result.training_coverage["input_provenance"] == "CALLER_SUPPLIED_UNCLAIMED"
+    assert result.training_coverage["updated_required_tensor_count"] > 0
     assert "source_training_executed" not in result.training_coverage
     assert result.pilot_executed is False
     assert result.loaded_bundle.base_checkpoint_id == "base-task8"
     assert all(not entry.basis.requires_grad for entry in result.loaded_bundle.bank.entries)
     assert all(not parameter.requires_grad for parameter in result.loaded_bundle.support_encoder.parameters())
+    post_step = {
+        **{
+            f"bank_basis.{entry.spec.name}": entry.basis.detach().clone()
+            for entry in bank.entries
+        },
+        **{
+            f"support_encoder.{name}": value.detach().clone()
+            for name, value in encoder.state_dict().items()
+        },
+    }
+    loaded = {
+        **{
+            f"bank_basis.{entry.spec.name}": entry.basis.detach().clone()
+            for entry in result.loaded_bundle.bank.entries
+        },
+        **{
+            f"support_encoder.{name}": value.detach().clone()
+            for name, value in result.loaded_bundle.support_encoder.state_dict().items()
+        },
+    }
+    assert all(bool(torch.isfinite(value).all()) for value in post_step.values())
+    assert any(not torch.equal(post_step[name], pre_step[name]) for name in pre_step)
+    assert all(torch.equal(loaded[name], post_step[name]) for name in post_step)
+    assert any(not torch.equal(loaded[name], pre_step[name]) for name in pre_step)
+
+
+def test_phase1_entry_rejects_zero_lr_and_duplicate_selector(tmp_path: Path) -> None:
+    """A no-op optimizer or repeated semantic cell cannot claim trained coverage."""
+
+    with pytest.raises(ValueError, match="learning rate|positive"):
+        _run_phase1_test_entry(
+            tmp_path / "zero_lr.pt",
+            learning_rate=0.0,
+            selector=lambda episodes: episodes[:1],
+        )
+    assert not (tmp_path / "zero_lr.pt").exists()
+
+    with pytest.raises(ValueError, match="duplicate|semantic"):
+        _run_phase1_test_entry(
+            tmp_path / "duplicate.pt",
+            learning_rate=0.01,
+            selector=lambda episodes: (episodes[0], episodes[0]),
+        )
+    assert not (tmp_path / "duplicate.pt").exists()
+
+    with pytest.raises(ValueError, match="duplicate semantic"):
+        _run_phase1_test_entry(
+            tmp_path / "semantic_duplicate.pt",
+            learning_rate=0.01,
+            selector=lambda episodes: (
+                episodes[0],
+                replace(episodes[0], seed=episodes[0].seed + 1000),
+            ),
+        )
+    assert not (tmp_path / "semantic_duplicate.pt").exists()
+
+    extra = _sampler().sample_requested(
+        kind="Q_SAME_DOMAIN",
+        k_shot=1,
+        seed=992,
+    )
+    with pytest.raises(ValueError, match="outside.*schedule"):
+        _run_phase1_test_entry(
+            tmp_path / "extra.pt",
+            learning_rate=0.01,
+            selector=lambda _episodes: (extra,),
+        )
+    assert not (tmp_path / "extra.pt").exists()
 
 
 def test_support_supcon_k1_zero_and_k2_nonzero_gradient() -> None:
@@ -405,6 +511,7 @@ def test_formal_runner_k1_falls_back_without_fake_held_out_evidence() -> None:
 
     assert audit.selected_alpha == 0.0
     assert audit.optimizer_steps == 0
+    assert audit.held_out_support_evidence is False
     assert audit.stage_audits == (
         {
             "stage": "K1_CONSERVATIVE_FALLBACK",

@@ -782,6 +782,64 @@ def validate_episode_semantics(
     }
 
 
+def _semantic_key_from_audit(audit: Mapping[str, Any]) -> tuple[str, int, str, str]:
+    kind = str(audit["kind"])
+    k_shot = int(audit["k_shot"])
+    if kind in {
+        EpisodeKind.RX_HOLDOUT.value,
+        EpisodeKind.DAY_CHANNEL_HOLDOUT.value,
+    }:
+        return (kind, k_shot, "*", "*")
+    return (
+        kind,
+        k_shot,
+        str(audit["support_view"]),
+        str(audit["query_view"]),
+    )
+
+
+def marc_ot_episode_semantic_key(
+    episode: MetaEpisode,
+    *,
+    source_receiver_ids: Sequence[int],
+) -> tuple[str, int, str, str]:
+    """Return the canonical coverage cell after complete semantic validation."""
+
+    return _semantic_key_from_audit(
+        validate_episode_semantics(
+            episode,
+            source_receiver_ids=source_receiver_ids,
+        )
+    )
+
+
+def _required_marc_ot_coverage_counter() -> Counter[tuple[str, int, str, str]]:
+    cells: list[tuple[str, int, str, str]] = []
+    for k_shot in MARC_OT_CANONICAL_K:
+        cells.extend(
+            (
+                (EpisodeKind.RX_HOLDOUT.value, k_shot, "*", "*"),
+                (EpisodeKind.DAY_CHANNEL_HOLDOUT.value, k_shot, "*", "*"),
+            )
+        )
+        cells.extend(
+            (EpisodeKind.CLEAN_TO_LEO.value, k_shot, "clean", scene)
+            for scene in MARC_OT_LEO_WEAK_SCENES
+        )
+        cells.extend(
+            (
+                EpisodeKind.LEO_CROSS.value,
+                k_shot,
+                support_scene,
+                query_scene,
+            )
+            for support_scene in MARC_OT_LEO_WEAK_SCENES
+            for query_scene in MARC_OT_LEO_WEAK_SCENES
+            if support_scene != query_scene
+        )
+    return Counter(cells)
+
+
 def sample_marc_ot_coverage_schedule(
     sampler: HierarchicalMetaEpisodeSampler,
     *,
@@ -892,8 +950,12 @@ def audit_marc_ot_episode_coverage(
         for query_scene in MARC_OT_LEO_WEAK_SCENES
         if support_scene != query_scene
     }
+    observed_counter = Counter(_semantic_key_from_audit(row) for row in audits)
+    required_counter = _required_marc_ot_coverage_counter()
     if require_complete and (
-        k_values != MARC_OT_CANONICAL_K
+        len(rows) != 55
+        or observed_counter != required_counter
+        or k_values != MARC_OT_CANONICAL_K
         or receiver_k != MARC_OT_CANONICAL_K
         or day_k != MARC_OT_CANONICAL_K
         or clean_cells != required_clean
@@ -904,6 +966,7 @@ def audit_marc_ot_episode_coverage(
         )
     return {
         "episode_count": len(rows),
+        "semantic_cell_count": len(observed_counter),
         "software_supported_k": k_values,
         "receiver_holdout_k": receiver_k,
         "day_capture_holdout_k": day_k,

@@ -19,6 +19,7 @@ from .meta_episodes import (
     HierarchicalMetaEpisodeSampler,
     MetaEpisode,
     audit_marc_ot_episode_coverage,
+    marc_ot_episode_semantic_key,
     sample_marc_ot_coverage_schedule,
     validate_episode_semantics,
 )
@@ -45,7 +46,11 @@ class MARCOTPhase1Closure:
     pilot_executed: bool = False
 
 
-def _actual_training_coverage(episodes: Sequence[MetaEpisode]) -> Mapping[str, Any]:
+def _actual_training_coverage(
+    episodes: Sequence[MetaEpisode],
+    *,
+    updated_required_tensor_count: int,
+) -> Mapping[str, Any]:
     rows = tuple(episodes)
     transitions = tuple(
         sorted(
@@ -65,8 +70,44 @@ def _actual_training_coverage(episodes: Sequence[MetaEpisode]) -> Mapping[str, A
         "episode_kinds": tuple(sorted({str(episode.kind.value) for episode in rows})),
         "scene_transitions": transitions,
         "training_step_executed": True,
+        "updated_required_tensor_count": int(updated_required_tensor_count),
         "input_provenance": "CALLER_SUPPLIED_UNCLAIMED",
         "pilot_executed": False,
+    }
+
+
+def _snapshot_required_training_state(
+    bank: WeightDeltaBank,
+    support_encoder: SupportSetEncoder,
+) -> dict[str, Tensor]:
+    state = {
+        **{
+            f"bank_basis.{entry.spec.name}": entry.basis.detach().cpu().clone()
+            for entry in bank.entries
+        },
+        **{
+            f"support_encoder.{name}": value.detach().cpu().clone()
+            for name, value in support_encoder.state_dict().items()
+        },
+    }
+    if not state or any(
+        value.is_floating_point() and not bool(torch.isfinite(value).all())
+        for value in state.values()
+    ):
+        raise ValueError("required Phase1 bank/encoder state must be finite and nonempty")
+    return state
+
+
+def _loaded_required_training_state(bundle: MetaWeightBundle) -> dict[str, Tensor]:
+    return {
+        **{
+            f"bank_basis.{entry.spec.name}": entry.basis.detach().cpu().clone()
+            for entry in bundle.bank.entries
+        },
+        **{
+            f"support_encoder.{name}": value.detach().cpu().clone()
+            for name, value in bundle.support_encoder.state_dict().items()
+        },
     }
 
 
@@ -105,6 +146,8 @@ def run_marc_ot_phase1_bank_training(
     if not destination.parent.is_dir():
         raise ValueError("MARC-OT bundle parent directory must already exist")
 
+    pre_step_state = _snapshot_required_training_state(bank, support_encoder)
+
     scheduled = sample_marc_ot_coverage_schedule(sampler, seed=int(schedule_seed))
     software_coverage = audit_marc_ot_episode_coverage(
         scheduled,
@@ -114,6 +157,17 @@ def run_marc_ot_phase1_bank_training(
     selected = tuple(training_episode_selector(scheduled))
     if not selected:
         raise ValueError("at least one scheduled MARC-OT episode must be trained")
+    if len({id(episode) for episode in selected}) != len(selected):
+        raise ValueError("training selector returned a duplicate episode")
+    semantic_keys = tuple(
+        marc_ot_episode_semantic_key(
+            episode,
+            source_receiver_ids=trainer_config.source_receiver_ids,
+        )
+        for episode in selected
+    )
+    if len(set(semantic_keys)) != len(semantic_keys):
+        raise ValueError("training selector returned a duplicate semantic key")
     scheduled_set = set(scheduled)
     if any(episode not in scheduled_set for episode in selected):
         raise ValueError("training selector returned an episode outside the frozen schedule")
@@ -141,6 +195,17 @@ def run_marc_ot_phase1_bank_training(
             )
         )
 
+    post_step_state = _snapshot_required_training_state(bank, support_encoder)
+    if set(post_step_state) != set(pre_step_state):
+        raise RuntimeError("required Phase1 training state registry changed")
+    updated_names = tuple(
+        name
+        for name in pre_step_state
+        if not torch.equal(pre_step_state[name], post_step_state[name])
+    )
+    if not updated_names:
+        raise RuntimeError("Phase1 bank step did not update any required bank/encoder tensor")
+
     saved = save_meta_weight_bundle(
         destination,
         base_checkpoint_id=base_checkpoint_id,
@@ -155,11 +220,22 @@ def run_marc_ot_phase1_bank_training(
         base_state=base_state,
         expected_block_specs=expected_block_specs,
     )
+    loaded_state = _loaded_required_training_state(loaded)
+    if set(loaded_state) != set(post_step_state) or any(
+        not torch.equal(loaded_state[name], post_step_state[name])
+        for name in post_step_state
+    ):
+        raise RuntimeError("strict MARC-OT bundle readback differs from post-step state")
     return MARCOTPhase1Closure(
         entrypoint="run_marc_ot_phase1_bank_training",
         bundle_path=saved,
         software_coverage=dict(software_coverage),
-        training_coverage=dict(_actual_training_coverage(selected)),
+        training_coverage=dict(
+            _actual_training_coverage(
+                selected,
+                updated_required_tensor_count=len(updated_names),
+            )
+        ),
         step_results=tuple(results),
         loaded_bundle=loaded,
         pilot_executed=False,

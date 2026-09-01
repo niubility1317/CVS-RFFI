@@ -20,6 +20,7 @@ if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
 from cvsrffi.meta_weight_bank import BlockSpec, parameter_block_key  # noqa: E402
+from cvsrffi.meta_episodes import MARC_OT_CANONICAL_K  # noqa: E402
 from cvsrffi.marc_ot_support_features import (  # noqa: E402
     MARC_OT_SUPPORT_FEATURE_CONFIG,
     MARC_OT_SUPPORT_ROW_DIM,
@@ -513,13 +514,23 @@ def _adapt_unit(
     }
 
 
-def _save_frozen_unit(destination: Path, scenario: str, arm: str, state: Mapping[str, Any]) -> None:
+def _save_frozen_unit(
+    destination: Path,
+    scenario: str,
+    arm: str,
+    state: Mapping[str, Any],
+    config: Mapping[str, Any],
+) -> None:
     unit = destination / scenario / arm
     unit.mkdir(parents=True, exist_ok=False)
     model_path = unit / "support_frozen_state.pt"
     if model_path.exists() or model_path.is_symlink():
         raise FileExistsError(f"immutable support state exists: {model_path}")
     torch.save(state["model_state"], model_path)
+    audit = state.get("audit")
+    held_out = audit.get("held_out_support_evidence") if isinstance(audit, Mapping) else None
+    if not isinstance(held_out, bool):
+        raise ValueError("support training audit lacks held-out evidence status")
     _write_json_new(
         unit / "support_state_receipt.json",
         {
@@ -529,6 +540,10 @@ def _save_frozen_unit(destination: Path, scenario: str, arm: str, state: Mapping
             "arm": arm,
             "query_opened": False,
             "query_rows_used": 0,
+            "software_supported_k": list(config["software_supported_k"]),
+            "training_coverage_k": list(config["training_coverage_k"]),
+            "pilot_k": int(config["pilot_k"]),
+            "held_out_support_evidence": held_out,
             "training_audit": state["audit"],
             "bank_initialization": state["bank_initialization"],
             "support_feature_abi": state["support_feature_abi"],
@@ -605,6 +620,12 @@ def _predict_unit(
             "query_role_opened": False,
             "support_state_frozen_before_query": True,
             "query_decision_policy": "per_sample_all_registered_classes",
+            "software_supported_k": list(config["software_supported_k"]),
+            "training_coverage_k": list(config["training_coverage_k"]),
+            "pilot_k": int(config["pilot_k"]),
+            "held_out_support_evidence": bool(
+                state["audit"]["held_out_support_evidence"]
+            ),
             "resources": _resource_receipt(
                 training_seconds=float(audit["training_seconds"]),
                 inference_seconds=inference_seconds,
@@ -659,16 +680,33 @@ def _smoke(args: argparse.Namespace) -> Mapping[str, Any]:
 def _pilot(args: argparse.Namespace) -> Mapping[str, Any]:
     destination = create_immutable_output_root(args.output_root)
     config, job = _context(args)
+    adaptation_unit_evidence: list[Mapping[str, Any]] = []
 
     def support_loader(scenario: str):
         return load_support_package(_support_path(job, scenario))
 
     def adapt(scenario: str, arm: str, support: Any):
-        del scenario
-        return _adapt_unit(args, config, support, arm, smoke=False)
+        state = _adapt_unit(args, config, support, arm, smoke=False)
+        if arm != "R0":
+            audit = state.get("audit")
+            held_out = (
+                audit.get("held_out_support_evidence")
+                if isinstance(audit, Mapping)
+                else None
+            )
+            if not isinstance(held_out, bool):
+                raise ValueError("adaptation unit lacks held-out support evidence status")
+            adaptation_unit_evidence.append(
+                {
+                    "scenario": scenario,
+                    "arm": arm,
+                    "held_out_support_evidence": held_out,
+                }
+            )
+        return state
 
     def write_state(scenario: str, arm: str, state: Mapping[str, Any]):
-        _save_frozen_unit(destination, scenario, arm, state)
+        _save_frozen_unit(destination, scenario, arm, state, config)
 
     def query_loader(scenario: str):
         return load_query_package(_query_path(job, scenario))
@@ -691,6 +729,11 @@ def _pilot(args: argparse.Namespace) -> Mapping[str, Any]:
         "capsule_id": str(job["capsule_id"]),
         "split_id": str(job["split_id"]),
         "receiver": str(job["receiver"]),
+        "software_supported_k": list(config["software_supported_k"]),
+        "training_coverage_k": list(config["training_coverage_k"]),
+        "pilot_k": int(config["pilot_k"]),
+        "pilot_executed": True,
+        "adaptation_unit_evidence": adaptation_unit_evidence,
         "promotion_gates": dict(config["promotion_gates"]),
         "scoring_required": True,
     }
@@ -735,6 +778,114 @@ def _promotion_decision(
     }
 
 
+def _preflight_pilot_promotion_binding(
+    pilot: Mapping[str, Any],
+    prediction_root: Path,
+    preflighted: Mapping[tuple[str, str], Any],
+) -> tuple[str, ...]:
+    software_k = pilot.get("software_supported_k")
+    if not isinstance(software_k, list) or tuple(software_k) != MARC_OT_CANONICAL_K:
+        raise ValueError("MARC-OT software K binding drift")
+    training_k = pilot.get("training_coverage_k")
+    if (
+        not isinstance(training_k, list)
+        or any(
+            not isinstance(value, int)
+            or isinstance(value, bool)
+            or value not in MARC_OT_CANONICAL_K
+            for value in training_k
+        )
+        or len(training_k) != len(set(training_k))
+    ):
+        raise ValueError("MARC-OT training coverage K binding drift")
+    pilot_k = pilot.get("pilot_k")
+    if (
+        not isinstance(pilot_k, int)
+        or isinstance(pilot_k, bool)
+        or pilot_k not in MARC_OT_CANONICAL_K
+    ):
+        raise ValueError("MARC-OT pilot K binding drift")
+    pilot_executed = pilot.get("pilot_executed")
+    if not isinstance(pilot_executed, bool):
+        raise ValueError("MARC-OT pilot execution binding drift")
+
+    raw_evidence = pilot.get("adaptation_unit_evidence")
+    if not isinstance(raw_evidence, list):
+        raise ValueError("MARC-OT adaptation unit evidence is missing")
+    expected_pairs = tuple(
+        (scenario, arm)
+        for scenario in SCENARIOS
+        for arm in FORMAL_ARMS
+        if arm != "R0"
+    )
+    evidence: dict[tuple[str, str], bool] = {}
+    for row in raw_evidence:
+        if not isinstance(row, Mapping) or set(row) != {
+            "scenario",
+            "arm",
+            "held_out_support_evidence",
+        }:
+            raise ValueError("MARC-OT adaptation unit evidence field drift")
+        pair = (str(row["scenario"]), str(row["arm"]))
+        held_out = row["held_out_support_evidence"]
+        if pair in evidence or not isinstance(held_out, bool):
+            raise ValueError("MARC-OT adaptation unit evidence duplicate or type drift")
+        evidence[pair] = held_out
+    if tuple(evidence) != expected_pairs:
+        raise ValueError("MARC-OT adaptation unit evidence coverage drift")
+
+    immutable = {
+        "software_supported_k": software_k,
+        "training_coverage_k": training_k,
+        "pilot_k": pilot_k,
+    }
+    for scenario in SCENARIOS:
+        for arm in FORMAL_ARMS:
+            prediction_receipt = preflighted[(scenario, arm)].receipt
+            if any(prediction_receipt.get(name) != value for name, value in immutable.items()):
+                raise ValueError("MARC-OT prediction receipt K binding drift")
+            if arm == "R0":
+                continue
+            support_receipt = _load_json(
+                prediction_root / scenario / arm / "support_state_receipt.json"
+            )
+            if (
+                support_receipt.get("schema")
+                != "cvs.phase2.marc_ot.support_state_receipt.v1"
+                or support_receipt.get("status") != "SUPPORT_STATE_FROZEN"
+                or support_receipt.get("scenario") != scenario
+                or support_receipt.get("arm") != arm
+                or any(
+                    support_receipt.get(name) != value
+                    for name, value in immutable.items()
+                )
+            ):
+                raise ValueError("MARC-OT support unit receipt binding drift")
+            training_audit = support_receipt.get("training_audit")
+            held_out = evidence[(scenario, arm)]
+            if (
+                not isinstance(training_audit, Mapping)
+                or support_receipt.get("held_out_support_evidence") is not held_out
+                or training_audit.get("held_out_support_evidence") is not held_out
+                or prediction_receipt.get("held_out_support_evidence") is not held_out
+            ):
+                raise ValueError("MARC-OT held-out unit receipt binding drift")
+
+    if pilot_k == 1 and any(evidence.values()):
+        raise ValueError("MARC-OT K1 cannot claim held-out support evidence")
+    reasons: list[str] = []
+    if pilot_k == 1:
+        reasons.append("PILOT_K1_NO_HELD_OUT_SUPPORT_EVIDENCE")
+    if not pilot_executed:
+        reasons.append("PILOT_NOT_EXECUTED")
+    reasons.extend(
+        f"UNIT_HELD_OUT_SUPPORT_EVIDENCE_MISSING:{scenario}/{arm}"
+        for (scenario, arm), held_out in evidence.items()
+        if not held_out
+    )
+    return tuple(reasons)
+
+
 def _score(args: argparse.Namespace) -> Mapping[str, Any]:
     destination = create_immutable_output_root(args.output_root)
     pilot = _load_json(args.prediction_root / "pilot_result.json")
@@ -754,6 +905,11 @@ def _score(args: argparse.Namespace) -> Mapping[str, Any]:
         for scenario in SCENARIOS
         for arm in FORMAL_ARMS
     }
+    analysis_only_reasons = _preflight_pilot_promotion_binding(
+        pilot,
+        args.prediction_root,
+        preflighted,
+    )
     truth_payload = load_marc_ot_truth(args.truth_sidecar)
     rows: list[Mapping[str, Any]] = []
     paired: list[Mapping[str, Any]] = []
@@ -773,7 +929,23 @@ def _score(args: argparse.Namespace) -> Mapping[str, Any]:
     gates = pilot.get("promotion_gates")
     if not isinstance(gates, Mapping):
         raise ValueError("MARC-OT frozen promotion gates are missing")
-    decisions = {arm: _promotion_decision(paired, gates, arm) for arm in FORMAL_ARMS[1:]}
+    raw_decisions = {
+        arm: _promotion_decision(paired, gates, arm) for arm in FORMAL_ARMS[1:]
+    }
+    promotion_eligible = not analysis_only_reasons
+    decisions = (
+        raw_decisions
+        if promotion_eligible
+        else {
+            arm: {
+                **decision,
+                "raw_gate_passed": bool(decision["passed"]),
+                "passed": False,
+                "status": "ANALYSIS_ONLY",
+            }
+            for arm, decision in raw_decisions.items()
+        }
+    )
     promotable = [arm for arm in FORMAL_ARMS[1:] if decisions[arm]["passed"]]
     result = {
         "schema": "cvs.phase2.marc_ot.score_collection.v1",
@@ -781,8 +953,16 @@ def _score(args: argparse.Namespace) -> Mapping[str, Any]:
         "rows": rows,
         "paired_rows": paired,
         "decisions": decisions,
+        "promotion_eligible": promotion_eligible,
+        "analysis_only_reasons": list(analysis_only_reasons),
         "best_promotable_arm": promotable[-1] if promotable else None,
-        "next_state": "PROMOTE_TO_TARGET25" if promotable else "NO_PROMOTION_TO_TARGET25",
+        "next_state": (
+            "ANALYSIS_ONLY"
+            if not promotion_eligible
+            else "PROMOTE_TO_TARGET25"
+            if promotable
+            else "NO_PROMOTION_TO_TARGET25"
+        ),
         "truth_join_after_prediction_only": True,
     }
     _write_json_new(destination / "score_collection.json", result)

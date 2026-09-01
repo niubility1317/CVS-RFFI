@@ -515,7 +515,101 @@ def test_stage_calibration_transform_returns_builder_rows_with_gradient(monkeypa
     assert audits[0]["cfo"]["status"] == "PROXY_ONLY"
 
 
-def _write_prediction_unit(root, scenario, arm, *, corrupt=False) -> None:
+def test_pilot_result_binds_k_coverage_execution_and_unit_evidence(
+    tmp_path, monkeypatch
+) -> None:
+    """Dropping K bindings or per-unit cross-fit evidence makes the pilot unscoreable."""
+    module = _module()
+    config = {
+        "software_supported_k": [1, 2, 5, 10, 20],
+        "training_coverage_k": [],
+        "pilot_k": 10,
+        "promotion_gates": {"gate": 1.0},
+    }
+    job = {
+        "outer_key": "outer",
+        "capsule_id": "capsule",
+        "split_id": "split",
+        "receiver": "3-19",
+        "packages": {
+            "before_enrollment": {"package_root": str(tmp_path / "support")},
+            "before_apply": {"package_root": str(tmp_path / "query")},
+        },
+    }
+    predictions: list[tuple[str, str]] = []
+
+    def fake_adapt(_args, _config, _support, arm, *, smoke):
+        assert smoke is False
+        held_out = arm != "R0"
+        return {
+            "model_state": {},
+            "audit": {
+                "held_out_support_evidence": held_out,
+                "training_seconds": 0.0,
+                "peak_cuda_bytes": None,
+            },
+            "bank_initialization": {},
+            "support_feature_abi": {},
+            "support_feature_audits": [],
+            "support_feature_boundary": {"source_iq_rows_used": 0, "query_rows_used": 0},
+            "trainable_parameter_count": 0,
+        }
+
+    monkeypatch.setattr(module, "_context", lambda _args: (config, job))
+    monkeypatch.setattr(module, "load_support_package", lambda _path: object())
+    monkeypatch.setattr(module, "load_query_package", lambda _path: object())
+    monkeypatch.setattr(module, "_adapt_unit", fake_adapt)
+    monkeypatch.setattr(
+        module,
+        "_predict_unit",
+        lambda _args, _config, _job, _destination, scenario, arm, *_rest: predictions.append(
+            (scenario, arm)
+        ),
+    )
+    args = SimpleNamespace(output_root=tmp_path / "pilot")
+
+    result = module._pilot(args)
+
+    assert result["software_supported_k"] == [1, 2, 5, 10, 20]
+    assert result["training_coverage_k"] == []
+    assert result["pilot_k"] == 10
+    assert result["pilot_executed"] is True
+    assert len(predictions) == len(SCENARIOS) * len(FORMAL_ARMS)
+    evidence = result["adaptation_unit_evidence"]
+    assert len(evidence) == len(SCENARIOS) * (len(FORMAL_ARMS) - 1)
+    assert all(row["arm"] != "R0" for row in evidence)
+    assert all(row["held_out_support_evidence"] is True for row in evidence)
+    for row in evidence:
+        receipt = json.loads(
+            (
+                args.output_root
+                / row["scenario"]
+                / row["arm"]
+                / "support_state_receipt.json"
+            ).read_text(encoding="utf-8")
+        )
+        assert receipt["held_out_support_evidence"] is True
+        assert receipt["training_audit"]["held_out_support_evidence"] is True
+
+    def fail_prediction(*_args, **_kwargs):
+        raise RuntimeError("prediction interrupted")
+
+    monkeypatch.setattr(module, "_predict_unit", fail_prediction)
+    failed_args = SimpleNamespace(output_root=tmp_path / "failed-pilot")
+    with pytest.raises(RuntimeError, match="prediction interrupted"):
+        module._pilot(failed_args)
+    assert not (failed_args.output_root / "pilot_result.json").exists()
+
+
+def _write_prediction_unit(
+    root,
+    scenario,
+    arm,
+    *,
+    corrupt=False,
+    pilot_k=10,
+    held_out_support_evidence=None,
+) -> None:
     root.mkdir(parents=True)
     tokens = np.asarray(["q0", "q1"])
     logits = np.asarray([[2.0, 0.0], [0.0, 2.0]], dtype=np.float64)
@@ -544,6 +638,14 @@ def _write_prediction_unit(root, scenario, arm, *, corrupt=False) -> None:
         "query_truth_opened": False,
         "query_role_opened": False,
         "support_state_frozen_before_query": True,
+        "software_supported_k": [1, 2, 5, 10, 20],
+        "training_coverage_k": [],
+        "pilot_k": pilot_k,
+        "held_out_support_evidence": (
+            arm != "R0"
+            if held_out_support_evidence is None
+            else held_out_support_evidence
+        ),
         "resources": {
             "training_seconds": 1.0,
             "inference_seconds": 0.1,
@@ -555,6 +657,89 @@ def _write_prediction_unit(root, scenario, arm, *, corrupt=False) -> None:
         },
     }
     (root / "prediction_receipt.json").write_text(json.dumps(receipt), encoding="utf-8")
+
+
+def _write_bound_prediction_root(
+    root: Path,
+    *,
+    pilot_k: int,
+    pilot_executed: bool,
+    held_out_support_evidence: bool,
+) -> Path:
+    evidence = []
+    for scenario in SCENARIOS:
+        for arm in FORMAL_ARMS:
+            _write_prediction_unit(
+                root / scenario / arm / "prediction",
+                scenario,
+                arm,
+                pilot_k=pilot_k,
+                held_out_support_evidence=(
+                    False if arm == "R0" else held_out_support_evidence
+                ),
+            )
+            if arm == "R0":
+                continue
+            row = {
+                "scenario": scenario,
+                "arm": arm,
+                "held_out_support_evidence": held_out_support_evidence,
+            }
+            evidence.append(row)
+            receipt = {
+                "schema": "cvs.phase2.marc_ot.support_state_receipt.v1",
+                "status": "SUPPORT_STATE_FROZEN",
+                "scenario": scenario,
+                "arm": arm,
+                "held_out_support_evidence": held_out_support_evidence,
+                "software_supported_k": [1, 2, 5, 10, 20],
+                "training_coverage_k": [],
+                "pilot_k": pilot_k,
+                "training_audit": {
+                    "held_out_support_evidence": held_out_support_evidence,
+                },
+            }
+            (root / scenario / arm / "support_state_receipt.json").write_text(
+                json.dumps(receipt), encoding="utf-8"
+            )
+    pilot = {
+        "status": "ARTIFACTS_COMPLETE",
+        "support_frozen_unit_count": 18,
+        "prediction_unit_count": 18,
+        "arms": list(FORMAL_ARMS),
+        "scenarios": list(SCENARIOS),
+        "truth_opened": False,
+        "software_supported_k": [1, 2, 5, 10, 20],
+        "training_coverage_k": [],
+        "pilot_k": pilot_k,
+        "pilot_executed": pilot_executed,
+        "adaptation_unit_evidence": evidence,
+        "promotion_gates": {
+            "median_p3_ba_delta_pp": -1.0,
+            "worst_scene_p3_ba_delta_pp": -1.0,
+            "median_p3_floor_delta_pp": -1.0,
+            "low_elev_p3_floor_delta_pp": -1.0,
+            "max_p1_p2_scene_drop_pp": 1.0,
+            "minimum_help_gt_harm_scenes": 0,
+        },
+    }
+    (root / "pilot_result.json").write_text(json.dumps(pilot), encoding="utf-8")
+    truth_path = root.parent / f"truth-k{pilot_k}-{int(pilot_executed)}-{int(held_out_support_evidence)}.json"
+    truth_path.write_text(
+        json.dumps(
+            {
+                "receiver": "3-19",
+                "capsule_id": "capsule",
+                "split_id": "split",
+                "rows": [
+                    {"query_token": "q0", "true_class_index": 0},
+                    {"query_token": "q1", "true_class_index": 1},
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    return truth_path
 
 
 class _CountingTruthPath(os.PathLike):
@@ -622,3 +807,107 @@ def test_score_preflights_all_18_predictions_before_first_truth_open(tmp_path) -
         module._score(args)
 
     assert observed_truth.open_attempts == 0
+
+
+@pytest.mark.parametrize("tamper", ("software_k", "unit_receipt"))
+def test_score_rejects_tampered_pilot_binding_before_truth(tmp_path, tamper: str) -> None:
+    module = _module()
+    prediction_root = tmp_path / f"pilot-{tamper}"
+    truth_path = _write_bound_prediction_root(
+        prediction_root,
+        pilot_k=10,
+        pilot_executed=True,
+        held_out_support_evidence=True,
+    )
+    if tamper == "software_k":
+        pilot = json.loads((prediction_root / "pilot_result.json").read_text(encoding="utf-8"))
+        pilot["software_supported_k"] = [1, 2, 5, 10]
+        (prediction_root / "pilot_result.json").write_text(
+            json.dumps(pilot), encoding="utf-8"
+        )
+    else:
+        receipt_path = (
+            prediction_root
+            / SCENARIOS[0]
+            / "R2"
+            / "support_state_receipt.json"
+        )
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        receipt["held_out_support_evidence"] = False
+        receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+    observed_truth = _CountingTruthPath(truth_path)
+
+    with pytest.raises(ValueError, match="binding|receipt|software"):
+        module._score(
+            SimpleNamespace(
+                prediction_root=prediction_root,
+                truth_sidecar=observed_truth,
+                output_root=tmp_path / f"score-{tamper}",
+            )
+        )
+
+    assert observed_truth.open_attempts == 0
+
+
+@pytest.mark.parametrize(
+    ("pilot_k", "pilot_executed", "held_out", "reason"),
+    (
+        (1, True, False, "K1"),
+        (10, False, True, "NOT_EXECUTED"),
+        (10, True, False, "HELD_OUT"),
+    ),
+)
+def test_score_forces_analysis_only_without_promotion_evidence(
+    tmp_path,
+    pilot_k: int,
+    pilot_executed: bool,
+    held_out: bool,
+    reason: str,
+) -> None:
+    module = _module()
+    prediction_root = tmp_path / f"pilot-{pilot_k}-{pilot_executed}-{held_out}"
+    truth_path = _write_bound_prediction_root(
+        prediction_root,
+        pilot_k=pilot_k,
+        pilot_executed=pilot_executed,
+        held_out_support_evidence=held_out,
+    )
+
+    result = module._score(
+        SimpleNamespace(
+            prediction_root=prediction_root,
+            truth_sidecar=truth_path,
+            output_root=tmp_path / f"score-{pilot_k}-{pilot_executed}-{held_out}",
+        )
+    )
+
+    assert result["promotion_eligible"] is False
+    assert result["next_state"] == "ANALYSIS_ONLY"
+    assert result["best_promotable_arm"] is None
+    assert any(reason in value for value in result["analysis_only_reasons"])
+    assert all(decision["passed"] is False for decision in result["decisions"].values())
+    assert all(decision["status"] == "ANALYSIS_ONLY" for decision in result["decisions"].values())
+
+
+def test_score_keeps_valid_k10_crossfit_root_promotion_eligible(tmp_path) -> None:
+    module = _module()
+    prediction_root = tmp_path / "pilot-valid"
+    truth_path = _write_bound_prediction_root(
+        prediction_root,
+        pilot_k=10,
+        pilot_executed=True,
+        held_out_support_evidence=True,
+    )
+
+    result = module._score(
+        SimpleNamespace(
+            prediction_root=prediction_root,
+            truth_sidecar=truth_path,
+            output_root=tmp_path / "score-valid",
+        )
+    )
+
+    assert result["promotion_eligible"] is True
+    assert result["analysis_only_reasons"] == []
+    assert result["next_state"] == "PROMOTE_TO_TARGET25"
+    assert result["best_promotable_arm"] == "R8"

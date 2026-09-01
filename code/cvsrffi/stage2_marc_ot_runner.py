@@ -191,6 +191,7 @@ class MARCOTTrainingAudit:
     training_seconds: float
     peak_cuda_bytes: int | None
     reached_parameter_names: tuple[str, ...] = field(default_factory=tuple)
+    held_out_support_evidence: bool = False
 
 
 def _clone_tensors(values: Mapping[str, Tensor], *, context: str) -> dict[str, Tensor]:
@@ -771,6 +772,7 @@ def train_marc_ot_arm(
                 config=asdict(config),
                 training_seconds=float(time.perf_counter() - started),
                 peak_cuda_bytes=(int(torch.cuda.max_memory_allocated(values.device)) if values.is_cuda else None),
+                held_out_support_evidence=False,
             )
 
         fold_plan = build_marc_ot_support_fold_plan(
@@ -806,6 +808,7 @@ def train_marc_ot_arm(
                     if values.is_cuda
                     else None
                 ),
+                held_out_support_evidence=False,
             )
         fold_indices = fold_plan.folds
 
@@ -1098,6 +1101,7 @@ def train_marc_ot_arm(
             training_seconds=float(time.perf_counter() - started),
             peak_cuda_bytes=(int(torch.cuda.max_memory_allocated(values.device)) if values.is_cuda else None),
             reached_parameter_names=reached,
+            held_out_support_evidence=True,
         )
     except Exception:
         _load_state(model, original_base)

@@ -160,6 +160,107 @@ def test_default_stage_transform_receives_fit_iq_model_and_keeps_gradient_path()
     assert observed == [(values.data_ptr(), tokens, True, "crossfit")]
 
 
+def test_production_r1_r2_single_step_contains_nonzero_supcon_gradient_increment() -> None:
+    """Removing SupCon from the real R2 stage makes the weight-scaled gradient delta zero."""
+    from cvsrffi.stage2_marc_ot import supervised_contrastive_support_loss
+
+    class StageModel(nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.id_backbone = _IdentityBackbone()
+
+        def forward(self, values: torch.Tensor, return_aux: bool = True):
+            del return_aux
+            features = self.id_backbone.t1(values.float())
+            return {"tx_logits": features, "z_id": features}
+
+    torch.manual_seed(17)
+    reference = StageModel()
+    initial = {
+        name: value.detach().clone() for name, value in reference.state_dict().items()
+    }
+    values = torch.tensor(
+        [[2.0, 0.1], [0.1, 2.0], [1.8, 0.2], [0.2, 1.8]],
+        dtype=torch.float32,
+    )
+    labels = torch.tensor([0, 0, 1, 1])
+    tokens = ("a0", "a1", "b0", "b1")
+    trainable = ("id_backbone.t1.weight",)
+
+    def production_step(arm: str, weight: float):
+        model = StageModel()
+        model.load_state_dict(initial, strict=True)
+        config = MARCOTRunnerConfig(
+            stage_steps=(1, 0, 0, 0),
+            fold_count=2,
+            learning_rate_min=9.0e-4,
+            learning_rate_max=1.0e-3,
+            supcon_weight=weight,
+        )
+        state, _duals = runner_subject._default_stage_update(
+            model,
+            "norm_fusion_projection",
+            trainable,
+            1,
+            {"class_duals": torch.zeros(2)},
+            values=values,
+            labels=labels,
+            tokens=tokens,
+            arm=arm,
+            config=config,
+            bank_task_features=None,
+            calibration_feature_transform=(
+                _test_calibration_transform if arm == "R2" else None
+            ),
+            fit_scope="crossfit",
+            block_learning_rates=None,
+            original_base=initial,
+        )
+        gradients = torch.cat(
+            [dict(model.named_parameters())[name].grad.detach().reshape(-1) for name in trainable]
+        )
+        updates = torch.cat(
+            [(state[name] - initial[name]).detach().reshape(-1) for name in trainable]
+        )
+        return gradients, updates
+
+    r1_gradient, r1_update = production_step("R1", 0.1)
+    r1_high_gradient, _r1_high_update = production_step("R1", 0.2)
+    r2_low_gradient, r2_low_update = production_step("R2", 0.1)
+    r2_high_gradient, r2_high_update = production_step("R2", 0.2)
+
+    expected_model = StageModel()
+    expected_model.load_state_dict(initial, strict=True)
+    expected_features = expected_model(values, return_aux=True)["z_id"]
+    expected_supcon = supervised_contrastive_support_loss(
+        expected_features,
+        labels,
+        temperature=0.07,
+    ).loss
+    expected_increment = torch.cat(
+        [
+            value.detach().reshape(-1)
+            for value in torch.autograd.grad(
+                0.1 * expected_supcon,
+                tuple(dict(expected_model.named_parameters())[name] for name in trainable),
+            )
+        ]
+    )
+
+    assert torch.count_nonzero(expected_increment)
+    assert torch.allclose(
+        r2_high_gradient - r2_low_gradient,
+        expected_increment,
+        atol=1.0e-5,
+        rtol=1.0e-4,
+    )
+    assert torch.equal(r1_gradient, r1_high_gradient)
+    assert torch.count_nonzero(r2_high_gradient - r2_low_gradient)
+    assert torch.count_nonzero(r1_update)
+    assert torch.count_nonzero(r2_low_update)
+    assert torch.count_nonzero(r2_high_update)
+
+
 def test_all_unsafe_interpolations_restore_base_state_duals_and_integer_buffer() -> None:
     base = _state(1)
     candidate = _state(2)
@@ -212,6 +313,7 @@ def test_progressive_runner_uses_fixed_stage_order_and_refreezes() -> None:
     assert tuple(stage for stage, _ in observed) == MARCOT_PROGRESSIVE_STAGES
     assert all(names for _, names in observed)
     assert audit.query_rows_used == 0
+    assert audit.held_out_support_evidence is True
     assert not model.training
     assert all(not parameter.requires_grad for parameter in model.parameters())
 

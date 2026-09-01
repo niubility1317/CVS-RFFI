@@ -238,6 +238,15 @@ def _validate_optimizer_scope(
 ) -> None:
     if not isinstance(optimizer, torch.optim.Optimizer):
         raise TypeError("optimizer must be a torch.optim.Optimizer")
+    for group in optimizer.param_groups:
+        learning_rate = group.get("lr")
+        if (
+            not isinstance(learning_rate, (int, float))
+            or isinstance(learning_rate, bool)
+            or not math.isfinite(float(learning_rate))
+            or float(learning_rate) <= 0.0
+        ):
+            raise ValueError("optimizer learning rate must be finite and positive")
     actual = tuple(
         parameter
         for group in optimizer.param_groups

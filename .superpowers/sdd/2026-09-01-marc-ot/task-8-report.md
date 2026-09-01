@@ -46,3 +46,28 @@
 - 未访问N607、未修改`VALIDATED_ONCE`数据、未运行正式K10 pilot、未读取Phase2 query用于训练/选择、未生成性能声明。
 - 精确stage仅纳入Task8代码/config/测试与本报告；既有Task6`analysis/marc_ot_traceability_20260901.md`、`docs/experiments/marc_ot_k10_pilot_20260901_report.md`、`conversation_index/`及`local_artifacts/`继续保留且不stage。
 - 提交主题固定为`feat: close MARC-OT meta episodes and SupCon`；本报告所在提交无法自引用最终OID，提交后的local/remote OID一致性由交付状态记录。
+
+## 定点修复round1（REQUEST_CHANGES）
+
+### pilot/scorer证据绑定
+
+- `_pilot()`现在把validated config中的`software_supported_k`、`training_coverage_k`与`pilot_k`写入`pilot_result.json`，并且只在全部prediction成功完成后写入`pilot_executed=true`。失败路径不生成可冒充已执行pilot的结果。
+- 15个非R0适配unit逐一记录`held_out_support_evidence`，该字段同时绑定support receipt、training audit与prediction receipt。K1只能记录`false`；K≥2只有真实cross-fit runner路径才记录`true`，不从opaque support token推断。
+- `_score()`先完成18个prediction unit的纯prediction预检，随后核对pilot的三个K字段、`pilot_executed`与全部非R0 unit receipts，最后才打开truth。手工K1 root、`pilot_executed=false`或任一适配unit缺少held-out证据时仍可计算指标，但所有arm强制为`ANALYSIS_ONLY`且`promotion_eligible=false`，不得晋级。
+- 新增pilot K字段篡改、unit receipt篡改、手工K1 prediction root、未执行pilot及held-out证据缺失负测；合法K10闭合路径仍可按原gate进入晋级判断。
+
+### Phase1与SupCon闭合收紧
+
+- coverage audit现在以canonical semantic key的`Counter`精确匹配55个期望cell，并同时要求`len==55`。selector拒绝相同episode对象、不同对象但semantic key重复，以及冻结schedule以外的额外cell。
+- Phase1 optimizer在训练前拒绝非数值、非有限或`<=0`的learning rate。训练前快照bank basis与encoder state；schedule完成后要求至少一个required tensor发生有限变化；strict bundle回读必须逐tensor等于post-step且不同于pre-step。
+- 新增真实更新、严格round-trip及零learning-rate拒绝测试。真实闭合不再只证明bundle可写，而是证明required state确已被训练步骤改变并被完整回读。
+- R1/R2生产接入测试直接调用`_default_stage_update()`执行single step：固定其它loss后，R1不受SupCon配置影响；R2的实际总梯度与参数更新包含可复现的非零support-only SupCon增量，并与独立autograd期望增量一致。该证据不是对独立feature loss函数的孤立测试。
+
+### TDD与回归证据
+
+- RED首轮为`12 failed, 37 passed`：11项对应缺失的pilot/scorer、coverage、optimizer/state closure行为，另1项暴露测试fixture的learning-rate语义与新合同不一致；修正fixture后未放宽生产合同。
+- GREEN聚焦回归为`49 passed`；新增三项压力负测为`3 passed`。
+- Task1–8完整新鲜回归为`365 passed in 153.60s`，退出码0。
+- fresh CLI help显示`smoke/pilot/score`且退出码0；Task8相关生产入口fresh `compileall -q`退出码0。
+- 本轮未运行正式K10 pilot、未产生held-out性能证据、未访问N607；software support、training coverage与pilot executed仍保持不同证据层级。
+- 本轮精确交付范围仅为Task8代码、测试与本报告。既有Task6 `analysis/marc_ot_traceability_20260901.md`、`docs/experiments/marc_ot_k10_pilot_20260901_report.md`、`conversation_index/`及`local_artifacts/`继续保留且不stage。
