@@ -2,7 +2,7 @@
 
 ## 状态
 
-- 当前状态：`LOCAL_VERIFIED`
+- 当前状态：`RUNNING`
 - run ID：`phase1_adv3b02_daot_stn_a1_a7_manysig_s392005_20260902_r3`
 - 代码与配置commit：`7504f6669fbc0a02b9b7446f463f561ecbcef6de`
 - 分支：`codex/adv3b02-daot-stn-v1-20260901`
@@ -68,3 +68,14 @@ nohup env ROOT=/home/szu2070436088/2510044040/CV-SincNet CODE_ROOT=/home/szu2070
 仅在数据/query边界违反、错误split/receiver/day、输出碰撞、错误checkout/CWD、确定性异常至少两行重复、无prediction闭合或scorer连接错误时停止精确绑定的r3进程树。低性能不停止。
 
 每行预期生成`config.json`、`train.log`、checkpoint、clean与三个LEO弱场景的独立评测日志和指标、`status.txt`；四场景齐全后才可标记`ARTIFACTS_COMPLETE`。
+
+## r3发布与启动证据
+
+- release归档SHA256：本地与远端均为`0b3b41f9fce013b586fc1ef530d71926a15aa467e6196495779a4e6e9a091672`，状态`VERIFIED`。
+- 远端验证：launcher与worker语法、Python编译、7行dry-run、真实checkpoint无query smoke、15域兼容加载、单一V协议保持均`VERIFIED`。
+- dispatcher PID：`3884219`，CWD为r3 release代码根，状态活动。
+- 7个主训练PID及GPU：A1=`3884248/GPU1`、A2=`3884249/GPU2`、A3=`3884259/GPU3`、A4=`3884252/GPU4`、A5=`3884256/GPU5`、A6=`3884254/GPU6`、A7=`3884257/GPU7`。
+- 7个候选目录、7份`train.log`均已建立；A0不存在。
+- checkpoint兼容marker共14条（7行student＋teacher）；单一`L/U/V=6300/56700/27000`marker共14条；旧`13500/13500`回退marker为0。
+- 两次短时回读均维持7个主训练进程，GPU1～7有对应活动负载；未发现Traceback、RuntimeError、OOM、Killed或其他确定性异常。
+- 当前只完成发布和启动健康闭合，尚无性能结果；不得提前作方法优劣判断。
