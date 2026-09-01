@@ -81,3 +81,9 @@ CUDA_VISIBLE_DEVICES=<physical_gpu> /home/szu2070436088/.conda/envs/CVS-RFFI/bin
 - 当前r6为7份冻结态、9个精确适配进程、2个同指纹R2失败；这确认故障是旧R2路径的确定性系统问题，而非单场景偶发性能现象。
 - 本地lazy-skip修复尚未部署到r6，因此不属于“修复后复现”；继续保留全部partial artifacts，不热补丁、不原地重启，也不停止仍健康的9个单元。
 - GPU仍有24个计算进程，替代矩阵容量不足；query继续关闭，r6保持`NO_PERFORMANCE_RESULT`。
+
+## 2026-09-02 06:38只读进度
+
+- 新增`leo_clear_weak/R4`、`leo_rain_weak/R4`和`leo_rain_weak/R6`冻结态；r6现有10份合法support回执、6个精确适配进程。
+- 异常仍固定为两个已知R2同指纹失败，未出现其他arm或新错误类型；query保持关闭。
+- N607共有21个GPU计算进程，完整替代矩阵仍无安全容量；继续保留产物并等待。
