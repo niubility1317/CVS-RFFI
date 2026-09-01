@@ -85,3 +85,16 @@ def test_support_encoder_bounds_gate_and_learning_rate_outputs() -> None:
     assert state.block_gates.shape == (2,)
     assert torch.all((state.block_gates >= 0.0) & (state.block_gates <= 1.0))
     assert torch.all((state.block_lrs >= 0.001) & (state.block_lrs <= 0.01))
+
+
+def test_support_encoder_rejects_collapsed_learning_rate_interval() -> None:
+    from cvsrffi.meta_support_set_encoder import SupportSetEncoder
+
+    with pytest.raises(ValueError, match="learning-rate bounds"):
+        SupportSetEncoder(
+            feature_dim=3,
+            coefficient_dim=2,
+            block_count=2,
+            lr_min=0.01,
+            lr_max=0.01,
+        )

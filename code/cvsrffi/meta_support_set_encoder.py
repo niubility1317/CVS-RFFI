@@ -39,7 +39,7 @@ class SupportSetEncoder(nn.Module):
             for value in (feature_dim, coefficient_dim, block_count, hidden_dim)
         ):
             raise ValueError("encoder dimensions must be positive integers")
-        if not math.isfinite(lr_min) or not math.isfinite(lr_max) or lr_min <= 0.0 or lr_min > lr_max:
+        if not math.isfinite(lr_min) or not math.isfinite(lr_max) or lr_min <= 0.0 or lr_min >= lr_max:
             raise ValueError("learning-rate bounds must be finite and positive")
         self.feature_dim = feature_dim
         self.coefficient_dim = coefficient_dim
