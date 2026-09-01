@@ -442,6 +442,11 @@ class BiCADXRTrainer(nn.Module):
     def swad_state(self) -> dict[str, Any] | None:
         return self._swad_state
 
+    def forward(self, *args: Any, **kwargs: Any) -> Any:
+        """Delegate inference to the candidate model loaded by this trainer."""
+
+        return self.model(*args, **kwargs)
+
     @staticmethod
     def _component(
         raw: Tensor | float = 0.0,

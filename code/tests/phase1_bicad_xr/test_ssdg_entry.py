@@ -750,3 +750,35 @@ def test_pairbicad_source_loro_eval_reports_class_floor_and_scenario_seed() -> N
     assert result["accuracy"] == pytest.approx(75.0)
     assert result["per_class_accuracy"] == {"0": 50.0, "1": 100.0}
     assert result["floor"] == pytest.approx(50.0)
+
+
+def test_cv2_final_source_loro_eval_accepts_the_candidate_trainer() -> None:
+    """The final/EMA/SWAD selection path evaluates the loaded trainer state."""
+
+    evaluate = _required_bicad_helper("_evaluate_bicad_xr_source_loro")
+    base_model = _CountingIQModel()
+    trainer = BiCADXRTrainer(
+        train_ssdg._BiCADXRConcatForward(base_model),
+        "CV2-B0",
+        num_receivers=4,
+        num_days=3,
+    )
+    args = SimpleNamespace(seed=392002, eval_max_batches=0)
+    batch = (
+        torch.ones(2, 2, 64, dtype=torch.float32),
+        torch.tensor([0, 1], dtype=torch.long),
+        torch.zeros(2, dtype=torch.long),
+        {},
+    )
+
+    result = evaluate(
+        trainer,
+        [batch],
+        torch.device("cpu"),
+        args,
+        scenario="clean",
+        scenario_index=0,
+    )
+
+    assert result["tx_total"] == 2
+    assert base_model.forward_calls == 1

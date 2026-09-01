@@ -37,7 +37,7 @@ from cvsrffi.phase1_bicad_xr.config import (
 from cvsrffi.phase1_bicad_xr.metrics import validate_artifact_closure
 
 
-RUN_ID_DEFAULT = "phase1_pairbicad_cv2_fixed11_e200_seed392002_20260901_r3"
+RUN_ID_DEFAULT = "phase1_pairbicad_cv2_fixed11_e200_seed392002_20260901_r4"
 CANDIDATE_IDS = CV2_CANDIDATE_IDS
 STATIC_BRANCH_BASELINES = CV2_STATIC_BRANCH_BASELINES
 FOLDS: tuple[int, int] = (1, 8)

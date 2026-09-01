@@ -69,3 +69,11 @@ Ruling：为允许24行并发且不读取运行中冠军，`CV2-D0`和`CV2-T0`�
 当前计数：verified=11，deferred=0，rejected=0，blocked=0，in_progress=0。这里的`verified`表示本地实现与行为测试已闭合；N607真实200epoch运行、每行机制遥测和四场景artifact仍须由新run给出运行时证据。
 
 独立P0/P1审查发现并修复一项P1：分离优化器入口原先仍由`detached_adversarial`间接触发，现已改为直接消费`adversarial_two_time_scale`及其运行契约；同时把新launcher默认run ID与本报告冻结ID对齐。定点RED测试先失败，修复后通过。最终本地回归为470项全部通过，仅3条既存PyTorch autocast弃用警告；所有改动模块通过`py_compile`和`git diff --check`。
+
+## 2026-09-01 r3最终选模包装器故障与r4修复
+
+- r3在两条`CV2-B0`行完成200epoch后进入final/EMA/SWAD的`V_select`评估时，重复触发`_forward_unimplemented() got an unexpected keyword argument 'y_tx'`；0/24行形成完整artifact，按系统技术失败规则精确停止并保留partial artifact。
+- 根因是训练期评估传入可调用的底层模型，而最终候选评估传入已加载候选状态的`BiCADXRTrainer`；该类继承`nn.Module`但缺少`forward`，导致统一source-LORO入口无法执行。
+- 修复在`BiCADXRTrainer.forward`中只把推理参数转发给其当前`self.model`，使final/EMA/SWAD候选继续使用已严格加载的trainer状态，同时不改变训练损失、优化器、数据划分、候选配置或source-only边界。
+- 新增行为级回归测试直接用`CV2-B0` trainer调用真实`_evaluate_bicad_xr_source_loro`。修复前精确复现远端异常，修复后完成推理且底层模型仅调用一次。
+- r4继续冻结同一24行、seed392002、fold1/8、完整200epoch矩阵；仅修复运行时评估接口并使用新不可覆盖run ID。
