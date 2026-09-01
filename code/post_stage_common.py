@@ -352,6 +352,10 @@ def build_baseline_model(model_args, device: torch.device) -> nn.Module:
         sat_anchor_adapter_rank=int(
             getattr(model_args, "sat_anchor_adapter_rank", 8)
         ),
+        use_daot_nuisance_head=bool(
+            getattr(model_args, "use_daot_nuisance_head", False)
+        ),
+        daot_nuisance_dim=int(getattr(model_args, "daot_nuisance_dim", 9)),
         fast_infer_when_no_aux=bool(getattr(model_args, "fast_infer_when_no_aux", True)),
         arch_family=str(getattr(model_args, "arch_family", "cvsincnet")),
         representation_mode=str(

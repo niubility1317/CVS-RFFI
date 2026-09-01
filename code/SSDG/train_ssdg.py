@@ -168,6 +168,37 @@ try:
         make_augmentor,
     )
     from cvsrffi.tensors import make_torch_generator, parse_csv_indices
+    from cvsrffi.deployment_orbit import (
+        DeploymentOrbitConfig,
+        DAOT_NUISANCE_TANGENT_NAMES,
+        apply_fingerprint_intervention,
+        apply_local_nuisance_tangent,
+        apply_named_local_nuisance_tangent,
+        daot_ablation_overrides,
+        daot_loss_ablation_overrides,
+        default_teacher_view_specs,
+        physical_reliability_from_meta,
+        stable_orbit_key_tensor,
+        teacher_importance_matrix,
+    )
+    from cvsrffi.daot_training import compute_daot_batch_objective
+    from cvsrffi.orbit_teacher import (
+        EMALossScaleNormalizer,
+        TemporalOrbitMemory,
+        adv3b02_daot_schedule,
+        orbit_feature_loss,
+        orbit_logit_distillation_loss,
+        orbit_prototype_distillation_loss,
+        robust_spherical_orbit_target,
+    )
+    from cvsrffi.selective_tangent import (
+        angular_sensitivity,
+        fingerprint_keep_loss,
+        gradient_norm_ratio,
+        heteroscedastic_nuisance_loss,
+        selective_tangent_loss,
+        worst_channel_bucket_accuracy,
+    )
 except ModuleNotFoundError:
     torch = None
     F = None
@@ -232,6 +263,20 @@ except ModuleNotFoundError:
     build_aug_base_cfg = build_stage_state = configure_augmentor_for_epoch = configure_mixstyle_for_epoch = None
     format_stage_state = make_augmentor = None
     format_named_test_lines = format_sat_test_lines = None
+    DeploymentOrbitConfig = default_teacher_view_specs = None
+    DAOT_NUISANCE_TANGENT_NAMES = None
+    apply_fingerprint_intervention = apply_local_nuisance_tangent = None
+    apply_named_local_nuisance_tangent = None
+    daot_ablation_overrides = daot_loss_ablation_overrides = None
+    physical_reliability_from_meta = teacher_importance_matrix = None
+    stable_orbit_key_tensor = None
+    compute_daot_batch_objective = None
+    EMALossScaleNormalizer = TemporalOrbitMemory = adv3b02_daot_schedule = None
+    orbit_feature_loss = orbit_logit_distillation_loss = None
+    orbit_prototype_distillation_loss = robust_spherical_orbit_target = None
+    angular_sensitivity = fingerprint_keep_loss = gradient_norm_ratio = None
+    heteroscedastic_nuisance_loss = selective_tangent_loss = None
+    worst_channel_bucket_accuracy = None
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
@@ -349,6 +394,45 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--pseudo_strong_agreement", type=str2bool, default=True)
     parser.add_argument("--use_ema_teacher", type=str2bool, default=False)
     parser.add_argument("--ema_decay", type=float, default=0.999)
+    parser.add_argument("--use_adv3b02_daot_stn", type=str2bool, default=False)
+    parser.add_argument("--daot_ablation", type=str, default="", choices=["", "A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8"])
+    parser.add_argument(
+        "--daot_loss_ablation",
+        type=str,
+        default="none",
+        choices=["none", "no_z", "no_logit", "no_proto", "relation_on"],
+    )
+    parser.add_argument(
+        "--daot_teacher_mode",
+        type=str,
+        default="three_view",
+        choices=["three_view", "temporal_memory"],
+    )
+    parser.add_argument("--daot_teacher_view_count", type=int, default=3, choices=[2, 3])
+    parser.add_argument("--daot_aggregation", type=str, default="robust_deployment", choices=["mean", "robust_deployment"])
+    parser.add_argument("--daot_tangent_mode", type=str, default="branch_selective", choices=["off", "single_parameter", "covariance", "branch_selective"])
+    parser.add_argument("--daot_lambda_orbit_z", type=float, default=0.50)
+    parser.add_argument("--daot_lambda_orbit_logit", type=float, default=0.20)
+    parser.add_argument("--daot_lambda_orbit_proto", type=float, default=0.20)
+    parser.add_argument("--daot_lambda_orbit_relation", type=float, default=0.05)
+    parser.add_argument("--daot_enable_relation", type=str2bool, default=False)
+    parser.add_argument("--daot_lambda_tangent", type=float, default=0.05)
+    parser.add_argument("--daot_lambda_nuisance", type=float, default=0.10)
+    parser.add_argument("--daot_lambda_fingerprint", type=float, default=0.10)
+    parser.add_argument("--daot_coverage_floor", type=float, default=0.15)
+    parser.add_argument("--daot_huber_beta_min", type=float, default=0.30)
+    parser.add_argument("--daot_temperature", type=float, default=3.0)
+    parser.add_argument("--daot_tangent_delta", type=float, default=0.05)
+    parser.add_argument("--daot_tangent_sample_ratio", type=float, default=0.25)
+    parser.add_argument("--daot_memory_momentum", type=float, default=0.85)
+    parser.add_argument("--daot_scale_normalization", type=str2bool, default=True)
+    parser.add_argument("--daot_scale_momentum", type=float, default=0.95)
+    parser.add_argument("--daot_diagnostic_epochs", type=str, default="21,61,141,200")
+    parser.add_argument("--daot_worst_bucket_bins", type=int, default=4)
+    parser.add_argument("--daot_nuisance_dim", type=int, default=9)
+    parser.add_argument("--daot_fingerprint_min_sensitivity", type=float, default=0.50)
+    parser.add_argument("--daot_student_scenario", type=str, default="leo_clear_weak")
+    parser.add_argument("--daot_hard_scenarios", type=str, default="leo_low_elev_weak,leo_rain_weak")
     parser.add_argument("--use_muse_ssdg", type=str2bool, default=False)
     parser.add_argument("--muse_level", type=str, default="M0", choices=["M0", "M1", "M2", "M3"])
     parser.add_argument("--muse_external_final_eval", type=str2bool, default=False)
@@ -1810,10 +1894,500 @@ def _apply_model_cli_args(model_args, args):
         "crra_ramp_epochs",
         "sat_anchor_adapter",
         "sat_anchor_adapter_rank",
+        "use_daot_nuisance_head",
+        "daot_nuisance_dim",
     ):
         if hasattr(args, key):
             setattr(model_args, key, getattr(args, key))
     return model_args
+
+
+def _validate_daot_config(args) -> None:
+    ablation_id = str(getattr(args, "daot_ablation", "") or "").upper().strip()
+    if ablation_id:
+        for name, value in daot_ablation_overrides(ablation_id).items():
+            setattr(args, name, value)
+    for name, value in daot_loss_ablation_overrides(
+        str(getattr(args, "daot_loss_ablation", "none"))
+    ).items():
+        setattr(args, name, value)
+    enabled = bool(getattr(args, "use_adv3b02_daot_stn", False))
+    args.use_daot_nuisance_head = enabled
+    args.daot_claim_label = DeploymentOrbitConfig().claim_label if enabled else "disabled"
+    if not enabled:
+        return
+    if str(getattr(args, "representation_mode", "dual")) != "dual":
+        raise ValueError("ADV3B02-DAOT-STN requires the dual identity/nuisance representation")
+    args.use_ema_teacher = True
+    nonnegative = (
+        "daot_lambda_orbit_z",
+        "daot_lambda_orbit_logit",
+        "daot_lambda_orbit_proto",
+        "daot_lambda_orbit_relation",
+        "daot_lambda_tangent",
+        "daot_lambda_nuisance",
+        "daot_lambda_fingerprint",
+    )
+    for name in nonnegative:
+        value = float(getattr(args, name))
+        if (not math.isfinite(value)) or value < 0.0:
+            raise ValueError(f"--{name} must be finite and non-negative")
+    if not 0.0 <= float(args.daot_coverage_floor) < 1.0:
+        raise ValueError("--daot_coverage_floor must be in [0,1)")
+    if not 0.0 < float(args.daot_huber_beta_min) <= 1.0:
+        raise ValueError("--daot_huber_beta_min must be in (0,1]")
+    if float(args.daot_temperature) <= 0.0:
+        raise ValueError("--daot_temperature must be positive")
+    if float(args.daot_tangent_delta) <= 0.0:
+        raise ValueError("--daot_tangent_delta must be positive")
+    if not 0.0 <= float(args.daot_tangent_sample_ratio) <= 1.0:
+        raise ValueError("--daot_tangent_sample_ratio must be in [0,1]")
+    if not 0.0 <= float(args.daot_scale_momentum) < 1.0:
+        raise ValueError("--daot_scale_momentum must be in [0,1)")
+    if int(args.daot_worst_bucket_bins) < 1:
+        raise ValueError("--daot_worst_bucket_bins must be positive")
+    diagnostic_epochs = {
+        int(value)
+        for value in str(args.daot_diagnostic_epochs).split(",")
+        if str(value).strip()
+    }
+    if any(epoch < 1 or epoch > int(args.epochs or 200) for epoch in diagnostic_epochs):
+        raise ValueError("--daot_diagnostic_epochs must stay inside the training budget")
+    if int(args.daot_nuisance_dim) != 9:
+        raise ValueError("ADV3B02-DAOT-STN currently binds exactly nine standardized nuisance fields")
+
+
+def _compute_daot_labeled_step(
+    *,
+    model,
+    ema_model,
+    student_clean: Mapping[str, torch.Tensor],
+    x_clean: torch.Tensor,
+    y_clean: torch.Tensor,
+    d_clean: Optional[torch.Tensor],
+    args,
+    epoch: int,
+    batch_idx: int,
+    apply_sat_fn,
+    prototype_matrix: Optional[torch.Tensor],
+    orbit_memory=None,
+    memory_keys: Optional[torch.Tensor] = None,
+    loss_normalizer=None,
+) -> Dict[str, Any]:
+    if ema_model is None:
+        raise RuntimeError("ADV3B02-DAOT-STN requires an EMA orbit teacher")
+    schedule = adv3b02_daot_schedule(int(epoch), total_epochs=int(args.epochs or 200))
+    zero = student_clean["z_id"].sum() * 0.0
+    if float(schedule.orbit_scale) <= 0.0:
+        return {
+            "loss": zero,
+            "components": {},
+            "diagnostics": {
+                "teacher_view_count": 0.0,
+                "teacher_mode": str(args.daot_teacher_mode),
+                "stage": schedule.stage,
+                "orbit_scale": 0.0,
+                "tangent_scale": 0.0,
+            },
+        }
+
+    base_seed = int(getattr(args, "sat_view_seed", getattr(args, "seed", 0))) + int(epoch) * 100_003 + int(batch_idx) * 101
+    medium_scenario = str(getattr(args, "daot_student_scenario", "leo_clear_weak"))
+    hard_scenarios = [
+        item.strip()
+        for item in str(getattr(args, "daot_hard_scenarios", "leo_low_elev_weak,leo_rain_weak")).split(",")
+        if item.strip()
+    ]
+    if not hard_scenarios:
+        raise ValueError("ADV3B02-DAOT-STN requires at least one hard teacher scenario")
+    hard_scenario = hard_scenarios[(int(epoch) + int(batch_idx)) % len(hard_scenarios)]
+    x_medium, medium_meta = apply_sat_fn(
+        x_clean,
+        medium_scenario,
+        args,
+        gen=make_torch_generator(x_clean.device, base_seed + 11),
+        return_meta=True,
+    )
+    teacher_view_count = int(getattr(args, "daot_teacher_view_count", 3))
+    x_hard = hard_meta = None
+    if teacher_view_count >= 3:
+        x_hard, hard_meta = apply_sat_fn(
+            x_clean,
+            hard_scenario,
+            args,
+            gen=make_torch_generator(x_clean.device, base_seed + 29),
+            return_meta=True,
+        )
+    student_channel = model(
+        x_medium,
+        y_tx=y_clean,
+        grl_lambda=1.0,
+        return_aux=True,
+        domain_labels=d_clean,
+    )
+    ema_model.eval()
+    with torch.no_grad():
+        teacher_views = [
+            ema_model(x_clean, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d_clean),
+            ema_model(x_medium, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d_clean),
+        ]
+        if x_hard is not None:
+            teacher_views.append(
+                ema_model(x_hard, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d_clean)
+            )
+    memory_found = None
+    if str(args.daot_teacher_mode) == "temporal_memory":
+        if orbit_memory is None or memory_keys is None:
+            raise RuntimeError("Temporal Orbit Memory requires stable physical-sample keys")
+        memory_features, memory_found = orbit_memory.lookup(memory_keys)
+        if memory_features.shape[1:] == teacher_views[1]["z_id"].shape[1:] and bool(memory_found.any()):
+            memory_features = torch.where(
+                memory_found.unsqueeze(1),
+                memory_features.to(device=x_clean.device, dtype=teacher_views[1]["z_id"].dtype),
+                teacher_views[1]["z_id"],
+            )
+            teacher_views.append(
+                {"z_id": memory_features, "tx_logits": teacher_views[1]["tx_logits"]}
+            )
+
+    batch_size = int(x_clean.shape[0])
+    reliability_columns = [
+        torch.ones(batch_size, device=x_clean.device),
+        physical_reliability_from_meta(medium_meta or {}, batch_size=batch_size, device=x_clean.device),
+    ]
+    if hard_meta is not None:
+        reliability_columns.append(
+            physical_reliability_from_meta(hard_meta, batch_size=batch_size, device=x_clean.device)
+        )
+    reliability = torch.stack(reliability_columns, dim=1)
+    importance = teacher_importance_matrix(batch_size=batch_size, device=x_clean.device)[:, :teacher_view_count]
+    if len(teacher_views) > int(reliability.shape[1]):
+        reliability = torch.cat([reliability, memory_found.float().unsqueeze(1)], dim=1)
+        importance = torch.cat([importance, torch.ones((batch_size, 1), device=x_clean.device)], dim=1)
+    if str(getattr(args, "daot_aggregation", "robust_deployment")) == "mean":
+        reliability = torch.ones_like(reliability)
+        importance = torch.ones_like(importance)
+    recoverability = reliability[:, 1:].mean(dim=1).clamp(0.05, 1.0)
+
+    tangent_outputs = None
+    tangent_valid = None
+    if float(schedule.tangent_scale) > 0.0 and float(args.daot_lambda_tangent) > 0.0:
+        tangent_gen = make_torch_generator(x_clean.device, base_seed + 47)
+        directions = torch.randn((batch_size, 4), device=x_clean.device, generator=tangent_gen)
+        tangent_mode = str(getattr(args, "daot_tangent_mode", "branch_selective"))
+        active_dimensions = 1 if tangent_mode == "single_parameter" else min(3, directions.shape[1])
+        if tangent_mode in {"covariance", "branch_selective"}:
+            covariance = directions.new_tensor(
+                [[1.0, 0.6, 0.0, 0.0], [0.6, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.3], [0.0, 0.0, 0.3, 1.0]]
+            )
+            directions = directions @ torch.linalg.cholesky(covariance + 1e-6 * torch.eye(4, device=directions.device)).t()
+        keep = directions.abs().topk(active_dimensions, dim=1).indices
+        sparse = torch.zeros_like(directions).scatter(1, keep, torch.gather(directions, 1, keep))
+        sparse = F.normalize(sparse, dim=1)
+        x_tangent = apply_local_nuisance_tangent(
+            x_medium,
+            sparse,
+            delta=float(args.daot_tangent_delta),
+            sample_rate_hz=float(getattr(args, "sat_fs_hz", 25e6)),
+        )
+        tangent_outputs = model(
+            x_tangent,
+            y_tx=y_clean,
+            grl_lambda=1.0,
+            return_aux=True,
+            domain_labels=d_clean,
+        )
+        tangent_valid = torch.rand((batch_size,), device=x_clean.device, generator=tangent_gen) < float(args.daot_tangent_sample_ratio)
+
+    fingerprint_outputs = None
+    if float(args.daot_lambda_fingerprint) > 0.0:
+        x_fingerprint = apply_fingerprint_intervention(
+            x_clean,
+            strength=float(args.daot_tangent_delta),
+            sample_rate_hz=float(getattr(args, "sat_fs_hz", 25e6)),
+        )
+        fingerprint_outputs = model(
+            x_fingerprint,
+            y_tx=y_clean,
+            grl_lambda=1.0,
+            return_aux=True,
+            domain_labels=d_clean,
+        )
+
+    _, nuisance_target, nuisance_valid, _ = normalize_crra_nuisance_meta(
+        medium_meta,
+        scenario=medium_scenario,
+        batch_size=batch_size,
+        device=x_clean.device,
+    )
+    relation_pairs = None
+    if bool(getattr(args, "daot_enable_relation", False)) and batch_size > 1:
+        relation_pairs = torch.stack(
+            [torch.arange(batch_size - 1, device=x_clean.device), torch.arange(1, batch_size, device=x_clean.device)],
+            dim=1,
+        )
+    objective = compute_daot_batch_objective(
+        student_clean=student_clean,
+        student_channel=student_channel,
+        teacher_views=teacher_views,
+        reliability=reliability,
+        importance=importance,
+        recoverability=recoverability,
+        orbit_scale=float(schedule.orbit_scale),
+        tangent_scale=float(schedule.tangent_scale),
+        weights={
+            "orbit_z": float(args.daot_lambda_orbit_z),
+            "orbit_logit": float(args.daot_lambda_orbit_logit),
+            "orbit_proto": float(args.daot_lambda_orbit_proto),
+            "orbit_relation": float(args.daot_lambda_orbit_relation),
+            "tangent": float(args.daot_lambda_tangent),
+            "nuisance": float(args.daot_lambda_nuisance),
+            "fingerprint": float(args.daot_lambda_fingerprint),
+        },
+        coverage_floor=float(args.daot_coverage_floor),
+        huber_beta_min=float(args.daot_huber_beta_min),
+        temperature=float(args.daot_temperature),
+        prototype_matrix=prototype_matrix,
+        tangent_perturbed=tangent_outputs,
+        tangent_delta=float(args.daot_tangent_delta),
+        tangent_budget=torch.zeros(batch_size, device=x_clean.device),
+        tangent_valid=tangent_valid,
+        nuisance_target=nuisance_target,
+        nuisance_valid=nuisance_valid,
+        fingerprint_perturbed=fingerprint_outputs,
+        fingerprint_minimum=float(args.daot_fingerprint_min_sensitivity),
+        relation_pairs=relation_pairs,
+        loss_normalizer=loss_normalizer,
+    )
+    diagnostic_epochs = {
+        int(value)
+        for value in str(getattr(args, "daot_diagnostic_epochs", "")).split(",")
+        if str(value).strip()
+    }
+    named_sensitivity = {}
+    worst_buckets = {}
+    if int(batch_idx) == 1 and int(epoch) in diagnostic_epochs:
+        direction = torch.ones(batch_size, device=x_clean.device, dtype=x_clean.dtype)
+        was_training = bool(model.training)
+        model.eval()
+        try:
+            with torch.no_grad():
+                for nuisance_name in DAOT_NUISANCE_TANGENT_NAMES:
+                    x_named = apply_named_local_nuisance_tangent(
+                        x_medium,
+                        name=nuisance_name,
+                        direction=direction,
+                        delta=float(args.daot_tangent_delta),
+                        sample_rate_hz=float(getattr(args, "sat_fs_hz", 25e6)),
+                    )
+                    named_output = model(
+                        x_named,
+                        y_tx=None,
+                        grl_lambda=1.0,
+                        return_aux=True,
+                        domain_labels=d_clean,
+                    )
+                    named_sensitivity[nuisance_name] = angular_sensitivity(
+                        student_channel["z_id"].detach(),
+                        named_output["z_id"],
+                        delta=float(args.daot_tangent_delta),
+                    ).mean()
+        finally:
+            model.train(was_training)
+        channel_fields = {
+            "snr": "snr_db",
+            "doppler": "fD_hz",
+            "doppler_rate": "doppler_rate_hz_s",
+            "elevation": "theta_deg",
+            "delay_spread": "delay_spread_s",
+            "deep_fade_ratio": "deep_fade_ratio",
+        }
+        predictions = student_channel["tx_logits"].detach().argmax(dim=1)
+        for bucket_name, metadata_name in channel_fields.items():
+            value = (medium_meta or {}).get(metadata_name)
+            if value is None:
+                continue
+            values = torch.as_tensor(value, device=x_clean.device, dtype=torch.float32).reshape(-1)
+            if values.numel() != batch_size:
+                continue
+            bucket = worst_channel_bucket_accuracy(
+                predictions=predictions,
+                labels=y_clean.detach(),
+                channel_values=values,
+                bins=int(args.daot_worst_bucket_bins),
+            )
+            worst_buckets[bucket_name] = float(bucket["worst_accuracy"])
+    objective["diagnostics"].update(
+        {
+            "teacher_view_count": float(teacher_view_count),
+            "teacher_mode": str(args.daot_teacher_mode),
+            "medium_scenario": medium_scenario,
+            "hard_scenario": hard_scenario,
+            "stage": schedule.stage,
+            "orbit_scale": float(schedule.orbit_scale),
+            "tangent_scale": float(schedule.tangent_scale),
+            "memory_hit_rate": float(memory_found.float().mean().item()) if torch.is_tensor(memory_found) else 0.0,
+            "named_nuisance_sensitivity": named_sensitivity,
+            "worst_channel_buckets": worst_buckets,
+        }
+    )
+    if orbit_memory is not None and memory_keys is not None:
+        orbit_memory.update(
+            keys=memory_keys,
+            features=teacher_views[1]["z_id"].detach(),
+            valid=recoverability > 0.05,
+        )
+    return objective
+
+
+def _compute_daot_unlabeled_step(
+    *,
+    model,
+    ema_model,
+    teacher_clean: Mapping[str, torch.Tensor],
+    student_strong: Mapping[str, torch.Tensor],
+    x_unlabeled: torch.Tensor,
+    d_unlabeled: Optional[torch.Tensor],
+    args,
+    epoch: int,
+    batch_idx: int,
+    apply_sat_fn,
+    prototype_matrix: Optional[torch.Tensor],
+    orbit_memory=None,
+    memory_keys: Optional[torch.Tensor] = None,
+    loss_normalizer=None,
+) -> Dict[str, Any]:
+    schedule = adv3b02_daot_schedule(int(epoch), total_epochs=int(args.epochs or 200))
+    zero = student_strong["z_id"].sum() * 0.0
+    if float(schedule.orbit_scale) <= 0.0:
+        return {"loss": zero, "components": {}, "diagnostics": {"route": "warmup", "orbit_scale": 0.0}}
+    base_seed = int(getattr(args, "sat_view_seed", getattr(args, "seed", 0))) + int(epoch) * 200_003 + int(batch_idx) * 211
+    medium_scenario = str(getattr(args, "daot_student_scenario", "leo_clear_weak"))
+    hard_scenarios = [
+        item.strip()
+        for item in str(getattr(args, "daot_hard_scenarios", "leo_low_elev_weak,leo_rain_weak")).split(",")
+        if item.strip()
+    ]
+    if not hard_scenarios:
+        raise ValueError("ADV3B02-DAOT-STN requires at least one hard teacher scenario")
+    hard_scenario = hard_scenarios[(int(epoch) + int(batch_idx)) % len(hard_scenarios)]
+    x_medium, medium_meta = apply_sat_fn(
+        x_unlabeled,
+        medium_scenario,
+        args,
+        gen=make_torch_generator(x_unlabeled.device, base_seed + 13),
+        return_meta=True,
+    )
+    teacher_view_count = int(getattr(args, "daot_teacher_view_count", 3))
+    x_hard = hard_meta = None
+    if teacher_view_count >= 3:
+        x_hard, hard_meta = apply_sat_fn(
+            x_unlabeled,
+            hard_scenario,
+            args,
+            gen=make_torch_generator(x_unlabeled.device, base_seed + 31),
+            return_meta=True,
+        )
+    student_channel = model(
+        x_medium,
+        y_tx=None,
+        grl_lambda=1.0,
+        return_aux=True,
+        domain_labels=d_unlabeled,
+    )
+    ema_model.eval()
+    with torch.no_grad():
+        teacher_medium = ema_model(
+            x_medium, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d_unlabeled
+        )
+        teacher_hard = (
+            ema_model(x_hard, y_tx=None, grl_lambda=1.0, return_aux=True, domain_labels=d_unlabeled)
+            if x_hard is not None
+            else None
+        )
+    teacher_views = [teacher_clean, teacher_medium]
+    memory_found = None
+    if str(args.daot_teacher_mode) == "temporal_memory":
+        if orbit_memory is None or memory_keys is None:
+            raise RuntimeError("Temporal Orbit Memory requires stable physical-sample keys")
+        memory_features, memory_found = orbit_memory.lookup(memory_keys)
+        if memory_features.shape[1:] == teacher_medium["z_id"].shape[1:] and bool(memory_found.any()):
+            memory_features = torch.where(
+                memory_found.unsqueeze(1),
+                memory_features.to(device=x_unlabeled.device, dtype=teacher_medium["z_id"].dtype),
+                teacher_medium["z_id"],
+            )
+            teacher_views.append({"z_id": memory_features, "tx_logits": teacher_medium["tx_logits"]})
+    batch_size = int(x_unlabeled.shape[0])
+    reliability_columns = [
+        torch.ones(batch_size, device=x_unlabeled.device),
+        physical_reliability_from_meta(medium_meta or {}, batch_size=batch_size, device=x_unlabeled.device),
+    ]
+    if hard_meta is not None:
+        reliability_columns.append(
+            physical_reliability_from_meta(hard_meta, batch_size=batch_size, device=x_unlabeled.device)
+        )
+    reliability = torch.stack(reliability_columns, dim=1)
+    importance = teacher_importance_matrix(batch_size=batch_size, device=x_unlabeled.device)[:, :teacher_view_count]
+    if len(teacher_views) > int(reliability.shape[1]):
+        reliability = torch.cat([reliability, memory_found.float().unsqueeze(1)], dim=1)
+        importance = torch.cat([importance, torch.ones((batch_size, 1), device=x_unlabeled.device)], dim=1)
+    if str(getattr(args, "daot_aggregation", "robust_deployment")) == "mean":
+        reliability = torch.ones_like(reliability)
+        importance = torch.ones_like(importance)
+    recoverability = reliability[:, 1:].mean(dim=1).clamp(0.05, 1.0)
+    if teacher_hard is not None:
+        teacher_views.append(teacher_hard)
+    result = compute_daot_batch_objective(
+        student_clean=student_strong,
+        student_channel=student_channel,
+        teacher_views=teacher_views,
+        reliability=reliability,
+        importance=importance,
+        recoverability=recoverability,
+        orbit_scale=float(schedule.orbit_scale),
+        tangent_scale=0.0,
+        weights={
+            "orbit_z": float(args.daot_lambda_orbit_z),
+            "orbit_logit": float(args.daot_lambda_orbit_logit),
+            "orbit_proto": float(args.daot_lambda_orbit_proto),
+            "orbit_relation": float(args.daot_lambda_orbit_relation),
+        },
+        coverage_floor=float(args.daot_coverage_floor),
+        huber_beta_min=float(args.daot_huber_beta_min),
+        temperature=float(args.daot_temperature),
+        prototype_matrix=prototype_matrix,
+        relation_pairs=(
+            torch.stack(
+                [
+                    torch.arange(batch_size - 1, device=x_unlabeled.device),
+                    torch.arange(1, batch_size, device=x_unlabeled.device),
+                ],
+                dim=1,
+            )
+            if bool(getattr(args, "daot_enable_relation", False)) and batch_size > 1
+            else None
+        ),
+        loss_normalizer=loss_normalizer,
+    )
+    result["diagnostics"].update(
+        {
+            "route": "all_recoverable_feature_consensus_logits",
+            "teacher_view_count": float(teacher_view_count),
+            "teacher_mode": str(args.daot_teacher_mode),
+            "medium_scenario": medium_scenario,
+            "hard_scenario": hard_scenario,
+            "orbit_scale": float(schedule.orbit_scale),
+            "memory_hit_rate": float(memory_found.float().mean().item()) if torch.is_tensor(memory_found) else 0.0,
+        }
+    )
+    if orbit_memory is not None and memory_keys is not None:
+        orbit_memory.update(
+            keys=memory_keys,
+            features=teacher_medium["z_id"].detach(),
+            valid=recoverability > 0.05,
+        )
+    return result
 
 
 def _build_source_split_receipt(
@@ -7127,6 +7701,7 @@ def _compose_unlabeled_closed_loss(
 
 def train(args) -> int:
     training_wall_started = time.time()
+    _validate_daot_config(args)
     muse_capabilities = _muse_level_capabilities(getattr(args, "muse_level", "M0"))
     muse_active = bool(getattr(args, "use_muse_ssdg", False)) and muse_capabilities["base"]
     if _sat_anchor_requested(args):
@@ -7466,6 +8041,16 @@ def train(args) -> int:
     muse_state = _initialize_muse_training_state(args, model, device)
     if muse_state is not None and use_ckpt:
         _restore_muse_checkpoint_state(muse_state, ckpt)
+    daot_orbit_memory = None
+    if bool(getattr(args, "use_adv3b02_daot_stn", False)) and str(args.daot_teacher_mode) == "temporal_memory":
+        daot_orbit_memory = TemporalOrbitMemory(momentum=float(args.daot_memory_momentum))
+        if use_ckpt and ckpt.get("daot_orbit_memory") is not None:
+            daot_orbit_memory.load_state_dict(ckpt["daot_orbit_memory"])
+    daot_loss_normalizer = None
+    if bool(getattr(args, "use_adv3b02_daot_stn", False)) and bool(args.daot_scale_normalization):
+        daot_loss_normalizer = EMALossScaleNormalizer(momentum=float(args.daot_scale_momentum))
+        if use_ckpt and ckpt.get("daot_loss_normalizer") is not None:
+            daot_loss_normalizer.load_state_dict(ckpt["daot_loss_normalizer"])
     trainable_params = int(sum(p.numel() for p in _optimizer_parameters(model, muse_state)))
     total_params = int(sum(p.numel() for p in model.parameters()))
     if muse_state is not None:
@@ -8206,6 +8791,61 @@ def train(args) -> int:
                             F.normalize(z_id_l[:teacher_clean_count].float(), dim=1),
                             F.normalize(teacher_clean_out["z_id"].detach().float(), dim=1),
                         )
+                loss_daot_l = z_id_l.sum() * 0.0
+                daot_components = {
+                    name: z_id_l.sum() * 0.0
+                    for name in ("orbit_z", "orbit_logit", "orbit_proto", "orbit_relation", "tangent", "nuisance", "fingerprint")
+                }
+                daot_diagnostics: Dict[str, Any] = {
+                    "teacher_view_count": 0.0,
+                    "teacher_mode": "disabled",
+                    "stage": "off",
+                    "orbit_scale": 0.0,
+                    "tangent_scale": 0.0,
+                }
+                if bool(getattr(args, "use_adv3b02_daot_stn", False)):
+                    daot_l_memory_keys = None
+                    if daot_orbit_memory is not None:
+                        daot_l_stable_keys = stable_sample_keys(_meta_from_extra(extra_l) or {})
+                        if len(daot_l_stable_keys) != labeled_clean_count:
+                            raise ValueError("DAOT labeled metadata cardinality does not match L_s")
+                        daot_l_memory_keys = stable_orbit_key_tensor(
+                            daot_l_stable_keys, device=x_l_main.device
+                        )
+                    daot_prototype_matrix = None
+                    if muse_state is not None:
+                        daot_proto_values = muse_state["classification_prototypes"].prototypes
+                        if daot_proto_values:
+                            daot_prototype_matrix = torch.stack(
+                                [daot_proto_values[key] for key in sorted(daot_proto_values)], dim=0
+                            ).to(device=z_id_l.device, dtype=z_id_l.dtype)
+                    elif proto_bank is not None and torch.is_tensor(proto_bank.class_proto):
+                        if torch.is_tensor(proto_bank.class_count):
+                            daot_active_proto = proto_bank.class_count > 0
+                            if bool(daot_active_proto.any()):
+                                daot_prototype_matrix = proto_bank.class_proto[daot_active_proto]
+                    daot_result = _compute_daot_labeled_step(
+                        model=model,
+                        ema_model=ema_model,
+                        student_clean={
+                            "z_id": out_l["z_id"][:labeled_clean_count],
+                            "tx_logits": out_l["tx_logits"][:labeled_clean_count],
+                        },
+                        x_clean=x_l_main[:labeled_clean_count],
+                        y_clean=y_l[:labeled_clean_count],
+                        d_clean=d_l[:labeled_clean_count] if d_l is not None else None,
+                        args=args,
+                        epoch=epoch,
+                        batch_idx=batch_idx,
+                        apply_sat_fn=apply_sat_channel_for_scenario,
+                        prototype_matrix=daot_prototype_matrix,
+                        orbit_memory=daot_orbit_memory,
+                        memory_keys=daot_l_memory_keys,
+                        loss_normalizer=daot_loss_normalizer,
+                    )
+                    loss_daot_l = daot_result["loss"]
+                    daot_components.update(daot_result.get("components", {}))
+                    daot_diagnostics.update(daot_result.get("diagnostics", {}))
                 loss_proto_l = z_id_l.sum() * 0.0
                 proto_info: Dict[str, float] = {
                     "proto_pull_cos": float("nan"),
@@ -9109,6 +9749,7 @@ def train(args) -> int:
                 loss_open_invariant_l = (
                     sanitize_loss("ssdg_zid_domain_invariance", loss_zid_invariance_l, z_id_l, loss_warn_counts)
                     + cur_w["proto"] * sanitize_loss("ssdg_proto", loss_proto_l, z_id_l, loss_warn_counts)
+                    + sanitize_loss("adv3b02_daot_stn", loss_daot_l, z_id_l, loss_warn_counts)
                 )
                 loss_open_boundary_l = (
                     (cur_w["open_world_feat"] * ow_feat_stage_scale) * sanitize_loss("ssdg_open_world_feat", loss_open_world_feat_l, z_id_l, loss_warn_counts)
@@ -9122,6 +9763,30 @@ def train(args) -> int:
                 )
                 loss_open_l = loss_open_invariant_l + loss_open_boundary_l + loss_open_source_l
                 loss_l = loss_closed_l + loss_open_l
+                daot_grad_ratios: Dict[str, float] = {}
+                daot_diagnostic_epochs = {
+                    int(value)
+                    for value in str(getattr(args, "daot_diagnostic_epochs", "")).split(",")
+                    if str(value).strip()
+                }
+                if (
+                    bool(getattr(args, "use_adv3b02_daot_stn", False))
+                    and int(batch_idx) == 1
+                    and int(epoch) in daot_diagnostic_epochs
+                ):
+                    daot_shared_parameters = [
+                        parameter
+                        for name, parameter in model.named_parameters()
+                        if name.startswith("id_backbone.") and parameter.requires_grad
+                    ]
+                    for component_name, component_loss in daot_components.items():
+                        daot_grad_ratios[component_name] = gradient_norm_ratio(
+                            component_loss,
+                            loss_tx_l,
+                            daot_shared_parameters,
+                        )
+                loss_daot_u = z_id_l.sum() * 0.0
+                daot_u_diagnostics: Dict[str, Any] = {"route": "disabled", "orbit_scale": 0.0}
                 if muse_state is not None:
                     if muse_unlabeled_batch is None:
                         raise RuntimeError("MUSE epoch pair is missing its U_s batch")
@@ -9416,6 +10081,35 @@ def train(args) -> int:
                             muse_state=muse_state,
                             simulator_metadata=simulator_metadata,
                         )
+                    if bool(getattr(args, "use_adv3b02_daot_stn", False)):
+                        daot_u_proto_values = muse_state["classification_prototypes"].prototypes
+                        daot_u_prototype_matrix = None
+                        if daot_u_proto_values:
+                            daot_u_prototype_matrix = torch.stack(
+                                [daot_u_proto_values[key] for key in sorted(daot_u_proto_values)], dim=0
+                            ).to(device=x_u.device, dtype=out_s["z_id"].dtype)
+                        daot_u_result = _compute_daot_unlabeled_step(
+                            model=model,
+                            ema_model=ema_model,
+                            teacher_clean=out_w,
+                            student_strong=out_s,
+                            x_unlabeled=x_u,
+                            d_unlabeled=d_u,
+                            args=args,
+                            epoch=epoch,
+                            batch_idx=batch_idx,
+                            apply_sat_fn=apply_sat_channel_for_scenario,
+                            prototype_matrix=daot_u_prototype_matrix,
+                            orbit_memory=daot_orbit_memory,
+                            memory_keys=(
+                                stable_orbit_key_tensor(memory_keys, device=x_u.device)
+                                if daot_orbit_memory is not None
+                                else None
+                            ),
+                            loss_normalizer=daot_loss_normalizer,
+                        )
+                        loss_daot_u = daot_u_result["loss"]
+                        daot_u_diagnostics.update(daot_u_result.get("diagnostics", {}))
                     identity_forbidden_through = (
                         int(args.rc4_identity_start_epoch) - 1
                         if bool(muse_state.get("fasttrust_rc4", False)) else 16
@@ -9496,7 +10190,7 @@ def train(args) -> int:
                     pseudo_truth_available = 0.0
                     pseudo = muse_losses["pseudo"]
                     zero_u = out_s["tx_logits"].sum() * 0.0
-                    loss_u = muse_losses["total"]
+                    loss_u = muse_losses["total"] + loss_daot_u
                     loss_ent = zero_u
                     loss_u_domain = zero_u
                     loss_u_adv = zero_u
@@ -10591,6 +11285,103 @@ def train(args) -> int:
                     "train/loss_teacher_clean_kl": loss_teacher_clean_kl_l.detach(),
                     "train/loss_teacher_sat_kl": loss_teacher_sat_kl_l.detach(),
                     "train/loss_teacher_zid_mse": loss_teacher_zid_mse_l.detach(),
+                    "train/loss_daot_total": loss_daot_l.detach(),
+                    "train/loss_daot_orbit_z": daot_components["orbit_z"].detach(),
+                    "train/loss_daot_orbit_logit": daot_components["orbit_logit"].detach(),
+                    "train/loss_daot_orbit_proto": daot_components["orbit_proto"].detach(),
+                    "train/loss_daot_orbit_relation": daot_components["orbit_relation"].detach(),
+                    "train/loss_daot_tangent": daot_components["tangent"].detach(),
+                    "train/loss_daot_nuisance": daot_components["nuisance"].detach(),
+                    "train/loss_daot_fingerprint": daot_components["fingerprint"].detach(),
+                    "train/daot_orbit_scale": float(daot_diagnostics.get("orbit_scale", 0.0)),
+                    "train/daot_tangent_scale": float(daot_diagnostics.get("tangent_scale", 0.0)),
+                    "train/daot_teacher_view_count": float(daot_diagnostics.get("teacher_view_count", 0.0)),
+                    "train/daot_orbit_dispersion": (
+                        daot_diagnostics.get("orbit_dispersion", zero_sat).detach().float().mean()
+                        if torch.is_tensor(daot_diagnostics.get("orbit_dispersion"))
+                        else float("nan")
+                    ),
+                    "train/daot_teacher_effective_views": (
+                        daot_diagnostics.get("effective_views", zero_sat).detach().float().mean()
+                        if torch.is_tensor(daot_diagnostics.get("effective_views"))
+                        else float("nan")
+                    ),
+                    "train/daot_clean_teacher_weight": (
+                        daot_diagnostics.get("clean_weight", zero_sat).detach().float().mean()
+                        if torch.is_tensor(daot_diagnostics.get("clean_weight"))
+                        else float("nan")
+                    ),
+                    "train/daot_consensus_rate": (
+                        daot_diagnostics.get("consensus_mask", zero_sat).detach().float().mean()
+                        if torch.is_tensor(daot_diagnostics.get("consensus_mask"))
+                        else float("nan")
+                    ),
+                    "train/daot_nuisance_sensitivity": (
+                        daot_diagnostics.get("nuisance_sensitivity", zero_sat).detach().float().mean()
+                        if torch.is_tensor(daot_diagnostics.get("nuisance_sensitivity"))
+                        else float("nan")
+                    ),
+                    "train/daot_fingerprint_sensitivity": (
+                        daot_diagnostics.get("fingerprint_sensitivity", zero_sat).detach().float().mean()
+                        if torch.is_tensor(daot_diagnostics.get("fingerprint_sensitivity"))
+                        else float("nan")
+                    ),
+                    "train/daot_fingerprint_selectivity": (
+                        daot_diagnostics.get("fingerprint_selectivity", zero_sat).detach().float().mean()
+                        if torch.is_tensor(daot_diagnostics.get("fingerprint_selectivity"))
+                        else float("nan")
+                    ),
+                    **{
+                        f"train/daot_loss_scale_{name}": float(
+                            daot_diagnostics.get(f"loss_scale_{name}", float("nan"))
+                        )
+                        for name in (
+                            "orbit_z",
+                            "orbit_logit",
+                            "orbit_proto",
+                            "orbit_relation",
+                            "tangent",
+                            "nuisance",
+                            "fingerprint",
+                        )
+                    },
+                    **{
+                        f"train/daot_grad_ratio_{name}": float(
+                            daot_grad_ratios.get(name, float("nan"))
+                        )
+                        for name in (
+                            "orbit_z",
+                            "orbit_logit",
+                            "orbit_proto",
+                            "orbit_relation",
+                            "tangent",
+                            "nuisance",
+                            "fingerprint",
+                        )
+                    },
+                    **{
+                        f"train/daot_nuisance_sensitivity_{name}": (
+                            daot_diagnostics.get("named_nuisance_sensitivity", {}).get(name).detach().float()
+                            if torch.is_tensor(
+                                daot_diagnostics.get("named_nuisance_sensitivity", {}).get(name)
+                            )
+                            else float("nan")
+                        )
+                        for name in DAOT_NUISANCE_TANGENT_NAMES
+                    },
+                    **{
+                        f"train/daot_worst_bucket_{name}": float(
+                            daot_diagnostics.get("worst_channel_buckets", {}).get(name, float("nan"))
+                        )
+                        for name in (
+                            "snr",
+                            "doppler",
+                            "doppler_rate",
+                            "elevation",
+                            "delay_spread",
+                            "deep_fade_ratio",
+                        )
+                    },
                     "train/w_loss_tx_labeled": loss_tx_l.detach(),
                     "train/w_loss_domain_labeled": (cur_w["dom"] * loss_dom_l).detach(),
                     "train/w_loss_adv_labeled": (cur_w["adv"] * loss_adv_l).detach(),
@@ -10645,6 +11436,18 @@ def train(args) -> int:
                     "train/concat_sat_stage_start_epoch": float(concat_sat_info.get("stage_start_epoch", float("nan"))),
                     "train/concat_sat_stage_index": float(concat_sat_info.get("stage_index", float("nan"))),
                     "train/loss_unlabeled": loss_u.detach(),
+                    "train/loss_daot_unlabeled": loss_daot_u.detach(),
+                    "train/daot_u_orbit_scale": float(daot_u_diagnostics.get("orbit_scale", 0.0)),
+                    "train/daot_u_orbit_dispersion": (
+                        daot_u_diagnostics.get("orbit_dispersion", zero_sat).detach().float().mean()
+                        if torch.is_tensor(daot_u_diagnostics.get("orbit_dispersion"))
+                        else float("nan")
+                    ),
+                    "train/daot_u_consensus_rate": (
+                        daot_u_diagnostics.get("consensus_mask", zero_sat).detach().float().mean()
+                        if torch.is_tensor(daot_u_diagnostics.get("consensus_mask"))
+                        else float("nan")
+                    ),
                     "train/loss_u_domain": loss_u_domain.detach(),
                     "train/loss_u_adv": loss_u_adv.detach(),
                     "train/loss_u_sat_cons": loss_u_sat_cons.detach(),
@@ -11515,6 +12318,12 @@ def train(args) -> int:
             "optimizer": optimizer.state_dict(),
             "scaler": scaler.state_dict(),
             "prototype_memory": proto_bank.state_dict() if proto_bank is not None else None,
+            "daot_orbit_memory": (
+                daot_orbit_memory.state_dict() if daot_orbit_memory is not None else None
+            ),
+            "daot_loss_normalizer": (
+                daot_loss_normalizer.state_dict() if daot_loss_normalizer is not None else None
+            ),
             "rng_state": _capture_training_rng_state(sat_gen),
             "tail_state_machine": phase1_v2_tail_machine.state_dict() if phase1_v2_tail_machine is not None else None,
             "tail_rollback_events": deepcopy(tail_rollback_events),

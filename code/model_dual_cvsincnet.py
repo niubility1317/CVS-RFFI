@@ -599,6 +599,8 @@ class DualCVSincNetDisentangle(nn.Module):
         sat_anchor_adapter: bool = False,
         sat_anchor_adapter_rank: int = 8,
         physical_gate_variant: str = "none",
+        use_daot_nuisance_head: bool = False,
+        daot_nuisance_dim: int = 9,
     ):
         super().__init__()
         self.num_classes = int(num_classes)
@@ -732,6 +734,11 @@ class DualCVSincNetDisentangle(nn.Module):
         self.tx_adv_head = (
             MLPHead(self.emb_dim, self.num_classes, hidden=max(64, self.emb_dim // 2), drop=drop)
             if self.use_tx_adv_on_zdom
+            else None
+        )
+        self.daot_nuisance_head = (
+            NuisanceHeteroscedasticHead(self.emb_dim, int(daot_nuisance_dim))
+            if bool(use_daot_nuisance_head)
             else None
         )
         self.crra_condition_tx_adv_head = (
@@ -966,6 +973,9 @@ class DualCVSincNetDisentangle(nn.Module):
             tx_logits = base_tx_logits + sat_correction
         z_dom_raw = self._pick_z_dom(aux_dom)
         z_dom, z_dom_rcn = self.dom_enhancer(z_dom_raw, x)
+        daot_nuisance_mean = daot_nuisance_log_variance = None
+        if self.daot_nuisance_head is not None:
+            daot_nuisance_mean, daot_nuisance_log_variance = self.daot_nuisance_head(z_dom)
 
         dom_logits = self.dom_head(z_dom)
         adv_dom_logits = self.adv_head(grad_reverse(z_id, grl_lambda))
@@ -1019,6 +1029,9 @@ class DualCVSincNetDisentangle(nn.Module):
             out["crra_condition_tx_adv_logits"] = crra_condition_tx_adv_logits
         if torch.is_tensor(z_dom_rcn):
             out["z_dom_rcn"] = z_dom_rcn
+        if torch.is_tensor(daot_nuisance_mean):
+            out["daot_nuisance_mean"] = daot_nuisance_mean
+            out["daot_nuisance_log_variance"] = daot_nuisance_log_variance
 
         # top-level aliases: no parameter changes, only easier access
         alias_map = {
@@ -1101,6 +1114,8 @@ def build_dual_model(
     sat_anchor_adapter: bool = False,
     sat_anchor_adapter_rank: int = 8,
     physical_gate_variant: str = "none",
+    use_daot_nuisance_head: bool = False,
+    daot_nuisance_dim: int = 9,
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -1155,4 +1170,6 @@ def build_dual_model(
         sat_anchor_adapter=sat_anchor_adapter,
         sat_anchor_adapter_rank=sat_anchor_adapter_rank,
         physical_gate_variant=physical_gate_variant,
+        use_daot_nuisance_head=use_daot_nuisance_head,
+        daot_nuisance_dim=daot_nuisance_dim,
     )

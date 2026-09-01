@@ -79,6 +79,8 @@ IDENTITY_DOMAIN_DISCRIMINATOR_SCALE="${IDENTITY_DOMAIN_DISCRIMINATOR_SCALE:-0.50
 IDENTITY_DOMAIN_CONFUSION_SCALE="${IDENTITY_DOMAIN_CONFUSION_SCALE:-0.50}"
 RC4_NONFINITE_GUARD_MIN_COUNT="${RC4_NONFINITE_GUARD_MIN_COUNT:-8}"
 RC4_NONFINITE_GUARD_FRACTION="${RC4_NONFINITE_GUARD_FRACTION:-0.05}"
+DAOT_ABLATION="${DAOT_ABLATION:-}"
+DAOT_LOSS_ABLATION="${DAOT_LOSS_ABLATION:-none}"
 DRY_RUN=0
 ONLY_CANDIDATES="M0,M1,M2,M3"
 
@@ -125,6 +127,18 @@ validate_ablation() {
     echo "[MUSE-ERROR] named ablation requires --only=M3" >&2
     return 2
   fi
+  case "${DAOT_ABLATION}" in
+    ""|A0|A1|A2|A3|A4|A5|A6|A7|A8) ;;
+    *) echo "[MUSE-ERROR] unknown DAOT ablation: ${DAOT_ABLATION}" >&2; return 2 ;;
+  esac
+  if [[ -n "${DAOT_ABLATION}" && "${ONLY_CANDIDATES}" != "M3" ]]; then
+    echo "[MUSE-ERROR] DAOT ablations require --only=M3" >&2
+    return 2
+  fi
+  case "${DAOT_LOSS_ABLATION}" in
+    none|no_z|no_logit|no_proto|relation_on) ;;
+    *) echo "[MUSE-ERROR] unknown DAOT loss ablation: ${DAOT_LOSS_ABLATION}" >&2; return 2 ;;
+  esac
 }
 
 build_ablation_args() {
@@ -479,6 +493,10 @@ build_train_command() {
     )
   fi
   TRAIN_CMD+=("${ABLATION_ARGS[@]}")
+  if [[ -n "${DAOT_ABLATION}" ]]; then
+    TRAIN_CMD+=(--daot_ablation "${DAOT_ABLATION}")
+  fi
+  TRAIN_CMD+=(--daot_loss_ablation "${DAOT_LOSS_ABLATION}")
 }
 
 build_eval_command() {
