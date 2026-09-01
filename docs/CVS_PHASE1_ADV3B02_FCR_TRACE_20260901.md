@@ -34,7 +34,7 @@
 | FCR-22 | 第十七节 | 保存latent纯度、配对距离、移植、参数恢复和资源诊断 | `code/cvsrffi/phase1_fcr_diagnostics.py`、`code/train.py` | pending | 日志字段完整性测试 | probe独立于训练分类器 |
 | FCR-23 | 第十七节 | 实现R0-R8递进消融并绑定同row结果 | `code/scripts/`、正式实验报告 | pending | launcher dry-run和结果行绑定测试 | 先单seed最小可证伪矩阵 |
 | FCR-24 | 项目协议4、4.3节 | 保持`L_s/U_s/V`权限、LEO_WEAK日程和clean/三场景最终评测 | `code/train.py`、正式launcher | pending | 协议负测、真实checkpoint无query smoke、四评测检查 | 不修改普通ADV3B02全局默认 |
-| FCR-25 | ADV3B02集成要求 | `use_fcr=false`保持旧checkpoint、state和输出兼容 | `code/model_dual_cvsincnet.py`、`code/cvsrffi/checkpoint.py` | pending | 严格加载和逐元素关闭态测试 | 仅开启时实例化FCR参数 |
+| FCR-25 | ADV3B02集成要求 | `use_fcr=false`保持旧checkpoint、state和输出兼容 | `code/model_dual_cvsincnet.py`、`code/cvsrffi/checkpoint.py` | verified | 严格加载和逐元素关闭态测试 | 仅开启时实例化FCR参数 |
 | FCR-26 | 部署闭合 | checkpoint保存FCR模块、物理基、统计和feature schema；单LEO IQ独立推理 | `code/cvsrffi/checkpoint.py`、`code/model_dual_cvsincnet.py` | pending | 保存—加载—单视图推理往返 | 推理不需要clean伴随输入 |
 
 ## 当前计数

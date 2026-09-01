@@ -9,6 +9,8 @@ from typing import Dict, Optional, Sequence, Tuple
 import torch
 import torch.nn as nn
 
+from cvsrffi.phase1_fcr_types import FCRConfig
+
 _CODE_ROOT = Path(__file__).resolve().parent
 _REPO_ROOT = Path(__file__).resolve().parents[1]
 for _path in (_CODE_ROOT, _REPO_ROOT):
@@ -595,6 +597,8 @@ class DualCVSincNetDisentangle(nn.Module):
         sat_anchor_adapter: bool = False,
         sat_anchor_adapter_rank: int = 8,
         physical_gate_variant: str = "none",
+        use_fcr: bool = False,
+        fcr_config: Optional[FCRConfig] = None,
     ):
         super().__init__()
         self.num_classes = int(num_classes)
@@ -618,6 +622,9 @@ class DualCVSincNetDisentangle(nn.Module):
         self.fast_infer_when_no_aux = bool(fast_infer_when_no_aux)
         self.use_tx_adv_on_zdom = bool(use_tx_adv_on_zdom)
         self.use_crra = bool(use_crra)
+        self.use_fcr = bool(use_fcr)
+        self.fcr_config = fcr_config if self.use_fcr else None
+        self.fcr = None
         self.physical_gate_variant = str(
             physical_gate_variant or "none"
         ).lower().strip()
@@ -1087,6 +1094,8 @@ def build_dual_model(
     sat_anchor_adapter: bool = False,
     sat_anchor_adapter_rank: int = 8,
     physical_gate_variant: str = "none",
+    use_fcr: bool = False,
+    fcr_config: Optional[FCRConfig] = None,
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -1141,4 +1150,6 @@ def build_dual_model(
         sat_anchor_adapter=sat_anchor_adapter,
         sat_anchor_adapter_rank=sat_anchor_adapter_rank,
         physical_gate_variant=physical_gate_variant,
+        use_fcr=use_fcr,
+        fcr_config=fcr_config,
     )
