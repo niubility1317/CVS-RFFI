@@ -31,11 +31,11 @@
 | FCR-19 | 第十四节9 | 实现指纹能量、响应平滑、参数边界和物理特征约束 | `code/cvsrffi/phase1_fcr_physics.py`、`code/cvsrffi/phase1_fcr_losses.py` | implemented | 本地聚焦测试核对逐物理块Fisher加权、零权重归零、零/近零有限和预测梯度；模块提供指纹能量、响应平滑及参数边界罚项 | 物理项受Fisher gate控制；未形成端到端或N607证据 |
 | FCR-20 | 第十五节 | `U_s`只使用无标签自监督项，不能读取隐藏TX真值 | `code/dataset_wisig.py`、`code/cvsrffi/phase1_fcr_interventions.py`、`code/train.py` | verified | `test_phase1_fcr_unlabeled_boundary.py`和gradient测试核对`labels=-1`、显式mask、无identity/factor/transplant且允许项可反传 | 验证范围仅限本地U_s训练路由；无真TX、硬伪标签或query证据面 |
 | FCR-21 | 第十六节 | 训练按基础重构→swap/cycle→定向移植→身份DG四阶段启用 | `code/cvsrffi/phase1_fcr_schedule.py`、`code/cvsrffi/schedule.py`、`code/train.py` | implemented | `test_phase1_fcr_schedule.py`核对E1/40/41/90/91/150/151/200、线性ramp、optimizer step交替和越界拒绝 | FCR权重独立于既有E80 sat CE/LEO_WEAK；未形成真实checkpoint证据 |
-| FCR-22 | 第十七节 | 保存latent纯度、配对距离、移植、参数恢复和资源诊断 | `code/cvsrffi/phase1_fcr_diagnostics.py`、`code/train.py` | pending | 日志字段完整性测试 | probe独立于训练分类器 |
-| FCR-23 | 第十七节 | 实现R0-R8递进消融并绑定同row结果 | `code/scripts/`、正式实验报告 | pending | launcher dry-run和结果行绑定测试 | 先单seed最小可证伪矩阵 |
+| FCR-22 | 第十七节 | 保存latent纯度、配对距离、移植、参数恢复和资源诊断 | `code/cvsrffi/phase1_fcr_diagnostics.py`、`code/train.py` | verified | `test_phase1_fcr_diagnostics.py`验证17键、独立detach probe、训练外collector和严格pair缺失时`N/A`+原因；完整聚焦组79 passed | probe独立于训练分类器；当前真实smoke不具备严格移植pair，正式row按能力报告`N/A`而非0 |
+| FCR-23 | 第十七节 | 实现R0-R8递进消融并绑定同row结果 | `code/scripts/launch_phase1_adv3b02_fcr_20260901.sh`、`code/train.py`、正式实验报告 | verified | `test_phase1_adv3b02_fcr_launcher.py`验证R0-R8显式递进、逐row独立输出、E200/E80/三段LEO与四评测配置；Python CLI dry-run通过 | 只验证正式入口和同row artifact绑定，尚未生成任何真实消融结果；先单seed最小可证伪矩阵 |
 | FCR-24 | 项目协议4、4.3节 | 保持`L_s/U_s/V`权限、LEO_WEAK日程和clean/三场景最终评测 | `code/train.py`、`code/cvsrffi/phase1_fcr_schedule.py`、正式launcher | pending | Task10协议负测已核对L_s/U_s/V、query不可达、只读V和普通路径有效lambda归零；Task11仍须真实checkpoint无query smoke及clean/三场景最终评测 | 本任务不修改普通ADV3B02、E80 sat CE或LEO_WEAK默认；未作实验完成声明 |
 | FCR-25 | ADV3B02集成要求 | `use_fcr=false`保持旧checkpoint、state和输出兼容 | `code/model_dual_cvsincnet.py`、`code/cvsrffi/checkpoint.py` | verified | 严格加载和逐元素关闭态测试 | 仅开启时实例化FCR参数 |
-| FCR-26 | 部署闭合 | checkpoint保存FCR模块、物理基、统计和feature schema；单LEO IQ独立推理 | `code/cvsrffi/checkpoint.py`、`code/model_dual_cvsincnet.py` | pending | 保存—加载—单视图推理往返 | 推理不需要clean伴随输入 |
+| FCR-26 | 部署闭合 | checkpoint保存FCR模块、物理基、统计和feature schema；单LEO IQ独立推理 | `code/cvsrffi/checkpoint.py`、`code/model_dual_cvsincnet.py` | verified | checkpoint单测5 passed；真实ADV3B02 epoch194 checkpoint+合法Phase1 source样本smoke完成FCR backward、bundle严格恢复和单`leo_clear_weak`的`z_f_id`精确复现 | 旧关闭态无bundle兼容；候选bundle在state使用前校验；推理不需要clean伴随输入 |
 
 ## 当前计数
 

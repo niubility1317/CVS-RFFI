@@ -7,7 +7,7 @@ import random
 import sys
 from copy import deepcopy
 from datetime import datetime
-from typing import Optional, Tuple, Dict, Any, List
+from typing import Optional, Tuple, Dict, Any, List, Callable
 import os
 
 PROJECT_CODE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -66,6 +66,7 @@ from cvsrffi.checkpoint import (
     default_is_path,
     derive_checkpoint_path,
     save_checkpoint,
+    validate_fcr_bundle_for_model,
 )
 from cvsrffi.eval import (
     accuracy_from_logits,
@@ -165,6 +166,7 @@ from cvsrffi.phase1_fcr_physics import (
 )
 from cvsrffi.phase1_fcr_transplant import TransplantLossOutput, freeze_identity_classifier
 from cvsrffi.phase1_fcr_types import FCRConfig, FCRLossOutput, FCRPairBatch
+from cvsrffi.phase1_fcr_diagnostics import compute_fcr_diagnostics, write_fcr_diagnostics_json
 from cvsrffi.tensors import (
     batch_domain_stats,
     build_domain_label_map,
@@ -212,6 +214,18 @@ FCR_LAMBDA_FLAGS = {
     "phys": "lambda_fcr_phys",
 }
 
+FCR_ABLATION_ACTIVE_LAMBDAS = {
+    "R0": frozenset(),
+    "R1": frozenset({"self", "eta"}),
+    "R2": frozenset({"self", "eta", "swap"}),
+    "R3": frozenset({"self", "eta", "swap", "shared"}),
+    "R4": frozenset({"self", "eta", "swap", "shared", "latent_cycle"}),
+    "R5": frozenset({"self", "eta", "swap", "shared", "latent_cycle", "factor"}),
+    "R6": frozenset({"self", "eta", "swap", "shared", "latent_cycle", "factor", "need"}),
+    "R7": frozenset({"self", "eta", "swap", "shared", "latent_cycle", "factor", "need", "phys"}),
+    "R8": frozenset(FCR_LAMBDA_FLAGS),
+}
+
 
 def add_fcr_training_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     parser.add_argument(
@@ -235,6 +249,20 @@ def add_fcr_training_args(parser: argparse.ArgumentParser) -> argparse.ArgumentP
     parser.add_argument("--lambda_fcr_factor", type=float, default=1.0)
     parser.add_argument("--lambda_fcr_need", type=float, default=1.0)
     parser.add_argument("--lambda_fcr_phys", type=float, default=1.0)
+    parser.add_argument(
+        "--fcr_ablation_row",
+        type=str,
+        choices=tuple(FCR_ABLATION_ACTIVE_LAMBDAS),
+        default="R8",
+        help="Explicit ADV3B02-FCR ablation row. Formal launchers always pass R0..R8.",
+    )
+    parser.add_argument(
+        "--fcr_config_dry_run",
+        action="store_true",
+        help="Validate and print the resolved FCR row without opening data or checkpoints.",
+    )
+    parser.add_argument("--fcr_diagnostics_path", type=str, default="")
+    parser.add_argument("--fcr_diagnostics_max_batches", type=int, default=4)
     return parser
 
 
@@ -251,7 +279,21 @@ def resolve_fcr_training_options(args):
             raise ValueError(f"FCR lambda {name} must be finite and >= 0")
     args.phase1_method = method
     args.use_fcr = bool(requested and method == "adv3b02_fcr")
-    args.effective_fcr_lambdas = raw if args.use_fcr else {name: 0.0 for name in raw}
+    row = str(getattr(args, "fcr_ablation_row", "R8") or "R8").upper()
+    if row not in FCR_ABLATION_ACTIVE_LAMBDAS:
+        raise ValueError("--fcr_ablation_row must be one of R0..R8")
+    active_lambdas = FCR_ABLATION_ACTIVE_LAMBDAS[row]
+    args.fcr_ablation_row = row
+    args.effective_fcr_lambdas = (
+        {name: (raw[name] if name in active_lambdas else 0.0) for name in raw}
+        if args.use_fcr
+        else {name: 0.0 for name in raw}
+    )
+    row_index = int(row[1:])
+    args.fcr_basic_need_diagnostic = bool(args.use_fcr and row_index >= 5)
+    args.fcr_targeted_transplant = bool(args.use_fcr and row_index >= 6)
+    args.fcr_physics_ordered_decoder = bool(args.use_fcr and row_index >= 7)
+    args.fcr_three_axis_intervention = bool(args.use_fcr and row_index >= 8)
     if args.use_fcr and int(getattr(args, "epochs", 200)) != 200:
         raise ValueError("ADV3B02-FCR uses the frozen 200-epoch schedule")
     if args.use_fcr and str(getattr(args, "train_mode", "centralized")) != "centralized":
@@ -259,6 +301,129 @@ def resolve_fcr_training_options(args):
     if args.use_fcr and bool(getattr(args, "use_concat_sat_channel_aug", False)):
         raise ValueError("ADV3B02-FCR builds its synchronized clean/LEO pair before any concat augmentation")
     return args
+
+
+def fcr_dry_run_payload(args) -> Dict[str, Any]:
+    return {
+        "phase1_method": str(args.phase1_method),
+        "use_fcr": bool(args.use_fcr),
+        "fcr_ablation_row": str(args.fcr_ablation_row),
+        "epochs": int(args.epochs),
+        "effective_lambdas": dict(args.effective_fcr_lambdas),
+        "basic_need_diagnostic": bool(args.fcr_basic_need_diagnostic),
+        "targeted_transplant": bool(args.fcr_targeted_transplant),
+        "physics_ordered_decoder": bool(args.fcr_physics_ordered_decoder),
+        "three_axis_intervention": bool(args.fcr_three_axis_intervention),
+        "satellite_aux_ce_start_epoch": 80,
+        "final_evaluation": [
+            "clean",
+            "leo_clear_weak",
+            "leo_low_elev_weak",
+            "leo_rain_weak",
+        ],
+    }
+
+
+@torch.no_grad()
+def collect_fcr_diagnostic_artifacts(
+    model: nn.Module,
+    loader,
+    device: torch.device,
+    *,
+    leo_transform: Callable[[torch.Tensor, int, Any], torch.Tensor],
+    max_batches: int = 4,
+) -> Tuple[Dict[str, Any], Dict[str, float]]:
+    """Collect bounded source-only clean/LEO artifacts outside training updates."""
+
+    raw_model = getattr(model, "_orig_mod", model)
+    if not bool(getattr(raw_model, "use_fcr", False)) or getattr(raw_model, "fcr", None) is None:
+        raise ValueError("FCR diagnostics require a use_fcr=True model")
+    was_training = bool(model.training)
+    model.eval()
+    chunks: Dict[str, List[torch.Tensor]] = {
+        "z_f_id": [],
+        "z_s": [],
+        "tx_labels": [],
+        "domain_labels": [],
+        "clean_z_f_id": [],
+        "leo_z_f_id": [],
+        "drop_f_error_full": [],
+        "drop_f_error_without": [],
+        "gram": [],
+        "fisher_coverage": [],
+    }
+    nuisance_chunks: Dict[str, List[torch.Tensor]] = {
+        "channel": [],
+        "receiver": [],
+        "sync": [],
+        "gain": [],
+    }
+    latency_samples: List[float] = []
+    try:
+        for batch_index, batch in enumerate(loader):
+            if int(max_batches) > 0 and batch_index >= int(max_batches):
+                break
+            x, y, extra = unpack_batch(batch)
+            x = x.to(device=device, non_blocking=True)
+            y = y.to(device=device, dtype=torch.long, non_blocking=True).reshape(-1)
+            d_raw = extract_domain_from_extra(extra, device)
+            if d_raw is None:
+                d_raw = torch.full_like(y, -1)
+            leo = leo_transform(x, batch_index, extra)
+            if not torch.is_tensor(leo) or leo.shape != x.shape:
+                raise ValueError("leo_transform must return one shape-matched Phase1 LEO view")
+            if device.type == "cuda":
+                torch.cuda.synchronize(device)
+            latency_started = time.perf_counter()
+            clean_out = model(x, return_aux=True)
+            leo_out = model(leo.to(device=device, dtype=x.dtype), return_aux=True)
+            if device.type == "cuda":
+                torch.cuda.synchronize(device)
+            latency_samples.append(1000.0 * (time.perf_counter() - latency_started) / float(max(1, x.size(0))))
+
+            aggregate = raw_model.fcr(x, clean_out["z_id"])
+            basis = fixed_response_basis(aggregate.content.s_hat.detach())
+            gram = torch.matmul(basis.conj().transpose(-2, -1), basis).real
+            gate = FisherIdentifiabilityGate()(x, gram, snr_db=None)
+            dropped = raw_model.fcr.decoder(
+                aggregate.content.s_hat,
+                torch.zeros_like(aggregate.response.delta_f),
+                aggregate.nuisance,
+            )
+            full_error = (aggregate.decode.mu_iq - x).float().square().mean(dim=(1, 2))
+            drop_error = (dropped.mu_iq - x).float().square().mean(dim=(1, 2))
+
+            chunks["z_f_id"].append(clean_out["z_f_id"].detach().cpu())
+            chunks["z_s"].append(clean_out["z_s"].detach().cpu())
+            chunks["tx_labels"].append(y.detach().cpu())
+            chunks["domain_labels"].append(d_raw.detach().long().cpu())
+            chunks["clean_z_f_id"].append(clean_out["z_f_id"].detach().cpu())
+            chunks["leo_z_f_id"].append(leo_out["z_f_id"].detach().cpu())
+            chunks["drop_f_error_full"].append(full_error.detach().cpu())
+            chunks["drop_f_error_without"].append(drop_error.detach().cpu())
+            chunks["gram"].append(gram.detach().cpu())
+            chunks["fisher_coverage"].append(gate.quality["excitation_coverage"].detach().cpu())
+            for name in nuisance_chunks:
+                nuisance_chunks[name].append(clean_out["z_n"][name].detach().cpu())
+    finally:
+        model.train(was_training)
+
+    if not chunks["z_f_id"]:
+        raise ValueError("FCR diagnostic loader produced no source rows")
+    artifacts: Dict[str, Any] = {
+        name: torch.cat(values, dim=0) for name, values in chunks.items()
+    }
+    artifacts["z_n"] = {
+        name: torch.cat(values, dim=0) for name, values in nuisance_chunks.items()
+    }
+    row_count = int(artifacts["z_f_id"].size(0))
+    row_index = torch.arange(row_count)
+    artifacts["probe_train_mask"] = row_index.remainder(2).eq(0)
+    artifacts["probe_eval_mask"] = row_index.remainder(2).eq(1)
+    resources = {
+        "latency_ms": float(sum(latency_samples) / max(1, len(latency_samples))),
+    }
+    return artifacts, resources
 
 
 def validate_fcr_pair_for_role(pair: FCRPairBatch, role: str) -> None:
@@ -539,7 +704,10 @@ def load_init_checkpoint_weights(model: nn.Module, path: str, device: torch.devi
     if not os.path.isfile(ckpt_path):
         raise FileNotFoundError(f"--init_checkpoint not found: {ckpt_path}")
 
-    ckpt = torch.load(ckpt_path, map_location=device)
+    # Project checkpoints contain trusted, Git-pinned training metadata such as
+    # argparse.Namespace and SatViewStage in addition to tensor state.  PyTorch
+    # 2.6 defaults to weights_only=True, which rejects those legacy payloads.
+    ckpt = torch.load(ckpt_path, map_location=device, weights_only=False)
     if isinstance(ckpt, dict) and isinstance(ckpt.get("model"), dict):
         state = ckpt["model"]
         state_name = "model"
@@ -554,6 +722,9 @@ def load_init_checkpoint_weights(model: nn.Module, path: str, device: torch.devi
         raise ValueError(f"--init_checkpoint must contain model/state_dict tensors, got {key_hint}")
 
     raw_model = getattr(model, "_orig_mod", model)
+    contains_fcr_state = any(str(key).startswith("fcr.") for key in state)
+    if bool(getattr(raw_model, "use_fcr", False)) and ("fcr_bundle" in ckpt or contains_fcr_state):
+        validate_fcr_bundle_for_model(ckpt, raw_model)
     current = raw_model.state_dict()
     filtered: Dict[str, torch.Tensor] = {}
     skipped: List[str] = []
@@ -2963,6 +3134,13 @@ def main():
     args = enforce_federated_sat_eval_args(args)
     args = apply_force_ce_grl_only(args)
     args = resolve_fcr_training_options(args)
+    if bool(getattr(args, "fcr_config_dry_run", False)):
+        print(
+            "[FCR-DRY-RUN] "
+            + json.dumps(fcr_dry_run_payload(args), sort_keys=True),
+            flush=True,
+        )
+        return
     args.runtime_thread_info = configure_torch_thread_runtime(
         cpu_threads=args.cpu_threads if int(args.cpu_threads) > 0 else None,
         cpu_interop_threads=args.cpu_interop_threads if int(args.cpu_interop_threads) > 0 else None,
@@ -3683,6 +3861,7 @@ def main():
     swa_avg = AveragedModelState("swa") if bool(args.use_swa_ckpt) else None
     swad_avg = AveragedModelState("swad") if bool(args.use_swad_ckpt) else None
     optimizer_step_count = 0
+    training_started_at = time.perf_counter()
 
     for epoch in range(1, args.epochs + 1):
         model.train()
@@ -4716,8 +4895,10 @@ def main():
         print(f"Final split info: {split_info}")
 
     try:
-        ckpt = torch.load(args.best_save_path, map_location=device)
-        model.load_state_dict(ckpt["model"], strict=False)
+        ckpt = torch.load(args.best_save_path, map_location=device, weights_only=False)
+        if bool(args.use_fcr):
+            validate_fcr_bundle_for_model(ckpt, model)
+        model.load_state_dict(ckpt["model"], strict=bool(args.use_fcr))
         final_val = evaluate_loader(model, val_loader, device, domain_label_map=domain_label_map, max_batches=0)
         final_named = evaluate_named_loaders(model, named_test_loaders, device, domain_label_map=domain_label_map, max_batches=0)
         test_keys = list(wisig_main_test_keys) if args.dataset == "wisig" else list(final_named.keys())
@@ -4740,12 +4921,58 @@ def main():
             )
             for line in format_sat_test_lines(final_sat):
                 print(f"[FINAL-BEST] {line}", flush=True)
+        diagnostics_path = str(getattr(args, "fcr_diagnostics_path", "") or "").strip()
+        if bool(args.use_fcr) and diagnostics_path:
+            diagnostic_scenarios = tuple(getattr(args, "eval_sat_scenario_list", ()))
+            if not diagnostic_scenarios:
+                diagnostic_scenarios = tuple(SAT_EVAL_SCENARIOS_DEFAULT.split(","))
+
+            def diagnostic_leo_transform(clean_iq, batch_index, _extra):
+                scenario = diagnostic_scenarios[int(batch_index) % len(diagnostic_scenarios)]
+                generator = make_torch_generator(
+                    clean_iq.device,
+                    int(args.sat_seed) + 700_001 + int(batch_index),
+                )
+                received, _ = apply_sat_channel_for_scenario(
+                    clean_iq,
+                    scenario,
+                    args,
+                    gen=generator,
+                    return_meta=False,
+                )
+                return received
+
+            diagnostic_artifacts, diagnostic_resources = collect_fcr_diagnostic_artifacts(
+                model,
+                val_loader,
+                device,
+                leo_transform=diagnostic_leo_transform,
+                max_batches=int(getattr(args, "fcr_diagnostics_max_batches", 4)),
+            )
+            diagnostic_resources["train_time_s"] = float(time.perf_counter() - training_started_at)
+            diagnostic_resources["peak_vram_mb"] = (
+                float(torch.cuda.max_memory_allocated(device)) / (1024.0 * 1024.0)
+                if device.type == "cuda"
+                else 0.0
+            )
+            diagnostic_metrics = compute_fcr_diagnostics(
+                diagnostic_artifacts,
+                resources=diagnostic_resources,
+                row_id=str(args.fcr_ablation_row),
+            )
+            write_fcr_diagnostics_json(diagnostics_path, diagnostic_metrics)
+            print(
+                f"[FCR-DIAGNOSTICS] row={args.fcr_ablation_row} path={diagnostics_path}",
+                flush=True,
+            )
     except Exception as e:
         print(f"[WARN] final best-checkpoint test failed: {e}", flush=True)
 
     try:
-        ckpt = torch.load(args.best_primary_save_path, map_location=device)
-        model.load_state_dict(ckpt["model"], strict=False)
+        ckpt = torch.load(args.best_primary_save_path, map_location=device, weights_only=False)
+        if bool(args.use_fcr):
+            validate_fcr_bundle_for_model(ckpt, model)
+        model.load_state_dict(ckpt["model"], strict=bool(args.use_fcr))
         primary_val = evaluate_loader(model, val_loader, device, domain_label_map=domain_label_map, max_batches=0)
         primary_named = evaluate_named_loaders(model, named_test_loaders, device, domain_label_map=domain_label_map, max_batches=0)
         test_keys = list(wisig_main_test_keys) if args.dataset == "wisig" else list(primary_named.keys())
