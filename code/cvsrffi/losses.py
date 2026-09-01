@@ -12,6 +12,24 @@ from cvsrffi.eval import accuracy_from_logits
 from cvsrffi.tensors import get_nested_tensor, safe_cosine_similarity, safe_l2_normalize
 
 
+def masked_identity_ce(
+    logits: torch.Tensor,
+    labels: torch.Tensor,
+    label_mask: torch.Tensor,
+    criterion,
+) -> torch.Tensor:
+    """Compute supervised identity CE only on explicitly visible L_s rows."""
+
+    mask = torch.as_tensor(label_mask, device=logits.device, dtype=torch.bool).reshape(-1)
+    targets = torch.as_tensor(labels, device=logits.device, dtype=torch.long).reshape(-1)
+    if logits.ndim != 2 or logits.size(0) != targets.numel() or mask.numel() != targets.numel():
+        raise ValueError("identity logits, labels, and label_mask must align by row")
+    valid = mask & targets.ge(0) & targets.lt(int(logits.size(1)))
+    if not bool(valid.any()):
+        return logits.sum() * 0.0
+    return criterion(logits[valid].float(), targets[valid])
+
+
 def crra_nuisance_huber_loss(
     prediction: Optional[torch.Tensor],
     target: Optional[torch.Tensor],

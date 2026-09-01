@@ -113,9 +113,12 @@ def test_cli_requires_explicit_candidate_route_and_ordinary_adv3b02_has_effectiv
     assert ordinary.use_fcr is False
     assert all(value == 0.0 for value in ordinary.effective_fcr_lambdas.values())
 
-    candidate = resolve_fcr_training_options(
-        parser.parse_args(["--phase1_method", "adv3b02_fcr", "--use_fcr"])
-    )
+    candidate_args = parser.parse_args(["--phase1_method", "adv3b02_fcr", "--use_fcr"])
+    candidate_args.use_meta_ssl_cvs = True
+    candidate_args.ssl_labeled_ratio = 0.07
+    candidate_args.ssl_unlabeled_ratio = 0.63
+    candidate_args.ssl_val_ratio = 0.30
+    candidate = resolve_fcr_training_options(candidate_args)
     assert candidate.use_fcr is True
     assert set(candidate.effective_fcr_lambdas) == {
         "self", "swap", "shared", "latent_cycle", "eta", "factor", "need", "phys"

@@ -63,6 +63,7 @@ except Exception:
 
 from cvsrffi.checkpoint import (
     AveragedModelState,
+    FCR_FEATURE_SCHEMA,
     default_is_path,
     derive_checkpoint_path,
     save_checkpoint,
@@ -78,12 +79,14 @@ from cvsrffi.eval import (
     evaluate_loader_sat_channel,
     evaluate_named_loaders,
     evaluate_sat_scenarios,
+    export_fcr_predictions,
     format_named_test_lines,
     format_sat_test_lines,
     make_loader,
     make_sat_config,
     metric_or_neg_inf,
     resolve_sat_eval_loader_names,
+    select_identity_logits,
 )
 from cvsrffi.logging import (
     AverageMeter,
@@ -110,6 +113,7 @@ from cvsrffi.losses import (
     hard_domain_ce_loss,
     one_way_kl_from_teacher,
     masked_pseudo_label_ce_loss,
+    masked_identity_ce,
     open_world_feature_space_loss,
     prototype_agreement_pull_loss,
     same_tx_cross_domain_consistency,
@@ -263,6 +267,7 @@ def add_fcr_training_args(parser: argparse.ArgumentParser) -> argparse.ArgumentP
     )
     parser.add_argument("--fcr_diagnostics_path", type=str, default="")
     parser.add_argument("--fcr_diagnostics_max_batches", type=int, default=4)
+    parser.add_argument("--fcr_predictions_path", type=str, default="")
     return parser
 
 
@@ -300,6 +305,28 @@ def resolve_fcr_training_options(args):
         raise ValueError("ADV3B02-FCR Task10 supports centralized Phase1 training only")
     if args.use_fcr and bool(getattr(args, "use_concat_sat_channel_aug", False)):
         raise ValueError("ADV3B02-FCR builds its synchronized clean/LEO pair before any concat augmentation")
+    if args.use_fcr:
+        if not bool(getattr(args, "use_meta_ssl_cvs", False)):
+            raise ValueError("ADV3B02-FCR requires the frozen Meta-SSL L_s/U_s/V split")
+        expected_ratios = {
+            "ssl_labeled_ratio": 0.07,
+            "ssl_unlabeled_ratio": 0.63,
+            "ssl_val_ratio": 0.30,
+        }
+        for name, expected in expected_ratios.items():
+            actual = float(getattr(args, name, float("nan")))
+            if not math.isfinite(actual) or not math.isclose(
+                actual,
+                expected,
+                rel_tol=0.0,
+                abs_tol=1e-12,
+            ):
+                raise ValueError(
+                    f"ADV3B02-FCR frozen Meta-SSL ratio {name} must be {expected:.2f}, got {actual}"
+                )
+        ratio_sum = sum(float(getattr(args, name)) for name in expected_ratios)
+        if not math.isclose(ratio_sum, 1.0, rel_tol=0.0, abs_tol=1e-12):
+            raise ValueError("ADV3B02-FCR frozen Meta-SSL ratios must sum to 1")
     return args
 
 
@@ -315,6 +342,13 @@ def fcr_dry_run_payload(args) -> Dict[str, Any]:
         "physics_ordered_decoder": bool(args.fcr_physics_ordered_decoder),
         "three_axis_intervention": bool(args.fcr_three_axis_intervention),
         "satellite_aux_ce_start_epoch": 80,
+        "meta_ssl_roles": {
+            "labeled": float(args.ssl_labeled_ratio),
+            "unlabeled": float(args.ssl_unlabeled_ratio),
+            "validation": float(args.ssl_val_ratio),
+        },
+        "identity_logit_route": "fcr_tx_logits",
+        "feature_schema": FCR_FEATURE_SCHEMA,
         "final_evaluation": [
             "clean",
             "leo_clear_weak",
@@ -322,6 +356,20 @@ def fcr_dry_run_payload(args) -> Dict[str, Any]:
             "leo_rain_weak",
         ],
     }
+
+
+def route_formal_identity_outputs(outputs: Dict[str, Any], *, use_fcr: bool) -> Dict[str, Any]:
+    """Return a shallow routed view while retaining legacy diagnostics in outputs."""
+
+    if not bool(use_fcr):
+        return outputs
+    routed = dict(outputs)
+    routed["tx_logits"] = select_identity_logits(outputs, use_fcr=True)
+    z_f_id = outputs.get("z_f_id")
+    if not torch.is_tensor(z_f_id):
+        raise KeyError("formal FCR identity feature z_f_id is unavailable")
+    routed["z_id"] = z_f_id
+    return routed
 
 
 @torch.no_grad()
@@ -1067,6 +1115,31 @@ def compute_meta_ssl_training_losses(
     }
     if x_unlabeled is None or x_unlabeled.numel() == 0:
         return zeros
+    if bool(getattr(args, "use_fcr", False)):
+        student_out = model(
+            x_unlabeled,
+            y_tx=None,
+            grl_lambda=float(args.grl_lambda),
+            return_aux=True,
+            domain_labels=d_raw_unlabeled,
+        )
+        reference = select_identity_logits(student_out, use_fcr=True)
+        connected_zero = reference.sum() * 0.0
+        loss_ssl_dom = connected_zero
+        loss_ssl_adv = connected_zero
+        if d_unlabeled is not None and "dom_logits" in student_out and "adv_dom_logits" in student_out:
+            d_compact = d_unlabeled.view(-1).long()
+            valid = d_compact >= 0
+            if bool(valid.any()):
+                loss_ssl_dom = ce_dom(student_out["dom_logits"][valid].float(), d_compact[valid])
+                loss_ssl_adv = ce_dom(student_out["adv_dom_logits"][valid].float(), d_compact[valid])
+        return {
+            **zeros,
+            "loss_ssl_tx": connected_zero,
+            "loss_ssl_proto": connected_zero,
+            "loss_ssl_dom": loss_ssl_dom,
+            "loss_ssl_adv": loss_ssl_adv,
+        }
 
     teacher_model.eval()
     with torch.no_grad():
@@ -4070,10 +4143,26 @@ def main():
                 out_dac = forward_aux(model, x_dac, y, float(args.grl_lambda), need_dac_aux, domain_labels=d_raw)
                 out_pa = forward_aux(model, x_pa, y, float(args.grl_lambda), need_pa_aux, domain_labels=d_raw)
 
-                tx_logits = out_main["tx_logits"]
-                z_id = out_main["z_id"]
+                formal_out_main = route_formal_identity_outputs(out_main, use_fcr=bool(args.use_fcr))
+                formal_out_dac = (
+                    route_formal_identity_outputs(out_dac, use_fcr=bool(args.use_fcr))
+                    if out_dac is not None
+                    else None
+                )
+                formal_out_pa = (
+                    route_formal_identity_outputs(out_pa, use_fcr=bool(args.use_fcr))
+                    if out_pa is not None
+                    else None
+                )
+                formal_anchor = (
+                    route_formal_identity_outputs(anchor, use_fcr=bool(args.use_fcr))
+                    if anchor is not None
+                    else None
+                )
+                tx_logits = formal_out_main["tx_logits"]
+                z_id = formal_out_main["z_id"]
                 core = compute_core_losses(
-                    out_main,
+                    formal_out_main,
                     y,
                     d,
                     domain_stats,
@@ -4089,6 +4178,15 @@ def main():
                     groupdro_cap=float(args.groupdro_cap),
                     groupdro_num_days=int(args.groupdro_num_days),
                 )
+                if bool(args.use_fcr):
+                    if fcr_labeled_pair is None:
+                        raise RuntimeError("formal FCR identity CE requires the synchronized L_s pair")
+                    core["loss_cls"] = masked_identity_ce(
+                        tx_logits,
+                        y,
+                        fcr_labeled_pair.label_mask,
+                        ce_tx,
+                    )
                 if not math.isnan(core["cons_cos"]):
                     cons_cos_vals.append(core["cons_cos"])
                 m_domacc.update(core["dom_acc"])
@@ -4105,7 +4203,20 @@ def main():
                         "cos_joint_pa": float("nan"), "cos_imp_pa": float("nan"),
                     }
                 else:
-                    aux = compute_aux_losses(out_dac, out_pa, anchor, y, s_dac, s_pa, need_dac_aux, need_pa_aux, cur_w, args, ce_tx, z_id)
+                    aux = compute_aux_losses(
+                        formal_out_dac,
+                        formal_out_pa,
+                        formal_anchor,
+                        y,
+                        s_dac,
+                        s_pa,
+                        need_dac_aux,
+                        need_pa_aux,
+                        cur_w,
+                        args,
+                        ce_tx,
+                        z_id,
+                    )
 
                 loss_sat_cls = z_id.new_tensor(0.0)
                 loss_sat_cons = z_id.new_tensor(0.0)
@@ -4132,7 +4243,7 @@ def main():
                             )
                     out_sat = forward_main(model, x_sat_train, y, float(args.grl_lambda), domain_labels=d_raw)
                     sat_aux_losses = satellite_auxiliary_losses(
-                        out_sat,
+                        route_formal_identity_outputs(out_sat, use_fcr=bool(args.use_fcr)),
                         y,
                         z_id,
                         ce_tx,
@@ -4150,7 +4261,7 @@ def main():
                     out_sat = forward_main(model, x_sat_train, y, float(args.grl_lambda), domain_labels=d_raw)
                     sat_cls_weight = float(args.concat_sat_ce_weight)
                     sat_aux_losses = satellite_auxiliary_losses(
-                        out_sat,
+                        route_formal_identity_outputs(out_sat, use_fcr=bool(args.use_fcr)),
                         y,
                         z_id,
                         ce_tx,
@@ -4164,7 +4275,11 @@ def main():
                     diag_sat_cls_active_epoch = diag_sat_cls_active_epoch or bool(sat_aux_losses["diag_sat_cls_active"])
                     diag_sat_cons_active_epoch = diag_sat_cons_active_epoch or bool(sat_aux_losses["diag_sat_cons_active"])
 
-                dg_feat = select_generalization_feature(out_main, str(args.generalization_feature))
+                dg_feat = (
+                    formal_out_main["z_id"]
+                    if bool(args.use_fcr)
+                    else select_generalization_feature(out_main, str(args.generalization_feature))
+                )
                 loss_proto = z_id.new_tensor(0.0)
                 proto_info = {"proto_pull_cos": float("nan")}
                 if proto_bank is not None and float(args.lambda_proto) > 0.0:
@@ -4921,6 +5036,22 @@ def main():
             )
             for line in format_sat_test_lines(final_sat):
                 print(f"[FINAL-BEST] {line}", flush=True)
+        predictions_path = str(getattr(args, "fcr_predictions_path", "") or "").strip()
+        if bool(args.use_fcr) and predictions_path:
+            prediction_validation = export_fcr_predictions(
+                model,
+                val_loader,
+                device,
+                args=args,
+                output_path=predictions_path,
+                run_id=str(args.run_name),
+                row_id=str(args.fcr_ablation_row),
+            )
+            print(
+                f"[FCR-PREDICTIONS-READY] row={args.fcr_ablation_row} "
+                f"records={prediction_validation['record_count']} path={predictions_path}",
+                flush=True,
+            )
         diagnostics_path = str(getattr(args, "fcr_diagnostics_path", "") or "").strip()
         if bool(args.use_fcr) and diagnostics_path:
             diagnostic_scenarios = tuple(getattr(args, "eval_sat_scenario_list", ()))

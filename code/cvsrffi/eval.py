@@ -1,14 +1,18 @@
 from __future__ import annotations
 
+import json
 import math
-from typing import Any, Dict, List, Tuple
+from pathlib import Path
+from typing import Any, Dict, List, Mapping, Sequence, Tuple
 
 import torch
 from torch.utils.data import DataLoader
 
 from training_controls import sat_channel_config_for_scenario
 from training_test_eval import aggregate_named_stats, format_named_test_lines
+from cvsrffi.checkpoint import FCR_FEATURE_SCHEMA
 from cvsrffi.tensors import (
+    extract_batch_meta,
     extract_domain_from_extra,
     make_torch_generator,
     remap_domain_tensor,
@@ -25,6 +29,12 @@ except Exception:  # pragma: no cover - optional satellite simulation dependency
 
 MAIN_SAT_EVAL_ON_NAMES = ["test_unseen_day_seen_rx", "test_seen_day_unseen_rx", "test_unseen_day_unseen_rx"]
 MAIN_SAT_EVAL_ON = ",".join(MAIN_SAT_EVAL_ON_NAMES)
+FCR_PREDICTION_SCENARIOS = (
+    "clean",
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak",
+)
 
 
 def _safe_nan(v: float) -> str:
@@ -32,6 +42,197 @@ def _safe_nan(v: float) -> str:
 
 
 safe_nan = _safe_nan
+
+
+def select_identity_logits(
+    outputs: Mapping[str, Any],
+    *,
+    model=None,
+    use_fcr: bool | None = None,
+) -> torch.Tensor:
+    """Select the explicit formal identity route without mutating legacy outputs."""
+
+    if use_fcr is None:
+        raw_model = getattr(model, "_orig_mod", model)
+        use_fcr = bool(getattr(raw_model, "use_fcr", False))
+    key = "fcr_tx_logits" if bool(use_fcr) else "tx_logits"
+    logits = outputs.get(key)
+    if not torch.is_tensor(logits):
+        raise KeyError(f"formal identity output {key!r} is unavailable")
+    if bool(use_fcr) and outputs.get("feature_schema") != FCR_FEATURE_SCHEMA:
+        raise ValueError("formal FCR identity output has an incompatible feature schema")
+    return logits
+
+
+def validate_fcr_prediction_records(
+    records: Sequence[Mapping[str, Any]],
+    *,
+    expected_samples_per_scenario: int,
+    run_id: str,
+    row_id: str,
+) -> dict[str, Any]:
+    """Fail closed on the four-scenario, prediction-first FCR artifact."""
+
+    expected = int(expected_samples_per_scenario)
+    if expected <= 0:
+        raise ValueError("expected_samples_per_scenario must be positive")
+    expected_count = expected * len(FCR_PREDICTION_SCENARIOS)
+    if len(records) != expected_count:
+        raise ValueError(f"FCR prediction record count must be {expected_count}, got {len(records)}")
+    expected_run = str(run_id)
+    expected_row = str(row_id)
+    if not expected_run or expected_row not in {f"R{index}" for index in range(9)}:
+        raise ValueError("FCR prediction run_id/row_id binding is invalid")
+
+    ids_by_scenario: dict[str, list[str]] = {
+        scenario: [] for scenario in FCR_PREDICTION_SCENARIOS
+    }
+    for record in records:
+        scenario = str(record.get("scenario", ""))
+        if scenario not in ids_by_scenario:
+            raise ValueError(f"unexpected FCR prediction scenario {scenario!r}")
+        sample_id = str(record.get("sample_id", ""))
+        if not sample_id:
+            raise ValueError("FCR prediction sample_id is missing")
+        if str(record.get("run_id", "")) != expected_run:
+            raise ValueError("FCR prediction run_id mismatch")
+        if str(record.get("row_id", "")) != expected_row:
+            raise ValueError("FCR prediction row_id mismatch")
+        if record.get("feature_schema") != FCR_FEATURE_SCHEMA:
+            raise ValueError("FCR prediction feature schema mismatch")
+        if record.get("logit_route") != "fcr_tx_logits":
+            raise ValueError("FCR prediction logit route mismatch")
+        predicted = record.get("predicted_class")
+        if isinstance(predicted, bool) or not isinstance(predicted, int) or predicted < 0:
+            raise ValueError("FCR prediction class must be a non-negative integer")
+        ids_by_scenario[scenario].append(sample_id)
+
+    reference_ids: set[str] | None = None
+    for scenario, sample_ids in ids_by_scenario.items():
+        if len(sample_ids) != expected:
+            raise ValueError(f"FCR prediction scenario {scenario} has an incomplete row count")
+        if len(sample_ids) != len(set(sample_ids)):
+            raise ValueError(f"FCR prediction scenario {scenario} contains duplicate sample IDs")
+        scenario_ids = set(sample_ids)
+        if reference_ids is None:
+            reference_ids = scenario_ids
+        elif scenario_ids != reference_ids:
+            raise ValueError("FCR prediction scenarios do not bind the same sample ID set")
+    return {
+        "schema": "adv3b02_fcr_prediction_validation:v1",
+        "run_id": expected_run,
+        "row_id": expected_row,
+        "feature_schema": FCR_FEATURE_SCHEMA,
+        "logit_route": "fcr_tx_logits",
+        "scenarios": list(FCR_PREDICTION_SCENARIOS),
+        "samples_per_scenario": expected,
+        "record_count": expected_count,
+    }
+
+
+def _prediction_sample_ids(extra: Any, batch_size: int) -> list[str]:
+    meta = extract_batch_meta(extra)
+    if not isinstance(meta, Mapping):
+        raise ValueError("FCR prediction export requires collated Phase1 sample metadata")
+    raw_ids = meta.get("physical_sample_id")
+    if torch.is_tensor(raw_ids):
+        raw_ids = raw_ids.detach().cpu().reshape(-1).tolist()
+    if isinstance(raw_ids, str):
+        raw_ids = [raw_ids]
+    if not isinstance(raw_ids, (tuple, list)) or len(raw_ids) != int(batch_size):
+        raise ValueError("FCR prediction sample identifiers do not align with the batch")
+    sample_ids = [str(value) for value in raw_ids]
+    if any(not value for value in sample_ids):
+        raise ValueError("FCR prediction sample identifier is empty")
+    return sample_ids
+
+
+@torch.no_grad()
+def export_fcr_predictions(
+    model,
+    loader,
+    device,
+    *,
+    args,
+    output_path: str | Path,
+    run_id: str,
+    row_id: str,
+) -> dict[str, Any]:
+    """Export complete four-scenario FCR predictions without consuming labels."""
+
+    raw_model = getattr(model, "_orig_mod", model)
+    if not bool(getattr(raw_model, "use_fcr", False)):
+        raise ValueError("FCR prediction export requires use_fcr=True")
+    destination = Path(output_path)
+    if destination.exists():
+        raise FileExistsError(f"refusing to overwrite FCR predictions: {destination}")
+    try:
+        expected_samples = int(len(loader.dataset))
+    except (AttributeError, TypeError):
+        raise ValueError("FCR prediction loader must expose a finite dataset length") from None
+    if expected_samples <= 0:
+        raise ValueError("FCR prediction loader is empty")
+
+    records: list[dict[str, Any]] = []
+    was_training = bool(model.training)
+    model.eval()
+    try:
+        for scenario_index, scenario in enumerate(FCR_PREDICTION_SCENARIOS):
+            generator = make_torch_generator(
+                device,
+                int(getattr(args, "sat_seed", 2027)) + scenario_index * 1009,
+            )
+            for batch in loader:
+                x = batch[0].to(device=device, non_blocking=True)
+                extra = batch[2:] if isinstance(batch, (tuple, list)) and len(batch) > 2 else ()
+                sample_ids = _prediction_sample_ids(extra, int(x.size(0)))
+                if scenario == "clean":
+                    received = x
+                else:
+                    received, _ = apply_sat_channel_for_scenario(
+                        x,
+                        scenario,
+                        args,
+                        gen=generator,
+                        return_meta=False,
+                    )
+                outputs = model(received, y_tx=None, grl_lambda=1.0, return_aux=True)
+                logits = select_identity_logits(outputs, model=model)
+                predicted = logits.argmax(dim=1).detach().cpu().tolist()
+                for sample_id, predicted_class in zip(sample_ids, predicted):
+                    records.append(
+                        {
+                            "sample_id": sample_id,
+                            "scenario": scenario,
+                            "predicted_class": int(predicted_class),
+                            "feature_schema": FCR_FEATURE_SCHEMA,
+                            "row_id": str(row_id),
+                            "run_id": str(run_id),
+                            "logit_route": "fcr_tx_logits",
+                        }
+                    )
+    finally:
+        model.train(was_training)
+
+    validation = validate_fcr_prediction_records(
+        records,
+        expected_samples_per_scenario=expected_samples,
+        run_id=str(run_id),
+        row_id=str(row_id),
+    )
+    payload = {
+        **validation,
+        "schema": "adv3b02_fcr_predictions:v1",
+        "validation_schema": validation["schema"],
+        "records": records,
+    }
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    return validation
 
 
 def accuracy_from_logits(logits: torch.Tensor, y: torch.Tensor) -> float:
@@ -138,7 +339,7 @@ def evaluate_loader(model, loader, device, domain_label_map: Dict[int, int], max
         d = remap_domain_tensor(d_raw, domain_label_map, device) if d_raw is not None else None
 
         out = model(x, y_tx=None, grl_lambda=1.0, return_aux=True)
-        tx_logits = out["tx_logits"]
+        tx_logits = select_identity_logits(out, model=model)
         tx_pred = tx_logits.argmax(dim=1)
         tx_correct += int((tx_pred == y).sum().item())
         tx_total += int(y.numel())
@@ -192,7 +393,7 @@ def evaluate_loader_sat_channel(
         d = remap_domain_tensor(d_raw, domain_label_map, device) if d_raw is not None else None
 
         out = model(x_sat, y_tx=None, grl_lambda=1.0, return_aux=True)
-        tx_logits = out["tx_logits"]
+        tx_logits = select_identity_logits(out, model=model)
         tx_pred = tx_logits.argmax(dim=1)
         tx_correct += int((tx_pred == y).sum().item())
         tx_total += int(y.numel())

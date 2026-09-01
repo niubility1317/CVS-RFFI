@@ -26,11 +26,14 @@ def _resolve(row: str):
     parser.add_argument("--train_mode", default="centralized")
     parser.add_argument("--use_concat_sat_channel_aug", action="store_true")
     add_fcr_training_args(parser)
-    return resolve_fcr_training_options(
-        parser.parse_args(
-            ["--phase1_method", "adv3b02_fcr", "--use_fcr", "--fcr_ablation_row", row]
-        )
+    args = parser.parse_args(
+        ["--phase1_method", "adv3b02_fcr", "--use_fcr", "--fcr_ablation_row", row]
     )
+    args.use_meta_ssl_cvs = True
+    args.ssl_labeled_ratio = 0.07
+    args.ssl_unlabeled_ratio = 0.63
+    args.ssl_val_ratio = 0.30
+    return resolve_fcr_training_options(args)
 
 
 def test_r0_r8_are_explicit_validated_rows_with_monotone_capabilities() -> None:
@@ -67,6 +70,13 @@ def test_train_config_dry_run_validates_row_without_opening_data() -> None:
             "--phase1_method",
             "adv3b02_fcr",
             "--use_fcr",
+            "--use_meta_ssl_cvs",
+            "--ssl_labeled_ratio",
+            "0.07",
+            "--ssl_unlabeled_ratio",
+            "0.63",
+            "--ssl_val_ratio",
+            "0.30",
             "--fcr_ablation_row",
             "R6",
             "--epochs",
@@ -86,6 +96,13 @@ def test_train_config_dry_run_validates_row_without_opening_data() -> None:
     assert payload["fcr_ablation_row"] == "R6"
     assert payload["epochs"] == 200
     assert payload["targeted_transplant"] is True
+    assert payload["meta_ssl_roles"] == {
+        "labeled": 0.07,
+        "unlabeled": 0.63,
+        "validation": 0.30,
+    }
+    assert payload["identity_logit_route"] == "fcr_tx_logits"
+    assert payload["feature_schema"] == "ADV3B02:FCR:z_f_id:unit_l2:160:v1"
     assert payload["final_evaluation"] == [
         "clean",
         "leo_clear_weak",
@@ -101,6 +118,10 @@ def test_launcher_freezes_defaults_four_evaluations_and_no_query_paths() -> None
         "--use_fcr",
         "--epochs 200",
         "--fcr_ablation_row",
+        "--use_meta_ssl_cvs",
+        "--ssl_labeled_ratio 0.07",
+        "--ssl_unlabeled_ratio 0.63",
+        "--ssl_val_ratio 0.30",
         "leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
         "--lambda_sat_cls 0.68",
         "--sat_cons_start_epoch 80",

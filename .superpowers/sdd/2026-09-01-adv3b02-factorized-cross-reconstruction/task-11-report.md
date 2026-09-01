@@ -66,9 +66,9 @@ Git Bash通道此前已判定`FAILED`，因此本任务没有本地执行Bash/WS
 
 - checkpoint：`E:\type10-7\local_artifacts\adv3b02_ecrs_smoke\best_joint_safe_ssdg.pth`，epoch194，`ADV3B02_CORE90_SOFT_E200`，架构为6类、14域、M/`lite_d`/`no_dac`/`no_stats`、输入长度256。
 - source：`E:\type10-7\local_artifacts\cvs_publication_inputs_20260713\ManySig.pkl`。只取该checkpoint原训练配置允许的day0/rx0/equalized1中TX0、TX1各1条真实IQ，shape为`[2,2,256]`。
-- 输出：`E:\type10-7\local_artifacts\adv3b02_fcr_task11_smoke_20260902_r1\smoke_result.json`及对应round-trip checkpoint；目录创建前检查不存在，未覆盖旧产物。
+- 输出：原Task11闭合使用`E:\type10-7\local_artifacts\adv3b02_fcr_task11_smoke_20260902_r1`；定点修复后使用新的不可覆盖目录`E:\type10-7\local_artifacts\adv3b02_fcr_task11_smoke_20260902_r2`，保存`smoke_result.json`及对应round-trip checkpoint和prediction JSON。
 
-smoke结果为PASS：195个旧模型tensor全部匹配加载，新增35个missing key全部属于`fcr.*`；真实clean IQ生成合法`leo_clear_weak`received view；forward/backward损失有限，29个FCR参数获得有限梯度；保存完整bundle后fresh同构模型严格恢复；单条LEO输入的`z_f_id`以`rtol=0,atol=0`精确一致。smoke没有读取Phase2、query、truth或scorer，也没有以随机tensor代替source样本。
+修复后smoke结果为PASS：195个旧模型tensor全部匹配加载，新增37个missing key仅属于`fcr.*`或`fcr_identity_head.*`；真实clean IQ生成合法三种LEO_WEAK received view；forward/backward损失有限，29个FCR参数获得有限梯度；保存完整bundle后fresh同构模型严格恢复；单条LEO输入的`z_f_id`及`fcr_tx_logits`均以`rtol=0,atol=0`精确一致。四场景导出8条逐样本prediction，场景、ID、run/row、feature schema和`fcr_tx_logits`route验证通过。smoke没有读取Phase2、query、truth或scorer，也没有以随机tensor代替source样本。
 
 ## 完整验证
 
@@ -88,3 +88,18 @@ smoke结果为PASS：195个旧模型tensor全部匹配加载，新增35个missin
 ## Git发布
 
 本报告、FCR-22/23/26追踪行和Task11拥有代码/测试将以`feat:close-FCR-local-implementation`同一提交发布。提交后的本地HEAD、push结果和远端branch OID在任务完成回执中独立给出；不把未来OID回写同一提交，避免改变提交对象。
+
+## P0/P1定点修复追溯
+
+| ID | 审查发现 | 直接文件 | 状态 | 验证 |
+|---|---|---|---|---|
+| P1F-01 | 正式FCR必须fail-closed冻结Meta-SSL开关及0.07/0.63/0.30比例 | launcher、`code/train.py`、聚焦测试 | verified | 禁用及三项偏差均在数据/model打开前拒绝；精确正式配置通过；普通路径不受此限制 |
+| P1F-02 | 正式identity、选择、clean/LEO评测和prediction必须显式使用`fcr_tx_logits`/`z_f_id`，普通路径不变 | model/train/loss/eval直接路由、聚焦测试 | verified | 独立FCR head由`z_f_id`产生logits；故意制造legacy/FCR logits冲突后，正式训练CE、选择、clean/三LEO评测和prediction均选择FCR route，普通路径仍选择legacy route |
+| P1F-03 | R0-R8 strict-UdU及全部artifact路径必须row隔离且包含于不可覆盖row root | launcher、最小路径解析、聚焦测试 | verified | 14类artifact路径在9个row中均位于对应row root，全部126个解析路径两两不相同；strict-UdU checkpoint包含在内 |
+| P1F-04 | 四场景per-sample prediction闭合，launcher不得自行写`ARTIFACTS_COMPLETE` | train/eval export、launcher、聚焦测试 | verified | 缺场景、重复ID、错row/schema/logit route均fail-closed；真实smoke导出8条完整prediction；launcher只写`PREDICTIONS_READY`，不嵌入truth/scorer |
+
+### 定点修复TDD与回归
+
+四项原P1先落为7个失败测试：4个Meta-SSL偏差、1个缺失`fcr_tx_logits`路由、1个row路径不闭合、1个prediction完整性接口缺失，首次结果为7 failed。最小修复后该组7 passed；与既有schedule/launcher合并聚焦组16 passed；完整FCR及launcher/baseline回归86 passed；普通sat eval、Meta-SSL train loop和关闭态模型兼容回归4 passed。全部为串行`conda run -n ssr-gpu`。
+
+Python编译检查和`git diff --check`在最终提交前重新执行。定点修复没有触碰FCR-13状态：真实strict Fingerprint Pair仍为`blocked`，缺失能力继续报告`N/A`+原因。FCR-24仍为`pending`：当前只闭合truth-blind prediction，四场景正式数值必须等待独立truth-last scorer。修复提交使用`fix:close-FCR-P1-review-findings`，提交、push和远端OID回读在任务回执中给出。

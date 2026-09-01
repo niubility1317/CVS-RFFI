@@ -53,6 +53,10 @@ run_row() {
     --phase1_method adv3b02_fcr
     --use_fcr
     --fcr_ablation_row "${row}"
+    --use_meta_ssl_cvs
+    --ssl_labeled_ratio 0.07
+    --ssl_unlabeled_ratio 0.63
+    --ssl_val_ratio 0.30
     --sat_view_schedule "${SAT_SCHEDULE}"
     --use_sat_consistency
     --sat_cons_start_epoch 80
@@ -62,8 +66,18 @@ run_row() {
     --eval_sat_scenarios "${SAT_SCENARIOS}"
     --best_save_path "${row_root}/best_joint.pth"
     --latest_save_path "${row_root}/latest.pth"
+    --best_test_save_path "${row_root}/best_overall.pth"
+    --best_primary_save_path "${row_root}/best_primary.pth"
+    --best_unseen_day_unseen_rx_save_path "${row_root}/best_test_model.pth"
+    --best_unseen_day_seen_rx_save_path "${row_root}/best_unseen_day_seen_rx.pth"
+    --best_seen_day_unseen_rx_save_path "${row_root}/best_seen_day_unseen_rx.pth"
+    --best_worst_rx_save_path "${row_root}/best_worst_rx.pth"
+    --ema_save_path "${row_root}/ema.pth"
+    --swa_save_path "${row_root}/swa.pth"
+    --swad_save_path "${row_root}/swad.pth"
     --log_dir "${row_root}/logs"
     --fcr_diagnostics_path "${row_root}/fcr_diagnostics.json"
+    --fcr_predictions_path "${row_root}/fcr_predictions.json"
   )
   printf '[FCR-ROW] run_id=%s row=%s output=%s final_eval=%s\n' \
     "${RUN_ID}" "${row}" "${row_root}" "${FINAL_EVALUATIONS[*]}"
@@ -76,13 +90,13 @@ run_row() {
     printf 'TRAIN_FAILED\n' > "${row_root}/status.txt"
     return 5
   fi
-  for artifact in best_joint.pth fcr_diagnostics.json train.log; do
+  for artifact in best_joint.pth fcr_diagnostics.json fcr_predictions.json train.log; do
     if [[ ! -s "${row_root}/${artifact}" ]]; then
       printf 'ARTIFACT_MISSING_%s\n' "${artifact}" > "${row_root}/status.txt"
       return 6
     fi
   done
-  printf 'ARTIFACTS_COMPLETE\n' > "${row_root}/status.txt"
+  printf 'PREDICTIONS_READY\n' > "${row_root}/status.txt"
 }
 
 if [[ "${DRY_RUN}" != "1" ]]; then

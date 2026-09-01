@@ -77,6 +77,8 @@ def export_fcr_bundle(model) -> dict[str, Any]:
             "candidate": "ADV3B02-FCR",
             "identity_dimension": 160,
             "feature_normalization": "unit_l2",
+            "logit_route": "fcr_identity_head(z_f_id)",
+            "logit_key": "fcr_tx_logits",
         },
     }
     return bundle

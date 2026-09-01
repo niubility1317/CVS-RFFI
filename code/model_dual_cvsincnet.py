@@ -720,6 +720,7 @@ class DualCVSincNetDisentangle(nn.Module):
         self.use_fcr = bool(use_fcr)
         self.fcr_config = None
         self.fcr = None
+        self.fcr_identity_head = None
         self.physical_gate_variant = str(
             physical_gate_variant or "none"
         ).lower().strip()
@@ -886,6 +887,7 @@ class DualCVSincNetDisentangle(nn.Module):
                 fcr_config if fcr_config is not None else FCRConfig(input_len=int(input_len))
             )
             self.fcr = ADV3B02FactorizedCrossReconstruction(self.fcr_config)
+            self.fcr_identity_head = nn.Linear(self.emb_dim, self.num_classes)
 
     def set_crra_epoch(self, epoch: int) -> None:
         self.crra_epoch = max(1, int(epoch))
@@ -954,7 +956,10 @@ class DualCVSincNetDisentangle(nn.Module):
             return out
         if self.fcr is None:
             raise RuntimeError("use_fcr=True requires an instantiated FCR module")
+        if self.fcr_identity_head is None:
+            raise RuntimeError("use_fcr=True requires an explicit FCR identity head")
         aggregate = self.fcr(x, z_id)
+        fcr_tx_logits = self.fcr_identity_head(aggregate.factors.z_f_id)
         out.update(
             {
                 "z_id_raw": z_id,
@@ -965,6 +970,7 @@ class DualCVSincNetDisentangle(nn.Module):
                     name: aggregate.factors.z_n_parts[name]
                     for name in ("channel", "receiver", "sync", "gain")
                 },
+                "fcr_tx_logits": fcr_tx_logits,
                 "fcr_decode": aggregate.decode,
                 "fcr_quality": aggregate.quality,
                 "feature_schema": FCR_FEATURE_SCHEMA,
