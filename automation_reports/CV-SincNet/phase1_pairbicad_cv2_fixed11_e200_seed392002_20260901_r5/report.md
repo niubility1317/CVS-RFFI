@@ -66,3 +66,11 @@ r5恢复完整闭合：定位非空final checkpoint；从独立`source_loro_sele
 - 运行中trainer按周期checkpoint持续增长：D3已到`u56500`，T1已到`u36500`，T2已到`u46500`，T3已到`u31000`；这些行在结束前尚未写最终metrics，符合该入口的写出方式。
 - GPU2—5处于轻量计算/阶段切换，GPU6—7约90%—92%利用率；GPU0—1检查瞬间空闲，但对应T1 checkpoint刚更新，未形成无进展证据。
 - 全run的`train.log`中未检出Traceback、CUDA OOM、`RuntimeError:`或`ValueError:`确定性指纹。判定保持`RUNNING`，无需用户操作，不停止、不重启、不热补丁。
+
+## 2026-09-01 16:02进度与ETA
+
+- `ARTIFACTS_COMPLETE=18/24`、`TECHNICAL_FAILURE=0`；D3的fold1/8已完成`63000/63000 updates`、E200和四场景闭合。
+- 剩余6行均在运行，统一计划终点为`63000 updates`：T1约`42000/42500`，T2约`55500/56000`，T3约`37500/37500`。
+- 相对15:43检查，T1约推进5500—6000、T2约推进9000—9500、T3约推进6500—7000 updates；checkpoint时间更新至16:01—16:02，未出现停滞。
+- 按这段真实吞吐估算，T2预计约16:20前后结束；最终瓶颈为T1/T3，预计约17:10—17:25达到训练终点。D3从最后source-LORO记录到`ARTIFACTS_COMPLETE`约需100秒，因此24行全部artifact闭合预计在17:15—17:30。
+- 全量读取24行日志、metrics、runtime和四场景JSON并完成分析、报告与Git发布还需约45—75分钟；若无技术异常，最终`ANALYZED`预计约18:00—18:45。
