@@ -471,7 +471,7 @@ class ResponseFusionGate(nn.Module):
         if rho_max != 0.25:
             raise ValueError("ADV3B02-ECRS-V1 fixes rho_max=0.25")
         self.rho_max = rho_max
-        self.active_rho_max = rho_max
+        self.active_rho_max = 0.0
         self.net = nn.Sequential(
             nn.Linear(7, int(hidden)),
             nn.GELU(),
@@ -532,7 +532,8 @@ class ResponseSurfaceBranch(nn.Module):
         self.anchor_encoder = SurfaceAnchorEncoder(self.response_basis)
         self.fusion_gate = ResponseFusionGate(rho_max=float(rho_max))
         self.response_projection = nn.Linear(64, self.identity_dim, bias=False)
-        nn.init.zeros_(self.response_projection.weight)
+        nn.init.normal_(self.response_projection.weight, mean=0.0, std=1e-3)
+        self.detach_identification_for_identity = True
 
     def forward(self, x: torch.Tensor, z_id_raw: torch.Tensor) -> Dict[str, object]:
         nuisance_coef = self.nuisance_estimator(x)
@@ -550,7 +551,11 @@ class ResponseSurfaceBranch(nn.Module):
         quality["anchor_variance"] = anchor_variance
         quality["anchor_reliability"] = anchor_reliability
         rho = self.fusion_gate(quality, ridge["resp_cov_diag"], int(x.size(-1)))
-        residual = self.response_projection(z_resp)
+        identity_response = (
+            z_resp.detach() if bool(self.detach_identification_for_identity) else z_resp
+        )
+        residual = self.response_projection(identity_response)
+        z_resp_projected = torch.nn.functional.normalize(residual.float(), dim=1, eps=1e-6)
         z_id_fused = torch.nn.functional.normalize(
             z_id_raw.float() + rho.unsqueeze(1) * residual.float(), dim=1, eps=1e-6
         )
@@ -569,6 +574,7 @@ class ResponseSurfaceBranch(nn.Module):
             "response_weights": ridge["weights"],
             "ridge_info": ridge["ridge_info"],
             "rho_resp": rho,
+            "z_resp_projected": z_resp_projected,
         }
 
 
@@ -1409,6 +1415,9 @@ class DualCVSincNetDisentangle(nn.Module):
             ecrs_out = self.ecrs(x, z_id_raw)
             z_id = ecrs_out["z_id_fused"]
             tx_logits = self._classify_identity_feature(z_id, y_tx)
+            ecrs_out["resp_tx_logits"] = self._classify_identity_feature(
+                ecrs_out["z_resp_projected"], y_tx
+            )
         z_dom_raw = self._pick_z_dom(aux_dom)
         z_dom, z_dom_rcn = self.dom_enhancer(z_dom_raw, x)
 

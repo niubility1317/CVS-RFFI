@@ -111,6 +111,12 @@ from cvsrffi.losses import (
     masked_pseudo_label_ce_loss,
     open_world_feature_space_loss,
     prototype_agreement_pull_loss,
+    response_pair_cross_prediction_loss,
+    response_split_fit_loss,
+    response_surface_distance,
+    same_tx_cross_response_loss,
+    different_tx_response_ranking_loss,
+    response_gate_calibration_loss,
     same_tx_cross_domain_consistency,
     sanitize_loss,
     smooth_groupdro_ce_loss,
@@ -138,6 +144,7 @@ from cvsrffi.schedule import (
     build_stage_state,
     configure_augmentor_for_epoch,
     configure_mixstyle_for_epoch,
+    configure_ecrs_for_epoch,
     current_weight_dict,
     domain_loss_gates,
     format_stage_state,
@@ -740,6 +747,155 @@ def satellite_auxiliary_losses(
         "sat_cls_weight": float(cls_weight),
         "diag_sat_cls_active": float(cls_weight) > 0.0,
         "diag_sat_cons_active": bool(cons_active),
+    }
+
+
+def _complex_from_iq(x: torch.Tensor) -> torch.Tensor:
+    return torch.complex(x[:, 0].float(), x[:, 1].float())
+
+
+def compute_ecrs_paired_losses(
+    out_clean: Dict[str, Any],
+    out_leo: Dict[str, Any],
+    pair_meta: Dict[str, Any],
+    labels: Optional[torch.Tensor],
+    ce_tx,
+    stage_state: Dict[str, Any],
+    args,
+) -> Dict[str, torch.Tensor]:
+    """Assemble only report-defined ECRS losses for one synchronized pair batch."""
+    reference = out_clean["z_id_fused"]
+    zero = reference.sum() * 0.0
+    canonical_clean = _complex_from_iq(out_clean["canonical_iq"])
+    canonical_leo = _complex_from_iq(out_leo["canonical_iq"])
+    canonical_nmse = (canonical_clean - canonical_leo).abs().square().mean() / (
+        canonical_clean.abs().square().mean().clamp_min(1e-6)
+    )
+    content_nmse = (out_clean["s_hat"] - out_leo["s_hat"]).abs().square().mean() / (
+        out_clean["s_hat"].abs().square().mean().clamp_min(1e-6)
+    )
+
+    combined = {
+        key: torch.cat([out_clean[key], out_leo[key]], dim=0)
+        for key in (
+            "resp_coef",
+            "response_design",
+            "response_weights",
+            "resp_anchor",
+            "s_hat",
+            "canonical_iq",
+            "rho_resp",
+            "tx_logits",
+            "tx_logits_raw",
+            "resp_tx_logits",
+        )
+    }
+    target = _complex_from_iq(combined["canonical_iq"])
+    amplitude = combined["s_hat"].abs().float()
+    split_fit = (
+        response_split_fit_loss(
+            combined["response_design"], target, combined["response_weights"], amplitude
+        )
+        if bool(stage_state.get("split_fit", False))
+        else zero
+    )
+    pair_cross = (
+        response_pair_cross_prediction_loss(
+            combined["resp_coef"],
+            combined["response_design"],
+            target,
+            list(pair_meta["pair_id"]),
+            pair_meta["clean_mask"],
+            pair_meta["leo_mask"],
+            combined["response_weights"],
+        )
+        if bool(stage_state.get("pair_cross", False))
+        else zero
+    )
+    variance = torch.cat(
+        [
+            out_clean["resp_quality"]["anchor_variance"],
+            out_leo["resp_quality"]["anchor_variance"],
+        ],
+        dim=0,
+    )
+    pair_surface_terms = []
+    if bool(stage_state.get("pair_surface", False)):
+        clean_count = int(out_clean["resp_anchor"].size(0))
+        for index in range(clean_count):
+            pair_surface_terms.append(
+                response_surface_distance(
+                    combined["resp_anchor"][index],
+                    combined["resp_anchor"][index + clean_count],
+                    variance[index],
+                    variance[index + clean_count],
+                )
+            )
+    pair_surface = torch.stack(pair_surface_terms).mean() if pair_surface_terms else zero
+
+    raw_ce = zero
+    resp_ce = zero
+    same_tx = zero
+    diff_tx = zero
+    gate_calibration = zero
+    if labels is not None:
+        labels = labels.to(device=reference.device).long().reshape(-1)
+        labels_both = torch.cat([labels, labels], dim=0)
+        label_mask = pair_meta["label_mask"].to(device=reference.device).bool()
+        valid = label_mask & (labels_both >= 0)
+        if bool(valid.any()):
+            raw_ce = ce_tx(out_clean["tx_logits_raw"].float(), labels)
+            if bool(stage_state.get("resp_cls", False)):
+                resp_ce = ce_tx(combined["resp_tx_logits"][valid].float(), labels_both[valid])
+                same_tx = same_tx_cross_response_loss(
+                    combined["resp_coef"],
+                    combined["response_design"],
+                    target,
+                    combined["response_weights"],
+                    labels_both,
+                    pair_meta["receiver_id"],
+                    pair_meta["day_id"],
+                    valid,
+                )
+                diff_tx = different_tx_response_ranking_loss(
+                    combined["resp_anchor"],
+                    variance,
+                    labels_both,
+                    pair_meta["receiver_id"],
+                    pair_meta["day_id"],
+                    list(pair_meta["view_type"]),
+                    valid,
+                )
+                raw_correct = combined["tx_logits_raw"].argmax(dim=1).eq(labels_both)
+                fused_correct = combined["tx_logits"].argmax(dim=1).eq(labels_both)
+                gate_calibration, _ = response_gate_calibration_loss(
+                    combined["rho_resp"], raw_correct, fused_correct, rho_max=0.25
+                )
+
+    total = (
+        float(args.lambda_ecrs_canonical) * float(stage_state["canonical_scale"]) * canonical_nmse
+        + float(args.lambda_ecrs_content) * float(stage_state["content_scale"]) * content_nmse
+        + float(args.lambda_ecrs_split_fit) * float(stage_state["split_fit_scale"]) * split_fit
+        + float(args.lambda_ecrs_pair_cross) * float(stage_state["pair_cross_scale"]) * pair_cross
+        + float(args.lambda_ecrs_pair_surface) * pair_surface
+        + float(args.ecrs_raw_ce_weight) * raw_ce
+        + float(args.ecrs_alpha_resp) * float(stage_state["resp_cls_scale"]) * resp_ce
+        + float(args.lambda_ecrs_same_tx) * float(stage_state["same_tx_scale"]) * same_tx
+        + float(args.lambda_ecrs_diff_tx) * float(stage_state["diff_tx_scale"]) * diff_tx
+        + float(args.lambda_ecrs_gate) * gate_calibration
+    )
+    return {
+        "loss": total,
+        "canonical": canonical_nmse,
+        "content": content_nmse,
+        "split_fit": split_fit,
+        "pair_cross": pair_cross,
+        "pair_surface": pair_surface,
+        "raw_ce": raw_ce,
+        "resp_ce": resp_ce,
+        "same_tx": same_tx,
+        "diff_tx": diff_tx,
+        "gate": gate_calibration,
     }
 
 
@@ -2169,6 +2325,22 @@ def main():
         "Enable the opt-in ADV3B02 ECRS local system-identification branch",
         "Keep the legacy ADV3B02 route without ECRS parameters",
     )
+    add_bool_arg(parser, "ecrs_enable_learnable_basis", False,
+                 "Enable deferred Stage5 shared learnable basis", "Keep the fixed V1 physical basis")
+    add_bool_arg(parser, "ecrs_enable_fasttrust", False,
+                 "Enable deferred Stage6 FastTrust structure", "Keep Stage6 FastTrust disabled")
+    add_bool_arg(parser, "ecrs_teacher_stable", False,
+                 "Declare the Stage6 teacher stable", "Do not authorize Stage6 pseudo-label structure")
+    parser.add_argument("--ecrs_raw_ce_weight", type=float, default=0.30)
+    parser.add_argument("--ecrs_alpha_resp", type=float, default=0.15)
+    parser.add_argument("--lambda_ecrs_canonical", type=float, default=1.0)
+    parser.add_argument("--lambda_ecrs_content", type=float, default=1.0)
+    parser.add_argument("--lambda_ecrs_split_fit", type=float, default=1.0)
+    parser.add_argument("--lambda_ecrs_pair_cross", type=float, default=1.0)
+    parser.add_argument("--lambda_ecrs_pair_surface", type=float, default=0.25)
+    parser.add_argument("--lambda_ecrs_same_tx", type=float, default=0.25)
+    parser.add_argument("--lambda_ecrs_diff_tx", type=float, default=0.10)
+    parser.add_argument("--lambda_ecrs_gate", type=float, default=0.10)
     parser.add_argument("--id_time_stability_mode", type=str, default="off", choices=["off", "phase_delta"],
                         help="Optional complex time-stability cues for the ID backbone.")
     parser.add_argument("--id_freq_stability_mode", type=str, default="off", choices=["off", "dsq"],
@@ -2603,6 +2775,8 @@ def main():
                         help="Collect epochs whose primary OOD score is within this margin of the best-so-far score.")
     parser.add_argument("--swad_save_path", type=str, default="")
     args = parser.parse_args()
+    if bool(args.use_ecrs) and not (0.10 <= float(args.ecrs_alpha_resp) <= 0.25):
+        parser.error("--ecrs_alpha_resp must stay within the report range [0.10, 0.25]")
     explicit_group_ce_min_domains = None
     explicit_fishr_min_domains = None
     argv_items = sys.argv[1:]
@@ -3359,6 +3533,7 @@ def main():
         m_domacc = NanMeter()
         cons_cos_vals = []
         mixstyle_state = configure_mixstyle_for_epoch(model, args, epoch)
+        ecrs_stage_state = configure_ecrs_for_epoch(model, epoch, args)
         aug_state = configure_augmentor_for_epoch(augmentor, aug_base_cfg, epoch, args) if augmentor is not None else None
         aux_scale = ramp_value(epoch, args.epochs, int(args.aux_warmup_epochs), int(args.aux_ramp_epochs), 0.0, 1.0, 1.0)
         stage_state = build_stage_state(epoch, args)
@@ -3384,11 +3559,13 @@ def main():
                 x_meta_ssl, _, extra_meta_ssl = unpack_batch(meta_ssl_batch)
                 x_meta_ssl = x_meta_ssl.to(device, non_blocking=True)
                 d_meta_ssl_raw = extract_domain_from_extra(extra_meta_ssl, device)
+                sample_meta_ssl = extract_meta_from_extra(extra_meta_ssl)
                 d_meta_ssl = remap_domain_tensor(d_meta_ssl_raw, domain_label_map, device) if d_meta_ssl_raw is not None else None
             else:
                 x_meta_ssl = None
                 d_meta_ssl_raw = None
                 d_meta_ssl = None
+                sample_meta_ssl = None
             x, y, d_raw, concat_sat_ce_view = prepare_concat_sat_batch_for_training(
                 concat_sat_aug,
                 x,
@@ -3521,6 +3698,9 @@ def main():
 
                 loss_sat_cls = z_id.new_tensor(0.0)
                 loss_sat_cons = z_id.new_tensor(0.0)
+                loss_ecrs = z_id.new_tensor(0.0)
+                out_sat = None
+                sat_pair_meta = None
                 sat_cos = float("nan")
                 sat_cls_weight = float(args.lambda_sat_cls)
                 use_sat_train = bool(args.use_sat_consistency) and concat_sat_aug is None and epoch >= int(args.sat_cons_start_epoch) and (
@@ -3531,9 +3711,18 @@ def main():
                     sat_train_scenario = sat_train_scenarios[(epoch + batch_idx - 1) % len(sat_train_scenarios)]
                     with torch.no_grad():
                         if sat_train_view_aug is not None:
-                            sat_view = sat_train_view_aug.transform(x, args=args, epoch=epoch, batch_idx=batch_idx)
+                            sat_view = sat_train_view_aug.transform(
+                                x,
+                                args=args,
+                                epoch=epoch,
+                                batch_idx=batch_idx,
+                                use_ecrs=bool(args.use_ecrs),
+                                sample_meta=sample_meta,
+                                label_mask=y >= 0,
+                            )
                             x_sat_train = safe_iq_tensor(sat_view.x)
                             sat_train_scenario = sat_view.scenario
+                            sat_pair_meta = sat_view.pair_meta
                         else:
                             x_sat_train, _ = apply_sat_channel_for_scenario(
                                 x,
@@ -3575,6 +3764,65 @@ def main():
                     sat_cos = sat_aux_losses["sat_cos"]
                     diag_sat_cls_active_epoch = diag_sat_cls_active_epoch or bool(sat_aux_losses["diag_sat_cls_active"])
                     diag_sat_cons_active_epoch = diag_sat_cons_active_epoch or bool(sat_aux_losses["diag_sat_cons_active"])
+                    sat_pair_meta = concat_sat_ce_view.pair_meta
+
+                if bool(args.use_ecrs) and out_sat is not None and sat_pair_meta is not None:
+                    out_ecrs_clean = forward_main(
+                        model, x, y, float(args.grl_lambda), domain_labels=d_raw
+                    )
+                    ecrs_losses = compute_ecrs_paired_losses(
+                        out_ecrs_clean,
+                        out_sat,
+                        sat_pair_meta,
+                        y,
+                        ce_tx,
+                        ecrs_stage_state,
+                        args,
+                    )
+                    loss_ecrs = ecrs_losses["loss"]
+
+                if (
+                    bool(args.use_ecrs)
+                    and x_meta_ssl is not None
+                    and sample_meta_ssl is not None
+                    and concat_sat_aug is not None
+                ):
+                    with torch.no_grad():
+                        unlabeled_view = concat_sat_aug.transform(
+                            x_meta_ssl,
+                            args=args,
+                            epoch=epoch,
+                            batch_idx=batch_idx + 1000003,
+                            use_ecrs=True,
+                            sample_meta=sample_meta_ssl,
+                            label_mask=torch.zeros(
+                                x_meta_ssl.size(0), device=x_meta_ssl.device, dtype=torch.bool
+                            ),
+                        )
+                    out_u_clean = model(
+                        x_meta_ssl,
+                        y_tx=None,
+                        grl_lambda=float(args.grl_lambda),
+                        return_aux=True,
+                        domain_labels=d_meta_ssl_raw,
+                    )
+                    out_u_leo = model(
+                        safe_iq_tensor(unlabeled_view.x),
+                        y_tx=None,
+                        grl_lambda=float(args.grl_lambda),
+                        return_aux=True,
+                        domain_labels=d_meta_ssl_raw,
+                    )
+                    unlabeled_ecrs_losses = compute_ecrs_paired_losses(
+                        out_u_clean,
+                        out_u_leo,
+                        unlabeled_view.pair_meta,
+                        None,
+                        ce_tx,
+                        ecrs_stage_state,
+                        args,
+                    )
+                    loss_ecrs = loss_ecrs + unlabeled_ecrs_losses["loss"]
 
                 dg_feat = select_generalization_feature(out_main, str(args.generalization_feature))
                 loss_proto = z_id.new_tensor(0.0)
@@ -3709,6 +3957,7 @@ def main():
                     + float(args.lambda_ssl_proto) * sanitize_loss("meta_ssl_proto", loss_meta_ssl_proto, z_id, loss_warn_counts)
                     + float(args.lambda_meta_ssl) * sanitize_loss("meta_ssl_dom", loss_meta_ssl_dom, z_id, loss_warn_counts)
                     + float(args.lambda_meta_ssl) * sanitize_loss("meta_ssl_adv", loss_meta_ssl_adv, z_id, loss_warn_counts)
+                    + sanitize_loss("ecrs", loss_ecrs, z_id, loss_warn_counts)
                 )
 
             stepped, grad_stats = safe_backward_step(model, optimizer, scaler, loss, args, use_amp)

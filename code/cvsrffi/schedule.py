@@ -122,6 +122,108 @@ def build_stage_state(epoch: int, args) -> Dict[str, float]:
     })
 
 
+def build_ecrs_stage_state(
+    stage: int,
+    *,
+    progress: float = 1.0,
+    enable_learnable_basis: bool = False,
+    enable_fasttrust: bool = False,
+    teacher_stable: bool = False,
+) -> Dict[str, Any]:
+    """Independent Stage0-Stage6 ECRS matrix from the design report."""
+    stage = int(stage)
+    if stage < 0 or stage > 6:
+        raise ValueError("ECRS stage must be in [0, 6]")
+    t = max(0.0, min(1.0, float(progress)))
+    state: Dict[str, Any] = {
+        "stage": stage,
+        "known_excitation": stage == 0,
+        "adv3b02_only": stage == 1,
+        "canonical": stage >= 2,
+        "content": stage >= 2,
+        "cycle": stage == 2,
+        "split_fit": stage >= 3,
+        "pair_cross": stage >= 3,
+        "pair_surface": stage >= 3,
+        "resp_cls": stage >= 4,
+        "same_tx_cross": stage >= 4,
+        "diff_tx": stage >= 4,
+        "gate_calibration": stage >= 4,
+        "learnable_basis": bool(stage >= 5 and enable_learnable_basis),
+        "fasttrust": bool(stage >= 6 and enable_fasttrust and teacher_stable),
+        "active_rho_max": 0.0,
+        "canonical_scale": 1.0 if stage == 2 else (0.25 if stage >= 3 else 0.0),
+        "content_scale": 1.0 if stage == 2 else (0.50 if stage >= 3 else 0.0),
+        "split_fit_scale": 1.0 if stage >= 3 else 0.0,
+        "pair_cross_scale": 1.0 if stage >= 3 else 0.0,
+        "resp_cls_scale": 1.0 if stage >= 4 else 0.0,
+        "same_tx_scale": 1.0 if stage >= 4 else 0.0,
+        "diff_tx_scale": 1.0 if stage >= 4 else 0.0,
+    }
+    if stage == 4:
+        state["active_rho_max"] = 0.20 * t
+    elif stage >= 5:
+        state["active_rho_max"] = 0.25
+    return state
+
+
+def ecrs_stage_for_epoch(
+    epoch: int,
+    *,
+    enable_learnable_basis: bool = False,
+    enable_fasttrust: bool = False,
+    teacher_stable: bool = False,
+) -> Dict[str, Any]:
+    """Map the frozen E200 V1 curriculum to Stage2, Stage3 and Stage4."""
+    epoch = int(epoch)
+    if epoch < 1 or epoch > 200:
+        raise ValueError("ADV3B02-ECRS-V1 epoch must be in [1, 200]")
+    if epoch <= 40:
+        stage, progress = 2, (epoch - 1) / 39.0
+    elif epoch <= 90:
+        stage, progress = 3, (epoch - 41) / 49.0
+    else:
+        stage, progress = 4, (epoch - 91) / 109.0
+    return build_ecrs_stage_state(
+        stage,
+        progress=progress,
+        enable_learnable_basis=enable_learnable_basis,
+        enable_fasttrust=enable_fasttrust,
+        teacher_stable=teacher_stable,
+    )
+
+
+def configure_ecrs_for_epoch(model, epoch: int, args) -> Dict[str, Any]:
+    raw_model = getattr(model, "_orig_mod", model)
+    branch = getattr(raw_model, "ecrs", None)
+    if not bool(getattr(args, "use_ecrs", False)) or branch is None:
+        return {"stage": -1, "enabled": False, "active_rho_max": 0.0}
+    state = ecrs_stage_for_epoch(
+        epoch,
+        enable_learnable_basis=bool(
+            getattr(args, "ecrs_enable_learnable_basis", False)
+        ),
+        enable_fasttrust=bool(getattr(args, "ecrs_enable_fasttrust", False)),
+        teacher_stable=bool(getattr(args, "ecrs_teacher_stable", False)),
+    )
+    for parameter in branch.parameters():
+        parameter.requires_grad_(False)
+    if state["canonical"]:
+        for parameter in branch.nuisance_estimator.parameters():
+            parameter.requires_grad_(True)
+    if state["content"]:
+        for parameter in branch.content_estimator.parameters():
+            parameter.requires_grad_(True)
+    if state["resp_cls"]:
+        for module in (branch.response_projection, branch.fusion_gate):
+            for parameter in module.parameters():
+                parameter.requires_grad_(True)
+    branch.detach_identification_for_identity = True
+    branch.fusion_gate.set_active_rho_max(float(state["active_rho_max"]))
+    state["enabled"] = True
+    return state
+
+
 def current_weight_dict(args, stage_state: Dict[str, float]) -> Dict[str, float]:
     return {
         "dom": float(args.lambda_dom) * float(stage_state["dom_scale"]),
