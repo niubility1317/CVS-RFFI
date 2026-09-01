@@ -3,7 +3,7 @@
 ## 状态
 
 - run_id：`phase1_adv3b02_fcr_r1r8_s392002_20260902_v2`
-- 当前状态：`LOCAL_VERIFIED`
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - protocol_scope：Phase1 source-only；不访问Phase2 support/query/truth
 - implementation_commit：`df19a485347ac18e350cddfd533ebc9894762e79`
 - prereg_base_commit：`df19a485347ac18e350cddfd533ebc9894762e79`
@@ -55,6 +55,20 @@ R0及任何旧ADV3B02对比基线均不启动。所有row固定`seed=392002`、`
 - 远端归档：`/home/szu2070436088/2510044040/CV-SincNet/releases/archives/phase1_adv3b02_fcr_r1r8_s392002_20260902_v2_c008b848.tar.gz`
 - SHA256：`61ab6252238f3428b53e2dae799ec4001e6246288f69b01cff66f7f6421864d1`
 - 解压策略：在不可覆盖release root内使用`--strip-components=1`。
+
+## v2启动与技术失败闭合
+
+- 启动时间：N607 2026-09-02 05:16:04 CST
+- launcher PID：R1-R8依次为`4023921`、`4023922`、`4023923`、`4023924`、`4023925`、`4023926`、`4023927`、`4023928`。
+- 训练PID：R1-R8依次为`4023939`、`4023946`、`4023944`、`4023943`、`4023952`、`4023954`、`4023951`、`4023949`。
+- GPU绑定：训练PID经`nvidia-smi`分别绑定GPU0-7；CWD均为v2 release root。
+- 技术结果：8个row均越过v1故障点后在prediction前写入`TRAIN_FAILED`；无prediction。
+- 确定性指纹：FCR固定接口要求`id_feature_raw:[B,160]`，而launcher未固定模型variant，沿用`lite_c`默认值并产生192维身份嵌入，统一触发`ValueError: id_feature_raw must have shape [B,160]`。
+- 处置：全部launcher自然退出，无本run残留进程；未停止或修改任何既有任务。v2全部run/log/status产物保留，不复用、不覆盖。
+- 修复：launcher显式设置`--model_variant lite_d`，复用现有160维身份主干，保持报告规定的`z_f_id=160`，不新增投影器或修改FCR结构。
+- 验证：回归断言先红后绿；完整FCR聚焦组95项通过；真实模型前向得到`z_id_raw=(2,160)`、`z_f_id=(2,160)`、`fcr_tx_logits=(2,6)`；定点P0/P1复审无阻断项。
+- 修复提交：`684ec110ffd7306ef836d82cf0cc5967ebc3c596`。
+- 后继run：`phase1_adv3b02_fcr_r1r8_s392002_20260902_v3`；除记录的160维兼容选择外，矩阵、seed、预算、GPU映射和科学规则不变。
 
 ## 直接技术停止规则
 
