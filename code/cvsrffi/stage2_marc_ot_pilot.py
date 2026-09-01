@@ -6,6 +6,7 @@ from collections.abc import Callable, Mapping, Sequence
 import math
 from typing import Any
 
+from .meta_episodes import MARC_OT_CANONICAL_K
 from .stage2_wiser_pilot import (
     WISERQueryPackage,
     WISERSupportPackage,
@@ -38,6 +39,7 @@ FORMAL_ARM_SPECS: Mapping[str, Mapping[str, bool]] = {
         "bank_initialization": False,
         "support_bank_ot": False,
         "blockwise_projection": False,
+        "supcon": False,
     },
     "R1": {
         "support_residual": True,
@@ -45,6 +47,7 @@ FORMAL_ARM_SPECS: Mapping[str, Mapping[str, bool]] = {
         "bank_initialization": False,
         "support_bank_ot": False,
         "blockwise_projection": False,
+        "supcon": False,
     },
     "R2": {
         "support_residual": True,
@@ -52,6 +55,7 @@ FORMAL_ARM_SPECS: Mapping[str, Mapping[str, bool]] = {
         "bank_initialization": False,
         "support_bank_ot": False,
         "blockwise_projection": False,
+        "supcon": True,
     },
     "R4": {
         "support_residual": True,
@@ -59,6 +63,7 @@ FORMAL_ARM_SPECS: Mapping[str, Mapping[str, bool]] = {
         "bank_initialization": True,
         "support_bank_ot": False,
         "blockwise_projection": False,
+        "supcon": True,
     },
     "R6": {
         "support_residual": True,
@@ -66,6 +71,7 @@ FORMAL_ARM_SPECS: Mapping[str, Mapping[str, bool]] = {
         "bank_initialization": True,
         "support_bank_ot": True,
         "blockwise_projection": False,
+        "supcon": True,
     },
     "R8": {
         "support_residual": True,
@@ -73,6 +79,7 @@ FORMAL_ARM_SPECS: Mapping[str, Mapping[str, bool]] = {
         "bank_initialization": True,
         "support_bank_ot": True,
         "blockwise_projection": True,
+        "supcon": True,
     },
 }
 
@@ -90,12 +97,17 @@ _CONFIG_KEYS = frozenset(
         "receiver",
         "seed",
         "k_shot",
+        "software_supported_k",
+        "pilot_k",
+        "pilot_executed",
+        "training_coverage_k",
         "scenarios",
         "arms",
         "fold_count",
         "stage_steps",
         "learning_rate_bounds",
         "ot",
+        "supcon",
         "ratio_cap",
         "interpolation_grid",
         "promotion_gates",
@@ -211,6 +223,28 @@ def validate_pilot_config(value: Any) -> Mapping[str, Any]:
     _strict_int(value.get("seed"), field="seed", minimum=0)
     if _strict_int(value.get("k_shot"), field="k_shot", minimum=1) != 10:
         raise ValueError("first MARC-OT pilot is frozen at K10")
+    software_supported_k = value.get("software_supported_k")
+    if (
+        not isinstance(software_supported_k, list)
+        or tuple(software_supported_k) != MARC_OT_CANONICAL_K
+    ):
+        raise ValueError("software_supported_k must be exactly 1/2/5/10/20")
+    if _strict_int(value.get("pilot_k"), field="pilot_k", minimum=1) != 10:
+        raise ValueError("first MARC-OT pilot_k is frozen at K10")
+    if value.get("pilot_k") != value.get("k_shot"):
+        raise ValueError("pilot_k and package k_shot must match")
+    if value.get("pilot_executed") is not False:
+        raise ValueError("pre-registered MARC-OT pilot must record pilot_executed=false")
+    training_coverage_k = value.get("training_coverage_k")
+    if not isinstance(training_coverage_k, list) or any(
+        not isinstance(item, int)
+        or isinstance(item, bool)
+        or item not in MARC_OT_CANONICAL_K
+        for item in training_coverage_k
+    ):
+        raise ValueError("training_coverage_k must be an explicit canonical-K list")
+    if len(training_coverage_k) != len(set(training_coverage_k)):
+        raise ValueError("training_coverage_k must not contain duplicates")
     if tuple(value.get("scenarios", ())) != SCENARIOS:
         raise ValueError("MARC-OT scenario registry must be the exact three LEO weak scenes")
     normalize_formal_arms(value.get("arms", ()))
@@ -235,6 +269,13 @@ def validate_pilot_config(value: Any) -> Mapping[str, Any]:
     if _finite_number(ot["epsilon"], field="ot.epsilon") <= 0.0:
         raise ValueError("ot.epsilon must be positive")
     _strict_int(ot["iterations"], field="ot.iterations", minimum=1)
+    supcon = value.get("supcon")
+    if not isinstance(supcon, Mapping) or set(supcon) != {"temperature", "weight"}:
+        raise ValueError("SupCon config field set drift")
+    if _finite_number(supcon["temperature"], field="supcon.temperature") <= 0.0:
+        raise ValueError("supcon.temperature must be positive")
+    if _finite_number(supcon["weight"], field="supcon.weight") <= 0.0:
+        raise ValueError("supcon.weight must be positive for R2/R4/R6/R8")
     if _finite_number(value.get("ratio_cap"), field="ratio_cap") < 0.0:
         raise ValueError("ratio_cap must be nonnegative")
     grid = value.get("interpolation_grid")

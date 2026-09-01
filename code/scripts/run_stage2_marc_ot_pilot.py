@@ -181,6 +181,9 @@ def _resource_receipt(
 
 
 def _runner_config(config: Mapping[str, Any]) -> MARCOTRunnerConfig:
+    supcon = config.get("supcon", {"weight": 0.1, "temperature": 0.07})
+    if not isinstance(supcon, Mapping):
+        raise ValueError("runner SupCon config must be a mapping")
     return MARCOTRunnerConfig(
         fold_count=int(config["fold_count"]),
         stage_steps=tuple(int(value) for value in config["stage_steps"]),
@@ -190,6 +193,8 @@ def _runner_config(config: Mapping[str, Any]) -> MARCOTRunnerConfig:
         ot_iterations=int(config["ot"]["iterations"]),
         ratio_cap=float(config["ratio_cap"]),
         interpolation_grid=tuple(float(value) for value in config["interpolation_grid"]),
+        supcon_weight=float(supcon["weight"]),
+        supcon_temperature=float(supcon["temperature"]),
         seed=int(config["seed"]),
     )
 

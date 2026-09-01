@@ -39,11 +39,89 @@ class MARCOTDiagnostics:
     class_risk_loss: Tensor
     transport_loss: Tensor
     statistics_loss: Tensor
+    supcon_loss: Tensor
+    supcon_scalar: float
+    supcon_mode: str
+    supcon_valid_anchor_count: int
+    supcon_temperature: float
+    supcon_weight: float
     k_shot: int
     statistics_mode: str
     cross_fit_mode: str
     transport_row_error: float
     transport_column_error: float
+
+
+@dataclass(frozen=True)
+class SupportSupConResult:
+    """Differentiable support-only SupCon result without retained row state."""
+
+    loss: Tensor
+    mode: str
+    valid_anchor_count: int
+    temperature: float
+
+
+def supervised_contrastive_support_loss(
+    support_features: Tensor,
+    support_labels: Tensor,
+    *,
+    temperature: float,
+) -> SupportSupConResult:
+    """Use same-class support positives and every other support row as denominator."""
+
+    if (
+        not isinstance(support_features, Tensor)
+        or support_features.ndim != 2
+        or support_features.shape[0] == 0
+        or not support_features.is_floating_point()
+        or not bool(torch.isfinite(support_features).all())
+    ):
+        raise ValueError("SupCon support features must be finite floating [rows, features]")
+    raw_labels = torch.as_tensor(support_labels, device=support_features.device)
+    if (
+        raw_labels.ndim != 1
+        or raw_labels.numel() != len(support_features)
+        or raw_labels.dtype.is_floating_point
+        or raw_labels.dtype.is_complex
+        or raw_labels.dtype == torch.bool
+    ):
+        raise ValueError("SupCon support labels must be aligned integer rows")
+    labels = raw_labels.to(dtype=torch.long)
+    temperature_value = _finite_positive_scalar(temperature, name="supcon temperature")
+    normalized = functional.normalize(support_features, dim=1, eps=1.0e-8)
+    diagonal = torch.eye(
+        len(normalized), device=normalized.device, dtype=torch.bool
+    )
+    positives = labels[:, None].eq(labels[None, :]) & ~diagonal
+    positive_counts = positives.sum(dim=1)
+    valid = positive_counts > 0
+    if not bool(valid.any()):
+        return SupportSupConResult(
+            loss=support_features.sum() * 0.0,
+            mode="K1_NO_POSITIVE_PAIRS",
+            valid_anchor_count=0,
+            temperature=temperature_value,
+        )
+    logits = normalized @ normalized.transpose(0, 1) / temperature_value
+    logits = logits - logits.max(dim=1, keepdim=True).values.detach()
+    denominator_logits = logits.masked_fill(diagonal, float("-inf"))
+    log_probabilities = logits - torch.logsumexp(
+        denominator_logits, dim=1, keepdim=True
+    )
+    mean_positive_log_probability = (
+        (log_probabilities * positives.to(log_probabilities.dtype)).sum(dim=1)
+        / positive_counts.clamp_min(1).to(log_probabilities.dtype)
+    )
+    loss = -mean_positive_log_probability[valid].mean()
+    if not bool(torch.isfinite(loss)):
+        raise ValueError("support-only SupCon became nonfinite")
+    return SupportSupConResult(
+        loss=loss,
+        mode="SUPPORT_ONLY_SUPCON",
+        valid_anchor_count=int(valid.sum().item()),
+        temperature=temperature_value,
+    )
 
 
 class _ProjectedGradientMap(dict[str, list[Tensor | None]]):
@@ -565,6 +643,8 @@ def marc_ot_losses(
     class_risk_weight: float = 1.0,
     transport_weight: float = 1.0,
     statistics_weight: float = 1.0,
+    supcon_weight: float = 0.0,
+    supcon_temperature: float = 0.07,
 ) -> MARCOTDiagnostics:
     """Compose MARC-OT losses from legal support and a frozen task bank only."""
 
@@ -584,6 +664,7 @@ def marc_ot_losses(
         class_risk_weight,
         transport_weight,
         statistics_weight,
+        supcon_weight,
     )
     if any(not math.isfinite(float(value)) or float(value) < 0.0 for value in weights):
         raise ValueError("MARC-OT loss weights must be finite and nonnegative")
@@ -652,6 +733,11 @@ def marc_ot_losses(
         )
         leave_one_out_ce = functional.cross_entropy(leave_one_out_logits, labels)
     class_risk_loss = tau * torch.logsumexp(class_risk / tau, dim=0)
+    supcon = supervised_contrastive_support_loss(
+        features,
+        labels,
+        temperature=supcon_temperature,
+    )
 
     transport = support_bank_transport(
         features,
@@ -686,6 +772,7 @@ def marc_ot_losses(
         + float(class_risk_weight) * class_risk_loss
         + float(transport_weight) * transport_loss
         + float(statistics_weight) * statistics_loss
+        + float(supcon_weight) * supcon.loss
     )
     components = (
         total,
@@ -696,6 +783,7 @@ def marc_ot_losses(
         class_risk_loss,
         transport_loss,
         statistics_loss,
+        supcon.loss,
     )
     if any(not bool(torch.isfinite(component).all()) for component in components):
         raise ValueError("MARC-OT loss became nonfinite")
@@ -708,6 +796,12 @@ def marc_ot_losses(
         class_risk_loss=class_risk_loss,
         transport_loss=transport_loss,
         statistics_loss=statistics_loss,
+        supcon_loss=supcon.loss,
+        supcon_scalar=float(supcon.loss.detach()),
+        supcon_mode=supcon.mode,
+        supcon_valid_anchor_count=supcon.valid_anchor_count,
+        supcon_temperature=supcon.temperature,
+        supcon_weight=float(supcon_weight),
         k_shot=k_shot,
         statistics_mode=statistics_mode,
         cross_fit_mode=cross_fit_mode,
@@ -718,7 +812,9 @@ def marc_ot_losses(
 
 __all__ = [
     "MARCOTDiagnostics",
+    "SupportSupConResult",
     "blockwise_primary_projection",
     "marc_ot_losses",
+    "supervised_contrastive_support_loss",
     "support_bank_transport",
 ]

@@ -18,6 +18,16 @@
     0.0
   ],
   "k_shot": 10,
+  "software_supported_k": [
+    1,
+    2,
+    5,
+    10,
+    20
+  ],
+  "pilot_k": 10,
+  "pilot_executed": false,
+  "training_coverage_k": [],
   "learning_rate_bounds": {
     "max": 0.0003,
     "min": 0.00001
@@ -39,6 +49,10 @@
   "ot": {
     "epsilon": 0.1,
     "iterations": 80
+  },
+  "supcon": {
+    "temperature": 0.07,
+    "weight": 0.1
   },
   "phase2_data_status": "VALIDATED_ONCE",
   "pilot_outer_key": "rx_3_19__seed_713102__k_10__new_5",

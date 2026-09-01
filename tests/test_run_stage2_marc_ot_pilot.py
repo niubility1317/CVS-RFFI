@@ -448,6 +448,21 @@ def test_frozen_k10_config_is_complete_and_has_no_mrior_history_fields() -> None
     assert "mrior_sda_result" not in controls
     assert validated["support_feature"]["schema"] == "marc_ot.support.row.v1"
     assert validated["support_feature"]["dim"] == 685
+    runner = module._runner_config(validated)
+    assert runner.supcon_weight == validated["supcon"]["weight"] == 0.1
+    assert runner.supcon_temperature == validated["supcon"]["temperature"] == 0.07
+
+
+def test_runner_consumes_the_validated_frozen_supcon_config() -> None:
+    module = _module()
+    payload = json.loads(CONFIG.read_text(encoding="utf-8-sig"))
+    payload["supcon"] = {"temperature": 0.09, "weight": 0.2}
+    validated = module._validate_config_payload(payload)
+
+    runner = module._runner_config(validated)
+
+    assert runner.supcon_weight == 0.2
+    assert runner.supcon_temperature == 0.09
 
 
 @pytest.mark.parametrize("tamper", ("schema", "dim", "config"))

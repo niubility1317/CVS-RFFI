@@ -43,6 +43,8 @@ class MARCOTRunnerConfig:
     support_ba_tolerance: float = 0.0
     support_floor_tolerance: float = 0.0
     trust_weight: float = 1.0e-4
+    supcon_weight: float = 0.1
+    supcon_temperature: float = 0.07
     seed: int = 713102
 
     def __post_init__(self) -> None:
@@ -76,6 +78,94 @@ class MARCOTRunnerConfig:
         ):
             if not math.isfinite(float(value)) or float(value) < 0.0:
                 raise ValueError("support tolerances and trust weight must be finite and nonnegative")
+        if not math.isfinite(float(self.supcon_weight)) or float(self.supcon_weight) <= 0.0:
+            raise ValueError("supcon_weight must be finite and positive for R2/R4/R6/R8")
+        if not math.isfinite(float(self.supcon_temperature)) or float(self.supcon_temperature) <= 0.0:
+            raise ValueError("supcon_temperature must be finite and positive")
+
+
+@dataclass(frozen=True)
+class MARCOTSupportFoldPlan:
+    """Ephemeral support-only fold indices and their evidence boundary."""
+
+    k_shot: int
+    folds: tuple[tuple[Tensor, Tensor], ...]
+    mode: str
+    held_out_support_evidence: bool
+
+
+def build_marc_ot_support_fold_plan(
+    support_labels: Tensor,
+    support_tokens: Sequence[str],
+    *,
+    fold_count: int,
+    seed: int,
+) -> MARCOTSupportFoldPlan:
+    """Return deterministic folds, or an explicit empty K1 evidence plan."""
+
+    raw_labels = torch.as_tensor(support_labels)
+    if (
+        raw_labels.ndim != 1
+        or raw_labels.numel() == 0
+        or raw_labels.dtype.is_floating_point
+        or raw_labels.dtype.is_complex
+        or raw_labels.dtype == torch.bool
+    ):
+        raise ValueError("support fold labels must be nonempty aligned integers")
+    labels = raw_labels.to(dtype=torch.long)
+    tokens = tuple(support_tokens)
+    if len(tokens) != len(labels) or len(set(tokens)) != len(tokens) or any(
+        not isinstance(token, str) or not token for token in tokens
+    ):
+        raise ValueError("support fold tokens must be unique nonempty aligned strings")
+    classes = torch.unique(labels, sorted=True)
+    if not torch.equal(classes, torch.arange(len(classes), device=labels.device)):
+        raise ValueError("support fold labels must form a contiguous zero-based registry")
+    counts = torch.bincount(labels, minlength=len(classes))
+    if not bool((counts == counts[0]).all()):
+        raise ValueError("support fold classes must have equal K")
+    k_shot = int(counts[0].item())
+    if k_shot == 1:
+        return MARCOTSupportFoldPlan(
+            k_shot=1,
+            folds=(),
+            mode="K1_NO_HELD_OUT_SUPPORT_EVIDENCE",
+            held_out_support_evidence=False,
+        )
+    if not isinstance(fold_count, int) or isinstance(fold_count, bool) or fold_count < 2:
+        raise ValueError("fold_count must be an integer of at least two")
+    raw_folds = stratified_crossfit_indices(
+        labels,
+        tokens,
+        fold_count=min(int(fold_count), k_shot),
+        seed=int(seed),
+    )
+    folds = tuple(
+        (
+            fold.fit_indices.to(device=labels.device, dtype=torch.long),
+            fold.validation_indices.to(device=labels.device, dtype=torch.long),
+        )
+        for fold in raw_folds
+    )
+    if not folds:
+        raise ValueError("deterministic support cross-fit produced no folds")
+    return MARCOTSupportFoldPlan(
+        k_shot=k_shot,
+        folds=folds,
+        mode="DETERMINISTIC_HELD_OUT_CROSSFIT",
+        held_out_support_evidence=True,
+    )
+
+
+def supcon_weight_for_arm(arm: str, config: MARCOTRunnerConfig) -> float:
+    """Freeze R0/R1 off and R2/R4/R6/R8 on without arm-specific tuning."""
+
+    arm_value = str(arm).upper()
+    if arm_value not in MARCOT_FORMAL_ARMS:
+        raise ValueError("MARC-OT arm is outside the frozen R matrix")
+    if not isinstance(config, MARCOTRunnerConfig):
+        raise TypeError("config must be MARCOTRunnerConfig")
+    return 0.0 if arm_value in {"R0", "R1"} else float(config.supcon_weight)
 
 
 @dataclass(frozen=True)
@@ -475,19 +565,19 @@ def _default_stage_update(
                 ot_iterations=int(config.ot_iterations),
                 transport_weight=1.0 if arm in {"R6", "R8"} else 0.0,
                 statistics_weight=1.0 if arm in {"R6", "R8"} else 0.0,
+                supcon_weight=supcon_weight_for_arm(arm, config),
+                supcon_temperature=float(config.supcon_temperature),
             )
             trust = sum(
                 (named[name] - original_base[name].to(named[name].device)).float().square().mean()
                 for name in trainable_names
             )
+            auxiliary = diagnostics.transport_loss + diagnostics.statistics_loss
             primary = (
-                diagnostics.frozen_head_ce
-                + diagnostics.cross_fit_ce
-                + diagnostics.leave_one_out_ce
-                + diagnostics.class_risk_loss
+                diagnostics.total
+                - (auxiliary if arm in {"R6", "R8"} else 0.0)
                 + float(config.trust_weight) * trust
             )
-            auxiliary = diagnostics.transport_loss + diagnostics.statistics_loss
             if arm != "R8":
                 (primary + (auxiliary if arm == "R6" else 0.0)).backward()
             else:
@@ -683,33 +773,41 @@ def train_marc_ot_arm(
                 peak_cuda_bytes=(int(torch.cuda.max_memory_allocated(values.device)) if values.is_cuda else None),
             )
 
-        class_minimum = int(torch.bincount(labels).min())
-        if class_minimum >= 2:
-            raw_folds = stratified_crossfit_indices(
-                labels,
-                tokens,
-                fold_count=min(int(config.fold_count), class_minimum),
-                seed=int(config.seed),
-            )
-            fold_indices = tuple(
-                (
-                    fold.fit_indices.to(device=labels.device, dtype=torch.long),
-                    fold.validation_indices.to(device=labels.device, dtype=torch.long),
-                )
-                for fold in raw_folds
-            )
-        elif support_evaluator is not None and stage_update is not None:
-            # A K=1 unit cannot form a fitted class prototype.  Keep the legacy
-            # callback-only seam usable without ever putting validation rows in
-            # its selection update; formal pilot units use K=10.
-            fold_indices = (
-                (
-                    torch.empty(0, dtype=torch.long, device=labels.device),
-                    torch.arange(len(labels), dtype=torch.long, device=labels.device),
+        fold_plan = build_marc_ot_support_fold_plan(
+            labels,
+            tokens,
+            fold_count=int(config.fold_count),
+            seed=int(config.seed),
+        )
+        if not fold_plan.held_out_support_evidence:
+            _load_state(model, original_base)
+            return MARCOTTrainingAudit(
+                arm=arm_value,
+                selected_alpha=0.0,
+                initial_selected_alpha=0.0,
+                stage_selected_alphas=(),
+                optimizer_steps=0,
+                query_rows_used=0,
+                stage_audits=(
+                    {
+                        "stage": "K1_CONSERVATIVE_FALLBACK",
+                        "mode": fold_plan.mode,
+                        "held_out_support_evidence": False,
+                        "crossfit_fold_count": 0,
+                        "optimizer_steps": 0,
+                        "query_rows_used": 0,
+                    },
+                ),
+                final_duals=_serialize_duals(original_duals),
+                config=asdict(config),
+                training_seconds=float(time.perf_counter() - started),
+                peak_cuda_bytes=(
+                    int(torch.cuda.max_memory_allocated(values.device))
+                    if values.is_cuda
+                    else None
                 ),
             )
-        else:
-            raise ValueError("MARC-OT adapter cross-fit requires at least two support rows per class")
+        fold_indices = fold_plan.folds
 
         def fold_payload(indices: Tensor) -> tuple[Tensor, Tensor, tuple[str, ...]]:
             selected = tuple(tokens[int(index)] for index in indices.detach().cpu().tolist())
@@ -1127,12 +1225,15 @@ __all__ = [
     "MARCOT_FORMAL_ARMS",
     "MARCOT_PROGRESSIVE_STAGES",
     "MARCOTRunnerConfig",
+    "MARCOTSupportFoldPlan",
     "MARCOTTrainingAudit",
     "SupportSafeSelection",
     "combine_blockwise_gradients",
+    "build_marc_ot_support_fold_plan",
     "predict_marc_ot_probes",
     "predict_registered_logits",
     "resolve_block_learning_rates",
     "select_support_safe_state",
+    "supcon_weight_for_arm",
     "train_marc_ot_arm",
 ]

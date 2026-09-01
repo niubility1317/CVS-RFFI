@@ -198,9 +198,9 @@ def test_progressive_runner_uses_fixed_stage_order_and_refreezes() -> None:
 
     audit = train_marc_ot_arm(
         model,
-        torch.tensor([[2.0, 0.0], [0.0, 2.0]]),
-        torch.tensor([0, 1]),
-        ("s0", "s1"),
+        torch.tensor([[2.0, 0.0], [1.5, 0.0], [0.0, 2.0], [0.0, 1.5]]),
+        torch.tensor([0, 0, 1, 1]),
+        ("s0", "s1", "s2", "s3"),
         arm="R8",
         config=MARCOTRunnerConfig(stage_steps=(1, 1, 1, 1), fold_count=2),
         initial_duals={"class_duals": torch.zeros(2)},

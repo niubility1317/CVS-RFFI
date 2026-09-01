@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections import defaultdict
+from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from enum import Enum
 import math
@@ -26,6 +26,13 @@ _DEFAULT_EPISODE_WEIGHTS = {
     EpisodeKind.LEO_CROSS: 0.10,
 }
 
+MARC_OT_CANONICAL_K = (1, 2, 5, 10, 20)
+MARC_OT_LEO_WEAK_SCENES = (
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak",
+)
+
 
 @dataclass(frozen=True)
 class MetaSampleRef:
@@ -50,6 +57,7 @@ class MetaEpisode:
     guard_class_ids: frozenset[int]
     k_shot: int
     seed: int
+    query_per_class: int = 2
 
 
 def _episode_kind(value: Any) -> EpisodeKind:
@@ -85,7 +93,7 @@ def _normalise_episode_weights(
 
 @dataclass(frozen=True)
 class MetaEpisodeSamplerConfig:
-    k_choices: tuple[int, ...] = (1, 2, 5, 10)
+    k_choices: tuple[int, ...] = MARC_OT_CANONICAL_K
     query_per_class: int = 2
     allowed_roles: tuple[str, ...] | None = None
     training: bool = True
@@ -478,9 +486,62 @@ class HierarchicalMetaEpisodeSampler:
         rng = random.Random(seed_i)
         kind = self._choose_kind(rng)
         k_shot = int(rng.choice(self.config.k_choices))
+        return self._sample_requested(
+            kind=kind,
+            k_shot=k_shot,
+            seed=seed_i,
+            rng=rng,
+        )
+
+    def sample_requested(
+        self,
+        *,
+        kind: EpisodeKind | str,
+        k_shot: int,
+        seed: int,
+        support_view: str | None = None,
+        query_view: str | None = None,
+    ) -> MetaEpisode:
+        """Sample one explicit coverage cell without weakening its pool checks."""
+
+        resolved_kind = _episode_kind(kind)
+        if (
+            isinstance(k_shot, bool)
+            or not isinstance(k_shot, int)
+            or int(k_shot) not in self.config.k_choices
+        ):
+            raise ValueError("requested k_shot is outside sampler k_choices")
+        return self._sample_requested(
+            kind=resolved_kind,
+            k_shot=int(k_shot),
+            seed=int(seed),
+            support_view=support_view,
+            query_view=query_view,
+        )
+
+    def _sample_requested(
+        self,
+        *,
+        kind: EpisodeKind,
+        k_shot: int,
+        seed: int,
+        support_view: str | None = None,
+        query_view: str | None = None,
+        rng: random.Random | None = None,
+    ) -> MetaEpisode:
+        seed_i = int(seed)
+        rng = random.Random(seed_i) if rng is None else rng
         adapt_class_ids, guard_class_ids = self._sample_class_sets(rng)
 
         plans = self._cached_candidate_plans(kind)
+        if support_view is not None:
+            plans = [
+                plan for plan in plans if str(plan[0].get("view")) == str(support_view)
+            ]
+        if query_view is not None:
+            plans = [
+                plan for plan in plans if str(plan[1].get("view")) == str(query_view)
+            ]
         rng.shuffle(plans)
         valid_plans = [
             plan
@@ -522,6 +583,7 @@ class HierarchicalMetaEpisodeSampler:
             guard_class_ids=frozenset(guard_class_ids),
             k_shot=k_shot,
             seed=seed_i,
+            query_per_class=int(self.config.query_per_class),
         )
         self._assert_episode(episode)
         return episode
@@ -556,6 +618,303 @@ class HierarchicalMetaEpisodeSampler:
             raise ValueError("query_guard classes do not match guard_class_ids")
         if episode.adapt_class_ids.intersection(episode.guard_class_ids):
             raise ValueError("adapt_class_ids and guard_class_ids must be disjoint")
+
+
+def _partition_ids(rows: Sequence[MetaSampleRef], *, name: str) -> set[str]:
+    values = [str(row.physical_sample_id) for row in rows]
+    if any(not value for value in values) or len(values) != len(set(values)):
+        raise ValueError(f"episode {name} physical IDs must be nonempty and unique")
+    return set(values)
+
+
+def _single_value(rows: Sequence[MetaSampleRef], field_name: str) -> Any:
+    values = {getattr(row, field_name) for row in rows}
+    if len(values) != 1:
+        raise ValueError(
+            f"declared episode kind relation requires one {field_name} per partition"
+        )
+    return next(iter(values))
+
+
+def _class_counts(rows: Sequence[MetaSampleRef]) -> Counter[int]:
+    return Counter(int(row.tx_i) for row in rows)
+
+
+def validate_episode_semantics(
+    episode: MetaEpisode,
+    *,
+    source_receiver_ids: Sequence[int] | None = None,
+    allowed_roles: Sequence[str] = ("L_s",),
+) -> Mapping[str, Any]:
+    """Fail closed on forged episode metadata before a bank meta step."""
+
+    if not isinstance(episode, MetaEpisode):
+        raise TypeError("episode must be a MetaEpisode")
+    kind = _episode_kind(episode.kind)
+    if (
+        isinstance(episode.k_shot, bool)
+        or not isinstance(episode.k_shot, int)
+        or episode.k_shot not in MARC_OT_CANONICAL_K
+    ):
+        raise ValueError("episode k_shot must be one of 1/2/5/10/20")
+    if (
+        isinstance(episode.query_per_class, bool)
+        or not isinstance(episode.query_per_class, int)
+        or episode.query_per_class <= 0
+    ):
+        raise ValueError("episode query_per_class must be a positive integer")
+    if not episode.support or not episode.query_adapt or not episode.query_guard:
+        raise ValueError("bank episode requires support, query_adapt and query_guard rows")
+
+    partitions = {
+        "support": episode.support,
+        "query_adapt": episode.query_adapt,
+        "query_guard": episode.query_guard,
+    }
+    ids = {
+        name: _partition_ids(rows, name=name) for name, rows in partitions.items()
+    }
+    for left, right in (
+        ("support", "query_adapt"),
+        ("support", "query_guard"),
+        ("query_adapt", "query_guard"),
+    ):
+        if ids[left].intersection(ids[right]):
+            raise ValueError("episode physical partitions must remain disjoint without overlap")
+
+    all_rows = episode.support + episode.query_adapt + episode.query_guard
+    roles = {str(row.role) for row in all_rows}
+    allowed = {str(role) for role in allowed_roles}
+    if not allowed or not roles.issubset(allowed):
+        raise ValueError("episode contains a role outside the source allowlist")
+    if source_receiver_ids is not None:
+        receiver_allowlist = {int(value) for value in source_receiver_ids}
+        if not receiver_allowlist or any(
+            int(row.rx_i) not in receiver_allowlist for row in all_rows
+        ):
+            raise ValueError("episode receiver is outside the source allowlist")
+
+    support_counts = _class_counts(episode.support)
+    adapt_counts = _class_counts(episode.query_adapt)
+    guard_counts = _class_counts(episode.query_guard)
+    if set(support_counts) != set(episode.adapt_class_ids) or any(
+        count != episode.k_shot for count in support_counts.values()
+    ):
+        raise ValueError("episode support per-class K does not match k_shot metadata")
+    if set(adapt_counts) != set(episode.adapt_class_ids) or any(
+        count != episode.query_per_class for count in adapt_counts.values()
+    ):
+        raise ValueError("episode query_adapt per-class K does not match role metadata")
+    if set(guard_counts) != set(episode.guard_class_ids) or any(
+        count != episode.query_per_class for count in guard_counts.values()
+    ):
+        raise ValueError("episode query_guard per-class K does not match role metadata")
+    if set(episode.adapt_class_ids).intersection(episode.guard_class_ids):
+        raise ValueError("episode adapt and guard class roles must be disjoint")
+
+    support = episode.support
+    query = episode.query_adapt + episode.query_guard
+    support_rx = _single_value(support, "rx_i")
+    query_rx = _single_value(query, "rx_i")
+    support_day = _single_value(support, "day_i")
+    query_day = _single_value(query, "day_i")
+    support_eq = _single_value(support, "eq_i")
+    query_eq = _single_value(query, "eq_i")
+    support_block = _single_value(support, "capture_block_i")
+    query_block = _single_value(query, "capture_block_i")
+    support_view = str(_single_value(support, "view"))
+    query_view = str(_single_value(query, "view"))
+
+    same_capture = (
+        support_day,
+        support_eq,
+        support_block,
+    ) == (
+        query_day,
+        query_eq,
+        query_block,
+    )
+    relation_valid = False
+    if kind is EpisodeKind.SAME_DOMAIN:
+        relation_valid = (
+            support_rx == query_rx
+            and support_day == query_day
+            and support_eq == query_eq
+            and support_view == query_view
+        )
+    elif kind is EpisodeKind.RX_HOLDOUT:
+        relation_valid = (
+            support_rx != query_rx
+            and same_capture
+            and support_view == query_view
+        )
+    elif kind is EpisodeKind.DAY_CHANNEL_HOLDOUT:
+        relation_valid = (
+            support_rx == query_rx
+            and support_eq == query_eq
+            and support_view == query_view
+            and (support_day, support_block) != (query_day, query_block)
+        )
+    elif kind is EpisodeKind.CLEAN_TO_LEO:
+        relation_valid = (
+            support_rx == query_rx
+            and same_capture
+            and support_view == "clean"
+            and query_view in MARC_OT_LEO_WEAK_SCENES
+        )
+    elif kind is EpisodeKind.LEO_CROSS:
+        relation_valid = (
+            support_rx == query_rx
+            and same_capture
+            and support_view in MARC_OT_LEO_WEAK_SCENES
+            and query_view in MARC_OT_LEO_WEAK_SCENES
+            and support_view != query_view
+        )
+    if not relation_valid:
+        raise ValueError(f"declared episode kind {kind.value} does not match row relation")
+    return {
+        "kind": kind.value,
+        "k_shot": int(episode.k_shot),
+        "query_per_class": int(episode.query_per_class),
+        "support_view": support_view,
+        "query_view": query_view,
+        "source_only": True,
+    }
+
+
+def sample_marc_ot_coverage_schedule(
+    sampler: HierarchicalMetaEpisodeSampler,
+    *,
+    seed: int = 0,
+) -> tuple[MetaEpisode, ...]:
+    """Materialize every frozen MARC-OT software coverage cell deterministically."""
+
+    if not isinstance(sampler, HierarchicalMetaEpisodeSampler):
+        raise TypeError("sampler must be a HierarchicalMetaEpisodeSampler")
+    episodes: list[MetaEpisode] = []
+    offset = 0
+
+    def add(
+        kind: EpisodeKind,
+        k_shot: int,
+        support_view: str | None = None,
+        query_view: str | None = None,
+    ) -> None:
+        nonlocal offset
+        episodes.append(
+            sampler.sample_requested(
+                kind=kind,
+                k_shot=k_shot,
+                seed=int(seed) + offset,
+                support_view=support_view,
+                query_view=query_view,
+            )
+        )
+        offset += 1
+
+    for k_shot in MARC_OT_CANONICAL_K:
+        add(EpisodeKind.RX_HOLDOUT, k_shot)
+        add(EpisodeKind.DAY_CHANNEL_HOLDOUT, k_shot)
+        for scene in MARC_OT_LEO_WEAK_SCENES:
+            add(EpisodeKind.CLEAN_TO_LEO, k_shot, "clean", scene)
+        for support_scene in MARC_OT_LEO_WEAK_SCENES:
+            for query_scene in MARC_OT_LEO_WEAK_SCENES:
+                if support_scene != query_scene:
+                    add(
+                        EpisodeKind.LEO_CROSS,
+                        k_shot,
+                        support_scene,
+                        query_scene,
+                    )
+    return tuple(episodes)
+
+
+def audit_marc_ot_episode_coverage(
+    episodes: Sequence[MetaEpisode],
+    *,
+    source_receiver_ids: Sequence[int],
+    require_complete: bool,
+) -> Mapping[str, Any]:
+    """Audit scheduled cells separately from episodes actually trained."""
+
+    rows = tuple(episodes)
+    if not rows:
+        raise ValueError("MARC-OT episode coverage is empty")
+    audits = tuple(
+        validate_episode_semantics(
+            episode,
+            source_receiver_ids=source_receiver_ids,
+        )
+        for episode in rows
+    )
+    k_values = tuple(sorted({int(row["k_shot"]) for row in audits}))
+    receiver_k = tuple(
+        sorted(
+            {
+                int(row["k_shot"])
+                for row in audits
+                if row["kind"] == EpisodeKind.RX_HOLDOUT.value
+            }
+        )
+    )
+    day_k = tuple(
+        sorted(
+            {
+                int(row["k_shot"])
+                for row in audits
+                if row["kind"] == EpisodeKind.DAY_CHANNEL_HOLDOUT.value
+            }
+        )
+    )
+    clean_cells = {
+        (int(row["k_shot"]), str(row["query_view"]))
+        for row in audits
+        if row["kind"] == EpisodeKind.CLEAN_TO_LEO.value
+    }
+    cross_cells = {
+        (
+            int(row["k_shot"]),
+            str(row["support_view"]),
+            str(row["query_view"]),
+        )
+        for row in audits
+        if row["kind"] == EpisodeKind.LEO_CROSS.value
+    }
+    required_clean = {
+        (k_shot, scene)
+        for k_shot in MARC_OT_CANONICAL_K
+        for scene in MARC_OT_LEO_WEAK_SCENES
+    }
+    required_cross = {
+        (k_shot, support_scene, query_scene)
+        for k_shot in MARC_OT_CANONICAL_K
+        for support_scene in MARC_OT_LEO_WEAK_SCENES
+        for query_scene in MARC_OT_LEO_WEAK_SCENES
+        if support_scene != query_scene
+    }
+    if require_complete and (
+        k_values != MARC_OT_CANONICAL_K
+        or receiver_k != MARC_OT_CANONICAL_K
+        or day_k != MARC_OT_CANONICAL_K
+        or clean_cells != required_clean
+        or cross_cells != required_cross
+    ):
+        raise ValueError(
+            "MARC-OT software coverage is incomplete for canonical K/domain/scene cells"
+        )
+    return {
+        "episode_count": len(rows),
+        "software_supported_k": k_values,
+        "receiver_holdout_k": receiver_k,
+        "day_capture_holdout_k": day_k,
+        "clean_to_leo_scenes": tuple(
+            sorted({scene for _k, scene in clean_cells})
+        ),
+        "leo_cross_scene_pairs": tuple(
+            sorted({(support, query) for _k, support, query in cross_cells})
+        ),
+        "coverage_complete": bool(require_complete),
+    }
 
 
 @dataclass(frozen=True)

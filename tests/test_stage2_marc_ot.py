@@ -195,7 +195,13 @@ def _loss_fixture(k_shot: int) -> tuple[torch.Tensor, torch.Tensor, tuple[str, .
 
 @pytest.mark.parametrize(
     ("k_shot", "expected_mode"),
-    [(1, "mean_scale"), (2, "diagonal"), (5, "low_rank_1"), (10, "low_rank_2")],
+    [
+        (1, "mean_scale"),
+        (2, "diagonal"),
+        (5, "low_rank_1"),
+        (10, "low_rank_2"),
+        (20, "low_rank_2"),
+    ],
 )
 def test_marc_ot_losses_are_support_only_differentiable_and_k_conditioned(
     k_shot: int,
