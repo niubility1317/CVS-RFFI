@@ -143,7 +143,10 @@ def _validate_bank(
     for task in bank.task_keys:
         if (
             not isinstance(task, DeltaTaskKey)
-            or any(not isinstance(value, str) or not value for value in (task.receiver, task.day, task.scene))
+            or any(
+                not isinstance(value, str) or not value
+                for value in (task.receiver, task.day, task.scene, task.capture_block)
+            )
             or isinstance(task.k_shot, bool)
             or not isinstance(task.k_shot, int)
             or task.k_shot <= 0
@@ -250,6 +253,7 @@ def _bank_payload(bank: WeightDeltaBank) -> dict[str, object]:
                 "day": task.day,
                 "scene": task.scene,
                 "k_shot": task.k_shot,
+                "capture_block": task.capture_block,
             }
             for task in bank.task_keys
         ],
@@ -305,6 +309,7 @@ def _task_keys_payload(task_keys: tuple[DeltaTaskKey, ...]) -> list[dict[str, ob
             "day": task.day,
             "scene": task.scene,
             "k_shot": task.k_shot,
+            "capture_block": task.capture_block,
         }
         for task in task_keys
     ]
@@ -388,7 +393,9 @@ def _decode_task_keys(raw: object) -> tuple[DeltaTaskKey, ...]:
     tasks: list[DeltaTaskKey] = []
     for index, item in enumerate(raw):
         data = _require_exact_keys(
-            item, {"receiver", "day", "scene", "k_shot"}, f"task_keys[{index}]"
+            item,
+            {"receiver", "day", "scene", "k_shot", "capture_block"},
+            f"task_keys[{index}]",
         )
         tasks.append(
             DeltaTaskKey(
@@ -396,6 +403,7 @@ def _decode_task_keys(raw: object) -> tuple[DeltaTaskKey, ...]:
                 day=data["day"],
                 scene=data["scene"],
                 k_shot=data["k_shot"],
+                capture_block=data["capture_block"],
             )
         )
     return tuple(tasks)

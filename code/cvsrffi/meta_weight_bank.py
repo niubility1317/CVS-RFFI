@@ -31,6 +31,7 @@ class DeltaTaskKey:
     day: str
     scene: str
     k_shot: int
+    capture_block: str = "aggregate"
 
 
 @dataclass(frozen=True)
@@ -158,15 +159,24 @@ def extract_block_delta(
     return result
 
 
-def _task_sort_key(task_key: DeltaTaskKey) -> tuple[str, str, str, int]:
-    return (task_key.receiver, task_key.day, task_key.scene, task_key.k_shot)
+def _task_sort_key(task_key: DeltaTaskKey) -> tuple[str, str, str, str, int]:
+    return (
+        task_key.receiver,
+        task_key.day,
+        task_key.capture_block,
+        task_key.scene,
+        task_key.k_shot,
+    )
 
 
 def _validate_task_key(task_key: object) -> DeltaTaskKey:
     if not isinstance(task_key, DeltaTaskKey):
         raise ValueError("task key must be a DeltaTaskKey")
-    if any(not isinstance(value, str) or not value for value in (task_key.receiver, task_key.day, task_key.scene)):
-        raise ValueError("task key receiver, day and scene must be non-empty strings")
+    if any(
+        not isinstance(value, str) or not value
+        for value in (task_key.receiver, task_key.day, task_key.scene, task_key.capture_block)
+    ):
+        raise ValueError("task key receiver, day, scene and capture_block must be non-empty strings")
     if (
         not isinstance(task_key.k_shot, int)
         or isinstance(task_key.k_shot, bool)

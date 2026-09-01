@@ -51,12 +51,18 @@ def canonical_episode_task_domain_selection(
 
     if not isinstance(episode, MetaEpisode) or not episode.query_adapt:
         raise ValueError("episode query_adapt facts are required for task domain binding")
-    facts = {(ref.rx_i, ref.day_i, ref.view) for ref in episode.query_adapt}
+    facts = {(ref.rx_i, ref.day_i, ref.capture_block_i, ref.view) for ref in episode.query_adapt}
     if len(facts) != 1:
         raise ValueError("episode query_adapt facts do not identify one task domain")
-    receiver, day, scene = next(iter(facts))
+    receiver, day, capture_block, scene = next(iter(facts))
     return MARCOTTaskDomainSelection(
-        task_key=DeltaTaskKey(str(int(receiver)), str(int(day)), str(scene), episode.k_shot),
+        task_key=DeltaTaskKey(
+            str(int(receiver)),
+            str(int(day)),
+            str(scene),
+            episode.k_shot,
+            str(int(capture_block)),
+        ),
         partition="query_adapt",
     )
 
@@ -75,12 +81,16 @@ def _validated_task_domain_selection(
     refs = tuple(getattr(episode, selection.partition))
     if len(refs) < 2:
         raise ValueError("task domain descriptor requires multiple physical samples")
-    facts = {(ref.rx_i, ref.day_i, ref.view) for ref in refs}
+    facts = {(ref.rx_i, ref.day_i, ref.capture_block_i, ref.view) for ref in refs}
     if len(facts) != 1:
         raise ValueError("selected episode partition does not identify one task domain")
-    receiver, day, scene = next(iter(facts))
+    receiver, day, capture_block, scene = next(iter(facts))
     explicit_key = DeltaTaskKey(
-        str(int(receiver)), str(int(day)), str(scene), int(episode.k_shot)
+        str(int(receiver)),
+        str(int(day)),
+        str(scene),
+        int(episode.k_shot),
+        str(int(capture_block)),
     )
     if key != explicit_key:
         raise ValueError("task domain key differs from explicit episode partition facts")

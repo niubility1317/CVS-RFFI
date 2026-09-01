@@ -29,12 +29,12 @@ def _bank():
     return fit_weight_delta_bank(
         "base-checkpoint-7",
         {
-            DeltaTaskKey("rx-1", "day-a", "leo_clear_weak", 10): {
+            DeltaTaskKey("rx-1", "day-a", "leo_clear_weak", 10, "capture-a"): {
                 "id_backbone.t3.weight": torch.tensor([[0.3, -0.1], [0.2, 0.4]]),
                 "id_backbone.t3.bias": torch.tensor([0.1, -0.2]),
                 "id_backbone.fusion.bias": torch.tensor([0.2, -0.3]),
             },
-            DeltaTaskKey("rx-2", "day-a", "leo_rain_weak", 10): {
+            DeltaTaskKey("rx-2", "day-a", "leo_rain_weak", 10, "capture-b"): {
                 "id_backbone.t3.weight": torch.tensor([[-0.2, 0.5], [0.1, -0.4]]),
                 "id_backbone.t3.bias": torch.tensor([-0.3, 0.2]),
                 "id_backbone.fusion.bias": torch.tensor([-0.1, 0.4]),
@@ -129,6 +129,8 @@ def test_meta_weight_bundle_round_trip_preserves_support_composition_bitwise(tmp
     assert raw["task_domain_bank"]["values"].dtype == torch.int8
     assert raw["task_domain_bank"]["values"].shape == (2, 685)
     assert raw["task_domain_bank"]["aggregation_counts"].tolist() == [20, 21]
+    assert raw["bank"]["task_keys"][0]["capture_block"] == "capture-a"
+    assert raw["task_domain_bank"]["task_keys"][1]["capture_block"] == "capture-b"
     assert set(raw["task_domain_bank"]) == {
         "schema",
         "task_keys",
@@ -154,6 +156,8 @@ def test_meta_weight_bundle_round_trip_preserves_support_composition_bitwise(tmp
     assert loaded.task_domain_bank.task_keys == loaded.bank.task_keys
     assert loaded.task_domain_bank.values.dtype == torch.int8
     assert loaded.task_domain_bank.aggregation_counts.tolist() == [20, 21]
+    assert loaded.bank.task_keys[0].capture_block == "capture-a"
+    assert loaded.task_domain_bank.task_keys[1].capture_block == "capture-b"
 
     features = torch.zeros(3, 685)
     features[:, :3] = torch.tensor(
@@ -401,6 +405,44 @@ def test_meta_weight_bundle_rejects_invalid_task_domain_bank(
     torch.save(raw, tampered)
 
     with pytest.raises(ValueError, match="task.domain|member|aggregate"):
+        load_meta_weight_bundle(
+            tampered,
+            expected_base_checkpoint_id="base-checkpoint-7",
+            base_state=_base_state(),
+            expected_block_specs=_expected_block_specs(),
+        )
+
+
+@pytest.mark.parametrize(
+    ("payload_name", "tamper"),
+    (
+        ("bank", "missing_capture"),
+        ("bank", "extra_capture"),
+        ("task_domain_bank", "missing_capture"),
+        ("task_domain_bank", "extra_capture"),
+        ("task_domain_bank", "changed_capture"),
+    ),
+)
+def test_meta_weight_bundle_fails_closed_on_task_key_capture_payload_drift(
+    tmp_path: Path, payload_name: str, tamper: str
+) -> None:
+    """MARC task-key payloads must retain an exact capture-block binding."""
+    from cvsrffi.meta_weight_bank_checkpoint import load_meta_weight_bundle
+
+    path = tmp_path / "valid.pt"
+    _save_bundle(path)
+    raw = _load_raw(path)
+    task_key = raw[payload_name]["task_keys"][0]
+    if tamper == "missing_capture":
+        task_key.pop("capture_block")
+    elif tamper == "extra_capture":
+        task_key["unexpected"] = "forbidden"
+    else:
+        task_key["capture_block"] = "forged-capture"
+    tampered = tmp_path / f"capture-{payload_name}-{tamper}.pt"
+    torch.save(raw, tampered)
+
+    with pytest.raises(ValueError, match="task_keys|task.domain|member"):
         load_meta_weight_bundle(
             tampered,
             expected_base_checkpoint_id="base-checkpoint-7",

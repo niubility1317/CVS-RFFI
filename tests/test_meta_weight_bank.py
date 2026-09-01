@@ -136,6 +136,24 @@ def test_fit_weight_delta_bank_rank_one_reconstructs_and_has_canonical_sign() ->
     assert torch.allclose(reconstructed["id_backbone.t3.weight"], torch.tensor([[1.0, 0.0]]))
 
 
+def test_fit_weight_delta_bank_keeps_capture_blocks_as_distinct_deterministic_tasks() -> None:
+    """Collapsing capture blocks would silently overwrite one physical-domain delta."""
+    from cvsrffi.meta_weight_bank import DeltaTaskKey, fit_weight_delta_bank
+
+    later_capture = DeltaTaskKey("rx-a", "d1", "leo_clear_weak", 10, "capture-b")
+    earlier_capture = DeltaTaskKey("rx-a", "d1", "leo_clear_weak", 10, "capture-a")
+    bank = fit_weight_delta_bank(
+        "base-123",
+        {
+            later_capture: {"id_backbone.t3.weight": torch.tensor([0.0, 1.0])},
+            earlier_capture: {"id_backbone.t3.weight": torch.tensor([1.0, 0.0])},
+        },
+    )
+
+    assert bank.task_keys == (earlier_capture, later_capture)
+    assert bank.entries[0].task_coefficients.shape[0] == 2
+
+
 def test_fit_weight_delta_bank_respects_rank_cap_unless_error_threshold_requires_full_rank() -> None:
     from cvsrffi.meta_weight_bank import DeltaTaskKey, fit_weight_delta_bank
 
@@ -253,10 +271,12 @@ def test_compose_weight_delta_rejects_low_precision_conversion_overflow() -> Non
         pytest.param(None, ("rx-a", 1, "leo_clear_weak", 10), id="non-string-day"),
         pytest.param(None, ("rx-a", "d1", "leo_clear_weak", 0), id="zero-k"),
         pytest.param(None, ("rx-a", "d1", "leo_clear_weak", 1.5), id="non-integer-k"),
+        pytest.param(None, ("rx-a", "d1", "leo_clear_weak", 10, ""), id="empty-capture"),
+        pytest.param(None, ("rx-a", "d1", "leo_clear_weak", 10, 9), id="non-string-capture"),
     ],
 )
 def test_fit_weight_delta_bank_rejects_invalid_task_keys_before_sorting(
-    raw_task_key: object, task_values: tuple[object, object, object, object] | None
+    raw_task_key: object, task_values: tuple[object, ...] | None
 ) -> None:
     from cvsrffi.meta_weight_bank import DeltaTaskKey, fit_weight_delta_bank
 

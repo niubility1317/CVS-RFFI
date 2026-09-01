@@ -195,7 +195,7 @@ def _bank_and_state():
         schema=WEIGHT_DELTA_BANK_SCHEMA,
         base_checkpoint_id="base-task8",
         task_keys=(
-            DeltaTaskKey("0", "0", "leo_clear_weak", 2),
+            DeltaTaskKey("0", "0", "leo_clear_weak", 2, "0"),
         ),
         entries=(
             DeltaBankEntry(
@@ -388,11 +388,52 @@ def test_phase1_default_task_key_uses_explicit_pseudo_target_facts_only() -> Non
         str(target.day_i),
         target.view,
         episode.k_shot,
+        str(target.capture_block_i),
     )
     assert all(
         opaque not in selection.task_key.receiver
         for opaque in (episode.query_adapt[0].physical_sample_id, str(episode.seed))
     )
+
+
+def test_task_domain_selection_rejects_forged_or_cross_capture_query_adapt() -> None:
+    """One MARC aggregate may bind only one explicit capture block."""
+    from cvsrffi.marc_ot_phase1 import (
+        MARCOTTaskDomainSelection,
+        _validated_task_domain_selection,
+        canonical_episode_task_domain_selection,
+    )
+    from cvsrffi.meta_episodes import EpisodeKind, sample_marc_ot_coverage_schedule
+    from cvsrffi.meta_weight_bank import DeltaTaskKey
+
+    episode = next(
+        row
+        for row in sample_marc_ot_coverage_schedule(_sampler(), seed=43)
+        if row.kind is EpisodeKind.CLEAN_TO_LEO and row.k_shot == 2
+    )
+    target = episode.query_adapt[0]
+    forged = MARCOTTaskDomainSelection(
+        task_key=DeltaTaskKey(
+            str(target.rx_i),
+            str(target.day_i),
+            target.view,
+            episode.k_shot,
+            "forged-capture",
+        ),
+        partition="query_adapt",
+    )
+    with pytest.raises(ValueError, match="key differs|capture"):
+        _validated_task_domain_selection(episode, forged)
+
+    cross_capture = replace(
+        episode,
+        query_adapt=(
+            replace(target, capture_block_i=int(target.capture_block_i) + 1),
+            *episode.query_adapt[1:],
+        ),
+    )
+    with pytest.raises(ValueError, match="one task domain|capture"):
+        canonical_episode_task_domain_selection(cross_capture)
 
 
 @pytest.mark.parametrize("arm", ("R6", "R8"))
