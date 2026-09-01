@@ -143,13 +143,19 @@ def _finite_positive_scalar(value: float, *, name: str) -> float:
     return scalar
 
 
+def _mean_squared_pairwise_cost(left: Tensor, right: Tensor) -> Tensor:
+    """Return squared Euclidean distance averaged over the feature dimension."""
+
+    return torch.cdist(left, right).square() / float(left.shape[1])
+
+
 def support_bank_transport(
     support_task_features: Tensor,
     frozen_bank_task_features: Tensor,
     epsilon: float,
     iterations: int,
 ) -> Tensor:
-    """Return a uniform support-to-frozen-bank FP32 log-Sinkhorn plan."""
+    """Return a dimension-stable uniform FP32 log-Sinkhorn plan."""
 
     if not isinstance(support_task_features, Tensor) or not isinstance(
         frozen_bank_task_features, Tensor
@@ -173,7 +179,7 @@ def support_bank_transport(
 
     support_work = support.float()
     bank_work = bank.detach().to(device=support.device, dtype=torch.float32)
-    cost = torch.cdist(support_work, bank_work).square()
+    cost = _mean_squared_pairwise_cost(support_work, bank_work)
     if not bool(torch.isfinite(cost).all()):
         raise ValueError("support-bank transport cost became nonfinite")
     log_a = cost.new_full((cost.shape[0],), -math.log(cost.shape[0]))
@@ -748,7 +754,7 @@ def marc_ot_losses(
     bank = frozen_bank_task_features.detach().to(
         device=features.device, dtype=torch.float32
     )
-    cost = torch.cdist(features.float(), bank).square()
+    cost = _mean_squared_pairwise_cost(features.float(), bank)
     transport_loss = torch.sum(transport * cost)
     row_mass = transport.sum(dim=1, keepdim=True)
     transported_bank = transport @ bank / row_mass

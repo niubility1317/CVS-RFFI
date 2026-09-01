@@ -17,3 +17,19 @@ CUDA_VISIBLE_DEVICES=0 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python code/
 ```
 
 smoke必须`query_opened=false/query_rows_used=0`；prediction闭合前不得打开truth；低性能只触发`NO_PROMOTION_TO_TARGET25`。
+
+## no-query smoke技术失败
+
+- 状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
+- 失败位置：Stage2 support-only适配的`support_bank_transport`，发生在任何query打开或prediction写出之前
+- 确定性指纹：`support-bank transport marginals failed to converge: row_error=0.0303964 column_error=6.55651e-07`
+- query/truth状态：未打开query，未连接truth，无合法prediction、评分或性能结果
+- 现场处理：r4 release与run输出保持原状，不原地修补、不覆盖、不重启；后续仅在本地复现并修复后使用全新run ID
+
+### 根因证据
+
+- 真实support-only复现：5折均为`48×11×685D`，原始平方距离中位数约`129.57～130.40`，`cost/epsilon`最大值约`3103～4886`
+- 固定80轮FP32行边际误差为`0.03040/0.07008/0.03963/0.07008/0.03862`，列边际误差仅约`6.56e-7～1.33e-6`；与r4指纹一致
+- 同一真实输入改用每特征维均方距离后，80轮五折行/列误差均不超过`3.73e-8`
+- 结论：685维平方距离求和使OT温度随特征维数放大，固定`epsilon=0.1`下形成过尖核并导致80轮未收敛；不是边际定义错误，也不应放宽`1e-4`容差
+- 诊断边界：全过程仅加载support、checkpoint与冻结Phase1 bank，未加载query或truth

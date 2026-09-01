@@ -70,6 +70,64 @@ def test_support_bank_transport_rejects_unconverged_marginals() -> None:
         support_bank_transport(support, bank, epsilon=0.01, iterations=1)
 
 
+def test_support_bank_transport_converges_for_formal_k10_geometry() -> None:
+    support = torch.zeros(60, 685)
+    bank = torch.zeros(11, 685)
+    support[:, 0] = torch.linspace(-8.0, 8.0, 60)
+    bank[:, 0] = torch.linspace(-8.0, 8.0, 11)
+    support.requires_grad_()
+
+    plan = support_bank_transport(support, bank, epsilon=0.1, iterations=80)
+
+    assert torch.isfinite(plan).all()
+    assert torch.allclose(
+        plan.sum(dim=1), torch.full((60,), 1.0 / 60.0), atol=1.0e-4, rtol=0.0
+    )
+    assert torch.allclose(
+        plan.sum(dim=0), torch.full((11,), 1.0 / 11.0), atol=1.0e-4, rtol=0.0
+    )
+    plan.square().sum().backward()
+    assert support.grad is not None and torch.isfinite(support.grad).all()
+    assert bank.grad is None
+
+
+def test_transport_cost_is_invariant_to_repeating_every_feature_coordinate() -> None:
+    support = torch.tensor([[0.0], [0.5], [1.5], [2.0]], requires_grad=True)
+    bank = torch.tensor([[0.0], [2.0]])
+    base = support_bank_transport(support, bank, epsilon=0.2, iterations=100)
+    repeated = support_bank_transport(
+        support.repeat(1, 685),
+        bank.repeat(1, 685),
+        epsilon=0.2,
+        iterations=100,
+    )
+
+    assert torch.allclose(repeated, base, atol=1.0e-6, rtol=0.0)
+
+    labels = torch.tensor([0, 0, 1, 1])
+    tokens = ("c0-a", "c0-b", "c1-a", "c1-b")
+    logits = torch.tensor([[2.0, -2.0], [1.0, -1.0], [-1.0, 1.0], [-2.0, 2.0]])
+    base_loss = marc_ot_losses(
+        support,
+        labels,
+        tokens,
+        logits,
+        bank,
+        ot_epsilon=0.2,
+        ot_iterations=100,
+    ).transport_loss
+    repeated_loss = marc_ot_losses(
+        support.repeat(1, 685),
+        labels,
+        tokens,
+        logits,
+        bank.repeat(1, 685),
+        ot_epsilon=0.2,
+        ot_iterations=100,
+    ).transport_loss
+    assert torch.allclose(repeated_loss, base_loss, atol=1.0e-6, rtol=0.0)
+
+
 def test_blockwise_projection_only_changes_conflicting_block() -> None:
     primary = {
         "time": [torch.tensor([1.0, 0.0])],
