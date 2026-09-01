@@ -40,3 +40,19 @@
 - 启动前进程归属复核表明，GPU0–7当前分别承载`2/3/3/3/2/3/3/2`个独立训练实验；现有任务属于MARC-OT与DAOT实验族，并非同一实验的重复子进程。
 - 按“每GPU最多2个并发训练实验”的硬约束，本轮未启动任何E1–E8行，未创建run/log根目录，也未停止、重启或修改任何现有任务。
 - 当前状态保持：`RELEASED_READY / WAITING_FOR_GPU_SLOTS / NOT_LAUNCHED`。
+
+## 首次启动与系统技术失败（2026-09-02）
+
+- 用户明确授权突破默认并发限制后，本次启动仅将`MAX_ACTIVE_PER_GPU`临时提高为`4`，E1–E8分别绑定GPU0–7；未修改冻结矩阵、数据、seed或训练预算。
+- 启动时间：N607服务器时间`2026-09-02 01:02:56 CST`；主PID依次为E1=`3901375`、E2=`3901378`、E3=`3901369`、E4=`3901387`、E5=`3901381`、E6=`3901390`、E7=`3901372`、E8=`3901384`。
+- PID、run root、命令行、GPU0–7映射和初始日志均已落地，但8行在正式训练前均出现同一确定性异常：`RuntimeError: "lu_factor_cublas" not implemented for 'Half'`，栈顶定位到`code/cvsrffi/identifiability_stats.py::phase_residual_stats`的`torch.linalg.solve`。
+- 该故障满足launcher级系统技术失败停止条件。所有run进程与dispatcher已自然退出，无需终止进程；未触碰其他MARC-OT或DAOT任务，r1目录及日志完整保留。
+- r1没有形成prediction或性能结果，不得用于候选比较或性能判断。
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`；后续仅允许在本地修复、验证并以新release和新run ID重新发布相同冻结实验。
+
+### 本地复现与修复证据
+
+- 本地`ssr-gpu`环境（PyTorch`2.10.0+cu128`、RTX5070Ti）稳定复现同类异常：CUDA autocast将正规方程矩阵乘法降为FP16，`torch.linalg.solve`随后收到Half矩阵。
+- 回归测试先分别在`phase_residual_stats`和`effective_fisher_summary`上以相同Half求解指纹失败，再将两处小型线性代数区限定为autocast关闭的FP32计算；门控公式、输入、输出语义和训练矩阵均未改变。
+- 修复后两个CUDA autocast回归测试通过；完整NMFDU聚焦套件`96 passed`，关键模块`py_compile`通过，完整小型NMFDU模型的CUDA autocast前向返回有限FP32门控证据。
+- 一次独立P0/P1定点审查结论：`PASS`，无P0/P1；审查范围仅限本次两处精度修复及其回归测试。

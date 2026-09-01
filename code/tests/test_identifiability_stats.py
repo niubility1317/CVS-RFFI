@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import math
 
+import pytest
 import torch
 
 from cvsrffi.identifiability_stats import (
@@ -34,6 +35,22 @@ def test_effective_fisher_removes_a_collinear_nuisance_direction() -> None:
     assert collinear["lambda_min"].item() < 1e-4
     assert orthogonal["lambda_min"].item() > 0.99
     assert orthogonal["effective_rank"].item() > 0.99
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA autocast regression")
+def test_effective_fisher_uses_supported_precision_under_cuda_autocast() -> None:
+    target = torch.tensor(
+        [[[1.0], [0.0], [0.0]], [[0.0], [1.0], [0.0]]], device="cuda"
+    )
+    nuisance = torch.tensor(
+        [[[0.0], [1.0], [0.0]], [[1.0], [0.0], [0.0]]], device="cuda"
+    )
+
+    with torch.autocast("cuda", dtype=torch.float16):
+        stats = effective_fisher_summary(target, nuisance)
+
+    assert stats["matrix"].dtype == torch.float32
+    assert torch.isfinite(stats["eigenvalues"]).all()
 
 
 def test_complex_excitation_separates_real_and_circular_symbol_geometry() -> None:
@@ -106,6 +123,20 @@ def test_phase_projection_removes_low_order_nuisance_but_not_cycle_slip() -> Non
     assert clean_stats["residual_rms"].item() < 1e-3
     assert slipped_stats["residual_rms"].item() > 0.2
     assert slipped_stats["stability"].item() < clean_stats["stability"].item()
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA autocast regression")
+def test_phase_projection_uses_supported_precision_under_cuda_autocast() -> None:
+    t = torch.linspace(-1.0, 1.0, 96, device="cuda")
+    phase = 0.2 + 0.5 * t + 0.1 * t.square()
+    iq = torch.stack([phase.cos(), phase.sin()], dim=0).unsqueeze(0)
+    valid_mask = torch.ones(1, 96, device="cuda")
+
+    with torch.autocast("cuda", dtype=torch.float16):
+        stats = phase_residual_stats(iq, valid_mask, polynomial_order=2)
+
+    assert stats["coefficients"].dtype == torch.float32
+    assert torch.isfinite(stats["residual_rms"]).all()
 
 
 def test_hos_confidence_penalizes_segment_to_segment_instability() -> None:

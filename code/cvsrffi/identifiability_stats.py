@@ -79,26 +79,29 @@ def effective_fisher_summary(
 ) -> Dict[str, torch.Tensor]:
     """Return nuisance-marginalized Fisher evidence via a Schur complement."""
 
-    target, _ = _weighted_jacobian(j_target, weight)
-    j_tt = target.transpose(-1, -2) @ target
-    if j_nuisance is None or int(j_nuisance.shape[-1]) == 0:
-        summary = _matrix_summary(j_tt, eps)
+    with torch.autocast(device_type=j_target.device.type, enabled=False):
+        target, _ = _weighted_jacobian(j_target, weight)
+        j_tt = target.transpose(-1, -2) @ target
+        if j_nuisance is None or int(j_nuisance.shape[-1]) == 0:
+            summary = _matrix_summary(j_tt, eps)
+            summary["raw_matrix"] = j_tt
+            return summary
+        nuisance, _ = _weighted_jacobian(j_nuisance, weight)
+        if nuisance.shape[:2] != target.shape[:2]:
+            raise ValueError("target and nuisance jacobians must share [B,N]")
+        j_tn = target.transpose(-1, -2) @ nuisance
+        j_nn = nuisance.transpose(-1, -2) @ nuisance
+        identity = torch.eye(
+            j_nn.size(-1), device=j_nn.device, dtype=j_nn.dtype
+        ).expand_as(j_nn)
+        projected = torch.linalg.solve(
+            j_nn + float(eps) * identity, j_tn.transpose(-1, -2)
+        )
+        j_eff = j_tt - j_tn @ projected
+        summary = _matrix_summary(j_eff, eps)
         summary["raw_matrix"] = j_tt
+        summary["nuisance_matrix"] = j_nn
         return summary
-    nuisance, _ = _weighted_jacobian(j_nuisance, weight)
-    if nuisance.shape[:2] != target.shape[:2]:
-        raise ValueError("target and nuisance jacobians must share [B,N]")
-    j_tn = target.transpose(-1, -2) @ nuisance
-    j_nn = nuisance.transpose(-1, -2) @ nuisance
-    identity = torch.eye(j_nn.size(-1), device=j_nn.device, dtype=j_nn.dtype).expand_as(j_nn)
-    projected = torch.linalg.solve(
-        j_nn + float(eps) * identity, j_tn.transpose(-1, -2)
-    )
-    j_eff = j_tt - j_tn @ projected
-    summary = _matrix_summary(j_eff, eps)
-    summary["raw_matrix"] = j_tt
-    summary["nuisance_matrix"] = j_nn
-    return summary
 
 
 def complex_excitation_stats(
@@ -288,44 +291,46 @@ def phase_residual_stats(
 ) -> Dict[str, torch.Tensor]:
     z = _as_complex(r_canonical)
     phase = _unwrap_phase(torch.angle(z))
-    batch, length = phase.shape
-    if valid_mask is None:
-        valid_mask = phase.new_ones((batch, length))
-    elif valid_mask.dim() == 1:
-        valid_mask = valid_mask.unsqueeze(0)
-    valid_mask = valid_mask.to(device=phase.device, dtype=phase.dtype).clamp(0.0, 1.0)
-    time = torch.linspace(-1.0, 1.0, length, device=phase.device, dtype=phase.dtype)
-    design = torch.stack(
-        [time.pow(power) for power in range(int(polynomial_order) + 1)], dim=-1
-    ).unsqueeze(0).expand(batch, -1, -1)
-    weighted_design = design * valid_mask.sqrt().unsqueeze(-1)
-    weighted_phase = phase * valid_mask.sqrt()
-    normal = weighted_design.transpose(-1, -2) @ weighted_design
-    identity = torch.eye(
-        normal.size(-1), device=normal.device, dtype=normal.dtype
-    ).expand_as(normal)
-    rhs = weighted_design.transpose(-1, -2) @ weighted_phase.unsqueeze(-1)
-    coefficients = torch.linalg.solve(normal + eps * identity, rhs)
-    fitted = (design @ coefficients).squeeze(-1)
-    residual = (phase - fitted) * valid_mask
-    denominator = valid_mask.sum(dim=-1).clamp_min(1.0)
-    residual_rms = (residual.square().sum(dim=-1) / denominator).sqrt()
-    if length > 1:
-        residual_jump = (residual[:, 1:] - residual[:, :-1]).abs()
-        cycle_slip_rate = (residual_jump > (math.pi / 2.0)).float().mean(dim=-1)
-    else:
-        cycle_slip_rate = residual_rms.new_zeros(residual_rms.shape)
-    return {
-        "residual_rms": residual_rms,
-        "stability": torch.exp(-residual_rms),
-        "cycle_slip_rate": cycle_slip_rate,
-        "coefficients": coefficients.squeeze(-1),
-        "phase_snr": 10.0
-        * torch.log10(
-            phase.var(dim=-1, unbiased=False).clamp_min(eps)
-            / residual_rms.square().clamp_min(eps)
-        ),
-    }
+    with torch.autocast(device_type=phase.device.type, enabled=False):
+        phase = phase.float()
+        batch, length = phase.shape
+        if valid_mask is None:
+            valid_mask = phase.new_ones((batch, length))
+        elif valid_mask.dim() == 1:
+            valid_mask = valid_mask.unsqueeze(0)
+        valid_mask = valid_mask.to(device=phase.device, dtype=phase.dtype).clamp(0.0, 1.0)
+        time = torch.linspace(-1.0, 1.0, length, device=phase.device, dtype=phase.dtype)
+        design = torch.stack(
+            [time.pow(power) for power in range(int(polynomial_order) + 1)], dim=-1
+        ).unsqueeze(0).expand(batch, -1, -1)
+        weighted_design = design * valid_mask.sqrt().unsqueeze(-1)
+        weighted_phase = phase * valid_mask.sqrt()
+        normal = weighted_design.transpose(-1, -2) @ weighted_design
+        identity = torch.eye(
+            normal.size(-1), device=normal.device, dtype=normal.dtype
+        ).expand_as(normal)
+        rhs = weighted_design.transpose(-1, -2) @ weighted_phase.unsqueeze(-1)
+        coefficients = torch.linalg.solve(normal + eps * identity, rhs)
+        fitted = (design @ coefficients).squeeze(-1)
+        residual = (phase - fitted) * valid_mask
+        denominator = valid_mask.sum(dim=-1).clamp_min(1.0)
+        residual_rms = (residual.square().sum(dim=-1) / denominator).sqrt()
+        if length > 1:
+            residual_jump = (residual[:, 1:] - residual[:, :-1]).abs()
+            cycle_slip_rate = (residual_jump > (math.pi / 2.0)).float().mean(dim=-1)
+        else:
+            cycle_slip_rate = residual_rms.new_zeros(residual_rms.shape)
+        return {
+            "residual_rms": residual_rms,
+            "stability": torch.exp(-residual_rms),
+            "cycle_slip_rate": cycle_slip_rate,
+            "coefficients": coefficients.squeeze(-1),
+            "phase_snr": 10.0
+            * torch.log10(
+                phase.var(dim=-1, unbiased=False).clamp_min(eps)
+                / residual_rms.square().clamp_min(eps)
+            ),
+        }
 
 
 def _complex_cumulants(z: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
