@@ -32,3 +32,11 @@
 - 正式启动命令：`env ROOT=/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate8_manysig392005_67279708 WISIG_PKL=/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl RUNS_ROOT=/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_nmfdu_gate8_manysig392005_20260902_r1 LOG_ROOT=/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_nmfdu_gate8_manysig392005_20260902_r1 bash /home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_nmfdu_gate8_manysig392005_67279708/code/scripts/launch_phase1_adv3b02_nmfdu_gate8_manysig392005_20260902.sh`
 - 资源读回：GPU0–7现有计算进程数依次为`2/3/3/3/2/3/3/2`，没有任何GPU低于启动上限2；未启动、不排队、不干预现有任务
 - 当前状态：`RELEASED_READY / WAITING_FOR_GPU_SLOTS / NOT_LAUNCHED`
+
+## 用户授权与启动复核（2026-09-02）
+
+- 用户已明确授权发布实验，并明确要求不设置ADV3B02基线对比。
+- 冻结矩阵复核：E1=`equal`、E2=`i_only`、E3=`i_d`、E4=`i_d_s`、E5=`physical_fixed`、E6=`physical_full`、E7=`full_no_null`、E8=`full`；八行均为`physical_gate_variant=nmfdu_v1`，不存在ADV3B02基线行。
+- 启动前进程归属复核表明，GPU0–7当前分别承载`2/3/3/3/2/3/3/2`个独立训练实验；现有任务属于MARC-OT与DAOT实验族，并非同一实验的重复子进程。
+- 按“每GPU最多2个并发训练实验”的硬约束，本轮未启动任何E1–E8行，未创建run/log根目录，也未停止、重启或修改任何现有任务。
+- 当前状态保持：`RELEASED_READY / WAITING_FOR_GPU_SLOTS / NOT_LAUNCHED`。
