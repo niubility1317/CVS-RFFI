@@ -71,6 +71,9 @@ def test_ecrs_on_exposes_report_outputs_and_bounded_residual_fusion() -> None:
         "resp_anchor",
         "nuisance_coef",
         "content_confidence",
+        "masked_s_hat",
+        "content_mask",
+        "cycle_iq",
         "tx_logits_raw",
         "rho_resp",
     }
@@ -80,7 +83,7 @@ def test_ecrs_on_exposes_report_outputs_and_bounded_residual_fusion() -> None:
     assert out["z_id_fused"].shape == (3, 160)
     assert out["resp_coef"].shape == (3, 28)
     assert out["resp_cov_diag"].shape == (3, 28)
-    assert out["resp_anchor"].shape == (3, 32)
+    assert out["resp_anchor"].shape == (3, 8)
     assert out["nuisance_coef"].shape == (3, 3)
     assert out["content_confidence"].shape == (3, 64)
     assert torch.all((out["rho_resp"] >= 0.0) & (out["rho_resp"] <= 0.25))
@@ -88,6 +91,8 @@ def test_ecrs_on_exposes_report_outputs_and_bounded_residual_fusion() -> None:
         out["z_id_fused"].norm(dim=1), torch.ones(3), atol=1e-5, rtol=1e-5
     )
     torch.testing.assert_close(out["z_id"], out["z_id_fused"])
+    assert out["content_mask"].shape == (3, 64)
+    torch.testing.assert_close(out["cycle_iq"], x, rtol=1e-5, atol=1e-5)
     with torch.no_grad():
         single_view_logits = model(x, return_aux=False)
     torch.testing.assert_close(single_view_logits, out["tx_logits"], rtol=0.0, atol=0.0)
@@ -96,6 +101,9 @@ def test_ecrs_on_exposes_report_outputs_and_bounded_residual_fusion() -> None:
 def test_ecrs_true_instantiates_only_fixed_v1_dimensions() -> None:
     model = _tiny_model(use_ecrs=True)
     assert model.ecrs.response_basis.block_slices["slew"] == slice(20, 28)
+    assert model.ecrs.anchor_encoder.anchor_grid.numel() == 8
+    assert model.ecrs.anchor_encoder.encoder.in_features == 16
+    assert model.ecrs.anchor_encoder.encoder.out_features == 64
     assert model.ecrs.response_projection.in_features == 64
     assert model.ecrs.response_projection.out_features == 160
     assert model.ecrs.fusion_gate.rho_max == 0.25
@@ -118,3 +126,15 @@ def test_response_gate_cannot_backpropagate_into_quality_measurements() -> None:
     gate(quality, covariance, sample_count=64).sum().backward()
     assert all(value.grad is None for value in quality.values())
     assert covariance.grad is None
+
+
+def test_masked_content_reconstruction_is_reachable_and_noncollapsed() -> None:
+    model = _tiny_model(use_ecrs=True).train()
+    x = torch.randn(2, 2, 64)
+    out = model(x, return_aux=True)
+    target = torch.complex(out["canonical_iq"][:, 0], out["canonical_iq"][:, 1]).detach()
+    mask = out["content_mask"]
+    loss = (out["masked_s_hat"] - target).abs().square()[mask].mean()
+    assert loss > 0.0
+    loss.backward()
+    assert any(parameter.grad is not None for parameter in model.ecrs.content_estimator.parameters())

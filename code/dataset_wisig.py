@@ -234,10 +234,7 @@ class WiSigCompactDataset(Dataset):
             x_t = self.transform(x_t)
         y = int(it.tx_i)
         d = int(self._domain_lut[(it.rx_i, it.day_i)])
-        physical_sample_id = (
-            f"tx{int(it.tx_i)}:rx{int(it.rx_i)}:day{int(it.day_i)}:"
-            f"eq{int(it.eq_i)}:sig{int(it.sig_i)}"
-        )
+        physical_sample_id = f"sample:{int(k)}"
         meta = {
             "base_index": int(k),
             "tx_i": it.tx_i,
@@ -292,9 +289,8 @@ class WiSigSubsetDataset(Dataset):
 class WiSigMetaSslSubsetDataset(WiSigSubsetDataset):
     """WiSig subset with explicit Meta-SSL role and TX-label masking.
 
-    The underlying sample metadata keeps the original transmitter id for audit,
-    but unlabeled-source samples return y=-1 so ordinary TX CE paths cannot
-    accidentally consume masked labels.
+    Unlabeled-source samples return y=-1 and remove every TX-bearing metadata
+    field so no training path can recover the masked label.
     """
 
     def __init__(
@@ -317,7 +313,8 @@ class WiSigMetaSslSubsetDataset(WiSigSubsetDataset):
         meta["meta_ssl_role"] = self.role
         meta["tx_label_visible"] = self.tx_label_visible
         if not self.tx_label_visible:
-            meta["true_tx_i"] = int(y)
+            for key in ("tx", "tx_i", "true_tx_i", "tx_label", "y_tx"):
+                meta.pop(key, None)
             y = -1
         return x, y, d, meta
 
@@ -844,7 +841,7 @@ def make_wisig_meta_ssl_source_split(
         "overlap_count": int(overlap_count),
         "tx_label_policy": {
             "labeled_train": "visible",
-            "unlabeled_source": "masked_y_minus_1_true_tx_in_meta_only",
+            "unlabeled_source": "masked_y_minus_1_no_tx_truth_in_training_metadata",
             "source_val": "visible_eval_only",
         },
         "seed": int(seed),

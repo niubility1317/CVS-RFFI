@@ -74,3 +74,4 @@ def test_report_r0_to_r8_masks_add_one_mechanism_at_a_time() -> None:
             state["active_rho_max"],
         )
         assert actual == contract
+        assert state["identifiability_shrinkage"] is (int(rung[1:]) >= 5)

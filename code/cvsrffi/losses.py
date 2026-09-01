@@ -4769,9 +4769,19 @@ def different_tx_response_ranking_loss(
     day_id: torch.Tensor,
     view_type: List[str],
     label_mask: torch.Tensor,
+    excitation: torch.Tensor,
+    snr_db: torch.Tensor,
     *,
     margin: float = 0.5,
+    max_histogram_distance: float = 0.25,
+    max_snr_difference_db: float = 3.0,
 ) -> torch.Tensor:
+    amplitude = excitation.abs().float()
+    scale = torch.quantile(amplitude, 0.95, dim=1, keepdim=True).clamp_min(1e-6)
+    normalized = amplitude / scale
+    centers = torch.linspace(0.15, 1.20, 8, device=anchors.device)
+    histograms = torch.exp(-0.5 * ((normalized.unsqueeze(-1) - centers) / 0.16) ** 2).mean(dim=1)
+    histograms = histograms / histograms.sum(dim=1, keepdim=True).clamp_min(1e-6)
     losses = []
     count = int(anchors.size(0))
     for anchor_index in range(count):
@@ -4788,7 +4798,7 @@ def different_tx_response_ranking_loss(
                 or int(day_id[index]) != int(day_id[anchor_index])
             )
         ]
-        negatives = [
+        candidate_negatives = [
             index
             for index in range(count)
             if bool(label_mask[index])
@@ -4797,10 +4807,18 @@ def different_tx_response_ranking_loss(
             and int(day_id[index]) == int(day_id[anchor_index])
             and str(view_type[index]) == str(view_type[anchor_index])
         ]
+        negatives = []
+        for index in candidate_negatives:
+            histogram_distance = (histograms[index] - histograms[anchor_index]).abs().sum()
+            snr_difference = (snr_db[index] - snr_db[anchor_index]).abs()
+            if float(histogram_distance.detach()) <= float(max_histogram_distance) and float(
+                snr_difference.detach()
+            ) <= float(max_snr_difference_db):
+                negatives.append((float(histogram_distance.detach() + snr_difference.detach() / 30.0), index))
         if not positives or not negatives:
             continue
         positive = positives[0]
-        negative = negatives[0]
+        negative = min(negatives, key=lambda item: item[0])[1]
         d_positive = response_surface_distance(
             anchors[anchor_index], anchors[positive], variance[anchor_index], variance[positive]
         )

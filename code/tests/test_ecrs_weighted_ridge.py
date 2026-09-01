@@ -59,3 +59,38 @@ def test_weighted_ridge_uses_second_cholesky_then_augmented_lstsq_fallback() -> 
     assert qr["ridge_info"].item() == 2
     assert torch.isfinite(qr["resp_coef"].real).all()
     assert "torch.inverse" not in inspect.getsource(WeightedRidgeLayer)
+
+
+def test_joint_nuisance_fingerprint_solve_exports_only_fp_coefficients() -> None:
+    torch.manual_seed(13)
+    samples = 128
+    s_hat = torch.randn(1, samples, dtype=torch.complex64)
+    phi = torch.randn(1, samples, 28, dtype=torch.complex64)
+    truth = torch.randn(1, 28, dtype=torch.complex64)
+    gamma = torch.randn(1, 4, dtype=torch.complex64)
+    nuisance = WeightedRidgeLayer.nuisance_dictionary(s_hat[0]).unsqueeze(0)
+    target = torch.einsum("bnk,bk->bn", nuisance, gamma) + torch.einsum("bnk,bk->bn", phi, truth)
+    layer = WeightedRidgeLayer(alpha_lambda=1e-5)
+    layer.set_block_shrinkage(False)
+    result = layer(phi, target, torch.ones(1, samples), s_hat=s_hat)
+    assert result["nuisance_reg_coef"].shape == (1, 4)
+    assert result["resp_coef"].shape == (1, 28)
+    assert result["response_design"].shape == phi.shape
+    torch.testing.assert_close(result["resp_coef"], truth, rtol=3e-2, atol=3e-2)
+
+
+def test_block_identifiability_uses_distinct_excitation_evidence() -> None:
+    layer = WeightedRidgeLayer(alpha_lambda=0.01)
+    amplitude = torch.linspace(0.1, 1.2, 96)
+    phase = torch.linspace(0.0, 8.0 * torch.pi, 96)
+    s_hat = torch.polar(amplitude, phase).to(torch.complex64)
+    phi = torch.randn(96, 28, dtype=torch.complex64)
+    q = layer._block_identifiability(phi, s_hat, torch.ones(96))
+    assert q.shape == (4,)
+    assert q[0] > q[2]
+    assert q[1] > q[2]
+    assert torch.unique(q).numel() >= 3
+
+    layer.set_block_shrinkage(False)
+    _, q_disabled = layer._block_regularization(phi, s_hat, torch.ones(96), torch.tensor(1.0))
+    assert torch.equal(q_disabled, torch.ones(4))

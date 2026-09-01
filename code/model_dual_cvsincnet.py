@@ -183,6 +183,15 @@ class AnalyticCanonicalizer(nn.Module):
         canonical = canonical * torch.exp(-coef[:, 2:3])
         return complex_to_iq(canonical, dtype=x.dtype)
 
+    def inverse(self, canonical_iq: torch.Tensor, nuisance_coef: torch.Tensor) -> torch.Tensor:
+        z = iq_to_complex(canonical_iq)
+        coef = nuisance_coef.to(device=z.device, dtype=torch.float32)
+        n = torch.arange(z.size(-1), device=z.device, dtype=torch.float32).unsqueeze(0)
+        phase = 2.0 * math.pi * coef[:, 0:1] * n + coef[:, 1:2]
+        reconstructed = z * torch.exp(coef[:, 2:3])
+        reconstructed = reconstructed * torch.exp(torch.complex(torch.zeros_like(phase), phase))
+        return complex_to_iq(reconstructed, dtype=canonical_iq.dtype)
+
 
 class ContentEstimator(nn.Module):
     """Bandwidth-limited blind content estimator with per-sample confidence."""
@@ -259,9 +268,12 @@ class ResponseBasis(nn.Module):
         s_prev = self._delay(s_hat, 1)
         amp_prev = self._delay(amplitude, 1)
         if self.mode == "fixed_mp":
-            powers = torch.arange(4, device=s_hat.device, dtype=torch.float32)
-            b_now = amplitude.unsqueeze(-1).pow(powers).to(torch.complex64)
-            b_prev = amp_prev.unsqueeze(-1).pow(powers).to(torch.complex64)
+            powers = torch.tensor([0.0, 2.0, 4.0], device=s_hat.device)
+            b_now_135 = amplitude.unsqueeze(-1).pow(powers).to(torch.complex64)
+            b_prev_135 = amp_prev.unsqueeze(-1).pow(powers).to(torch.complex64)
+            zero_gate = torch.zeros_like(b_now_135[..., :1])
+            b_now = torch.cat([b_now_135, zero_gate], dim=-1)
+            b_prev = torch.cat([b_prev_135, torch.zeros_like(b_prev_135[..., :1])], dim=-1)
         else:
             b_now = self._rbf(amplitude).to(torch.complex64)
             b_prev = self._rbf(amp_prev).to(torch.complex64)
@@ -283,18 +295,35 @@ class ResponseBasis(nn.Module):
 class WeightedRidgeLayer(nn.Module):
     """Differentiable complex64 weighted ridge with bounded weights and fallbacks."""
 
-    def __init__(self, alpha_lambda: float = 1e-4, min_weight: float = 0.05, eps: float = 1e-6):
+    def __init__(self, alpha_lambda: float = 0.01, min_weight: float = 0.05, eps: float = 1e-6):
         super().__init__()
         self.alpha_lambda = float(alpha_lambda)
         self.min_weight = float(min_weight)
         self.eps = float(eps)
+        self.block_shrinkage_enabled = True
+
+    def set_block_shrinkage(self, enabled: bool) -> None:
+        self.block_shrinkage_enabled = bool(enabled)
+
+    @staticmethod
+    def nuisance_dictionary(s_hat: torch.Tensor) -> torch.Tensor:
+        if s_hat.ndim != 1 or not torch.is_complex(s_hat):
+            raise ValueError("one-packet s_hat must be complex [samples]")
+        count = int(s_hat.numel())
+        trend = torch.linspace(-1.0, 1.0, count, device=s_hat.device)
+        delayed = torch.nn.functional.pad(s_hat[:-1], (1, 0))
+        return torch.stack(
+            [s_hat, trend.to(torch.complex64) * s_hat, 1j * s_hat, delayed], dim=1
+        ).to(torch.complex64)
 
     @staticmethod
     def _cholesky_solve(matrix: torch.Tensor, rhs: torch.Tensor) -> Optional[torch.Tensor]:
         chol, info = torch.linalg.cholesky_ex(matrix)
         if int(info.item()) != 0:
             return None
-        return torch.cholesky_solve(rhs.unsqueeze(-1), chol).squeeze(-1)
+        if rhs.ndim == 1:
+            return torch.cholesky_solve(rhs.unsqueeze(-1), chol).squeeze(-1)
+        return torch.cholesky_solve(rhs, chol)
 
     def _coverage(self, amplitude: torch.Tensor, weight: torch.Tensor) -> torch.Tensor:
         scale = torch.quantile(amplitude, 0.95).clamp_min(self.eps)
@@ -304,37 +333,50 @@ class WeightedRidgeLayer(nn.Module):
         occupancy = (bins * weight.unsqueeze(-1)).sum(dim=0) / weight.sum().clamp_min(self.eps)
         return (occupancy > 0.02).float().mean()
 
+    def _block_identifiability(
+        self,
+        phi: torch.Tensor,
+        s_hat: torch.Tensor,
+        weight: torch.Tensor,
+    ) -> torch.Tensor:
+        n_eff = weight.sum().square() / weight.square().sum().clamp_min(self.eps)
+        q_pa = self._coverage(s_hat.abs().float(), weight)
+        weighted_energy = (weight * s_hat.abs().square()).sum().clamp_min(self.eps)
+        impropriety = (weight.to(torch.complex64) * s_hat.square()).sum().abs() / weighted_energy
+        q_iq = (1.0 - impropriety).clamp(0.05, 1.0)
+        previous = torch.nn.functional.pad(s_hat[:-1], (1, 0))
+        correlation = (weight.to(torch.complex64) * s_hat * previous.conj()).sum().abs()
+        correlation = correlation / torch.sqrt(
+            weighted_energy * (weight * previous.abs().square()).sum().clamp_min(self.eps)
+        )
+        q_mem = ((1.0 - correlation) * (n_eff / float(max(1, phi.size(0))))).clamp(0.05, 1.0)
+        delta = s_hat - previous
+        q_dac = ((weight * delta.abs().square()).sum() / weighted_energy).clamp(0.05, 1.0)
+        return torch.stack([q_pa, q_iq, q_mem, q_dac]).float()
+
     def _block_regularization(
         self,
         phi: torch.Tensor,
-        target: torch.Tensor,
+        s_hat: torch.Tensor,
         weight: torch.Tensor,
         gram_trace_over_k: torch.Tensor,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
-        n_eff = weight.sum().square() / weight.square().sum().clamp_min(self.eps)
-        coverage = self._coverage(target.abs().float(), weight)
-        total_energy = phi.abs().square().mean().clamp_min(self.eps)
-        slew_energy = phi[..., 20:28].abs().square().mean() / total_energy
-        q_values = torch.stack(
-            [
-                coverage,
-                coverage,
-                (n_eff / float(max(1, phi.size(0)))).clamp(0.05, 1.0),
-                slew_energy.float().clamp(0.05, 1.0),
-            ]
-        ).clamp_min(0.05)
+        q_values = self._block_identifiability(phi, s_hat, weight)
+        if not self.block_shrinkage_enabled:
+            q_values = torch.ones_like(q_values)
         block_sizes = (8, 8, 4, 8)
         chunks = []
         for q_value, size in zip(q_values, block_sizes):
             value = self.alpha_lambda * gram_trace_over_k / (q_value + self.eps)
             chunks.append(value.expand(size))
-        return torch.cat(chunks), coverage
+        return torch.cat(chunks), q_values
 
     def forward(
         self,
         phi: torch.Tensor,
         target: torch.Tensor,
         content_confidence: torch.Tensor,
+        s_hat: Optional[torch.Tensor] = None,
     ) -> Dict[str, object]:
         if phi.ndim != 3 or int(phi.size(-1)) != 28 or not torch.is_complex(phi):
             raise ValueError("phi must be complex [batch, samples, 28]")
@@ -352,6 +394,11 @@ class WeightedRidgeLayer(nn.Module):
         coverages = []
         nmses = []
         normalized_weights = []
+        nuisance_coefficients = []
+        response_designs = []
+        response_targets = []
+        block_identifiability = []
+        lambda_diagonals = []
 
         with torch.autocast(device_type=phi.device.type, enabled=False):
             for batch_index in range(int(phi.size(0))):
@@ -361,19 +408,46 @@ class WeightedRidgeLayer(nn.Module):
                 weight = weight / weight.mean().clamp_min(self.eps)
                 normalized_weights.append(weight)
                 gram = design.conj().transpose(0, 1) @ (weight.unsqueeze(-1) * design)
-                rhs = design.conj().transpose(0, 1) @ (weight * response)
                 gram_trace_over_k = gram.diagonal().real.mean().clamp_min(self.eps)
-                lambda_diag, coverage = self._block_regularization(
-                    design, response, weight, gram_trace_over_k
+                excitation = response if s_hat is None else s_hat[batch_index].to(torch.complex64)
+                lambda_diag, q_values = self._block_regularization(
+                    design, excitation, weight, gram_trace_over_k
                 )
-                regularizer = torch.diag(lambda_diag).to(torch.complex64)
-                solved = self._cholesky_solve(gram + regularizer, rhs)
+                if s_hat is None:
+                    nuisance = design.new_zeros((design.size(0), 0))
+                    fp_design = design
+                else:
+                    nuisance = self.nuisance_dictionary(excitation)
+                    nuisance_gram = nuisance.conj().transpose(0, 1) @ (weight.unsqueeze(-1) * nuisance)
+                    nuisance_scale = nuisance_gram.diagonal().real.mean().clamp_min(self.eps)
+                    nuisance_reg = self.alpha_lambda * nuisance_scale
+                    nuisance_cross = nuisance.conj().transpose(0, 1) @ (weight.unsqueeze(-1) * design)
+                    projection = self._cholesky_solve(
+                        nuisance_gram + torch.eye(4, device=phi.device, dtype=torch.complex64) * nuisance_reg,
+                        nuisance_cross,
+                    )
+                    if projection is None:
+                        projection = torch.linalg.lstsq(
+                            nuisance_gram + torch.eye(4, device=phi.device, dtype=torch.complex64) * nuisance_reg,
+                            nuisance_cross,
+                        ).solution
+                    fp_design = design - nuisance @ projection
+                joint_design = torch.cat([nuisance, fp_design], dim=1)
+                joint_gram = joint_design.conj().transpose(0, 1) @ (weight.unsqueeze(-1) * joint_design)
+                rhs = joint_design.conj().transpose(0, 1) @ (weight * response)
+                nuisance_lambda = (
+                    gram_trace_over_k.expand(nuisance.size(1)).to(lambda_diag.dtype)
+                    * self.alpha_lambda
+                )
+                joint_lambda = torch.cat([nuisance_lambda, lambda_diag])
+                regularizer = torch.diag(joint_lambda).to(torch.complex64)
+                solved = self._cholesky_solve(joint_gram + regularizer, rhs)
                 info = 0
-                used_lambda = lambda_diag
+                used_lambda = joint_lambda
                 if solved is None:
-                    used_lambda = lambda_diag * 10.0
+                    used_lambda = joint_lambda * 10.0
                     solved = self._cholesky_solve(
-                        gram + torch.diag(used_lambda).to(torch.complex64), rhs
+                        joint_gram + torch.diag(used_lambda).to(torch.complex64), rhs
                     )
                     info = 1
                 if solved is None:
@@ -382,20 +456,24 @@ class WeightedRidgeLayer(nn.Module):
                     weighted_response = sqrt_weight * response
                     augmented_design = torch.cat(
                         [
-                            weighted_design,
+                            sqrt_weight.unsqueeze(-1) * joint_design,
                             torch.diag(used_lambda.clamp_min(0.0).sqrt()).to(torch.complex64),
                         ],
                         dim=0,
                     )
                     augmented_response = torch.cat(
-                        [weighted_response, torch.zeros(28, device=phi.device, dtype=torch.complex64)]
+                        [weighted_response, torch.zeros(joint_design.size(1), device=phi.device, dtype=torch.complex64)]
                     )
                     solved = torch.linalg.lstsq(augmented_design, augmented_response).solution
                     info = 2
 
-                fitted = design @ solved
+                nuisance_count = int(nuisance.size(1))
+                gamma = solved[:nuisance_count]
+                fp_coef = solved[nuisance_count:]
+                fitted = joint_design @ solved
                 residual = response - fitted
-                eig = torch.linalg.eigvalsh(gram).real.clamp_min(0.0)
+                fp_gram = fp_design.conj().transpose(0, 1) @ (weight.unsqueeze(-1) * fp_design)
+                eig = torch.linalg.eigvalsh(fp_gram).real.clamp_min(0.0)
                 spectrum_sum = eig.sum().clamp_min(self.eps)
                 probability = (eig / spectrum_sum).clamp_min(self.eps)
                 effective_rank = torch.exp(-(probability * probability.log()).sum())
@@ -404,22 +482,34 @@ class WeightedRidgeLayer(nn.Module):
                 nmse = (weight * residual.abs().square()).sum() / (
                     (weight * response.abs().square()).sum().clamp_min(self.eps)
                 )
-                system_diag = (gram.diagonal().real + used_lambda).clamp_min(self.eps)
+                system_diag = (joint_gram.diagonal().real + used_lambda).clamp_min(self.eps)
 
-                coefficients.append(solved)
-                covariance.append(system_diag.reciprocal())
+                coefficients.append(fp_coef)
+                covariance.append(system_diag[nuisance_count:].reciprocal())
+                nuisance_coefficients.append(gamma)
+                response_designs.append(fp_design)
+                response_targets.append(response - nuisance @ gamma)
+                block_identifiability.append(q_values)
+                lambda_diagonals.append(lambda_diag)
                 infos.append(info)
                 eigenvalues.append(eig)
                 log_conditions.append(condition.log())
                 effective_ranks.append(effective_rank)
                 effective_samples.append(n_eff)
-                coverages.append(coverage)
+                coverages.append(q_values[0])
                 nmses.append(nmse.real)
 
         return {
             "resp_coef": torch.stack(coefficients, dim=0),
             "resp_cov_diag": torch.stack(covariance, dim=0),
             "weights": torch.stack(normalized_weights, dim=0),
+            "nuisance_reg_coef": torch.nn.utils.rnn.pad_sequence(
+                nuisance_coefficients, batch_first=True
+            ),
+            "response_design": torch.stack(response_designs, dim=0),
+            "response_target": torch.stack(response_targets, dim=0),
+            "block_identifiability": torch.stack(block_identifiability, dim=0),
+            "lambda_diag": torch.stack(lambda_diagonals, dim=0),
             "ridge_info": torch.tensor(infos, device=phi.device, dtype=torch.long),
             "resp_quality": {
                 "gram_eigenvalues": torch.stack(eigenvalues, dim=0),
@@ -433,22 +523,23 @@ class WeightedRidgeLayer(nn.Module):
 
 
 class SurfaceAnchorEncoder(nn.Module):
-    """Evaluate a fitted response on one fixed 32-point complex excitation grid."""
+    """Evaluate the surface on the report's eight anchors, then encode 16 real values to 64D."""
 
-    def __init__(self, response_basis: ResponseBasis, variance_temperature: float = 1.0):
+    def __init__(self, response_basis: ResponseBasis, variance_temperature: float = 1.0, response_dim: int = 64):
         super().__init__()
         amplitudes = torch.tensor(
             [0.15, 0.30, 0.45, 0.60, 0.75, 0.90, 1.05, 1.20], dtype=torch.float32
         )
-        phases = torch.tensor([0.0, 0.5 * math.pi, math.pi, 1.5 * math.pi])
-        anchor_grid = (
-            amplitudes[:, None] * torch.exp(torch.complex(torch.zeros_like(phases), phases))[None, :]
-        ).reshape(1, 32).to(torch.complex64)
+        anchor_grid = torch.complex(amplitudes, torch.zeros_like(amplitudes)).reshape(1, 8)
         with torch.no_grad():
             anchor_design = response_basis(anchor_grid).squeeze(0)
         self.register_buffer("anchor_grid", anchor_grid.squeeze(0), persistent=True)
         self.register_buffer("anchor_design", anchor_design, persistent=True)
         self.variance_temperature = float(variance_temperature)
+        if int(response_dim) != 64:
+            raise ValueError("ADV3B02-ECRS-V1 fixes response_dim=64")
+        self.encoder = nn.Linear(16, 64, bias=False)
+        nn.init.orthogonal_(self.encoder.weight)
 
     def forward(
         self,
@@ -465,7 +556,8 @@ class SurfaceAnchorEncoder(nn.Module):
             -variance / max(self.variance_temperature, 1e-6)
         )
         weighted_anchor = anchor * reliability.sqrt().to(torch.complex64)
-        z_resp = torch.cat([weighted_anchor.real, weighted_anchor.imag], dim=1)
+        anchor_features = torch.cat([weighted_anchor.real, weighted_anchor.imag], dim=1).float()
+        z_resp = self.encoder(anchor_features)
         z_resp = torch.nn.functional.normalize(z_resp.float(), dim=1, eps=1e-6)
         return anchor, z_resp, variance, reliability
 
@@ -529,7 +621,7 @@ class ResponseSurfaceBranch(nn.Module):
         response_basis_dim: int = 28,
         response_dim: int = 64,
         rho_max: float = 0.25,
-        ridge_alpha: float = 1e-4,
+        ridge_alpha: float = 0.01,
         basis_mode: str = "fixed_spline",
     ):
         super().__init__()
@@ -546,7 +638,7 @@ class ResponseSurfaceBranch(nn.Module):
         self.canonicalizer = AnalyticCanonicalizer()
         self.content_estimator = ContentEstimator()
         self.weighted_ridge = WeightedRidgeLayer(alpha_lambda=float(ridge_alpha))
-        self.anchor_encoder = SurfaceAnchorEncoder(self.response_basis)
+        self.anchor_encoder = SurfaceAnchorEncoder(self.response_basis, response_dim=int(response_dim))
         self.fusion_gate = ResponseFusionGate(rho_max=float(rho_max))
         self.response_projection = nn.Linear(64, self.identity_dim, bias=False)
         nn.init.normal_(self.response_projection.weight, mean=0.0, std=1e-3)
@@ -580,6 +672,7 @@ class ResponseSurfaceBranch(nn.Module):
             "M_ref": self.M_ref.detach().cpu().clone(),
             "anchor_grid": self.anchor_encoder.anchor_grid.detach().cpu().clone(),
             "anchor_design": self.anchor_encoder.anchor_design.detach().cpu().clone(),
+            "anchor_encoder": self._cpu_state(self.anchor_encoder.encoder),
             "normalization": {
                 "mode": "unit_l2",
                 "center": self.z_resp_center.detach().cpu().clone(),
@@ -597,9 +690,13 @@ class ResponseSurfaceBranch(nn.Module):
         nuisance_coef = self.nuisance_estimator(x)
         canonical_iq = self.canonicalizer(x, nuisance_coef)
         s_hat, content_confidence = self.content_estimator(canonical_iq)
+        content_mask = (torch.arange(x.size(-1), device=x.device) % 4 == 0).reshape(1, -1)
+        masked_iq = canonical_iq.masked_fill(content_mask.unsqueeze(1), 0.0)
+        masked_s_hat, _ = self.content_estimator(masked_iq)
+        cycle_iq = self.canonicalizer.inverse(canonical_iq, nuisance_coef)
         design = self.response_basis(s_hat)
         ridge = self.weighted_ridge(
-            design, iq_to_complex(canonical_iq), content_confidence
+            design, iq_to_complex(canonical_iq), content_confidence, s_hat=s_hat
         )
         quality = dict(ridge["resp_quality"])
         quality["snr_db"] = -10.0 * torch.log10(quality["nmse"].clamp_min(1e-8))
@@ -628,7 +725,16 @@ class ResponseSurfaceBranch(nn.Module):
             "content_confidence": content_confidence,
             "canonical_iq": canonical_iq,
             "s_hat": s_hat,
-            "response_design": design,
+            "masked_s_hat": masked_s_hat,
+            "content_mask": content_mask.expand(x.size(0), -1),
+            "cycle_iq": cycle_iq,
+            "input_iq": x,
+            "response_design": ridge["response_design"],
+            "response_design_raw": design,
+            "response_target": ridge["response_target"],
+            "nuisance_reg_coef": ridge["nuisance_reg_coef"],
+            "block_identifiability": ridge["block_identifiability"],
+            "ridge_lambda_diag": ridge["lambda_diag"],
             "response_weights": ridge["weights"],
             "ridge_info": ridge["ridge_info"],
             "rho_resp": rho,

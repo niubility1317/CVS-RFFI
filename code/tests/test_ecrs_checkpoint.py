@@ -68,6 +68,8 @@ def test_ecrs_checkpoint_roundtrip_preserves_single_view_inference(tmp_path: Pat
     ):
         assert key in bundle
     assert bundle["single_view_inference"] is True
+    assert bundle["anchor_grid"].numel() == 8
+    assert bundle["anchor_encoder"]["weight"].shape == (64, 16)
 
     restored = _model(True).eval()
     restored.load_state_dict(payload["model"], strict=True)

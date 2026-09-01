@@ -42,6 +42,13 @@ def unpack_batch(batch):
 def extract_domain_from_extra(extra, device) -> Optional[torch.Tensor]:
     if extra is None or len(extra) == 0:
         return None
+    d0 = extra[0]
+    if torch.is_tensor(d0):
+        return d0.to(device, non_blocking=True).view(-1)
+    try:
+        return torch.as_tensor(d0, device=device).view(-1)
+    except Exception:
+        return None
 
 
 def extract_meta_from_extra(extra) -> Optional[Dict[str, Any]]:
@@ -126,15 +133,6 @@ def build_ecrs_pair_metadata(
         "leo_mask": ~clean_mask,
         "sat_meta": dict(sat_meta or {}),
     }
-    d0 = extra[0]
-    if torch.is_tensor(d0):
-        return d0.to(device, non_blocking=True).view(-1)
-    try:
-        return torch.as_tensor(d0, device=device).view(-1)
-    except Exception:
-        return None
-
-
 def parse_csv_indices(s: str):
     s = str(s).strip()
     if s == "":

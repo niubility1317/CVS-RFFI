@@ -751,8 +751,75 @@ def satellite_auxiliary_losses(
     }
 
 
+def effective_concat_sat_ce_weight(args, epoch: int) -> float:
+    """Keep ECRS paired views active while delaying Core90 satellite auxiliary CE."""
+    if int(epoch) < int(getattr(args, "concat_sat_ce_start_epoch", 1)):
+        return 0.0
+    return float(getattr(args, "concat_sat_ce_weight", 1.0))
+
+
+def validate_ecrs_v1_hyperparameters(args) -> None:
+    ranges = {
+        "lambda_ecrs_split_fit": (0.05, 0.20),
+        "lambda_ecrs_pair_cross": (0.05, 0.20),
+        "lambda_ecrs_pair_surface": (0.01, 0.05),
+        "lambda_ecrs_same_tx": (0.02, 0.10),
+        "lambda_ecrs_diff_tx": (0.01, 0.05),
+        "ecrs_alpha_resp": (0.10, 0.30),
+        "lambda_ecrs_canonical": (0.05, 0.20),
+        "ecrs_ridge_alpha": (1e-3, 1e-1),
+    }
+    for name, (lower, upper) in ranges.items():
+        value = float(getattr(args, name))
+        if not lower <= value <= upper:
+            raise ValueError(f"--{name} must be within report V1 range [{lower}, {upper}], got {value}")
+
+
 def _complex_from_iq(x: torch.Tensor) -> torch.Tensor:
     return torch.complex(x[:, 0].float(), x[:, 1].float())
+
+
+def _ecrs_weighted_complex_nmse(
+    prediction: torch.Tensor,
+    target: torch.Tensor,
+    weight: torch.Tensor,
+) -> torch.Tensor:
+    weight = weight.float().clamp_min(0.05)
+    return (weight * (prediction - target).abs().square()).sum() / (
+        (weight * target.abs().square()).sum().clamp_min(1e-6)
+    )
+
+
+def ecrs_pair_directional_prediction_errors(
+    out_clean: Dict[str, Any],
+    out_leo: Dict[str, Any],
+) -> Tuple[torch.Tensor, torch.Tensor]:
+    """Report E_clean->LEO and E_LEO->clean separately, as required by Section15.2."""
+    batch_size = int(out_clean["resp_coef"].size(0))
+    if int(out_leo["resp_coef"].size(0)) != batch_size:
+        raise ValueError("clean and LEO paired outputs must have the same batch size")
+    clean_to_leo = []
+    leo_to_clean = []
+    for index in range(batch_size):
+        clean_to_leo.append(
+            _ecrs_weighted_complex_nmse(
+                out_leo["response_design"][index] @ out_clean["resp_coef"][index],
+                out_leo["response_target"][index],
+                out_leo["response_weights"][index],
+            )
+        )
+        leo_to_clean.append(
+            _ecrs_weighted_complex_nmse(
+                out_clean["response_design"][index] @ out_leo["resp_coef"][index],
+                out_clean["response_target"][index],
+                out_clean["response_weights"][index],
+            )
+        )
+    zero = out_clean["resp_coef"].real.sum() * 0.0
+    return (
+        torch.stack(clean_to_leo).mean() if clean_to_leo else zero,
+        torch.stack(leo_to_clean).mean() if leo_to_clean else zero,
+    )
 
 
 def compute_ecrs_paired_losses(
@@ -781,9 +848,15 @@ def compute_ecrs_paired_losses(
         for key in (
             "resp_coef",
             "response_design",
+            "response_target",
             "response_weights",
             "resp_anchor",
+            "z_resp",
             "s_hat",
+            "masked_s_hat",
+            "content_mask",
+            "cycle_iq",
+            "input_iq",
             "canonical_iq",
             "rho_resp",
             "tx_logits",
@@ -791,7 +864,16 @@ def compute_ecrs_paired_losses(
             "resp_tx_logits",
         )
     }
-    target = _complex_from_iq(combined["canonical_iq"])
+    target = combined["response_target"]
+    canonical_target = _complex_from_iq(combined["canonical_iq"])
+    content_mask = combined["content_mask"].bool()
+    masked_reconstruction = (
+        (combined["masked_s_hat"] - canonical_target.detach()).abs().square()[content_mask].mean()
+        / canonical_target.detach().abs().square()[content_mask].mean().clamp_min(1e-6)
+    )
+    cycle_nmse = (combined["cycle_iq"] - combined["input_iq"]).square().mean() / (
+        combined["input_iq"].square().mean().clamp_min(1e-6)
+    )
     amplitude = combined["s_hat"].abs().float()
     split_fit = (
         response_split_fit_loss(
@@ -833,6 +915,14 @@ def compute_ecrs_paired_losses(
                 )
             )
     pair_surface = torch.stack(pair_surface_terms).mean() if pair_surface_terms else zero
+    pair_embedding = (
+        (1.0 - torch.nn.functional.cosine_similarity(out_clean["z_resp"], out_leo["z_resp"], dim=1)).mean()
+        if bool(stage_state.get("pair_surface", False))
+        else zero
+    )
+    clean_to_leo_nmse, leo_to_clean_nmse = ecrs_pair_directional_prediction_errors(
+        out_clean, out_leo
+    )
 
     raw_ce = zero
     resp_ce = zero
@@ -869,6 +959,11 @@ def compute_ecrs_paired_losses(
                     pair_meta["day_id"],
                     list(pair_meta["view_type"]),
                     valid,
+                    combined["s_hat"],
+                    torch.cat(
+                        [out_clean["resp_quality"]["snr_db"], out_leo["resp_quality"]["snr_db"]],
+                        dim=0,
+                    ),
                 )
                 different_tx_prediction_error = different_tx_cross_response_error(
                     combined["resp_coef"],
@@ -889,10 +984,11 @@ def compute_ecrs_paired_losses(
 
     total = (
         float(args.lambda_ecrs_canonical) * float(stage_state["canonical_scale"]) * canonical_nmse
-        + float(args.lambda_ecrs_content) * float(stage_state["content_scale"]) * content_nmse
+        + float(args.lambda_ecrs_content) * float(stage_state["content_scale"]) * (content_nmse + masked_reconstruction)
+        + float(args.lambda_ecrs_cycle) * float(stage_state["cycle_scale"]) * cycle_nmse
         + float(args.lambda_ecrs_split_fit) * float(stage_state["split_fit_scale"]) * split_fit
         + float(args.lambda_ecrs_pair_cross) * float(stage_state["pair_cross_scale"]) * pair_cross
-        + float(args.lambda_ecrs_pair_surface) * pair_surface
+        + float(args.lambda_ecrs_pair_surface) * (pair_surface + pair_embedding)
         + float(args.ecrs_raw_ce_weight) * raw_ce
         + float(args.ecrs_alpha_resp) * float(stage_state["resp_cls_scale"]) * resp_ce
         + float(args.lambda_ecrs_same_tx) * float(stage_state["same_tx_scale"]) * same_tx
@@ -903,9 +999,14 @@ def compute_ecrs_paired_losses(
         "loss": total,
         "canonical": canonical_nmse,
         "content": content_nmse,
+        "masked_reconstruction": masked_reconstruction,
+        "cycle": cycle_nmse,
         "split_fit": split_fit,
         "pair_cross": pair_cross,
+        "clean_to_leo_nmse": clean_to_leo_nmse,
+        "leo_to_clean_nmse": leo_to_clean_nmse,
         "pair_surface": pair_surface,
+        "pair_embedding": pair_embedding,
         "raw_ce": raw_ce,
         "resp_ce": resp_ce,
         "same_tx": same_tx,
@@ -957,6 +1058,123 @@ def build_ecrs_negative_controls(
     return controls
 
 
+def _ecrs_s_hat_summary(s_hat: torch.Tensor) -> torch.Tensor:
+    iq = torch.view_as_real(s_hat.to(torch.complex64)).permute(0, 2, 1).float()
+    return torch.nn.functional.adaptive_avg_pool1d(iq, 32).flatten(1)
+
+
+def _ecrs_to_cpu(value: Any) -> Any:
+    if torch.is_tensor(value):
+        return value.detach().cpu()
+    if isinstance(value, dict):
+        return {str(key): _ecrs_to_cpu(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_ecrs_to_cpu(item) for item in value]
+    return value
+
+
+def build_ecrs_v1_diagnostic_record(
+    out_clean: Dict[str, Any],
+    out_leo: Dict[str, Any],
+    pair_meta: Dict[str, Any],
+    *,
+    tx_labels: Optional[torch.Tensor],
+    include_negative_controls: bool = False,
+) -> Dict[str, Any]:
+    """Build a compact source-only record for Section27 probes and Section28 controls."""
+    combined = {
+        key: torch.cat([out_clean[key], out_leo[key]], dim=0)
+        for key in (
+            "z_resp",
+            "s_hat",
+            "resp_coef",
+            "nuisance_reg_coef",
+            "nuisance_coef",
+            "resp_anchor",
+            "resp_cov_diag",
+            "block_identifiability",
+        )
+    }
+    batch_size = int(out_clean["z_resp"].size(0))
+    if tx_labels is None:
+        tx_both = torch.full(
+            (batch_size * 2,), -1, device=combined["z_resp"].device, dtype=torch.long
+        )
+    else:
+        tx = tx_labels.to(device=combined["z_resp"].device).long().reshape(-1)
+        tx_both = torch.cat([tx, tx], dim=0)
+    view_labels = torch.cat(
+        [
+            torch.zeros(batch_size, device=combined["z_resp"].device, dtype=torch.long),
+            torch.ones(batch_size, device=combined["z_resp"].device, dtype=torch.long),
+        ]
+    )
+    clean_to_leo, leo_to_clean = ecrs_pair_directional_prediction_errors(
+        out_clean, out_leo
+    )
+    safe_pair_meta = {
+        key: _ecrs_to_cpu(pair_meta[key])
+        for key in (
+            "physical_sample_id",
+            "pair_id",
+            "view_type",
+            "label_mask",
+            "receiver_id",
+            "day_id",
+            "crop_offset",
+            "synchronized_crop",
+        )
+        if key in pair_meta
+    }
+    record = {
+        "source_only": True,
+        "pair_metadata": safe_pair_meta,
+        "directional_prediction": {
+            "clean_to_leo_nmse": clean_to_leo.detach().cpu(),
+            "leo_to_clean_nmse": leo_to_clean.detach().cpu(),
+        },
+        "probe_payload": _ecrs_to_cpu(
+            {
+                "z_resp": combined["z_resp"],
+                "s_hat_summary": _ecrs_s_hat_summary(combined["s_hat"]),
+                "c_fp": torch.view_as_real(combined["resp_coef"]).flatten(1),
+                "gamma_nuis": torch.view_as_real(combined["nuisance_reg_coef"]).flatten(1),
+                "canonical_nuisance": combined["nuisance_coef"],
+                "tx_labels": tx_both,
+                "receiver_labels": pair_meta["receiver_id"],
+                "view_labels": view_labels,
+            }
+        ),
+        "surface_export": _ecrs_to_cpu(
+            {
+                "resp_anchor": combined["resp_anchor"],
+                "resp_coef": combined["resp_coef"],
+                "resp_cov_diag": combined["resp_cov_diag"],
+                "block_identifiability": combined["block_identifiability"],
+                "tx_labels": tx_both,
+                "receiver_labels": pair_meta["receiver_id"],
+                "view_labels": view_labels,
+            }
+        ),
+    }
+    if include_negative_controls:
+        clean_pair_ids = list(pair_meta.get("pair_id", []))[:batch_size]
+        leo_pair_ids = list(pair_meta.get("pair_id", []))[batch_size:]
+        record["negative_controls"] = {
+            "clean": _ecrs_to_cpu(build_ecrs_negative_controls(out_clean, clean_pair_ids)),
+            "leo": _ecrs_to_cpu(build_ecrs_negative_controls(out_leo, leo_pair_ids)),
+        }
+    return record
+
+
+def save_ecrs_v1_diagnostic_artifact(path: Any, payload: Dict[str, Any]) -> None:
+    target = os.path.abspath(os.fspath(path))
+    if os.path.exists(target):
+        raise FileExistsError(f"refusing to overwrite ECRS diagnostic artifact: {target}")
+    os.makedirs(os.path.dirname(target), exist_ok=True)
+    torch.save(_ecrs_to_cpu(payload), target)
+
+
 def summarize_ecrs_diagnostics(
     out: Dict[str, Any],
     *,
@@ -1000,6 +1218,10 @@ def summarize_ecrs_diagnostics(
         "rho_resp": out["rho_resp"].detach(),
         "probe_payload": {
             "z_resp": out["z_resp"].detach(),
+            "s_hat_summary": _ecrs_s_hat_summary(out["s_hat"]).detach(),
+            "c_fp": torch.view_as_real(out["resp_coef"]).flatten(1).detach(),
+            "gamma_nuis": torch.view_as_real(out["nuisance_reg_coef"]).flatten(1).detach(),
+            "canonical_nuisance": out["nuisance_coef"].detach(),
             "tx_labels": None if tx_labels is None else tx_labels.detach(),
             "receiver_labels": None if receiver_labels is None else receiver_labels.detach(),
         },
@@ -1007,6 +1229,7 @@ def summarize_ecrs_diagnostics(
             "resp_anchor": out["resp_anchor"].detach(),
             "resp_coef": out["resp_coef"].detach(),
             "resp_cov_diag": out["resp_cov_diag"].detach(),
+            "block_identifiability": out["block_identifiability"].detach(),
         },
     }
 
@@ -2449,14 +2672,15 @@ def main():
                         choices=[f"R{i}" for i in range(9)])
     parser.add_argument("--ecrs_basis_mode", type=str, default="fixed_spline",
                         choices=["fixed_spline", "fixed_mp"])
-    parser.add_argument("--ecrs_ridge_alpha", type=float, default=1e-4)
-    parser.add_argument("--lambda_ecrs_canonical", type=float, default=1.0)
-    parser.add_argument("--lambda_ecrs_content", type=float, default=1.0)
-    parser.add_argument("--lambda_ecrs_split_fit", type=float, default=1.0)
-    parser.add_argument("--lambda_ecrs_pair_cross", type=float, default=1.0)
-    parser.add_argument("--lambda_ecrs_pair_surface", type=float, default=0.25)
-    parser.add_argument("--lambda_ecrs_same_tx", type=float, default=0.25)
-    parser.add_argument("--lambda_ecrs_diff_tx", type=float, default=0.10)
+    parser.add_argument("--ecrs_ridge_alpha", type=float, default=0.01)
+    parser.add_argument("--lambda_ecrs_canonical", type=float, default=0.10)
+    parser.add_argument("--lambda_ecrs_content", type=float, default=0.10)
+    parser.add_argument("--lambda_ecrs_cycle", type=float, default=0.10)
+    parser.add_argument("--lambda_ecrs_split_fit", type=float, default=0.10)
+    parser.add_argument("--lambda_ecrs_pair_cross", type=float, default=0.10)
+    parser.add_argument("--lambda_ecrs_pair_surface", type=float, default=0.03)
+    parser.add_argument("--lambda_ecrs_same_tx", type=float, default=0.05)
+    parser.add_argument("--lambda_ecrs_diff_tx", type=float, default=0.03)
     parser.add_argument("--lambda_ecrs_gate", type=float, default=0.10)
     parser.add_argument("--id_time_stability_mode", type=str, default="off", choices=["off", "phase_delta"],
                         help="Optional complex time-stability cues for the ID backbone.")
@@ -2773,6 +2997,8 @@ def main():
                         help="Seed offset for baseline-style satellite-view expansion in federated training.")
     parser.add_argument("--concat_sat_start_epoch", type=int, default=1,
                         help="First epoch to enable concatenated satellite-channel supervised view expansion.")
+    parser.add_argument("--concat_sat_ce_start_epoch", type=int, default=1,
+                        help="First epoch that CE-only satellite views contribute auxiliary CE.")
     parser.add_argument("--lambda_sat_cons", type=float, default=0.0,
                         help="Cosine-distance consistency weight between clean and satellite z_id features.")
     parser.add_argument("--lambda_sat_cls", type=float, default=0.0,
@@ -2956,6 +3182,10 @@ def main():
     use_concat_sat = bool(getattr(args, "use_concat_sat_channel_aug", False))
     if float(getattr(args, "concat_sat_ce_weight", 1.0)) < 0.0:
         raise ValueError("--concat_sat_ce_weight must be >= 0")
+    if int(getattr(args, "concat_sat_ce_start_epoch", 1)) < 1:
+        raise ValueError("--concat_sat_ce_start_epoch must be >= 1")
+    if bool(getattr(args, "use_ecrs", False)):
+        validate_ecrs_v1_hyperparameters(args)
     if float(getattr(args, "fl_baseline_view_ce_weight", 1.0)) < 0.0:
         raise ValueError("--fl_baseline_view_ce_weight must be >= 0")
     if bool(getattr(args, "concat_sat_ce_only", False)) and not use_concat_sat:
@@ -3624,6 +3854,7 @@ def main():
     ema_avg = AveragedModelState("ema", decay=float(args.ema_decay)) if bool(args.use_ema_ckpt) else None
     swa_avg = AveragedModelState("swa") if bool(args.use_swa_ckpt) else None
     swad_avg = AveragedModelState("swad") if bool(args.use_swad_ckpt) else None
+    ecrs_final_diagnostic_records: List[Dict[str, Any]] = []
 
     for epoch in range(1, args.epochs + 1):
         model.train()
@@ -3651,6 +3882,8 @@ def main():
             "ecrs_loss", "ecrs_nmse", "ecrs_log_condition", "ecrs_effective_rank",
             "ecrs_effective_samples", "ecrs_coverage", "ecrs_ridge_fallback", "ecrs_rho",
             "ecrs_same_diff_ratio", "ecrs_gate_rescue", "ecrs_gate_harm", "ecrs_gate_net_gain",
+            "ecrs_clean_to_leo", "ecrs_leo_to_clean", "ecrs_pair_surface", "ecrs_pair_embedding",
+            "ecrs_masked_reconstruction", "ecrs_cycle",
             "w_cls", "w_dom", "w_adv", "w_orth", "w_cons", "w_group_ce",
             "w_cls_pa", "w_cls_dac", "w_pa_joint_inv", "w_pa_kl", "w_dac_reg", "w_pa_reg",
             "w_sat_cls", "w_sat_cons", "w_proto", "w_supcon", "w_fishr", "w_open_world_feat", "w_feature_norm",
@@ -3827,6 +4060,7 @@ def main():
                 loss_sat_cons = z_id.new_tensor(0.0)
                 loss_ecrs = z_id.new_tensor(0.0)
                 ecrs_diagnostics = None
+                ecrs_losses = None
                 out_sat = None
                 sat_pair_meta = None
                 sat_cos = float("nan")
@@ -3877,7 +4111,7 @@ def main():
                 elif concat_sat_ce_view is not None:
                     x_sat_train = safe_iq_tensor(concat_sat_ce_view.x)
                     out_sat = forward_main(model, x_sat_train, y, float(args.grl_lambda), domain_labels=d_raw)
-                    sat_cls_weight = float(args.concat_sat_ce_weight)
+                    sat_cls_weight = effective_concat_sat_ce_weight(args, epoch)
                     sat_aux_losses = satellite_auxiliary_losses(
                         out_sat,
                         y,
@@ -3917,6 +4151,16 @@ def main():
                         raw_correct=ecrs_losses["raw_correct"],
                         fused_correct=ecrs_losses["fused_correct"],
                     )
+                    if epoch == int(args.epochs):
+                        ecrs_final_diagnostic_records.append(
+                            build_ecrs_v1_diagnostic_record(
+                                out_ecrs_clean,
+                                out_sat,
+                                sat_pair_meta,
+                                tx_labels=y,
+                                include_negative_controls=(len(ecrs_final_diagnostic_records) == 0),
+                            )
+                        )
 
                 if (
                     bool(args.use_ecrs)
@@ -3960,6 +4204,16 @@ def main():
                         args,
                     )
                     loss_ecrs = loss_ecrs + unlabeled_ecrs_losses["loss"]
+                    if epoch == int(args.epochs):
+                        ecrs_final_diagnostic_records.append(
+                            build_ecrs_v1_diagnostic_record(
+                                out_u_clean,
+                                out_u_leo,
+                                unlabeled_view.pair_meta,
+                                tx_labels=None,
+                                include_negative_controls=(len(ecrs_final_diagnostic_records) == 0),
+                            )
+                        )
 
                 dg_feat = select_generalization_feature(out_main, str(args.generalization_feature))
                 loss_proto = z_id.new_tensor(0.0)
@@ -4146,6 +4400,15 @@ def main():
                 meters["ecrs_gate_rescue"].update(float(ecrs_diagnostics["gate_rescue_count"]), 1)
                 meters["ecrs_gate_harm"].update(float(ecrs_diagnostics["gate_harm_count"]), 1)
                 meters["ecrs_gate_net_gain"].update(float(ecrs_diagnostics["gate_net_gain"]), 1)
+            if ecrs_losses is not None:
+                meters["ecrs_clean_to_leo"].update(ecrs_losses["clean_to_leo_nmse"].item(), bsz)
+                meters["ecrs_leo_to_clean"].update(ecrs_losses["leo_to_clean_nmse"].item(), bsz)
+                meters["ecrs_pair_surface"].update(ecrs_losses["pair_surface"].item(), bsz)
+                meters["ecrs_pair_embedding"].update(ecrs_losses["pair_embedding"].item(), bsz)
+                meters["ecrs_masked_reconstruction"].update(
+                    ecrs_losses["masked_reconstruction"].item(), bsz
+                )
+                meters["ecrs_cycle"].update(ecrs_losses["cycle"].item(), bsz)
             meters["proto"].update(loss_proto.item(), bsz)
             meters["proto_pull_cos"].update(proto_info.get("proto_pull_cos", float("nan")), bsz)
             meters["supcon"].update(loss_supcon.item(), bsz)
@@ -4196,6 +4459,28 @@ def main():
             meters["grad_backbone"].update(grad_stats["grad_backbone"], bsz)
             meters["grad_aux"].update(grad_stats["grad_aux"], bsz)
             meters["grad_domain"].update(grad_stats["grad_domain"], bsz)
+
+        if bool(args.use_ecrs) and epoch == int(args.epochs):
+            if not ecrs_final_diagnostic_records:
+                raise RuntimeError(
+                    "ECRS V1 final epoch produced no synchronized clean/LEO diagnostic records"
+                )
+            ecrs_diagnostic_path = os.path.join(
+                os.path.dirname(os.path.abspath(args.latest_save_path)),
+                "ecrs_v1_diagnostics.pt",
+            )
+            save_ecrs_v1_diagnostic_artifact(
+                ecrs_diagnostic_path,
+                {
+                    "schema": "adv3b02_ecrs_v1_diagnostics_v1",
+                    "feature_schema": "ADV3B02:ECRS:z_fused:unit_l2:160:v1",
+                    "source_only": True,
+                    "epoch": int(epoch),
+                    "rung": str(args.ecrs_rung),
+                    "records": ecrs_final_diagnostic_records,
+                },
+            )
+            print(f"[ECRS-DIAGNOSTICS] saved={ecrs_diagnostic_path}", flush=True)
 
         scheduler.step()
         train_time_s = time.perf_counter() - epoch_t0
@@ -4357,6 +4642,12 @@ def main():
             "train_ecrs_gate_rescue_per_batch": meters["ecrs_gate_rescue"].avg,
             "train_ecrs_gate_harm_per_batch": meters["ecrs_gate_harm"].avg,
             "train_ecrs_gate_net_gain_per_batch": meters["ecrs_gate_net_gain"].avg,
+            "train_ecrs_clean_to_leo_nmse": meters["ecrs_clean_to_leo"].avg,
+            "train_ecrs_leo_to_clean_nmse": meters["ecrs_leo_to_clean"].avg,
+            "train_ecrs_pair_surface": meters["ecrs_pair_surface"].avg,
+            "train_ecrs_pair_embedding": meters["ecrs_pair_embedding"].avg,
+            "train_ecrs_masked_reconstruction_nmse": meters["ecrs_masked_reconstruction"].avg,
+            "train_ecrs_cycle_nmse": meters["ecrs_cycle"].avg,
             "test_named": named_test_stats,
             "sat_test_named": sat_test_stats,
             "meta_ssl_enabled": bool(meta_ssl_enabled),

@@ -61,7 +61,8 @@ def test_meta_ssl_split_masks_unlabeled_tx_and_is_disjoint():
     assert meta_labeled["tx_label_visible"] is True
     assert y_unlabeled == -1
     assert meta_unlabeled["tx_label_visible"] is False
-    assert "true_tx_i" in meta_unlabeled
+    for forbidden in ("true_tx_i", "tx", "tx_i", "tx_label", "y_tx"):
+        assert forbidden not in meta_unlabeled
     assert y_val >= 0
     assert meta_val["meta_ssl_role"] == "source_val"
 

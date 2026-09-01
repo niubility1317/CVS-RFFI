@@ -45,6 +45,10 @@ def test_stage2_and_stage4_parameter_routes_follow_report() -> None:
     assert all(p.requires_grad for p in model.ecrs.content_estimator.parameters())
     assert not any(p.requires_grad for p in model.ecrs.response_projection.parameters())
 
+    stage3 = configure_ecrs_for_epoch(model, 60, args)
+    assert stage3["stage"] == 3
+    assert all(p.requires_grad for p in model.ecrs.anchor_encoder.encoder.parameters())
+
     stage4 = configure_ecrs_for_epoch(model, 120, args)
     assert stage4["stage"] == 4
     assert all(p.requires_grad for p in model.ecrs.response_projection.parameters())

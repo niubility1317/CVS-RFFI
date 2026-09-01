@@ -93,7 +93,16 @@ def test_labeled_response_losses_require_cross_receiver_positive_and_matched_neg
         label_mask,
     )
     ranking = different_tx_response_ranking_loss(
-        anchor, variance, labels, receiver, day, ["clean"] * 4, label_mask, margin=0.5
+        anchor,
+        variance,
+        labels,
+        receiver,
+        day,
+        ["clean"] * 4,
+        label_mask,
+        torch.ones(4, 48, dtype=torch.complex64),
+        torch.full((4,), 15.0),
+        margin=0.5,
     )
     different = different_tx_cross_response_error(
         coefficient,

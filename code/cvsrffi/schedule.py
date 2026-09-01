@@ -154,6 +154,7 @@ def build_ecrs_stage_state(
         "active_rho_max": 0.0,
         "canonical_scale": 1.0 if stage == 2 else (0.25 if stage >= 3 else 0.0),
         "content_scale": 1.0 if stage == 2 else (0.50 if stage >= 3 else 0.0),
+        "cycle_scale": 1.0 if stage == 2 else 0.0,
         "split_fit_scale": 1.0 if stage >= 3 else 0.0,
         "pair_cross_scale": 1.0 if stage >= 3 else 0.0,
         "resp_cls_scale": 1.0 if stage >= 4 else 0.0,
@@ -210,8 +211,11 @@ def apply_ecrs_rung_mask(state: Dict[str, Any], rung: str) -> Dict[str, Any]:
     out["resp_cls"] = bool(out["resp_cls"] and level >= 7)
     out["diff_tx"] = bool(out["diff_tx"] and level >= 7)
     out["gate_calibration"] = bool(out["gate_calibration"] and level >= 8)
+    out["identifiability_shrinkage"] = level >= 5
     if level < 8:
         out["active_rho_max"] = 0.0
+    if not out["cycle"]:
+        out["cycle_scale"] = 0.0
     for key, enabled_key in (
         ("canonical_scale", "canonical"),
         ("content_scale", "content"),
@@ -248,11 +252,15 @@ def configure_ecrs_for_epoch(model, epoch: int, args) -> Dict[str, Any]:
     if state["content"]:
         for parameter in branch.content_estimator.parameters():
             parameter.requires_grad_(True)
+    if state["pair_surface"]:
+        for parameter in branch.anchor_encoder.encoder.parameters():
+            parameter.requires_grad_(True)
     if state["resp_cls"]:
         for module in (branch.response_projection, branch.fusion_gate):
             for parameter in module.parameters():
                 parameter.requires_grad_(True)
     branch.detach_identification_for_identity = True
+    branch.weighted_ridge.set_block_shrinkage(bool(state["identifiability_shrinkage"]))
     branch.fusion_gate.set_active_rho_max(float(state["active_rho_max"]))
     state["enabled"] = True
     return state

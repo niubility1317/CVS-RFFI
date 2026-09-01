@@ -2,11 +2,18 @@ from __future__ import annotations
 
 import os
 import subprocess
+import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = PROJECT_ROOT / "code" / "scripts" / "launch_phase1_adv3b02_ecrs_v1_20260901.sh"
+CODE_ROOT = PROJECT_ROOT / "code"
+if str(CODE_ROOT) not in sys.path:
+    sys.path.insert(0, str(CODE_ROOT))
+
+from train import effective_concat_sat_ce_weight, validate_ecrs_v1_hyperparameters  # noqa: E402
 
 
 def _bash_executable() -> str:
@@ -27,6 +34,8 @@ def test_launcher_dry_run_freezes_report_v1_contract() -> None:
     output = result.stdout
     assert output.count("[ECRS-V1-CANDIDATE]") == 9
     assert "rung=R0" in output and "rung=R8" in output
+    assert "rung=R0 mode=reference_checkpoint" in output
+    assert "--init_checkpoint" in output
     for token in (
         "--model_variant lite_d",
         "--branch_ablation no_dac",
@@ -36,17 +45,55 @@ def test_launcher_dry_run_freezes_report_v1_contract() -> None:
         "--ssl_val_ratio 0.30",
         "--concat_sat_ce_only",
         "--concat_sat_ce_weight 0.68",
+        "--concat_sat_start_epoch 1",
+        "--concat_sat_ce_start_epoch 80",
         "--lambda_sat_cons 0",
         "1@0.30:leo_clear_weak",
         "41@0.60:leo_low_elev_weak,leo_rain_weak",
         "91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
         "--eval_sat_scenarios leo_clear_weak,leo_low_elev_weak,leo_rain_weak",
         "--epochs 200",
-        "K=28 response_dim=64 rho_max=0.25",
+        "K=28 anchors=8 response_dim=64 rho_max=0.25",
         "--no_ecrs_enable_learnable_basis",
         "--no_ecrs_enable_fasttrust",
+        "--lambda_ecrs_canonical 0.10",
+        "--lambda_ecrs_split_fit 0.10",
+        "--lambda_ecrs_pair_cross 0.10",
+        "--lambda_ecrs_pair_surface 0.03",
+        "--lambda_ecrs_same_tx 0.05",
+        "--lambda_ecrs_diff_tx 0.03",
+        "--ecrs_alpha_resp 0.15",
+        "--ecrs_ridge_alpha 0.01",
     ):
         assert token in output
+
+
+def test_core90_sat_ce_starts_e80_without_suppressing_ecrs_pair_view() -> None:
+    args = SimpleNamespace(concat_sat_ce_weight=0.68, concat_sat_ce_start_epoch=80)
+    assert effective_concat_sat_ce_weight(args, 79) == 0.0
+    assert effective_concat_sat_ce_weight(args, 80) == 0.68
+
+
+def test_ecrs_v1_rejects_out_of_report_weight_ranges() -> None:
+    valid = SimpleNamespace(
+        lambda_ecrs_canonical=0.10,
+        lambda_ecrs_split_fit=0.10,
+        lambda_ecrs_pair_cross=0.10,
+        lambda_ecrs_pair_surface=0.03,
+        lambda_ecrs_same_tx=0.05,
+        lambda_ecrs_diff_tx=0.03,
+        ecrs_alpha_resp=0.15,
+        ecrs_ridge_alpha=0.01,
+    )
+    validate_ecrs_v1_hyperparameters(valid)
+    invalid = SimpleNamespace(**vars(valid))
+    invalid.lambda_ecrs_split_fit = 1.0
+    try:
+        validate_ecrs_v1_hyperparameters(invalid)
+    except ValueError as error:
+        assert "lambda_ecrs_split_fit" in str(error)
+    else:
+        raise AssertionError("out-of-report ECRS weight must be rejected")
 
 
 def test_launcher_rejects_phase2_or_target_data() -> None:

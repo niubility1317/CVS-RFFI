@@ -14,7 +14,8 @@ if str(CODE_ROOT) not in sys.path:
     sys.path.insert(0, str(CODE_ROOT))
 
 from baseline_origin_sat_view import BaselineOriginSatViewAugment  # noqa: E402
-from dataset_wisig import WiSigCompactDataset  # noqa: E402
+from dataset_wisig import WiSigCompactDataset, WiSigMetaSslSubsetDataset  # noqa: E402
+from cvsrffi.tensors import extract_domain_from_extra  # noqa: E402
 
 
 def _tiny_wisig_dataset() -> WiSigCompactDataset:
@@ -36,12 +37,31 @@ def test_wisig_meta_exposes_stable_physical_sample_and_crop_identity() -> None:
     dataset = _tiny_wisig_dataset()
     _, _, _, meta = dataset[0]
 
-    assert meta["physical_sample_id"] == "tx0:rx0:day0:eq0:sig0"
+    assert meta["physical_sample_id"] == "sample:0"
     assert meta["pair_id"] == meta["physical_sample_id"]
     assert meta["receiver_id"] == 0
     assert meta["day_id"] == 0
     assert meta["crop_offset"] == 2
     assert meta["synchronized_crop"] is True
+
+
+def test_ecrs_metadata_extension_preserves_legacy_domain_extraction() -> None:
+    expected = torch.tensor([2, 3])
+    assert torch.equal(extract_domain_from_extra((expected,), torch.device("cpu")), expected)
+    assert torch.equal(
+        extract_domain_from_extra(([4, 5],), torch.device("cpu")), torch.tensor([4, 5])
+    )
+
+
+def test_unlabeled_source_metadata_contains_no_tx_truth_or_tx_bearing_id() -> None:
+    unlabeled = WiSigMetaSslSubsetDataset(
+        _tiny_wisig_dataset(), [0], split_source="source_unlabeled", role="U_s", tx_label_visible=False
+    )
+    _, y, _, meta = unlabeled[0]
+    assert y == -1
+    assert not ({"tx", "tx_i", "true_tx_i", "tx_label", "y_tx"} & set(meta))
+    assert "tx" not in meta["physical_sample_id"].lower()
+    assert "tx" not in meta["pair_id"].lower()
 
 
 def test_ecrs_pair_metadata_keeps_clean_and_leo_views_synchronized() -> None:
