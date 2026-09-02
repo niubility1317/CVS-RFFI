@@ -36,12 +36,12 @@
 | FCR-24 | 项目协议4、4.3节 | 保持`L_s/U_s/V`权限、LEO_WEAK日程和clean/三场景最终评测 | `code/train.py`、`code/cvsrffi/phase1_fcr_schedule.py`、正式launcher | pending | 协议负测核对L_s/U_s/V、query不可达、只读V；真实source/checkpoint无query smoke已闭合clean/三LEO逐样本prediction并验证ID、row/run/schema/route完整性 | 正式launcher只写`PREDICTIONS_READY`，必须在独立truth-last scorer后才能进入`ARTIFACTS_COMPLETE`；尚无四场景最终数值评测 |
 | FCR-25 | ADV3B02集成要求 | `use_fcr=false`保持旧checkpoint、state和输出兼容 | `code/model_dual_cvsincnet.py`、`code/cvsrffi/checkpoint.py` | verified | 严格加载、逐元素关闭态和普通eval/Meta-SSL回归测试通过 | 仅开启时实例化FCR参数及`fcr_identity_head`；普通路径继续消费legacy输出 |
 | FCR-26 | 部署闭合 | checkpoint保存FCR模块、物理基、统计和feature schema；单LEO IQ独立推理 | `code/cvsrffi/checkpoint.py`、`code/model_dual_cvsincnet.py` | verified | checkpoint单测及真实ADV3B02 epoch194 checkpoint+合法Phase1 source样本smoke完成FCR backward、bundle严格恢复、单`leo_clear_weak`的`z_f_id`/`fcr_tx_logits`精确复现和四场景prediction导出 | bundle显式记录`fcr_identity_head(z_f_id)`；旧关闭态无bundle兼容；推理不需要clean伴随输入 |
-| FCR-27 | 规格5.4、5.6及10节 | CUDA AMP下FCR物理复数路径必须保持FP32/`complex64`，不得生成CUDA`ComplexHalf`或调用其不支持的算子 | `code/model_dual_cvsincnet.py`、`code/cvsrffi/phase1_fcr_factors.py`、`code/cvsrffi/phase1_fcr_fingerprint.py`、`code/cvsrffi/phase1_fcr_decoder.py`、FCR聚焦测试 | implemented | CPU autocast RED先复现低精度复数失败；本地真实CUDA FP16 AMP下`U_s`及`L_s`完整objective+backward均通过，主干保持FP16、FCR目标为FP32、33组FCR梯度有限；全量FCR 90 passed；原P1定点复审0项P0/P1 | 模块级边界覆盖聚合前向、cross decode和transplant直达入口；不关闭ADV3B02主干AMP，不改变因子、Decoder顺序、损失或矩阵；N607同环境smoke仍待v4发布验证 |
+| FCR-27 | 规格5.4、5.6及10节 | CUDA AMP下FCR物理复数路径必须保持FP32/`complex64`，不得生成CUDA`ComplexHalf`或调用其不支持的算子 | `code/model_dual_cvsincnet.py`、`code/cvsrffi/phase1_fcr_factors.py`、`code/cvsrffi/phase1_fcr_fingerprint.py`、`code/cvsrffi/phase1_fcr_decoder.py`、FCR聚焦测试 | verified | CPU autocast RED先复现低精度复数失败；本地真实CUDA FP16 AMP下`U_s`及`L_s`完整objective+backward均通过，主干保持FP16、FCR目标为FP32、33组FCR梯度有限；全量FCR 90 passed；原P1定点复审0项P0/P1；N607 Torch2.1/CUDA12.1同环境完整成对目标smoke通过，v4的R1-R8均越过原首次FCR前向故障点并写出E-01 checkpoint事件 | 模块级边界覆盖聚合前向、cross decode和transplant直达入口；不关闭ADV3B02主干AMP，不改变因子、Decoder顺序、损失或矩阵 |
 
 ## 当前计数
 
-- `verified`：2
-- `implemented`：9
+- `verified`：3
+- `implemented`：8
 - `deferred`：0
 - `rejected`：0
 - `blocked`：1

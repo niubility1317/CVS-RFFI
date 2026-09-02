@@ -3,7 +3,7 @@
 ## 状态
 
 - run_id：`phase1_adv3b02_fcr_r1r8_s392002_20260902_v4`
-- 当前状态：`LOCAL_VERIFIED`
+- 当前状态：`RUNNING`
 - protocol_scope：Phase1 source-only；不访问Phase2 support/query/truth
 - implementation_commit：`9e2b75a4ed70a4d206cbd87a4c9750773d8299c8`
 - branch：`codex/adv3b02-fcr-20260901`
@@ -60,3 +60,12 @@ R0及旧ADV3B02基线均不启动。所有row固定`seed=392002`、`epochs=200`�
 ## 预期artifact
 
 每个R1-R8独立保存`best_joint.pth`、`fcr_diagnostics.json`、`fcr_predictions.json`、`train.log`和`status.txt`。完成训练的row必须产生clean、`leo_clear_weak`、`leo_low_elev_weak`和`leo_rain_weak`四场景prediction。启动闭合只证明`RUNNING`；独立truth-last评分后才能进入`ARTIFACTS_COMPLETE/ANALYZED`。
+
+## N607发布与启动闭合
+
+- 2026-09-02 10:32 CST完成直接SSH只读preflight；普通账户、项目路径、8张GPU和7.2TB可用磁盘均可见。v4 release、run和archive目标在发布前均不存在。
+- release归档本地/远端SHA256一致；远端Python编译和`bash -n`通过。N607 Torch2.1/CUDA12.1下直接运行完整CUDA FP16 AMP`compute_fcr_pair_objective+backward`，结果为`N607_CUDA_AMP_PAIR_OBJECTIVE_PASS`。
+- 远端训练环境未安装`pytest`，因此未以pytest runner执行；同一回归函数通过标准库直接加载并执行成功，不安装服务器软件。
+- 2026-09-02 10:35 CST启动R1-R8；未启动R0或旧ADV3B02基线。launcher PID：R1=`4166651`、R2=`4166652`、R3=`4166653`、R4=`4166654`、R5=`4166655`、R6=`4166656`、R7=`4166657`、R8=`4166658`。
+- 主训练PID：R1=`4166678`、R2=`4166679`、R3=`4166682`、R4=`4166680`、R5=`4166674`、R6=`4166684`、R7=`4166681`、R8=`4166683`。CWD全部绑定v4 release，GPU映射逐一为R1→GPU0至R8→GPU7。
+- 10:36 CST，8个`train.log`均增长至约16.5KB并写出E-01 checkpoint事件；`ComplexHalf|Traceback|RuntimeError`扫描为零，原v3确定性故障未复现。当前最高可证明状态仅为`RUNNING`，尚无完整训练、prediction或性能结果。
