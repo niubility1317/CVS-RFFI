@@ -82,6 +82,7 @@ def test_release_launcher_freezes_exact_protocol() -> None:
     assert text.index("ADV3B02_CORE90_SOFT_E200") < text.index("ROWS=(R1 R2 R3 R4 R5 R6 R7 R8)")
     assert "V_cal" not in text and "V_select" not in text
     assert "STAGE2_MAX_ACTIVE_PER_GPU=999" in text
+    assert "VALIDATE_TRAIN_DRY_RUN=1" in text
 
 
 def test_predictor_process_reads_only_label_free_package() -> None:

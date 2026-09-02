@@ -10,3 +10,4 @@
 - prediction/scoring：无标签IQ包+稳定opaque ID；独立truth sidecar仅由独立scorer最后连接。
 - 技术停止：仅协议/路径/输出覆盖/确定性执行失败/无prediction闭合/scorer连接失败；低性能不停止。
 - 当前状态：`LOCAL_VERIFIED`。
+- launcher smoke：批次`--dry-run`会真实调用训练入口的`--dry_run`，执行完整训练前参数校验但不构建数据/模型；通过后立即正式启动。

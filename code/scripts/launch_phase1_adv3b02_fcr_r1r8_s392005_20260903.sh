@@ -30,7 +30,7 @@ printf '[RELEASE] stage=ADV3B02_CORE90_SOFT_E200 seed=%s source_days=%s source_r
 if [[ "${DRY_RUN}" == "1" ]]; then
   ROOT="${ROOT}" PYTHON="${PYTHON}" WISIG_PKL="${WISIG_PKL}" RUN_ID="${RUN_ID}_ADV3B02" \
     RUNS_ROOT="${OUTPUT_ROOT}/ADV3B02" LOG_ROOT="${LOG_ROOT}/ADV3B02" \
-    EXTRA_ARGS="${COMMON_ARGS}" DRY_RUN=1 \
+    EXTRA_ARGS="${COMMON_ARGS}" DRY_RUN=1 VALIDATE_TRAIN_DRY_RUN=1 \
     "${ROOT}/code/scripts/launch_phase1_adv3_mechanism32_queue_20260701.sh" \
   --only="${BASE_CANDIDATE}" --dry-run
   printf '[RELEASE] stage=R1-R8 waits_for=%s\n' "${OUTPUT_ROOT}/ADV3B02/ADV3B02_CORE90_SOFT_E200/final_ssdg.pth"

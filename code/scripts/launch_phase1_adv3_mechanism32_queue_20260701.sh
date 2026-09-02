@@ -13,6 +13,7 @@ WISIG_PKL="${WISIG_PKL:-${ROOT}/Dataset_WigSig/ManySig.pkl}"
 STAGE2_MAX_ACTIVE_PER_GPU="${STAGE2_MAX_ACTIVE_PER_GPU:-2}"
 LAUNCH_STABILIZE_SEC="${LAUNCH_STABILIZE_SEC:-35}"
 DRY_RUN="${DRY_RUN:-0}"
+VALIDATE_TRAIN_DRY_RUN="${VALIDATE_TRAIN_DRY_RUN:-0}"
 ONLY_CANDIDATES="${ONLY_CANDIDATES:-}"
 CIPG_SCREEN="${CIPG_SCREEN:-0}"
 EXTRA_ARGS_TEXT="${EXTRA_ARGS:-}"
@@ -453,6 +454,10 @@ run_candidate() {
   echo "[ADV3M32-CANDIDATE] id=${cid} gpu=${gpu} slot=${slot} seed=${seed} epochs=${epochs} label_epochs=${label_epochs} pseudo_epochs=${pseudo_epochs} mechanism=${mechanism}"
   printf "[ADV3M32-CMD] "; printf "%q " "${CMD[@]}"; printf "\n"
   if [[ "${DRY_RUN}" == "1" ]]; then
+    if [[ "${VALIDATE_TRAIN_DRY_RUN}" == "1" ]]; then
+      echo "[ADV3M32-TRAIN-DRY-RUN] id=${cid}"
+      "${CMD[@]}" --dry_run
+    fi
     return 0
   fi
   mkdir -p "${RUNS_ROOT}" "${LOG_ROOT}" "${LOG_ROOT}/locks" "${LOG_ROOT}/status"
