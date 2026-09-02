@@ -107,19 +107,33 @@ class PhysicsOrderedDecoder(nn.Module):
             raise ValueError("delta_f must be complex [B,input_len]")
         self._check_nuisance(nuisance, s_hat.size(0))
 
-        u_hat = s_hat + delta_f
-        if self.mode == "control":
-            mu = u_hat
-            self.call_trace = ("content", "fingerprint", "control")
-        else:
-            linked = self.apply_short_channel(u_hat, nuisance.z_ch)
-            linked = self.apply_rx_residual(linked, nuisance.z_rx)
-            mu = self.apply_sync_and_gain(linked, nuisance.z_sync, nuisance.z_gain)
-            self.call_trace = ("content", "fingerprint", "channel_receiver")
-        log_variance = self.bounded_variance_head(nuisance).expand(-1, self.config.input_len)
-        return FCRDecodeOutput(
-            mu_iq=torch.stack((mu.real, mu.imag), dim=1),
-            log_variance=log_variance,
-            delta_f=delta_f,
-            decoder_mode=self.mode,
-        )
+        with torch.autocast(device_type=s_hat.device.type, enabled=False):
+            s_hat_fp32 = s_hat.to(torch.complex64)
+            delta_f_fp32 = delta_f.to(torch.complex64)
+            nuisance_fp32 = NuisanceOutput(
+                z_ch=nuisance.z_ch.float(),
+                z_rx=nuisance.z_rx.float(),
+                z_sync=nuisance.z_sync.float(),
+                z_gain=nuisance.z_gain.float(),
+                eta_pred=nuisance.eta_pred.float(),
+            )
+            u_hat = s_hat_fp32 + delta_f_fp32
+            if self.mode == "control":
+                mu = u_hat
+                self.call_trace = ("content", "fingerprint", "control")
+            else:
+                linked = self.apply_short_channel(u_hat, nuisance_fp32.z_ch)
+                linked = self.apply_rx_residual(linked, nuisance_fp32.z_rx)
+                mu = self.apply_sync_and_gain(
+                    linked, nuisance_fp32.z_sync, nuisance_fp32.z_gain
+                )
+                self.call_trace = ("content", "fingerprint", "channel_receiver")
+            log_variance = self.bounded_variance_head(nuisance_fp32).expand(
+                -1, self.config.input_len
+            )
+            return FCRDecodeOutput(
+                mu_iq=torch.stack((mu.real, mu.imag), dim=1),
+                log_variance=log_variance,
+                delta_f=delta_f_fp32,
+                decoder_mode=self.mode,
+            )

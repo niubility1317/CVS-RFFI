@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import pytest
 import torch
 
 from cvsrffi.phase1_fcr_schedule import FCRLambdaConfig, stage_for_epoch
@@ -216,3 +217,64 @@ def test_strict_labeled_pair_activates_existing_task8_necessity_route() -> None:
     assert result.components["transplant"].item() > 0.0
     assert all(not parameter.requires_grad for parameter in frozen_classifier.parameters())
     assert all(parameter.requires_grad for parameter in model.fcr.decoder.parameters())
+
+
+def test_cuda_amp_complete_pair_objective_keeps_fcr_gradients_finite() -> None:
+    """Formal pair training must not re-enter unsupported ComplexHalf operations."""
+
+    if not torch.cuda.is_available():
+        pytest.skip("CUDA is required for the original ComplexHalf regression")
+    torch.manual_seed(1012)
+    device = torch.device("cuda")
+    model = build_dual_model(
+        num_classes=3,
+        num_domains=2,
+        model_size="S",
+        dataset="wisig",
+        input_len=64,
+        model_variant="lite_d",
+        fast_infer_when_no_aux=False,
+        use_fcr=True,
+    ).to(device).train()
+    pair = _pair(torch.tensor([False, False]))
+    pair.clean_iq = torch.randn(2, 2, 64, device=device)
+    pair.leo_iq = pair.clean_iq + 0.01 * torch.randn_like(pair.clean_iq)
+    pair.nuisance_pair_index = torch.arange(2, device=device)
+    pair.pair_valid_mask["nuisance"] = torch.ones(2, dtype=torch.bool, device=device)
+    for name in (
+        "labels",
+        "label_mask",
+        "receiver_id",
+        "day_id",
+        "nuisance",
+        "nuisance_valid",
+        "clean_crop_offset",
+        "leo_crop_offset",
+        "content_pair_index",
+        "fingerprint_pair_index",
+    ):
+        setattr(pair, name, getattr(pair, name).to(device))
+    pair.pair_valid_mask = {
+        name: mask.to(device) for name, mask in pair.pair_valid_mask.items()
+    }
+
+    with torch.autocast(device_type="cuda", dtype=torch.float16):
+        result = compute_fcr_pair_objective(
+            model=model,
+            raw_model=model,
+            pair=pair,
+            role="U_s",
+            stage=stage_for_epoch(90),
+            configured=FCRLambdaConfig(),
+            frozen_identity_classifier=torch.nn.Identity().to(device),
+        )
+    result.total.backward()
+
+    assert torch.isfinite(result.total)
+    gradients = [
+        parameter.grad
+        for parameter in model.fcr.parameters()
+        if parameter.grad is not None
+    ]
+    assert gradients
+    assert all(torch.isfinite(gradient).all() for gradient in gradients)

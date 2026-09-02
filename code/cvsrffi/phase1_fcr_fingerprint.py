@@ -137,24 +137,34 @@ class ExcitationConditionedFingerprintOperator(nn.Module):
     def forward(self, s_hat: torch.Tensor, factor: FingerprintFactorOutput) -> FingerprintResponseOutput:
         if not torch.is_complex(s_hat) or s_hat.shape != (factor.z_f_id.size(0), self.config.input_len):
             raise ValueError("s_hat must be complex [B,input_len]")
-        excitation = excitation_features(s_hat)
-        response_coef = self._response_coefficients(factor.z_tx_state)
-        basis = fixed_response_basis(s_hat)
-        phase_reference = self._phase_reference(s_hat)
-        phase_equivariant_basis = basis.clone()
-        phase_equivariant_basis[:, :, 1] = phase_equivariant_basis[:, :, 1] * phase_reference.square()
-        delta_physical = torch.einsum("btn,bn->bt", phase_equivariant_basis, response_coef)
-        residual_amplitude = self.bounded_residual(excitation, factor.z_tx_state)
-        phase_carrier = s_hat / s_hat.abs().clamp_min(1e-8)
-        delta_small = torch.complex(residual_amplitude, torch.zeros_like(residual_amplitude)) * phase_carrier
-        delta_f = self.limit_energy_and_bandwidth(delta_physical + delta_small, s_hat).to(torch.complex64)
-        energy_ratio = delta_f.norm(dim=1) / s_hat.norm(dim=1).clamp_min(1e-8)
-        response_quality = {
-            "energy_ratio": energy_ratio,
-            "state_norm": factor.z_tx_state.norm(dim=1),
-        }
-        return FingerprintResponseOutput(
-            delta_f=delta_f,
-            response_coef=response_coef,
-            response_quality=response_quality,
-        )
+        with torch.autocast(device_type=s_hat.device.type, enabled=False):
+            s_hat_fp32 = s_hat.to(torch.complex64)
+            z_tx_state_fp32 = factor.z_tx_state.float()
+            excitation = excitation_features(s_hat_fp32)
+            response_coef = self._response_coefficients(z_tx_state_fp32)
+            basis = fixed_response_basis(s_hat_fp32)
+            phase_reference = self._phase_reference(s_hat_fp32)
+            phase_equivariant_basis = basis.clone()
+            phase_equivariant_basis[:, :, 1] = (
+                phase_equivariant_basis[:, :, 1] * phase_reference.square()
+            )
+            delta_physical = torch.einsum("btn,bn->bt", phase_equivariant_basis, response_coef)
+            residual_amplitude = self.bounded_residual(excitation, z_tx_state_fp32)
+            phase_carrier = s_hat_fp32 / s_hat_fp32.abs().clamp_min(1e-8)
+            delta_small = (
+                torch.complex(residual_amplitude, torch.zeros_like(residual_amplitude))
+                * phase_carrier
+            )
+            delta_f = self.limit_energy_and_bandwidth(
+                delta_physical + delta_small, s_hat_fp32
+            ).to(torch.complex64)
+            energy_ratio = delta_f.norm(dim=1) / s_hat_fp32.norm(dim=1).clamp_min(1e-8)
+            response_quality = {
+                "energy_ratio": energy_ratio,
+                "state_norm": z_tx_state_fp32.norm(dim=1),
+            }
+            return FingerprintResponseOutput(
+                delta_f=delta_f,
+                response_coef=response_coef,
+                response_quality=response_quality,
+            )

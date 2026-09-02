@@ -567,6 +567,21 @@ class ADV3B02FactorizedCrossReconstruction(nn.Module):
         *,
         pair_context=None,
     ) -> FCRAggregateOutput:
+        # CUDA ComplexHalf has incomplete operator coverage (for example,
+        # gather). Keep the compact FCR physics branch in FP32/complex64 while
+        # allowing the surrounding ADV3B02 backbone to remain under AMP.
+        with torch.autocast(device_type=x.device.type, enabled=False):
+            return self._forward_fp32(
+                x.float(), id_feature_raw.float(), pair_context=pair_context
+            )
+
+    def _forward_fp32(
+        self,
+        x: torch.Tensor,
+        id_feature_raw: torch.Tensor,
+        *,
+        pair_context=None,
+    ) -> FCRAggregateOutput:
         # Pair context is intentionally optional. Task10 may consume it for
         # paired losses; single-view factorization never requires a companion.
         del pair_context

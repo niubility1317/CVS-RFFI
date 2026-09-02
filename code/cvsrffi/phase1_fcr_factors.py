@@ -69,11 +69,15 @@ class ContentGenerator(nn.Module):
             raise ValueError(
                 "z_s must have shape [B,{},{}]".format(expected_tokens, self.config.content_dim)
             )
-        upsampled = functional.interpolate(
-            z_s.transpose(1, 2), size=self.config.input_len, mode="linear", align_corners=False
-        )
-        reconstructed = torch.tanh(self.local_decoder(upsampled))
-        return torch.complex(reconstructed[:, 0], reconstructed[:, 1])
+        with torch.autocast(device_type=z_s.device.type, enabled=False):
+            upsampled = functional.interpolate(
+                z_s.float().transpose(1, 2),
+                size=self.config.input_len,
+                mode="linear",
+                align_corners=False,
+            )
+            reconstructed = torch.tanh(self.local_decoder(upsampled))
+            return torch.complex(reconstructed[:, 0], reconstructed[:, 1])
 
 
 class ContentFactorEncoder(nn.Module):

@@ -93,6 +93,66 @@ def test_fcr_enabled_single_view_outputs_exact_feature_contract() -> None:
         assert torch.isfinite(value).all()
 
 
+def test_fcr_amp_precision_island_keeps_complex_path_complex64() -> None:
+    """Removing the precision island must expose unsupported low-precision complex ops."""
+
+    torch.manual_seed(3909)
+    model = _small_model(use_fcr=True)
+    assert model.fcr is not None
+    model.fcr.train()
+    x = torch.randn(2, 2, 64)
+    id_feature_raw = torch.randn(2, 160, requires_grad=True)
+
+    with torch.autocast(device_type="cpu", dtype=torch.bfloat16):
+        aggregate = model.fcr(x, id_feature_raw)
+
+    assert aggregate.content.s_hat.dtype == torch.complex64
+    assert aggregate.factors.response_coef.dtype == torch.complex64
+    assert aggregate.decode.delta_f.dtype == torch.complex64
+    assert aggregate.decode.mu_iq.dtype == torch.float32
+    objective = (
+        aggregate.decode.mu_iq.square().mean()
+        + aggregate.factors.z_f_id.square().mean()
+        + aggregate.factors.z_s.square().mean()
+    )
+    objective.backward()
+    assert id_feature_raw.grad is not None
+    assert torch.isfinite(id_feature_raw.grad).all()
+
+
+def test_fcr_direct_cross_decode_keeps_complex_path_complex64_under_autocast() -> None:
+    """Pair-objective direct module calls must not bypass the AMP precision boundary."""
+
+    torch.manual_seed(4909)
+    model = _small_model(use_fcr=True)
+    assert model.fcr is not None
+    x = torch.randn(2, 2, 64)
+    id_feature_raw = torch.randn(2, 160, requires_grad=True)
+    aggregate = model.fcr(x, id_feature_raw)
+
+    with torch.autocast(device_type="cpu", dtype=torch.bfloat16):
+        response = model.fcr.fingerprint_operator(
+            aggregate.content.s_hat.detach(), aggregate.fingerprint
+        )
+        decoded = model.fcr.decoder(
+            aggregate.content.s_hat, response.delta_f, aggregate.nuisance
+        )
+
+    assert response.response_coef.dtype == torch.complex64
+    assert response.delta_f.dtype == torch.complex64
+    assert decoded.delta_f.dtype == torch.complex64
+    assert decoded.mu_iq.dtype == torch.float32
+    decoded.mu_iq.square().mean().backward()
+    gradients = [
+        parameter.grad
+        for module in (model.fcr.fingerprint_operator, model.fcr.decoder)
+        for parameter in module.parameters()
+        if parameter.grad is not None
+    ]
+    assert gradients
+    assert all(torch.isfinite(gradient).all() for gradient in gradients)
+
+
 def test_fcr_enabled_backward_reaches_fcr_and_raw_identity_path() -> None:
     """Disconnected FCR factors or an overwritten raw identity path must fail."""
 
