@@ -40,3 +40,4 @@ R1→GPU0、R2→GPU1、R3→GPU2、R4→GPU3、R5→GPU4、R6→GPU5、R7→GPU
 - 8行真实checkpoint加载均为`loaded=191,skipped=4,missing=40,unexpected=0`；skipped仅为`dom_head.net.3.{weight,bias}`和`adv_head.net.3.{weight,bias}`，36个其余missing为新增FCR张量。
 - 首轮训练进展：R1到E004，R2-R8到E003；8行均已生成`latest.pth`和`best_joint.pth`，未见`Traceback`、`RuntimeError`或OOM。未启用诊断字段中的`nan`不属于优化损失或系统技术故障。
 - 每30分钟Luna只读监控已启用；监控不得因低性能干预实验。
+- Luna独立首检：`HEALTHY / RUNNING`。R1到E012，R2-R6到E010，R7-R8到E009；8份日志持续增长，最新`train_loss`均有限，每行已有2个checkpoint。未发现Traceback、RuntimeError、CUDA错误、OOM或确定性失败；训练阶段尚无prediction符合预期。
