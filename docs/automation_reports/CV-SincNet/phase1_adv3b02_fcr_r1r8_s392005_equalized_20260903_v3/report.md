@@ -11,3 +11,11 @@
 - 技术停止：仅协议/路径/输出覆盖/确定性执行失败/无prediction闭合/scorer连接失败；低性能不停止。
 - 当前状态：`LOCAL_VERIFIED`。
 - launcher smoke：批次`--dry-run`会真实调用训练入口的`--dry_run`，执行完整训练前参数校验但不构建数据/模型；通过后立即正式启动。
+
+## 最终状态
+
+`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
+
+- v3通过完整参数干跑并进入首轮训练，但非MUSE路径的遥测访问了未初始化`rc4_route`，触发`UnboundLocalError`。
+- 未生成有效checkpoint、prediction或性能结果；失败日志与输出保留，R1-R8未启动。
+- v4在每个batch入口显式初始化可选`rc4_route/sat_anchor_route`，不改变损失、数据、seed、预算或矩阵。

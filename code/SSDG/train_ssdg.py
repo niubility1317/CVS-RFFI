@@ -7982,6 +7982,8 @@ def train(args) -> int:
         )
         for batch_idx, (labeled_batch, muse_unlabeled_batch) in enumerate(epoch_pairs, start=1):
             muse_identity_grad_norm = float("nan")
+            rc4_route = None
+            sat_anchor_route = None
             sat_anchor_pair_grad_norm = float("nan")
             sat_anchor_sat_grad_norm = float("nan")
             sat_anchor_anchor_grad_norm = float("nan")

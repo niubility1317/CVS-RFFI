@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT="${ROOT:-/home/szu2070436088/2510044040/CV-SincNet}"
 PYTHON="${PYTHON:-/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python}"
 WISIG_PKL="${WISIG_PKL:-${ROOT}/Dataset_WigSig/ManySig.pkl}"
-RUN_ID="${RUN_ID:-phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v3}"
+RUN_ID="${RUN_ID:-phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-${ROOT}/runs/${RUN_ID}}"
 LOG_ROOT="${LOG_ROOT:-${ROOT}/logs/${RUN_ID}}"
 SEED="${SEED:-392005}"

@@ -128,3 +128,14 @@ def test_legacy_checkpoint_model_defaults_use_valid_physical_sources(monkeypatch
     assert captured["freq_feature_source"] == "raw_fft"
     assert captured["pa_feature_source"] == "raw_iq"
     assert captured["sample_rate_hz"] == 25e6
+
+
+def test_non_muse_batch_initializes_optional_rc4_telemetry_routes() -> None:
+    root = Path(__file__).resolve().parents[2]
+    text = (root / "code" / "SSDG" / "train_ssdg.py").read_text(encoding="utf-8")
+    batch_start = text.index(
+        "for batch_idx, (labeled_batch, muse_unlabeled_batch) in enumerate(epoch_pairs, start=1):"
+    )
+    pre_forward = text[batch_start : text.index("x_l, y_l, extra_l = move_batch", batch_start)]
+    assert "rc4_route = None" in pre_forward
+    assert "sat_anchor_route = None" in pre_forward
