@@ -38,3 +38,4 @@
 - `REJECTED_EXTRA_GATE`：审查提出的“每个物理样本在全部LEO scenario中只能出现一次”属于`p2_min_v1` Phase2规则；本批为Phase1且用户明确要求每个scenario 168000样本，因此未擅自改变冻结矩阵。
 - 本地Git Bash：`FAILED`，桌面shell适配器错误路由至损坏WSL，fail-closed且未执行payload；将在N607目标原生Bash完成`bash -n`与干跑。
 - N607首次干跑发现历史队列器仍会按现有GPU进程数等待；按用户明确授权将本批ADV3B02的容量检查设为`999`以旁路等待，不终止或修改任何既有进程，并新增回归断言。
+- N607真实ADV3B02 checkpoint无query烟测首次发现旧checkpoint缺省物理特征源的兼容错误；加载默认已修正为模型原生`raw_fft/raw_iq`并增加定点回归，修复后必须重新通过真实checkpoint严格加载和dummy forward。

@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
+import torch
 
 
 def test_training_test_policy_never_is_strictly_truth_blind() -> None:
@@ -102,3 +104,20 @@ def test_predictor_process_reads_only_label_free_package() -> None:
     assert predict_blocks
     for block in predict_blocks:
         assert "--wisig-pkl" not in block.split("--mode", 1)[0]
+
+
+def test_legacy_checkpoint_model_defaults_use_valid_physical_sources(monkeypatch) -> None:
+    import post_stage_common
+
+    captured = {}
+
+    def fake_build(*args, **kwargs):
+        captured.update(kwargs)
+        return torch.nn.Identity()
+
+    monkeypatch.setattr(post_stage_common, "build_dual_model", fake_build)
+    post_stage_common.build_baseline_model(
+        SimpleNamespace(num_classes=6, num_domains=15), torch.device("cpu")
+    )
+    assert captured["freq_feature_source"] == "raw_fft"
+    assert captured["pa_feature_source"] == "raw_iq"
