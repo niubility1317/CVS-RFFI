@@ -3,7 +3,7 @@
 ## 状态
 
 - run_id：`phase1_adv3b02_fcr_r1r8_s392002_20260902_v5`
-- 当前状态：`LOCAL_VERIFIED`
+- 当前状态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
 - protocol_scope：Phase1 source-only；不访问Phase2 support/query/truth
 - implementation_commit：`7f12d8bbd2cea1003b1abf4376beee049982e7f9`
 - branch：`codex/adv3b02-fcr-20260901`
@@ -65,3 +65,22 @@ launcher和加载器共同拒绝非392002 seed、非E200、非指定candidate、
 ## 预期artifact
 
 每个R1-R8独立保存`best_joint.pth`、`fcr_diagnostics.json`、`fcr_predictions.json`、`train.log`和`status.txt`。完成训练的row必须产生clean、`leo_clear_weak`、`leo_low_elev_weak`和`leo_rain_weak`四场景prediction。启动闭合只证明`RUNNING`；独立truth-last评分后才能进入`ARTIFACTS_COMPLETE/ANALYZED`。
+
+## Release落地
+
+- release_commit：`8dbc980189e173722d27ea9cb543defb52a6ba87`
+- 本地归档：`E:\type10-7\release_archives\phase1_adv3b02_fcr_r1r8_s392002_20260902_v5_8dbc9801.tar.gz`
+- 远端归档：`/home/szu2070436088/2510044040/CV-SincNet/releases/archives/phase1_adv3b02_fcr_r1r8_s392002_20260902_v5_8dbc9801.tar.gz`
+- release根：`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_fcr_r1r8_s392002_20260902_v5`
+- 本地/远端归档SHA256：`a71c750e648424cd0c89d5567562271063841647fbaad46d4325fff28bac7400`，一致。
+- 2026-09-02 16:25 CST直接SSH preflight通过；普通账户、项目根和8张GPU可见。GPU0-7均有既有高负载，按用户授权仅记录，不停止既有任务。
+- 远端初始化checkpoint存在；Python编译、base launcher和v5八卡launcher的`bash -n`均通过。
+- release、run和archive目标发布前均不存在；当前run root仍未创建，未提前启动。
+- 原17:00启动计划由用户在16:29 CST改为立即启动，不再等待17:00。
+
+## 立即启动与技术失败
+
+- 用户在16:29 CST将启动时间改为立即；v5于16:30 CST启动R1-R8，launcher PID为`133210`至`133217`，未启动R0。
+- 8个row均在训练前、checkpoint完整性检查处以同一指纹退出：`locked mature base checkpoint is incomplete: skipped=7 missing_mature_base=58`；8份`status.txt`均为`TRAIN_FAILED`，没有v5主训练进程进入GPU。
+- 根因：初始化checkpoint来自day1/2/3×5接收机，共15个域；v5训练沿用v4 day0/1×7接收机split，共14个域。全模型完整检查错误地要求域分类输出层形状一致；同时launcher未显式还原checkpoint的`no_dac/no_stats`架构。
+- 本run没有性能结果，不得原地重启；全部v5日志和partial run root保留。修复进入新Git提交、新release和不可覆盖v6 run。

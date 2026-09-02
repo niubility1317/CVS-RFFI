@@ -22,13 +22,13 @@ from model_dual_cvsincnet import build_dual_model  # noqa: E402
 FEATURE_SCHEMA = "ADV3B02:FCR:z_f_id:unit_l2:160:v1"
 
 
-def _small_model(*, use_fcr: bool, decoder_mode: str | None = None):
+def _small_model(*, use_fcr: bool, decoder_mode: str | None = None, num_domains: int = 2):
     fcr_config = None
     if use_fcr and decoder_mode is not None:
         fcr_config = FCRConfig(input_len=64, decoder_mode=decoder_mode)
     return build_dual_model(
         num_classes=3,
-        num_domains=2,
+        num_domains=num_domains,
         model_size="S",
         dataset="wisig",
         input_len=64,
@@ -259,4 +259,41 @@ def test_locked_v5_warm_start_rejects_incomplete_mature_base(tmp_path: Path) -> 
             expected_epoch=200,
             expected_candidate_id="S392002_ADV3B03_MU10_ALPHA20_E200",
             require_mature_base_complete=True,
+        )
+
+
+def test_locked_identity_warm_start_allows_domain_count_change_but_rejects_missing_identity(
+    tmp_path: Path,
+) -> None:
+    import train
+
+    legacy = _small_model(use_fcr=False, num_domains=3)
+    payload = {
+        "model": legacy.state_dict(),
+        "epoch": 200,
+        "candidate_id": "S392002_ADV3B03_MU10_ALPHA20_E200",
+        "args": {"seed": 392002},
+    }
+    path = tmp_path / "domain3.pth"
+    torch.save(payload, path)
+    policy = dict(
+        expected_seed=392002,
+        expected_epoch=200,
+        expected_candidate_id="S392002_ADV3B03_MU10_ALPHA20_E200",
+        require_mature_identity_complete=True,
+    )
+    train.load_init_checkpoint_weights(
+        _small_model(use_fcr=True, num_domains=2), str(path), torch.device("cpu"), **policy
+    )
+
+    incomplete = copy.deepcopy(payload)
+    incomplete["model"].pop("id_backbone.cls_head.head.weight")
+    incomplete_path = tmp_path / "missing-identity.pth"
+    torch.save(incomplete, incomplete_path)
+    with pytest.raises(RuntimeError, match="mature identity"):
+        train.load_init_checkpoint_weights(
+            _small_model(use_fcr=True, num_domains=2),
+            str(incomplete_path),
+            torch.device("cpu"),
+            **policy,
         )

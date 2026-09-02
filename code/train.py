@@ -859,6 +859,7 @@ def load_init_checkpoint_weights(
     expected_epoch: int | None = None,
     expected_candidate_id: str = "",
     require_mature_base_complete: bool = False,
+    require_mature_identity_complete: bool = False,
 ) -> None:
     """Load model weights only for staged training warm-starts."""
     ckpt_path = str(path or "").strip()
@@ -914,7 +915,7 @@ def load_init_checkpoint_weights(
     contains_fcr_state = any(
         str(key).startswith(fcr_prefixes) for key in state
     )
-    if require_mature_base_complete and contains_fcr_state:
+    if (require_mature_base_complete or require_mature_identity_complete) and contains_fcr_state:
         raise ValueError("locked mature-base initialization checkpoint must not contain FCR state")
     if bool(getattr(raw_model, "use_fcr", False)) and ("fcr_bundle" in ckpt or contains_fcr_state):
         validate_fcr_bundle_for_model(ckpt, raw_model)
@@ -947,6 +948,15 @@ def load_init_checkpoint_weights(
                 "locked mature base checkpoint is incomplete: "
                 f"skipped={len(skipped)} missing_mature_base={len(missing_mature_base)} "
                 f"missing_sample={missing_mature_base[:8]}"
+            )
+    if require_mature_identity_complete:
+        mature_identity_keys = {key for key in current if str(key).startswith("id_backbone.")}
+        missing_mature_identity = sorted(mature_identity_keys.difference(filtered))
+        if missing_mature_identity:
+            raise RuntimeError(
+                "locked mature identity checkpoint is incomplete: "
+                f"missing_mature_identity={len(missing_mature_identity)} "
+                f"missing_sample={missing_mature_identity[:8]}"
             )
 
     missing, unexpected = raw_model.load_state_dict(filtered, strict=False)
@@ -3258,6 +3268,7 @@ def main():
     parser.add_argument("--init_checkpoint_expected_epoch", type=int, default=None)
     parser.add_argument("--init_checkpoint_expected_candidate", type=str, default="")
     parser.add_argument("--init_checkpoint_require_mature_base_complete", action="store_true")
+    parser.add_argument("--init_checkpoint_require_mature_identity_complete", action="store_true")
     parser.add_argument("--eval_max_batches", type=int, default=0)
     parser.add_argument(
         "--test_eval_policy",
@@ -3862,6 +3873,9 @@ def main():
         expected_candidate_id=str(getattr(args, "init_checkpoint_expected_candidate", "") or ""),
         require_mature_base_complete=bool(
             getattr(args, "init_checkpoint_require_mature_base_complete", False)
+        ),
+        require_mature_identity_complete=bool(
+            getattr(args, "init_checkpoint_require_mature_identity_complete", False)
         ),
     )
     model_emb_dim = getattr(model, "emb_dim", "unknown")

@@ -154,7 +154,9 @@ def test_launcher_freezes_defaults_four_evaluations_and_no_query_paths() -> None
         "--init_checkpoint_expected_seed 392002",
         "--init_checkpoint_expected_epoch 200",
         "--init_checkpoint_expected_candidate S392002_ADV3B03_MU10_ALPHA20_E200",
-        "--init_checkpoint_require_mature_base_complete",
+        "--init_checkpoint_require_mature_identity_complete",
+        "--branch_ablation no_dac",
+        "--domain_branch_ablation no_stats",
         "--dry-run",
     )
     for fragment in required_fragments:

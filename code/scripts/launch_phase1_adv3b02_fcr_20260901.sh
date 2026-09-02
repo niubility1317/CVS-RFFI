@@ -54,11 +54,13 @@ run_row() {
     --dataset wisig
     --wisig_pkl "${WISIG_PKL}"
     --model_variant lite_d
+    --branch_ablation no_dac
+    --domain_branch_ablation no_stats
     --init_checkpoint "${INIT_CHECKPOINT}"
     --init_checkpoint_expected_seed 392002
     --init_checkpoint_expected_epoch 200
     --init_checkpoint_expected_candidate S392002_ADV3B03_MU10_ALPHA20_E200
-    --init_checkpoint_require_mature_base_complete
+    --init_checkpoint_require_mature_identity_complete
     --run_name "${RUN_ID}_${row}"
     --seed "${SEED}"
     --device cuda:0
