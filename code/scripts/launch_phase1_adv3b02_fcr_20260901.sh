@@ -10,6 +10,9 @@ RUN_ID="${RUN_ID:-}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-}"
 GPU="${GPU:-0}"
 SEED="${SEED:-392002}"
+EXPECTED_SEED="${EXPECTED_SEED:-392002}"
+FCR_EXTRA_ARGS_TEXT="${FCR_EXTRA_ARGS:-}"
+EXTERNAL_TARGET_EVAL="${EXTERNAL_TARGET_EVAL:-0}"
 DRY_RUN=0
 ONLY_ROW=""
 ROWS=(R1 R2 R3 R4 R5 R6 R7 R8)
@@ -30,7 +33,7 @@ done
 [[ -n "${RUN_ID}" ]] || { echo "[FCR-ERROR] caller must set RUN_ID" >&2; exit 2; }
 [[ -n "${OUTPUT_ROOT}" ]] || { echo "[FCR-ERROR] caller must set OUTPUT_ROOT" >&2; exit 2; }
 [[ -n "${INIT_CHECKPOINT}" ]] || { echo "[FCR-ERROR] caller must set INIT_CHECKPOINT" >&2; exit 2; }
-[[ "${SEED}" == "392002" ]] || { echo "[FCR-ERROR] v5 seed is locked to 392002" >&2; exit 2; }
+[[ "${SEED}" == "${EXPECTED_SEED}" ]] || { echo "[FCR-ERROR] seed mismatch expected=${EXPECTED_SEED} actual=${SEED}" >&2; exit 2; }
 if [[ "${DRY_RUN}" != "1" && -e "${OUTPUT_ROOT}" ]]; then
   echo "[FCR-ERROR] refusing to overwrite existing output root: ${OUTPUT_ROOT}" >&2
   exit 3
@@ -94,6 +97,14 @@ run_row() {
     --fcr_diagnostics_path "${row_root}/fcr_diagnostics.json"
     --fcr_predictions_path "${row_root}/fcr_predictions.json"
   )
+  if [[ -n "${FCR_EXTRA_ARGS_TEXT}" ]]; then
+    local extra_args=()
+    read -r -a extra_args <<< "${FCR_EXTRA_ARGS_TEXT}"
+    command+=("${extra_args[@]}")
+  fi
+  if [[ "${EXTERNAL_TARGET_EVAL}" == "1" ]]; then
+    command+=(--final_save_path "${row_root}/final.pth" --defer_target_evaluation)
+  fi
   printf '[FCR-ROW] run_id=%s row=%s output=%s final_eval=%s\n' \
     "${RUN_ID}" "${row}" "${row_root}" "${FINAL_EVALUATIONS[*]}"
   printf '[FCR-CMD] '; printf '%q ' "${command[@]}"; printf '\n'
@@ -105,13 +116,21 @@ run_row() {
     printf 'TRAIN_FAILED\n' > "${row_root}/status.txt"
     return 5
   fi
-  for artifact in best_joint.pth fcr_diagnostics.json fcr_predictions.json train.log; do
+  local expected_artifacts=(best_joint.pth fcr_diagnostics.json fcr_predictions.json train.log)
+  if [[ "${EXTERNAL_TARGET_EVAL}" == "1" ]]; then
+    expected_artifacts=(final.pth train.log)
+  fi
+  for artifact in "${expected_artifacts[@]}"; do
     if [[ ! -s "${row_root}/${artifact}" ]]; then
       printf 'ARTIFACT_MISSING_%s\n' "${artifact}" > "${row_root}/status.txt"
       return 6
     fi
   done
-  printf 'PREDICTIONS_READY\n' > "${row_root}/status.txt"
+  if [[ "${EXTERNAL_TARGET_EVAL}" == "1" ]]; then
+    printf 'TRAINING_COMPLETE_TARGET_PENDING\n' > "${row_root}/status.txt"
+  else
+    printf 'PREDICTIONS_READY\n' > "${row_root}/status.txt"
+  fi
 }
 
 if [[ "${DRY_RUN}" != "1" ]]; then

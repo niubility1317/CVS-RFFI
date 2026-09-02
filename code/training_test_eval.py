@@ -31,6 +31,8 @@ def should_run_training_test(
     final_interval: int = 0,
 ) -> bool:
     normalized = str(policy or "every_epoch").strip().lower()
+    if normalized == "never":
+        return False
     if normalized == "interval_final":
         if int(epoch) >= int(epochs):
             return True

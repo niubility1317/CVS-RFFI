@@ -718,6 +718,7 @@ def make_wisig_meta_ssl_source_split(
     max_samples_per_combo_source: Optional[int] = None,
     seed: int = 0,
     sample_strategy: str = "front",
+    allow_day_overlap_if_receiver_disjoint: bool = False,
 ):
     """Build the source-only 0.07L/0.63U/0.30V Phase1 split.
 
@@ -749,7 +750,15 @@ def make_wisig_meta_ssl_source_split(
     train_rx_idx = _resolve_rxs(rx_list, train_rxs if train_rxs is not None else default_train_rxs, [])
     holdout_rx_idx = _resolve_rxs(rx_list, holdout_rxs if holdout_rxs is not None else default_holdout_rxs, [])
 
-    train_day_idx = [d for d in train_day_idx if d not in holdout_day_idx]
+    if bool(allow_day_overlap_if_receiver_disjoint):
+        receiver_overlap = sorted(set(train_rx_idx).intersection(holdout_rx_idx))
+        if receiver_overlap:
+            raise ValueError(
+                "day overlap is allowed only when source/target receivers are disjoint, "
+                f"overlap={receiver_overlap}"
+            )
+    else:
+        train_day_idx = [d for d in train_day_idx if d not in holdout_day_idx]
     train_rx_idx = [r for r in train_rx_idx if r not in holdout_rx_idx]
     if not train_day_idx:
         raise ValueError("No Meta-SSL source train days left after holdout removal.")
@@ -924,6 +933,7 @@ def make_wisig_trainval_test_by_day_rx(
     split_strategy: str = "random",
     cap_strategy: str = "random",
     train_class_cap_strategy: str = "domain_balanced",
+    allow_day_overlap_if_receiver_disjoint: bool = False,
 ):
     """
     General WiSig split with explicit day and receiver isolation.
@@ -982,7 +992,15 @@ def make_wisig_trainval_test_by_day_rx(
     train_rx_idx = _resolve_rxs(rx_list, train_rxs if train_rxs is not None else default_train_rxs, [])
     test_rx_idx = _resolve_rxs(rx_list, test_rxs if test_rxs is not None else default_test_rxs, [])
 
-    train_day_idx = [d for d in train_day_idx if d not in test_day_idx]
+    if bool(allow_day_overlap_if_receiver_disjoint):
+        receiver_overlap = sorted(set(train_rx_idx).intersection(test_rx_idx))
+        if receiver_overlap:
+            raise ValueError(
+                "day overlap is allowed only when source/target receivers are disjoint, "
+                f"overlap={receiver_overlap}"
+            )
+    else:
+        train_day_idx = [d for d in train_day_idx if d not in test_day_idx]
     train_rx_idx = [r for r in train_rx_idx if r not in test_rx_idx]
 
     if len(train_day_idx) == 0:

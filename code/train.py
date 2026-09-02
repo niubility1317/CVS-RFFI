@@ -1199,6 +1199,9 @@ def build_meta_ssl_source_split(args, ds_w: Dict[str, Any]):
         max_samples_per_combo_source=max_source,
         seed=int(args.seed),
         sample_strategy=str(args.wisig_cap_strategy),
+        allow_day_overlap_if_receiver_disjoint=bool(
+            getattr(args, "wisig_allow_day_overlap_if_receiver_disjoint", False)
+        ),
     )
 
 
@@ -2349,6 +2352,7 @@ def main():
     parser.add_argument("--wisig_test_days", type=str, default="2,3")
     parser.add_argument("--wisig_train_rxs", type=str, default="0,1,2,3,4,5,6")
     parser.add_argument("--wisig_test_rxs", type=str, default="7,8,9,10,11")
+    parser.add_argument("--wisig_allow_day_overlap_if_receiver_disjoint", action="store_true")
     parser.add_argument("--wisig_max_day123_per_combo", type=int, default=0)
     parser.add_argument("--wisig_max_train_per_combo", type=int, default=0)
     parser.add_argument(
@@ -3274,7 +3278,7 @@ def main():
         "--test_eval_policy",
         type=str,
         default="every_epoch",
-        choices=["every_epoch", "val_improved_final", "interval_final"],
+        choices=["never", "every_epoch", "val_improved_final", "interval_final"],
         help="When to run named test-set evaluation during training.",
     )
     parser.add_argument(
@@ -3305,6 +3309,10 @@ def main():
                         help="按 VAL tx_acc 最优保存的权重路径。")
     parser.add_argument("--latest_save_path", type=str, default="latest_model.pth",
                         help="每个 epoch 覆盖保存的最新权重路径。")
+    parser.add_argument("--final_save_path", type=str, default="",
+                        help="最后一个epoch的正式checkpoint；不参与任何指标筛选。")
+    parser.add_argument("--defer_target_evaluation", action="store_true",
+                        help="训练结束后不在本进程评估target；交由独立prediction/scorer阶段。")
     parser.add_argument("--best_test_save_path", type=str, default="",
                         help="按 overall TEST tx_acc 最优保存的权重路径。为空时由 best_save_path 自动派生。")
     parser.add_argument("--best_primary_save_path", type=str, default="",
@@ -3398,6 +3406,8 @@ def main():
     )
 
     # Auto-derive extra checkpoint paths after preset application.
+    if str(args.final_save_path).strip() == "":
+        args.final_save_path = derive_checkpoint_path(args.latest_save_path, "final")
     if str(args.best_test_save_path).strip() == "":
         args.best_test_save_path = derive_checkpoint_path(args.best_save_path, "test_overall")
     if str(args.best_primary_save_path).strip() == "":
@@ -3641,6 +3651,9 @@ def main():
                 split_strategy=str(args.wisig_split_strategy),
                 cap_strategy=str(args.wisig_cap_strategy),
                 train_class_cap_strategy=str(args.wisig_train_shot_strategy),
+                allow_day_overlap_if_receiver_disjoint=bool(
+                    args.wisig_allow_day_overlap_if_receiver_disjoint
+                ),
             )
         input_len = int(args.wisig_out_len)
         print(f"[WISIG] pkl={args.wisig_pkl} protocol={protocol} eq={eq2} out_len={input_len} domain={args.wisig_domain}")
@@ -4067,6 +4080,7 @@ def main():
 
     print("[CKPT-PATHS]", flush=True)
     print(f"  latest                       -> {args.latest_save_path}", flush=True)
+    print(f"  final_epoch_only             -> {args.final_save_path}", flush=True)
     print(f"  best_by_val                  -> {args.best_save_path}", flush=True)
     print(f"  best_by_test_overall         -> {args.best_test_save_path}", flush=True)
     print(f"  best_by_primary_ood         -> {args.best_primary_save_path} (udu_weight={args.primary_udu_weight:.2f})", flush=True)
@@ -5194,6 +5208,35 @@ def main():
             f"@ E{best_worst_rx_epoch:03d} -> {args.best_worst_rx_save_path}",
             flush=True,
         )
+
+    save_checkpoint(
+        args.final_save_path,
+        model=model,
+        optimizer=optimizer,
+        scheduler=scheduler,
+        scaler=scaler,
+        epoch=epoch,
+        args=args,
+        split_info=split_info,
+        stats={
+            "checkpoint_role": "training_final_only",
+            "selection_rule": "final_epoch_only",
+            "target_metrics_consumed_for_selection": False,
+            "val_tx_acc": val_stats["tx_acc"],
+        },
+    )
+    print(
+        f"[FINAL-EPOCH-CHECKPOINT] epoch={epoch} path={args.final_save_path} "
+        "selection=final_epoch_only target_metrics_consumed=0",
+        flush=True,
+    )
+    if bool(getattr(args, "defer_target_evaluation", False)):
+        print(
+            "[TARGET-EVAL-DEFERRED] training_process_target_scoring=0 "
+            "next=independent_prediction_then_truth_sidecar_scorer",
+            flush=True,
+        )
+        return
 
     print(f"Training finished. best_joint_val_tx_acc={best_joint_val_tx:.2f}% & best_joint_test_tx_acc={best_joint_test_tx:.2f}% at epoch {best_epoch}")
     print(f"Training finished. best_test_overall_tx_acc={best_test_tx:.2f}% at epoch {best_test_epoch} -> {args.best_test_save_path}")

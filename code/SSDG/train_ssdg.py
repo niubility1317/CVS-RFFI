@@ -352,6 +352,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--use_muse_ssdg", type=str2bool, default=False)
     parser.add_argument("--muse_level", type=str, default="M0", choices=["M0", "M1", "M2", "M3"])
     parser.add_argument("--muse_external_final_eval", type=str2bool, default=False)
+    parser.add_argument("--phase1_external_final_eval", type=str2bool, default=False)
+    parser.add_argument("--wisig_allow_day_overlap_if_receiver_disjoint", type=str2bool, default=False)
     parser.add_argument(
         "--muse_epoch_basis",
         type=str,
@@ -559,7 +561,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
         "--test_eval_policy",
         type=str,
         default="every_epoch",
-        choices=["every_epoch", "val_improved_final", "interval_final"],
+        choices=["never", "every_epoch", "val_improved_final", "interval_final"],
         help="Legacy compatibility option; Phase1 source-only training never evaluates held-out tests by epoch.",
     )
     parser.add_argument(
@@ -1971,7 +1973,15 @@ def _build_ssdg_wisig_data(args, device: torch.device):
     test_days = _resolve_days(day_list, parse_csv_indices(args.wisig_test_days), [len(day_list) - 1])
     train_rxs = _resolve_rxs(rx_list, parse_csv_indices(args.wisig_train_rxs), list(range(len(rx_list))))
     test_rxs = _resolve_rxs(rx_list, parse_csv_indices(args.wisig_test_rxs), [])
-    train_days = [d for d in train_days if d not in test_days]
+    if bool(getattr(args, "wisig_allow_day_overlap_if_receiver_disjoint", False)):
+        receiver_overlap = sorted(set(train_rxs).intersection(test_rxs))
+        if receiver_overlap:
+            raise ValueError(
+                "day overlap is allowed only for disjoint source/target receivers, "
+                f"overlap={receiver_overlap}"
+            )
+    else:
+        train_days = [d for d in train_days if d not in test_days]
     train_rxs = [r for r in train_rxs if r not in test_rxs]
 
     source_base = WiSigCompactDataset(
@@ -2039,6 +2049,9 @@ def _build_ssdg_wisig_data(args, device: torch.device):
         test_rxs=test_rxs,
         max_samples_per_combo_test=None if int(args.wisig_max_test_per_combo) <= 0 else int(args.wisig_max_test_per_combo),
         seed=int(args.seed),
+        allow_day_overlap_if_receiver_disjoint=bool(
+            getattr(args, "wisig_allow_day_overlap_if_receiver_disjoint", False)
+        ),
     )
     balanced_sampler = None
     if bool(getattr(args, "use_tx_rx_balanced_sampler", False)):
@@ -3024,8 +3037,10 @@ def _run_final_heldout_evaluation(
 ) -> Dict[str, Any]:
     """Delegate MUSE target evaluation to its launcher while preserving legacy behavior."""
 
-    if bool(getattr(args, "use_muse_ssdg", False)) and bool(
-        getattr(args, "muse_external_final_eval", False)
+    if bool(getattr(args, "phase1_external_final_eval", False)) or (
+        bool(getattr(args, "use_muse_ssdg", False)) and bool(
+            getattr(args, "muse_external_final_eval", False)
+        )
     ):
         return {
             "status": "DELEGATED_TO_MUSE_LAUNCHER",
@@ -12464,8 +12479,10 @@ def train(args) -> int:
     endpoint_export_ready = bool(
         export_status.get("status") == "COMPLETE" and export_status.get("endpoint_artifact_ready", False)
     )
-    muse_external_eval = bool(getattr(args, "use_muse_ssdg", False)) and bool(
-        getattr(args, "muse_external_final_eval", False)
+    muse_external_eval = bool(getattr(args, "phase1_external_final_eval", False)) or (
+        bool(getattr(args, "use_muse_ssdg", False)) and bool(
+            getattr(args, "muse_external_final_eval", False)
+        )
     )
     terminal_status = _resolve_phase1_terminal_status(
         tail_stopped=bool(tail_early_stop_requested),
@@ -12473,7 +12490,7 @@ def train(args) -> int:
         final_blocked=bool(phase1_v2_final_blocked),
         selected_checkpoint_exists=bool(selected_checkpoint_exists),
         heldout_eval_status=str(frozen_eval.get("status", "")),
-        external_final_eval=bool(getattr(args, "muse_external_final_eval", False)),
+        external_final_eval=bool(muse_external_eval),
         p0_mechanisms_ready=bool(p0_mechanisms_ready),
         p1_mechanisms_ready=bool(p1_mechanisms_ready),
         endpoint_export_ready=bool(endpoint_export_ready),

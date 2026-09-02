@@ -15,6 +15,7 @@ LAUNCH_STABILIZE_SEC="${LAUNCH_STABILIZE_SEC:-35}"
 DRY_RUN="${DRY_RUN:-0}"
 ONLY_CANDIDATES="${ONLY_CANDIDATES:-}"
 CIPG_SCREEN="${CIPG_SCREEN:-0}"
+EXTRA_ARGS_TEXT="${EXTRA_ARGS:-}"
 
 for arg in "$@"; do
   case "${arg}" in
@@ -429,6 +430,11 @@ build_command() {
     --sat_eval_max_batches -1
     --device cuda:0
     --seed "${seed}")
+  if [[ -n "${EXTRA_ARGS_TEXT}" ]]; then
+    local extra_args=()
+    read -r -a extra_args <<< "${EXTRA_ARGS_TEXT}"
+    CMD+=("${extra_args[@]}")
+  fi
 }
 
 run_candidate() {

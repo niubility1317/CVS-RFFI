@@ -15,6 +15,7 @@ import torch.nn as nn
 from dataset import WiFiRFFIDataset
 from dataset_wisig import load_wisig_compact_pkl, make_wisig_trainval_test_by_day_rx
 from model_dual_cvsincnet import build_dual_model
+from cvsrffi.phase1_fcr_types import FCRConfig
 from baseline_origin_sat_view import SatViewStage
 from cvsrffi.eval import evaluate_loader, evaluate_named_loaders, make_loader
 from cvsrffi.tensors import (
@@ -309,6 +310,8 @@ def merge_checkpoint_args(ckpt: Mapping[str, Any], cli_args, *, input_len: int, 
 
 
 def build_baseline_model(model_args, device: torch.device) -> nn.Module:
+    pa_orders_raw = str(getattr(model_args, "pa_orders", "") or "").strip()
+    pa_orders = tuple(int(value) for value in pa_orders_raw.split(",") if value.strip()) or None
     return build_dual_model(
         int(model_args.num_classes),
         int(model_args.num_domains),
@@ -359,6 +362,25 @@ def build_baseline_model(model_args, device: torch.device) -> nn.Module:
         ),
         physical_gate_variant=str(
             getattr(model_args, "physical_gate_variant", "none")
+        ),
+        use_circularity=bool(getattr(model_args, "use_circularity", True)),
+        use_freq_stats=bool(getattr(model_args, "use_freq_stats", True)),
+        use_pa_stats=bool(getattr(model_args, "use_pa_stats", True)),
+        use_freq_band_gate=bool(getattr(model_args, "use_freq_band_gate", True)),
+        freq_feature_source=str(getattr(model_args, "freq_feature_source", "feat_joint")),
+        pa_feature_source=str(getattr(model_args, "pa_feature_source", "feat_joint")),
+        pa_orders=pa_orders,
+        use_aux_spectral_stats=bool(getattr(model_args, "use_aux_spectral_stats", True)),
+        channel_trim_scale=float(getattr(model_args, "channel_trim_scale", 1.0)),
+        use_tx_adv_on_zdom=bool(getattr(model_args, "use_tx_adv_on_zdom", False)),
+        use_fcr=bool(getattr(model_args, "use_fcr", False)),
+        fcr_config=(
+            FCRConfig(
+                input_len=int(getattr(model_args, "input_len", 256)),
+                decoder_mode=str(getattr(model_args, "fcr_decoder_mode", "full")),
+            )
+            if bool(getattr(model_args, "use_fcr", False))
+            else None
         ),
     ).to(device)
 
