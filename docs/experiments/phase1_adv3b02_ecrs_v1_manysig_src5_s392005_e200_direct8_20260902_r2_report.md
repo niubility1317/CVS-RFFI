@@ -3,7 +3,7 @@
 ## 1.状态与变更边界
 
 - run_id：`phase1_adv3b02_ecrs_v1_manysig_src5_s392005_e200_direct8_20260902_r2`
-- 当前状态：`LANDED`；已安排2026-09-02 16:00（Asia/Hong_Kong）启动
+- 当前状态：`RUNNING`；2026-09-02约11:11（Asia/Hong_Kong）按用户即时指令启动
 - 正式实验：R1–R8，共8个
 - code_commit：`1fb9fe05d9dcaba5cd21e8fed16270d0745e2e72`
 - Git分支：`codex/adv3b02-ecrs-v1-parity-fix-20260901`
@@ -64,7 +64,7 @@
 - `git diff --check`：通过
 - 真实ADV3B02 checkpoint无query smoke：既有ECRS V1实证继续适用，已验证前向、反向、checkpoint roundtrip与单LEO推理
 - 独立P0/P1审查已在ECRS V1实现上完成；项目规则禁止因本次用户明确矩阵变更增加第二次全量审查
-- 追踪项`ECRS-24`：implemented；远端启动核对后更新为verified
+- 追踪项`ECRS-24`：verified；R1–R8已按无共享R0、随机初始化边界启动
 
 ## 6.发布与启动
 
@@ -87,12 +87,21 @@ env ROOT=<release-root> PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/pyth
 
 每个R1–R8必须产生：`best.pth`、`latest.pth`、训练指标、clean与三种LEO最终指标、ECRS响应/不确定性/融合诊断及独立日志。
 
-## 8.落地状态与定时启动
+## 8.落地与启动状态
 
 - release归档本地/远端SHA256一致：`ef46c2dc889d3d6f72e36a1131393b32f63ab245ad32133dd55060bcd3743a0b`
 - 远端release解压、Python编译和launcher语法检查：`VERIFIED`
-- 新run/log输出根仍不存在，R1–R8尚未启动
-- 资源变化：在本run发布前，另一个DAOT-STN八卡矩阵新启动；GPU0、1、2、3、5、6当前各有3个训练进程，GPU4、7各有2个
+- 启动前只读核对：release、launcher与ManySig数据存在；新run/log输出根不存在；磁盘可用7.2TB
+- 启动前GPU计算进程数：GPU0为2，GPU1–7各为3；用户已明确授权本次启动无视显卡进程数限制
 - 用户于2026-09-02明确授权本次启动无视显卡进程数限制；资源slot guard固定为`MAX_GPU_TRAIN_PROCS=999`
-- 已创建一次性自动任务`16点启动ECRS R1-R8`，状态`ACTIVE`，下一次本地时间16:00执行；完成启动与首次绑定核验后暂停，禁止重复启动
+- 原一次性自动任务`16点启动ECRS R1-R8`已在手动启动前暂停，独立读回状态为`PAUSED`，防止16:00重复启动
 - 资源授权只解除本run的进程数门槛；仍不得停止、迁移、修改或影响任何外部实验
+
+## 9.启动后绑定核验
+
+- 启动命令退出状态：0；launcher明确返回R1–R8共8个PID
+- PID/GPU：R1=`4183316`/GPU0，R2=`4183323`/GPU1，R3=`4183330`/GPU2，R4=`4183337`/GPU3，R5=`4183344`/GPU4，R6=`4183351`/GPU5，R7=`4183358`/GPU6，R8=`4183365`/GPU7
+- 8个PID均存活；CWD均为冻结release根；cmdline均绑定本run对应R1–R8输出根；`CUDA_VISIBLE_DEVICES`与GPU0–7映射一致
+- 8个PID均被对应GPU的compute-app列表读回，每个占用约3.5GB显存；每个主进程有8个数据子进程，CPU时间持续增加
+- 8份独立日志均已创建且非空，首次核验大小均为12645字节；未发现`Traceback`、`RuntimeError`、`CUDA out of memory`或`Error:`
+- 初始化阶段每份日志出现2次`unsafe backward/step skipped`警告；当前无退出、无确定性异常和无归属错误，按预登记规则继续运行，不因该非终止警告停止
