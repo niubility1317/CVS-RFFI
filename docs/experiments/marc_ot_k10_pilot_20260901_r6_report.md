@@ -93,3 +93,10 @@ CUDA_VISIBLE_DEVICES=<physical_gpu> /home/szu2070436088/.conda/envs/CVS-RFFI/bin
 - 新增`leo_clear_weak/R2`、`leo_clear_weak/R6`和`leo_clear_weak/R8`冻结态；r6现有14份合法support回执，仅余2个精确适配进程。
 - 两个失败仍为已知`leo_low_elev_weak/R2`与`leo_rain_weak/R2`同指纹异常，没有新错误类型；query保持关闭。
 - N607仍有17个GPU计算进程，替代矩阵尚无安全容量；继续等待剩余健康单元和既有工作负载自然退出。
+
+## 2026-09-02 08:41 r6终态
+
+- 所有r6适配进程已退出；共得到16份合法support冻结态，缺失项仅为两个同指纹失败：`leo_low_elev_weak/R2`与`leo_rain_weak/R2`。
+- r6终态：`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`。因不满足18/18，不创建support_collection、不打开query、不生成prediction、不连接truth、不评分。
+- 16份合法冻结态、2份异常日志及全部partial artifacts保持原位，不覆盖、不删除、不原地补跑。
+- N607仍有15个其他GPU计算进程，无法安全容纳完整替代矩阵；本次不发布替代run，等待容量后从已验证修复提交构建新release和新run ID。
