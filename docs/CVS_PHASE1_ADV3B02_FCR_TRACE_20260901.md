@@ -33,19 +33,19 @@
 | FCR-21 | 第十六节 | 训练按基础重构→swap/cycle→定向移植→身份DG四阶段启用 | `code/cvsrffi/phase1_fcr_schedule.py`、`code/cvsrffi/schedule.py`、`code/train.py` | implemented | `test_phase1_fcr_schedule.py`核对E1/40/41/90/91/150/151/200、线性ramp、optimizer step交替和越界拒绝 | FCR权重独立于既有E80 sat CE/LEO_WEAK；未形成真实checkpoint证据 |
 | FCR-22 | 第十七节 | 保存latent纯度、配对距离、移植、参数恢复和资源诊断 | `code/cvsrffi/phase1_fcr_diagnostics.py`、`code/train.py` | verified | `test_phase1_fcr_diagnostics.py`验证17键、独立detach probe、训练外collector和严格pair缺失时`N/A`+原因；完整聚焦组79 passed | probe独立于训练分类器；当前真实smoke不具备严格移植pair，正式row按能力报告`N/A`而非0 |
 | FCR-23 | 第十七节 | 实现R0-R8递进消融并绑定同row结果 | `code/scripts/launch_phase1_adv3b02_fcr_20260901.sh`、`code/train.py`、正式实验报告 | verified | 行目标/pair路由及Decoder模式聚焦回归55 passed：R0仅身份CE；R1 self/eta；R2 swap；R3 shared；R4 latent-cycle；R5基础drop-f；R6严格定向移植；R0-R6统一control Decoder，仅执行`u_hat=s_hat+delta_f`；R7-R8统一full physics并依次开放物理项、三轴索引；9个执行签名互异 | self/cross/basic/transplant/推理共用同一row绑定Decoder；mode进入诊断和`FCRConfig` bundle，错误模式评测在state使用前拒绝；未新增concat/skip/高容量旁路；FCR-13仍`blocked` |
-| FCR-24 | 项目协议4、4.3节 | 保持`L_s/U_s/V`权限、LEO_WEAK日程和clean/三场景最终评测 | `code/train.py`、`code/cvsrffi/phase1_fcr_schedule.py`、正式launcher | pending | 协议负测核对L_s/U_s/V、query不可达、只读V；真实source/checkpoint无query smoke已闭合clean/三LEO逐样本prediction并验证ID、row/run/schema/route完整性 | 正式launcher只写`PREDICTIONS_READY`，必须在独立truth-last scorer后才能进入`ARTIFACTS_COMPLETE`；尚无四场景最终数值评测 |
+| FCR-24 | 项目协议4、4.3节 | 保持`L_s/U_s/V`权限、LEO_WEAK日程和clean/三场景最终评测 | `code/train.py`、`code/cvsrffi/phase1_fcr_schedule.py`、正式launcher、v4正式实验报告与分析数据 | implemented | 协议负测核对L_s/U_s/V、query不可达、只读V；v4的R1-R8均完成E200及clean/三LEO共806,400条逐样本prediction，独立进程完整解析并重算32个row-scenario结果、192个row-scenario-class结果和混淆矩阵 | 四场景数值评测已闭合；prediction样本ID可逆包含TX标签，因此本次仅证明独立进程评分，不声称严格不透明ID的truth-last隔离，暂不提升为`verified` |
 | FCR-25 | ADV3B02集成要求 | `use_fcr=false`保持旧checkpoint、state和输出兼容 | `code/model_dual_cvsincnet.py`、`code/cvsrffi/checkpoint.py` | verified | 严格加载、逐元素关闭态和普通eval/Meta-SSL回归测试通过 | 仅开启时实例化FCR参数及`fcr_identity_head`；普通路径继续消费legacy输出 |
 | FCR-26 | 部署闭合 | checkpoint保存FCR模块、物理基、统计和feature schema；单LEO IQ独立推理 | `code/cvsrffi/checkpoint.py`、`code/model_dual_cvsincnet.py` | verified | checkpoint单测及真实ADV3B02 epoch194 checkpoint+合法Phase1 source样本smoke完成FCR backward、bundle严格恢复、单`leo_clear_weak`的`z_f_id`/`fcr_tx_logits`精确复现和四场景prediction导出 | bundle显式记录`fcr_identity_head(z_f_id)`；旧关闭态无bundle兼容；推理不需要clean伴随输入 |
 | FCR-27 | 规格5.4、5.6及10节 | CUDA AMP下FCR物理复数路径必须保持FP32/`complex64`，不得生成CUDA`ComplexHalf`或调用其不支持的算子 | `code/model_dual_cvsincnet.py`、`code/cvsrffi/phase1_fcr_factors.py`、`code/cvsrffi/phase1_fcr_fingerprint.py`、`code/cvsrffi/phase1_fcr_decoder.py`、FCR聚焦测试 | verified | CPU autocast RED先复现低精度复数失败；本地真实CUDA FP16 AMP下`U_s`及`L_s`完整objective+backward均通过，主干保持FP16、FCR目标为FP32、33组FCR梯度有限；全量FCR 90 passed；原P1定点复审0项P0/P1；N607 Torch2.1/CUDA12.1同环境完整成对目标smoke通过，v4的R1-R8均越过原首次FCR前向故障点并写出E-01 checkpoint事件 | 模块级边界覆盖聚合前向、cross decode和transplant直达入口；不关闭ADV3B02主干AMP，不改变因子、Decoder顺序、损失或矩阵 |
 
 ## 当前计数
 
-- `verified`：3
-- `implemented`：8
+- `verified`：7
+- `implemented`：19
 - `deferred`：0
 - `rejected`：0
 - `blocked`：1
-- `pending`：17
+- `pending`：0
 
 ## 最高风险项
 
