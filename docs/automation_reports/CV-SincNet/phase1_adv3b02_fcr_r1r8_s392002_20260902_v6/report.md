@@ -3,7 +3,7 @@
 ## 状态
 
 - run_id：`phase1_adv3b02_fcr_r1r8_s392002_20260902_v6`
-- 当前状态：`LOCAL_VERIFIED`
+- 当前状态：`RUNNING`
 - protocol_scope：Phase1 source-only；R1-R8；seed392002；E200；无R0和旧ADV3B02基线
 - branch：`codex/adv3b02-fcr-20260901`
 - predecessor：v5在训练前因15域checkpoint与14域训练split被错误要求全模型形状一致而系统性失败，无性能结果，全部partial artifacts保留。
@@ -29,3 +29,14 @@ R1→GPU0、R2→GPU1、R3→GPU2、R4→GPU3、R5→GPU4、R6→GPU5、R7→GPU
 - 命令：`bash <release>/docs/automation_reports/CV-SincNet/phase1_adv3b02_fcr_r1r8_s392002_20260902_v6/launch_r1r8_remote.sh`
 
 只在数据/query越界、错误row/seed/split/checkpoint、输出覆盖、错误checkout、不能启动、无prediction闭合、进程归属不明或至少两个row出现同一确定性pre-prediction异常时停止本run精确进程树并保留产物；低性能和既有GPU任务数量不触发停止。每行预期生成`best_joint.pth`、`fcr_diagnostics.json`、`fcr_predictions.json`、`train.log`、`status.txt`和四场景prediction。
+
+## 发布与启动证据（2026-09-02 16:49 CST）
+
+- Git提交：`ed4346cadb043d4d14716ef9c7e11b25e00b8faf`；已push，远端分支OID独立回读一致。
+- release归档：`E:\type10-7\release_archives\phase1_adv3b02_fcr_r1r8_s392002_20260902_v6_ed4346ca.tar.gz`→`/home/szu2070436088/2510044040/CV-SincNet/release_archives/phase1_adv3b02_fcr_r1r8_s392002_20260902_v6_ed4346ca.tar.gz`；唯一一次传输SHA256一致：`61934122dbe91551febaa43f47b2d09b9231f2fe3eaa6870057e6fb13611c033`。
+- 远端解包、`train.py`编译及两个Bash启动脚本语法检查通过。
+- launcher PID：R1-R8分别为`142397,142398,142399,142400,142401,142402,142403,142404`；8个CWD均严格绑定v6 release，每个launcher仅有一个直属主训练进程。
+- GPU绑定：R1→GPU0、R2→GPU1、R3→GPU2、R4→GPU3、R5→GPU4、R6→GPU5、R7→GPU6、R8→GPU7，8个主训练进程均已产生GPU显存占用。
+- 8行真实checkpoint加载均为`loaded=191,skipped=4,missing=40,unexpected=0`；skipped仅为`dom_head.net.3.{weight,bias}`和`adv_head.net.3.{weight,bias}`，36个其余missing为新增FCR张量。
+- 首轮训练进展：R1到E004，R2-R8到E003；8行均已生成`latest.pth`和`best_joint.pth`，未见`Traceback`、`RuntimeError`或OOM。未启用诊断字段中的`nan`不属于优化损失或系统技术故障。
+- 每30分钟Luna只读监控已启用；监控不得因低性能干预实验。
