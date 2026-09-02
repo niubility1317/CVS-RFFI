@@ -105,3 +105,83 @@ env ROOT=<release-root> PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/pyth
 - 8个PID均被对应GPU的compute-app列表读回，每个占用约3.5GB显存；每个主进程有8个数据子进程，CPU时间持续增加
 - 8份独立日志均已创建且非空，首次核验大小均为12645字节；未发现`Traceback`、`RuntimeError`、`CUDA out of memory`或`Error:`
 - 初始化阶段每份日志出现2次`unsafe backward/step skipped`警告；当前无退出、无确定性异常和无归属错误，按预登记规则继续运行，不因该非终止警告停止
+
+## 10.中期状态结论（2026-09-03）
+
+截至2026-09-03 00:15:28（Asia/Hong_Kong），本run**尚未跑完**，最高交付状态仍为`RUNNING`，不能标记为`ARTIFACTS_COMPLETE`或`ANALYZED`。
+
+- 8个原始主训练PID均仍存活，cmdline继续绑定冻结release、对应R1–R8输出根与GPU0–7。
+- GPU即时利用率为80%–99%，总显存占用为7789–11542MiB/24576MiB；该数值包含同卡外部任务，不能当作本run独占资源。
+- R1–R8均已有`best.pth`和`latest.pth`；均没有`final_ssdg.pth`。
+- 冻结快照的CSV与JSONL共包含635条完整epoch记录，逐row均从E1连续到最新epoch，记录数相等，未发现损坏JSON行。
+- 全量stdout扫描未发现`Traceback`、`RuntimeError`、CUDA OOM、`Killed`或显式`[ERROR]`。
+- 正式target测试由训练门控固定在E200；当前所有`test_tx_acc`、`primary_ood_score`与`worst_rx_tx_acc`字段为空。因此clean和三个LEO场景都还没有可报告的最终性能。
+
+00:06–00:12冻结数据快照之后，00:15在线只读核对已推进到：R1=124、R2=117、R3=70、R4=67、R5=67、R6=66、R7=63、R8=66。下表及随附数据文件严格对应冻结快照，不把其后的未完整下载epoch混入同一分析。
+
+## 11.逐实验训练数据
+
+|实验|GPU|冻结epoch|进度|当前loss|当前训练TX准确率|当前source-val TX准确率|历史最佳source-val|最近10轮source-val|估算剩余训练时间|累计跳过batch|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|R1|0|123/200|61.5%|10.8220|74.04%|97.35%|97.87%@E101|97.69%±0.15|7.3小时|22|
+|R2|1|116/200|58.0%|9.0118|80.58%|97.74%|97.89%@E113|97.68%±0.20|8.1小时|13|
+|R3|2|69/200|34.5%|5.9905|81.35%|96.97%|97.42%@E67|97.25%±0.16|29.3小时|8|
+|R4|3|66/200|33.0%|6.8943|75.99%|97.31%|97.46%@E65|97.04%±0.41|33.5小时|8|
+|R5|4|67/200|33.5%|5.6455|84.74%|96.80%|97.41%@E64|97.00%±0.31|33.2小时|6|
+|R6|5|66/200|33.0%|7.0471|75.49%|97.38%|97.38%@E66|97.05%±0.21|33.6小时|7|
+|R7|6|63/200|31.5%|5.9985|82.30%|96.73%|97.17%@E62|96.73%±0.22|43.7小时|7|
+|R8|7|65/200|32.5%|5.6689|84.30%|97.06%|97.26%@E64|96.91%±0.23|34.1小时|5|
+
+说明：`source-val`只对应27000个只读source validation样本，不是target receiver结果，也不是clean/LEO最终结果。剩余时间按各row最近10个完整epoch的平均耗时线性估计，仅覆盖到E200训练结束，不含E200全target评测和训练后四场景独立评测；GPU共享负载变化会使该估计继续漂移。
+
+## 12.训练阶段与机制接线
+
+网络没有偏离设计稿：原ADV3B02继续产生160维`z_id_raw`，ECRS旁路按`NuisanceEstimator→AnalyticCanonicalizer→ContentEstimator→固定复数响应基→可微加权岭回归→固定锚点编码`产生64维`z_resp`，只有R8再通过`rho≤0.25`的受限残差gate融合回160维身份空间。R1–R8的递进关系如下。
+
+|实验|本row实际研究机制|当前所处LEO课程阶段|
+|---|---|---|
+|R1|固定Memory Polynomial、内容估计、加权岭回归|E91+：三LEO场景、p=0.80、卫星CE已启用|
+|R2|固定样条响应曲面|E91+：三LEO场景、p=0.80、卫星CE已启用|
+|R3|R2＋包内幅度分层50/50 split-fit|E41–79：low-elev/rain、p=0.60、卫星CE未启用|
+|R4|R3＋clean/LEO双向cross-response与surface约束|E41–79：low-elev/rain、p=0.60、卫星CE未启用|
+|R5|R4＋可辨识性分块收缩|E41–79：low-elev/rain、p=0.60、卫星CE未启用|
+|R6|R5＋同TX跨receiver响应迁移|E41–79：low-elev/rain、p=0.60、卫星CE未启用|
+|R7|R6＋response辅助分类与不同TX排序|E41–79：low-elev/rain、p=0.60、卫星CE未启用|
+|R8|R7＋受限残差融合gate|E41–79：low-elev/rain、p=0.60、卫星CE未启用|
+
+阶段统计显示：E1–40期间8组平均source-val TX准确率为89.86%–90.09%，阶段最佳为96.10%–96.37%；进入E41–79后，各row当前已观测区间的平均值为96.55%–96.93%。R1、R2已完整经过E80–90卫星CE启用阶段，其该阶段均值分别为97.44%和97.55%；进入E91+后三LEO并集阶段后，截至快照均值分别为97.64%和97.67%。由于R3–R8尚未到E80，当前不能把R1/R2与R3–R8的末轮数值当成同训练阶段的机制优劣排序。
+
+## 13.数据协议与日志解释
+
+- 原始source池为90000。底层WiSig装载器先产生9000/81000的临时train/val索引；随后Meta-SSL-CVS按同一物理池重新切成`L_s=6300`、`U_s=56700`、`V=27000`，训练实际使用的是后一组角色划分。
+- `L_s`每个source receiver为1260样本；`V`每个source receiver为5400样本。日志确认source receivers为`[1,3,4,6,8]`、target receivers为`[0,2,5,7,9,10,11]`且集合不相交。
+- `meta_ssl_enabled=true`只表示数据路由启用；本run的`meta_ssl_loss_enabled=false`，其TX/prototype/domain/adversarial损失权重均为0，不能把该空路由写成实际启用的Meta-SSL学习机制。
+- 星地训练严格使用拼接式增强：E1–40为clear/p=0.30，E41–90为low-elev＋rain/p=0.60，E91–200为三LEO场景/p=0.80；卫星辅助CE权重0.68从E80开始，卫星一致性损失为0。
+- 76次`unsafe backward/step skipped`分布于65个epoch：R1/R2分别累计22/13次，R3–R8分别为8/8/6/7/7/5次。它们被训练器记录为非有限梯度保护性跳过，未导致进程退出、epoch断裂或checkpoint停止更新；这是需要在最终报告保留的数值稳定性风险，但不满足预登记的技术停止条件。
+
+## 14.当前可用与不可用结果
+
+|结果层级|当前状态|可否用于方法结论|
+|---|---|---|
+|训练loss、训练TX准确率|635个完整epoch可用|仅用于健康和收敛诊断|
+|source validation TX/domain准确率|635个完整epoch可用|仅用于source侧训练进度，不代表target泛化|
+|clean target测试|E200门控尚未触发|不可报告|
+|`leo_clear_weak` target测试|尚未执行|不可报告|
+|`leo_low_elev_weak` target测试|尚未执行|不可报告|
+|`leo_rain_weak` target测试|尚未执行|不可报告|
+|最终checkpoint与deployment bundle|`final_ssdg.pth`尚不存在|不可交付|
+|R1–R8机制优劣与晋级|训练阶段不同且最终评测缺失|不可判定|
+
+即使全部完成，本run仍是单seed、R1–R8各自随机初始化的`USER_OVERRIDE_NON_SHARED_BASELINE`实验。它可以比较最终同row表现并筛选后续候选，但不能把相邻rung差值严格归因于单一新增机制；严格因果消融需要共享收敛R0或其他matched初始化，而本次用户已明确取消该前置。
+
+## 15.随附数据文件
+
+冻结快照的可复核数据位于`data/interim_20260903_0006/`：
+
+- `r1_r8_interim_summary.csv`：每个实验一行，含进度、最新值、历史最佳、最近10轮统计、耗时估计、跳过batch与日志完整性。
+- `r1_r8_phase_summary.csv`：按四段LEO课程汇总loss、TX准确率、domain准确率、耗时和跳过batch。
+- `r1_r8_milestones.csv`：关键epoch与各row最新epoch的读数。
+- `r1_r8_epoch_metrics_full.csv`：635条完整逐epoch原始结构化指标，保留runner写出的全部字段。
+- `r1_r8_interim_analysis.json`：机器可读汇总、阶段数据、异常扫描与审计信息。
+
+下一次完整闭合必须等8组均达到E200，确认各自最终checkpoint身份，并分别保存clean、`leo_clear_weak`、`leo_low_elev_weak`和`leo_rain_weak`结果后，才能把状态从`RUNNING`推进到`ARTIFACTS_COMPLETE`并进行同row分析。
