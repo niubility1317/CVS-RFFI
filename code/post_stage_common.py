@@ -312,13 +312,17 @@ def merge_checkpoint_args(ckpt: Mapping[str, Any], cli_args, *, input_len: int, 
 def build_baseline_model(model_args, device: torch.device) -> nn.Module:
     pa_orders_raw = str(getattr(model_args, "pa_orders", "") or "").strip()
     pa_orders = tuple(int(value) for value in pa_orders_raw.split(",") if value.strip()) or None
+    dataset = str(getattr(model_args, "dataset", "wisig"))
+    sample_rate_hz = float(getattr(model_args, "sample_rate_hz", 0.0))
+    if sample_rate_hz <= 0.0:
+        sample_rate_hz = 25e6 if dataset == "wisig" else 5e6
     return build_dual_model(
         int(model_args.num_classes),
         int(model_args.num_domains),
         model_size=str(getattr(model_args, "model_size", "M")),
-        dataset=str(getattr(model_args, "dataset", "wisig")),
+        dataset=dataset,
         input_len=int(getattr(model_args, "input_len", 256)),
-        sample_rate_hz=float(getattr(model_args, "sample_rate_hz", 25e6)),
+        sample_rate_hz=sample_rate_hz,
         id_feature_key=str(getattr(model_args, "id_feature_key", "feat_joint")),
         dom_feature_key=str(getattr(model_args, "dom_feature_key", "feat_imp")),
         model_variant=str(getattr(model_args, "model_variant", "lite_c")),

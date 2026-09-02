@@ -39,3 +39,4 @@
 - 本地Git Bash：`FAILED`，桌面shell适配器错误路由至损坏WSL，fail-closed且未执行payload；将在N607目标原生Bash完成`bash -n`与干跑。
 - N607首次干跑发现历史队列器仍会按现有GPU进程数等待；按用户明确授权将本批ADV3B02的容量检查设为`999`以旁路等待，不终止或修改任何既有进程，并新增回归断言。
 - N607真实ADV3B02 checkpoint无query烟测首次发现旧checkpoint缺省物理特征源的兼容错误；加载默认已修正为模型原生`raw_fft/raw_iq`并增加定点回归，修复后必须重新通过真实checkpoint严格加载和dummy forward。
+- 同一真实checkpoint烟测继续发现历史`sample_rate_hz=0`自动推断哨兵未被加载器归一化；现按WiSig协议解析为25MHz并纳入同一定点回归。
