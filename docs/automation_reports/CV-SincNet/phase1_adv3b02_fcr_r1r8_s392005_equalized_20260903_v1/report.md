@@ -41,3 +41,11 @@
 - N607真实ADV3B02 checkpoint无query烟测首次发现旧checkpoint缺省物理特征源的兼容错误；加载默认已修正为模型原生`raw_fft/raw_iq`并增加定点回归，修复后必须重新通过真实checkpoint严格加载和dummy forward。
 - 同一真实checkpoint烟测继续发现历史`sample_rate_hz=0`自动推断哨兵未被加载器归一化；现按WiSig协议解析为25MHz并纳入同一定点回归。
 - prediction最终改为复用已验证的精确SSDG重构器，从checkpoint权重推断域头宽度并严格加载，移除`num_domains=15`硬编码；该重构器已在N607真实ADV3B02 checkpoint上完成无query dummy forward。
+
+## 最终状态
+
+`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
+
+- ADV3B02在进入训练前因历史`best_metric=joint_safe`被source-only保护拒绝，exit=1；未生成checkpoint、prediction或性能结果。
+- run树已自行退出，专属失败日志与空输出目录保留；未终止或修改任何无关进程。
+- 修复仅把final-only模式下最后生效的兼容best metric固定为`clean_val_tx`，实验矩阵、seed、数据配置、训练预算和选择规则不变；替代run为`phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v2`。
