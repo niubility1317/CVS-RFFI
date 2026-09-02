@@ -37,3 +37,4 @@
 - 独立P0/P1审查：发现prediction进程仍可触达带标签ManySig的P1；修复后定点复审结论为`FIXED`。truth仅由prepare生成，prediction只读标签自由包，scorer最后独立连接truth。
 - `REJECTED_EXTRA_GATE`：审查提出的“每个物理样本在全部LEO scenario中只能出现一次”属于`p2_min_v1` Phase2规则；本批为Phase1且用户明确要求每个scenario 168000样本，因此未擅自改变冻结矩阵。
 - 本地Git Bash：`FAILED`，桌面shell适配器错误路由至损坏WSL，fail-closed且未执行payload；将在N607目标原生Bash完成`bash -n`与干跑。
+- N607首次干跑发现历史队列器仍会按现有GPU进程数等待；按用户明确授权将本批ADV3B02的容量检查设为`999`以旁路等待，不终止或修改任何既有进程，并新增回归断言。
