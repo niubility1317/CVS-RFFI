@@ -122,6 +122,41 @@ def test_necessity_step_routes_only_transplant_and_freezes_decoder_flag() -> Non
         assert result.components[name].item() == 0.0
 
 
+def test_inactive_nonfinite_component_cannot_poison_active_stage_or_gradients() -> None:
+    finite = torch.tensor(2.0, requires_grad=True)
+    poison = torch.tensor(float("nan"), requires_grad=True)
+    zero = finite * 0.0
+    cross = FCRLossOutput(
+        total=poison,
+        components={
+            "self": finite,
+            "swap": zero,
+            "swap_clean_to_leo": zero,
+            "swap_leo_to_clean": zero,
+            "shared": zero,
+            "latent_cycle": zero,
+            "eta": zero,
+            "factor": poison,
+            "anti_collapse": poison,
+        },
+        metrics={},
+    )
+    result = combine_fcr_training_losses(
+        pair=_pair(torch.tensor([True, True])),
+        cross=cross,
+        transplant=_transplant(zero, active_pairs=0),
+        identity_per_sample=torch.zeros(2, requires_grad=True),
+        physical_components={},
+        stage=stage_for_epoch(1),
+        configured=FCRLambdaConfig(),
+    )
+
+    assert torch.isfinite(result.total)
+    result.total.backward()
+    assert finite.grad is not None and torch.isfinite(finite.grad)
+    assert poison.grad is None or torch.isfinite(poison.grad).all()
+
+
 def test_task9_fingerprint_excitation_detach_is_explicit_in_gradient_route() -> None:
     torch.manual_seed(1009)
     model = build_dual_model(

@@ -108,8 +108,21 @@ def test_shared_is_symmetric_stop_gradient_and_constant_codes_trigger_anti_colla
     assert clean.z_s.grad is not None and clean.z_s.grad.abs().sum() > 0
     assert leo.z_s.grad is not None and leo.z_s.grad.abs().sum() > 0
 
-    collapsed = compute_cross_losses(**_cross_kwargs(_pair(), clean=_factors(constant=True), leo=_factors(constant=True)))
+    collapsed_clean = _factors(constant=True, requires_grad=True)
+    collapsed_leo = _factors(constant=True, requires_grad=True)
+    collapsed = compute_cross_losses(
+        **_cross_kwargs(_pair(), clean=collapsed_clean, leo=collapsed_leo)
+    )
     assert collapsed.components["anti_collapse"].item() > 0.0
+    collapsed.components["anti_collapse"].backward()
+    gradients = (
+        collapsed_clean.z_s.grad,
+        collapsed_clean.z_f_id.grad,
+        collapsed_leo.z_s.grad,
+        collapsed_leo.z_f_id.grad,
+    )
+    assert all(gradient is not None for gradient in gradients)
+    assert all(torch.isfinite(gradient).all() for gradient in gradients)
 
 
 def test_latent_cycle_reencodes_both_syntheses_and_detaches_latent_targets() -> None:

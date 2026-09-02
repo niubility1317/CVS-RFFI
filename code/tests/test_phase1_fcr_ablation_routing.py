@@ -271,3 +271,63 @@ def test_formal_inference_reports_the_row_bound_decoder_mode(row: str, expected_
         output = model(torch.randn(1, 2, 64), return_aux=True)
     assert output["fcr_decoder_mode"] == expected_mode
     assert output["fcr_decode"].decoder_mode == expected_mode
+
+
+def _objective_model_and_pair():
+    model = build_dual_model(
+        num_classes=2,
+        num_domains=2,
+        model_size="S",
+        dataset="wisig",
+        input_len=64,
+        model_variant="lite_d",
+        fast_infer_when_no_aux=False,
+        use_fcr=True,
+    ).train()
+    pair = _pair()
+    pair.clean_iq = torch.randn(4, 2, 64)
+    pair.leo_iq = pair.clean_iq + 0.01 * torch.randn_like(pair.clean_iq)
+    return model, pair
+
+
+def test_reconstruction_stage_does_not_execute_future_necessity(monkeypatch) -> None:
+    model, pair = _objective_model_and_pair()
+    args = _resolved_row("R5")
+
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("necessity executed before its scheduled stage")
+
+    monkeypatch.setattr(train, "compute_basic_drop_f_necessity_loss", forbidden)
+    result = train.compute_fcr_pair_objective(
+        model=model,
+        raw_model=model,
+        pair=pair,
+        role="L_s",
+        stage=stage_for_epoch(1, configured=_configured(args)),
+        configured=_configured(args),
+        frozen_identity_classifier=nn.Identity(),
+        capabilities=args.fcr_objective_capabilities,
+    )
+    assert torch.isfinite(result.total)
+
+
+def test_reconstruction_stage_does_not_execute_future_physics_or_three_axis(monkeypatch) -> None:
+    model, pair = _objective_model_and_pair()
+    args = _resolved_row("R8")
+
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("future-stage objective executed during reconstruction")
+
+    monkeypatch.setattr(train, "physical_feature_loss", forbidden)
+    monkeypatch.setattr(train, "compute_three_axis_intervention_loss", forbidden)
+    result = train.compute_fcr_pair_objective(
+        model=model,
+        raw_model=model,
+        pair=pair,
+        role="L_s",
+        stage=stage_for_epoch(1, configured=_configured(args)),
+        configured=_configured(args),
+        frozen_identity_classifier=nn.Identity(),
+        capabilities=args.fcr_objective_capabilities,
+    )
+    assert torch.isfinite(result.total)

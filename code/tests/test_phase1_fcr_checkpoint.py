@@ -170,3 +170,93 @@ def test_trusted_legacy_checkpoint_with_training_metadata_can_warm_start_fcr(
 
     for name, value in legacy.state_dict().items():
         torch.testing.assert_close(candidate.state_dict()[name], value, rtol=0.0, atol=0.0)
+
+
+def test_legacy_adv3_checkpoint_warm_start_preserves_zero_step_identity_logits(
+    tmp_path: Path,
+) -> None:
+    import train
+
+    torch.manual_seed(21001)
+    legacy = _small_model(use_fcr=False).eval()
+    path = tmp_path / "adv3-legacy.pth"
+    torch.save({"model": legacy.state_dict(), "epoch": 200}, path)
+
+    torch.manual_seed(21002)
+    candidate = _small_model(use_fcr=True).eval()
+    train.load_init_checkpoint_weights(candidate, str(path), torch.device("cpu"))
+    iq = torch.randn(3, 2, 64)
+    with torch.no_grad():
+        legacy_logits = legacy(iq, y_tx=None, return_aux=True)["tx_logits"]
+        fcr_logits = candidate(iq, y_tx=None, return_aux=True)["fcr_tx_logits"]
+        labels = torch.tensor([0, 1, 2], dtype=torch.long)
+        legacy_margin_logits = legacy(iq, y_tx=labels, return_aux=True)["tx_logits"]
+        fcr_margin_logits = candidate(iq, y_tx=labels, return_aux=True)["fcr_tx_logits"]
+
+    torch.testing.assert_close(fcr_logits, legacy_logits, rtol=0.0, atol=1e-6)
+    torch.testing.assert_close(fcr_margin_logits, legacy_margin_logits, rtol=0.0, atol=3e-6)
+
+
+def test_locked_v5_warm_start_rejects_wrong_metadata_and_fcr_state(tmp_path: Path) -> None:
+    import train
+
+    legacy = _small_model(use_fcr=False)
+    candidate = _small_model(use_fcr=True)
+    payload = {
+        "model": legacy.state_dict(),
+        "epoch": 200,
+        "final_epoch": 200,
+        "candidate_id": "S392002_ADV3B03_MU10_ALPHA20_E200",
+        "args": {"seed": 392002},
+    }
+    path = tmp_path / "locked-v5.pth"
+    torch.save(payload, path)
+    policy = dict(
+        expected_seed=392002,
+        expected_epoch=200,
+        expected_candidate_id="S392002_ADV3B03_MU10_ALPHA20_E200",
+        require_mature_base_complete=True,
+    )
+    train.load_init_checkpoint_weights(candidate, str(path), torch.device("cpu"), **policy)
+
+    wrong_seed = copy.deepcopy(payload)
+    wrong_seed["args"]["seed"] = 392005
+    wrong_seed_path = tmp_path / "wrong-seed.pth"
+    torch.save(wrong_seed, wrong_seed_path)
+    with pytest.raises(ValueError, match="seed"):
+        train.load_init_checkpoint_weights(candidate, str(wrong_seed_path), torch.device("cpu"), **policy)
+
+    fcr_payload = copy.deepcopy(payload)
+    fcr_payload["model"]["fcr_identity_head.weight"] = candidate.fcr_identity_head.weight.detach().clone()
+    fcr_path = tmp_path / "old-fcr.pth"
+    torch.save(fcr_payload, fcr_path)
+    with pytest.raises(ValueError, match="FCR state"):
+        train.load_init_checkpoint_weights(candidate, str(fcr_path), torch.device("cpu"), **policy)
+
+
+def test_locked_v5_warm_start_rejects_incomplete_mature_base(tmp_path: Path) -> None:
+    import train
+
+    legacy = _small_model(use_fcr=False)
+    incomplete = dict(legacy.state_dict())
+    incomplete.pop("id_backbone.cls_head.head.weight")
+    path = tmp_path / "incomplete.pth"
+    torch.save(
+        {
+            "model": incomplete,
+            "epoch": 200,
+            "candidate_id": "S392002_ADV3B03_MU10_ALPHA20_E200",
+            "args": {"seed": 392002},
+        },
+        path,
+    )
+    with pytest.raises(RuntimeError, match="mature base"):
+        train.load_init_checkpoint_weights(
+            _small_model(use_fcr=True),
+            str(path),
+            torch.device("cpu"),
+            expected_seed=392002,
+            expected_epoch=200,
+            expected_candidate_id="S392002_ADV3B03_MU10_ALPHA20_E200",
+            require_mature_base_complete=True,
+        )

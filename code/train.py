@@ -545,8 +545,9 @@ def combine_fcr_training_losses(
     """Apply stage and permission routing to existing Task6/7/8 losses."""
 
     del configured
-    reference = cross.total
-    zero = reference.reshape(-1).sum() * 0.0
+    # Inactive objectives must be disconnected from their values. Multiplying
+    # an inactive NaN by zero still yields NaN and poisoned the v4 warmup.
+    zero = zero_like_with_grad(cross.components["self"])
     route = dict(capabilities or {
         "basic_need": False,
         "targeted_transplant": True,
@@ -733,6 +734,7 @@ def compute_fcr_pair_objective(
         reencode_clean_to_leo=reencode,
         reencode_leo_to_clean=reencode,
         config=fcr.config,
+        active=stage.active,
     )
 
     raw_reconstruction = {
@@ -745,7 +747,12 @@ def compute_fcr_pair_objective(
             + phase_increment_loss(pair.leo_iq, leo.decode.mu_iq)
         ),
     }
-    if route.get("physics_ordered", False):
+    physics_active = bool(
+        route.get("physics_ordered", False)
+        and "phys" in stage.active
+        and float(stage.scales.get("phys", 0.0)) > 0.0
+    )
+    if physics_active:
         basis = fixed_response_basis(clean.content.s_hat.detach()).abs().float()
         gram = basis.transpose(1, 2).matmul(basis) / max(1, int(basis.size(1)))
         snr_db = None
@@ -786,7 +793,11 @@ def compute_fcr_pair_objective(
         components={name: zero for name in ("target_id", "preserve_s", "preserve_n", "same_f", "drop_f")},
         metrics={"active_pairs": 0.0, "status": "N/A"},
     )
-    if route.get("targeted_transplant", False) and "transplant" in permission.allowed:
+    necessity_active = bool(
+        ("transplant" in stage.active or "necessity" in stage.active)
+        and float(stage.scales.get("need", 0.0)) > 0.0
+    )
+    if necessity_active and route.get("targeted_transplant", False) and "transplant" in permission.allowed:
         transplant = compute_transplant_losses(
             pair=pair,
             source_factors=clean.factors,
@@ -803,7 +814,7 @@ def compute_fcr_pair_objective(
         components={"drop_f": zero},
         metrics={"active_rows": 0.0, "status": "N/A"},
     )
-    if route.get("basic_need", False) and permission.role == "L_s":
+    if necessity_active and route.get("basic_need", False) and permission.role == "L_s":
         basic_necessity = compute_basic_drop_f_necessity_loss(
             source_factors=clean.factors,
             decoder=decoder_adapter,
@@ -812,7 +823,8 @@ def compute_fcr_pair_objective(
             freeze_decoder=bool(stage.freeze_decoder_for_necessity),
         )
     three_axis = None
-    if route.get("three_axis", False):
+    factor_active = bool("factor" in stage.active and float(stage.scales.get("factor", 0.0)) > 0.0)
+    if factor_active and route.get("three_axis", False):
         three_axis = compute_three_axis_intervention_loss(
             pair=pair,
             clean_factors=clean.factors,
@@ -837,7 +849,17 @@ def compute_fcr_pair_objective(
     return combined
 
 
-def load_init_checkpoint_weights(model: nn.Module, path: str, device: torch.device, strict: bool = False) -> None:
+def load_init_checkpoint_weights(
+    model: nn.Module,
+    path: str,
+    device: torch.device,
+    strict: bool = False,
+    *,
+    expected_seed: int | None = None,
+    expected_epoch: int | None = None,
+    expected_candidate_id: str = "",
+    require_mature_base_complete: bool = False,
+) -> None:
     """Load model weights only for staged training warm-starts."""
     ckpt_path = str(path or "").strip()
     if not ckpt_path:
@@ -862,8 +884,38 @@ def load_init_checkpoint_weights(model: nn.Module, path: str, device: torch.devi
         key_hint = list(ckpt)[:8] if isinstance(ckpt, dict) else type(ckpt)
         raise ValueError(f"--init_checkpoint must contain model/state_dict tensors, got {key_hint}")
 
+    def checkpoint_metadata(name: str, *fallbacks: str):
+        for key in (name, *fallbacks):
+            if isinstance(ckpt, dict) and ckpt.get(key) is not None:
+                return ckpt.get(key)
+        args_metadata = ckpt.get("args", {}) if isinstance(ckpt, dict) else {}
+        for key in (name, *fallbacks):
+            if isinstance(args_metadata, dict) and args_metadata.get(key) is not None:
+                return args_metadata.get(key)
+            value = getattr(args_metadata, key, None)
+            if value is not None:
+                return value
+        return None
+
+    actual_seed = checkpoint_metadata("seed")
+    actual_epoch = checkpoint_metadata("final_epoch", "epoch")
+    actual_candidate = checkpoint_metadata("candidate_id")
+    if expected_seed is not None and (actual_seed is None or int(actual_seed) != int(expected_seed)):
+        raise ValueError(f"init checkpoint seed mismatch: expected={expected_seed} actual={actual_seed}")
+    if expected_epoch is not None and (actual_epoch is None or int(actual_epoch) != int(expected_epoch)):
+        raise ValueError(f"init checkpoint epoch mismatch: expected={expected_epoch} actual={actual_epoch}")
+    if str(expected_candidate_id or "") and str(actual_candidate) != str(expected_candidate_id):
+        raise ValueError(
+            f"init checkpoint candidate mismatch: expected={expected_candidate_id} actual={actual_candidate}"
+        )
+
     raw_model = getattr(model, "_orig_mod", model)
-    contains_fcr_state = any(str(key).startswith("fcr.") for key in state)
+    fcr_prefixes = ("fcr.", "fcr_identity_head.")
+    contains_fcr_state = any(
+        str(key).startswith(fcr_prefixes) for key in state
+    )
+    if require_mature_base_complete and contains_fcr_state:
+        raise ValueError("locked mature-base initialization checkpoint must not contain FCR state")
     if bool(getattr(raw_model, "use_fcr", False)) and ("fcr_bundle" in ckpt or contains_fcr_state):
         validate_fcr_bundle_for_model(ckpt, raw_model)
     current = raw_model.state_dict()
@@ -887,7 +939,24 @@ def load_init_checkpoint_weights(model: nn.Module, path: str, device: torch.devi
             continue
         filtered[match_key] = value
 
+    if require_mature_base_complete:
+        mature_base_keys = {key for key in current if not str(key).startswith(fcr_prefixes)}
+        missing_mature_base = sorted(mature_base_keys.difference(filtered))
+        if skipped or missing_mature_base:
+            raise RuntimeError(
+                "locked mature base checkpoint is incomplete: "
+                f"skipped={len(skipped)} missing_mature_base={len(missing_mature_base)} "
+                f"missing_sample={missing_mature_base[:8]}"
+            )
+
     missing, unexpected = raw_model.load_state_dict(filtered, strict=False)
+    if bool(getattr(raw_model, "use_fcr", False)) and not contains_fcr_state:
+        legacy_head = getattr(getattr(raw_model.id_backbone, "cls_head", None), "head", None)
+        fcr_head = getattr(raw_model, "fcr_identity_head", None)
+        if legacy_head is None or fcr_head is None:
+            raise RuntimeError("Legacy ADV3 warm start requires both legacy and FCR identity heads")
+        fcr_head.load_state_dict(legacy_head.state_dict(), strict=True)
+        print("[INIT-CKPT] synchronized FCR identity head from mature ADV3 geometry", flush=True)
     print(
         f"[INIT-CKPT] path={ckpt_path} source={state_name} loaded={len(filtered)} "
         f"skipped={len(skipped)} missing={len(missing)} unexpected={len(unexpected)} "
@@ -3185,6 +3254,10 @@ def main():
         action="store_true",
         help="Fail if --init_checkpoint cannot load every compatible model tensor.",
     )
+    parser.add_argument("--init_checkpoint_expected_seed", type=int, default=None)
+    parser.add_argument("--init_checkpoint_expected_epoch", type=int, default=None)
+    parser.add_argument("--init_checkpoint_expected_candidate", type=str, default="")
+    parser.add_argument("--init_checkpoint_require_mature_base_complete", action="store_true")
     parser.add_argument("--eval_max_batches", type=int, default=0)
     parser.add_argument(
         "--test_eval_policy",
@@ -3784,6 +3857,12 @@ def main():
         str(getattr(args, "init_checkpoint", "") or ""),
         device,
         strict=bool(getattr(args, "strict_init_checkpoint", False)),
+        expected_seed=getattr(args, "init_checkpoint_expected_seed", None),
+        expected_epoch=getattr(args, "init_checkpoint_expected_epoch", None),
+        expected_candidate_id=str(getattr(args, "init_checkpoint_expected_candidate", "") or ""),
+        require_mature_base_complete=bool(
+            getattr(args, "init_checkpoint_require_mature_base_complete", False)
+        ),
     )
     model_emb_dim = getattr(model, "emb_dim", "unknown")
     n_total, n_trainable = count_parameters(model)

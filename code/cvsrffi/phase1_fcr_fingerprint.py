@@ -40,6 +40,10 @@ class FingerprintFactorEncoder(nn.Module):
         self.config = config
         summary_dim = 8
         self.identity_context = nn.Linear(summary_dim, 160, bias=False)
+        # A legacy ADV3B02/ADV3B03 warm start must preserve its identity
+        # geometry at optimizer step zero. The context branch learns only the
+        # residual correction introduced by FCR.
+        nn.init.zeros_(self.identity_context.weight)
         self.state_head = nn.Sequential(
             nn.Linear(summary_dim, 32),
             nn.GELU(),

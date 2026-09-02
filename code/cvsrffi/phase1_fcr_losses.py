@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import math
 from collections.abc import Callable
+from typing import AbstractSet
 
 import torch
 
@@ -269,7 +270,10 @@ def _anti_collapse_loss(z: torch.Tensor, *, minimum_std: float = 0.1) -> torch.T
     if flat.size(0) == 0:
         return _connected_zero(z)
     centered = flat - flat.mean(dim=0, keepdim=True)
-    std = centered.square().mean(dim=0).sqrt()
+    # The derivative of sqrt(x) is singular at x=0. Constant latent
+    # dimensions are expected early in training, so keep their backward pass
+    # finite instead of relying on the later non-finite batch skip.
+    std = (centered.square().mean(dim=0) + 1e-6).sqrt()
     variance_floor = (float(minimum_std) - std).clamp_min(0.0).square().mean()
     if flat.size(1) < 2:
         covariance = _connected_zero(flat)
@@ -318,6 +322,7 @@ def compute_cross_losses(
     reencode_clean_to_leo: Callable[[torch.Tensor], FCRFactorOutput],
     reencode_leo_to_clean: Callable[[torch.Tensor], FCRFactorOutput],
     config: FCRConfig,
+    active: AbstractSet[str] | None = None,
     domain_confusion_loss: Callable[[torch.Tensor, torch.Tensor], torch.Tensor] | None = None,
     probe_metric: Callable[[tuple[FCRFactorOutput, FCRFactorOutput], torch.Tensor], float] | None = None,
 ) -> FCRLossOutput:
@@ -331,32 +336,56 @@ def compute_cross_losses(
     ``probe_metric`` is a detached training-external diagnostic hook.
     """
 
+    enabled = None if active is None else frozenset(str(name) for name in active)
+
+    def is_enabled(name: str) -> bool:
+        return enabled is None or name in enabled
+
+    zero = _connected_zero(clean_factors.z_s)
     forward_mask = _pair_mask(pair, "clean_to_leo")
     reverse_mask = _pair_mask(pair, "leo_to_clean")
-    self_loss = 0.5 * (
-        heteroscedastic_complex_nll(pair.clean_iq, clean_self.mu_iq, clean_self.log_variance, config)
-        + heteroscedastic_complex_nll(pair.leo_iq, leo_self.mu_iq, leo_self.log_variance, config)
+    self_loss = (
+        0.5
+        * (
+            heteroscedastic_complex_nll(pair.clean_iq, clean_self.mu_iq, clean_self.log_variance, config)
+            + heteroscedastic_complex_nll(pair.leo_iq, leo_self.mu_iq, leo_self.log_variance, config)
+        )
+        if is_enabled("self")
+        else zero
     )
-    swap_clean_to_leo = _masked_nll(pair.leo_iq, clean_to_leo, forward_mask, config)
-    swap_leo_to_clean = _masked_nll(pair.clean_iq, leo_to_clean, reverse_mask, config)
+    swap_clean_to_leo = (
+        _masked_nll(pair.leo_iq, clean_to_leo, forward_mask, config) if is_enabled("swap") else zero
+    )
+    swap_leo_to_clean = (
+        _masked_nll(pair.clean_iq, leo_to_clean, reverse_mask, config) if is_enabled("swap") else zero
+    )
     swap = 0.5 * (swap_clean_to_leo + swap_leo_to_clean)
 
     clean_zf = _unit_sphere(clean_factors.z_f_id)
     leo_zf = _unit_sphere(leo_factors.z_f_id)
-    shared = symmetric_stopgrad_distance(clean_factors.z_s, leo_factors.z_s)
-    shared = shared + symmetric_stopgrad_distance(clean_zf, leo_zf)
-    anti_collapse = 0.5 * (
-        _anti_collapse_loss(torch.cat((clean_factors.z_s, leo_factors.z_s), dim=0))
-        + _anti_collapse_loss(torch.cat((clean_zf, leo_zf), dim=0))
+    shared = (
+        symmetric_stopgrad_distance(clean_factors.z_s, leo_factors.z_s)
+        + symmetric_stopgrad_distance(clean_zf, leo_zf)
+        if is_enabled("shared")
+        else zero
+    )
+    anti_collapse = (
+        0.5
+        * (
+            _anti_collapse_loss(torch.cat((clean_factors.z_s, leo_factors.z_s), dim=0))
+            + _anti_collapse_loss(torch.cat((clean_zf, leo_zf), dim=0))
+        )
+        if is_enabled("factor")
+        else zero
     )
 
-    if bool(forward_mask.any()):
+    if is_enabled("latent_cycle") and bool(forward_mask.any()):
         cycle_clean_to_leo = _cycle_distance(
             reencode_clean_to_leo(clean_to_leo.mu_iq), clean_factors, leo_factors
         )
     else:
         cycle_clean_to_leo = _connected_zero(clean_to_leo.mu_iq)
-    if bool(reverse_mask.any()):
+    if is_enabled("latent_cycle") and bool(reverse_mask.any()):
         cycle_leo_to_clean = _cycle_distance(
             reencode_leo_to_clean(leo_to_clean.mu_iq), leo_factors, clean_factors
         )
@@ -367,7 +396,7 @@ def compute_cross_losses(
     eta_pred = leo_factors.z_n_parts.get("eta_pred")
     eta_target = pair.nuisance.to(device=pair.leo_iq.device)
     eta_valid = torch.as_tensor(pair.nuisance_valid, device=pair.leo_iq.device, dtype=torch.bool)
-    if eta_pred is None:
+    if not is_enabled("eta") or eta_pred is None:
         eta = _connected_zero(leo_factors.z_s)
     else:
         if eta_pred.shape != eta_target.shape:
@@ -379,18 +408,21 @@ def compute_cross_losses(
         else:
             eta = _connected_zero(eta_pred)
 
-    clean_nuisance = _nuisance_vector(clean_factors)
-    leo_nuisance = _nuisance_vector(leo_factors)
-    factor = 0.5 * (
-        _cross_covariance_loss(clean_factors.z_s, clean_zf, clean_nuisance)
-        + _cross_covariance_loss(leo_factors.z_s, leo_zf, leo_nuisance)
-    )
-    if domain_confusion_loss is not None:
-        domain_terms = (
-            domain_confusion_loss(clean_zf, pair.receiver_id.detach())
-            + domain_confusion_loss(leo_zf, pair.receiver_id.detach())
+    if is_enabled("factor"):
+        clean_nuisance = _nuisance_vector(clean_factors)
+        leo_nuisance = _nuisance_vector(leo_factors)
+        factor = 0.5 * (
+            _cross_covariance_loss(clean_factors.z_s, clean_zf, clean_nuisance)
+            + _cross_covariance_loss(leo_factors.z_s, leo_zf, leo_nuisance)
         )
-        factor = factor + 0.5 * domain_terms
+        if domain_confusion_loss is not None:
+            domain_terms = (
+                domain_confusion_loss(clean_zf, pair.receiver_id.detach())
+                + domain_confusion_loss(leo_zf, pair.receiver_id.detach())
+            )
+            factor = factor + 0.5 * domain_terms
+    else:
+        factor = zero
 
     components = {
         "self": self_loss,

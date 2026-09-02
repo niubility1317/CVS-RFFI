@@ -149,6 +149,12 @@ def test_launcher_freezes_defaults_four_evaluations_and_no_query_paths() -> None
         "refusing to overwrite existing output root",
         "RUN_ID",
         "OUTPUT_ROOT",
+        "INIT_CHECKPOINT",
+        "--init_checkpoint",
+        "--init_checkpoint_expected_seed 392002",
+        "--init_checkpoint_expected_epoch 200",
+        "--init_checkpoint_expected_candidate S392002_ADV3B03_MU10_ALPHA20_E200",
+        "--init_checkpoint_require_mature_base_complete",
         "--dry-run",
     )
     for fragment in required_fragments:
@@ -156,8 +162,11 @@ def test_launcher_freezes_defaults_four_evaluations_and_no_query_paths() -> None
     lowered = text.lower()
     for forbidden in ("phase2", "query", "truth", "scorer"):
         assert forbidden not in lowered
-    for row in range(9):
+    for row in range(1, 9):
         assert f"R{row}" in text
+    assert "--row=R0" not in text
+    assert "ROWS=(R1 R2 R3 R4 R5 R6 R7 R8)" in text
+    assert '[[ "${SEED}" == "392002" ]]' in text
 
 
 def test_launcher_requires_caller_run_id_and_output_root_without_defaults() -> None:
@@ -166,3 +175,5 @@ def test_launcher_requires_caller_run_id_and_output_root_without_defaults() -> N
     assert 'OUTPUT_ROOT="${OUTPUT_ROOT:-}"' in text
     assert '[[ -n "${RUN_ID}" ]]' in text
     assert '[[ -n "${OUTPUT_ROOT}" ]]' in text
+    assert 'INIT_CHECKPOINT="${INIT_CHECKPOINT:-}"' in text
+    assert '[[ -n "${INIT_CHECKPOINT}" ]]' in text

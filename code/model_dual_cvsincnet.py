@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import math
+from copy import deepcopy
 from pathlib import Path
 import sys
 from typing import Dict, Optional, Sequence, Tuple
@@ -902,7 +903,10 @@ class DualCVSincNetDisentangle(nn.Module):
                 fcr_config if fcr_config is not None else FCRConfig(input_len=int(input_len))
             )
             self.fcr = ADV3B02FactorizedCrossReconstruction(self.fcr_config)
-            self.fcr_identity_head = nn.Linear(self.emb_dim, self.num_classes)
+            legacy_identity_head = getattr(getattr(self.id_backbone, "cls_head", None), "head", None)
+            if legacy_identity_head is None:
+                raise RuntimeError("FCR requires the mature ADV3B02 identity head")
+            self.fcr_identity_head = deepcopy(legacy_identity_head)
 
     def set_crra_epoch(self, epoch: int) -> None:
         self.crra_epoch = max(1, int(epoch))
@@ -966,6 +970,7 @@ class DualCVSincNetDisentangle(nn.Module):
         out: Dict[str, object],
         x: torch.Tensor,
         z_id: torch.Tensor,
+        y_tx: Optional[torch.Tensor] = None,
     ) -> Dict[str, object]:
         if not self.use_fcr:
             return out
@@ -974,7 +979,7 @@ class DualCVSincNetDisentangle(nn.Module):
         if self.fcr_identity_head is None:
             raise RuntimeError("use_fcr=True requires an explicit FCR identity head")
         aggregate = self.fcr(x, z_id)
-        fcr_tx_logits = self.fcr_identity_head(aggregate.factors.z_f_id)
+        fcr_tx_logits = self.fcr_identity_head(aggregate.factors.z_f_id, y_tx)
         out.update(
             {
                 "z_id_raw": z_id,
@@ -1057,7 +1062,7 @@ class DualCVSincNetDisentangle(nn.Module):
                 "aux_id": aux_id,
                 "aux_dom": {},
             }
-            return self._attach_fcr_outputs(out, x, z_id)
+            return self._attach_fcr_outputs(out, x, z_id, y_tx)
 
         if (
             (not return_aux)
@@ -1190,7 +1195,7 @@ class DualCVSincNetDisentangle(nn.Module):
             v = out[g].get(k, None)
             if torch.is_tensor(v):
                 out[name] = v
-        return self._attach_fcr_outputs(out, x, z_id)
+        return self._attach_fcr_outputs(out, x, z_id, y_tx)
 
 
 def build_dual_model(

@@ -5,13 +5,14 @@ ROOT="${ROOT:-/home/szu2070436088/2510044040/CV-SincNet}"
 CODE_ROOT="${CODE_ROOT:-${ROOT}}"
 PYTHON="${PYTHON:-/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python}"
 WISIG_PKL="${WISIG_PKL:-${ROOT}/Dataset_WigSig/ManySig.pkl}"
+INIT_CHECKPOINT="${INIT_CHECKPOINT:-}"
 RUN_ID="${RUN_ID:-}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-}"
 GPU="${GPU:-0}"
 SEED="${SEED:-392002}"
 DRY_RUN=0
 ONLY_ROW=""
-ROWS=(R0 R1 R2 R3 R4 R5 R6 R7 R8)
+ROWS=(R1 R2 R3 R4 R5 R6 R7 R8)
 FINAL_EVALUATIONS=(clean leo_clear_weak leo_low_elev_weak leo_rain_weak)
 SAT_SCHEDULE='1@0.30:leo_clear_weak;41@0.60:leo_low_elev_weak,leo_rain_weak;91@0.80:leo_clear_weak,leo_low_elev_weak,leo_rain_weak'
 SAT_SCENARIOS='leo_clear_weak,leo_low_elev_weak,leo_rain_weak'
@@ -19,7 +20,7 @@ SAT_SCENARIOS='leo_clear_weak,leo_low_elev_weak,leo_rain_weak'
 for arg in "$@"; do
   case "${arg}" in
     --dry-run) DRY_RUN=1 ;;
-    --row=R0|--row=R1|--row=R2|--row=R3|--row=R4|--row=R5|--row=R6|--row=R7|--row=R8)
+    --row=R1|--row=R2|--row=R3|--row=R4|--row=R5|--row=R6|--row=R7|--row=R8)
       ONLY_ROW="${arg#--row=}"
       ;;
     *) echo "[FCR-ERROR] unknown argument: ${arg}" >&2; exit 2 ;;
@@ -28,12 +29,18 @@ done
 
 [[ -n "${RUN_ID}" ]] || { echo "[FCR-ERROR] caller must set RUN_ID" >&2; exit 2; }
 [[ -n "${OUTPUT_ROOT}" ]] || { echo "[FCR-ERROR] caller must set OUTPUT_ROOT" >&2; exit 2; }
+[[ -n "${INIT_CHECKPOINT}" ]] || { echo "[FCR-ERROR] caller must set INIT_CHECKPOINT" >&2; exit 2; }
+[[ "${SEED}" == "392002" ]] || { echo "[FCR-ERROR] v5 seed is locked to 392002" >&2; exit 2; }
 if [[ "${DRY_RUN}" != "1" && -e "${OUTPUT_ROOT}" ]]; then
   echo "[FCR-ERROR] refusing to overwrite existing output root: ${OUTPUT_ROOT}" >&2
   exit 3
 fi
 if [[ "${DRY_RUN}" != "1" && ! -f "${WISIG_PKL}" ]]; then
   echo "[FCR-ERROR] source WiSig file missing: ${WISIG_PKL}" >&2
+  exit 4
+fi
+if [[ "${DRY_RUN}" != "1" && ! -f "${INIT_CHECKPOINT}" ]]; then
+  echo "[FCR-ERROR] initialization checkpoint missing: ${INIT_CHECKPOINT}" >&2
   exit 4
 fi
 
@@ -47,6 +54,11 @@ run_row() {
     --dataset wisig
     --wisig_pkl "${WISIG_PKL}"
     --model_variant lite_d
+    --init_checkpoint "${INIT_CHECKPOINT}"
+    --init_checkpoint_expected_seed 392002
+    --init_checkpoint_expected_epoch 200
+    --init_checkpoint_expected_candidate S392002_ADV3B03_MU10_ALPHA20_E200
+    --init_checkpoint_require_mature_base_complete
     --run_name "${RUN_ID}_${row}"
     --seed "${SEED}"
     --device cuda:0
