@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT="${ROOT:-/home/szu2070436088/2510044040/CV-SincNet}"
 PYTHON="${PYTHON:-/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python}"
 WISIG_PKL="${WISIG_PKL:-${ROOT}/Dataset_WigSig/ManySig.pkl}"
-RUN_ID="${RUN_ID:-phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v2}"
+RUN_ID="${RUN_ID:-phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v3}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-${ROOT}/runs/${RUN_ID}}"
 LOG_ROOT="${LOG_ROOT:-${ROOT}/logs/${RUN_ID}}"
 SEED="${SEED:-392005}"
@@ -23,7 +23,7 @@ if [[ "${DRY_RUN}" != "1" && -e "${OUTPUT_ROOT}" ]]; then
   exit 3
 fi
 
-COMMON_ARGS="--seed 392005 --wisig_equalized 1 --wisig_train_days ${SOURCE_DAYS} --wisig_train_rxs ${SOURCE_RXS} --wisig_test_days ${TARGET_DAYS} --wisig_test_rxs ${TARGET_RXS} --wisig_allow_day_overlap_if_receiver_disjoint true --labeled_ratio 0.07 --unlabeled_ratio 0.63 --source_val_ratio 0.30 --phase1_source_role_protocol legacy_l_u_v --checkpoint_selection final_only --best_metric clean_val_tx --test_eval_policy never --phase1_external_final_eval true"
+COMMON_ARGS="--seed 392005 --wisig_equalized 1 --wisig_train_days ${SOURCE_DAYS} --wisig_train_rxs ${SOURCE_RXS} --wisig_test_days ${TARGET_DAYS} --wisig_test_rxs ${TARGET_RXS} --wisig_allow_day_overlap_if_receiver_disjoint true --labeled_ratio 0.07 --unlabeled_ratio 0.63 --source_val_ratio 0.30 --phase1_source_role_protocol legacy_l_u_v --checkpoint_selection final_only --best_metric clean_val_tx --enable_joint_safe_guard false --test_eval_policy never --phase1_external_final_eval true"
 
 printf '[RELEASE] stage=ADV3B02_CORE90_SOFT_E200 seed=%s source_days=%s source_rxs=%s target_days=%s target_rxs=%s\n' \
   "${SEED}" "${SOURCE_DAYS}" "${SOURCE_RXS}" "${TARGET_DAYS}" "${TARGET_RXS}"

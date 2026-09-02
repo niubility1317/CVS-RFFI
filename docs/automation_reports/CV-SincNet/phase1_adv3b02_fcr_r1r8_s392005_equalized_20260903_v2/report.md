@@ -12,3 +12,11 @@
 - 技术停止：仅协议/路径/输出覆盖/确定性执行失败/无prediction闭合/scorer连接失败；低性能不停止。
 - Git commit：提交后填写；release与N607路径：提交后填写。
 - 当前状态：`LOCAL_VERIFIED`。
+
+## 最终状态
+
+`STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE / NO_PERFORMANCE_RESULT`
+
+- ADV3B02在进入训练前因历史`enable_joint_safe_guard=true`被source-only保护拒绝；未生成checkpoint、prediction或性能结果。
+- v2专属日志和输出保留，run树自行退出；替代run为`phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v3`。
+- v3显式关闭held-out joint guard；final-only、source-only、数据、seed、预算和R1-R8矩阵不变。

@@ -76,6 +76,7 @@ def test_release_launcher_freezes_exact_protocol() -> None:
     assert "TARGET_RXS='0,2,5,7,9,10,11'" in text
     assert "--test_eval_policy never" in text
     assert "--best_metric clean_val_tx" in text
+    assert "--enable_joint_safe_guard false" in text
     assert "final_checkpoint=final.pth" in text
     assert "best_test_save_path" not in text
     assert text.index("ADV3B02_CORE90_SOFT_E200") < text.index("ROWS=(R1 R2 R3 R4 R5 R6 R7 R8)")
