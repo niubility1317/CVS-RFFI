@@ -9,10 +9,11 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader, Dataset
 
+from cvsrffi.checkpoint_loading import build_exact_ssdg_model_from_checkpoint
 from cvsrffi.eval import FCR_PREDICTION_SCENARIOS, apply_sat_channel_for_scenario, select_identity_logits
 from cvsrffi.truth_last import build_truth_sidecar, stable_sample_id
 from dataset_wisig import WiSigCompactDataset, load_wisig_compact_pkl
-from post_stage_common import build_baseline_model, load_checkpoint
+from post_stage_common import load_checkpoint
 
 
 class _OpaqueTargetDataset(Dataset):
@@ -128,10 +129,11 @@ def main() -> None:
 
     checkpoint = load_checkpoint(args.checkpoint, torch.device("cpu"))
     model_args = dict(checkpoint.get("args") or {})
-    model_args.update({"input_len": 256, "num_domains": 15, "num_classes": 6, "dataset": "wisig"})
+    model_args.update({"input_len": 256, "num_classes": 6, "dataset": "wisig"})
     device = torch.device(args.device)
-    model = build_baseline_model(SimpleNamespace(**model_args), device)
-    model.load_state_dict(checkpoint["model"], strict=True)
+    model, _load_audit = build_exact_ssdg_model_from_checkpoint(
+        checkpoint, input_len=256, device=device
+    )
     model.eval()
 
     loader = DataLoader(

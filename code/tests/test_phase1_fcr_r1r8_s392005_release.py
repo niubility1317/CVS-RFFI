@@ -94,6 +94,8 @@ def test_predictor_process_reads_only_label_free_package() -> None:
     assert "self.base" not in predictor_class
     assert 'manifest["sample_ids"]' in predictor_class
     assert '"contains_labels": False' in script
+    assert "build_exact_ssdg_model_from_checkpoint" in script
+    assert '"num_domains": 15' not in script
     launcher = (
         root
         / "code"
