@@ -48,10 +48,10 @@ R0及旧ADV3B02基线均不启动。所有row固定`seed=392002`、`epochs=200`�
 
 ## Release归档映射
 
-- archive_source_commit：待本报告和launcher提交后记录
-- 本地归档：待记录
-- 远端归档：待记录
-- SHA256：待记录
+- archive_source_commit：`d55daeb206f358e9d20d7c19561ac6329383eccb`
+- 本地归档：`E:\type10-7\release_archives\phase1_adv3b02_fcr_r1r8_s392002_20260902_v4_d55daeb2.tar.gz`
+- 远端归档：`/home/szu2070436088/2510044040/CV-SincNet/releases/archives/phase1_adv3b02_fcr_r1r8_s392002_20260902_v4_d55daeb2.tar.gz`
+- SHA256：`45828f1c017cb10d71229f2ac16705a75381ae0ef67e76a1e8734410713df53e`
 
 ## 直接技术停止规则
 
