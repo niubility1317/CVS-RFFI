@@ -174,7 +174,23 @@ from cvsrffi.phase1_fcr_transplant import (
     compute_basic_drop_f_necessity_loss,
     freeze_identity_classifier,
 )
-from cvsrffi.phase1_fcr_types import FCRConfig, FCRLossOutput, FCRPairBatch
+from cvsrffi.phase1_fcr_types import (
+    FCRConfig,
+    FCRLossOutput,
+    FCRPairBatch,
+    FCRV2CapabilityState,
+    FCRV2FactorOutput,
+    FCRV2LossOutput,
+)
+from cvsrffi.phase1_fcr_v2_losses import (
+    compute_fcr_v2_losses,
+    cross_decode as fcr_v2_cross_decode,
+    necessity_loss as fcr_v2_necessity_loss,
+)
+from cvsrffi.phase1_fcr_v2_metadata import build_fcr_v2_metadata
+from cvsrffi.phase1_fcr_v2_pairing import FCRV2PairBuilder
+from cvsrffi.phase1_fcr_v2_physics import complex_gram
+from cvsrffi.phase1_fcr_v2_schedule import FCRV2Schedule
 from cvsrffi.phase1_fcr_v2_diagnostics import write_fcr_v2_diagnostics
 from cvsrffi.tensors import (
     batch_domain_stats,
@@ -235,6 +251,14 @@ FCR_ABLATION_ACTIVE_LAMBDAS = {
     "R8": frozenset({"self", "eta", "swap", "shared", "latent_cycle", "need", "phys", "factor"}),
 }
 
+FCR_V2_ROWS = (
+    "C1", "C2", "C3", "S0", "S1", "S2", "S3", "S4",
+    "M1", "M2", "M3", "M4", "M5", "M6",
+)
+FCR_V2_UNLABELED_ALLOWED = frozenset(
+    {"self", "shared_f", "shared_s", "response", "eta"}
+)
+
 
 def add_fcr_training_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     parser.add_argument(
@@ -250,6 +274,20 @@ def add_fcr_training_args(parser: argparse.ArgumentParser) -> argparse.ArgumentP
         "Enable FCR only for --phase1_method adv3b02_fcr",
         "Keep the legacy ADV3B02 path without FCR parameters or losses",
     )
+    parser.add_argument(
+        "--fcr_version",
+        type=str,
+        choices=("v1", "v2"),
+        default="v1",
+        help="Select the historical FCR path or the complete-matrix V2 path.",
+    )
+    parser.add_argument(
+        "--fcr_matrix_row",
+        type=str,
+        choices=FCR_V2_ROWS,
+        default=None,
+        help="Explicit FCR-V2 complete-matrix row.",
+    )
     parser.add_argument("--lambda_fcr_self", type=float, default=1.0)
     parser.add_argument("--lambda_fcr_swap", type=float, default=1.0)
     parser.add_argument("--lambda_fcr_shared", type=float, default=1.0)
@@ -261,9 +299,9 @@ def add_fcr_training_args(parser: argparse.ArgumentParser) -> argparse.ArgumentP
     parser.add_argument(
         "--fcr_ablation_row",
         type=str,
-        choices=tuple(FCR_ABLATION_ACTIVE_LAMBDAS),
+        choices=tuple(FCR_ABLATION_ACTIVE_LAMBDAS) + FCR_V2_ROWS,
         default="R8",
-        help="Explicit ADV3B02-FCR ablation row. Formal launchers always pass R0..R8.",
+        help="V1 R0..R8 row; V2 row aliases remain accepted for the frozen Task7 launcher.",
     )
     parser.add_argument(
         "--fcr_config_dry_run",
@@ -288,49 +326,92 @@ def resolve_fcr_training_options(args):
         if not math.isfinite(value) or value < 0.0:
             raise ValueError(f"FCR lambda {name} must be finite and >= 0")
     args.phase1_method = method
-    args.use_fcr = bool(requested and method == "adv3b02_fcr")
-    row = str(getattr(args, "fcr_ablation_row", "R8") or "R8").upper()
-    if row not in FCR_ABLATION_ACTIVE_LAMBDAS:
+    args.fcr_requested = bool(requested and method == "adv3b02_fcr")
+    version = str(getattr(args, "fcr_version", "v1") or "v1").strip().lower()
+    matrix_value = str(getattr(args, "fcr_matrix_row", "") or "").strip().upper()
+    legacy_value = str(getattr(args, "fcr_ablation_row", "R8") or "R8").strip().upper()
+    if matrix_value:
+        version = "v2"
+        row = matrix_value
+    elif legacy_value in FCR_V2_ROWS:
+        # Task7 was frozen before the explicit option name landed.  Treat its
+        # V2 row spelling as a compatibility alias without changing V1 rows.
+        version = "v2"
+        row = legacy_value
+    elif version == "v2":
+        row = "M6"
+    else:
+        row = legacy_value
+    if version not in {"v1", "v2"}:
+        raise ValueError("--fcr_version must be v1 or v2")
+    if version == "v2" and row not in FCR_V2_ROWS:
+        raise ValueError("--fcr_matrix_row must be one of C1,C2,C3,S0-S4,M1-M6")
+    if version == "v1" and row not in FCR_ABLATION_ACTIVE_LAMBDAS:
         raise ValueError("--fcr_ablation_row must be one of R0..R8")
-    active_lambdas = FCR_ABLATION_ACTIVE_LAMBDAS[row]
+    args.fcr_version = version
+    args.fcr_matrix_row = row if version == "v2" else ""
     args.fcr_ablation_row = row
-    args.effective_fcr_lambdas = (
-        {name: (raw[name] if name in active_lambdas else 0.0) for name in raw}
-        if args.use_fcr
-        else {name: 0.0 for name in raw}
-    )
-    row_index = int(row[1:])
-    args.fcr_basic_need_diagnostic = bool(args.use_fcr and row_index >= 5)
-    args.fcr_targeted_transplant = bool(args.use_fcr and row_index >= 6)
-    args.fcr_physics_ordered_decoder = bool(args.use_fcr and row_index >= 7)
-    args.fcr_three_axis_intervention = bool(args.use_fcr and row_index >= 8)
-    args.fcr_decoder_mode = (
-        "full_physics"
-        if args.use_fcr and args.fcr_physics_ordered_decoder
-        else "control"
-        if args.use_fcr
-        else "disabled"
-    )
-    args.fcr_objective_capabilities = {
-        "basic_need": bool(args.fcr_basic_need_diagnostic),
-        "targeted_transplant": bool(args.fcr_targeted_transplant),
-        "physics_ordered": bool(args.fcr_physics_ordered_decoder),
-        "three_axis": bool(args.fcr_three_axis_intervention),
-    }
-    active_signature = ",".join(sorted(name for name, value in args.effective_fcr_lambdas.items() if value > 0.0))
-    capability_signature = ",".join(
-        f"{name}={int(enabled)}" for name, enabled in args.fcr_objective_capabilities.items()
-    )
-    args.fcr_execution_signature = (
-        f"{row}|lambdas={active_signature or 'none'}|{capability_signature}|decoder={args.fcr_decoder_mode}"
-    )
-    if args.use_fcr and int(getattr(args, "epochs", 200)) != 200:
+    args.use_fcr = bool(args.fcr_requested and not (version == "v2" and row == "C1"))
+    args.fcr_identity_only = bool(version == "v2" and row in {"C2", "S0"})
+    if version == "v2":
+        args.effective_fcr_lambdas = {name: 0.0 for name in raw}
+        args.fcr_v2_active_losses = tuple(sorted(FCRV2Schedule().row_losses(row)))
+        args.fcr_basic_need_diagnostic = bool(row in {"M3", "M4", "M5", "M6"})
+        args.fcr_targeted_transplant = bool(row in {"M4", "M5", "M6"})
+        args.fcr_physics_ordered_decoder = bool(row in {"M1", "M2", "M3", "M4", "M5", "M6"})
+        args.fcr_three_axis_intervention = bool(row == "M6")
+        args.fcr_decoder_mode = "disabled" if row == "C1" else "identity_noop" if args.fcr_identity_only else "identity_initialized"
+        args.fcr_objective_capabilities = {
+            "basic_need": args.fcr_basic_need_diagnostic,
+            "targeted_transplant": args.fcr_targeted_transplant,
+            "physics_ordered": args.fcr_physics_ordered_decoder,
+            "three_axis": args.fcr_three_axis_intervention,
+        }
+        active_signature = ",".join(args.fcr_v2_active_losses) or "none"
+        args.fcr_execution_signature = (
+            f"v2:{row}|aux={active_signature}|identity_only={int(args.fcr_identity_only)}|"
+            f"decoder={args.fcr_decoder_mode}|source_only=1|final_only=1"
+        )
+    else:
+        active_lambdas = FCR_ABLATION_ACTIVE_LAMBDAS[row]
+        args.effective_fcr_lambdas = (
+            {name: (raw[name] if name in active_lambdas else 0.0) for name in raw}
+            if args.use_fcr
+            else {name: 0.0 for name in raw}
+        )
+        row_index = int(row[1:])
+        args.fcr_v2_active_losses = ()
+        args.fcr_basic_need_diagnostic = bool(args.use_fcr and row_index >= 5)
+        args.fcr_targeted_transplant = bool(args.use_fcr and row_index >= 6)
+        args.fcr_physics_ordered_decoder = bool(args.use_fcr and row_index >= 7)
+        args.fcr_three_axis_intervention = bool(args.use_fcr and row_index >= 8)
+        args.fcr_decoder_mode = (
+            "full_physics"
+            if args.use_fcr and args.fcr_physics_ordered_decoder
+            else "control"
+            if args.use_fcr
+            else "disabled"
+        )
+        args.fcr_objective_capabilities = {
+            "basic_need": bool(args.fcr_basic_need_diagnostic),
+            "targeted_transplant": bool(args.fcr_targeted_transplant),
+            "physics_ordered": bool(args.fcr_physics_ordered_decoder),
+            "three_axis": bool(args.fcr_three_axis_intervention),
+        }
+        active_signature = ",".join(sorted(name for name, value in args.effective_fcr_lambdas.items() if value > 0.0))
+        capability_signature = ",".join(
+            f"{name}={int(enabled)}" for name, enabled in args.fcr_objective_capabilities.items()
+        )
+        args.fcr_execution_signature = (
+            f"{row}|lambdas={active_signature or 'none'}|{capability_signature}|decoder={args.fcr_decoder_mode}"
+        )
+    if args.fcr_requested and int(getattr(args, "epochs", 200)) != 200:
         raise ValueError("ADV3B02-FCR uses the frozen 200-epoch schedule")
-    if args.use_fcr and str(getattr(args, "train_mode", "centralized")) != "centralized":
+    if args.fcr_requested and str(getattr(args, "train_mode", "centralized")) != "centralized":
         raise ValueError("ADV3B02-FCR Task10 supports centralized Phase1 training only")
-    if args.use_fcr and bool(getattr(args, "use_concat_sat_channel_aug", False)):
+    if args.fcr_requested and bool(getattr(args, "use_concat_sat_channel_aug", False)):
         raise ValueError("ADV3B02-FCR builds its synchronized clean/LEO pair before any concat augmentation")
-    if args.use_fcr:
+    if args.fcr_requested:
         if not bool(getattr(args, "use_meta_ssl_cvs", False)):
             raise ValueError("ADV3B02-FCR requires the frozen Meta-SSL L_s/U_s/V split")
         expected_ratios = {
@@ -358,7 +439,9 @@ def resolve_fcr_training_options(args):
 def fcr_dry_run_payload(args) -> Dict[str, Any]:
     return {
         "phase1_method": str(args.phase1_method),
+        "fcr_version": str(args.fcr_version),
         "use_fcr": bool(args.use_fcr),
+        "fcr_matrix_row": str(args.fcr_matrix_row),
         "fcr_ablation_row": str(args.fcr_ablation_row),
         "epochs": int(args.epochs),
         "effective_lambdas": dict(args.effective_fcr_lambdas),
@@ -369,14 +452,20 @@ def fcr_dry_run_payload(args) -> Dict[str, Any]:
         "decoder_mode": str(args.fcr_decoder_mode),
         "objective_capabilities": dict(args.fcr_objective_capabilities),
         "execution_signature": str(args.fcr_execution_signature),
+        "v2_active_losses": list(args.fcr_v2_active_losses),
+        "identity_only": bool(args.fcr_identity_only),
         "satellite_aux_ce_start_epoch": 80,
         "meta_ssl_roles": {
             "labeled": float(args.ssl_labeled_ratio),
             "unlabeled": float(args.ssl_unlabeled_ratio),
             "validation": float(args.ssl_val_ratio),
         },
-        "identity_logit_route": "fcr_tx_logits",
-        "feature_schema": FCR_FEATURE_SCHEMA,
+        "identity_logit_route": "fcr_tx_logits" if bool(args.use_fcr) else "legacy_tx_logits",
+        "feature_schema": (
+            "ADV3B02:FCR:z_f_id:unit_l2:160:v2"
+            if str(args.fcr_version) == "v2" and bool(args.use_fcr)
+            else FCR_FEATURE_SCHEMA if bool(args.use_fcr) else "ADV3B02:legacy:z_id:160"
+        ),
         "final_evaluation": [
             "clean",
             "leo_clear_weak",
@@ -398,6 +487,473 @@ def route_formal_identity_outputs(outputs: Dict[str, Any], *, use_fcr: bool) -> 
         raise KeyError("formal FCR identity feature z_f_id is unavailable")
     routed["z_id"] = z_f_id
     return routed
+
+
+def compute_fcr_v2_routed_losses(
+    components: Dict[str, torch.Tensor],
+    *,
+    row: str,
+    epoch: int,
+    role: str,
+    capabilities: FCRV2CapabilityState,
+    ema_normalizer=None,
+) -> FCRV2LossOutput:
+    """Apply the V2 row schedule and the source-role boundary in one place."""
+
+    output = compute_fcr_v2_losses(
+        {
+            "epoch": int(epoch),
+            "role": str(role),
+            "capabilities": capabilities,
+            "components": components,
+        },
+        row=str(row),
+        ema_normalizer=ema_normalizer,
+    )
+    normalized_role = str(role).strip().lower()
+    if normalized_role not in {"u_s", "unlabeled", "source_unlabeled"}:
+        return output
+    zero = next(iter(output.components.values())).reshape(-1).sum() * 0.0
+    routed_components = dict(output.components)
+    routed_weights = dict(output.weights)
+    blocked = dict(output.blocked)
+    for name in routed_components:
+        if name in {"identity_ce", "prototype", "tail"} or name not in FCR_V2_UNLABELED_ALLOWED:
+            routed_components[name] = zero
+            routed_weights[name] = 0.0
+            if name in output.active_losses:
+                blocked[name] = "ROLE_NOT_PERMITTED:U_s"
+    active = frozenset(name for name in output.active_losses if name in FCR_V2_UNLABELED_ALLOWED)
+    return FCRV2LossOutput(
+        total=sum(routed_components.values(), zero),
+        components=routed_components,
+        metrics=dict(output.metrics),
+        active_losses=active,
+        weights=routed_weights,
+        blocked=blocked,
+    )
+
+
+def build_fcr_v2_optimizer_param_groups(
+    model: nn.Module,
+    *,
+    base_lr: float,
+    weight_decay: float,
+) -> List[Dict[str, Any]]:
+    """Build exhaustive, disjoint V2 groups for the frozen 200-epoch route."""
+
+    raw_model = getattr(model, "_orig_mod", model)
+    if not bool(getattr(raw_model, "use_fcr", False)) or str(getattr(raw_model, "fcr_version", "v1")) != "v2":
+        raise ValueError("V2 optimizer groups require a use_fcr=True fcr_version=v2 model")
+    named_parameters = [(name, parameter) for name, parameter in raw_model.named_parameters() if parameter.requires_grad]
+    assigned: set[int] = set()
+    groups: List[Dict[str, Any]] = []
+
+    def add_group(name: str, selected: List[torch.nn.Parameter], lr: float) -> None:
+        unique = [parameter for parameter in selected if id(parameter) not in assigned]
+        if not unique:
+            return
+        groups.append(
+            {
+                "name": name,
+                "params": unique,
+                "lr": float(lr),
+                "weight_decay": float(weight_decay),
+            }
+        )
+        assigned.update(id(parameter) for parameter in unique)
+
+    early_tokens = ("id_backbone.sinc", "id_backbone.hf", "id_backbone.time_down")
+    add_group(
+        "backbone_early",
+        [parameter for name, parameter in named_parameters if name.startswith(early_tokens)],
+        0.0,
+    )
+    add_group(
+        "backbone_late",
+        [parameter for name, parameter in named_parameters if name.startswith("id_backbone.")],
+        1.0e-5,
+    )
+    add_group(
+        "identity_head",
+        [parameter for name, parameter in named_parameters if name.startswith("fcr_identity_head.")],
+        2.0e-5,
+    )
+    add_group(
+        "identity_projection",
+        [parameter for name, parameter in named_parameters if name.startswith("fcr_identity_projection.")],
+        5.0e-5,
+    )
+    add_group(
+        "fcr_new",
+        [parameter for name, parameter in named_parameters if name.startswith("fcr.")],
+        2.0e-4,
+    )
+    add_group(
+        "other",
+        [parameter for _, parameter in named_parameters],
+        float(base_lr),
+    )
+    expected = {id(parameter) for _, parameter in named_parameters}
+    actual = {id(parameter) for group in groups for parameter in group["params"]}
+    flat_count = sum(len(group["params"]) for group in groups)
+    if actual != expected or flat_count != len(actual):
+        raise RuntimeError("FCR-V2 optimizer parameter groups must be exhaustive and non-overlapping")
+    return groups
+
+
+def set_fcr_v2_optimizer_epoch(optimizer, epoch: int) -> None:
+    """Apply the preregistered V2 learning-rate stages by named group."""
+
+    epoch = int(epoch)
+    for group in optimizer.param_groups:
+        name = str(group.get("name", ""))
+        if name == "backbone_early":
+            group["lr"] = 0.0 if epoch <= 20 else 5.0e-6
+        elif name == "backbone_late":
+            group["lr"] = 1.0e-5 if epoch <= 100 else 2.0e-5
+        elif name == "identity_head":
+            group["lr"] = 2.0e-5 if epoch <= 100 else 5.0e-5
+        elif name == "identity_projection":
+            group["lr"] = 5.0e-5
+        elif name == "fcr_new":
+            group["lr"] = 2.0e-4
+
+
+def _fcr_v2_meta_column(metadata: Dict[str, Any], name: str, batch_size: int, default: Any) -> List[Any]:
+    value = metadata.get(name, default)
+    if torch.is_tensor(value):
+        value = value.detach().cpu().reshape(-1).tolist()
+    if isinstance(value, (tuple, list)):
+        if len(value) == int(batch_size):
+            return list(value)
+        if len(value) == 1:
+            return list(value) * int(batch_size)
+        return [default] * int(batch_size)
+    return [value] * int(batch_size)
+
+
+def build_fcr_v2_training_pair(
+    clean_iq: torch.Tensor,
+    leo_view,
+    labels: torch.Tensor,
+    batch_metadata: Dict[str, Any],
+    *,
+    role: str,
+    epoch: int,
+    seed: int,
+) -> Dict[str, Any]:
+    """Build source-only V2 metadata and deterministic three-axis pairs."""
+
+    if not isinstance(batch_metadata, dict):
+        raise ValueError("FCR-V2 requires collated source metadata")
+    batch_size = int(clean_iq.size(0))
+    physical_ids = tuple(
+        str(value) for value in _fcr_v2_meta_column(batch_metadata, "physical_sample_id", batch_size, "")
+    )
+    if any(not value for value in physical_ids):
+        raise ValueError("FCR-V2 source metadata requires physical_sample_id")
+    crop = torch.as_tensor(
+        _fcr_v2_meta_column(batch_metadata, "crop_offset", batch_size, -1),
+        dtype=torch.long,
+        device=clean_iq.device,
+    )
+    rx_i = torch.as_tensor(
+        _fcr_v2_meta_column(batch_metadata, "rx_i", batch_size, -1),
+        dtype=torch.long,
+        device=clean_iq.device,
+    )
+    day_i = torch.as_tensor(
+        _fcr_v2_meta_column(batch_metadata, "day_i", batch_size, -1),
+        dtype=torch.long,
+        device=clean_iq.device,
+    )
+    visible = str(role).strip().lower() in {"l_s", "labeled", "source_labeled"}
+    tx_id = labels.detach().to(device=clean_iq.device, dtype=torch.long).reshape(-1)
+    if not visible:
+        tx_id = torch.full_like(tx_id, -1)
+    content_ids = tuple(
+        str(value) for value in _fcr_v2_meta_column(
+            batch_metadata, "content_record_id", batch_size, ""
+        )
+    )
+    content_ids = tuple(value or physical_ids[index] for index, value in enumerate(content_ids))
+    sig_i = _fcr_v2_meta_column(batch_metadata, "sig_i", batch_size, -1)
+    eq_i = _fcr_v2_meta_column(batch_metadata, "eq_i", batch_size, -1)
+    preamble_ids = tuple(
+        str(value) for value in _fcr_v2_meta_column(
+            batch_metadata, "common_preamble_id", batch_size, ""
+        )
+    )
+    preamble_ids = tuple(
+        value or f"preamble:eq{eq_i[index]}:sig{sig_i[index]}:crop{int(crop[index])}"
+        for index, value in enumerate(preamble_ids)
+    )
+    excitation = torch.as_tensor(
+        _fcr_v2_meta_column(batch_metadata, "excitation_bin", batch_size, 0),
+        dtype=torch.long,
+        device=clean_iq.device,
+    )
+    link_condition = tuple(
+        str(value or "source") for value in _fcr_v2_meta_column(
+            batch_metadata, "link_condition", batch_size, "source"
+        )
+    )
+    metadata = build_fcr_v2_metadata(
+        {
+            "physical_sample_id": physical_ids,
+            "content_record_id": content_ids,
+            "crop_offset": crop,
+            "common_preamble_id": preamble_ids,
+            "tx_id": tx_id,
+            "rx_i": rx_i,
+            "day_i": day_i,
+            "link_condition": link_condition,
+            "excitation_bin": excitation,
+        },
+        leo_view,
+    )
+    pairs = FCRV2PairBuilder(crop_span=int(clean_iq.size(-1))).build(
+        metadata,
+        epoch=int(epoch),
+        seed=int(seed),
+    )
+    return {
+        "clean_iq": clean_iq,
+        "leo_iq": leo_view.x.to(device=clean_iq.device, dtype=clean_iq.dtype),
+        "labels": labels,
+        "role": "L_s" if visible else "U_s",
+        "metadata": metadata,
+        "pairs": {name: value.to(clean_iq.device) for name, value in pairs.items()},
+    }
+
+
+def _concat_fcr_v2_factors(left: FCRV2FactorOutput, right: FCRV2FactorOutput) -> FCRV2FactorOutput:
+    response_quality = None
+    if isinstance(left.response_quality, dict) and isinstance(right.response_quality, dict):
+        response_quality = {
+            name: torch.cat((left.response_quality[name], right.response_quality[name]), dim=0)
+            for name in left.response_quality.keys() & right.response_quality.keys()
+        }
+    return FCRV2FactorOutput(
+        z_s=torch.cat((left.z_s, right.z_s), dim=0),
+        z_f_id=torch.cat((left.z_f_id, right.z_f_id), dim=0),
+        z_f_dev=torch.cat((left.z_f_dev, right.z_f_dev), dim=0),
+        z_n={name: torch.cat((left.z_n[name], right.z_n[name]), dim=0) for name in left.z_n},
+        s_hat=torch.cat((left.s_hat, right.s_hat), dim=0),
+        delta_f=torch.cat((left.delta_f, right.delta_f), dim=0),
+        canonical_residual=(
+            torch.cat((left.canonical_residual, right.canonical_residual), dim=0)
+            if torch.is_tensor(left.canonical_residual) and torch.is_tensor(right.canonical_residual)
+            else None
+        ),
+        response_quality=response_quality,
+    )
+
+
+def _index_fcr_v2_factors(factors: FCRV2FactorOutput, index: torch.Tensor) -> FCRV2FactorOutput:
+    return FCRV2FactorOutput(
+        z_s=factors.z_s[index],
+        z_f_id=factors.z_f_id[index],
+        z_f_dev=factors.z_f_dev[index],
+        z_n={name: value[index] for name, value in factors.z_n.items()},
+        s_hat=factors.s_hat[index],
+        delta_f=factors.delta_f[index],
+        canonical_residual=(factors.canonical_residual[index] if torch.is_tensor(factors.canonical_residual) else None),
+        response_quality=(
+            {name: value[index] for name, value in factors.response_quality.items()}
+            if isinstance(factors.response_quality, dict)
+            else None
+        ),
+    )
+
+
+def _complex_mse(left: torch.Tensor, right: torch.Tensor) -> torch.Tensor:
+    return (left - right).abs().square().mean()
+
+
+def _fcr_v2_eta_prediction(factors: FCRV2FactorOutput) -> torch.Tensor:
+    nuisance = factors.z_n
+    columns = (
+        nuisance["alpha"].real - 1.0,
+        nuisance["alpha"].imag,
+        nuisance["beta"].real,
+        nuisance["beta"].imag,
+        nuisance["sto"],
+        nuisance["sfo"],
+        nuisance["phase"],
+        nuisance["taps"][:, 1:].real.mean(dim=1),
+        nuisance["taps"][:, 1:].imag.mean(dim=1),
+    )
+    return torch.stack(columns, dim=1)
+
+
+def compute_fcr_v2_pair_objective(
+    *,
+    model,
+    raw_model,
+    training_pair: Dict[str, Any],
+    row: str,
+    epoch: int,
+    supervised_components: Optional[Dict[str, torch.Tensor]] = None,
+) -> FCRLossOutput:
+    """Compute the real V2 row objective from Task1-4 public interfaces."""
+
+    role = str(training_pair["role"])
+    clean_out = model(training_pair["clean_iq"], return_aux=True, fcr_identity_only=False)
+    leo_out = model(training_pair["leo_iq"], return_aux=True, fcr_identity_only=False)
+    clean = clean_out["fcr_factors"]
+    leo = leo_out["fcr_factors"]
+    factors = _concat_fcr_v2_factors(clean, leo)
+    raw_iq = torch.cat((training_pair["clean_iq"], training_pair["leo_iq"]), dim=0)
+    pairs = training_pair["pairs"]
+    metadata = training_pair["metadata"]
+    zero = factors.z_f_id.reshape(-1).sum() * 0.0
+    planned_active = FCRV2Schedule().state(
+        epoch=int(epoch),
+        row=str(row),
+        capabilities=FCRV2CapabilityState(True, True, True, True, {}),
+    ).active_losses
+
+    def paired(name: str, value: torch.Tensor) -> torch.Tensor:
+        index = pairs[name]
+        if int(index.numel()) == 0:
+            return zero
+        return value(index[:, 0], index[:, 1])
+
+    if "self" not in planned_active or clean_out.get("fcr_decode") is None or leo_out.get("fcr_decode") is None:
+        self_loss = zero
+    else:
+        self_loss = 0.5 * (
+            F.mse_loss(clean_out["fcr_decode"].mu_iq, training_pair["clean_iq"])
+            + F.mse_loss(leo_out["fcr_decode"].mu_iq, training_pair["leo_iq"])
+        )
+    shared_f = paired("nuisance", lambda source, target: F.mse_loss(factors.z_f_id[source], factors.z_f_id[target])) if "shared_f" in planned_active else zero
+    shared_s = paired("content", lambda source, target: F.mse_loss(factors.z_s[source], factors.z_s[target])) if "shared_s" in planned_active else zero
+    response = paired("nuisance", lambda source, target: _complex_mse(factors.delta_f[source], factors.delta_f[target])) if "response" in planned_active else zero
+
+    eta_pred = _fcr_v2_eta_prediction(factors)
+    eta_target = metadata.eta.to(device=eta_pred.device, dtype=eta_pred.dtype)
+    eta_valid = metadata.eta_valid_mask.to(device=eta_pred.device, dtype=torch.bool)
+    eta_width = min(int(eta_pred.size(1)), int(eta_target.size(1)))
+    valid_eta = eta_valid[:, :eta_width]
+    eta_loss = (
+        (eta_pred[:, :eta_width] - eta_target[:, :eta_width]).square()[valid_eta].mean()
+        if "eta" in planned_active and bool(valid_eta.any())
+        else zero
+    )
+
+    swap_pairs = pairs["nuisance"]
+    swap_loss = zero
+    cycle_loss = zero
+    need_loss = zero
+    transplant_loss = zero
+    if int(swap_pairs.numel()) > 0 and bool(planned_active & {"swap", "cycle", "need"}):
+        source_index, target_index = swap_pairs[:, 0], swap_pairs[:, 1]
+        source = _index_fcr_v2_factors(factors, source_index)
+        destination = _index_fcr_v2_factors(factors, target_index)
+        swapped = fcr_v2_cross_decode(source, destination, raw_model.fcr.decoder)
+        if "swap" in planned_active:
+            swap_loss = F.mse_loss(swapped.mu_iq, raw_iq[target_index])
+        if "cycle" in planned_active:
+            recycled = raw_model.fcr.forward_identity_only(swapped.mu_iq, source.z_f_dev).factors
+            cycle_loss = F.mse_loss(recycled.z_s, source.z_s) + F.mse_loss(recycled.z_f_id, destination.z_f_id)
+        if "need" in planned_active:
+            dropped = raw_model.fcr.decoder(source.s_hat, torch.zeros_like(source.delta_f), destination.z_n)
+            full_error = (swapped.mu_iq - raw_iq[target_index]).square().mean(dim=(1, 2))
+            drop_error = (dropped.mu_iq - raw_iq[target_index]).square().mean(dim=(1, 2))
+            need_loss = fcr_v2_necessity_loss(full_error=full_error, drop_error=drop_error).mean()
+
+    fingerprint_pairs = pairs["fingerprint"]
+    if int(fingerprint_pairs.numel()) > 0 and "transplant" in planned_active:
+        source_index, target_index = fingerprint_pairs[:, 0], fingerprint_pairs[:, 1]
+        source = _index_fcr_v2_factors(factors, source_index)
+        destination = _index_fcr_v2_factors(factors, target_index)
+        transplanted = fcr_v2_cross_decode(source, destination, raw_model.fcr.decoder)
+        transplant_factors = raw_model.fcr.forward_identity_only(transplanted.mu_iq, destination.z_f_dev).factors
+        transplant_loss = F.mse_loss(transplant_factors.z_f_id, destination.z_f_id) + F.mse_loss(
+            transplant_factors.z_s, source.z_s
+        )
+
+    physical_loss = (
+        self_loss
+        + _complex_mse(
+            factors.canonical_residual,
+            factors.canonical_residual.detach() * 0.0,
+        )
+        if "physical" in planned_active
+        else zero
+    )
+    factor_loss = (
+        shared_f
+        + shared_s
+        + paired(
+            "fingerprint", lambda source, target: (1.0 - F.cosine_similarity(factors.z_f_id[source], factors.z_f_id[target])).mean()
+        )
+        if "factor" in planned_active
+        else zero
+    )
+    components = {
+        "identity_ce": zero,
+        "prototype": zero,
+        "tail": zero,
+        "self": self_loss,
+        "shared_f": shared_f,
+        "shared_s": shared_s,
+        "response": response,
+        "eta": eta_loss,
+        "swap": swap_loss,
+        "cycle": cycle_loss,
+        "need": need_loss,
+        "transplant": transplant_loss,
+        "physical": physical_loss,
+        "factor": factor_loss,
+    }
+    for name, value in dict(supervised_components or {}).items():
+        if name in {"identity_ce", "prototype", "tail"}:
+            components[name] = value
+    capabilities = FCRV2CapabilityState(
+        eta_ready=bool(valid_eta.any()),
+        decoder_ready=clean_out.get("fcr_decode") is not None,
+        swap_ready=int(swap_pairs.size(0)) > 0,
+        fingerprint_ready=int(fingerprint_pairs.size(0)) > 0,
+        reasons={
+            "eta": "source_eta_unavailable" if not bool(valid_eta.any()) else "",
+            "decoder": "identity_noop_row" if clean_out.get("fcr_decode") is None else "",
+            "swap": "source_pair_coverage_zero" if int(swap_pairs.size(0)) == 0 else "",
+            "fingerprint": "source_fingerprint_pair_coverage_zero" if int(fingerprint_pairs.size(0)) == 0 else "",
+        },
+    )
+    v2 = compute_fcr_v2_routed_losses(
+        components,
+        row=row,
+        epoch=epoch,
+        role=role,
+        capabilities=capabilities,
+    )
+    mapped = {
+        "id": v2.components["identity_ce"] + v2.components["prototype"] + v2.components["tail"],
+        "self": v2.components["self"],
+        "swap": v2.components["swap"],
+        "shared": v2.components["shared_f"] + v2.components["shared_s"] + v2.components["response"],
+        "latent_cycle": v2.components["cycle"],
+        "eta": v2.components["eta"],
+        "factor": v2.components["factor"],
+        "transplant": v2.components["need"] + v2.components["transplant"],
+        "phys": v2.components["physical"],
+    }
+    return FCRLossOutput(
+        total=v2.total,
+        components=mapped,
+        metrics={
+            "active_fingerprint_pairs": float(fingerprint_pairs.size(0)),
+            "active_nuisance_pairs": float(swap_pairs.size(0)),
+            "active_losses": ",".join(sorted(v2.active_losses)),
+            "blocked": dict(v2.blocked),
+            "role_labeled": float(role == "L_s"),
+            "role_unlabeled": float(role == "U_s"),
+        },
+    )
 
 
 @torch.no_grad()
@@ -550,6 +1106,120 @@ def collect_fcr_diagnostic_artifacts(
     return artifacts, resources
 
 
+@torch.no_grad()
+def collect_fcr_v2_diagnostic_artifacts(
+    model: nn.Module,
+    loader,
+    device: torch.device,
+    *,
+    leo_transform: Callable[[torch.Tensor, int, Any], torch.Tensor],
+    max_batches: int = 4,
+) -> Tuple[Dict[str, Any], Dict[str, float]]:
+    """Collect bounded source-only diagnostics from the V2 public outputs."""
+
+    raw_model = getattr(model, "_orig_mod", model)
+    if not bool(getattr(raw_model, "use_fcr", False)) or str(getattr(raw_model, "fcr_version", "v1")) != "v2":
+        raise ValueError("FCR-V2 diagnostics require a V2 model")
+    was_training = bool(model.training)
+    model.eval()
+    chunks: Dict[str, List[torch.Tensor]] = {
+        name: []
+        for name in (
+            "z_f_id", "z_tx_state", "z_s", "tx_labels", "domain_labels",
+            "clean_z_f_id", "leo_z_f_id", "gram", "fisher_coverage",
+            "eta_target", "eta_pred", "decode_full", "decode_zero_nuisance",
+            "drop_f_error_full", "drop_f_error_without",
+        )
+    }
+    nuisance_chunks: Dict[str, List[torch.Tensor]] = {}
+    response_quality_chunks: Dict[str, List[torch.Tensor]] = {"energy_ratio": [], "state_norm": []}
+    latency_samples: List[float] = []
+    decoder_mode = "not_run_identity_only"
+    try:
+        for batch_index, batch in enumerate(loader):
+            if int(max_batches) > 0 and batch_index >= int(max_batches):
+                break
+            x, y, extra = unpack_batch(batch)
+            x = x.to(device=device, non_blocking=True)
+            y = y.to(device=device, dtype=torch.long, non_blocking=True).reshape(-1)
+            domain = extract_domain_from_extra(extra, device)
+            if domain is None:
+                domain = torch.full_like(y, -1)
+            leo = leo_transform(x, batch_index, extra).to(device=device, dtype=x.dtype)
+            if device.type == "cuda":
+                torch.cuda.synchronize(device)
+            started = time.perf_counter()
+            clean_out = model(x, return_aux=True, fcr_identity_only=False)
+            leo_out = model(leo, return_aux=True, fcr_identity_only=False)
+            if device.type == "cuda":
+                torch.cuda.synchronize(device)
+            latency_samples.append(1000.0 * (time.perf_counter() - started) / float(max(1, x.size(0))))
+            clean = clean_out["fcr_factors"]
+            chunks["z_f_id"].append(clean.z_f_id.detach().cpu())
+            chunks["z_tx_state"].append(clean.z_f_dev.detach().cpu())
+            chunks["z_s"].append(clean.z_s.detach().cpu())
+            chunks["tx_labels"].append(y.detach().cpu())
+            chunks["domain_labels"].append(domain.detach().long().cpu())
+            chunks["clean_z_f_id"].append(clean.z_f_id.detach().cpu())
+            chunks["leo_z_f_id"].append(leo_out["fcr_factors"].z_f_id.detach().cpu())
+            gram = complex_gram(clean.s_hat.unsqueeze(-1)).real
+            chunks["gram"].append(gram.detach().cpu())
+            chunks["fisher_coverage"].append(torch.ones(x.size(0)))
+            eta_target = clean_out["fcr_canonical"].eta_hat.detach().float()
+            eta_pred = _fcr_v2_eta_prediction(clean)[:, : eta_target.size(1)]
+            chunks["eta_target"].append(eta_target.cpu())
+            chunks["eta_pred"].append(eta_pred.detach().cpu())
+            for name, value in clean.z_n.items():
+                tensor = torch.view_as_real(value).flatten(1) if torch.is_complex(value) else value.flatten(1) if value.ndim > 1 else value.unsqueeze(1)
+                nuisance_chunks.setdefault(name, []).append(tensor.detach().float().cpu())
+            response_quality_chunks["energy_ratio"].append(clean.response_quality["energy_ratio"].detach().cpu())
+            response_quality_chunks["state_norm"].append(clean.z_f_dev.norm(dim=1).detach().cpu())
+            decoded = clean_out.get("fcr_decode")
+            if decoded is not None:
+                decoder_mode = str(decoded.decoder_mode)
+                chunks["decode_full"].append(decoded.mu_iq.detach().cpu())
+                default = {
+                    "alpha": torch.ones_like(clean.z_n["alpha"]),
+                    "beta": torch.zeros_like(clean.z_n["beta"]),
+                    "sto": torch.zeros_like(clean.z_n["sto"]),
+                    "sfo": torch.zeros_like(clean.z_n["sfo"]),
+                    "phase": torch.zeros_like(clean.z_n["phase"]),
+                    "taps": torch.cat(
+                        (
+                            torch.ones_like(clean.z_n["taps"][:, :1]),
+                            torch.zeros_like(clean.z_n["taps"][:, 1:]),
+                        ),
+                        dim=1,
+                    ),
+                }
+                zero_nuisance = raw_model.fcr.decoder(clean.s_hat, clean.delta_f, default)
+                dropped = raw_model.fcr.decoder(clean.s_hat, torch.zeros_like(clean.delta_f), clean.z_n)
+                chunks["decode_zero_nuisance"].append(zero_nuisance.mu_iq.detach().cpu())
+                chunks["drop_f_error_full"].append((decoded.mu_iq - x).square().mean(dim=(1, 2)).detach().cpu())
+                chunks["drop_f_error_without"].append((dropped.mu_iq - x).square().mean(dim=(1, 2)).detach().cpu())
+    finally:
+        model.train(was_training)
+    if not chunks["z_f_id"]:
+        raise ValueError("FCR-V2 diagnostic loader produced no source rows")
+    artifacts: Dict[str, Any] = {
+        name: torch.cat(values, dim=0) for name, values in chunks.items() if values
+    }
+    artifacts["z_n"] = {
+        name: torch.cat(values, dim=0) for name, values in nuisance_chunks.items()
+    }
+    artifacts["response_quality"] = {
+        name: torch.cat(values, dim=0) for name, values in response_quality_chunks.items() if values
+    }
+    artifacts["decoder_mode"] = decoder_mode
+    rows = int(artifacts["z_f_id"].size(0))
+    index = torch.arange(rows)
+    artifacts["probe_train_mask"] = index.remainder(2).eq(0)
+    artifacts["probe_eval_mask"] = index.remainder(2).eq(1)
+    return artifacts, {
+        "latency_ms": float(sum(latency_samples) / max(1, len(latency_samples))),
+    }
+
+
 def finalize_fcr_v2_diagnostics_before_return(
     args,
     *,
@@ -563,10 +1233,15 @@ def finalize_fcr_v2_diagnostics_before_return(
     active_lambdas: Any = (),
 ) -> bool:
     diagnostics_path = str(getattr(args, "fcr_diagnostics_path", "") or "").strip()
-    if bool(args.use_fcr) and diagnostics_path:
-        best_save_path = str(getattr(args, "best_save_path", "") or "").strip()
-        if best_save_path and os.path.isfile(best_save_path):
-            ckpt = torch.load(best_save_path, map_location=device, weights_only=False)
+    if bool(getattr(args, "fcr_requested", getattr(args, "use_fcr", False))) and diagnostics_path:
+        is_v2 = str(getattr(args, "fcr_version", "v1")) == "v2"
+        diagnostic_checkpoint = str(
+            getattr(args, "final_save_path", "")
+            if is_v2
+            else getattr(args, "best_save_path", "")
+        ).strip()
+        if bool(args.use_fcr) and diagnostic_checkpoint and os.path.isfile(diagnostic_checkpoint):
+            ckpt = torch.load(diagnostic_checkpoint, map_location=device, weights_only=False)
             validate_fcr_bundle_for_model(ckpt, model)
             model.load_state_dict(ckpt["model"], strict=True)
         diagnostic_scenarios = tuple(getattr(args, "eval_sat_scenario_list", ()))
@@ -588,13 +1263,24 @@ def finalize_fcr_v2_diagnostics_before_return(
             )
             return received
 
-        diagnostic_artifacts, diagnostic_resources = collect_fcr_diagnostic_artifacts(
-            model,
-            source_loader,
-            device,
-            leo_transform=diagnostic_leo_transform,
-            max_batches=int(getattr(args, "fcr_diagnostics_max_batches", 4)),
-        )
+        if not bool(args.use_fcr):
+            diagnostic_artifacts, diagnostic_resources = {}, {}
+        elif is_v2:
+            diagnostic_artifacts, diagnostic_resources = collect_fcr_v2_diagnostic_artifacts(
+                model,
+                source_loader,
+                device,
+                leo_transform=diagnostic_leo_transform,
+                max_batches=int(getattr(args, "fcr_diagnostics_max_batches", 4)),
+            )
+        else:
+            diagnostic_artifacts, diagnostic_resources = collect_fcr_diagnostic_artifacts(
+                model,
+                source_loader,
+                device,
+                leo_transform=diagnostic_leo_transform,
+                max_batches=int(getattr(args, "fcr_diagnostics_max_batches", 4)),
+            )
         diagnostic_resources["train_time_s"] = float(time.perf_counter() - training_started_at)
         diagnostic_resources["peak_vram_mb"] = (
             float(torch.cuda.max_memory_allocated(device)) / (1024.0 * 1024.0)
@@ -984,11 +1670,16 @@ def load_init_checkpoint_weights(
     expected_candidate_id: str = "",
     require_mature_base_complete: bool = False,
     require_mature_identity_complete: bool = False,
-) -> None:
+) -> Dict[str, Any]:
     """Load model weights only for staged training warm-starts."""
     ckpt_path = str(path or "").strip()
     if not ckpt_path:
-        return
+        return {
+            "path": "",
+            "loaded": 0,
+            "source_only": True,
+            "status": "not_requested",
+        }
     if not os.path.isfile(ckpt_path):
         raise FileNotFoundError(f"--init_checkpoint not found: {ckpt_path}")
 
@@ -1035,7 +1726,7 @@ def load_init_checkpoint_weights(
         )
 
     raw_model = getattr(model, "_orig_mod", model)
-    fcr_prefixes = ("fcr.", "fcr_identity_head.")
+    fcr_prefixes = ("fcr.", "fcr_identity_head.", "fcr_identity_projection.")
     contains_fcr_state = any(
         str(key).startswith(fcr_prefixes) for key in state
     )
@@ -1103,6 +1794,25 @@ def load_init_checkpoint_weights(
         raise RuntimeError(
             f"Strict init checkpoint load failed: skipped={len(skipped)} missing={len(missing)} unexpected={len(unexpected)}"
         )
+    return {
+        "path": ckpt_path,
+        "source": state_name,
+        "loaded": len(filtered),
+        "skipped": len(skipped),
+        "missing": len(missing),
+        "unexpected": len(unexpected),
+        "expected_seed": expected_seed,
+        "actual_seed": None if actual_seed is None else int(actual_seed),
+        "expected_epoch": expected_epoch,
+        "actual_epoch": None if actual_epoch is None else int(actual_epoch),
+        "expected_candidate_id": str(expected_candidate_id or ""),
+        "actual_candidate_id": None if actual_candidate is None else str(actual_candidate),
+        "mature_base_complete": bool(require_mature_base_complete),
+        "mature_identity_complete": bool(require_mature_identity_complete),
+        "source_only": True,
+        "query_access": False,
+        "status": "loaded",
+    }
 
 
 def select_generalization_feature(out: Dict[str, Any], feature_name: str) -> torch.Tensor:
@@ -3991,6 +4701,7 @@ def main():
                                fast_infer_when_no_aux=bool(args.fast_infer_when_no_aux),
                                use_tx_adv_on_zdom=bool(args.use_tx_adv_on_zdom or str(args.train_mode).lower() == "fedcvs_vmb"),
                                use_fcr=bool(args.use_fcr),
+                               fcr_version=str(args.fcr_version),
                                fcr_config=(
                                    FCRConfig(
                                        input_len=int(input_len),
@@ -4000,7 +4711,8 @@ def main():
                                    else None
                                ),
                                arch_family=str(args.arch_family)).to(device)
-    load_init_checkpoint_weights(
+    model.fcr_identity_only_training = bool(getattr(args, "fcr_identity_only", False))
+    args.init_checkpoint_report = load_init_checkpoint_weights(
         model,
         str(getattr(args, "init_checkpoint", "") or ""),
         device,
@@ -4163,7 +4875,23 @@ def main():
             f"curve={args.aug_ramp_curve:.2f} | base_p_dac={args.aug_p_dac:.2f} base_p_pa={args.aug_p_pa:.2f}"
         )
 
-    optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.wd)
+    if bool(args.use_fcr) and str(args.fcr_version) == "v2":
+        optimizer_groups = build_fcr_v2_optimizer_param_groups(
+            model,
+            base_lr=float(args.lr),
+            weight_decay=float(args.wd),
+        )
+        optimizer = torch.optim.AdamW(optimizer_groups, lr=args.lr, weight_decay=args.wd)
+        print(
+            "[FCR-V2-OPT] "
+            + ",".join(
+                f"{group['name']}:{len(group['params'])}@{float(group['lr']):.2e}"
+                for group in optimizer_groups
+            ),
+            flush=True,
+        )
+    else:
+        optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.wd)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(1, args.epochs), eta_min=args.lr_min)
     scaler = torch.cuda.amp.GradScaler(enabled=use_amp)
     ce_tx = nn.CrossEntropyLoss(label_smoothing=float(args.label_smoothing))
@@ -4269,6 +4997,8 @@ def main():
 
     for epoch in range(1, args.epochs + 1):
         model.train()
+        if bool(args.use_fcr) and str(args.fcr_version) == "v2":
+            set_fcr_v2_optimizer_epoch(optimizer, epoch)
         if meta_ssl_teacher is not None:
             meta_ssl_teacher.eval()
         meta_ssl_unlabeled_iter = iter(meta_ssl_unlabeled_loader) if meta_ssl_unlabeled_loader is not None else None
@@ -4365,12 +5095,27 @@ def main():
                         batch_idx=batch_idx,
                         batch_meta=batch_meta,
                     )
-                labeled_builder = InterventionCubeBatchBuilder()
-                fcr_labeled_pair = labeled_builder.build(
-                    safe_iq_tensor(x), labeled_leo_view, y, d_raw, batch_meta
-                )
-                for reason in labeled_builder.capability.reason.values():
-                    fcr_capability_reasons_epoch[reason] = fcr_capability_reasons_epoch.get(reason, 0) + 1
+                if str(args.fcr_version) == "v2":
+                    fcr_labeled_pair = build_fcr_v2_training_pair(
+                        safe_iq_tensor(x),
+                        labeled_leo_view,
+                        y,
+                        batch_meta,
+                        role="L_s",
+                        epoch=epoch,
+                        seed=int(args.seed),
+                    )
+                    for axis, indices in fcr_labeled_pair["pairs"].items():
+                        if int(indices.size(0)) == 0:
+                            reason = f"{axis}_source_pair_coverage_zero"
+                            fcr_capability_reasons_epoch[reason] = fcr_capability_reasons_epoch.get(reason, 0) + 1
+                else:
+                    labeled_builder = InterventionCubeBatchBuilder()
+                    fcr_labeled_pair = labeled_builder.build(
+                        safe_iq_tensor(x), labeled_leo_view, y, d_raw, batch_meta
+                    )
+                    for reason in labeled_builder.capability.reason.values():
+                        fcr_capability_reasons_epoch[reason] = fcr_capability_reasons_epoch.get(reason, 0) + 1
                 if x_meta_ssl is not None:
                     unlabeled_meta = extract_batch_meta(extra_meta_ssl)
                     if unlabeled_meta is None:
@@ -4383,17 +5128,32 @@ def main():
                             batch_idx=batch_idx + 1_000_000,
                             batch_meta=unlabeled_meta,
                         )
-                    unlabeled_builder = InterventionCubeBatchBuilder()
-                    fcr_unlabeled_pair = unlabeled_builder.build(
-                        safe_iq_tensor(x_meta_ssl),
-                        unlabeled_leo_view,
-                        y_meta_ssl,
-                        d_meta_ssl_raw,
-                        unlabeled_meta,
-                    )
-                    validate_fcr_pair_for_role(fcr_unlabeled_pair, "U_s")
-                    for reason in unlabeled_builder.capability.reason.values():
-                        fcr_capability_reasons_epoch[reason] = fcr_capability_reasons_epoch.get(reason, 0) + 1
+                    if str(args.fcr_version) == "v2":
+                        fcr_unlabeled_pair = build_fcr_v2_training_pair(
+                            safe_iq_tensor(x_meta_ssl),
+                            unlabeled_leo_view,
+                            y_meta_ssl,
+                            unlabeled_meta,
+                            role="U_s",
+                            epoch=epoch,
+                            seed=int(args.seed),
+                        )
+                        for axis, indices in fcr_unlabeled_pair["pairs"].items():
+                            if int(indices.size(0)) == 0:
+                                reason = f"u_s_{axis}_source_pair_coverage_zero"
+                                fcr_capability_reasons_epoch[reason] = fcr_capability_reasons_epoch.get(reason, 0) + 1
+                    else:
+                        unlabeled_builder = InterventionCubeBatchBuilder()
+                        fcr_unlabeled_pair = unlabeled_builder.build(
+                            safe_iq_tensor(x_meta_ssl),
+                            unlabeled_leo_view,
+                            y_meta_ssl,
+                            d_meta_ssl_raw,
+                            unlabeled_meta,
+                        )
+                        validate_fcr_pair_for_role(fcr_unlabeled_pair, "U_s")
+                        for reason in unlabeled_builder.capability.reason.values():
+                            fcr_capability_reasons_epoch[reason] = fcr_capability_reasons_epoch.get(reason, 0) + 1
 
             need_dac_aux = bool(args.enable_dac_aux and stage_state["use_aux_views"] > 0.0 and (
                 cur_w["cls_dac"] > 0.0 or cur_w["dac_reg"] > 0.0
@@ -4512,10 +5272,15 @@ def main():
                 if bool(args.use_fcr):
                     if fcr_labeled_pair is None:
                         raise RuntimeError("formal FCR identity CE requires the synchronized L_s pair")
+                    label_mask = (
+                        y.ge(0)
+                        if str(args.fcr_version) == "v2"
+                        else fcr_labeled_pair.label_mask
+                    )
                     core["loss_cls"] = masked_identity_ce(
                         tx_logits,
                         y,
-                        fcr_labeled_pair.label_mask,
+                        label_mask,
                         ce_tx,
                     )
                 if not math.isnan(core["cons_cos"]):
@@ -4704,39 +5469,62 @@ def main():
                     metrics={"active_fingerprint_pairs": 0.0},
                 )
                 if bool(args.use_fcr):
-                    configured_fcr = FCRLambdaConfig(
-                        self_reconstruction=float(args.effective_fcr_lambdas["self"]),
-                        swap=float(args.effective_fcr_lambdas["swap"]),
-                        shared=float(args.effective_fcr_lambdas["shared"]),
-                        latent_cycle=float(args.effective_fcr_lambdas["latent_cycle"]),
-                        eta=float(args.effective_fcr_lambdas["eta"]),
-                        factor=float(args.effective_fcr_lambdas["factor"]),
-                        transplant_necessity=float(args.effective_fcr_lambdas["need"]),
-                        physical_features=float(args.effective_fcr_lambdas["phys"]),
-                    )
                     raw_model = getattr(model, "_orig_mod", model)
-                    labeled_fcr_loss = compute_fcr_pair_objective(
-                        model=model,
-                        raw_model=raw_model,
-                        pair=fcr_labeled_pair,
-                        role="L_s",
-                        stage=fcr_stage_state,
-                        configured=configured_fcr,
-                        frozen_identity_classifier=fcr_identity_classifier,
-                        capabilities=args.fcr_objective_capabilities,
-                    )
-                    fcr_loss = labeled_fcr_loss
-                    if fcr_unlabeled_pair is not None:
-                        unlabeled_fcr_loss = compute_fcr_pair_objective(
+                    if str(args.fcr_version) == "v2":
+                        labeled_fcr_loss = compute_fcr_v2_pair_objective(
                             model=model,
                             raw_model=raw_model,
-                            pair=fcr_unlabeled_pair,
-                            role="U_s",
+                            training_pair=fcr_labeled_pair,
+                            row=str(args.fcr_matrix_row),
+                            epoch=epoch,
+                            supervised_components={
+                                "identity_ce": core["loss_cls"],
+                                "prototype": loss_proto,
+                                "tail": z_id.new_zeros(()),
+                            },
+                        )
+                    else:
+                        configured_fcr = FCRLambdaConfig(
+                            self_reconstruction=float(args.effective_fcr_lambdas["self"]),
+                            swap=float(args.effective_fcr_lambdas["swap"]),
+                            shared=float(args.effective_fcr_lambdas["shared"]),
+                            latent_cycle=float(args.effective_fcr_lambdas["latent_cycle"]),
+                            eta=float(args.effective_fcr_lambdas["eta"]),
+                            factor=float(args.effective_fcr_lambdas["factor"]),
+                            transplant_necessity=float(args.effective_fcr_lambdas["need"]),
+                            physical_features=float(args.effective_fcr_lambdas["phys"]),
+                        )
+                        labeled_fcr_loss = compute_fcr_pair_objective(
+                            model=model,
+                            raw_model=raw_model,
+                            pair=fcr_labeled_pair,
+                            role="L_s",
                             stage=fcr_stage_state,
                             configured=configured_fcr,
                             frozen_identity_classifier=fcr_identity_classifier,
                             capabilities=args.fcr_objective_capabilities,
                         )
+                    fcr_loss = labeled_fcr_loss
+                    if fcr_unlabeled_pair is not None:
+                        if str(args.fcr_version) == "v2":
+                            unlabeled_fcr_loss = compute_fcr_v2_pair_objective(
+                                model=model,
+                                raw_model=raw_model,
+                                training_pair=fcr_unlabeled_pair,
+                                row=str(args.fcr_matrix_row),
+                                epoch=epoch,
+                            )
+                        else:
+                            unlabeled_fcr_loss = compute_fcr_pair_objective(
+                                model=model,
+                                raw_model=raw_model,
+                                pair=fcr_unlabeled_pair,
+                                role="U_s",
+                                stage=fcr_stage_state,
+                                configured=configured_fcr,
+                                frozen_identity_classifier=fcr_identity_classifier,
+                                capabilities=args.fcr_objective_capabilities,
+                            )
                         fcr_loss = FCRLossOutput(
                             total=labeled_fcr_loss.total + unlabeled_fcr_loss.total,
                             components={
@@ -4781,8 +5569,9 @@ def main():
                     cur_w["pa_reg"] * sanitize_loss("pa_reg", loss_pa_reg, z_id, loss_warn_counts),
                 ]
 
+                v2_supervised_in_fcr = bool(args.use_fcr and str(args.fcr_version) == "v2")
                 loss = (
-                    sanitize_loss("cls", loss_cls, z_id, loss_warn_counts)
+                    (0.0 if v2_supervised_in_fcr else 1.0) * sanitize_loss("cls", loss_cls, z_id, loss_warn_counts)
                     + cur_w["dom"] * sanitize_loss("dom", loss_dom, z_id, loss_warn_counts)
                     + cur_w["adv"] * sanitize_loss("adv", loss_adv, z_id, loss_warn_counts)
                     + cur_w["orth"] * sanitize_loss("orth", loss_orth, z_id, loss_warn_counts)
@@ -4791,7 +5580,7 @@ def main():
                     + aux_scale * sum(aux_terms)
                     + sat_cls_weight * sanitize_loss("sat_cls", loss_sat_cls, z_id, loss_warn_counts)
                     + float(args.lambda_sat_cons) * sanitize_loss("sat_cons", loss_sat_cons, z_id, loss_warn_counts)
-                    + float(args.lambda_proto) * sanitize_loss("proto", loss_proto, z_id, loss_warn_counts)
+                    + (0.0 if v2_supervised_in_fcr else float(args.lambda_proto)) * sanitize_loss("proto", loss_proto, z_id, loss_warn_counts)
                     + float(args.lambda_supcon_id) * sanitize_loss("supcon", loss_supcon, z_id, loss_warn_counts)
                     + float(args.lambda_fishr) * sanitize_loss("fishr", loss_fishr, z_id, loss_warn_counts)
                     + float(args.lambda_open_world_feat) * sanitize_loss("open_world_feat", loss_open_world_feat, z_id, loss_warn_counts)
@@ -5042,6 +5831,10 @@ def main():
             "train_meta_ssl_teacher_confidence": meters["meta_ssl_teacher_conf"].avg,
             "train_meta_ssl_active_prototypes": meters["meta_ssl_proto_active"].avg,
             "fcr_enabled": bool(args.use_fcr),
+            "fcr_version": str(args.fcr_version),
+            "fcr_matrix_row": str(args.fcr_matrix_row),
+            "fcr_execution_signature": str(args.fcr_execution_signature),
+            "fcr_v2_active_losses": list(args.fcr_v2_active_losses),
             "fcr_stage": None if fcr_stage_state is None else fcr_stage_state.name,
             "fcr_scales": {} if fcr_stage_state is None else dict(fcr_stage_state.scales),
             "fcr_freeze_decoder_for_necessity": (
@@ -5104,6 +5897,11 @@ def main():
             "train_meta_ssl_proto_agreement_rate": meters["meta_ssl_proto_agree"].avg,
             "train_meta_ssl_teacher_confidence": meters["meta_ssl_teacher_conf"].avg,
             "train_meta_ssl_active_prototypes": meters["meta_ssl_proto_active"].avg,
+            "fcr_version": str(args.fcr_version),
+            "fcr_matrix_row": str(args.fcr_matrix_row),
+            "fcr_execution_signature": str(args.fcr_execution_signature),
+            "fcr_v2_active_losses": list(args.fcr_v2_active_losses),
+            "fcr_capability_reasons": dict(fcr_capability_reasons_epoch),
             "meta_ssl_enabled": bool(meta_ssl_enabled),
             "meta_ssl_loss_enabled": bool(meta_ssl_loss_enabled),
             "diag_sat_cls_active": bool(diag_sat_cls_active_epoch),
@@ -5313,6 +6111,14 @@ def main():
                 f"freeze_decoder_for_necessity={int(fcr_stage_state.freeze_decoder_for_necessity)}",
                 flush=True,
             )
+        if str(args.fcr_version) == "v2" and bool(getattr(args, "fcr_requested", False)):
+            print(
+                "[FCR-V2] "
+                f"signature={args.fcr_execution_signature} "
+                f"active_losses={','.join(args.fcr_v2_active_losses) or 'none'} "
+                f"activation_reasons={json.dumps(fcr_capability_reasons_epoch, sort_keys=True)}",
+                flush=True,
+            )
         for sat_line in format_sat_test_lines(sat_test_stats):
             print(sat_line, flush=True)
         print(
@@ -5347,6 +6153,17 @@ def main():
             "selection_rule": "final_epoch_only",
             "target_metrics_consumed_for_selection": False,
             "val_tx_acc": val_stats["tx_acc"],
+            "fcr_version": str(args.fcr_version),
+            "fcr_matrix_row": str(args.fcr_matrix_row),
+            "fcr_execution_signature": str(args.fcr_execution_signature),
+            "fcr_resource_state": {
+                str(group.get("name", index)): {
+                    "lr": float(group["lr"]),
+                    "parameter_tensors": len(group["params"]),
+                }
+                for index, group in enumerate(optimizer.param_groups)
+            },
+            "fcr_activation_reasons": dict(fcr_capability_reasons_epoch),
         },
     )
     print(
@@ -5369,9 +6186,11 @@ def main():
             },
             epoch_time_s=float(time_stats.get("epoch_time_s", 0.0)),
             capability_reasons=dict(fcr_capability_reasons_epoch),
-            active_lambdas=()
-            if fcr_stage_state is None
-            else tuple(sorted(fcr_stage_state.active)),
+            active_lambdas=(
+                tuple(args.fcr_v2_active_losses)
+                if str(args.fcr_version) == "v2"
+                else () if fcr_stage_state is None else tuple(sorted(fcr_stage_state.active))
+            ),
         ):
             return
     except Exception as e:

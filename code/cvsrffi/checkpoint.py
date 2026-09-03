@@ -14,6 +14,8 @@ FCR_PHYSICAL_BASIS_ID = "fixed_response_basis:pa_conjugate_memory4:v1"
 FCR_INPUT_NORMALIZATION_VERSION = "adv3b02_input_iq:v1"
 FCR_FISHER_GATE_ID = "FisherIdentifiabilityGate:v1"
 FCR_NUISANCE_SCHEMA_VERSION = "structured_nuisance:16_8_6_3:v1"
+FCR_V2_BUNDLE_SCHEMA = "cvs.phase1.adv3b02_fcr.bundle.v2"
+FCR_V2_FEATURE_SCHEMA = "ADV3B02:FCR:z_f_id:unit_l2:160:v2"
 
 
 def _unwrap_model(model):
@@ -30,6 +32,59 @@ def export_fcr_bundle(model) -> dict[str, Any]:
     fcr = getattr(state_model, "fcr", None)
     if config is None or fcr is None:
         raise ValueError("use_fcr=True requires fcr_config and the FCR module")
+    if str(getattr(state_model, "fcr_version", "v1")).lower().strip() == "v2":
+        factor_encoder = getattr(fcr, "factor_encoder", None)
+        multipath_taps = int(getattr(factor_encoder, "multipath_taps", 3))
+        return {
+            "bundle_schema": FCR_V2_BUNDLE_SCHEMA,
+            "feature_schema": FCR_V2_FEATURE_SCHEMA,
+            "fcr_version": "v2",
+            "fcr_config": asdict(config),
+            "physical_basis": {
+                "identifier": "orthogonal_response_basis:s_conjugate_pa_delay1:v2",
+                "terms": ["s", "conjugate_s", "s_abs2", "delay1"],
+                "trainable": False,
+            },
+            "input_normalization": {
+                "version": "adv3b02_input_iq:conservative_canonicalizer:v2",
+                "description": (
+                    "WiSig per-record RMS-power IQ normalization without centering, "
+                    "followed by the deterministic bounded FCR gain/phase/CFO canonicalizer"
+                ),
+                "iq_layout": "float32:[batch,2,input_len]",
+            },
+            "fisher_gate": {
+                "identifier": "not_applicable:v2",
+                "deterministic": True,
+                "trainable_parameters": 0,
+                "eps": 1e-8,
+            },
+            "nuisance_schema": {
+                "order": ["alpha", "beta", "sto", "sfo", "phase", "taps"],
+                "dimensions": {
+                    "alpha": 1,
+                    "beta": 1,
+                    "sto": 1,
+                    "sfo": 1,
+                    "phase": 1,
+                    "taps": multipath_taps,
+                },
+                "version": "physical_nuisance:alpha_beta_sto_sfo_phase_taps:v2",
+            },
+            "routing": {
+                "fingerprint": "normalize(identity_projection(z_adv)+delta_z_f)",
+                "version": "task3_factorized_response:v2",
+                "single_view_inference": True,
+                "identity_only_skips_decoder": True,
+            },
+            "model_identity": {
+                "candidate": "ADV3B02-FCR-V2",
+                "identity_dimension": 160,
+                "feature_normalization": "unit_l2",
+                "logit_route": "fcr_identity_head(identity_projection(z_f_id))",
+                "logit_key": "fcr_tx_logits",
+            },
+        }
     fisher_gate = getattr(fcr, "fisher_gate", None)
     fisher_eps = float(getattr(fisher_gate, "eps", 1e-8))
     trainable_fisher = 0 if fisher_gate is None else sum(
@@ -94,7 +149,7 @@ def validate_fcr_bundle_for_model(payload: Mapping[str, Any], model) -> None:
     if not isinstance(bundle, Mapping):
         raise ValueError("FCR checkpoint requires a mapping fcr_bundle")
     expected = export_fcr_bundle(state_model)
-    for key in (
+    required_keys = [
         "bundle_schema",
         "feature_schema",
         "fcr_config",
@@ -104,7 +159,10 @@ def validate_fcr_bundle_for_model(payload: Mapping[str, Any], model) -> None:
         "nuisance_schema",
         "routing",
         "model_identity",
-    ):
+    ]
+    if expected.get("fcr_version") == "v2":
+        required_keys.append("fcr_version")
+    for key in required_keys:
         if bundle.get(key) != expected[key]:
             raise ValueError(f"incompatible fcr_bundle {key}")
 

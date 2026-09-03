@@ -40,7 +40,9 @@ _ROW_LOSS_REGISTRY: dict[str, frozenset[str]] = {
     "C1": frozenset(),
     "C2": frozenset(),
     "C3": frozenset({"self"}),
-    "S0": frozenset({"self"}),
+    # S0 is the structural shared-branch control.  It exercises the same V2
+    # identity route as the shared rows while keeping every auxiliary loss off.
+    "S0": frozenset(),
     "S1": frozenset({"self", "shared_f"}),
     "S2": frozenset({"self", "shared_s"}),
     "S3": frozenset({"self", "shared_f", "shared_s"}),

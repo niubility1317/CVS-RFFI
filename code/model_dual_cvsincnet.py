@@ -3,9 +3,10 @@ from __future__ import annotations
 
 import math
 from copy import deepcopy
+from dataclasses import dataclass
 from pathlib import Path
 import sys
-from typing import Dict, Optional, Sequence, Tuple
+from typing import Any, Dict, Optional, Sequence, Tuple
 
 import torch
 import torch.nn as nn
@@ -22,7 +23,10 @@ from cvsrffi.phase1_fcr_types import (
     FCRAggregateOutput,
     FCRConfig,
     FCRFactorOutput,
+    FCRV2FactorOutput,
 )
+from cvsrffi.phase1_fcr_v2_factors import FCRV2FactorEncoder
+from cvsrffi.phase1_fcr_v2_physics import IdentityInitializedPhysicsDecoder
 
 _CODE_ROOT = Path(__file__).resolve().parent
 _REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -546,6 +550,7 @@ def build_arch_backbone(
 
 
 FCR_FEATURE_SCHEMA = "ADV3B02:FCR:z_f_id:unit_l2:160:v1"
+FCR_V2_FEATURE_SCHEMA = "ADV3B02:FCR:z_f_id:unit_l2:160:v2"
 
 
 class ADV3B02FactorizedCrossReconstruction(nn.Module):
@@ -643,6 +648,74 @@ class ADV3B02FactorizedCrossReconstruction(nn.Module):
         )
 
 
+@dataclass(frozen=True)
+class FCRV2AggregateOutput:
+    """Internal composition result for the public Task1-4 V2 modules."""
+
+    canonical: Any
+    factors: FCRV2FactorOutput
+    decode: Optional[Any]
+    quality: Dict[str, torch.Tensor]
+
+
+class ADV3B02FactorizedCrossReconstructionV2(nn.Module):
+    """Compose the V2 factor encoder and identity-initialized physics decoder."""
+
+    def __init__(self, config: FCRConfig) -> None:
+        super().__init__()
+        self.config = config
+        self.canonicalizer = ConservativeCanonicalizer(config)
+        self.factor_encoder = FCRV2FactorEncoder(config)
+        self.decoder = IdentityInitializedPhysicsDecoder(config)
+
+    def _forward_fp32(
+        self,
+        x: torch.Tensor,
+        id_feature_raw: torch.Tensor,
+        *,
+        run_decoder: bool,
+    ) -> FCRV2AggregateOutput:
+        canonical = self.canonicalizer(x)
+        factors = self.factor_encoder(
+            canonical.canonical_iq,
+            canonical.residual_iq,
+            id_feature_raw,
+        )
+        decoded = self.decoder(*factors.decoder_inputs()) if bool(run_decoder) else None
+        quality = {
+            **{f"canonical_{name}": value for name, value in canonical.quality.items()},
+            **{f"response_{name}": value for name, value in factors.response_quality.items()},
+            "z_f_dev_norm": factors.z_f_dev.norm(dim=1),
+        }
+        return FCRV2AggregateOutput(
+            canonical=canonical,
+            factors=factors,
+            decode=decoded,
+            quality=quality,
+        )
+
+    def forward(
+        self,
+        x: torch.Tensor,
+        id_feature_raw: torch.Tensor,
+        *,
+        pair_context=None,
+    ) -> FCRV2AggregateOutput:
+        del pair_context
+        with torch.autocast(device_type=x.device.type, enabled=False):
+            return self._forward_fp32(x.float(), id_feature_raw.float(), run_decoder=True)
+
+    def forward_identity_only(
+        self,
+        x: torch.Tensor,
+        id_feature_raw: torch.Tensor,
+    ) -> FCRV2AggregateOutput:
+        """Return the deployable identity route without entering the decoder."""
+
+        with torch.autocast(device_type=x.device.type, enabled=False):
+            return self._forward_fp32(x.float(), id_feature_raw.float(), run_decoder=False)
+
+
 class DualCVSincNetDisentangle(nn.Module):
     """
     双 CV-SincNet 解耦模型。
@@ -710,6 +783,7 @@ class DualCVSincNetDisentangle(nn.Module):
         physical_gate_variant: str = "none",
         use_fcr: bool = False,
         fcr_config: Optional[FCRConfig] = None,
+        fcr_version: str = "v1",
     ):
         super().__init__()
         self.num_classes = int(num_classes)
@@ -734,9 +808,14 @@ class DualCVSincNetDisentangle(nn.Module):
         self.use_tx_adv_on_zdom = bool(use_tx_adv_on_zdom)
         self.use_crra = bool(use_crra)
         self.use_fcr = bool(use_fcr)
+        self.fcr_version = str(fcr_version or "v1").lower().strip()
+        if self.fcr_version not in {"v1", "v2"}:
+            raise ValueError("fcr_version must be v1 or v2")
+        self.fcr_identity_only_training = False
         self.fcr_config = None
         self.fcr = None
         self.fcr_identity_head = None
+        self.fcr_identity_projection = None
         self.physical_gate_variant = str(
             physical_gate_variant or "none"
         ).lower().strip()
@@ -902,11 +981,41 @@ class DualCVSincNetDisentangle(nn.Module):
             self.fcr_config = (
                 fcr_config if fcr_config is not None else FCRConfig(input_len=int(input_len))
             )
-            self.fcr = ADV3B02FactorizedCrossReconstruction(self.fcr_config)
+            self.fcr = (
+                ADV3B02FactorizedCrossReconstructionV2(self.fcr_config)
+                if self.fcr_version == "v2"
+                else ADV3B02FactorizedCrossReconstruction(self.fcr_config)
+            )
             legacy_identity_head = getattr(getattr(self.id_backbone, "cls_head", None), "head", None)
             if legacy_identity_head is None:
                 raise RuntimeError("FCR requires the mature ADV3B02 identity head")
             self.fcr_identity_head = deepcopy(legacy_identity_head)
+            if self.fcr_version == "v2":
+                # Task3 fixes z_f_id/z_f_dev at 160 dimensions, whereas some
+                # mature ADV3 variants expose a wider classifier feature.  The
+                # two identity-initialized bridges keep the V2 factor contract
+                # fixed and preserve the copied mature classifier geometry.
+                self.fcr_identity_projection = nn.ModuleDict(
+                    {
+                        "to_factor": nn.Linear(self.emb_dim, 160, bias=False),
+                        "to_classifier": nn.Linear(160, self.emb_dim, bias=False),
+                    }
+                )
+                with torch.no_grad():
+                    for projection in self.fcr_identity_projection.values():
+                        projection.weight.zero_()
+                        diagonal = min(projection.in_features, projection.out_features)
+                        projection.weight[:diagonal, :diagonal].copy_(torch.eye(diagonal))
+
+    def fcr_identity_head_matches_legacy(self) -> bool:
+        legacy_identity_head = getattr(getattr(self.id_backbone, "cls_head", None), "head", None)
+        if legacy_identity_head is None or self.fcr_identity_head is None:
+            return False
+        legacy_state = legacy_identity_head.state_dict()
+        fcr_state = self.fcr_identity_head.state_dict()
+        return legacy_state.keys() == fcr_state.keys() and all(
+            torch.equal(legacy_state[name], fcr_state[name]) for name in legacy_state
+        )
 
     def set_crra_epoch(self, epoch: int) -> None:
         self.crra_epoch = max(1, int(epoch))
@@ -971,6 +1080,8 @@ class DualCVSincNetDisentangle(nn.Module):
         x: torch.Tensor,
         z_id: torch.Tensor,
         y_tx: Optional[torch.Tensor] = None,
+        *,
+        identity_only: bool = False,
     ) -> Dict[str, object]:
         if not self.use_fcr:
             return out
@@ -978,7 +1089,42 @@ class DualCVSincNetDisentangle(nn.Module):
             raise RuntimeError("use_fcr=True requires an instantiated FCR module")
         if self.fcr_identity_head is None:
             raise RuntimeError("use_fcr=True requires an explicit FCR identity head")
-        aggregate = self.fcr(x, z_id)
+        fcr_input = z_id
+        if self.fcr_version == "v2":
+            if self.fcr_identity_projection is None:
+                raise RuntimeError("FCR-V2 requires the identity projection bridge")
+            fcr_input = self.fcr_identity_projection["to_factor"](z_id)
+        use_identity_only = bool(identity_only and self.fcr_version == "v2")
+        aggregate = (
+            self.fcr.forward_identity_only(x, fcr_input)
+            if use_identity_only
+            else self.fcr(x, fcr_input)
+        )
+        if self.fcr_version == "v2":
+            classifier_feature = self.fcr_identity_projection["to_classifier"](
+                aggregate.factors.z_f_id
+            )
+            fcr_tx_logits = self.fcr_identity_head(classifier_feature, y_tx)
+            decoded = aggregate.decode
+            out.update(
+                {
+                    "z_id_raw": z_id,
+                    "z_f_id": aggregate.factors.z_f_id,
+                    "z_tx_state": aggregate.factors.z_f_dev,
+                    "z_s": aggregate.factors.z_s,
+                    "z_n": aggregate.factors.z_n,
+                    "fcr_tx_logits": fcr_tx_logits,
+                    "fcr_decode": decoded,
+                    "fcr_decoder_mode": (
+                        "not_run_identity_only" if decoded is None else decoded.decoder_mode
+                    ),
+                    "fcr_quality": aggregate.quality,
+                    "fcr_factors": aggregate.factors,
+                    "fcr_canonical": aggregate.canonical,
+                    "feature_schema": FCR_V2_FEATURE_SCHEMA,
+                }
+            )
+            return out
         fcr_tx_logits = self.fcr_identity_head(aggregate.factors.z_f_id, y_tx)
         out.update(
             {
@@ -1010,6 +1156,7 @@ class DualCVSincNetDisentangle(nn.Module):
         update_crra_support: bool = False,
         crra_support_mask: Optional[torch.Tensor] = None,
         sat_anchor_detach_backbone: bool = False,
+        fcr_identity_only: bool = False,
     ):
         if self.representation_mode == "single_parameter_matched":
             aux_id = backbone_forward_compat(
@@ -1062,7 +1209,13 @@ class DualCVSincNetDisentangle(nn.Module):
                 "aux_id": aux_id,
                 "aux_dom": {},
             }
-            return self._attach_fcr_outputs(out, x, z_id, y_tx)
+            return self._attach_fcr_outputs(
+                out,
+                x,
+                z_id,
+                y_tx,
+                identity_only=bool(fcr_identity_only or self.fcr_identity_only_training),
+            )
 
         if (
             (not return_aux)
@@ -1195,7 +1348,37 @@ class DualCVSincNetDisentangle(nn.Module):
             v = out[g].get(k, None)
             if torch.is_tensor(v):
                 out[name] = v
-        return self._attach_fcr_outputs(out, x, z_id, y_tx)
+        return self._attach_fcr_outputs(
+            out,
+            x,
+            z_id,
+            y_tx,
+            identity_only=bool(fcr_identity_only or self.fcr_identity_only_training),
+        )
+
+    def forward_identity_only(
+        self,
+        x: torch.Tensor,
+        y_tx: Optional[torch.Tensor] = None,
+        grl_lambda: float = 1.0,
+        domain_labels: Optional[torch.Tensor] = None,
+        **kwargs,
+    ) -> Dict[str, object]:
+        if not self.use_fcr or self.fcr_version != "v2":
+            raise RuntimeError("forward_identity_only requires use_fcr=True and fcr_version=v2")
+        output = self.forward(
+            x,
+            y_tx=y_tx,
+            grl_lambda=grl_lambda,
+            return_aux=True,
+            domain_labels=domain_labels,
+            fcr_identity_only=True,
+            **kwargs,
+        )
+        routed = dict(output)
+        routed["tx_logits"] = routed["fcr_tx_logits"]
+        routed["z_id"] = routed["z_f_id"]
+        return routed
 
 
 def build_dual_model(
@@ -1253,6 +1436,7 @@ def build_dual_model(
     physical_gate_variant: str = "none",
     use_fcr: bool = False,
     fcr_config: Optional[FCRConfig] = None,
+    fcr_version: str = "v1",
 ) -> DualCVSincNetDisentangle:
     return DualCVSincNetDisentangle(
         num_classes=num_classes,
@@ -1309,4 +1493,5 @@ def build_dual_model(
         physical_gate_variant=physical_gate_variant,
         use_fcr=use_fcr,
         fcr_config=fcr_config,
+        fcr_version=fcr_version,
     )
