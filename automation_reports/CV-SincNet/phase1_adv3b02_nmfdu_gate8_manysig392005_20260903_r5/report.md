@@ -63,4 +63,28 @@
 - PID/CWD/cmdline：dispatcher与8个训练主进程均存活；CWD均为`/home/szu2070436088`；每行命令均绑定固定release、r5 run ID、对应E行输出目录及split seed=`392005`。
 - GPU读回：E1–E8分别位于GPU0–7；启动后GPU0–7计算进程数为`2/1/2/2/2/2/3/2`，不超过授权上限4。
 - 日志读回：E1–E8共8份`.out`均为6325bytes，全部出现`[SSDG-TRAIN]`标记；初始扫描未发现`Traceback`、`RuntimeError`、OOM或CUDA error。
-- 当前最高交付状态：`RUNNING`。尚未产生epoch结果、最终checkpoint、四场景评估、prediction或独立评分，因此没有性能结论。
+- 启动读回时的最高交付状态：`RUNNING`。当时尚未产生epoch结果、最终checkpoint、四场景评估、prediction或独立评分，因此没有性能结论。
++
+## 7.预计完成时间（2026-09-03 14:50快照）
+
+- 当前状态：8行均为`RUNNING`；GPU持续计算。
+- 证据范围：完整解析r5的8份stdout、8份`metrics_epoch.csv`和8份`metrics_epoch.jsonl`，合计146个连续epoch；同时解析同配置r3中仍覆盖后期阶段的E1共189epoch和E7共155epoch作为阶段耗时参照。
+- 数据完整性：各行CSV/JSONL记录数一致、epoch从1连续到最新轮次；训练loss均为有限值；`train_skipped_nonfinite_loss=0`、`train_skipped_nonfinite_grad=0`；完整stdout中未发现Traceback、RuntimeError、OOM、CUDA error或Killed。
+- 估算方法：当前Stage1实测每轮均值用于缩放；E1后续阶段采用r3-E1实测阶段耗时，E2–E8采用最接近完整门控路径的r3-E7阶段耗时比例；整体完成时间取最慢行，并为GPU竞争与最终评估保留区间。
+
+|行|最新epoch|当前平均秒/epoch|训练剩余点估计|
+|---|---:|---:|---:|
+|E1|16|616.2|36.9小时|
+|E2|27|373.1|16.1小时|
+|E3|17|594.2|27.4小时|
+|E4|17|598.8|27.6小时|
+|E5|17|595.5|27.4小时|
+|E6|17|593.6|27.3小时|
+|E7|14|714.5|33.5小时|
+|E8|21|483.0|21.7小时|
+
+- 训练全部结束预计还需：`33–42小时`，点估计约`37小时`。
+- 最终checkpoint、clean与三个`leo_*_weak`评估、prediction及独立评分全部闭合预计还需：`34–45小时`。
+- 对应完成窗口：约为`2026-09-05 01:00–12:15 +0800`；较可能集中在`2026-09-05 04:45–06:45 +0800`。
+- 主要不确定性：E2预计最早在当日约20:30进入epoch81，这是修复后的null概率BCE首次在正式Stage2长跑中触发；当前估算假设该已通过CUDA回归的修复在正式运行中继续成立。GPU上其他任务结束或负载变化会使实际时间前后波动。
+- 本节是截至最新解析epoch的运行中估算，不是完成状态或性能结果。
