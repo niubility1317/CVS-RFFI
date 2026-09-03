@@ -332,3 +332,61 @@ def test_full_no_null_objective_disables_null_calibration_loss() -> None:
         ablation_mode="full_no_null",
     )
     assert losses["null_cal"].item() == 0.0
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="requires CUDA autocast")
+@pytest.mark.parametrize(
+    "mode",
+    ("i_only", "i_d", "i_d_s", "physical_fixed", "physical_full", "full"),
+)
+def test_stage_two_null_probability_calibration_is_safe_under_cuda_autocast(
+    mode: str,
+) -> None:
+    torch.manual_seed(85)
+    model = _model(ablation_mode=mode).cuda().train()
+    NMFDUStageController().apply(model, epoch=81)
+    labels = torch.tensor([0, 1], device="cuda")
+
+    with torch.autocast(device_type="cuda", dtype=torch.float16):
+        output = model(
+            torch.randn(2, 2, 64, device="cuda"),
+            y=labels,
+            return_aux=True,
+            return_physical_gate_diag=True,
+        )
+        losses = nmfdu_labeled_objective(
+            output,
+            labels,
+            stage=2,
+            clean_count=0,
+            lambda_branch_aux=0.2,
+            lambda_route=0.1,
+            lambda_phys=0.1,
+            lambda_fused_pair=0.2,
+            lambda_branch_pair=0.1,
+            lambda_null_cal=0.05,
+            lambda_balance=0.01,
+            ablation_mode=mode,
+        )
+
+    assert losses["null_cal"].dtype == torch.float32
+    assert torch.isfinite(losses["null_cal"])
+    diagnostics = output["physical_gate_diag"]["per_sample"]
+    reliability = diagnostics["I"]
+    if mode != "i_only":
+        reliability = reliability * diagnostics["D"]
+    if mode not in {"i_only", "i_d"}:
+        reliability = reliability * diagnostics["S"]
+    if mode in {"physical_fixed", "physical_full", "full"}:
+        reliability = reliability * (1.0 - diagnostics["U"])
+    expected_target = 1.0 - reliability.max(dim=-1).values.detach()
+    expected = torch.nn.functional.binary_cross_entropy(
+        diagnostics["null_weight"].float().clamp(1e-6, 1.0 - 1e-6),
+        expected_target.float(),
+    )
+    torch.testing.assert_close(losses["null_cal"], expected)
+    losses["total"].backward()
+    assert any(
+        parameter.grad is not None and torch.isfinite(parameter.grad).all()
+        for parameter in model.nmfdu_gate.sample_gate.parameters()
+    )

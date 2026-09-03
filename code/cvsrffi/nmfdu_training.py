@@ -360,10 +360,20 @@ def nmfdu_labeled_objective(
         physical_quality = reliability.max(dim=-1).values.detach()
         null_target = 1.0 - physical_quality
         if ablation_mode != "full_no_null":
-            null_cal = F.binary_cross_entropy(
-                diagnostics["null_weight"].clamp(1e-6, 1.0 - 1e-6),
-                null_target,
-            )
+            # null_weight is already a softmax probability.  Keep the report's
+            # probability-space calibration semantics, but evaluate BCE in
+            # FP32 because probability BCE is intentionally unsafe under AMP.
+            with torch.autocast(
+                device_type=diagnostics["null_weight"].device.type,
+                enabled=False,
+            ):
+                null_probability = diagnostics["null_weight"].float().clamp(
+                    1e-6, 1.0 - 1e-6
+                )
+                null_cal = F.binary_cross_entropy(
+                    null_probability,
+                    null_target.float(),
+                )
         usage = diagnostics["weights"].mean(dim=0)
         balance = (usage - usage.new_full(usage.shape, 1.0 / usage.numel())).square().mean()
 
