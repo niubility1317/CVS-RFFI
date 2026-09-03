@@ -185,3 +185,80 @@ env ROOT=<release-root> PYTHON=/home/szu2070436088/.conda/envs/CVS-RFFI/bin/pyth
 - `r1_r8_interim_analysis.json`：机器可读汇总、阶段数据、异常扫描与审计信息。
 
 下一次完整闭合必须等8组均达到E200，确认各自最终checkpoint身份，并分别保存clean、`leo_clear_weak`、`leo_low_elev_weak`和`leo_rain_weak`结果后，才能把状态从`RUNNING`推进到`ARTIFACTS_COMPLETE`并进行同row分析。
+
+## 16.第二次全量日志快照（2026-09-03 09:54–09:56）
+
+本次重新下载R1–R8的全部stdout、`metrics.csv`和`logs.jsonl`，共24个文件、6984732字节。结构化日志包含1050条完整epoch记录；每个row的CSV、JSONL和stdout`[EPOCH-END]`计数一致，均从E1连续到最新epoch。全量stdout扫描仍未发现`Traceback`、`RuntimeError`、CUDA OOM、`Killed`或显式`[ERROR]`。
+
+矩阵尚未完成。R1、R2已记录E200并产生当前checkpoint四场景结果；R3–R8仍在训练。快照时8个原始PID全部存活，所有run目录均无`final_ssdg.pth`。R1正在进行selected-best LEO复评；R2的selected-best四场景日志已经闭合，但整个八实验run的最高状态仍为`RUNNING`。
+
+## 17.最新逐实验进度
+
+|实验|GPU|epoch|进度|当前loss|当前训练TX|当前source-val TX|历史最佳source-val|最近10轮source-val|估算剩余训练时间|累计跳过batch|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|R1|0|200/200|100.0%|9.0892|85.49%|97.87%|98.00%@E164|97.90%±0.03|训练已结束；selected-best复评中|31|
+|R2|1|200/200|100.0%|8.8964|85.99%|97.94%|98.02%@E155|97.95%±0.03|训练和selected-best日志已闭合|29|
+|R3|2|122/200|61.0%|9.5881|81.10%|97.89%|97.92%@E120|97.77%±0.11|16.7小时|21|
+|R4|3|113/200|56.5%|8.8350|85.67%|97.84%|97.89%@E98|97.61%±0.15|19.4小时|22|
+|R5|4|114/200|57.0%|9.9540|82.46%|97.75%|97.89%@E98|97.65%±0.18|20.0小时|20|
+|R6|5|110/200|55.0%|10.0341|80.68%|97.67%|97.88%@E98|97.76%±0.09|21.0小时|20|
+|R7|6|93/200|46.5%|11.1566|85.30%|97.73%|97.76%@E91|97.48%±0.22|38.9小时|11|
+|R8|7|98/200|49.0%|11.5859|82.72%|97.66%|97.74%@E96|97.50%±0.23|44.1小时|9|
+
+剩余时间按快照前最近10个完整epoch线性估计，不包括E200约1小时以上的全target与三LEO评测，也不保证共享GPU负载保持不变。R1的E200总耗时为4672秒，其中评测4425秒；R2为3903秒，其中评测3706秒。
+
+截至本快照，保护性`unsafe backward/step skipped`累计163次，分布于146个epoch。R1–R8分别为31、29、21、22、20、20、11和9次。checkpoint与epoch记录持续更新，未出现重复确定性异常或进程退出，因此仍不满足预登记的技术停止条件。
+
+## 18.R1与R2已取得的E200结果
+
+下表使用每个row的E200当前checkpoint。每种场景均评测168000个target样本；这些是Phase1闭集TX识别结果，不是Phase2新类注册、unknown拒识或四状态DA/REG结果。
+
+|实验|clean总体|seen-day/unseen-RX|unseen-day/unseen-RX|worst seen-day RX|primary score|clear/strict-UDU|low-elev/strict-UDU|rain/strict-UDU|三LEO均值|clean→LEO均值下降|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|R1|78.83%|79.75%|76.06%|65.31%（RX2）|77.45|51.62%/49.26%|50.41%/48.48%|50.60%/48.88%|50.88%|27.95个百分点|
+|R2|79.29%|80.50%|75.68%|66.46%（RX2）|77.49|52.02%/49.45%|50.84%/48.35%|51.10%/49.27%|51.32%|27.97个百分点|
+
+R2相对R1的描述性差值为：clean＋0.46个百分点、clear＋0.40、low-elev＋0.43、rain＋0.50。该差值不能严格归因于固定样条替代Memory Polynomial，因为R1、R2分别从不同随机初始化开始，且没有共享收敛R0。
+
+### 18.1 selected-best复评
+
+|实验|selected-best epoch|clean总体|seen-day/unseen-RX|unseen-day/unseen-RX|clear|low-elev|rain|状态|
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+|R1|E164|78.80%|79.61%|76.39%|N/A|N/A|N/A|clean已完成，三LEO仍在运行|
+|R2|E155|78.61%|79.50%|75.93%|51.42%|50.27%|50.58%|四场景日志闭合|
+
+R2的selected-best checkpoint虽然source-val更高，但相对E200 checkpoint在clean、clear、low-elev和rain上分别低0.68、0.60、0.57和0.52个百分点。这说明source validation选择与target最优并不一致；根据冻结协议，不能利用target结果回调checkpoint或重排候选。
+
+### 18.2 E200 clean按target receiver分解
+
+单元格为`seen-day/unseen-day`TX准确率。
+
+|target RX|R1|R2|
+|---:|---:|---:|
+|0|85.69%/67.28%|86.67%/67.87%|
+|2|65.31%/68.50%|66.46%/68.00%|
+|5|89.16%/80.45%|89.23%/79.55%|
+|7|68.24%/86.05%|68.17%/85.17%|
+|9|92.60%/71.47%|93.63%/72.33%|
+|10|74.33%/80.22%|75.84%/79.43%|
+|11|82.94%/78.47%|83.49%/77.40%|
+
+clean结果存在明显receiver异质性：seen-day范围为65.31%–93.63%，unseen-day范围为67.28%–86.05%。R1、R2的seen-day最弱receiver均为RX2，而unseen-day最弱receiver为RX0或RX2。LEO场景总体进一步降至约51%，说明当前主要缺口是弱星地信道鲁棒性，而不是source validation收敛。
+
+## 19.第二次快照数据包
+
+`data/interim_20260903_0955/`包含：
+
+- `r1_r8_interim_summary.csv`：8个row的进度、曲线末值、历史最佳、最近10轮统计、耗时和异常计数。
+- `r1_r8_epoch_metrics_full.csv`：1050条逐epoch完整指标。
+- `r1_r8_phase_summary.csv`：四段LEO课程统计。
+- `r1_r8_milestones.csv`：关键epoch与最新epoch读数。
+- `r1_r8_evaluation_results.csv`：R1–R8×两类checkpoint×四场景，共64个状态槽；未完成项保持空值和`PENDING`状态。
+- `r1_r8_receiver_results.csv`：R1/R2当前checkpoint与selected-best的target receiver/day分解。
+- `r1_r8_interim_analysis.json`：机器可读汇总、评测、receiver明细与全日志异常审计。
+
+## 20.当前结论与完成条件
+
+当前证据支持三个结论。第一，八卡run仍在运行，不能宣称实验跑完。第二，R1/R2已经证明ECRS两种固定基在clean target上约79%，但三LEO场景仅约51%，相对clean下降约28个百分点。第三，R1/R2差异小于0.5个百分点且缺少共享初始化，现阶段没有足够证据判定样条基优于Memory Polynomial。
+
+完整闭合仍需：R1完成selected-best三LEO复评；R3–R8达到E200；8个row分别保存selected final checkpoint的clean与三个LEO结果；确认最终artifact身份；随后才能进行八row同口径比较并将run推进至`ARTIFACTS_COMPLETE→ANALYZED`。
