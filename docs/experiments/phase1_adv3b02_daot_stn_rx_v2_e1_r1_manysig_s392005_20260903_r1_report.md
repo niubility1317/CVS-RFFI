@@ -3,7 +3,7 @@
 ## 1.状态与预登记
 
 - run ID：`phase1_adv3b02_daot_stn_rx_v2_e1_r1_manysig_s392005_20260903_r1`
-- 当前状态：`LOCAL_VERIFIED`
+- 当前状态：`RUNNING`
 - 数据：ManySig equalized，`split_mode=tx_rx_day_1_7_2`，seed=`392005`
 - source：RX=`[1,3,4,6,8]`，day=`[1,2,3]`，`L_s/U_s/V=6300/56700/27000`
 - target test：RX=`[0,2,5,7,9,10,11]`，day=`[0,1,2,3]`
@@ -30,7 +30,7 @@
 |E1-03|实施计划4.1|E1作为P5的效率增量独立可选|CLI、worker、E1/R1 launcher|implemented|本地发布映射测试通过，待远端dry-run|必须有真实开关，不能只改候选名|
 |R1-01|实施计划Task11、矩阵V2-R1|E1基础上启用选择性nuisance子空间|训练入口、E1/R1 launcher|implemented|参数映射测试通过，待真实checkpoint smoke|`λ_subspace=0.05`、rank=8、interval=5|
 |R1-02|实施计划Task11|非有限、秩不足时保留有效basis并安全跳过|`code/cvsrffi/selective_nuisance_subspace.py`|verified|非有限输入回归测试通过|不得因高风险模块中断训练|
-|PUB-01|最小实验流程|不可覆盖run root、release归档、远端编译/dry-run/启动核验|本报告、release、N607|pending|待发布|只校验一次release归档SHA|
+|PUB-01|最小实验流程|不可覆盖run root、release归档、远端编译/dry-run/启动核验|本报告、release、N607|verified|远端编译、dry-run、真实checkpoint smoke与启动核验通过|只校验一次release归档SHA|
 
 独立P0/P1审查：首次发现R1对秩不足扰动安装任意basis的P1；已定点修复为有效秩不足时保留旧basis并安全跳过，同时将QR异常纳入保护。定点复审结论为`RESOLVED`，未发现其余P0/P1。
 
@@ -41,4 +41,22 @@
 - 数据：`/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl`
 - 基础checkpoint：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3_mechanism32_queue_20260701/ADV3B02_CORE90_SOFT_E200/best_joint_safe_ssdg.pth`
 - 远端输出根：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_daot_stn_rx_v2_e1_r1_manysig_s392005_20260903_r1`
-- 精确launcher、Git commit、release路径和启动命令在本地验证后补充。
+- Git commit：`a3764c533a427be060ea15cd038fd64a7d2ac986`；GitHub远端分支OID已独立核对一致。
+- 本地release归档：`E:\type10-7\local_artifacts\adv3b02_daot_stn_rx_v2_e1_r1_a3764c53.zip`。
+- 远端release归档：`/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_daot_stn_rx_v2_e1_r1_a3764c53.zip`。
+- release归档本地/远端SHA256：`82ed631a83a1af682f29d9b132f23de71b48e8b4caa336b6dcbfb5870e75f483`，一致。
+- 远端release目录：`/home/szu2070436088/2510044040/CV-SincNet/releases/adv3b02_daot_stn_rx_v2_e1_r1_a3764c53/CVS-RFFI-repo`。
+- launcher：`code/scripts/launch_phase1_adv3b02_daot_stn_rx_v2_e1_r1_manysig_s392005_20260903.sh`。
+
+## 4.发布与启动证据
+
+- 本地验证：95项聚焦测试通过；Python编译与`git diff --check`通过。
+- 独立审查：1个R1秩不足P1已修复并经定点复审关闭，最终无P0/P1。
+- N607预检：直连、项目路径和8张RTX 3090可见；用户已明确允许忽略GPU并发限制。
+- 远端验证：Python编译、两个Shell脚本语法检查、两行dry-run均通过。
+- 真实checkpoint无query smoke：`PASS`；`query_inputs=0`、`identity_only_used=1.0`、`batched_view_count=2.0`、`subspace_rank=8`。
+- dispatcher PID：`858523`；CWD固定为release中的`CVS-RFFI-repo`。
+- V2-E1主训练PID：`858538`，物理GPU3；cmdline含`--daot_efficiency_mode e1 --daot_lambda_subspace 0`。
+- V2-R1主训练PID：`858539`，物理GPU5；cmdline含`--daot_efficiency_mode e1 --daot_lambda_subspace 0.05`。
+- 两行均已生成独立`config.json`与增长中的`train.log`；首次异常指纹扫描未见`Traceback`、OOM、`RuntimeError`或worker失败标记。
+- 既有P1～P5进程保持运行，未停止、重启或修改。
