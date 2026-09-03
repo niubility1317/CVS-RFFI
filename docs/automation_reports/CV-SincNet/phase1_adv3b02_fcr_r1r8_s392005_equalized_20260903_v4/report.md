@@ -1,12 +1,22 @@
-# ADV3B02→FCR R1-R8重新发布v4预登记
+# ADV3B02→FCR R1-R8重新发布v4完整实验报告
+
+## 最终摘要
+
+本批`phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4`已经完成ADV3B02基线训练、R1-R8八行FCR训练、四场景无标签prediction和独立truth-last评分，最终状态为`ANALYZED`。所有候选统一使用seed392005、同一ManySig equalized划分和E200最后一个checkpoint；target测试集没有进入训练、选模或候选筛选。
+
+最可靠的性能结论是：R3在本批单seed上取得最佳LEO鲁棒性，clean/clear/low-elev/rain分别为78.4435%/64.6369%/62.8964%/62.6756%，LEO均值63.4030%、LEO下界62.6756%、四场景均值67.1631%；相对ADV3B02分别提高2.2167pp/3.2633pp/3.2119pp/3.0016pp。R6取得最高clean=78.4601%，R8取得次高LEO均值63.2895%，但都没有超过R3的综合结果。
+
+全量训练日志同时限定了机制结论：R1-R5中self、swap、shared、latent-cycle和basic drop-f necessity按预定阶段产生了非零信号；R6虽配置了targeted transplant，但200轮`active_fingerprint_pairs`始终为0，因此R6不能被解释为“定向移植有效”；所有行的`eta`项均为0，R7/R8的physical与R8的factor项确有非零运行信号。由此，本批支持的是“FCR训练族相对ADV3B02有收益、R3组合在单seed最优”，不支持“全部后续机制逐项有效”或“完整三因子可辨识已经得到验证”。
+
+当前最突出的类别瓶颈仍是TX1：ADV3B02的LEO均值为33.9155%，R3为33.4214%，反而下降0.4940pp；R3总体增益主要来自TX0（+8.5298pp）和TX2（+7.7512pp）。因此下一步不应直接把R8作为默认模型，应先修复干预配对覆盖和`eta`监督，再用新的单seed同协议最小矩阵验证；R3可作为当前研究候选，但尚不足以跨seed晋级。
 
 - run_id：`phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4`
 - 替代原因：v3首轮遥测在非MUSE路径访问未初始化`rc4_route`；v4仅初始化可选遥测变量。
-- 当前只启动seed392005的`ADV3B02_CORE90_SOFT_E200`；R1-R8等待其E200 `final_ssdg.pth`。
+- 启动阶段先运行seed392005的`ADV3B02_CORE90_SOFT_E200`；R1-R8等待其E200 `final_ssdg.pth`后再启动。
 - source：ManySig equalized；receiver=`[1,3,4,6,8]`、day=`[1,2,3]`；`L_s/U_s/V=6300/56700/27000`。
 - target训练边界：`test_eval_policy=never`；不训练、不筛选、不选择checkpoint；最后epoch冻结后才独立预测与评分。
 - checkpoint：final-only；`best_metric=clean_val_tx`仅满足source-only兼容检查，held-out joint guard关闭。
-- GPU：ADV3B02使用GPU0；不干预既有任务。R1-R8当前未启动。
+- GPU：ADV3B02使用GPU0；不干预既有任务。该条记录对应R1-R8尚未启动的发布时点。
 - Git固定版本：`8f1de7971853aa9650e4f83d6ad979f359c434c2`。
 - release：本地`E:\type10-7\releases\phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4_8f1de797.zip`；远端`/home/szu2070436088/2510044040/CV-SincNet/releases/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4_8f1de797`；归档SHA256本地/远端一致：`6D8484618441CE2E8470556864C82D8DF64A3BD8E8D826A5D5713428CFE40B10`。
 - 发布前验证：远端编译通过；真实checkpoint无query smoke通过；真实训练入口dry-run通过。
@@ -15,7 +25,7 @@
 - 输出：`/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/ADV3B02/ADV3B02_CORE90_SOFT_E200`。
 - 日志：`/home/szu2070436088/2510044040/CV-SincNet/logs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/ADV3B02/ADV3B02_CORE90_SOFT_E200.out`。
 - 启动健康检查：PID/CWD/cmdline/run-root绑定正确；PID`382450`绑定GPU0，显存约2802MiB；日志已增长至17991字节并完成E002/200，未发现Traceback。中间checkpoint标记为`NOT_SAVED_FINAL_ONLY`，R1-R8仍未启动，等待训练结束后写入的E200 `final_ssdg.pth`。
-- 当前状态：`RUNNING`。
+- 该发布时点状态：`RUNNING`；最终状态见后文`ANALYZED`。
 
 ## ADV3B02 E200基线独立测试
 
@@ -86,12 +96,12 @@
 
 |行|新增机制（相对上一行）|clean|clear|low-elev|rain|LEO均值|LEO下界|四场景均值|
 |---|---|---:|---:|---:|---:|---:|---:|---:|
-|R1|self reconstruction+eta|78.1315%|64.1256%|62.3679%|62.1202%|62.8712%|62.1202%|66.6863%|
+|R1|self reconstruction（eta配置但无有效监督）|78.1315%|64.1256%|62.3679%|62.1202%|62.8712%|62.1202%|66.6863%|
 |R2|+swap|77.9190%|63.8333%|62.1863%|62.0560%|62.6919%|62.0560%|66.4987%|
 |R3|+shared|78.4435%|64.6369%|62.8964%|62.6756%|63.4030%|62.6756%|67.1631%|
 |R4|+latent cycle|77.9542%|64.2768%|62.4488%|62.2012%|62.9756%|62.2012%|66.7202%|
-|R5|+basic need diagnostic|77.9929%|64.4536%|62.7238%|62.5280%|63.2351%|62.5280%|66.9246%|
-|R6|+targeted transplant|78.4601%|64.4024%|62.6607%|62.4554%|63.1728%|62.4554%|66.9946%|
+|R5|+basic drop-f necessity|77.9929%|64.4536%|62.7238%|62.5280%|63.2351%|62.5280%|66.9246%|
+|R6|+targeted transplant开关（有效pair=0）|78.4601%|64.4024%|62.6607%|62.4554%|63.1728%|62.4554%|66.9946%|
 |R7|+physics-ordered decoder/phys|78.3542%|64.4476%|62.6518%|62.4833%|63.1942%|62.4833%|66.9842%|
 |R8|+three-axis factor intervention|78.2369%|64.5875%|62.7304%|62.5506%|63.2895%|62.5506%|67.0263%|
 
@@ -260,3 +270,143 @@ ADV3B02基线为clean=76.2268%、LEO均值=60.1397%、LEO下界=59.4637%、四�
 - 当前v4结果：`VERIFIED`，8行均有672000条prediction及独立truth-last score。
 - 旧v6独立truth-last评分：`FAILED/未闭合`，不能补算或伪造。
 - 是否存在target梯度更新：未发现证据；是否存在训练期间test peeking：`VERIFIED`。
+
+## 全量机制、训练过程与证据边界复核
+
+### 分析范围
+
+本节重新读取了ADV3B02的200条`metrics_epoch.csv`和200条`metrics_epoch.jsonl`，以及R1-R8每行全部200条结构化epoch记录、全部stdout行和全部truth-last score，而不是抽查日志尾部。每行CSV/JSONL的epoch均严格连续E1-E200，stdout均含200个`[FCR]`和200个`[EPOCH-END]`记录；8行均无Traceback、RuntimeError、CUDA error、OOM或Killed指纹。
+
+ADV3B02训练期`test_eval_ran`合计为0；R1-R8每个epoch的`[TEST]`均明确为training-time gate跳过。最终测试统一在E200冻结后完成，每行prediction为672000条，四场景各168000条，再由独立scorer连接truth sidecar。因而当前性能数据属于正式测试结果，而不是source-val或训练期测试日志。
+
+### 数据、初始化与共同训练配置
+
+|项目|固定值|
+|---|---|
+|数据|ManySig，equalized=true，`split_mode=tx_rx_day_1_7_2`，seed392005|
+|source|receiver=`[1,3,4,6,8]`，day=`[1,2,3]`，pool=90000|
+|source角色|`L_s=6300`、`U_s=56700`、source validation=`27000`|
+|target|receiver=`[0,2,5,7,9,10,11]`，day=`[0,1,2,3]`，TX=`[0..5]`|
+|target规模|每个receiver×day为6000条；每TX×receiver×day为1000条；每场景168000条|
+|初始化|本run新训练`ADV3B02_CORE90_SOFT_E200/final_ssdg.pth`，seed392005，epoch200|
+|FCR加载|每行`loaded=195`、`missing=36`、`skipped=0`、`unexpected=0`；36个缺失键为新FCR模块|
+|优化|AdamW，lr=`2e-4`，min lr=`1e-6`，weight decay=`1e-4`，batch128，E200，AMP|
+|模型|ADV3B02为1049827参数；FCR为1061996参数，新增12169参数（+1.16%），全部可训练|
+|主干损失|身份CE、domain loss=1.0、GRL identity去域=0.5、orth=0.05、cons=0.10；PA辅助保留|
+|source星地增强|E1-40 clear概率0.30；E41-90 low/rain概率0.60；E91-200三场景概率0.80；`lambda_sat_cls=0.68`、`lambda_sat_cons=0`|
+|测试规则|`test_eval_policy=never`；只测试E200最后一个checkpoint；禁止target选模|
+
+`use_meta_ssl_cvs`在数据角色和loader层面启用，但其伪标签/原型/域分支损失权重均为0；U_s的作用来自FCR允许的无标签重构项，而不是硬伪标签CE。`L_s`可使用身份和全部合法FCR目标；`U_s`只允许self、swap、shared、latent-cycle、eta和phys，不允许身份、factor或transplant；source validation只读。
+
+### 网络结构落地
+
+FCR不是普通三向量拼接。实际前向链为：保守canonicalizer先解析并有界移除公共gain、phase和CFO；内容分支生成低采样率序列`z_s`并重建`ŝ`；指纹分支把ADV3B02身份特征、canonical IQ、残差IQ和激励特征编码为160维单位球`z_f_id`与16维`z_tx_state`；激励条件化算子生成小残差`δ_f`；结构化nuisance分支只读取11个统计量，输出`z_ch(16)+z_rx(8)+z_sync(6)+z_gain(3)`；Decoder输出有界方差的复IQ条件均值。
+
+R1-R6使用`control` Decoder，即`μ=ŝ+δ_f`，结构化nuisance只控制方差而不进入波形链路；R7-R8切换为`full_physics` Decoder，严格按短信道→RX残差→同步/增益的顺序把nuisance施加到`ŝ+δ_f`。指纹算子接收的内容激励采用detach，避免`G_f→E_s`反向捷径。该结构忠实落地了设计报告中的“内容生成→发射机响应→信道/接收机”主线，但是否真正得到物理可辨识因子仍需诊断证据，不能仅由结构命名推出。
+
+### 四阶段训练日程
+
+|阶段|epoch|训练行为|
+|---|---:|---|
+|基本重构|E1-40|身份主损失+self+eta；其余FCR项关闭|
+|交叉重构渐入|E41-90|self/eta持续，swap/shared/latent-cycle从0线性增至1|
+|干预阶段|E91-150|在optimizer step层面交替完整组合更新与Decoder冻结的necessity更新|
+|身份精修|E151-200|完整合法目标持续；self和swap缩放到0.25，其余保持1|
+
+E91的训练准确率在各行从E90约92.3%短暂降至约85.5%-86.5%，与交替干预阶段切换同步，但source-val始终约98.6%，没有形成持续崩塌。E151降低重构权重后总loss出现预期台阶下降，source-val继续稳定。
+
+### 消融路由与实际非零信号
+
+下表中的“配置”来自冻结消融路由，“实际信号”来自200条`[FCR]`全量记录。非零epoch数按日志中的epoch均值统计；E41的ramp恰为0，因此交叉项最多为159个非零epoch。
+
+|行|相对上一行的配置变化|实际非零信号|判定|
+|---|---|---|---|
+|R1|self+eta|self 200/200；eta 0/200|实际是self基线；eta没有监督信号|
+|R2|+swap|swap 159/200|真实启用，但相对R1负收益|
+|R3|+shared|shared 159/200|真实启用，并取得最大正增量|
+|R4|+latent-cycle|latent-cycle 159/200|真实启用，但相对R3退化|
+|R5|+basic drop-f necessity|transplant汇总项110/200，均值约0.05|basic necessity真实启用，小幅恢复LEO|
+|R6|+targeted transplant能力|`active_fingerprint_pairs=0`持续200/200|定向移植未获得合法跨TX配对，不能归因|
+|R7|+full-physics Decoder+phys|phys 110/200；后50轮均值0.0339|物理解码及约束真实启用，净增益近零|
+|R8|+factor+three-axis|factor 110/200；后50轮均值0.0734|三轴/去相关汇总信号真实启用，LEO小幅增加|
+
+另有三个重要解释边界：
+
+1. `[FCR] id=0`不等于没有身份监督。身份CE在主`core.loss_cls`中通过`fcr_identity_head(z_f_id)`计算，因此未重复计入FCR分量。
+2. eta持续为0，是因为当前pair中的nuisance监督有效掩码没有提供可用值；所以不能把R1收益解释为eta回归收益。
+3. R6虽然打开targeted transplant开关，但当前批次缺少公共preamble/content-window元数据，严格fingerprint pair没有形成。日志累计记录每行`missing_common_preamble_metadata=19600`、`missing_content_window_metadata=19600`，`active_fingerprint_pairs=0`。这正是设计报告要求“同内容、不同TX”配对尚未闭合的直接证据。
+
+### 逐行增量效果
+
+|新增步骤|Δclean|ΔLEO均值|解释|
+|---|---:|---:|---|
+|R1-ADV3B02|+1.9048pp|+2.7315pp|FCR重构族整体起点有明显收益|
+|R2-R1|-0.2125pp|-0.1794pp|单独加入swap无正收益|
+|R3-R2|+0.5244pp|+0.7111pp|shared是本批最大、最一致的正向增量|
+|R4-R3|-0.4893pp|-0.4274pp|latent-cycle在当前权重下过约束或扰动分类表征|
+|R5-R4|+0.0387pp|+0.2595pp|basic drop-f necessity恢复部分LEO性能|
+|R6-R5|+0.4673pp|-0.0623pp|clean升、LEO降；targeted pair为0，不能归因于定向移植|
+|R7-R6|-0.1060pp|+0.0214pp|full-physics/phys基本持平|
+|R8-R7|-0.1173pp|+0.0952pp|factor/three-axis轻微换取LEO、牺牲clean|
+
+消融不是独立重复试验而是单seed累加路线，因此小于约0.1pp的差异应视为方向提示，不应作稳定机制结论。R3的+0.7111pp LEO增量较清晰，但仍需多seed确认。
+
+### 类别层面：总体提升掩盖了TX1退化
+
+|TX|ADV3B02 LEO均值|R3 LEO均值|R3-基线|R8 LEO均值|R8-基线|
+|---:|---:|---:|---:|---:|---:|
+|0|56.3417%|64.8714%|+8.5298pp|65.3357%|+8.9940pp|
+|1|33.9155%|33.4214%|-0.4940pp|31.6440%|-2.2714pp|
+|2|44.7345%|52.4857%|+7.7512pp|52.2631%|+7.5286pp|
+|3|59.0298%|59.5107%|+0.4810pp|59.9524%|+0.9226pp|
+|4|81.2310%|83.2417%|+2.0107pp|82.5583%|+1.3274pp|
+|5|85.5857%|86.8869%|+1.3012pp|87.9833%|+2.3976pp|
+
+R3的LEO总体提升主要由TX0和TX2贡献，TX1并未改善。R8进一步提高TX0/TX5，却把TX1降至31.6440%。因此“LEO均值提高”不能等价为“所有发射机鲁棒性提高”；若部署关注最弱设备，现有R3/R8都没有解决关键短板。
+
+### 收敛、稳定性与资源
+
+|行|最佳source-val（epoch）|E200 source-val|末20轮source-val均值±标准差|总epoch时间|unsafe skip|
+|---|---:|---:|---:|---:|---:|
+|R1|98.7000%（E154）|98.6778%|98.6731%±0.0094pp|2.467h|9|
+|R2|98.6815%（E161）|98.6556%|98.6500%±0.0054pp|2.069h|9|
+|R3|98.6963%（E190）|98.6889%|98.6841%±0.0094pp|2.079h|9|
+|R4|98.6963%（E179）|98.6815%|98.6744%±0.0074pp|2.094h|9|
+|R5|98.6852%（E166）|98.6556%|98.6469%±0.0070pp|2.243h|9|
+|R6|98.7037%（E173）|98.6741%|98.6802%±0.0069pp|2.230h|10|
+|R7|98.7185%（E154）|98.7000%|98.6961%±0.0096pp|2.768h|8|
+|R8|98.6963%（E122）|98.6667%|98.6728%±0.0095pp|2.281h|8|
+
+各行仅有8-10个unsafe backward/step被保护性跳过，约占9800个主训练batch的0.08%-0.10%；4个集中在E1，其余离散分布，未形成连续故障，最终结构化指标均有限。它们不是技术失败，但说明训练并非完全无数值保护触发。日志中显示的`nan`主要是关闭模块的余弦/测试占位值，不进入总loss；不能把这些占位符误报为训练NaN。
+
+ADV3B02观测wall time约6.26h、峰值CUDA allocated约9.51GiB、reserved约9.79GiB；FCR各行总epoch时间为2.069-2.768h。由于ADV3B02与FCR的loader路径、并发GPU占用和计时口径不同，这些时间只能作为本次资源记录，不能据此声称FCR比ADV3B02更快。FCR行没有生成独立resource summary，因此其峰值显存为`UNKNOWN`；不能从启动时显存快照替代峰值统计。
+
+### 设计报告对应关系与未闭合项
+
+|设计要求|代码实现|本批运行证据|状态|
+|---|---|---|---|
+|同物理片段clean/LEO配对|同步pair builder与严格mask|self/swap/shared/cycle有非零信号|已实现并启用|
+|物理顺序Decoder|content→fingerprint→channel/RX/sync/gain|R7/R8 phys非零|已实现并启用|
+|激励条件化指纹算子|固定响应基+小残差，content excitation detach|R1-R8均经FCR前向|已实现并启用|
+|结构化低容量nuisance|33维分块统计编码，无逐采样skip|代码和checkpoint存在|已实现并启用|
+|异方差噪声建模|有界variance head+complex NLL|self/swap重构使用|已实现并启用|
+|latent cross-cycle|交叉生成后重新编码|R4-R8非零|已实现并启用，但本批负增量|
+|basic necessity|drop-f margin，干预阶段交替冻结Decoder|R5-R8汇总项非零|已实现并启用|
+|定向跨TX移植|target-id/preserve-s/preserve-n/same-f/drop-f|严格pair为0|已实现但本批未实际激活|
+|三轴干预立方体|nuisance/content/fingerprint严格索引|R8 factor汇总非零，但fingerprint轴缺失|部分激活|
+|nuisance参数监督|eta head与有效mask MSE|eta 0/200|配置存在但本批未激活|
+|Fisher门控物理特征|冻结特征bank+Fisher gate|R7/R8 phys非零|已实现并启用|
+|独立latent/probe诊断|`phase1_fcr_diagnostics.py`已实现|run目录没有`fcr_diagnostics.json`|无运行证据|
+
+最后一项很关键：当前run没有生成任何R1-R8的`fcr_diagnostics.json`，因此无法报告`z_f`的TX/receiver probe、`z_n`的TX泄漏、clean/LEO latent距离、谱条件数或移植目标身份成功率。最终分类性能可以确认，但“纯内容/纯指纹/纯nuisance”不可辨识性声明仍然没有被实验验证。
+
+### 最终科学结论与后续优先级
+
+1. **性能层面**：R1-R8全部高于同协议ADV3B02的四场景均值；R3是当前单seed综合候选，R6只适合作为clean最高记录，R8未取得综合冠军。
+2. **机制层面**：最强正证据来自R3的shared一致性；swap单独、latent-cycle、full-physics和factor的边际效果分别为负、负、近零和小正。不能用R6宣称targeted transplant成功。
+3. **类别层面**：FCR改善的是部分TX，尤其TX0/TX2；最弱TX1没有改善，R8甚至进一步退化。
+4. **协议层面**：本批truth-last闭环合格，当前结果比历史高分截图更可信；历史v6数据只能作为不同协议的旧内置评测。
+5. **晋级边界**：R3可进入同协议多seed确认候选，但当前只有seed392005，不能声明稳定胜出或升级默认ADV3B02。
+6. **修复优先级**：先补公共preamble/content-window元数据，使fingerprint pair真正非零；再补可用eta监督；随后输出独立FCR diagnostics并针对TX1加类别级保护。完成这些之前，不应扩大R6-R8的物理可解释性表述。
+
+本次全面复核使用的机器数据仍以[baseline_eval_v2_score.json](baseline_eval_v2_score.json)和[r1r8_target_eval_v2_summary.json](r1r8_target_eval_v2_summary.json)为准；上述机制激活统计来自R1-R8全部训练stdout，未用target结果反向选择checkpoint。
