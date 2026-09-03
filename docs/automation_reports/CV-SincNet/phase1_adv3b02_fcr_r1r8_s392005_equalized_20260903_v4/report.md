@@ -61,3 +61,17 @@
 - 机器可读结果：[baseline_eval_v2_score.json](baseline_eval_v2_score.json)。
 - 解释：该单seed基线在clean上达到76.2268%，但LEO三场景均值下降至60.1397%；类别1是所有场景的最低类，rain下仅32.8821%。这表明当前E200最终checkpoint的主要短板是跨LEO弱信道鲁棒性和类别1稳定性。本结果仅是指定split/seed/checkpoint的Phase1闭集六类基线，不代表R1-R8结果，也不构成真实在轨性能声明。
 - v2状态：`ANALYZED`。
+
+## R1-R8 E200最终checkpoint独立测试v2预登记
+
+- eval_id：`phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4_R1R8_target_eval_v2`。
+- 触发原因：R1-R8均完成200轮训练并生成`final.pth`，但原release中的predictor在首批DataLoader读取时均触发`TypeError: expected np.ndarray (got numpy.ndarray)`；8行均未生成prediction，旧`predict.log`与空输出目录原样保留。
+- 修复来源：使用已完成TDD、20/20聚焦测试、真实IQ smoke和定点P0/P1复审的提交`0cc19956a817c14d8f1155114a714a206aed2b21`及release`phase1_adv3b02_baseline_eval_s392005_20260903_v2_0cc19956`。
+- checkpoint：仅使用R1-R8各自E200最终`final.pth`；禁止target测试集选模、筛选、重排或反馈训练。
+- 数据：复用已生成的同一无标签输入包`target_inputs`与独立truth sidecar`target_truth/truth_sidecar.json`；不重新划分数据，不改变split seed、receiver、day、TX或场景。
+- 场景：`clean`、`leo_clear_weak`、`leo_low_elev_weak`、`leo_rain_weak`，每场景168000条。
+- 输出：每行写入全新不可覆盖目录`FCR_Rn/Rn/target_prediction_v2`；日志为`predict_v2.log`和`score_v2.log`。
+- GPU：R1-R8分别使用GPU0-7；用户已明确允许在现有进程数上继续增加实验。
+- 执行顺序：8行并行prediction全部完成后，独立scorer逐行连接truth；任何行prediction失败时不产生该行性能结论。
+- 技术停止规则：仅因路径覆盖、checkpoint/数据绑定错误、prediction不完整、scorer连接错误、确定性异常、OOM或非有限输出停止；不因性能高低停止。
+- 启动前状态：`LOCAL_VERIFIED`。
