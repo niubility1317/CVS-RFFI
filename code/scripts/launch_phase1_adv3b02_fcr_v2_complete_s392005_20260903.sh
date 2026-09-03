@@ -41,6 +41,8 @@ COMMON_ARGS=(
   --dataset wisig
   --wisig_pkl "${WISIG_PKL}"
   --model_variant lite_d
+  --branch_ablation no_dac
+  --domain_branch_ablation no_stats
   --seed "${SEED}"
   --device cuda:0
   --epochs 200

@@ -297,3 +297,34 @@ def test_locked_identity_warm_start_allows_domain_count_change_but_rejects_missi
             torch.device("cpu"),
             **policy,
         )
+
+
+def test_locked_identity_warm_start_rejects_unloadable_source_identity_tensor(
+    tmp_path: Path,
+) -> None:
+    import train
+
+    legacy = _small_model(use_fcr=False)
+    state = dict(legacy.state_dict())
+    state["id_backbone.retired_legacy_block.weight"] = torch.ones(2, 2)
+    path = tmp_path / "incompatible-source-identity.pth"
+    torch.save(
+        {
+            "model": state,
+            "epoch": 200,
+            "candidate_id": "ADV3B02_CORE90_SOFT_E200",
+            "args": {"seed": 392005},
+        },
+        path,
+    )
+
+    with pytest.raises(RuntimeError, match="incompatible_source_mature_identity"):
+        train.load_init_checkpoint_weights(
+            _small_model(use_fcr=True),
+            str(path),
+            torch.device("cpu"),
+            expected_seed=392005,
+            expected_epoch=200,
+            expected_candidate_id="ADV3B02_CORE90_SOFT_E200",
+            require_mature_identity_complete=True,
+        )

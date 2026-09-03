@@ -1956,21 +1956,30 @@ def load_init_checkpoint_weights(
     current = raw_model.state_dict()
     filtered: Dict[str, torch.Tensor] = {}
     skipped: List[str] = []
+    incompatible_source_mature_identity: List[str] = []
     for key, value in state.items():
         key_str = str(key)
-        if not torch.is_tensor(value):
-            skipped.append(key_str)
-            continue
         candidates = [key_str]
         for prefix in ("module.", "_orig_mod.", "model."):
             if key_str.startswith(prefix):
                 candidates.append(key_str[len(prefix):])
+        source_identity_key = next(
+            (cand for cand in candidates if cand.startswith("id_backbone.")),
+            None,
+        )
+        if not torch.is_tensor(value):
+            skipped.append(key_str)
+            if source_identity_key is not None:
+                incompatible_source_mature_identity.append(source_identity_key)
+            continue
         match_key = next(
             (cand for cand in candidates if cand in current and tuple(current[cand].shape) == tuple(value.shape)),
             None,
         )
         if match_key is None:
             skipped.append(key_str)
+            if source_identity_key is not None:
+                incompatible_source_mature_identity.append(source_identity_key)
             continue
         filtered[match_key] = value
 
@@ -1986,11 +1995,14 @@ def load_init_checkpoint_weights(
     if require_mature_identity_complete:
         mature_identity_keys = {key for key in current if str(key).startswith("id_backbone.")}
         missing_mature_identity = sorted(mature_identity_keys.difference(filtered))
-        if missing_mature_identity:
+        incompatible_source_mature_identity = sorted(set(incompatible_source_mature_identity))
+        if missing_mature_identity or incompatible_source_mature_identity:
             raise RuntimeError(
                 "locked mature identity checkpoint is incomplete: "
                 f"missing_mature_identity={len(missing_mature_identity)} "
-                f"missing_sample={missing_mature_identity[:8]}"
+                f"incompatible_source_mature_identity={len(incompatible_source_mature_identity)} "
+                f"missing_sample={missing_mature_identity[:8]} "
+                f"incompatible_sample={incompatible_source_mature_identity[:8]}"
             )
 
     missing, unexpected = raw_model.load_state_dict(filtered, strict=False)
@@ -2028,6 +2040,7 @@ def load_init_checkpoint_weights(
         "actual_candidate_id": None if actual_candidate is None else str(actual_candidate),
         "mature_base_complete": bool(require_mature_base_complete),
         "mature_identity_complete": bool(require_mature_identity_complete),
+        "incompatible_source_mature_identity": len(incompatible_source_mature_identity),
         "source_only": True,
         "query_access": False,
         "status": "loaded",

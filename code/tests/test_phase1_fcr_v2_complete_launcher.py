@@ -6,8 +6,18 @@ import sys
 from pathlib import Path
 from types import SimpleNamespace
 
+import torch
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+CODE_ROOT = PROJECT_ROOT / "code"
+if str(CODE_ROOT) not in sys.path:
+    sys.path.insert(0, str(CODE_ROOT))
+
+import train  # noqa: E402
+from model_dual_cvsincnet import build_dual_model  # noqa: E402
+
+
 SCRIPT = "code/scripts/launch_phase1_adv3b02_fcr_v2_complete_s392005_20260903.sh"
 LAUNCHER = PROJECT_ROOT / SCRIPT
 GIT_BASH = Path(r"C:\Program Files\Git\bin\bash.exe")
@@ -152,6 +162,76 @@ def _formal_train_argv(row: str) -> list[str]:
         "--fcr_predictions_path", f"out/{row}/fcr_predictions.json",
         "--fcr_config_dry_run",
     ]
+
+
+def _argv_value(argv: list[str], flag: str, default: str) -> str:
+    if flag not in argv:
+        return default
+    return argv[argv.index(flag) + 1]
+
+
+def test_formal_launcher_reconstructs_c0_identity_before_fcr_v2_initialization(
+    tmp_path: Path,
+) -> None:
+    argv = _formal_train_argv("M6")
+    mature = build_dual_model(
+        num_classes=3,
+        num_domains=2,
+        model_size="S",
+        dataset="wisig",
+        input_len=64,
+        model_variant="lite_d",
+        branch_ablation="no_dac",
+        domain_branch_ablation="no_stats",
+        fast_infer_when_no_aux=False,
+        use_fcr=False,
+    )
+    checkpoint = tmp_path / "c0.pth"
+    torch.save(
+        {
+            "model": mature.state_dict(),
+            "epoch": 200,
+            "candidate_id": "ADV3B02_CORE90_SOFT_E200",
+            "args": {"seed": 392005},
+        },
+        checkpoint,
+    )
+    candidate = build_dual_model(
+        num_classes=3,
+        num_domains=2,
+        model_size="S",
+        dataset="wisig",
+        input_len=64,
+        model_variant="lite_d",
+        branch_ablation=_argv_value(argv, "--branch_ablation", "none"),
+        domain_branch_ablation=_argv_value(argv, "--domain_branch_ablation", "same"),
+        fast_infer_when_no_aux=False,
+        use_fcr=True,
+        fcr_version="v2",
+    )
+    new_v2_initial = {
+        name: value.detach().clone()
+        for name, value in candidate.state_dict().items()
+        if name.startswith(("fcr.", "fcr_identity_projection."))
+    }
+
+    report = train.load_init_checkpoint_weights(
+        candidate,
+        str(checkpoint),
+        torch.device("cpu"),
+        expected_seed=392005,
+        expected_epoch=200,
+        expected_candidate_id="ADV3B02_CORE90_SOFT_E200",
+        require_mature_identity_complete=True,
+    )
+
+    assert report["mature_identity_complete"] is True
+    for name, value in mature.state_dict().items():
+        if name.startswith("id_backbone."):
+            torch.testing.assert_close(candidate.state_dict()[name], value, rtol=0.0, atol=0.0)
+    for name, value in new_v2_initial.items():
+        torch.testing.assert_close(candidate.state_dict()[name], value, rtol=0.0, atol=0.0)
+    assert candidate.fcr_identity_head_matches_legacy()
 
 
 def test_launcher_c1_and_m6_formal_argv_reach_real_train_parser() -> None:
