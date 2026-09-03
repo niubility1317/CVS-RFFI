@@ -3,11 +3,11 @@
 ## 1.状态
 
 - run ID：`phase1_adv3b02_daot_stn_rx_v2_p1_p5_manysig_s392005_20260903_r1`
-- 当前状态：`LOCAL_VERIFIED`
+- 当前状态：`RUNNING`
 - Git分支：`codex/adv3b02-daot-stn-v1-20260901`
 - 首次实现提交：`c34e812f3236d1e167fc4d2508718db9104341a5`
 - P1/P2发布入口提交：`4e2acba7b504c8c282f073ae40cdc64feb1bd905`
-- 本报告对应的扩展提交：`6d2276ca22f552acc0d6b6dd7a6e2b7a4869c3f2`。
+- 本报告对应的扩展提交：`6d2276ca22f552acc0d6b6dd7a6e2b7a4869c3f2`；实际release提交：`e498fc69f6371c06c1cda71df41ef1a6b72efc47`。
 - 发布边界：不含ADV3B02基线；不执行非LEO_WEAK场景；不启动效率E1或高风险子空间R1。
 - 用户追加授权：P1/P2之外，同时启动P3/P4/P5扩展确认；并明确不受默认GPU线程数限制。
 
@@ -53,3 +53,15 @@
 仅在数据/query边界错误、错误checkout或run root、输出覆盖、launcher-wide故障、至少两行出现相同确定性异常、无prediction闭合或scorer连接错误时停止；不得因中间性能低而停止，也不得触碰无关进程。
 
 每行预期至少生成：`final_ssdg.pth`、`metrics_joint.json`、clean与3个LEO_WEAK逐场景结果、per-RX拆分结果、训练日志、状态文件和阶段2原型导出。5行全部闭合后才可标记`ARTIFACTS_COMPLETE`。
+
+## 6.发布与启动证据
+
+- 2026-09-03 17:49 CST直连preflight再次通过；数据、基础checkpoint可见；release归档、release目录和run root均确认不存在。
+- release归档：`phase1_adv3b02_daot_stn_rx_v2_p1_p5_manysig_s392005_20260903_r1.zip`；本地与远端唯一SHA256均为`4f765d0f85cb5a2fa7664edc7aa9157ad9deba62a09c8edfae820590c52d66a2`。
+- 远端Python compileall与两份launcher的`bash -n`均通过。
+- 远端dry-run实际生成5条`RXV2-ROW`、5条训练命令和5条评估命令；首次验收因错误搜索不存在的`MUSE-DRY-RUN`标记而返回非零，读取完整输出后确认执行成功，并用真实稳定标记重新核验为`VERIFIED`，没有修改冻结代码或参数。
+- 2026-09-03 17:51 CST启动；dispatcher锚点PID=`826695`，CWD为release内`CVS-RFFI-repo`。
+- 启动后核验：5个worker、5个训练主链及其数据加载子进程存在；P1/P2/P3/P4/P5分别绑定GPU1/7/0/2/4；5份dispatcher日志与5份train.log均生成并增长。
+- 启动后GPU占用：GPU0/1/2/4/7约5353/5179/9740/9660/5369MiB；已有任务未被停止或修改。
+- 启动日志中的协议读回一致：`L/U/V=6300/56700/27000`、`legacy_l_u_v`、130+70=200epoch、seed392005；异常扫描为0个`Traceback/CUDA out of memory/RuntimeError/Killed`。
+- 当前尚无完整epoch指标和最终评估，不得形成性能或晋级结论。

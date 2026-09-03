@@ -1,6 +1,6 @@
 {
   "schema": "cvs.phase1.adv3b02_daot_stn_rx_v2.v1",
-  "status": "RELEASE_AUTHORIZED",
+  "status": "RUNNING",
   "seed": 392005,
   "epochs": 200,
   "dataset": {
@@ -46,7 +46,9 @@
   },
   "launch": {
     "authorized": true,
-    "experiment_started": false,
+    "experiment_started": true,
+    "release_commit": "e498fc69f6371c06c1cda71df41ef1a6b72efc47",
+    "dispatcher_pid": 826695,
     "run_id": "phase1_adv3b02_daot_stn_rx_v2_p1_p5_manysig_s392005_20260903_r1",
     "rows": ["V2-P1", "V2-P2", "V2-P3", "V2-P4", "V2-P5"]
   }
