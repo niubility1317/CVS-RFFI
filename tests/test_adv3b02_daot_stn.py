@@ -29,15 +29,20 @@ from cvsrffi.deployment_orbit import (
     default_teacher_view_specs,
     daot_ablation_overrides,
     daot_loss_ablation_overrides,
+    daot_rx_v2_overrides,
     DAOT_NUISANCE_TANGENT_NAMES,
     physical_reliability_from_meta,
     sample_sparse_joint_direction,
     stable_orbit_key_tensor,
     teacher_importance_matrix,
+    validate_daot_eval_scenarios,
 )
 from cvsrffi.daot_training import compute_daot_batch_objective
 from cvsrffi.orbit_teacher import (
+    anchored_spherical_orbit_target,
+    coverage_mixture_weights,
     EMALossScaleNormalizer,
+    TensorTemporalOrbitMemory,
     TemporalOrbitMemory,
     adv3b02_daot_schedule,
     orbit_logit_distillation_loss,
@@ -46,6 +51,8 @@ from cvsrffi.orbit_teacher import (
     orbit_feature_loss,
     robust_spherical_orbit_target,
 )
+from cvsrffi.receiver_conditioned_alignment import GroupTailRiskEMA
+from cvsrffi.receiver_style_bank import OnlineReceiverStyleBank
 from cvsrffi.selective_tangent import (
     angular_sensitivity,
     fingerprint_keep_loss,
@@ -390,6 +397,25 @@ def test_physical_reliability_and_importance_do_not_make_clean_the_only_teacher(
     assert float(importance[0, 1]) > float(importance[0, 0])
 
 
+def test_rx_v2_reliability_reports_missing_metadata_and_extended_impairments() -> None:
+    reliability, details = physical_reliability_from_meta(
+        {
+            "snr_db": torch.tensor([24.0, 24.0]),
+            "theta_deg": torch.tensor([60.0, 60.0]),
+            "K_db": torch.tensor([15.0, 15.0]),
+            "deep_fade_ratio": torch.tensor([0.0, 0.8]),
+            "clip_ratio": torch.tensor([0.0, 0.4]),
+        },
+        batch_size=2,
+        device=torch.device("cpu"),
+        return_details=True,
+    )
+
+    assert reliability[0] > reliability[1]
+    assert details["metadata_present"]["spectral_error"].tolist() == [False, False]
+    assert details["missing_fraction"].item() > 0.0
+
+
 def test_local_tangent_reuses_the_received_iq_without_new_randomness() -> None:
     x = torch.zeros(2, 2, 16)
     x[:, 0] = 1.0
@@ -452,6 +478,44 @@ def test_robust_spherical_target_applies_coverage_floor_and_stays_on_sphere() ->
     assert float(target.norm(dim=-1)[0]) == pytest.approx(1.0, abs=1e-6)
     assert float(target[0, 0]) > float(target[0, 1])
     assert float(diagnostics["effective_views"][0]) > 2.0
+
+
+def test_coverage_mixture_preserves_prior_mass_for_unrecoverable_views() -> None:
+    recoverability = torch.tensor([[1.0, 0.0, 0.0]])
+    deployment = torch.tensor([[1.0, 1.0, 1.0]])
+    prior = torch.tensor([0.20, 0.35, 0.45])
+
+    weights = coverage_mixture_weights(
+        recoverability,
+        deployment,
+        prior=prior,
+        coverage_floor=0.20,
+    )
+
+    assert torch.allclose(weights.sum(dim=1), torch.ones(1))
+    assert float(weights[0, 1]) >= 0.20 * 0.35 - 1e-6
+    assert float(weights[0, 2]) >= 0.20 * 0.45 - 1e-6
+
+
+def test_anchored_orbit_target_stays_closer_to_clean_when_views_disperse() -> None:
+    features = torch.tensor([[[1.0, 0.0], [0.0, 1.0], [-1.0, 0.0]]])
+    reliability = torch.ones((1, 3))
+    importance = torch.ones((1, 3))
+
+    target, _, diagnostics = anchored_spherical_orbit_target(
+        features,
+        reliability=reliability,
+        importance=importance,
+        prior=torch.tensor([0.20, 0.35, 0.45]),
+        coverage_floor=0.15,
+        huber_beta_min=0.30,
+        anchor_strength=0.75,
+    )
+
+    clean = torch.tensor([[1.0, 0.0]])
+    assert torch.allclose(target.norm(dim=-1), torch.ones(1), atol=1e-5)
+    assert float((target * clean).sum()) > 0.5
+    assert float(diagnostics["anchor_travel_fraction"][0]) < 1.0
 
 
 def test_orbit_feature_loss_uses_recoverability_without_pseudo_labels() -> None:
@@ -631,6 +695,36 @@ def test_daot_cli_is_opt_in_but_three_view_is_its_default_mode() -> None:
     assert args.daot_lambda_fingerprint == pytest.approx(0.10)
 
 
+def test_daot_rx_v2_is_opt_in_and_uses_two_fresh_views_plus_memory() -> None:
+    args = build_arg_parser().parse_args(
+        ["--output_dir", "run", "--use_adv3b02_daot_stn_rx_v2", "true"]
+    )
+
+    _validate_daot_config(args)
+
+    assert args.use_adv3b02_daot_stn is True
+    assert args.daot_teacher_mode == "temporal_memory_rx"
+    assert args.daot_teacher_view_count == 2
+    assert args.daot_lambda_subspace == 0.0
+    assert args.use_tx_rx_balanced_sampler is True
+    assert args.balanced_sampler_domain_per_batch == 5
+    assert args.daot_eval_scenarios == (
+        "clean",
+        "leo_clear_weak",
+        "leo_low_elev_weak",
+        "leo_rain_weak",
+    )
+
+
+def test_daot_rx_v2_rejects_non_leo_weak_evaluation_scenarios() -> None:
+    assert validate_daot_eval_scenarios(
+        ["clean", "leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"]
+    ) == ("clean", "leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak")
+
+    with pytest.raises(ValueError, match="clean and the three LEO_WEAK scenarios"):
+        validate_daot_eval_scenarios(["clean", "mixed_orbit"])
+
+
 def test_daot_validation_enables_only_its_nuisance_head_and_ema_teacher() -> None:
     args = build_arg_parser().parse_args(
         ["--output_dir", "run", "--use_adv3b02_daot_stn", "true"]
@@ -702,6 +796,42 @@ def test_daot_batch_objective_keeps_feature_and_consensus_routes_separate() -> N
     assert float(student_channel["tx_logits"].grad[1].abs().sum()) == pytest.approx(0.0)
 
 
+def test_rx_v2_objective_uses_anchored_target_and_independent_component_scales() -> None:
+    student = {
+        "z_id": torch.tensor([[0.0, 1.0]], requires_grad=True),
+        "tx_logits": torch.tensor([[2.0, 0.0]], requires_grad=True),
+    }
+    teachers = [
+        {"z_id": torch.tensor([[1.0, 0.0]]), "tx_logits": torch.tensor([[3.0, 0.0]])},
+        {"z_id": torch.tensor([[0.0, 1.0]]), "tx_logits": torch.tensor([[3.0, 0.0]])},
+    ]
+    route = student["z_id"].square().mean()
+
+    result = compute_daot_batch_objective(
+        student_clean=student,
+        student_channel=student,
+        teacher_views=teachers,
+        reliability=torch.ones(1, 2),
+        importance=torch.ones(1, 2),
+        recoverability=torch.ones(1),
+        orbit_scale=0.0,
+        tangent_scale=0.0,
+        weights={"orbit_z": 0.4, "route": 1.0},
+        coverage_floor=0.2,
+        huber_beta_min=0.3,
+        temperature=3.0,
+        rx_v2=True,
+        teacher_prior=torch.tensor([0.7, 0.3]),
+        anchor_strength=0.8,
+        component_scales={"route": 1.0},
+        extra_components={"route": route},
+    )
+
+    assert float(result["loss"].detach()) > 0.0
+    assert "anchor_travel_fraction" in result["diagnostics"]
+    assert set(result["components"]) >= {"route", "rx", "tail", "clean_anchor", "subspace"}
+
+
 def test_labeled_step_runs_the_default_three_teacher_views() -> None:
     class ToyModel(torch.nn.Module):
         def __init__(self) -> None:
@@ -764,6 +894,90 @@ def test_labeled_step_runs_the_default_three_teacher_views() -> None:
         DAOT_NUISANCE_TANGENT_NAMES
     )
     assert float(model.proj.weight.grad.abs().sum()) > 0.0
+
+
+def test_rx_v2_labeled_step_uses_two_fresh_teacher_views_and_tensor_memory() -> None:
+    class ToyModel(torch.nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.proj = torch.nn.Linear(2, 2, bias=False)
+            torch.nn.init.eye_(self.proj.weight)
+
+        def forward(self, x, **kwargs):
+            z = self.proj(x.mean(dim=-1))
+            return {"z_id": z, "tx_logits": z, "z_dom": torch.roll(z, 1, dims=1)}
+
+    def fake_sat(x, scenario, args, *, gen, return_meta):
+        shifted = x.clone()
+        shifted[:, 1] += 0.1
+        batch = x.shape[0]
+        return shifted, {
+            "snr_db": torch.full((batch,), 24.0),
+            "theta_deg": torch.full((batch,), 60.0),
+            "K_db": torch.full((batch,), 18.0),
+            "cfo_hz": torch.zeros(batch),
+            "residual_cfo_hz": torch.zeros(batch),
+            "fD_hz": torch.zeros(batch),
+            "pl_db": torch.zeros(batch),
+            "h_km": torch.full((batch,), 1000.0),
+            "state": torch.zeros(batch),
+        }
+
+    args = build_arg_parser().parse_args(
+        ["--output_dir", "run", "--use_adv3b02_daot_stn_rx_v2", "true"]
+    )
+    _validate_daot_config(args)
+    args.daot_diagnostic_epochs = ""
+    model = ToyModel()
+    teacher = ToyModel()
+    teacher.load_state_dict(model.state_dict())
+    x = torch.randn(6, 2, 16)
+    keys = torch.arange(6)
+    memory = TensorTemporalOrbitMemory(feature_dim=2, capacity=16, ttl=64)
+    style = OnlineReceiverStyleBank(rank=2, min_receivers=3)
+    tail = GroupTailRiskEMA(alpha=0.4, momentum=0.8, min_group_size=2, max_weight=2.0)
+
+    first = _compute_daot_labeled_step(
+        model=model,
+        ema_model=teacher,
+        student_clean=model(x),
+        x_clean=x,
+        y_clean=torch.tensor([0, 0, 1, 1, 0, 1]),
+        d_clean=None,
+        receiver_clean=torch.tensor([1, 1, 3, 3, 4, 4]),
+        receiver_style_bank=style,
+        tail_risk_state=tail,
+        args=args,
+        epoch=80,
+        batch_idx=2,
+        apply_sat_fn=fake_sat,
+        prototype_matrix=None,
+        orbit_memory=memory,
+        memory_keys=keys,
+    )
+    second = _compute_daot_labeled_step(
+        model=model,
+        ema_model=teacher,
+        student_clean=model(x),
+        x_clean=x,
+        y_clean=torch.tensor([0, 0, 1, 1, 0, 1]),
+        d_clean=None,
+        receiver_clean=torch.tensor([1, 1, 3, 3, 4, 4]),
+        receiver_style_bank=style,
+        tail_risk_state=tail,
+        args=args,
+        epoch=80,
+        batch_idx=3,
+        apply_sat_fn=fake_sat,
+        prototype_matrix=None,
+        orbit_memory=memory,
+        memory_keys=keys,
+    )
+
+    assert first["diagnostics"]["teacher_view_count"] == 2.0
+    assert first["diagnostics"]["memory_hit_rate"] == 0.0
+    assert second["diagnostics"]["memory_hit_rate"] == 1.0
+    assert second["diagnostics"]["receiver_style_ready"] is True
 
 
 def test_unlabeled_step_has_no_label_or_pseudo_label_input() -> None:

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import hashlib
-from typing import Any, Mapping, Sequence
+from typing import Any, Iterator, Mapping, Sequence
 
 import torch
 
@@ -18,12 +18,80 @@ DAOT_NUISANCE_TANGENT_NAMES = (
     "agc",
 )
 
+DAOT_RX_V2_EVAL_SCENARIOS = (
+    "clean",
+    "leo_clear_weak",
+    "leo_low_elev_weak",
+    "leo_rain_weak",
+)
+
 
 @dataclass(frozen=True)
 class TeacherViewSpec:
     name: str
     scenario: str
     severity: float
+
+
+@dataclass(frozen=True)
+class TangentDirectionSpec:
+    name: str
+    kind: str
+    unit: str
+    delta: float
+    budget: float
+    supports_tangent: bool = True
+    null_identity: bool = True
+
+
+class TangentDirectionRegistry(Mapping[str, TangentDirectionSpec]):
+    """Single source of truth for nuisance, mixed, TX, and secant directions."""
+
+    _KINDS = {"pure_nuisance", "mixed", "tx_fingerprint", "secant_only"}
+
+    def __init__(self, specs: Sequence[TangentDirectionSpec]) -> None:
+        self._specs = {spec.name: spec for spec in specs}
+        if len(self._specs) != len(tuple(specs)):
+            raise ValueError("tangent direction names must be unique")
+        if any(spec.kind not in self._KINDS for spec in self._specs.values()):
+            raise ValueError("unknown tangent direction kind")
+        if any(spec.delta <= 0.0 or spec.budget < 0.0 for spec in self._specs.values()):
+            raise ValueError("direction delta must be positive and budget non-negative")
+
+    def __getitem__(self, key: str) -> TangentDirectionSpec:
+        return self._specs[str(key)]
+
+    def __iter__(self) -> Iterator[str]:
+        return iter(self._specs)
+
+    def __len__(self) -> int:
+        return len(self._specs)
+
+    @classmethod
+    def default(cls) -> "TangentDirectionRegistry":
+        return cls(
+            (
+                TangentDirectionSpec("doppler", "pure_nuisance", "Hz", 0.05, 0.0),
+                TangentDirectionSpec("doppler_rate", "pure_nuisance", "Hz/s", 0.05, 0.0),
+                TangentDirectionSpec("sto", "pure_nuisance", "sample", 0.05, 0.0),
+                TangentDirectionSpec("rx_sfo", "pure_nuisance", "ppm", 0.05, 0.01),
+                TangentDirectionSpec("rx_filter", "pure_nuisance", "standardized", 0.05, 0.0),
+                TangentDirectionSpec("multipath", "pure_nuisance", "standardized", 0.05, 0.0),
+                TangentDirectionSpec("snr", "pure_nuisance", "dB-standardized", 0.05, 0.01),
+                TangentDirectionSpec("rx_phase_noise", "pure_nuisance", "rad-standardized", 0.05, 0.01),
+                TangentDirectionSpec("agc", "pure_nuisance", "dB", 0.05, 0.0),
+                TangentDirectionSpec("total_cfo", "mixed", "Hz", 0.05, 0.05),
+                TangentDirectionSpec("total_iq_imbalance", "mixed", "standardized", 0.05, 0.05),
+                TangentDirectionSpec("pa", "tx_fingerprint", "standardized", 0.03, 0.0, True, False),
+                TangentDirectionSpec("iq_gain", "tx_fingerprint", "standardized", 0.03, 0.0, True, False),
+                TangentDirectionSpec("iq_phase", "tx_fingerprint", "rad", 0.03, 0.0, True, False),
+                TangentDirectionSpec("tx_cfo", "tx_fingerprint", "Hz", 0.03, 0.0, True, False),
+                TangentDirectionSpec("clock_skew", "tx_fingerprint", "ppm", 0.03, 0.0, True, False),
+                TangentDirectionSpec("dac_nonlinearity", "tx_fingerprint", "standardized", 0.03, 0.0, True, False),
+                TangentDirectionSpec("clipping", "secant_only", "clip-ratio", 0.05, 0.0, False, False),
+                TangentDirectionSpec("quantization", "secant_only", "bit-step", 0.05, 0.0, False, False),
+            )
+        )
 
 
 @dataclass(frozen=True)
@@ -71,6 +139,43 @@ def default_teacher_view_specs() -> tuple[TeacherViewSpec, ...]:
         TeacherViewSpec("medium", "leo_clear_weak", 0.5),
         TeacherViewSpec("hard", "leo_low_elev_weak", 1.0),
     )
+
+
+def validate_daot_eval_scenarios(scenarios: Sequence[str]) -> tuple[str, ...]:
+    """Enforce the RX-V2 clean plus LEO_WEAK evaluation boundary."""
+
+    normalized = tuple(str(value).strip() for value in scenarios if str(value).strip())
+    if normalized != DAOT_RX_V2_EVAL_SCENARIOS:
+        raise ValueError(
+            "ADV3B02-DAOT-STN-RX-V2 evaluation is limited to clean and the three LEO_WEAK scenarios"
+        )
+    return normalized
+
+
+def daot_rx_v2_overrides() -> dict[str, Any]:
+    """Deployment-default RX-V2 controls, separate from the A1-A8 upper-bound matrix."""
+
+    return {
+        "use_adv3b02_daot_stn": True,
+        "daot_teacher_mode": "temporal_memory_rx",
+        "daot_teacher_view_count": 2,
+        "daot_lambda_orbit_z": 0.40,
+        "daot_lambda_orbit_logit": 0.075,
+        "daot_lambda_orbit_proto": 0.125,
+        "daot_lambda_tangent": 0.035,
+        "daot_lambda_nuisance": 0.0,
+        "daot_lambda_fingerprint": 0.0,
+        "daot_lambda_route": 0.05,
+        "daot_lambda_rx": 0.075,
+        "daot_lambda_tail": 0.10,
+        "daot_lambda_clean_anchor": 0.025,
+        "daot_lambda_subspace": 0.0,
+        "daot_eval_scenarios": DAOT_RX_V2_EVAL_SCENARIOS,
+        "use_tx_rx_balanced_sampler": True,
+        "balanced_sampler_tx_per_batch": 6,
+        "balanced_sampler_domain_per_batch": 5,
+        "balanced_sampler_samples_per_cell": 3,
+    }
 
 
 def daot_ablation_overrides(ablation_id: str) -> dict[str, Any]:
@@ -174,14 +279,45 @@ def physical_reliability_from_meta(
     *,
     batch_size: int,
     device: torch.device,
-) -> torch.Tensor:
+    return_details: bool = False,
+) -> torch.Tensor | tuple[torch.Tensor, dict[str, Any]]:
     """Recoverability score derived only from physical channel metadata."""
 
-    snr = torch.sigmoid((_meta_column(meta, "snr_db", batch_size, device) - 14.0) / 5.0)
-    elevation = (_meta_column(meta, "theta_deg", batch_size, device) / 90.0).clamp(0.0, 1.0)
-    rician = torch.sigmoid((_meta_column(meta, "K_db", batch_size, device) - 6.0) / 5.0)
-    reliability = (snr * elevation.clamp_min(0.05) * rician).pow(1.0 / 3.0)
-    return reliability.clamp(0.0, 1.0)
+    names = (
+        "snr_db", "theta_deg", "K_db", "deep_fade_ratio", "clip_ratio",
+        "occupancy_error", "canonical_error", "phase_error", "spectral_error",
+    )
+    columns = {name: _meta_column(meta, name, batch_size, device) for name in names}
+    present = {
+        name: torch.full((int(batch_size),), name in meta, device=device, dtype=torch.bool)
+        for name in names
+    }
+    factors = {
+        "snr_db": torch.sigmoid((columns["snr_db"] - 14.0) / 5.0),
+        "theta_deg": (columns["theta_deg"] / 90.0).clamp(0.05, 1.0),
+        "K_db": torch.sigmoid((columns["K_db"] - 6.0) / 5.0),
+        "deep_fade_ratio": torch.exp(-2.0 * columns["deep_fade_ratio"].clamp_min(0.0)),
+        "clip_ratio": torch.exp(-3.0 * columns["clip_ratio"].clamp_min(0.0)),
+        "occupancy_error": torch.exp(-columns["occupancy_error"].abs()),
+        "canonical_error": torch.exp(-columns["canonical_error"].abs()),
+        "phase_error": torch.exp(-columns["phase_error"].abs()),
+        "spectral_error": torch.exp(-columns["spectral_error"].abs()),
+    }
+    log_sum = torch.zeros(int(batch_size), device=device)
+    count = torch.zeros(int(batch_size), device=device)
+    for name in names:
+        mask = present[name].float()
+        log_sum = log_sum + mask * factors[name].clamp_min(1e-6).log()
+        count = count + mask
+    reliability = torch.exp(log_sum / count.clamp_min(1.0)).clamp(0.0, 1.0)
+    if not return_details:
+        return reliability
+    details = {
+        "metadata_present": present,
+        "factor_values": factors,
+        "missing_fraction": 1.0 - count.mean() / float(len(names)),
+    }
+    return reliability, details
 
 
 def teacher_importance_matrix(*, batch_size: int, device: torch.device) -> torch.Tensor:
@@ -249,7 +385,8 @@ def apply_named_local_nuisance_tangent(
     if received_iq.ndim != 3 or int(received_iq.shape[1]) != 2:
         raise ValueError("received_iq must have shape [batch,2,time]")
     key = str(name).lower().strip()
-    if key not in DAOT_NUISANCE_TANGENT_NAMES:
+    key = {"rx_sfo": "sfo", "rx_phase_noise": "phase_noise"}.get(key, key)
+    if key not in DAOT_NUISANCE_TANGENT_NAMES and key != "rx_filter":
         raise ValueError(f"unknown nuisance tangent: {name}")
     delta = float(delta)
     if delta <= 0.0:
@@ -297,6 +434,11 @@ def apply_named_local_nuisance_tangent(
         result = complex_x * torch.exp(1j * phase)
     elif key == "agc":
         result = complex_x * torch.exp(delta * 0.20 * direction).unsqueeze(1)
+    elif key == "rx_filter":
+        previous = torch.roll(complex_x, shifts=1, dims=1)
+        previous[:, 0] = complex_x[:, 0]
+        alpha = (delta * 0.50 * direction.abs()).clamp(0.0, 0.25).unsqueeze(1)
+        result = (1.0 - alpha) * complex_x + alpha * previous
     else:  # pragma: no cover - exhaustive guard above
         raise AssertionError(key)
     return torch.stack([result.real, result.imag], dim=1).to(dtype=received_iq.dtype)
@@ -359,6 +501,55 @@ def apply_fingerprint_intervention(
     clock_offset_hz = 10_000.0 * strength
     shifted = iq * torch.exp(1j * (2.0 * torch.pi * clock_offset_hz * time.unsqueeze(0)))
     return torch.stack([shifted.real, shifted.imag], dim=1).to(dtype=clean_iq.dtype)
+
+
+def sample_single_tx_intervention(
+    clean_iq: torch.Tensor,
+    *,
+    seed: int,
+    strength: float,
+    sample_rate_hz: float,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Apply exactly one randomized, replayable TX intervention per sample."""
+
+    if clean_iq.ndim != 3 or int(clean_iq.shape[1]) != 2:
+        raise ValueError("clean_iq must have shape [batch,2,time]")
+    if float(strength) <= 0.0 or float(sample_rate_hz) <= 0.0:
+        raise ValueError("strength and sample_rate_hz must be positive")
+    batch, _, length = clean_iq.shape
+    generator = torch.Generator(device=clean_iq.device)
+    generator.manual_seed(int(seed))
+    direction_ids = torch.randint(0, 6, (batch,), generator=generator, device=clean_iq.device)
+    signs = torch.randint(0, 2, (batch,), generator=generator, device=clean_iq.device).float() * 2.0 - 1.0
+    signed = signs * float(strength)
+    x = torch.complex(clean_iq[:, 0].float(), clean_iq[:, 1].float())
+    output = x.clone()
+    time = torch.arange(length, device=clean_iq.device, dtype=torch.float32) / float(sample_rate_hz)
+
+    for direction_id in range(6):
+        selected = direction_ids.eq(direction_id)
+        if not bool(selected.any()):
+            continue
+        value = x[selected]
+        amount = signed[selected].unsqueeze(1)
+        if direction_id == 0:  # PA
+            changed = value * (1.0 + amount * value.abs().square().clamp_max(4.0))
+        elif direction_id == 1:  # IQ gain
+            changed = torch.complex(value.real * (1.0 + amount), value.imag * (1.0 - amount))
+        elif direction_id == 2:  # IQ phase
+            changed = value * torch.exp(1j * amount)
+        elif direction_id == 3:  # TX CFO
+            changed = value * torch.exp(1j * 2.0 * torch.pi * amount * 50_000.0 * time.unsqueeze(0))
+        elif direction_id == 4:  # clock skew proxy
+            changed = value * torch.exp(1j * 2.0 * torch.pi * amount * 12_500.0 * time.unsqueeze(0))
+        else:  # DAC nonlinearity
+            changed = value + amount * value * value.abs().square().clamp_max(4.0)
+        output[selected] = changed
+    return (
+        torch.stack([output.real, output.imag], dim=1).to(dtype=clean_iq.dtype),
+        direction_ids,
+        signs,
+    )
 
 
 def sample_sparse_joint_direction(

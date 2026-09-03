@@ -1,0 +1,48 @@
+{
+  "schema": "cvs.phase1.adv3b02_daot_stn_rx_v2.v1",
+  "status": "IMPLEMENTED_NOT_LAUNCHED",
+  "seed": 392005,
+  "epochs": 200,
+  "dataset": {
+    "name": "ManySig",
+    "path": "Dataset_WigSig/ManySig.pkl",
+    "equalized": true,
+    "split_mode": "tx_rx_day_1_7_2",
+    "split_seed": 392005,
+    "source_receivers": [1, 3, 4, 6, 8],
+    "source_days": [1, 2, 3],
+    "pool_size": 90000,
+    "roles": {"L_s": 6300, "U_s": 56700, "V_cal": 13500, "V_select": 13500}
+  },
+  "method": {
+    "use_adv3b02_daot_stn": true,
+    "use_adv3b02_daot_stn_rx_v2": true,
+    "teacher_mode": "temporal_memory_rx",
+    "fresh_teacher_views": 2,
+    "deployment_teacher": ["clean", "rotating_channel_receiver", "temporal_memory"],
+    "three_fresh_teacher_scope": "A2_A3_UPPER_BOUND_ONLY",
+    "aggregation": "coverage_aware_clean_anchored_spherical",
+    "tangent_sensitivity": "squared_chordal_over_delta_squared",
+    "source_receiver_style_only": true,
+    "unlabeled_route": ["Core", "Ambiguous", "Irrecoverable"],
+    "memory": {"capacity": 131072, "momentum": 0.85, "ttl": 64},
+    "subspace": {"enabled": false, "lambda": 0.0, "rank": 8, "update_interval": 5}
+  },
+  "loss_weights": {
+    "orbit_z": 0.4,
+    "soft_logit": 0.075,
+    "prototype": 0.125,
+    "tangent": 0.035,
+    "route": 0.05,
+    "receiver": 0.075,
+    "tail_cvar": 0.1,
+    "clean_anchor": 0.025,
+    "subspace": 0.0
+  },
+  "final_evaluation": ["clean", "leo_clear_weak", "leo_low_elev_weak", "leo_rain_weak"],
+  "excluded": {
+    "prior_checkpoint_non_leo_weak_test": true,
+    "non_weak_scenarios": ["clear_leo", "low_elev_leo", "rain_leo", "storm_mp", "mixed_orbit", "geo_clear"]
+  },
+  "launch": {"authorized": false, "experiment_started": false}
+}

@@ -22,6 +22,61 @@ def angular_sensitivity(base: torch.Tensor, perturbed: torch.Tensor, *, delta: f
     return angle / delta
 
 
+def chordal_sensitivity(
+    base: torch.Tensor,
+    perturbed: torch.Tensor,
+    *,
+    delta: float | torch.Tensor,
+) -> torch.Tensor:
+    """Squared directional energy using the stable spherical chord length."""
+
+    if base.shape != perturbed.shape:
+        raise ValueError("base and perturbed features must have identical shape")
+    delta_value = torch.as_tensor(delta, device=base.device, dtype=torch.float32)
+    if bool((delta_value <= 0.0).any()):
+        raise ValueError("finite-difference delta must be positive")
+    cosine = (F.normalize(base.float(), dim=-1) * F.normalize(perturbed.float(), dim=-1)).sum(dim=-1)
+    while delta_value.ndim < cosine.ndim:
+        delta_value = delta_value.unsqueeze(-1)
+    return 2.0 * (1.0 - cosine.clamp(-1.0, 1.0)) / delta_value.square()
+
+
+def _cosine_distance(left: torch.Tensor, right: torch.Tensor) -> torch.Tensor:
+    if left.shape != right.shape:
+        raise ValueError("routing feature pairs must have identical shape")
+    return 1.0 - (F.normalize(left.float(), dim=-1) * F.normalize(right.float(), dim=-1)).sum(dim=-1)
+
+
+def directional_routing_loss(
+    *,
+    base_id: torch.Tensor,
+    nuisance_id: torch.Tensor,
+    fingerprint_id: torch.Tensor,
+    base_dom: torch.Tensor,
+    nuisance_dom: torch.Tensor,
+    fingerprint_dom: torch.Tensor,
+    nuisance_margin: float,
+    fingerprint_margin: float,
+) -> dict[str, torch.Tensor]:
+    """Route nuisance changes to z_dom and TX changes to z_id."""
+
+    delta_nui_id = _cosine_distance(base_id, nuisance_id)
+    delta_nui_dom = _cosine_distance(base_dom, nuisance_dom)
+    delta_fp_id = _cosine_distance(base_id, fingerprint_id)
+    delta_fp_dom = _cosine_distance(base_dom, fingerprint_dom)
+    nuisance_violation = (float(nuisance_margin) + delta_nui_id - delta_nui_dom).clamp_min(0.0)
+    fingerprint_violation = (float(fingerprint_margin) + delta_fp_dom - delta_fp_id).clamp_min(0.0)
+    return {
+        "loss": (nuisance_violation + fingerprint_violation).mean(),
+        "delta_nui_id": delta_nui_id,
+        "delta_nui_dom": delta_nui_dom,
+        "delta_fp_id": delta_fp_id,
+        "delta_fp_dom": delta_fp_dom,
+        "nuisance_violation": nuisance_violation,
+        "fingerprint_violation": fingerprint_violation,
+    }
+
+
 def selective_tangent_loss(
     sensitivity: torch.Tensor,
     *,

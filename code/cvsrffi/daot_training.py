@@ -6,6 +6,7 @@ import torch
 import torch.nn.functional as F
 
 from .orbit_teacher import (
+    anchored_spherical_orbit_target,
     orbit_feature_loss,
     orbit_logit_distillation_loss,
     orbit_prototype_distillation_loss,
@@ -14,6 +15,7 @@ from .orbit_teacher import (
 )
 from .selective_tangent import (
     angular_sensitivity,
+    chordal_sensitivity,
     fingerprint_keep_loss,
     heteroscedastic_nuisance_loss,
     fingerprint_selectivity,
@@ -67,6 +69,12 @@ def compute_daot_batch_objective(
     fingerprint_minimum: float = 0.50,
     relation_pairs: Optional[torch.Tensor] = None,
     loss_normalizer=None,
+    rx_v2: bool = False,
+    teacher_prior: Optional[torch.Tensor] = None,
+    anchor_strength: float = 0.50,
+    component_scales: Optional[Mapping[str, float]] = None,
+    extra_components: Optional[Mapping[str, torch.Tensor]] = None,
+    logit_valid: Optional[torch.Tensor] = None,
 ) -> dict[str, Any]:
     """Compose DAOT-STN losses without consulting TX labels or pseudo labels."""
 
@@ -75,18 +83,39 @@ def compute_daot_batch_objective(
     student_z = student_channel["z_id"]
     teacher_features = torch.stack([view["z_id"].detach() for view in teacher_views], dim=1)
     teacher_logits = torch.stack([view["tx_logits"].detach() for view in teacher_views], dim=1)
-    target_z, feature_weights, aggregate_diag = robust_spherical_orbit_target(
-        teacher_features,
-        reliability=reliability,
-        importance=importance,
-        coverage_floor=float(coverage_floor),
-        huber_beta_min=float(huber_beta_min),
-    )
+    if bool(rx_v2):
+        if teacher_prior is None:
+            teacher_prior = torch.ones(
+                teacher_features.shape[1], device=teacher_features.device, dtype=torch.float32
+            )
+            teacher_prior[0] = float(max(1, teacher_features.shape[1] - 1))
+        target_z, feature_weights, aggregate_diag = anchored_spherical_orbit_target(
+            teacher_features,
+            reliability=reliability,
+            importance=importance,
+            prior=teacher_prior,
+            coverage_floor=float(coverage_floor),
+            huber_beta_min=float(huber_beta_min),
+            anchor_strength=float(anchor_strength),
+        )
+    else:
+        target_z, feature_weights, aggregate_diag = robust_spherical_orbit_target(
+            teacher_features,
+            reliability=reliability,
+            importance=importance,
+            coverage_floor=float(coverage_floor),
+            huber_beta_min=float(huber_beta_min),
+        )
     consensus, confidence, target_logits = _teacher_consensus_and_target_logits(
         teacher_logits,
         feature_weights,
         temperature=float(temperature),
     )
+    if logit_valid is not None:
+        logit_valid = logit_valid.to(device=consensus.device, dtype=torch.bool).reshape(-1)
+        if logit_valid.numel() != consensus.numel():
+            raise ValueError("logit_valid must align with the batch")
+        consensus = consensus & logit_valid
     recoverability = recoverability.to(device=student_z.device, dtype=torch.float32).clamp(0.0, 1.0)
     loss_z = 0.5 * (
         orbit_feature_loss(student_clean["z_id"], target_z, recoverability=recoverability)
@@ -121,7 +150,8 @@ def compute_daot_batch_objective(
     loss_tangent = _zero(student_z)
     nuisance_sensitivity = student_z.new_zeros((student_z.shape[0],))
     if tangent_perturbed is not None:
-        nuisance_sensitivity = angular_sensitivity(
+        sensitivity_fn = chordal_sensitivity if bool(rx_v2) else angular_sensitivity
+        nuisance_sensitivity = sensitivity_fn(
             student_channel["z_id"],
             tangent_perturbed["z_id"],
             delta=float(tangent_delta),
@@ -145,7 +175,8 @@ def compute_daot_batch_objective(
     loss_fingerprint = _zero(student_z)
     fingerprint_sensitivity_value = student_z.new_zeros((student_z.shape[0],))
     if fingerprint_perturbed is not None:
-        fingerprint_sensitivity_value = angular_sensitivity(
+        sensitivity_fn = chordal_sensitivity if bool(rx_v2) else angular_sensitivity
+        fingerprint_sensitivity_value = sensitivity_fn(
             student_clean["z_id"],
             fingerprint_perturbed["z_id"],
             delta=float(tangent_delta),
@@ -164,7 +195,21 @@ def compute_daot_batch_objective(
         "tangent": loss_tangent,
         "nuisance": loss_nuisance,
         "fingerprint": loss_fingerprint,
+        "route": _zero(student_z),
+        "rx": _zero(student_z),
+        "tail": _zero(student_z),
+        "clean_anchor": orbit_feature_loss(
+            student_clean["z_id"],
+            teacher_views[0]["z_id"].detach(),
+            recoverability=torch.ones_like(recoverability),
+        ),
+        "subspace": _zero(student_z),
     }
+    if extra_components is not None:
+        unknown = set(extra_components) - set(components)
+        if unknown:
+            raise ValueError(f"unknown DAOT component(s): {sorted(unknown)}")
+        components.update({str(name): value for name, value in extra_components.items()})
     normalized_components = components
     loss_scales: dict[str, float] = {}
     if loss_normalizer is not None:
@@ -172,18 +217,40 @@ def compute_daot_batch_objective(
             components,
             active={
                 name: float(weights.get(name, 0.0)) > 0.0
-                and (float(tangent_scale) > 0.0 if name == "tangent" else float(orbit_scale) > 0.0)
+                and (
+                    float((component_scales or {}).get(name, 0.0)) > 0.0
+                    if bool(rx_v2)
+                    else (float(tangent_scale) > 0.0 if name == "tangent" else float(orbit_scale) > 0.0)
+                )
                 for name in components
             },
         )
-    total = float(orbit_scale) * (
-        float(weights.get("orbit_z", 0.0)) * normalized_components["orbit_z"]
-        + float(weights.get("orbit_logit", 0.0)) * normalized_components["orbit_logit"]
-        + float(weights.get("orbit_proto", 0.0)) * normalized_components["orbit_proto"]
-        + float(weights.get("orbit_relation", 0.0)) * normalized_components["orbit_relation"]
-        + float(weights.get("nuisance", 0.0)) * normalized_components["nuisance"]
-        + float(weights.get("fingerprint", 0.0)) * normalized_components["fingerprint"]
-    ) + float(tangent_scale) * float(weights.get("tangent", 0.0)) * normalized_components["tangent"]
+    if bool(rx_v2):
+        component_scales = dict(component_scales or {})
+        weighted_components = {
+            name: float(component_scales.get(name, 0.0))
+            * float(weights.get(name, 0.0))
+            * normalized_components[name]
+            for name in components
+        }
+        total = sum(weighted_components.values())
+    else:
+        total = float(orbit_scale) * (
+            float(weights.get("orbit_z", 0.0)) * normalized_components["orbit_z"]
+            + float(weights.get("orbit_logit", 0.0)) * normalized_components["orbit_logit"]
+            + float(weights.get("orbit_proto", 0.0)) * normalized_components["orbit_proto"]
+            + float(weights.get("orbit_relation", 0.0)) * normalized_components["orbit_relation"]
+            + float(weights.get("nuisance", 0.0)) * normalized_components["nuisance"]
+            + float(weights.get("fingerprint", 0.0)) * normalized_components["fingerprint"]
+        ) + float(tangent_scale) * float(weights.get("tangent", 0.0)) * normalized_components["tangent"]
+        weighted_components = {
+            name: (
+                float(tangent_scale) if name == "tangent" else float(orbit_scale)
+            )
+            * float(weights.get(name, 0.0))
+            * normalized_components[name]
+            for name in components
+        }
     diagnostics = {
         **aggregate_diag,
         "consensus_mask": consensus,
@@ -200,6 +267,7 @@ def compute_daot_batch_objective(
         "loss": total,
         "components": components,
         "normalized_components": normalized_components,
+        "weighted_components": weighted_components,
         "diagnostics": diagnostics,
         "target_z": target_z,
     }
