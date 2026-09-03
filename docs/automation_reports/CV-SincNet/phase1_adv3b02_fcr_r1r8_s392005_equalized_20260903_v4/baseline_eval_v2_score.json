@@ -1,0 +1,60 @@
+{
+  "metrics": {
+    "clean": {
+      "accuracy": 0.7622678571428572,
+      "correct": 128061,
+      "per_class_accuracy": {
+        "0": 0.9085357142857143,
+        "1": 0.5129642857142858,
+        "2": 0.6201785714285715,
+        "3": 0.6472857142857142,
+        "4": 0.9988928571428571,
+        "5": 0.88575
+      },
+      "total": 168000
+    },
+    "leo_clear_weak": {
+      "accuracy": 0.6136785714285714,
+      "correct": 103098,
+      "per_class_accuracy": {
+        "0": 0.5614642857142857,
+        "1": 0.35532142857142857,
+        "2": 0.46567857142857144,
+        "3": 0.61275,
+        "4": 0.8344642857142858,
+        "5": 0.8523928571428572
+      },
+      "total": 168000
+    },
+    "leo_low_elev_weak": {
+      "accuracy": 0.595875,
+      "correct": 100107,
+      "per_class_accuracy": {
+        "0": 0.5571785714285714,
+        "1": 0.33332142857142855,
+        "2": 0.4423214285714286,
+        "3": 0.5869642857142857,
+        "4": 0.80325,
+        "5": 0.8522142857142857
+      },
+      "total": 168000
+    },
+    "leo_rain_weak": {
+      "accuracy": 0.5946369047619048,
+      "correct": 99899,
+      "per_class_accuracy": {
+        "0": 0.5716071428571429,
+        "1": 0.3288214285714286,
+        "2": 0.4340357142857143,
+        "3": 0.5711785714285714,
+        "4": 0.7992142857142858,
+        "5": 0.8629642857142857
+      },
+      "total": 168000
+    }
+  },
+  "prediction_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/ADV3B02/ADV3B02_CORE90_SOFT_E200/baseline_eval_v2/prediction/predictions.json",
+  "record_count": 672000,
+  "schema": "cvs.phase1.truth_last_score.v1",
+  "truth_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4/ADV3B02/ADV3B02_CORE90_SOFT_E200/baseline_eval_v2/truth/truth_sidecar.json"
+}

@@ -33,4 +33,31 @@
 - 修复：`_OpaqueTargetDataset`复用`dataset_wisig._safe_to_torch_float_tensor`，当`torch.from_numpy`和`torch.as_tensor`均失败时以plain-list构造tensor；不改变数据、模型、场景或truth-last边界。
 - 验证：新增ABI回归测试先RED后GREEN；聚焦测试20/20通过；Python编译与diff检查通过；原问题定点P0/P1复审结论为FIXED。
 - v2 eval_id：`phase1_adv3b02_fcr_r1r8_s392005_equalized_20260903_v4_ADV3B02_baseline_eval_v2`；使用全新`baseline_eval_v2`输出根，重新执行prepare→predict→独立scorer，不覆盖或复用v1输出根。
-- 当前状态：`LOCAL_VERIFIED`（v2待发布）。
+- v2修复提交：`0cc19956a817c14d8f1155114a714a206aed2b21`；本地与远端分支OID一致。
+- v2 release：`phase1_adv3b02_baseline_eval_s392005_20260903_v2_0cc19956.zip`；本地/远端归档SHA256一致为`502ED1AFD930451B652817693D3F05A7660E2E9BD105704DCAEECE6F9C17E4A0`；远端编译和真实无标签IQ单样本转换smoke通过。
+
+### v2测试结果
+
+|场景|正确数/总数|Accuracy|相对clean下降|
+|---|---:|---:|---:|
+|clean|128061/168000|76.2268%|0.0000pp|
+|leo_clear_weak|103098/168000|61.3679%|14.8589pp|
+|leo_low_elev_weak|100107/168000|59.5875%|16.6393pp|
+|leo_rain_weak|99899/168000|59.4637%|16.7631pp|
+
+- LEO三场景均值：60.1397%；LEO最差场景：59.4637%（`leo_rain_weak`）；clean到LEO均值下降16.0871pp；四场景宏平均64.1615%。
+
+|TX类别|clean|clear|low-elev|rain|四场景均值|
+|---:|---:|---:|---:|---:|---:|
+|0|90.8536%|56.1464%|55.7179%|57.1607%|64.9696%|
+|1|51.2964%|35.5321%|33.3321%|32.8821%|38.2607%|
+|2|62.0179%|46.5679%|44.2321%|43.4036%|49.0554%|
+|3|64.7286%|61.2750%|58.6964%|57.1179%|60.4545%|
+|4|99.8893%|83.4464%|80.3250%|79.9214%|85.8955%|
+|5|88.5750%|85.2393%|85.2214%|86.2964%|86.3330%|
+
+- 闭环：无标签predictor package为168000条，`contains_labels=false`；独立truth sidecar为168000条并绑定`ManySig|tx_rx_day_1_7_2|392005`；prediction为672000条，四场景各168000条；独立score schema为`cvs.phase1.truth_last_score.v1`。
+- checkpoint未被测试改写：测试后仍为15039647字节，mtime=`2026-09-03 08:00:52 +0800`。prediction为197064257字节；全量prepare/predict/score日志未发现异常指纹。
+- 机器可读结果：[baseline_eval_v2_score.json](baseline_eval_v2_score.json)。
+- 解释：该单seed基线在clean上达到76.2268%，但LEO三场景均值下降至60.1397%；类别1是所有场景的最低类，rain下仅32.8821%。这表明当前E200最终checkpoint的主要短板是跨LEO弱信道鲁棒性和类别1稳定性。本结果仅是指定split/seed/checkpoint的Phase1闭集六类基线，不代表R1-R8结果，也不构成真实在轨性能声明。
+- v2状态：`ANALYZED`。
